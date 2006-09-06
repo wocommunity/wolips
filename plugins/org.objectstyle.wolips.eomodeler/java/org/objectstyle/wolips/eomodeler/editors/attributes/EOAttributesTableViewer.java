@@ -50,6 +50,8 @@
 package org.objectstyle.wolips.eomodeler.editors.attributes;
 
 import java.beans.PropertyChangeEvent;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -81,155 +83,157 @@ import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 import org.objectstyle.wolips.eomodeler.utils.TriStateCellEditor;
 
 public class EOAttributesTableViewer extends Composite implements ISelectionProvider {
-  private TableViewer myAttributesTableViewer;
-  private EOEntity myEntity;
-  private AttributesChangeRefresher myAttributesChangedRefresher;
-  private TableRefreshPropertyListener myParentChangedRefresher;
-  private TableRowRefreshPropertyListener myTableRowRefresher;
+	private TableViewer myAttributesTableViewer;
 
-  public EOAttributesTableViewer(Composite _parent, int _style) {
-    super(_parent, _style);
+	private EOEntity myEntity;
 
-    setLayout(new GridLayout(1, true));
-    myAttributesTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EOAttribute", EOAttributesConstants.COLUMNS, new EOAttributesContentProvider(), null, new EOAttributesViewerSorter(EOAttributesConstants.COLUMNS));
-    myAttributesTableViewer.setLabelProvider(new EOAttributesLabelProvider(myAttributesTableViewer, EOAttributesConstants.COLUMNS));
-    new DoubleClickNewAttributeHandler(myAttributesTableViewer).attach();
-    myAttributesChangedRefresher = new AttributesChangeRefresher(myAttributesTableViewer);
-    myParentChangedRefresher = new TableRefreshPropertyListener(myAttributesTableViewer);
-    myTableRowRefresher = new TableRowRefreshPropertyListener(myAttributesTableViewer);
-    Table attributesTable = myAttributesTableViewer.getTable();
-    attributesTable.setLayoutData(new GridData(GridData.FILL_BOTH));
+	private AttributesChangeRefresher myAttributesChangedRefresher;
 
-    TableColumn primaryKeyColumn = attributesTable.getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PRIMARY_KEY));
-    primaryKeyColumn.setText("");
-    //primaryKeyColumn.setAlignment(SWT.CENTER);
-    primaryKeyColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.PRIMARY_KEY_ICON));
+	private TableRefreshPropertyListener myParentChangedRefresher;
 
-    TableColumn lockingColumn = attributesTable.getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.USED_FOR_LOCKING));
-    lockingColumn.setText("");
-    //lockingColumn.setAlignment(SWT.CENTER);
-    lockingColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.LOCKING_ICON));
+	private TableRowRefreshPropertyListener myTableRowRefresher;
 
-    TableColumn classPropertyColumn = attributesTable.getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.CLASS_PROPERTY));
-    classPropertyColumn.setText("");
-    //classPropertyColumn.setAlignment(SWT.CENTER);
-    classPropertyColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON));
+	public EOAttributesTableViewer(Composite _parent, int _style) {
+		super(_parent, _style);
 
-    TableColumn allowNullColumn = attributesTable.getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.ALLOWS_NULL));
-    allowNullColumn.setText("0");
-    //allowNullColumn.setAlignment(SWT.CENTER);
-    //classPropertyColumn.setImage(Activator.getDefault().getImageRegistry().get(EOAttribute.CLASS_PROPERTY));
+		setLayout(new GridLayout(1, true));
+		myAttributesTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EOAttribute", EOAttributesConstants.COLUMNS, new EOAttributesContentProvider(), null, new EOAttributesViewerSorter(EOAttributesConstants.COLUMNS));
+		myAttributesTableViewer.setLabelProvider(new EOAttributesLabelProvider(myAttributesTableViewer, EOAttributesConstants.COLUMNS));
+		new DoubleClickNewAttributeHandler(myAttributesTableViewer).attach();
+		myAttributesChangedRefresher = new AttributesChangeRefresher(myAttributesTableViewer);
+		myParentChangedRefresher = new TableRefreshPropertyListener(myAttributesTableViewer);
+		myTableRowRefresher = new TableRowRefreshPropertyListener(myAttributesTableViewer);
+		Table attributesTable = myAttributesTableViewer.getTable();
+		attributesTable.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-    TableUtils.sort(myAttributesTableViewer, AbstractEOArgument.NAME);
+		TableColumn primaryKeyColumn = attributesTable.getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PRIMARY_KEY));
+		primaryKeyColumn.setText("");
+		// primaryKeyColumn.setAlignment(SWT.CENTER);
+		primaryKeyColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.PRIMARY_KEY_ICON));
 
-    CellEditor[] cellEditors = new CellEditor[EOAttributesConstants.COLUMNS.length];
-    cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PROTOTYPE)] = new KeyComboBoxCellEditor(attributesTable, new String[0], SWT.READ_ONLY);
-    cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.NAME)] = new TextCellEditor(attributesTable);
-    cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.COLUMN_NAME)] = new TextCellEditor(attributesTable);
-    updateCellEditors(cellEditors);
-    myAttributesTableViewer.setCellModifier(new EOAttributesCellModifier(myAttributesTableViewer, cellEditors));
-    myAttributesTableViewer.setCellEditors(cellEditors);
-  }
+		TableColumn lockingColumn = attributesTable.getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.USED_FOR_LOCKING));
+		lockingColumn.setText("");
+		// lockingColumn.setAlignment(SWT.CENTER);
+		lockingColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.LOCKING_ICON));
 
-  public void setEntity(EOEntity _entity) {
-    if (myEntity != null) {
-      myEntity.removePropertyChangeListener(EOEntity.PARENT, myParentChangedRefresher);
-      myEntity.removePropertyChangeListener(EOEntity.ATTRIBUTES, myAttributesChangedRefresher);
-      myEntity.removePropertyChangeListener(EOEntity.ATTRIBUTE, myTableRowRefresher);
-    }
-    myEntity = _entity;
-    if (myEntity != null) {
-      myAttributesTableViewer.setInput(myEntity);
-      updateCellEditors(myAttributesTableViewer.getCellEditors());
-      TableUtils.packTableColumns(myAttributesTableViewer);
-      TableColumn prototypeColumn = myAttributesTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PROTOTYPE));
-      prototypeColumn.setWidth(Math.max(prototypeColumn.getWidth(), 100));
-      TableColumn nameColumn = myAttributesTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.NAME));
-      nameColumn.setWidth(Math.max(nameColumn.getWidth(), 100));
-      TableColumn allowsNullColumn = myAttributesTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.ALLOWS_NULL));
-      allowsNullColumn.setWidth(Math.max(allowsNullColumn.getWidth(), 30));
-      myEntity.addPropertyChangeListener(EOEntity.PARENT, myParentChangedRefresher);
-      myEntity.addPropertyChangeListener(EOEntity.ATTRIBUTES, myAttributesChangedRefresher);
-      myEntity.addPropertyChangeListener(EOEntity.ATTRIBUTE, myTableRowRefresher);
-    }
-  }
+		TableColumn classPropertyColumn = attributesTable.getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.CLASS_PROPERTY));
+		classPropertyColumn.setText("");
+		// classPropertyColumn.setAlignment(SWT.CENTER);
+		classPropertyColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON));
 
-  public EOEntity getEntity() {
-    return myEntity;
-  }
+		TableColumn allowNullColumn = attributesTable.getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.ALLOWS_NULL));
+		allowNullColumn.setText("0");
+		// allowNullColumn.setAlignment(SWT.CENTER);
+		// classPropertyColumn.setImage(Activator.getDefault().getImageRegistry().get(EOAttribute.CLASS_PROPERTY));
 
-  public TableViewer getTableViewer() {
-    return myAttributesTableViewer;
-  }
+		TableUtils.sort(myAttributesTableViewer, AbstractEOArgument.NAME);
 
-  protected void updateCellEditors(CellEditor[] _cellEditors) {
-    Table attributesTable = myAttributesTableViewer.getTable();
-    if (myEntity != null && myEntity.isPrototype()) {
-      _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PRIMARY_KEY)] = new TriStateCellEditor(attributesTable);
-      _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.CLASS_PROPERTY)] = new TriStateCellEditor(attributesTable);
-      _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.USED_FOR_LOCKING)] = new TriStateCellEditor(attributesTable);
-      _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.ALLOWS_NULL)] = new TriStateCellEditor(attributesTable);
-    }
-    else {
-      _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PRIMARY_KEY)] = new CheckboxCellEditor(attributesTable);
-      _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.CLASS_PROPERTY)] = new CheckboxCellEditor(attributesTable);
-      _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.USED_FOR_LOCKING)] = new CheckboxCellEditor(attributesTable);
-      _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.ALLOWS_NULL)] = new CheckboxCellEditor(attributesTable);
-    }
-  }
+		CellEditor[] cellEditors = new CellEditor[EOAttributesConstants.COLUMNS.length];
+		cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PROTOTYPE)] = new KeyComboBoxCellEditor(attributesTable, new String[0], SWT.READ_ONLY);
+		cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.NAME)] = new TextCellEditor(attributesTable);
+		cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.COLUMN_NAME)] = new TextCellEditor(attributesTable);
+		updateCellEditors(cellEditors);
+		myAttributesTableViewer.setCellModifier(new EOAttributesCellModifier(myAttributesTableViewer, cellEditors));
+		myAttributesTableViewer.setCellEditors(cellEditors);
+	}
 
-  public void addSelectionChangedListener(ISelectionChangedListener _listener) {
-    myAttributesTableViewer.addSelectionChangedListener(_listener);
-  }
+	public void setEntity(EOEntity _entity) {
+		if (myEntity != null) {
+			myEntity.removePropertyChangeListener(EOEntity.PARENT, myParentChangedRefresher);
+			myEntity.removePropertyChangeListener(EOEntity.ATTRIBUTES, myAttributesChangedRefresher);
+			myEntity.removePropertyChangeListener(EOEntity.ATTRIBUTE, myTableRowRefresher);
+		}
+		myEntity = _entity;
+		if (myEntity != null) {
+			myAttributesTableViewer.setInput(myEntity);
+			updateCellEditors(myAttributesTableViewer.getCellEditors());
+			TableUtils.packTableColumns(myAttributesTableViewer);
+			TableColumn prototypeColumn = myAttributesTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PROTOTYPE));
+			prototypeColumn.setWidth(Math.max(prototypeColumn.getWidth(), 100));
+			TableColumn nameColumn = myAttributesTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.NAME));
+			nameColumn.setWidth(Math.max(nameColumn.getWidth(), 100));
+			TableColumn allowsNullColumn = myAttributesTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.ALLOWS_NULL));
+			allowsNullColumn.setWidth(Math.max(allowsNullColumn.getWidth(), 30));
+			myEntity.addPropertyChangeListener(EOEntity.PARENT, myParentChangedRefresher);
+			myEntity.addPropertyChangeListener(EOEntity.ATTRIBUTES, myAttributesChangedRefresher);
+			myEntity.addPropertyChangeListener(EOEntity.ATTRIBUTE, myTableRowRefresher);
+		}
+	}
 
-  public void removeSelectionChangedListener(ISelectionChangedListener _listener) {
-    myAttributesTableViewer.removeSelectionChangedListener(_listener);
-  }
+	public EOEntity getEntity() {
+		return myEntity;
+	}
 
-  public ISelection getSelection() {
-    return myAttributesTableViewer.getSelection();
-  }
+	public TableViewer getTableViewer() {
+		return myAttributesTableViewer;
+	}
 
-  public void setSelection(ISelection _selection) {
-    myAttributesTableViewer.setSelection(_selection);
-  }
+	protected void updateCellEditors(CellEditor[] _cellEditors) {
+		Table attributesTable = myAttributesTableViewer.getTable();
+		if (myEntity != null && myEntity.isPrototype()) {
+			_cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PRIMARY_KEY)] = new TriStateCellEditor(attributesTable);
+			_cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.CLASS_PROPERTY)] = new TriStateCellEditor(attributesTable);
+			_cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.USED_FOR_LOCKING)] = new TriStateCellEditor(attributesTable);
+			_cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.ALLOWS_NULL)] = new TriStateCellEditor(attributesTable);
+		} else {
+			_cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PRIMARY_KEY)] = new CheckboxCellEditor(attributesTable);
+			_cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.CLASS_PROPERTY)] = new CheckboxCellEditor(attributesTable);
+			_cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.USED_FOR_LOCKING)] = new CheckboxCellEditor(attributesTable);
+			_cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.ALLOWS_NULL)] = new CheckboxCellEditor(attributesTable);
+		}
+	}
 
-  protected class DoubleClickNewAttributeHandler extends TableRowDoubleClickHandler {
-    public DoubleClickNewAttributeHandler(TableViewer _viewer) {
-      super(_viewer);
-    }
+	public void addSelectionChangedListener(ISelectionChangedListener _listener) {
+		myAttributesTableViewer.addSelectionChangedListener(_listener);
+	}
 
-    protected void emptyDoubleSelectionOccurred() {
-      try {
-        EOAttributesTableViewer.this.getEntity().addBlankAttribute(Messages.getString("EOAttribute.newName"));
-      }
-      catch (Throwable e) {
-        e.printStackTrace();
-      }
-    }
-    
-    protected void doubleSelectionOccurred(ISelection _selection) {
-      // DO NOTHING
-    }
-  }
+	public void removeSelectionChangedListener(ISelectionChangedListener _listener) {
+		myAttributesTableViewer.removeSelectionChangedListener(_listener);
+	}
 
-  protected class AttributesChangeRefresher extends TableRefreshPropertyListener {
-    public AttributesChangeRefresher(TableViewer _tableViewer) {
-      super(_tableViewer);
-    }
+	public ISelection getSelection() {
+		return myAttributesTableViewer.getSelection();
+	}
 
-    public void propertyChange(PropertyChangeEvent _event) {
-      super.propertyChange(_event);
-      Set oldValues = (Set) _event.getOldValue();
-      Set newValues = (Set) _event.getNewValue();
-      if (newValues != null && oldValues != null) {
-        if (newValues.size() > oldValues.size()) {
-          List newList = new LinkedList(newValues);
-          newList.removeAll(oldValues);
-          EOAttributesTableViewer.this.setSelection(new StructuredSelection(newList));
-        }
-        TableUtils.packTableColumns(EOAttributesTableViewer.this.getTableViewer());
-      }
-    }
-  }
+	public void setSelection(ISelection _selection) {
+		myAttributesTableViewer.setSelection(_selection);
+	}
+
+	protected class DoubleClickNewAttributeHandler extends TableRowDoubleClickHandler {
+		public DoubleClickNewAttributeHandler(TableViewer _viewer) {
+			super(_viewer);
+		}
+
+		protected void emptyDoubleSelectionOccurred() {
+			try {
+				EOAttributesTableViewer.this.getEntity().addBlankAttribute(Messages.getString("EOAttribute.newName"));
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
+		}
+
+		protected void doubleSelectionOccurred(ISelection _selection) {
+			// DO NOTHING
+		}
+	}
+
+	protected class AttributesChangeRefresher extends TableRefreshPropertyListener {
+		public AttributesChangeRefresher(TableViewer _tableViewer) {
+			super(_tableViewer);
+		}
+
+		public void propertyChange(PropertyChangeEvent _event) {
+			super.propertyChange(_event);
+			Set oldValues = (Set) _event.getOldValue();
+			Set newValues = (Set) _event.getNewValue();
+			if (newValues != null && oldValues != null) {
+				if (newValues.size() > oldValues.size()) {
+					List newList = new LinkedList(newValues);
+					newList.removeAll(oldValues);
+					EOAttributesTableViewer.this.setSelection(new StructuredSelection(newList));
+				}
+				TableUtils.packTableColumns(EOAttributesTableViewer.this.getTableViewer());
+			}
+		}
+	}
 }

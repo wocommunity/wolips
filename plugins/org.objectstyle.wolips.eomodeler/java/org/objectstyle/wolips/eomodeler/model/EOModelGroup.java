@@ -54,6 +54,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class EOModelGroup extends EOModelObject {
   public static final String MODELS = "models";
@@ -61,7 +62,7 @@ public class EOModelGroup extends EOModelObject {
   private Set myModels;
 
   public EOModelGroup() {
-    myModels = new PropertyListSet();
+    myModels = new HashSet();
   }
 
   public Set getReferenceFailures() {
@@ -77,7 +78,7 @@ public class EOModelGroup extends EOModelObject {
   }
 
   public Set getEntityNames() {
-    Set entityNames = new PropertyListSet();
+    Set entityNames = new TreeSet();
     Iterator modelsIter = myModels.iterator();
     while (modelsIter.hasNext()) {
       EOModel model = (EOModel) modelsIter.next();
@@ -91,7 +92,7 @@ public class EOModelGroup extends EOModelObject {
   }
 
   public Set getEntities() {
-    Set entities = new PropertyListSet();
+    Set entities = new HashSet();
     Iterator modelsIter = myModels.iterator();
     while (modelsIter.hasNext()) {
       EOModel model = (EOModel) modelsIter.next();

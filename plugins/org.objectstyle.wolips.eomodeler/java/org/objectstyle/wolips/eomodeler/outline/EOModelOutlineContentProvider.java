@@ -49,7 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.outline;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -68,159 +68,150 @@ import org.objectstyle.wolips.eomodeler.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
-import org.objectstyle.wolips.eomodeler.model.PropertyListComparator;
 
 public class EOModelOutlineContentProvider implements ITreeContentProvider {
-  private Object myModelContainer;
-  private boolean myShowEntities;
-  private boolean myShowAttributes;
-  private boolean myShowRelationships;
-  private boolean myShowFetchSpecs;
-  private boolean myShowStoredProcedures;
-  private boolean myShowDatabaseConfigs;
+	private Object myModelContainer;
 
-  public EOModelOutlineContentProvider(boolean _showEntities, boolean _showAttributes, boolean _showRelationships, boolean _showFetchSpecs, boolean _showStoredProcedures, boolean _showDatabaseConfigs) {
-    myShowEntities = _showEntities;
-    myShowAttributes = _showAttributes;
-    myShowRelationships = _showRelationships;
-    myShowFetchSpecs = _showFetchSpecs;
-    myShowStoredProcedures = _showStoredProcedures;
-    myShowDatabaseConfigs = _showDatabaseConfigs;
-  }
+	private boolean myShowEntities;
 
-  public Object[] getChildren(Object _parentElement) {
-    Object[] children;
-    if (_parentElement instanceof EOModelContainer) {
-      EOModelContainer modelContainer = (EOModelContainer) _parentElement;
-      children = new Object[] { modelContainer.getModel() };
-    }
-    else if (_parentElement instanceof EOModelGroup) {
-      EOModelGroup modelGroup = (EOModelGroup) _parentElement;
-      children = modelGroup.getModels().toArray();
-    }
-    else if (_parentElement instanceof EOModel) {
-      EOModel model = (EOModel) _parentElement;
-      Set modelChildren = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
-      if (myShowEntities) {
-        modelChildren.addAll(model.getEntities());
-      }
-      if (myShowStoredProcedures) {
-        modelChildren.addAll(model.getStoredProcedures());
-      }
-      if (myShowDatabaseConfigs) {
-        modelChildren.addAll(model.getDatabaseConfigs(false));
-      }
-      children = modelChildren.toArray();
-    }
-    else if (_parentElement instanceof EOEntity) {
-      EOEntity entity = (EOEntity) _parentElement;
-      Set entityChildren = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
-      if (myShowAttributes) {
-        entityChildren.addAll(entity.getAttributes());
-      }
-      if (myShowRelationships) {
-        entityChildren.addAll(entity.getRelationships());
-      }
-      if (myShowFetchSpecs) {
-        entityChildren.addAll(entity.getFetchSpecs());
-      }
-      children = entityChildren.toArray();
-    }
-    else if (_parentElement instanceof EORelationship) {
-      EORelationship relationship = (EORelationship) _parentElement;
-      children = new EORelationshipPath(null, relationship).getChildren();
-    }
-    else if (_parentElement instanceof EORelationshipPath) {
-      EORelationshipPath relationshipPath = (EORelationshipPath) _parentElement;
-      children = relationshipPath.getChildren();
-    }
-    else if (_parentElement instanceof EOStoredProcedure) {
-      EOStoredProcedure storedProcedure = (EOStoredProcedure) _parentElement;
-      List arguments = storedProcedure.getArguments();
-      children = arguments.toArray();
-    }
-    else {
-      children = null;
-    }
-    return children;
-  }
+	private boolean myShowAttributes;
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	private boolean myShowRelationships;
 
-  public Object[] getElements(Object _inputElement) {
-    return getChildren(_inputElement);
-  }
+	private boolean myShowFetchSpecs;
 
-  public Object getParent(Object _element) {
-    Object parent;
-    if (_element instanceof EOModelContainer) {
-      parent = null;
-    }
-    //    else if (_element instanceof EOModelGroup) {
-    //      parent = myModelContainer;
-    //    }
-    else if (_element instanceof EOModel) {
-      parent = myModelContainer;
-    }
-    else if (_element instanceof EOEntity) {
-      parent = ((EOEntity) _element).getModel();
-    }
-    else if (_element instanceof EOAttribute) {
-      parent = ((EOAttribute) _element).getEntity();
-    }
-    else if (_element instanceof EOFetchSpecification) {
-      parent = ((EOFetchSpecification) _element).getEntity();
-    }
-    else if (_element instanceof EORelationship) {
-      parent = ((EORelationship) _element).getEntity();
-    }
-    else if (_element instanceof EOStoredProcedure) {
-      parent = ((EOStoredProcedure) _element).getModel();
-    }
-    else if (_element instanceof EODatabaseConfig) {
-      parent = ((EODatabaseConfig) _element).getModel();
-    }
-    else if (_element instanceof EOArgument) {
-      parent = ((EOArgument) _element).getStoredProcedure();
-    }
-    else if (_element instanceof AbstractEOAttributePath) {
-      EORelationshipPath parentRelationshipPath = ((AbstractEOAttributePath) _element).getParentRelationshipPath();
-      if (parentRelationshipPath == null) {
-        parent = ((AbstractEOAttributePath) _element).getChildIEOAttribute().getEntity();
-      }
-      else {
-        parent = parentRelationshipPath;
-      }
-    }
-    else {
-      parent = null;
-    }
-    return parent;
-  }
+	private boolean myShowStoredProcedures;
 
-  public boolean hasChildren(Object _element) {
-    boolean hasChildren = true;
-    if (_element instanceof EOFetchSpecification) {
-      hasChildren = false;
-    }
-    else if (_element instanceof EOAttribute) {
-      hasChildren = false;
-    }
-    else if (_element instanceof EOAttributePath) {
-      hasChildren = false;
-    }
-    else if (_element instanceof EOArgument) {
-      hasChildren = false;
-    }
-    else if (_element instanceof EODatabaseConfig) {
-      hasChildren = false;
-    }
-    return hasChildren;
-  }
+	private boolean myShowDatabaseConfigs;
 
-  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
-    myModelContainer = _newInput;
-  }
+	public EOModelOutlineContentProvider(boolean _showEntities, boolean _showAttributes, boolean _showRelationships, boolean _showFetchSpecs, boolean _showStoredProcedures, boolean _showDatabaseConfigs) {
+		myShowEntities = _showEntities;
+		myShowAttributes = _showAttributes;
+		myShowRelationships = _showRelationships;
+		myShowFetchSpecs = _showFetchSpecs;
+		myShowStoredProcedures = _showStoredProcedures;
+		myShowDatabaseConfigs = _showDatabaseConfigs;
+	}
+
+	public Object[] getChildren(Object _parentElement) {
+		Object[] children;
+		if (_parentElement instanceof EOModelContainer) {
+			EOModelContainer modelContainer = (EOModelContainer) _parentElement;
+			children = new Object[] { modelContainer.getModel() };
+		} else if (_parentElement instanceof EOModelGroup) {
+			EOModelGroup modelGroup = (EOModelGroup) _parentElement;
+			Set modelGroupChildren = new TreeSet(new EOSortableEOModelObjectComparator());
+			modelGroupChildren.addAll(modelGroup.getModels());
+			children = modelGroupChildren.toArray();
+		} else if (_parentElement instanceof EOModel) {
+			EOModel model = (EOModel) _parentElement;
+			Set modelChildren = new TreeSet(new EOSortableEOModelObjectComparator());
+			if (myShowEntities) {
+				modelChildren.addAll(model.getEntities());
+			}
+			if (myShowStoredProcedures) {
+				modelChildren.addAll(model.getStoredProcedures());
+			}
+			if (myShowDatabaseConfigs) {
+				modelChildren.addAll(model.getDatabaseConfigs(false));
+			}
+			children = modelChildren.toArray();
+		} else if (_parentElement instanceof EOEntity) {
+			EOEntity entity = (EOEntity) _parentElement;
+			Set entityChildren = new TreeSet(new EOSortableEOModelObjectComparator());
+			if (myShowAttributes) {
+				entityChildren.addAll(entity.getAttributes());
+			}
+			if (myShowRelationships) {
+				entityChildren.addAll(entity.getRelationships());
+			}
+			if (myShowFetchSpecs) {
+				entityChildren.addAll(entity.getFetchSpecs());
+			}
+			children = entityChildren.toArray();
+		} else if (_parentElement instanceof EORelationship) {
+			EORelationship relationship = (EORelationship) _parentElement;
+			Set relationshipPathChildren = new TreeSet(new EOSortableEOModelObjectComparator());
+			relationshipPathChildren.addAll(Arrays.asList(new EORelationshipPath(null, relationship).getChildren()));
+			children = relationshipPathChildren.toArray();
+		} else if (_parentElement instanceof EORelationshipPath) {
+			EORelationshipPath relationshipPath = (EORelationshipPath) _parentElement;
+			Set relationshipPathChildren = new TreeSet(new EOSortableEOModelObjectComparator());
+			relationshipPathChildren.addAll(Arrays.asList(relationshipPath.getChildren()));
+			children = relationshipPathChildren.toArray();
+		} else if (_parentElement instanceof EOStoredProcedure) {
+			EOStoredProcedure storedProcedure = (EOStoredProcedure) _parentElement;
+			Set arguments = new TreeSet(new EOSortableEOModelObjectComparator());
+			arguments.addAll(storedProcedure.getArguments());
+			children = arguments.toArray();
+		} else {
+			children = null;
+		}
+		return children;
+	}
+
+	public void dispose() {
+		// DO NOTHING
+	}
+
+	public Object[] getElements(Object _inputElement) {
+		return getChildren(_inputElement);
+	}
+
+	public Object getParent(Object _element) {
+		Object parent;
+		if (_element instanceof EOModelContainer) {
+			parent = null;
+		}
+		// else if (_element instanceof EOModelGroup) {
+		// parent = myModelContainer;
+		// }
+		else if (_element instanceof EOModel) {
+			parent = myModelContainer;
+		} else if (_element instanceof EOEntity) {
+			parent = ((EOEntity) _element).getModel();
+		} else if (_element instanceof EOAttribute) {
+			parent = ((EOAttribute) _element).getEntity();
+		} else if (_element instanceof EOFetchSpecification) {
+			parent = ((EOFetchSpecification) _element).getEntity();
+		} else if (_element instanceof EORelationship) {
+			parent = ((EORelationship) _element).getEntity();
+		} else if (_element instanceof EOStoredProcedure) {
+			parent = ((EOStoredProcedure) _element).getModel();
+		} else if (_element instanceof EODatabaseConfig) {
+			parent = ((EODatabaseConfig) _element).getModel();
+		} else if (_element instanceof EOArgument) {
+			parent = ((EOArgument) _element).getStoredProcedure();
+		} else if (_element instanceof AbstractEOAttributePath) {
+			EORelationshipPath parentRelationshipPath = ((AbstractEOAttributePath) _element).getParentRelationshipPath();
+			if (parentRelationshipPath == null) {
+				parent = ((AbstractEOAttributePath) _element).getChildIEOAttribute().getEntity();
+			} else {
+				parent = parentRelationshipPath;
+			}
+		} else {
+			parent = null;
+		}
+		return parent;
+	}
+
+	public boolean hasChildren(Object _element) {
+		boolean hasChildren = true;
+		if (_element instanceof EOFetchSpecification) {
+			hasChildren = false;
+		} else if (_element instanceof EOAttribute) {
+			hasChildren = false;
+		} else if (_element instanceof EOAttributePath) {
+			hasChildren = false;
+		} else if (_element instanceof EOArgument) {
+			hasChildren = false;
+		} else if (_element instanceof EODatabaseConfig) {
+			hasChildren = false;
+		}
+		return hasChildren;
+	}
+
+	public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+		myModelContainer = _newInput;
+	}
 }

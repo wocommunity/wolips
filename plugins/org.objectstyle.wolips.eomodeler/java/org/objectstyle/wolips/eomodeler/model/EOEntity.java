@@ -117,9 +117,9 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   private EOStoredProcedure myNextPrimaryKeyProcedure;
 
   public EOEntity() {
-    myAttributes = new PropertyListSet();
-    myRelationships = new PropertyListSet();
-    myFetchSpecs = new PropertyListSet();
+    myAttributes = new HashSet();
+    myRelationships = new HashSet();
+    myFetchSpecs = new HashSet();
     myEntityMap = new EOModelMap();
     myFetchSpecsMap = new EOModelMap();
   }
@@ -716,7 +716,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public Set getReferencingRelationships() {
-    Set referencingRelationships = new PropertyListSet();
+    Set referencingRelationships = new HashSet();
     Iterator modelsIter = getModel().getModelGroup().getModels().iterator();
     while (modelsIter.hasNext()) {
       EOModel model = (EOModel) modelsIter.next();
@@ -738,7 +738,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public Set getChildrenEntities() {
-    Set children = new PropertyListSet();
+    Set children = new HashSet();
     if (myModel != null) {
       Iterator modelsIter = myModel.getModelGroup().getModels().iterator();
       while (modelsIter.hasNext()) {
@@ -819,7 +819,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public Set getPrimaryKeyAttributes() {
-    Set primaryKeyAttributes = new PropertyListSet();
+    Set primaryKeyAttributes = new HashSet();
     Iterator attributesIter = myAttributes.iterator();
     while (attributesIter.hasNext()) {
       EOAttribute attribute = (EOAttribute) attributesIter.next();
@@ -937,7 +937,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     Set oldFetchSpecs = null;
     if (_fireEvents) {
       oldFetchSpecs = myFetchSpecs;
-      Set newFetchSpecs = new PropertyListSet();
+      Set newFetchSpecs = new HashSet();
       newFetchSpecs.addAll(myFetchSpecs);
       newFetchSpecs.add(_fetchSpecification);
       myFetchSpecs = newFetchSpecs;
@@ -950,7 +950,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 
   public void removeFetchSpecification(EOFetchSpecification _fetchSpecification) {
     Set oldFetchSpecs = myFetchSpecs;
-    Set newFetchSpecs = new PropertyListSet();
+    Set newFetchSpecs = new HashSet();
     newFetchSpecs.addAll(myFetchSpecs);
     newFetchSpecs.remove(_fetchSpecification);
     myFetchSpecs = newFetchSpecs;
@@ -968,7 +968,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     Set oldAttributes = null;
     if (_fireEvents) {
       oldAttributes = myAttributes;
-      Set newAttributes = new PropertyListSet();
+      Set newAttributes = new HashSet();
       newAttributes.addAll(myAttributes);
       newAttributes.add(_attribute);
       myAttributes = newAttributes;
@@ -982,7 +982,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   public void removeAttribute(EOAttribute _attribute, boolean _removeFromSubclasses) {
     String attributeName = _attribute.getName();
     Set oldAttributes = myAttributes;
-    Set newAttributes = new PropertyListSet();
+    Set newAttributes = new HashSet();
     newAttributes.addAll(myAttributes);
     newAttributes.remove(_attribute);
     myAttributes = newAttributes;
@@ -1059,7 +1059,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     Set oldRelationships = null;
     if (_fireEvents) {
       oldRelationships = myRelationships;
-      Set newRelationships = new PropertyListSet();
+      Set newRelationships = new HashSet();
       newRelationships.addAll(myRelationships);
       newRelationships.add(_relationship);
       myRelationships = newRelationships;
@@ -1073,7 +1073,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   public void removeRelationship(EORelationship _relationship, boolean _removeFromSubclasses) {
     String relationshipName = _relationship.getName();
     Set oldRelationships = myRelationships;
-    Set newRelationships = new PropertyListSet();
+    Set newRelationships = new HashSet();
     newRelationships.addAll(myRelationships);
     newRelationships.remove(_relationship);
     myRelationships = newRelationships;

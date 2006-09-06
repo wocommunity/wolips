@@ -58,7 +58,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.objectstyle.cayenne.exp.Expression;
@@ -110,7 +109,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     myClass = "EOFetchSpecification";
     mySortOrderings = new LinkedList();
     myFetchSpecMap = new EOModelMap();
-    myPrefetchingRelationshipKeyPaths = new PropertyListSet();
+    myPrefetchingRelationshipKeyPaths = new TreeSet();
   }
 
   public EOFetchSpecification cloneFetchSpecification() {
@@ -120,12 +119,12 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     fetchSpec.myDeep = myDeep;
     fetchSpec.myLocksObjects = myLocksObjects;
     if (myPrefetchingRelationshipKeyPaths != null) {
-      fetchSpec.myPrefetchingRelationshipKeyPaths = new PropertyListSet();
+      fetchSpec.myPrefetchingRelationshipKeyPaths = new TreeSet();
       fetchSpec.myPrefetchingRelationshipKeyPaths.addAll(myPrefetchingRelationshipKeyPaths);
     }
     fetchSpec.myPromptsAfterFetchLimit = myPromptsAfterFetchLimit;
     if (myRawRowKeyPaths != null) {
-      fetchSpec.myRawRowKeyPaths = new PropertyListSet();
+      fetchSpec.myRawRowKeyPaths = new TreeSet();
       fetchSpec.myRawRowKeyPaths.addAll(myRawRowKeyPaths);
     }
     fetchSpec.myRefreshesRefetchedObjects = myRefreshesRefetchedObjects;
@@ -407,7 +406,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   public void addPrefetchingRelationshipKeyPath(String _prefetchingRelationshipKeyPath, boolean _fireEvents) {
     if (_fireEvents) {
       Set oldPrefetchingRelationshipKeyPaths = myPrefetchingRelationshipKeyPaths;
-      myPrefetchingRelationshipKeyPaths = new PropertyListSet();
+      myPrefetchingRelationshipKeyPaths = new TreeSet();
       if (oldPrefetchingRelationshipKeyPaths != null) {
         myPrefetchingRelationshipKeyPaths.addAll(oldPrefetchingRelationshipKeyPaths);
       }
@@ -423,7 +422,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     if (_fireEvents) {
       Set oldPrefetchingRelationshipKeyPaths = myPrefetchingRelationshipKeyPaths;
       if (oldPrefetchingRelationshipKeyPaths != null) {
-        myPrefetchingRelationshipKeyPaths = new PropertyListSet();
+        myPrefetchingRelationshipKeyPaths = new TreeSet();
         myPrefetchingRelationshipKeyPaths.addAll(oldPrefetchingRelationshipKeyPaths);
         myPrefetchingRelationshipKeyPaths.remove(_prefetchingRelationshipKeyPath);
       }
@@ -442,7 +441,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 
   public void fetchAllAttributesAsRawRows() {
     Set oldRawRowKeyPaths = myRawRowKeyPaths;
-    myRawRowKeyPaths = new PropertyListSet();
+    myRawRowKeyPaths = new TreeSet();
     firePropertyChange(EOFetchSpecification.RAW_ROW_KEY_PATHS, oldRawRowKeyPaths, myRawRowKeyPaths);
   }
 
@@ -471,7 +470,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   public void addRawRowKeyPath(String _rawRowKeyPath, boolean _fireEvents) {
     if (_fireEvents) {
       Set oldRawRowKeyPaths = myRawRowKeyPaths;
-      myRawRowKeyPaths = new PropertyListSet();
+      myRawRowKeyPaths = new TreeSet();
       if (oldRawRowKeyPaths != null) {
         myRawRowKeyPaths.addAll(oldRawRowKeyPaths);
       }
@@ -487,7 +486,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     if (_fireEvents) {
       Set oldRawRowKeyPaths = myRawRowKeyPaths;
       if (oldRawRowKeyPaths != null) {
-        myRawRowKeyPaths = new PropertyListSet();
+        myRawRowKeyPaths = new TreeSet();
         myRawRowKeyPaths.addAll(oldRawRowKeyPaths);
         myRawRowKeyPaths.remove(_rawRowKeyPath);
       }
