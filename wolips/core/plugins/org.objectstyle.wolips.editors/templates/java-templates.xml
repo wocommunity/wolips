@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+
+	<template name="%Templates.action.name" description="%Templates.action.desc" id="org.objectstyle.wolips.editors.action" context="java" enabled="true">%Templates.action.content</template>
+
+	<template name="%Templates.actionthis.name" description="%Templates.actionthis.desc" id="org.objectstyle.wolips.editors.actionthis" context="java" enabled="true">%Templates.actionthis.content</template>
+
+	<template name="%Templates.ecsessiondefault.name" description="%Templates.ecsessiondefault.desc" id="org.objectstyle.wolips.editors.ecsessiondefault" context="java" enabled="true">%Templates.ecsessiondefault.content</template>
+
+	<template name="%Templates.ecnew.name" description="%Templates.ecnew.desc" id="org.objectstyle.wolips.editors.ecnew" context="java" enabled="true">%Templates.ecnew.content</template>
+
+</templates>

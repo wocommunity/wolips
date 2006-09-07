@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WOLips Datasets Plug-in
+Bundle-SymbolicName: org.objectstyle.wolips.datasets; singleton:=true
+Bundle-Version: 1.0.6
+Bundle-Activator: org.objectstyle.wolips.datasets.DataSetsPlugin
+Bundle-Vendor: objectstyle.org
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.objectstyle.wolips.commons,
+ org.eclipse.core.resources,
+ org.eclipse.jdt.core,
+ org.objectstyle.wolips.workbenchutilities,
+ org.junit,
+ org.objectstyle.wolips.variables,
+ org.objectstyle.wolips.woproject,
+ org.apache.ant,
+ org.objectstyle.wolips
+Eclipse-LazyStart: true
+Export-Package: org.objectstyle.wolips.datasets,
+ org.objectstyle.wolips.datasets.adaptable,
+ org.objectstyle.wolips.datasets.internal,
+ org.objectstyle.wolips.datasets.pattern,
+ org.objectstyle.wolips.datasets.project,
+ org.objectstyle.wolips.datasets.resources

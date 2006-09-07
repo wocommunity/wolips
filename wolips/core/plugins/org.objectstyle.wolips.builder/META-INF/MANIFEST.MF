@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WOLips Builder Plug-in
+Bundle-SymbolicName: org.objectstyle.wolips.builder; singleton:=true
+Bundle-Version: 1.0.6
+Bundle-Activator: org.objectstyle.wolips.builder.BuilderPlugin
+Bundle-Vendor: objectstyle.org
+Bundle-Localization: plugin
+Require-Bundle: org.objectstyle.wolips,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.junit,
+ org.objectstyle.wolips.woproject.ant,
+ org.objectstyle.wolips.woproject,
+ org.apache.ant,
+ org.objectstyle.wolips.preferences,
+ org.eclipse.jdt.core,
+ org.objectstyle.wolips.datasets,
+ org.eclipse.debug.core,
+ org.eclipse.ui.externaltools,
+ org.eclipse.debug.ui,
+ org.objectstyle.wolips.ant
+Eclipse-LazyStart: true
+Export-Package: org.objectstyle.wolips.builder
