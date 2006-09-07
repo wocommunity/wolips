@@ -12,9 +12,9 @@
     <!-- Build copy resources.                      -->
     <!-- ========================================== -->
     <target name="copy.resources">
-        <ant dir="." antfile="../../../${project.buildscripts.dir}/feature-project.xml" target="copy.resources">
+        <ant dir="." antfile="../../../../${project.buildscripts.dir}/feature-project.xml" target="copy.resources">
             <property name="param.plugin.dir" value="."/>
-            <property name="param.build.output.build.dir" value="../../../${build.output.build.dir}"/>
+            <property name="param.build.output.build.dir" value="../../../../${build.output.build.dir}"/>
             <property name="param.feature.name" value="${feature.name}"/>
 	    </ant>
     </target>
@@ -29,10 +29,10 @@
     <!-- Build dist.                                -->
     <!-- ========================================== -->
     <target name="dist">
-        <ant dir="." antfile="../../../${project.buildscripts.dir}/feature-project.xml" target="dist">
+        <ant dir="." antfile="../../../../${project.buildscripts.dir}/feature-project.xml" target="dist">
             <property name="param.feature.name" value="${feature.name}"/>
-            <property name="param.build.output.build.dir" value="../../../${build.output.build.dir}"/>
-            <property name="param.build.dist.build.dir" value="../../../${build.output.dist.dir}"/>
+            <property name="param.build.output.build.dir" value="../../../../${build.output.build.dir}"/>
+            <property name="param.build.dist.build.dir" value="../../../../${build.output.dist.dir}"/>
 	    </ant>
     </target>
 
