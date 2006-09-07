@@ -1,0 +1,118 @@
+AssistantActiveConditional: WOConditional {
+	condition = isWebAssistantEnabled;
+}
+
+D2WLink: WOHyperlink {
+	href = "http://www.apple.com/WebObjects/";
+}
+
+D2WLink2: WOHyperlink {
+	href = "http://www.apple.com/WebObjects/";
+}
+
+D2WLogo: WOImage {
+	alt = "Direct to Web - WebObjects 4.5";
+	border = "0";
+	filename = "DTW.gif";
+	framework = "JavaDirectToWeb";
+	height = "49";
+	name = "Direct to Web - WebObjects 4.5";
+	width = "196";
+}
+
+D2WLogo2: WOImage {
+	alt = "Direct to Web - WebObjects 4.5";
+	border = "0";
+	filename = "DTW.gif";
+	framework = "JavaDirectToWeb";
+	height = "49";
+	name = "Direct to Web - WebObjects 4.5";
+	width = "196";
+}
+
+EntitiesForm: WOForm {
+}
+
+EntitiesPopup: WOPopUpButton {
+	item = entityNameInList;
+	list = visibleEntityNames;
+	selection = manipulatedEntityName;
+}
+
+FindButton: WOImageButton {
+	action = findEntityAction;
+	alt = "Builds a Query Component for the selected Entity";
+	border = "0";
+	filename = "ButtonBuildQuery.gif";
+	framework = "JavaDirectToWeb";
+	height = "48";
+	name = "Builds a Query Component for the selected Entity";
+	width = "74";
+}
+
+HasValidSession: WOConditional {
+	condition = context.hasSession;
+}
+
+HomeButton: WOImage {
+	alt = "Exit to Top/Home";
+	border = "0";
+	filename = "ButtonHome.gif";
+	framework = "JavaDirectToWeb";
+	height = "48";
+	name = "Exit to Top/Home";
+	width = "66";
+}
+
+HomeLink: WOHyperlink {
+	action = homeAction;
+}
+
+LoginButton: WOImage {
+	alt = "Logout";
+	border = "0";
+	filename = "ButtonLogout.gif";
+	framework = "JavaDirectToWeb";
+	height = "48";
+	name = "Logout";
+	width = "66";
+}
+
+LoginLink: WOHyperlink {
+	action = logout;
+	target = "_top";
+}
+
+NewButton: WOImageButton {
+	action = newObjectAction;
+	alt = "Creates a new Object of the selected Entity";
+	border = "0";
+	filename = "ButtonNew.gif";
+	framework = "JavaDirectToWeb";
+	height = "48";
+	name = "Creates a new Object of the selected Entity";
+	width = "74";
+}
+
+NoValidSession: WOConditional {
+	condition = context.hasSession;
+	negate = true;
+}
+
+RemoteControl: D2WRemoteControl {
+}
+
+ShowAssistantButton: WOImage {
+	alt = "Activates the WebAssistant";
+	border = "0";
+	filename = "ButtonCustomize.gif";
+	framework = "JavaDirectToWeb";
+	height = "48";
+	name = "Activates the WebAssistant";
+	width = "66";
+}
+
+ShowAssistantLink: WOHyperlink {
+	action = showWebAssistant;
+}
+
