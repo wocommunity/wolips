@@ -1,2 +1,0 @@
-classes.dir = bin
-jar.name = ${WOLipsContext.getProjectName()}

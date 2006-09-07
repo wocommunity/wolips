@@ -1,6 +1,0 @@
-classes.dir = bin
-framework.name = ${WOLipsContext.getProjectName()}
-principalClass =
-project.name =
-customInfoPListContent =
-eoAdaptorClassName =
