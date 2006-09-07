@@ -1,0 +1,578 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+
+<!-- =================================================================================== -->
+<!-- Extension: Popup menus                                                              -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.popupMenus">
+<!-- =================================================================================== -->
+<!-- menu maven                                                                          -->
+<!-- =================================================================================== -->
+      <objectContribution
+            adaptable="true"
+            objectClass="org.eclipse.core.resources.IResource"
+            id="org.objectstyle.wolips.maven.ui.ResourceContributions">
+         <menu
+               label="&amp;WOLips Maven Tools"
+               path="additions"
+               id="org.objectstyle.wolips.maven.ui.ResourceContributions">
+            <separator
+                  name="group1">
+            </separator>
+            <separator
+                  name="group2">
+            </separator>
+         </menu>
+      </objectContribution>
+<!-- =================================================================================== -->
+<!-- menu ant                                                                            -->
+<!-- =================================================================================== -->
+<objectContribution
+            adaptable="true"
+            objectClass="org.eclipse.core.resources.IResource"
+            id="org.objectstyle.wolips.deployment.ui.ResourceContributions">
+         <menu
+               label="&amp;WOLips Ant Tools"
+               path="additions"
+               id="org.objectstyle.wolips.ant.ui.ResourceContributions">
+            <separator
+                  name="group1">
+            </separator>
+            <separator
+                  name="group2">
+            </separator>
+         </menu>
+      </objectContribution>
+<!-- =================================================================================== -->
+<!-- menu wolips tools                                                                   -->
+<!-- =================================================================================== -->
+      <objectContribution
+            adaptable="true"
+            objectClass="org.eclipse.core.resources.IResource"
+            id="org.objectstyle.wolips.ui.ResourceContributions">
+         <menu
+               label="&amp;WOLips Tools"
+               path="additions"
+               id="org.objectstyle.wolips.ui.ResourceContributions">
+            <separator
+                  name="group1">
+            </separator>
+            <separator
+                  name="group2">
+            </separator>
+            <separator
+                  name="group3">
+            </separator>
+            <separator
+                  name="group4">
+            </separator>
+         </menu>
+      </objectContribution>
+<!-- =================================================================================== -->
+<!-- project actions                                                                     -->
+<!-- =================================================================================== -->
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true"
+            id="org.objectstyle.wolips.ui">
+         <filter
+               name="nature"
+               value="org.eclipse.jdt.core.javanature">
+         </filter>
+      </objectContribution>
+<!-- =================================================================================== -->
+<!-- Extension: File actions                                                             -->
+<!-- =================================================================================== -->
+      <objectContribution
+            objectClass="org.eclipse.jdt.core.ICompilationUnit"
+            adaptable="true"
+            nameFilter="*.java"
+            id="org.objectstyle.wolips.ui.actions.OpenComponentAction">
+         <action
+               label="Open WOComponent"
+               class="org.objectstyle.wolips.ui.actions.OpenComponentAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group0"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.OpenComponentAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            adaptable="true"
+            nameFilter="*.wod"
+            id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
+         <action
+               label="Open .java"
+               class="org.objectstyle.wolips.ui.actions.OpenSourceAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group0"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IContainer"
+            adaptable="true"
+            nameFilter="*.wo"
+            id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
+         <action
+               label="Open .java"
+               class="org.objectstyle.wolips.ui.actions.OpenSourceAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group0"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IContainer"
+            adaptable="true"
+            nameFilter="*.eomodeld"
+            id="org.objectstyle.wolips.ui.actions.OpenEOModelIndexAction">
+         <action
+               label="Open EOModel"
+               class="org.objectstyle.wolips.ui.actions.OpenEOModelIndexAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group0"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.OpenEOModelIndexAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="true"
+            id="org.objectstyle.wolips.ui.actions.OpenEntityModerAction"
+            nameFilter="*.eomodeld"
+            objectClass="org.eclipse.core.resources.IContainer">
+         <action
+               class="org.objectstyle.wolips.ui.actions.OpenEntityModelerAction"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.OpenEntityModerAction"
+               label="Open Entity Modeler"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group0"/>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.objectstyle.wolips.ui.actions.AddToWOAppResourcesIncludePatternsetAction">
+         <action
+               label="Include as WebServerResource"
+               class="org.objectstyle.wolips.ui.actions.AddToWOAppResourcesIncludePatternsetAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group3"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.AddToWOAppResourcesIncludePatternsetAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.objectstyle.wolips.ui.actions.AddToWOAppResourcesExcludePatternsetAction">
+         <action
+               label="Exclude as WebServerResource"
+               class="org.objectstyle.wolips.ui.actions.AddToWOAppResourcesExcludePatternsetAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group3"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.AddToWOAppResourcesExcludePatternsetAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.objectstyle.wolips.ui.actions.AddToResourcesIncludePatternsetAction">
+         <action
+               label="Include as Resource"
+               class="org.objectstyle.wolips.ui.actions.AddToResourcesIncludePatternsetAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group3"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.AddToResourcesIncludePatternsetAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.objectstyle.wolips.ui.actions.AddToResourcesExcludePatternsetAction">
+         <action
+               label="Exclude as Resource"
+               class="org.objectstyle.wolips.ui.actions.AddToResourcesExcludePatternsetAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group3"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.AddToResourcesExcludePatternsetAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.objectstyle.wolips.ui.actions.AddToClassesIncludePatternsetAction">
+         <action
+               label="Include as Class"
+               class="org.objectstyle.wolips.ui.actions.AddToClassesIncludePatternsetAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group3"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.AddToClassesIncludePatternsetAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.objectstyle.wolips.ui.actions.AddToClassesExcludePatternsetAction">
+         <action
+               label="Exclude as Class"
+               class="org.objectstyle.wolips.ui.actions.AddToClassesExcludePatternsetAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group3"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.AddToClassesExcludePatternsetAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="true"
+            nameFilter="*.wo"
+            id="org.objectstyle.wolips.ui.actions.OpenWOAction"
+            objectClass="org.eclipse.core.resources.IContainer">
+         <action
+               class="org.objectstyle.wolips.ui.actions.OpenWOAction"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.OpenWOAction"
+               label="Open WO"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group0"/>
+      </objectContribution>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Perspective                                                              -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="WOLips"
+            icon="icons/wolips/WOLips-icon.gif"
+            class="org.objectstyle.wolips.ui.view.PerspectiveFactory"
+            id="org.objectstyle.wolips.ui.Perspective">
+      </perspective>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Perspective Extensions                                                   -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.ui.resourcePerspective">
+         <perspectiveShortcut
+               id="org.objectstyle.wolips.ui.Perspective">
+         </perspectiveShortcut>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <perspectiveShortcut
+               id="org.objectstyle.wolips.ui.Perspective">
+         </perspectiveShortcut>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.eclipse.debug.ui.DebugPerspective">
+         <perspectiveShortcut
+               id="org.objectstyle.wolips.ui.Perspective">
+         </perspectiveShortcut>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.objectstyle.wolips.ui.Perspective">
+         <perspectiveShortcut
+               id="org.eclipse.debug.ui.DebugPerspective">
+         </perspectiveShortcut>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.objectstyle.wolips.ui.Perspective">
+         <perspectiveShortcut
+               id="org.eclipse.jdt.ui.JavaPerspective">
+         </perspectiveShortcut>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.objectstyle.wolips.ui.Perspective">
+         <perspectiveShortcut
+               id="org.eclipse.ui.resourcePerspective">
+         </perspectiveShortcut>
+      </perspectiveExtension>
+     </extension>
+<!-- =================================================================================== -->
+<!-- Extension: View                                                                     -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="WOLips"
+            id="org.objectstyle.wolips.ui">
+      </category>
+      <view
+            name="Related"
+            icon="icons/wolips/WOLips-icon.gif"
+            category="org.objectstyle.wolips.ui"
+            class="org.objectstyle.wolips.ui.view.RelatedView"
+            id="org.objectstyle.wolips.ui.view.RelatedView">
+      </view>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Preferences                                                              -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="WOLips"
+            class="org.objectstyle.wolips.ui.preferences.PreferencesPage"
+            id="org.objectstyle.wolips.preferences.PreferencesPage">
+      </page>
+      <page
+            name="Build"
+            category="org.objectstyle.wolips.preferences.PreferencesPage"
+            class="org.objectstyle.wolips.ui.preferences.BuildPreferencesPage"
+            id="org.objectstyle.wolips.preferences.BuildPreferencesPage">
+      </page>
+      <page
+            name="Launch"
+            category="org.objectstyle.wolips.preferences.PreferencesPage"
+            class="org.objectstyle.wolips.ui.preferences.LaunchPreferencesPage"
+            id="org.objectstyle.wolips.preferences.LaunchPreferencesPage">
+      </page>
+      <page
+            name="EOGenerator"
+            category="org.objectstyle.wolips.preferences.PreferencesPage"
+            class="org.objectstyle.wolips.ui.preferences.EOGeneratorPreferencesPage"
+            id="org.objectstyle.wolips.preferences.EOGeneratorPreferencesPage">
+      </page>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Decorators                                                               -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.decorators">
+      <decorator
+            lightweight="true"
+            adaptable="true"
+            label="WebObjects Application"
+            icon="icons/ovr16/woapplication_co.gif"
+            state="true"
+            location="TOP_LEFT"
+            id="org.objectstyle.wolips.ui.labeldecorator.WOApplicationLabelDecorator">
+         <description>
+            WebObjects Application
+         </description>
+		<enablement>
+			<and>
+				<objectClass name="org.eclipse.core.resources.IProject">
+				</objectClass>
+				<or>
+					<objectState name="nature"
+						value="org.objectstyle.wolips.antapplicationnature">
+					</objectState>
+					<objectState name="nature"
+						value="org.objectstyle.wolips.incrementalapplicationnature">
+					</objectState>
+				</or>	
+            </and>
+         </enablement>
+      </decorator>
+      <decorator
+            lightweight="true"
+            adaptable="true"
+            label="WebObjects Framework"
+            icon="icons/ovr16/woframework_co.gif"
+            state="true"
+            location="TOP_LEFT"
+            id="org.objectstyle.wolips.ui.labeldecorator.WOFrameworkLabelDecorator">
+         <description>
+            WebObjects Framework
+         </description>
+		<enablement>
+			<and>
+				<objectClass name="org.eclipse.core.resources.IProject">
+				</objectClass>
+				<or>
+					<objectState name="nature"
+						value="org.objectstyle.wolips.antframeworknature">
+					</objectState>
+					<objectState name="nature"
+						value="org.objectstyle.wolips.incrementalframeworknature">
+					</objectState>
+				</or>	
+            </and>
+         </enablement>
+      </decorator>
+      <decorator
+            lightweight="true"
+            adaptable="true"
+            label="WOLips build folder"
+            icon="icons/ovr16/build_co.gif"
+            state="true"
+            location="TOP_LEFT"
+            id="org.objectstyle.wolips.ui.labeldecorator.BuildFolderLabelDecorator">
+         <description>
+            WOLips build folder
+         </description>
+		<enablement>
+			<and>
+				<objectClass name="org.eclipse.core.resources.IFolder">
+				</objectClass>
+				<or>
+					<objectState name="name"
+						value="build">
+					</objectState>
+					<objectState name="name"
+						value="dist">
+					</objectState>
+				</or>	
+            </and>
+         </enablement>
+      </decorator>
+      <decorator
+            lightweight="true"
+            adaptable="true"
+            label="WOComponent folder"
+            icon="icons/ovr16/comp_co.gif"
+            state="true"
+            location="TOP_RIGHT"
+            id="org.objectstyle.wolips.ui.labeldecorator.WOComponentFolderLabelDecorator">
+         <description>
+            WOComponent folder
+         </description>
+		<enablement>
+			<and>
+				<objectClass name="org.eclipse.core.resources.IFolder">
+				</objectClass>
+				<objectState name="extension"
+					value="wo">
+				</objectState>
+            </and>
+         </enablement>
+      </decorator>
+      <decorator
+            lightweight="true"
+            adaptable="true"
+            label="EOModel folder"
+            icon="icons/ovr16/eomodel_co.gif"
+            state="true"
+            location="TOP_RIGHT"
+            id="org.objectstyle.wolips.ui.labeldecorator.EOModelFolderLabelDecorator">
+         <description>
+            EOModel folder
+         </description>
+		<enablement>
+			<and>
+				<objectClass name="org.eclipse.core.resources.IFolder">
+				</objectClass>
+				<objectState name="extension"
+					value="eomodeld">
+				</objectState>
+            </and>
+         </enablement>
+      </decorator>
+      <decorator
+            lightweight="true"
+            adaptable="true"
+            label="Subproject folder"
+            icon="icons/ovr16/subproj_co.gif"
+            state="true"
+            location="TOP_RIGHT"
+            id="org.objectstyle.wolips.ui.labeldecorator.SubprojectFolderLabelDecorator">
+         <description>
+            Subproject folder
+         </description>
+		<enablement>
+			<and>
+				<objectClass name="org.eclipse.core.resources.IFolder">
+				</objectClass>
+				<objectState name="extension"
+					value="subproj">
+				</objectState>
+            </and>
+         </enablement>
+      </decorator>
+      <decorator
+            lightweight="true"
+            adaptable="true"
+            label="WOProject folder"
+            icon="icons/ovr16/woproject_co.gif"
+            state="true"
+            id="org.objectstyle.wolips.ui.labeldecorator.WOProjectFolderLabelDecorator">
+         <description>
+            Woproject folder
+         </description>
+		<enablement>
+			<and>
+				<objectClass name="org.eclipse.core.resources.IFolder">
+				</objectClass>
+				<objectState name="name"
+					value="woproject">
+				</objectState>
+            </and>
+         </enablement>
+      </decorator>
+      <decorator
+            lightweight="true"
+            adaptable="true"
+            label="Xcode .xcode folder"
+            icon="icons/ovr16/xcode_co.gif"
+            state="true"
+            location="TOP_RIGHT"
+            id="org.objectstyle.wolips.ui.labeldecorator.XcodeLabelDecorator">
+         <description>
+            Xcode .xcode folder
+         </description>
+		<enablement>
+			<and>
+				<objectClass name="org.eclipse.core.resources.IFolder">
+				</objectClass>
+				<objectState name="extension"
+					value="xcode">
+				</objectState>
+            </and>
+         </enablement>
+      </decorator>
+      <decorator
+            lightweight="true"
+            adaptable="true"
+            label="Xcode .xcodeproj folder"
+            icon="icons/ovr16/xcode_co.gif"
+            state="true"
+            location="TOP_RIGHT"
+            id="org.objectstyle.wolips.ui.labeldecorator.XcodeProjLabelDecorator">
+         <description>
+            Xcode .xcodeproj folder
+         </description>
+                <enablement>
+                        <and>
+                                <objectClass name="org.eclipse.core.resources.IFolder">
+                                </objectClass>
+                                <objectState name="extension"
+                                        value="xcodeproj">
+                                </objectState>
+            </and>
+         </enablement>
+      </decorator>
+      <decorator
+            label="WebObjects Resources"
+            state="true"
+            class="org.objectstyle.wolips.ui.labeldecorator.ResourcesLabelDecorator"
+            id="org.objectstyle.wolips.ui.labeldecorator.ResourcesLabelDecorator">
+         <description>
+            Xcode .xcodeproj folder
+         </description>
+         <enablement>
+         	<objectClass name="org.eclipse.core.resources.IResource">
+            </objectClass>
+         </enablement>
+      </decorator>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: WOLips projectbuild property page                                        -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            adaptable="true"
+            objectClass="org.eclipse.core.resources.IProject"
+            name="WOLips Build"
+            class="org.objectstyle.wolips.ui.propertypages.ProjectNaturePage"
+            id="org.objectstyle.wolips.ui.propertypages.ProjectNaturePage">
+         <filter
+               name="nature"
+               value="org.eclipse.jdt.core.javanature">
+         </filter>
+      </page>
+   </extension>
+
+</plugin>
