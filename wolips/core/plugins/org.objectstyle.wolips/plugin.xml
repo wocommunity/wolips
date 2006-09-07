@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+	<extension-point id="builders" name="Builder" schema="schema/builders.exsd"/>
+
+<!-- =================================================================================== -->
+<!-- Extension: WOProject Builder                                                      -->
+<!-- =================================================================================== -->
+   <extension
+         id="incrementalbuilder"
+         name="WOLips Incremental Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            isConfigurable="false">
+         <run
+               class="org.objectstyle.wolips.core.resources.internal.build.IncrementalBuilder">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="antbuilder"
+         name="WOLips Ant Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            isConfigurable="false">
+         <run
+               class="org.objectstyle.wolips.core.resources.internal.build.AntBuilder">
+         </run>
+      </builder>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Project Natures                                                          -->
+<!-- =================================================================================== -->
+   <extension
+         id="incrementalframeworknature"
+         name="org.objectstyle.wolips.projectbuild.WOIncrementalNature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.objectstyle.wolips.core.resources.internal.build.IncrementalFrameworkNature">
+         </run>
+      </runtime>
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
+      <one-of-nature id="org.objectstyle.wolips"/>
+   </extension>
+   <extension
+         id="incrementalapplicationnature"
+         name="org.objectstyle.wolips.projectbuild.WOIncrementalNature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.objectstyle.wolips.core.resources.internal.build.IncrementalApplicationNature">
+         </run>
+      </runtime>
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
+      <one-of-nature id="org.objectstyle.wolips"/>
+   </extension>
+<!-- Simple nature that runs ant -->
+   <extension
+         id="antnature"
+         name="org.objectstyle.wolips.projectbuild.wolipsantnature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.objectstyle.wolips.core.resources.internal.build.AntNature">
+         </run>
+      </runtime>
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
+      <one-of-nature id="org.objectstyle.wolips"/>
+   </extension>
+   <extension
+         id="antframeworknature"
+         name="org.objectstyle.wolips.projectbuild.wolipsantframeworknature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.objectstyle.wolips.core.resources.internal.build.AntFrameworkNature">
+         </run>
+      </runtime>
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
+      <one-of-nature id="org.objectstyle.wolips"/>
+   </extension>
+   <extension
+         id="antapplicationnature"
+         name="org.objectstyle.wolips.projectbuild.wolipsantapplicationnature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.objectstyle.wolips.core.resources.internal.build.AntApplicationNature">
+         </run>
+      </runtime>
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
+      <one-of-nature id="org.objectstyle.wolips"/>
+   </extension>
+
+<!-- =================================================================================== -->
+<!-- Extension: Adapters                                                                 -->
+<!-- =================================================================================== -->
+   <extension point="org.eclipse.core.runtime.adapters">
+       <factory class="org.objectstyle.wolips.core.resources.internal.types.file.FileAdapterFactory"
+           adaptableType="org.eclipse.core.resources.IFile">
+           <adapter type="org.objectstyle.wolips.core.resources.types.file.IPBDotProjectAdapter"/>
+       </factory>
+       <factory class="org.objectstyle.wolips.core.resources.internal.types.folder.FolderAdapterFactory"
+           adaptableType="org.eclipse.core.resources.IFolder">
+           <adapter type="org.objectstyle.wolips.core.resources.types.folder.IDotApplicationAdapter"/>
+           <adapter type="org.objectstyle.wolips.core.resources.types.folder.IDotFrameworkAdapter"/>
+           <adapter type="org.objectstyle.wolips.core.resources.types.folder.IDotSubprojAdapter"/>
+           <adapter type="org.objectstyle.wolips.core.resources.types.folder.IDotLprojAdapter"/>
+           <adapter type="org.objectstyle.wolips.core.resources.types.folder.IDotWoAdapter"/>
+           <adapter type="org.objectstyle.wolips.core.resources.types.folder.IDotEOModeldAdapter"/>
+           <adapter type="org.objectstyle.wolips.core.resources.types.folder.IBuildAdapter"/>
+           <adapter type="org.objectstyle.wolips.core.resources.types.folder.IContentsAdapter"/>
+           <adapter type="org.objectstyle.wolips.core.resources.types.folder.IResourcesAdapter"/>
+           <adapter type="org.objectstyle.wolips.core.resources.types.folder.IWebServerResourcesAdapter"/>
+           <adapter type="org.objectstyle.wolips.core.resources.types.folder.IWoprojectAdapter"/>
+       </factory>
+       <factory class="org.objectstyle.wolips.core.resources.internal.types.project.ProjectAdapterFactory"
+           adaptableType="org.eclipse.core.resources.IProject">
+           <adapter type="org.objectstyle.wolips.core.resources.types.project.IProjectAdapter"/>
+           <adapter type="org.objectstyle.wolips.core.resources.types.project.IProjectPatternsets"/>
+       </factory>
+   </extension>
+
+</plugin>
