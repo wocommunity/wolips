@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WOLips Cayenne Plug-in
+Bundle-SymbolicName: org.objectstyle.wolips.cayenne
+Bundle-Version: 1.0.6
+Bundle-Vendor: objectstyle.org
+Bundle-Localization: plugin
+Eclipse-LazyStart: true
+Export-Package: org.objectstyle.cayenne.exp,
+ org.objectstyle.cayenne.exp.parser,
+ org.objectstyle.cayenne.wocompat,
+ org.objectstyle.cayenne.wocompat.parser
+Bundle-ClassPath: lib/cayenne.jar,
+ lib/log4j.jar,
+ lib/commons-collections-3.1.jar,
+ lib/velocity-dep-1.3.jar

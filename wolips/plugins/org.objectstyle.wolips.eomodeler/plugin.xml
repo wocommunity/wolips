@@ -1,0 +1,654 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.objectstyle.wolips.eomodeler.editors.EOModelEditor"
+            contributorClass="org.objectstyle.wolips.eomodeler.editors.EOModelEditorContributor"
+            default="true"
+            icon="icons/eoModel.gif"
+            id="org.objectstyle.wolips.eomodeler.editors.EOModelEditor"
+            matchingStrategy="org.objectstyle.wolips.eomodeler.editors.EOModelMatchingStrategy"
+            name="Entity Modeler">
+			<contentTypeBinding
+               contentTypeId="org.objectstyle.wolips.editors.indexdoteomodeld"
+            />
+			<contentTypeBinding
+               contentTypeId="org.objectstyle.wolips.editors.fspec"
+            />
+			<contentTypeBinding
+               contentTypeId="org.objectstyle.wolips.editors.storedProcedure"
+            />
+			<contentTypeBinding
+               contentTypeId="org.objectstyle.wolips.editors.eomodelgroup"
+            />
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.decorators">
+      <decorator
+            class="org.objectstyle.wolips.eomodeler.decorators.EOEntityDecorator"
+            id="org.objectstyle.wolips.eomodeler.decorators.EOEntityDecorator"
+            label="EOEntity Decorator"
+            lightweight="false"
+            state="true">
+         <enablement>
+            <and>
+               <objectState
+                     name="extension"
+                     value="plist"/>
+               <objectClass name="org.eclipse.core.resources.IFile"/>
+            </and>
+         </enablement>
+      </decorator>
+      <decorator
+            class="org.objectstyle.wolips.eomodeler.decorators.EOModelDecorator"
+            icon="icons/eoModel.gif"
+            id="org.objectstyle.wolips.eomodeler.decorators.EOModelDecorator"
+            label="EOModel Decorator"
+            lightweight="false"
+            state="true">
+         <enablement>
+            <and>
+               <objectClass name="org.eclipse.core.resources.IResource"/>
+               <objectState
+                     name="extension"
+                     value="eomodeld"/>
+            </and>
+         </enablement>
+      </decorator>
+      <decorator
+            icon="icons/eoFetchSpecification.gif"
+            id="org.objectstyle.wolips.eomodeler.decorators.EOFetchSpecDecorator"
+            label="EOFetchSpecification Decorator"
+            lightweight="false"
+            state="true">
+         <enablement>
+            <and>
+               <objectClass name="org.eclipse.core.resources.IResource"/>
+               <objectState
+                     name="extension"
+                     value="fspec"/>
+            </and>
+         </enablement>
+      </decorator>
+      <decorator
+            icon="icons/eoStoredProcedure.gif"
+            id="org.objectstyle.wolips.eomodeler.decorators.EOStoredProcedureDecorator"
+            label="EOStoredProcedure Decorator"
+            lightweight="false"
+            state="true">
+         <enablement>
+            <and>
+               <objectClass name="org.eclipse.core.resources.IResource"/>
+               <objectState
+                     name="extension"
+                     value="storedProcedure"/>
+            </and>
+         </enablement>
+      </decorator>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+      <propertyContributor contributorId="org.objectstyle.wolips.eomodeler.editors.EOModelEditor">
+         <propertyCategory category="eomodel"/>
+         <propertyCategory category="eorelationship"/>
+         <propertyCategory category="eoentity"/>
+         <propertyCategory category="eoattribute"/>
+         <propertyCategory category="eofetchspec"/>
+         <propertyCategory category="eostoredprocedure"/>
+         <propertyCategory category="eoargument"/>
+         <propertyCategory category="eodatabaseconfig"/>
+      </propertyContributor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
+      <propertyTabs contributorId="org.objectstyle.wolips.eomodeler.editors.EOModelEditor">
+         <propertyTab
+               category="eomodel"
+               id="org.objectstyle.wolips.eomodeler.tabs.connectionDictionary"
+               image="icons/eoModel.gif"
+               label="Adaptor"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.connectionDictionary"
+               category="eomodel"
+               id="org.objectstyle.wolips.eomodeler.tabs.eomodelUserInfo"
+               image="icons/eoModel.gif"
+               label="User Info"/>
+         <propertyTab
+               category="eoentity"
+               id="org.objectstyle.wolips.eomodeler.tabs.eoentityBasic"
+               image="icons/eoEntity.gif"
+               label="Basic"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eoentityBasic"
+               category="eoentity"
+               id="org.objectstyle.wolips.eomodeler.tabs.eoentityAdvanced"
+               image="icons/eoEntity.gif"
+               label="Advanced"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eoentityAdvanced"
+               category="eoentity"
+               id="org.objectstyle.wolips.eomodeler.tabs.eoentitySharedObjects"
+               image="icons/eoEntity.gif"
+               label="Shared Objects"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eoentitySharedObjects"
+               category="eoentity"
+               id="org.objectstyle.wolips.eomodeler.tabs.eoentityStoredProcedures"
+               image="icons/eoStoredProcedure.gif"
+               label="Stored Procs"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eoentityStoredProcedures"
+               category="eoentity"
+               id="org.objectstyle.wolips.eomodeler.tabs.eoentityUserInfo"
+               image="icons/eoEntity.gif"
+               label="User Info"/>
+         <propertyTab
+               category="eoattribute"
+               id="org.objectstyle.wolips.eomodeler.tabs.eoattributeBasic"
+               image="icons/eoAttribute.gif"
+               label="Basic"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eoattributeBasic"
+               category="eoattribute"
+               id="org.objectstyle.wolips.eomodeler.tabs.eoattributeAdvanced"
+               image="icons/eoAttribute.gif"
+               label="Advanced"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eoattributeAdvanced"
+               category="eoattribute"
+               id="org.objectstyle.wolips.eomodeler.tabs.eoattributeUserInfo"
+               image="icons/eoAttribute.gif"
+               label="User Info"/>
+         <propertyTab
+               category="eorelationship"
+               id="org.objectstyle.wolips.eomodeler.tabs.eorelationshipBasic"
+               image="icons/eoRelationship.gif"
+               label="Basic"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eorelationshipBasic"
+               category="eorelationship"
+               id="org.objectstyle.wolips.eomodeler.tabs.eorelationshipAdvanced"
+               image="icons/eoRelationship.gif"
+               label="Advanced"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eorelationshipAdvanced"
+               category="eorelationship"
+               id="org.objectstyle.wolips.eomodeler.tabs.eorelationshipUserInfo"
+               image="icons/eoRelationship.gif"
+               label="User Info"/>
+         <propertyTab
+               category="eofetchspec"
+               id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecQualifier"
+               image="icons/eoFetchSpecification.gif"
+               label="Qualifier"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecQualifier"
+               category="eofetchspec"
+               id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecSortOrderings"
+               image="icons/eoFetchSpecification.gif"
+               label="Sort Orderings"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecSortOrderings"
+               category="eofetchspec"
+               id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecPrefetching"
+               image="icons/eoFetchSpecification.gif"
+               label="Prefetching"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecPrefetching"
+               category="eofetchspec"
+               id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecRawFetch"
+               image="icons/eoFetchSpecification.gif"
+               label="Raw Fetch"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecRawFetch"
+               category="eofetchspec"
+               id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecOptions"
+               image="icons/eoFetchSpecification.gif"
+               label="Options"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecOptions"
+               category="eofetchspec"
+               id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecSQL"
+               image="icons/eoFetchSpecification.gif"
+               label="SQL"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecSQL"
+               category="eofetchspec"
+               id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecUserInfo"
+               image="icons/eoFetchSpecification.gif"
+               label="User Info"/>
+         <propertyTab
+               category="eostoredprocedure"
+               id="org.objectstyle.wolips.eomodeler.tabs.eostoredprocedureBasic"
+               image="icons/eoStoredProcedure.gif"
+               label="Basic"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eostoredprocedureBasic"
+               category="eostoredprocedure"
+               id="org.objectstyle.wolips.eomodeler.tabs.eostoredprocedureUserInfo"
+               image="icons/eoStoredProcedure.gif"
+               label="User Info"/>
+         <propertyTab
+               category="eoargument"
+               id="org.objectstyle.wolips.eomodeler.tabs.eoargumentBasic"
+               image="icons/eoArgument.gif"
+               label="Basic"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eoargumentBasic"
+               category="eoargument"
+               id="org.objectstyle.wolips.eomodeler.tabs.eoargumentUserInfo"
+               image="icons/eoArgument.gif"
+               label="User Info"/>
+         <propertyTab
+               category="eodatabaseconfig"
+               id="org.objectstyle.wolips.eomodeler.tabs.eodatabaseconfigBasic"
+               image="icons/sql.gif"
+               label="Config"/>
+      </propertyTabs>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertySections">
+      <propertySections contributorId="org.objectstyle.wolips.eomodeler.editors.EOModelEditor">
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.properties.ConnectionDictionarySection"
+               id="org.objectstyle.wolips.eomodeler.sections.connectionDictionary"
+               tab="org.objectstyle.wolips.eomodeler.tabs.connectionDictionary">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOModel"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.userInfo.UserInfoPropertySection"
+               id="org.objectstyle.wolips.eomodeler.sections.eomodelUserInfo"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eomodelUserInfo">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOModel"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.entity.EOEntityBasicEditorSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eoentityBasic"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoentityBasic">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOEntity"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.entity.EOEntityAdvancedEditorSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eoentityAdvanced"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoentityAdvanced">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOEntity"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.entity.EOEntitySharedObjectsEditorSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eoentitySharedObjects"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoentitySharedObjects">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOEntity"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.userInfo.UserInfoPropertySection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eoentityUserInfo"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoentityUserInfo">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOEntity"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.attribute.EOAttributeBasicEditorSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eoattributeBasic"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoattributeBasic">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOAttribute"/>
+            <input type="org.objectstyle.wolips.eomodeler.model.EOAttributePath"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.attribute.EOAttributeAdvancedEditorSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eoattributeAdvanced"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoattributeAdvanced">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOAttribute"/>
+            <input type="org.objectstyle.wolips.eomodeler.model.EOAttributePath"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.userInfo.UserInfoPropertySection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eoattributeUserInfo"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoattributeUserInfo">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOAttribute"/>
+            <input type="org.objectstyle.wolips.eomodeler.model.EOAttributePath"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.relationship.EORelationshipBasicEditorSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eorelationshipBasic"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eorelationshipBasic">
+            <input type="org.objectstyle.wolips.eomodeler.model.EORelationship"/>
+            <input type="org.objectstyle.wolips.eomodeler.model.EORelationshipPath"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.relationship.EORelationshipAdvancedEditorSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eorelationshipAdvanced"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eorelationshipAdvanced">
+            <input type="org.objectstyle.wolips.eomodeler.model.EORelationship"/>
+            <input type="org.objectstyle.wolips.eomodeler.model.EORelationshipPath"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.userInfo.UserInfoPropertySection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eorelationshipUserInfo"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eorelationshipUserInfo">
+            <input type="org.objectstyle.wolips.eomodeler.model.EORelationship"/>
+            <input type="org.objectstyle.wolips.eomodeler.model.EORelationshipPath"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.fetchspec.EOFetchSpecQualifierEditorSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eofetchspecQualifier"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecQualifier">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOFetchSpecification"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.fetchspec.EOFetchSpecSortOrderingEditorSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eofetchspecSortOrderings"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecSortOrderings">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOFetchSpecification"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.fetchspec.EOFetchSpecPrefetchingEditorSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eofetchspecPrefetching"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecPrefetching">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOFetchSpecification"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.fetchspec.EOFetchSpecRawFetchEditorSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eofetchspecRawFetch"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecRawFetch">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOFetchSpecification"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.fetchspec.EOFetchSpecOptionsEditorSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eofetchspecOptions"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecOptions">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOFetchSpecification"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.fetchspec.EOFetchSpecSQLEditorSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eofetchspecSQL"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecSQL">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOFetchSpecification"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.userInfo.UserInfoPropertySection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eofetchspecUserInfo"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecUserInfo">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOFetchSpecification"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.storedProcedure.EOStoredProcedureBasicEditorSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eostoredprocedureBasic"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eostoredprocedureBasic">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.userInfo.UserInfoPropertySection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eostoredprocedureUserInfo"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eostoredprocedureUserInfo">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.attribute.EOArgumentBasicEditorSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eoargumentBasic"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoargumentBasic">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.userInfo.UserInfoPropertySection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eoargumentUserInfo"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoargumentUserInfo">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.entity.EOEntityStoredProceduresEditorSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eoentityStoredProcedures"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoentityStoredProcedures">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOEntity"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.properties.DatabaseConfigSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eodatabaseconfigBasic"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eodatabaseconfigBasic">
+            <input type="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+         </propertySection>
+      </propertySections>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.objectstyle.wolips.eomodeler.EOModelerPerspectiveFactory"
+            icon="icons/eoModel.gif"
+            id="org.objectstyle.wolips.eomodeler.EOModelerPerspective"
+            name="Entity Modeler"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="Entity Modeler Actions"
+            id="org.objectstyle.wolips.eomodeler.actionSet"
+            label="Entity Modeler"
+            >
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewDatabaseConfigAction"
+               icon="icons/newDatabaseConfig.gif"
+               id="org.objectstyle.wolips.eomodeler.actions.newDatabaseConfig"
+               label="New Database Config"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="New Database Config">
+               <enablement>
+                   <or>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOModel"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                   </or>
+               </enablement>
+         </action>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.GenerateSQLAction"
+               icon="icons/sql.gif"
+               id="org.objectstyle.wolips.eomodeler.actions.generateSQL"
+               label="Generate SQL"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="Generate SQL">
+               <enablement>
+                   <or>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOModel"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                   </or>
+               </enablement>
+         </action>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.VerifyAction"
+               icon="icons/verify.gif"
+               id="org.objectstyle.wolips.eomodeler.actions.verify"
+               label="Verify Model"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="Verify Model">
+               <enablement>
+                   <or>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOModel"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                   </or>
+               </enablement>
+         </action>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.SubclassEntityAction"
+               icon="icons/subclassEntity.gif"
+               id="org.objectstyle.wolips.eomodeler.actions.subclassEntity"
+               label="Subclass Entity"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="Subclass Entity">
+               <enablement>
+                   <or>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                   </or>
+               </enablement>
+         </action>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.FlattenAction"
+               icon="icons/flattenRelationship.gif"
+               id="org.objectstyle.wolips.eomodeler.actions.flatten"
+               label="Flatten"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="Flatten">
+               <enablement>
+                   <or>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                   </or>
+               </enablement>
+         </action>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewArgumentAction"
+               icon="icons/newArgument.gif"
+               id="org.objectstyle.wolips.eomodeler.actions.newArgument"
+               label="New Argument"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="New Argument">
+               <enablement>
+                   <or>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                   </or>
+               </enablement>
+         </action>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewStoredProcedureAction"
+               icon="icons/newStoredProcedure.gif"
+               id="org.objectstyle.wolips.eomodeler.actions.newStoredProcedure"
+               label="New Stored Procedure"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="New Stored Procedure">
+               <enablement>
+                   <or>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                   </or>
+               </enablement>
+         </action>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewFetchSpecAction"
+               icon="icons/newFetchSpecification.gif"
+               id="org.objectstyle.wolips.eomodeler.actions.newFetchSpec"
+               label="New Fetch Specification"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="New Fetch Specification">
+               <enablement>
+                   <or>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                   </or>
+               </enablement>
+         </action>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewRelationshipAction"
+               icon="icons/newRelationship.gif"
+               id="org.objectstyle.wolips.eomodeler.actions.newRelationship"
+               label="New Relationship"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="New Relationship">
+               <enablement>
+                   <or>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                   </or>
+               </enablement>
+         </action>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewAttributeAction"
+               icon="icons/newAttribute.gif"
+               id="org.objectstyle.wolips.eomodeler.actions.newAttribute"
+               label="New Attribute"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="New Attribute">
+               <enablement>
+                   <or>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                   </or>
+               </enablement>
+         </action>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewEntityAction"
+               icon="icons/newEntity.gif"
+               id="org.objectstyle.wolips.eomodeler.actions.newEntity"
+               label="New Entity"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="New Entity">
+               <enablement>
+                   <or>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOModel"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                   </or>
+               </enablement>
+         </action>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSetPartAssociations">
+      <actionSetPartAssociation targetID="org.objectstyle.wolips.eomodeler.actionSet">
+         <part id="org.objectstyle.wolips.eomodeler.editors.EOModelEditor"/>
+         <part id="org.eclipse.ui.views.ContentOutline"/>
+         <part id="org.eclipse.ui.views.PropertySheet"/>
+      </actionSetPartAssociation>
+   </extension>
+
+</plugin>
