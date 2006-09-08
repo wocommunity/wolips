@@ -53,17 +53,16 @@
  * <http://objectstyle.org/>.
  *
  */
- 
- package org.objectstyle.wolips.commons.util;
+
+package org.objectstyle.wolips.commons.util;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class ArrayUtilities {
-
 
 	/**
 	 * @param items

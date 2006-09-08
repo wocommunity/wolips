@@ -52,13 +52,32 @@ package org.objectstyle.wolips.commons.logging;
 /**
  * 
  * @author hn3000
- *
+ * 
  */
 class ConsoleLogger implements ILogger {
-  public void log(Object msg)                { System.out.println(msg); }
-  public void log(Throwable t)               { t.printStackTrace(System.out); }
-  public void log(Object msg, Throwable t)   { System.out.print(msg); t.printStackTrace(System.out); } 
-  public void debug(Object msg)              { System.out.println(msg); }
-  public void debug(Throwable t)             { t.printStackTrace(System.out); }
-  public void debug(Object msg, Throwable t) { System.out.print(msg); t.printStackTrace(System.out); }
+	public void log(Object msg) {
+		System.out.println(msg);
+	}
+
+	public void log(Throwable t) {
+		t.printStackTrace(System.out);
+	}
+
+	public void log(Object msg, Throwable t) {
+		System.out.print(msg);
+		t.printStackTrace(System.out);
+	}
+
+	public void debug(Object msg) {
+		System.out.println(msg);
+	}
+
+	public void debug(Throwable t) {
+		t.printStackTrace(System.out);
+	}
+
+	public void debug(Object msg, Throwable t) {
+		System.out.print(msg);
+		t.printStackTrace(System.out);
+	}
 }

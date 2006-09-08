@@ -57,11 +57,12 @@ import org.eclipse.core.runtime.Plugin;
  * The main plugin class to be used in the desktop.
  */
 public class CommonsPlugin extends Plugin {
-	//The shared instance.
+	// The shared instance.
 	private static CommonsPlugin plugin;
-	//Resource bundle.
+
+	// Resource bundle.
 	private ResourceBundle resourceBundle;
-	
+
 	/**
 	 * The constructor.
 	 */
@@ -69,7 +70,7 @@ public class CommonsPlugin extends Plugin {
 		super();
 		plugin = this;
 		try {
-			this.resourceBundle   = ResourceBundle.getBundle("org.objectstyle.wolips.commons.CommonsPluginResources");
+			this.resourceBundle = ResourceBundle.getBundle("org.objectstyle.wolips.commons.CommonsPluginResources");
 		} catch (MissingResourceException x) {
 			this.resourceBundle = null;
 		}
