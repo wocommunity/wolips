@@ -61,47 +61,45 @@ import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 
 public class EOArgumentsLabelProvider extends TablePropertyLabelProvider implements ITableColorProvider, ITableFontProvider {
-  public EOArgumentsLabelProvider(String[] _columnProperties) {
-    super(_columnProperties);
-  }
+	public EOArgumentsLabelProvider(String[] _columnProperties) {
+		super(_columnProperties);
+	}
 
-  public Image getColumnImage(Object _element, String _property) {
-    EOArgument argument = (EOArgument) _element;
-    Image image = null;
-    if (_property == AbstractEOArgument.ALLOWS_NULL) {
-      image = yesNoImage(argument.isAllowsNull(), Activator.getDefault().getImageRegistry().get(Activator.CHECK_ICON), null, null);
-    }
-    return image;
-  }
+	public Image getColumnImage(Object _element, String _property) {
+		EOArgument argument = (EOArgument) _element;
+		Image image = null;
+		if (_property == AbstractEOArgument.ALLOWS_NULL) {
+			image = yesNoImage(argument.isAllowsNull(), Activator.getDefault().getImageRegistry().get(Activator.CHECK_ICON), null, null);
+		}
+		return image;
+	}
 
-  protected String yesNoText(EOAttribute _attribute, Boolean _bool) {
-    return yesNoText(_bool, !_attribute.getEntity().isPrototype());
-  }
+	protected String yesNoText(EOAttribute _attribute, Boolean _bool) {
+		return yesNoText(_bool, !_attribute.getEntity().isPrototype());
+	}
 
-  public String getColumnText(Object _element, String _property) {
-    EOArgument argument = (EOArgument) _element;
-    String text = null;
-    if (_property == AbstractEOArgument.ALLOWS_NULL) {
-      // DO NOTHING
-    }
-    else if (_property == EOArgument.DIRECTION) {
-      text = argument.getDirection().getName();
-    }
-    else {
-      text = super.getColumnText(_element, _property);
-    }
-    return text;
-  }
+	public String getColumnText(Object _element, String _property) {
+		EOArgument argument = (EOArgument) _element;
+		String text = null;
+		if (_property == AbstractEOArgument.ALLOWS_NULL) {
+			// DO NOTHING
+		} else if (_property == EOArgument.DIRECTION) {
+			text = argument.getDirection().getName();
+		} else {
+			text = super.getColumnText(_element, _property);
+		}
+		return text;
+	}
 
-  public Color getForeground(Object _element, int _columnIndex) {
-    return null;
-  }
+	public Color getForeground(Object _element, int _columnIndex) {
+		return null;
+	}
 
-  public Color getBackground(Object _element, int _columnIndex) {
-    return null;
-  }
+	public Color getBackground(Object _element, int _columnIndex) {
+		return null;
+	}
 
-  public Font getFont(Object _element, int _columnIndex) {
-    return null;
-  }
+	public Font getFont(Object _element, int _columnIndex) {
+		return null;
+	}
 }

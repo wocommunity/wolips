@@ -50,30 +50,32 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 public class DuplicateArgumentFailure extends EOModelVerificationFailure {
-  private EOStoredProcedure myStoredProcedure;
-  private String myArgumentName;
-  private String myNewArgumentName;
+	private EOStoredProcedure myStoredProcedure;
 
-  public DuplicateArgumentFailure(EOStoredProcedure _storedProcedure, String _argumentName, String _newArgumentName) {
-    this(_storedProcedure, _argumentName, _newArgumentName, null);
-  }
+	private String myArgumentName;
 
-  public DuplicateArgumentFailure(EOStoredProcedure _storedProcedure, String _argumentName, String _newArgumentName, Throwable _throwable) {
-    super("There was more than one argument named '" + _argumentName + "' in " + _storedProcedure.getName() + ", so one was renamed to '" + _newArgumentName + "'.", _throwable);
-    myStoredProcedure = _storedProcedure;
-    myArgumentName = _argumentName;
-    myNewArgumentName = _newArgumentName;
-  }
+	private String myNewArgumentName;
 
-  public EOStoredProcedure getModel() {
-    return myStoredProcedure;
-  }
+	public DuplicateArgumentFailure(EOStoredProcedure _storedProcedure, String _argumentName, String _newArgumentName) {
+		this(_storedProcedure, _argumentName, _newArgumentName, null);
+	}
 
-  public String getStoredProcedureName() {
-    return myArgumentName;
-  }
+	public DuplicateArgumentFailure(EOStoredProcedure _storedProcedure, String _argumentName, String _newArgumentName, Throwable _throwable) {
+		super("There was more than one argument named '" + _argumentName + "' in " + _storedProcedure.getName() + ", so one was renamed to '" + _newArgumentName + "'.", _throwable);
+		myStoredProcedure = _storedProcedure;
+		myArgumentName = _argumentName;
+		myNewArgumentName = _newArgumentName;
+	}
 
-  public String getNewStoredProcedureName() {
-    return myNewArgumentName;
-  }
+	public EOStoredProcedure getModel() {
+		return myStoredProcedure;
+	}
+
+	public String getStoredProcedureName() {
+		return myArgumentName;
+	}
+
+	public String getNewStoredProcedureName() {
+		return myNewArgumentName;
+	}
 }

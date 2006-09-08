@@ -55,29 +55,29 @@ import org.eclipse.swt.graphics.Image;
 import org.objectstyle.wolips.eomodeler.model.EOFactoryMethodArgumentType;
 
 public class EOFactoryMethodArgumentTypeLabelProvider implements ILabelProvider {
-  public Image getImage(Object _element) {
-    return null;
-  }
+	public Image getImage(Object _element) {
+		return null;
+	}
 
-  public String getText(Object _element) {
-    EOFactoryMethodArgumentType argumentType = (EOFactoryMethodArgumentType) _element;
-    return argumentType.getName();
-  }
+	public String getText(Object _element) {
+		EOFactoryMethodArgumentType argumentType = (EOFactoryMethodArgumentType) _element;
+		return argumentType.getName();
+	}
 
-  public void addListener(ILabelProviderListener _listener) {
-    // DO NOTHING
-  }
+	public void addListener(ILabelProviderListener _listener) {
+		// DO NOTHING
+	}
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public boolean isLabelProperty(Object _element, String _property) {
-    return true;
-  }
+	public boolean isLabelProperty(Object _element, String _property) {
+		return true;
+	}
 
-  public void removeListener(ILabelProviderListener _listener) {
-    // DO NOTHING
-  }
+	public void removeListener(ILabelProviderListener _listener) {
+		// DO NOTHING
+	}
 
 }

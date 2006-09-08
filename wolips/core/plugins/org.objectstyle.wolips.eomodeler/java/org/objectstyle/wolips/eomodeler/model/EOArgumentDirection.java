@@ -52,42 +52,47 @@ package org.objectstyle.wolips.eomodeler.model;
 import org.objectstyle.wolips.eomodeler.Messages;
 
 public class EOArgumentDirection {
-  public static final EOArgumentDirection VOID = new EOArgumentDirection(0, Messages.getString("EOArgumentDirection.void"));
-  public static final EOArgumentDirection IN = new EOArgumentDirection(1, Messages.getString("EOArgumentDirection.in"));
-  public static final EOArgumentDirection OUT = new EOArgumentDirection(2, Messages.getString("EOArgumentDirection.out"));
-  public static final EOArgumentDirection IN_OUT = new EOArgumentDirection(3, Messages.getString("EOArgumentDirection.inOut"));
-  public static final EOArgumentDirection[] ARGUMENT_DIRECTIONS = new EOArgumentDirection[] { EOArgumentDirection.VOID, EOArgumentDirection.IN, EOArgumentDirection.OUT, EOArgumentDirection.IN_OUT };
+	public static final EOArgumentDirection VOID = new EOArgumentDirection(0, Messages.getString("EOArgumentDirection.void"));
 
-  private int myID;
-  private String myName;
+	public static final EOArgumentDirection IN = new EOArgumentDirection(1, Messages.getString("EOArgumentDirection.in"));
 
-  public EOArgumentDirection(int _id, String _name) {
-    myID = _id;
-    myName = _name;
-  }
+	public static final EOArgumentDirection OUT = new EOArgumentDirection(2, Messages.getString("EOArgumentDirection.out"));
 
-  public int getID() {
-    return myID;
-  }
+	public static final EOArgumentDirection IN_OUT = new EOArgumentDirection(3, Messages.getString("EOArgumentDirection.inOut"));
 
-  public String getName() {
-    return myName;
-  }
+	public static final EOArgumentDirection[] ARGUMENT_DIRECTIONS = new EOArgumentDirection[] { EOArgumentDirection.VOID, EOArgumentDirection.IN, EOArgumentDirection.OUT, EOArgumentDirection.IN_OUT };
 
-  public String toString() {
-    return "[EOArgumentDirection: name = " + myName + "]";
-  }
+	private int myID;
 
-  public static EOArgumentDirection getArgumentDirectionByID(int _id) {
-    EOArgumentDirection matchingArgumentDirection = null;
-    for (int argumentDirectionNum = 0; matchingArgumentDirection == null && argumentDirectionNum < EOArgumentDirection.ARGUMENT_DIRECTIONS.length; argumentDirectionNum++) {
-      if (EOArgumentDirection.ARGUMENT_DIRECTIONS[argumentDirectionNum].myID == _id) {
-        matchingArgumentDirection = EOArgumentDirection.ARGUMENT_DIRECTIONS[argumentDirectionNum];
-      }
-    }
-    if (matchingArgumentDirection == null) {
-      matchingArgumentDirection = EOArgumentDirection.VOID;
-    }
-    return matchingArgumentDirection;
-  }
+	private String myName;
+
+	public EOArgumentDirection(int _id, String _name) {
+		myID = _id;
+		myName = _name;
+	}
+
+	public int getID() {
+		return myID;
+	}
+
+	public String getName() {
+		return myName;
+	}
+
+	public String toString() {
+		return "[EOArgumentDirection: name = " + myName + "]";
+	}
+
+	public static EOArgumentDirection getArgumentDirectionByID(int _id) {
+		EOArgumentDirection matchingArgumentDirection = null;
+		for (int argumentDirectionNum = 0; matchingArgumentDirection == null && argumentDirectionNum < EOArgumentDirection.ARGUMENT_DIRECTIONS.length; argumentDirectionNum++) {
+			if (EOArgumentDirection.ARGUMENT_DIRECTIONS[argumentDirectionNum].myID == _id) {
+				matchingArgumentDirection = EOArgumentDirection.ARGUMENT_DIRECTIONS[argumentDirectionNum];
+			}
+		}
+		if (matchingArgumentDirection == null) {
+			matchingArgumentDirection = EOArgumentDirection.VOID;
+		}
+		return matchingArgumentDirection;
+	}
 }

@@ -50,5 +50,5 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 public interface IEOEntityRelative {
-  public EOEntity getEntity();
+	public EOEntity getEntity();
 }

@@ -50,18 +50,18 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 public class DuplicateModelNameException extends DuplicateNameException {
-  private EOModelGroup myModelGroup;
+	private EOModelGroup myModelGroup;
 
-  public DuplicateModelNameException(String _name, EOModelGroup _modelGroup) {
-    this(_name, _modelGroup, null);
-  }
+	public DuplicateModelNameException(String _name, EOModelGroup _modelGroup) {
+		this(_name, _modelGroup, null);
+	}
 
-  public DuplicateModelNameException(String _name, EOModelGroup _modelGroup, Throwable _throwable) {
-    super(_name, "There is more than one model named '" + _name + "' in this model group.", _throwable);
-    myModelGroup = _modelGroup;
-  }
-  
-  public EOModelGroup getModelGroup() {
-    return myModelGroup;
-  }
+	public DuplicateModelNameException(String _name, EOModelGroup _modelGroup, Throwable _throwable) {
+		super(_name, "There is more than one model named '" + _name + "' in this model group.", _throwable);
+		myModelGroup = _modelGroup;
+	}
+
+	public EOModelGroup getModelGroup() {
+		return myModelGroup;
+	}
 }

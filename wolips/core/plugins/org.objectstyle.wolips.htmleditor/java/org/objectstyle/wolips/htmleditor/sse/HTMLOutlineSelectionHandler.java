@@ -58,14 +58,12 @@ public class HTMLOutlineSelectionHandler implements ISelectionChangedListener {
 	}
 
 	public void selectionChanged(SelectionChangedEvent event) {
-		IStructuredSelection structuredSelection = (IStructuredSelection)event.getSelection();
+		IStructuredSelection structuredSelection = (IStructuredSelection) event.getSelection();
 		Object object = structuredSelection.getFirstElement();
 		if (object instanceof ElementStyleImpl) {
 			ElementStyleImpl elementStyleImpl = (ElementStyleImpl) object;
 			String tagName = elementStyleImpl.getTagName();
-			if (tagName != null
-					&& ("webobject".equalsIgnoreCase(tagName) || "webobjects"
-							.equalsIgnoreCase(tagName))) {
+			if (tagName != null && ("webobject".equalsIgnoreCase(tagName) || "webobjects".equalsIgnoreCase(tagName))) {
 				this.changeWodSelection(elementStyleImpl);
 
 			}

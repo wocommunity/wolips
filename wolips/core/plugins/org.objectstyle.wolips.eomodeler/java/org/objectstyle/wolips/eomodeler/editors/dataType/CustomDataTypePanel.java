@@ -68,74 +68,81 @@ import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 
 public class CustomDataTypePanel extends Composite implements IDataTypePanel {
-  private Text myExternalWidthText;
-  private Text myValueClassNameText;
-  private Text myValueTypeText;
-  private Text myFactoryMethodText;
-  private Text myConversionMethodText;
-  private ComboViewer myArgumentTypeComboViewer;
-  private ComboViewerBinding myArgumentTypeBinding;
-  private DataBindingContext myBindingContext;
+	private Text myExternalWidthText;
 
-  public CustomDataTypePanel(Composite _parent, int _style, TabbedPropertySheetWidgetFactory _widgetFactory) {
-    super(_parent, _style);
-    setBackground(_parent.getBackground());
-    setLayout(new GridLayout(2, false));
-    _widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.WIDTH), SWT.NONE);
-    myExternalWidthText = new Text(this, SWT.BORDER);
-    GridData externalWidthFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myExternalWidthText.setLayoutData(externalWidthFieldLayoutData);
+	private Text myValueClassNameText;
 
-    _widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.VALUE_CLASS_NAME), SWT.NONE);
-    myValueClassNameText = new Text(this, SWT.BORDER);
-    GridData valueClassNameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myValueClassNameText.setLayoutData(valueClassNameFieldLayoutData);
+	private Text myValueTypeText;
 
-    _widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.VALUE_TYPE), SWT.NONE);
-    myValueTypeText = new Text(this, SWT.BORDER);
-    GridData valueTypeFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myValueTypeText.setLayoutData(valueTypeFieldLayoutData);
+	private Text myFactoryMethodText;
 
-    _widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.VALUE_FACTORY_METHOD_NAME), SWT.NONE);
-    myFactoryMethodText = new Text(this, SWT.BORDER);
-    GridData factoryMethodFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myFactoryMethodText.setLayoutData(factoryMethodFieldLayoutData);
+	private Text myConversionMethodText;
 
-    _widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME), SWT.NONE);
-    myConversionMethodText = new Text(this, SWT.BORDER);
-    GridData conversionMethodFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myConversionMethodText.setLayoutData(conversionMethodFieldLayoutData);
+	private ComboViewer myArgumentTypeComboViewer;
 
-    _widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.FACTORY_METHOD_ARGUMENT_TYPE), SWT.NONE);
-    Combo argumentTypeComboViewer = new Combo(this, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
-    myArgumentTypeComboViewer = new ComboViewer(argumentTypeComboViewer);
-    myArgumentTypeComboViewer.setLabelProvider(new EOFactoryMethodArgumentTypeLabelProvider());
-    myArgumentTypeComboViewer.setContentProvider(new EOFactoryMethodArgumentTypeContentProvider());
-    myArgumentTypeComboViewer.setInput(EOFactoryMethodArgumentType.ARGUMENT_TYPES);
-    GridData argumentTypeFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    argumentTypeComboViewer.setLayoutData(argumentTypeFieldLayoutData);
-  }
+	private ComboViewerBinding myArgumentTypeBinding;
 
-  public void setArgument(AbstractEOArgument _argument) {
-    if (myBindingContext != null) {
-      myBindingContext.dispose();
-    }
-    if (myArgumentTypeBinding != null) {
-      myArgumentTypeBinding.dispose();
-    }
-    if (_argument != null) {
-      myBindingContext = BindingFactory.createContext();
-      myBindingContext.bind(myExternalWidthText, new Property(_argument, AbstractEOArgument.WIDTH), null);
-      myBindingContext.bind(myValueClassNameText, new Property(_argument, AbstractEOArgument.VALUE_CLASS_NAME), null);
-      myBindingContext.bind(myValueTypeText, new Property(_argument, AbstractEOArgument.VALUE_TYPE), null);
-      myBindingContext.bind(myFactoryMethodText, new Property(_argument, AbstractEOArgument.VALUE_FACTORY_METHOD_NAME), null);
-      myBindingContext.bind(myConversionMethodText, new Property(_argument, AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME), null);
-      myArgumentTypeBinding = new ComboViewerBinding(myArgumentTypeComboViewer, _argument, AbstractEOArgument.FACTORY_METHOD_ARGUMENT_TYPE, null, null, EOFactoryMethodArgumentType.DATA);
-    }
-  }
+	private DataBindingContext myBindingContext;
 
-  public void dispose() {
-    setArgument(null);
-    super.dispose();
-  }
+	public CustomDataTypePanel(Composite _parent, int _style, TabbedPropertySheetWidgetFactory _widgetFactory) {
+		super(_parent, _style);
+		setBackground(_parent.getBackground());
+		setLayout(new GridLayout(2, false));
+		_widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.WIDTH), SWT.NONE);
+		myExternalWidthText = new Text(this, SWT.BORDER);
+		GridData externalWidthFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myExternalWidthText.setLayoutData(externalWidthFieldLayoutData);
+
+		_widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.VALUE_CLASS_NAME), SWT.NONE);
+		myValueClassNameText = new Text(this, SWT.BORDER);
+		GridData valueClassNameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myValueClassNameText.setLayoutData(valueClassNameFieldLayoutData);
+
+		_widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.VALUE_TYPE), SWT.NONE);
+		myValueTypeText = new Text(this, SWT.BORDER);
+		GridData valueTypeFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myValueTypeText.setLayoutData(valueTypeFieldLayoutData);
+
+		_widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.VALUE_FACTORY_METHOD_NAME), SWT.NONE);
+		myFactoryMethodText = new Text(this, SWT.BORDER);
+		GridData factoryMethodFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myFactoryMethodText.setLayoutData(factoryMethodFieldLayoutData);
+
+		_widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME), SWT.NONE);
+		myConversionMethodText = new Text(this, SWT.BORDER);
+		GridData conversionMethodFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myConversionMethodText.setLayoutData(conversionMethodFieldLayoutData);
+
+		_widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.FACTORY_METHOD_ARGUMENT_TYPE), SWT.NONE);
+		Combo argumentTypeComboViewer = new Combo(this, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
+		myArgumentTypeComboViewer = new ComboViewer(argumentTypeComboViewer);
+		myArgumentTypeComboViewer.setLabelProvider(new EOFactoryMethodArgumentTypeLabelProvider());
+		myArgumentTypeComboViewer.setContentProvider(new EOFactoryMethodArgumentTypeContentProvider());
+		myArgumentTypeComboViewer.setInput(EOFactoryMethodArgumentType.ARGUMENT_TYPES);
+		GridData argumentTypeFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		argumentTypeComboViewer.setLayoutData(argumentTypeFieldLayoutData);
+	}
+
+	public void setArgument(AbstractEOArgument _argument) {
+		if (myBindingContext != null) {
+			myBindingContext.dispose();
+		}
+		if (myArgumentTypeBinding != null) {
+			myArgumentTypeBinding.dispose();
+		}
+		if (_argument != null) {
+			myBindingContext = BindingFactory.createContext();
+			myBindingContext.bind(myExternalWidthText, new Property(_argument, AbstractEOArgument.WIDTH), null);
+			myBindingContext.bind(myValueClassNameText, new Property(_argument, AbstractEOArgument.VALUE_CLASS_NAME), null);
+			myBindingContext.bind(myValueTypeText, new Property(_argument, AbstractEOArgument.VALUE_TYPE), null);
+			myBindingContext.bind(myFactoryMethodText, new Property(_argument, AbstractEOArgument.VALUE_FACTORY_METHOD_NAME), null);
+			myBindingContext.bind(myConversionMethodText, new Property(_argument, AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME), null);
+			myArgumentTypeBinding = new ComboViewerBinding(myArgumentTypeComboViewer, _argument, AbstractEOArgument.FACTORY_METHOD_ARGUMENT_TYPE, null, null, EOFactoryMethodArgumentType.DATA);
+		}
+	}
+
+	public void dispose() {
+		setArgument(null);
+		super.dispose();
+	}
 }

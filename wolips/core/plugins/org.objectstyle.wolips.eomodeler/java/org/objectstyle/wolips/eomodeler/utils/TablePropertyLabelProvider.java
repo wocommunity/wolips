@@ -59,93 +59,89 @@ import org.objectstyle.wolips.eomodeler.kvc.CachingKeyPath;
 import org.objectstyle.wolips.eomodeler.kvc.KeyPath;
 
 public class TablePropertyLabelProvider implements ITableLabelProvider {
-  private String[] myColumnProperties;
-  private Map myKeys;
+	private String[] myColumnProperties;
 
-  public TablePropertyLabelProvider(String[] _columnProperties) {
-    myColumnProperties = _columnProperties;
-    myKeys = new HashMap();
-    for (int keyNum = 0; keyNum < _columnProperties.length; keyNum++) {
-      KeyPath keyPath = new CachingKeyPath(_columnProperties[keyNum]);
-      myKeys.put(_columnProperties[keyNum], keyPath);
-    }
-  }
-  
-  public String getColumnProperty(int _columnIndex) {
-    return myColumnProperties[_columnIndex];
-  }
+	private Map myKeys;
 
-  public Image getColumnImage(Object _element, String _property) {
-    return null;
-  }
+	public TablePropertyLabelProvider(String[] _columnProperties) {
+		myColumnProperties = _columnProperties;
+		myKeys = new HashMap();
+		for (int keyNum = 0; keyNum < _columnProperties.length; keyNum++) {
+			KeyPath keyPath = new CachingKeyPath(_columnProperties[keyNum]);
+			myKeys.put(_columnProperties[keyNum], keyPath);
+		}
+	}
 
-  public Image getColumnImage(Object _element, int _columnIndex) {
-    return getColumnImage(_element, myColumnProperties[_columnIndex]);
-  }
+	public String getColumnProperty(int _columnIndex) {
+		return myColumnProperties[_columnIndex];
+	}
 
-  public String getColumnText(Object _element, String _property) {
-    String text = null;
-    Object value = ((KeyPath) myKeys.get(_property)).getValue(_element);
-    if (value != null) {
-      text = value.toString();
-    }
-    return text;
-  }
+	public Image getColumnImage(Object _element, String _property) {
+		return null;
+	}
 
-  public String getColumnText(Object _element, int _columnIndex) {
-    return getColumnText(_element, myColumnProperties[_columnIndex]);
-  }
+	public Image getColumnImage(Object _element, int _columnIndex) {
+		return getColumnImage(_element, myColumnProperties[_columnIndex]);
+	}
 
-  public void addListener(ILabelProviderListener _listener) {
-    // DO NOTHING
-  }
+	public String getColumnText(Object _element, String _property) {
+		String text = null;
+		Object value = ((KeyPath) myKeys.get(_property)).getValue(_element);
+		if (value != null) {
+			text = value.toString();
+		}
+		return text;
+	}
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public String getColumnText(Object _element, int _columnIndex) {
+		return getColumnText(_element, myColumnProperties[_columnIndex]);
+	}
 
-  public boolean isLabelProperty(Object _element, String _property) {
-    return true;
-  }
+	public void addListener(ILabelProviderListener _listener) {
+		// DO NOTHING
+	}
 
-  public void removeListener(ILabelProviderListener _listener) {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  protected Image yesNoImage(Boolean _bool, Image _yesImage, Image _noImage, Image _nullImage) {
-    Image image;
-    if (_bool == null) {
-      image = _nullImage;
-    }
-    else if (_bool.booleanValue()) {
-      image = _yesImage;
-    }
-    else {
-      image = _noImage;
-    }
-    return image;
-  }
+	public boolean isLabelProperty(Object _element, String _property) {
+		return true;
+	}
 
-  protected String yesNoText(Boolean _bool, String _yesText, String _noText, boolean _nullIsNo) {
-    String str;
-    if (_bool == null) {
-      if (_nullIsNo) {
-        str = _noText;
-      }
-      else {
-        str = "";
-      }
-    }
-    else if (_bool.booleanValue()) {
-      str = _yesText;
-    }
-    else {
-      str = _noText;
-    }
-    return str;
-  }
-  
-  protected String yesNoText(Boolean _bool, boolean _nullIsNo) {
-    return yesNoText(_bool, "Y", "N", _nullIsNo);
-  }
+	public void removeListener(ILabelProviderListener _listener) {
+		// DO NOTHING
+	}
+
+	protected Image yesNoImage(Boolean _bool, Image _yesImage, Image _noImage, Image _nullImage) {
+		Image image;
+		if (_bool == null) {
+			image = _nullImage;
+		} else if (_bool.booleanValue()) {
+			image = _yesImage;
+		} else {
+			image = _noImage;
+		}
+		return image;
+	}
+
+	protected String yesNoText(Boolean _bool, String _yesText, String _noText, boolean _nullIsNo) {
+		String str;
+		if (_bool == null) {
+			if (_nullIsNo) {
+				str = _noText;
+			} else {
+				str = "";
+			}
+		} else if (_bool.booleanValue()) {
+			str = _yesText;
+		} else {
+			str = _noText;
+		}
+		return str;
+	}
+
+	protected String yesNoText(Boolean _bool, boolean _nullIsNo) {
+		return yesNoText(_bool, "Y", "N", _nullIsNo);
+	}
 }

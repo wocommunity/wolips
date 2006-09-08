@@ -52,46 +52,40 @@ package org.objectstyle.wolips.eomodeler.kvc;
 import java.util.Comparator;
 
 public class KVCComparator implements Comparator {
-  private KeyPath myKeyPath;
+	private KeyPath myKeyPath;
 
-  public KVCComparator(Class _class, String _keyPath) {
-    myKeyPath = new ResolvedKeyPath(_class, _keyPath);
-  }
+	public KVCComparator(Class _class, String _keyPath) {
+		myKeyPath = new ResolvedKeyPath(_class, _keyPath);
+	}
 
-  public KVCComparator(String _keyPath) {
-    myKeyPath = new KeyPath(_keyPath);
-  }
+	public KVCComparator(String _keyPath) {
+		myKeyPath = new KeyPath(_keyPath);
+	}
 
-  public int compare(Object _o1, Object _o2) {
-    try {
-      Object value1 = myKeyPath.getValue(_o1);
-      Object value2 = myKeyPath.getValue(_o2);
-      int results;
-      if (value1 == null) {
-        if (value2 == null) {
-          results = 0;
-        }
-        else if (value2 instanceof Comparable) {
-          results = 1;
-        }
-        else {
-          throw new IllegalArgumentException(myKeyPath + " did not return a comparable value from " + _o2);
-        }
-      }
-      else if (value2 == null) {
-        results = -1;
-      }
-      else if (value1 instanceof Comparable) {
-        results = ((Comparable) value1).compareTo(value2);
-      }
-      else {
-        throw new IllegalArgumentException(myKeyPath + " did not return a comparable value from " + _o1);
-      }
-      return results;
-    }
-    catch (Throwable t) {
-      throw new RuntimeException("Failed to retrieve value of " + myKeyPath + " on " + _o1 + " or " + _o2 + ".", t);
-    }
-  }
+	public int compare(Object _o1, Object _o2) {
+		try {
+			Object value1 = myKeyPath.getValue(_o1);
+			Object value2 = myKeyPath.getValue(_o2);
+			int results;
+			if (value1 == null) {
+				if (value2 == null) {
+					results = 0;
+				} else if (value2 instanceof Comparable) {
+					results = 1;
+				} else {
+					throw new IllegalArgumentException(myKeyPath + " did not return a comparable value from " + _o2);
+				}
+			} else if (value2 == null) {
+				results = -1;
+			} else if (value1 instanceof Comparable) {
+				results = ((Comparable) value1).compareTo(value2);
+			} else {
+				throw new IllegalArgumentException(myKeyPath + " did not return a comparable value from " + _o1);
+			}
+			return results;
+		} catch (Throwable t) {
+			throw new RuntimeException("Failed to retrieve value of " + myKeyPath + " on " + _o1 + " or " + _o2 + ".", t);
+		}
+	}
 
 }

@@ -62,63 +62,62 @@ import org.objectstyle.wolips.eomodeler.utils.TablePropertyCellModifier;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
 public class EOEntitiesCellModifier extends TablePropertyCellModifier {
-  private static final String NO_PARENT_VALUE = Messages.getString("EOEntitiesCellModifier.noParent");
-  private CellEditor[] myCellEditors;
-  private List myEntityNames;
+	private static final String NO_PARENT_VALUE = Messages.getString("EOEntitiesCellModifier.noParent");
 
-  public EOEntitiesCellModifier(TableViewer _modelTableViewer, CellEditor[] _cellEditors) {
-    super(_modelTableViewer);
-    myCellEditors = _cellEditors;
-  }
+	private CellEditor[] myCellEditors;
 
-  protected boolean _canModify(Object _element, String _property) {
-    if (_property == EOEntity.PARENT) {
-      EOModel model = (EOModel) getTableViewer().getInput();
-      myEntityNames = new LinkedList(model.getModelGroup().getEntityNames());
-      myEntityNames.add(0, EOEntitiesCellModifier.NO_PARENT_VALUE);
-      String[] entityNames = (String[]) myEntityNames.toArray(new String[myEntityNames.size()]);
-      KeyComboBoxCellEditor cellEditor = (KeyComboBoxCellEditor) myCellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, _property)];
-      cellEditor.setItems(entityNames);
-    }
-    return true;
-  }
+	private List myEntityNames;
 
-  public Object getValue(Object _element, String _property) {
-    EOEntity entity = (EOEntity) _element;
-    Object value = null;
-    if (_property == EOEntity.PARENT) {
-      EOEntity parent = entity.getParent();
-      String parentName;
-      if (parent == null) {
-        parentName = EOEntitiesCellModifier.NO_PARENT_VALUE;
-      }
-      else {
-        parentName = parent.getName();
-      }
-      value = new Integer(myEntityNames.indexOf(parentName));
-    }
-    else {
-      value = super.getValue(_element, _property);
-    }
-    return value;
-  }
+	public EOEntitiesCellModifier(TableViewer _modelTableViewer, CellEditor[] _cellEditors) {
+		super(_modelTableViewer);
+		myCellEditors = _cellEditors;
+	}
 
-  protected boolean _modify(Object _element, String _property, Object _value) throws Throwable {
-    boolean modified = false;
-    EOEntity entity = (EOEntity) _element;
-    if (_property == EOEntity.PARENT) {
-      Integer parentNameIndex = (Integer) _value;
-      int parentNameIndexInt = parentNameIndex.intValue();
-      String parentName = (parentNameIndexInt == -1) ? null : (String) myEntityNames.get(parentNameIndexInt);
-      if (EOEntitiesCellModifier.NO_PARENT_VALUE.equals(parentName)) {
-        entity.setParent(null);
-      }
-      else {
-        EOEntity parent = entity.getModel().getModelGroup().getEntityNamed(parentName);
-        entity.setParent(parent);
-      }
-      modified = true;
-    }
-    return modified;
-  }
+	protected boolean _canModify(Object _element, String _property) {
+		if (_property == EOEntity.PARENT) {
+			EOModel model = (EOModel) getTableViewer().getInput();
+			myEntityNames = new LinkedList(model.getModelGroup().getEntityNames());
+			myEntityNames.add(0, EOEntitiesCellModifier.NO_PARENT_VALUE);
+			String[] entityNames = (String[]) myEntityNames.toArray(new String[myEntityNames.size()]);
+			KeyComboBoxCellEditor cellEditor = (KeyComboBoxCellEditor) myCellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, _property)];
+			cellEditor.setItems(entityNames);
+		}
+		return true;
+	}
+
+	public Object getValue(Object _element, String _property) {
+		EOEntity entity = (EOEntity) _element;
+		Object value = null;
+		if (_property == EOEntity.PARENT) {
+			EOEntity parent = entity.getParent();
+			String parentName;
+			if (parent == null) {
+				parentName = EOEntitiesCellModifier.NO_PARENT_VALUE;
+			} else {
+				parentName = parent.getName();
+			}
+			value = new Integer(myEntityNames.indexOf(parentName));
+		} else {
+			value = super.getValue(_element, _property);
+		}
+		return value;
+	}
+
+	protected boolean _modify(Object _element, String _property, Object _value) throws Throwable {
+		boolean modified = false;
+		EOEntity entity = (EOEntity) _element;
+		if (_property == EOEntity.PARENT) {
+			Integer parentNameIndex = (Integer) _value;
+			int parentNameIndexInt = parentNameIndex.intValue();
+			String parentName = (parentNameIndexInt == -1) ? null : (String) myEntityNames.get(parentNameIndexInt);
+			if (EOEntitiesCellModifier.NO_PARENT_VALUE.equals(parentName)) {
+				entity.setParent(null);
+			} else {
+				EOEntity parent = entity.getModel().getModelGroup().getEntityNamed(parentName);
+				entity.setParent(parent);
+			}
+			modified = true;
+		}
+		return modified;
+	}
 }

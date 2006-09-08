@@ -58,41 +58,40 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
 public abstract class TableRowDoubleClickHandler implements MouseListener {
-  private TableViewer myTableViewer;
-  
-  public TableRowDoubleClickHandler(TableViewer _viewer) {
-    myTableViewer = _viewer;
-  }
+	private TableViewer myTableViewer;
 
-  public void attach() {
-    myTableViewer.getTable().addMouseListener(this);
-  }
-  
-  public void detach() {
-    myTableViewer.getTable().removeMouseListener(this);
-  }
-  
-  public void mouseDoubleClick(MouseEvent _e) {
-    Table table = (Table) _e.getSource();
-    TableItem item = table.getItem(new Point(_e.x, _e.y));
-    if (item == null) {
-      emptyDoubleSelectionOccurred();
-    }
-    else {
-      ISelection selection = myTableViewer.getSelection();
-      doubleSelectionOccurred(selection);
-    }
-  }
+	public TableRowDoubleClickHandler(TableViewer _viewer) {
+		myTableViewer = _viewer;
+	}
 
-  public void mouseDown(MouseEvent _e) {
-    // DO NOTHING
-  }
+	public void attach() {
+		myTableViewer.getTable().addMouseListener(this);
+	}
 
-  public void mouseUp(MouseEvent _e) {
-    // DO NOTHING
-  }
+	public void detach() {
+		myTableViewer.getTable().removeMouseListener(this);
+	}
 
-  protected abstract void emptyDoubleSelectionOccurred();
+	public void mouseDoubleClick(MouseEvent _e) {
+		Table table = (Table) _e.getSource();
+		TableItem item = table.getItem(new Point(_e.x, _e.y));
+		if (item == null) {
+			emptyDoubleSelectionOccurred();
+		} else {
+			ISelection selection = myTableViewer.getSelection();
+			doubleSelectionOccurred(selection);
+		}
+	}
 
-  protected abstract void doubleSelectionOccurred(ISelection _selection);
+	public void mouseDown(MouseEvent _e) {
+		// DO NOTHING
+	}
+
+	public void mouseUp(MouseEvent _e) {
+		// DO NOTHING
+	}
+
+	protected abstract void emptyDoubleSelectionOccurred();
+
+	protected abstract void doubleSelectionOccurred(ISelection _selection);
 }

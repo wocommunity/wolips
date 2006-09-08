@@ -54,372 +54,398 @@ import java.util.Set;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
 public abstract class AbstractEOArgument extends UserInfoableEOModelObject implements ISortableEOModelObject {
-  public static final String ALLOWS_NULL = "allowsNull";
-  public static final String NAME = "name";
-  public static final String COLUMN_NAME = "columnName";
-  public static final String ADAPTOR_VALUE_CONVERSION_METHOD_NAME = "adaptorValueConversionMethodName";
-  public static final String EXTERNAL_TYPE = "externalType";
-  public static final String FACTORY_METHOD_ARGUMENT_TYPE = "factoryMethodArgumentType";
-  public static final String PRECISION = "precision";
-  public static final String SCALE = "scale";
-  public static final String VALUE_CLASS_NAME = "valueClassName";
-  public static final String VALUE_FACTORY_METHOD_NAME = "valueFactoryMethodName";
-  public static final String VALUE_TYPE = "valueType";
-  public static final String DEFINITION = "definition";
-  public static final String WIDTH = "width";
-  public static final String DATA_TYPE = "dataType";
-  public static final String SERVER_TIME_ZONE = "serverTimeZone";
+	public static final String ALLOWS_NULL = "allowsNull";
 
-  private String myName;
-  private String myColumnName;
-  private String myExternalType;
-  private String myValueType;
-  private String myValueClassName;
-  private String myValueFactoryMethodName;
-  private EOFactoryMethodArgumentType myFactoryMethodArgumentType;
-  private String myAdaptorValueConversionMethodName;
-  private Integer myScale;
-  private Integer myPrecision;
-  private Integer myWidth;
-  private Boolean myAllowsNull;
-  private String myDefinition;
-  private String myServerTimeZone;
-  private EOModelMap myArgumentMap;
-  private EODataType myDataType;
+	public static final String NAME = "name";
 
-  public AbstractEOArgument() {
-    myArgumentMap = new EOModelMap();
-  }
+	public static final String COLUMN_NAME = "columnName";
 
-  public AbstractEOArgument(String _name) {
-    this();
-    myName = _name;
-  }
+	public static final String ADAPTOR_VALUE_CONVERSION_METHOD_NAME = "adaptorValueConversionMethodName";
 
-  public AbstractEOArgument(String _name, String _definition) {
-    this(_name);
-    myDefinition = _definition;
-  }
+	public static final String EXTERNAL_TYPE = "externalType";
 
-  public void pasted() {
-    // DO NOTHING
-  }
+	public static final String FACTORY_METHOD_ARGUMENT_TYPE = "factoryMethodArgumentType";
 
-  protected abstract AbstractEOArgument _createArgument(String _name);
+	public static final String PRECISION = "precision";
 
-  protected AbstractEOArgument _cloneArgument() {
-    AbstractEOArgument argument = _createArgument(myName);
-    argument.myColumnName = myColumnName;
-    argument.myExternalType = myExternalType;
-    argument.myValueType = myValueType;
-    argument.myValueClassName = myValueClassName;
-    argument.myValueFactoryMethodName = myValueFactoryMethodName;
-    argument.myFactoryMethodArgumentType = myFactoryMethodArgumentType;
-    argument.myAdaptorValueConversionMethodName = myAdaptorValueConversionMethodName;
-    argument.myScale = myScale;
-    argument.myPrecision = myPrecision;
-    argument.myServerTimeZone = myServerTimeZone;
-    argument.myWidth = myWidth;
-    argument.myAllowsNull = myAllowsNull;
-    argument.myDefinition = myDefinition;
-    return argument;
-  }
+	public static final String SCALE = "scale";
 
-  public int hashCode() {
-    return (myName == null) ? super.hashCode() : myName.hashCode();
-  }
+	public static final String VALUE_CLASS_NAME = "valueClassName";
 
-  public boolean equals(Object _obj) {
-    boolean equals = false;
-    if (_obj instanceof AbstractEOArgument) {
-      AbstractEOArgument argument = (AbstractEOArgument) _obj;
-      equals = (argument == this) || (ComparisonUtils.equals(argument.myName, myName));
-    }
-    return equals;
-  }
+	public static final String VALUE_FACTORY_METHOD_NAME = "valueFactoryMethodName";
 
-  public boolean isFlattened() {
-    return getDefinition() != null;
-  }
+	public static final String VALUE_TYPE = "valueType";
 
-  public void setName(String _name) throws DuplicateNameException {
-    setName(_name, true);
-  }
+	public static final String DEFINITION = "definition";
 
-  public void setName(String _name, boolean _fireEvents) throws DuplicateNameException {
-    String oldName = getName();
-    myName = _name;
-    if (_fireEvents) {
-      firePropertyChange(AbstractEOArgument.NAME, oldName, getName());
-    }
-  }
+	public static final String WIDTH = "width";
 
-  public String getName() {
-    return myName;
-  }
+	public static final String DATA_TYPE = "dataType";
 
-  public Boolean getAllowsNull() {
-    return isAllowsNull();
-  }
+	public static final String SERVER_TIME_ZONE = "serverTimeZone";
 
-  public Boolean isAllowsNull() {
-    return myAllowsNull;
-  }
+	private String myName;
 
-  public void setAllowsNull(Boolean _allowsNull) {
-    setAllowsNull(_allowsNull, true);
-  }
+	private String myColumnName;
 
-  public void setAllowsNull(Boolean _allowsNull, boolean _fireEvents) {
-    Boolean oldAllowsNull = getAllowsNull();
-    myAllowsNull = _allowsNull;
-    if (_fireEvents) {
-      firePropertyChange(AbstractEOArgument.ALLOWS_NULL, oldAllowsNull, getAllowsNull());
-    }
-  }
+	private String myExternalType;
 
-  public String getColumnName() {
-    return myColumnName;
-  }
+	private String myValueType;
 
-  public void setColumnName(String _columnName) {
-    String oldColumnName = getColumnName();
-    myColumnName = _columnName;
-    firePropertyChange(AbstractEOArgument.COLUMN_NAME, oldColumnName, getColumnName());
-  }
+	private String myValueClassName;
 
-  public String getAdaptorValueConversionMethodName() {
-    return myAdaptorValueConversionMethodName;
-  }
+	private String myValueFactoryMethodName;
 
-  public void setAdaptorValueConversionMethodName(String _adaptorValueConversionMethodName) {
-    String oldAdaptorValueConversionMethodName = getAdaptorValueConversionMethodName();
-    myAdaptorValueConversionMethodName = _adaptorValueConversionMethodName;
-    firePropertyChange(AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, oldAdaptorValueConversionMethodName, getAdaptorValueConversionMethodName());
-  }
+	private EOFactoryMethodArgumentType myFactoryMethodArgumentType;
 
-  public String getExternalType() {
-    return myExternalType;
-  }
+	private String myAdaptorValueConversionMethodName;
 
-  public void setExternalType(String _externalType) {
-    String oldExternalType = getExternalType();
-    myExternalType = _externalType;
-    firePropertyChange(AbstractEOArgument.EXTERNAL_TYPE, oldExternalType, getExternalType());
-  }
+	private Integer myScale;
 
-  public EOFactoryMethodArgumentType getFactoryMethodArgumentType() {
-    return myFactoryMethodArgumentType;
-  }
+	private Integer myPrecision;
 
-  public void setFactoryMethodArgumentType(EOFactoryMethodArgumentType _factoryMethodArgumentType) {
-    EOFactoryMethodArgumentType oldFactoryMethodArgumentType = getFactoryMethodArgumentType();
-    myFactoryMethodArgumentType = _factoryMethodArgumentType;
-    firePropertyChange(AbstractEOArgument.FACTORY_METHOD_ARGUMENT_TYPE, oldFactoryMethodArgumentType, getFactoryMethodArgumentType());
-  }
+	private Integer myWidth;
 
-  public Integer getPrecision() {
-    return myPrecision;
-  }
+	private Boolean myAllowsNull;
 
-  public void setPrecision(Integer _precision) {
-    Integer oldPrecision = getPrecision();
-    myPrecision = _precision;
-    firePropertyChange(AbstractEOArgument.PRECISION, oldPrecision, getPrecision());
-  }
+	private String myDefinition;
 
-  public Integer getScale() {
-    return myScale;
-  }
+	private String myServerTimeZone;
 
-  public void setScale(Integer _scale) {
-    Integer oldScale = getScale();
-    myScale = _scale;
-    firePropertyChange(AbstractEOArgument.SCALE, oldScale, getScale());
-  }
+	private EOModelMap myArgumentMap;
 
-  public String getServerTimeZone() {
-    return myServerTimeZone;
-  }
+	private EODataType myDataType;
 
-  public void setServerTimeZone(String _serverTimeZone) {
-    String oldServerTimeZone = getServerTimeZone();
-    myServerTimeZone = _serverTimeZone;
-    firePropertyChange(AbstractEOArgument.SERVER_TIME_ZONE, oldServerTimeZone, getServerTimeZone());
-  }
+	public AbstractEOArgument() {
+		myArgumentMap = new EOModelMap();
+	}
 
-  public synchronized EODataType getDataType() {
-    EODataType dataType = myDataType;
-    if (dataType == null) {
-      if (getValueFactoryMethodName() != null || getAdaptorValueConversionMethodName() != null) {
-        dataType = EODataType.CUSTOM;
-      }
-      else {
-        dataType = EODataType.getDataTypeByValueClassAndType(getValueClassName(), getValueType());
-      }
-      myDataType = dataType;
-    }
-    return dataType;
-  }
+	public AbstractEOArgument(String _name) {
+		this();
+		myName = _name;
+	}
 
-  public void setDataType(EODataType _dataType) {
-    EODataType oldDataType = getDataType();
-    EODataType dataType = _dataType;
-    if (dataType == null) {
-      dataType = EODataType.CUSTOM;
-    }
-    setFactoryMethodArgumentType(null);
-    setAdaptorValueConversionMethodName(null);
-    // MS: I think clearing external type may be a little aggressive
-    // setExternalType(null);
-    setPrecision(null);
-    setScale(null);
-    setServerTimeZone(null);
-    setValueFactoryMethodName(null);
-    setWidth(null);
-    setValueClassName(dataType.getValueClass(), false);
-    setValueType(dataType.getFirstValueType(), false);
-    myDataType = dataType;
-    updateDataType(oldDataType);
-  }
+	public AbstractEOArgument(String _name, String _definition) {
+		this(_name);
+		myDefinition = _definition;
+	}
 
-  protected void updateDataType(EODataType _oldDataType) {
-    EODataType dataType = getDataType();
-    firePropertyChange(AbstractEOArgument.DATA_TYPE, _oldDataType, dataType);
-  }
+	public void pasted() {
+		// DO NOTHING
+	}
 
-  public String getValueClassName() {
-    return myValueClassName;
-  }
+	protected abstract AbstractEOArgument _createArgument(String _name);
 
-  public void setValueClassName(String _valueClassName) {
-    setValueClassName(_valueClassName, true);
-  }
+	protected AbstractEOArgument _cloneArgument() {
+		AbstractEOArgument argument = _createArgument(myName);
+		argument.myColumnName = myColumnName;
+		argument.myExternalType = myExternalType;
+		argument.myValueType = myValueType;
+		argument.myValueClassName = myValueClassName;
+		argument.myValueFactoryMethodName = myValueFactoryMethodName;
+		argument.myFactoryMethodArgumentType = myFactoryMethodArgumentType;
+		argument.myAdaptorValueConversionMethodName = myAdaptorValueConversionMethodName;
+		argument.myScale = myScale;
+		argument.myPrecision = myPrecision;
+		argument.myServerTimeZone = myServerTimeZone;
+		argument.myWidth = myWidth;
+		argument.myAllowsNull = myAllowsNull;
+		argument.myDefinition = myDefinition;
+		return argument;
+	}
 
-  public synchronized void setValueClassName(String _valueClassName, boolean _updateDataType) {
-    EODataType oldDataType = getDataType();
-    String oldValueClassName = getValueClassName();
-    myValueClassName = _valueClassName;
-    myDataType = null;
-    firePropertyChange(AbstractEOArgument.VALUE_CLASS_NAME, oldValueClassName, getValueClassName());
-    if (_updateDataType) {
-      updateDataType(oldDataType);
-    }
-  }
+	public int hashCode() {
+		return (myName == null) ? super.hashCode() : myName.hashCode();
+	}
 
-  public String getValueFactoryMethodName() {
-    return myValueFactoryMethodName;
-  }
+	public boolean equals(Object _obj) {
+		boolean equals = false;
+		if (_obj instanceof AbstractEOArgument) {
+			AbstractEOArgument argument = (AbstractEOArgument) _obj;
+			equals = (argument == this) || (ComparisonUtils.equals(argument.myName, myName));
+		}
+		return equals;
+	}
 
-  public void setValueFactoryMethodName(String _valueFactoryMethodName) {
-    String oldValueFactoryMethodName = getValueFactoryMethodName();
-    myValueFactoryMethodName = _valueFactoryMethodName;
-    firePropertyChange(AbstractEOArgument.VALUE_FACTORY_METHOD_NAME, oldValueFactoryMethodName, getValueFactoryMethodName());
-  }
+	public boolean isFlattened() {
+		return getDefinition() != null;
+	}
 
-  public String getValueType() {
-    return myValueType;
-  }
+	public void setName(String _name) throws DuplicateNameException {
+		setName(_name, true);
+	}
 
-  public void setValueType(String _valueType) {
-    setValueType(_valueType, false);
-  }
+	public void setName(String _name, boolean _fireEvents) throws DuplicateNameException {
+		String oldName = getName();
+		myName = _name;
+		if (_fireEvents) {
+			firePropertyChange(AbstractEOArgument.NAME, oldName, getName());
+		}
+	}
 
-  public synchronized void setValueType(String _valueType, boolean _updateDataType) {
-    EODataType oldDataType = getDataType();
-    String oldValueType = getValueType();
-    myValueType = _valueType;
-    myDataType = null;
-    firePropertyChange(AbstractEOArgument.VALUE_TYPE, oldValueType, getValueType());
-    if (_updateDataType) {
-      updateDataType(oldDataType);
-    }
-  }
+	public String getName() {
+		return myName;
+	}
 
-  public Integer getWidth() {
-    return myWidth;
-  }
+	public Boolean getAllowsNull() {
+		return isAllowsNull();
+	}
 
-  public void setWidth(Integer _width) {
-    Integer oldWidth = getWidth();
-    myWidth = _width;
-    firePropertyChange(AbstractEOArgument.WIDTH, oldWidth, getWidth());
-  }
+	public Boolean isAllowsNull() {
+		return myAllowsNull;
+	}
 
-  public String getDefinition() {
-    return myDefinition;
-  }
+	public void setAllowsNull(Boolean _allowsNull) {
+		setAllowsNull(_allowsNull, true);
+	}
 
-  public void setDefinition(String _definition) {
-    String oldDefinition = getDefinition();
-    myDefinition = _definition;
-    firePropertyChange(AbstractEOArgument.DEFINITION, oldDefinition, getDefinition());
-  }
+	public void setAllowsNull(Boolean _allowsNull, boolean _fireEvents) {
+		Boolean oldAllowsNull = getAllowsNull();
+		myAllowsNull = _allowsNull;
+		if (_fireEvents) {
+			firePropertyChange(AbstractEOArgument.ALLOWS_NULL, oldAllowsNull, getAllowsNull());
+		}
+	}
 
-  public void loadFromMap(EOModelMap _argumentMap, Set _failures) {
-    myArgumentMap = _argumentMap;
-    myName = _argumentMap.getString("name", true);
-    if (_argumentMap.containsKey("externalName")) {
-      myColumnName = _argumentMap.getString("externalName", true);
-    }
-    else {
-      myColumnName = _argumentMap.getString("columnName", true);
-    }
-    myExternalType = _argumentMap.getString("externalType", true);
-    myScale = _argumentMap.getInteger("scale");
-    myPrecision = _argumentMap.getInteger("precision");
-    if (_argumentMap.containsKey("maximumLength")) {
-      myWidth = _argumentMap.getInteger("maximumLength");
-    }
-    else {
-      myWidth = _argumentMap.getInteger("width");
-    }
-    myValueType = _argumentMap.getString("valueType", true);
-    myValueClassName = _argumentMap.getString("valueClassName", true);
-    myValueFactoryMethodName = _argumentMap.getString("valueFactoryMethodName", true);
-    myFactoryMethodArgumentType = EOFactoryMethodArgumentType.getFactoryMethodArgumentTypeByID(_argumentMap.getString("factoryMethodArgumentType", true));
-    myAdaptorValueConversionMethodName = _argumentMap.getString("adaptorValueConversionMethodName", true);
-    myServerTimeZone = _argumentMap.getString("serverTimeZone", true);
-    myAllowsNull = _argumentMap.getBoolean("allowsNull");
-    myDefinition = _argumentMap.getString("definition", true);
-    loadUserInfo(_argumentMap);
-  }
+	public String getColumnName() {
+		return myColumnName;
+	}
 
-  public EOModelMap toMap() {
-    EOModelMap argumentMap = myArgumentMap.cloneModelMap();
-    argumentMap.setString("name", getName(), true);
-    // If columnName is prototyped, EOModeler leaves out the columnName.  If, however, columnName is MISSING, then it needs to write a "". 
-    if (myColumnName == null && getColumnName() == null) {
-      argumentMap.setString("columnName", "", false);
-    }
-    else {
-      argumentMap.setString("columnName", myColumnName, false);
-    }
-    argumentMap.remove("externalName");
-    argumentMap.setString("externalType", myExternalType, true);
-    argumentMap.setInteger("scale", myScale);
-    argumentMap.setInteger("precision", myPrecision);
-    argumentMap.setInteger("width", myWidth);
-    argumentMap.setString("serverTimeZone", myServerTimeZone, true);
-    argumentMap.remove("maximumLength");
-    argumentMap.setString("valueType", myValueType, true);
-    argumentMap.setString("valueClassName", myValueClassName, true);
-    argumentMap.setString("valueFactoryMethodName", myValueFactoryMethodName, true);
-    if (myFactoryMethodArgumentType != null) {
-      argumentMap.setString("factoryMethodArgumentType", myFactoryMethodArgumentType.getID(), true);
-    }
-    argumentMap.setString("adaptorValueConversionMethodName", myAdaptorValueConversionMethodName, true);
-    argumentMap.setBoolean("allowsNull", myAllowsNull, EOModelMap.YN);
-    argumentMap.setString("definition", myDefinition, true);
-    writeUserInfo(argumentMap);
-    return argumentMap;
-  }
+	public void setColumnName(String _columnName) {
+		String oldColumnName = getColumnName();
+		myColumnName = _columnName;
+		firePropertyChange(AbstractEOArgument.COLUMN_NAME, oldColumnName, getColumnName());
+	}
 
-  public EOModelMap getArgumentMap() {
-    return myArgumentMap;
-  }
+	public String getAdaptorValueConversionMethodName() {
+		return myAdaptorValueConversionMethodName;
+	}
 
-  public String toString() {
-    return "[EOArgument: " + myName + "]";
-  }
+	public void setAdaptorValueConversionMethodName(String _adaptorValueConversionMethodName) {
+		String oldAdaptorValueConversionMethodName = getAdaptorValueConversionMethodName();
+		myAdaptorValueConversionMethodName = _adaptorValueConversionMethodName;
+		firePropertyChange(AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, oldAdaptorValueConversionMethodName, getAdaptorValueConversionMethodName());
+	}
+
+	public String getExternalType() {
+		return myExternalType;
+	}
+
+	public void setExternalType(String _externalType) {
+		String oldExternalType = getExternalType();
+		myExternalType = _externalType;
+		firePropertyChange(AbstractEOArgument.EXTERNAL_TYPE, oldExternalType, getExternalType());
+	}
+
+	public EOFactoryMethodArgumentType getFactoryMethodArgumentType() {
+		return myFactoryMethodArgumentType;
+	}
+
+	public void setFactoryMethodArgumentType(EOFactoryMethodArgumentType _factoryMethodArgumentType) {
+		EOFactoryMethodArgumentType oldFactoryMethodArgumentType = getFactoryMethodArgumentType();
+		myFactoryMethodArgumentType = _factoryMethodArgumentType;
+		firePropertyChange(AbstractEOArgument.FACTORY_METHOD_ARGUMENT_TYPE, oldFactoryMethodArgumentType, getFactoryMethodArgumentType());
+	}
+
+	public Integer getPrecision() {
+		return myPrecision;
+	}
+
+	public void setPrecision(Integer _precision) {
+		Integer oldPrecision = getPrecision();
+		myPrecision = _precision;
+		firePropertyChange(AbstractEOArgument.PRECISION, oldPrecision, getPrecision());
+	}
+
+	public Integer getScale() {
+		return myScale;
+	}
+
+	public void setScale(Integer _scale) {
+		Integer oldScale = getScale();
+		myScale = _scale;
+		firePropertyChange(AbstractEOArgument.SCALE, oldScale, getScale());
+	}
+
+	public String getServerTimeZone() {
+		return myServerTimeZone;
+	}
+
+	public void setServerTimeZone(String _serverTimeZone) {
+		String oldServerTimeZone = getServerTimeZone();
+		myServerTimeZone = _serverTimeZone;
+		firePropertyChange(AbstractEOArgument.SERVER_TIME_ZONE, oldServerTimeZone, getServerTimeZone());
+	}
+
+	public synchronized EODataType getDataType() {
+		EODataType dataType = myDataType;
+		if (dataType == null) {
+			if (getValueFactoryMethodName() != null || getAdaptorValueConversionMethodName() != null) {
+				dataType = EODataType.CUSTOM;
+			} else {
+				dataType = EODataType.getDataTypeByValueClassAndType(getValueClassName(), getValueType());
+			}
+			myDataType = dataType;
+		}
+		return dataType;
+	}
+
+	public void setDataType(EODataType _dataType) {
+		EODataType oldDataType = getDataType();
+		EODataType dataType = _dataType;
+		if (dataType == null) {
+			dataType = EODataType.CUSTOM;
+		}
+		setFactoryMethodArgumentType(null);
+		setAdaptorValueConversionMethodName(null);
+		// MS: I think clearing external type may be a little aggressive
+		// setExternalType(null);
+		setPrecision(null);
+		setScale(null);
+		setServerTimeZone(null);
+		setValueFactoryMethodName(null);
+		setWidth(null);
+		setValueClassName(dataType.getValueClass(), false);
+		setValueType(dataType.getFirstValueType(), false);
+		myDataType = dataType;
+		updateDataType(oldDataType);
+	}
+
+	protected void updateDataType(EODataType _oldDataType) {
+		EODataType dataType = getDataType();
+		firePropertyChange(AbstractEOArgument.DATA_TYPE, _oldDataType, dataType);
+	}
+
+	public String getValueClassName() {
+		return myValueClassName;
+	}
+
+	public void setValueClassName(String _valueClassName) {
+		setValueClassName(_valueClassName, true);
+	}
+
+	public synchronized void setValueClassName(String _valueClassName, boolean _updateDataType) {
+		EODataType oldDataType = getDataType();
+		String oldValueClassName = getValueClassName();
+		myValueClassName = _valueClassName;
+		myDataType = null;
+		firePropertyChange(AbstractEOArgument.VALUE_CLASS_NAME, oldValueClassName, getValueClassName());
+		if (_updateDataType) {
+			updateDataType(oldDataType);
+		}
+	}
+
+	public String getValueFactoryMethodName() {
+		return myValueFactoryMethodName;
+	}
+
+	public void setValueFactoryMethodName(String _valueFactoryMethodName) {
+		String oldValueFactoryMethodName = getValueFactoryMethodName();
+		myValueFactoryMethodName = _valueFactoryMethodName;
+		firePropertyChange(AbstractEOArgument.VALUE_FACTORY_METHOD_NAME, oldValueFactoryMethodName, getValueFactoryMethodName());
+	}
+
+	public String getValueType() {
+		return myValueType;
+	}
+
+	public void setValueType(String _valueType) {
+		setValueType(_valueType, false);
+	}
+
+	public synchronized void setValueType(String _valueType, boolean _updateDataType) {
+		EODataType oldDataType = getDataType();
+		String oldValueType = getValueType();
+		myValueType = _valueType;
+		myDataType = null;
+		firePropertyChange(AbstractEOArgument.VALUE_TYPE, oldValueType, getValueType());
+		if (_updateDataType) {
+			updateDataType(oldDataType);
+		}
+	}
+
+	public Integer getWidth() {
+		return myWidth;
+	}
+
+	public void setWidth(Integer _width) {
+		Integer oldWidth = getWidth();
+		myWidth = _width;
+		firePropertyChange(AbstractEOArgument.WIDTH, oldWidth, getWidth());
+	}
+
+	public String getDefinition() {
+		return myDefinition;
+	}
+
+	public void setDefinition(String _definition) {
+		String oldDefinition = getDefinition();
+		myDefinition = _definition;
+		firePropertyChange(AbstractEOArgument.DEFINITION, oldDefinition, getDefinition());
+	}
+
+	public void loadFromMap(EOModelMap _argumentMap, Set _failures) {
+		myArgumentMap = _argumentMap;
+		myName = _argumentMap.getString("name", true);
+		if (_argumentMap.containsKey("externalName")) {
+			myColumnName = _argumentMap.getString("externalName", true);
+		} else {
+			myColumnName = _argumentMap.getString("columnName", true);
+		}
+		myExternalType = _argumentMap.getString("externalType", true);
+		myScale = _argumentMap.getInteger("scale");
+		myPrecision = _argumentMap.getInteger("precision");
+		if (_argumentMap.containsKey("maximumLength")) {
+			myWidth = _argumentMap.getInteger("maximumLength");
+		} else {
+			myWidth = _argumentMap.getInteger("width");
+		}
+		myValueType = _argumentMap.getString("valueType", true);
+		myValueClassName = _argumentMap.getString("valueClassName", true);
+		myValueFactoryMethodName = _argumentMap.getString("valueFactoryMethodName", true);
+		myFactoryMethodArgumentType = EOFactoryMethodArgumentType.getFactoryMethodArgumentTypeByID(_argumentMap.getString("factoryMethodArgumentType", true));
+		myAdaptorValueConversionMethodName = _argumentMap.getString("adaptorValueConversionMethodName", true);
+		myServerTimeZone = _argumentMap.getString("serverTimeZone", true);
+		myAllowsNull = _argumentMap.getBoolean("allowsNull");
+		myDefinition = _argumentMap.getString("definition", true);
+		loadUserInfo(_argumentMap);
+	}
+
+	public EOModelMap toMap() {
+		EOModelMap argumentMap = myArgumentMap.cloneModelMap();
+		argumentMap.setString("name", getName(), true);
+		// If columnName is prototyped, EOModeler leaves out the columnName. If,
+		// however, columnName is MISSING, then it needs to write a "".
+		if (myColumnName == null && getColumnName() == null) {
+			argumentMap.setString("columnName", "", false);
+		} else {
+			argumentMap.setString("columnName", myColumnName, false);
+		}
+		argumentMap.remove("externalName");
+		argumentMap.setString("externalType", myExternalType, true);
+		argumentMap.setInteger("scale", myScale);
+		argumentMap.setInteger("precision", myPrecision);
+		argumentMap.setInteger("width", myWidth);
+		argumentMap.setString("serverTimeZone", myServerTimeZone, true);
+		argumentMap.remove("maximumLength");
+		argumentMap.setString("valueType", myValueType, true);
+		argumentMap.setString("valueClassName", myValueClassName, true);
+		argumentMap.setString("valueFactoryMethodName", myValueFactoryMethodName, true);
+		if (myFactoryMethodArgumentType != null) {
+			argumentMap.setString("factoryMethodArgumentType", myFactoryMethodArgumentType.getID(), true);
+		}
+		argumentMap.setString("adaptorValueConversionMethodName", myAdaptorValueConversionMethodName, true);
+		argumentMap.setBoolean("allowsNull", myAllowsNull, EOModelMap.YN);
+		argumentMap.setString("definition", myDefinition, true);
+		writeUserInfo(argumentMap);
+		return argumentMap;
+	}
+
+	public EOModelMap getArgumentMap() {
+		return myArgumentMap;
+	}
+
+	public String toString() {
+		return "[EOArgument: " + myName + "]";
+	}
 }

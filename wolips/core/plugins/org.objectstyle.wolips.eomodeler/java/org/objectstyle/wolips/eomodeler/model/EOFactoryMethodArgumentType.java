@@ -53,43 +53,47 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
 public class EOFactoryMethodArgumentType {
-  public static final EOFactoryMethodArgumentType STRING = new EOFactoryMethodArgumentType("EOFactoryMethodArgumentIsNSString", Messages.getString("EOFactoryMethodArgumentType.string"));
-  public static final EOFactoryMethodArgumentType BYTES = new EOFactoryMethodArgumentType("EOFactoryMethodArgumentIsBytes", Messages.getString("EOFactoryMethodArgumentType.bytes"));
-  public static final EOFactoryMethodArgumentType DATA = new EOFactoryMethodArgumentType(null, Messages.getString("EOFactoryMethodArgumentType.data"));
-  public static final EOFactoryMethodArgumentType[] ARGUMENT_TYPES = new EOFactoryMethodArgumentType[] { EOFactoryMethodArgumentType.STRING, EOFactoryMethodArgumentType.DATA, EOFactoryMethodArgumentType.BYTES };
+	public static final EOFactoryMethodArgumentType STRING = new EOFactoryMethodArgumentType("EOFactoryMethodArgumentIsNSString", Messages.getString("EOFactoryMethodArgumentType.string"));
 
-  private String myID;
-  private String myName;
+	public static final EOFactoryMethodArgumentType BYTES = new EOFactoryMethodArgumentType("EOFactoryMethodArgumentIsBytes", Messages.getString("EOFactoryMethodArgumentType.bytes"));
 
-  public EOFactoryMethodArgumentType(String _id, String _name) {
-    myID = _id;
-    myName = _name;
-    myName = _name;
-  }
+	public static final EOFactoryMethodArgumentType DATA = new EOFactoryMethodArgumentType(null, Messages.getString("EOFactoryMethodArgumentType.data"));
 
-  public String getID() {
-    return myID;
-  }
+	public static final EOFactoryMethodArgumentType[] ARGUMENT_TYPES = new EOFactoryMethodArgumentType[] { EOFactoryMethodArgumentType.STRING, EOFactoryMethodArgumentType.DATA, EOFactoryMethodArgumentType.BYTES };
 
-  public String getName() {
-    return myName;
-  }
+	private String myID;
 
-  public String toString() {
-    return "[EOFactoryMethodArgumentType: name = " + myName + "]";
-  }
+	private String myName;
 
-  public static EOFactoryMethodArgumentType getFactoryMethodArgumentTypeByID(String _id) {
-    EOFactoryMethodArgumentType matchingArgumentType = null;
-    for (int argumentTypeNum = 0; matchingArgumentType == null && argumentTypeNum < EOFactoryMethodArgumentType.ARGUMENT_TYPES.length; argumentTypeNum++) {
-      EOFactoryMethodArgumentType argumentType = EOFactoryMethodArgumentType.ARGUMENT_TYPES[argumentTypeNum];
-      if (ComparisonUtils.equals(argumentType.myID, _id)) {
-        matchingArgumentType = argumentType;
-      }
-    }
-    if (matchingArgumentType == null) {
-      matchingArgumentType = EOFactoryMethodArgumentType.DATA;
-    }
-    return matchingArgumentType;
-  }
+	public EOFactoryMethodArgumentType(String _id, String _name) {
+		myID = _id;
+		myName = _name;
+		myName = _name;
+	}
+
+	public String getID() {
+		return myID;
+	}
+
+	public String getName() {
+		return myName;
+	}
+
+	public String toString() {
+		return "[EOFactoryMethodArgumentType: name = " + myName + "]";
+	}
+
+	public static EOFactoryMethodArgumentType getFactoryMethodArgumentTypeByID(String _id) {
+		EOFactoryMethodArgumentType matchingArgumentType = null;
+		for (int argumentTypeNum = 0; matchingArgumentType == null && argumentTypeNum < EOFactoryMethodArgumentType.ARGUMENT_TYPES.length; argumentTypeNum++) {
+			EOFactoryMethodArgumentType argumentType = EOFactoryMethodArgumentType.ARGUMENT_TYPES[argumentTypeNum];
+			if (ComparisonUtils.equals(argumentType.myID, _id)) {
+				matchingArgumentType = argumentType;
+			}
+		}
+		if (matchingArgumentType == null) {
+			matchingArgumentType = EOFactoryMethodArgumentType.DATA;
+		}
+		return matchingArgumentType;
+	}
 }

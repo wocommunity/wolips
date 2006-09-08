@@ -55,18 +55,18 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
 
 public class IntegerDataTypePanel extends Composite implements IDataTypePanel {
-  public IntegerDataTypePanel(Composite _parent, int _style, TabbedPropertySheetWidgetFactory _widgetFactory) {
-    super(_parent, _style);
-    setBackground(_parent.getBackground());
-    setLayout(new GridLayout(2, false));
-  }
-  
-  public void setArgument(AbstractEOArgument _argument) {
-    // DO NOTHING
-  }
-  
-  public void dispose() {
-    setArgument(null);
-    super.dispose();
-  }
+	public IntegerDataTypePanel(Composite _parent, int _style, TabbedPropertySheetWidgetFactory _widgetFactory) {
+		super(_parent, _style);
+		setBackground(_parent.getBackground());
+		setLayout(new GridLayout(2, false));
+	}
+
+	public void setArgument(AbstractEOArgument _argument) {
+		// DO NOTHING
+	}
+
+	public void dispose() {
+		setArgument(null);
+		super.dispose();
+	}
 }

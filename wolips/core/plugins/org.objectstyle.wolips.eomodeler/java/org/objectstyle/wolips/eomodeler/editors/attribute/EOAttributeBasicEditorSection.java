@@ -66,44 +66,44 @@ import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 
 public class EOAttributeBasicEditorSection extends AbstractEOArgumentBasicEditorSection {
-  private ComboViewer myPrototypeComboViewer;
-  private ComboViewerBinding myPrototypeBinding;
+	private ComboViewer myPrototypeComboViewer;
 
-  protected void _addComponents(Composite _parent) {
-    getWidgetFactory().createCLabel(_parent, Messages.getString("EOAttribute." + EOAttribute.PROTOTYPE), SWT.NONE);
-    Combo prototypeCombo = new Combo(_parent, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
-    myPrototypeComboViewer = new ComboViewer(prototypeCombo);
-    myPrototypeComboViewer.setLabelProvider(new EOPrototypeListLabelProvider());
-    myPrototypeComboViewer.setContentProvider(new EOPrototypeListContentProvider());
-    GridData prototypeComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    prototypeCombo.setLayoutData(prototypeComboLayoutData);
-  }
+	private ComboViewerBinding myPrototypeBinding;
 
-  protected void _argumentChanged(AbstractEOArgument _argument) {
-    EOAttribute attribute = (EOAttribute) _argument;
-    if (attribute != null) {
-      myPrototypeComboViewer.setInput(attribute);
-      myPrototypeBinding = new ComboViewerBinding(myPrototypeComboViewer, attribute, EOAttribute.PROTOTYPE, attribute.getEntity().getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY);
-    }
-  }
+	protected void _addComponents(Composite _parent) {
+		getWidgetFactory().createCLabel(_parent, Messages.getString("EOAttribute." + EOAttribute.PROTOTYPE), SWT.NONE);
+		Combo prototypeCombo = new Combo(_parent, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
+		myPrototypeComboViewer = new ComboViewer(prototypeCombo);
+		myPrototypeComboViewer.setLabelProvider(new EOPrototypeListLabelProvider());
+		myPrototypeComboViewer.setContentProvider(new EOPrototypeListContentProvider());
+		GridData prototypeComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		prototypeCombo.setLayoutData(prototypeComboLayoutData);
+	}
 
-  protected void disposeBindings() {
-    if (myPrototypeBinding != null) {
-      myPrototypeBinding.dispose();
-    }
-    super.disposeBindings();
-  }
+	protected void _argumentChanged(AbstractEOArgument _argument) {
+		EOAttribute attribute = (EOAttribute) _argument;
+		if (attribute != null) {
+			myPrototypeComboViewer.setInput(attribute);
+			myPrototypeBinding = new ComboViewerBinding(myPrototypeComboViewer, attribute, EOAttribute.PROTOTYPE, attribute.getEntity().getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY);
+		}
+	}
 
-  public void setInput(IWorkbenchPart _part, ISelection _selection) {
-    super.setInput(_part, _selection);
-    EOAttribute attribute = null;
-    Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-    if (selectedObject instanceof EOAttribute) {
-      attribute = (EOAttribute) selectedObject;
-    }
-    else if (selectedObject instanceof EOAttributePath) {
-      attribute = ((EOAttributePath) selectedObject).getChildAttribute();
-    }
-    setArgument(attribute);
-  }
+	protected void disposeBindings() {
+		if (myPrototypeBinding != null) {
+			myPrototypeBinding.dispose();
+		}
+		super.disposeBindings();
+	}
+
+	public void setInput(IWorkbenchPart _part, ISelection _selection) {
+		super.setInput(_part, _selection);
+		EOAttribute attribute = null;
+		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+		if (selectedObject instanceof EOAttribute) {
+			attribute = (EOAttribute) selectedObject;
+		} else if (selectedObject instanceof EOAttributePath) {
+			attribute = ((EOAttributePath) selectedObject).getChildAttribute();
+		}
+		setArgument(attribute);
+	}
 }

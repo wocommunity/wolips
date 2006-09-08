@@ -81,198 +81,199 @@ import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
 public class EOFetchSpecRawFetchEditorSection extends AbstractPropertySection implements ISelectionChangedListener, SelectionListener {
-  private EOFetchSpecification myFetchSpecification;
+	private EOFetchSpecification myFetchSpecification;
 
-  private TreeViewer myModelTreeViewer;
-  private TableViewer myRawRowKeyPathsTableViewer;
-  private AddRemoveButtonGroup myAddRemoveButtonGroup;
-  private EOEntityTreeViewUpdater myEntityTreeViewUpdater;
-  private TableRefreshPropertyListener myRawRowKeyPathsChangedRefresher;
-  private Button myFetchEnterpriseObjectsButton;
-  private Button myFetchAllAttributesAsRawRowsButton;
-  private Button myFetchSpecificAttributesAsRawRowsButton;
+	private TreeViewer myModelTreeViewer;
 
-  public EOFetchSpecRawFetchEditorSection() {
-    // DO NOTHING
-  }
+	private TableViewer myRawRowKeyPathsTableViewer;
 
-  public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
-    super.createControls(_parent, _tabbedPropertySheetPage);
-    Composite form = getWidgetFactory().createFlatFormComposite(_parent);
-    FormLayout formLayout = new FormLayout();
-    form.setLayout(formLayout);
+	private AddRemoveButtonGroup myAddRemoveButtonGroup;
 
-    Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-    FormData topFormData = new FormData();
-    topFormData.top = new FormAttachment(0, 5);
-    topFormData.left = new FormAttachment(0, 5);
-    topFormData.right = new FormAttachment(100, -5);
-    topForm.setLayoutData(topFormData);
+	private EOEntityTreeViewUpdater myEntityTreeViewUpdater;
 
-    GridLayout topFormLayout = new GridLayout();
-    topForm.setLayout(topFormLayout);
+	private TableRefreshPropertyListener myRawRowKeyPathsChangedRefresher;
 
-    Composite fetchStyleComposite = getWidgetFactory().createPlainComposite(topForm, SWT.NONE);
-    GridLayout fetchStyleLayout = new GridLayout();
-    fetchStyleComposite.setLayout(fetchStyleLayout);
-    myFetchEnterpriseObjectsButton = new Button(fetchStyleComposite, SWT.RADIO);
-    myFetchEnterpriseObjectsButton.setText(Messages.getString("EOFetchSpecRawFetchEditorSection.fetchEnterpriseObjects")); //$NON-NLS-1$
-    myFetchAllAttributesAsRawRowsButton = new Button(fetchStyleComposite, SWT.RADIO);
-    myFetchAllAttributesAsRawRowsButton.setText(Messages.getString("EOFetchSpecRawFetchEditorSection.fetchAllAttributes")); //$NON-NLS-1$
-    myFetchSpecificAttributesAsRawRowsButton = new Button(fetchStyleComposite, SWT.RADIO);
-    myFetchSpecificAttributesAsRawRowsButton.setText(Messages.getString("EOFetchSpecRawFetchEditorSection.fetchSpecificAttributes")); //$NON-NLS-1$
+	private Button myFetchEnterpriseObjectsButton;
 
-    myModelTreeViewer = new TreeViewer(topForm);
-    GridData modelTreeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    modelTreeLayoutData.heightHint = 100;
-    myModelTreeViewer.getTree().setLayoutData(modelTreeLayoutData);
-    myEntityTreeViewUpdater = new EOEntityTreeViewUpdater(myModelTreeViewer, new EOModelOutlineContentProvider(true, true, true, false, false, false));
-    myModelTreeViewer.addSelectionChangedListener(this);
+	private Button myFetchAllAttributesAsRawRowsButton;
 
-    myRawRowKeyPathsTableViewer = TableUtils.createTableViewer(topForm, "EOFetchSpecification", EORawRowKeyPathsConstants.COLUMNS, new RawRowKeyPathsContentProvider(), new RawRowKeyPathsLabelProvider(EORawRowKeyPathsConstants.COLUMNS), new RawRowKeyPathsViewerSorter(EORawRowKeyPathsConstants.COLUMNS));
-    GridData rawRowKeyPathsTableLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    rawRowKeyPathsTableLayoutData.heightHint = 100;
-    myRawRowKeyPathsTableViewer.getTable().setLayoutData(rawRowKeyPathsTableLayoutData);
-    myRawRowKeyPathsTableViewer.addSelectionChangedListener(this);
-    myRawRowKeyPathsChangedRefresher = new TableRefreshPropertyListener(myRawRowKeyPathsTableViewer);
+	private Button myFetchSpecificAttributesAsRawRowsButton;
 
-    myAddRemoveButtonGroup = new AddRemoveButtonGroup(topForm, new AddRawRowKeyPathHandler(), new RemoveRawRowKeyPathHandler());
-    myAddRemoveButtonGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-  }
+	public EOFetchSpecRawFetchEditorSection() {
+		// DO NOTHING
+	}
 
-  public void setInput(IWorkbenchPart _part, ISelection _selection) {
-    super.setInput(_part, _selection);
-    disposeBindings();
+	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
+		super.createControls(_parent, _tabbedPropertySheetPage);
+		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
+		FormLayout formLayout = new FormLayout();
+		form.setLayout(formLayout);
 
-    Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-    myFetchSpecification = (EOFetchSpecification) selectedObject;
-    if (myFetchSpecification != null) {
-      myFetchSpecification.addPropertyChangeListener(EOFetchSpecification.RAW_ROW_KEY_PATHS, myRawRowKeyPathsChangedRefresher);
-      myEntityTreeViewUpdater.setEntity(myFetchSpecification.getEntity());
-      myRawRowKeyPathsTableViewer.setInput(myFetchSpecification);
-      TableUtils.packTableColumns(myRawRowKeyPathsTableViewer);
-      updateButtonsEnabled();
-    }
-  }
+		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
+		FormData topFormData = new FormData();
+		topFormData.top = new FormAttachment(0, 5);
+		topFormData.left = new FormAttachment(0, 5);
+		topFormData.right = new FormAttachment(100, -5);
+		topForm.setLayoutData(topFormData);
 
-  protected void disposeBindings() {
-    if (myFetchSpecification != null) {
-      myFetchSpecification.removePropertyChangeListener(EOFetchSpecification.RAW_ROW_KEY_PATHS, myRawRowKeyPathsChangedRefresher);
-    }
-  }
+		GridLayout topFormLayout = new GridLayout();
+		topForm.setLayout(topFormLayout);
 
-  protected void removeButtonListeners() {
-    myFetchEnterpriseObjectsButton.removeSelectionListener(this);
-    myFetchAllAttributesAsRawRowsButton.removeSelectionListener(this);
-    myFetchSpecificAttributesAsRawRowsButton.removeSelectionListener(this);
-  }
+		Composite fetchStyleComposite = getWidgetFactory().createPlainComposite(topForm, SWT.NONE);
+		GridLayout fetchStyleLayout = new GridLayout();
+		fetchStyleComposite.setLayout(fetchStyleLayout);
+		myFetchEnterpriseObjectsButton = new Button(fetchStyleComposite, SWT.RADIO);
+		myFetchEnterpriseObjectsButton.setText(Messages.getString("EOFetchSpecRawFetchEditorSection.fetchEnterpriseObjects")); //$NON-NLS-1$
+		myFetchAllAttributesAsRawRowsButton = new Button(fetchStyleComposite, SWT.RADIO);
+		myFetchAllAttributesAsRawRowsButton.setText(Messages.getString("EOFetchSpecRawFetchEditorSection.fetchAllAttributes")); //$NON-NLS-1$
+		myFetchSpecificAttributesAsRawRowsButton = new Button(fetchStyleComposite, SWT.RADIO);
+		myFetchSpecificAttributesAsRawRowsButton.setText(Messages.getString("EOFetchSpecRawFetchEditorSection.fetchSpecificAttributes")); //$NON-NLS-1$
 
-  protected void addButtonListeners() {
-    myFetchEnterpriseObjectsButton.addSelectionListener(this);
-    myFetchAllAttributesAsRawRowsButton.addSelectionListener(this);
-    myFetchSpecificAttributesAsRawRowsButton.addSelectionListener(this);
-  }
+		myModelTreeViewer = new TreeViewer(topForm);
+		GridData modelTreeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		modelTreeLayoutData.heightHint = 100;
+		myModelTreeViewer.getTree().setLayoutData(modelTreeLayoutData);
+		myEntityTreeViewUpdater = new EOEntityTreeViewUpdater(myModelTreeViewer, new EOModelOutlineContentProvider(true, true, true, false, false, false));
+		myModelTreeViewer.addSelectionChangedListener(this);
 
-  public void dispose() {
-    super.dispose();
-    disposeBindings();
-  }
+		myRawRowKeyPathsTableViewer = TableUtils.createTableViewer(topForm, "EOFetchSpecification", EORawRowKeyPathsConstants.COLUMNS, new RawRowKeyPathsContentProvider(), new RawRowKeyPathsLabelProvider(EORawRowKeyPathsConstants.COLUMNS), new RawRowKeyPathsViewerSorter(EORawRowKeyPathsConstants.COLUMNS));
+		GridData rawRowKeyPathsTableLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		rawRowKeyPathsTableLayoutData.heightHint = 100;
+		myRawRowKeyPathsTableViewer.getTable().setLayoutData(rawRowKeyPathsTableLayoutData);
+		myRawRowKeyPathsTableViewer.addSelectionChangedListener(this);
+		myRawRowKeyPathsChangedRefresher = new TableRefreshPropertyListener(myRawRowKeyPathsTableViewer);
 
-  public void widgetDefaultSelected(SelectionEvent _e) {
-    widgetSelected(_e);
-  }
+		myAddRemoveButtonGroup = new AddRemoveButtonGroup(topForm, new AddRawRowKeyPathHandler(), new RemoveRawRowKeyPathHandler());
+		myAddRemoveButtonGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+	}
 
-  public void widgetSelected(SelectionEvent _e) {
-    Object source = _e.getSource();
-    if (source == myFetchEnterpriseObjectsButton) {
-      myFetchSpecification.fetchEnterpriseObjects();
-    }
-    else if (source == myFetchAllAttributesAsRawRowsButton) {
-      myFetchSpecification.fetchAllAttributesAsRawRows();
-    }
-    else if (source == myFetchSpecificAttributesAsRawRowsButton) {
-      myFetchSpecification.fetchSpecificAttributesAsRawRows();
-    }
-    updateButtonsEnabled();
-  }
+	public void setInput(IWorkbenchPart _part, ISelection _selection) {
+		super.setInput(_part, _selection);
+		disposeBindings();
 
-  public void addRawRowKeyPath() {
-    IStructuredSelection selection = (IStructuredSelection) myModelTreeViewer.getSelection();
-    Object selectedObject = selection.getFirstElement();
-    String path;
-    if (selectedObject instanceof EOAttributePath) {
-      path = ((EOAttributePath) selectedObject).toKeyPath();
-    }
-    else if (selectedObject instanceof EOAttribute) {
-      path = ((EOAttribute) selectedObject).getName();
-    }
-    else {
-      path = null;
-    }
-    if (path != null) {
-      myFetchSpecification.addRawRowKeyPath(path, true);
-      TableUtils.packTableColumns(myRawRowKeyPathsTableViewer);
-      updateButtonsEnabled();
-    }
-  }
+		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+		myFetchSpecification = (EOFetchSpecification) selectedObject;
+		if (myFetchSpecification != null) {
+			myFetchSpecification.addPropertyChangeListener(EOFetchSpecification.RAW_ROW_KEY_PATHS, myRawRowKeyPathsChangedRefresher);
+			myEntityTreeViewUpdater.setEntity(myFetchSpecification.getEntity());
+			myRawRowKeyPathsTableViewer.setInput(myFetchSpecification);
+			TableUtils.packTableColumns(myRawRowKeyPathsTableViewer);
+			updateButtonsEnabled();
+		}
+	}
 
-  public void removePrefetchKeyPath() {
-    IStructuredSelection selection = (IStructuredSelection) myRawRowKeyPathsTableViewer.getSelection();
-    Iterator selectedObjectsIter = selection.toList().iterator();
-    while (selectedObjectsIter.hasNext()) {
-      String rawRowKeyPath = (String) selectedObjectsIter.next();
-      myFetchSpecification.removeRawRowKeyPath(rawRowKeyPath, true);
-    }
-    updateButtonsEnabled();
-  }
+	protected void disposeBindings() {
+		if (myFetchSpecification != null) {
+			myFetchSpecification.removePropertyChangeListener(EOFetchSpecification.RAW_ROW_KEY_PATHS, myRawRowKeyPathsChangedRefresher);
+		}
+	}
 
-  public void updateButtonsEnabled() {
-    removeButtonListeners();
-    if (myFetchSpecification.isFetchEnterpriseObjects()) {
-      myFetchEnterpriseObjectsButton.setSelection(true);
-      myFetchAllAttributesAsRawRowsButton.setSelection(false);
-      myFetchSpecificAttributesAsRawRowsButton.setSelection(false);
-    }
-    else if (myFetchSpecification.isFetchAllAttributesAsRawRows()) {
-      myFetchEnterpriseObjectsButton.setSelection(false);
-      myFetchAllAttributesAsRawRowsButton.setSelection(true);
-      myFetchSpecificAttributesAsRawRowsButton.setSelection(false);
-    }
-    else {
-      myFetchEnterpriseObjectsButton.setSelection(false);
-      myFetchAllAttributesAsRawRowsButton.setSelection(false);
-      myFetchSpecificAttributesAsRawRowsButton.setSelection(true);
-    }
-    addButtonListeners();
-    boolean enabled = myFetchSpecification.isFetchSpecificAttributesAsRawRows();
-    Object selectedObject = ((IStructuredSelection) myModelTreeViewer.getSelection()).getFirstElement();
-    boolean addEnabled = (selectedObject instanceof EOAttributePath || selectedObject instanceof EOAttribute);
-    myModelTreeViewer.getTree().setEnabled(enabled);
-    myAddRemoveButtonGroup.setAddEnabled(enabled && addEnabled);
-    myAddRemoveButtonGroup.setRemoveEnabled(enabled && !myRawRowKeyPathsTableViewer.getSelection().isEmpty());
-  }
+	protected void removeButtonListeners() {
+		myFetchEnterpriseObjectsButton.removeSelectionListener(this);
+		myFetchAllAttributesAsRawRowsButton.removeSelectionListener(this);
+		myFetchSpecificAttributesAsRawRowsButton.removeSelectionListener(this);
+	}
 
-  public void selectionChanged(SelectionChangedEvent _event) {
-    updateButtonsEnabled();
-  }
+	protected void addButtonListeners() {
+		myFetchEnterpriseObjectsButton.addSelectionListener(this);
+		myFetchAllAttributesAsRawRowsButton.addSelectionListener(this);
+		myFetchSpecificAttributesAsRawRowsButton.addSelectionListener(this);
+	}
 
-  protected class AddRawRowKeyPathHandler implements SelectionListener {
-    public void widgetDefaultSelected(SelectionEvent _e) {
-      widgetSelected(_e);
-    }
+	public void dispose() {
+		super.dispose();
+		disposeBindings();
+	}
 
-    public void widgetSelected(SelectionEvent _e) {
-      EOFetchSpecRawFetchEditorSection.this.addRawRowKeyPath();
-    }
-  }
+	public void widgetDefaultSelected(SelectionEvent _e) {
+		widgetSelected(_e);
+	}
 
-  protected class RemoveRawRowKeyPathHandler implements SelectionListener {
-    public void widgetDefaultSelected(SelectionEvent _e) {
-      widgetSelected(_e);
-    }
+	public void widgetSelected(SelectionEvent _e) {
+		Object source = _e.getSource();
+		if (source == myFetchEnterpriseObjectsButton) {
+			myFetchSpecification.fetchEnterpriseObjects();
+		} else if (source == myFetchAllAttributesAsRawRowsButton) {
+			myFetchSpecification.fetchAllAttributesAsRawRows();
+		} else if (source == myFetchSpecificAttributesAsRawRowsButton) {
+			myFetchSpecification.fetchSpecificAttributesAsRawRows();
+		}
+		updateButtonsEnabled();
+	}
 
-    public void widgetSelected(SelectionEvent _e) {
-      EOFetchSpecRawFetchEditorSection.this.removePrefetchKeyPath();
-    }
-  }
+	public void addRawRowKeyPath() {
+		IStructuredSelection selection = (IStructuredSelection) myModelTreeViewer.getSelection();
+		Object selectedObject = selection.getFirstElement();
+		String path;
+		if (selectedObject instanceof EOAttributePath) {
+			path = ((EOAttributePath) selectedObject).toKeyPath();
+		} else if (selectedObject instanceof EOAttribute) {
+			path = ((EOAttribute) selectedObject).getName();
+		} else {
+			path = null;
+		}
+		if (path != null) {
+			myFetchSpecification.addRawRowKeyPath(path, true);
+			TableUtils.packTableColumns(myRawRowKeyPathsTableViewer);
+			updateButtonsEnabled();
+		}
+	}
+
+	public void removePrefetchKeyPath() {
+		IStructuredSelection selection = (IStructuredSelection) myRawRowKeyPathsTableViewer.getSelection();
+		Iterator selectedObjectsIter = selection.toList().iterator();
+		while (selectedObjectsIter.hasNext()) {
+			String rawRowKeyPath = (String) selectedObjectsIter.next();
+			myFetchSpecification.removeRawRowKeyPath(rawRowKeyPath, true);
+		}
+		updateButtonsEnabled();
+	}
+
+	public void updateButtonsEnabled() {
+		removeButtonListeners();
+		if (myFetchSpecification.isFetchEnterpriseObjects()) {
+			myFetchEnterpriseObjectsButton.setSelection(true);
+			myFetchAllAttributesAsRawRowsButton.setSelection(false);
+			myFetchSpecificAttributesAsRawRowsButton.setSelection(false);
+		} else if (myFetchSpecification.isFetchAllAttributesAsRawRows()) {
+			myFetchEnterpriseObjectsButton.setSelection(false);
+			myFetchAllAttributesAsRawRowsButton.setSelection(true);
+			myFetchSpecificAttributesAsRawRowsButton.setSelection(false);
+		} else {
+			myFetchEnterpriseObjectsButton.setSelection(false);
+			myFetchAllAttributesAsRawRowsButton.setSelection(false);
+			myFetchSpecificAttributesAsRawRowsButton.setSelection(true);
+		}
+		addButtonListeners();
+		boolean enabled = myFetchSpecification.isFetchSpecificAttributesAsRawRows();
+		Object selectedObject = ((IStructuredSelection) myModelTreeViewer.getSelection()).getFirstElement();
+		boolean addEnabled = (selectedObject instanceof EOAttributePath || selectedObject instanceof EOAttribute);
+		myModelTreeViewer.getTree().setEnabled(enabled);
+		myAddRemoveButtonGroup.setAddEnabled(enabled && addEnabled);
+		myAddRemoveButtonGroup.setRemoveEnabled(enabled && !myRawRowKeyPathsTableViewer.getSelection().isEmpty());
+	}
+
+	public void selectionChanged(SelectionChangedEvent _event) {
+		updateButtonsEnabled();
+	}
+
+	protected class AddRawRowKeyPathHandler implements SelectionListener {
+		public void widgetDefaultSelected(SelectionEvent _e) {
+			widgetSelected(_e);
+		}
+
+		public void widgetSelected(SelectionEvent _e) {
+			EOFetchSpecRawFetchEditorSection.this.addRawRowKeyPath();
+		}
+	}
+
+	protected class RemoveRawRowKeyPathHandler implements SelectionListener {
+		public void widgetDefaultSelected(SelectionEvent _e) {
+			widgetSelected(_e);
+		}
+
+		public void widgetSelected(SelectionEvent _e) {
+			EOFetchSpecRawFetchEditorSection.this.removePrefetchKeyPath();
+		}
+	}
 }

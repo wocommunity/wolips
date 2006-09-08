@@ -53,5 +53,5 @@ import org.objectstyle.wolips.eomodeler.model.EOJoin;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 
 public class EORelationshipsConstants {
-  public static final String[] COLUMNS = { EORelationship.TO_MANY, EORelationship.CLASS_PROPERTY, EORelationship.NAME, EORelationship.DESTINATION, EOJoin.SOURCE_ATTRIBUTE, EOJoin.DESTINATION_ATTRIBUTE };
+	public static final String[] COLUMNS = { EORelationship.TO_MANY, EORelationship.CLASS_PROPERTY, EORelationship.NAME, EORelationship.DESTINATION, EOJoin.SOURCE_ATTRIBUTE, EOJoin.DESTINATION_ATTRIBUTE };
 }

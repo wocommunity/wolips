@@ -52,28 +52,28 @@ package org.objectstyle.wolips.eomodeler.kvc;
 import java.util.Map;
 
 public class MapKey implements IKey {
-  private String myName;
+	private String myName;
 
-  public MapKey(String _name) {
-    myName = _name;
-  }
+	public MapKey(String _name) {
+		myName = _name;
+	}
 
-  public Class getType(Object _instance) {
-    Class nextClass = null;
-    Object value = ((Map) _instance).get(myName);
-    if (value != null) {
-      nextClass = value.getClass();
-    }
-    return nextClass;
-  }
+	public Class getType(Object _instance) {
+		Class nextClass = null;
+		Object value = ((Map) _instance).get(myName);
+		if (value != null) {
+			nextClass = value.getClass();
+		}
+		return nextClass;
+	}
 
-  public Object getValue(Object _instance) {
-    Object value = ((Map) _instance).get(myName);
-    return value;
-  }
+	public Object getValue(Object _instance) {
+		Object value = ((Map) _instance).get(myName);
+		return value;
+	}
 
-  public void setValue(Object _instance, Object _value) {
-    ((Map) _instance).put(myName, _value);
-  }
+	public void setValue(Object _instance, Object _value) {
+		((Map) _instance).put(myName, _value);
+	}
 
 }

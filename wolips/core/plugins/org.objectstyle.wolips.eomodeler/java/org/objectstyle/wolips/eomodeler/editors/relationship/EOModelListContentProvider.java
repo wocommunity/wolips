@@ -59,33 +59,29 @@ import org.objectstyle.wolips.eomodeler.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 
 public class EOModelListContentProvider implements IStructuredContentProvider {
-  public Object[] getElements(Object _inputElement) {
-    EOModelGroup modelGroup;
-    if (_inputElement instanceof EORelationship) {
-      modelGroup = ((EORelationship) _inputElement).getEntity().getModel().getModelGroup();
-    }
-    else if (_inputElement instanceof EOEntity) {
-      modelGroup = ((EOEntity) _inputElement).getModel().getModelGroup();
-    }
-    else if (_inputElement instanceof EOModel) {
-      modelGroup = ((EOModel) _inputElement).getModelGroup();
-    }
-    else if (_inputElement instanceof EOModelGroup) {
-      modelGroup = (EOModelGroup) _inputElement;
-    }
-    else {
-      throw new IllegalArgumentException("Unknown input element: " + _inputElement);
-    }
-    Set modelsList = modelGroup.getModels();
-    EOModel[] models = (EOModel[]) modelsList.toArray(new EOModel[modelsList.size()]);
-    return models;
-  }
+	public Object[] getElements(Object _inputElement) {
+		EOModelGroup modelGroup;
+		if (_inputElement instanceof EORelationship) {
+			modelGroup = ((EORelationship) _inputElement).getEntity().getModel().getModelGroup();
+		} else if (_inputElement instanceof EOEntity) {
+			modelGroup = ((EOEntity) _inputElement).getModel().getModelGroup();
+		} else if (_inputElement instanceof EOModel) {
+			modelGroup = ((EOModel) _inputElement).getModelGroup();
+		} else if (_inputElement instanceof EOModelGroup) {
+			modelGroup = (EOModelGroup) _inputElement;
+		} else {
+			throw new IllegalArgumentException("Unknown input element: " + _inputElement);
+		}
+		Set modelsList = modelGroup.getModels();
+		EOModel[] models = (EOModel[]) modelsList.toArray(new EOModel[modelsList.size()]);
+		return models;
+	}
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
-    // DO NOTHING
-  }
+	public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+		// DO NOTHING
+	}
 }

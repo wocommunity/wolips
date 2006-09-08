@@ -62,41 +62,41 @@ import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 
 public class EOPrototypeEntityListContentProvider implements IStructuredContentProvider {
-  public static final Object BLANK_ENTITY = "";
+	public static final Object BLANK_ENTITY = "";
 
-  private boolean myAllowBlank;
-  private KVCComparator myComparator;
+	private boolean myAllowBlank;
 
-  public EOPrototypeEntityListContentProvider(boolean _allowBlank) {
-    myAllowBlank = _allowBlank;
-    myComparator = new KVCComparator(EOEntity.class, EOEntity.NAME);
-  }
+	private KVCComparator myComparator;
 
-  public Object[] getElements(Object _inputElement) {
-    Set entitiesList;
-    EOModel model = EOModelUtils.getRelatedModel(_inputElement);
-    if (model != null) {
-      entitiesList = model.getModelGroup().getPrototypeEntities();
-    }
-    else {
-      throw new IllegalArgumentException("Unknown input element: " + _inputElement);
-    }
+	public EOPrototypeEntityListContentProvider(boolean _allowBlank) {
+		myAllowBlank = _allowBlank;
+		myComparator = new KVCComparator(EOEntity.class, EOEntity.NAME);
+	}
 
-    List entitiesListCopy = new LinkedList();
-    entitiesListCopy.addAll(entitiesList);
-    Collections.sort(entitiesListCopy, myComparator);
-    if (myAllowBlank) {
-      entitiesListCopy.add(0, EOPrototypeEntityListContentProvider.BLANK_ENTITY);
-    }
-    Object[] entities = entitiesListCopy.toArray();
-    return entities;
-  }
+	public Object[] getElements(Object _inputElement) {
+		Set entitiesList;
+		EOModel model = EOModelUtils.getRelatedModel(_inputElement);
+		if (model != null) {
+			entitiesList = model.getModelGroup().getPrototypeEntities();
+		} else {
+			throw new IllegalArgumentException("Unknown input element: " + _inputElement);
+		}
 
-  public void dispose() {
-    // DO NOTHING
-  }
+		List entitiesListCopy = new LinkedList();
+		entitiesListCopy.addAll(entitiesList);
+		Collections.sort(entitiesListCopy, myComparator);
+		if (myAllowBlank) {
+			entitiesListCopy.add(0, EOPrototypeEntityListContentProvider.BLANK_ENTITY);
+		}
+		Object[] entities = entitiesListCopy.toArray();
+		return entities;
+	}
 
-  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
+
+	public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+		// DO NOTHING
+	}
 }

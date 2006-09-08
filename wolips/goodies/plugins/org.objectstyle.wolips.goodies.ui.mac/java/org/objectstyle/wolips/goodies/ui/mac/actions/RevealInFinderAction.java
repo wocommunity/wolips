@@ -74,8 +74,8 @@ import org.objectstyle.wolips.goodies.core.mac.NativeHelper;
  */
 public class RevealInFinderAction implements IObjectActionDelegate {
 
-
 	private IResource actionResource;
+
 	protected IWorkbenchPart part;
 
 	/**
@@ -106,8 +106,7 @@ public class RevealInFinderAction implements IObjectActionDelegate {
 	public void run(IAction action) {
 		try {
 			NativeHelper.revealInFinder(this.actionResource());
-		}
-		catch (Throwable t) {
+		} catch (Throwable t) {
 			System.out.println("");
 		}
 	}
@@ -140,8 +139,10 @@ public class RevealInFinderAction implements IObjectActionDelegate {
 			this.actionResource = ((IPackageFragment) obj).getResource();
 		}
 	}
-	/** (non-Javadoc)
-	 * Method declared on IObjectActionDelegate
+
+	/**
+	 * (non-Javadoc) Method declared on IObjectActionDelegate
+	 * 
 	 * @param action
 	 * @param targetPart
 	 */

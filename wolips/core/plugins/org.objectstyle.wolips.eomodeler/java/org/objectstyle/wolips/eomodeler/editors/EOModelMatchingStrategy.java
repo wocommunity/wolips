@@ -60,38 +60,36 @@ import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 
 public class EOModelMatchingStrategy implements IEditorMatchingStrategy {
-  public boolean matches(IEditorReference _editorRef, IEditorInput _input) {
-    boolean matches = false;
-    String editorId = _editorRef.getId();
-    if (editorId == null) {
-      matches = false;
-    }
-    else if (!editorId.equals(EOModelEditor.EOMODEL_EDITOR_ID)) {
-      matches = false;
-    }
-    else if (_input instanceof IFileEditorInput) {
-      IFile file = ((IFileEditorInput) _input).getFile();
-      IContainer container = file.getParent();
-      if ("eomodeld".equals(container.getFileExtension())) {
-        IEditorPart editorPart = _editorRef.getEditor(true);
-        if (editorPart instanceof EOModelEditor) {
-          EOModelEditor eomodelEditorPart = (EOModelEditor) editorPart;
-          IFileEditorInput existingEditorInput = (IFileEditorInput) eomodelEditorPart.getEditorInput();
-          IContainer existingEOModelFolder = existingEditorInput.getFile().getParent();
-          IFileEditorInput possibleEditorInput = (IFileEditorInput) _input;
-          IFile possibleEditorFile = possibleEditorInput.getFile();
-          IContainer possibleEOModelFolder = possibleEditorFile.getParent();
-          matches = existingEOModelFolder.equals(possibleEOModelFolder);
-          if ("plist".equals(possibleEditorFile.getFileExtension())) {
-            String entityName = possibleEditorFile.getName();
-            entityName = entityName.substring(0, entityName.indexOf('.'));
-            EOModel eoModel = eomodelEditorPart.getModel();
-            EOEntity entity = eoModel.getEntityNamed(entityName);
-            eomodelEditorPart.setSelectedEntity(entity);
-          }
-        }
-      }
-    }
-    return matches;
-  }
+	public boolean matches(IEditorReference _editorRef, IEditorInput _input) {
+		boolean matches = false;
+		String editorId = _editorRef.getId();
+		if (editorId == null) {
+			matches = false;
+		} else if (!editorId.equals(EOModelEditor.EOMODEL_EDITOR_ID)) {
+			matches = false;
+		} else if (_input instanceof IFileEditorInput) {
+			IFile file = ((IFileEditorInput) _input).getFile();
+			IContainer container = file.getParent();
+			if ("eomodeld".equals(container.getFileExtension())) {
+				IEditorPart editorPart = _editorRef.getEditor(true);
+				if (editorPart instanceof EOModelEditor) {
+					EOModelEditor eomodelEditorPart = (EOModelEditor) editorPart;
+					IFileEditorInput existingEditorInput = (IFileEditorInput) eomodelEditorPart.getEditorInput();
+					IContainer existingEOModelFolder = existingEditorInput.getFile().getParent();
+					IFileEditorInput possibleEditorInput = (IFileEditorInput) _input;
+					IFile possibleEditorFile = possibleEditorInput.getFile();
+					IContainer possibleEOModelFolder = possibleEditorFile.getParent();
+					matches = existingEOModelFolder.equals(possibleEOModelFolder);
+					if ("plist".equals(possibleEditorFile.getFileExtension())) {
+						String entityName = possibleEditorFile.getName();
+						entityName = entityName.substring(0, entityName.indexOf('.'));
+						EOModel eoModel = eomodelEditorPart.getModel();
+						EOEntity entity = eoModel.getEntityNamed(entityName);
+						eomodelEditorPart.setSelectedEntity(entity);
+					}
+				}
+			}
+		}
+		return matches;
+	}
 }

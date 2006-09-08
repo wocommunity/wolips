@@ -50,18 +50,18 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 public class DuplicateDatabaseConfigNameException extends DuplicateNameException {
-  private EOModel myModel;
+	private EOModel myModel;
 
-  public DuplicateDatabaseConfigNameException(String _name, EOModel _model) {
-    this(_name, _model, null);
-  }
+	public DuplicateDatabaseConfigNameException(String _name, EOModel _model) {
+		this(_name, _model, null);
+	}
 
-  public DuplicateDatabaseConfigNameException(String _name, EOModel _model, Throwable _throwable) {
-    super(_name, "There is more than one database config named '" + _name + "' in this model.", _throwable);
-    myModel = _model;
-  }
+	public DuplicateDatabaseConfigNameException(String _name, EOModel _model, Throwable _throwable) {
+		super(_name, "There is more than one database config named '" + _name + "' in this model.", _throwable);
+		myModel = _model;
+	}
 
-  public EOModel getModel() {
-    return myModel;
-  }
+	public EOModel getModel() {
+		return myModel;
+	}
 }

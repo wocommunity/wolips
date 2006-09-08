@@ -53,28 +53,27 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 
 public class EOEntityTreeViewUpdater extends EOModelTreeViewUpdater {
-  private EOEntity myEntity;
+	private EOEntity myEntity;
 
-  public EOEntityTreeViewUpdater(TreeViewer _treeViewer, EOModelOutlineContentProvider _contentProvider) {
-    super(_treeViewer, _contentProvider);
-  }
+	public EOEntityTreeViewUpdater(TreeViewer _treeViewer, EOModelOutlineContentProvider _contentProvider) {
+		super(_treeViewer, _contentProvider);
+	}
 
-  public void setEntity(EOEntity _entity) {
-    myEntity = _entity;
-    if (_entity == null) {
-      super.setModel(null);
-    }
-    else {
-      super.setModel(_entity.getModel());
-    }
-  }
+	public void setEntity(EOEntity _entity) {
+		myEntity = _entity;
+		if (_entity == null) {
+			super.setModel(null);
+		} else {
+			super.setModel(_entity.getModel());
+		}
+	}
 
-  public EOEntity getEntity() {
-    return myEntity;
-  }
+	public EOEntity getEntity() {
+		return myEntity;
+	}
 
-  protected void setInput(TreeViewer _treeViewer) {
-    _treeViewer.setInput(myEntity);
-    _treeViewer.expandToLevel(1);
-  }
+	protected void setInput(TreeViewer _treeViewer) {
+		_treeViewer.setInput(myEntity);
+		_treeViewer.expandToLevel(1);
+	}
 }

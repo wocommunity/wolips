@@ -54,15 +54,16 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
 public class TableSortHandler extends SelectionAdapter {
-  private TableViewer myTableViewer;
-  private String myProperty;
+	private TableViewer myTableViewer;
 
-  public TableSortHandler(TableViewer _tableViewer, String _property) {
-    myTableViewer = _tableViewer;
-    myProperty = _property;
-  }
+	private String myProperty;
 
-  public void widgetSelected(SelectionEvent _event) {
-    TableUtils.sort(myTableViewer, myProperty);
-  }
+	public TableSortHandler(TableViewer _tableViewer, String _property) {
+		myTableViewer = _tableViewer;
+		myProperty = _property;
+	}
+
+	public void widgetSelected(SelectionEvent _event) {
+		TableUtils.sort(myTableViewer, myProperty);
+	}
 }

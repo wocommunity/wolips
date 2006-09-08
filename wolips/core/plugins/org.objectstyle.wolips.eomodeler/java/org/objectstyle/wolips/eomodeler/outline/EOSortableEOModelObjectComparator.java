@@ -17,8 +17,7 @@ public class EOSortableEOModelObjectComparator implements Comparator {
 			comparison = 1;
 		} else if (_o1 instanceof ISortableEOModelObject && _o2 instanceof ISortableEOModelObject) {
 			comparison = ((ISortableEOModelObject) _o1).getName().compareTo(((ISortableEOModelObject) _o2).getName());
-		}
-		else {
+		} else {
 			comparison = -1;
 		}
 		return comparison;

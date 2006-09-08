@@ -57,48 +57,46 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 
 public class EOModelDecorator implements ILabelDecorator {
-  public Image decorateImage(Image _image, Object _element) {
-    Image icon = null;
-    return icon;
-  }
+	public Image decorateImage(Image _image, Object _element) {
+		Image icon = null;
+		return icon;
+	}
 
-  public String decorateText(String _text, Object _element) {
-    IResource modelResource = (IResource) _element;
-    boolean isModelFile = (modelResource instanceof IFile);
-    IContainer modelFolder;
-    if (isModelFile) {
-      IFile modelFile = (IFile) _element;
-      modelFolder = modelFile.getParent();
-    }
-    else {
-      modelFolder = (IContainer) modelResource;
-    }
-    String fileName = modelFolder.getName();
-    String fileNameWithoutExtension = fileName.substring(0, fileName.indexOf('.'));
-    String text;
-    if (isModelFile) {
-      text = fileNameWithoutExtension;
-    }
-    else {
-      text = fileNameWithoutExtension + " EOModel";
-    }
-    return text;
-  }
+	public String decorateText(String _text, Object _element) {
+		IResource modelResource = (IResource) _element;
+		boolean isModelFile = (modelResource instanceof IFile);
+		IContainer modelFolder;
+		if (isModelFile) {
+			IFile modelFile = (IFile) _element;
+			modelFolder = modelFile.getParent();
+		} else {
+			modelFolder = (IContainer) modelResource;
+		}
+		String fileName = modelFolder.getName();
+		String fileNameWithoutExtension = fileName.substring(0, fileName.indexOf('.'));
+		String text;
+		if (isModelFile) {
+			text = fileNameWithoutExtension;
+		} else {
+			text = fileNameWithoutExtension + " EOModel";
+		}
+		return text;
+	}
 
-  public void addListener(ILabelProviderListener _listener) {
-    // DO NOTHING
-  }
+	public void addListener(ILabelProviderListener _listener) {
+		// DO NOTHING
+	}
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public boolean isLabelProperty(Object _element, String _property) {
-    return false;
-  }
+	public boolean isLabelProperty(Object _element, String _property) {
+		return false;
+	}
 
-  public void removeListener(ILabelProviderListener _listener) {
-    // DO NOTHING
-  }
+	public void removeListener(ILabelProviderListener _listener) {
+		// DO NOTHING
+	}
 
 }

@@ -53,5 +53,5 @@ import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
 import org.objectstyle.wolips.eomodeler.model.EOArgument;
 
 public class EOArgumentsConstants {
-  public static final String[] COLUMNS = { AbstractEOArgument.NAME, AbstractEOArgument.COLUMN_NAME, EOArgument.DIRECTION };
+	public static final String[] COLUMNS = { AbstractEOArgument.NAME, AbstractEOArgument.COLUMN_NAME, EOArgument.DIRECTION };
 }

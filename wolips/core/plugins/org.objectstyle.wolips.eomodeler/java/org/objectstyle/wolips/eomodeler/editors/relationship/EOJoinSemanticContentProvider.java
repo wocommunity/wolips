@@ -54,16 +54,16 @@ import org.eclipse.jface.viewers.Viewer;
 import org.objectstyle.wolips.eomodeler.model.EOJoinSemantic;
 
 public class EOJoinSemanticContentProvider implements IStructuredContentProvider {
-  public Object[] getElements(Object _inputElement) {
-    EOJoinSemantic[] joinSemantics = (EOJoinSemantic[]) _inputElement;
-    return joinSemantics;
-  }
+	public Object[] getElements(Object _inputElement) {
+		EOJoinSemantic[] joinSemantics = (EOJoinSemantic[]) _inputElement;
+		return joinSemantics;
+	}
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
-    // DO NOTHING
-  }
+	public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+		// DO NOTHING
+	}
 }

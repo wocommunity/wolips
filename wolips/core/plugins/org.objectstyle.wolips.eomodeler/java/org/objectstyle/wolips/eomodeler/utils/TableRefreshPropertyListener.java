@@ -55,13 +55,13 @@ import java.beans.PropertyChangeListener;
 import org.eclipse.jface.viewers.TableViewer;
 
 public class TableRefreshPropertyListener implements PropertyChangeListener {
-  private TableViewer myTableViewer;
+	private TableViewer myTableViewer;
 
-  public TableRefreshPropertyListener(TableViewer _tableViewer) {
-    myTableViewer = _tableViewer;
-  }
+	public TableRefreshPropertyListener(TableViewer _tableViewer) {
+		myTableViewer = _tableViewer;
+	}
 
-  public void propertyChange(PropertyChangeEvent _event) {
-    myTableViewer.refresh();
-  }
+	public void propertyChange(PropertyChangeEvent _event) {
+		myTableViewer.refresh();
+	}
 }

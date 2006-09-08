@@ -52,8 +52,7 @@ import org.eclipse.wst.html.core.internal.document.ElementStyleImpl;
 import org.eclipse.wst.html.ui.views.contentoutline.HTMLContentOutlineConfiguration;
 import org.objectstyle.wolips.htmleditor.HtmleditorPlugin;
 
-public class ContentOutlineConfigurationWO extends
-		HTMLContentOutlineConfiguration {
+public class ContentOutlineConfigurationWO extends HTMLContentOutlineConfiguration {
 	Image image;
 
 	WebObjectTagLabelProvider webObjectTagLabelProvider;
@@ -72,8 +71,7 @@ public class ContentOutlineConfigurationWO extends
 		}
 		ILabelProvider labelProvider = super.getLabelProvider(viewer);
 		if (!(labelProvider instanceof WebObjectTagLabelProvider)) {
-			webObjectTagLabelProvider = new WebObjectTagLabelProvider(
-					labelProvider);
+			webObjectTagLabelProvider = new WebObjectTagLabelProvider(labelProvider);
 			return webObjectTagLabelProvider;
 		}
 		return labelProvider;
@@ -110,8 +108,7 @@ public class ContentOutlineConfigurationWO extends
 				String tagName = elementStyleImpl.getTagName();
 				if (tagName != null && "webobject".equalsIgnoreCase(tagName)) {
 					if (image == null) {
-						ImageDescriptor desc = HtmleditorPlugin
-								.getImageDescriptor("icons/BindingOutline.gif");
+						ImageDescriptor desc = HtmleditorPlugin.getImageDescriptor("icons/BindingOutline.gif");
 						if (desc != null) {
 							image = desc.createImage();
 						}
@@ -130,10 +127,8 @@ public class ContentOutlineConfigurationWO extends
 				ElementStyleImpl elementStyleImpl = (ElementStyleImpl) element;
 				String tagName = elementStyleImpl.getTagName();
 				if (tagName != null && "webobject".equalsIgnoreCase(tagName)) {
-					String nameAttributeValue = elementStyleImpl
-							.getAttribute("name");
-					if (nameAttributeValue != null
-							&& nameAttributeValue.length() > 0) {
+					String nameAttributeValue = elementStyleImpl.getAttribute("name");
+					if (nameAttributeValue != null && nameAttributeValue.length() > 0) {
 						return nameAttributeValue;
 					}
 				}

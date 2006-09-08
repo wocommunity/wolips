@@ -50,24 +50,25 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 public class MissingPrototypeFailure extends EOModelVerificationFailure {
-  private EOAttribute myReferencingAttribute;
-  private String myPrototypeName;
+	private EOAttribute myReferencingAttribute;
 
-  public MissingPrototypeFailure(String _prototypeName, EOAttribute _referencingAttribute) {
-    this(_prototypeName, _referencingAttribute, null);
-  }
+	private String myPrototypeName;
 
-  public MissingPrototypeFailure(String _prototypeName, EOAttribute _referencingAttribute, Throwable _throwable) {
-    super("Missing prototype named '" + _prototypeName + "' referenced by " + _referencingAttribute.getFullyQualifiedName() + ".", _throwable);
-    myPrototypeName = _prototypeName;
-    myReferencingAttribute = _referencingAttribute;
-  }
+	public MissingPrototypeFailure(String _prototypeName, EOAttribute _referencingAttribute) {
+		this(_prototypeName, _referencingAttribute, null);
+	}
 
-  public String getPrototypeName() {
-    return myPrototypeName;
-  }
+	public MissingPrototypeFailure(String _prototypeName, EOAttribute _referencingAttribute, Throwable _throwable) {
+		super("Missing prototype named '" + _prototypeName + "' referenced by " + _referencingAttribute.getFullyQualifiedName() + ".", _throwable);
+		myPrototypeName = _prototypeName;
+		myReferencingAttribute = _referencingAttribute;
+	}
 
-  public EOAttribute getReferencingAttribute() {
-    return myReferencingAttribute;
-  }
+	public String getPrototypeName() {
+		return myPrototypeName;
+	}
+
+	public EOAttribute getReferencingAttribute() {
+		return myReferencingAttribute;
+	}
 }

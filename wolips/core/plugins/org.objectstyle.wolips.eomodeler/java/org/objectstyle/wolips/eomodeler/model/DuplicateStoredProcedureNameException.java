@@ -50,18 +50,18 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 public class DuplicateStoredProcedureNameException extends DuplicateNameException {
-  private EOModel myModel;
+	private EOModel myModel;
 
-  public DuplicateStoredProcedureNameException(String _name, EOModel _model) {
-    this(_name, _model, null);
-  }
+	public DuplicateStoredProcedureNameException(String _name, EOModel _model) {
+		this(_name, _model, null);
+	}
 
-  public DuplicateStoredProcedureNameException(String _name, EOModel _model, Throwable _throwable) {
-    super(_name, "There is already a stored procedure named '" + _name + "' in " + _model.getName() + ".", _throwable);
-    myModel = _model;
-  }
+	public DuplicateStoredProcedureNameException(String _name, EOModel _model, Throwable _throwable) {
+		super(_name, "There is already a stored procedure named '" + _name + "' in " + _model.getName() + ".", _throwable);
+		myModel = _model;
+	}
 
-  public EOModel getModel() {
-    return myModel;
-  }
+	public EOModel getModel() {
+		return myModel;
+	}
 }

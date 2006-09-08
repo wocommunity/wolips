@@ -50,30 +50,32 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 public class DuplicateAttributeFailure extends EOModelVerificationFailure {
-  private EOEntity myEntity;
-  private String myAttributeName;
-  private String myNewAttributeName;
+	private EOEntity myEntity;
 
-  public DuplicateAttributeFailure(EOEntity _entity, String _attributeName, String _newAttributeName) {
-    this(_entity, _attributeName, _newAttributeName, null);
-  }
+	private String myAttributeName;
 
-  public DuplicateAttributeFailure(EOEntity _entity, String _attributeName, String _newAttributeName, Throwable _throwable) {
-    super("There was more than one attribute named '" + _attributeName + "' in " + _entity.getName() + ", so one was renamed to '" + _newAttributeName + "'.", _throwable);
-    myEntity = _entity;
-    myAttributeName = _attributeName;
-    myNewAttributeName = _newAttributeName;
-  }
+	private String myNewAttributeName;
 
-  public EOEntity getEntity() {
-    return myEntity;
-  }
+	public DuplicateAttributeFailure(EOEntity _entity, String _attributeName, String _newAttributeName) {
+		this(_entity, _attributeName, _newAttributeName, null);
+	}
 
-  public String getAttributeName() {
-    return myAttributeName;
-  }
+	public DuplicateAttributeFailure(EOEntity _entity, String _attributeName, String _newAttributeName, Throwable _throwable) {
+		super("There was more than one attribute named '" + _attributeName + "' in " + _entity.getName() + ", so one was renamed to '" + _newAttributeName + "'.", _throwable);
+		myEntity = _entity;
+		myAttributeName = _attributeName;
+		myNewAttributeName = _newAttributeName;
+	}
 
-  public String getNewAttributeName() {
-    return myNewAttributeName;
-  }
+	public EOEntity getEntity() {
+		return myEntity;
+	}
+
+	public String getAttributeName() {
+		return myAttributeName;
+	}
+
+	public String getNewAttributeName() {
+		return myNewAttributeName;
+	}
 }

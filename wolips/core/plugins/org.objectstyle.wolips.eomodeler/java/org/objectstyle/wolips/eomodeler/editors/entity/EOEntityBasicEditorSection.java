@@ -75,109 +75,116 @@ import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
 public class EOEntityBasicEditorSection extends AbstractPropertySection {
-  private EOEntity myEntity;
+	private EOEntity myEntity;
 
-  private Text myNameText;
-  private Text myExternalNameText;
-  private Text myClassNameText;
-  private ComboViewer myParentEntityComboViewer;
-  private Text myRestrictingQualifierText;
-  private Button myAbstractButton;
+	private Text myNameText;
 
-  private DataBindingContext myBindingContext;
-  private ComboViewerBinding myParentEntityBinding;
-  private EntityNameSyncer myNameSyncer;
+	private Text myExternalNameText;
 
-  public EOEntityBasicEditorSection() {
-	  myNameSyncer = new EntityNameSyncer();
-  }
+	private Text myClassNameText;
 
-  public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
-    super.createControls(_parent, _tabbedPropertySheetPage);
-    Composite form = getWidgetFactory().createFlatFormComposite(_parent);
-    FormLayout formLayout = new FormLayout();
-    form.setLayout(formLayout);
+	private ComboViewer myParentEntityComboViewer;
 
-    Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-    FormData topFormData = new FormData();
-    topFormData.top = new FormAttachment(0, 5);
-    topFormData.left = new FormAttachment(0, 5);
-    topFormData.right = new FormAttachment(100, -5);
-    topForm.setLayoutData(topFormData);
+	private Text myRestrictingQualifierText;
 
-    GridLayout topFormLayout = new GridLayout();
-    topFormLayout.numColumns = 2;
-    topForm.setLayout(topFormLayout);
+	private Button myAbstractButton;
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.NAME), SWT.NONE);
-    myNameText = new Text(topForm, SWT.BORDER);
-    GridData nameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myNameText.setLayoutData(nameFieldLayoutData);
+	private DataBindingContext myBindingContext;
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.EXTERNAL_NAME), SWT.NONE);
-    myExternalNameText = new Text(topForm, SWT.BORDER);
-    GridData externalNameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myExternalNameText.setLayoutData(externalNameFieldLayoutData);
+	private ComboViewerBinding myParentEntityBinding;
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.CLASS_NAME), SWT.NONE);
-    myClassNameText = new Text(topForm, SWT.BORDER);
-    GridData classNameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myClassNameText.setLayoutData(classNameFieldLayoutData);
+	private EntityNameSyncer myNameSyncer;
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.PARENT), SWT.NONE);
-    Combo parentEntityCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
-    myParentEntityComboViewer = new ComboViewer(parentEntityCombo);
-    myParentEntityComboViewer.setLabelProvider(new EOEntityLabelProvider());
-    myParentEntityComboViewer.setContentProvider(new EOEntityListContentProvider(true, false));
-    GridData entityComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    parentEntityCombo.setLayoutData(entityComboLayoutData);
+	public EOEntityBasicEditorSection() {
+		myNameSyncer = new EntityNameSyncer();
+	}
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.RESTRICTING_QUALIFIER), SWT.NONE);
-    myRestrictingQualifierText = new Text(topForm, SWT.BORDER);
-    GridData restrictingQualifierFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myRestrictingQualifierText.setLayoutData(restrictingQualifierFieldLayoutData);
+	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
+		super.createControls(_parent, _tabbedPropertySheetPage);
+		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
+		FormLayout formLayout = new FormLayout();
+		form.setLayout(formLayout);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.ABSTRACT_ENTITY), SWT.NONE);
-    myAbstractButton = new Button(topForm, SWT.CHECK);
-  }
+		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
+		FormData topFormData = new FormData();
+		topFormData.top = new FormAttachment(0, 5);
+		topFormData.left = new FormAttachment(0, 5);
+		topFormData.right = new FormAttachment(100, -5);
+		topForm.setLayoutData(topFormData);
 
-  public void setInput(IWorkbenchPart _part, ISelection _selection) {
-    super.setInput(_part, _selection);
-    Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-    EOEntity entity = (EOEntity) selectedObject;
-    if (!ComparisonUtils.equals(entity, myEntity)) {
-      disposeBindings();
+		GridLayout topFormLayout = new GridLayout();
+		topFormLayout.numColumns = 2;
+		topForm.setLayout(topFormLayout);
 
-      myEntity = entity;
-      if (myEntity != null) {
-        myBindingContext = BindingFactory.createContext();
-        myBindingContext.bind(myNameText, new Property(myEntity, EOEntity.NAME), null);
-        myBindingContext.bind(myExternalNameText, new Property(myEntity, EOEntity.EXTERNAL_NAME), null);
-        myBindingContext.bind(myClassNameText, new Property(myEntity, EOEntity.CLASS_NAME), null);
-        myBindingContext.bind(myRestrictingQualifierText, new Property(myEntity, EOEntity.RESTRICTING_QUALIFIER), null);
-        myBindingContext.bind(myAbstractButton, new Property(myEntity, EOEntity.ABSTRACT_ENTITY), null);
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.NAME), SWT.NONE);
+		myNameText = new Text(topForm, SWT.BORDER);
+		GridData nameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myNameText.setLayoutData(nameFieldLayoutData);
 
-        myParentEntityComboViewer.setInput(myEntity);
-        myParentEntityBinding = new ComboViewerBinding(myParentEntityComboViewer, myEntity, EOEntity.PARENT, myEntity.getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY);
-        myEntity.addPropertyChangeListener(EOEntity.NAME, myNameSyncer);
-      }
-    }
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.EXTERNAL_NAME), SWT.NONE);
+		myExternalNameText = new Text(topForm, SWT.BORDER);
+		GridData externalNameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myExternalNameText.setLayoutData(externalNameFieldLayoutData);
 
-  protected void disposeBindings() {
-    if (myBindingContext != null) {
-      myBindingContext.dispose();
-    }
-    if (myParentEntityBinding != null) {
-      myParentEntityBinding.dispose();
-    }
-    if (myEntity != null) {
-        myEntity.removePropertyChangeListener(EOEntity.NAME, myNameSyncer);
-    }
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.CLASS_NAME), SWT.NONE);
+		myClassNameText = new Text(topForm, SWT.BORDER);
+		GridData classNameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myClassNameText.setLayoutData(classNameFieldLayoutData);
 
-  public void dispose() {
-    super.dispose();
-    disposeBindings();
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.PARENT), SWT.NONE);
+		Combo parentEntityCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
+		myParentEntityComboViewer = new ComboViewer(parentEntityCombo);
+		myParentEntityComboViewer.setLabelProvider(new EOEntityLabelProvider());
+		myParentEntityComboViewer.setContentProvider(new EOEntityListContentProvider(true, false));
+		GridData entityComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		parentEntityCombo.setLayoutData(entityComboLayoutData);
+
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.RESTRICTING_QUALIFIER), SWT.NONE);
+		myRestrictingQualifierText = new Text(topForm, SWT.BORDER);
+		GridData restrictingQualifierFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myRestrictingQualifierText.setLayoutData(restrictingQualifierFieldLayoutData);
+
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.ABSTRACT_ENTITY), SWT.NONE);
+		myAbstractButton = new Button(topForm, SWT.CHECK);
+	}
+
+	public void setInput(IWorkbenchPart _part, ISelection _selection) {
+		super.setInput(_part, _selection);
+		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+		EOEntity entity = (EOEntity) selectedObject;
+		if (!ComparisonUtils.equals(entity, myEntity)) {
+			disposeBindings();
+
+			myEntity = entity;
+			if (myEntity != null) {
+				myBindingContext = BindingFactory.createContext();
+				myBindingContext.bind(myNameText, new Property(myEntity, EOEntity.NAME), null);
+				myBindingContext.bind(myExternalNameText, new Property(myEntity, EOEntity.EXTERNAL_NAME), null);
+				myBindingContext.bind(myClassNameText, new Property(myEntity, EOEntity.CLASS_NAME), null);
+				myBindingContext.bind(myRestrictingQualifierText, new Property(myEntity, EOEntity.RESTRICTING_QUALIFIER), null);
+				myBindingContext.bind(myAbstractButton, new Property(myEntity, EOEntity.ABSTRACT_ENTITY), null);
+
+				myParentEntityComboViewer.setInput(myEntity);
+				myParentEntityBinding = new ComboViewerBinding(myParentEntityComboViewer, myEntity, EOEntity.PARENT, myEntity.getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY);
+				myEntity.addPropertyChangeListener(EOEntity.NAME, myNameSyncer);
+			}
+		}
+	}
+
+	protected void disposeBindings() {
+		if (myBindingContext != null) {
+			myBindingContext.dispose();
+		}
+		if (myParentEntityBinding != null) {
+			myParentEntityBinding.dispose();
+		}
+		if (myEntity != null) {
+			myEntity.removePropertyChangeListener(EOEntity.NAME, myNameSyncer);
+		}
+	}
+
+	public void dispose() {
+		super.dispose();
+		disposeBindings();
+	}
 }

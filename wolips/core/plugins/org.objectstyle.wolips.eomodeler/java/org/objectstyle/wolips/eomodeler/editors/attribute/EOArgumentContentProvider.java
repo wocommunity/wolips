@@ -54,16 +54,16 @@ import org.eclipse.jface.viewers.Viewer;
 import org.objectstyle.wolips.eomodeler.model.EOArgumentDirection;
 
 public class EOArgumentContentProvider implements IStructuredContentProvider {
-  public Object[] getElements(Object _inputElement) {
-    EOArgumentDirection[] directions = (EOArgumentDirection[]) _inputElement;
-    return directions;
-  }
+	public Object[] getElements(Object _inputElement) {
+		EOArgumentDirection[] directions = (EOArgumentDirection[]) _inputElement;
+		return directions;
+	}
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
-    // DO NOTHING
-  }
+	public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+		// DO NOTHING
+	}
 }

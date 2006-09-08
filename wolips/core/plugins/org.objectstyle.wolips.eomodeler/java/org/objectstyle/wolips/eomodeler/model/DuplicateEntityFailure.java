@@ -50,30 +50,32 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 public class DuplicateEntityFailure extends EOModelVerificationFailure {
-  private EOModel myModel;
-  private String myEntityName;
-  private String myNewEntityName;
+	private EOModel myModel;
 
-  public DuplicateEntityFailure(EOModel _model, String _entityName, String _newEntityName) {
-    this(_model, _entityName, _newEntityName, null);
-  }
+	private String myEntityName;
 
-  public DuplicateEntityFailure(EOModel _model, String _entityName, String _newEntityName, Throwable _throwable) {
-    super("There was more than one entity named '" + _entityName + "' in " + _model.getName() + ", so one was renamed to '" + _newEntityName + "'.", _throwable);
-    myModel = _model;
-    myEntityName = _entityName;
-    myNewEntityName = _newEntityName;
-  }
+	private String myNewEntityName;
 
-  public EOModel getModel() {
-    return myModel;
-  }
+	public DuplicateEntityFailure(EOModel _model, String _entityName, String _newEntityName) {
+		this(_model, _entityName, _newEntityName, null);
+	}
 
-  public String getEntityName() {
-    return myEntityName;
-  }
+	public DuplicateEntityFailure(EOModel _model, String _entityName, String _newEntityName, Throwable _throwable) {
+		super("There was more than one entity named '" + _entityName + "' in " + _model.getName() + ", so one was renamed to '" + _newEntityName + "'.", _throwable);
+		myModel = _model;
+		myEntityName = _entityName;
+		myNewEntityName = _newEntityName;
+	}
 
-  public String getNewEntityName() {
-    return myNewEntityName;
-  }
+	public EOModel getModel() {
+		return myModel;
+	}
+
+	public String getEntityName() {
+		return myEntityName;
+	}
+
+	public String getNewEntityName() {
+		return myNewEntityName;
+	}
 }

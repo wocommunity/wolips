@@ -52,5 +52,5 @@ package org.objectstyle.wolips.eomodeler.editors.entities;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 
 public class EOEntitiesConstants {
-  public static final String[] COLUMNS = { EOEntity.NAME, EOEntity.EXTERNAL_NAME, EOEntity.CLASS_NAME, EOEntity.PARENT };
+	public static final String[] COLUMNS = { EOEntity.NAME, EOEntity.EXTERNAL_NAME, EOEntity.CLASS_NAME, EOEntity.PARENT };
 }

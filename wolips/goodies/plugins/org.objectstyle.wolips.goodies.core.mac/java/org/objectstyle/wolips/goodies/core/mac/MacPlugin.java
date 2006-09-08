@@ -66,11 +66,14 @@ import org.osgi.framework.BundleContext;
  * The main plugin class to be used in the desktop.
  */
 public class MacPlugin extends Plugin {
-	//private static final String PluginID = "org.objectstyle.wolips.goodies.core.mac";
-	//The shared instance.
+	// private static final String PluginID =
+	// "org.objectstyle.wolips.goodies.core.mac";
+	// The shared instance.
 	private static MacPlugin plugin;
-	//Resource bundle.
+
+	// Resource bundle.
 	private ResourceBundle resourceBundle;
+
 	/**
 	 * The constructor.
 	 */
@@ -106,8 +109,8 @@ public class MacPlugin extends Plugin {
 	}
 
 	/**
-	 * Returns the string from the plugin's resource bundle,
-	 * or 'key' if not found.
+	 * Returns the string from the plugin's resource bundle, or 'key' if not
+	 * found.
 	 */
 	public static String getResourceString(String key) {
 		ResourceBundle bundle = MacPlugin.getDefault().getResourceBundle();

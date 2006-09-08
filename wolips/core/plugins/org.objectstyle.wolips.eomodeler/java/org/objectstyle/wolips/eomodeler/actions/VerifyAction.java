@@ -62,31 +62,32 @@ import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 
 public class VerifyAction implements IWorkbenchWindowActionDelegate {
-  private IWorkbenchWindow myWindow;
-  private EOModel myModel;
+	private IWorkbenchWindow myWindow;
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	private EOModel myModel;
 
-  public void init(IWorkbenchWindow _window) {
-    myWindow = _window;
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public void selectionChanged(IAction _action, ISelection _selection) {
-    myModel = null;
-    if (_selection instanceof IStructuredSelection) {
-      Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-      myModel = EOModelUtils.getRelatedModel(selectedObject);
-    }
-  }
+	public void init(IWorkbenchWindow _window) {
+		myWindow = _window;
+	}
 
-  public void run(IAction _action) {
-    if (myModel != null) {
-      Set verifyFailures = new HashSet();
-      myModel.verify(verifyFailures);
-      EOModelErrorDialog dialog = new EOModelErrorDialog(myWindow.getShell(), verifyFailures);
-      dialog.open();
-    }
-  }
+	public void selectionChanged(IAction _action, ISelection _selection) {
+		myModel = null;
+		if (_selection instanceof IStructuredSelection) {
+			Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+			myModel = EOModelUtils.getRelatedModel(selectedObject);
+		}
+	}
+
+	public void run(IAction _action) {
+		if (myModel != null) {
+			Set verifyFailures = new HashSet();
+			myModel.verify(verifyFailures);
+			EOModelErrorDialog dialog = new EOModelErrorDialog(myWindow.getShell(), verifyFailures);
+			dialog.open();
+		}
+	}
 }

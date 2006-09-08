@@ -63,111 +63,104 @@ import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 
 public class EOAttributesLabelProvider extends TablePropertyLabelProvider implements ITableColorProvider, ITableFontProvider {
-  private TableViewer myTableViewer;
+	private TableViewer myTableViewer;
 
-  private Font myInheritedFont;
-  private Font myFlattenedFont;
+	private Font myInheritedFont;
 
-  public EOAttributesLabelProvider(TableViewer _tableViewer, String[] _columnProperties) {
-    super(_columnProperties);
-    myTableViewer = _tableViewer;
-  }
+	private Font myFlattenedFont;
 
-  public Image getColumnImage(Object _element, String _property) {
-    EOAttribute attribute = (EOAttribute) _element;
-    Image image = null;
-    if (_property == EOAttribute.PRIMARY_KEY) {
-      image = yesNoImage(attribute.isPrimaryKey(), Activator.getDefault().getImageRegistry().get(Activator.PRIMARY_KEY_ICON), null, null);
-    }
-    else if (_property == EOAttribute.USED_FOR_LOCKING) {
-      image = yesNoImage(attribute.isUsedForLocking(), Activator.getDefault().getImageRegistry().get(Activator.LOCKING_ICON), null, null);
-    }
-    else if (_property == EOAttribute.CLASS_PROPERTY) {
-      image = yesNoImage(attribute.isClassProperty(), Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON), null, null);
-    }
-    else if (_property == EOAttribute.ALLOWS_NULL) {
-      image = yesNoImage(attribute.isAllowsNull(), Activator.getDefault().getImageRegistry().get(Activator.CHECK_ICON), null, null);
-    }
-    return image;
-  }
+	public EOAttributesLabelProvider(TableViewer _tableViewer, String[] _columnProperties) {
+		super(_columnProperties);
+		myTableViewer = _tableViewer;
+	}
 
-  protected String yesNoText(EOAttribute _attribute, Boolean _bool) {
-    return yesNoText(_bool, !_attribute.getEntity().isPrototype());
-  }
+	public Image getColumnImage(Object _element, String _property) {
+		EOAttribute attribute = (EOAttribute) _element;
+		Image image = null;
+		if (_property == EOAttribute.PRIMARY_KEY) {
+			image = yesNoImage(attribute.isPrimaryKey(), Activator.getDefault().getImageRegistry().get(Activator.PRIMARY_KEY_ICON), null, null);
+		} else if (_property == EOAttribute.USED_FOR_LOCKING) {
+			image = yesNoImage(attribute.isUsedForLocking(), Activator.getDefault().getImageRegistry().get(Activator.LOCKING_ICON), null, null);
+		} else if (_property == EOAttribute.CLASS_PROPERTY) {
+			image = yesNoImage(attribute.isClassProperty(), Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON), null, null);
+		} else if (_property == EOAttribute.ALLOWS_NULL) {
+			image = yesNoImage(attribute.isAllowsNull(), Activator.getDefault().getImageRegistry().get(Activator.CHECK_ICON), null, null);
+		}
+		return image;
+	}
 
-  public String getColumnText(Object _element, String _property) {
-    EOAttribute attribute = (EOAttribute) _element;
-    String text = null;
-    if (_property == EOAttribute.PRIMARY_KEY) {
-      // DO NOTHING
-    }
-    else if (_property == EOAttribute.USED_FOR_LOCKING) {
-      // DO NOTHING
-    }
-    else if (_property == EOAttribute.CLASS_PROPERTY) {
-      // DO NOTHING
-    }
-    else if (_property == EOAttribute.ALLOWS_NULL) {
-      // DO NOTHING
-    }
-    else if (_property == EOAttribute.PROTOTYPE) {
-      EOAttribute prototype = attribute.getPrototype();
-      if (prototype != null) {
-        text = prototype.getName();
-      }
-    }
-    else {
-      text = super.getColumnText(_element, _property);
-    }
-    return text;
-  }
+	protected String yesNoText(EOAttribute _attribute, Boolean _bool) {
+		return yesNoText(_bool, !_attribute.getEntity().isPrototype());
+	}
 
-  public Font getFont(Object _element, int _columnIndex) {
-    Font font = null;
-    EOAttribute attribute = (EOAttribute) _element;
-    if (attribute.isFlattened()) {
-      if (myFlattenedFont == null) {
-        Font originalFont = myTableViewer.getTable().getFont();
-        FontData[] fontData = myTableViewer.getTable().getFont().getFontData();
-        myFlattenedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD);
-      }
-      font = myFlattenedFont;
-    }
-    else if (attribute.isInherited()) {
-      if (myInheritedFont == null) {
-        Font originalFont = myTableViewer.getTable().getFont();
-        FontData[] fontData = myTableViewer.getTable().getFont().getFontData();
-        myInheritedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.ITALIC);
-      }
-      font = myInheritedFont;
-    }
-    return font;
-  }
+	public String getColumnText(Object _element, String _property) {
+		EOAttribute attribute = (EOAttribute) _element;
+		String text = null;
+		if (_property == EOAttribute.PRIMARY_KEY) {
+			// DO NOTHING
+		} else if (_property == EOAttribute.USED_FOR_LOCKING) {
+			// DO NOTHING
+		} else if (_property == EOAttribute.CLASS_PROPERTY) {
+			// DO NOTHING
+		} else if (_property == EOAttribute.ALLOWS_NULL) {
+			// DO NOTHING
+		} else if (_property == EOAttribute.PROTOTYPE) {
+			EOAttribute prototype = attribute.getPrototype();
+			if (prototype != null) {
+				text = prototype.getName();
+			}
+		} else {
+			text = super.getColumnText(_element, _property);
+		}
+		return text;
+	}
 
-  public Color getBackground(Object _element, int _columnIndex) {
-    //EOAttribute attribute = (EOAttribute) _element;
-    return null;
-  }
+	public Font getFont(Object _element, int _columnIndex) {
+		Font font = null;
+		EOAttribute attribute = (EOAttribute) _element;
+		if (attribute.isFlattened()) {
+			if (myFlattenedFont == null) {
+				Font originalFont = myTableViewer.getTable().getFont();
+				FontData[] fontData = myTableViewer.getTable().getFont().getFontData();
+				myFlattenedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD);
+			}
+			font = myFlattenedFont;
+		} else if (attribute.isInherited()) {
+			if (myInheritedFont == null) {
+				Font originalFont = myTableViewer.getTable().getFont();
+				FontData[] fontData = myTableViewer.getTable().getFont().getFontData();
+				myInheritedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.ITALIC);
+			}
+			font = myInheritedFont;
+		}
+		return font;
+	}
 
-  public Color getForeground(Object _element, int _columnIndex) {
-    Color color = null;
-    EOAttribute attribute = (EOAttribute) _element;
-    if (attribute != null) {
-      //    if (attribute.isInherited()) {
-      //      color = myTableViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY);
-      //    }
-      String property = getColumnProperty(_columnIndex);
-      if (attribute.isPrototyped(property)) {
-        color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED);
-      }
-    }
-    return color;
-  }
+	public Color getBackground(Object _element, int _columnIndex) {
+		// EOAttribute attribute = (EOAttribute) _element;
+		return null;
+	}
 
-  public void dispose() {
-    if (myInheritedFont != null) {
-      myInheritedFont.dispose();
-    }
-    super.dispose();
-  }
+	public Color getForeground(Object _element, int _columnIndex) {
+		Color color = null;
+		EOAttribute attribute = (EOAttribute) _element;
+		if (attribute != null) {
+			// if (attribute.isInherited()) {
+			// color =
+			// myTableViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY);
+			// }
+			String property = getColumnProperty(_columnIndex);
+			if (attribute.isPrototyped(property)) {
+				color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED);
+			}
+		}
+		return color;
+	}
+
+	public void dispose() {
+		if (myInheritedFont != null) {
+			myInheritedFont.dispose();
+		}
+		super.dispose();
+	}
 }

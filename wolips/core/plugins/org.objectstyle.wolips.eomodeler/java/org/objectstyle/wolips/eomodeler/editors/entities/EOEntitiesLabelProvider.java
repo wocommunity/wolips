@@ -53,22 +53,21 @@ import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 
 public class EOEntitiesLabelProvider extends TablePropertyLabelProvider {
-  public EOEntitiesLabelProvider(String[] _columnProperties) {
-    super(_columnProperties);
-  }
+	public EOEntitiesLabelProvider(String[] _columnProperties) {
+		super(_columnProperties);
+	}
 
-  public String getColumnText(Object _element, String _property) {
-    EOEntity entity = (EOEntity) _element;
-    String text = null;
-    if (_property == EOEntity.PARENT) {
-      EOEntity parent = entity.getParent();
-      if (parent != null) {
-        text = parent.getName();
-      }
-    }
-    else {
-      text = super.getColumnText(_element, _property);
-    }
-    return text;
-  }
+	public String getColumnText(Object _element, String _property) {
+		EOEntity entity = (EOEntity) _element;
+		String text = null;
+		if (_property == EOEntity.PARENT) {
+			EOEntity parent = entity.getParent();
+			if (parent != null) {
+				text = parent.getName();
+			}
+		} else {
+			text = super.getColumnText(_element, _property);
+		}
+		return text;
+	}
 }

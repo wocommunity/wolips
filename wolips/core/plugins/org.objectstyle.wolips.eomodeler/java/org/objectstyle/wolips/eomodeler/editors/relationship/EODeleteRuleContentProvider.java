@@ -54,16 +54,16 @@ import org.eclipse.jface.viewers.Viewer;
 import org.objectstyle.wolips.eomodeler.model.EODeleteRule;
 
 public class EODeleteRuleContentProvider implements IStructuredContentProvider {
-  public Object[] getElements(Object _inputElement) {
-    EODeleteRule[] deleteRules = (EODeleteRule[]) _inputElement;
-    return deleteRules;
-  }
+	public Object[] getElements(Object _inputElement) {
+		EODeleteRule[] deleteRules = (EODeleteRule[]) _inputElement;
+		return deleteRules;
+	}
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
-    // DO NOTHING
-  }
+	public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+		// DO NOTHING
+	}
 }

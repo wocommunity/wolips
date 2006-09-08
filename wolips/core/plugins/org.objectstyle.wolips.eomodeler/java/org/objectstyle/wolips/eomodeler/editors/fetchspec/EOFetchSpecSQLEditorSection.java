@@ -88,164 +88,167 @@ import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
 public class EOFetchSpecSQLEditorSection extends AbstractPropertySection implements ISelectionChangedListener, SelectionListener {
-  private EOFetchSpecification myFetchSpecification;
+	private EOFetchSpecification myFetchSpecification;
 
-  private Text myRawSQLText;
-  private TableViewer myStoredProcedureTableViewer;
-  private TableRefreshPropertyListener myStoredProcedureChangedRefresher;
-  private StoredProcedureChangedHandler myStoredProcedureChangedHandler;
-  private Button myUseQualifierButton;
-  private Button myUseRawSQLButton;
-  private Button myUseStoredProcedureButton;
+	private Text myRawSQLText;
 
-  private DataBindingContext myBindingContext;
+	private TableViewer myStoredProcedureTableViewer;
 
-  public EOFetchSpecSQLEditorSection() {
-    myStoredProcedureChangedHandler = new StoredProcedureChangedHandler();
-  }
+	private TableRefreshPropertyListener myStoredProcedureChangedRefresher;
 
-  public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
-    super.createControls(_parent, _tabbedPropertySheetPage);
-    Composite form = getWidgetFactory().createFlatFormComposite(_parent);
-    FormLayout formLayout = new FormLayout();
-    form.setLayout(formLayout);
+	private StoredProcedureChangedHandler myStoredProcedureChangedHandler;
 
-    Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-    FormData topFormData = new FormData();
-    topFormData.top = new FormAttachment(0, 5);
-    topFormData.left = new FormAttachment(0, 5);
-    topFormData.right = new FormAttachment(100, -5);
-    topForm.setLayoutData(topFormData);
+	private Button myUseQualifierButton;
 
-    GridLayout topFormLayout = new GridLayout();
-    topForm.setLayout(topFormLayout);
+	private Button myUseRawSQLButton;
 
-    myUseQualifierButton = new Button(topForm, SWT.RADIO);
-    myUseQualifierButton.setText(Messages.getString("EOFetchSpecSQLEditorSection.useQualifier")); //$NON-NLS-1$
-    myUseRawSQLButton = new Button(topForm, SWT.RADIO);
-    myUseRawSQLButton.setText(Messages.getString("EOFetchSpecSQLEditorSection.useRawSQL")); //$NON-NLS-1$
+	private Button myUseStoredProcedureButton;
 
-    myRawSQLText = new Text(topForm, SWT.BORDER);
-    GridData nameLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myRawSQLText.setLayoutData(nameLayoutData);
+	private DataBindingContext myBindingContext;
 
-    myUseStoredProcedureButton = new Button(topForm, SWT.RADIO);
-    myUseStoredProcedureButton.setText(Messages.getString("EOFetchSpecSQLEditorSection.useStoredProcedure")); //$NON-NLS-1$
+	public EOFetchSpecSQLEditorSection() {
+		myStoredProcedureChangedHandler = new StoredProcedureChangedHandler();
+	}
 
-    myStoredProcedureTableViewer = TableUtils.createTableViewer(topForm, "EOStoredProcedure", EOStoredProceduresConstants.COLUMNS, new EOStoredProceduresContentProvider(), new TablePropertyLabelProvider(EOStoredProceduresConstants.COLUMNS), new TablePropertyViewerSorter(EOStoredProceduresConstants.COLUMNS));
-    GridData rawRowKeyPathsTableLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    rawRowKeyPathsTableLayoutData.heightHint = 100;
-    myStoredProcedureTableViewer.getTable().setLayoutData(rawRowKeyPathsTableLayoutData);
-    myStoredProcedureTableViewer.addSelectionChangedListener(this);
-    myStoredProcedureChangedRefresher = new TableRefreshPropertyListener(myStoredProcedureTableViewer);
-  }
+	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
+		super.createControls(_parent, _tabbedPropertySheetPage);
+		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
+		FormLayout formLayout = new FormLayout();
+		form.setLayout(formLayout);
 
-  public void setInput(IWorkbenchPart _part, ISelection _selection) {
-    super.setInput(_part, _selection);
-    disposeBindings();
+		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
+		FormData topFormData = new FormData();
+		topFormData.top = new FormAttachment(0, 5);
+		topFormData.left = new FormAttachment(0, 5);
+		topFormData.right = new FormAttachment(100, -5);
+		topForm.setLayoutData(topFormData);
 
-    Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-    myFetchSpecification = (EOFetchSpecification) selectedObject;
-    if (myFetchSpecification != null) {
-      addBindings();
-      myStoredProcedureTableViewer.setInput(myFetchSpecification);
-      TableUtils.packTableColumns(myStoredProcedureTableViewer);
-      updateButtonsEnabled();
-    }
-  }
+		GridLayout topFormLayout = new GridLayout();
+		topForm.setLayout(topFormLayout);
 
-  protected void addBindings() {
-    if (myFetchSpecification != null) {
-      myBindingContext = BindingFactory.createContext();
-      myBindingContext.bind(myRawSQLText, new Property(myFetchSpecification, EOFetchSpecification.CUSTOM_QUERY_EXPRESSION), null);
-      myFetchSpecification.getEntity().getModel().addPropertyChangeListener(EOModel.STORED_PROCEDURES, myStoredProcedureChangedRefresher);
-      myFetchSpecification.getEntity().getModel().addPropertyChangeListener(EOModel.STORED_PROCEDURE, myStoredProcedureChangedRefresher);
-      myFetchSpecification.addPropertyChangeListener(EOFetchSpecification.STORED_PROCEDURE, myStoredProcedureChangedHandler);
-      myFetchSpecification.addPropertyChangeListener(EOFetchSpecification.CUSTOM_QUERY_EXPRESSION, myStoredProcedureChangedHandler);
-    }
-  }
+		myUseQualifierButton = new Button(topForm, SWT.RADIO);
+		myUseQualifierButton.setText(Messages.getString("EOFetchSpecSQLEditorSection.useQualifier")); //$NON-NLS-1$
+		myUseRawSQLButton = new Button(topForm, SWT.RADIO);
+		myUseRawSQLButton.setText(Messages.getString("EOFetchSpecSQLEditorSection.useRawSQL")); //$NON-NLS-1$
 
-  protected void disposeBindings() {
-    if (myBindingContext != null) {
-      myBindingContext.dispose();
-    }
-    if (myFetchSpecification != null) {
-      myFetchSpecification.getEntity().getModel().removePropertyChangeListener(EOModel.STORED_PROCEDURES, myStoredProcedureChangedRefresher);
-      myFetchSpecification.getEntity().getModel().removePropertyChangeListener(EOModel.STORED_PROCEDURE, myStoredProcedureChangedRefresher);
-      myFetchSpecification.removePropertyChangeListener(EOFetchSpecification.STORED_PROCEDURE, myStoredProcedureChangedHandler);
-      myFetchSpecification.removePropertyChangeListener(EOFetchSpecification.CUSTOM_QUERY_EXPRESSION, myStoredProcedureChangedHandler);
-    }
-  }
+		myRawSQLText = new Text(topForm, SWT.BORDER);
+		GridData nameLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myRawSQLText.setLayoutData(nameLayoutData);
 
-  protected void removeButtonListeners() {
-    myUseQualifierButton.removeSelectionListener(this);
-    myUseRawSQLButton.removeSelectionListener(this);
-    myUseStoredProcedureButton.removeSelectionListener(this);
-  }
+		myUseStoredProcedureButton = new Button(topForm, SWT.RADIO);
+		myUseStoredProcedureButton.setText(Messages.getString("EOFetchSpecSQLEditorSection.useStoredProcedure")); //$NON-NLS-1$
 
-  protected void addButtonListeners() {
-    myUseQualifierButton.addSelectionListener(this);
-    myUseRawSQLButton.addSelectionListener(this);
-    myUseStoredProcedureButton.addSelectionListener(this);
-  }
+		myStoredProcedureTableViewer = TableUtils.createTableViewer(topForm, "EOStoredProcedure", EOStoredProceduresConstants.COLUMNS, new EOStoredProceduresContentProvider(), new TablePropertyLabelProvider(EOStoredProceduresConstants.COLUMNS), new TablePropertyViewerSorter(EOStoredProceduresConstants.COLUMNS));
+		GridData rawRowKeyPathsTableLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		rawRowKeyPathsTableLayoutData.heightHint = 100;
+		myStoredProcedureTableViewer.getTable().setLayoutData(rawRowKeyPathsTableLayoutData);
+		myStoredProcedureTableViewer.addSelectionChangedListener(this);
+		myStoredProcedureChangedRefresher = new TableRefreshPropertyListener(myStoredProcedureTableViewer);
+	}
 
-  public void dispose() {
-    super.dispose();
-    disposeBindings();
-  }
+	public void setInput(IWorkbenchPart _part, ISelection _selection) {
+		super.setInput(_part, _selection);
+		disposeBindings();
 
-  public void widgetDefaultSelected(SelectionEvent _e) {
-    widgetSelected(_e);
-  }
+		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+		myFetchSpecification = (EOFetchSpecification) selectedObject;
+		if (myFetchSpecification != null) {
+			addBindings();
+			myStoredProcedureTableViewer.setInput(myFetchSpecification);
+			TableUtils.packTableColumns(myStoredProcedureTableViewer);
+			updateButtonsEnabled();
+		}
+	}
 
-  public void widgetSelected(SelectionEvent _e) {
-    Button source = (Button) _e.getSource();
-    if (source.getSelection()) {
-      disposeBindings();
-      if (source == myUseQualifierButton) {
-        myFetchSpecification.useQualifier();
-      }
-      else if (source == myUseRawSQLButton) {
-        myFetchSpecification.useCustomQueryExpression();
-      }
-      else if (source == myUseStoredProcedureButton) {
-        Iterator storedProceduresIter = myFetchSpecification.getEntity().getModel().getStoredProcedures().iterator();
-        if (storedProceduresIter.hasNext()) {
-          EOStoredProcedure storedProcedure = (EOStoredProcedure) storedProceduresIter.next();
-          myFetchSpecification.setStoredProcedure(storedProcedure);
-        }
-      }
-      updateButtonsEnabled();
-      addBindings();
-    }
-  }
+	protected void addBindings() {
+		if (myFetchSpecification != null) {
+			myBindingContext = BindingFactory.createContext();
+			myBindingContext.bind(myRawSQLText, new Property(myFetchSpecification, EOFetchSpecification.CUSTOM_QUERY_EXPRESSION), null);
+			myFetchSpecification.getEntity().getModel().addPropertyChangeListener(EOModel.STORED_PROCEDURES, myStoredProcedureChangedRefresher);
+			myFetchSpecification.getEntity().getModel().addPropertyChangeListener(EOModel.STORED_PROCEDURE, myStoredProcedureChangedRefresher);
+			myFetchSpecification.addPropertyChangeListener(EOFetchSpecification.STORED_PROCEDURE, myStoredProcedureChangedHandler);
+			myFetchSpecification.addPropertyChangeListener(EOFetchSpecification.CUSTOM_QUERY_EXPRESSION, myStoredProcedureChangedHandler);
+		}
+	}
 
-  public void updateButtonsEnabled() {
-    removeButtonListeners();
-    myUseQualifierButton.setSelection(myFetchSpecification.isUsingQualifier());
-    myUseRawSQLButton.setSelection(myFetchSpecification.isUsingCustomQuery());
-    myUseStoredProcedureButton.setSelection(myFetchSpecification.isUsingStoredProcedure());
-    myRawSQLText.setEnabled(myFetchSpecification.isUsingCustomQuery());
-    if (!myFetchSpecification.isUsingStoredProcedure() && !myStoredProcedureTableViewer.getSelection().isEmpty()) {
-      myStoredProcedureTableViewer.setSelection(new StructuredSelection());
-      myStoredProcedureTableViewer.getTable().setEnabled(false);
-    }
-    else if (myFetchSpecification.isUsingStoredProcedure()) {
-      myStoredProcedureTableViewer.getTable().setEnabled(true);
-      myStoredProcedureTableViewer.setSelection(new StructuredSelection(myFetchSpecification.getStoredProcedure()));
-    }
-    addButtonListeners();
-  }
+	protected void disposeBindings() {
+		if (myBindingContext != null) {
+			myBindingContext.dispose();
+		}
+		if (myFetchSpecification != null) {
+			myFetchSpecification.getEntity().getModel().removePropertyChangeListener(EOModel.STORED_PROCEDURES, myStoredProcedureChangedRefresher);
+			myFetchSpecification.getEntity().getModel().removePropertyChangeListener(EOModel.STORED_PROCEDURE, myStoredProcedureChangedRefresher);
+			myFetchSpecification.removePropertyChangeListener(EOFetchSpecification.STORED_PROCEDURE, myStoredProcedureChangedHandler);
+			myFetchSpecification.removePropertyChangeListener(EOFetchSpecification.CUSTOM_QUERY_EXPRESSION, myStoredProcedureChangedHandler);
+		}
+	}
 
-  public void selectionChanged(SelectionChangedEvent _event) {
-    IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
-    EOStoredProcedure storedProcedure = (EOStoredProcedure) selection.getFirstElement();
-    myFetchSpecification.setStoredProcedure(storedProcedure);
-  }
+	protected void removeButtonListeners() {
+		myUseQualifierButton.removeSelectionListener(this);
+		myUseRawSQLButton.removeSelectionListener(this);
+		myUseStoredProcedureButton.removeSelectionListener(this);
+	}
 
-  protected class StoredProcedureChangedHandler implements PropertyChangeListener {
-    public void propertyChange(PropertyChangeEvent _evt) {
-      EOFetchSpecSQLEditorSection.this.updateButtonsEnabled();
-    }
-  }
+	protected void addButtonListeners() {
+		myUseQualifierButton.addSelectionListener(this);
+		myUseRawSQLButton.addSelectionListener(this);
+		myUseStoredProcedureButton.addSelectionListener(this);
+	}
+
+	public void dispose() {
+		super.dispose();
+		disposeBindings();
+	}
+
+	public void widgetDefaultSelected(SelectionEvent _e) {
+		widgetSelected(_e);
+	}
+
+	public void widgetSelected(SelectionEvent _e) {
+		Button source = (Button) _e.getSource();
+		if (source.getSelection()) {
+			disposeBindings();
+			if (source == myUseQualifierButton) {
+				myFetchSpecification.useQualifier();
+			} else if (source == myUseRawSQLButton) {
+				myFetchSpecification.useCustomQueryExpression();
+			} else if (source == myUseStoredProcedureButton) {
+				Iterator storedProceduresIter = myFetchSpecification.getEntity().getModel().getStoredProcedures().iterator();
+				if (storedProceduresIter.hasNext()) {
+					EOStoredProcedure storedProcedure = (EOStoredProcedure) storedProceduresIter.next();
+					myFetchSpecification.setStoredProcedure(storedProcedure);
+				}
+			}
+			updateButtonsEnabled();
+			addBindings();
+		}
+	}
+
+	public void updateButtonsEnabled() {
+		removeButtonListeners();
+		myUseQualifierButton.setSelection(myFetchSpecification.isUsingQualifier());
+		myUseRawSQLButton.setSelection(myFetchSpecification.isUsingCustomQuery());
+		myUseStoredProcedureButton.setSelection(myFetchSpecification.isUsingStoredProcedure());
+		myRawSQLText.setEnabled(myFetchSpecification.isUsingCustomQuery());
+		if (!myFetchSpecification.isUsingStoredProcedure() && !myStoredProcedureTableViewer.getSelection().isEmpty()) {
+			myStoredProcedureTableViewer.setSelection(new StructuredSelection());
+			myStoredProcedureTableViewer.getTable().setEnabled(false);
+		} else if (myFetchSpecification.isUsingStoredProcedure()) {
+			myStoredProcedureTableViewer.getTable().setEnabled(true);
+			myStoredProcedureTableViewer.setSelection(new StructuredSelection(myFetchSpecification.getStoredProcedure()));
+		}
+		addButtonListeners();
+	}
+
+	public void selectionChanged(SelectionChangedEvent _event) {
+		IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
+		EOStoredProcedure storedProcedure = (EOStoredProcedure) selection.getFirstElement();
+		myFetchSpecification.setStoredProcedure(storedProcedure);
+	}
+
+	protected class StoredProcedureChangedHandler implements PropertyChangeListener {
+		public void propertyChange(PropertyChangeEvent _evt) {
+			EOFetchSpecSQLEditorSection.this.updateButtonsEnabled();
+		}
+	}
 }

@@ -52,5 +52,5 @@ package org.objectstyle.wolips.eomodeler.editors.dataType;
 import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
 
 public interface IDataTypePanel {
-  public void setArgument(AbstractEOArgument _argument);
+	public void setArgument(AbstractEOArgument _argument);
 }

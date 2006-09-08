@@ -49,7 +49,7 @@ import org.eclipse.jface.text.templates.TemplateVariableResolver;
 import org.objectstyle.wolips.htmleditor.HtmleditorPlugin;
 
 public class TemplateVariableWebObjectsName extends TemplateVariableResolver {
-	
+
 	public TemplateVariableWebObjectsName() {
 		super();
 	}

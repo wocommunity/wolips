@@ -49,77 +49,73 @@
  */
 package org.objectstyle.wolips.eomodeler.kvc;
 
-
 public class Key implements IKey {
-  private String myName;
+	private String myName;
 
-  public Key(String _name) {
-    myName = _name;
-  }
+	public Key(String _name) {
+		myName = _name;
+	}
 
-  public ResolvedKey toResolvedKey(Class _declaringClass) {
-    return new ResolvedKey(_declaringClass, myName);
-  }
+	public ResolvedKey toResolvedKey(Class _declaringClass) {
+		return new ResolvedKey(_declaringClass, myName);
+	}
 
-  public String getName() {
-    return myName;
-  }
+	public String getName() {
+		return myName;
+	}
 
-  public Class getType(Object _instance) {
-    IKey getMember = getGetMember(_instance);
-    Class nextClass = getMember.getType(_instance);
-    return nextClass;
-  }
+	public Class getType(Object _instance) {
+		IKey getMember = getGetMember(_instance);
+		Class nextClass = getMember.getType(_instance);
+		return nextClass;
+	}
 
-  protected Class getClass(Object _instance) {
-    Class clazz;
-    if (_instance == null) {
-      clazz = null;
-    }
-    else {
-      clazz = _instance.getClass();
-    }
-    return clazz;
-  }
+	protected Class getClass(Object _instance) {
+		Class clazz;
+		if (_instance == null) {
+			clazz = null;
+		} else {
+			clazz = _instance.getClass();
+		}
+		return clazz;
+	}
 
-  protected IKey getSetMember(Object _instance) {
-    IKey setMember;
-    Class clazz = getClass(_instance);
-    if (clazz == null) {
-      setMember = null;
-    }
-    else {
-      MemberContainer memberContainer = new MemberContainer(clazz, MemberContainer.SET);
-      setMember = memberContainer.getMember(_instance, myName);
-    }
-    return setMember;
-  }
+	protected IKey getSetMember(Object _instance) {
+		IKey setMember;
+		Class clazz = getClass(_instance);
+		if (clazz == null) {
+			setMember = null;
+		} else {
+			MemberContainer memberContainer = new MemberContainer(clazz, MemberContainer.SET);
+			setMember = memberContainer.getMember(_instance, myName);
+		}
+		return setMember;
+	}
 
-  protected IKey getGetMember(Object _instance) {
-    IKey getMember;
-    Class clazz = getClass(_instance);
-    if (clazz == null) {
-      getMember = null;
-    }
-    else {
-      MemberContainer memberContainer = new MemberContainer(clazz, MemberContainer.GET);
-      getMember = memberContainer.getMember(_instance, myName);
-    }
-    return getMember;
-  }
+	protected IKey getGetMember(Object _instance) {
+		IKey getMember;
+		Class clazz = getClass(_instance);
+		if (clazz == null) {
+			getMember = null;
+		} else {
+			MemberContainer memberContainer = new MemberContainer(clazz, MemberContainer.GET);
+			getMember = memberContainer.getMember(_instance, myName);
+		}
+		return getMember;
+	}
 
-  public void setValue(Object _instance, Object _value) {
-    IKey setMember = getSetMember(_instance);
-    setMember.setValue(_instance, _value);
-  }
+	public void setValue(Object _instance, Object _value) {
+		IKey setMember = getSetMember(_instance);
+		setMember.setValue(_instance, _value);
+	}
 
-  public Object getValue(Object _instance) {
-    IKey getMember = getGetMember(_instance);
-    Object value = getMember.getValue(_instance);
-    return value;
-  }
+	public Object getValue(Object _instance) {
+		IKey getMember = getGetMember(_instance);
+		Object value = getMember.getValue(_instance);
+		return value;
+	}
 
-  public String toString() {
-    return "[Key: " + myName + "]";
-  }
+	public String toString() {
+		return "[Key: " + myName + "]";
+	}
 }

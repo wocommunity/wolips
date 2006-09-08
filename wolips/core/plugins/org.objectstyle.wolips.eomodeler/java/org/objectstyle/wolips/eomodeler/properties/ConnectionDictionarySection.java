@@ -70,105 +70,109 @@ import org.objectstyle.wolips.eomodeler.model.IConnectionDictionaryOwner;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
 public class ConnectionDictionarySection extends AbstractPropertySection {
-  private IConnectionDictionaryOwner myConnectionDictionaryOwner;
+	private IConnectionDictionaryOwner myConnectionDictionaryOwner;
 
-  private Text myUsernameText;
-  private Text myPasswordText;
-  private Text myURLText;
-  private Text myDriverText;
-  private Text myPluginText;
+	private Text myUsernameText;
 
-  private DataBindingContext myBindingContext;
+	private Text myPasswordText;
 
-  public ConnectionDictionarySection() {
-    // DO NOTHING
-  }
+	private Text myURLText;
 
-  public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
-    super.createControls(_parent, _tabbedPropertySheetPage);
-    Composite form = getWidgetFactory().createFlatFormComposite(_parent);
-    FormLayout formLayout = new FormLayout();
-    form.setLayout(formLayout);
+	private Text myDriverText;
 
-    Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-    FormData topFormData = new FormData();
-    topFormData.top = new FormAttachment(0, 5);
-    topFormData.left = new FormAttachment(0, 5);
-    topFormData.right = new FormAttachment(100, -5);
-    topForm.setLayoutData(topFormData);
+	private Text myPluginText;
 
-    GridLayout topFormLayout = new GridLayout();
-    topFormLayout.numColumns = 2;
-    topForm.setLayout(topFormLayout);
+	private DataBindingContext myBindingContext;
 
-    addFormEntriesAbove(topForm);
+	public ConnectionDictionarySection() {
+		// DO NOTHING
+	}
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + IConnectionDictionaryOwner.USERNAME), SWT.NONE);
-    myUsernameText = new Text(topForm, SWT.BORDER);
-    myUsernameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
+		super.createControls(_parent, _tabbedPropertySheetPage);
+		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
+		FormLayout formLayout = new FormLayout();
+		form.setLayout(formLayout);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + IConnectionDictionaryOwner.PASSWORD), SWT.NONE);
-    myPasswordText = new Text(topForm, SWT.BORDER);
-    myPasswordText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
+		FormData topFormData = new FormData();
+		topFormData.top = new FormAttachment(0, 5);
+		topFormData.left = new FormAttachment(0, 5);
+		topFormData.right = new FormAttachment(100, -5);
+		topForm.setLayoutData(topFormData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + IConnectionDictionaryOwner.URL), SWT.NONE);
-    myURLText = new Text(topForm, SWT.BORDER);
-    myURLText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		GridLayout topFormLayout = new GridLayout();
+		topFormLayout.numColumns = 2;
+		topForm.setLayout(topFormLayout);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + IConnectionDictionaryOwner.DRIVER), SWT.NONE);
-    myDriverText = new Text(topForm, SWT.BORDER);
-    myDriverText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		addFormEntriesAbove(topForm);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + IConnectionDictionaryOwner.PLUGIN), SWT.NONE);
-    myPluginText = new Text(topForm, SWT.BORDER);
-    myPluginText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    
-    addFormEntriesBelow(topForm);
-  }
-  
-  protected void addFormEntriesAbove(Composite _form) {
-    // DO NOTHING
-  }
-  
-  protected void addFormEntriesBelow(Composite _form) {
-    // DO NOTHING
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + IConnectionDictionaryOwner.USERNAME), SWT.NONE);
+		myUsernameText = new Text(topForm, SWT.BORDER);
+		myUsernameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-  public void setInput(IWorkbenchPart _part, ISelection _selection) {
-    super.setInput(_part, _selection);
-    disposeBindings();
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + IConnectionDictionaryOwner.PASSWORD), SWT.NONE);
+		myPasswordText = new Text(topForm, SWT.BORDER);
+		myPasswordText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-    Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-    if (selectedObject instanceof IConnectionDictionaryOwner) {
-      myConnectionDictionaryOwner = (IConnectionDictionaryOwner) selectedObject;
-    }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + IConnectionDictionaryOwner.URL), SWT.NONE);
+		myURLText = new Text(topForm, SWT.BORDER);
+		myURLText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-    if (myConnectionDictionaryOwner != null) {
-      myBindingContext = BindingFactory.createContext();
-      addBindings(myBindingContext);
-    }
-  }
-  
-  public IConnectionDictionaryOwner getConnectionDictionaryOwner() {
-    return myConnectionDictionaryOwner;
-  }
-  
-  protected void addBindings(DataBindingContext _context) {
-    _context.bind(myUsernameText, new Property(myConnectionDictionaryOwner, IConnectionDictionaryOwner.USERNAME), null);
-    _context.bind(myPasswordText, new Property(myConnectionDictionaryOwner, IConnectionDictionaryOwner.PASSWORD), null);
-    _context.bind(myURLText, new Property(myConnectionDictionaryOwner, IConnectionDictionaryOwner.URL), null);
-    _context.bind(myDriverText, new Property(myConnectionDictionaryOwner, IConnectionDictionaryOwner.DRIVER), null);
-    _context.bind(myPluginText, new Property(myConnectionDictionaryOwner, IConnectionDictionaryOwner.PLUGIN), null);
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + IConnectionDictionaryOwner.DRIVER), SWT.NONE);
+		myDriverText = new Text(topForm, SWT.BORDER);
+		myDriverText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-  protected void disposeBindings() {
-    if (myBindingContext != null) {
-      myBindingContext.dispose();
-    }
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + IConnectionDictionaryOwner.PLUGIN), SWT.NONE);
+		myPluginText = new Text(topForm, SWT.BORDER);
+		myPluginText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-  public void dispose() {
-    super.dispose();
-    disposeBindings();
-  }
+		addFormEntriesBelow(topForm);
+	}
+
+	protected void addFormEntriesAbove(Composite _form) {
+		// DO NOTHING
+	}
+
+	protected void addFormEntriesBelow(Composite _form) {
+		// DO NOTHING
+	}
+
+	public void setInput(IWorkbenchPart _part, ISelection _selection) {
+		super.setInput(_part, _selection);
+		disposeBindings();
+
+		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+		if (selectedObject instanceof IConnectionDictionaryOwner) {
+			myConnectionDictionaryOwner = (IConnectionDictionaryOwner) selectedObject;
+		}
+
+		if (myConnectionDictionaryOwner != null) {
+			myBindingContext = BindingFactory.createContext();
+			addBindings(myBindingContext);
+		}
+	}
+
+	public IConnectionDictionaryOwner getConnectionDictionaryOwner() {
+		return myConnectionDictionaryOwner;
+	}
+
+	protected void addBindings(DataBindingContext _context) {
+		_context.bind(myUsernameText, new Property(myConnectionDictionaryOwner, IConnectionDictionaryOwner.USERNAME), null);
+		_context.bind(myPasswordText, new Property(myConnectionDictionaryOwner, IConnectionDictionaryOwner.PASSWORD), null);
+		_context.bind(myURLText, new Property(myConnectionDictionaryOwner, IConnectionDictionaryOwner.URL), null);
+		_context.bind(myDriverText, new Property(myConnectionDictionaryOwner, IConnectionDictionaryOwner.DRIVER), null);
+		_context.bind(myPluginText, new Property(myConnectionDictionaryOwner, IConnectionDictionaryOwner.PLUGIN), null);
+	}
+
+	protected void disposeBindings() {
+		if (myBindingContext != null) {
+			myBindingContext.dispose();
+		}
+	}
+
+	public void dispose() {
+		super.dispose();
+		disposeBindings();
+	}
 }

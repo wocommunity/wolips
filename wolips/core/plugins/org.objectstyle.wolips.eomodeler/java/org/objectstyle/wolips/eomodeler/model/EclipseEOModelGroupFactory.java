@@ -77,124 +77,121 @@ import org.objectstyle.wolips.eogenerator.model.EOModelReference;
 import org.objectstyle.wolips.eomodeler.Activator;
 
 public class EclipseEOModelGroupFactory {
-  public static EOModel createModel(IResource _modelResource, Set _failures) throws CoreException, IOException, EOModelException, ParseException {
-    IProject project = _modelResource.getProject();
-    EOModel model = null;
-    EOModelGroup modelGroup;
-    if ("eomodelgroup".equals(_modelResource.getFileExtension())) {
-      modelGroup = new EOModelGroup();
-      EOGeneratorModel eogeneratorModel = EOGeneratorModel.createModelFromFile((IFile) _modelResource);
-      List modelRefList = new LinkedList();
-      modelRefList.addAll(eogeneratorModel.getModels());
-      modelRefList.addAll(eogeneratorModel.getRefModels());
-      Iterator modelIter = modelRefList.iterator();
-      while (modelIter.hasNext()) {
-        EOModelReference modelRef = (EOModelReference) modelIter.next();
-        String modelPath = modelRef.getPath(project);
-        File modelFolder = new File(modelPath);
-        if (!modelFolder.isAbsolute()) {
-          modelFolder = new File(project.getLocation().toFile(), modelPath);
-        }
-        EOModel modelGroupModel = modelGroup.addModelFromFolder(modelFolder, _failures);
-        if (model == null) {
-          model = modelGroupModel;
-        }
-      }
-      modelGroup.resolve(_failures);
-      modelGroup.verify(_failures);
-    }
-    else {
-      IContainer modelContainer;
-      if (_modelResource.getType() == IResource.FILE) {
-        modelContainer = _modelResource.getParent();
-      }
-      else {
-        modelContainer = (IContainer) _modelResource;
-      }
-      modelGroup = EclipseEOModelGroupFactory.createModelGroup(project, _failures);
-      String modelFileName = modelContainer.getName();
-      String modelName = modelFileName.substring(0, modelFileName.indexOf('.'));
-      model = modelGroup.getModelNamed(modelName);
-    }
-    return model;
-  }
+	public static EOModel createModel(IResource _modelResource, Set _failures) throws CoreException, IOException, EOModelException, ParseException {
+		IProject project = _modelResource.getProject();
+		EOModel model = null;
+		EOModelGroup modelGroup;
+		if ("eomodelgroup".equals(_modelResource.getFileExtension())) {
+			modelGroup = new EOModelGroup();
+			EOGeneratorModel eogeneratorModel = EOGeneratorModel.createModelFromFile((IFile) _modelResource);
+			List modelRefList = new LinkedList();
+			modelRefList.addAll(eogeneratorModel.getModels());
+			modelRefList.addAll(eogeneratorModel.getRefModels());
+			Iterator modelIter = modelRefList.iterator();
+			while (modelIter.hasNext()) {
+				EOModelReference modelRef = (EOModelReference) modelIter.next();
+				String modelPath = modelRef.getPath(project);
+				File modelFolder = new File(modelPath);
+				if (!modelFolder.isAbsolute()) {
+					modelFolder = new File(project.getLocation().toFile(), modelPath);
+				}
+				EOModel modelGroupModel = modelGroup.addModelFromFolder(modelFolder, _failures);
+				if (model == null) {
+					model = modelGroupModel;
+				}
+			}
+			modelGroup.resolve(_failures);
+			modelGroup.verify(_failures);
+		} else {
+			IContainer modelContainer;
+			if (_modelResource.getType() == IResource.FILE) {
+				modelContainer = _modelResource.getParent();
+			} else {
+				modelContainer = (IContainer) _modelResource;
+			}
+			modelGroup = EclipseEOModelGroupFactory.createModelGroup(project, _failures);
+			String modelFileName = modelContainer.getName();
+			String modelName = modelFileName.substring(0, modelFileName.indexOf('.'));
+			model = modelGroup.getModelNamed(modelName);
+		}
+		return model;
+	}
 
-  protected static void addModelsFromProject(EOModelGroup _modelGroup, IProject _project, Set _searchedFolders, Set _searchedProjects, Set _failures) throws IOException, EOModelException, CoreException {
-    if (!_searchedProjects.contains(_project)) {
-      _searchedProjects.add(_project);
-      Project wolipsProject = (Project) _project.getAdapter(Project.class);
-      if (wolipsProject != null && wolipsProject.hasWOLipsNature()) {
-        _project.accept(new ModelVisitor(_modelGroup, _searchedFolders, _failures), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
+	protected static void addModelsFromProject(EOModelGroup _modelGroup, IProject _project, Set _searchedFolders, Set _searchedProjects, Set _failures) throws IOException, EOModelException, CoreException {
+		if (!_searchedProjects.contains(_project)) {
+			_searchedProjects.add(_project);
+			Project wolipsProject = (Project) _project.getAdapter(Project.class);
+			if (wolipsProject != null && wolipsProject.hasWOLipsNature()) {
+				_project.accept(new ModelVisitor(_modelGroup, _searchedFolders, _failures), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
 
-        IJavaProject javaProject = JavaCore.create(_project);
-        IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
-        for (int classpathEntryNum = 0; classpathEntryNum < classpathEntries.length; classpathEntryNum++) {
-          IClasspathEntry entry = classpathEntries[classpathEntryNum];
-          int entryKind = entry.getEntryKind();
-          if (entryKind == IClasspathEntry.CPE_LIBRARY) {
-            IPath path = entry.getPath();
-            IPath frameworkPath = null;
-            while (frameworkPath == null && path.lastSegment() != null) {
-              String lastSegment = path.lastSegment();
-              if (lastSegment != null && lastSegment.endsWith(".framework")) {
-                frameworkPath = path;
-              }
-              else {
-                path = path.removeLastSegments(1);
-              }
-            }
-            if (frameworkPath != null) {
-              File resourcesFolder = frameworkPath.append("Resources").toFile();
-              if (!_searchedFolders.contains(resourcesFolder) && resourcesFolder.exists()) {
-                _searchedFolders.add(resourcesFolder);
-                _modelGroup.addModelsFromFolder(resourcesFolder, false, _failures);
-              }
-            }
-          }
-          else if (entryKind == IClasspathEntry.CPE_PROJECT) {
-            IPath path = entry.getPath();
-            IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(path.lastSegment());
-            EclipseEOModelGroupFactory.addModelsFromProject(_modelGroup, project, _searchedFolders, _searchedProjects, _failures);
-          }
-        }
-      }
-    }
-  }
+				IJavaProject javaProject = JavaCore.create(_project);
+				IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
+				for (int classpathEntryNum = 0; classpathEntryNum < classpathEntries.length; classpathEntryNum++) {
+					IClasspathEntry entry = classpathEntries[classpathEntryNum];
+					int entryKind = entry.getEntryKind();
+					if (entryKind == IClasspathEntry.CPE_LIBRARY) {
+						IPath path = entry.getPath();
+						IPath frameworkPath = null;
+						while (frameworkPath == null && path.lastSegment() != null) {
+							String lastSegment = path.lastSegment();
+							if (lastSegment != null && lastSegment.endsWith(".framework")) {
+								frameworkPath = path;
+							} else {
+								path = path.removeLastSegments(1);
+							}
+						}
+						if (frameworkPath != null) {
+							File resourcesFolder = frameworkPath.append("Resources").toFile();
+							if (!_searchedFolders.contains(resourcesFolder) && resourcesFolder.exists()) {
+								_searchedFolders.add(resourcesFolder);
+								_modelGroup.addModelsFromFolder(resourcesFolder, false, _failures);
+							}
+						}
+					} else if (entryKind == IClasspathEntry.CPE_PROJECT) {
+						IPath path = entry.getPath();
+						IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(path.lastSegment());
+						EclipseEOModelGroupFactory.addModelsFromProject(_modelGroup, project, _searchedFolders, _searchedProjects, _failures);
+					}
+				}
+			}
+		}
+	}
 
-  public static EOModelGroup createModelGroup(IProject _project, Set _failures) throws CoreException, IOException, EOModelException {
-    EOModelGroup modelGroup = new EOModelGroup();
-    EclipseEOModelGroupFactory.addModelsFromProject(modelGroup, _project, new HashSet(), new HashSet(), _failures);
-    modelGroup.resolve(_failures);
-    modelGroup.verify(_failures);
-    return modelGroup;
-  }
+	public static EOModelGroup createModelGroup(IProject _project, Set _failures) throws CoreException, IOException, EOModelException {
+		EOModelGroup modelGroup = new EOModelGroup();
+		EclipseEOModelGroupFactory.addModelsFromProject(modelGroup, _project, new HashSet(), new HashSet(), _failures);
+		modelGroup.resolve(_failures);
+		modelGroup.verify(_failures);
+		return modelGroup;
+	}
 
-  protected static class ModelVisitor implements IResourceVisitor {
-    private EOModelGroup myModelGroup;
-    private Set myFailures;
-    private Set mySearchedFolders;
+	protected static class ModelVisitor implements IResourceVisitor {
+		private EOModelGroup myModelGroup;
 
-    public ModelVisitor(EOModelGroup _modelGroup, Set _searchedFolders, Set _failures) {
-      myModelGroup = _modelGroup;
-      myFailures = _failures;
-      mySearchedFolders = _searchedFolders;
-    }
+		private Set myFailures;
 
-    public boolean visit(IResource _resource) throws CoreException {
-      try {
-        boolean visitChildren = true;
-        if (_resource.getType() == IResource.FOLDER) {
-          File resourceFile = _resource.getLocation().toFile();
-          if (!mySearchedFolders.contains(resourceFile) && "eomodeld".equals(_resource.getFileExtension())) {
-            myModelGroup.addModelFromFolder(resourceFile, myFailures);
-            visitChildren = false;
-          }
-        }
-        return visitChildren;
-      }
-      catch (Exception e) {
-        throw new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, 0, "Failed to load model in " + _resource + ".", e));
-      }
-    }
-  }
+		private Set mySearchedFolders;
+
+		public ModelVisitor(EOModelGroup _modelGroup, Set _searchedFolders, Set _failures) {
+			myModelGroup = _modelGroup;
+			myFailures = _failures;
+			mySearchedFolders = _searchedFolders;
+		}
+
+		public boolean visit(IResource _resource) throws CoreException {
+			try {
+				boolean visitChildren = true;
+				if (_resource.getType() == IResource.FOLDER) {
+					File resourceFile = _resource.getLocation().toFile();
+					if (!mySearchedFolders.contains(resourceFile) && "eomodeld".equals(_resource.getFileExtension())) {
+						myModelGroup.addModelFromFolder(resourceFile, myFailures);
+						visitChildren = false;
+					}
+				}
+				return visitChildren;
+			} catch (Exception e) {
+				throw new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, 0, "Failed to load model in " + _resource + ".", e));
+			}
+		}
+	}
 }

@@ -53,15 +53,15 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 public class EODerivedContentProvider implements IStructuredContentProvider {
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public Object[] getElements(Object _inputElement) {
-    return (Object[]) _inputElement;
-  }
+	public Object[] getElements(Object _inputElement) {
+		return (Object[]) _inputElement;
+	}
 
-  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
-    // DO NOTHING
-  }
+	public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+		// DO NOTHING
+	}
 }

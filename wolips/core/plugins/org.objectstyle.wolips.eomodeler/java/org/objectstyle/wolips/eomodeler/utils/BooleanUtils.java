@@ -51,18 +51,17 @@ package org.objectstyle.wolips.eomodeler.utils;
 
 public class BooleanUtils {
 
-  public static Boolean negate(Boolean _value) {
-    Boolean negatedValue;
-    if (_value == null) {
-      negatedValue = Boolean.TRUE;
-    }
-    else {
-      negatedValue = Boolean.valueOf(!_value.booleanValue());
-    }
-    return negatedValue;
-  }
+	public static Boolean negate(Boolean _value) {
+		Boolean negatedValue;
+		if (_value == null) {
+			negatedValue = Boolean.TRUE;
+		} else {
+			negatedValue = Boolean.valueOf(!_value.booleanValue());
+		}
+		return negatedValue;
+	}
 
-  public static boolean isTrue(Boolean _bool) {
-    return (_bool != null && _bool.booleanValue());
-  }
+	public static boolean isTrue(Boolean _bool) {
+		return (_bool != null && _bool.booleanValue());
+	}
 }

@@ -50,20 +50,20 @@
 package org.objectstyle.wolips.eomodeler.kvc;
 
 public class CachingKeyPath extends KeyPath {
-  public CachingKeyPath(String _keyPath) {
-    super(_keyPath);
-  }
+	public CachingKeyPath(String _keyPath) {
+		super(_keyPath);
+	}
 
-  public CachingKeyPath(String[] _keyNames) {
-    super(_keyNames);
-  }
+	public CachingKeyPath(String[] _keyNames) {
+		super(_keyNames);
+	}
 
-  public CachingKeyPath(CachingKey[] _keys) {
-    super(_keys);
-  }
+	public CachingKeyPath(CachingKey[] _keys) {
+		super(_keys);
+	}
 
-  protected Key createKey(Key _previousKey, String _keyName) {
-    Key key = new CachingKey(_keyName);
-    return key;
-  }
+	protected Key createKey(Key _previousKey, String _keyName) {
+		Key key = new CachingKey(_keyName);
+		return key;
+	}
 }

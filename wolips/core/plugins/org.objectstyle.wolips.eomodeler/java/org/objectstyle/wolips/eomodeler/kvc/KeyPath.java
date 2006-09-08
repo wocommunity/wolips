@@ -50,101 +50,101 @@
 package org.objectstyle.wolips.eomodeler.kvc;
 
 public class KeyPath implements IKey {
-  private String[] myKeyNames;
-  private Key[] myKeys;
+	private String[] myKeyNames;
 
-  public KeyPath(String _keyPath) {
-    this(_keyPath.split("\\."));
-  }
+	private Key[] myKeys;
 
-  public KeyPath(String[] _keyNames) {
-    myKeyNames = _keyNames;
-  }
+	public KeyPath(String _keyPath) {
+		this(_keyPath.split("\\."));
+	}
 
-  public KeyPath(Key[] _keys) {
-    myKeys = _keys;
-    myKeyNames = new String[_keys.length];
-    for (int keyNum = 0; keyNum < _keys.length; keyNum++) {
-      myKeyNames[keyNum] = _keys[keyNum].getName();
-    }
-  }
+	public KeyPath(String[] _keyNames) {
+		myKeyNames = _keyNames;
+	}
 
-  public String toKeyPath() {
-    StringBuffer sb = new StringBuffer();
-    for (int keyNum = 0; keyNum < myKeyNames.length; keyNum++) {
-      sb.append(myKeyNames[keyNum]);
-      sb.append(".");
-    }
-    if (myKeyNames.length > 0) {
-      sb.setLength(sb.length() - 1);
-    }
-    return sb.toString();
-  }
+	public KeyPath(Key[] _keys) {
+		myKeys = _keys;
+		myKeyNames = new String[_keys.length];
+		for (int keyNum = 0; keyNum < _keys.length; keyNum++) {
+			myKeyNames[keyNum] = _keys[keyNum].getName();
+		}
+	}
 
-  public ResolvedKeyPath toResolvedKey(Class _declaringClass) {
-    return new ResolvedKeyPath(_declaringClass, myKeyNames);
-  }
+	public String toKeyPath() {
+		StringBuffer sb = new StringBuffer();
+		for (int keyNum = 0; keyNum < myKeyNames.length; keyNum++) {
+			sb.append(myKeyNames[keyNum]);
+			sb.append(".");
+		}
+		if (myKeyNames.length > 0) {
+			sb.setLength(sb.length() - 1);
+		}
+		return sb.toString();
+	}
 
-  protected Key[] getKeys() {
-    if (myKeys == null) {
-      Key key = null;
-      myKeys = new Key[myKeyNames.length];
-      for (int keyNum = 0; keyNum < myKeys.length; keyNum++) {
-        key = createKey(key, myKeyNames[keyNum]);
-        myKeys[keyNum] = key;
-      }
-    }
-    return myKeys;
-  }
+	public ResolvedKeyPath toResolvedKey(Class _declaringClass) {
+		return new ResolvedKeyPath(_declaringClass, myKeyNames);
+	}
 
-  protected Key createKey(Key _previousKey, String _keyName) {
-    return new Key(_keyName);
-  }
+	protected Key[] getKeys() {
+		if (myKeys == null) {
+			Key key = null;
+			myKeys = new Key[myKeyNames.length];
+			for (int keyNum = 0; keyNum < myKeys.length; keyNum++) {
+				key = createKey(key, myKeyNames[keyNum]);
+				myKeys[keyNum] = key;
+			}
+		}
+		return myKeys;
+	}
 
-  public Class getType(Object _instance) {
-    Class type = null;
-    Key[] keys = getKeys();
-    if (keys.length > 0) {
-      type = keys[keys.length - 1].getType(_instance);
-    }
-    return type;
-  }
+	protected Key createKey(Key _previousKey, String _keyName) {
+		return new Key(_keyName);
+	}
 
-  public void setValue(Object _instance, Object _value) {
-    Key[] keys = getKeys();
-    Object instance = _instance;
-    for (int keyNum = 0; instance != null && keyNum < keys.length - 1; keyNum++) {
-      Key key = keys[keyNum];
-      instance = key.getValue(instance);
-    }
-    if (instance != null) {
-      keys[keys.length - 1].setValue(instance, _value);
-    }
-  }
+	public Class getType(Object _instance) {
+		Class type = null;
+		Key[] keys = getKeys();
+		if (keys.length > 0) {
+			type = keys[keys.length - 1].getType(_instance);
+		}
+		return type;
+	}
 
-  public Object getValue(Object _instance) {
-    Key[] keys = getKeys();
-    Object instance = _instance;
-    for (int keyNum = 0; instance != null && keyNum < keys.length; keyNum++) {
-      Key key = keys[keyNum];
-      instance = key.getValue(instance);
-    }
-    return instance;
-  }
+	public void setValue(Object _instance, Object _value) {
+		Key[] keys = getKeys();
+		Object instance = _instance;
+		for (int keyNum = 0; instance != null && keyNum < keys.length - 1; keyNum++) {
+			Key key = keys[keyNum];
+			instance = key.getValue(instance);
+		}
+		if (instance != null) {
+			keys[keys.length - 1].setValue(instance, _value);
+		}
+	}
 
-  public String toString() {
-    return "[KeyPath: " + toKeyPath() + "]";
-  }
+	public Object getValue(Object _instance) {
+		Key[] keys = getKeys();
+		Object instance = _instance;
+		for (int keyNum = 0; instance != null && keyNum < keys.length; keyNum++) {
+			Key key = keys[keyNum];
+			instance = key.getValue(instance);
+		}
+		return instance;
+	}
 
-  public static Object getValue(Object _instance, String _keyPath) {
-    Object value;
-    if (_instance == null) {
-      value = null;
-    }
-    else {
-      ResolvedKeyPath keyPath = new ResolvedKeyPath(_instance.getClass(), _keyPath);
-      value = keyPath.getValue(_instance);
-    }
-    return value;
-  }
+	public String toString() {
+		return "[KeyPath: " + toKeyPath() + "]";
+	}
+
+	public static Object getValue(Object _instance, String _keyPath) {
+		Object value;
+		if (_instance == null) {
+			value = null;
+		} else {
+			ResolvedKeyPath keyPath = new ResolvedKeyPath(_instance.getClass(), _keyPath);
+			value = keyPath.getValue(_instance);
+		}
+		return value;
+	}
 }

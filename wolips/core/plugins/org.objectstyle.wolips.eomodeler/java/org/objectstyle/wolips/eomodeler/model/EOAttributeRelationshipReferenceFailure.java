@@ -50,7 +50,7 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 public class EOAttributeRelationshipReferenceFailure extends EOModelVerificationFailure {
-  public EOAttributeRelationshipReferenceFailure(EOAttribute _attribute, EORelationship _relationship) {
-    super(_attribute.getName() + " is referenced by the relationship " + _relationship.getFullyQualifiedName() + ".");
-  }
+	public EOAttributeRelationshipReferenceFailure(EOAttribute _attribute, EORelationship _relationship) {
+		super(_attribute.getName() + " is referenced by the relationship " + _relationship.getFullyQualifiedName() + ".");
+	}
 }

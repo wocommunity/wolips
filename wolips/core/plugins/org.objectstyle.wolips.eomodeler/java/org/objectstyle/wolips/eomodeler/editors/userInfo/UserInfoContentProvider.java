@@ -58,17 +58,17 @@ import org.eclipse.jface.viewers.Viewer;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 
 public class UserInfoContentProvider implements IStructuredContentProvider {
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public Object[] getElements(Object _inputElement) {
-    Set keys = new HashSet(((Map) _inputElement).keySet());
-    keys.remove(EOModel.ENTITY_MODELER_KEY);
-    return keys.toArray();
-  }
+	public Object[] getElements(Object _inputElement) {
+		Set keys = new HashSet(((Map) _inputElement).keySet());
+		keys.remove(EOModel.ENTITY_MODELER_KEY);
+		return keys.toArray();
+	}
 
-  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
-    // DO NOTHING
-  }
+	public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+		// DO NOTHING
+	}
 }

@@ -62,65 +62,66 @@ import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 
 public class EOAttributesTableEditor extends EditorPart implements IEntityEditor {
-  private EOAttributesTableViewer myAttributesTableViewer;
-  private EOEntity myEntity;
+	private EOAttributesTableViewer myAttributesTableViewer;
 
-  public void setEntity(EOEntity _entity) {
-    myEntity = _entity;
-    updateAttributesTableViewer();
-  }
-  
-  public EOModel getModel() {
-    return (myEntity == null) ? null : myEntity.getModel();
-  }
+	private EOEntity myEntity;
 
-  public EOEntity getEntity() {
-    return myEntity;
-  }
+	public void setEntity(EOEntity _entity) {
+		myEntity = _entity;
+		updateAttributesTableViewer();
+	}
 
-  public void doSave(IProgressMonitor _monitor) {
-    // DO NOTHING
-  }
+	public EOModel getModel() {
+		return (myEntity == null) ? null : myEntity.getModel();
+	}
 
-  public void doSaveAs() {
-    // DO NOTHING
-  }
+	public EOEntity getEntity() {
+		return myEntity;
+	}
 
-  public void init(IEditorSite _site, IEditorInput _input) {
-    setSite(_site);
-    setInput(_input);
-    setEntity(null);
-  }
+	public void doSave(IProgressMonitor _monitor) {
+		// DO NOTHING
+	}
 
-  public boolean isDirty() {
-    return myEntity != null && myEntity.getModel().isDirty();
-  }
+	public void doSaveAs() {
+		// DO NOTHING
+	}
 
-  public boolean isSaveAsAllowed() {
-    return true;
-  }
+	public void init(IEditorSite _site, IEditorInput _input) {
+		setSite(_site);
+		setInput(_input);
+		setEntity(null);
+	}
 
-  public void createPartControl(Composite _parent) {
-    myAttributesTableViewer = new EOAttributesTableViewer(_parent, SWT.NONE);
-    myAttributesTableViewer.setLayoutData(new GridData(GridData.FILL_BOTH));
-    updateAttributesTableViewer();
-  }
+	public boolean isDirty() {
+		return myEntity != null && myEntity.getModel().isDirty();
+	}
 
-  public void setFocus() {
-    // DO NOTHING
-  }
+	public boolean isSaveAsAllowed() {
+		return true;
+	}
 
-  protected void updateAttributesTableViewer() {
-    if (myAttributesTableViewer != null) {
-      myAttributesTableViewer.setEntity(myEntity);
-    }
-  }
+	public void createPartControl(Composite _parent) {
+		myAttributesTableViewer = new EOAttributesTableViewer(_parent, SWT.NONE);
+		myAttributesTableViewer.setLayoutData(new GridData(GridData.FILL_BOTH));
+		updateAttributesTableViewer();
+	}
 
-  public void addSelectionChangedListener(ISelectionChangedListener _listener) {
-    myAttributesTableViewer.addSelectionChangedListener(_listener);
-  }
+	public void setFocus() {
+		// DO NOTHING
+	}
 
-  public void removeSelectionChangedListener(ISelectionChangedListener _listener) {
-    myAttributesTableViewer.removeSelectionChangedListener(_listener);
-  }
+	protected void updateAttributesTableViewer() {
+		if (myAttributesTableViewer != null) {
+			myAttributesTableViewer.setEntity(myEntity);
+		}
+	}
+
+	public void addSelectionChangedListener(ISelectionChangedListener _listener) {
+		myAttributesTableViewer.addSelectionChangedListener(_listener);
+	}
+
+	public void removeSelectionChangedListener(ISelectionChangedListener _listener) {
+		myAttributesTableViewer.removeSelectionChangedListener(_listener);
+	}
 }

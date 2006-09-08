@@ -56,35 +56,33 @@ import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 
 public class UserInfoLabelProvider extends TablePropertyLabelProvider {
-  private NotificationMap myUserInfo;
+	private NotificationMap myUserInfo;
 
-  public UserInfoLabelProvider(String[] _columns) {
-    super(_columns);
-  }
+	public UserInfoLabelProvider(String[] _columns) {
+		super(_columns);
+	}
 
-  public void setUserInfo(NotificationMap _userInfo) {
-    myUserInfo = _userInfo;
-  }
+	public void setUserInfo(NotificationMap _userInfo) {
+		myUserInfo = _userInfo;
+	}
 
-  public String getColumnText(Object _element, String _property) {
-    String text = null;
-    Object key = _element;
-    if (_property == UserInfoPropertySection.KEY) {
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      PropertyListSerialization.propertyListToStream(baos, key);
-      text = new String(baos.toByteArray());
-    }
-    else if (_property == UserInfoPropertySection.VALUE) {
-      if (myUserInfo != null) {
-        Object valueObj = myUserInfo.get(key);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PropertyListSerialization.propertyListToStream(baos, valueObj);
-        text = new String(baos.toByteArray());
-      }
-    }
-    else {
-      text = super.getColumnText(_element, _property);
-    }
-    return text;
-  }
+	public String getColumnText(Object _element, String _property) {
+		String text = null;
+		Object key = _element;
+		if (_property == UserInfoPropertySection.KEY) {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			PropertyListSerialization.propertyListToStream(baos, key);
+			text = new String(baos.toByteArray());
+		} else if (_property == UserInfoPropertySection.VALUE) {
+			if (myUserInfo != null) {
+				Object valueObj = myUserInfo.get(key);
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				PropertyListSerialization.propertyListToStream(baos, valueObj);
+				text = new String(baos.toByteArray());
+			}
+		} else {
+			text = super.getColumnText(_element, _property);
+		}
+		return text;
+	}
 }

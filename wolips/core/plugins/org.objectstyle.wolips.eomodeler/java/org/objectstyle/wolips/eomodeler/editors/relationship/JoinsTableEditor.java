@@ -76,193 +76,194 @@ import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
 public class JoinsTableEditor extends Composite {
-  private EORelationship myRelationship;
+	private EORelationship myRelationship;
 
-  private TableViewer myJoinsTableViewer;
-  private AddRemoveButtonGroup myAddRemoveButtonGroup;
+	private TableViewer myJoinsTableViewer;
 
-  private AttributesListener myAttributesListener;
-  private RelationshipListener myRelationshipListener;
-  private ButtonUpdateListener myButtonUpdateListener;
+	private AddRemoveButtonGroup myAddRemoveButtonGroup;
 
-  public JoinsTableEditor(Composite _parent, int _style) {
-    super(_parent, _style);
-    setBackground(_parent.getBackground());
+	private AttributesListener myAttributesListener;
 
-    myRelationshipListener = new RelationshipListener();
-    myButtonUpdateListener = new ButtonUpdateListener();
+	private RelationshipListener myRelationshipListener;
 
-    GridLayout layout = new GridLayout();
-    setLayout(layout);
+	private ButtonUpdateListener myButtonUpdateListener;
 
-    myJoinsTableViewer = TableUtils.createTableViewer(this, SWT.BORDER | SWT.FLAT | SWT.MULTI | SWT.FULL_SELECTION, "EOJoin", EOJoinsConstants.COLUMNS, new EOJoinsContentProvider(), new EOJoinsLabelProvider(EOJoinsConstants.COLUMNS), new TablePropertyViewerSorter(EOJoinsConstants.COLUMNS));
+	public JoinsTableEditor(Composite _parent, int _style) {
+		super(_parent, _style);
+		setBackground(_parent.getBackground());
 
-    CellEditor[] cellEditors = new CellEditor[EOJoinsConstants.COLUMNS.length];
-    cellEditors[TableUtils.getColumnNumber(EOJoinsConstants.COLUMNS, EOJoin.SOURCE_ATTRIBUTE_NAME)] = new KeyComboBoxCellEditor(myJoinsTableViewer.getTable(), new String[0], SWT.READ_ONLY);
-    cellEditors[TableUtils.getColumnNumber(EOJoinsConstants.COLUMNS, EOJoin.DESTINATION_ATTRIBUTE_NAME)] = new KeyComboBoxCellEditor(myJoinsTableViewer.getTable(), new String[0], SWT.READ_ONLY);
-    myJoinsTableViewer.setCellModifier(new EOJoinsCellModifier(myJoinsTableViewer));
-    myJoinsTableViewer.setCellEditors(cellEditors);
+		myRelationshipListener = new RelationshipListener();
+		myButtonUpdateListener = new ButtonUpdateListener();
 
-    GridData joinsTableLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    joinsTableLayoutData.heightHint = 100;
-    myJoinsTableViewer.getTable().setLayoutData(joinsTableLayoutData);
-    myJoinsTableViewer.addSelectionChangedListener(myButtonUpdateListener);
+		GridLayout layout = new GridLayout();
+		setLayout(layout);
 
-    myAddRemoveButtonGroup = new AddRemoveButtonGroup(this, new AddJoinHandler(), new RemoveJoinsHandler());
-  }
+		myJoinsTableViewer = TableUtils.createTableViewer(this, SWT.BORDER | SWT.FLAT | SWT.MULTI | SWT.FULL_SELECTION, "EOJoin", EOJoinsConstants.COLUMNS, new EOJoinsContentProvider(), new EOJoinsLabelProvider(EOJoinsConstants.COLUMNS), new TablePropertyViewerSorter(EOJoinsConstants.COLUMNS));
 
-  public void setRelationship(EORelationship _relationship) {
-    if (!ComparisonUtils.equals(_relationship, myRelationship)) {
-      disposeBindings();
+		CellEditor[] cellEditors = new CellEditor[EOJoinsConstants.COLUMNS.length];
+		cellEditors[TableUtils.getColumnNumber(EOJoinsConstants.COLUMNS, EOJoin.SOURCE_ATTRIBUTE_NAME)] = new KeyComboBoxCellEditor(myJoinsTableViewer.getTable(), new String[0], SWT.READ_ONLY);
+		cellEditors[TableUtils.getColumnNumber(EOJoinsConstants.COLUMNS, EOJoin.DESTINATION_ATTRIBUTE_NAME)] = new KeyComboBoxCellEditor(myJoinsTableViewer.getTable(), new String[0], SWT.READ_ONLY);
+		myJoinsTableViewer.setCellModifier(new EOJoinsCellModifier(myJoinsTableViewer));
+		myJoinsTableViewer.setCellEditors(cellEditors);
 
-      myRelationship = _relationship;
-      if (myRelationship != null) {
-        myRelationship.addPropertyChangeListener(EORelationship.DESTINATION, myRelationshipListener);
-        myRelationship.addPropertyChangeListener(EORelationship.JOINS, myRelationshipListener);
+		GridData joinsTableLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		joinsTableLayoutData.heightHint = 100;
+		myJoinsTableViewer.getTable().setLayoutData(joinsTableLayoutData);
+		myJoinsTableViewer.addSelectionChangedListener(myButtonUpdateListener);
 
-        myJoinsTableViewer.setInput(myRelationship);
-        TableUtils.sort(myJoinsTableViewer, EOJoin.SOURCE_ATTRIBUTE);
+		myAddRemoveButtonGroup = new AddRemoveButtonGroup(this, new AddJoinHandler(), new RemoveJoinsHandler());
+	}
 
-        boolean enabled = !myRelationship.isFlattened();
-        myJoinsTableViewer.getTable().setEnabled(enabled);
-        myAddRemoveButtonGroup.setAddEnabled(enabled);
-        myAddRemoveButtonGroup.setRemoveEnabled(enabled);
+	public void setRelationship(EORelationship _relationship) {
+		if (!ComparisonUtils.equals(_relationship, myRelationship)) {
+			disposeBindings();
 
-        updateJoins();
-        updateButtons();
-      }
-    }
-  }
+			myRelationship = _relationship;
+			if (myRelationship != null) {
+				myRelationship.addPropertyChangeListener(EORelationship.DESTINATION, myRelationshipListener);
+				myRelationship.addPropertyChangeListener(EORelationship.JOINS, myRelationshipListener);
 
-  protected void updateButtons() {
-    boolean buttonsEnabled = isEnabled() && myRelationship.getDestination() != null;
-    boolean removeEnabled = buttonsEnabled && !myJoinsTableViewer.getSelection().isEmpty() && !myRelationship.isFlattened();
-    boolean addEnabled = buttonsEnabled;
-    myAddRemoveButtonGroup.setRemoveEnabled(removeEnabled);
-    myAddRemoveButtonGroup.setAddEnabled(addEnabled);
-  }
+				myJoinsTableViewer.setInput(myRelationship);
+				TableUtils.sort(myJoinsTableViewer, EOJoin.SOURCE_ATTRIBUTE);
 
-  protected void updateJoins() {
-    if (myJoinsTableViewer != null) {
-      myJoinsTableViewer.setInput(myRelationship);
-      KeyComboBoxCellEditor sourceCellEditor = (KeyComboBoxCellEditor) myJoinsTableViewer.getCellEditors()[TableUtils.getColumnNumber(EOJoinsConstants.COLUMNS, EOJoin.SOURCE_ATTRIBUTE_NAME)];
-      EOEntity source = myRelationship.getEntity();
-      if (source != null) {
-        sourceCellEditor.setItems(source.getAttributeNames());
-      }
-      KeyComboBoxCellEditor destinationCellEditor = (KeyComboBoxCellEditor) myJoinsTableViewer.getCellEditors()[TableUtils.getColumnNumber(EOJoinsConstants.COLUMNS, EOJoin.DESTINATION_ATTRIBUTE_NAME)];
-      EOEntity destination = myRelationship.getDestination();
-      if (destination != null) {
-        destinationCellEditor.setItems(destination.getAttributeNames());
-      }
-      TableUtils.packTableColumns(myJoinsTableViewer);
-    }
-  }
+				boolean enabled = !myRelationship.isFlattened();
+				myJoinsTableViewer.getTable().setEnabled(enabled);
+				myAddRemoveButtonGroup.setAddEnabled(enabled);
+				myAddRemoveButtonGroup.setRemoveEnabled(enabled);
 
-  protected void addSelectedJoin() {
-    EOJoin newJoin = new EOJoin();
-    myRelationship.addJoin(newJoin);
-    myJoinsTableViewer.setSelection(new StructuredSelection(newJoin));
-  }
+				updateJoins();
+				updateButtons();
+			}
+		}
+	}
 
-  protected void removeSelectedJoins() {
-    Object[] selectedJoins = ((IStructuredSelection) myJoinsTableViewer.getSelection()).toArray();
-    if (selectedJoins.length > 0) {
-      boolean confirmed = MessageDialog.openConfirm(getShell(), Messages.getString("EORelationshipBasicEditorSection.removeJoinsTitle"), Messages.getString("EORelationshipBasicEditorSection.removeJoinsMessage"));
-      if (confirmed) {
-        for (int joinNum = 0; joinNum < selectedJoins.length; joinNum++) {
-          EOJoin join = (EOJoin) selectedJoins[joinNum];
-          myRelationship.removeJoin(join);
-        }
-      }
-    }
-  }
+	protected void updateButtons() {
+		boolean buttonsEnabled = isEnabled() && myRelationship.getDestination() != null;
+		boolean removeEnabled = buttonsEnabled && !myJoinsTableViewer.getSelection().isEmpty() && !myRelationship.isFlattened();
+		boolean addEnabled = buttonsEnabled;
+		myAddRemoveButtonGroup.setRemoveEnabled(removeEnabled);
+		myAddRemoveButtonGroup.setAddEnabled(addEnabled);
+	}
 
-  public void disposeBindings() {
-    if (myRelationship != null) {
-      myRelationship.removePropertyChangeListener(EORelationship.DESTINATION, myRelationshipListener);
-      myRelationship.removePropertyChangeListener(EORelationship.JOINS, myRelationshipListener);
-      EOEntity destination = myRelationship.getDestination();
-      if (destination != null) {
-        destination.removePropertyChangeListener(EOEntity.ATTRIBUTE, myAttributesListener);
-        destination.removePropertyChangeListener(EOEntity.ATTRIBUTES, myAttributesListener);
-      }
-    }
-  }
-  
-  public void setEnabled(boolean _enabled) {
-    super.setEnabled(_enabled);
-    myJoinsTableViewer.getTable().setEnabled(_enabled);
-    updateButtons();
-  }
+	protected void updateJoins() {
+		if (myJoinsTableViewer != null) {
+			myJoinsTableViewer.setInput(myRelationship);
+			KeyComboBoxCellEditor sourceCellEditor = (KeyComboBoxCellEditor) myJoinsTableViewer.getCellEditors()[TableUtils.getColumnNumber(EOJoinsConstants.COLUMNS, EOJoin.SOURCE_ATTRIBUTE_NAME)];
+			EOEntity source = myRelationship.getEntity();
+			if (source != null) {
+				sourceCellEditor.setItems(source.getAttributeNames());
+			}
+			KeyComboBoxCellEditor destinationCellEditor = (KeyComboBoxCellEditor) myJoinsTableViewer.getCellEditors()[TableUtils.getColumnNumber(EOJoinsConstants.COLUMNS, EOJoin.DESTINATION_ATTRIBUTE_NAME)];
+			EOEntity destination = myRelationship.getDestination();
+			if (destination != null) {
+				destinationCellEditor.setItems(destination.getAttributeNames());
+			}
+			TableUtils.packTableColumns(myJoinsTableViewer);
+		}
+	}
 
-  public void dispose() {
-    super.dispose();
-    disposeBindings();
-  }
+	protected void addSelectedJoin() {
+		EOJoin newJoin = new EOJoin();
+		myRelationship.addJoin(newJoin);
+		myJoinsTableViewer.setSelection(new StructuredSelection(newJoin));
+	}
 
-  protected void destinationChanged(EOEntity _oldDestination, EOEntity _newDestination) {
-    if (_oldDestination != null) {
-      _oldDestination.removePropertyChangeListener(EOEntity.ATTRIBUTE, myAttributesListener);
-      _oldDestination.removePropertyChangeListener(EOEntity.ATTRIBUTES, myAttributesListener);
-    }
-    updateJoins();
-    updateButtons();
-    if (_newDestination != null) {
-      _newDestination.addPropertyChangeListener(EOEntity.ATTRIBUTE, myAttributesListener);
-      _newDestination.addPropertyChangeListener(EOEntity.ATTRIBUTES, myAttributesListener);
-    }
-  }
+	protected void removeSelectedJoins() {
+		Object[] selectedJoins = ((IStructuredSelection) myJoinsTableViewer.getSelection()).toArray();
+		if (selectedJoins.length > 0) {
+			boolean confirmed = MessageDialog.openConfirm(getShell(), Messages.getString("EORelationshipBasicEditorSection.removeJoinsTitle"), Messages.getString("EORelationshipBasicEditorSection.removeJoinsMessage"));
+			if (confirmed) {
+				for (int joinNum = 0; joinNum < selectedJoins.length; joinNum++) {
+					EOJoin join = (EOJoin) selectedJoins[joinNum];
+					myRelationship.removeJoin(join);
+				}
+			}
+		}
+	}
 
-  protected class AttributesListener implements PropertyChangeListener {
-    public void propertyChange(PropertyChangeEvent _event) {
-      String propertyName = _event.getPropertyName();
-      if (propertyName.equals(EOEntity.ATTRIBUTE)) {
-        JoinsTableEditor.this.updateJoins();
-      }
-      else if (propertyName.equals(EOEntity.ATTRIBUTES)) {
-        JoinsTableEditor.this.updateJoins();
-      }
-    }
-  }
+	public void disposeBindings() {
+		if (myRelationship != null) {
+			myRelationship.removePropertyChangeListener(EORelationship.DESTINATION, myRelationshipListener);
+			myRelationship.removePropertyChangeListener(EORelationship.JOINS, myRelationshipListener);
+			EOEntity destination = myRelationship.getDestination();
+			if (destination != null) {
+				destination.removePropertyChangeListener(EOEntity.ATTRIBUTE, myAttributesListener);
+				destination.removePropertyChangeListener(EOEntity.ATTRIBUTES, myAttributesListener);
+			}
+		}
+	}
 
-  protected class RelationshipListener implements PropertyChangeListener {
-    public void propertyChange(PropertyChangeEvent _event) {
-      String propertyName = _event.getPropertyName();
-      if (propertyName.equals(EORelationship.DESTINATION)) {
-        EOEntity oldDestination = (EOEntity) _event.getOldValue();
-        EOEntity newDestination = (EOEntity) _event.getNewValue();
-        JoinsTableEditor.this.destinationChanged(oldDestination, newDestination);
-      }
-      else if (propertyName.equals(EORelationship.JOINS)) {
-        JoinsTableEditor.this.updateJoins();
-      }
-    }
-  }
+	public void setEnabled(boolean _enabled) {
+		super.setEnabled(_enabled);
+		myJoinsTableViewer.getTable().setEnabled(_enabled);
+		updateButtons();
+	}
 
-  protected class ButtonUpdateListener implements ISelectionChangedListener {
-    public void selectionChanged(SelectionChangedEvent _event) {
-      JoinsTableEditor.this.updateButtons();
-    }
-  }
+	public void dispose() {
+		super.dispose();
+		disposeBindings();
+	}
 
-  protected class AddJoinHandler implements SelectionListener {
-    public void widgetDefaultSelected(SelectionEvent _e) {
-      widgetSelected(_e);
-    }
+	protected void destinationChanged(EOEntity _oldDestination, EOEntity _newDestination) {
+		if (_oldDestination != null) {
+			_oldDestination.removePropertyChangeListener(EOEntity.ATTRIBUTE, myAttributesListener);
+			_oldDestination.removePropertyChangeListener(EOEntity.ATTRIBUTES, myAttributesListener);
+		}
+		updateJoins();
+		updateButtons();
+		if (_newDestination != null) {
+			_newDestination.addPropertyChangeListener(EOEntity.ATTRIBUTE, myAttributesListener);
+			_newDestination.addPropertyChangeListener(EOEntity.ATTRIBUTES, myAttributesListener);
+		}
+	}
 
-    public void widgetSelected(SelectionEvent _e) {
-      JoinsTableEditor.this.addSelectedJoin();
-    }
-  }
+	protected class AttributesListener implements PropertyChangeListener {
+		public void propertyChange(PropertyChangeEvent _event) {
+			String propertyName = _event.getPropertyName();
+			if (propertyName.equals(EOEntity.ATTRIBUTE)) {
+				JoinsTableEditor.this.updateJoins();
+			} else if (propertyName.equals(EOEntity.ATTRIBUTES)) {
+				JoinsTableEditor.this.updateJoins();
+			}
+		}
+	}
 
-  protected class RemoveJoinsHandler implements SelectionListener {
-    public void widgetDefaultSelected(SelectionEvent _e) {
-      widgetSelected(_e);
-    }
+	protected class RelationshipListener implements PropertyChangeListener {
+		public void propertyChange(PropertyChangeEvent _event) {
+			String propertyName = _event.getPropertyName();
+			if (propertyName.equals(EORelationship.DESTINATION)) {
+				EOEntity oldDestination = (EOEntity) _event.getOldValue();
+				EOEntity newDestination = (EOEntity) _event.getNewValue();
+				JoinsTableEditor.this.destinationChanged(oldDestination, newDestination);
+			} else if (propertyName.equals(EORelationship.JOINS)) {
+				JoinsTableEditor.this.updateJoins();
+			}
+		}
+	}
 
-    public void widgetSelected(SelectionEvent _e) {
-      JoinsTableEditor.this.removeSelectedJoins();
-    }
-  }
+	protected class ButtonUpdateListener implements ISelectionChangedListener {
+		public void selectionChanged(SelectionChangedEvent _event) {
+			JoinsTableEditor.this.updateButtons();
+		}
+	}
+
+	protected class AddJoinHandler implements SelectionListener {
+		public void widgetDefaultSelected(SelectionEvent _e) {
+			widgetSelected(_e);
+		}
+
+		public void widgetSelected(SelectionEvent _e) {
+			JoinsTableEditor.this.addSelectedJoin();
+		}
+	}
+
+	protected class RemoveJoinsHandler implements SelectionListener {
+		public void widgetDefaultSelected(SelectionEvent _e) {
+			widgetSelected(_e);
+		}
+
+		public void widgetSelected(SelectionEvent _e) {
+			JoinsTableEditor.this.removeSelectedJoins();
+		}
+	}
 }

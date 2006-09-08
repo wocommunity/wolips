@@ -73,139 +73,145 @@ import org.objectstyle.wolips.eomodeler.model.InheritanceType;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUtils;
 
 public class SubclassEntityDialog extends Dialog {
-  private EOModel myModel;
-  private String myEntityName;
-  private EOEntity myParentEntity;
-  private InheritanceType myInheritanceType;
-  private String myRestrictingQualifier;
+	private EOModel myModel;
 
-  private Text myEntityNameText;
-  private ComboViewer myParentEntityViewer;
-  private ComboViewer myInheritanceTypeViewer;
-  private Text myRestrictingQualifierText;
+	private String myEntityName;
 
-  public SubclassEntityDialog(Shell _shell, EOModel _model, EOEntity _parentEntity) {
-    super(_shell);
-    myModel = _model;
-    myParentEntity = _parentEntity;
-  }
+	private EOEntity myParentEntity;
 
-  protected void configureShell(Shell _newShell) {
-    super.configureShell(_newShell);
-    _newShell.setText(Messages.getString("SubclassEntityDialog.title"));
-  }
+	private InheritanceType myInheritanceType;
 
-  public String getEntityName() {
-    return myEntityName;
-  }
+	private String myRestrictingQualifier;
 
-  public EOEntity getParentEntity() {
-    return myParentEntity;
-  }
+	private Text myEntityNameText;
 
-  public InheritanceType getInheritanceType() {
-    return myInheritanceType;
-  }
+	private ComboViewer myParentEntityViewer;
 
-  public String getRestrictingQualifier() {
-    return myRestrictingQualifier;
-  }
+	private ComboViewer myInheritanceTypeViewer;
 
-  protected void _updateSubclassFromUI() {
-    if (myEntityNameText != null) {
-      myEntityName = myEntityNameText.getText();
-    }
-    if (myParentEntityViewer != null) {
-      myParentEntity = (EOEntity) ((IStructuredSelection) myParentEntityViewer.getSelection()).getFirstElement();
-    }
-    if (myInheritanceTypeViewer != null) {
-      myInheritanceType = (InheritanceType) ((IStructuredSelection) myInheritanceTypeViewer.getSelection()).getFirstElement();
-    }
-    if (myRestrictingQualifierText != null) {
-      if (myParentEntity != null && !BooleanUtils.isTrue(myParentEntity.isAbstractEntity())) {
-        myRestrictingQualifierText.setEnabled(true);
-        myRestrictingQualifier = myRestrictingQualifierText.getText();
-      }
-      else {
-        myRestrictingQualifierText.setEnabled(false);
-        myRestrictingQualifier = null;
-      }
-    }
-  }
+	private Text myRestrictingQualifierText;
 
-  protected void _setEntityName(String _entityName) {
-    myEntityName = _entityName;
-  }
+	public SubclassEntityDialog(Shell _shell, EOModel _model, EOEntity _parentEntity) {
+		super(_shell);
+		myModel = _model;
+		myParentEntity = _parentEntity;
+	}
 
-  protected void _setParentEntity(EOEntity _parentEntity) {
-    myParentEntity = _parentEntity;
-  }
+	protected void configureShell(Shell _newShell) {
+		super.configureShell(_newShell);
+		_newShell.setText(Messages.getString("SubclassEntityDialog.title"));
+	}
 
-  protected Control createDialogArea(Composite _parent) {
-    Composite subclassDialogArea = new Composite(_parent, SWT.NONE);
-    GridLayout gridLayout = new GridLayout(2, false);
-    gridLayout.marginBottom = 0;
-    gridLayout.marginTop = 15;
-    gridLayout.marginLeft = 15;
-    gridLayout.marginRight = 15;
-    gridLayout.horizontalSpacing = 15;
-    subclassDialogArea.setLayout(gridLayout);
+	public String getEntityName() {
+		return myEntityName;
+	}
 
-    Label subclassNameLabel = new Label(subclassDialogArea, SWT.NONE);
-    subclassNameLabel.setText(Messages.getString("SubclassEntityDialog.entityNameLabel"));
-    myEntityNameText = new Text(subclassDialogArea, SWT.BORDER);
-    myEntityNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    myEntityNameText.addModifyListener(new ModifyListener() {
-      public void modifyText(ModifyEvent _e) {
-        SubclassEntityDialog.this._updateSubclassFromUI();
-      }
-    });
-    myEntityNameText.setText(myModel.findUnusedEntityName(myParentEntity.getName()));
+	public EOEntity getParentEntity() {
+		return myParentEntity;
+	}
 
-    Label parentEntityLabel = new Label(subclassDialogArea, SWT.NONE);
-    parentEntityLabel.setText(Messages.getString("SubclassEntityDialog.parentEntityLabel"));
-    myParentEntityViewer = new ComboViewer(subclassDialogArea);
-    myParentEntityViewer.setContentProvider(new EOEntityListContentProvider(false, false));
-    myParentEntityViewer.setLabelProvider(new EOEntityLabelProvider());
-    myParentEntityViewer.setSorter(new ViewerSorter());
-    myParentEntityViewer.setInput(myModel);
-    myParentEntityViewer.getCombo().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    myParentEntityViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-      public void selectionChanged(SelectionChangedEvent _event) {
-        SubclassEntityDialog.this._updateSubclassFromUI();
-      }
-    });
-    if (myParentEntity != null) {
-      myParentEntityViewer.setSelection(new StructuredSelection(myParentEntity));
-    }
+	public InheritanceType getInheritanceType() {
+		return myInheritanceType;
+	}
 
-    Label inheritanceTypeLabel = new Label(subclassDialogArea, SWT.NONE);
-    inheritanceTypeLabel.setText(Messages.getString("SubclassEntityDialog.inheritanceTypeLabel"));
-    myInheritanceTypeViewer = new ComboViewer(subclassDialogArea);
-    myInheritanceTypeViewer.setLabelProvider(new InheritanceTypeLabelProvider());
-    myInheritanceTypeViewer.setContentProvider(new InheritanceTypeContentProvider());
-    myInheritanceTypeViewer.setSorter(new ViewerSorter());
-    myInheritanceTypeViewer.setInput(InheritanceType.INHERITANCE_TYPES);
-    myInheritanceTypeViewer.getCombo().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    myInheritanceTypeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-      public void selectionChanged(SelectionChangedEvent _event) {
-        SubclassEntityDialog.this._updateSubclassFromUI();
-      }
-    });
-    myInheritanceTypeViewer.setSelection(new StructuredSelection(InheritanceType.HORIZONTAL));
+	public String getRestrictingQualifier() {
+		return myRestrictingQualifier;
+	}
 
-    Label restrictingQualifierLabel = new Label(subclassDialogArea, SWT.NONE);
-    restrictingQualifierLabel.setText(Messages.getString("SubclassEntityDialog.restrictingQualifierLabel"));
-    myRestrictingQualifierText = new Text(subclassDialogArea, SWT.BORDER);
-    myRestrictingQualifierText.addModifyListener(new ModifyListener() {
-      public void modifyText(ModifyEvent _e) {
-        SubclassEntityDialog.this._updateSubclassFromUI();
-      }
-    });
-    myRestrictingQualifierText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+	protected void _updateSubclassFromUI() {
+		if (myEntityNameText != null) {
+			myEntityName = myEntityNameText.getText();
+		}
+		if (myParentEntityViewer != null) {
+			myParentEntity = (EOEntity) ((IStructuredSelection) myParentEntityViewer.getSelection()).getFirstElement();
+		}
+		if (myInheritanceTypeViewer != null) {
+			myInheritanceType = (InheritanceType) ((IStructuredSelection) myInheritanceTypeViewer.getSelection()).getFirstElement();
+		}
+		if (myRestrictingQualifierText != null) {
+			if (myParentEntity != null && !BooleanUtils.isTrue(myParentEntity.isAbstractEntity())) {
+				myRestrictingQualifierText.setEnabled(true);
+				myRestrictingQualifier = myRestrictingQualifierText.getText();
+			} else {
+				myRestrictingQualifierText.setEnabled(false);
+				myRestrictingQualifier = null;
+			}
+		}
+	}
 
-    _updateSubclassFromUI();
-    
-    return subclassDialogArea;
-  }
+	protected void _setEntityName(String _entityName) {
+		myEntityName = _entityName;
+	}
+
+	protected void _setParentEntity(EOEntity _parentEntity) {
+		myParentEntity = _parentEntity;
+	}
+
+	protected Control createDialogArea(Composite _parent) {
+		Composite subclassDialogArea = new Composite(_parent, SWT.NONE);
+		GridLayout gridLayout = new GridLayout(2, false);
+		gridLayout.marginBottom = 0;
+		gridLayout.marginTop = 15;
+		gridLayout.marginLeft = 15;
+		gridLayout.marginRight = 15;
+		gridLayout.horizontalSpacing = 15;
+		subclassDialogArea.setLayout(gridLayout);
+
+		Label subclassNameLabel = new Label(subclassDialogArea, SWT.NONE);
+		subclassNameLabel.setText(Messages.getString("SubclassEntityDialog.entityNameLabel"));
+		myEntityNameText = new Text(subclassDialogArea, SWT.BORDER);
+		myEntityNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		myEntityNameText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent _e) {
+				SubclassEntityDialog.this._updateSubclassFromUI();
+			}
+		});
+		myEntityNameText.setText(myModel.findUnusedEntityName(myParentEntity.getName()));
+
+		Label parentEntityLabel = new Label(subclassDialogArea, SWT.NONE);
+		parentEntityLabel.setText(Messages.getString("SubclassEntityDialog.parentEntityLabel"));
+		myParentEntityViewer = new ComboViewer(subclassDialogArea);
+		myParentEntityViewer.setContentProvider(new EOEntityListContentProvider(false, false));
+		myParentEntityViewer.setLabelProvider(new EOEntityLabelProvider());
+		myParentEntityViewer.setSorter(new ViewerSorter());
+		myParentEntityViewer.setInput(myModel);
+		myParentEntityViewer.getCombo().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		myParentEntityViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent _event) {
+				SubclassEntityDialog.this._updateSubclassFromUI();
+			}
+		});
+		if (myParentEntity != null) {
+			myParentEntityViewer.setSelection(new StructuredSelection(myParentEntity));
+		}
+
+		Label inheritanceTypeLabel = new Label(subclassDialogArea, SWT.NONE);
+		inheritanceTypeLabel.setText(Messages.getString("SubclassEntityDialog.inheritanceTypeLabel"));
+		myInheritanceTypeViewer = new ComboViewer(subclassDialogArea);
+		myInheritanceTypeViewer.setLabelProvider(new InheritanceTypeLabelProvider());
+		myInheritanceTypeViewer.setContentProvider(new InheritanceTypeContentProvider());
+		myInheritanceTypeViewer.setSorter(new ViewerSorter());
+		myInheritanceTypeViewer.setInput(InheritanceType.INHERITANCE_TYPES);
+		myInheritanceTypeViewer.getCombo().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		myInheritanceTypeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent _event) {
+				SubclassEntityDialog.this._updateSubclassFromUI();
+			}
+		});
+		myInheritanceTypeViewer.setSelection(new StructuredSelection(InheritanceType.HORIZONTAL));
+
+		Label restrictingQualifierLabel = new Label(subclassDialogArea, SWT.NONE);
+		restrictingQualifierLabel.setText(Messages.getString("SubclassEntityDialog.restrictingQualifierLabel"));
+		myRestrictingQualifierText = new Text(subclassDialogArea, SWT.BORDER);
+		myRestrictingQualifierText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent _e) {
+				SubclassEntityDialog.this._updateSubclassFromUI();
+			}
+		});
+		myRestrictingQualifierText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+		_updateSubclassFromUI();
+
+		return subclassDialogArea;
+	}
 }

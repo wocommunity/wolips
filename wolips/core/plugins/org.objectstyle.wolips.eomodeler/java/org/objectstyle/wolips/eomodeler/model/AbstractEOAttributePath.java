@@ -55,71 +55,71 @@ import org.objectstyle.wolips.eomodeler.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
 public abstract class AbstractEOAttributePath implements IUserInfoable, IEOEntityRelative {
-  private EORelationshipPath myParentRelationshipPath;
-  private IEOAttribute myChildAttribute;
+	private EORelationshipPath myParentRelationshipPath;
 
-  public AbstractEOAttributePath(EORelationshipPath _parentRelationshipPath, IEOAttribute _childAttribute) {
-    myParentRelationshipPath = _parentRelationshipPath;
-    myChildAttribute = _childAttribute;
-  }
+	private IEOAttribute myChildAttribute;
 
-  public EORelationshipPath getParentRelationshipPath() {
-    return myParentRelationshipPath;
-  }
+	public AbstractEOAttributePath(EORelationshipPath _parentRelationshipPath, IEOAttribute _childAttribute) {
+		myParentRelationshipPath = _parentRelationshipPath;
+		myChildAttribute = _childAttribute;
+	}
 
-  public IEOAttribute getChildIEOAttribute() {
-    return myChildAttribute;
-  }
+	public EORelationshipPath getParentRelationshipPath() {
+		return myParentRelationshipPath;
+	}
 
-  public NotificationMap getUserInfo() {
-    return myChildAttribute.getUserInfo();
-  }
+	public IEOAttribute getChildIEOAttribute() {
+		return myChildAttribute;
+	}
 
-  public void setUserInfo(Map _userInfo) {
-    myChildAttribute.setUserInfo(_userInfo);
-  }
+	public NotificationMap getUserInfo() {
+		return myChildAttribute.getUserInfo();
+	}
 
-  public void setUserInfo(Map _userInfo, boolean _fireEvents) {
-    myChildAttribute.setUserInfo(_userInfo, _fireEvents);
-  }
+	public void setUserInfo(Map _userInfo) {
+		myChildAttribute.setUserInfo(_userInfo);
+	}
 
-  public EOEntity getEntity() {
-    return myChildAttribute.getEntity();
-  }
+	public void setUserInfo(Map _userInfo, boolean _fireEvents) {
+		myChildAttribute.setUserInfo(_userInfo, _fireEvents);
+	}
 
-  public EOEntity getRootEntity() {
-    EOEntity entity;
-    if (myParentRelationshipPath != null) {
-      entity = myParentRelationshipPath.getRootEntity();
-    }
-    else {
-      entity = getEntity();
-    }
-    return entity;
-  }
+	public EOEntity getEntity() {
+		return myChildAttribute.getEntity();
+	}
 
-  public Boolean isToMany() {
-    Boolean toMany = null;
-    AbstractEOAttributePath attributePath = this;
-    while (!BooleanUtils.isTrue(toMany) && attributePath != null) {
-      toMany = attributePath.getChildIEOAttribute().isToMany();
-      attributePath = attributePath.getParentRelationshipPath();
-    }
-    return toMany;
-  }
+	public EOEntity getRootEntity() {
+		EOEntity entity;
+		if (myParentRelationshipPath != null) {
+			entity = myParentRelationshipPath.getRootEntity();
+		} else {
+			entity = getEntity();
+		}
+		return entity;
+	}
 
-  public String toKeyPath() {
-    StringBuffer sb = new StringBuffer();
-    toKeyPath(sb);
-    return sb.toString();
-  }
+	public Boolean isToMany() {
+		Boolean toMany = null;
+		AbstractEOAttributePath attributePath = this;
+		while (!BooleanUtils.isTrue(toMany) && attributePath != null) {
+			toMany = attributePath.getChildIEOAttribute().isToMany();
+			attributePath = attributePath.getParentRelationshipPath();
+		}
+		return toMany;
+	}
 
-  protected void toKeyPath(StringBuffer _keyPathBuffer) {
-    if (myParentRelationshipPath != null) {
-      myParentRelationshipPath.toKeyPath(_keyPathBuffer);
-      _keyPathBuffer.append(".");
-    }
-    String name = myChildAttribute.getName();
-    _keyPathBuffer.append(name);
-  }
+	public String toKeyPath() {
+		StringBuffer sb = new StringBuffer();
+		toKeyPath(sb);
+		return sb.toString();
+	}
+
+	protected void toKeyPath(StringBuffer _keyPathBuffer) {
+		if (myParentRelationshipPath != null) {
+			myParentRelationshipPath.toKeyPath(_keyPathBuffer);
+			_keyPathBuffer.append(".");
+		}
+		String name = myChildAttribute.getName();
+		_keyPathBuffer.append(name);
+	}
 }

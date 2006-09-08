@@ -77,8 +77,7 @@ import org.w3c.dom.NodeList;
  * 
  * @author uli
  */
-public class HtmlPreviewEditor implements IEmbeddedEditor,
-		IEmbeddedEditorSelected, IEditorPart {
+public class HtmlPreviewEditor implements IEmbeddedEditor, IEmbeddedEditorSelected, IEditorPart {
 
 	private EditorInteraction editorInteraction;
 
@@ -96,72 +95,55 @@ public class HtmlPreviewEditor implements IEmbeddedEditor,
 	 * Update the contents of the Preview page
 	 */
 	private void updatePreviewContent() {
-		if(editorInteraction == null) {
+		if (editorInteraction == null) {
 			return;
 		}
-		IDocument editDocument = editorInteraction.getHtmlDocumentProvider()
-				.getHtmlEditDocument();
-		IDocument htmlSource = new org.eclipse.jface.text.Document(editDocument
-				.get());
+		IDocument editDocument = editorInteraction.getHtmlDocumentProvider().getHtmlEditDocument();
+		IDocument htmlSource = new org.eclipse.jface.text.Document(editDocument.get());
 
 		IStructuredModel editModel = null;
 		int insertOffset = 0;
 		List removalRegions = new ArrayList(2);
 		try {
-			editModel = StructuredModelManager.getModelManager()
-					.getExistingModelForRead(editDocument);
+			editModel = StructuredModelManager.getModelManager().getExistingModelForRead(editDocument);
 			if (editModel != null && editModel instanceof IDOMModel) {
 				Document document = ((IDOMModel) editModel).getDocument();
 				// remove meta tags specifying encoding as required by Browser
 				// API
-				NodeList metaElements = document
-						.getElementsByTagName(HTML40Namespace.ElementName.META);
+				NodeList metaElements = document.getElementsByTagName(HTML40Namespace.ElementName.META);
 				for (int i = 0; i < metaElements.getLength(); i++) {
 					IDOMElement meta = (IDOMElement) metaElements.item(i);
 					if (insertOffset == 0)
 						insertOffset = meta.getStartOffset();
-					insertOffset = Math.max(0, Math.min(insertOffset, meta
-							.getStartOffset()));
-					String attributeNameHttpEquiv = meta
-							.getAttribute(HTML40Namespace.ATTR_NAME_HTTP_EQUIV);
-					String attributeNameContent = meta
-							.getAttribute(HTML40Namespace.ATTR_NAME_CONTENT);
-					if (attributeNameHttpEquiv != null
-							&& attributeNameHttpEquiv.equals("Content-Type") && attributeNameContent != null && attributeNameContent.indexOf("charset") > 0) { //$NON-NLS-2$ //$NON-NLS-1$
+					insertOffset = Math.max(0, Math.min(insertOffset, meta.getStartOffset()));
+					String attributeNameHttpEquiv = meta.getAttribute(HTML40Namespace.ATTR_NAME_HTTP_EQUIV);
+					String attributeNameContent = meta.getAttribute(HTML40Namespace.ATTR_NAME_CONTENT);
+					if (attributeNameHttpEquiv != null && attributeNameHttpEquiv.equals("Content-Type") && attributeNameContent != null && attributeNameContent.indexOf("charset") > 0) { //$NON-NLS-2$ //$NON-NLS-1$
 						if (meta.getStartStructuredDocumentRegion() != null)
-							removalRegions.add(meta
-									.getStartStructuredDocumentRegion());
+							removalRegions.add(meta.getStartStructuredDocumentRegion());
 						if (meta.getEndStructuredDocumentRegion() != null)
-							removalRegions.add(meta
-									.getEndStructuredDocumentRegion());
+							removalRegions.add(meta.getEndStructuredDocumentRegion());
 					}
 				}
 				// remove existing base elements with hrefs so we can add one
 				// for the local location
-				NodeList baseElements = document
-						.getElementsByTagName(HTML40Namespace.ElementName.BASE);
+				NodeList baseElements = document.getElementsByTagName(HTML40Namespace.ElementName.BASE);
 				for (int i = 0; i < baseElements.getLength(); i++) {
 					IDOMElement base = (IDOMElement) baseElements.item(i);
 					if (insertOffset == 0)
 						insertOffset = base.getStartOffset();
-					insertOffset = Math.max(0, Math.min(insertOffset, base
-							.getStartOffset()));
+					insertOffset = Math.max(0, Math.min(insertOffset, base.getStartOffset()));
 					if (base.getStartStructuredDocumentRegion() != null)
-						removalRegions.add(base
-								.getStartStructuredDocumentRegion());
+						removalRegions.add(base.getStartStructuredDocumentRegion());
 					if (base.getEndStructuredDocumentRegion() != null)
-						removalRegions.add(base
-								.getEndStructuredDocumentRegion());
+						removalRegions.add(base.getEndStructuredDocumentRegion());
 				}
 			}
 
 			for (int i = removalRegions.size() - 1; i >= 0; i--) {
-				IStructuredDocumentRegion region = (IStructuredDocumentRegion) removalRegions
-						.get(i);
+				IStructuredDocumentRegion region = (IStructuredDocumentRegion) removalRegions.get(i);
 				try {
-					htmlSource.replace(region.getStartOffset(), region
-							.getEndOffset()
-							- region.getStartOffset(), ""); //$NON-NLS-1$
+					htmlSource.replace(region.getStartOffset(), region.getEndOffset() - region.getStartOffset(), ""); //$NON-NLS-1$
 				} catch (BadLocationException e1) {
 					HtmlPreviewPlugin.getDefault().log(e1);
 				}
@@ -169,13 +151,11 @@ public class HtmlPreviewEditor implements IEmbeddedEditor,
 
 			if (insertOffset == 0) {
 				Document document = ((IDOMModel) editModel).getDocument();
-				NodeList headElements = document
-						.getElementsByTagName(HTML40Namespace.ElementName.HEAD);
+				NodeList headElements = document.getElementsByTagName(HTML40Namespace.ElementName.HEAD);
 				if (headElements.getLength() > 0) {
 					IDOMElement head = (IDOMElement) headElements.item(0);
 					if (head.getStartStructuredDocumentRegion() != null) {
-						insertOffset = head.getStartStructuredDocumentRegion()
-								.getEndOffset();
+						insertOffset = head.getStartStructuredDocumentRegion().getEndOffset();
 					} else {
 						insertOffset = head.getEndOffset();
 					}
@@ -230,8 +210,7 @@ public class HtmlPreviewEditor implements IEmbeddedEditor,
 		return site;
 	}
 
-	public void init(IEditorSite site, IEditorInput input)
-			throws PartInitException {
+	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		this.site = site;
 		this.input = input;
 	}

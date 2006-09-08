@@ -52,42 +52,47 @@ package org.objectstyle.wolips.eomodeler.model;
 import org.objectstyle.wolips.eomodeler.Messages;
 
 public class EODeleteRule {
-  public static final EODeleteRule NULLIFY = new EODeleteRule("EODeleteRuleNullify", Messages.getString("EODeleteRule.nullify"));
-  public static final EODeleteRule CASCADE = new EODeleteRule("EODeleteRuleCascade", Messages.getString("EODeleteRule.cascade"));
-  public static final EODeleteRule DENY = new EODeleteRule("EODeleteRuleDeny", Messages.getString("EODeleteRule.deny"));
-  public static final EODeleteRule NO_ACTION = new EODeleteRule("EODeleteRuleNoAction", Messages.getString("EODeleteRule.noAction"));
-  public static final EODeleteRule[] DELETE_RULES = new EODeleteRule[] { EODeleteRule.NULLIFY, EODeleteRule.CASCADE, EODeleteRule.DENY, EODeleteRule.NO_ACTION };
+	public static final EODeleteRule NULLIFY = new EODeleteRule("EODeleteRuleNullify", Messages.getString("EODeleteRule.nullify"));
 
-  private String myID;
-  private String myName;
+	public static final EODeleteRule CASCADE = new EODeleteRule("EODeleteRuleCascade", Messages.getString("EODeleteRule.cascade"));
 
-  public EODeleteRule(String _id, String _name) {
-    myID = _id;
-    myName = _name;
-  }
+	public static final EODeleteRule DENY = new EODeleteRule("EODeleteRuleDeny", Messages.getString("EODeleteRule.deny"));
 
-  public String getID() {
-    return myID;
-  }
+	public static final EODeleteRule NO_ACTION = new EODeleteRule("EODeleteRuleNoAction", Messages.getString("EODeleteRule.noAction"));
 
-  public String getName() {
-    return myName;
-  }
+	public static final EODeleteRule[] DELETE_RULES = new EODeleteRule[] { EODeleteRule.NULLIFY, EODeleteRule.CASCADE, EODeleteRule.DENY, EODeleteRule.NO_ACTION };
 
-  public String toString() {
-    return "[EODeleteRule: name = " + myName + "]";
-  }
+	private String myID;
 
-  public static EODeleteRule getDeleteRuleByID(String _id) {
-    EODeleteRule matchingDeleteRule = null;
-    for (int deleteRuleNum = 0; matchingDeleteRule == null && deleteRuleNum < EODeleteRule.DELETE_RULES.length; deleteRuleNum++) {
-      if (EODeleteRule.DELETE_RULES[deleteRuleNum].myID.equals(_id)) {
-        matchingDeleteRule = EODeleteRule.DELETE_RULES[deleteRuleNum];
-      }
-    }
-    if (matchingDeleteRule == null) {
-      matchingDeleteRule = EODeleteRule.NULLIFY;
-    }
-    return matchingDeleteRule;
-  }
+	private String myName;
+
+	public EODeleteRule(String _id, String _name) {
+		myID = _id;
+		myName = _name;
+	}
+
+	public String getID() {
+		return myID;
+	}
+
+	public String getName() {
+		return myName;
+	}
+
+	public String toString() {
+		return "[EODeleteRule: name = " + myName + "]";
+	}
+
+	public static EODeleteRule getDeleteRuleByID(String _id) {
+		EODeleteRule matchingDeleteRule = null;
+		for (int deleteRuleNum = 0; matchingDeleteRule == null && deleteRuleNum < EODeleteRule.DELETE_RULES.length; deleteRuleNum++) {
+			if (EODeleteRule.DELETE_RULES[deleteRuleNum].myID.equals(_id)) {
+				matchingDeleteRule = EODeleteRule.DELETE_RULES[deleteRuleNum];
+			}
+		}
+		if (matchingDeleteRule == null) {
+			matchingDeleteRule = EODeleteRule.NULLIFY;
+		}
+		return matchingDeleteRule;
+	}
 }

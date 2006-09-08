@@ -54,12 +54,11 @@ public class StructuredTextViewerConfigurationWO extends StructuredTextViewerCon
 		super();
 	}
 
-
 	protected IContentAssistProcessor[] getContentAssistProcessors(ISourceViewer sourceViewer, String partitionType) {
 		if ((partitionType == IHTMLPartitionTypes.HTML_DEFAULT) || (partitionType == IHTMLPartitionTypes.HTML_COMMENT)) {
-			return new IContentAssistProcessor[]{new WebObjectTagContentAssistProcessor()};
+			return new IContentAssistProcessor[] { new WebObjectTagContentAssistProcessor() };
 		}
 		return super.getContentAssistProcessors(sourceViewer, partitionType);
 	}
-	
+
 }

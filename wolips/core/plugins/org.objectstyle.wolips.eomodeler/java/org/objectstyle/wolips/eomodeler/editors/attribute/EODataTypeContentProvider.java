@@ -54,16 +54,16 @@ import org.eclipse.jface.viewers.Viewer;
 import org.objectstyle.wolips.eomodeler.model.EODataType;
 
 public class EODataTypeContentProvider implements IStructuredContentProvider {
-  public Object[] getElements(Object _inputElement) {
-    EODataType[] dataTypes = (EODataType[]) _inputElement;
-    return dataTypes;
-  }
+	public Object[] getElements(Object _inputElement) {
+		EODataType[] dataTypes = (EODataType[]) _inputElement;
+		return dataTypes;
+	}
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
-    // DO NOTHING
-  }
+	public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+		// DO NOTHING
+	}
 }

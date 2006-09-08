@@ -64,41 +64,42 @@ import org.objectstyle.wolips.eomodeler.model.EOArgumentDirection;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 
 public class EOArgumentBasicEditorSection extends AbstractEOArgumentBasicEditorSection {
-  private ComboViewer myDirectionComboViewer;
-  private ComboViewerBinding myDirectionBinding;
+	private ComboViewer myDirectionComboViewer;
 
-  protected void _addComponents(Composite _parent) {
-    getWidgetFactory().createCLabel(_parent, Messages.getString("EOArgument." + EOArgument.DIRECTION), SWT.NONE);
-    Combo prototypeCombo = new Combo(_parent, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
-    myDirectionComboViewer = new ComboViewer(prototypeCombo);
-    myDirectionComboViewer.setLabelProvider(new EOArgumentLabelProvider());
-    myDirectionComboViewer.setContentProvider(new EOArgumentContentProvider());
-    myDirectionComboViewer.setInput(EOArgumentDirection.ARGUMENT_DIRECTIONS);
-    GridData prototypeComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    prototypeCombo.setLayoutData(prototypeComboLayoutData);
-  }
+	private ComboViewerBinding myDirectionBinding;
 
-  protected void _argumentChanged(AbstractEOArgument _argument) {
-    EOArgument argument = (EOArgument) _argument;
-    if (argument != null) {
-      myDirectionBinding = new ComboViewerBinding(myDirectionComboViewer, argument, EOArgument.DIRECTION, null, null, null);
-    }
-  }
+	protected void _addComponents(Composite _parent) {
+		getWidgetFactory().createCLabel(_parent, Messages.getString("EOArgument." + EOArgument.DIRECTION), SWT.NONE);
+		Combo prototypeCombo = new Combo(_parent, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
+		myDirectionComboViewer = new ComboViewer(prototypeCombo);
+		myDirectionComboViewer.setLabelProvider(new EOArgumentLabelProvider());
+		myDirectionComboViewer.setContentProvider(new EOArgumentContentProvider());
+		myDirectionComboViewer.setInput(EOArgumentDirection.ARGUMENT_DIRECTIONS);
+		GridData prototypeComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		prototypeCombo.setLayoutData(prototypeComboLayoutData);
+	}
 
-  protected void disposeBindings() {
-    if (myDirectionBinding != null) {
-      myDirectionBinding.dispose();
-    }
-    super.disposeBindings();
-  }
+	protected void _argumentChanged(AbstractEOArgument _argument) {
+		EOArgument argument = (EOArgument) _argument;
+		if (argument != null) {
+			myDirectionBinding = new ComboViewerBinding(myDirectionComboViewer, argument, EOArgument.DIRECTION, null, null, null);
+		}
+	}
 
-  public void setInput(IWorkbenchPart _part, ISelection _selection) {
-    super.setInput(_part, _selection);
-    EOArgument attribute = null;
-    Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-    if (selectedObject instanceof EOArgument) {
-      attribute = (EOArgument) selectedObject;
-    }
-    setArgument(attribute);
-  }
+	protected void disposeBindings() {
+		if (myDirectionBinding != null) {
+			myDirectionBinding.dispose();
+		}
+		super.disposeBindings();
+	}
+
+	public void setInput(IWorkbenchPart _part, ISelection _selection) {
+		super.setInput(_part, _selection);
+		EOArgument attribute = null;
+		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+		if (selectedObject instanceof EOArgument) {
+			attribute = (EOArgument) selectedObject;
+		}
+		setArgument(attribute);
+	}
 }

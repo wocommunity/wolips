@@ -61,36 +61,35 @@ import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 
 public class EOPrototypeListContentProvider implements IStructuredContentProvider {
-  public static final Object BLANK_ENTITY = "";
+	public static final Object BLANK_ENTITY = "";
 
-  private KVCComparator myComparator;
+	private KVCComparator myComparator;
 
-  public EOPrototypeListContentProvider() {
-    myComparator = new KVCComparator(EOAttribute.class, EOEntity.NAME);
-  }
+	public EOPrototypeListContentProvider() {
+		myComparator = new KVCComparator(EOAttribute.class, EOEntity.NAME);
+	}
 
-  public Object[] getElements(Object _inputElement) {
-    Set prototypeAttributesList;
-    if (_inputElement instanceof EOAttribute) {
-      prototypeAttributesList = ((EOAttribute) _inputElement).getEntity().getModel().getPrototypeAttributes();
-    }
-    else {
-      throw new IllegalArgumentException("Unknown input element: " + _inputElement);
-    }
+	public Object[] getElements(Object _inputElement) {
+		Set prototypeAttributesList;
+		if (_inputElement instanceof EOAttribute) {
+			prototypeAttributesList = ((EOAttribute) _inputElement).getEntity().getModel().getPrototypeAttributes();
+		} else {
+			throw new IllegalArgumentException("Unknown input element: " + _inputElement);
+		}
 
-    List prototypeAttributesListCopy = new LinkedList();
-    prototypeAttributesListCopy.addAll(prototypeAttributesList);
-    Collections.sort(prototypeAttributesListCopy, myComparator);
-    prototypeAttributesListCopy.add(0, EOPrototypeListContentProvider.BLANK_ENTITY);
-    Object[] attributes = prototypeAttributesListCopy.toArray();
-    return attributes;
-  }
+		List prototypeAttributesListCopy = new LinkedList();
+		prototypeAttributesListCopy.addAll(prototypeAttributesList);
+		Collections.sort(prototypeAttributesListCopy, myComparator);
+		prototypeAttributesListCopy.add(0, EOPrototypeListContentProvider.BLANK_ENTITY);
+		Object[] attributes = prototypeAttributesListCopy.toArray();
+		return attributes;
+	}
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
-    // DO NOTHING
-  }
+	public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+		// DO NOTHING
+	}
 }

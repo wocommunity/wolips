@@ -49,41 +49,42 @@
  */
 package org.objectstyle.wolips.eomodeler.kvc;
 
-
 public class CachingKey extends Key {
-  private Class myCacheClass;
-  private IKey myGetMember;
-  private IKey mySetMember;
+	private Class myCacheClass;
 
-  public CachingKey(String _name) {
-    super(_name);
-  }
+	private IKey myGetMember;
 
-  public synchronized Class getType(Object _instance) {
-    Class clazz = super.getClass(_instance);
-    if (myCacheClass != clazz) {
-      myGetMember = null;
-      mySetMember = null;
-    }
-    myCacheClass = clazz;
-    return clazz;
-  }
+	private IKey mySetMember;
 
-  protected IKey getGetMember(Object _instance) {
-    if (myGetMember == null) {
-      myGetMember = super.getGetMember(_instance);
-    }
-    return myGetMember;
-  }
+	public CachingKey(String _name) {
+		super(_name);
+	}
 
-  protected IKey getSetMember(Object _instance) {
-    if (mySetMember == null) {
-      mySetMember = super.getSetMember(_instance);
-    }
-    return mySetMember;
-  }
+	public synchronized Class getType(Object _instance) {
+		Class clazz = super.getClass(_instance);
+		if (myCacheClass != clazz) {
+			myGetMember = null;
+			mySetMember = null;
+		}
+		myCacheClass = clazz;
+		return clazz;
+	}
 
-  public String toString() {
-    return "[CachedKey: name = " + getName() + "]";
-  }
+	protected IKey getGetMember(Object _instance) {
+		if (myGetMember == null) {
+			myGetMember = super.getGetMember(_instance);
+		}
+		return myGetMember;
+	}
+
+	protected IKey getSetMember(Object _instance) {
+		if (mySetMember == null) {
+			mySetMember = super.getSetMember(_instance);
+		}
+		return mySetMember;
+	}
+
+	public String toString() {
+		return "[CachedKey: name = " + getName() + "]";
+	}
 }

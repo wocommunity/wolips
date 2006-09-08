@@ -50,39 +50,40 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 public class EOModelVerificationFailure {
-  private String myMessage;
-  private Throwable myRootCause;
+	private String myMessage;
 
-  public EOModelVerificationFailure(String _message) {
-    this(_message, null);
-  }
+	private Throwable myRootCause;
 
-  public EOModelVerificationFailure(String _message, Throwable _rootCause) {
-    myMessage = _message;
-    myRootCause = _rootCause;
-  }
+	public EOModelVerificationFailure(String _message) {
+		this(_message, null);
+	}
 
-  public int hashCode() {
-    int hashCode = myMessage.hashCode();
-    if (myRootCause != null) {
-      hashCode *= myRootCause.hashCode();
-    }
-    return hashCode;
-  }
+	public EOModelVerificationFailure(String _message, Throwable _rootCause) {
+		myMessage = _message;
+		myRootCause = _rootCause;
+	}
 
-  public boolean equals(Object _obj) {
-    return (_obj instanceof EOModelVerificationFailure && (_obj == this || (((EOModelVerificationFailure) _obj).myMessage.equals(myMessage)) && myRootCause == null && ((EOModelVerificationFailure) _obj).myRootCause == null));
-  }
+	public int hashCode() {
+		int hashCode = myMessage.hashCode();
+		if (myRootCause != null) {
+			hashCode *= myRootCause.hashCode();
+		}
+		return hashCode;
+	}
 
-  public String getMessage() {
-    return myMessage;
-  }
+	public boolean equals(Object _obj) {
+		return (_obj instanceof EOModelVerificationFailure && (_obj == this || (((EOModelVerificationFailure) _obj).myMessage.equals(myMessage)) && myRootCause == null && ((EOModelVerificationFailure) _obj).myRootCause == null));
+	}
 
-  public Throwable getRootCause() {
-    return myRootCause;
-  }
+	public String getMessage() {
+		return myMessage;
+	}
 
-  public String toString() {
-    return "[EOModelVerificationFailure: " + myMessage + "]";
-  }
+	public Throwable getRootCause() {
+		return myRootCause;
+	}
+
+	public String toString() {
+		return "[EOModelVerificationFailure: " + myMessage + "]";
+	}
 }

@@ -50,30 +50,32 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 public class DuplicateStoredProcedureFailure extends EOModelVerificationFailure {
-  private EOModel myModel;
-  private String myStoredProcedureName;
-  private String myNewStoredProcedureName;
+	private EOModel myModel;
 
-  public DuplicateStoredProcedureFailure(EOModel _entity, String _storedProcedureName, String _newStoredProcedureName) {
-    this(_entity, _storedProcedureName, _newStoredProcedureName, null);
-  }
+	private String myStoredProcedureName;
 
-  public DuplicateStoredProcedureFailure(EOModel _entity, String _storedProcedureName, String _newStoredProcedureName, Throwable _throwable) {
-    super("There was more than one stored procedure named '" + _storedProcedureName + "' in " + _entity.getName() + ", so one was renamed to '" + _newStoredProcedureName + "'.", _throwable);
-    myModel = _entity;
-    myStoredProcedureName = _storedProcedureName;
-    myNewStoredProcedureName = _newStoredProcedureName;
-  }
+	private String myNewStoredProcedureName;
 
-  public EOModel getModel() {
-    return myModel;
-  }
+	public DuplicateStoredProcedureFailure(EOModel _entity, String _storedProcedureName, String _newStoredProcedureName) {
+		this(_entity, _storedProcedureName, _newStoredProcedureName, null);
+	}
 
-  public String getStoredProcedureName() {
-    return myStoredProcedureName;
-  }
+	public DuplicateStoredProcedureFailure(EOModel _entity, String _storedProcedureName, String _newStoredProcedureName, Throwable _throwable) {
+		super("There was more than one stored procedure named '" + _storedProcedureName + "' in " + _entity.getName() + ", so one was renamed to '" + _newStoredProcedureName + "'.", _throwable);
+		myModel = _entity;
+		myStoredProcedureName = _storedProcedureName;
+		myNewStoredProcedureName = _newStoredProcedureName;
+	}
 
-  public String getNewStoredProcedureName() {
-    return myNewStoredProcedureName;
-  }
+	public EOModel getModel() {
+		return myModel;
+	}
+
+	public String getStoredProcedureName() {
+		return myStoredProcedureName;
+	}
+
+	public String getNewStoredProcedureName() {
+		return myNewStoredProcedureName;
+	}
 }
