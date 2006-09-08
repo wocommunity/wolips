@@ -51,18 +51,18 @@ import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
  * @author mike
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
-  public void initializeDefaultPreferences() {
-    IPreferenceStore store = WodclipsePlugin.getDefault().getPreferenceStore();
-    store.setDefault(PreferenceConstants.ELEMENT_NAME, "65,0,197");
-    store.setDefault(PreferenceConstants.ELEMENT_TYPE, "63,127,95");
-    store.setDefault(PreferenceConstants.BINDING_NAME, "138,23,100");
-    store.setDefault(PreferenceConstants.BINDING_VALUE, "0,65,216");
-    store.setDefault(PreferenceConstants.CONSTANT_BINDING_VALUE, "42,0,255");
-    store.setDefault(PreferenceConstants.OPERATOR, "0,0,0");
-    store.setDefault(PreferenceConstants.COMMENT, "63,127,95");
-    store.setDefault(PreferenceConstants.UNKNOWN, "0,0,0");
-    store.setDefault(PreferenceConstants.ALLOWED_BINDING_CHARACTERS, ".^-@");
-    store.setDefault(PreferenceConstants.CHECK_BINDING_VALUES, false);
-    store.setDefault(PreferenceConstants.AUTO_INSERT_ON_COMPLETION, true);
-  }
+	public void initializeDefaultPreferences() {
+		IPreferenceStore store = WodclipsePlugin.getDefault().getPreferenceStore();
+		store.setDefault(PreferenceConstants.ELEMENT_NAME, "65,0,197");
+		store.setDefault(PreferenceConstants.ELEMENT_TYPE, "63,127,95");
+		store.setDefault(PreferenceConstants.BINDING_NAME, "138,23,100");
+		store.setDefault(PreferenceConstants.BINDING_VALUE, "0,65,216");
+		store.setDefault(PreferenceConstants.CONSTANT_BINDING_VALUE, "42,0,255");
+		store.setDefault(PreferenceConstants.OPERATOR, "0,0,0");
+		store.setDefault(PreferenceConstants.COMMENT, "63,127,95");
+		store.setDefault(PreferenceConstants.UNKNOWN, "0,0,0");
+		store.setDefault(PreferenceConstants.ALLOWED_BINDING_CHARACTERS, ".^-@");
+		store.setDefault(PreferenceConstants.CHECK_BINDING_VALUES, false);
+		store.setDefault(PreferenceConstants.AUTO_INSERT_ON_COMPLETION, true);
+	}
 }

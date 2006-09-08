@@ -89,8 +89,7 @@ public class WOFrameworkWizard extends AbstractProjectWizard {
 			this.project = project;
 		}
 
-		protected void execute(IProgressMonitor monitor)
-				throws InvocationTargetException {
+		protected void execute(IProgressMonitor monitor) throws InvocationTargetException {
 			String projectName = this.project.getName();
 			String path = this.project.getLocation().toOSString();
 			NullProgressMonitor nullProgressMonitor = new NullProgressMonitor();
@@ -105,8 +104,7 @@ public class WOFrameworkWizard extends AbstractProjectWizard {
 				// File xcodeproj = new File(path + File.separator + projectName
 				// + ".xcodeproj");
 				// xcodeproj.mkdirs();
-				File ant = new File(path + File.separator
-						+ ProjectPatternsets.ANT_FOLDER_NAME);
+				File ant = new File(path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME);
 				ant.mkdirs();
 				// project.close(nullProgressMonitor);
 				TemplateEngine templateEngine = new TemplateEngine();
@@ -117,40 +115,17 @@ public class WOFrameworkWizard extends AbstractProjectWizard {
 					throw new InvocationTargetException(e);
 				}
 				templateEngine.getWolipsContext().setProjectName(projectName);
-				templateEngine.getWolipsContext().setAntFolderName(
-						ProjectPatternsets.ANT_FOLDER_NAME);
-				templateEngine.addTemplate(new TemplateDefinition(
-						"woframework/.classpath.vm", path, ".classpath",
-						".classpath"));
-				templateEngine
-						.addTemplate(new TemplateDefinition(
-								"woframework/.project.vm", path, ".project",
-								".project"));
-				templateEngine.addTemplate(new TemplateDefinition(
-						"woframework/build.xml.vm", path, "build.xml",
-						"build.xml"));
-				templateEngine.addTemplate(new TemplateDefinition(
-						"woframework/build.properties.vm", path,
-						"build.properties", "build.properties"));
-				templateEngine.addTemplate(new TemplateDefinition(
-						"woframework/CustomInfo.plist.vm", path,
-						"CustomInfo.plist", "CustomInfo.plist"));
-				templateEngine
-						.addTemplate(new TemplateDefinition(
-								"woframework/Makefile.vm", path, "Makefile",
-								"Makefile"));
-				templateEngine.addTemplate(new TemplateDefinition(
-						"woframework/Makefile.postamble.vm", path,
-						"Makefile.postamble", "Makefile.postamble"));
-				templateEngine.addTemplate(new TemplateDefinition(
-						"woframework/Makefile.preamble.vm", path,
-						"Makefile.preamble", "Makefile.preamble"));
-				templateEngine.addTemplate(new TemplateDefinition(
-						"woframework/PB.project.vm", path, "PB.project",
-						"PB.project"));
-				templateEngine.addTemplate(new TemplateDefinition(
-						"woframework/Properties.vm", path, "Properties",
-						"Properties"));
+				templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
+				templateEngine.addTemplate(new TemplateDefinition("woframework/.classpath.vm", path, ".classpath", ".classpath"));
+				templateEngine.addTemplate(new TemplateDefinition("woframework/.project.vm", path, ".project", ".project"));
+				templateEngine.addTemplate(new TemplateDefinition("woframework/build.xml.vm", path, "build.xml", "build.xml"));
+				templateEngine.addTemplate(new TemplateDefinition("woframework/build.properties.vm", path, "build.properties", "build.properties"));
+				templateEngine.addTemplate(new TemplateDefinition("woframework/CustomInfo.plist.vm", path, "CustomInfo.plist", "CustomInfo.plist"));
+				templateEngine.addTemplate(new TemplateDefinition("woframework/Makefile.vm", path, "Makefile", "Makefile"));
+				templateEngine.addTemplate(new TemplateDefinition("woframework/Makefile.postamble.vm", path, "Makefile.postamble", "Makefile.postamble"));
+				templateEngine.addTemplate(new TemplateDefinition("woframework/Makefile.preamble.vm", path, "Makefile.preamble", "Makefile.preamble"));
+				templateEngine.addTemplate(new TemplateDefinition("woframework/PB.project.vm", path, "PB.project", "PB.project"));
+				templateEngine.addTemplate(new TemplateDefinition("woframework/Properties.vm", path, "Properties", "Properties"));
 				// templateEngine.addTemplate(new TemplateDefinition(
 				// "woframework/project.pbxproj.vm", path + File.separator
 				// + projectName + ".xcode", "project.pbxproj",
@@ -160,8 +135,7 @@ public class WOFrameworkWizard extends AbstractProjectWizard {
 				// RunAnt runAnt = new RunAnt();
 				// runAnt.asAnt(path + File.separator
 				// + IWOLipsModel.DEFAULT_BUILD_FILENAME, null, null);
-				this.project.refreshLocal(IResource.DEPTH_INFINITE,
-						nullProgressMonitor);
+				this.project.refreshLocal(IResource.DEPTH_INFINITE, nullProgressMonitor);
 			} catch (Exception e) {
 				throw new InvocationTargetException(e);
 			}

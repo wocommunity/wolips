@@ -52,69 +52,68 @@ import org.eclipse.jface.text.rules.Token;
  * @author mike
  */
 public class SingleWordRule implements IPredicateRule {
-  private IToken myToken;
-  private char[] myAcceptableCharacters;
-  private char myStopCharacter;
+	private IToken myToken;
 
-  public SingleWordRule(IToken _token, char[] _acceptableCharacters, char _stopCharacter) {
-    myToken = _token;
-    myAcceptableCharacters = _acceptableCharacters;
-    myStopCharacter = _stopCharacter;
-  }
+	private char[] myAcceptableCharacters;
 
-  public IToken getSuccessToken() {
-    return myToken;
-  }
+	private char myStopCharacter;
 
-  public IToken evaluate(ICharacterScanner _scanner) {
-    return evaluate(_scanner, false);
-  }
+	public SingleWordRule(IToken _token, char[] _acceptableCharacters, char _stopCharacter) {
+		myToken = _token;
+		myAcceptableCharacters = _acceptableCharacters;
+		myStopCharacter = _stopCharacter;
+	}
 
-  public IToken evaluate(ICharacterScanner _scanner, boolean _resume) {
-    IToken token = Token.UNDEFINED;
-    int whitespaceCount = 0;
-    int unreadCount = 0;
-    int wordCount = 0;
-    int ch;
-    while ((ch = _scanner.read()) != ICharacterScanner.EOF) {
-      unreadCount++;
-      if (ch == myStopCharacter) {
-        token = myToken;
-        _scanner.unread();
-        break;
-      }
-      else if (isAcceptableCharacter((char)ch)) {
-        if ((wordCount == 0 || whitespaceCount > 0) && (++ wordCount >= 2)) {
-          break;
-        }
-        whitespaceCount = 0;
-      }
-      else if (Character.isWhitespace((char)ch)) {
-        whitespaceCount++;
-      }
-      else {
-        break;
-      }
-    }
+	public IToken getSuccessToken() {
+		return myToken;
+	}
 
-    if (token == myToken) {
-      unreadCount = whitespaceCount;
-    }
-    if (ch == ICharacterScanner.EOF) {
-      unreadCount++;
-    }
-    for (int i = 0; i < unreadCount; i++) {
-      _scanner.unread();
-    }
+	public IToken evaluate(ICharacterScanner _scanner) {
+		return evaluate(_scanner, false);
+	}
 
-    return token;
-  }
-  
-  protected boolean isAcceptableCharacter(char _ch) {
-    boolean acceptableCharacter = Character.isJavaIdentifierPart(_ch);
-    for (int i = 0; !acceptableCharacter && i < myAcceptableCharacters.length; i ++) {
-      acceptableCharacter = (myAcceptableCharacters[i] == _ch);
-    }
-    return acceptableCharacter;
-  }
+	public IToken evaluate(ICharacterScanner _scanner, boolean _resume) {
+		IToken token = Token.UNDEFINED;
+		int whitespaceCount = 0;
+		int unreadCount = 0;
+		int wordCount = 0;
+		int ch;
+		while ((ch = _scanner.read()) != ICharacterScanner.EOF) {
+			unreadCount++;
+			if (ch == myStopCharacter) {
+				token = myToken;
+				_scanner.unread();
+				break;
+			} else if (isAcceptableCharacter((char) ch)) {
+				if ((wordCount == 0 || whitespaceCount > 0) && (++wordCount >= 2)) {
+					break;
+				}
+				whitespaceCount = 0;
+			} else if (Character.isWhitespace((char) ch)) {
+				whitespaceCount++;
+			} else {
+				break;
+			}
+		}
+
+		if (token == myToken) {
+			unreadCount = whitespaceCount;
+		}
+		if (ch == ICharacterScanner.EOF) {
+			unreadCount++;
+		}
+		for (int i = 0; i < unreadCount; i++) {
+			_scanner.unread();
+		}
+
+		return token;
+	}
+
+	protected boolean isAcceptableCharacter(char _ch) {
+		boolean acceptableCharacter = Character.isJavaIdentifierPart(_ch);
+		for (int i = 0; !acceptableCharacter && i < myAcceptableCharacters.length; i++) {
+			acceptableCharacter = (myAcceptableCharacters[i] == _ch);
+		}
+		return acceptableCharacter;
+	}
 }

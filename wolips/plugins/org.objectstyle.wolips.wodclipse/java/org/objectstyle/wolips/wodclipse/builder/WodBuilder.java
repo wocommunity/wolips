@@ -67,142 +67,140 @@ import org.objectstyle.wolips.wodclipse.wod.WodReconcilingStrategy;
 import org.objectstyle.wolips.wodclipse.wod.model.WodProblem;
 
 public class WodBuilder extends AbstractFullAndIncrementalBuilder {
-  private boolean myValidateWOD;
+	private boolean myValidateWOD;
 
-  public WodBuilder() {
-    super();
-  }
+	public WodBuilder() {
+		super();
+	}
 
-  public boolean buildStarted(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
-    myValidateWOD = Preferences.getPREF_VALIDATE_WOD_ON_BUILD();
-    return false;
-  }
+	public boolean buildStarted(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
+		myValidateWOD = Preferences.getPREF_VALIDATE_WOD_ON_BUILD();
+		return false;
+	}
 
-  public boolean buildPreparationDone(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
-    return false;
-  }
+	public boolean buildPreparationDone(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
+		return false;
+	}
 
-  public void handleClasses(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
-    // DO NOTHING
-  }
+	public void handleClasses(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
+		// DO NOTHING
+	}
 
-  public void handleSource(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
-    if (myValidateWOD) {
-      try {
-        touchRelatedResources(_resource, _progressMonitor, _buildCache);
-      }
-      catch (CoreException e) {
-        WodclipsePlugin.getDefault().log(e);
-      }
-    }
-  }
+	public void handleSource(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
+		if (myValidateWOD) {
+			try {
+				touchRelatedResources(_resource, _progressMonitor, _buildCache);
+			} catch (CoreException e) {
+				WodclipsePlugin.getDefault().log(e);
+			}
+		}
+	}
 
-  public void handleClasspath(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
-    // DO NOTHING
-  }
+	public void handleClasspath(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
+		// DO NOTHING
+	}
 
-  public void handleOther(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
-    if (myValidateWOD) {
-      try {
-        boolean validateWodFile = false;
-        if (_resource instanceof IFile) {
-          IFile file = (IFile) _resource;
-          String fileExtension = file.getFileExtension();
-          if ("wod".equals(fileExtension)) {
-            validateWodFile = true;
-          }
-          else if ("html".equals(fileExtension) && _resource.getParent().getName().endsWith(".wo")) {
-            validateWodFile = true;
-          }
-          else if ("api".equals(fileExtension)) {
-            //should we really do something with the component when we change the api?
-            //shoulnd't we validate all files using the api?
-            validateWodFile = false;
+	public void handleOther(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
+		if (myValidateWOD) {
+			try {
+				boolean validateWodFile = false;
+				if (_resource instanceof IFile) {
+					IFile file = (IFile) _resource;
+					String fileExtension = file.getFileExtension();
+					if ("wod".equals(fileExtension)) {
+						validateWodFile = true;
+					} else if ("html".equals(fileExtension) && _resource.getParent().getName().endsWith(".wo")) {
+						validateWodFile = true;
+					} else if ("api".equals(fileExtension)) {
+						// should we really do something with the component when
+						// we change the api?
+						// shoulnd't we validate all files using the api?
+						validateWodFile = false;
 
-            try {
-              touchRelatedResources(_resource, _monitor, _buildCache);
-            }
-            catch (CoreException e) {
-              WodclipsePlugin.getDefault().log(e);
-            }
-          }
+						try {
+							touchRelatedResources(_resource, _monitor, _buildCache);
+						} catch (CoreException e) {
+							WodclipsePlugin.getDefault().log(e);
+						}
+					}
 
-          if (validateWodFile) {
-            validateWodFile(file, _monitor, _buildCache);
-          }
-        }
-      }
-      catch (Throwable e) {
-        WodclipsePlugin.getDefault().log(e);
-      }
-    }
-    else {
-      if (_resource instanceof IFile) {
-        IFile file = (IFile) _resource;
-        String fileExtension = file.getFileExtension();
-        if ("wod".equals(fileExtension)) {
-          WodReconcilingStrategy.deleteWodProblems(file);
-        }
-      }
-    }
-  }
+					if (validateWodFile) {
+						validateWodFile(file, _monitor, _buildCache);
+					}
+				}
+			} catch (Throwable e) {
+				WodclipsePlugin.getDefault().log(e);
+			}
+		} else {
+			if (_resource instanceof IFile) {
+				IFile file = (IFile) _resource;
+				String fileExtension = file.getFileExtension();
+				if ("wod".equals(fileExtension)) {
+					WodReconcilingStrategy.deleteWodProblems(file);
+				}
+			}
+		}
+	}
 
-  public void handleWebServerResources(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
-    // DO NOTHING
-  }
+	public void handleWebServerResources(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
+		// DO NOTHING
+	}
 
-  public void handleWoappResources(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
-    // DO NOTHING
-  }
+	public void handleWoappResources(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
+		// DO NOTHING
+	}
 
-  protected void touchRelatedResources(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) throws CoreException {
-    if (_progressMonitor != null) {
-      _progressMonitor.subTask("Touching files related to " + _resource.getName() + " ...");
-    }
+	protected void touchRelatedResources(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) throws CoreException {
+		if (_progressMonitor != null) {
+			_progressMonitor.subTask("Touching files related to " + _resource.getName() + " ...");
+		}
 
-    IMarker[] markers = _resource.getProject().findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
-    Set relatedResources = new HashSet();
-    String name = _resource.getName();
-    for (int markerNum = 0; markerNum < markers.length; markerNum++) {
-      //System.out.println("WodBuilder.touchRelatedResources: Checking " + markers[markerNum]);
-      String relatedToFileNames = (String) markers[markerNum].getAttribute(WodProblem.RELATED_TO_FILE_NAMES);
-      //System.out.println("WodBuilder.touchRelatedResources: problem in " + markers[markerNum].getResource().getName() + " is related to " + relatedToFileNames);
-      if (relatedToFileNames != null && relatedToFileNames.indexOf(name) != -1) {
-        //System.out.println("WodBuilder.touchRelatedResources:  ... which is this: " + _resource);
-        relatedResources.add(markers[markerNum].getResource());
-      }
-    }
+		IMarker[] markers = _resource.getProject().findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+		Set relatedResources = new HashSet();
+		String name = _resource.getName();
+		for (int markerNum = 0; markerNum < markers.length; markerNum++) {
+			// System.out.println("WodBuilder.touchRelatedResources: Checking "
+			// + markers[markerNum]);
+			String relatedToFileNames = (String) markers[markerNum].getAttribute(WodProblem.RELATED_TO_FILE_NAMES);
+			// System.out.println("WodBuilder.touchRelatedResources: problem in
+			// " + markers[markerNum].getResource().getName() + " is related to
+			// " + relatedToFileNames);
+			if (relatedToFileNames != null && relatedToFileNames.indexOf(name) != -1) {
+				// System.out.println("WodBuilder.touchRelatedResources: ...
+				// which is this: " + _resource);
+				relatedResources.add(markers[markerNum].getResource());
+			}
+		}
 
-    Iterator relatedResourcesIter = relatedResources.iterator();
-    while (relatedResourcesIter.hasNext()) {
-      IResource relatedResource = (IResource) relatedResourcesIter.next();
-      handleWoappResources(relatedResource, _progressMonitor, _buildCache);
-      //relatedResource.touch(_progressMonitor);
-    }
-  }
+		Iterator relatedResourcesIter = relatedResources.iterator();
+		while (relatedResourcesIter.hasNext()) {
+			IResource relatedResource = (IResource) relatedResourcesIter.next();
+			handleWoappResources(relatedResource, _progressMonitor, _buildCache);
+			// relatedResource.touch(_progressMonitor);
+		}
+	}
 
-  protected void validateWodFile(IFile file, IProgressMonitor _progressMonitor, Map _buildCache) throws CoreException, LocateException {
-    String _resourceName = file.getName();
-    if (_progressMonitor != null) {
-      _progressMonitor.subTask("Locating components for " + _resourceName + " ...");
-    }
-    LocalizedComponentsLocateResult _locateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(file);
-    IFile wodFile = _locateResults.getFirstWodFile();
-    if (wodFile != null) {
-      if (_progressMonitor != null) {
-        _progressMonitor.subTask("Building WOD file " + wodFile.getName() + " ...");
-      }
+	protected void validateWodFile(IFile file, IProgressMonitor _progressMonitor, Map _buildCache) throws CoreException, LocateException {
+		String _resourceName = file.getName();
+		if (_progressMonitor != null) {
+			_progressMonitor.subTask("Locating components for " + _resourceName + " ...");
+		}
+		LocalizedComponentsLocateResult _locateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(file);
+		IFile wodFile = _locateResults.getFirstWodFile();
+		if (wodFile != null) {
+			if (_progressMonitor != null) {
+				_progressMonitor.subTask("Building WOD file " + wodFile.getName() + " ...");
+			}
 
-      FileEditorInput input = new FileEditorInput(wodFile);
-      WodFileDocumentProvider provider = new WodFileDocumentProvider();
-      provider.connect(input);
-      try {
-        IDocument document = provider.getDocument(input);
-        WodReconcilingStrategy.reconcileWodModel(document, _locateResults, _buildCache, _buildCache);
-      }
-      finally {
-        provider.disconnect(input);
-      }
-    }
-  }
+			FileEditorInput input = new FileEditorInput(wodFile);
+			WodFileDocumentProvider provider = new WodFileDocumentProvider();
+			provider.connect(input);
+			try {
+				IDocument document = provider.getDocument(input);
+				WodReconcilingStrategy.reconcileWodModel(document, _locateResults, _buildCache, _buildCache);
+			} finally {
+				provider.disconnect(input);
+			}
+		}
+	}
 }

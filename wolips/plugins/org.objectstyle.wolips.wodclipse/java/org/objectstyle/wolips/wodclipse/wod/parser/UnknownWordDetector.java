@@ -49,19 +49,19 @@ import org.eclipse.jface.text.rules.IWordDetector;
  * @author mike
  */
 public class UnknownWordDetector implements IWordDetector {
-  public UnknownWordDetector() {
-  }
+	public UnknownWordDetector() {
+	}
 
-  public boolean isWordStart(char _ch) {
-    return isUnknownLetter(_ch);
-  }
+	public boolean isWordStart(char _ch) {
+		return isUnknownLetter(_ch);
+	}
 
-  public boolean isWordPart(char _ch) {
-    return isUnknownLetter(_ch);
-  }
+	public boolean isWordPart(char _ch) {
+		return isUnknownLetter(_ch);
+	}
 
-  private boolean isUnknownLetter(char _ch) {
-    boolean unknownLetter = Character.isLetterOrDigit(_ch) || _ch == '.' || _ch == '_' || _ch == '^';
-    return unknownLetter;
-  }
+	private boolean isUnknownLetter(char _ch) {
+		boolean unknownLetter = Character.isLetterOrDigit(_ch) || _ch == '.' || _ch == '_' || _ch == '^';
+		return unknownLetter;
+	}
 }

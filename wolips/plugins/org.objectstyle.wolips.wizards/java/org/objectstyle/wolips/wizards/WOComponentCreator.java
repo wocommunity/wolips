@@ -79,130 +79,127 @@ import org.objectstyle.wolips.templateengine.ComponentEngine;
  * @author uli
  */
 public class WOComponentCreator implements IRunnableWithProgress {
-  private String componentName;
+	private String componentName;
 
-  private String packageName;
+	private String packageName;
 
-  private boolean createBodyTag;
+	private boolean createBodyTag;
 
-  private boolean createApiFile;
+	private boolean createApiFile;
 
-  private boolean createWooFile;
+	private boolean createWooFile;
 
-  private IResource parentResource;
+	private IResource parentResource;
 
-  private WOComponentCreationPage page;
+	private WOComponentCreationPage page;
 
-  /**
-   * Constructor for WOComponentCreator.
-   * 
-   * @param parentResource
-   * @param componentName
-   * @param packageName
-   * @param createBodyTag
-   * @param createApiFile
-   * @param createWooFile
-   */
-  public WOComponentCreator(IResource parentResource, String componentName, String packageName, boolean createBodyTag, boolean createApiFile, boolean createWooFile, WOComponentCreationPage page) {
-    this.parentResource = parentResource;
-    this.componentName = componentName;
-    this.packageName = packageName;
-    this.createBodyTag = createBodyTag;
-    this.createApiFile = createApiFile;
-    this.createWooFile = createWooFile;
-    this.page = page;
-  }
+	/**
+	 * Constructor for WOComponentCreator.
+	 * 
+	 * @param parentResource
+	 * @param componentName
+	 * @param packageName
+	 * @param createBodyTag
+	 * @param createApiFile
+	 * @param createWooFile
+	 */
+	public WOComponentCreator(IResource parentResource, String componentName, String packageName, boolean createBodyTag, boolean createApiFile, boolean createWooFile, WOComponentCreationPage page) {
+		this.parentResource = parentResource;
+		this.componentName = componentName;
+		this.packageName = packageName;
+		this.createBodyTag = createBodyTag;
+		this.createApiFile = createApiFile;
+		this.createWooFile = createWooFile;
+		this.page = page;
+	}
 
-  public void run(IProgressMonitor monitor) throws InvocationTargetException {
-    try {
-      createWOComponent(monitor);
-    }
-    catch (CoreException e) {
-      throw new InvocationTargetException(e);
-    }
-  }
+	public void run(IProgressMonitor monitor) throws InvocationTargetException {
+		try {
+			createWOComponent(monitor);
+		} catch (CoreException e) {
+			throw new InvocationTargetException(e);
+		}
+	}
 
-  /**
-   * Method createWOComponent.
-   * 
-   * @param monitor
-   * @throws CoreException
-   * @throws InvocationTargetException
-   */
-  public void createWOComponent(IProgressMonitor monitor) throws CoreException, InvocationTargetException {
-    IFolder componentFolder = null;
-    IPath componentJavaPath = null;
-    IPath apiPath = null;
-    IFolder componentFolderToReveal = null;
-    IJavaProject iJavaProject = JavaCore.create(this.parentResource.getProject());
-    JavaProject javaProject = (JavaProject) iJavaProject.getAdapter(JavaProject.class);
-    Project project = (Project) this.parentResource.getProject().getAdapter(Project.class);
-    switch (this.parentResource.getType()) {
-    case IResource.PROJECT:
-      componentFolder = ((IProject) this.parentResource).getFolder(this.componentName + "." + IWOLipsModel.EXT_COMPONENT);
-      componentFolderToReveal = (IFolder) javaProject.getProjectSourceFolder();
-      componentJavaPath = componentFolderToReveal.getLocation();
-      apiPath = this.parentResource.getProject().getLocation();
-      break;
-    case IResource.FOLDER:
-      componentFolder = ((IFolder) this.parentResource).getFolder(this.componentName + "." + IWOLipsModel.EXT_COMPONENT);
-      componentFolderToReveal = javaProject.getSubprojectSourceFolder((IFolder) this.parentResource, true);
-      componentJavaPath = componentFolderToReveal.getLocation();
-      apiPath = componentFolder.getParent().getLocation();
-      IFolder pbFolder = project.getParentFolderWithPBProject((IFolder) this.parentResource);
-      if (pbFolder != null) {
-        apiPath = pbFolder.getLocation();
-      }
-      break;
-    default:
-      throw new InvocationTargetException(new Exception("Wrong parent resource - check validation"));
-    }
-    if (packageName != null && packageName.length() > 0) {
-      componentJavaPath = componentJavaPath.append(new Path(packageName.replace('.', '/')));
-    }
-    prepareFolder(componentFolder, monitor);
-    String projectName = this.parentResource.getProject().getName();
-    IPath path = componentFolder.getLocation();
-    IPath projectRelativeJavaPath = componentJavaPath.removeFirstSegments(this.parentResource.getProject().getLocation().segmentCount());
-    IFolder javaSourceFolder = this.parentResource.getProject().getFolder(projectRelativeJavaPath);
-    prepareFolder(javaSourceFolder, monitor);
-    ComponentEngine componentEngine = new ComponentEngine();
-    try {
-      componentEngine.init();
-    }
-    catch (Exception e) {
-      WizardsPlugin.getDefault().log(e);
-      throw new InvocationTargetException(e);
-    }
-    // TODO: select template in the user interface
-    componentEngine.setSelectedTemplateName(componentEngine.names()[0]);
-    componentEngine.setProjectName(projectName);
-    componentEngine.setCreateBodyTag(this.createBodyTag);
-    componentEngine.setComponentName(this.componentName);
-    componentEngine.setPackageName(this.packageName);
-    componentEngine.setComponentPath(path);
-    componentEngine.setApiPath(apiPath);
-    componentEngine.setJavaPath(componentJavaPath);
-    componentEngine.setCreateWooFile(this.createWooFile);
-    componentEngine.setCreateApiFile(this.createApiFile);
-    try {
-      componentEngine.run(new NullProgressMonitor());
-      this.parentResource.getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);
-      page.setResourceToReveal(componentFolderToReveal.findMember(this.componentName + "." + IWOLipsModel.EXT_JAVA));
-    }
-    catch (Exception e) {
-      WizardsPlugin.getDefault().log(e);
-      throw new InvocationTargetException(e);
-    }
-  }
+	/**
+	 * Method createWOComponent.
+	 * 
+	 * @param monitor
+	 * @throws CoreException
+	 * @throws InvocationTargetException
+	 */
+	public void createWOComponent(IProgressMonitor monitor) throws CoreException, InvocationTargetException {
+		IFolder componentFolder = null;
+		IPath componentJavaPath = null;
+		IPath apiPath = null;
+		IFolder componentFolderToReveal = null;
+		IJavaProject iJavaProject = JavaCore.create(this.parentResource.getProject());
+		JavaProject javaProject = (JavaProject) iJavaProject.getAdapter(JavaProject.class);
+		Project project = (Project) this.parentResource.getProject().getAdapter(Project.class);
+		switch (this.parentResource.getType()) {
+		case IResource.PROJECT:
+			componentFolder = ((IProject) this.parentResource).getFolder(this.componentName + "." + IWOLipsModel.EXT_COMPONENT);
+			componentFolderToReveal = (IFolder) javaProject.getProjectSourceFolder();
+			componentJavaPath = componentFolderToReveal.getLocation();
+			apiPath = this.parentResource.getProject().getLocation();
+			break;
+		case IResource.FOLDER:
+			componentFolder = ((IFolder) this.parentResource).getFolder(this.componentName + "." + IWOLipsModel.EXT_COMPONENT);
+			componentFolderToReveal = javaProject.getSubprojectSourceFolder((IFolder) this.parentResource, true);
+			componentJavaPath = componentFolderToReveal.getLocation();
+			apiPath = componentFolder.getParent().getLocation();
+			IFolder pbFolder = project.getParentFolderWithPBProject((IFolder) this.parentResource);
+			if (pbFolder != null) {
+				apiPath = pbFolder.getLocation();
+			}
+			break;
+		default:
+			throw new InvocationTargetException(new Exception("Wrong parent resource - check validation"));
+		}
+		if (packageName != null && packageName.length() > 0) {
+			componentJavaPath = componentJavaPath.append(new Path(packageName.replace('.', '/')));
+		}
+		prepareFolder(componentFolder, monitor);
+		String projectName = this.parentResource.getProject().getName();
+		IPath path = componentFolder.getLocation();
+		IPath projectRelativeJavaPath = componentJavaPath.removeFirstSegments(this.parentResource.getProject().getLocation().segmentCount());
+		IFolder javaSourceFolder = this.parentResource.getProject().getFolder(projectRelativeJavaPath);
+		prepareFolder(javaSourceFolder, monitor);
+		ComponentEngine componentEngine = new ComponentEngine();
+		try {
+			componentEngine.init();
+		} catch (Exception e) {
+			WizardsPlugin.getDefault().log(e);
+			throw new InvocationTargetException(e);
+		}
+		// TODO: select template in the user interface
+		componentEngine.setSelectedTemplateName(componentEngine.names()[0]);
+		componentEngine.setProjectName(projectName);
+		componentEngine.setCreateBodyTag(this.createBodyTag);
+		componentEngine.setComponentName(this.componentName);
+		componentEngine.setPackageName(this.packageName);
+		componentEngine.setComponentPath(path);
+		componentEngine.setApiPath(apiPath);
+		componentEngine.setJavaPath(componentJavaPath);
+		componentEngine.setCreateWooFile(this.createWooFile);
+		componentEngine.setCreateApiFile(this.createApiFile);
+		try {
+			componentEngine.run(new NullProgressMonitor());
+			this.parentResource.getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);
+			page.setResourceToReveal(componentFolderToReveal.findMember(this.componentName + "." + IWOLipsModel.EXT_JAVA));
+		} catch (Exception e) {
+			WizardsPlugin.getDefault().log(e);
+			throw new InvocationTargetException(e);
+		}
+	}
 
-  public void prepareFolder(IFolder _folder, IProgressMonitor _progressMonitor) throws CoreException {
-    if (!_folder.exists()) {
-      IContainer parent = _folder.getParent();
-      if (parent instanceof IFolder) {
-        prepareFolder((IFolder) parent, _progressMonitor);
-      }
-      _folder.create(false, true, _progressMonitor);
-    }
-  }
+	public void prepareFolder(IFolder _folder, IProgressMonitor _progressMonitor) throws CoreException {
+		if (!_folder.exists()) {
+			IContainer parent = _folder.getParent();
+			if (parent instanceof IFolder) {
+				prepareFolder((IFolder) parent, _progressMonitor);
+			}
+			_folder.create(false, true, _progressMonitor);
+		}
+	}
 }

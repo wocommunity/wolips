@@ -84,8 +84,7 @@ import org.objectstyle.wolips.launching.ui.LogTab;
  *         disable the creation of type comments go to
  *         Window>Preferences>Java>Code Generation.
  */
-public class TPTPWOLocalJavaApplicationTabGroup extends
-		AbstractLaunchConfigurationTabGroup {
+public class TPTPWOLocalJavaApplicationTabGroup extends AbstractLaunchConfigurationTabGroup {
 
 	/**
 	 * @see ILaunchConfigurationTabGroup#createTabs(ILaunchConfigurationDialog,
@@ -94,8 +93,7 @@ public class TPTPWOLocalJavaApplicationTabGroup extends
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
 		// check preferences whether profiling is enabled
 		IPreferenceStore store = UIPlugin.getDefault().getPreferenceStore();
-		boolean isProfilingEnabled = store
-				.getBoolean(TraceConstants.PROF_OPTION_KEY);
+		boolean isProfilingEnabled = store.getBoolean(TraceConstants.PROF_OPTION_KEY);
 
 		ArrayList tabs = new ArrayList(10);
 		tabs.add(new JavaMainTab());
@@ -112,8 +110,7 @@ public class TPTPWOLocalJavaApplicationTabGroup extends
 		tabs.add(new ProfileEnvironmentTab());
 		tabs.add(new CommonTab());
 
-		ILaunchConfigurationTab[] array = new ILaunchConfigurationTab[tabs
-				.size()];
+		ILaunchConfigurationTab[] array = new ILaunchConfigurationTab[tabs.size()];
 		tabs.toArray(array);
 		setTabs(array);
 	}
@@ -124,8 +121,7 @@ public class TPTPWOLocalJavaApplicationTabGroup extends
 	 * @see org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup#setDefaults(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
 	 */
 	public void setDefaults(ILaunchConfigurationWorkingCopy wc) {
-		WOJavaLocalApplicationLaunchConfigurationDelegate
-				.initConfiguration(wc);
+		WOJavaLocalApplicationLaunchConfigurationDelegate.initConfiguration(wc);
 		super.setDefaults(wc);
 	}
 }

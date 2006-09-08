@@ -50,55 +50,58 @@ import org.objectstyle.wolips.wodclipse.wod.parser.RulePosition;
  * @author mschrag
  */
 public class DocumentWodBinding implements IWodBinding {
-  private RulePosition myName;
-  private RulePosition myValue;
-  private DocumentWodElement myElement;
-  private boolean myValidate;
+	private RulePosition myName;
 
-  public DocumentWodBinding(RulePosition _name, RulePosition _value, DocumentWodElement _element) {
-    myName = _name;
-    myValue = _value;
-    myElement = _element;
-    myValidate = true;
-  }
+	private RulePosition myValue;
 
-  public IWodElement getElement() {
-    return myElement;
-  }
+	private DocumentWodElement myElement;
 
-  public String getName() {
-    return myName._getTextWithoutException();
-  }
+	private boolean myValidate;
 
-  public Position getNamePosition() {
-    return myName.getPosition();
-  }
+	public DocumentWodBinding(RulePosition _name, RulePosition _value, DocumentWodElement _element) {
+		myName = _name;
+		myValue = _value;
+		myElement = _element;
+		myValidate = true;
+	}
 
-  public String getValue() {
-    return myValue._getTextWithoutException();
-  }
+	public IWodElement getElement() {
+		return myElement;
+	}
 
-  public Position getValuePosition() {
-    return myValue.getPosition();
-  }
+	public String getName() {
+		return myName._getTextWithoutException();
+	}
 
-  public int getStartOffset() {
-    return myName.getTokenOffset();
-  }
+	public Position getNamePosition() {
+		return myName.getPosition();
+	}
 
-  public int getEndOffset() {
-    return myValue.getTokenEndOffset();
-  }
-  
-  public void setValidate(boolean _validate) {
-    myValidate = _validate;
-  }
-  
-  public boolean shouldValidate() {
-    return myValidate;
-  }
+	public String getValue() {
+		return myValue._getTextWithoutException();
+	}
 
-  public String toString() {
-    return "[DocumentWodBinding: name = " + myName + "; value = " + myValue + "]";
-  }
+	public Position getValuePosition() {
+		return myValue.getPosition();
+	}
+
+	public int getStartOffset() {
+		return myName.getTokenOffset();
+	}
+
+	public int getEndOffset() {
+		return myValue.getTokenEndOffset();
+	}
+
+	public void setValidate(boolean _validate) {
+		myValidate = _validate;
+	}
+
+	public boolean shouldValidate() {
+		return myValidate;
+	}
+
+	public String toString() {
+		return "[DocumentWodBinding: name = " + myName + "; value = " + myValue + "]";
+	}
 }

@@ -51,54 +51,52 @@ import org.eclipse.jface.text.rules.Token;
  * @author mschrag
  */
 public class CommentRule implements ICommentRule {
-  private IToken myToken;
+	private IToken myToken;
 
-  public CommentRule(IToken _token) {
-    myToken = _token;
-  }
+	public CommentRule(IToken _token) {
+		myToken = _token;
+	}
 
-  public IToken getSuccessToken() {
-    return myToken;
-  }
+	public IToken getSuccessToken() {
+		return myToken;
+	}
 
-  public IToken evaluate(ICharacterScanner _scanner) {
-    return evaluate(_scanner, false);
-  }
+	public IToken evaluate(ICharacterScanner _scanner) {
+		return evaluate(_scanner, false);
+	}
 
-  public IToken evaluate(ICharacterScanner _scanner, boolean _resume) {
-    int startColumn = _scanner.getColumn();
-    IToken token = Token.UNDEFINED;
-    int ch = 0;
-    int unreadCount = 0;
-    int slashCount = 0;
-    boolean done = false;
-    while (!done && (ch = _scanner.read()) != ICharacterScanner.EOF) {
-      if (slashCount < 2) {
-        unreadCount++;
-        if (ch == '/') {
-          slashCount++;
-          if (slashCount == 2) {
-            token = myToken;
-            unreadCount = 0;
-          }
-        }
-        else {
-          done = true;
-        }
-      }
-      else if (ch == '\n' || ch == '\r') {
-        unreadCount ++;
-        done = true;
-      }
-    }
+	public IToken evaluate(ICharacterScanner _scanner, boolean _resume) {
+		int startColumn = _scanner.getColumn();
+		IToken token = Token.UNDEFINED;
+		int ch = 0;
+		int unreadCount = 0;
+		int slashCount = 0;
+		boolean done = false;
+		while (!done && (ch = _scanner.read()) != ICharacterScanner.EOF) {
+			if (slashCount < 2) {
+				unreadCount++;
+				if (ch == '/') {
+					slashCount++;
+					if (slashCount == 2) {
+						token = myToken;
+						unreadCount = 0;
+					}
+				} else {
+					done = true;
+				}
+			} else if (ch == '\n' || ch == '\r') {
+				unreadCount++;
+				done = true;
+			}
+		}
 
-    if (ch == ICharacterScanner.EOF) {
-      unreadCount++;
-    }
-    for (int i = 0; i < unreadCount; i++) {
-      _scanner.unread();
-    }
+		if (ch == ICharacterScanner.EOF) {
+			unreadCount++;
+		}
+		for (int i = 0; i < unreadCount; i++) {
+			_scanner.unread();
+		}
 
-    return token;
-  }
+		return token;
+	}
 }

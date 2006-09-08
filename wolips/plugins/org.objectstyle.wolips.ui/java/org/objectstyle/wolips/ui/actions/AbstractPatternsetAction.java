@@ -90,16 +90,11 @@ public abstract class AbstractPatternsetAction extends AbstractActionOnIResource
 		if (name == null && extension == null) {
 			return null;
 		}
-		if(name != null && extension != null && name.equals("." +extension))
+		if (name != null && extension != null && name.equals("." + extension))
 			extension = null;
 		String pattern = null;
 		if (name != null && extension != null) {
-			MessageDialogWithToggle messageDialogWithToggle = MessageDialogWithToggle
-					.openOkCancelConfirm(this.part.getSite().getShell(),
-							"Add pattern", "Add all resources with extension "
-									+ extension,
-							"add by extension (otherwise by name)", true, null,
-							null);
+			MessageDialogWithToggle messageDialogWithToggle = MessageDialogWithToggle.openOkCancelConfirm(this.part.getSite().getShell(), "Add pattern", "Add all resources with extension " + extension, "add by extension (otherwise by name)", true, null, null);
 			if (messageDialogWithToggle.getReturnCode() == Window.CANCEL)
 				return null;
 			if (messageDialogWithToggle.getToggleState()) {
@@ -124,9 +119,9 @@ public abstract class AbstractPatternsetAction extends AbstractActionOnIResource
 		}
 		return pattern;
 	}
+
 	public void run(IAction action) {
-		TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(
-				this.getIProject());
+		TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(this.getIProject());
 		try {
 			touchAllFilesOperation.run(new NullProgressMonitor());
 		} catch (InvocationTargetException e) {

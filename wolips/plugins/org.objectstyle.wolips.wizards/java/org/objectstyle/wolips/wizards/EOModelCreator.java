@@ -89,94 +89,93 @@ import org.objectstyle.wolips.eomodeler.model.EclipseEOModelGroupFactory;
  * @author mschrag uses Entity Modeler API's now
  */
 public class EOModelCreator implements IRunnableWithProgress {
-  private String modelName;
-  private String adaptorName;
-  private IResource parentResource;
-  private boolean createEOGeneratorFile;
-  private EOModelCreationPage page;
+	private String modelName;
 
-  /**
-   * Constructor for EOModelCreator.
-   * 
-   * @param parentResource
-   * @param modelName
-   * @param adaptorName
-   */
-  public EOModelCreator(IResource parentResource, String modelName, String adaptorName, boolean createEOGeneratorFile, EOModelCreationPage page) {
-    this.parentResource = parentResource;
-    this.modelName = modelName;
-    this.adaptorName = adaptorName;
-    this.page = page;
-    this.createEOGeneratorFile = createEOGeneratorFile;
-  }
+	private String adaptorName;
 
-  public void run(IProgressMonitor monitor) throws InvocationTargetException {
-    try {
-      createEOModel(monitor);
-    }
-    catch (CoreException e) {
-      throw new InvocationTargetException(e);
-    }
-    catch (IOException e) {
-      throw new InvocationTargetException(e);
-    }
-    catch (EOModelException e) {
-      throw new InvocationTargetException(e);
-    }
-  }
+	private IResource parentResource;
 
-  /**
-   * Method createEOModelNamed. Creates eo model file resources. All file
-   * resource changes are registered in ResourceChangeListener where the
-   * project file is updated. <br>
-   * All folder resource changes are registered in
-   * 
-   * @link WOProjectResourceCreator#createResourceFolderInProject(IFolder,
-   *       IProgressMonitor). <br>
-   * @param monitor
-   * @throws EOModelException 
-   * @throws IOException 
-   * @throws CoreException 
-   * @throws InvocationTargetException 
-   */
-  public void createEOModel(IProgressMonitor monitor) throws CoreException, IOException, EOModelException, InvocationTargetException {
-    EOModelGroup modelGroup = EclipseEOModelGroupFactory.createModelGroup(parentResource.getProject(), new HashSet());
-    EOModel model = new EOModel(modelName);
-    model.setAdaptorName(adaptorName);
-    modelGroup.addModel(model);
-    IContainer parentContainer = (IContainer) parentResource;
-    File modelFolderFile = model.saveToFolder(parentContainer.getLocation().toFile());
-    IFolder modelFolder = parentContainer.getFolder(new Path(modelFolderFile.getName()));
-    EOGeneratorModel eogenModel = EOGeneratorWizard.createEOGeneratorModel(parentContainer, model);
-    String baseName = model.getName();
-    IFile eogenFile = parentContainer.getFile(new Path(baseName + ".eogen"));
-    if (eogenFile.exists()) {
-      for (int dupeNum = 1; !eogenFile.exists(); dupeNum++) {
-        eogenFile = parentContainer.getFile(new Path(baseName + dupeNum + ".eogen"));
-      }
-    }
-    eogenModel.writeToFile(eogenFile, monitor);
-    parentContainer.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-    page.setResourceToReveal(modelFolder.findMember("index.eomodeld"));
+	private boolean createEOGeneratorFile;
 
-    // add adaptor framework
-    if (!"None".equals(adaptorName)) {
-      IJavaProject projectToUpdate = JavaCore.create(this.parentResource.getProject());
-      List newAdaptorFrameworkList = new LinkedList();
-      newAdaptorFrameworkList.add("Java" + this.adaptorName + "Adaptor." + IWOLipsModel.EXT_FRAMEWORK);
-      JavaProject javaProject = (JavaProject) projectToUpdate.getAdapter(JavaProject.class);
-      IClasspathEntry[] newClasspathEntries = javaProject.addFrameworkListToClasspathEntries(newAdaptorFrameworkList);
-      try {
-        projectToUpdate.setRawClasspath(newClasspathEntries, null);
-      }
-      catch (JavaModelException e) {
-        throw new InvocationTargetException(e);
-      }
-      finally {
-        projectToUpdate = null;
-        newAdaptorFrameworkList = null;
-        newClasspathEntries = null;
-      }
-    }
-  }
+	private EOModelCreationPage page;
+
+	/**
+	 * Constructor for EOModelCreator.
+	 * 
+	 * @param parentResource
+	 * @param modelName
+	 * @param adaptorName
+	 */
+	public EOModelCreator(IResource parentResource, String modelName, String adaptorName, boolean createEOGeneratorFile, EOModelCreationPage page) {
+		this.parentResource = parentResource;
+		this.modelName = modelName;
+		this.adaptorName = adaptorName;
+		this.page = page;
+		this.createEOGeneratorFile = createEOGeneratorFile;
+	}
+
+	public void run(IProgressMonitor monitor) throws InvocationTargetException {
+		try {
+			createEOModel(monitor);
+		} catch (CoreException e) {
+			throw new InvocationTargetException(e);
+		} catch (IOException e) {
+			throw new InvocationTargetException(e);
+		} catch (EOModelException e) {
+			throw new InvocationTargetException(e);
+		}
+	}
+
+	/**
+	 * Method createEOModelNamed. Creates eo model file resources. All file
+	 * resource changes are registered in ResourceChangeListener where the
+	 * project file is updated. <br>
+	 * All folder resource changes are registered in
+	 * 
+	 * @link WOProjectResourceCreator#createResourceFolderInProject(IFolder,
+	 *       IProgressMonitor). <br>
+	 * @param monitor
+	 * @throws EOModelException
+	 * @throws IOException
+	 * @throws CoreException
+	 * @throws InvocationTargetException
+	 */
+	public void createEOModel(IProgressMonitor monitor) throws CoreException, IOException, EOModelException, InvocationTargetException {
+		EOModelGroup modelGroup = EclipseEOModelGroupFactory.createModelGroup(parentResource.getProject(), new HashSet());
+		EOModel model = new EOModel(modelName);
+		model.setAdaptorName(adaptorName);
+		modelGroup.addModel(model);
+		IContainer parentContainer = (IContainer) parentResource;
+		File modelFolderFile = model.saveToFolder(parentContainer.getLocation().toFile());
+		IFolder modelFolder = parentContainer.getFolder(new Path(modelFolderFile.getName()));
+		EOGeneratorModel eogenModel = EOGeneratorWizard.createEOGeneratorModel(parentContainer, model);
+		String baseName = model.getName();
+		IFile eogenFile = parentContainer.getFile(new Path(baseName + ".eogen"));
+		if (eogenFile.exists()) {
+			for (int dupeNum = 1; !eogenFile.exists(); dupeNum++) {
+				eogenFile = parentContainer.getFile(new Path(baseName + dupeNum + ".eogen"));
+			}
+		}
+		eogenModel.writeToFile(eogenFile, monitor);
+		parentContainer.refreshLocal(IResource.DEPTH_INFINITE, monitor);
+		page.setResourceToReveal(modelFolder.findMember("index.eomodeld"));
+
+		// add adaptor framework
+		if (!"None".equals(adaptorName)) {
+			IJavaProject projectToUpdate = JavaCore.create(this.parentResource.getProject());
+			List newAdaptorFrameworkList = new LinkedList();
+			newAdaptorFrameworkList.add("Java" + this.adaptorName + "Adaptor." + IWOLipsModel.EXT_FRAMEWORK);
+			JavaProject javaProject = (JavaProject) projectToUpdate.getAdapter(JavaProject.class);
+			IClasspathEntry[] newClasspathEntries = javaProject.addFrameworkListToClasspathEntries(newAdaptorFrameworkList);
+			try {
+				projectToUpdate.setRawClasspath(newClasspathEntries, null);
+			} catch (JavaModelException e) {
+				throw new InvocationTargetException(e);
+			} finally {
+				projectToUpdate = null;
+				newAdaptorFrameworkList = null;
+				newClasspathEntries = null;
+			}
+		}
+	}
 }

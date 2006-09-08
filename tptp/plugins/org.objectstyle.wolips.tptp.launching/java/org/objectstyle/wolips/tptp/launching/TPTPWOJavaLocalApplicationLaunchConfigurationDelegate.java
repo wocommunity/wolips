@@ -68,17 +68,15 @@ import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchCo
 /**
  * Launches a local VM.
  */
-public class TPTPWOJavaLocalApplicationLaunchConfigurationDelegate extends
-		WOJavaLocalApplicationLaunchConfigurationDelegate {
+public class TPTPWOJavaLocalApplicationLaunchConfigurationDelegate extends WOJavaLocalApplicationLaunchConfigurationDelegate {
 
 	public final static String TPTPWOJavaLocalApplicationID = "org.objectstyle.wolips.tptp.launching.TPTPWOJavaLocalApplicationLaunchConfigurationDelegate";
-	public void launch(ILaunchConfiguration conf, String mode, ILaunch launch,
-			IProgressMonitor monitor) throws CoreException {
+
+	public void launch(ILaunchConfiguration conf, String mode, ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		try {
 			monitor.beginTask("", 4);
 			monitor.subTask(TraceMessages.LNCH_MSGV);
-			boolean success = ProfileLaunchUtil
-					.performProfilingTypesLaunch(conf);
+			boolean success = ProfileLaunchUtil.performProfilingTypesLaunch(conf);
 			monitor.worked(1);
 
 			if (!success) {
@@ -93,8 +91,7 @@ public class TPTPWOJavaLocalApplicationLaunchConfigurationDelegate extends
 			args.setClassPath(getClasspathString(conf));
 			args.setParameters(getProgramArguments(conf));
 			args.setVMArguments(getVMArguments(conf));
-			args.setEnvironmentVariable(ProfileLaunchUtil
-					.getEnvironmentVariables(conf));
+			args.setEnvironmentVariable(ProfileLaunchUtil.getEnvironmentVariables(conf));
 			args.setAutoMonitoring(manager.getAutoMonitoring(conf));
 
 			File workingDir = getWorkingDirectory(conf);
@@ -106,39 +103,22 @@ public class TPTPWOJavaLocalApplicationLaunchConfigurationDelegate extends
 
 			monitor.worked(1);
 
-			String hostName = conf.getAttribute(
-					IProfileLaunchConfigurationConstants.ATTR_HOSTNAME,
-					"localhost");
-			int port = conf.getAttribute(
-					IProfileLaunchConfigurationConstants.ATTR_PORT, store
-							.getInt(HyadesConstants.LOCALHOST_PORT));
-			String projectName = conf
-					.getAttribute(
-							IProfileLaunchConfigurationConstants.ATTR_DESTINATION_PROJECT,
-							store.getString(TraceConstants.TRACE_PROJECT_NAME));
-			String monitorName = conf
-					.getAttribute(
-							IProfileLaunchConfigurationConstants.ATTR_DESTINATION_MONITOR,
-							store.getString(TraceConstants.TRACE_MONITOR_NAME));
+			String hostName = conf.getAttribute(IProfileLaunchConfigurationConstants.ATTR_HOSTNAME, "localhost");
+			int port = conf.getAttribute(IProfileLaunchConfigurationConstants.ATTR_PORT, store.getInt(HyadesConstants.LOCALHOST_PORT));
+			String projectName = conf.getAttribute(IProfileLaunchConfigurationConstants.ATTR_DESTINATION_PROJECT, store.getString(TraceConstants.TRACE_PROJECT_NAME));
+			String monitorName = conf.getAttribute(IProfileLaunchConfigurationConstants.ATTR_DESTINATION_MONITOR, store.getString(TraceConstants.TRACE_MONITOR_NAME));
 
 			args.setHostName(hostName);
 			args.setPortNumber(port);
 
-			if (conf.getAttribute(
-					IProfileLaunchConfigurationConstants.ATTR_PROFILE_TO_FILE,
-					false))
-				args
-						.setProfileFile(conf
-								.getAttribute(
-										IProfileLaunchConfigurationConstants.ATTR_DESTINATION_FILE,
-										(String) null));
+			if (conf.getAttribute(IProfileLaunchConfigurationConstants.ATTR_PROFILE_TO_FILE, false))
+				args.setProfileFile(conf.getAttribute(IProfileLaunchConfigurationConstants.ATTR_DESTINATION_FILE, (String) null));
 
 			ArrayList filters = manager.getFilters(conf);
 			Vector options = manager.getOptions(conf);
 			monitor.worked(1);
 
-			if (!PDCoreUtil.launchTrace(args, filters, options, projectName,
-					monitorName, launch)) {
+			if (!PDCoreUtil.launchTrace(args, filters, options, projectName, monitorName, launch)) {
 				monitor.setCanceled(true);
 			}
 			monitor.worked(1);
@@ -148,11 +128,8 @@ public class TPTPWOJavaLocalApplicationLaunchConfigurationDelegate extends
 		}
 	}
 
-	private String getClasspathString(ILaunchConfiguration conf)
-			throws CoreException {
-		String classPath = conf.getAttribute(
-				IProfileLaunchConfigurationConstants.ATTR_CLASSPATH,
-				(String) null);
+	private String getClasspathString(ILaunchConfiguration conf) throws CoreException {
+		String classPath = conf.getAttribute(IProfileLaunchConfigurationConstants.ATTR_CLASSPATH, (String) null);
 
 		if (classPath == null) {
 			StringBuffer buf = new StringBuffer();

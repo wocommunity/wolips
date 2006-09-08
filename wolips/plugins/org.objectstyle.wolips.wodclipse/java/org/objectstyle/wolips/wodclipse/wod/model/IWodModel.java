@@ -49,11 +49,11 @@ import java.util.List;
  * @author mschrag
  */
 public interface IWodModel extends IWodUnit {
-  public String getName();
+	public String getName();
 
-  public List getElements();
+	public List getElements();
 
-  public List getSyntacticProblems();
+	public List getSyntacticProblems();
 
-  public IWodUnit getWodUnitAtIndex(int _index);
+	public IWodUnit getWodUnitAtIndex(int _index);
 }

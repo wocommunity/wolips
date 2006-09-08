@@ -55,23 +55,22 @@ import org.objectstyle.wolips.wodclipse.wod.parser.WodFilePartitionScanner;
  * @author mike
  */
 public class WodFileDocumentSetupParticipant implements IDocumentSetupParticipant {
-  public void setup(IDocument document) {
-    WodFileDocumentSetupParticipant.setupDocument(document);
-  }
+	public void setup(IDocument document) {
+		WodFileDocumentSetupParticipant.setupDocument(document);
+	}
 
-  public static void setupDocument(IDocument document) {
-    IDocumentPartitioner partitioner = WodFileDocumentSetupParticipant.createDocumentPartitioner();
-    if (document instanceof IDocumentExtension3) {
-      IDocumentExtension3 extension3 = (IDocumentExtension3) document;
-      extension3.setDocumentPartitioner(IWodFilePartitions.WOD_FILE_PARTITIONING, partitioner);
-    }
-    else {
-      document.setDocumentPartitioner(partitioner);
-    }
-    partitioner.connect(document);
-  }
+	public static void setupDocument(IDocument document) {
+		IDocumentPartitioner partitioner = WodFileDocumentSetupParticipant.createDocumentPartitioner();
+		if (document instanceof IDocumentExtension3) {
+			IDocumentExtension3 extension3 = (IDocumentExtension3) document;
+			extension3.setDocumentPartitioner(IWodFilePartitions.WOD_FILE_PARTITIONING, partitioner);
+		} else {
+			document.setDocumentPartitioner(partitioner);
+		}
+		partitioner.connect(document);
+	}
 
-  private static IDocumentPartitioner createDocumentPartitioner() {
-    return new FastPartitioner(new WodFilePartitionScanner(), IWodFilePartitions.PARTITIONS);
-  }
+	private static IDocumentPartitioner createDocumentPartitioner() {
+		return new FastPartitioner(new WodFilePartitionScanner(), IWodFilePartitions.PARTITIONS);
+	}
 }

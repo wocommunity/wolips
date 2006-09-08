@@ -56,83 +56,85 @@ import org.objectstyle.wolips.wodclipse.wod.parser.RulePosition;
  * @author mschrag
  */
 public class DocumentWodElement implements IWodElement, Comparable {
-  private RulePosition myElementName;
-  private RulePosition myElementType;
-  private DocumentWodModel myModel;
-  private List myBindings;
+	private RulePosition myElementName;
 
-  public DocumentWodElement(RulePosition _elementName, RulePosition _elementType, DocumentWodModel _model) {
-    myModel = _model;
-    myElementName = _elementName;
-    myElementType = _elementType;
-    myBindings = new LinkedList();
-  }
+	private RulePosition myElementType;
 
-  public void addBinding(DocumentWodBinding _binding) {
-    myBindings.add(_binding);
-  }
+	private DocumentWodModel myModel;
 
-  public String getElementName() {
-    return myElementName._getTextWithoutException();
-  }
+	private List myBindings;
 
-  public Position getElementNamePosition() {
-    return myElementName.getPosition();
-  }
+	public DocumentWodElement(RulePosition _elementName, RulePosition _elementType, DocumentWodModel _model) {
+		myModel = _model;
+		myElementName = _elementName;
+		myElementType = _elementType;
+		myBindings = new LinkedList();
+	}
 
-  public String getElementType() {
-    return myElementType._getTextWithoutException();
-  }
+	public void addBinding(DocumentWodBinding _binding) {
+		myBindings.add(_binding);
+	}
 
-  public Position getElementTypePosition() {
-    return myElementType.getPosition();
-  }
+	public String getElementName() {
+		return myElementName._getTextWithoutException();
+	}
 
-  public List getBindings() {
-    return myBindings;
-  }
+	public Position getElementNamePosition() {
+		return myElementName.getPosition();
+	}
 
-  public Map getBindingsMap() {
-    Map bindingsMap = new HashMap();
-    Iterator bindingsIter = myBindings.iterator();
-    while (bindingsIter.hasNext()) {
-      IWodBinding binding = (IWodBinding) bindingsIter.next();
-      bindingsMap.put(binding.getName(), binding.getValue());
-    }
-    return bindingsMap;
-  }
+	public String getElementType() {
+		return myElementType._getTextWithoutException();
+	}
 
-  public IWodModel getModel() {
-    return myModel;
-  }
+	public Position getElementTypePosition() {
+		return myElementType.getPosition();
+	}
 
-  public int compareTo(Object _otherObj) {
-    int comparison;
-    if (_otherObj instanceof DocumentWodElement) {
-      String otherName = ((DocumentWodElement) _otherObj).getElementName();
-      comparison = getElementName().compareTo(otherName);
-    }
-    else {
-      comparison = -1;
-    }
-    return comparison;
-  }
+	public List getBindings() {
+		return myBindings;
+	}
 
-  public int getStartOffset() {
-    return myElementName.getTokenOffset();
-  }
+	public Map getBindingsMap() {
+		Map bindingsMap = new HashMap();
+		Iterator bindingsIter = myBindings.iterator();
+		while (bindingsIter.hasNext()) {
+			IWodBinding binding = (IWodBinding) bindingsIter.next();
+			bindingsMap.put(binding.getName(), binding.getValue());
+		}
+		return bindingsMap;
+	}
 
-  public int getEndOffset() {
-    int endOffset = myElementType.getTokenEndOffset();
-    Iterator bindingsIter = myBindings.iterator();
-    while (bindingsIter.hasNext()) {
-      IWodBinding binding = (IWodBinding) bindingsIter.next();
-      endOffset = Math.max(endOffset, binding.getEndOffset());
-    }
-    return endOffset;
-  }
+	public IWodModel getModel() {
+		return myModel;
+	}
 
-  public String toString() {
-    return "[DocumentWodElement: elementName = " + myElementName + ";  elementType = " + myElementType + "; bindings = " + myBindings + "]";
-  }
+	public int compareTo(Object _otherObj) {
+		int comparison;
+		if (_otherObj instanceof DocumentWodElement) {
+			String otherName = ((DocumentWodElement) _otherObj).getElementName();
+			comparison = getElementName().compareTo(otherName);
+		} else {
+			comparison = -1;
+		}
+		return comparison;
+	}
+
+	public int getStartOffset() {
+		return myElementName.getTokenOffset();
+	}
+
+	public int getEndOffset() {
+		int endOffset = myElementType.getTokenEndOffset();
+		Iterator bindingsIter = myBindings.iterator();
+		while (bindingsIter.hasNext()) {
+			IWodBinding binding = (IWodBinding) bindingsIter.next();
+			endOffset = Math.max(endOffset, binding.getEndOffset());
+		}
+		return endOffset;
+	}
+
+	public String toString() {
+		return "[DocumentWodElement: elementName = " + myElementName + ";  elementType = " + myElementType + "; bindings = " + myBindings + "]";
+	}
 }

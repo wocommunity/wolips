@@ -62,10 +62,9 @@ import org.eclipse.jface.action.IAction;
  */
 public class AddToResourcesIncludePatternsetAction extends AbstractPatternsetAction {
 
-	
 	public void run(IAction action) {
 		String pattern = this.getPattern();
-		if(pattern != null)
+		if (pattern != null)
 			this.getProject().addResourcesIncludePattern(pattern);
 		super.run(action);
 	}

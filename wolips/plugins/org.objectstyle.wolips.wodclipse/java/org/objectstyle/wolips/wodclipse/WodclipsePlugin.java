@@ -61,7 +61,7 @@ public class WodclipsePlugin extends AbstractWOLipsUIPlugin {
 	private static WodclipsePlugin plugin;
 
 	private WodEditor lastWodEditor;
-	
+
 	/**
 	 * The constructor.
 	 */
@@ -85,6 +85,7 @@ public class WodclipsePlugin extends AbstractWOLipsUIPlugin {
 		plugin = null;
 		lastWodEditor = null;
 	}
+
 	/**
 	 * Returns the shared instance.
 	 */
@@ -101,14 +102,13 @@ public class WodclipsePlugin extends AbstractWOLipsUIPlugin {
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin(
-				"org.objectstyle.wolips.wodclipse", path);
+		return AbstractUIPlugin.imageDescriptorFromPlugin("org.objectstyle.wolips.wodclipse", path);
 	}
-	
+
 	public Image getImage(String key) {
 		return getImageRegistry().get(key);
 	}
-	
+
 	public void updateWebObjectsTagNames(WodEditor wodEditor) {
 		if (lastWodEditor == wodEditor) {
 			return;

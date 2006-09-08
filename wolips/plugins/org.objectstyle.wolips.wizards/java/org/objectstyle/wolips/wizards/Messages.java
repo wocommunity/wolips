@@ -65,8 +65,7 @@ import java.util.ResourceBundle;
 public class Messages {
 	private static final String RESOURCE_BUNDLE = Messages.class.getName();
 
-	private static ResourceBundle fgResourceBundle = ResourceBundle
-			.getBundle(RESOURCE_BUNDLE);
+	private static ResourceBundle fgResourceBundle = ResourceBundle.getBundle(RESOURCE_BUNDLE);
 
 	private Messages() {
 		super();

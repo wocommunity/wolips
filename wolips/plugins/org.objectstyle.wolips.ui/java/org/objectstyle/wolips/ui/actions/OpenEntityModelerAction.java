@@ -71,29 +71,29 @@ import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResour
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class OpenEntityModelerAction extends AbstractActionOnIResource {
-  private final String eoModelExtension = ".eomodeld";
+	private final String eoModelExtension = ".eomodeld";
 
-  /**
-   * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
-   */
-  public void run(IAction action) {
-    if (getActionResource() != null) {
-      String fileName = getActionResource().getName();
-      fileName = fileName.substring(0, fileName.length() - this.eoModelExtension.length());
+	/**
+	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
+	 */
+	public void run(IAction action) {
+		if (getActionResource() != null) {
+			String fileName = getActionResource().getName();
+			fileName = fileName.substring(0, fileName.length() - this.eoModelExtension.length());
 
-      ArrayList list = new ArrayList();
-      WorkbenchUtilitiesPlugin.findFilesInResourceByName(list, getActionResource(), "index" + this.eoModelExtension);
-      if (list.size() > 0) {
-        IFile indexFile = (IFile) list.get(0);
-        WorkbenchUtilitiesPlugin.open(indexFile, "org.objectstyle.wolips.eomodeler.editors.EOModelEditor");
-      }
-    }
-  }
+			ArrayList list = new ArrayList();
+			WorkbenchUtilitiesPlugin.findFilesInResourceByName(list, getActionResource(), "index" + this.eoModelExtension);
+			if (list.size() > 0) {
+				IFile indexFile = (IFile) list.get(0);
+				WorkbenchUtilitiesPlugin.open(indexFile, "org.objectstyle.wolips.eomodeler.editors.EOModelEditor");
+			}
+		}
+	}
 
-  /**
-   * Method dispose.
-   */
-  public void dispose() {
-    super.dispose();
-  }
+	/**
+	 * Method dispose.
+	 */
+	public void dispose() {
+		super.dispose();
+	}
 }

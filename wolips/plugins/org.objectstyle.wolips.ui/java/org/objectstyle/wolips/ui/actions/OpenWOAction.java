@@ -69,23 +69,24 @@ import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResour
  */
 public class OpenWOAction extends AbstractActionOnIResource {
 
-  private final String woExtension = ".wo";
+	private final String woExtension = ".wo";
+
 	private final String wodExtension = ".wod";
+
 	/**
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
 	public void run(IAction action) {
 		if (getActionResource() != null) {
 			String fileName = getActionResource().getName();
-			fileName = fileName.substring(0, fileName.length()
-					- this.woExtension.length());
+			fileName = fileName.substring(0, fileName.length() - this.woExtension.length());
 
 			ArrayList list = new ArrayList();
-			WorkbenchUtilitiesPlugin.findFilesInResourceByName(list,
-					getActionResource(), fileName + this.wodExtension);
+			WorkbenchUtilitiesPlugin.findFilesInResourceByName(list, getActionResource(), fileName + this.wodExtension);
 			WorkbenchUtilitiesPlugin.open(list);
 		}
 	}
+
 	/**
 	 * Method dispose.
 	 */

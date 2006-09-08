@@ -96,8 +96,7 @@ public abstract class AbstractWOLipsUIPlugin extends AbstractUIPlugin {
 	 * found.
 	 */
 	public final static String getResourceString(String key) {
-		ResourceBundle bundle = AbstractWOLipsUIPlugin.Plugin
-				.getResourceBundle();
+		ResourceBundle bundle = AbstractWOLipsUIPlugin.Plugin.getResourceBundle();
 		try {
 			return (bundle != null) ? bundle.getString(key) : key;
 		} catch (MissingResourceException e) {
@@ -111,8 +110,7 @@ public abstract class AbstractWOLipsUIPlugin extends AbstractUIPlugin {
 	public final ResourceBundle getResourceBundle() {
 		try {
 			if (this.resourceBundle == null)
-				this.resourceBundle = ResourceBundle.getBundle(this
-						.getBundleID());
+				this.resourceBundle = ResourceBundle.getBundle(this.getBundleID());
 		} catch (MissingResourceException x) {
 			this.resourceBundle = null;
 		}
@@ -134,8 +132,7 @@ public abstract class AbstractWOLipsUIPlugin extends AbstractUIPlugin {
 	 * @param message
 	 */
 	public void log(Object message) {
-		this.log(new Status(IStatus.ERROR, this.getBundleID(), IStatus.ERROR,
-				"" + message, null));
+		this.log(new Status(IStatus.ERROR, this.getBundleID(), IStatus.ERROR, "" + message, null));
 	}
 
 	/**
@@ -144,8 +141,7 @@ public abstract class AbstractWOLipsUIPlugin extends AbstractUIPlugin {
 	 * @param e
 	 */
 	public void log(Throwable e) {
-		this.log(new Status(IStatus.ERROR, this.getBundleID(), IStatus.ERROR,
-				"Internal Error", e)); //$NON-NLS-1$
+		this.log(new Status(IStatus.ERROR, this.getBundleID(), IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
 	}
 
 	/**
@@ -155,8 +151,7 @@ public abstract class AbstractWOLipsUIPlugin extends AbstractUIPlugin {
 	 * @param e
 	 */
 	public void log(Object message, Throwable e) {
-		this.log(new Status(IStatus.ERROR, this.getBundleID(), IStatus.ERROR,
-				"" + message, e)); //$NON-NLS-1$
+		this.log(new Status(IStatus.ERROR, this.getBundleID(), IStatus.ERROR, "" + message, e)); //$NON-NLS-1$
 	}
 
 	/**
@@ -166,8 +161,7 @@ public abstract class AbstractWOLipsUIPlugin extends AbstractUIPlugin {
 	 */
 	public void debug(Throwable aThrowable) {
 		if (this.debug) {
-			this.log(new Status(IStatus.WARNING, this.getBundleID(),
-					IStatus.WARNING, aThrowable.getMessage(), aThrowable)); //$NON-NLS-1$
+			this.log(new Status(IStatus.WARNING, this.getBundleID(), IStatus.WARNING, aThrowable.getMessage(), aThrowable)); //$NON-NLS-1$
 		}
 	}
 
@@ -177,8 +171,7 @@ public abstract class AbstractWOLipsUIPlugin extends AbstractUIPlugin {
 	 */
 	public void debug(Object message, Throwable t) {
 		if (this.debug) {
-			this.log(new Status(IStatus.WARNING, this.getBundleID(),
-					IStatus.WARNING, "" + message, t)); //$NON-NLS-1$
+			this.log(new Status(IStatus.WARNING, this.getBundleID(), IStatus.WARNING, "" + message, t)); //$NON-NLS-1$
 		}
 	}
 
@@ -187,8 +180,7 @@ public abstract class AbstractWOLipsUIPlugin extends AbstractUIPlugin {
 	 */
 	public void debug(Object message) {
 		if (this.debug) {
-			this.log(new Status(IStatus.WARNING, this.getBundleID(),
-					IStatus.WARNING, "" + message, null)); //$NON-NLS-1$
+			this.log(new Status(IStatus.WARNING, this.getBundleID(), IStatus.WARNING, "" + message, null)); //$NON-NLS-1$
 		}
 	}
 

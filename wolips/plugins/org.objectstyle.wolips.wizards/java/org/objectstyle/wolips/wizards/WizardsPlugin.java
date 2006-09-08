@@ -112,8 +112,7 @@ public class WizardsPlugin extends AbstractWOLipsUIPlugin {
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin(
-				"org.objectstyle.wolips.wizards", path);
+		return AbstractUIPlugin.imageDescriptorFromPlugin("org.objectstyle.wolips.wizards", path);
 	}
 
 	/**
@@ -136,8 +135,7 @@ public class WizardsPlugin extends AbstractWOLipsUIPlugin {
 
 	public static void selectAndReveal(IResource newResource) {
 		if (newResource != null) {
-			BasicNewResourceWizard.selectAndReveal(newResource,
-					WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow());
+			BasicNewResourceWizard.selectAndReveal(newResource, WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow());
 			if (newResource.getType() == IResource.FILE)
 				WorkbenchUtilitiesPlugin.open((IFile) newResource);
 		}

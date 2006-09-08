@@ -59,33 +59,33 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+
 /**
  * @author mnolte
  * @author uli
  */
 public class EOModelCreationWizard extends Wizard implements INewWizard {
 	private EOModelCreationPage mainPage;
-	
+
 	public EOModelCreationWizard() {
 		super();
 	}
-	
+
 	public void addPages() {
 		addPage(mainPage);
 	}
-	
+
 	public boolean performFinish() {
 		boolean returnValue = mainPage.createEOModel();
-		if(returnValue) {
+		if (returnValue) {
 			WizardsPlugin.selectAndReveal(mainPage.getResourceToReveal());
 		}
 		return returnValue;
 	}
-	
+
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		mainPage = new EOModelCreationPage(selection);
 		setWindowTitle(Messages.getString("EOModelCreationWizard.title"));
-		setDefaultPageImageDescriptor(WizardsPlugin
-				.WOCOMPONENT_WIZARD_BANNER());
+		setDefaultPageImageDescriptor(WizardsPlugin.WOCOMPONENT_WIZARD_BANNER());
 	}
 }

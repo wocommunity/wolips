@@ -59,16 +59,14 @@ import org.objectstyle.wolips.preferences.PreferencesMessages;
 /**
  * @author uli
  */
-public class BuildPreferencesPage extends FieldEditorPreferencePage implements
-		IWorkbenchPreferencePage {
+public class BuildPreferencesPage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 	/**
 	 * Constructor
 	 */
 	public BuildPreferencesPage() {
 		super(GRID);
 		setPreferenceStore(Preferences.getPreferenceStore());
-		setDescription(PreferencesMessages
-				.getString("Preferences.Build.PageDescription"));
+		setDescription(PreferencesMessages.getString("Preferences.Build.PageDescription"));
 		Preferences.setDefaults();
 	}
 
@@ -76,30 +74,12 @@ public class BuildPreferencesPage extends FieldEditorPreferencePage implements
 	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
 	 */
 	public void createFieldEditors() {
-		addField(new BooleanFieldEditor(
-				Preferences.PREF_CAPTURE_ANT_OUTPUT, PreferencesMessages
-						.getString("Preferences.CaptureAntOutput.Label"),
-				getFieldEditorParent()));
-		addField(new BooleanFieldEditor(
-				Preferences.PREF_WRITE_PB_DOT_PROJECT_ON_BUILD, PreferencesMessages
-						.getString("Preferences.WritePBDotProjectOnBuild.Label"),
-				getFieldEditorParent()));
-		addField(new BooleanFieldEditor(Preferences.PREF_WRITE_XCODE_ON_BUILD,
-				PreferencesMessages
-						.getString("Preferences.WriteXcodeOnBuild.Label"),
-				getFieldEditorParent()));
-		addField(new BooleanFieldEditor(
-				Preferences.PREF_WRITE_XCODE21_ON_BUILD, PreferencesMessages
-						.getString("Preferences.WriteXcode21OnBuild.Label"),
-				getFieldEditorParent()));
-		addField(new BooleanFieldEditor(Preferences.PREF_VALIDATE_WOD_ON_BUILD,
-				PreferencesMessages
-						.getString("Preferences.ValidateWODOnBuild.Label"),
-				getFieldEditorParent()));
-    addField(new BooleanFieldEditor(Preferences.PREF_AUTOEOGENERATE_ON_BUILD,
-        PreferencesMessages
-            .getString("Preferences.AutoEOGenerateOnBuild.Label"),
-        getFieldEditorParent()));
+		addField(new BooleanFieldEditor(Preferences.PREF_CAPTURE_ANT_OUTPUT, PreferencesMessages.getString("Preferences.CaptureAntOutput.Label"), getFieldEditorParent()));
+		addField(new BooleanFieldEditor(Preferences.PREF_WRITE_PB_DOT_PROJECT_ON_BUILD, PreferencesMessages.getString("Preferences.WritePBDotProjectOnBuild.Label"), getFieldEditorParent()));
+		addField(new BooleanFieldEditor(Preferences.PREF_WRITE_XCODE_ON_BUILD, PreferencesMessages.getString("Preferences.WriteXcodeOnBuild.Label"), getFieldEditorParent()));
+		addField(new BooleanFieldEditor(Preferences.PREF_WRITE_XCODE21_ON_BUILD, PreferencesMessages.getString("Preferences.WriteXcode21OnBuild.Label"), getFieldEditorParent()));
+		addField(new BooleanFieldEditor(Preferences.PREF_VALIDATE_WOD_ON_BUILD, PreferencesMessages.getString("Preferences.ValidateWODOnBuild.Label"), getFieldEditorParent()));
+		addField(new BooleanFieldEditor(Preferences.PREF_AUTOEOGENERATE_ON_BUILD, PreferencesMessages.getString("Preferences.AutoEOGenerateOnBuild.Label"), getFieldEditorParent()));
 	}
 
 	/**

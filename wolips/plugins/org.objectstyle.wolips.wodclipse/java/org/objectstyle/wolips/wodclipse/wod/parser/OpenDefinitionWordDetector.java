@@ -49,14 +49,14 @@ import org.eclipse.jface.text.rules.IWordDetector;
  * @author mike
  */
 public class OpenDefinitionWordDetector implements IWordDetector {
-  public OpenDefinitionWordDetector() {
-  }
+	public OpenDefinitionWordDetector() {
+	}
 
-  public boolean isWordStart(char _ch) {
-    return _ch == '{';
-  }
+	public boolean isWordStart(char _ch) {
+		return _ch == '{';
+	}
 
-  public boolean isWordPart(char _ch) {
-    return false;
-  }
+	public boolean isWordPart(char _ch) {
+		return false;
+	}
 }

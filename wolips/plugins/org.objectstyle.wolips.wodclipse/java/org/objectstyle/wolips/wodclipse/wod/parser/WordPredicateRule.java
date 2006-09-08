@@ -53,21 +53,21 @@ import org.eclipse.jface.text.rules.WordRule;
  * @author mike
  */
 public class WordPredicateRule extends WordRule implements IPredicateRule {
-  public WordPredicateRule(IWordDetector _detector) {
-    super(_detector);
-  }
+	public WordPredicateRule(IWordDetector _detector) {
+		super(_detector);
+	}
 
-  public WordPredicateRule(IWordDetector _detector, IToken _defaultToken) {
-    super(_detector, _defaultToken);
-  }
+	public WordPredicateRule(IWordDetector _detector, IToken _defaultToken) {
+		super(_detector, _defaultToken);
+	}
 
-  public IToken getSuccessToken() {
-    return fDefaultToken;
-  }
+	public IToken getSuccessToken() {
+		return fDefaultToken;
+	}
 
-  public IToken evaluate(ICharacterScanner _scanner, boolean _resume) {
-    IToken token = evaluate(_scanner);
-    return token;
-  }
+	public IToken evaluate(ICharacterScanner _scanner, boolean _resume) {
+		IToken token = evaluate(_scanner);
+		return token;
+	}
 
 }

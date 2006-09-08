@@ -114,8 +114,7 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 /**
  * @author ulrich
  */
-public final class RelatedView extends ViewPart implements ISelectionListener,
-		IPartListener {
+public final class RelatedView extends ViewPart implements ISelectionListener, IPartListener {
 	protected class ViewContentProvider implements ITreeContentProvider {
 
 		Object input = null;
@@ -136,23 +135,15 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 			IWOLipsResource wolipsResource = null;
 			// MS: If we add the dependency it is a circular dependency, so that
 			// sucks ... We'll just do it Reflection-Style.
-			if (parent != null
-					&& parent
-							.getClass()
-							.getName()
-							.equals(
-									"org.objectstyle.wolips.components.input.ComponentEditorFileEditorInput")) {
+			if (parent != null && parent.getClass().getName().equals("org.objectstyle.wolips.components.input.ComponentEditorFileEditorInput")) {
 				try {
-					parent = parent.getClass().getMethod("getFile", null)
-							.invoke(parent, null);
+					parent = parent.getClass().getMethod("getFile", null).invoke(parent, null);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				// System.out.println("ViewContentProvider.getElements: " +
 				// parent);
-			} else if (parent != null
-					&& parent.getClass().getName()
-							.startsWith("org.eclipse.wst")) {
+			} else if (parent != null && parent.getClass().getName().startsWith("org.eclipse.wst")) {
 				// MS: Total hack ... HTML editor returns its element as a
 				// TextImpl. I'm not how to get back to the IResource from
 				// that. It just so happens that there's always a previous
@@ -177,8 +168,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 				try {
 					// HACK AK: we should use sth more generic here
 					if ("java".equals(input.getFile().getFileExtension())) {
-						parent = JavaCore.createCompilationUnitFrom(input
-								.getFile());
+						parent = JavaCore.createCompilationUnitFrom(input.getFile());
 					}
 				} catch (Exception ex) {
 					UIPlugin.getDefault().log(ex);
@@ -188,12 +178,10 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 				parent = ((IMember) parent).getCompilationUnit();
 			}
 			if (parent instanceof IResource) {
-				wolipsResource = WOLipsCore.getWOLipsModel().getWOLipsResource(
-						(IResource) parent);
+				wolipsResource = WOLipsCore.getWOLipsModel().getWOLipsResource((IResource) parent);
 				// getViewer().setInput(wolipsResource);
 			} else if (parent instanceof ICompilationUnit) {
-				wolipsResource = WOLipsCore.getWOLipsModel()
-						.getWOLipsCompilationUnit((ICompilationUnit) parent);
+				wolipsResource = WOLipsCore.getWOLipsModel().getWOLipsCompilationUnit((ICompilationUnit) parent);
 			}
 			List result = new LinkedList();
 			if (wolipsResource != null) {
@@ -245,17 +233,12 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 		}
 	}
 
-	class ViewLabelProvider extends AppearanceAwareLabelProvider implements
-			ITableLabelProvider {
+	class ViewLabelProvider extends AppearanceAwareLabelProvider implements ITableLabelProvider {
 		private Set duplicateFilenameSet;
 
 		public ViewLabelProvider() {
-			super(AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS
-					| JavaElementLabels.P_COMPRESSED,
-					AppearanceAwareLabelProvider.DEFAULT_IMAGEFLAGS
-							| JavaElementImageProvider.SMALL_ICONS);
-			addLabelDecorator(PlatformUI.getWorkbench().getDecoratorManager()
-					.getLabelDecorator());
+			super(AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS | JavaElementLabels.P_COMPRESSED, AppearanceAwareLabelProvider.DEFAULT_IMAGEFLAGS | JavaElementImageProvider.SMALL_ICONS);
+			addLabelDecorator(PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator());
 		}
 
 		public void setResultList(Object[] items) {
@@ -268,8 +251,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 					continue;
 				}
 				IResource thisResource = (IResource) items[i];
-				IResource otherResource = (IResource) filenameToItemMap
-						.get(thisResource.getName());
+				IResource otherResource = (IResource) filenameToItemMap.get(thisResource.getName());
 				if (otherResource != null) {
 					duplicateFilenameSet.add(thisResource);
 					duplicateFilenameSet.add(otherResource);
@@ -346,8 +328,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 
 		this.viewer.setSorter(new NameSorter());
 
-		this.showInNavigatorAction = new ShowInNavigatorAction(this
-				.getViewSite().getPage(), this.viewer);
+		this.showInNavigatorAction = new ShowInNavigatorAction(this.getViewSite().getPage(), this.viewer);
 		this.openInEditorAction = new Action() {
 
 			public void run() {
@@ -361,17 +342,14 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 					if (object != null) {
 						if (object instanceof IResource) {
 							IResource resource = (IResource) object;
-							wolipsResource = WOLipsCore.getWOLipsModel()
-									.getWOLipsResource((IResource) object);
+							wolipsResource = WOLipsCore.getWOLipsModel().getWOLipsResource((IResource) object);
 							if (wolipsResource != null) {
 								wolipsResource.open();
 							} else if (resource.getType() == IResource.FILE) {
 								WorkbenchUtilitiesPlugin.open((IFile) resource);
 							}
 						} else if (object instanceof ICompilationUnit) {
-							wolipsResource = WOLipsCore.getWOLipsModel()
-									.getWOLipsCompilationUnit(
-											(ICompilationUnit) object);
+							wolipsResource = WOLipsCore.getWOLipsModel().getWOLipsCompilationUnit((ICompilationUnit) object);
 							wolipsResource.open();
 						}
 					}
@@ -390,38 +368,36 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 
 		});
 
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(
-				new IResourceChangeListener() {
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(new IResourceChangeListener() {
 
-					public void resourceChanged(IResourceChangeEvent event) {
-						synchronized (viewer) {
-							IViewSite viewSite = getViewSite();
-							if (viewSite == null)
-								return;
-							IWorkbenchWindow workbenchWindow = viewSite
-									.getWorkbenchWindow();
-							if (workbenchWindow == null)
-								return;
-							Shell shell = workbenchWindow.getShell();
-							if (shell == null)
-								return;
-							Display display = shell.getDisplay();
-							if (display == null)
-								return;
-							display.asyncExec(new Runnable() {
+			public void resourceChanged(IResourceChangeEvent event) {
+				synchronized (viewer) {
+					IViewSite viewSite = getViewSite();
+					if (viewSite == null)
+						return;
+					IWorkbenchWindow workbenchWindow = viewSite.getWorkbenchWindow();
+					if (workbenchWindow == null)
+						return;
+					Shell shell = workbenchWindow.getShell();
+					if (shell == null)
+						return;
+					Display display = shell.getDisplay();
+					if (display == null)
+						return;
+					display.asyncExec(new Runnable() {
 
-								public void run() {
-									TableViewer tableViewer = getViewer();
-									if (!tableViewer.getTable().isDisposed()) {
-										tableViewer.refresh(false);
-									}
-								}
-
-							});
+						public void run() {
+							TableViewer tableViewer = getViewer();
+							if (!tableViewer.getTable().isDisposed()) {
+								tableViewer.refresh(false);
+							}
 						}
-					}
 
-				});
+					});
+				}
+			}
+
+		});
 
 		getViewSite().getPage().addSelectionListener(this);
 		getViewSite().getPage().addPartListener(this);
@@ -462,15 +438,13 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 	void fillContextMenu(IMenuManager menu) {
 		menu.add(new Separator());
 		menu.add(showInNavigatorAction);
-		List list = ((IStructuredSelection) getViewer().getSelection())
-				.toList();
+		List list = ((IStructuredSelection) getViewer().getSelection()).toList();
 		for (int i = 0; i < list.size(); i++) {
 			Object object = list.get(i);
 			if (object != null) {
 				if (object instanceof IResource) {
 					IResource resource = (IResource) object;
-					OpenWithMenu action = new OpenWithMenu(getViewSite()
-							.getPage(), resource);
+					OpenWithMenu action = new OpenWithMenu(getViewSite().getPage(), resource);
 					menu.add(action);
 					// AK: I can
 					// OpenEditorActionGroup group = new
@@ -478,8 +452,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 					// group.fillContextMenu(menu);
 				} else if (object instanceof ICompilationUnit) {
 					ICompilationUnit unit = (ICompilationUnit) object;
-					OpenWithMenu action = new OpenWithMenu(getViewSite()
-							.getPage(), unit);
+					OpenWithMenu action = new OpenWithMenu(getViewSite().getPage(), unit);
 					menu.add(action);
 				}
 			}
@@ -499,8 +472,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 
 				Object selectedElement = sel.getFirstElement();
 				Object viewerInput = this.viewer.getInput();
-				if (viewerInput == null
-						|| (!viewerInput.equals(selectedElement)))
+				if (viewerInput == null || (!viewerInput.equals(selectedElement)))
 					this.viewer.setInput(selectedElement);
 			}
 		}

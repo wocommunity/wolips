@@ -64,83 +64,86 @@ import org.eclipse.jdt.internal.corext.util.SuperTypeHierarchyCache;
  * @author mike
  */
 public class TypeNameCollector extends TypeNameRequestor {
-  private IJavaProject myProject;
-  private Set myTypeNames;
-  private Map myTypeNameToPath;
-  private Map myTypeNameToType;
-  private IType myWOElementType;
-  private boolean myRequireTypeInProject;
+	private IJavaProject myProject;
 
-  public TypeNameCollector(IJavaProject _project, boolean _requireTypeInProject) throws JavaModelException {
-    this(_project, _requireTypeInProject, new TreeSet());
-  }
+	private Set myTypeNames;
 
-  public TypeNameCollector(IJavaProject _project, boolean _requireTypeInProject, Set _typeNames) throws JavaModelException {
-    myProject = _project;
-    myTypeNames = _typeNames;
-    myTypeNameToPath = new HashMap();
-    myTypeNameToType = new HashMap();
-    myRequireTypeInProject = _requireTypeInProject;
-    myWOElementType = myProject.findType("com.webobjects.appserver.WOElement");
-  }
+	private Map myTypeNameToPath;
 
-  public boolean isExactMatch() {
-    return myTypeNames.size() == 1;
-  }
+	private Map myTypeNameToType;
 
-  public boolean isEmpty() {
-    return myTypeNames.isEmpty();
-  }
+	private IType myWOElementType;
 
-  public String firstTypeName() {
-    return (String) myTypeNames.iterator().next();
-  }
+	private boolean myRequireTypeInProject;
 
-  public Iterator typeNames() {
-    return myTypeNames.iterator();
-  }
+	public TypeNameCollector(IJavaProject _project, boolean _requireTypeInProject) throws JavaModelException {
+		this(_project, _requireTypeInProject, new TreeSet());
+	}
 
-  public String getPathForClassName(String _className) {
-    return (String) myTypeNameToPath.get(_className);
-  }
+	public TypeNameCollector(IJavaProject _project, boolean _requireTypeInProject, Set _typeNames) throws JavaModelException {
+		myProject = _project;
+		myTypeNames = _typeNames;
+		myTypeNameToPath = new HashMap();
+		myTypeNameToType = new HashMap();
+		myRequireTypeInProject = _requireTypeInProject;
+		myWOElementType = myProject.findType("com.webobjects.appserver.WOElement");
+	}
 
-  public IType getTypeForClassName(String _className) {
-    return (IType) myTypeNameToType.get(_className);
-  }
+	public boolean isExactMatch() {
+		return myTypeNames.size() == 1;
+	}
 
-  public void acceptType(int _modifiers, char[] _packageName, char[] _simpleTypeName, char[][] _enclosingTypeNames, String _path) {
-    String className;
-    String simpleClassName = new String(_simpleTypeName);
-    if (_packageName == null || _packageName.length == 0) {
-      className = simpleClassName;
-    }
-    else {
-      String packageName = new String(_packageName);
-      className = packageName + "." + simpleClassName;
-    }
-    try {
-      IType type = myProject.findType(className);
-      if (type != null) {
-        boolean typeMatches = true;
-        if (myRequireTypeInProject) {
-          IResource correspondingResource = type.getResource();
-          if (correspondingResource == null) {
-            typeMatches = false;
-          }
-        }
-        if (typeMatches) {
-          ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(type);
-          if (typeHierarchy.contains(myWOElementType)) {
-            myTypeNames.add(className);
-            myTypeNameToPath.put(className, _path);
-            myTypeNameToType.put(className, type);
-          }
-        }
-      }
-    }
-    catch (Throwable t) {
-      // ignore
-      t.printStackTrace();
-    }
-  }
+	public boolean isEmpty() {
+		return myTypeNames.isEmpty();
+	}
+
+	public String firstTypeName() {
+		return (String) myTypeNames.iterator().next();
+	}
+
+	public Iterator typeNames() {
+		return myTypeNames.iterator();
+	}
+
+	public String getPathForClassName(String _className) {
+		return (String) myTypeNameToPath.get(_className);
+	}
+
+	public IType getTypeForClassName(String _className) {
+		return (IType) myTypeNameToType.get(_className);
+	}
+
+	public void acceptType(int _modifiers, char[] _packageName, char[] _simpleTypeName, char[][] _enclosingTypeNames, String _path) {
+		String className;
+		String simpleClassName = new String(_simpleTypeName);
+		if (_packageName == null || _packageName.length == 0) {
+			className = simpleClassName;
+		} else {
+			String packageName = new String(_packageName);
+			className = packageName + "." + simpleClassName;
+		}
+		try {
+			IType type = myProject.findType(className);
+			if (type != null) {
+				boolean typeMatches = true;
+				if (myRequireTypeInProject) {
+					IResource correspondingResource = type.getResource();
+					if (correspondingResource == null) {
+						typeMatches = false;
+					}
+				}
+				if (typeMatches) {
+					ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(type);
+					if (typeHierarchy.contains(myWOElementType)) {
+						myTypeNames.add(className);
+						myTypeNameToPath.put(className, _path);
+						myTypeNameToType.put(className, type);
+					}
+				}
+			}
+		} catch (Throwable t) {
+			// ignore
+			t.printStackTrace();
+		}
+	}
 }

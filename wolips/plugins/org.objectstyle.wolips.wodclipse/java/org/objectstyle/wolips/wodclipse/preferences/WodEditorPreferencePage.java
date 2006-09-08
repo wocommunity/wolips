@@ -55,28 +55,29 @@ import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
  * @author mike
  */
 public class WodEditorPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
-  public WodEditorPreferencePage() {
-    super(GRID);
-    setPreferenceStore(WodclipsePlugin.getDefault().getPreferenceStore());
-    setDescription("WOD Editor Preferences");
-  }
+	public WodEditorPreferencePage() {
+		super(GRID);
+		setPreferenceStore(WodclipsePlugin.getDefault().getPreferenceStore());
+		setDescription("WOD Editor Preferences");
+	}
 
-  public void createFieldEditors() {
-    addField(new ColorFieldEditor(PreferenceConstants.ELEMENT_NAME, "Element Name Color", getFieldEditorParent()));
-    addField(new ColorFieldEditor(PreferenceConstants.ELEMENT_TYPE, "Element Type Color", getFieldEditorParent()));
-    addField(new ColorFieldEditor(PreferenceConstants.BINDING_NAME, "Association Name Color", getFieldEditorParent()));
-    addField(new ColorFieldEditor(PreferenceConstants.BINDING_VALUE, "Association Value Color", getFieldEditorParent()));
-    addField(new ColorFieldEditor(PreferenceConstants.CONSTANT_BINDING_VALUE, "Constant Association Value Color", getFieldEditorParent()));
-    addField(new ColorFieldEditor(PreferenceConstants.OPERATOR, "Operator Color", getFieldEditorParent()));
-    addField(new ColorFieldEditor(PreferenceConstants.COMMENT, "Comment Color", getFieldEditorParent()));
-    addField(new ColorFieldEditor(PreferenceConstants.UNKNOWN, "Unknown Color", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.AUTO_INSERT_ON_COMPLETION, "Auto-Insert {'s, :'s, and ='s", getFieldEditorParent()));
-//  AK: this actually belongs to the build prefs section, but this resides in another framework and isn't used anywhere else...
-    addField(new StringFieldEditor(PreferenceConstants.ALLOWED_BINDING_CHARACTERS, "Allowed Binding Characters", 15, getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.CHECK_BINDING_VALUES, "Check Binding Values (Experimental)", getFieldEditorParent()));
-  }
+	public void createFieldEditors() {
+		addField(new ColorFieldEditor(PreferenceConstants.ELEMENT_NAME, "Element Name Color", getFieldEditorParent()));
+		addField(new ColorFieldEditor(PreferenceConstants.ELEMENT_TYPE, "Element Type Color", getFieldEditorParent()));
+		addField(new ColorFieldEditor(PreferenceConstants.BINDING_NAME, "Association Name Color", getFieldEditorParent()));
+		addField(new ColorFieldEditor(PreferenceConstants.BINDING_VALUE, "Association Value Color", getFieldEditorParent()));
+		addField(new ColorFieldEditor(PreferenceConstants.CONSTANT_BINDING_VALUE, "Constant Association Value Color", getFieldEditorParent()));
+		addField(new ColorFieldEditor(PreferenceConstants.OPERATOR, "Operator Color", getFieldEditorParent()));
+		addField(new ColorFieldEditor(PreferenceConstants.COMMENT, "Comment Color", getFieldEditorParent()));
+		addField(new ColorFieldEditor(PreferenceConstants.UNKNOWN, "Unknown Color", getFieldEditorParent()));
+		addField(new BooleanFieldEditor(PreferenceConstants.AUTO_INSERT_ON_COMPLETION, "Auto-Insert {'s, :'s, and ='s", getFieldEditorParent()));
+		// AK: this actually belongs to the build prefs section, but this
+		// resides in another framework and isn't used anywhere else...
+		addField(new StringFieldEditor(PreferenceConstants.ALLOWED_BINDING_CHARACTERS, "Allowed Binding Characters", 15, getFieldEditorParent()));
+		addField(new BooleanFieldEditor(PreferenceConstants.CHECK_BINDING_VALUES, "Check Binding Values (Experimental)", getFieldEditorParent()));
+	}
 
-  public void init(IWorkbench workbench) {
-  }
+	public void init(IWorkbench workbench) {
+	}
 
 }

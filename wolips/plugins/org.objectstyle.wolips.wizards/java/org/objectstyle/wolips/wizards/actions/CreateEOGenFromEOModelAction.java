@@ -57,26 +57,26 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
 public class CreateEOGenFromEOModelAction implements IObjectActionDelegate {
-  private ISelection mySelection;
+	private ISelection mySelection;
 
-  public CreateEOGenFromEOModelAction() {
-    super();
-  }
+	public CreateEOGenFromEOModelAction() {
+		super();
+	}
 
-  public void setActivePart(IAction _action, IWorkbenchPart _targetPart) {
-    // do nothing
-  }
+	public void setActivePart(IAction _action, IWorkbenchPart _targetPart) {
+		// do nothing
+	}
 
-  public void run(IAction _action) {
-    IStructuredSelection selection = (IStructuredSelection) mySelection;
-    if (selection != null && !selection.isEmpty()) {
-      IResource modelFile = (IResource) selection.getFirstElement();
-      CreateEOGenFromEOModelWorkspaceJob generateJob = new CreateEOGenFromEOModelWorkspaceJob(modelFile);
-      generateJob.schedule();
-    }
-  }
+	public void run(IAction _action) {
+		IStructuredSelection selection = (IStructuredSelection) mySelection;
+		if (selection != null && !selection.isEmpty()) {
+			IResource modelFile = (IResource) selection.getFirstElement();
+			CreateEOGenFromEOModelWorkspaceJob generateJob = new CreateEOGenFromEOModelWorkspaceJob(modelFile);
+			generateJob.schedule();
+		}
+	}
 
-  public void selectionChanged(IAction _action, ISelection _selection) {
-    mySelection = _selection;
-  }
+	public void selectionChanged(IAction _action, ISelection _selection) {
+		mySelection = _selection;
+	}
 }

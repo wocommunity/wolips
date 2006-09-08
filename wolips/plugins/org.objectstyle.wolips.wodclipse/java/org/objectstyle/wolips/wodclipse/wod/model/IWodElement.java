@@ -50,9 +50,13 @@ import java.util.Map;
  * @author mschrag
  */
 public interface IWodElement extends IWodUnit {
-  public IWodModel getModel();
-  public String getElementName();
-  public String getElementType();
-  public List getBindings();
-  public Map getBindingsMap();
+	public IWodModel getModel();
+
+	public String getElementName();
+
+	public String getElementType();
+
+	public List getBindings();
+
+	public Map getBindingsMap();
 }

@@ -73,8 +73,7 @@ import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResour
 public class UpgradeBuildXML extends AbstractActionOnIResource {
 
 	public void run(IAction action) {
-		Project project = (Project) this.getIProject()
-				.getAdapter(Project.class);
+		Project project = (Project) this.getIProject().getAdapter(Project.class);
 		try {
 			if (!project.isWOLipsProject()) {
 				return;
@@ -87,6 +86,7 @@ public class UpgradeBuildXML extends AbstractActionOnIResource {
 
 	/**
 	 * Upgrades the build.xml of a given project
+	 * 
 	 * @param project
 	 */
 	public static void upgradeBuildXml(Project project) {
@@ -96,20 +96,14 @@ public class UpgradeBuildXML extends AbstractActionOnIResource {
 		try {
 			templateEngine.init();
 			templateEngine.getWolipsContext().setProjectName(projectName);
-			templateEngine.getWolipsContext().setAntFolderName(
-					ProjectPatternsets.ANT_FOLDER_NAME);
+			templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
 			if (project.isApplication()) {
-				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication/build.xml.vm", path, "build.xml",
-						"build.xml"));
+				templateEngine.addTemplate(new TemplateDefinition("woapplication/build.xml.vm", path, "build.xml", "build.xml"));
 			} else {
-				templateEngine.addTemplate(new TemplateDefinition(
-						"woframework/build.xml.vm", path, "build.xml",
-						"build.xml"));
+				templateEngine.addTemplate(new TemplateDefinition("woframework/build.xml.vm", path, "build.xml", "build.xml"));
 			}
 			templateEngine.run(new NullProgressMonitor());
-			project.getIProject().refreshLocal(IResource.DEPTH_INFINITE,
-					new NullProgressMonitor());
+			project.getIProject().refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
 		} catch (Exception e) {
 			WizardsPlugin.getDefault().log(e);
 		}

@@ -108,8 +108,7 @@ public class ResourcesLabelDecorator implements ILabelDecorator {
 	 * @return Image
 	 */
 	private Image webServerResourcesImage(Image image) {
-		return this
-				.createImagewithName(image, "webserverresources_overlay.gif");
+		return this.createImagewithName(image, "webserverresources_overlay.gif");
 	}
 
 	/**
@@ -120,19 +119,15 @@ public class ResourcesLabelDecorator implements ILabelDecorator {
 		if (element instanceof IResource && !(element instanceof IProject)) {
 			IResource resource = (IResource) element;
 			IProject iProject = resource.getProject();
-			IProjectAdapter projectAdapter = (IProjectAdapter) iProject
-					.getAdapter(IProjectAdapter.class);
+			IProjectAdapter projectAdapter = (IProjectAdapter) iProject.getAdapter(IProjectAdapter.class);
 			// make sure it's a wo project
 			if (projectAdapter != null) {
-				IProjectPatternsets projectPatternsets = (IProjectPatternsets) iProject
-						.getAdapter(IProjectPatternsets.class);
+				IProjectPatternsets projectPatternsets = (IProjectPatternsets) iProject.getAdapter(IProjectPatternsets.class);
 				if (projectPatternsets != null) {
-					if (this.matchesResourcesPattern(projectPatternsets,
-							resource)) {
+					if (this.matchesResourcesPattern(projectPatternsets, resource)) {
 						return resourcesImage(image);
 					}
-					if (this.matchesWOAppResourcesPattern(projectPatternsets,
-							resource)) {
+					if (this.matchesWOAppResourcesPattern(projectPatternsets, resource)) {
 						return webServerResourcesImage(image);
 					}
 				}
@@ -141,8 +136,7 @@ public class ResourcesLabelDecorator implements ILabelDecorator {
 		return image;
 	}
 
-	private boolean matchesResourcesPattern(
-			IProjectPatternsets projectPatternsets, IResource resource) {
+	private boolean matchesResourcesPattern(IProjectPatternsets projectPatternsets, IResource resource) {
 		IResource parent = resource;
 		while (parent != null && !(parent instanceof IProject)) {
 			if (projectPatternsets.matchesResourcesPattern(parent)) {
@@ -153,8 +147,7 @@ public class ResourcesLabelDecorator implements ILabelDecorator {
 		return false;
 	}
 
-	private boolean matchesWOAppResourcesPattern(
-			IProjectPatternsets projectPatternsets, IResource resource) {
+	private boolean matchesWOAppResourcesPattern(IProjectPatternsets projectPatternsets, IResource resource) {
 		IResource parent = resource;
 		while (parent != null && !(parent instanceof IProject)) {
 			if (projectPatternsets.matchesWOAppResourcesPattern(parent)) {
@@ -229,15 +222,11 @@ public class ResourcesLabelDecorator implements ILabelDecorator {
 			super();
 			if (image != null) {
 				this.baseImageData = image.getImageData();
-				this.size = new Point(this.baseImageData.width,
-						this.baseImageData.height);
+				this.size = new Point(this.baseImageData.width, this.baseImageData.height);
 			}
-			this.overlayImageData = ImageDescriptor.createFromFile(
-					ResourcesLabelDecorator.class, overlayImageFilename)
-					.getImageData();
+			this.overlayImageData = ImageDescriptor.createFromFile(ResourcesLabelDecorator.class, overlayImageFilename).getImageData();
 			if (this.size == null) {
-				this.size = new Point(this.overlayImageData.width,
-						this.overlayImageData.height);
+				this.size = new Point(this.overlayImageData.width, this.overlayImageData.height);
 			}
 		}
 

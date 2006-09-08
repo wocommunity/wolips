@@ -103,10 +103,9 @@ public class UIPlugin extends AbstractWOLipsUIPlugin {
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin(
-				"org.objectstyle.wolips.ui", path);
+		return AbstractUIPlugin.imageDescriptorFromPlugin("org.objectstyle.wolips.ui", path);
 	}
-	
+
 	public IEditorPart openJavaFile(IFile file) {
 		ICompilationUnit unit = JavaCore.createCompilationUnitFrom(file);
 		try {
@@ -117,5 +116,5 @@ public class UIPlugin extends AbstractWOLipsUIPlugin {
 			UIPlugin.getDefault().log(e);
 		}
 		return null;
-	} 
+	}
 }

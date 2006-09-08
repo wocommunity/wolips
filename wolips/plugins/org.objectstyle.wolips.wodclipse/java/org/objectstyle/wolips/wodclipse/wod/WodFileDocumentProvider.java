@@ -59,40 +59,41 @@ import org.objectstyle.wolips.wodclipse.wod.parser.IWodFilePartitions;
  * @author mike
  */
 public class WodFileDocumentProvider extends TextFileDocumentProvider {
-  public static final String WOD_FILE_CONTENT_TYPE_STRING = "org.objectstyle.wolips.wodclipse.wod";
-  public static final IContentType WOD_FILE_CONTENT_TYPE = Platform.getContentTypeManager().getContentType(WodFileDocumentProvider.WOD_FILE_CONTENT_TYPE_STRING); //$NON-NLS-1$
+	public static final String WOD_FILE_CONTENT_TYPE_STRING = "org.objectstyle.wolips.wodclipse.wod";
 
-  public WodFileDocumentProvider() {
-    IDocumentProvider provider = new TextFileDocumentProvider();
-    provider = new ForwardingDocumentProvider(IWodFilePartitions.WOD_FILE_PARTITIONING, new WodFileDocumentSetupParticipant(), provider);
-    setParentDocumentProvider(provider);
-  }
+	public static final IContentType WOD_FILE_CONTENT_TYPE = Platform.getContentTypeManager().getContentType(WodFileDocumentProvider.WOD_FILE_CONTENT_TYPE_STRING); //$NON-NLS-1$
 
-  protected FileInfo createFileInfo(Object element) throws CoreException {
-    if (WOD_FILE_CONTENT_TYPE == null || !(element instanceof IFileEditorInput)) {
-      return null;
-    }
+	public WodFileDocumentProvider() {
+		IDocumentProvider provider = new TextFileDocumentProvider();
+		provider = new ForwardingDocumentProvider(IWodFilePartitions.WOD_FILE_PARTITIONING, new WodFileDocumentSetupParticipant(), provider);
+		setParentDocumentProvider(provider);
+	}
 
-    IFileEditorInput input = (IFileEditorInput) element;
+	protected FileInfo createFileInfo(Object element) throws CoreException {
+		if (WOD_FILE_CONTENT_TYPE == null || !(element instanceof IFileEditorInput)) {
+			return null;
+		}
 
-    IFile file = input.getFile();
-    if (file == null) {
-      return null;
-    }
+		IFileEditorInput input = (IFileEditorInput) element;
 
-    IContentDescription description = file.getContentDescription();
-    if (description == null || description.getContentType() == null || !description.getContentType().isKindOf(WOD_FILE_CONTENT_TYPE)) {
-      return null;
-    }
+		IFile file = input.getFile();
+		if (file == null) {
+			return null;
+		}
 
-    return super.createFileInfo(element);
-  }
+		IContentDescription description = file.getContentDescription();
+		if (description == null || description.getContentType() == null || !description.getContentType().isKindOf(WOD_FILE_CONTENT_TYPE)) {
+			return null;
+		}
 
-  protected DocumentProviderOperation createSaveOperation(final Object element, final IDocument document, final boolean overwrite) throws CoreException {
-    if (getFileInfo(element) == null) {
-      return null;
-    }
+		return super.createFileInfo(element);
+	}
 
-    return super.createSaveOperation(element, document, overwrite);
-  }
+	protected DocumentProviderOperation createSaveOperation(final Object element, final IDocument document, final boolean overwrite) throws CoreException {
+		if (getFileInfo(element) == null) {
+			return null;
+		}
+
+		return super.createSaveOperation(element, document, overwrite);
+	}
 }

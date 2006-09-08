@@ -49,7 +49,7 @@ import org.eclipse.jface.text.rules.IToken;
  * @author mike
  */
 public class BindingValueRule extends SingleWordRule {
-  public BindingValueRule(IToken _token, String allowed) {
-	    super(_token, allowed.toCharArray(), ';');
-  }
+	public BindingValueRule(IToken _token, String allowed) {
+		super(_token, allowed.toCharArray(), ';');
+	}
 }

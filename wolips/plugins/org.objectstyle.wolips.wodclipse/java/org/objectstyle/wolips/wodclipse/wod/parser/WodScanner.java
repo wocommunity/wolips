@@ -67,144 +67,142 @@ import org.objectstyle.wolips.wodclipse.preferences.PreferenceConstants;
  * @author mike
  */
 public class WodScanner extends AbstractJavaScanner {
-  private static String[] WOD_TOKENS = { PreferenceConstants.ELEMENT_NAME, PreferenceConstants.ELEMENT_TYPE, PreferenceConstants.BINDING_NAME, PreferenceConstants.BINDING_VALUE, PreferenceConstants.CONSTANT_BINDING_VALUE, PreferenceConstants.OPERATOR, PreferenceConstants.COMMENT, PreferenceConstants.UNKNOWN};
+	private static String[] WOD_TOKENS = { PreferenceConstants.ELEMENT_NAME, PreferenceConstants.ELEMENT_TYPE, PreferenceConstants.BINDING_NAME, PreferenceConstants.BINDING_VALUE, PreferenceConstants.CONSTANT_BINDING_VALUE, PreferenceConstants.OPERATOR, PreferenceConstants.COMMENT, PreferenceConstants.UNKNOWN };
 
-  public static WodScanner newWODScanner() {
-    IColorManager colorManager = JavaPlugin.getDefault().getJavaTextTools().getColorManager();
-    IPreferenceStore preferenceStore = WodclipsePlugin.getDefault().getPreferenceStore();
-    WodScanner scanner = new WodScanner(colorManager, preferenceStore);
-    return scanner;
-  }
+	public static WodScanner newWODScanner() {
+		IColorManager colorManager = JavaPlugin.getDefault().getJavaTextTools().getColorManager();
+		IPreferenceStore preferenceStore = WodclipsePlugin.getDefault().getPreferenceStore();
+		WodScanner scanner = new WodScanner(colorManager, preferenceStore);
+		return scanner;
+	}
 
-  public WodScanner(IColorManager _manager, IPreferenceStore _store) {
-    super(_manager, _store);
-    initialize();
-  }
+	public WodScanner(IColorManager _manager, IPreferenceStore _store) {
+		super(_manager, _store);
+		initialize();
+	}
 
-  protected String[] getTokenProperties() {
-    return WodScanner.WOD_TOKENS;
-  }
+	protected String[] getTokenProperties() {
+		return WodScanner.WOD_TOKENS;
+	}
 
-  protected List createRules() {
-    List rules = new ArrayList();
-    rules.add(new StringLiteralRule("\"", "\"", getToken(PreferenceConstants.CONSTANT_BINDING_VALUE), '\\'));
-    rules.add(new StringLiteralRule("'", "'", getToken(PreferenceConstants.CONSTANT_BINDING_VALUE), '\\'));
-    rules.add(new WhitespaceRule(new WodWhitespaceDetector()));
-    rules.add(new MultilineCommentRule(getToken(PreferenceConstants.COMMENT)));
-    rules.add(new CommentRule(getToken(PreferenceConstants.COMMENT)));
-    rules.add(new OperatorRule(new ElementTypeOperatorWordDetector(), getToken(PreferenceConstants.OPERATOR)));
-    rules.add(new OperatorRule(new OpenDefinitionWordDetector(), getToken(PreferenceConstants.OPERATOR)));
-    rules.add(new OperatorRule(new AssignmentOperatorWordDetector(), getToken(PreferenceConstants.OPERATOR)));
-    rules.add(new OperatorRule(new EndAssignmentWordDetector(), getToken(PreferenceConstants.OPERATOR)));
-    rules.add(new OperatorRule(new CloseDefinitionWordDetector(), getToken(PreferenceConstants.OPERATOR)));
-    rules.add(new ElementNameRule(getToken(PreferenceConstants.ELEMENT_NAME)));
-    rules.add(new ElementTypeRule(getToken(PreferenceConstants.ELEMENT_TYPE)));
-    rules.add(new BindingNameRule(getToken(PreferenceConstants.BINDING_NAME)));
-    String allowedBindingCharacters = WodclipsePlugin.getDefault().getPreferenceStore().getString(PreferenceConstants.ALLOWED_BINDING_CHARACTERS);
-    rules.add(new BindingValueRule(getToken(PreferenceConstants.BINDING_VALUE), allowedBindingCharacters));
-    rules.add(new WordPredicateRule(new UnknownWordDetector(), getToken(PreferenceConstants.UNKNOWN)));
-    //setDefaultReturnToken(getToken("Default"));
-    return rules;
-  }
+	protected List createRules() {
+		List rules = new ArrayList();
+		rules.add(new StringLiteralRule("\"", "\"", getToken(PreferenceConstants.CONSTANT_BINDING_VALUE), '\\'));
+		rules.add(new StringLiteralRule("'", "'", getToken(PreferenceConstants.CONSTANT_BINDING_VALUE), '\\'));
+		rules.add(new WhitespaceRule(new WodWhitespaceDetector()));
+		rules.add(new MultilineCommentRule(getToken(PreferenceConstants.COMMENT)));
+		rules.add(new CommentRule(getToken(PreferenceConstants.COMMENT)));
+		rules.add(new OperatorRule(new ElementTypeOperatorWordDetector(), getToken(PreferenceConstants.OPERATOR)));
+		rules.add(new OperatorRule(new OpenDefinitionWordDetector(), getToken(PreferenceConstants.OPERATOR)));
+		rules.add(new OperatorRule(new AssignmentOperatorWordDetector(), getToken(PreferenceConstants.OPERATOR)));
+		rules.add(new OperatorRule(new EndAssignmentWordDetector(), getToken(PreferenceConstants.OPERATOR)));
+		rules.add(new OperatorRule(new CloseDefinitionWordDetector(), getToken(PreferenceConstants.OPERATOR)));
+		rules.add(new ElementNameRule(getToken(PreferenceConstants.ELEMENT_NAME)));
+		rules.add(new ElementTypeRule(getToken(PreferenceConstants.ELEMENT_TYPE)));
+		rules.add(new BindingNameRule(getToken(PreferenceConstants.BINDING_NAME)));
+		String allowedBindingCharacters = WodclipsePlugin.getDefault().getPreferenceStore().getString(PreferenceConstants.ALLOWED_BINDING_CHARACTERS);
+		rules.add(new BindingValueRule(getToken(PreferenceConstants.BINDING_VALUE), allowedBindingCharacters));
+		rules.add(new WordPredicateRule(new UnknownWordDetector(), getToken(PreferenceConstants.UNKNOWN)));
+		// setDefaultReturnToken(getToken("Default"));
+		return rules;
+	}
 
-  public Token getToken(String _key) {
-    return super.getToken(_key);
-  }
+	public Token getToken(String _key) {
+		return super.getToken(_key);
+	}
 
-  public RulePosition getFirstRulePositionOfType(Class _ruleType) {
-    RulePosition rulePosition = null;
-    while ((rulePosition == null || !rulePosition.isRuleOfType(_ruleType)) && (rulePosition = nextRulePosition()) != null) {
-    }
+	public RulePosition getFirstRulePositionOfType(Class _ruleType) {
+		RulePosition rulePosition = null;
+		while ((rulePosition == null || !rulePosition.isRuleOfType(_ruleType)) && (rulePosition = nextRulePosition()) != null) {
+		}
 
-    if (rulePosition == null || !rulePosition.isRuleOfType(_ruleType)) {
-      rulePosition = null;
-    }
+		if (rulePosition == null || !rulePosition.isRuleOfType(_ruleType)) {
+			rulePosition = null;
+		}
 
-    return rulePosition;
-  }
+		return rulePosition;
+	}
 
-  public List getRulePositionsOfType(Class _ruleType) {
-    List rulePositions = new LinkedList();
-    RulePosition rulePosition = null;
-    while ((rulePosition = nextRulePosition()) != null) {
-      if (rulePosition.isRuleOfType(_ruleType)) {
-        rulePositions.add(rulePosition);
-      }
-    }
-    return rulePositions;
-  }
+	public List getRulePositionsOfType(Class _ruleType) {
+		List rulePositions = new LinkedList();
+		RulePosition rulePosition = null;
+		while ((rulePosition = nextRulePosition()) != null) {
+			if (rulePosition.isRuleOfType(_ruleType)) {
+				rulePositions.add(rulePosition);
+			}
+		}
+		return rulePositions;
+	}
 
-  public RulePosition firstRulePositionOfTypeWithText(Class _ruleType, String _text) throws BadLocationException {
-    RulePosition rulePosition = null;
-    while ((rulePosition = nextRulePosition()) != null) {
-      if (rulePosition.isRuleOfType(_ruleType) && _text.equals(rulePosition.getText())) {
-        return rulePosition;
-      }
-    }
-    return null;
-  }
+	public RulePosition firstRulePositionOfTypeWithText(Class _ruleType, String _text) throws BadLocationException {
+		RulePosition rulePosition = null;
+		while ((rulePosition = nextRulePosition()) != null) {
+			if (rulePosition.isRuleOfType(_ruleType) && _text.equals(rulePosition.getText())) {
+				return rulePosition;
+			}
+		}
+		return null;
+	}
 
-  public RulePosition nextRulePosition() {
-    fTokenOffset = fOffset;
-    fColumn = UNDEFINED;
+	public RulePosition nextRulePosition() {
+		fTokenOffset = fOffset;
+		fColumn = UNDEFINED;
 
-    IRule matchingRule = null;
-    if (fRules != null) {
-      for (int i = 0; matchingRule == null && i < fRules.length; i++) {
-        IToken token = fRules[i].evaluate(this);
-        if (!token.isUndefined()) {
-          matchingRule = fRules[i];
-        }
-      }
-    }
+		IRule matchingRule = null;
+		if (fRules != null) {
+			for (int i = 0; matchingRule == null && i < fRules.length; i++) {
+				IToken token = fRules[i].evaluate(this);
+				if (!token.isUndefined()) {
+					matchingRule = fRules[i];
+				}
+			}
+		}
 
-    RulePosition rulePosition;
-    if (matchingRule != null) {
-      rulePosition = new RulePosition(fDocument, matchingRule, getTokenOffset(), getTokenLength());
-    }
-    else {
-      // NTS: Not sure why I do this :)
-      if (read() == EOF) {
-        rulePosition = null;
-      }
-      else {
-        rulePosition = new RulePosition(fDocument, null, getTokenOffset(), getTokenLength());
-      }
-    }
+		RulePosition rulePosition;
+		if (matchingRule != null) {
+			rulePosition = new RulePosition(fDocument, matchingRule, getTokenOffset(), getTokenLength());
+		} else {
+			// NTS: Not sure why I do this :)
+			if (read() == EOF) {
+				rulePosition = null;
+			} else {
+				rulePosition = new RulePosition(fDocument, null, getTokenOffset(), getTokenLength());
+			}
+		}
 
-    return rulePosition;
-  }
+		return rulePosition;
+	}
 
-  public IToken nextToken() {
-    IToken token = super.nextToken();
-    return token;
-  }
+	public IToken nextToken() {
+		IToken token = super.nextToken();
+		return token;
+	}
 
-  public static WodScanner wodScannerForDocument(IDocument _document) {
-    WodScanner scanner = WodScanner.newWODScanner();
-    scanner.setRange(_document, 0, _document.getLength());
-    return scanner;
-  }
-  
-  public static List getRulePositionsOfType(IDocument _document, Class _ruleType) {
-    List rulePositions = WodScanner.wodScannerForDocument(_document).getRulePositionsOfType(_ruleType);
-    return rulePositions;
-  }
+	public static WodScanner wodScannerForDocument(IDocument _document) {
+		WodScanner scanner = WodScanner.newWODScanner();
+		scanner.setRange(_document, 0, _document.getLength());
+		return scanner;
+	}
 
-  public static List getTextForRulePositions(List _rulePositions) throws BadLocationException {
-    List text = new LinkedList();
-    Iterator rulePositionsIter = _rulePositions.iterator();
-    while (rulePositionsIter.hasNext()) {
-      RulePosition rulePosition = (RulePosition) rulePositionsIter.next();
-      text.add(rulePosition.getText());
-    }
-    return text;
-  }
+	public static List getRulePositionsOfType(IDocument _document, Class _ruleType) {
+		List rulePositions = WodScanner.wodScannerForDocument(_document).getRulePositionsOfType(_ruleType);
+		return rulePositions;
+	}
 
-  public static Set getTextForRulesOfType(IDocument _document, Class _ruleType) throws BadLocationException {
-    List rulePositions = WodScanner.getRulePositionsOfType(_document, _ruleType);
-    List textList = WodScanner.getTextForRulePositions(rulePositions);
-    Set textSet = new HashSet(textList);
-    return textSet;
-  }
+	public static List getTextForRulePositions(List _rulePositions) throws BadLocationException {
+		List text = new LinkedList();
+		Iterator rulePositionsIter = _rulePositions.iterator();
+		while (rulePositionsIter.hasNext()) {
+			RulePosition rulePosition = (RulePosition) rulePositionsIter.next();
+			text.add(rulePosition.getText());
+		}
+		return text;
+	}
+
+	public static Set getTextForRulesOfType(IDocument _document, Class _ruleType) throws BadLocationException {
+		List rulePositions = WodScanner.getRulePositionsOfType(_document, _ruleType);
+		List textList = WodScanner.getTextForRulePositions(rulePositions);
+		Set textSet = new HashSet(textList);
+		return textSet;
+	}
 }

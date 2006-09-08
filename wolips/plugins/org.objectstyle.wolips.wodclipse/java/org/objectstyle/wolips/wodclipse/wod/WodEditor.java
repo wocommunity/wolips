@@ -145,7 +145,7 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 		myInput = _input;
 		IDocument document = getDocumentProvider().getDocument(getEditorInput());
 		document.addDocumentListener(new IDocumentListener() {
-			
+
 			public void documentAboutToBeChanged(DocumentEvent event) {
 				// Do nothing
 			}

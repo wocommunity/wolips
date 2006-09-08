@@ -67,32 +67,31 @@ import org.objectstyle.wolips.eomodeler.model.EclipseEOModelGroupFactory;
 import org.objectstyle.wolips.wizards.EOGeneratorWizard;
 
 public class CreateEOGenFromEOModelWorkspaceJob extends WorkspaceJob {
-  private IResource myModelFile;
+	private IResource myModelFile;
 
-  public CreateEOGenFromEOModelWorkspaceJob(IResource _modelFile) {
-    super("Creating EOGenerator File ...");
-    myModelFile = _modelFile;
-  }
+	public CreateEOGenFromEOModelWorkspaceJob(IResource _modelFile) {
+		super("Creating EOGenerator File ...");
+		myModelFile = _modelFile;
+	}
 
-  public IStatus runInWorkspace(IProgressMonitor _monitor) throws CoreException {
-    try {
-      EOModel model = EclipseEOModelGroupFactory.createModel(myModelFile, new HashSet());
-      EOGeneratorModel eogenModel = EOGeneratorWizard.createEOGeneratorModel(myModelFile.getParent(), model);
-      String eogenBasePath = model.getModelFolder().getAbsolutePath();
-      int dotIndex = eogenBasePath.lastIndexOf('.');
-      eogenBasePath = eogenBasePath.substring(0, dotIndex);
-      String eogenPath = eogenBasePath + ".eogen";
-      IFile eogenFile = myModelFile.getWorkspace().getRoot().getFileForLocation(new Path(eogenPath));
-      for (int dupeNum = 0; eogenFile.exists(); dupeNum++) {
-        eogenPath = eogenBasePath + dupeNum + ".eogen";
-        eogenFile = myModelFile.getWorkspace().getRoot().getFileForLocation(new Path(eogenPath));
-      }
-      eogenModel.writeToFile(eogenFile, null);
-    }
-    catch (Throwable t) {
-      t.printStackTrace();
-      MessageDialog.openError(new Shell(), "Generate Failed", t.getMessage());
-    }
-    return new Status(IStatus.OK, org.objectstyle.wolips.eogenerator.ui.Activator.PLUGIN_ID, IStatus.OK, "Done", null);
-  }
+	public IStatus runInWorkspace(IProgressMonitor _monitor) throws CoreException {
+		try {
+			EOModel model = EclipseEOModelGroupFactory.createModel(myModelFile, new HashSet());
+			EOGeneratorModel eogenModel = EOGeneratorWizard.createEOGeneratorModel(myModelFile.getParent(), model);
+			String eogenBasePath = model.getModelFolder().getAbsolutePath();
+			int dotIndex = eogenBasePath.lastIndexOf('.');
+			eogenBasePath = eogenBasePath.substring(0, dotIndex);
+			String eogenPath = eogenBasePath + ".eogen";
+			IFile eogenFile = myModelFile.getWorkspace().getRoot().getFileForLocation(new Path(eogenPath));
+			for (int dupeNum = 0; eogenFile.exists(); dupeNum++) {
+				eogenPath = eogenBasePath + dupeNum + ".eogen";
+				eogenFile = myModelFile.getWorkspace().getRoot().getFileForLocation(new Path(eogenPath));
+			}
+			eogenModel.writeToFile(eogenFile, null);
+		} catch (Throwable t) {
+			t.printStackTrace();
+			MessageDialog.openError(new Shell(), "Generate Failed", t.getMessage());
+		}
+		return new Status(IStatus.OK, org.objectstyle.wolips.eogenerator.ui.Activator.PLUGIN_ID, IStatus.OK, "Done", null);
+	}
 }

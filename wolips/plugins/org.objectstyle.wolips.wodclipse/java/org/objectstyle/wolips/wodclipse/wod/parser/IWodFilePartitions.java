@@ -47,8 +47,11 @@ package org.objectstyle.wolips.wodclipse.wod.parser;
  * @author mike
  */
 public interface IWodFilePartitions {
-  public static final String WOD_FILE_PARTITIONING = "___wf_partitioning"; //$NON-NLS-1$
-  public static final String COMMENT = "__wf_comment"; //$NON-NLS-1$
-  public static final String DEFINITION = "__wf_definition"; //$NON-NLS-1$
-  public static final String[] PARTITIONS = new String[] { IWodFilePartitions.COMMENT, IWodFilePartitions.DEFINITION };
+	public static final String WOD_FILE_PARTITIONING = "___wf_partitioning"; //$NON-NLS-1$
+
+	public static final String COMMENT = "__wf_comment"; //$NON-NLS-1$
+
+	public static final String DEFINITION = "__wf_definition"; //$NON-NLS-1$
+
+	public static final String[] PARTITIONS = new String[] { IWodFilePartitions.COMMENT, IWodFilePartitions.DEFINITION };
 }

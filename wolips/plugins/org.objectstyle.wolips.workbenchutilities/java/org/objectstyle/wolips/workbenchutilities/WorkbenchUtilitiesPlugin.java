@@ -97,8 +97,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	// Resource bundle.
 	private ResourceBundle resourceBundle;
 
-	private ILogger pluginLogger = new PluginLogger(
-			WorkbenchUtilitiesPlugin.PLUGIN_ID, false);
+	private ILogger pluginLogger = new PluginLogger(WorkbenchUtilitiesPlugin.PLUGIN_ID, false);
 
 	/**
 	 * The constructor.
@@ -107,8 +106,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 		super();
 		plugin = this;
 		try {
-			this.resourceBundle = ResourceBundle
-					.getBundle("org.objectstyle.wolips.workbenchutilities.WorkbenchutilitiesPluginResources");
+			this.resourceBundle = ResourceBundle.getBundle("org.objectstyle.wolips.workbenchutilities.WorkbenchutilitiesPluginResources");
 		} catch (MissingResourceException x) {
 			this.resourceBundle = null;
 		}
@@ -127,8 +125,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @param key
 	 */
 	public static String getResourceString(String key) {
-		ResourceBundle bundle = WorkbenchUtilitiesPlugin.getDefault()
-				.getResourceBundle();
+		ResourceBundle bundle = WorkbenchUtilitiesPlugin.getDefault().getResourceBundle();
 		try {
 			return (bundle != null) ? bundle.getString(key) : key;
 		} catch (MissingResourceException e) {
@@ -159,9 +156,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @param e
 	 */
 	public static void log(Throwable e) {
-		WorkbenchUtilitiesPlugin.log(new Status(IStatus.ERROR,
-				WorkbenchUtilitiesPlugin.PLUGIN_ID, IStatus.ERROR,
-				"Internal Error", e)); //$NON-NLS-1$
+		WorkbenchUtilitiesPlugin.log(new Status(IStatus.ERROR, WorkbenchUtilitiesPlugin.PLUGIN_ID, IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
 	}
 
 	/**
@@ -172,8 +167,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @param message
 	 * @param s
 	 */
-	public final static void errorDialog(Shell shell, String title,
-			String message, IStatus s) {
+	public final static void errorDialog(Shell shell, String title, String message, IStatus s) {
 		WorkbenchUtilitiesPlugin.log(s);
 		// if the 'message' resource string and the IStatus' message are the
 		// same,
@@ -192,8 +186,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @param message
 	 * @param t
 	 */
-	public final static void errorDialog(Shell shell, String title,
-			String message, Throwable t) {
+	public final static void errorDialog(Shell shell, String title, String message, Throwable t) {
 		WorkbenchUtilitiesPlugin.log(t);
 		IStatus status;
 		if (t instanceof CoreException) {
@@ -205,9 +198,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 				message = null;
 			}
 		} else {
-			status = new Status(IStatus.ERROR,
-					WorkbenchUtilitiesPlugin.PLUGIN_ID, IStatus.ERROR,
-					"Error within Debug UI: ", t); //$NON-NLS-1$	
+			status = new Status(IStatus.ERROR, WorkbenchUtilitiesPlugin.PLUGIN_ID, IStatus.ERROR, "Error within Debug UI: ", t); //$NON-NLS-1$	
 		}
 		ErrorDialog.openError(shell, title, message, status);
 	}
@@ -219,8 +210,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @param mother
 	 * @return boolean
 	 */
-	private static boolean projectISReferencedByProject(IProject child,
-			IProject mother) {
+	private static boolean projectISReferencedByProject(IProject child, IProject mother) {
 		IProject[] projects = null;
 		try {
 			if (!mother.isOpen() || !mother.isAccessible())
@@ -246,19 +236,12 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @return The list of resources.
 	 * @deprecated Use the locate stuff.
 	 */
-	public final static List findResourcesInProjectByNameAndExtensions(
-			IProject project, String name, String[] extensions,
-			boolean includesReferencedProjects) {
+	public final static List findResourcesInProjectByNameAndExtensions(IProject project, String name, String[] extensions, boolean includesReferencedProjects) {
 		if (includesReferencedProjects) {
-			IProject[] projects = WorkbenchUtilitiesPlugin.getWorkspace()
-					.getRoot().getProjects();
+			IProject[] projects = WorkbenchUtilitiesPlugin.getWorkspace().getRoot().getProjects();
 			ArrayList referencedProjects = new ArrayList();
 			for (int i = 0; i < projects.length; i++) {
-				if (WorkbenchUtilitiesPlugin.projectISReferencedByProject(
-						projects[i], project)
-						|| WorkbenchUtilitiesPlugin
-								.projectISReferencedByProject(project,
-										projects[i]))
+				if (WorkbenchUtilitiesPlugin.projectISReferencedByProject(projects[i], project) || WorkbenchUtilitiesPlugin.projectISReferencedByProject(project, projects[i]))
 					referencedProjects.add(projects[i]);
 			}
 			int numReferencedProjects = referencedProjects.size();
@@ -267,15 +250,11 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 				searchScope[i] = (IProject) referencedProjects.get(i);
 			}
 			searchScope[numReferencedProjects] = project;
-			return WorkbenchUtilitiesPlugin
-					.findResourcesInResourcesByNameAndExtensions(searchScope,
-							name, extensions);
+			return WorkbenchUtilitiesPlugin.findResourcesInResourcesByNameAndExtensions(searchScope, name, extensions);
 		}
 		IProject[] searchScope = new IProject[1];
 		searchScope[0] = project;
-		return WorkbenchUtilitiesPlugin
-				.findResourcesInResourcesByNameAndExtensions(searchScope, name,
-						extensions);
+		return WorkbenchUtilitiesPlugin.findResourcesInResourcesByNameAndExtensions(searchScope, name, extensions);
 	}
 
 	/**
@@ -285,13 +264,10 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @return List of IResource
 	 * @deprecated Use the locate stuff.
 	 */
-	public final static List findResourcesInResourcesByNameAndExtensions(
-			IResource[] resources, String name, String[] extensions) {
+	public final static List findResourcesInResourcesByNameAndExtensions(IResource[] resources, String name, String[] extensions) {
 		ArrayList list = new ArrayList();
 		for (int i = 0; i < resources.length; i++)
-			list.addAll(WorkbenchUtilitiesPlugin
-					.findResourcesInResourceByNameAndExtensions(resources[i],
-							name, extensions));
+			list.addAll(WorkbenchUtilitiesPlugin.findResourcesInResourceByNameAndExtensions(resources[i], name, extensions));
 		return list;
 	}
 
@@ -302,23 +278,17 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @return List of IResource
 	 * @deprecated Use the locate stuff.
 	 */
-	public final static List findResourcesInResourceByNameAndExtensions(
-			IResource resource, String name, String[] extensions) {
+	public final static List findResourcesInResourceByNameAndExtensions(IResource resource, String name, String[] extensions) {
 		ArrayList list = new ArrayList();
 		if ((resource != null)) {
-			if (((resource instanceof IContainer) || (resource instanceof IProject))
-					&& resource.isAccessible()) {
+			if (((resource instanceof IContainer) || (resource instanceof IProject)) && resource.isAccessible()) {
 				for (int i = 0; i < extensions.length; i++) {
-					IResource foundResource = ((IContainer) resource)
-							.findMember(name + "." + extensions[i]);
+					IResource foundResource = ((IContainer) resource).findMember(name + "." + extensions[i]);
 					if (foundResource != null && !foundResource.isDerived())
 						list.add(foundResource);
 				}
-				IResource[] members = WorkbenchUtilitiesPlugin
-						.members(resource);
-				WorkbenchUtilitiesPlugin
-						.findResourcesInResourceByNameAndExtensionsAndAddToArrayList(
-								members, name, extensions, list);
+				IResource[] members = WorkbenchUtilitiesPlugin.members(resource);
+				WorkbenchUtilitiesPlugin.findResourcesInResourceByNameAndExtensionsAndAddToArrayList(members, name, extensions, list);
 			}
 		}
 		return list;
@@ -331,40 +301,22 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @param list
 	 * @deprecated Use the locate stuff.
 	 */
-	private final static void findResourcesInResourceByNameAndExtensionsAndAddToArrayList(
-			IResource[] resources, String name, String[] extensions,
-			ArrayList list) {
+	private final static void findResourcesInResourceByNameAndExtensionsAndAddToArrayList(IResource[] resources, String name, String[] extensions, ArrayList list) {
 		if (resources == null) {
 			return;
 		}
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
-			if ((resource != null)
-					&& (!resource.isDerived())
-					&& (resource instanceof IContainer)
-					&& (!resource.getName().endsWith(".framework"))
-					&& (!resource.getName().endsWith(".woa"))
-					&& (!(resource.getName().equalsIgnoreCase("build") && resource
-							.getParent().equals(resource.getProject())))
-					&& (!(resource.getName().equalsIgnoreCase("dist") && resource
-							.getParent().equals(resource.getProject())))
-					&& (!(resource.getName().equalsIgnoreCase("target") && resource
-							.getParent().equals(resource.getProject())))) {
+			if ((resource != null) && (!resource.isDerived()) && (resource instanceof IContainer) && (!resource.getName().endsWith(".framework")) && (!resource.getName().endsWith(".woa")) && (!(resource.getName().equalsIgnoreCase("build") && resource.getParent().equals(resource.getProject()))) && (!(resource.getName().equalsIgnoreCase("dist") && resource.getParent().equals(resource.getProject()))) && (!(resource.getName().equalsIgnoreCase("target") && resource.getParent().equals(resource.getProject())))) {
 				if ((resource != null)) {
-					if (((resource instanceof IContainer) || (resource instanceof IProject))
-							&& resource.isAccessible()) {
+					if (((resource instanceof IContainer) || (resource instanceof IProject)) && resource.isAccessible()) {
 						for (int j = 0; j < extensions.length; j++) {
-							IResource foundResource = ((IContainer) resource)
-									.findMember(name + "." + extensions[j]);
-							if (foundResource != null
-									&& !foundResource.isDerived())
+							IResource foundResource = ((IContainer) resource).findMember(name + "." + extensions[j]);
+							if (foundResource != null && !foundResource.isDerived())
 								list.add(foundResource);
 						}
-						IResource[] members = WorkbenchUtilitiesPlugin
-								.members(resource);
-						WorkbenchUtilitiesPlugin
-								.findResourcesInResourceByNameAndExtensionsAndAddToArrayList(
-										members, name, extensions, list);
+						IResource[] members = WorkbenchUtilitiesPlugin.members(resource);
+						WorkbenchUtilitiesPlugin.findResourcesInResourceByNameAndExtensionsAndAddToArrayList(members, name, extensions, list);
 					}
 				}
 			}
@@ -379,20 +331,14 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @param aFileName
 	 * @deprecated Use the locate stuff.
 	 */
-	public final static void findFilesInResourceByName(ArrayList anArrayList,
-			IResource aResource, String aFileName) {
+	public final static void findFilesInResourceByName(ArrayList anArrayList, IResource aResource, String aFileName) {
 		if ((aResource != null)) {
-			if (((aResource instanceof IContainer) || (aResource instanceof IProject))
-					&& aResource.isAccessible()) {
-				IResource resource = ((IContainer) aResource)
-						.findMember(aFileName);
-				if ((resource != null) && (resource instanceof IFile)
-						&& !resource.isDerived())
+			if (((aResource instanceof IContainer) || (aResource instanceof IProject)) && aResource.isAccessible()) {
+				IResource resource = ((IContainer) aResource).findMember(aFileName);
+				if ((resource != null) && (resource instanceof IFile) && !resource.isDerived())
 					anArrayList.add(resource);
-				IResource[] members = WorkbenchUtilitiesPlugin
-						.members(aResource);
-				WorkbenchUtilitiesPlugin.findFilesInResourceByName(anArrayList,
-						members, aFileName);
+				IResource[] members = WorkbenchUtilitiesPlugin.members(aResource);
+				WorkbenchUtilitiesPlugin.findFilesInResourceByName(anArrayList, members, aFileName);
 			}
 		}
 	}
@@ -405,23 +351,11 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @param aFileName
 	 * @deprecated Use the locate stuff.
 	 */
-	private final static void findFilesInResourceByName(ArrayList anArrayList,
-			IResource[] aResource, String aFileName) {
+	private final static void findFilesInResourceByName(ArrayList anArrayList, IResource[] aResource, String aFileName) {
 		for (int i = 0; i < aResource.length; i++) {
 			IResource memberResource = aResource[i];
-			if ((memberResource != null)
-					&& (!memberResource.isDerived())
-					&& (memberResource instanceof IContainer)
-					&& (!memberResource.toString().endsWith(".framework"))
-					&& (!memberResource.toString().endsWith(".woa"))
-					&& (!(memberResource.toString().equalsIgnoreCase("build") && memberResource
-							.getParent().equals(memberResource.getProject())))
-					&& (!(memberResource.toString().equalsIgnoreCase("dist") && memberResource
-							.getParent().equals(memberResource.getProject())))
-					&& (!(memberResource.toString().equalsIgnoreCase("target") && memberResource
-							.getParent().equals(memberResource.getProject()))))
-				WorkbenchUtilitiesPlugin.findFilesInResourceByName(anArrayList,
-						memberResource, aFileName);
+			if ((memberResource != null) && (!memberResource.isDerived()) && (memberResource instanceof IContainer) && (!memberResource.toString().endsWith(".framework")) && (!memberResource.toString().endsWith(".woa")) && (!(memberResource.toString().equalsIgnoreCase("build") && memberResource.getParent().equals(memberResource.getProject()))) && (!(memberResource.toString().equalsIgnoreCase("dist") && memberResource.getParent().equals(memberResource.getProject()))) && (!(memberResource.toString().equalsIgnoreCase("target") && memberResource.getParent().equals(memberResource.getProject()))))
+				WorkbenchUtilitiesPlugin.findFilesInResourceByName(anArrayList, memberResource, aFileName);
 		}
 	}
 
@@ -455,16 +389,14 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @return Returns the active page.
 	 */
 	public final static IWorkbenchPage getActivePage() {
-		return WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow()
-				.getActivePage();
+		return WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow().getActivePage();
 	}
 
 	/**
 	 * @return Returns the active workbench shell.
 	 */
 	public final static Shell getActiveWorkbenchShell() {
-		IWorkbenchWindow win = WorkbenchUtilitiesPlugin
-				.getActiveWorkbenchWindow();
+		IWorkbenchWindow win = WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow();
 		Shell shell = null;
 		if (null != win) {
 			shell = win.getShell();
@@ -476,8 +408,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @return Returns the the active workbench window.
 	 */
 	public final static IWorkbenchWindow getActiveWorkbenchWindow() {
-		return WorkbenchUtilitiesPlugin.getDefault().getWorkbench()
-				.getActiveWorkbenchWindow();
+		return WorkbenchUtilitiesPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
 	}
 
 	/**
@@ -534,16 +465,14 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @param editor
 	 */
 	public final static void open(IFile file, String editor) {
-		IWorkbenchWindow workbenchWindow = WorkbenchUtilitiesPlugin
-				.getDefault().getWorkbench().getActiveWorkbenchWindow();
+		IWorkbenchWindow workbenchWindow = WorkbenchUtilitiesPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
 		if (workbenchWindow != null) {
 			IWorkbenchPage workbenchPage = workbenchWindow.getActivePage();
 			if (workbenchPage != null) {
 				try {
 					String id = null;
 					if (editor == null) {
-						IEditorDescriptor editorDescriptor = IDE
-								.getDefaultEditor(file);
+						IEditorDescriptor editorDescriptor = IDE.getDefaultEditor(file);
 						if (editorDescriptor == null) {
 							editorDescriptor = IDE.getEditorDescriptor(file);
 						}
@@ -574,8 +503,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @return the configured selection
 	 */
 	public final static IStructuredSelection getActiveWorkbenchWindowSelection() {
-		IWorkbenchWindow window = WorkbenchUtilitiesPlugin
-				.getActiveWorkbenchWindow();
+		IWorkbenchWindow window = WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow();
 		if (window != null) {
 			ISelection selection = window.getSelectionService().getSelection();
 			if (selection instanceof IStructuredSelection) {

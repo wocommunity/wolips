@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.wolips.wizards;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.HashMap;
@@ -75,18 +76,21 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
 import org.objectstyle.wolips.variables.VariablesPlugin;
+
 /**
  * @author mnolte
  * @author uli The one and only page in the eo model creation wizard
  */
 public class EOModelCreationPage extends WizardNewWOResourcePage {
 	private HashMap availableAdaptors;
+
 	private IResource resourceToReveal;
-  private Button createEOGeneratorFileButton;
-  
+
+	private Button createEOGeneratorFileButton;
+
 	// widgets
-	//	private Button adaptorJDBCCheckbox;
-	//	private Button adaptorJDBCPatchedCheckbox;
+	// private Button adaptorJDBCCheckbox;
+	// private Button adaptorJDBCPatchedCheckbox;
 	/**
 	 * Creates the page for the eomodel creation wizard.
 	 * 
@@ -98,9 +102,9 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 	public EOModelCreationPage(IStructuredSelection selection) {
 		super("createEOModelPage1", selection);
 		this.setTitle(Messages.getString("EOModelCreationPage.title"));
-		this.setDescription(Messages
-				.getString("EOModelCreationPage.description"));
+		this.setDescription(Messages.getString("EOModelCreationPage.description"));
 	}
+
 	/**
 	 * (non-Javadoc) Method declared on IDialogPage.
 	 */
@@ -108,30 +112,28 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 		// inherit default container and name specification widgets
 		super.createControl(parent);
 		Composite composite = (Composite) getControl();
-		//WorkbenchHelp.setHelp(composite,
+		// WorkbenchHelp.setHelp(composite,
 		// IReadmeConstants.CREATION_WIZARD_PAGE_CONTEXT);
-		//GridData data = (GridData) composite.getLayoutData();
-		this.setFileName(Messages
-				.getString("EOModelCreationPage.newEOModel.defaultName"));
+		// GridData data = (GridData) composite.getLayoutData();
+		this.setFileName(Messages.getString("EOModelCreationPage.newEOModel.defaultName"));
 		new Label(composite, SWT.NONE); // vertical spacer
 		// section generation group
-    
+
 		Group group = new Group(composite, SWT.NONE);
 		group.setLayout(new GridLayout());
-		group.setText(Messages
-				.getString("EOModelCreationPage.creationOptions.title"));
-		group.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-				| GridData.HORIZONTAL_ALIGN_FILL));
+		group.setText(Messages.getString("EOModelCreationPage.creationOptions.title"));
+		group.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
 
 		createAvailableAdaptorButtons(group);
 		new Label(composite, SWT.NONE); // vertical spacer
 
-    createEOGeneratorFileButton = new Button(composite, SWT.CHECK);
-    createEOGeneratorFileButton.setText("Create EOGenerator File?");
-    createEOGeneratorFileButton.setSelection(true);
+		createEOGeneratorFileButton = new Button(composite, SWT.CHECK);
+		createEOGeneratorFileButton.setText("Create EOGenerator File?");
+		createEOGeneratorFileButton.setSelection(true);
 
 		setPageComplete(validatePage());
 	}
+
 	/**
 	 * Creates a new eomodel as requested by the user. If everything is OK then
 	 * answer true. If not, false will cause the dialog to stay open and the
@@ -143,11 +145,10 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 	public boolean createEOModel() {
 		EOModelCreator modelCreator;
 		String modelName = getFileName();
-		IProject actualProject = ResourcesPlugin.getWorkspace().getRoot()
-				.getProject(getContainerFullPath().segment(0));
+		IProject actualProject = ResourcesPlugin.getWorkspace().getRoot().getProject(getContainerFullPath().segment(0));
 		// determine adaptor
 		String adaptorName = "";
-    boolean createEOGeneratorFile = createEOGeneratorFileButton.getSelection();
+		boolean createEOGeneratorFile = createEOGeneratorFileButton.getSelection();
 		Button currentButton;
 		Iterator buttonIterator = availableAdaptors.keySet().iterator();
 		while (buttonIterator.hasNext()) {
@@ -159,31 +160,27 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 		}
 		// determine parent resource
 		switch (getContainerFullPath().segmentCount()) {
-			case 0 :
-				// not possible ( see validatePage() )
-				setErrorMessage("unknown error");
-				return false;
-			case 1 :
-				modelCreator = new EOModelCreator(actualProject, modelName,
-						adaptorName, createEOGeneratorFile, this);
-				break;
-			default :
-				IFolder subprojectFolder = actualProject
-						.getFolder(getContainerFullPath()
-								.removeFirstSegments(1));
-				modelCreator = new EOModelCreator(subprojectFolder, modelName,
-						adaptorName, createEOGeneratorFile, this);
-				break;
+		case 0:
+			// not possible ( see validatePage() )
+			setErrorMessage("unknown error");
+			return false;
+		case 1:
+			modelCreator = new EOModelCreator(actualProject, modelName, adaptorName, createEOGeneratorFile, this);
+			break;
+		default:
+			IFolder subprojectFolder = actualProject.getFolder(getContainerFullPath().removeFirstSegments(1));
+			modelCreator = new EOModelCreator(subprojectFolder, modelName, adaptorName, createEOGeneratorFile, this);
+			break;
 		}
-		IRunnableWithProgress op = new WorkspaceModifyDelegatingOperation(
-				modelCreator);
+		IRunnableWithProgress op = new WorkspaceModifyDelegatingOperation(modelCreator);
 		return createResourceOperation(op);
 	}
+
 	/**
 	 * Method createAvailableAdaptorButtons. Parses system framework library
-	 * directory for all occurences of "Java[Adaptorname]Adaptor.framework".
-	 * For each match one button in the given group is created. The button's
-	 * text is equal to the Adaptorname part of the Adaptorframework name.
+	 * directory for all occurences of "Java[Adaptorname]Adaptor.framework". For
+	 * each match one button in the given group is created. The button's text is
+	 * equal to the Adaptorname part of the Adaptorframework name.
 	 * 
 	 * @param group
 	 */
@@ -194,8 +191,7 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 		File systemFrameworkDir = new File(VariablesPlugin.getDefault().getSystemRoot().append("Library").append("Frameworks").toOSString());
 		AdaptorFilter adaptorFilter = new AdaptorFilter();
 		systemFrameworkDir.listFiles(adaptorFilter);
-		availableAdaptors = new HashMap(
-				adaptorFilter.getAdaptorNames().size() + 1);
+		availableAdaptors = new HashMap(adaptorFilter.getAdaptorNames().size() + 1);
 		Button currentAdaptorButton;
 		String buttonText;
 		// add none adaptor entry
@@ -211,34 +207,36 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 			availableAdaptors.put(currentAdaptorButton, buttonText);
 		}
 	}
+
 	/**
 	 * (non-Javadoc) Method declared on WizardNewFileCreationPage.
 	 */
 	protected String getNewFileLabel() {
 		return Messages.getString("EOModelCreationPage.newEOModel.label");
 	}
+
 	private class AdaptorFilter implements FilenameFilter {
 		private static final String ADAPTOR_PREFIX = "Java";
+
 		private static final String ADAPTOR_POSTFIX = "Adaptor.framework";
+
 		private Vector adaptorNames;
+
 		public AdaptorFilter() {
 			super();
 			adaptorNames = new Vector();
 		}
+
 		public boolean accept(File dir, String name) {
 			String adaptorName = null;
-			boolean isAdaptor = (name.length() > (ADAPTOR_PREFIX.length() + ADAPTOR_POSTFIX
-					.length()))
-					&& name.startsWith(ADAPTOR_PREFIX)
-					&& name.endsWith(ADAPTOR_POSTFIX);
+			boolean isAdaptor = (name.length() > (ADAPTOR_PREFIX.length() + ADAPTOR_POSTFIX.length())) && name.startsWith(ADAPTOR_PREFIX) && name.endsWith(ADAPTOR_POSTFIX);
 			if (isAdaptor) {
-				adaptorName = name.substring(ADAPTOR_PREFIX.length(), name
-						.length()
-						- ADAPTOR_POSTFIX.length());
+				adaptorName = name.substring(ADAPTOR_PREFIX.length(), name.length() - ADAPTOR_POSTFIX.length());
 				adaptorNames.add(adaptorName);
 			}
 			return isAdaptor;
 		}
+
 		/**
 		 * Returns the adaptorNames.
 		 * 
@@ -248,11 +246,11 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 			return adaptorNames;
 		}
 	}
-	
-	
+
 	public IResource getResourceToReveal() {
 		return resourceToReveal;
 	}
+
 	public void setResourceToReveal(IResource resourceToReveal) {
 		this.resourceToReveal = resourceToReveal;
 	}

@@ -86,22 +86,26 @@ import org.objectstyle.wolips.commons.util.StringUtilities;
 /**
  * @author uli
  */
-public class LaunchPreferencesPage
-	extends PreferencePage
-	implements IWorkbenchPreferencePage {
+public class LaunchPreferencesPage extends PreferencePage implements IWorkbenchPreferencePage {
 	private Table includeTable;
+
 	private Button addButton;
+
 	private Button removeButton;
+
 	private Button changeButton;
+
 	private String preferencesKey;
 
 	private Vector allParameter;
+
 	private Vector allArguments;
 
 	public void init(IWorkbench workbench) {
 		setDescription(PreferencesMessages.getString("LaunchPreferencesPage.description")); //$NON-NLS-1$
 		this.preferencesKey = Preferences.PREF_LAUNCH_GLOBAL;
 	}
+
 	protected Control createContents(Composite ancestor) {
 
 		Composite parent = new Composite(ancestor, SWT.NULL);
@@ -116,7 +120,8 @@ public class LaunchPreferencesPage
 		parent.setLayoutData(data);
 
 		// set F1 help
-		//WorkbenchHelp.setHelp(parent, IHelpContextIds.IGNORE_PREFERENCE_PAGE);
+		// WorkbenchHelp.setHelp(parent,
+		// IHelpContextIds.IGNORE_PREFERENCE_PAGE);
 
 		Label l1 = new Label(parent, SWT.NULL);
 		l1.setText(PreferencesMessages.getString("LaunchPreferencesPage.label")); //$NON-NLS-1$
@@ -124,10 +129,10 @@ public class LaunchPreferencesPage
 		data.horizontalSpan = 3;
 		l1.setLayoutData(data);
 
-		//includeTable = new Table(parent, SWT.CHECK | SWT.BORDER);
+		// includeTable = new Table(parent, SWT.CHECK | SWT.BORDER);
 		this.includeTable = new Table(parent, SWT.CHECK | SWT.BORDER);
 		GridData gd = new GridData(GridData.FILL_BOTH);
-		//gd.widthHint = convertWidthInCharsToPixels(30);
+		// gd.widthHint = convertWidthInCharsToPixels(30);
 		gd.heightHint = 300;
 		this.includeTable.setLayoutData(gd);
 		this.includeTable.addListener(SWT.Selection, new Listener() {
@@ -147,16 +152,9 @@ public class LaunchPreferencesPage
 		this.addButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.add")); //$NON-NLS-1$
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
-        data.heightHint =
-            Math.max(
-                data.heightHint,
-                this.addButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
-		int widthHint =
-			convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
-		data.widthHint =
-			Math.max(
-				widthHint,
-				this.addButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
+		data.heightHint = Math.max(data.heightHint, this.addButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
+		int widthHint = convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+		data.widthHint = Math.max(widthHint, this.addButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		this.addButton.setLayoutData(data);
 		this.addButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
@@ -168,16 +166,9 @@ public class LaunchPreferencesPage
 		this.removeButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.remove")); //$NON-NLS-1$
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
-        data.heightHint =
-          Math.max(
-              data.heightHint,
-              this.removeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
-		widthHint =
-			convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
-		data.widthHint =
-			Math.max(
-				widthHint,
-				this.removeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
+		data.heightHint = Math.max(data.heightHint, this.removeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
+		widthHint = convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+		data.widthHint = Math.max(widthHint, this.removeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		this.removeButton.setLayoutData(data);
 		this.removeButton.setEnabled(false);
 		this.removeButton.addListener(SWT.Selection, new Listener() {
@@ -189,16 +180,9 @@ public class LaunchPreferencesPage
 		this.changeButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.change")); //$NON-NLS-1$
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
-        data.heightHint =
-          Math.max(
-              data.heightHint,
-              this.changeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
-		widthHint =
-			convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
-		data.widthHint =
-			Math.max(
-				widthHint,
-				this.removeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
+		data.heightHint = Math.max(data.heightHint, this.changeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
+		widthHint = convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+		data.widthHint = Math.max(widthHint, this.removeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		this.changeButton.setLayoutData(data);
 		this.changeButton.setEnabled(false);
 		this.changeButton.addListener(SWT.Selection, new Listener() {
@@ -210,9 +194,10 @@ public class LaunchPreferencesPage
 		Dialog.applyDialogFont(ancestor);
 		return parent;
 	}
+
 	/**
 	 * Do anything necessary because the OK button has been pressed.
-	 *
+	 * 
 	 * @return whether it is okay to close the preference page
 	 */
 	public boolean performOk() {
@@ -226,13 +211,10 @@ public class LaunchPreferencesPage
 			arguments[i] = (String) this.allArguments.get(i);
 			enabled[i] = items[i].getChecked();
 		}
-		Preferences.setLaunchInfoForKey(
-			parameter,
-			arguments,
-			enabled,
-			this.preferencesKey);
-		//Team.setAllIgnores(patterns, enabled);
-		//TeamUIPlugin.broadcastPropertyChange(new PropertyChangeEvent(this, TeamUI.GLOBAL_IGNORES_CHANGED, null, null));
+		Preferences.setLaunchInfoForKey(parameter, arguments, enabled, this.preferencesKey);
+		// Team.setAllIgnores(patterns, enabled);
+		// TeamUIPlugin.broadcastPropertyChange(new PropertyChangeEvent(this,
+		// TeamUI.GLOBAL_IGNORES_CHANGED, null, null));
 		return true;
 	}
 
