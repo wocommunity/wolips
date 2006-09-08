@@ -79,8 +79,7 @@ import org.objectstyle.wolips.variables.VariablesPlugin;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class WOClasspathContainerContentProvider implements
-		ITreeContentProvider, ILabelProvider {
+public class WOClasspathContainerContentProvider implements ITreeContentProvider, ILabelProvider {
 	private WOClasspathContainerRoot[] roots;
 
 	private CheckboxTreeViewer checkboxTreeViewer;
@@ -96,24 +95,19 @@ public class WOClasspathContainerContentProvider implements
 		super();
 		IPath path = null;
 		if (containerEntry == null || containerEntry.getPath() == null) {
-			path = new Path(
-					WOClasspathContainer.WOLIPS_CLASSPATH_CONTAINER_IDENTITY);
+			path = new Path(WOClasspathContainer.WOLIPS_CLASSPATH_CONTAINER_IDENTITY);
 			for (int i = 0; i < WOClasspathContainer.WOLIPS_CLASSPATH_STANDARD_FRAMEWORKS.length; i++) {
-				path = path
-						.append("/"
-								+ WOClasspathContainer.WOLIPS_CLASSPATH_STANDARD_FRAMEWORKS[i]);
+				path = path.append("/" + WOClasspathContainer.WOLIPS_CLASSPATH_STANDARD_FRAMEWORKS[i]);
 			}
 		} else {
 			this.isExported = containerEntry.isExported();
 			path = containerEntry.getPath();
 		}
-		String[] rootsNames = VariablesPlugin.getDefault()
-				.getFrameworkRootsNames();
+		String[] rootsNames = VariablesPlugin.getDefault().getFrameworkRootsNames();
 		IPath[] rootsPaths = VariablesPlugin.getDefault().getFrameworkRoots();
 		this.roots = new WOClasspathContainerRoot[rootsNames.length];
 		for (int i = 0; i < rootsNames.length; i++) {
-			this.roots[i] = new WOClasspathContainerRoot(rootsNames[i],
-					rootsPaths[i], path);
+			this.roots[i] = new WOClasspathContainerRoot(rootsNames[i], rootsPaths[i], path);
 		}
 	}
 
@@ -132,8 +126,7 @@ public class WOClasspathContainerContentProvider implements
 
 		private WOClasspathContainerEntry[] entries;
 
-		protected WOClasspathContainerRoot(String root, IPath rootPath,
-				IPath containerPath) {
+		protected WOClasspathContainerRoot(String root, IPath rootPath, IPath containerPath) {
 			this.root = root;
 			this.rootPath = rootPath;
 			this.containerPath = containerPath;
@@ -142,8 +135,7 @@ public class WOClasspathContainerContentProvider implements
 				File frameworks[] = fwBase.listFiles(new WOFWFilenameFilter());
 				this.entries = new WOClasspathContainerEntry[frameworks.length];
 				for (int i = 0; i < frameworks.length; i++) {
-					WOClasspathContainerEntry entry = new WOClasspathContainerEntry(
-							this, containerPath, frameworks[i]);
+					WOClasspathContainerEntry entry = new WOClasspathContainerEntry(this, containerPath, frameworks[i]);
 					this.entries[i] = entry;
 				}
 			}
@@ -183,8 +175,7 @@ public class WOClasspathContainerContentProvider implements
 
 		private String name;
 
-		protected WOClasspathContainerEntry(WOClasspathContainerRoot root,
-				IPath path, File framework) {
+		protected WOClasspathContainerEntry(WOClasspathContainerRoot root, IPath path, File framework) {
 			this.root = root;
 			if (path != null) {
 				String[] segments = path.segments();
@@ -192,15 +183,10 @@ public class WOClasspathContainerContentProvider implements
 				// cut off the .framework
 				this.name = this.name.substring(0, this.name.length() - 10);
 				for (int i = 0; i < segments.length; i++) {
-					this.checked = (i > 0
-							&& !WOClasspathContainerContentProvider.this.allEntries
-									.contains(this.name)
-							&& segments[i].equals(this.name) && this.exists(
-							segments[i], (this.getRoot().getRootPath())));
+					this.checked = (i > 0 && !WOClasspathContainerContentProvider.this.allEntries.contains(this.name) && segments[i].equals(this.name) && this.exists(segments[i], (this.getRoot().getRootPath())));
 					if (this.checked) {
 						i = segments.length;
-						WOClasspathContainerContentProvider.this.allEntries
-								.add(this.name);
+						WOClasspathContainerContentProvider.this.allEntries.add(this.name);
 					}
 
 				}
@@ -208,8 +194,7 @@ public class WOClasspathContainerContentProvider implements
 		}
 
 		private boolean exists(String framework, IPath rootPath) {
-			IPath frameworkPath = rootPath.append(framework + ".framework")
-					.append("Resources").append("Java");
+			IPath frameworkPath = rootPath.append(framework + ".framework").append("Resources").append("Java");
 			File frameworkFile = new File(frameworkPath.toOSString());
 			return frameworkFile.isDirectory();
 		}
@@ -248,9 +233,7 @@ public class WOClasspathContainerContentProvider implements
 
 			String lowerName = name.toLowerCase();
 
-			return (((null == this._prefix) || lowerName
-					.startsWith(this._prefix)) && ((null == this._suffix) || lowerName
-					.endsWith(this._suffix)));
+			return (((null == this._prefix) || lowerName.startsWith(this._prefix)) && ((null == this._suffix) || lowerName.endsWith(this._suffix)));
 		}
 
 		String _prefix;
@@ -269,10 +252,8 @@ public class WOClasspathContainerContentProvider implements
 				File resDir = new File(file, name + "/Resources/Java");
 				if (resDir.exists()) {
 
-					String jarFiles[] = resDir.list(new WildcardFilenameFilter(
-							null, ".jar"));
-					String zipFiles[] = resDir.list(new WildcardFilenameFilter(
-							null, ".zip"));
+					String jarFiles[] = resDir.list(new WildcardFilenameFilter(null, ".jar"));
+					String zipFiles[] = resDir.list(new WildcardFilenameFilter(null, ".zip"));
 
 					result = (0 != jarFiles.length) || (0 != zipFiles.length);
 
@@ -288,16 +269,13 @@ public class WOClasspathContainerContentProvider implements
 	 */
 	public IClasspathEntry getClasspathEntry() {
 		IPath path = null;
-		path = new Path(
-				WOClasspathContainer.WOLIPS_CLASSPATH_CONTAINER_IDENTITY);
+		path = new Path(WOClasspathContainer.WOLIPS_CLASSPATH_CONTAINER_IDENTITY);
 		if (this.getRoots() != null)
 			for (int i = 0; i < this.getRoots().length; i++) {
 				WOClasspathContainerRoot root = this.getRoots()[i];
 				if (root.getEntries() != null)
 					for (int j = 0; j < root.getEntries().length; j++) {
-						if (root.getEntries() != null
-								&& this.checkboxTreeViewer.getChecked(root
-										.getEntries()[j])) {
+						if (root.getEntries() != null && this.checkboxTreeViewer.getChecked(root.getEntries()[j])) {
 							// path = path.append(root.root);
 							path = path.append(root.getEntries()[j].getName());
 						}
@@ -320,8 +298,7 @@ public class WOClasspathContainerContentProvider implements
 	 */
 	public Object[] getChildren(Object parentElement) {
 		if (parentElement instanceof WOClasspathContainerRoot) {
-			WOClasspathContainerEntry[] entries = ((WOClasspathContainerRoot) parentElement)
-					.getEntries();
+			WOClasspathContainerEntry[] entries = ((WOClasspathContainerRoot) parentElement).getEntries();
 			/*
 			 * for (int i = 0; i < entries.length; i++) {
 			 * viewer.setChecked(entries[i], entries[i].isChecked()); }
@@ -329,8 +306,7 @@ public class WOClasspathContainerContentProvider implements
 			return entries;
 		}
 		if (parentElement instanceof WOClasspathContainerContentProvider) {
-			WOClasspathContainerRoot[] currentRoots = ((WOClasspathContainerContentProvider) parentElement)
-					.getRoots();
+			WOClasspathContainerRoot[] currentRoots = ((WOClasspathContainerContentProvider) parentElement).getRoots();
 			/*
 			 * for (int i = 0; i < roots.length; i++) { viewer.add(roots[i],
 			 * this.getChildren(roots[i])); }
@@ -360,12 +336,9 @@ public class WOClasspathContainerContentProvider implements
 	 */
 	public boolean hasChildren(Object element) {
 		if (element instanceof WOClasspathContainerContentProvider)
-			return ((WOClasspathContainerContentProvider) element).getRoots() != null
-					&& ((WOClasspathContainerContentProvider) element)
-							.getRoots().length > 0;
+			return ((WOClasspathContainerContentProvider) element).getRoots() != null && ((WOClasspathContainerContentProvider) element).getRoots().length > 0;
 		if (element instanceof WOClasspathContainerRoot)
-			return ((WOClasspathContainerRoot) element).getEntries() != null
-					&& ((WOClasspathContainerRoot) element).getEntries().length > 0;
+			return ((WOClasspathContainerRoot) element).getEntries() != null && ((WOClasspathContainerRoot) element).getEntries().length > 0;
 		return false;
 	}
 
@@ -407,8 +380,7 @@ public class WOClasspathContainerContentProvider implements
 			return PluginImages.WOFRAMEWORK_ROOT_IMAGE();
 		if (element instanceof WOClasspathContainerEntry) {
 			for (int i = 0; i < WOClasspathContainer.WOLIPS_CLASSPATH_STANDARD_FRAMEWORKS.length; i++) {
-				if (WOClasspathContainer.WOLIPS_CLASSPATH_STANDARD_FRAMEWORKS[i]
-						.equals(((WOClasspathContainerEntry) element).getName()))
+				if (WOClasspathContainer.WOLIPS_CLASSPATH_STANDARD_FRAMEWORKS[i].equals(((WOClasspathContainerEntry) element).getName()))
 					return PluginImages.WOSTANDARD_FRAMEWORK_IMAGE();
 			}
 			return PluginImages.WOFRAMEWORK_IMAGE();

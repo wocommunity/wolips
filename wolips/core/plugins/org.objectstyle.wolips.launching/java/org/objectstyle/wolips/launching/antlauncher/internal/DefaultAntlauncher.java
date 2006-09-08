@@ -88,18 +88,13 @@ public class DefaultAntlauncher implements IAntlauncher {
 	 * @param targets
 	 * @throws CoreException
 	 */
-	public void launchAntInExternalVM(IFile buildFile,
-			IProgressMonitor monitor, boolean captureOutput, String targets)
-			throws CoreException {
+	public void launchAntInExternalVM(IFile buildFile, IProgressMonitor monitor, boolean captureOutput, String targets) throws CoreException {
 		ILaunchConfigurationWorkingCopy workingCopy = null;
 		try {
-			workingCopy = DefaultAntlauncher.createDefaultLaunchConfiguration(
-					buildFile, captureOutput, targets);
-			ILaunch launch = workingCopy.launch(ILaunchManager.RUN_MODE,
-					new SubProgressMonitor(monitor, 1));
+			workingCopy = DefaultAntlauncher.createDefaultLaunchConfiguration(buildFile, captureOutput, targets);
+			ILaunch launch = workingCopy.launch(ILaunchManager.RUN_MODE, new SubProgressMonitor(monitor, 1));
 			if (!captureOutput) {
-				ILaunchManager manager = DebugPlugin.getDefault()
-						.getLaunchManager();
+				ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
 				manager.removeLaunch(launch);
 			}
 		} finally {
@@ -116,66 +111,41 @@ public class DefaultAntlauncher implements IAntlauncher {
 	 * @return default launch configuration
 	 * @throws CoreException
 	 */
-	private static ILaunchConfigurationWorkingCopy createDefaultLaunchConfiguration(
-			IFile file, boolean captureOutput, String targets)
-			throws CoreException {
+	private static ILaunchConfigurationWorkingCopy createDefaultLaunchConfiguration(IFile file, boolean captureOutput, String targets) throws CoreException {
 		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-		ILaunchConfigurationType type = manager
-				.getLaunchConfigurationType(ID_ANT_LAUNCH_CONFIGURATION_TYPE);
+		ILaunchConfigurationType type = manager.getLaunchConfigurationType(ID_ANT_LAUNCH_CONFIGURATION_TYPE);
 		StringBuffer buffer = new StringBuffer(file.getProject().getName());
 		buffer.append(' ');
 		buffer.append(file.getName());
 		buffer.append(" (WOLips)");
 		String name = buffer.toString().trim();
 		name = manager.generateUniqueLaunchConfigurationNameFrom(name);
-		ILaunchConfigurationWorkingCopy workingCopy = type.newInstance(null,
-				name);
-		workingCopy.setAttribute(ATTR_LOCATION, VariablesPlugin.getDefault()
-				.getStringVariableManager().generateVariableExpression(
-						"workspace_loc", file.getFullPath().toString())); //$NON-NLS-1$
-		workingCopy.setAttribute("org.eclipse.jdt.launching.WORKING_DIRECTORY",
-				file.getProject().getLocation().toOSString());
-		workingCopy.setAttribute(
-				IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
-				"org.eclipse.ant.ui.AntClasspathProvider"); //$NON-NLS-1$
+		ILaunchConfigurationWorkingCopy workingCopy = type.newInstance(null, name);
+		workingCopy.setAttribute(ATTR_LOCATION, VariablesPlugin.getDefault().getStringVariableManager().generateVariableExpression("workspace_loc", file.getFullPath().toString())); //$NON-NLS-1$
+		workingCopy.setAttribute("org.eclipse.jdt.launching.WORKING_DIRECTORY", file.getProject().getLocation().toOSString());
+		workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, "org.eclipse.ant.ui.AntClasspathProvider"); //$NON-NLS-1$
 		IVMInstall defaultInstall = null;
 		defaultInstall = JavaRuntime.getDefaultVMInstall();
 		if (defaultInstall != null) {
 			String vmName = defaultInstall.getName();
 			String vmTypeID = defaultInstall.getVMInstallType().getId();
-			workingCopy.setAttribute(
-					IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_NAME,
-					vmName);
-			workingCopy.setAttribute(
-					IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_TYPE,
-					vmTypeID);
+			workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_NAME, vmName);
+			workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_TYPE, vmTypeID);
 		}
-		workingCopy.setAttribute(
-				IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,
-				MAIN_TYPE_NAME);
-		workingCopy.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID,
-				REMOTE_ANT_PROCESS_FACTORY_ID);
-		workingCopy.setAttribute(
-				IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS,
-				"-Xms256m -Xmx512m");
+		workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, MAIN_TYPE_NAME);
+		workingCopy.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID, REMOTE_ANT_PROCESS_FACTORY_ID);
+		workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, "-Xms256m -Xmx512m");
 
-		workingCopy.setAttribute(
-				"org.eclipse.debug.ui.ATTR_LAUNCH_IN_BACKGROUND", false);
+		workingCopy.setAttribute("org.eclipse.debug.ui.ATTR_LAUNCH_IN_BACKGROUND", false);
 		if (captureOutput) {
-			workingCopy.setAttribute(
-					"org.eclipse.ui.externaltools.ATTR_SHOW_CONSOLE", true);
-			workingCopy.setAttribute(
-					"org.eclipse.ui.externaltools.ATTR_CAPTURE_OUTPUT", true);
+			workingCopy.setAttribute("org.eclipse.ui.externaltools.ATTR_SHOW_CONSOLE", true);
+			workingCopy.setAttribute("org.eclipse.ui.externaltools.ATTR_CAPTURE_OUTPUT", true);
 		} else {
-			workingCopy.setAttribute(
-					"org.eclipse.ui.externaltools.ATTR_SHOW_CONSOLE", false);
-			workingCopy.setAttribute(
-					"org.eclipse.ui.externaltools.ATTR_CAPTURE_OUTPUT", false);
+			workingCopy.setAttribute("org.eclipse.ui.externaltools.ATTR_SHOW_CONSOLE", false);
+			workingCopy.setAttribute("org.eclipse.ui.externaltools.ATTR_CAPTURE_OUTPUT", false);
 		}
 		workingCopy.setAttribute(IDebugUIConstants.ATTR_PRIVATE, true);
-		workingCopy.setAttribute(
-				IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, file
-						.getProject().getName());
+		workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, file.getProject().getName());
 		workingCopy.setAttribute(ATTR_ANT_TARGETS, targets);
 		workingCopy.setAttribute(BuildFailedConsoleLineTracker.ATTR_BUILD_FAILED_CONSOLE_LINE_TRACKER_ENABLED, true);
 		return workingCopy;

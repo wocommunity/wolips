@@ -72,8 +72,7 @@ import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchCo
 /**
  * @author uli
  */
-public class WOLocalJavaApplicationTabGroup extends
-		AbstractLaunchConfigurationTabGroup {
+public class WOLocalJavaApplicationTabGroup extends AbstractLaunchConfigurationTabGroup {
 
 	/**
 	 * @see ILaunchConfigurationTabGroup#createTabs(ILaunchConfigurationDialog,
@@ -81,11 +80,7 @@ public class WOLocalJavaApplicationTabGroup extends
 	 */
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
 
-		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
-				new JavaMainTab(), new JavaArgumentsTab(),
-				new CommonWOArgumentsTab(), new LogTab(), new BrowserTab(),
-				new JavaJRETab(), new JavaClasspathTab(),
-				new SourceLookupTab(), new CommonTab() };
+		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] { new JavaMainTab(), new JavaArgumentsTab(), new CommonWOArgumentsTab(), new LogTab(), new BrowserTab(), new JavaJRETab(), new JavaClasspathTab(), new SourceLookupTab(), new CommonTab() };
 		setTabs(tabs);
 	}
 

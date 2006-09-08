@@ -68,38 +68,39 @@ import org.objectstyle.wolips.jdt.classpath.model.Framework;
  */
 public class ContainerEntries {
 	ArrayList entries = new ArrayList();
-	
+
 	/**
 	 * 
 	 */
 	public ContainerEntries() {
 		super();
 	}
-	
+
 	/**
 	 * @param path
 	 * @return a container with the entries from the path
 	 * @throws PathCoderException
 	 */
 	public static ContainerEntries initWithPath(IPath path) throws PathCoderException {
-		ContainerEntries containerEntries =  new ContainerEntries();
+		ContainerEntries containerEntries = new ContainerEntries();
 		IPath[] entries = PathCoder.decode(path);
-		for(int i = 0;i < entries.length; i++) {
+		for (int i = 0; i < entries.length; i++) {
 			ContainerEntry containerEntry = ContainerEntry.initWithPath(entries[i]);
 			containerEntries.add(containerEntry);
 		}
 		return containerEntries;
 	}
+
 	/**
 	 * @return
 	 */
 	public IClasspathEntry[] getEntries() {
 		ArrayList arrayList = new ArrayList();
-		for(int i = 0; i < this.entries.size(); i++) {
-			ContainerEntry containerEntry = (ContainerEntry)this.entries.get(i);
+		for (int i = 0; i < this.entries.size(); i++) {
+			ContainerEntry containerEntry = (ContainerEntry) this.entries.get(i);
 			arrayList.addAll(containerEntry.getEntries());
 		}
-		return (IClasspathEntry[])arrayList.toArray(new IClasspathEntry[this.entries.size()]);
+		return (IClasspathEntry[]) arrayList.toArray(new IClasspathEntry[this.entries.size()]);
 	}
 
 	/**
@@ -107,8 +108,8 @@ public class ContainerEntries {
 	 */
 	public IPath getPath() {
 		IPath path = new Path("");
-		for(int i = 0; i < this.entries.size(); i++) {
-			ContainerEntry containerEntry = (ContainerEntry)this.entries.get(i);
+		for (int i = 0; i < this.entries.size(); i++) {
+			ContainerEntry containerEntry = (ContainerEntry) this.entries.get(i);
 			IPath entryPath = containerEntry.getPath();
 			path = path.append(PathCoder.encode(entryPath));
 		}
@@ -136,23 +137,23 @@ public class ContainerEntries {
 	 * @return
 	 */
 	public ContainerEntry getEntry(Framework framework) {
-		for(int i = 0; i < this.entries.size(); i++) {
-			ContainerEntry containerEntry = (ContainerEntry)this.entries.get(i);
-			if(framework.getName().equals(containerEntry.getName())) {
+		for (int i = 0; i < this.entries.size(); i++) {
+			ContainerEntry containerEntry = (ContainerEntry) this.entries.get(i);
+			if (framework.getName().equals(containerEntry.getName())) {
 				return containerEntry;
 			}
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @param entries
 	 */
 	public void setEntries(ArrayList entries) {
-		ContainerEntry[] containerEntries = (ContainerEntry[])entries.toArray(new ContainerEntry[entries.size()]);
+		ContainerEntry[] containerEntries = (ContainerEntry[]) entries.toArray(new ContainerEntry[entries.size()]);
 		Arrays.sort(containerEntries);
 		this.entries = new ArrayList();
-		for(int i =0; i < containerEntries.length; i++) {
+		for (int i = 0; i < containerEntries.length; i++) {
 			this.entries.add(containerEntries[i]);
 		}
 	}

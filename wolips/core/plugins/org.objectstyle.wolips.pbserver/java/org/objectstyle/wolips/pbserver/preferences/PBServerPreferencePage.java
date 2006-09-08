@@ -55,20 +55,20 @@ import org.objectstyle.wolips.preferences.PreferencesPlugin;
  * @author mike
  */
 public class PBServerPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
-  public PBServerPreferencePage() {
-    super(GRID);
-    setMessage("Changes will not be reflected until after a restart.");
-  }
-  
-  protected IPreferenceStore doGetPreferenceStore() {
-    return PreferencesPlugin.getDefault().getPreferenceStore();
-  }
+	public PBServerPreferencePage() {
+		super(GRID);
+		setMessage("Changes will not be reflected until after a restart.");
+	}
 
-  protected void createFieldEditors() {
-    addField(new BooleanFieldEditor(PreferenceConstants.PBSERVER_ENABLED, "ProjectBuilder Server Enabled", getFieldEditorParent()));
-    addField(new IntegerFieldEditor(PreferenceConstants.PBSERVER_PORT, "ProjectBuilder Server Port", getFieldEditorParent(), 5));
-  }
+	protected IPreferenceStore doGetPreferenceStore() {
+		return PreferencesPlugin.getDefault().getPreferenceStore();
+	}
 
-  public void init(IWorkbench _workbench) {
-  }
+	protected void createFieldEditors() {
+		addField(new BooleanFieldEditor(PreferenceConstants.PBSERVER_ENABLED, "ProjectBuilder Server Enabled", getFieldEditorParent()));
+		addField(new IntegerFieldEditor(PreferenceConstants.PBSERVER_PORT, "ProjectBuilder Server Port", getFieldEditorParent(), 5));
+	}
+
+	public void init(IWorkbench _workbench) {
+	}
 }

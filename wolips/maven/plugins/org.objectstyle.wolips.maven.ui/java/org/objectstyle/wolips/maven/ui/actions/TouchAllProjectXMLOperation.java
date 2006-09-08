@@ -74,13 +74,11 @@ public class TouchAllProjectXMLOperation extends WorkspaceModifyOperation {
 		this.projects = projects;
 	}
 
-	protected void execute(IProgressMonitor monitor) throws CoreException,
-			InvocationTargetException, InterruptedException {
+	protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException, InterruptedException {
 		for (int i = 0; i < projects.length; i++) {
 			IProject project = this.projects[i];
 			IFile projectXML = project.getFile("project.xml");
-			if (projectXML != null && projectXML.isAccessible()
-					&& projectXML.exists()) {
+			if (projectXML != null && projectXML.isAccessible() && projectXML.exists()) {
 				projectXML.touch(monitor);
 			}
 		}

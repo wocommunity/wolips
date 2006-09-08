@@ -72,6 +72,7 @@ public class MavenCoreTestSuite extends TestCase {
 	public MavenCoreTestSuite(String testName) {
 		super(testName);
 	}
+
 	/**
 	 * @return
 	 * @throws Exception

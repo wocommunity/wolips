@@ -92,11 +92,9 @@ import org.objectstyle.wolips.variables.VariablesPlugin;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
- * @author ulrich
- * Launches a local VM.
+ * @author ulrich Launches a local VM.
  */
-public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
-		AbstractJavaLaunchConfigurationDelegate {
+public class WOJavaLocalApplicationLaunchConfigurationDelegate extends AbstractJavaLaunchConfigurationDelegate {
 	/**
 	 * Comment for <code>WOJavaLocalApplicationID</code>
 	 */
@@ -121,70 +119,40 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 		try {
 			IJavaProject javaProject = JavaRuntime.getJavaProject(config);
 			if (javaProject != null) {
-				config
-						.setAttribute(
-								IJavaLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY,
-								"${working_dir_loc_WOLips:"
-										+ javaProject.getProject().getName()
-										+ "}");
+				config.setAttribute(IJavaLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY, "${working_dir_loc_WOLips:" + javaProject.getProject().getName() + "}");
 			}
 		} catch (CoreException ce) {
 			LaunchingPlugin.getDefault().log(ce);
 		}
-		config.setAttribute(
-				IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
-				WORuntimeClasspathProvider.ID);
-		config
-				.setAttribute(
-						WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER,
-						"true");
+		config.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, WORuntimeClasspathProvider.ID);
+		config.setAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER, "true");
 	}
 
-	public String[] getClasspath(ILaunchConfiguration configuration)
-			throws CoreException {
+	public String[] getClasspath(ILaunchConfiguration configuration) throws CoreException {
 		return super.getClasspath(configuration);
 	}
 
-	public boolean preLaunchCheck(ILaunchConfiguration configuration,
-			String mode, IProgressMonitor monitor) throws CoreException {
+	public boolean preLaunchCheck(ILaunchConfiguration configuration, String mode, IProgressMonitor monitor) throws CoreException {
 		String notFound = "notFound";
-		if (configuration.getAttribute(
-				IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
-				notFound).equals(notFound)) {
-			ILaunchConfigurationWorkingCopy workingCopy = configuration
-					.getWorkingCopy();
-			workingCopy.setAttribute(
-					IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
-					WORuntimeClasspathProvider.ID);
+		if (configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, notFound).equals(notFound)) {
+			ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
+			workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, WORuntimeClasspathProvider.ID);
 			workingCopy.doSave();
-			this
-					.informUser("LaunchConfiguration update. The message should occur only once. Please launch your app again.");
+			this.informUser("LaunchConfiguration update. The message should occur only once. Please launch your app again.");
 			return false;
 		}
-		if (configuration.getAttribute(
-				IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
-				notFound).equals(WORuntimeClasspathProvider.OLD_ID)) {
-			ILaunchConfigurationWorkingCopy workingCopy = configuration
-					.getWorkingCopy();
-			workingCopy.setAttribute(
-					IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
-					WORuntimeClasspathProvider.ID);
+		if (configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, notFound).equals(WORuntimeClasspathProvider.OLD_ID)) {
+			ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
+			workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, WORuntimeClasspathProvider.ID);
 			workingCopy.doSave();
-			this
-					.informUser("LaunchConfiguration update. The message should occur only once. Please launch your app again.");
+			this.informUser("LaunchConfiguration update. The message should occur only once. Please launch your app again.");
 			return false;
 		}
-		if (configuration.getAttribute(
-				IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
-				notFound).equals(WORuntimeClasspathProvider.VERY_OLD_ID)) {
-			ILaunchConfigurationWorkingCopy workingCopy = configuration
-					.getWorkingCopy();
-			workingCopy.setAttribute(
-					IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
-					WORuntimeClasspathProvider.ID);
+		if (configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, notFound).equals(WORuntimeClasspathProvider.VERY_OLD_ID)) {
+			ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
+			workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, WORuntimeClasspathProvider.ID);
 			workingCopy.doSave();
-			this
-					.informUser("LaunchConfiguration update. The message should occur only once. Please launch your app again.");
+			this.informUser("LaunchConfiguration update. The message should occur only once. Please launch your app again.");
 			return false;
 		}
 		return super.preLaunchCheck(configuration, mode, monitor);
@@ -194,27 +162,20 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 		class RunnableExceptionHandler implements Runnable {
 
 			public void run() {
-				Status status = new Status(IStatus.ERROR,
-						"org.objectstyle.wolips.launching", IStatus.ERROR,
-						"Classpath Provider missing or invalid", null);
-				WorkbenchUtilitiesPlugin.errorDialog(Display.getCurrent()
-						.getActiveShell(), "WOLips", message, status);
+				Status status = new Status(IStatus.ERROR, "org.objectstyle.wolips.launching", IStatus.ERROR, "Classpath Provider missing or invalid", null);
+				WorkbenchUtilitiesPlugin.errorDialog(Display.getCurrent().getActiveShell(), "WOLips", message, status);
 			}
 		}
 		RunnableExceptionHandler runnable = new RunnableExceptionHandler();
 		Display.getDefault().asyncExec(runnable);
 	}
 
-	public void launch(ILaunchConfiguration configuration, String mode,
-			ILaunch launch, IProgressMonitor monitor) throws CoreException {
+	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor) throws CoreException {
 
 		if (monitor == null) {
 			monitor = new NullProgressMonitor();
 		}
-		monitor
-				.beginTask(
-						LaunchingMessages
-								.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.Launching..._1"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+		monitor.beginTask(LaunchingMessages.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.Launching..._1"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 		// check for cancellation
 		if (monitor.isCanceled()) {
 			return;
@@ -231,8 +192,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 		String vmArgs = getVMArguments(configuration, launch);
 		StringBuffer vmArgsBuffer = new StringBuffer(vmArgs);
 
-		ExecutionArguments execArgs = new ExecutionArguments(vmArgsBuffer
-				.toString(), pgmArgs);
+		ExecutionArguments execArgs = new ExecutionArguments(vmArgsBuffer.toString(), pgmArgs);
 
 		// VM-specific attributes
 		Map vmAttributesMap = getVMSpecificAttributesMap(configuration);
@@ -242,8 +202,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 		String mainTypeName = verifyMainTypeName(configuration);
 
 		// Create VM config
-		VMRunnerConfiguration runConfig = new VMRunnerConfiguration(
-				mainTypeName, classpath);
+		VMRunnerConfiguration runConfig = new VMRunnerConfiguration(mainTypeName, classpath);
 		runConfig.setProgramArguments(execArgs.getProgramArgumentsArray());
 		runConfig.setVMArguments(execArgs.getVMArgumentsArray());
 		runConfig.setWorkingDirectory(workingDirName);
@@ -265,17 +224,9 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 		IVMRunner runner = vm.getVMRunner(mode);
 		if (runner == null) {
 			if (mode == ILaunchManager.DEBUG_MODE) {
-				abort(
-						MessageFormat
-								.format(
-										LaunchingMessages
-												.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.JRE_{0}_does_not_support_debug_mode._1"), new String[] { vm.getName() }), null, IJavaLaunchConfigurationConstants.ERR_VM_RUNNER_DOES_NOT_EXIST); //$NON-NLS-1$
+				abort(MessageFormat.format(LaunchingMessages.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.JRE_{0}_does_not_support_debug_mode._1"), new String[] { vm.getName() }), null, IJavaLaunchConfigurationConstants.ERR_VM_RUNNER_DOES_NOT_EXIST); //$NON-NLS-1$
 			} else {
-				abort(
-						MessageFormat
-								.format(
-										LaunchingMessages
-												.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.JRE_{0}_does_not_support_run_mode._2"), new String[] { vm.getName() }), null, IJavaLaunchConfigurationConstants.ERR_VM_RUNNER_DOES_NOT_EXIST); //$NON-NLS-1$
+				abort(MessageFormat.format(LaunchingMessages.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.JRE_{0}_does_not_support_run_mode._2"), new String[] { vm.getName() }), null, IJavaLaunchConfigurationConstants.ERR_VM_RUNNER_DOES_NOT_EXIST); //$NON-NLS-1$
 			}
 			return;
 		}
@@ -296,13 +247,11 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 	/**
 	 * @see org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate#verifyWorkingDirectory(org.eclipse.debug.core.ILaunchConfiguration)
 	 */
-	public File verifyWorkingDirectory(ILaunchConfiguration configuration)
-			throws CoreException {
+	public File verifyWorkingDirectory(ILaunchConfiguration configuration) throws CoreException {
 		IProject theProject = this.getJavaProject(configuration).getProject();
 
 		IPath wd = getWorkingDirectoryPath(configuration);
-		JavaProject javaProject = (JavaProject) (this
-				.getJavaProject(configuration).getAdapter(JavaProject.class));
+		JavaProject javaProject = (JavaProject) (this.getJavaProject(configuration).getAdapter(JavaProject.class));
 
 		File wdFile = javaProject.getWDFolder(theProject, wd);
 		if (null == wdFile) {
@@ -317,36 +266,25 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 			wdFile = super.verifyWorkingDirectory(configuration);
 		}
 		if (((wdFile == null) || (wdFile.toString().indexOf(".woa") < 0))) {
-			abort(
-					MessageFormat
-							.format(
-									LaunchingMessages
-											.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.Working_directory_is_not_a_woa__{0}_12"), new String[] { wdFile.toString() }), null, IJavaLaunchConfigurationConstants.ERR_WORKING_DIRECTORY_DOES_NOT_EXIST); //$NON-NLS-1$
+			abort(MessageFormat.format(LaunchingMessages.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.Working_directory_is_not_a_woa__{0}_12"), new String[] { wdFile.toString() }), null, IJavaLaunchConfigurationConstants.ERR_WORKING_DIRECTORY_DOES_NOT_EXIST); //$NON-NLS-1$
 		}
 
 		return wdFile;
 	}
 
-	public String getProgramArguments(ILaunchConfiguration configuration)
-			throws CoreException {
-		StringBuffer launchArgument = new StringBuffer(super
-				.getProgramArguments(configuration));
+	public String getProgramArguments(ILaunchConfiguration configuration) throws CoreException {
+		StringBuffer launchArgument = new StringBuffer(super.getProgramArguments(configuration));
 		launchArgument.append(" ");
-		JavaProject javaProject = (JavaProject) (this
-				.getJavaProject(configuration).getAdapter(JavaProject.class));
+		JavaProject javaProject = (JavaProject) (this.getJavaProject(configuration).getAdapter(JavaProject.class));
 
 		String mainTypeName = verifyMainTypeName(configuration);
 
 		File workingDir = verifyWorkingDirectory(configuration);
-		String launchArguments = configuration
-				.getAttribute(
-						WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
-						Preferences.getPREF_LAUNCH_GLOBAL());
-        if (launchArguments != null && launchArguments.indexOf("<>-EOAdaptorDebugEnabled=<>") != -1) {
-            launchArguments = launchArguments.replaceAll("\\Q<>-EOAdaptorDebugEnabled=<>\\E", "<>-EOAdaptorDebugEnabled<>");
-        }
-		ILaunchInfo[] launchInfo = Preferences
-				.getLaunchInfoFrom(launchArguments);
+		String launchArguments = configuration.getAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS, Preferences.getPREF_LAUNCH_GLOBAL());
+		if (launchArguments != null && launchArguments.indexOf("<>-EOAdaptorDebugEnabled=<>") != -1) {
+			launchArguments = launchArguments.replaceAll("\\Q<>-EOAdaptorDebugEnabled=<>\\E", "<>-EOAdaptorDebugEnabled<>");
+		}
+		ILaunchInfo[] launchInfo = Preferences.getLaunchInfoFrom(launchArguments);
 		String automatic = "Automatic";
 		for (int i = 0; i < launchInfo.length; i++) {
 			if (launchInfo[i].isEnabled()) {
@@ -357,16 +295,14 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 					if ("-WOApplicationClassName".equals(parameter))
 						argument = mainTypeName;
 					if ("-DWORoot=".equals(parameter)) {
-						argument = VariablesPlugin.getDefault().getSystemRoot()
-								.toOSString();
+						argument = VariablesPlugin.getDefault().getSystemRoot().toOSString();
 						if (javaProject.isOnMacOSX()) {
 							parameter = "";
 							argument = "";
 						}
 					}
 					if ("-DWORootDirectory=".equals(parameter)) {
-						argument = VariablesPlugin.getDefault().getSystemRoot()
-								.toOSString();
+						argument = VariablesPlugin.getDefault().getSystemRoot().toOSString();
 						if (javaProject.isOnMacOSX()) {
 							parameter = "";
 							argument = "";
@@ -376,27 +312,22 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 						argument = workingDir.getAbsolutePath();
 					}
 					if ("-NSProjectSearchPath".equals(parameter)) {
-						argument = javaProject.getGeneratedByWOLips(Preferences
-								.getPREF_NS_PROJECT_SEARCH_PATH());
+						argument = javaProject.getGeneratedByWOLips(Preferences.getPREF_NS_PROJECT_SEARCH_PATH());
 					}
 
 				}
 
-				launchArgument.append(StringUtilities
-						.toCommandlineParameterFormat(parameter, argument, true));
+				launchArgument.append(StringUtilities.toCommandlineParameterFormat(parameter, argument, true));
 				launchArgument.append(" ");
 			}
 		}
-		String debugGroups = configuration
-				.getAttribute(
-						WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS,
-						"");
+		String debugGroups = configuration.getAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS, "");
 		if (debugGroups != null && debugGroups.length() > 0) {
 			launchArgument.append(" -DNSDebugGroups=\"(");
 			launchArgument.append(debugGroups);
 			launchArgument.append(")\"");
 		}
-    System.out.println("WOJavaLocalApplicationLaunchConfigurationDelegate.getProgramArguments: " + launchArgument);
+		System.out.println("WOJavaLocalApplicationLaunchConfigurationDelegate.getProgramArguments: " + launchArgument);
 		return launchArgument.toString();
 	}
 
@@ -408,20 +339,15 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 	 * @return
 	 * @throws CoreException
 	 */
-	public String getVMArguments(ILaunchConfiguration configuration,
-			ILaunch launch) throws CoreException {
+	public String getVMArguments(ILaunchConfiguration configuration, ILaunch launch) throws CoreException {
 		return super.getVMArguments(configuration);
 	}
 
-	protected void setDefaultSourceLocator(ILaunch launch,
-			ILaunchConfiguration configuration) throws CoreException {
+	protected void setDefaultSourceLocator(ILaunch launch, ILaunchConfiguration configuration) throws CoreException {
 		// set default source locator if none specified
 		if (launch.getSourceLocator() == null || !(launch.getSourceLocator() instanceof JavaSourceLookupDirectorWO)) {
 			ISourceLookupDirector sourceLocator = new JavaSourceLookupDirectorWO();
-			sourceLocator
-					.setSourcePathComputer(getLaunchManager()
-							.getSourcePathComputer(
-									"org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer")); //$NON-NLS-1$
+			sourceLocator.setSourcePathComputer(getLaunchManager().getSourcePathComputer("org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer")); //$NON-NLS-1$
 			sourceLocator.initializeDefaults(configuration);
 			launch.setSourceLocator(sourceLocator);
 		}

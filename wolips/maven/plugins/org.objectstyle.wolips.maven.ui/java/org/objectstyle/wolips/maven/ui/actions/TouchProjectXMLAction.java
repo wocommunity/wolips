@@ -67,14 +67,15 @@ import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIProjec
 public class TouchProjectXMLAction extends AbstractActionOnIProjects {
 
 	private static String TouchProjectXMLActionID = "org.objectstyle.wolips.maven.ui.actions.TouchProjectXMLAction";
+
 	public TouchProjectXMLAction() {
 		super();
 	}
+
 	public void run(IAction action) {
 		try {
 			if (action.getId().equals(TouchProjectXMLAction.TouchProjectXMLActionID)) {
-				TouchAllProjectXMLOperation touchAllFilesOperation = new TouchAllProjectXMLOperation(
-						this.getIProjects());
+				TouchAllProjectXMLOperation touchAllFilesOperation = new TouchAllProjectXMLOperation(this.getIProjects());
 				touchAllFilesOperation.run(new NullProgressMonitor());
 			}
 		} catch (Exception ex) {

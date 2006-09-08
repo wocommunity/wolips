@@ -69,7 +69,9 @@ import org.eclipse.swt.graphics.Image;
 public class PluginImages {
 
 	private static Image WOFRAMEWORK_ROOT_IMAGE;
+
 	private static Image WOFRAMEWORK_IMAGE;
+
 	private static Image WOSTANDARD_FRAMEWORK_IMAGE;
 
 	/**
@@ -77,8 +79,7 @@ public class PluginImages {
 	 */
 	public static final Image WOFRAMEWORK_ROOT_IMAGE() {
 		if (WOFRAMEWORK_ROOT_IMAGE == null)
-			WOFRAMEWORK_ROOT_IMAGE = createImageDescriptor(
-					"icons/frameworks/framework_root.gif").createImage(false);
+			WOFRAMEWORK_ROOT_IMAGE = createImageDescriptor("icons/frameworks/framework_root.gif").createImage(false);
 		return WOFRAMEWORK_ROOT_IMAGE;
 	}
 
@@ -87,8 +88,7 @@ public class PluginImages {
 	 */
 	public static final Image WOFRAMEWORK_IMAGE() {
 		if (WOFRAMEWORK_IMAGE == null)
-			WOFRAMEWORK_IMAGE = createImageDescriptor(
-					"icons/frameworks/framework.gif").createImage(false);
+			WOFRAMEWORK_IMAGE = createImageDescriptor("icons/frameworks/framework.gif").createImage(false);
 		return WOFRAMEWORK_IMAGE;
 	}
 
@@ -97,9 +97,7 @@ public class PluginImages {
 	 */
 	public static final Image WOSTANDARD_FRAMEWORK_IMAGE() {
 		if (WOSTANDARD_FRAMEWORK_IMAGE == null)
-			WOSTANDARD_FRAMEWORK_IMAGE = createImageDescriptor(
-					"icons/frameworks/standard_framework.gif").createImage(
-					false);
+			WOSTANDARD_FRAMEWORK_IMAGE = createImageDescriptor("icons/frameworks/standard_framework.gif").createImage(false);
 		return WOSTANDARD_FRAMEWORK_IMAGE;
 	}
 

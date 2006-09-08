@@ -78,32 +78,18 @@ public class WorkingDirResolver implements IDynamicVariableResolver {
 	 * @see org.eclipse.core.variables.IDynamicVariableResolver#resolveValue(org.eclipse.core.variables.IDynamicVariable,
 	 *      java.lang.String)
 	 */
-	public String resolveValue(IDynamicVariable variable, String argument)
-			throws CoreException {
+	public String resolveValue(IDynamicVariable variable, String argument) throws CoreException {
 		if (argument == null) {
-			throw new CoreException(
-					new Status(
-							IStatus.ERROR,
-							LaunchingPlugin.PLUGIN_ID,
-							IStatus.ERROR,
-							"Provide a project name for the working dir variable.", null)); //$NON-NLS-1$
+			throw new CoreException(new Status(IStatus.ERROR, LaunchingPlugin.PLUGIN_ID, IStatus.ERROR, "Provide a project name for the working dir variable.", null)); //$NON-NLS-1$
 		}
-		IProject iProject = ResourcesPlugin.getWorkspace().getRoot()
-				.getProject(argument);
+		IProject iProject = ResourcesPlugin.getWorkspace().getRoot().getProject(argument);
 		if (iProject == null || !iProject.exists() || !iProject.isAccessible()) {
-			throw new CoreException(new Status(IStatus.ERROR,
-					LaunchingPlugin.PLUGIN_ID, IStatus.ERROR,
-					"Could not find or open project: " + argument, null)); //$NON-NLS-1$
+			throw new CoreException(new Status(IStatus.ERROR, LaunchingPlugin.PLUGIN_ID, IStatus.ERROR, "Could not find or open project: " + argument, null)); //$NON-NLS-1$
 		}
 		Project project = (Project) iProject.getAdapter(Project.class);
 		IPath workingDir = project.getWorkingDir();
 		if (workingDir == null) {
-			throw new CoreException(
-					new Status(
-							IStatus.ERROR,
-							LaunchingPlugin.PLUGIN_ID,
-							IStatus.ERROR,
-							"Could not find working dir for project: " + argument, null)); //$NON-NLS-1$
+			throw new CoreException(new Status(IStatus.ERROR, LaunchingPlugin.PLUGIN_ID, IStatus.ERROR, "Could not find working dir for project: " + argument, null)); //$NON-NLS-1$
 		}
 		return workingDir.toString();
 	}

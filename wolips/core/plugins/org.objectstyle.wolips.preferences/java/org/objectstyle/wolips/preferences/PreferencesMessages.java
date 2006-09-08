@@ -63,11 +63,9 @@ import java.util.ResourceBundle;
  */
 public class PreferencesMessages {
 
-	private static final String RESOURCE_BUNDLE = PreferencesMessages.class
-			.getName();
+	private static final String RESOURCE_BUNDLE = PreferencesMessages.class.getName();
 
-	private static ResourceBundle fgResourceBundle = ResourceBundle
-			.getBundle(RESOURCE_BUNDLE);
+	private static ResourceBundle fgResourceBundle = ResourceBundle.getBundle(RESOURCE_BUNDLE);
 
 	private PreferencesMessages() {
 		super();

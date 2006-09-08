@@ -61,7 +61,5 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 public interface IMavenLauncher {
 
-	public abstract void launchMavenInExternalVM(IFile buildFile,
-			IProgressMonitor monitor, boolean captureOutput, String targets)
-			throws CoreException;
+	public abstract void launchMavenInExternalVM(IFile buildFile, IProgressMonitor monitor, boolean captureOutput, String targets) throws CoreException;
 }

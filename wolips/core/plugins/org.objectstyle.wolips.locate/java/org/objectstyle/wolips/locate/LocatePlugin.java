@@ -84,14 +84,12 @@ public class LocatePlugin extends AbstractCorePlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		componentsLocateCache = new ComponentLocateCache();
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(
-				componentsLocateCache);
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(componentsLocateCache);
 	}
 
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
-		ResourcesPlugin.getWorkspace().removeResourceChangeListener(
-				componentsLocateCache);
+		ResourcesPlugin.getWorkspace().removeResourceChangeListener(componentsLocateCache);
 		componentsLocateCache = null;
 		plugin = null;
 	}
@@ -103,18 +101,14 @@ public class LocatePlugin extends AbstractCorePlugin {
 		return plugin;
 	}
 
-	public LocalizedComponentsLocateResult getLocalizedComponentsLocateResult(
-			IFile file) throws CoreException, LocateException {
-		LocalizedComponentsLocateResult localizedComponentsLocateResult = componentsLocateCache
-				.getLocalizedComponentsLocateResult(file);
+	public LocalizedComponentsLocateResult getLocalizedComponentsLocateResult(IFile file) throws CoreException, LocateException {
+		LocalizedComponentsLocateResult localizedComponentsLocateResult = componentsLocateCache.getLocalizedComponentsLocateResult(file);
 		if (localizedComponentsLocateResult != null) {
 			return localizedComponentsLocateResult;
 		}
-		ComponentLocateScope componentLocateScope = ComponentLocateScope
-				.createLocateScope(file);
+		ComponentLocateScope componentLocateScope = ComponentLocateScope.createLocateScope(file);
 		localizedComponentsLocateResult = new LocalizedComponentsLocateResult();
-		Locate locate = new Locate(componentLocateScope,
-				localizedComponentsLocateResult);
+		Locate locate = new Locate(componentLocateScope, localizedComponentsLocateResult);
 		locate.locate();
 		componentsLocateCache.addToCache(file, localizedComponentsLocateResult);
 		return localizedComponentsLocateResult;

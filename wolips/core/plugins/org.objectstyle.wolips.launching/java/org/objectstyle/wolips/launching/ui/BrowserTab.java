@@ -40,7 +40,7 @@ public class BrowserTab extends AbstractWOArgumentsTab {
 		data.verticalAlignment = GridData.FILL;
 		data.horizontalAlignment = GridData.FILL;
 		parent.setLayoutData(data);
-		
+
 		Composite buttons = new Composite(parent, SWT.NULL);
 		buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
 		layout = new GridLayout();
@@ -48,27 +48,24 @@ public class BrowserTab extends AbstractWOArgumentsTab {
 		layout.marginWidth = 0;
 		buttons.setLayout(layout);
 
-		
 		this.openInBrowserCheckbox = new Button(buttons, SWT.CHECK);
 		this.openInBrowserCheckbox.setText("Use Eclipse Browser");
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
 		data.heightHint = 20;
-		data.heightHint = Math.max(data.heightHint, this.openInBrowserCheckbox
-				.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
+		data.heightHint = Math.max(data.heightHint, this.openInBrowserCheckbox.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
 
 		// Dialog.convertVerticalDLUsToPixels(new FontMetrics(),
 		// IDialogConstants.BUTTON_HEIGHT);
 		data.widthHint = 100;
 		// Dialog.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
-		data.widthHint = Math.max(data.widthHint, this.openInBrowserCheckbox
-				.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
+		data.widthHint = Math.max(data.widthHint, this.openInBrowserCheckbox.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		this.openInBrowserCheckbox.setLayoutData(data);
 		this.openInBrowserCheckbox.setEnabled(true);
 
 		this.openInBrowserCheckbox.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
-				//setDirty(true);
+				// setDirty(true);
 				updateLaunchConfigurationDialog();
 			}
 		});
@@ -78,21 +75,19 @@ public class BrowserTab extends AbstractWOArgumentsTab {
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
 		data.heightHint = 20;
-		data.heightHint = Math.max(data.heightHint, this.webServerConnect
-				.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
+		data.heightHint = Math.max(data.heightHint, this.webServerConnect.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
 
 		// Dialog.convertVerticalDLUsToPixels(new FontMetrics(),
 		// IDialogConstants.BUTTON_HEIGHT);
 		data.widthHint = 100;
 		// Dialog.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
-		data.widthHint = Math.max(data.widthHint, this.webServerConnect.computeSize(
-				SWT.DEFAULT, SWT.DEFAULT, true).x);
+		data.widthHint = Math.max(data.widthHint, this.webServerConnect.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		this.webServerConnect.setLayoutData(data);
 		this.webServerConnect.setEnabled(true);
 
 		this.webServerConnect.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
-				//setDirty(true);
+				// setDirty(true);
 				updateLaunchConfigurationDialog();
 			}
 		});
@@ -100,7 +95,6 @@ public class BrowserTab extends AbstractWOArgumentsTab {
 		Dialog.applyDialogFont(parent);
 		this.setControl(parent);
 	}
-
 
 	/**
 	 * @see ILaunchConfigurationTab#isValid(ILaunchConfiguration)
@@ -115,14 +109,8 @@ public class BrowserTab extends AbstractWOArgumentsTab {
 	 * @see ILaunchConfigurationTab#setDefaults(ILaunchConfigurationWorkingCopy)
 	 */
 	public void setDefaults(ILaunchConfigurationWorkingCopy config) {
-		config
-				.setAttribute(
-						WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER,
-						"true");
-		config
-				.setAttribute(
-						WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WEBSERVER_CONNECT,
-						"false");
+		config.setAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER, "true");
+		config.setAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WEBSERVER_CONNECT, "false");
 	}
 
 	/**
@@ -130,25 +118,18 @@ public class BrowserTab extends AbstractWOArgumentsTab {
 	 */
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
-			if (configuration
-					.getAttribute(
-							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER,
-							"true").equals("true")) {
+			if (configuration.getAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER, "true").equals("true")) {
 				openInBrowserCheckbox.setSelection(true);
 			} else {
 				openInBrowserCheckbox.setSelection(false);
 			}
-			if (configuration
-					.getAttribute(
-							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WEBSERVER_CONNECT,
-							"false").equals("true")) {
+			if (configuration.getAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WEBSERVER_CONNECT, "false").equals("true")) {
 				webServerConnect.setSelection(true);
 			} else {
 				webServerConnect.setSelection(false);
 			}
 		} catch (CoreException e) {
-			setErrorMessage(LaunchingMessages
-					.getString("WOArgumentsTab.Exception_occurred_reading_configuration___15") + e.getStatus().getMessage()); //$NON-NLS-1$
+			setErrorMessage(LaunchingMessages.getString("WOArgumentsTab.Exception_occurred_reading_configuration___15") + e.getStatus().getMessage()); //$NON-NLS-1$
 			LaunchingPlugin.getDefault().log(e);
 		}
 	}
@@ -158,26 +139,14 @@ public class BrowserTab extends AbstractWOArgumentsTab {
 	 */
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
 		if (openInBrowserCheckbox.getSelection()) {
-			configuration
-					.setAttribute(
-							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER,
-							"true");
+			configuration.setAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER, "true");
 		} else {
-			configuration
-					.setAttribute(
-							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER,
-							"false");
+			configuration.setAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER, "false");
 		}
 		if (webServerConnect.getSelection()) {
-			configuration
-					.setAttribute(
-							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WEBSERVER_CONNECT,
-							"true");
+			configuration.setAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WEBSERVER_CONNECT, "true");
 		} else {
-			configuration
-					.setAttribute(
-							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WEBSERVER_CONNECT,
-							"false");
+			configuration.setAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WEBSERVER_CONNECT, "false");
 		}
 	}
 

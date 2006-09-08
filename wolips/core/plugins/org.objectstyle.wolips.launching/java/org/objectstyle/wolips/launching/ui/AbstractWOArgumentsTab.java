@@ -273,9 +273,7 @@ public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab 
 	 *            the default value of the attribute
 	 * @since 2.1
 	 */
-	protected void setAttribute(String attribute,
-			ILaunchConfigurationWorkingCopy configuration, boolean value,
-			boolean defaultValue) {
+	protected void setAttribute(String attribute, ILaunchConfigurationWorkingCopy configuration, boolean value, boolean defaultValue) {
 		if (value == defaultValue) {
 			configuration.setAttribute(attribute, (String) null);
 		} else {
@@ -343,10 +341,8 @@ public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab 
 		gc.setFont(button.getFont());
 		FontMetrics fFontMetrics = gc.getFontMetrics();
 		gc.dispose();
-		int widthHint = Dialog.convertHorizontalDLUsToPixels(fFontMetrics,
-				IDialogConstants.BUTTON_WIDTH);
-		return Math.max(widthHint, button.computeSize(SWT.DEFAULT, SWT.DEFAULT,
-				true).x);
+		int widthHint = Dialog.convertHorizontalDLUsToPixels(fFontMetrics, IDialogConstants.BUTTON_WIDTH);
+		return Math.max(widthHint, button.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 	}
 
 	/**
@@ -377,8 +373,7 @@ public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab 
 	 *            image of <code>null</code>
 	 * @return a new push button
 	 */
-	public static Button createPushButton(Composite parent, String label,
-			Image image) {
+	public static Button createPushButton(Composite parent, String label, Image image) {
 		Button button = new Button(parent, SWT.PUSH);
 		button.setFont(parent.getFont());
 		if (image != null) {

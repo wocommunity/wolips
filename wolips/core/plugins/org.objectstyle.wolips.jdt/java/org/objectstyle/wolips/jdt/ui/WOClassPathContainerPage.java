@@ -75,12 +75,12 @@ import org.objectstyle.wolips.jdt.ui.WOClasspathContainerContentProvider.WOClass
 
 /**
  * Insert the type's description here.
+ * 
  * @see WizardPage
  */
-public class WOClassPathContainerPage
-	extends WizardPage
-	implements IClasspathContainerPage {
+public class WOClassPathContainerPage extends WizardPage implements IClasspathContainerPage {
 	private WOClasspathContainerContentProvider path;
+
 	/**
 	 * The constructor.
 	 */
@@ -93,20 +93,14 @@ public class WOClassPathContainerPage
 
 		thisPage.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		thisPage.setLayout(new GridLayout());
-		//thisPage.setLayout(new RowLayout(SWT.VERTICAL));
+		// thisPage.setLayout(new RowLayout(SWT.VERTICAL));
 
 		this._uiList = new CheckboxTreeViewer(thisPage, SWT.MULTI);
-		//_uiList = new CheckboxTreeViewer(thisPage, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
-		GridData gd =
-			new GridData(
-				GridData.HORIZONTAL_ALIGN_FILL | GridData.FILL_HORIZONTAL);
-		//|GridData.VERTICAL_ALIGN_FILL
-		Rectangle trim =
-			this._uiList.getTree().computeTrim(
-				0,
-				0,
-				0,
-				12 * this._uiList.getTree().getItemHeight());
+		// _uiList = new CheckboxTreeViewer(thisPage, SWT.MULTI | SWT.BORDER |
+		// SWT.V_SCROLL | SWT.H_SCROLL);
+		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.FILL_HORIZONTAL);
+		// |GridData.VERTICAL_ALIGN_FILL
+		Rectangle trim = this._uiList.getTree().computeTrim(0, 0, 0, 12 * this._uiList.getTree().getItemHeight());
 		gd.heightHint = trim.height;
 		this._uiList.getTree().setLayoutData(gd);
 		this._uiList.setContentProvider(this.path);
@@ -116,16 +110,15 @@ public class WOClassPathContainerPage
 		WOClasspathContainerRoot[] roots = this.path.getRoots();
 		if (roots != null)
 			for (int i = 0; i < roots.length; i++) {
-				WOClasspathContainerEntry[] entries =
-					roots[i].getEntries();
+				WOClasspathContainerEntry[] entries = roots[i].getEntries();
 				if (entries != null)
 					for (int j = 0; j < entries.length; j++) {
-						if(entries[j].isChecked())
-						checked.add(entries[j]);
+						if (entries[j].isChecked())
+							checked.add(entries[j]);
 					}
 			}
 		this._uiList.setCheckedElements(checked.toArray());
-						
+
 		Label lbl = new Label(thisPage, SWT.SINGLE);
 		lbl.setText("Hint: use Ctrl-click or Shift-click");
 
@@ -134,19 +127,27 @@ public class WOClassPathContainerPage
 		setControl(thisPage);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jdt.ui.wizards.IClasspathContainerPage#finish()
 	 */
 	public boolean finish() {
 		return true;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jdt.ui.wizards.IClasspathContainerPage#getSelection()
 	 */
 	public IClasspathEntry getSelection() {
 		return this.path.getClasspathEntry();
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jdt.ui.wizards.IClasspathContainerPage#setSelection(org.eclipse.jdt.core.IClasspathEntry)
 	 */
 	public void setSelection(IClasspathEntry containerEntry) {

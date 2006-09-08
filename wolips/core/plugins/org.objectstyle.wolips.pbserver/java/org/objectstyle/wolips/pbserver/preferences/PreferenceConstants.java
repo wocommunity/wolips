@@ -47,6 +47,7 @@ package org.objectstyle.wolips.pbserver.preferences;
  * @author mike
  */
 public class PreferenceConstants {
-  public static final String PBSERVER_ENABLED = "org.objectstyle.wolips.pbserver.PBServerEnabled";
-  public static final String PBSERVER_PORT = "org.objectstyle.wolips.pbserver.PBServerPort";
+	public static final String PBSERVER_ENABLED = "org.objectstyle.wolips.pbserver.PBServerEnabled";
+
+	public static final String PBSERVER_PORT = "org.objectstyle.wolips.pbserver.PBServerPort";
 }

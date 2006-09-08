@@ -88,8 +88,7 @@ import org.objectstyle.wolips.jdt.classpath.model.Framework;
  * 
  * @see WizardPage
  */
-public class ContainerPage extends WizardPage implements
-		IClasspathContainerPage, ISelectionChangedListener {
+public class ContainerPage extends WizardPage implements IClasspathContainerPage, ISelectionChangedListener {
 	private ContainerContentProvider containerContentProvider;
 
 	private CheckboxTreeViewer checkboxTreeViewer;
@@ -112,7 +111,7 @@ public class ContainerPage extends WizardPage implements
 
 	Framework framework;
 
-	//private
+	// private
 
 	/**
 	 * The constructor.
@@ -126,20 +125,17 @@ public class ContainerPage extends WizardPage implements
 
 		thisPage.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		thisPage.setLayout(new GridLayout());
-		//thisPage.setLayout(new RowLayout(SWT.VERTICAL));
+		// thisPage.setLayout(new RowLayout(SWT.VERTICAL));
 
 		this.checkboxTreeViewer = new CheckboxTreeViewer(thisPage, SWT.MULTI);
-		//_uiList = new CheckboxTreeViewer(thisPage, SWT.MULTI | SWT.BORDER |
+		// _uiList = new CheckboxTreeViewer(thisPage, SWT.MULTI | SWT.BORDER |
 		// SWT.V_SCROLL | SWT.H_SCROLL);
-		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL
-				| GridData.FILL_HORIZONTAL);
-		//|GridData.VERTICAL_ALIGN_FILL
-		Rectangle trim = this.checkboxTreeViewer.getTree().computeTrim(0, 0, 0,
-				12 * this.checkboxTreeViewer.getTree().getItemHeight());
+		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.FILL_HORIZONTAL);
+		// |GridData.VERTICAL_ALIGN_FILL
+		Rectangle trim = this.checkboxTreeViewer.getTree().computeTrim(0, 0, 0, 12 * this.checkboxTreeViewer.getTree().getItemHeight());
 		gd.heightHint = trim.height;
 		this.checkboxTreeViewer.getTree().setLayoutData(gd);
-		this.checkboxTreeViewer
-				.setContentProvider(this.containerContentProvider);
+		this.checkboxTreeViewer.setContentProvider(this.containerContentProvider);
 		this.checkboxTreeViewer.setLabelProvider(this.containerContentProvider);
 		this.checkboxTreeViewer.setInput(this.containerContentProvider);
 		this.checkboxTreeViewer.addSelectionChangedListener(this);
@@ -147,10 +143,10 @@ public class ContainerPage extends WizardPage implements
 			Composite row = null;
 			Label lbl = null;
 			if (false) {
-			row = new Composite(thisPage, SWT.NONE);
-			row.setLayout(new RowLayout());
-			lbl = new Label(row, SWT.SINGLE);
-			lbl.setText("Source location");
+				row = new Composite(thisPage, SWT.NONE);
+				row.setLayout(new RowLayout());
+				lbl = new Label(row, SWT.SINGLE);
+				lbl.setText("Source location");
 				sourceField = new Text(row, SWT.SINGLE);
 				sourceField.setEditable(false);
 				sourceFileButton = new Button(row, SWT.PUSH);
@@ -190,8 +186,7 @@ public class ContainerPage extends WizardPage implements
 					}
 
 					public void mouseDown(MouseEvent e) {
-						DirectoryDialog directoryDialog = new DirectoryDialog(
-								new Shell());
+						DirectoryDialog directoryDialog = new DirectoryDialog(new Shell());
 						directoryDialog.open();
 						String stringPath = directoryDialog.getFilterPath();
 						if (stringPath != null) {
@@ -259,8 +254,7 @@ public class ContainerPage extends WizardPage implements
 					}
 
 					public void mouseDown(MouseEvent e) {
-						DirectoryDialog directoryDialog = new DirectoryDialog(
-								new Shell());
+						DirectoryDialog directoryDialog = new DirectoryDialog(new Shell());
 						directoryDialog.open();
 						String path = directoryDialog.getFilterPath();
 						if (path != null) {
@@ -319,8 +313,7 @@ public class ContainerPage extends WizardPage implements
 		thisPage.layout();
 
 		setControl(thisPage);
-		this.containerContentProvider
-				.setCheckboxTreeViewer(this.checkboxTreeViewer);
+		this.containerContentProvider.setCheckboxTreeViewer(this.checkboxTreeViewer);
 		this.frameworkChanged();
 	}
 
@@ -351,8 +344,7 @@ public class ContainerPage extends WizardPage implements
 		if (containerEntry == null) {
 			this.containerContentProvider = new ContainerContentProvider();
 		} else {
-			this.containerContentProvider = new ContainerContentProvider(
-					containerEntry);
+			this.containerContentProvider = new ContainerContentProvider(containerEntry);
 		}
 	}
 

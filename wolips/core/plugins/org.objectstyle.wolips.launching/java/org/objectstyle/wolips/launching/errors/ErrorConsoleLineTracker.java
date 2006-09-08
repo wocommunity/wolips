@@ -92,9 +92,7 @@ public class ErrorConsoleLineTracker implements IConsoleLineTracker {
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
-		if (text != null
-				&& text
-						.startsWith("com.webobjects.foundation.NSForwardException [com.webobjects.appserver._private.WODeclarationFormatException] <WOHTMLTemplateParser> no declaration for dynamic element (or component) named")) {
+		if (text != null && text.startsWith("com.webobjects.foundation.NSForwardException [com.webobjects.appserver._private.WODeclarationFormatException] <WOHTMLTemplateParser> no declaration for dynamic element (or component) named")) {
 			int startIndex = text.indexOf('\'', 0);
 			int endIndex = text.indexOf('\'', startIndex + 1);
 			final String pathString = text.substring(startIndex + 6, endIndex);
@@ -103,19 +101,12 @@ public class ErrorConsoleLineTracker implements IConsoleLineTracker {
 			path = path.append(path.lastSegment() + "d");
 			path = new Path("/Foo/Main.wo/Main.wod");
 			final String errorMessage = text.substring(133, startIndex - 99);
-			final IFile file = ResourcesPlugin.getWorkspace().getRoot()
-					.getFile(path);
+			final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
 					WorkbenchUtilitiesPlugin.open(file);
-					IStatus status = new Status(
-							IStatus.ERROR,
-							LaunchingPlugin.PLUGIN_ID,
-							IStatus.ERROR,
-							errorMessage,
-							null);
-					ErrorDialog.openError(null, "Buggy WOComponent", "",
-							status);
+					IStatus status = new Status(IStatus.ERROR, LaunchingPlugin.PLUGIN_ID, IStatus.ERROR, errorMessage, null);
+					ErrorDialog.openError(null, "Buggy WOComponent", "", status);
 				}
 			});
 		}

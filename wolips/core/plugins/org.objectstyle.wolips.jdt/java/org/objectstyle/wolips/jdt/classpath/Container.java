@@ -81,9 +81,7 @@ public class Container implements IClasspathContainer {
 	/**
 	 * Names of the standard frameworks.
 	 */
-	public static final String[] STANDARD_FRAMEWORK_NAMES = new String[] {
-			"JavaWebObjects", "JavaFoundation", "JavaXML", "JavaWOExtensions",
-			"JavaEOAccess", "JavaEOControl", "JavaJDBCAdaptor" };
+	public static final String[] STANDARD_FRAMEWORK_NAMES = new String[] { "JavaWebObjects", "JavaFoundation", "JavaXML", "JavaWOExtensions", "JavaEOAccess", "JavaEOControl", "JavaJDBCAdaptor" };
 
 	private ContainerEntries containerEntries = null;
 
@@ -154,11 +152,8 @@ public class Container implements IClasspathContainer {
 			if (containerEntries.contains(framework)) {
 				containerEntry = containerEntries.getEntry(framework);
 				containerEntry.push(framework);
-			}
-			else {
-				containerEntry = new ContainerEntry(framework.getName(),
-						framework.getSrcPath(), framework.getJavaDocPath(),
-						framework.getOrder(), framework.isExported() + "");
+			} else {
+				containerEntry = new ContainerEntry(framework.getName(), framework.getSrcPath(), framework.getJavaDocPath(), framework.getOrder(), framework.isExported() + "");
 			}
 			newEntries.add(containerEntry);
 		}

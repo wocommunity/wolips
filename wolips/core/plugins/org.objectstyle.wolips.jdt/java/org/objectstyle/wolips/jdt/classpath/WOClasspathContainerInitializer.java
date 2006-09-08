@@ -53,7 +53,7 @@
  * <http://objectstyle.org/>.
  *
  */
- 
+
 /**
  * Created on 28.06.2002
  *
@@ -69,47 +69,40 @@ import org.eclipse.jdt.core.JavaCore;
 
 /**
  * @author Harald Niesche
- *
+ * 
  */
-public final class WOClasspathContainerInitializer
-    extends ClasspathContainerInitializer 
-{
+public final class WOClasspathContainerInitializer extends ClasspathContainerInitializer {
 
-    /**
-     * Constructor for WOClasspathContainerInitializer.
-     */
-    public WOClasspathContainerInitializer() {
-        super();
-    }
+	/**
+	 * Constructor for WOClasspathContainerInitializer.
+	 */
+	public WOClasspathContainerInitializer() {
+		super();
+	}
 
-    /**
-     * @see org.eclipse.jdt.core.ClasspathContainerInitializer#initialize(IPath, IJavaProject)
-     */
-    public final void initialize(IPath containerPath, IJavaProject project)
-        throws CoreException 
-    {
-      int size = containerPath.segmentCount();
-      if (size > 0) {
-      	String firstSegment = containerPath.segment(0); 
-        if (
-          firstSegment.startsWith(WOClasspathContainer.WOLIPS_CLASSPATH_CONTAINER_IDENTITY)
-        ) {
-          
-            JavaCore.setClasspathContainer(
-              containerPath, 
-              new IJavaProject[] {project}, 
-              new IClasspathContainer[] {new WOClasspathContainer (containerPath)}, 
-              null
-            );
-        }
-      }
-    }
+	/**
+	 * @see org.eclipse.jdt.core.ClasspathContainerInitializer#initialize(IPath,
+	 *      IJavaProject)
+	 */
+	public final void initialize(IPath containerPath, IJavaProject project) throws CoreException {
+		int size = containerPath.segmentCount();
+		if (size > 0) {
+			String firstSegment = containerPath.segment(0);
+			if (firstSegment.startsWith(WOClasspathContainer.WOLIPS_CLASSPATH_CONTAINER_IDENTITY)) {
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jdt.core.ClasspathContainerInitializer#getComparisonID(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject)
-     */
-    public Object getComparisonID(IPath containerPath, IJavaProject project) {
-        // we want every WO container to show up
-        return containerPath;
-    }
+				JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { project }, new IClasspathContainer[] { new WOClasspathContainer(containerPath) }, null);
+			}
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jdt.core.ClasspathContainerInitializer#getComparisonID(org.eclipse.core.runtime.IPath,
+	 *      org.eclipse.jdt.core.IJavaProject)
+	 */
+	public Object getComparisonID(IPath containerPath, IJavaProject project) {
+		// we want every WO container to show up
+		return containerPath;
+	}
 }

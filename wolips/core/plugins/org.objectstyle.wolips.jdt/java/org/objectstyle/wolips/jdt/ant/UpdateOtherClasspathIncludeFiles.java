@@ -70,7 +70,7 @@ import org.objectstyle.wolips.jdt.JdtPlugin;
 
 /**
  * @author mnolte
- *  
+ * 
  */
 public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 
@@ -83,11 +83,12 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 	}
 
 	/**
-	 *  
+	 * 
 	 */
 	public void execute() {
 		buildIncludeFiles();
 	}
+
 	/**
 	 * @see org.objectstyle.wolips.jdt.ant.UpdateIncludeFiles#buildIncludeFiles()
 	 */
@@ -108,9 +109,8 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 
 		for (int i = 0; i < getPaths().length; i++) {
 
-			currentClasspathListFile = this.getProject().getAntFolder().getFile(
-					this.INCLUDES_FILE_PREFIX + "." + this.rootPaths[i]);
-			//System.out.println("currentClasspathListFile: " +
+			currentClasspathListFile = this.getProject().getAntFolder().getFile(this.INCLUDES_FILE_PREFIX + "." + this.rootPaths[i]);
+			// System.out.println("currentClasspathListFile: " +
 			// currentClasspathListFile.toString());
 			if (currentClasspathListFile.exists()) {
 				// delete old include file
@@ -118,8 +118,7 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 					if (false)
 						currentClasspathListFile.delete(true, null);
 				} catch (CoreException e) {
-					JdtPlugin.getDefault().getPluginLogger()
-							.log(e.getMessage());
+					JdtPlugin.getDefault().getPluginLogger().log(e.getMessage());
 					return;
 				}
 			}
@@ -127,15 +126,12 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 			StringBuffer newClasspathEntries = new StringBuffer();
 			String resolvedEntry;
 			for (int j = 0; j < classPaths.length; j++) {
-				if (classPaths[j].getEntryKind() == IClasspathEntry.CPE_LIBRARY
-						|| classPaths[j].getEntryKind() == IClasspathEntry.CPE_VARIABLE) {
+				if (classPaths[j].getEntryKind() == IClasspathEntry.CPE_LIBRARY || classPaths[j].getEntryKind() == IClasspathEntry.CPE_VARIABLE) {
 
 					// convert classpath entries to woproject acceptable paths
-					resolvedEntry = classpathEntryToOtherClasspathEntry(
-							classPaths[j], getPaths()[i].toOSString());
+					resolvedEntry = classpathEntryToOtherClasspathEntry(classPaths[j], getPaths()[i].toOSString());
 
-					if (resolvedEntry != null
-							&& !resolvedEntries.contains(classPaths[j])) {
+					if (resolvedEntry != null && !resolvedEntries.contains(classPaths[j])) {
 						resolvedEntries.add(classPaths[j]);
 						newClasspathEntries.append(resolvedEntry);
 						newClasspathEntries.append("\n");
@@ -144,22 +140,17 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 			}
 
 			if (newClasspathEntries.length() == 0) {
-				newClasspathEntries
-						.append("An empty file result in a full filesystem scan");
+				newClasspathEntries.append("An empty file result in a full filesystem scan");
 				newClasspathEntries.append("\n");
 			}
 			try {
 				if (currentClasspathListFile.exists()) {
-					currentClasspathListFile.setContents(
-							new ByteArrayInputStream(newClasspathEntries
-									.toString().getBytes()), true, true, null);
+					currentClasspathListFile.setContents(new ByteArrayInputStream(newClasspathEntries.toString().getBytes()), true, true, null);
 				} else {
 					// create list file if any entries found
-					Project project = (Project)this.getIProject().getAdapter(Project.class);
+					Project project = (Project) this.getIProject().getAdapter(Project.class);
 					project.createAntFolder();
-					currentClasspathListFile.create(new ByteArrayInputStream(
-							newClasspathEntries.toString().getBytes()), true,
-							null);
+					currentClasspathListFile.create(new ByteArrayInputStream(newClasspathEntries.toString().getBytes()), true, null);
 				}
 			} catch (CoreException e) {
 				JdtPlugin.getDefault().getPluginLogger().log(e.getMessage());
@@ -167,6 +158,7 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 			}
 		}
 	}
+
 	/**
 	 * Method classpathEntryToOtherClasspathEntry.
 	 * 
@@ -174,11 +166,10 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 	 * @param rootDir
 	 * @return String
 	 */
-	private String classpathEntryToOtherClasspathEntry(IClasspathEntry entry,
-			String rootDir) {
-		//System.out.println("classpathEntryToOtherClasspathEntry");
-		//System.out.println("entry: " + entry);
-		//System.out.println("rootDir" + rootDir);
+	private String classpathEntryToOtherClasspathEntry(IClasspathEntry entry, String rootDir) {
+		// System.out.println("classpathEntryToOtherClasspathEntry");
+		// System.out.println("entry: " + entry);
+		// System.out.println("rootDir" + rootDir);
 		String toReturn = null;
 		IPath pathToConvert;
 		if (entry.getPath().toOSString().startsWith(rootDir)) {
@@ -198,8 +189,8 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 			}
 			toReturn = pathToConvert.toOSString().substring(rootDir.length());
 		}
-		//System.out.println("toReturn: " + toReturn);
-		//System.out.println("classpathEntryToOtherClasspathEntry return");
+		// System.out.println("toReturn: " + toReturn);
+		// System.out.println("classpathEntryToOtherClasspathEntry return");
 		return toReturn;
 	}
 }

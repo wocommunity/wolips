@@ -76,8 +76,7 @@ public class Locate {
 	}
 
 	public void locate() throws CoreException, LocateException {
-		IProject[] allProjects = ResourcesPlugin.getWorkspace().getRoot()
-				.getProjects();
+		IProject[] allProjects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		for (int i = 0; i < allProjects.length; i++) {
 			this.investigate(allProjects[i]);
 		}
@@ -97,8 +96,7 @@ public class Locate {
 			if (resource.isAccessible() && !resource.isDerived()) {
 				if (resource.getType() == IResource.FOLDER) {
 					this.investigate((IFolder) resource);
-				}
-				else if (resource.getType() == IResource.FILE) {
+				} else if (resource.getType() == IResource.FILE) {
 					this.investigate((IFile) resource);
 				}
 			}

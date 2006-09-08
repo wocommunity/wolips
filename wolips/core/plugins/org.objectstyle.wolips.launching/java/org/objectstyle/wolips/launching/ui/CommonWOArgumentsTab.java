@@ -130,9 +130,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		// IHelpContextIds.IGNORE_PREFERENCE_PAGE);
 
 		Label l1 = new Label(parent, SWT.NULL);
-		l1
-				.setText(PreferencesMessages
-						.getString("LaunchPreferencesPage.label")); //$NON-NLS-1$
+		l1.setText(PreferencesMessages.getString("LaunchPreferencesPage.label")); //$NON-NLS-1$
 		data = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 		data.horizontalSpan = 3;
 		l1.setLayoutData(data);
@@ -165,18 +163,15 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		buttons.setLayout(layout);
 
 		this.addButton = new Button(buttons, SWT.PUSH);
-		this.addButton.setText(PreferencesMessages
-				.getString("LaunchPreferencesPage.add")); //$NON-NLS-1$
+		this.addButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.add")); //$NON-NLS-1$
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
 		data.heightHint = 20;
-		data.heightHint = Math.max(data.heightHint, this.addButton.computeSize(
-				SWT.DEFAULT, SWT.DEFAULT, true).y);
+		data.heightHint = Math.max(data.heightHint, this.addButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
 		// convertVerticalDLUsToPixels(IDialogConstants.BUTTON_HEIGHT);
 		int widthHint = 100;
 		// convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
-		data.widthHint = Math.max(widthHint, this.addButton.computeSize(
-				SWT.DEFAULT, SWT.DEFAULT, true).x);
+		data.widthHint = Math.max(widthHint, this.addButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		this.addButton.setLayoutData(data);
 		this.addButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
@@ -185,19 +180,16 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		});
 
 		this.removeButton = new Button(buttons, SWT.PUSH);
-		this.removeButton.setText(PreferencesMessages
-				.getString("LaunchPreferencesPage.remove")); //$NON-NLS-1$
+		this.removeButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.remove")); //$NON-NLS-1$
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
 		data.heightHint = 20;
-		data.heightHint = Math.max(data.heightHint, this.removeButton
-				.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
+		data.heightHint = Math.max(data.heightHint, this.removeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
 		// Dialog.convertVerticalDLUsToPixels(new FontMetrics(),
 		// IDialogConstants.BUTTON_HEIGHT);
 		widthHint = 100;
 		// Dialog.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
-		data.widthHint = Math.max(widthHint, this.removeButton.computeSize(
-				SWT.DEFAULT, SWT.DEFAULT, true).x);
+		data.widthHint = Math.max(widthHint, this.removeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		this.removeButton.setLayoutData(data);
 		this.removeButton.setEnabled(false);
 		this.removeButton.addListener(SWT.Selection, new Listener() {
@@ -207,20 +199,17 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		});
 
 		this.changeButton = new Button(buttons, SWT.PUSH);
-		this.changeButton.setText(PreferencesMessages
-				.getString("LaunchPreferencesPage.change")); //$NON-NLS-1$
+		this.changeButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.change")); //$NON-NLS-1$
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
 		data.heightHint = 20;
-		data.heightHint = Math.max(data.heightHint, this.changeButton
-				.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
+		data.heightHint = Math.max(data.heightHint, this.changeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
 
 		// Dialog.convertVerticalDLUsToPixels(new FontMetrics(),
 		// IDialogConstants.BUTTON_HEIGHT);
 		widthHint = 100;
 		// Dialog.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
-		data.widthHint = Math.max(widthHint, this.changeButton.computeSize(
-				SWT.DEFAULT, SWT.DEFAULT, true).x);
+		data.widthHint = Math.max(widthHint, this.changeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		this.changeButton.setLayoutData(data);
 		this.changeButton.setEnabled(false);
 		this.changeButton.addListener(SWT.Selection, new Listener() {
@@ -240,10 +229,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		for (int i = 0; i < launchInfoArray.length; i++) {
 			ILaunchInfo launchInfo = launchInfoArray[i];
 			TableItem item = new TableItem(this.includeTable, SWT.NONE);
-			item
-					.setText(StringUtilities.toCommandlineParameterFormat(
-							launchInfo.getParameter(),
-							launchInfo.getArgument(), false));
+			item.setText(StringUtilities.toCommandlineParameterFormat(launchInfo.getParameter(), launchInfo.getArgument(), false));
 			this.allParameter.add(launchInfo.getParameter());
 			this.allArguments.add(launchInfo.getArgument());
 			item.setChecked(launchInfo.isEnabled());
@@ -251,17 +237,11 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 	}
 
 	protected void addIgnore() {
-		InputDialog parameterDialog = new InputDialog(
-				getShell(),
-				PreferencesMessages
-						.getString("LaunchPreferencesPage.enterParameterShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), null, null); //$NON-NLS-1$ //$NON-NLS-2$
+		InputDialog parameterDialog = new InputDialog(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.enterParameterShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), null, null); //$NON-NLS-1$ //$NON-NLS-2$
 		parameterDialog.open();
 		if (parameterDialog.getReturnCode() != Window.OK)
 			return;
-		InputDialog argumentDialog = new InputDialog(
-				getShell(),
-				PreferencesMessages
-						.getString("LaunchPreferencesPage.enterArgumentShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), null, null); //$NON-NLS-1$ //$NON-NLS-2$
+		InputDialog argumentDialog = new InputDialog(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), null, null); //$NON-NLS-1$ //$NON-NLS-2$
 		argumentDialog.open();
 		if (argumentDialog.getReturnCode() != Window.OK)
 			return;
@@ -274,8 +254,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 			return;
 		}
 		TableItem item = new TableItem(this.includeTable, SWT.NONE);
-		item.setText(StringUtilities.toCommandlineParameterFormat(parameter,
-				argument, false));
+		item.setText(StringUtilities.toCommandlineParameterFormat(parameter, argument, false));
 		this.allParameter.add(parameter);
 		this.allArguments.add(argument);
 		item.setChecked(true);
@@ -287,11 +266,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		TableItem[] items = this.includeTable.getItems();
 		for (int i = 0; i < items.length; i++) {
 			if (items[i].getText(1).equals(item)) {
-				MessageDialog
-						.openWarning(
-								getShell(),
-								PreferencesMessages
-										.getString("LaunchPreferencesPage.parameterExistsShort"), Preferences.getString("IgnorePreferencePage.patternExistsLong")); //$NON-NLS-1$ //$NON-NLS-2$
+				MessageDialog.openWarning(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.parameterExistsShort"), Preferences.getString("IgnorePreferencePage.patternExistsLong")); //$NON-NLS-1$ //$NON-NLS-2$
 				return true;
 			}
 		}
@@ -326,19 +301,13 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 			return;
 		int index = selection[0];
 		String parameter = (String) this.allParameter.elementAt(index);
-		InputDialog argumentDialog = new InputDialog(getShell(), parameter
-				+ " "
-				+ PreferencesMessages
-						.getString("LaunchPreferencesPage.enterArgumentShort"),
-				Preferences.getString("IgnorePreferencePage.enterPatternLong"),
-				(String) this.allArguments.elementAt(index), null);
+		InputDialog argumentDialog = new InputDialog(getShell(), parameter + " " + PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), (String) this.allArguments.elementAt(index), null);
 		argumentDialog.open();
 		if (argumentDialog.getReturnCode() != Window.OK)
 			return;
 		String argument = argumentDialog.getValue();
 		TableItem item = this.includeTable.getItem(index);
-		item.setText(StringUtilities.toCommandlineParameterFormat(parameter,
-				argument, false));
+		item.setText(StringUtilities.toCommandlineParameterFormat(parameter, argument, false));
 		this.allArguments.setElementAt(argument, index);
 		setDirty(true);
 		this.updateLaunchConfigurationDialog();
@@ -375,10 +344,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 	 */
 	public void setDefaults(ILaunchConfigurationWorkingCopy config) {
 		String string = this.getDefaultArguments(config);
-		config
-				.setAttribute(
-						WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
-						string);
+		config.setAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS, string);
 	}
 
 	/**
@@ -386,14 +352,10 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 	 */
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
-			String string = configuration
-					.getAttribute(
-							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
-							Preferences.getPREF_LAUNCH_GLOBAL()); //$NON-NLS-1$
+			String string = configuration.getAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS, Preferences.getPREF_LAUNCH_GLOBAL()); //$NON-NLS-1$
 			this.fillTable(Preferences.getLaunchInfoFrom(string));
 		} catch (CoreException e) {
-			setErrorMessage(LaunchingMessages
-					.getString("WOArgumentsTab.Exception_occurred_reading_configuration___15") + e.getStatus().getMessage()); //$NON-NLS-1$
+			setErrorMessage(LaunchingMessages.getString("WOArgumentsTab.Exception_occurred_reading_configuration___15") + e.getStatus().getMessage()); //$NON-NLS-1$
 			LaunchingPlugin.getDefault().log(e);
 		}
 	}
@@ -412,12 +374,8 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 			arguments[i] = (String) this.allArguments.get(i);
 			enabled[i] = items[i].getChecked();
 		}
-		String string = Preferences.LaunchInfoToString(parameter, arguments,
-				enabled);
-		configuration
-				.setAttribute(
-						WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
-						string);
+		String string = Preferences.LaunchInfoToString(parameter, arguments, enabled);
+		configuration.setAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS, string);
 	}
 
 	/**
@@ -442,37 +400,23 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 	 * @see ILaunchConfigurationTab#getImage()
 	 */
 	public Image getImage() {
-		return LaunchingPlugin.getImageDescriptor(
-				"icons/launching/arguments-tab.gif").createImage();
+		return LaunchingPlugin.getImageDescriptor("icons/launching/arguments-tab.gif").createImage();
 	}
 
 	private String getDefaultArguments(ILaunchConfigurationWorkingCopy config) {
 		try {
-			String path = config.getAttribute(
-					IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME,
-					(String) null);
-			IResource resource = ResourcesPlugin.getWorkspace().getRoot()
-					.findMember(path);
-			if (resource != null && resource instanceof IContainer
-					&& resource.exists()) {
-				IResource distFolder = ((IContainer) resource)
-						.findMember("dist");
+			String path = config.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String) null);
+			IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
+			if (resource != null && resource instanceof IContainer && resource.exists()) {
+				IResource distFolder = ((IContainer) resource).findMember("dist");
 				IResource product;
 				if (distFolder instanceof IContainer && distFolder.exists())
-					product = ((IContainer) distFolder).findMember(path
-							.toString()
-							+ ".woa");
+					product = ((IContainer) distFolder).findMember(path.toString() + ".woa");
 				else
-					product = ((IContainer) resource).findMember(path
-							.toString()
-							+ ".woa");
+					product = ((IContainer) resource).findMember(path.toString() + ".woa");
 				if (product != null) {
 					if (product instanceof IContainer && product.exists()) {
-						config
-								.setAttribute(
-										IJavaLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY,
-										((IContainer) product).getFullPath()
-												.toString().substring(1));
+						config.setAttribute(IJavaLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY, ((IContainer) product).getFullPath().toString().substring(1));
 					}
 				}
 			}

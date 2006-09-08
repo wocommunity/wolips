@@ -84,8 +84,7 @@ class PreDeleteVisitor implements IResourceDeltaVisitor {
 			return false;
 		}
 		if (resource instanceof IFile) {
-			if (delta.getKind() == IResourceDelta.ADDED
-					|| delta.getKind() == IResourceDelta.REMOVED) {
+			if (delta.getKind() == IResourceDelta.ADDED || delta.getKind() == IResourceDelta.REMOVED) {
 				IFile file = (IFile) resource;
 				this.componentLocateCache.forgetCacheForFile(file);
 			}

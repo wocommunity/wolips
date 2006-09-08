@@ -65,57 +65,59 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.objectstyle.wolips.locate.LocatePlugin;
 
 public abstract class AbstractProjectReferencesLocateScope implements ILocateScope {
-  private IProject myProject;
-  private List myProjects;
-  private boolean myFindProjectsThatDependOnThis;
-  private boolean myFindProjectsThatThisDependsOn;
-  private boolean myIncludeThis;
+	private IProject myProject;
 
-  public AbstractProjectReferencesLocateScope(IProject project, boolean _findProjectsThatDependOnThis, boolean _findProjectsThatThisDependOn, boolean _includeThis) {
-    myProject = project;
-    myIncludeThis = _includeThis;
-    myFindProjectsThatDependOnThis = _findProjectsThatDependOnThis;
-    myFindProjectsThatThisDependsOn = _findProjectsThatThisDependOn;
-  }
+	private List myProjects;
 
-  public boolean ignoreContainer(IContainer container) {
-    if (container.getType() == IResource.PROJECT) {
-      return ignoreProject((IProject) container);
-    }
-    return _ignoreContainer(container);
-  }
-  
-  protected abstract boolean _ignoreContainer(IContainer _container);
+	private boolean myFindProjectsThatDependOnThis;
 
-  private boolean ignoreProject(IProject projectToValidate) {
-    if (myProjects == null) {
-      myProjects = new LinkedList();
-      IProject[] allProjects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-      for (int projectNum = 0; projectNum < allProjects.length; projectNum++) {
-        if (myIncludeThis && myProject.equals(allProjects[projectNum])) {
-          myProjects.add(allProjects[projectNum]);
-        }
-        else if ((myFindProjectsThatDependOnThis && doesProjectDependOnProject(allProjects[projectNum], myProject)) || (myFindProjectsThatThisDependsOn && doesProjectDependOnProject(myProject, allProjects[projectNum]))) {
-          myProjects.add(allProjects[projectNum]);
-        }
-      }
-    }
-    return !myProjects.contains(projectToValidate);
-  }
+	private boolean myFindProjectsThatThisDependsOn;
 
-  private boolean doesProjectDependOnProject(IProject _project, IProject _maybeDependsOnProject) {
-    boolean projectIsDependedOn = false;
-    try {
-      if (_project.isOpen() || _project.isAccessible()) {
-        IProject[] referencedProjects = _project.getReferencedProjects();
-        for (int projectNum = 0; !projectIsDependedOn && projectNum < referencedProjects.length; projectNum++) {
-          projectIsDependedOn = referencedProjects[projectNum].equals(_maybeDependsOnProject);
-        }
-      }
-    }
-    catch (Exception anException) {
-      LocatePlugin.getDefault().log(anException);
-    }
-    return projectIsDependedOn;
-  }
+	private boolean myIncludeThis;
+
+	public AbstractProjectReferencesLocateScope(IProject project, boolean _findProjectsThatDependOnThis, boolean _findProjectsThatThisDependOn, boolean _includeThis) {
+		myProject = project;
+		myIncludeThis = _includeThis;
+		myFindProjectsThatDependOnThis = _findProjectsThatDependOnThis;
+		myFindProjectsThatThisDependsOn = _findProjectsThatThisDependOn;
+	}
+
+	public boolean ignoreContainer(IContainer container) {
+		if (container.getType() == IResource.PROJECT) {
+			return ignoreProject((IProject) container);
+		}
+		return _ignoreContainer(container);
+	}
+
+	protected abstract boolean _ignoreContainer(IContainer _container);
+
+	private boolean ignoreProject(IProject projectToValidate) {
+		if (myProjects == null) {
+			myProjects = new LinkedList();
+			IProject[] allProjects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+			for (int projectNum = 0; projectNum < allProjects.length; projectNum++) {
+				if (myIncludeThis && myProject.equals(allProjects[projectNum])) {
+					myProjects.add(allProjects[projectNum]);
+				} else if ((myFindProjectsThatDependOnThis && doesProjectDependOnProject(allProjects[projectNum], myProject)) || (myFindProjectsThatThisDependsOn && doesProjectDependOnProject(myProject, allProjects[projectNum]))) {
+					myProjects.add(allProjects[projectNum]);
+				}
+			}
+		}
+		return !myProjects.contains(projectToValidate);
+	}
+
+	private boolean doesProjectDependOnProject(IProject _project, IProject _maybeDependsOnProject) {
+		boolean projectIsDependedOn = false;
+		try {
+			if (_project.isOpen() || _project.isAccessible()) {
+				IProject[] referencedProjects = _project.getReferencedProjects();
+				for (int projectNum = 0; !projectIsDependedOn && projectNum < referencedProjects.length; projectNum++) {
+					projectIsDependedOn = referencedProjects[projectNum].equals(_maybeDependsOnProject);
+				}
+			}
+		} catch (Exception anException) {
+			LocatePlugin.getDefault().log(anException);
+		}
+		return projectIsDependedOn;
+	}
 }

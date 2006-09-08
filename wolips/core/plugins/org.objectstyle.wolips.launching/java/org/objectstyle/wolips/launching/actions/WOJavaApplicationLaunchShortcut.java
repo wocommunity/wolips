@@ -68,16 +68,13 @@ import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchCo
 /**
  * @author uli
  */
-public class WOJavaApplicationLaunchShortcut extends
-		JavaApplicationLaunchShortcut {
+public class WOJavaApplicationLaunchShortcut extends JavaApplicationLaunchShortcut {
 
 	/**
 	 * Returns the local wo java launch config type
 	 */
 	protected ILaunchConfigurationType getJavaLaunchConfigType() {
-		ILaunchConfigurationType launchConfigurationType = getLaunchManager()
-				.getLaunchConfigurationType(
-						WOJavaLocalApplicationLaunchConfigurationDelegate.WOJavaLocalApplicationID);
+		ILaunchConfigurationType launchConfigurationType = getLaunchManager().getLaunchConfigurationType(WOJavaLocalApplicationLaunchConfigurationDelegate.WOJavaLocalApplicationID);
 		return launchConfigurationType;
 	}
 
@@ -86,22 +83,21 @@ public class WOJavaApplicationLaunchShortcut extends
 		ILaunchConfigurationWorkingCopy wc = null;
 		try {
 			ILaunchConfigurationType configType = getJavaLaunchConfigType();
-      String elementName = type.getElementName();
-      String projectName = type.getJavaProject().getProject().getName();
-      String launchName = projectName + ": " + elementName;
+			String elementName = type.getElementName();
+			String projectName = type.getJavaProject().getProject().getName();
+			String launchName = projectName + ": " + elementName;
 			wc = configType.newInstance(null, getLaunchManager().generateUniqueLaunchConfigurationNameFrom(launchName));
 		} catch (CoreException exception) {
 			reportErorr(exception);
-			return null;		
-		} 
+			return null;
+		}
 		wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, type.getFullyQualifiedName());
 		wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, type.getJavaProject().getElementName());
-		WOJavaLocalApplicationLaunchConfigurationDelegate
-		.initConfiguration(wc);
+		WOJavaLocalApplicationLaunchConfigurationDelegate.initConfiguration(wc);
 		try {
-			config = wc.doSave();		
+			config = wc.doSave();
 		} catch (CoreException exception) {
-			reportErorr(exception);			
+			reportErorr(exception);
 		}
 		return config;
 	}

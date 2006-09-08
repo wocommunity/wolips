@@ -69,14 +69,12 @@ public class DefaultLocateScope extends AbstractLocateScope {
 
 	private IncludeFolderLocateScope includeFolderScope;
 
-	public DefaultLocateScope(IProject project, String[] includedFilesNames,
-			String[] includedFolderNames) {
+	public DefaultLocateScope(IProject project, String[] includedFilesNames, String[] includedFolderNames) {
 		super();
 		projectLocateScope = new ProjectLocateScope(project);
 		ignoredFolderScope = new DefaultIgnoredFolderLocateScope();
 		includeFileScope = new IncludeFileLocateScope(includedFilesNames, null);
-		includeFolderScope = new IncludeFolderLocateScope(includedFolderNames,
-				null);
+		includeFolderScope = new IncludeFolderLocateScope(includedFolderNames, null);
 	}
 
 	public boolean ignoreContainer(IContainer container) {
