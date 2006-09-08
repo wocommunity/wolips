@@ -103,7 +103,6 @@ public class EditorsPlugin extends AbstractWOLipsUIPlugin {
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin(
-				"org.objectstyle.wolips.editors", path);
+		return AbstractUIPlugin.imageDescriptorFromPlugin("org.objectstyle.wolips.editors", path);
 	}
 }

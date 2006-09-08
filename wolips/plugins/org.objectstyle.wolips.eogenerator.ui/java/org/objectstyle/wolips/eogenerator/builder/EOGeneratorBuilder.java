@@ -65,65 +65,64 @@ import org.objectstyle.wolips.locate.result.DefaultLocateResult;
 import org.objectstyle.wolips.preferences.Preferences;
 
 public class EOGeneratorBuilder extends AbstractFullAndIncrementalBuilder {
-  private boolean myAutoEOGenerateOnBuild;
+	private boolean myAutoEOGenerateOnBuild;
 
-  public EOGeneratorBuilder() {
-    super();
-  }
+	public EOGeneratorBuilder() {
+		super();
+	}
 
-  public boolean buildStarted(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
-    myAutoEOGenerateOnBuild = Preferences.getPREF_AUTOEOGENERATE_ON_BUILD();
-    return false;
-  }
+	public boolean buildStarted(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
+		myAutoEOGenerateOnBuild = Preferences.getPREF_AUTOEOGENERATE_ON_BUILD();
+		return false;
+	}
 
-  public boolean buildPreparationDone(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
-    return false;
-  }
+	public boolean buildPreparationDone(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
+		return false;
+	}
 
-  public void handleClasses(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
-    // do nothing
-  }
+	public void handleClasses(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
+		// do nothing
+	}
 
-  public void handleSource(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
-    // do nothing
-  }
+	public void handleSource(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
+		// do nothing
+	}
 
-  public void handleClasspath(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
-    // do nothing
-  }
+	public void handleClasspath(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
+		// do nothing
+	}
 
-  public void handleOther(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
-    // do nothing
-  }
+	public void handleOther(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
+		// do nothing
+	}
 
-  public void handleWebServerResources(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
-    // do nothing
-  }
+	public void handleWebServerResources(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
+		// do nothing
+	}
 
-  public void handleWoappResources(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
-    try {
-      if (myAutoEOGenerateOnBuild && _resource instanceof IContainer && _resource.getName().endsWith(".eomodeld")) {
-        EOModelReference modifiedModelReference = new EOModelReference(_resource.getLocation());
-        DefaultLocateResult result = new DefaultLocateResult();
-        Locate locate = new Locate(new EOGenLocateScope(_resource.getProject()), result);
-        locate.locate();
-        Set referencingEOGenFiles = new HashSet();
-        IResource[] eogenFiles = result.getResources();
-        for (int eogenFileNum = 0; eogenFileNum < eogenFiles.length; eogenFileNum++) {
-          IFile eogenFile = (IFile) eogenFiles[eogenFileNum];
-          EOGeneratorModel eogenModel = EOGeneratorModel.createModelFromFile(eogenFile);
-          if (eogenModel.isModelReferenced(modifiedModelReference)) {
-            referencingEOGenFiles.add(eogenFile);
-          }
-        }
+	public void handleWoappResources(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
+		try {
+			if (myAutoEOGenerateOnBuild && _resource instanceof IContainer && _resource.getName().endsWith(".eomodeld")) {
+				EOModelReference modifiedModelReference = new EOModelReference(_resource.getLocation());
+				DefaultLocateResult result = new DefaultLocateResult();
+				Locate locate = new Locate(new EOGenLocateScope(_resource.getProject()), result);
+				locate.locate();
+				Set referencingEOGenFiles = new HashSet();
+				IResource[] eogenFiles = result.getResources();
+				for (int eogenFileNum = 0; eogenFileNum < eogenFiles.length; eogenFileNum++) {
+					IFile eogenFile = (IFile) eogenFiles[eogenFileNum];
+					EOGeneratorModel eogenModel = EOGeneratorModel.createModelFromFile(eogenFile);
+					if (eogenModel.isModelReferenced(modifiedModelReference)) {
+						referencingEOGenFiles.add(eogenFile);
+					}
+				}
 
-        IFile[] finalEOGenFiles = (IFile[]) referencingEOGenFiles.toArray(new IFile[referencingEOGenFiles.size()]);
-        EOGenerateWorkspaceJob eogenerateJob = new EOGenerateWorkspaceJob(finalEOGenFiles, false);
-        eogenerateJob.schedule();
-      }
-    }
-    catch (Throwable e) {
-      Activator.getDefault().getLog().log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, IStatus.ERROR, "Internal Error", e));
-    }
-  }
+				IFile[] finalEOGenFiles = (IFile[]) referencingEOGenFiles.toArray(new IFile[referencingEOGenFiles.size()]);
+				EOGenerateWorkspaceJob eogenerateJob = new EOGenerateWorkspaceJob(finalEOGenFiles, false);
+				eogenerateJob.schedule();
+			}
+		} catch (Throwable e) {
+			Activator.getDefault().getLog().log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, IStatus.ERROR, "Internal Error", e));
+		}
+	}
 }

@@ -81,6 +81,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.objectstyle.wolips.commons.util.ArrayUtilities;
+
 /**
  * @author ulrich
  * 
@@ -89,8 +90,11 @@ import org.objectstyle.wolips.commons.util.ArrayUtilities;
  */
 public class PatternsetPage extends FormPage {
 	private ArrayList patternList;
+
 	private Table table;
+
 	private Button changeButton;
+
 	private Button removeButton;
 
 	/**
@@ -101,26 +105,22 @@ public class PatternsetPage extends FormPage {
 		super(editor, "Pattern", "Pattern");
 		this.patternList = patternList;
 	}
+
 	protected void createFormContent(IManagedForm managedForm) {
 		ScrolledForm form = managedForm.getForm();
 		FormToolkit toolkit = managedForm.getToolkit();
 		form.setText("Pattern");
-		//form.setBackgroundImage(ExamplesPlugin.getDefault().getImage(ExamplesPlugin.IMG_FORM_BG));
+		// form.setBackgroundImage(ExamplesPlugin.getDefault().getImage(ExamplesPlugin.IMG_FORM_BG));
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 1;
 		form.getBody().setLayout(layout);
 		createTableSection(form, toolkit, "Pattern");
 	}
-	
+
 	private void createTableSection(final ScrolledForm form, FormToolkit toolkit, String title) {
-		Section section =
-			toolkit.createSection(
-				form.getBody(),
-				ExpandableComposite.TWISTIE | Section.DESCRIPTION);
-		section.setActiveToggleColor(
-			toolkit.getHyperlinkGroup().getActiveForeground());
-		section.setToggleColor(
-			toolkit.getColors().getColor(FormColors.SEPARATOR));
+		Section section = toolkit.createSection(form.getBody(), ExpandableComposite.TWISTIE | Section.DESCRIPTION);
+		section.setActiveToggleColor(toolkit.getHyperlinkGroup().getActiveForeground());
+		section.setToggleColor(toolkit.getColors().getColor(FormColors.SEPARATOR));
 		toolkit.createCompositeSeparator(section);
 		Composite client = toolkit.createComposite(section, SWT.WRAP);
 		GridLayout layout = new GridLayout();
@@ -132,9 +132,9 @@ public class PatternsetPage extends FormPage {
 		gd.heightHint = 200;
 		gd.widthHint = 100;
 		this.table.setLayoutData(gd);
-		for(int i = 0; i < this.patternList.size(); i++) {
+		for (int i = 0; i < this.patternList.size(); i++) {
 			TableItem item = new TableItem(this.table, SWT.NONE);
-			item.setText((String)this.patternList.get(i));
+			item.setText((String) this.patternList.get(i));
 		}
 		this.table.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
@@ -146,7 +146,7 @@ public class PatternsetPage extends FormPage {
 		RowLayout rowLayout = new RowLayout();
 		rowLayout.type = SWT.VERTICAL;
 		row.setLayout(rowLayout);
-		
+
 		Button b = toolkit.createButton(row, PatternsetEditorMessages.getString("PaternsetEditor.add"), SWT.PUSH);
 		b.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
@@ -179,7 +179,7 @@ public class PatternsetPage extends FormPage {
 		this.changeButton.setEnabled(false);
 		this.removeButton.setEnabled(false);
 	}
-	
+
 	void addPattern() {
 		InputDialog patternDialog = new InputDialog(this.getEditorSite().getShell(), PatternsetEditorMessages.getString("PaternsetEditor.enterPatternShort"), PatternsetEditorMessages.getString("PaternsetEditor.enterPatternLong"), null, null); //$NON-NLS-1$ //$NON-NLS-2$
 		patternDialog.open();
@@ -227,7 +227,7 @@ public class PatternsetPage extends FormPage {
 		if (selection.length != 1)
 			return;
 		int index = selection[0];
-		InputDialog patternDialog = new InputDialog(this.getEditorSite().getShell(), PatternsetEditorMessages.getString("PaternsetEditor.enterPatternShort"), PatternsetEditorMessages.getString("PaternsetEditor.enterPatternLong"), (String)this.patternList.get(index), null); //$NON-NLS-1$ //$NON-NLS-2$
+		InputDialog patternDialog = new InputDialog(this.getEditorSite().getShell(), PatternsetEditorMessages.getString("PaternsetEditor.enterPatternShort"), PatternsetEditorMessages.getString("PaternsetEditor.enterPatternLong"), (String) this.patternList.get(index), null); //$NON-NLS-1$ //$NON-NLS-2$
 		patternDialog.open();
 		if (patternDialog.getReturnCode() != Window.OK)
 			return;
@@ -247,8 +247,8 @@ public class PatternsetPage extends FormPage {
 			this.removeButton.setEnabled(false);
 		}
 	}
-	
+
 	private void markDirty() {
-		((PatternsetEditor)this.getEditor()).setDirty(true);
+		((PatternsetEditor) this.getEditor()).setDirty(true);
 	}
 }

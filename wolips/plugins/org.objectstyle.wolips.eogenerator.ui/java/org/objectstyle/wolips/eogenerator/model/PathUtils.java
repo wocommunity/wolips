@@ -54,33 +54,30 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
 public class PathUtils {
-  public static String getRelativePath(IProject _projectContext, IPath _path) {
-    IPath projectPath = _projectContext.getLocation();
-    String modelPathStr;
-    if (_path.isAbsolute()) {
-      if (projectPath.isPrefixOf(_path)) {
-        modelPathStr = _path.removeFirstSegments(projectPath.segmentCount()).toPortableString();
-      }
-      else {
-        int matchingSegmentCount = projectPath.matchingFirstSegments(_path);
-        if (matchingSegmentCount == 0) {
-          modelPathStr = _path.toPortableString();
-        }
-        else {
-          int relativePathSegmentCount = projectPath.segmentCount() - matchingSegmentCount;
-          IPath relativeModelPath = new Path("");
-          for (int i = 0; i < relativePathSegmentCount; i++) {
-            relativeModelPath = relativeModelPath.append(".." + IPath.SEPARATOR);
-          }
-          relativeModelPath = relativeModelPath.append(_path.removeFirstSegments(matchingSegmentCount));
-          modelPathStr = relativeModelPath.toPortableString();
-        }
-      }
-    }
-    else {
-      modelPathStr = _path.toPortableString();
-    }
-    return modelPathStr;
-  }
+	public static String getRelativePath(IProject _projectContext, IPath _path) {
+		IPath projectPath = _projectContext.getLocation();
+		String modelPathStr;
+		if (_path.isAbsolute()) {
+			if (projectPath.isPrefixOf(_path)) {
+				modelPathStr = _path.removeFirstSegments(projectPath.segmentCount()).toPortableString();
+			} else {
+				int matchingSegmentCount = projectPath.matchingFirstSegments(_path);
+				if (matchingSegmentCount == 0) {
+					modelPathStr = _path.toPortableString();
+				} else {
+					int relativePathSegmentCount = projectPath.segmentCount() - matchingSegmentCount;
+					IPath relativeModelPath = new Path("");
+					for (int i = 0; i < relativePathSegmentCount; i++) {
+						relativeModelPath = relativeModelPath.append(".." + IPath.SEPARATOR);
+					}
+					relativeModelPath = relativeModelPath.append(_path.removeFirstSegments(matchingSegmentCount));
+					modelPathStr = relativeModelPath.toPortableString();
+				}
+			}
+		} else {
+			modelPathStr = _path.toPortableString();
+		}
+		return modelPathStr;
+	}
 
 }
