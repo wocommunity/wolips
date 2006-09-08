@@ -65,7 +65,7 @@ import org.osgi.framework.BundleContext;
 public class DeploymentPlugin extends AbstractWOLipsUIPlugin {
 	// The shared instance.
 	private static DeploymentPlugin plugin;
-	
+
 	/**
 	 * The constructor.
 	 */
@@ -88,6 +88,7 @@ public class DeploymentPlugin extends AbstractWOLipsUIPlugin {
 		super.stop(context);
 		plugin = null;
 	}
+
 	/**
 	 * Returns the shared instance.
 	 */

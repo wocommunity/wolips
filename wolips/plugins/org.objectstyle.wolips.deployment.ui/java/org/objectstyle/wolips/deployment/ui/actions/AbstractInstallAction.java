@@ -75,8 +75,7 @@ import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResour
 public abstract class AbstractInstallAction extends AbstractActionOnIResource {
 
 	protected void install(IProject[] projects) {
-		ProgressMonitorDialog progressMonitorDialog = new ProgressMonitorDialog(
-				new Shell());
+		ProgressMonitorDialog progressMonitorDialog = new ProgressMonitorDialog(new Shell());
 		Runnable runnable = new Runnable();
 		runnable.projectsToBuild = projects;
 		try {
@@ -94,8 +93,7 @@ public abstract class AbstractInstallAction extends AbstractActionOnIResource {
 		String projectName = "";
 
 		public void run(IProgressMonitor monitor) {
-			SubProgressMonitor subProgressMonitor = new SubProgressMonitor(
-					monitor, projectsToBuild.length);
+			SubProgressMonitor subProgressMonitor = new SubProgressMonitor(monitor, projectsToBuild.length);
 			for (int i = 0; i < projectsToBuild.length; i++) {
 				if (monitor.isCanceled()) {
 					break;
@@ -105,8 +103,7 @@ public abstract class AbstractInstallAction extends AbstractActionOnIResource {
 				subProgressMonitor.subTask(projectName);
 				IFile iFile = iProjectToBuild.getFile("build.xml");
 				try {
-					AntPlugin.getDefault().launchAntInExternalVM(iFile,
-							subProgressMonitor, true, "install");
+					AntPlugin.getDefault().launchAntInExternalVM(iFile, subProgressMonitor, true, "install");
 				} catch (CoreException e) {
 					DeploymentPlugin.getDefault().log(e);
 				}

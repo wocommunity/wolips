@@ -48,8 +48,10 @@
  *  
  */
 package org.objectstyle.wolips.documentation;
+
 import org.objectstyle.wolips.core.runtime.AbstractCorePlugin;
 import org.osgi.framework.BundleContext;
+
 /**
  * The main plugin class to be used in the desktop.
  * 

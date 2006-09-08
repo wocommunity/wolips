@@ -80,14 +80,12 @@ public class InstallWithSelectionDialogAction extends AbstractInstallAction {
 
 	private IProject[] getIProjects() {
 		ArrayList arrayList = new ArrayList();
-		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
-				.getProjects();
+		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		for (int i = 0; i < projects.length; i++) {
 			IProject iProject = projects[i];
 			if (iProject.isAccessible() && iProject.isOpen()) {
 				if (iProject.getFile("build.xml").exists()) {
-					IProjectAdapter project = (IProjectAdapter) this
-							.getIProject().getAdapter(IProjectAdapter.class);
+					IProjectAdapter project = (IProjectAdapter) this.getIProject().getAdapter(IProjectAdapter.class);
 					if (project != null) {
 						if (iProject == this.getIProject()) {
 							arrayList.add(iProject);
@@ -108,10 +106,7 @@ public class InstallWithSelectionDialogAction extends AbstractInstallAction {
 
 			public Object[] getElements(Object inputElement) {
 				if (inputElement instanceof String) {
-					ProjectOrder projectOrder = ResourcesPlugin.getWorkspace()
-							.computeProjectOrder(
-									ResourcesPlugin.getWorkspace().getRoot()
-											.getProjects());
+					ProjectOrder projectOrder = ResourcesPlugin.getWorkspace().computeProjectOrder(ResourcesPlugin.getWorkspace().getRoot().getProjects());
 					return projectOrder.projects;
 				}
 				return null;
@@ -121,8 +116,7 @@ public class InstallWithSelectionDialogAction extends AbstractInstallAction {
 				return;
 			}
 
-			public void inputChanged(Viewer viewer, Object oldInput,
-					Object newInput) {
+			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 				return;
 			}
 
@@ -159,9 +153,7 @@ public class InstallWithSelectionDialogAction extends AbstractInstallAction {
 
 		};
 		iProjects = this.getIProjects();
-		ListSelectionDialog listSelectionDialog = new ListSelectionDialog(
-				new Shell(), "WOLips", structuredContentProvider,
-				labelProvider, "Select the projects to install.");
+		ListSelectionDialog listSelectionDialog = new ListSelectionDialog(new Shell(), "WOLips", structuredContentProvider, labelProvider, "Select the projects to install.");
 		listSelectionDialog.setInitialSelections(iProjects);
 		listSelectionDialog.open();
 		if (listSelectionDialog.getReturnCode() == Window.CANCEL) {
@@ -172,8 +164,7 @@ public class InstallWithSelectionDialogAction extends AbstractInstallAction {
 		for (int i = 0; i < selectionResult.length; i++) {
 			projectsSelected[i] = (IProject) selectionResult[i];
 		}
-		ProjectOrder projectOrder = ResourcesPlugin.getWorkspace()
-				.computeProjectOrder(projectsSelected);
+		ProjectOrder projectOrder = ResourcesPlugin.getWorkspace().computeProjectOrder(projectsSelected);
 		this.install(projectOrder.projects);
 	}
 }
