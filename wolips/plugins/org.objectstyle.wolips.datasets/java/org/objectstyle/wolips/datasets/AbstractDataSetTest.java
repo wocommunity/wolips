@@ -70,17 +70,19 @@ import org.eclipse.jdt.core.IJavaProject;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public abstract class AbstractDataSetTest extends TestCase {
 
 	private IProject project = null;
+
 	private IJavaProject javaProject = null;
-	
+
 	/**
 	 * Constructor for AbstractResourcesTest.
+	 * 
 	 * @param arg0
 	 */
 	public AbstractDataSetTest(String arg0) {
@@ -94,13 +96,11 @@ public abstract class AbstractDataSetTest extends TestCase {
 		super.setUp();
 		try {
 			this.project = Utils.CreateProject(AbstractDataSetTest.class.getName());
-			this.javaProject = Utils.CreateJavaProject(AbstractDataSetTest.class.getName()
-						+ "Java");
+			this.javaProject = Utils.CreateJavaProject(AbstractDataSetTest.class.getName() + "Java");
 		} catch (CoreException e) {
-			assertNull("Project creation shouldnt throw an Exception",
-					e);
+			assertNull("Project creation shouldnt throw an Exception", e);
 		}
-		}
+	}
 
 	/*
 	 * @see TestCase#tearDown()
@@ -109,42 +109,40 @@ public abstract class AbstractDataSetTest extends TestCase {
 		super.tearDown();
 		try {
 			this.project.delete(false, new NullProgressMonitor());
-			this.javaProject.getProject().delete(false,
-						new NullProgressMonitor());
+			this.javaProject.getProject().delete(false, new NullProgressMonitor());
 		} catch (CoreException e) {
-			assertNull("Project deletion shouldnt throw an exception",
-					e);
+			assertNull("Project deletion shouldnt throw an exception", e);
 		}
 	}
-	
+
 	protected void assertTypeAndExtensionForFile(int type, String extension) {
 		int newType = DataSetsPlugin.getDefault().getAssociatedType(DataSetsPlugin.API_EXTENSION);
 		Assert.assertEquals("type does not match", newType, type);
 		this.assertFileType(type, extension);
 	}
-	
+
 	protected void assertTypeAndExtensionForFolder(int type, String extension) {
 		int newType = DataSetsPlugin.getDefault().getAssociatedType(DataSetsPlugin.WOCOMPONENT_EXTENSION);
 		Assert.assertEquals("type does not match", newType, type);
 		this.assertFolderType(type, extension);
 	}
-	
+
 	private void assertFileType(int type, String extension) {
 		IFile file = this.file(extension);
-		Assert.assertNotNull("could not create file with extension: " + extension , file);
+		Assert.assertNotNull("could not create file with extension: " + extension, file);
 		IDataSet dataSet = this.getDataSet(file);
-		Assert.assertNotNull("getResource should not return null for: " + extension , dataSet);
+		Assert.assertNotNull("getResource should not return null for: " + extension, dataSet);
 		Assert.assertEquals("the dataset should return the same type", type, dataSet.getType());
 	}
-	
+
 	private void assertFolderType(int type, String extension) {
 		IFolder folder = this.folder(extension);
-		Assert.assertNotNull("could not create folder with extension: " + extension , folder);
+		Assert.assertNotNull("could not create folder with extension: " + extension, folder);
 		IDataSet dataSet = this.getDataSet(this.folder(extension));
-		Assert.assertNotNull("getResource should not return null for: " + extension , dataSet);
+		Assert.assertNotNull("getResource should not return null for: " + extension, dataSet);
 		Assert.assertEquals("the dataset should return the same type", type, dataSet.getType());
 	}
-	
+
 	/**
 	 * @param resource
 	 * @return
@@ -152,7 +150,7 @@ public abstract class AbstractDataSetTest extends TestCase {
 	public IDataSet getDataSet(IResource resource) {
 		return DataSetsPlugin.getDefault().getDataSet(resource);
 	}
-	
+
 	private IFile file(String string) {
 		IFile file = this.project.getFile("foo." + string);
 		try {
@@ -164,7 +162,7 @@ public abstract class AbstractDataSetTest extends TestCase {
 	}
 
 	private IFolder folder(String string) {
-		IFolder folder =this.project.getFolder("foo." + string);
+		IFolder folder = this.project.getFolder("foo." + string);
 		try {
 			folder.create(false, false, new NullProgressMonitor());
 		} catch (CoreException e) {

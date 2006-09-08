@@ -61,36 +61,37 @@ import org.eclipse.core.runtime.IAdapterFactory;
  * @author ulrich
  */
 public class IFolderAdapterFactory implements IAdapterFactory {
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapter(java.lang.Object,
-		 *      java.lang.Class)
-		 */
-		/**
-		 * @param adaptableObject
-		 * @param adapterType
-		 * @return Returns the adapter.
-		 */
-		public Object getAdapter(Object adaptableObject, Class adapterType) {
-			if (adaptableObject instanceof IFolder) {
-				IFolder iFolder = (IFolder)adaptableObject;
-				if(LProjFolder.isLProjFolder(iFolder)) {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapter(java.lang.Object,
+	 *      java.lang.Class)
+	 */
+	/**
+	 * @param adaptableObject
+	 * @param adapterType
+	 * @return Returns the adapter.
+	 */
+	public Object getAdapter(Object adaptableObject, Class adapterType) {
+		if (adaptableObject instanceof IFolder) {
+			IFolder iFolder = (IFolder) adaptableObject;
+			if (LProjFolder.isLProjFolder(iFolder)) {
 				LProjFolder lProjFolder = new LProjFolder(iFolder);
 				return lProjFolder;
-				}
 			}
-			return null;
 		}
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapterList()
-		 */
-		/**
-		 * @return Returns null.
-		 */
-		public Class[] getAdapterList() {
-			return null;
-		}
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapterList()
+	 */
+	/**
+	 * @return Returns null.
+	 */
+	public Class[] getAdapterList() {
+		return null;
+	}
 }

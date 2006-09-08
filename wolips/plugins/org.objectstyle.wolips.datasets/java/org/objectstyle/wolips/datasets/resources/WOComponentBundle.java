@@ -63,8 +63,7 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 /**
  * @author ulrich
  */
-public final class WOComponentBundle extends WOLipsResource implements
-		IWOComponentBundle {
+public final class WOComponentBundle extends WOLipsResource implements IWOComponentBundle {
 
 	protected WOComponentBundle() {
 		super();
@@ -82,9 +81,6 @@ public final class WOComponentBundle extends WOLipsResource implements
 	public final void open() {
 		String fileName = this.getCorrespondingResource().getName();
 		fileName = fileName.substring(0, fileName.length() - 3);
-		WorkbenchUtilitiesPlugin.open((IFile) ((IFolder) this
-				.getCorrespondingResource()).findMember(fileName + "."
-				+ WOLipsModel.WOCOMPONENT_WOD_EXTENSION),
-				"org.objectstyle.wolips.componenteditor.ComponentEditor");
+		WorkbenchUtilitiesPlugin.open((IFile) ((IFolder) this.getCorrespondingResource()).findMember(fileName + "." + WOLipsModel.WOCOMPONENT_WOD_EXTENSION), "org.objectstyle.wolips.componenteditor.ComponentEditor");
 	}
 }

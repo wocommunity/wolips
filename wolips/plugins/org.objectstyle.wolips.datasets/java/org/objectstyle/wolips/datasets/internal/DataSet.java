@@ -60,15 +60,16 @@ import org.objectstyle.wolips.datasets.IDataSet;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class DataSet implements IDataSet {
-	
+
 	private int type = -1;
+
 	private IResource correspondingResource;
-	
+
 	/**
 	 * @param type
 	 * @param correspondingResource
@@ -78,13 +79,19 @@ public class DataSet implements IDataSet {
 		this.type = type;
 		this.correspondingResource = correspondingResource;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.objectstyle.wolips.datasets.IDataSet#getCorrespondingResource()
 	 */
 	public IResource getCorrespondingResource() {
 		return this.correspondingResource;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.objectstyle.wolips.datasets.IDataSet#getType()
 	 */
 	public int getType() {

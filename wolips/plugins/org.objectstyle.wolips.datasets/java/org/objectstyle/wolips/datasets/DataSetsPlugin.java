@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.wolips.datasets;
+
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -69,40 +70,55 @@ import org.objectstyle.wolips.commons.logging.PluginLogger;
 import org.objectstyle.wolips.datasets.adaptable.AdapterCache;
 import org.objectstyle.wolips.datasets.internal.Api;
 import org.osgi.framework.BundleContext;
+
 /**
  * The main plugin class to be used in the desktop.
  */
 public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 	private final static String PLUGIN_ID = "org.objectstyle.wolips.datasets";
+
 	private PluginLogger pluginLogger;
-	//The shared instance.
+
+	// The shared instance.
 	private static DataSetsPlugin plugin;
-	//Resource bundle.
+
+	// Resource bundle.
 	private ResourceBundle resourceBundle;
 
 	private AdapterCache adapterCache;
-	//	DataSets based on files
+
+	// DataSets based on files
 	protected final static String API_EXTENSION = "api";
+
 	protected final static String WOD_EXTENSION = "wod";
+
 	protected final static String WOO_EXTENSION = "woo";
+
 	protected final static String HTML_EXTENSION = "html";
-	//DataSets based on folder
+
+	// DataSets based on folder
 	protected final static String WOCOMPONENT_EXTENSION = "wo";
+
 	protected final static String SUBPROJECT_EXTENSION = "subproject";
+
 	protected final static String EOMODEL_EXTENSION = "eomodel";
+
 	protected final static String EOMODEL_BACKUP_EXTENSION = "eomodeld~";
+
 	protected final static String D2WMODEL_EXTENSION = "d2wmodel";
+
 	protected final static String FRAMEWORK_EXTENSION = "d2wmodel";
+
 	protected final static String WOA_EXTENSION = "woa";
+
 	protected final static String BUILD_EXTENSION = "build";
+
 	protected final static String DIST_EXTENSION = "dist";
-	private final static String[] TYPES = new String[]{
-			DataSetsPlugin.API_EXTENSION, WOD_EXTENSION, WOO_EXTENSION,
-			HTML_EXTENSION, WOCOMPONENT_EXTENSION, SUBPROJECT_EXTENSION,
-			EOMODEL_EXTENSION, EOMODEL_BACKUP_EXTENSION, D2WMODEL_EXTENSION,
-			FRAMEWORK_EXTENSION, WOA_EXTENSION, BUILD_EXTENSION, DIST_EXTENSION};
+
+	private final static String[] TYPES = new String[] { DataSetsPlugin.API_EXTENSION, WOD_EXTENSION, WOO_EXTENSION, HTML_EXTENSION, WOCOMPONENT_EXTENSION, SUBPROJECT_EXTENSION, EOMODEL_EXTENSION, EOMODEL_BACKUP_EXTENSION, D2WMODEL_EXTENSION, FRAMEWORK_EXTENSION, WOA_EXTENSION, BUILD_EXTENSION, DIST_EXTENSION };
 
 	private IResourceChangeListener resourceChangeListener;
+
 	/**
 	 * The constructor.
 	 */
@@ -110,19 +126,20 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 		super();
 		plugin = this;
 		try {
-			this.resourceBundle = ResourceBundle
-					.getBundle("org.objectstyle.wolips.datasets.DataSetPluginResources");
+			this.resourceBundle = ResourceBundle.getBundle("org.objectstyle.wolips.datasets.DataSetPluginResources");
 		} catch (MissingResourceException x) {
 			this.resourceBundle = null;
 		}
 	}
+
 	/**
 	 * @return Returns the shared instance.
-	 *  
+	 * 
 	 */
 	public static DataSetsPlugin getDefault() {
 		return plugin;
 	}
+
 	/**
 	 * Returns the PluginID.
 	 * 
@@ -131,12 +148,14 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 	public static String getPluginId() {
 		return DataSetsPlugin.PLUGIN_ID;
 	}
+
 	/**
 	 * @return Returns the workspace instance.
 	 */
 	public static IWorkspace getWorkspace() {
 		return DataSetsPlugin.getWorkspace();
 	}
+
 	/**
 	 * @param key
 	 * @return Returns the string from the plugin's resource bundle, or 'key' if
@@ -150,12 +169,14 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 			return key;
 		}
 	}
+
 	/**
 	 * @return Returns the plugin's resource bundle,
 	 */
 	public ResourceBundle getResourceBundle() {
 		return this.resourceBundle;
 	}
+
 	/**
 	 * @param resource
 	 * @return Null if the resource is null or unsupported otherwise the
@@ -166,30 +187,31 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 			return null;
 		IDataSet dataSet = null;
 		switch (resource.getType()) {
-			case IResource.FILE :
-				switch (this.getAssociatedType(resource.getFileExtension())) {
-					case IDataSetTypes.API :
-						dataSet = new Api(IDataSetTypes.API, resource);
-						break;
-					default :
-						break;
-				}
+		case IResource.FILE:
+			switch (this.getAssociatedType(resource.getFileExtension())) {
+			case IDataSetTypes.API:
+				dataSet = new Api(IDataSetTypes.API, resource);
 				break;
-			case IResource.FOLDER :
-				switch (this.getAssociatedType(resource.getFileExtension())) {
-					case IDataSetTypes.WOCOMPONENT :
-						break;
-					default :
-						break;
-				}
+			default:
 				break;
-			case IResource.PROJECT :
+			}
+			break;
+		case IResource.FOLDER:
+			switch (this.getAssociatedType(resource.getFileExtension())) {
+			case IDataSetTypes.WOCOMPONENT:
 				break;
-			default :
+			default:
 				break;
+			}
+			break;
+		case IResource.PROJECT:
+			break;
+		default:
+			break;
 		}
 		return dataSet;
 	}
+
 	/**
 	 * @param extension
 	 *            The file extension.
@@ -204,6 +226,7 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 		}
 		return -1;
 	}
+
 	/**
 	 * @return The path to user settings.
 	 */
@@ -213,6 +236,7 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 		path = path.append("WOLips");
 		return path;
 	}
+
 	/**
 	 * Method informUser.
 	 * 
@@ -223,6 +247,7 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 		String title = "Error";
 		MessageDialog.openError(shell, title, message);
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -232,11 +257,11 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 		super.start(context);
 		this.pluginLogger = new PluginLogger(DataSetsPlugin.PLUGIN_ID, false);
 		this.adapterCache = new AdapterCache();
-		//add resource change listener to update project file on resource
+		// add resource change listener to update project file on resource
 		// changes
-//		this.resourceChangeListener = new ResourceChangeListener();
-//		ResourcesPlugin.getWorkspace().addResourceChangeListener(
-//				this.resourceChangeListener, IResourceChangeEvent.POST_BUILD);
+		// this.resourceChangeListener = new ResourceChangeListener();
+		// ResourcesPlugin.getWorkspace().addResourceChangeListener(
+		// this.resourceChangeListener, IResourceChangeEvent.POST_BUILD);
 	}
 
 	/*
@@ -245,12 +270,13 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
-		//ResourcesPlugin.getWorkspace().removeResourceChangeListener(
-		//		this.resourceChangeListener);
+		// ResourcesPlugin.getWorkspace().removeResourceChangeListener(
+		// this.resourceChangeListener);
 		this.adapterCache.clean();
 		this.adapterCache = null;
 		super.stop(context);
 	}
+
 	/**
 	 * @return Returns the adapterCache.
 	 */

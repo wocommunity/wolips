@@ -54,9 +54,11 @@
  *
  */
 package org.objectstyle.wolips.datasets.adaptable;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 /**
  * @author ulrich
  * 
@@ -70,13 +72,14 @@ public class AdaptableTestSuite extends TestCase {
 	public AdaptableTestSuite(String testName) {
 		super(testName);
 	}
+
 	/**
 	 * @return Returns the test.
 	 * @throws Exception
 	 */
 	public static Test suite() throws Exception {
 		TestSuite suite = new TestSuite();
-		//suite.addTestSuite(DataSetsPluginTest.class);
+		// suite.addTestSuite(DataSetsPluginTest.class);
 		return suite;
 	}
 }

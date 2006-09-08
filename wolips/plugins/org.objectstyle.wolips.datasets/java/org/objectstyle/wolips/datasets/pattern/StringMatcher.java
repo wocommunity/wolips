@@ -21,13 +21,21 @@ import java.util.Vector;
  */
 public class StringMatcher {
 	protected String fPattern;
+
 	protected int fLength; // pattern length
+
 	protected boolean fIgnoreWildCards;
+
 	protected boolean fIgnoreCase;
+
 	protected boolean fHasLeadingStar;
+
 	protected boolean fHasTrailingStar;
-	protected String fSegments[]; //the given pattern is split into * separated
-								  // segments
+
+	protected String fSegments[]; // the given pattern is split into *
+									// separated
+
+	// segments
 
 	/* boundary value beyond which we don't need to search in the text */
 	protected int fBound = 0;
@@ -38,8 +46,10 @@ public class StringMatcher {
 	 * @author eclipse team
 	 */
 	public static class Position {
-		int startingPosition; //inclusive
-		int endingPosition; //exclusive
+		int startingPosition; // inclusive
+
+		int endingPosition; // exclusive
+
 		/**
 		 * @param start
 		 * @param end
@@ -48,12 +58,14 @@ public class StringMatcher {
 			this.startingPosition = start;
 			this.endingPosition = end;
 		}
+
 		/**
 		 * @return
 		 */
 		public int getStart() {
 			return this.startingPosition;
 		}
+
 		/**
 		 * @return
 		 */
@@ -85,8 +97,7 @@ public class StringMatcher {
 	 *            if true, wild cards and their escape sequences are ignored
 	 *            (everything is taken literally).
 	 */
-	public StringMatcher(String pattern, boolean ignoreCase,
-			boolean ignoreWildCards) {
+	public StringMatcher(String pattern, boolean ignoreCase, boolean ignoreWildCards) {
 		if (pattern == null)
 			throw new IllegalArgumentException();
 		this.fIgnoreCase = ignoreCase;
@@ -137,7 +148,7 @@ public class StringMatcher {
 		}
 
 		int segCount = this.fSegments.length;
-		if (segCount == 0)//pattern contains only '*'(s)
+		if (segCount == 0)// pattern contains only '*'(s)
 			return new Position(start, end);
 
 		int curPos = start;
@@ -189,9 +200,7 @@ public class StringMatcher {
 			return false;
 
 		if (this.fIgnoreWildCards) {
-			return (end - start == this.fLength)
-					&& this.fPattern.regionMatches(this.fIgnoreCase, 0, text,
-							start, this.fLength);
+			return (end - start == this.fLength) && this.fPattern.regionMatches(this.fIgnoreCase, 0, text, start, this.fLength);
 		}
 		int segCount = this.fSegments.length;
 		if (segCount == 0 && (this.fHasLeadingStar || this.fHasTrailingStar)) {
@@ -225,8 +234,7 @@ public class StringMatcher {
 			++i;
 			tCurPos = tCurPos + segLength;
 		}
-		if ((this.fSegments.length == 1) && (!this.fHasLeadingStar)
-				&& (!this.fHasTrailingStar)) {
+		if ((this.fSegments.length == 1) && (!this.fHasLeadingStar) && (!this.fHasTrailingStar)) {
 			// only one segment to match, no wildcards specified
 			return tCurPos == end;
 		}
@@ -277,8 +285,7 @@ public class StringMatcher {
 		}
 		if (this.fPattern.endsWith("*")) {//$NON-NLS-1$
 			/* make sure it's not an escaped wildcard */
-			if (this.fLength > 1
-					&& this.fPattern.charAt(this.fLength - 2) != '\\') {
+			if (this.fLength > 1 && this.fPattern.charAt(this.fLength - 2) != '\\') {
 				this.fHasTrailingStar = true;
 			}
 		}
@@ -290,38 +297,37 @@ public class StringMatcher {
 		while (pos < this.fLength) {
 			char c = this.fPattern.charAt(pos++);
 			switch (c) {
-				case '\\' :
-					if (pos >= this.fLength) {
-						buf.append(c);
-					} else {
-						char next = this.fPattern.charAt(pos++);
-						/* if it's an escape sequence */
-						if (next == '*' || next == '?' || next == '\\') {
-							buf.append(next);
-						} else {
-							/* not an escape sequence, just insert literally */
-							buf.append(c);
-							buf.append(next);
-						}
-					}
-					break;
-				case '*' :
-					if (buf.length() > 0) {
-						/* new segment */
-						temp.addElement(buf.toString());
-						this.fBound += buf.length();
-						buf.setLength(0);
-					}
-					break;
-				case '?' :
-					/*
-					 * append special character representing single match
-					 * wildcard
-					 */
-					buf.append(fSingleWildCard);
-					break;
-				default :
+			case '\\':
+				if (pos >= this.fLength) {
 					buf.append(c);
+				} else {
+					char next = this.fPattern.charAt(pos++);
+					/* if it's an escape sequence */
+					if (next == '*' || next == '?' || next == '\\') {
+						buf.append(next);
+					} else {
+						/* not an escape sequence, just insert literally */
+						buf.append(c);
+						buf.append(next);
+					}
+				}
+				break;
+			case '*':
+				if (buf.length() > 0) {
+					/* new segment */
+					temp.addElement(buf.toString());
+					this.fBound += buf.length();
+					buf.setLength(0);
+				}
+				break;
+			case '?':
+				/*
+				 * append special character representing single match wildcard
+				 */
+				buf.append(fSingleWildCard);
+				break;
+			default:
+				buf.append(c);
 			}
 		}
 
@@ -334,6 +340,7 @@ public class StringMatcher {
 		this.fSegments = new String[temp.size()];
 		temp.copyInto(this.fSegments);
 	}
+
 	/**
 	 * @param text,
 	 *            a string which contains no wildcard
@@ -344,8 +351,8 @@ public class StringMatcher {
 	 * @return the starting index in the text of the pattern , or -1 if not
 	 *         found
 	 */
-	protected int posIn(String text, int start, int end) {//no wild card in
-														  // pattern
+	protected int posIn(String text, int start, int end) {// no wild card in
+		// pattern
 		int max = end - this.fLength;
 
 		if (!this.fIgnoreCase) {
@@ -363,6 +370,7 @@ public class StringMatcher {
 
 		return -1;
 	}
+
 	/**
 	 * @param text,
 	 *            a simple regular expression that may only contain '?'(s)
@@ -385,6 +393,7 @@ public class StringMatcher {
 		}
 		return -1;
 	}
+
 	/**
 	 * 
 	 * @return boolean
@@ -398,8 +407,7 @@ public class StringMatcher {
 	 * @param pStart
 	 * @param plen
 	 */
-	protected boolean regExpRegionMatches(String text, int tStart, String p,
-			int pStart, int plen) {
+	protected boolean regExpRegionMatches(String text, int tStart, String p, int pStart, int plen) {
 		while (plen-- > 0) {
 			char tchar = text.charAt(tStart++);
 			char pchar = p.charAt(pStart++);
@@ -414,20 +422,19 @@ public class StringMatcher {
 			if (pchar == tchar)
 				continue;
 			if (this.fIgnoreCase) {
-				if (Character.toUpperCase(tchar) == Character
-						.toUpperCase(pchar))
+				if (Character.toUpperCase(tchar) == Character.toUpperCase(pchar))
 					continue;
 				// comparing after converting to upper case doesn't handle all
 				// cases;
 				// also compare after converting to lower case
-				if (Character.toLowerCase(tchar) == Character
-						.toLowerCase(pchar))
+				if (Character.toLowerCase(tchar) == Character.toLowerCase(pchar))
 					continue;
 			}
 			return false;
 		}
 		return true;
 	}
+
 	protected int textPosIn(String text, int start, int end, String p) {
 
 		int plen = p.length();

@@ -54,7 +54,9 @@
  *
  */
 package org.objectstyle.wolips.datasets.adaptable;
+
 import org.eclipse.core.resources.IProject;
+
 /**
  * @author ulrich
  * 
@@ -63,12 +65,14 @@ import org.eclipse.core.resources.IProject;
  */
 public abstract class AbstractProjectAdapterType {
 	private IProject project;
+
 	/**
 	 * @param project
 	 */
 	protected AbstractProjectAdapterType(IProject project) {
 		this.project = project;
 	}
+
 	/**
 	 * @return Returns the project.
 	 */

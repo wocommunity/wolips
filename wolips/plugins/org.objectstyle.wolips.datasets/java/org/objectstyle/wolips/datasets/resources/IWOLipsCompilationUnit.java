@@ -62,7 +62,7 @@ import org.eclipse.jdt.core.ICompilationUnit;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
@@ -71,18 +71,22 @@ public interface IWOLipsCompilationUnit extends IWOLipsResource {
 	 * Comment for <code>WOCOMPONENT_JAVA</code>
 	 */
 	public static final int WOCOMPONENT_JAVA = 0;
+
 	/**
 	 * Comment for <code>EOENTITY_JAVA</code>
 	 */
 	public static final int EOENTITY_JAVA = 1;
+
 	/**
 	 * @return Returns the IResource;
 	 */
 	public abstract ICompilationUnit getCorrespondingCompilationUnit();
+
 	/**
 	 * @return Returns the type.
 	 */
 	public abstract int getType();
+
 	/**
 	 * @return Returns a List of related IWOLipsResource s.
 	 */

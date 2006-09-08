@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.wolips.datasets;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -61,6 +62,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+
 /**
  * @author ulrich
  * 
@@ -73,14 +75,11 @@ public final class Utils {
 	 * @return
 	 * @throws CoreException
 	 */
-	public static IProject CreateProject(String projectName)
-			throws CoreException {
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(
-				projectName);
-		IProjectDescription projectDescription = ResourcesPlugin.getWorkspace()
-				.newProjectDescription(projectName);
+	public static IProject CreateProject(String projectName) throws CoreException {
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+		IProjectDescription projectDescription = ResourcesPlugin.getWorkspace().newProjectDescription(projectName);
 		projectDescription.setLocation(project.getLocation());
-		//org.objectstyle.wolips.antapplicationnature
+		// org.objectstyle.wolips.antapplicationnature
 		projectDescription.setNatureIds(new String[0]);
 		if (!project.exists()) {
 			// set description only in this way
@@ -92,22 +91,18 @@ public final class Utils {
 		}
 		return project;
 	}
-	
+
 	/**
 	 * @param projectName
 	 * @return
 	 * @throws CoreException
 	 */
-	public static IJavaProject CreateJavaProject(String projectName)
-			throws CoreException {
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(
-				projectName);
-		IProjectDescription projectDescription = ResourcesPlugin.getWorkspace()
-				.newProjectDescription(projectName);
+	public static IJavaProject CreateJavaProject(String projectName) throws CoreException {
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+		IProjectDescription projectDescription = ResourcesPlugin.getWorkspace().newProjectDescription(projectName);
 		projectDescription.setLocation(project.getLocation());
-		//org.objectstyle.wolips.antapplicationnature
-		projectDescription
-				.setNatureIds(new String[]{"org.eclipse.jdt.core.javanature"});
+		// org.objectstyle.wolips.antapplicationnature
+		projectDescription.setNatureIds(new String[] { "org.eclipse.jdt.core.javanature" });
 		if (!project.exists()) {
 			// set description only in this way
 			// to ensure project location is set

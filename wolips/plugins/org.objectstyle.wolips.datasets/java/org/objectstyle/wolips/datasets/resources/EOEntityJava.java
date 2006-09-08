@@ -71,8 +71,7 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 /**
  * @author ulrich
  */
-public final class EOEntityJava extends WOLipsCompilationUnit implements
-		IEOEntityJava {
+public final class EOEntityJava extends WOLipsCompilationUnit implements IEOEntityJava {
 
 	protected EOEntityJava() {
 		super();
@@ -110,31 +109,20 @@ public final class EOEntityJava extends WOLipsCompilationUnit implements
 		List plists = new ArrayList();
 		if (this.getCorrespondingCompilationUnit() != null) {
 			try {
-				IProject[] projects = WorkbenchUtilitiesPlugin.getWorkspace()
-						.getRoot().getProjects();
-				String fileName = this.getCorrespondingCompilationUnit()
-						.getCorrespondingResource().getName();
-				fileName = fileName.substring(0, fileName.length()
-						- IWOLipsModel.EXT_JAVA.length() - 1);
+				IProject[] projects = WorkbenchUtilitiesPlugin.getWorkspace().getRoot().getProjects();
+				String fileName = this.getCorrespondingCompilationUnit().getCorrespondingResource().getName();
+				fileName = fileName.substring(0, fileName.length() - IWOLipsModel.EXT_JAVA.length() - 1);
 				String[] extensions = new String[] { WOLipsModel.EOENTITY_PLIST_EXTENSION };
-				plists = WorkbenchUtilitiesPlugin
-						.findResourcesInResourcesByNameAndExtensions(projects,
-								fileName, extensions);
+				plists = WorkbenchUtilitiesPlugin.findResourcesInResourcesByNameAndExtensions(projects, fileName, extensions);
 				// assuming that the superclasses start with _
 				if (fileName.startsWith("_")) {
-					plists
-							.addAll(WorkbenchUtilitiesPlugin
-									.findResourcesInResourcesByNameAndExtensions(
-											projects, fileName.substring(1),
-											extensions));
+					plists.addAll(WorkbenchUtilitiesPlugin.findResourcesInResourcesByNameAndExtensions(projects, fileName.substring(1), extensions));
 				}
 				for (int i = 0; i < plists.size(); i++) {
 					IResource resource = (IResource) plists.get(i);
 					if (resource != null) {
 						IContainer parent = resource.getParent();
-						if (parent != null
-								&& parent.getName().endsWith(
-										WOLipsModel.EOMODEL_EXTENSION)) {
+						if (parent != null && parent.getName().endsWith(WOLipsModel.EOMODEL_EXTENSION)) {
 							list.add(parent);
 						}
 					}
@@ -142,16 +130,12 @@ public final class EOEntityJava extends WOLipsCompilationUnit implements
 				// try also for files starting with _
 				if (fileName.startsWith("_")) {
 					fileName = fileName.substring(1, fileName.length() - 1);
-					plists = WorkbenchUtilitiesPlugin
-							.findResourcesInResourcesByNameAndExtensions(
-									projects, fileName, extensions);
+					plists = WorkbenchUtilitiesPlugin.findResourcesInResourcesByNameAndExtensions(projects, fileName, extensions);
 					for (int i = 0; i < plists.size(); i++) {
 						IResource resource = (IResource) plists.get(i);
 						if (resource != null) {
 							IContainer parent = resource.getParent();
-							if (parent != null
-									&& parent.getName().endsWith(
-											WOLipsModel.EOMODEL_EXTENSION)) {
+							if (parent != null && parent.getName().endsWith(WOLipsModel.EOMODEL_EXTENSION)) {
 								list.add(parent);
 							}
 						}
@@ -166,8 +150,7 @@ public final class EOEntityJava extends WOLipsCompilationUnit implements
 	}
 
 	public final void open() {
-		IFile index = (IFile) ((IFolder) this.getCorrespondingResource())
-				.findMember("index.eomodeld");
+		IFile index = (IFile) ((IFolder) this.getCorrespondingResource()).findMember("index.eomodeld");
 		WorkbenchUtilitiesPlugin.open(index);
 	}
 

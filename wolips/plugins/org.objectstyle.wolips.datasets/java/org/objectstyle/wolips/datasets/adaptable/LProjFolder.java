@@ -75,16 +75,17 @@ public class LProjFolder extends AbstractFolderAdapterType {
 	public String getNameWithoutExtension() {
 		return LProjFolder.getLocalisation(this.getIFolder());
 	}
+
 	protected static boolean isLProjFolder(IFolder folder) {
-		if(!"lproj".equals(folder.getFileExtension()))
-				return false;
+		if (!"lproj".equals(folder.getFileExtension()))
+			return false;
 		return LProjFolder.getLocalisation(folder) != null;
 	}
-	
+
 	private static String getLocalisation(IFolder folder) {
 		String string = folder.getName();
 		string = string.substring(0, string.length() - 6);
-		if("".equals(string))
+		if ("".equals(string))
 			return null;
 		return string;
 	}

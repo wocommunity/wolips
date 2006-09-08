@@ -54,8 +54,10 @@
  *
  */
 package org.objectstyle.wolips.datasets.adaptable;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IJavaProject;
+
 /**
  * @author ulrich
  * 
@@ -64,18 +66,21 @@ import org.eclipse.jdt.core.IJavaProject;
  */
 public abstract class AbstractJavaProjectAdapterType extends Project {
 	private IJavaProject iJavaProject;
+
 	/**
 	 * @param project
 	 */
 	protected AbstractJavaProjectAdapterType(IProject project) {
 		super(project);
 	}
+
 	/**
 	 * @return Returns the java project.
 	 */
 	public IJavaProject getIJavaProject() {
 		return this.iJavaProject;
 	}
+
 	/**
 	 * @param iJavaProject
 	 *            The javaProject to set.

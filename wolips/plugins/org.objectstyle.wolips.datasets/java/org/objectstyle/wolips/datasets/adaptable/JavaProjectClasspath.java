@@ -96,8 +96,7 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 	 * @param monitor
 	 * @throws InvocationTargetException
 	 */
-	public void addNewSourcefolderToClassPath(IFolder newSourceFolder,
-			IProgressMonitor monitor) throws InvocationTargetException {
+	public void addNewSourcefolderToClassPath(IFolder newSourceFolder, IProgressMonitor monitor) throws InvocationTargetException {
 		// add source classpath entry for project
 		IJavaProject actualJavaProject = null;
 		IClasspathEntry[] oldClassPathEntries = null;
@@ -111,10 +110,8 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 			throw new InvocationTargetException(e);
 		}
 		newClassPathEntries = new IClasspathEntry[oldClassPathEntries.length + 1];
-		System.arraycopy(oldClassPathEntries, 0, newClassPathEntries, 1,
-				oldClassPathEntries.length);
-		newClassPathEntries[0] = JavaCore.newSourceEntry(newSourceFolder
-				.getFullPath());
+		System.arraycopy(oldClassPathEntries, 0, newClassPathEntries, 1, oldClassPathEntries.length);
+		newClassPathEntries[0] = JavaCore.newSourceEntry(newSourceFolder.getFullPath());
 		try {
 			actualJavaProject.setRawClasspath(newClassPathEntries, monitor);
 		} catch (JavaModelException e) {
@@ -135,33 +132,24 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 	 *            create folder if necessary
 	 * @return IFolder
 	 */
-	public IFolder getSubprojectSourceFolder(IFolder subprojectFolder,
-			boolean forceCreation) {
-		//ensure that the folder is a subproject
-		if (!IWOLipsModel.EXT_SUBPROJECT.equals(subprojectFolder
-				.getFileExtension())) {
-			IFolder parentFolder = this
-					.getParentFolderWithPBProject(subprojectFolder);
-			//this belongs to the project and not a subproject
+	public IFolder getSubprojectSourceFolder(IFolder subprojectFolder, boolean forceCreation) {
+		// ensure that the folder is a subproject
+		if (!IWOLipsModel.EXT_SUBPROJECT.equals(subprojectFolder.getFileExtension())) {
+			IFolder parentFolder = this.getParentFolderWithPBProject(subprojectFolder);
+			// this belongs to the project and not a subproject
 			if (parentFolder == null)
-				return subprojectFolder.getProject().getFolder(
-						this.getProjectSourceFolder().getProjectRelativePath());
+				return subprojectFolder.getProject().getFolder(this.getProjectSourceFolder().getProjectRelativePath());
 			subprojectFolder = parentFolder;
 		}
 		List subprojectFolders = getSubProjectsSourceFolder();
 		for (int i = 0; i < subprojectFolders.size(); i++) {
-			if (((IFolder) subprojectFolders.get(i)).getFullPath()
-					.removeLastSegments(1).equals(
-							subprojectFolder.getFullPath())) {
+			if (((IFolder) subprojectFolders.get(i)).getFullPath().removeLastSegments(1).equals(subprojectFolder.getFullPath())) {
 				return (IFolder) subprojectFolders.get(i);
 			}
 		}
 		if (forceCreation) {
 			// no folder found - create new source folder
-			IFolder subprojectSourceFolder = subprojectFolder.getProject()
-					.getFolder(
-							subprojectFolder.getName() + "/"
-									+ IWOLipsModel.EXT_SRC);
+			IFolder subprojectSourceFolder = subprojectFolder.getProject().getFolder(subprojectFolder.getName() + "/" + IWOLipsModel.EXT_SRC);
 			if (!subprojectSourceFolder.exists()) {
 				try {
 					subprojectSourceFolder.create(true, true, null);
@@ -170,9 +158,7 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 				}
 			} // add folder to classpath
 			try {
-				this
-						.addNewSourcefolderToClassPath(subprojectSourceFolder,
-								null);
+				this.addNewSourcefolderToClassPath(subprojectSourceFolder, null);
 			} catch (InvocationTargetException e) {
 				DataSetsPlugin.getDefault().getPluginLogger().log(e);
 			}
@@ -197,16 +183,12 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 			return null;
 		}
 		for (int i = 0; i < classpathEntries.length; i++) {
-			if (IClasspathEntry.CPE_SOURCE == classpathEntries[i]
-					.getEntryKind()) {
+			if (IClasspathEntry.CPE_SOURCE == classpathEntries[i].getEntryKind()) {
 				// source entry found
-				if (classpathEntries[i].getPath() != null
-						&& classpathEntries[i].getPath().removeLastSegments(1)
-								.equals(this.getIProject().getFullPath())) {
+				if (classpathEntries[i].getPath() != null && classpathEntries[i].getPath().removeLastSegments(1).equals(this.getIProject().getFullPath())) {
 					// source folder's parent is project
 					// project source folder found
-					return this.getIProject().getWorkspace().getRoot()
-							.getFolder(classpathEntries[i].getPath());
+					return this.getIProject().getWorkspace().getRoot().getFolder(classpathEntries[i].getPath());
 				}
 				/*
 				 * if (classpathEntries[i].getPath() != null &&
@@ -220,8 +202,7 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 			}
 		}
 		// no source folder found -> create new one
-		IFolder projectSourceFolder = this.getIProject().getFolder(
-				IWOLipsModel.EXT_SRC);
+		IFolder projectSourceFolder = this.getIProject().getFolder(IWOLipsModel.EXT_SRC);
 		if (!projectSourceFolder.exists()) {
 			try {
 				projectSourceFolder.create(true, true, null);
@@ -254,17 +235,12 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 			return null;
 		}
 		for (int i = 0; i < classpathEntries.length; i++) {
-			if (IClasspathEntry.CPE_SOURCE == classpathEntries[i]
-					.getEntryKind()) {
+			if (IClasspathEntry.CPE_SOURCE == classpathEntries[i].getEntryKind()) {
 				// source entry found
-				if (classpathEntries[i].getPath() != null
-						&& !classpathEntries[i].getPath().removeLastSegments(1)
-								.equals(this.getIProject().getFullPath())) {
+				if (classpathEntries[i].getPath() != null && !classpathEntries[i].getPath().removeLastSegments(1).equals(this.getIProject().getFullPath())) {
 					// source folder's parent is not project
 					// project source folder found
-					foundFolders
-							.add(this.getIProject().getWorkspace().getRoot()
-									.getFolder(classpathEntries[i].getPath()));
+					foundFolders.add(this.getIProject().getWorkspace().getRoot().getFolder(classpathEntries[i].getPath()));
 				}
 				/*
 				 * if (classpathEntries[i].getPath() != null &&
@@ -286,8 +262,7 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 	 * @param monitor
 	 * @throws InvocationTargetException
 	 */
-	public void removeSourcefolderFromClassPath(IFolder folderToRemove,
-			IProgressMonitor monitor) throws InvocationTargetException {
+	public void removeSourcefolderFromClassPath(IFolder folderToRemove, IProgressMonitor monitor) throws InvocationTargetException {
 		if (folderToRemove != null) {
 			IClasspathEntry[] oldClassPathEntries;
 			try {
@@ -299,10 +274,7 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 			IClasspathEntry[] newClassPathEntries = new IClasspathEntry[oldClassPathEntries.length - 1];
 			int offSet = 0;
 			for (int i = 0; i < oldClassPathEntries.length; i++) {
-				if (IClasspathEntry.CPE_SOURCE == oldClassPathEntries[i]
-						.getEntryKind()
-						&& oldClassPathEntries[i].getPath().equals(
-								folderToRemove.getFullPath())) {
+				if (IClasspathEntry.CPE_SOURCE == oldClassPathEntries[i].getEntryKind() && oldClassPathEntries[i].getPath().equals(folderToRemove.getFullPath())) {
 					offSet = 1;
 				} else {
 					newClassPathEntries[i - offSet] = oldClassPathEntries[i];
@@ -310,8 +282,7 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 			}
 			if (offSet != 0) {
 				try {
-					this.getIJavaProject().setRawClasspath(newClassPathEntries,
-							monitor);
+					this.getIJavaProject().setRawClasspath(newClassPathEntries, monitor);
 				} catch (JavaModelException e) {
 					oldClassPathEntries = null;
 					newClassPathEntries = null;
@@ -328,10 +299,8 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 	 * @throws JavaModelException
 	 * @return Returns the array of classpath entries.
 	 */
-	public IClasspathEntry[] addFrameworkListToClasspathEntries(
-			List frameworkList) throws JavaModelException {
-		IClasspathEntry[] oldClasspathEntries = this.getIJavaProject()
-				.getResolvedClasspath(true);
+	public IClasspathEntry[] addFrameworkListToClasspathEntries(List frameworkList) throws JavaModelException {
+		IClasspathEntry[] oldClasspathEntries = this.getIJavaProject().getResolvedClasspath(true);
 		IPath nextRootAsPath = VariablesPlugin.getDefault().getSystemRoot();
 		ArrayList classpathEntries = new ArrayList(frameworkList.size());
 		IPath frameworkPath;
@@ -341,23 +310,18 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 		for (int i = 0; i < frameworkList.size(); i++) {
 			frameworkName = (String) frameworkList.get(i);
 			// check for framework extentsion
-			frameworkExtIndex = frameworkName
-					.indexOf(IWOLipsModel.EXT_FRAMEWORK);
+			frameworkExtIndex = frameworkName.indexOf(IWOLipsModel.EXT_FRAMEWORK);
 			if (frameworkExtIndex == -1 || frameworkExtIndex == 0) { // invalid
 				// framework
 				// name
 				continue;
 			}
-			jarName = frameworkName.substring(0, frameworkExtIndex - 1)
-					.toLowerCase()
-					+ ".jar";
+			jarName = frameworkName.substring(0, frameworkExtIndex - 1).toLowerCase() + ".jar";
 			// check for root
-			frameworkPath = VariablesPlugin.getDefault().getSystemRoot()
-					.append("Library").append("Frameworks");
+			frameworkPath = VariablesPlugin.getDefault().getSystemRoot().append("Library").append("Frameworks");
 			frameworkPath = frameworkPath.append(frameworkName);
 			if (!frameworkPath.toFile().isDirectory()) {
-				frameworkPath = VariablesPlugin.getDefault().getLocalRoot()
-						.append("Library").append("Frameworks");
+				frameworkPath = VariablesPlugin.getDefault().getLocalRoot().append("Library").append("Frameworks");
 				frameworkPath = frameworkPath.append(frameworkName);
 			}
 			if (!frameworkPath.toFile().isDirectory()) { // invalid path
@@ -386,35 +350,22 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 			if (j != oldClasspathEntries.length) { // entry already set
 				continue;
 			} // determine if new class path begins with next root
-			if ((frameworkPath.segmentCount() > nextRootAsPath.segmentCount())
-					&& frameworkPath.removeLastSegments(
-							frameworkPath.segmentCount()
-									- nextRootAsPath.segmentCount()).equals(
-							nextRootAsPath)) {
+			if ((frameworkPath.segmentCount() > nextRootAsPath.segmentCount()) && frameworkPath.removeLastSegments(frameworkPath.segmentCount() - nextRootAsPath.segmentCount()).equals(nextRootAsPath)) {
 				// replace beginning of class path with next root
-				frameworkPath = VariablesPlugin.getDefault().getSystemRoot()
-						.append(
-								frameworkPath
-										.removeFirstSegments(nextRootAsPath
-												.segmentCount()));
+				frameworkPath = VariablesPlugin.getDefault().getSystemRoot().append(frameworkPath.removeFirstSegments(nextRootAsPath.segmentCount()));
 				// set path as variable entry
-				classpathEntries.add(JavaCore.newVariableEntry(frameworkPath,
-						null, null));
+				classpathEntries.add(JavaCore.newVariableEntry(frameworkPath, null, null));
 			} else {
-				classpathEntries.add(JavaCore.newLibraryEntry(frameworkPath,
-						null, null));
+				classpathEntries.add(JavaCore.newLibraryEntry(frameworkPath, null, null));
 			}
 		} // build new class path entry array
 		oldClasspathEntries = this.getIJavaProject().getRawClasspath();
-		IClasspathEntry[] newClasspathEntries = new IClasspathEntry[classpathEntries
-				.size()
-				+ oldClasspathEntries.length];
+		IClasspathEntry[] newClasspathEntries = new IClasspathEntry[classpathEntries.size() + oldClasspathEntries.length];
 		for (int i = 0; i < oldClasspathEntries.length; i++) {
 			newClasspathEntries[i] = oldClasspathEntries[i];
 		}
 		for (int i = 0; i < classpathEntries.size(); i++) {
-			newClasspathEntries[i + oldClasspathEntries.length] = (IClasspathEntry) classpathEntries
-					.get(i);
+			newClasspathEntries[i + oldClasspathEntries.length] = (IClasspathEntry) classpathEntries.get(i);
 		}
 		return newClasspathEntries;
 	}
@@ -422,17 +373,13 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 	private IResource getJar(String prefix, String postfix) {
 		IResource result = null;
 		String projectName = this.getIProject().getName();
-		result = this.getIProject().getFile(
-				prefix + projectName + postfix + "Resources/Java/"
-						+ projectName + ".jar");
+		result = this.getIProject().getFile(prefix + projectName + postfix + "Resources/Java/" + projectName + ".jar");
 		if (result == null || !result.exists()) {
-			result = this.getIProject().getFile(
-					prefix + projectName + postfix + "Resources/Java/"
-							+ projectName.toLowerCase() + ".jar");
+			result = this.getIProject().getFile(prefix + projectName + postfix + "Resources/Java/" + projectName.toLowerCase() + ".jar");
 		}
 		return result;
 	}
-	
+
 	/**
 	 * @return
 	 * @throws CoreException
@@ -441,7 +388,7 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 		IResource resource = null;
 		IPath path = null;
 		String projectName = this.getIProject().getName();
-		//String projectNameLC = projectName.toLowerCase();
+		// String projectNameLC = projectName.toLowerCase();
 		// I'd rather use the knowledge from the IncrementalNature, but
 		// that fragment is not
 		// visible here (so I can't use the class, I think) [hn3000]
@@ -451,16 +398,12 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 				if (!resource.exists())
 					resource = getJar("", ".framework/");
 			} else if (this.isIncremental()) {
-				resource = this.getIProject().getFolder(
-						"build/" + projectName + ".framework/Resources/Java");
+				resource = this.getIProject().getFolder("build/" + projectName + ".framework/Resources/Java");
 			}
 			if (resource != null && (resource.exists())) {
 				path = resource.getLocation();
 			} else {
-				path = VariablesPlugin.getDefault().getExternalBuildRoot()
-						.append(
-								projectName + ".framework/Resources/Java/"
-										+ projectName + ".jar");
+				path = VariablesPlugin.getDefault().getExternalBuildRoot().append(projectName + ".framework/Resources/Java/" + projectName + ".jar");
 			}
 		} else if (this.isApplication()) { // must be application
 			IFolder wdFolder = null;
@@ -469,35 +412,30 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 			} else {
 				wdFolder = this.getIProject().getFolder("build");
 			}
-			if(wdFolder != null || !wdFolder.exists()) {
+			if (wdFolder != null || !wdFolder.exists()) {
 				IResource[] members = wdFolder.members();
-				for(int i = 0; i < members.length; i++) {
+				for (int i = 0; i < members.length; i++) {
 					IResource member = members[i];
-					if(member.getType() ==IResource.FOLDER && member.getName().endsWith(".woa")) {
-						wdFolder = (IFolder)member;
+					if (member.getType() == IResource.FOLDER && member.getName().endsWith(".woa")) {
+						wdFolder = (IFolder) member;
 						break;
 					}
 				}
 			}
-			if(wdFolder != null && wdFolder.exists()) {
-			IFolder javaFolder = wdFolder
-			.getFolder(
-					"Contents/Resources/Java");
-			if (this.isAnt()) {
-				resource = javaFolder.findMember(wdFolder.getName().substring(0, wdFolder.getName().length() - 4 ).toLowerCase()+ ".jar");
-				if (!resource.exists())
-					resource = getJar("", ".woa/Contents/");
-			} else if (this.isIncremental()) {
-				resource = javaFolder;
-			}
+			if (wdFolder != null && wdFolder.exists()) {
+				IFolder javaFolder = wdFolder.getFolder("Contents/Resources/Java");
+				if (this.isAnt()) {
+					resource = javaFolder.findMember(wdFolder.getName().substring(0, wdFolder.getName().length() - 4).toLowerCase() + ".jar");
+					if (!resource.exists())
+						resource = getJar("", ".woa/Contents/");
+				} else if (this.isIncremental()) {
+					resource = javaFolder;
+				}
 			}
 			if (resource != null && (resource.exists())) {
 				path = resource.getLocation();
 			} else {
-				path = VariablesPlugin.getDefault().getExternalBuildRoot()
-						.append(
-								projectName + ".woa/Contents/Resources/Java/"
-										+ projectName + ".jar");
+				path = VariablesPlugin.getDefault().getExternalBuildRoot().append(projectName + ".woa/Contents/Resources/Java/" + projectName + ".jar");
 			}
 		}
 		return path;
@@ -505,16 +443,14 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 
 	public List getFrameworkNames() {
 		ArrayList list = new ArrayList();
-		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
-				.getProjects();
+		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		for (int i = 0; i < projects.length; i++) {
 			if (isAFramework(projects[i])) {
 				list.add(projects[i].getName() + "." + IWOLipsModel.EXT_FRAMEWORK);
 			}
 		}
 		try {
-			list.addAll(this.toFrameworkNames(this.getIJavaProject()
-					.getResolvedClasspath(false)));
+			list.addAll(this.toFrameworkNames(this.getIJavaProject().getResolvedClasspath(false)));
 		} catch (JavaModelException e) {
 			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		}
@@ -558,9 +494,7 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 		try {
 			buildProject = this.getIJavaProject();
 			Project project = (Project) iProject.getAdapter(Project.class);
-			if (project.isFramework()
-					&& projectISReferencedByProject(iProject, buildProject
-							.getProject()))
+			if (project.isFramework() && projectISReferencedByProject(iProject, buildProject.getProject()))
 				return true;
 		} catch (Exception anException) {
 			DataSetsPlugin.getDefault().getPluginLogger().log(anException);

@@ -57,63 +57,75 @@ package org.objectstyle.wolips.datasets;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public interface IDataSetTypes {
-	//	DataSets based on files
+	// DataSets based on files
 	/**
 	 * Comment for <code>API</code>
 	 */
 	public final static int API = 0;
+
 	/**
 	 * Comment for <code>WOD</code>
 	 */
 	public final static int WOD = 1;
+
 	/**
 	 * Comment for <code>WOO</code>
 	 */
 	public final static int WOO = 2;
+
 	/**
 	 * Comment for <code>HTML</code>
 	 */
 	public final static int HTML = 3;
+
 	/**
 	 * Comment for <code>WOCOMPONENT</code>
 	 */
-	//DataSets based on folder
+	// DataSets based on folder
 	public final static int WOCOMPONENT = 4;
+
 	/**
 	 * Comment for <code>SUBPROJECT</code>
 	 */
 	public final static int SUBPROJECT = 5;
+
 	/**
 	 * Comment for <code>EOMODEL</code>
 	 */
 	public final static int EOMODEL = 6;
+
 	/**
 	 * Comment for <code>EOMODEL_BACKUP</code>
 	 */
 	public final static int EOMODEL_BACKUP = 7;
+
 	/**
 	 * Comment for <code>D2WMODEL</code>
 	 */
 	public final static int D2WMODEL = 8;
+
 	/**
 	 * Comment for <code>FRAMEWORK</code>
 	 */
 	public final static int FRAMEWORK = 9;
+
 	/**
 	 * Comment for <code>WOA</code>
 	 */
 	public final static int WOA = 10;
+
 	/**
 	 * Comment for <code>BUILD</code>
 	 */
 	public final static int BUILD = 11;
+
 	/**
 	 * Comment for <code>DIST</code>
 	 */
-	public final static int DIST = 12;	
+	public final static int DIST = 12;
 }

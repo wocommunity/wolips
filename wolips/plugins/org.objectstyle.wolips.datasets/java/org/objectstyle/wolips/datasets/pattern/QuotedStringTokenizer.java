@@ -120,6 +120,7 @@ public class QuotedStringTokenizer implements Iterator {
 
 	/**
 	 * obtain current token as String
+	 * 
 	 * @return
 	 */
 	public String nextToken() {
@@ -128,6 +129,7 @@ public class QuotedStringTokenizer implements Iterator {
 
 	/**
 	 * obtain current token as String, using sep as separator
+	 * 
 	 * @param sep
 	 * @return
 	 */
@@ -151,8 +153,7 @@ public class QuotedStringTokenizer implements Iterator {
 			restStart = this._nextStart;
 			tmp = this._s.indexOf('"', this._nextStart);
 
-			while ((tmp != -1) && (tmp + 1 < this._s.length())
-					&& (this._s.charAt(tmp + 1) == '"')) {
+			while ((tmp != -1) && (tmp + 1 < this._s.length()) && (this._s.charAt(tmp + 1) == '"')) {
 				buffer.append(this._s.substring(restStart, tmp + 1));
 				restStart = tmp + 2;
 				tmp = this._s.indexOf('"', tmp + 2);
@@ -195,6 +196,8 @@ public class QuotedStringTokenizer implements Iterator {
 	}
 
 	private String _s;
+
 	private int _sep;
+
 	private int _nextStart;
 }

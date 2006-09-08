@@ -60,10 +60,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
-
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
@@ -71,6 +70,7 @@ public class IApiTest extends AbstractDataSetTest {
 
 	/**
 	 * Constructor for AbstractResourcesTest.
+	 * 
 	 * @param arg0
 	 */
 	public IApiTest(String arg0) {
@@ -83,15 +83,15 @@ public class IApiTest extends AbstractDataSetTest {
 	public void testCreation() {
 		this.assertTypeAndExtensionForFile(IDataSetTypes.API, DataSetsPlugin.API_EXTENSION);
 	}
-	
+
 	/**
 	 * 
 	 */
 	public void testGetWo() {
-		//File file = new File("WOCompletionBar.api");
+		// File file = new File("WOCompletionBar.api");
 		IPath path = new Path("/System/Library/Frameworks/JavaWOExtensions.framework/Versions/A/Resources/WOCompletionBar.api");
 		IResource resource = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
 		IDataSet dataSet = this.getDataSet(resource);
-		
+
 	}
 }

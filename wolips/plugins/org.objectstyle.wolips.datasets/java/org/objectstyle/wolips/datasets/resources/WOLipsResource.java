@@ -66,13 +66,13 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public abstract class WOLipsResource implements IWOLipsResource {
 	private IResource resource = null;
-	
+
 	protected WOLipsResource() {
 		super();
 	}
@@ -91,42 +91,28 @@ public abstract class WOLipsResource implements IWOLipsResource {
 		this.resource = resource;
 	}
 
+	public List getRelatedResources() {
+		return getRelatedWOComponentResources(this.getCorrespondingResource());
+	}
 
-    public List getRelatedResources() {
-        return getRelatedWOComponentResources(this.getCorrespondingResource());
-    }
-    
-    /** static help method to find all related resources for WO component files */
-    public static List getRelatedWOComponentResources(IResource resource) {
-    	List list = new ArrayList();
-    	if (resource != null) {
-    		try {
-    			String fileName = resource.getName();
-    			String extName = resource.getFileExtension();
-                            int length = fileName.length() - extName.length() - 1;
-                            if(length > 0) {
-    			fileName = fileName.substring(0, length);
-    			String[] extensions =
-    			    new String[] {
-    			                  "java",
-    			                  WOLipsModel.WOCOMPONENT_BUNDLE_EXTENSION,
-    			                  WOLipsModel.WOCOMPONENT_HTML_EXTENSION,
-    			                  WOLipsModel.WOCOMPONENT_WOD_EXTENSION,
-    			                  WOLipsModel.WOCOMPONENT_WOO_EXTENSION,
-    			                  WOLipsModel.WOCOMPONENT_API_EXTENSION};
-    			list =
-    				WorkbenchUtilitiesPlugin
-    					.findResourcesInProjectByNameAndExtensions(
-    					resource.getProject(),
-    					fileName,
-    					extensions,
-    					true);
-                            }
-    		} catch (Exception e) {
-    			DataSetsPlugin.getDefault().getPluginLogger().log(e);
-    		}
-    	}
-    	return list;
-    }
+	/** static help method to find all related resources for WO component files */
+	public static List getRelatedWOComponentResources(IResource resource) {
+		List list = new ArrayList();
+		if (resource != null) {
+			try {
+				String fileName = resource.getName();
+				String extName = resource.getFileExtension();
+				int length = fileName.length() - extName.length() - 1;
+				if (length > 0) {
+					fileName = fileName.substring(0, length);
+					String[] extensions = new String[] { "java", WOLipsModel.WOCOMPONENT_BUNDLE_EXTENSION, WOLipsModel.WOCOMPONENT_HTML_EXTENSION, WOLipsModel.WOCOMPONENT_WOD_EXTENSION, WOLipsModel.WOCOMPONENT_WOO_EXTENSION, WOLipsModel.WOCOMPONENT_API_EXTENSION };
+					list = WorkbenchUtilitiesPlugin.findResourcesInProjectByNameAndExtensions(resource.getProject(), fileName, extensions, true);
+				}
+			} catch (Exception e) {
+				DataSetsPlugin.getDefault().getPluginLogger().log(e);
+			}
+		}
+		return list;
+	}
 
 }

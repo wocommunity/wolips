@@ -116,8 +116,7 @@ public class ProjectBuilder extends ProjectFiles {
 	 */
 	public void installTargetBuilder(int position) throws CoreException {
 		if (!this.isTargetBuilderInstalled())
-			this.installBuilderAtPosition(ProjectBuilder.TARGET_BUILDER_ID,
-					position, null);
+			this.installBuilderAtPosition(ProjectBuilder.TARGET_BUILDER_ID, position, null);
 	}
 
 	/**
@@ -130,8 +129,7 @@ public class ProjectBuilder extends ProjectFiles {
 	public int removeTargetBuilder() throws CoreException {
 		if (!this.isTargetBuilderInstalled())
 			return ProjectBuilder.BuilderNotFound;
-		int returnValue = this
-				.positionForBuilder(ProjectBuilder.TARGET_BUILDER_ID);
+		int returnValue = this.positionForBuilder(ProjectBuilder.TARGET_BUILDER_ID);
 		this.removeBuilder(ProjectBuilder.TARGET_BUILDER_ID);
 		return returnValue;
 	}
@@ -274,8 +272,7 @@ public class ProjectBuilder extends ProjectFiles {
 	 * @return boolean whether this is one of ours
 	 */
 	private boolean isWOLipsBuilder(String name) {
-		return (name.equals(ProjectBuilder.INCREMENTAL_BUILDER_ID) || name
-				.equals(ProjectBuilder.ANT_BUILDER_ID));
+		return (name.equals(ProjectBuilder.INCREMENTAL_BUILDER_ID) || name.equals(ProjectBuilder.ANT_BUILDER_ID));
 	}
 
 	/**
@@ -298,8 +295,7 @@ public class ProjectBuilder extends ProjectFiles {
 			comList.addAll(tmp);
 			boolean foundJBuilder = false;
 			for (int i = 0; i < comList.size(); i++) {
-				if (((ICommand) comList.get(i)).getBuilderName().equals(
-						aBuilder)) {
+				if (((ICommand) comList.get(i)).getBuilderName().equals(aBuilder)) {
 					comList.remove(i);
 					foundJBuilder = true;
 				}
@@ -367,8 +363,7 @@ public class ProjectBuilder extends ProjectFiles {
 	 */
 	private boolean isBuilderInstalled(String anID) {
 		try {
-			ICommand[] nids = this.getIProject().getDescription()
-					.getBuildSpec();
+			ICommand[] nids = this.getIProject().getDescription().getBuildSpec();
 			for (int i = 0; i < nids.length; i++) {
 				if (nids[i].getBuilderName().equals(anID))
 					return true;
@@ -412,16 +407,9 @@ public class ProjectBuilder extends ProjectFiles {
 	 * @param arguments
 	 * @throws CoreException
 	 */
-	private void installBuilderAtPosition(String aBuilder, int installPos,
-			Map arguments) throws CoreException {
+	private void installBuilderAtPosition(String aBuilder, int installPos, Map arguments) throws CoreException {
 		if (installPos == ProjectBuilder.BuilderNotFound) {
-			DataSetsPlugin
-					.getDefault()
-					.getPluginLogger()
-					.log(
-							"Somebody tries to install builder: "
-									+ aBuilder
-									+ " at an illegal position. This may happen if the removed builder does not exist.");
+			DataSetsPlugin.getDefault().getPluginLogger().log("Somebody tries to install builder: " + aBuilder + " at an illegal position. This may happen if the removed builder does not exist.");
 			return;
 		}
 		IProjectDescription desc = this.getIProject().getDescription();
@@ -429,8 +417,7 @@ public class ProjectBuilder extends ProjectFiles {
 		if (arguments == null)
 			arguments = new HashMap();
 		for (int i = 0; i < coms.length; i++) {
-			if (coms[i].getBuilderName().equals(aBuilder)
-					&& coms[i].getArguments().equals(arguments))
+			if (coms[i].getBuilderName().equals(aBuilder) && coms[i].getArguments().equals(arguments))
 				return;
 		}
 		ICommand[] newIc = null;
@@ -447,8 +434,7 @@ public class ProjectBuilder extends ProjectFiles {
 		} else {
 			System.arraycopy(coms, 0, newIc, 0, installPos);
 			newIc[installPos] = command;
-			System.arraycopy(coms, installPos, newIc, installPos + 1,
-					coms.length - installPos);
+			System.arraycopy(coms, installPos, newIc, installPos + 1, coms.length - installPos);
 		}
 		desc.setBuildSpec(newIc);
 		this.getIProject().setDescription(desc, null);
@@ -470,27 +456,24 @@ public class ProjectBuilder extends ProjectFiles {
 	}
 
 	private Properties getBuildProperties() throws CoreException, IOException {
-	    Properties properties = new Properties();
-	    IFile file = this.getIProject().getFile("build.properties");
-	    if(file.exists()) {
-	        InputStream inputStream = file.getContents();
-	        properties.load(inputStream);
-	        inputStream.close();
-	    }
-	    return properties;
+		Properties properties = new Properties();
+		IFile file = this.getIProject().getFile("build.properties");
+		if (file.exists()) {
+			InputStream inputStream = file.getContents();
+			properties.load(inputStream);
+			inputStream.close();
+		}
+		return properties;
 	}
 
-	private void setBuildProperties(Properties properties)
-			throws CoreException, IOException {
+	private void setBuildProperties(Properties properties) throws CoreException, IOException {
 		if (this.getBuildProperties().equals(properties))
 			return;
 		IFile file = this.getIProject().getFile("build.properties");
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		properties.store(byteArrayOutputStream, null);
-		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
-				byteArrayOutputStream.toByteArray());
-		file.setContents(byteArrayInputStream, true, true,
-				new NullProgressMonitor());
+		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+		file.setContents(byteArrayInputStream, true, true, new NullProgressMonitor());
 		fullBuildRequired = true;
 	}
 
@@ -539,8 +522,7 @@ public class ProjectBuilder extends ProjectFiles {
 	public String getWebXML_CustomContent(boolean convertNullValueToEmptyString) {
 		String returnValue = null;
 		try {
-			returnValue = (String) this.getBuildProperties().get(
-					"webXML_CustomContent");
+			returnValue = (String) this.getBuildProperties().get("webXML_CustomContent");
 		} catch (CoreException e) {
 			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		} catch (IOException e) {
@@ -572,37 +554,36 @@ public class ProjectBuilder extends ProjectFiles {
 		}
 	}
 
-  public String getEOGeneratorArgs(boolean convertNullValueToEmptyString) {
-    String returnValue = null;
-    try {
-      returnValue = (String) this.getBuildProperties().get(
-          "eogeneratorArgs");
-    } catch (CoreException e) {
-      DataSetsPlugin.getDefault().getPluginLogger().log(e);
-    } catch (IOException e) {
-      DataSetsPlugin.getDefault().getPluginLogger().log(e);
-    }
-    if (convertNullValueToEmptyString && returnValue == null) {
-      return "";
-    }
-    return returnValue;
-  }
+	public String getEOGeneratorArgs(boolean convertNullValueToEmptyString) {
+		String returnValue = null;
+		try {
+			returnValue = (String) this.getBuildProperties().get("eogeneratorArgs");
+		} catch (CoreException e) {
+			DataSetsPlugin.getDefault().getPluginLogger().log(e);
+		} catch (IOException e) {
+			DataSetsPlugin.getDefault().getPluginLogger().log(e);
+		}
+		if (convertNullValueToEmptyString && returnValue == null) {
+			return "";
+		}
+		return returnValue;
+	}
 
-  public void setEOGeneratorArgs(String eogeneratorArgs) {
-    try {
-      Properties properties = this.getBuildProperties();
-      if (eogeneratorArgs == null) {
-        properties.put("eogeneratorArgs", "");
-      } else {
-        properties.put("eogeneratorArgs", eogeneratorArgs);
-      }
-      this.setBuildProperties(properties);
-    } catch (CoreException e) {
-      DataSetsPlugin.getDefault().getPluginLogger().log(e);
-    } catch (IOException e) {
-      DataSetsPlugin.getDefault().getPluginLogger().log(e);
-    }
-  }
+	public void setEOGeneratorArgs(String eogeneratorArgs) {
+		try {
+			Properties properties = this.getBuildProperties();
+			if (eogeneratorArgs == null) {
+				properties.put("eogeneratorArgs", "");
+			} else {
+				properties.put("eogeneratorArgs", eogeneratorArgs);
+			}
+			this.setBuildProperties(properties);
+		} catch (CoreException e) {
+			DataSetsPlugin.getDefault().getPluginLogger().log(e);
+		} catch (IOException e) {
+			DataSetsPlugin.getDefault().getPluginLogger().log(e);
+		}
+	}
 
 	/**
 	 * @param convertNullValueToEmptyString
@@ -611,8 +592,7 @@ public class ProjectBuilder extends ProjectFiles {
 	public String getPrincipalClass(boolean convertNullValueToEmptyString) {
 		String returnValue = null;
 		try {
-			returnValue = (String) this.getBuildProperties().get(
-					"principalClass");
+			returnValue = (String) this.getBuildProperties().get("principalClass");
 		} catch (CoreException e) {
 			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		} catch (IOException e) {
@@ -648,12 +628,10 @@ public class ProjectBuilder extends ProjectFiles {
 	 * @param convertNullValueToEmptyString
 	 * @return The CustomContent for the Info.plist
 	 */
-	public String getCustomInfoPListContent(
-			boolean convertNullValueToEmptyString) {
+	public String getCustomInfoPListContent(boolean convertNullValueToEmptyString) {
 		String returnValue = null;
 		try {
-			returnValue = (String) this.getBuildProperties().get(
-					"customInfoPListContent");
+			returnValue = (String) this.getBuildProperties().get("customInfoPListContent");
 		} catch (CoreException e) {
 			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		} catch (IOException e) {
@@ -675,8 +653,7 @@ public class ProjectBuilder extends ProjectFiles {
 			if (customInfoPListContent == null) {
 				properties.put("customInfoPListContent", "");
 			} else {
-				properties
-						.put("customInfoPListContent", customInfoPListContent);
+				properties.put("customInfoPListContent", customInfoPListContent);
 			}
 			this.setBuildProperties(properties);
 		} catch (CoreException e) {
@@ -693,8 +670,7 @@ public class ProjectBuilder extends ProjectFiles {
 	public String getEOAdaptorClassName(boolean convertNullValueToEmptyString) {
 		String returnValue = null;
 		try {
-			returnValue = (String) this.getBuildProperties().get(
-					"eoAdaptorClassName");
+			returnValue = (String) this.getBuildProperties().get("eoAdaptorClassName");
 		} catch (CoreException e) {
 			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		} catch (IOException e) {

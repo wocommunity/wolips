@@ -54,7 +54,9 @@
  *
  */
 package org.objectstyle.wolips.datasets.adaptable;
+
 import junit.framework.TestCase;
+
 /**
  * @author ulrich
  * 
@@ -62,5 +64,5 @@ import junit.framework.TestCase;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class IProjectAdapterFactoryTest extends TestCase {
-	//TODO: :-)
+	// TODO: :-)
 }
