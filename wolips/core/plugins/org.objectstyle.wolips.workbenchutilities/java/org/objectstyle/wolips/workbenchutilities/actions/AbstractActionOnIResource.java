@@ -68,16 +68,17 @@ import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * @author uli
- *
+ * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type
+ * comments go to Window>Preferences>Java>Code Generation.
  */
 public abstract class AbstractActionOnIResource implements IObjectActionDelegate {
 
 	private IProject project;
+
 	private IResource actionResource;
+
 	protected IWorkbenchPart part;
 
 	/**
@@ -139,8 +140,10 @@ public abstract class AbstractActionOnIResource implements IObjectActionDelegate
 			this.project = (IProject) this.actionResource;
 		}
 	}
-	/** (non-Javadoc)
-	 * Method declared on IObjectActionDelegate
+
+	/**
+	 * (non-Javadoc) Method declared on IObjectActionDelegate
+	 * 
 	 * @param action
 	 * @param targetPart
 	 */

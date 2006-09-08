@@ -144,8 +144,7 @@ public class EOModelGroupWizardPage extends WizardPage {
 	 */
 
 	private void initialize() {
-		if (selection != null && selection.isEmpty() == false
-				&& selection instanceof IStructuredSelection) {
+		if (selection != null && selection.isEmpty() == false && selection instanceof IStructuredSelection) {
 			IStructuredSelection ssel = (IStructuredSelection) selection;
 			if (ssel.size() > 1)
 				return;
@@ -167,10 +166,8 @@ public class EOModelGroupWizardPage extends WizardPage {
 	 * the container field.
 	 */
 
-  protected void handleBrowse() {
-		ContainerSelectionDialog dialog = new ContainerSelectionDialog(
-				getShell(), ResourcesPlugin.getWorkspace().getRoot(), false,
-				"Select new file container");
+	protected void handleBrowse() {
+		ContainerSelectionDialog dialog = new ContainerSelectionDialog(getShell(), ResourcesPlugin.getWorkspace().getRoot(), false, "Select new file container");
 		if (dialog.open() == Window.OK) {
 			Object[] result = dialog.getResult();
 			if (result.length == 1) {
@@ -184,16 +181,14 @@ public class EOModelGroupWizardPage extends WizardPage {
 	 */
 
 	protected void dialogChanged() {
-		IResource container = ResourcesPlugin.getWorkspace().getRoot()
-				.findMember(new Path(getContainerName()));
+		IResource container = ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(getContainerName()));
 		String fileName = getFileName();
 
 		if (getContainerName().length() == 0) {
 			updateStatus("File container must be specified");
 			return;
 		}
-		if (container == null
-				|| (container.getType() & (IResource.PROJECT | IResource.FOLDER)) == 0) {
+		if (container == null || (container.getType() & (IResource.PROJECT | IResource.FOLDER)) == 0) {
 			updateStatus("File container must exist");
 			return;
 		}

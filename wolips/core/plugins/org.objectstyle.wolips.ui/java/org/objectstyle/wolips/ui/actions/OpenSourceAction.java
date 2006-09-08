@@ -63,11 +63,10 @@ import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResour
 
 /**
  * @author uli
- *
+ * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type
+ * comments go to Window>Preferences>Java>Code Generation.
  */
 public class OpenSourceAction extends AbstractActionOnIResource {
 
@@ -87,6 +86,7 @@ public class OpenSourceAction extends AbstractActionOnIResource {
 			WorkbenchUtilitiesPlugin.open(list);
 		}
 	}
+
 	/**
 	 * Method dispose.
 	 */

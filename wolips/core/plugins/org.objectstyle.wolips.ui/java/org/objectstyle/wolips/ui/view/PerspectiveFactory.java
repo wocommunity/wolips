@@ -67,35 +67,28 @@ import org.eclipse.ui.progress.IProgressConstants;
 
 /**
  * @author uli
- *
+ * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type
+ * comments go to Window>Preferences>Java>Code Generation.
  */
 public class PerspectiveFactory implements IPerspectiveFactory {
-	private static final String ID_BUILD_ACTION_SET =
-		"org.objectstyle.wolips.ui.BuildActionSet";
-	private static final String ID_WIZARDS_ACTION_SET =
-		"org.objectstyle.wolips.wizards.ElementCreationActionSet";
-	private static final String ID_RELATED =
-		"org.objectstyle.wolips.ui.view.RelatedView";
+	private static final String ID_BUILD_ACTION_SET = "org.objectstyle.wolips.ui.BuildActionSet";
+
+	private static final String ID_WIZARDS_ACTION_SET = "org.objectstyle.wolips.wizards.ElementCreationActionSet";
+
+	private static final String ID_RELATED = "org.objectstyle.wolips.ui.view.RelatedView";
 
 	public void createInitialLayout(IPageLayout layout) {
 		String editorArea = layout.getEditorArea();
-		
-		IFolderLayout folder= layout.createFolder("left", IPageLayout.LEFT, (float)0.25, editorArea); //$NON-NLS-1$
+
+		IFolderLayout folder = layout.createFolder("left", IPageLayout.LEFT, (float) 0.25, editorArea); //$NON-NLS-1$
 		folder.addView(JavaUI.ID_PACKAGES);
 		folder.addView(JavaUI.ID_TYPE_HIERARCHY);
 		folder.addPlaceholder(IPageLayout.ID_RES_NAV);
-		folder =
-			layout.createFolder(
-				"left_bottom",
-				IPageLayout.BOTTOM,
-				(float) 0.75,
-				"left");
+		folder = layout.createFolder("left_bottom", IPageLayout.BOTTOM, (float) 0.75, "left");
 		folder.addView(PerspectiveFactory.ID_RELATED);
-		IFolderLayout outputfolder= layout.createFolder("bottom", IPageLayout.BOTTOM, (float)0.75, editorArea); //$NON-NLS-1$
+		IFolderLayout outputfolder = layout.createFolder("bottom", IPageLayout.BOTTOM, (float) 0.75, editorArea); //$NON-NLS-1$
 		outputfolder.addView(IPageLayout.ID_PROBLEM_VIEW);
 		outputfolder.addView(JavaUI.ID_JAVADOC_VIEW);
 		outputfolder.addView(JavaUI.ID_SOURCE_VIEW);
@@ -103,16 +96,16 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		outputfolder.addPlaceholder(IConsoleConstants.ID_CONSOLE_VIEW);
 		outputfolder.addPlaceholder(IPageLayout.ID_BOOKMARKS);
 		outputfolder.addPlaceholder(IProgressConstants.PROGRESS_VIEW_ID);
-		
-		layout.addView(IPageLayout.ID_OUTLINE, IPageLayout.RIGHT, (float)0.75, editorArea);
-		
+
+		layout.addView(IPageLayout.ID_OUTLINE, IPageLayout.RIGHT, (float) 0.75, editorArea);
+
 		layout.addActionSet(IDebugUIConstants.LAUNCH_ACTION_SET);
 		layout.addActionSet(JavaUI.ID_ACTION_SET);
 		layout.addActionSet(JavaUI.ID_ELEMENT_CREATION_ACTION_SET);
 		layout.addActionSet(PerspectiveFactory.ID_BUILD_ACTION_SET);
 		layout.addActionSet(PerspectiveFactory.ID_WIZARDS_ACTION_SET);
 		layout.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
-		
+
 		// views - java
 		layout.addShowViewShortcut(JavaUI.ID_PACKAGES);
 		layout.addShowViewShortcut(JavaUI.ID_TYPE_HIERARCHY);
@@ -121,11 +114,9 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 
 		// views - search
 		layout.addShowViewShortcut(NewSearchUI.SEARCH_VIEW_ID);
-		
+
 		// views - debugging
 		layout.addShowViewShortcut(IConsoleConstants.ID_CONSOLE_VIEW);
-
-		
 
 		// views - standard workbench
 		layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
@@ -140,7 +131,7 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		layout.addNewWizardShortcut("org.eclipse.jdt.ui.wizards.NewInterfaceCreationWizard"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.jdt.ui.wizards.NewEnumCreationWizard"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.jdt.ui.wizards.NewAnnotationCreationWizard"); //$NON-NLS-1$
-		layout.addNewWizardShortcut("org.eclipse.jdt.ui.wizards.NewSourceFolderCreationWizard");	 //$NON-NLS-1$
+		layout.addNewWizardShortcut("org.eclipse.jdt.ui.wizards.NewSourceFolderCreationWizard"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.jdt.ui.wizards.NewSnippetFileCreationWizard"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.folder");//$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.file");//$NON-NLS-1$

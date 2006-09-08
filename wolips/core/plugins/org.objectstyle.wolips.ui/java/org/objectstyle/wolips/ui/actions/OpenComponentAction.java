@@ -65,11 +65,10 @@ import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResour
 
 /**
  * @author uli
- *
+ * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type
+ * comments go to Window>Preferences>Java>Code Generation.
  */
 public class OpenComponentAction extends AbstractActionOnIResource {
 
@@ -81,18 +80,15 @@ public class OpenComponentAction extends AbstractActionOnIResource {
 			String fileName = getActionResource().getName();
 			fileName = fileName.substring(0, fileName.length() - 5);
 			ArrayList list = new ArrayList();
-			WorkbenchUtilitiesPlugin.findFilesInResourceByName(
-				list,
-				getIProject(),
-				fileName + ".wod");
+			WorkbenchUtilitiesPlugin.findFilesInResourceByName(list, getIProject(), fileName + ".wod");
 			for (int i = 0; i < list.size(); i++) {
 				IResource resource = (IResource) list.get(i);
-				if ((resource != null)
-					&& (resource.getType() == IResource.FILE))
+				if ((resource != null) && (resource.getType() == IResource.FILE))
 					WorkbenchUtilitiesPlugin.open((IFile) resource);
 			}
 		}
 	}
+
 	/**
 	 * Method dispose.
 	 */

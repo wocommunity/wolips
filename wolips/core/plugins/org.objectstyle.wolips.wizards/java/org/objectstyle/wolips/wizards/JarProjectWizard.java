@@ -91,8 +91,7 @@ public class JarProjectWizard extends AbstractProjectWizard {
 			this.project = project;
 		}
 
-		protected void execute(IProgressMonitor monitor)
-				throws InvocationTargetException {
+		protected void execute(IProgressMonitor monitor) throws InvocationTargetException {
 
 			String projectName = this.project.getName();
 			String path = this.project.getLocation().toOSString();
@@ -111,26 +110,16 @@ public class JarProjectWizard extends AbstractProjectWizard {
 					throw new InvocationTargetException(e);
 				}
 				templateEngine.getWolipsContext().setProjectName(projectName);
-				templateEngine.addTemplate(new TemplateDefinition(
-						"jarproject/.classpath.vm", path, ".classpath",
-						".classpath"));
-				templateEngine
-						.addTemplate(new TemplateDefinition(
-								"jarproject/.project.vm", path, ".project",
-								".project"));
-				templateEngine.addTemplate(new TemplateDefinition(
-						"jarproject/build.xml.vm", path, "build.xml",
-						"build.xml"));
-				templateEngine.addTemplate(new TemplateDefinition(
-						"jarproject/build.properties.vm", path,
-						"build.properties", "build.properties"));
+				templateEngine.addTemplate(new TemplateDefinition("jarproject/.classpath.vm", path, ".classpath", ".classpath"));
+				templateEngine.addTemplate(new TemplateDefinition("jarproject/.project.vm", path, ".project", ".project"));
+				templateEngine.addTemplate(new TemplateDefinition("jarproject/build.xml.vm", path, "build.xml", "build.xml"));
+				templateEngine.addTemplate(new TemplateDefinition("jarproject/build.properties.vm", path, "build.properties", "build.properties"));
 				templateEngine.run(new NullProgressMonitor());
 				// project.open(nullProgressMonitor);
 				// RunAnt runAnt = new RunAnt();
 				// runAnt.asAnt(path + File.separator
 				// + IWOLipsModel.DEFAULT_BUILD_FILENAME, null, null);
-				this.project.refreshLocal(IResource.DEPTH_INFINITE,
-						nullProgressMonitor);
+				this.project.refreshLocal(IResource.DEPTH_INFINITE, nullProgressMonitor);
 			} catch (Exception e) {
 				throw new InvocationTargetException(e);
 			}

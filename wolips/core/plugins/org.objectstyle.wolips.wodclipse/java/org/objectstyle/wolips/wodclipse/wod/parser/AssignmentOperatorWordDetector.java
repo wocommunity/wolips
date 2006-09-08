@@ -49,14 +49,14 @@ import org.eclipse.jface.text.rules.IWordDetector;
  * @author mike
  */
 public class AssignmentOperatorWordDetector implements IWordDetector {
-  public AssignmentOperatorWordDetector() {
-  }
+	public AssignmentOperatorWordDetector() {
+	}
 
-  public boolean isWordStart(char _ch) {
-    return _ch == '=';
-  }
+	public boolean isWordStart(char _ch) {
+		return _ch == '=';
+	}
 
-  public boolean isWordPart(char _ch) {
-    return false;
-  }
+	public boolean isWordPart(char _ch) {
+		return false;
+	}
 }

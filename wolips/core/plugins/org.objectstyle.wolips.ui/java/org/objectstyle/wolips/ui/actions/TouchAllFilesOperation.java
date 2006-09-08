@@ -86,13 +86,11 @@ public class TouchAllFilesOperation extends WorkspaceModifyOperation {
 	 * 
 	 * @see org.eclipse.ui.actions.WorkspaceModifyOperation#execute(org.eclipse.core.runtime.IProgressMonitor)
 	 */
-	protected void execute(IProgressMonitor monitor) throws CoreException,
-			InvocationTargetException, InterruptedException {
+	protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException, InterruptedException {
 		this.touch(this.iProject, monitor);
 	}
 
-	private void touch(IResource resource, IProgressMonitor monitor)
-			throws CoreException {
+	private void touch(IResource resource, IProgressMonitor monitor) throws CoreException {
 		if (resource.getType() == IResource.FILE)
 			resource.touch(monitor);
 		IResource[] members = null;

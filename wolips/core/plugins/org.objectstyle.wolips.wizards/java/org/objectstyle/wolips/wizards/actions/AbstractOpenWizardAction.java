@@ -71,8 +71,7 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 /**
  * @author uli
  */
-public abstract class AbstractOpenWizardAction extends Action implements
-		IWorkbenchWindowActionDelegate {
+public abstract class AbstractOpenWizardAction extends Action implements IWorkbenchWindowActionDelegate {
 
 	private IStructuredSelection currentSelection;
 

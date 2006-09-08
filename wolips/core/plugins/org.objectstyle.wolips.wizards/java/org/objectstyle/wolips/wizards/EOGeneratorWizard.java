@@ -82,143 +82,135 @@ import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EOModelGroup;
 
 /**
- * This is a sample new wizard. Its role is to create a new file 
- * resource in the provided container. If the container resource
- * (a folder or a project) is selected in the workspace 
- * when the wizard is opened, it will accept it as the target
- * container. The wizard creates one file with the extension
- * "eogen". If a sample multi-page editor (also available
- * as a template) is registered for the same extension, it will
- * be able to open it.
+ * This is a sample new wizard. Its role is to create a new file resource in the
+ * provided container. If the container resource (a folder or a project) is
+ * selected in the workspace when the wizard is opened, it will accept it as the
+ * target container. The wizard creates one file with the extension "eogen". If
+ * a sample multi-page editor (also available as a template) is registered for
+ * the same extension, it will be able to open it.
  */
 
 public class EOGeneratorWizard extends Wizard implements INewWizard {
-  private EOGeneratorWizardPage myPage;
-  private ISelection mySelection;
+	private EOGeneratorWizardPage myPage;
 
-  /**
-   * Constructor for EOGeneratorWizard.
-   */
-  public EOGeneratorWizard() {
-    super();
-    setNeedsProgressMonitor(true);
-  }
+	private ISelection mySelection;
 
-  /**
-   * Adding the page to the wizard.
-   */
+	/**
+	 * Constructor for EOGeneratorWizard.
+	 */
+	public EOGeneratorWizard() {
+		super();
+		setNeedsProgressMonitor(true);
+	}
 
-  public void addPages() {
-    myPage = new EOGeneratorWizardPage(mySelection);
-    addPage(myPage);
-  }
+	/**
+	 * Adding the page to the wizard.
+	 */
 
-  /**
-   * This method is called when 'Finish' button is pressed in
-   * the wizard. We will create an operation and run it
-   * using wizard as execution context.
-   */
-  public boolean performFinish() {
-    final String containerName = myPage.getContainerName();
-    final String fileName = myPage.getFileName();
-    IRunnableWithProgress op = new IRunnableWithProgress() {
-      public void run(IProgressMonitor monitor) throws InvocationTargetException {
-        try {
-          doFinish(containerName, fileName, monitor);
-        }
-        catch (CoreException e) {
-          throw new InvocationTargetException(e);
-        }
-        finally {
-          monitor.done();
-        }
-      }
-    };
-    try {
-      getContainer().run(true, false, op);
-    }
-    catch (InterruptedException e) {
-      return false;
-    }
-    catch (InvocationTargetException e) {
-      Throwable realException = e.getTargetException();
-      MessageDialog.openError(getShell(), "Error", realException.getMessage());
-      return false;
-    }
-    return true;
-  }
+	public void addPages() {
+		myPage = new EOGeneratorWizardPage(mySelection);
+		addPage(myPage);
+	}
 
-  /**
-   * The worker method. It will find the container, create the
-   * file if missing or just replace its contents, and open
-   * the editor on the newly created file.
-   */
+	/**
+	 * This method is called when 'Finish' button is pressed in the wizard. We
+	 * will create an operation and run it using wizard as execution context.
+	 */
+	public boolean performFinish() {
+		final String containerName = myPage.getContainerName();
+		final String fileName = myPage.getFileName();
+		IRunnableWithProgress op = new IRunnableWithProgress() {
+			public void run(IProgressMonitor monitor) throws InvocationTargetException {
+				try {
+					doFinish(containerName, fileName, monitor);
+				} catch (CoreException e) {
+					throw new InvocationTargetException(e);
+				} finally {
+					monitor.done();
+				}
+			}
+		};
+		try {
+			getContainer().run(true, false, op);
+		} catch (InterruptedException e) {
+			return false;
+		} catch (InvocationTargetException e) {
+			Throwable realException = e.getTargetException();
+			MessageDialog.openError(getShell(), "Error", realException.getMessage());
+			return false;
+		}
+		return true;
+	}
 
-  protected void doFinish(String containerName, String fileName, IProgressMonitor monitor) throws CoreException {
-    // create a sample file
-    monitor.beginTask("Creating " + fileName, 2);
-    IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-    IResource resource = root.findMember(new Path(containerName));
-    if (!resource.exists() || !(resource instanceof IContainer)) {
-      throwCoreException("Container \"" + containerName + "\" does not exist.");
-    }
-    IContainer container = (IContainer) resource;
-    final IFile file = container.getFile(new Path(fileName));
-    try {
-      EOGeneratorModel model = EOGeneratorModel.createDefaultModel(container.getProject());
-      model.writeToFile(file, monitor);
-    }
-    catch (IOException e) {
-      e.printStackTrace();
-    }
-    monitor.worked(1);
-    monitor.setTaskName("Opening file for editing...");
-    getShell().getDisplay().asyncExec(new Runnable() {
-      public void run() {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        try {
-          IDE.openEditor(page, file, true);
-        }
-        catch (PartInitException e) {
-          e.printStackTrace();
-        }
-      }
-    });
-    monitor.worked(1);
-  }
+	/**
+	 * The worker method. It will find the container, create the file if missing
+	 * or just replace its contents, and open the editor on the newly created
+	 * file.
+	 */
 
-  private void throwCoreException(String message) throws CoreException {
-    IStatus status = new Status(IStatus.ERROR, "org.objectstyle.wolips.eogenerator.ui", IStatus.OK, message, null);
-    throw new CoreException(status);
-  }
+	protected void doFinish(String containerName, String fileName, IProgressMonitor monitor) throws CoreException {
+		// create a sample file
+		monitor.beginTask("Creating " + fileName, 2);
+		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		IResource resource = root.findMember(new Path(containerName));
+		if (!resource.exists() || !(resource instanceof IContainer)) {
+			throwCoreException("Container \"" + containerName + "\" does not exist.");
+		}
+		IContainer container = (IContainer) resource;
+		final IFile file = container.getFile(new Path(fileName));
+		try {
+			EOGeneratorModel model = EOGeneratorModel.createDefaultModel(container.getProject());
+			model.writeToFile(file, monitor);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		monitor.worked(1);
+		monitor.setTaskName("Opening file for editing...");
+		getShell().getDisplay().asyncExec(new Runnable() {
+			public void run() {
+				IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+				try {
+					IDE.openEditor(page, file, true);
+				} catch (PartInitException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		monitor.worked(1);
+	}
 
-  /**
-   * We will accept the selection in the workbench to see if
-   * we can initialize from it.
-   * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
-   */
-  public void init(IWorkbench workbench, IStructuredSelection selection) {
-    mySelection = selection;
-  }
+	private void throwCoreException(String message) throws CoreException {
+		IStatus status = new Status(IStatus.ERROR, "org.objectstyle.wolips.eogenerator.ui", IStatus.OK, message, null);
+		throw new CoreException(status);
+	}
 
-  public static EOGeneratorModel createEOGeneratorModel(IContainer parentResource, EOModel targetModel) {
-    EOGeneratorModel eogenModel = EOGeneratorModel.createDefaultModel(parentResource.getProject());
-    EOModelGroup modelGroup = targetModel.getModelGroup();
-    Iterator modelsIter = modelGroup.getModels().iterator();
-    while (modelsIter.hasNext()) {
-      EOModel modelGroupModel = (EOModel) modelsIter.next();
-      File modelFolder = modelGroupModel.getModelFolder();
-      if (modelFolder != null) {
-        Path modelPath = new Path(modelFolder.getAbsolutePath());
-        EOModelReference modelReference = new EOModelReference(modelPath);
-        if (modelGroupModel == targetModel) {
-          eogenModel.addModel(modelReference);
-        }
-        else {
-          eogenModel.addRefModel(modelReference);
-        }
-      }
-    }
-    return eogenModel;
-  }
+	/**
+	 * We will accept the selection in the workbench to see if we can initialize
+	 * from it.
+	 * 
+	 * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
+	 */
+	public void init(IWorkbench workbench, IStructuredSelection selection) {
+		mySelection = selection;
+	}
+
+	public static EOGeneratorModel createEOGeneratorModel(IContainer parentResource, EOModel targetModel) {
+		EOGeneratorModel eogenModel = EOGeneratorModel.createDefaultModel(parentResource.getProject());
+		EOModelGroup modelGroup = targetModel.getModelGroup();
+		Iterator modelsIter = modelGroup.getModels().iterator();
+		while (modelsIter.hasNext()) {
+			EOModel modelGroupModel = (EOModel) modelsIter.next();
+			File modelFolder = modelGroupModel.getModelFolder();
+			if (modelFolder != null) {
+				Path modelPath = new Path(modelFolder.getAbsolutePath());
+				EOModelReference modelReference = new EOModelReference(modelPath);
+				if (modelGroupModel == targetModel) {
+					eogenModel.addModel(modelReference);
+				} else {
+					eogenModel.addRefModel(modelReference);
+				}
+			}
+		}
+		return eogenModel;
+	}
 }

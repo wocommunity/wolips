@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.wolips.wizards;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -88,6 +89,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
+
 /**
  * @author mnolte
  * @author uli
@@ -95,11 +97,14 @@ import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 public class WOComponentCreationPage extends WizardNewWOResourcePage {
 	// widgets
 	private Button bodyCheckbox;
+
 	private Button wooCheckbox;
+
 	private Button apiCheckbox;
+
 	private IResource resourceToReveal;
-    StringButtonStatusDialogField myPackageDialogField;
-    
+
+	StringButtonStatusDialogField myPackageDialogField;
 
 	/**
 	 * Creates the page for the wocomponent creation wizard.
@@ -112,9 +117,9 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 	public WOComponentCreationPage(IStructuredSelection selection) {
 		super("createWOComponentPage1", selection);
 		this.setTitle(Messages.getString("WOComponentCreationPage.title"));
-		this.setDescription(Messages
-				.getString("WOComponentCreationPage.description"));
+		this.setDescription(Messages.getString("WOComponentCreationPage.description"));
 	}
+
 	/**
 	 * (non-Javadoc) Method declared on IDialogPage.
 	 */
@@ -122,66 +127,63 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 		// inherit default container and name specification widgets
 		super.createControl(parent);
 		Composite composite = (Composite) getControl();
-		//WorkbenchHelp.setHelp(composite,
+		// WorkbenchHelp.setHelp(composite,
 		// IReadmeConstants.CREATION_WIZARD_PAGE_CONTEXT);
-		this.setFileName(Messages
-				.getString("WOComponentCreationPage.newComponent.defaultName"));
+		this.setFileName(Messages.getString("WOComponentCreationPage.newComponent.defaultName"));
 
-        new Label(composite, SWT.NONE); // vertical spacer
-        
-        Group packageGroup = new Group(composite, SWT.NONE);
-        GridLayout layout = new GridLayout();
-        layout.numColumns = 4;
-        packageGroup.setLayout(layout);
-        packageGroup.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
-        PackageButtonAdapter adapter = new PackageButtonAdapter();
-        myPackageDialogField= new StringButtonStatusDialogField(adapter);
-        myPackageDialogField.setDialogFieldListener(adapter);
-        myPackageDialogField.setLabelText(NewWizardMessages.NewTypeWizardPage_package_label); 
-        myPackageDialogField.setButtonLabel(NewWizardMessages.NewTypeWizardPage_package_button); 
-        myPackageDialogField.setStatusWidthHint(NewWizardMessages.NewTypeWizardPage_default); 
-        myPackageDialogField.doFillIntoGrid(packageGroup, 4);
-        Text text= myPackageDialogField.getTextControl(null);
-        LayoutUtil.setWidthHint(text, convertWidthInCharsToPixels(40));  
-        LayoutUtil.setHorizontalGrabbing(text);
-        //JavaPackageCompletionProcessor packageCompletionProcessor= new JavaPackageCompletionProcessor();
-        //ControlContentAssistHelper.createTextContentAssistant(text, packageCompletionProcessor);
+		new Label(composite, SWT.NONE); // vertical spacer
+
+		Group packageGroup = new Group(composite, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 4;
+		packageGroup.setLayout(layout);
+		packageGroup.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
+		PackageButtonAdapter adapter = new PackageButtonAdapter();
+		myPackageDialogField = new StringButtonStatusDialogField(adapter);
+		myPackageDialogField.setDialogFieldListener(adapter);
+		myPackageDialogField.setLabelText(NewWizardMessages.NewTypeWizardPage_package_label);
+		myPackageDialogField.setButtonLabel(NewWizardMessages.NewTypeWizardPage_package_button);
+		myPackageDialogField.setStatusWidthHint(NewWizardMessages.NewTypeWizardPage_default);
+		myPackageDialogField.doFillIntoGrid(packageGroup, 4);
+		Text text = myPackageDialogField.getTextControl(null);
+		LayoutUtil.setWidthHint(text, convertWidthInCharsToPixels(40));
+		LayoutUtil.setHorizontalGrabbing(text);
+		// JavaPackageCompletionProcessor packageCompletionProcessor= new
+		// JavaPackageCompletionProcessor();
+		// ControlContentAssistHelper.createTextContentAssistant(text,
+		// packageCompletionProcessor);
 
 		new Label(composite, SWT.NONE); // vertical spacer
 		// section generation group
 		Group group = new Group(composite, SWT.NONE);
 		group.setLayout(new GridLayout());
-		group.setText(Messages
-				.getString("WOComponentCreationPage.creationOptions.title"));
-		group.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-				| GridData.HORIZONTAL_ALIGN_FILL));
-        
+		group.setText(Messages.getString("WOComponentCreationPage.creationOptions.title"));
+		group.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
+
 		Composite row = new Composite(group, SWT.NONE);
 		RowLayout rowLayout = new RowLayout();
 		row.setLayout(rowLayout);
 		// section generation checkboxes
 		bodyCheckbox = new Button(row, SWT.CHECK);
-		bodyCheckbox.setText(Messages
-				.getString("WOComponentCreationPage.creationOptions.bodyTag"));
+		bodyCheckbox.setText(Messages.getString("WOComponentCreationPage.creationOptions.bodyTag"));
 		bodyCheckbox.setSelection(true);
 		bodyCheckbox.addListener(SWT.Selection, this);
 		wooCheckbox = new Button(row, SWT.CHECK);
-		wooCheckbox.setText(Messages
-				.getString("WOComponentCreationPage.creationOptions.wooFile"));
+		wooCheckbox.setText(Messages.getString("WOComponentCreationPage.creationOptions.wooFile"));
 		wooCheckbox.setSelection(true);
 		wooCheckbox.addListener(SWT.Selection, this);
 		apiCheckbox = new Button(row, SWT.CHECK);
-		apiCheckbox.setText(Messages
-				.getString("WOComponentCreationPage.creationOptions.apiFile"));
+		apiCheckbox.setText(Messages.getString("WOComponentCreationPage.creationOptions.apiFile"));
 		apiCheckbox.setSelection(true);
 		apiCheckbox.addListener(SWT.Selection, this);
 		new Label(composite, SWT.NONE); // vertical spacer
 		setPageComplete(validatePage());
 	}
+
 	/**
-	 * Creates a new file resource as requested by the user. If everything is
-	 * OK then answer true. If not, false will cause the dialog to stay open
-	 * and the appropiate error message is shown
+	 * Creates a new file resource as requested by the user. If everything is OK
+	 * then answer true. If not, false will cause the dialog to stay open and
+	 * the appropiate error message is shown
 	 * 
 	 * @return whether creation was successful
 	 * @see WOComponentCreationWizard#performFinish()
@@ -189,92 +191,86 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 	public boolean createComponent() {
 		WOComponentCreator componentCreator;
 		String componentName = getFileName();
-        String packageName = myPackageDialogField.getText();
-		IProject actualProject = ResourcesPlugin.getWorkspace().getRoot()
-				.getProject(getContainerFullPath().segment(0));
+		String packageName = myPackageDialogField.getText();
+		IProject actualProject = ResourcesPlugin.getWorkspace().getRoot().getProject(getContainerFullPath().segment(0));
 		switch (getContainerFullPath().segmentCount()) {
-			case 0 :
-				// not possible ( see validatePage() )
-				setErrorMessage("unknown error");
-				return false;
-			case 1 :
-				componentCreator = new WOComponentCreator(actualProject,
-						componentName, packageName, bodyCheckbox.getSelection(), apiCheckbox
-								.getSelection(), wooCheckbox.getSelection(), this);
-				break;
-			default :
-				// determine parent resource for component creator by removing
-				// first element (workspace) from full path
-				IFolder subprojectFolder = actualProject
-						.getFolder(getContainerFullPath()
-								.removeFirstSegments(1));
-				componentCreator = new WOComponentCreator(subprojectFolder,
-						componentName, packageName, bodyCheckbox.getSelection(), apiCheckbox
-								.getSelection(), wooCheckbox.getSelection(), this);
-				break;
+		case 0:
+			// not possible ( see validatePage() )
+			setErrorMessage("unknown error");
+			return false;
+		case 1:
+			componentCreator = new WOComponentCreator(actualProject, componentName, packageName, bodyCheckbox.getSelection(), apiCheckbox.getSelection(), wooCheckbox.getSelection(), this);
+			break;
+		default:
+			// determine parent resource for component creator by removing
+			// first element (workspace) from full path
+			IFolder subprojectFolder = actualProject.getFolder(getContainerFullPath().removeFirstSegments(1));
+			componentCreator = new WOComponentCreator(subprojectFolder, componentName, packageName, bodyCheckbox.getSelection(), apiCheckbox.getSelection(), wooCheckbox.getSelection(), this);
+			break;
 		}
-		IRunnableWithProgress op = new WorkspaceModifyDelegatingOperation(
-				componentCreator);
+		IRunnableWithProgress op = new WorkspaceModifyDelegatingOperation(componentCreator);
 		return createResourceOperation(op);
 	}
+
 	/**
 	 * (non-Javadoc) Method declared on WizardNewFileCreationPage.
 	 */
 	protected String getNewFileLabel() {
 		return Messages.getString("WOComponentCreationPage.newComponent.label");
 	}
-	
+
 	public IResource getResourceToReveal() {
 		return resourceToReveal;
 	}
+
 	public void setResourceToReveal(IResource resourceToReveal) {
 		this.resourceToReveal = resourceToReveal;
 	}
-    
-    private IPackageFragment choosePackage() {
-      List packagesList = new LinkedList();
-      try {
-        IProject actualProject = ResourcesPlugin.getWorkspace().getRoot().getProject(getContainerFullPath().segment(0));
-        IJavaProject javaProject = JavaModelManager.getJavaModelManager().getJavaModel().getJavaProject(actualProject);
-        IPackageFragmentRoot[] roots = javaProject.getPackageFragmentRoots();
-        for (int k = 0; k < roots.length; k++) {
-          if (roots[k].getKind() == IPackageFragmentRoot.K_SOURCE) {
-            IJavaElement[] children = roots[k].getChildren();
-            for (int i = 0; i < children.length; i++) {
-              packagesList.add(children[i]);
-            }
-          }
-        }
-      } catch (JavaModelException e) {
-          //JTourBusPlugin.log(e);
-        e.printStackTrace();
-      }
-      IJavaElement[] packages= (IJavaElement[])packagesList.toArray(new IJavaElement[packagesList.size()]);
-      
-      ElementListSelectionDialog dialog= new ElementListSelectionDialog(getShell(), new JavaElementLabelProvider(JavaElementLabelProvider.SHOW_DEFAULT));
-      dialog.setIgnoreCase(false);
-      dialog.setTitle(NewWizardMessages.NewTypeWizardPage_ChoosePackageDialog_title); 
-      dialog.setMessage(NewWizardMessages.NewTypeWizardPage_ChoosePackageDialog_description); 
-      dialog.setEmptyListMessage(NewWizardMessages.NewTypeWizardPage_ChoosePackageDialog_empty);
-      dialog.setFilter(myPackageDialogField.getText());
-      dialog.setElements(packages);
-      if (dialog.open() == Window.OK) {
-        return (IPackageFragment) dialog.getFirstResult();
-      }
-      return null;
-    }
 
-    protected class PackageButtonAdapter implements IStringButtonAdapter, IDialogFieldListener {
-      public void changeControlPressed(DialogField _field) {
-        IPackageFragment pack = choosePackage(); 
-        if (pack != null) {
-            myPackageDialogField.setText(pack.getElementName());
-        }
-      }
-      
-      public void dialogFieldChanged(DialogField _field) {
-        //fPackageStatus= packageChanged();
-        //updatePackageStatusLabel();
-      }
-    }
+	private IPackageFragment choosePackage() {
+		List packagesList = new LinkedList();
+		try {
+			IProject actualProject = ResourcesPlugin.getWorkspace().getRoot().getProject(getContainerFullPath().segment(0));
+			IJavaProject javaProject = JavaModelManager.getJavaModelManager().getJavaModel().getJavaProject(actualProject);
+			IPackageFragmentRoot[] roots = javaProject.getPackageFragmentRoots();
+			for (int k = 0; k < roots.length; k++) {
+				if (roots[k].getKind() == IPackageFragmentRoot.K_SOURCE) {
+					IJavaElement[] children = roots[k].getChildren();
+					for (int i = 0; i < children.length; i++) {
+						packagesList.add(children[i]);
+					}
+				}
+			}
+		} catch (JavaModelException e) {
+			// JTourBusPlugin.log(e);
+			e.printStackTrace();
+		}
+		IJavaElement[] packages = (IJavaElement[]) packagesList.toArray(new IJavaElement[packagesList.size()]);
+
+		ElementListSelectionDialog dialog = new ElementListSelectionDialog(getShell(), new JavaElementLabelProvider(JavaElementLabelProvider.SHOW_DEFAULT));
+		dialog.setIgnoreCase(false);
+		dialog.setTitle(NewWizardMessages.NewTypeWizardPage_ChoosePackageDialog_title);
+		dialog.setMessage(NewWizardMessages.NewTypeWizardPage_ChoosePackageDialog_description);
+		dialog.setEmptyListMessage(NewWizardMessages.NewTypeWizardPage_ChoosePackageDialog_empty);
+		dialog.setFilter(myPackageDialogField.getText());
+		dialog.setElements(packages);
+		if (dialog.open() == Window.OK) {
+			return (IPackageFragment) dialog.getFirstResult();
+		}
+		return null;
+	}
+
+	protected class PackageButtonAdapter implements IStringButtonAdapter, IDialogFieldListener {
+		public void changeControlPressed(DialogField _field) {
+			IPackageFragment pack = choosePackage();
+			if (pack != null) {
+				myPackageDialogField.setText(pack.getElementName());
+			}
+		}
+
+		public void dialogFieldChanged(DialogField _field) {
+			// fPackageStatus= packageChanged();
+			// updatePackageStatusLabel();
+		}
+	}
 }

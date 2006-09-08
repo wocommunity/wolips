@@ -74,247 +74,243 @@ import org.objectstyle.wolips.wodclipse.wod.parser.WodScanner;
 
 public class WodContentOutlinePage extends ContentOutlinePage {
 
-  Image image;
+	Image image;
 
-  /**
-   * A segment element.
-   */
-  protected static class Segment {
-    public String name;
+	/**
+	 * A segment element.
+	 */
+	protected static class Segment {
+		public String name;
 
-    public Position position;
+		public Position position;
 
-    public Segment(String name, Position position) {
-      this.name = name;
-      this.position = position;
-    }
+		public Segment(String name, Position position) {
+			this.name = name;
+			this.position = position;
+		}
 
-    public String getName() {
-      return name;
-    }
-  }
+		public String getName() {
+			return name;
+		}
+	}
 
-  /**
-   * Divides the editor's document into ten segments and provides elements for
-   * them.
-   */
-  protected class ContentProvider implements ITreeContentProvider {
+	/**
+	 * Divides the editor's document into ten segments and provides elements for
+	 * them.
+	 */
+	protected class ContentProvider implements ITreeContentProvider {
 
-    protected final static String SEGMENTS = "__wod_segments"; //$NON-NLS-1$
+		protected final static String SEGMENTS = "__wod_segments"; //$NON-NLS-1$
 
-    protected IPositionUpdater fPositionUpdater = new DefaultPositionUpdater(SEGMENTS);
+		protected IPositionUpdater fPositionUpdater = new DefaultPositionUpdater(SEGMENTS);
 
-    protected List fContent = new ArrayList(10);
+		protected List fContent = new ArrayList(10);
 
-    protected void parse(IDocument document) {
-      try {
-        List elementNameRulePositions = WodScanner.getRulePositionsOfType(document, ElementNameRule.class);
-        Iterator elementNameRulePositionsIter = elementNameRulePositions.iterator();
-        while (elementNameRulePositionsIter.hasNext()) {
-          RulePosition rulePosition = (RulePosition) elementNameRulePositionsIter.next();
-          Position p = rulePosition.getPosition();
-          document.addPosition(SEGMENTS, p);
-          fContent.add(new Segment(rulePosition.getText(), p));
-        }
-      }
-      catch (BadPositionCategoryException e) {
-        WodclipsePlugin.getDefault().log(e);
-      }
-      catch (BadLocationException e) {
-        WodclipsePlugin.getDefault().log(e);
-      }
-    }
+		protected void parse(IDocument document) {
+			try {
+				List elementNameRulePositions = WodScanner.getRulePositionsOfType(document, ElementNameRule.class);
+				Iterator elementNameRulePositionsIter = elementNameRulePositions.iterator();
+				while (elementNameRulePositionsIter.hasNext()) {
+					RulePosition rulePosition = (RulePosition) elementNameRulePositionsIter.next();
+					Position p = rulePosition.getPosition();
+					document.addPosition(SEGMENTS, p);
+					fContent.add(new Segment(rulePosition.getText(), p));
+				}
+			} catch (BadPositionCategoryException e) {
+				WodclipsePlugin.getDefault().log(e);
+			} catch (BadLocationException e) {
+				WodclipsePlugin.getDefault().log(e);
+			}
+		}
 
-    /*
-     * @see IContentProvider#inputChanged(Viewer, Object, Object)
-     */
-    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-      if (oldInput != null) {
-        IDocument document = fDocumentProvider.getDocument(oldInput);
-        if (document != null) {
-          try {
-            document.removePositionCategory(SEGMENTS);
-          }
-          catch (BadPositionCategoryException e) {
-            WodclipsePlugin.getDefault().log(e);
-          }
-          document.removePositionUpdater(fPositionUpdater);
-        }
-      }
+		/*
+		 * @see IContentProvider#inputChanged(Viewer, Object, Object)
+		 */
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			if (oldInput != null) {
+				IDocument document = fDocumentProvider.getDocument(oldInput);
+				if (document != null) {
+					try {
+						document.removePositionCategory(SEGMENTS);
+					} catch (BadPositionCategoryException e) {
+						WodclipsePlugin.getDefault().log(e);
+					}
+					document.removePositionUpdater(fPositionUpdater);
+				}
+			}
 
-      fContent.clear();
+			fContent.clear();
 
-      if (newInput != null) {
-        IDocument document = fDocumentProvider.getDocument(newInput);
-        if (document != null) {
-          document.addPositionCategory(SEGMENTS);
-          document.addPositionUpdater(fPositionUpdater);
+			if (newInput != null) {
+				IDocument document = fDocumentProvider.getDocument(newInput);
+				if (document != null) {
+					document.addPositionCategory(SEGMENTS);
+					document.addPositionUpdater(fPositionUpdater);
 
-          parse(document);
-        }
-      }
-    }
+					parse(document);
+				}
+			}
+		}
 
-    /*
-     * @see IContentProvider#dispose
-     */
-    public void dispose() {
-      if (fContent != null) {
-        fContent.clear();
-        fContent = null;
-      }
-    }
+		/*
+		 * @see IContentProvider#dispose
+		 */
+		public void dispose() {
+			if (fContent != null) {
+				fContent.clear();
+				fContent = null;
+			}
+		}
 
-    /*
-     * @see IContentProvider#isDeleted(Object)
-     */
-    public boolean isDeleted(Object element) {
-      return false;
-    }
+		/*
+		 * @see IContentProvider#isDeleted(Object)
+		 */
+		public boolean isDeleted(Object element) {
+			return false;
+		}
 
-    /*
-     * @see IStructuredContentProvider#getElements(Object)
-     */
-    public Object[] getElements(Object element) {
-      return fContent.toArray();
-    }
+		/*
+		 * @see IStructuredContentProvider#getElements(Object)
+		 */
+		public Object[] getElements(Object element) {
+			return fContent.toArray();
+		}
 
-    /*
-     * @see ITreeContentProvider#hasChildren(Object)
-     */
-    public boolean hasChildren(Object element) {
-      return element == fInput;
-    }
+		/*
+		 * @see ITreeContentProvider#hasChildren(Object)
+		 */
+		public boolean hasChildren(Object element) {
+			return element == fInput;
+		}
 
-    /*
-     * @see ITreeContentProvider#getParent(Object)
-     */
-    public Object getParent(Object element) {
-      if (element instanceof Segment)
-        return fInput;
-      return null;
-    }
+		/*
+		 * @see ITreeContentProvider#getParent(Object)
+		 */
+		public Object getParent(Object element) {
+			if (element instanceof Segment)
+				return fInput;
+			return null;
+		}
 
-    /*
-     * @see ITreeContentProvider#getChildren(Object)
-     */
-    public Object[] getChildren(Object element) {
-      if (element == fInput)
-        return fContent.toArray();
-      return new Object[0];
-    }
-  }
+		/*
+		 * @see ITreeContentProvider#getChildren(Object)
+		 */
+		public Object[] getChildren(Object element) {
+			if (element == fInput)
+				return fContent.toArray();
+			return new Object[0];
+		}
+	}
 
-  protected Object fInput;
+	protected Object fInput;
 
-  protected IDocumentProvider fDocumentProvider;
+	protected IDocumentProvider fDocumentProvider;
 
-  protected ITextEditor fTextEditor;
+	protected ITextEditor fTextEditor;
 
-  /**
-   * Creates a content outline page using the given provider and the given
-   * editor.
-   * 
-   * @param provider
-   *            the document provider
-   * @param editor
-   *            the editor
-   */
-  public WodContentOutlinePage(IDocumentProvider provider, ITextEditor editor) {
-    super();
-    fDocumentProvider = provider;
-    fTextEditor = editor;
-  }
+	/**
+	 * Creates a content outline page using the given provider and the given
+	 * editor.
+	 * 
+	 * @param provider
+	 *            the document provider
+	 * @param editor
+	 *            the editor
+	 */
+	public WodContentOutlinePage(IDocumentProvider provider, ITextEditor editor) {
+		super();
+		fDocumentProvider = provider;
+		fTextEditor = editor;
+	}
 
-  /*
-   * (non-Javadoc) Method declared on ContentOutlinePage
-   */
-  public void createControl(Composite parent) {
+	/*
+	 * (non-Javadoc) Method declared on ContentOutlinePage
+	 */
+	public void createControl(Composite parent) {
 
-    super.createControl(parent);
+		super.createControl(parent);
 
-    TreeViewer viewer = getTreeViewer();
-    viewer.setContentProvider(new ContentProvider());
-    viewer.setLabelProvider(new LabelProvider() {
+		TreeViewer viewer = getTreeViewer();
+		viewer.setContentProvider(new ContentProvider());
+		viewer.setLabelProvider(new LabelProvider() {
 
-      public Image getImage(Object element) {
-        if (image == null) {
-          ImageDescriptor desc = WodclipsePlugin.getImageDescriptor("icons/BindingOutline.gif");
-          if (desc != null) {
-            image = desc.createImage();
-          }
-        }
-        if (image != null && element instanceof Segment) {
-          return image;
-        }
+			public Image getImage(Object element) {
+				if (image == null) {
+					ImageDescriptor desc = WodclipsePlugin.getImageDescriptor("icons/BindingOutline.gif");
+					if (desc != null) {
+						image = desc.createImage();
+					}
+				}
+				if (image != null && element instanceof Segment) {
+					return image;
+				}
 
-        return super.getImage(element);
-      }
+				return super.getImage(element);
+			}
 
-      public String getText(Object element) {
-        if (element instanceof Segment) {
-          Segment segment = (Segment) element;
-          return segment.getName();
-        }
-        return super.getText(element);
-      }
+			public String getText(Object element) {
+				if (element instanceof Segment) {
+					Segment segment = (Segment) element;
+					return segment.getName();
+				}
+				return super.getText(element);
+			}
 
-    });
-    viewer.addSelectionChangedListener(this);
+		});
+		viewer.addSelectionChangedListener(this);
 
-    if (fInput != null)
-      viewer.setInput(fInput);
-  }
+		if (fInput != null)
+			viewer.setInput(fInput);
+	}
 
-  /*
-   * (non-Javadoc) Method declared on ContentOutlinePage
-   */
-  public void selectionChanged(SelectionChangedEvent event) {
+	/*
+	 * (non-Javadoc) Method declared on ContentOutlinePage
+	 */
+	public void selectionChanged(SelectionChangedEvent event) {
 
-    super.selectionChanged(event);
+		super.selectionChanged(event);
 
-    ISelection selection = event.getSelection();
-    if (selection.isEmpty())
-      fTextEditor.resetHighlightRange();
-    else {
-      Segment segment = (Segment) ((IStructuredSelection) selection).getFirstElement();
-      int start = segment.position.getOffset();
-      int length = segment.position.getLength();
-      try {
-        fTextEditor.setHighlightRange(start, length, true);
-      }
-      catch (IllegalArgumentException e) {
-        WodclipsePlugin.getDefault().log(e);
-        fTextEditor.resetHighlightRange();
-      }
-    }
-  }
+		ISelection selection = event.getSelection();
+		if (selection.isEmpty())
+			fTextEditor.resetHighlightRange();
+		else {
+			Segment segment = (Segment) ((IStructuredSelection) selection).getFirstElement();
+			int start = segment.position.getOffset();
+			int length = segment.position.getLength();
+			try {
+				fTextEditor.setHighlightRange(start, length, true);
+			} catch (IllegalArgumentException e) {
+				WodclipsePlugin.getDefault().log(e);
+				fTextEditor.resetHighlightRange();
+			}
+		}
+	}
 
-  /**
-   * Sets the input of the outline page
-   * 
-   * @param input
-   *            the input of this outline page
-   */
-  public void setInput(Object input) {
-    fInput = input;
-    update();
-  }
+	/**
+	 * Sets the input of the outline page
+	 * 
+	 * @param input
+	 *            the input of this outline page
+	 */
+	public void setInput(Object input) {
+		fInput = input;
+		update();
+	}
 
-  /**
-   * Updates the outline page.
-   */
-  public void update() {
-    TreeViewer viewer = getTreeViewer();
+	/**
+	 * Updates the outline page.
+	 */
+	public void update() {
+		TreeViewer viewer = getTreeViewer();
 
-    if (viewer != null) {
-      Control control = viewer.getControl();
-      if (control != null && !control.isDisposed()) {
-        control.setRedraw(false);
-        viewer.setInput(fInput);
-        viewer.expandAll();
-        control.setRedraw(true);
-      }
-    }
-  }
+		if (viewer != null) {
+			Control control = viewer.getControl();
+			if (control != null && !control.isDisposed()) {
+				control.setRedraw(false);
+				viewer.setInput(fInput);
+				viewer.expandAll();
+				control.setRedraw(true);
+			}
+		}
+	}
 }

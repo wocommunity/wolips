@@ -49,64 +49,65 @@ import org.eclipse.jface.text.contentassist.CompletionProposal;
  * @author mike
  */
 public class WodCompletionProposal implements Comparable {
-  private String myToken;
-  private int myTokenOffset;
-  private int myOffset;
-  private String myProposal;
-  private String myDisplay;
-  private int myCursorOffset;
+	private String myToken;
 
-  public WodCompletionProposal(String _token, int _tokenOffset, int _offset, String _proposal) {
-    this(_token, _tokenOffset, _offset, _proposal, null, _proposal.length());
-  }
+	private int myTokenOffset;
 
-  public WodCompletionProposal(String _token, int _tokenOffset, int _offset, String _proposal, String _display, int _cursorOffset) {
-    myToken = _token;
-    myTokenOffset = _tokenOffset;
-    myOffset = _offset;
-    myProposal = _proposal;
-    myDisplay = _display;
-    myCursorOffset = _cursorOffset;
-  }
+	private int myOffset;
 
-  public CompletionProposal toCompletionProposal() {
-    CompletionProposal completionProposal = new CompletionProposal(myProposal, myTokenOffset, myToken.length(), myCursorOffset, null, myDisplay, null, null);
-    return completionProposal;
-  }
+	private String myProposal;
 
-  public boolean equals(Object _obj) {
-    return (_obj instanceof WodCompletionProposal && ((WodCompletionProposal) _obj).myProposal.equals(myProposal));
-  }
+	private String myDisplay;
 
-  public int hashCode() {
-    return myProposal.hashCode();
-  }
+	private int myCursorOffset;
 
-  public int compareTo(Object _obj) {
-    int comparison;
-    if (_obj instanceof WodCompletionProposal) {
-      String proposal = myProposal;
-      String otherProposal = ((WodCompletionProposal)_obj).myProposal;
-      if (proposal.startsWith("_")) {
-        if (otherProposal.startsWith("_")) {
-          comparison = myProposal.compareTo(((WodCompletionProposal) _obj).myProposal);
-        }
-        else {
-          comparison = 1;
-        }
-      }
-      else {
-        if (otherProposal.startsWith("_")) {
-          comparison = -1;
-        }
-        else {
-          comparison = proposal.compareTo(otherProposal);
-        }
-      }
-    }
-    else {
-      comparison = -1;
-    }
-    return comparison;
-  }
+	public WodCompletionProposal(String _token, int _tokenOffset, int _offset, String _proposal) {
+		this(_token, _tokenOffset, _offset, _proposal, null, _proposal.length());
+	}
+
+	public WodCompletionProposal(String _token, int _tokenOffset, int _offset, String _proposal, String _display, int _cursorOffset) {
+		myToken = _token;
+		myTokenOffset = _tokenOffset;
+		myOffset = _offset;
+		myProposal = _proposal;
+		myDisplay = _display;
+		myCursorOffset = _cursorOffset;
+	}
+
+	public CompletionProposal toCompletionProposal() {
+		CompletionProposal completionProposal = new CompletionProposal(myProposal, myTokenOffset, myToken.length(), myCursorOffset, null, myDisplay, null, null);
+		return completionProposal;
+	}
+
+	public boolean equals(Object _obj) {
+		return (_obj instanceof WodCompletionProposal && ((WodCompletionProposal) _obj).myProposal.equals(myProposal));
+	}
+
+	public int hashCode() {
+		return myProposal.hashCode();
+	}
+
+	public int compareTo(Object _obj) {
+		int comparison;
+		if (_obj instanceof WodCompletionProposal) {
+			String proposal = myProposal;
+			String otherProposal = ((WodCompletionProposal) _obj).myProposal;
+			if (proposal.startsWith("_")) {
+				if (otherProposal.startsWith("_")) {
+					comparison = myProposal.compareTo(((WodCompletionProposal) _obj).myProposal);
+				} else {
+					comparison = 1;
+				}
+			} else {
+				if (otherProposal.startsWith("_")) {
+					comparison = -1;
+				} else {
+					comparison = proposal.compareTo(otherProposal);
+				}
+			}
+		} else {
+			comparison = -1;
+		}
+		return comparison;
+	}
 }

@@ -64,15 +64,12 @@ import org.objectstyle.wolips.preferences.PreferencesMessages;
 
 /**
  * @author uli
- *
+ * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type
+ * comments go to Window>Preferences>Java>Code Generation.
  */
-public class PreferencesPage
-	extends FieldEditorPreferencePage
-	implements IWorkbenchPreferencePage {
+public class PreferencesPage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
 	/**
 	 * Constructor
@@ -80,8 +77,7 @@ public class PreferencesPage
 	public PreferencesPage() {
 		super(GRID);
 		setPreferenceStore(Preferences.getPreferenceStore());
-		setDescription(
-			PreferencesMessages.getString("Preferences.PageDescription"));
+		setDescription(PreferencesMessages.getString("Preferences.PageDescription"));
 		Preferences.setDefaults();
 	}
 
@@ -91,13 +87,16 @@ public class PreferencesPage
 	public void createFieldEditors() {
 		return;
 	}
+
 	/**
 	 * Method performOK.
+	 * 
 	 * @return boolean
 	 */
 	public boolean performOk() {
 		return super.performOk();
 	}
+
 	/**
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(IWorkbench)
 	 */

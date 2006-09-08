@@ -62,16 +62,14 @@ import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 /**
  * @author ulrich
  */
-public abstract class AbstractProjectWizard extends
-		BasicNewProjectResourceWizard {
+public abstract class AbstractProjectWizard extends BasicNewProjectResourceWizard {
 	public AbstractProjectWizard() {
 		super();
 	}
 
 	public abstract String getWindowTitle();
 
-	public void init(IWorkbench workbench,
-			IStructuredSelection structuredSelection) {
+	public void init(IWorkbench workbench, IStructuredSelection structuredSelection) {
 		super.init(workbench, structuredSelection);
 		setDefaultPageImageDescriptor(WizardsPlugin.WOPROJECT_WIZARD_BANNER());
 		setWindowTitle(this.getWindowTitle());

@@ -77,9 +77,7 @@ import org.osgi.framework.Constants;
 public class VariablesPlugin extends AbstractCorePlugin {
 	private static final String build_user_home_properties = "woproperties.xml";
 
-	private static final String build_user_home_properties_pde_info = "PDE User please copy "
-			+ VariablesPlugin.build_user_home_properties
-			+ " from the woproject/projects/buildscripts to the wolips variables plugin.";
+	private static final String build_user_home_properties_pde_info = "PDE User please copy " + VariablesPlugin.build_user_home_properties + " from the woproject/projects/buildscripts to the wolips variables plugin.";
 
 	// The shared instance.
 	private static VariablesPlugin plugin;
@@ -106,8 +104,7 @@ public class VariablesPlugin extends AbstractCorePlugin {
 		monitor = new NullProgressMonitor();
 		File tmpFile = File.createTempFile("wolips", "xml");
 		FileOutputStream fileOutputStream = new FileOutputStream(tmpFile);
-		InputStream inputStream = this.openStream(new Path(
-				VariablesPlugin.build_user_home_properties));
+		InputStream inputStream = this.openStream(new Path(VariablesPlugin.build_user_home_properties));
 		int aByte = 0;
 		while (aByte >= 0) {
 			aByte = inputStream.read();
@@ -135,13 +132,12 @@ public class VariablesPlugin extends AbstractCorePlugin {
 	}
 
 	private boolean wobuildPropertiesMissing() {
-		File wobuildDotProperties = new File(System.getProperty("user.home")
-				+ "/Library/wobuild.properties");
-		if(!wobuildDotProperties.exists()) {
+		File wobuildDotProperties = new File(System.getProperty("user.home") + "/Library/wobuild.properties");
+		if (!wobuildDotProperties.exists()) {
 			return true;
 		}
 		boolean referenceApiSet = this.getReferenceApi() != null;
-		if(referenceApiSet) {
+		if (referenceApiSet) {
 			return false;
 		}
 		this.woEnvironment = null;
@@ -157,8 +153,7 @@ public class VariablesPlugin extends AbstractCorePlugin {
 
 	private IPath fixMissingSeparatorAfterDevice(String string) {
 		if (string != null && string.length() > 1 && string.charAt(1) == ':') {
-			return new Path(string.substring(2)).setDevice(string.substring(0,
-					2));
+			return new Path(string.substring(2)).setDevice(string.substring(0, 2));
 		}
 		return new Path(string);
 	}
@@ -167,49 +162,45 @@ public class VariablesPlugin extends AbstractCorePlugin {
 	 * @return the path to the local root
 	 */
 	public IPath getLocalRoot() {
-		return this.fixMissingSeparatorAfterDevice(this.getWOEnvironment()
-				.getWOVariables().localRoot());
+		return this.fixMissingSeparatorAfterDevice(this.getWOEnvironment().getWOVariables().localRoot());
 	}
 
 	/**
 	 * @return the path to the system root
 	 */
 	public IPath getSystemRoot() {
-		return this.fixMissingSeparatorAfterDevice(this.getWOEnvironment()
-				.getWOVariables().systemRoot());
+		return this.fixMissingSeparatorAfterDevice(this.getWOEnvironment().getWOVariables().systemRoot());
 	}
 
 	/**
 	 * @return the path to the user home
 	 */
 	public IPath getUserHome() {
-		return this.fixMissingSeparatorAfterDevice(this.getWOVariables()
-				.userHome());
+		return this.fixMissingSeparatorAfterDevice(this.getWOVariables().userHome());
 	}
 
 	/**
 	 * @return the path to the reference api
 	 */
 	public IPath getReferenceApi() {
-		String referenceApi = this.getWOVariables()
-		.referenceApi();
-		if(referenceApi == null) {
+		String referenceApi = this.getWOVariables().referenceApi();
+		if (referenceApi == null) {
 			return null;
 		}
 		return this.fixMissingSeparatorAfterDevice(referenceApi);
 	}
-	
+
 	/**
 	 * @return the path to the reference api
 	 */
 	public String getReferenceApiAsJavaDocCompatibleString() {
 		IPath referenceApi = this.getReferenceApi();
-		if(referenceApi == null) {
+		if (referenceApi == null) {
 			return null;
 		}
 		String referenceApiString = referenceApi.toOSString();
 		String osName = System.getProperty("os.name").toLowerCase();
-		if(osName.indexOf("windows") >= 0) {
+		if (osName.indexOf("windows") >= 0) {
 			referenceApiString = referenceApiString.replace('\\', '/');
 		}
 		referenceApiString = "file://" + referenceApiString;
@@ -220,21 +211,21 @@ public class VariablesPlugin extends AbstractCorePlugin {
 	 * @return the path to external build root
 	 */
 	public IPath getExternalBuildRoot() {
-	String root = this.getWOVariables().externalBuildRoot();
-	if(root != null) {
-		IPath result = this.fixMissingSeparatorAfterDevice(root);
-		  return result;
+		String root = this.getWOVariables().externalBuildRoot();
+		if (root != null) {
+			IPath result = this.fixMissingSeparatorAfterDevice(root);
+			return result;
+		}
+		return null;
 	}
-	   return null;
-	}
-	
+
 	/**
 	 * @return the names of the framework roots
 	 */
 	public String[] getFrameworkRootsNames() {
-	   if( getExternalBuildRoot() != null) {
-		return new String[] { "External Build Root", "User Home", "Local", "System" };
-        }
+		if (getExternalBuildRoot() != null) {
+			return new String[] { "External Build Root", "User Home", "Local", "System" };
+		}
 		return new String[] { "User Home", "Local", "System" };
 	}
 
@@ -242,13 +233,13 @@ public class VariablesPlugin extends AbstractCorePlugin {
 	 * @return the paths to the framework roots
 	 */
 	public IPath[] getFrameworkRoots() {
-	   if( getExternalBuildRoot() != null) {
-		IPath[] paths = new IPath[4];
-		paths[0] = this.getExternalBuildRoot();
-		paths[1] = this.appendLibraryFrameworks(this.getUserHome());
-		paths[2] = this.appendLibraryFrameworks(this.getLocalRoot());
-		paths[3] = this.appendLibraryFrameworks(this.getSystemRoot());
-		return paths;
+		if (getExternalBuildRoot() != null) {
+			IPath[] paths = new IPath[4];
+			paths[0] = this.getExternalBuildRoot();
+			paths[1] = this.appendLibraryFrameworks(this.getUserHome());
+			paths[2] = this.appendLibraryFrameworks(this.getLocalRoot());
+			paths[3] = this.appendLibraryFrameworks(this.getSystemRoot());
+			return paths;
 		}
 		IPath[] paths = new IPath[3];
 		paths[0] = this.appendLibraryFrameworks(this.getUserHome());
@@ -294,8 +285,7 @@ public class VariablesPlugin extends AbstractCorePlugin {
 		try {
 			this.writePropertiesFileToUserHome();
 		} catch (Exception anException) {
-			this.debug(VariablesPlugin.build_user_home_properties_pde_info
-					+ " " + anException.getStackTrace());
+			this.debug(VariablesPlugin.build_user_home_properties_pde_info + " " + anException.getStackTrace());
 		}
 	}
 

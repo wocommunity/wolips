@@ -61,55 +61,60 @@ import org.objectstyle.wolips.wodclipse.wod.parser.WodScanner;
  * @author mike
  */
 public class WodSourceViewerConfiguration extends SourceViewerConfiguration {
-  private WodScanner myScanner;
-  private WodEditor myEditor;
-  private MonoReconciler myReconciler;
-  private PresentationReconciler myPresentationReconciler;
-  private ContentAssistant myContentAssistant;
+	private WodScanner myScanner;
 
-  public WodSourceViewerConfiguration(WodEditor _editor) {
-    myEditor = _editor;
-  }
+	private WodEditor myEditor;
 
-  protected WodScanner getWODScanner() {
-    if (myScanner == null) {
-      myScanner = WodScanner.newWODScanner();
-    }
-    return myScanner;
-  }
+	private MonoReconciler myReconciler;
 
-  public IAnnotationHover getAnnotationHover(ISourceViewer _sourceViewer) {
-    return new WodAnnotationHover(_sourceViewer.getAnnotationModel());
-  }
+	private PresentationReconciler myPresentationReconciler;
 
-  public IReconciler getReconciler(ISourceViewer _sourceViewer) {
-    if (myReconciler == null) {
-      //WodReconcilingStrategy reconcilingStrategy = new WodReconcilingStrategy(myEditor);
-      //myReconciler = new MonoReconciler(reconcilingStrategy, false);
-    }
-    return myReconciler;
-  }
+	private ContentAssistant myContentAssistant;
 
-  public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceView) {
-    if (myPresentationReconciler == null) {
-      myPresentationReconciler = new PresentationReconciler();
-      DefaultDamagerRepairer dr = new DefaultDamagerRepairer(getWODScanner());
-      myPresentationReconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
-      myPresentationReconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
-    }
-    return myPresentationReconciler;
-  }
+	public WodSourceViewerConfiguration(WodEditor _editor) {
+		myEditor = _editor;
+	}
 
-  public IContentAssistant getContentAssistant(ISourceViewer _sourceViewer) {
-    if (myContentAssistant == null) {
-      WodCompletionProcessor completionProcessor = new WodCompletionProcessor(myEditor);
-      myContentAssistant = new ContentAssistant();
-      myContentAssistant.setContentAssistProcessor(completionProcessor, IDocument.DEFAULT_CONTENT_TYPE);
-      myContentAssistant.enableAutoActivation(true);
-      myContentAssistant.setAutoActivationDelay(500);
-      myContentAssistant.enableAutoInsert(true);
-      myContentAssistant.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
-    }
-    return myContentAssistant;
-  }
+	protected WodScanner getWODScanner() {
+		if (myScanner == null) {
+			myScanner = WodScanner.newWODScanner();
+		}
+		return myScanner;
+	}
+
+	public IAnnotationHover getAnnotationHover(ISourceViewer _sourceViewer) {
+		return new WodAnnotationHover(_sourceViewer.getAnnotationModel());
+	}
+
+	public IReconciler getReconciler(ISourceViewer _sourceViewer) {
+		if (myReconciler == null) {
+			// WodReconcilingStrategy reconcilingStrategy = new
+			// WodReconcilingStrategy(myEditor);
+			// myReconciler = new MonoReconciler(reconcilingStrategy, false);
+		}
+		return myReconciler;
+	}
+
+	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceView) {
+		if (myPresentationReconciler == null) {
+			myPresentationReconciler = new PresentationReconciler();
+			DefaultDamagerRepairer dr = new DefaultDamagerRepairer(getWODScanner());
+			myPresentationReconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
+			myPresentationReconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
+		}
+		return myPresentationReconciler;
+	}
+
+	public IContentAssistant getContentAssistant(ISourceViewer _sourceViewer) {
+		if (myContentAssistant == null) {
+			WodCompletionProcessor completionProcessor = new WodCompletionProcessor(myEditor);
+			myContentAssistant = new ContentAssistant();
+			myContentAssistant.setContentAssistProcessor(completionProcessor, IDocument.DEFAULT_CONTENT_TYPE);
+			myContentAssistant.enableAutoActivation(true);
+			myContentAssistant.setAutoActivationDelay(500);
+			myContentAssistant.enableAutoInsert(true);
+			myContentAssistant.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
+		}
+		return myContentAssistant;
+	}
 }

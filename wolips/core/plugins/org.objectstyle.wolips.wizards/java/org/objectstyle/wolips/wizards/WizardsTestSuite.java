@@ -67,9 +67,10 @@ public class WizardsTestSuite extends TestCase {
 	public WizardsTestSuite(String testName) {
 		super(testName);
 	}
+
 	public static Test suite() throws Exception {
 		TestSuite suite = new TestSuite();
-		//suite.addTestSuite(TemplateEnginePluginTest.class);
+		// suite.addTestSuite(TemplateEnginePluginTest.class);
 		return suite;
 	}
 }

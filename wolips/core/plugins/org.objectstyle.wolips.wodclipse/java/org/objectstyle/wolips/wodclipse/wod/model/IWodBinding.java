@@ -47,8 +47,11 @@ package org.objectstyle.wolips.wodclipse.wod.model;
  * @author mschrag
  */
 public interface IWodBinding extends IWodUnit {
-  public IWodElement getElement();
-  public String getName();
-  public String getValue();
-  public boolean shouldValidate();
+	public IWodElement getElement();
+
+	public String getName();
+
+	public String getValue();
+
+	public boolean shouldValidate();
 }

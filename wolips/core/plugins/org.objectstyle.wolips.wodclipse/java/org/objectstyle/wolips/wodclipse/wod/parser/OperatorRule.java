@@ -50,14 +50,14 @@ import org.eclipse.jface.text.rules.IWordDetector;
  * @author mike
  */
 public class OperatorRule extends WordPredicateRule {
-  private IWordDetector myWordDetector;
-  
-  public OperatorRule(IWordDetector _detector, IToken _defaultToken) {
-    super(_detector, _defaultToken);
-    myWordDetector = _detector;
-  }
+	private IWordDetector myWordDetector;
 
-  public boolean isWordDetectorOfType(Class _wordDetectorType) {
-    return myWordDetector.getClass().isAssignableFrom(_wordDetectorType);
-  }
+	public OperatorRule(IWordDetector _detector, IToken _defaultToken) {
+		super(_detector, _defaultToken);
+		myWordDetector = _detector;
+	}
+
+	public boolean isWordDetectorOfType(Class _wordDetectorType) {
+		return myWordDetector.getClass().isAssignableFrom(_wordDetectorType);
+	}
 }

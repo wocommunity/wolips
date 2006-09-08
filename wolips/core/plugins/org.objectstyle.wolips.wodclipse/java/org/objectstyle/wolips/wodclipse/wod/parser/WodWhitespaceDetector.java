@@ -49,10 +49,10 @@ import org.eclipse.jface.text.rules.IWhitespaceDetector;
  * @author mike
  */
 public class WodWhitespaceDetector implements IWhitespaceDetector {
-  /**
-   * @see IWhitespaceDetector#isWhitespace
-   */
-  public boolean isWhitespace(char c) {
-    return Character.isWhitespace(c);
-  }
+	/**
+	 * @see IWhitespaceDetector#isWhitespace
+	 */
+	public boolean isWhitespace(char c) {
+		return Character.isWhitespace(c);
+	}
 }

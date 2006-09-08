@@ -89,8 +89,7 @@ public class WOSubprojectCreator implements IRunnableWithProgress {
 	 * Constructor for WOSubprojectCreator.
 	 */
 	public WOSubprojectCreator(IResource parentResource, String subprojectName) {
-		this.subprojectName = subprojectName + "."
-				+ IWOLipsModel.EXT_SUBPROJECT;
+		this.subprojectName = subprojectName + "." + IWOLipsModel.EXT_SUBPROJECT;
 		this.parentResource = parentResource;
 	}
 
@@ -113,22 +112,18 @@ public class WOSubprojectCreator implements IRunnableWithProgress {
 	 * @throws InvocationTargetException
 	 * @throws InterruptedException
 	 */
-	public void createSubproject(IProgressMonitor monitor)
-			throws CoreException, InvocationTargetException {
+	public void createSubproject(IProgressMonitor monitor) throws CoreException, InvocationTargetException {
 		IFolder subprojectFolder = null;
 		switch (parentResource.getType()) {
 		case IResource.PROJECT:
-			subprojectFolder = ((IProject) parentResource)
-					.getFolder(subprojectName);
+			subprojectFolder = ((IProject) parentResource).getFolder(subprojectName);
 			break;
 		case IResource.FOLDER:
-			subprojectFolder = ((IFolder) parentResource)
-					.getFolder(subprojectName);
+			subprojectFolder = ((IFolder) parentResource).getFolder(subprojectName);
 
 			break;
 		default:
-			throw new InvocationTargetException(new Exception(
-					"Wrong parent resource - check validation"));
+			throw new InvocationTargetException(new Exception("Wrong parent resource - check validation"));
 		}
 		subprojectFolder.create(false, true, monitor);
 
@@ -141,8 +136,7 @@ public class WOSubprojectCreator implements IRunnableWithProgress {
 			throw new InvocationTargetException(e);
 		}
 		templateEngine.getWolipsContext().setProjectName(subprojectName);
-		templateEngine.addTemplate(new TemplateDefinition(
-				"subproject/PB.project.vm", path, "PB.project", "PB.project"));
+		templateEngine.addTemplate(new TemplateDefinition("subproject/PB.project.vm", path, "PB.project", "PB.project"));
 		try {
 			templateEngine.run(new NullProgressMonitor());
 		} catch (Exception e) {
@@ -163,12 +157,10 @@ public class WOSubprojectCreator implements IRunnableWithProgress {
 			}
 		}
 		IJavaProject javaProject = JavaCore.create(parentResource.getProject());
-		IClasspathEntry classpathEntry = JavaCore.newSourceEntry(sourceFolder
-				.getFullPath());
+		IClasspathEntry classpathEntry = JavaCore.newSourceEntry(sourceFolder.getFullPath());
 		IClasspathEntry[] classpathEntries = javaProject.getRawClasspath();
 		IClasspathEntry[] newClasspathEntries = new IClasspathEntry[classpathEntries.length + 1];
-		System.arraycopy(classpathEntries, 0, newClasspathEntries, 0,
-				classpathEntries.length);
+		System.arraycopy(classpathEntries, 0, newClasspathEntries, 0, classpathEntries.length);
 		newClasspathEntries[classpathEntries.length] = classpathEntry;
 		javaProject.setRawClasspath(newClasspathEntries, monitor);
 	}

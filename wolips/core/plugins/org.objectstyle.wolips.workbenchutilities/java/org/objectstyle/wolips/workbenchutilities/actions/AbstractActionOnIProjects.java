@@ -119,7 +119,7 @@ public abstract class AbstractActionOnIProjects implements IObjectActionDelegate
 			if (obj != null && obj instanceof IJavaProject)
 				arrayList.add(((IJavaProject) obj).getProject());
 		}
-		this.projects = (IProject[])arrayList.toArray(new IProject[arrayList.size()]);
+		this.projects = (IProject[]) arrayList.toArray(new IProject[arrayList.size()]);
 	}
 
 	/**
