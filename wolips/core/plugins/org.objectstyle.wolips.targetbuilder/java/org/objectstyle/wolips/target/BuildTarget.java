@@ -53,8 +53,8 @@
  * <http://objectstyle.org/>.
  *
  */
- 
- package org.objectstyle.wolips.target;
+
+package org.objectstyle.wolips.target;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,20 +65,22 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 
-public class BuildTarget
-{	
+public class BuildTarget {
 	private String _name;
+
 	private List _sourcePaths;
+
 	private List _classPath;
+
 	private List _projectClassPath;
+
 	private IPath _outputLocation;
 
-	public BuildTarget(Map targetMap)
-	{
+	public BuildTarget(Map targetMap) {
 		super();
-		
+
 		Object value;
-		
+
 		if ((value = targetMap.get(TargetBuilderNature.NAME)) != null)
 			setName((String) value);
 		if ((value = targetMap.get(TargetBuilderNature.OUTPUT)) != null)
@@ -91,51 +93,44 @@ public class BuildTarget
 			setProjectClassPath((List) value);
 	}
 
-	public void setName(String value)
-	{
+	public void setName(String value) {
 		this._name = value;
 	}
-	public void setOutputLocation(IPath value)
-	{
+
+	public void setOutputLocation(IPath value) {
 		this._outputLocation = value;
 	}
 
-	public void setSourcePath(List value)
-	{
+	public void setSourcePath(List value) {
 		this._sourcePaths = new ArrayList();
 		for (int i = 0; i < value.size(); i++)
 			_sourcePaths.add(JavaCore.newSourceEntry(new Path((String) value.get(i))));
 	}
 
-	public void setClassPath(List value)
-	{
+	public void setClassPath(List value) {
 		this._classPath = new ArrayList();
 		for (int i = 0; i < value.size(); i++)
 			_classPath.add(JavaCore.newLibraryEntry(new Path((String) value.get(i)), null, null, false));
 	}
-	
-	public void setProjectClassPath(List value)
-	{
+
+	public void setProjectClassPath(List value) {
 		this._projectClassPath = new ArrayList();
 		for (int i = 0; i < value.size(); i++)
 			_projectClassPath.add(JavaCore.newLibraryEntry(new Path((String) value.get(i)), null, null, false));
 	}
 
-	public String name()
-	{
+	public String name() {
 		return _name;
 	}
 
-	public IPath outputLocation()
-	{
+	public IPath outputLocation() {
 		return _outputLocation;
 	}
 
-	public IClasspathEntry[] classPathEntries()
-	{
-		ArrayList classPathEntries = new ArrayList(); 
+	public IClasspathEntry[] classPathEntries() {
+		ArrayList classPathEntries = new ArrayList();
 		classPathEntries.addAll(_sourcePaths);
-		if(_projectClassPath != null && _projectClassPath.size() > 0)
+		if (_projectClassPath != null && _projectClassPath.size() > 0)
 			classPathEntries.addAll(_projectClassPath);
 		classPathEntries.addAll(_classPath);
 

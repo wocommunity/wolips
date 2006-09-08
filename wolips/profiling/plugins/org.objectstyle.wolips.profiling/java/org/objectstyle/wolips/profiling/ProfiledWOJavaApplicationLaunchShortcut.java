@@ -58,22 +58,22 @@ package org.objectstyle.wolips.profiling;
 
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.objectstyle.wolips.launching.actions.WOJavaApplicationLaunchShortcut;
+
 /**
  * @author uli
- *
+ * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type
+ * comments go to Window>Preferences>Java>Code Generation.
  */
 public class ProfiledWOJavaApplicationLaunchShortcut extends WOJavaApplicationLaunchShortcut {
-	
+
 	/**
 	 * Returns the local java launch config type
 	 */
 	protected ILaunchConfigurationType getJavaLaunchConfigType() {
-	    String type = ProfiledWOJavaLocalApplicationLaunchConfigurationDelegate.ProfiledWOJavaLocalApplicationID;
-		return getLaunchManager().getLaunchConfigurationType(type);		
+		String type = ProfiledWOJavaLocalApplicationLaunchConfigurationDelegate.ProfiledWOJavaLocalApplicationID;
+		return getLaunchManager().getLaunchConfigurationType(type);
 	}
 
 }

@@ -59,114 +59,93 @@ import junit.framework.TestCase;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class TemplateFolderTest extends TestCase {
-	
+
 	/**
 	 * 
 	 */
 	public void testIsOfWOApplicationProjectType() {
-		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
-					.getTemplateFolderRoots();
-			TemplateFolder[] templateFolder = TemplateEnginePlugin
-					.getTemplateFolder(templateFolderRoots,
-							TemplateEnginePlugin.WOApplicationProject);
-			for (int i = 0; i < templateFolder.length; i++) {
-				TemplateFolder folder = templateFolder[i];
-				assertTrue(folder.isOfType(TemplateEnginePlugin.WOApplicationProject));				
-			}
+		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin.getTemplateFolderRoots();
+		TemplateFolder[] templateFolder = TemplateEnginePlugin.getTemplateFolder(templateFolderRoots, TemplateEnginePlugin.WOApplicationProject);
+		for (int i = 0; i < templateFolder.length; i++) {
+			TemplateFolder folder = templateFolder[i];
+			assertTrue(folder.isOfType(TemplateEnginePlugin.WOApplicationProject));
+		}
 	}
-  
-  /**
-   * 
-   */
-  public void testIsOfWOnderApplicationProjectType() {
-    TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
-          .getTemplateFolderRoots();
-      TemplateFolder[] templateFolder = TemplateEnginePlugin
-          .getTemplateFolder(templateFolderRoots,
-              TemplateEnginePlugin.WOnderApplicationProject);
-      for (int i = 0; i < templateFolder.length; i++) {
-        TemplateFolder folder = templateFolder[i];
-        assertTrue(folder.isOfType(TemplateEnginePlugin.WOnderApplicationProject));       
-      }
-  }
-	
+
+	/**
+	 * 
+	 */
+	public void testIsOfWOnderApplicationProjectType() {
+		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin.getTemplateFolderRoots();
+		TemplateFolder[] templateFolder = TemplateEnginePlugin.getTemplateFolder(templateFolderRoots, TemplateEnginePlugin.WOnderApplicationProject);
+		for (int i = 0; i < templateFolder.length; i++) {
+			TemplateFolder folder = templateFolder[i];
+			assertTrue(folder.isOfType(TemplateEnginePlugin.WOnderApplicationProject));
+		}
+	}
+
 	/**
 	 * 
 	 */
 	public void testIsOfD2W_ApplicationProjectType() {
-		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
-					.getTemplateFolderRoots();
-			TemplateFolder[] templateFolder = TemplateEnginePlugin
-					.getTemplateFolder(templateFolderRoots,
-							TemplateEnginePlugin.D2W_ApplicationProject);
-			for (int i = 0; i < templateFolder.length; i++) {
-				TemplateFolder folder = templateFolder[i];
-				assertTrue(folder.isOfType(TemplateEnginePlugin.D2W_ApplicationProject));				
-			}
+		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin.getTemplateFolderRoots();
+		TemplateFolder[] templateFolder = TemplateEnginePlugin.getTemplateFolder(templateFolderRoots, TemplateEnginePlugin.D2W_ApplicationProject);
+		for (int i = 0; i < templateFolder.length; i++) {
+			TemplateFolder folder = templateFolder[i];
+			assertTrue(folder.isOfType(TemplateEnginePlugin.D2W_ApplicationProject));
+		}
 	}
-	
+
 	/**
 	 * 
 	 */
 	public void testIsOfWOFrameworkProjectType() {
-		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
-					.getTemplateFolderRoots();
-			TemplateFolder[] templateFolder = TemplateEnginePlugin
-					.getTemplateFolder(templateFolderRoots,
-							TemplateEnginePlugin.WOFrameworkProject);
-			for (int i = 0; i < templateFolder.length; i++) {
-				TemplateFolder folder = templateFolder[i];
-				assertTrue(folder.isOfType(TemplateEnginePlugin.WOFrameworkProject));				
-			}
+		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin.getTemplateFolderRoots();
+		TemplateFolder[] templateFolder = TemplateEnginePlugin.getTemplateFolder(templateFolderRoots, TemplateEnginePlugin.WOFrameworkProject);
+		for (int i = 0; i < templateFolder.length; i++) {
+			TemplateFolder folder = templateFolder[i];
+			assertTrue(folder.isOfType(TemplateEnginePlugin.WOFrameworkProject));
+		}
 	}
-	
+
 	/**
 	 * 
 	 */
 	public void testIsOfJarProjectType() {
-		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
-					.getTemplateFolderRoots();
-			TemplateFolder[] templateFolder = TemplateEnginePlugin
-					.getTemplateFolder(templateFolderRoots,
-							TemplateEnginePlugin.JarProject);
-			for (int i = 0; i < templateFolder.length; i++) {
-				TemplateFolder folder = templateFolder[i];
-				assertTrue(folder.isOfType(TemplateEnginePlugin.JarProject));				
-			}
+		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin.getTemplateFolderRoots();
+		TemplateFolder[] templateFolder = TemplateEnginePlugin.getTemplateFolder(templateFolderRoots, TemplateEnginePlugin.JarProject);
+		for (int i = 0; i < templateFolder.length; i++) {
+			TemplateFolder folder = templateFolder[i];
+			assertTrue(folder.isOfType(TemplateEnginePlugin.JarProject));
+		}
 	}
-	
+
 	/**
 	 * 
 	 */
 	public void testIsOfEOModelType() {
-		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
-					.getTemplateFolderRoots();
-			TemplateFolder[] templateFolder = TemplateEnginePlugin
-					.getTemplateFolder(templateFolderRoots,
-							TemplateEnginePlugin.EOModel);
-			for (int i = 0; i < templateFolder.length; i++) {
-				TemplateFolder folder = templateFolder[i];
-				assertTrue(folder.isOfType(TemplateEnginePlugin.EOModel));				
-			}
+		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin.getTemplateFolderRoots();
+		TemplateFolder[] templateFolder = TemplateEnginePlugin.getTemplateFolder(templateFolderRoots, TemplateEnginePlugin.EOModel);
+		for (int i = 0; i < templateFolder.length; i++) {
+			TemplateFolder folder = templateFolder[i];
+			assertTrue(folder.isOfType(TemplateEnginePlugin.EOModel));
+		}
 	}
-	
+
 	/**
 	 * 
 	 */
 	public void testIsOfWOComponentType() {
-		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
-					.getTemplateFolderRoots();
-			TemplateFolder[] templateFolder = TemplateEnginePlugin
-					.getTemplateFolder(templateFolderRoots,
-							TemplateEnginePlugin.WOComponent);
-			for (int i = 0; i < templateFolder.length; i++) {
-				TemplateFolder folder = templateFolder[i];
-				assertTrue(folder.isOfType(TemplateEnginePlugin.WOComponent));				
-			}
+		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin.getTemplateFolderRoots();
+		TemplateFolder[] templateFolder = TemplateEnginePlugin.getTemplateFolder(templateFolderRoots, TemplateEnginePlugin.WOComponent);
+		for (int i = 0; i < templateFolder.length; i++) {
+			TemplateFolder folder = templateFolder[i];
+			assertTrue(folder.isOfType(TemplateEnginePlugin.WOComponent));
+		}
 	}
 }

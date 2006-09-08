@@ -59,13 +59,13 @@ public abstract class AbstractD2WModelChild {
 	private Map map;
 
 	private D2WModel model;
-	
+
 	public AbstractD2WModelChild(D2WModel model, Map map) {
 		super();
-		if(model == null) {
+		if (model == null) {
 			throw new IllegalArgumentException();
 		}
-		if(map == null) {
+		if (map == null) {
 			throw new IllegalArgumentException();
 		}
 		this.map = map;
@@ -83,5 +83,5 @@ public abstract class AbstractD2WModelChild {
 	public D2WModel getModel() {
 		return model;
 	}
-	
+
 }

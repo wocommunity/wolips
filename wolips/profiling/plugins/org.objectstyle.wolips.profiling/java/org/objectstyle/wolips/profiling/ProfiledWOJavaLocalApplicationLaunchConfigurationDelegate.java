@@ -55,24 +55,20 @@ import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchCo
 /**
  * Launches a local VM.
  */
-public class ProfiledWOJavaLocalApplicationLaunchConfigurationDelegate extends
-		WOJavaLocalApplicationLaunchConfigurationDelegate {
+public class ProfiledWOJavaLocalApplicationLaunchConfigurationDelegate extends WOJavaLocalApplicationLaunchConfigurationDelegate {
 
 	public static final String ProfiledWOJavaLocalApplicationID = "org.objectstyle.wolips.profiling.ProfiledWOLocalJavaApplication";
 
-	public String getVMArguments(ILaunchConfiguration configuration, ILaunch launch)
-			throws CoreException {
+	public String getVMArguments(ILaunchConfiguration configuration, ILaunch launch) throws CoreException {
 		StringBuffer vmArgs = new StringBuffer();
 		vmArgs.append(super.getVMArguments(configuration));
 		// Set things up for profiling only if this is
 		// debug mode
 		// Set things up for profiling
 		try {
-			int hprofPort = ProfilingLaunchSupport
-					.getProfilerPortNumber(configuration);
+			int hprofPort = ProfilingLaunchSupport.getProfilerPortNumber(configuration);
 			if (hprofPort != -1) {
-				String args = ProfilingLaunchSupport.getHProfVMArguments(
-						configuration, hprofPort);
+				String args = ProfilingLaunchSupport.getHProfVMArguments(configuration, hprofPort);
 				// Fire up the listener thread
 				ProfilingLaunchSupport.launchHprofListener(launch, hprofPort);
 				System.err.println(args);

@@ -62,32 +62,32 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
  * @author mike
  */
 public class CreateFolderChange extends Change {
-  private IFolder myFolder;
-  
-  public CreateFolderChange(IFolder _folder) {
-    myFolder = _folder;
-  }
+	private IFolder myFolder;
 
-  public String getName() {
-    return "Create folder " + myFolder.getName() + ".";
-  }
+	public CreateFolderChange(IFolder _folder) {
+		myFolder = _folder;
+	}
 
-  public void initializeValidationData(IProgressMonitor _pm) {
-  }
+	public String getName() {
+		return "Create folder " + myFolder.getName() + ".";
+	}
 
-  public RefactoringStatus isValid(IProgressMonitor _pm) throws CoreException, OperationCanceledException {
-    RefactoringStatus status = myFolder.exists() ? RefactoringStatus.createErrorStatus(myFolder.getName() + " already exists.") : new RefactoringStatus();
-    return status;
-  }
+	public void initializeValidationData(IProgressMonitor _pm) {
+	}
 
-  public Change perform(IProgressMonitor _pm) throws CoreException {
-    myFolder.create(false, true, _pm);
-    DeleteFolderChange undoChange = new DeleteFolderChange(myFolder, true);
-    return undoChange;
-  }
+	public RefactoringStatus isValid(IProgressMonitor _pm) throws CoreException, OperationCanceledException {
+		RefactoringStatus status = myFolder.exists() ? RefactoringStatus.createErrorStatus(myFolder.getName() + " already exists.") : new RefactoringStatus();
+		return status;
+	}
 
-  public Object getModifiedElement() {
-    return myFolder;
-  }
+	public Change perform(IProgressMonitor _pm) throws CoreException {
+		myFolder.create(false, true, _pm);
+		DeleteFolderChange undoChange = new DeleteFolderChange(myFolder, true);
+		return undoChange;
+	}
+
+	public Object getModifiedElement() {
+		return myFolder;
+	}
 
 }

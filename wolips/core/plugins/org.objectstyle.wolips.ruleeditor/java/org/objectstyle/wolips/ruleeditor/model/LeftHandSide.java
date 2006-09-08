@@ -58,7 +58,7 @@ public class LeftHandSide extends AbstractQualifierElement {
 	public LeftHandSide(D2WModel model, Map map) {
 		super(model, map);
 	}
-	
+
 	public String getDisplayString() {
 		StringBuffer stringBuffer = new StringBuffer();
 		this.appendToDisplayStringBuffer(stringBuffer, this.getConcatWithString());

@@ -56,14 +56,13 @@ import org.eclipse.jdt.internal.corext.refactoring.reorg.INewNameQuery;
  * @author mike
  */
 public class FixedNewNameQuery implements INewNameQuery {
-  private String myNewName;
+	private String myNewName;
 
-  public FixedNewNameQuery(String _newName) {
-    myNewName = _newName;
-  }
+	public FixedNewNameQuery(String _newName) {
+		myNewName = _newName;
+	}
 
-  public String getNewName() {
-    return myNewName;
-  }
+	public String getNewName() {
+		return myNewName;
+	}
 }
-

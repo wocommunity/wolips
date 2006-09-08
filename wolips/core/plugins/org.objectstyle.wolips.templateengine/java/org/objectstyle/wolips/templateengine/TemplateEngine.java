@@ -83,148 +83,146 @@ import org.jdom.input.SAXBuilder;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class TemplateEngine implements IRunnableWithProgress {
-  private VelocityContext context = null;
-  private ArrayList templates = null;
-  private VelocityEngine velocityEngine = null;
-  private WOLipsContext wolipsContext;
+	private VelocityContext context = null;
 
-  /**
-   * @throws Exception
-   */
-  public void init() throws Exception {
-    /*
-     * create a new instance of the engine
-     */
-    this.velocityEngine = new VelocityEngine();
-    this.velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.NullLogSystem");
-    /*
-     * initialize the engine
-     */
-    String userHomeWOLipsPath = System.getProperty("user.home") + File.separator + "Library" + File.separator + "WOLips";
-    URL url = null;
-    url = Platform.resolve(TemplateEnginePlugin.baseURL());
-    String templatePaths = userHomeWOLipsPath + ", ";
-    Path path = new Path(url.getPath());
-    templatePaths = templatePaths + path.append("templates").toOSString();
-    this.velocityEngine.setProperty("file.resource.loader.path", templatePaths);
-    this.velocityEngine.init();
-    this.context = new VelocityContext();
-    this.templates = new ArrayList();
-    this.wolipsContext = new WOLipsContext();
-    this.setPropertyForKey(this.wolipsContext, WOLipsContext.Key);
-    SAXBuilder builder;
-    Document myContext = null;
-    try {
-      builder = new SAXBuilder();
-      myContext = builder.build(userHomeWOLipsPath + File.separator + "MyContext.xml");
-    }
-    catch (Exception ee) {
-      //We can ignore this exception, it`s thrown if the xml document is
-      // not found.
-      //Per default there is no such file
-      builder = null;
-    }
-    if (myContext != null) {
-      this.setPropertyForKey(myContext, "MyContext");
-    }
-  }
+	private ArrayList templates = null;
 
-  /**
-   * @param template
-   */
-  public void addTemplate(TemplateDefinition template) {
-    this.templates.add(template);
-  }
+	private VelocityEngine velocityEngine = null;
 
-  /**
-   * @param templateDefinitions
-   */
-  public void addTemplates(TemplateDefinition[] templateDefinitions) {
-    if (this.templates == null) {
-      return;
-    }
-    for (int i = 0; i < templateDefinitions.length; i++) {
-      TemplateDefinition templateDefinition = templateDefinitions[i];
-      this.templates.add(templateDefinition);
-    }
-  }
+	private WOLipsContext wolipsContext;
 
-  /**
-   * @param property
-   * @param key
-   */
-  public void setPropertyForKey(Object property, String key) {
-    this.context.put(key, property);
-  }
+	/**
+	 * @throws Exception
+	 */
+	public void init() throws Exception {
+		/*
+		 * create a new instance of the engine
+		 */
+		this.velocityEngine = new VelocityEngine();
+		this.velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.NullLogSystem");
+		/*
+		 * initialize the engine
+		 */
+		String userHomeWOLipsPath = System.getProperty("user.home") + File.separator + "Library" + File.separator + "WOLips";
+		URL url = null;
+		url = Platform.resolve(TemplateEnginePlugin.baseURL());
+		String templatePaths = userHomeWOLipsPath + ", ";
+		Path path = new Path(url.getPath());
+		templatePaths = templatePaths + path.append("templates").toOSString();
+		this.velocityEngine.setProperty("file.resource.loader.path", templatePaths);
+		this.velocityEngine.init();
+		this.context = new VelocityContext();
+		this.templates = new ArrayList();
+		this.wolipsContext = new WOLipsContext();
+		this.setPropertyForKey(this.wolipsContext, WOLipsContext.Key);
+		SAXBuilder builder;
+		Document myContext = null;
+		try {
+			builder = new SAXBuilder();
+			myContext = builder.build(userHomeWOLipsPath + File.separator + "MyContext.xml");
+		} catch (Exception ee) {
+			// We can ignore this exception, it`s thrown if the xml document is
+			// not found.
+			// Per default there is no such file
+			builder = null;
+		}
+		if (myContext != null) {
+			this.setPropertyForKey(myContext, "MyContext");
+		}
+	}
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
-   */
-  public void run(IProgressMonitor monitor) throws InvocationTargetException {
-    setDateInContext();
-    try {
-      for (int i = 0; i < this.templates.size(); i++) {
-        TemplateDefinition templateDefinition = (TemplateDefinition) this.templates.get(i);
-        this.run(templateDefinition);
-      }
-    }
-    catch (Exception e) {
-      throw new InvocationTargetException(e);
-    }
-  }
+	/**
+	 * @param template
+	 */
+	public void addTemplate(TemplateDefinition template) {
+		this.templates.add(template);
+	}
 
-  private void run(TemplateDefinition templateDefinition) {
-    FileWriter writer = null;
-    File file = null;
-    try {
-      /*
-       * make a writer, and merge the template 'against' the context
-       */
-      String templateName = templateDefinition.getTemplateName();
-      Template template = this.velocityEngine.getTemplate(templateName);
-      writer = new FileWriter(templateDefinition.getDestinationPath());
-      file = new File(templateDefinition.getDestinationPath());
-      File parentDir = file.getParentFile();
-      if (!parentDir.exists()) {
-        parentDir.mkdirs();
-      }
-      writer = new FileWriter(file);
-      template.merge(this.context, writer);
-    }
-    catch (Exception e) {
-      System.out.println("Exception : " + e);
-    }
-    finally {
-      if (writer != null) {
-        try {
-          writer.flush();
-          writer.close();
-        }
-        catch (Exception ee) {
-          System.out.println("Exception : " + ee);
-        }
-      }
-    }
-  }
+	/**
+	 * @param templateDefinitions
+	 */
+	public void addTemplates(TemplateDefinition[] templateDefinitions) {
+		if (this.templates == null) {
+			return;
+		}
+		for (int i = 0; i < templateDefinitions.length; i++) {
+			TemplateDefinition templateDefinition = templateDefinitions[i];
+			this.templates.add(templateDefinition);
+		}
+	}
 
-  /**
-   * @return Returns the wolipsContext.
-   */
-  public WOLipsContext getWolipsContext() {
-    return this.wolipsContext;
-  }
+	/**
+	 * @param property
+	 * @param key
+	 */
+	public void setPropertyForKey(Object property, String key) {
+		this.context.put(key, property);
+	}
 
-  /**
-   * sets the date in the context
-   */
-  private void setDateInContext() {
-    DateFormat dateFormat = DateFormat.getDateInstance();
-    DateFormat timeFormat = DateFormat.getTimeInstance();
-    Date currentDate = Calendar.getInstance().getTime();
-    String date = dateFormat.format(currentDate) + " " + timeFormat.format(currentDate);
-    this.setPropertyForKey(date, "Date");
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
+	 */
+	public void run(IProgressMonitor monitor) throws InvocationTargetException {
+		setDateInContext();
+		try {
+			for (int i = 0; i < this.templates.size(); i++) {
+				TemplateDefinition templateDefinition = (TemplateDefinition) this.templates.get(i);
+				this.run(templateDefinition);
+			}
+		} catch (Exception e) {
+			throw new InvocationTargetException(e);
+		}
+	}
 
-  }
+	private void run(TemplateDefinition templateDefinition) {
+		FileWriter writer = null;
+		File file = null;
+		try {
+			/*
+			 * make a writer, and merge the template 'against' the context
+			 */
+			String templateName = templateDefinition.getTemplateName();
+			Template template = this.velocityEngine.getTemplate(templateName);
+			writer = new FileWriter(templateDefinition.getDestinationPath());
+			file = new File(templateDefinition.getDestinationPath());
+			File parentDir = file.getParentFile();
+			if (!parentDir.exists()) {
+				parentDir.mkdirs();
+			}
+			writer = new FileWriter(file);
+			template.merge(this.context, writer);
+		} catch (Exception e) {
+			System.out.println("Exception : " + e);
+		} finally {
+			if (writer != null) {
+				try {
+					writer.flush();
+					writer.close();
+				} catch (Exception ee) {
+					System.out.println("Exception : " + ee);
+				}
+			}
+		}
+	}
+
+	/**
+	 * @return Returns the wolipsContext.
+	 */
+	public WOLipsContext getWolipsContext() {
+		return this.wolipsContext;
+	}
+
+	/**
+	 * sets the date in the context
+	 */
+	private void setDateInContext() {
+		DateFormat dateFormat = DateFormat.getDateInstance();
+		DateFormat timeFormat = DateFormat.getTimeInstance();
+		Date currentDate = Calendar.getInstance().getTime();
+		String date = dateFormat.format(currentDate) + " " + timeFormat.format(currentDate);
+		this.setPropertyForKey(date, "Date");
+
+	}
 }

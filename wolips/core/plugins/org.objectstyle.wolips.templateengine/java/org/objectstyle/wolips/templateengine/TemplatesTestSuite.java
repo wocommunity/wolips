@@ -70,6 +70,7 @@ public class TemplatesTestSuite extends TestCase {
 	public TemplatesTestSuite(String testName) {
 		super(testName);
 	}
+
 	/**
 	 * @return
 	 * @throws Exception
@@ -78,10 +79,10 @@ public class TemplatesTestSuite extends TestCase {
 		TestSuite suite = new TestSuite();
 		suite.addTestSuite(TemplateEnginePluginTest.class);
 		suite.addTestSuite(ComponentEngineTest.class);
-		//suite.addTestSuite(TemplateFolderRootTest.class);
-		//suite.addTestSuite(TemplateFolderTest.class);
-		//suite.addTestSuite(TemplatesDocumentTest.class);
-		//suite.addTestSuite(TemplateDefinitionTest.class);
+		// suite.addTestSuite(TemplateFolderRootTest.class);
+		// suite.addTestSuite(TemplateFolderTest.class);
+		// suite.addTestSuite(TemplatesDocumentTest.class);
+		// suite.addTestSuite(TemplateDefinitionTest.class);
 		return suite;
 	}
 }

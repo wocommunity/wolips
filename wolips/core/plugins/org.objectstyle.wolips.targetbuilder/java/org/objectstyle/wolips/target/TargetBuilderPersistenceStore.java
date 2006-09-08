@@ -53,8 +53,8 @@
  * <http://objectstyle.org/>.
  *
  */
- 
- package org.objectstyle.wolips.target;
+
+package org.objectstyle.wolips.target;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -78,28 +78,23 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.internal.core.builder.JavaBuilder;
 import org.eclipse.jdt.internal.core.builder.State;
 
-public class TargetBuilderPersistenceStore implements ISaveParticipant, IResourceChangeListener
-{
+public class TargetBuilderPersistenceStore implements ISaveParticipant, IResourceChangeListener {
 	private HashMap _buildStates;
 
-	public TargetBuilderPersistenceStore()
-	{
+	public TargetBuilderPersistenceStore() {
 		super();
 		_buildStates = new HashMap();
 	}
 
-	public void setBuildStateForKey(State buildState, String key)
-	{
+	public void setBuildStateForKey(State buildState, String key) {
 		_buildStates.put(key, buildState);
 	}
 
-	public State buildStateForKey(String key)
-	{
+	public State buildStateForKey(String key) {
 		return (State) _buildStates.get(key);
 	}
 
-	public void doneSaving(ISaveContext context)
-	{
+	public void doneSaving(ISaveContext context) {
 		TargetBuilderPlugin pluginInstance = TargetBuilderPlugin.getDefault();
 		int previousSaveNumber = context.getPreviousSaveNumber();
 		String oldFileName = "save-" + Integer.toString(previousSaveNumber);
@@ -107,113 +102,94 @@ public class TargetBuilderPersistenceStore implements ISaveParticipant, IResourc
 		f.delete();
 	}
 
-	public void prepareToSave(ISaveContext context)
-	{}
+	public void prepareToSave(ISaveContext context) {
+	}
 
-	public void rollback(ISaveContext context)
-	{
+	public void rollback(ISaveContext context) {
 		TargetBuilderPlugin pluginInstance = TargetBuilderPlugin.getDefault();
-		// since the save operation has failed, delete the saved state we have just written
+		// since the save operation has failed, delete the saved state we have
+		// just written
 		int saveNumber = context.getSaveNumber();
 		String saveFileName = "save-" + Integer.toString(saveNumber);
 		File f = pluginInstance.getStateLocation().append(saveFileName).toFile();
 		f.delete();
 	}
 
-	public void saving(ISaveContext context)
-	{
-		switch (context.getKind())
-		{
-			case ISaveContext.FULL_SAVE :
-				TargetBuilderPlugin pluginInstance = TargetBuilderPlugin.getDefault();
-				int saveNumber = context.getSaveNumber();
-				String saveFileName = "save-" + Integer.toString(saveNumber);
-				File f = pluginInstance.getStateLocation().append(saveFileName).toFile();
-				// if we fail to write, an exception is thrown and we do not update the path
-				writeImportantState(f);
-				context.map(new Path("save"), new Path(saveFileName));
-				context.needSaveNumber();
-				break;
-			case ISaveContext.PROJECT_SAVE :
-				// get the project related to this save operation
-				IProject project = context.getProject();
-				System.out.println("ISaveContext.PROJECT_SAVE:" + project);
-				// save its information, if necessary
-				break;
-			case ISaveContext.SNAPSHOT :
-				//System.out.println("ISaveContext.SNAPSHOT:");
-				// This operation needs to be really fast because
-				// snapshots can be requested frequently by the
-				// workspace.
-				break;
+	public void saving(ISaveContext context) {
+		switch (context.getKind()) {
+		case ISaveContext.FULL_SAVE:
+			TargetBuilderPlugin pluginInstance = TargetBuilderPlugin.getDefault();
+			int saveNumber = context.getSaveNumber();
+			String saveFileName = "save-" + Integer.toString(saveNumber);
+			File f = pluginInstance.getStateLocation().append(saveFileName).toFile();
+			// if we fail to write, an exception is thrown and we do not update
+			// the path
+			writeImportantState(f);
+			context.map(new Path("save"), new Path(saveFileName));
+			context.needSaveNumber();
+			break;
+		case ISaveContext.PROJECT_SAVE:
+			// get the project related to this save operation
+			IProject project = context.getProject();
+			System.out.println("ISaveContext.PROJECT_SAVE:" + project);
+			// save its information, if necessary
+			break;
+		case ISaveContext.SNAPSHOT:
+			// System.out.println("ISaveContext.SNAPSHOT:");
+			// This operation needs to be really fast because
+			// snapshots can be requested frequently by the
+			// workspace.
+			break;
 		}
 	}
 
-	protected void writeImportantState(File target)
-	{
-		try
-		{
+	protected void writeImportantState(File target) {
+		try {
 			DataOutputStream out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(target)));
-			try
-			{
+			try {
 				Set aSet = _buildStates.entrySet();
 				out.writeInt(aSet.size());
-				for (Iterator iter = aSet.iterator(); iter.hasNext();)
-				{
+				for (Iterator iter = aSet.iterator(); iter.hasNext();) {
 					Map.Entry element = (Map.Entry) iter.next();
 					String key = (String) element.getKey();
 					State value = (State) element.getValue();
 					out.writeUTF(key);
 					JavaBuilder.writeState(value, out);
 				}
-			}
-			finally
-			{
+			} finally {
 				out.close();
 			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			System.out.println(e);
 		}
 	}
 
-	protected void readStateFrom(File target)
-	{
-		try
-		{
+	protected void readStateFrom(File target) {
+		try {
 			DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(target)));
-			try
-			{
+			try {
 				int stateCount = in.readInt();
-				for (int i = 0; i < stateCount; i++)
-				{
+				for (int i = 0; i < stateCount; i++) {
 					String key = in.readUTF();
-					//This is not correct.
-					State buildState =JavaBuilder.readState(null,in);
+					// This is not correct.
+					State buildState = JavaBuilder.readState(null, in);
 					setBuildStateForKey(buildState, key);
 				}
-			}
-			finally
-			{
+			} finally {
 				in.close();
 			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			System.out.println(e);
 		}
 	}
 
-	public void resourceChanged(IResourceChangeEvent event)
-	{
+	public void resourceChanged(IResourceChangeEvent event) {
 		IResource res = event.getResource();
 		String keyPrefix = res.getName() + "/";
-		for (Iterator iter = _buildStates.entrySet().iterator(); iter.hasNext();)
-		{
+		for (Iterator iter = _buildStates.entrySet().iterator(); iter.hasNext();) {
 			Map.Entry element = (Map.Entry) iter.next();
 			String key = (String) element.getKey();
-			if(key.startsWith(keyPrefix))
+			if (key.startsWith(keyPrefix))
 				iter.remove();
 		}
 	}

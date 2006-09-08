@@ -85,8 +85,7 @@ public class D2WModel {
 		try {
 			projectFile = new File(path);
 			in = new FileInputStream(projectFile);
-			modelMap = (Map) PropertyListSerialization
-					.propertyListFromStream(in);
+			modelMap = (Map) PropertyListSerialization.propertyListFromStream(in);
 		} finally {
 			projectFile = null;
 			if (in != null) {
@@ -123,8 +122,7 @@ public class D2WModel {
 		File projectFile = null;
 		try {
 			projectFile = new File(modelPath);
-			PropertyListSerialization.propertyListToFile(projectFile,
-					this.modelMap);
+			PropertyListSerialization.propertyListToFile(projectFile, this.modelMap);
 		} finally {
 			projectFile = null;
 		}
@@ -134,7 +132,7 @@ public class D2WModel {
 	public boolean hasUnsavedChanges() {
 		return hasUnsavedChanges;
 	}
-	
+
 	public void setHasUnsavedChanges(boolean hasUnsavedChanges) {
 		this.hasUnsavedChanges = hasUnsavedChanges;
 	}

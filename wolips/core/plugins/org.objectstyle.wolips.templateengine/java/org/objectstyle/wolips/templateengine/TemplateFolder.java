@@ -65,6 +65,7 @@ import org.eclipse.core.runtime.IPath;
  */
 public class TemplateFolder {
 	private IPath path;
+
 	private TemplatesDocument templatesProperties;
 
 	/**
@@ -74,12 +75,14 @@ public class TemplateFolder {
 		super();
 		this.path = location;
 	}
+
 	/**
 	 * @return Returns the path.
 	 */
 	public IPath getPath() {
 		return this.path;
 	}
+
 	/**
 	 * @param string
 	 * @return

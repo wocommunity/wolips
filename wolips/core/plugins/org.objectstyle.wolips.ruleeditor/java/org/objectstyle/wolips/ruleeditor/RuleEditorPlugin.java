@@ -99,7 +99,6 @@ public class RuleEditorPlugin extends AbstractWOLipsUIPlugin {
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin(
-				"org.objectstyle.wolips.launching", path);
+		return AbstractUIPlugin.imageDescriptorFromPlugin("org.objectstyle.wolips.launching", path);
 	}
 }

@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.templateengine;
 
 import junit.framework.TestCase;
+
 /**
  * @author ulrich
  * 
@@ -63,104 +64,82 @@ import junit.framework.TestCase;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class TemplateEnginePluginTest extends TestCase {
-	
+
 	/**
 	 * 
 	 */
 	public void testGetTemplateFolderRoots() {
-		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
-				.getTemplateFolderRoots();
+		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin.getTemplateFolderRoots();
 		assertNotNull(templateFolderRoots);
 		assertEquals(1, templateFolderRoots.length);
 	}
-	
+
 	/**
 	 * 
 	 */
 	public void testGetD2W_ApplicationProjectTemplateFolder() {
-		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
-				.getTemplateFolderRoots();
-		TemplateFolder[] templateFolder = TemplateEnginePlugin
-				.getTemplateFolder(templateFolderRoots,
-						TemplateEnginePlugin.D2W_ApplicationProject);
+		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin.getTemplateFolderRoots();
+		TemplateFolder[] templateFolder = TemplateEnginePlugin.getTemplateFolder(templateFolderRoots, TemplateEnginePlugin.D2W_ApplicationProject);
 		assertNotNull(templateFolder);
 		assertEquals(1, templateFolder.length);
 	}
-	
+
 	/**
 	 * 
 	 */
 	public void testGetWOApplicationProjectTemplateFolder() {
-		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
-				.getTemplateFolderRoots();
-		TemplateFolder[] templateFolder = TemplateEnginePlugin
-				.getTemplateFolder(templateFolderRoots,
-						TemplateEnginePlugin.WOApplicationProject);
+		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin.getTemplateFolderRoots();
+		TemplateFolder[] templateFolder = TemplateEnginePlugin.getTemplateFolder(templateFolderRoots, TemplateEnginePlugin.WOApplicationProject);
 		assertNotNull(templateFolder);
 		assertEquals(2, templateFolder.length);
 	}
-  
-  /**
-   * 
-   */
-  public void testGetWOnderApplicationProjectTemplateFolder() {
-    TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
-        .getTemplateFolderRoots();
-    TemplateFolder[] templateFolder = TemplateEnginePlugin
-        .getTemplateFolder(templateFolderRoots,
-            TemplateEnginePlugin.WOnderApplicationProject);
-    assertNotNull(templateFolder);
-    assertEquals(2, templateFolder.length);
-  }
-	
+
+	/**
+	 * 
+	 */
+	public void testGetWOnderApplicationProjectTemplateFolder() {
+		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin.getTemplateFolderRoots();
+		TemplateFolder[] templateFolder = TemplateEnginePlugin.getTemplateFolder(templateFolderRoots, TemplateEnginePlugin.WOnderApplicationProject);
+		assertNotNull(templateFolder);
+		assertEquals(2, templateFolder.length);
+	}
+
 	/**
 	 * 
 	 */
 	public void testGetWOFrameworkProjectTemplateFolder() {
-		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
-				.getTemplateFolderRoots();
-		TemplateFolder[] templateFolder = TemplateEnginePlugin
-				.getTemplateFolder(templateFolderRoots,
-						TemplateEnginePlugin.WOFrameworkProject);
+		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin.getTemplateFolderRoots();
+		TemplateFolder[] templateFolder = TemplateEnginePlugin.getTemplateFolder(templateFolderRoots, TemplateEnginePlugin.WOFrameworkProject);
 		assertNotNull(templateFolder);
 		assertEquals(1, templateFolder.length);
 	}
-	
+
 	/**
 	 * 
 	 */
 	public void testGetJarProjectTemplateFolder() {
-		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
-				.getTemplateFolderRoots();
-		TemplateFolder[] templateFolder = TemplateEnginePlugin
-				.getTemplateFolder(templateFolderRoots,
-						TemplateEnginePlugin.JarProject);
+		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin.getTemplateFolderRoots();
+		TemplateFolder[] templateFolder = TemplateEnginePlugin.getTemplateFolder(templateFolderRoots, TemplateEnginePlugin.JarProject);
 		assertNotNull(templateFolder);
 		assertEquals(1, templateFolder.length);
 	}
-	
+
 	/**
 	 * 
 	 */
 	public void testGetWOComponentTemplateFolder() {
-		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
-				.getTemplateFolderRoots();
-		TemplateFolder[] templateFolder = TemplateEnginePlugin
-				.getTemplateFolder(templateFolderRoots,
-						TemplateEnginePlugin.WOComponent);
+		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin.getTemplateFolderRoots();
+		TemplateFolder[] templateFolder = TemplateEnginePlugin.getTemplateFolder(templateFolderRoots, TemplateEnginePlugin.WOComponent);
 		assertNotNull(templateFolder);
 		assertEquals(1, templateFolder.length);
 	}
-	
+
 	/**
 	 * 
 	 */
 	public void testGetEOModelTemplateFolder() {
-		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
-				.getTemplateFolderRoots();
-		TemplateFolder[] templateFolder = TemplateEnginePlugin
-				.getTemplateFolder(templateFolderRoots,
-						TemplateEnginePlugin.EOModel);
+		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin.getTemplateFolderRoots();
+		TemplateFolder[] templateFolder = TemplateEnginePlugin.getTemplateFolder(templateFolderRoots, TemplateEnginePlugin.EOModel);
 		assertNotNull(templateFolder);
 		assertEquals(1, templateFolder.length);
 	}

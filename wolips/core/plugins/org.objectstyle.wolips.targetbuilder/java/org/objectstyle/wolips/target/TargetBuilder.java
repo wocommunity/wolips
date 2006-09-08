@@ -53,8 +53,7 @@
  * <http://objectstyle.org/>.
  *
  */
- 
- 
+
 package org.objectstyle.wolips.target;
 
 import java.util.HashMap;
@@ -80,36 +79,32 @@ import org.eclipse.jdt.internal.core.JavaModelManager;
 import org.eclipse.jdt.internal.core.builder.JavaBuilder;
 import org.eclipse.jdt.internal.core.builder.State;
 
-public class TargetBuilder extends JavaBuilder
-{
+public class TargetBuilder extends JavaBuilder {
 	public static String ID = "org.objectstyle.wolips.targetbuilder.targetbuilder";
+
 	public static String RESOURCE = "resource";
+
 	public static String ATTRIBUTES = "attributes";
 
 	private HashMap _problemMarkers;
 
-	public TargetBuilder()
-	{
+	public TargetBuilder() {
 		super();
 	}
 
-	private void cancelBuildOnErrors() throws CoreException
-	{
+	private void cancelBuildOnErrors() throws CoreException {
 		Integer severityError = new Integer(IMarker.SEVERITY_ERROR);
 
 		IMarker[] problemMarkers = JavaBuilder.getProblemsFor(getProject());
-		for (int j = 0; j < problemMarkers.length; j++)
-		{
-			if (problemMarkers[j].getAttribute(IMarker.SEVERITY).equals(severityError))
-			{
-				//if (isResourceTargetMember(problemMarkers[j].getResource()))
-					throw new OperationCanceledException("Compilation Errors");
+		for (int j = 0; j < problemMarkers.length; j++) {
+			if (problemMarkers[j].getAttribute(IMarker.SEVERITY).equals(severityError)) {
+				// if (isResourceTargetMember(problemMarkers[j].getResource()))
+				throw new OperationCanceledException("Compilation Errors");
 			}
 		}
 	}
 
-	protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException
-	{
+	protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
 		State buildState;
 		String buldStateKey;
 		IProject[] result = null;
@@ -126,10 +121,8 @@ public class TargetBuilder extends JavaBuilder
 		_problemMarkers = new HashMap();
 		TargetBuilderPlugin plugin = TargetBuilderPlugin.getDefault();
 
-		try
-		{
-			for (int i = 0; i < targets.size(); i++)
-			{
+		try {
+			for (int i = 0; i < targets.size(); i++) {
 				BuildTarget target = (BuildTarget) targets.get(i);
 				buldStateKey = project.getName() + "/" + target.name();
 				javaProject.setOutputLocation(target.outputLocation(), monitor);
@@ -142,11 +135,9 @@ public class TargetBuilder extends JavaBuilder
 				buildState = (State) JavaModelManager.getJavaModelManager().getLastBuiltState(project, monitor);
 				plugin.setBuildStateForKey(buildState, buldStateKey);
 				registerProblemMarkers(JavaBuilder.getProblemsFor(getProject()));
-				//cancelBuildOnErrors(javaProject);
+				// cancelBuildOnErrors(javaProject);
 			}
-		}
-		finally
-		{
+		} finally {
 			javaProject.setOutputLocation(projectOutputLocation, monitor);
 			javaProject.setRawClasspath(projectClasspath, monitor);
 			updateProblemMarkers();
@@ -156,8 +147,7 @@ public class TargetBuilder extends JavaBuilder
 		return result;
 	}
 
-	private List targets() throws CoreException
-	{
+	private List targets() throws CoreException {
 		IResourceDelta targetFileDelta = null;
 		IProject project = getProject();
 
@@ -179,13 +169,11 @@ public class TargetBuilder extends JavaBuilder
 		return targets;
 	}
 
-	private void updateProblemMarkers() throws CoreException
-	{
-		//JavaBuilder.removeProblemsFor(getProject());
+	private void updateProblemMarkers() throws CoreException {
+		// JavaBuilder.removeProblemsFor(getProject());
 		JavaBuilder.removeProblemsAndTasksFor(getProject());
 		Set problemAttributes = _problemMarkers.entrySet();
-		for (Iterator iter = problemAttributes.iterator(); iter.hasNext();)
-		{
+		for (Iterator iter = problemAttributes.iterator(); iter.hasNext();) {
 			Map element = (Map) ((Map.Entry) iter.next()).getValue();
 			IResource resource = (IResource) element.get(TargetBuilder.RESOURCE);
 			Map attributes = (Map) element.get(TargetBuilder.ATTRIBUTES);
@@ -194,27 +182,24 @@ public class TargetBuilder extends JavaBuilder
 		}
 	}
 
-	public void registerProblemMarkers(IMarker[] problemMarkers) throws CoreException
-	{
+	public void registerProblemMarkers(IMarker[] problemMarkers) throws CoreException {
 		Map tempMap;
-		
-		for (int i = 0; i < problemMarkers.length; i++)
-		{
-			//if (isResourceTargetMember(problemMarkers[i].getResource()))
+
+		for (int i = 0; i < problemMarkers.length; i++) {
+			// if (isResourceTargetMember(problemMarkers[i].getResource()))
 			{
 				String hashKey = "";
-				
-				if(problemMarkers[i].getResource().getFullPath() != null)
+
+				if (problemMarkers[i].getResource().getFullPath() != null)
 					hashKey = hashKey + problemMarkers[i].getResource().getFullPath().toString();
-				
-				if(problemMarkers[i].getAttribute(IMarker.LINE_NUMBER) != null)
+
+				if (problemMarkers[i].getAttribute(IMarker.LINE_NUMBER) != null)
 					hashKey = hashKey + problemMarkers[i].getAttribute(IMarker.LINE_NUMBER).toString();
-					
-				if(problemMarkers[i].getAttribute(IMarker.MESSAGE) != null)
+
+				if (problemMarkers[i].getAttribute(IMarker.MESSAGE) != null)
 					hashKey = hashKey + problemMarkers[i].getAttribute(IMarker.MESSAGE);
 
-				if (!_problemMarkers.containsKey(hashKey))
-				{
+				if (!_problemMarkers.containsKey(hashKey)) {
 					tempMap = new HashMap();
 					tempMap.put(TargetBuilder.RESOURCE, problemMarkers[i].getResource());
 					tempMap.put(TargetBuilder.ATTRIBUTES, problemMarkers[i].getAttributes());

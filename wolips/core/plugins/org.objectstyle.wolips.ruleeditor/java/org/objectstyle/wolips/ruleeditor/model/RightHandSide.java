@@ -56,6 +56,7 @@ import java.util.Map;
  */
 public class RightHandSide extends AbstractClassElement {
 	private static final String KEY_PATH_KEY = "keyPath";
+
 	private static final String VALUE_KEY = "value";
 
 	public RightHandSide(D2WModel model, Map map) {
@@ -73,7 +74,7 @@ public class RightHandSide extends AbstractClassElement {
 
 	public String getValue() {
 		Object value = this.getMap().get(VALUE_KEY);
-		if(value == null) {
+		if (value == null) {
 			return null;
 		}
 		return value.toString();

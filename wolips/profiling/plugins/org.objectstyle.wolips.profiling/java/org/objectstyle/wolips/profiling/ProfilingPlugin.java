@@ -60,7 +60,7 @@ import org.osgi.framework.BundleContext;
  * @author markus
  */
 public class ProfilingPlugin extends AbstractUIPlugin {
-	//The plugin.
+	// The plugin.
 	private static ProfilingPlugin plugin;
 
 	private static final String PLUGIN_ID = "org.objectstyle.wolips.profiling";
@@ -72,8 +72,8 @@ public class ProfilingPlugin extends AbstractUIPlugin {
 	 * 
 	 * @param descriptor
 	 */
-	//The constructur is very sensitive. Make sure that your stuff works.
-	//If this cunstructor fails, the whole plugin will be disabled.
+	// The constructur is very sensitive. Make sure that your stuff works.
+	// If this cunstructor fails, the whole plugin will be disabled.
 	public ProfilingPlugin() {
 		super();
 		plugin = this;

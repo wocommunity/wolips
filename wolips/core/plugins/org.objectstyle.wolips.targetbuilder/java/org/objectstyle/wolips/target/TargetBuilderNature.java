@@ -53,8 +53,8 @@
  * <http://objectstyle.org/>.
  *
  */
- 
- package org.objectstyle.wolips.target;
+
+package org.objectstyle.wolips.target;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -75,92 +75,85 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.datasets.adaptable.Project;
+
 /**
  * @author uwe
- *
+ * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type
+ * comments go to Window>Preferences>Java>Code Generation.
  */
-public class TargetBuilderNature implements IProjectNature
-{
+public class TargetBuilderNature implements IProjectNature {
 	public static String ID = "org.objectstyle.wolips.targetbuilder.targetbuildernature";
+
 	public static String NAME = "name";
+
 	public static String OUTPUT = "output";
+
 	public static String SOURCE = "source";
+
 	public static String PROJECTCLASSPATH = "projectclasspath";
+
 	public static String CLASSPATH = "classpath";
+
 	public static String TARGETS = "targets";
+
 	public static String TARGETFILE = "targets.plist";
 
 	private IProject _project;
+
 	private List _buildTargets;
 
-	public TargetBuilderNature()
-	{
+	public TargetBuilderNature() {
 		super();
 		_buildTargets = new ArrayList();
 	}
 
-	public IJavaProject javaProject()
-	{
+	public IJavaProject javaProject() {
 		return JavaCore.create(getProject());
 	}
 
-	public List targets()
-	{
+	public List targets() {
 		return _buildTargets;
 	}
 
-	public IPath filePath()
-	{
+	public IPath filePath() {
 		return getProject().getFile(TargetBuilderNature.TARGETFILE).getLocation();
 	}
 
-	public void synchronizeWithFile()
-	{
+	public void synchronizeWithFile() {
 		Map targetMap;
 
 		_buildTargets = new ArrayList();
 		File targetFile = filePath().toFile();
-		try
-		{
+		try {
 			targetMap = (Map) PropertyListSerialization.propertyListFromFile(targetFile);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			System.out.println("Could not find targets.plist file for Project:" + getProject() + "!");
 			return;
 		}
 
-		if (targetMap == null)
-		{
-			Status status = new Status(IStatus.ERROR, "org.objectstyle.wolips.target", IStatus.OK,
-					"look at system console", null);
+		if (targetMap == null) {
+			Status status = new Status(IStatus.ERROR, "org.objectstyle.wolips.target", IStatus.OK, "look at system console", null);
 			ErrorDialog.openError(null, "Error", "Parse Error while parsing targets.plist", status);
 			return;
 		}
 
 		List targets = (List) targetMap.get(TargetBuilderNature.TARGETS);
-		for (int i = 0; i < targets.size(); i++)
-		{
+		for (int i = 0; i < targets.size(); i++) {
 			BuildTarget buildTarget = new BuildTarget((Map) targets.get(i));
 			_buildTargets.add(buildTarget);
 		}
 		synchronizeProjectClassPath();
 	}
 
-	public IClasspathEntry[] classPathEntries()
-	{
+	public IClasspathEntry[] classPathEntries() {
 		ArrayList classPathEntries = new ArrayList();
 
-		for (Iterator iter = _buildTargets.iterator(); iter.hasNext();)
-		{
+		for (Iterator iter = _buildTargets.iterator(); iter.hasNext();) {
 			BuildTarget element = (BuildTarget) iter.next();
 			IClasspathEntry[] tmp = element.classPathEntries();
-			for (int i = 0; i < tmp.length; i++)
-			{
+			for (int i = 0; i < tmp.length; i++) {
 				if (!classPathEntries.contains(tmp[i]))
 					classPathEntries.add(tmp[i]);
 			}
@@ -173,58 +166,50 @@ public class TargetBuilderNature implements IProjectNature
 		return result;
 	}
 
-	public void synchronizeProjectClassPath()
-	{
-		try
-		{
+	public void synchronizeProjectClassPath() {
+		try {
 			javaProject().setRawClasspath(classPathEntries(), null);
-		}
-		catch (JavaModelException e)
-		{
+		} catch (JavaModelException e) {
 			System.out.println("synchronizeProjectClassPath:" + e);
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.core.resources.IProjectNature#configure()
 	 */
-	public void configure() throws CoreException
-	{
+	public void configure() throws CoreException {
 		// Add nature-specific information
 		// for the project, such as adding a builder
 		// to a project's build spec.*/
-		Project project = (Project) (this.getProject())
-		.getAdapter(Project.class);
+		Project project = (Project) (this.getProject()).getAdapter(Project.class);
 		int position = project.removeJavaBuilder();
 		this.synchronizeWithFile();
 		project.installTargetBuilder(position);
 	}
-		
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.core.resources.IProjectNature#deconfigure()
 	 */
-	public void deconfigure() throws CoreException
-	{
-		Project project = (Project) (this.getProject())
-		.getAdapter(Project.class);
+	public void deconfigure() throws CoreException {
+		Project project = (Project) (this.getProject()).getAdapter(Project.class);
 		int position = project.removeTargetBuilder();
 		project.installJavaBuilder(position);
 	}
 
-	public IProject getProject()
-	{
+	public IProject getProject() {
 		return _project;
 	}
 
-	public void setProject(IProject value)
-	{
+	public void setProject(IProject value) {
 		_project = value;
 	}
 
-	public BuildTarget getTarget(String name)
-	{
-		for (Iterator iter = _buildTargets.iterator(); iter.hasNext();)
-		{
+	public BuildTarget getTarget(String name) {
+		for (Iterator iter = _buildTargets.iterator(); iter.hasNext();) {
 			BuildTarget element = (BuildTarget) iter.next();
 			if (element.name().equals(name))
 				return element;

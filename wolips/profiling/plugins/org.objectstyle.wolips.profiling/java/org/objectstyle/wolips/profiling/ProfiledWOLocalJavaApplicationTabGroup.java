@@ -56,7 +56,6 @@
 
 package org.objectstyle.wolips.profiling;
 
-
 import jmechanic.eclipse.profiler.launching.JavaProfilingTab;
 
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -76,38 +75,29 @@ import org.objectstyle.wolips.launching.ui.LogTab;
 
 /**
  * @author uli
- *
+ * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type
+ * comments go to Window>Preferences>Java>Code Generation.
  */
 public class ProfiledWOLocalJavaApplicationTabGroup extends AbstractLaunchConfigurationTabGroup {
 
 	/**
-	 * @see ILaunchConfigurationTabGroup#createTabs(ILaunchConfigurationDialog, String)
+	 * @see ILaunchConfigurationTabGroup#createTabs(ILaunchConfigurationDialog,
+	 *      String)
 	 */
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
-		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
-			new JavaMainTab(),
-			new JavaArgumentsTab(),
-			new CommonWOArgumentsTab(),
-			new LogTab(),
-			new BrowserTab(),
-			new JavaJRETab(),
-			new JavaClasspathTab(),
-			new SourceLookupTab(),
-			new JavaProfilingTab(),
-			new CommonTab()
-		};
+		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] { new JavaMainTab(), new JavaArgumentsTab(), new CommonWOArgumentsTab(), new LogTab(), new BrowserTab(), new JavaJRETab(), new JavaClasspathTab(), new SourceLookupTab(), new JavaProfilingTab(), new CommonTab() };
 		setTabs(tabs);
 	}
-	  
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup#setDefaults(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
 	 */
 	public void setDefaults(ILaunchConfigurationWorkingCopy wc) {
-	    ProfiledWOJavaLocalApplicationLaunchConfigurationDelegate.initConfiguration(wc);
+		ProfiledWOJavaLocalApplicationLaunchConfigurationDelegate.initConfiguration(wc);
 		super.setDefaults(wc);
 	}
 }

@@ -67,8 +67,11 @@ import java.io.File;
 public class TemplateDefinition {
 
 	private String templateName;
+
 	private String destination;
+
 	private String finalName;
+
 	private String type;
 
 	/**
@@ -77,8 +80,7 @@ public class TemplateDefinition {
 	 * @param finalName
 	 * @param type
 	 */
-	public TemplateDefinition(String templateName, String destination,
-			String finalName, String type) {
+	public TemplateDefinition(String templateName, String destination, String finalName, String type) {
 		super();
 		this.templateName = templateName;
 		this.destination = destination;
@@ -100,6 +102,7 @@ public class TemplateDefinition {
 	public void setFinalName(String finalName) {
 		this.finalName = finalName;
 	}
+
 	/**
 	 * @return
 	 */
@@ -108,25 +111,27 @@ public class TemplateDefinition {
 		StringBuffer returnValue = new StringBuffer(this.destination);
 		returnValue.append(File.separator);
 		returnValue.append(this.finalName);
-		if (!this.finalName.equals(this.type)
-				&& !this.finalName.endsWith("." + this.type)) {
+		if (!this.finalName.equals(this.type) && !this.finalName.endsWith("." + this.type)) {
 			returnValue.append(".");
 			returnValue.append(this.type);
 		}
 		return returnValue.toString();
 	}
+
 	/**
 	 * @return Returns the type.
 	 */
 	public String getType() {
 		return this.type;
 	}
+
 	/**
 	 * @return Returns the destination.
 	 */
 	public String getDestination() {
 		return this.destination;
 	}
+
 	/**
 	 * @param destination
 	 *            The destination to set.

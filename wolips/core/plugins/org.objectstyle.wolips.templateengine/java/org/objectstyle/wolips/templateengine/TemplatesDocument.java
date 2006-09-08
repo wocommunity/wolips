@@ -66,13 +66,13 @@ import org.jdom.input.SAXBuilder;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class TemplatesDocument {
 	private Document document = null;
-	
+
 	/**
 	 * @param location
 	 */
@@ -100,16 +100,16 @@ public class TemplatesDocument {
 	 * @return
 	 */
 	public boolean isValid() {
-		if(this.document == null) {
+		if (this.document == null) {
 			return false;
 		}
-		if(this.getType() == null)
+		if (this.getType() == null)
 			return false;
 		return true;
 	}
-	
+
 	private String getType() {
-		if(this.document == null) {
+		if (this.document == null) {
 			return null;
 		}
 		return this.document.getRootElement().getChildText("type");
@@ -119,7 +119,7 @@ public class TemplatesDocument {
 	 * @return Returns the name
 	 */
 	public String getName() {
-		if(this.document == null) {
+		if (this.document == null) {
 			return null;
 		}
 		return this.document.getRootElement().getChildText("name");
@@ -129,15 +129,15 @@ public class TemplatesDocument {
 	 * @return
 	 */
 	public TemplateDefinition[] getTemplateDefinitions() {
-		if(!isValid())
-			return null; 
+		if (!isValid())
+			return null;
 		List templates = this.document.getRootElement().getChildren("templates");
 		ArrayList templateDefinitions = new ArrayList();
 		for (int i = 0; i < templates.size(); i++) {
-			Element child = (Element)templates.get(i);
+			Element child = (Element) templates.get(i);
 			TemplateDefinition templateDefinition = new TemplateDefinition(child.getChildText("templateName"), child.getChildText("destination"), child.getChildText("finalName"), child.getChildText("type"));
 			templateDefinitions.add(templateDefinition);
 		}
-		return (TemplateDefinition[])(templateDefinitions.toArray(new TemplateDefinition[templateDefinitions.size()]));
+		return (TemplateDefinition[]) (templateDefinitions.toArray(new TemplateDefinition[templateDefinitions.size()]));
 	}
 }
