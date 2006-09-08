@@ -55,6 +55,7 @@
  */
 
 package org.objectstyle.wolips.core.resources.pattern;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -67,7 +68,7 @@ import org.objectstyle.wolips.core.CorePlugin;
  * @author ulrich
  */
 public class PatternsetWriter {
-	
+
 	/**
 	 * @param patternset
 	 * @param pattern
@@ -76,7 +77,7 @@ public class PatternsetWriter {
 		BufferedWriter patternWriter = null;
 		try {
 			patternWriter = new BufferedWriter(new FileWriter(new File(patternset.getLocation().toOSString())));
-			for(int i = 0; i < pattern.length; i++) {
+			for (int i = 0; i < pattern.length; i++) {
 				patternWriter.write(pattern[i]);
 				patternWriter.write("\n");
 			}
@@ -87,7 +88,7 @@ public class PatternsetWriter {
 				try {
 					patternWriter.close();
 				} catch (IOException ioe) {
-					//Ignore exception
+					// Ignore exception
 				}
 			}
 		}

@@ -66,8 +66,7 @@ import org.objectstyle.wolips.core.CorePlugin;
 import org.objectstyle.wolips.core.resources.internal.types.AbstractResourceAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IFolderAdapter;
 
-public abstract class AbstractFolderAdapter extends AbstractResourceAdapter
-		implements IFolderAdapter {
+public abstract class AbstractFolderAdapter extends AbstractResourceAdapter implements IFolderAdapter {
 
 	private IFolder folder;
 
@@ -89,8 +88,7 @@ public abstract class AbstractFolderAdapter extends AbstractResourceAdapter
 	 *            a ProgressMonitor
 	 * @throws CoreException
 	 */
-	private void createFolder(IFolder f, IProgressMonitor m)
-			throws CoreException {
+	private void createFolder(IFolder f, IProgressMonitor m) throws CoreException {
 		if (f.exists()) {
 			return;
 		}
@@ -109,12 +107,10 @@ public abstract class AbstractFolderAdapter extends AbstractResourceAdapter
 		IPath destination = thisPath.append(projectRelativePath);
 		IResource returnValue = null;
 		if (resource.getType() == IResource.FILE) {
-			returnValue = ResourcesPlugin.getWorkspace().getRoot().getFile(
-					destination);
+			returnValue = ResourcesPlugin.getWorkspace().getRoot().getFile(destination);
 			this.createFolder(((IFolder) returnValue.getParent()), null);
 		} else {
-			returnValue = ResourcesPlugin.getWorkspace().getRoot().getFolder(
-					destination);
+			returnValue = ResourcesPlugin.getWorkspace().getRoot().getFolder(destination);
 
 			((IFolder) returnValue).create(true, true, null);
 			this.createFolder((IFolder) returnValue, null);
@@ -127,8 +123,7 @@ public abstract class AbstractFolderAdapter extends AbstractResourceAdapter
 		IPath projectRelativePath = resource.getProjectRelativePath();
 		IPath thisPath = this.getUnderlyingFolder().getFullPath();
 		IPath destination = thisPath.append(projectRelativePath);
-		IResource deleteResource = ResourcesPlugin.getWorkspace().getRoot()
-				.findMember(destination);
+		IResource deleteResource = ResourcesPlugin.getWorkspace().getRoot().findMember(destination);
 		if (deleteResource != null && deleteResource.exists())
 			deleteResource.delete(true, null);
 	}
@@ -142,9 +137,8 @@ public abstract class AbstractFolderAdapter extends AbstractResourceAdapter
 		}
 	}
 
-	public void markAsDerivated(IFolder folderToMarkAsDerivated, IProgressMonitor monitor)
-			throws CoreException {
-		if(!folderToMarkAsDerivated.exists()) {
+	public void markAsDerivated(IFolder folderToMarkAsDerivated, IProgressMonitor monitor) throws CoreException {
+		if (!folderToMarkAsDerivated.exists()) {
 			return;
 		}
 		folderToMarkAsDerivated.setDerived(true);
@@ -154,7 +148,7 @@ public abstract class AbstractFolderAdapter extends AbstractResourceAdapter
 			if (member instanceof IFolder) {
 				this.markAsDerivated((IFolder) member, monitor);
 			} else {
-				if(member.exists()) {
+				if (member.exists()) {
 					member.setDerived(true);
 				}
 			}

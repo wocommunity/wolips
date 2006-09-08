@@ -55,8 +55,6 @@
  */
 package org.objectstyle.wolips.core.resources.types.folder;
 
-
-
 public interface IWoprojectAdapter extends IFolderAdapter {
 
 	public static final String FOLDER_NAME = "woproject";

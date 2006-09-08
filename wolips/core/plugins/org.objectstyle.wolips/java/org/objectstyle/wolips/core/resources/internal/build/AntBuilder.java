@@ -58,6 +58,7 @@ package org.objectstyle.wolips.core.resources.internal.build;
 public class AntBuilder extends Builder {
 
 	private static final String CONTEXT = "ant";
+
 	public AntBuilder() {
 		super();
 	}
@@ -66,5 +67,4 @@ public class AntBuilder extends Builder {
 		return CONTEXT;
 	}
 
-	
 }

@@ -80,10 +80,7 @@ import org.objectstyle.wolips.core.resources.types.folder.IWoprojectAdapter;
  */
 public class FolderAdapterFactory extends AbstractResourceAdapterFactory {
 
-	private Class[] adapterList = new Class[] { IDotApplicationAdapter.class,
-			IDotFrameworkAdapter.class, IDotLprojAdapter.class,
-			IDotSubprojAdapter.class, IDotWoAdapter.class,
-			IWoprojectAdapter.class };
+	private Class[] adapterList = new Class[] { IDotApplicationAdapter.class, IDotFrameworkAdapter.class, IDotLprojAdapter.class, IDotSubprojAdapter.class, IDotWoAdapter.class, IWoprojectAdapter.class };
 
 	public Class[] getAdapterList() {
 		return this.adapterList;
@@ -126,78 +123,53 @@ public class FolderAdapterFactory extends AbstractResourceAdapterFactory {
 		try {
 			nature = Nature.getNature(project);
 		} catch (CoreException e) {
-			CorePlugin.getDefault().debug(
-					"Error while resolving nature for project: "
-							+ project.getName(), e);
+			CorePlugin.getDefault().debug("Error while resolving nature for project: " + project.getName(), e);
 		}
 		if (nature == null) {
 			return null;
 		}
 		if (adapterType == IBuildAdapter.class) {
-			if (folder.getName() != null
-					&& (IBuildAdapter.FILE_NAME_BUILD.equals(folder.getName()) || IBuildAdapter.FILE_NAME_DIST
-							.equals(folder.getName()))) {
+			if (folder.getName() != null && (IBuildAdapter.FILE_NAME_BUILD.equals(folder.getName()) || IBuildAdapter.FILE_NAME_DIST.equals(folder.getName()))) {
 				return new BuildAdapter(folder);
 			}
 		} else if (adapterType == IContentsAdapter.class) {
-			if (folder.getName() != null
-					&& IContentsAdapter.FILE_NAME.equals(folder.getName())) {
+			if (folder.getName() != null && IContentsAdapter.FILE_NAME.equals(folder.getName())) {
 				return new ContentsAdapter(folder);
 			}
 		} else if (adapterType == IResourcesAdapter.class) {
-			if (folder.getName() != null
-					&& IResourcesAdapter.FILE_NAME.equals(folder.getName())) {
+			if (folder.getName() != null && IResourcesAdapter.FILE_NAME.equals(folder.getName())) {
 				return new ResourcesAdapter(folder);
 			}
 		} else if (adapterType == IWebServerResourcesAdapter.class) {
-			if (folder.getName() != null
-					&& IWebServerResourcesAdapter.FILE_NAME.equals(folder
-							.getName())) {
+			if (folder.getName() != null && IWebServerResourcesAdapter.FILE_NAME.equals(folder.getName())) {
 				return new WebServerResourcesAdapter(folder);
 			}
 		} else if (adapterType == IDotApplicationAdapter.class) {
-			if (folder.getFileExtension() != null
-					&& IDotApplicationAdapter.FILE_NAME_EXTENSION.equals(folder
-							.getFileExtension())) {
+			if (folder.getFileExtension() != null && IDotApplicationAdapter.FILE_NAME_EXTENSION.equals(folder.getFileExtension())) {
 				return new DotApplicationAdapter(folder);
 			}
 		} else if (adapterType == IDotFrameworkAdapter.class) {
-			if (folder.getFileExtension() != null
-					&& IDotFrameworkAdapter.FILE_NAME_EXTENSION.equals(folder
-							.getFileExtension())) {
+			if (folder.getFileExtension() != null && IDotFrameworkAdapter.FILE_NAME_EXTENSION.equals(folder.getFileExtension())) {
 				return new DotFrameworkAdapter(folder);
 			}
 		} else if (adapterType == IDotSubprojAdapter.class) {
-			if (folder.getFileExtension() != null
-					&& IDotSubprojAdapter.FILE_NAME_EXTENSION.equals(folder
-							.getFileExtension())) {
+			if (folder.getFileExtension() != null && IDotSubprojAdapter.FILE_NAME_EXTENSION.equals(folder.getFileExtension())) {
 				return new DotSubprojAdapter(folder);
 			}
 		} else if (adapterType == IDotLprojAdapter.class) {
-			if (folder.getFileExtension() != null
-					&& IDotLprojAdapter.FILE_NAME_EXTENSION.equals(folder
-							.getFileExtension())) {
+			if (folder.getFileExtension() != null && IDotLprojAdapter.FILE_NAME_EXTENSION.equals(folder.getFileExtension())) {
 				return new DotLprojAdapter(folder);
 			}
 		} else if (adapterType == IDotWoAdapter.class) {
-			if (folder.getFileExtension() != null
-					&& IDotWoAdapter.FILE_NAME_EXTENSION.equals(folder
-							.getFileExtension())) {
+			if (folder.getFileExtension() != null && IDotWoAdapter.FILE_NAME_EXTENSION.equals(folder.getFileExtension())) {
 				return new DotWoAdapter(folder);
 			}
 		} else if (adapterType == IDotEOModeldAdapter.class) {
-			if (folder.getFileExtension() != null
-					&& IDotEOModeldAdapter.FILE_NAME_EXTENSION.equals(folder
-							.getFileExtension())) {
+			if (folder.getFileExtension() != null && IDotEOModeldAdapter.FILE_NAME_EXTENSION.equals(folder.getFileExtension())) {
 				return new DotEOModeldAdapter(folder);
 			}
 		} else if (adapterType == IWoprojectAdapter.class) {
-			if (folder.getFileExtension() == null
-					&& folder.getName() != null
-					&& folder.getParent() != null
-					&& folder.getParent().getType() == IResource.PROJECT
-					&& (IWoprojectAdapter.FOLDER_NAME.equals(folder.getName()) || (IWoprojectAdapter.FOLDER_NAME_DEPRECATED
-							.equals(folder.getName())))) {
+			if (folder.getFileExtension() == null && folder.getName() != null && folder.getParent() != null && folder.getParent().getType() == IResource.PROJECT && (IWoprojectAdapter.FOLDER_NAME.equals(folder.getName()) || (IWoprojectAdapter.FOLDER_NAME_DEPRECATED.equals(folder.getName())))) {
 				return new WoprojectAdapter(folder);
 			}
 		}

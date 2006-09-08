@@ -60,7 +60,7 @@ public class ApieditorPlugin extends AbstractWOLipsUIPlugin {
 	private static ApieditorPlugin plugin;
 
 	private FormColors formColors;
-	
+
 	/**
 	 * The constructor.
 	 */
@@ -90,6 +90,7 @@ public class ApieditorPlugin extends AbstractWOLipsUIPlugin {
 		}
 		plugin = null;
 	}
+
 	/**
 	 * Returns the shared instance.
 	 */
@@ -106,14 +107,13 @@ public class ApieditorPlugin extends AbstractWOLipsUIPlugin {
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin(
-				"org.objectstyle.wolips.apieditor", path);
+		return AbstractUIPlugin.imageDescriptorFromPlugin("org.objectstyle.wolips.apieditor", path);
 	}
-	
+
 	public Image getImage(String key) {
 		return getImageRegistry().get(key);
 	}
-	
+
 	public FormColors getFormColors(Display display) {
 		if (formColors == null) {
 			formColors = new FormColors(display);

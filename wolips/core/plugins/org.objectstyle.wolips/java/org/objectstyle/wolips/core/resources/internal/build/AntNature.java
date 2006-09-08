@@ -63,10 +63,11 @@ import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 
 /**
  * @author mnolte
- *  
+ * 
  */
 public class AntNature implements IProjectNature {
 	private IProject iProject;
+
 	/**
 	 * Constructor for WOApplicationNature.
 	 */
@@ -78,8 +79,7 @@ public class AntNature implements IProjectNature {
 	 * @see org.eclipse.core.resources.IProjectNature#configure()
 	 */
 	public void configure() throws CoreException {
-		IProjectAdapter project = (IProjectAdapter) (this.getProject())
-				.getAdapter(IProjectAdapter.class);
+		IProjectAdapter project = (IProjectAdapter) (this.getProject()).getAdapter(IProjectAdapter.class);
 		project.installAntBuilder();
 	}
 
@@ -87,10 +87,10 @@ public class AntNature implements IProjectNature {
 	 * @see org.eclipse.core.resources.IProjectNature#deconfigure()
 	 */
 	public void deconfigure() throws CoreException {
-		IProjectAdapter project = (IProjectAdapter) (this.getProject())
-				.getAdapter(IProjectAdapter.class);
+		IProjectAdapter project = (IProjectAdapter) (this.getProject()).getAdapter(IProjectAdapter.class);
 		project.removeAntBuilder();
 	}
+
 	/**
 	 * @see org.eclipse.core.resources.IProjectNature#getProject()
 	 */

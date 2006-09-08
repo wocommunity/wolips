@@ -72,6 +72,7 @@ public class CoreTestSuite extends TestCase {
 	public CoreTestSuite(String testName) {
 		super(testName);
 	}
+
 	/**
 	 * @return
 	 * @throws Exception

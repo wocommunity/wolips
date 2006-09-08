@@ -61,10 +61,11 @@ import org.objectstyle.wolips.core.resources.builder.IBuilder;
 public final class BuilderWrapper {
 
 	private final IBuilder builder;
+
 	private final String name;
+
 	private final String context;
-	
-	
+
 	public BuilderWrapper(IBuilder builder, String name, String context) {
 		super();
 		this.builder = builder;
@@ -79,9 +80,9 @@ public final class BuilderWrapper {
 	public String getName() {
 		return this.name;
 	}
-	
+
 	public boolean validInContext(String buildContext) {
-		if(context == null) {
+		if (context == null) {
 			return true;
 		}
 		return buildContext.equals(context);
@@ -91,8 +92,7 @@ public final class BuilderWrapper {
 		return builder instanceof AbstractOldBuilder;
 	}
 
-
-  public String toString() {
-    return "[BuilderWrapper: name = " + name + "; builder = " + builder + "]";
-  }
+	public String toString() {
+		return "[BuilderWrapper: name = " + name + "; builder = " + builder + "]";
+	}
 }

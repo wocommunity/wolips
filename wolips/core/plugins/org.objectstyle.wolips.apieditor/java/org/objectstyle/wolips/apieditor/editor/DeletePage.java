@@ -107,21 +107,17 @@ public class DeletePage extends ApiFormPage {
 		gd.widthHint = 100;
 
 		final ApiEditor apiEditor = (ApiEditor) this.getEditor();
-		Button createApiFileButton = toolkit.createButton(client,
-				"Delete Api File", SWT.PUSH);
+		Button createApiFileButton = toolkit.createButton(client, "Delete Api File", SWT.PUSH);
 		gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 		createApiFileButton.setLayoutData(gd);
 		createApiFileButton.addSelectionListener(new SelectionListener() {
 
 			public void widgetSelected(SelectionEvent e) {
-				FileEditorInput fileEditorInput = (FileEditorInput) apiEditor
-						.getEditorInput();
+				FileEditorInput fileEditorInput = (FileEditorInput) apiEditor.getEditorInput();
 				try {
-					fileEditorInput.getFile().delete(true,
-							new NullProgressMonitor());
+					fileEditorInput.getFile().delete(true, new NullProgressMonitor());
 				} catch (CoreException coreException) {
-					throw new RuntimeException("Failed to delete .api file.",
-							coreException);
+					throw new RuntimeException("Failed to delete .api file.", coreException);
 				}
 				apiEditor.removePage(0);
 				apiEditor.removePage(0);

@@ -119,30 +119,24 @@ public class AntPlugin extends AbstractCorePlugin implements IAntlauncher {
 	 * @throws CoreException
 	 */
 	private void loadAntlauncherExtensionPoint() {
-		IExtensionPoint extensionPoint = Platform.getExtensionRegistry()
-				.getExtensionPoint(EXTENSION_POINT_ID);
+		IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(EXTENSION_POINT_ID);
 		IExtension[] extensions = extensionPoint.getExtensions();
 		ArrayList arrayList = new ArrayList();
 		for (int i = 0; i < extensions.length; i++) {
-			IConfigurationElement[] configurationElements = extensions[i]
-					.getConfigurationElements();
+			IConfigurationElement[] configurationElements = extensions[i].getConfigurationElements();
 			for (int j = 0; j < configurationElements.length; j++) {
 				IConfigurationElement configurationElement = configurationElements[j];
 				IAntlauncher currentAntlauncher = null;
 				try {
-					currentAntlauncher = (IAntlauncher) configurationElement
-							.createExecutableExtension("class");
+					currentAntlauncher = (IAntlauncher) configurationElement.createExecutableExtension("class");
 					String name = configurationElement.getAttribute("name");
 					arrayList.add(new AntlauncherWrapper(currentAntlauncher, name));
 				} catch (CoreException e) {
-					this.log(
-							"Could not create executable from configuration element: "
-									+ configurationElement, e);
+					this.log("Could not create executable from configuration element: " + configurationElement, e);
 				}
 			}
 		}
-		this.antlauncherWrapper = (AntlauncherWrapper[]) arrayList
-				.toArray(new AntlauncherWrapper[arrayList.size()]);
+		this.antlauncherWrapper = (AntlauncherWrapper[]) arrayList.toArray(new AntlauncherWrapper[arrayList.size()]);
 	}
 
 	public AntlauncherWrapper[] getAntlauncherWrapper() {
@@ -154,8 +148,7 @@ public class AntPlugin extends AbstractCorePlugin implements IAntlauncher {
 			AntlauncherWrapper currentAntlauncherWrapper = antlauncherWrapper[i];
 			antlauncherWrapperList.add(currentAntlauncherWrapper);
 		}
-		return (AntlauncherWrapper[]) antlauncherWrapperList
-				.toArray(new AntlauncherWrapper[antlauncherWrapperList.size()]);
+		return (AntlauncherWrapper[]) antlauncherWrapperList.toArray(new AntlauncherWrapper[antlauncherWrapperList.size()]);
 	}
 
 	public void launchAntInExternalVM(IFile buildFile, IProgressMonitor monitor, boolean captureOutput, String targets) throws CoreException {

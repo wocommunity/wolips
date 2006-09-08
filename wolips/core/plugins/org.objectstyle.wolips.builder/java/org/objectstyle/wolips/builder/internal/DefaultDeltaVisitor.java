@@ -60,22 +60,19 @@ import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
  */
 public abstract class DefaultDeltaVisitor implements IResourceDeltaVisitor {
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse.core.resources.IResourceDelta)
 	 */
 	public boolean visit(IResourceDelta delta) throws CoreException {
 		IResource resource = delta.getResource();
-		//if (!resource.exists() || !resource.isAccessible())
-		//	return false;
+		// if (!resource.exists() || !resource.isAccessible())
+		// return false;
 		if (resource.getType() == IResource.FOLDER) {
-				if (IWOLipsModel.EXT_FRAMEWORK.equals(resource
-						.getFileExtension())
-						|| IWOLipsModel.EXT_WOA.equals(resource
-								.getFileExtension())
-						|| "build".equals(resource.getName())
-						|| "dist".equals(resource.getName())) {
-					return false;
-				}
+			if (IWOLipsModel.EXT_FRAMEWORK.equals(resource.getFileExtension()) || IWOLipsModel.EXT_WOA.equals(resource.getFileExtension()) || "build".equals(resource.getName()) || "dist".equals(resource.getName())) {
+				return false;
+			}
 		}
 		return true;
 	}

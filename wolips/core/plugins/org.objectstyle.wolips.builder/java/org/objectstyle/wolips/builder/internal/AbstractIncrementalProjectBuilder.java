@@ -64,8 +64,7 @@ import org.objectstyle.wolips.datasets.adaptable.Project;
 /**
  * @author ulrich
  */
-public abstract class AbstractIncrementalProjectBuilder extends
-		AbstractOldBuilder {
+public abstract class AbstractIncrementalProjectBuilder extends AbstractOldBuilder {
 
 	private BuildResourceValidator buildResourceValidator = new BuildResourceValidator();
 
@@ -83,8 +82,7 @@ public abstract class AbstractIncrementalProjectBuilder extends
 			return false;
 		try {
 			delta.accept(patternsetDeltaVisitor);
-			Project project = (Project) this.getProject().getAdapter(
-					Project.class);
+			Project project = (Project) this.getProject().getAdapter(Project.class);
 			if (project.fullBuildRequired) {
 				return true;
 			}

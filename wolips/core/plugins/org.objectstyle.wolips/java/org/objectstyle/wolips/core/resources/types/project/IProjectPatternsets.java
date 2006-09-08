@@ -77,7 +77,6 @@ public interface IProjectPatternsets {
 	 */
 	public abstract boolean matchesResourcesPattern(IResource resource);
 
-
 	/**
 	 * @param string
 	 * @return true is the pattern allready exists

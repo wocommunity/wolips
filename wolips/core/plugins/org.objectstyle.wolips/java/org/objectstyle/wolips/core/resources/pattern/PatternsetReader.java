@@ -55,6 +55,7 @@
  */
 
 package org.objectstyle.wolips.core.resources.pattern;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -66,11 +67,13 @@ import org.objectstyle.wolips.core.CorePlugin;
 
 /**
  * @author ulrich
-*/
+ */
 public class PatternsetReader {
 	private String[] pattern = new String[0];
-	/*private long lastReadAt = 0;
-	private IFile theFile = null;*/
+
+	/*
+	 * private long lastReadAt = 0; private IFile theFile = null;
+	 */
 
 	public PatternsetReader(IFile patternset) {
 
@@ -87,21 +90,21 @@ public class PatternsetReader {
 			}
 		} catch (IOException ioe) {
 			CorePlugin.getDefault().log(ioe);
-			//String msg = "An error occured while reading from pattern file: "
-			//		+ patternset.getLocation().toOSString();
-			//throw new InvocationException(msg, ioe);
+			// String msg = "An error occured while reading from pattern file: "
+			// + patternset.getLocation().toOSString();
+			// throw new InvocationException(msg, ioe);
 		} finally {
 			if (null != patternReader) {
 				try {
 					patternReader.close();
 				} catch (IOException ioe) {
-					//Ignore exception
+					// Ignore exception
 				}
 			}
 		}
-		pattern = (String[])patternList.toArray(new String[patternList.size()]);
+		pattern = (String[]) patternList.toArray(new String[patternList.size()]);
 	}
-	
+
 	/**
 	 * @param pattern
 	 */

@@ -66,12 +66,12 @@ public class Gettable extends AbstractUn {
 	protected Gettable(Element element, ApiModel apiModel) {
 		super(element, apiModel);
 	}
-  
-  public boolean evaluate(Map _bindings) {
-    String bindingName = getName();
-    String bindingValue = (String)_bindings.get(bindingName);
-    boolean evaluation = (bindingValue != null && !bindingValue.startsWith("\""));
-    return evaluation;
-  }
+
+	public boolean evaluate(Map _bindings) {
+		String bindingName = getName();
+		String bindingValue = (String) _bindings.get(bindingName);
+		boolean evaluation = (bindingValue != null && !bindingValue.startsWith("\""));
+		return evaluation;
+	}
 
 }

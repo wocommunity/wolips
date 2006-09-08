@@ -83,106 +83,85 @@ public abstract class AbstractProjectTestCase extends TestCase {
 	public IProject getProject(String suffix) {
 		String projectName = this.getClass().getName() + "-" + suffix;
 		projectName = projectName.replace('.', '-');
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(
-				projectName);
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
 		this.projects.add(project);
 		return project;
 	}
 
-	public void initIncrementalFrameworkProject(IProject project,
-			IProgressMonitor monitor) {
+	public void initIncrementalFrameworkProject(IProject project, IProgressMonitor monitor) {
 		assertFalse(project.exists());
-		IProjectAdapter projectAdapter = (IProjectAdapter) project
-				.getAdapter(IProjectAdapter.class);
+		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
 		assertNull(projectAdapter);
 
 		try {
 			project.create(monitor);
 			project.open(monitor);
 			IProjectDescription description = project.getDescription();
-			List naturesList = new ArrayList(Arrays.asList(description
-					.getNatureIds()));
+			List naturesList = new ArrayList(Arrays.asList(description.getNatureIds()));
 			naturesList.add("org.eclipse.jdt.core.javanature");
-			description.setNatureIds((String[]) naturesList
-					.toArray(new String[naturesList.size()]));
+			description.setNatureIds((String[]) naturesList.toArray(new String[naturesList.size()]));
 			project.setDescription(description, monitor);
-			boolean success = Nature.addIncrementalFrameworkNatureToProject(project,
-					monitor);
+			boolean success = Nature.addIncrementalFrameworkNatureToProject(project, monitor);
 			assertTrue(success);
 		} catch (CoreException e) {
 			assertTrue(false);
 		}
 	}
 
-	public void initAntFrameworkProject(IProject project,
-			IProgressMonitor monitor) {
+	public void initAntFrameworkProject(IProject project, IProgressMonitor monitor) {
 		assertFalse(project.exists());
-		IProjectAdapter projectAdapter = (IProjectAdapter) project
-				.getAdapter(IProjectAdapter.class);
+		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
 		assertNull(projectAdapter);
 
 		try {
 			project.create(monitor);
 			project.open(monitor);
 			IProjectDescription description = project.getDescription();
-			List naturesList = new ArrayList(Arrays.asList(description
-					.getNatureIds()));
+			List naturesList = new ArrayList(Arrays.asList(description.getNatureIds()));
 			naturesList.add("org.eclipse.jdt.core.javanature");
-			description.setNatureIds((String[]) naturesList
-					.toArray(new String[naturesList.size()]));
+			description.setNatureIds((String[]) naturesList.toArray(new String[naturesList.size()]));
 			project.setDescription(description, monitor);
-			boolean success = Nature.addAntFrameworkNatureToProject(project,
-					monitor);
+			boolean success = Nature.addAntFrameworkNatureToProject(project, monitor);
 			assertTrue(success);
 		} catch (CoreException e) {
 			assertTrue(false);
 		}
 	}
 
-	public void initIncrementalApplicationProject(IProject project,
-			IProgressMonitor monitor) {
+	public void initIncrementalApplicationProject(IProject project, IProgressMonitor monitor) {
 		assertFalse(project.exists());
-		IProjectAdapter projectAdapter = (IProjectAdapter) project
-				.getAdapter(IProjectAdapter.class);
+		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
 		assertNull(projectAdapter);
 
 		try {
 			project.create(monitor);
 			project.open(monitor);
 			IProjectDescription description = project.getDescription();
-			List naturesList = new ArrayList(Arrays.asList(description
-					.getNatureIds()));
+			List naturesList = new ArrayList(Arrays.asList(description.getNatureIds()));
 			naturesList.add("org.eclipse.jdt.core.javanature");
-			description.setNatureIds((String[]) naturesList
-					.toArray(new String[naturesList.size()]));
+			description.setNatureIds((String[]) naturesList.toArray(new String[naturesList.size()]));
 			project.setDescription(description, monitor);
-			boolean success = Nature.addIncrementalApplicationNatureToProject(project,
-					monitor);
+			boolean success = Nature.addIncrementalApplicationNatureToProject(project, monitor);
 			assertTrue(success);
 		} catch (CoreException e) {
 			assertTrue(false);
 		}
 	}
 
-	public void initAntApplicationProject(IProject project,
-			IProgressMonitor monitor) {
+	public void initAntApplicationProject(IProject project, IProgressMonitor monitor) {
 		assertFalse(project.exists());
-		IProjectAdapter projectAdapter = (IProjectAdapter) project
-				.getAdapter(IProjectAdapter.class);
+		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
 		assertNull(projectAdapter);
 
 		try {
 			project.create(monitor);
 			project.open(monitor);
 			IProjectDescription description = project.getDescription();
-			List naturesList = new ArrayList(Arrays.asList(description
-					.getNatureIds()));
+			List naturesList = new ArrayList(Arrays.asList(description.getNatureIds()));
 			naturesList.add("org.eclipse.jdt.core.javanature");
-			description.setNatureIds((String[]) naturesList
-					.toArray(new String[naturesList.size()]));
+			description.setNatureIds((String[]) naturesList.toArray(new String[naturesList.size()]));
 			project.setDescription(description, monitor);
-			boolean success = Nature.addAntApplicationNatureToProject(project,
-					monitor);
+			boolean success = Nature.addAntApplicationNatureToProject(project, monitor);
 			assertTrue(success);
 		} catch (CoreException e) {
 			assertTrue(false);

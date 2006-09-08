@@ -83,16 +83,14 @@ public class JarBuilder extends BuildHelper {
 	 * @param delta
 	 * @throws CoreException
 	 */
-	public boolean handleResource(IResource resource, IResourceDelta delta)
-			throws CoreException {
+	public boolean handleResource(IResource resource, IResourceDelta delta) throws CoreException {
 		int baseSegments;
 
 		IPath outPath;
 
 		IPath compilerOutPath;
 		outPath = this.getJavaOutputPath();
-		compilerOutPath = this.getJavaProject()
-				.getOutputLocation();
+		compilerOutPath = this.getJavaProject().getOutputLocation();
 		baseSegments = compilerOutPath.segmentCount();
 
 		Project adaptedProject = this.getProject();
@@ -101,8 +99,7 @@ public class JarBuilder extends BuildHelper {
 			if (compilerOutPath.isPrefixOf(path) && !outPath.isPrefixOf(path)) {
 				IPath cp = path.removeFirstSegments(baseSegments);
 				path = outPath.append(cp);
-				if ((null != delta)
-						&& (delta.getKind() == IResourceDelta.REMOVED)) {
+				if ((null != delta) && (delta.getKind() == IResourceDelta.REMOVED)) {
 					addTask(new DeleteTask(path, "jar"));
 					_getLogger().debug("delete: " + path.toString());
 				} else {
@@ -111,7 +108,7 @@ public class JarBuilder extends BuildHelper {
 				}
 			}
 		}
-        return true;
+		return true;
 	}
 
 }

@@ -72,6 +72,7 @@ public class AntTestSuite extends TestCase {
 	public AntTestSuite(String testName) {
 		super(testName);
 	}
+
 	/**
 	 * @return
 	 * @throws Exception

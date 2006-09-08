@@ -57,11 +57,10 @@ package org.objectstyle.wolips.core.resources.types.folder;
 
 import org.objectstyle.wolips.core.resources.types.IPBDotProjectOwner;
 
-
 public interface IDotSubprojAdapter extends IFolderAdapter, IPBDotProjectOwner {
 
 	public static final String FILE_NAME_EXTENSION = "subproj";
-	
+
 	public abstract String getSubprojectName();
 
 }

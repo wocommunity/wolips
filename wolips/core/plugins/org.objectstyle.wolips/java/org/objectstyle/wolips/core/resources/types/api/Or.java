@@ -59,20 +59,20 @@ import java.util.Map;
 
 import org.w3c.dom.Element;
 
-public class Or  extends AbstractValidationChild {
+public class Or extends AbstractValidationChild {
 
 	protected final static String OR = "or";
-	
+
 	protected Or(Element element, ApiModel apiModel) {
 		super(element, apiModel);
 	}
 
-  public boolean evaluate(Map _bindings) {
-    boolean evaluation = false;
-    IValidation[] validationChildren = getValidationChildren();
-    for (int i = 0; !evaluation && i < validationChildren.length; i ++) {
-      evaluation = validationChildren[i].evaluate(_bindings);
-    }
-    return evaluation;
-  }
+	public boolean evaluate(Map _bindings) {
+		boolean evaluation = false;
+		IValidation[] validationChildren = getValidationChildren();
+		for (int i = 0; !evaluation && i < validationChildren.length; i++) {
+			evaluation = validationChildren[i].evaluate(_bindings);
+		}
+		return evaluation;
+	}
 }

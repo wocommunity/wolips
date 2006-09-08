@@ -88,8 +88,7 @@ public class PatternList implements IPatternList {
 	}
 
 	public IPattern[] getPattern() {
-		return (IPattern[]) this.patternList
-				.toArray(new IPattern[this.patternList.size()]);
+		return (IPattern[]) this.patternList.toArray(new IPattern[this.patternList.size()]);
 	}
 
 	public boolean matches(String string) {

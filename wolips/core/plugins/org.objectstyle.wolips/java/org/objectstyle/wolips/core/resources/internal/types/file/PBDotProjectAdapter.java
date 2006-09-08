@@ -71,8 +71,7 @@ import org.objectstyle.wolips.core.resources.types.file.IPBDotProjectAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IDotSubprojAdapter;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 
-public class PBDotProjectAdapter extends AbstractFileAdapter implements
-		IPBDotProjectAdapter {
+public class PBDotProjectAdapter extends AbstractFileAdapter implements IPBDotProjectAdapter {
 	// local framework search for PB.project
 	private static final String DefaultLocalFrameworkSearch = "$(NEXT_ROOT)$(LOCAL_LIBRARY_DIR)/Frameworks";
 
@@ -101,28 +100,22 @@ public class PBDotProjectAdapter extends AbstractFileAdapter implements
 		this.saveRequired = false;
 		this.pbProject.saveChanges();
 		try {
-			this.getUnderlyingFile()
-					.refreshLocal(IResource.DEPTH_ZERO, monitor);
+			this.getUnderlyingFile().refreshLocal(IResource.DEPTH_ZERO, monitor);
 		} catch (CoreException up) {
-			CorePlugin.getDefault().debug(
-					this.getClass().getName()
-							+ "Error while saving PB.project: "
-							+ this.getUnderlyingFile(), up);
+			CorePlugin.getDefault().debug(this.getClass().getName() + "Error while saving PB.project: " + this.getUnderlyingFile(), up);
 		}
 	}
 
 	private IProjectAdapter getProjectAdapter() {
 		IProject project = this.getUnderlyingFile().getProject();
-		IProjectAdapter projectAdapter = (IProjectAdapter) project
-				.getAdapter(IProjectAdapter.class);
+		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
 		return projectAdapter;
 	}
 
 	private void initPBProject() {
 		IProjectAdapter projectAdapter = this.getProjectAdapter();
 		try {
-			this.pbProject = new PBProject(this.getUnderlyingFile()
-					.getLocation().toOSString(), projectAdapter.isFramework());
+			this.pbProject = new PBProject(this.getUnderlyingFile().getLocation().toOSString(), projectAdapter.isFramework());
 			this.pbProject.update();
 			IFile underlyingFile = getUnderlyingFile();
 			if (!underlyingFile.exists()) {
@@ -131,19 +124,13 @@ public class PBDotProjectAdapter extends AbstractFileAdapter implements
 				try {
 					underlyingFile.refreshLocal(IResource.DEPTH_ONE, null);
 				} catch (CoreException e) {
-					CorePlugin.getDefault().debug(
-							this.getClass().getName()
-									+ "Error while refreshing PB.project: "
-									+ underlyingFile, e);
+					CorePlugin.getDefault().debug(this.getClass().getName() + "Error while refreshing PB.project: " + underlyingFile, e);
 				}
 			}
 			addLocalFrameworkSectionToPBProject();
 			syncProjectName();
 		} catch (IOException e) {
-			CorePlugin.getDefault().debug(
-					this.getClass().getName()
-							+ "Error while loading PB.project: "
-							+ this.getUnderlyingFile(), e);
+			CorePlugin.getDefault().debug(this.getClass().getName() + "Error while loading PB.project: " + this.getUnderlyingFile(), e);
 		}
 	}
 
@@ -159,8 +146,7 @@ public class PBDotProjectAdapter extends AbstractFileAdapter implements
 	 * Method syncProjectName.
 	 */
 	public void syncProjectName() {
-		String projectName = this.getUnderlyingResource().getProject()
-				.getName();
+		String projectName = this.getUnderlyingResource().getProject().getName();
 		if (!projectName.equals(this.pbProject.getProjectName())) {
 			this.pbProject.setProjectName(projectName);
 			this.saveRequired = true;
@@ -176,10 +162,8 @@ public class PBDotProjectAdapter extends AbstractFileAdapter implements
 			this.pbProject.setFrameworkSearch(new ArrayList());
 			actualFrameworkSearch = this.pbProject.getFrameworkSearch();
 		}
-		if (!actualFrameworkSearch
-				.contains(PBDotProjectAdapter.DefaultLocalFrameworkSearch)) {
-			actualFrameworkSearch
-					.add(PBDotProjectAdapter.DefaultLocalFrameworkSearch);
+		if (!actualFrameworkSearch.contains(PBDotProjectAdapter.DefaultLocalFrameworkSearch)) {
+			actualFrameworkSearch.add(PBDotProjectAdapter.DefaultLocalFrameworkSearch);
 		}
 	}
 
@@ -220,83 +204,64 @@ public class PBDotProjectAdapter extends AbstractFileAdapter implements
 		if (this.pbProject == null) {
 			return;
 		}
-		removeFromListIfListNotContains(this.pbProject.getClasses(),
-				localizedPath.getResourcePath());
+		removeFromListIfListNotContains(this.pbProject.getClasses(), localizedPath.getResourcePath());
 	}
 
 	public void addWoComponent(ILocalizedPath localizedPath) {
 		if (this.pbProject == null) {
 			return;
 		}
-		List woComponents = this.pbProject.getWoComponents(localizedPath
-				.getLanguage());
+		List woComponents = this.pbProject.getWoComponents(localizedPath.getLanguage());
 		if (woComponents == null) {
-			this.pbProject.setWoComponents(new ArrayList(), localizedPath
-					.getLanguage());
-			woComponents = this.pbProject.getWoComponents(localizedPath
-					.getLanguage());
+			this.pbProject.setWoComponents(new ArrayList(), localizedPath.getLanguage());
+			woComponents = this.pbProject.getWoComponents(localizedPath.getLanguage());
 		}
-		addToListIfListNotContains(woComponents, localizedPath
-				.getResourcePath());
+		addToListIfListNotContains(woComponents, localizedPath.getResourcePath());
 	}
 
 	public void removeWoComponent(ILocalizedPath localizedPath) {
 		if (this.pbProject == null) {
 			return;
 		}
-		removeFromListIfListNotContains(this.pbProject
-				.getWoComponents(localizedPath.getLanguage()), localizedPath
-				.getResourcePath());
+		removeFromListIfListNotContains(this.pbProject.getWoComponents(localizedPath.getLanguage()), localizedPath.getResourcePath());
 	}
 
 	public void addWoappResource(ILocalizedPath localizedPath) {
 		if (this.pbProject == null) {
 			return;
 		}
-		List woAppResourcesComponents = this.pbProject
-				.getWoAppResources(localizedPath.getLanguage());
+		List woAppResourcesComponents = this.pbProject.getWoAppResources(localizedPath.getLanguage());
 		if (woAppResourcesComponents == null) {
-			this.pbProject.setWoAppResources(new ArrayList(), localizedPath
-					.getLanguage());
-			woAppResourcesComponents = this.pbProject
-					.getWoAppResources(localizedPath.getLanguage());
+			this.pbProject.setWoAppResources(new ArrayList(), localizedPath.getLanguage());
+			woAppResourcesComponents = this.pbProject.getWoAppResources(localizedPath.getLanguage());
 		}
-		addToListIfListNotContains(woAppResourcesComponents, localizedPath
-				.getResourcePath());
+		addToListIfListNotContains(woAppResourcesComponents, localizedPath.getResourcePath());
 	}
 
 	public void removeWoappResource(ILocalizedPath localizedPath) {
 		if (this.pbProject == null) {
 			return;
 		}
-		removeFromListIfListNotContains(this.pbProject
-				.getWoAppResources(localizedPath.getLanguage()), localizedPath
-				.getResourcePath());
+		removeFromListIfListNotContains(this.pbProject.getWoAppResources(localizedPath.getLanguage()), localizedPath.getResourcePath());
 	}
 
 	public void addWebServerResource(ILocalizedPath localizedPath) {
 		if (this.pbProject == null) {
 			return;
 		}
-		List wsResourcesComponents = this.pbProject
-				.getWebServerResources(localizedPath.getLanguage());
+		List wsResourcesComponents = this.pbProject.getWebServerResources(localizedPath.getLanguage());
 		if (wsResourcesComponents == null) {
-			this.pbProject.setWebServerResources(new ArrayList(), localizedPath
-					.getLanguage());
-			wsResourcesComponents = this.pbProject
-					.getWebServerResources(localizedPath.getLanguage());
+			this.pbProject.setWebServerResources(new ArrayList(), localizedPath.getLanguage());
+			wsResourcesComponents = this.pbProject.getWebServerResources(localizedPath.getLanguage());
 		}
-		addToListIfListNotContains(wsResourcesComponents, localizedPath
-				.getResourcePath());
+		addToListIfListNotContains(wsResourcesComponents, localizedPath.getResourcePath());
 	}
 
 	public void removeWebServerResource(ILocalizedPath localizedPath) {
 		if (this.pbProject == null) {
 			return;
 		}
-		removeFromListIfListNotContains(this.pbProject
-				.getWebServerResources(localizedPath.getLanguage()),
-				localizedPath.getResourcePath());
+		removeFromListIfListNotContains(this.pbProject.getWebServerResources(localizedPath.getLanguage()), localizedPath.getResourcePath());
 	}
 
 	public void updateFrameworkNames(List frameworkNames) {
@@ -337,16 +302,14 @@ public class PBDotProjectAdapter extends AbstractFileAdapter implements
 			this.pbProject.setSubprojects(new ArrayList());
 			subProjects = this.pbProject.getSubprojects();
 		}
-		addToListIfListNotContains(subProjects, dotSubprojAdapter
-				.getUnderlyingFolder().getName());
+		addToListIfListNotContains(subProjects, dotSubprojAdapter.getUnderlyingFolder().getName());
 	}
 
 	public void removeSubproject(IDotSubprojAdapter dotSubprojAdapter) {
 		if (this.pbProject == null) {
 			return;
 		}
-		removeFromListIfListNotContains(this.pbProject.getSubprojects(),
-				dotSubprojAdapter.getUnderlyingFolder().getName());
+		removeFromListIfListNotContains(this.pbProject.getSubprojects(), dotSubprojAdapter.getUnderlyingFolder().getName());
 
 	}
 

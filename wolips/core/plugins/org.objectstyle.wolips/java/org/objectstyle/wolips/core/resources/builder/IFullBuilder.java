@@ -61,7 +61,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 public interface IFullBuilder extends IBuilder {
-  public abstract void handleSource(IResource resource, IProgressMonitor _progressMonitor, Map _buildCache);
+	public abstract void handleSource(IResource resource, IProgressMonitor _progressMonitor, Map _buildCache);
 
 	public abstract void handleClasses(IResource resource, IProgressMonitor _progressMonitor, Map _buildCache);
 

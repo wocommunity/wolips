@@ -78,7 +78,7 @@ public class Unbound extends AbstractUn {
 
 	public static void removeFromWoWithBinding(Wo wo, Binding binding) {
 		Validation[] validations = wo.getValidations();
-		for (int i = validations.length - 1; i > 0 ; i--) {
+		for (int i = validations.length - 1; i > 0; i--) {
 			Validation validation = validations[i];
 			Unbound[] unbounds = validation.getUnbounds();
 			if (unbounds.length == 1) {
@@ -88,9 +88,9 @@ public class Unbound extends AbstractUn {
 			}
 		}
 	}
-  
-  public boolean evaluate(Map _bindings) {
-    String bindingName = getName();
-    return !_bindings.containsKey(bindingName);
-  }
+
+	public boolean evaluate(Map _bindings) {
+		String bindingName = getName();
+		return !_bindings.containsKey(bindingName);
+	}
 }

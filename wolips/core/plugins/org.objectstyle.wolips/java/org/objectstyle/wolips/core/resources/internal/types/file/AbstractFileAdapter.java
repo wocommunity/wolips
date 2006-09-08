@@ -61,7 +61,7 @@ import org.objectstyle.wolips.core.resources.internal.types.AbstractResourceAdap
 public abstract class AbstractFileAdapter extends AbstractResourceAdapter {
 
 	private IFile underlyingFile;
-	
+
 	public AbstractFileAdapter(IFile underlyingFile) {
 		super(underlyingFile);
 		this.underlyingFile = underlyingFile;

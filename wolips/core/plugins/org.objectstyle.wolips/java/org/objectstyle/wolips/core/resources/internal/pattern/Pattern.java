@@ -61,21 +61,23 @@ import org.objectstyle.wolips.core.resources.pattern.IPattern;
 public class Pattern implements IPattern {
 
 	private String pattern;
-	
+
 	public Pattern(String pattern) {
 		super();
 		this.pattern = pattern;
 	}
-	
+
 	public String getPattern() {
 		return this.pattern;
 	}
-	
+
 	public void setPattern(String pattern) {
 		this.pattern = pattern;
 	}
+
 	/**
 	 * match the given <code>text</code> with the pattern
+	 * 
 	 * @param string
 	 * 
 	 * @return true if matched eitherwise false

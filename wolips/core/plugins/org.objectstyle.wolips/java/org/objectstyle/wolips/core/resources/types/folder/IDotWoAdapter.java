@@ -55,8 +55,6 @@
  */
 package org.objectstyle.wolips.core.resources.types.folder;
 
-
-
 public interface IDotWoAdapter extends IFolderAdapter {
 
 	public static final String FILE_NAME_EXTENSION = "wo";

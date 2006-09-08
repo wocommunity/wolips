@@ -74,6 +74,7 @@ public class CoreResourcesTestSuite extends TestCase {
 	public CoreResourcesTestSuite(String testName) {
 		super(testName);
 	}
+
 	/**
 	 * @return
 	 * @throws Exception

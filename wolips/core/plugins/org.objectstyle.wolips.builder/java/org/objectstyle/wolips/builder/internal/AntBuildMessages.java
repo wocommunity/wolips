@@ -64,11 +64,9 @@ import java.util.ResourceBundle;
  */
 public class AntBuildMessages {
 
-	private static final String RESOURCE_BUNDLE = AntBuildMessages.class
-			.getName();
+	private static final String RESOURCE_BUNDLE = AntBuildMessages.class.getName();
 
-	private static ResourceBundle fgResourceBundle = ResourceBundle
-			.getBundle(RESOURCE_BUNDLE);
+	private static ResourceBundle fgResourceBundle = ResourceBundle.getBundle(RESOURCE_BUNDLE);
 
 	private AntBuildMessages() {
 		super();

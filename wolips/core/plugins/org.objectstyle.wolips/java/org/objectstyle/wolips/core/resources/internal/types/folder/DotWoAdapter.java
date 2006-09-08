@@ -58,10 +58,8 @@ package org.objectstyle.wolips.core.resources.internal.types.folder;
 import org.eclipse.core.resources.IFolder;
 import org.objectstyle.wolips.core.resources.types.folder.IDotWoAdapter;
 
-public class DotWoAdapter extends AbstractFolderAdapter implements
-		IDotWoAdapter {
+public class DotWoAdapter extends AbstractFolderAdapter implements IDotWoAdapter {
 
-	
 	public DotWoAdapter(IFolder folder) {
 		super(folder);
 	}

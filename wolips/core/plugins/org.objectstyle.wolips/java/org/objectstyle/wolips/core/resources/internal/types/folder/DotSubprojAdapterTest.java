@@ -128,11 +128,9 @@ public class DotSubprojAdapterTest extends AbstractProjectTestCase {
 		IProject project = this.getProject("testDotSubProjectAdapter");
 		NullProgressMonitor monitor = new NullProgressMonitor();
 		this.initIncrementalApplicationProject(project, monitor);
-		IProjectAdapter projectAdapter = (IProjectAdapter) project
-				.getAdapter(IProjectAdapter.class);
+		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
 		assertNotNull(projectAdapter);
-		IPBDotProjectAdapter pbDotProjectAdapter = projectAdapter
-				.getPBDotProjectAdapter();
+		IPBDotProjectAdapter pbDotProjectAdapter = projectAdapter.getPBDotProjectAdapter();
 		assertNotNull(pbDotProjectAdapter);
 		IFolder folder = project.getFolder("foo.subproj");
 		assertNotNull(folder);
@@ -145,21 +143,17 @@ public class DotSubprojAdapterTest extends AbstractProjectTestCase {
 		assertNotNull(fooDotWoFolder);
 		IResource pbDotProjectFile = folder.getFile("PB.project");
 		assertNotNull(pbDotProjectFile);
-		IDotWoAdapter dotWoAdapter = (IDotWoAdapter) fooDotWoFolder
-				.getAdapter(IDotWoAdapter.class);
+		IDotWoAdapter dotWoAdapter = (IDotWoAdapter) fooDotWoFolder.getAdapter(IDotWoAdapter.class);
 		assertNotNull(dotWoAdapter);
 		IPBDotProjectOwner pbDotProjectOwner = dotWoAdapter.getPBDotProjectOwner();
 		assertNotNull(pbDotProjectOwner);
-		IPBDotProjectAdapter pbDotProjectAdapterFromPbDotProjectFile = (IPBDotProjectAdapter) pbDotProjectFile
-				.getAdapter(IPBDotProjectAdapter.class);
+		IPBDotProjectAdapter pbDotProjectAdapterFromPbDotProjectFile = (IPBDotProjectAdapter) pbDotProjectFile.getAdapter(IPBDotProjectAdapter.class);
 		assertNotNull(pbDotProjectAdapterFromPbDotProjectFile);
-		IDotSubprojAdapter dotSubprojAdapter = (IDotSubprojAdapter) folder
-				.getAdapter(IDotSubprojAdapter.class);
+		IDotSubprojAdapter dotSubprojAdapter = (IDotSubprojAdapter) folder.getAdapter(IDotSubprojAdapter.class);
 		assertNotNull(dotSubprojAdapter);
 		assertTrue(pbDotProjectAdapter != pbDotProjectAdapterFromPbDotProjectFile);
 		assertTrue(pbDotProjectOwner != projectAdapter);
-		IPBDotProjectAdapter pbDotProjectAdapterFromSubprojFolder = dotSubprojAdapter
-				.getPBDotProjectAdapter();
+		IPBDotProjectAdapter pbDotProjectAdapterFromSubprojFolder = dotSubprojAdapter.getPBDotProjectAdapter();
 		assertNotNull(pbDotProjectAdapterFromSubprojFolder);
 	}
 }

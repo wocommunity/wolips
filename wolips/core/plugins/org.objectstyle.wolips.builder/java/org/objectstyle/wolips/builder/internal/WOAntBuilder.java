@@ -76,26 +76,21 @@ public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 		super();
 	}
 
-	public void invokeOldBuilder(int kind, Map args, IProgressMonitor monitor,
-			IResourceDelta delta) {
+	public void invokeOldBuilder(int kind, Map args, IProgressMonitor monitor, IResourceDelta delta) {
 		if (getProject() == null || !getProject().exists()) {
 			monitor.done();
 			return;
 		}
-		monitor.beginTask(AntBuildMessages.getString("Build.Monitor.Title"),
-				WOAntBuilder.TOTAL_WORK_UNITS);
+		monitor.beginTask(AntBuildMessages.getString("Build.Monitor.Title"), WOAntBuilder.TOTAL_WORK_UNITS);
 		String aBuildFile = null;
 		try {
-			if (!projectNeedsAnUpdate(delta)
-					&& kind != IncrementalProjectBuilder.FULL_BUILD) {
+			if (!projectNeedsAnUpdate(delta) && kind != IncrementalProjectBuilder.FULL_BUILD) {
 				monitor.done();
 				return;
 			}
 			aBuildFile = this.buildFile();
 			if (checkIfBuildfileExist(aBuildFile)) {
-				getProject().getFile(aBuildFile).deleteMarkers(
-						BuilderPlugin.MARKER_TASK_GENERIC, false,
-						IResource.DEPTH_ONE);
+				getProject().getFile(aBuildFile).deleteMarkers(BuilderPlugin.MARKER_TASK_GENERIC, false, IResource.DEPTH_ONE);
 				this.execute(monitor, aBuildFile);
 			}
 		} catch (Exception e) {
@@ -118,8 +113,7 @@ public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 	 * @param aBuildFile
 	 * @throws Exception
 	 */
-	private void execute(IProgressMonitor monitor, String aBuildFile)
-			throws Exception {
+	private void execute(IProgressMonitor monitor, String aBuildFile) throws Exception {
 		// RunAnt runAnt = new RunAnt();
 		// if (projectNeedsClean())
 		// TODO:handle clean
@@ -137,12 +131,10 @@ public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 		IMarker aMarker = null;
 		try {
 			if (anException == null) {
-				throw new NullPointerException(
-						"WOBuilder.handleException called without an exception.");
+				throw new NullPointerException("WOBuilder.handleException called without an exception.");
 			}
 			aMarker = this.getBuildfileMarker();
-			aMarker.setAttribute(IMarker.MESSAGE, "WOLips: "
-					+ anException.getMessage());
+			aMarker.setAttribute(IMarker.MESSAGE, "WOLips: " + anException.getMessage());
 		} catch (Exception e) {
 			BuilderPlugin.getDefault().log(e);
 		} finally {
@@ -153,8 +145,7 @@ public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 	private IMarker getBuildfileMarker() {
 		IMarker aMarker = null;
 		try {
-			aMarker = getProject().getFile(this.buildFile()).createMarker(
-					BuilderPlugin.MARKER_TASK_GENERIC);
+			aMarker = getProject().getFile(this.buildFile()).createMarker(BuilderPlugin.MARKER_TASK_GENERIC);
 			aMarker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 		} catch (CoreException e) {
 			BuilderPlugin.getDefault().log(e);
@@ -177,10 +168,8 @@ public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 		}
 		IMarker aMarker = null;
 		try {
-			aMarker = getProject().createMarker(
-					BuilderPlugin.MARKER_TASK_GENERIC);
-			aMarker.setAttribute(IMarker.MESSAGE, "WOLips: Can not find: "
-					+ this.buildFile());
+			aMarker = getProject().createMarker(BuilderPlugin.MARKER_TASK_GENERIC);
+			aMarker.setAttribute(IMarker.MESSAGE, "WOLips: Can not find: " + this.buildFile());
 			aMarker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 		} catch (Exception anException) {
 			BuilderPlugin.getDefault().log(anException);
@@ -219,8 +208,7 @@ public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 	 */
 	private void launchAntInExternalVM(IFile buildFile, IProgressMonitor monitor) {
 		try {
-			AntPlugin.getDefault().launchAntInExternalVM(buildFile, monitor,
-					Preferences.getPREF_CAPTURE_ANT_OUTPUT(), null);
+			AntPlugin.getDefault().launchAntInExternalVM(buildFile, monitor, Preferences.getPREF_CAPTURE_ANT_OUTPUT(), null);
 		} catch (CoreException e) {
 			BuilderPlugin.getDefault().log(e);
 			return;

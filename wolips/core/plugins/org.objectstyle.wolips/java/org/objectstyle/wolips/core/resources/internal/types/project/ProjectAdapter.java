@@ -95,8 +95,7 @@ import org.objectstyle.wolips.core.resources.types.folder.IBuildAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IWoprojectAdapter;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 
-public class ProjectAdapter extends AbstractResourceAdapter implements
-		IProjectAdapter {
+public class ProjectAdapter extends AbstractResourceAdapter implements IProjectAdapter {
 
 	private IProject underlyingProject;
 
@@ -129,10 +128,8 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 
 	public IPBDotProjectAdapter getPBDotProjectAdapter() {
 		IContainer underlyingContainer = this.getUnderlyingProject();
-		IResource pbDotProjectResource = underlyingContainer.getFile(new Path(
-				IPBDotProjectAdapter.FILE_NAME));
-		IPBDotProjectAdapter pbDotProjectAdapter = (IPBDotProjectAdapter) pbDotProjectResource
-				.getAdapter(IPBDotProjectAdapter.class);
+		IResource pbDotProjectResource = underlyingContainer.getFile(new Path(IPBDotProjectAdapter.FILE_NAME));
+		IPBDotProjectAdapter pbDotProjectAdapter = (IPBDotProjectAdapter) pbDotProjectResource.getAdapter(IPBDotProjectAdapter.class);
 		return pbDotProjectAdapter;
 	}
 
@@ -140,20 +137,16 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 		IContainer underlyingContainer = this.getUnderlyingProject();
 		IFolder wprojectFolder = null;
 		IWoprojectAdapter wprojectAdapter = null;
-		wprojectFolder = underlyingContainer.getFolder(new Path(
-				IWoprojectAdapter.FOLDER_NAME));
+		wprojectFolder = underlyingContainer.getFolder(new Path(IWoprojectAdapter.FOLDER_NAME));
 		if (wprojectFolder.exists()) {
-			wprojectAdapter = (IWoprojectAdapter) wprojectFolder
-					.getAdapter(IWoprojectAdapter.class);
+			wprojectAdapter = (IWoprojectAdapter) wprojectFolder.getAdapter(IWoprojectAdapter.class);
 			if (wprojectAdapter != null) {
 				return wprojectAdapter;
 			}
 		}
-		wprojectFolder = underlyingContainer.getFolder(new Path(
-				IWoprojectAdapter.FOLDER_NAME_DEPRECATED));
+		wprojectFolder = underlyingContainer.getFolder(new Path(IWoprojectAdapter.FOLDER_NAME_DEPRECATED));
 		if (wprojectFolder.exists()) {
-			wprojectAdapter = (IWoprojectAdapter) wprojectFolder
-					.getAdapter(IWoprojectAdapter.class);
+			wprojectAdapter = (IWoprojectAdapter) wprojectFolder.getAdapter(IWoprojectAdapter.class);
 		}
 		return wprojectAdapter;
 
@@ -175,14 +168,12 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 	}
 
 	private IFolder getBuildFolder() {
-		//:TODO what if we have both folder
-		IResource resource = this.getUnderlyingProject().getFolder(
-				IBuildAdapter.FILE_NAME_DIST);
+		// :TODO what if we have both folder
+		IResource resource = this.getUnderlyingProject().getFolder(IBuildAdapter.FILE_NAME_DIST);
 		if (resource.exists() && resource instanceof IFolder) {
 			return (IFolder) resource;
 		}
-		resource = this.getUnderlyingProject().getFolder(
-				IBuildAdapter.FILE_NAME_BUILD);
+		resource = this.getUnderlyingProject().getFolder(IBuildAdapter.FILE_NAME_BUILD);
 		if (resource.exists() && resource instanceof IFolder) {
 			return (IFolder) resource;
 		}
@@ -199,18 +190,15 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 
 	public List getFrameworkPaths() {
 		ArrayList list = new ArrayList();
-		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
-				.getProjects();
+		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		for (int i = 0; i < projects.length; i++) {
 			if (isFrameworkReference(projects[i])) {
 				list.add(projects[i].getLocation());
 			}
 		}
 		try {
-			IJavaProject javaProject = JavaCore.create(this
-					.getUnderlyingProject());
-			list.addAll(toFrameworkPaths(javaProject
-					.getResolvedClasspath(false)));
+			IJavaProject javaProject = JavaCore.create(this.getUnderlyingProject());
+			list.addAll(toFrameworkPaths(javaProject.getResolvedClasspath(false)));
 		} catch (JavaModelException e) {
 			CorePlugin.getDefault().log(e);
 		}
@@ -219,19 +207,15 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 
 	public List getFrameworkNames() {
 		Set frameworkNamesSet = new TreeSet();
-		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
-				.getProjects();
+		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		for (int i = 0; i < projects.length; i++) {
 			if (isFrameworkReference(projects[i])) {
-				frameworkNamesSet
-						.add(projects[i].getName() + "." + "framework");
+				frameworkNamesSet.add(projects[i].getName() + "." + "framework");
 			}
 		}
 		try {
-			IJavaProject javaProject = JavaCore.create(this
-					.getUnderlyingProject());
-			frameworkNamesSet.addAll(this.toFrameworkNames(javaProject
-					.getResolvedClasspath(false)));
+			IJavaProject javaProject = JavaCore.create(this.getUnderlyingProject());
+			frameworkNamesSet.addAll(this.toFrameworkNames(javaProject.getResolvedClasspath(false)));
 		} catch (JavaModelException e) {
 			CorePlugin.getDefault().log(e);
 		}
@@ -240,8 +224,7 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 
 	public String getFrameworkName(IPath frameworkPath) {
 		String frameworkName = null;
-		if (ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(
-				frameworkPath) instanceof IProject) {
+		if (ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(frameworkPath) instanceof IProject) {
 			frameworkName = frameworkPath.lastSegment() + ".framework";
 		} else {
 			frameworkName = frameworkPath.lastSegment();
@@ -255,16 +238,13 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 			IPath path = classpathEntries[i].getPath();
 			IPath choppedFrameworkPath = null;
 			int count = path.segmentCount();
-			for (int pathElementNum = 0; pathElementNum < count
-					&& choppedFrameworkPath == null; pathElementNum++) {
+			for (int pathElementNum = 0; pathElementNum < count && choppedFrameworkPath == null; pathElementNum++) {
 				String segment = path.segment(pathElementNum);
 				if (segment.endsWith("." + "framework")) {
-					choppedFrameworkPath = path.removeLastSegments(count
-							- pathElementNum - 1);
+					choppedFrameworkPath = path.removeLastSegments(count - pathElementNum - 1);
 				}
 			}
-			if (choppedFrameworkPath != null
-					&& !choppedFrameworkPath.lastSegment().startsWith("JavaVM")) {
+			if (choppedFrameworkPath != null && !choppedFrameworkPath.lastSegment().startsWith("JavaVM")) {
 				arrayList.add(choppedFrameworkPath);
 			}
 		}
@@ -297,12 +277,8 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 			if (javaProject == null) {
 				isFrameworkReference = false;
 			} else {
-				IProjectAdapter project = (IProjectAdapter) iProject
-						.getAdapter(IProjectAdapter.class);
-				isFrameworkReference = project != null
-						&& project.isFramework()
-						&& projectIsReferencedByProject(iProject, javaProject
-								.getProject());
+				IProjectAdapter project = (IProjectAdapter) iProject.getAdapter(IProjectAdapter.class);
+				isFrameworkReference = project != null && project.isFramework() && projectIsReferencedByProject(iProject, javaProject.getProject());
 			}
 		} catch (Exception e) {
 			CorePlugin.getDefault().log(e);
@@ -334,8 +310,7 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 	 */
 	public void installTargetBuilder(int position) throws CoreException {
 		if (!this.isTargetBuilderInstalled())
-			this.installBuilderAtPosition(ProjectAdapter.TARGET_BUILDER_ID,
-					position, null);
+			this.installBuilderAtPosition(ProjectAdapter.TARGET_BUILDER_ID, position, null);
 	}
 
 	/**
@@ -348,8 +323,7 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 	public int removeTargetBuilder() throws CoreException {
 		if (!this.isTargetBuilderInstalled())
 			return ProjectAdapter.BuilderNotFound;
-		int returnValue = this
-				.positionForBuilder(ProjectAdapter.TARGET_BUILDER_ID);
+		int returnValue = this.positionForBuilder(ProjectAdapter.TARGET_BUILDER_ID);
 		this.removeBuilder(ProjectAdapter.TARGET_BUILDER_ID);
 		return returnValue;
 	}
@@ -464,8 +438,7 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 	public Map getBuilderArgs() {
 		Map result = null;
 		try {
-			IProjectDescription desc = this.getUnderlyingProject()
-					.getDescription();
+			IProjectDescription desc = this.getUnderlyingProject().getDescription();
 			List cmdList = Arrays.asList(desc.getBuildSpec());
 			Iterator iter = cmdList.iterator();
 			while (iter.hasNext()) {
@@ -493,8 +466,7 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 	 * @return boolean whether this is one of ours
 	 */
 	private boolean isWOLipsBuilder(String name) {
-		return (name.equals(ProjectAdapter.INCREMENTAL_BUILDER_ID) || name
-				.equals(ProjectAdapter.ANT_BUILDER_ID));
+		return (name.equals(ProjectAdapter.INCREMENTAL_BUILDER_ID) || name.equals(ProjectAdapter.ANT_BUILDER_ID));
 	}
 
 	/**
@@ -517,8 +489,7 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 			comList.addAll(tmp);
 			boolean foundJBuilder = false;
 			for (int i = 0; i < comList.size(); i++) {
-				if (((ICommand) comList.get(i)).getBuilderName().equals(
-						aBuilder)) {
+				if (((ICommand) comList.get(i)).getBuilderName().equals(aBuilder)) {
 					comList.remove(i);
 					foundJBuilder = true;
 				}
@@ -585,8 +556,7 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 	 */
 	private boolean isBuilderInstalled(String anID) {
 		try {
-			ICommand[] nids = this.getUnderlyingProject().getDescription()
-					.getBuildSpec();
+			ICommand[] nids = this.getUnderlyingProject().getDescription().getBuildSpec();
 			for (int i = 0; i < nids.length; i++) {
 				if (nids[i].getBuilderName().equals(anID))
 					return true;
@@ -630,16 +600,11 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 	 * @param arguments
 	 * @throws CoreException
 	 */
-	private void installBuilderAtPosition(String aBuilder, int installPos,
-			Map arguments) throws CoreException {
+	private void installBuilderAtPosition(String aBuilder, int installPos, Map arguments) throws CoreException {
 		if (installPos == ProjectAdapter.BuilderNotFound) {
-			CorePlugin
-					.getDefault()
+			CorePlugin.getDefault()
 
-					.log(
-							"Somebody tries to install builder: "
-									+ aBuilder
-									+ " at an illegal position. This may happen if the removed builder does not exist.");
+			.log("Somebody tries to install builder: " + aBuilder + " at an illegal position. This may happen if the removed builder does not exist.");
 			return;
 		}
 		IProjectDescription desc = this.getUnderlyingProject().getDescription();
@@ -648,8 +613,7 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 		if (args == null)
 			args = new HashMap();
 		for (int i = 0; i < coms.length; i++) {
-			if (coms[i].getBuilderName().equals(aBuilder)
-					&& coms[i].getArguments().equals(args))
+			if (coms[i].getBuilderName().equals(aBuilder) && coms[i].getArguments().equals(args))
 				return;
 		}
 		ICommand[] newIc = null;
@@ -666,8 +630,7 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 		} else {
 			System.arraycopy(coms, 0, newIc, 0, installPos);
 			newIc[installPos] = command;
-			System.arraycopy(coms, installPos, newIc, installPos + 1,
-					coms.length - installPos);
+			System.arraycopy(coms, installPos, newIc, installPos + 1, coms.length - installPos);
 		}
 		desc.setBuildSpec(newIc);
 		this.getUnderlyingProject().setDescription(desc, null);
@@ -699,17 +662,14 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 		return properties;
 	}
 
-	private void setBuildProperties(Properties properties)
-			throws CoreException, IOException {
+	private void setBuildProperties(Properties properties) throws CoreException, IOException {
 		if (this.getBuildProperties().equals(properties))
 			return;
 		IFile file = this.getUnderlyingProject().getFile("build.properties");
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		properties.store(byteArrayOutputStream, null);
-		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
-				byteArrayOutputStream.toByteArray());
-		file.setContents(byteArrayInputStream, true, true,
-				new NullProgressMonitor());
+		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+		file.setContents(byteArrayInputStream, true, true, new NullProgressMonitor());
 	}
 
 	/**
@@ -757,8 +717,7 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 	public String getWebXML_CustomContent(boolean convertNullValueToEmptyString) {
 		String returnValue = null;
 		try {
-			returnValue = (String) this.getBuildProperties().get(
-					"webXML_CustomContent");
+			returnValue = (String) this.getBuildProperties().get("webXML_CustomContent");
 		} catch (CoreException e) {
 			CorePlugin.getDefault().log(e);
 		} catch (IOException e) {
@@ -793,8 +752,7 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 	public String getEOGeneratorArgs(boolean convertNullValueToEmptyString) {
 		String returnValue = null;
 		try {
-			returnValue = (String) this.getBuildProperties().get(
-					"eogeneratorArgs");
+			returnValue = (String) this.getBuildProperties().get("eogeneratorArgs");
 		} catch (CoreException e) {
 			CorePlugin.getDefault().log(e);
 		} catch (IOException e) {
@@ -829,8 +787,7 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 	public String getPrincipalClass(boolean convertNullValueToEmptyString) {
 		String returnValue = null;
 		try {
-			returnValue = (String) this.getBuildProperties().get(
-					"principalClass");
+			returnValue = (String) this.getBuildProperties().get("principalClass");
 		} catch (CoreException e) {
 			CorePlugin.getDefault().log(e);
 		} catch (IOException e) {
@@ -866,12 +823,10 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 	 * @param convertNullValueToEmptyString
 	 * @return The CustomContent for the Info.plist
 	 */
-	public String getCustomInfoPListContent(
-			boolean convertNullValueToEmptyString) {
+	public String getCustomInfoPListContent(boolean convertNullValueToEmptyString) {
 		String returnValue = null;
 		try {
-			returnValue = (String) this.getBuildProperties().get(
-					"customInfoPListContent");
+			returnValue = (String) this.getBuildProperties().get("customInfoPListContent");
 		} catch (CoreException e) {
 			CorePlugin.getDefault().log(e);
 		} catch (IOException e) {
@@ -893,8 +848,7 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 			if (customInfoPListContent == null) {
 				properties.put("customInfoPListContent", "");
 			} else {
-				properties
-						.put("customInfoPListContent", customInfoPListContent);
+				properties.put("customInfoPListContent", customInfoPListContent);
 			}
 			this.setBuildProperties(properties);
 		} catch (CoreException e) {
@@ -911,8 +865,7 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 	public String getEOAdaptorClassName(boolean convertNullValueToEmptyString) {
 		String returnValue = null;
 		try {
-			returnValue = (String) this.getBuildProperties().get(
-					"eoAdaptorClassName");
+			returnValue = (String) this.getBuildProperties().get("eoAdaptorClassName");
 		} catch (CoreException e) {
 			CorePlugin.getDefault().log(e);
 		} catch (IOException e) {

@@ -64,8 +64,10 @@ import org.objectstyle.wolips.core.resources.types.IResourceType;
 public interface IFolderAdapter extends IResourceType {
 
 	public abstract IFolder getUnderlyingFolder();
-	
+
 	public abstract IResource copy(IResource resource) throws CoreException;
+
 	public abstract void deleteCopy(IResource resource) throws CoreException;
+
 	public abstract void markAsDerivated(IProgressMonitor monitor);
 }

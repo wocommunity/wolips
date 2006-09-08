@@ -57,17 +57,17 @@ package org.objectstyle.wolips.core.resources.types.folder;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
-
-
 public interface IBuildAdapter extends IFolderAdapter {
 
-	public static final String FILE_NAME_BUILD ="build";
+	public static final String FILE_NAME_BUILD = "build";
 
-	public static final String FILE_NAME_DIST ="dist";
-	
+	public static final String FILE_NAME_DIST = "dist";
 
 	public abstract IDotApplicationAdapter getDotApplicationAdapter();
+
 	public abstract IDotFrameworkAdapter getDotFrameworkAdapter();
+
 	public abstract IProductAdapter getProductAdapter();
+
 	public abstract void clean(IProgressMonitor monitor);
 }

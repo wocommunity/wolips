@@ -88,8 +88,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.objectstyle.wolips.core.resources.types.api.Binding;
 import org.objectstyle.wolips.core.resources.types.api.Binding.BindingNameChangedListener;
 
-public class BindingsPageBlock extends MasterDetailsBlock implements
-		BindingNameChangedListener {
+public class BindingsPageBlock extends MasterDetailsBlock implements BindingNameChangedListener {
 	FormPage page;
 
 	TableViewer viewer;
@@ -107,12 +106,10 @@ public class BindingsPageBlock extends MasterDetailsBlock implements
 			try {
 				if (inputElement instanceof IEditorInput) {
 					ApiEditor apiEditor = (ApiEditor) page.getEditor();
-					Binding[] bindings = apiEditor.getModel()
-							.getWODefinitions().getWo().getBindings();
+					Binding[] bindings = apiEditor.getModel().getWODefinitions().getWo().getBindings();
 					for (int i = 0; i < bindings.length; i++) {
 						Binding binding = bindings[i];
-						binding
-								.setBindingNameChangedListener(BindingsPageBlock.this);
+						binding.setBindingNameChangedListener(BindingsPageBlock.this);
 					}
 					return bindings;
 				}
@@ -126,35 +123,30 @@ public class BindingsPageBlock extends MasterDetailsBlock implements
 			// nothing to do
 		}
 
-		public void inputChanged(Viewer inViewer, Object oldInput,
-				Object newInput) {
+		public void inputChanged(Viewer inViewer, Object oldInput, Object newInput) {
 			// nothing to do
 		}
 	}
 
-	class MasterLabelProvider extends LabelProvider implements
-			ITableLabelProvider {
+	class MasterLabelProvider extends LabelProvider implements ITableLabelProvider {
 		public String getColumnText(Object obj, int index) {
 			return obj.toString();
 		}
 
 		public Image getColumnImage(Object obj, int index) {
 			if (obj instanceof Binding) {
-				return PlatformUI.getWorkbench().getSharedImages().getImage(
-						ISharedImages.IMG_OBJ_ELEMENT);
+				return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ELEMENT);
 			}
 			return null;
 		}
 	}
 
-	protected void createMasterPart(final IManagedForm managedForm,
-			Composite parent) {
+	protected void createMasterPart(final IManagedForm managedForm, Composite parent) {
 		// final ScrolledForm form = managedForm.getForm();
 		FormToolkit toolkit = managedForm.getToolkit();
 		Section section = toolkit.createSection(parent, Section.DESCRIPTION);
 		section.setText("Bindings");
-		section
-				.setDescription("The list contains bindings from the component whose details are editable on the right");
+		section.setDescription("The list contains bindings from the component whose details are editable on the right");
 		section.marginWidth = 10;
 		section.marginHeight = 5;
 		toolkit.createCompositeSeparator(section);
@@ -203,8 +195,7 @@ public class BindingsPageBlock extends MasterDetailsBlock implements
 
 			public void widgetSelected(SelectionEvent e) {
 				try {
-					IStructuredSelection selection = (IStructuredSelection) viewer
-							.getSelection();
+					IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
 					if (!selection.isEmpty()) {
 						Iterator iterator = selection.iterator();
 						ApiEditor apiEditor = (ApiEditor) page.getEditor();
