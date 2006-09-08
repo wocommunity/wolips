@@ -63,56 +63,55 @@ import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 
 public class GenerateSQLAction implements IWorkbenchWindowActionDelegate {
-  private IWorkbenchWindow myWindow;
-  private ISelection mySelection;
+	private IWorkbenchWindow myWindow;
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	private ISelection mySelection;
 
-  public void init(IWorkbenchWindow _window) {
-    myWindow = _window;
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public void selectionChanged(IAction _action, ISelection _selection) {
-    mySelection = _selection;
-  }
+	public void init(IWorkbenchWindow _window) {
+		myWindow = _window;
+	}
 
-  public void run(IAction _action) {
-    try {
-      if (mySelection instanceof IStructuredSelection) {
-        EOModel model = null;
-        boolean modelSelected = false;
-        List entityNames = new LinkedList();
-        Iterator selectionIter = ((IStructuredSelection) mySelection).iterator();
-        while (!modelSelected && selectionIter.hasNext()) {
-          Object obj = selectionIter.next();
-          if (obj instanceof EOModel) {
-            model = (EOModel) obj;
-            modelSelected = true;
-          }
-          else if (obj instanceof EOEntity) {
-            EOEntity entity = (EOEntity) obj;
-            model = entity.getModel();
-            entityNames.add(entity.getName());
-          }
-        }
+	public void selectionChanged(IAction _action, ISelection _selection) {
+		mySelection = _selection;
+	}
 
-        if (modelSelected) {
-          entityNames = null;
-        }
+	public void run(IAction _action) {
+		try {
+			if (mySelection instanceof IStructuredSelection) {
+				EOModel model = null;
+				boolean modelSelected = false;
+				List entityNames = new LinkedList();
+				Iterator selectionIter = ((IStructuredSelection) mySelection).iterator();
+				while (!modelSelected && selectionIter.hasNext()) {
+					Object obj = selectionIter.next();
+					if (obj instanceof EOModel) {
+						model = (EOModel) obj;
+						modelSelected = true;
+					} else if (obj instanceof EOEntity) {
+						EOEntity entity = (EOEntity) obj;
+						model = entity.getModel();
+						entityNames.add(entity.getName());
+					}
+				}
 
-        if (model != null) {
-          if (model.isDirty()) {
-            MessageDialog.openWarning(myWindow.getShell(), "Model Not Saved", "Your model has unsaved changes. Unsaved changes will not be reflected in generated SQL.");
-          }
-          GenerateSQLDialog dialog = new GenerateSQLDialog(myWindow.getShell(), model, entityNames);
-          dialog.open();
-        }
-      }
-    }
-    catch (Throwable e) {
-      e.printStackTrace();
-    }
-  }
+				if (modelSelected) {
+					entityNames = null;
+				}
+
+				if (model != null) {
+					if (model.isDirty()) {
+						MessageDialog.openWarning(myWindow.getShell(), "Model Not Saved", "Your model has unsaved changes. Unsaved changes will not be reflected in generated SQL.");
+					}
+					GenerateSQLDialog dialog = new GenerateSQLDialog(myWindow.getShell(), model, entityNames);
+					dialog.open();
+				}
+			}
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+	}
 }

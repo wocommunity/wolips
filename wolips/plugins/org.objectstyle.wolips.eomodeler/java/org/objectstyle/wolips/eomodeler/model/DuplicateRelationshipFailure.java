@@ -50,30 +50,32 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 public class DuplicateRelationshipFailure extends EOModelVerificationFailure {
-  private EOEntity myEntity;
-  private String myRelationshipName;
-  private String myNewRelationshipName;
+	private EOEntity myEntity;
 
-  public DuplicateRelationshipFailure(EOEntity _entity, String _relationshipName, String _newRelationshipName) {
-    this(_entity, _relationshipName, _newRelationshipName, null);
-  }
+	private String myRelationshipName;
 
-  public DuplicateRelationshipFailure(EOEntity _entity, String _relationshipName, String _newRelationshipName, Throwable _throwable) {
-    super("There was more than one relationship named '" + _relationshipName + "' in " + _entity.getName() + ", so one was renamed to '" + _newRelationshipName + "'.", _throwable);
-    myEntity = _entity;
-    myRelationshipName = _relationshipName;
-    myNewRelationshipName = _newRelationshipName;
-  }
+	private String myNewRelationshipName;
 
-  public EOEntity getEntity() {
-    return myEntity;
-  }
+	public DuplicateRelationshipFailure(EOEntity _entity, String _relationshipName, String _newRelationshipName) {
+		this(_entity, _relationshipName, _newRelationshipName, null);
+	}
 
-  public String getRelationshipName() {
-    return myRelationshipName;
-  }
+	public DuplicateRelationshipFailure(EOEntity _entity, String _relationshipName, String _newRelationshipName, Throwable _throwable) {
+		super("There was more than one relationship named '" + _relationshipName + "' in " + _entity.getName() + ", so one was renamed to '" + _newRelationshipName + "'.", _throwable);
+		myEntity = _entity;
+		myRelationshipName = _relationshipName;
+		myNewRelationshipName = _newRelationshipName;
+	}
 
-  public String getNewRelationshipName() {
-    return myNewRelationshipName;
-  }
+	public EOEntity getEntity() {
+		return myEntity;
+	}
+
+	public String getRelationshipName() {
+		return myRelationshipName;
+	}
+
+	public String getNewRelationshipName() {
+		return myNewRelationshipName;
+	}
 }

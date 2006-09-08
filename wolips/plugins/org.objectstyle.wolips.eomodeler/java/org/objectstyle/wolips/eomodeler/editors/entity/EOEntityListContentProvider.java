@@ -62,48 +62,48 @@ import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 
 public class EOEntityListContentProvider implements IStructuredContentProvider {
-  public static final Object BLANK_ENTITY = "";
+	public static final Object BLANK_ENTITY = "";
 
-  private boolean myAllowBlank;
-  private boolean myRestrictToSingleModel;
-  private KVCComparator myComparator;
+	private boolean myAllowBlank;
 
-  public EOEntityListContentProvider(boolean _allowBlank, boolean _restrictToSingleModel) {
-    myAllowBlank = _allowBlank;
-    myRestrictToSingleModel = _restrictToSingleModel;
-    myComparator = new KVCComparator(EOEntity.class, EOEntity.NAME);
-  }
+	private boolean myRestrictToSingleModel;
 
-  public Object[] getElements(Object _inputElement) {
-    Set entitiesList;
-    EOModel model = EOModelUtils.getRelatedModel(_inputElement);
-    if (model != null) {
-      if (myRestrictToSingleModel) {
-        entitiesList = model.getEntities();
-      }
-      else {
-        entitiesList = model.getModelGroup().getEntities();
-      }
-    }
-    else {
-      throw new IllegalArgumentException("Unknown input element: " + _inputElement);
-    }
+	private KVCComparator myComparator;
 
-    List entitiesListCopy = new LinkedList();
-    entitiesListCopy.addAll(entitiesList);
-    Collections.sort(entitiesListCopy, myComparator);
-    if (myAllowBlank) {
-      entitiesListCopy.add(0, EOEntityListContentProvider.BLANK_ENTITY);
-    }
-    Object[] entities = entitiesListCopy.toArray();
-    return entities;
-  }
+	public EOEntityListContentProvider(boolean _allowBlank, boolean _restrictToSingleModel) {
+		myAllowBlank = _allowBlank;
+		myRestrictToSingleModel = _restrictToSingleModel;
+		myComparator = new KVCComparator(EOEntity.class, EOEntity.NAME);
+	}
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public Object[] getElements(Object _inputElement) {
+		Set entitiesList;
+		EOModel model = EOModelUtils.getRelatedModel(_inputElement);
+		if (model != null) {
+			if (myRestrictToSingleModel) {
+				entitiesList = model.getEntities();
+			} else {
+				entitiesList = model.getModelGroup().getEntities();
+			}
+		} else {
+			throw new IllegalArgumentException("Unknown input element: " + _inputElement);
+		}
 
-  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
-    // DO NOTHING
-  }
+		List entitiesListCopy = new LinkedList();
+		entitiesListCopy.addAll(entitiesList);
+		Collections.sort(entitiesListCopy, myComparator);
+		if (myAllowBlank) {
+			entitiesListCopy.add(0, EOEntityListContentProvider.BLANK_ENTITY);
+		}
+		Object[] entities = entitiesListCopy.toArray();
+		return entities;
+	}
+
+	public void dispose() {
+		// DO NOTHING
+	}
+
+	public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+		// DO NOTHING
+	}
 }

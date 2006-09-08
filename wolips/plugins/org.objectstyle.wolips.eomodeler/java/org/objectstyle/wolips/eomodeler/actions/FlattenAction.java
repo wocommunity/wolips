@@ -62,39 +62,38 @@ import org.objectstyle.wolips.eomodeler.model.IEOAttribute;
 import org.objectstyle.wolips.eomodeler.model.AbstractEOAttributePath;
 
 public class FlattenAction implements IWorkbenchWindowActionDelegate {
-  private IWorkbenchWindow myWindow;
-  private AbstractEOAttributePath myAttributePath;
+	private IWorkbenchWindow myWindow;
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	private AbstractEOAttributePath myAttributePath;
 
-  public void init(IWorkbenchWindow _window) {
-    myWindow = _window;
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public void selectionChanged(IAction _action, ISelection _selection) {
-    myAttributePath = null;
-    if (_selection instanceof IStructuredSelection) {
-      Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-      if (selectedObject instanceof AbstractEOAttributePath) {
-        myAttributePath = (AbstractEOAttributePath) selectedObject;
-      }
-    }
-  }
+	public void init(IWorkbenchWindow _window) {
+		myWindow = _window;
+	}
 
-  public void run(IAction _action) {
-    try {
-      if (myAttributePath != null) {
-        EOEntity rootEntity = myAttributePath.getRootEntity();
-        IEOAttribute newAttribute = rootEntity.addBlankIEOAttribute(myAttributePath);
-      }
-      else {
-        MessageDialog.openError(myWindow.getShell(), Messages.getString("EORelationship.noRelationshipOrAttributeSelectedTitle"), Messages.getString("EORelationship.noRelationshipOrAttributeSelectedMessage"));//$NON-NLS-1$
-      }
-    }
-    catch (DuplicateNameException e) {
-      e.printStackTrace();
-    }
-  }
+	public void selectionChanged(IAction _action, ISelection _selection) {
+		myAttributePath = null;
+		if (_selection instanceof IStructuredSelection) {
+			Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+			if (selectedObject instanceof AbstractEOAttributePath) {
+				myAttributePath = (AbstractEOAttributePath) selectedObject;
+			}
+		}
+	}
+
+	public void run(IAction _action) {
+		try {
+			if (myAttributePath != null) {
+				EOEntity rootEntity = myAttributePath.getRootEntity();
+				IEOAttribute newAttribute = rootEntity.addBlankIEOAttribute(myAttributePath);
+			} else {
+				MessageDialog.openError(myWindow.getShell(), Messages.getString("EORelationship.noRelationshipOrAttributeSelectedTitle"), Messages.getString("EORelationship.noRelationshipOrAttributeSelectedMessage"));//$NON-NLS-1$
+			}
+		} catch (DuplicateNameException e) {
+			e.printStackTrace();
+		}
+	}
 }

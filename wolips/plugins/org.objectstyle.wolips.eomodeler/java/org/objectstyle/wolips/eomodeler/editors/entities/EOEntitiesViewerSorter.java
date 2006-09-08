@@ -54,22 +54,21 @@ import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
 
 public class EOEntitiesViewerSorter extends TablePropertyViewerSorter {
 
-  public EOEntitiesViewerSorter(String[] _properties) {
-    super(_properties);
-  }
+	public EOEntitiesViewerSorter(String[] _properties) {
+		super(_properties);
+	}
 
-  public Object getComparisonValue(Object _obj, String _property) {
-    EOEntity entity = (EOEntity) _obj;
-    Object value = null;
-    if (_property == EOEntity.PARENT) {
-      EOEntity parent = entity.getParent();
-      if (parent != null) {
-        value = parent.getName();
-      }
-    }
-    else {
-      value = super.getComparisonValue(_obj, _property);
-    }
-    return value;
-  }
+	public Object getComparisonValue(Object _obj, String _property) {
+		EOEntity entity = (EOEntity) _obj;
+		Object value = null;
+		if (_property == EOEntity.PARENT) {
+			EOEntity parent = entity.getParent();
+			if (parent != null) {
+				value = parent.getName();
+			}
+		} else {
+			value = super.getComparisonValue(_obj, _property);
+		}
+		return value;
+	}
 }

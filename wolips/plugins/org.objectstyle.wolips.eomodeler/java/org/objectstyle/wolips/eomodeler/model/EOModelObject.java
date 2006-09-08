@@ -59,77 +59,76 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
 public abstract class EOModelObject implements IAdaptable {
-  private PropertyChangeSupport myPropertyChangeSupport = new PropertyChangeSupport(this);
+	private PropertyChangeSupport myPropertyChangeSupport = new PropertyChangeSupport(this);
 
-  public EOModelObject() {
-    myPropertyChangeSupport = new PropertyChangeSupport(this);
-  }
+	public EOModelObject() {
+		myPropertyChangeSupport = new PropertyChangeSupport(this);
+	}
 
-  public void addPropertyChangeListener(PropertyChangeListener _listener) {
-    myPropertyChangeSupport.addPropertyChangeListener(_listener);
-  }
+	public void addPropertyChangeListener(PropertyChangeListener _listener) {
+		myPropertyChangeSupport.addPropertyChangeListener(_listener);
+	}
 
-  public void addPropertyChangeListener(String _propertyName, PropertyChangeListener _listener) {
-    myPropertyChangeSupport.addPropertyChangeListener(_propertyName, _listener);
-  }
+	public void addPropertyChangeListener(String _propertyName, PropertyChangeListener _listener) {
+		myPropertyChangeSupport.addPropertyChangeListener(_propertyName, _listener);
+	}
 
-  public void removePropertyChangeListener(PropertyChangeListener _listener) {
-    myPropertyChangeSupport.removePropertyChangeListener(_listener);
-  }
+	public void removePropertyChangeListener(PropertyChangeListener _listener) {
+		myPropertyChangeSupport.removePropertyChangeListener(_listener);
+	}
 
-  public void removePropertyChangeListener(String _propertyName, PropertyChangeListener _listener) {
-    myPropertyChangeSupport.removePropertyChangeListener(_propertyName, _listener);
-  }
+	public void removePropertyChangeListener(String _propertyName, PropertyChangeListener _listener) {
+		myPropertyChangeSupport.removePropertyChangeListener(_propertyName, _listener);
+	}
 
-  protected void firePropertyChange(String _propertyName, Object _oldValue, Object _newValue) {
-    if (_oldValue == null || _newValue == null || !_oldValue.equals(_newValue)) {
-      myPropertyChangeSupport.firePropertyChange(_propertyName, _oldValue, _newValue);
-      _propertyChanged(_propertyName, _oldValue, _newValue);
-    }
-  }
+	protected void firePropertyChange(String _propertyName, Object _oldValue, Object _newValue) {
+		if (_oldValue == null || _newValue == null || !_oldValue.equals(_newValue)) {
+			myPropertyChangeSupport.firePropertyChange(_propertyName, _oldValue, _newValue);
+			_propertyChanged(_propertyName, _oldValue, _newValue);
+		}
+	}
 
-  public abstract Set getReferenceFailures();
-  
-  protected abstract void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue);
+	public abstract Set getReferenceFailures();
 
-  public Object getAdapter(Class _adapter) {
-    return null;
-  }
-  
-  public abstract String getFullyQualifiedName();
+	protected abstract void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue);
 
-  protected NotificationMap mapChanged(NotificationMap _oldMap, Map _newMap, PropertyChangeRepeater _propertyChangeRepeater, boolean _fireEvents) {
-    NotificationMap newMap;
-    if (_oldMap != null) {
-      _oldMap.removePropertyChangeListener(_propertyChangeRepeater);
-    }
-    if (_newMap instanceof NotificationMap) {
-      newMap = (NotificationMap) _newMap;
-    }
-    else {
-      newMap = new NotificationMap(_newMap);
-    }
-    newMap.addPropertyChangeListener(_propertyChangeRepeater);
-    if (_fireEvents) {
-      firePropertyChange(_propertyChangeRepeater.getPropertyName(), _oldMap, newMap);
-    }
-    return newMap;
-  }
+	public Object getAdapter(Class _adapter) {
+		return null;
+	}
 
-  protected class PropertyChangeRepeater implements PropertyChangeListener {
-    private String myPropertyName;
+	public abstract String getFullyQualifiedName();
 
-    public PropertyChangeRepeater(String _propertyName) {
-      myPropertyName = _propertyName;
-    }
+	protected NotificationMap mapChanged(NotificationMap _oldMap, Map _newMap, PropertyChangeRepeater _propertyChangeRepeater, boolean _fireEvents) {
+		NotificationMap newMap;
+		if (_oldMap != null) {
+			_oldMap.removePropertyChangeListener(_propertyChangeRepeater);
+		}
+		if (_newMap instanceof NotificationMap) {
+			newMap = (NotificationMap) _newMap;
+		} else {
+			newMap = new NotificationMap(_newMap);
+		}
+		newMap.addPropertyChangeListener(_propertyChangeRepeater);
+		if (_fireEvents) {
+			firePropertyChange(_propertyChangeRepeater.getPropertyName(), _oldMap, newMap);
+		}
+		return newMap;
+	}
 
-    public String getPropertyName() {
-      return myPropertyName;
-    }
+	protected class PropertyChangeRepeater implements PropertyChangeListener {
+		private String myPropertyName;
 
-    public void propertyChange(PropertyChangeEvent _event) {
-      EOModelObject.this.firePropertyChange(myPropertyName, null, null);
-    }
-  }
+		public PropertyChangeRepeater(String _propertyName) {
+			myPropertyName = _propertyName;
+		}
+
+		public String getPropertyName() {
+			return myPropertyName;
+		}
+
+		public void propertyChange(PropertyChangeEvent _event) {
+			EOModelObject.this.firePropertyChange(myPropertyName, null, null);
+		}
+	}
 
 }

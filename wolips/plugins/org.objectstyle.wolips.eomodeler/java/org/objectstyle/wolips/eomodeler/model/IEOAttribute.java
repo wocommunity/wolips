@@ -50,31 +50,31 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 public interface IEOAttribute extends IEOEntityRelative, IUserInfoable {
-  public EOEntity getEntity();
-  
-  public String getName();
-  
-  public void setName(String _name) throws DuplicateNameException;
-  
-  public void setName(String _name, boolean _fireEvents) throws DuplicateNameException;
-  
-  public void setClassProperty(Boolean _classProperty);
+	public EOEntity getEntity();
 
-  public void setClassProperty(Boolean _classProperty, boolean _fireEvents);
+	public String getName();
 
-  public Boolean isClassProperty();
-  
-  public Boolean getClassProperty();
-  
-  public void setClientClassProperty(Boolean _clientClassProperty);
+	public void setName(String _name) throws DuplicateNameException;
 
-  public void setClientClassProperty(Boolean _clientClassProperty, boolean _fireEvents);
+	public void setName(String _name, boolean _fireEvents) throws DuplicateNameException;
 
-  public Boolean isClientClassProperty();
+	public void setClassProperty(Boolean _classProperty);
 
-  public Boolean getClientClassProperty();
-  
-  public boolean isInherited();
-  
-  public Boolean isToMany();
+	public void setClassProperty(Boolean _classProperty, boolean _fireEvents);
+
+	public Boolean isClassProperty();
+
+	public Boolean getClassProperty();
+
+	public void setClientClassProperty(Boolean _clientClassProperty);
+
+	public void setClientClassProperty(Boolean _clientClassProperty, boolean _fireEvents);
+
+	public Boolean isClientClassProperty();
+
+	public Boolean getClientClassProperty();
+
+	public boolean isInherited();
+
+	public Boolean isToMany();
 }

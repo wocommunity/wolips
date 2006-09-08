@@ -50,18 +50,18 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 public class MissingEntityFailure extends EOModelVerificationFailure {
-  private String myEntityName;
+	private String myEntityName;
 
-  public MissingEntityFailure(String _entityName) {
-    this(_entityName, null);
-  }
+	public MissingEntityFailure(String _entityName) {
+		this(_entityName, null);
+	}
 
-  public MissingEntityFailure(String _entityName, Throwable _throwable) {
-    super("Missing entity named '" + _entityName + "'.", _throwable);
-    myEntityName = _entityName;
-  }
+	public MissingEntityFailure(String _entityName, Throwable _throwable) {
+		super("Missing entity named '" + _entityName + "'.", _throwable);
+		myEntityName = _entityName;
+	}
 
-  public String getEntityName() {
-    return myEntityName;
-  }
+	public String getEntityName() {
+		return myEntityName;
+	}
 }

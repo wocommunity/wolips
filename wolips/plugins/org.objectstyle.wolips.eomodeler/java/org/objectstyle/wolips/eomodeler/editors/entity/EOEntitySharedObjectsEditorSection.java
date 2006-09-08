@@ -82,182 +82,182 @@ import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
 public class EOEntitySharedObjectsEditorSection extends AbstractPropertySection {
-  private EOEntity myEntity;
+	private EOEntity myEntity;
 
-  private Button myShareNoObjectsButton;
-  private Button myShareAllObjectsButton;
-  private Button myShareFetchSpecsButton;
-  private TableViewer myFetchSpecsViewer;
+	private Button myShareNoObjectsButton;
 
-  private DataBindingContext myBindingContext;
-  private PropertyChangeListener myFetchSpecListener;
+	private Button myShareAllObjectsButton;
 
-  public EOEntitySharedObjectsEditorSection() {
-    myFetchSpecListener = new FetchSpecChangeListener();
-  }
+	private Button myShareFetchSpecsButton;
 
-  public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
-    super.createControls(_parent, _tabbedPropertySheetPage);
-    Composite form = getWidgetFactory().createFlatFormComposite(_parent);
-    FormLayout formLayout = new FormLayout();
-    form.setLayout(formLayout);
+	private TableViewer myFetchSpecsViewer;
 
-    Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-    FormData topFormData = new FormData();
-    topFormData.top = new FormAttachment(0, 5);
-    topFormData.left = new FormAttachment(0, 5);
-    topFormData.right = new FormAttachment(100, -5);
-    topForm.setLayoutData(topFormData);
+	private DataBindingContext myBindingContext;
 
-    GridLayout topFormLayout = new GridLayout();
-    topFormLayout.numColumns = 1;
-    topForm.setLayout(topFormLayout);
+	private PropertyChangeListener myFetchSpecListener;
 
-    myShareNoObjectsButton = new Button(topForm, SWT.RADIO);
-    myShareNoObjectsButton.setText(Messages.getString("EOEntity.shareNoObjects"));
-    myShareNoObjectsButton.addSelectionListener(new ShareNoObjectsListener());
+	public EOEntitySharedObjectsEditorSection() {
+		myFetchSpecListener = new FetchSpecChangeListener();
+	}
 
-    myShareAllObjectsButton = new Button(topForm, SWT.RADIO);
-    myShareAllObjectsButton.setText(Messages.getString("EOEntity.shareAllObjects"));
-    myShareAllObjectsButton.addSelectionListener(new ShareAllObjectsListener());
+	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
+		super.createControls(_parent, _tabbedPropertySheetPage);
+		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
+		FormLayout formLayout = new FormLayout();
+		form.setLayout(formLayout);
 
-    myShareFetchSpecsButton = new Button(topForm, SWT.RADIO);
-    myShareFetchSpecsButton.setText(Messages.getString("EOEntity.shareFetchSpecs"));
-    myShareFetchSpecsButton.addSelectionListener(new ShareFetchSpecsListener());
+		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
+		FormData topFormData = new FormData();
+		topFormData.top = new FormAttachment(0, 5);
+		topFormData.left = new FormAttachment(0, 5);
+		topFormData.right = new FormAttachment(100, -5);
+		topForm.setLayoutData(topFormData);
 
-    myFetchSpecsViewer = TableUtils.createTableViewer(topForm, SWT.BORDER | SWT.FLAT | SWT.MULTI | SWT.FULL_SELECTION, "EOFetchSpecification", EOFetchSpecsConstants.COLUMNS, new EOFetchSpecsContentProvider(), new EOFetchSpecsLabelProvider(EOFetchSpecsConstants.COLUMNS), new TablePropertyViewerSorter(EOFetchSpecsConstants.COLUMNS));
-    myFetchSpecsViewer.getTable().getColumns()[TableUtils.getColumnNumber(EOFetchSpecsConstants.COLUMNS, EOFetchSpecification.SHARES_OBJECTS)].setText("");
-    myFetchSpecsViewer.getTable().getColumns()[TableUtils.getColumnNumber(EOFetchSpecsConstants.COLUMNS, EOFetchSpecification.SHARES_OBJECTS)].setImage(Activator.getDefault().getImageRegistry().get(Activator.CHECK_ICON));
+		GridLayout topFormLayout = new GridLayout();
+		topFormLayout.numColumns = 1;
+		topForm.setLayout(topFormLayout);
 
-    CellEditor[] cellEditors = new CellEditor[1];
-    cellEditors[TableUtils.getColumnNumber(EOFetchSpecsConstants.COLUMNS, EOFetchSpecification.SHARES_OBJECTS)] = new CheckboxCellEditor(myFetchSpecsViewer.getTable());
-    myFetchSpecsViewer.setCellModifier(new TablePropertyCellModifier(myFetchSpecsViewer));
-    myFetchSpecsViewer.setCellEditors(cellEditors);
-    GridData fetchSpecsLayoutData = new GridData(GridData.FILL_BOTH);
-    fetchSpecsLayoutData.heightHint = 100;
-    myFetchSpecsViewer.getTable().setLayoutData(fetchSpecsLayoutData);
-  }
+		myShareNoObjectsButton = new Button(topForm, SWT.RADIO);
+		myShareNoObjectsButton.setText(Messages.getString("EOEntity.shareNoObjects"));
+		myShareNoObjectsButton.addSelectionListener(new ShareNoObjectsListener());
 
-  public void setInput(IWorkbenchPart _part, ISelection _selection) {
-    super.setInput(_part, _selection);
-    disposeBindings();
+		myShareAllObjectsButton = new Button(topForm, SWT.RADIO);
+		myShareAllObjectsButton.setText(Messages.getString("EOEntity.shareAllObjects"));
+		myShareAllObjectsButton.addSelectionListener(new ShareAllObjectsListener());
 
-    Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-    myEntity = (EOEntity) selectedObject;
-    if (myEntity != null) {
-      myBindingContext = BindingFactory.createContext();
-      myEntity.addPropertyChangeListener(EOEntity.FETCH_SPECIFICATION, myFetchSpecListener);
-      myEntity.addPropertyChangeListener(EOEntity.FETCH_SPECIFICATIONS, myFetchSpecListener);
-      myFetchSpecsViewer.setInput(myEntity);
-      fetchSpecsChanged();
-    }
-  }
+		myShareFetchSpecsButton = new Button(topForm, SWT.RADIO);
+		myShareFetchSpecsButton.setText(Messages.getString("EOEntity.shareFetchSpecs"));
+		myShareFetchSpecsButton.addSelectionListener(new ShareFetchSpecsListener());
 
-  protected void disposeBindings() {
-    if (myBindingContext != null) {
-      myBindingContext.dispose();
-    }
-    if (myEntity != null) {
-      myEntity.removePropertyChangeListener(EOEntity.FETCH_SPECIFICATION, myFetchSpecListener);
-      myEntity.removePropertyChangeListener(EOEntity.FETCH_SPECIFICATIONS, myFetchSpecListener);
-    }
-  }
+		myFetchSpecsViewer = TableUtils.createTableViewer(topForm, SWT.BORDER | SWT.FLAT | SWT.MULTI | SWT.FULL_SELECTION, "EOFetchSpecification", EOFetchSpecsConstants.COLUMNS, new EOFetchSpecsContentProvider(), new EOFetchSpecsLabelProvider(EOFetchSpecsConstants.COLUMNS), new TablePropertyViewerSorter(EOFetchSpecsConstants.COLUMNS));
+		myFetchSpecsViewer.getTable().getColumns()[TableUtils.getColumnNumber(EOFetchSpecsConstants.COLUMNS, EOFetchSpecification.SHARES_OBJECTS)].setText("");
+		myFetchSpecsViewer.getTable().getColumns()[TableUtils.getColumnNumber(EOFetchSpecsConstants.COLUMNS, EOFetchSpecification.SHARES_OBJECTS)].setImage(Activator.getDefault().getImageRegistry().get(Activator.CHECK_ICON));
 
-  public void dispose() {
-    super.dispose();
-    disposeBindings();
-  }
+		CellEditor[] cellEditors = new CellEditor[1];
+		cellEditors[TableUtils.getColumnNumber(EOFetchSpecsConstants.COLUMNS, EOFetchSpecification.SHARES_OBJECTS)] = new CheckboxCellEditor(myFetchSpecsViewer.getTable());
+		myFetchSpecsViewer.setCellModifier(new TablePropertyCellModifier(myFetchSpecsViewer));
+		myFetchSpecsViewer.setCellEditors(cellEditors);
+		GridData fetchSpecsLayoutData = new GridData(GridData.FILL_BOTH);
+		fetchSpecsLayoutData.heightHint = 100;
+		myFetchSpecsViewer.getTable().setLayoutData(fetchSpecsLayoutData);
+	}
 
-  public EOEntity getEntity() {
-    return myEntity;
-  }
+	public void setInput(IWorkbenchPart _part, ISelection _selection) {
+		super.setInput(_part, _selection);
+		disposeBindings();
 
-  protected void fetchSpecsChanged() {
-    myFetchSpecsViewer.refresh();
-    shareTypeChanged(false);
-  }
+		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+		myEntity = (EOEntity) selectedObject;
+		if (myEntity != null) {
+			myBindingContext = BindingFactory.createContext();
+			myEntity.addPropertyChangeListener(EOEntity.FETCH_SPECIFICATION, myFetchSpecListener);
+			myEntity.addPropertyChangeListener(EOEntity.FETCH_SPECIFICATIONS, myFetchSpecListener);
+			myFetchSpecsViewer.setInput(myEntity);
+			fetchSpecsChanged();
+		}
+	}
 
-  protected void fetchSpecChanged(EOFetchSpecification _fetchSpec) {
-    myFetchSpecsViewer.refresh(_fetchSpec);
-    shareTypeChanged(false);
-  }
+	protected void disposeBindings() {
+		if (myBindingContext != null) {
+			myBindingContext.dispose();
+		}
+		if (myEntity != null) {
+			myEntity.removePropertyChangeListener(EOEntity.FETCH_SPECIFICATION, myFetchSpecListener);
+			myEntity.removePropertyChangeListener(EOEntity.FETCH_SPECIFICATIONS, myFetchSpecListener);
+		}
+	}
 
-  protected void shareTypeChanged(boolean _selectedShareFetchSpecs) {
-    if (!_selectedShareFetchSpecs && !myEntity.hasSharedObjects()) {
-      if (!myShareNoObjectsButton.getSelection()) {
-        myShareNoObjectsButton.setSelection(true);
-      }
-      myShareAllObjectsButton.setSelection(false);
-      myShareFetchSpecsButton.setSelection(false);
-      myFetchSpecsViewer.getTable().setEnabled(false);
-    }
-    else if (!_selectedShareFetchSpecs && myEntity.isSharesAllObjectsOnly()) {
-      if (!myShareAllObjectsButton.getSelection()) {
-        myShareAllObjectsButton.setSelection(true);
-      }
-      myShareNoObjectsButton.setSelection(false);
-      myShareFetchSpecsButton.setSelection(false);
-      myFetchSpecsViewer.getTable().setEnabled(false);
-    }
-    else {
-      if (!myShareFetchSpecsButton.getSelection()) {
-        myShareFetchSpecsButton.setSelection(true);
-      }
-      myShareNoObjectsButton.setSelection(false);
-      myShareAllObjectsButton.setSelection(false);
-      myFetchSpecsViewer.getTable().setEnabled(true);
-    }
-    TableUtils.packTableColumns(myFetchSpecsViewer);
-  }
+	public void dispose() {
+		super.dispose();
+		disposeBindings();
+	}
 
-  protected class FetchSpecChangeListener implements PropertyChangeListener {
-    public void propertyChange(PropertyChangeEvent _event) {
-      String propertyName = _event.getPropertyName();
-      if (EOEntity.FETCH_SPECIFICATION == propertyName) {
-        EOFetchSpecification fetchSpec = (EOFetchSpecification) _event.getNewValue();
-        EOEntitySharedObjectsEditorSection.this.fetchSpecChanged(fetchSpec);
+	public EOEntity getEntity() {
+		return myEntity;
+	}
 
-      }
-      else if (EOEntity.FETCH_SPECIFICATIONS == propertyName) {
-        EOEntitySharedObjectsEditorSection.this.fetchSpecsChanged();
-      }
-    }
-  }
+	protected void fetchSpecsChanged() {
+		myFetchSpecsViewer.refresh();
+		shareTypeChanged(false);
+	}
 
-  protected class ShareNoObjectsListener implements SelectionListener {
-    public void widgetDefaultSelected(SelectionEvent _e) {
-      widgetSelected(_e);
-    }
+	protected void fetchSpecChanged(EOFetchSpecification _fetchSpec) {
+		myFetchSpecsViewer.refresh(_fetchSpec);
+		shareTypeChanged(false);
+	}
 
-    public void widgetSelected(SelectionEvent _e) {
-      EOEntitySharedObjectsEditorSection.this.getEntity().shareNoObjects();
-    }
-  }
+	protected void shareTypeChanged(boolean _selectedShareFetchSpecs) {
+		if (!_selectedShareFetchSpecs && !myEntity.hasSharedObjects()) {
+			if (!myShareNoObjectsButton.getSelection()) {
+				myShareNoObjectsButton.setSelection(true);
+			}
+			myShareAllObjectsButton.setSelection(false);
+			myShareFetchSpecsButton.setSelection(false);
+			myFetchSpecsViewer.getTable().setEnabled(false);
+		} else if (!_selectedShareFetchSpecs && myEntity.isSharesAllObjectsOnly()) {
+			if (!myShareAllObjectsButton.getSelection()) {
+				myShareAllObjectsButton.setSelection(true);
+			}
+			myShareNoObjectsButton.setSelection(false);
+			myShareFetchSpecsButton.setSelection(false);
+			myFetchSpecsViewer.getTable().setEnabled(false);
+		} else {
+			if (!myShareFetchSpecsButton.getSelection()) {
+				myShareFetchSpecsButton.setSelection(true);
+			}
+			myShareNoObjectsButton.setSelection(false);
+			myShareAllObjectsButton.setSelection(false);
+			myFetchSpecsViewer.getTable().setEnabled(true);
+		}
+		TableUtils.packTableColumns(myFetchSpecsViewer);
+	}
 
-  protected class ShareAllObjectsListener implements SelectionListener {
-    public void widgetDefaultSelected(SelectionEvent _e) {
-      widgetSelected(_e);
-    }
+	protected class FetchSpecChangeListener implements PropertyChangeListener {
+		public void propertyChange(PropertyChangeEvent _event) {
+			String propertyName = _event.getPropertyName();
+			if (EOEntity.FETCH_SPECIFICATION == propertyName) {
+				EOFetchSpecification fetchSpec = (EOFetchSpecification) _event.getNewValue();
+				EOEntitySharedObjectsEditorSection.this.fetchSpecChanged(fetchSpec);
 
-    public void widgetSelected(SelectionEvent _e) {
-      try {
-        EOEntitySharedObjectsEditorSection.this.getEntity().shareAllObjects();
-      }
-      catch (DuplicateFetchSpecNameException e) {
-        e.printStackTrace();
-      }
-    }
-  }
+			} else if (EOEntity.FETCH_SPECIFICATIONS == propertyName) {
+				EOEntitySharedObjectsEditorSection.this.fetchSpecsChanged();
+			}
+		}
+	}
 
-  protected class ShareFetchSpecsListener implements SelectionListener {
-    public void widgetDefaultSelected(SelectionEvent _e) {
-      widgetSelected(_e);
-    }
+	protected class ShareNoObjectsListener implements SelectionListener {
+		public void widgetDefaultSelected(SelectionEvent _e) {
+			widgetSelected(_e);
+		}
 
-    public void widgetSelected(SelectionEvent _e) {
-      if (((Button) _e.getSource()).getSelection()) {
-        EOEntitySharedObjectsEditorSection.this.shareTypeChanged(true);
-      }
-    }
-  }
+		public void widgetSelected(SelectionEvent _e) {
+			EOEntitySharedObjectsEditorSection.this.getEntity().shareNoObjects();
+		}
+	}
+
+	protected class ShareAllObjectsListener implements SelectionListener {
+		public void widgetDefaultSelected(SelectionEvent _e) {
+			widgetSelected(_e);
+		}
+
+		public void widgetSelected(SelectionEvent _e) {
+			try {
+				EOEntitySharedObjectsEditorSection.this.getEntity().shareAllObjects();
+			} catch (DuplicateFetchSpecNameException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	protected class ShareFetchSpecsListener implements SelectionListener {
+		public void widgetDefaultSelected(SelectionEvent _e) {
+			widgetSelected(_e);
+		}
+
+		public void widgetSelected(SelectionEvent _e) {
+			if (((Button) _e.getSource()).getSelection()) {
+				EOEntitySharedObjectsEditorSection.this.shareTypeChanged(true);
+			}
+		}
+	}
 }

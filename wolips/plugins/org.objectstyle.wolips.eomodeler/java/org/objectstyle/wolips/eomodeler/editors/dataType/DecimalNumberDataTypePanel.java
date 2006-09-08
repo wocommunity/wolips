@@ -63,39 +63,41 @@ import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
 public class DecimalNumberDataTypePanel extends Composite implements IDataTypePanel {
-  private Text myPrecisionText;
-  private Text myScaleText;
-  private DataBindingContext myBindingContext;
+	private Text myPrecisionText;
 
-  public DecimalNumberDataTypePanel(Composite _parent, int _style, TabbedPropertySheetWidgetFactory _widgetFactory) {
-    super(_parent, _style);
-    setBackground(_parent.getBackground());
-    setLayout(new GridLayout(2, false));
-    _widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.PRECISION), SWT.NONE);
-    myPrecisionText = new Text(this, SWT.BORDER);
-    GridData precisionFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myPrecisionText.setLayoutData(precisionFieldLayoutData);
+	private Text myScaleText;
 
-    _widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.SCALE), SWT.NONE);
-    myScaleText = new Text(this, SWT.BORDER);
-    GridData scaleFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myScaleText.setLayoutData(scaleFieldLayoutData);
-  }
+	private DataBindingContext myBindingContext;
 
-  public void setArgument(AbstractEOArgument _argument) {
-    if (myBindingContext != null) {
-      myBindingContext.dispose();
-    }
-    if (_argument != null) {
-      myBindingContext = BindingFactory.createContext();
-      myBindingContext.bind(myPrecisionText, new Property(_argument, AbstractEOArgument.PRECISION), null);
-      myBindingContext.bind(myScaleText, new Property(_argument, AbstractEOArgument.SCALE), null);
-    }
-  }
-  
-  public void dispose() {
-    setArgument(null);
-    super.dispose();
-  }
+	public DecimalNumberDataTypePanel(Composite _parent, int _style, TabbedPropertySheetWidgetFactory _widgetFactory) {
+		super(_parent, _style);
+		setBackground(_parent.getBackground());
+		setLayout(new GridLayout(2, false));
+		_widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.PRECISION), SWT.NONE);
+		myPrecisionText = new Text(this, SWT.BORDER);
+		GridData precisionFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myPrecisionText.setLayoutData(precisionFieldLayoutData);
+
+		_widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.SCALE), SWT.NONE);
+		myScaleText = new Text(this, SWT.BORDER);
+		GridData scaleFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myScaleText.setLayoutData(scaleFieldLayoutData);
+	}
+
+	public void setArgument(AbstractEOArgument _argument) {
+		if (myBindingContext != null) {
+			myBindingContext.dispose();
+		}
+		if (_argument != null) {
+			myBindingContext = BindingFactory.createContext();
+			myBindingContext.bind(myPrecisionText, new Property(_argument, AbstractEOArgument.PRECISION), null);
+			myBindingContext.bind(myScaleText, new Property(_argument, AbstractEOArgument.SCALE), null);
+		}
+	}
+
+	public void dispose() {
+		setArgument(null);
+		super.dispose();
+	}
 
 }

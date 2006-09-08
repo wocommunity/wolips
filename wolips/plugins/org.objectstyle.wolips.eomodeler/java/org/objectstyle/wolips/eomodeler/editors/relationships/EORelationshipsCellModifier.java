@@ -54,33 +54,32 @@ import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyCellModifier;
 
 public class EORelationshipsCellModifier extends TablePropertyCellModifier {
-  public EORelationshipsCellModifier(TableViewer _relationshipsTableViewer) {
-    super(_relationshipsTableViewer);
-  }
+	public EORelationshipsCellModifier(TableViewer _relationshipsTableViewer) {
+		super(_relationshipsTableViewer);
+	}
 
-  public Object getValue(Object _element, String _property) {
-    Object value;
-    if (_property == EORelationship.CLASS_PROPERTY || _property == EORelationship.CLIENT_CLASS_PROPERTY || _property == EORelationship.MANDATORY || _property == EORelationship.OPTIONAL || _property == EORelationship.TO_MANY || _property == EORelationship.TO_ONE) {
-      value = super.getValue(_element, _property);
-      if (value == null) {
-        value = Boolean.FALSE;
-      }
-    }
-    else {
-      value = super.getValue(_element, _property);
-    }
-    return value;
-  }
+	public Object getValue(Object _element, String _property) {
+		Object value;
+		if (_property == EORelationship.CLASS_PROPERTY || _property == EORelationship.CLIENT_CLASS_PROPERTY || _property == EORelationship.MANDATORY || _property == EORelationship.OPTIONAL || _property == EORelationship.TO_MANY || _property == EORelationship.TO_ONE) {
+			value = super.getValue(_element, _property);
+			if (value == null) {
+				value = Boolean.FALSE;
+			}
+		} else {
+			value = super.getValue(_element, _property);
+		}
+		return value;
+	}
 
-  protected boolean _canModify(Object _element, String _property) throws Throwable {
-    boolean canModify = true;
-    //    EORelationship relationship = (EORelationship) _element;
-    //    if (relationship.isInherited()) {
-    //      canModify = false;
-    //    }
-    //    else {
-    canModify = (_property == EORelationship.CLASS_PROPERTY || _property == EORelationship.NAME);
-    //    }
-    return canModify;
-  }
+	protected boolean _canModify(Object _element, String _property) throws Throwable {
+		boolean canModify = true;
+		// EORelationship relationship = (EORelationship) _element;
+		// if (relationship.isInherited()) {
+		// canModify = false;
+		// }
+		// else {
+		canModify = (_property == EORelationship.CLASS_PROPERTY || _property == EORelationship.NAME);
+		// }
+		return canModify;
+	}
 }

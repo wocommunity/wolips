@@ -52,7 +52,7 @@ package org.objectstyle.wolips.eomodeler.editors;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 
 public interface IEntityEditor extends IEOModelEditor {
-  public void setEntity(EOEntity _entity);
+	public void setEntity(EOEntity _entity);
 
-  public EOEntity getEntity();
+	public EOEntity getEntity();
 }

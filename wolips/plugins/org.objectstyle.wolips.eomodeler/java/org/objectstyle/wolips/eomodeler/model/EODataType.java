@@ -53,92 +53,115 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
 public class EODataType {
-  public static final EODataType STRING = new EODataType("NSString", new String[] { null, "" }, Messages.getString("EODataType.string"));
-  public static final EODataType STRING_SET = new EODataType("NSString", "S", Messages.getString("EODataType.stringSetString"));
-  public static final EODataType STRING_CHAR = new EODataType("NSString", "C", Messages.getString("EODataType.stringChar"));
-  public static final EODataType STRING_UTF = new EODataType("NSString", "E", Messages.getString("EODataType.stringUTF"));
-  public static final EODataType STRING_RTRIM = new EODataType("NSString", "c", Messages.getString("EODataType.stringRTRIM"));
-  public static final EODataType BYTE = new EODataType("NSNumber", "b", Messages.getString("EODataType.byte"));
-  public static final EODataType SHORT = new EODataType("NSNumber", "s", Messages.getString("EODataType.short"));
-  public static final EODataType INTEGER = new EODataType("NSNumber", new String[] { "i", null, "" }, Messages.getString("EODataType.integer")); //$NON-NLS-4$
-  public static final EODataType LONG = new EODataType("NSNumber", "l", Messages.getString("EODataType.long"));
-  public static final EODataType FLOAT = new EODataType("NSNumber", "f", Messages.getString("EODataType.float"));
-  public static final EODataType DOUBLE = new EODataType("NSNumber", "d", Messages.getString("EODataType.double"));
-  public static final EODataType BOOLEAN = new EODataType("NSNumber", "c", Messages.getString("EODataType.boolean"));
-  public static final EODataType BIGDECIMAL = new EODataType("NSNumber", "B", Messages.getString("EODataType.bigDecimal"));
-  public static final EODataType DECIMAL_NUMBER = new EODataType("NSDecimalNumber", (String) null, Messages.getString("EODataType.decimalNumber"));
-  public static final EODataType DATE_OBJ = new EODataType("NSCalendarDate", new String[] { null, "" }, Messages.getString("EODataType.dateObj"));
-  public static final EODataType DATE = new EODataType("NSCalendarDate", "D", Messages.getString("EODataType.date"));
-  public static final EODataType TIME = new EODataType("NSCalendarDate", "t", Messages.getString("EODataType.time"));
-  public static final EODataType TIMESTAMP = new EODataType("NSCalendarDate", "T", Messages.getString("EODataType.timestamp"));
-  public static final EODataType DATE_MSSQL = new EODataType("NSCalendarDate", "M", Messages.getString("EODataType.dateMSSQL"));
-  public static final EODataType DATA = new EODataType("NSData", (String) null, Messages.getString("EODataType.data"));
-  public static final EODataType CUSTOM = new EODataType(null, (String) null, Messages.getString("EODataType.custom"));
-  public static final EODataType[] DATA_TYPES = new EODataType[] { EODataType.STRING, EODataType.STRING_SET, EODataType.STRING_CHAR, EODataType.STRING_UTF, EODataType.STRING_RTRIM, EODataType.BYTE, EODataType.SHORT, EODataType.INTEGER, EODataType.LONG, EODataType.FLOAT, EODataType.DOUBLE, EODataType.BIGDECIMAL, EODataType.DECIMAL_NUMBER, EODataType.BOOLEAN, EODataType.DATE_OBJ, EODataType.DATE, EODataType.TIME, EODataType.TIMESTAMP, EODataType.DATE_MSSQL, EODataType.DATA, EODataType.CUSTOM };
+	public static final EODataType STRING = new EODataType("NSString", new String[] { null, "" }, Messages.getString("EODataType.string"));
 
-  private String myValueClass;
-  private String[] myValueTypes;
-  private String myName;
+	public static final EODataType STRING_SET = new EODataType("NSString", "S", Messages.getString("EODataType.stringSetString"));
 
-  public EODataType(String _valueClass, String _valueType, String _name) {
-    this(_valueClass, new String[] { _valueType }, _name);
-  }
+	public static final EODataType STRING_CHAR = new EODataType("NSString", "C", Messages.getString("EODataType.stringChar"));
 
-  public EODataType(String _valueClass, String[] _valueTypes, String _name) {
-    myValueClass = _valueClass;
-    myValueTypes = _valueTypes;
-    myName = _name;
-  }
+	public static final EODataType STRING_UTF = new EODataType("NSString", "E", Messages.getString("EODataType.stringUTF"));
 
-  public String getValueClass() {
-    return myValueClass;
-  }
+	public static final EODataType STRING_RTRIM = new EODataType("NSString", "c", Messages.getString("EODataType.stringRTRIM"));
 
-  public String getFirstValueType() {
-    return myValueTypes[0];
-  }
+	public static final EODataType BYTE = new EODataType("NSNumber", "b", Messages.getString("EODataType.byte"));
 
-  public String[] getValueTypes() {
-    return myValueTypes;
-  }
+	public static final EODataType SHORT = new EODataType("NSNumber", "s", Messages.getString("EODataType.short"));
 
-  public String getName() {
-    return myName;
-  }
+	public static final EODataType INTEGER = new EODataType("NSNumber", new String[] { "i", null, "" }, Messages.getString("EODataType.integer")); //$NON-NLS-4$
 
-  public String toString() {
-    return "[EODataType: name = " + myName + "]";
-  }
+	public static final EODataType LONG = new EODataType("NSNumber", "l", Messages.getString("EODataType.long"));
 
-  public static EODataType getDataTypeByValueClassAndType(String _valueClass, String _valueType) {
-    EODataType matchingDataType = null;
-    for (int dataTypeNum = 0; matchingDataType == null && dataTypeNum < EODataType.DATA_TYPES.length; dataTypeNum++) {
-      EODataType dataType = EODataType.DATA_TYPES[dataTypeNum];
-      if (ComparisonUtils.equals(dataType.myValueClass, _valueClass)) {
-        for (int valueTypeNum = 0; matchingDataType == null && valueTypeNum < dataType.myValueTypes.length; valueTypeNum++) {
-          if (ComparisonUtils.equals(dataType.myValueTypes[valueTypeNum], _valueType)) {
-            matchingDataType = dataType;
-          }
-        }
-      }
-    }
-    if (matchingDataType == null) {
-      matchingDataType = EODataType.CUSTOM;
-    }
-    return matchingDataType;
-  }
+	public static final EODataType FLOAT = new EODataType("NSNumber", "f", Messages.getString("EODataType.float"));
 
-  public static EODataType getDataTypeByValueClass(String _valueClass) {
-    EODataType matchingDataType = null;
-    for (int dataTypeNum = 0; matchingDataType == null && dataTypeNum < EODataType.DATA_TYPES.length; dataTypeNum++) {
-      EODataType dataType = EODataType.DATA_TYPES[dataTypeNum];
-      if (ComparisonUtils.equals(dataType.myValueClass, _valueClass)) {
-        matchingDataType = dataType;
-      }
-    }
-    if (matchingDataType == null) {
-      matchingDataType = EODataType.CUSTOM;
-    }
-    return matchingDataType;
-  }
+	public static final EODataType DOUBLE = new EODataType("NSNumber", "d", Messages.getString("EODataType.double"));
+
+	public static final EODataType BOOLEAN = new EODataType("NSNumber", "c", Messages.getString("EODataType.boolean"));
+
+	public static final EODataType BIGDECIMAL = new EODataType("NSNumber", "B", Messages.getString("EODataType.bigDecimal"));
+
+	public static final EODataType DECIMAL_NUMBER = new EODataType("NSDecimalNumber", (String) null, Messages.getString("EODataType.decimalNumber"));
+
+	public static final EODataType DATE_OBJ = new EODataType("NSCalendarDate", new String[] { null, "" }, Messages.getString("EODataType.dateObj"));
+
+	public static final EODataType DATE = new EODataType("NSCalendarDate", "D", Messages.getString("EODataType.date"));
+
+	public static final EODataType TIME = new EODataType("NSCalendarDate", "t", Messages.getString("EODataType.time"));
+
+	public static final EODataType TIMESTAMP = new EODataType("NSCalendarDate", "T", Messages.getString("EODataType.timestamp"));
+
+	public static final EODataType DATE_MSSQL = new EODataType("NSCalendarDate", "M", Messages.getString("EODataType.dateMSSQL"));
+
+	public static final EODataType DATA = new EODataType("NSData", (String) null, Messages.getString("EODataType.data"));
+
+	public static final EODataType CUSTOM = new EODataType(null, (String) null, Messages.getString("EODataType.custom"));
+
+	public static final EODataType[] DATA_TYPES = new EODataType[] { EODataType.STRING, EODataType.STRING_SET, EODataType.STRING_CHAR, EODataType.STRING_UTF, EODataType.STRING_RTRIM, EODataType.BYTE, EODataType.SHORT, EODataType.INTEGER, EODataType.LONG, EODataType.FLOAT, EODataType.DOUBLE, EODataType.BIGDECIMAL, EODataType.DECIMAL_NUMBER, EODataType.BOOLEAN, EODataType.DATE_OBJ, EODataType.DATE, EODataType.TIME, EODataType.TIMESTAMP, EODataType.DATE_MSSQL, EODataType.DATA, EODataType.CUSTOM };
+
+	private String myValueClass;
+
+	private String[] myValueTypes;
+
+	private String myName;
+
+	public EODataType(String _valueClass, String _valueType, String _name) {
+		this(_valueClass, new String[] { _valueType }, _name);
+	}
+
+	public EODataType(String _valueClass, String[] _valueTypes, String _name) {
+		myValueClass = _valueClass;
+		myValueTypes = _valueTypes;
+		myName = _name;
+	}
+
+	public String getValueClass() {
+		return myValueClass;
+	}
+
+	public String getFirstValueType() {
+		return myValueTypes[0];
+	}
+
+	public String[] getValueTypes() {
+		return myValueTypes;
+	}
+
+	public String getName() {
+		return myName;
+	}
+
+	public String toString() {
+		return "[EODataType: name = " + myName + "]";
+	}
+
+	public static EODataType getDataTypeByValueClassAndType(String _valueClass, String _valueType) {
+		EODataType matchingDataType = null;
+		for (int dataTypeNum = 0; matchingDataType == null && dataTypeNum < EODataType.DATA_TYPES.length; dataTypeNum++) {
+			EODataType dataType = EODataType.DATA_TYPES[dataTypeNum];
+			if (ComparisonUtils.equals(dataType.myValueClass, _valueClass)) {
+				for (int valueTypeNum = 0; matchingDataType == null && valueTypeNum < dataType.myValueTypes.length; valueTypeNum++) {
+					if (ComparisonUtils.equals(dataType.myValueTypes[valueTypeNum], _valueType)) {
+						matchingDataType = dataType;
+					}
+				}
+			}
+		}
+		if (matchingDataType == null) {
+			matchingDataType = EODataType.CUSTOM;
+		}
+		return matchingDataType;
+	}
+
+	public static EODataType getDataTypeByValueClass(String _valueClass) {
+		EODataType matchingDataType = null;
+		for (int dataTypeNum = 0; matchingDataType == null && dataTypeNum < EODataType.DATA_TYPES.length; dataTypeNum++) {
+			EODataType dataType = EODataType.DATA_TYPES[dataTypeNum];
+			if (ComparisonUtils.equals(dataType.myValueClass, _valueClass)) {
+				matchingDataType = dataType;
+			}
+		}
+		if (matchingDataType == null) {
+			matchingDataType = EODataType.CUSTOM;
+		}
+		return matchingDataType;
+	}
 }

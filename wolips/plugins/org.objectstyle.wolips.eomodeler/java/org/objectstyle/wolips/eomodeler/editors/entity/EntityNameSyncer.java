@@ -20,8 +20,7 @@ public class EntityNameSyncer implements PropertyChangeListener {
 			String className = entity.getClassName();
 			if (ComparisonUtils.equals(oldName, className, true)) {
 				entity.setClassName(newName);
-			}
-			else if (className != null && className.endsWith("." + oldName)) {
+			} else if (className != null && className.endsWith("." + oldName)) {
 				String oldPackage = className.substring(0, className.lastIndexOf('.') + 1);
 				entity.setClassName(oldPackage + newName);
 			}

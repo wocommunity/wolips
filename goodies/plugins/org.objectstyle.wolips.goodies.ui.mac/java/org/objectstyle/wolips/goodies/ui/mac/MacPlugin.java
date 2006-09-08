@@ -64,11 +64,12 @@ import java.util.*;
  * The main plugin class to be used in the desktop.
  */
 public class MacPlugin extends AbstractUIPlugin {
-	//The shared instance.
+	// The shared instance.
 	private static MacPlugin plugin;
-	//Resource bundle.
+
+	// Resource bundle.
 	private ResourceBundle resourceBundle;
-	
+
 	/**
 	 * The constructor.
 	 */
@@ -104,8 +105,8 @@ public class MacPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns the string from the plugin's resource bundle,
-	 * or 'key' if not found.
+	 * Returns the string from the plugin's resource bundle, or 'key' if not
+	 * found.
 	 */
 	public static String getResourceString(String key) {
 		ResourceBundle bundle = MacPlugin.getDefault().getResourceBundle();

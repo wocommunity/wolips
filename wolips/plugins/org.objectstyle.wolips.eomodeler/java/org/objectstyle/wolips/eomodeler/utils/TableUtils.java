@@ -60,74 +60,73 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.objectstyle.wolips.eomodeler.Messages;
 
 public class TableUtils {
-  public static TableViewer createTableViewer(Composite _parent, String _messagePrefix, String[] _columns, IStructuredContentProvider _contentProvider, ITableLabelProvider _labelProvider, ViewerSorter _sorter) {
-    return TableUtils.createTableViewer(_parent, SWT.FULL_SELECTION, _messagePrefix, _columns, _contentProvider, _labelProvider, _sorter);
-  }
+	public static TableViewer createTableViewer(Composite _parent, String _messagePrefix, String[] _columns, IStructuredContentProvider _contentProvider, ITableLabelProvider _labelProvider, ViewerSorter _sorter) {
+		return TableUtils.createTableViewer(_parent, SWT.FULL_SELECTION, _messagePrefix, _columns, _contentProvider, _labelProvider, _sorter);
+	}
 
-  public static TableViewer createTableViewer(Composite _parent, int _style, String _messagePrefix, String[] _columns, IStructuredContentProvider _contentProvider, ITableLabelProvider _labelProvider, ViewerSorter _sorter) {
-    TableViewer tableViewer = new TableViewer(_parent, _style);
-    tableViewer.setColumnProperties(_columns);
-    if (_contentProvider != null) {
-      tableViewer.setContentProvider(_contentProvider);
-    }
-    if (_labelProvider != null) {
-      tableViewer.setLabelProvider(_labelProvider);
-    }
-    if (_sorter != null) {
-      tableViewer.setSorter(_sorter);
-    }
-    Table table = tableViewer.getTable();
-    table.setHeaderVisible(true);
-    table.setLinesVisible(true);
-    TableUtils.createTableColumns(tableViewer, _messagePrefix, _columns, (_sorter instanceof TablePropertyViewerSorter));
-    return tableViewer;
-  }
+	public static TableViewer createTableViewer(Composite _parent, int _style, String _messagePrefix, String[] _columns, IStructuredContentProvider _contentProvider, ITableLabelProvider _labelProvider, ViewerSorter _sorter) {
+		TableViewer tableViewer = new TableViewer(_parent, _style);
+		tableViewer.setColumnProperties(_columns);
+		if (_contentProvider != null) {
+			tableViewer.setContentProvider(_contentProvider);
+		}
+		if (_labelProvider != null) {
+			tableViewer.setLabelProvider(_labelProvider);
+		}
+		if (_sorter != null) {
+			tableViewer.setSorter(_sorter);
+		}
+		Table table = tableViewer.getTable();
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
+		TableUtils.createTableColumns(tableViewer, _messagePrefix, _columns, (_sorter instanceof TablePropertyViewerSorter));
+		return tableViewer;
+	}
 
-  public static void packTableColumns(TableViewer _viewer) {
-    Table table = _viewer.getTable();
-    int columnCount = table.getColumnCount();
-    for (int columnNum = 0; columnNum < columnCount; columnNum++) {
-      table.getColumn(columnNum).pack();
-    }
-  }
+	public static void packTableColumns(TableViewer _viewer) {
+		Table table = _viewer.getTable();
+		int columnCount = table.getColumnCount();
+		for (int columnNum = 0; columnNum < columnCount; columnNum++) {
+			table.getColumn(columnNum).pack();
+		}
+	}
 
-  public static void createTableColumns(TableViewer _viewer, String _messagePrefix, String[] _properties, boolean _addSortHandler) {
-    for (int columnNum = 0; columnNum < _properties.length; columnNum++) {
-      TableUtils.createTableColumn(_viewer, _messagePrefix, _properties[columnNum], _addSortHandler);
-    }
-  }
+	public static void createTableColumns(TableViewer _viewer, String _messagePrefix, String[] _properties, boolean _addSortHandler) {
+		for (int columnNum = 0; columnNum < _properties.length; columnNum++) {
+			TableUtils.createTableColumn(_viewer, _messagePrefix, _properties[columnNum], _addSortHandler);
+		}
+	}
 
-  public static TableColumn createTableColumn(TableViewer _viewer, String _messagePrefix, String _propertyName, boolean _addSortHandler) {
-    TableColumn column = new TableColumn(_viewer.getTable(), SWT.LEFT);
-    column.setMoveable(true);
-    String text;
-    if (_messagePrefix == null) {
-      text = _propertyName;
-    }
-    else {
-      text = Messages.getString(_messagePrefix + "." + _propertyName);
-    }
-    column.setText(text);
-    if (_addSortHandler) {
-      column.addSelectionListener(new TableSortHandler(_viewer, _propertyName));
-    }
-    return column;
-  }
+	public static TableColumn createTableColumn(TableViewer _viewer, String _messagePrefix, String _propertyName, boolean _addSortHandler) {
+		TableColumn column = new TableColumn(_viewer.getTable(), SWT.LEFT);
+		column.setMoveable(true);
+		String text;
+		if (_messagePrefix == null) {
+			text = _propertyName;
+		} else {
+			text = Messages.getString(_messagePrefix + "." + _propertyName);
+		}
+		column.setText(text);
+		if (_addSortHandler) {
+			column.addSelectionListener(new TableSortHandler(_viewer, _propertyName));
+		}
+		return column;
+	}
 
-  public static int getColumnNumber(String[] _properties, String _property) {
-    int matchingColumnIndex = -1;
-    for (int columnNum = 0; columnNum < _properties.length; columnNum++) {
-      if (_properties[columnNum].equals(_property)) {
-        matchingColumnIndex = columnNum;
-      }
-    }
-    return matchingColumnIndex;
-  }
+	public static int getColumnNumber(String[] _properties, String _property) {
+		int matchingColumnIndex = -1;
+		for (int columnNum = 0; columnNum < _properties.length; columnNum++) {
+			if (_properties[columnNum].equals(_property)) {
+				matchingColumnIndex = columnNum;
+			}
+		}
+		return matchingColumnIndex;
+	}
 
-  public static void sort(TableViewer _tableViewer, String _propertyName) {
-    TablePropertyViewerSorter sorter = (TablePropertyViewerSorter) _tableViewer.getSorter();
-    if (sorter != null) {
-      sorter.sort(_tableViewer, _propertyName);
-    }
-  }
+	public static void sort(TableViewer _tableViewer, String _propertyName) {
+		TablePropertyViewerSorter sorter = (TablePropertyViewerSorter) _tableViewer.getSorter();
+		if (sorter != null) {
+			sorter.sort(_tableViewer, _propertyName);
+		}
+	}
 }

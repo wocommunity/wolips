@@ -64,72 +64,73 @@ import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 
 public class EOEntitiesTableEditor extends EditorPart implements ISelectionProvider, IEOModelEditor {
-  private EOEntitiesTableViewer myEntitiesTableViewer;
-  private EOModel myModel;
+	private EOEntitiesTableViewer myEntitiesTableViewer;
 
-  public void doSave(IProgressMonitor _monitor) {
-    // DO NOTHING
-  }
+	private EOModel myModel;
 
-  public void doSaveAs() {
-    // DO NOTHING
-  }
+	public void doSave(IProgressMonitor _monitor) {
+		// DO NOTHING
+	}
 
-  public void init(IEditorSite _site, IEditorInput _input) {
-    setSite(_site);
-    setInput(_input);
-  }
+	public void doSaveAs() {
+		// DO NOTHING
+	}
 
-  public void setModel(EOModel _model) {
-    myModel = _model;
-    updateEntitiesTableViewer();
-  }
+	public void init(IEditorSite _site, IEditorInput _input) {
+		setSite(_site);
+		setInput(_input);
+	}
 
-  public EOModel getModel() {
-    return myModel;
-  }
+	public void setModel(EOModel _model) {
+		myModel = _model;
+		updateEntitiesTableViewer();
+	}
 
-  public boolean isDirty() {
-    return myModel != null && myModel.isDirty();
-  }
+	public EOModel getModel() {
+		return myModel;
+	}
 
-  public boolean isSaveAsAllowed() {
-    return true;
-  }
+	public boolean isDirty() {
+		return myModel != null && myModel.isDirty();
+	}
 
-  public void createPartControl(Composite _parent) {
-    myEntitiesTableViewer = new EOEntitiesTableViewer(_parent, SWT.NONE);
-    myEntitiesTableViewer.setLayoutData(new GridData(GridData.FILL_BOTH));
-    updateEntitiesTableViewer();
-  }
+	public boolean isSaveAsAllowed() {
+		return true;
+	}
 
-  public void setFocus() {
-    // DO NOTHING
-  }
+	public void createPartControl(Composite _parent) {
+		myEntitiesTableViewer = new EOEntitiesTableViewer(_parent, SWT.NONE);
+		myEntitiesTableViewer.setLayoutData(new GridData(GridData.FILL_BOTH));
+		updateEntitiesTableViewer();
+	}
 
-  public void setSelectedEntity(EOEntity _entity) {
-    myEntitiesTableViewer.setSelectedEntity(_entity);
-  }
+	public void setFocus() {
+		// DO NOTHING
+	}
 
-  protected void updateEntitiesTableViewer() {
-    if (myEntitiesTableViewer != null) {
-      myEntitiesTableViewer.setModel(myModel);
-    }
-  }
+	public void setSelectedEntity(EOEntity _entity) {
+		myEntitiesTableViewer.setSelectedEntity(_entity);
+	}
 
-  public ISelection getSelection() {
-    return myEntitiesTableViewer.getSelection();
-  }
+	protected void updateEntitiesTableViewer() {
+		if (myEntitiesTableViewer != null) {
+			myEntitiesTableViewer.setModel(myModel);
+		}
+	}
 
-  public void setSelection(ISelection _selection) {
-    myEntitiesTableViewer.setSelection(_selection);
-  }
+	public ISelection getSelection() {
+		return myEntitiesTableViewer.getSelection();
+	}
 
-  public void addSelectionChangedListener(ISelectionChangedListener _listener) {
-    myEntitiesTableViewer.addSelectionChangedListener(_listener);
-  }
+	public void setSelection(ISelection _selection) {
+		myEntitiesTableViewer.setSelection(_selection);
+	}
 
-  public void removeSelectionChangedListener(ISelectionChangedListener _listener) {
-    myEntitiesTableViewer.removeSelectionChangedListener(_listener);
-  }
+	public void addSelectionChangedListener(ISelectionChangedListener _listener) {
+		myEntitiesTableViewer.addSelectionChangedListener(_listener);
+	}
+
+	public void removeSelectionChangedListener(ISelectionChangedListener _listener) {
+		myEntitiesTableViewer.removeSelectionChangedListener(_listener);
+	}
 }

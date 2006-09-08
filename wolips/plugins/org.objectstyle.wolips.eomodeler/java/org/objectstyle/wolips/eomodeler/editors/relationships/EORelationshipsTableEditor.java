@@ -62,65 +62,66 @@ import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 
 public class EORelationshipsTableEditor extends EditorPart implements IEntityEditor {
-  private EORelationshipsTableViewer myRelationshipsTableViewer;
-  private EOEntity myEntity;
+	private EORelationshipsTableViewer myRelationshipsTableViewer;
 
-  public void setEntity(EOEntity _entity) {
-    myEntity = _entity;
-    updateRelationshipsTableViewer();
-  }
+	private EOEntity myEntity;
 
-  public EOModel getModel() {
-    return (myEntity == null) ? null : myEntity.getModel();
-  }
+	public void setEntity(EOEntity _entity) {
+		myEntity = _entity;
+		updateRelationshipsTableViewer();
+	}
 
-  public EOEntity getEntity() {
-    return myEntity;
-  }
+	public EOModel getModel() {
+		return (myEntity == null) ? null : myEntity.getModel();
+	}
 
-  public void doSave(IProgressMonitor _monitor) {
-    // DO NOTHING
-  }
+	public EOEntity getEntity() {
+		return myEntity;
+	}
 
-  public void doSaveAs() {
-    // DO NOTHING
-  }
+	public void doSave(IProgressMonitor _monitor) {
+		// DO NOTHING
+	}
 
-  public void init(IEditorSite _site, IEditorInput _input) {
-    setSite(_site);
-    setInput(_input);
-    setEntity(null);
-  }
+	public void doSaveAs() {
+		// DO NOTHING
+	}
 
-  public boolean isDirty() {
-    return myEntity != null && myEntity.getModel().isDirty();
-  }
+	public void init(IEditorSite _site, IEditorInput _input) {
+		setSite(_site);
+		setInput(_input);
+		setEntity(null);
+	}
 
-  public boolean isSaveAsAllowed() {
-    return true;
-  }
+	public boolean isDirty() {
+		return myEntity != null && myEntity.getModel().isDirty();
+	}
 
-  public void createPartControl(Composite _parent) {
-    myRelationshipsTableViewer = new EORelationshipsTableViewer(_parent, SWT.NONE);
-    myRelationshipsTableViewer.setLayoutData(new GridData(GridData.FILL_BOTH));
-    updateRelationshipsTableViewer();
-  }
+	public boolean isSaveAsAllowed() {
+		return true;
+	}
 
-  public void setFocus() {
-    // DO NOTHING
-  }
+	public void createPartControl(Composite _parent) {
+		myRelationshipsTableViewer = new EORelationshipsTableViewer(_parent, SWT.NONE);
+		myRelationshipsTableViewer.setLayoutData(new GridData(GridData.FILL_BOTH));
+		updateRelationshipsTableViewer();
+	}
 
-  protected void updateRelationshipsTableViewer() {
-    if (myRelationshipsTableViewer != null) {
-      myRelationshipsTableViewer.setEntity(myEntity);
-    }
-  }
+	public void setFocus() {
+		// DO NOTHING
+	}
 
-  public void addSelectionChangedListener(ISelectionChangedListener _listener) {
-    myRelationshipsTableViewer.addSelectionChangedListener(_listener);
-  }
+	protected void updateRelationshipsTableViewer() {
+		if (myRelationshipsTableViewer != null) {
+			myRelationshipsTableViewer.setEntity(myEntity);
+		}
+	}
 
-  public void removeSelectionChangedListener(ISelectionChangedListener _listener) {
-    myRelationshipsTableViewer.removeSelectionChangedListener(_listener);
-  }
+	public void addSelectionChangedListener(ISelectionChangedListener _listener) {
+		myRelationshipsTableViewer.addSelectionChangedListener(_listener);
+	}
+
+	public void removeSelectionChangedListener(ISelectionChangedListener _listener) {
+		myRelationshipsTableViewer.removeSelectionChangedListener(_listener);
+	}
 }

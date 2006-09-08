@@ -72,74 +72,67 @@ import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 
 public class DeleteAction extends Action {
-  private ISelection mySelection;
+	private ISelection mySelection;
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public void selectionChanged(IAction _action, ISelection _selection) {
-    mySelection = _selection;
-  }
+	public void selectionChanged(IAction _action, ISelection _selection) {
+		mySelection = _selection;
+	}
 
-  public void run() {
-    Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-    Object[] selectedObjects = null;
-    if (mySelection instanceof IStructuredSelection) {
-      selectedObjects = ((IStructuredSelection) mySelection).toArray();
-    }
-    if (selectedObjects != null) {
-      Set referenceFailures = new HashSet();
-      for (int selectedObjectNum = 0; selectedObjectNum < selectedObjects.length; selectedObjectNum++) {
-        Object selectedObject = selectedObjects[selectedObjectNum];
-        if (selectedObject instanceof EOModelObject) {
-          referenceFailures.addAll(((EOModelObject) selectedObject).getReferenceFailures());
-        }
-      }
-      if (!referenceFailures.isEmpty()) {
-        new EOModelErrorDialog(activeShell, referenceFailures).open();
-      }
-      else if (MessageDialog.openConfirm(activeShell, Messages.getString("delete.objectsTitle"), Messages.getString("delete.objectsMessage"))) {
-        for (int selectedObjectNum = 0; selectedObjectNum < selectedObjects.length; selectedObjectNum++) {
-          Object selectedObject = selectedObjects[selectedObjectNum];
-          if (selectedObject instanceof EOEntity) {
-            EOEntity entity = (EOEntity) selectedObject;
-            entity.getModel().removeEntity(entity);
-          }
-          else if (selectedObject instanceof EORelationship) {
-            EORelationship relationship = (EORelationship) selectedObject;
-            relationship.getEntity().removeRelationship(relationship, true);
-          }
-          else if (selectedObject instanceof EOAttribute) {
-            EOAttribute attribute = (EOAttribute) selectedObject;
-            attribute.getEntity().removeAttribute(attribute, true);
-          }
-          else if (selectedObject instanceof EOFetchSpecification) {
-            EOFetchSpecification fetchSpec = (EOFetchSpecification) selectedObject;
-            fetchSpec.getEntity().removeFetchSpecification(fetchSpec);
-          }
-          else if (selectedObject instanceof EOStoredProcedure) {
-            EOStoredProcedure storedProcedure = (EOStoredProcedure) selectedObject;
-            storedProcedure.getModel().removeStoredProcedure(storedProcedure);
-          }
-          else if (selectedObject instanceof EOArgument) {
-            EOArgument argument = (EOArgument) selectedObject;
-            argument.getStoredProcedure().removeArgument(argument);
-          }
-          else if (selectedObject instanceof EODatabaseConfig) {
-            EODatabaseConfig databaseConfig = (EODatabaseConfig) selectedObject;
-            databaseConfig.getModel().removeDatabaseConfig(databaseConfig);
-          }
-        }
-      }
-    }
-  }
+	public void run() {
+		Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+		Object[] selectedObjects = null;
+		if (mySelection instanceof IStructuredSelection) {
+			selectedObjects = ((IStructuredSelection) mySelection).toArray();
+		}
+		if (selectedObjects != null) {
+			Set referenceFailures = new HashSet();
+			for (int selectedObjectNum = 0; selectedObjectNum < selectedObjects.length; selectedObjectNum++) {
+				Object selectedObject = selectedObjects[selectedObjectNum];
+				if (selectedObject instanceof EOModelObject) {
+					referenceFailures.addAll(((EOModelObject) selectedObject).getReferenceFailures());
+				}
+			}
+			if (!referenceFailures.isEmpty()) {
+				new EOModelErrorDialog(activeShell, referenceFailures).open();
+			} else if (MessageDialog.openConfirm(activeShell, Messages.getString("delete.objectsTitle"), Messages.getString("delete.objectsMessage"))) {
+				for (int selectedObjectNum = 0; selectedObjectNum < selectedObjects.length; selectedObjectNum++) {
+					Object selectedObject = selectedObjects[selectedObjectNum];
+					if (selectedObject instanceof EOEntity) {
+						EOEntity entity = (EOEntity) selectedObject;
+						entity.getModel().removeEntity(entity);
+					} else if (selectedObject instanceof EORelationship) {
+						EORelationship relationship = (EORelationship) selectedObject;
+						relationship.getEntity().removeRelationship(relationship, true);
+					} else if (selectedObject instanceof EOAttribute) {
+						EOAttribute attribute = (EOAttribute) selectedObject;
+						attribute.getEntity().removeAttribute(attribute, true);
+					} else if (selectedObject instanceof EOFetchSpecification) {
+						EOFetchSpecification fetchSpec = (EOFetchSpecification) selectedObject;
+						fetchSpec.getEntity().removeFetchSpecification(fetchSpec);
+					} else if (selectedObject instanceof EOStoredProcedure) {
+						EOStoredProcedure storedProcedure = (EOStoredProcedure) selectedObject;
+						storedProcedure.getModel().removeStoredProcedure(storedProcedure);
+					} else if (selectedObject instanceof EOArgument) {
+						EOArgument argument = (EOArgument) selectedObject;
+						argument.getStoredProcedure().removeArgument(argument);
+					} else if (selectedObject instanceof EODatabaseConfig) {
+						EODatabaseConfig databaseConfig = (EODatabaseConfig) selectedObject;
+						databaseConfig.getModel().removeDatabaseConfig(databaseConfig);
+					}
+				}
+			}
+		}
+	}
 
-  public void runWithEvent(Event _event) {
-    run();
-  }
+	public void runWithEvent(Event _event) {
+		run();
+	}
 
-  public void run(IAction _action) {
-    run();
-  }
+	public void run(IAction _action) {
+		run();
+	}
 }

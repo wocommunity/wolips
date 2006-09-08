@@ -66,71 +66,71 @@ import org.objectstyle.wolips.eomodeler.kvc.Key;
 import org.objectstyle.wolips.eomodeler.kvc.KeyPath;
 
 public class TablePropertyCellModifier implements ICellModifier, ISelectionChangedListener {
-  private TableViewer myTableViewer;
-  private ISelection mySelection;
-  private Map myKeys;
+	private TableViewer myTableViewer;
 
-  public TablePropertyCellModifier(TableViewer _tableViewer) {
-    myTableViewer = _tableViewer;
-    myTableViewer.addSelectionChangedListener(this);
-    myKeys = new HashMap();
-  }
+	private ISelection mySelection;
 
-  public TableViewer getTableViewer() {
-    return myTableViewer;
-  }
+	private Map myKeys;
 
-  public void selectionChanged(SelectionChangedEvent _event) {
-    mySelection = _event.getSelection();
-  }
+	public TablePropertyCellModifier(TableViewer _tableViewer) {
+		myTableViewer = _tableViewer;
+		myTableViewer.addSelectionChangedListener(this);
+		myKeys = new HashMap();
+	}
 
-  public boolean canModify(Object _element, String _property) {
-    boolean canModify = false;
-    if (mySelection instanceof IStructuredSelection) {
-      IStructuredSelection selection = (IStructuredSelection) mySelection;
-      if (selection.size() == 1 && _element == selection.getFirstElement()) {
-        try {
-          canModify = _canModify(_element, _property);
-        }
-        catch (Throwable t) {
-          t.printStackTrace();
-          canModify = false;
-        }
-      }
-    }
-    return canModify;
-  }
+	public TableViewer getTableViewer() {
+		return myTableViewer;
+	}
 
-  protected boolean _canModify(Object _element, String _property) throws Throwable {
-    return true;
-  }
+	public void selectionChanged(SelectionChangedEvent _event) {
+		mySelection = _event.getSelection();
+	}
 
-  public Object getValue(Object _element, String _property) {
-    Object value = new Key(_property).getValue(_element);
-    return value;
-  }
+	public boolean canModify(Object _element, String _property) {
+		boolean canModify = false;
+		if (mySelection instanceof IStructuredSelection) {
+			IStructuredSelection selection = (IStructuredSelection) mySelection;
+			if (selection.size() == 1 && _element == selection.getFirstElement()) {
+				try {
+					canModify = _canModify(_element, _property);
+				} catch (Throwable t) {
+					t.printStackTrace();
+					canModify = false;
+				}
+			}
+		}
+		return canModify;
+	}
 
-  public void modify(Object _element, String _property, Object _value) {
-    try {
-      TableItem tableItem = (TableItem) _element;
-      Object obj = tableItem.getData();
-      if (!_modify(obj, _property, _value)) {
-        KeyPath keyPath = (KeyPath)myKeys.get(_property);
-        if (keyPath == null) {
-          keyPath = new CachingKeyPath(_property);
-          myKeys.put(_property, keyPath);
-        }
-        keyPath.setValue(obj, _value);
-      }
-      myTableViewer.refresh(obj);
-    }
-    catch (Throwable t) {
-      t.printStackTrace();
-      MessageDialog.openError(Display.getDefault().getActiveShell(), "", t.getMessage());
-    }
-  }
+	protected boolean _canModify(Object _element, String _property) throws Throwable {
+		return true;
+	}
 
-  protected boolean _modify(Object _element, String _property, Object _value) throws Throwable {
-    return false;
-  }
+	public Object getValue(Object _element, String _property) {
+		Object value = new Key(_property).getValue(_element);
+		return value;
+	}
+
+	public void modify(Object _element, String _property, Object _value) {
+		try {
+			TableItem tableItem = (TableItem) _element;
+			Object obj = tableItem.getData();
+			if (!_modify(obj, _property, _value)) {
+				KeyPath keyPath = (KeyPath) myKeys.get(_property);
+				if (keyPath == null) {
+					keyPath = new CachingKeyPath(_property);
+					myKeys.put(_property, keyPath);
+				}
+				keyPath.setValue(obj, _value);
+			}
+			myTableViewer.refresh(obj);
+		} catch (Throwable t) {
+			t.printStackTrace();
+			MessageDialog.openError(Display.getDefault().getActiveShell(), "", t.getMessage());
+		}
+	}
+
+	protected boolean _modify(Object _element, String _property, Object _value) throws Throwable {
+		return false;
+	}
 }

@@ -61,34 +61,35 @@ import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 
 public class DateDataTypePanel extends Composite implements IDataTypePanel {
-  private ComboViewer myServerTimeZoneViewer;
-  private ComboViewerBinding myServerTimeZoneBinding;
+	private ComboViewer myServerTimeZoneViewer;
 
-  public DateDataTypePanel(Composite _parent, int _style, TabbedPropertySheetWidgetFactory _widgetFactory) {
-    super(_parent, _style);
-    setBackground(_parent.getBackground());
-    setLayout(new GridLayout(2, false));
-    _widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.SERVER_TIME_ZONE), SWT.NONE);
-    Combo timeZoneCombo = new Combo(this, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
-    myServerTimeZoneViewer = new ComboViewer(timeZoneCombo);
-    myServerTimeZoneViewer.setLabelProvider(new TimeZoneLabelProvider());
-    myServerTimeZoneViewer.setContentProvider(new TimeZoneContentProvider());
-    GridData timeZoneFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myServerTimeZoneViewer.getCombo().setLayoutData(timeZoneFieldLayoutData);
-  }
+	private ComboViewerBinding myServerTimeZoneBinding;
 
-  public void setArgument(AbstractEOArgument _argument) {
-    if (myServerTimeZoneBinding != null) {
-      myServerTimeZoneBinding.dispose();
-    }
-    if (_argument != null) {
-      myServerTimeZoneViewer.setInput(_argument);
-      myServerTimeZoneBinding = new ComboViewerBinding(myServerTimeZoneViewer, _argument, AbstractEOArgument.SERVER_TIME_ZONE, null, null, TimeZoneContentProvider.BLANK_VALUE);
-    }
-  }
+	public DateDataTypePanel(Composite _parent, int _style, TabbedPropertySheetWidgetFactory _widgetFactory) {
+		super(_parent, _style);
+		setBackground(_parent.getBackground());
+		setLayout(new GridLayout(2, false));
+		_widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.SERVER_TIME_ZONE), SWT.NONE);
+		Combo timeZoneCombo = new Combo(this, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
+		myServerTimeZoneViewer = new ComboViewer(timeZoneCombo);
+		myServerTimeZoneViewer.setLabelProvider(new TimeZoneLabelProvider());
+		myServerTimeZoneViewer.setContentProvider(new TimeZoneContentProvider());
+		GridData timeZoneFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myServerTimeZoneViewer.getCombo().setLayoutData(timeZoneFieldLayoutData);
+	}
 
-  public void dispose() {
-    setArgument(null);
-    super.dispose();
-  }
+	public void setArgument(AbstractEOArgument _argument) {
+		if (myServerTimeZoneBinding != null) {
+			myServerTimeZoneBinding.dispose();
+		}
+		if (_argument != null) {
+			myServerTimeZoneViewer.setInput(_argument);
+			myServerTimeZoneBinding = new ComboViewerBinding(myServerTimeZoneViewer, _argument, AbstractEOArgument.SERVER_TIME_ZONE, null, null, TimeZoneContentProvider.BLANK_VALUE);
+		}
+	}
+
+	public void dispose() {
+		setArgument(null);
+		super.dispose();
+	}
 }

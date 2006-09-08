@@ -65,93 +65,95 @@ import org.objectstyle.wolips.eomodeler.kvc.IKey;
 import org.objectstyle.wolips.eomodeler.model.EOModelObject;
 
 public class ComboViewerBinding implements ISelectionChangedListener, PropertyChangeListener {
-  private ComboViewer myViewer;
-  private EOModelObject myObj;
-  private String myPropertyName;
-  private EOModelObject myListObj;
-  private String myListPropertyName;
-  private Object myBlankValue;
-  private Map myKeys;
+	private ComboViewer myViewer;
 
-  public ComboViewerBinding(ComboViewer _viewer, EOModelObject _obj, String _propertyName, EOModelObject _listObj, String _listPropertyName, Object _blankValue) {
-    myViewer = _viewer;
-    myKeys = new HashMap();
-    myObj = _obj;
-    myPropertyName = _propertyName;
-    myListObj = _listObj;
-    myListPropertyName = _listPropertyName;
-    myBlankValue = _blankValue;
-    Object initialValue = getKey(myPropertyName).getValue(myObj);
-    setSelectedValue(initialValue);
+	private EOModelObject myObj;
 
-    myViewer.addSelectionChangedListener(this);
-    myObj.addPropertyChangeListener(myPropertyName, this);
-    if (myListObj != null) {
-      myListObj.addPropertyChangeListener(myListPropertyName, this);
-    }
-  }
+	private String myPropertyName;
 
-  protected synchronized IKey getKey(String _property) {
-    IKey key = (IKey) myKeys.get(_property);
-    if (key == null) {
-      key = new CachingKeyPath(_property);
-      myKeys.put(_property, key);
-    }
-    return key;
-  }
+	private EOModelObject myListObj;
 
-  public void dispose() {
-    myViewer.removeSelectionChangedListener(this);
-    myObj.removePropertyChangeListener(myPropertyName, this);
-    if (myListObj != null) {
-      myListObj.removePropertyChangeListener(myListPropertyName, this);
-    }
-  }
+	private String myListPropertyName;
 
-  public void propertyChange(PropertyChangeEvent _event) {
-    Object source = _event.getSource();
-    String propertyName = _event.getPropertyName();
-    if (source == myObj && myPropertyName.equals(propertyName)) {
-      Object newValue = _event.getNewValue();
-      setSelectedValue(newValue);
-    }
-    else if (myListObj != null && source == myListObj && myListPropertyName.equals(propertyName)) {
-      ISelection selection = myViewer.getSelection();
-      if (myViewer.getContentProvider() != null) {
-        myViewer.setInput(myListObj);
-        myViewer.setSelection(selection);
-      }
-    }
-  }
+	private Object myBlankValue;
 
-  public void selectionChanged(SelectionChangedEvent _event) {
-    try {
-      Object newValue = ((IStructuredSelection) _event.getSelection()).getFirstElement();
-      if (ComparisonUtils.equals(myBlankValue, newValue)) {
-        newValue = null;
-      }
-      IKey key = getKey(myPropertyName);
-      Object existingValue = key.getValue(myObj);
-      if (!ComparisonUtils.equals(existingValue, newValue)) {
-        key.setValue(myObj, newValue);
-      }
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
+	private Map myKeys;
 
-  protected void setSelectedValue(Object _newValue) {
-    if (_newValue == null || _newValue == myBlankValue || (myBlankValue != null && myBlankValue.equals(_newValue))) {
-      if (myBlankValue == null) {
-        // DO NOTHING
-      }
-      else {
-        myViewer.setSelection(new StructuredSelection(myBlankValue), true);
-      }
-    }
-    else {
-      myViewer.setSelection(new StructuredSelection(_newValue), true);
-    }
-  }
+	public ComboViewerBinding(ComboViewer _viewer, EOModelObject _obj, String _propertyName, EOModelObject _listObj, String _listPropertyName, Object _blankValue) {
+		myViewer = _viewer;
+		myKeys = new HashMap();
+		myObj = _obj;
+		myPropertyName = _propertyName;
+		myListObj = _listObj;
+		myListPropertyName = _listPropertyName;
+		myBlankValue = _blankValue;
+		Object initialValue = getKey(myPropertyName).getValue(myObj);
+		setSelectedValue(initialValue);
+
+		myViewer.addSelectionChangedListener(this);
+		myObj.addPropertyChangeListener(myPropertyName, this);
+		if (myListObj != null) {
+			myListObj.addPropertyChangeListener(myListPropertyName, this);
+		}
+	}
+
+	protected synchronized IKey getKey(String _property) {
+		IKey key = (IKey) myKeys.get(_property);
+		if (key == null) {
+			key = new CachingKeyPath(_property);
+			myKeys.put(_property, key);
+		}
+		return key;
+	}
+
+	public void dispose() {
+		myViewer.removeSelectionChangedListener(this);
+		myObj.removePropertyChangeListener(myPropertyName, this);
+		if (myListObj != null) {
+			myListObj.removePropertyChangeListener(myListPropertyName, this);
+		}
+	}
+
+	public void propertyChange(PropertyChangeEvent _event) {
+		Object source = _event.getSource();
+		String propertyName = _event.getPropertyName();
+		if (source == myObj && myPropertyName.equals(propertyName)) {
+			Object newValue = _event.getNewValue();
+			setSelectedValue(newValue);
+		} else if (myListObj != null && source == myListObj && myListPropertyName.equals(propertyName)) {
+			ISelection selection = myViewer.getSelection();
+			if (myViewer.getContentProvider() != null) {
+				myViewer.setInput(myListObj);
+				myViewer.setSelection(selection);
+			}
+		}
+	}
+
+	public void selectionChanged(SelectionChangedEvent _event) {
+		try {
+			Object newValue = ((IStructuredSelection) _event.getSelection()).getFirstElement();
+			if (ComparisonUtils.equals(myBlankValue, newValue)) {
+				newValue = null;
+			}
+			IKey key = getKey(myPropertyName);
+			Object existingValue = key.getValue(myObj);
+			if (!ComparisonUtils.equals(existingValue, newValue)) {
+				key.setValue(myObj, newValue);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	protected void setSelectedValue(Object _newValue) {
+		if (_newValue == null || _newValue == myBlankValue || (myBlankValue != null && myBlankValue.equals(_newValue))) {
+			if (myBlankValue == null) {
+				// DO NOTHING
+			} else {
+				myViewer.setSelection(new StructuredSelection(myBlankValue), true);
+			}
+		} else {
+			myViewer.setSelection(new StructuredSelection(_newValue), true);
+		}
+	}
 }

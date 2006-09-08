@@ -7,139 +7,144 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
 public class EOArgument extends AbstractEOArgument {
-  public static final String DIRECTION = "direction";
+	public static final String DIRECTION = "direction";
 
-  private EOStoredProcedure myStoredProcedure;
-  private EOArgumentDirection myDirection;
+	private EOStoredProcedure myStoredProcedure;
 
-  public EOArgument() {
-    myDirection = EOArgumentDirection.VOID;
-  }
+	private EOArgumentDirection myDirection;
 
-  public EOArgument(String _name) {
-    super(_name);
-    myDirection = EOArgumentDirection.VOID;
-  }
+	public EOArgument() {
+		myDirection = EOArgumentDirection.VOID;
+	}
 
-  public EOArgument(String _name, String _definition) {
-    super(_name, _definition);
-    myDirection = EOArgumentDirection.VOID;
-  }
+	public EOArgument(String _name) {
+		super(_name);
+		myDirection = EOArgumentDirection.VOID;
+	}
 
-  public int hashCode() {
-    return ((myStoredProcedure == null) ? 1 : myStoredProcedure.hashCode()) * super.hashCode();
-  }
+	public EOArgument(String _name, String _definition) {
+		super(_name, _definition);
+		myDirection = EOArgumentDirection.VOID;
+	}
 
-  public boolean equals(Object _obj) {
-    boolean equals = false;
-    if (_obj instanceof EOArgument) {
-      EOArgument argument = (EOArgument) _obj;
-      equals = (argument == this) || (ComparisonUtils.equals(argument.myStoredProcedure, myStoredProcedure) && ComparisonUtils.equals(argument.getName(), getName()));
-    }
-    return equals;
-  }
+	public int hashCode() {
+		return ((myStoredProcedure == null) ? 1 : myStoredProcedure.hashCode()) * super.hashCode();
+	}
 
-  public EOStoredProcedure getStoredProcedure() {
-    return myStoredProcedure;
-  }
+	public boolean equals(Object _obj) {
+		boolean equals = false;
+		if (_obj instanceof EOArgument) {
+			EOArgument argument = (EOArgument) _obj;
+			equals = (argument == this) || (ComparisonUtils.equals(argument.myStoredProcedure, myStoredProcedure) && ComparisonUtils.equals(argument.getName(), getName()));
+		}
+		return equals;
+	}
 
-  public void _setStoredProcedure(EOStoredProcedure _storedProcedure) {
-    myStoredProcedure = _storedProcedure;
-  }
+	public EOStoredProcedure getStoredProcedure() {
+		return myStoredProcedure;
+	}
 
-  protected AbstractEOArgument _createArgument(String _name) {
-    return new EOArgument(_name);
-  }
+	public void _setStoredProcedure(EOStoredProcedure _storedProcedure) {
+		myStoredProcedure = _storedProcedure;
+	}
 
-  public EOArgument cloneArgument() {
-    EOArgument argument = (EOArgument) _cloneArgument();
-    argument.myDirection = myDirection;
-    return argument;
-  }
+	protected AbstractEOArgument _createArgument(String _name) {
+		return new EOArgument(_name);
+	}
 
-  protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
-    if (myStoredProcedure != null) {
-      myStoredProcedure._argumentChanged(this, _propertyName, _oldValue, _newValue);
-    }
-  }
+	public EOArgument cloneArgument() {
+		EOArgument argument = (EOArgument) _cloneArgument();
+		argument.myDirection = myDirection;
+		return argument;
+	}
 
-  public void setName(String _name, boolean _fireEvents) throws DuplicateNameException {
-    if (_name == null) {
-      throw new NullPointerException(Messages.getString("EOArgument.noBlankArgumentNames"));
-    }
-    if (myStoredProcedure != null) {
-      myStoredProcedure._checkForDuplicateArgumentName(this, _name, null);
-    }
-    super.setName(_name, _fireEvents);
-  }
+	protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
+		if (myStoredProcedure != null) {
+			myStoredProcedure._argumentChanged(this, _propertyName, _oldValue, _newValue);
+		}
+	}
 
-  public void setDirection(EOArgumentDirection _direction) {
-    EOArgumentDirection oldDirection = myDirection;
-    myDirection = _direction;
-    firePropertyChange(EOArgument.DIRECTION, oldDirection, myDirection);
-  }
+	public void setName(String _name, boolean _fireEvents) throws DuplicateNameException {
+		if (_name == null) {
+			throw new NullPointerException(Messages.getString("EOArgument.noBlankArgumentNames"));
+		}
+		if (myStoredProcedure != null) {
+			myStoredProcedure._checkForDuplicateArgumentName(this, _name, null);
+		}
+		super.setName(_name, _fireEvents);
+	}
 
-  public EOArgumentDirection getDirection() {
-    return myDirection;
-  }
+	public void setDirection(EOArgumentDirection _direction) {
+		EOArgumentDirection oldDirection = myDirection;
+		myDirection = _direction;
+		firePropertyChange(EOArgument.DIRECTION, oldDirection, myDirection);
+	}
 
-  public void loadFromMap(EOModelMap _argumentMap, Set _failures) {
-    super.loadFromMap(_argumentMap, _failures);
-    Integer argumentDirectionNum = _argumentMap.getInteger("parameterDirection");
-    if (argumentDirectionNum == null) {
-      argumentDirectionNum = new Integer(0);
-    }
-    myDirection = EOArgumentDirection.getArgumentDirectionByID(argumentDirectionNum.intValue());
-  }
+	public EOArgumentDirection getDirection() {
+		return myDirection;
+	}
 
-  public EOModelMap toMap() {
-    EOModelMap argumentMap = super.toMap();
-    if (myDirection == null || myDirection == EOArgumentDirection.VOID) {
-      argumentMap.remove("parameterDirection");
-    }
-    else {
-      argumentMap.setInteger("parameterDirection", new Integer(myDirection.getID()));
-    }
-    return argumentMap;
-  }
+	public void loadFromMap(EOModelMap _argumentMap, Set _failures) {
+		super.loadFromMap(_argumentMap, _failures);
+		Integer argumentDirectionNum = _argumentMap.getInteger("parameterDirection");
+		if (argumentDirectionNum == null) {
+			argumentDirectionNum = new Integer(0);
+		}
+		myDirection = EOArgumentDirection.getArgumentDirectionByID(argumentDirectionNum.intValue());
+	}
 
-  public Set getReferenceFailures() {
-    return new HashSet();
-  }
+	public EOModelMap toMap() {
+		EOModelMap argumentMap = super.toMap();
+		if (myDirection == null || myDirection == EOArgumentDirection.VOID) {
+			argumentMap.remove("parameterDirection");
+		} else {
+			argumentMap.setInteger("parameterDirection", new Integer(myDirection.getID()));
+		}
+		return argumentMap;
+	}
 
-  public void resolve(Set _failures) {
-    // DO NOTHING
-  }
+	public Set getReferenceFailures() {
+		return new HashSet();
+	}
 
-  public void verify(Set _failures) {
-    String name = getName();
-    if (name == null || name.trim().length() == 0) {
-      _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " has an empty name."));
-    }
-    else {
-      if (name.indexOf(' ') != -1) {
-        _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s name has a space in it."));
-      }
-    }
-    //    if (!isFlattened()) {
-    //      String columnName = getColumnName();
-    //      if (columnName == null || columnName.trim().length() == 0) {
-    //        _failures.add(new EOModelVerificationFailure(myStoredProcedure.getModel().getName() + "/" + myStoredProcedure.getName() + "/" + name + " does not have a column name set."));
-    //      }
-    //      else if (columnName.indexOf(' ') != -1) {
-    //        _failures.add(new EOModelVerificationFailure(myStoredProcedure.getModel().getName() + "/" + myStoredProcedure.getName() + "/" + name + "'s column name '" + columnName + "' has a space in it."));
-    //      }
-    //    }
-    if (myDirection == null) {
-      _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " has no direction specified."));
-    }
-  }
+	public void resolve(Set _failures) {
+		// DO NOTHING
+	}
 
-  public String getFullyQualifiedName() {
-    return ((myStoredProcedure == null) ? "?" : myStoredProcedure.getFullyQualifiedName()) + "/Argument:" + getName();
-  }
+	public void verify(Set _failures) {
+		String name = getName();
+		if (name == null || name.trim().length() == 0) {
+			_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " has an empty name."));
+		} else {
+			if (name.indexOf(' ') != -1) {
+				_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s name has a space in it."));
+			}
+		}
+		// if (!isFlattened()) {
+		// String columnName = getColumnName();
+		// if (columnName == null || columnName.trim().length() == 0) {
+		// _failures.add(new
+		// EOModelVerificationFailure(myStoredProcedure.getModel().getName() +
+		// "/" + myStoredProcedure.getName() + "/" + name + " does not have a
+		// column name set."));
+		// }
+		// else if (columnName.indexOf(' ') != -1) {
+		// _failures.add(new
+		// EOModelVerificationFailure(myStoredProcedure.getModel().getName() +
+		// "/" + myStoredProcedure.getName() + "/" + name + "'s column name '" +
+		// columnName + "' has a space in it."));
+		// }
+		// }
+		if (myDirection == null) {
+			_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " has no direction specified."));
+		}
+	}
 
-  public String toString() {
-    return "[EOArgument: name = " + getName() + "]";
-  }
+	public String getFullyQualifiedName() {
+		return ((myStoredProcedure == null) ? "?" : myStoredProcedure.getFullyQualifiedName()) + "/Argument:" + getName();
+	}
+
+	public String toString() {
+		return "[EOArgument: name = " + getName() + "]";
+	}
 }

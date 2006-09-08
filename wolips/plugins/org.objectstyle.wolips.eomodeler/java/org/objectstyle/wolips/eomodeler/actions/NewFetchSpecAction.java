@@ -62,37 +62,36 @@ import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 
 public class NewFetchSpecAction implements IWorkbenchWindowActionDelegate {
-  private EOEntity myEntity;
-  private IWorkbenchWindow myWindow;
+	private EOEntity myEntity;
 
-  public void init(IWorkbenchWindow _window) {
-    myWindow = _window;
-  }
+	private IWorkbenchWindow myWindow;
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void init(IWorkbenchWindow _window) {
+		myWindow = _window;
+	}
 
-  public void selectionChanged(IAction _action, ISelection _selection) {
-    myEntity = null;
-    if (_selection instanceof IStructuredSelection) {
-      Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-      myEntity = EOModelUtils.getRelatedEntity(selectedObject);
-    }
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public void run(IAction _action) {
-    try {
-      if (myEntity != null) {
-        EOFetchSpecification newFetchSpec = myEntity.addBlankFetchSpec(Messages.getString("EOFetchSpecification.newName"));
-      }
-      else {
-        MessageDialog.openError(myWindow.getShell(), Messages.getString("EOFetchSpec.noEntitySelectedTitle"), Messages.getString("EOFetchSpec.noEntitySelectedMessage"));//$NON-NLS-1$
-      }
-    }
-    catch (DuplicateFetchSpecNameException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-  }
+	public void selectionChanged(IAction _action, ISelection _selection) {
+		myEntity = null;
+		if (_selection instanceof IStructuredSelection) {
+			Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+			myEntity = EOModelUtils.getRelatedEntity(selectedObject);
+		}
+	}
+
+	public void run(IAction _action) {
+		try {
+			if (myEntity != null) {
+				EOFetchSpecification newFetchSpec = myEntity.addBlankFetchSpec(Messages.getString("EOFetchSpecification.newName"));
+			} else {
+				MessageDialog.openError(myWindow.getShell(), Messages.getString("EOFetchSpec.noEntitySelectedTitle"), Messages.getString("EOFetchSpec.noEntitySelectedMessage"));//$NON-NLS-1$
+			}
+		} catch (DuplicateFetchSpecNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

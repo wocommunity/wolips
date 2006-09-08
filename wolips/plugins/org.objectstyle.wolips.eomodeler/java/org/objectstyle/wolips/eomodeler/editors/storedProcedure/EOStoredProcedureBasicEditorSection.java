@@ -71,70 +71,71 @@ import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
 public class EOStoredProcedureBasicEditorSection extends AbstractPropertySection implements ISelectionChangedListener {
-  private EOStoredProcedure myStoredProcedure;
+	private EOStoredProcedure myStoredProcedure;
 
-  private Text myNameText;
-  private Text myExternalNameText;
+	private Text myNameText;
 
-  private DataBindingContext myBindingContext;
+	private Text myExternalNameText;
 
-  public EOStoredProcedureBasicEditorSection() {
-    // DO NOTHING
-  }
+	private DataBindingContext myBindingContext;
 
-  public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
-    super.createControls(_parent, _tabbedPropertySheetPage);
-    Composite form = getWidgetFactory().createFlatFormComposite(_parent);
-    FormLayout formLayout = new FormLayout();
-    form.setLayout(formLayout);
+	public EOStoredProcedureBasicEditorSection() {
+		// DO NOTHING
+	}
 
-    Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-    FormData topFormData = new FormData();
-    topFormData.top = new FormAttachment(0, 5);
-    topFormData.left = new FormAttachment(0, 5);
-    topFormData.right = new FormAttachment(100, -5);
-    topForm.setLayoutData(topFormData);
+	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
+		super.createControls(_parent, _tabbedPropertySheetPage);
+		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
+		FormLayout formLayout = new FormLayout();
+		form.setLayout(formLayout);
 
-    GridLayout topFormLayout = new GridLayout();
-    topFormLayout.numColumns = 2;
-    topForm.setLayout(topFormLayout);
+		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
+		FormData topFormData = new FormData();
+		topFormData.top = new FormAttachment(0, 5);
+		topFormData.left = new FormAttachment(0, 5);
+		topFormData.right = new FormAttachment(100, -5);
+		topForm.setLayoutData(topFormData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOStoredProcedure." + EOStoredProcedure.NAME), SWT.NONE);
-    myNameText = new Text(topForm, SWT.BORDER);
-    GridData nameLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myNameText.setLayoutData(nameLayoutData);
+		GridLayout topFormLayout = new GridLayout();
+		topFormLayout.numColumns = 2;
+		topForm.setLayout(topFormLayout);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOStoredProcedure." + EOStoredProcedure.EXTERNAL_NAME), SWT.NONE);
-    myExternalNameText = new Text(topForm, SWT.BORDER);
-    GridData externalLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myExternalNameText.setLayoutData(externalLayoutData);
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOStoredProcedure." + EOStoredProcedure.NAME), SWT.NONE);
+		myNameText = new Text(topForm, SWT.BORDER);
+		GridData nameLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myNameText.setLayoutData(nameLayoutData);
 
-  public void setInput(IWorkbenchPart _part, ISelection _selection) {
-    super.setInput(_part, _selection);
-    disposeBindings();
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOStoredProcedure." + EOStoredProcedure.EXTERNAL_NAME), SWT.NONE);
+		myExternalNameText = new Text(topForm, SWT.BORDER);
+		GridData externalLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myExternalNameText.setLayoutData(externalLayoutData);
+	}
 
-    Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-    myStoredProcedure = (EOStoredProcedure) selectedObject;
-    if (myStoredProcedure != null) {
-      myBindingContext = BindingFactory.createContext();
-      myBindingContext.bind(myNameText, new Property(myStoredProcedure, EOStoredProcedure.NAME), null);
-      myBindingContext.bind(myExternalNameText, new Property(myStoredProcedure, EOStoredProcedure.EXTERNAL_NAME), null);
-    }
-  }
+	public void setInput(IWorkbenchPart _part, ISelection _selection) {
+		super.setInput(_part, _selection);
+		disposeBindings();
 
-  protected void disposeBindings() {
-    if (myBindingContext != null) {
-      myBindingContext.dispose();
-    }
-  }
+		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+		myStoredProcedure = (EOStoredProcedure) selectedObject;
+		if (myStoredProcedure != null) {
+			myBindingContext = BindingFactory.createContext();
+			myBindingContext.bind(myNameText, new Property(myStoredProcedure, EOStoredProcedure.NAME), null);
+			myBindingContext.bind(myExternalNameText, new Property(myStoredProcedure, EOStoredProcedure.EXTERNAL_NAME), null);
+		}
+	}
 
-  public void dispose() {
-    super.dispose();
-    disposeBindings();
-  }
+	protected void disposeBindings() {
+		if (myBindingContext != null) {
+			myBindingContext.dispose();
+		}
+	}
 
-  public void selectionChanged(SelectionChangedEvent _event) {
-    // DO NOTHING
-  }
+	public void dispose() {
+		super.dispose();
+		disposeBindings();
+	}
+
+	public void selectionChanged(SelectionChangedEvent _event) {
+		// DO NOTHING
+	}
 }

@@ -50,18 +50,18 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 public class DuplicateArgumentNameException extends DuplicateNameException {
-  private EOStoredProcedure myStoredProcedure;
+	private EOStoredProcedure myStoredProcedure;
 
-  public DuplicateArgumentNameException(String _name, EOStoredProcedure _model) {
-    this(_name, _model, null);
-  }
+	public DuplicateArgumentNameException(String _name, EOStoredProcedure _model) {
+		this(_name, _model, null);
+	}
 
-  public DuplicateArgumentNameException(String _name, EOStoredProcedure _storedProcedure, Throwable _throwable) {
-    super(_name, "There is already an argument named '" + _name + "' in " + _storedProcedure.getName() + ".", _throwable);
-    myStoredProcedure = _storedProcedure;
-  }
+	public DuplicateArgumentNameException(String _name, EOStoredProcedure _storedProcedure, Throwable _throwable) {
+		super(_name, "There is already an argument named '" + _name + "' in " + _storedProcedure.getName() + ".", _throwable);
+		myStoredProcedure = _storedProcedure;
+	}
 
-  public EOStoredProcedure getStoredProcedure() {
-    return myStoredProcedure;
-  }
+	public EOStoredProcedure getStoredProcedure() {
+		return myStoredProcedure;
+	}
 }

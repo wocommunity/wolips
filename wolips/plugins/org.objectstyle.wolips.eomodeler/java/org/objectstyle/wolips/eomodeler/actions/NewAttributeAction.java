@@ -62,36 +62,35 @@ import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 
 public class NewAttributeAction implements IWorkbenchWindowActionDelegate {
-  private EOEntity myEntity;
-  private IWorkbenchWindow myWindow;
+	private EOEntity myEntity;
 
-  public void init(IWorkbenchWindow _window) {
-    myWindow = _window;
-  }
+	private IWorkbenchWindow myWindow;
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void init(IWorkbenchWindow _window) {
+		myWindow = _window;
+	}
 
-  public void selectionChanged(IAction _action, ISelection _selection) {
-    myEntity = null;
-    if (_selection instanceof IStructuredSelection) {
-      Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-      myEntity = EOModelUtils.getRelatedEntity(selectedObject);
-    }
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public void run(IAction _action) {
-    try {
-      if (myEntity != null) {
-        EOAttribute newAttribute = myEntity.addBlankAttribute(Messages.getString("EOAttribute.newName"));
-      }
-      else {
-        MessageDialog.openError(myWindow.getShell(), Messages.getString("EOAttribute.noEntitySelectedTitle"), Messages.getString("EOAttribute.noEntitySelectedMessage"));//$NON-NLS-1$
-      }
-    }
-    catch (DuplicateNameException e) {
-      e.printStackTrace();
-    }
-  }
+	public void selectionChanged(IAction _action, ISelection _selection) {
+		myEntity = null;
+		if (_selection instanceof IStructuredSelection) {
+			Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+			myEntity = EOModelUtils.getRelatedEntity(selectedObject);
+		}
+	}
+
+	public void run(IAction _action) {
+		try {
+			if (myEntity != null) {
+				EOAttribute newAttribute = myEntity.addBlankAttribute(Messages.getString("EOAttribute.newName"));
+			} else {
+				MessageDialog.openError(myWindow.getShell(), Messages.getString("EOAttribute.noEntitySelectedTitle"), Messages.getString("EOAttribute.noEntitySelectedMessage"));//$NON-NLS-1$
+			}
+		} catch (DuplicateNameException e) {
+			e.printStackTrace();
+		}
+	}
 }

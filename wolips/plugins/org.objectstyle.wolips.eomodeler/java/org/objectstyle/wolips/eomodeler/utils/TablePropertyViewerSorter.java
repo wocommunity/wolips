@@ -62,88 +62,83 @@ import org.objectstyle.wolips.eomodeler.kvc.CachingKeyPath;
 import org.objectstyle.wolips.eomodeler.kvc.KeyPath;
 
 public class TablePropertyViewerSorter extends ViewerSorter {
-  private String[] myColumnProperties;
-  private int mySortedColumn;
-  private int myDirection;
-  private Map myKeys;
+	private String[] myColumnProperties;
 
-  public TablePropertyViewerSorter(String[] _columnProperties) {
-    myColumnProperties = _columnProperties;
-    myKeys = new HashMap();
-    for (int keyNum = 0; keyNum < _columnProperties.length; keyNum++) {
-      KeyPath keyPath = new CachingKeyPath(_columnProperties[keyNum]);
-      myKeys.put(_columnProperties[keyNum], keyPath);
-    }
-  }
+	private int mySortedColumn;
 
-  public void sort(TableViewer _viewer, String _property) {
-    int matchingColumn = TableUtils.getColumnNumber(myColumnProperties, _property);
-    if (matchingColumn != -1) {
-      sort(_viewer, matchingColumn);
-    }
-  }
+	private int myDirection;
 
-  public void sort(TableViewer _viewer, int _column) {
-    Table table = _viewer.getTable();
-    TableColumn sortColumn = table.getSortColumn();
-    TableColumn selectedColumn = table.getColumn(_column);
-    int direction = table.getSortDirection();
-    if (sortColumn == selectedColumn) {
-      direction = (direction == SWT.UP) ? SWT.DOWN : SWT.UP;
-    }
-    else {
-      table.setSortColumn(selectedColumn);
-      direction = SWT.UP;
-    }
-    table.setSortDirection(direction);
-    mySortedColumn = _column;
-    myDirection = direction;
-    _viewer.refresh();
-  }
+	private Map myKeys;
 
-  public int compare(Viewer _viewer, Object _o1, Object _o2) {
-    String property = myColumnProperties[mySortedColumn];
-    Object o1 = getComparisonValue(_o1, property);
-    Object o2 = getComparisonValue(_o2, property);
-    int comparison = 0;
-    if (o1 == null && o2 == null) {
-      comparison = 0;
-    }
-    else if (o1 == null) {
-      comparison = -1;
-    }
-    else if (o2 == null) {
-      comparison = 1;
-    }
-    else if (o1 instanceof Boolean && o2 instanceof Boolean) {
-      boolean left = ((Boolean) _o1).booleanValue();
-      boolean right = ((Boolean) _o2).booleanValue();
-      if (left == right) {
-        comparison = 0;
-      }
-      else if (left == true) {
-        comparison = 1;
-      }
-      else {
-        comparison = -1;
-      }
-    }
-    else if (o1 instanceof Integer && o2 instanceof Integer) {
-      comparison = ((Integer) o1).compareTo((Integer) o2);
-    }
-    else if (o1 instanceof String && o2 instanceof String) {
-      comparison = collator.compare(o1, o2);
-    }
+	public TablePropertyViewerSorter(String[] _columnProperties) {
+		myColumnProperties = _columnProperties;
+		myKeys = new HashMap();
+		for (int keyNum = 0; keyNum < _columnProperties.length; keyNum++) {
+			KeyPath keyPath = new CachingKeyPath(_columnProperties[keyNum]);
+			myKeys.put(_columnProperties[keyNum], keyPath);
+		}
+	}
 
-    if (myDirection == SWT.DOWN) {
-      comparison = -comparison;
-    }
+	public void sort(TableViewer _viewer, String _property) {
+		int matchingColumn = TableUtils.getColumnNumber(myColumnProperties, _property);
+		if (matchingColumn != -1) {
+			sort(_viewer, matchingColumn);
+		}
+	}
 
-    return comparison;
-  }
+	public void sort(TableViewer _viewer, int _column) {
+		Table table = _viewer.getTable();
+		TableColumn sortColumn = table.getSortColumn();
+		TableColumn selectedColumn = table.getColumn(_column);
+		int direction = table.getSortDirection();
+		if (sortColumn == selectedColumn) {
+			direction = (direction == SWT.UP) ? SWT.DOWN : SWT.UP;
+		} else {
+			table.setSortColumn(selectedColumn);
+			direction = SWT.UP;
+		}
+		table.setSortDirection(direction);
+		mySortedColumn = _column;
+		myDirection = direction;
+		_viewer.refresh();
+	}
 
-  public Object getComparisonValue(Object _obj, String _property) {
-    Object value = ((KeyPath) myKeys.get(_property)).getValue(_obj);
-    return value;
-  }
+	public int compare(Viewer _viewer, Object _o1, Object _o2) {
+		String property = myColumnProperties[mySortedColumn];
+		Object o1 = getComparisonValue(_o1, property);
+		Object o2 = getComparisonValue(_o2, property);
+		int comparison = 0;
+		if (o1 == null && o2 == null) {
+			comparison = 0;
+		} else if (o1 == null) {
+			comparison = -1;
+		} else if (o2 == null) {
+			comparison = 1;
+		} else if (o1 instanceof Boolean && o2 instanceof Boolean) {
+			boolean left = ((Boolean) _o1).booleanValue();
+			boolean right = ((Boolean) _o2).booleanValue();
+			if (left == right) {
+				comparison = 0;
+			} else if (left == true) {
+				comparison = 1;
+			} else {
+				comparison = -1;
+			}
+		} else if (o1 instanceof Integer && o2 instanceof Integer) {
+			comparison = ((Integer) o1).compareTo((Integer) o2);
+		} else if (o1 instanceof String && o2 instanceof String) {
+			comparison = collator.compare(o1, o2);
+		}
+
+		if (myDirection == SWT.DOWN) {
+			comparison = -comparison;
+		}
+
+		return comparison;
+	}
+
+	public Object getComparisonValue(Object _obj, String _property) {
+		Object value = ((KeyPath) myKeys.get(_property)).getValue(_obj);
+		return value;
+	}
 }

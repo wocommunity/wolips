@@ -56,35 +56,34 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 
 public class EOPrototypeListLabelProvider implements ILabelProvider {
-  public Image getImage(Object _element) {
-    return null;
-  }
+	public Image getImage(Object _element) {
+		return null;
+	}
 
-  public String getText(Object _element) {
-    String prototypeName = null;
-    if (_element instanceof EOAttribute) {
-      EOAttribute prototype = (EOAttribute) _element;
-      prototypeName = prototype.getName();
-    }
-    else {
-      prototypeName = Messages.getString("EOAttributesCellModifier.noPrototype");
-    }
-    return prototypeName;
-  }
+	public String getText(Object _element) {
+		String prototypeName = null;
+		if (_element instanceof EOAttribute) {
+			EOAttribute prototype = (EOAttribute) _element;
+			prototypeName = prototype.getName();
+		} else {
+			prototypeName = Messages.getString("EOAttributesCellModifier.noPrototype");
+		}
+		return prototypeName;
+	}
 
-  public void addListener(ILabelProviderListener _listener) {
-    // DO NOTHING
-  }
+	public void addListener(ILabelProviderListener _listener) {
+		// DO NOTHING
+	}
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public boolean isLabelProperty(Object _element, String _property) {
-    return true;
-  }
+	public boolean isLabelProperty(Object _element, String _property) {
+		return true;
+	}
 
-  public void removeListener(ILabelProviderListener _listener) {
-    // DO NOTHING
-  }
+	public void removeListener(ILabelProviderListener _listener) {
+		// DO NOTHING
+	}
 }

@@ -56,34 +56,31 @@ import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
 
 public class EORelationshipsViewerSorter extends TablePropertyViewerSorter {
 
-  public EORelationshipsViewerSorter(String[] _properties) {
-    super(_properties);
-  }
+	public EORelationshipsViewerSorter(String[] _properties) {
+		super(_properties);
+	}
 
-  public Object getComparisonValue(Object _obj, String _property) {
-    EORelationship relationship = (EORelationship) _obj;
-    Object value = null;
-    if (_property == EORelationship.DESTINATION) {
-      EOEntity destination = relationship.getDestination();
-      if (destination != null) {
-        value = destination.getName();
-      }
-    }
-    else if (_property == EOJoin.SOURCE_ATTRIBUTE) {
-      EOJoin firstJoin = relationship.getFirstJoin();
-      if (firstJoin != null) {
-        value = firstJoin.getSourceAttribute().getName();
-      }
-    }
-    else if (_property == EOJoin.DESTINATION_ATTRIBUTE) {
-      EOJoin firstJoin = relationship.getFirstJoin();
-      if (firstJoin != null) {
-        value = firstJoin.getDestinationAttribute().getName();
-      }
-    }
-    else {
-      value = super.getComparisonValue(_obj, _property);
-    }
-    return value;
-  }
+	public Object getComparisonValue(Object _obj, String _property) {
+		EORelationship relationship = (EORelationship) _obj;
+		Object value = null;
+		if (_property == EORelationship.DESTINATION) {
+			EOEntity destination = relationship.getDestination();
+			if (destination != null) {
+				value = destination.getName();
+			}
+		} else if (_property == EOJoin.SOURCE_ATTRIBUTE) {
+			EOJoin firstJoin = relationship.getFirstJoin();
+			if (firstJoin != null) {
+				value = firstJoin.getSourceAttribute().getName();
+			}
+		} else if (_property == EOJoin.DESTINATION_ATTRIBUTE) {
+			EOJoin firstJoin = relationship.getFirstJoin();
+			if (firstJoin != null) {
+				value = firstJoin.getDestinationAttribute().getName();
+			}
+		} else {
+			value = super.getComparisonValue(_obj, _property);
+		}
+		return value;
+	}
 }

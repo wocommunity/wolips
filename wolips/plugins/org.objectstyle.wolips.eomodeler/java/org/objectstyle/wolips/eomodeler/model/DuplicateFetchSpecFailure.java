@@ -50,30 +50,32 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 public class DuplicateFetchSpecFailure extends EOModelVerificationFailure {
-  private EOEntity myEntity;
-  private String myFetchSpecName;
-  private String myNewFetchSpecName;
+	private EOEntity myEntity;
 
-  public DuplicateFetchSpecFailure(EOEntity _entity, String _fetchSpecName, String _newFetchSpecName) {
-    this(_entity, _fetchSpecName, _newFetchSpecName, null);
-  }
+	private String myFetchSpecName;
 
-  public DuplicateFetchSpecFailure(EOEntity _entity, String _fetchSpecName, String _newFetchSpecName, Throwable _throwable) {
-    super("There was more than one fetch specification named '" + _fetchSpecName + "' in " + _entity.getName() + ", so one was renamed to '" + _newFetchSpecName + "'.", _throwable);
-    myEntity = _entity;
-    myFetchSpecName = _fetchSpecName;
-    myNewFetchSpecName = _newFetchSpecName;
-  }
+	private String myNewFetchSpecName;
 
-  public EOEntity getEntity() {
-    return myEntity;
-  }
+	public DuplicateFetchSpecFailure(EOEntity _entity, String _fetchSpecName, String _newFetchSpecName) {
+		this(_entity, _fetchSpecName, _newFetchSpecName, null);
+	}
 
-  public String getFetchSpecName() {
-    return myFetchSpecName;
-  }
+	public DuplicateFetchSpecFailure(EOEntity _entity, String _fetchSpecName, String _newFetchSpecName, Throwable _throwable) {
+		super("There was more than one fetch specification named '" + _fetchSpecName + "' in " + _entity.getName() + ", so one was renamed to '" + _newFetchSpecName + "'.", _throwable);
+		myEntity = _entity;
+		myFetchSpecName = _fetchSpecName;
+		myNewFetchSpecName = _newFetchSpecName;
+	}
 
-  public String getNewFetchSpecName() {
-    return myNewFetchSpecName;
-  }
+	public EOEntity getEntity() {
+		return myEntity;
+	}
+
+	public String getFetchSpecName() {
+		return myFetchSpecName;
+	}
+
+	public String getNewFetchSpecName() {
+		return myNewFetchSpecName;
+	}
 }

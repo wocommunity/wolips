@@ -65,94 +65,96 @@ import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 
 public class EOArgumentsTableEditor extends EditorPart implements ISelectionProvider {
-  private EOArgumentsTableViewer myArgumentsTableViewer;
-  private EOStoredProcedure myStoredProcedure;
-  private ListenerList myListenerList;
+	private EOArgumentsTableViewer myArgumentsTableViewer;
 
-  public EOArgumentsTableEditor() {
-    myListenerList = new ListenerList();
-  }
+	private EOStoredProcedure myStoredProcedure;
 
-  public void setStoredProcedure(EOStoredProcedure _storedProcedure) {
-    myStoredProcedure = _storedProcedure;
-    updateArgumentsTableViewer();
-  }
+	private ListenerList myListenerList;
 
-  public EOModel getModel() {
-    return (myStoredProcedure == null) ? null : myStoredProcedure.getModel();
-  }
+	public EOArgumentsTableEditor() {
+		myListenerList = new ListenerList();
+	}
 
-  public EOStoredProcedure getStoredProcedure() {
-    return myStoredProcedure;
-  }
+	public void setStoredProcedure(EOStoredProcedure _storedProcedure) {
+		myStoredProcedure = _storedProcedure;
+		updateArgumentsTableViewer();
+	}
 
-  public void doSave(IProgressMonitor _monitor) {
-    // DO NOTHING
-  }
+	public EOModel getModel() {
+		return (myStoredProcedure == null) ? null : myStoredProcedure.getModel();
+	}
 
-  public void doSaveAs() {
-    // DO NOTHING
-  }
+	public EOStoredProcedure getStoredProcedure() {
+		return myStoredProcedure;
+	}
 
-  public void init(IEditorSite _site, IEditorInput _input) {
-    setSite(_site);
-    setInput(_input);
-    setStoredProcedure(null);
-  }
+	public void doSave(IProgressMonitor _monitor) {
+		// DO NOTHING
+	}
 
-  public boolean isDirty() {
-    return myStoredProcedure != null && myStoredProcedure.getModel().isDirty();
-  }
+	public void doSaveAs() {
+		// DO NOTHING
+	}
 
-  public boolean isSaveAsAllowed() {
-    return true;
-  }
+	public void init(IEditorSite _site, IEditorInput _input) {
+		setSite(_site);
+		setInput(_input);
+		setStoredProcedure(null);
+	}
 
-  public void createPartControl(Composite _parent) {
-    myArgumentsTableViewer = new EOArgumentsTableViewer(_parent, SWT.NONE);
-    myArgumentsTableViewer.addSelectionChangedListener(new ArgumentSelectionChangedListener());
-    myArgumentsTableViewer.setLayoutData(new GridData(GridData.FILL_BOTH));
-    updateArgumentsTableViewer();
-  }
+	public boolean isDirty() {
+		return myStoredProcedure != null && myStoredProcedure.getModel().isDirty();
+	}
 
-  public void setFocus() {
-    // DO NOTHING
-  }
+	public boolean isSaveAsAllowed() {
+		return true;
+	}
 
-  protected void updateArgumentsTableViewer() {
-    if (myArgumentsTableViewer != null) {
-      myArgumentsTableViewer.setStoredProcedure(myStoredProcedure);
-    }
-  }
+	public void createPartControl(Composite _parent) {
+		myArgumentsTableViewer = new EOArgumentsTableViewer(_parent, SWT.NONE);
+		myArgumentsTableViewer.addSelectionChangedListener(new ArgumentSelectionChangedListener());
+		myArgumentsTableViewer.setLayoutData(new GridData(GridData.FILL_BOTH));
+		updateArgumentsTableViewer();
+	}
 
-  public ISelection getSelection() {
-    return myArgumentsTableViewer.getSelection();
-  }
+	public void setFocus() {
+		// DO NOTHING
+	}
 
-  public void setSelection(ISelection _selection) {
-    myArgumentsTableViewer.setSelection(_selection);
-  }
+	protected void updateArgumentsTableViewer() {
+		if (myArgumentsTableViewer != null) {
+			myArgumentsTableViewer.setStoredProcedure(myStoredProcedure);
+		}
+	}
 
-  public void addSelectionChangedListener(ISelectionChangedListener _listener) {
-    myListenerList.add(_listener);
-  }
+	public ISelection getSelection() {
+		return myArgumentsTableViewer.getSelection();
+	}
 
-  public void removeSelectionChangedListener(ISelectionChangedListener _listener) {
-    myListenerList.remove(_listener);
-  }
+	public void setSelection(ISelection _selection) {
+		myArgumentsTableViewer.setSelection(_selection);
+	}
 
-  public void fireSelectionChanged(ISelection _selection) {
-    Object[] listeners = myListenerList.getListeners();
-    for (int i = 0; i < listeners.length; i++) {
-      ((ISelectionChangedListener) listeners[i]).selectionChanged(new SelectionChangedEvent(this, _selection));
-    }
-  }
+	public void addSelectionChangedListener(ISelectionChangedListener _listener) {
+		myListenerList.add(_listener);
+	}
 
-  protected class ArgumentSelectionChangedListener implements ISelectionChangedListener {
-    public void selectionChanged(SelectionChangedEvent _event) {
-      if (!_event.getSelection().isEmpty()) {
-        fireSelectionChanged(_event.getSelection());
-      }
-    }
-  }
+	public void removeSelectionChangedListener(ISelectionChangedListener _listener) {
+		myListenerList.remove(_listener);
+	}
+
+	public void fireSelectionChanged(ISelection _selection) {
+		Object[] listeners = myListenerList.getListeners();
+		for (int i = 0; i < listeners.length; i++) {
+			((ISelectionChangedListener) listeners[i]).selectionChanged(new SelectionChangedEvent(this, _selection));
+		}
+	}
+
+	protected class ArgumentSelectionChangedListener implements ISelectionChangedListener {
+		public void selectionChanged(SelectionChangedEvent _event) {
+			if (!_event.getSelection().isEmpty()) {
+				fireSelectionChanged(_event.getSelection());
+			}
+		}
+	}
 }

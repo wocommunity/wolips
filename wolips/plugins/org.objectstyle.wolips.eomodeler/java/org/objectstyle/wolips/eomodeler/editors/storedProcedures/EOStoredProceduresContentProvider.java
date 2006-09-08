@@ -55,17 +55,17 @@ import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 
 public class EOStoredProceduresContentProvider implements IStructuredContentProvider {
-  public Object[] getElements(Object _inputElement) {
-    EOModel model = EOModelUtils.getRelatedModel(_inputElement);
-    Object[] storedProcedures = model.getStoredProcedures().toArray();
-    return storedProcedures;
-  }
+	public Object[] getElements(Object _inputElement) {
+		EOModel model = EOModelUtils.getRelatedModel(_inputElement);
+		Object[] storedProcedures = model.getStoredProcedures().toArray();
+		return storedProcedures;
+	}
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
-    // DO NOTHING
-  }
+	public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+		// DO NOTHING
+	}
 }

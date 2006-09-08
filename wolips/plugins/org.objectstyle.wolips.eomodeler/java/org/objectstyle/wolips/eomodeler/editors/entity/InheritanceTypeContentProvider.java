@@ -55,16 +55,16 @@ import org.objectstyle.wolips.eomodeler.model.InheritanceType;
 
 public class InheritanceTypeContentProvider implements IStructuredContentProvider {
 
-  public Object[] getElements(Object _inputElement) {
-    return (InheritanceType[]) _inputElement;
-  }
+	public Object[] getElements(Object _inputElement) {
+		return (InheritanceType[]) _inputElement;
+	}
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
-    // DO NOTHING
-  }
+	public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+		// DO NOTHING
+	}
 
 }

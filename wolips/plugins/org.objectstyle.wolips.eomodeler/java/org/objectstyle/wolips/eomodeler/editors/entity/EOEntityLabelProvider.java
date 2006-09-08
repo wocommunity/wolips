@@ -55,35 +55,34 @@ import org.eclipse.swt.graphics.Image;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 
 public class EOEntityLabelProvider implements ILabelProvider {
-  public Image getImage(Object _element) {
-    return null;
-  }
+	public Image getImage(Object _element) {
+		return null;
+	}
 
-  public String getText(Object _element) {
-    String text = null;
-    if (_element == EOEntityListContentProvider.BLANK_ENTITY) {
-      // DO NOTHING
-    }
-    else if (_element instanceof EOEntity) {
-      EOEntity entity = (EOEntity) _element;
-      text = entity.getName();
-    }
-    return text;
-  }
+	public String getText(Object _element) {
+		String text = null;
+		if (_element == EOEntityListContentProvider.BLANK_ENTITY) {
+			// DO NOTHING
+		} else if (_element instanceof EOEntity) {
+			EOEntity entity = (EOEntity) _element;
+			text = entity.getName();
+		}
+		return text;
+	}
 
-  public void addListener(ILabelProviderListener _listener) {
-    // DO NOTHING
-  }
+	public void addListener(ILabelProviderListener _listener) {
+		// DO NOTHING
+	}
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public boolean isLabelProperty(Object _element, String _property) {
-    return true;
-  }
+	public boolean isLabelProperty(Object _element, String _property) {
+		return true;
+	}
 
-  public void removeListener(ILabelProviderListener _listener) {
-    // DO NOTHING
-  }
+	public void removeListener(ILabelProviderListener _listener) {
+		// DO NOTHING
+	}
 }

@@ -87,229 +87,243 @@ import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
 public class EORelationshipBasicEditorSection extends AbstractPropertySection {
-  private EORelationship myRelationship;
+	private EORelationship myRelationship;
 
-  private Text myNameText;
-  private Text myDefinitionText;
-  private Button myToOneButton;
-  private Button myToManyButton;
-  private Button myOptionalButton;
-  private Button myMandatoryButton;
-  private JoinsTableEditor myJoinsTableEditor;
-  private ComboViewer myDeleteRuleComboViewer;
-  private ComboViewer myModelComboViewer;
-  private ComboViewer myJoinSemanticComboViewer;
-  private ComboViewer myEntityComboViewer;
+	private Text myNameText;
 
-  private JoinsListener myJoinsListener;
-  private DataBindingContext myBindingContext;
-  private ComboViewerBinding myDeleteRuleBinding;
-  private ComboViewerBinding myJoinSemanticBinding;
-  private ComboViewerBinding myModelBinding;
-  private ComboViewerBinding myEntityBinding;
+	private Text myDefinitionText;
 
-  public EORelationshipBasicEditorSection() {
-    myJoinsListener = new JoinsListener();
-  }
+	private Button myToOneButton;
 
-  public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
-    super.createControls(_parent, _tabbedPropertySheetPage);
-    Composite form = getWidgetFactory().createFlatFormComposite(_parent);
-    FormLayout formLayout = new FormLayout();
-    form.setLayout(formLayout);
+	private Button myToManyButton;
 
-    Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-    FormData topFormData = new FormData();
-    topFormData.top = new FormAttachment(0, 5);
-    topFormData.left = new FormAttachment(0, 5);
-    topFormData.right = new FormAttachment(100, -5);
-    topForm.setLayoutData(topFormData);
+	private Button myOptionalButton;
 
-    GridLayout topFormLayout = new GridLayout();
-    topFormLayout.numColumns = 2;
-    topForm.setLayout(topFormLayout);
+	private Button myMandatoryButton;
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.NAME), SWT.NONE);
-    myNameText = new Text(topForm, SWT.BORDER);
-    GridData nameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myNameText.setLayoutData(nameFieldLayoutData);
+	private JoinsTableEditor myJoinsTableEditor;
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.DEFINITION), SWT.NONE);
-    myDefinitionText = new Text(topForm, SWT.BORDER);
-    GridData definitionFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myDefinitionText.setLayoutData(definitionFieldLayoutData);
+	private ComboViewer myDeleteRuleComboViewer;
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.cardinality"), SWT.NONE);
-    Composite cardinalityComposite = getWidgetFactory().createPlainComposite(topForm, SWT.NONE);
-    GridLayout cardinalityLayout = new GridLayout();
-    cardinalityLayout.numColumns = 2;
-    cardinalityLayout.makeColumnsEqualWidth = true;
-    cardinalityComposite.setLayout(cardinalityLayout);
-    myToOneButton = new Button(cardinalityComposite, SWT.RADIO);
-    myToOneButton.setText(Messages.getString("EORelationship.toOne"));
-    GridData toOneButtonLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myToOneButton.setLayoutData(toOneButtonLayoutData);
-    myToManyButton = new Button(cardinalityComposite, SWT.RADIO);
-    myToManyButton.setText(Messages.getString("EORelationship.toMany"));
-    GridData toManyButtonLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myToManyButton.setLayoutData(toManyButtonLayoutData);
-    GridData cardinalityCompositeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    cardinalityComposite.setLayoutData(cardinalityCompositeLayoutData);
+	private ComboViewer myModelComboViewer;
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.optionality"), SWT.NONE);
-    Composite optionalityComposite = getWidgetFactory().createPlainComposite(topForm, SWT.NONE);
-    GridLayout optionalityLayout = new GridLayout();
-    optionalityLayout.numColumns = 2;
-    optionalityLayout.makeColumnsEqualWidth = true;
-    optionalityComposite.setLayout(optionalityLayout);
-    myOptionalButton = new Button(optionalityComposite, SWT.RADIO);
-    myOptionalButton.setText(Messages.getString("EORelationship.optional"));
-    GridData optionalButtonLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myOptionalButton.setLayoutData(optionalButtonLayoutData);
-    myMandatoryButton = new Button(optionalityComposite, SWT.RADIO);
-    myMandatoryButton.setText(Messages.getString("EORelationship.mandatory"));
-    GridData mandatoryButtonLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myMandatoryButton.setLayoutData(mandatoryButtonLayoutData);
-    GridData optioanlityCompositeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    optionalityComposite.setLayoutData(optioanlityCompositeLayoutData);
+	private ComboViewer myJoinSemanticComboViewer;
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.DELETE_RULE), SWT.NONE);
-    Combo deleteRuleCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
-    myDeleteRuleComboViewer = new ComboViewer(deleteRuleCombo);
-    myDeleteRuleComboViewer.setLabelProvider(new EODeleteRuleLabelProvider());
-    myDeleteRuleComboViewer.setContentProvider(new EODeleteRuleContentProvider());
-    myDeleteRuleComboViewer.setInput(EODeleteRule.DELETE_RULES);
-    myDeleteRuleComboViewer.setSelection(new StructuredSelection(EODeleteRule.NULLIFY));
-    GridData deleteRuleComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    deleteRuleCombo.setLayoutData(deleteRuleComboLayoutData);
+	private ComboViewer myEntityComboViewer;
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.model"), SWT.NONE);
-    Combo modelCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
-    myModelComboViewer = new ComboViewer(modelCombo);
-    myModelComboViewer.setLabelProvider(new EOModelLabelProvider());
-    myModelComboViewer.setContentProvider(new EOModelListContentProvider());
-    myModelComboViewer.addSelectionChangedListener(new ModelSelectionListener());
-    GridData modelRuleComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    modelCombo.setLayoutData(modelRuleComboLayoutData);
+	private JoinsListener myJoinsListener;
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.DESTINATION), SWT.NONE);
-    Combo entityCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
-    myEntityComboViewer = new ComboViewer(entityCombo);
-    myEntityComboViewer.setLabelProvider(new EOEntityLabelProvider());
-    myEntityComboViewer.setContentProvider(new EOEntityListContentProvider(false, true));
-    GridData entityComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    entityCombo.setLayoutData(entityComboLayoutData);
+	private DataBindingContext myBindingContext;
 
-    Combo joinSemanticCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
-    myJoinSemanticComboViewer = new ComboViewer(joinSemanticCombo);
-    myJoinSemanticComboViewer.setLabelProvider(new EOJoinSemanticLabelProvider());
-    myJoinSemanticComboViewer.setContentProvider(new EOJoinSemanticContentProvider());
-    myJoinSemanticComboViewer.setInput(EOJoinSemantic.JOIN_SEMANTICS);
-    myJoinSemanticComboViewer.setSelection(new StructuredSelection(EOJoinSemantic.INNER));
-    GridData joinSemanticLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    joinSemanticLayoutData.verticalAlignment = SWT.TOP;
-    joinSemanticCombo.setLayoutData(joinSemanticLayoutData);
+	private ComboViewerBinding myDeleteRuleBinding;
 
-    myJoinsTableEditor = new JoinsTableEditor(topForm, SWT.NONE);
-    GridData joinsTableLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myJoinsTableEditor.setLayoutData(joinsTableLayoutData);
-  }
+	private ComboViewerBinding myJoinSemanticBinding;
 
-  public void setInput(IWorkbenchPart _part, ISelection _selection) {
-    super.setInput(_part, _selection);
-    EORelationship relationship = null;
-    Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-    if (selectedObject instanceof EORelationship) {
-      relationship = (EORelationship) selectedObject;
-    }
-    else if (selectedObject instanceof EORelationshipPath) {
-      relationship = ((EORelationshipPath) selectedObject).getChildRelationship();
-    }
-    if (!ComparisonUtils.equals(relationship, myRelationship)) {
-      disposeBindings();
+	private ComboViewerBinding myModelBinding;
 
-      myRelationship = relationship;
-      if (myRelationship != null) {
-        myRelationship.addPropertyChangeListener(EORelationship.JOINS, myJoinsListener);
-        myJoinsTableEditor.setRelationship(myRelationship);
-        myModelComboViewer.setInput(myRelationship);
-        myEntityComboViewer.setInput(myRelationship);
-        myModelComboViewer.setSelection(new StructuredSelection(myRelationship.getEntity().getModel()));
+	private ComboViewerBinding myEntityBinding;
 
-        myBindingContext = BindingFactory.createContext();
-        myBindingContext.bind(myNameText, new Property(myRelationship, EORelationship.NAME), null);
-        myBindingContext.bind(myDefinitionText, new Property(myRelationship, EORelationship.DEFINITION), null);
-        myBindingContext.bind(myToOneButton, new Property(myRelationship, EORelationship.TO_ONE), null);
-        myBindingContext.bind(myToManyButton, new Property(myRelationship, EORelationship.TO_MANY), null);
-        myBindingContext.bind(myOptionalButton, new Property(myRelationship, EORelationship.OPTIONAL), null);
-        myBindingContext.bind(myMandatoryButton, new Property(myRelationship, EORelationship.MANDATORY), null);
+	public EORelationshipBasicEditorSection() {
+		myJoinsListener = new JoinsListener();
+	}
 
-        myDeleteRuleBinding = new ComboViewerBinding(myDeleteRuleComboViewer, myRelationship, EORelationship.DELETE_RULE, null, null, null);
-        myJoinSemanticBinding = new ComboViewerBinding(myJoinSemanticComboViewer, myRelationship, EORelationship.JOIN_SEMANTIC, myRelationship.getEntity().getModel().getModelGroup(), EOModelGroup.MODELS, null);
-        myEntityBinding = new ComboViewerBinding(myEntityComboViewer, myRelationship, EORelationship.DESTINATION, myRelationship.getEntity().getModel(), EOModel.ENTITIES, null);
+	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
+		super.createControls(_parent, _tabbedPropertySheetPage);
+		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
+		FormLayout formLayout = new FormLayout();
+		form.setLayout(formLayout);
 
-        boolean enabled = !myRelationship.isFlattened();
-        myModelComboViewer.getCombo().setEnabled(enabled);
-        myEntityComboViewer.getCombo().setEnabled(enabled);
-        myJoinSemanticComboViewer.getCombo().setEnabled(enabled);
-        myDefinitionText.setEnabled(false);
-        //boolean flattened = myRelationship.isFlattened();
-        //myDefinitionLabel.setVisible(flattened);
-        //myDefinitionText.setVisible(flattened);
+		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
+		FormData topFormData = new FormData();
+		topFormData.top = new FormAttachment(0, 5);
+		topFormData.left = new FormAttachment(0, 5);
+		topFormData.right = new FormAttachment(100, -5);
+		topForm.setLayoutData(topFormData);
 
-        updateModelAndEntityCombosEnabled();
-      }
-    }
-  }
+		GridLayout topFormLayout = new GridLayout();
+		topFormLayout.numColumns = 2;
+		topForm.setLayout(topFormLayout);
 
-  protected void updateModelAndEntityCombosEnabled() {
-    boolean enabled = myRelationship.getJoins().size() == 0 && !myRelationship.isFlattened();
-    myModelComboViewer.getCombo().setEnabled(enabled);
-    myEntityComboViewer.getCombo().setEnabled(enabled);
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.NAME), SWT.NONE);
+		myNameText = new Text(topForm, SWT.BORDER);
+		GridData nameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myNameText.setLayoutData(nameFieldLayoutData);
 
-  protected void updateEntityCombo() {
-    IStructuredSelection selection = (IStructuredSelection) myModelComboViewer.getSelection();
-    EOModel selectedModel = (EOModel) selection.getFirstElement();
-    myEntityComboViewer.setInput(selectedModel);
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.DEFINITION), SWT.NONE);
+		myDefinitionText = new Text(topForm, SWT.BORDER);
+		GridData definitionFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myDefinitionText.setLayoutData(definitionFieldLayoutData);
 
-  protected void disposeBindings() {
-    if (myRelationship != null) {
-      myRelationship.removePropertyChangeListener(EORelationship.JOINS, myJoinsListener);
-    }
-    if (myBindingContext != null) {
-      myBindingContext.dispose();
-    }
-    if (myDeleteRuleBinding != null) {
-      myDeleteRuleBinding.dispose();
-    }
-    if (myJoinSemanticBinding != null) {
-      myJoinSemanticBinding.dispose();
-    }
-    if (myModelBinding != null) {
-      myModelBinding.dispose();
-    }
-    if (myEntityBinding != null) {
-      myEntityBinding.dispose();
-    }
-    myJoinsTableEditor.disposeBindings();
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.cardinality"), SWT.NONE);
+		Composite cardinalityComposite = getWidgetFactory().createPlainComposite(topForm, SWT.NONE);
+		GridLayout cardinalityLayout = new GridLayout();
+		cardinalityLayout.numColumns = 2;
+		cardinalityLayout.makeColumnsEqualWidth = true;
+		cardinalityComposite.setLayout(cardinalityLayout);
+		myToOneButton = new Button(cardinalityComposite, SWT.RADIO);
+		myToOneButton.setText(Messages.getString("EORelationship.toOne"));
+		GridData toOneButtonLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myToOneButton.setLayoutData(toOneButtonLayoutData);
+		myToManyButton = new Button(cardinalityComposite, SWT.RADIO);
+		myToManyButton.setText(Messages.getString("EORelationship.toMany"));
+		GridData toManyButtonLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myToManyButton.setLayoutData(toManyButtonLayoutData);
+		GridData cardinalityCompositeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		cardinalityComposite.setLayoutData(cardinalityCompositeLayoutData);
 
-  public void dispose() {
-    super.dispose();
-    disposeBindings();
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.optionality"), SWT.NONE);
+		Composite optionalityComposite = getWidgetFactory().createPlainComposite(topForm, SWT.NONE);
+		GridLayout optionalityLayout = new GridLayout();
+		optionalityLayout.numColumns = 2;
+		optionalityLayout.makeColumnsEqualWidth = true;
+		optionalityComposite.setLayout(optionalityLayout);
+		myOptionalButton = new Button(optionalityComposite, SWT.RADIO);
+		myOptionalButton.setText(Messages.getString("EORelationship.optional"));
+		GridData optionalButtonLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myOptionalButton.setLayoutData(optionalButtonLayoutData);
+		myMandatoryButton = new Button(optionalityComposite, SWT.RADIO);
+		myMandatoryButton.setText(Messages.getString("EORelationship.mandatory"));
+		GridData mandatoryButtonLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myMandatoryButton.setLayoutData(mandatoryButtonLayoutData);
+		GridData optioanlityCompositeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		optionalityComposite.setLayoutData(optioanlityCompositeLayoutData);
 
-  protected class JoinsListener implements PropertyChangeListener {
-    public void propertyChange(PropertyChangeEvent _evt) {
-      EORelationshipBasicEditorSection.this.updateModelAndEntityCombosEnabled();
-    }
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.DELETE_RULE), SWT.NONE);
+		Combo deleteRuleCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
+		myDeleteRuleComboViewer = new ComboViewer(deleteRuleCombo);
+		myDeleteRuleComboViewer.setLabelProvider(new EODeleteRuleLabelProvider());
+		myDeleteRuleComboViewer.setContentProvider(new EODeleteRuleContentProvider());
+		myDeleteRuleComboViewer.setInput(EODeleteRule.DELETE_RULES);
+		myDeleteRuleComboViewer.setSelection(new StructuredSelection(EODeleteRule.NULLIFY));
+		GridData deleteRuleComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		deleteRuleCombo.setLayoutData(deleteRuleComboLayoutData);
 
-  protected class ModelSelectionListener implements ISelectionChangedListener {
-    public void selectionChanged(SelectionChangedEvent _event) {
-      EORelationshipBasicEditorSection.this.updateEntityCombo();
-    }
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.model"), SWT.NONE);
+		Combo modelCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
+		myModelComboViewer = new ComboViewer(modelCombo);
+		myModelComboViewer.setLabelProvider(new EOModelLabelProvider());
+		myModelComboViewer.setContentProvider(new EOModelListContentProvider());
+		myModelComboViewer.addSelectionChangedListener(new ModelSelectionListener());
+		GridData modelRuleComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		modelCombo.setLayoutData(modelRuleComboLayoutData);
+
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.DESTINATION), SWT.NONE);
+		Combo entityCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
+		myEntityComboViewer = new ComboViewer(entityCombo);
+		myEntityComboViewer.setLabelProvider(new EOEntityLabelProvider());
+		myEntityComboViewer.setContentProvider(new EOEntityListContentProvider(false, true));
+		GridData entityComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		entityCombo.setLayoutData(entityComboLayoutData);
+
+		Combo joinSemanticCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
+		myJoinSemanticComboViewer = new ComboViewer(joinSemanticCombo);
+		myJoinSemanticComboViewer.setLabelProvider(new EOJoinSemanticLabelProvider());
+		myJoinSemanticComboViewer.setContentProvider(new EOJoinSemanticContentProvider());
+		myJoinSemanticComboViewer.setInput(EOJoinSemantic.JOIN_SEMANTICS);
+		myJoinSemanticComboViewer.setSelection(new StructuredSelection(EOJoinSemantic.INNER));
+		GridData joinSemanticLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		joinSemanticLayoutData.verticalAlignment = SWT.TOP;
+		joinSemanticCombo.setLayoutData(joinSemanticLayoutData);
+
+		myJoinsTableEditor = new JoinsTableEditor(topForm, SWT.NONE);
+		GridData joinsTableLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myJoinsTableEditor.setLayoutData(joinsTableLayoutData);
+	}
+
+	public void setInput(IWorkbenchPart _part, ISelection _selection) {
+		super.setInput(_part, _selection);
+		EORelationship relationship = null;
+		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+		if (selectedObject instanceof EORelationship) {
+			relationship = (EORelationship) selectedObject;
+		} else if (selectedObject instanceof EORelationshipPath) {
+			relationship = ((EORelationshipPath) selectedObject).getChildRelationship();
+		}
+		if (!ComparisonUtils.equals(relationship, myRelationship)) {
+			disposeBindings();
+
+			myRelationship = relationship;
+			if (myRelationship != null) {
+				myRelationship.addPropertyChangeListener(EORelationship.JOINS, myJoinsListener);
+				myJoinsTableEditor.setRelationship(myRelationship);
+				myModelComboViewer.setInput(myRelationship);
+				myEntityComboViewer.setInput(myRelationship);
+				myModelComboViewer.setSelection(new StructuredSelection(myRelationship.getEntity().getModel()));
+
+				myBindingContext = BindingFactory.createContext();
+				myBindingContext.bind(myNameText, new Property(myRelationship, EORelationship.NAME), null);
+				myBindingContext.bind(myDefinitionText, new Property(myRelationship, EORelationship.DEFINITION), null);
+				myBindingContext.bind(myToOneButton, new Property(myRelationship, EORelationship.TO_ONE), null);
+				myBindingContext.bind(myToManyButton, new Property(myRelationship, EORelationship.TO_MANY), null);
+				myBindingContext.bind(myOptionalButton, new Property(myRelationship, EORelationship.OPTIONAL), null);
+				myBindingContext.bind(myMandatoryButton, new Property(myRelationship, EORelationship.MANDATORY), null);
+
+				myDeleteRuleBinding = new ComboViewerBinding(myDeleteRuleComboViewer, myRelationship, EORelationship.DELETE_RULE, null, null, null);
+				myJoinSemanticBinding = new ComboViewerBinding(myJoinSemanticComboViewer, myRelationship, EORelationship.JOIN_SEMANTIC, myRelationship.getEntity().getModel().getModelGroup(), EOModelGroup.MODELS, null);
+				myEntityBinding = new ComboViewerBinding(myEntityComboViewer, myRelationship, EORelationship.DESTINATION, myRelationship.getEntity().getModel(), EOModel.ENTITIES, null);
+
+				boolean enabled = !myRelationship.isFlattened();
+				myModelComboViewer.getCombo().setEnabled(enabled);
+				myEntityComboViewer.getCombo().setEnabled(enabled);
+				myJoinSemanticComboViewer.getCombo().setEnabled(enabled);
+				myDefinitionText.setEnabled(false);
+				// boolean flattened = myRelationship.isFlattened();
+				// myDefinitionLabel.setVisible(flattened);
+				// myDefinitionText.setVisible(flattened);
+
+				updateModelAndEntityCombosEnabled();
+			}
+		}
+	}
+
+	protected void updateModelAndEntityCombosEnabled() {
+		boolean enabled = myRelationship.getJoins().size() == 0 && !myRelationship.isFlattened();
+		myModelComboViewer.getCombo().setEnabled(enabled);
+		myEntityComboViewer.getCombo().setEnabled(enabled);
+	}
+
+	protected void updateEntityCombo() {
+		IStructuredSelection selection = (IStructuredSelection) myModelComboViewer.getSelection();
+		EOModel selectedModel = (EOModel) selection.getFirstElement();
+		myEntityComboViewer.setInput(selectedModel);
+	}
+
+	protected void disposeBindings() {
+		if (myRelationship != null) {
+			myRelationship.removePropertyChangeListener(EORelationship.JOINS, myJoinsListener);
+		}
+		if (myBindingContext != null) {
+			myBindingContext.dispose();
+		}
+		if (myDeleteRuleBinding != null) {
+			myDeleteRuleBinding.dispose();
+		}
+		if (myJoinSemanticBinding != null) {
+			myJoinSemanticBinding.dispose();
+		}
+		if (myModelBinding != null) {
+			myModelBinding.dispose();
+		}
+		if (myEntityBinding != null) {
+			myEntityBinding.dispose();
+		}
+		myJoinsTableEditor.disposeBindings();
+	}
+
+	public void dispose() {
+		super.dispose();
+		disposeBindings();
+	}
+
+	protected class JoinsListener implements PropertyChangeListener {
+		public void propertyChange(PropertyChangeEvent _evt) {
+			EORelationshipBasicEditorSection.this.updateModelAndEntityCombosEnabled();
+		}
+	}
+
+	protected class ModelSelectionListener implements ISelectionChangedListener {
+		public void selectionChanged(SelectionChangedEvent _event) {
+			EORelationshipBasicEditorSection.this.updateEntityCombo();
+		}
+	}
 }

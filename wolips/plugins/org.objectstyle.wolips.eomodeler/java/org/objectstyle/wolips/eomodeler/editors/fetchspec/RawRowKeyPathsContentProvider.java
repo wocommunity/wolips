@@ -56,24 +56,23 @@ import org.eclipse.jface.viewers.Viewer;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 
 public class RawRowKeyPathsContentProvider implements IStructuredContentProvider {
-  public Object[] getElements(Object _inputElement) {
-    EOFetchSpecification fetchSpec = (EOFetchSpecification) _inputElement;
-    Collection rawRowKeyPathsSet = fetchSpec.getRawRowKeyPaths();
-    Object[] rawRowKeyPaths;
-    if (rawRowKeyPathsSet == null) {
-      rawRowKeyPaths = new Object[0];
-    }
-    else {
-      rawRowKeyPaths = rawRowKeyPathsSet.toArray();
-    }
-    return rawRowKeyPaths;
-  }
+	public Object[] getElements(Object _inputElement) {
+		EOFetchSpecification fetchSpec = (EOFetchSpecification) _inputElement;
+		Collection rawRowKeyPathsSet = fetchSpec.getRawRowKeyPaths();
+		Object[] rawRowKeyPaths;
+		if (rawRowKeyPathsSet == null) {
+			rawRowKeyPaths = new Object[0];
+		} else {
+			rawRowKeyPaths = rawRowKeyPathsSet.toArray();
+		}
+		return rawRowKeyPaths;
+	}
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
-    // DO NOTHING
-  }
+	public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+		// DO NOTHING
+	}
 }

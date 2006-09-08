@@ -3,36 +3,41 @@ package org.objectstyle.wolips.eomodeler.model;
 import java.util.Map;
 
 public interface IConnectionDictionaryOwner {
-  public static final String USERNAME = "username";
-  public static final String PASSWORD = "password";
-  public static final String URL = "URL";
-  public static final String DRIVER = "driver";
-  public static final String PLUGIN = "plugin";
-  public static final String CONNECTION_DICTIONARY = "connectionDictionary";
+	public static final String USERNAME = "username";
 
-  public void setUsername(String _userName);
+	public static final String PASSWORD = "password";
 
-  public String getUsername();
+	public static final String URL = "URL";
 
-  public void setPassword(String _password);
+	public static final String DRIVER = "driver";
 
-  public String getPassword();
+	public static final String PLUGIN = "plugin";
 
-  public void setPlugin(String _plugin);
+	public static final String CONNECTION_DICTIONARY = "connectionDictionary";
 
-  public String getPlugin();
+	public void setUsername(String _userName);
 
-  public void setDriver(String _driver);
+	public String getUsername();
 
-  public String getDriver();
+	public void setPassword(String _password);
 
-  public void setURL(String _url);
+	public String getPassword();
 
-  public String getURL();
+	public void setPlugin(String _plugin);
 
-  public Map getConnectionDictionary();
-  
-  public void setConnectionDictionary(Map _connectionDictionary);
+	public String getPlugin();
 
-  public void setConnectionDictionary(Map _connectionDictionary, boolean _fireEvents);
+	public void setDriver(String _driver);
+
+	public String getDriver();
+
+	public void setURL(String _url);
+
+	public String getURL();
+
+	public Map getConnectionDictionary();
+
+	public void setConnectionDictionary(Map _connectionDictionary);
+
+	public void setConnectionDictionary(Map _connectionDictionary, boolean _fireEvents);
 }

@@ -72,102 +72,110 @@ import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
 public class EOEntityStoredProceduresEditorSection extends AbstractPropertySection {
-  private EOEntity myEntity;
+	private EOEntity myEntity;
 
-  private ComboViewer myInsertComboViewer;
-  private ComboViewer myDeleteComboViewer;
-  private ComboViewer myFetchAllComboViewer;
-  private ComboViewer myFetchWithPrimaryKeyComboViewer;
-  private ComboViewer myNextPrimaryKeyComboViewer;
+	private ComboViewer myInsertComboViewer;
 
-  private ComboViewerBinding myInsertBinding;
-  private ComboViewerBinding myDeleteBinding;
-  private ComboViewerBinding myFetchAllBinding;
-  private ComboViewerBinding myFetchWithPrimaryKeyBinding;
-  private ComboViewerBinding myNextPrimaryKeyBinding;
+	private ComboViewer myDeleteComboViewer;
 
-  public EOEntityStoredProceduresEditorSection() {
-    // DO NOTHING
-  }
+	private ComboViewer myFetchAllComboViewer;
 
-  public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
-    super.createControls(_parent, _tabbedPropertySheetPage);
-    Composite form = getWidgetFactory().createFlatFormComposite(_parent);
-    FormLayout formLayout = new FormLayout();
-    form.setLayout(formLayout);
+	private ComboViewer myFetchWithPrimaryKeyComboViewer;
 
-    Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-    FormData topFormData = new FormData();
-    topFormData.top = new FormAttachment(0, 5);
-    topFormData.left = new FormAttachment(0, 5);
-    topFormData.right = new FormAttachment(100, -5);
-    topForm.setLayoutData(topFormData);
+	private ComboViewer myNextPrimaryKeyComboViewer;
 
-    GridLayout topFormLayout = new GridLayout();
-    topFormLayout.numColumns = 2;
-    topForm.setLayout(topFormLayout);
+	private ComboViewerBinding myInsertBinding;
 
-    myInsertComboViewer = createStoredProcedureComboViewer(topForm, EOEntity.INSERT_PROCEDURE);
-    myDeleteComboViewer = createStoredProcedureComboViewer(topForm, EOEntity.DELETE_PROCEDURE);
-    myFetchAllComboViewer = createStoredProcedureComboViewer(topForm, EOEntity.FETCH_ALL_PROCEDURE);
-    myFetchWithPrimaryKeyComboViewer = createStoredProcedureComboViewer(topForm, EOEntity.FETCH_WITH_PRIMARY_KEY_PROCEDURE);
-    myNextPrimaryKeyComboViewer = createStoredProcedureComboViewer(topForm, EOEntity.NEXT_PRIMARY_KEY_PROCEDURE);
-  }
+	private ComboViewerBinding myDeleteBinding;
 
-  protected ComboViewer createStoredProcedureComboViewer(Composite _parent, String _name) {
-    getWidgetFactory().createCLabel(_parent, Messages.getString("EOEntity." + _name), SWT.NONE);
-    Combo insertCombo = new Combo(_parent, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
-    ComboViewer comboViewer = new ComboViewer(insertCombo);
-    comboViewer.setLabelProvider(new EOStoredProceduresLabelProvider());
-    comboViewer.setContentProvider(new EOStoredProceduresListContentProvider(true));
-    GridData comboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    insertCombo.setLayoutData(comboLayoutData);
-    return comboViewer;
-  }
+	private ComboViewerBinding myFetchAllBinding;
 
-  public void setInput(IWorkbenchPart _part, ISelection _selection) {
-    super.setInput(_part, _selection);
-    Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-    EOEntity entity = (EOEntity) selectedObject;
-    if (!ComparisonUtils.equals(entity, myEntity)) {
-      disposeBindings();
+	private ComboViewerBinding myFetchWithPrimaryKeyBinding;
 
-      myEntity = entity;
-      if (myEntity != null) {
-        myInsertComboViewer.setInput(myEntity);
-        myDeleteComboViewer.setInput(myEntity);
-        myFetchAllComboViewer.setInput(myEntity);
-        myFetchWithPrimaryKeyComboViewer.setInput(myEntity);
-        myNextPrimaryKeyComboViewer.setInput(myEntity);
-        myInsertBinding = new ComboViewerBinding(myInsertComboViewer, myEntity, EOEntity.INSERT_PROCEDURE, myEntity.getModel(), EOModel.STORED_PROCEDURES, EOStoredProceduresListContentProvider.BLANK_STORED_PROCEDURE);
-        myDeleteBinding = new ComboViewerBinding(myDeleteComboViewer, myEntity, EOEntity.DELETE_PROCEDURE, myEntity.getModel(), EOModel.STORED_PROCEDURES, EOStoredProceduresListContentProvider.BLANK_STORED_PROCEDURE);
-        myFetchAllBinding = new ComboViewerBinding(myFetchAllComboViewer, myEntity, EOEntity.FETCH_ALL_PROCEDURE, myEntity.getModel(), EOModel.STORED_PROCEDURES, EOStoredProceduresListContentProvider.BLANK_STORED_PROCEDURE);
-        myFetchWithPrimaryKeyBinding = new ComboViewerBinding(myFetchWithPrimaryKeyComboViewer, myEntity, EOEntity.FETCH_WITH_PRIMARY_KEY_PROCEDURE, myEntity.getModel(), EOModel.STORED_PROCEDURES, EOStoredProceduresListContentProvider.BLANK_STORED_PROCEDURE);
-        myNextPrimaryKeyBinding = new ComboViewerBinding(myNextPrimaryKeyComboViewer, myEntity, EOEntity.NEXT_PRIMARY_KEY_PROCEDURE, myEntity.getModel(), EOModel.STORED_PROCEDURES, EOStoredProceduresListContentProvider.BLANK_STORED_PROCEDURE);
-      }
-    }
-  }
+	private ComboViewerBinding myNextPrimaryKeyBinding;
 
-  protected void disposeBindings() {
-    if (myInsertBinding != null) {
-      myInsertBinding.dispose();
-    }
-    if (myDeleteBinding != null) {
-      myDeleteBinding.dispose();
-    }
-    if (myFetchAllBinding != null) {
-      myFetchAllBinding.dispose();
-    }
-    if (myFetchWithPrimaryKeyBinding != null) {
-      myFetchWithPrimaryKeyBinding.dispose();
-    }
-    if (myNextPrimaryKeyBinding != null) {
-      myNextPrimaryKeyBinding.dispose();
-    }
-  }
+	public EOEntityStoredProceduresEditorSection() {
+		// DO NOTHING
+	}
 
-  public void dispose() {
-    super.dispose();
-    disposeBindings();
-  }
+	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
+		super.createControls(_parent, _tabbedPropertySheetPage);
+		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
+		FormLayout formLayout = new FormLayout();
+		form.setLayout(formLayout);
+
+		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
+		FormData topFormData = new FormData();
+		topFormData.top = new FormAttachment(0, 5);
+		topFormData.left = new FormAttachment(0, 5);
+		topFormData.right = new FormAttachment(100, -5);
+		topForm.setLayoutData(topFormData);
+
+		GridLayout topFormLayout = new GridLayout();
+		topFormLayout.numColumns = 2;
+		topForm.setLayout(topFormLayout);
+
+		myInsertComboViewer = createStoredProcedureComboViewer(topForm, EOEntity.INSERT_PROCEDURE);
+		myDeleteComboViewer = createStoredProcedureComboViewer(topForm, EOEntity.DELETE_PROCEDURE);
+		myFetchAllComboViewer = createStoredProcedureComboViewer(topForm, EOEntity.FETCH_ALL_PROCEDURE);
+		myFetchWithPrimaryKeyComboViewer = createStoredProcedureComboViewer(topForm, EOEntity.FETCH_WITH_PRIMARY_KEY_PROCEDURE);
+		myNextPrimaryKeyComboViewer = createStoredProcedureComboViewer(topForm, EOEntity.NEXT_PRIMARY_KEY_PROCEDURE);
+	}
+
+	protected ComboViewer createStoredProcedureComboViewer(Composite _parent, String _name) {
+		getWidgetFactory().createCLabel(_parent, Messages.getString("EOEntity." + _name), SWT.NONE);
+		Combo insertCombo = new Combo(_parent, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
+		ComboViewer comboViewer = new ComboViewer(insertCombo);
+		comboViewer.setLabelProvider(new EOStoredProceduresLabelProvider());
+		comboViewer.setContentProvider(new EOStoredProceduresListContentProvider(true));
+		GridData comboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		insertCombo.setLayoutData(comboLayoutData);
+		return comboViewer;
+	}
+
+	public void setInput(IWorkbenchPart _part, ISelection _selection) {
+		super.setInput(_part, _selection);
+		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+		EOEntity entity = (EOEntity) selectedObject;
+		if (!ComparisonUtils.equals(entity, myEntity)) {
+			disposeBindings();
+
+			myEntity = entity;
+			if (myEntity != null) {
+				myInsertComboViewer.setInput(myEntity);
+				myDeleteComboViewer.setInput(myEntity);
+				myFetchAllComboViewer.setInput(myEntity);
+				myFetchWithPrimaryKeyComboViewer.setInput(myEntity);
+				myNextPrimaryKeyComboViewer.setInput(myEntity);
+				myInsertBinding = new ComboViewerBinding(myInsertComboViewer, myEntity, EOEntity.INSERT_PROCEDURE, myEntity.getModel(), EOModel.STORED_PROCEDURES, EOStoredProceduresListContentProvider.BLANK_STORED_PROCEDURE);
+				myDeleteBinding = new ComboViewerBinding(myDeleteComboViewer, myEntity, EOEntity.DELETE_PROCEDURE, myEntity.getModel(), EOModel.STORED_PROCEDURES, EOStoredProceduresListContentProvider.BLANK_STORED_PROCEDURE);
+				myFetchAllBinding = new ComboViewerBinding(myFetchAllComboViewer, myEntity, EOEntity.FETCH_ALL_PROCEDURE, myEntity.getModel(), EOModel.STORED_PROCEDURES, EOStoredProceduresListContentProvider.BLANK_STORED_PROCEDURE);
+				myFetchWithPrimaryKeyBinding = new ComboViewerBinding(myFetchWithPrimaryKeyComboViewer, myEntity, EOEntity.FETCH_WITH_PRIMARY_KEY_PROCEDURE, myEntity.getModel(), EOModel.STORED_PROCEDURES, EOStoredProceduresListContentProvider.BLANK_STORED_PROCEDURE);
+				myNextPrimaryKeyBinding = new ComboViewerBinding(myNextPrimaryKeyComboViewer, myEntity, EOEntity.NEXT_PRIMARY_KEY_PROCEDURE, myEntity.getModel(), EOModel.STORED_PROCEDURES, EOStoredProceduresListContentProvider.BLANK_STORED_PROCEDURE);
+			}
+		}
+	}
+
+	protected void disposeBindings() {
+		if (myInsertBinding != null) {
+			myInsertBinding.dispose();
+		}
+		if (myDeleteBinding != null) {
+			myDeleteBinding.dispose();
+		}
+		if (myFetchAllBinding != null) {
+			myFetchAllBinding.dispose();
+		}
+		if (myFetchWithPrimaryKeyBinding != null) {
+			myFetchWithPrimaryKeyBinding.dispose();
+		}
+		if (myNextPrimaryKeyBinding != null) {
+			myNextPrimaryKeyBinding.dispose();
+		}
+	}
+
+	public void dispose() {
+		super.dispose();
+		disposeBindings();
+	}
 }

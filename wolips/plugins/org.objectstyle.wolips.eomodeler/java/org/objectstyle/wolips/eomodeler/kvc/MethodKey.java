@@ -52,32 +52,30 @@ package org.objectstyle.wolips.eomodeler.kvc;
 import java.lang.reflect.Method;
 
 public class MethodKey implements IKey {
-  private Method myMethod;
+	private Method myMethod;
 
-  public MethodKey(Method _method) {
-    myMethod = _method;
-  }
+	public MethodKey(Method _method) {
+		myMethod = _method;
+	}
 
-  public Class getType(Object _instance) {
-    return myMethod.getReturnType();
-  }
+	public Class getType(Object _instance) {
+		return myMethod.getReturnType();
+	}
 
-  public Object getValue(Object _instance) {
-    try {
-      return myMethod.invoke(_instance, null);
-    }
-    catch (Throwable t) {
-      throw new RuntimeException("Failed to get value from method " + myMethod + " on  " + _instance + ".", t);
-    }
-  }
+	public Object getValue(Object _instance) {
+		try {
+			return myMethod.invoke(_instance, null);
+		} catch (Throwable t) {
+			throw new RuntimeException("Failed to get value from method " + myMethod + " on  " + _instance + ".", t);
+		}
+	}
 
-  public void setValue(Object _instance, Object _value) {
-    try {
-      myMethod.invoke(_instance, new Object[] { _value });
-    }
-    catch (Throwable t) {
-      throw new RuntimeException("Failed to set value with method " + myMethod + " on  " + _instance + ".", t);
-    }
-  }
+	public void setValue(Object _instance, Object _value) {
+		try {
+			myMethod.invoke(_instance, new Object[] { _value });
+		} catch (Throwable t) {
+			throw new RuntimeException("Failed to set value with method " + myMethod + " on  " + _instance + ".", t);
+		}
+	}
 
 }

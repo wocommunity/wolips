@@ -54,22 +54,21 @@ import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
 
 public class EOAttributesViewerSorter extends TablePropertyViewerSorter {
 
-  public EOAttributesViewerSorter(String[] _properties) {
-    super(_properties);
-  }
+	public EOAttributesViewerSorter(String[] _properties) {
+		super(_properties);
+	}
 
-  public Object getComparisonValue(Object _obj, String _property) {
-    EOAttribute attribute = (EOAttribute) _obj;
-    Object value = null;
-    if (_property == EOAttribute.PROTOTYPE) {
-      EOAttribute prototype = attribute.getPrototype();
-      if (prototype != null) {
-        value = prototype.getName();
-      }
-    }
-    else {
-      value = super.getComparisonValue(_obj, _property);
-    }
-    return value;
-  }
+	public Object getComparisonValue(Object _obj, String _property) {
+		EOAttribute attribute = (EOAttribute) _obj;
+		Object value = null;
+		if (_property == EOAttribute.PROTOTYPE) {
+			EOAttribute prototype = attribute.getPrototype();
+			if (prototype != null) {
+				value = prototype.getName();
+			}
+		} else {
+			value = super.getComparisonValue(_obj, _property);
+		}
+		return value;
+	}
 }

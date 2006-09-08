@@ -71,133 +71,114 @@ import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUtils;
 
 public class EOModelOutlineLabelProvider implements ILabelProvider, IFontProvider {
-  private TreeViewer myTreeViewer;
-  private Font myInheritedFont;
+	private TreeViewer myTreeViewer;
 
-  public EOModelOutlineLabelProvider(TreeViewer _treeViewer) {
-    myTreeViewer = _treeViewer;
-  }
+	private Font myInheritedFont;
 
-  public void addListener(ILabelProviderListener _listener) {
-    // DO NOTHING
-  }
+	public EOModelOutlineLabelProvider(TreeViewer _treeViewer) {
+		myTreeViewer = _treeViewer;
+	}
 
-  public void dispose() {
-    if (myInheritedFont != null) {
-      myInheritedFont.dispose();
-    }
-  }
+	public void addListener(ILabelProviderListener _listener) {
+		// DO NOTHING
+	}
 
-  public Image getImage(Object _element) {
-    Image image;
-    if (_element instanceof EOModel) {
-      image = Activator.getDefault().getImageRegistry().get(Activator.EOMODEL_ICON);
-    }
-    else if (_element instanceof EOEntity) {
-      image = Activator.getDefault().getImageRegistry().get(Activator.EOENTITY_ICON);
-    }
-    else if (_element instanceof EOAttribute) {
-      image = Activator.getDefault().getImageRegistry().get(Activator.EOATTRIBUTE_ICON);
-    }
-    else if (_element instanceof EORelationship) {
-      image = Activator.getDefault().getImageRegistry().get(Activator.EORELATIONSHIP_ICON);
-    }
-    else if (_element instanceof EORelationshipPath) {
-      image = Activator.getDefault().getImageRegistry().get(Activator.EORELATIONSHIP_ICON);
-    }
-    else if (_element instanceof EOAttributePath) {
-      image = Activator.getDefault().getImageRegistry().get(Activator.EOATTRIBUTE_ICON);
-    }
-    else if (_element instanceof EOFetchSpecification) {
-      image = Activator.getDefault().getImageRegistry().get(Activator.EOFETCHSPEC_ICON);
-    }
-    else if (_element instanceof EOStoredProcedure) {
-      image = Activator.getDefault().getImageRegistry().get(Activator.EOSTOREDPROCEDURE_ICON);
-    }
-    else if (_element instanceof EOArgument) {
-      image = Activator.getDefault().getImageRegistry().get(Activator.EOATTRIBUTE_ICON);
-    }
-    else if (_element instanceof EODatabaseConfig) {
-      image = Activator.getDefault().getImageRegistry().get(Activator.SQL_ICON);
-    }
-    else {
-      image = null;
-    }
-    return image;
-  }
+	public void dispose() {
+		if (myInheritedFont != null) {
+			myInheritedFont.dispose();
+		}
+	}
 
-  public String getText(Object _element) {
-    String text;
-    if (_element instanceof EOModel) {
-      EOModel model = (EOModel) _element;
-      text = model.getName();
-    }
-    else if (_element instanceof EOEntity) {
-      EOEntity entity = (EOEntity) _element;
-      text = entity.getName();
-    }
-    else if (_element instanceof EOAttribute) {
-      EOAttribute attribute = (EOAttribute) _element;
-      text = attribute.getName();
-    }
-    else if (_element instanceof EORelationship) {
-      EORelationship relationship = (EORelationship) _element;
-      text = relationship.getName();
-    }
-    else if (_element instanceof EORelationshipPath) {
-      EORelationshipPath relationshipPath = (EORelationshipPath) _element;
-      text = relationshipPath.getChildRelationship().getName();
-    }
-    else if (_element instanceof EOAttributePath) {
-      EOAttributePath attributePath = (EOAttributePath) _element;
-      text = attributePath.getChildAttribute().getName();
-    }
-    else if (_element instanceof EOFetchSpecification) {
-      EOFetchSpecification fetchSpec = (EOFetchSpecification) _element;
-      text = fetchSpec.getName();
-    }
-    else if (_element instanceof EOArgument) {
-      EOArgument argument = (EOArgument) _element;
-      text = argument.getName();
-    }
-    else if (_element instanceof EOStoredProcedure) {
-      EOStoredProcedure storedProcedure = (EOStoredProcedure) _element;
-      text = storedProcedure.getName();
-    }
-    else if (_element instanceof EODatabaseConfig) {
-      EODatabaseConfig databaseConfig = (EODatabaseConfig) _element;
-      text = databaseConfig.getName();
-    }
-    else {
-      text = null;
-    }
-    if (text == null) {
-      text = "?";
-    }
-    return text;
-  }
+	public Image getImage(Object _element) {
+		Image image;
+		if (_element instanceof EOModel) {
+			image = Activator.getDefault().getImageRegistry().get(Activator.EOMODEL_ICON);
+		} else if (_element instanceof EOEntity) {
+			image = Activator.getDefault().getImageRegistry().get(Activator.EOENTITY_ICON);
+		} else if (_element instanceof EOAttribute) {
+			image = Activator.getDefault().getImageRegistry().get(Activator.EOATTRIBUTE_ICON);
+		} else if (_element instanceof EORelationship) {
+			image = Activator.getDefault().getImageRegistry().get(Activator.EORELATIONSHIP_ICON);
+		} else if (_element instanceof EORelationshipPath) {
+			image = Activator.getDefault().getImageRegistry().get(Activator.EORELATIONSHIP_ICON);
+		} else if (_element instanceof EOAttributePath) {
+			image = Activator.getDefault().getImageRegistry().get(Activator.EOATTRIBUTE_ICON);
+		} else if (_element instanceof EOFetchSpecification) {
+			image = Activator.getDefault().getImageRegistry().get(Activator.EOFETCHSPEC_ICON);
+		} else if (_element instanceof EOStoredProcedure) {
+			image = Activator.getDefault().getImageRegistry().get(Activator.EOSTOREDPROCEDURE_ICON);
+		} else if (_element instanceof EOArgument) {
+			image = Activator.getDefault().getImageRegistry().get(Activator.EOATTRIBUTE_ICON);
+		} else if (_element instanceof EODatabaseConfig) {
+			image = Activator.getDefault().getImageRegistry().get(Activator.SQL_ICON);
+		} else {
+			image = null;
+		}
+		return image;
+	}
 
-  public Font getFont(Object _element) {
-    Font font = null;
-    if (_element instanceof EOEntity) {
-      EOEntity entity = (EOEntity)_element;
-      if (BooleanUtils.isTrue(entity.isAbstractEntity())) {
-        if (myInheritedFont == null) {
-          Font originalFont = myTreeViewer.getTree().getFont();
-          FontData[] fontData = myTreeViewer.getTree().getFont().getFontData();
-          myInheritedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.ITALIC);
-        }
-        font = myInheritedFont;
-      }
-    }
-    return font;
-  }
+	public String getText(Object _element) {
+		String text;
+		if (_element instanceof EOModel) {
+			EOModel model = (EOModel) _element;
+			text = model.getName();
+		} else if (_element instanceof EOEntity) {
+			EOEntity entity = (EOEntity) _element;
+			text = entity.getName();
+		} else if (_element instanceof EOAttribute) {
+			EOAttribute attribute = (EOAttribute) _element;
+			text = attribute.getName();
+		} else if (_element instanceof EORelationship) {
+			EORelationship relationship = (EORelationship) _element;
+			text = relationship.getName();
+		} else if (_element instanceof EORelationshipPath) {
+			EORelationshipPath relationshipPath = (EORelationshipPath) _element;
+			text = relationshipPath.getChildRelationship().getName();
+		} else if (_element instanceof EOAttributePath) {
+			EOAttributePath attributePath = (EOAttributePath) _element;
+			text = attributePath.getChildAttribute().getName();
+		} else if (_element instanceof EOFetchSpecification) {
+			EOFetchSpecification fetchSpec = (EOFetchSpecification) _element;
+			text = fetchSpec.getName();
+		} else if (_element instanceof EOArgument) {
+			EOArgument argument = (EOArgument) _element;
+			text = argument.getName();
+		} else if (_element instanceof EOStoredProcedure) {
+			EOStoredProcedure storedProcedure = (EOStoredProcedure) _element;
+			text = storedProcedure.getName();
+		} else if (_element instanceof EODatabaseConfig) {
+			EODatabaseConfig databaseConfig = (EODatabaseConfig) _element;
+			text = databaseConfig.getName();
+		} else {
+			text = null;
+		}
+		if (text == null) {
+			text = "?";
+		}
+		return text;
+	}
 
-  public boolean isLabelProperty(Object _element, String _property) {
-    return false;
-  }
+	public Font getFont(Object _element) {
+		Font font = null;
+		if (_element instanceof EOEntity) {
+			EOEntity entity = (EOEntity) _element;
+			if (BooleanUtils.isTrue(entity.isAbstractEntity())) {
+				if (myInheritedFont == null) {
+					Font originalFont = myTreeViewer.getTree().getFont();
+					FontData[] fontData = myTreeViewer.getTree().getFont().getFontData();
+					myInheritedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.ITALIC);
+				}
+				font = myInheritedFont;
+			}
+		}
+		return font;
+	}
 
-  public void removeListener(ILabelProviderListener _listener) {
-    // DO NOTHING
-  }
+	public boolean isLabelProperty(Object _element, String _property) {
+		return false;
+	}
+
+	public void removeListener(ILabelProviderListener _listener) {
+		// DO NOTHING
+	}
 }

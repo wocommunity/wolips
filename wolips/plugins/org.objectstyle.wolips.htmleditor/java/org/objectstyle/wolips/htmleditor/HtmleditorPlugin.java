@@ -44,13 +44,11 @@
 
 package org.objectstyle.wolips.htmleditor;
 
-
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
 import org.osgi.framework.BundleContext;
-
 
 /**
  * The main plugin class to be used in the desktop.
@@ -58,9 +56,10 @@ import org.osgi.framework.BundleContext;
 public class HtmleditorPlugin extends AbstractWOLipsUIPlugin {
 	// The shared instance.
 	private static HtmleditorPlugin plugin;
+
 	private String[] webObjectsTagNames;
-  
-    /**
+
+	/**
 	 * The constructor.
 	 */
 	public HtmleditorPlugin() {
@@ -82,6 +81,7 @@ public class HtmleditorPlugin extends AbstractWOLipsUIPlugin {
 		super.stop(context);
 		plugin = null;
 	}
+
 	/**
 	 * Returns the shared instance.
 	 */
@@ -98,14 +98,13 @@ public class HtmleditorPlugin extends AbstractWOLipsUIPlugin {
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin(
-				"org.objectstyle.wolips.htmleditor", path);
+		return AbstractUIPlugin.imageDescriptorFromPlugin("org.objectstyle.wolips.htmleditor", path);
 	}
-	
+
 	public Image getImage(String key) {
 		return getImageRegistry().get(key);
 	}
-	
+
 	public String[] getWebObjectsTagNames() {
 		if (this.webObjectsTagNames == null) {
 			this.webObjectsTagNames = new String[] { "No tags available" };
@@ -117,5 +116,4 @@ public class HtmleditorPlugin extends AbstractWOLipsUIPlugin {
 		this.webObjectsTagNames = webObjectsTagNames;
 	}
 
-	
 }

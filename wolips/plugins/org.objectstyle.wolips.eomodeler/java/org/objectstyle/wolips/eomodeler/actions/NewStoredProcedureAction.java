@@ -64,37 +64,36 @@ import org.objectstyle.wolips.eomodeler.model.IEOEntityRelative;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 
 public class NewStoredProcedureAction implements IWorkbenchWindowActionDelegate {
-  private EOModel myModel;
-  private IWorkbenchWindow myWindow;
+	private EOModel myModel;
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	private IWorkbenchWindow myWindow;
 
-  public void init(IWorkbenchWindow _window) {
-    myWindow = _window;
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public void selectionChanged(IAction _action, ISelection _selection) {
-    myModel = null;
-    if (_selection instanceof IStructuredSelection) {
-      Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-      myModel = EOModelUtils.getRelatedModel(selectedObject);
-    }
-  }
+	public void init(IWorkbenchWindow _window) {
+		myWindow = _window;
+	}
 
-  public void run(IAction _action) {
-    try {
-      if (myModel != null) {
-        EOStoredProcedure newStoredProcedure = myModel.addBlankStoredProcedure(Messages.getString("EOStoredProcedure.newName"));
-      }
-      else {
-        MessageDialog.openError(myWindow.getShell(), Messages.getString("EOEntity.noModelSelectedTitle"), Messages.getString("EOEntity.noModelSelectedMessage"));//$NON-NLS-1$
-      }
-    }
-    catch (DuplicateNameException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-  }
+	public void selectionChanged(IAction _action, ISelection _selection) {
+		myModel = null;
+		if (_selection instanceof IStructuredSelection) {
+			Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+			myModel = EOModelUtils.getRelatedModel(selectedObject);
+		}
+	}
+
+	public void run(IAction _action) {
+		try {
+			if (myModel != null) {
+				EOStoredProcedure newStoredProcedure = myModel.addBlankStoredProcedure(Messages.getString("EOStoredProcedure.newName"));
+			} else {
+				MessageDialog.openError(myWindow.getShell(), Messages.getString("EOEntity.noModelSelectedTitle"), Messages.getString("EOEntity.noModelSelectedMessage"));//$NON-NLS-1$
+			}
+		} catch (DuplicateNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

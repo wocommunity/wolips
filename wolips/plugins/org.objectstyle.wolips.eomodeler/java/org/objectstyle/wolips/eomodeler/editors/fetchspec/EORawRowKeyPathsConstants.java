@@ -3,5 +3,5 @@ package org.objectstyle.wolips.eomodeler.editors.fetchspec;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 
 public class EORawRowKeyPathsConstants {
-  public static final String[] COLUMNS = { EOFetchSpecification.RAW_ROW_KEY_PATH }; 
+	public static final String[] COLUMNS = { EOFetchSpecification.RAW_ROW_KEY_PATH };
 }

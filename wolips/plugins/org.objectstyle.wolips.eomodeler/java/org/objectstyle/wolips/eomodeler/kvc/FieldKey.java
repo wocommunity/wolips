@@ -52,31 +52,29 @@ package org.objectstyle.wolips.eomodeler.kvc;
 import java.lang.reflect.Field;
 
 public class FieldKey implements IKey {
-  private Field myField;
+	private Field myField;
 
-  public FieldKey(Field _field) {
-    myField = _field;
-  }
+	public FieldKey(Field _field) {
+		myField = _field;
+	}
 
-  public Class getType(Object _instance) {
-    return myField.getType();
-  }
+	public Class getType(Object _instance) {
+		return myField.getType();
+	}
 
-  public Object getValue(Object _instance) {
-    try {
-      return myField.get(_instance);
-    }
-    catch (Throwable t) {
-      throw new RuntimeException("Failed to get value from field " + myField + " on  " + _instance + ".", t);
-    }
-  }
+	public Object getValue(Object _instance) {
+		try {
+			return myField.get(_instance);
+		} catch (Throwable t) {
+			throw new RuntimeException("Failed to get value from field " + myField + " on  " + _instance + ".", t);
+		}
+	}
 
-  public void setValue(Object _instance, Object _value) {
-    try {
-      myField.set(_instance, _value);
-    }
-    catch (Throwable t) {
-      throw new RuntimeException("Failed to set value with field " + myField + " on  " + _instance + ".", t);
-    }
-  }
+	public void setValue(Object _instance, Object _value) {
+		try {
+			myField.set(_instance, _value);
+		} catch (Throwable t) {
+			throw new RuntimeException("Failed to set value with field " + myField + " on  " + _instance + ".", t);
+		}
+	}
 }

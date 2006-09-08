@@ -72,8 +72,8 @@ import org.objectstyle.wolips.goodies.core.mac.NativeHelper;
  */
 public class CdInTerminalAction implements IObjectActionDelegate {
 
-
 	private IContainer actionResource;
+
 	protected IWorkbenchPart part;
 
 	/**
@@ -104,8 +104,7 @@ public class CdInTerminalAction implements IObjectActionDelegate {
 	public void run(IAction action) {
 		try {
 			NativeHelper.cdInTerminal(this.actionResource());
-		}
-		catch (Throwable t) {
+		} catch (Throwable t) {
 			System.out.println("");
 		}
 	}
@@ -123,14 +122,16 @@ public class CdInTerminalAction implements IObjectActionDelegate {
 			this.actionResource = ((IJavaProject) obj).getProject();
 		}
 		if (obj != null && obj instanceof IPackageFragmentRoot) {
-			this.actionResource = (IContainer)((IPackageFragmentRoot) obj).getResource();
+			this.actionResource = (IContainer) ((IPackageFragmentRoot) obj).getResource();
 		}
 		if (obj != null && obj instanceof IPackageFragment) {
-			this.actionResource = (IContainer)((IPackageFragment) obj).getResource();
+			this.actionResource = (IContainer) ((IPackageFragment) obj).getResource();
 		}
 	}
-	/** (non-Javadoc)
-	 * Method declared on IObjectActionDelegate
+
+	/**
+	 * (non-Javadoc) Method declared on IObjectActionDelegate
+	 * 
 	 * @param action
 	 * @param targetPart
 	 */

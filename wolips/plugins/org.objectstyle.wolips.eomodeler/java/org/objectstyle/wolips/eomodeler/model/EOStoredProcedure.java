@@ -62,326 +62,329 @@ import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
 public class EOStoredProcedure extends UserInfoableEOModelObject implements ISortableEOModelObject {
-  public static final String NAME = "name";
-  public static final String EXTERNAL_NAME = "externalName";
-  public static final String ARGUMENT = "argument";
-  public static final String ARGUMENTS = "arguments";
+	public static final String NAME = "name";
 
-  private EOModel myModel;
-  private String myName;
-  private String myExternalName;
-  private List myArguments;
-  private EOModelMap myStoredProcedureMap;
+	public static final String EXTERNAL_NAME = "externalName";
 
-  public EOStoredProcedure() {
-    myStoredProcedureMap = new EOModelMap();
-    myArguments = new LinkedList();
-  }
+	public static final String ARGUMENT = "argument";
 
-  public EOStoredProcedure(String _name) {
-    this();
-    myName = _name;
-  }
+	public static final String ARGUMENTS = "arguments";
 
-  public void pasted() {
-    Iterator argumentsIter = getArguments().iterator();
-    while (argumentsIter.hasNext()) {
-      EOArgument argument = (EOArgument) argumentsIter.next();
-      argument.pasted();
-    }
-  }
+	private EOModel myModel;
 
-  public EOStoredProcedure cloneStoredProcedure() throws DuplicateNameException {
-    EOStoredProcedure storedProcedure = new EOStoredProcedure(myName);
-    storedProcedure.myName = myName;
-    storedProcedure.myExternalName = myExternalName;
+	private String myName;
 
-    Iterator argumentsIter = myArguments.iterator();
-    while (argumentsIter.hasNext()) {
-      EOArgument argument = (EOArgument) argumentsIter.next();
-      if (getArgumentNamed(argument.getName()) == null) {
-        EOArgument clonedArgument = argument.cloneArgument();
-        clonedArgument.setName(findUnusedArgumentName(clonedArgument.getName()));
-        storedProcedure.addArgument(clonedArgument);
-      }
-    }
+	private String myExternalName;
 
-    return storedProcedure;
-  }
+	private List myArguments;
 
-  public Set getReferenceFailures() {
-    Set referenceFailures = new HashSet();
-    Iterator argumentsIter = myArguments.iterator();
-    while (argumentsIter.hasNext()) {
-      EOArgument argument = (EOArgument) argumentsIter.next();
-      referenceFailures.addAll(argument.getReferenceFailures());
-    }
+	private EOModelMap myStoredProcedureMap;
 
-    if (myModel != null) {
-      Iterator entitiesIter = myModel.getEntities().iterator();
-      while (entitiesIter.hasNext()) {
-        EOEntity entity = (EOEntity) entitiesIter.next();
-        if (entity.getDeleteProcedure() == this) {
-          referenceFailures.add(new EOModelVerificationFailure(entity.getFullyQualifiedName() + " uses " + myName + " as its delete procedure."));
-        }
-        if (entity.getInsertProcedure() == this) {
-          referenceFailures.add(new EOModelVerificationFailure(entity.getFullyQualifiedName() + " uses " + myName + " as its insert procedure."));
-        }
-        if (entity.getNextPrimaryKeyProcedure() == this) {
-          referenceFailures.add(new EOModelVerificationFailure(entity.getFullyQualifiedName() + " uses " + myName + " as its next primary key procedure."));
-        }
-        if (entity.getFetchWithPrimaryKeyProcedure() == this) {
-          referenceFailures.add(new EOModelVerificationFailure(entity.getFullyQualifiedName() + " uses " + myName + " as its fetch with primary key procedure."));
-        }
-        if (entity.getFetchAllProcedure() == this) {
-          referenceFailures.add(new EOModelVerificationFailure(entity.getFullyQualifiedName() + " uses " + myName + " as its fetch all procedure."));
-        }
-        
-        Iterator fetchSpecsIter = entity.getFetchSpecs().iterator();
-        while (fetchSpecsIter.hasNext()) {
-          EOFetchSpecification fetchSpec = (EOFetchSpecification)fetchSpecsIter.next();
-          if (fetchSpec.getStoredProcedure() == this) {
-            referenceFailures.add(new EOModelVerificationFailure(fetchSpec.getFullyQualifiedName() + " uses " + myName + " as its stored procedure."));
-          }
-        }
-      }
-    }
+	public EOStoredProcedure() {
+		myStoredProcedureMap = new EOModelMap();
+		myArguments = new LinkedList();
+	}
 
-    return referenceFailures;
-  }
+	public EOStoredProcedure(String _name) {
+		this();
+		myName = _name;
+	}
 
-  public void _setModel(EOModel _model) {
-    myModel = _model;
-  }
+	public void pasted() {
+		Iterator argumentsIter = getArguments().iterator();
+		while (argumentsIter.hasNext()) {
+			EOArgument argument = (EOArgument) argumentsIter.next();
+			argument.pasted();
+		}
+	}
 
-  public EOModel getModel() {
-    return myModel;
-  }
+	public EOStoredProcedure cloneStoredProcedure() throws DuplicateNameException {
+		EOStoredProcedure storedProcedure = new EOStoredProcedure(myName);
+		storedProcedure.myName = myName;
+		storedProcedure.myExternalName = myExternalName;
 
-  protected void _argumentChanged(EOArgument _argument, String _propertyName, Object _oldValue, Object _newValue) {
-    firePropertyChange(EOStoredProcedure.ARGUMENT, null, _argument);
-  }
+		Iterator argumentsIter = myArguments.iterator();
+		while (argumentsIter.hasNext()) {
+			EOArgument argument = (EOArgument) argumentsIter.next();
+			if (getArgumentNamed(argument.getName()) == null) {
+				EOArgument clonedArgument = argument.cloneArgument();
+				clonedArgument.setName(findUnusedArgumentName(clonedArgument.getName()));
+				storedProcedure.addArgument(clonedArgument);
+			}
+		}
 
-  protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
-    if (myModel != null) {
-      myModel._storedProcedureChanged(this, _propertyName, _oldValue, _newValue);
-    }
-  }
+		return storedProcedure;
+	}
 
-  public int hashCode() {
-    return ((myModel == null) ? 1 : myModel.hashCode()) * ((myName == null) ? super.hashCode() : myName.hashCode());
-  }
+	public Set getReferenceFailures() {
+		Set referenceFailures = new HashSet();
+		Iterator argumentsIter = myArguments.iterator();
+		while (argumentsIter.hasNext()) {
+			EOArgument argument = (EOArgument) argumentsIter.next();
+			referenceFailures.addAll(argument.getReferenceFailures());
+		}
 
-  public boolean equals(Object _obj) {
-    boolean equals = false;
-    if (_obj instanceof EOStoredProcedure) {
-      EOStoredProcedure storedProcedure = (EOStoredProcedure) _obj;
-      equals = (storedProcedure == this) || (ComparisonUtils.equals(storedProcedure.myModel, myModel) && ComparisonUtils.equals(storedProcedure.myName, myName));
-    }
-    return equals;
-  }
+		if (myModel != null) {
+			Iterator entitiesIter = myModel.getEntities().iterator();
+			while (entitiesIter.hasNext()) {
+				EOEntity entity = (EOEntity) entitiesIter.next();
+				if (entity.getDeleteProcedure() == this) {
+					referenceFailures.add(new EOModelVerificationFailure(entity.getFullyQualifiedName() + " uses " + myName + " as its delete procedure."));
+				}
+				if (entity.getInsertProcedure() == this) {
+					referenceFailures.add(new EOModelVerificationFailure(entity.getFullyQualifiedName() + " uses " + myName + " as its insert procedure."));
+				}
+				if (entity.getNextPrimaryKeyProcedure() == this) {
+					referenceFailures.add(new EOModelVerificationFailure(entity.getFullyQualifiedName() + " uses " + myName + " as its next primary key procedure."));
+				}
+				if (entity.getFetchWithPrimaryKeyProcedure() == this) {
+					referenceFailures.add(new EOModelVerificationFailure(entity.getFullyQualifiedName() + " uses " + myName + " as its fetch with primary key procedure."));
+				}
+				if (entity.getFetchAllProcedure() == this) {
+					referenceFailures.add(new EOModelVerificationFailure(entity.getFullyQualifiedName() + " uses " + myName + " as its fetch all procedure."));
+				}
 
-  public void setName(String _name) throws DuplicateStoredProcedureNameException {
-    setName(_name, true);
-  }
+				Iterator fetchSpecsIter = entity.getFetchSpecs().iterator();
+				while (fetchSpecsIter.hasNext()) {
+					EOFetchSpecification fetchSpec = (EOFetchSpecification) fetchSpecsIter.next();
+					if (fetchSpec.getStoredProcedure() == this) {
+						referenceFailures.add(new EOModelVerificationFailure(fetchSpec.getFullyQualifiedName() + " uses " + myName + " as its stored procedure."));
+					}
+				}
+			}
+		}
 
-  public void setName(String _name, boolean _fireEvents) throws DuplicateStoredProcedureNameException {
-    if (myModel != null) {
-      myModel._checkForDuplicateStoredProcedureName(this, _name, null);
-      myModel._storedProcedureNameChanged(myName, _name);
-    }
-    String oldName = myName;
-    myName = _name;
-    if (_fireEvents) {
-      firePropertyChange(EOStoredProcedure.NAME, oldName, myName);
-    }
-  }
+		return referenceFailures;
+	}
 
-  public String getName() {
-    return myName;
-  }
+	public void _setModel(EOModel _model) {
+		myModel = _model;
+	}
 
-  public String getExternalName() {
-    return myExternalName;
-  }
+	public EOModel getModel() {
+		return myModel;
+	}
 
-  public void setExternalName(String _externalName) {
-    String oldExternalName = myExternalName;
-    myExternalName = _externalName;
-    firePropertyChange(EOStoredProcedure.EXTERNAL_NAME, oldExternalName, myExternalName);
-  }
+	protected void _argumentChanged(EOArgument _argument, String _propertyName, Object _oldValue, Object _newValue) {
+		firePropertyChange(EOStoredProcedure.ARGUMENT, null, _argument);
+	}
 
-  public EOArgument getArgumentNamed(String _name) {
-    EOArgument matchingArgument = null;
-    Iterator argumentsIter = myArguments.iterator();
-    while (matchingArgument == null && argumentsIter.hasNext()) {
-      EOArgument argument = (EOArgument) argumentsIter.next();
-      if (ComparisonUtils.equals(argument.getName(), _name)) {
-        matchingArgument = argument;
-      }
-    }
-    return matchingArgument;
-  }
+	protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
+		if (myModel != null) {
+			myModel._storedProcedureChanged(this, _propertyName, _oldValue, _newValue);
+		}
+	}
 
-  public String findUnusedArgumentName(String _newName) {
-    boolean unusedNameFound = (getArgumentNamed(_newName) == null);
-    String unusedName = _newName;
-    for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
-      unusedName = _newName + dupeNameNum;
-      EOArgument renameArgument = getArgumentNamed(unusedName);
-      unusedNameFound = (renameArgument == null);
-    }
-    return unusedName;
-  }
+	public int hashCode() {
+		return ((myModel == null) ? 1 : myModel.hashCode()) * ((myName == null) ? super.hashCode() : myName.hashCode());
+	}
 
-  public void _checkForDuplicateArgumentName(EOArgument _argument, String _newName, Set _failures) throws DuplicateNameException {
-    EOArgument existingArgument = getArgumentNamed(_newName);
-    if (existingArgument != null && existingArgument != _argument) {
-      if (_failures == null) {
-        throw new DuplicateArgumentNameException(_newName, this);
-      }
+	public boolean equals(Object _obj) {
+		boolean equals = false;
+		if (_obj instanceof EOStoredProcedure) {
+			EOStoredProcedure storedProcedure = (EOStoredProcedure) _obj;
+			equals = (storedProcedure == this) || (ComparisonUtils.equals(storedProcedure.myModel, myModel) && ComparisonUtils.equals(storedProcedure.myName, myName));
+		}
+		return equals;
+	}
 
-      String unusedName = findUnusedArgumentName(_newName);
-      existingArgument.setName(unusedName, true);
-      _failures.add(new DuplicateArgumentFailure(this, _newName, unusedName));
-    }
-  }
+	public void setName(String _name) throws DuplicateStoredProcedureNameException {
+		setName(_name, true);
+	}
 
-  public EOArgument addBlankArgument(String _name) throws DuplicateNameException {
-    EOArgument argument = new EOArgument(findUnusedArgumentName(_name));
-    argument.setAllowsNull(Boolean.TRUE, false);
-    addArgument(argument);
-    return argument;
-  }
+	public void setName(String _name, boolean _fireEvents) throws DuplicateStoredProcedureNameException {
+		if (myModel != null) {
+			myModel._checkForDuplicateStoredProcedureName(this, _name, null);
+			myModel._storedProcedureNameChanged(myName, _name);
+		}
+		String oldName = myName;
+		myName = _name;
+		if (_fireEvents) {
+			firePropertyChange(EOStoredProcedure.NAME, oldName, myName);
+		}
+	}
 
-  public void addArgument(EOArgument _argument) throws DuplicateNameException {
-    addArgument(_argument, null, true);
-  }
+	public String getName() {
+		return myName;
+	}
 
-  public void addArgument(EOArgument _argument, Set _failures, boolean _fireEvents) throws DuplicateNameException {
-    _argument._setStoredProcedure(this);
-    _checkForDuplicateArgumentName(_argument, _argument.getName(), _failures);
-    _argument.pasted();
-    List oldArguments = null;
-    if (_fireEvents) {
-      oldArguments = myArguments;
-      List newArguments = new LinkedList();
-      newArguments.addAll(myArguments);
-      newArguments.add(_argument);
-      myArguments = newArguments;
-      firePropertyChange(EOStoredProcedure.ARGUMENTS, oldArguments, myArguments);
-    }
-    else {
-      myArguments.add(_argument);
-    }
-  }
+	public String getExternalName() {
+		return myExternalName;
+	}
 
-  public void removeArgument(EOArgument _argument) {
-    List oldArguments = myArguments;
-    List newArguments = new LinkedList();
-    newArguments.addAll(myArguments);
-    newArguments.remove(_argument);
-    myArguments = newArguments;
-    firePropertyChange(EOStoredProcedure.ARGUMENTS, oldArguments, newArguments);
-    _argument._setStoredProcedure(null);
-  }
+	public void setExternalName(String _externalName) {
+		String oldExternalName = myExternalName;
+		myExternalName = _externalName;
+		firePropertyChange(EOStoredProcedure.EXTERNAL_NAME, oldExternalName, myExternalName);
+	}
 
-  public List getArguments() {
-    return myArguments;
-  }
+	public EOArgument getArgumentNamed(String _name) {
+		EOArgument matchingArgument = null;
+		Iterator argumentsIter = myArguments.iterator();
+		while (matchingArgument == null && argumentsIter.hasNext()) {
+			EOArgument argument = (EOArgument) argumentsIter.next();
+			if (ComparisonUtils.equals(argument.getName(), _name)) {
+				matchingArgument = argument;
+			}
+		}
+		return matchingArgument;
+	}
 
-  public void loadFromMap(EOModelMap _map, Set _failures) throws EOModelException {
-    myStoredProcedureMap = _map;
-    myName = _map.getString("name", true);
-    myExternalName = _map.getString("externalName", true);
+	public String findUnusedArgumentName(String _newName) {
+		boolean unusedNameFound = (getArgumentNamed(_newName) == null);
+		String unusedName = _newName;
+		for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
+			unusedName = _newName + dupeNameNum;
+			EOArgument renameArgument = getArgumentNamed(unusedName);
+			unusedNameFound = (renameArgument == null);
+		}
+		return unusedName;
+	}
 
-    List argumentsList = _map.getList("arguments", false);
-    if (argumentsList != null) {
-      Iterator argumentsIter = argumentsList.iterator();
-      while (argumentsIter.hasNext()) {
-        EOModelMap argumentMap = new EOModelMap((Map) argumentsIter.next());
-        EOArgument argument = new EOArgument();
-        argument.loadFromMap(argumentMap, _failures);
-        addArgument(argument, _failures, false);
-      }
-    }
-    loadUserInfo(_map);
-  }
+	public void _checkForDuplicateArgumentName(EOArgument _argument, String _newName, Set _failures) throws DuplicateNameException {
+		EOArgument existingArgument = getArgumentNamed(_newName);
+		if (existingArgument != null && existingArgument != _argument) {
+			if (_failures == null) {
+				throw new DuplicateArgumentNameException(_newName, this);
+			}
 
-  public EOModelMap toMap() {
-    EOModelMap fetchSpecMap = myStoredProcedureMap.cloneModelMap();
-    fetchSpecMap.setString("name", myName, true);
-    fetchSpecMap.setString("externalName", myExternalName, true);
+			String unusedName = findUnusedArgumentName(_newName);
+			existingArgument.setName(unusedName, true);
+			_failures.add(new DuplicateArgumentFailure(this, _newName, unusedName));
+		}
+	}
 
-    List arguments = new LinkedList();
-    Iterator argumentsIter = myArguments.iterator();
-    while (argumentsIter.hasNext()) {
-      EOArgument argument = (EOArgument) argumentsIter.next();
-      EOModelMap argumentMap = argument.toMap();
-      arguments.add(argumentMap);
-    }
-    fetchSpecMap.setList("arguments", arguments, true);
-    writeUserInfo(fetchSpecMap);
-    return fetchSpecMap;
-  }
+	public EOArgument addBlankArgument(String _name) throws DuplicateNameException {
+		EOArgument argument = new EOArgument(findUnusedArgumentName(_name));
+		argument.setAllowsNull(Boolean.TRUE, false);
+		addArgument(argument);
+		return argument;
+	}
 
-  public void loadFromFile(File _storedProcedureFile, Set _failures) throws EOModelException {
-    try {
-      EOModelMap entityMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_storedProcedureFile, new EOModelParserDataStructureFactory()));
-      loadFromMap(entityMap, _failures);
-    }
-    catch (Throwable e) {
-      throw new EOModelException("Failed to load stored procedure from '" + _storedProcedureFile + "'.", e);
-    }
-  }
+	public void addArgument(EOArgument _argument) throws DuplicateNameException {
+		addArgument(_argument, null, true);
+	}
 
-  public void saveToFile(File _storedProcedureFile) {
-    EOModelMap storedProcedureMap = toMap();
-    PropertyListSerialization.propertyListToFile(_storedProcedureFile, storedProcedureMap);
-  }
+	public void addArgument(EOArgument _argument, Set _failures, boolean _fireEvents) throws DuplicateNameException {
+		_argument._setStoredProcedure(this);
+		_checkForDuplicateArgumentName(_argument, _argument.getName(), _failures);
+		_argument.pasted();
+		List oldArguments = null;
+		if (_fireEvents) {
+			oldArguments = myArguments;
+			List newArguments = new LinkedList();
+			newArguments.addAll(myArguments);
+			newArguments.add(_argument);
+			myArguments = newArguments;
+			firePropertyChange(EOStoredProcedure.ARGUMENTS, oldArguments, myArguments);
+		} else {
+			myArguments.add(_argument);
+		}
+	}
 
-  public void resolve(Set _failures) {
-    Iterator argumentsIter = myArguments.iterator();
-    while (argumentsIter.hasNext()) {
-      EOArgument argument = (EOArgument) argumentsIter.next();
-      argument.resolve(_failures);
-    }
-  }
+	public void removeArgument(EOArgument _argument) {
+		List oldArguments = myArguments;
+		List newArguments = new LinkedList();
+		newArguments.addAll(myArguments);
+		newArguments.remove(_argument);
+		myArguments = newArguments;
+		firePropertyChange(EOStoredProcedure.ARGUMENTS, oldArguments, newArguments);
+		_argument._setStoredProcedure(null);
+	}
 
-  public void verify(Set _failures) {
-    String name = getName();
-    if (name == null || name.trim().length() == 0) {
-      _failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + myName + " has an empty name."));
-    }
-    else {
-      if (name.indexOf(' ') != -1) {
-        _failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + myName + "'s name has a space in it."));
-      }
-      if (!StringUtils.isUppercaseFirstLetter(myName)) {
-        _failures.add(new EOModelVerificationFailure("Entity names should be capitalized, but " + myModel.getName() + "/" + myName + " is not."));
-      }
-    }
+	public List getArguments() {
+		return myArguments;
+	}
 
-    String externalName = getExternalName();
-    if (externalName == null || externalName.trim().length() == 0) {
-      _failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + getName() + " has an empty table name."));
-    }
-    else if (externalName.indexOf(' ') != -1) {
-      _failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + getName() + "'s table name '" + externalName + "' has a space in it."));
-    }
+	public void loadFromMap(EOModelMap _map, Set _failures) throws EOModelException {
+		myStoredProcedureMap = _map;
+		myName = _map.getString("name", true);
+		myExternalName = _map.getString("externalName", true);
 
-    Iterator argumentsIter = myArguments.iterator();
-    while (argumentsIter.hasNext()) {
-      EOArgument argument = (EOArgument) argumentsIter.next();
-      argument.verify(_failures);
-    }
-  }
+		List argumentsList = _map.getList("arguments", false);
+		if (argumentsList != null) {
+			Iterator argumentsIter = argumentsList.iterator();
+			while (argumentsIter.hasNext()) {
+				EOModelMap argumentMap = new EOModelMap((Map) argumentsIter.next());
+				EOArgument argument = new EOArgument();
+				argument.loadFromMap(argumentMap, _failures);
+				addArgument(argument, _failures, false);
+			}
+		}
+		loadUserInfo(_map);
+	}
 
-  public String getFullyQualifiedName() {
-    return ((myModel == null) ? "?" : myModel.getFullyQualifiedName()) + "/StoredProc:" + getName();
-  }
+	public EOModelMap toMap() {
+		EOModelMap fetchSpecMap = myStoredProcedureMap.cloneModelMap();
+		fetchSpecMap.setString("name", myName, true);
+		fetchSpecMap.setString("externalName", myExternalName, true);
 
-  public String toString() {
-    return "[EOStoredProcedure: name = " + myName + "; arguments = " + myArguments + "]";
-  }
+		List arguments = new LinkedList();
+		Iterator argumentsIter = myArguments.iterator();
+		while (argumentsIter.hasNext()) {
+			EOArgument argument = (EOArgument) argumentsIter.next();
+			EOModelMap argumentMap = argument.toMap();
+			arguments.add(argumentMap);
+		}
+		fetchSpecMap.setList("arguments", arguments, true);
+		writeUserInfo(fetchSpecMap);
+		return fetchSpecMap;
+	}
+
+	public void loadFromFile(File _storedProcedureFile, Set _failures) throws EOModelException {
+		try {
+			EOModelMap entityMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_storedProcedureFile, new EOModelParserDataStructureFactory()));
+			loadFromMap(entityMap, _failures);
+		} catch (Throwable e) {
+			throw new EOModelException("Failed to load stored procedure from '" + _storedProcedureFile + "'.", e);
+		}
+	}
+
+	public void saveToFile(File _storedProcedureFile) {
+		EOModelMap storedProcedureMap = toMap();
+		PropertyListSerialization.propertyListToFile(_storedProcedureFile, storedProcedureMap);
+	}
+
+	public void resolve(Set _failures) {
+		Iterator argumentsIter = myArguments.iterator();
+		while (argumentsIter.hasNext()) {
+			EOArgument argument = (EOArgument) argumentsIter.next();
+			argument.resolve(_failures);
+		}
+	}
+
+	public void verify(Set _failures) {
+		String name = getName();
+		if (name == null || name.trim().length() == 0) {
+			_failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + myName + " has an empty name."));
+		} else {
+			if (name.indexOf(' ') != -1) {
+				_failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + myName + "'s name has a space in it."));
+			}
+			if (!StringUtils.isUppercaseFirstLetter(myName)) {
+				_failures.add(new EOModelVerificationFailure("Entity names should be capitalized, but " + myModel.getName() + "/" + myName + " is not."));
+			}
+		}
+
+		String externalName = getExternalName();
+		if (externalName == null || externalName.trim().length() == 0) {
+			_failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + getName() + " has an empty table name."));
+		} else if (externalName.indexOf(' ') != -1) {
+			_failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + getName() + "'s table name '" + externalName + "' has a space in it."));
+		}
+
+		Iterator argumentsIter = myArguments.iterator();
+		while (argumentsIter.hasNext()) {
+			EOArgument argument = (EOArgument) argumentsIter.next();
+			argument.verify(_failures);
+		}
+	}
+
+	public String getFullyQualifiedName() {
+		return ((myModel == null) ? "?" : myModel.getFullyQualifiedName()) + "/StoredProc:" + getName();
+	}
+
+	public String toString() {
+		return "[EOStoredProcedure: name = " + myName + "; arguments = " + myArguments + "]";
+	}
 }

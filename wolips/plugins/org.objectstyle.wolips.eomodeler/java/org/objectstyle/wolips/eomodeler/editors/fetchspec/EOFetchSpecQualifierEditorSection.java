@@ -77,122 +77,123 @@ import org.objectstyle.wolips.eomodeler.outline.EOModelOutlineContentProvider;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
 public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection implements ISelectionChangedListener {
-  private EOFetchSpecification myFetchSpecification;
+	private EOFetchSpecification myFetchSpecification;
 
-  private Text myNameText;
-  private Text myQualifierText;
-  private TreeViewer myModelTreeViewer;
-  private EOEntityTreeViewUpdater myEntityTreeViewUpdater;
+	private Text myNameText;
 
-  private DataBindingContext myBindingContext;
+	private Text myQualifierText;
 
-  public EOFetchSpecQualifierEditorSection() {
-    // DO NOTHING
-  }
+	private TreeViewer myModelTreeViewer;
 
-  public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
-    super.createControls(_parent, _tabbedPropertySheetPage);
-    Composite form = getWidgetFactory().createFlatFormComposite(_parent);
-    FormLayout formLayout = new FormLayout();
-    form.setLayout(formLayout);
+	private EOEntityTreeViewUpdater myEntityTreeViewUpdater;
 
-    Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-    FormData topFormData = new FormData();
-    topFormData.top = new FormAttachment(0, 5);
-    topFormData.left = new FormAttachment(0, 5);
-    topFormData.right = new FormAttachment(100, -5);
-    topForm.setLayoutData(topFormData);
+	private DataBindingContext myBindingContext;
 
-    GridLayout topFormLayout = new GridLayout();
-    topFormLayout.numColumns = 2;
-    topForm.setLayout(topFormLayout);
+	public EOFetchSpecQualifierEditorSection() {
+		// DO NOTHING
+	}
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.NAME), SWT.NONE);
-    myNameText = new Text(topForm, SWT.BORDER);
-    GridData nameLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myNameText.setLayoutData(nameLayoutData);
+	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
+		super.createControls(_parent, _tabbedPropertySheetPage);
+		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
+		FormLayout formLayout = new FormLayout();
+		form.setLayout(formLayout);
 
-    myModelTreeViewer = new TreeViewer(topForm);
-    GridData modelTreeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    modelTreeLayoutData.horizontalSpan = 2;
-    modelTreeLayoutData.heightHint = 100;
-    myModelTreeViewer.getTree().setLayoutData(modelTreeLayoutData);
-    myEntityTreeViewUpdater = new EOEntityTreeViewUpdater(myModelTreeViewer, new EOModelOutlineContentProvider(true, true, true, false, false, false));
-    myModelTreeViewer.addSelectionChangedListener(this);
+		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
+		FormData topFormData = new FormData();
+		topFormData.top = new FormAttachment(0, 5);
+		topFormData.left = new FormAttachment(0, 5);
+		topFormData.right = new FormAttachment(100, -5);
+		topForm.setLayoutData(topFormData);
 
-    myQualifierText = getWidgetFactory().createText(topForm, "", SWT.WRAP | SWT.MULTI | SWT.V_SCROLL);
-    myQualifierText.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+		GridLayout topFormLayout = new GridLayout();
+		topFormLayout.numColumns = 2;
+		topForm.setLayout(topFormLayout);
 
-    GridData qualifierLayoutData = new GridData(GridData.FILL_BOTH);
-    qualifierLayoutData.horizontalSpan = 2;
-    qualifierLayoutData.heightHint = 150;
-    myQualifierText.setLayoutData(qualifierLayoutData);
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.NAME), SWT.NONE);
+		myNameText = new Text(topForm, SWT.BORDER);
+		GridData nameLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myNameText.setLayoutData(nameLayoutData);
 
-  public void setInput(IWorkbenchPart _part, ISelection _selection) {
-    super.setInput(_part, _selection);
-    disposeBindings();
+		myModelTreeViewer = new TreeViewer(topForm);
+		GridData modelTreeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		modelTreeLayoutData.horizontalSpan = 2;
+		modelTreeLayoutData.heightHint = 100;
+		myModelTreeViewer.getTree().setLayoutData(modelTreeLayoutData);
+		myEntityTreeViewUpdater = new EOEntityTreeViewUpdater(myModelTreeViewer, new EOModelOutlineContentProvider(true, true, true, false, false, false));
+		myModelTreeViewer.addSelectionChangedListener(this);
 
-    Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-    myFetchSpecification = (EOFetchSpecification) selectedObject;
-    if (myFetchSpecification != null) {
-      myBindingContext = BindingFactory.createContext();
-      myBindingContext.bind(myNameText, new Property(myFetchSpecification, EOFetchSpecification.NAME), null);
-      myBindingContext.bind(myQualifierText, new Property(myFetchSpecification, EOFetchSpecification.QUALIFIER_STRING), null);
-      myEntityTreeViewUpdater.setEntity(myFetchSpecification.getEntity());
-    }
-  }
+		myQualifierText = getWidgetFactory().createText(topForm, "", SWT.WRAP | SWT.MULTI | SWT.V_SCROLL);
+		myQualifierText.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
 
-  protected void disposeBindings() {
-    if (myBindingContext != null) {
-      myBindingContext.dispose();
-    }
-  }
+		GridData qualifierLayoutData = new GridData(GridData.FILL_BOTH);
+		qualifierLayoutData.horizontalSpan = 2;
+		qualifierLayoutData.heightHint = 150;
+		myQualifierText.setLayoutData(qualifierLayoutData);
+	}
 
-  public void dispose() {
-    super.dispose();
-    disposeBindings();
-  }
+	public void setInput(IWorkbenchPart _part, ISelection _selection) {
+		super.setInput(_part, _selection);
+		disposeBindings();
 
-  public void selectionChanged(SelectionChangedEvent _event) {
-    IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
-    String keyPath;
-    Object selectedObject = selection.getFirstElement();
-    if (selectedObject instanceof IEOAttribute) {
-      keyPath = ((IEOAttribute) selectedObject).getName();
-    }
-    else if (selectedObject instanceof AbstractEOAttributePath) {
-      keyPath = ((AbstractEOAttributePath) selectedObject).toKeyPath();
-    }
-    else {
-      keyPath = null;
-    }
-    if (keyPath != null) {
-      String qualifierString = myQualifierText.getText();
-      if (qualifierString != null) {
-        int caretPosition = myQualifierText.getCaretPosition();
-        int startPosition = caretPosition;
-        for (startPosition = caretPosition - 1; startPosition > 0; startPosition--) {
-          char ch = qualifierString.charAt(startPosition);
-          if (!Character.isLetterOrDigit(ch) && ch != '.') {
-            startPosition++;
-            break;
-          }
-        }
-        int endPosition;
-        for (endPosition = caretPosition; endPosition < qualifierString.length(); endPosition++) {
-          char ch = qualifierString.charAt(endPosition);
-          if (!Character.isLetterOrDigit(ch) && ch != '.') {
-            break;
-          }
-        }
-        myQualifierText.setSelection(startPosition, endPosition);
-        if (startPosition > 0 && qualifierString.charAt(startPosition - 1) != ' ' && qualifierString.charAt(startPosition - 1) != '(') {
-          keyPath = " " + keyPath;
-        }
-      }
-      myQualifierText.insert(keyPath);
-      myQualifierText.setFocus();
-    }
-  }
+		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+		myFetchSpecification = (EOFetchSpecification) selectedObject;
+		if (myFetchSpecification != null) {
+			myBindingContext = BindingFactory.createContext();
+			myBindingContext.bind(myNameText, new Property(myFetchSpecification, EOFetchSpecification.NAME), null);
+			myBindingContext.bind(myQualifierText, new Property(myFetchSpecification, EOFetchSpecification.QUALIFIER_STRING), null);
+			myEntityTreeViewUpdater.setEntity(myFetchSpecification.getEntity());
+		}
+	}
+
+	protected void disposeBindings() {
+		if (myBindingContext != null) {
+			myBindingContext.dispose();
+		}
+	}
+
+	public void dispose() {
+		super.dispose();
+		disposeBindings();
+	}
+
+	public void selectionChanged(SelectionChangedEvent _event) {
+		IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
+		String keyPath;
+		Object selectedObject = selection.getFirstElement();
+		if (selectedObject instanceof IEOAttribute) {
+			keyPath = ((IEOAttribute) selectedObject).getName();
+		} else if (selectedObject instanceof AbstractEOAttributePath) {
+			keyPath = ((AbstractEOAttributePath) selectedObject).toKeyPath();
+		} else {
+			keyPath = null;
+		}
+		if (keyPath != null) {
+			String qualifierString = myQualifierText.getText();
+			if (qualifierString != null) {
+				int caretPosition = myQualifierText.getCaretPosition();
+				int startPosition = caretPosition;
+				for (startPosition = caretPosition - 1; startPosition > 0; startPosition--) {
+					char ch = qualifierString.charAt(startPosition);
+					if (!Character.isLetterOrDigit(ch) && ch != '.') {
+						startPosition++;
+						break;
+					}
+				}
+				int endPosition;
+				for (endPosition = caretPosition; endPosition < qualifierString.length(); endPosition++) {
+					char ch = qualifierString.charAt(endPosition);
+					if (!Character.isLetterOrDigit(ch) && ch != '.') {
+						break;
+					}
+				}
+				myQualifierText.setSelection(startPosition, endPosition);
+				if (startPosition > 0 && qualifierString.charAt(startPosition - 1) != ' ' && qualifierString.charAt(startPosition - 1) != '(') {
+					keyPath = " " + keyPath;
+				}
+			}
+			myQualifierText.insert(keyPath);
+			myQualifierText.setFocus();
+		}
+	}
 }

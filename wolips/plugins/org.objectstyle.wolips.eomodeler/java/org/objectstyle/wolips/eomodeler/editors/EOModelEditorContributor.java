@@ -55,35 +55,37 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 
 public class EOModelEditorContributor extends MultiPageEditorActionBarContributor {
-  private IEditorPart myActiveEditor;
-  private IEditorPart myActiveEditorPage;
-  private EOModelClipboardHandler myClipboardHandler;
+	private IEditorPart myActiveEditor;
 
-  public EOModelEditorContributor() {
-    myClipboardHandler = new EOModelClipboardHandler();
-  }
+	private IEditorPart myActiveEditorPage;
 
-  public void setActiveEditor(IEditorPart _part) {
-    if (myActiveEditor != null) {
-      ((ISelectionProvider) myActiveEditor).removeSelectionChangedListener(myClipboardHandler);
-    }
-    myActiveEditor = _part;
-    if (myActiveEditor != null) {
-      ((ISelectionProvider) myActiveEditor).addSelectionChangedListener(myClipboardHandler);
-    }
-    super.setActiveEditor(_part);
-  }
+	private EOModelClipboardHandler myClipboardHandler;
 
-  public void setActivePage(IEditorPart _editor) {
-    if (myActiveEditor != null) {
-      ((ISelectionProvider) myActiveEditorPage).addSelectionChangedListener(myClipboardHandler);
-    }
-    myActiveEditorPage = _editor;
-    if (myActiveEditor != null) {
-      ((ISelectionProvider) myActiveEditorPage).addSelectionChangedListener(myClipboardHandler);
-    }
+	public EOModelEditorContributor() {
+		myClipboardHandler = new EOModelClipboardHandler();
+	}
 
-    IActionBars actionBars = getActionBars();
-    myClipboardHandler.attach(actionBars, (EOModelEditor) myActiveEditor);
-  }
+	public void setActiveEditor(IEditorPart _part) {
+		if (myActiveEditor != null) {
+			((ISelectionProvider) myActiveEditor).removeSelectionChangedListener(myClipboardHandler);
+		}
+		myActiveEditor = _part;
+		if (myActiveEditor != null) {
+			((ISelectionProvider) myActiveEditor).addSelectionChangedListener(myClipboardHandler);
+		}
+		super.setActiveEditor(_part);
+	}
+
+	public void setActivePage(IEditorPart _editor) {
+		if (myActiveEditor != null) {
+			((ISelectionProvider) myActiveEditorPage).addSelectionChangedListener(myClipboardHandler);
+		}
+		myActiveEditorPage = _editor;
+		if (myActiveEditor != null) {
+			((ISelectionProvider) myActiveEditorPage).addSelectionChangedListener(myClipboardHandler);
+		}
+
+		IActionBars actionBars = getActionBars();
+		myClipboardHandler.attach(actionBars, (EOModelEditor) myActiveEditor);
+	}
 }

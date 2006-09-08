@@ -79,114 +79,118 @@ import org.objectstyle.wolips.eomodeler.utils.TableRowRefreshPropertyListener;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
 public class EOArgumentsTableViewer extends Composite implements ISelectionProvider {
-  private TableViewer myArgumentsTableViewer;
-  private EOStoredProcedure myStoredProcedure;
-  private ArgumentsChangeRefresher myArgumentsChangedRefresher;
-  private TableRowRefreshPropertyListener myTableRowRefresher;
+	private TableViewer myArgumentsTableViewer;
 
-  public EOArgumentsTableViewer(Composite _parent, int _style) {
-    super(_parent, _style);
+	private EOStoredProcedure myStoredProcedure;
 
-    setLayout(new GridLayout(1, true));
-    myArgumentsTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EOArgument", EOArgumentsConstants.COLUMNS, new EOArgumentsContentProvider(), new EOArgumentsLabelProvider(EOArgumentsConstants.COLUMNS), new TablePropertyViewerSorter(EOArgumentsConstants.COLUMNS));
-    new DoubleClickNewAttributeHandler(myArgumentsTableViewer).attach();
-    myArgumentsChangedRefresher = new ArgumentsChangeRefresher(myArgumentsTableViewer);
-    myTableRowRefresher = new TableRowRefreshPropertyListener(myArgumentsTableViewer);
-    Table argumentsTable = myArgumentsTableViewer.getTable();
-    argumentsTable.setLayoutData(new GridData(GridData.FILL_BOTH));
+	private ArgumentsChangeRefresher myArgumentsChangedRefresher;
 
-    //TableColumn allowNullColumn = attributesTable.getColumn(TableUtils.getColumnNumber(EOArgumentsConstants.COLUMNS, EOAttribute.ALLOWS_NULL));
-    //allowNullColumn.setText("0");
-    //allowNullColumn.setAlignment(SWT.CENTER);
-    //
-    TableUtils.sort(myArgumentsTableViewer, AbstractEOArgument.NAME);
+	private TableRowRefreshPropertyListener myTableRowRefresher;
 
-    CellEditor[] cellEditors = new CellEditor[EOArgumentsConstants.COLUMNS.length];
-    cellEditors[TableUtils.getColumnNumber(EOArgumentsConstants.COLUMNS, AbstractEOArgument.NAME)] = new TextCellEditor(argumentsTable);
-    cellEditors[TableUtils.getColumnNumber(EOArgumentsConstants.COLUMNS, AbstractEOArgument.COLUMN_NAME)] = new TextCellEditor(argumentsTable);
-    String[] argumentDirectionNames = new String[EOArgumentDirection.ARGUMENT_DIRECTIONS.length];
-    for (int argumentDirectionNum = 0; argumentDirectionNum < argumentDirectionNames.length; argumentDirectionNum++) {
-      argumentDirectionNames[argumentDirectionNum] = EOArgumentDirection.ARGUMENT_DIRECTIONS[argumentDirectionNum].getName();
-    }
-    cellEditors[TableUtils.getColumnNumber(EOArgumentsConstants.COLUMNS, EOArgument.DIRECTION)] = new KeyComboBoxCellEditor(argumentsTable, argumentDirectionNames);
-    myArgumentsTableViewer.setCellModifier(new EOArgumentsCellModifier(myArgumentsTableViewer));
-    myArgumentsTableViewer.setCellEditors(cellEditors);
-  }
+	public EOArgumentsTableViewer(Composite _parent, int _style) {
+		super(_parent, _style);
 
-  public void setStoredProcedure(EOStoredProcedure _storedProcedure) {
-    if (myStoredProcedure != null) {
-      myStoredProcedure.removePropertyChangeListener(EOStoredProcedure.ARGUMENTS, myArgumentsChangedRefresher);
-      myStoredProcedure.removePropertyChangeListener(EOStoredProcedure.ARGUMENT, myTableRowRefresher);
-    }
-    myStoredProcedure = _storedProcedure;
-    if (myStoredProcedure != null) {
-      myArgumentsTableViewer.setInput(myStoredProcedure);
-      TableUtils.packTableColumns(myArgumentsTableViewer);
-      myStoredProcedure.addPropertyChangeListener(EOStoredProcedure.ARGUMENTS, myArgumentsChangedRefresher);
-      myStoredProcedure.addPropertyChangeListener(EOStoredProcedure.ARGUMENT, myTableRowRefresher);
-    }
-  }
+		setLayout(new GridLayout(1, true));
+		myArgumentsTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EOArgument", EOArgumentsConstants.COLUMNS, new EOArgumentsContentProvider(), new EOArgumentsLabelProvider(EOArgumentsConstants.COLUMNS), new TablePropertyViewerSorter(EOArgumentsConstants.COLUMNS));
+		new DoubleClickNewAttributeHandler(myArgumentsTableViewer).attach();
+		myArgumentsChangedRefresher = new ArgumentsChangeRefresher(myArgumentsTableViewer);
+		myTableRowRefresher = new TableRowRefreshPropertyListener(myArgumentsTableViewer);
+		Table argumentsTable = myArgumentsTableViewer.getTable();
+		argumentsTable.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-  public EOStoredProcedure getStoredProcedure() {
-    return myStoredProcedure;
-  }
+		// TableColumn allowNullColumn =
+		// attributesTable.getColumn(TableUtils.getColumnNumber(EOArgumentsConstants.COLUMNS,
+		// EOAttribute.ALLOWS_NULL));
+		// allowNullColumn.setText("0");
+		// allowNullColumn.setAlignment(SWT.CENTER);
+		//
+		TableUtils.sort(myArgumentsTableViewer, AbstractEOArgument.NAME);
 
-  public TableViewer getTableViewer() {
-    return myArgumentsTableViewer;
-  }
+		CellEditor[] cellEditors = new CellEditor[EOArgumentsConstants.COLUMNS.length];
+		cellEditors[TableUtils.getColumnNumber(EOArgumentsConstants.COLUMNS, AbstractEOArgument.NAME)] = new TextCellEditor(argumentsTable);
+		cellEditors[TableUtils.getColumnNumber(EOArgumentsConstants.COLUMNS, AbstractEOArgument.COLUMN_NAME)] = new TextCellEditor(argumentsTable);
+		String[] argumentDirectionNames = new String[EOArgumentDirection.ARGUMENT_DIRECTIONS.length];
+		for (int argumentDirectionNum = 0; argumentDirectionNum < argumentDirectionNames.length; argumentDirectionNum++) {
+			argumentDirectionNames[argumentDirectionNum] = EOArgumentDirection.ARGUMENT_DIRECTIONS[argumentDirectionNum].getName();
+		}
+		cellEditors[TableUtils.getColumnNumber(EOArgumentsConstants.COLUMNS, EOArgument.DIRECTION)] = new KeyComboBoxCellEditor(argumentsTable, argumentDirectionNames);
+		myArgumentsTableViewer.setCellModifier(new EOArgumentsCellModifier(myArgumentsTableViewer));
+		myArgumentsTableViewer.setCellEditors(cellEditors);
+	}
 
-  public void addSelectionChangedListener(ISelectionChangedListener _listener) {
-    myArgumentsTableViewer.addSelectionChangedListener(_listener);
-  }
+	public void setStoredProcedure(EOStoredProcedure _storedProcedure) {
+		if (myStoredProcedure != null) {
+			myStoredProcedure.removePropertyChangeListener(EOStoredProcedure.ARGUMENTS, myArgumentsChangedRefresher);
+			myStoredProcedure.removePropertyChangeListener(EOStoredProcedure.ARGUMENT, myTableRowRefresher);
+		}
+		myStoredProcedure = _storedProcedure;
+		if (myStoredProcedure != null) {
+			myArgumentsTableViewer.setInput(myStoredProcedure);
+			TableUtils.packTableColumns(myArgumentsTableViewer);
+			myStoredProcedure.addPropertyChangeListener(EOStoredProcedure.ARGUMENTS, myArgumentsChangedRefresher);
+			myStoredProcedure.addPropertyChangeListener(EOStoredProcedure.ARGUMENT, myTableRowRefresher);
+		}
+	}
 
-  public void removeSelectionChangedListener(ISelectionChangedListener _listener) {
-    myArgumentsTableViewer.removeSelectionChangedListener(_listener);
-  }
+	public EOStoredProcedure getStoredProcedure() {
+		return myStoredProcedure;
+	}
 
-  public ISelection getSelection() {
-    return myArgumentsTableViewer.getSelection();
-  }
+	public TableViewer getTableViewer() {
+		return myArgumentsTableViewer;
+	}
 
-  public void setSelection(ISelection _selection) {
-    myArgumentsTableViewer.setSelection(_selection);
-  }
+	public void addSelectionChangedListener(ISelectionChangedListener _listener) {
+		myArgumentsTableViewer.addSelectionChangedListener(_listener);
+	}
 
-  protected class DoubleClickNewAttributeHandler extends TableRowDoubleClickHandler {
-    public DoubleClickNewAttributeHandler(TableViewer _viewer) {
-      super(_viewer);
-    }
+	public void removeSelectionChangedListener(ISelectionChangedListener _listener) {
+		myArgumentsTableViewer.removeSelectionChangedListener(_listener);
+	}
 
-    protected void emptyDoubleSelectionOccurred() {
-      try {
-        EOArgumentsTableViewer.this.getStoredProcedure().addBlankArgument(Messages.getString("EOArgument.newName"));
-      }
-      catch (Throwable e) {
-        e.printStackTrace();
-      }
-    }
+	public ISelection getSelection() {
+		return myArgumentsTableViewer.getSelection();
+	}
 
-    protected void doubleSelectionOccurred(ISelection _selection) {
-      // DO NOTHING
-    }
-  }
+	public void setSelection(ISelection _selection) {
+		myArgumentsTableViewer.setSelection(_selection);
+	}
 
-  protected class ArgumentsChangeRefresher extends TableRefreshPropertyListener {
-    public ArgumentsChangeRefresher(TableViewer _tableViewer) {
-      super(_tableViewer);
-    }
+	protected class DoubleClickNewAttributeHandler extends TableRowDoubleClickHandler {
+		public DoubleClickNewAttributeHandler(TableViewer _viewer) {
+			super(_viewer);
+		}
 
-    public void propertyChange(PropertyChangeEvent _event) {
-      super.propertyChange(_event);
-      Set oldValues = (Set) _event.getOldValue();
-      Set newValues = (Set) _event.getNewValue();
-      if (newValues != null && oldValues != null) {
-        if (newValues.size() > oldValues.size()) {
-          List newList = new LinkedList(newValues);
-          newList.removeAll(oldValues);
-          EOArgumentsTableViewer.this.setSelection(new StructuredSelection(newList));
-        }
-        TableUtils.packTableColumns(EOArgumentsTableViewer.this.getTableViewer());
-      }
-    }
-  }
+		protected void emptyDoubleSelectionOccurred() {
+			try {
+				EOArgumentsTableViewer.this.getStoredProcedure().addBlankArgument(Messages.getString("EOArgument.newName"));
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
+		}
+
+		protected void doubleSelectionOccurred(ISelection _selection) {
+			// DO NOTHING
+		}
+	}
+
+	protected class ArgumentsChangeRefresher extends TableRefreshPropertyListener {
+		public ArgumentsChangeRefresher(TableViewer _tableViewer) {
+			super(_tableViewer);
+		}
+
+		public void propertyChange(PropertyChangeEvent _event) {
+			super.propertyChange(_event);
+			Set oldValues = (Set) _event.getOldValue();
+			Set newValues = (Set) _event.getNewValue();
+			if (newValues != null && oldValues != null) {
+				if (newValues.size() > oldValues.size()) {
+					List newList = new LinkedList(newValues);
+					newList.removeAll(oldValues);
+					EOArgumentsTableViewer.this.setSelection(new StructuredSelection(newList));
+				}
+				TableUtils.packTableColumns(EOArgumentsTableViewer.this.getTableViewer());
+			}
+		}
+	}
 }

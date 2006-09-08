@@ -56,55 +56,52 @@ import org.objectstyle.wolips.eomodeler.model.EOJoin;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyCellModifier;
 
 public class EOJoinsCellModifier extends TablePropertyCellModifier {
-  public EOJoinsCellModifier(TableViewer _joinsTableViewer) {
-    super(_joinsTableViewer);
-  }
+	public EOJoinsCellModifier(TableViewer _joinsTableViewer) {
+		super(_joinsTableViewer);
+	}
 
-  protected boolean _canModify(Object _element, String _property) throws Throwable {
-    boolean canModify = true;
-    return canModify;
-  }
+	protected boolean _canModify(Object _element, String _property) throws Throwable {
+		boolean canModify = true;
+		return canModify;
+	}
 
-  public Object getValue(Object _element, String _property) {
-    EOJoin join = (EOJoin) _element;
-    Object value = null;
-    if (_property == EOJoin.DESTINATION_ATTRIBUTE_NAME) {
-      String attributeName = join.getDestinationAttributeName();
-      if (attributeName != null) {
-        value = new Integer(Arrays.asList(join.getRelationship().getDestination().getAttributeNames()).indexOf(attributeName));
-      }
-    }
-    else if (_property == EOJoin.SOURCE_ATTRIBUTE_NAME) {
-      String attributeName = join.getSourceAttributeName();
-      if (attributeName != null) {
-        value = new Integer(Arrays.asList(join.getRelationship().getEntity().getAttributeNames()).indexOf(attributeName));
-      }
-    }
-    else {
-      value = super.getValue(_element, _property);
-    }
-    return value;
-  }
+	public Object getValue(Object _element, String _property) {
+		EOJoin join = (EOJoin) _element;
+		Object value = null;
+		if (_property == EOJoin.DESTINATION_ATTRIBUTE_NAME) {
+			String attributeName = join.getDestinationAttributeName();
+			if (attributeName != null) {
+				value = new Integer(Arrays.asList(join.getRelationship().getDestination().getAttributeNames()).indexOf(attributeName));
+			}
+		} else if (_property == EOJoin.SOURCE_ATTRIBUTE_NAME) {
+			String attributeName = join.getSourceAttributeName();
+			if (attributeName != null) {
+				value = new Integer(Arrays.asList(join.getRelationship().getEntity().getAttributeNames()).indexOf(attributeName));
+			}
+		} else {
+			value = super.getValue(_element, _property);
+		}
+		return value;
+	}
 
-  protected boolean _modify(Object _element, String _property, Object _value) throws Throwable {
-    boolean modified = false;
-    EOJoin join = (EOJoin) _element;
-    if (_property == EOJoin.DESTINATION_ATTRIBUTE_NAME) {
-      Integer attributeIndex = (Integer) _value;
-      int attributeIndexInt = attributeIndex.intValue();
-      String[] destinationAttributeNames = join.getRelationship().getDestination().getAttributeNames();
-      String attributeName = (attributeIndexInt == -1) ? null : (String) destinationAttributeNames[attributeIndexInt];
-      join.setDestinationAttributeName(attributeName);
-      modified = true;
-    }
-    else if (_property == EOJoin.SOURCE_ATTRIBUTE_NAME) {
-      Integer attributeIndex = (Integer) _value;
-      int attributeIndexInt = attributeIndex.intValue();
-      String[] sourceAttributeNames = join.getRelationship().getEntity().getAttributeNames();
-      String attributeName = (attributeIndexInt == -1) ? null : (String) sourceAttributeNames[attributeIndexInt];
-      join.setSourceAttributeName(attributeName);
-      modified = true;
-    }
-    return modified;
-  }
+	protected boolean _modify(Object _element, String _property, Object _value) throws Throwable {
+		boolean modified = false;
+		EOJoin join = (EOJoin) _element;
+		if (_property == EOJoin.DESTINATION_ATTRIBUTE_NAME) {
+			Integer attributeIndex = (Integer) _value;
+			int attributeIndexInt = attributeIndex.intValue();
+			String[] destinationAttributeNames = join.getRelationship().getDestination().getAttributeNames();
+			String attributeName = (attributeIndexInt == -1) ? null : (String) destinationAttributeNames[attributeIndexInt];
+			join.setDestinationAttributeName(attributeName);
+			modified = true;
+		} else if (_property == EOJoin.SOURCE_ATTRIBUTE_NAME) {
+			Integer attributeIndex = (Integer) _value;
+			int attributeIndexInt = attributeIndex.intValue();
+			String[] sourceAttributeNames = join.getRelationship().getEntity().getAttributeNames();
+			String attributeName = (attributeIndexInt == -1) ? null : (String) sourceAttributeNames[attributeIndexInt];
+			join.setSourceAttributeName(attributeName);
+			modified = true;
+		}
+		return modified;
+	}
 }

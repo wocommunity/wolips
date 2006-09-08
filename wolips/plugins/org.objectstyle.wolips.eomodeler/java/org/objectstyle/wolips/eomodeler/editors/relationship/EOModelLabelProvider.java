@@ -55,28 +55,28 @@ import org.eclipse.swt.graphics.Image;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 
 public class EOModelLabelProvider implements ILabelProvider {
-  public Image getImage(Object _element) {
-    return null;
-  }
+	public Image getImage(Object _element) {
+		return null;
+	}
 
-  public String getText(Object _element) {
-    EOModel model = (EOModel) _element;
-    return model.getName();
-  }
+	public String getText(Object _element) {
+		EOModel model = (EOModel) _element;
+		return model.getName();
+	}
 
-  public void addListener(ILabelProviderListener _listener) {
-    // DO NOTHING
-  }
+	public void addListener(ILabelProviderListener _listener) {
+		// DO NOTHING
+	}
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public boolean isLabelProperty(Object _element, String _property) {
-    return true;
-  }
+	public boolean isLabelProperty(Object _element, String _property) {
+		return true;
+	}
 
-  public void removeListener(ILabelProviderListener _listener) {
-    // DO NOTHING
-  }
+	public void removeListener(ILabelProviderListener _listener) {
+		// DO NOTHING
+	}
 }

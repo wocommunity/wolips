@@ -57,18 +57,18 @@ import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 
 public class EOEntitiesContentProvider implements IStructuredContentProvider {
-  public Object[] getElements(Object _inputElement) {
-    EOModel model = (EOModel) _inputElement;
-    Set entitiesList = model.getEntities();
-    EOEntity[] entities = (EOEntity[]) entitiesList.toArray(new EOEntity[entitiesList.size()]);
-    return entities;
-  }
+	public Object[] getElements(Object _inputElement) {
+		EOModel model = (EOModel) _inputElement;
+		Set entitiesList = model.getEntities();
+		EOEntity[] entities = (EOEntity[]) entitiesList.toArray(new EOEntity[entitiesList.size()]);
+		return entities;
+	}
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
-    // DO NOTHING
-  }
+	public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+		// DO NOTHING
+	}
 }

@@ -77,101 +77,104 @@ import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
 public class EORelationshipAdvancedEditorSection extends AbstractPropertySection {
-  private EORelationship myRelationship;
+	private EORelationship myRelationship;
 
-  private Text myNumberOfToManyFaultsToBatchFetchText;
-  private Button myOwnsDestinationButton;
-  private Button myPropagatesPrimaryKeyButton;
-  private Button myClientClassPropertyButton;
+	private Text myNumberOfToManyFaultsToBatchFetchText;
 
-  private DataBindingContext myBindingContext;
-  private RelationshipPropertyChangeListener myRelationshipPropertyChangeListener;
+	private Button myOwnsDestinationButton;
 
-  public EORelationshipAdvancedEditorSection() {
-    myRelationshipPropertyChangeListener = new RelationshipPropertyChangeListener();
-  }
+	private Button myPropagatesPrimaryKeyButton;
 
-  public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
-    super.createControls(_parent, _tabbedPropertySheetPage);
-    Composite form = getWidgetFactory().createFlatFormComposite(_parent);
-    FormLayout formLayout = new FormLayout();
-    form.setLayout(formLayout);
+	private Button myClientClassPropertyButton;
 
-    Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-    FormData topFormData = new FormData();
-    topFormData.top = new FormAttachment(0, 5);
-    topFormData.left = new FormAttachment(0, 5);
-    topFormData.right = new FormAttachment(100, -5);
-    topForm.setLayoutData(topFormData);
+	private DataBindingContext myBindingContext;
 
-    GridLayout topFormLayout = new GridLayout();
-    topFormLayout.numColumns = 2;
-    topForm.setLayout(topFormLayout);
+	private RelationshipPropertyChangeListener myRelationshipPropertyChangeListener;
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH), SWT.NONE);
-    myNumberOfToManyFaultsToBatchFetchText = new Text(topForm, SWT.BORDER);
-    GridData nameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myNumberOfToManyFaultsToBatchFetchText.setLayoutData(nameFieldLayoutData);
+	public EORelationshipAdvancedEditorSection() {
+		myRelationshipPropertyChangeListener = new RelationshipPropertyChangeListener();
+	}
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.OWNS_DESTINATION), SWT.NONE);
-    myOwnsDestinationButton = new Button(topForm, SWT.CHECK);
+	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
+		super.createControls(_parent, _tabbedPropertySheetPage);
+		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
+		FormLayout formLayout = new FormLayout();
+		form.setLayout(formLayout);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.PROPAGATES_PRIMARY_KEY), SWT.NONE);
-    myPropagatesPrimaryKeyButton = new Button(topForm, SWT.CHECK);
+		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
+		FormData topFormData = new FormData();
+		topFormData.top = new FormAttachment(0, 5);
+		topFormData.left = new FormAttachment(0, 5);
+		topFormData.right = new FormAttachment(100, -5);
+		topForm.setLayoutData(topFormData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.CLIENT_CLASS_PROPERTY), SWT.NONE);
-    myClientClassPropertyButton = new Button(topForm, SWT.CHECK);
-  }
+		GridLayout topFormLayout = new GridLayout();
+		topFormLayout.numColumns = 2;
+		topForm.setLayout(topFormLayout);
 
-  public void setInput(IWorkbenchPart _part, ISelection _selection) {
-    super.setInput(_part, _selection);
-    disposeBindings();
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH), SWT.NONE);
+		myNumberOfToManyFaultsToBatchFetchText = new Text(topForm, SWT.BORDER);
+		GridData nameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myNumberOfToManyFaultsToBatchFetchText.setLayoutData(nameFieldLayoutData);
 
-    Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-    if (selectedObject instanceof EORelationship) {
-      myRelationship = (EORelationship) selectedObject;
-    }
-    else if (selectedObject instanceof EORelationshipPath) {
-      myRelationship = ((EORelationshipPath) selectedObject).getChildRelationship();
-    }
-    if (myRelationship != null) {
-      myRelationship.addPropertyChangeListener(EORelationship.TO_MANY, myRelationshipPropertyChangeListener);
-      myBindingContext = BindingFactory.createContext();
-      myBindingContext.bind(myNumberOfToManyFaultsToBatchFetchText, new Property(myRelationship, EORelationship.NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH), new BindSpec(null, null, new RegexStringValidator("^[0-9]*$", "^[0-9]$", "Please enter a number"), null));
-      myBindingContext.bind(myOwnsDestinationButton, new Property(myRelationship, EORelationship.OWNS_DESTINATION), null);
-      myBindingContext.bind(myPropagatesPrimaryKeyButton, new Property(myRelationship, EORelationship.PROPAGATES_PRIMARY_KEY), null);
-      myBindingContext.bind(myClientClassPropertyButton, new Property(myRelationship, EORelationship.CLIENT_CLASS_PROPERTY), null);
-      updateCardinalityEnabled();
-    }
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.OWNS_DESTINATION), SWT.NONE);
+		myOwnsDestinationButton = new Button(topForm, SWT.CHECK);
 
-  protected void updateCardinalityEnabled() {
-    Boolean isToMany = myRelationship.isToMany();
-    boolean enabled = (isToMany != null && isToMany.booleanValue());
-    myNumberOfToManyFaultsToBatchFetchText.setEnabled(enabled);
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.PROPAGATES_PRIMARY_KEY), SWT.NONE);
+		myPropagatesPrimaryKeyButton = new Button(topForm, SWT.CHECK);
 
-  protected void removeRelationshipListeners() {
-    if (myRelationship != null) {
-      myRelationship.removePropertyChangeListener(EORelationship.TO_MANY, myRelationshipPropertyChangeListener);
-    }
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.CLIENT_CLASS_PROPERTY), SWT.NONE);
+		myClientClassPropertyButton = new Button(topForm, SWT.CHECK);
+	}
 
-  protected void disposeBindings() {
-    if (myBindingContext != null) {
-      myBindingContext.dispose();
-    }
-    removeRelationshipListeners();
-  }
+	public void setInput(IWorkbenchPart _part, ISelection _selection) {
+		super.setInput(_part, _selection);
+		disposeBindings();
 
-  public void dispose() {
-    super.dispose();
-    disposeBindings();
-  }
+		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+		if (selectedObject instanceof EORelationship) {
+			myRelationship = (EORelationship) selectedObject;
+		} else if (selectedObject instanceof EORelationshipPath) {
+			myRelationship = ((EORelationshipPath) selectedObject).getChildRelationship();
+		}
+		if (myRelationship != null) {
+			myRelationship.addPropertyChangeListener(EORelationship.TO_MANY, myRelationshipPropertyChangeListener);
+			myBindingContext = BindingFactory.createContext();
+			myBindingContext.bind(myNumberOfToManyFaultsToBatchFetchText, new Property(myRelationship, EORelationship.NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH), new BindSpec(null, null, new RegexStringValidator("^[0-9]*$", "^[0-9]$", "Please enter a number"), null));
+			myBindingContext.bind(myOwnsDestinationButton, new Property(myRelationship, EORelationship.OWNS_DESTINATION), null);
+			myBindingContext.bind(myPropagatesPrimaryKeyButton, new Property(myRelationship, EORelationship.PROPAGATES_PRIMARY_KEY), null);
+			myBindingContext.bind(myClientClassPropertyButton, new Property(myRelationship, EORelationship.CLIENT_CLASS_PROPERTY), null);
+			updateCardinalityEnabled();
+		}
+	}
 
-  protected class RelationshipPropertyChangeListener implements PropertyChangeListener {
-    public void propertyChange(PropertyChangeEvent _event) {
-      EORelationshipAdvancedEditorSection.this.updateCardinalityEnabled();
-    }
-  }
+	protected void updateCardinalityEnabled() {
+		Boolean isToMany = myRelationship.isToMany();
+		boolean enabled = (isToMany != null && isToMany.booleanValue());
+		myNumberOfToManyFaultsToBatchFetchText.setEnabled(enabled);
+	}
+
+	protected void removeRelationshipListeners() {
+		if (myRelationship != null) {
+			myRelationship.removePropertyChangeListener(EORelationship.TO_MANY, myRelationshipPropertyChangeListener);
+		}
+	}
+
+	protected void disposeBindings() {
+		if (myBindingContext != null) {
+			myBindingContext.dispose();
+		}
+		removeRelationshipListeners();
+	}
+
+	public void dispose() {
+		super.dispose();
+		disposeBindings();
+	}
+
+	protected class RelationshipPropertyChangeListener implements PropertyChangeListener {
+		public void propertyChange(PropertyChangeEvent _event) {
+			EORelationshipAdvancedEditorSection.this.updateCardinalityEnabled();
+		}
+	}
 }

@@ -55,48 +55,48 @@ import org.eclipse.swt.graphics.Image;
 import org.objectstyle.wolips.eomodeler.model.EODataType;
 
 public class EODataTypeLabelProvider implements ILabelProvider {
-  public Image getImage(Object _element) {
-    return null;
-  }
+	public Image getImage(Object _element) {
+		return null;
+	}
 
-  public String getText(Object _element) {
-    EODataType dataType = (EODataType) _element;
-    StringBuffer displayNameBuffer = new StringBuffer();
-    String valueClass = dataType.getValueClass();
-    displayNameBuffer.append(dataType.getName());
-    if (valueClass != null) {
-      displayNameBuffer.append(" - ");
-      displayNameBuffer.append(valueClass);
-    }
-    String[] valueTypes = dataType.getValueTypes();
-    for (int valueTypeNum = 0; valueTypeNum < valueTypes.length; valueTypeNum++) {
-      String valueType = valueTypes[valueTypeNum];
-      if (valueType != null && valueType.length() > 0) {
-        displayNameBuffer.append(" ");
-        displayNameBuffer.append(valueType);
-      }
-    }
-    if (valueClass != null) {
-      displayNameBuffer.append("");
-    }
+	public String getText(Object _element) {
+		EODataType dataType = (EODataType) _element;
+		StringBuffer displayNameBuffer = new StringBuffer();
+		String valueClass = dataType.getValueClass();
+		displayNameBuffer.append(dataType.getName());
+		if (valueClass != null) {
+			displayNameBuffer.append(" - ");
+			displayNameBuffer.append(valueClass);
+		}
+		String[] valueTypes = dataType.getValueTypes();
+		for (int valueTypeNum = 0; valueTypeNum < valueTypes.length; valueTypeNum++) {
+			String valueType = valueTypes[valueTypeNum];
+			if (valueType != null && valueType.length() > 0) {
+				displayNameBuffer.append(" ");
+				displayNameBuffer.append(valueType);
+			}
+		}
+		if (valueClass != null) {
+			displayNameBuffer.append("");
+		}
 
-    return displayNameBuffer.toString();
-  }
+		return displayNameBuffer.toString();
+	}
 
-  public void addListener(ILabelProviderListener _listener) {
-    // DO NOTHING
-  }
+	public void addListener(ILabelProviderListener _listener) {
+		// DO NOTHING
+	}
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public boolean isLabelProperty(Object _element, String _property) {
-    return true;
-  }
+	public boolean isLabelProperty(Object _element, String _property) {
+		return true;
+	}
 
-  public void removeListener(ILabelProviderListener _listener) {
-    // DO NOTHING
-  }
+	public void removeListener(ILabelProviderListener _listener) {
+		// DO NOTHING
+	}
 
 }

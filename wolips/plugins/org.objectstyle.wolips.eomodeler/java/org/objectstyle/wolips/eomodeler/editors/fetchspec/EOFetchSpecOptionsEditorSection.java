@@ -72,90 +72,96 @@ import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
 public class EOFetchSpecOptionsEditorSection extends AbstractPropertySection {
-  private EOFetchSpecification myFetchSpecification;
+	private EOFetchSpecification myFetchSpecification;
 
-  private Text myFetchLimitText;
-  private Button myPromptsAfterFetchLimitButton;
-  private Button myDeepButton;
-  private Button myUsesDistinctButton;
-  private Button myLockObjectsButton;
-  private Button myRefreshesRefetchedObjectsButton;
-  private Button myRequiresAllQualifierBindingVariablesButton;
+	private Text myFetchLimitText;
 
-  private DataBindingContext myBindingContext;
+	private Button myPromptsAfterFetchLimitButton;
 
-  public EOFetchSpecOptionsEditorSection() {
-    // DO NOTHING
-  }
+	private Button myDeepButton;
 
-  public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
-    super.createControls(_parent, _tabbedPropertySheetPage);
-    Composite form = getWidgetFactory().createFlatFormComposite(_parent);
-    FormLayout formLayout = new FormLayout();
-    form.setLayout(formLayout);
+	private Button myUsesDistinctButton;
 
-    Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-    FormData topFormData = new FormData();
-    topFormData.top = new FormAttachment(0, 5);
-    topFormData.left = new FormAttachment(0, 5);
-    topFormData.right = new FormAttachment(100, -5);
-    topForm.setLayoutData(topFormData);
+	private Button myLockObjectsButton;
 
-    GridLayout topFormLayout = new GridLayout();
-    topFormLayout.numColumns = 2;
-    topForm.setLayout(topFormLayout);
+	private Button myRefreshesRefetchedObjectsButton;
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.FETCH_LIMIT), SWT.NONE);
-    myFetchLimitText = new Text(topForm, SWT.BORDER);
-    GridData fetchLimitLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myFetchLimitText.setLayoutData(fetchLimitLayoutData);
+	private Button myRequiresAllQualifierBindingVariablesButton;
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.PROMPTS_AFTER_FETCH_LIMIT), SWT.NONE);
-    myPromptsAfterFetchLimitButton = new Button(topForm, SWT.CHECK);
+	private DataBindingContext myBindingContext;
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.DEEP), SWT.NONE);
-    myDeepButton = new Button(topForm, SWT.CHECK);
+	public EOFetchSpecOptionsEditorSection() {
+		// DO NOTHING
+	}
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.USES_DISTINCT), SWT.NONE);
-    myUsesDistinctButton = new Button(topForm, SWT.CHECK);
+	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
+		super.createControls(_parent, _tabbedPropertySheetPage);
+		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
+		FormLayout formLayout = new FormLayout();
+		form.setLayout(formLayout);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.LOCKS_OBJECTS), SWT.NONE);
-    myLockObjectsButton = new Button(topForm, SWT.CHECK);
+		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
+		FormData topFormData = new FormData();
+		topFormData.top = new FormAttachment(0, 5);
+		topFormData.left = new FormAttachment(0, 5);
+		topFormData.right = new FormAttachment(100, -5);
+		topForm.setLayoutData(topFormData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.REFRESHES_REFETCHED_OBJECTS), SWT.NONE);
-    myRefreshesRefetchedObjectsButton = new Button(topForm, SWT.CHECK);
+		GridLayout topFormLayout = new GridLayout();
+		topFormLayout.numColumns = 2;
+		topForm.setLayout(topFormLayout);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.REQUIRES_ALL_QUALIFIER_BINDING_VARIABLES), SWT.NONE);
-    myRequiresAllQualifierBindingVariablesButton = new Button(topForm, SWT.CHECK);
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.FETCH_LIMIT), SWT.NONE);
+		myFetchLimitText = new Text(topForm, SWT.BORDER);
+		GridData fetchLimitLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myFetchLimitText.setLayoutData(fetchLimitLayoutData);
 
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.PROMPTS_AFTER_FETCH_LIMIT), SWT.NONE);
+		myPromptsAfterFetchLimitButton = new Button(topForm, SWT.CHECK);
 
-  public void setInput(IWorkbenchPart _part, ISelection _selection) {
-    super.setInput(_part, _selection);
-    disposeBindings();
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.DEEP), SWT.NONE);
+		myDeepButton = new Button(topForm, SWT.CHECK);
 
-    Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-    myFetchSpecification = (EOFetchSpecification) selectedObject;
-    if (myFetchSpecification != null) {
-      myBindingContext = BindingFactory.createContext();
-      myBindingContext.bind(myFetchLimitText, new Property(myFetchSpecification, EOFetchSpecification.FETCH_LIMIT), new BindSpec(null, null, new RegexStringValidator("^[0-9]*$", "^[0-9]$", "Please enter a number"), null));
-      myBindingContext.bind(myPromptsAfterFetchLimitButton, new Property(myFetchSpecification, EOFetchSpecification.PROMPTS_AFTER_FETCH_LIMIT), null);
-      myBindingContext.bind(myDeepButton, new Property(myFetchSpecification, EOFetchSpecification.DEEP), null);
-      myBindingContext.bind(myUsesDistinctButton, new Property(myFetchSpecification, EOFetchSpecification.USES_DISTINCT), null);
-      myBindingContext.bind(myLockObjectsButton, new Property(myFetchSpecification, EOFetchSpecification.LOCKS_OBJECTS), null);
-      myBindingContext.bind(myRefreshesRefetchedObjectsButton, new Property(myFetchSpecification, EOFetchSpecification.REFRESHES_REFETCHED_OBJECTS), null);
-      myBindingContext.bind(myRequiresAllQualifierBindingVariablesButton, new Property(myFetchSpecification, EOFetchSpecification.REQUIRES_ALL_QUALIFIER_BINDING_VARIABLES), null);
-    }
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.USES_DISTINCT), SWT.NONE);
+		myUsesDistinctButton = new Button(topForm, SWT.CHECK);
 
-  protected void disposeBindings() {
-    if (myBindingContext != null) {
-      myBindingContext.dispose();
-    }
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.LOCKS_OBJECTS), SWT.NONE);
+		myLockObjectsButton = new Button(topForm, SWT.CHECK);
 
-  public void dispose() {
-    super.dispose();
-    disposeBindings();
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.REFRESHES_REFETCHED_OBJECTS), SWT.NONE);
+		myRefreshesRefetchedObjectsButton = new Button(topForm, SWT.CHECK);
+
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.REQUIRES_ALL_QUALIFIER_BINDING_VARIABLES), SWT.NONE);
+		myRequiresAllQualifierBindingVariablesButton = new Button(topForm, SWT.CHECK);
+
+	}
+
+	public void setInput(IWorkbenchPart _part, ISelection _selection) {
+		super.setInput(_part, _selection);
+		disposeBindings();
+
+		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+		myFetchSpecification = (EOFetchSpecification) selectedObject;
+		if (myFetchSpecification != null) {
+			myBindingContext = BindingFactory.createContext();
+			myBindingContext.bind(myFetchLimitText, new Property(myFetchSpecification, EOFetchSpecification.FETCH_LIMIT), new BindSpec(null, null, new RegexStringValidator("^[0-9]*$", "^[0-9]$", "Please enter a number"), null));
+			myBindingContext.bind(myPromptsAfterFetchLimitButton, new Property(myFetchSpecification, EOFetchSpecification.PROMPTS_AFTER_FETCH_LIMIT), null);
+			myBindingContext.bind(myDeepButton, new Property(myFetchSpecification, EOFetchSpecification.DEEP), null);
+			myBindingContext.bind(myUsesDistinctButton, new Property(myFetchSpecification, EOFetchSpecification.USES_DISTINCT), null);
+			myBindingContext.bind(myLockObjectsButton, new Property(myFetchSpecification, EOFetchSpecification.LOCKS_OBJECTS), null);
+			myBindingContext.bind(myRefreshesRefetchedObjectsButton, new Property(myFetchSpecification, EOFetchSpecification.REFRESHES_REFETCHED_OBJECTS), null);
+			myBindingContext.bind(myRequiresAllQualifierBindingVariablesButton, new Property(myFetchSpecification, EOFetchSpecification.REQUIRES_ALL_QUALIFIER_BINDING_VARIABLES), null);
+		}
+	}
+
+	protected void disposeBindings() {
+		if (myBindingContext != null) {
+			myBindingContext.dispose();
+		}
+	}
+
+	public void dispose() {
+		super.dispose();
+		disposeBindings();
+	}
 }

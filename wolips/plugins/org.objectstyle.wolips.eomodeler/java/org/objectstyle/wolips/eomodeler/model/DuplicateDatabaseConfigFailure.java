@@ -50,30 +50,32 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 public class DuplicateDatabaseConfigFailure extends EOModelVerificationFailure {
-  private EOModel myModel;
-  private String myDatabaseConfigName;
-  private String myNewDatabaseConfigName;
+	private EOModel myModel;
 
-  public DuplicateDatabaseConfigFailure(EOModel _model, String _databaseConfigName, String _newDatabaseConfigName) {
-    this(_model, _databaseConfigName, _newDatabaseConfigName, null);
-  }
+	private String myDatabaseConfigName;
 
-  public DuplicateDatabaseConfigFailure(EOModel _model, String _databaseConfigName, String _newDatabaseConfigName, Throwable _throwable) {
-    super("There was more than one entity named '" + _databaseConfigName + "' in " + _model.getName() + ", so one was renamed to '" + _newDatabaseConfigName + "'.", _throwable);
-    myModel = _model;
-    myDatabaseConfigName = _databaseConfigName;
-    myNewDatabaseConfigName = _newDatabaseConfigName;
-  }
+	private String myNewDatabaseConfigName;
 
-  public EOModel getModel() {
-    return myModel;
-  }
+	public DuplicateDatabaseConfigFailure(EOModel _model, String _databaseConfigName, String _newDatabaseConfigName) {
+		this(_model, _databaseConfigName, _newDatabaseConfigName, null);
+	}
 
-  public String getDatabaseConfigName() {
-    return myDatabaseConfigName;
-  }
+	public DuplicateDatabaseConfigFailure(EOModel _model, String _databaseConfigName, String _newDatabaseConfigName, Throwable _throwable) {
+		super("There was more than one entity named '" + _databaseConfigName + "' in " + _model.getName() + ", so one was renamed to '" + _newDatabaseConfigName + "'.", _throwable);
+		myModel = _model;
+		myDatabaseConfigName = _databaseConfigName;
+		myNewDatabaseConfigName = _newDatabaseConfigName;
+	}
 
-  public String getNewDatabaseConfigName() {
-    return myNewDatabaseConfigName;
-  }
+	public EOModel getModel() {
+		return myModel;
+	}
+
+	public String getDatabaseConfigName() {
+		return myDatabaseConfigName;
+	}
+
+	public String getNewDatabaseConfigName() {
+		return myNewDatabaseConfigName;
+	}
 }

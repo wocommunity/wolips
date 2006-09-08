@@ -52,42 +52,47 @@ package org.objectstyle.wolips.eomodeler.model;
 import org.objectstyle.wolips.eomodeler.Messages;
 
 public class EOJoinSemantic {
-  public static final EOJoinSemantic INNER = new EOJoinSemantic("EOInnerJoin", Messages.getString("EOJoinSemantic.inner"));
-  public static final EOJoinSemantic FULL_OUTER = new EOJoinSemantic("EOFullOuterJoin", Messages.getString("EOJoinSemantic.fullOuter"));
-  public static final EOJoinSemantic LEFT_OUTER = new EOJoinSemantic("EOLeftOuterJoin", Messages.getString("EOJoinSemantic.leftOuter"));
-  public static final EOJoinSemantic RIGHT_OUTER = new EOJoinSemantic("EORightOuterJoin", Messages.getString("EOJoinSemantic.rightOuter"));
-  public static final EOJoinSemantic[] JOIN_SEMANTICS = new EOJoinSemantic[] { EOJoinSemantic.INNER, EOJoinSemantic.FULL_OUTER, EOJoinSemantic.LEFT_OUTER, EOJoinSemantic.RIGHT_OUTER };
+	public static final EOJoinSemantic INNER = new EOJoinSemantic("EOInnerJoin", Messages.getString("EOJoinSemantic.inner"));
 
-  private String myID;
-  private String myName;
+	public static final EOJoinSemantic FULL_OUTER = new EOJoinSemantic("EOFullOuterJoin", Messages.getString("EOJoinSemantic.fullOuter"));
 
-  public EOJoinSemantic(String _id, String _name) {
-    myID = _id;
-    myName = _name;
-  }
+	public static final EOJoinSemantic LEFT_OUTER = new EOJoinSemantic("EOLeftOuterJoin", Messages.getString("EOJoinSemantic.leftOuter"));
 
-  public String getID() {
-    return myID;
-  }
+	public static final EOJoinSemantic RIGHT_OUTER = new EOJoinSemantic("EORightOuterJoin", Messages.getString("EOJoinSemantic.rightOuter"));
 
-  public String getName() {
-    return myName;
-  }
-  
-  public String toString() {
-    return "[EOJoinSemantic: name = " + myName + "]";
-  }
-  
-  public static EOJoinSemantic getJoinSemanticByID(String _id) {
-    EOJoinSemantic matchingJoinSemantic = null;
-    for (int joinSemanticNum = 0; matchingJoinSemantic == null && joinSemanticNum < EOJoinSemantic.JOIN_SEMANTICS.length; joinSemanticNum ++) {
-      if (EOJoinSemantic.JOIN_SEMANTICS[joinSemanticNum].myID.equals(_id)) {
-        matchingJoinSemantic = EOJoinSemantic.JOIN_SEMANTICS[joinSemanticNum];
-      }
-    }
-    if (matchingJoinSemantic == null) {
-      matchingJoinSemantic = EOJoinSemantic.INNER;
-    }
-    return matchingJoinSemantic;
-  }
+	public static final EOJoinSemantic[] JOIN_SEMANTICS = new EOJoinSemantic[] { EOJoinSemantic.INNER, EOJoinSemantic.FULL_OUTER, EOJoinSemantic.LEFT_OUTER, EOJoinSemantic.RIGHT_OUTER };
+
+	private String myID;
+
+	private String myName;
+
+	public EOJoinSemantic(String _id, String _name) {
+		myID = _id;
+		myName = _name;
+	}
+
+	public String getID() {
+		return myID;
+	}
+
+	public String getName() {
+		return myName;
+	}
+
+	public String toString() {
+		return "[EOJoinSemantic: name = " + myName + "]";
+	}
+
+	public static EOJoinSemantic getJoinSemanticByID(String _id) {
+		EOJoinSemantic matchingJoinSemantic = null;
+		for (int joinSemanticNum = 0; matchingJoinSemantic == null && joinSemanticNum < EOJoinSemantic.JOIN_SEMANTICS.length; joinSemanticNum++) {
+			if (EOJoinSemantic.JOIN_SEMANTICS[joinSemanticNum].myID.equals(_id)) {
+				matchingJoinSemantic = EOJoinSemantic.JOIN_SEMANTICS[joinSemanticNum];
+			}
+		}
+		if (matchingJoinSemantic == null) {
+			matchingJoinSemantic = EOJoinSemantic.INNER;
+		}
+		return matchingJoinSemantic;
+	}
 }

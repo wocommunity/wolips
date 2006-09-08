@@ -52,12 +52,12 @@ package org.objectstyle.wolips.eomodeler.utils;
 import org.eclipse.core.resources.IResource;
 
 public class MiscUtils {
-  public static String getFileNameWithoutExtension(IResource _resource) {
-    String fileName = _resource.getName();
-    String fileExtension = _resource.getFileExtension();
-    if (fileExtension != null) {
-      fileName = fileName.substring(0, fileName.indexOf('.'));
-    }
-    return fileName;
-  }
+	public static String getFileNameWithoutExtension(IResource _resource) {
+		String fileName = _resource.getName();
+		String fileExtension = _resource.getFileExtension();
+		if (fileExtension != null) {
+			fileName = fileName.substring(0, fileName.indexOf('.'));
+		}
+		return fileName;
+	}
 }

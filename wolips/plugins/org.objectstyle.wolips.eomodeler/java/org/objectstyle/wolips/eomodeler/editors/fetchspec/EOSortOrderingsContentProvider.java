@@ -54,17 +54,17 @@ import org.eclipse.jface.viewers.Viewer;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 
 public class EOSortOrderingsContentProvider implements IStructuredContentProvider {
-  public Object[] getElements(Object _inputElement) {
-    EOFetchSpecification fetchSpec = (EOFetchSpecification) _inputElement;
-    Object[] sortOrderings = fetchSpec.getSortOrderings().toArray();
-    return sortOrderings;
-  }
+	public Object[] getElements(Object _inputElement) {
+		EOFetchSpecification fetchSpec = (EOFetchSpecification) _inputElement;
+		Object[] sortOrderings = fetchSpec.getSortOrderings().toArray();
+		return sortOrderings;
+	}
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
-    // DO NOTHING
-  }
+	public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+		// DO NOTHING
+	}
 }

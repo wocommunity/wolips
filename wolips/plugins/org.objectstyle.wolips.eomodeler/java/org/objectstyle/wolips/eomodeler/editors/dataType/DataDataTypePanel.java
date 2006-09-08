@@ -63,31 +63,32 @@ import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
 public class DataDataTypePanel extends Composite implements IDataTypePanel {
-  private Text myExternalWidthText;
-  private DataBindingContext myBindingContext;
+	private Text myExternalWidthText;
 
-  public DataDataTypePanel(Composite _parent, int _style, TabbedPropertySheetWidgetFactory _widgetFactory) {
-    super(_parent, _style);
-    setBackground(_parent.getBackground());
-    setLayout(new GridLayout(2, false));
-    _widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.WIDTH), SWT.NONE);
-    myExternalWidthText = new Text(this, SWT.BORDER);
-    GridData externalWidthFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myExternalWidthText.setLayoutData(externalWidthFieldLayoutData);
-  }
+	private DataBindingContext myBindingContext;
 
-  public void setArgument(AbstractEOArgument _argument) {
-    if (myBindingContext != null) {
-      myBindingContext.dispose();
-    }
-    if (_argument != null) {
-      myBindingContext = BindingFactory.createContext();
-      myBindingContext.bind(myExternalWidthText, new Property(_argument, AbstractEOArgument.WIDTH), null);
-    }
-  }
-  
-  public void dispose() {
-    setArgument(null);
-    super.dispose();
-  }
+	public DataDataTypePanel(Composite _parent, int _style, TabbedPropertySheetWidgetFactory _widgetFactory) {
+		super(_parent, _style);
+		setBackground(_parent.getBackground());
+		setLayout(new GridLayout(2, false));
+		_widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.WIDTH), SWT.NONE);
+		myExternalWidthText = new Text(this, SWT.BORDER);
+		GridData externalWidthFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myExternalWidthText.setLayoutData(externalWidthFieldLayoutData);
+	}
+
+	public void setArgument(AbstractEOArgument _argument) {
+		if (myBindingContext != null) {
+			myBindingContext.dispose();
+		}
+		if (_argument != null) {
+			myBindingContext = BindingFactory.createContext();
+			myBindingContext.bind(myExternalWidthText, new Property(_argument, AbstractEOArgument.WIDTH), null);
+		}
+	}
+
+	public void dispose() {
+		setArgument(null);
+		super.dispose();
+	}
 }

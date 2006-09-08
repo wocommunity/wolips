@@ -52,8 +52,7 @@ import org.objectstyle.wolips.components.editor.IEmbeddedEditor;
 import org.objectstyle.wolips.components.editor.IHtmlDocumentProvider;
 import org.objectstyle.wolips.editors.contentdescriber.ContentDescriberWO;
 
-public class StructuredTextEditorWO extends
-		StructuredTextEditor implements IEmbeddedEditor, IHtmlDocumentProvider {
+public class StructuredTextEditorWO extends StructuredTextEditor implements IEmbeddedEditor, IHtmlDocumentProvider {
 
 	private EditorInteraction editorInteraction;
 
@@ -63,15 +62,13 @@ public class StructuredTextEditorWO extends
 	}
 
 	public void initEditorInteraction(EditorInteraction editorInteraction) {
-		this.getSelectionProvider().addSelectionChangedListener(
-				new HTMLOutlineSelectionHandler(editorInteraction));
+		this.getSelectionProvider().addSelectionChangedListener(new HTMLOutlineSelectionHandler(editorInteraction));
 		editorInteraction.setHtmlDocumentProvider(this);
 		this.editorInteraction = editorInteraction;
 	}
 
 	public IDocument getHtmlEditDocument() {
-		IDocument editDocument = this.getDocumentProvider().getDocument(
-				this.getEditorInput());
+		IDocument editDocument = this.getDocumentProvider().getDocument(this.getEditorInput());
 		return editDocument;
 	}
 
@@ -80,7 +77,7 @@ public class StructuredTextEditorWO extends
 	}
 
 	protected void setSourceViewerConfiguration(SourceViewerConfiguration sourceViewerConfiguration) {
-		if(sourceViewerConfiguration instanceof StructuredTextViewerConfigurationWO) {
+		if (sourceViewerConfiguration instanceof StructuredTextViewerConfigurationWO) {
 			ContentDescriberWO.ANSWER = ITextContentDescriber.INVALID;
 		}
 		super.setSourceViewerConfiguration(sourceViewerConfiguration);

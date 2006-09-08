@@ -50,24 +50,25 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 public class MissingAttributeFailure extends EOModelVerificationFailure {
-  private EOEntity myEntity;
-  private String myAttributeName;
+	private EOEntity myEntity;
 
-  public MissingAttributeFailure(EOEntity _entity, String _attributeName) {
-    this(_entity, _attributeName, null);
-  }
+	private String myAttributeName;
 
-  public MissingAttributeFailure(EOEntity _entity, String _attributeName, Throwable _throwable) {
-    super("Missing attribute named '" + _attributeName + "' in " + _entity.getFullyQualifiedName() + ".", _throwable);
-    myEntity = _entity;
-    myAttributeName = _attributeName;
-  }
+	public MissingAttributeFailure(EOEntity _entity, String _attributeName) {
+		this(_entity, _attributeName, null);
+	}
 
-  public EOEntity getEntity() {
-    return myEntity;
-  }
+	public MissingAttributeFailure(EOEntity _entity, String _attributeName, Throwable _throwable) {
+		super("Missing attribute named '" + _attributeName + "' in " + _entity.getFullyQualifiedName() + ".", _throwable);
+		myEntity = _entity;
+		myAttributeName = _attributeName;
+	}
 
-  public String getAttributeName() {
-    return myAttributeName;
-  }
+	public EOEntity getEntity() {
+		return myEntity;
+	}
+
+	public String getAttributeName() {
+		return myAttributeName;
+	}
 }

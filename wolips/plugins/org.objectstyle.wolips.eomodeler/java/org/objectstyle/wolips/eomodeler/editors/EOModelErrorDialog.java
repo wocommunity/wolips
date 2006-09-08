@@ -18,75 +18,76 @@ import org.eclipse.swt.widgets.Shell;
 import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
 
 public class EOModelErrorDialog extends Dialog {
-  private Set myFailures;
-  private ListViewer myFailureListViewer;
+	private Set myFailures;
 
-  public EOModelErrorDialog(Shell _parentShell, Set _failures) {
-    super(_parentShell);
-    myFailures = _failures;
-  }
-  
-  protected void configureShell(Shell _newShell) {
-    super.configureShell(_newShell);
-    _newShell.setText("EOModel Verification Failures");
-  }
+	private ListViewer myFailureListViewer;
 
-  protected Control createDialogArea(Composite _parent) {
-    Composite composite = (Composite) super.createDialogArea(_parent);
-    myFailureListViewer = new ListViewer(composite, SWT.V_SCROLL | SWT.H_SCROLL);
-    myFailureListViewer.setContentProvider(new FailureContentProvider());
-    myFailureListViewer.setLabelProvider(new FailureLabelProvider());
-    myFailureListViewer.setInput(myFailures);
-    GridData failuresGridData = new GridData(GridData.FILL_BOTH);
-    failuresGridData.widthHint = 600;
-    failuresGridData.heightHint = 300;
-    myFailureListViewer.getList().setLayoutData(failuresGridData);
-    return composite;
-  }
+	public EOModelErrorDialog(Shell _parentShell, Set _failures) {
+		super(_parentShell);
+		myFailures = _failures;
+	}
 
-  protected void createButtonsForButtonBar(Composite parent) {
-    createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
-  }
+	protected void configureShell(Shell _newShell) {
+		super.configureShell(_newShell);
+		_newShell.setText("EOModel Verification Failures");
+	}
 
-  protected static class FailureLabelProvider implements ILabelProvider {
-    public void addListener(ILabelProviderListener _listener) {
-      // DO NOTHING
-    }
+	protected Control createDialogArea(Composite _parent) {
+		Composite composite = (Composite) super.createDialogArea(_parent);
+		myFailureListViewer = new ListViewer(composite, SWT.V_SCROLL | SWT.H_SCROLL);
+		myFailureListViewer.setContentProvider(new FailureContentProvider());
+		myFailureListViewer.setLabelProvider(new FailureLabelProvider());
+		myFailureListViewer.setInput(myFailures);
+		GridData failuresGridData = new GridData(GridData.FILL_BOTH);
+		failuresGridData.widthHint = 600;
+		failuresGridData.heightHint = 300;
+		myFailureListViewer.getList().setLayoutData(failuresGridData);
+		return composite;
+	}
 
-    public void dispose() {
-      // DO NOTHING
-    }
+	protected void createButtonsForButtonBar(Composite parent) {
+		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+	}
 
-    public Image getImage(Object _element) {
-      return null;
-    }
+	protected static class FailureLabelProvider implements ILabelProvider {
+		public void addListener(ILabelProviderListener _listener) {
+			// DO NOTHING
+		}
 
-    public String getText(Object _element) {
-      EOModelVerificationFailure failure = (EOModelVerificationFailure) _element;
-      return failure.getMessage();
-    }
+		public void dispose() {
+			// DO NOTHING
+		}
 
-    public boolean isLabelProperty(Object _element, String _property) {
-      return true;
-    }
+		public Image getImage(Object _element) {
+			return null;
+		}
 
-    public void removeListener(ILabelProviderListener _listener) {
-      // DO NOTHING
-    }
-  }
+		public String getText(Object _element) {
+			EOModelVerificationFailure failure = (EOModelVerificationFailure) _element;
+			return failure.getMessage();
+		}
 
-  protected static class FailureContentProvider implements IStructuredContentProvider {
-    public Object[] getElements(Object _inputElement) {
-      Set failures = (Set) _inputElement;
-      return failures.toArray();
-    }
+		public boolean isLabelProperty(Object _element, String _property) {
+			return true;
+		}
 
-    public void dispose() {
-      // DO NOTHING
-    }
+		public void removeListener(ILabelProviderListener _listener) {
+			// DO NOTHING
+		}
+	}
 
-    public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
-      // DO NOTHING
-    }
-  }
+	protected static class FailureContentProvider implements IStructuredContentProvider {
+		public Object[] getElements(Object _inputElement) {
+			Set failures = (Set) _inputElement;
+			return failures.toArray();
+		}
+
+		public void dispose() {
+			// DO NOTHING
+		}
+
+		public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+			// DO NOTHING
+		}
+	}
 }

@@ -70,200 +70,207 @@ import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
 public class CreateRelationshipDialog extends Dialog implements SelectionListener {
-  private EORelationship myRelationship;
-  private EORelationship myInverseRelationship;
-  private JoinsTableEditor myJoinsTableEditor;
-  private String myOriginalName;
-  private Text myNameText;
-  private Button myToManyButton;
-  private Button myCreateButton;
-  private String myOriginalInverseName;
-  private Text myInverseNameText;
-  private Button myInverseToManyButton;
-  private Button myCreateInverseButton;
-  private Font myTitleFont;
+	private EORelationship myRelationship;
 
-  private boolean myManyToMany;
-  private String myName;
-  private String myInverseName;
+	private EORelationship myInverseRelationship;
 
-  public CreateRelationshipDialog(Shell _shell, EOEntity _entity1, EOEntity _entity2) {
-    super(_shell);
-    myRelationship = _entity1.createRelationshipTo(_entity2, false);
-  }
+	private JoinsTableEditor myJoinsTableEditor;
 
-  protected void configureShell(Shell _newShell) {
-    super.configureShell(_newShell);
-    _newShell.setText(Messages.getString("CreateRelationshipDialog.title"));
-  }
+	private String myOriginalName;
 
-  protected Control createDialogArea(Composite _parent) {
-    Composite relationshipDialogArea = new Composite(_parent, SWT.NONE);
-    GridLayout gridLayout = new GridLayout(2, false);
-    gridLayout.marginBottom = 0;
-    gridLayout.marginTop = 15;
-    gridLayout.marginLeft = 15;
-    gridLayout.marginRight = 15;
-    gridLayout.horizontalSpacing = 15;
-    relationshipDialogArea.setLayout(gridLayout);
+	private Text myNameText;
 
-    Label sourceLabel = new Label(relationshipDialogArea, SWT.NONE);
-    Font originalFont = sourceLabel.getFont();
-    FontData[] fontData = originalFont.getFontData();
-    myTitleFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD);
-    sourceLabel.setText(myRelationship.getEntity().getName());
-    sourceLabel.setFont(myTitleFont);
-    GridData sourceLabelData = new GridData(GridData.FILL_HORIZONTAL);
-    sourceLabelData.horizontalSpan = 2;
-    sourceLabel.setLayoutData(sourceLabelData);
+	private Button myToManyButton;
 
-    myCreateButton = new Button(relationshipDialogArea, SWT.CHECK);
-    myCreateButton.setSelection(true);
-    myCreateButton.setLayoutData(new GridData());
-    myCreateButton.addSelectionListener(this);
-    myCreateButton.setText(Messages.getString("CreateRelationshipDialog.nameLabel"));
+	private Button myCreateButton;
 
-    myNameText = new Text(relationshipDialogArea, SWT.BORDER);
-    GridData nameData = new GridData(GridData.FILL_HORIZONTAL);
-    nameData.widthHint = 200;
-    myNameText.setLayoutData(nameData);
+	private String myOriginalInverseName;
 
-    myToManyButton = new Button(relationshipDialogArea, SWT.CHECK);
-    myToManyButton.addSelectionListener(this);
-    myToManyButton.setText(Messages.getString("CreateRelationshipDialog.toManyLabel"));
+	private Text myInverseNameText;
 
-    Label destinationLabel = new Label(relationshipDialogArea, SWT.NONE);
-    destinationLabel.setText(myRelationship.getDestination().getName());
-    destinationLabel.setFont(myTitleFont);
-    GridData destinationLabelData = new GridData(GridData.FILL_HORIZONTAL);
-    destinationLabelData.horizontalSpan = 2;
-    destinationLabelData.verticalIndent = 15;
-    destinationLabel.setLayoutData(destinationLabelData);
+	private Button myInverseToManyButton;
 
-    myCreateInverseButton = new Button(relationshipDialogArea, SWT.CHECK);
-    myCreateInverseButton.setSelection(true);
-    myCreateInverseButton.setLayoutData(new GridData());
-    myCreateInverseButton.addSelectionListener(this);
-    myCreateInverseButton.setText(Messages.getString("CreateRelationshipDialog.inverseNameLabel"));
+	private Button myCreateInverseButton;
 
-    myInverseNameText = new Text(relationshipDialogArea, SWT.BORDER);
-    GridData inverseNameData = new GridData(GridData.FILL_HORIZONTAL);
-    inverseNameData.widthHint = 200;
-    myInverseNameText.setLayoutData(inverseNameData);
+	private Font myTitleFont;
 
-    myInverseToManyButton = new Button(relationshipDialogArea, SWT.CHECK);
-    myInverseToManyButton.addSelectionListener(this);
-    myInverseToManyButton.setText(Messages.getString("CreateRelationshipDialog.inverseToManyLabel"));
+	private boolean myManyToMany;
 
-    myJoinsTableEditor = new JoinsTableEditor(relationshipDialogArea, SWT.BORDER);
-    GridData joinsGridData = new GridData(GridData.FILL_HORIZONTAL);
-    joinsGridData.horizontalSpan = 2;
-    joinsGridData.verticalIndent = 15;
-    myJoinsTableEditor.setLayoutData(joinsGridData);
-    myJoinsTableEditor.setRelationship(myRelationship);
+	private String myName;
 
-    toManyChanged();
-    inverseToManyChanged();
+	private String myInverseName;
 
-    return relationshipDialogArea;
-  }
+	public CreateRelationshipDialog(Shell _shell, EOEntity _entity1, EOEntity _entity2) {
+		super(_shell);
+		myRelationship = _entity1.createRelationshipTo(_entity2, false);
+	}
 
-  public String getName() {
-    return myName;
-  }
+	protected void configureShell(Shell _newShell) {
+		super.configureShell(_newShell);
+		_newShell.setText(Messages.getString("CreateRelationshipDialog.title"));
+	}
 
-  public String getInverseName() {
-    return myInverseName;
-  }
+	protected Control createDialogArea(Composite _parent) {
+		Composite relationshipDialogArea = new Composite(_parent, SWT.NONE);
+		GridLayout gridLayout = new GridLayout(2, false);
+		gridLayout.marginBottom = 0;
+		gridLayout.marginTop = 15;
+		gridLayout.marginLeft = 15;
+		gridLayout.marginRight = 15;
+		gridLayout.horizontalSpacing = 15;
+		relationshipDialogArea.setLayout(gridLayout);
 
-  public EORelationship getRelationship() {
-    return myRelationship;
-  }
+		Label sourceLabel = new Label(relationshipDialogArea, SWT.NONE);
+		Font originalFont = sourceLabel.getFont();
+		FontData[] fontData = originalFont.getFontData();
+		myTitleFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD);
+		sourceLabel.setText(myRelationship.getEntity().getName());
+		sourceLabel.setFont(myTitleFont);
+		GridData sourceLabelData = new GridData(GridData.FILL_HORIZONTAL);
+		sourceLabelData.horizontalSpan = 2;
+		sourceLabel.setLayoutData(sourceLabelData);
 
-  public EORelationship getInverseRelationship() {
-    return myInverseRelationship;
-  }
+		myCreateButton = new Button(relationshipDialogArea, SWT.CHECK);
+		myCreateButton.setSelection(true);
+		myCreateButton.setLayoutData(new GridData());
+		myCreateButton.addSelectionListener(this);
+		myCreateButton.setText(Messages.getString("CreateRelationshipDialog.nameLabel"));
 
-  public boolean isManyToMany() {
-    return myManyToMany;
-  }
+		myNameText = new Text(relationshipDialogArea, SWT.BORDER);
+		GridData nameData = new GridData(GridData.FILL_HORIZONTAL);
+		nameData.widthHint = 200;
+		myNameText.setLayoutData(nameData);
 
-  protected void okPressed() {
-    try {
-      myName = myNameText.getText();
-      myInverseName = myInverseNameText.getText();
-      if (isManyToMany()) {
-        // DO NOTHING
-      }
-      else if (myCreateInverseButton.getSelection()) {
-        myInverseRelationship = myRelationship.createInverseRelationshipNamed(myInverseName, myInverseToManyButton.getSelection());
-      }
-      if (!myCreateButton.getSelection()) {
-        myRelationship = null;
-      }
-      else {
-        myRelationship.setName(myName);
-        myRelationship.setToMany(Boolean.valueOf(myToManyButton.getSelection()));
-      }
-    }
-    catch (Throwable t) {
-      t.printStackTrace();
-    }
-    super.okPressed();
-  }
+		myToManyButton = new Button(relationshipDialogArea, SWT.CHECK);
+		myToManyButton.addSelectionListener(this);
+		myToManyButton.setText(Messages.getString("CreateRelationshipDialog.toManyLabel"));
 
-  public void toManyChanged() {
-    String name = myNameText.getText();
-    if (myOriginalName == null || ComparisonUtils.equals(name, myOriginalName)) {
-      String newName = myRelationship.getEntity()._findUnusedRelationshipName(myRelationship.getDestination().getName(), myToManyButton.getSelection());
-      myNameText.setText(newName);
-      myOriginalName = newName;
-    }
-    _checkManyToMany();
-  }
+		Label destinationLabel = new Label(relationshipDialogArea, SWT.NONE);
+		destinationLabel.setText(myRelationship.getDestination().getName());
+		destinationLabel.setFont(myTitleFont);
+		GridData destinationLabelData = new GridData(GridData.FILL_HORIZONTAL);
+		destinationLabelData.horizontalSpan = 2;
+		destinationLabelData.verticalIndent = 15;
+		destinationLabel.setLayoutData(destinationLabelData);
 
-  public void inverseToManyChanged() {
-    String name = myInverseNameText.getText();
-    if (myOriginalInverseName == null || ComparisonUtils.equals(name, myOriginalInverseName)) {
-      String newName = myRelationship.getDestination()._findUnusedRelationshipName(myRelationship.getEntity().getName(), myInverseToManyButton.getSelection());
-      myInverseNameText.setText(newName);
-      myOriginalInverseName = newName;
-    }
-    _checkManyToMany();
-  }
+		myCreateInverseButton = new Button(relationshipDialogArea, SWT.CHECK);
+		myCreateInverseButton.setSelection(true);
+		myCreateInverseButton.setLayoutData(new GridData());
+		myCreateInverseButton.addSelectionListener(this);
+		myCreateInverseButton.setText(Messages.getString("CreateRelationshipDialog.inverseNameLabel"));
 
-  protected void _checkManyToMany() {
-    myManyToMany = (myCreateButton.getSelection() && myCreateInverseButton.getSelection() && myToManyButton.getSelection() && myInverseToManyButton.getSelection());
-    myJoinsTableEditor.setEnabled(!myManyToMany);
-  }
+		myInverseNameText = new Text(relationshipDialogArea, SWT.BORDER);
+		GridData inverseNameData = new GridData(GridData.FILL_HORIZONTAL);
+		inverseNameData.widthHint = 200;
+		myInverseNameText.setLayoutData(inverseNameData);
 
-  public void widgetDefaultSelected(SelectionEvent _e) {
-    widgetSelected(_e);
-  }
+		myInverseToManyButton = new Button(relationshipDialogArea, SWT.CHECK);
+		myInverseToManyButton.addSelectionListener(this);
+		myInverseToManyButton.setText(Messages.getString("CreateRelationshipDialog.inverseToManyLabel"));
 
-  public void widgetSelected(SelectionEvent _e) {
-    Object source = _e.getSource();
-    if (source == myToManyButton) {
-      toManyChanged();
-    }
-    else if (source == myInverseToManyButton) {
-      inverseToManyChanged();
-    }
-    else if (source == myCreateButton) {
-      myNameText.setEnabled(myCreateButton.getSelection());
-      myToManyButton.setEnabled(myCreateButton.getSelection());
-    }
-    else if (source == myCreateInverseButton) {
-      myInverseNameText.setEnabled(myCreateInverseButton.getSelection());
-      myInverseToManyButton.setEnabled(myCreateInverseButton.getSelection());
-    }
-  }
+		myJoinsTableEditor = new JoinsTableEditor(relationshipDialogArea, SWT.BORDER);
+		GridData joinsGridData = new GridData(GridData.FILL_HORIZONTAL);
+		joinsGridData.horizontalSpan = 2;
+		joinsGridData.verticalIndent = 15;
+		myJoinsTableEditor.setLayoutData(joinsGridData);
+		myJoinsTableEditor.setRelationship(myRelationship);
 
-  public boolean close() {
-    boolean results = super.close();
-    if (myTitleFont != null) {
-      myTitleFont.dispose();
-    }
-    return results;
-  }
+		toManyChanged();
+		inverseToManyChanged();
+
+		return relationshipDialogArea;
+	}
+
+	public String getName() {
+		return myName;
+	}
+
+	public String getInverseName() {
+		return myInverseName;
+	}
+
+	public EORelationship getRelationship() {
+		return myRelationship;
+	}
+
+	public EORelationship getInverseRelationship() {
+		return myInverseRelationship;
+	}
+
+	public boolean isManyToMany() {
+		return myManyToMany;
+	}
+
+	protected void okPressed() {
+		try {
+			myName = myNameText.getText();
+			myInverseName = myInverseNameText.getText();
+			if (isManyToMany()) {
+				// DO NOTHING
+			} else if (myCreateInverseButton.getSelection()) {
+				myInverseRelationship = myRelationship.createInverseRelationshipNamed(myInverseName, myInverseToManyButton.getSelection());
+			}
+			if (!myCreateButton.getSelection()) {
+				myRelationship = null;
+			} else {
+				myRelationship.setName(myName);
+				myRelationship.setToMany(Boolean.valueOf(myToManyButton.getSelection()));
+			}
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+		super.okPressed();
+	}
+
+	public void toManyChanged() {
+		String name = myNameText.getText();
+		if (myOriginalName == null || ComparisonUtils.equals(name, myOriginalName)) {
+			String newName = myRelationship.getEntity()._findUnusedRelationshipName(myRelationship.getDestination().getName(), myToManyButton.getSelection());
+			myNameText.setText(newName);
+			myOriginalName = newName;
+		}
+		_checkManyToMany();
+	}
+
+	public void inverseToManyChanged() {
+		String name = myInverseNameText.getText();
+		if (myOriginalInverseName == null || ComparisonUtils.equals(name, myOriginalInverseName)) {
+			String newName = myRelationship.getDestination()._findUnusedRelationshipName(myRelationship.getEntity().getName(), myInverseToManyButton.getSelection());
+			myInverseNameText.setText(newName);
+			myOriginalInverseName = newName;
+		}
+		_checkManyToMany();
+	}
+
+	protected void _checkManyToMany() {
+		myManyToMany = (myCreateButton.getSelection() && myCreateInverseButton.getSelection() && myToManyButton.getSelection() && myInverseToManyButton.getSelection());
+		myJoinsTableEditor.setEnabled(!myManyToMany);
+	}
+
+	public void widgetDefaultSelected(SelectionEvent _e) {
+		widgetSelected(_e);
+	}
+
+	public void widgetSelected(SelectionEvent _e) {
+		Object source = _e.getSource();
+		if (source == myToManyButton) {
+			toManyChanged();
+		} else if (source == myInverseToManyButton) {
+			inverseToManyChanged();
+		} else if (source == myCreateButton) {
+			myNameText.setEnabled(myCreateButton.getSelection());
+			myToManyButton.setEnabled(myCreateButton.getSelection());
+		} else if (source == myCreateInverseButton) {
+			myInverseNameText.setEnabled(myCreateInverseButton.getSelection());
+			myInverseToManyButton.setEnabled(myCreateInverseButton.getSelection());
+		}
+	}
+
+	public boolean close() {
+		boolean results = super.close();
+		if (myTitleFont != null) {
+			myTitleFont.dispose();
+		}
+		return results;
+	}
 }

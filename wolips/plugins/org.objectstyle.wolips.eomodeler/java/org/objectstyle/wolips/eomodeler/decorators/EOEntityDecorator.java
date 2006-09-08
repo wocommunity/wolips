@@ -56,43 +56,43 @@ import org.eclipse.swt.graphics.Image;
 import org.objectstyle.wolips.eomodeler.Activator;
 
 public class EOEntityDecorator implements ILabelDecorator {
-  protected boolean shouldDecorate(Object _element) {
-    IFile file = (IFile) _element;
-    return ("eomodeld".equals(file.getParent().getFileExtension()));
-  }
+	protected boolean shouldDecorate(Object _element) {
+		IFile file = (IFile) _element;
+		return ("eomodeld".equals(file.getParent().getFileExtension()));
+	}
 
-  public Image decorateImage(Image _image, Object _element) {
-    Image icon = null;
-    if (shouldDecorate(_element)) {
-      icon = Activator.getDefault().getImageRegistry().get(Activator.EOENTITY_ICON);
-    }
-    return icon;
-  }
+	public Image decorateImage(Image _image, Object _element) {
+		Image icon = null;
+		if (shouldDecorate(_element)) {
+			icon = Activator.getDefault().getImageRegistry().get(Activator.EOENTITY_ICON);
+		}
+		return icon;
+	}
 
-  public String decorateText(String _text, Object _element) {
-    String text = null;
-    if (shouldDecorate(_element)) {
-      IFile entityFile = (IFile) _element;
-      String fileName = entityFile.getName();
-      text = fileName.substring(0, fileName.indexOf('.'));
-    }
-    return text;
-  }
+	public String decorateText(String _text, Object _element) {
+		String text = null;
+		if (shouldDecorate(_element)) {
+			IFile entityFile = (IFile) _element;
+			String fileName = entityFile.getName();
+			text = fileName.substring(0, fileName.indexOf('.'));
+		}
+		return text;
+	}
 
-  public void addListener(ILabelProviderListener _listener) {
-    // DO NOTHING
-  }
+	public void addListener(ILabelProviderListener _listener) {
+		// DO NOTHING
+	}
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public boolean isLabelProperty(Object _element, String _property) {
-    return false;
-  }
+	public boolean isLabelProperty(Object _element, String _property) {
+		return false;
+	}
 
-  public void removeListener(ILabelProviderListener _listener) {
-    // DO NOTHING
-  }
+	public void removeListener(ILabelProviderListener _listener) {
+		// DO NOTHING
+	}
 
 }

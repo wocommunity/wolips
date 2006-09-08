@@ -54,16 +54,16 @@ import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
 public class EOModelerPerspectiveFactory implements IPerspectiveFactory {
-  public static final String EOMODELER_PERSPECTIVE_ID = "org.objectstyle.wolips.eomodeler.EOModelerPerspective";
+	public static final String EOMODELER_PERSPECTIVE_ID = "org.objectstyle.wolips.eomodeler.EOModelerPerspective";
 
-  public void createInitialLayout(IPageLayout _layout) {
-    String editorArea = _layout.getEditorArea();
+	public void createInitialLayout(IPageLayout _layout) {
+		String editorArea = _layout.getEditorArea();
 
-    IFolderLayout topLeft = _layout.createFolder("left", IPageLayout.LEFT, 0.45f, editorArea);
-    topLeft.addView(IPageLayout.ID_OUTLINE);
-    topLeft.addView("org.eclipse.jdt.ui.PackageExplorer");
+		IFolderLayout topLeft = _layout.createFolder("left", IPageLayout.LEFT, 0.45f, editorArea);
+		topLeft.addView(IPageLayout.ID_OUTLINE);
+		topLeft.addView("org.eclipse.jdt.ui.PackageExplorer");
 
-    IFolderLayout bottomRight = _layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.50f, "left");
-    bottomRight.addView(IPageLayout.ID_PROP_SHEET);
-  }
+		IFolderLayout bottomRight = _layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.50f, "left");
+		bottomRight.addView(IPageLayout.ID_PROP_SHEET);
+	}
 }

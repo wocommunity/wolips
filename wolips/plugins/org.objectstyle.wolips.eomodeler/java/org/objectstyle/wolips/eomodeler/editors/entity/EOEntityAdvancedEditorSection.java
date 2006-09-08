@@ -72,83 +72,87 @@ import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
 public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
-  private EOEntity myEntity;
+	private EOEntity myEntity;
 
-  private Text myMaxNumberOfInstancesToBatchFetchText;
-  private Button myCacheInMemoryButton;
-  private Button myReadOnlyButton;
-  private Text myExternalQueryText;
-  private Text myClientClassNameText;
+	private Text myMaxNumberOfInstancesToBatchFetchText;
 
-  private DataBindingContext myBindingContext;
+	private Button myCacheInMemoryButton;
 
-  public EOEntityAdvancedEditorSection() {
-    // DO NOTHING
-  }
+	private Button myReadOnlyButton;
 
-  public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
-    super.createControls(_parent, _tabbedPropertySheetPage);
-    Composite form = getWidgetFactory().createFlatFormComposite(_parent);
-    FormLayout formLayout = new FormLayout();
-    form.setLayout(formLayout);
+	private Text myExternalQueryText;
 
-    Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-    FormData topFormData = new FormData();
-    topFormData.top = new FormAttachment(0, 5);
-    topFormData.left = new FormAttachment(0, 5);
-    topFormData.right = new FormAttachment(100, -5);
-    topForm.setLayoutData(topFormData);
+	private Text myClientClassNameText;
 
-    GridLayout topFormLayout = new GridLayout();
-    topFormLayout.numColumns = 2;
-    topForm.setLayout(topFormLayout);
+	private DataBindingContext myBindingContext;
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH), SWT.NONE);
-    myMaxNumberOfInstancesToBatchFetchText = new Text(topForm, SWT.BORDER);
-    GridData maxNumberOfInstancesToBatchFetchFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myMaxNumberOfInstancesToBatchFetchText.setLayoutData(maxNumberOfInstancesToBatchFetchFieldLayoutData);
+	public EOEntityAdvancedEditorSection() {
+		// DO NOTHING
+	}
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.CACHES_OBJECTS), SWT.NONE);
-    myCacheInMemoryButton = new Button(topForm, SWT.CHECK);
+	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
+		super.createControls(_parent, _tabbedPropertySheetPage);
+		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
+		FormLayout formLayout = new FormLayout();
+		form.setLayout(formLayout);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.READ_ONLY), SWT.NONE);
-    myReadOnlyButton = new Button(topForm, SWT.CHECK);
+		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
+		FormData topFormData = new FormData();
+		topFormData.top = new FormAttachment(0, 5);
+		topFormData.left = new FormAttachment(0, 5);
+		topFormData.right = new FormAttachment(100, -5);
+		topForm.setLayoutData(topFormData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.EXTERNAL_QUERY), SWT.NONE);
-    myExternalQueryText = new Text(topForm, SWT.BORDER);
-    GridData externalQueryFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myExternalQueryText.setLayoutData(externalQueryFieldLayoutData);
+		GridLayout topFormLayout = new GridLayout();
+		topFormLayout.numColumns = 2;
+		topForm.setLayout(topFormLayout);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.CLIENT_CLASS_NAME), SWT.NONE);
-    myClientClassNameText = new Text(topForm, SWT.BORDER);
-    GridData clientClassNameLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myClientClassNameText.setLayoutData(clientClassNameLayoutData);
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH), SWT.NONE);
+		myMaxNumberOfInstancesToBatchFetchText = new Text(topForm, SWT.BORDER);
+		GridData maxNumberOfInstancesToBatchFetchFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myMaxNumberOfInstancesToBatchFetchText.setLayoutData(maxNumberOfInstancesToBatchFetchFieldLayoutData);
 
-  public void setInput(IWorkbenchPart _part, ISelection _selection) {
-    super.setInput(_part, _selection);
-    disposeBindings();
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.CACHES_OBJECTS), SWT.NONE);
+		myCacheInMemoryButton = new Button(topForm, SWT.CHECK);
 
-    Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-    myEntity = (EOEntity) selectedObject;
-    if (myEntity != null) {
-      myBindingContext = BindingFactory.createContext();
-      myBindingContext.bind(myMaxNumberOfInstancesToBatchFetchText, new Property(myEntity, EOEntity.MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH), new BindSpec(null, null, new RegexStringValidator("^[0-9]*$", "^[0-9]$", "Please enter a number"), null));
-      myBindingContext.bind(myCacheInMemoryButton, new Property(myEntity, EOEntity.CACHES_OBJECTS), null);
-      myBindingContext.bind(myReadOnlyButton, new Property(myEntity, EOEntity.READ_ONLY), null);
-      myBindingContext.bind(myExternalQueryText, new Property(myEntity, EOEntity.EXTERNAL_QUERY), null);
-      myBindingContext.bind(myClientClassNameText, new Property(myEntity, EOEntity.CLIENT_CLASS_NAME), null);
-    }
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.READ_ONLY), SWT.NONE);
+		myReadOnlyButton = new Button(topForm, SWT.CHECK);
 
-  protected void disposeBindings() {
-    if (myBindingContext != null) {
-      myBindingContext.dispose();
-    }
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.EXTERNAL_QUERY), SWT.NONE);
+		myExternalQueryText = new Text(topForm, SWT.BORDER);
+		GridData externalQueryFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myExternalQueryText.setLayoutData(externalQueryFieldLayoutData);
 
-  public void dispose() {
-    super.dispose();
-    disposeBindings();
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.CLIENT_CLASS_NAME), SWT.NONE);
+		myClientClassNameText = new Text(topForm, SWT.BORDER);
+		GridData clientClassNameLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myClientClassNameText.setLayoutData(clientClassNameLayoutData);
+	}
+
+	public void setInput(IWorkbenchPart _part, ISelection _selection) {
+		super.setInput(_part, _selection);
+		disposeBindings();
+
+		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+		myEntity = (EOEntity) selectedObject;
+		if (myEntity != null) {
+			myBindingContext = BindingFactory.createContext();
+			myBindingContext.bind(myMaxNumberOfInstancesToBatchFetchText, new Property(myEntity, EOEntity.MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH), new BindSpec(null, null, new RegexStringValidator("^[0-9]*$", "^[0-9]$", "Please enter a number"), null));
+			myBindingContext.bind(myCacheInMemoryButton, new Property(myEntity, EOEntity.CACHES_OBJECTS), null);
+			myBindingContext.bind(myReadOnlyButton, new Property(myEntity, EOEntity.READ_ONLY), null);
+			myBindingContext.bind(myExternalQueryText, new Property(myEntity, EOEntity.EXTERNAL_QUERY), null);
+			myBindingContext.bind(myClientClassNameText, new Property(myEntity, EOEntity.CLIENT_CLASS_NAME), null);
+		}
+	}
+
+	protected void disposeBindings() {
+		if (myBindingContext != null) {
+			myBindingContext.dispose();
+		}
+	}
+
+	public void dispose() {
+		super.dispose();
+		disposeBindings();
+	}
 }

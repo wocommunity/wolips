@@ -59,8 +59,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-public class WebObjectTagContentAssistProcessor extends
-		HTMLContentAssistProcessor {
+public class WebObjectTagContentAssistProcessor extends HTMLContentAssistProcessor {
 
 	/**
 	 * Return a list of proposed code completions based on the specified
@@ -71,11 +70,9 @@ public class WebObjectTagContentAssistProcessor extends
 	 *            a location within the document
 	 * @return an array of code-assist items
 	 */
-	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer,
-			int documentPosition) {
+	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int documentPosition) {
 
-		IndexedRegion indexedNode = ContentAssistUtils.getNodeAt(
-				(StructuredTextViewer) viewer, documentPosition);
+		IndexedRegion indexedNode = ContentAssistUtils.getNodeAt((StructuredTextViewer) viewer, documentPosition);
 		IDOMNode xNode = null;
 
 		if (indexedNode instanceof IDOMNode) {
@@ -102,13 +99,15 @@ public class WebObjectTagContentAssistProcessor extends
 
 	private class WebObjectTagNameAttributeCompletionProposal implements ICompletionProposal {
 		private Node node;
+
 		private String proposal;
+
 		public WebObjectTagNameAttributeCompletionProposal(Node node, String proposal) {
 			super();
 			this.node = node;
 			this.proposal = proposal;
 		}
-		
+
 		public void apply(IDocument document) {
 			node.setNodeValue(proposal);
 		}
@@ -133,6 +132,5 @@ public class WebObjectTagContentAssistProcessor extends
 			return null;
 		}
 
-		
 	}
 }

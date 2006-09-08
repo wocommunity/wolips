@@ -50,34 +50,33 @@
 package org.objectstyle.wolips.eomodeler.kvc;
 
 public class ResolvedKeyPath extends KeyPath {
-  private Class myInitialClass;
+	private Class myInitialClass;
 
-  public ResolvedKeyPath(Class _initialClass, String _keyPath) {
-    super(_keyPath);
-    myInitialClass = _initialClass;
-  }
+	public ResolvedKeyPath(Class _initialClass, String _keyPath) {
+		super(_keyPath);
+		myInitialClass = _initialClass;
+	}
 
-  public ResolvedKeyPath(Class _initialClass, String[] _keyNames) {
-    super(_keyNames);
-    myInitialClass = _initialClass;
-  }
+	public ResolvedKeyPath(Class _initialClass, String[] _keyNames) {
+		super(_keyNames);
+		myInitialClass = _initialClass;
+	}
 
-  public ResolvedKeyPath(ResolvedKey[] _keys) {
-    super(_keys);
-    if (_keys.length > 0) {
-      myInitialClass = _keys[0].getDeclaringClass();
-    }
-  }
+	public ResolvedKeyPath(ResolvedKey[] _keys) {
+		super(_keys);
+		if (_keys.length > 0) {
+			myInitialClass = _keys[0].getDeclaringClass();
+		}
+	}
 
-  protected Key createKey(Key _previousKey, String _keyName) {
-    Class clazz;
-    if (_previousKey == null) {
-      clazz = myInitialClass;
-    }
-    else {
-      clazz = _previousKey.getType(null);
-    }
-    Key key = new ResolvedKey(clazz, _keyName);
-    return key;
-  }
+	protected Key createKey(Key _previousKey, String _keyName) {
+		Class clazz;
+		if (_previousKey == null) {
+			clazz = myInitialClass;
+		} else {
+			clazz = _previousKey.getType(null);
+		}
+		Key key = new ResolvedKey(clazz, _keyName);
+		return key;
+	}
 }

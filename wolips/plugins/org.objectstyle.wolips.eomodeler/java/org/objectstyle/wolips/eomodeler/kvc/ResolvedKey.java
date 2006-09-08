@@ -49,24 +49,23 @@
  */
 package org.objectstyle.wolips.eomodeler.kvc;
 
-
 public class ResolvedKey extends CachingKey {
-  private Class myDeclaringClass;
+	private Class myDeclaringClass;
 
-  public ResolvedKey(Class _declaringClass, String _name) {
-    super(_name);
-    myDeclaringClass = _declaringClass;
-  }
+	public ResolvedKey(Class _declaringClass, String _name) {
+		super(_name);
+		myDeclaringClass = _declaringClass;
+	}
 
-  public Class getDeclaringClass() {
-    return myDeclaringClass;
-  }
+	public Class getDeclaringClass() {
+		return myDeclaringClass;
+	}
 
-  protected Class getClass(Object _instance) {
-    return myDeclaringClass;
-  }
+	protected Class getClass(Object _instance) {
+		return myDeclaringClass;
+	}
 
-  public String toString() {
-    return "[ResolvedKey: class = " + myDeclaringClass.getName() + "; name = " + getName() + "]";
-  }
+	public String toString() {
+		return "[ResolvedKey: class = " + myDeclaringClass.getName() + "; name = " + getName() + "]";
+	}
 }

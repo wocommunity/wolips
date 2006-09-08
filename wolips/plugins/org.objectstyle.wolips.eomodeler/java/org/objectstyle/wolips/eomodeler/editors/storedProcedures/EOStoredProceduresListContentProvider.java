@@ -61,33 +61,34 @@ import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 
 public class EOStoredProceduresListContentProvider implements IStructuredContentProvider {
-  public static final Object BLANK_STORED_PROCEDURE = "";
+	public static final Object BLANK_STORED_PROCEDURE = "";
 
-  private boolean myAllowBlank;
-  private KVCComparator myComparator;
+	private boolean myAllowBlank;
 
-  public EOStoredProceduresListContentProvider(boolean _allowBlank) {
-    myAllowBlank = _allowBlank;
-    myComparator = new KVCComparator(EOStoredProcedure.class, EOStoredProcedure.NAME);
-  }
+	private KVCComparator myComparator;
 
-  public Object[] getElements(Object _inputElement) {
-    Set storedProceduresList = EOModelUtils.getRelatedModel(_inputElement).getStoredProcedures();
-    List storedProceduresListCopy = new LinkedList();
-    storedProceduresListCopy.addAll(storedProceduresList);
-    Collections.sort(storedProceduresListCopy, myComparator);
-    if (myAllowBlank) {
-      storedProceduresListCopy.add(0, EOStoredProceduresListContentProvider.BLANK_STORED_PROCEDURE);
-    }
-    Object[] entities = storedProceduresListCopy.toArray();
-    return entities;
-  }
+	public EOStoredProceduresListContentProvider(boolean _allowBlank) {
+		myAllowBlank = _allowBlank;
+		myComparator = new KVCComparator(EOStoredProcedure.class, EOStoredProcedure.NAME);
+	}
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public Object[] getElements(Object _inputElement) {
+		Set storedProceduresList = EOModelUtils.getRelatedModel(_inputElement).getStoredProcedures();
+		List storedProceduresListCopy = new LinkedList();
+		storedProceduresListCopy.addAll(storedProceduresList);
+		Collections.sort(storedProceduresListCopy, myComparator);
+		if (myAllowBlank) {
+			storedProceduresListCopy.add(0, EOStoredProceduresListContentProvider.BLANK_STORED_PROCEDURE);
+		}
+		Object[] entities = storedProceduresListCopy.toArray();
+		return entities;
+	}
 
-  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
+
+	public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+		// DO NOTHING
+	}
 }

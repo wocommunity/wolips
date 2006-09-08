@@ -60,44 +60,46 @@ import org.objectstyle.wolips.eomodeler.editors.EOModelClipboardHandler;
 import org.objectstyle.wolips.eomodeler.editors.EOModelEditor;
 
 public class EOModelContentOutlinePage extends ContentOutlinePage {
-  private EOModelTreeViewUpdater myUpdater;
-  private EOModelEditor myEditor;
-  private EOModelClipboardHandler myClipboardHandler;
+	private EOModelTreeViewUpdater myUpdater;
 
-  public EOModelContentOutlinePage(EOModelEditor _editor) {
-    myClipboardHandler = new EOModelClipboardHandler();
-    myEditor = _editor;
-  }
+	private EOModelEditor myEditor;
 
-  protected void updateClipboardHandler() {
-    IPageSite site = getSite();
-    if (site != null && myEditor != null) {
-      IActionBars actionBars = site.getActionBars();
-      myClipboardHandler.attach(actionBars, myEditor);
-    }
-  }
+	private EOModelClipboardHandler myClipboardHandler;
 
-  public void createControl(Composite _parent) {
-    super.createControl(_parent);
-    TreeViewer treeViewer = getTreeViewer();
-    myUpdater = new EOModelTreeViewUpdater(treeViewer, new EOModelOutlineContentProvider(true, true, true, true, true, true));
-    myUpdater.setModel(myEditor.getModel());
-    updateClipboardHandler();
-    //AK: commenting prevents an error in swt
-    // setFocus();
-  }
+	public EOModelContentOutlinePage(EOModelEditor _editor) {
+		myClipboardHandler = new EOModelClipboardHandler();
+		myEditor = _editor;
+	}
 
-  public void init(IPageSite _pageSite) {
-    super.init(_pageSite);
-    updateClipboardHandler();
-  }
+	protected void updateClipboardHandler() {
+		IPageSite site = getSite();
+		if (site != null && myEditor != null) {
+			IActionBars actionBars = site.getActionBars();
+			myClipboardHandler.attach(actionBars, myEditor);
+		}
+	}
 
-  public void selectionChanged(SelectionChangedEvent _event) {
-    super.selectionChanged(_event);
-    myClipboardHandler.selectionChanged(_event);
-  }
+	public void createControl(Composite _parent) {
+		super.createControl(_parent);
+		TreeViewer treeViewer = getTreeViewer();
+		myUpdater = new EOModelTreeViewUpdater(treeViewer, new EOModelOutlineContentProvider(true, true, true, true, true, true));
+		myUpdater.setModel(myEditor.getModel());
+		updateClipboardHandler();
+		// AK: commenting prevents an error in swt
+		// setFocus();
+	}
 
-  public void setSelection(ISelection _selection) {
-    super.setSelection(_selection);
-  }
+	public void init(IPageSite _pageSite) {
+		super.init(_pageSite);
+		updateClipboardHandler();
+	}
+
+	public void selectionChanged(SelectionChangedEvent _event) {
+		super.selectionChanged(_event);
+		myClipboardHandler.selectionChanged(_event);
+	}
+
+	public void setSelection(ISelection _selection) {
+		super.setSelection(_selection);
+	}
 }

@@ -52,5 +52,5 @@ package org.objectstyle.wolips.eomodeler.editors;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 
 public interface IEOModelEditor {
-  public EOModel getModel();
+	public EOModel getModel();
 }

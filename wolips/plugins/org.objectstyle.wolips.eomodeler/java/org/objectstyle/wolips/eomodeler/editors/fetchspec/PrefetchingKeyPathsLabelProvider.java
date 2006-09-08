@@ -5,23 +5,22 @@ import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 
 public class PrefetchingKeyPathsLabelProvider extends TablePropertyLabelProvider {
-  public PrefetchingKeyPathsLabelProvider(String[] _columnProperties) {
-    super(_columnProperties);
-  }
+	public PrefetchingKeyPathsLabelProvider(String[] _columnProperties) {
+		super(_columnProperties);
+	}
 
-  public Image getColumnImage(Object _element, String _property) {
-    return null;
-  }
+	public Image getColumnImage(Object _element, String _property) {
+		return null;
+	}
 
-  public String getColumnText(Object _element, String _property) {
-    String prefetchingRelationshipKeyPath = (String) _element;
-    String text = null;
-    if (_property == EOFetchSpecification.PREFETCHING_RELATIONSHIP_KEY_PATH) {
-      text = prefetchingRelationshipKeyPath;
-    }
-    else {
-      text = super.getColumnText(_element, _property);
-    }
-    return text;
-  }
+	public String getColumnText(Object _element, String _property) {
+		String prefetchingRelationshipKeyPath = (String) _element;
+		String text = null;
+		if (_property == EOFetchSpecification.PREFETCHING_RELATIONSHIP_KEY_PATH) {
+			text = prefetchingRelationshipKeyPath;
+		} else {
+			text = super.getColumnText(_element, _property);
+		}
+		return text;
+	}
 }

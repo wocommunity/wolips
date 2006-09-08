@@ -63,74 +63,72 @@ import org.objectstyle.wolips.eomodeler.utils.TablePropertyCellModifier;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
 public class EOAttributesCellModifier extends TablePropertyCellModifier {
-  private static final String NO_PROTOYPE_VALUE = Messages.getString("EOAttributesCellModifier.noPrototype");
-  private CellEditor[] myCellEditors;
-  private List myPrototypeNames;
+	private static final String NO_PROTOYPE_VALUE = Messages.getString("EOAttributesCellModifier.noPrototype");
 
-  public EOAttributesCellModifier(TableViewer _attributesTableViewer, CellEditor[] _cellEditors) {
-    super(_attributesTableViewer);
-    myCellEditors = _cellEditors;
-  }
+	private CellEditor[] myCellEditors;
 
-  protected boolean _canModify(Object _element, String _property) {
-    boolean canModify = true;
-    //    EOAttribute attribute = (EOAttribute) _element;
-    //    if (attribute.isInherited()) {
-    //      canModify = false;
-    //    }
-    if (_property == EOAttribute.PROTOTYPE) {
-      EOEntity entity = (EOEntity) getTableViewer().getInput();
-      myPrototypeNames = new LinkedList(entity.getModel().getPrototypeAttributeNames());
-      myPrototypeNames.add(0, EOAttributesCellModifier.NO_PROTOYPE_VALUE);
-      String[] prototypeNames = (String[]) myPrototypeNames.toArray(new String[myPrototypeNames.size()]);
-      KeyComboBoxCellEditor cellEditor = (KeyComboBoxCellEditor) myCellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, _property)];
-      cellEditor.setItems(prototypeNames);
-    }
-    return canModify;
-  }
+	private List myPrototypeNames;
 
-  public Object getValue(Object _element, String _property) {
-    EOAttribute attribute = (EOAttribute) _element;
-    Object value = null;
-    if (_property == EOAttribute.PROTOTYPE) {
-      EOAttribute prototype = attribute.getPrototype();
-      String prototypeName;
-      if (prototype == null) {
-        prototypeName = EOAttributesCellModifier.NO_PROTOYPE_VALUE;
-      }
-      else {
-        prototypeName = prototype.getName();
-      }
-      value = new Integer(myPrototypeNames.indexOf(prototypeName));
-    }
-    else if (_property == AbstractEOArgument.ALLOWS_NULL || _property == EOAttribute.CLASS_PROPERTY || _property == EOAttribute.CLIENT_CLASS_PROPERTY || _property == EOAttribute.INDEXED || _property == EOAttribute.PRIMARY_KEY || _property == EOAttribute.READ_ONLY || _property== EOAttribute.USED_FOR_LOCKING) {
-      value = super.getValue(_element, _property);
-      if (value == null) {
-        value = Boolean.FALSE;
-      }
-    }
-    else {
-      value = super.getValue(_element, _property);
-    }
-    return value;
-  }
+	public EOAttributesCellModifier(TableViewer _attributesTableViewer, CellEditor[] _cellEditors) {
+		super(_attributesTableViewer);
+		myCellEditors = _cellEditors;
+	}
 
-  protected boolean _modify(Object _element, String _property, Object _value) throws Throwable {
-    boolean modified = false;
-    EOAttribute attribute = (EOAttribute) _element;
-    if (_property == EOAttribute.PROTOTYPE) {
-      Integer prototypeIndex = (Integer) _value;
-      int prototypeIndexInt = prototypeIndex.intValue();
-      String prototypeName = (prototypeIndexInt == -1) ? null : (String) myPrototypeNames.get(prototypeIndexInt);
-      if (EOAttributesCellModifier.NO_PROTOYPE_VALUE.equals(prototypeName)) {
-        attribute.setPrototype(null, true);
-      }
-      else {
-        EOAttribute prototype = attribute.getEntity().getModel().getPrototypeAttributeNamed(prototypeName);
-        attribute.setPrototype(prototype, true);
-      }
-      modified = true;
-    }
-    return modified;
-  }
+	protected boolean _canModify(Object _element, String _property) {
+		boolean canModify = true;
+		// EOAttribute attribute = (EOAttribute) _element;
+		// if (attribute.isInherited()) {
+		// canModify = false;
+		// }
+		if (_property == EOAttribute.PROTOTYPE) {
+			EOEntity entity = (EOEntity) getTableViewer().getInput();
+			myPrototypeNames = new LinkedList(entity.getModel().getPrototypeAttributeNames());
+			myPrototypeNames.add(0, EOAttributesCellModifier.NO_PROTOYPE_VALUE);
+			String[] prototypeNames = (String[]) myPrototypeNames.toArray(new String[myPrototypeNames.size()]);
+			KeyComboBoxCellEditor cellEditor = (KeyComboBoxCellEditor) myCellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, _property)];
+			cellEditor.setItems(prototypeNames);
+		}
+		return canModify;
+	}
+
+	public Object getValue(Object _element, String _property) {
+		EOAttribute attribute = (EOAttribute) _element;
+		Object value = null;
+		if (_property == EOAttribute.PROTOTYPE) {
+			EOAttribute prototype = attribute.getPrototype();
+			String prototypeName;
+			if (prototype == null) {
+				prototypeName = EOAttributesCellModifier.NO_PROTOYPE_VALUE;
+			} else {
+				prototypeName = prototype.getName();
+			}
+			value = new Integer(myPrototypeNames.indexOf(prototypeName));
+		} else if (_property == AbstractEOArgument.ALLOWS_NULL || _property == EOAttribute.CLASS_PROPERTY || _property == EOAttribute.CLIENT_CLASS_PROPERTY || _property == EOAttribute.INDEXED || _property == EOAttribute.PRIMARY_KEY || _property == EOAttribute.READ_ONLY || _property == EOAttribute.USED_FOR_LOCKING) {
+			value = super.getValue(_element, _property);
+			if (value == null) {
+				value = Boolean.FALSE;
+			}
+		} else {
+			value = super.getValue(_element, _property);
+		}
+		return value;
+	}
+
+	protected boolean _modify(Object _element, String _property, Object _value) throws Throwable {
+		boolean modified = false;
+		EOAttribute attribute = (EOAttribute) _element;
+		if (_property == EOAttribute.PROTOTYPE) {
+			Integer prototypeIndex = (Integer) _value;
+			int prototypeIndexInt = prototypeIndex.intValue();
+			String prototypeName = (prototypeIndexInt == -1) ? null : (String) myPrototypeNames.get(prototypeIndexInt);
+			if (EOAttributesCellModifier.NO_PROTOYPE_VALUE.equals(prototypeName)) {
+				attribute.setPrototype(null, true);
+			} else {
+				EOAttribute prototype = attribute.getEntity().getModel().getPrototypeAttributeNamed(prototypeName);
+				attribute.setPrototype(prototype, true);
+			}
+			modified = true;
+		}
+		return modified;
+	}
 }

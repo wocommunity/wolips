@@ -71,79 +71,74 @@ import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 
 public class CopyAction extends Action implements IWorkbenchWindowActionDelegate {
-  private IWorkbenchWindow myWindow;
-  private ISelection mySelection;
-  private Clipboard myClipboard;
+	private IWorkbenchWindow myWindow;
 
-  public CopyAction(Clipboard _clipboard) {
-    myClipboard = _clipboard;
-  }
+	private ISelection mySelection;
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	private Clipboard myClipboard;
 
-  public void init(IWorkbenchWindow _window) {
-    myWindow = _window;
-  }
+	public CopyAction(Clipboard _clipboard) {
+		myClipboard = _clipboard;
+	}
 
-  public void selectionChanged(IAction _action, ISelection _selection) {
-    mySelection = _selection;
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public void run() {
-    try {
-      Object[] selectedObjects = null;
-      if (mySelection instanceof IStructuredSelection) {
-        selectedObjects = ((IStructuredSelection) mySelection).toArray();
-      }
-      List selectedObjectsList = new LinkedList();
-      if (selectedObjects != null) {
-        for (int selectedObjectNum = 0; selectedObjectNum < selectedObjects.length; selectedObjectNum++) {
-          Object selectedObject = selectedObjects[selectedObjectNum];
-          if (selectedObject instanceof EOEntity) {
-            EOEntity entity = (EOEntity) selectedObject;
-            selectedObjectsList.add(entity.cloneEntity());
-          }
-          else if (selectedObject instanceof EORelationship) {
-            EORelationship relationship = (EORelationship) selectedObject;
-            selectedObjectsList.add(relationship.cloneRelationship());
-          }
-          else if (selectedObject instanceof EOAttribute) {
-            EOAttribute attribute = (EOAttribute) selectedObject;
-            selectedObjectsList.add(attribute.cloneAttribute());
-          }
-          else if (selectedObject instanceof EOFetchSpecification) {
-            EOFetchSpecification fetchSpec = (EOFetchSpecification) selectedObject;
-            selectedObjectsList.add(fetchSpec.cloneFetchSpecification());
-          }
-          else if (selectedObject instanceof EOStoredProcedure) {
-            EOStoredProcedure storedProcedure = (EOStoredProcedure) selectedObject;
-            selectedObjectsList.add(storedProcedure.cloneStoredProcedure());
-          }
-          else if (selectedObject instanceof EOArgument) {
-            EOArgument argument = (EOArgument) selectedObject;
-            selectedObjectsList.add(argument.cloneArgument());
-          }
-          else if (selectedObject instanceof EODatabaseConfig) {
-            EODatabaseConfig databaseConfig = (EODatabaseConfig) selectedObject;
-            selectedObjectsList.add(databaseConfig.cloneDatabaseConfig());
-          }
-        }
-      }
-      LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(selectedObjectsList));
-      LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
-    }
-    catch (Throwable t) {
-      t.printStackTrace();
-    }
-  }
+	public void init(IWorkbenchWindow _window) {
+		myWindow = _window;
+	}
 
-  public void runWithEvent(Event _event) {
-    run();
-  }
+	public void selectionChanged(IAction _action, ISelection _selection) {
+		mySelection = _selection;
+	}
 
-  public void run(IAction _action) {
-    run();
-  }
+	public void run() {
+		try {
+			Object[] selectedObjects = null;
+			if (mySelection instanceof IStructuredSelection) {
+				selectedObjects = ((IStructuredSelection) mySelection).toArray();
+			}
+			List selectedObjectsList = new LinkedList();
+			if (selectedObjects != null) {
+				for (int selectedObjectNum = 0; selectedObjectNum < selectedObjects.length; selectedObjectNum++) {
+					Object selectedObject = selectedObjects[selectedObjectNum];
+					if (selectedObject instanceof EOEntity) {
+						EOEntity entity = (EOEntity) selectedObject;
+						selectedObjectsList.add(entity.cloneEntity());
+					} else if (selectedObject instanceof EORelationship) {
+						EORelationship relationship = (EORelationship) selectedObject;
+						selectedObjectsList.add(relationship.cloneRelationship());
+					} else if (selectedObject instanceof EOAttribute) {
+						EOAttribute attribute = (EOAttribute) selectedObject;
+						selectedObjectsList.add(attribute.cloneAttribute());
+					} else if (selectedObject instanceof EOFetchSpecification) {
+						EOFetchSpecification fetchSpec = (EOFetchSpecification) selectedObject;
+						selectedObjectsList.add(fetchSpec.cloneFetchSpecification());
+					} else if (selectedObject instanceof EOStoredProcedure) {
+						EOStoredProcedure storedProcedure = (EOStoredProcedure) selectedObject;
+						selectedObjectsList.add(storedProcedure.cloneStoredProcedure());
+					} else if (selectedObject instanceof EOArgument) {
+						EOArgument argument = (EOArgument) selectedObject;
+						selectedObjectsList.add(argument.cloneArgument());
+					} else if (selectedObject instanceof EODatabaseConfig) {
+						EODatabaseConfig databaseConfig = (EODatabaseConfig) selectedObject;
+						selectedObjectsList.add(databaseConfig.cloneDatabaseConfig());
+					}
+				}
+			}
+			LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(selectedObjectsList));
+			LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+	}
+
+	public void runWithEvent(Event _event) {
+		run();
+	}
+
+	public void run(IAction _action) {
+		run();
+	}
 }

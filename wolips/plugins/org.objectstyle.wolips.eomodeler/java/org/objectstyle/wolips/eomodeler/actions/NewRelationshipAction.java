@@ -64,63 +64,60 @@ import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 
 public class NewRelationshipAction implements IWorkbenchWindowActionDelegate {
-  private EOEntity myEntity1;
-  private EOEntity myEntity2;
-  private IWorkbenchWindow myWindow;
+	private EOEntity myEntity1;
 
-  public void init(IWorkbenchWindow _window) {
-    myWindow = _window;
-  }
+	private EOEntity myEntity2;
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	private IWorkbenchWindow myWindow;
 
-  public void selectionChanged(IAction _action, ISelection _selection) {
-    myEntity1 = null;
-    myEntity2 = null;
-    if (_selection instanceof IStructuredSelection) {
-      Object[] selectedObjects = ((IStructuredSelection) _selection).toArray();
-      if (selectedObjects.length == 1) {
-        myEntity1 = EOModelUtils.getRelatedEntity(selectedObjects[0]);
-      }
-      else if (selectedObjects.length == 2) {
-        myEntity1 = EOModelUtils.getRelatedEntity(selectedObjects[0]);
-        myEntity2 = EOModelUtils.getRelatedEntity(selectedObjects[1]);
-      }
-    }
-  }
+	public void init(IWorkbenchWindow _window) {
+		myWindow = _window;
+	}
 
-  public void run(IAction _action) {
-    try {
-      if (myEntity1 != null && myEntity2 != null) {
-        CreateRelationshipDialog dialog = new CreateRelationshipDialog(myWindow.getShell(), myEntity1, myEntity2);
-        int results = dialog.open();
-        if (results == Window.OK) {
-          if (dialog.isManyToMany()) {
-            myEntity1.joinInManyToManyWith(myEntity2, dialog.getName(), dialog.getInverseName());
-          }
-          else {
-            EORelationship relationship = dialog.getRelationship();
-            if (relationship != null) {
-              relationship.getEntity().addRelationship(relationship);
-            }
-            EORelationship inverseRelationship = dialog.getInverseRelationship();
-            if (inverseRelationship != null) {
-              inverseRelationship.getEntity().addRelationship(inverseRelationship);
-            }
-          }
-        }
-      }
-      else if (myEntity1 != null) {
-        EORelationship newRelationship = myEntity1.addBlankRelationship(Messages.getString("EORelationship.newName"));
-      }
-      else {
-        MessageDialog.openError(myWindow.getShell(), Messages.getString("EORelationship.noEntitySelectedTitle"), Messages.getString("EORelationship.noEntitySelectedMessage"));//$NON-NLS-1$
-      }
-    }
-    catch (DuplicateNameException e) {
-      e.printStackTrace();
-    }
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
+
+	public void selectionChanged(IAction _action, ISelection _selection) {
+		myEntity1 = null;
+		myEntity2 = null;
+		if (_selection instanceof IStructuredSelection) {
+			Object[] selectedObjects = ((IStructuredSelection) _selection).toArray();
+			if (selectedObjects.length == 1) {
+				myEntity1 = EOModelUtils.getRelatedEntity(selectedObjects[0]);
+			} else if (selectedObjects.length == 2) {
+				myEntity1 = EOModelUtils.getRelatedEntity(selectedObjects[0]);
+				myEntity2 = EOModelUtils.getRelatedEntity(selectedObjects[1]);
+			}
+		}
+	}
+
+	public void run(IAction _action) {
+		try {
+			if (myEntity1 != null && myEntity2 != null) {
+				CreateRelationshipDialog dialog = new CreateRelationshipDialog(myWindow.getShell(), myEntity1, myEntity2);
+				int results = dialog.open();
+				if (results == Window.OK) {
+					if (dialog.isManyToMany()) {
+						myEntity1.joinInManyToManyWith(myEntity2, dialog.getName(), dialog.getInverseName());
+					} else {
+						EORelationship relationship = dialog.getRelationship();
+						if (relationship != null) {
+							relationship.getEntity().addRelationship(relationship);
+						}
+						EORelationship inverseRelationship = dialog.getInverseRelationship();
+						if (inverseRelationship != null) {
+							inverseRelationship.getEntity().addRelationship(inverseRelationship);
+						}
+					}
+				}
+			} else if (myEntity1 != null) {
+				EORelationship newRelationship = myEntity1.addBlankRelationship(Messages.getString("EORelationship.newName"));
+			} else {
+				MessageDialog.openError(myWindow.getShell(), Messages.getString("EORelationship.noEntitySelectedTitle"), Messages.getString("EORelationship.noEntitySelectedMessage"));//$NON-NLS-1$
+			}
+		} catch (DuplicateNameException e) {
+			e.printStackTrace();
+		}
+	}
 }

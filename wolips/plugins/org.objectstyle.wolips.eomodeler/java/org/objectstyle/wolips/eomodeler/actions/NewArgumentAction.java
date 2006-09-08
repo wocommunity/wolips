@@ -62,36 +62,35 @@ import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 
 public class NewArgumentAction implements IWorkbenchWindowActionDelegate {
-  private EOStoredProcedure myStoredProcedure;
-  private IWorkbenchWindow myWindow;
+	private EOStoredProcedure myStoredProcedure;
 
-  public void init(IWorkbenchWindow _window) {
-    myWindow = _window;
-  }
+	private IWorkbenchWindow myWindow;
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void init(IWorkbenchWindow _window) {
+		myWindow = _window;
+	}
 
-  public void selectionChanged(IAction _action, ISelection _selection) {
-    myStoredProcedure = null;
-    if (_selection instanceof IStructuredSelection) {
-      Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-      myStoredProcedure = EOModelUtils.getRelatedStoredProcedure(selectedObject);
-    }
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public void run(IAction _action) {
-    try {
-      if (myStoredProcedure != null) {
-        EOArgument newArgument = myStoredProcedure.addBlankArgument(Messages.getString("EOArgument.newName"));
-      }
-      else {
-        MessageDialog.openError(myWindow.getShell(), Messages.getString("EOArgument.noStoredProcedureSelectedTitle"), Messages.getString("EOArgument.noStoredProcedureSelectedMessage"));//$NON-NLS-1$
-      }
-    }
-    catch (DuplicateNameException e) {
-      e.printStackTrace();
-    }
-  }
+	public void selectionChanged(IAction _action, ISelection _selection) {
+		myStoredProcedure = null;
+		if (_selection instanceof IStructuredSelection) {
+			Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+			myStoredProcedure = EOModelUtils.getRelatedStoredProcedure(selectedObject);
+		}
+	}
+
+	public void run(IAction _action) {
+		try {
+			if (myStoredProcedure != null) {
+				EOArgument newArgument = myStoredProcedure.addBlankArgument(Messages.getString("EOArgument.newName"));
+			} else {
+				MessageDialog.openError(myWindow.getShell(), Messages.getString("EOArgument.noStoredProcedureSelectedTitle"), Messages.getString("EOArgument.noStoredProcedureSelectedMessage"));//$NON-NLS-1$
+			}
+		} catch (DuplicateNameException e) {
+			e.printStackTrace();
+		}
+	}
 }

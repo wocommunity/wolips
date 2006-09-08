@@ -52,34 +52,39 @@ package org.objectstyle.wolips.eomodeler.model;
 import org.objectstyle.wolips.eomodeler.Messages;
 
 public class InheritanceType {
-  public static final InheritanceType VERTICAL = new InheritanceType("Vertical", Messages.getString("InheritanceType.vertical"));
-  public static final InheritanceType HORIZONTAL = new InheritanceType("Horizontal", Messages.getString("InheritanceType.horizontal"));
-  public static final InheritanceType SINGLE_TABLE = new InheritanceType("SingleTable", Messages.getString("InheritanceType.singleTable"));
-  public static final InheritanceType[] INHERITANCE_TYPES = { InheritanceType.VERTICAL, InheritanceType.HORIZONTAL, InheritanceType.SINGLE_TABLE };
-  private String myID;
-  private String myName;
+	public static final InheritanceType VERTICAL = new InheritanceType("Vertical", Messages.getString("InheritanceType.vertical"));
 
-  public InheritanceType(String _id, String _name) {
-    myID = _id;
-    myName = _name;
-  }
+	public static final InheritanceType HORIZONTAL = new InheritanceType("Horizontal", Messages.getString("InheritanceType.horizontal"));
 
-  public String getID() {
-    return myID;
-  }
+	public static final InheritanceType SINGLE_TABLE = new InheritanceType("SingleTable", Messages.getString("InheritanceType.singleTable"));
 
-  public String getName() {
-    return myName;
-  }
+	public static final InheritanceType[] INHERITANCE_TYPES = { InheritanceType.VERTICAL, InheritanceType.HORIZONTAL, InheritanceType.SINGLE_TABLE };
 
-  public static InheritanceType getInheritanceTypeByID(String _id) {
-    InheritanceType matchingInheritanceType = null;
-    for (int inheritanceTypeNum = 0; inheritanceTypeNum < InheritanceType.INHERITANCE_TYPES.length; inheritanceTypeNum++) {
-      InheritanceType inheritanceType = InheritanceType.INHERITANCE_TYPES[inheritanceTypeNum];
-      if (inheritanceType.myID.equals(_id)) {
-        matchingInheritanceType = inheritanceType;
-      }
-    }
-    return matchingInheritanceType;
-  }
+	private String myID;
+
+	private String myName;
+
+	public InheritanceType(String _id, String _name) {
+		myID = _id;
+		myName = _name;
+	}
+
+	public String getID() {
+		return myID;
+	}
+
+	public String getName() {
+		return myName;
+	}
+
+	public static InheritanceType getInheritanceTypeByID(String _id) {
+		InheritanceType matchingInheritanceType = null;
+		for (int inheritanceTypeNum = 0; inheritanceTypeNum < InheritanceType.INHERITANCE_TYPES.length; inheritanceTypeNum++) {
+			InheritanceType inheritanceType = InheritanceType.INHERITANCE_TYPES[inheritanceTypeNum];
+			if (inheritanceType.myID.equals(_id)) {
+				matchingInheritanceType = inheritanceType;
+			}
+		}
+		return matchingInheritanceType;
+	}
 }

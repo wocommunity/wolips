@@ -56,39 +56,37 @@ import org.objectstyle.wolips.eomodeler.model.EOArgumentDirection;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyCellModifier;
 
 public class EOArgumentsCellModifier extends TablePropertyCellModifier {
-  public EOArgumentsCellModifier(TableViewer _argumentsTableViewer) {
-    super(_argumentsTableViewer);
-  }
+	public EOArgumentsCellModifier(TableViewer _argumentsTableViewer) {
+		super(_argumentsTableViewer);
+	}
 
-  public Object getValue(Object _element, String _property) {
-    EOArgument argument = (EOArgument) _element;
-    Object value = null;
-    if (_property == EOArgument.DIRECTION) {
-      EOArgumentDirection direction = argument.getDirection();
-      value = new Integer(direction.getID());
-    }
-    else if (_property == AbstractEOArgument.ALLOWS_NULL) {
-      value = super.getValue(_element, _property);
-      if (value == null) {
-        value = Boolean.FALSE;
-      }
-    }
-    else {
-      value = super.getValue(_element, _property);
-    }
-    return value;
-  }
+	public Object getValue(Object _element, String _property) {
+		EOArgument argument = (EOArgument) _element;
+		Object value = null;
+		if (_property == EOArgument.DIRECTION) {
+			EOArgumentDirection direction = argument.getDirection();
+			value = new Integer(direction.getID());
+		} else if (_property == AbstractEOArgument.ALLOWS_NULL) {
+			value = super.getValue(_element, _property);
+			if (value == null) {
+				value = Boolean.FALSE;
+			}
+		} else {
+			value = super.getValue(_element, _property);
+		}
+		return value;
+	}
 
-  protected boolean _modify(Object _element, String _property, Object _value) throws Throwable {
-    boolean modified = false;
-    EOArgument argument = (EOArgument) _element;
-    if (_property == EOArgument.DIRECTION) {
-      Integer argumentID = (Integer) _value;
-      int argumentIDInt = argumentID.intValue();
-      EOArgumentDirection direction = EOArgumentDirection.getArgumentDirectionByID(argumentIDInt);
-      argument.setDirection(direction);
-      modified = true;
-    }
-    return modified;
-  }
+	protected boolean _modify(Object _element, String _property, Object _value) throws Throwable {
+		boolean modified = false;
+		EOArgument argument = (EOArgument) _element;
+		if (_property == EOArgument.DIRECTION) {
+			Integer argumentID = (Integer) _value;
+			int argumentIDInt = argumentID.intValue();
+			EOArgumentDirection direction = EOArgumentDirection.getArgumentDirectionByID(argumentIDInt);
+			argument.setDirection(direction);
+			modified = true;
+		}
+		return modified;
+	}
 }

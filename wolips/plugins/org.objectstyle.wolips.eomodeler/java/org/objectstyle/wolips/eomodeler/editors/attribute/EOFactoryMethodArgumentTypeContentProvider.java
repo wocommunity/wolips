@@ -54,16 +54,16 @@ import org.eclipse.jface.viewers.Viewer;
 import org.objectstyle.wolips.eomodeler.model.EOFactoryMethodArgumentType;
 
 public class EOFactoryMethodArgumentTypeContentProvider implements IStructuredContentProvider {
-  public Object[] getElements(Object _inputElement) {
-    EOFactoryMethodArgumentType[] argumentTypes = (EOFactoryMethodArgumentType[]) _inputElement;
-    return argumentTypes;
-  }
+	public Object[] getElements(Object _inputElement) {
+		EOFactoryMethodArgumentType[] argumentTypes = (EOFactoryMethodArgumentType[]) _inputElement;
+		return argumentTypes;
+	}
 
-  public void dispose() {
-    // DO NOTHING
-  }
+	public void dispose() {
+		// DO NOTHING
+	}
 
-  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
-    // DO NOTHING
-  }
+	public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+		// DO NOTHING
+	}
 }

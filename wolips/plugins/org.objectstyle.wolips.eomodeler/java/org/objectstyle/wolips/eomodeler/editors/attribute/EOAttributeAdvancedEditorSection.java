@@ -71,87 +71,91 @@ import org.objectstyle.wolips.eomodeler.model.EOAttributePath;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
 public class EOAttributeAdvancedEditorSection extends AbstractPropertySection {
-  private EOAttribute myAttribute;
+	private EOAttribute myAttribute;
 
-  private Button myReadOnlyButton;
-  private Button myClientClassPropertyButton;
-  //private Button myIndexedButton;
-  private Text myReadFormatText;
-  private Text myWriteFormatText;
+	private Button myReadOnlyButton;
 
-  private DataBindingContext myBindingContext;
+	private Button myClientClassPropertyButton;
 
-  public EOAttributeAdvancedEditorSection() {
-    // DO NOTHING
-  }
+	// private Button myIndexedButton;
+	private Text myReadFormatText;
 
-  public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
-    super.createControls(_parent, _tabbedPropertySheetPage);
-    Composite form = getWidgetFactory().createFlatFormComposite(_parent);
-    FormLayout formLayout = new FormLayout();
-    form.setLayout(formLayout);
+	private Text myWriteFormatText;
 
-    Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-    FormData topFormData = new FormData();
-    topFormData.top = new FormAttachment(0, 5);
-    topFormData.left = new FormAttachment(0, 5);
-    topFormData.right = new FormAttachment(100, -5);
-    topForm.setLayoutData(topFormData);
+	private DataBindingContext myBindingContext;
 
-    GridLayout topFormLayout = new GridLayout();
-    topFormLayout.numColumns = 2;
-    topForm.setLayout(topFormLayout);
+	public EOAttributeAdvancedEditorSection() {
+		// DO NOTHING
+	}
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.READ_ONLY), SWT.NONE);
-    myReadOnlyButton = new Button(topForm, SWT.CHECK);
+	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
+		super.createControls(_parent, _tabbedPropertySheetPage);
+		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
+		FormLayout formLayout = new FormLayout();
+		form.setLayout(formLayout);
 
-    //getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.INDEXED), SWT.NONE);
-    //myIndexedButton = new Button(topForm, SWT.CHECK);
+		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
+		FormData topFormData = new FormData();
+		topFormData.top = new FormAttachment(0, 5);
+		topFormData.left = new FormAttachment(0, 5);
+		topFormData.right = new FormAttachment(100, -5);
+		topForm.setLayoutData(topFormData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.CLIENT_CLASS_PROPERTY), SWT.NONE);
-    myClientClassPropertyButton = new Button(topForm, SWT.CHECK);
+		GridLayout topFormLayout = new GridLayout();
+		topFormLayout.numColumns = 2;
+		topForm.setLayout(topFormLayout);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.READ_FORMAT), SWT.NONE);
-    myReadFormatText = new Text(topForm, SWT.BORDER);
-    GridData readFormatFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myReadFormatText.setLayoutData(readFormatFieldLayoutData);
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.READ_ONLY), SWT.NONE);
+		myReadOnlyButton = new Button(topForm, SWT.CHECK);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.WRITE_FORMAT), SWT.NONE);
-    myWriteFormatText = new Text(topForm, SWT.BORDER);
-    GridData writeFormatFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myWriteFormatText.setLayoutData(writeFormatFieldLayoutData);
-  }
+		// getWidgetFactory().createCLabel(topForm,
+		// Messages.getString("EOAttribute." + EOAttribute.INDEXED), SWT.NONE);
+		// myIndexedButton = new Button(topForm, SWT.CHECK);
 
-  public void setInput(IWorkbenchPart _part, ISelection _selection) {
-    super.setInput(_part, _selection);
-    disposeBindings();
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.CLIENT_CLASS_PROPERTY), SWT.NONE);
+		myClientClassPropertyButton = new Button(topForm, SWT.CHECK);
 
-    Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-    if (selectedObject instanceof EOAttribute) {
-      myAttribute = (EOAttribute) selectedObject;
-    }
-    else if (selectedObject instanceof EOAttributePath) {
-      myAttribute = ((EOAttributePath) selectedObject).getChildAttribute();
-    }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.READ_FORMAT), SWT.NONE);
+		myReadFormatText = new Text(topForm, SWT.BORDER);
+		GridData readFormatFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myReadFormatText.setLayoutData(readFormatFieldLayoutData);
 
-    if (myAttribute != null) {
-      myBindingContext = BindingFactory.createContext();
-      myBindingContext.bind(myReadOnlyButton, new Property(myAttribute, EOAttribute.READ_ONLY), null);
-      //myBindingContext.bind(myIndexedButton, new Property(myAttribute, EOAttribute.INDEXED), null);
-      myBindingContext.bind(myClientClassPropertyButton, new Property(myAttribute, EOAttribute.CLIENT_CLASS_PROPERTY), null);
-      myBindingContext.bind(myReadFormatText, new Property(myAttribute, EOAttribute.READ_FORMAT), null);
-      myBindingContext.bind(myWriteFormatText, new Property(myAttribute, EOAttribute.WRITE_FORMAT), null);
-    }
-  }
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.WRITE_FORMAT), SWT.NONE);
+		myWriteFormatText = new Text(topForm, SWT.BORDER);
+		GridData writeFormatFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myWriteFormatText.setLayoutData(writeFormatFieldLayoutData);
+	}
 
-  protected void disposeBindings() {
-    if (myBindingContext != null) {
-      myBindingContext.dispose();
-    }
-  }
+	public void setInput(IWorkbenchPart _part, ISelection _selection) {
+		super.setInput(_part, _selection);
+		disposeBindings();
 
-  public void dispose() {
-    super.dispose();
-    disposeBindings();
-  }
+		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+		if (selectedObject instanceof EOAttribute) {
+			myAttribute = (EOAttribute) selectedObject;
+		} else if (selectedObject instanceof EOAttributePath) {
+			myAttribute = ((EOAttributePath) selectedObject).getChildAttribute();
+		}
+
+		if (myAttribute != null) {
+			myBindingContext = BindingFactory.createContext();
+			myBindingContext.bind(myReadOnlyButton, new Property(myAttribute, EOAttribute.READ_ONLY), null);
+			// myBindingContext.bind(myIndexedButton, new Property(myAttribute,
+			// EOAttribute.INDEXED), null);
+			myBindingContext.bind(myClientClassPropertyButton, new Property(myAttribute, EOAttribute.CLIENT_CLASS_PROPERTY), null);
+			myBindingContext.bind(myReadFormatText, new Property(myAttribute, EOAttribute.READ_FORMAT), null);
+			myBindingContext.bind(myWriteFormatText, new Property(myAttribute, EOAttribute.WRITE_FORMAT), null);
+		}
+	}
+
+	protected void disposeBindings() {
+		if (myBindingContext != null) {
+			myBindingContext.dispose();
+		}
+	}
+
+	public void dispose() {
+		super.dispose();
+		disposeBindings();
+	}
 }
