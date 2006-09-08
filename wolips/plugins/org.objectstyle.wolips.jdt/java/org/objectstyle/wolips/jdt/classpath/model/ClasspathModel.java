@@ -58,8 +58,8 @@ package org.objectstyle.wolips.jdt.classpath.model;
 import org.eclipse.core.runtime.IPath;
 import org.objectstyle.wolips.variables.VariablesPlugin;
 
-//import org.eclipse.core.runtime.IPath;
-//import org.objectstyle.wolips.variables.VariablesPlugin;
+// import org.eclipse.core.runtime.IPath;
+// import org.objectstyle.wolips.variables.VariablesPlugin;
 
 /**
  * @author ulrich
@@ -67,15 +67,14 @@ import org.objectstyle.wolips.variables.VariablesPlugin;
 public class ClasspathModel {
 
 	private Root[] roots = null;
+
 	/**
 	 * @return Returns the roots.
 	 */
 	public Root[] getRoots() {
 		if (this.roots == null) {
-			String[] rootsNames = VariablesPlugin.getDefault()
-					.getFrameworkRootsNames();
-			IPath[] rootsPaths = VariablesPlugin.getDefault()
-					.getFrameworkRoots();
+			String[] rootsNames = VariablesPlugin.getDefault().getFrameworkRootsNames();
+			IPath[] rootsPaths = VariablesPlugin.getDefault().getFrameworkRoots();
 			this.roots = new Root[rootsNames.length];
 			for (int i = 0; i < rootsNames.length; i++) {
 				this.roots[i] = new Root(rootsNames[i], rootsPaths[i]);
@@ -83,14 +82,15 @@ public class ClasspathModel {
 		}
 		return this.roots;
 	}
+
 	/**
 	 * @param string
 	 * @return
 	 */
 	public Framework getFrameworkWithName(String string) {
-		for(int i = 0; i < this.getRoots().length; i++) {
+		for (int i = 0; i < this.getRoots().length; i++) {
 			Framework framework = this.getRoots()[i].getFrameworkWithName(string);
-			if(framework != null) {
+			if (framework != null) {
 				return framework;
 			}
 		}

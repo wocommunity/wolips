@@ -87,20 +87,17 @@ public class ComponentLocateCache implements IResourceChangeListener {
 		projectHashMap.remove(key);
 	}
 
-	public LocalizedComponentsLocateResult getLocalizedComponentsLocateResult(
-			IFile file) {
+	public LocalizedComponentsLocateResult getLocalizedComponentsLocateResult(IFile file) {
 		HashMap projectHashMap = this.project(file.getProject());
 		if (projectHashMap == null) {
 			return null;
 		}
 		String key = LocatePlugin.getDefault().fileNameWithoutExtension(file);
-		LocalizedComponentsLocateResult localizedComponentsLocateResult = (LocalizedComponentsLocateResult) projectHashMap
-				.get(key);
+		LocalizedComponentsLocateResult localizedComponentsLocateResult = (LocalizedComponentsLocateResult) projectHashMap.get(key);
 		return localizedComponentsLocateResult;
 	}
 
-	public void addToCache(IFile file,
-			LocalizedComponentsLocateResult localizedComponentsLocateResult) {
+	public void addToCache(IFile file, LocalizedComponentsLocateResult localizedComponentsLocateResult) {
 
 		HashMap projectHashMap = this.project(file.getProject());
 		if (projectHashMap == null) {
@@ -118,8 +115,7 @@ public class ComponentLocateCache implements IResourceChangeListener {
 	}
 
 	public void resourceChanged(IResourceChangeEvent event) {
-		if (event.getDelta() != null
-				&& event.getType() == IResourceChangeEvent.PRE_CLOSE) {
+		if (event.getDelta() != null && event.getType() == IResourceChangeEvent.PRE_CLOSE) {
 			try {
 				event.getDelta().accept(new PreCloseVisitor(this));
 			} catch (CoreException e) {
@@ -128,8 +124,7 @@ public class ComponentLocateCache implements IResourceChangeListener {
 			}
 		}
 
-		if (event.getDelta() != null
-				&& event.getType() == IResourceChangeEvent.POST_CHANGE) {
+		if (event.getDelta() != null && event.getType() == IResourceChangeEvent.POST_CHANGE) {
 			try {
 				event.getDelta().accept(new PreDeleteVisitor(this));
 			} catch (CoreException e) {

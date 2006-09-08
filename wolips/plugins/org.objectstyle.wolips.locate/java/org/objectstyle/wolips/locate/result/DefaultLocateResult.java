@@ -56,7 +56,7 @@
 package org.objectstyle.wolips.locate.result;
 
 public class DefaultLocateResult extends AbstractLocateResult {
-  public DefaultLocateResult() {
-    super();
-  }
+	public DefaultLocateResult() {
+		super();
+	}
 }

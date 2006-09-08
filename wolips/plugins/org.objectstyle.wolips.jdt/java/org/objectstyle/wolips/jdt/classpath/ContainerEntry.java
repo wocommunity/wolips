@@ -87,8 +87,7 @@ public class ContainerEntry implements Comparable {
 	 * @param order
 	 * @param exported
 	 */
-	public ContainerEntry(String name, IPath srcPath, IPath javaDocPath,
-			String order, String exported) {
+	public ContainerEntry(String name, IPath srcPath, IPath javaDocPath, String order, String exported) {
 		super();
 		this.name = name;
 		this.order = order;
@@ -98,8 +97,7 @@ public class ContainerEntry implements Comparable {
 		if (this.srcPath != null && "nil".equals(this.srcPath.toString())) {
 			this.srcPath = null;
 		}
-		if (this.javaDocPath != null
-				&& "nil".equals(this.javaDocPath.toString())) {
+		if (this.javaDocPath != null && "nil".equals(this.javaDocPath.toString())) {
 			this.javaDocPath = null;
 		}
 		if ("true".equals(exported)) {
@@ -108,24 +106,18 @@ public class ContainerEntry implements Comparable {
 
 		JdtPlugin.getDefault().getPluginLogger().debug("name : " + this.name);
 		JdtPlugin.getDefault().getPluginLogger().debug("order : " + this.order);
-		JdtPlugin.getDefault().getPluginLogger().debug(
-				"srcPath : " + this.srcPath);
-		JdtPlugin.getDefault().getPluginLogger().debug(
-				"javaDocPath : " + this.javaDocPath);
-		JdtPlugin.getDefault().getPluginLogger().debug(
-				"exported : " + this.exported);
-		Framework framework = JdtPlugin.getDefault().getClasspathModel()
-				.getFrameworkWithName(this.name);
+		JdtPlugin.getDefault().getPluginLogger().debug("srcPath : " + this.srcPath);
+		JdtPlugin.getDefault().getPluginLogger().debug("javaDocPath : " + this.javaDocPath);
+		JdtPlugin.getDefault().getPluginLogger().debug("exported : " + this.exported);
+		Framework framework = JdtPlugin.getDefault().getClasspathModel().getFrameworkWithName(this.name);
 		if (framework != null) {
 			IPath[] libraryPaths = framework.getLibraryPaths();
 			for (int i = 0; i < libraryPaths.length; i++) {
-				IClasspathEntry entry = JavaCore.newLibraryEntry(
-						libraryPaths[i], framework.getSourcePath(), this.javaDocPath,
-						this.exported);
+				IClasspathEntry entry = JavaCore.newLibraryEntry(libraryPaths[i], framework.getSourcePath(), this.javaDocPath, this.exported);
 				this.entries.add(entry);
 			}
 		} else {
-			//TODO: Was nun?
+			// TODO: Was nun?
 		}
 	}
 
@@ -134,11 +126,9 @@ public class ContainerEntry implements Comparable {
 	 * @return
 	 * @throws PathCoderException
 	 */
-	public static ContainerEntry initWithPath(IPath path)
-			throws PathCoderException {
+	public static ContainerEntry initWithPath(IPath path) throws PathCoderException {
 		IPath[] details = PathCoder.decode(path);
-		return new ContainerEntry(details[0].toString(), details[1],
-				details[2], details[3].toString(), details[4].toString());
+		return new ContainerEntry(details[0].toString(), details[1], details[2], details[3].toString(), details[4].toString());
 	}
 
 	/**
@@ -178,9 +168,9 @@ public class ContainerEntry implements Comparable {
 		path = path.append(PathCoder.encode(new Path(this.name)));
 		path = path.append(PathCoder.encode(this.srcPath));
 		path = path.append(PathCoder.encode(this.javaDocPath));
-		if(this.order == null) {
-		    JdtPlugin.getDefault().getPluginLogger().log(this.name + ": null order, setting to '0'");
-		    this.order= "0";
+		if (this.order == null) {
+			JdtPlugin.getDefault().getPluginLogger().log(this.name + ": null order, setting to '0'");
+			this.order = "0";
 		}
 		path = path.append(PathCoder.encode(new Path(this.order)));
 		if (this.isExported()) {
@@ -210,9 +200,7 @@ public class ContainerEntry implements Comparable {
 		if (framework != null) {
 			IPath[] libraryPaths = framework.getLibraryPaths();
 			for (int j = 0; j < libraryPaths.length; j++) {
-				IClasspathEntry entry = JavaCore.newLibraryEntry(
-						libraryPaths[j], framework.getSrcPath(), this.javaDocPath,
-						this.exported);
+				IClasspathEntry entry = JavaCore.newLibraryEntry(libraryPaths[j], framework.getSrcPath(), this.javaDocPath, this.exported);
 				this.entries.add(entry);
 			}
 		}
@@ -244,16 +232,14 @@ public class ContainerEntry implements Comparable {
 			try {
 				left = new Integer(this.order);
 			} catch (NumberFormatException numberFormatException) {
-				JdtPlugin.getDefault().getPluginLogger().log(
-						numberFormatException);
+				JdtPlugin.getDefault().getPluginLogger().log(numberFormatException);
 			}
 		}
 		if (compareTo.order != null && compareTo.order.length() > 0) {
 			try {
 				right = new Integer(compareTo.order);
 			} catch (NumberFormatException numberFormatException) {
-				JdtPlugin.getDefault().getPluginLogger().log(
-						numberFormatException);
+				JdtPlugin.getDefault().getPluginLogger().log(numberFormatException);
 			}
 		}
 		return left.compareTo(right);

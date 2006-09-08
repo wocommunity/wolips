@@ -65,8 +65,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 import org.eclipse.swt.graphics.Image;
 
-public class ActionMethodDecorator implements ILabelDecorator,
-		ILightweightLabelDecorator {
+public class ActionMethodDecorator implements ILabelDecorator, ILightweightLabelDecorator {
 
 	public ActionMethodDecorator() {
 		super();
@@ -120,8 +119,7 @@ public class ActionMethodDecorator implements ILabelDecorator,
 
 	public void decorate(Object element, IDecoration decoration) {
 		if (this.isAction(element)) {
-			decoration.addOverlay(ImageDescriptor.createFromFile(
-					ActionMethodDecorator.class, "action_overlay.gif"));
+			decoration.addOverlay(ImageDescriptor.createFromFile(ActionMethodDecorator.class, "action_overlay.gif"));
 		}
 	}
 

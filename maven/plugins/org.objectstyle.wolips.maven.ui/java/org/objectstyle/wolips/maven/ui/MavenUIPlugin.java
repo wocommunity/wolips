@@ -95,7 +95,6 @@ public class MavenUIPlugin extends AbstractWOLipsUIPlugin {
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin(
-				"org.objectstyle.wolips.maven.ui", path);
+		return AbstractUIPlugin.imageDescriptorFromPlugin("org.objectstyle.wolips.maven.ui", path);
 	}
 }

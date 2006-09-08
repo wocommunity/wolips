@@ -61,19 +61,19 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 
 public class ProjectReferencesLocateScope extends AbstractProjectReferencesLocateScope {
-  public ProjectReferencesLocateScope(IProject _project, boolean _findProjectsThatDependOnThis, boolean _findProjectsThatThisDependOn, boolean _includeThis) {
-    super(_project, _findProjectsThatDependOnThis, _findProjectsThatThisDependOn, _includeThis);
-  }
+	public ProjectReferencesLocateScope(IProject _project, boolean _findProjectsThatDependOnThis, boolean _findProjectsThatThisDependOn, boolean _includeThis) {
+		super(_project, _findProjectsThatDependOnThis, _findProjectsThatThisDependOn, _includeThis);
+	}
 
-  protected boolean _ignoreContainer(IContainer _container) {
-    return false;
-  }
+	protected boolean _ignoreContainer(IContainer _container) {
+		return false;
+	}
 
-  public boolean addToResult(IContainer _container) {
-    return _container.getType() == IResource.PROJECT;
-  }
+	public boolean addToResult(IContainer _container) {
+		return _container.getType() == IResource.PROJECT;
+	}
 
-  public boolean addToResult(IFile _file) {
-    return false;
-  }
+	public boolean addToResult(IFile _file) {
+		return false;
+	}
 }

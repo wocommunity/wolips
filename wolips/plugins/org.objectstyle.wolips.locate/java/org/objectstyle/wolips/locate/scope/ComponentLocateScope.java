@@ -62,15 +62,12 @@ import org.objectstyle.wolips.locate.LocatePlugin;
 public class ComponentLocateScope extends DefaultLocateScope {
 
 	public ComponentLocateScope(IProject project, String name) {
-		super(project, new String[] { name + ".java", name + ".api" },
-				new String[] { name + ".wo" });
+		super(project, new String[] { name + ".java", name + ".api" }, new String[] { name + ".wo" });
 	}
 
 	public static ComponentLocateScope createLocateScope(IFile file) {
-		String fileNameWithoutExtension = LocatePlugin.getDefault()
-				.fileNameWithoutExtension(file);
+		String fileNameWithoutExtension = LocatePlugin.getDefault().fileNameWithoutExtension(file);
 
-		return new ComponentLocateScope(file.getProject(),
-				fileNameWithoutExtension);
+		return new ComponentLocateScope(file.getProject(), fileNameWithoutExtension);
 	}
 }

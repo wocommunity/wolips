@@ -68,50 +68,46 @@ import org.objectstyle.wolips.jdt.classpath.WOClasspathContainer;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class WORuntimeClasspathResolver implements IRuntimeClasspathEntryResolver {
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jdt.launching.IRuntimeClasspathEntryResolver#resolveRuntimeClasspathEntry(org.eclipse.jdt.launching.IRuntimeClasspathEntry, org.eclipse.debug.core.ILaunchConfiguration)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jdt.launching.IRuntimeClasspathEntryResolver#resolveRuntimeClasspathEntry(org.eclipse.jdt.launching.IRuntimeClasspathEntry,
+	 *      org.eclipse.debug.core.ILaunchConfiguration)
 	 */
-	public IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry(
-			IRuntimeClasspathEntry entry,
-			ILaunchConfiguration configuration
-	)
-	throws CoreException 
-	{    
+	public IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry(IRuntimeClasspathEntry entry, ILaunchConfiguration configuration) throws CoreException {
 		IJavaProject prj = JavaRuntime.getJavaProject(configuration);
 		return this.resolveRuntimeClasspathEntry(entry, prj);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jdt.launching.IRuntimeClasspathEntryResolver#resolveRuntimeClasspathEntry(org.eclipse.jdt.launching.IRuntimeClasspathEntry, org.eclipse.jdt.core.IJavaProject)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jdt.launching.IRuntimeClasspathEntryResolver#resolveRuntimeClasspathEntry(org.eclipse.jdt.launching.IRuntimeClasspathEntry,
+	 *      org.eclipse.jdt.core.IJavaProject)
 	 */
-	public IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry(
-			IRuntimeClasspathEntry entry,
-			IJavaProject project
-	)
-	throws CoreException 
-	{
+	public IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry(IRuntimeClasspathEntry entry, IJavaProject project) throws CoreException {
 		IPath path = entry.getClasspathEntry().getPath();
-		
-		List rawEntries = new ArrayList (Arrays.asList(project.getRawClasspath()));
-		
+
+		List rawEntries = new ArrayList(Arrays.asList(project.getRawClasspath()));
+
 		IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
-		
+
 		Set referencedFrameworks = new HashSet();
 		while (!rawEntries.isEmpty()) {
-			IClasspathEntry thisOne = (IClasspathEntry)rawEntries.remove(0);
+			IClasspathEntry thisOne = (IClasspathEntry) rawEntries.remove(0);
 			if (IClasspathEntry.CPE_PROJECT == thisOne.getEntryKind()) {
 				String name = thisOne.getPath().lastSegment();
 				if (!referencedFrameworks.contains(name)) {
 					referencedFrameworks.add(name);
 					try {
 						IJavaProject refPrj = JavaCore.create(wsRoot.getProject(name));
-						rawEntries.addAll (Arrays.asList(refPrj.getRawClasspath()));
+						rawEntries.addAll(Arrays.asList(refPrj.getRawClasspath()));
 					} catch (CoreException up) {
 						// ignore, for now
 						System.out.println(up);
@@ -120,32 +116,33 @@ public class WORuntimeClasspathResolver implements IRuntimeClasspathEntryResolve
 			}
 		}
 
-		IPath resultPath = new Path (path.segment(0));
-		
+		IPath resultPath = new Path(path.segment(0));
+
 		for (int i = 1; i < path.segmentCount(); ++i) {
 			String segment = path.segment(i);
 			if (!referencedFrameworks.contains(segment)) {
 				resultPath = resultPath.append(segment);
 			}
 		}
-		
-		WOClasspathContainer rcc = new WOClasspathContainer (resultPath);
-		
+
+		WOClasspathContainer rcc = new WOClasspathContainer(resultPath);
+
 		IClasspathEntry re[] = rcc.getClasspathEntries();
 		IRuntimeClasspathEntry rrce[] = new IRuntimeClasspathEntry[re.length];
-		
+
 		for (int i = 0; i < re.length; ++i) {
 			rrce[i] = JavaRuntime.newArchiveRuntimeClasspathEntry(re[i].getPath());
 		}
-		
+
 		return rrce;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jdt.launching.IRuntimeClasspathEntryResolver#resolveVMInstall(org.eclipse.jdt.core.IClasspathEntry)
 	 */
-	public IVMInstall resolveVMInstall(IClasspathEntry entry)
-	throws CoreException {
+	public IVMInstall resolveVMInstall(IClasspathEntry entry) throws CoreException {
 		return null;
 	}
 

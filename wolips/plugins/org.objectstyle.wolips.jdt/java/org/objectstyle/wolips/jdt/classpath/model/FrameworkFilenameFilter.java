@@ -71,7 +71,7 @@ public class FrameworkFilenameFilter implements FilenameFilter {
 	protected ArrayList frameworks() {
 		return this.arrayList;
 	}
-    
+
 	/**
 	 * @param file
 	 * @param name
@@ -87,21 +87,17 @@ public class FrameworkFilenameFilter implements FilenameFilter {
 			File resDir = new File(file, name + "/Resources/Java");
 			if (resDir.exists()) {
 
-				String jarFiles[] = resDir.list(new WildcardFilenameFilter(
-						null, ".jar", "src.jar"));
-				String zipFiles[] = resDir.list(new WildcardFilenameFilter(
-						null, ".zip"));
-                
-                String srcFiles[] = resDir.list(new WildcardFilenameFilter(
-                        "src", ".jar"));
-                String srcFile = null;
-                if (srcFiles != null && srcFiles.length > 0)
-                    srcFile = srcFiles[0];
-                
+				String jarFiles[] = resDir.list(new WildcardFilenameFilter(null, ".jar", "src.jar"));
+				String zipFiles[] = resDir.list(new WildcardFilenameFilter(null, ".zip"));
+
+				String srcFiles[] = resDir.list(new WildcardFilenameFilter("src", ".jar"));
+				String srcFile = null;
+				if (srcFiles != null && srcFiles.length > 0)
+					srcFile = srcFiles[0];
+
 				result = (0 != jarFiles.length) || (0 != zipFiles.length);
-				Framework framework = new Framework(name.substring(0, name.length() - ".framework".length()), this.root, jarFiles,
-						zipFiles, srcFile);
-                
+				Framework framework = new Framework(name.substring(0, name.length() - ".framework".length()), this.root, jarFiles, zipFiles, srcFile);
+
 				this.arrayList.add(framework);
 			}
 
@@ -120,28 +116,27 @@ public class FrameworkFilenameFilter implements FilenameFilter {
 	}
 
 	private static final class WildcardFilenameFilter implements FilenameFilter {
-        WildcardFilenameFilter(String prefix, String suffix) {
-            this(prefix, suffix, null);
-        }
-        WildcardFilenameFilter(String prefix, String suffix, String exclude) {
-            this._prefix = prefix;
-            this._suffix = suffix;
-             this._exclude = exclude;
-        }
+		WildcardFilenameFilter(String prefix, String suffix) {
+			this(prefix, suffix, null);
+		}
+
+		WildcardFilenameFilter(String prefix, String suffix, String exclude) {
+			this._prefix = prefix;
+			this._suffix = suffix;
+			this._exclude = exclude;
+		}
 
 		public boolean accept(File file, String name) {
 
 			String lowerName = name.toLowerCase();
 
-			return ( ((null == this._exclude) || (! lowerName.equals(this._exclude))) 
-                    && ((null == this._prefix) || lowerName.startsWith(this._prefix)) 
-                    && ((null == this._suffix) || lowerName.endsWith(this._suffix)));
+			return (((null == this._exclude) || (!lowerName.equals(this._exclude))) && ((null == this._prefix) || lowerName.startsWith(this._prefix)) && ((null == this._suffix) || lowerName.endsWith(this._suffix)));
 		}
 
 		String _prefix;
 
 		String _suffix;
-        
-        String _exclude;
+
+		String _exclude;
 	}
 }

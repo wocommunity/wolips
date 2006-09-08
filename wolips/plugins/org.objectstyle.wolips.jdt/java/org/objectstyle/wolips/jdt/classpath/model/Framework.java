@@ -65,21 +65,29 @@ import org.eclipse.core.runtime.Path;
  */
 public class Framework {
 	private String name;
+
 	private Root root;
+
 	private String jarFiles[];
+
 	private String zipFiles[];
+
 	private String order;
+
 	private String sourceFile;
+
 	private IPath javaDocPath;
-    private IPath srcPath;
+
+	private IPath srcPath;
+
 	private boolean exported = false;
-	
+
 	protected Framework(String name, Root root, String jarFiles[], String zipFiles[], String sourceFile) {
 		this.name = name;
 		this.root = root;
 		this.jarFiles = jarFiles;
 		this.zipFiles = zipFiles;
-        this.sourceFile = sourceFile;
+		this.sourceFile = sourceFile;
 	}
 
 	/**
@@ -88,24 +96,25 @@ public class Framework {
 	public String getName() {
 		return this.name;
 	}
-	
+
 	/**
 	 * @return
 	 */
 	public IPath[] getLibraryPaths() {
 		ArrayList arrayList = new ArrayList(this.jarFiles.length + this.zipFiles.length);
-		for(int i = 0; i < this.jarFiles.length; i++) {
+		for (int i = 0; i < this.jarFiles.length; i++) {
 			arrayList.add(this.libraryPath(this.jarFiles[i]));
 		}
-		for(int i = 0; i < this.zipFiles.length; i++) {
+		for (int i = 0; i < this.zipFiles.length; i++) {
 			arrayList.add(this.libraryPath(this.zipFiles[i]));
 		}
-		return (IPath[])arrayList.toArray(new IPath[arrayList.size()]);
+		return (IPath[]) arrayList.toArray(new IPath[arrayList.size()]);
 	}
 
 	private IPath libraryPath(String string) {
 		return this.root.getRootPath().append(this.getName() + ".framework").append("Resources").append("Java").append(string);
 	}
+
 	/**
 	 * @return
 	 */
@@ -119,62 +128,74 @@ public class Framework {
 	public Root getRoot() {
 		return this.root;
 	}
+
 	/**
 	 * @return Returns the exported.
 	 */
 	public boolean isExported() {
 		return exported;
 	}
+
 	/**
-	 * @param exported The exported to set.
+	 * @param exported
+	 *            The exported to set.
 	 */
 	public void setExported(boolean exported) {
 		this.exported = exported;
 	}
+
 	/**
 	 * @return Returns the javaDocPath.
 	 */
 	public IPath getJavaDocPath() {
 		return javaDocPath;
 	}
+
 	/**
-	 * @param javaDocPath The javaDocPath to set.
+	 * @param javaDocPath
+	 *            The javaDocPath to set.
 	 */
 	public void setJavaDocPath(IPath javaDocPath) {
 		this.javaDocPath = javaDocPath;
 	}
+
 	/**
 	 * @return Returns the order.
 	 */
 	public String getOrder() {
 		return order;
 	}
+
 	/**
-	 * @param order The order to set.
+	 * @param order
+	 *            The order to set.
 	 */
 	public void setOrder(String order) {
 		this.order = order;
 	}
+
 	/**
 	 * @return Returns the srcPath.
 	 */
 	public IPath getSrcPath() {
-		return  this.srcPath;
+		return this.srcPath;
 	}
+
 	/**
-	 * @param srcPath The srcPath to set.
+	 * @param srcPath
+	 *            The srcPath to set.
 	 */
 	public void setSrcPath(IPath srcPath) {
 		this.srcPath = srcPath;
 	}
 
-    /**
-     * @return
-     */
-    public IPath getSourcePath() {
-        IPath sourcePath = null;
-        if (sourceFile != null)
-            sourcePath = libraryPath(sourceFile);
-        return sourcePath;
-    }
+	/**
+	 * @return
+	 */
+	public IPath getSourcePath() {
+		IPath sourcePath = null;
+		if (sourceFile != null)
+			sourcePath = libraryPath(sourceFile);
+		return sourcePath;
+	}
 }

@@ -84,15 +84,13 @@ public class UpdateIncludeFilesJob extends WorkspaceJob {
 	 * 
 	 * @see org.eclipse.core.resources.WorkspaceJob#runInWorkspace(org.eclipse.core.runtime.IProgressMonitor)
 	 */
-	public IStatus runInWorkspace(IProgressMonitor monitor)
-			throws CoreException {
+	public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
 		UpdateOtherClasspathIncludeFiles updateOtherClasspathIncludeFiles = new UpdateOtherClasspathIncludeFiles();
 		updateOtherClasspathIncludeFiles.setIProject(iProject);
 		updateOtherClasspathIncludeFiles.execute();
 		UpdateFrameworkIncludeFiles updateFrameworkIncludeFiles = new UpdateFrameworkIncludeFiles();
 		updateFrameworkIncludeFiles.setIProject(iProject);
 		updateFrameworkIncludeFiles.execute();
-		return new Status(IStatus.OK, DataSetsPlugin.getPluginId(), IStatus.OK,
-				"Done", null);
+		return new Status(IStatus.OK, DataSetsPlugin.getPluginId(), IStatus.OK, "Done", null);
 	}
 }

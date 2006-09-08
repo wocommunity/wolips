@@ -73,10 +73,10 @@ import org.osgi.framework.BundleContext;
 public class JdtPlugin extends AbstractUIPlugin {
 	private final static String PLUGIN_ID = "org.objectstyle.wolips.jdt.JdtPlugin";
 
-	//The shared instance.
+	// The shared instance.
 	private static JdtPlugin plugin;
 
-	//Resource bundle.
+	// Resource bundle.
 	private ResourceBundle resourceBundle;
 
 	private PluginLogger pluginLogger = null;
@@ -84,7 +84,7 @@ public class JdtPlugin extends AbstractUIPlugin {
 	private ClasspathModel classpathModel = null;
 
 	private IResourceChangeListener resourceChangeListener;
-	
+
 	/**
 	 * The constructor.
 	 */
@@ -92,8 +92,7 @@ public class JdtPlugin extends AbstractUIPlugin {
 		super();
 		plugin = this;
 		try {
-			this.resourceBundle = ResourceBundle
-					.getBundle("org.objectstyle.wolips.jdt.JdtPluginResources");
+			this.resourceBundle = ResourceBundle.getBundle("org.objectstyle.wolips.jdt.JdtPluginResources");
 		} catch (MissingResourceException x) {
 			this.resourceBundle = null;
 		}
@@ -139,8 +138,7 @@ public class JdtPlugin extends AbstractUIPlugin {
 		// add element change listener to update project file on classpath
 		// changes
 		this.resourceChangeListener = new ResourceChangeListener();
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(
-				this.resourceChangeListener, IResourceChangeEvent.POST_CHANGE);
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(this.resourceChangeListener, IResourceChangeEvent.POST_CHANGE);
 	}
 
 	/*
@@ -149,8 +147,7 @@ public class JdtPlugin extends AbstractUIPlugin {
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
-		ResourcesPlugin.getWorkspace().removeResourceChangeListener(
-				this.resourceChangeListener);
+		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this.resourceChangeListener);
 		super.stop(context);
 		this.classpathModel = null;
 		this.pluginLogger = null;

@@ -57,54 +57,54 @@ import org.osgi.framework.BundleContext;
  */
 public class PBServerPlugin extends Plugin implements IStartup {
 
-  //The shared instance.
-  private static PBServerPlugin plugin;
-  private PBServer myServer;
+	// The shared instance.
+	private static PBServerPlugin plugin;
 
-  /**
-   * The constructor.
-   */
-  public PBServerPlugin() {
-    plugin = this;
+	private PBServer myServer;
 
-    IPreferenceStore store = PreferencesPlugin.getDefault().getPreferenceStore();
-    store.setDefault(PreferenceConstants.PBSERVER_PORT, PBServer.DEFAULT_PB_PORT);
-    store.setDefault(PreferenceConstants.PBSERVER_ENABLED, false);
-  }
+	/**
+	 * The constructor.
+	 */
+	public PBServerPlugin() {
+		plugin = this;
 
-  /**
-   * This method is called upon plug-in activation
-   */
-  public void start(BundleContext context) throws Exception {
-    super.start(context);
-  }
+		IPreferenceStore store = PreferencesPlugin.getDefault().getPreferenceStore();
+		store.setDefault(PreferenceConstants.PBSERVER_PORT, PBServer.DEFAULT_PB_PORT);
+		store.setDefault(PreferenceConstants.PBSERVER_ENABLED, false);
+	}
 
-  /**
-   * This method is called when the plug-in is stopped
-   */
-  public void stop(BundleContext context) throws Exception {
-    super.stop(context);
-    plugin = null;
-  }
+	/**
+	 * This method is called upon plug-in activation
+	 */
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+	}
 
-  /**
-   * Returns the shared instance.
-   */
-  public static PBServerPlugin getDefault() {
-    return plugin;
-  }
+	/**
+	 * This method is called when the plug-in is stopped
+	 */
+	public void stop(BundleContext context) throws Exception {
+		super.stop(context);
+		plugin = null;
+	}
 
-  public void earlyStartup() {
-    IPreferenceStore store = PreferencesPlugin.getDefault().getPreferenceStore();
-    if (store.getBoolean(PreferenceConstants.PBSERVER_ENABLED)) {
-      myServer = new PBServer();
-      try {
-        int port = store.getInt(PreferenceConstants.PBSERVER_PORT);
-        myServer.start(port);
-      }
-      catch (IOException e) {
-        e.printStackTrace(System.out);
-      }
-    }
-  }
+	/**
+	 * Returns the shared instance.
+	 */
+	public static PBServerPlugin getDefault() {
+		return plugin;
+	}
+
+	public void earlyStartup() {
+		IPreferenceStore store = PreferencesPlugin.getDefault().getPreferenceStore();
+		if (store.getBoolean(PreferenceConstants.PBSERVER_ENABLED)) {
+			myServer = new PBServer();
+			try {
+				int port = store.getInt(PreferenceConstants.PBSERVER_PORT);
+				myServer.start(port);
+			} catch (IOException e) {
+				e.printStackTrace(System.out);
+			}
+		}
+	}
 }

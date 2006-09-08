@@ -48,10 +48,12 @@
  *  
  */
 package org.objectstyle.wolips.launching;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
 import org.osgi.framework.BundleContext;
+
 /**
  * The main plugin class to be used in the desktop.
  * 
@@ -61,8 +63,8 @@ import org.osgi.framework.BundleContext;
 public class LaunchingPlugin extends AbstractWOLipsUIPlugin {
 	// The shared instance.
 	private static LaunchingPlugin plugin;
-	
-	public static final String PLUGIN_ID ="org.objectstyle.wolips.launching";
+
+	public static final String PLUGIN_ID = "org.objectstyle.wolips.launching";
 
 	/**
 	 * The constructor.
@@ -96,7 +98,6 @@ public class LaunchingPlugin extends AbstractWOLipsUIPlugin {
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin(
-				"org.objectstyle.wolips.launching", path);
+		return AbstractUIPlugin.imageDescriptorFromPlugin("org.objectstyle.wolips.launching", path);
 	}
 }

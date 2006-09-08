@@ -59,8 +59,7 @@ public class WoprojectFilter extends ViewerFilter {
 			return true;
 		}
 		IFolder folder = (IFolder) element;
-		if (folder.getParent() == null
-				|| folder.getParent().getType() != IResource.PROJECT) {
+		if (folder.getParent() == null || folder.getParent().getType() != IResource.PROJECT) {
 			return true;
 		}
 		String folderName = folder.getName();

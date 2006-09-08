@@ -90,14 +90,12 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 			String extension = resource.getFileExtension();
 			if (extension.equals("java")) {
 				if (dotJava != null) {
-					throw new LocateException("Duplicate located: " + dotJava
-							+ " " + file);
+					throw new LocateException("Duplicate located: " + dotJava + " " + file);
 				}
 				dotJava = file;
 			} else if (extension.equals("api")) {
 				if (dotApi != null) {
-					throw new LocateException("Duplicate located: " + dotApi
-							+ " " + file);
+					throw new LocateException("Duplicate located: " + dotApi + " " + file);
 				}
 				dotApi = file;
 			} else {
@@ -172,28 +170,23 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 	}
 
 	public static IFile getHtml(IFolder component) throws CoreException {
-		return LocalizedComponentsLocateResult.getMemberWithExtension(
-				component, "html");
+		return LocalizedComponentsLocateResult.getMemberWithExtension(component, "html");
 	}
 
 	public static IFile getWod(IFolder component) throws CoreException {
-		return LocalizedComponentsLocateResult.getMemberWithExtension(
-				component, "wod");
+		return LocalizedComponentsLocateResult.getMemberWithExtension(component, "wod");
 	}
 
 	public static IFile getWoo(IFolder component) throws CoreException {
-		return LocalizedComponentsLocateResult.getMemberWithExtension(
-				component, "woo");
+		return LocalizedComponentsLocateResult.getMemberWithExtension(component, "woo");
 	}
 
-	private static IFile getMemberWithExtension(IFolder folder, String extension)
-			throws CoreException {
+	private static IFile getMemberWithExtension(IFolder folder, String extension) throws CoreException {
 		IResource[] member = folder.members();
 		for (int i = 0; i < member.length; i++) {
 			IResource resource = member[i];
 			String fileExtension = resource.getFileExtension();
-			if (resource.getType() == IResource.FILE && fileExtension != null
-					&& fileExtension.equalsIgnoreCase(extension)) {
+			if (resource.getType() == IResource.FILE && fileExtension != null && fileExtension.equalsIgnoreCase(extension)) {
 				return (IFile) resource;
 			}
 

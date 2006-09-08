@@ -62,37 +62,29 @@ import org.objectstyle.wolips.variables.VariablesPlugin;
 
 /**
  * @author mnolte
- *
+ * 
  */
 public abstract class UpdateIncludeFiles {
 
 	protected String[] rootPaths = null;
-		
+
 	private IPath[] paths = null;
 
 	protected String INCLUDES_FILE_PREFIX;
 
 	private IProject iProject;
+
 	private Project project;
-	
 
 	/**
 	 * 
 	 */
 	public UpdateIncludeFiles() {
-		this.paths =
-			new IPath[] {
-				VariablesPlugin.getDefault().getUserHome(),
-				VariablesPlugin.getDefault().getLocalRoot(),
-				VariablesPlugin.getDefault().getSystemRoot()};
-		this.rootPaths = new String [] { "user.home", "wo.wolocalroot", "wo.wosystemroot" };
+		this.paths = new IPath[] { VariablesPlugin.getDefault().getUserHome(), VariablesPlugin.getDefault().getLocalRoot(), VariablesPlugin.getDefault().getSystemRoot() };
+		this.rootPaths = new String[] { "user.home", "wo.wolocalroot", "wo.wosystemroot" };
 		if (this.paths[1].toOSString().length() < this.paths[2].toOSString().length()) {
-			this.paths =
-				new IPath[] {
-				VariablesPlugin.getDefault().getUserHome(),
-				VariablesPlugin.getDefault().getSystemRoot(),
-				VariablesPlugin.getDefault().getLocalRoot() };
-			this.rootPaths = new String [] { "user.home", "wo.wosystemroot", "wo.wolocalroot" };
+			this.paths = new IPath[] { VariablesPlugin.getDefault().getUserHome(), VariablesPlugin.getDefault().getSystemRoot(), VariablesPlugin.getDefault().getLocalRoot() };
+			this.rootPaths = new String[] { "user.home", "wo.wosystemroot", "wo.wolocalroot" };
 		}
 	}
 
@@ -102,6 +94,7 @@ public abstract class UpdateIncludeFiles {
 	public IPath[] getPaths() {
 		return this.paths;
 	}
+
 	/**
 	 * Method buildIncludeFiles.
 	 */
@@ -119,7 +112,7 @@ public abstract class UpdateIncludeFiles {
 	 */
 	public void setIProject(IProject iProject) {
 		this.iProject = iProject;
-		this.project = (Project)iProject.getAdapter(Project.class);
+		this.project = (Project) iProject.getAdapter(Project.class);
 	}
 
 	/**

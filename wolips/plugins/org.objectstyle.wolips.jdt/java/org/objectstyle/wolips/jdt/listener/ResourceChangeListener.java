@@ -64,8 +64,7 @@ import org.objectstyle.wolips.jdt.JdtPlugin;
 /**
  * Tracking changes in resources and synchronizes webobjects project file
  */
-public class ResourceChangeListener implements IResourceChangeListener,
-		IResourceDeltaVisitor {
+public class ResourceChangeListener implements IResourceChangeListener, IResourceDeltaVisitor {
 
 	private Project project;
 
@@ -110,8 +109,7 @@ public class ResourceChangeListener implements IResourceChangeListener,
 	 * @return boolean
 	 * @throws CoreException
 	 */
-	private final boolean examineResource(IResource resource, int kindOfChange)
-			throws CoreException {
+	private final boolean examineResource(IResource resource, int kindOfChange) throws CoreException {
 		if (!resource.isAccessible() && kindOfChange != IResourceDelta.REMOVED)
 			return false;
 		if (resource.isDerived())
@@ -122,8 +120,7 @@ public class ResourceChangeListener implements IResourceChangeListener,
 			return true;
 		case IResource.PROJECT:
 			this.project = null;
-			this.project = (Project) ((IProject) resource)
-					.getAdapter(Project.class);
+			this.project = (Project) ((IProject) resource).getAdapter(Project.class);
 			if (this.project == null) {
 				return false;
 			}
@@ -135,22 +132,22 @@ public class ResourceChangeListener implements IResourceChangeListener,
 			return false;
 		case IResource.FILE:
 			if (resource.getName().equals(".classpath")) {
-				UpdateIncludeFilesJob updateIncludeFilesJob = new UpdateIncludeFilesJob(
-						this.project.getIProject());
+				UpdateIncludeFilesJob updateIncludeFilesJob = new UpdateIncludeFilesJob(this.project.getIProject());
 				updateIncludeFilesJob.setRule(this.project.getIProject());
 				updateIncludeFilesJob.schedule();
-//				IJavaProject iJavaProject = JavaCore.create(this.project
-//						.getIProject());
-//				JavaProject javaProject = (JavaProject) iJavaProject
-//						.getAdapter(JavaProject.class);
-//				List frameworkNames = javaProject.getFrameworkNames();
-//
-//				if (frameworkNames != null) {
-//					UpdateFrameworkNamesJob updateFrameworkNamesJob = new UpdateFrameworkNamesJob(
-//							frameworkNames, this.project.getIProject());
-//					updateFrameworkNamesJob.setRule(this.project.getIProject());
-//					updateFrameworkNamesJob.schedule();
-//				}
+				// IJavaProject iJavaProject = JavaCore.create(this.project
+				// .getIProject());
+				// JavaProject javaProject = (JavaProject) iJavaProject
+				// .getAdapter(JavaProject.class);
+				// List frameworkNames = javaProject.getFrameworkNames();
+				//
+				// if (frameworkNames != null) {
+				// UpdateFrameworkNamesJob updateFrameworkNamesJob = new
+				// UpdateFrameworkNamesJob(
+				// frameworkNames, this.project.getIProject());
+				// updateFrameworkNamesJob.setRule(this.project.getIProject());
+				// updateFrameworkNamesJob.schedule();
+				// }
 			}
 		}
 		return false;

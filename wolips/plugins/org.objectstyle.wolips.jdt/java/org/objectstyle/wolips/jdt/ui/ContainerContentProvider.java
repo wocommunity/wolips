@@ -82,21 +82,19 @@ import org.objectstyle.wolips.jdt.classpath.model.Root;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class ContainerContentProvider implements ITreeContentProvider,
-		ILabelProvider {
+public class ContainerContentProvider implements ITreeContentProvider, ILabelProvider {
 	private CheckboxTreeViewer checkboxTreeViewer;
 
 	private Container container;
 
 	/**
-	 *  
+	 * 
 	 */
 	public ContainerContentProvider() {
 		super();
 		ContainerEntries containerEntries = null;
 		try {
-			containerEntries = ContainerEntries.initWithPath(new Path(
-					Container.DEFAULT_PATH));
+			containerEntries = ContainerEntries.initWithPath(new Path(Container.DEFAULT_PATH));
 		} catch (PathCoderException e) {
 			JdtPlugin.getDefault().getPluginLogger().log(e);
 		}
@@ -106,14 +104,12 @@ public class ContainerContentProvider implements ITreeContentProvider,
 	/**
 	 * @param containerEntry
 	 */
-public ContainerContentProvider(IClasspathEntry containerEntry) {
+	public ContainerContentProvider(IClasspathEntry containerEntry) {
 		super();
 		ContainerEntries containerEntries = null;
 		try {
-			IPath path = containerEntry
-			.getPath();
-			if(Container.CONTAINER_IDENTITY.equals(path.segment(0)))
-			{
+			IPath path = containerEntry.getPath();
+			if (Container.CONTAINER_IDENTITY.equals(path.segment(0))) {
 				path = path.removeFirstSegments(1);
 			}
 			containerEntries = ContainerEntries.initWithPath(path);
@@ -123,14 +119,14 @@ public ContainerContentProvider(IClasspathEntry containerEntry) {
 		}
 		this.container = new Container(containerEntries);
 	}
+
 	private void pull(ContainerEntries containerEntries) {
 		Root[] roots = JdtPlugin.getDefault().getClasspathModel().getRoots();
 		for (int i = 0; i < roots.length; i++) {
 			Framework[] frameworks = roots[i].getEntries();
 			if (frameworks != null)
 				for (int j = 0; j < frameworks.length; j++) {
-					ContainerEntry containerEntry = containerEntries
-							.getEntry(frameworks[j]);
+					ContainerEntry containerEntry = containerEntries.getEntry(frameworks[j]);
 					if (containerEntry != null) {
 						containerEntry.pull(frameworks[j]);
 					}
@@ -163,15 +159,12 @@ public ContainerContentProvider(IClasspathEntry containerEntry) {
 			Framework[] frameworks = roots[i].getEntries();
 			if (frameworks != null)
 				for (int j = 0; j < frameworks.length; j++) {
-					if (roots[i].getEntries() != null
-							&& this.checkboxTreeViewer.getChecked(roots[i]
-									.getEntries()[j])) {
+					if (roots[i].getEntries() != null && this.checkboxTreeViewer.getChecked(roots[i].getEntries()[j])) {
 						checked.add(roots[i].getEntries()[j]);
 					}
 				}
 		}
-		this.container.setContent((Framework[]) checked
-				.toArray(new Framework[checked.size()]));
+		this.container.setContent((Framework[]) checked.toArray(new Framework[checked.size()]));
 		return JavaCore.newContainerEntry(this.container.getPath(), false);
 	}
 
@@ -255,8 +248,7 @@ public ContainerContentProvider(IClasspathEntry containerEntry) {
 			return PluginImages.WOFRAMEWORK_ROOT_IMAGE();
 		if (element instanceof Framework) {
 			for (int i = 0; i < Container.STANDARD_FRAMEWORK_NAMES.length; i++) {
-				if (Container.STANDARD_FRAMEWORK_NAMES[i]
-						.equals(((Framework) element).getName()))
+				if (Container.STANDARD_FRAMEWORK_NAMES[i].equals(((Framework) element).getName()))
 					return PluginImages.WOSTANDARD_FRAMEWORK_IMAGE();
 			}
 			return PluginImages.WOFRAMEWORK_IMAGE();

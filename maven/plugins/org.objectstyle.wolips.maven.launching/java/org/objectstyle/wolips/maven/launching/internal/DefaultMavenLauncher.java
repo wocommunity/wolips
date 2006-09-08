@@ -67,9 +67,7 @@ public class DefaultMavenLauncher implements IMavenLauncher {
 	 * @param targets
 	 * @throws CoreException
 	 */
-	public void launchMavenInExternalVM(IFile buildFile,
-			IProgressMonitor monitor, boolean captureOutput, String targets)
-			throws CoreException {
+	public void launchMavenInExternalVM(IFile buildFile, IProgressMonitor monitor, boolean captureOutput, String targets) throws CoreException {
 	}
 
 }

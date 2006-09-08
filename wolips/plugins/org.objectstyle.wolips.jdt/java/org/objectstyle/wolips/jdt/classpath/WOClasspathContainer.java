@@ -76,9 +76,7 @@ import org.objectstyle.wolips.variables.VariablesPlugin;
 public final class WOClasspathContainer implements IClasspathContainer {
 	public static final String WOLIPS_CLASSPATH_CONTAINER_IDENTITY = "org.objectstyle.wolips.WO_CLASSPATH";
 
-	public static final String[] WOLIPS_CLASSPATH_STANDARD_FRAMEWORKS = new String[] {
-			"JavaWebObjects", "JavaFoundation", "JavaXML", "JavaWOExtensions",
-			"JavaEOAccess", "JavaEOControl", "JavaJDBCAdaptor" };
+	public static final String[] WOLIPS_CLASSPATH_STANDARD_FRAMEWORKS = new String[] { "JavaWebObjects", "JavaFoundation", "JavaXML", "JavaWOExtensions", "JavaEOAccess", "JavaEOControl", "JavaJDBCAdaptor" };
 
 	private IClasspathEntry[] classpathEntries = null;
 
@@ -135,30 +133,22 @@ public final class WOClasspathContainer implements IClasspathContainer {
 				IPath classpathVariable = paths[h];
 				String framework = id.segment(i);
 				if (!allClasspathEntries.containsKey(framework)) {
-					File frameworkFile = new File(classpathVariable
-							.toOSString(), framework
-							+ ".framework/Resources/Java");
+					File frameworkFile = new File(classpathVariable.toOSString(), framework + ".framework/Resources/Java");
 					if (frameworkFile.isDirectory()) {
-						String archives[] = frameworkFile
-								.list(new FilenameFilter() {
-									public boolean accept(File dir, String name) {
-										String lowerName = name.toLowerCase();
-										return (lowerName.endsWith(".zip") || lowerName
-												.endsWith(".jar"));
-									}
-								});
-						IPath source = new Path(classpathVariable.toOSString()
-								+ "/" + framework
-								+ ".framework/Resources/Java/src.jar");
+						String archives[] = frameworkFile.list(new FilenameFilter() {
+							public boolean accept(File dir, String name) {
+								String lowerName = name.toLowerCase();
+								return (lowerName.endsWith(".zip") || lowerName.endsWith(".jar"));
+							}
+						});
+						IPath source = new Path(classpathVariable.toOSString() + "/" + framework + ".framework/Resources/Java/src.jar");
 						if (!source.toFile().exists()) {
 							source = null;
 						}
 						for (int j = 0; j < archives.length; j++) {
 							// framework found under this root
 							h = paths.length;
-							IPath archivePath = new Path(frameworkFile
-									.getAbsolutePath()
-									+ "/" + archives[j]);
+							IPath archivePath = new Path(frameworkFile.getAbsolutePath() + "/" + archives[j]);
 							// IClasspathEntry entry =
 							// JavaCore.newLibraryEntry(archivePath, null,
 							// null);
@@ -167,31 +157,27 @@ public final class WOClasspathContainer implements IClasspathContainer {
 								if (framework.indexOf("Java") == 0) {
 									javadoc = new IClasspathAttribute[1];
 									String referenceApiString = VariablesPlugin.getDefault().getReferenceApiAsJavaDocCompatibleString();
-									if(referenceApiString != null) {
+									if (referenceApiString != null) {
 										javadoc[0] = JavaCore.newClasspathAttribute(IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME, referenceApiString);
 									}
 								}
-								IClasspathEntry entry = JavaCore
-										.newLibraryEntry(archivePath, source,
-												null, null, javadoc, false);
+								IClasspathEntry entry = JavaCore.newLibraryEntry(archivePath, source, null, null, javadoc, false);
 								path.add(entry);
-               Set entrySet = (Set)allClasspathEntries.get(framework);
-               if (entrySet == null) {
-                 entrySet = new LinkedHashSet();
-                 allClasspathEntries.put(framework, entrySet);
-               }
-               entrySet.add(entry);
+								Set entrySet = (Set) allClasspathEntries.get(framework);
+								if (entrySet == null) {
+									entrySet = new LinkedHashSet();
+									allClasspathEntries.put(framework, entrySet);
+								}
+								entrySet.add(entry);
 							}
 						}
 					}
-				}
-				else {
-					path.addAll((Set)allClasspathEntries.get(framework));
+				} else {
+					path.addAll((Set) allClasspathEntries.get(framework));
 					h = paths.length;
 				}
 			}
 		}
-		classpathEntries = (IClasspathEntry[]) path
-				.toArray(new IClasspathEntry[path.size()]);
+		classpathEntries = (IClasspathEntry[]) path.toArray(new IClasspathEntry[path.size()]);
 	}
 }

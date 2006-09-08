@@ -61,7 +61,9 @@ import org.eclipse.core.resources.IFile;
 public interface ILocateScope {
 
 	public abstract boolean ignoreContainer(IContainer container);
+
 	public abstract boolean addToResult(IFile file);
+
 	public abstract boolean addToResult(IContainer container);
-	
+
 }

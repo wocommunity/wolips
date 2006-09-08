@@ -63,17 +63,16 @@ import org.objectstyle.wolips.locate.LocateException;
 public abstract class AbstractLocateResult implements ILocateResult {
 
 	private ArrayList resources = new ArrayList();
-	
+
 	public AbstractLocateResult() {
 		super();
 	}
 
-
 	public void add(IResource resource) throws LocateException {
 		resources.add(resource);
 	}
-	
+
 	public IResource[] getResources() {
-		return (IResource[])resources.toArray(new IResource[resources.size()]);
+		return (IResource[]) resources.toArray(new IResource[resources.size()]);
 	}
 }

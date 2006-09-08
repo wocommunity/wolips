@@ -54,10 +54,10 @@ public class ComponentFilter extends ViewerFilter {
 	}
 
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
-		if(element instanceof IFolder) {
-			IFolder folder = (IFolder)element;
+		if (element instanceof IFolder) {
+			IFolder folder = (IFolder) element;
 			String folderExtension = folder.getFileExtension();
-			if(folderExtension != null && "wo".equals(folderExtension)) {
+			if (folderExtension != null && "wo".equals(folderExtension)) {
 				return false;
 			}
 		}

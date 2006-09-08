@@ -75,7 +75,7 @@ public class PathCoder {
 	public static IPath[] decode(IPath path) throws PathCoderException {
 		ArrayList arrayList = new ArrayList();
 		int segmentCount = path.segmentCount();
-		//if something goes wrong max 2048 runs
+		// if something goes wrong max 2048 runs
 		for (int i = 0; i < segmentCount && i < 2048;) {
 			Integer integer = null;
 			try {
@@ -86,8 +86,7 @@ public class PathCoder {
 				throw new PathCoderException();
 			}
 			IPath entryPath = path.removeFirstSegments(i + 1);
-			entryPath = entryPath.removeLastSegments(entryPath.segmentCount()
-					- integer.intValue());
+			entryPath = entryPath.removeLastSegments(entryPath.segmentCount() - integer.intValue());
 			arrayList.add(entryPath);
 			i = i + integer.intValue() + 1;
 		}

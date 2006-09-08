@@ -98,8 +98,7 @@ public class PreferencesPlugin extends AbstractUIPlugin {
 			// set up missing preferences
 			Preferences.setDefaults();
 		} catch (Exception exception) {
-			this.pluginLogger.log("Exception in WOLips constructor: ",
-					exception);
+			this.pluginLogger.log("Exception in WOLips constructor: ", exception);
 		}
 	}
 }

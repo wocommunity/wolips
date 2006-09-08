@@ -86,8 +86,7 @@ public class ContainerInitializer extends ClasspathContainerInitializer {
 	 * @see org.eclipse.jdt.core.ClasspathContainerInitializer#canUpdateClasspathContainer(org.eclipse.core.runtime.IPath,
 	 *      org.eclipse.jdt.core.IJavaProject)
 	 */
-	public boolean canUpdateClasspathContainer(IPath containerPath,
-			IJavaProject project) {
+	public boolean canUpdateClasspathContainer(IPath containerPath, IJavaProject project) {
 		return super.canUpdateClasspathContainer(containerPath, project);
 	}
 
@@ -98,8 +97,8 @@ public class ContainerInitializer extends ClasspathContainerInitializer {
 	 *      org.eclipse.jdt.core.IJavaProject)
 	 */
 	public Object getComparisonID(IPath containerPath, IJavaProject project) {
-    return containerPath;
-  }
+		return containerPath;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -118,11 +117,8 @@ public class ContainerInitializer extends ClasspathContainerInitializer {
 	 *      org.eclipse.jdt.core.IJavaProject,
 	 *      org.eclipse.jdt.core.IClasspathContainer)
 	 */
-	public void requestClasspathContainerUpdate(IPath containerPath,
-			IJavaProject project, IClasspathContainer containerSuggestion)
-			throws CoreException {
-		super.requestClasspathContainerUpdate(containerPath, project,
-				containerSuggestion);
+	public void requestClasspathContainerUpdate(IPath containerPath, IJavaProject project, IClasspathContainer containerSuggestion) throws CoreException {
+		super.requestClasspathContainerUpdate(containerPath, project, containerSuggestion);
 	}
 
 	/*
@@ -131,8 +127,7 @@ public class ContainerInitializer extends ClasspathContainerInitializer {
 	 * @see org.eclipse.jdt.core.ClasspathContainerInitializer#initialize(org.eclipse.core.runtime.IPath,
 	 *      org.eclipse.jdt.core.IJavaProject)
 	 */
-	public void initialize(IPath containerPath, IJavaProject project)
-			throws CoreException {
+	public void initialize(IPath containerPath, IJavaProject project) throws CoreException {
 		int size = containerPath.segmentCount();
 		if (size > 0) {
 			String firstSegment = containerPath.segment(0);
@@ -140,18 +135,13 @@ public class ContainerInitializer extends ClasspathContainerInitializer {
 				ContainerEntries containerEntries = null;
 				try {
 
-					containerEntries = ContainerEntries
-							.initWithPath(containerPath.removeFirstSegments(1));
+					containerEntries = ContainerEntries.initWithPath(containerPath.removeFirstSegments(1));
 				} catch (PathCoderException e) {
 					JdtPlugin.getDefault().getPluginLogger().log(e);
 				}
 				if (containerEntries != null) {
-					IClasspathContainer classpathContainer = new Container(
-							containerEntries);
-					JavaCore.setClasspathContainer(containerPath,
-							new IJavaProject[] { project },
-							new IClasspathContainer[] { classpathContainer },
-							null);
+					IClasspathContainer classpathContainer = new Container(containerEntries);
+					JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { project }, new IClasspathContainer[] { classpathContainer }, null);
 				}
 			}
 		}

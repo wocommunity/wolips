@@ -119,9 +119,7 @@ public class LogTab extends AbstractWOArgumentsTab {
 		// IHelpContextIds.IGNORE_PREFERENCE_PAGE);
 
 		Label l1 = new Label(parent, SWT.NULL);
-		l1
-				.setText(PreferencesMessages
-						.getString("LaunchPreferencesPage.label")); //$NON-NLS-1$
+		l1.setText(PreferencesMessages.getString("LaunchPreferencesPage.label")); //$NON-NLS-1$
 		data = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 		data.horizontalSpan = 3;
 		l1.setLayoutData(data);
@@ -154,18 +152,15 @@ public class LogTab extends AbstractWOArgumentsTab {
 		buttons.setLayout(layout);
 
 		this.addButton = new Button(buttons, SWT.PUSH);
-		this.addButton.setText(PreferencesMessages
-				.getString("LaunchPreferencesPage.add")); //$NON-NLS-1$
+		this.addButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.add")); //$NON-NLS-1$
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
 		data.heightHint = 20;
-		data.heightHint = Math.max(data.heightHint, this.addButton.computeSize(
-				SWT.DEFAULT, SWT.DEFAULT, true).y);
+		data.heightHint = Math.max(data.heightHint, this.addButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
 		// convertVerticalDLUsToPixels(IDialogConstants.BUTTON_HEIGHT);
 		int widthHint = 100;
 		// convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
-		data.widthHint = Math.max(widthHint, this.addButton.computeSize(
-				SWT.DEFAULT, SWT.DEFAULT, true).x);
+		data.widthHint = Math.max(widthHint, this.addButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		this.addButton.setLayoutData(data);
 		this.addButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
@@ -174,19 +169,16 @@ public class LogTab extends AbstractWOArgumentsTab {
 		});
 
 		this.removeButton = new Button(buttons, SWT.PUSH);
-		this.removeButton.setText(PreferencesMessages
-				.getString("LaunchPreferencesPage.remove")); //$NON-NLS-1$
+		this.removeButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.remove")); //$NON-NLS-1$
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
 		data.heightHint = 20;
-		data.heightHint = Math.max(data.heightHint, this.removeButton
-				.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
+		data.heightHint = Math.max(data.heightHint, this.removeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
 		// Dialog.convertVerticalDLUsToPixels(new FontMetrics(),
 		// IDialogConstants.BUTTON_HEIGHT);
 		widthHint = 100;
 		// Dialog.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
-		data.widthHint = Math.max(widthHint, this.removeButton.computeSize(
-				SWT.DEFAULT, SWT.DEFAULT, true).x);
+		data.widthHint = Math.max(widthHint, this.removeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		this.removeButton.setLayoutData(data);
 		this.removeButton.setEnabled(false);
 		this.removeButton.addListener(SWT.Selection, new Listener() {
@@ -196,20 +188,17 @@ public class LogTab extends AbstractWOArgumentsTab {
 		});
 
 		this.renameButton = new Button(buttons, SWT.PUSH);
-		this.renameButton.setText(PreferencesMessages
-				.getString("LaunchPreferencesPage.change")); //$NON-NLS-1$
+		this.renameButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.change")); //$NON-NLS-1$
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
 		data.heightHint = 20;
-		data.heightHint = Math.max(data.heightHint, this.renameButton
-				.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
+		data.heightHint = Math.max(data.heightHint, this.renameButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
 
 		// Dialog.convertVerticalDLUsToPixels(new FontMetrics(),
 		// IDialogConstants.BUTTON_HEIGHT);
 		widthHint = 100;
 		// Dialog.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
-		data.widthHint = Math.max(widthHint, this.renameButton.computeSize(
-				SWT.DEFAULT, SWT.DEFAULT, true).x);
+		data.widthHint = Math.max(widthHint, this.renameButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		this.renameButton.setLayoutData(data);
 		this.renameButton.setEnabled(false);
 		this.renameButton.addListener(SWT.Selection, new Listener() {
@@ -240,10 +229,7 @@ public class LogTab extends AbstractWOArgumentsTab {
 		int index = selection[0];
 		TableItem item = this.debugGroupsTable.getItem(index);
 		String oldValue = item.getText();
-		InputDialog launchGroupDialog = new InputDialog(
-				getShell(),
-				oldValue
-						+ " " + PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), oldValue, null); //$NON-NLS-1$ //$NON-NLS-2$
+		InputDialog launchGroupDialog = new InputDialog(getShell(), oldValue + " " + PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), oldValue, null); //$NON-NLS-1$ //$NON-NLS-2$
 		launchGroupDialog.open();
 		if (launchGroupDialog.getReturnCode() != Window.OK)
 			return;
@@ -257,10 +243,7 @@ public class LogTab extends AbstractWOArgumentsTab {
 	}
 
 	protected void addLaunchGroup() {
-		InputDialog parameterDialog = new InputDialog(
-				getShell(),
-				PreferencesMessages
-						.getString("LaunchPreferencesPage.enterParameterShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), null, null); //$NON-NLS-1$ //$NON-NLS-2$
+		InputDialog parameterDialog = new InputDialog(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.enterParameterShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), null, null); //$NON-NLS-1$ //$NON-NLS-2$
 		parameterDialog.open();
 		if (parameterDialog.getReturnCode() != Window.OK)
 			return;
@@ -282,11 +265,7 @@ public class LogTab extends AbstractWOArgumentsTab {
 		TableItem[] items = this.debugGroupsTable.getItems();
 		for (int i = 0; i < items.length; i++) {
 			if (items[i].getText().equals(item)) {
-				MessageDialog
-						.openWarning(
-								getShell(),
-								PreferencesMessages
-										.getString("LaunchPreferencesPage.parameterExistsShort"), Preferences.getString("IgnorePreferencePage.patternExistsLong")); //$NON-NLS-1$ //$NON-NLS-2$
+				MessageDialog.openWarning(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.parameterExistsShort"), Preferences.getString("IgnorePreferencePage.patternExistsLong")); //$NON-NLS-1$ //$NON-NLS-2$
 				return true;
 			}
 		}
@@ -294,8 +273,7 @@ public class LogTab extends AbstractWOArgumentsTab {
 	}
 
 	private void fillDebugGroupsTable(String aString) {
-		String debugGroups = LaunchingMessages
-				.getString(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS);
+		String debugGroups = LaunchingMessages.getString(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS);
 		StringTokenizer stringTokenizer = new StringTokenizer(debugGroups, ",");
 		this.debugGroupsTable.removeAll();
 		while (stringTokenizer.hasMoreTokens()) {
@@ -329,10 +307,7 @@ public class LogTab extends AbstractWOArgumentsTab {
 	 * @see ILaunchConfigurationTab#setDefaults(ILaunchConfigurationWorkingCopy)
 	 */
 	public void setDefaults(ILaunchConfigurationWorkingCopy config) {
-		config
-				.setAttribute(
-						WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS,
-						"");
+		config.setAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS, "");
 	}
 
 	/**
@@ -340,14 +315,9 @@ public class LogTab extends AbstractWOArgumentsTab {
 	 */
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
-			this
-					.fillDebugGroupsTable(configuration
-							.getAttribute(
-									WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS,
-									""));
+			this.fillDebugGroupsTable(configuration.getAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS, ""));
 		} catch (CoreException e) {
-			setErrorMessage(LaunchingMessages
-					.getString("WOArgumentsTab.Exception_occurred_reading_configuration___15") + e.getStatus().getMessage()); //$NON-NLS-1$
+			setErrorMessage(LaunchingMessages.getString("WOArgumentsTab.Exception_occurred_reading_configuration___15") + e.getStatus().getMessage()); //$NON-NLS-1$
 			LaunchingPlugin.getDefault().log(e);
 		}
 	}
@@ -365,10 +335,7 @@ public class LogTab extends AbstractWOArgumentsTab {
 				aString = aString + debugGrouspItems[i].getText();
 			}
 		}
-		configuration
-				.setAttribute(
-						WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS,
-						aString);
+		configuration.setAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS, aString);
 	}
 
 	/**
@@ -382,8 +349,7 @@ public class LogTab extends AbstractWOArgumentsTab {
 	 * @see ILaunchConfigurationTab#getImage()
 	 */
 	public Image getImage() {
-		return LaunchingPlugin.getImageDescriptor(
-				"icons/launching/logging-tab.gif").createImage();
+		return LaunchingPlugin.getImageDescriptor("icons/launching/logging-tab.gif").createImage();
 	}
 
 	protected void updateLaunchConfigurationDialog() {

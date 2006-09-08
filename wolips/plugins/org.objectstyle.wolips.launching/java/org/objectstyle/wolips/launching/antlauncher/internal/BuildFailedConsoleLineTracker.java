@@ -84,10 +84,7 @@ public class BuildFailedConsoleLineTracker implements IConsoleLineTracker {
 		this.currentConsole = console;
 		isDefaultAntLauncherConsole = false;
 		try {
-			isDefaultAntLauncherConsole = console.getProcess().getLaunch()
-					.getLaunchConfiguration().getAttribute(
-							ATTR_BUILD_FAILED_CONSOLE_LINE_TRACKER_ENABLED,
-							false);
+			isDefaultAntLauncherConsole = console.getProcess().getLaunch().getLaunchConfiguration().getAttribute(ATTR_BUILD_FAILED_CONSOLE_LINE_TRACKER_ENABLED, false);
 		} catch (CoreException e) {
 			LaunchingPlugin.getDefault().log(e);
 		}
@@ -108,27 +105,12 @@ public class BuildFailedConsoleLineTracker implements IConsoleLineTracker {
 		}
 		if (text != null && text.startsWith("BUILD FAILED")) {
 			try {
-				final String projectName = currentConsole
-						.getProcess()
-						.getLaunch()
-						.getLaunchConfiguration()
-						.getAttribute(
-								IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME,
-								"UNKNOWN");
+				final String projectName = currentConsole.getProcess().getLaunch().getLaunchConfiguration().getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "UNKNOWN");
 				Display.getDefault().asyncExec(new Runnable() {
 
 					public void run() {
-						IStatus status = new Status(
-								IStatus.ERROR,
-								LaunchingPlugin.PLUGIN_ID,
-								IStatus.ERROR,
-								"Error while building project: "
-										+ projectName
-										+ " with the ant builder. Take a look into the console for details.\n\n"
-										+ "You mave have to enable the logging of the ant output in the WOLips preferences.",
-								null);
-						ErrorDialog.openError(null, "Error", "BUILD FAILED",
-								status);
+						IStatus status = new Status(IStatus.ERROR, LaunchingPlugin.PLUGIN_ID, IStatus.ERROR, "Error while building project: " + projectName + " with the ant builder. Take a look into the console for details.\n\n" + "You mave have to enable the logging of the ant output in the WOLips preferences.", null);
+						ErrorDialog.openError(null, "Error", "BUILD FAILED", status);
 					}
 				});
 			} catch (CoreException e) {

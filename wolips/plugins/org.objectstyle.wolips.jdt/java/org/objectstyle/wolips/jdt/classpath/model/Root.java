@@ -65,8 +65,11 @@ import org.eclipse.core.runtime.IPath;
  */
 public class Root {
 	private String name;
+
 	private IPath rootPath;
+
 	private Framework[] entries;
+
 	/**
 	 * @param name
 	 * @param rootPath
@@ -80,7 +83,7 @@ public class Root {
 	 * @return
 	 */
 	public Framework[] getEntries() {
-		if(this.entries == null) {
+		if (this.entries == null) {
 			ArrayList frameworks = new ArrayList();
 			File fwBase = new File(this.rootPath.toOSString());
 			if (fwBase.exists() && fwBase.isDirectory()) {
@@ -89,7 +92,7 @@ public class Root {
 				fwBase.listFiles(frameworkFilenameFilter);
 				frameworks.addAll(frameworkFilenameFilter.frameworks());
 			}
-			this.entries = (Framework[])frameworks.toArray(new Framework[frameworks.size()]);
+			this.entries = (Framework[]) frameworks.toArray(new Framework[frameworks.size()]);
 		}
 		return this.entries;
 	}
@@ -107,15 +110,13 @@ public class Root {
 	 * @return
 	 */
 	public Framework getFrameworkWithName(String string) {
-		for(int i = 0; i < this.getEntries().length; i++) {
-			if(this.getEntries()[i].getName().equals(string)) {
+		for (int i = 0; i < this.getEntries().length; i++) {
+			if (this.getEntries()[i].getName().equals(string)) {
 				return this.entries[i];
 			}
 		}
 		return null;
 	}
-
-
 
 	/**
 	 * @return Returns the name.

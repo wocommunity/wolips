@@ -62,8 +62,7 @@ import org.objectstyle.wolips.maven.core.MavenCorePlugin;
 public class MavenLauncherExtensionPointTest extends TestCase {
 
 	public void testGetMavenLauncher() {
-		MavenLauncherWrapper[] mavenLauncher = MavenCorePlugin.getDefault()
-				.getMavenLauncherWrapper();
+		MavenLauncherWrapper[] mavenLauncher = MavenCorePlugin.getDefault().getMavenLauncherWrapper();
 		assertNotNull(mavenLauncher);
 		assertTrue(mavenLauncher.length == 1);
 	}

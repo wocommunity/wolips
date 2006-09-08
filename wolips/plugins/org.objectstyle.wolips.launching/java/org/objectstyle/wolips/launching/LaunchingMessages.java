@@ -63,10 +63,9 @@ import java.util.ResourceBundle;
  */
 public class LaunchingMessages {
 
-	private static final String RESOURCE_BUNDLE =
-	LaunchingMessages.class.getName();
-	private static ResourceBundle fgResourceBundle =
-		ResourceBundle.getBundle(RESOURCE_BUNDLE);
+	private static final String RESOURCE_BUNDLE = LaunchingMessages.class.getName();
+
+	private static ResourceBundle fgResourceBundle = ResourceBundle.getBundle(RESOURCE_BUNDLE);
 
 	private LaunchingMessages() {
 		super();

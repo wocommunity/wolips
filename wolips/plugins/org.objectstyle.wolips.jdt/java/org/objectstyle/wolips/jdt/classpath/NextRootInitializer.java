@@ -67,13 +67,15 @@ import org.objectstyle.wolips.variables.VariablesPlugin;
  */
 public class NextRootInitializer extends ClasspathVariableInitializer {
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jdt.core.ClasspathVariableInitializer#initialize(java.lang.String)
 	 */
 	public void initialize(String variable) {
-		if("NEXT_ROOT".equals(variable)) {
+		if ("NEXT_ROOT".equals(variable)) {
 			try {
-				JavaCore.setClasspathVariable(variable, VariablesPlugin.getDefault().getSystemRoot() , new NullProgressMonitor());
+				JavaCore.setClasspathVariable(variable, VariablesPlugin.getDefault().getSystemRoot(), new NullProgressMonitor());
 			} catch (JavaModelException e) {
 				JdtPlugin.getDefault().getPluginLogger().log(e);
 			}

@@ -90,33 +90,20 @@ public class ConsoleLineTracker implements IConsoleLineTracker {
 		// process type
 		String openBrowser = null;
 		try {
-			openBrowser = console
-					.getProcess()
-					.getLaunch()
-					.getLaunchConfiguration()
-					.getAttribute(
-							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER,
-							"false");
+			openBrowser = console.getProcess().getLaunch().getLaunchConfiguration().getAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER, "false");
 		} catch (CoreException e) {
 			LaunchingPlugin.getDefault().log(e);
 		}
 		String webServerConnectString = null;
 		try {
-			webServerConnectString = console
-					.getProcess()
-					.getLaunch()
-					.getLaunchConfiguration()
-					.getAttribute(
-							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WEBSERVER_CONNECT,
-							"false");
+			webServerConnectString = console.getProcess().getLaunch().getLaunchConfiguration().getAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WEBSERVER_CONNECT, "false");
 		} catch (CoreException e) {
 			LaunchingPlugin.getDefault().log(e);
 		}
 
 		if (openBrowser != null && openBrowser.equals("true")) {
 			urlFound = false;
-			webserverConnect = webServerConnectString != null
-					&& webServerConnectString.equals("true");
+			webserverConnect = webServerConnectString != null && webServerConnectString.equals("true");
 			webserverURLFound = false;
 			this.currentConsole = console;
 		} else {
@@ -150,14 +137,8 @@ public class ConsoleLineTracker implements IConsoleLineTracker {
 					URL url;
 					try {
 						url = new URL(urlString);
-						IWorkbenchBrowserSupport browserSupport = WebBrowserUIPlugin
-								.getInstance().getWorkbench()
-								.getBrowserSupport();
-						IWebBrowser browser = browserSupport
-								.createBrowser(
-										IWorkbenchBrowserSupport.LOCATION_BAR
-												| IWorkbenchBrowserSupport.NAVIGATION_BAR,
-										null, null, null);
+						IWorkbenchBrowserSupport browserSupport = WebBrowserUIPlugin.getInstance().getWorkbench().getBrowserSupport();
+						IWebBrowser browser = browserSupport.createBrowser(IWorkbenchBrowserSupport.LOCATION_BAR | IWorkbenchBrowserSupport.NAVIGATION_BAR, null, null, null);
 						browser.openURL(url);
 					} catch (MalformedURLException e1) {
 						LaunchingPlugin.getDefault().log(e1);

@@ -119,30 +119,24 @@ public class MavenCorePlugin extends AbstractCorePlugin implements IMavenLaunche
 	 * @throws CoreException
 	 */
 	private void loadMavenLauncherExtensionPoint() {
-		IExtensionPoint extensionPoint = Platform.getExtensionRegistry()
-				.getExtensionPoint(EXTENSION_POINT_ID);
+		IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(EXTENSION_POINT_ID);
 		IExtension[] extensions = extensionPoint.getExtensions();
 		ArrayList arrayList = new ArrayList();
 		for (int i = 0; i < extensions.length; i++) {
-			IConfigurationElement[] configurationElements = extensions[i]
-					.getConfigurationElements();
+			IConfigurationElement[] configurationElements = extensions[i].getConfigurationElements();
 			for (int j = 0; j < configurationElements.length; j++) {
 				IConfigurationElement configurationElement = configurationElements[j];
 				IMavenLauncher currentMavenLauncher = null;
 				try {
-					currentMavenLauncher = (IMavenLauncher) configurationElement
-							.createExecutableExtension("class");
+					currentMavenLauncher = (IMavenLauncher) configurationElement.createExecutableExtension("class");
 					String name = configurationElement.getAttribute("name");
 					arrayList.add(new MavenLauncherWrapper(currentMavenLauncher, name));
 				} catch (CoreException e) {
-					this.log(
-							"Could not create executable from configuration element: "
-									+ configurationElement, e);
+					this.log("Could not create executable from configuration element: " + configurationElement, e);
 				}
 			}
 		}
-		this.mavenLauncherWrapper = (MavenLauncherWrapper[]) arrayList
-				.toArray(new MavenLauncherWrapper[arrayList.size()]);
+		this.mavenLauncherWrapper = (MavenLauncherWrapper[]) arrayList.toArray(new MavenLauncherWrapper[arrayList.size()]);
 	}
 
 	public MavenLauncherWrapper[] getMavenLauncherWrapper() {
@@ -154,8 +148,7 @@ public class MavenCorePlugin extends AbstractCorePlugin implements IMavenLaunche
 			MavenLauncherWrapper currentMavenLauncherWrapper = mavenLauncherWrapper[i];
 			mavenLauncherWrapperList.add(currentMavenLauncherWrapper);
 		}
-		return (MavenLauncherWrapper[]) mavenLauncherWrapperList
-				.toArray(new MavenLauncherWrapper[mavenLauncherWrapperList.size()]);
+		return (MavenLauncherWrapper[]) mavenLauncherWrapperList.toArray(new MavenLauncherWrapper[mavenLauncherWrapperList.size()]);
 	}
 
 	public void launchMavenInExternalVM(IFile buildFile, IProgressMonitor monitor, boolean captureOutput, String targets) throws CoreException {
