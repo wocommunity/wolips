@@ -55,20 +55,25 @@
  */
 package org.objectstyle.wolips.core.resources.pattern;
 
-
 public interface IPatternList {
 	public abstract void add(String pattern);
+
 	public abstract void remove(IPattern pattern);
+
 	public abstract IPattern[] getPattern();
+
 	/**
 	 * match the given <code>text</code> with the pattern
+	 * 
 	 * @param string
 	 * 
 	 * @return true if matched eitherwise false
 	 */
 	public abstract boolean matches(String string);
+
 	/**
 	 * match the given <code>text</code> with the pattern
+	 * 
 	 * @param string
 	 * 
 	 * @return true if matched eitherwise false

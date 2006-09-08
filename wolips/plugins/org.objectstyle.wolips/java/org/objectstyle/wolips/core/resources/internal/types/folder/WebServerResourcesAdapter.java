@@ -58,8 +58,7 @@ package org.objectstyle.wolips.core.resources.internal.types.folder;
 import org.eclipse.core.resources.IFolder;
 import org.objectstyle.wolips.core.resources.types.folder.IWebServerResourcesAdapter;
 
-public class WebServerResourcesAdapter extends AbstractFolderAdapter implements
-		IWebServerResourcesAdapter {
+public class WebServerResourcesAdapter extends AbstractFolderAdapter implements IWebServerResourcesAdapter {
 
 	public WebServerResourcesAdapter(IFolder folder) {
 		super(folder);

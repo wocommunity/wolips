@@ -60,5 +60,6 @@ import org.objectstyle.wolips.core.resources.types.file.IPBDotProjectAdapter;
 public interface IPBDotProjectOwner extends IResourceType {
 
 	public abstract IPBDotProjectAdapter getPBDotProjectAdapter();
+
 	public abstract boolean hasParentPBDotProjectAdapter();
 }

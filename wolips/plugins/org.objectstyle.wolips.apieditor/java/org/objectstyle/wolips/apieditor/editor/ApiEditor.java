@@ -77,8 +77,7 @@ public class ApiEditor extends FormEditor {
 	}
 
 	protected FormToolkit createToolkit(Display display) {
-		return new FormToolkit(ApieditorPlugin.getDefault().getFormColors(
-				display));
+		return new FormToolkit(ApieditorPlugin.getDefault().getFormColors(display));
 	}
 
 	protected void addPages() {
@@ -115,28 +114,26 @@ public class ApiEditor extends FormEditor {
 		return false;
 	}
 
-	public void init(IEditorSite site, IEditorInput input)
-			throws PartInitException {
+	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		super.init(site, input);
 		this.getSite().getSelectionProvider().setSelection(new ISelection() {
 
 			public boolean isEmpty() {
 				return true;
 			}
-			
+
 		});
 	}
 
 	public ApiModel getModel() throws ApiModelException {
 		if (model == null) {
 			if (((FileEditorInput) this.getEditorInput()).getFile().exists()) {
-				model = new ApiModel(((FileEditorInput) this.getEditorInput())
-						.getFile().getLocation().toFile());
+				model = new ApiModel(((FileEditorInput) this.getEditorInput()).getFile().getLocation().toFile());
 			}
 		}
 		return model;
 	}
-	
+
 	public void dropModel() {
 		model = null;
 	}

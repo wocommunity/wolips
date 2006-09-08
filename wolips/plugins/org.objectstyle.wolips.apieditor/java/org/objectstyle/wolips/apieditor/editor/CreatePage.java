@@ -119,32 +119,19 @@ public class CreatePage extends ApiFormPage {
 		}
 		if (apiModel == null) {
 
-			Button createApiFileButton = toolkit.createButton(client,
-					"Create Api File", SWT.PUSH);
+			Button createApiFileButton = toolkit.createButton(client, "Create Api File", SWT.PUSH);
 			gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 			createApiFileButton.setLayoutData(gd);
 			createApiFileButton.addSelectionListener(new SelectionListener() {
 
 				public void widgetSelected(SelectionEvent e) {
-					FileEditorInput fileEditorInput = (FileEditorInput) apiEditor
-							.getEditorInput();
+					FileEditorInput fileEditorInput = (FileEditorInput) apiEditor.getEditorInput();
 					try {
-						String javaFileName = LocatePlugin.getDefault()
-								.fileNameWithoutExtension(
-										fileEditorInput.getFile());
-						String content = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
-								+ "<wodefinitions>"
-								+ "<wo wocomponentcontent=\"false\" class=\""
-								+ javaFileName
-								+ "\">\n\n"
-								+ " </wo>"
-								+ "</wodefinitions>";
-						fileEditorInput.getFile().create(
-								new ByteArrayInputStream(content.getBytes()), true,
-								new NullProgressMonitor());
+						String javaFileName = LocatePlugin.getDefault().fileNameWithoutExtension(fileEditorInput.getFile());
+						String content = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" + "<wodefinitions>" + "<wo wocomponentcontent=\"false\" class=\"" + javaFileName + "\">\n\n" + " </wo>" + "</wodefinitions>";
+						fileEditorInput.getFile().create(new ByteArrayInputStream(content.getBytes()), true, new NullProgressMonitor());
 					} catch (CoreException coreException) {
-						throw new RuntimeException(
-								"Failed to create .api file.", coreException);
+						throw new RuntimeException("Failed to create .api file.", coreException);
 					}
 					apiEditor.removePage(0);
 					apiEditor.addPages();

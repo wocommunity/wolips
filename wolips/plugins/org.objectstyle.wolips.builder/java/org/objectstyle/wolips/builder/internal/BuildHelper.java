@@ -83,8 +83,7 @@ import org.objectstyle.wolips.datasets.adaptable.Project;
 /**
  * @author Harald Niesche
  */
-public abstract class BuildHelper extends ResourceUtilities implements
-		IResourceDeltaVisitor, IResourceVisitor {
+public abstract class BuildHelper extends ResourceUtilities implements IResourceDeltaVisitor, IResourceVisitor {
 	private Project _project;
 
 	private IPath _distPath;
@@ -180,15 +179,13 @@ public abstract class BuildHelper extends ResourceUtilities implements
 				_getLogger().debug("copy " + _res + " -> " + _dest);
 
 			} catch (CoreException up) {
-				error = " *failed* to copy resource " + _res + " -> " + _dest
-						+ " (" + up.getMessage() + ")";
+				error = " *failed* to copy resource " + _res + " -> " + _dest + " (" + up.getMessage() + ")";
 				_getLogger().debug(_msgPrefix + error, up);
 				// up.printStackTrace();
 				// m.setCanceled(true);
 				// throw up;
 			} catch (RuntimeException up) {
-				error = " *failed* to copy resource " + _res + " -> " + _dest
-						+ " (" + up.getMessage() + ")";
+				error = " *failed* to copy resource " + _res + " -> " + _dest + " (" + up.getMessage() + ")";
 				_getLogger().log(_msgPrefix + error, up);
 				// up.printStackTrace();
 				// throw up;
@@ -197,8 +194,7 @@ public abstract class BuildHelper extends ResourceUtilities implements
 				// _res.deleteMarkers(IMarker.PROBLEM, true, 1);
 				_res.deleteMarkers(BuilderPlugin.MARKER_BUILD_PROBLEM, true, 0);
 			} else {
-				markResource(_res, BuilderPlugin.MARKER_BUILD_PROBLEM,
-						IMarker.SEVERITY_ERROR, error, _dest.toString());
+				markResource(_res, BuilderPlugin.MARKER_BUILD_PROBLEM, IMarker.SEVERITY_ERROR, error, _dest.toString());
 			}
 		}
 
@@ -234,8 +230,7 @@ public abstract class BuildHelper extends ResourceUtilities implements
 		public void doWork(IProgressMonitor m) throws CoreException {
 			if (_path == null) {
 				// this really really should not happen! (again ...)
-				throw new OperationCanceledException(
-						"(deleting a null path wipes the workspace)");
+				throw new OperationCanceledException("(deleting a null path wipes the workspace)");
 			}
 			IResource res = getWorkspaceRoot().findMember(_path);
 			if (null != res) {
@@ -301,11 +296,9 @@ public abstract class BuildHelper extends ResourceUtilities implements
 		return _visitResource(resource, null);
 	}
 
-	private boolean _visitResource(IResource res, IResourceDelta delta)
-			throws CoreException {
+	private boolean _visitResource(IResource res, IResourceDelta delta) throws CoreException {
 		IPath resPath = res.getProjectRelativePath();
-		if (this.getBuildPath().isPrefixOf(resPath)
-				|| _distPath.isPrefixOf(resPath)) {
+		if (this.getBuildPath().isPrefixOf(resPath) || _distPath.isPrefixOf(resPath)) {
 			return false;
 		}
 		boolean handleResourceChildren = handleResource(res, delta);
@@ -343,15 +336,16 @@ public abstract class BuildHelper extends ResourceUtilities implements
 		return BuilderPlugin.getDefault();
 	}
 
-	public abstract boolean handleResource(IResource res, IResourceDelta delta)
-			throws CoreException;
+	public abstract boolean handleResource(IResource res, IResourceDelta delta) throws CoreException;
 
 	public Project getProject() {
 		return _project;
 	}
+
 	public IProject getIProject() {
 		return _project.getIProject();
 	}
+
 	/**
 	 * @return
 	 * 
@@ -402,8 +396,7 @@ public abstract class BuildHelper extends ResourceUtilities implements
 	public boolean isFramework() {
 		// return (getBooleanProperty(FRAMEWORK_PROPERTY));
 		try {
-			Project project = (Project) (this.getIProject())
-					.getAdapter(Project.class);
+			Project project = (Project) (this.getIProject()).getAdapter(Project.class);
 			return (project.isFramework());
 		} catch (CoreException up) {
 			BuilderPlugin.getDefault().log(up.getStatus());
@@ -561,18 +554,15 @@ public abstract class BuildHelper extends ResourceUtilities implements
 	 * @return
 	 */
 	public IPath asResourcePath(IPath path, IResource res) {
-		if (IResource.FILE == res.getType()
-				|| IResource.FOLDER == res.getType()) {
+		if (IResource.FILE == res.getType() || IResource.FOLDER == res.getType()) {
 			String lastSegment = path.lastSegment();
-			if ((-1 == path.toString().indexOf(".eomodeld/"))
-					&& (-1 == path.toString().indexOf(".wo/"))) {
+			if ((-1 == path.toString().indexOf(".eomodeld/")) && (-1 == path.toString().indexOf(".wo/"))) {
 				return (_appendSpecial(getResourceOutputPath(), path));
 			}
 
 			String parentName = res.getParent().getName();
 			if (parentName.endsWith(".wo") || parentName.endsWith(".eomodeld")) {
-				return (_appendSpecial(getResourceOutputPath(), res.getParent()
-						.getProjectRelativePath()).append(lastSegment));
+				return (_appendSpecial(getResourceOutputPath(), res.getParent().getProjectRelativePath()).append(lastSegment));
 				// return
 				// (getResourceOutputPath().append(parentName).append(lastSegment));
 			}
@@ -588,8 +578,7 @@ public abstract class BuildHelper extends ResourceUtilities implements
 	 * @return
 	 */
 	public IPath asWebResourcePath(IPath path, IResource res) {
-		if (IResource.FILE == res.getType()
-				|| IResource.FOLDER == res.getType()) {
+		if (IResource.FILE == res.getType() || IResource.FOLDER == res.getType()) {
 			return _appendSpecial(getWebResourceOutputPath(), path);
 		}
 

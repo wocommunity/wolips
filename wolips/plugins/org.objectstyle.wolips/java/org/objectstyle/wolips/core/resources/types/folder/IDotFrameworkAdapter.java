@@ -55,8 +55,6 @@
  */
 package org.objectstyle.wolips.core.resources.types.folder;
 
-
-
 public interface IDotFrameworkAdapter extends IProductAdapter {
 
 	public static final String FILE_NAME_EXTENSION = "framework";

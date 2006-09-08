@@ -62,9 +62,9 @@ import org.w3c.dom.Element;
 public class Validation extends AbstractValidationChild {
 
 	public final static String MESSAGE = "message";
+
 	public final static String VALIDATION = "validation";
 
-	
 	protected Validation(Element element, ApiModel apiModel) {
 		super(element, apiModel);
 	}
@@ -77,12 +77,12 @@ public class Validation extends AbstractValidationChild {
 		element.setAttribute(MESSAGE, className);
 	}
 
-  public boolean evaluate(Map _bindings) {
-    boolean evaluation = true;
-    IValidation[] validationChildren = getValidationChildren();
-    for (int i = 0; evaluation && i < validationChildren.length; i ++) {
-      evaluation = validationChildren[i].evaluate(_bindings);
-    }
-    return evaluation;
-  }
+	public boolean evaluate(Map _bindings) {
+		boolean evaluation = true;
+		IValidation[] validationChildren = getValidationChildren();
+		for (int i = 0; evaluation && i < validationChildren.length; i++) {
+			evaluation = validationChildren[i].evaluate(_bindings);
+		}
+		return evaluation;
+	}
 }

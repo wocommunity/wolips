@@ -72,11 +72,9 @@ public class PBDotProjectBuilderTest extends AbstractProjectTestCase {
 
 		NullProgressMonitor monitor = new NullProgressMonitor();
 		this.initIncrementalFrameworkProject(project, monitor);
-		IProjectAdapter projectAdapter = (IProjectAdapter) project
-				.getAdapter(IProjectAdapter.class);
+		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
 		assertNotNull(projectAdapter);
-		IResource resource = projectAdapter.getUnderlyingProject().getFile(
-				IPBDotProjectAdapter.FILE_NAME);
+		IResource resource = projectAdapter.getUnderlyingProject().getFile(IPBDotProjectAdapter.FILE_NAME);
 		assertFalse(resource.exists());
 		try {
 			project.build(IncrementalProjectBuilder.AUTO_BUILD, monitor);

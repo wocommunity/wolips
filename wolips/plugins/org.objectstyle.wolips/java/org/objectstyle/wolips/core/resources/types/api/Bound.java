@@ -66,10 +66,10 @@ public class Bound extends AbstractUn {
 	protected Bound(Element element, ApiModel apiModel) {
 		super(element, apiModel);
 	}
-  
-  public boolean evaluate(Map _bindings) {
-    String bindingName = getName();
-    boolean evaluation = _bindings.containsKey(bindingName);
-    return evaluation;
-  }
+
+	public boolean evaluate(Map _bindings) {
+		String bindingName = getName();
+		boolean evaluation = _bindings.containsKey(bindingName);
+		return evaluation;
+	}
 }

@@ -63,8 +63,7 @@ import org.objectstyle.wolips.core.resources.types.IPBDotProjectOwner;
 import org.objectstyle.wolips.core.resources.types.file.IPBDotProjectAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IDotSubprojAdapter;
 
-public class DotSubprojAdapter extends AbstractFolderAdapter
-		implements IDotSubprojAdapter {
+public class DotSubprojAdapter extends AbstractFolderAdapter implements IDotSubprojAdapter {
 
 	public DotSubprojAdapter(IFolder folder) {
 		super(folder);
@@ -72,13 +71,11 @@ public class DotSubprojAdapter extends AbstractFolderAdapter
 
 	public IPBDotProjectAdapter getPBDotProjectAdapter() {
 		IContainer underlyingContainer = this.getUnderlyingFolder();
-		IResource pbDotProjectResource = underlyingContainer.getFile(new Path(
-				IPBDotProjectAdapter.FILE_NAME));
-		IPBDotProjectAdapter pbDotProjectAdapter = (IPBDotProjectAdapter) pbDotProjectResource
-				.getAdapter(IPBDotProjectAdapter.class);
+		IResource pbDotProjectResource = underlyingContainer.getFile(new Path(IPBDotProjectAdapter.FILE_NAME));
+		IPBDotProjectAdapter pbDotProjectAdapter = (IPBDotProjectAdapter) pbDotProjectResource.getAdapter(IPBDotProjectAdapter.class);
 		return pbDotProjectAdapter;
 	}
-	
+
 	public IPBDotProjectOwner getPBDotProjectOwner() {
 		return this;
 	}

@@ -55,7 +55,6 @@
  */
 package org.objectstyle.wolips.apieditor.editor;
 
-
 public class DisplayPage extends ApiFormPage {
 
 	public static String PAGE_ID = "org.objectstyle.wolips.wodclipse.api.DisplayPage";

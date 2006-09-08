@@ -70,9 +70,7 @@ public class Ungettable extends AbstractUn {
 	public static void addToWoWithBinding(Wo wo, Binding binding) {
 		Element newValidationElement = wo.element.getOwnerDocument().createElement(Validation.VALIDATION);
 		wo.element.appendChild(newValidationElement);
-		newValidationElement.setAttribute(Validation.MESSAGE, "&apos;"
-				+ binding.getName()
-				+ "&apos; must be bound to a gettable value");
+		newValidationElement.setAttribute(Validation.MESSAGE, "&apos;" + binding.getName() + "&apos; must be bound to a gettable value");
 		Element newUngettableElement = wo.element.getOwnerDocument().createElement(UNGETTABLE);
 		newValidationElement.appendChild(newUngettableElement);
 		newUngettableElement.setAttribute(NAME, binding.getName());
@@ -80,7 +78,7 @@ public class Ungettable extends AbstractUn {
 
 	public static void removeFromWoWithBinding(Wo wo, Binding binding) {
 		Validation[] validations = wo.getValidations();
-		for (int i = validations.length - 1; i > 0 ; i--) {
+		for (int i = validations.length - 1; i > 0; i--) {
 			Validation validation = validations[i];
 			Ungettable[] ungettables = validation.getUngettables();
 			if (ungettables.length == 1) {
@@ -90,11 +88,11 @@ public class Ungettable extends AbstractUn {
 			}
 		}
 	}
-  
-  public boolean evaluate(Map _bindings) {
-    String bindingName = getName();
-    String bindingValue = (String)_bindings.get(bindingName);
-    boolean evaluation = (bindingValue != null && bindingValue.startsWith("\""));
-    return evaluation;
-  }
+
+	public boolean evaluate(Map _bindings) {
+		String bindingName = getName();
+		String bindingValue = (String) _bindings.get(bindingName);
+		boolean evaluation = (bindingValue != null && bindingValue.startsWith("\""));
+		return evaluation;
+	}
 }

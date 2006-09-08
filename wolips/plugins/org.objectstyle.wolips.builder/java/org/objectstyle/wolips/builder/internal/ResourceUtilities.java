@@ -85,8 +85,7 @@ public class ResourceUtilities {
 	 *            a ProgressMonitor
 	 * @throws CoreException
 	 */
-	public static void createFolder(IFolder f, IProgressMonitor m)
-			throws CoreException {
+	public static void createFolder(IFolder f, IProgressMonitor m) throws CoreException {
 		if (f.exists()) {
 			return;
 		}
@@ -111,8 +110,7 @@ public class ResourceUtilities {
 	 *         created
 	 * @throws CoreException
 	 */
-	public static boolean checkDir(IPath path, IProgressMonitor m)
-			throws CoreException {
+	public static boolean checkDir(IPath path, IProgressMonitor m) throws CoreException {
 		return checkDir(path, m, false);
 	}
 
@@ -122,13 +120,11 @@ public class ResourceUtilities {
 	 * @return
 	 * @throws CoreException
 	 */
-	public static boolean checkDerivedDir(IPath path, IProgressMonitor m)
-			throws CoreException {
+	public static boolean checkDerivedDir(IPath path, IProgressMonitor m) throws CoreException {
 		return checkDir(path, m, true);
 	}
 
-	public static boolean checkDir(IPath path, IProgressMonitor m,
-			boolean derived) throws CoreException {
+	public static boolean checkDir(IPath path, IProgressMonitor m, boolean derived) throws CoreException {
 		boolean result = true;
 
 		IFolder f = getWorkspaceRoot().getFolder(path);
@@ -156,18 +152,15 @@ public class ResourceUtilities {
 	 * @return
 	 * @throws CoreException
 	 */
-	public static IResource checkDestination(IPath path, IProgressMonitor m)
-			throws CoreException {
+	public static IResource checkDestination(IPath path, IProgressMonitor m) throws CoreException {
 		return checkDestination(path, m, false);
 	}
 
-	public static IResource checkDerivedDestination(IPath path,
-			IProgressMonitor m) throws CoreException {
+	public static IResource checkDerivedDestination(IPath path, IProgressMonitor m) throws CoreException {
 		return checkDestination(path, m, true);
 	}
 
-	public static IResource checkDestination(IPath path, IProgressMonitor m,
-			boolean derived) throws CoreException {
+	public static IResource checkDestination(IPath path, IProgressMonitor m, boolean derived) throws CoreException {
 		if (checkDir(path.removeLastSegments(1), m, derived)) {
 			IResource res = getWorkspaceRoot().findMember(path);
 			if (null != res && res.exists()) {
@@ -182,10 +175,8 @@ public class ResourceUtilities {
 					// I think it's
 					// better to have the non-deletable files in one place,
 					// instead of messing the build directory
-					IPath trashFolder = res.getProject().getFullPath().append(
-							"build/.trash");
-					IPath trashPath = trashFolder.append(res.getName()
-							+ (_getUniqifier()));
+					IPath trashFolder = res.getProject().getFullPath().append("build/.trash");
+					IPath trashPath = trashFolder.append(res.getName() + (_getUniqifier()));
 					checkDir(trashFolder, m);
 					res.move(trashPath, true, null);
 					/*
@@ -211,8 +202,7 @@ public class ResourceUtilities {
 	 * @param m
 	 * @throws CoreException
 	 */
-	public static void copyDerivedOld(IResource res, IPath dest,
-			IProgressMonitor m) throws CoreException {
+	public static void copyDerivedOld(IResource res, IPath dest, IProgressMonitor m) throws CoreException {
 		if (res.isTeamPrivateMember() || res.getName().equals(".svn"))
 			return;
 
@@ -234,8 +224,7 @@ public class ResourceUtilities {
 	 * @throws CoreException
 	 *             if something goes wrong (and we notice)
 	 */
-	public static void copyDerived(IResource res, IPath dest, IProgressMonitor m)
-			throws CoreException {
+	public static void copyDerived(IResource res, IPath dest, IProgressMonitor m) throws CoreException {
 		if (res.isTeamPrivateMember() || res.getName().equals(".svn"))
 			return;
 
@@ -288,8 +277,7 @@ public class ResourceUtilities {
 	 * @param markerId
 	 * @throws CoreException
 	 */
-	public static void unmarkResource(IResource res, String markerId)
-			throws CoreException {
+	public static void unmarkResource(IResource res, String markerId) throws CoreException {
 		if (res.exists()) {
 			res.deleteMarkers(markerId, true, 0);
 		}
@@ -304,8 +292,7 @@ public class ResourceUtilities {
 	 * @return
 	 * @throws CoreException
 	 */
-	public static IMarker markResource(IResource res, String markerId,
-			int severity, String message, String location) throws CoreException {
+	public static IMarker markResource(IResource res, String markerId, int severity, String message, String location) throws CoreException {
 		IMarker marker[] = res.findMarkers(markerId, true, 0);
 		if (marker.length != 1) {
 			if (marker.length > 1) {

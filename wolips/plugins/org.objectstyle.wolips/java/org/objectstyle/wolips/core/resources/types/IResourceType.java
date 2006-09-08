@@ -60,7 +60,10 @@ import org.eclipse.core.resources.IResource;
 public interface IResourceType {
 
 	public abstract IResource getUnderlyingResource();
+
 	public abstract IPBDotProjectOwner getPBDotProjectOwner();
+
 	public abstract IPBDotProjectOwner getPBDotProjectOwner(IResource resource);
+
 	public abstract ILocalizedPath localizedRelativeResourcePath(IPBDotProjectOwner pbDotProjectOwner, IResource resource);
 }

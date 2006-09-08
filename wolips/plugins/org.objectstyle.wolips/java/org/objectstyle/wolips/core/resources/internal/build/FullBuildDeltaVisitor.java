@@ -62,103 +62,96 @@ import org.objectstyle.wolips.core.resources.builder.IFullBuilder;
  * @author ulrich
  */
 public class FullBuildDeltaVisitor extends AbstractBuildVisitor implements IResourceVisitor {
-  public FullBuildDeltaVisitor(BuilderWrapper[] builderWrappers, IProgressMonitor _progressMonitor, Map _buildCache) {
-    super(builderWrappers, _progressMonitor, _buildCache);
-  }
+	public FullBuildDeltaVisitor(BuilderWrapper[] builderWrappers, IProgressMonitor _progressMonitor, Map _buildCache) {
+		super(builderWrappers, _progressMonitor, _buildCache);
+	}
 
-  public boolean visit(IResource resource) throws CoreException {
-    boolean visitChildren;
-    if (resource == null || isCanceled()) {
-      visitChildren = false;
-    }
-    else {
-      visitChildren = true;
-      Map buildCache = getBuildCache();
-      IProgressMonitor progressMonitor = getProgressMonitor();
-      int woResourceType = getWoResourceType(resource);
-      if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_CLASS) {
-        this.notifyBuilderHandleClasses(resource, progressMonitor, buildCache);
-      }
-      else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_CLASSPATH) {
-        this.notifyBuilderHandleOther(resource, progressMonitor, buildCache);
-        this.notifyBuilderClasspath(resource, progressMonitor, buildCache);
-      }
-      else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_IGNORE) {
-        visitChildren = false;
-      }
-      else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_OTHER) {
-        this.notifyBuilderHandleOther(resource, progressMonitor, buildCache);
-      }
-      else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_RESOURCE) {
-        this.notifyBuilderHandleResources(resource, progressMonitor, buildCache);
-      }
-      else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_SOURCE) {
-        this.notifyBuilderHandleSource(resource, progressMonitor, buildCache);
-      }
-      else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_WEB_SERVER_RESOURCE) {
-        this.notifyBuilderHandleWebServerResources(resource, progressMonitor, buildCache);
-      }
-    }
-    return visitChildren;
-  }
+	public boolean visit(IResource resource) throws CoreException {
+		boolean visitChildren;
+		if (resource == null || isCanceled()) {
+			visitChildren = false;
+		} else {
+			visitChildren = true;
+			Map buildCache = getBuildCache();
+			IProgressMonitor progressMonitor = getProgressMonitor();
+			int woResourceType = getWoResourceType(resource);
+			if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_CLASS) {
+				this.notifyBuilderHandleClasses(resource, progressMonitor, buildCache);
+			} else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_CLASSPATH) {
+				this.notifyBuilderHandleOther(resource, progressMonitor, buildCache);
+				this.notifyBuilderClasspath(resource, progressMonitor, buildCache);
+			} else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_IGNORE) {
+				visitChildren = false;
+			} else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_OTHER) {
+				this.notifyBuilderHandleOther(resource, progressMonitor, buildCache);
+			} else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_RESOURCE) {
+				this.notifyBuilderHandleResources(resource, progressMonitor, buildCache);
+			} else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_SOURCE) {
+				this.notifyBuilderHandleSource(resource, progressMonitor, buildCache);
+			} else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_WEB_SERVER_RESOURCE) {
+				this.notifyBuilderHandleWebServerResources(resource, progressMonitor, buildCache);
+			}
+		}
+		return visitChildren;
+	}
 
-  private void notifyBuilderClasspath(IResource resource, IProgressMonitor _progressMonitor, Map _buildCache) {
-    BuilderWrapper[] builderWrappers = getBuilderWrappers();
-    for (int i = 0; i < builderWrappers.length; i++) {
-      IBuilder builder = builderWrappers[i].getBuilder();
-      if (builder instanceof IFullBuilder) {
-        ((IFullBuilder) builder).handleClasspath(resource, _progressMonitor, _buildCache);
-      }
-    }
-  }
+	private void notifyBuilderClasspath(IResource resource, IProgressMonitor _progressMonitor, Map _buildCache) {
+		BuilderWrapper[] builderWrappers = getBuilderWrappers();
+		for (int i = 0; i < builderWrappers.length; i++) {
+			IBuilder builder = builderWrappers[i].getBuilder();
+			if (builder instanceof IFullBuilder) {
+				((IFullBuilder) builder).handleClasspath(resource, _progressMonitor, _buildCache);
+			}
+		}
+	}
 
-  private void notifyBuilderHandleClasses(IResource resource, IProgressMonitor _progressMonitor, Map _buildCache) {
-    BuilderWrapper[] builderWrappers = getBuilderWrappers();
-    for (int i = 0; i < builderWrappers.length; i++) {
-      IBuilder builder = builderWrappers[i].getBuilder();
-      if (builder instanceof IFullBuilder) {
-        ((IFullBuilder) builder).handleClasses(resource, _progressMonitor, _buildCache);
-      }
-    }
-  }
+	private void notifyBuilderHandleClasses(IResource resource, IProgressMonitor _progressMonitor, Map _buildCache) {
+		BuilderWrapper[] builderWrappers = getBuilderWrappers();
+		for (int i = 0; i < builderWrappers.length; i++) {
+			IBuilder builder = builderWrappers[i].getBuilder();
+			if (builder instanceof IFullBuilder) {
+				((IFullBuilder) builder).handleClasses(resource, _progressMonitor, _buildCache);
+			}
+		}
+	}
 
-  private void notifyBuilderHandleSource(IResource resource, IProgressMonitor _progressMonitor, Map _buildCache) {
-    BuilderWrapper[] builderWrappers = getBuilderWrappers();
-    for (int i = 0; i < builderWrappers.length; i++) {
-      IBuilder builder = builderWrappers[i].getBuilder();
-      if (builder instanceof IFullBuilder) {
-        ((IFullBuilder) builder).handleSource(resource, _progressMonitor, _buildCache);
-      }
-    }
-  }
+	private void notifyBuilderHandleSource(IResource resource, IProgressMonitor _progressMonitor, Map _buildCache) {
+		BuilderWrapper[] builderWrappers = getBuilderWrappers();
+		for (int i = 0; i < builderWrappers.length; i++) {
+			IBuilder builder = builderWrappers[i].getBuilder();
+			if (builder instanceof IFullBuilder) {
+				((IFullBuilder) builder).handleSource(resource, _progressMonitor, _buildCache);
+			}
+		}
+	}
 
-  private void notifyBuilderHandleResources(IResource resource, IProgressMonitor _progressMonitor, Map _buildCache) {
-    BuilderWrapper[] builderWrappers = getBuilderWrappers();
-    for (int i = 0; i < builderWrappers.length; i++) {
-      IBuilder builder = builderWrappers[i].getBuilder();
-      if (builder instanceof IFullBuilder) {
-        ((IFullBuilder) builder).handleWoappResources(resource, _progressMonitor, _buildCache);
-      }
-    }
-  }
+	private void notifyBuilderHandleResources(IResource resource, IProgressMonitor _progressMonitor, Map _buildCache) {
+		BuilderWrapper[] builderWrappers = getBuilderWrappers();
+		for (int i = 0; i < builderWrappers.length; i++) {
+			IBuilder builder = builderWrappers[i].getBuilder();
+			if (builder instanceof IFullBuilder) {
+				((IFullBuilder) builder).handleWoappResources(resource, _progressMonitor, _buildCache);
+			}
+		}
+	}
 
-  private void notifyBuilderHandleWebServerResources(IResource resource, IProgressMonitor _progressMonitor, Map _buildCache) {
-    BuilderWrapper[] builderWrappers = getBuilderWrappers();
-    for (int i = 0; i < builderWrappers.length; i++) {
-      IBuilder builder = builderWrappers[i].getBuilder();
-      if (builder instanceof IFullBuilder) {
-        ((IFullBuilder) builder).handleWebServerResources(resource, _progressMonitor, _buildCache);
-      }
-    }
-  }
+	private void notifyBuilderHandleWebServerResources(IResource resource, IProgressMonitor _progressMonitor, Map _buildCache) {
+		BuilderWrapper[] builderWrappers = getBuilderWrappers();
+		for (int i = 0; i < builderWrappers.length; i++) {
+			IBuilder builder = builderWrappers[i].getBuilder();
+			if (builder instanceof IFullBuilder) {
+				((IFullBuilder) builder).handleWebServerResources(resource, _progressMonitor, _buildCache);
+			}
+		}
+	}
 
-  private void notifyBuilderHandleOther(IResource resource, IProgressMonitor _progressMonitor, Map _buildCache) {
-    BuilderWrapper[] builderWrappers = getBuilderWrappers();
-    for (int i = 0; i < builderWrappers.length; i++) {
-      IBuilder builder = builderWrappers[i].getBuilder();
-      if (builder instanceof IFullBuilder) {
-        ((IFullBuilder) builder).handleOther(resource, _progressMonitor, _buildCache);
-      }
-    }
-  }
+	private void notifyBuilderHandleOther(IResource resource, IProgressMonitor _progressMonitor, Map _buildCache) {
+		BuilderWrapper[] builderWrappers = getBuilderWrappers();
+		for (int i = 0; i < builderWrappers.length; i++) {
+			IBuilder builder = builderWrappers[i].getBuilder();
+			if (builder instanceof IFullBuilder) {
+				((IFullBuilder) builder).handleOther(resource, _progressMonitor, _buildCache);
+			}
+		}
+	}
 }

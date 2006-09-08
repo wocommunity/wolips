@@ -96,9 +96,7 @@ public class FileAdapterFactory extends AbstractResourceAdapterFactory {
 		try {
 			nature = Nature.getNature(project);
 		} catch (CoreException e) {
-			CorePlugin.getDefault().debug(
-					"Error while resolving nature for project: "
-							+ project.getName(), e);
+			CorePlugin.getDefault().debug("Error while resolving nature for project: " + project.getName(), e);
 		}
 		if (nature == null) {
 			return null;

@@ -68,9 +68,9 @@ public abstract class ApiFormPage extends FormPage {
 	}
 
 	protected void createFormContent(IManagedForm managedForm) {
-		//nothing to do
+		// nothing to do
 	}
-	
+
 	protected boolean canPerformDirectly(String id, Control control) {
 		if (control instanceof Text) {
 			Text text = (Text) control;
@@ -101,5 +101,5 @@ public abstract class ApiFormPage extends FormPage {
 			}
 		}
 		return false;
-	}	
+	}
 }

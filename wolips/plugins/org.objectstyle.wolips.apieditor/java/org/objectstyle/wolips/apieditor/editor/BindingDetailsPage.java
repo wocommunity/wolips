@@ -131,8 +131,7 @@ public class BindingDetailsPage implements IDetailsPage {
 		s1.marginWidth = 10;
 		s1.setText("Binding Details");
 		s1.setDescription("Set the properties of the selected binding.");
-		TableWrapData td = new TableWrapData(TableWrapData.FILL,
-				TableWrapData.TOP);
+		TableWrapData td = new TableWrapData(TableWrapData.FILL, TableWrapData.TOP);
 		td.grabHorizontal = true;
 		s1.setLayoutData(td);
 		toolkit.createCompositeSeparator(s1);
@@ -163,8 +162,7 @@ public class BindingDetailsPage implements IDetailsPage {
 				}
 			}
 		});
-		gd = new GridData(GridData.FILL_HORIZONTAL
-				| GridData.VERTICAL_ALIGN_BEGINNING);
+		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.widthHint = 10;
 		name.setLayoutData(gd);
 
@@ -201,8 +199,7 @@ public class BindingDetailsPage implements IDetailsPage {
 		toolkit.createLabel(client, "Value Set:");
 		defaults = new Button[Binding.ALL_DEFAULTS.length];
 		for (int i = 0; i < Binding.ALL_DEFAULTS.length; i++) {
-			defaults[i] = toolkit.createButton(client, Binding.ALL_DEFAULTS[i],
-					SWT.RADIO);
+			defaults[i] = toolkit.createButton(client, Binding.ALL_DEFAULTS[i], SWT.RADIO);
 			defaults[i].setData(new Integer(i));
 			defaults[i].addSelectionListener(choiceListener);
 			gd = new GridData();
@@ -226,15 +223,13 @@ public class BindingDetailsPage implements IDetailsPage {
 		for (int i = 0; i < defaults.length; i++) {
 			if (i == selectedDefaults) {
 				defaults[i].setSelection(true);
-			}
-			else {
+			} else {
 				defaults[i].setSelection(false);
 			}
 		}
 		requiredFlag.setSelection(binding != null && binding.isRequired());
 		willSetFlag.setSelection(binding != null && binding.isWillSet());
-		name.setText(binding != null && binding.getName() != null ? binding
-				.getName() : "");
+		name.setText(binding != null && binding.getName() != null ? binding.getName() : "");
 	}
 
 	/*

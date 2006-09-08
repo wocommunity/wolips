@@ -65,26 +65,26 @@ import org.w3c.dom.NodeList;
 public abstract class AbstractApiModelElement {
 
 	Element element;
+
 	public ApiModel apiModel;
-	
+
 	protected AbstractApiModelElement(Element element, ApiModel apiModel) {
 		super();
 		this.element = element;
 		this.apiModel = apiModel;
 	}
-  
-  public List getChildrenElementsByTagName(String _tagName) {
-    List elementsList = new LinkedList();
-    NodeList nodeList = element.getChildNodes();
-    int length = nodeList.getLength();
-    for (int i = 0; i < length; i ++) {
-      Node childNode = nodeList.item(i);
-      if (childNode instanceof Element && _tagName.equals(childNode.getNodeName())) {
-        elementsList.add(childNode);
-      }
-    }
-    return elementsList;
-  }
 
-	
+	public List getChildrenElementsByTagName(String _tagName) {
+		List elementsList = new LinkedList();
+		NodeList nodeList = element.getChildNodes();
+		int length = nodeList.getLength();
+		for (int i = 0; i < length; i++) {
+			Node childNode = nodeList.item(i);
+			if (childNode instanceof Element && _tagName.equals(childNode.getNodeName())) {
+				elementsList.add(childNode);
+			}
+		}
+		return elementsList;
+	}
+
 }

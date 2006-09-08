@@ -115,16 +115,14 @@ public class BuildVisitor extends BuildHelper {
 	 * @return
 	 * @throws CoreException
 	 */
-	public boolean _checkResource(IResource res, IResourceDelta delta,
-			IPath copyToPath) throws CoreException {
+	public boolean _checkResource(IResource res, IResourceDelta delta, IPath copyToPath) throws CoreException {
 		boolean result;
 		if (null == copyToPath) {
 			unmarkResource(res, BuilderPlugin.MARKER_BUILD_DUPLICATE);
 			return false;
 		}
 		IResource src = (IResource) _destinations.get(copyToPath);
-		boolean deleted = (null != delta)
-				&& (delta.getKind() == IResourceDelta.REMOVED);
+		boolean deleted = (null != delta) && (delta.getKind() == IResourceDelta.REMOVED);
 		if (null == src) {
 			if (!deleted) {
 				_destinations.put(copyToPath, res);
@@ -138,13 +136,10 @@ public class BuildVisitor extends BuildHelper {
 		} else {
 			if (!deleted) {
 				IPath shortened = copyToPath.removeFirstSegments(2);
-				String message = "duplicate resource for destination .../"
-						+ shortened.toString();
+				String message = "duplicate resource for destination .../" + shortened.toString();
 				// _getLogger().debug("** " + message);
 				/**/
-				markResource(res, BuilderPlugin.MARKER_BUILD_DUPLICATE,
-						IMarker.SEVERITY_ERROR, message, src.getFullPath()
-								.toString());
+				markResource(res, BuilderPlugin.MARKER_BUILD_DUPLICATE, IMarker.SEVERITY_ERROR, message, src.getFullPath().toString());
 				result = false; // ignore this one, it's a duplicate
 				/**/
 				// result = true;
@@ -176,8 +171,7 @@ public class BuildVisitor extends BuildHelper {
 	 * @see org.objectstyle.wolips.projectbuild.builder.WOIncrementalBuilder.WOBuildHelper#handleResource(org.eclipse.core.resources.IResource,
 	 *      org.eclipse.core.resources.IResourceDelta)
 	 */
-	public boolean handleResource(IResource res, IResourceDelta delta)
-			throws CoreException {
+	public boolean handleResource(IResource res, IResourceDelta delta) throws CoreException {
 		boolean handleResourceChildren = true;
 		++count;
 		IPath fullPath = res.getFullPath();
@@ -235,8 +229,7 @@ public class BuildVisitor extends BuildHelper {
 	 * @return
 	 * @throws CoreException
 	 */
-	public boolean _handleResource(IResource res, IResourceDelta delta,
-			IPath copyToPath) {
+	public boolean _handleResource(IResource res, IResourceDelta delta, IPath copyToPath) {
 		if (null == copyToPath)
 			return false;
 

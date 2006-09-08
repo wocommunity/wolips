@@ -65,176 +65,176 @@ import org.w3c.dom.NodeList;
 
 public abstract class AbstractValidationChild extends AbstractApiModelElement implements IValidation {
 
-  public AbstractValidationChild(Element element, ApiModel apiModel) {
-    super(element, apiModel);
-  }
+	public AbstractValidationChild(Element element, ApiModel apiModel) {
+		super(element, apiModel);
+	}
 
-  public Unsettable[] getUnsettables() {
-    List unsetableElements = getChildrenElementsByTagName(Unsettable.UNSETTABLE);
-    ArrayList unsetables = new ArrayList();
-    for (int i = 0; i < unsetableElements.size(); i++) {
-      Element unsettableElement = (Element) unsetableElements.get(i);
-      Unsettable validation = new Unsettable(unsettableElement, apiModel);
-      unsetables.add(validation);
-    }
-    return (Unsettable[]) unsetables.toArray(new Unsettable[unsetables.size()]);
-  }
+	public Unsettable[] getUnsettables() {
+		List unsetableElements = getChildrenElementsByTagName(Unsettable.UNSETTABLE);
+		ArrayList unsetables = new ArrayList();
+		for (int i = 0; i < unsetableElements.size(); i++) {
+			Element unsettableElement = (Element) unsetableElements.get(i);
+			Unsettable validation = new Unsettable(unsettableElement, apiModel);
+			unsetables.add(validation);
+		}
+		return (Unsettable[]) unsetables.toArray(new Unsettable[unsetables.size()]);
+	}
 
-  public Settable[] getSettables() {
-    List setableElements = getChildrenElementsByTagName(Settable.SETTABLE);
-    ArrayList setables = new ArrayList();
-    for (int i = 0; i < setableElements.size(); i++) {
-      Element settableElement = (Element) setableElements.get(i);
-      Settable settable = new Settable(settableElement, apiModel);
-      setables.add(settable);
-    }
-    return (Settable[]) setables.toArray(new Settable[setables.size()]);
-  }
+	public Settable[] getSettables() {
+		List setableElements = getChildrenElementsByTagName(Settable.SETTABLE);
+		ArrayList setables = new ArrayList();
+		for (int i = 0; i < setableElements.size(); i++) {
+			Element settableElement = (Element) setableElements.get(i);
+			Settable settable = new Settable(settableElement, apiModel);
+			setables.add(settable);
+		}
+		return (Settable[]) setables.toArray(new Settable[setables.size()]);
+	}
 
-  public Ungettable[] getUngettables() {
-    List ungetableElements = getChildrenElementsByTagName(Ungettable.UNGETTABLE);
-    ArrayList ungetables = new ArrayList();
-    for (int i = 0; i < ungetableElements.size(); i++) {
-      Element ungettableElement = (Element) ungetableElements.get(i);
-      Ungettable validation = new Ungettable(ungettableElement, apiModel);
-      ungetables.add(validation);
-    }
-    return (Ungettable[]) ungetables.toArray(new Ungettable[ungetables.size()]);
-  }
+	public Ungettable[] getUngettables() {
+		List ungetableElements = getChildrenElementsByTagName(Ungettable.UNGETTABLE);
+		ArrayList ungetables = new ArrayList();
+		for (int i = 0; i < ungetableElements.size(); i++) {
+			Element ungettableElement = (Element) ungetableElements.get(i);
+			Ungettable validation = new Ungettable(ungettableElement, apiModel);
+			ungetables.add(validation);
+		}
+		return (Ungettable[]) ungetables.toArray(new Ungettable[ungetables.size()]);
+	}
 
-  public Gettable[] getGettables() {
-    List getableElements = getChildrenElementsByTagName(Gettable.GETTABLE);
-    ArrayList getables = new ArrayList();
-    for (int i = 0; i < getableElements.size(); i++) {
-      Element gettableElement = (Element) getableElements.get(i);
-      Gettable gettable = new Gettable(gettableElement, apiModel);
-      getables.add(gettable);
-    }
-    return (Gettable[]) getables.toArray(new Gettable[getables.size()]);
-  }
+	public Gettable[] getGettables() {
+		List getableElements = getChildrenElementsByTagName(Gettable.GETTABLE);
+		ArrayList getables = new ArrayList();
+		for (int i = 0; i < getableElements.size(); i++) {
+			Element gettableElement = (Element) getableElements.get(i);
+			Gettable gettable = new Gettable(gettableElement, apiModel);
+			getables.add(gettable);
+		}
+		return (Gettable[]) getables.toArray(new Gettable[getables.size()]);
+	}
 
-  public Unbound[] getUnbounds() {
-    List unsetableElements = getChildrenElementsByTagName(Unbound.UNBOUND);
-    ArrayList unsetables = new ArrayList();
-    for (int i = 0; i < unsetableElements.size(); i++) {
-      Element unboundElement = (Element) unsetableElements.get(i);
-      Unbound validation = new Unbound(unboundElement, apiModel);
-      unsetables.add(validation);
-    }
-    return (Unbound[]) unsetables.toArray(new Unbound[unsetables.size()]);
-  }
+	public Unbound[] getUnbounds() {
+		List unsetableElements = getChildrenElementsByTagName(Unbound.UNBOUND);
+		ArrayList unsetables = new ArrayList();
+		for (int i = 0; i < unsetableElements.size(); i++) {
+			Element unboundElement = (Element) unsetableElements.get(i);
+			Unbound validation = new Unbound(unboundElement, apiModel);
+			unsetables.add(validation);
+		}
+		return (Unbound[]) unsetables.toArray(new Unbound[unsetables.size()]);
+	}
 
-  public Bound[] getBounds() {
-    List setableElements = getChildrenElementsByTagName(Bound.BOUND);
-    ArrayList setables = new ArrayList();
-    for (int i = 0; i < setableElements.size(); i++) {
-      Element boundElement = (Element) setableElements.get(i);
-      Bound bound = new Bound(boundElement, apiModel);
-      setables.add(bound);
-    }
-    return (Bound[]) setables.toArray(new Bound[setables.size()]);
-  }
+	public Bound[] getBounds() {
+		List setableElements = getChildrenElementsByTagName(Bound.BOUND);
+		ArrayList setables = new ArrayList();
+		for (int i = 0; i < setableElements.size(); i++) {
+			Element boundElement = (Element) setableElements.get(i);
+			Bound bound = new Bound(boundElement, apiModel);
+			setables.add(bound);
+		}
+		return (Bound[]) setables.toArray(new Bound[setables.size()]);
+	}
 
-  public And getAnd() {
-    NodeList list = element.getChildNodes();
-    assert (list.getLength() == 0 || list.getLength() == 1);
-    List elements = getChildrenElementsByTagName(And.AND);
-    if (elements == null || elements.size() == 0) {
-      return null;
-    }
-    return new And((Element) elements.get(0), apiModel);
-  }
+	public And getAnd() {
+		NodeList list = element.getChildNodes();
+		assert (list.getLength() == 0 || list.getLength() == 1);
+		List elements = getChildrenElementsByTagName(And.AND);
+		if (elements == null || elements.size() == 0) {
+			return null;
+		}
+		return new And((Element) elements.get(0), apiModel);
+	}
 
-  public Count getCount() {
-    NodeList list = element.getChildNodes();
-    assert (list.getLength() == 0 || list.getLength() == 1);
-    List elements = getChildrenElementsByTagName(Count.COUNT);
-    if (elements == null || elements.size() == 0) {
-      return null;
-    }
-    return new Count((Element) elements.get(0), apiModel);
-  }
+	public Count getCount() {
+		NodeList list = element.getChildNodes();
+		assert (list.getLength() == 0 || list.getLength() == 1);
+		List elements = getChildrenElementsByTagName(Count.COUNT);
+		if (elements == null || elements.size() == 0) {
+			return null;
+		}
+		return new Count((Element) elements.get(0), apiModel);
+	}
 
-  public Or getOr() {
-    NodeList list = element.getChildNodes();
-    assert (list.getLength() == 0 || list.getLength() == 1);
-    List elements = getChildrenElementsByTagName(Or.OR);
-    if (elements == null || elements.size() == 0) {
-      return null;
-    }
-    return new Or((Element) elements.get(0), apiModel);
-  }
+	public Or getOr() {
+		NodeList list = element.getChildNodes();
+		assert (list.getLength() == 0 || list.getLength() == 1);
+		List elements = getChildrenElementsByTagName(Or.OR);
+		if (elements == null || elements.size() == 0) {
+			return null;
+		}
+		return new Or((Element) elements.get(0), apiModel);
+	}
 
-  public Not getNot() {
-    NodeList list = element.getChildNodes();
-    assert (list.getLength() == 0 || list.getLength() == 1);
-    List elements = getChildrenElementsByTagName(Not.NOT);
-    if (elements == null || elements.size() == 0) {
-      return null;
-    }
-    return new Not((Element) elements.get(0), apiModel);
-  }
+	public Not getNot() {
+		NodeList list = element.getChildNodes();
+		assert (list.getLength() == 0 || list.getLength() == 1);
+		List elements = getChildrenElementsByTagName(Not.NOT);
+		if (elements == null || elements.size() == 0) {
+			return null;
+		}
+		return new Not((Element) elements.get(0), apiModel);
+	}
 
-  public IValidation[] getValidationChildren() {
-    List validationChildren = new LinkedList();
-    Count count = this.getCount();
-    if (count != null) {
-      validationChildren.add(count);
-    }
-    And and = this.getAnd();
-    if (and != null) {
-      validationChildren.add(and);
-    }
-    Or or = this.getOr();
-    if (or != null) {
-      validationChildren.add(or);
-    }
-    Not not = this.getNot();
-    if (not != null) {
-      validationChildren.add(not);
-    }
-    Unbound[] unbounds = this.getUnbounds();
-    for (int i = 0; i < unbounds.length; i++) {
-      Unbound unbound = unbounds[i];
-      validationChildren.add(unbound);
-    }
-    Bound[] bounds = this.getBounds();
-    for (int i = 0; i < bounds.length; i++) {
-      Bound bound = bounds[i];
-      validationChildren.add(bound);
-    }
-    Unsettable[] unsettables = this.getUnsettables();
-    for (int i = 0; i < unsettables.length; i++) {
-      Unsettable unsettable = unsettables[i];
-      validationChildren.add(unsettable);
-    }
-    Settable[] settables = this.getSettables();
-    for (int i = 0; i < settables.length; i++) {
-      Settable settable = settables[i];
-      validationChildren.add(settable);
-    }
-    Ungettable[] ungettables = this.getUngettables();
-    for (int i = 0; i < ungettables.length; i++) {
-      Ungettable ungettable = ungettables[i];
-      validationChildren.add(ungettable);
-    }
-    Gettable[] gettables = this.getGettables();
-    for (int i = 0; i < gettables.length; i++) {
-      Gettable gettable = gettables[i];
-      validationChildren.add(gettable);
-    }
-    IValidation[] validations = (IValidation[]) validationChildren.toArray(new IValidation[validationChildren.size()]);
-    return validations;
-  }
+	public IValidation[] getValidationChildren() {
+		List validationChildren = new LinkedList();
+		Count count = this.getCount();
+		if (count != null) {
+			validationChildren.add(count);
+		}
+		And and = this.getAnd();
+		if (and != null) {
+			validationChildren.add(and);
+		}
+		Or or = this.getOr();
+		if (or != null) {
+			validationChildren.add(or);
+		}
+		Not not = this.getNot();
+		if (not != null) {
+			validationChildren.add(not);
+		}
+		Unbound[] unbounds = this.getUnbounds();
+		for (int i = 0; i < unbounds.length; i++) {
+			Unbound unbound = unbounds[i];
+			validationChildren.add(unbound);
+		}
+		Bound[] bounds = this.getBounds();
+		for (int i = 0; i < bounds.length; i++) {
+			Bound bound = bounds[i];
+			validationChildren.add(bound);
+		}
+		Unsettable[] unsettables = this.getUnsettables();
+		for (int i = 0; i < unsettables.length; i++) {
+			Unsettable unsettable = unsettables[i];
+			validationChildren.add(unsettable);
+		}
+		Settable[] settables = this.getSettables();
+		for (int i = 0; i < settables.length; i++) {
+			Settable settable = settables[i];
+			validationChildren.add(settable);
+		}
+		Ungettable[] ungettables = this.getUngettables();
+		for (int i = 0; i < ungettables.length; i++) {
+			Ungettable ungettable = ungettables[i];
+			validationChildren.add(ungettable);
+		}
+		Gettable[] gettables = this.getGettables();
+		for (int i = 0; i < gettables.length; i++) {
+			Gettable gettable = gettables[i];
+			validationChildren.add(gettable);
+		}
+		IValidation[] validations = (IValidation[]) validationChildren.toArray(new IValidation[validationChildren.size()]);
+		return validations;
+	}
 
-  public boolean isAffectedByBindingNamed(String bindingName) {
-    boolean isAffectedByBindingName = false;
-    IValidation[] validationChildren = getValidationChildren();
-    for (int i = 0; !isAffectedByBindingName && i < validationChildren.length; i++) {
-      isAffectedByBindingName = validationChildren[i].isAffectedByBindingNamed(bindingName);
-    }
-    return isAffectedByBindingName;
-  }
+	public boolean isAffectedByBindingNamed(String bindingName) {
+		boolean isAffectedByBindingName = false;
+		IValidation[] validationChildren = getValidationChildren();
+		for (int i = 0; !isAffectedByBindingName && i < validationChildren.length; i++) {
+			isAffectedByBindingName = validationChildren[i].isAffectedByBindingNamed(bindingName);
+		}
+		return isAffectedByBindingName;
+	}
 
-  public abstract boolean evaluate(Map _bindings);
+	public abstract boolean evaluate(Map _bindings);
 }

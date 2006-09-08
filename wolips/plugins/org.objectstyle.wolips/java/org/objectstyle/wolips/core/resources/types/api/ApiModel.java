@@ -72,91 +72,88 @@ import org.w3c.dom.Element;
 
 public class ApiModel {
 
-  private Document document;
+	private Document document;
 
-  private URL url;
-  private File file;
+	private URL url;
 
-  private boolean isDirty = false;
+	private File file;
 
-  public ApiModel(File file) throws ApiModelException {
-    super();
-    this.file = file;
-    this.parse();
-  }
+	private boolean isDirty = false;
 
-  public ApiModel(URL url) throws ApiModelException {
-    super();
-    this.url = url;
-    this.parse();
-  }
+	public ApiModel(File file) throws ApiModelException {
+		super();
+		this.file = file;
+		this.parse();
+	}
 
-  public String getLocation() {
-    String location;
-    if (this.url != null) {
-      location = this.url.toExternalForm();
-    }
-    else {
-      location = this.file.getAbsolutePath();
-    }
-    return location;
-  }
+	public ApiModel(URL url) throws ApiModelException {
+		super();
+		this.url = url;
+		this.parse();
+	}
 
-  private void parse() throws ApiModelException {
-    try {
-      DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      if (this.url != null) {
-        this.document = documentBuilder.parse(this.url.toExternalForm());
-      }
-      else {
-        this.document = documentBuilder.parse(this.file);
-      }
-    }
-    catch (Throwable e) {
-      throw new ApiModelException("Failed to parse API file " + getLocation() + ".", e);
-    }
-  }
+	public String getLocation() {
+		String location;
+		if (this.url != null) {
+			location = this.url.toExternalForm();
+		} else {
+			location = this.file.getAbsolutePath();
+		}
+		return location;
+	}
 
-  public Wodefinitions getWODefinitions() {
-    Element element = document.getDocumentElement();
-    return new Wodefinitions(element, this);
-  }
+	private void parse() throws ApiModelException {
+		try {
+			DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			if (this.url != null) {
+				this.document = documentBuilder.parse(this.url.toExternalForm());
+			} else {
+				this.document = documentBuilder.parse(this.file);
+			}
+		} catch (Throwable e) {
+			throw new ApiModelException("Failed to parse API file " + getLocation() + ".", e);
+		}
+	}
 
-  public Wo getWo() {
-    Wodefinitions wodefinitions = this.getWODefinitions();
-    if (wodefinitions == null) {
-      return null;
-    }
-    return wodefinitions.getWo();
-  }
+	public Wodefinitions getWODefinitions() {
+		Element element = document.getDocumentElement();
+		return new Wodefinitions(element, this);
+	}
 
-  public void saveChanges() throws ApiModelException {
-    if (file == null) {
-      throw new ApiModelException("You can not saveChanges to an ApiModel that is not backed by a file.");
-    }
+	public Wo getWo() {
+		Wodefinitions wodefinitions = this.getWODefinitions();
+		if (wodefinitions == null) {
+			return null;
+		}
+		return wodefinitions.getWo();
+	}
 
-    // Prepare the DOM document for writing
-    Source source = new DOMSource(this.document);
+	public void saveChanges() throws ApiModelException {
+		if (file == null) {
+			throw new ApiModelException("You can not saveChanges to an ApiModel that is not backed by a file.");
+		}
 
-    // Prepare the output file
-    Result result = new StreamResult(file);
+		// Prepare the DOM document for writing
+		Source source = new DOMSource(this.document);
 
-    // Write the DOM document to the file
-    try {
-      Transformer xformer = TransformerFactory.newInstance().newTransformer();
-      xformer.transform(source, result);
-      isDirty = false;
-    }
-    catch (Throwable t) {
-      throw new ApiModelException("Failed to save API file " + getLocation() + ".", t);
-    }
-  }
+		// Prepare the output file
+		Result result = new StreamResult(file);
 
-  public boolean isDirty() {
-    return isDirty;
-  }
+		// Write the DOM document to the file
+		try {
+			Transformer xformer = TransformerFactory.newInstance().newTransformer();
+			xformer.transform(source, result);
+			isDirty = false;
+		} catch (Throwable t) {
+			throw new ApiModelException("Failed to save API file " + getLocation() + ".", t);
+		}
+	}
 
-  public void markAsDirty() {
-    isDirty = true;
-  }
+	public boolean isDirty() {
+		return isDirty;
+	}
+
+	public void markAsDirty() {
+		isDirty = true;
+	}
 }

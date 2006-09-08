@@ -59,25 +59,19 @@ import org.eclipse.core.runtime.IAdapterFactory;
 import org.objectstyle.wolips.core.CorePlugin;
 import org.objectstyle.wolips.core.resources.types.IResourceType;
 
-public abstract class AbstractResourceAdapterFactory implements
-		IAdapterFactory {
+public abstract class AbstractResourceAdapterFactory implements IAdapterFactory {
 
 	public AbstractResourceAdapterFactory() {
 		super();
 	}
 
-	public abstract boolean isSupported(Object adaptableObject,
-			Class adapterType);
+	public abstract boolean isSupported(Object adaptableObject, Class adapterType);
 
-	public abstract IResourceType createAdapter(Object adaptableObject,
-			Class adapterType);
+	public abstract IResourceType createAdapter(Object adaptableObject, Class adapterType);
 
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
 		if (!this.isSupported(adaptableObject, adapterType)) {
-			CorePlugin.getDefault().debug(
-					"This Adapter Factory does not support adaptableObject: "
-							+ adaptableObject + " and adapterType: "
-							+ adapterType);
+			CorePlugin.getDefault().debug("This Adapter Factory does not support adaptableObject: " + adaptableObject + " and adapterType: " + adapterType);
 			return null;
 		}
 		IResourceType adapter = this.createAdapter(adaptableObject, adapterType);

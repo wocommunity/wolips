@@ -58,9 +58,12 @@ package org.objectstyle.wolips.core.resources.pattern;
 public interface IPattern {
 
 	public abstract String getPattern();
+
 	public abstract void setPattern(String pattern);
+
 	/**
 	 * match the given <code>text</code> with the pattern
+	 * 
 	 * @param string
 	 * 
 	 * @return true if matched eitherwise false

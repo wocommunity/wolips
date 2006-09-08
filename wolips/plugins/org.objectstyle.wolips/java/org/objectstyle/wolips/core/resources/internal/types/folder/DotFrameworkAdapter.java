@@ -113,8 +113,7 @@ package org.objectstyle.wolips.core.resources.internal.types.folder;
 import org.eclipse.core.resources.IFolder;
 import org.objectstyle.wolips.core.resources.types.folder.IDotFrameworkAdapter;
 
-public class DotFrameworkAdapter extends ProductAdapter implements
-		IDotFrameworkAdapter {
+public class DotFrameworkAdapter extends ProductAdapter implements IDotFrameworkAdapter {
 
 	public DotFrameworkAdapter(IFolder folder) {
 		super(folder);

@@ -55,8 +55,6 @@
  */
 package org.objectstyle.wolips.core.resources.types.folder;
 
-
-
 public interface IWebServerResourcesAdapter extends IFolderAdapter {
 
 	public static final String FILE_NAME = "WebServerResources";

@@ -72,10 +72,10 @@ public abstract class AbstractUn extends AbstractApiModelElement implements IVal
 	public void setName(String className) {
 		element.setAttribute(NAME, className);
 	}
-  
-  public IValidation[] getValidationChildren() {
-    return new IValidation[0];
-  }
+
+	public IValidation[] getValidationChildren() {
+		return new IValidation[0];
+	}
 
 	public boolean isAffectedByBindingNamed(String bindingName) {
 		return bindingName.equals(this.getName());

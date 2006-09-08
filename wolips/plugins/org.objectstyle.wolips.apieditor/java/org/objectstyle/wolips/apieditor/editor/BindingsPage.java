@@ -60,15 +60,15 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 public class BindingsPage extends ApiFormPage {
 
-
 	private BindingsPageBlock block;
-	
+
 	public static String PAGE_ID = "org.objectstyle.wolips.wodclipse.api.DisplayPage";
 
 	public BindingsPage(ApiEditor apiEditor, String title) {
 		super(apiEditor, PAGE_ID, title);
 		block = new BindingsPageBlock(this);
 	}
+
 	protected void createFormContent(final IManagedForm managedForm) {
 		final ScrolledForm form = managedForm.getForm();
 		form.setText("Bindings");

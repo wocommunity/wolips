@@ -61,7 +61,5 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 public interface IAntlauncher {
 
-	public abstract void launchAntInExternalVM(IFile buildFile,
-			IProgressMonitor monitor, boolean captureOutput, String targets)
-			throws CoreException;
+	public abstract void launchAntInExternalVM(IFile buildFile, IProgressMonitor monitor, boolean captureOutput, String targets) throws CoreException;
 }

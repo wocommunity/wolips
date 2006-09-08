@@ -60,16 +60,14 @@ import org.eclipse.core.resources.IResource;
 import org.objectstyle.wolips.core.resources.types.folder.IContentsAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IProductAdapter;
 
-public abstract class ProductAdapter extends AbstractFolderAdapter implements
-		IProductAdapter {
+public abstract class ProductAdapter extends AbstractFolderAdapter implements IProductAdapter {
 
 	public ProductAdapter(IFolder folder) {
 		super(folder);
 	}
 
 	public IContentsAdapter getContentsAdapter() {
-		IResource resource = this.getUnderlyingFolder().getFolder(
-				IContentsAdapter.FILE_NAME);
+		IResource resource = this.getUnderlyingFolder().getFolder(IContentsAdapter.FILE_NAME);
 		return (IContentsAdapter) resource.getAdapter(IContentsAdapter.class);
 	}
 }

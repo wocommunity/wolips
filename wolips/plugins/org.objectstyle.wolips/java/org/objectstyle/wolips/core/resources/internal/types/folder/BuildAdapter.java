@@ -67,33 +67,25 @@ import org.objectstyle.wolips.core.resources.types.folder.IDotFrameworkAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IProductAdapter;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 
-public class BuildAdapter extends AbstractFolderAdapter implements
-		IBuildAdapter {
+public class BuildAdapter extends AbstractFolderAdapter implements IBuildAdapter {
 
 	public BuildAdapter(IFolder folder) {
 		super(folder);
 	}
 
 	public IDotApplicationAdapter getDotApplicationAdapter() {
-		IResource resource = this.getUnderlyingFolder().getFolder(
-				this.getUnderlyingResource().getProject().getName() + "."
-						+ IDotApplicationAdapter.FILE_NAME_EXTENSION);
-		return (IDotApplicationAdapter) resource
-				.getAdapter(IDotApplicationAdapter.class);
+		IResource resource = this.getUnderlyingFolder().getFolder(this.getUnderlyingResource().getProject().getName() + "." + IDotApplicationAdapter.FILE_NAME_EXTENSION);
+		return (IDotApplicationAdapter) resource.getAdapter(IDotApplicationAdapter.class);
 	}
 
 	public IDotFrameworkAdapter getDotFrameworkAdapter() {
-		IResource resource = this.getUnderlyingFolder().getFolder(
-				this.getUnderlyingResource().getProject().getName() + "."
-						+ IDotFrameworkAdapter.FILE_NAME_EXTENSION);
-		return (IDotFrameworkAdapter) resource
-				.getAdapter(IDotFrameworkAdapter.class);
+		IResource resource = this.getUnderlyingFolder().getFolder(this.getUnderlyingResource().getProject().getName() + "." + IDotFrameworkAdapter.FILE_NAME_EXTENSION);
+		return (IDotFrameworkAdapter) resource.getAdapter(IDotFrameworkAdapter.class);
 	}
 
 	public IProductAdapter getProductAdapter() {
 		IProject project = this.getUnderlyingResource().getProject();
-		IProjectAdapter projectAdapter = (IProjectAdapter) project
-				.getAdapter(IProjectAdapter.class);
+		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
 		if (projectAdapter.isFramework()) {
 			return this.getDotFrameworkAdapter();
 		}
@@ -102,7 +94,7 @@ public class BuildAdapter extends AbstractFolderAdapter implements
 	}
 
 	public void clean(IProgressMonitor monitor) {
-		if(!this.getUnderlyingFolder().exists()) {
+		if (!this.getUnderlyingFolder().exists()) {
 			return;
 		}
 		try {

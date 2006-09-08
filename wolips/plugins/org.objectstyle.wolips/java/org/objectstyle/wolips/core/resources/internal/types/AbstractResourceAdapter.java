@@ -91,8 +91,7 @@ public abstract class AbstractResourceAdapter implements IResourceType {
 		}
 		if (!(parent instanceof IProject)) {
 			do {
-				IDotSubprojAdapter subprojectAdapter = (IDotSubprojAdapter) parent
-						.getAdapter(IDotSubprojAdapter.class);
+				IDotSubprojAdapter subprojectAdapter = (IDotSubprojAdapter) parent.getAdapter(IDotSubprojAdapter.class);
 				if (subprojectAdapter != null) {
 					return subprojectAdapter;
 				}
@@ -102,8 +101,7 @@ public abstract class AbstractResourceAdapter implements IResourceType {
 		if (this instanceof IProjectAdapter) {
 			return (IPBDotProjectOwner) this;
 		}
-		IProjectAdapter projectAdapter = (IProjectAdapter) resource
-				.getProject().getAdapter(IProjectAdapter.class);
+		IProjectAdapter projectAdapter = (IProjectAdapter) resource.getProject().getAdapter(IProjectAdapter.class);
 		return projectAdapter;
 	}
 
@@ -114,27 +112,19 @@ public abstract class AbstractResourceAdapter implements IResourceType {
 	 * @param resource
 	 * @return ILocalizedPath
 	 */
-	public ILocalizedPath localizedRelativeResourcePath(
-			IPBDotProjectOwner pbDotProjectOwner, IResource resource) {
+	public ILocalizedPath localizedRelativeResourcePath(IPBDotProjectOwner pbDotProjectOwner, IResource resource) {
 		// determine relativ path to resource
 		String resourcePath;
-		if (pbDotProjectOwner.getUnderlyingResource().equals(
-				resource.getParent())) {
+		if (pbDotProjectOwner.getUnderlyingResource().equals(resource.getParent())) {
 			// same folder
 			resourcePath = resource.getName();
-		} else if (pbDotProjectOwner.getUnderlyingResource().getFullPath()
-				.matchingFirstSegments(resource.getFullPath()) == pbDotProjectOwner
-				.getUnderlyingResource().getFullPath().segmentCount()) {
+		} else if (pbDotProjectOwner.getUnderlyingResource().getFullPath().matchingFirstSegments(resource.getFullPath()) == pbDotProjectOwner.getUnderlyingResource().getFullPath().segmentCount()) {
 			// resource is deeper in directory structure
-			resourcePath = resource.getFullPath().removeFirstSegments(
-					pbDotProjectOwner.getUnderlyingResource().getFullPath()
-							.matchingFirstSegments(resource.getFullPath()))
-					.toString();
+			resourcePath = resource.getFullPath().removeFirstSegments(pbDotProjectOwner.getUnderlyingResource().getFullPath().matchingFirstSegments(resource.getFullPath())).toString();
 		} else {
 			// resource is higher or paralell in directory structure
 			resourcePath = resource.getProjectRelativePath().toString();
-			for (int i = 0; i < pbDotProjectOwner.getUnderlyingResource()
-					.getProjectRelativePath().segmentCount() - 1; i++) {
+			for (int i = 0; i < pbDotProjectOwner.getUnderlyingResource().getProjectRelativePath().segmentCount() - 1; i++) {
 				resourcePath = "../" + resourcePath;
 			}
 		}

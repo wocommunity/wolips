@@ -61,24 +61,20 @@ import org.objectstyle.wolips.core.resources.types.folder.IContentsAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IResourcesAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IWebServerResourcesAdapter;
 
-public class ContentsAdapter extends AbstractFolderAdapter implements
-		IContentsAdapter {
+public class ContentsAdapter extends AbstractFolderAdapter implements IContentsAdapter {
 
 	public ContentsAdapter(IFolder folder) {
 		super(folder);
 	}
 
 	public IResourcesAdapter getResourcesAdapter() {
-		IResource resource = this.getUnderlyingFolder().getFolder(
-				IResourcesAdapter.FILE_NAME);
+		IResource resource = this.getUnderlyingFolder().getFolder(IResourcesAdapter.FILE_NAME);
 		return (IResourcesAdapter) resource.getAdapter(IResourcesAdapter.class);
 	}
 
 	public IWebServerResourcesAdapter getWebServerResourcesAdapter() {
-		IResource resource = this.getUnderlyingFolder().getFolder(
-				IWebServerResourcesAdapter.FILE_NAME);
-		return (IWebServerResourcesAdapter) resource
-				.getAdapter(IWebServerResourcesAdapter.class);
+		IResource resource = this.getUnderlyingFolder().getFolder(IWebServerResourcesAdapter.FILE_NAME);
+		return (IWebServerResourcesAdapter) resource.getAdapter(IWebServerResourcesAdapter.class);
 	}
 
 }

@@ -74,11 +74,9 @@ public class NatureTest extends AbstractProjectTestCase {
 			project.create(monitor);
 			project.open(monitor);
 			IProjectDescription description = project.getDescription();
-			List naturesList = new ArrayList(Arrays.asList(description
-					.getNatureIds()));
+			List naturesList = new ArrayList(Arrays.asList(description.getNatureIds()));
 			naturesList.add("org.eclipse.jdt.core.javanature");
-			description.setNatureIds((String[]) naturesList
-					.toArray(new String[naturesList.size()]));
+			description.setNatureIds((String[]) naturesList.toArray(new String[naturesList.size()]));
 			project.setDescription(description, monitor);
 			boolean success = Nature.addIncrementalFrameworkNatureToProject(project, monitor);
 			assertTrue(success);
@@ -92,29 +90,26 @@ public class NatureTest extends AbstractProjectTestCase {
 		CoreException exception = null;
 		try {
 			Nature.addIncrementalApplicationNatureToProject(project, monitor);
-		}
-		catch (CoreException e) {
+		} catch (CoreException e) {
 			exception = e;
 		}
 		assertNotNull(exception);
 		exception = null;
 		try {
 			Nature.addAntApplicationNatureToProject(project, monitor);
-		}
-		catch (CoreException e) {
+		} catch (CoreException e) {
 			exception = e;
 		}
 		assertNotNull(exception);
 		exception = null;
 		try {
 			Nature.addAntFrameworkNatureToProject(project, monitor);
-		}
-		catch (CoreException e) {
+		} catch (CoreException e) {
 			exception = e;
 		}
 		assertNotNull(exception);
 	}
-	
+
 	public void testAddIncrementalApplicationNature() {
 		IProject project = this.getProject("testAddIncrementalApplicationNature");
 		NullProgressMonitor monitor = new NullProgressMonitor();
@@ -122,11 +117,9 @@ public class NatureTest extends AbstractProjectTestCase {
 			project.create(monitor);
 			project.open(monitor);
 			IProjectDescription description = project.getDescription();
-			List naturesList = new ArrayList(Arrays.asList(description
-					.getNatureIds()));
+			List naturesList = new ArrayList(Arrays.asList(description.getNatureIds()));
 			naturesList.add("org.eclipse.jdt.core.javanature");
-			description.setNatureIds((String[]) naturesList
-					.toArray(new String[naturesList.size()]));
+			description.setNatureIds((String[]) naturesList.toArray(new String[naturesList.size()]));
 			project.setDescription(description, monitor);
 			boolean success = Nature.addIncrementalApplicationNatureToProject(project, monitor);
 			assertTrue(success);
@@ -140,29 +133,26 @@ public class NatureTest extends AbstractProjectTestCase {
 		CoreException exception = null;
 		try {
 			Nature.addIncrementalFrameworkNatureToProject(project, monitor);
-		}
-		catch (CoreException e) {
+		} catch (CoreException e) {
 			exception = e;
 		}
 		assertNotNull(exception);
 		exception = null;
 		try {
 			Nature.addAntApplicationNatureToProject(project, monitor);
-		}
-		catch (CoreException e) {
+		} catch (CoreException e) {
 			exception = e;
 		}
 		assertNotNull(exception);
 		exception = null;
 		try {
 			Nature.addAntFrameworkNatureToProject(project, monitor);
-		}
-		catch (CoreException e) {
+		} catch (CoreException e) {
 			exception = e;
 		}
 		assertNotNull(exception);
 	}
-	
+
 	public void testAddAndFrameworkNature() {
 		IProject project = this.getProject("testAddAndFrameworkNature");
 		NullProgressMonitor monitor = new NullProgressMonitor();
@@ -170,11 +160,9 @@ public class NatureTest extends AbstractProjectTestCase {
 			project.create(monitor);
 			project.open(monitor);
 			IProjectDescription description = project.getDescription();
-			List naturesList = new ArrayList(Arrays.asList(description
-					.getNatureIds()));
+			List naturesList = new ArrayList(Arrays.asList(description.getNatureIds()));
 			naturesList.add("org.eclipse.jdt.core.javanature");
-			description.setNatureIds((String[]) naturesList
-					.toArray(new String[naturesList.size()]));
+			description.setNatureIds((String[]) naturesList.toArray(new String[naturesList.size()]));
 			project.setDescription(description, monitor);
 			boolean success = Nature.addAntFrameworkNatureToProject(project, monitor);
 			assertTrue(success);
@@ -188,29 +176,26 @@ public class NatureTest extends AbstractProjectTestCase {
 		CoreException exception = null;
 		try {
 			Nature.addAntApplicationNatureToProject(project, monitor);
-		}
-		catch (CoreException e) {
+		} catch (CoreException e) {
 			exception = e;
 		}
 		assertNotNull(exception);
 		exception = null;
 		try {
 			Nature.addIncrementalFrameworkNatureToProject(project, monitor);
-		}
-		catch (CoreException e) {
+		} catch (CoreException e) {
 			exception = e;
 		}
 		assertNotNull(exception);
 		exception = null;
 		try {
 			Nature.addIncrementalApplicationNatureToProject(project, monitor);
-		}
-		catch (CoreException e) {
+		} catch (CoreException e) {
 			exception = e;
 		}
 		assertNotNull(exception);
 	}
-	
+
 	public void testAddAntApplicationNature() {
 		IProject project = this.getProject("testAddAntApplicationNature");
 		NullProgressMonitor monitor = new NullProgressMonitor();
@@ -218,11 +203,9 @@ public class NatureTest extends AbstractProjectTestCase {
 			project.create(monitor);
 			project.open(monitor);
 			IProjectDescription description = project.getDescription();
-			List naturesList = new ArrayList(Arrays.asList(description
-					.getNatureIds()));
+			List naturesList = new ArrayList(Arrays.asList(description.getNatureIds()));
 			naturesList.add("org.eclipse.jdt.core.javanature");
-			description.setNatureIds((String[]) naturesList
-					.toArray(new String[naturesList.size()]));
+			description.setNatureIds((String[]) naturesList.toArray(new String[naturesList.size()]));
 			project.setDescription(description, monitor);
 			boolean success = Nature.addAntApplicationNatureToProject(project, monitor);
 			assertTrue(success);
@@ -236,27 +219,24 @@ public class NatureTest extends AbstractProjectTestCase {
 		CoreException exception = null;
 		try {
 			Nature.addAntFrameworkNatureToProject(project, monitor);
-		}
-		catch (CoreException e) {
+		} catch (CoreException e) {
 			exception = e;
 		}
 		assertNotNull(exception);
 		exception = null;
 		try {
 			Nature.addIncrementalApplicationNatureToProject(project, monitor);
-		}
-		catch (CoreException e) {
+		} catch (CoreException e) {
 			exception = e;
 		}
 		assertNotNull(exception);
 		exception = null;
 		try {
 			Nature.addIncrementalFrameworkNatureToProject(project, monitor);
-		}
-		catch (CoreException e) {
+		} catch (CoreException e) {
 			exception = e;
 		}
 		assertNotNull(exception);
 	}
-	
+
 }

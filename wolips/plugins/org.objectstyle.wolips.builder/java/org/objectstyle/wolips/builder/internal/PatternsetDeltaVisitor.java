@@ -60,29 +60,31 @@ import org.objectstyle.wolips.datasets.adaptable.ProjectPatternsets;
  * @author ulrich
  */
 public class PatternsetDeltaVisitor extends DefaultDeltaVisitor {
-	
+
 	private boolean needsFurtherInvestigation = true;
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse.core.resources.IResourceDelta)
 	 */
 	public boolean visit(IResourceDelta delta) throws CoreException {
-		if(!this.needsFurtherInvestigation) {
+		if (!this.needsFurtherInvestigation) {
 			return false;
 		}
-		if(!super.visit(delta)) {
+		if (!super.visit(delta)) {
 			return false;
 		}
 		IResource resource = delta.getResource();
-		if(resource.getType() == IResource.PROJECT) {
+		if (resource.getType() == IResource.PROJECT) {
 			return true;
 		}
-		if(resource.getType() == IResource.FOLDER && ProjectPatternsets.ANT_FOLDER_NAME.equals(resource.getName())) {
+		if (resource.getType() == IResource.FOLDER && ProjectPatternsets.ANT_FOLDER_NAME.equals(resource.getName())) {
 			return true;
 		}
-		if(ProjectPatternsets.EXTENSION.equals(resource.getFileExtension())){
+		if (ProjectPatternsets.EXTENSION.equals(resource.getFileExtension())) {
 			IProject iProject = resource.getProject();
-			Project project = (Project)iProject.getAdapter(Project.class);
+			Project project = (Project) iProject.getAdapter(Project.class);
 			project.releasePatternsetCache();
 			this.needsFurtherInvestigation = false;
 			project.fullBuildRequired = true;

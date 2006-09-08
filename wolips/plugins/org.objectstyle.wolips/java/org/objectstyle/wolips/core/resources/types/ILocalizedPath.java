@@ -58,8 +58,11 @@ package org.objectstyle.wolips.core.resources.types;
 public interface ILocalizedPath {
 
 	public abstract String getLanguage();
+
 	public abstract void setLanguage(String language);
+
 	public abstract String getResourcePath();
+
 	public abstract void setResourcePath(String resourcePath);
 
 }

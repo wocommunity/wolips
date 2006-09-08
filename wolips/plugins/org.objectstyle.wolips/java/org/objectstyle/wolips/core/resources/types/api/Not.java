@@ -59,21 +59,22 @@ import java.util.Map;
 
 import org.w3c.dom.Element;
 
-public class Not  extends AbstractValidationChild {
+public class Not extends AbstractValidationChild {
 
 	protected final static String NOT = "not";
-	
+
 	protected Not(Element element, ApiModel apiModel) {
 		super(element, apiModel);
 	}
 
-  public boolean evaluate(Map _bindings) {
-    // NTS: What do we do when NOT has more than one child?  I just and the not's together right now
-    boolean evaluation = true;
-    IValidation[] validationChildren = getValidationChildren();
-    for (int i = 0; i < validationChildren.length; i ++) {
-      evaluation = evaluation && !validationChildren[i].evaluate(_bindings);
-    }
-    return evaluation;
-  }
+	public boolean evaluate(Map _bindings) {
+		// NTS: What do we do when NOT has more than one child? I just and the
+		// not's together right now
+		boolean evaluation = true;
+		IValidation[] validationChildren = getValidationChildren();
+		for (int i = 0; i < validationChildren.length; i++) {
+			evaluation = evaluation && !validationChildren[i].evaluate(_bindings);
+		}
+		return evaluation;
+	}
 }

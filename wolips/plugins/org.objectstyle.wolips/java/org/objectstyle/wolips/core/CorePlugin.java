@@ -107,33 +107,25 @@ public class CorePlugin extends AbstractCorePlugin {
 	 * @throws CoreException
 	 */
 	private void loadBuilderExtensionPoint() {
-		IExtensionPoint extensionPoint = Platform.getExtensionRegistry()
-				.getExtensionPoint(EXTENSION_POINT_ID);
+		IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(EXTENSION_POINT_ID);
 		IExtension[] extensions = extensionPoint.getExtensions();
 		ArrayList arrayList = new ArrayList();
 		for (int i = 0; i < extensions.length; i++) {
-			IConfigurationElement[] configurationElements = extensions[i]
-					.getConfigurationElements();
+			IConfigurationElement[] configurationElements = extensions[i].getConfigurationElements();
 			for (int j = 0; j < configurationElements.length; j++) {
 				IConfigurationElement configurationElement = configurationElements[j];
 				IBuilder currentBuilder = null;
 				try {
-					currentBuilder = (IBuilder) configurationElement
-							.createExecutableExtension("class");
+					currentBuilder = (IBuilder) configurationElement.createExecutableExtension("class");
 					String name = configurationElement.getAttribute("name");
-					String context = configurationElement
-							.getAttribute("context");
-					arrayList.add(new BuilderWrapper(currentBuilder, name,
-							context));
+					String context = configurationElement.getAttribute("context");
+					arrayList.add(new BuilderWrapper(currentBuilder, name, context));
 				} catch (CoreException e) {
-					this.log(
-							"Could not create executable from configuration element: "
-									+ configurationElement, e);
+					this.log("Could not create executable from configuration element: " + configurationElement, e);
 				}
 			}
 		}
-		this.builderWrapper = (BuilderWrapper[]) arrayList
-				.toArray(new BuilderWrapper[arrayList.size()]);
+		this.builderWrapper = (BuilderWrapper[]) arrayList.toArray(new BuilderWrapper[arrayList.size()]);
 	}
 
 	public BuilderWrapper[] getBuilderWrapper(String context) {
@@ -147,8 +139,7 @@ public class CorePlugin extends AbstractCorePlugin {
 				builderWrapperList.add(currentBuilderWrapper);
 			}
 		}
-		return (BuilderWrapper[]) builderWrapperList
-				.toArray(new BuilderWrapper[builderWrapperList.size()]);
+		return (BuilderWrapper[]) builderWrapperList.toArray(new BuilderWrapper[builderWrapperList.size()]);
 	}
 
 }

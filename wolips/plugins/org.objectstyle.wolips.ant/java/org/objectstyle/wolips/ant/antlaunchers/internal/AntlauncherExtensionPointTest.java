@@ -59,7 +59,6 @@ import junit.framework.TestCase;
 
 import org.objectstyle.wolips.ant.AntPlugin;
 
-
 public class AntlauncherExtensionPointTest extends TestCase {
 
 	public void testGetAntlauncher() {

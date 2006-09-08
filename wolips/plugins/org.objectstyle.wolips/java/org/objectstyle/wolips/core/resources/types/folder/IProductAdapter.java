@@ -55,8 +55,7 @@
  */
 package org.objectstyle.wolips.core.resources.types.folder;
 
-
 public interface IProductAdapter {
-	
+
 	public abstract IContentsAdapter getContentsAdapter();
 }

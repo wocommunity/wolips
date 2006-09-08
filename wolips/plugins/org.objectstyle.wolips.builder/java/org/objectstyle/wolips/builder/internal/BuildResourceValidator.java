@@ -118,28 +118,21 @@ final class BuildResourceValidator extends DefaultDeltaVisitor {
 		case IResource.FOLDER:
 			String extension = resource.getFileExtension();
 			if (extension != null) {
-				if (extension.equals("framework") || extension.equals("woa")
-						|| extension.equals("xcode")
-						|| extension.equals("xcodeproj")) {
+				if (extension.equals("framework") || extension.equals("woa") || extension.equals("xcode") || extension.equals("xcodeproj")) {
 					return false;
 				}
 			}
-			if (resource.getName().equals("build")
-					|| resource.getName().equals("dist")
-					|| resource.getName().equals("target")) {
+			if (resource.getName().equals("build") || resource.getName().equals("dist") || resource.getName().equals("target")) {
 				return false;
 			}
-			if (resource.getName().equals(".svn")
-					|| resource.getName().equals("CVS")) {
+			if (resource.getName().equals(".svn") || resource.getName().equals("CVS")) {
 				return false;
 			}
-      // PJYF May 21 2006 We need to exclude the temp wrappers
-      if (resource.getName().endsWith("~")) {
-        return false;
-      }
-			if (this.project.matchesResourcesPattern(resource)
-					|| this.project.matchesWOAppResourcesPattern(resource)
-					|| this.project.matchesClassesPattern(resource)) {
+			// PJYF May 21 2006 We need to exclude the temp wrappers
+			if (resource.getName().endsWith("~")) {
+				return false;
+			}
+			if (this.project.matchesResourcesPattern(resource) || this.project.matchesWOAppResourcesPattern(resource) || this.project.matchesClassesPattern(resource)) {
 				this.buildRequired = true;
 				return false;
 			}
@@ -147,16 +140,9 @@ final class BuildResourceValidator extends DefaultDeltaVisitor {
 			return true;
 		case IResource.FILE:
 			if (needsUpdate(kindOfChange)) {
-				if (".project".equals(resource.getName())
-						|| "PB.project".equals(resource.getName())
-						|| ".classpath".equals(resource.getName())
-						|| "Makefile".equals(resource.getName())
-						|| resource.getName().startsWith("ant.")) {
+				if (".project".equals(resource.getName()) || "PB.project".equals(resource.getName()) || ".classpath".equals(resource.getName()) || "Makefile".equals(resource.getName()) || resource.getName().startsWith("ant.")) {
 					return false;
-				} else if (resource.getName().endsWith(".java")
-						|| this.project.matchesResourcesPattern(resource)
-						|| this.project.matchesWOAppResourcesPattern(resource)
-						|| this.project.matchesClassesPattern(resource)) {
+				} else if (resource.getName().endsWith(".java") || this.project.matchesResourcesPattern(resource) || this.project.matchesWOAppResourcesPattern(resource) || this.project.matchesClassesPattern(resource)) {
 					this.buildRequired = true;
 					return false;
 				}
@@ -169,9 +155,7 @@ final class BuildResourceValidator extends DefaultDeltaVisitor {
 	 * Method needsUpdate. @ param kindOfChange @ return boolean
 	 */
 	private final boolean needsUpdate(int kindOfChange) {
-		return IResourceDelta.ADDED == kindOfChange
-				|| IResourceDelta.REMOVED == kindOfChange
-				|| IResourceDelta.CHANGED == kindOfChange;
+		return IResourceDelta.ADDED == kindOfChange || IResourceDelta.REMOVED == kindOfChange || IResourceDelta.CHANGED == kindOfChange;
 	}
 
 	/**

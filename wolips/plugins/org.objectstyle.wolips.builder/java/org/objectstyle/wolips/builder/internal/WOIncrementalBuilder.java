@@ -120,30 +120,24 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 		return result;
 	}
 
-	public void invokeOldBuilder(int kind, Map args, IProgressMonitor progressMonitor,
-			IResourceDelta resourceDelta) throws CoreException {
+	public void invokeOldBuilder(int kind, Map args, IProgressMonitor progressMonitor, IResourceDelta resourceDelta) throws CoreException {
 		IProgressMonitor subProgressMonitor = null;
 		if (null == progressMonitor) {
 			subProgressMonitor = new NullProgressMonitor();
-		}
-		else {
-		subProgressMonitor = new SubProgressMonitor(progressMonitor, 100 * 1000);
+		} else {
+			subProgressMonitor = new SubProgressMonitor(progressMonitor, 100 * 1000);
 		}
 		IResourceDelta delta = resourceDelta;
-		if (kind != IncrementalProjectBuilder.FULL_BUILD
-				&& !projectNeedsAnUpdate(delta)) {
+		if (kind != IncrementalProjectBuilder.FULL_BUILD && !projectNeedsAnUpdate(delta)) {
 			subProgressMonitor.done();
 		}
 		getLogger().debug("<incremental build>");
 		subProgressMonitor.beginTask("building WebObjects layout ...", 100);
 		try {
-			Project project = (Project) this.getProject().getAdapter(
-					Project.class);
-			boolean fullBuild = (null != delta)
-					&& (kind == IncrementalProjectBuilder.FULL_BUILD || project.fullBuildRequired);
+			Project project = (Project) this.getProject().getAdapter(Project.class);
+			boolean fullBuild = (null != delta) && (kind == IncrementalProjectBuilder.FULL_BUILD || project.fullBuildRequired);
 			project.fullBuildRequired = false;
-			String oldPrincipalClass = getArg(args,
-					BuilderPlugin.NS_PRINCIPAL_CLASS, "");
+			String oldPrincipalClass = getArg(args, BuilderPlugin.NS_PRINCIPAL_CLASS, "");
 			if (oldPrincipalClass.length() == 0) {
 				oldPrincipalClass = null;
 			}
@@ -171,23 +165,17 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 				subProgressMonitor.subTask("scrubbing build folder ...");
 				buildFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
 				subProgressMonitor.worked(1);
-				getLogger().debug(
-						"refresh build folder took: "
-								+ (System.currentTimeMillis() - t0) + " ms");
+				getLogger().debug("refresh build folder took: " + (System.currentTimeMillis() - t0) + " ms");
 				t0 = System.currentTimeMillis();
 				buildFolder.delete(true, false, null);
 				subProgressMonitor.worked(2);
-				getLogger().debug(
-						"scrubbing build folder took: "
-								+ (System.currentTimeMillis() - t0) + " ms");
+				getLogger().debug("scrubbing build folder took: " + (System.currentTimeMillis() - t0) + " ms");
 				t0 = System.currentTimeMillis();
 				buildFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
 				subProgressMonitor.subTask("re-creating structure ...");
 				buildVisitor._checkDirs();
 				subProgressMonitor.worked(2);
-				getLogger().debug(
-						"re-creating build folder took: "
-								+ (System.currentTimeMillis() - t0) + " ms");
+				getLogger().debug("re-creating build folder took: " + (System.currentTimeMillis() - t0) + " ms");
 			}
 			subProgressMonitor.subTask("creating Info.plist");
 			createInfoPlist();
@@ -198,10 +186,7 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 				long t0 = System.currentTimeMillis();
 				buildVisitor.resetCount();
 				delta.accept(buildVisitor, IResourceDelta.ALL_WITH_PHANTOMS);
-				getLogger().debug(
-						"delta.accept with " + buildVisitor.getCount()
-								+ " delta nodes took: "
-								+ (System.currentTimeMillis() - t0) + " ms");
+				getLogger().debug("delta.accept with " + buildVisitor.getCount() + " delta nodes took: " + (System.currentTimeMillis() - t0) + " ms");
 				getLogger().debug("</partial build>");
 				subProgressMonitor.worked(12);
 			} else {
@@ -211,24 +196,17 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 				t0 = System.currentTimeMillis();
 				buildVisitor.resetCount();
 				getProject().accept(buildVisitor);
-				getLogger().debug(
-						"preparing with " + buildVisitor.getCount()
-								+ " project nodes took: "
-								+ (System.currentTimeMillis() - t0) + " ms");
+				getLogger().debug("preparing with " + buildVisitor.getCount() + " project nodes took: " + (System.currentTimeMillis() - t0) + " ms");
 				getLogger().debug("</full build>");
 				subProgressMonitor.worked(12);
 			}
 			long t0 = System.currentTimeMillis();
 			buildVisitor.executeTasks(subProgressMonitor);
-			getLogger().debug(
-					"building structure took: "
-							+ (System.currentTimeMillis() - t0) + " ms");
+			getLogger().debug("building structure took: " + (System.currentTimeMillis() - t0) + " ms");
 			t0 = System.currentTimeMillis();
 			subProgressMonitor.subTask("copying classes");
 			jarBuild(delta, subProgressMonitor, project);
-			getLogger().debug(
-					"copying classes took: "
-							+ (System.currentTimeMillis() - t0) + " ms");
+			getLogger().debug("copying classes took: " + (System.currentTimeMillis() - t0) + " ms");
 			subProgressMonitor.done();
 		} catch (RuntimeException up) {
 			getLogger().log(up);
@@ -248,41 +226,27 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 		} else {
 			infoPlist = INFO_PLIST_APPLICATION;
 		}
-		infoPlist = StringUtilities.replace(infoPlist, "$$name$$", buildVisitor
-				.getResultName());
-		infoPlist = StringUtilities.replace(infoPlist, "$$basename$$",
-				getProject().getName());
-		infoPlist = StringUtilities.replace(infoPlist, "$$res$$", buildVisitor
-				.getResourceName().toString());
-		infoPlist = StringUtilities.replace(infoPlist, "$$wsr$$", buildVisitor
-				.getWebResourceName().toString());
-		infoPlist = StringUtilities.replace(infoPlist, "$$type$$", buildVisitor
-				.isFramework() ? "FMWK" : "APPL");
+		infoPlist = StringUtilities.replace(infoPlist, "$$name$$", buildVisitor.getResultName());
+		infoPlist = StringUtilities.replace(infoPlist, "$$basename$$", getProject().getName());
+		infoPlist = StringUtilities.replace(infoPlist, "$$res$$", buildVisitor.getResourceName().toString());
+		infoPlist = StringUtilities.replace(infoPlist, "$$wsr$$", buildVisitor.getWebResourceName().toString());
+		infoPlist = StringUtilities.replace(infoPlist, "$$type$$", buildVisitor.isFramework() ? "FMWK" : "APPL");
 		if (principalClass != null && principalClass.length() > 0) {
-			String string = "  <key>NSPrincipalClass</key>" + "\r\n"
-					+ "  <string>" + principalClass + "</string>" + "\r\n";
-			infoPlist = StringUtilities.replace(infoPlist,
-					"$$principalclass$$", string);
+			String string = "  <key>NSPrincipalClass</key>" + "\r\n" + "  <string>" + principalClass + "</string>" + "\r\n";
+			infoPlist = StringUtilities.replace(infoPlist, "$$principalclass$$", string);
 		} else {
-			infoPlist = StringUtilities.replace(infoPlist,
-					"$$principalclass$$", "");
+			infoPlist = StringUtilities.replace(infoPlist, "$$principalclass$$", "");
 		}
 		if (customInfoPListContent != null) {
-			infoPlist = StringUtilities.replace(infoPlist,
-					"$$customInfoPListContent$$", customInfoPListContent);
+			infoPlist = StringUtilities.replace(infoPlist, "$$customInfoPListContent$$", customInfoPListContent);
 		} else {
-			infoPlist = StringUtilities.replace(infoPlist,
-					"$$customInfoPListContent$$", "");
+			infoPlist = StringUtilities.replace(infoPlist, "$$customInfoPListContent$$", "");
 		}
-		if (project.isFramework() && eoAdaptorClassName != null
-				&& eoAdaptorClassName.length() > 0) {
-			String string = "  <key>EOAdaptorClassName</key>" + "\r\n"
-					+ "  <string>" + eoAdaptorClassName + "</string>" + "\r\n";
-			infoPlist = StringUtilities.replace(infoPlist,
-					"$$EOAdaptorClassName$$", string);
+		if (project.isFramework() && eoAdaptorClassName != null && eoAdaptorClassName.length() > 0) {
+			String string = "  <key>EOAdaptorClassName</key>" + "\r\n" + "  <string>" + eoAdaptorClassName + "</string>" + "\r\n";
+			infoPlist = StringUtilities.replace(infoPlist, "$$EOAdaptorClassName$$", string);
 		} else {
-			infoPlist = StringUtilities.replace(infoPlist,
-					"$$EOAdaptorClassName$$", "");
+			infoPlist = StringUtilities.replace(infoPlist, "$$EOAdaptorClassName$$", "");
 		}
 		IPath infoPath = buildVisitor.getInfoPath().append("Info.plist");
 		IFile resFile = getProject().getWorkspace().getRoot().getFile(infoPath);
@@ -355,8 +319,7 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 		return BuilderPlugin.getDefault();
 	}
 
-	private void jarBuild(IResourceDelta delta, IProgressMonitor monitor,
-			Project project) throws CoreException {
+	private void jarBuild(IResourceDelta delta, IProgressMonitor monitor, Project project) throws CoreException {
 		getLogger().debug("<jar build>");
 		if (jarBuilder == null)
 			jarBuilder = new JarBuilder();
@@ -372,15 +335,11 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 			}
 			output.accept(jarBuilder);
 		}
-		getLogger().debug(
-				"prepare jar copy took " + (System.currentTimeMillis() - t0)
-						+ " ms");
+		getLogger().debug("prepare jar copy took " + (System.currentTimeMillis() - t0) + " ms");
 		monitor.worked(10);
 		t0 = System.currentTimeMillis();
 		jarBuilder.executeTasks(monitor);
-		getLogger().debug(
-				"executing jar copy took " + (System.currentTimeMillis() - t0)
-						+ " ms");
+		getLogger().debug("executing jar copy took " + (System.currentTimeMillis() - t0) + " ms");
 		getLogger().debug("</jar build>");
 	}
 
@@ -405,173 +364,11 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 		// super.startupOnInitialize();
 	}
 
-	static final String INFO_PLIST_APPLICATION = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-			+ "\r\n"
-			// +"<!DOCTYPE plist SYSTEM
+	static final String INFO_PLIST_APPLICATION = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\r\n"
+	// +"<!DOCTYPE plist SYSTEM
 			// \"file://localhost/System/Library/DTDs/PropertyList.dtd\">" +
 			// "\r\n"
-			+ "<plist version=\"0.9\">"
-			+ "\r\n"
-			+ "<dict>"
-			+ "\r\n"
-			+ "  <key>NOTE</key>"
-			+ "\r\n"
-			+ "  <string>"
-			+ "\r\n"
-			+ "    Please, feel free to change this file "
-			+ "\r\n"
-			+ "    -- It was generated by the WOLips incremental builder and "
-			+ "\r\n"
-			+ "    *will be overwritten* anyway.."
-			+ "\r\n"
-			+ "  </string>"
-			+ "\r\n"
-			+ "  <key>CFBundleDevelopmentRegion</key>"
-			+ "\r\n"
-			+ "  <string>English</string>"
-			+ "\r\n"
-			+ "  <key>CFBundleExecutable</key>"
-			+ "\r\n"
-			+ "  <string>$$basename$$</string>"
-			+ "\r\n"
-			+ "  <key>CFBundleIconFile</key>"
-			+ "\r\n"
-			+ "  <string>WOAfile.icns</string>"
-			+ "\r\n"
-			+ "  <key>CFBundleInfoDictionaryVersion</key>"
-			+ "\r\n"
-			+ "  <string>6.0</string>"
-			+ "\r\n"
-			+ "  <key>CFBundlePackageType</key>"
-			+ "\r\n"
-			+ "  <string>APPL</string>"
-			+ "\r\n"
-			+ "  <key>CFBundleSignature</key>"
-			+ "\r\n"
-			+ "  <string>webo</string>"
-			+ "\r\n"
-			+ "  <key>CFBundleVersion</key>"
-			+ "\r\n"
-			+ "  <string>0.0.1d1</string>"
-			+ "\r\n"
-			+ "  <key>NSExecutable</key>"
-			+ "\r\n"
-			+ "  <string>$$basename$$</string>"
-			+ "\r\n"
-			+ "  <key>NSJavaNeeded</key>"
-			+ "\r\n"
-			+ "  <true/>"
-			+ "\r\n"
-			+ "  <key>NSJavaPath</key>"
-			+ "\r\n"
-			+ "  <array>"
-			+ "\r\n"
-			+ "    <string>$$basename$$.jar</string>"
-			+ "\r\n"
-			+ "  </array>"
-			+ "\r\n"
-			+ "  <key>NSJavaPathClient</key>"
-			+ "\r\n"
-			+ "  <string>$$basename$$.jar</string>"
-			+ "\r\n"
-			+ "  <key>NSJavaRoot</key>"
-			+ "\r\n"
-			+ "  <string>Contents/Resources/Java</string>"
-			+ "\r\n"
-			+ "  <key>NSJavaRootClient</key>"
-			+ "\r\n"
-			+ "  <string>Contents/WebServerResources/Java</string>"
-			+ "\r\n"
-			+ "$$principalclass$$"
-			+ "$$customInfoPListContent$$"
-			+ "\r\n"
-			+ "</dict>" + "\r\n" + "</plist>" + "\r\n";
+			+ "<plist version=\"0.9\">" + "\r\n" + "<dict>" + "\r\n" + "  <key>NOTE</key>" + "\r\n" + "  <string>" + "\r\n" + "    Please, feel free to change this file " + "\r\n" + "    -- It was generated by the WOLips incremental builder and " + "\r\n" + "    *will be overwritten* anyway.." + "\r\n" + "  </string>" + "\r\n" + "  <key>CFBundleDevelopmentRegion</key>" + "\r\n" + "  <string>English</string>" + "\r\n" + "  <key>CFBundleExecutable</key>" + "\r\n" + "  <string>$$basename$$</string>" + "\r\n" + "  <key>CFBundleIconFile</key>" + "\r\n" + "  <string>WOAfile.icns</string>" + "\r\n" + "  <key>CFBundleInfoDictionaryVersion</key>" + "\r\n" + "  <string>6.0</string>" + "\r\n" + "  <key>CFBundlePackageType</key>" + "\r\n" + "  <string>APPL</string>" + "\r\n" + "  <key>CFBundleSignature</key>" + "\r\n" + "  <string>webo</string>" + "\r\n" + "  <key>CFBundleVersion</key>" + "\r\n" + "  <string>0.0.1d1</string>" + "\r\n" + "  <key>NSExecutable</key>" + "\r\n" + "  <string>$$basename$$</string>" + "\r\n" + "  <key>NSJavaNeeded</key>" + "\r\n" + "  <true/>" + "\r\n" + "  <key>NSJavaPath</key>" + "\r\n" + "  <array>" + "\r\n" + "    <string>$$basename$$.jar</string>" + "\r\n" + "  </array>" + "\r\n" + "  <key>NSJavaPathClient</key>" + "\r\n" + "  <string>$$basename$$.jar</string>" + "\r\n" + "  <key>NSJavaRoot</key>" + "\r\n" + "  <string>Contents/Resources/Java</string>" + "\r\n" + "  <key>NSJavaRootClient</key>" + "\r\n" + "  <string>Contents/WebServerResources/Java</string>" + "\r\n" + "$$principalclass$$" + "$$customInfoPListContent$$" + "\r\n" + "</dict>" + "\r\n" + "</plist>" + "\r\n";
 
-	static final String INFO_PLIST_FRAMEWORK = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-			+ "\r\n"
-			+ "<plist version=\"0.9\">"
-			+ "\r\n"
-			+ "<dict>"
-			+ "\r\n"
-			+ "  <key>NOTE</key>"
-			+ "\r\n"
-			+ "  <string>"
-			+ "\r\n"
-			+ "    Please, feel free to change this file "
-			+ "\r\n"
-			+ "    -- It was generated by the WOLips incremental builder and "
-			+ "\r\n"
-			+ "    *will be overwritten* anyway.."
-			+ "\r\n"
-			+ "  </string>"
-			+ "\r\n"
-			+ "  <key>NSJavaPathClient</key>"
-			+ "\r\n"
-			+ "  <string>theTestFramework.jar</string>"
-			+ "\r\n"
-			+ "  <key>CFBundleIconFile</key>"
-			+ "\r\n"
-			+ "  <string>WOAfile.icns</string>"
-			+ "\r\n"
-			+ "  <key>CFBundleExecutable</key>"
-			+ "\r\n"
-			+ "  <string>$$basename$$</string>"
-			+ "\r\n"
-			+ "  <key>NSJavaRoot</key>"
-			+ "\r\n"
-			+ "  <string>$$res$$/Java</string>"
-			+ "\r\n"
-			+ "  <key>NSJavaRootClient</key>"
-			+ "\r\n"
-			+ "  <string>$$wsr$$/Java</string>"
-			+ "\r\n"
-			+ "  <key>NSJavaNeeded</key>"
-			+ "\r\n"
-			+ "  <true/>"
-			+ "\r\n"
-			+ "  <key>CFBundleName</key>"
-			+ "\r\n"
-			+ "  <string></string>"
-			+ "\r\n"
-			+ "  <key>NSExecutable</key>"
-			+ "\r\n"
-			+ "  <string>$$basename$$</string>"
-			+ "\r\n"
-			+ "  <key>NSJavaPath</key>"
-			+ "\r\n"
-			+ "  <array>"
-			+ "\r\n"
-			+ "    <string>$$basename$$.jar</string>"
-			+ "\r\n"
-			+ "  </array>"
-			+ "\r\n"
-			+ "  <key>CFBundleInfoDictionaryVersion</key>"
-			+ "\r\n"
-			+ "  <string>6.0</string>"
-			+ "\r\n"
-			+ "  <key>Has_WOComponents</key>"
-			+ "\r\n"
-			+ "  <true/>"
-			+ "\r\n"
-			+ "  <key>CFBundleSignature</key>"
-			+ "\r\n"
-			+ "  <string>webo</string>"
-			+ "\r\n"
-			+ "  <key>CFBundleShortVersionString</key>"
-			+ "\r\n"
-			+ "  <string></string>"
-			+ "\r\n"
-			+ "  <key>CFBundleIdentifier</key>"
-			+ "\r\n"
-			+ "  <string></string>"
-			+ "\r\n"
-			+ "  <key>CFBundlePackageType</key>"
-			+ "\r\n"
-			+ "  <string>$$type$$</string>"
-			+ "\r\n"
-			+ "$$principalclass$$"
-			+ "$$customInfoPListContent$$"
-			+ "$$EOAdaptorClassName$$"
-			+ "\r\n"
-			+ "</dict>" + "\r\n" + "</plist>" + "\r\n";
+	static final String INFO_PLIST_FRAMEWORK = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\r\n" + "<plist version=\"0.9\">" + "\r\n" + "<dict>" + "\r\n" + "  <key>NOTE</key>" + "\r\n" + "  <string>" + "\r\n" + "    Please, feel free to change this file " + "\r\n" + "    -- It was generated by the WOLips incremental builder and " + "\r\n" + "    *will be overwritten* anyway.." + "\r\n" + "  </string>" + "\r\n" + "  <key>NSJavaPathClient</key>" + "\r\n" + "  <string>theTestFramework.jar</string>" + "\r\n" + "  <key>CFBundleIconFile</key>" + "\r\n" + "  <string>WOAfile.icns</string>" + "\r\n" + "  <key>CFBundleExecutable</key>" + "\r\n" + "  <string>$$basename$$</string>" + "\r\n" + "  <key>NSJavaRoot</key>" + "\r\n" + "  <string>$$res$$/Java</string>" + "\r\n" + "  <key>NSJavaRootClient</key>" + "\r\n" + "  <string>$$wsr$$/Java</string>" + "\r\n" + "  <key>NSJavaNeeded</key>" + "\r\n" + "  <true/>" + "\r\n" + "  <key>CFBundleName</key>" + "\r\n" + "  <string></string>" + "\r\n" + "  <key>NSExecutable</key>" + "\r\n" + "  <string>$$basename$$</string>" + "\r\n" + "  <key>NSJavaPath</key>" + "\r\n" + "  <array>" + "\r\n" + "    <string>$$basename$$.jar</string>" + "\r\n" + "  </array>" + "\r\n" + "  <key>CFBundleInfoDictionaryVersion</key>" + "\r\n" + "  <string>6.0</string>" + "\r\n" + "  <key>Has_WOComponents</key>" + "\r\n" + "  <true/>" + "\r\n" + "  <key>CFBundleSignature</key>" + "\r\n" + "  <string>webo</string>" + "\r\n" + "  <key>CFBundleShortVersionString</key>" + "\r\n" + "  <string></string>" + "\r\n" + "  <key>CFBundleIdentifier</key>" + "\r\n" + "  <string></string>" + "\r\n" + "  <key>CFBundlePackageType</key>" + "\r\n" + "  <string>$$type$$</string>" + "\r\n" + "$$principalclass$$" + "$$customInfoPListContent$$" + "$$EOAdaptorClassName$$" + "\r\n" + "</dict>" + "\r\n" + "</plist>" + "\r\n";
 }

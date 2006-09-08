@@ -77,9 +77,7 @@ public abstract class Nature implements IProjectNature {
 
 	private final static String ANT_APPLICATION_ID = "org.objectstyle.wolips.antapplicationnature";
 
-	private final static String[] NATURES = new String[] {
-			INCREMENTAL_FRAMEWORK_ID, INCREMENTAL_APPLICATION_ID,
-			ANT_FRAMEWORK_ID, ANT_APPLICATION_ID };
+	private final static String[] NATURES = new String[] { INCREMENTAL_FRAMEWORK_ID, INCREMENTAL_APPLICATION_ID, ANT_FRAMEWORK_ID, ANT_APPLICATION_ID };
 
 	private IProject project;
 
@@ -168,8 +166,7 @@ public abstract class Nature implements IProjectNature {
 			comList.addAll(tmp);
 			boolean foundJBuilder = false;
 			for (int i = 0; i < comList.size(); i++) {
-				if (((ICommand) comList.get(i)).getBuilderName().equals(
-						aBuilder)) {
+				if (((ICommand) comList.get(i)).getBuilderName().equals(aBuilder)) {
 					comList.remove(i);
 					foundJBuilder = true;
 				}
@@ -213,10 +210,8 @@ public abstract class Nature implements IProjectNature {
 	 * @return true when the nature successfully added
 	 * @throws CoreException
 	 */
-	public static boolean addIncrementalFrameworkNatureToProject(
-			IProject project, IProgressMonitor monitor) throws CoreException {
-		return addNatureToProject(Nature.INCREMENTAL_FRAMEWORK_ID, project,
-				monitor);
+	public static boolean addIncrementalFrameworkNatureToProject(IProject project, IProgressMonitor monitor) throws CoreException {
+		return addNatureToProject(Nature.INCREMENTAL_FRAMEWORK_ID, project, monitor);
 	}
 
 	/**
@@ -225,10 +220,8 @@ public abstract class Nature implements IProjectNature {
 	 * @return true when the nature successfully added
 	 * @throws CoreException
 	 */
-	public static boolean addIncrementalApplicationNatureToProject(
-			IProject project, IProgressMonitor monitor) throws CoreException {
-		return addNatureToProject(Nature.INCREMENTAL_APPLICATION_ID, project,
-				monitor);
+	public static boolean addIncrementalApplicationNatureToProject(IProject project, IProgressMonitor monitor) throws CoreException {
+		return addNatureToProject(Nature.INCREMENTAL_APPLICATION_ID, project, monitor);
 	}
 
 	/**
@@ -237,8 +230,7 @@ public abstract class Nature implements IProjectNature {
 	 * @return true when the nature successfully added
 	 * @throws CoreException
 	 */
-	public static boolean addAntFrameworkNatureToProject(IProject project,
-			IProgressMonitor monitor) throws CoreException {
+	public static boolean addAntFrameworkNatureToProject(IProject project, IProgressMonitor monitor) throws CoreException {
 		return addNatureToProject(Nature.ANT_FRAMEWORK_ID, project, monitor);
 	}
 
@@ -248,22 +240,18 @@ public abstract class Nature implements IProjectNature {
 	 * @return true when the nature successfully added
 	 * @throws CoreException
 	 */
-	public static boolean addAntApplicationNatureToProject(IProject project,
-			IProgressMonitor monitor) throws CoreException {
+	public static boolean addAntApplicationNatureToProject(IProject project, IProgressMonitor monitor) throws CoreException {
 		return addNatureToProject(Nature.ANT_APPLICATION_ID, project, monitor);
 	}
 
-	private static boolean addNatureToProject(String id, IProject project,
-			IProgressMonitor monitor) throws CoreException {
+	private static boolean addNatureToProject(String id, IProject project, IProgressMonitor monitor) throws CoreException {
 		IProjectNature nature = project.getNature(id);
 		if (nature == null) {
 			IProjectDescription description = project.getDescription();
 			{
-				List naturesList = new ArrayList(Arrays.asList(description
-						.getNatureIds()));
+				List naturesList = new ArrayList(Arrays.asList(description.getNatureIds()));
 				naturesList.add(id);
-				description.setNatureIds((String[]) naturesList
-						.toArray(new String[naturesList.size()]));
+				description.setNatureIds((String[]) naturesList.toArray(new String[naturesList.size()]));
 				project.setDescription(description, monitor);
 			}
 		} else {

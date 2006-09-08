@@ -58,8 +58,7 @@ package org.objectstyle.wolips.core.resources.internal.types.folder;
 import org.eclipse.core.resources.IFolder;
 import org.objectstyle.wolips.core.resources.types.folder.IDotLprojAdapter;
 
-public class DotLprojAdapter extends AbstractFolderAdapter implements
-		IDotLprojAdapter {
+public class DotLprojAdapter extends AbstractFolderAdapter implements IDotLprojAdapter {
 
 	public DotLprojAdapter(IFolder folder) {
 		super(folder);
