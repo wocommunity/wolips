@@ -61,9 +61,9 @@ import org.eclipse.core.resources.IFolder;
  * @author ulrich
  */
 public abstract class AbstractFolderAdapterType {
-	
+
 	private IFolder folder;
-	
+
 	/**
 	 * @param folder
 	 */
@@ -71,7 +71,7 @@ public abstract class AbstractFolderAdapterType {
 		super();
 		this.folder = folder;
 	}
-	
+
 	/**
 	 * @return
 	 */

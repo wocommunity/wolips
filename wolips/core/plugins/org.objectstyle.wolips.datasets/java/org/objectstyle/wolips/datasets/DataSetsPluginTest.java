@@ -55,7 +55,6 @@
  */
 package org.objectstyle.wolips.datasets;
 
-
 /**
  * @author ulrich
  * 
@@ -71,7 +70,7 @@ public class DataSetsPluginTest extends AbstractDataSetTest {
 	public DataSetsPluginTest(String arg0) {
 		super(arg0);
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -85,5 +84,5 @@ public class DataSetsPluginTest extends AbstractDataSetTest {
 	public void testGetNullResource() {
 		assertNull("getResource should return null for null", DataSetsPlugin.getDefault().getDataSet(null));
 	}
-	
+
 }

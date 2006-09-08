@@ -60,13 +60,13 @@ import org.eclipse.jdt.core.ICompilationUnit;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public abstract class WOLipsCompilationUnit implements IWOLipsCompilationUnit {
 	private ICompilationUnit compilationUnit = null;
-	
+
 	protected WOLipsCompilationUnit() {
 		super();
 	}

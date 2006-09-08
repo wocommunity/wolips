@@ -68,8 +68,7 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 /**
  * @author ulrich
  */
-public final class WOComponentJava extends WOLipsCompilationUnit implements
-		IWOComponentJava {
+public final class WOComponentJava extends WOLipsCompilationUnit implements IWOComponentJava {
 
 	protected WOComponentJava() {
 		super();
@@ -105,9 +104,7 @@ public final class WOComponentJava extends WOLipsCompilationUnit implements
 
 	public List getRelatedResources() {
 		try {
-			return WOLipsResource.getRelatedWOComponentResources(this
-					.getCorrespondingCompilationUnit()
-					.getCorrespondingResource());
+			return WOLipsResource.getRelatedWOComponentResources(this.getCorrespondingCompilationUnit().getCorrespondingResource());
 		} catch (Exception e) {
 			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		}

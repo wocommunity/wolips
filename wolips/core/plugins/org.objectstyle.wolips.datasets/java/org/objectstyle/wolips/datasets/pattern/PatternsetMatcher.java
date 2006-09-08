@@ -55,9 +55,11 @@
  */
 
 package org.objectstyle.wolips.datasets.pattern;
+
 import org.apache.tools.ant.types.selectors.SelectorUtils;
 import org.eclipse.core.resources.IFile;
 import org.objectstyle.wolips.core.resources.pattern.PatternsetReader;
+
 /**
  * A string pattern matcher, supporting ant patterns.
  */
@@ -69,17 +71,17 @@ public class PatternsetMatcher extends PatternsetReader implements IStringMatche
 	public PatternsetMatcher(IFile patternset) {
 		super(patternset);
 	}
-	
+
 	/**
 	 * @param pattern
 	 */
-	public  PatternsetMatcher(String[] pattern) {
+	public PatternsetMatcher(String[] pattern) {
 		super(pattern);
 	}
-	
 
 	/**
 	 * match the given <code>text</code> with the pattern
+	 * 
 	 * @param string
 	 * 
 	 * @return true if matched eitherwise false
@@ -92,18 +94,24 @@ public class PatternsetMatcher extends PatternsetReader implements IStringMatche
 		}
 		return false;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.objectstyle.wolips.datasets.pattern.IStringMatcher#match(java.lang.String)
 	 */
 	public boolean match(String[] strings) {
-		for(int i = 0; i < strings.length; i++) {
-			if(this.match(strings[i])) {
+		for (int i = 0; i < strings.length; i++) {
+			if (this.match(strings[i])) {
 				return true;
 			}
 		}
 		return false;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.objectstyle.wolips.datasets.pattern.IStringMatcher#hasPattern(java.lang.String)
 	 */
 	public boolean hasPattern(String string) {

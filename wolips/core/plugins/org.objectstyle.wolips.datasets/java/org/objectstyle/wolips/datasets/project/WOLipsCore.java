@@ -53,7 +53,7 @@
  * <http://objectstyle.org/>.
  *
  */
- 
+
 package org.objectstyle.wolips.datasets.project;
 
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
@@ -61,7 +61,7 @@ import org.objectstyle.wolips.datasets.resources.WOLipsModel;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */

@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.wolips.datasets;
+
 import junit.framework.TestCase;
 
 import org.eclipse.core.resources.IProject;
@@ -61,6 +62,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
+
 /**
  * @author ulrich
  * 
@@ -76,6 +78,7 @@ public class UtilsTest extends TestCase {
 	public UtilsTest(String name) {
 		super(name);
 	}
+
 	/**
 	 * 
 	 */
@@ -93,7 +96,7 @@ public class UtilsTest extends TestCase {
 			assertNull("Project deletion shouldnt throw an exception", e);
 		}
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -103,11 +106,10 @@ public class UtilsTest extends TestCase {
 			assertNotNull("project to delete should exist", project);
 			project.delete(false, new NullProgressMonitor());
 		} catch (CoreException e) {
-			assertNull("Project deletion shouldnt throw an exception",
-					e);
+			assertNull("Project deletion shouldnt throw an exception", e);
 		}
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -125,7 +127,7 @@ public class UtilsTest extends TestCase {
 			assertNull("Java Project deletion shouldnt throw an exception", e);
 		}
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -135,8 +137,7 @@ public class UtilsTest extends TestCase {
 			assertNotNull("project to delete should exist", project);
 			project.delete(false, new NullProgressMonitor());
 		} catch (CoreException e) {
-			assertNull("Project deletion shouldnt throw an exception",
-					e);
+			assertNull("Project deletion shouldnt throw an exception", e);
 		}
 	}
 

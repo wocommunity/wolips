@@ -61,161 +61,178 @@ import org.eclipse.jdt.core.ICompilationUnit;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public interface IWOLipsModel {
-//	flle extensions and resource identifier
-	 /**
+	// flle extensions and resource identifier
+	/**
 	 * Comment for <code>EXT_PROJECT</code>
 	 */
 	public static final String EXT_PROJECT = "project";
+
 	/**
 	 * Comment for <code>EXT_SUBPROJECT</code>
 	 */
 	public static final String EXT_SUBPROJECT = "subproj";
+
 	/**
 	 * Comment for <code>EXT_LPROJ</code>
 	 */
 	public static final String EXT_LPROJ = "lproj";
-	 /**
+
+	/**
 	 * Comment for <code>EXT_JAVA</code>
 	 */
 	public static final String EXT_JAVA = "java";
-	 /**
+
+	/**
 	 * Comment for <code>EXT_COMPONENT</code>
 	 */
 	public static final String EXT_COMPONENT = "wo";
-	 /**
+
+	/**
 	 * Comment for <code>EXT_API</code>
 	 */
 	public static final String EXT_API = "api";
-	 /**
+
+	/**
 	 * Comment for <code>EXT_WOD</code>
 	 */
 	public static final String EXT_WOD = "wod";
-	 /**
+
+	/**
 	 * Comment for <code>EXT_WOO</code>
 	 */
 	public static final String EXT_WOO = "woo";
-	 /**
+
+	/**
 	 * Comment for <code>EXT_HTML</code>
 	 */
 	public static final String EXT_HTML = "html";
-	 /**
+
+	/**
 	 * Comment for <code>EXT_EOMODEL</code>
 	 */
 	public static final String EXT_EOMODEL = "eomodeld";
-	 /**
+
+	/**
 	 * Comment for <code>EXT_EOMODEL_BACKUP</code>
 	 */
 	public static final String EXT_EOMODEL_BACKUP = "eomodeld~";
-	 /**
+
+	/**
 	 * Comment for <code>EXT_D2WMODEL</code>
 	 */
 	public static final String EXT_D2WMODEL = "d2wmodel";
-	 /**
+
+	/**
 	 * Comment for <code>EXT_PROPERTIES</code>
 	 */
 	public static final String EXT_PROPERTIES = "properties";
-	 /**
+
+	/**
 	 * Comment for <code>EXT_STRINGS</code>
 	 */
 	public static final String EXT_STRINGS = "strings";
-	 /**
+
+	/**
 	 * Comment for <code>EXT_SRC</code>
 	 */
 	public static final String EXT_SRC = "src";
-	 /**
+
+	/**
 	 * Comment for <code>EXT_FRAMEWORK</code>
 	 */
 	public static final String EXT_FRAMEWORK = "framework";
-	 /**
+
+	/**
 	 * Comment for <code>EXT_WOA</code>
 	 */
 	public static final String EXT_WOA = "woa";
-	 /**
+
+	/**
 	 * Comment for <code>EXT_BUILD</code>
 	 */
 	public static final String EXT_BUILD = "build";
-	 /**
+
+	/**
 	 * Comment for <code>EXT_DIST</code>
 	 */
 	public static final String EXT_DIST = "dist";
-	 // webobjects project file lists
-	 /**
+
+	// webobjects project file lists
+	/**
 	 * Comment for <code>RESOURCES_ID</code>
 	 */
 	public static final String RESOURCES_ID = "WOAPP_RESOURCES";
-	 /**
+
+	/**
 	 * Comment for <code>WS_RESOURCES_ID</code>
 	 */
 	public static final String WS_RESOURCES_ID = "WEBSERVER_RESOURCES";
-	 /**
+
+	/**
 	 * Comment for <code>CLASSES_ID</code>
 	 */
 	public static final String CLASSES_ID = "CLASSES";
-	 /**
+
+	/**
 	 * Comment for <code>COMPONENTS_ID</code>
 	 */
 	public static final String COMPONENTS_ID = "WO_COMPONENTS";
-	 /**
+
+	/**
 	 * Comment for <code>SUBPROJECTS_ID</code>
 	 */
 	public static final String SUBPROJECTS_ID = "SUBPROJECTS";
-	 /**
+
+	/**
 	 * Comment for <code>FRAMEWORKS_ID</code>
 	 */
 	public static final String FRAMEWORKS_ID = "FRAMEWORKS";
-	 /**
+
+	/**
 	 * Comment for <code>PROJECT_FILE_NAME</code>
 	 */
 	public static final String PROJECT_FILE_NAME = "PB.project";
-	 /**
+
+	/**
 	 * Comment for <code>DEFAULT_BUILD_FILENAME</code>
 	 */
 	public static final String DEFAULT_BUILD_FILENAME = "build.xml";
-	 /**
+
+	/**
 	 * Comment for <code>RESOURCE_IDENTIFIERS</code>
 	 */
-	public static final String[] RESOURCE_IDENTIFIERS =
-		 {
-			 EXT_JAVA,
-			 EXT_COMPONENT,
-			 EXT_API,
-			 EXT_EOMODEL,
-			 EXT_STRINGS,
-			 EXT_SUBPROJECT,
-			 EXT_FRAMEWORK };
-	 /**
+	public static final String[] RESOURCE_IDENTIFIERS = { EXT_JAVA, EXT_COMPONENT, EXT_API, EXT_EOMODEL, EXT_STRINGS, EXT_SUBPROJECT, EXT_FRAMEWORK };
+
+	/**
 	 * Comment for <code>LIST_IDENTIFIERS</code>
 	 */
-	public static final String[] LIST_IDENTIFIERS =
-		 {
-			 CLASSES_ID,
-			 COMPONENTS_ID,
-			 RESOURCES_ID,
-			 RESOURCES_ID,
-			 RESOURCES_ID,
-			 SUBPROJECTS_ID,
-			 FRAMEWORKS_ID };
-	
+	public static final String[] LIST_IDENTIFIERS = { CLASSES_ID, COMPONENTS_ID, RESOURCES_ID, RESOURCES_ID, RESOURCES_ID, SUBPROJECTS_ID, FRAMEWORKS_ID };
+
 	/**
 	 * @param resource
-	 * @return Returns the IWOLipsResource if the resource is a WOLips resource. Otherwise null is returned.	 
+	 * @return Returns the IWOLipsResource if the resource is a WOLips resource.
+	 *         Otherwise null is returned.
 	 */
 	public abstract IWOLipsResource getWOLipsResource(IResource resource);
+
 	/**
 	 * @param resource
 	 * @return Returns true is the resource is a WOLips resource.
 	 */
 	public abstract boolean isWOLipsResource(IResource resource);
+
 	/**
 	 * @param compilationUnit
-	 * @return Returns the IWOLipsResource if the resource is a WOLips resource. Otherwise null is returned.
+	 * @return Returns the IWOLipsResource if the resource is a WOLips resource.
+	 *         Otherwise null is returned.
 	 */
 	public abstract IWOLipsCompilationUnit getWOLipsCompilationUnit(ICompilationUnit compilationUnit);
+
 	/**
 	 * @param compilationUnit
 	 * @return Returns true is the ICompilationUnit is a WOLips CompilationUnit.

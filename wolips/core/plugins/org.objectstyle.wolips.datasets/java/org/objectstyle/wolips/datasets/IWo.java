@@ -57,16 +57,17 @@ package org.objectstyle.wolips.datasets;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public interface IWo {
-	
+
 	/**
 	 * @return true if the component has a WOComponentContent.
 	 */
 	public boolean getIsWOComponentContent();
+
 	/**
 	 * @param isWOComponentContent
 	 */
@@ -76,6 +77,7 @@ public interface IWo {
 	 * @return the class name.
 	 */
 	public String clazz();
+
 	/**
 	 * @param clazz
 	 */

@@ -63,9 +63,11 @@ import java.util.Hashtable;
 public class AdapterCache {
 
 	Hashtable projects = new Hashtable();
+
 	Hashtable javaProjects = new Hashtable();
+
 	/**
-	 *  
+	 * 
 	 */
 	public void clean() {
 		this.projects = null;
@@ -88,6 +90,7 @@ public class AdapterCache {
 	public void setProject(Object object, Project project) {
 		this.projects.put(object, project);
 	}
+
 	/**
 	 * @param object
 	 * @return

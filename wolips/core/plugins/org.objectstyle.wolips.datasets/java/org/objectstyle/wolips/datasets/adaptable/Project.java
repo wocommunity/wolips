@@ -54,7 +54,9 @@
  *
  */
 package org.objectstyle.wolips.datasets.adaptable;
+
 import org.eclipse.core.resources.IProject;
+
 /**
  * @author ulrich
  * 

@@ -54,10 +54,12 @@
  *
  */
 package org.objectstyle.wolips.datasets.adaptable;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
+
 /**
  * @author ulrich
  * 
@@ -71,6 +73,7 @@ public class ProjectFiles extends ProjectPatternsets {
 	protected ProjectFiles(IProject project) {
 		super(project);
 	}
+
 	/**
 	 * @param resource
 	 * @return IFolder
@@ -84,6 +87,7 @@ public class ProjectFiles extends ProjectPatternsets {
 			return getParentFolderWithPBProject((IFolder) resource);
 		return null;
 	}
+
 	/**
 	 * Method getParentFolderWithPBProject.
 	 * 
@@ -93,9 +97,7 @@ public class ProjectFiles extends ProjectPatternsets {
 	 */
 	public IFolder getParentFolderWithPBProject(IFolder aFolder) {
 		IFolder findFolder = aFolder;
-		while ((findFolder.findMember(IWOLipsModel.PROJECT_FILE_NAME) == null)
-				&& (findFolder.getParent() != null)
-				&& (findFolder.getParent().getType() != IResource.PROJECT)) {
+		while ((findFolder.findMember(IWOLipsModel.PROJECT_FILE_NAME) == null) && (findFolder.getParent() != null) && (findFolder.getParent().getType() != IResource.PROJECT)) {
 			findFolder = (IFolder) findFolder.getParent();
 		}
 		if (findFolder.getParent() == null)

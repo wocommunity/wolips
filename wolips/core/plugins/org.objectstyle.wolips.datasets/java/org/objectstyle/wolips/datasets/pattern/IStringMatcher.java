@@ -68,11 +68,13 @@ public interface IStringMatcher {
 	 * @return
 	 */
 	public boolean match(String txt);
+
 	/**
 	 * @param strings
 	 * @return
 	 */
 	public boolean match(String[] strings);
+
 	/**
 	 * @param string
 	 * @return

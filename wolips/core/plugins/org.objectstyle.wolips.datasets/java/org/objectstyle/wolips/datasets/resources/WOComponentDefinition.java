@@ -62,8 +62,7 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 /**
  * @author ulrich
  */
-public final class WOComponentDefinition extends WOLipsResource implements
-		IWOComponentDefinition {
+public final class WOComponentDefinition extends WOLipsResource implements IWOComponentDefinition {
 
 	protected WOComponentDefinition() {
 		super();
@@ -74,8 +73,7 @@ public final class WOComponentDefinition extends WOLipsResource implements
 	}
 
 	public final void open() {
-		WorkbenchUtilitiesPlugin.open((IFile) this.getCorrespondingResource(),
-				null);
+		WorkbenchUtilitiesPlugin.open((IFile) this.getCorrespondingResource(), null);
 	}
 
 }

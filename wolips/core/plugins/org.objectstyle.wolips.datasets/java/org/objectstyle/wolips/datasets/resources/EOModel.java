@@ -93,8 +93,7 @@ public final class EOModel extends WOLipsResource implements IEOModel {
 	}
 
 	public final void open() {
-		IFile index = (IFile) ((IFolder) this.getCorrespondingResource())
-				.findMember("index.eomodeld");
+		IFile index = (IFile) ((IFolder) this.getCorrespondingResource()).findMember("index.eomodeld");
 		WorkbenchUtilitiesPlugin.open(index);
 	}
 }

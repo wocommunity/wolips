@@ -67,30 +67,29 @@ import java.util.StringTokenizer;
 
 /**
  * @author Harald Niesche
- *
+ * 
  */
 public class StringUtilities {
 
 	/**
-	 * replace every occurence of oldPart with newPart in origin
-	 * returns changed origin (since String is immutable...)
+	 * replace every occurence of oldPart with newPart in origin returns changed
+	 * origin (since String is immutable...)
+	 * 
 	 * @param origin
 	 * @param oldPart
 	 * @param newPart
 	 * @return
 	 */
 
-	static public String replace(
-		String origin,
-		String oldPart,
-		String newPart) {
+	static public String replace(String origin, String oldPart, String newPart) {
 		if ((origin == null) || (origin.length() == 0)) {
 			return origin;
 		}
 
 		StringBuffer buffer = new StringBuffer(origin);
 
-		//start replacing from the end so we can use indexOf on the original string
+		// start replacing from the end so we can use indexOf on the original
+		// string
 
 		int index;
 		int end = origin.length();
@@ -126,6 +125,7 @@ public class StringUtilities {
 
 	/**
 	 * Method arrayListFromCSV.
+	 * 
 	 * @param csvString
 	 * @return ArrayList
 	 */
