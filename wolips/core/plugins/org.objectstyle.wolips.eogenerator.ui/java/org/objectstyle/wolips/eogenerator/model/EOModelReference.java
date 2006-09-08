@@ -53,26 +53,26 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 
 public class EOModelReference {
-  private IPath myModelPath;
+	private IPath myModelPath;
 
-  public EOModelReference(IPath _modelPath) {
-    myModelPath = _modelPath;
-  }
+	public EOModelReference(IPath _modelPath) {
+		myModelPath = _modelPath;
+	}
 
-  public String getPath(IProject _projectContext) {
-    return PathUtils.getRelativePath(_projectContext, myModelPath);
-  }
+	public String getPath(IProject _projectContext) {
+		return PathUtils.getRelativePath(_projectContext, myModelPath);
+	}
 
-  public String getName() {
-    String name = myModelPath.lastSegment();
-    int dotIndex = name.indexOf('.');
-    if (dotIndex != -1) {
-      name = name.substring(0, dotIndex);
-    }
-    return name;
-  }
+	public String getName() {
+		String name = myModelPath.lastSegment();
+		int dotIndex = name.indexOf('.');
+		if (dotIndex != -1) {
+			name = name.substring(0, dotIndex);
+		}
+		return name;
+	}
 
-  public String toString() {
-    return "[EOModelReference: name = " + getName() + "]";
-  }
+	public String toString() {
+		return "[EOModelReference: name = " + getName() + "]";
+	}
 }

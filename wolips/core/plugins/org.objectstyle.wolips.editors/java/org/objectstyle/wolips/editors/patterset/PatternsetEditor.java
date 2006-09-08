@@ -82,38 +82,26 @@ public class PatternsetEditor extends FormEditor {
 	private ArrayList patternList;
 
 	private boolean isDirty = false;
-/*
-	private PatternsetListener pattersetListener;
 
-	private class PatternsetListener implements IResourceChangeListener {
-
-		public void resourceChanged(IResourceChangeEvent event) {
-			try {
-				event.getDelta().accept(new IResourceDeltaVisitor() {
-					private boolean done = false;
-
-					public boolean visit(IResourceDelta delta)
-							throws CoreException {
-						if (this.done) {
-							return false;
-						}
-						if (delta.getResource() == PatternsetEditor.this
-								.getInputFile()) {
-							PatternsetEditor.this.loadPatternList();
-							this.done = true;
-						}
-						return true;
-					}
-				});
-			} catch (CoreException e) {
-				UIPlugin.getDefault().getPluginLogger().log(e);
-			}
-		}
-
-	}
-*/
+	/*
+	 * private PatternsetListener pattersetListener;
+	 * 
+	 * private class PatternsetListener implements IResourceChangeListener {
+	 * 
+	 * public void resourceChanged(IResourceChangeEvent event) { try {
+	 * event.getDelta().accept(new IResourceDeltaVisitor() { private boolean
+	 * done = false;
+	 * 
+	 * public boolean visit(IResourceDelta delta) throws CoreException { if
+	 * (this.done) { return false; } if (delta.getResource() ==
+	 * PatternsetEditor.this .getInputFile()) {
+	 * PatternsetEditor.this.loadPatternList(); this.done = true; } return true; }
+	 * }); } catch (CoreException e) {
+	 * UIPlugin.getDefault().getPluginLogger().log(e); } }
+	 *  }
+	 */
 	/**
-	 *  
+	 * 
 	 */
 	public PatternsetEditor() {
 		super();
@@ -126,11 +114,12 @@ public class PatternsetEditor extends FormEditor {
 	 */
 	public void close(boolean save) {
 		super.close(save);
-	/*	if (this.pattersetListener == null) {
-			this.pattersetListener = new PatternsetListener();
-			ResourcesPlugin.getWorkspace().removeResourceChangeListener(
-					this.pattersetListener);
-		}*/
+		/*
+		 * if (this.pattersetListener == null) { this.pattersetListener = new
+		 * PatternsetListener();
+		 * ResourcesPlugin.getWorkspace().removeResourceChangeListener(
+		 * this.pattersetListener); }
+		 */
 	}
 
 	IFile getInputFile() {
@@ -139,8 +128,7 @@ public class PatternsetEditor extends FormEditor {
 	}
 
 	void loadPatternList() {
-		PatternsetReader patternsetReader = new PatternsetReader(this
-				.getInputFile());
+		PatternsetReader patternsetReader = new PatternsetReader(this.getInputFile());
 		String[] pattern = patternsetReader.getPattern();
 		this.patternList = new ArrayList();
 		for (int i = 0; i < pattern.length; i++) {
@@ -154,11 +142,12 @@ public class PatternsetEditor extends FormEditor {
 	 * @see org.eclipse.ui.forms.editor.FormEditor#addPages()
 	 */
 	protected void addPages() {
-		/*if (this.pattersetListener == null) {
-			this.pattersetListener = new PatternsetListener();
-			ResourcesPlugin.getWorkspace().addResourceChangeListener(
-					this.pattersetListener);
-		}*/
+		/*
+		 * if (this.pattersetListener == null) { this.pattersetListener = new
+		 * PatternsetListener();
+		 * ResourcesPlugin.getWorkspace().addResourceChangeListener(
+		 * this.pattersetListener); }
+		 */
 		this.loadPatternList();
 		try {
 			addPage(new PatternsetPage(this, this.patternList));
@@ -175,12 +164,10 @@ public class PatternsetEditor extends FormEditor {
 	public void doSave(IProgressMonitor monitor) {
 		IEditorInput editorInput = getEditorInput();
 		IFile inputFile = ((IFileEditorInput) editorInput).getFile();
-		String[] pattern = (String[]) this.patternList
-				.toArray(new String[this.patternList.size()]);
+		String[] pattern = (String[]) this.patternList.toArray(new String[this.patternList.size()]);
 		PatternsetWriter.create(inputFile, pattern);
 		this.setDirty(false);
-		TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(
-				inputFile.getProject());
+		TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(inputFile.getProject());
 		try {
 			touchAllFilesOperation.run(new NullProgressMonitor());
 		} catch (InvocationTargetException e) {

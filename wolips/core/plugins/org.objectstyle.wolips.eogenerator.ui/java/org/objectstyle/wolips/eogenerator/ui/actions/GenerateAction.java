@@ -60,32 +60,31 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.objectstyle.wolips.eogenerator.model.EOGenerateWorkspaceJob;
 
 public class GenerateAction implements IObjectActionDelegate {
-  private ISelection mySelection;
+	private ISelection mySelection;
 
-  public GenerateAction() {
-    super();
-  }
+	public GenerateAction() {
+		super();
+	}
 
-  public void setActivePart(IAction _action, IWorkbenchPart _targetPart) {
-    // do nothing
-  }
+	public void setActivePart(IAction _action, IWorkbenchPart _targetPart) {
+		// do nothing
+	}
 
-  public void run(IAction _action) {
-    try {
-      IStructuredSelection selection = (IStructuredSelection) mySelection;
-      if (selection != null && !selection.isEmpty()) {
-        IFile eogenFile = (IFile) selection.getFirstElement();
-        EOGenerateWorkspaceJob generateJob = new EOGenerateWorkspaceJob(new IFile[] { eogenFile }, true);
-        generateJob.schedule();
-      }
-    }
-    catch (Throwable t) {
-      t.printStackTrace();
-      MessageDialog.openError(new Shell(), "Generate Failed", t.getMessage());
-    }
-  }
+	public void run(IAction _action) {
+		try {
+			IStructuredSelection selection = (IStructuredSelection) mySelection;
+			if (selection != null && !selection.isEmpty()) {
+				IFile eogenFile = (IFile) selection.getFirstElement();
+				EOGenerateWorkspaceJob generateJob = new EOGenerateWorkspaceJob(new IFile[] { eogenFile }, true);
+				generateJob.schedule();
+			}
+		} catch (Throwable t) {
+			t.printStackTrace();
+			MessageDialog.openError(new Shell(), "Generate Failed", t.getMessage());
+		}
+	}
 
-  public void selectionChanged(IAction _action, ISelection _selection) {
-    mySelection = _selection;
-  }
+	public void selectionChanged(IAction _action, ISelection _selection) {
+		mySelection = _selection;
+	}
 }

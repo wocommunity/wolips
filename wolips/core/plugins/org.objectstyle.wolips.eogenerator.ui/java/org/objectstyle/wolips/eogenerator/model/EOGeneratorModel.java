@@ -74,512 +74,506 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.preferences.Preferences;
 
 public class EOGeneratorModel {
-  private IProject myProject;
-  private String myEOGeneratorPath;
-  private List myModels;
-  private List myRefModels;
-  private String myDestination;
-  private String mySubclassDestination;
-  private String myTemplateDir;
-  private String myJavaTemplate;
-  private String mySubclassJavaTemplate;
-  private List myDefines;
-  private Boolean myPackageDirs;
-  private Boolean myJava;
-  private Boolean myJavaClient;
-  private Boolean myVerbose;
-  private String myPrefix;
-  private String myFilenameTemplate;
-  private List myCustomSettings;
-  private boolean myDirty;
+	private IProject myProject;
 
-  public EOGeneratorModel(IProject _project, String _lineInfo) throws ParseException {
-    this(_project);
-    readFromString(_lineInfo);
-  }
+	private String myEOGeneratorPath;
 
-  public EOGeneratorModel(IProject _project) {
-    this();
-    myProject = _project;
-  }
+	private List myModels;
 
-  public EOGeneratorModel() {
-    myModels = new LinkedList();
-    myRefModels = new LinkedList();
-    myDefines = new LinkedList();
-    myCustomSettings = new LinkedList();
-  }
+	private List myRefModels;
 
-  public void writeToFile(IFile _file, IProgressMonitor _monitor) throws CoreException, IOException {
-    String eogenFileContents = writeToString(Preferences.getEOGeneratorPath(), Preferences.getEOGeneratorTemplateDir(), Preferences.getEOGeneratorJavaTemplate(), Preferences.getEOGeneratorSubclassJavaTemplate());
-    InputStream stream = new ByteArrayInputStream(eogenFileContents.getBytes("UTF-8"));
-    if (_file.exists()) {
-      _file.setContents(stream, true, true, _monitor);
-    }
-    else {
-      _file.create(stream, true, _monitor);
-    }
-    stream.close();
-    setDirty(false);
-  }
+	private String myDestination;
 
-  public String writeToString(String _defaultEOGeneratorPath, String _defaultTemplateDir, String _defaultJavaTemplate, String _defaultSubclassJavaTemplate) {
-    StringBuffer sb = new StringBuffer();
+	private String mySubclassDestination;
 
-    sb.append(escape(getEOGeneratorPath(_defaultEOGeneratorPath), false));
+	private String myTemplateDir;
 
-    append(sb, "-destination", myDestination);
-    append(sb, "-filenameTemplate", myFilenameTemplate);
-    append(sb, "-java", myJava);
-    append(sb, "-javaclient", myJavaClient);
-    append(sb, "-javaTemplate", getJavaTemplate(_defaultJavaTemplate));
+	private String myJavaTemplate;
 
-    Iterator modelsIter = myModels.iterator();
-    while (modelsIter.hasNext()) {
-      EOModelReference model = (EOModelReference) modelsIter.next();
-      append(sb, "-model", model.getPath(myProject));
-    }
+	private String mySubclassJavaTemplate;
 
-    append(sb, "-packagedirs", myPackageDirs);
-    append(sb, "-prefix", myPrefix);
+	private List myDefines;
 
-    Iterator refModelsIter = myRefModels.iterator();
-    while (refModelsIter.hasNext()) {
-      EOModelReference refModel = (EOModelReference) refModelsIter.next();
-      append(sb, "-refmodel", refModel.getPath(myProject));
-    }
+	private Boolean myPackageDirs;
 
-    append(sb, "-subclassDestination", mySubclassDestination);
-    append(sb, "-subclassJavaTemplate", getSubclassJavaTemplate(_defaultSubclassJavaTemplate));
-    append(sb, "-templatedir", getTemplateDir(_defaultTemplateDir));
-    append(sb, "-verbose", myVerbose);
+	private Boolean myJava;
 
-    Iterator definesIter = myDefines.iterator();
-    while (definesIter.hasNext()) {
-      Define define = (Define) definesIter.next();
-      String name = define.getName();
-      String value = define.getValue();
-      append(sb, "-define-" + name, value);
-    }
+	private Boolean myJavaClient;
 
-    return sb.toString();
-  }
+	private Boolean myVerbose;
 
-  public void readFromString(String _str) throws ParseException {
-    myModels.clear();
-    myRefModels.clear();
-    myDefines.clear();
-    myCustomSettings.clear();
-    CommandLineTokenizer tokenizer = new CommandLineTokenizer(_str);
-    while (tokenizer.hasMoreTokens()) {
-      String token = tokenizer.nextToken();
-      if (myEOGeneratorPath == null) {
-        myEOGeneratorPath = token;
-      }
-      else if (token.startsWith("-")) {
-        if ("-destination".equalsIgnoreCase(token)) {
-          myDestination = nextTokenValue(token, tokenizer);
-        }
-        else if ("-filenameTemplate".equalsIgnoreCase(token)) {
-          myFilenameTemplate = nextTokenValue(token, tokenizer);
-        }
-        else if ("-java".equalsIgnoreCase(token)) {
-          myJava = Boolean.TRUE;
-        }
-        else if ("-javaclient".equalsIgnoreCase(token)) {
-          myJavaClient = Boolean.TRUE;
-        }
-        else if ("-javaTemplate".equalsIgnoreCase(token)) {
-          myJavaTemplate = nextTokenValue(token, tokenizer);
-        }
-        else if ("-model".equalsIgnoreCase(token)) {
-          String modelPath = nextTokenValue(token, tokenizer);
-          myModels.add(new EOModelReference(new Path(modelPath)));
-        }
-        else if ("-packagedirs".equalsIgnoreCase(token)) {
-          myPackageDirs = Boolean.TRUE;
-        }
-        else if ("-prefix".equalsIgnoreCase(token)) {
-          myPrefix = nextTokenValue(token, tokenizer);
-        }
-        else if ("-refmodel".equalsIgnoreCase(token)) {
-          String refModelPath = nextTokenValue(token, tokenizer);
-          myRefModels.add(new EOModelReference(new Path(refModelPath)));
-        }
-        else if ("-subclassDestination".equalsIgnoreCase(token)) {
-          mySubclassDestination = nextTokenValue(token, tokenizer);
-        }
-        else if ("-subclassJavaTemplate".equalsIgnoreCase(token)) {
-          mySubclassJavaTemplate = nextTokenValue(token, tokenizer);
-        }
-        else if ("-templatedir".equalsIgnoreCase(token)) {
-          myTemplateDir = nextTokenValue(token, tokenizer);
-        }
-        else if ("-verbose".equalsIgnoreCase(token)) {
-          myVerbose = Boolean.TRUE;
-        }
-        else if (token.startsWith("-define-")) {
-          String name = token.substring("-define-".length());
-          String value = nextTokenValue(token, tokenizer);
-          Define define = new Define(name, value);
-          myDefines.add(define);
-        }
-        else {
-          myCustomSettings.add(token);
-        }
-      }
-      else {
-        myCustomSettings.add(token);
-      }
-    }
-    myDirty = false;
-  }
+	private String myPrefix;
 
-  protected void append(StringBuffer _buffer, String _name, Boolean _value) {
-    if (_value != null && _value.booleanValue()) {
-      _buffer.append(" ");
-      _buffer.append(_name);
-    }
-  }
+	private String myFilenameTemplate;
 
-  protected void append(StringBuffer _buffer, String _name, String _value) {
-    if (_value != null && _value.trim().length() > 0) {
-      _buffer.append(" ");
-      _buffer.append(_name);
-      _buffer.append(" ");
-      _buffer.append(escape(_value, true));
-    }
-  }
+	private List myCustomSettings;
 
-  protected String escape(String _value, boolean _quotes) {
-    String value;
-    if (_value == null) {
-      value = null;
-    }
-    else if (_value.indexOf(' ') == -1 && _value.trim().length() > 0) {
-      value = _value;
-    }
-    else if (_quotes) {
-      StringBuffer valueBuffer = new StringBuffer();
-      valueBuffer.append("\"");
-      valueBuffer.append(_value);
-      valueBuffer.append("\"");
-      value = valueBuffer.toString();
-    }
-    else {
-      value = _value.replaceAll(" ", "\\ ");
-    }
-    return value;
-  }
+	private boolean myDirty;
 
-  protected String nextTokenValue(String _token, CommandLineTokenizer _tokenizer) throws ParseException {
-    if (!_tokenizer.hasMoreTokens()) {
-      throw new ParseException(_token + " must be followed by a value.", -1);
-    }
-    String token = _tokenizer.nextToken();
-    return token;
-  }
+	public EOGeneratorModel(IProject _project, String _lineInfo) throws ParseException {
+		this(_project);
+		readFromString(_lineInfo);
+	}
 
-  public IProject getProject() {
-    return myProject;
-  }
+	public EOGeneratorModel(IProject _project) {
+		this();
+		myProject = _project;
+	}
 
-  public List getDefines() {
-    return myDefines;
-  }
+	public EOGeneratorModel() {
+		myModels = new LinkedList();
+		myRefModels = new LinkedList();
+		myDefines = new LinkedList();
+		myCustomSettings = new LinkedList();
+	}
 
-  public void setDefines(List _defines) {
-    myDefines = _defines;
-    myDirty = true;
-  }
+	public void writeToFile(IFile _file, IProgressMonitor _monitor) throws CoreException, IOException {
+		String eogenFileContents = writeToString(Preferences.getEOGeneratorPath(), Preferences.getEOGeneratorTemplateDir(), Preferences.getEOGeneratorJavaTemplate(), Preferences.getEOGeneratorSubclassJavaTemplate());
+		InputStream stream = new ByteArrayInputStream(eogenFileContents.getBytes("UTF-8"));
+		if (_file.exists()) {
+			_file.setContents(stream, true, true, _monitor);
+		} else {
+			_file.create(stream, true, _monitor);
+		}
+		stream.close();
+		setDirty(false);
+	}
 
-  public String getDestination() {
-    return myDestination;
-  }
+	public String writeToString(String _defaultEOGeneratorPath, String _defaultTemplateDir, String _defaultJavaTemplate, String _defaultSubclassJavaTemplate) {
+		StringBuffer sb = new StringBuffer();
 
-  public void setDestination(String _destination) {
-    if (isNew(myDestination, _destination)) {
-      myDestination = _destination;
-      myDirty = true;
-    }
-  }
+		sb.append(escape(getEOGeneratorPath(_defaultEOGeneratorPath), false));
 
-  public String getEOGeneratorPath(String _default) {
-    String eoGeneratorPath = myEOGeneratorPath;
-    if (myEOGeneratorPath == null || myEOGeneratorPath.trim().length() == 0) {
-      eoGeneratorPath = _default;
-    }
-    return eoGeneratorPath;
-  }
+		append(sb, "-destination", myDestination);
+		append(sb, "-filenameTemplate", myFilenameTemplate);
+		append(sb, "-java", myJava);
+		append(sb, "-javaclient", myJavaClient);
+		append(sb, "-javaTemplate", getJavaTemplate(_defaultJavaTemplate));
 
-  public void setEOGeneratorPath(String _generatorPath) {
-    if (isNew(myEOGeneratorPath, _generatorPath)) {
-      myEOGeneratorPath = _generatorPath;
-      myDirty = true;
-    }
-  }
+		Iterator modelsIter = myModels.iterator();
+		while (modelsIter.hasNext()) {
+			EOModelReference model = (EOModelReference) modelsIter.next();
+			append(sb, "-model", model.getPath(myProject));
+		}
 
-  public Boolean isJavaClient() {
-    return myJavaClient;
-  }
-  
-  public void setJavaClient(Boolean _javaClient) {
-    myJavaClient = _javaClient;
-    myDirty = true;
-  }
-  
-  public Boolean isJava() {
-    return myJava;
-  }
+		append(sb, "-packagedirs", myPackageDirs);
+		append(sb, "-prefix", myPrefix);
 
-  public void setJava(Boolean _java) {
-    myJava = _java;
-    myDirty = true;
-  }
+		Iterator refModelsIter = myRefModels.iterator();
+		while (refModelsIter.hasNext()) {
+			EOModelReference refModel = (EOModelReference) refModelsIter.next();
+			append(sb, "-refmodel", refModel.getPath(myProject));
+		}
 
-  public String getJavaTemplate(String _default) {
-    String javaTemplate = myJavaTemplate;
-    if (myJavaTemplate == null || myJavaTemplate.trim().length() == 0) {
-      javaTemplate = _default;
-    }
-    return javaTemplate;
-  }
+		append(sb, "-subclassDestination", mySubclassDestination);
+		append(sb, "-subclassJavaTemplate", getSubclassJavaTemplate(_defaultSubclassJavaTemplate));
+		append(sb, "-templatedir", getTemplateDir(_defaultTemplateDir));
+		append(sb, "-verbose", myVerbose);
 
-  public void setJavaTemplate(String _javaTemplate) {
-    if (isNew(myJavaTemplate, _javaTemplate)) {
-      myJavaTemplate = _javaTemplate;
-      myDirty = true;
-    }
-  }
+		Iterator definesIter = myDefines.iterator();
+		while (definesIter.hasNext()) {
+			Define define = (Define) definesIter.next();
+			String name = define.getName();
+			String value = define.getValue();
+			append(sb, "-define-" + name, value);
+		}
 
-  protected boolean isNew(String _oldValue, String _newValue) {
-    boolean isNew;
-    if (_oldValue == null && _newValue != null && _newValue.trim().length() > 0) {
-      isNew = true;
-    }
-    else if (_oldValue != null && !_oldValue.equals(_newValue)) {
-      isNew = true;
-    }
-    else {
-      isNew = false;
-    }
-    return isNew;
-  }
+		return sb.toString();
+	}
 
-  public List getModels() {
-    return myModels;
-  }
+	public void readFromString(String _str) throws ParseException {
+		myModels.clear();
+		myRefModels.clear();
+		myDefines.clear();
+		myCustomSettings.clear();
+		CommandLineTokenizer tokenizer = new CommandLineTokenizer(_str);
+		while (tokenizer.hasMoreTokens()) {
+			String token = tokenizer.nextToken();
+			if (myEOGeneratorPath == null) {
+				myEOGeneratorPath = token;
+			} else if (token.startsWith("-")) {
+				if ("-destination".equalsIgnoreCase(token)) {
+					myDestination = nextTokenValue(token, tokenizer);
+				} else if ("-filenameTemplate".equalsIgnoreCase(token)) {
+					myFilenameTemplate = nextTokenValue(token, tokenizer);
+				} else if ("-java".equalsIgnoreCase(token)) {
+					myJava = Boolean.TRUE;
+				} else if ("-javaclient".equalsIgnoreCase(token)) {
+					myJavaClient = Boolean.TRUE;
+				} else if ("-javaTemplate".equalsIgnoreCase(token)) {
+					myJavaTemplate = nextTokenValue(token, tokenizer);
+				} else if ("-model".equalsIgnoreCase(token)) {
+					String modelPath = nextTokenValue(token, tokenizer);
+					myModels.add(new EOModelReference(new Path(modelPath)));
+				} else if ("-packagedirs".equalsIgnoreCase(token)) {
+					myPackageDirs = Boolean.TRUE;
+				} else if ("-prefix".equalsIgnoreCase(token)) {
+					myPrefix = nextTokenValue(token, tokenizer);
+				} else if ("-refmodel".equalsIgnoreCase(token)) {
+					String refModelPath = nextTokenValue(token, tokenizer);
+					myRefModels.add(new EOModelReference(new Path(refModelPath)));
+				} else if ("-subclassDestination".equalsIgnoreCase(token)) {
+					mySubclassDestination = nextTokenValue(token, tokenizer);
+				} else if ("-subclassJavaTemplate".equalsIgnoreCase(token)) {
+					mySubclassJavaTemplate = nextTokenValue(token, tokenizer);
+				} else if ("-templatedir".equalsIgnoreCase(token)) {
+					myTemplateDir = nextTokenValue(token, tokenizer);
+				} else if ("-verbose".equalsIgnoreCase(token)) {
+					myVerbose = Boolean.TRUE;
+				} else if (token.startsWith("-define-")) {
+					String name = token.substring("-define-".length());
+					String value = nextTokenValue(token, tokenizer);
+					Define define = new Define(name, value);
+					myDefines.add(define);
+				} else {
+					myCustomSettings.add(token);
+				}
+			} else {
+				myCustomSettings.add(token);
+			}
+		}
+		myDirty = false;
+	}
 
-  public void setModels(List _models) {
-    myModels = _models;
-    myDirty = true;
-  }
+	protected void append(StringBuffer _buffer, String _name, Boolean _value) {
+		if (_value != null && _value.booleanValue()) {
+			_buffer.append(" ");
+			_buffer.append(_name);
+		}
+	}
 
-  public void addModel(EOModelReference _modelReference) {
-    myModels.add(_modelReference);
-    myDirty = true;
-  }
+	protected void append(StringBuffer _buffer, String _name, String _value) {
+		if (_value != null && _value.trim().length() > 0) {
+			_buffer.append(" ");
+			_buffer.append(_name);
+			_buffer.append(" ");
+			_buffer.append(escape(_value, true));
+		}
+	}
 
-  public Boolean isPackageDirs() {
-    return myPackageDirs;
-  }
+	protected String escape(String _value, boolean _quotes) {
+		String value;
+		if (_value == null) {
+			value = null;
+		} else if (_value.indexOf(' ') == -1 && _value.trim().length() > 0) {
+			value = _value;
+		} else if (_quotes) {
+			StringBuffer valueBuffer = new StringBuffer();
+			valueBuffer.append("\"");
+			valueBuffer.append(_value);
+			valueBuffer.append("\"");
+			value = valueBuffer.toString();
+		} else {
+			value = _value.replaceAll(" ", "\\ ");
+		}
+		return value;
+	}
 
-  public void setPackageDirs(Boolean _packageDirs) {
-    myPackageDirs = _packageDirs;
-    myDirty = true;
-  }
+	protected String nextTokenValue(String _token, CommandLineTokenizer _tokenizer) throws ParseException {
+		if (!_tokenizer.hasMoreTokens()) {
+			throw new ParseException(_token + " must be followed by a value.", -1);
+		}
+		String token = _tokenizer.nextToken();
+		return token;
+	}
 
-  public List getRefModels() {
-    return myRefModels;
-  }
+	public IProject getProject() {
+		return myProject;
+	}
 
-  public void setRefModels(List _refModels) {
-    myRefModels = _refModels;
-    myDirty = true;
-  }
+	public List getDefines() {
+		return myDefines;
+	}
 
-  public void addRefModel(EOModelReference _modelReference) {
-    myRefModels.add(_modelReference);
-    myDirty = true;
-  }
+	public void setDefines(List _defines) {
+		myDefines = _defines;
+		myDirty = true;
+	}
 
-  public String getSubclassDestination() {
-    return mySubclassDestination;
-  }
+	public String getDestination() {
+		return myDestination;
+	}
 
-  public void setSubclassDestination(String _subclassDestination) {
-    if (isNew(mySubclassDestination, _subclassDestination)) {
-      mySubclassDestination = _subclassDestination;
-      myDirty = true;
-    }
-  }
+	public void setDestination(String _destination) {
+		if (isNew(myDestination, _destination)) {
+			myDestination = _destination;
+			myDirty = true;
+		}
+	}
 
-  public String getSubclassJavaTemplate(String _default) {
-    String subclassJavaTemplate = mySubclassJavaTemplate;
-    if (mySubclassJavaTemplate == null || mySubclassJavaTemplate.trim().length() == 0) {
-      subclassJavaTemplate = _default;
-    }
-    return subclassJavaTemplate;
-  }
+	public String getEOGeneratorPath(String _default) {
+		String eoGeneratorPath = myEOGeneratorPath;
+		if (myEOGeneratorPath == null || myEOGeneratorPath.trim().length() == 0) {
+			eoGeneratorPath = _default;
+		}
+		return eoGeneratorPath;
+	}
 
-  public void setSubclassJavaTemplate(String _subclassJavaTemplate) {
-    if (isNew(mySubclassJavaTemplate, _subclassJavaTemplate)) {
-      mySubclassJavaTemplate = _subclassJavaTemplate;
-      myDirty = true;
-    }
-  }
+	public void setEOGeneratorPath(String _generatorPath) {
+		if (isNew(myEOGeneratorPath, _generatorPath)) {
+			myEOGeneratorPath = _generatorPath;
+			myDirty = true;
+		}
+	}
 
-  public String getTemplateDir(String _default) {
-    String templateDir = myTemplateDir;
-    if (myTemplateDir == null || myTemplateDir.trim().length() == 0) {
-      templateDir = _default;
-    }
-    if (templateDir != null) {
-      templateDir = PathUtils.getRelativePath(myProject, new Path(templateDir));
-    }
-    return templateDir;
-  }
+	public Boolean isJavaClient() {
+		return myJavaClient;
+	}
 
-  public void setTemplateDir(String _templateDir) {
-    if (isNew(myTemplateDir, _templateDir)) {
-      myTemplateDir = _templateDir;
-      myDirty = true;
-    }
-  }
+	public void setJavaClient(Boolean _javaClient) {
+		myJavaClient = _javaClient;
+		myDirty = true;
+	}
 
-  public void setPrefix(String _prefix) {
-    if (isNew(myPrefix, _prefix)) {
-      myPrefix = _prefix;
-      myDirty = true;
-    }
-  }
+	public Boolean isJava() {
+		return myJava;
+	}
 
-  public String getPrefix() {
-    return myPrefix;
-  }
+	public void setJava(Boolean _java) {
+		myJava = _java;
+		myDirty = true;
+	}
 
-  public void setFilenameTemplate(String _filenameTemplate) {
-    if (isNew(myFilenameTemplate, _filenameTemplate)) {
-      myFilenameTemplate = _filenameTemplate;
-      myDirty = true;
-    }
-  }
+	public String getJavaTemplate(String _default) {
+		String javaTemplate = myJavaTemplate;
+		if (myJavaTemplate == null || myJavaTemplate.trim().length() == 0) {
+			javaTemplate = _default;
+		}
+		return javaTemplate;
+	}
 
-  public String getFilenameTemplate() {
-    return myFilenameTemplate;
-  }
+	public void setJavaTemplate(String _javaTemplate) {
+		if (isNew(myJavaTemplate, _javaTemplate)) {
+			myJavaTemplate = _javaTemplate;
+			myDirty = true;
+		}
+	}
 
-  public Boolean isVerbose() {
-    return myVerbose;
-  }
+	protected boolean isNew(String _oldValue, String _newValue) {
+		boolean isNew;
+		if (_oldValue == null && _newValue != null && _newValue.trim().length() > 0) {
+			isNew = true;
+		} else if (_oldValue != null && !_oldValue.equals(_newValue)) {
+			isNew = true;
+		} else {
+			isNew = false;
+		}
+		return isNew;
+	}
 
-  public void setVerbose(Boolean _verbose) {
-    myVerbose = _verbose;
-    myDirty = true;
-  }
+	public List getModels() {
+		return myModels;
+	}
 
-  public void setDirty(boolean _dirty) {
-    myDirty = _dirty;
-  }
+	public void setModels(List _models) {
+		myModels = _models;
+		myDirty = true;
+	}
 
-  public boolean isDirty() {
-    return myDirty;
-  }
+	public void addModel(EOModelReference _modelReference) {
+		myModels.add(_modelReference);
+		myDirty = true;
+	}
 
-  public boolean isModelReferenced(EOModelReference _modelReference) {
-    boolean modelReferenced = false;
-    String eomodelName = _modelReference.getName();
-    Iterator modelsIter = myModels.iterator();
-    while (!modelReferenced && modelsIter.hasNext()) {
-      EOModelReference model = (EOModelReference) modelsIter.next();
-      modelReferenced = model.getName().equals(eomodelName);
-    }
-    if (!modelReferenced) {
-      Iterator refModelsIter = myRefModels.iterator();
-      while (!modelReferenced && refModelsIter.hasNext()) {
-        EOModelReference model = (EOModelReference) refModelsIter.next();
-        modelReferenced = model.getName().equals(eomodelName);
-      }
-    }
-    return modelReferenced;
-  }
+	public Boolean isPackageDirs() {
+		return myPackageDirs;
+	}
 
-  public static class Define {
-    private String myName;
-    private String myValue;
+	public void setPackageDirs(Boolean _packageDirs) {
+		myPackageDirs = _packageDirs;
+		myDirty = true;
+	}
 
-    public Define(String _name, String _value) {
-      myName = _name;
-      myValue = _value;
-    }
+	public List getRefModels() {
+		return myRefModels;
+	}
 
-    public int hashCode() {
-      return myName.hashCode();
-    }
+	public void setRefModels(List _refModels) {
+		myRefModels = _refModels;
+		myDirty = true;
+	}
 
-    public boolean equals(Object _obj) {
-      return (_obj instanceof Define && ((Define) _obj).myName.equals(myName));
-    }
+	public void addRefModel(EOModelReference _modelReference) {
+		myRefModels.add(_modelReference);
+		myDirty = true;
+	}
 
-    public String getName() {
-      return myName;
-    }
+	public String getSubclassDestination() {
+		return mySubclassDestination;
+	}
 
-    public String getValue() {
-      return myValue;
-    }
-  }
+	public void setSubclassDestination(String _subclassDestination) {
+		if (isNew(mySubclassDestination, _subclassDestination)) {
+			mySubclassDestination = _subclassDestination;
+			myDirty = true;
+		}
+	}
 
-  public static EOGeneratorModel createModelFromFile(IFile _file) throws ParseException, CoreException, IOException {
-    _file.refreshLocal(IResource.DEPTH_INFINITE, null);
-    InputStream eogenFileStream = _file.getContents();
-    try {
-      StringBuffer sb = new StringBuffer();
-      BufferedReader br = new BufferedReader(new InputStreamReader(eogenFileStream));
-      String line;
-      while ((line = br.readLine()) != null) {
-        sb.append(line);
-      }
-      EOGeneratorModel model = new EOGeneratorModel(_file.getProject(), sb.toString());
-      model.setEOGeneratorPath(Preferences.getEOGeneratorPath());
-      return model;
-    }
-    finally {
-      eogenFileStream.close();
-    }
-  }
+	public String getSubclassJavaTemplate(String _default) {
+		String subclassJavaTemplate = mySubclassJavaTemplate;
+		if (mySubclassJavaTemplate == null || mySubclassJavaTemplate.trim().length() == 0) {
+			subclassJavaTemplate = _default;
+		}
+		return subclassJavaTemplate;
+	}
 
-  public static EOGeneratorModel createDefaultModel(IProject _project) {
-    EOGeneratorModel model = new EOGeneratorModel(_project);
-    model.setJava(Boolean.TRUE);
-    model.setPackageDirs(Boolean.TRUE);
-    model.setVerbose(Boolean.TRUE);
-    //    model.setEOGeneratorPath(Preferences.getEOGeneratorPath());
-    //    model.setJavaTemplate(Preferences.getEOGeneratorJavaTemplate());
-    //    model.setTemplateDir(Preferences.getEOGeneratorTemplateDir());
-    //    model.setSubclassJavaTemplate(Preferences.getEOGeneratorSubclassJavaTemplate());
-    try {
-      IJavaProject javaProject = JavaCore.create(_project);
-      if (javaProject != null) {
-        IClasspathEntry[] classpathEntry = javaProject.getRawClasspath();
-        for (int classpathEntryNum = 0; classpathEntryNum < classpathEntry.length; classpathEntryNum++) {
-          IClasspathEntry entry = classpathEntry[classpathEntryNum];
-          if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-            IPath path = entry.getPath();
-            if (path != null) {
-              IFolder sourceFolder = _project.getWorkspace().getRoot().getFolder(path);
-              IPath projectRelativePath = sourceFolder.getProjectRelativePath();
-              String projectRelativePathStr = projectRelativePath.toPortableString();
-              model.setDestination(projectRelativePathStr);
-              model.setSubclassDestination(projectRelativePathStr);
-            }
-          }
-        }
-      }
-    }
-    catch (JavaModelException e) {
-      e.printStackTrace();
-    }
-    return model;
-  }
+	public void setSubclassJavaTemplate(String _subclassJavaTemplate) {
+		if (isNew(mySubclassJavaTemplate, _subclassJavaTemplate)) {
+			mySubclassJavaTemplate = _subclassJavaTemplate;
+			myDirty = true;
+		}
+	}
+
+	public String getTemplateDir(String _default) {
+		String templateDir = myTemplateDir;
+		if (myTemplateDir == null || myTemplateDir.trim().length() == 0) {
+			templateDir = _default;
+		}
+		if (templateDir != null) {
+			templateDir = PathUtils.getRelativePath(myProject, new Path(templateDir));
+		}
+		return templateDir;
+	}
+
+	public void setTemplateDir(String _templateDir) {
+		if (isNew(myTemplateDir, _templateDir)) {
+			myTemplateDir = _templateDir;
+			myDirty = true;
+		}
+	}
+
+	public void setPrefix(String _prefix) {
+		if (isNew(myPrefix, _prefix)) {
+			myPrefix = _prefix;
+			myDirty = true;
+		}
+	}
+
+	public String getPrefix() {
+		return myPrefix;
+	}
+
+	public void setFilenameTemplate(String _filenameTemplate) {
+		if (isNew(myFilenameTemplate, _filenameTemplate)) {
+			myFilenameTemplate = _filenameTemplate;
+			myDirty = true;
+		}
+	}
+
+	public String getFilenameTemplate() {
+		return myFilenameTemplate;
+	}
+
+	public Boolean isVerbose() {
+		return myVerbose;
+	}
+
+	public void setVerbose(Boolean _verbose) {
+		myVerbose = _verbose;
+		myDirty = true;
+	}
+
+	public void setDirty(boolean _dirty) {
+		myDirty = _dirty;
+	}
+
+	public boolean isDirty() {
+		return myDirty;
+	}
+
+	public boolean isModelReferenced(EOModelReference _modelReference) {
+		boolean modelReferenced = false;
+		String eomodelName = _modelReference.getName();
+		Iterator modelsIter = myModels.iterator();
+		while (!modelReferenced && modelsIter.hasNext()) {
+			EOModelReference model = (EOModelReference) modelsIter.next();
+			modelReferenced = model.getName().equals(eomodelName);
+		}
+		if (!modelReferenced) {
+			Iterator refModelsIter = myRefModels.iterator();
+			while (!modelReferenced && refModelsIter.hasNext()) {
+				EOModelReference model = (EOModelReference) refModelsIter.next();
+				modelReferenced = model.getName().equals(eomodelName);
+			}
+		}
+		return modelReferenced;
+	}
+
+	public static class Define {
+		private String myName;
+
+		private String myValue;
+
+		public Define(String _name, String _value) {
+			myName = _name;
+			myValue = _value;
+		}
+
+		public int hashCode() {
+			return myName.hashCode();
+		}
+
+		public boolean equals(Object _obj) {
+			return (_obj instanceof Define && ((Define) _obj).myName.equals(myName));
+		}
+
+		public String getName() {
+			return myName;
+		}
+
+		public String getValue() {
+			return myValue;
+		}
+	}
+
+	public static EOGeneratorModel createModelFromFile(IFile _file) throws ParseException, CoreException, IOException {
+		_file.refreshLocal(IResource.DEPTH_INFINITE, null);
+		InputStream eogenFileStream = _file.getContents();
+		try {
+			StringBuffer sb = new StringBuffer();
+			BufferedReader br = new BufferedReader(new InputStreamReader(eogenFileStream));
+			String line;
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+			}
+			EOGeneratorModel model = new EOGeneratorModel(_file.getProject(), sb.toString());
+			model.setEOGeneratorPath(Preferences.getEOGeneratorPath());
+			return model;
+		} finally {
+			eogenFileStream.close();
+		}
+	}
+
+	public static EOGeneratorModel createDefaultModel(IProject _project) {
+		EOGeneratorModel model = new EOGeneratorModel(_project);
+		model.setJava(Boolean.TRUE);
+		model.setPackageDirs(Boolean.TRUE);
+		model.setVerbose(Boolean.TRUE);
+		// model.setEOGeneratorPath(Preferences.getEOGeneratorPath());
+		// model.setJavaTemplate(Preferences.getEOGeneratorJavaTemplate());
+		// model.setTemplateDir(Preferences.getEOGeneratorTemplateDir());
+		// model.setSubclassJavaTemplate(Preferences.getEOGeneratorSubclassJavaTemplate());
+		try {
+			IJavaProject javaProject = JavaCore.create(_project);
+			if (javaProject != null) {
+				IClasspathEntry[] classpathEntry = javaProject.getRawClasspath();
+				for (int classpathEntryNum = 0; classpathEntryNum < classpathEntry.length; classpathEntryNum++) {
+					IClasspathEntry entry = classpathEntry[classpathEntryNum];
+					if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+						IPath path = entry.getPath();
+						if (path != null) {
+							IFolder sourceFolder = _project.getWorkspace().getRoot().getFolder(path);
+							IPath projectRelativePath = sourceFolder.getProjectRelativePath();
+							String projectRelativePathStr = projectRelativePath.toPortableString();
+							model.setDestination(projectRelativePathStr);
+							model.setSubclassDestination(projectRelativePathStr);
+						}
+					}
+				}
+			}
+		} catch (JavaModelException e) {
+			e.printStackTrace();
+		}
+		return model;
+	}
 }

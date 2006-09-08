@@ -53,10 +53,10 @@ import org.eclipse.core.runtime.content.ITextContentDescriber;
 
 public class ContentDescriberWO implements ITextContentDescriber {
 
-	private final static QualifiedName[] SUPPORTED_OPTIONS = {IContentDescription.BYTE_ORDER_MARK};
+	private final static QualifiedName[] SUPPORTED_OPTIONS = { IContentDescription.BYTE_ORDER_MARK };
 
 	public static int ANSWER = INVALID;
-	
+
 	public ContentDescriberWO() {
 		super();
 	}

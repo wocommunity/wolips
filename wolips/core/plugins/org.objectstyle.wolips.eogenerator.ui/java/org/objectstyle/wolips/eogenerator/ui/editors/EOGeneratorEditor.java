@@ -59,59 +59,58 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.wolips.eogenerator.model.EOGeneratorModel;
 
 public class EOGeneratorEditor extends FormEditor {
-  private EOGeneratorModel myModel;
-  private EOGeneratorFormPage myFormPage;
-  private boolean myModelGroupEditor;
+	private EOGeneratorModel myModel;
 
-  public EOGeneratorEditor() {
-    super();
-  }
+	private EOGeneratorFormPage myFormPage;
 
-  protected void setInput(IEditorInput _input) {
-    super.setInput(_input);
-    try {
-      FileEditorInput editorInput = (FileEditorInput) _input;
-      IFile eogenFile = editorInput.getFile();
-      myModel = EOGeneratorModel.createModelFromFile(eogenFile);
-      myModelGroupEditor = "eomodelgroup".equals(eogenFile.getFileExtension());
-    }
-    catch (Throwable e) {
-      throw new RuntimeException("Failed to read EOGen file.", e);
-    }
-  }
+	private boolean myModelGroupEditor;
 
-  protected void addPages() {
-    try {
-      myFormPage = new EOGeneratorFormPage(this, myModel, myModelGroupEditor);
-      addPage(myFormPage);
-    }
-    catch (PartInitException e) {
-      ErrorDialog.openError(getSite().getShell(), "Error creating form pages.", null, e.getStatus());
-    }
-  }
+	public EOGeneratorEditor() {
+		super();
+	}
 
-  public void doSave(IProgressMonitor _monitor) {
-    try {
-      FileEditorInput editorInput = (FileEditorInput) getEditorInput();
-      myModel.writeToFile(editorInput.getFile(), _monitor);
-      editorDirtyStateChanged();
-    }
-    catch (Throwable e) {
-      e.printStackTrace();
-      throw new RuntimeException("Failed to write EOGen file.", e);
-    }
-  }
+	protected void setInput(IEditorInput _input) {
+		super.setInput(_input);
+		try {
+			FileEditorInput editorInput = (FileEditorInput) _input;
+			IFile eogenFile = editorInput.getFile();
+			myModel = EOGeneratorModel.createModelFromFile(eogenFile);
+			myModelGroupEditor = "eomodelgroup".equals(eogenFile.getFileExtension());
+		} catch (Throwable e) {
+			throw new RuntimeException("Failed to read EOGen file.", e);
+		}
+	}
 
-  public void doSaveAs() {
-    // do nothing
-  }
+	protected void addPages() {
+		try {
+			myFormPage = new EOGeneratorFormPage(this, myModel, myModelGroupEditor);
+			addPage(myFormPage);
+		} catch (PartInitException e) {
+			ErrorDialog.openError(getSite().getShell(), "Error creating form pages.", null, e.getStatus());
+		}
+	}
 
-  public boolean isSaveAsAllowed() {
-    return true;
-  }
+	public void doSave(IProgressMonitor _monitor) {
+		try {
+			FileEditorInput editorInput = (FileEditorInput) getEditorInput();
+			myModel.writeToFile(editorInput.getFile(), _monitor);
+			editorDirtyStateChanged();
+		} catch (Throwable e) {
+			e.printStackTrace();
+			throw new RuntimeException("Failed to write EOGen file.", e);
+		}
+	}
 
-  public boolean isDirty() {
-    return myModel.isDirty() || super.isDirty();
-  }
+	public void doSaveAs() {
+		// do nothing
+	}
+
+	public boolean isSaveAsAllowed() {
+		return true;
+	}
+
+	public boolean isDirty() {
+		return myModel.isDirty() || super.isDirty();
+	}
 
 }
