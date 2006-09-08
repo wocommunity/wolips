@@ -56,23 +56,25 @@ import java.util.Map;
  */
 public class Rule extends AbstractClassElement {
 	private static final String RHS_KEY = "rhs";
+
 	private static final String LHS_KEY = "lhs";
 
 	private static final String AUTHOR_KEY = "author";
 
 	private RightHandSide rightHandSide;
+
 	private LeftHandSide leftHandSide;
-	
+
 	public Rule(D2WModel model, Map map) {
 		super(model, map);
 	}
 
 	public RightHandSide getRightHandSide() {
-		if(rightHandSide != null) {
+		if (rightHandSide != null) {
 			return rightHandSide;
 		}
-		Map map = (Map)this.getMap().get(RHS_KEY);
-		rightHandSide  = new RightHandSide(this.getModel(), map);
+		Map map = (Map) this.getMap().get(RHS_KEY);
+		rightHandSide = new RightHandSide(this.getModel(), map);
 		return rightHandSide;
 	}
 
@@ -82,14 +84,14 @@ public class Rule extends AbstractClassElement {
 	}
 
 	public LeftHandSide getLeftHandSide() {
-		if(leftHandSide != null) {
+		if (leftHandSide != null) {
 			return leftHandSide;
 		}
-		Map map = (Map)this.getMap().get(LHS_KEY);
-		if(map == null) {
+		Map map = (Map) this.getMap().get(LHS_KEY);
+		if (map == null) {
 			return null;
 		}
-		leftHandSide  = new LeftHandSide(this.getModel(), map);
+		leftHandSide = new LeftHandSide(this.getModel(), map);
 		return leftHandSide;
 	}
 
@@ -100,10 +102,10 @@ public class Rule extends AbstractClassElement {
 
 	public String getPriority() {
 		Object priority = this.getMap().get(AUTHOR_KEY);
-		if(priority == null) {
+		if (priority == null) {
 			return null;
 		}
-		return  priority.toString();
+		return priority.toString();
 	}
 
 	public void setPriority(String priority) {

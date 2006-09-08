@@ -56,15 +56,16 @@ import java.util.*;
 
 /**
  * The main plugin class to be used in the desktop.
- 
+ * 
  * @author mike
  */
 public class RefactoringPlugin extends AbstractUIPlugin {
-	//The shared instance.
+	// The shared instance.
 	private static RefactoringPlugin plugin;
-	//Resource bundle.
+
+	// Resource bundle.
 	private ResourceBundle resourceBundle;
-	
+
 	/**
 	 * The constructor.
 	 */
@@ -97,8 +98,8 @@ public class RefactoringPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns the string from the plugin's resource bundle,
-	 * or 'key' if not found.
+	 * Returns the string from the plugin's resource bundle, or 'key' if not
+	 * found.
 	 */
 	public static String getResourceString(String key) {
 		ResourceBundle bundle = RefactoringPlugin.getDefault().getResourceBundle();

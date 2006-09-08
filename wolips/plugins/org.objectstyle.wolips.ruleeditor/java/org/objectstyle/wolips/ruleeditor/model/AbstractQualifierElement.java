@@ -81,18 +81,15 @@ public abstract class AbstractQualifierElement extends AbstractClassElement {
 		return qualifiers;
 	}
 
-	public void appendToDisplayStringBuffer(StringBuffer stringBuffer,
-			String concatWith) {
+	public void appendToDisplayStringBuffer(StringBuffer stringBuffer, String concatWith) {
 		if (this.getQualifiers() == null) {
 			return;
 		}
 		stringBuffer.append("(");
 		Iterator iterator = qualifiers.iterator();
 		while (iterator.hasNext()) {
-			AbstractQualifierElement abstractQualifierElement = (AbstractQualifierElement) iterator
-					.next();
-			abstractQualifierElement.appendToDisplayStringBuffer(stringBuffer,
-					this.getConcatWithString());
+			AbstractQualifierElement abstractQualifierElement = (AbstractQualifierElement) iterator.next();
+			abstractQualifierElement.appendToDisplayStringBuffer(stringBuffer, this.getConcatWithString());
 			if (iterator.hasNext()) {
 				stringBuffer.append(" ");
 				stringBuffer.append(concatWith);
@@ -104,16 +101,16 @@ public abstract class AbstractQualifierElement extends AbstractClassElement {
 
 	public String getConcatWithString() {
 		String assignmentClassName = this.getAssignmentClassName();
-		if(assignmentClassName == null) {
+		if (assignmentClassName == null) {
 			return null;
 		}
-		if("com.webobjects.eocontrol.EOAndQualifier".equals(assignmentClassName)) {
+		if ("com.webobjects.eocontrol.EOAndQualifier".equals(assignmentClassName)) {
 			return "and";
 		}
-		if("com.webobjects.eocontrol.EOOrQualifier".equals(assignmentClassName)) {
+		if ("com.webobjects.eocontrol.EOOrQualifier".equals(assignmentClassName)) {
 			return "or";
 		}
-		if("com.webobjects.eocontrol.EONotQualifier".equals(assignmentClassName)) {
+		if ("com.webobjects.eocontrol.EONotQualifier".equals(assignmentClassName)) {
 			return "not";
 		}
 		return assignmentClassName;

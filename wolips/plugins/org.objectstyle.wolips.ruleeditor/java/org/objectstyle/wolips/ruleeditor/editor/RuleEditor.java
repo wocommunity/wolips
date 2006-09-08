@@ -75,6 +75,7 @@ import org.eclipse.swt.widgets.Text;
 import org.objectstyle.wolips.ruleeditor.RuleEditorPlugin;
 import org.objectstyle.wolips.ruleeditor.model.D2WModel;
 import org.objectstyle.wolips.ruleeditor.model.Rule;
+
 /**
  * @author uli
  */
@@ -520,6 +521,5 @@ public class RuleEditor {
 
 	public void setFocus() {
 	}
-	
-	
+
 }

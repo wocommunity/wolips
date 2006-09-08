@@ -61,35 +61,36 @@ import org.objectstyle.wolips.datasets.adaptable.Project;
  * @author mike
  */
 public class PrincipalClassChange extends Change {
-  private Project myProject;
-  private String myNewName;
+	private Project myProject;
 
-  public PrincipalClassChange(Project _project, String _newName) {
-    myProject = _project;
-    myNewName = _newName;
-  }
+	private String myNewName;
 
-  public String getName() {
-    return "Change Principal Class from " + myProject.getPrincipalClass(true) + " to " + myNewName;
-  }
+	public PrincipalClassChange(Project _project, String _newName) {
+		myProject = _project;
+		myNewName = _newName;
+	}
 
-  public void initializeValidationData(IProgressMonitor _pm) {
-  }
+	public String getName() {
+		return "Change Principal Class from " + myProject.getPrincipalClass(true) + " to " + myNewName;
+	}
 
-  public RefactoringStatus isValid(IProgressMonitor _pm) throws CoreException, OperationCanceledException {
-    RefactoringStatus status = new RefactoringStatus();
-    return status;
-  }
+	public void initializeValidationData(IProgressMonitor _pm) {
+	}
 
-  public Change perform(IProgressMonitor _pm) throws CoreException {
-    String oldName = myProject.getPrincipalClass(true);
-    myProject.setPrincipalClass(myNewName);
-    PrincipalClassChange undoChange = new PrincipalClassChange(myProject, oldName);
-    return undoChange;
-  }
+	public RefactoringStatus isValid(IProgressMonitor _pm) throws CoreException, OperationCanceledException {
+		RefactoringStatus status = new RefactoringStatus();
+		return status;
+	}
 
-  public Object getModifiedElement() {
-    return myProject;
-  }
+	public Change perform(IProgressMonitor _pm) throws CoreException {
+		String oldName = myProject.getPrincipalClass(true);
+		myProject.setPrincipalClass(myNewName);
+		PrincipalClassChange undoChange = new PrincipalClassChange(myProject, oldName);
+		return undoChange;
+	}
+
+	public Object getModifiedElement() {
+		return myProject;
+	}
 
 }

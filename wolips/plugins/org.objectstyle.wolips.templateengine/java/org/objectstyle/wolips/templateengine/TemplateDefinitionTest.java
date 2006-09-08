@@ -62,12 +62,12 @@ import junit.framework.TestCase;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class TemplateDefinitionTest extends TestCase {
-	
+
 	/**
 	 * 
 	 */
@@ -75,12 +75,12 @@ public class TemplateDefinitionTest extends TestCase {
 		TemplateDefinition templateDefinition = new TemplateDefinition("foo", "foo1", "foo2", "foo3");
 		assertNotNull(templateDefinition);
 	}
-	
+
 	/**
 	 * 
 	 */
 	public void testGetDestinationPath() {
 		TemplateDefinition templateDefinition = new TemplateDefinition("foo", "foo1", "foo2", "foo2");
-		assertEquals("foo1" + File.separator + "foo2", templateDefinition);	
+		assertEquals("foo1" + File.separator + "foo2", templateDefinition);
 	}
 }

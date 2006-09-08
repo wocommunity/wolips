@@ -53,8 +53,8 @@
  * <http://objectstyle.org/>.
  *
  */
- 
- package org.objectstyle.wolips.target;
+
+package org.objectstyle.wolips.target;
 
 import java.io.File;
 
@@ -68,26 +68,22 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.jdt.internal.core.builder.State;
 
-public class TargetBuilderPlugin extends Plugin
-{
-	//The shared instance.
+public class TargetBuilderPlugin extends Plugin {
+	// The shared instance.
 	private static TargetBuilderPlugin _plugin;
 
 	private TargetBuilderPersistenceStore _persistenceStore;
 
-	public TargetBuilderPlugin(IPluginDescriptor descriptor)
-	{
+	public TargetBuilderPlugin(IPluginDescriptor descriptor) {
 		super(descriptor);
 		_plugin = this;
 	}
 
-	public static TargetBuilderPlugin getDefault()
-	{
+	public static TargetBuilderPlugin getDefault() {
 		return _plugin;
 	}
 
-	public void startup() throws CoreException
-	{
+	public void startup() throws CoreException {
 		super.startup();
 		_persistenceStore = new TargetBuilderPersistenceStore();
 		ISavedState lastState = ResourcesPlugin.getWorkspace().addSaveParticipant(this, _persistenceStore);
@@ -104,18 +100,15 @@ public class TargetBuilderPlugin extends Plugin
 		_persistenceStore.readStateFrom(f);
 	}
 
-	public void shutdown() throws CoreException
-	{
+	public void shutdown() throws CoreException {
 		super.shutdown();
 	}
 
-	public void setBuildStateForKey(State buildState, String key)
-	{
+	public void setBuildStateForKey(State buildState, String key) {
 		_persistenceStore.setBuildStateForKey(buildState, key);
 	}
 
-	public State buildStateForKey(String key)
-	{
+	public State buildStateForKey(String key) {
 		return _persistenceStore.buildStateForKey(key);
 	}
 }

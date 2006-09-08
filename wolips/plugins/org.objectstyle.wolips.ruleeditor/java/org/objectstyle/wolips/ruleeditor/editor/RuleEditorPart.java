@@ -88,8 +88,7 @@ public class RuleEditorPart extends EditorPart {
 		throw new IllegalStateException();
 	}
 
-	public void init(IEditorSite site, IEditorInput input)
-			throws PartInitException {
+	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		fileEditorInput = (IFileEditorInput) input;
 		super.setSite(site);
 		super.setInput(input);

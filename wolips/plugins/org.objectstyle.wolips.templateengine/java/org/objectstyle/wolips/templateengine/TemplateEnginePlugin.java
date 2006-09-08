@@ -80,19 +80,25 @@ import org.osgi.framework.Constants;
  */
 public class TemplateEnginePlugin extends AbstractUIPlugin {
 	private final static String PLUGIN_ID = "org.objectstyle.wolips.templateengine";
-	//The shared instance.
+
+	// The shared instance.
 	private static TemplateEnginePlugin plugin;
-	//Resource bundle.
+
+	// Resource bundle.
 	private ResourceBundle resourceBundle;
+
 	private PluginLogger pluginLogger = null;
+
 	/**
 	 * Comment for <code>WOApplicationProject</code>
 	 */
 	public static final String WOApplicationProject = "WOApplicationProject";
-  /**
-   * Comment for <code>WOnderApplicationProject</code>
-   */
-  public static final String WOnderApplicationProject = "WOnderApplicationProject";
+
+	/**
+	 * Comment for <code>WOnderApplicationProject</code>
+	 */
+	public static final String WOnderApplicationProject = "WOnderApplicationProject";
+
 	/**
 	 * Comment for <code>D2W_ApplicationProject</code>
 	 */
@@ -100,18 +106,22 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 	 * Comment for <code>D2W_ApplicationProject</code>
 	 */
 	public static final String D2W_ApplicationProject = "D2W_ApplicationProject";
+
 	/**
 	 * Comment for <code>WOFrameworkProject</code>
 	 */
 	public static final String WOFrameworkProject = "WOFrameworkProject";
+
 	/**
 	 * Comment for <code>JarProject</code>
 	 */
 	public static final String JarProject = "JarProject";
+
 	/**
 	 * Comment for <code>WOComponent</code>
 	 */
 	public static final String WOComponent = "WOComponent";
+
 	/**
 	 * Comment for <code>EOModel</code>
 	 */
@@ -124,8 +134,7 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 		super();
 		plugin = this;
 		try {
-			this.resourceBundle = ResourceBundle
-					.getBundle("org.objectstyle.wolips.templateengine.TemplateenginePluginResources");
+			this.resourceBundle = ResourceBundle.getBundle("org.objectstyle.wolips.templateengine.TemplateenginePluginResources");
 		} catch (MissingResourceException x) {
 			this.resourceBundle = null;
 		}
@@ -167,8 +176,7 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 	 * @return
 	 */
 	public static String getResourceString(String key) {
-		ResourceBundle bundle = TemplateEnginePlugin.getDefault()
-				.getResourceBundle();
+		ResourceBundle bundle = TemplateEnginePlugin.getDefault().getResourceBundle();
 		try {
 			return bundle.getString(key);
 		} catch (MissingResourceException e) {
@@ -191,8 +199,7 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 	 * @return URL
 	 */
 	public static URL baseURL() {
-		return TemplateEnginePlugin.getDefault().getDescriptor()
-				.getInstallURL();
+		return TemplateEnginePlugin.getDefault().getDescriptor().getInstallURL();
 	}
 
 	private static IPath templatesPath() {
@@ -215,20 +222,18 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 		path = path.append("Templates");
 		return path;
 	}
+
 	/**
 	 * @return The roots.
 	 */
 	protected static TemplateFolderRoot[] getTemplateFolderRoots() {
 		TemplateFolderRoot[] templateFolderRoots = new TemplateFolderRoot[2];
-		templateFolderRoots[0] = new TemplateFolderRoot(TemplateEnginePlugin
-				.templatesPath());
-		templateFolderRoots[1] = new TemplateFolderRoot(TemplateEnginePlugin
-				.userTemplatesPath());
+		templateFolderRoots[0] = new TemplateFolderRoot(TemplateEnginePlugin.templatesPath());
+		templateFolderRoots[1] = new TemplateFolderRoot(TemplateEnginePlugin.userTemplatesPath());
 		return templateFolderRoots;
 	}
 
-	private static TemplateFolder[] getTemplateFolder(
-			TemplateFolderRoot templateFolderRoot) {
+	private static TemplateFolder[] getTemplateFolder(TemplateFolderRoot templateFolderRoot) {
 		ArrayList templateFolderList = new ArrayList();
 		IPath root = templateFolderRoot.getPath();
 		File file = new File(root.toOSString());
@@ -243,29 +248,26 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 				}
 			}
 		}
-		return (TemplateFolder[]) templateFolderList
-				.toArray(new TemplateFolder[templateFolderList.size()]);
+		return (TemplateFolder[]) templateFolderList.toArray(new TemplateFolder[templateFolderList.size()]);
 	}
+
 	/**
 	 * @param templateFolderRoots
 	 * @param type
 	 * @return The of templates folder array for the given type.
 	 */
-	protected static TemplateFolder[] getTemplateFolder(
-			TemplateFolderRoot[] templateFolderRoots, String type) {
+	protected static TemplateFolder[] getTemplateFolder(TemplateFolderRoot[] templateFolderRoots, String type) {
 		ArrayList templateFolderList = new ArrayList();
 		for (int i = 0; i < templateFolderRoots.length; i++) {
 			TemplateFolderRoot templateFolderRoot = templateFolderRoots[i];
-			TemplateFolder[] templateFolders = TemplateEnginePlugin
-					.getTemplateFolder(templateFolderRoot);
+			TemplateFolder[] templateFolders = TemplateEnginePlugin.getTemplateFolder(templateFolderRoot);
 			for (int j = 0; j < templateFolders.length; j++) {
 				TemplateFolder templateFolder = templateFolders[j];
 				if (templateFolder.isOfType(type))
 					templateFolderList.add(templateFolder);
 			}
 		}
-		return (TemplateFolder[]) templateFolderList
-				.toArray(new TemplateFolder[templateFolderList.size()]);
+		return (TemplateFolder[]) templateFolderList.toArray(new TemplateFolder[templateFolderList.size()]);
 	}
 
 	/**
@@ -273,8 +275,7 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 	 * @return The of templates folder array for the given type.
 	 */
 	public static TemplateFolder[] getTemplateFolder(String type) {
-		return TemplateEnginePlugin.getTemplateFolder(TemplateEnginePlugin
-				.getTemplateFolderRoots(), type);
+		return TemplateEnginePlugin.getTemplateFolder(TemplateEnginePlugin.getTemplateFolderRoots(), type);
 	}
 
 	/**
@@ -291,9 +292,9 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		this.pluginLogger = new PluginLogger(TemplateEnginePlugin.PLUGIN_ID,
-				false);
+		this.pluginLogger = new PluginLogger(TemplateEnginePlugin.PLUGIN_ID, false);
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

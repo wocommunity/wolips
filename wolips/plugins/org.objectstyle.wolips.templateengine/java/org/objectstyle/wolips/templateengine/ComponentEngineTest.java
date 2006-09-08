@@ -63,12 +63,12 @@ import org.eclipse.core.runtime.Path;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class ComponentEngineTest extends TestCase {
-	
+
 	/**
 	 * 
 	 */
@@ -78,7 +78,7 @@ public class ComponentEngineTest extends TestCase {
 		componentEngine.setComponentPath(path);
 		assertEquals(path, componentEngine.getComponentPath());
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -88,7 +88,7 @@ public class ComponentEngineTest extends TestCase {
 		componentEngine.setApiPath(path);
 		assertEquals(path, componentEngine.getApiPath());
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -98,7 +98,7 @@ public class ComponentEngineTest extends TestCase {
 		componentEngine.setJavaPath(path);
 		assertEquals(path, componentEngine.getJavaPath());
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -114,8 +114,7 @@ public class ComponentEngineTest extends TestCase {
 		assertEquals(1, componentEngine.templateFolderCount());
 		assertEquals(1, componentEngine.names().length);
 	}
-	
-	
+
 	/**
 	 * 
 	 */

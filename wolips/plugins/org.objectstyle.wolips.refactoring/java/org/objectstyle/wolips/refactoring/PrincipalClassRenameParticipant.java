@@ -60,42 +60,42 @@ import org.eclipse.ltk.core.refactoring.participants.RenameParticipant;
 import org.objectstyle.wolips.datasets.adaptable.Project;
 
 /**
- * Changes the name of a WOLips project's Principal Class when it gets renamed.  
+ * Changes the name of a WOLips project's Principal Class when it gets renamed.
  * 
  * @author mschrag
  */
 public class PrincipalClassRenameParticipant extends RenameParticipant {
-  private Project myProject;
+	private Project myProject;
 
-  public PrincipalClassRenameParticipant() {
-  }
+	public PrincipalClassRenameParticipant() {
+	}
 
-  protected boolean initialize(Object _element) {
-    myProject = PrincipalClassMoveParticipant.getInitializedProject(_element);
-    boolean initialized = myProject != null;
-    return initialized;
-  }
+	protected boolean initialize(Object _element) {
+		myProject = PrincipalClassMoveParticipant.getInitializedProject(_element);
+		boolean initialized = myProject != null;
+		return initialized;
+	}
 
-  public String getName() {
-    return "Rename Principal Class";
-  }
+	public String getName() {
+		return "Rename Principal Class";
+	}
 
-  public RefactoringStatus checkConditions(IProgressMonitor _pm, CheckConditionsContext _context) throws OperationCanceledException {
-    RefactoringStatus refactoringStatus = new RefactoringStatus();
-    return refactoringStatus;
-  }
+	public RefactoringStatus checkConditions(IProgressMonitor _pm, CheckConditionsContext _context) throws OperationCanceledException {
+		RefactoringStatus refactoringStatus = new RefactoringStatus();
+		return refactoringStatus;
+	}
 
-  public Change createChange(IProgressMonitor _pm) throws CoreException, OperationCanceledException {
-    Change change = null;
-    if (myProject != null) {
-      String principalClass = myProject.getPrincipalClass(true);
-      int nameIndex = principalClass.lastIndexOf('$');
-      if (nameIndex == -1) {
-        nameIndex = principalClass.lastIndexOf('.');
-      }
-      String newName = principalClass.substring(0, nameIndex + 1) + getArguments().getNewName();
-      change = new PrincipalClassChange(myProject, newName);
-    }
-    return change;
-  }
+	public Change createChange(IProgressMonitor _pm) throws CoreException, OperationCanceledException {
+		Change change = null;
+		if (myProject != null) {
+			String principalClass = myProject.getPrincipalClass(true);
+			int nameIndex = principalClass.lastIndexOf('$');
+			if (nameIndex == -1) {
+				nameIndex = principalClass.lastIndexOf('.');
+			}
+			String newName = principalClass.substring(0, nameIndex + 1) + getArguments().getNewName();
+			change = new PrincipalClassChange(myProject, newName);
+		}
+		return change;
+	}
 }
