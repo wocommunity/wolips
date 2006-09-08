@@ -292,4 +292,8 @@ public class VariablesPlugin extends AbstractCorePlugin {
 	public String getWOProjectDevelopmentPath() {
 		return getWOVariables().getProperty("woproject.development.root");
 	}
+	
+	public String getProperty(String key) {
+		return getWOVariables().getProperty(key);
+	}
 }
