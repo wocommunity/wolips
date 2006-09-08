@@ -66,8 +66,7 @@ import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 public class InstallAction extends AbstractInstallAction {
 
 	public void run(IAction action) {
-		IProjectAdapter project = (IProjectAdapter) this.getIProject()
-				.getAdapter(IProjectAdapter.class);
+		IProjectAdapter project = (IProjectAdapter) this.getIProject().getAdapter(IProjectAdapter.class);
 		if (project != null && this.getIProject().getFile("build.xml").exists()) {
 			this.install(new IProject[] { this.getIProject() });
 		}
