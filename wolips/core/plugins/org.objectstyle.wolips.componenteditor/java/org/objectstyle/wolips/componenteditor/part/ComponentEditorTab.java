@@ -57,6 +57,7 @@ public abstract class ComponentEditorTab extends Composite {
 	private ComponentEditorPart componentEditorPart;
 
 	private SashForm parentSashForm;
+
 	private int tabIndex;
 
 	public ComponentEditorTab(ComponentEditorPart componentEditorPart, int tabIndex) {
