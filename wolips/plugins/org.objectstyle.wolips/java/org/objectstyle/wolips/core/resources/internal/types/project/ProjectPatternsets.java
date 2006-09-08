@@ -121,6 +121,38 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 		this.project = project;
 	}
 
+	private String[] getStringsFromDefaults(String key, String[] def) {
+		String values = null; //AK: how do i get the prefs in here?? VariablesPlugin.getDefault().getProperty(key);
+		if(values == null) {
+			return def;
+		}
+		return values.split("\\,\\s+");
+	}
+	
+	private String[] getWSResourcesIncludeStringsDefault() {
+		return getStringsFromDefaults("wsresources.include.patternset", new String[] {"**/*.gif", "**/*.xsl", "**/*.css", "**/*.png", "**/*.jpg", "**/*.js" });
+	}
+	
+	private String[] getWSResourcesExcludeStringsDefault() {
+		return getStringsFromDefaults("wsresources.exclude.patternset", new String[] {"**/*.woa/**", "**/*.framework/**", "**/*.eomodeld~/**"});
+	}
+
+	private String[] getResourcesIncludeStringsDefault() {
+		return getStringsFromDefaults("resources.include.patternset", new String[] {"**/Properties", "**/*.eomodeld/", "**/*.d2wmodel", "**/*.wo/", "**/*.api", "**/*.strings", "**/*.plist"});
+	}
+	
+	private String[] getResourcesExcludeStringsDefault() {
+		return getStringsFromDefaults("resources.exclude.patternset", new String[] {"**/*.eomodeld~/", "**/*.woa/**", "**/*.framework/**"});
+	}
+
+	private String[] getClassesIncludeStringsDefault() {
+		return getStringsFromDefaults("classes.include.patternset", new String[] {"**/*.class", "*.properties"});
+	}
+	
+	private String[] getClassesExcludeStringsDefault() {
+		return getStringsFromDefaults("classes.exclude.patternset", new String[] {"build.properties"});
+	}
+
 	/**
 	 * Creates the folder "ant" within the project if it does not exist.
 	 */
@@ -211,7 +243,7 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 		}
 		this.createAntFolder();
 		IFile classesExcludePatternset = this.getAntFolder().getFile("classes.exclude.patternset");
-		PatternsetWorkspaceRunnable patternsetWorkspaceRunnable = new PatternsetWorkspaceRunnable(classesExcludePatternset, new String[] { "build.properties" });
+		PatternsetWorkspaceRunnable patternsetWorkspaceRunnable = new PatternsetWorkspaceRunnable(classesExcludePatternset, getClassesExcludeStringsDefault());
 		patternsetWorkspaceRunnable.run();
 		this.classesExcludeMatcher = patternsetWorkspaceRunnable.getMatcher();
 		return this.classesExcludeMatcher;
@@ -226,7 +258,7 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 		}
 		this.createAntFolder();
 		IFile classesIncludePatternset = this.getAntFolder().getFile("classes.include.patternset");
-		PatternsetWorkspaceRunnable patternsetWorkspaceRunnable = new PatternsetWorkspaceRunnable(classesIncludePatternset, new String[] { "**/*.class", "*.properties" });
+		PatternsetWorkspaceRunnable patternsetWorkspaceRunnable = new PatternsetWorkspaceRunnable(classesIncludePatternset, getClassesIncludeStringsDefault());
 		patternsetWorkspaceRunnable.run();
 		this.classesIncludeMatcher = patternsetWorkspaceRunnable.getMatcher();
 		return this.classesIncludeMatcher;
@@ -241,7 +273,7 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 		}
 		this.createAntFolder();
 		IFile resourcesExcludePatternset = this.getAntFolder().getFile("resources.exclude.patternset");
-		PatternsetWorkspaceRunnable patternsetWorkspaceRunnable = new PatternsetWorkspaceRunnable(resourcesExcludePatternset, new String[] { "**/*.eomodeld~/", "**/*.woa/**", "**/*.framework/**" });
+		PatternsetWorkspaceRunnable patternsetWorkspaceRunnable = new PatternsetWorkspaceRunnable(resourcesExcludePatternset, getResourcesExcludeStringsDefault());
 		patternsetWorkspaceRunnable.run();
 		this.resourcesExcludeMatcher = patternsetWorkspaceRunnable.getMatcher();
 		return this.resourcesExcludeMatcher;
@@ -256,7 +288,7 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 		}
 		this.createAntFolder();
 		IFile resourcesIncludePatternset = this.getAntFolder().getFile("resources.include.patternset");
-		PatternsetWorkspaceRunnable patternsetWorkspaceRunnable = new PatternsetWorkspaceRunnable(resourcesIncludePatternset, new String[] { "Properties", "**/*.eomodeld/", "**/*.d2wmodel", "**/*.wo/", "**/*.api", "**/*.strings" });
+		PatternsetWorkspaceRunnable patternsetWorkspaceRunnable = new PatternsetWorkspaceRunnable(resourcesIncludePatternset, getResourcesIncludeStringsDefault());
 		patternsetWorkspaceRunnable.run();
 		this.resourcesIncludeMatcher = patternsetWorkspaceRunnable.getMatcher();
 		return this.resourcesIncludeMatcher;
@@ -271,7 +303,7 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 		}
 		this.createAntFolder();
 		IFile wsresourcesExcludePatternset = this.getAntFolder().getFile("wsresources.exclude.patternset");
-		PatternsetWorkspaceRunnable patternsetWorkspaceRunnable = new PatternsetWorkspaceRunnable(wsresourcesExcludePatternset, new String[] { "**/*.woa/**", "**/*.framework/**" });
+		PatternsetWorkspaceRunnable patternsetWorkspaceRunnable = new PatternsetWorkspaceRunnable(wsresourcesExcludePatternset, getWSResourcesExcludeStringsDefault());
 		patternsetWorkspaceRunnable.run();
 		this.woappResourcesExcludeMatcher = patternsetWorkspaceRunnable.getMatcher();
 		return this.woappResourcesExcludeMatcher;
@@ -286,7 +318,7 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 		}
 		this.createAntFolder();
 		IFile wsresourcesIncludePatternset = this.getAntFolder().getFile("wsresources.include.patternset");
-		PatternsetWorkspaceRunnable patternsetWorkspaceRunnable = new PatternsetWorkspaceRunnable(wsresourcesIncludePatternset, new String[] { "**/*.gif", "**/*.xsl", "**/*.css", "**/*.png", "**/*.jpg", "**/*.js" });
+		PatternsetWorkspaceRunnable patternsetWorkspaceRunnable = new PatternsetWorkspaceRunnable(wsresourcesIncludePatternset, getWSResourcesIncludeStringsDefault());
 		patternsetWorkspaceRunnable.run();
 		this.woappResourcesIncludeMatcher = patternsetWorkspaceRunnable.getMatcher();
 		return this.woappResourcesIncludeMatcher;
