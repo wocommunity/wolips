@@ -48,16 +48,20 @@
  *  
  */
 package org.objectstyle.wolips.commons.logging;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.objectstyle.wolips.commons.CommonsPlugin;
+
 /**
  * @author uli
  * @author mnolte
  */
 public class PluginLogger implements ILogger {
 	private String pluginID = null;
+
 	private boolean debug;
+
 	/**
 	 * @param pluginID
 	 * @param debug
@@ -66,6 +70,7 @@ public class PluginLogger implements ILogger {
 		this.pluginID = pluginID;
 		this.debug = debug;
 	}
+
 	/**
 	 * Prints an IStatus.
 	 * 
@@ -74,32 +79,33 @@ public class PluginLogger implements ILogger {
 	public void log(IStatus status) {
 		CommonsPlugin.getDefault().getLog().log(status);
 	}
+
 	/**
 	 * Prints a message.
 	 * 
 	 * @param message
 	 */
 	public void log(Object message) {
-		this.log(new Status(IStatus.ERROR, this.pluginID, IStatus.ERROR, ""+message,
-				null));
+		this.log(new Status(IStatus.ERROR, this.pluginID, IStatus.ERROR, "" + message, null));
 	}
+
 	/**
 	 * Prints a Throwable.
 	 * 
 	 * @param e
 	 */
 	public void log(Throwable e) {
-		this.log(new Status(IStatus.ERROR, this.pluginID, IStatus.ERROR,
-				"Internal Error", e)); //$NON-NLS-1$
+		this.log(new Status(IStatus.ERROR, this.pluginID, IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
 	}
+
 	/**
 	 * Prints a Throwable.
+	 * 
 	 * @param message
 	 * @param e
 	 */
 	public void log(Object message, Throwable e) {
-		this.log(new Status(IStatus.ERROR, this.pluginID, IStatus.ERROR,
-				""+message, e)); //$NON-NLS-1$
+		this.log(new Status(IStatus.ERROR, this.pluginID, IStatus.ERROR, "" + message, e)); //$NON-NLS-1$
 	}
 
 	/**
@@ -109,27 +115,26 @@ public class PluginLogger implements ILogger {
 	 */
 	public void debug(Throwable aThrowable) {
 		if (this.debug) {
-            this.log(new Status(IStatus.WARNING, this.pluginID, IStatus.WARNING,
-              aThrowable.getMessage(), aThrowable)); //$NON-NLS-1$
+			this.log(new Status(IStatus.WARNING, this.pluginID, IStatus.WARNING, aThrowable.getMessage(), aThrowable)); //$NON-NLS-1$
 		}
 	}
+
 	/**
 	 * @param message
 	 * @param t
 	 */
 	public void debug(Object message, Throwable t) {
 		if (this.debug) {
-			this.log(new Status(IStatus.WARNING, this.pluginID, IStatus.WARNING,
-					""+message, t)); //$NON-NLS-1$
+			this.log(new Status(IStatus.WARNING, this.pluginID, IStatus.WARNING, "" + message, t)); //$NON-NLS-1$
 		}
 	}
+
 	/**
 	 * @param message
 	 */
 	public void debug(Object message) {
 		if (this.debug) {
-			this.log(new Status(IStatus.WARNING, this.pluginID, IStatus.WARNING,
-					""+message, null)); //$NON-NLS-1$
+			this.log(new Status(IStatus.WARNING, this.pluginID, IStatus.WARNING, "" + message, null)); //$NON-NLS-1$
 		}
 	}
 }

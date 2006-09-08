@@ -57,18 +57,21 @@ package org.objectstyle.wolips.commons.logging;
 public interface ILogger {
 	/**
 	 * prints an Object
+	 * 
 	 * @param msg
 	 */
 	void log(Object msg);
 
 	/**
 	 * prints a Throwable
+	 * 
 	 * @param t
 	 */
 	void log(Throwable t);
 
 	/**
 	 * prints an Object and a Throwable
+	 * 
 	 * @param msg
 	 * @param t
 	 */
@@ -76,18 +79,21 @@ public interface ILogger {
 
 	/**
 	 * prints an Object
+	 * 
 	 * @param msg
 	 */
 	void debug(Object msg);
 
 	/**
 	 * prints a Throwable
+	 * 
 	 * @param t
 	 */
 	void debug(Throwable t);
 
 	/**
 	 * prints an Object and a Throwable
+	 * 
 	 * @param msg
 	 * @param t
 	 */
