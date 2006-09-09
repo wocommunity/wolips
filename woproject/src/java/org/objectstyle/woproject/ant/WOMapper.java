@@ -119,13 +119,13 @@ public class WOMapper extends Mapper {
 			String subprojPath = subprojFilter(sourceFileName);
 
 			String localizedPath = localizationFilter(subprojPath);
-
 			String wocompPath = wocompFilter(localizedPath);
 			String resourcesPath = resourcesFilter(wocompPath);
 			String webserverresourcesPath = webserverResourcesFilter(resourcesPath);
 			String miscFilter = miscFilter(webserverresourcesPath);
 			String flattenfilesFilter = applyFlattenfiles(miscFilter);
 			String finalPath = eomodelFilter(flattenfilesFilter);
+			// System.out.println("mapFileName: " + sourceFileName + "->"+ finalPath);
 			return new String[] { finalPath };
 		}
 
@@ -172,6 +172,9 @@ public class WOMapper extends Mapper {
 			File f = new File(path);
 			// add other file extensions here!
 			if (path.endsWith(".strings")) {
+				return flatten(f);
+			}
+			if (path.endsWith(".plist") && path.indexOf(".eomodeld") <= 0) {
 				return flatten(f);
 			}
 			// skip the filter
@@ -246,9 +249,19 @@ public class WOMapper extends Mapper {
 		 * localization rules to <code>path</code>.
 		 */
 		private String localizationFilter(String path) {
-			String startPattern = NON_LOCALIZED + File.separator;
-
-			return (path.startsWith(startPattern)) ? path.substring(startPattern.length()) : path;
+			String result = path;
+			String pattern = NON_LOCALIZED + File.separator;
+			int index = path.indexOf(pattern);
+			if (index >= 0) {
+				result = path.substring(index + pattern.length());
+			} else {
+				pattern = LPROJ_SUFFIX + File.separator;
+				index = path.indexOf(pattern);
+				if (index >= 0) {
+					result = path.replaceFirst(".*?(\\w+\\." + LPROJ_SUFFIX + ")", "$1");
+				}
+			}
+			return result;
 		}
 
 		/**
@@ -257,23 +270,31 @@ public class WOMapper extends Mapper {
 		 * localization filter already.
 		 */
 		private String flatten(File f) {
+			String result = null;
 			File p1 = f.getParentFile();
 
 			// check for localization
 			File p2 = null;
 			while (p1 != null) {
 				p2 = p1;
-				p1 = p1.getParentFile();
-			}
-
-			if (p2 != null) {
-				String topmostParent = p2.getName();
-				if (topmostParent.endsWith(LPROJ_SUFFIX)) {
-					return topmostParent + File.separator + f.getName();
+				if(p1.getName().endsWith(LPROJ_SUFFIX)) {
+					break;
+				} else {
+					p1 = p1.getParentFile();
 				}
 			}
 
-			return f.getName();
+			if (p2 != null && result == null) {
+				String topmostParent = p2.getName();
+				if (topmostParent.endsWith(LPROJ_SUFFIX)) {
+					result = topmostParent + File.separator + f.getName();
+				}
+			}
+			if(result == null) {
+				result = f.getName();
+			}
+
+			return result;
 		}
 
 		/*
