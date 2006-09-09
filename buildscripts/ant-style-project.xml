@@ -17,6 +17,8 @@
                 destdir="${param.dest.dir}"
                 deprecation="${compile.deprecation}"
                 debug="${compile.debug}"
+                source="${compile.source}"
+                target="${compile.target}"
                 optimize="${compile.optimize}">
             <classpath refid="classpath"/>
         </javac>
@@ -33,6 +35,8 @@
        <javac srcdir="${param.src.dir}"
                 destdir="${param.dest.dir}"
                 deprecation="${compile.deprecation}"
+                source="${compile.source}"
+                target="${compile.target}"
                 debug="${compile.debug}"
                 optimize="${compile.optimize}">
             <classpath refid="classpath-tests"/>
