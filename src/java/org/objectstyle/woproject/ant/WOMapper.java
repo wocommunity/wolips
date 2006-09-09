@@ -125,7 +125,7 @@ public class WOMapper extends Mapper {
 			String miscFilter = miscFilter(webserverresourcesPath);
 			String flattenfilesFilter = applyFlattenfiles(miscFilter);
 			String finalPath = eomodelFilter(flattenfilesFilter);
-			System.out.println("mapFileName: " + sourceFileName + "->"+ finalPath);
+			// System.out.println("mapFileName: " + sourceFileName + "->"+ finalPath);
 			return new String[] { finalPath };
 		}
 
