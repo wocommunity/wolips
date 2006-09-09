@@ -125,7 +125,7 @@ public class WOMapper extends Mapper {
 			String miscFilter = miscFilter(webserverresourcesPath);
 			String flattenfilesFilter = applyFlattenfiles(miscFilter);
 			String finalPath = eomodelFilter(flattenfilesFilter);
-			// System.out.println("mapFileName: " + sourceFileName + "->"+ finalPath);
+			System.out.println("mapFileName: " + sourceFileName + "->"+ finalPath);
 			return new String[] { finalPath };
 		}
 
@@ -156,9 +156,14 @@ public class WOMapper extends Mapper {
 			// File in Resources directory
 			String parent = f.getParent();
 			if (parent != null && parent.equals("WebServerResources")) {
-				return flatten(f);
+				return flatten(new File(path));
 			}
-
+			// AK Wonder hack: we use WebServerResources as the base directory
+			String pattern = "WebServerResources" + File.separator;
+			int index = path.indexOf(pattern);
+			if(index >= 0) {
+				path = path.substring(index + pattern.length());
+			}
 			// skip the filter
 			return path;
 		}
