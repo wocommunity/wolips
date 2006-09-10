@@ -113,7 +113,7 @@ public class EOFSQLGenerator {
 	public EOFSQLGenerator(String _modelName, List _modelFolders, List _entityNames, Map _databaseConfig) throws MalformedURLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 		Map databaseConfig = (_databaseConfig == null ? new HashMap() : _databaseConfig);
 		String prototypeEntityName = (String) databaseConfig.get("prototypeEntityName");
-
+		
 		myGroup = new EOModelGroup();
 		Iterator modelFoldersIter = _modelFolders.iterator();
 		while (modelFoldersIter.hasNext()) {
@@ -177,6 +177,15 @@ public class EOFSQLGenerator {
 
 		ensureSingleTableInheritanceParentEntitiesAreIncluded();
 		ensureSingleTableInheritanceChildEntitiesAreIncluded();
+		localizeEntities();
+	}
+
+	protected void localizeEntities() {
+		Enumeration entitiesEnum = new NSArray(myEntities).objectEnumerator();
+		while (entitiesEnum.hasMoreElements()) {
+			EOEntity entity = (EOEntity) entitiesEnum.nextElement();
+			createLocalizedAttributes(entity);
+		}
 	}
 
 	protected void ensureSingleTableInheritanceParentEntitiesAreIncluded() {
@@ -221,6 +230,57 @@ public class EOFSQLGenerator {
 		return parentEntity != null && _entity.externalName() != null && _entity.externalName().equalsIgnoreCase(parentEntity.externalName());
 	}
 
+	protected void createLocalizedAttributes(EOEntity entity) {
+		NSArray attributes = entity.attributes();
+		NSArray classProperties = entity.classProperties();
+		NSArray attributesUsedForLocking = entity.attributesUsedForLocking();
+		if(attributes == null) attributes = NSArray.EmptyArray;
+		if(classProperties == null) classProperties = NSArray.EmptyArray;
+		if(attributesUsedForLocking == null) attributesUsedForLocking = NSArray.EmptyArray;
+		NSMutableArray mutableClassProperties = classProperties.mutableClone();
+		NSMutableArray mutableAttributesUsedForLocking = attributesUsedForLocking.mutableClone();
+		for(Enumeration e = attributes.objectEnumerator(); e.hasMoreElements(); ) {
+			EOAttribute attribute = (EOAttribute)e.nextElement();
+			NSDictionary userInfo = attribute.userInfo();
+			String name = attribute.name();
+			if(userInfo != null) {
+				NSArray languages = (NSArray)userInfo.objectForKey("ERXLanguages");
+				if(languages != null && languages.count() > 0) {
+					String columnName = attribute.columnName();
+					for (int i = 0; i < languages.count(); i++) {
+						String language = (String) languages.objectAtIndex(i);
+						String newName = name + "_" +language;
+						String newColumnName = columnName + "_" +language;
+
+						EOAttribute newAttribute = new EOAttribute();
+						newAttribute.setPrototype(attribute.prototype());
+						newAttribute.setName(newName);
+						newAttribute.setColumnName(newColumnName);
+						newAttribute.setAllowsNull(attribute.allowsNull());
+						newAttribute.setClassName(attribute.className());
+						newAttribute.setExternalType(attribute.externalType());
+						newAttribute.setWidth(attribute.width());
+
+						entity.addAttribute(newAttribute);
+
+						if(classProperties.containsObject(attribute)) {
+							mutableClassProperties.addObject(newAttribute);
+						}
+						if(attributesUsedForLocking.containsObject(attribute)) {
+							mutableAttributesUsedForLocking.addObject(newAttribute);
+						}
+					}
+					entity.removeAttribute(attribute);
+					mutableClassProperties.removeObject(attribute);
+					mutableAttributesUsedForLocking.removeObject(attribute);
+				}
+			}
+
+			entity.setClassProperties(mutableClassProperties);
+			entity.setAttributesUsedForLocking(mutableAttributesUsedForLocking);
+		}
+	}
+	
 	protected boolean isInherited(EOAttribute _attribute) {
 		boolean inherited = false;
 		EOEntity parentEntity = _attribute.entity().parentEntity();
@@ -269,7 +329,7 @@ public class EOFSQLGenerator {
 		}
 
 		callModelProcessorMethodIfExists("processModel", new Object[] { myModel, myEntities, flags });
-
+		
 		EODatabaseContext dbc = new EODatabaseContext(new EODatabase(myModel));
 		EOAdaptorContext ac = dbc.adaptorContext();
 		EOSynchronizationFactory sf = ((JDBCAdaptor) ac.adaptor()).plugIn().synchronizationFactory();
