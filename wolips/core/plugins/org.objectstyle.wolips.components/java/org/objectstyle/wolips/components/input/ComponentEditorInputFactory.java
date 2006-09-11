@@ -87,7 +87,7 @@ public class ComponentEditorInputFactory implements IElementFactory {
 			IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(fileName));
 			allInputs[i] = new ComponentEditorFileEditorInput(file);
 			if (i < (count - 1)) {
-				allComponentInputs[1] = allInputs[i];
+				allComponentInputs[i] = allInputs[i];
 			}
 		}
 
