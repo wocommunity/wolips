@@ -67,6 +67,7 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
  * @author ulrich
+ * @deprecated Use org.objectstyle.wolips.core.* instead.
  */
 public final class WOComponentJava extends WOLipsCompilationUnit implements IWOComponentJava {
 

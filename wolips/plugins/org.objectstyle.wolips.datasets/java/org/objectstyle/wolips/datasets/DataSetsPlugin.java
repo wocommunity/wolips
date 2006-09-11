@@ -72,7 +72,8 @@ import org.objectstyle.wolips.datasets.internal.Api;
 import org.osgi.framework.BundleContext;
 
 /**
- * The main plugin class to be used in the desktop.
+ * @deprecated Use org.objectstyle.wolips.core.* instead. The main plugin class
+ *             to be used in the desktop.
  */
 public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 	private final static String PLUGIN_ID = "org.objectstyle.wolips.datasets";

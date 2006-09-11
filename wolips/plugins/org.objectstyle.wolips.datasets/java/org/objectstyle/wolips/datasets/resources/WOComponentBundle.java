@@ -62,6 +62,7 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
  * @author ulrich
+ * @deprecated Use org.objectstyle.wolips.core.* instead.
  */
 public final class WOComponentBundle extends WOLipsResource implements IWOComponentBundle {
 

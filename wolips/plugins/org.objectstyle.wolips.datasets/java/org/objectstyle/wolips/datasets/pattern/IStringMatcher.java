@@ -58,9 +58,7 @@ package org.objectstyle.wolips.datasets.pattern;
 
 /**
  * @author hn3000
- * 
- * To change this generated comment go to Window>Preferences>Java>Code
- * Generation>Code Template
+ * @deprecated Use org.objectstyle.wolips.core.* instead.
  */
 public interface IStringMatcher {
 	/**

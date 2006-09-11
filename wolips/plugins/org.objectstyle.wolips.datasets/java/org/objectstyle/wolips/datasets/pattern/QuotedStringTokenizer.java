@@ -61,6 +61,7 @@ import java.util.Iterator;
  * @author Harald Niesche
  * @version 1.0 QuotedStringTokenizer -- tokenize string ignoring quoted
  *          separators
+ * @deprecated Use org.objectstyle.wolips.core.* instead.
  */
 public class QuotedStringTokenizer implements Iterator {
 

@@ -18,6 +18,8 @@ import java.util.Vector;
 
 /**
  * A string pattern matcher, suppporting * and ? wildcards.
+ * 
+ * @deprecated Use org.objectstyle.wolips.core.* instead.
  */
 public class StringMatcher {
 	protected String fPattern;
@@ -33,7 +35,8 @@ public class StringMatcher {
 	protected boolean fHasTrailingStar;
 
 	protected String fSegments[]; // the given pattern is split into *
-									// separated
+
+	// separated
 
 	// segments
 

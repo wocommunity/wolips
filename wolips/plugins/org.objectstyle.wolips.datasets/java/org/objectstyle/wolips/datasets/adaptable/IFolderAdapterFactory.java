@@ -59,6 +59,7 @@ import org.eclipse.core.runtime.IAdapterFactory;
 
 /**
  * @author ulrich
+ * @deprecated Use org.objectstyle.wolips.core.* instead.
  */
 public class IFolderAdapterFactory implements IAdapterFactory {
 	/*
