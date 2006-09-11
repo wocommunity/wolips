@@ -67,7 +67,7 @@ import java.util.StringTokenizer;
 
 /**
  * @author Harald Niesche
- * 
+ * @deprecated Use org.objectstyle.wolips.core.* instead.
  */
 public class StringUtilities {
 

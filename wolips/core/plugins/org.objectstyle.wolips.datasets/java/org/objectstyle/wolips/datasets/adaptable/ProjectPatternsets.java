@@ -78,9 +78,7 @@ import org.objectstyle.wolips.variables.VariablesPlugin;
 
 /**
  * @author ulrich
- * 
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * @deprecated Use org.objectstyle.wolips.core.* instead.
  */
 public class ProjectPatternsets extends AbstractProjectAdapterType {
 
@@ -119,37 +117,36 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 
 	private String[] getStringsFromDefaults(String key, String[] def) {
 		String values = VariablesPlugin.getDefault().getProperty(key);
-		if(values == null) {
+		if (values == null) {
 			return def;
 		}
 		return values.split("\\,\\s*");
 	}
-	
+
 	private String[] getWSResourcesIncludeStringsDefault() {
-		return getStringsFromDefaults("wsresources.include.patternset", new String[] {"**/*.gif", "**/*.xsl", "**/*.css", "**/*.png", "**/*.jpg", "**/*.js" });
+		return getStringsFromDefaults("wsresources.include.patternset", new String[] { "**/*.gif", "**/*.xsl", "**/*.css", "**/*.png", "**/*.jpg", "**/*.js" });
 	}
-	
+
 	private String[] getWSResourcesExcludeStringsDefault() {
-		return getStringsFromDefaults("wsresources.exclude.patternset", new String[] {"**/*.woa/**", "**/*.framework/**", "**/*.eomodeld~/**"});
+		return getStringsFromDefaults("wsresources.exclude.patternset", new String[] { "**/*.woa/**", "**/*.framework/**", "**/*.eomodeld~/**" });
 	}
 
 	private String[] getResourcesIncludeStringsDefault() {
-		return getStringsFromDefaults("resources.include.patternset", new String[] {"**/Properties", "**/*.eomodeld/", "**/*.d2wmodel", "**/*.wo/", "**/*.api", "**/*.strings", "**/*.plist"});
+		return getStringsFromDefaults("resources.include.patternset", new String[] { "**/Properties", "**/*.eomodeld/", "**/*.d2wmodel", "**/*.wo/", "**/*.api", "**/*.strings", "**/*.plist" });
 	}
-	
+
 	private String[] getResourcesExcludeStringsDefault() {
-		return getStringsFromDefaults("resources.exclude.patternset", new String[] {"**/*.eomodeld~/", "**/*.woa/**", "**/*.framework/**"});
+		return getStringsFromDefaults("resources.exclude.patternset", new String[] { "**/*.eomodeld~/", "**/*.woa/**", "**/*.framework/**" });
 	}
 
 	private String[] getClassesIncludeStringsDefault() {
-		return getStringsFromDefaults("classes.include.patternset", new String[] {"**/*.class", "*.properties"});
+		return getStringsFromDefaults("classes.include.patternset", new String[] { "**/*.class", "*.properties" });
 	}
-	
+
 	private String[] getClassesExcludeStringsDefault() {
-		return getStringsFromDefaults("classes.exclude.patternset", new String[] {"build.properties"});
+		return getStringsFromDefaults("classes.exclude.patternset", new String[] { "build.properties" });
 	}
-	
-	
+
 	/**
 	 * Creates the folder "ant" within the project if it does not exist.
 	 */

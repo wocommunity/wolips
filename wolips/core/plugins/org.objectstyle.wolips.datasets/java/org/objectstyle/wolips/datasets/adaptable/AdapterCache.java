@@ -59,6 +59,7 @@ import java.util.Hashtable;
 
 /**
  * @author ulrich
+ * @deprecated Use org.objectstyle.wolips.core.* instead.
  */
 public class AdapterCache {
 

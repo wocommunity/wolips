@@ -62,6 +62,8 @@ import org.objectstyle.wolips.core.resources.pattern.PatternsetReader;
 
 /**
  * A string pattern matcher, supporting ant patterns.
+ * 
+ * @deprecated Use org.objectstyle.wolips.core.* instead.
  */
 public class PatternsetMatcher extends PatternsetReader implements IStringMatcher {
 

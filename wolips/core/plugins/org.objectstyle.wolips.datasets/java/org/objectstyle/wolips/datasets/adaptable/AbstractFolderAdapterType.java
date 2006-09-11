@@ -59,6 +59,7 @@ import org.eclipse.core.resources.IFolder;
 
 /**
  * @author ulrich
+ * @deprecated Use org.objectstyle.wolips.core.* instead.
  */
 public abstract class AbstractFolderAdapterType {
 

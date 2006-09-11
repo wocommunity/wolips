@@ -65,9 +65,7 @@ import org.eclipse.jdt.core.JavaCore;
 
 /**
  * @author ulrich
- * 
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * @deprecated Use org.objectstyle.wolips.core.* instead.
  */
 public final class Utils {
 	/**
