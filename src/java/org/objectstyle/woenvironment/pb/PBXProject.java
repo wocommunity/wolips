@@ -81,30 +81,54 @@ public class PBXProject {
 			_sourceRefs.add(path);
 	}
 
+  public void removeSourceReference(String path) {
+      _sourceRefs.remove(path);
+  }
+
 	public void addResourceFileReference(String path) {
 		if (!_resourceFileRefs.contains(path))
 			_resourceFileRefs.add(path);
 	}
+
+  public void removeResourceFileReference(String path) {
+      _resourceFileRefs.remove(path);
+  }
 
 	public void addResourceFolderReference(String path) {
 		if (!_resourceFolderRefs.contains(path))
 			_resourceFolderRefs.add(path);
 	}
 
+  public void removeResourceFolderReference(String path) {
+      _resourceFolderRefs.remove(path);
+  }
+
 	public void addWSResourceFileReference(String path) {
 		if (!_wsresourceFileRefs.contains(path))
 			_wsresourceFileRefs.add(path);
 	}
+
+  public void removeWSResourceFileReference(String path) {
+      _wsresourceFileRefs.remove(path);
+  }
 
 	public void addWSResourceFolderReference(String path) {
 		if (!_wsresourceFolderRefs.contains(path))
 			_wsresourceFolderRefs.add(path);
 	}
 
+  public void removeWSResourceFolderReference(String path) {
+      _wsresourceFolderRefs.remove(path);
+  }
+
 	public void addFrameworkReference(String path) {
 		if (!_frameworkRefs.contains(path))
 			_frameworkRefs.add(path);
 	}
+
+  public void removeFrameworkReference(String path) {
+      _frameworkRefs.remove(path);
+  }
 
 	public void save(File projectFile) {
 		ObjectsTable objectsTable = new ObjectsTable();
