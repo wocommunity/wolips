@@ -60,6 +60,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.IAction;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResource;
@@ -71,23 +72,13 @@ import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResour
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class OpenEntityModelerAction extends AbstractActionOnIResource {
-	private final String eoModelExtension = ".eomodeld";
+	private static final String eoModelExtension = ".eomodeld";
 
 	/**
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
 	public void run(IAction action) {
-		if (getActionResource() != null) {
-			String fileName = getActionResource().getName();
-			fileName = fileName.substring(0, fileName.length() - this.eoModelExtension.length());
-
-			ArrayList list = new ArrayList();
-			WorkbenchUtilitiesPlugin.findFilesInResourceByName(list, getActionResource(), "index" + this.eoModelExtension);
-			if (list.size() > 0) {
-				IFile indexFile = (IFile) list.get(0);
-				WorkbenchUtilitiesPlugin.open(indexFile, "org.objectstyle.wolips.eomodeler.editors.EOModelEditor");
-			}
-		}
+		OpenEntityModelerAction.openResourceIfPossible(getActionResource());
 	}
 
 	/**
@@ -95,5 +86,22 @@ public class OpenEntityModelerAction extends AbstractActionOnIResource {
 	 */
 	public void dispose() {
 		super.dispose();
+	}
+	
+	public static boolean openResourceIfPossible(IResource actionResource) {
+		boolean opened = false;
+		if (actionResource != null) {
+			String fileName = actionResource.getName();
+			fileName = fileName.substring(0, fileName.length() - OpenEntityModelerAction.eoModelExtension.length());
+
+			ArrayList list = new ArrayList();
+			WorkbenchUtilitiesPlugin.findFilesInResourceByName(list, actionResource, "index" + OpenEntityModelerAction.eoModelExtension);
+			if (list.size() > 0) {
+				IFile indexFile = (IFile) list.get(0);
+				WorkbenchUtilitiesPlugin.open(indexFile, "org.objectstyle.wolips.eomodeler.editors.EOModelEditor");
+				opened = true;
+			}
+		}
+		return opened;
 	}
 }

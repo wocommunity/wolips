@@ -56,8 +56,11 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IPerspectiveDescriptor;
+import org.eclipse.ui.IPerspectiveListener;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.objectstyle.wolips.ui.actions.PackageExplorerDoubleClickHandler;
 import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -85,6 +88,11 @@ public class UIPlugin extends AbstractWOLipsUIPlugin {
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
 		plugin = null;
+	}
+
+	public void start(BundleContext _context) throws Exception {
+		super.start(_context);
+		getWorkbench().getActiveWorkbenchWindow().addPageListener(new PackageExplorerDoubleClickHandler());
 	}
 
 	/**
