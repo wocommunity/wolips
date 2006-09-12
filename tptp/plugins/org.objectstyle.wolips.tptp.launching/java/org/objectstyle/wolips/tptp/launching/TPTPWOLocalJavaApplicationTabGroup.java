@@ -59,53 +59,33 @@ package org.objectstyle.wolips.tptp.launching;
 import java.util.ArrayList;
 
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
 import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
-import org.eclipse.debug.ui.ILaunchConfigurationTabGroup;
 import org.eclipse.debug.ui.sourcelookup.SourceLookupTab;
-import org.eclipse.hyades.trace.internal.ui.TraceConstants;
-import org.eclipse.hyades.trace.ui.UIPlugin;
 import org.eclipse.hyades.trace.ui.internal.launcher.ProfileEnvironmentTab;
 import org.eclipse.hyades.trace.ui.internal.launcher.ProfileTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaArgumentsTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaClasspathTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaMainTab;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchConfigurationDelegate;
 import org.objectstyle.wolips.launching.ui.CommonWOArgumentsTab;
 import org.objectstyle.wolips.launching.ui.LogTab;
 
 /**
- * @author uli To change this generated comment edit the template variable
- *         "typecomment": Window>Preferences>Java>Templates. To enable and
- *         disable the creation of type comments go to
- *         Window>Preferences>Java>Code Generation.
+ * @author uli
  */
 public class TPTPWOLocalJavaApplicationTabGroup extends AbstractLaunchConfigurationTabGroup {
 
-	/**
-	 * @see ILaunchConfigurationTabGroup#createTabs(ILaunchConfigurationDialog,
-	 *      String)
-	 */
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
-		// check preferences whether profiling is enabled
-		IPreferenceStore store = UIPlugin.getDefault().getPreferenceStore();
-		boolean isProfilingEnabled = store.getBoolean(TraceConstants.PROF_OPTION_KEY);
-
 		ArrayList tabs = new ArrayList(10);
 		tabs.add(new JavaMainTab());
 		tabs.add(new JavaArgumentsTab());
 		tabs.add(new CommonWOArgumentsTab());
 		tabs.add(new LogTab());
 		tabs.add(new JavaClasspathTab());
-
-		if (isProfilingEnabled) {
-			tabs.add(new ProfileTab(false));
-		}
-
+		tabs.add(new ProfileTab(false, true));
 		tabs.add(new SourceLookupTab());
 		tabs.add(new ProfileEnvironmentTab());
 		tabs.add(new CommonTab());
@@ -115,11 +95,6 @@ public class TPTPWOLocalJavaApplicationTabGroup extends AbstractLaunchConfigurat
 		setTabs(array);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup#setDefaults(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
-	 */
 	public void setDefaults(ILaunchConfigurationWorkingCopy wc) {
 		WOJavaLocalApplicationLaunchConfigurationDelegate.initConfiguration(wc);
 		super.setDefaults(wc);
