@@ -257,7 +257,7 @@ public class DotXcodeBuilder implements IIncrementalBuilder, IFullBuilder {
 						myXcodeProject.removeResourceFileReference(resourcePath);
 					}
 					if (myXcodeProjProject != null) {
-						myXcodeProjProject.removeWSResourceFileReference(resourcePath);
+						myXcodeProjProject.removeResourceFileReference(resourcePath);
 					}
 					myProjectChanged = true;
 				} else if (resource instanceof IFolder) {
@@ -265,7 +265,7 @@ public class DotXcodeBuilder implements IIncrementalBuilder, IFullBuilder {
 						myXcodeProject.removeResourceFolderReference(resourcePath);
 					}
 					if (myXcodeProjProject != null) {
-						myXcodeProjProject.removeWSResourceFolderReference(resourcePath);
+						myXcodeProjProject.removeResourceFolderReference(resourcePath);
 					}
 					myProjectChanged = true;
 				}
