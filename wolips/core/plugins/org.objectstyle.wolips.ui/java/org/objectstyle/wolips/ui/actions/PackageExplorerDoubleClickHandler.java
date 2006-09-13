@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2004 - 2005 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2006 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -65,9 +65,9 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 
 /**
- * Eclipse does not understand how to open a bundle folder.  This handler sneaks in and listens
- * to double-click events on Package Explorer to try and provide that missing ability for EOModel
- * folders and WO component folders.
+ * Eclipse does not understand how to open a bundle folder. This handler sneaks
+ * in and listens to double-click events on Package Explorer to try and provide
+ * that missing ability for EOModel folders and WO component folders.
  * 
  * @author mschrag
  */
@@ -75,11 +75,11 @@ public class PackageExplorerDoubleClickHandler implements IPageListener, IPartLi
 	private boolean _addedPartListener;
 
 	public void pageActivated(IWorkbenchPage _page) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	public void pageClosed(IWorkbenchPage _page) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	public void pageOpened(IWorkbenchPage _page) {
@@ -87,34 +87,31 @@ public class PackageExplorerDoubleClickHandler implements IPageListener, IPartLi
 	}
 
 	public void partActivated(IWorkbenchPartReference _partRef) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	public void partBroughtToTop(IWorkbenchPartReference _partRef) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	public void partClosed(IWorkbenchPartReference _partRef) {
-		// TODO Auto-generated method stub
-
+		// do nothing
 	}
 
 	public void partDeactivated(IWorkbenchPartReference _partRef) {
-		// TODO Auto-generated method stub
-
+		// do nothing
 	}
 
 	public void partHidden(IWorkbenchPartReference _partRef) {
-		// TODO Auto-generated method stub
-
+		// do nothing
 	}
 
 	public void partInputChanged(IWorkbenchPartReference _partRef) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	public void partOpened(IWorkbenchPartReference _partRef) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	public void partVisible(IWorkbenchPartReference partRef) {
@@ -134,7 +131,6 @@ public class PackageExplorerDoubleClickHandler implements IPageListener, IPartLi
 	}
 
 	public void doubleClick(DoubleClickEvent _event) {
-		// TODO Auto-generated method stub
 		ISelection selection = _event.getSelection();
 		if (selection instanceof IStructuredSelection) {
 			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
@@ -142,13 +138,9 @@ public class PackageExplorerDoubleClickHandler implements IPageListener, IPartLi
 			while (selectedObjectsIter.hasNext()) {
 				Object selectedObj = selectedObjectsIter.next();
 				if (selectedObj instanceof IFolder) {
-					IFolder selectedFolder = (IFolder)selectedObj;
-					boolean opened = false;
-					if (!opened) {
-						opened = OpenEntityModelerAction.openResourceIfPossible(selectedFolder);
-					}
-					if (!opened) {
-						opened = OpenWOAction.openResourceIfPossible(selectedFolder);
+					IFolder selectedFolder = (IFolder) selectedObj;
+					if (!OpenEntityModelerAction.openResourceIfPossible(selectedFolder)) {
+						OpenWOAction.openResourceIfPossible(selectedFolder);
 					}
 				}
 			}
