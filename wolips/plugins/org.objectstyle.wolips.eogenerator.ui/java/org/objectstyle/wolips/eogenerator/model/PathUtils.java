@@ -56,16 +56,20 @@ import org.eclipse.core.runtime.Path;
 public class PathUtils {
 	public static String getRelativePath(IProject _projectContext, IPath _path) {
 		IPath projectPath = _projectContext.getLocation();
+		return PathUtils.getRelativePath(projectPath, _path);
+	}
+	
+	public static String getRelativePath(IPath _projectPath, IPath _path) {
 		String modelPathStr;
 		if (_path.isAbsolute()) {
-			if (projectPath.isPrefixOf(_path)) {
-				modelPathStr = _path.removeFirstSegments(projectPath.segmentCount()).toPortableString();
+			if (_projectPath.isPrefixOf(_path)) {
+				modelPathStr = _path.removeFirstSegments(_projectPath.segmentCount()).toPortableString();
 			} else {
-				int matchingSegmentCount = projectPath.matchingFirstSegments(_path);
+				int matchingSegmentCount = _projectPath.matchingFirstSegments(_path);
 				if (matchingSegmentCount == 0) {
 					modelPathStr = _path.toPortableString();
 				} else {
-					int relativePathSegmentCount = projectPath.segmentCount() - matchingSegmentCount;
+					int relativePathSegmentCount = _projectPath.segmentCount() - matchingSegmentCount;
 					IPath relativeModelPath = new Path("");
 					for (int i = 0; i < relativePathSegmentCount; i++) {
 						relativeModelPath = relativeModelPath.append(".." + IPath.SEPARATOR);
@@ -79,5 +83,8 @@ public class PathUtils {
 		}
 		return modelPathStr;
 	}
-
+	
+	public static void main(String[] args) {
+		System.out.println("PathUtils.main: " + getRelativePath(new Path("C:\\grantparent"), new Path("C:\\grantparent\\parent\\child.txt")));
+	}
 }
