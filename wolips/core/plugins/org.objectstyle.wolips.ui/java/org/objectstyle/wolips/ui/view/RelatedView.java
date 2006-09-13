@@ -117,14 +117,14 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 public final class RelatedView extends ViewPart implements ISelectionListener, IPartListener {
 	protected class ViewContentProvider implements ITreeContentProvider {
 
-		Object input = null;
+		Object currentInput = null;
 
 		private Object lastParent;
 
 		ViewLabelProvider labelProvider;
 
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-			this.input = newInput;
+			this.currentInput = newInput;
 		}
 
 		public void dispose() {
