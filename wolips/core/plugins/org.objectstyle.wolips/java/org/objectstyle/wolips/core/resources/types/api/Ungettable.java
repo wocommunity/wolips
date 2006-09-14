@@ -92,7 +92,7 @@ public class Ungettable extends AbstractUn {
 	public boolean evaluate(Map _bindings) {
 		String bindingName = getName();
 		String bindingValue = (String) _bindings.get(bindingName);
-		boolean evaluation = (bindingValue != null && bindingValue.startsWith("\""));
+		boolean evaluation = (bindingValue != null && bindingValue.startsWith("\"") && !bindingValue.startsWith("\"~"));
 		return evaluation;
 	}
 }
