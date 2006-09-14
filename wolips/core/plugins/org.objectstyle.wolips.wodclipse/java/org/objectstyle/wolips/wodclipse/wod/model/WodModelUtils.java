@@ -65,15 +65,11 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.wolips.core.resources.types.api.Binding;
 import org.objectstyle.wolips.core.resources.types.api.Validation;
 import org.objectstyle.wolips.core.resources.types.api.Wo;
-import org.objectstyle.wolips.locate.Locate;
-import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
-import org.objectstyle.wolips.locate.scope.ComponentLocateScope;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.preferences.PreferenceConstants;
 import org.objectstyle.wolips.wodclipse.wod.completion.WodBindingUtils;
@@ -121,7 +117,6 @@ public class WodModelUtils {
 	}
 
 	public static List getSemanticProblems(IWodModel _wodModel, LocalizedComponentsLocateResult _locateResults, IJavaProject _javaProject, Map _elementNameToTypeCache, Map _typeToApiModelWoCache) throws CoreException {
-		long startTime = System.currentTimeMillis();
 		boolean hasPositions = (_wodModel instanceof DocumentWodModel);
 		boolean checkBindingValues = WodclipsePlugin.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.CHECK_BINDING_VALUES);
 
@@ -139,16 +134,16 @@ public class WodModelUtils {
 		}
 
 		IType javaFileType = _locateResults.getDotJavaType();
-		String javaFileName = null;
-		if (javaFileType != null) {
-			javaFileName = _locateResults.getDotJava().getName();
-		}
-
-		String apiFileName = null;
-		IFile apiFile = _locateResults.getDotApi();
-		if (apiFile != null) {
-			apiFileName = apiFile.getName();
-		}
+		// String javaFileName = null;
+		// if (javaFileType != null) {
+		// javaFileName = _locateResults.getDotJava().getName();
+		// }
+		//
+		// String apiFileName = null;
+		// IFile apiFile = _locateResults.getDotApi();
+		// if (apiFile != null) {
+		// apiFileName = apiFile.getName();
+		// }
 
 		Set elementNames = new HashSet();
 
@@ -271,7 +266,7 @@ public class WodModelUtils {
 		char[] stringToMatch = { '<', 'w', 'e', 'b', 'o', 'b', 'j', 'e', 'c', 't', 'n', 'a', 'm', 'e', '=' };
 		int matchIndex = 0;
 		StringBuffer elementNameBuffer = null;
-		boolean elementFound = false;
+		//boolean elementFound = false;
 		while ((ch = br.read()) != -1) {
 			if (elementNameBuffer == null) {
 				if (ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t') {
@@ -290,8 +285,11 @@ public class WodModelUtils {
 				}
 			} else {
 				if (ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t') {
+					// ignore
 				} else if (ch == '"') {
+					// ignore
 				} else if (ch == '/') {
+					// ignore
 				} else if (ch == '>') {
 					String elementName = elementNameBuffer.toString();
 					_htmlElementNames.add(elementName);
