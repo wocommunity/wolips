@@ -87,6 +87,7 @@ public class WodScanner extends AbstractJavaScanner {
 
 	protected List createRules() {
 		List rules = new ArrayList();
+		rules.add(new WOOGNLRule("\"~", "\"", getToken(PreferenceConstants.BINDING_VALUE), '\\'));
 		rules.add(new StringLiteralRule("\"", "\"", getToken(PreferenceConstants.CONSTANT_BINDING_VALUE), '\\'));
 		rules.add(new StringLiteralRule("'", "'", getToken(PreferenceConstants.CONSTANT_BINDING_VALUE), '\\'));
 		rules.add(new WhitespaceRule(new WodWhitespaceDetector()));
@@ -114,6 +115,7 @@ public class WodScanner extends AbstractJavaScanner {
 	public RulePosition getFirstRulePositionOfType(Class _ruleType) {
 		RulePosition rulePosition = null;
 		while ((rulePosition == null || !rulePosition.isRuleOfType(_ruleType)) && (rulePosition = nextRulePosition()) != null) {
+			// ignore
 		}
 
 		if (rulePosition == null || !rulePosition.isRuleOfType(_ruleType)) {

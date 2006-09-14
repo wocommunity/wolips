@@ -63,6 +63,7 @@ import org.objectstyle.wolips.wodclipse.wod.parser.ICommentRule;
 import org.objectstyle.wolips.wodclipse.wod.parser.OpenDefinitionWordDetector;
 import org.objectstyle.wolips.wodclipse.wod.parser.RulePosition;
 import org.objectstyle.wolips.wodclipse.wod.parser.StringLiteralRule;
+import org.objectstyle.wolips.wodclipse.wod.parser.WOOGNLRule;
 import org.objectstyle.wolips.wodclipse.wod.parser.WodScanner;
 
 /**
@@ -94,7 +95,7 @@ public class DocumentWodModel implements IWodModel {
 		DocumentWodElement element = null;
 		RulePosition savedRulePosition = null;
 		RulePosition lastRulePosition = null;
-		boolean stringLiteralIsABindingName = false;
+		// boolean stringLiteralIsABindingName = false;
 		RulePosition rulePosition;
 		while ((rulePosition = scanner.nextRulePosition()) != null) {
 			boolean whitespace = false;
@@ -138,6 +139,18 @@ public class DocumentWodModel implements IWodModel {
 				if (!RulePosition.isRulePositionOfType(lastRulePosition, ElementTypeRule.class)) {
 					addProblem("A '{' can only appear after an element type", rulePosition, false);
 				}
+			} else if (RulePosition.isRulePositionOfType(rulePosition, WOOGNLRule.class)) {
+				boolean ognlIsValue = RulePosition.isOperatorOfType(lastRulePosition, AssignmentOperatorWordDetector.class);
+				boolean ognlIsName = !ognlIsValue && (RulePosition.isOperatorOfType(lastRulePosition, EndAssignmentWordDetector.class) || RulePosition.isOperatorOfType(lastRulePosition, OpenDefinitionWordDetector.class));
+				if (!ognlIsValue && !ognlIsName) {
+					addProblem("The OGNL value " + rulePosition._getTextWithoutException() + " can only appear after a '{', '=', or ';'.", rulePosition, false);
+					savedRulePosition = null;
+				} else if (ognlIsName) {
+					savedRulePosition = rulePosition;
+				} else if (ognlIsValue) {
+					lastBinding = addBinding(element, savedRulePosition, rulePosition);
+					savedRulePosition = null;
+				}
 			} else if (RulePosition.isRulePositionOfType(rulePosition, StringLiteralRule.class)) {
 				boolean literalIsValue = RulePosition.isOperatorOfType(lastRulePosition, AssignmentOperatorWordDetector.class);
 				boolean literalIsName = !literalIsValue && (RulePosition.isOperatorOfType(lastRulePosition, EndAssignmentWordDetector.class) || RulePosition.isOperatorOfType(lastRulePosition, OpenDefinitionWordDetector.class));
@@ -168,7 +181,7 @@ public class DocumentWodModel implements IWodModel {
 				}
 				savedRulePosition = null;
 			} else if (RulePosition.isOperatorOfType(rulePosition, EndAssignmentWordDetector.class)) {
-				if (!RulePosition.isRulePositionOfType(lastRulePosition, BindingValueRule.class) && !RulePosition.isRulePositionOfType(lastRulePosition, StringLiteralRule.class)) {
+				if (!RulePosition.isRulePositionOfType(lastRulePosition, BindingValueRule.class) && !RulePosition.isRulePositionOfType(lastRulePosition, StringLiteralRule.class) && !RulePosition.isRulePositionOfType(lastRulePosition, WOOGNLRule.class)) {
 					addProblem("A ';' can only appear after a binding value", rulePosition, false);
 				}
 			} else if (RulePosition.isOperatorOfType(rulePosition, CloseDefinitionWordDetector.class)) {

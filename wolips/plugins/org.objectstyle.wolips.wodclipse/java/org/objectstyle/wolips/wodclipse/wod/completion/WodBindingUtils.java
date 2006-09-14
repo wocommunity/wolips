@@ -79,10 +79,8 @@ public class WodBindingUtils {
 				// there was more than one matching class! crap!
 				String matchingElementClassName = typeNameCollector.firstTypeName();
 				type = typeNameCollector.getTypeForClassName(matchingElementClassName);
-			} else {
-				type = null;
 			}
-			if (type != null) {
+			if (type != null && _elementNameToTypeCache != null) {
 				_elementNameToTypeCache.put(_elementTypeName, type);
 			}
 		}
@@ -230,10 +228,8 @@ public class WodBindingUtils {
 		if (cachedWo != null) {
 			if (cachedWo instanceof Wo) {
 				wo = (Wo) cachedWo;
-			} else {
-				wo = null;
 			}
-		} else if (cachedWo == null) {
+		} else {
 			ApiModel apiModel = null;
 			IOpenable typeContainer = _elementType.getOpenable();
 			if (typeContainer instanceof IClassFile) {
@@ -256,9 +252,9 @@ public class WodBindingUtils {
 					}
 				}
 			} else if (typeContainer instanceof ICompilationUnit) {
-				ICompilationUnit cu = (ICompilationUnit) typeContainer;
-				IResource resource = cu.getCorrespondingResource();
-				String name = resource.getName();
+				//ICompilationUnit cu = (ICompilationUnit) typeContainer;
+				//IResource resource = cu.getCorrespondingResource();
+				//String name = resource.getName();
 				List apiResources = WorkbenchUtilitiesPlugin.findResourcesInProjectByNameAndExtensions(_elementType.getJavaProject().getProject(), _elementType.getElementName(), new String[] { "api" }, false);
 				if (apiResources != null && apiResources.size() > 0) {
 					IResource apiResource = (IResource) apiResources.get(0);
@@ -269,11 +265,10 @@ public class WodBindingUtils {
 			if (apiModel != null) {
 				Wo[] wos = apiModel.getWODefinitions().getWos();
 				if (wos.length == 0) {
-					wo = null;
+					// leave it alone
 				} else if (wos.length == 1) {
 					wo = wos[0];
 				} else {
-					String className;
 					for (int i = 0; wo == null && i < wos.length; i++) {
 						if (_elementType.getElementName().equals(wos[i].getClassName())) {
 							wo = wos[i];
@@ -318,10 +313,15 @@ public class WodBindingUtils {
 				} else if ("MIME Types".equals(defaultsName)) {
 					validValues = new String[] { "\"image/gif\"", "\"image/jpeg\"", "\"image/png\"" };
 				} else if ("Direct Actions".equals(defaultsName)) {
+					// do nothing for now
 				} else if ("Direct Action Classes".equals(defaultsName)) {
+					// do nothing for now
 				} else if ("Page Names".equals(defaultsName)) {
+					// do nothing for now
 				} else if ("Frameworks".equals(defaultsName)) {
+					// do nothing for now
 				} else if ("Resources".equals(defaultsName)) {
+					// do nothing for now
 				} else if ("Actions".equals(defaultsName)) {
 					List bindingKeysList = WodBindingUtils.createMatchingBindingKeys(_javaProject, _wodJavaFileType, "", false, WodBindingUtils.VOID_ONLY);
 					validValues = new String[bindingKeysList.size()];
