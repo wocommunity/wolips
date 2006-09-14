@@ -65,14 +65,12 @@ import org.objectstyle.wolips.locate.result.DefaultLocateResult;
 import org.objectstyle.wolips.preferences.Preferences;
 
 public class EOGeneratorBuilder extends AbstractFullAndIncrementalBuilder {
-	private boolean myAutoEOGenerateOnBuild;
 
 	public EOGeneratorBuilder() {
 		super();
 	}
 
 	public boolean buildStarted(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
-		myAutoEOGenerateOnBuild = Preferences.shouldAutoEOGeneratorOnBuild();
 		return false;
 	}
 
@@ -102,7 +100,7 @@ public class EOGeneratorBuilder extends AbstractFullAndIncrementalBuilder {
 
 	public void handleWoappResources(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
 		try {
-			if (myAutoEOGenerateOnBuild && _resource instanceof IContainer && _resource.getName().endsWith(".eomodeld")) {
+			if (Preferences.shouldAutoEOGeneratorOnBuild() && _resource instanceof IContainer && _resource.getName().endsWith(".eomodeld")) {
 				EOModelReference modifiedModelReference = new EOModelReference(_resource.getLocation());
 				DefaultLocateResult result = new DefaultLocateResult();
 				Locate locate = new Locate(new EOGenLocateScope(_resource.getProject()), result);
