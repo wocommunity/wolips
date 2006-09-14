@@ -909,9 +909,9 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 			Map connectionDictionary = getConnectionDictionary();
 			if (connectionDictionary != null) {
 				String pluginName = (String) connectionDictionary.get("plugin");
-				if (pluginName == null) {
+				if (pluginName == null || pluginName.length() == 0) {
 					String jdbcUrl = (String) connectionDictionary.get("URL");
-					if (jdbcUrl != null) {
+					if (jdbcUrl != null && jdbcUrl.length() > 0) {
 						int firstColon = jdbcUrl.indexOf(':');
 						int secondColon = jdbcUrl.indexOf(':', firstColon + 1);
 						if (firstColon != -1 && secondColon != -1) {
