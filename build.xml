@@ -41,7 +41,7 @@
 	<!-- Load version provided by repository.                            -->
 	<!-- ========================================== -->
 	<target name="load.version.file">
-		<xmlproperty file=".svn/entries"/>
+		<xmlproperty file=".svn/entries" />
 		<property name="build.version" value="${buildprefix.version}${wc-entries.entry(revision)}" />
 	</target>
 
@@ -72,12 +72,6 @@
         * compile.deprecation= ${compile.deprecation}
         * compile.debug= ${compile.debug}
         * compile.optimize= ${compile.optimize}
-        * test environment
-        * build.output.test.dir = ${build.output.test.dir}
-        * test.eclipse.home = ${test.eclipse.home}                
-        * os = ${os}
-        * ws = ${ws}
-        * test.java.library.path = ${test.java.library.path}
         ****************************************
         </echo>
 	</target>
@@ -168,7 +162,7 @@
 	<!-- ============================================= -->
 	<!-- Run tests.                                    -->
 	<!-- ============================================= -->
-	<target name="test" depends="print.environment,prepare,woenvironment.test,woproject.test,wolips.test">
+	<target name="test" depends="print.environment,prepare,woenvironment.test,woproject.test">
 	</target>
 
 	<!-- ========================================== -->
@@ -183,13 +177,6 @@
 	<!-- ========================================== -->
 	<target name="woproject.test">
 		<ant dir="${project.woproject.dir}" target="test" />
-	</target>
-
-	<!-- ========================================== -->
-	<!-- Run wolips  tests.                         -->
-	<!-- ========================================== -->
-	<target name="wolips.test">
-		<ant dir="${project.wolips.dir}" target="test" />
 	</target>
 
 	<!-- ========================================== -->
