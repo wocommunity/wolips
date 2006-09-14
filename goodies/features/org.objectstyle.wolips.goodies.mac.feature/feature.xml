@@ -14,7 +14,7 @@
    </description>
 
    <copyright>
-      Copyright 2004, objectstyle.org
+      Copyright 2004 - 2006, objectstyle.org
    </copyright>
 
    <license>
@@ -23,7 +23,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2004 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2004 - 2006  The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -84,14 +84,14 @@
    <plugin
          id="org.objectstyle.wolips.goodies.core.mac"
          download-size="0"
-         install-size="0"
+         install-size="32"
          version="1.0.6"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.goodies.ui.mac"
          download-size="0"
-         install-size="0"
+         install-size="32"
          version="1.0.6"
          unpack="false"/>
 
