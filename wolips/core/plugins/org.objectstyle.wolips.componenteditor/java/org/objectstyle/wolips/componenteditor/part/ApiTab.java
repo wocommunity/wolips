@@ -47,6 +47,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.PartInitException;
 import org.objectstyle.wolips.apieditor.editor.ApiEditor;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
@@ -75,10 +76,15 @@ public class ApiTab extends ComponentEditorTab {
 			ComponenteditorPlugin.getDefault().log(e);
 		}
 		createInnerPartControl(this.getParentSashForm(), apiEditor);
+		apiEditor.addPropertyListener(new IPropertyListener() {
+			public void propertyChanged(Object source, int propertyId) {
+				ApiTab.this.getComponentEditorPart().publicHandlePropertyChange(propertyId);
+			}
+		});
 	}
 
 	public void doSave(IProgressMonitor monitor) {
-		// do nothing
+		apiEditor.doSave(monitor);
 	}
 
 	public IEditorInput getActiveEditorInput() {
