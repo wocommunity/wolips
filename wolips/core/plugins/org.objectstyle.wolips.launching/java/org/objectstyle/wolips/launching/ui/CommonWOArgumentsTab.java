@@ -145,12 +145,6 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		this.includeTable.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				handleSelection();
-			}
-		});
-
-		this.includeTable.addListener(SWT.CHECK, new Listener() {
-			public void handleEvent(Event e) {
-				setDirty(true);
 				updateLaunchConfigurationDialog();
 			}
 		});
