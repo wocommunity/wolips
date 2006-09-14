@@ -134,12 +134,6 @@ public class LogTab extends AbstractWOArgumentsTab {
 		this.debugGroupsTable.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				handleSelection();
-			}
-		});
-
-		this.debugGroupsTable.addListener(SWT.CHECK, new Listener() {
-			public void handleEvent(Event e) {
-				setDirty(true);
 				updateLaunchConfigurationDialog();
 			}
 		});
@@ -280,10 +274,7 @@ public class LogTab extends AbstractWOArgumentsTab {
 			TableItem item = new TableItem(this.debugGroupsTable, SWT.NONE);
 			String token = stringTokenizer.nextToken();
 			item.setText(token);
-			if (aString != null && aString.indexOf(token) >= 0)
-				item.setChecked(true);
-			else
-				item.setChecked(false);
+				item.setChecked(aString != null && aString.indexOf(token) >= 0);
 		}
 	}
 
