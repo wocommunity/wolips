@@ -68,7 +68,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -111,6 +110,7 @@ import org.objectstyle.wolips.eomodeler.model.EclipseEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.outline.EOModelContentOutlinePage;
 import org.objectstyle.wolips.eomodeler.utils.AbstractAddRemoveChangeRefresher;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
+import org.objectstyle.wolips.preferences.Preferences;
 
 public class EOModelEditor extends MultiPageEditorPart implements IResourceChangeListener, ITabbedPropertySheetPageContributor, ISelectionProvider, IEOModelEditor {
 	public static final String EOMODEL_EDITOR_ID = "org.objectstyle.wolips.eomodeler.editors.EOModelEditor";
@@ -356,24 +356,26 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 		super.dispose();
 
-		try {
-			IWorkbench workbench = Activator.getDefault().getWorkbench();
-			IWorkbenchPage workbenchPage = workbench.getActiveWorkbenchWindow().getActivePage();
-			if (EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID.equals(workbenchPage.getPerspective().getId())) {
-				IEditorReference[] editorReferences = workbenchPage.getEditorReferences();
-				int eomodelerEditorCount = 0;
-				for (int editorReferenceNum = 0; editorReferenceNum < editorReferences.length; editorReferenceNum++) {
-					IEditorReference editorReference = editorReferences[editorReferenceNum];
-					if (EOModelEditor.EOMODEL_EDITOR_ID.equals(editorReference.getId())) {
-						eomodelerEditorCount++;
+		if (Preferences.shouldEntityModelerChangePerspectives()) {
+			try {
+				IWorkbench workbench = Activator.getDefault().getWorkbench();
+				IWorkbenchPage workbenchPage = workbench.getActiveWorkbenchWindow().getActivePage();
+				if (EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID.equals(workbenchPage.getPerspective().getId())) {
+					IEditorReference[] editorReferences = workbenchPage.getEditorReferences();
+					int eomodelerEditorCount = 0;
+					for (int editorReferenceNum = 0; editorReferenceNum < editorReferences.length; editorReferenceNum++) {
+						IEditorReference editorReference = editorReferences[editorReferenceNum];
+						if (EOModelEditor.EOMODEL_EDITOR_ID.equals(editorReference.getId())) {
+							eomodelerEditorCount++;
+						}
+					}
+					if (eomodelerEditorCount == 0) {
+						workbench.showPerspective("org.objectstyle.wolips.ui.Perspective", workbench.getActiveWorkbenchWindow());
 					}
 				}
-				if (eomodelerEditorCount == 0) {
-					workbench.showPerspective("org.objectstyle.wolips.ui.Perspective", workbench.getActiveWorkbenchWindow());
-				}
+			} catch (WorkbenchException e) {
+				e.printStackTrace();
 			}
-		} catch (WorkbenchException e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -422,26 +424,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		}
 	}
 
-	private static int switchMode = -1;
-
 	public void init(IEditorSite _site, IEditorInput _editorInput) throws PartInitException {
 		try {
-			IWorkbench workbench = Activator.getDefault().getWorkbench();
-			IWorkbenchPage workbenchPage = workbench.getActiveWorkbenchWindow().getActivePage();
-			int result = switchMode;
-			if (workbenchPage != null && !EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID.equals(workbenchPage.getPerspective().getId()) && result < 2) {
-				// FIXME AK: this sucks, as we only keep this pref for the
-				// session, but I'm totally tired of this dialog
-				MessageDialog dialog = new MessageDialog(Display.getDefault().getActiveShell(), Messages.getString("EOModelEditor.switchPerspectivesTitle"), null, Messages.getString("EOModelEditor.switchPerspectivesMessage"), MessageDialog.QUESTION, new String[] { IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL, Messages.getString("EOModelEditor.switchPerspectivesAlways"), Messages.getString("EOModelEditor.switchPerspectivesNever") }, 0); // yes
-																																																																																																																	// is
-																																																																																																																	// the
-																																																																																																																	// default
-				result = dialog.open();
-				if (result > 1) {
-					switchMode = result;
-				}
-			}
-			if (result == 0 || result == 2) {
+			if (Preferences.shouldEntityModelerChangePerspectives()) {
+				IWorkbench workbench = Activator.getDefault().getWorkbench();
 				workbench.showPerspective(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID, workbench.getActiveWorkbenchWindow());
 			}
 		} catch (WorkbenchException e) {
@@ -565,10 +551,8 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 	public synchronized void setSelection(ISelection _selection, boolean _updateOutline) {
 		// MS: it's really easy to setup a selection loop with so many
-		// interrelated
-		// components. In reality, we only want the top selection to count, and
-		// if
-		// the call to setSelection is called again from within this stack, then
+		// interrelated components. In reality, we only want the top selection to count, and
+		// if the call to setSelection is called again from within this stack, then
 		// that's pretty much bad.
 		mySelectionDepth++;
 		try {

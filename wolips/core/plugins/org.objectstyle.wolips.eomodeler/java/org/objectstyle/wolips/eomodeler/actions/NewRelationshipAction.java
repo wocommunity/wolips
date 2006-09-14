@@ -99,15 +99,17 @@ public class NewRelationshipAction implements IWorkbenchWindowActionDelegate {
 				int results = dialog.open();
 				if (results == Window.OK) {
 					if (dialog.isManyToMany()) {
-						myEntity1.joinInManyToManyWith(myEntity2, dialog.getName(), dialog.getInverseName());
+						myEntity1.joinInManyToManyWith(myEntity2, dialog.getName(), dialog.getInverseName(), dialog.getJoinEntityName(), dialog.shouldFlatten());
 					} else {
 						EORelationship relationship = dialog.getRelationship();
 						if (relationship != null) {
 							relationship.getEntity().addRelationship(relationship);
+							relationship.setMandatoryIfNecessary();
 						}
 						EORelationship inverseRelationship = dialog.getInverseRelationship();
 						if (inverseRelationship != null) {
 							inverseRelationship.getEntity().addRelationship(inverseRelationship);
+							inverseRelationship.setMandatoryIfNecessary();
 						}
 					}
 				}

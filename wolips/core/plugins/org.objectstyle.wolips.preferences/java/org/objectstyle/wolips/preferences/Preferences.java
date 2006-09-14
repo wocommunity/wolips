@@ -134,6 +134,8 @@ public class Preferences {
 
 	public static final String PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE = "org.objectstyle.wolips.Preference.EOGeneratorSubclassTemplate";
 
+	public static final String PREF_ENTITY_MODELER_CHANGE_PERSPECTIVES = "org.objectstyle.wolips.Preference.EntityModelerChangePerspectives";
+
 	/**
 	 * Comment for <code>FLAG_INCLUDE_EXCLUDE_RULES_CHANGED</code>
 	 */
@@ -176,10 +178,12 @@ public class Preferences {
 	 */
 	public static void setDefaults() {
 		IPreferenceStore store = getPreferenceStore();
-		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_CAPTURE_ANT_OUTPUT))
+		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_CAPTURE_ANT_OUTPUT)) {
 			store.setDefault(Preferences.PREF_CAPTURE_ANT_OUTPUT, Preferences.falseString);
-		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_WRITE_PB_DOT_PROJECT_ON_BUILD))
+		}
+		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_WRITE_PB_DOT_PROJECT_ON_BUILD)) {
 			store.setDefault(Preferences.PREF_WRITE_PB_DOT_PROJECT_ON_BUILD, Preferences.trueString);
+		}
 		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_EOGENERATOR_PATH)) {
 			store.setDefault(Preferences.PREF_EOGENERATOR_PATH, "");
 		}
@@ -204,14 +208,21 @@ public class Preferences {
 		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_AUTOEOGENERATE_ON_BUILD)) {
 			store.setDefault(Preferences.PREF_AUTOEOGENERATE_ON_BUILD, Preferences.falseString);
 		}
-		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML))
+		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML)) {
 			store.setDefault(Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML, Preferences.falseString);
-		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_NS_PROJECT_SEARCH_PATH))
+		}
+		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_NS_PROJECT_SEARCH_PATH)) {
 			store.setDefault(Preferences.PREF_NS_PROJECT_SEARCH_PATH, "");
-		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH))
+		}
+		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH)) {
 			store.setDefault(Preferences.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH, PreferencesMessages.getString(Preferences.falseString));
-		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_WOLIPS_VERSION_EARLY_STARTUP))
+		}
+		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_WOLIPS_VERSION_EARLY_STARTUP)) {
 			store.setDefault(Preferences.PREF_WOLIPS_VERSION_EARLY_STARTUP, "0.0.0");
+		}
+		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_ENTITY_MODELER_CHANGE_PERSPECTIVES)) {
+			store.setDefault(Preferences.PREF_ENTITY_MODELER_CHANGE_PERSPECTIVES, Preferences.trueString);
+		}
 		store.setDefault(Preferences.PREF_LAUNCH_GLOBAL, PreferencesMessages.getString(Preferences.PREF_LAUNCH_GLOBAL));
 		Preferences.SET_DEFAULTS_STRING = null;
 	}
@@ -381,58 +392,43 @@ public class Preferences {
 
 	}
 
-	/**
-	 * @return the global lauch preferences
-	 */
-	public static String getPREF_LAUNCH_GLOBAL() {
+	public static String getLaunchGlobal() {
 		return Preferences.getString(Preferences.PREF_LAUNCH_GLOBAL);
 	}
 
-	/**
-	 * @return the nsprojectsearchpath preferences
-	 */
-	public static String getPREF_NS_PROJECT_SEARCH_PATH() {
+	public static String getNSProjectSearchPath() {
 		return Preferences.getString(Preferences.PREF_NS_PROJECT_SEARCH_PATH);
 	}
 
-	/**
-	 * @return the preference
-	 */
-	public static String getPREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML() {
-		return Preferences.getString(Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML);
+	public static boolean getOpenWOComponentActionIncludesOpenHTML() {
+		return Preferences.getBoolean(Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML);
 	}
 
-	/**
-	 * @return the preference
-	 */
-	public static boolean getPREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH() {
+	public static boolean shouldRebuildWOBuildPropertiesOnNextLaunch() {
 		return Preferences.getBoolean(Preferences.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH);
 	}
 
-	/**
-	 * @return the preferences
-	 */
-	public static boolean getPREF_CAPTURE_ANT_OUTPUT() {
+	public static boolean shouldCaptureAntOutput() {
 		return Preferences.getBoolean(Preferences.PREF_CAPTURE_ANT_OUTPUT);
 	}
 
-	public static boolean getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD() {
+	public static boolean shouldWritePBProjOnBuild() {
 		return Preferences.getBoolean(Preferences.PREF_WRITE_PB_DOT_PROJECT_ON_BUILD);
 	}
 
-	public static boolean getPREF_WRITE_XCODE_ON_BUILD() {
+	public static boolean shouldWriteXcodeOnBuild() {
 		return Preferences.getBoolean(Preferences.PREF_WRITE_XCODE_ON_BUILD);
 	}
 
-	public static boolean getPREF_WRITE_XCODE21_ON_BUILD() {
+	public static boolean shouldWriteXcodeProjOnBuild() {
 		return Preferences.getBoolean(Preferences.PREF_WRITE_XCODE21_ON_BUILD);
 	}
 
-	public static boolean getPREF_VALIDATE_WOD_ON_BUILD() {
+	public static boolean shouldValidateWODOnBuild() {
 		return Preferences.getBoolean(Preferences.PREF_VALIDATE_WOD_ON_BUILD);
 	}
 
-	public static boolean getPREF_AUTOEOGENERATE_ON_BUILD() {
+	public static boolean shouldAutoEOGeneratorOnBuild() {
 		return Preferences.getBoolean(Preferences.PREF_AUTOEOGENERATE_ON_BUILD);
 	}
 
@@ -468,76 +464,60 @@ public class Preferences {
 		Preferences.setString(Preferences.PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE, _path);
 	}
 
-	/**
-	 * @return the preferences
-	 */
-	public static String getPREF_WOLIPS_VERSION_EARLY_STARTUP() {
+	public static String getWOLipsVersionEarlyStartup() {
 		return Preferences.getString(Preferences.PREF_WOLIPS_VERSION_EARLY_STARTUP);
 	}
 
-	/**
-	 * @param string
-	 */
-	public static void setPREF_LAUNCH_GLOBAL(String string) {
+	public static void setLaunchGlobal(String string) {
 		Preferences.setString(Preferences.PREF_LAUNCH_GLOBAL, string);
 	}
 
-	/**
-	 * @param string
-	 */
-	public static void setPREF_NS_PROJECT_SEARCH_PATH(String string) {
+	public static void setNSProjectSearchPath(String string) {
 		Preferences.setString(Preferences.PREF_NS_PROJECT_SEARCH_PATH, string);
 	}
 
-	/**
-	 * @param value
-	 */
-	public static void setPREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML(boolean value) {
+	public static void setOpenWOComponentActionIncludesOpenHTML(boolean value) {
 		Preferences.setBoolean(Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML, value);
 	}
 
-	/**
-	 * @param value
-	 */
-	public static void setPREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH(boolean value) {
+	public static void setRebuildWOBuildPropertiesOnNextLaunch(boolean value) {
 		Preferences.setBoolean(Preferences.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH, value);
 	}
 
-	/**
-	 * @param value
-	 */
-	public static void setPREF_CAPTURE_ANT_OUTPUT(boolean value) {
+	public static void setCaptureAntOutput(boolean value) {
 		Preferences.setBoolean(Preferences.PREF_CAPTURE_ANT_OUTPUT, value);
 	}
 
-	/**
-	 * @param value
-	 */
-	public static void setPREF_WRITE_PB_DOT_PROJECT_ON_BUILD(boolean value) {
+	public static void setWritePBProjOnBuild(boolean value) {
 		Preferences.setBoolean(PREF_WRITE_PB_DOT_PROJECT_ON_BUILD, value);
 	}
 
-	public static void setPREF_WRITE_XCODE_ON_BUILD(boolean value) {
+	public static void setWriteXcodeOnBuild(boolean value) {
 		Preferences.setBoolean(Preferences.PREF_WRITE_XCODE_ON_BUILD, value);
 	}
 
-	public static void setPREF_WRITE_XCODE21_ON_BUILD(boolean value) {
+	public static void setWriteXcodeProjOnBuild(boolean value) {
 		Preferences.setBoolean(Preferences.PREF_WRITE_XCODE21_ON_BUILD, value);
 	}
 
-	public static void setPREF_VALIDATE_WOD_ON_BUILD(boolean value) {
+	public static void setValidateWODOnBuild(boolean value) {
 		Preferences.setBoolean(Preferences.PREF_VALIDATE_WOD_ON_BUILD, value);
 	}
 
-	public static void setPREF_AUTOEOGENERATE_ON_BUILD(boolean value) {
+	public static void setAutoEOGenerateOnBuild(boolean value) {
 		Preferences.setBoolean(Preferences.PREF_AUTOEOGENERATE_ON_BUILD, value);
 	}
 
-	/**
-	 * @param string
-	 */
-	public static void setPREF_WOLIPS_VERSION_EARLY_STARTUP(String string) {
+	public static void setWOLipsVersionEarlyStartup(String string) {
 		Preferences.setString(Preferences.PREF_WOLIPS_VERSION_EARLY_STARTUP, string);
+	}
+
+	public static void setEntityModelerChangePerspective(boolean value) {
+		Preferences.setBoolean(Preferences.PREF_ENTITY_MODELER_CHANGE_PERSPECTIVES, value);
+	}
+
+	public static boolean shouldEntityModelerChangePerspectives() {
+		return Preferences.getBoolean(Preferences.PREF_ENTITY_MODELER_CHANGE_PERSPECTIVES);
 	}
 
 }

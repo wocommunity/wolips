@@ -39,8 +39,8 @@ public class EOModelErrorDialog extends Dialog {
 		myFailureListViewer.setLabelProvider(new FailureLabelProvider());
 		myFailureListViewer.setInput(myFailures);
 		GridData failuresGridData = new GridData(GridData.FILL_BOTH);
-		failuresGridData.widthHint = 600;
-		failuresGridData.heightHint = 300;
+		failuresGridData.widthHint = 800;
+		failuresGridData.heightHint = 400;
 		myFailureListViewer.getList().setLayoutData(failuresGridData);
 		return composite;
 	}
