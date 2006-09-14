@@ -72,7 +72,7 @@ public class EOGeneratorBuilder extends AbstractFullAndIncrementalBuilder {
 	}
 
 	public boolean buildStarted(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
-		myAutoEOGenerateOnBuild = Preferences.getPREF_AUTOEOGENERATE_ON_BUILD();
+		myAutoEOGenerateOnBuild = Preferences.shouldAutoEOGeneratorOnBuild();
 		return false;
 	}
 

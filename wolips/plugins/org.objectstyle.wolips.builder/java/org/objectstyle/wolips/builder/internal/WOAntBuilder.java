@@ -208,7 +208,7 @@ public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 	 */
 	private void launchAntInExternalVM(IFile buildFile, IProgressMonitor monitor) {
 		try {
-			AntPlugin.getDefault().launchAntInExternalVM(buildFile, monitor, Preferences.getPREF_CAPTURE_ANT_OUTPUT(), null);
+			AntPlugin.getDefault().launchAntInExternalVM(buildFile, monitor, Preferences.shouldCaptureAntOutput(), null);
 		} catch (CoreException e) {
 			BuilderPlugin.getDefault().log(e);
 			return;

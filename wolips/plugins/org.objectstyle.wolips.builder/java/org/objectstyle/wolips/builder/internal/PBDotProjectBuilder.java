@@ -100,7 +100,7 @@ public class PBDotProjectBuilder implements IIncrementalBuilder, IFullBuilder {
 	}
 
 	public boolean buildStarted(int kind, Map args, IProgressMonitor monitor, IProject project, Map buildCache) {
-		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+		if (!Preferences.shouldWritePBProjOnBuild()) {
 			return false;
 		}
 		this.affectedPBDotProjectOwner = new Hashtable();
@@ -111,7 +111,7 @@ public class PBDotProjectBuilder implements IIncrementalBuilder, IFullBuilder {
 	}
 
 	public boolean buildPreparationDone(int kind, Map args, IProgressMonitor monitor, IProject project, Map buildCache) {
-		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+		if (!Preferences.shouldWritePBProjOnBuild()) {
 			return false;
 		}
 		Iterator iterator = affectedPBDotProjectOwner.values().iterator();
@@ -142,7 +142,7 @@ public class PBDotProjectBuilder implements IIncrementalBuilder, IFullBuilder {
 	}
 
 	public void handleSourceDelta(IResourceDelta delta, IProgressMonitor monitor, Map buildCache) {
-		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+		if (!Preferences.shouldWritePBProjOnBuild()) {
 			return;
 		}
 		IResource resource = delta.getResource();
@@ -150,14 +150,14 @@ public class PBDotProjectBuilder implements IIncrementalBuilder, IFullBuilder {
 	}
 
 	public void handleSource(IResource resource, IProgressMonitor progressMonitor, Map buildCache) {
-		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+		if (!Preferences.shouldWritePBProjOnBuild()) {
 			return;
 		}
 		handleSource(IResourceDelta.ADDED, resource);
 	}
 
 	private boolean handleSource(int kind, IResource resource) {
-		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+		if (!Preferences.shouldWritePBProjOnBuild()) {
 			return false;
 		}
 		if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED || kind == IResourceDelta.REMOVED) {
@@ -182,21 +182,21 @@ public class PBDotProjectBuilder implements IIncrementalBuilder, IFullBuilder {
 	}
 
 	public void handleWoappResourcesDelta(IResourceDelta delta, IProgressMonitor monitor, Map buildCache) {
-		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+		if (!Preferences.shouldWritePBProjOnBuild()) {
 			return;
 		}
 		handleWoappResources(delta.getKind(), delta.getResource());
 	}
 
 	public void handleWoappResources(IResource resource, IProgressMonitor progressMonitor, Map buildCache) {
-		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+		if (!Preferences.shouldWritePBProjOnBuild()) {
 			return;
 		}
 		handleWoappResources(IResourceDelta.ADDED, resource);
 	}
 
 	public void handleWoappResources(int kind, IResource resource) {
-		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+		if (!Preferences.shouldWritePBProjOnBuild()) {
 			return;
 		}
 		if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED || kind == IResourceDelta.REMOVED) {
@@ -238,14 +238,14 @@ public class PBDotProjectBuilder implements IIncrementalBuilder, IFullBuilder {
 	}
 
 	public void handleWebServerResources(IResource resource, IProgressMonitor progressMonitor, Map buildCache) {
-		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+		if (!Preferences.shouldWritePBProjOnBuild()) {
 			return;
 		}
 		handleWebServerResources(IResourceDelta.ADDED, resource);
 	}
 
 	public void handleWebServerResourcesDelta(IResourceDelta delta, IProgressMonitor monitor, Map buildCache) {
-		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+		if (!Preferences.shouldWritePBProjOnBuild()) {
 			return;
 		}
 		IResource resource = delta.getResource();
@@ -253,7 +253,7 @@ public class PBDotProjectBuilder implements IIncrementalBuilder, IFullBuilder {
 	}
 
 	private void handleWebServerResources(int kind, IResource resource) {
-		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+		if (!Preferences.shouldWritePBProjOnBuild()) {
 			return;
 		}
 		if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED || kind == IResourceDelta.REMOVED) {
@@ -269,14 +269,14 @@ public class PBDotProjectBuilder implements IIncrementalBuilder, IFullBuilder {
 	}
 
 	public void handleOther(IResource resource, IProgressMonitor monitor, Map buildCache) {
-		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+		if (!Preferences.shouldWritePBProjOnBuild()) {
 			return;
 		}
 		handleOther(IResourceDelta.ADDED, resource);
 	}
 
 	public void handleOtherDelta(IResourceDelta delta, IProgressMonitor monitor, Map buildCache) {
-		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+		if (!Preferences.shouldWritePBProjOnBuild()) {
 			return;
 		}
 		IResource resource = delta.getResource();
@@ -284,7 +284,7 @@ public class PBDotProjectBuilder implements IIncrementalBuilder, IFullBuilder {
 	}
 
 	private void handleOther(int kind, IResource resource) {
-		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+		if (!Preferences.shouldWritePBProjOnBuild()) {
 			return;
 		}
 		IDotSubprojAdapter dotSubprojAdapter = (IDotSubprojAdapter) resource.getAdapter(IDotSubprojAdapter.class);
@@ -303,7 +303,7 @@ public class PBDotProjectBuilder implements IIncrementalBuilder, IFullBuilder {
 
 	public void handleClasspath(IResource resource, IProgressMonitor progressMonitor, Map buildCache) {
 
-		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+		if (!Preferences.shouldWritePBProjOnBuild()) {
 			return;
 		}
 		IPBDotProjectOwner pbDotProjectOwner = this.getIPBDotProjectOwner(resource);
@@ -315,7 +315,7 @@ public class PBDotProjectBuilder implements IIncrementalBuilder, IFullBuilder {
 	}
 
 	public void classpathChanged(IResourceDelta delta, IProgressMonitor monitor, Map buildCache) {
-		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+		if (!Preferences.shouldWritePBProjOnBuild()) {
 			return;
 		}
 		IResource resource = delta.getResource();

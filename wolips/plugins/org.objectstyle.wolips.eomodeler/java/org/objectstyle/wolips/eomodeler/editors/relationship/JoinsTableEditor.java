@@ -151,11 +151,13 @@ public class JoinsTableEditor extends Composite {
 			KeyComboBoxCellEditor sourceCellEditor = (KeyComboBoxCellEditor) myJoinsTableViewer.getCellEditors()[TableUtils.getColumnNumber(EOJoinsConstants.COLUMNS, EOJoin.SOURCE_ATTRIBUTE_NAME)];
 			EOEntity source = myRelationship.getEntity();
 			if (source != null) {
+				myJoinsTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOJoinsConstants.COLUMNS, EOJoin.SOURCE_ATTRIBUTE_NAME)).setText(source.getName());
 				sourceCellEditor.setItems(source.getAttributeNames());
 			}
 			KeyComboBoxCellEditor destinationCellEditor = (KeyComboBoxCellEditor) myJoinsTableViewer.getCellEditors()[TableUtils.getColumnNumber(EOJoinsConstants.COLUMNS, EOJoin.DESTINATION_ATTRIBUTE_NAME)];
 			EOEntity destination = myRelationship.getDestination();
 			if (destination != null) {
+				myJoinsTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOJoinsConstants.COLUMNS, EOJoin.DESTINATION_ATTRIBUTE_NAME)).setText(destination.getName());
 				destinationCellEditor.setItems(destination.getAttributeNames());
 			}
 			TableUtils.packTableColumns(myJoinsTableViewer);

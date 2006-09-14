@@ -280,7 +280,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends AbstractJ
 		String mainTypeName = verifyMainTypeName(configuration);
 
 		File workingDir = verifyWorkingDirectory(configuration);
-		String launchArguments = configuration.getAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS, Preferences.getPREF_LAUNCH_GLOBAL());
+		String launchArguments = configuration.getAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS, Preferences.getLaunchGlobal());
 		if (launchArguments != null && launchArguments.indexOf("<>-EOAdaptorDebugEnabled=<>") != -1) {
 			launchArguments = launchArguments.replaceAll("\\Q<>-EOAdaptorDebugEnabled=<>\\E", "<>-EOAdaptorDebugEnabled<>");
 		}
@@ -312,7 +312,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends AbstractJ
 						argument = workingDir.getAbsolutePath();
 					}
 					if ("-NSProjectSearchPath".equals(parameter)) {
-						argument = javaProject.getGeneratedByWOLips(Preferences.getPREF_NS_PROJECT_SEARCH_PATH());
+						argument = javaProject.getGeneratedByWOLips(Preferences.getNSProjectSearchPath());
 					}
 
 				}

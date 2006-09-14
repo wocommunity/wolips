@@ -438,6 +438,19 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 		firePropertyChange(EORelationship.MANDATORY, oldMandatory, myMandatory);
 		firePropertyChange(EORelationship.OPTIONAL, BooleanUtils.negate(oldMandatory), BooleanUtils.negate(myMandatory));
 	}
+	
+	public void setMandatoryIfNecessary() {
+		boolean mandatory = false;
+		Iterator joinsIter = getJoins().iterator();
+		while (!mandatory && joinsIter.hasNext()) {
+			EOJoin join = (EOJoin)joinsIter.next();
+			EOAttribute sourceAttribute = join.getSourceAttribute();
+			if (sourceAttribute != null) {
+				mandatory = sourceAttribute.isAllowsNull() == null || !sourceAttribute.isAllowsNull().booleanValue();
+			}
+		}
+		setMandatory(Boolean.valueOf(mandatory));
+	}
 
 	public Boolean getOptional() {
 		return isOptional();
@@ -683,6 +696,8 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 				_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " has no destination entity."));
 			}
 		}
+		EOEntity entity = getEntity();
+		boolean singleTableInheritance = entity != null && entity.isSingleTableInheritance();
 		boolean mandatory = BooleanUtils.isTrue(isMandatory());
 		boolean toOne = BooleanUtils.isTrue(isToOne());
 		Iterator joinsIter = myJoins.iterator();
@@ -690,7 +705,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 			EOJoin join = (EOJoin) joinsIter.next();
 			join.verify(_failures);
 			EOAttribute sourceAttribute = join.getSourceAttribute();
-			if (toOne && mandatory && sourceAttribute != null && BooleanUtils.isTrue(sourceAttribute.isAllowsNull())) {
+			if (toOne && mandatory && !singleTableInheritance && sourceAttribute != null && BooleanUtils.isTrue(sourceAttribute.isAllowsNull())) {
 				_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " is mandatory but " + sourceAttribute.getFullyQualifiedName() + " allows nulls."));
 			} else if (toOne && !mandatory && sourceAttribute != null && !BooleanUtils.isTrue(sourceAttribute.isAllowsNull())) {
 				_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " is optional but " + sourceAttribute.getFullyQualifiedName() + " does not allow nulls."));

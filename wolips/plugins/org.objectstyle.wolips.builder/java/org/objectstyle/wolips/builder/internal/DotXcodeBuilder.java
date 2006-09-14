@@ -134,7 +134,7 @@ public class DotXcodeBuilder implements IIncrementalBuilder, IFullBuilder {
 			myXcodeProject = null;
 			myXcodeProjProject = null;
 		} else {
-			if (Preferences.getPREF_WRITE_XCODE_ON_BUILD()) {
+			if (Preferences.shouldWriteXcodeOnBuild()) {
 				boolean exists = project.getFolder(project.getName() + ".xcode").getFile("project.pbxproj").exists();
 				myXcodeProject = getXcodeProject(project, true);
 				fullRebuild |= !exists;
@@ -143,7 +143,7 @@ public class DotXcodeBuilder implements IIncrementalBuilder, IFullBuilder {
 				myXcodeProject = null;
 			}
 
-			if (Preferences.getPREF_WRITE_XCODE21_ON_BUILD()) {
+			if (Preferences.shouldWriteXcodeProjOnBuild()) {
 				boolean exists = project.getFolder(project.getName() + ".xcodeproj").getFile("project.pbxproj").exists();
 				myXcodeProjProject = getXcodeProjProject(project, true);
 				fullRebuild |= !exists;

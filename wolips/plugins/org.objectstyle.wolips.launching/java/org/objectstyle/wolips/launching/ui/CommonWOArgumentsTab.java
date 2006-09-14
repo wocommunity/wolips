@@ -352,7 +352,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 	 */
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
-			String string = configuration.getAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS, Preferences.getPREF_LAUNCH_GLOBAL()); //$NON-NLS-1$
+			String string = configuration.getAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS, Preferences.getLaunchGlobal()); //$NON-NLS-1$
 			this.fillTable(Preferences.getLaunchInfoFrom(string));
 		} catch (CoreException e) {
 			setErrorMessage(LaunchingMessages.getString("WOArgumentsTab.Exception_occurred_reading_configuration___15") + e.getStatus().getMessage()); //$NON-NLS-1$
@@ -424,7 +424,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		} catch (Exception anException) {
 			LaunchingPlugin.getDefault().log(anException);
 		}
-		return Preferences.getPREF_LAUNCH_GLOBAL();
+		return Preferences.getLaunchGlobal();
 	}
 
 	protected void updateLaunchConfigurationDialog() {

@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2006 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2004 - 2005 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -72,10 +72,10 @@ import org.eclipse.ui.IWorkbenchPartReference;
  * @author mschrag
  */
 public class PackageExplorerDoubleClickHandler implements IPageListener, IPartListener2, IDoubleClickListener {
-	private boolean _addedPartListener;
+	private boolean _addedPackageExplorerListener;
 
 	public void pageActivated(IWorkbenchPage _page) {
-		// do nothing
+		_page.addPartListener(this);
 	}
 
 	public void pageClosed(IWorkbenchPage _page) {
@@ -83,7 +83,7 @@ public class PackageExplorerDoubleClickHandler implements IPageListener, IPartLi
 	}
 
 	public void pageOpened(IWorkbenchPage _page) {
-		_page.addPartListener(this);
+		// do nothing
 	}
 
 	public void partActivated(IWorkbenchPartReference _partRef) {
@@ -115,7 +115,7 @@ public class PackageExplorerDoubleClickHandler implements IPageListener, IPartLi
 	}
 
 	public void partVisible(IWorkbenchPartReference partRef) {
-		if (!_addedPartListener) {
+		if (!_addedPackageExplorerListener) {
 			if (PackageExplorerPart.VIEW_ID.equals(partRef.getId())) {
 				IWorkbenchPart part = partRef.getPart(true);
 				if (part instanceof PackageExplorerPart) {
@@ -123,7 +123,7 @@ public class PackageExplorerDoubleClickHandler implements IPageListener, IPartLi
 					TreeViewer packageExplorerTreeViewer = packageExplorerPart.getTreeViewer();
 					if (packageExplorerTreeViewer != null) {
 						packageExplorerTreeViewer.addDoubleClickListener(this);
-						_addedPartListener = true;
+						_addedPackageExplorerListener = true;
 					}
 				}
 			}

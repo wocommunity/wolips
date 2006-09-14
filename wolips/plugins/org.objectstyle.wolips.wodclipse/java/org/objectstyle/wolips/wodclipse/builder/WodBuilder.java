@@ -74,7 +74,7 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
 	}
 
 	public boolean buildStarted(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
-		myValidateWOD = Preferences.getPREF_VALIDATE_WOD_ON_BUILD();
+		myValidateWOD = Preferences.shouldValidateWODOnBuild();
 		return false;
 	}
 
