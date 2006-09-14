@@ -310,9 +310,13 @@ public class EOGeneratorModel {
 	}
 
 	public void setEOGeneratorPath(String _generatorPath) {
+		this.setEOGeneratorPath(_generatorPath, false);
+	}
+
+	public void setEOGeneratorPath(String _generatorPath, boolean markAsDirty) {
 		if (isNew(myEOGeneratorPath, _generatorPath)) {
 			myEOGeneratorPath = _generatorPath;
-			myDirty = true;
+			myDirty = markAsDirty;
 		}
 	}
 
@@ -536,8 +540,10 @@ public class EOGeneratorModel {
 			while ((line = br.readLine()) != null) {
 				sb.append(line);
 			}
-			EOGeneratorModel model = new EOGeneratorModel(_file.getProject(), sb.toString());
-			model.setEOGeneratorPath(Preferences.getEOGeneratorPath());
+			String string = sb.toString();
+			string.replace('\\', '/');
+			EOGeneratorModel model = new EOGeneratorModel(_file.getProject(), string);
+			model.setEOGeneratorPath(Preferences.getEOGeneratorPath(), false);
 			return model;
 		} finally {
 			eogenFileStream.close();
