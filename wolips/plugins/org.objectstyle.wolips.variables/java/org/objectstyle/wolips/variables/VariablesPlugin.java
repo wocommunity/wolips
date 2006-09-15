@@ -61,6 +61,7 @@ import java.io.InputStream;
 import java.util.Dictionary;
 
 import org.eclipse.ant.core.AntRunner;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -105,7 +106,7 @@ public class VariablesPlugin extends AbstractBaseActivator {
 		monitor = new NullProgressMonitor();
 		File tmpFile = File.createTempFile("wolips", "xml");
 		FileOutputStream fileOutputStream = new FileOutputStream(tmpFile);
-		InputStream inputStream = this.openStream(new Path(VariablesPlugin.build_user_home_properties));
+		InputStream inputStream = FileLocator.openStream(this.getBundle(), new Path(VariablesPlugin.build_user_home_properties), false);
 		int aByte = 0;
 		while (aByte >= 0) {
 			aByte = inputStream.read();
