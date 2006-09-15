@@ -56,6 +56,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IEncodedStorage;
 import org.eclipse.core.resources.IFile;
@@ -78,6 +80,18 @@ import org.objectstyle.wolips.wodclipse.wod.completion.WodBindingUtils;
  * @author mschrag
  */
 public class WodModelUtils {
+	public static Pattern WEBOBJECTS_PATTERN;
+	
+	static {
+		StringBuffer patterns = new StringBuffer();
+		patterns.append("<webobjects{0,1}\\s+name\\s*=\\s*\"{0,1}([^>\"/\\s]+)\"{0,1}\\s*/{0,1}\\s*>");
+		patterns.append("|");
+		patterns.append("<wo\\s+name\\s*=\\s*\"{0,1}([^>\"/\\s]+)\"{0,1}\\s*/{0,1}\\s*>");
+		patterns.append("|");
+		patterns.append("<wo:([^>/\\s]+)\\s*/{0,1}\\s*>");
+		WodModelUtils.WEBOBJECTS_PATTERN = Pattern.compile(patterns.toString(), Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+	}
+
 	public static IWodModel createWodModel(IFile _wodFile, IDocument _wodDocument) {
 		return new DocumentWodModel(_wodFile, _wodDocument);
 	}
@@ -261,42 +275,20 @@ public class WodModelUtils {
 		IEncodedStorage storage = (IEncodedStorage) fileInput.getStorage();
 		InputStream fileContents = storage.getContents();
 		BufferedReader br = new BufferedReader(new InputStreamReader(fileContents, storage.getCharset()));
-		int ch;
-
-		char[] stringToMatch = { '<', 'w', 'e', 'b', 'o', 'b', 'j', 'e', 'c', 't', 'n', 'a', 'm', 'e', '=' };
-		int matchIndex = 0;
-		StringBuffer elementNameBuffer = null;
-		//boolean elementFound = false;
-		while ((ch = br.read()) != -1) {
-			if (elementNameBuffer == null) {
-				if (ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t') {
-					// ignore spaces
-				} else if (Character.toLowerCase((char) ch) == stringToMatch[matchIndex]) {
-					matchIndex++;
-					if (matchIndex == stringToMatch.length) {
-						elementNameBuffer = new StringBuffer();
-						matchIndex = 0;
-					}
-				} else {
-					matchIndex = 0;
-					if (Character.toLowerCase((char) ch) == stringToMatch[matchIndex]) {
-						matchIndex++;
-					}
-				}
-			} else {
-				if (ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t') {
-					// ignore
-				} else if (ch == '"') {
-					// ignore
-				} else if (ch == '/') {
-					// ignore
-				} else if (ch == '>') {
-					String elementName = elementNameBuffer.toString();
-					_htmlElementNames.add(elementName);
-					elementNameBuffer = null;
-				} else {
-					elementNameBuffer.append((char) ch);
-				}
+		StringBuffer htmlBuffer = new StringBuffer();
+		String line;
+		while ((line = br.readLine()) != null) {
+			htmlBuffer.append(line);
+			htmlBuffer.append(' ');
+		}
+		Matcher webobjectsTagMatcher = WodModelUtils.WEBOBJECTS_PATTERN.matcher(htmlBuffer);
+		while (webobjectsTagMatcher.find()) {
+			String elementName = webobjectsTagMatcher.group(1);
+			if (elementName == null) {
+				elementName = webobjectsTagMatcher.group(2);
+			}
+			if (elementName != null) {
+				_htmlElementNames.add(elementName);
 			}
 		}
 	}
@@ -316,5 +308,4 @@ public class WodModelUtils {
 		}
 		return isBindingValueKeyPath;
 	}
-
 }
