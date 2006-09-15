@@ -49,7 +49,7 @@
  */
 package org.objectstyle.wolips.documentation;
 
-import org.objectstyle.wolips.core.runtime.AbstractCorePlugin;
+import org.objectstyle.wolips.baseforplugins.AbstractBaseActivator;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -58,7 +58,7 @@ import org.osgi.framework.BundleContext;
  * @author uli
  * @author markus
  */
-public class DocumentationPlugin extends AbstractCorePlugin {
+public class DocumentationPlugin extends AbstractBaseActivator {
 	// The shared instance.
 	private static DocumentationPlugin plugin;
 

@@ -56,13 +56,13 @@
 
 package org.objectstyle.wolips.deployment.ui;
 
-import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
+import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
 import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
  */
-public class DeploymentPlugin extends AbstractWOLipsUIPlugin {
+public class DeploymentPlugin extends AbstractBaseUIActivator {
 	// The shared instance.
 	private static DeploymentPlugin plugin;
 

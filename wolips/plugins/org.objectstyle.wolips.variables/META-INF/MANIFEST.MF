@@ -9,6 +9,6 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.objectstyle.wolips.woproject,
  org.eclipse.ant.core,
- org.objectstyle.wolips
+ org.objectstyle.wolips.baseforplugins
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.variables

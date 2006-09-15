@@ -44,13 +44,13 @@
 
 package org.objectstyle.wolips.htmlpreview;
 
-import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
+import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
 import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
  */
-public class HtmlPreviewPlugin extends AbstractWOLipsUIPlugin {
+public class HtmlPreviewPlugin extends AbstractBaseUIActivator {
 	// The shared instance.
 	private static HtmlPreviewPlugin plugin;
 

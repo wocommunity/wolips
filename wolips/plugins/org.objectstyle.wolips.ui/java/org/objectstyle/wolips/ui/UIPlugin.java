@@ -58,8 +58,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
 import org.objectstyle.wolips.ui.actions.PackageExplorerDoubleClickHandler;
-import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -68,7 +68,7 @@ import org.osgi.framework.BundleContext;
  * @author uli
  * @author markus
  */
-public class UIPlugin extends AbstractWOLipsUIPlugin {
+public class UIPlugin extends AbstractBaseUIActivator {
 	// The shared instance.
 	private static UIPlugin plugin;
 

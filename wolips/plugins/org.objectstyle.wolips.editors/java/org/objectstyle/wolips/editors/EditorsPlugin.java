@@ -51,13 +51,13 @@ package org.objectstyle.wolips.editors;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
+import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
 import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
  */
-public class EditorsPlugin extends AbstractWOLipsUIPlugin {
+public class EditorsPlugin extends AbstractBaseUIActivator {
 	// The shared instance.
 	private static EditorsPlugin plugin;
 

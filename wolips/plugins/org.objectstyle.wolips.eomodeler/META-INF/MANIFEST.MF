@@ -15,7 +15,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jface.databinding,
  org.objectstyle.wolips.eogenerator.ui,
  org.objectstyle.wolips.variables,
- org.objectstyle.wolips.preferences
+ org.objectstyle.wolips.preferences,
+ org.objectstyle.wolips.baseforuiplugins
 Eclipse-LazyStart: true
 Bundle-Vendor: objectstyle.org
 Export-Package: org.objectstyle.wolips.eomodeler,

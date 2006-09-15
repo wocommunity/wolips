@@ -75,8 +75,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.objectstyle.wolips.baseforplugins.AbstractBaseActivator;
 import org.objectstyle.wolips.builder.BuilderPlugin;
-import org.objectstyle.wolips.core.runtime.AbstractCorePlugin;
 import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.datasets.pattern.StringUtilities;
 
@@ -315,7 +315,7 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 		return false;
 	}
 
-	private AbstractCorePlugin getLogger() {
+	private AbstractBaseActivator getLogger() {
 		return BuilderPlugin.getDefault();
 	}
 

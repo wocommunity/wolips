@@ -20,11 +20,11 @@ Require-Bundle: org.eclipse.search,
  org.objectstyle.wolips.workbenchutilities,
  org.objectstyle.wolips.datasets,
  org.objectstyle.wolips,
- org.objectstyle.wolips.builder
+ org.objectstyle.wolips.builder,
+ org.objectstyle.wolips.baseforuiplugins
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.ui,
  org.objectstyle.wolips.ui.actions,
- org.objectstyle.wolips.ui.plugins,
  org.objectstyle.wolips.ui.preferences,
  org.objectstyle.wolips.ui.propertypages,
  org.objectstyle.wolips.ui.view

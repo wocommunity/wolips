@@ -14,7 +14,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide,
  org.eclipse.ui.forms,
  org.objectstyle.wolips.commons,
- org.objectstyle.wolips
+ org.objectstyle.wolips,
+ org.objectstyle.wolips.baseforuiplugins
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.editors,
  org.objectstyle.wolips.editors.contentdescriber,

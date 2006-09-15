@@ -49,13 +49,13 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
+import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
 import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
  */
-public class ApieditorPlugin extends AbstractWOLipsUIPlugin {
+public class ApieditorPlugin extends AbstractBaseUIActivator {
 	// The shared instance.
 	private static ApieditorPlugin plugin;
 
