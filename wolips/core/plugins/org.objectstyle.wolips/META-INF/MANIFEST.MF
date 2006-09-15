@@ -11,7 +11,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.junit,
  org.apache.ant,
  org.objectstyle.wolips.woproject,
- org.eclipse.jdt.core
+ org.eclipse.jdt.core,
+ org.objectstyle.wolips.baseforplugins,
+ org.objectstyle.wolips.variables
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.core,
  org.objectstyle.wolips.core.resources.builder,
@@ -28,5 +30,4 @@ Export-Package: org.objectstyle.wolips.core,
  org.objectstyle.wolips.core.resources.types.file,
  org.objectstyle.wolips.core.resources.types.folder,
  org.objectstyle.wolips.core.resources.types.project,
- org.objectstyle.wolips.core.runtime,
  org.objectstyle.wolips.core.tests
