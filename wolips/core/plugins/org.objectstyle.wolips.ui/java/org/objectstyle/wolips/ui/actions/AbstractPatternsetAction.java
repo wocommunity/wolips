@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2004 The ObjectStyle Group 
+ * Copyright (c) 2004 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.window.Window;
-import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.objectstyle.wolips.core.resources.types.project.IProjectPatternsets;
 import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResource;
 
 /**
@@ -70,11 +70,8 @@ import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResour
  */
 public abstract class AbstractPatternsetAction extends AbstractActionOnIResource {
 
-	/**
-	 * @return the project
-	 */
-	public Project getProject() {
-		return (Project) this.getIProject().getAdapter(Project.class);
+	public IProjectPatternsets getProject() {
+		return (IProjectPatternsets) this.getIProject().getAdapter(IProjectPatternsets.class);
 	}
 
 	/**
