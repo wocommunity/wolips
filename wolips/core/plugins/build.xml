@@ -10,6 +10,8 @@
 	<!-- Build all.                                 -->
 	<!-- ========================================== -->
 	<target name="all">
+		<ant dir="org.objectstyle.wolips.baseforplugins" target="all" />
+		<ant dir="org.objectstyle.wolips.baseforuiplugins" target="all" />
 		<ant dir="org.objectstyle.wolips.commons" target="all" />
 		<ant dir="org.objectstyle.wolips.workbenchutilities" target="all" />
 		<ant dir="org.objectstyle.wolips.preferences" target="all" />
@@ -50,6 +52,8 @@
 	<!-- Build dist.                                -->
 	<!-- ========================================== -->
 	<target name="dist">
+		<ant dir="org.objectstyle.wolips.baseforplugins" target="dist" />
+		<ant dir="org.objectstyle.wolips.baseforuiplugins" target="dist" />
 		<ant dir="org.objectstyle.wolips.commons" target="dist" />
 		<ant dir="org.objectstyle.wolips.workbenchutilities" target="dist" />
 		<ant dir="org.objectstyle.wolips.preferences" target="dist" />
