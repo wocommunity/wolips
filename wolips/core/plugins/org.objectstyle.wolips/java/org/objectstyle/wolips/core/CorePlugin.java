@@ -62,15 +62,15 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.objectstyle.wolips.baseforplugins.AbstractBaseActivator;
 import org.objectstyle.wolips.core.resources.builder.IBuilder;
 import org.objectstyle.wolips.core.resources.internal.build.BuilderWrapper;
-import org.objectstyle.wolips.core.runtime.AbstractCorePlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
  */
-public class CorePlugin extends AbstractCorePlugin {
+public class CorePlugin extends AbstractBaseActivator {
 	// The shared instance.
 	private static CorePlugin plugin;
 
