@@ -43,6 +43,9 @@
  */
 package org.objectstyle.wolips.componenteditor.part;
 
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -51,11 +54,14 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.MultiPageSelectionProvider;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -66,7 +72,7 @@ import org.objectstyle.wolips.components.input.ComponentEditorInput;
 /**
  * @author uli
  */
-public class ComponentEditorPart extends MultiPageEditorPart {
+public class ComponentEditorPart extends MultiPageEditorPart implements IResourceChangeListener {
 
 	ComponentEditorInput componentEditorInput;
 
@@ -84,6 +90,7 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 
 	public ComponentEditorPart() {
 		super();
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 	}
 
 	private ComponentEditorOutline getComponentEditorOutline() {
@@ -308,6 +315,37 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 
 	public EditorInteraction getEditorInteraction() {
 		return editorInteraction;
+	}
+
+	public void resourceChanged(final IResourceChangeEvent event) {
+		if (event.getType() == IResourceChangeEvent.PRE_CLOSE) {
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					boolean closed = false;
+					for (int i = 0; i < componentEditorInput.getInput().length; i++) {
+						if (((FileEditorInput) componentEditorInput.getInput()[i]).getFile().getProject().equals(event.getResource())) {
+							IWorkbenchPage[] pages = getSite().getWorkbenchWindow().getPages();
+							for (int j = 0; j < pages.length; j++) {
+								IEditorPart editorPart = pages[i].findEditor(componentEditorInput);
+								if (editorPart != null) {
+									if(pages[i].closeEditor(ComponentEditorPart.this, true)) {
+										closed = true;
+									}
+								}
+							}
+						}
+						if(closed) {
+							break;
+						}
+					}
+				}
+			});
+		}
+	}
+
+	public void dispose() {
+		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+		super.dispose();
 	}
 
 }
