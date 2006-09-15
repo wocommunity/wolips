@@ -51,8 +51,8 @@ import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.FileEditorInput;
+import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
-import org.objectstyle.wolips.components.ComponentsPlugin;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
@@ -95,10 +95,10 @@ public abstract class AbstractSwitchToActionDelegate implements IEditorActionDel
 		try {
 			localizedComponentsLocateResult = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(file);
 		} catch (CoreException e) {
-			ComponentsPlugin.getDefault().log(e);
+			ComponenteditorPlugin.getDefault().log(e);
 			return null;
 		} catch (LocateException e) {
-			ComponentsPlugin.getDefault().log(e);
+			ComponenteditorPlugin.getDefault().log(e);
 			return null;
 		}
 		if (localizedComponentsLocateResult.getDotJava() == null || localizedComponentsLocateResult.getComponents() == null || localizedComponentsLocateResult.getComponents().length == 0) {

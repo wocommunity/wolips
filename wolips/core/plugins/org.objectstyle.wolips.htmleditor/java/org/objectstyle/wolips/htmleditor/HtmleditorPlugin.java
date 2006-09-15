@@ -47,13 +47,13 @@ package org.objectstyle.wolips.htmleditor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
+import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
 import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
  */
-public class HtmleditorPlugin extends AbstractWOLipsUIPlugin {
+public class HtmleditorPlugin extends AbstractBaseUIActivator {
 	// The shared instance.
 	private static HtmleditorPlugin plugin;
 

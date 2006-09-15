@@ -8,5 +8,5 @@ Bundle-Vendor: objectstyle.org
 Bundle-Localization: plugin
 Eclipse-LazyStart: true
 Require-Bundle: org.eclipse.core.runtime,
- org.objectstyle.wolips
+ org.objectstyle.wolips.baseforplugins
 Export-Package: org.objectstyle.wolips.team

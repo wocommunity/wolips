@@ -51,13 +51,13 @@ package org.objectstyle.wolips.tptp.launching;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
+import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
 import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
  */
-public class TPTPLaunchingPlugin extends AbstractWOLipsUIPlugin {
+public class TPTPLaunchingPlugin extends AbstractBaseUIActivator {
 	// The shared instance.
 	private static TPTPLaunchingPlugin plugin;
 

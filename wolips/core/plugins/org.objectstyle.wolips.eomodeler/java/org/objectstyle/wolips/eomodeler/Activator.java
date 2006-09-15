@@ -52,12 +52,13 @@ package org.objectstyle.wolips.eomodeler;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractUIPlugin {
+public class Activator extends AbstractBaseUIActivator {
 	public static final String CHECK_ICON = "check";
 
 	public static final String EOMODEL_ICON = "eoModel";

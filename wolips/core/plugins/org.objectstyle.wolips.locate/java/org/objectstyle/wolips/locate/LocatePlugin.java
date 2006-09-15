@@ -58,7 +58,7 @@ package org.objectstyle.wolips.locate;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.objectstyle.wolips.core.runtime.AbstractCorePlugin;
+import org.objectstyle.wolips.baseforplugins.AbstractBaseActivator;
 import org.objectstyle.wolips.locate.cache.ComponentLocateCache;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.locate.scope.ComponentLocateScope;
@@ -67,7 +67,7 @@ import org.osgi.framework.BundleContext;
 /**
  * The main plugin class to be used in the desktop.
  */
-public class LocatePlugin extends AbstractCorePlugin {
+public class LocatePlugin extends AbstractBaseActivator {
 	// The shared instance.
 	private static LocatePlugin plugin;
 

@@ -51,7 +51,7 @@ package org.objectstyle.wolips.ruleeditor;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
+import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -59,7 +59,7 @@ import org.osgi.framework.BundleContext;
  * 
  * @author uli
  */
-public class RuleEditorPlugin extends AbstractWOLipsUIPlugin {
+public class RuleEditorPlugin extends AbstractBaseUIActivator {
 	// The shared instance.
 	private static RuleEditorPlugin plugin;
 

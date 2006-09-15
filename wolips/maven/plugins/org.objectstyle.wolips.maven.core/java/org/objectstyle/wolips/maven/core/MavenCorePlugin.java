@@ -65,7 +65,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.objectstyle.wolips.core.runtime.AbstractCorePlugin;
+import org.objectstyle.wolips.baseforplugins.AbstractBaseActivator;
 import org.objectstyle.wolips.maven.core.mavenlaunchers.IMavenLauncher;
 import org.objectstyle.wolips.maven.core.mavenlaunchers.internal.MavenLauncherWrapper;
 import org.osgi.framework.BundleContext;
@@ -73,7 +73,7 @@ import org.osgi.framework.BundleContext;
 /**
  * The main plugin class to be used in the desktop.
  */
-public class MavenCorePlugin extends AbstractCorePlugin implements IMavenLauncher {
+public class MavenCorePlugin extends AbstractBaseActivator implements IMavenLauncher {
 	// The shared instance.
 	private static MavenCorePlugin plugin;
 

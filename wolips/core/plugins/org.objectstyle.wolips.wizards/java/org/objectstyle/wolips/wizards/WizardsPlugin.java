@@ -61,14 +61,14 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
-import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
+import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
  */
-public class WizardsPlugin extends AbstractWOLipsUIPlugin {
+public class WizardsPlugin extends AbstractBaseUIActivator {
 	// The shared instance.
 	private static WizardsPlugin plugin;
 

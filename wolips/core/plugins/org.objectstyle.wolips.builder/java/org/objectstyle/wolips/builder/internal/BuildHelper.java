@@ -76,8 +76,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.objectstyle.wolips.baseforplugins.AbstractBaseActivator;
 import org.objectstyle.wolips.builder.BuilderPlugin;
-import org.objectstyle.wolips.core.runtime.AbstractCorePlugin;
 import org.objectstyle.wolips.datasets.adaptable.Project;
 
 /**
@@ -130,7 +130,7 @@ public abstract class BuildHelper extends ResourceUtilities implements IResource
 
 		protected int _workAmount = 1000;
 
-		protected AbstractCorePlugin _getLogger() {
+		protected AbstractBaseActivator _getLogger() {
 			return BuilderPlugin.getDefault();
 		}
 
@@ -332,7 +332,7 @@ public abstract class BuildHelper extends ResourceUtilities implements IResource
 		subProgressMonitor.done();
 	}
 
-	protected AbstractCorePlugin _getLogger() {
+	protected AbstractBaseActivator _getLogger() {
 		return BuilderPlugin.getDefault();
 	}
 

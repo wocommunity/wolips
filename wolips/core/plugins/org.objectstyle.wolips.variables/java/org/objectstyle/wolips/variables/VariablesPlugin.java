@@ -67,14 +67,15 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.objectstyle.woenvironment.env.WOEnvironment;
 import org.objectstyle.woenvironment.env.WOVariables;
-import org.objectstyle.wolips.core.runtime.AbstractCorePlugin;
+import org.objectstyle.wolips.baseforplugins.AbstractBaseActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 
 /**
  * The main plugin class to be used in the desktop.
  */
-public class VariablesPlugin extends AbstractCorePlugin {
+public class VariablesPlugin extends AbstractBaseActivator {
+
 	private static final String build_user_home_properties = "woproperties.xml";
 
 	private static final String build_user_home_properties_pde_info = "PDE User please copy " + VariablesPlugin.build_user_home_properties + " from the woproject/projects/buildscripts to the wolips variables plugin.";
@@ -292,7 +293,7 @@ public class VariablesPlugin extends AbstractCorePlugin {
 	public String getWOProjectDevelopmentPath() {
 		return getWOVariables().getProperty("woproject.development.root");
 	}
-	
+
 	public String getProperty(String key) {
 		return getWOVariables().getProperty(key);
 	}

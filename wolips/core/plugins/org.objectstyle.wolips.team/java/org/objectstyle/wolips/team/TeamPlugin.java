@@ -55,13 +55,13 @@
  */
 package org.objectstyle.wolips.team;
 
-import org.objectstyle.wolips.core.runtime.AbstractCorePlugin;
+import org.objectstyle.wolips.baseforplugins.AbstractBaseActivator;
 import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
  */
-public class TeamPlugin extends AbstractCorePlugin {
+public class TeamPlugin extends AbstractBaseActivator {
 	// The shared instance.
 	private static TeamPlugin plugin;
 

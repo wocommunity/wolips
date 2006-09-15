@@ -46,8 +46,8 @@ package org.objectstyle.wolips.wodclipse;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
 import org.objectstyle.wolips.htmleditor.HtmleditorPlugin;
-import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
 import org.objectstyle.wolips.wodclipse.wod.WodEditor;
 import org.osgi.framework.BundleContext;
 
@@ -56,7 +56,7 @@ import org.osgi.framework.BundleContext;
  * 
  * @author mike
  */
-public class WodclipsePlugin extends AbstractWOLipsUIPlugin {
+public class WodclipsePlugin extends AbstractBaseUIActivator {
 	// The shared instance.
 	private static WodclipsePlugin plugin;
 

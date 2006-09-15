@@ -55,13 +55,13 @@
  */
 package org.objectstyle.wolips.builder;
 
-import org.objectstyle.wolips.core.runtime.AbstractCorePlugin;
+import org.objectstyle.wolips.baseforplugins.AbstractBaseActivator;
 import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
  */
-public class BuilderPlugin extends AbstractCorePlugin {
+public class BuilderPlugin extends AbstractBaseActivator {
 	// The shared instance.
 	private static BuilderPlugin plugin;
 

@@ -9,11 +9,10 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.jdt.debug.ui,
  org.eclipse.debug.core,
  org.eclipse.debug.ui,
- org.eclipse.core.runtime,
  org.objectstyle.wolips.launching,
  org.eclipse.ui,
  org.eclipse.hyades.trace.ui,
- org.objectstyle.wolips.ui,
+ org.objectstyle.wolips.baseforuiplugins,
  org.eclipse.jdt.launching,
  org.eclipse.jdt.core
 Eclipse-LazyStart: true

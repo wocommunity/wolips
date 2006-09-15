@@ -78,6 +78,9 @@
       <import plugin="org.apache.ant"/>
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.debug.core"/>
@@ -86,27 +89,25 @@
       <import plugin="org.eclipse.ui.browser"/>
       <import plugin="org.eclipse.jdt.debug.ui"/>
       <import plugin="org.eclipse.core.variables"/>
-      <import plugin="org.eclipse.ui.externaltools"/>
-      <import plugin="org.eclipse.ant.core"/>
       <import plugin="org.eclipse.search"/>
       <import plugin="org.eclipse.ui.console"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.ant.core"/>
       <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.ui.workbench"/>
       <import plugin="org.eclipse.jface"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.eclipse.wst.sse.core"/>
-      <import plugin="org.eclipse.wst.html.ui"/>
-      <import plugin="org.eclipse.ui.forms"/>
-      <import plugin="org.eclipse.wst.sse.ui"/>
       <import plugin="org.eclipse.ltk.core.refactoring"/>
       <import plugin="org.eclipse.text"/>
-      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.wst.sse.core"/>
+      <import plugin="org.eclipse.wst.html.ui"/>
+      <import plugin="org.eclipse.wst.sse.ui"/>
       <import plugin="org.eclipse.wst.xml.core"/>
       <import plugin="org.eclipse.wst.html.core"/>
       <import plugin="org.eclipse.wst.xml.ui"/>
-      <import plugin="org.eclipse.wst.common.ui"/>
       <import feature="org.eclipse.jst"/>
+      <import plugin="org.eclipse.pde.ui"/>
+      <import plugin="org.eclipse.ui.views.properties.tabbed"/>
+      <import plugin="org.eclipse.jface.databinding"/>
    </requires>
 
    <plugin
@@ -159,10 +160,10 @@
 
    <plugin
          id="org.objectstyle.wolips.eogenerator.ui"
-         download-size="12" 
+         download-size="12"
          install-size="24"
          version="1.0.6"
-         unpack="false"/> 
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.jdom"
@@ -348,6 +349,20 @@
          id="org.objectstyle.wolips.eomodeler"
          download-size="144"
          install-size="144"
+         version="1.0.6"
+         unpack="false"/>
+
+   <plugin
+         id="org.objectstyle.wolips.baseforplugins"
+         download-size="32"
+         install-size="32"
+         version="1.0.6"
+         unpack="false"/>
+
+   <plugin
+         id="org.objectstyle.wolips.baseforuiplugins"
+         download-size="32"
+         install-size="32"
          version="1.0.6"
          unpack="false"/>
 

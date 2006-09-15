@@ -46,7 +46,7 @@ package org.objectstyle.wolips.componenteditor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
+import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -54,7 +54,7 @@ import org.osgi.framework.BundleContext;
  * 
  * @author mike
  */
-public class ComponenteditorPlugin extends AbstractWOLipsUIPlugin {
+public class ComponenteditorPlugin extends AbstractBaseUIActivator {
 	// The shared instance.
 	private static ComponenteditorPlugin plugin;
 
