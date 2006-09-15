@@ -57,6 +57,7 @@ package org.objectstyle.wolips.core.resources.internal.types.project;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -76,12 +77,10 @@ import org.objectstyle.wolips.core.resources.types.ILocalizedPath;
 import org.objectstyle.wolips.core.resources.types.IPBDotProjectOwner;
 import org.objectstyle.wolips.core.resources.types.IResourceType;
 import org.objectstyle.wolips.core.resources.types.project.IProjectPatternsets;
+import org.objectstyle.wolips.variables.VariablesPlugin;
 
 /**
  * @author ulrich
- * 
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 
@@ -122,35 +121,35 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 	}
 
 	private String[] getStringsFromDefaults(String key, String[] def) {
-		String values = null; //AK: how do i get the prefs in here?? VariablesPlugin.getDefault().getProperty(key);
-		if(values == null) {
+		String values = VariablesPlugin.getDefault().getProperty(key);
+		if (values == null) {
 			return def;
 		}
 		return values.split("\\,\\s+");
 	}
-	
+
 	private String[] getWSResourcesIncludeStringsDefault() {
-		return getStringsFromDefaults("wsresources.include.patternset", new String[] {"**/*.gif", "**/*.xsl", "**/*.css", "**/*.png", "**/*.jpg", "**/*.js" });
+		return getStringsFromDefaults("wsresources.include.patternset", new String[] { "**/*.gif", "**/*.xsl", "**/*.css", "**/*.png", "**/*.jpg", "**/*.js" });
 	}
-	
+
 	private String[] getWSResourcesExcludeStringsDefault() {
-		return getStringsFromDefaults("wsresources.exclude.patternset", new String[] {"**/*.woa/**", "**/*.framework/**", "**/*.eomodeld~/**"});
+		return getStringsFromDefaults("wsresources.exclude.patternset", new String[] { "**/*.woa/**", "**/*.framework/**", "**/*.eomodeld~/**" });
 	}
 
 	private String[] getResourcesIncludeStringsDefault() {
-		return getStringsFromDefaults("resources.include.patternset", new String[] {"**/Properties", "**/*.eomodeld/", "**/*.d2wmodel", "**/*.wo/", "**/*.api", "**/*.strings", "**/*.plist"});
+		return getStringsFromDefaults("resources.include.patternset", new String[] { "**/Properties", "**/*.eomodeld/", "**/*.d2wmodel", "**/*.wo/", "**/*.api", "**/*.strings", "**/*.plist" });
 	}
-	
+
 	private String[] getResourcesExcludeStringsDefault() {
-		return getStringsFromDefaults("resources.exclude.patternset", new String[] {"**/*.eomodeld~/", "**/*.woa/**", "**/*.framework/**"});
+		return getStringsFromDefaults("resources.exclude.patternset", new String[] { "**/*.eomodeld~/", "**/*.woa/**", "**/*.framework/**" });
 	}
 
 	private String[] getClassesIncludeStringsDefault() {
-		return getStringsFromDefaults("classes.include.patternset", new String[] {"**/*.class", "*.properties"});
+		return getStringsFromDefaults("classes.include.patternset", new String[] { "**/*.class", "*.properties" });
 	}
-	
+
 	private String[] getClassesExcludeStringsDefault() {
-		return getStringsFromDefaults("classes.exclude.patternset", new String[] {"build.properties"});
+		return getStringsFromDefaults("classes.exclude.patternset", new String[] { "build.properties" });
 	}
 
 	/**
@@ -465,13 +464,35 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 	 * @param string
 	 */
 	public void addClassesIncludePattern(String string) {
+		List list = loadClassesIncludePatternSet();
+		if (!list.contains(string)) {
+			list.add(string);
+			saveClassesIncludePatternList(list);
+			removeClassesExcludePattern(string);
+		}
+	}
+
+	/**
+	 * @param string
+	 */
+	public void removeClassesIncludePattern(String string) {
+		List patterns = loadClassesIncludePatternSet();
+		if (patterns.remove(string)) {
+			saveClassesIncludePatternList(patterns);
+		}
+	}
+
+	protected List loadClassesIncludePatternSet() {
 		PatternsetMatcher patternsetMatcher = this.getClassesIncludeMatcher();
 		String[] pattern = patternsetMatcher.getPattern();
 		ArrayList list = new ArrayList();
 		for (int i = 0; i < pattern.length; i++) {
 			list.add(pattern[i]);
 		}
-		list.add(string);
+		return list;
+	}
+
+	protected void saveClassesIncludePatternList(List list) {
 		IFile classesIncludePatternset = this.getAntFolder().getFile("classes.include.patternset");
 		PatternsetWriter.create(classesIncludePatternset, (String[]) list.toArray(new String[list.size()]));
 		this.classesIncludeMatcher = new PatternsetMatcher(classesIncludePatternset);
@@ -486,13 +507,38 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 	 * @param string
 	 */
 	public void addClassesExcludePattern(String string) {
+		List list = loadClassesExcludePatternList();
+		if (!list.contains(string)) {
+			list.add(string);
+			saveClassesExcludePatternList(list);
+			removeClassesIncludePattern(string);
+		}
+	}
+
+	/**
+	 * @param string
+	 */
+	public void removeClassesExcludePattern(String string) {
+		List list = loadClassesExcludePatternList();
+		if (list.remove(string)) {
+			saveClassesExcludePatternList(list);
+		}
+	}
+
+	/**
+	 * @param string
+	 */
+	public List loadClassesExcludePatternList() {
 		PatternsetMatcher patternsetMatcher = this.getClassesExcludeMatcher();
 		String[] pattern = patternsetMatcher.getPattern();
 		ArrayList list = new ArrayList();
 		for (int i = 0; i < pattern.length; i++) {
 			list.add(pattern[i]);
 		}
-		list.add(string);
+		return list;
+	}
+
+	public void saveClassesExcludePatternList(List list) {
 		IFile classesExcludePatternset = this.getAntFolder().getFile("classes.exclude.patternset");
 		PatternsetWriter.create(classesExcludePatternset, (String[]) list.toArray(new String[list.size()]));
 		this.classesExcludeMatcher = new PatternsetMatcher(classesExcludePatternset);
@@ -507,13 +553,32 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 	 * @param string
 	 */
 	public void addWOAppResourcesIncludePattern(String string) {
+		List list = loadWOAppResourcesIncludePatternList();
+		if (!list.contains(string)) {
+			list.add(string);
+			saveWOAppResourcesIncludePatternList(list);
+			removeWOAppResourcesExcludePattern(string);
+		}
+	}
+
+	public void removeWOAppResourcesIncludePattern(String string) {
+		List list = loadWOAppResourcesIncludePatternList();
+		if (list.remove(string)) {
+			saveWOAppResourcesIncludePatternList(list);
+		}
+	}
+
+	public List loadWOAppResourcesIncludePatternList() {
 		PatternsetMatcher patternsetMatcher = this.getWoappResourcesIncludeMatcher();
 		String[] pattern = patternsetMatcher.getPattern();
 		ArrayList list = new ArrayList();
 		for (int i = 0; i < pattern.length; i++) {
 			list.add(pattern[i]);
 		}
-		list.add(string);
+		return list;
+	}
+
+	public void saveWOAppResourcesIncludePatternList(List list) {
 		IFile wsresourcesIncludePatternset = this.getAntFolder().getFile("wsresources.include.patternset");
 		PatternsetWriter.create(wsresourcesIncludePatternset, (String[]) list.toArray(new String[list.size()]));
 		this.woappResourcesIncludeMatcher = new PatternsetMatcher(wsresourcesIncludePatternset);
@@ -528,13 +593,32 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 	 * @param string
 	 */
 	public void addWOAppResourcesExcludePattern(String string) {
+		List list = loadWOAppResourcesExcludePatternList();
+		if (!list.contains(string)) {
+			list.add(string);
+			saveWOAppResourcesExcludePatternList(list);
+			removeWOAppResourcesIncludePattern(string);
+		}
+	}
+
+	public void removeWOAppResourcesExcludePattern(String string) {
+		List list = loadWOAppResourcesExcludePatternList();
+		if (list.remove(string)) {
+			saveWOAppResourcesExcludePatternList(list);
+		}
+	}
+
+	public List loadWOAppResourcesExcludePatternList() {
 		PatternsetMatcher patternsetMatcher = this.getWoappResourcesExcludeMatcher();
 		String[] pattern = patternsetMatcher.getPattern();
 		ArrayList list = new ArrayList();
 		for (int i = 0; i < pattern.length; i++) {
 			list.add(pattern[i]);
 		}
-		list.add(string);
+		return list;
+	}
+
+	public void saveWOAppResourcesExcludePatternList(List list) {
 		IFile wsresourcesExcludePatternset = this.getAntFolder().getFile("wsresources.exclude.patternset");
 		PatternsetWriter.create(wsresourcesExcludePatternset, (String[]) list.toArray(new String[list.size()]));
 		this.woappResourcesExcludeMatcher = new PatternsetMatcher(wsresourcesExcludePatternset);
@@ -549,13 +633,32 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 	 * @param string
 	 */
 	public void addResourcesIncludePattern(String string) {
+		List list = loadResourcesIncludePatternList();
+		if (!list.contains(string)) {
+			list.add(string);
+			saveResourcesIncludePatternList(list);
+			removeResourcesExcludePattern(string);
+		}
+	}
+
+	public void removeResourcesIncludePattern(String string) {
+		List list = loadResourcesIncludePatternList();
+		if (list.remove(string)) {
+			saveResourcesIncludePatternList(list);
+		}
+	}
+
+	public List loadResourcesIncludePatternList() {
 		PatternsetMatcher patternsetMatcher = this.getResourcesIncludeMatcher();
 		String[] pattern = patternsetMatcher.getPattern();
 		ArrayList list = new ArrayList();
 		for (int i = 0; i < pattern.length; i++) {
 			list.add(pattern[i]);
 		}
-		list.add(string);
+		return list;
+	}
+
+	public void saveResourcesIncludePatternList(List list) {
 		IFile resourcesIncludePatternset = this.getAntFolder().getFile("resources.include.patternset");
 		PatternsetWriter.create(resourcesIncludePatternset, (String[]) list.toArray(new String[list.size()]));
 		this.resourcesIncludeMatcher = new PatternsetMatcher(resourcesIncludePatternset);
@@ -570,13 +673,32 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 	 * @param string
 	 */
 	public void addResourcesExcludePattern(String string) {
+		List list = loadResourcesExcludePatternList();
+		if (!list.contains(string)) {
+			list.add(string);
+			saveResourcesExcludePatternList(list);
+			removeResourcesIncludePattern(string);
+		}
+	}
+
+	public void removeResourcesExcludePattern(String string) {
+		List list = loadResourcesExcludePatternList();
+		if (list.remove(string)) {
+			saveResourcesExcludePatternList(list);
+		}
+	}
+
+	public List loadResourcesExcludePatternList() {
 		PatternsetMatcher patternsetMatcher = this.getResourcesExcludeMatcher();
 		String[] pattern = patternsetMatcher.getPattern();
 		ArrayList list = new ArrayList();
 		for (int i = 0; i < pattern.length; i++) {
 			list.add(pattern[i]);
 		}
-		list.add(string);
+		return list;
+	}
+
+	public void saveResourcesExcludePatternList(List list) {
 		IFile resourcesexcludePatternset = this.getAntFolder().getFile("resources.exclude.patternset");
 		PatternsetWriter.create(resourcesexcludePatternset, (String[]) list.toArray(new String[list.size()]));
 		this.resourcesIncludeMatcher = new PatternsetMatcher(resourcesexcludePatternset);
