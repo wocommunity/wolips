@@ -55,14 +55,77 @@
  */
 package org.objectstyle.woproject.ant;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.taskdefs.ExecTask;
 
 class JApplicationWindowsWorker extends JApplicationJavaWorker {
 
-	public void execute(JApplication task) throws BuildException {
-		// build fat runnable jar
-		super.execute(task);
+	static final String MAKE_NSIS = "makensis";
 
-		// TODO: build exe launcher...
+	protected String nsisExe;
+
+	protected File nsiScript;
+
+	protected void executeInternal() throws BuildException {
+		// build fat runnable jar
+		super.executeInternal();
+
+		createNsisScript();
+		initNsis();
+		execNsis();
+	}
+
+	void execNsis() throws BuildException {
+		ExecTask exec = makeExecTask();
+		exec.setDir(baseDir);
+		exec.setExecutable(nsisExe);
+		exec.setFailonerror(true);
+
+		exec.createArg().setLine(nsiScript.getAbsolutePath());
+		
+		exec.execute();
+	}
+
+	void initNsis() throws BuildException {
+
+		File nsisDir = new File(task.getNsisHome());
+
+		if (nsisDir.isDirectory()) {
+			this.nsisExe = new File(nsisDir, MAKE_NSIS).getAbsolutePath();
+		} else {
+			// hope it is on path
+			task.log("Can't find NSIS in " + task.getNsisHome() + ", will attempt to look it in the path.", Project.MSG_INFO);
+			this.nsisExe = MAKE_NSIS;
+		}
+	}
+
+	void createNsisScript() throws BuildException {
+
+		String targetIcon = task.getIcon() != null && task.getIcon().isFile() ? task.getIcon().getName() : "";
+		String jvmOptions = task.getJvmOptions() != null ? task.getJvmOptions() : "";
+
+		Map tokens = new HashMap();
+		tokens.put("@NAME@", task.getName());
+		tokens.put("@LONG_NAME@", task.getLongName());
+		tokens.put("@MAIN_CLASS@", task.getMainClass());
+		tokens.put("@ICON@", targetIcon);
+		tokens.put("@JVM_OPTIONS@", jvmOptions);
+
+		this.nsiScript = new File(scratchDir, "app.nsi");
+		new TokenFilter(tokens).copy("japplication/windows/app.nsi", nsiScript);
+	}
+
+	ExecTask makeExecTask() {
+		ExecTask exec = new ExecTask();
+		exec.setOwningTarget(task.getOwningTarget());
+		exec.setProject(task.getProject());
+		exec.setTaskName(task.getTaskName());
+		exec.setLocation(task.getLocation());
+		return exec;
 	}
 }

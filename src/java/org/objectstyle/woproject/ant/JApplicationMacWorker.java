@@ -104,7 +104,7 @@ class JApplicationMacWorker implements JApplicationWorker {
 		copyJars();
 
 		// do this AFTER the jars, as we need to list them in the Info.plist
-		copyInfoPlist();
+		createInfoPlist();
 	}
 
 	void createDirectories() throws BuildException {
@@ -120,7 +120,7 @@ class JApplicationMacWorker implements JApplicationWorker {
 		}
 	}
 
-	void copyInfoPlist() throws BuildException {
+	void createInfoPlist() throws BuildException {
 		File targetInfoPlist = new File(contentsDir, "Info.plist");
 		String targetIcon = task.getIcon() != null && task.getIcon().isFile() ? task.getIcon().getName() : "";
 		String jvmOptions = task.getJvmOptions() != null ? task.getJvmOptions() : "";
