@@ -87,16 +87,20 @@ class JApplicationJavaWorker implements JApplicationWorker {
 		this.unpackedJarDirs = new ArrayList();
 
 		try {
-			createDirectories();
-			createManifest();
-			unpackJars();
-			createFatJar();
+			executeInternal();
 		} finally {
 			// must clean the tempdir
 			if (!recursiveDelete(scratchDir)) {
 				throw new BuildException("Failed to clean up temp directory: " + scratchDir);
 			}
 		}
+	}
+
+	protected void executeInternal() throws BuildException {
+		createDirectories();
+		createManifest();
+		unpackJars();
+		createFatJar();
 	}
 
 	void createManifest() throws BuildException {
