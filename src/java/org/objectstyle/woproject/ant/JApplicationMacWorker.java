@@ -122,7 +122,7 @@ class JApplicationMacWorker implements JApplicationWorker {
 
 	void copyInfoPlist() throws BuildException {
 		File targetInfoPlist = new File(contentsDir, "Info.plist");
-		String targetIcon = task.getIcon() != null && task.getIcon().isFile() ? new File(resourcesDir, task.getIcon().getName()).getAbsolutePath() : "";
+		String targetIcon = task.getIcon() != null && task.getIcon().isFile() ? task.getIcon().getName() : "";
 		String jvmOptions = task.getJvmOptions() != null ? task.getJvmOptions() : "";
 
 		StringBuffer jars = new StringBuffer();
