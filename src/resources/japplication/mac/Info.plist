@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key>
+    <string>@NAME@</string>
+    <key>CFBundleVersion</key>
+    <string>@VERSION@</string>
+    <key>CFBundleAllowMixedLocalizations</key>
+    <string>false</string>
+    <key>CFBundleGetInfoString</key>
+    <string>@LONG_NAME@</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleIdentifier</key>
+    <string>@NAME@</string>
+    <key>CFBundleExecutable</key>
+    <string>JavaApplicationStub</string>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>English</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleSignature</key>
+    <string>WOP</string>
+    <key>CFBundleIconFile</key>
+    <string>@ICON@</string>
+    <key>Java</key>
+    <dict>
+        <key>MainClass</key>
+        <string>@MAIN_CLASS@</string>
+        <key>JVMVersion</key>
+        <string>@JVM@</string>
+        <key>ClassPath</key>
+        <array>
+@JARS@
+        </array>
+        <key>VMOptions</key>
+        <string>@JVM_OPTIONS@</string>
+        <key>Properties</key>
+        <dict>
+            <key>com.apple.mrj.application.apple.menu.about.name</key>
+            <string>@NAME@</string>
+            <key>apple.awt.textantialiasing</key>
+            <string>true</string>
+            <key>com.apple.smallTabs</key>
+            <string>true</string>
+            <key>apple.laf.useScreenMenuBar</key>
+            <string>true</string>
+            <key>com.apple.mrj.application.live-resize</key>
+            <string>true</string>
+            <key>apple.awt.antialiasing</key>
+            <string>true</string>
+            <key>apple.awt.showGrowBox</key>
+            <string>true</string>
+        </dict>
+    </dict>
+</dict>
+</plist>
