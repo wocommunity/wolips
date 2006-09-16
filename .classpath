@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="woenvironment/src/java"/>
+	<classpathentry kind="src" path="woproject/src/resources"/>
 	<classpathentry kind="src" path="woproject/src/java"/>
 	<classpathentry kind="src" path="woproject/tests/java"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
