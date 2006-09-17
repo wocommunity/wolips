@@ -242,7 +242,7 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             name="WOLips"
-            icon="icons/wolips/WOLips16*16.gif"
+            icon="icons/wolips/WOLips16*16.png"
             class="org.objectstyle.wolips.ui.view.PerspectiveFactory"
             id="org.objectstyle.wolips.ui.Perspective">
       </perspective>
