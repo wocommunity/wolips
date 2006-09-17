@@ -99,7 +99,7 @@ import org.objectstyle.wolips.eogenerator.model.EOGeneratorModel;
 import org.objectstyle.wolips.eogenerator.model.EOModelReference;
 
 public class EOGeneratorFormPage extends FormPage {
-	private EOGeneratorModel myModel;
+	EOGeneratorModel myModel;
 
 	private FormEntry myDestinationEntry;
 
@@ -116,17 +116,17 @@ public class EOGeneratorFormPage extends FormPage {
 	private FormEntry myFilenameTemplateEntry;
 
 	// private Button myVerboseButton;
-	private Button myJavaButton;
+	Button myJavaButton;
 
-	private Button myJavaClientButton;
+	Button myJavaClientButton;
 
-	private Button myPackageDirsButton;
+	Button myPackageDirsButton;
 
-	private TableViewer myModelsTableViewer;
+	TableViewer myModelsTableViewer;
 
-	private TableViewer myRefModelsTableViewer;
+	TableViewer myRefModelsTableViewer;
 
-	private TableViewer myDefinesTableViewer;
+	TableViewer myDefinesTableViewer;
 
 	private boolean myModelGroupEditor;
 
