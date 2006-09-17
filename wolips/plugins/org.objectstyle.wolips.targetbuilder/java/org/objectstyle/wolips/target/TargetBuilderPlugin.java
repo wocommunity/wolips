@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,34 +61,33 @@ import java.io.File;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.ISavedState;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Plugin;
 import org.eclipse.jdt.internal.core.builder.State;
+import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
+import org.osgi.framework.BundleContext;
 
-public class TargetBuilderPlugin extends Plugin {
+public class TargetBuilderPlugin extends AbstractBaseUIActivator {
 	// The shared instance.
-	private static TargetBuilderPlugin _plugin;
+	private static TargetBuilderPlugin plugin;
 
-	private TargetBuilderPersistenceStore _persistenceStore;
+	private TargetBuilderPersistenceStore persistenceStore;
 
-	public TargetBuilderPlugin(IPluginDescriptor descriptor) {
-		super(descriptor);
-		_plugin = this;
+	public TargetBuilderPlugin() {
+		super();
+		plugin = this;
 	}
 
 	public static TargetBuilderPlugin getDefault() {
-		return _plugin;
+		return plugin;
 	}
 
-	public void startup() throws CoreException {
-		super.startup();
-		_persistenceStore = new TargetBuilderPersistenceStore();
-		ISavedState lastState = ResourcesPlugin.getWorkspace().addSaveParticipant(this, _persistenceStore);
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		persistenceStore = new TargetBuilderPersistenceStore();
+		ISavedState lastState = ResourcesPlugin.getWorkspace().addSaveParticipant(this, persistenceStore);
 		// remove target buildstates if the project is removed
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(_persistenceStore, IResourceChangeEvent.PRE_DELETE);
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(persistenceStore, IResourceChangeEvent.PRE_DELETE);
 
 		if (lastState == null)
 			return;
@@ -97,18 +96,19 @@ public class TargetBuilderPlugin extends Plugin {
 			return;
 		// the plugin instance should read any important state from the file.
 		File f = getStateLocation().append(location).toFile();
-		_persistenceStore.readStateFrom(f);
+		persistenceStore.readStateFrom(f);
 	}
 
-	public void shutdown() throws CoreException {
-		super.shutdown();
+	public void stop(BundleContext context) throws Exception {
+		plugin = null;
+		super.stop(context);
 	}
 
 	public void setBuildStateForKey(State buildState, String key) {
-		_persistenceStore.setBuildStateForKey(buildState, key);
+		persistenceStore.setBuildStateForKey(buildState, key);
 	}
 
 	public State buildStateForKey(String key) {
-		return _persistenceStore.buildStateForKey(key);
+		return persistenceStore.buildStateForKey(key);
 	}
 }
