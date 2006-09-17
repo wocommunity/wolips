@@ -12,7 +12,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jdt.core,
  org.eclipse.ltk.core.refactoring,
  org.eclipse.jdt.ui,
- org.objectstyle.wolips.datasets,
  org.objectstyle.wolips
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.refactoring
