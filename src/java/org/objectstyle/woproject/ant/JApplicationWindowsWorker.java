@@ -106,7 +106,7 @@ class JApplicationWindowsWorker extends JApplicationJavaWorker {
 
 	void createNsisScript() throws BuildException {
 
-		String targetIcon = task.getIcon() != null && task.getIcon().isFile() ? task.getIcon().getName() : "";
+		String targetIcon = task.getIcon() != null && task.getIcon().isFile() ? task.getIcon().getAbsolutePath() : "";
 		String jvmOptions = task.getJvmOptions() != null ? task.getJvmOptions() : "";
 
 		Map tokens = new HashMap();
