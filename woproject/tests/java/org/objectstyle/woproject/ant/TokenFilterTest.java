@@ -82,4 +82,26 @@ public class TokenFilterTest extends TestCase {
 
 		assertEquals("b nice try yyyy bb nn yyyyyyyy" + System.getProperty("line.separator"), string.toString());
 	}
+	
+	public void testWriteLineReplaceSpecialChars() throws Exception {
+		StringWriter string = new StringWriter();
+		Map toks = new HashMap();
+		toks.put("a", "b\\c");
+		
+		TokenFilter writer = new TokenFilter(toks);
+		writer.writeLine(string, "a a");
+
+		assertEquals("b\\c b\\c" + System.getProperty("line.separator"), string.toString());
+	}
+	
+	public void testWriteLineReplaceNoTokens() throws Exception {
+		StringWriter string = new StringWriter();
+		Map toks = new HashMap();
+		toks.put("a", "b");
+		
+		TokenFilter writer = new TokenFilter(toks);
+		writer.writeLine(string, "xxx");
+
+		assertEquals("xxx" + System.getProperty("line.separator"), string.toString());
+	}
 }

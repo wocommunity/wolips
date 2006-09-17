@@ -4,7 +4,7 @@
 
 Name "@LONG_NAME@"
 Caption "@LONG_NAME@"
-Icon "@ICON@"
+@ICON@
 OutFile "@NAME@.exe"
  
 SilentInstall silent
