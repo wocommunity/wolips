@@ -133,7 +133,7 @@ class JApplicationMacWorker implements JApplicationWorker {
 		});
 
 		for (int i = 0; i < jarFiles.length; i++) {
-			jars.append("          <string>\\$JAVAROOT/").append(jarFiles[i]).append("</string>\n");
+			jars.append("          <string>$JAVAROOT/").append(jarFiles[i]).append("</string>\n");
 		}
 
 		Map tokens = new HashMap();
