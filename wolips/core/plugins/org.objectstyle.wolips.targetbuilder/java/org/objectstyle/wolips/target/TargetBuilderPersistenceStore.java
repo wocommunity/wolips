@@ -103,6 +103,7 @@ public class TargetBuilderPersistenceStore implements ISaveParticipant, IResourc
 	}
 
 	public void prepareToSave(ISaveContext context) {
+		// do nothing
 	}
 
 	public void rollback(ISaveContext context) {

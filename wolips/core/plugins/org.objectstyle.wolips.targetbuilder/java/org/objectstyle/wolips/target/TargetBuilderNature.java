@@ -78,10 +78,6 @@ import org.objectstyle.wolips.datasets.adaptable.Project;
 
 /**
  * @author uwe
- * 
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates. To enable and disable the creation of type
- * comments go to Window>Preferences>Java>Code Generation.
  */
 public class TargetBuilderNature implements IProjectNature {
 	public static String ID = "org.objectstyle.wolips.targetbuilder.targetbuildernature";
