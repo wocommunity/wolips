@@ -60,7 +60,7 @@ import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.MoveParticipant;
-import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 
 /**
  * Changes the package name of a WOLips project's Principal Class when it gets
@@ -69,13 +69,14 @@ import org.objectstyle.wolips.datasets.adaptable.Project;
  * @author mschrag
  */
 public class PrincipalClassMoveParticipant extends MoveParticipant {
-	private Project myProject;
+	private IProjectAdapter myProject;
 
 	private String myName;
 
 	private IJavaElement myJavaDestination;
 
 	public PrincipalClassMoveParticipant() {
+		super();
 	}
 
 	protected boolean initialize(Object _element) {
@@ -104,7 +105,7 @@ public class PrincipalClassMoveParticipant extends MoveParticipant {
 	public Change createChange(IProgressMonitor _pm) throws CoreException, OperationCanceledException {
 		Change change = null;
 		if (myProject != null) {
-			String newName = myJavaDestination.getElementName();
+			// String newName = myJavaDestination.getElementName();
 			String newFullyQualifiedName;
 			if (myJavaDestination instanceof IType) {
 				newFullyQualifiedName = ((IType) myJavaDestination).getFullyQualifiedName() + '$' + myName;
@@ -125,12 +126,12 @@ public class PrincipalClassMoveParticipant extends MoveParticipant {
 		return change;
 	}
 
-	public static Project getInitializedProject(Object _element) {
-		Project initializedProject = null;
+	public static IProjectAdapter getInitializedProject(Object _element) {
+		IProjectAdapter initializedProject = null;
 		try {
 			if (_element instanceof IType) {
 				IType sourceType = (IType) _element;
-				Project project = (Project) sourceType.getJavaProject().getProject().getAdapter(Project.class);
+				IProjectAdapter project = (IProjectAdapter) sourceType.getJavaProject().getProject().getAdapter(IProjectAdapter.class);
 				String principalClass = project.getPrincipalClass(true);
 				String fullyQualifiedName = sourceType.getFullyQualifiedName();
 				if (principalClass != null && principalClass.equals(fullyQualifiedName)) {
