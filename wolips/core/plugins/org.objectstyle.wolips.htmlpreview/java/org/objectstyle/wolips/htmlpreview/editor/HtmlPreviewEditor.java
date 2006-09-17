@@ -60,8 +60,8 @@ import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.wst.html.core.internal.provisional.HTML40Namespace;
+import org.eclipse.wst.sse.core.StructuredModelManager;
 import org.eclipse.wst.sse.core.internal.provisional.IStructuredModel;
-import org.eclipse.wst.sse.core.internal.provisional.StructuredModelManager;
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMElement;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMModel;
@@ -149,7 +149,7 @@ public class HtmlPreviewEditor implements IEmbeddedEditor, IEmbeddedEditorSelect
 				}
 			}
 
-			if (insertOffset == 0) {
+			if (editModel != null && editModel instanceof IDOMModel && insertOffset == 0) {
 				Document document = ((IDOMModel) editModel).getDocument();
 				NodeList headElements = document.getElementsByTagName(HTML40Namespace.ElementName.HEAD);
 				if (headElements.getLength() > 0) {
@@ -198,8 +198,8 @@ public class HtmlPreviewEditor implements IEmbeddedEditor, IEmbeddedEditorSelect
 		}
 	}
 
-	public void initEditorInteraction(EditorInteraction editorInteraction) {
-		this.editorInteraction = editorInteraction;
+	public void initEditorInteraction(EditorInteraction intiEditorInteraction) {
+		this.editorInteraction = intiEditorInteraction;
 	}
 
 	public IEditorInput getEditorInput() {
@@ -210,9 +210,9 @@ public class HtmlPreviewEditor implements IEmbeddedEditor, IEmbeddedEditorSelect
 		return site;
 	}
 
-	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
-		this.site = site;
-		this.input = input;
+	public void init(IEditorSite initSite, IEditorInput initInput) throws PartInitException {
+		this.site = initSite;
+		this.input = initInput;
 	}
 
 	public void addPropertyListener(IPropertyListener listener) {
