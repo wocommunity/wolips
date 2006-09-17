@@ -6,10 +6,21 @@ import java.util.Map;
 import java.util.Set;
 
 import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
-public class EODatabaseConfig extends EOModelObject implements IConnectionDictionaryOwner {
-	public static final String DEFAULT_NAME = "Default";
+public class EODatabaseConfig extends EOModelObject {
+	public static final String USERNAME = "username";
+
+	public static final String PASSWORD = "password";
+
+	public static final String URL = "URL";
+
+	public static final String DRIVER = "driver";
+
+	public static final String PLUGIN = "plugin";
+
+	public static final String CONNECTION_DICTIONARY = "connectionDictionary";
 
 	public static final String NAME = "name";
 
@@ -30,7 +41,7 @@ public class EODatabaseConfig extends EOModelObject implements IConnectionDictio
 	private EOModelMap myDatabaseConfigMap;
 
 	public EODatabaseConfig() {
-		myConnectionDictionaryRepeater = new PropertyChangeRepeater(IConnectionDictionaryOwner.CONNECTION_DICTIONARY);
+		myConnectionDictionaryRepeater = new PropertyChangeRepeater(EODatabaseConfig.CONNECTION_DICTIONARY);
 		myDatabaseConfigMap = new EOModelMap();
 		setConnectionDictionary(new NotificationMap(), false);
 	}
@@ -38,6 +49,50 @@ public class EODatabaseConfig extends EOModelObject implements IConnectionDictio
 	public EODatabaseConfig(String _name) {
 		this();
 		myName = _name;
+	}
+
+	public boolean isActive() {
+		return (myModel != null && myModel.getActiveDatabaseConfig() == this);
+	}
+	
+	public void setActive() {
+		if (myModel != null) {
+			myModel.setActiveDatabaseConfig(this);
+		}
+	}
+	
+	public boolean equals(Object _obj) {
+		return (_obj instanceof EODatabaseConfig && ComparisonUtils.equals(myName, ((EODatabaseConfig) _obj).myName));
+	}
+
+	public int hashCode() {
+		return (myName == null) ? super.hashCode() : myName.hashCode();
+	}
+	
+	public boolean isEquivalent(EODatabaseConfig _config) {
+		boolean equivalent = false;
+		if (_config != null) {
+			equivalent = (myConnectionDictionary != null && _config.myConnectionDictionary != null);
+			if (equivalent) {
+				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("URL"), _config.myConnectionDictionary.get("URL"));
+			}
+			if (equivalent) {
+				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("username"), _config.myConnectionDictionary.get("username"));
+			}
+			if (equivalent) {
+				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("password"), _config.myConnectionDictionary.get("password"));
+			}
+			if (equivalent) {
+				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("plugin"), _config.myConnectionDictionary.get("plugin"));
+			}
+			if (equivalent) {
+				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("driver"), _config.myConnectionDictionary.get("driver"));
+			}
+			if (equivalent) {
+				equivalent = ComparisonUtils.equals(myPrototypeName, _config.myPrototypeName);
+			}
+		}
+		return equivalent;
 	}
 
 	public EODatabaseConfig cloneDatabaseConfig() {
@@ -108,43 +163,43 @@ public class EODatabaseConfig extends EOModelObject implements IConnectionDictio
 	}
 
 	public void setUsername(String _userName) {
-		getConnectionDictionary().put("username", _userName);
+		getConnectionDictionary().put(EODatabaseConfig.USERNAME, _userName);
 	}
 
 	public String getUsername() {
-		return (String) getConnectionDictionary().get("username");
+		return (String) getConnectionDictionary().get(EODatabaseConfig.USERNAME);
 	}
 
 	public void setPassword(String _password) {
-		getConnectionDictionary().put("password", _password);
+		getConnectionDictionary().put(EODatabaseConfig.PASSWORD, _password);
 	}
 
 	public String getPassword() {
-		return (String) getConnectionDictionary().get("password");
+		return (String) getConnectionDictionary().get(EODatabaseConfig.PASSWORD);
 	}
 
 	public void setPlugin(String _plugin) {
-		getConnectionDictionary().put("plugin", _plugin);
+		getConnectionDictionary().put(EODatabaseConfig.PLUGIN, _plugin);
 	}
 
 	public String getPlugin() {
-		return (String) getConnectionDictionary().get("plugin");
+		return (String) getConnectionDictionary().get(EODatabaseConfig.PLUGIN);
 	}
 
 	public void setDriver(String _driver) {
-		getConnectionDictionary().put("driver", _driver);
+		getConnectionDictionary().put(EODatabaseConfig.DRIVER, _driver);
 	}
 
 	public String getDriver() {
-		return (String) getConnectionDictionary().get("driver");
+		return (String) getConnectionDictionary().get(EODatabaseConfig.DRIVER);
 	}
 
 	public void setURL(String _url) {
-		getConnectionDictionary().put("URL", _url);
+		getConnectionDictionary().put(EODatabaseConfig.URL, _url);
 	}
 
 	public String getURL() {
-		return (String) getConnectionDictionary().get("URL");
+		return (String) getConnectionDictionary().get(EODatabaseConfig.URL);
 	}
 
 	public void setConnectionDictionary(Map _connectionDictionary) {

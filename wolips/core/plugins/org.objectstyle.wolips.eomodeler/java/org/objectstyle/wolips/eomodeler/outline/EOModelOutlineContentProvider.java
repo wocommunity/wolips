@@ -113,7 +113,7 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
 				modelChildren.addAll(model.getStoredProcedures());
 			}
 			if (myShowDatabaseConfigs) {
-				modelChildren.addAll(model.getDatabaseConfigs(false));
+				modelChildren.addAll(model.getDatabaseConfigs());
 			}
 			children = modelChildren.toArray();
 		} else if (_parentElement instanceof EOEntity) {
