@@ -94,13 +94,14 @@ import org.xml.sax.InputSource;
 public class PBServer {
 	public static final int DEFAULT_PB_PORT = 8547;
 
-	private ServerSocket myServerSocket;
+	ServerSocket myServerSocket;
 
 	private Thread myServerThread;
 
-	private boolean myRunning;
+	boolean myRunning;
 
 	public PBServer() {
+		super();
 	}
 
 	public synchronized void start(int _port) throws IOException {
@@ -121,26 +122,12 @@ public class PBServer {
 		return arrayElement;
 	}
 
-	private Element appendArray(Element _element) {
-		Element arrayElement = _element.getOwnerDocument().createElement("array");
-		_element.appendChild(arrayElement);
-		return arrayElement;
-	}
-
 	private Element appendString(Element _element, String _string) {
 		Element stringElement = _element.getOwnerDocument().createElement("string");
 		_element.appendChild(stringElement);
 		Text stringText = _element.getOwnerDocument().createTextNode(_string);
 		stringElement.appendChild(stringText);
 		return stringElement;
-	}
-
-	private boolean booleanValue(String _str) {
-		return _str.equals("YES");
-	}
-
-	private boolean booleanValue(Element _element, String _tagName) {
-		return booleanValue(text(_element, _tagName));
 	}
 
 	private String text(Element _element, String _tagName) {
@@ -235,8 +222,10 @@ public class PBServer {
 
 	public Document targetsInProjectContainingFile(Document _requestDocument) throws ParserConfigurationException {
 		IProject project = project(_requestDocument, "cookie");
-		String path = path(_requestDocument);
-		IContainer[] containers = ResourcesPlugin.getWorkspace().getRoot().findContainersForLocation(new Path(path));
+		// String path = path(_requestDocument);
+		// IContainer[] containers =
+		// ResourcesPlugin.getWorkspace().getRoot().findContainersForLocation(new
+		// Path(path));
 		Document responseDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 		appendString(appendArray(responseDocument), project.getName());
 		appendString(appendArray(responseDocument), "Application Server");
@@ -244,8 +233,8 @@ public class PBServer {
 		return responseDocument;
 	}
 
-	public Document targetsInProject(Document _requestDocument) throws ParserConfigurationException {
-		IProject project = project(_requestDocument, "cookie");
+	public Document targetsInProject(/* Document _requestDocument */) throws ParserConfigurationException {
+		// IProject project = project(_requestDocument, "cookie");
 		Document responseDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 		appendString(appendArray(responseDocument), "mockTarget");
 		return responseDocument;
@@ -262,12 +251,15 @@ public class PBServer {
 		for (int i = 0; i < addFiles.length; i++) {
 			System.out.println("PBServer.addFilesToProject: add files " + addFiles[i]);
 		}
-		IProject project = project(_requestDocument, "toProject");
-		String nearFile = text(documentElement, "nearFile");
-		String preferredInsertionGroupName = text(documentElement, "preferredInsertionGroupName");
-		String[] addToTargets = strings(documentElement, "addToTargets");
-		boolean copyIntoGroupFolder = booleanValue(documentElement, "copyIntoGroupFolder");
-		boolean createGroupsRecursively = booleanValue(documentElement, "createGroupsRecursively");
+		// IProject project = project(_requestDocument, "toProject");
+		// String nearFile = text(documentElement, "nearFile");
+		// String preferredInsertionGroupName = text(documentElement,
+		// "preferredInsertionGroupName");
+		// String[] addToTargets = strings(documentElement, "addToTargets");
+		// boolean copyIntoGroupFolder = booleanValue(documentElement,
+		// "copyIntoGroupFolder");
+		// boolean createGroupsRecursively = booleanValue(documentElement,
+		// "createGroupsRecursively");
 		new PrintStream(_os, true).print("YES");
 	}
 
@@ -280,7 +272,7 @@ public class PBServer {
 		// stringbuffer.append("</filesOfTypesInTargetOfProject>");
 		IProject project = project(_requestDocument, "cookie");
 		Element documentElement = _requestDocument.getDocumentElement();
-		String targetName = text(documentElement, "target");
+		// String targetName = text(documentElement, "target");
 		String[] typesArray = strings(documentElement, "typesArray");
 		FileTypeResourceVisitor visitor = new FileTypeResourceVisitor(typesArray);
 		project.accept(visitor, IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
@@ -299,7 +291,7 @@ public class PBServer {
 		// stringbuffer.append("<targetCookie>" + s + "</targetCookie >");
 		// stringbuffer.append("<projectCookie>" + s1 + "</projectCookie >");
 		// stringbuffer.append("</nameOfTarget>");
-		IProject project = project(_requestDocument, "projectCookie");
+		// IProject project = project(_requestDocument, "projectCookie");
 		Element documentElement = _requestDocument.getDocumentElement();
 		String targetCookie = text(documentElement, "targetCookie");
 		new PrintStream(_os, true).print(targetCookie);
@@ -315,7 +307,8 @@ public class PBServer {
 		// stringbuffer.append("</message></OpenFile>");
 		String filename = text(_requestDocument.getDocumentElement(), "filename");
 		String lineNumberStr = text(_requestDocument.getDocumentElement(), "linenumber");
-		String message = text(_requestDocument.getDocumentElement(), "message");
+		// String message = text(_requestDocument.getDocumentElement(),
+		// "message");
 		final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(filename));
 		final int lineNumber = Integer.parseInt(lineNumberStr);
 		if (file != null) {
@@ -355,10 +348,11 @@ public class PBServer {
 		// stringbuffer.append("<nearFile>" + s3 + "</nearFile >");
 		// stringbuffer.append("</addGroup>");
 		String name = text(_requestDocument.getDocumentElement(), "name");
-		String path = text(_requestDocument.getDocumentElement(), "path");
+		// String path = text(_requestDocument.getDocumentElement(), "path");
 		System.out.println("PBServer.addGroup: name = " + name);
-		IProject project = project(_requestDocument, "projectCookie");
-		String nearFile = text(_requestDocument.getDocumentElement(), "nearFile");
+		// IProject project = project(_requestDocument, "projectCookie");
+		// String nearFile = text(_requestDocument.getDocumentElement(),
+		// "nearFile");
 		new PrintStream(_os, true).print("YES");
 	}
 
@@ -376,10 +370,13 @@ public class PBServer {
 		// stringbuffer.append("</addGroupToPreferredInsertionGroup>");
 		String name = text(_requestDocument.getDocumentElement(), "name");
 		System.out.println("PBServer.addGroupToPreferredInsertionGroup: name = " + name);
-		String path = text(_requestDocument.getDocumentElement(), "path");
-		IProject project = project(_requestDocument, "projectCookie");
-		String nearFile = text(_requestDocument.getDocumentElement(), "nearFile");
-		String preferredInsertionGroup = text(_requestDocument.getDocumentElement(), "preferredInsertionGroup");
+		// String path = text(_requestDocument.getDocumentElement(), "path");
+		// IProject project = project(_requestDocument, "projectCookie");
+		// String nearFile = text(_requestDocument.getDocumentElement(),
+		// "nearFile");
+		// String preferredInsertionGroup =
+		// text(_requestDocument.getDocumentElement(),
+		// "preferredInsertionGroup");
 		new PrintStream(_os, true).print("YES");
 	}
 
@@ -391,7 +388,7 @@ public class PBServer {
 		} else if ("targetsInProjectContainingFile".equals(nodeName)) {
 			responseDocument = targetsInProjectContainingFile(_requestDocument);
 		} else if ("targetsInProject".equals(nodeName)) {
-			responseDocument = targetsInProject(_requestDocument);
+			responseDocument = targetsInProject(/* _requestDocument */);
 		} else if ("nameOfProject".equals(nodeName)) {
 			nameOfProject(_requestDocument, _os);
 		} else if ("addFilesToProject".equals(nodeName)) {
@@ -408,7 +405,7 @@ public class PBServer {
 			addGroupToPreferredInsertionGroup(_requestDocument, _os);
 		} else {
 			System.out.println("PBServer.run: Unknown request: " + nodeName);
-			responseDocument = null;
+			// responseDocument = null;
 		}
 		if (responseDocument != null) {
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();

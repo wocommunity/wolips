@@ -70,5 +70,6 @@ public class PBServerPreferencePage extends FieldEditorPreferencePage implements
 	}
 
 	public void init(IWorkbench _workbench) {
+		// do nothing
 	}
 }
