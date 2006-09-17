@@ -43,7 +43,7 @@
  */
 package org.objectstyle.wolips.htmleditor.sse;
 
-import org.eclipse.core.runtime.content.ITextContentDescriber;
+import org.eclipse.core.runtime.content.IContentDescriber;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
@@ -58,13 +58,13 @@ public class StructuredTextEditorWO extends StructuredTextEditor implements IEmb
 
 	public StructuredTextEditorWO() {
 		super();
-		ContentDescriberWO.ANSWER = ITextContentDescriber.VALID;
+		ContentDescriberWO.ANSWER = IContentDescriber.VALID;
 	}
 
-	public void initEditorInteraction(EditorInteraction editorInteraction) {
+	public void initEditorInteraction(EditorInteraction initEditorInteraction) {
 		this.getSelectionProvider().addSelectionChangedListener(new HTMLOutlineSelectionHandler(editorInteraction));
 		editorInteraction.setHtmlDocumentProvider(this);
-		this.editorInteraction = editorInteraction;
+		this.editorInteraction = initEditorInteraction;
 	}
 
 	public IDocument getHtmlEditDocument() {
@@ -78,7 +78,7 @@ public class StructuredTextEditorWO extends StructuredTextEditor implements IEmb
 
 	protected void setSourceViewerConfiguration(SourceViewerConfiguration sourceViewerConfiguration) {
 		if (sourceViewerConfiguration instanceof StructuredTextViewerConfigurationWO) {
-			ContentDescriberWO.ANSWER = ITextContentDescriber.INVALID;
+			ContentDescriberWO.ANSWER = IContentDescriber.INVALID;
 		}
 		super.setSourceViewerConfiguration(sourceViewerConfiguration);
 	}
