@@ -149,7 +149,7 @@ class TokenFilter {
 				int start = 0;
 				while (matcher.find(start)) {
 					buffer.replace(matcher.start(), matcher.end(), replacement);
-					start = matcher.end();
+					start = matcher.start() + replacement.length();
 				}
 			}
 

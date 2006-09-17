@@ -104,4 +104,15 @@ public class TokenFilterTest extends TestCase {
 
 		assertEquals("xxx" + System.getProperty("line.separator"), string.toString());
 	}
+	
+	public void testWriteLineReplaceLongTokensShorReplacements() throws Exception {
+		StringWriter string = new StringWriter();
+		Map toks = new HashMap();
+		toks.put("@aaaa@", "b");
+		
+		TokenFilter writer = new TokenFilter(toks);
+		writer.writeLine(string, "@aaaa@ @aaaa@ sss");
+
+		assertEquals("b b sss" + System.getProperty("line.separator"), string.toString());
+	}
 }
