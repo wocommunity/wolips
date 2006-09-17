@@ -151,7 +151,7 @@
                id="org.objectstyle.wolips.wizards.actions.NewWODropDown"
                toolbarPath="Normal/WOLipsWizards"
                class="org.objectstyle.wolips.wizards.actions.NewWODropDown"
-               icon="icons/wolips/WOLips16*16.gif"
+               icon="icons/wolips/WOLips16-16.png"
                label="WO"
                style="pulldown">
          </action>
