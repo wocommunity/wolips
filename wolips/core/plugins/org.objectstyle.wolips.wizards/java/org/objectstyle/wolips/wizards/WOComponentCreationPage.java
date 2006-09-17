@@ -227,7 +227,7 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 		this.resourceToReveal = resourceToReveal;
 	}
 
-	private IPackageFragment choosePackage() {
+	IPackageFragment choosePackage() {
 		List packagesList = new LinkedList();
 		try {
 			IProject actualProject = ResourcesPlugin.getWorkspace().getRoot().getProject(getContainerFullPath().segment(0));
