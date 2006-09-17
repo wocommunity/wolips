@@ -106,14 +106,14 @@ class JApplicationWindowsWorker extends JApplicationJavaWorker {
 
 	void createNsisScript() throws BuildException {
 
-		String targetIcon = task.getIcon() != null && task.getIcon().isFile() ? task.getIcon().getAbsolutePath() : "";
+		String targetIcon = task.getIcon() != null && task.getIcon().isFile() ? "Icon \"" + task.getIcon().getAbsolutePath() + "\"" : "";
 		String jvmOptions = task.getJvmOptions() != null ? task.getJvmOptions() : "";
 
 		Map tokens = new HashMap();
 		tokens.put("@NAME@", task.getName());
 		tokens.put("@LONG_NAME@", task.getLongName());
 		tokens.put("@MAIN_CLASS@", task.getMainClass());
-		tokens.put("@ICON@", targetIcon);
+		tokens.put("@ICON@",  targetIcon);
 		tokens.put("@JVM_OPTIONS@", jvmOptions);
 
 		this.nsiScript = new File(scratchDir, "app.nsi");

@@ -65,6 +65,7 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.tools.ant.BuildException;
@@ -131,19 +132,32 @@ class TokenFilter {
 
 		if (line.length() > 0) {
 
+			StringBuffer buffer = new StringBuffer(line);
+
 			// not very efficient - may need to rewrite
 			Iterator it = tokens.entrySet().iterator();
 			while (it.hasNext()) {
 				Map.Entry entry = (Map.Entry) it.next();
 
 				Pattern token = (Pattern) entry.getKey();
-				line = token.matcher(line).replaceAll(entry.getValue().toString());
+				String replacement = entry.getValue().toString();
+
+				// can't use Pattern.replaceAll as it will pre-process
+				// replacement strings breaking things like backslashes
+
+				Matcher matcher = token.matcher(buffer);
+				int start = 0;
+				while (matcher.find(start)) {
+					buffer.replace(matcher.start(), matcher.end(), replacement);
+					start = matcher.end();
+				}
 			}
 
+			out.write(buffer.toString());
+		} else {
 			out.write(line);
 		}
 
 		out.write(lineEnd);
 	}
-
 }
