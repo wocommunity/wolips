@@ -108,13 +108,15 @@ class JApplicationWindowsWorker extends JApplicationJavaWorker {
 
 		String targetIcon = task.getIcon() != null && task.getIcon().isFile() ? "Icon \"" + task.getIcon().getAbsolutePath() + "\"" : "";
 		String jvmOptions = task.getJvmOptions() != null ? task.getJvmOptions() : "";
+		String outFile = new File(baseDir, task.getName() + ".exe").getAbsolutePath();
 
 		Map tokens = new HashMap();
 		tokens.put("@NAME@", task.getName());
 		tokens.put("@LONG_NAME@", task.getLongName());
 		tokens.put("@MAIN_CLASS@", task.getMainClass());
-		tokens.put("@ICON@",  targetIcon);
+		tokens.put("@ICON@", targetIcon);
 		tokens.put("@JVM_OPTIONS@", jvmOptions);
+		tokens.put("@OUT_FILE@", outFile);
 
 		this.nsiScript = new File(scratchDir, "app.nsi");
 		new TokenFilter(tokens).copy("japplication/windows/app.nsi", nsiScript);

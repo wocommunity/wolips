@@ -5,7 +5,7 @@
 Name "@LONG_NAME@"
 Caption "@LONG_NAME@"
 @ICON@
-OutFile "@NAME@.exe"
+OutFile "@OUT_FILE@"
  
 SilentInstall silent
 AutoCloseWindow true
