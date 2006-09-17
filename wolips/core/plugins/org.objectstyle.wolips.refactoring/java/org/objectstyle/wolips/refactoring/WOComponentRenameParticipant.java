@@ -81,6 +81,7 @@ public class WOComponentRenameParticipant extends RenameParticipant {
 	private IType mySourceType;
 
 	public WOComponentRenameParticipant() {
+		super();
 	}
 
 	protected boolean initialize(Object _element) {

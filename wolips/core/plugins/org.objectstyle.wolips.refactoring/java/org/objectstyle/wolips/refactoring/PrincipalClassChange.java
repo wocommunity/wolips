@@ -55,26 +55,27 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 
 /**
  * @author mike
  */
 public class PrincipalClassChange extends Change {
-	private Project myProject;
+	private IProjectAdapter projectAdapter;
 
 	private String myNewName;
 
-	public PrincipalClassChange(Project _project, String _newName) {
-		myProject = _project;
+	public PrincipalClassChange(IProjectAdapter projectAdapter, String _newName) {
+		this.projectAdapter = projectAdapter;
 		myNewName = _newName;
 	}
 
 	public String getName() {
-		return "Change Principal Class from " + myProject.getPrincipalClass(true) + " to " + myNewName;
+		return "Change Principal Class from " + projectAdapter.getPrincipalClass(true) + " to " + myNewName;
 	}
 
 	public void initializeValidationData(IProgressMonitor _pm) {
+		//do nothing
 	}
 
 	public RefactoringStatus isValid(IProgressMonitor _pm) throws CoreException, OperationCanceledException {
@@ -83,14 +84,14 @@ public class PrincipalClassChange extends Change {
 	}
 
 	public Change perform(IProgressMonitor _pm) throws CoreException {
-		String oldName = myProject.getPrincipalClass(true);
-		myProject.setPrincipalClass(myNewName);
-		PrincipalClassChange undoChange = new PrincipalClassChange(myProject, oldName);
+		String oldName = projectAdapter.getPrincipalClass(true);
+		projectAdapter.setPrincipalClass(myNewName);
+		PrincipalClassChange undoChange = new PrincipalClassChange(projectAdapter, oldName);
 		return undoChange;
 	}
 
 	public Object getModifiedElement() {
-		return myProject;
+		return projectAdapter;
 	}
 
 }

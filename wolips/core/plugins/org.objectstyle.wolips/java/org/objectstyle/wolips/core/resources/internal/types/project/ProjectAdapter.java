@@ -126,6 +126,10 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 		return this.isFramework;
 	}
 
+	public boolean isApplication() {
+		return !this.isFramework();
+	}
+
 	public IPBDotProjectAdapter getPBDotProjectAdapter() {
 		IContainer underlyingContainer = this.getUnderlyingProject();
 		IResource pbDotProjectResource = underlyingContainer.getFile(new Path(IPBDotProjectAdapter.FILE_NAME));

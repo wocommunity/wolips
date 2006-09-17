@@ -71,6 +71,8 @@ public interface IProjectAdapter extends IResourceType, IPBDotProjectOwner {
 
 	public abstract boolean isFramework();
 
+	public abstract boolean isApplication();
+
 	public abstract IBuildAdapter getBuildAdapter();
 
 	public abstract IWoprojectAdapter getWoprojectAdapter();
@@ -96,4 +98,7 @@ public interface IProjectAdapter extends IResourceType, IPBDotProjectOwner {
 	 * @throws CoreException
 	 */
 	public abstract void removeAntBuilder() throws CoreException;
+	
+	public abstract String getPrincipalClass(boolean convertNullValueToEmptyString);
+	public abstract void setPrincipalClass(String principalClass);
 }

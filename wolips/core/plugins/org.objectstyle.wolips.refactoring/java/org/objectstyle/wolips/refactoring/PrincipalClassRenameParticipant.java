@@ -57,7 +57,7 @@ import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RenameParticipant;
-import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 
 /**
  * Changes the name of a WOLips project's Principal Class when it gets renamed.
@@ -65,9 +65,10 @@ import org.objectstyle.wolips.datasets.adaptable.Project;
  * @author mschrag
  */
 public class PrincipalClassRenameParticipant extends RenameParticipant {
-	private Project myProject;
+	private IProjectAdapter myProject;
 
 	public PrincipalClassRenameParticipant() {
+		super();
 	}
 
 	protected boolean initialize(Object _element) {

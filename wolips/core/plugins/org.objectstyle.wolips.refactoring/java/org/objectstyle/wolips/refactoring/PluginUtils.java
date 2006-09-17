@@ -53,7 +53,6 @@ package org.objectstyle.wolips.refactoring;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.corext.util.JavaModelUtil;
@@ -68,7 +67,7 @@ public class PluginUtils {
 		if (qualifiedTypeName.equals(_lookingForTypeName)) {
 			isWOComponent = true;
 		} else {
-			IJavaProject javaProject = _type.getJavaProject();
+//			IJavaProject javaProject = _type.getJavaProject();
 			String superclassName = _type.getSuperclassName();
 			if (superclassName == null) {
 				isWOComponent = false;

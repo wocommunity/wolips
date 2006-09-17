@@ -73,6 +73,7 @@ public class CreateFolderChange extends Change {
 	}
 
 	public void initializeValidationData(IProgressMonitor _pm) {
+		//do nothing
 	}
 
 	public RefactoringStatus isValid(IProgressMonitor _pm) throws CoreException, OperationCanceledException {
