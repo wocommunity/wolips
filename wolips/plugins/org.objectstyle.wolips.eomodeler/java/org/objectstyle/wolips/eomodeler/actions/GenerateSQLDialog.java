@@ -85,7 +85,7 @@ public class GenerateSQLDialog extends Dialog {
 		layout.numColumns = 2;
 		control.setLayout(layout);
 
-		myDatabaseConfigs = myModel.getDatabaseConfigs(true);
+		myDatabaseConfigs = myModel.getDatabaseConfigs();
 		if (myDatabaseConfigs.size() > 1) {
 			myDatabaseConfigComboViewer = new ComboViewer(control, SWT.READ_ONLY);
 			GridData extraInfoData = new GridData(GridData.FILL_HORIZONTAL);
@@ -194,7 +194,7 @@ public class GenerateSQLDialog extends Dialog {
 			IStructuredSelection selection = (IStructuredSelection) myDatabaseConfigComboViewer.getSelection();
 			selectedDatabaseConfig = (EODatabaseConfig) selection.getFirstElement();
 		} else {
-			selectedDatabaseConfig = myModel.createDefaultDatabaseConfig();
+			selectedDatabaseConfig = myModel.getActiveDatabaseConfig();
 		}
 		Map selectedDatabaseConfigMap = null;
 		if (selectedDatabaseConfig != null) {

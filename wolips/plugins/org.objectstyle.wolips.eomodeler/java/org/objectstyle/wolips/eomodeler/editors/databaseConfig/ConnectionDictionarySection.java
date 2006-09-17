@@ -47,7 +47,7 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.properties;
+package org.objectstyle.wolips.eomodeler.editors.databaseConfig;
 
 import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
 import org.eclipse.jface.internal.databinding.provisional.description.Property;
@@ -65,12 +65,11 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.EOModel;
-import org.objectstyle.wolips.eomodeler.model.IConnectionDictionaryOwner;
+import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
 public class ConnectionDictionarySection extends AbstractPropertySection {
-	private IConnectionDictionaryOwner myConnectionDictionaryOwner;
+	private EODatabaseConfig myDatabaseConfig;
 
 	private Text myUsernameText;
 
@@ -107,23 +106,23 @@ public class ConnectionDictionarySection extends AbstractPropertySection {
 
 		addFormEntriesAbove(topForm);
 
-		getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + IConnectionDictionaryOwner.USERNAME), SWT.NONE);
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + EODatabaseConfig.USERNAME), SWT.NONE);
 		myUsernameText = new Text(topForm, SWT.BORDER);
 		myUsernameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + IConnectionDictionaryOwner.PASSWORD), SWT.NONE);
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + EODatabaseConfig.PASSWORD), SWT.NONE);
 		myPasswordText = new Text(topForm, SWT.BORDER);
 		myPasswordText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + IConnectionDictionaryOwner.URL), SWT.NONE);
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + EODatabaseConfig.URL), SWT.NONE);
 		myURLText = new Text(topForm, SWT.BORDER);
 		myURLText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + IConnectionDictionaryOwner.DRIVER), SWT.NONE);
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + EODatabaseConfig.DRIVER), SWT.NONE);
 		myDriverText = new Text(topForm, SWT.BORDER);
 		myDriverText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + IConnectionDictionaryOwner.PLUGIN), SWT.NONE);
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + EODatabaseConfig.PLUGIN), SWT.NONE);
 		myPluginText = new Text(topForm, SWT.BORDER);
 		myPluginText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
@@ -143,26 +142,24 @@ public class ConnectionDictionarySection extends AbstractPropertySection {
 		disposeBindings();
 
 		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-		if (selectedObject instanceof IConnectionDictionaryOwner) {
-			myConnectionDictionaryOwner = (IConnectionDictionaryOwner) selectedObject;
-		}
+		myDatabaseConfig = (EODatabaseConfig) selectedObject;
 
-		if (myConnectionDictionaryOwner != null) {
+		if (myDatabaseConfig != null) {
 			myBindingContext = BindingFactory.createContext();
 			addBindings(myBindingContext);
 		}
 	}
 
-	public IConnectionDictionaryOwner getConnectionDictionaryOwner() {
-		return myConnectionDictionaryOwner;
+	public EODatabaseConfig getDatabaseConfig() {
+		return myDatabaseConfig;
 	}
 
 	protected void addBindings(DataBindingContext _context) {
-		_context.bind(myUsernameText, new Property(myConnectionDictionaryOwner, IConnectionDictionaryOwner.USERNAME), null);
-		_context.bind(myPasswordText, new Property(myConnectionDictionaryOwner, IConnectionDictionaryOwner.PASSWORD), null);
-		_context.bind(myURLText, new Property(myConnectionDictionaryOwner, IConnectionDictionaryOwner.URL), null);
-		_context.bind(myDriverText, new Property(myConnectionDictionaryOwner, IConnectionDictionaryOwner.DRIVER), null);
-		_context.bind(myPluginText, new Property(myConnectionDictionaryOwner, IConnectionDictionaryOwner.PLUGIN), null);
+		_context.bind(myUsernameText, new Property(myDatabaseConfig, EODatabaseConfig.USERNAME), null);
+		_context.bind(myPasswordText, new Property(myDatabaseConfig, EODatabaseConfig.PASSWORD), null);
+		_context.bind(myURLText, new Property(myDatabaseConfig, EODatabaseConfig.URL), null);
+		_context.bind(myDriverText, new Property(myDatabaseConfig, EODatabaseConfig.DRIVER), null);
+		_context.bind(myPluginText, new Property(myDatabaseConfig, EODatabaseConfig.PLUGIN), null);
 	}
 
 	protected void disposeBindings() {

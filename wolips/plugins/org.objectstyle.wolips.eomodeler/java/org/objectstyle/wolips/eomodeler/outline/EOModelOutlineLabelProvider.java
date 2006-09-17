@@ -75,6 +75,8 @@ public class EOModelOutlineLabelProvider implements ILabelProvider, IFontProvide
 
 	private Font myInheritedFont;
 
+	private Font myActiveFont;
+
 	public EOModelOutlineLabelProvider(TreeViewer _treeViewer) {
 		myTreeViewer = _treeViewer;
 	}
@@ -86,6 +88,9 @@ public class EOModelOutlineLabelProvider implements ILabelProvider, IFontProvide
 	public void dispose() {
 		if (myInheritedFont != null) {
 			myInheritedFont.dispose();
+		}
+		if (myActiveFont != null) {
+			myActiveFont.dispose();
 		}
 	}
 
@@ -169,6 +174,17 @@ public class EOModelOutlineLabelProvider implements ILabelProvider, IFontProvide
 					myInheritedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.ITALIC);
 				}
 				font = myInheritedFont;
+			}
+		}
+		else if (_element instanceof EODatabaseConfig) {
+			EODatabaseConfig databaseConfig = (EODatabaseConfig) _element;
+			if (databaseConfig.isActive()) {
+				if (myActiveFont == null) {
+					Font originalFont = myTreeViewer.getTree().getFont();
+					FontData[] fontData = myTreeViewer.getTree().getFont().getFontData();
+					myActiveFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD);
+				}
+				font = myActiveFont;
 			}
 		}
 		return font;

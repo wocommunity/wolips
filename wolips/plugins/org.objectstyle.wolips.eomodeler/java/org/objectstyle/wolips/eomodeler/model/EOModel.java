@@ -61,9 +61,8 @@ import java.util.TreeSet;
 
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
-import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
-public class EOModel extends UserInfoableEOModelObject implements IUserInfoable, ISortableEOModelObject, IConnectionDictionaryOwner {
+public class EOModel extends UserInfoableEOModelObject implements IUserInfoable, ISortableEOModelObject {
 	public static final String ENTITY_MODELER_KEY = "_EntityModeler";
 
 	public static final String DIRTY = "dirty";
@@ -82,6 +81,8 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 
 	public static final String STORED_PROCEDURES = "storedProcedures";
 
+	public static final String ACTIVE_DATABASE_CONFIG = "activeDatabaseConfig";
+
 	public static final String DATABASE_CONFIG = "databaseConfig";
 
 	public static final String DATABASE_CONFIGS = "databaseConfigs";
@@ -94,11 +95,13 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 
 	private String myAdaptorName;
 
-	private NotificationMap myConnectionDictionary;
+	//private NotificationMap myConnectionDictionary;
 
 	private Set myEntities;
 
 	private Set myDatabaseConfigs;
+
+	private EODatabaseConfig myActiveDatabaseConfig;
 
 	private Set myStoredProcedures;
 
@@ -111,8 +114,6 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 	private EOModelMap myModelMap;
 
 	private boolean myDirty;
-
-	private PropertyChangeRepeater myConnectionDictionaryRepeater;
 
 	private File myModelFolder;
 
@@ -128,8 +129,9 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		myDatabaseConfigs = new PropertyListSet();
 		myVersion = "2.1";
 		myModelMap = new EOModelMap();
-		myConnectionDictionaryRepeater = new PropertyChangeRepeater(IConnectionDictionaryOwner.CONNECTION_DICTIONARY);
-		setConnectionDictionary(new NotificationMap(), false);
+		// myConnectionDictionaryRepeater = new
+		// PropertyChangeRepeater(IConnectionDictionaryOwner.CONNECTION_DICTIONARY);
+		// setConnectionDictionary(new NotificationMap(), false);
 	}
 
 	protected void _storedProcedureChanged(EOStoredProcedure _storedProcedure, String _propertyName, Object _oldValue, Object _newValue) {
@@ -233,9 +235,6 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		if (!myDirty && !EOModel.DIRTY.equals(_propertyName)) {
 			setDirty(true);
 		}
-		if (_propertyName == IConnectionDictionaryOwner.CONNECTION_DICTIONARY) {
-			clearCachedPrototypes(null, false);
-		}
 	}
 
 	protected void _entityChanged(EOEntity _entity, String _propertyName, Object _oldValue, Object _newValue) {
@@ -244,19 +243,18 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 
 	protected void _databaseConfigChanged(EODatabaseConfig _databaseConfig, String _propertyName, Object _oldValue, Object _newValue) {
 		firePropertyChange(EOModel.DATABASE_CONFIG, null, _databaseConfig);
+		if (_databaseConfig == myActiveDatabaseConfig) {
+			clearCachedPrototypes(null, false);
+		}
 	}
 
 	public EODatabaseConfig getDatabaseConfigNamed(String _name) {
 		EODatabaseConfig matchingDatabaseConfig = null;
-		if (EODatabaseConfig.DEFAULT_NAME.equals(_name)) {
-			matchingDatabaseConfig = createDefaultDatabaseConfig();
-		} else {
-			Iterator databaseConfigsIter = myDatabaseConfigs.iterator();
-			while (matchingDatabaseConfig == null && databaseConfigsIter.hasNext()) {
-				EODatabaseConfig entity = (EODatabaseConfig) databaseConfigsIter.next();
-				if (ComparisonUtils.equals(entity.getName(), _name)) {
-					matchingDatabaseConfig = entity;
-				}
+		Iterator databaseConfigsIter = myDatabaseConfigs.iterator();
+		while (matchingDatabaseConfig == null && databaseConfigsIter.hasNext()) {
+			EODatabaseConfig entity = (EODatabaseConfig) databaseConfigsIter.next();
+			if (ComparisonUtils.equals(entity.getName(), _name)) {
+				matchingDatabaseConfig = entity;
 			}
 		}
 		return matchingDatabaseConfig;
@@ -309,12 +307,28 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 			newEntities.add(_databaseConfig);
 			myDatabaseConfigs = newEntities;
 			firePropertyChange(EOModel.DATABASE_CONFIGS, oldDatabaseConfigs, myDatabaseConfigs);
+			if (myActiveDatabaseConfig == null) {
+				setActiveDatabaseConfig(_databaseConfig);
+			}
 		} else {
 			myDatabaseConfigs.add(_databaseConfig);
 		}
 	}
 
 	public void removeDatabaseConfig(EODatabaseConfig _databaseConfig) {
+		if (ComparisonUtils.equals(myActiveDatabaseConfig, _databaseConfig)) {
+			EODatabaseConfig newActiveDatabaseConfig = null;
+			if (!myDatabaseConfigs.isEmpty()) {
+				Iterator databaseConfigsIter = myDatabaseConfigs.iterator();
+				while (newActiveDatabaseConfig == null && databaseConfigsIter.hasNext()) { 
+					EODatabaseConfig otherDatabaseConfig = (EODatabaseConfig) databaseConfigsIter.next();
+					if (otherDatabaseConfig != _databaseConfig) {
+						newActiveDatabaseConfig = otherDatabaseConfig;
+					}
+				}
+			}
+			setActiveDatabaseConfig(newActiveDatabaseConfig);
+		}
 		Set oldDatabaseConfigs = myDatabaseConfigs;
 		Set newDatabaseConfigs = new TreeSet(new PropertyListSet());
 		newDatabaseConfigs.addAll(myDatabaseConfigs);
@@ -324,21 +338,27 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		_databaseConfig._setModel(null);
 	}
 
-	public EODatabaseConfig createDefaultDatabaseConfig() {
-		EODatabaseConfig defaultDatabaseConfig = new EODatabaseConfig(EODatabaseConfig.DEFAULT_NAME);
-		defaultDatabaseConfig.setConnectionDictionary(new HashMap(myConnectionDictionary));
-		defaultDatabaseConfig.setPrototype(getPreferredPrototypeEntity());
+	public void setActiveDatabaseConfig(EODatabaseConfig _activeDatabaseConfig) {
+		EODatabaseConfig oldActiveDatabaseConfig = myActiveDatabaseConfig;
+		myActiveDatabaseConfig = _activeDatabaseConfig;
+		clearCachedPrototypes(null, false);
+		firePropertyChange(EOModel.ACTIVE_DATABASE_CONFIG, oldActiveDatabaseConfig, myActiveDatabaseConfig);
+	}
+
+	public EODatabaseConfig getActiveDatabaseConfig() {
+		return myActiveDatabaseConfig;
+	}
+
+	public EODatabaseConfig _createDatabaseConfig(Map _connectionDictionary) {
+		EODatabaseConfig defaultDatabaseConfig = new EODatabaseConfig(findUnusedDatabaseConfigName("Default"));
+		defaultDatabaseConfig.setConnectionDictionary(new HashMap(_connectionDictionary));
+		defaultDatabaseConfig.setPrototype(_getPreferredPrototypeEntity(_connectionDictionary));
 		defaultDatabaseConfig._setModel(this);
 		return defaultDatabaseConfig;
 	}
 
-	public Set getDatabaseConfigs(boolean _includeDefault) {
-		Set databaseConfigs = new LinkedHashSet();
-		if (_includeDefault) {
-			databaseConfigs.add(createDefaultDatabaseConfig());
-		}
-		databaseConfigs.addAll(myDatabaseConfigs);
-		return databaseConfigs;
+	public Set getDatabaseConfigs() {
+		return myDatabaseConfigs;
 	}
 
 	public int hashCode() {
@@ -414,13 +434,15 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		if (myModelGroup != null) {
 			existingEntity = myModelGroup.getEntityNamed(_newName);
 		}
-		// MS: We do this because at load time, the model thinks it's part of the model group, but the model group doesnt'
+		// MS: We do this because at load time, the model thinks it's part of
+		// the model group, but the model group doesnt'
 		// think it contains the model, so we check both
 		if (existingEntity == null) {
 			existingEntity = getEntityNamed(_newName);
 		}
 		if (existingEntity != null && existingEntity != _entity) {
-			// MS: For most duplicates, we can rename the original.  But for entities, they can be
+			// MS: For most duplicates, we can rename the original. But for
+			// entities, they can be
 			// in a totally separate model.
 			if (_failures == null || _entity.getModel() != existingEntity.getModel()) {
 				throw new DuplicateEntityNameException(_newName, this);
@@ -575,62 +597,6 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		}
 	}
 
-	public void setUsername(String _userName) {
-		getConnectionDictionary().put("username", _userName);
-	}
-
-	public String getUsername() {
-		return (String) getConnectionDictionary().get("username");
-	}
-
-	public void setPassword(String _password) {
-		getConnectionDictionary().put("password", _password);
-	}
-
-	public String getPassword() {
-		return (String) getConnectionDictionary().get("password");
-	}
-
-	public void setPlugin(String _plugin) {
-		getConnectionDictionary().put("plugin", _plugin);
-	}
-
-	public String getPlugin() {
-		return (String) getConnectionDictionary().get("plugin");
-	}
-
-	public void setDriver(String _driver) {
-		getConnectionDictionary().put("driver", _driver);
-	}
-
-	public String getDriver() {
-		return (String) getConnectionDictionary().get("driver");
-	}
-
-	public void setURL(String _url) {
-		getConnectionDictionary().put("URL", _url);
-	}
-
-	public String getURL() {
-		return (String) getConnectionDictionary().get("URL");
-	}
-
-	public void setConnectionDictionary(Map _connectionDictionary) {
-		setConnectionDictionary(_connectionDictionary, true);
-	}
-
-	public void setConnectionDictionary(Map _connectionDictionary, boolean _fireEvents) {
-		Map oldConnectionDictionary = myConnectionDictionary;
-		myConnectionDictionary = mapChanged(myConnectionDictionary, _connectionDictionary, myConnectionDictionaryRepeater, false);
-		if (_fireEvents) {
-			firePropertyChange(myConnectionDictionaryRepeater.getPropertyName(), oldConnectionDictionary, myConnectionDictionary);
-		}
-	}
-
-	public Map getConnectionDictionary() {
-		return myConnectionDictionary;
-	}
-
 	public void loadFromFolder(File _modelFolder, Set _failures) throws EOModelException, IOException {
 		File indexFile = new File(_modelFolder, "index.eomodeld");
 		if (!indexFile.exists()) {
@@ -652,7 +618,6 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 			throw new IllegalArgumentException("Unknown version format:" + version);
 		}
 		myAdaptorName = modelMap.getString("adaptorName", true);
-		setConnectionDictionary(modelMap.getMap("connectionDictionary", true), false);
 		loadUserInfo(modelMap);
 
 		Set entities = modelMap.getSet("entities");
@@ -712,13 +677,51 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 				addDatabaseConfig(databaseConfig, false, _failures);
 			}
 		}
+		EODatabaseConfig activeDatabaseConfig = null; 
+		String activeDatabaseConfigName = entityModelerMap.getString("activeDatabaseConfigName", false);
+		if (activeDatabaseConfigName != null) {
+			activeDatabaseConfig = getDatabaseConfigNamed(activeDatabaseConfigName);
+		}
+		// If there is a connection dictionary, then look for a database config that is equivalent ...
+		Map connectionDictionary = modelMap.getMap("connectionDictionary", true);
+		if (!connectionDictionary.isEmpty()) {
+			EODatabaseConfig tempConnectionDictionaryDatabaseConfig = _createDatabaseConfig(connectionDictionary);
+			EODatabaseConfig connectionDictionaryDatabaseConfig = null; 
+			Iterator databaseConfigsIter = myDatabaseConfigs.iterator();
+			while (connectionDictionaryDatabaseConfig == null && databaseConfigsIter.hasNext()) {
+				EODatabaseConfig databaseConfig = (EODatabaseConfig)databaseConfigsIter.next();
+				if (tempConnectionDictionaryDatabaseConfig.isEquivalent(databaseConfig)) {
+					connectionDictionaryDatabaseConfig = databaseConfig;
+				}
+			}
+			// if one isn't found, then make a new database config based off the connection dictionary 
+			if (connectionDictionaryDatabaseConfig == null) {
+				connectionDictionaryDatabaseConfig = tempConnectionDictionaryDatabaseConfig;
+				addDatabaseConfig(connectionDictionaryDatabaseConfig, false, _failures);
+			}
+			// if the identified active database config isn't the connection dictionary config, then
+			// change the active config to the connection dictionary config
+			if (activeDatabaseConfig != connectionDictionaryDatabaseConfig) {
+				activeDatabaseConfig = connectionDictionaryDatabaseConfig;
+				setActiveDatabaseConfig(connectionDictionaryDatabaseConfig);
+			}
+		}
+		// try to always have at least one active database config
+		if (activeDatabaseConfig == null && !myDatabaseConfigs.isEmpty()) {
+			activeDatabaseConfig = (EODatabaseConfig)myDatabaseConfigs.iterator().next();
+			setActiveDatabaseConfig(activeDatabaseConfig);
+		}
 	}
 
 	public EOModelMap toMap() {
 		EOModelMap modelMap = myModelMap.cloneModelMap();
 		modelMap.setString("EOModelVersion", myVersion, true);
 		modelMap.setString("adaptorName", myAdaptorName, true);
-		modelMap.put("connectionDictionary", myConnectionDictionary);
+		Map connectionDictionary = null;
+		if (myActiveDatabaseConfig != null) {
+			connectionDictionary = myActiveDatabaseConfig.getConnectionDictionary();
+		}
+		modelMap.put("connectionDictionary", connectionDictionary);
 
 		Set entities = new PropertyListSet();
 		Set entitiesWithSharedObjects = new PropertyListSet();
@@ -760,6 +763,12 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		modelMap.setSet("storedProcedures", storedProcedures, true);
 
 		EOModelMap entityModelerMap = new EOModelMap((Map) getUserInfo().get(EOModel.ENTITY_MODELER_KEY));
+		if (myActiveDatabaseConfig == null) {
+			entityModelerMap.remove("activeDatabaseConfigName");
+		}
+		else {
+			entityModelerMap.put("activeDatabaseConfigName", myActiveDatabaseConfig.getName());
+		}
 		Map databaseConfigs = new PropertyListMap();
 		Iterator databaseConfigsIter = myDatabaseConfigs.iterator();
 		while (databaseConfigsIter.hasNext()) {
@@ -868,7 +877,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return "[EOModel: name = " + myName + "; entities = " + myEntities + "]";
 	}
 
-	/** Begin Prototypes **/
+	/** Begin Prototypes * */
 	public synchronized void clearCachedPrototypes(Set _failures, boolean _reload) {
 		myPrototypeAttributeCache = null;
 		Iterator entitiesIter = myEntities.iterator();
@@ -901,16 +910,15 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return adaptorPrototypeEntityName;
 	}
 
-	public String getDriverPrototypeEntityName(String name) {
+	public String getDriverPrototypeEntityName(Map _connectionDictionary, String name) {
 		String driverPrototypeEntityName = null;
 		String adaptorName = getAdaptorName();
 		// MS: Hardcoded JDBC reference hack ...
 		if ("JDBC".equals(adaptorName)) {
-			Map connectionDictionary = getConnectionDictionary();
-			if (connectionDictionary != null) {
-				String pluginName = (String) connectionDictionary.get("plugin");
+			if (_connectionDictionary != null) {
+				String pluginName = (String) _connectionDictionary.get("plugin");
 				if (pluginName == null || pluginName.length() == 0) {
-					String jdbcUrl = (String) connectionDictionary.get("URL");
+					String jdbcUrl = (String) _connectionDictionary.get("URL");
 					if (jdbcUrl != null && jdbcUrl.length() > 0) {
 						int firstColon = jdbcUrl.indexOf(':');
 						int secondColon = jdbcUrl.indexOf(':', firstColon + 1);
@@ -927,9 +935,9 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return driverPrototypeEntityName;
 	}
 
-	public EOEntity getPreferredPrototypeEntity() {
+	public EOEntity _getPreferredPrototypeEntity(Map _connectionDictionary) {
 		EOEntity prototypeEntity = null;
-		String driverPrototypeEntityName = getDriverPrototypeEntityName(null);
+		String driverPrototypeEntityName = getDriverPrototypeEntityName(_connectionDictionary, null);
 		if (driverPrototypeEntityName != null) {
 			prototypeEntity = myModelGroup.getEntityNamed(driverPrototypeEntityName);
 		}
@@ -950,13 +958,25 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		if (myPrototypeAttributeCache == null) {
 			Map prototypeAttributeCache = new HashMap();
 
+			Map connectionDictionary = null;
+			EODatabaseConfig activeDatabaseConfig = getActiveDatabaseConfig();
+			if (activeDatabaseConfig != null) {
+				connectionDictionary = activeDatabaseConfig.getConnectionDictionary();
+			}
 			addPrototypeAttributes(getDefaultPrototypeEntityName(null), prototypeAttributeCache);
 			addPrototypeAttributes(getAdaptorPrototypeEntityName(null), prototypeAttributeCache);
-			addPrototypeAttributes(getDriverPrototypeEntityName(null), prototypeAttributeCache);
+			addPrototypeAttributes(getDriverPrototypeEntityName(connectionDictionary, null), prototypeAttributeCache);
 
 			addPrototypeAttributes(getDefaultPrototypeEntityName(getName()), prototypeAttributeCache);
 			addPrototypeAttributes(getAdaptorPrototypeEntityName(getName()), prototypeAttributeCache);
-			addPrototypeAttributes(getDriverPrototypeEntityName(getName()), prototypeAttributeCache);
+			addPrototypeAttributes(getDriverPrototypeEntityName(connectionDictionary, getName()), prototypeAttributeCache);
+			
+			if (activeDatabaseConfig != null) {
+				EOEntity prototypeEntity = activeDatabaseConfig.getPrototype();
+				if (prototypeEntity != null) {
+					addPrototypeAttributes(prototypeEntity.getName(), prototypeAttributeCache);
+				}
+			}
 
 			// Do we need to support "EOPrototypesToHide" entity?
 			myPrototypeAttributeCache = new PropertyListSet();
@@ -991,7 +1011,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return matchingAttribute;
 	}
 
-	/** End Prototypes **/
+	/** End Prototypes * */
 
 	public static void main(String[] args) throws IOException, EOModelException {
 		Set failures = new LinkedHashSet();

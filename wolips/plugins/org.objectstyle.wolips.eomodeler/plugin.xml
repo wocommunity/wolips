@@ -107,11 +107,6 @@
          point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
       <propertyTabs contributorId="org.objectstyle.wolips.eomodeler.editors.EOModelEditor">
          <propertyTab
-               category="eomodel"
-               id="org.objectstyle.wolips.eomodeler.tabs.connectionDictionary"
-               image="icons/eoModel.gif"
-               label="Adaptor"/>
-         <propertyTab
                afterTab="org.objectstyle.wolips.eomodeler.tabs.connectionDictionary"
                category="eomodel"
                id="org.objectstyle.wolips.eomodeler.tabs.eomodelUserInfo"
@@ -253,12 +248,6 @@
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertySections">
       <propertySections contributorId="org.objectstyle.wolips.eomodeler.editors.EOModelEditor">
-         <propertySection
-               class="org.objectstyle.wolips.eomodeler.properties.ConnectionDictionarySection"
-               id="org.objectstyle.wolips.eomodeler.sections.connectionDictionary"
-               tab="org.objectstyle.wolips.eomodeler.tabs.connectionDictionary">
-            <input type="org.objectstyle.wolips.eomodeler.model.EOModel"/>
-         </propertySection>
          <propertySection
                class="org.objectstyle.wolips.eomodeler.editors.userInfo.UserInfoPropertySection"
                id="org.objectstyle.wolips.eomodeler.sections.eomodelUserInfo"
@@ -426,7 +415,7 @@
             <input type="org.objectstyle.wolips.eomodeler.model.EOEntity"/>
          </propertySection>
          <propertySection
-               class="org.objectstyle.wolips.eomodeler.properties.DatabaseConfigSection"
+               class="org.objectstyle.wolips.eomodeler.editors.databaseConfig.DatabaseConfigSection"
                enablesFor="1"
                id="org.objectstyle.wolips.eomodeler.sections.eodatabaseconfigBasic"
                tab="org.objectstyle.wolips.eomodeler.tabs.eodatabaseconfigBasic">
