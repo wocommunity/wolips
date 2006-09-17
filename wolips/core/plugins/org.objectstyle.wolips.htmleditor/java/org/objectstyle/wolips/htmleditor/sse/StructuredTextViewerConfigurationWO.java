@@ -45,7 +45,7 @@ package org.objectstyle.wolips.htmleditor.sse;
 
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.wst.html.core.internal.provisional.text.IHTMLPartitionTypes;
+import org.eclipse.wst.html.core.text.IHTMLPartitions;
 import org.eclipse.wst.html.ui.StructuredTextViewerConfigurationHTML;
 
 public class StructuredTextViewerConfigurationWO extends StructuredTextViewerConfigurationHTML {
@@ -55,7 +55,7 @@ public class StructuredTextViewerConfigurationWO extends StructuredTextViewerCon
 	}
 
 	protected IContentAssistProcessor[] getContentAssistProcessors(ISourceViewer sourceViewer, String partitionType) {
-		if ((partitionType == IHTMLPartitionTypes.HTML_DEFAULT) || (partitionType == IHTMLPartitionTypes.HTML_COMMENT)) {
+		if ((partitionType == IHTMLPartitions.HTML_DEFAULT) || (partitionType == IHTMLPartitions.HTML_COMMENT)) {
 			return new IContentAssistProcessor[] { new WebObjectTagContentAssistProcessor() };
 		}
 		return super.getContentAssistProcessors(sourceViewer, partitionType);
