@@ -14,12 +14,13 @@ Require-Bundle: org.eclipse.jdt.ui,
  org.eclipse.jdt.core,
  org.eclipse.core.resources,
  org.objectstyle.wolips.variables,
- org.objectstyle.wolips.datasets,
  org.objectstyle.wolips.workbenchutilities,
  org.junit,
  org.objectstyle.wolips.eogenerator.ui,
  org.objectstyle.wolips.eomodeler,
- org.objectstyle.wolips.baseforuiplugins
+ org.objectstyle.wolips.baseforuiplugins,
+ org.objectstyle.wolips,
+ org.objectstyle.wolips.datasets
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.wizards,
  org.objectstyle.wolips.wizards.actions
