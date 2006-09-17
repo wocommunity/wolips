@@ -32,7 +32,7 @@
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
-            icon="icons/launching/WOLips16*16.gif"
+            icon="icons/launching/WOLips16-16.png"
             configTypeID="org.objectstyle.wolips.launching.WOLocalJavaApplication"
             id="org.objectstyle.wolips.launching.WOLocalJavaApplicationImage">
       </launchConfigurationTypeImage>
@@ -78,7 +78,7 @@
          point="org.eclipse.debug.ui.launchShortcuts">
       <shortcut
             label="WOApplication"
-            icon="icons/launching/WOLips16*16.gif"
+            icon="icons/launching/WOLips16-16.png"
             modes="run, debug"
             class="org.objectstyle.wolips.launching.actions.WOJavaApplicationLaunchShortcut"
             id="org.objectstyle.wolips.launching.WOJavaApplicationLaunchShortcut">
