@@ -68,6 +68,7 @@ public class DefaultMavenLauncher implements IMavenLauncher {
 	 * @throws CoreException
 	 */
 	public void launchMavenInExternalVM(IFile buildFile, IProgressMonitor monitor, boolean captureOutput, String targets) throws CoreException {
+		throw new IllegalAccessError("not implemented yet");
 	}
 
 }
