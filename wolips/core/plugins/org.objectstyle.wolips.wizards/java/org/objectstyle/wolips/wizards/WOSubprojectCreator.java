@@ -68,16 +68,14 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.objectstyle.wolips.core.resources.types.folder.IDotSubprojAdapter;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
 
 /**
  * @author mnolte
- * @author uli To change this generated comment edit the template variable
- *         "typecomment": Window>Preferences>Java>Templates. To enable and
- *         disable the creation of type comments go to
- *         Window>Preferences>Java>Code Generation.
+ * @author uli
  */
 public class WOSubprojectCreator implements IRunnableWithProgress {
 
@@ -89,7 +87,7 @@ public class WOSubprojectCreator implements IRunnableWithProgress {
 	 * Constructor for WOSubprojectCreator.
 	 */
 	public WOSubprojectCreator(IResource parentResource, String subprojectName) {
-		this.subprojectName = subprojectName + "." + IWOLipsModel.EXT_SUBPROJECT;
+		this.subprojectName = subprojectName + "." + IDotSubprojAdapter.FILE_NAME_EXTENSION;
 		this.parentResource = parentResource;
 	}
 

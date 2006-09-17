@@ -57,10 +57,8 @@
 package org.objectstyle.wolips.wizards.actions;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
-import org.objectstyle.wolips.datasets.adaptable.Project;
-import org.objectstyle.wolips.wizards.WizardsPlugin;
+import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIProjects;
 
 /**
@@ -73,15 +71,11 @@ public class UpgradeAllBuildXML extends AbstractActionOnIProjects {
 		if (projects == null)
 			return;
 		for (int i = 0; i < projects.length; i++) {
-			Project project = (Project) projects[i].getAdapter(Project.class);
-			try {
-				if (!project.isWOLipsProject()) {
-					return;
-				}
-			} catch (CoreException e) {
-				WizardsPlugin.getDefault().log(e);
+			IProjectAdapter projectAdapter = (IProjectAdapter) projects[i].getAdapter(IProjectAdapter.class);
+			if (projectAdapter == null) {
+				return;
 			}
-			UpgradeBuildXML.upgradeBuildXml(project);
+			UpgradeBuildXML.upgradeBuildXml(projectAdapter);
 		}
 	}
 }
