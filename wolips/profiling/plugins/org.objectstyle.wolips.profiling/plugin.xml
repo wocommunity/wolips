@@ -45,7 +45,7 @@
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
-            icon="icons/profiling/WOLips-profiling.gif"
+            icon="icons/profiling/WOLips16*16.gif"
             configTypeID="org.objectstyle.wolips.profiling.ProfiledWOLocalJavaApplication"
             id="org.objectstyle.wolips.profiling.ProfiledWOLocalJavaApplicationImage">
       </launchConfigurationTypeImage>
@@ -68,7 +68,7 @@
          point="org.eclipse.debug.ui.launchShortcuts">
       <shortcut
             label="WOApplication (profiled)"
-            icon="icons/profiling/WOLips-profiling.gif"
+            icon="icons/profiling/WOLips16*16.gif"
             modes="debug"
             class="org.objectstyle.wolips.profiling.ProfiledWOJavaApplicationLaunchShortcut"
             id="org.objectstyle.wolips.profiling.ProfiledWOJavaApplicationLaunchShortcut">
