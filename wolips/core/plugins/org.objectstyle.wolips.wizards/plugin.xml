@@ -16,8 +16,10 @@
             name="WOComponent"
             icon="icons/wobuilder/wocomponent_wiz.gif"
             category="org.objectstyle.wolips.wizards"
-            class="org.objectstyle.wolips.wizards.WOComponentCreationWizard"
             id="org.objectstyle.wolips.wizards.new.wo.5.1.component">
+            <class class="org.objectstyle.wolips.wizards.WOComponentCreationWizard">
+              <parameter name="javatype" value="true"/>
+            </class>
          <description>
          </description>
          <selection
@@ -28,9 +30,11 @@
             name="WOApplication"
             icon="icons/woproject/woapplication_wiz.gif"
             category="org.objectstyle.wolips.wizards"
-            class="org.objectstyle.wolips.wizards.WOApplicationWizard"
             project="true"
             id="org.objectstyle.wolips.wizards.new.wo.5.1.application">
+            <class class="org.objectstyle.wolips.wizards.WOApplicationWizard">
+              <parameter name="wotype" value="true"/>
+            </class>
          <description>
          </description>
       </wizard>
@@ -38,9 +42,11 @@
             name="WOnderApplication"
             icon="icons/woproject/woapplication_wiz.gif"
             category="org.objectstyle.wolips.wizards"
-            class="org.objectstyle.wolips.wizards.WOnderApplicationWizard"
             project="true"
             id="org.objectstyle.wolips.wizards.new.wo.5.1.wonderapplication">
+            <class class="org.objectstyle.wolips.wizards.WOnderApplicationWizard">
+              <parameter name="wotype" value="true"/>
+            </class>
          <description>
          </description>
       </wizard>
@@ -48,9 +54,11 @@
             name="D2WApplication"
             icon="icons/woproject/d2wapplication_wiz.gif"
             category="org.objectstyle.wolips.wizards"
-            class="org.objectstyle.wolips.wizards.D2WApplicationWizard"
             project="true"
             id="org.objectstyle.wolips.wizards.new.wo.5.1.d2wapplication">
+            <class class="org.objectstyle.wolips.wizards.D2WApplicationWizard">
+              <parameter name="wotype" value="true"/>
+            </class>
          <description>
          </description>
       </wizard>
@@ -58,9 +66,11 @@
             name="WOFramework"
             icon="icons/woproject/woframework_wiz.gif"
             category="org.objectstyle.wolips.wizards"
-            class="org.objectstyle.wolips.wizards.WOFrameworkWizard"
             project="true"
             id="org.objectstyle.wolips.wizards.new.wo.5.1.framework">
+            <class class="org.objectstyle.wolips.wizards.WOFrameworkWizard">
+              <parameter name="wotype" value="true"/>
+            </class>
          <description>
          </description>
       </wizard>
@@ -68,9 +78,11 @@
             name="Jar Project"
             icon="icons/woproject/jar_project_wiz.gif"
             category="org.objectstyle.wolips.wizards"
-            class="org.objectstyle.wolips.wizards.JarProjectWizard"
             project="true"
             id="org.objectstyle.wolips.wizards.new.wo.5.1.jarproject">
+            <class class="org.objectstyle.wolips.wizards.JarProjectWizard">
+              <parameter name="wotype" value="true"/>
+            </class>
          <description>
          </description>
       </wizard>
@@ -78,8 +90,10 @@
             name="Subproject"
             icon="icons/woproject/wosubproject_wiz.gif"
             category="org.objectstyle.wolips.wizards"
-            class="org.objectstyle.wolips.wizards.WOSubprojectCreationWizard"
             id="org.objectstyle.wolips.wizards.new.wo.5.1.subproject">
+            <class class="org.objectstyle.wolips.wizards.WOSubprojectCreationWizard">
+              <parameter name="wotype" value="true"/>
+            </class>
          <description>
          </description>
          <selection
@@ -90,8 +104,10 @@
             name="EOModel"
             icon="icons/woproject/eomodel_wiz.gif"
             category="org.objectstyle.wolips.wizards"
-            class="org.objectstyle.wolips.wizards.EOModelCreationWizard"
             id="org.objectstyle.wolips.wizards.new.wo.5.1.eomodel">
+            <class class="org.objectstyle.wolips.wizards.EOModelCreationWizard">
+              <parameter name="eotype" value="true"/>
+            </class>
          <description>
          </description>
          <selection
@@ -100,19 +116,23 @@
       </wizard>
       <wizard
             category="org.objectstyle.wolips.wizards"
-            class="org.objectstyle.wolips.wizards.EOGeneratorWizard"
             icon="icons/woproject/eogenerator_wiz.gif"
             id="org.objectstyle.wolips.wizards.new.eogen"
             name="EOGenerator">
+            <class class="org.objectstyle.wolips.wizards.EOGeneratorWizard">
+              <parameter name="eotype" value="true"/>
+            </class>
          <description/>
          <selection class="org.eclipse.core.resources.IResource"/>
       </wizard>
       <wizard
             category="org.objectstyle.wolips.wizards"
-            class="org.objectstyle.wolips.wizards.EOModelGroupWizard"
             icon="icons/woproject/eomodelGroup_wiz.gif"
             id="org.objectstyle.wolips.wizards.new.eomodelgroup"
             name="EOModelGroup">
+            <class class="org.objectstyle.wolips.wizards.EOModelGroupWizard">
+              <parameter name="eotype" value="true"/>
+            </class>
          <description/>
          <selection class="org.eclipse.core.resources.IResource"/>
       </wizard>
@@ -127,77 +147,21 @@
             description="WOLips Wizards"
             visible="false"
             id="org.objectstyle.wolips.wizards.ElementCreationActionSet">
-         <action
-               label="EOModel"
-               icon="icons/woproject/eomodel_wiz.gif"
-               class="org.objectstyle.wolips.wizards.actions.OpenEOModelWizard"
-               tooltip="New EOModel"
+        <action
+               id="org.objectstyle.wolips.wizards.actions.NewWODropDown"
                toolbarPath="Normal/WOLipsWizards"
-               id="org.objectstyle.wolips.wizards.actions.OpenEOModelWizard">
+               class="org.objectstyle.wolips.wizards.actions.NewWODropDown"
+               icon="icons/wolips/WOLips16*16.gif"
+               label="WO"
+               style="pulldown">
          </action>
-         <action
-               label="EOGenerator"
-               icon="icons/woproject/eogenerator_wiz.gif"
-               class="org.objectstyle.wolips.wizards.actions.OpenEOGeneratorWizard"
-               tooltip="New EOGenerator"
+        <action
+               id="org.objectstyle.wolips.wizards.actions.NewEODropDown"
                toolbarPath="Normal/WOLipsWizards"
-               id="org.objectstyle.wolips.wizards.actions.OpenEOGeneratorWizard">
-         </action>
-         <action
-               label="WOComponent"
-               icon="icons/wobuilder/wocomponent_wiz.gif"
-               class="org.objectstyle.wolips.wizards.actions.OpenWOComponentWizard"
-               tooltip="New WOComponent"
-               toolbarPath="Normal/WOLipsWizards"
-               id="org.objectstyle.wolips.wizards.actions.OpenWOComponentWizard">
-         </action>
-         <action
-               label="WOSubproject"
-               icon="icons/woproject/wosubproject_wiz.gif"
-               class="org.objectstyle.wolips.wizards.actions.OpenWOSubprojectCreationWizard"
-               tooltip="New WOSubproject"
-               toolbarPath="Normal/WOLipsWizards"
-               id="org.objectstyle.wolips.wizards.actions.OpenWOSubprojectCreationWizard">
-         </action>
-         <action
-               label="Jar Project"
-               icon="icons/woproject/jar_project_wiz.gif"
-               class="org.objectstyle.wolips.wizards.actions.OpenJarProjectWizard"
-               tooltip="New Jar Project"
-               toolbarPath="Normal/WOLipsWizards"
-               id="org.objectstyle.wolips.wizards.actions.OpenJarProjectWizard">
-         </action>
-         <action
-               label="WOFramework"
-               icon="icons/woproject/woframework_wiz.gif"
-               class="org.objectstyle.wolips.wizards.actions.OpenWOFrameworkWizard"
-               tooltip="New WOFramework"
-               toolbarPath="Normal/WOLipsWizards"
-               id="org.objectstyle.wolips.wizards.actions.OpenWOFrameworkWizard">
-         </action>
-         <action
-               label="D2WApplication"
-               icon="icons/woproject/d2wapplication_wiz.gif"
-               class="org.objectstyle.wolips.wizards.actions.OpenD2WApplicationWizard"
-               tooltip="New D2WApplication"
-               toolbarPath="Normal/WOLipsWizards"
-               id="org.objectstyle.wolips.wizards.actions.OpenD2WApplicationWizard">
-         </action>
-         <action
-               label="WOnderApplication"
-               icon="icons/woproject/wonderapplication_wiz.gif"
-               class="org.objectstyle.wolips.wizards.actions.OpenWOnderApplicationWizard"
-               tooltip="New WOnderApplication"
-               toolbarPath="Normal/WOLipsWizards"
-               id="org.objectstyle.wolips.wizards.actions.OpenWOnderApplicationWizard">
-         </action>
-         <action
-               label="WOApplication"
-               icon="icons/woproject/woapplication_wiz.gif"
-               class="org.objectstyle.wolips.wizards.actions.OpenWOApplicationWizard"
-               tooltip="New WOApplication"
-               toolbarPath="Normal/WOLipsWizards"
-               id="org.objectstyle.wolips.wizards.actions.OpenWOApplicationWizard">
+               class="org.objectstyle.wolips.wizards.actions.NewEODropDown"
+               icon="icons/woproject/eomodelGroup_wiz.gif"
+               label="EO"
+               style="pulldown">
          </action>
       </actionSet>
    </extension>
