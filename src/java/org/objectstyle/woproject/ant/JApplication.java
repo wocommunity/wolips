@@ -153,6 +153,33 @@ public class JApplication extends Task {
 		}
 	}
 
+	/**
+	 * A utility method to create subtasks.
+	 */
+	protected Task createSubtask(Class subtaskClass) throws BuildException {
+
+		if (subtaskClass == null) {
+			throw new IllegalArgumentException("Null subtask class");
+		}
+
+		if (!Task.class.isAssignableFrom(subtaskClass)) {
+			throw new IllegalArgumentException("Invalid subtask class, must be a subclass of Task: " + subtaskClass.getName());
+		}
+
+		Task subtask;
+		try {
+			subtask = (Task) subtaskClass.newInstance();
+		} catch (Exception e) {
+			throw new BuildException("Can't create subtask: " + subtaskClass.getName());
+		}
+
+		subtask.setOwningTarget(getOwningTarget());
+		subtask.setProject(getProject());
+		subtask.setTaskName(getTaskName());
+		subtask.setLocation(getLocation());
+		return subtask;
+	}
+
 	protected void initDefaults() {
 		if (longName == null) {
 			longName = name;
@@ -176,12 +203,12 @@ public class JApplication extends Task {
 		if (nsisHome == null) {
 			nsisHome = NSIS_HOME_DEFAULT;
 		}
-		
-		if(version == null) {
+
+		if (version == null) {
 			version = "0.0";
 		}
-		
-		if(jvm == null) {
+
+		if (jvm == null) {
 			jvm = "1.4+";
 		}
 	}

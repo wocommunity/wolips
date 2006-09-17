@@ -110,7 +110,7 @@ class JApplicationJavaWorker implements JApplicationWorker {
 		mainClass.setName("Main-Class");
 		mainClass.setValue(task.getMainClass());
 
-		ManifestTask manifest = makeManifestTask();
+		ManifestTask manifest = (ManifestTask) task.createSubtask(ManifestTask.class);
 		manifest.setFile(manifestFile);
 		try {
 			manifest.addConfiguredAttribute(mainClass);
@@ -125,7 +125,7 @@ class JApplicationJavaWorker implements JApplicationWorker {
 		File fatJar = new File(baseDir, task.getName() + ".jar");
 		fatJar.delete();
 
-		Jar jar = makeJarTask();
+		Jar jar = (Jar) task.createSubtask(Jar.class);
 		jar.setDestFile(fatJar);
 
 		Iterator it = unpackedJarDirs.iterator();
@@ -161,7 +161,7 @@ class JApplicationJavaWorker implements JApplicationWorker {
 			DirectoryScanner scanner = fs.getDirectoryScanner(task.getProject());
 
 			String[] files = scanner.getIncludedFiles();
-			Expand unjar = makeUnjarTask();
+			Expand unjar = (Expand) task.createSubtask(Expand.class);
 
 			for (int i = 0; i < files.length; i++) {
 
@@ -215,32 +215,5 @@ class JApplicationJavaWorker implements JApplicationWorker {
 		}
 
 		return file.delete();
-	}
-
-	ManifestTask makeManifestTask() {
-		ManifestTask manifest = new ManifestTask();
-		manifest.setOwningTarget(task.getOwningTarget());
-		manifest.setProject(task.getProject());
-		manifest.setTaskName(task.getTaskName());
-		manifest.setLocation(task.getLocation());
-		return manifest;
-	}
-
-	Jar makeJarTask() {
-		Jar jar = new Jar();
-		jar.setOwningTarget(task.getOwningTarget());
-		jar.setProject(task.getProject());
-		jar.setTaskName(task.getTaskName());
-		jar.setLocation(task.getLocation());
-		return jar;
-	}
-
-	Expand makeUnjarTask() {
-		Expand expand = new Expand();
-		expand.setOwningTarget(task.getOwningTarget());
-		expand.setProject(task.getProject());
-		expand.setTaskName(task.getTaskName());
-		expand.setLocation(task.getLocation());
-		return expand;
 	}
 }

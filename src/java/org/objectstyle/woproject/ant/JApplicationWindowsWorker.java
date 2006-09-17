@@ -81,13 +81,13 @@ class JApplicationWindowsWorker extends JApplicationJavaWorker {
 	}
 
 	void execNsis() throws BuildException {
-		ExecTask exec = makeExecTask();
+		ExecTask exec = (ExecTask) task.createSubtask(ExecTask.class);
 		exec.setDir(baseDir);
 		exec.setExecutable(nsisExe);
 		exec.setFailonerror(true);
 
 		exec.createArg().setLine(nsiScript.getAbsolutePath());
-		
+
 		exec.execute();
 	}
 
@@ -120,12 +120,4 @@ class JApplicationWindowsWorker extends JApplicationJavaWorker {
 		new TokenFilter(tokens).copy("japplication/windows/app.nsi", nsiScript);
 	}
 
-	ExecTask makeExecTask() {
-		ExecTask exec = new ExecTask();
-		exec.setOwningTarget(task.getOwningTarget());
-		exec.setProject(task.getProject());
-		exec.setTaskName(task.getTaskName());
-		exec.setLocation(task.getLocation());
-		return exec;
-	}
 }
