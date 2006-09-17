@@ -151,12 +151,12 @@ class JApplicationMacWorker implements JApplicationWorker {
 	}
 
 	void copyStub() throws BuildException {
-		Copy cp = makeCopyTask();
+		Copy cp = (Copy) task.createSubtask(Copy.class);
 		cp.setTodir(macOSDir);
 		cp.setFile(stub);
 		cp.execute();
 
-		Chmod chmod = makeChmodTask();
+		Chmod chmod = (Chmod) task.createSubtask(Chmod.class);
 		chmod.setPerm("755");
 		chmod.setFile(new File(macOSDir, "JavaApplicationStub"));
 		chmod.execute();
@@ -164,7 +164,7 @@ class JApplicationMacWorker implements JApplicationWorker {
 
 	void copyIcon() throws BuildException {
 		if (task.getIcon() != null && task.getIcon().isFile()) {
-			Copy cp = makeCopyTask();
+			Copy cp = (Copy) task.createSubtask(Copy.class);
 			cp.setTodir(resourcesDir);
 			cp.setFile(task.getIcon());
 			cp.execute();
@@ -173,7 +173,7 @@ class JApplicationMacWorker implements JApplicationWorker {
 
 	void copyJars() {
 		if (!task.getLibs().isEmpty()) {
-			Copy cp = makeCopyTask();
+			Copy cp = (Copy) task.createSubtask(Copy.class);
 			cp.setTodir(javaDir);
 			cp.setFlatten(true);
 
@@ -185,23 +185,5 @@ class JApplicationMacWorker implements JApplicationWorker {
 
 			cp.execute();
 		}
-	}
-
-	Copy makeCopyTask() {
-		Copy cp = new Copy();
-		cp.setOwningTarget(task.getOwningTarget());
-		cp.setProject(task.getProject());
-		cp.setTaskName(task.getTaskName());
-		cp.setLocation(task.getLocation());
-		return cp;
-	}
-
-	Chmod makeChmodTask() {
-		Chmod chmod = new Chmod();
-		chmod.setOwningTarget(task.getOwningTarget());
-		chmod.setProject(task.getProject());
-		chmod.setTaskName(task.getTaskName());
-		chmod.setLocation(task.getLocation());
-		return chmod;
 	}
 }
