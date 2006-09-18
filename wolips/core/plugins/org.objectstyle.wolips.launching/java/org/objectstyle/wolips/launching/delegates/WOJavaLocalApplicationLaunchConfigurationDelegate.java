@@ -81,7 +81,7 @@ import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
 import org.eclipse.swt.widgets.Display;
-import org.objectstyle.wolips.commons.util.StringUtilities;
+import org.objectstyle.wolips.baseforplugins.util.StringUtilities;
 import org.objectstyle.wolips.datasets.adaptable.JavaProject;
 import org.objectstyle.wolips.launching.LaunchingMessages;
 import org.objectstyle.wolips.launching.LaunchingPlugin;
