@@ -62,9 +62,9 @@ public class StructuredTextEditorWO extends StructuredTextEditor implements IEmb
 	}
 
 	public void initEditorInteraction(EditorInteraction initEditorInteraction) {
+		this.editorInteraction = initEditorInteraction;
 		this.getSelectionProvider().addSelectionChangedListener(new HTMLOutlineSelectionHandler(editorInteraction));
 		editorInteraction.setHtmlDocumentProvider(this);
-		this.editorInteraction = initEditorInteraction;
 	}
 
 	public IDocument getHtmlEditDocument() {
