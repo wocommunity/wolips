@@ -223,7 +223,7 @@ public class GenerateSQLDialog extends Dialog {
 		return myEOModelClassLoader;
 	}
 
-	public synchronized void generateSqlInThread() {
+	public void generateSqlInThread() {
 		final Map flags = new HashMap();
 		flags.put("dropTables", yesNo(myDropTablesButton));
 		flags.put("dropPrimaryKeySupport", yesNo(myDropPrimaryKeySupportButton));
@@ -272,11 +272,11 @@ public class GenerateSQLDialog extends Dialog {
 		}
 	}
 
-	protected synchronized String getSqlString() {
+	protected String getSqlString() {
 		return mySqlText.getText();
 	}
 
-	public synchronized void executeSqlInThread() {
+	public void executeSqlInThread() {
 		boolean confirmed = MessageDialog.openConfirm(getShell(), "Execute SQL", "Are you sure you want to execute this SQL?");
 		if (confirmed) {
 			final String sqlString = getSqlString();
