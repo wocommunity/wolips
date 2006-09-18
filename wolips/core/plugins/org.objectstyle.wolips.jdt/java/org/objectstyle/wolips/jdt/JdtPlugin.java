@@ -62,7 +62,7 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.commons.logging.PluginLogger;
+import org.objectstyle.wolips.baseforplugins.logging.PluginLogger;
 import org.objectstyle.wolips.jdt.classpath.model.ClasspathModel;
 import org.objectstyle.wolips.jdt.listener.ResourceChangeListener;
 import org.osgi.framework.BundleContext;
