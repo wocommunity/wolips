@@ -16,12 +16,12 @@ Require-Bundle: org.eclipse.search,
  org.eclipse.jdt.core,
  org.eclipse.core.resources,
  org.objectstyle.wolips.preferences,
- org.objectstyle.wolips.commons,
  org.objectstyle.wolips.workbenchutilities,
  org.objectstyle.wolips.datasets,
  org.objectstyle.wolips,
  org.objectstyle.wolips.builder,
- org.objectstyle.wolips.baseforuiplugins
+ org.objectstyle.wolips.baseforuiplugins,
+ org.objectstyle.wolips.baseforplugins
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.ui,
  org.objectstyle.wolips.ui.actions,

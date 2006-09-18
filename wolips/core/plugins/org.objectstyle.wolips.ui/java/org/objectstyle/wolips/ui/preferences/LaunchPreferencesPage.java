@@ -77,11 +77,11 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.objectstyle.wolips.baseforplugins.util.ArrayUtilities;
+import org.objectstyle.wolips.baseforplugins.util.StringUtilities;
 import org.objectstyle.wolips.preferences.ILaunchInfo;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.preferences.PreferencesMessages;
-import org.objectstyle.wolips.commons.util.ArrayUtilities;
-import org.objectstyle.wolips.commons.util.StringUtilities;
 
 /**
  * @author uli
