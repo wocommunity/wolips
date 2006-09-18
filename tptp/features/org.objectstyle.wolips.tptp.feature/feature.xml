@@ -75,13 +75,12 @@
       <import plugin="org.eclipse.jdt.debug.ui"/>
       <import plugin="org.eclipse.debug.core"/>
       <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.objectstyle.wolips.launching"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.hyades.trace.ui"/>
-      <import plugin="org.objectstyle.wolips.ui"/>
       <import plugin="org.eclipse.jdt.launching"/>
       <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.objectstyle.wolips.baseforuiplugins"/>
    </requires>
 
    <plugin
