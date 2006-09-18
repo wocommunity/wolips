@@ -710,7 +710,12 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 			activeDatabaseConfig = (EODatabaseConfig)myDatabaseConfigs.iterator().next();
 		}
 		if (activeDatabaseConfig != null) {
-			setActiveDatabaseConfig(activeDatabaseConfig);
+			if (ComparisonUtils.equals(activeDatabaseConfig.getName(), activeDatabaseConfigName)) {
+				myActiveDatabaseConfig = activeDatabaseConfig;	
+			}
+			else {
+				setActiveDatabaseConfig(activeDatabaseConfig);
+			}
 		}
 	}
 
