@@ -75,7 +75,7 @@ public class ProfiledWOJavaLocalApplicationLaunchConfigurationDelegate extends W
 				vmArgs.append(args);
 			}
 		} catch (CoreException e) {
-			ProfilingPlugin.getDefault().getPluginLogger().log(e);
+			ProfilingPlugin.getDefault().log(e);
 		}
 		return vmArgs.toString();
 	}

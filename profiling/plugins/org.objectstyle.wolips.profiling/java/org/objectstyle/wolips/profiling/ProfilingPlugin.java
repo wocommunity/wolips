@@ -49,9 +49,7 @@
  */
 package org.objectstyle.wolips.profiling;
 
-import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.commons.logging.PluginLogger;
-import org.osgi.framework.BundleContext;
+import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -59,13 +57,9 @@ import org.osgi.framework.BundleContext;
  * @author uli
  * @author markus
  */
-public class ProfilingPlugin extends AbstractUIPlugin {
+public class ProfilingPlugin extends AbstractBaseUIActivator {
 	// The plugin.
 	private static ProfilingPlugin plugin;
-
-	private static final String PLUGIN_ID = "org.objectstyle.wolips.profiling";
-
-	private PluginLogger pluginLogger;
 
 	/**
 	 * The constructor.
@@ -86,32 +80,5 @@ public class ProfilingPlugin extends AbstractUIPlugin {
 	 */
 	public static ProfilingPlugin getDefault() {
 		return plugin;
-	}
-
-	/**
-	 * @return Returns the pluginLogger.
-	 */
-	public PluginLogger getPluginLogger() {
-		return pluginLogger;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-	 */
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-		pluginLogger = new PluginLogger(ProfilingPlugin.PLUGIN_ID, false);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-	 */
-	public void stop(BundleContext context) throws Exception {
-		super.stop(context);
-		this.pluginLogger = null;
 	}
 }
