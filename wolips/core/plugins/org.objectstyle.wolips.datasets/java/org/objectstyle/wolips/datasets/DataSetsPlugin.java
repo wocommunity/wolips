@@ -66,7 +66,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.objectstyle.wolips.commons.logging.PluginLogger;
+import org.objectstyle.wolips.baseforplugins.logging.PluginLogger;
 import org.objectstyle.wolips.datasets.adaptable.AdapterCache;
 import org.objectstyle.wolips.datasets.internal.Api;
 import org.osgi.framework.BundleContext;

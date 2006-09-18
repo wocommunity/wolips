@@ -60,7 +60,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.jdt.core.ICompilationUnit;
 import org.objectstyle.wolips.datasets.DataSetsPlugin;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
