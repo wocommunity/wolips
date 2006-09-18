@@ -8,7 +8,6 @@ Bundle-Vendor: objectstyle.org
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
- org.objectstyle.wolips.commons,
  org.eclipse.debug.ui,
  org.eclipse.debug.core,
  org.eclipse.core.resources,
@@ -25,7 +24,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.objectstyle.wolips.ant,
  org.objectstyle.wolips.datasets,
  org.eclipse.ui.ide,
- org.objectstyle.wolips.baseforuiplugins
+ org.objectstyle.wolips.baseforuiplugins,
+ org.objectstyle.wolips.baseforplugins
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.launching,
  org.objectstyle.wolips.launching.actions,
