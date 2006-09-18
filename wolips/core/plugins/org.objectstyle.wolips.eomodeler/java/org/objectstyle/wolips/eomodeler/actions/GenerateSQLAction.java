@@ -61,6 +61,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 
 public class GenerateSQLAction implements IWorkbenchWindowActionDelegate {
 	private IWorkbenchWindow myWindow;
@@ -88,13 +89,16 @@ public class GenerateSQLAction implements IWorkbenchWindowActionDelegate {
 				Iterator selectionIter = ((IStructuredSelection) mySelection).iterator();
 				while (!modelSelected && selectionIter.hasNext()) {
 					Object obj = selectionIter.next();
-					if (obj instanceof EOModel) {
-						model = (EOModel) obj;
-						modelSelected = true;
-					} else if (obj instanceof EOEntity) {
-						EOEntity entity = (EOEntity) obj;
+					EOEntity entity = EOModelUtils.getRelatedEntity(obj);
+					if (entity != null) {
 						model = entity.getModel();
 						entityNames.add(entity.getName());
+					}
+					else {
+						model = EOModelUtils.getRelatedModel(obj);
+						if (model != null) {
+							modelSelected = true;
+						}
 					}
 				}
 
