@@ -69,6 +69,7 @@ import org.eclipse.jdt.debug.ui.launchConfigurations.JavaArgumentsTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaClasspathTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaJRETab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaMainTab;
+import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchConfigurationDelegate;
 import org.objectstyle.wolips.launching.ui.BrowserTab;
 import org.objectstyle.wolips.launching.ui.CommonWOArgumentsTab;
 import org.objectstyle.wolips.launching.ui.LogTab;
@@ -97,7 +98,7 @@ public class ProfiledWOLocalJavaApplicationTabGroup extends AbstractLaunchConfig
 	 * @see org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup#setDefaults(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
 	 */
 	public void setDefaults(ILaunchConfigurationWorkingCopy wc) {
-		ProfiledWOJavaLocalApplicationLaunchConfigurationDelegate.initConfiguration(wc);
+		WOJavaLocalApplicationLaunchConfigurationDelegate.initConfiguration(wc);
 		super.setDefaults(wc);
 	}
 }
