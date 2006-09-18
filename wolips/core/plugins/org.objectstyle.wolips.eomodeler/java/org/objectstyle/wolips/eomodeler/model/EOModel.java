@@ -703,12 +703,13 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 			// change the active config to the connection dictionary config
 			if (activeDatabaseConfig != connectionDictionaryDatabaseConfig) {
 				activeDatabaseConfig = connectionDictionaryDatabaseConfig;
-				setActiveDatabaseConfig(connectionDictionaryDatabaseConfig);
 			}
 		}
 		// try to always have at least one active database config
 		if (activeDatabaseConfig == null && !myDatabaseConfigs.isEmpty()) {
 			activeDatabaseConfig = (EODatabaseConfig)myDatabaseConfigs.iterator().next();
+		}
+		if (activeDatabaseConfig != null) {
 			setActiveDatabaseConfig(activeDatabaseConfig);
 		}
 	}
