@@ -66,21 +66,16 @@
  */
    </license>
 
-   <url>
-      <update label="WOLips" url="http://www.mdimension.com/~wolips/update/"/>
-      <discovery label="WOLips" url="http://www.mdimension.com/~wolips/update/"/>
-   </url>
-
    <requires>
       <import plugin="org.eclipse.jdt.debug.ui"/>
       <import plugin="org.eclipse.debug.core"/>
       <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="org.objectstyle.wolips.launching"/>
+      <import plugin="org.objectstyle.wolips.launching" version="1.0.6" match="perfect"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.hyades.trace.ui"/>
       <import plugin="org.eclipse.jdt.launching"/>
       <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.objectstyle.wolips.baseforuiplugins"/>
+      <import plugin="org.objectstyle.wolips.baseforuiplugins" version="1.0.6" match="perfect"/>
    </requires>
 
    <plugin
