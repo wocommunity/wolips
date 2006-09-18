@@ -59,15 +59,12 @@ package org.objectstyle.wolips.preferences;
 import java.io.IOException;
 import java.util.StringTokenizer;
 import java.util.Vector;
+
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
  * @author uli
- * 
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates. To enable and disable the creation of type
- * comments go to Window>Preferences>Java>Code Generation.
  */
 public class Preferences {
 

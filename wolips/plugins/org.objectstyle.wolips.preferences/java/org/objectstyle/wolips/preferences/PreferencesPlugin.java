@@ -49,8 +49,7 @@
  */
 package org.objectstyle.wolips.preferences;
 
-import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.commons.logging.PluginLogger;
+import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -59,14 +58,9 @@ import org.osgi.framework.BundleContext;
  * @author uli
  * @author markus
  */
-public class PreferencesPlugin extends AbstractUIPlugin {
-	private final static String PLUGIN_ID = "org.objectstyle.wolips.preferences";
-
+public class PreferencesPlugin extends AbstractBaseUIActivator {
 	// The plugin.
 	private static PreferencesPlugin plugin;
-
-	private PluginLogger pluginLogger = null;
-
 	/**
 	 * The constructor.
 	 */
@@ -84,21 +78,9 @@ public class PreferencesPlugin extends AbstractUIPlugin {
 		return plugin;
 	}
 
-	/**
-	 * @return Returns the pluginLogger.
-	 */
-	public PluginLogger getPluginLogger() {
-		return this.pluginLogger;
-	}
-
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		this.pluginLogger = new PluginLogger(PreferencesPlugin.PLUGIN_ID, false);
-		try {
 			// set up missing preferences
 			Preferences.setDefaults();
-		} catch (Exception exception) {
-			this.pluginLogger.log("Exception in WOLips constructor: ", exception);
-		}
 	}
 }
