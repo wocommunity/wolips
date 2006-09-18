@@ -105,7 +105,13 @@ public class GenerateSQLDialog extends Dialog {
 			myDatabaseConfigComboViewer.setLabelProvider(new DatabaseConfigLabelProvider());
 			myDatabaseConfigComboViewer.setInput(myDatabaseConfigs);
 			myDatabaseConfigComboViewer.getCombo().setLayoutData(extraInfoData);
-			myDatabaseConfigComboViewer.setSelection(new StructuredSelection(myDatabaseConfigs.iterator().next()));
+			EODatabaseConfig activeDatabaseConfig = myModel.getActiveDatabaseConfig();
+			if (activeDatabaseConfig != null) {
+				myDatabaseConfigComboViewer.setSelection(new StructuredSelection(activeDatabaseConfig));
+			}
+			else {
+				myDatabaseConfigComboViewer.setSelection(new StructuredSelection(myDatabaseConfigs.iterator().next()));
+			}
 			myDatabaseConfigComboViewer.addSelectionChangedListener(myFlagChangeHander);
 		}
 
