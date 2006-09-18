@@ -89,7 +89,7 @@ public class EODatabaseConfig extends EOModelObject {
 				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("driver"), _config.myConnectionDictionary.get("driver"));
 			}
 			if (equivalent) {
-				equivalent = ComparisonUtils.equals(myPrototypeName, _config.myPrototypeName);
+				equivalent = myPrototypeName == null || _config.myPrototypeName == null || myPrototypeName.length() == 0 || _config.myPrototypeName.length() == 0 || ComparisonUtils.equals(myPrototypeName, _config.myPrototypeName);
 			}
 		}
 		return equivalent;
