@@ -1,4 +1,4 @@
-package org.objectstyle.wolips.commons.util;
+package org.objectstyle.wolips.baseforplugins.util;
 
 public class StringUtilities {
 	public static String toCommandlineParameterFormat(String _parameter, String _value, boolean _escapeSpacesAndQuotes) {

@@ -47,11 +47,11 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.commons.logging;
+package org.objectstyle.wolips.baseforplugins.logging;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.objectstyle.wolips.commons.CommonsPlugin;
+import org.objectstyle.wolips.baseforplugins.Activator;
 
 /**
  * @author uli
@@ -77,7 +77,7 @@ public class PluginLogger implements ILogger {
 	 * @param status
 	 */
 	public void log(IStatus status) {
-		CommonsPlugin.getDefault().getLog().log(status);
+		Activator.getDefault().log(status);
 	}
 
 	/**
