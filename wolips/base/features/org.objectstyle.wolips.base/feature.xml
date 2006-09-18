@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.objectstyle.wolips.feature"
-      label="%featureName"
+      id="org.objectstyle.wolips.base"
+      label="WOLips Base"
       version="1.0.6"
-      provider-name="%providerName"
+      provider-name="objectstyle.org"
       image="%image">
 
    <description url="http://objectstyle.org/confluence/display/WOL/Home">
@@ -71,6 +71,10 @@
       <discovery label="WOLips" url="http://www.mdimension.com/~wolips/update/"/>
    </url>
 
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui"/>
+   </requires>
 
    <plugin
          id="org.objectstyle.wolips.baseforplugins"
