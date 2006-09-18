@@ -15,19 +15,23 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -65,10 +69,17 @@ public class GenerateSQLDialog extends Dialog {
 
 	private ClassLoader myEOModelClassLoader;
 
+	private FlagChangedHandler myFlagChangeHander;
+
+	private boolean myCancel;
+
+	private Cursor myWaitCursor;
+
 	public GenerateSQLDialog(Shell _parentShell, EOModel _model, List _entityNames) {
 		super(_parentShell);
 		myModel = _model;
 		myEntityNames = _entityNames;
+		myFlagChangeHander = new FlagChangedHandler();
 	}
 
 	protected void configureShell(Shell _newShell) {
@@ -95,36 +106,45 @@ public class GenerateSQLDialog extends Dialog {
 			myDatabaseConfigComboViewer.setInput(myDatabaseConfigs);
 			myDatabaseConfigComboViewer.getCombo().setLayoutData(extraInfoData);
 			myDatabaseConfigComboViewer.setSelection(new StructuredSelection(myDatabaseConfigs.iterator().next()));
+			myDatabaseConfigComboViewer.addSelectionChangedListener(myFlagChangeHander);
 		}
 
 		myDropDatabaseButton = new Button(control, SWT.CHECK);
 		myDropDatabaseButton.setText("Drop Database");
+		myDropDatabaseButton.addSelectionListener(myFlagChangeHander);
 		myCreateDatabaseButton = new Button(control, SWT.CHECK);
 		myCreateDatabaseButton.setText("Create Database");
+		myCreateDatabaseButton.addSelectionListener(myFlagChangeHander);
 
 		myDropTablesButton = new Button(control, SWT.CHECK);
 		myDropTablesButton.setText("Drop Tables");
 		myDropTablesButton.setSelection(true);
+		myDropTablesButton.addSelectionListener(myFlagChangeHander);
 		myCreateTablesButton = new Button(control, SWT.CHECK);
 		myCreateTablesButton.setText("Create Tables");
 		myCreateTablesButton.setSelection(true);
+		myCreateTablesButton.addSelectionListener(myFlagChangeHander);
 
 		myDropPrimaryKeySupportButton = new Button(control, SWT.CHECK);
 		myDropPrimaryKeySupportButton.setText("Drop Primary Keys");
 		myDropPrimaryKeySupportButton.setSelection(true);
+		myDropPrimaryKeySupportButton.addSelectionListener(myFlagChangeHander);
 		myCreatePrimaryKeySupportButton = new Button(control, SWT.CHECK);
 		myCreatePrimaryKeySupportButton.setText("Create Primary Key Support");
 		myCreatePrimaryKeySupportButton.setSelection(true);
+		myCreatePrimaryKeySupportButton.addSelectionListener(myFlagChangeHander);
 
 		new Label(control, SWT.NONE);
 		myCreatePrimaryKeyConstraintsButton = new Button(control, SWT.CHECK);
 		myCreatePrimaryKeyConstraintsButton.setText("Primary Key Constraints");
 		myCreatePrimaryKeyConstraintsButton.setSelection(true);
+		myCreatePrimaryKeyConstraintsButton.addSelectionListener(myFlagChangeHander);
 
 		new Label(control, SWT.NONE);
 		myCreateForeignKeyConstraintsButton = new Button(control, SWT.CHECK);
 		myCreateForeignKeyConstraintsButton.setText("Foreign Key Constraints");
 		myCreateForeignKeyConstraintsButton.setSelection(true);
+		myCreateForeignKeyConstraintsButton.addSelectionListener(myFlagChangeHander);
 
 		mySqlText = new Text(control, SWT.BORDER | SWT.MULTI | SWT.READ_ONLY | SWT.V_SCROLL);
 		GridData sqlTextData = new GridData(GridData.FILL_HORIZONTAL);
@@ -133,8 +153,21 @@ public class GenerateSQLDialog extends Dialog {
 		sqlTextData.verticalIndent = 10;
 		sqlTextData.horizontalSpan = 2;
 		mySqlText.setLayoutData(sqlTextData);
+		mySqlText.setText("Generating SQL. Please Wait ...");
+
+		myWaitCursor = new Cursor(getShell().getDisplay(), SWT.CURSOR_WAIT);
+		generateSqlInThread();
 
 		return control;
+	}
+
+	public boolean close() {
+		boolean close = super.close();
+		if (myWaitCursor != null) {
+			myWaitCursor.dispose();
+			myWaitCursor = null;
+		}
+		return close;
 	}
 
 	protected Control createButtonBar(Composite _parent) {
@@ -153,13 +186,10 @@ public class GenerateSQLDialog extends Dialog {
 		Button closeButton = new Button(composite, SWT.PUSH);
 		closeButton.setText("Close");
 		closeButton.addSelectionListener(new CloseHandler());
-		Button generateSqlButton = new Button(composite, SWT.PUSH);
-		generateSqlButton.setText("View SQL");
-		generateSqlButton.addSelectionListener(new GenerateSqlHandler());
 		Button executeSqlButton = new Button(composite, SWT.PUSH);
 		executeSqlButton.setText("Execute SQL");
 		executeSqlButton.addSelectionListener(new ExecuteSqlHandler());
-		getShell().setDefaultButton(generateSqlButton);
+		getShell().setDefaultButton(closeButton);
 		return composite;
 	}
 
@@ -167,25 +197,8 @@ public class GenerateSQLDialog extends Dialog {
 		return (_button.getSelection()) ? "YES" : "NO";
 	}
 
-	public synchronized void generateSql() {
-		Text sqlText = mySqlText;
-		Map flags = new HashMap();
-		flags.put("dropTables", yesNo(myDropTablesButton));
-		flags.put("dropPrimaryKeySupport", yesNo(myDropPrimaryKeySupportButton));
-		flags.put("createTables", yesNo(myCreateTablesButton));
-		flags.put("createPrimaryKeySupport", yesNo(myCreatePrimaryKeySupportButton));
-		flags.put("primaryKeyConstraints", yesNo(myCreatePrimaryKeyConstraintsButton));
-		flags.put("foreignKeyConstraints", yesNo(myCreateForeignKeyConstraintsButton));
-		flags.put("createDatabase", yesNo(myCreateDatabaseButton));
-		flags.put("dropDatabase", yesNo(myDropDatabaseButton));
-		try {
-			Object eofSQLGenerator = SQLUtils.createEOFSQLGenerator(myModel, myEntityNames, getSelectedDatabaseConfigMap(), getEOModelClassLoader());
-			Method getSchemaCreationScriptMethod = eofSQLGenerator.getClass().getMethod("getSchemaCreationScript", new Class[] { Map.class });
-			String sqlScript = (String) getSchemaCreationScriptMethod.invoke(eofSQLGenerator, new Object[] { flags });
-			sqlText.setText(sqlScript);
-		} catch (Throwable t) {
-			MessageDialog.openError(getShell(), "Error", getErrorMessage(t));
-		}
+	protected Text getSqlText() {
+		return mySqlText;
 	}
 
 	protected Map getSelectedDatabaseConfigMap() {
@@ -210,27 +223,124 @@ public class GenerateSQLDialog extends Dialog {
 		return myEOModelClassLoader;
 	}
 
-	public synchronized void executeSql() {
+	public synchronized void generateSqlInThread() {
+		final Map flags = new HashMap();
+		flags.put("dropTables", yesNo(myDropTablesButton));
+		flags.put("dropPrimaryKeySupport", yesNo(myDropPrimaryKeySupportButton));
+		flags.put("createTables", yesNo(myCreateTablesButton));
+		flags.put("createPrimaryKeySupport", yesNo(myCreatePrimaryKeySupportButton));
+		flags.put("primaryKeyConstraints", yesNo(myCreatePrimaryKeyConstraintsButton));
+		flags.put("foreignKeyConstraints", yesNo(myCreateForeignKeyConstraintsButton));
+		flags.put("createDatabase", yesNo(myCreateDatabaseButton));
+		flags.put("dropDatabase", yesNo(myDropDatabaseButton));
+		final Map selectedDatabaseConfigMap = getSelectedDatabaseConfigMap();
+		Thread generateSqlThread = new Thread(new Runnable() {
+			public void run() {
+				generateSql(flags, selectedDatabaseConfigMap);
+			}
+		}, "Generate SQL");
+		generateSqlThread.start();
+	}
+
+	protected synchronized void generateSql(Map flags, Map selectedDatabaseConfigMap) {
 		try {
-			generateSql();
+			Display.getDefault().syncExec(new Runnable() {
+				public void run() {
+					getShell().setCursor(getWaitCursor());
+				}
+			});
+			Object eofSQLGenerator = SQLUtils.createEOFSQLGenerator(myModel, myEntityNames, selectedDatabaseConfigMap, getEOModelClassLoader());
+			Method getSchemaCreationScriptMethod = eofSQLGenerator.getClass().getMethod("getSchemaCreationScript", new Class[] { Map.class });
+			final String sqlScript = (String) getSchemaCreationScriptMethod.invoke(eofSQLGenerator, new Object[] { flags });
+			Display.getDefault().syncExec(new Runnable() {
+				public void run() {
+					getSqlText().setText(sqlScript);
+				}
+			});
+		} catch (final Throwable t) {
+			Display.getDefault().syncExec(new Runnable() {
+				public void run() {
+					MessageDialog.openError(getShell(), "Error", getErrorMessage(t));
+				}
+			});
+		} finally {
+			Display.getDefault().syncExec(new Runnable() {
+				public void run() {
+					getShell().setCursor(null);
+				}
+			});
+		}
+	}
+
+	protected synchronized String getSqlString() {
+		return mySqlText.getText();
+	}
+
+	public synchronized void executeSqlInThread() {
+		boolean confirmed = MessageDialog.openConfirm(getShell(), "Execute SQL", "Are you sure you want to execute this SQL?");
+		if (confirmed) {
+			final String sqlString = getSqlString();
+			Thread executeSqlThread = new Thread(new Runnable() {
+				public void run() {
+					executeSql(sqlString);
+				}
+			}, "Execute SQL");
+			executeSqlThread.start();
+		}
+	}
+
+	protected void setCancel(boolean cancel) {
+		myCancel = cancel;
+	}
+
+	protected Cursor getWaitCursor() {
+		return myWaitCursor;
+	}
+
+	protected synchronized void executeSql(String allSql) {
+		try {
+			Display.getDefault().syncExec(new Runnable() {
+				public void run() {
+					getShell().setCursor(getWaitCursor());
+				}
+			});
 			Object eofSQLGenerator = SQLUtils.createEOFSQLGenerator(myModel, myEntityNames, getSelectedDatabaseConfigMap(), getEOModelClassLoader());
 			Method executeSQLMethod = eofSQLGenerator.getClass().getMethod("executeSQL", new Class[] { String.class });
-			String allSql = mySqlText.getText();
 			String[] statements = allSql.split(";");
-			boolean cancel = false;
-			for (int statementsNum = 0; !cancel && statementsNum < statements.length; statementsNum++) {
+			setCancel(false);
+			for (int statementsNum = 0; !myCancel && statementsNum < statements.length; statementsNum++) {
 				String statement = statements[statementsNum];
 				statement = statement.trim().replaceAll("[\n\r]", " ");
 				if (statement.length() > 0) {
 					try {
 						executeSQLMethod.invoke(eofSQLGenerator, new Object[] { statement });
-					} catch (Throwable t) {
-						cancel = MessageDialog.openQuestion(getShell(), "Error", getErrorMessage(t) + "  Do you want to cancel the rest of the script?");
+					} catch (final Throwable t) {
+						Display.getDefault().syncExec(new Runnable() {
+							public void run() {
+								boolean cancel = MessageDialog.openQuestion(getShell(), "Error", getErrorMessage(t) + "  Do you want to cancel the rest of the script?");
+								setCancel(cancel);
+							}
+						});
 					}
 				}
 			}
-		} catch (Throwable t) {
-			MessageDialog.openError(getShell(), "Error", getErrorMessage(t));
+			Display.getDefault().syncExec(new Runnable() {
+				public void run() {
+					MessageDialog.openInformation(getShell(), "Done", "SQL Execution Complete");
+				}
+			});
+		} catch (final Throwable t) {
+			Display.getDefault().syncExec(new Runnable() {
+				public void run() {
+					MessageDialog.openError(getShell(), "Error", getErrorMessage(t));
+				}
+			});
+		} finally {
+			Display.getDefault().syncExec(new Runnable() {
+				public void run() {
+					getShell().setCursor(null);
+				}
+			});
 		}
 	}
 
@@ -246,13 +356,17 @@ public class GenerateSQLDialog extends Dialog {
 		return message;
 	}
 
-	public class GenerateSqlHandler implements SelectionListener {
+	public class FlagChangedHandler implements SelectionListener, ISelectionChangedListener {
 		public void widgetDefaultSelected(SelectionEvent _e) {
 			widgetSelected(_e);
 		}
 
 		public void widgetSelected(SelectionEvent _e) {
-			GenerateSQLDialog.this.generateSql();
+			GenerateSQLDialog.this.generateSqlInThread();
+		}
+
+		public void selectionChanged(SelectionChangedEvent event) {
+			GenerateSQLDialog.this.generateSqlInThread();
 		}
 	}
 
@@ -262,7 +376,7 @@ public class GenerateSQLDialog extends Dialog {
 		}
 
 		public void widgetSelected(SelectionEvent _e) {
-			GenerateSQLDialog.this.executeSql();
+			GenerateSQLDialog.this.executeSqlInThread();
 		}
 	}
 

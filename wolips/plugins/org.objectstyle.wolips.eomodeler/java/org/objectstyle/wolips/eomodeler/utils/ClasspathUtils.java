@@ -1,11 +1,15 @@
 package org.objectstyle.wolips.eomodeler.utils;
 
 import java.io.File;
+import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.internal.runtime.InternalPlatform;
@@ -25,16 +29,30 @@ import org.objectstyle.wolips.variables.VariablesPlugin;
 import org.osgi.framework.Bundle;
 
 public class ClasspathUtils {
+	private static Map CLASSLOADER_CACHE;
+
+	static {
+		CLASSLOADER_CACHE = new HashMap();
+	}
+
 	public static ClassLoader createEOModelClassLoader(IProject _project) throws JavaModelException, MalformedURLException {
 		Set classpathUrlsSet = new LinkedHashSet();
 		ClasspathUtils.fillInClasspath(_project, classpathUrlsSet);
 		return createEOModelClassLoader(classpathUrlsSet);
 	}
 
-	public static ClassLoader createEOModelClassLoader(Set _classpathUrlSet) {
-		URL[] classpathUrls = (URL[]) _classpathUrlSet.toArray(new URL[_classpathUrlSet.size()]);
-		URLClassLoader classLoader = URLClassLoader.newInstance(classpathUrls, ClasspathUtils.class.getClassLoader());
-		classLoader = URLClassLoader.newInstance(classpathUrls);
+	public static synchronized ClassLoader createEOModelClassLoader(Set _classpathUrlSet) {
+		ClassLoader classLoader = null;
+		Reference classLoaderReference = (Reference) ClasspathUtils.CLASSLOADER_CACHE.get(_classpathUrlSet);
+		if (classLoaderReference != null) {
+			classLoader = (ClassLoader) classLoaderReference.get();
+		}
+		if (classLoader == null) {
+			URL[] classpathUrls = (URL[]) _classpathUrlSet.toArray(new URL[_classpathUrlSet.size()]);
+			classLoader = URLClassLoader.newInstance(classpathUrls, ClasspathUtils.class.getClassLoader());
+			classLoader = URLClassLoader.newInstance(classpathUrls);
+			ClasspathUtils.CLASSLOADER_CACHE.put(_classpathUrlSet, new SoftReference(classLoader));
+		}
 		return classLoader;
 	}
 
