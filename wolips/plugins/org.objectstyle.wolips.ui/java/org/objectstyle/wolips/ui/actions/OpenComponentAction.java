@@ -57,6 +57,7 @@
 package org.objectstyle.wolips.ui.actions;
 
 import java.util.ArrayList;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.IAction;
