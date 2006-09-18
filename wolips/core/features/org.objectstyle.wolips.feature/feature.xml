@@ -66,11 +66,6 @@
  */
    </license>
 
-   <url>
-      <update label="WOLips" url="http://www.mdimension.com/~wolips/update/"/>
-      <discovery label="WOLips" url="http://www.mdimension.com/~wolips/update/"/>
-   </url>
-
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
@@ -81,6 +76,7 @@
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.pde.ui"/>
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.debug.core"/>
@@ -104,10 +100,11 @@
       <import plugin="org.eclipse.wst.xml.core"/>
       <import plugin="org.eclipse.wst.html.core"/>
       <import plugin="org.eclipse.wst.xml.ui"/>
-      <import feature="org.eclipse.jst"/>
-      <import plugin="org.eclipse.pde.ui"/>
       <import plugin="org.eclipse.ui.views.properties.tabbed"/>
       <import plugin="org.eclipse.jface.databinding"/>
+      <import feature="org.eclipse.jst"/>
+      <import plugin="org.objectstyle.wolips.baseforplugins"/>
+      <import plugin="org.objectstyle.wolips.baseforuiplugins"/>
    </requires>
 
    <plugin
@@ -349,20 +346,6 @@
          id="org.objectstyle.wolips.eomodeler"
          download-size="144"
          install-size="144"
-         version="1.0.6"
-         unpack="false"/>
-
-   <plugin
-         id="org.objectstyle.wolips.baseforplugins"
-         download-size="32"
-         install-size="32"
-         version="1.0.6"
-         unpack="false"/>
-
-   <plugin
-         id="org.objectstyle.wolips.baseforuiplugins"
-         download-size="32"
-         install-size="32"
          version="1.0.6"
          unpack="false"/>
 
