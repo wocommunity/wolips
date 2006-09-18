@@ -80,7 +80,7 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
-import org.objectstyle.wolips.commons.util.ArrayUtilities;
+import org.objectstyle.wolips.baseforplugins.util.ArrayUtilities;
 
 /**
  * @author ulrich
