@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2005 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,14 +67,8 @@ import org.eclipse.ui.progress.IProgressConstants;
 
 /**
  * @author uli
- * 
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates. To enable and disable the creation of type
- * comments go to Window>Preferences>Java>Code Generation.
  */
 public class PerspectiveFactory implements IPerspectiveFactory {
-	private static final String ID_BUILD_ACTION_SET = "org.objectstyle.wolips.ui.BuildActionSet";
-
 	private static final String ID_WIZARDS_ACTION_SET = "org.objectstyle.wolips.wizards.ElementCreationActionSet";
 
 	private static final String ID_RELATED = "org.objectstyle.wolips.ui.view.RelatedView";
@@ -102,7 +96,6 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		layout.addActionSet(IDebugUIConstants.LAUNCH_ACTION_SET);
 		layout.addActionSet(JavaUI.ID_ACTION_SET);
 		layout.addActionSet(JavaUI.ID_ELEMENT_CREATION_ACTION_SET);
-		layout.addActionSet(PerspectiveFactory.ID_BUILD_ACTION_SET);
 		layout.addActionSet(PerspectiveFactory.ID_WIZARDS_ACTION_SET);
 		layout.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
 
