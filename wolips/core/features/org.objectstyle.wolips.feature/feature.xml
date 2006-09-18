@@ -103,8 +103,8 @@
       <import plugin="org.eclipse.ui.views.properties.tabbed"/>
       <import plugin="org.eclipse.jface.databinding"/>
       <import feature="org.eclipse.jst"/>
-      <import plugin="org.objectstyle.wolips.baseforplugins"/>
-      <import plugin="org.objectstyle.wolips.baseforuiplugins"/>
+      <import plugin="org.objectstyle.wolips.baseforplugins" version="1.0.6" match="perfect"/>
+      <import plugin="org.objectstyle.wolips.baseforuiplugins" version="1.0.6" match="perfect"/>
    </requires>
 
    <plugin
