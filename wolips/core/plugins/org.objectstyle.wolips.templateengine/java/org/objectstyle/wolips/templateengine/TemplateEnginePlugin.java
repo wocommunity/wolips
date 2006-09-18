@@ -70,7 +70,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.commons.logging.PluginLogger;
+import org.objectstyle.wolips.baseforplugins.logging.PluginLogger;
 import org.objectstyle.wolips.datasets.DataSetsPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;

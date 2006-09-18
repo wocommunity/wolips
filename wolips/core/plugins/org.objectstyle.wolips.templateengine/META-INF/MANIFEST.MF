@@ -15,6 +15,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.core.runtime,
  org.objectstyle.wolips.datasets,
- org.objectstyle.wolips.commons
+ org.objectstyle.wolips.baseforplugins
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.templateengine
