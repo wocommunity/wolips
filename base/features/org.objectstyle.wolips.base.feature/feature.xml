@@ -4,14 +4,14 @@
       label="WOLips Base Feature"
       version="1.0.6"
       provider-name="objectstyle.org"
-      image="%image">
+      plugin="org.objectstyle.wolips.baseforplugins">
 
    <description url="http://objectstyle.org/confluence/display/WOL/Home">
-      This feature manages all the plug-ins that constitutes WOLips except for the profiling and tests plug-ins. Those two plug-ins are managed by separate features. If you do not install all the plug-ins managed by this feature WOLips will not function properly.
+      This feature is the base for all WOLips features.
    </description>
 
    <copyright>
-      Copyright 2002 - 2006, objectstyle.org
+      Copyright 2002 - 2006, objectstyle.org and individual authors
    </copyright>
 
    <license>
