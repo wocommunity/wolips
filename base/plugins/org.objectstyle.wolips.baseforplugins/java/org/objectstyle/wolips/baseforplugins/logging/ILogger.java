@@ -47,7 +47,7 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.commons.logging;
+package org.objectstyle.wolips.baseforplugins.logging;
 
 /**
  * 
