@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.objectstyle.wolips.base.feature"
-      label="WOLips Base Feature"
+      label="WOLips Base"
       version="1.0.6"
       provider-name="objectstyle.org"
       plugin="org.objectstyle.wolips.baseforplugins">
