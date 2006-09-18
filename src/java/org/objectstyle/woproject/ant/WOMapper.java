@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2005 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -159,10 +159,10 @@ public class WOMapper extends Mapper {
 				return flatten(new File(path));
 			}
 			// AK Wonder hack: we use WebServerResources as the base directory
-			String pattern = "WebServerResources" + File.separator;
-			int index = path.indexOf(pattern);
+			String webServerResourcesPattern = "WebServerResources" + File.separator;
+			int index = path.indexOf(webServerResourcesPattern);
 			if(index >= 0) {
-				path = path.substring(index + pattern.length());
+				return path.substring(index + webServerResourcesPattern.length());
 			}
 			// skip the filter
 			return path;
@@ -255,13 +255,13 @@ public class WOMapper extends Mapper {
 		 */
 		private String localizationFilter(String path) {
 			String result = path;
-			String pattern = NON_LOCALIZED + File.separator;
-			int index = path.indexOf(pattern);
+			String localizationPattern = NON_LOCALIZED + File.separator;
+			int index = path.indexOf(localizationPattern);
 			if (index >= 0) {
-				result = path.substring(index + pattern.length());
+				result = path.substring(index + localizationPattern.length());
 			} else {
-				pattern = LPROJ_SUFFIX + File.separator;
-				index = path.indexOf(pattern);
+				localizationPattern = LPROJ_SUFFIX + File.separator;
+				index = path.indexOf(localizationPattern);
 				if (index >= 0) {
 					result = path.replaceFirst(".*?(\\w+\\." + LPROJ_SUFFIX + ")", "$1");
 				}
@@ -284,12 +284,11 @@ public class WOMapper extends Mapper {
 				p2 = p1;
 				if(p1.getName().endsWith(LPROJ_SUFFIX)) {
 					break;
-				} else {
-					p1 = p1.getParentFile();
 				}
+				p1 = p1.getParentFile();
 			}
 
-			if (p2 != null && result == null) {
+			if (p2 != null) {
 				String topmostParent = p2.getName();
 				if (topmostParent.endsWith(LPROJ_SUFFIX)) {
 					result = topmostParent + File.separator + f.getName();
