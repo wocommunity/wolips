@@ -81,23 +81,16 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.commons.logging.ILogger;
-import org.objectstyle.wolips.commons.logging.PluginLogger;
+import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
 
 /**
  * The main plugin class to be used in the desktop.
  */
-public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
+public class WorkbenchUtilitiesPlugin extends AbstractBaseUIActivator {
 	private static final String PLUGIN_ID = "org.objectstyle.wolips.workbenchutilities";
 
 	// The shared instance.
 	private static WorkbenchUtilitiesPlugin plugin;
-
-	// Resource bundle.
-	private ResourceBundle resourceBundle;
-
-	private ILogger pluginLogger = new PluginLogger(WorkbenchUtilitiesPlugin.PLUGIN_ID, false);
 
 	/**
 	 * The constructor.
@@ -105,11 +98,6 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	public WorkbenchUtilitiesPlugin() {
 		super();
 		plugin = this;
-		try {
-			this.resourceBundle = ResourceBundle.getBundle("org.objectstyle.wolips.workbenchutilities.WorkbenchutilitiesPluginResources");
-		} catch (MissingResourceException x) {
-			this.resourceBundle = null;
-		}
 	}
 
 	/**
@@ -117,46 +105,6 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 */
 	public static WorkbenchUtilitiesPlugin getDefault() {
 		return plugin;
-	}
-
-	/**
-	 * @return Returns the string from the plugin's resource bundle, or 'key' if
-	 *         not found.
-	 * @param key
-	 */
-	public static String getResourceString(String key) {
-		ResourceBundle bundle = WorkbenchUtilitiesPlugin.getDefault().getResourceBundle();
-		try {
-			return (bundle != null) ? bundle.getString(key) : key;
-		} catch (MissingResourceException e) {
-			return key;
-		}
-	}
-
-	/**
-	 * @return Returns the plugin's resource bundle,
-	 */
-	public ResourceBundle getResourceBundle() {
-		return this.resourceBundle;
-	}
-
-	/**
-	 * Prints a Status.
-	 * 
-	 * @param status
-	 *            The status to log.
-	 */
-	public static void log(IStatus status) {
-		WorkbenchUtilitiesPlugin.getDefault().getLog().log(status);
-	}
-
-	/**
-	 * Prints a Throwable.
-	 * 
-	 * @param e
-	 */
-	public static void log(Throwable e) {
-		WorkbenchUtilitiesPlugin.log(new Status(IStatus.ERROR, WorkbenchUtilitiesPlugin.PLUGIN_ID, IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
 	}
 
 	/**
@@ -168,7 +116,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @param s
 	 */
 	public final static void errorDialog(Shell shell, String title, String message, IStatus s) {
-		WorkbenchUtilitiesPlugin.log(s);
+		WorkbenchUtilitiesPlugin.getDefault().log(s);
 		// if the 'message' resource string and the IStatus' message are the
 		// same,
 		// don't show both in the dialog
@@ -187,7 +135,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @param t
 	 */
 	public final static void errorDialog(Shell shell, String title, String message, Throwable t) {
-		WorkbenchUtilitiesPlugin.log(t);
+		WorkbenchUtilitiesPlugin.getDefault().log(t);
 		IStatus status;
 		if (t instanceof CoreException) {
 			status = ((CoreException) t).getStatus();
@@ -218,7 +166,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 				return false;
 			projects = mother.getReferencedProjects();
 		} catch (Exception anException) {
-			WorkbenchUtilitiesPlugin.log(anException);
+			WorkbenchUtilitiesPlugin.getDefault().log(anException);
 			return false;
 		}
 		for (int i = 0; i < projects.length; i++) {
@@ -429,7 +377,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 		try {
 			members = ((IContainer) aResource).members();
 		} catch (Exception anException) {
-			WorkbenchUtilitiesPlugin.log(anException);
+			WorkbenchUtilitiesPlugin.getDefault().log(anException);
 		}
 		return members;
 	}
@@ -484,17 +432,10 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 					}
 					workbenchPage.openEditor(new FileEditorInput(file), id);
 				} catch (Exception anException) {
-					WorkbenchUtilitiesPlugin.log(anException);
+					WorkbenchUtilitiesPlugin.getDefault().log(anException);
 				}
 			}
 		}
-	}
-
-	/**
-	 * @return Returns the pluginLogger.
-	 */
-	public ILogger getPluginLogger() {
-		return this.pluginLogger;
 	}
 
 	/**
