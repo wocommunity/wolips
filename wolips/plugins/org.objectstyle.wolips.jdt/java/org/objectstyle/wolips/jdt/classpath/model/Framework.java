@@ -58,7 +58,6 @@ package org.objectstyle.wolips.jdt.classpath.model;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 
 /**
  * @author ulrich
