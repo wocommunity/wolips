@@ -87,7 +87,7 @@ public class NewEntityAction implements IWorkbenchWindowActionDelegate {
 	public void run(IAction _action) {
 		try {
 			if (myModel != null) {
-				EOEntity newEntity = myModel.addBlankEntity(Messages.getString("EOEntity.newName"));
+				EOEntity newEntity = myModel.addBlankEntity(myModel.findUnusedEntityName(Messages.getString("EOEntity.newName")));
 			} else {
 				MessageDialog.openError(myWindow.getShell(), Messages.getString("EOEntity.noModelSelectedTitle"), Messages.getString("EOEntity.noModelSelectedMessage"));//$NON-NLS-1$
 			}
