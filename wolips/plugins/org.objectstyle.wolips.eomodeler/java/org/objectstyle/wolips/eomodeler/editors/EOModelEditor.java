@@ -110,6 +110,7 @@ import org.objectstyle.wolips.eomodeler.model.EclipseEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.outline.EOModelContentOutlinePage;
 import org.objectstyle.wolips.eomodeler.utils.AbstractAddRemoveChangeRefresher;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
+import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 import org.objectstyle.wolips.preferences.Preferences;
 
 public class EOModelEditor extends MultiPageEditorPart implements IResourceChangeListener, ITabbedPropertySheetPageContributor, ISelectionProvider, IEOModelEditor {
@@ -374,7 +375,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 					}
 				}
 			} catch (WorkbenchException e) {
-				e.printStackTrace();
+				ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), e);
 			}
 		}
 	}
@@ -394,12 +395,8 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				myModel.setDirty(false);
 				originalFolder.refreshLocal(IResource.DEPTH_INFINITE, _monitor);
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (CoreException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Throwable t) {
+			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), t);
 		} finally {
 			showBusy(false);
 		}

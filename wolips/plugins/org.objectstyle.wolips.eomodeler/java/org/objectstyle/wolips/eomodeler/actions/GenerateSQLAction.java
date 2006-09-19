@@ -57,11 +57,13 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
+import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class GenerateSQLAction implements IWorkbenchWindowActionDelegate {
 	private IWorkbenchWindow myWindow;
@@ -115,7 +117,7 @@ public class GenerateSQLAction implements IWorkbenchWindowActionDelegate {
 				}
 			}
 		} catch (Throwable e) {
-			e.printStackTrace();
+			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), e);
 		}
 	}
 }

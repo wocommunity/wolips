@@ -39,6 +39,7 @@ import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.sql.SQLUtils;
 import org.objectstyle.wolips.eomodeler.utils.ClasspathUtils;
+import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class GenerateSQLDialog extends Dialog {
 	private Button myDropDatabaseButton;
@@ -74,6 +75,8 @@ public class GenerateSQLDialog extends Dialog {
 	private boolean myCancel;
 
 	private Cursor myWaitCursor;
+
+	private Button myExecuteSqlButton;
 
 	public GenerateSQLDialog(Shell _parentShell, EOModel _model, List _entityNames) {
 		super(_parentShell);
@@ -192,9 +195,9 @@ public class GenerateSQLDialog extends Dialog {
 		Button closeButton = new Button(composite, SWT.PUSH);
 		closeButton.setText("Close");
 		closeButton.addSelectionListener(new CloseHandler());
-		Button executeSqlButton = new Button(composite, SWT.PUSH);
-		executeSqlButton.setText("Execute SQL");
-		executeSqlButton.addSelectionListener(new ExecuteSqlHandler());
+		myExecuteSqlButton = new Button(composite, SWT.PUSH);
+		myExecuteSqlButton.setText("Execute SQL");
+		myExecuteSqlButton.addSelectionListener(new ExecuteSqlHandler());
 		getShell().setDefaultButton(closeButton);
 		return composite;
 	}
@@ -248,11 +251,16 @@ public class GenerateSQLDialog extends Dialog {
 		generateSqlThread.start();
 	}
 
+	protected Button getExecuteSqlButton() {
+		return myExecuteSqlButton;
+	}
+	
 	protected synchronized void generateSql(Map flags, Map selectedDatabaseConfigMap) {
 		try {
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
 					getShell().setCursor(getWaitCursor());
+					getExecuteSqlButton().setEnabled(false);
 				}
 			});
 			Object eofSQLGenerator = SQLUtils.createEOFSQLGenerator(myModel, myEntityNames, selectedDatabaseConfigMap, getEOModelClassLoader());
@@ -261,14 +269,16 @@ public class GenerateSQLDialog extends Dialog {
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
 					getSqlText().setText(sqlScript);
+					getExecuteSqlButton().setEnabled(true);
 				}
 			});
 		} catch (final Throwable t) {
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
-					MessageDialog.openError(getShell(), "Error", getErrorMessage(t));
+					getSqlText().setText("Generation Failed.");
 				}
 			});
+			ErrorUtils.openErrorDialog(getShell(), t);
 		} finally {
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
@@ -323,7 +333,8 @@ public class GenerateSQLDialog extends Dialog {
 					} catch (final Throwable t) {
 						Display.getDefault().syncExec(new Runnable() {
 							public void run() {
-								boolean cancel = MessageDialog.openQuestion(getShell(), "Error", getErrorMessage(t) + "  Do you want to cancel the rest of the script?");
+								ErrorUtils.openErrorDialog(getShell(), t);
+								boolean cancel = MessageDialog.openQuestion(getShell(), "Error", "Do you want to cancel the rest of the script?");
 								setCancel(cancel);
 							}
 						});
@@ -336,11 +347,7 @@ public class GenerateSQLDialog extends Dialog {
 				}
 			});
 		} catch (final Throwable t) {
-			Display.getDefault().syncExec(new Runnable() {
-				public void run() {
-					MessageDialog.openError(getShell(), "Error", getErrorMessage(t));
-				}
-			});
+			ErrorUtils.openErrorDialog(getShell(), t);
 		} finally {
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
@@ -348,18 +355,6 @@ public class GenerateSQLDialog extends Dialog {
 				}
 			});
 		}
-	}
-
-	protected String getErrorMessage(Throwable _t) {
-		_t.printStackTrace();
-		String message;
-		if (_t instanceof InvocationTargetException) {
-			Throwable cause = _t.getCause();
-			message = cause.getClass().getName() + ": " + cause.getMessage();
-		} else {
-			message = _t.getClass().getName() + ": " + _t.getMessage();
-		}
-		return message;
 	}
 
 	public class FlagChangedHandler implements SelectionListener, ISelectionChangedListener {

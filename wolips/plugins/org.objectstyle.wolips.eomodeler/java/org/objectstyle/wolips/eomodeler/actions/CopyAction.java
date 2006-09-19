@@ -59,6 +59,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
@@ -69,6 +70,7 @@ import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
+import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class CopyAction extends Action implements IWorkbenchWindowActionDelegate {
 	private IWorkbenchWindow myWindow;
@@ -130,7 +132,7 @@ public class CopyAction extends Action implements IWorkbenchWindowActionDelegate
 			LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(selectedObjectsList));
 			LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
 		} catch (Throwable t) {
-			t.printStackTrace();
+			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), t);
 		}
 	}
 

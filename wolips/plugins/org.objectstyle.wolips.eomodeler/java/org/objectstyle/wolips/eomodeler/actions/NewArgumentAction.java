@@ -53,6 +53,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.objectstyle.wolips.eomodeler.Messages;
@@ -60,6 +61,7 @@ import org.objectstyle.wolips.eomodeler.model.DuplicateNameException;
 import org.objectstyle.wolips.eomodeler.model.EOArgument;
 import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
+import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class NewArgumentAction implements IWorkbenchWindowActionDelegate {
 	private EOStoredProcedure myStoredProcedure;
@@ -90,7 +92,7 @@ public class NewArgumentAction implements IWorkbenchWindowActionDelegate {
 				MessageDialog.openError(myWindow.getShell(), Messages.getString("EOArgument.noStoredProcedureSelectedTitle"), Messages.getString("EOArgument.noStoredProcedureSelectedMessage"));//$NON-NLS-1$
 			}
 		} catch (DuplicateNameException e) {
-			e.printStackTrace();
+			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), e);
 		}
 	}
 }

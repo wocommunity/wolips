@@ -65,12 +65,14 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
 import org.objectstyle.wolips.eomodeler.model.EOArgument;
 import org.objectstyle.wolips.eomodeler.model.EOArgumentDirection;
 import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
+import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
 import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
@@ -165,7 +167,7 @@ public class EOArgumentsTableViewer extends Composite implements ISelectionProvi
 			try {
 				EOArgumentsTableViewer.this.getStoredProcedure().addBlankArgument(Messages.getString("EOArgument.newName"));
 			} catch (Throwable e) {
-				e.printStackTrace();
+				ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), e);
 			}
 		}
 
