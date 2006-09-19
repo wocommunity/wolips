@@ -61,7 +61,7 @@ public class ErrorUtils {
 		Throwable t = _t;
 		while (t != null) {
 			String message = t.getMessage();
-			if (message == null) {
+			if (message == null && !(t instanceof InvocationTargetException)) {
 				String name = t.getClass().getName();
 				int lastDotIndex = name.lastIndexOf('.');
 				name = name.substring(lastDotIndex + 1);
