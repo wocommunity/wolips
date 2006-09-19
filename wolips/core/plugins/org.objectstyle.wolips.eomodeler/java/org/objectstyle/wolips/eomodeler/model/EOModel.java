@@ -684,7 +684,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		}
 		// If there is a connection dictionary, then look for a database config that is equivalent ...
 		Map connectionDictionary = modelMap.getMap("connectionDictionary", true);
-		if (!connectionDictionary.isEmpty()) {
+		if (connectionDictionary != null && !connectionDictionary.isEmpty()) {
 			EODatabaseConfig tempConnectionDictionaryDatabaseConfig = _createDatabaseConfig(connectionDictionary);
 			EODatabaseConfig connectionDictionaryDatabaseConfig = null; 
 			Iterator databaseConfigsIter = myDatabaseConfigs.iterator();
