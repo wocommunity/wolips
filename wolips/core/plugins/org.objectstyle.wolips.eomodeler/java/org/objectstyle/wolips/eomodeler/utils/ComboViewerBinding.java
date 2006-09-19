@@ -60,6 +60,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.widgets.Display;
 import org.objectstyle.wolips.eomodeler.kvc.CachingKeyPath;
 import org.objectstyle.wolips.eomodeler.kvc.IKey;
 import org.objectstyle.wolips.eomodeler.model.EOModelObject;
@@ -141,7 +142,7 @@ public class ComboViewerBinding implements ISelectionChangedListener, PropertyCh
 				key.setValue(myObj, newValue);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), e);
 		}
 	}
 

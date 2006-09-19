@@ -55,6 +55,7 @@ import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
@@ -67,6 +68,7 @@ import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
+import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class PasteAction extends Action implements IWorkbenchWindowActionDelegate {
 	private IWorkbenchWindow myWindow;
@@ -168,7 +170,7 @@ public class PasteAction extends Action implements IWorkbenchWindowActionDelegat
 				}
 			}
 		} catch (Throwable t) {
-			t.printStackTrace();
+			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), t);
 		}
 	}
 

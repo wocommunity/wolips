@@ -52,7 +52,6 @@ package org.objectstyle.wolips.eomodeler.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -125,8 +124,7 @@ public class TablePropertyCellModifier implements ICellModifier, ISelectionChang
 			}
 			myTableViewer.refresh(obj);
 		} catch (Throwable t) {
-			t.printStackTrace();
-			MessageDialog.openError(Display.getDefault().getActiveShell(), "", t.getMessage());
+			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), t);
 		}
 	}
 

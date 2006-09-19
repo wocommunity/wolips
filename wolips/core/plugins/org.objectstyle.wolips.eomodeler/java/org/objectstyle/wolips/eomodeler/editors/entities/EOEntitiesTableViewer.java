@@ -61,6 +61,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.objectstyle.wolips.eomodeler.Messages;
@@ -69,6 +70,7 @@ import org.objectstyle.wolips.eomodeler.editors.relationships.EORelationshipsCon
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
+import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
 import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
 import org.objectstyle.wolips.eomodeler.utils.TableRowDoubleClickHandler;
@@ -172,7 +174,7 @@ public class EOEntitiesTableViewer extends Composite implements ISelectionProvid
 			try {
 				EOEntitiesTableViewer.this.getModel().addBlankEntity(Messages.getString("EOEntity.newName"));
 			} catch (Throwable e) {
-				e.printStackTrace();
+				ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), e);
 			}
 		}
 
