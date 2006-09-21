@@ -52,13 +52,14 @@ package org.objectstyle.wolips.eomodeler.editors;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -104,6 +105,7 @@ import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.model.EclipseEOModelGroupFactory;
@@ -391,6 +393,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 				IFile originalFile = ((IFileEditorInput) input).getFile();
 				IContainer originalFolder = originalFile.getParent();
+
 				myModel.saveToFolder(originalFolder.getParent().getLocation().toFile());
 				myModel.setDirty(false);
 				originalFolder.refreshLocal(IResource.DEPTH_INFINITE, _monitor);
@@ -419,6 +422,14 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				e.printStackTrace();
 			}
 		}
+	}
+
+	protected static IFile getFile(File _file) {
+		return ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(_file.getAbsolutePath()));
+	}
+
+	protected static IFile getIndexFile(EOModel _model) {
+		return EOModelEditor.getFile(_model.getIndexFile());
 	}
 
 	public void init(IEditorSite _site, IEditorInput _editorInput) throws PartInitException {
@@ -457,7 +468,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			if (openingEntityName != null) {
 				myOpeningEntity = myModel.getEntityNamed(openingEntityName);
 			}
-			fileEditorInput = new FileEditorInput(fileEditorInput.getFile().getWorkspace().getRoot().getFileForLocation(new Path(new File(myModel.getModelFolder(), "index.eomodeld").getAbsolutePath())));
+			fileEditorInput = new FileEditorInput(EOModelEditor.getIndexFile(myModel));
 			handleModelErrors(myLoadFailures);
 
 			myModel.addPropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
@@ -474,6 +485,42 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	}
 
 	protected void handleModelErrors(final Set _failures) {
+		try {
+			Iterator modelsIter = myModel.getModelGroup().getModels().iterator();
+			while (modelsIter.hasNext()) {
+				EOModel model = (EOModel) modelsIter.next();
+				IFile indexFile = EOModelEditor.getIndexFile(model);
+				if (indexFile != null) {
+					IMarker[] markers = indexFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+					for (int markerNum = 0; markerNum < markers.length; markerNum++) {
+						System.out.println("EOModelEditor.handleModelErrors: deleting " + markers[markerNum]);
+						markers[markerNum].delete();
+					}
+				}
+			}
+			Iterator failuresIter = _failures.iterator();
+			while (failuresIter.hasNext()) {
+				EOModelVerificationFailure failure = (EOModelVerificationFailure) failuresIter.next();
+				EOModel model = failure.getModel();
+				IFile indexFile = EOModelEditor.getIndexFile(model);
+				if (indexFile != null) {
+					System.out.println("EOModelEditor.handleModelErrors: creating " + failure.getMessage());
+					IMarker marker = indexFile.createMarker(IMarker.PROBLEM);
+					marker.setAttribute(IMarker.MESSAGE, failure.getMessage());
+					int severity;
+					if (failure.isWarning()) {
+						severity = IMarker.SEVERITY_WARNING;
+					} else {
+						severity = IMarker.SEVERITY_ERROR;
+					}
+					marker.setAttribute(IMarker.SEVERITY, new Integer(severity));
+					marker.setAttribute(IMarker.TRANSIENT, false);
+				}
+			}
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				if (!_failures.isEmpty()) {
@@ -548,8 +595,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 	public synchronized void setSelection(ISelection _selection, boolean _updateOutline) {
 		// MS: it's really easy to setup a selection loop with so many
-		// interrelated components. In reality, we only want the top selection to count, and
-		// if the call to setSelection is called again from within this stack, then
+		// interrelated components. In reality, we only want the top selection
+		// to count, and
+		// if the call to setSelection is called again from within this stack,
+		// then
 		// that's pretty much bad.
 		mySelectionDepth++;
 		try {

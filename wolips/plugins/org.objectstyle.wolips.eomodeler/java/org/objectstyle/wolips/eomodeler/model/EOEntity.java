@@ -1505,7 +1505,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 				myParent = myModel.getModelGroup().getEntityNamed(parentName);
 			}
 			if (myParent == null) {
-				_failures.add(new MissingEntityFailure(parentName));
+				_failures.add(new MissingEntityFailure(myModel, parentName));
 			}
 		}
 
@@ -1573,35 +1573,35 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 			if (deleteProcedureName != null) {
 				myDeleteProcedure = myModel.getStoredProcedureNamed(deleteProcedureName);
 				if (myDeleteProcedure == null) {
-					_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s delete procedure '" + deleteProcedureName + "' is missing."));
+					_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + "'s delete procedure '" + deleteProcedureName + "' is missing.", false));
 				}
 			}
 			String fetchAllProcedureName = (String) storedProcedureNames.get(EOEntity.EOFETCH_ALL_PROCEDURE);
 			if (fetchAllProcedureName != null) {
 				myFetchAllProcedure = myModel.getStoredProcedureNamed(fetchAllProcedureName);
 				if (myFetchAllProcedure == null) {
-					_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s fetch all procedure '" + fetchAllProcedureName + "' is missing."));
+					_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + "'s fetch all procedure '" + fetchAllProcedureName + "' is missing.", false));
 				}
 			}
 			String fetchWithPrimaryKeyProcedureName = (String) storedProcedureNames.get(EOEntity.EOFETCH_WITH_PRIMARY_KEY_PROCEDURE);
 			if (fetchWithPrimaryKeyProcedureName != null) {
 				myFetchWithPrimaryKeyProcedure = myModel.getStoredProcedureNamed(fetchWithPrimaryKeyProcedureName);
 				if (myFetchWithPrimaryKeyProcedure == null) {
-					_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s fetch with primary key procedure '" + fetchWithPrimaryKeyProcedureName + "' is missing."));
+					_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + "'s fetch with primary key procedure '" + fetchWithPrimaryKeyProcedureName + "' is missing.", false));
 				}
 			}
 			String insertProcedureName = (String) storedProcedureNames.get(EOEntity.EOINSERT_PROCEDURE);
 			if (insertProcedureName != null) {
 				myInsertProcedure = myModel.getStoredProcedureNamed(insertProcedureName);
 				if (myInsertProcedure == null) {
-					_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s insert procedure '" + insertProcedureName + "' is missing."));
+					_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + "'s insert procedure '" + insertProcedureName + "' is missing.", false));
 				}
 			}
 			String nextPrimaryKeyProcedureName = (String) storedProcedureNames.get(EOEntity.EONEXT_PRIMARY_KEY_PROCEDURE);
 			if (nextPrimaryKeyProcedureName != null) {
 				myNextPrimaryKeyProcedure = myModel.getStoredProcedureNamed(nextPrimaryKeyProcedureName);
 				if (myNextPrimaryKeyProcedure == null) {
-					_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s next primary key procedure '" + nextPrimaryKeyProcedureName + "' is missing."));
+					_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + "'s next primary key procedure '" + nextPrimaryKeyProcedureName + "' is missing.", false));
 				}
 			}
 		}
@@ -1610,13 +1610,13 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 	public void verify(Set _failures) {
 		String name = getName();
 		if (name == null || name.trim().length() == 0) {
-			_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " has an empty name."));
+			_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + " has an empty name.", false));
 		} else {
 			if (name.indexOf(' ') != -1) {
-				_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s name has a space in it."));
+				_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + "'s name has a space in it.", false));
 			}
 			if (!StringUtils.isUppercaseFirstLetter(myName)) {
-				_failures.add(new EOModelVerificationFailure("Entity names should be capitalized, but " + getFullyQualifiedName() + " is not."));
+				_failures.add(new EOModelVerificationFailure(myModel, "Entity names should be capitalized, but " + getFullyQualifiedName() + " is not.", true));
 			}
 		}
 
@@ -1642,21 +1642,21 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 			String externalName = getExternalName();
 			if (externalName == null || externalName.trim().length() == 0) {
 				if (!BooleanUtils.isTrue(isAbstractEntity())) {
-					_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " has an empty table name."));
+					_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + " has an empty table name.", false));
 				}
 			} else if (externalName.indexOf(' ') != -1) {
-				_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s table name '" + externalName + "' has a space in it."));
+				_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + "'s table name '" + externalName + "' has a space in it.", false));
 			}
 		}
 
 		EOEntity parent = getParent();
 		if (parent != null && !BooleanUtils.isTrue(parent.isAbstractEntity()) && getRestrictingQualifier() == null) {
-			_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " is a subclass of " + getParent().getName() + " but does not have a restricting qualifier."));
+			_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + " is a subclass of " + getParent().getName() + " but does not have a restricting qualifier.", false));
 		}
 
 		Set primaryKeyAttributes = getPrimaryKeyAttributes();
 		if (primaryKeyAttributes.isEmpty()) {
-			_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " does not have a primary key."));
+			_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + " does not have a primary key.", false));
 		}
 	}
 

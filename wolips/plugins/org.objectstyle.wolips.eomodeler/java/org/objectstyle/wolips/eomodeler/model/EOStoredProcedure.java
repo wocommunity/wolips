@@ -129,26 +129,26 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 			while (entitiesIter.hasNext()) {
 				EOEntity entity = (EOEntity) entitiesIter.next();
 				if (entity.getDeleteProcedure() == this) {
-					referenceFailures.add(new EOModelVerificationFailure(entity.getFullyQualifiedName() + " uses " + myName + " as its delete procedure."));
+					referenceFailures.add(new EOModelVerificationFailure(myModel, entity.getFullyQualifiedName() + " uses " + myName + " as its delete procedure.", false));
 				}
 				if (entity.getInsertProcedure() == this) {
-					referenceFailures.add(new EOModelVerificationFailure(entity.getFullyQualifiedName() + " uses " + myName + " as its insert procedure."));
+					referenceFailures.add(new EOModelVerificationFailure(myModel, entity.getFullyQualifiedName() + " uses " + myName + " as its insert procedure.", false));
 				}
 				if (entity.getNextPrimaryKeyProcedure() == this) {
-					referenceFailures.add(new EOModelVerificationFailure(entity.getFullyQualifiedName() + " uses " + myName + " as its next primary key procedure."));
+					referenceFailures.add(new EOModelVerificationFailure(myModel, entity.getFullyQualifiedName() + " uses " + myName + " as its next primary key procedure.", false));
 				}
 				if (entity.getFetchWithPrimaryKeyProcedure() == this) {
-					referenceFailures.add(new EOModelVerificationFailure(entity.getFullyQualifiedName() + " uses " + myName + " as its fetch with primary key procedure."));
+					referenceFailures.add(new EOModelVerificationFailure(myModel, entity.getFullyQualifiedName() + " uses " + myName + " as its fetch with primary key procedure.", false));
 				}
 				if (entity.getFetchAllProcedure() == this) {
-					referenceFailures.add(new EOModelVerificationFailure(entity.getFullyQualifiedName() + " uses " + myName + " as its fetch all procedure."));
+					referenceFailures.add(new EOModelVerificationFailure(myModel, entity.getFullyQualifiedName() + " uses " + myName + " as its fetch all procedure.", false));
 				}
 
 				Iterator fetchSpecsIter = entity.getFetchSpecs().iterator();
 				while (fetchSpecsIter.hasNext()) {
 					EOFetchSpecification fetchSpec = (EOFetchSpecification) fetchSpecsIter.next();
 					if (fetchSpec.getStoredProcedure() == this) {
-						referenceFailures.add(new EOModelVerificationFailure(fetchSpec.getFullyQualifiedName() + " uses " + myName + " as its stored procedure."));
+						referenceFailures.add(new EOModelVerificationFailure(myModel, fetchSpec.getFullyQualifiedName() + " uses " + myName + " as its stored procedure.", false));
 					}
 				}
 			}
@@ -356,21 +356,21 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 	public void verify(Set _failures) {
 		String name = getName();
 		if (name == null || name.trim().length() == 0) {
-			_failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + myName + " has an empty name."));
+			_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + " has an empty name.", false));
 		} else {
 			if (name.indexOf(' ') != -1) {
-				_failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + myName + "'s name has a space in it."));
+				_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + "'s name has a space in it.", false));
 			}
 			if (!StringUtils.isUppercaseFirstLetter(myName)) {
-				_failures.add(new EOModelVerificationFailure("Entity names should be capitalized, but " + myModel.getName() + "/" + myName + " is not."));
+				_failures.add(new EOModelVerificationFailure(myModel, "Entity names should be capitalized, but " + getFullyQualifiedName() + " is not.", true));
 			}
 		}
 
 		String externalName = getExternalName();
 		if (externalName == null || externalName.trim().length() == 0) {
-			_failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + getName() + " has an empty table name."));
+			_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + " has an empty table name.", false));
 		} else if (externalName.indexOf(' ') != -1) {
-			_failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + getName() + "'s table name '" + externalName + "' has a space in it."));
+			_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + "'s table name '" + externalName + "' has a space in it.", false));
 		}
 
 		Iterator argumentsIter = myArguments.iterator();

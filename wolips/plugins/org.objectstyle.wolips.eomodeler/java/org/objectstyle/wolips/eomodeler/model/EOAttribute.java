@@ -177,6 +177,33 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
 		return equals;
 	}
 
+	public void guessPrototype(boolean _skipIfAlreadyPrototyped) {
+		if (!_skipIfAlreadyPrototyped || getPrototype() == null) {
+			EOAttribute matchingPrototypeAttribute = null;
+			Iterator prototypeAttributesIter = getEntity().getModel().getPrototypeAttributes().iterator();
+			while (matchingPrototypeAttribute == null && prototypeAttributesIter.hasNext()) {
+				EOAttribute prototypeAttribute = (EOAttribute) prototypeAttributesIter.next();
+				boolean prototypeMatches = true;
+				for (int propertyNum = 0; prototypeMatches && propertyNum < PROTOTYPED_PROPERTIES.length; propertyNum++) {
+					String propertyName = PROTOTYPED_PROPERTIES[propertyNum];
+					if (AbstractEOArgument.NAME != propertyName && AbstractEOArgument.COLUMN_NAME != propertyName) {
+						Object currentValue = EOAttribute.getPropertyKey(propertyName).getValue(this);
+						Object prototypeValue = EOAttribute.getPropertyKey(propertyName).getValue(prototypeAttribute);
+						if (prototypeValue != null && !ComparisonUtils.equals(currentValue, prototypeValue)) {
+							prototypeMatches = false;
+						}
+					}
+				}
+				if (prototypeMatches) {
+					matchingPrototypeAttribute = prototypeAttribute;
+				}
+			}
+			if (matchingPrototypeAttribute != null) {
+				setPrototype(matchingPrototypeAttribute);
+			}
+		}
+	}
+
 	public Boolean isToMany() {
 		return Boolean.FALSE;
 	}
@@ -388,8 +415,8 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
 
 	public Boolean isClassProperty() {
 		return myClassProperty;// (Boolean)
-								// _prototypeValueIfNull(EOAttribute.CLASS_PROPERTY,
-								// myClassProperty);
+		// _prototypeValueIfNull(EOAttribute.CLASS_PROPERTY,
+		// myClassProperty);
 	}
 
 	public void setClassProperty(Boolean _classProperty) {
@@ -692,28 +719,28 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
 	public void verify(Set _failures) {
 		String name = getName();
 		if (name == null || name.trim().length() == 0) {
-			_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " has an empty name."));
+			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " has an empty name.", false));
 		} else {
 			if (name.indexOf(' ') != -1) {
-				_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s name has a space in it."));
+				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + "'s name has a space in it.", false));
 			}
 			if (!StringUtils.isLowercaseFirstLetter(name)) {
-				_failures.add(new EOModelVerificationFailure("Attribute names should not be capitalized, but " + getFullyQualifiedName() + " is."));
+				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), "Attribute names should not be capitalized, but " + getFullyQualifiedName() + " is.", true));
 			}
 		}
 		if (!myEntity.isPrototype()) {
 			if (!isFlattened()) {
 				String columnName = getColumnName();
 				if (columnName == null || columnName.trim().length() == 0) {
-					_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " does not have a column name set."));
+					_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " does not have a column name set.", false));
 				} else if (columnName.indexOf(' ') != -1) {
-					_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s column name '" + columnName + "' has a space in it."));
+					_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + "'s column name '" + columnName + "' has a space in it.", false));
 				} else {
 					Iterator attributesIter = myEntity.getAttributes().iterator();
 					while (attributesIter.hasNext()) {
 						EOAttribute attribute = (EOAttribute) attributesIter.next();
 						if (attribute != this && columnName.equals(attribute.getColumnName())) {
-							_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s column name is the same as " + attribute.getFullyQualifiedName() + "'s."));
+							_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + "'s column name is the same as " + attribute.getFullyQualifiedName() + "'s.", true));
 						}
 					}
 				}

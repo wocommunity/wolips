@@ -61,13 +61,13 @@ public class DuplicateArgumentFailure extends EOModelVerificationFailure {
 	}
 
 	public DuplicateArgumentFailure(EOStoredProcedure _storedProcedure, String _argumentName, String _newArgumentName, Throwable _throwable) {
-		super("There was more than one argument named '" + _argumentName + "' in " + _storedProcedure.getName() + ", so one was renamed to '" + _newArgumentName + "'.", _throwable);
+		super(_storedProcedure.getModel(), "There was more than one argument named '" + _argumentName + "' in " + _storedProcedure.getName() + ", so one was renamed to '" + _newArgumentName + "'.", false, _throwable);
 		myStoredProcedure = _storedProcedure;
 		myArgumentName = _argumentName;
 		myNewArgumentName = _newArgumentName;
 	}
 
-	public EOStoredProcedure getModel() {
+	public EOStoredProcedure getStoredProcedure() {
 		return myStoredProcedure;
 	}
 

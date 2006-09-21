@@ -61,7 +61,7 @@ public class DuplicateFetchSpecFailure extends EOModelVerificationFailure {
 	}
 
 	public DuplicateFetchSpecFailure(EOEntity _entity, String _fetchSpecName, String _newFetchSpecName, Throwable _throwable) {
-		super("There was more than one fetch specification named '" + _fetchSpecName + "' in " + _entity.getName() + ", so one was renamed to '" + _newFetchSpecName + "'.", _throwable);
+		super(_entity.getModel(), "There was more than one fetch specification named '" + _fetchSpecName + "' in " + _entity.getName() + ", so one was renamed to '" + _newFetchSpecName + "'.", false, _throwable);
 		myEntity = _entity;
 		myFetchSpecName = _fetchSpecName;
 		myNewFetchSpecName = _newFetchSpecName;

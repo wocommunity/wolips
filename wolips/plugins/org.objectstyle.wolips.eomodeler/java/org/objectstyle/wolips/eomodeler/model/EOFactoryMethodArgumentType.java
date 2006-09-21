@@ -85,14 +85,16 @@ public class EOFactoryMethodArgumentType {
 
 	public static EOFactoryMethodArgumentType getFactoryMethodArgumentTypeByID(String _id) {
 		EOFactoryMethodArgumentType matchingArgumentType = null;
-		for (int argumentTypeNum = 0; matchingArgumentType == null && argumentTypeNum < EOFactoryMethodArgumentType.ARGUMENT_TYPES.length; argumentTypeNum++) {
-			EOFactoryMethodArgumentType argumentType = EOFactoryMethodArgumentType.ARGUMENT_TYPES[argumentTypeNum];
-			if (ComparisonUtils.equals(argumentType.myID, _id)) {
-				matchingArgumentType = argumentType;
+		if (_id != null) {
+			for (int argumentTypeNum = 0; matchingArgumentType == null && argumentTypeNum < EOFactoryMethodArgumentType.ARGUMENT_TYPES.length; argumentTypeNum++) {
+				EOFactoryMethodArgumentType argumentType = EOFactoryMethodArgumentType.ARGUMENT_TYPES[argumentTypeNum];
+				if (ComparisonUtils.equals(argumentType.myID, _id)) {
+					matchingArgumentType = argumentType;
+				}
 			}
-		}
-		if (matchingArgumentType == null) {
-			matchingArgumentType = EOFactoryMethodArgumentType.DATA;
+			if (matchingArgumentType == null) {
+				matchingArgumentType = EOFactoryMethodArgumentType.DATA;
+			}
 		}
 		return matchingArgumentType;
 	}

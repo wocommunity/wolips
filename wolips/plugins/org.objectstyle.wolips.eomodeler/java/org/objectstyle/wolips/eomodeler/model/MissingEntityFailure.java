@@ -52,12 +52,12 @@ package org.objectstyle.wolips.eomodeler.model;
 public class MissingEntityFailure extends EOModelVerificationFailure {
 	private String myEntityName;
 
-	public MissingEntityFailure(String _entityName) {
-		this(_entityName, null);
+	public MissingEntityFailure(EOModel _model, String _entityName) {
+		this(_model, _entityName, null);
 	}
 
-	public MissingEntityFailure(String _entityName, Throwable _throwable) {
-		super("Missing entity named '" + _entityName + "'.", _throwable);
+	public MissingEntityFailure(EOModel _model, String _entityName, Throwable _throwable) {
+		super(_model, "Missing entity named '" + _entityName + "'.", false, _throwable);
 		myEntityName = _entityName;
 	}
 

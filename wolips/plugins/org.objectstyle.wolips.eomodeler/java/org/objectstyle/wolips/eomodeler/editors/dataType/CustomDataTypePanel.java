@@ -137,7 +137,7 @@ public class CustomDataTypePanel extends Composite implements IDataTypePanel {
 			myBindingContext.bind(myValueTypeText, new Property(_argument, AbstractEOArgument.VALUE_TYPE), null);
 			myBindingContext.bind(myFactoryMethodText, new Property(_argument, AbstractEOArgument.VALUE_FACTORY_METHOD_NAME), null);
 			myBindingContext.bind(myConversionMethodText, new Property(_argument, AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME), null);
-			myArgumentTypeBinding = new ComboViewerBinding(myArgumentTypeComboViewer, _argument, AbstractEOArgument.FACTORY_METHOD_ARGUMENT_TYPE, null, null, EOFactoryMethodArgumentType.DATA);
+			myArgumentTypeBinding = new ComboViewerBinding(myArgumentTypeComboViewer, _argument, AbstractEOArgument.FACTORY_METHOD_ARGUMENT_TYPE, null, null, EOFactoryMethodArgumentTypeContentProvider.BLANK_ARGUMENT_TYPE);
 		}
 	}
 

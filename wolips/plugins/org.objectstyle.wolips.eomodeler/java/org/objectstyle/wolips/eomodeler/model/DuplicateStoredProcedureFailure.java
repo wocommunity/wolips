@@ -50,25 +50,18 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 public class DuplicateStoredProcedureFailure extends EOModelVerificationFailure {
-	private EOModel myModel;
-
 	private String myStoredProcedureName;
 
 	private String myNewStoredProcedureName;
 
-	public DuplicateStoredProcedureFailure(EOModel _entity, String _storedProcedureName, String _newStoredProcedureName) {
-		this(_entity, _storedProcedureName, _newStoredProcedureName, null);
+	public DuplicateStoredProcedureFailure(EOModel _model, String _storedProcedureName, String _newStoredProcedureName) {
+		this(_model, _storedProcedureName, _newStoredProcedureName, null);
 	}
 
-	public DuplicateStoredProcedureFailure(EOModel _entity, String _storedProcedureName, String _newStoredProcedureName, Throwable _throwable) {
-		super("There was more than one stored procedure named '" + _storedProcedureName + "' in " + _entity.getName() + ", so one was renamed to '" + _newStoredProcedureName + "'.", _throwable);
-		myModel = _entity;
+	public DuplicateStoredProcedureFailure(EOModel _model, String _storedProcedureName, String _newStoredProcedureName, Throwable _throwable) {
+		super(_model, "There was more than one stored procedure named '" + _storedProcedureName + "' in " + _model.getName() + ", so one was renamed to '" + _newStoredProcedureName + "'.", false, _throwable);
 		myStoredProcedureName = _storedProcedureName;
 		myNewStoredProcedureName = _newStoredProcedureName;
-	}
-
-	public EOModel getModel() {
-		return myModel;
 	}
 
 	public String getStoredProcedureName() {

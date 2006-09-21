@@ -50,17 +50,31 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 public class EOModelVerificationFailure {
+	private EOModel myModel;
+	
 	private String myMessage;
 
 	private Throwable myRootCause;
 
-	public EOModelVerificationFailure(String _message) {
-		this(_message, null);
+	private boolean myWarning;
+	
+	public EOModelVerificationFailure(EOModel _model, String _message, boolean _warning) {
+		this(_model, _message, _warning, null);
 	}
 
-	public EOModelVerificationFailure(String _message, Throwable _rootCause) {
+	public EOModelVerificationFailure(EOModel _model, String _message, boolean _warning, Throwable _rootCause) {
+		myModel = _model;
 		myMessage = _message;
 		myRootCause = _rootCause;
+		myWarning = _warning;
+	}
+	
+	public EOModel getModel() {
+		return myModel;
+	}
+	
+	public boolean isWarning() {
+		return myWarning;
 	}
 
 	public int hashCode() {

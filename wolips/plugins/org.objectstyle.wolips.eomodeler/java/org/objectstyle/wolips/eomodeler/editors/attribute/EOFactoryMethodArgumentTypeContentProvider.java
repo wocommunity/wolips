@@ -49,14 +49,25 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.attribute;
 
+import java.util.LinkedList;
+
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.objectstyle.wolips.eomodeler.model.EOFactoryMethodArgumentType;
 
 public class EOFactoryMethodArgumentTypeContentProvider implements IStructuredContentProvider {
+	public static String BLANK_ARGUMENT_TYPE = "";
+	
 	public Object[] getElements(Object _inputElement) {
 		EOFactoryMethodArgumentType[] argumentTypes = (EOFactoryMethodArgumentType[]) _inputElement;
-		return argumentTypes;
+		LinkedList argumentTypesList = new LinkedList();
+		argumentTypesList.add(EOFactoryMethodArgumentTypeContentProvider.BLANK_ARGUMENT_TYPE);
+		for (int argumentTypeNum = 0; argumentTypeNum < argumentTypes.length; argumentTypeNum++) {
+			EOFactoryMethodArgumentType type = argumentTypes[argumentTypeNum];
+			argumentTypesList.add(type);
+		}
+		return argumentTypesList.toArray();
+		//return argumentTypes;
 	}
 
 	public void dispose() {

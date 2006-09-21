@@ -61,7 +61,7 @@ public class DuplicateAttributeFailure extends EOModelVerificationFailure {
 	}
 
 	public DuplicateAttributeFailure(EOEntity _entity, String _attributeName, String _newAttributeName, Throwable _throwable) {
-		super("There was more than one attribute named '" + _attributeName + "' in " + _entity.getName() + ", so one was renamed to '" + _newAttributeName + "'.", _throwable);
+		super(_entity.getModel(), "There was more than one attribute named '" + _attributeName + "' in " + _entity.getName() + ", so one was renamed to '" + _newAttributeName + "'.", false, _throwable);
 		myEntity = _entity;
 		myAttributeName = _attributeName;
 		myNewAttributeName = _newAttributeName;
