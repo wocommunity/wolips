@@ -675,7 +675,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 			if (storedProcedureName != null) {
 				myStoredProcedure = myEntity.getModel().getStoredProcedureNamed(storedProcedureName);
 				if (myStoredProcedure == null) {
-					_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " specifies a stored procedure name '" + myStoredProcedure + "' which does not exist."));
+					_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " specifies a stored procedure name '" + myStoredProcedure + "' which does not exist.", false));
 				}
 			}
 		}
@@ -694,10 +694,10 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 		}
 
 		if (myCustomQueryExpression != null && myCustomQueryExpression.trim().length() == 0) {
-			_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " has an empty custom SQL expression."));
+			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " has an empty custom SQL expression.", false));
 		}
 		if (myCustomQueryExpression != null && myStoredProcedure != null) {
-			_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " specifies a custom SQL expression AND a stored procedure name, which is invalid."));
+			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " specifies a custom SQL expression AND a stored procedure name, which is invalid.", false));
 		}
 	}
 

@@ -659,11 +659,11 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 		if (!isFlattened()) {
 			String destinationName = myRelationshipMap.getString("destination", true);
 			if (destinationName == null) {
-				_failures.add(new EOModelVerificationFailure(myEntity.getName() + "'s " + myName + " relationship has no destination entity."));
+				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), myEntity.getName() + "'s " + myName + " relationship has no destination entity.", false));
 			} else {
 				myDestination = myEntity.getModel().getModelGroup().getEntityNamed(destinationName);
 				if (myDestination == null) {
-					_failures.add(new MissingEntityFailure(destinationName));
+					_failures.add(new MissingEntityFailure(myEntity.getModel(), destinationName));
 				}
 			}
 		}
@@ -678,22 +678,22 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 	public void verify(Set _failures) {
 		String name = getName();
 		if (name == null || name.trim().length() == 0) {
-			_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " has an empty name."));
+			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " has an empty name.", false));
 		} else {
 			if (name.indexOf(' ') != -1) {
-				_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s name has a space in it."));
+				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + "'s name has a space in it.", false));
 			}
 			if (!StringUtils.isLowercaseFirstLetter(name)) {
-				_failures.add(new EOModelVerificationFailure("Relationship names should not be capitalized, but " + getFullyQualifiedName() + " is ."));
+				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), "Relationship names should not be capitalized, but " + getFullyQualifiedName() + " is .", true));
 			}
 		}
 		if (isFlattened()) {
 			if (myEntity.resolveKeyPath(getDefinition()) == null) {
-				_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " is flattened and either creates a loop or points to a non-existent target."));
+				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " is flattened and either creates a loop or points to a non-existent target.", false));
 			}
 		} else {
 			if (myDestination == null) {
-				_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " has no destination entity."));
+				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " has no destination entity.", false));
 			}
 		}
 		EOEntity entity = getEntity();
@@ -706,9 +706,9 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 			join.verify(_failures);
 			EOAttribute sourceAttribute = join.getSourceAttribute();
 			if (toOne && mandatory && !singleTableInheritance && sourceAttribute != null && BooleanUtils.isTrue(sourceAttribute.isAllowsNull())) {
-				_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " is mandatory but " + sourceAttribute.getFullyQualifiedName() + " allows nulls."));
+				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " is mandatory but " + sourceAttribute.getFullyQualifiedName() + " allows nulls.", true));
 			} else if (toOne && !mandatory && sourceAttribute != null && !BooleanUtils.isTrue(sourceAttribute.isAllowsNull())) {
-				_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " is optional but " + sourceAttribute.getFullyQualifiedName() + " does not allow nulls."));
+				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " is optional but " + sourceAttribute.getFullyQualifiedName() + " does not allow nulls.", true));
 			}
 		}
 	}

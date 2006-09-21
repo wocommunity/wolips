@@ -50,8 +50,6 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 public class DuplicateDatabaseConfigFailure extends EOModelVerificationFailure {
-	private EOModel myModel;
-
 	private String myDatabaseConfigName;
 
 	private String myNewDatabaseConfigName;
@@ -61,14 +59,9 @@ public class DuplicateDatabaseConfigFailure extends EOModelVerificationFailure {
 	}
 
 	public DuplicateDatabaseConfigFailure(EOModel _model, String _databaseConfigName, String _newDatabaseConfigName, Throwable _throwable) {
-		super("There was more than one entity named '" + _databaseConfigName + "' in " + _model.getName() + ", so one was renamed to '" + _newDatabaseConfigName + "'.", _throwable);
-		myModel = _model;
+		super(_model, "There was more than one entity named '" + _databaseConfigName + "' in " + _model.getName() + ", so one was renamed to '" + _newDatabaseConfigName + "'.", false, _throwable);
 		myDatabaseConfigName = _databaseConfigName;
 		myNewDatabaseConfigName = _newDatabaseConfigName;
-	}
-
-	public EOModel getModel() {
-		return myModel;
 	}
 
 	public String getDatabaseConfigName() {

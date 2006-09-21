@@ -61,7 +61,7 @@ public class DuplicateRelationshipFailure extends EOModelVerificationFailure {
 	}
 
 	public DuplicateRelationshipFailure(EOEntity _entity, String _relationshipName, String _newRelationshipName, Throwable _throwable) {
-		super("There was more than one relationship named '" + _relationshipName + "' in " + _entity.getName() + ", so one was renamed to '" + _newRelationshipName + "'.", _throwable);
+		super(_entity.getModel(), "There was more than one relationship named '" + _relationshipName + "' in " + _entity.getName() + ", so one was renamed to '" + _newRelationshipName + "'.", false, _throwable);
 		myEntity = _entity;
 		myRelationshipName = _relationshipName;
 		myNewRelationshipName = _newRelationshipName;

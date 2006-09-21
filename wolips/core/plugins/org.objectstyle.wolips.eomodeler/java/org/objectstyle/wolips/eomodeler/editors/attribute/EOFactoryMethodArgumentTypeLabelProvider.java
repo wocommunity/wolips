@@ -60,8 +60,15 @@ public class EOFactoryMethodArgumentTypeLabelProvider implements ILabelProvider 
 	}
 
 	public String getText(Object _element) {
-		EOFactoryMethodArgumentType argumentType = (EOFactoryMethodArgumentType) _element;
-		return argumentType.getName();
+		String text;
+		if (_element == EOFactoryMethodArgumentTypeContentProvider.BLANK_ARGUMENT_TYPE) {
+			text = "";
+		}
+		else {
+			EOFactoryMethodArgumentType argumentType = (EOFactoryMethodArgumentType) _element;
+			text = argumentType.getName();
+		}
+		return text;
 	}
 
 	public void addListener(ILabelProviderListener _listener) {

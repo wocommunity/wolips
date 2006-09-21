@@ -51,6 +51,6 @@ package org.objectstyle.wolips.eomodeler.model;
 
 public class EOEntityRelationshipReferenceFailure extends EOModelVerificationFailure {
 	public EOEntityRelationshipReferenceFailure(EOEntity _entity, EORelationship _relationship) {
-		super(_entity.getName() + " is the destination of the relationship " + _relationship.getFullyQualifiedName() + ".");
+		super(_entity.getModel(), _entity.getName() + " is the destination of the relationship " + _relationship.getFullyQualifiedName() + ".", false);
 	}
 }

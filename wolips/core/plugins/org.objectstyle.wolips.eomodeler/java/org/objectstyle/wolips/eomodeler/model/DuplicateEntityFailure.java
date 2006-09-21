@@ -50,8 +50,6 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 public class DuplicateEntityFailure extends EOModelVerificationFailure {
-	private EOModel myModel;
-
 	private String myEntityName;
 
 	private String myNewEntityName;
@@ -61,14 +59,9 @@ public class DuplicateEntityFailure extends EOModelVerificationFailure {
 	}
 
 	public DuplicateEntityFailure(EOModel _model, String _entityName, String _newEntityName, Throwable _throwable) {
-		super("There was more than one entity named '" + _entityName + "' in " + _model.getName() + ", so one was renamed to '" + _newEntityName + "'.", _throwable);
-		myModel = _model;
+		super(_model, "There was more than one entity named '" + _entityName + "' in " + _model.getName() + ", so one was renamed to '" + _newEntityName + "'.", false, _throwable);
 		myEntityName = _entityName;
 		myNewEntityName = _newEntityName;
-	}
-
-	public EOModel getModel() {
-		return myModel;
 	}
 
 	public String getEntityName() {

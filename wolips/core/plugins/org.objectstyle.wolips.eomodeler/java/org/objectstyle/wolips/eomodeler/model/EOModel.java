@@ -597,6 +597,11 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		}
 	}
 
+	public File getIndexFile() {
+		File indexFile = new File(myModelFolder, "index.eomodeld");
+		return indexFile;
+	}
+	
 	public void loadFromFolder(File _modelFolder, Set _failures) throws EOModelException, IOException {
 		File indexFile = new File(_modelFolder, "index.eomodeld");
 		if (!indexFile.exists()) {
@@ -636,7 +641,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 					}
 					addEntity(entity, false, _failures);
 				} else {
-					_failures.add(new EOModelVerificationFailure("The entity file " + entityFile.getAbsolutePath() + " was missing."));
+					_failures.add(new EOModelVerificationFailure(this, "The entity file " + entityFile.getAbsolutePath() + " was missing.", false));
 				}
 			}
 		}
@@ -652,7 +657,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 					storedProcedure.loadFromFile(storedProcedureFile, _failures);
 					addStoredProcedure(storedProcedure, false, _failures);
 				} else {
-					_failures.add(new EOModelVerificationFailure("The stored procedure file " + storedProcedureFile.getAbsolutePath() + " was missing."));
+					_failures.add(new EOModelVerificationFailure(this, "The stored procedure file " + storedProcedureFile.getAbsolutePath() + " was missing.", false));
 				}
 			}
 		}

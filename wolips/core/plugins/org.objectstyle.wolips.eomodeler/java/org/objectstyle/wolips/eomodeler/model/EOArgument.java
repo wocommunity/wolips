@@ -114,10 +114,10 @@ public class EOArgument extends AbstractEOArgument {
 	public void verify(Set _failures) {
 		String name = getName();
 		if (name == null || name.trim().length() == 0) {
-			_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " has an empty name."));
+			_failures.add(new EOModelVerificationFailure(myStoredProcedure.getModel(), getFullyQualifiedName() + " has an empty name.", false));
 		} else {
 			if (name.indexOf(' ') != -1) {
-				_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s name has a space in it."));
+				_failures.add(new EOModelVerificationFailure(myStoredProcedure.getModel(), getFullyQualifiedName() + "'s name has a space in it.", false));
 			}
 		}
 		// if (!isFlattened()) {
@@ -136,7 +136,7 @@ public class EOArgument extends AbstractEOArgument {
 		// }
 		// }
 		if (myDirection == null) {
-			_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " has no direction specified."));
+			_failures.add(new EOModelVerificationFailure(myStoredProcedure.getModel(), getFullyQualifiedName() + " has no direction specified.", false));
 		}
 	}
 
