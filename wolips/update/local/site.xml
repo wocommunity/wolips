@@ -6,9 +6,6 @@
    <feature url="features/org.objectstyle.wolips.feature_1.0.6.jar" id="org.objectstyle.wolips.feature" version="1.0.6">
       <category name="Standard Install"/>
    </feature>
-   <feature url="features/org.objectstyle.wolips.profiling.feature_1.0.6.jar" id="org.objectstyle.wolips.profiling.feature" version="1.0.6">
-      <category name="Profiling Support"/>
-   </feature>
    <feature url="features/org.objectstyle.wolips.tptp.feature_1.0.6.jar" id="org.objectstyle.wolips.tptp.feature" version="1.0.6">
       <category name="Profiling Support"/>
    </feature>
