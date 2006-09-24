@@ -10,13 +10,19 @@
 	<!-- Build all.                                 -->
 	<!-- ========================================== -->
 	<target name="all">
-		<ant dir="org.objectstyle.wolips.3rdparty.velocity" target="all" />
+		<ant dir="org.objectstyle.wolips.thirdparty.cayenne" target="all" />
+		<ant dir="org.objectstyle.wolips.thirdparty.commonscollections" target="all" />
+		<ant dir="org.objectstyle.wolips.thirdparty.log4j" target="all" />
+		<ant dir="org.objectstyle.wolips.thirdparty.velocity" target="all" />
 	</target>
 	<!-- ========================================== -->
 	<!-- Build dist.                                -->
 	<!-- ========================================== -->
 	<target name="dist">
-		<ant dir="org.objectstyle.wolips.3rdparty.velocity" target="dist" />
+		<ant dir="org.objectstyle.wolips.thirdparty.cayenne" target="dist" />
+		<ant dir="org.objectstyle.wolips.thirdparty.commonscollections" target="dist" />
+		<ant dir="org.objectstyle.wolips.thirdparty.log4j" target="dist" />
+		<ant dir="org.objectstyle.wolips.thirdparty.velocity" target="dist" />
 	</target>
 
 </project>

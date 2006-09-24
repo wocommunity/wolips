@@ -55,37 +55,27 @@
  */
 package org.objectstyle.wolips.templateengine;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.core.runtime.IPath;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.input.SAXBuilder;
 
 /**
  * @author ulrich
- * 
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class TemplatesDocument {
-	private Document document = null;
+//	private Document document = null;
 
 	/**
 	 * @param location
 	 */
 	public TemplatesDocument(IPath location) {
 		super();
-		SAXBuilder builder;
-		try {
-			builder = new SAXBuilder();
-			this.document = builder.build(location.toOSString() + File.separator + "Templates.xml");
-		} catch (Exception ee) {
-			builder = null;
-			this.document = null;
-		}
+//		SAXBuilder builder;
+//		try {
+//			builder = new SAXBuilder();
+//			this.document = builder.build(location.toOSString() + File.separator + "Templates.xml");
+//		} catch (Exception ee) {
+//			builder = null;
+//			this.document = null;
+//		}
 	}
 
 	/**
@@ -93,51 +83,55 @@ public class TemplatesDocument {
 	 * @return
 	 */
 	public boolean isOfType(String type) {
-		return type.equals(this.getType());
+//		return type.equals(this.getType());
+		return false;
 	}
 
 	/**
 	 * @return
 	 */
 	public boolean isValid() {
-		if (this.document == null) {
-			return false;
-		}
-		if (this.getType() == null)
-			return false;
+//		if (this.document == null) {
+//			return false;
+//		}
+//		if (this.getType() == null)
+//			return false;
 		return true;
 	}
 
 	private String getType() {
-		if (this.document == null) {
-			return null;
-		}
-		return this.document.getRootElement().getChildText("type");
+//		if (this.document == null) {
+//			return null;
+//		}
+//		return this.document.getRootElement().getChildText("type");
+		return null;
 	}
 
 	/**
 	 * @return Returns the name
 	 */
 	public String getName() {
-		if (this.document == null) {
-			return null;
-		}
-		return this.document.getRootElement().getChildText("name");
+		// if (this.document == null) {
+		// return null;
+		// }
+		// return this.document.getRootElement().getChildText("name");
+		return null;
 	}
 
 	/**
 	 * @return
 	 */
 	public TemplateDefinition[] getTemplateDefinitions() {
-		if (!isValid())
-			return null;
-		List templates = this.document.getRootElement().getChildren("templates");
-		ArrayList templateDefinitions = new ArrayList();
-		for (int i = 0; i < templates.size(); i++) {
-			Element child = (Element) templates.get(i);
-			TemplateDefinition templateDefinition = new TemplateDefinition(child.getChildText("templateName"), child.getChildText("destination"), child.getChildText("finalName"), child.getChildText("type"));
-			templateDefinitions.add(templateDefinition);
-		}
-		return (TemplateDefinition[]) (templateDefinitions.toArray(new TemplateDefinition[templateDefinitions.size()]));
+//		if (!isValid())
+//			return null;
+//		List templates = this.document.getRootElement().getChildren("templates");
+//		ArrayList templateDefinitions = new ArrayList();
+//		for (int i = 0; i < templates.size(); i++) {
+//			Element child = (Element) templates.get(i);
+//			TemplateDefinition templateDefinition = new TemplateDefinition(child.getChildText("templateName"), child.getChildText("destination"), child.getChildText("finalName"), child.getChildText("type"));
+//			templateDefinitions.add(templateDefinition);
+//		}
+//		return (TemplateDefinition[]) (templateDefinitions.toArray(new TemplateDefinition[templateDefinitions.size()]));
+		return null;
 	}
 }
