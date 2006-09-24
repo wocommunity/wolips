@@ -17,10 +17,7 @@
 		<ant dir="org.objectstyle.wolips.datasets" target="all" />
 		<ant dir="org.objectstyle.wolips.locate" target="all" />
 		<ant dir="org.objectstyle.wolips.ant" target="all" />
-		<ant dir="org.objectstyle.wolips.cayenne" target="all" />
-		<ant dir="org.objectstyle.wolips.cayenne.ant" target="all" />
 		<ant dir="org.objectstyle.wolips.documentation" target="all" />
-		<ant dir="org.objectstyle.wolips.jdom" target="all" />
 		<ant dir="org.objectstyle.wolips.jdt" target="all" />
 		<ant dir="org.objectstyle.wolips.pbserver" target="all" />
 		<ant dir="org.objectstyle.wolips.builder" target="all" />
@@ -56,10 +53,7 @@
 		<ant dir="org.objectstyle.wolips.datasets" target="dist" />
 		<ant dir="org.objectstyle.wolips.locate" target="dist" />
 		<ant dir="org.objectstyle.wolips.ant" target="dist" />
-		<ant dir="org.objectstyle.wolips.cayenne" target="dist" />
-		<ant dir="org.objectstyle.wolips.cayenne.ant" target="dist" />
 		<ant dir="org.objectstyle.wolips.documentation" target="dist" />
-		<ant dir="org.objectstyle.wolips.jdom" target="dist" />
 		<ant dir="org.objectstyle.wolips.jdt" target="dist" />
 		<ant dir="org.objectstyle.wolips.pbserver" target="dist" />
 		<ant dir="org.objectstyle.wolips.ui" target="dist" />
