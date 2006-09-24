@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Templateengine Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.templateengine
 Bundle-Version: 1.0.6
-Bundle-ClassPath: lib/wolips-templateengine.jar
 Bundle-Activator: org.objectstyle.wolips.templateengine.TemplateEnginePlugin
 Bundle-Vendor: objectstyle.org
 Bundle-Localization: plugin
