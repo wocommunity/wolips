@@ -33,21 +33,21 @@
          id="org.objectstyle.wolips.thirdparty.cayenne"
          download-size="0"
          install-size="0"
-         version="1.1.4"
+         version="1.0.6"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.thirdparty.log4j"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.6"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.thirdparty.commonscollections"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.6"
          unpack="false"/>
 
 </feature>
