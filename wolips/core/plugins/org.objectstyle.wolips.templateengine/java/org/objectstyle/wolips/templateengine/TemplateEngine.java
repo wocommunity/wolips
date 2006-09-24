@@ -68,6 +68,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.resource.loader.JarResourceLoader;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -92,7 +93,7 @@ public class TemplateEngine implements IRunnableWithProgress {
 		/*
 		 * create a new instance of the engine
 		 */
-		this.velocityEngine = new VelocityEngine();
+		this.velocityEngine = new VelocityEngine();//jar.resource.loader.path
 		this.velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.NullLogSystem");
 		/*
 		 * initialize the engine
@@ -103,7 +104,10 @@ public class TemplateEngine implements IRunnableWithProgress {
 		String templatePaths = userHomeWOLipsPath + ", ";
 		Path path = new Path(url.getPath());
 		templatePaths = templatePaths + path.append("templates").toOSString();
-		this.velocityEngine.setProperty("file.resource.loader.path", templatePaths);
+		this.velocityEngine.setProperty("resource.loader", "wolips");
+		this.velocityEngine.setProperty("wolips.resource.loader.class", "org.objectstyle.wolips.thirdparty.velocity.resourceloader.ResourceLoader");
+		this.velocityEngine.setProperty("wolips.resource.loader.bundle", TemplateEnginePlugin.getDefault().getBundle());
+//		this.velocityEngine.setProperty("jar.resource.loader.path", "jar:" + TemplateEnginePlugin.getDefault().getBundle().getResource("plugin.xml").getFile());
 		this.velocityEngine.init();
 		this.context = new VelocityContext();
 		this.templates = new ArrayList();
