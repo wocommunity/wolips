@@ -14,4 +14,4 @@ Export-Package: org.objectstyle.woenvironment.env,
  org.objectstyle.woproject.ant,
  org.objectstyle.woproject.log4j,
  org.objectstyle.woproject.util
-Require-Bundle: org.objectstyle.wolips.cayenne
+Require-Bundle: org.objectstyle.wolips.thirdparty.cayenne

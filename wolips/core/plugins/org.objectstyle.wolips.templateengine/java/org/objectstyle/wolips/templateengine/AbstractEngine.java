@@ -73,14 +73,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.jdom.Document;
-import org.jdom.input.SAXBuilder;
 
 /**
  * @author ulrich
- * 
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public abstract class AbstractEngine implements IRunnableWithProgress {
 	private String projectName;
@@ -118,21 +113,21 @@ public abstract class AbstractEngine implements IRunnableWithProgress {
 		this.context = new VelocityContext();
 		this.templates = new ArrayList();
 		this.setPropertyForKey(this, WOLipsContext.Key);
-		SAXBuilder builder;
-		Document myContext = null;
-		try {
-			builder = new SAXBuilder();
-			myContext = builder.build(userHomeWOLipsPath + File.separator + "MyContext.xml");
-		} catch (Exception ee) {
-			// We can ignore this exception, it`s thrown if the xml document is
-			// not found.
-			// Per default there is no such file
-			builder = null;
-			myContext = null;
-		}
-		if (myContext != null) {
-			this.setPropertyForKey(myContext, "MyContext");
-		}
+//		SAXBuilder builder;
+//		Document myContext = null;
+//		try {
+//			builder = new SAXBuilder();
+//			myContext = builder.build(userHomeWOLipsPath + File.separator + "MyContext.xml");
+//		} catch (Exception ee) {
+//			// We can ignore this exception, it`s thrown if the xml document is
+//			// not found.
+//			// Per default there is no such file
+//			builder = null;
+//			myContext = null;
+//		}
+//		if (myContext != null) {
+//			this.setPropertyForKey(myContext, "MyContext");
+//		}
 	}
 
 	/**

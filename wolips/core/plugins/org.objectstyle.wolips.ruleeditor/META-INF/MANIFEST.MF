@@ -9,9 +9,9 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.ui.ide,
- org.objectstyle.wolips.cayenne,
  org.objectstyle.wolips.baseforuiplugins,
- org.eclipse.core.resources
+ org.eclipse.core.resources,
+ org.objectstyle.wolips.thirdparty.cayenne
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.ruleeditor,
  org.objectstyle.wolips.ruleeditor.model

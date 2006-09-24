@@ -32,6 +32,7 @@
 	<!-- ========================================== -->
 	<target name="all_children" if="eclipse.home.set">
 		<mkdir dir="../${build.output.java.dir}" />
+		<ant dir="3rdparty" target="all" />
 		<ant dir="base" target="all" />
 		<ant dir="core" target="all" />
 		<ant dir="goodies" target="all" />
@@ -51,6 +52,7 @@
 	<target name="dist_children" if="eclipse.home.set">
 		<mkdir dir="../${build.output.dist.dir}/plugins" />
 		<mkdir dir="../${build.output.dist.dir}/features" />
+		<ant dir="3rdparty" target="dist" />
 		<ant dir="base" target="dist" />
 		<ant dir="core" target="dist" />
 		<ant dir="goodies" target="dist" />

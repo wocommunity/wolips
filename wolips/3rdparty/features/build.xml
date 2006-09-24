@@ -10,13 +10,13 @@
 	<!-- Build all.                                 -->
 	<!-- ========================================== -->
 	<target name="all">
-		<ant dir="org.objectstyle.wolips.3rdparty.feature" target="all" />
+		<ant dir="org.objectstyle.wolips.thirdparty.feature" target="all" />
 	</target>
 	<!-- ========================================== -->
 	<!-- Build dist.                                -->
 	<!-- ========================================== -->
 	<target name="dist">
-		<ant dir="org.objectstyle.wolips.3rdparty.feature" target="dist" />
+		<ant dir="org.objectstyle.wolips.thirdparty.feature" target="dist" />
 	</target>
 
 </project>

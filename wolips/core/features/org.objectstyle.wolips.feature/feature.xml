@@ -72,6 +72,7 @@
       <import plugin="org.junit"/>
       <import plugin="org.apache.ant"/>
       <import plugin="org.eclipse.jdt.core"/>
+      <import feature="org.objectstyle.wolips.base.feature" version="1.0.6" match="perfect"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
@@ -103,8 +104,8 @@
       <import plugin="org.eclipse.ui.views.properties.tabbed"/>
       <import plugin="org.eclipse.jface.databinding"/>
       <import feature="org.eclipse.jst"/>
-      <import plugin="org.objectstyle.wolips.baseforplugins" version="1.0.6" match="perfect"/>
-      <import plugin="org.objectstyle.wolips.baseforuiplugins" version="1.0.6" match="perfect"/>
+      <import plugin="org.objectstyle.wolips.thirdparty.cayenne"/>
+      <import plugin="org.objectstyle.wolips.thirdparty.velocity"/>
    </requires>
 
    <plugin
@@ -120,19 +121,6 @@
          install-size="24"
          version="1.0.6"
          unpack="false"/>
-
-   <plugin
-         id="org.objectstyle.wolips.cayenne"
-         download-size="2100"
-         install-size="2300"
-         version="1.0.6"
-         unpack="false"/>
-
-   <plugin
-         id="org.objectstyle.wolips.cayenne.ant"
-         download-size="2100"
-         install-size="2300"
-         version="1.0.6"/>
 
    <plugin
          id="org.objectstyle.wolips.datasets"
@@ -152,13 +140,6 @@
          id="org.objectstyle.wolips.eogenerator.ui"
          download-size="12"
          install-size="24"
-         version="1.0.6"
-         unpack="false"/>
-
-   <plugin
-         id="org.objectstyle.wolips.jdom"
-         download-size="248"
-         install-size="268"
          version="1.0.6"
          unpack="false"/>
 

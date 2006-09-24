@@ -10,13 +10,13 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.ide,
  org.eclipse.jdt.core,
  org.objectstyle.wolips.datasets,
- org.objectstyle.wolips.cayenne,
  org.eclipse.ui.views.properties.tabbed,
  org.eclipse.jface.databinding,
  org.objectstyle.wolips.eogenerator.ui,
  org.objectstyle.wolips.variables,
  org.objectstyle.wolips.preferences,
- org.objectstyle.wolips.baseforuiplugins
+ org.objectstyle.wolips.baseforuiplugins,
+ org.objectstyle.wolips.thirdparty.cayenne
 Eclipse-LazyStart: true
 Bundle-Vendor: objectstyle.org
 Export-Package: org.objectstyle.wolips.eomodeler,
