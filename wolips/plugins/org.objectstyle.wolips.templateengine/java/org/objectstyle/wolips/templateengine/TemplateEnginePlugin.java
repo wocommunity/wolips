@@ -217,8 +217,15 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 		return path;
 	}
 
+
+	private static IPath UserHomeLibrayWOLipsPath() {
+		IPath path = new Path(System.getProperty("user.home"));
+		path = path.append("Library");
+		path = path.append("WOLips");
+		return path;
+	}
 	private static IPath userTemplatesPath() {
-		IPath path = DataSetsPlugin.UserHomeLibrayWOLipsPath();
+		IPath path = TemplateEnginePlugin.UserHomeLibrayWOLipsPath();
 		path = path.append("Templates");
 		return path;
 	}

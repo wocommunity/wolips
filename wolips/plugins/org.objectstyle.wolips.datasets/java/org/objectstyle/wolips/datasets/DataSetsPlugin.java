@@ -229,16 +229,6 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 	}
 
 	/**
-	 * @return The path to user settings.
-	 */
-	public static IPath UserHomeLibrayWOLipsPath() {
-		IPath path = new Path(System.getProperty("user.home"));
-		path = path.append("Library");
-		path = path.append("WOLips");
-		return path;
-	}
-
-	/**
 	 * Method informUser.
 	 * 
 	 * @param shell

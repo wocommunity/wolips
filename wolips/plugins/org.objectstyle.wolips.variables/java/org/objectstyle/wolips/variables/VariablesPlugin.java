@@ -133,6 +133,17 @@ public class VariablesPlugin extends AbstractBaseActivator {
 		}
 	}
 
+
+	/**
+	 * @return The path to user settings.
+	 */
+	public static IPath UserHomeLibrayWOLipsPath() {
+		IPath path = new Path(System.getProperty("user.home"));
+		path = path.append("Library");
+		path = path.append("WOLips");
+		return path;
+	}
+	
 	private boolean wobuildPropertiesMissing() {
 		File wobuildDotProperties = new File(System.getProperty("user.home") + "/Library/wobuild.properties");
 		if (!wobuildDotProperties.exists()) {
