@@ -26,7 +26,7 @@
          id="org.objectstyle.wolips.thirdparty.velocity"
          download-size="0"
          install-size="0"
-         version="1.4.0"
+         version="1.0.6"
          unpack="false"/>
 
    <plugin
