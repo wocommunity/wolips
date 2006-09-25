@@ -72,7 +72,6 @@
       <import plugin="org.junit"/>
       <import plugin="org.apache.ant"/>
       <import plugin="org.eclipse.jdt.core"/>
-      <import feature="org.objectstyle.wolips.base.feature" version="1.0.6" match="perfect"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
@@ -86,6 +85,8 @@
       <import plugin="org.eclipse.ui.browser"/>
       <import plugin="org.eclipse.jdt.debug.ui"/>
       <import plugin="org.eclipse.core.variables"/>
+      <import plugin="org.objectstyle.wolips.thirdparty.cayenne"/>
+      <import plugin="org.objectstyle.wolips.thirdparty.velocity"/>
       <import plugin="org.eclipse.search"/>
       <import plugin="org.eclipse.ui.console"/>
       <import plugin="org.eclipse.ant.core"/>
@@ -103,50 +104,51 @@
       <import plugin="org.eclipse.wst.xml.ui"/>
       <import plugin="org.eclipse.ui.views.properties.tabbed"/>
       <import plugin="org.eclipse.jface.databinding"/>
+      <import feature="org.objectstyle.wolips.base.feature" version="1.0.6" match="perfect"/>
       <import feature="org.eclipse.jst"/>
-      <import plugin="org.objectstyle.wolips.thirdparty.cayenne"/>
-      <import plugin="org.objectstyle.wolips.thirdparty.velocity"/>
+      <import plugin="org.objectstyle.wolips.baseforplugins"/>
+      <import plugin="org.objectstyle.wolips.baseforuiplugins"/>
    </requires>
 
    <plugin
          id="org.objectstyle.wolips"
-         download-size="8"
-         install-size="8"
+         download-size="120"
+         install-size="120"
          version="1.0.6"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.ant"
          download-size="16"
-         install-size="24"
+         install-size="16"
          version="1.0.6"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.datasets"
-         download-size="80"
-         install-size="96"
+         download-size="84"
+         install-size="84"
          version="1.0.6"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.documentation"
-         download-size="3100"
-         install-size="3300"
+         download-size="1700"
+         install-size="1700"
          version="1.0.6"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.eogenerator.ui"
-         download-size="12"
-         install-size="24"
+         download-size="68"
+         install-size="68"
          version="1.0.6"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.jdt"
-         download-size="56"
-         install-size="76"
+         download-size="68"
+         install-size="68"
          version="1.0.6"
          unpack="false"/>
 
@@ -159,8 +161,8 @@
 
    <plugin
          id="org.objectstyle.wolips.preferences"
-         download-size="12"
-         install-size="16"
+         download-size="64"
+         install-size="64"
          version="1.0.6"
          unpack="false"/>
 
@@ -180,35 +182,36 @@
 
    <plugin
          id="org.objectstyle.wolips.templateengine"
-         download-size="258"
-         install-size="976"
-         version="1.0.6"/>
+         download-size="8"
+         install-size="8"
+         version="1.0.6"
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.ui"
-         download-size="76"
-         install-size="144"
+         download-size="68"
+         install-size="68"
          version="1.0.6"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.variables"
          download-size="12"
-         install-size="24"
+         install-size="12"
          version="1.0.6"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.wizards"
-         download-size="52"
+         download-size="100"
          install-size="100"
          version="1.0.6"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.wodclipse"
-         download-size="12"
-         install-size="24"
+         download-size="100"
+         install-size="100"
          version="1.0.6"
          unpack="false"/>
 
@@ -227,22 +230,22 @@
 
    <plugin
          id="org.objectstyle.wolips.workbenchutilities"
-         download-size="12"
-         install-size="24"
+         download-size="16"
+         install-size="16"
          version="1.0.6"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.refactoring"
-         download-size="12"
-         install-size="24"
+         download-size="20"
+         install-size="20"
          version="1.0.6"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.pbserver"
-         download-size="32"
-         install-size="32"
+         download-size="20"
+         install-size="20"
          version="1.0.6"
          unpack="false"/>
 
