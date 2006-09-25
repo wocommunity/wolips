@@ -24,29 +24,29 @@
 
    <plugin
          id="org.objectstyle.wolips.thirdparty.velocity"
-         download-size="0"
-         install-size="0"
+         download-size="464"
+         install-size="464"
          version="1.0.6"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.thirdparty.cayenne"
-         download-size="0"
-         install-size="0"
+         download-size="916"
+         install-size="916"
          version="1.0.6"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.thirdparty.log4j"
-         download-size="0"
-         install-size="0"
+         download-size="316"
+         install-size="316"
          version="1.0.6"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.thirdparty.commonscollections"
-         download-size="0"
-         install-size="0"
+         download-size="480"
+         install-size="480"
          version="1.0.6"
          unpack="false"/>
 
