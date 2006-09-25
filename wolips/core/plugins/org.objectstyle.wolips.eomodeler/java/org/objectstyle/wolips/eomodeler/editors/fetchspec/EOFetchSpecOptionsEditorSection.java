@@ -144,7 +144,7 @@ public class EOFetchSpecOptionsEditorSection extends AbstractPropertySection {
 		myFetchSpecification = (EOFetchSpecification) selectedObject;
 		if (myFetchSpecification != null) {
 			myBindingContext = BindingFactory.createContext();
-			myBindingContext.bind(myFetchLimitText, new Property(myFetchSpecification, EOFetchSpecification.FETCH_LIMIT), new BindSpec(null, null, new RegexStringValidator("^[0-9]*$", "^[0-9]$", "Please enter a number"), null));
+			myBindingContext.bind(myFetchLimitText, new Property(myFetchSpecification, EOFetchSpecification.FETCH_LIMIT), new BindSpec(null, null, new RegexStringValidator("^[0-9]*$", "^[0-9]+$", "Please enter a number"), null));
 			myBindingContext.bind(myPromptsAfterFetchLimitButton, new Property(myFetchSpecification, EOFetchSpecification.PROMPTS_AFTER_FETCH_LIMIT), null);
 			myBindingContext.bind(myDeepButton, new Property(myFetchSpecification, EOFetchSpecification.DEEP), null);
 			myBindingContext.bind(myUsesDistinctButton, new Property(myFetchSpecification, EOFetchSpecification.USES_DISTINCT), null);

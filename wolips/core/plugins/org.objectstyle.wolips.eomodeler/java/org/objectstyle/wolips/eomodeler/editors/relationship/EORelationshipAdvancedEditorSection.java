@@ -140,7 +140,7 @@ public class EORelationshipAdvancedEditorSection extends AbstractPropertySection
 		if (myRelationship != null) {
 			myRelationship.addPropertyChangeListener(EORelationship.TO_MANY, myRelationshipPropertyChangeListener);
 			myBindingContext = BindingFactory.createContext();
-			myBindingContext.bind(myNumberOfToManyFaultsToBatchFetchText, new Property(myRelationship, EORelationship.NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH), new BindSpec(null, null, new RegexStringValidator("^[0-9]*$", "^[0-9]$", "Please enter a number"), null));
+			myBindingContext.bind(myNumberOfToManyFaultsToBatchFetchText, new Property(myRelationship, EORelationship.NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH), new BindSpec(null, null, new RegexStringValidator("^[0-9]*$", "^[0-9]+$", "Please enter a number"), null));
 			myBindingContext.bind(myOwnsDestinationButton, new Property(myRelationship, EORelationship.OWNS_DESTINATION), null);
 			myBindingContext.bind(myPropagatesPrimaryKeyButton, new Property(myRelationship, EORelationship.PROPAGATES_PRIMARY_KEY), null);
 			myBindingContext.bind(myClientClassPropertyButton, new Property(myRelationship, EORelationship.CLIENT_CLASS_PROPERTY), null);
