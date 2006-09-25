@@ -21,3 +21,4 @@ Export-Package: org.objectstyle.wolips.thirdparty.commonscollections,
  org.apache.commons.collections.bidimap,
  org.apache.commons.collections.bag,
  org.apache.commons.collections
+Bundle-ClassPath: .,lib/commons-collections-3.1.jar
