@@ -75,7 +75,8 @@
       <import plugin="org.objectstyle.wolips.baseforuiplugins" version="1.0.6" match="perfect"/>
       <import plugin="org.eclipse.jdt.launching"/>
       <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="com.jprofiler.integrations.eclipse"/>
+      <!-- The jprofiler plugin has no feature so we can't inlcude it here -->
+      <!-- import plugin="com.jprofiler.integrations.eclipse"/ -->
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
    </requires>
