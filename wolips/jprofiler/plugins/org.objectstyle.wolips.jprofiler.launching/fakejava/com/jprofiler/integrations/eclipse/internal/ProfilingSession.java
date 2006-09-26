@@ -11,9 +11,14 @@ public class ProfilingSession {
     public static ProfilingSession createProfilingSession(ILaunchConfigurationDelegate delegate, ILaunchConfiguration configuration) throws CoreException {
     	return null;
     }
-public Map getModifiedAttributesMap(Map map) {
+    
+    public Map getModifiedAttributesMap(Map map) {
     	return null;
     }
+
+	public boolean sendProfilingRequest() {
+		return false;
+	}
 
 
 }
