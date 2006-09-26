@@ -38,6 +38,7 @@
 		<ant dir="goodies" target="all" />
 		<ant dir="maven" target="all" />
 		<ant dir="tptp" target="all" />
+		<ant dir="jprofiler" target="all" />
 	</target>
 
 	<!-- ========================================== -->
@@ -58,6 +59,7 @@
 		<ant dir="goodies" target="dist" />
 		<ant dir="maven" target="dist" />
 		<ant dir="tptp" target="dist" />
+		<ant dir="jprofiler" target="dist" />
 		<copy file="update/local/site.xml" todir="../${build.output.dist.dir}" overwrite="true" />
 		<replace file="../${build.output.dist.dir}/site.xml" token="${build.version.to.replace}" value="${build.version}" />
 	</target>

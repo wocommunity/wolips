@@ -21,6 +21,11 @@
 			</fileset>
 			<pathelement path="../../../../${build.output.java.dir}" />
 		</path>
+		<ant dir="." antfile="../../../../${project.buildscripts.dir}/plugin-project.xml" target="fakejava">
+			<property name="param.plugin.dir" value="." />
+			<property name="param.java.dest.dir" value="../../../../${build.output.java.dir}" />
+			<reference refid="classpath" torefid="classpath" />
+		</ant>
 		<ant dir="." antfile="../../../../${project.buildscripts.dir}/plugin-project.xml" target="java">
 			<property name="param.plugin.dir" value="." />
 			<property name="param.java.dest.dir" value="../../../../${build.output.java.dir}" />
