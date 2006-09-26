@@ -1650,7 +1650,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 		}
 
 		EOEntity parent = getParent();
-		if (parent != null && !BooleanUtils.isTrue(parent.isAbstractEntity()) && getRestrictingQualifier() == null) {
+		if (parent != null && !BooleanUtils.isTrue(parent.isAbstractEntity()) && getRestrictingQualifier() == null && ComparisonUtils.equals(parent.getExternalName(), getExternalName())) {
 			_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + " is a subclass of " + getParent().getName() + " but does not have a restricting qualifier.", false));
 		}
 
