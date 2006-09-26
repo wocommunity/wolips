@@ -21,6 +21,9 @@
    <feature url="features/org.objectstyle.wolips.thirdparty.feature_1.0.6.jar" id="org.objectstyle.wolips.thirdparty.feature" version="1.0.6">
       <category name="Standard Install"/>
    </feature>
+   <feature url="features/org.objectstyle.wolips.jprofiler.feature_1.0.6.jar" id="org.objectstyle.wolips.jprofiler.feature" version="1.0.6">
+      <category name="Profiling Support"/>
+   </feature>
    <category-def name="Standard Install" label="Standard Install">
       <description>
          WOLips supports the development of WebObjects Applications and Frameworks.
