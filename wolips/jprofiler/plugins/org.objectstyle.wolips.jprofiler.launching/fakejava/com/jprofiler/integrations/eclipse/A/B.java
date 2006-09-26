@@ -1,4 +1,4 @@
-package com.jprofiler.integrations.eclipse.internal;
+package com.jprofiler.integrations.eclipse.A;
 
 import java.util.Map;
 
