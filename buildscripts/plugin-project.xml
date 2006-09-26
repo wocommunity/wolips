@@ -28,6 +28,28 @@
 	</target>
 
 	<!-- ============================================= -->
+	<!-- Compiles fake Java classes                         -->
+	<!-- Required parameters                           -->
+	<!-- param.plugin.dir the plugin directory         -->
+	<!-- param.java.dest.dir the javac output directory-->
+	<!-- classpath the classpath refid                 -->
+	<!-- ============================================= -->
+	<target name="fakejava">
+		<path id="full.classpath">
+			<path refid="classpath" />
+			<fileset dir="${eclipse.home}">
+				<include name="**/plugins/**/*.jar" />
+				<exclude name="**/org.objectstyle.*/**" />
+				<exclude name="**/org.eclipse.core.runtime/**" />
+			</fileset>
+		</path>
+
+		<javac srcdir="${param.plugin.dir}/fakejava" destdir="${param.java.dest.dir}" deprecation="${compile.deprecation}" debug="${compile.debug}" optimize="${compile.optimize}" source="${compile.source}" target="${compile.target}">
+			<classpath refid="full.classpath" />
+		</javac>
+	</target>
+
+	<!-- ============================================= -->
 	<!-- Copies the resources                          -->
 	<!-- Required parameters                           -->
 	<!-- param.plugin.dir the plugin directory         -->
