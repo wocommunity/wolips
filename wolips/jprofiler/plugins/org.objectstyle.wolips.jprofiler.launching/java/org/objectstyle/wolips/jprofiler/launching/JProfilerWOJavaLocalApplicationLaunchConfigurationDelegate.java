@@ -54,7 +54,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchConfigurationDelegate;
 
-import com.jprofiler.integrations.eclipse.internal.ProfilingSession;
+import com.jprofiler.integrations.eclipse.A.B;
 
 /**
  * Launches a local VM.
@@ -64,23 +64,23 @@ public class JProfilerWOJavaLocalApplicationLaunchConfigurationDelegate extends
 
 	public final static String JProfilerWOJavaLocalApplicationID = "org.objectstyle.wolips.jprofiler.launching.JProfilerWOJavaLocalApplicationLaunchConfigurationDelegate";
 
-	private ProfilingSession profilingSession;
+	private B profilingSession;
 
 	public void launch(ILaunchConfiguration configuration, String mode,
 			ILaunch launch, IProgressMonitor monitor) throws CoreException {
-		profilingSession = ProfilingSession.createProfilingSession(this,
+		profilingSession = B.A(this,
 				configuration);
-		if (!profilingSession.sendProfilingRequest()) {
+		if (!profilingSession.H()) {
 			return;
 		}
 		super.launch(profilingSession
-				.getModifiedLaunchConfiguration(configuration),
+				.C(configuration),
 				ILaunchManager.RUN_MODE, launch, monitor);
 	}
 
 	public Map getVMSpecificAttributesMap(ILaunchConfiguration configuration)
 			throws CoreException {
-		return profilingSession.getModifiedAttributesMap(super
+		return profilingSession.A(super
 				.getVMSpecificAttributesMap(configuration));
 	}
 
