@@ -73,11 +73,11 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.sourcelookup.ISourceLookupDirector;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate;
 import org.eclipse.jdt.launching.ExecutionArguments;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMRunner;
+import org.eclipse.jdt.launching.JavaLaunchDelegate;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
 import org.eclipse.swt.widgets.Display;
@@ -94,7 +94,7 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 /**
  * @author ulrich Launches a local VM.
  */
-public class WOJavaLocalApplicationLaunchConfigurationDelegate extends AbstractJavaLaunchConfigurationDelegate {
+public class WOJavaLocalApplicationLaunchConfigurationDelegate extends JavaLaunchDelegate {
 	/**
 	 * Comment for <code>WOJavaLocalApplicationID</code>
 	 */
@@ -170,79 +170,79 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends AbstractJ
 		Display.getDefault().asyncExec(runnable);
 	}
 
-	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor) throws CoreException {
-
-		if (monitor == null) {
-			monitor = new NullProgressMonitor();
-		}
-		monitor.beginTask(LaunchingMessages.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.Launching..._1"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
-		// check for cancellation
-		if (monitor.isCanceled()) {
-			return;
-		}
-		IVMInstall vm = verifyVMInstall(configuration);
-
-		File workingDir = verifyWorkingDirectory(configuration);
-		String workingDirName = null;
-		if (workingDir != null) {
-			workingDirName = workingDir.getAbsolutePath();
-		}
-		// Program & VM args
-		String pgmArgs = getProgramArguments(configuration);
-		String vmArgs = getVMArguments(configuration, launch);
-		StringBuffer vmArgsBuffer = new StringBuffer(vmArgs);
-
-		ExecutionArguments execArgs = new ExecutionArguments(vmArgsBuffer.toString(), pgmArgs);
-
-		// VM-specific attributes
-		Map vmAttributesMap = getVMSpecificAttributesMap(configuration);
-		// Classpath
-		String[] classpath = getClasspath(configuration);
-
-		String mainTypeName = verifyMainTypeName(configuration);
-
-		// Create VM config
-		VMRunnerConfiguration runConfig = new VMRunnerConfiguration(mainTypeName, classpath);
-		runConfig.setProgramArguments(execArgs.getProgramArgumentsArray());
-		runConfig.setVMArguments(execArgs.getVMArgumentsArray());
-		runConfig.setWorkingDirectory(workingDirName);
-		runConfig.setVMSpecificAttributesMap(vmAttributesMap);
-
-		// Bootpath
-		String[] bootpath = getBootpath(configuration);
-		runConfig.setBootClassPath(bootpath);
-
-		// check for cancellation
-		if (monitor.isCanceled()) {
-			return;
-		}
-
-		// stop in main
-		prepareStopInMain(configuration);
-
-		// Launch the configuration
-		IVMRunner runner = vm.getVMRunner(mode);
-		if (runner == null) {
-			if (mode == ILaunchManager.DEBUG_MODE) {
-				abort(MessageFormat.format(LaunchingMessages.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.JRE_{0}_does_not_support_debug_mode._1"), new String[] { vm.getName() }), null, IJavaLaunchConfigurationConstants.ERR_VM_RUNNER_DOES_NOT_EXIST); //$NON-NLS-1$
-			} else {
-				abort(MessageFormat.format(LaunchingMessages.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.JRE_{0}_does_not_support_run_mode._2"), new String[] { vm.getName() }), null, IJavaLaunchConfigurationConstants.ERR_VM_RUNNER_DOES_NOT_EXIST); //$NON-NLS-1$
-			}
-			return;
-		}
-
-		runner.run(runConfig, launch, monitor);
-
-		// check for cancellation
-		if (monitor.isCanceled()) {
-			return;
-		}
-
-		// set the default source locator if required
-		setDefaultSourceLocator(launch, configuration);
-
-		monitor.done();
-	}
+//	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor) throws CoreException {
+//
+//		if (monitor == null) {
+//			monitor = new NullProgressMonitor();
+//		}
+//		monitor.beginTask(LaunchingMessages.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.Launching..._1"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+//		// check for cancellation
+//		if (monitor.isCanceled()) {
+//			return;
+//		}
+//		IVMInstall vm = verifyVMInstall(configuration);
+//
+//		File workingDir = verifyWorkingDirectory(configuration);
+//		String workingDirName = null;
+//		if (workingDir != null) {
+//			workingDirName = workingDir.getAbsolutePath();
+//		}
+//		// Program & VM args
+//		String pgmArgs = getProgramArguments(configuration);
+//		String vmArgs = getVMArguments(configuration, launch);
+//		StringBuffer vmArgsBuffer = new StringBuffer(vmArgs);
+//
+//		ExecutionArguments execArgs = new ExecutionArguments(vmArgsBuffer.toString(), pgmArgs);
+//
+//		// VM-specific attributes
+//		Map vmAttributesMap = getVMSpecificAttributesMap(configuration);
+//		// Classpath
+//		String[] classpath = getClasspath(configuration);
+//
+//		String mainTypeName = verifyMainTypeName(configuration);
+//
+//		// Create VM config
+//		VMRunnerConfiguration runConfig = new VMRunnerConfiguration(mainTypeName, classpath);
+//		runConfig.setProgramArguments(execArgs.getProgramArgumentsArray());
+//		runConfig.setVMArguments(execArgs.getVMArgumentsArray());
+//		runConfig.setWorkingDirectory(workingDirName);
+//		runConfig.setVMSpecificAttributesMap(vmAttributesMap);
+//
+//		// Bootpath
+//		String[] bootpath = getBootpath(configuration);
+//		runConfig.setBootClassPath(bootpath);
+//
+//		// check for cancellation
+//		if (monitor.isCanceled()) {
+//			return;
+//		}
+//
+//		// stop in main
+//		prepareStopInMain(configuration);
+//
+//		// Launch the configuration
+//		IVMRunner runner = vm.getVMRunner(mode);
+//		if (runner == null) {
+//			if (mode == ILaunchManager.DEBUG_MODE) {
+//				abort(MessageFormat.format(LaunchingMessages.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.JRE_{0}_does_not_support_debug_mode._1"), new String[] { vm.getName() }), null, IJavaLaunchConfigurationConstants.ERR_VM_RUNNER_DOES_NOT_EXIST); //$NON-NLS-1$
+//			} else {
+//				abort(MessageFormat.format(LaunchingMessages.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.JRE_{0}_does_not_support_run_mode._2"), new String[] { vm.getName() }), null, IJavaLaunchConfigurationConstants.ERR_VM_RUNNER_DOES_NOT_EXIST); //$NON-NLS-1$
+//			}
+//			return;
+//		}
+//
+//		runner.run(runConfig, launch, monitor);
+//
+//		// check for cancellation
+//		if (monitor.isCanceled()) {
+//			return;
+//		}
+//
+//		// set the default source locator if required
+//		setDefaultSourceLocator(launch, configuration);
+//
+//		monitor.done();
+//	}
 
 	/**
 	 * @see org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate#verifyWorkingDirectory(org.eclipse.debug.core.ILaunchConfiguration)
