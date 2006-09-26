@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WOLips JProfiler Launching Plug-in
+Bundle-SymbolicName: org.objectstyle.wolips.jprofiler.launching; singleton:=true
+Bundle-Version: 1.0.6
+Bundle-Activator: org.objectstyle.wolips.jprofiler.launching.Activator
+Bundle-Vendor: objectstyle.org
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.jdt.debug.ui,
+ org.eclipse.debug.core,
+ org.eclipse.debug.ui,
+ org.objectstyle.wolips.launching,
+ org.eclipse.ui,
+ org.objectstyle.wolips.baseforuiplugins,
+ org.eclipse.jdt.launching,
+ org.eclipse.jdt.core,
+ com.jprofiler.integrations.eclipse,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources
+Eclipse-LazyStart: true
+
