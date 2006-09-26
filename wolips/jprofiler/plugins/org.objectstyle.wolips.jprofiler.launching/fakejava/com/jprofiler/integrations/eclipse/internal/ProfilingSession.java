@@ -20,5 +20,8 @@ public class ProfilingSession {
 		return false;
 	}
 
+	public ILaunchConfiguration getModifiedLaunchConfiguration(ILaunchConfiguration sourceConfiguration) throws CoreException {
+		return null;
+	}
 
 }
