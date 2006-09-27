@@ -200,6 +200,14 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IResourc
 		return;
 	}
 
+	public void close(boolean save) {
+		for (int i = 0; i < componentEditorTabs.length; i++) {
+			if (componentEditorTabs[i] != null) {
+				componentEditorTabs[i].close(save);
+			}
+		}
+	}
+
 	public void doSaveAs() {
 		assert false;
 		return;
@@ -345,6 +353,11 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IResourc
 
 	public void dispose() {
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+		for (int i = 0; i < componentEditorTabs.length; i++) {
+			if (componentEditorTabs[i] != null) {
+				componentEditorTabs[i].dispose();
+			}
+		}
 		super.dispose();
 	}
 

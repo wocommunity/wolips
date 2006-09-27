@@ -87,6 +87,14 @@ public class ApiTab extends ComponentEditorTab {
 		apiEditor.doSave(monitor);
 	}
 
+	public void close(boolean save) {
+		apiEditor.close(save);
+	}
+	
+	public void dispose() {
+		apiEditor.dispose();
+	}
+	
 	public IEditorInput getActiveEditorInput() {
 		return apiInput;
 	}

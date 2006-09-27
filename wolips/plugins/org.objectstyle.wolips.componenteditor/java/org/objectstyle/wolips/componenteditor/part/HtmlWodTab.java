@@ -153,6 +153,16 @@ public class HtmlWodTab extends ComponentEditorTab {
 		}
 	}
 
+	public void close(boolean save) {
+		wodEditor.close(save);
+		structuredTextEditorWO.close(save);
+	}
+	
+	public void dispose() {
+		wodEditor.dispose();
+		structuredTextEditorWO.dispose();
+	}
+
 	public boolean isDirty() {
 		return wodEditor.isDirty() || structuredTextEditorWO.isDirty();
 	}
