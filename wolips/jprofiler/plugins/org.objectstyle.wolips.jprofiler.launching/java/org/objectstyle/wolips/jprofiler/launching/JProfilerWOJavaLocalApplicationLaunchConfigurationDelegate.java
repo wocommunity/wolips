@@ -62,8 +62,8 @@ import com.jprofiler.integrations.eclipse.A.B;
 public class JProfilerWOJavaLocalApplicationLaunchConfigurationDelegate extends
 		WOJavaLocalApplicationLaunchConfigurationDelegate {
 
-	public final static String JProfilerWOJavaLocalApplicationID = "org.objectstyle.wolips.jprofiler.launching.JProfilerWOJavaLocalApplicationLaunchConfigurationDelegate";
-
+	public final static String JProfilerWOJavaLocalApplicationID = "org.objectstyle.wolips.jprofiler.launching.JProfilerWOLocalJavaApplication";
+	
 	private B profilingSession;
 
 	public void launch(ILaunchConfiguration configuration, String mode,
