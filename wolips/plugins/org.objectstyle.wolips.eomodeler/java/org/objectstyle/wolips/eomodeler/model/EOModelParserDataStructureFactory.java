@@ -3,8 +3,6 @@ package org.objectstyle.wolips.eomodeler.model;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
 import org.objectstyle.cayenne.wocompat.parser.ParserDataStructureFactory;
 
