@@ -231,9 +231,9 @@ public class EOFSQLGenerator {
 	}
 
 	protected void createLocalizedAttributes(EOEntity entity) {
-		NSArray attributes = entity.attributes();
-		NSArray classProperties = entity.classProperties();
-		NSArray attributesUsedForLocking = entity.attributesUsedForLocking();
+		NSArray attributes = entity.attributes().immutableClone();
+		NSArray classProperties = entity.classProperties().immutableClone();
+		NSArray attributesUsedForLocking = entity.attributesUsedForLocking().immutableClone();
 		if(attributes == null) attributes = NSArray.EmptyArray;
 		if(classProperties == null) classProperties = NSArray.EmptyArray;
 		if(attributesUsedForLocking == null) attributesUsedForLocking = NSArray.EmptyArray;
@@ -244,7 +244,12 @@ public class EOFSQLGenerator {
 			NSDictionary userInfo = attribute.userInfo();
 			String name = attribute.name();
 			if(userInfo != null) {
-				NSArray languages = (NSArray)userInfo.objectForKey("ERXLanguages");
+				Object l = userInfo.objectForKey("ERXLanguages");
+				if(l != null && !(l instanceof NSArray)) {
+					l = (entity.model().userInfo() != null ? entity.model().userInfo().objectForKey("ERXLanguages") :  null);
+				}
+				
+				NSArray languages = (NSArray)l;
 				if(languages != null && languages.count() > 0) {
 					String columnName = attribute.columnName();
 					for (int i = 0; i < languages.count(); i++) {
@@ -253,15 +258,16 @@ public class EOFSQLGenerator {
 						String newColumnName = columnName + "_" +language;
 
 						EOAttribute newAttribute = new EOAttribute();
-						newAttribute.setPrototype(attribute.prototype());
 						newAttribute.setName(newName);
+						entity.addAttribute(newAttribute);
+
+						newAttribute.setPrototype(attribute.prototype());
 						newAttribute.setColumnName(newColumnName);
 						newAttribute.setAllowsNull(attribute.allowsNull());
 						newAttribute.setClassName(attribute.className());
 						newAttribute.setExternalType(attribute.externalType());
 						newAttribute.setWidth(attribute.width());
-
-						entity.addAttribute(newAttribute);
+						newAttribute.setUserInfo(attribute.userInfo());
 
 						if(classProperties.containsObject(attribute)) {
 							mutableClassProperties.addObject(newAttribute);
