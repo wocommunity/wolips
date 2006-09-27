@@ -12,10 +12,16 @@
 	<property file="build.properties" />
 	<property file="${user.home}${file.separator}build.properties" />
 	<property file="${user.home}${file.separator}Library${file.separator}wobuild.properties" />
-	<property file="default.properties" />
+	<loadproperties srcfile="default.properties">
+		<filterchain>
+			<tokenfilter>
+				<replacestring from="$Revision: " to="" />
+				<replacestring from=" $" to="" />
+			</tokenfilter>
+		</filterchain>
+	</loadproperties>
 	<property file="${project.lib.dir}/lib.properties" />
 	<property name="build.version.to.replace" value="1.0.6" />
-
 	<!-- ========================================== -->
 	<!-- Print help.                                -->
 	<!-- ========================================== -->
@@ -38,17 +44,9 @@
 	</target>
 
 	<!-- ========================================== -->
-	<!-- Load version provided by repository.                            -->
-	<!-- ========================================== -->
-	<target name="load.version.file">
-		<xmlproperty file=".svn/entries" />
-		<property name="build.version" value="${buildprefix.version}${wc-entries.entry(revision)}" />
-	</target>
-
-	<!-- ========================================== -->
 	<!-- Print environment.                         -->
 	<!-- ========================================== -->
-	<target name="print.environment" depends="load.version.file">
+	<target name="print.environment">
 		<echo>
         ****************************************
         * java.home = ${java.home}
