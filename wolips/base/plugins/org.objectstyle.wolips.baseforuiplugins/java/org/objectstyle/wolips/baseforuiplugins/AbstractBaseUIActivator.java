@@ -184,4 +184,8 @@ public abstract class AbstractBaseUIActivator extends AbstractUIPlugin {
 		}
 	}
 
+	public void publicSaveDialogSettings() {
+		saveDialogSettings();
+	}
+
 }
