@@ -727,6 +727,9 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
 			if (!StringUtils.isLowercaseFirstLetter(name)) {
 				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), "Attribute names should not be capitalized, but " + getFullyQualifiedName() + " is.", true));
 			}
+			if (name.equals("entityName")) {
+				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), "Attribute " + getFullyQualifiedName() + " is named 'entityName', which is a method in EOEnterpriseObject.", true));
+			}
 		}
 		if (!myEntity.isPrototype()) {
 			if (!isFlattened()) {
