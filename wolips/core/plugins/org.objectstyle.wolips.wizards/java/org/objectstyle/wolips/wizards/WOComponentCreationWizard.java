@@ -65,7 +65,7 @@ import org.eclipse.ui.IWorkbench;
  * @author uli
  */
 public class WOComponentCreationWizard extends Wizard implements INewWizard {
-
+	
 	public WOComponentCreationWizard() {
 		super();
 	}
@@ -77,6 +77,7 @@ public class WOComponentCreationWizard extends Wizard implements INewWizard {
 	}
 
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
+		this.setDialogSettings(WizardsPlugin.getDefault().getDialogSettings());
 		mainPage = new WOComponentCreationPage(selection);
 		setWindowTitle(Messages.getString("WOComponentCreationWizard.title"));
 		setDefaultPageImageDescriptor(WizardsPlugin.WOCOMPONENT_WIZARD_BANNER());
@@ -85,8 +86,9 @@ public class WOComponentCreationWizard extends Wizard implements INewWizard {
 	public boolean performFinish() {
 		boolean returnValue = mainPage.createComponent();
 		if (returnValue) {
-			WizardsPlugin.selectAndReveal(mainPage.getResourceToReveal());
+			WizardsPlugin.selectAndReveal(mainPage.getResourcesToReveal());
 		}
+		WizardsPlugin.getDefault().publicSaveDialogSettings();
 		return returnValue;
 	}
 }
