@@ -89,6 +89,10 @@ public abstract class ComponentEditorTab extends Composite {
 
 	public abstract void doSave(IProgressMonitor monitor);
 
+	public abstract void close(boolean save);
+	
+	public abstract void dispose();
+
 	public void editorSelected() {
 		if (this.getActiveEmbeddedEditor() instanceof IEmbeddedEditorSelected) {
 			{

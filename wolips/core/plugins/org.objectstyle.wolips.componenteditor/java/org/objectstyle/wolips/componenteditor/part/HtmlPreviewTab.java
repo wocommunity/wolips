@@ -81,6 +81,15 @@ public class HtmlPreviewTab extends ComponentEditorTab {
 		// do nothing
 	}
 
+	public void close(boolean save) {
+		// do nothing
+	}
+	
+	public void dispose() {
+		htmlPreviewEditor.dispose();
+	}
+	
+
 	public IEditorInput getActiveEditorInput() {
 		return htmlInput;
 	}
