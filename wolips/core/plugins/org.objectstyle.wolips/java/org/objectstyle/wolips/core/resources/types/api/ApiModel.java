@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.core.resources.types.api;
 
 import java.io.File;
+import java.io.Reader;
 import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -69,35 +70,45 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 
 public class ApiModel {
 
 	private Document document;
 
 	private URL url;
+	
+	private Reader reader;
 
 	private File file;
 
 	private boolean isDirty = false;
 
 	public ApiModel(File file) throws ApiModelException {
-		super();
 		this.file = file;
 		this.parse();
 	}
 
 	public ApiModel(URL url) throws ApiModelException {
-		super();
 		this.url = url;
 		this.parse();
 	}
 
+	public ApiModel(Reader reader) throws ApiModelException {
+		this.reader = reader;
+		this.parse();
+	}
+	
 	public String getLocation() {
 		String location;
 		if (this.url != null) {
 			location = this.url.toExternalForm();
-		} else {
+		}
+		else if (this.file != null) {
 			location = this.file.getAbsolutePath();
+		}
+		else {
+			location = null;
 		}
 		return location;
 	}
@@ -107,8 +118,12 @@ public class ApiModel {
 			DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			if (this.url != null) {
 				this.document = documentBuilder.parse(this.url.toExternalForm());
-			} else {
+			}
+			else if (this.file != null) {
 				this.document = documentBuilder.parse(this.file);
+			}
+			else {
+				this.document = documentBuilder.parse(new InputSource(this.reader));
 			}
 		} catch (Throwable e) {
 			throw new ApiModelException("Failed to parse API file " + getLocation() + ".", e);
@@ -132,12 +147,13 @@ public class ApiModel {
 		if (file == null) {
 			throw new ApiModelException("You can not saveChanges to an ApiModel that is not backed by a file.");
 		}
+		Result result = new StreamResult(file);
+		saveChanges(result);
+	}
 
+	public void saveChanges(Result result) throws ApiModelException {
 		// Prepare the DOM document for writing
 		Source source = new DOMSource(this.document);
-
-		// Prepare the output file
-		Result result = new StreamResult(file);
 
 		// Write the DOM document to the file
 		try {
