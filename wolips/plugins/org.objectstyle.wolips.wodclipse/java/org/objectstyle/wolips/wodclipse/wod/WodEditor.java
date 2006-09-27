@@ -56,6 +56,7 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
@@ -83,15 +84,18 @@ import org.objectstyle.wolips.wodclipse.wod.parser.WodScanner;
  * @author uli
  */
 public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobjectTagListener, IWodDocumentProvider {
-	private WodContentOutlinePage myContentOutlinePage;
+	private WodContentOutlinePage _contentOutlinePage;
 
-	private IEditorInput myInput;
+	private IEditorInput _input;
 
-	private LocalizedComponentsLocateResult myComponentsLocateResults;
+	private LocalizedComponentsLocateResult _componentsLocateResults;
 
-	private EditorInteraction editorInteraction;
+	private EditorInteraction _editorInteraction;
+	
+	private Throttle _wodOutlineUpdateThrottle;
 
 	public WodEditor() {
+		_wodOutlineUpdateThrottle = new Throttle(1000, new WodOutlineUpdater());
 		setSourceViewerConfiguration(new WodSourceViewerConfiguration(this));
 	}
 
@@ -99,8 +103,8 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 		setKeyBindingScopes(new String[] { "org.objectstyle.wolips.wodclipse.wodEditorScope" });
 	}
 
-	protected ISourceViewer createSourceViewer(Composite _parent, IVerticalRuler _verticalRuler, int _styles) {
-		return super.createSourceViewer(_parent, _verticalRuler, _styles);
+	protected ISourceViewer createSourceViewer(Composite parent, IVerticalRuler verticalRuler, int styles) {
+		return super.createSourceViewer(parent, verticalRuler, styles);
 	}
 
 	protected void createActions() {
@@ -131,46 +135,66 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 
 	public Object getAdapter(Class adapter) {
 		if (IContentOutlinePage.class.equals(adapter)) {
-			if (myContentOutlinePage == null) {
-				myContentOutlinePage = new WodContentOutlinePage(getDocumentProvider(), this);
-				myContentOutlinePage.setInput(myInput);
+			if (_contentOutlinePage == null) {
+				_contentOutlinePage = new WodContentOutlinePage(getDocumentProvider(), this);
+				_contentOutlinePage.setInput(_input);
 			}
-			return myContentOutlinePage;
+			return _contentOutlinePage;
 		}
 		return super.getAdapter(adapter);
 	}
+	
+	protected Throttle getWodOutlineUpdateThrottle() {
+		return _wodOutlineUpdateThrottle;
+	}
 
-	public void init(IEditorSite _site, IEditorInput _input) throws PartInitException {
-		super.init(_site, _input);
-		myInput = _input;
+	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+		super.init(site, input);
+		_wodOutlineUpdateThrottle.stop();
+		_input = input;
 		IDocument document = getDocumentProvider().getDocument(getEditorInput());
 		document.addDocumentListener(new IDocumentListener() {
-
 			public void documentAboutToBeChanged(DocumentEvent event) {
 				// Do nothing
 			}
 
 			public void documentChanged(DocumentEvent event) {
-				IContentOutlinePage contentOutlinePage = (IContentOutlinePage) WodEditor.this.getAdapter(IContentOutlinePage.class);
-				if (contentOutlinePage instanceof WodContentOutlinePage) {
-					WodContentOutlinePage wodContentOutlinePage = (WodContentOutlinePage) contentOutlinePage;
-					wodContentOutlinePage.update();
-				}
+				getWodOutlineUpdateThrottle().ping();
 			}
 		});
+		_wodOutlineUpdateThrottle.start();
+	}
+	
+	public void dispose() {
+		_wodOutlineUpdateThrottle.stop();
+		super.dispose();
+	}
+	
+	protected class WodOutlineUpdater implements Runnable {
+		public void run() {
+			IContentOutlinePage contentOutlinePage = (IContentOutlinePage) WodEditor.this.getAdapter(IContentOutlinePage.class);
+			if (contentOutlinePage instanceof WodContentOutlinePage) {
+				final WodContentOutlinePage wodContentOutlinePage = (WodContentOutlinePage) contentOutlinePage;
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						wodContentOutlinePage.update();
+					}
+				});
+			}
+		}
 	}
 
 	public LocalizedComponentsLocateResult getComponentsLocateResults() throws CoreException, LocateException {
-		if (myComponentsLocateResults == null) {
-			myComponentsLocateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(((IFileEditorInput) myInput).getFile());
+		if (_componentsLocateResults == null) {
+			_componentsLocateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(((IFileEditorInput) _input).getFile());
 		}
-		return myComponentsLocateResults;
+		return _componentsLocateResults;
 	}
 
-	public void initEditorInteraction(EditorInteraction intiEditorInteraction) {
-		this.editorInteraction = intiEditorInteraction;
-		editorInteraction.setWebObjectTagListener(this);
-		editorInteraction.setWodDocumentProvider(this);
+	public void initEditorInteraction(EditorInteraction editorInteraction) {
+		_editorInteraction = editorInteraction;
+		_editorInteraction.setWebObjectTagListener(this);
+		_editorInteraction.setWodDocumentProvider(this);
 	}
 
 	public void webObjectTagSelected(String name) {
@@ -193,7 +217,7 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 	}
 
 	public EditorInteraction getEditorInteraction() {
-		return editorInteraction;
+		return _editorInteraction;
 	}
 
 }
