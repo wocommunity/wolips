@@ -1,6 +1,5 @@
 package org.objectstyle.wolips.eomodeler.actions;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.util.HashMap;
