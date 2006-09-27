@@ -182,6 +182,9 @@ public class EOModelTreeViewUpdater {
 					treeViewer.refresh(true);
 					refreshPropertyChangeListeners();
 				}
+        else if (EOModel.ACTIVE_DATABASE_CONFIG.equals(changedPropertyName)) {
+          treeViewer.refresh(true);
+        }
 			}
 		}
 	}
