@@ -186,7 +186,8 @@ public class WOComponentCreator implements IRunnableWithProgress {
 		try {
 			componentEngine.run(new NullProgressMonitor());
 			this.parentResource.getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);
-			page.setResourceToReveal(componentFolderToReveal.findMember(this.componentName + "." + IWOLipsModel.EXT_JAVA));
+			IResource[] resources = new IResource[] {componentFolderToReveal.findMember(this.componentName + "." + IWOLipsModel.EXT_JAVA), componentFolder.findMember(this.componentName + "." + IWOLipsModel.EXT_WOD)};
+			page.setResourcesToReveal(resources);
 		} catch (Exception e) {
 			WizardsPlugin.getDefault().log(e);
 			throw new InvocationTargetException(e);

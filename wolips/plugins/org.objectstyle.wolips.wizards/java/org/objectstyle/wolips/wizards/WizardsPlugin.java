@@ -133,6 +133,14 @@ public class WizardsPlugin extends AbstractBaseUIActivator {
 		return WOPROJECT_WIZARD_BANNER;
 	}
 
+	public static void selectAndReveal(IResource[] resources) {
+		if (resources != null) {
+			for (int i = 0; i < resources.length; i++) {
+				selectAndReveal(resources[i]);
+			}
+		}
+	}
+
 	public static void selectAndReveal(IResource newResource) {
 		if (newResource != null) {
 			BasicNewResourceWizard.selectAndReveal(newResource, WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow());

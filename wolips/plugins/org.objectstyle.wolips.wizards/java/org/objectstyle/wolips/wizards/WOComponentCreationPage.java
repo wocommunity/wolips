@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002, 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -96,13 +96,19 @@ import org.eclipse.ui.dialogs.ElementListSelectionDialog;
  */
 public class WOComponentCreationPage extends WizardNewWOResourcePage {
 	// widgets
+	private static final String BODY_CHECKBOX_KEY = "WOComponentCreationWizardSection.bodyCheckbox";
+
+	private static final String WOO_CHECKBOX_KEY = "WOComponentCreationWizardSection.wooCheckbox";
+
+	private static final String API_CHECKBOX_KEY = "WOComponentCreationWizardSection.apiCheckbox";
+
 	private Button bodyCheckbox;
 
 	private Button wooCheckbox;
 
 	private Button apiCheckbox;
 
-	private IResource resourceToReveal;
+	private IResource[] resourcesToReveal;
 
 	StringButtonStatusDialogField myPackageDialogField;
 
@@ -126,6 +132,7 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 	public void createControl(Composite parent) {
 		// inherit default container and name specification widgets
 		super.createControl(parent);
+
 		Composite composite = (Composite) getControl();
 		// WorkbenchHelp.setHelp(composite,
 		// IReadmeConstants.CREATION_WIZARD_PAGE_CONTEXT);
@@ -166,15 +173,15 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 		// section generation checkboxes
 		bodyCheckbox = new Button(row, SWT.CHECK);
 		bodyCheckbox.setText(Messages.getString("WOComponentCreationPage.creationOptions.bodyTag"));
-		bodyCheckbox.setSelection(true);
+		bodyCheckbox.setSelection(this.getDialogSettings().getBoolean(BODY_CHECKBOX_KEY));
 		bodyCheckbox.addListener(SWT.Selection, this);
 		wooCheckbox = new Button(row, SWT.CHECK);
 		wooCheckbox.setText(Messages.getString("WOComponentCreationPage.creationOptions.wooFile"));
-		wooCheckbox.setSelection(true);
+		wooCheckbox.setSelection(this.getDialogSettings().getBoolean(WOO_CHECKBOX_KEY));
 		wooCheckbox.addListener(SWT.Selection, this);
 		apiCheckbox = new Button(row, SWT.CHECK);
 		apiCheckbox.setText(Messages.getString("WOComponentCreationPage.creationOptions.apiFile"));
-		apiCheckbox.setSelection(true);
+		apiCheckbox.setSelection(this.getDialogSettings().getBoolean(API_CHECKBOX_KEY));
 		apiCheckbox.addListener(SWT.Selection, this);
 		new Label(composite, SWT.NONE); // vertical spacer
 		setPageComplete(validatePage());
@@ -208,6 +215,9 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 			componentCreator = new WOComponentCreator(subprojectFolder, componentName, packageName, bodyCheckbox.getSelection(), apiCheckbox.getSelection(), wooCheckbox.getSelection(), this);
 			break;
 		}
+		this.getDialogSettings().put(BODY_CHECKBOX_KEY, bodyCheckbox.getSelection());
+		this.getDialogSettings().put(WOO_CHECKBOX_KEY, wooCheckbox.getSelection());
+		this.getDialogSettings().put(API_CHECKBOX_KEY, apiCheckbox.getSelection());
 		IRunnableWithProgress op = new WorkspaceModifyDelegatingOperation(componentCreator);
 		return createResourceOperation(op);
 	}
@@ -219,12 +229,12 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 		return Messages.getString("WOComponentCreationPage.newComponent.label");
 	}
 
-	public IResource getResourceToReveal() {
-		return resourceToReveal;
+	public IResource[] getResourcesToReveal() {
+		return resourcesToReveal;
 	}
 
-	public void setResourceToReveal(IResource resourceToReveal) {
-		this.resourceToReveal = resourceToReveal;
+	public void setResourcesToReveal(IResource[] resources) {
+		this.resourcesToReveal = resources;
 	}
 
 	IPackageFragment choosePackage() {
