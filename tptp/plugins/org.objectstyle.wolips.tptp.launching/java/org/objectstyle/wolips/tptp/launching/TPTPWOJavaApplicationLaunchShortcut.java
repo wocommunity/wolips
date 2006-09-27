@@ -61,17 +61,13 @@ import org.objectstyle.wolips.launching.actions.WOJavaApplicationLaunchShortcut;
 
 /**
  * @author uli
- * 
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates. To enable and disable the creation of type
- * comments go to Window>Preferences>Java>Code Generation.
  */
 public class TPTPWOJavaApplicationLaunchShortcut extends WOJavaApplicationLaunchShortcut {
 
 	/**
 	 * Returns the local java launch config type
 	 */
-	protected ILaunchConfigurationType getJavaLaunchConfigType() {
+	protected ILaunchConfigurationType getConfigurationType() {
 		String type = TPTPWOJavaLocalApplicationLaunchConfigurationDelegate.TPTPWOJavaLocalApplicationID;
 		return getLaunchManager().getLaunchConfigurationType(type);
 	}

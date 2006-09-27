@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002-2005 The ObjectStyle Group
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,6 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.internal.debug.ui.launcher.JavaApplicationLaunchShortcut;
-import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchConfigurationDelegate;
 
 /**
@@ -73,28 +72,16 @@ public class WOJavaApplicationLaunchShortcut extends JavaApplicationLaunchShortc
 	/**
 	 * Returns the local wo java launch config type
 	 */
-	protected ILaunchConfigurationType getJavaLaunchConfigType() {
+	protected ILaunchConfigurationType getConfigurationType() {
 		ILaunchConfigurationType launchConfigurationType = getLaunchManager().getLaunchConfigurationType(WOJavaLocalApplicationLaunchConfigurationDelegate.WOJavaLocalApplicationID);
 		return launchConfigurationType;
 	}
 
 	protected ILaunchConfiguration createConfiguration(IType type) {
-		ILaunchConfiguration config = null;
-		ILaunchConfigurationWorkingCopy wc = null;
+		ILaunchConfiguration config = super.createConfiguration(type);
 		try {
-			ILaunchConfigurationType configType = getJavaLaunchConfigType();
-			String elementName = type.getElementName();
-			String projectName = type.getJavaProject().getProject().getName();
-			String launchName = projectName + ": " + elementName;
-			wc = configType.newInstance(null, getLaunchManager().generateUniqueLaunchConfigurationNameFrom(launchName));
-		} catch (CoreException exception) {
-			reportErorr(exception);
-			return null;
-		}
-		wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, type.getFullyQualifiedName());
-		wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, type.getJavaProject().getElementName());
-		WOJavaLocalApplicationLaunchConfigurationDelegate.initConfiguration(wc);
-		try {
+			ILaunchConfigurationWorkingCopy wc = config.getWorkingCopy();
+			WOJavaLocalApplicationLaunchConfigurationDelegate.initConfiguration(wc);
 			config = wc.doSave();
 		} catch (CoreException exception) {
 			reportErorr(exception);
