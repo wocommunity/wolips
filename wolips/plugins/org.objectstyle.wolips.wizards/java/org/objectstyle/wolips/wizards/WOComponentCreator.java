@@ -173,7 +173,7 @@ public class WOComponentCreator implements IRunnableWithProgress {
 			throw new InvocationTargetException(e);
 		}
 		// TODO: select template in the user interface
-		componentEngine.setSelectedTemplateName(componentEngine.names()[0]);
+//		componentEngine.setSelectedTemplateName(componentEngine.names()[0]);
 		componentEngine.setProjectName(projectName);
 		componentEngine.setCreateBodyTag(this.createBodyTag);
 		componentEngine.setComponentName(this.componentName);
