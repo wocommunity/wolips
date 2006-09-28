@@ -55,8 +55,17 @@
  */
 package org.objectstyle.woproject.maven2;
 
+import java.io.File;
+import java.util.Iterator;
+
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.project.MavenProject;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.types.FileSet;
+import org.objectstyle.woproject.ant.JApplication;
 
 /**
  * @goal japplication
@@ -81,9 +90,121 @@ public class JApplicationMojo extends DependencyMojo {
 	 */
 	protected String mainClass;
 
+	/**
+	 * A family of operating systems. Currently supported values are "mac",
+	 * "windows" and "java".
+	 * 
+	 * @parameter expression="${os}"
+	 */
+	protected String os;
+
+	/**
+	 * An optional string identifying the application human-readable name. If
+	 * not specified, "name" is used.
+	 * 
+	 * @parameter expression="${longName}"
+	 */
+	protected String longName;
+
+	/**
+	 * A destination directory where the application launcher should be
+	 * installed.
+	 * 
+	 * @parameter expression="${destDir}"
+	 *            default-value="${project.build.directory}
+	 */
+	protected File destDir;
+
+	/**
+	 * Platform-specific icon file (usually "*.ico" on Windows and "*.icns" on
+	 * Mac)
+	 * 
+	 * @parameter expression="${icon}"
+	 */
+	protected File icon;
+
+	/**
+	 * Minimal version of the Java Virtual machine required.
+	 * 
+	 * @parameter expression="${jvm}"
+	 */
+	protected String jvm;
+
+	/**
+	 * Optional parameters to pass to the JVM, such as memory settings, etc.
+	 * 
+	 * @parameter expression="${jvmOptions}"
+	 */
+	protected String jvmOptions;
+
+	/**
+	 * Location of NSIS installation. Ignored except on Windows.
+	 * 
+	 * @parameter expression="${nsisHome}"
+	 */
+	protected String nsisHome;
+
+	/**
+	 * Product version string
+	 * 
+	 * @parameter expression="${version}"
+	 */
+	protected String version;
+
+	/**
+	 * Contains the full list of projects in the reactor.
+	 * 
+	 * @parameter expression="${project}"
+	 * @required
+	 * @readonly
+	 */
+	protected MavenProject project;
+
 	public void execute() throws MojoExecutionException, MojoFailureException {
+
 		getLog().debug(
 				"JApplication [name: " + name + "; mainClass:" + mainClass
-						+ "]");
+						+ "; destDir:" + destDir.getAbsolutePath() + "]");
+
+		JApplication task = new JApplication();
+
+		// TODO, andrus, 9/28/2006 - hook up maven loggers to the Ant project.
+		task.setProject(new Project());
+
+		task.setName(name);
+		task.setMainClass(mainClass);
+		task.setDestDir(destDir);
+		task.setOs(os);
+		task.setLongName(longName);
+		task.setIcon(icon);
+		task.setJvm(jvm);
+		task.setJvmOptions(jvmOptions);
+		task.setNsisHome(nsisHome);
+		task.setVersion(version);
+
+		Iterator it = getDependencies().iterator();
+		while (it.hasNext()) {
+			Artifact a = (Artifact) it.next();
+			addArtifact(task, a);
+		}
+
+		// add main project artifact
+		addArtifact(task, project.getArtifact());
+
+		try {
+			task.execute();
+		} catch (BuildException e) {
+			throw new MojoExecutionException("Failed to build application "
+					+ name, e);
+		}
+	}
+
+	protected void addArtifact(JApplication task, Artifact artifact) {
+
+		getLog().debug("packaging artifact '" + artifact.getId() + "'...");
+
+		FileSet fs = new FileSet();
+		fs.setFile(artifact.getFile());
+		task.addLib(fs);
 	}
 }
