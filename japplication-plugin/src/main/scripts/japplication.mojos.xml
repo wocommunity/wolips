@@ -1,0 +1,12 @@
+<pluginMetadata>
+  <mojos>
+    <mojo>
+      <goal>japplication</goal>
+        
+      <call>japplication</call>
+      <description>
+        Assembles native Java launchers
+      </description>
+    </mojo>
+  </mojos>
+</pluginMetadata>
