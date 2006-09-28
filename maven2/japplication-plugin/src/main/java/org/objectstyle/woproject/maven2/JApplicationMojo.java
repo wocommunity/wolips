@@ -182,6 +182,10 @@ public class JApplicationMojo extends DependencyMojo {
 		task.setNsisHome(nsisHome);
 		task.setVersion(version);
 
+		// TODO: andrus, 9/28/2006 - we are bundling all external dependencies
+		// and a current artifact. This will likely break if one of the
+		// dependencies is in the reactor... need to test (and fix) this case.
+
 		Iterator it = getDependencies().iterator();
 		while (it.hasNext()) {
 			Artifact a = (Artifact) it.next();
