@@ -1,12 +1,44 @@
 <pluginMetadata>
-  <mojos>
-    <mojo>
-      <goal>japplication</goal>
-        
-      <call>japplication</call>
-      <description>
-        Assembles native Java launchers
-      </description>
-    </mojo>
-  </mojos>
+	<mojos>
+		<mojo>
+			<goal>japplication</goal>
+			<call>japplication</call>
+			<description>Assembles native Java launchers</description>
+			<parameters>
+
+				<parameter>
+					<name>name</name>
+					<property>name</property>
+					<required>true</required>
+					<expression>${name}</expression>
+					<type>java.lang.String</type>
+					<description>
+						The name of the application without OS-specific extension.
+					</description>
+				</parameter>
+
+				<parameter>
+					<name>mainClass</name>
+					<property>mainClass</property>
+					<required>true</required>
+					<expression>${mainClass}</expression>
+					<type>java.lang.String</type>
+					<description>Main Java class.</description>
+				</parameter>
+
+				<parameter>
+					<name>os</name>
+					<property>os</property>
+					<required>false</required>
+					<defaultValue>java</defaultValue>
+					<expression>${os}</expression>
+					<type>java.lang.String</type>
+					<description>
+						A family of operating systems. Currently supported values are "mac",
+						"windows" and "java".
+					</description>
+				</parameter>
+			</parameters>
+		</mojo>
+	</mojos>
 </pluginMetadata>
