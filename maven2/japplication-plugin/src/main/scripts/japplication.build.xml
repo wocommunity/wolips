@@ -1,0 +1,5 @@
+<project>
+  <target name="japplication">
+    <echo>Hello, World</echo>
+  </target>
+</project>
