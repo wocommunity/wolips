@@ -78,7 +78,6 @@ public class JApplicationMojo extends DependencyMojo {
 	 * The name of the application without OS-specific extension
 	 * 
 	 * @parameter expression="${name}"
-	 * @required
 	 */
 	protected String name;
 
@@ -145,13 +144,6 @@ public class JApplicationMojo extends DependencyMojo {
 	protected String nsisHome;
 
 	/**
-	 * Product version string
-	 * 
-	 * @parameter expression="${version}"
-	 */
-	protected String version;
-
-	/**
 	 * Contains the full list of projects in the reactor.
 	 * 
 	 * @parameter expression="${project}"
@@ -171,7 +163,16 @@ public class JApplicationMojo extends DependencyMojo {
 		// TODO, andrus, 9/28/2006 - hook up maven loggers to the Ant project.
 		task.setProject(new Project());
 
-		task.setName(name);
+		// build name from the artifact if not set
+		if (name == null) {
+			String prefix = project.getArtifact().getArtifactId();
+			String suffix = (os != null) ? os : task.getDefaultOs();
+			name = prefix + "-" + suffix;
+		}
+
+		String fullName = name + "-" + project.getArtifact().getVersion();
+
+		task.setName(fullName);
 		task.setMainClass(mainClass);
 		task.setDestDir(destDir);
 		task.setOs(os);
@@ -180,7 +181,7 @@ public class JApplicationMojo extends DependencyMojo {
 		task.setJvm(jvm);
 		task.setJvmOptions(jvmOptions);
 		task.setNsisHome(nsisHome);
-		task.setVersion(version);
+		task.setVersion(project.getArtifact().getVersion());
 
 		// TODO: andrus, 9/28/2006 - we are bundling all external dependencies
 		// and a current artifact. This will likely break if one of the
