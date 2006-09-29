@@ -64,9 +64,6 @@ import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 
 /**
  * @author ulrich
- * 
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class ComponentEngine extends AbstractEngine {
 	private IPath componentPath;
@@ -221,13 +218,6 @@ public class ComponentEngine extends AbstractEngine {
 	}
 
 	public void run(IProgressMonitor monitor) throws InvocationTargetException {
-		TemplateEngine templateEngine = new TemplateEngine();
-		try {
-			templateEngine.init();
-		} catch (Exception e) {
-			TemplateEnginePlugin.getDefault().getPluginLogger().log(e);
-			throw new InvocationTargetException(e);
-		}
 		if (this.getCreateBodyTag())
 			this.setPropertyForKey(this.getCreateBodyTag() + "", "CreateBodyTag");
 		setDateInContext();
