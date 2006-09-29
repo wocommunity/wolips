@@ -96,6 +96,21 @@ public class JApplication extends Task {
 
 	protected Collection libs = new ArrayList();
 
+	/**
+	 * Returns default operating system for a given platform. If no exact
+	 * platform match is found, java platform is returned.
+	 */
+	public String getDefaultOs() {
+		String vmOS = System.getProperty("os.name").toUpperCase();
+		if (vmOS.startsWith("WINDOWS")) {
+			return WINDOWS_OS;
+		} else if (vmOS.startsWith("MAC")) {
+			return MAC_OS;
+		} else {
+			return JAVA_OS;
+		}
+	}
+
 	public void execute() throws BuildException {
 		validate();
 		initDefaults();
@@ -190,14 +205,7 @@ public class JApplication extends Task {
 		}
 
 		if (os == null) {
-			String vmOS = System.getProperty("os.name").toUpperCase();
-			if (vmOS.startsWith("WINDOWS")) {
-				this.os = WINDOWS_OS;
-			} else if (vmOS.startsWith("MAC")) {
-				this.os = MAC_OS;
-			} else {
-				this.os = JAVA_OS;
-			}
+			os = getDefaultOs();
 		}
 
 		if (nsisHome == null) {
