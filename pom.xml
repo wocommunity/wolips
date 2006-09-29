@@ -17,8 +17,8 @@
 	<url>http://objectstyle.org/woproject/</url>
 
 	<modules>
-		<module>japplication-plugin</module>
-		<module>woproject-plugin</module>
+		<module>maven-japplication-plugin</module>
+		<module>maven-woproject-plugin</module>
 	</modules>
 
 	<issueManagement>
