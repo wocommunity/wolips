@@ -127,26 +127,19 @@ class JApplicationJavaWorker implements JApplicationWorker {
 
 		Jar jar = (Jar) task.createSubtask(Jar.class);
 		jar.setDestFile(fatJar);
+		jar.setManifest(manifestFile);
 
 		Iterator it = unpackedJarDirs.iterator();
 		while (it.hasNext()) {
 
-			// append to the initial file
-			if (fatJar.exists()) {
-				jar.setUpdate(true);
-			}
-
 			File jarDir = (File) it.next();
-			jar.setBasedir(jarDir);
 
-			// add manifest at the end
-			if (!it.hasNext()) {
-				jar.setManifest(manifestFile);
-			}
-
-			jar.execute();
+			FileSet fs = new FileSet();
+			fs.setDir(jarDir);
+			jar.addFileset(fs);
 		}
 
+		jar.execute();
 	}
 
 	void unpackJars() throws BuildException {
