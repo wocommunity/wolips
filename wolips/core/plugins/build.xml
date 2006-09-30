@@ -41,6 +41,7 @@
 		<ant dir="org.objectstyle.wolips.ruleeditor" target="all" />
 		<ant dir="org.objectstyle.wolips.woproject" target="all" />
 		<ant dir="org.objectstyle.wolips.woproject.ant" target="all" />
+		<ant dir="org.objectstyle.wolips.debug" target="all" />
 	</target>
 	<!-- ========================================== -->
 	<!-- Build dist.                                -->
@@ -77,6 +78,7 @@
 		<ant dir="org.objectstyle.wolips.woproject" target="dist" />
 		<ant dir="org.objectstyle.wolips.woproject.ant" target="dist" />
 		<ant dir="org.objectstyle.wolips.builder" target="dist" />
+		<ant dir="org.objectstyle.wolips.debug" target="dist" />
 	</target>
 
 </project>
