@@ -78,6 +78,7 @@ public class JApplicationMojo extends DependencyMojo {
 	 * The name of the application without OS-specific extension
 	 * 
 	 * @parameter expression="${name}"
+	 *            default-value="${project.artifact.artifactId}
 	 */
 	protected String name;
 
@@ -102,6 +103,7 @@ public class JApplicationMojo extends DependencyMojo {
 	 * not specified, "name" is used.
 	 * 
 	 * @parameter expression="${longName}"
+	 *            default-value="${project.artifact.artifactId}-${project.artifact.version}"
 	 */
 	protected String longName;
 
@@ -152,27 +154,32 @@ public class JApplicationMojo extends DependencyMojo {
 	 */
 	protected MavenProject project;
 
+	/**
+	 * @parameter expression="${version}"
+	 *            default-value="${project.artifact.version}
+	 */
+	protected String version;
+
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
-		getLog().debug(
-				"JApplication [name: " + name + "; mainClass:" + mainClass
-						+ "; destDir:" + destDir.getAbsolutePath() + "]");
+		if (getLog().isDebugEnabled()) {
+			getLog().debug("parameter - name: " + name);
+			getLog().debug("parameter - longName: " + longName);
+			getLog().debug("parameter - mainClass:" + mainClass);
+			getLog().debug("parameter - destDir:" + destDir.getAbsolutePath());
+			getLog().debug("parameter - os: " + os);
+			getLog().debug("parameter - icon: " + icon);
+			getLog().debug("parameter - jvm: " + jvm);
+			getLog().debug("parameter - jvmOptions: " + jvmOptions);
+			getLog().debug("parameter - nsisHome: " + nsisHome);
+		}
 
 		JApplication task = new JApplication();
 
 		// TODO, andrus, 9/28/2006 - hook up maven loggers to the Ant project.
 		task.setProject(new Project());
 
-		// build name from the artifact if not set
-		if (name == null) {
-			String prefix = project.getArtifact().getArtifactId();
-			String suffix = (os != null) ? os : task.getDefaultOs();
-			name = prefix + "-" + suffix;
-		}
-
-		String fullName = name + "-" + project.getArtifact().getVersion();
-
-		task.setName(fullName);
+		task.setName(name);
 		task.setMainClass(mainClass);
 		task.setDestDir(destDir);
 		task.setOs(os);
@@ -181,7 +188,7 @@ public class JApplicationMojo extends DependencyMojo {
 		task.setJvm(jvm);
 		task.setJvmOptions(jvmOptions);
 		task.setNsisHome(nsisHome);
-		task.setVersion(project.getArtifact().getVersion());
+		task.setVersion(version);
 
 		// TODO: andrus, 9/28/2006 - we are bundling all external dependencies
 		// and a current artifact. This will likely break if one of the
