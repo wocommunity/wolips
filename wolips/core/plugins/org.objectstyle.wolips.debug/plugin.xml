@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
+
+<!-- =================================================================================== -->
+<!-- Extension: javaLogicalStructures                                                    -->
+<!-- =================================================================================== -->  
+	<extension
+         point="org.eclipse.debug.core.logicalStructureProviders">
+      	<logicalStructureProvider
+            class="org.objectstyle.wolips.debug.logicalstructure.provider.LogicalStructureProvider"
+            modelIdentifier="org.eclipse.jdt.debug"/>
+	</extension>
 </plugin>

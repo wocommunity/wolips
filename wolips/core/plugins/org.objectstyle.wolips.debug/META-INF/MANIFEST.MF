@@ -14,4 +14,8 @@ Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.debug,
  org.objectstyle.wolips.debug.logicalstructure,
  org.objectstyle.wolips.debug.logicalstructure.provider,
- org.objectstyle.wolips.debug.logicalstructure.type
+ org.objectstyle.wolips.debug.logicalstructure.type,
+ org.objectstyle.wolips.debug.logicalstructure.type.directtoweb,
+ org.objectstyle.wolips.debug.logicalstructure.type.eoaccess,
+ org.objectstyle.wolips.debug.logicalstructure.type.eocontrol,
+ org.objectstyle.wolips.debug.logicalstructure.type.foundation
