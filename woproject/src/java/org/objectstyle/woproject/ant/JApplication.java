@@ -72,8 +72,6 @@ public class JApplication extends Task {
 
 	public static final String JAVA_OS = "java";
 
-	public static final String NSIS_HOME_DEFAULT = "C:\\Program Files\\NSIS";
-
 	protected String name;
 
 	protected String mainClass;
@@ -89,8 +87,6 @@ public class JApplication extends Task {
 	protected String jvm;
 
 	protected String jvmOptions;
-
-	protected String nsisHome;
 
 	protected String version;
 
@@ -208,10 +204,6 @@ public class JApplication extends Task {
 			os = getDefaultOs();
 		}
 
-		if (nsisHome == null) {
-			nsisHome = NSIS_HOME_DEFAULT;
-		}
-
 		if (version == null) {
 			version = "0.0";
 		}
@@ -265,10 +257,6 @@ public class JApplication extends Task {
 		this.os = os;
 	}
 
-	public void setNsisHome(String nsisHome) {
-		this.nsisHome = nsisHome;
-	}
-
 	public File getDestDir() {
 		return destDir;
 	}
@@ -295,10 +283,6 @@ public class JApplication extends Task {
 
 	public String getName() {
 		return name;
-	}
-
-	public String getNsisHome() {
-		return nsisHome;
 	}
 
 	public String getOs() {

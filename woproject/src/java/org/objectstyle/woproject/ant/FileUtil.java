@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,83 +55,76 @@
  */
 package org.objectstyle.woproject.ant;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.taskdefs.ExecTask;
 
-class JApplicationWindowsWorker extends JApplicationJavaWorker {
+/**
+ * Provides stream copy utilities.
+ * 
+ * @author andrus
+ */
+class FileUtil {
 
-	static final String EMBEDDED_NSIS_PATH = "japplication/windows/nsis-2.20";
-
-	protected String nsisExe;
-
-	protected File nsiScript;
-
-	protected void executeInternal() throws BuildException {
-		// build fat runnable jar
-		super.executeInternal();
-
-		createNsisScript();
-		initNsis();
-		execNsis();
+	static void ensureParentDirExists(File file) {
+		File parent = file.getParentFile();
+		if (parent != null && !parent.isDirectory() && !parent.mkdirs()) {
+			throw new BuildException("Failed to create directory " + parent.getAbsolutePath());
+		}
 	}
 
-	void execNsis() throws BuildException {
-		ExecTask exec = (ExecTask) task.createSubtask(ExecTask.class);
-		exec.setDir(baseDir);
-		exec.setExecutable(nsisExe);
-		exec.setFailonerror(true);
+	/**
+	 * Performs a binary copy of a ClassLoader resource to a file.
+	 */
+	static void copy(String fromResource, File to) throws BuildException {
 
-		exec.createArg().setLine(nsiScript.getAbsolutePath());
+		int bufferSize = 8 * 1024;
 
-		exec.execute();
-	}
+		ensureParentDirExists(to);
 
-	void initNsis() throws BuildException {
+		InputStream in = FileUtil.class.getClassLoader().getResourceAsStream(fromResource);
 
-		task.log("Extracting embedded NSIS", Project.MSG_DEBUG);
+		if (in == null) {
+			throw new BuildException("Resource not found: " + fromResource);
+		}
 
-		File nsisDir = new File(scratchDir, "nsis");
+		try {
+			in = new BufferedInputStream(in, bufferSize);
 
-		// extract embedded NSIS into the scratch directory
-		extractResource("makensis.exe", nsisDir);
-		extractResource("Stubs/bzip2", nsisDir);
-		extractResource("Stubs/bzip2_solid", nsisDir);
-		extractResource("Stubs/lzma", nsisDir);
-		extractResource("Stubs/lzma_solid", nsisDir);
-		extractResource("Stubs/uninst", nsisDir);
-		extractResource("Stubs/zlib", nsisDir);
-		extractResource("Stubs/zlib_solid", nsisDir);
+			byte[] buffer = new byte[bufferSize];
+			int read;
+			OutputStream out = new BufferedOutputStream(new FileOutputStream(to), bufferSize);
 
-		this.nsisExe = new File(nsisDir, "makensis.exe").getAbsolutePath();
-	}
+			try {
 
-	void createNsisScript() throws BuildException {
+				while ((read = in.read(buffer, 0, bufferSize)) >= 0) {
+					out.write(buffer, 0, read);
+				}
 
-		String targetIcon = task.getIcon() != null && task.getIcon().isFile() ? "Icon \"" + task.getIcon().getAbsolutePath() + "\"" : "";
-		String jvmOptions = task.getJvmOptions() != null ? task.getJvmOptions() : "";
-		String outFile = new File(baseDir, task.getName() + ".exe").getAbsolutePath();
+				out.flush();
 
-		Map tokens = new HashMap();
-		tokens.put("@NAME@", task.getName());
-		tokens.put("@LONG_NAME@", task.getLongName());
-		tokens.put("@MAIN_CLASS@", task.getMainClass());
-		tokens.put("@ICON@", targetIcon);
-		tokens.put("@JVM_OPTIONS@", jvmOptions);
-		tokens.put("@OUT_FILE@", outFile);
+			} finally {
+				try {
+					out.close();
+				} catch (IOException ioex) {
+					// ignore
+				}
+			}
 
-		this.nsiScript = new File(scratchDir, "app.nsi");
-		new TokenFilter(tokens).copy("japplication/windows/app.nsi", nsiScript);
-	}
-
-	void extractResource(String resourceName, File dir) {
-		String path = EMBEDDED_NSIS_PATH + '/' + resourceName;
-
-		String name = ('/' != File.separatorChar) ? resourceName.replace('/', File.separatorChar) : resourceName;
-		FileUtil.copy(path, new File(dir, name));
+		} catch (IOException e) {
+			throw new BuildException("Error copying resource " + fromResource, e);
+		} finally {
+			try {
+				in.close();
+			} catch (IOException ioex) {
+				// ignore
+			}
+		}
 	}
 }
