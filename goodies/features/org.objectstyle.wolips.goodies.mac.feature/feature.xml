@@ -69,11 +69,6 @@
  */
    </license>
 
-   <url>
-      <update label="WOLips" url="http://www.mdimension.com/~wolips/update/"/>
-      <discovery label="WOLips" url="http://www.mdimension.com/~wolips/update/"/>
-   </url>
-
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
