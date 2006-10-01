@@ -139,13 +139,6 @@ public class JApplicationMojo extends DependencyMojo {
 	protected String jvmOptions;
 
 	/**
-	 * Location of NSIS installation. Ignored except on Windows.
-	 * 
-	 * @parameter expression="${nsisHome}"
-	 */
-	protected String nsisHome;
-
-	/**
 	 * Contains the full list of projects in the reactor.
 	 * 
 	 * @parameter expression="${project}"
@@ -171,7 +164,6 @@ public class JApplicationMojo extends DependencyMojo {
 			getLog().debug("parameter - icon: " + icon);
 			getLog().debug("parameter - jvm: " + jvm);
 			getLog().debug("parameter - jvmOptions: " + jvmOptions);
-			getLog().debug("parameter - nsisHome: " + nsisHome);
 		}
 
 		JApplication task = new JApplication();
@@ -187,7 +179,6 @@ public class JApplicationMojo extends DependencyMojo {
 		task.setIcon(icon);
 		task.setJvm(jvm);
 		task.setJvmOptions(jvmOptions);
-		task.setNsisHome(nsisHome);
 		task.setVersion(version);
 
 		// TODO: andrus, 9/28/2006 - we are bundling all external dependencies
