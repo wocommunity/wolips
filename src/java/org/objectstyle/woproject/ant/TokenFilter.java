@@ -102,6 +102,7 @@ class TokenFilter {
 				throw new IOException("Resource not found: " + fromResource);
 			}
 
+			FileUtil.ensureParentDirExists(to);
 			Writer out = new FileWriter(to);
 
 			try {
@@ -124,7 +125,7 @@ class TokenFilter {
 				}
 			}
 		} catch (IOException e) {
-			throw new BuildException("Error copying Info.plist", e);
+			throw new BuildException("Error copying resource " + fromResource, e);
 		}
 	}
 
