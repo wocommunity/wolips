@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 -2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -291,28 +291,20 @@ public class SimpleCharStream {
 		ReInit(dstream, 1, 1, 4096);
 	}
 
-	public SimpleCharStream(java.io.InputStream dstream, int startline, int startcolumn, int buffersize) {
+	public SimpleCharStream(java.io.InputStream dstream, int startline, int startcolumn) {
 		this(new java.io.InputStreamReader(dstream), startline, startcolumn, 4096);
 	}
 
-	public SimpleCharStream(java.io.InputStream dstream, int startline, int startcolumn) {
-		this(dstream, startline, startcolumn, 4096);
-	}
-
 	public SimpleCharStream(java.io.InputStream dstream) {
-		this(dstream, 1, 1, 4096);
-	}
-
-	public void ReInit(java.io.InputStream dstream, int startline, int startcolumn, int buffersize) {
-		ReInit(new java.io.InputStreamReader(dstream), startline, startcolumn, 4096);
+		this(dstream, 1, 1);
 	}
 
 	public void ReInit(java.io.InputStream dstream) {
-		ReInit(dstream, 1, 1, 4096);
+		ReInit(dstream, 1, 1);
 	}
 
 	public void ReInit(java.io.InputStream dstream, int startline, int startcolumn) {
-		ReInit(dstream, startline, startcolumn, 4096);
+		ReInit(dstream, startline, startcolumn);
 	}
 
 	public String GetImage() {
@@ -339,37 +331,4 @@ public class SimpleCharStream {
 		bufcolumn = null;
 	}
 
-	/**
-	 * Method to adjust line and column numbers for the start of a token.
-	 */
-	public void adjustBeginLineColumn(int newLine, int newCol) {
-		int start = tokenBegin;
-		int len;
-		if (bufpos >= tokenBegin) {
-			len = bufpos - tokenBegin + inBuf + 1;
-		} else {
-			len = bufsize - tokenBegin + bufpos + 1 + inBuf;
-		}
-		int i = 0, j = 0, k = 0;
-		int nextColDiff = 0, columnDiff = 0;
-		while (i < len && bufline[j = start % bufsize] == bufline[k = ++start % bufsize]) {
-			bufline[j] = newLine;
-			nextColDiff = columnDiff + bufcolumn[k] - bufcolumn[j];
-			bufcolumn[j] = newCol + columnDiff;
-			columnDiff = nextColDiff;
-			i++;
-		}
-		if (i < len) {
-			bufline[j] = newLine++;
-			bufcolumn[j] = newCol + columnDiff;
-			while (i++ < len) {
-				if (bufline[j = start % bufsize] != bufline[++start % bufsize])
-					bufline[j] = newLine++;
-				else
-					bufline[j] = newLine;
-			}
-		}
-		line = bufline[j];
-		column = bufcolumn[j];
-	}
 }
