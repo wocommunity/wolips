@@ -31,7 +31,7 @@
    </category-def>
    <category-def name="Profiling Support" label="Profiling Support">
       <description>
-         Profiling support for WOLips. Requires jMechanic.
+         Profiling support for WOLips.
       </description>
    </category-def>
    <category-def name="Maven Support" label="Maven Support">
