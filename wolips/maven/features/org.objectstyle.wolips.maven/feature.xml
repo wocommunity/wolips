@@ -67,8 +67,7 @@
    </license>
 
    <url>
-      <url label="WOLips nightly" url="http://www.mdimension.com/~wolips/update/"/>
-      <url label="WOLips" url="http://www.mdimension.com/~wolips/stable/"/>
+      <update label="WOLips" url="http://www.mdimension.com/~wolips/stable/"/>
    </url>
 
    <requires>
