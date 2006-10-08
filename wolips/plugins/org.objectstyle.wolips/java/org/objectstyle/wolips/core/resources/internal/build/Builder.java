@@ -137,10 +137,10 @@ public abstract class Builder extends IncrementalProjectBuilder {
 		if (buildAdapter != null) {
 			buildAdapter.markAsDerivated(monitor);
 		}
-		IWoprojectAdapter woprojectAdapter = projectAdapter.getWoprojectAdapter();
-		if (woprojectAdapter != null) {
-			woprojectAdapter.markAsDerivated(monitor);
-		}
+//		IWoprojectAdapter woprojectAdapter = projectAdapter.getWoprojectAdapter();
+//		if (woprojectAdapter != null) {
+//			woprojectAdapter.markAsDerivated(monitor);
+//		}
 		final IProject workspaceRunnableProject = project;
 		IWorkspaceRunnable workspaceRunnable = new IWorkspaceRunnable() {
 
