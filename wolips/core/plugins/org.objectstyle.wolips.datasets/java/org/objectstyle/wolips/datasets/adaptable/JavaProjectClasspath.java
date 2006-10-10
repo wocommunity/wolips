@@ -104,7 +104,6 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 			oldClassPathEntries = actualJavaProject.getRawClasspath();
 		} catch (JavaModelException e) {
 			actualJavaProject = null;
-			oldClassPathEntries = null;
 			throw new InvocationTargetException(e);
 		}
 		newClassPathEntries = new IClasspathEntry[oldClassPathEntries.length + 1];
@@ -398,10 +397,13 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 			} else if (this.isIncremental()) {
 				resource = this.getIProject().getFolder("build/" + projectName + ".framework/Resources/Java");
 			}
-			if (resource != null && (resource.exists())) {
+			if (resource != null && resource.exists()) {
 				path = resource.getLocation();
 			} else {
-				path = VariablesPlugin.getDefault().getExternalBuildRoot().append(projectName + ".framework/Resources/Java/" + projectName + ".jar");
+				IPath externalBuildRoot = VariablesPlugin.getDefault().getExternalBuildRoot();
+				if (externalBuildRoot != null) {
+					path = externalBuildRoot.append(projectName + ".framework/Resources/Java/" + projectName + ".jar");
+				}
 			}
 		} else if (this.isApplication()) { // must be application
 			IFolder wdFolder = null;
@@ -410,7 +412,7 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 			} else {
 				wdFolder = this.getIProject().getFolder("build");
 			}
-			if (wdFolder != null || !wdFolder.exists()) {
+			if (wdFolder != null && wdFolder.exists()) {
 				IResource[] members = wdFolder.members();
 				for (int i = 0; i < members.length; i++) {
 					IResource member = members[i];
