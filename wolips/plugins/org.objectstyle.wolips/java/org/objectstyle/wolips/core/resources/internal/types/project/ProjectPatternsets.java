@@ -125,7 +125,7 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 		if (values == null) {
 			return def;
 		}
-		return values.split("\\,\\s+");
+		return values.split("\\,\\s*");
 	}
 
 	private String[] getWSResourcesIncludeStringsDefault() {
