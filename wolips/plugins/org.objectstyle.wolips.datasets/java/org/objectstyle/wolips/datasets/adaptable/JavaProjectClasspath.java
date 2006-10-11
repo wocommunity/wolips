@@ -435,7 +435,10 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 			if (resource != null && (resource.exists())) {
 				path = resource.getLocation();
 			} else {
-				path = VariablesPlugin.getDefault().getExternalBuildRoot().append(projectName + ".woa/Contents/Resources/Java/" + projectName + ".jar");
+				IPath externalBuildRoot = VariablesPlugin.getDefault().getExternalBuildRoot();
+				if (externalBuildRoot != null) {
+					path = externalBuildRoot.append(projectName + ".woa/Contents/Resources/Java/" + projectName + ".jar");
+				}
 			}
 		}
 		return path;
