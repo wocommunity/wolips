@@ -49,6 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.actions;
 
+import java.util.Arrays;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -101,6 +103,7 @@ public class PasteAction extends Action implements IWorkbenchWindowActionDelegat
 			}
 			ISelection pastedSelection = LocalSelectionTransfer.getTransfer().getSelection();
 			Object[] clipboardObjects = ((IStructuredSelection) pastedSelection).toArray();
+			Arrays.sort(clipboardObjects, new PasteOrderComparator());
 			for (int clipboardObjectNum = 0; clipboardObjectNum < clipboardObjects.length; clipboardObjectNum++) {
 				Object clipboardObject = clipboardObjects[clipboardObjectNum];
 				if (clipboardObject instanceof EOEntity) {
