@@ -271,6 +271,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 			EOAttribute entity1PrimaryKeyAttribute = (EOAttribute) entity1PrimaryKeyAttributesIter.next();
 			EOAttribute manyToManyPrimaryKeyAttribute = entity1PrimaryKeyAttribute.cloneAttribute();
 			manyToManyPrimaryKeyAttribute.setName(manyToManyEntity.findUnusedAttributeName(StringUtils.toLowercaseFirstLetter(getName()) + StringUtils.toUppercaseFirstLetter(manyToManyPrimaryKeyAttribute.getName())));
+			manyToManyPrimaryKeyAttribute.setColumnName(manyToManyEntity.getName());
 			EOJoin entity1Join = new EOJoin();
 			entity1Join.setSourceAttribute(manyToManyPrimaryKeyAttribute);
 			entity1Join.setDestinationAttribute(entity1PrimaryKeyAttribute);
