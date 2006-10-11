@@ -166,7 +166,7 @@ public class EOJoin extends EOModelObject implements ISortableEOModelObject {
 	}
 
 	public boolean isRelatedTo(EOAttribute _attribute) {
-		return getSourceAttribute().equals(_attribute) || getDestinationAttribute().equals(_attribute);
+		return (getSourceAttribute() != null && getSourceAttribute().equals(_attribute)) || (getDestinationAttribute() != null && getDestinationAttribute().equals(_attribute));
 	}
 
 	public String getSourceAttributeName() {
