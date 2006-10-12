@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.objectstyle.wolips.thirdparty.feature"
-      label="WOLips Third Party Feature"
-      version="1.0.6"
-      provider-name="objectstyle.org">
+      label="%feature.featureName"
+      version="%build.version"
+      provider-name="%feature.providerName"
+      image="%feature.image">
 
-   <description url="http://objectstyle.org/confluence/display/WOL/Home">
-      This feature is the base for all WOLips features.
-   </description>
+    <description url="http://objectstyle.org/confluence/display/WOL/Home">
+      %feature.description
+    </description>
 
    <copyright>
-      Copyright 2006, objectstyle.org and individual authors
+      %feature.copyright
    </copyright>
 
    <license>
@@ -66,8 +67,8 @@
    </license>
 
    <url>
-      <update label="WOLips" url="http://www.mdimension.com/~wolips/stable/"/>
-   </url>
+      <update label="%feature.updateSiteName" url="%feature.updateSite"/>
+  </url>
 
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
@@ -78,28 +79,28 @@
          id="org.objectstyle.wolips.thirdparty.velocity"
          download-size="464"
          install-size="464"
-         version="1.0.6"
+         version="%build.version"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.thirdparty.cayenne"
          download-size="916"
          install-size="916"
-         version="1.0.6"
+         version="%build.version"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.thirdparty.log4j"
          download-size="316"
          install-size="316"
-         version="1.0.6"
+         version="%build.version"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.thirdparty.commonscollections"
          download-size="480"
          install-size="480"
-         version="1.0.6"
+         version="%build.version"
          unpack="false"/>
 
 </feature>

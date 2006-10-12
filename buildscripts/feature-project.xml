@@ -1,56 +1,64 @@
 <?xml version="1.0"?>
- 
+
 <!-- ======================================================== -->
 <!--              feature build script                        -->
 <!-- ======================================================== -->
 <project name="build-feature" default="dist" basedir=".">
-    <!-- ============================================= -->
-    <!-- Copies the resources                          -->
-    <!-- Required parameters                           -->
-    <!-- param.build.output.build.dir the output dir   -->
-    <!-- param.feature.name the feature name           -->
-    <!-- ============================================= -->
-    <target name="copy.resources">
-	    <mkdir dir="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}"/>
-        <copy todir="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}">
-            <fileset dir="">
-        	<exclude name="build.xml"/>
-                <exclude name="default.properties"/>
-        	<exclude name=".project"/>
-                <exclude name=".classpath"/>
-            </fileset>
-        </copy>
-        
-        <condition property="stringToReplace" value="I hope we have never a string like this in the plugin.xml">
-        	<contains string="${param.feature.name}" substring="test"/>
-	</condition>
-        
-        <condition property="stringToReplace" value="${TestsCorePluginReferenceToReplace}">
-        	<not>
-	        	<contains string="${param.feature.name}" substring="test"/>
-	        </not>
-	</condition>
+	<!-- ============================================= -->
+	<!-- Copies the resources                          -->
+	<!-- Required parameters                           -->
+	<!-- param.build.output.build.dir the output dir   -->
+	<!-- param.feature.name the feature name           -->
+	<!-- ============================================= -->
+	<target name="copy.resources">
+		<mkdir dir="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}" />
+		<copy todir="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}">
+			<fileset dir="">
+				<exclude name="build.xml" />
+				<exclude name="default.properties" />
+				<exclude name="feature.properties" />
+				<exclude name=".project" />
+				<exclude name=".classpath" />
+			</fileset>
+		</copy>
 
-        <replace dir="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}/" token="${stringToReplace}" value="">
-            <include name="feature.xml"/>
-        </replace>
-           
+		<property name="feature.id" value="${param.feature.name}" />
+		<echoproperties destfile="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}/feature.properties">
+			<propertyset>
+				<propertyref name="feature.id" />
+				<propertyref name="feature.featureName" />
+				<propertyref name="feature.description" />
+				<propertyref name="build.version" />
+				<propertyref name="feature.providerName" />
+				<propertyref name="feature.copyright" />
+				<propertyref name="feature.image" />
+				<propertyref name="feature.updateSiteName" />
+				<propertyref name="feature.updateSite" />
+			</propertyset>
+		</echoproperties>
 
-        <replace file="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}/feature.xml" token="${build.version.to.replace}" value="${build.version}"/>
-    </target>
+		<replace file="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}/feature.xml" token="%build.version" value="${build.version}" />
+		<replace file="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}/feature.xml" token="%feature.featureName" value="${feature.featureName}" />
+		<replace file="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}/feature.xml" token="%feature.description" value="${feature.description}" />
+		<replace file="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}/feature.xml" token="%feature.providerName" value="${feature.providerName}" />
+		<replace file="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}/feature.xml" token="%feature.copyright" value="${feature.copyright}" />
+		<replace file="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}/feature.xml" token="%feature.image" value="${feature.image}" />
+		<replace file="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}/feature.xml" token="%feature.updateSiteName" value="${feature.updateSiteName}" />
+		<replace file="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}/feature.xml" token="%feature.updateSite" value="${feature.updateSite}" />
+	</target>
 
-    <!-- ============================================= -->
-    <!-- Dist                                          -->
-    <!-- Required parameters                           -->
-    <!-- param.feature.name the plugin directory         -->
-    <!-- param.build.output.build.dir the output dir   -->
-    <!-- param.build.dist.build.dir the dist directory -->
-    <!-- ============================================= -->
-    <target name="dist">
-        <jar jarfile="${param.build.dist.build.dir}/features/${param.feature.name}_${build.version}.jar">
-     	    <fileset dir="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}">
-     	    </fileset>
-        </jar>    
-    </target>
+	<!-- ============================================= -->
+	<!-- Dist                                          -->
+	<!-- Required parameters                           -->
+	<!-- param.feature.name the plugin directory         -->
+	<!-- param.build.output.build.dir the output dir   -->
+	<!-- param.build.dist.build.dir the dist directory -->
+	<!-- ============================================= -->
+	<target name="dist">
+		<jar jarfile="${param.build.dist.build.dir}/features/${param.feature.name}_${build.version}.jar">
+			<fileset dir="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}">
+			</fileset>
+		</jar>
+	</target>
 
 </project>

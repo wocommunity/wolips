@@ -33,12 +33,13 @@
         *  1. help                  - prints this message.
         *  2. all                   - build all projects.
         *  3. dist                  - build distribution.
-        *  4. clean                 - cleans temporary directories.
-        *  5. test                  - Run JUnit tests.
-        *  6. check                 - Stores the wo specific properties in a file.
-        *  7. .ds_store             - delete .DS_store files
-        *  8. buildserver           - Target for the buildserver
-        *  9. buildserver.publish   - Target for the buildserver to publish
+        *  4. distnightly           - build nigthly distribution.
+        *  5. clean                 - cleans temporary directories.
+        *  6. test                  - Run JUnit tests.
+        *  7. check                 - Stores the wo specific properties in a file.
+        *  8. .ds_store             - delete .DS_store files
+        *  9. buildserver           - Target for the buildserver
+        *  10. buildserver.publish   - Target for the buildserver to publish
         ****************************************
         </echo>
 	</target>
@@ -70,6 +71,8 @@
         * compile.deprecation= ${compile.deprecation}
         * compile.debug= ${compile.debug}
         * compile.optimize= ${compile.optimize}
+        * feature.updateSiteName= ${feature.updateSiteName}
+        * feature.updateSite= ${feature.updateSite}
         ****************************************
         </echo>
 	</target>
@@ -112,7 +115,35 @@
 	<!-- ========================================== -->
 	<!-- Build dist.                                -->
 	<!-- ========================================== -->
-	<target name="dist" depends="all">
+	<target name="dist" depends="definestableupdatesite,distchildren">
+	</target>
+
+	<!-- ========================================== -->
+	<!-- Build dist.                                -->
+	<!-- ========================================== -->
+	<target name="distnightly" depends="definenightlyupdatesite,distchildren">
+	</target>
+
+	<!-- ========================================== -->
+	<!-- Build definenightlyupdatesite.             -->
+	<!-- ========================================== -->
+	<target name="definenightlyupdatesite">
+		<property name="feature.updateSiteName" value="${feature.updateSiteName.nightly}" />
+		<property name="feature.updateSite" value="${feature.updateSite.nightly}" />
+	</target>
+
+	<!-- ========================================== -->
+	<!-- Build definestableupdatesite.             -->
+	<!-- ========================================== -->
+	<target name="definestableupdatesite">
+		<property name="feature.updateSiteName" value="${feature.updateSiteName.stable}" />
+		<property name="feature.updateSite" value="${feature.updateSite.stable}" />
+	</target>
+
+	<!-- ========================================== -->
+	<!-- Build dist children.                       -->
+	<!-- ========================================== -->
+	<target name="distchildren" depends="all">
 		<ant dir="${project.woenvironment.dir}" target="dist" />
 		<ant dir="${project.woproject.dir}" target="dist" />
 		<ant dir="${project.wolips.dir}" target="dist" />
