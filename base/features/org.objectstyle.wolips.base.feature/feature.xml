@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.objectstyle.wolips.base.feature"
-      label="WOLips Base"
-      version="1.0.6"
-      provider-name="objectstyle.org"
-      plugin="org.objectstyle.wolips.baseforplugins">
+      label="%feature.featureName"
+      version="%build.version"
+      provider-name="%feature.providerName"
+      image="%feature.image">
 
    <description url="http://objectstyle.org/confluence/display/WOL/Home">
-      This feature is the base for all WOLips features.
+      %feature.description
    </description>
 
    <copyright>
-      Copyright 2002 - 2006, objectstyle.org and individual authors
+      %feature.copyright
    </copyright>
 
    <license>
@@ -67,11 +67,10 @@
    </license>
 
    <url>
-      <update label="WOLips" url="http://www.mdimension.com/~wolips/stable/"/>
-      <discovery label="WOLips nightly" url="http://www.mdimension.com/~wolips/update/"/>
-      <discovery label="WOLips" url="http://www.mdimension.com/~wolips/stable/"/>
+       <update label="%feature.updateSiteName" url="%feature.updateSite"/>
+       <discovery label="%feature.updateSiteName" url="%feature.updateSite"/>
    </url>
-
+ 
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.ui"/>
@@ -81,14 +80,14 @@
          id="org.objectstyle.wolips.baseforplugins"
          download-size="32"
          install-size="32"
-         version="1.0.6"
+         version="%build.version"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.baseforuiplugins"
          download-size="32"
          install-size="32"
-         version="1.0.6"
+         version="%build.version"
          unpack="false"/>
 
 </feature>

@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.objectstyle.wolips.goodies.mac.feature"
-      label="%featureName"
-      version="1.0.6"
-      provider-name="%providerName"
+      label="%feature.featureName"
+      version="%build.version"
+      provider-name="%feature.providerName"
+      image="%feature.image"
       os="macosx"
       ws="carbon"
-      arch="ppc,x86,x86_64"
-      image="%image">
+      arch="ppc,x86,x86_64">
 
-   <description url="http://objectstyle.org/confluence/display/WOL/Home">
-      This feature includes some goodies for the Mac.
-   </description>
+     <description url="http://objectstyle.org/confluence/display/WOL/Home">
+      %feature.description
+    </description>
 
    <copyright>
-      Copyright 2004 - 2006, objectstyle.org
+      %feature.copyright
    </copyright>
 
    <license>
@@ -69,9 +69,9 @@
  */
    </license>
 
-   <url>
-      <update label="WOLips" url="http://www.mdimension.com/~wolips/stable/"/>
-   </url>
+  <url>
+       <update label="%feature.updateSiteName" url="%feature.updateSite"/>
+  </url>
 
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
@@ -84,14 +84,14 @@
          id="org.objectstyle.wolips.goodies.core.mac"
          download-size="0"
          install-size="32"
-         version="1.0.6"
+         version="%build.version"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.goodies.ui.mac"
          download-size="0"
          install-size="32"
-         version="1.0.6"
+         version="%build.version"
          unpack="false"/>
 
 </feature>

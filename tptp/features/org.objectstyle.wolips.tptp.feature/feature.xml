@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.objectstyle.wolips.tptp.feature"
-      label="%featureName"
-      version="1.0.6"
-      provider-name="%providerName"
-      image="%image">
+      label="%feature.featureName"
+      version="%build.version"
+      provider-name="%feature.providerName"
+      image="%feature.image">
 
    <description url="http://objectstyle.org/confluence/display/WOL/Home">
-      This feature manages the profiling plug-in only. If you don
+      %feature.description
    </description>
 
    <copyright>
-      Copyright 2005 - 2006, objectstyle.org
+      %feature.copyright
    </copyright>
 
    <license>
@@ -67,26 +67,26 @@
    </license>
 
    <url>
-      <update label="WOLips" url="http://www.mdimension.com/~wolips/stable/"/>
-   </url>
+      <update label="%feature.updateSiteName" url="%feature.updateSite"/>
+  </url>
 
    <requires>
       <import plugin="org.eclipse.jdt.debug.ui"/>
       <import plugin="org.eclipse.debug.core"/>
       <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="org.objectstyle.wolips.launching" version="1.0.6" match="perfect"/>
+      <import plugin="org.objectstyle.wolips.launching" version="%build.version" match="perfect"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.hyades.trace.ui"/>
       <import plugin="org.eclipse.jdt.launching"/>
       <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.objectstyle.wolips.baseforuiplugins" version="1.0.6" match="perfect"/>
+      <import plugin="org.objectstyle.wolips.baseforuiplugins" version="%build.version" match="perfect"/>
    </requires>
 
    <plugin
          id="org.objectstyle.wolips.tptp.launching"
          download-size="32"
          install-size="32"
-         version="1.0.6"
+         version="%build.version"
          unpack="false"/>
 
 </feature>
