@@ -190,5 +190,4 @@ public abstract class AbstractBaseActivator extends Plugin {
 			this.log(new Status(IStatus.WARNING, this.getBundleID(), IStatus.WARNING, "" + message, null)); //$NON-NLS-1$
 		}
 	}
-
 }
