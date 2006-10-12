@@ -58,22 +58,29 @@ package org.objectstyle.wolips.launching.errors;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.ui.console.IConsole;
 import org.eclipse.debug.ui.console.IConsoleLineTracker;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.swt.widgets.Display;
+import org.objectstyle.wolips.baseforuiplugins.IEditorTarget;
 import org.objectstyle.wolips.launching.LaunchingPlugin;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
+import org.objectstyle.wolips.locate.LocateException;
+import org.objectstyle.wolips.locate.LocatePlugin;
 
 public class ErrorConsoleLineTracker implements IConsoleLineTracker {
 
 	private IConsole currentConsole;
+
+	private int blockedLines = 0;
 
 	public ErrorConsoleLineTracker() {
 		super();
@@ -83,7 +90,14 @@ public class ErrorConsoleLineTracker implements IConsoleLineTracker {
 		this.currentConsole = console;
 	}
 
+	private void blockNextLines() {
+		blockedLines = 4;
+	}
 	public void lineAppended(IRegion line) {
+		if (blockedLines > 0) {
+			blockedLines--;
+			return;
+		}
 		int offset = line.getOffset();
 		int length = line.getLength();
 		String text = null;
@@ -92,23 +106,64 @@ public class ErrorConsoleLineTracker implements IConsoleLineTracker {
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
-		if (text != null && text.startsWith("com.webobjects.foundation.NSForwardException [com.webobjects.appserver._private.WODeclarationFormatException] <WOHTMLTemplateParser> no declaration for dynamic element (or component) named")) {
-			int startIndex = text.indexOf('\'', 0);
-			int endIndex = text.indexOf('\'', startIndex + 1);
-			final String pathString = text.substring(startIndex + 6, endIndex);
-			IPath path = Path.fromOSString(pathString);
-			path = path.makeRelative();
-			path = path.append(path.lastSegment() + "d");
-			path = new Path("/Foo/Main.wo/Main.wod");
-			final String errorMessage = text.substring(133, startIndex - 99);
-			final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					WorkbenchUtilitiesPlugin.open(file);
-					IStatus status = new Status(IStatus.ERROR, LaunchingPlugin.PLUGIN_ID, IStatus.ERROR, errorMessage, null);
-					ErrorDialog.openError(null, "Buggy WOComponent", "", status);
+		if (text != null) {
+			String exception = "com.webobjects.foundation.NSForwardException [com.webobjects.appserver._private.WODeclarationFormatException] <WOHTMLTemplateParser> no declaration for dynamic element (or component) named";
+			int exceptionIndex = text.indexOf(exception);
+			if (exceptionIndex >= 0) {
+				int startIndex = text.indexOf('\'', exceptionIndex + exception.length());
+				int endIndex = text.indexOf('\'', startIndex + 1);
+				final String pathString = text.substring(startIndex + 6, endIndex);
+				IPath path = Path.fromOSString(pathString);
+				IPath wodpath = path.append(path.lastSegment() + "d");
+				final String errorMessage = text.substring(133 + exceptionIndex, startIndex - 99 + exceptionIndex);
+				final String declared = text.substring(189 + exceptionIndex, startIndex - 99 + exceptionIndex);
+				final IFile wodfile = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(wodpath);
+				this.blockNextLines();
+				LaunchingPlugin.getDefault().selectAndReveal(wodfile, declared, IEditorTarget.TARGET_HTML);
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						IStatus status = new Status(IStatus.ERROR, LaunchingPlugin.PLUGIN_ID, IStatus.ERROR, errorMessage, null);
+						ErrorDialog.openError(null, "Buggy WOComponent", "", status);
+					}
+				});
+			}
+		}
+		if (text != null) {
+			String exception = "com.webobjects.foundation.NSKeyValueCoding$UnknownKeyException: [<";
+			int exceptionIndex = text.indexOf(exception);
+			if (exceptionIndex >= 0) {
+				int startIndex = exceptionIndex + exception.length();
+				int endIndex = text.indexOf(' ', startIndex + 1);
+				final String fileName = text.substring(startIndex, endIndex);
+				IJavaProject javaProject = null;
+				try {
+					javaProject = JavaRuntime.getJavaProject(this.currentConsole.getProcess().getLaunch().getLaunchConfiguration());
+				} catch (CoreException e) {
+					LaunchingPlugin.getDefault().log(e);
 				}
-			});
+				if (javaProject != null) {
+					IFile[] javaFiles = null;
+					try {
+						javaFiles = LocatePlugin.getDefault().getJavaLocateResult(fileName, javaProject.getProject()).getDotJava();
+					} catch (CoreException e) {
+						LaunchingPlugin.getDefault().log(e);
+					} catch (LocateException e) {
+						LaunchingPlugin.getDefault().log(e);
+					}
+					// TODO: select java file in the ui
+					if (javaFiles != null && javaFiles.length == 1) {
+						this.blockNextLines();
+						LaunchingPlugin.getDefault().selectAndReveal(javaFiles[0]);
+						final String message = text.substring(text.indexOf(">", endIndex) + 1).replace(']', ' ');
+						Display.getDefault().asyncExec(new Runnable() {
+							public void run() {
+								IStatus status = new Status(IStatus.ERROR, LaunchingPlugin.PLUGIN_ID, IStatus.ERROR, message, null);
+								ErrorDialog.openError(null, "Buggy KeyValueCoding", "", status);
+							}
+						});
+					}
+				}
+			}
 		}
 	}
 

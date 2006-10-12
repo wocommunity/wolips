@@ -65,6 +65,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.MultiPageSelectionProvider;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.objectstyle.wolips.baseforuiplugins.IEditorTarget;
 import org.objectstyle.wolips.componenteditor.outline.ComponentEditorOutline;
 import org.objectstyle.wolips.components.editor.EditorInteraction;
 import org.objectstyle.wolips.components.input.ComponentEditorInput;
@@ -72,7 +73,7 @@ import org.objectstyle.wolips.components.input.ComponentEditorInput;
 /**
  * @author uli
  */
-public class ComponentEditorPart extends MultiPageEditorPart implements IResourceChangeListener {
+public class ComponentEditorPart extends MultiPageEditorPart implements IEditorTarget, IResourceChangeListener {
 
 	ComponentEditorInput componentEditorInput;
 
@@ -237,6 +238,28 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IResourc
 		return false;
 	}
 
+	public IEditorPart switchTo(int targetEditorID) {
+		switch (targetEditorID) {
+		case IEditorTarget.TARGET_API:
+			this.switchToApi();
+			break;
+		case IEditorTarget.TARGET_HTML:
+			this.switchToHtml();
+			break;
+		case IEditorTarget.TARGET_PREVIEW:
+			this.switchToPreview();
+			break;
+		case IEditorTarget.TARGET_WOD:
+			this.switchToWod();
+			break;
+
+		default:
+			break;
+		}
+		IEditorPart editorPart = getActiveEditor();
+		return editorPart;
+	}
+
 	public void switchToHtml() {
 		this.htmlWodTabs[0].setHtmlActive();
 		switchToPage(0);
@@ -336,13 +359,13 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IResourc
 							for (int j = 0; j < pages.length; j++) {
 								IEditorPart editorPart = pages[i].findEditor(componentEditorInput);
 								if (editorPart != null) {
-									if(pages[i].closeEditor(ComponentEditorPart.this, true)) {
+									if (pages[i].closeEditor(ComponentEditorPart.this, true)) {
 										closed = true;
 									}
 								}
 							}
 						}
-						if(closed) {
+						if (closed) {
 							break;
 						}
 					}

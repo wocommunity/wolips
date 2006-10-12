@@ -52,9 +52,21 @@ package org.objectstyle.wolips.baseforuiplugins;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.osgi.framework.BundleContext;
 
 public abstract class AbstractBaseUIActivator extends AbstractUIPlugin {
@@ -186,6 +198,63 @@ public abstract class AbstractBaseUIActivator extends AbstractUIPlugin {
 
 	public void publicSaveDialogSettings() {
 		saveDialogSettings();
+	}
+
+	public final void selectAndReveal(final IFile file) {
+		this.selectAndReveal(file, null, IEditorTarget.TARGET_UNDEFINED);
+	}
+
+	public final void selectAndReveal(final IFile file, final String string, final int targetEditorID) {
+		IWorkbenchWindow[] workbenchWindows = PlatformUI.getWorkbench().getWorkbenchWindows();
+		for (int i = 0; i < workbenchWindows.length; i++) {
+			final IWorkbenchPage workbenchPage = workbenchWindows[i].getActivePage();
+			if (workbenchPage != null) {
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						runSelectAndReveal(workbenchPage, file, string, targetEditorID);
+					}
+				});
+			}
+		}
+	}
+
+	protected void runSelectAndReveal(IWorkbenchPage workbenchPage, IFile file, String string, int targetEditorID) {
+		try {
+			IEditorPart editorPart = IDE.openEditor(workbenchPage, file, true);
+			if (string != null && string.length() > 0 && editorPart != null && editorPart instanceof ITextEditor) {
+				if (editorPart instanceof IEditorTarget) {
+					IEditorTarget editorTarget = (IEditorTarget) editorPart;
+					editorPart = editorTarget.switchTo(targetEditorID);
+				}
+				ITextEditor textEditor = (ITextEditor) editorPart;
+				IDocumentProvider documentProvider = textEditor.getDocumentProvider();
+				IDocument document = documentProvider.getDocument(textEditor.getEditorInput());
+				// it's deprecated but the sse does not provide a
+				// FindReplaceDocumentAdapter
+				int offset = document.search(0, string, true, true, false);
+				if (offset >= 0) {
+					textEditor.selectAndReveal(offset, string.length());
+				}
+				// if (document instanceof IAdaptable) {
+				// IAdaptable adaptable = (IAdaptable) document;
+				// FindReplaceDocumentAdapter findReplaceDocumentAdapter =
+				// (FindReplaceDocumentAdapter)
+				// adaptable.getAdapter(FindReplaceDocumentAdapter.class);
+				// if (findReplaceDocumentAdapter != null) {
+				// IRegion region = findReplaceDocumentAdapter.find(0, string,
+				// true, true, false, false);
+				// if (region != null) {
+				// textEditor.selectAndReveal(region.getOffset(),
+				// region.getLength());
+				// }
+				// }
+				// }
+			}
+		} catch (BadLocationException e) {
+			this.log(e);
+		} catch (PartInitException e) {
+			this.log(e);
+		}
 	}
 
 }

@@ -56,12 +56,15 @@
 package org.objectstyle.wolips.locate;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.objectstyle.wolips.baseforplugins.AbstractBaseActivator;
 import org.objectstyle.wolips.locate.cache.ComponentLocateCache;
+import org.objectstyle.wolips.locate.result.JavaLocateResult;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.locate.scope.ComponentLocateScope;
+import org.objectstyle.wolips.locate.scope.JavaLocateScope;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -112,6 +115,14 @@ public class LocatePlugin extends AbstractBaseActivator {
 		locate.locate();
 		componentsLocateCache.addToCache(file, localizedComponentsLocateResult);
 		return localizedComponentsLocateResult;
+	}
+
+	public JavaLocateResult getJavaLocateResult(String fileName, IProject project) throws CoreException, LocateException {
+		JavaLocateScope javaLocateScope = JavaLocateScope.createLocateScope(fileName, project);
+		JavaLocateResult javaLocateResult = new JavaLocateResult();
+		Locate locate = new Locate(javaLocateScope, javaLocateResult);
+		locate.locate();
+		return javaLocateResult;
 	}
 
 	public String fileNameWithoutExtension(IFile file) {
