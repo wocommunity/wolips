@@ -299,6 +299,7 @@ public class ResourceUtilities {
 			newMarker = null;
 		}
 		else {
+			try {
 			IMarker[] marker = res.findMarkers(markerId, true, 0);
 			if (marker.length != 1) {
 				if (marker.length > 1) {
@@ -320,6 +321,12 @@ public class ResourceUtilities {
 	
 			marker[0].setAttributes(attr);
 			newMarker = marker[0];
+			}
+			catch (ResourceException e) {
+				// MS: This happens a lot and it's not actually a problem.  This is almost always a deleted file.
+				e.printStackTrace();
+				newMarker = null;
+			}
 		}
 		return newMarker;
 	}
