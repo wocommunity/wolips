@@ -102,39 +102,35 @@ import com.webobjects.jdbcadaptor.JDBCContext;
  * 
  */
 public class EOFSQLGenerator {
-	private NSMutableArray myEntities;
+	private NSMutableArray _entities;
 
-	private EOModel myModel;
+	private EOModel _model;
 
-	private EOModelGroup myGroup;
+	private EOModelGroup _modelGroup;
 
-	private Object myModelProcessor;
+	private Object _modelProcessor;
 
-	public EOFSQLGenerator(String _modelName, List _modelFolders, List _entityNames, Map _databaseConfig) throws MalformedURLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-		Map databaseConfig = (_databaseConfig == null ? new HashMap() : _databaseConfig);
-		String prototypeEntityName = (String) databaseConfig.get("prototypeEntityName");
-		
-		myGroup = new EOModelGroup();
-		Iterator modelFoldersIter = _modelFolders.iterator();
+	public EOFSQLGenerator(String modelName, List modelFolders, List entityNames, Map selectedDatabaseConfig) throws MalformedURLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+		Map databaseConfig = selectedDatabaseConfig;
+		if (databaseConfig == null) {
+			databaseConfig = new HashMap();
+		}
+
+		_modelGroup = new EOModelGroup();
+
+		Iterator modelFoldersIter = modelFolders.iterator();
 		while (modelFoldersIter.hasNext()) {
 			File modelFolder = (File) modelFoldersIter.next();
-			EOModel newModel = myGroup.addModelWithPathURL(modelFolder.toURL());
-			System.out.println("Loading model: " + newModel.name());
-			if (prototypeEntityName != null) {
-				EOEntity entity = newModel.entityNamed("EOPrototypes");
-				if (entity != null) {
-					newModel.removeEntity(entity);
-				}
-				entity = newModel.entityNamed(prototypeEntityName);
-				if (entity != null) {
-					newModel.removeEntity(entity);
-					entity.setName("EOPrototypes");
-					newModel.addEntity(entity);
-				}
-			}
+			_modelGroup.addModelWithPathURL(modelFolder.toURL());
 		}
-		myEntities = new NSMutableArray();
-		myModel = myGroup.modelNamed(_modelName);
+
+		String prototypeEntityName = (String) databaseConfig.get("prototypeEntityName");
+		if (prototypeEntityName != null) {
+			replacePrototypes(_modelGroup, prototypeEntityName);
+		}
+
+		_entities = new NSMutableArray();
+		_model = _modelGroup.modelNamed(modelName);
 		Map overrideConnectionDictionary = (Map) databaseConfig.get("connectionDictionary");
 		if (overrideConnectionDictionary != null) {
 			NSMutableDictionary connectionDictionary = new NSMutableDictionary();
@@ -147,31 +143,31 @@ public class EOFSQLGenerator {
 					connectionDictionary.setObjectForKey(value, key);
 				}
 			}
-			myModel.setConnectionDictionary(connectionDictionary);
+			_model.setConnectionDictionary(connectionDictionary);
 			String eomodelProcessorClassName = (String) connectionDictionary.objectForKey("eomodelProcessorClassName");
 			if (eomodelProcessorClassName != null) {
 				findModelProcessor(eomodelProcessorClassName, true);
 			}
 		}
-		if (myModelProcessor == null) {
+		if (_modelProcessor == null) {
 			findModelProcessor("org.objectstyle.wolips.eomodeler.EOModelProcessor", false);
 		}
-		if (_entityNames == null) {
-			Enumeration entitiesEnum = myModel.entities().objectEnumerator();
+		if (entityNames == null || entityNames.size() == 0) {
+			Enumeration entitiesEnum = _model.entities().objectEnumerator();
 			while (entitiesEnum.hasMoreElements()) {
 				EOEntity entity = (EOEntity) entitiesEnum.nextElement();
 				if (!isPrototype(entity)) {// &&
-											// entityUsesSeparateTable(entity))
-											// {
-					myEntities.addObject(entity);
+					// entityUsesSeparateTable(entity))
+					// {
+					_entities.addObject(entity);
 				}
 			}
 		} else {
-			Iterator entityNamesIter = _entityNames.iterator();
+			Iterator entityNamesIter = entityNames.iterator();
 			while (entityNamesIter.hasNext()) {
 				String entityName = (String) entityNamesIter.next();
-				EOEntity entity = myModel.entityNamed(entityName);
-				myEntities.addObject(entity);
+				EOEntity entity = _model.entityNamed(entityName);
+				_entities.addObject(entity);
 			}
 		}
 
@@ -180,8 +176,58 @@ public class EOFSQLGenerator {
 		localizeEntities();
 	}
 
+	protected void replacePrototypes(EOModelGroup modelGroup, String prototypeEntityName) {
+		NSMutableDictionary removedPrototypeEntities = new NSMutableDictionary();
+
+		EOModel prototypesModel = null;
+		Enumeration modelsEnum = modelGroup.models().objectEnumerator();
+		while (modelsEnum.hasMoreElements()) {
+			EOModel model = (EOModel) modelsEnum.nextElement();
+			EOEntity eoAdaptorPrototypesEntity = _modelGroup.entityNamed("EO" + model.adaptorName() + "Prototypes");
+			if (eoAdaptorPrototypesEntity != null) {
+				prototypesModel = eoAdaptorPrototypesEntity.model();
+				// System.out.println("EOFSQLGenerator.EOFSQLGenerator:
+				// removing " + eoAdaptorPrototypesEntity.name() + " from "
+				// + prototypesModel.name());
+				prototypesModel.removeEntity(eoAdaptorPrototypesEntity);
+				removedPrototypeEntities.setObjectForKey(eoAdaptorPrototypesEntity, eoAdaptorPrototypesEntity.name());
+			}
+		}
+
+		EOEntity eoPrototypesEntity = _modelGroup.entityNamed("EOPrototypes");
+		if (eoPrototypesEntity != null) {
+			prototypesModel = eoPrototypesEntity.model();
+			prototypesModel.removeEntity(eoPrototypesEntity);
+			// System.out.println("EOFSQLGenerator.EOFSQLGenerator: removing
+			// " + eoPrototypesEntity.name() + " from " +
+			// prototypesModel.name());
+			removedPrototypeEntities.setObjectForKey(eoPrototypesEntity, eoPrototypesEntity.name());
+		}
+
+		EOEntity prototypesEntity = _modelGroup.entityNamed(prototypeEntityName);
+		if (prototypesEntity == null) {
+			prototypesEntity = (EOEntity) removedPrototypeEntities.objectForKey(prototypeEntityName);
+		} else {
+			prototypesModel = prototypesEntity.model();
+			prototypesModel.removeEntity(prototypesEntity);
+		}
+		if (prototypesEntity != null && prototypesModel != null) {
+			// System.out.println("EOFSQLGenerator.EOFSQLGenerator: setting
+			// " + prototypesEntity.name() + " to EOPrototypes in " +
+			// prototypesModel.name());
+			prototypesEntity.setName("EOPrototypes");
+			prototypesModel.addEntity(prototypesEntity);
+		}
+
+		Enumeration resetModelsEnum = _modelGroup.models().objectEnumerator();
+		while (resetModelsEnum.hasMoreElements()) {
+			EOModel model = (EOModel) resetModelsEnum.nextElement();
+			model._resetPrototypeCache();
+		}
+	}
+
 	protected void localizeEntities() {
-		Enumeration entitiesEnum = new NSArray(myEntities).objectEnumerator();
+		Enumeration entitiesEnum = new NSArray(_entities).objectEnumerator();
 		while (entitiesEnum.hasMoreElements()) {
 			EOEntity entity = (EOEntity) entitiesEnum.nextElement();
 			createLocalizedAttributes(entity);
@@ -189,7 +235,7 @@ public class EOFSQLGenerator {
 	}
 
 	protected void ensureSingleTableInheritanceParentEntitiesAreIncluded() {
-		Enumeration entitiesEnum = new NSArray(myEntities).objectEnumerator();
+		Enumeration entitiesEnum = new NSArray(_entities).objectEnumerator();
 		while (entitiesEnum.hasMoreElements()) {
 			EOEntity entity = (EOEntity) entitiesEnum.nextElement();
 			ensureSingleTableInheritanceParentEntitiesAreIncluded(entity);
@@ -197,24 +243,24 @@ public class EOFSQLGenerator {
 	}
 
 	protected void ensureSingleTableInheritanceChildEntitiesAreIncluded() {
-		Enumeration entitiesEnum = myModel.entities().objectEnumerator();
+		Enumeration entitiesEnum = _model.entities().objectEnumerator();
 		while (entitiesEnum.hasMoreElements()) {
 			EOEntity entity = (EOEntity) entitiesEnum.nextElement();
 			if (isSingleTableInheritance(entity)) {
 				EOEntity parentEntity = entity.parentEntity();
-				if (myEntities.containsObject(parentEntity) && !myEntities.containsObject(entity)) {
-					myEntities.addObject(entity);
+				if (_entities.containsObject(parentEntity) && !_entities.containsObject(entity)) {
+					_entities.addObject(entity);
 				}
 			}
 		}
 	}
 
-	protected void ensureSingleTableInheritanceParentEntitiesAreIncluded(EOEntity _entity) {
-		if (isSingleTableInheritance(_entity)) {
-			EOEntity parentEntity = _entity.parentEntity();
-			if (!myEntities.containsObject(parentEntity)) {
-				myEntities.addObject(parentEntity);
-				ensureSingleTableInheritanceParentEntitiesAreIncluded(_entity);
+	protected void ensureSingleTableInheritanceParentEntitiesAreIncluded(EOEntity entity) {
+		if (isSingleTableInheritance(entity)) {
+			EOEntity parentEntity = entity.parentEntity();
+			if (!_entities.containsObject(parentEntity)) {
+				_entities.addObject(parentEntity);
+				ensureSingleTableInheritanceParentEntitiesAreIncluded(entity);
 			}
 		}
 	}
@@ -225,37 +271,43 @@ public class EOFSQLGenerator {
 		return isPrototype;
 	}
 
-	protected boolean isSingleTableInheritance(EOEntity _entity) {
-		EOEntity parentEntity = _entity.parentEntity();
-		return parentEntity != null && _entity.externalName() != null && _entity.externalName().equalsIgnoreCase(parentEntity.externalName());
+	protected boolean isSingleTableInheritance(EOEntity entity) {
+		EOEntity parentEntity = entity.parentEntity();
+		return parentEntity != null && entity.externalName() != null && entity.externalName().equalsIgnoreCase(parentEntity.externalName());
 	}
 
 	protected void createLocalizedAttributes(EOEntity entity) {
 		NSArray attributes = entity.attributes().immutableClone();
 		NSArray classProperties = entity.classProperties().immutableClone();
 		NSArray attributesUsedForLocking = entity.attributesUsedForLocking().immutableClone();
-		if(attributes == null) attributes = NSArray.EmptyArray;
-		if(classProperties == null) classProperties = NSArray.EmptyArray;
-		if(attributesUsedForLocking == null) attributesUsedForLocking = NSArray.EmptyArray;
+		if (attributes == null) {
+			attributes = NSArray.EmptyArray;
+		}
+		if (classProperties == null) {
+			classProperties = NSArray.EmptyArray;
+		}
+		if (attributesUsedForLocking == null) {
+			attributesUsedForLocking = NSArray.EmptyArray;
+		}
 		NSMutableArray mutableClassProperties = classProperties.mutableClone();
 		NSMutableArray mutableAttributesUsedForLocking = attributesUsedForLocking.mutableClone();
-		for(Enumeration e = attributes.objectEnumerator(); e.hasMoreElements(); ) {
-			EOAttribute attribute = (EOAttribute)e.nextElement();
+		for (Enumeration e = attributes.objectEnumerator(); e.hasMoreElements();) {
+			EOAttribute attribute = (EOAttribute) e.nextElement();
 			NSDictionary userInfo = attribute.userInfo();
 			String name = attribute.name();
-			if(userInfo != null) {
+			if (userInfo != null) {
 				Object l = userInfo.objectForKey("ERXLanguages");
-				if(l != null && !(l instanceof NSArray)) {
-					l = (entity.model().userInfo() != null ? entity.model().userInfo().objectForKey("ERXLanguages") :  null);
+				if (l != null && !(l instanceof NSArray)) {
+					l = (entity.model().userInfo() != null ? entity.model().userInfo().objectForKey("ERXLanguages") : null);
 				}
-				
-				NSArray languages = (NSArray)l;
-				if(languages != null && languages.count() > 0) {
+
+				NSArray languages = (NSArray) l;
+				if (languages != null && languages.count() > 0) {
 					String columnName = attribute.columnName();
 					for (int i = 0; i < languages.count(); i++) {
 						String language = (String) languages.objectAtIndex(i);
-						String newName = name + "_" +language;
-						String newColumnName = columnName + "_" +language;
+						String newName = name + "_" + language;
+						String newColumnName = columnName + "_" + language;
 
 						EOAttribute newAttribute = new EOAttribute();
 						newAttribute.setName(newName);
@@ -269,10 +321,10 @@ public class EOFSQLGenerator {
 						newAttribute.setWidth(attribute.width());
 						newAttribute.setUserInfo(attribute.userInfo());
 
-						if(classProperties.containsObject(attribute)) {
+						if (classProperties.containsObject(attribute)) {
 							mutableClassProperties.addObject(newAttribute);
 						}
-						if(attributesUsedForLocking.containsObject(attribute)) {
+						if (attributesUsedForLocking.containsObject(attribute)) {
 							mutableAttributesUsedForLocking.addObject(newAttribute);
 						}
 					}
@@ -286,27 +338,27 @@ public class EOFSQLGenerator {
 			entity.setAttributesUsedForLocking(mutableAttributesUsedForLocking);
 		}
 	}
-	
-	protected boolean isInherited(EOAttribute _attribute) {
+
+	protected boolean isInherited(EOAttribute attribute) {
 		boolean inherited = false;
-		EOEntity parentEntity = _attribute.entity().parentEntity();
+		EOEntity parentEntity = attribute.entity().parentEntity();
 		while (!inherited && parentEntity != null) {
-			inherited = (parentEntity.attributeNamed(_attribute.name()) != null);
+			inherited = (parentEntity.attributeNamed(attribute.name()) != null);
 			parentEntity = parentEntity.parentEntity();
 		}
 		return inherited;
 	}
 
-	protected void fixDuplicateSingleTableInheritanceDropStatements(EOSynchronizationFactory _syncFactory, NSMutableDictionary _flags, StringBuffer _sqlBuffer) {
-		if ("YES".equals(_flags.objectForKey(EOSchemaGeneration.DropTablesKey))) {
-			NSMutableArray dropEntities = new NSMutableArray(myEntities);
+	protected void fixDuplicateSingleTableInheritanceDropStatements(EOSynchronizationFactory syncFactory, NSMutableDictionary flags, StringBuffer sqlBuffer) {
+		if ("YES".equals(flags.objectForKey(EOSchemaGeneration.DropTablesKey))) {
+			NSMutableArray dropEntities = new NSMutableArray(_entities);
 			for (int entityNum = dropEntities.count() - 1; entityNum >= 0; entityNum--) {
 				EOEntity entity = (EOEntity) dropEntities.objectAtIndex(entityNum);
 				if (isSingleTableInheritance(entity)) {
 					dropEntities.removeObjectAtIndex(entityNum);
 				}
 			}
-			if (dropEntities.count() != myEntities.count()) {
+			if (dropEntities.count() != _entities.count()) {
 				NSMutableDictionary dropFlags = new NSMutableDictionary();
 				dropFlags.setObjectForKey("YES", EOSchemaGeneration.DropTablesKey);
 				dropFlags.setObjectForKey("NO", EOSchemaGeneration.DropPrimaryKeySupportKey);
@@ -316,51 +368,51 @@ public class EOFSQLGenerator {
 				dropFlags.setObjectForKey("NO", EOSchemaGeneration.ForeignKeyConstraintsKey);
 				dropFlags.setObjectForKey("NO", EOSchemaGeneration.CreateDatabaseKey);
 				dropFlags.setObjectForKey("NO", EOSchemaGeneration.DropDatabaseKey);
-				_flags.setObjectForKey("NO", EOSchemaGeneration.DropTablesKey);
-				String dropSql = _syncFactory.schemaCreationScriptForEntities(dropEntities, dropFlags);
-				_sqlBuffer.append(dropSql);
-				_sqlBuffer.append("\n");
+				flags.setObjectForKey("NO", EOSchemaGeneration.DropTablesKey);
+				String dropSql = syncFactory.schemaCreationScriptForEntities(dropEntities, dropFlags);
+				sqlBuffer.append(dropSql);
+				sqlBuffer.append("\n");
 			}
 		}
 	}
 
-	public String getSchemaCreationScript(Map _flagsMap) {
+	public String getSchemaCreationScript(Map flagsMap) {
 		NSMutableDictionary flags = new NSMutableDictionary();
-		if (_flagsMap != null) {
-			Iterator entriesIter = _flagsMap.entrySet().iterator();
+		if (flagsMap != null) {
+			Iterator entriesIter = flagsMap.entrySet().iterator();
 			while (entriesIter.hasNext()) {
 				Map.Entry flag = (Map.Entry) entriesIter.next();
 				flags.setObjectForKey(flag.getValue(), flag.getKey());
 			}
 		}
 
-		callModelProcessorMethodIfExists("processModel", new Object[] { myModel, myEntities, flags });
-		
-		EODatabaseContext dbc = new EODatabaseContext(new EODatabase(myModel));
+		callModelProcessorMethodIfExists("processModel", new Object[] { _model, _entities, flags });
+
+		EODatabaseContext dbc = new EODatabaseContext(new EODatabase(_model));
 		EOAdaptorContext ac = dbc.adaptorContext();
 		EOSynchronizationFactory sf = ((JDBCAdaptor) ac.adaptor()).plugIn().synchronizationFactory();
 
 		StringBuffer sqlBuffer = new StringBuffer();
 		fixDuplicateSingleTableInheritanceDropStatements(sf, flags, sqlBuffer);
 
-		String sql = sf.schemaCreationScriptForEntities(myEntities, flags);
+		String sql = sf.schemaCreationScriptForEntities(_entities, flags);
 		sqlBuffer.append(sql);
 
-		callModelProcessorMethodIfExists("processSQL", new Object[] { sqlBuffer, myModel, myEntities, flags });
+		callModelProcessorMethodIfExists("processSQL", new Object[] { sqlBuffer, _model, _entities, flags });
 
 		String sqlBufferStr = sqlBuffer.toString();
 		return sqlBufferStr;
 	}
 
-	public Object callModelProcessorMethodIfExists(String _methodName, Object[] _objs) {
+	public Object callModelProcessorMethodIfExists(String methodName, Object[] _objs) {
 		try {
 			Object results = null;
-			if (myModelProcessor != null) {
-				Method[] methods = myModelProcessor.getClass().getMethods();
+			if (_modelProcessor != null) {
+				Method[] methods = _modelProcessor.getClass().getMethods();
 				Method matchingMethod = null;
 				for (int methodNum = 0; matchingMethod == null && methodNum < methods.length; methodNum++) {
 					Method method = methods[methodNum];
-					if (method.getName().equals(_methodName)) {
+					if (method.getName().equals(methodName)) {
 						Class[] parameterTypes = method.getParameterTypes();
 						boolean parametersMatch = false;
 						if ((_objs == null || _objs.length == 0) && parameterTypes.length == 0) {
@@ -378,47 +430,47 @@ public class EOFSQLGenerator {
 					}
 				}
 				if (matchingMethod != null) {
-					results = matchingMethod.invoke(myModelProcessor, _objs);
+					results = matchingMethod.invoke(_modelProcessor, _objs);
 				} else {
-					System.out.println("EOFSQLGenerator.callModelProcessorMethodIfExists: Missing delegate " + _methodName);
+					System.out.println("EOFSQLGenerator.callModelProcessorMethodIfExists: Missing delegate " + methodName);
 				}
 			}
 			return results;
 		} catch (Throwable t) {
-			throw new RuntimeException("Failed to execute " + _methodName + " on " + myModelProcessor + ".", t);
+			throw new RuntimeException("Failed to execute " + methodName + " on " + _modelProcessor + ".", t);
 		}
 	}
 
-	public void findModelProcessor(String _modelProcessorClassName, boolean _throwExceptionIfMissing) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+	public void findModelProcessor(String modelProcessorClassName, boolean throwExceptionIfMissing) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		try {
-			Class modelProcessorClass = Class.forName(_modelProcessorClassName);
-			myModelProcessor = modelProcessorClass.newInstance();
+			Class modelProcessorClass = Class.forName(modelProcessorClassName);
+			_modelProcessor = modelProcessorClass.newInstance();
 		} catch (ClassNotFoundException e) {
-			System.out.println("EOFSQLGenerator.getModelProcessor: Missing model processor " + _modelProcessorClassName);
-			if (_throwExceptionIfMissing) {
+			System.out.println("EOFSQLGenerator.getModelProcessor: Missing model processor " + modelProcessorClassName);
+			if (throwExceptionIfMissing) {
 				throw e;
 			}
 		} catch (InstantiationException e) {
-			if (_throwExceptionIfMissing) {
+			if (throwExceptionIfMissing) {
 				throw e;
 			}
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			if (_throwExceptionIfMissing) {
+			if (throwExceptionIfMissing) {
 				throw e;
 			}
 			e.printStackTrace();
 		} catch (RuntimeException e) {
-			if (_throwExceptionIfMissing) {
+			if (throwExceptionIfMissing) {
 				throw e;
 			}
 			e.printStackTrace();
 		}
 	}
 
-	public void executeSQL(String _sql) throws SQLException {
-		System.out.println("EOFSQLGenerator.executeSQL: " + myModel.connectionDictionary());
-		EODatabaseContext databaseContext = new EODatabaseContext(new EODatabase(myModel));
+	public void executeSQL(String sql) throws SQLException {
+		System.out.println("EOFSQLGenerator.executeSQL: " + _model.connectionDictionary());
+		EODatabaseContext databaseContext = new EODatabaseContext(new EODatabase(_model));
 		EODatabaseChannel databaseChannel = databaseContext.availableChannel();
 		EOAdaptorChannel adaptorChannel = databaseChannel.adaptorChannel();
 		if (!adaptorChannel.isOpen()) {
@@ -429,7 +481,7 @@ public class EOFSQLGenerator {
 			jdbccontext.beginTransaction();
 			Connection conn = jdbccontext.connection();
 			Statement stmt = conn.createStatement();
-			stmt.executeUpdate(_sql);
+			stmt.executeUpdate(sql);
 			conn.commit();
 		} catch (SQLException sqlexception) {
 			sqlexception.printStackTrace(System.out);
@@ -440,17 +492,17 @@ public class EOFSQLGenerator {
 	}
 
 	public Map externalTypes() {
-		EODatabaseContext dbc = new EODatabaseContext(new EODatabase(myModel));
+		EODatabaseContext dbc = new EODatabaseContext(new EODatabase(_model));
 		EOAdaptorContext ac = dbc.adaptorContext();
 		NSDictionary jdbc2Info = ((JDBCAdaptor) ac.adaptor()).plugIn().jdbcInfo();
 		return (Map) toJavaCollections(jdbc2Info);
 	}
 
-	protected static Object toJavaCollections(Object _obj) {
+	protected static Object toJavaCollections(Object obj) {
 		Object result;
-		if (_obj instanceof NSDictionary) {
+		if (obj instanceof NSDictionary) {
 			Map map = new HashMap();
-			NSDictionary nsDict = (NSDictionary) _obj;
+			NSDictionary nsDict = (NSDictionary) obj;
 			Enumeration keysEnum = nsDict.allKeys().objectEnumerator();
 			while (keysEnum.hasMoreElements()) {
 				Object key = keysEnum.nextElement();
@@ -460,9 +512,9 @@ public class EOFSQLGenerator {
 				map.put(key, value);
 			}
 			result = map;
-		} else if (_obj instanceof NSArray) {
+		} else if (obj instanceof NSArray) {
 			List list = new LinkedList();
-			NSArray nsArray = (NSArray) _obj;
+			NSArray nsArray = (NSArray) obj;
 			Enumeration valuesEnum = nsArray.objectEnumerator();
 			while (valuesEnum.hasMoreElements()) {
 				Object value = valuesEnum.nextElement();
@@ -470,9 +522,9 @@ public class EOFSQLGenerator {
 				list.add(value);
 			}
 			result = list;
-		} else if (_obj instanceof NSSet) {
+		} else if (obj instanceof NSSet) {
 			Set set = new HashSet();
-			NSSet nsSet = (NSSet) _obj;
+			NSSet nsSet = (NSSet) obj;
 			Enumeration valuesEnum = nsSet.objectEnumerator();
 			while (valuesEnum.hasMoreElements()) {
 				Object value = valuesEnum.nextElement();
@@ -481,12 +533,12 @@ public class EOFSQLGenerator {
 			}
 			result = set;
 		} else {
-			result = _obj;
+			result = obj;
 		}
 		return result;
 	}
 
-	public static void main(String argv[]) throws MalformedURLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+	public static void main(String[] argv) throws MalformedURLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 		Map flags = new HashMap();
 		flags.put(EOSchemaGeneration.DropTablesKey, "YES");
 		flags.put(EOSchemaGeneration.DropPrimaryKeySupportKey, "YES");

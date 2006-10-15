@@ -47,6 +47,8 @@ public class GenerateSQLDialog extends Dialog {
 
 	private Button myDropPrimaryKeySupportButton;
 
+	private Button myCreateSelectedEntitiesButton;
+
 	private Button myCreateTablesButton;
 
 	private Button myCreatePrimaryKeySupportButton;
@@ -76,6 +78,8 @@ public class GenerateSQLDialog extends Dialog {
 	private Cursor myWaitCursor;
 
 	private Button myExecuteSqlButton;
+	
+	private boolean myCreateOnlySelectedEntities;
 
 	public GenerateSQLDialog(Shell _parentShell, EOModel _model, List _entityNames) {
 		super(_parentShell);
@@ -110,8 +114,7 @@ public class GenerateSQLDialog extends Dialog {
 			EODatabaseConfig activeDatabaseConfig = myModel.getActiveDatabaseConfig();
 			if (activeDatabaseConfig != null) {
 				myDatabaseConfigComboViewer.setSelection(new StructuredSelection(activeDatabaseConfig));
-			}
-			else {
+			} else {
 				myDatabaseConfigComboViewer.setSelection(new StructuredSelection(myDatabaseConfigs.iterator().next()));
 			}
 			myDatabaseConfigComboViewer.addSelectionChangedListener(myFlagChangeHander);
@@ -142,7 +145,13 @@ public class GenerateSQLDialog extends Dialog {
 		myCreatePrimaryKeySupportButton.setSelection(true);
 		myCreatePrimaryKeySupportButton.addSelectionListener(myFlagChangeHander);
 
-		new Label(control, SWT.NONE);
+		int entityCount = (myEntityNames != null) ? myEntityNames.size() : 0;
+		myCreateSelectedEntitiesButton = new Button(control, SWT.CHECK);
+		myCreateSelectedEntitiesButton.setText("Create Only Selected Entities");
+		myCreateSelectedEntitiesButton.setSelection(entityCount > 0);
+		myCreateSelectedEntitiesButton.addSelectionListener(myFlagChangeHander);
+		myCreateSelectedEntitiesButton.setEnabled(entityCount > 0);
+		myCreateOnlySelectedEntities = (entityCount > 0);
 		myCreatePrimaryKeyConstraintsButton = new Button(control, SWT.CHECK);
 		myCreatePrimaryKeyConstraintsButton.setText("Primary Key Constraints");
 		myCreatePrimaryKeyConstraintsButton.setSelection(true);
@@ -232,6 +241,7 @@ public class GenerateSQLDialog extends Dialog {
 	}
 
 	public void generateSqlInThread() {
+		myCreateOnlySelectedEntities = myCreateSelectedEntitiesButton.getSelection();
 		final Map flags = new HashMap();
 		flags.put("dropTables", yesNo(myDropTablesButton));
 		flags.put("dropPrimaryKeySupport", yesNo(myDropPrimaryKeySupportButton));
@@ -253,7 +263,7 @@ public class GenerateSQLDialog extends Dialog {
 	protected Button getExecuteSqlButton() {
 		return myExecuteSqlButton;
 	}
-	
+
 	protected synchronized void generateSql(Map flags, Map selectedDatabaseConfigMap) {
 		try {
 			Display.getDefault().syncExec(new Runnable() {
@@ -262,7 +272,7 @@ public class GenerateSQLDialog extends Dialog {
 					getExecuteSqlButton().setEnabled(false);
 				}
 			});
-			Object eofSQLGenerator = SQLUtils.createEOFSQLGenerator(myModel, myEntityNames, selectedDatabaseConfigMap, getEOModelClassLoader());
+			Object eofSQLGenerator = SQLUtils.createEOFSQLGenerator(myModel, getEntityNames(), selectedDatabaseConfigMap, getEOModelClassLoader());
 			Method getSchemaCreationScriptMethod = eofSQLGenerator.getClass().getMethod("getSchemaCreationScript", new Class[] { Map.class });
 			final String sqlScript = (String) getSchemaCreationScriptMethod.invoke(eofSQLGenerator, new Object[] { flags });
 			Display.getDefault().syncExec(new Runnable() {
@@ -292,6 +302,7 @@ public class GenerateSQLDialog extends Dialog {
 	}
 
 	public void executeSqlInThread() {
+		myCreateOnlySelectedEntities = myCreateSelectedEntitiesButton.getSelection();
 		boolean confirmed = MessageDialog.openConfirm(getShell(), "Execute SQL", "Are you sure you want to execute this SQL?");
 		if (confirmed) {
 			final String sqlString = getSqlString();
@@ -311,6 +322,10 @@ public class GenerateSQLDialog extends Dialog {
 	protected Cursor getWaitCursor() {
 		return myWaitCursor;
 	}
+	
+	protected List getEntityNames() {
+		return (myCreateOnlySelectedEntities) ? myEntityNames : null;
+	}
 
 	protected synchronized void executeSql(String allSql) {
 		try {
@@ -319,7 +334,7 @@ public class GenerateSQLDialog extends Dialog {
 					getShell().setCursor(getWaitCursor());
 				}
 			});
-			Object eofSQLGenerator = SQLUtils.createEOFSQLGenerator(myModel, myEntityNames, getSelectedDatabaseConfigMap(), getEOModelClassLoader());
+			Object eofSQLGenerator = SQLUtils.createEOFSQLGenerator(myModel, getEntityNames(), getSelectedDatabaseConfigMap(), getEOModelClassLoader());
 			Method executeSQLMethod = eofSQLGenerator.getClass().getMethod("executeSQL", new Class[] { String.class });
 			String[] statements = allSql.split(";");
 			setCancel(false);
@@ -333,7 +348,9 @@ public class GenerateSQLDialog extends Dialog {
 						Display.getDefault().syncExec(new Runnable() {
 							public void run() {
 								ErrorUtils.openErrorDialog(getShell(), t);
-								boolean cancel = MessageDialog.openQuestion(getShell(), "Error", "Do you want to cancel the rest of the script?");
+								MessageDialog dialog = new MessageDialog(getShell(), "Error", null, "There was an error, do you want to cancel the rest of the script?", MessageDialog.QUESTION, new String[] { "Cancel", "Continue" }, 0);
+								int results = dialog.open();
+								boolean cancel = (results == 0);
 								setCancel(cancel);
 							}
 						});
