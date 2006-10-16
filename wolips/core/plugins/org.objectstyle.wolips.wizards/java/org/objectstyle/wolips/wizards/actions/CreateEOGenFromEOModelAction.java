@@ -71,7 +71,7 @@ public class CreateEOGenFromEOModelAction implements IObjectActionDelegate {
 		IStructuredSelection selection = (IStructuredSelection) mySelection;
 		if (selection != null && !selection.isEmpty()) {
 			IResource modelFile = (IResource) selection.getFirstElement();
-			CreateEOGenFromEOModelWorkspaceJob generateJob = new CreateEOGenFromEOModelWorkspaceJob(modelFile);
+			CreateEOGenFromEOModelWorkspaceJob generateJob = new CreateEOGenFromEOModelWorkspaceJob(modelFile, false);
 			generateJob.schedule();
 		}
 	}

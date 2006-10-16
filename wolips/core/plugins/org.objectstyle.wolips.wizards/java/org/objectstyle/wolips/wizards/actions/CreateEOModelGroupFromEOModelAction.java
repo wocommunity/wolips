@@ -49,53 +49,34 @@
  */
 package org.objectstyle.wolips.wizards.actions;
 
-import java.util.HashSet;
-
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.WorkspaceJob;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Shell;
-import org.objectstyle.wolips.eogenerator.model.EOGeneratorModel;
-import org.objectstyle.wolips.eomodeler.model.EOModel;
-import org.objectstyle.wolips.eomodeler.model.EclipseEOModelGroupFactory;
-import org.objectstyle.wolips.wizards.EOGeneratorWizard;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IWorkbenchPart;
 
-public class CreateEOGenFromEOModelWorkspaceJob extends WorkspaceJob {
-	private IResource _modelFile;
+public class CreateEOModelGroupFromEOModelAction implements IObjectActionDelegate {
+	private ISelection _selection;
 
-	private boolean _createEOModelGroup;
-
-	public CreateEOGenFromEOModelWorkspaceJob(IResource modelFile, boolean createEOModelGroup) {
-		super((createEOModelGroup) ? "Creating EOModelGroup File" : "Creating EOGenerator File ...");
-		_modelFile = modelFile;
-		_createEOModelGroup = createEOModelGroup;
+	public CreateEOModelGroupFromEOModelAction() {
+		super();
 	}
 
-	public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
-		try {
-			String extension = (_createEOModelGroup) ? ".eomodelgroup" : ".eogen";
-			EOModel model = EclipseEOModelGroupFactory.createModel(_modelFile, new HashSet());
-			EOGeneratorModel eogenModel = EOGeneratorWizard.createEOGeneratorModel(_modelFile.getParent(), model);
-			String eogenBasePath = model.getModelFolder().getAbsolutePath();
-			int dotIndex = eogenBasePath.lastIndexOf('.');
-			eogenBasePath = eogenBasePath.substring(0, dotIndex);
-			String eogenPath = eogenBasePath + extension;
-			IFile eogenFile = _modelFile.getWorkspace().getRoot().getFileForLocation(new Path(eogenPath));
-			for (int dupeNum = 0; eogenFile.exists(); dupeNum++) {
-				eogenPath = eogenBasePath + dupeNum + extension;
-				eogenFile = _modelFile.getWorkspace().getRoot().getFileForLocation(new Path(eogenPath));
-			}
-			eogenModel.writeToFile(eogenFile, null);
-		} catch (Throwable t) {
-			t.printStackTrace();
-			MessageDialog.openError(new Shell(), "Generate Failed", t.getMessage());
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		// do nothing
+	}
+
+	public void run(IAction _action) {
+		IStructuredSelection structuredSelection = (IStructuredSelection) _selection;
+		if (structuredSelection != null && !structuredSelection.isEmpty()) {
+			IResource modelFile = (IResource) structuredSelection.getFirstElement();
+			CreateEOGenFromEOModelWorkspaceJob generateJob = new CreateEOGenFromEOModelWorkspaceJob(modelFile, true);
+			generateJob.schedule();
 		}
-		return new Status(IStatus.OK, org.objectstyle.wolips.eogenerator.ui.Activator.PLUGIN_ID, IStatus.OK, "Done", null);
+	}
+
+	public void selectionChanged(IAction action, ISelection selection) {
+		_selection = selection;
 	}
 }

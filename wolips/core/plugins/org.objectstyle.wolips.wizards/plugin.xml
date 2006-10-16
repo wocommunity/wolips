@@ -206,7 +206,13 @@
                icon="icons/woproject/eogenerator_wiz.gif"
                id="org.objectstyle.wolips.wizards.actions.eogenFromEOModel"
                label="Create EOGenerator File"
-               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group4"/>
+               menubarPath="additions"/>
+         <action
+               class="org.objectstyle.wolips.wizards.actions.CreateEOModelGroupFromEOModelAction"
+               icon="icons/woproject/eomodelGroup_wiz.gif"
+               id="org.objectstyle.wolips.wizards.actions.eomodelgroupFromEOModel"
+               label="Create EOModelGroup File"
+               menubarPath="additions"/>
       </objectContribution>
    </extension>
 </plugin>
