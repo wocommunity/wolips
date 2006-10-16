@@ -131,11 +131,12 @@
             nameFilter="*.eomodeld"
             id="org.objectstyle.wolips.ui.actions.OpenEOModelIndexAction">
          <action
-               label="Open EOModel"
                class="org.objectstyle.wolips.ui.actions.OpenEOModelIndexAction"
-               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group0"
                enablesFor="1"
-               id="org.objectstyle.wolips.ui.actions.OpenEOModelIndexAction">
+               icon="icons/eomodeler/webobjects_eomodeler.gif"
+               id="org.objectstyle.wolips.ui.actions.OpenEOModelIndexAction"
+               label="Open EOModel"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group0">
          </action>
       </objectContribution>
       <objectContribution
@@ -146,9 +147,10 @@
          <action
                class="org.objectstyle.wolips.ui.actions.OpenEntityModelerAction"
                enablesFor="1"
+               icon="icons/eomodeler/webobjects_eomodeler.gif"
                id="org.objectstyle.wolips.ui.actions.OpenEntityModerAction"
                label="Open Entity Modeler"
-               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group0"/>
+               menubarPath="additions"/>
       </objectContribution>
       <objectContribution
             objectClass="org.eclipse.core.resources.IResource"
