@@ -31,9 +31,10 @@
          <action
                class="org.objectstyle.wolips.eogenerator.ui.actions.GenerateAction"
                enablesFor="1"
+               icon="icons/eogenerator_wiz.gif"
                id="org.objectstyle.wolips.eogenerator.ui.generateAction"
                label="EOGenerate ..."
-               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group0"/>
+               menubarPath="additions"/>
       </objectContribution>
    </extension>
    <extension
