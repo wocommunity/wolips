@@ -306,9 +306,10 @@ public class GenerateSQLDialog extends Dialog {
 		boolean confirmed = MessageDialog.openConfirm(getShell(), "Execute SQL", "Are you sure you want to execute this SQL?");
 		if (confirmed) {
 			final String sqlString = getSqlString();
+			final Map selectedDatabaseConfigMap = getSelectedDatabaseConfigMap();
 			Thread executeSqlThread = new Thread(new Runnable() {
 				public void run() {
-					executeSql(sqlString);
+					executeSql(sqlString, selectedDatabaseConfigMap);
 				}
 			}, "Execute SQL");
 			executeSqlThread.start();
@@ -327,14 +328,14 @@ public class GenerateSQLDialog extends Dialog {
 		return (myCreateOnlySelectedEntities) ? myEntityNames : null;
 	}
 
-	protected synchronized void executeSql(String allSql) {
+	protected synchronized void executeSql(String allSql, Map selectedDatabaseConfigMap) {
 		try {
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
 					getShell().setCursor(getWaitCursor());
 				}
 			});
-			Object eofSQLGenerator = SQLUtils.createEOFSQLGenerator(myModel, getEntityNames(), getSelectedDatabaseConfigMap(), getEOModelClassLoader());
+			Object eofSQLGenerator = SQLUtils.createEOFSQLGenerator(myModel, getEntityNames(), selectedDatabaseConfigMap, getEOModelClassLoader());
 			Method executeSQLMethod = eofSQLGenerator.getClass().getMethod("executeSQL", new Class[] { String.class });
 			String[] statements = allSql.split(";");
 			setCancel(false);
