@@ -90,7 +90,8 @@ public class UIPlugin extends AbstractBaseUIActivator {
 
 	public void start(BundleContext _context) throws Exception {
 		super.start(_context);
-		getWorkbench().getActiveWorkbenchWindow().addPageListener(new PackageExplorerDoubleClickHandler());
+		PackageExplorerDoubleClickHandler doubleClickHandler = new PackageExplorerDoubleClickHandler();
+		getWorkbench().getActiveWorkbenchWindow().addPageListener(doubleClickHandler);
 	}
 
 	/**

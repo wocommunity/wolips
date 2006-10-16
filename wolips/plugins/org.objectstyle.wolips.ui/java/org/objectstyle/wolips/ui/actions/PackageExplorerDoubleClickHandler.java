@@ -52,6 +52,7 @@ package org.objectstyle.wolips.ui.actions;
 import java.util.Iterator;
 
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.jdt.internal.core.util.WeakHashSet;
 import org.eclipse.jdt.internal.ui.packageview.PackageExplorerPart;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -63,6 +64,7 @@ import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
+import org.eclipse.ui.internal.UIPlugin;
 
 /**
  * Eclipse does not understand how to open a bundle folder. This handler sneaks
@@ -72,13 +74,24 @@ import org.eclipse.ui.IWorkbenchPartReference;
  * @author mschrag
  */
 public class PackageExplorerDoubleClickHandler implements IPageListener, IPartListener2, IDoubleClickListener {
-	private boolean _addedPackageExplorerListener;
+	private WeakHashSet _listeningPackageExplorers;
+
+	public PackageExplorerDoubleClickHandler() {
+		_listeningPackageExplorers = new WeakHashSet();
+		IWorkbenchPage[] pages = UIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getPages();
+		for (int i = 0; i < pages.length; i++) {
+			IWorkbenchPage page = pages[i];
+			findAndAttachToPackageExplorerInPage(page);
+		}
+	}
 
 	public void pageActivated(IWorkbenchPage _page) {
+		findAndAttachToPackageExplorerInPage(_page);
 		_page.addPartListener(this);
 	}
 
 	public void pageClosed(IWorkbenchPage _page) {
+		_page.removePartListener(this);
 		// do nothing
 	}
 
@@ -115,15 +128,24 @@ public class PackageExplorerDoubleClickHandler implements IPageListener, IPartLi
 	}
 
 	public void partVisible(IWorkbenchPartReference partRef) {
-		if (!_addedPackageExplorerListener) {
-			if (PackageExplorerPart.VIEW_ID.equals(partRef.getId())) {
-				IWorkbenchPart part = partRef.getPart(true);
-				if (part instanceof PackageExplorerPart) {
-					PackageExplorerPart packageExplorerPart = (PackageExplorerPart) part;
+		attachToPartIfNecessary(partRef);
+	}
+
+	protected void findAndAttachToPackageExplorerInPage(IWorkbenchPage page) {
+		IWorkbenchPartReference packageExplorerPartRef = page.findViewReference(PackageExplorerPart.VIEW_ID);
+		attachToPartIfNecessary(packageExplorerPartRef);
+	}
+
+	protected synchronized void attachToPartIfNecessary(IWorkbenchPartReference partReference) {
+		if (PackageExplorerPart.VIEW_ID.equals(partReference.getId())) {
+			IWorkbenchPart part = partReference.getPart(false);
+			if (part instanceof PackageExplorerPart) {
+				PackageExplorerPart packageExplorerPart = (PackageExplorerPart) part;
+				if (!_listeningPackageExplorers.contains(packageExplorerPart)) {
 					TreeViewer packageExplorerTreeViewer = packageExplorerPart.getTreeViewer();
 					if (packageExplorerTreeViewer != null) {
 						packageExplorerTreeViewer.addDoubleClickListener(this);
-						_addedPackageExplorerListener = true;
+						_listeningPackageExplorers.add(packageExplorerPart);
 					}
 				}
 			}
