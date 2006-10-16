@@ -92,13 +92,13 @@ public class EOModelGroup extends EOModelObject {
 	}
 
 	public Set getEntities() {
-		Set entities = new HashSet();
+		Set allEntities = new HashSet();
 		Iterator modelsIter = myModels.iterator();
 		while (modelsIter.hasNext()) {
 			EOModel model = (EOModel) modelsIter.next();
-			entities.addAll(model.getEntities());
+			allEntities.addAll(model.getEntities());
 		}
-		return entities;
+		return allEntities;
 	}
 
 	public String findUnusedEntityName(String _newName) {
@@ -193,33 +193,47 @@ public class EOModelGroup extends EOModelObject {
 		return matchingModel;
 	}
 
-	public void addModelsFromFolder(File _folder, Set _failures) throws IOException, EOModelException {
-		addModelsFromFolder(_folder, true, _failures);
+	public void addModelsFromFolder(File _folder, Set _failures, boolean _skipOnDuplicates) throws IOException, EOModelException {
+		addModelsFromFolder(_folder, true, _failures, _skipOnDuplicates);
 	}
 
-	public void addModelsFromFolder(File _folder, boolean _recursive, Set _failures) throws IOException, EOModelException {
+	public void addModelsFromFolder(File _folder, boolean _recursive, Set _failures, boolean _skipOnDuplicates) throws IOException, EOModelException {
 		File[] files = _folder.listFiles();
 		for (int fileNum = 0; fileNum < files.length; fileNum++) {
 			String name = files[fileNum].getName();
 			if (files[fileNum].isDirectory()) {
 				if (name.endsWith(".eomodeld")) {
-					addModelFromFolder(files[fileNum], _failures);
+					addModelFromFolder(files[fileNum], _failures, _skipOnDuplicates);
 				} else if (_recursive) {
-					addModelsFromFolder(files[fileNum], _recursive, _failures);
+					addModelsFromFolder(files[fileNum], _recursive, _failures, _skipOnDuplicates);
 				}
 			}
 		}
 	}
 
-	public EOModel addModelFromFolder(File _folder, Set _failures) throws IOException, EOModelException {
+	public EOModel addModelFromFolder(File _folder, Set _failures, boolean _skipOnDuplicates) throws IOException, EOModelException {
 		String name = _folder.getName();
 		String modelName = name.substring(0, name.indexOf('.'));
 		EOModel model = getModelNamed(modelName);
 		if (model == null) {
 			model = new EOModel(modelName);
 			model._setModelGroup(this);
-			model.loadFromFolder(_folder, _failures);
-			addModel(model, _failures);
+			boolean reloadModel = true;
+			while (reloadModel) {
+				try {
+					model.loadFromFolder(_folder, _failures);
+					addModel(model, _failures);
+					reloadModel = false;
+				} catch (DuplicateEntityNameException e) {
+					if (!_skipOnDuplicates) {
+						throw e;
+					}
+					EOEntity existingEntity = e.getExistingEntity();
+					EOModel existingEntityModel = existingEntity.getModel();
+					_failures.add(new EOModelVerificationFailure(model, existingEntityModel.getName() + " and " + model.getName() + " both declare an entity named " + existingEntity.getName() + ", so " + existingEntityModel.getName() + " is being removed. You can create an EOModelGroup file to resolve this.", true, e));
+					removeModel(existingEntityModel, _failures);
+				}
+			}
 		}
 		return model;
 	}

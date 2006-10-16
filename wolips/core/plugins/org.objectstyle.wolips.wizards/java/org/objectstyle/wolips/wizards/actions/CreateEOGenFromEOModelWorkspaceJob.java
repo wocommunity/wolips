@@ -80,7 +80,7 @@ public class CreateEOGenFromEOModelWorkspaceJob extends WorkspaceJob {
 	public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
 		try {
 			String extension = (_createEOModelGroup) ? ".eomodelgroup" : ".eogen";
-			EOModel model = EclipseEOModelGroupFactory.createModel(_modelFile, new HashSet());
+			EOModel model = EclipseEOModelGroupFactory.createModel(_modelFile, new HashSet(), true);
 			EOGeneratorModel eogenModel = EOGeneratorWizard.createEOGeneratorModel(_modelFile.getParent(), model);
 			String eogenBasePath = model.getModelFolder().getAbsolutePath();
 			int dotIndex = eogenBasePath.lastIndexOf('.');

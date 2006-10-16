@@ -77,7 +77,7 @@ import org.objectstyle.wolips.eogenerator.model.EOModelReference;
 import org.objectstyle.wolips.eomodeler.Activator;
 
 public class EclipseEOModelGroupFactory {
-	public static EOModel createModel(IResource _modelResource, Set _failures) throws CoreException, IOException, EOModelException, ParseException {
+	public static EOModel createModel(IResource _modelResource, Set _failures, boolean _skipOnDuplicates) throws CoreException, IOException, EOModelException, ParseException {
 		IProject project = _modelResource.getProject();
 		EOModel model = null;
 		EOModelGroup modelGroup;
@@ -95,7 +95,7 @@ public class EclipseEOModelGroupFactory {
 				if (!modelFolder.isAbsolute()) {
 					modelFolder = new File(project.getLocation().toFile(), modelPath);
 				}
-				EOModel modelGroupModel = modelGroup.addModelFromFolder(modelFolder, _failures);
+				EOModel modelGroupModel = modelGroup.addModelFromFolder(modelFolder, _failures, _skipOnDuplicates);
 				if (model == null) {
 					model = modelGroupModel;
 				}
@@ -109,7 +109,7 @@ public class EclipseEOModelGroupFactory {
 			} else {
 				modelContainer = (IContainer) _modelResource;
 			}
-			modelGroup = EclipseEOModelGroupFactory.createModelGroup(project, _failures);
+			modelGroup = EclipseEOModelGroupFactory.createModelGroup(project, _failures, _skipOnDuplicates);
 			String modelFileName = modelContainer.getName();
 			String modelName = modelFileName.substring(0, modelFileName.indexOf('.'));
 			model = modelGroup.getModelNamed(modelName);
@@ -117,13 +117,11 @@ public class EclipseEOModelGroupFactory {
 		return model;
 	}
 
-	protected static void addModelsFromProject(EOModelGroup _modelGroup, IProject _project, Set _searchedFolders, Set _searchedProjects, Set _failures) throws IOException, EOModelException, CoreException {
+	protected static void addModelsFromProject(EOModelGroup _modelGroup, IProject _project, Set _searchedFolders, Set _searchedProjects, Set _failures, boolean _skipOnDuplicates) throws IOException, EOModelException, CoreException {
 		if (!_searchedProjects.contains(_project)) {
 			_searchedProjects.add(_project);
 			Project wolipsProject = (Project) _project.getAdapter(Project.class);
 			if (wolipsProject != null && wolipsProject.hasWOLipsNature()) {
-				_project.accept(new ModelVisitor(_modelGroup, _searchedFolders, _failures), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
-
 				IJavaProject javaProject = JavaCore.create(_project);
 				IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
 				for (int classpathEntryNum = 0; classpathEntryNum < classpathEntries.length; classpathEntryNum++) {
@@ -144,22 +142,24 @@ public class EclipseEOModelGroupFactory {
 							File resourcesFolder = frameworkPath.append("Resources").toFile();
 							if (!_searchedFolders.contains(resourcesFolder) && resourcesFolder.exists()) {
 								_searchedFolders.add(resourcesFolder);
-								_modelGroup.addModelsFromFolder(resourcesFolder, false, _failures);
+								_modelGroup.addModelsFromFolder(resourcesFolder, false, _failures, _skipOnDuplicates);
 							}
 						}
 					} else if (entryKind == IClasspathEntry.CPE_PROJECT) {
 						IPath path = entry.getPath();
 						IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(path.lastSegment());
-						EclipseEOModelGroupFactory.addModelsFromProject(_modelGroup, project, _searchedFolders, _searchedProjects, _failures);
+						EclipseEOModelGroupFactory.addModelsFromProject(_modelGroup, project, _searchedFolders, _searchedProjects, _failures, _skipOnDuplicates);
 					}
 				}
+
+				_project.accept(new ModelVisitor(_modelGroup, _searchedFolders, _failures, _skipOnDuplicates), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
 			}
 		}
 	}
 
-	public static EOModelGroup createModelGroup(IProject _project, Set _failures) throws CoreException, IOException, EOModelException {
+	public static EOModelGroup createModelGroup(IProject _project, Set _failures, boolean _skipOnDuplicates) throws CoreException, IOException, EOModelException {
 		EOModelGroup modelGroup = new EOModelGroup();
-		EclipseEOModelGroupFactory.addModelsFromProject(modelGroup, _project, new HashSet(), new HashSet(), _failures);
+		EclipseEOModelGroupFactory.addModelsFromProject(modelGroup, _project, new HashSet(), new HashSet(), _failures, _skipOnDuplicates);
 		modelGroup.resolve(_failures);
 		modelGroup.verify(_failures);
 		return modelGroup;
@@ -171,11 +171,14 @@ public class EclipseEOModelGroupFactory {
 		private Set myFailures;
 
 		private Set mySearchedFolders;
+		
+		private boolean mySkipOnDuplicates;
 
-		public ModelVisitor(EOModelGroup _modelGroup, Set _searchedFolders, Set _failures) {
+		public ModelVisitor(EOModelGroup _modelGroup, Set _searchedFolders, Set _failures, boolean _skipOnDuplicates) {
 			myModelGroup = _modelGroup;
 			myFailures = _failures;
 			mySearchedFolders = _searchedFolders;
+			mySkipOnDuplicates = _skipOnDuplicates;
 		}
 
 		public boolean visit(IResource _resource) throws CoreException {
@@ -184,7 +187,7 @@ public class EclipseEOModelGroupFactory {
 				if (_resource.getType() == IResource.FOLDER) {
 					File resourceFile = _resource.getLocation().toFile();
 					if (!mySearchedFolders.contains(resourceFile) && "eomodeld".equals(_resource.getFileExtension())) {
-						myModelGroup.addModelFromFolder(resourceFile, myFailures);
+						myModelGroup.addModelFromFolder(resourceFile, myFailures, mySkipOnDuplicates);
 						visitChildren = false;
 					}
 				}

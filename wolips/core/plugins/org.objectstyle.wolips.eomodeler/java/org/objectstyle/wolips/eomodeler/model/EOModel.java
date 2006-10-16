@@ -603,6 +603,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 	}
 	
 	public void loadFromFolder(File _modelFolder, Set _failures) throws EOModelException, IOException {
+		System.out.println("EOModel.loadFromFolder: " + _modelFolder);
 		File indexFile = new File(_modelFolder, "index.eomodeld");
 		if (!indexFile.exists()) {
 			throw new EOModelException(indexFile + " does not exist.");
@@ -1028,11 +1029,11 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		Set failures = new LinkedHashSet();
 
 		EOModelGroup modelGroup = new EOModelGroup();
-		modelGroup.addModelsFromFolder(new File("/Library/Frameworks/ERPrototypes.framework/Resources"), false, failures);
-		modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTask"), false, failures);
-		modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTAccounting"), false, failures);
-		modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTCMS"), false, failures);
-		modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTWOExtensions"), false, failures);
+		modelGroup.addModelsFromFolder(new File("/Library/Frameworks/ERPrototypes.framework/Resources"), false, failures, false);
+		modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTask"), false, failures, false);
+		modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTAccounting"), false, failures, false);
+		modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTCMS"), false, failures, false);
+		modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTWOExtensions"), false, failures, false);
 
 		modelGroup.resolve(failures);
 		modelGroup.verify(failures);
