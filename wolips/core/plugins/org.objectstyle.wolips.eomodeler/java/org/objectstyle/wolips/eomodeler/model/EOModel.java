@@ -445,7 +445,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 			// entities, they can be
 			// in a totally separate model.
 			if (_failures == null || _entity.getModel() != existingEntity.getModel()) {
-				throw new DuplicateEntityNameException(_newName, this);
+				throw new DuplicateEntityNameException(_newName, this, existingEntity);
 			}
 			String unusedName = findUnusedEntityName(_newName);
 			existingEntity.setName(unusedName, true);

@@ -52,12 +52,12 @@ package org.objectstyle.wolips.eomodeler.model;
 public class DuplicateEntityNameException extends DuplicateNameException {
 	private EOModel myModel;
 
-	public DuplicateEntityNameException(String _name, EOModel _model) {
-		this(_name, _model, null);
+	public DuplicateEntityNameException(String _name, EOModel _model, EOEntity _existingEntity) {
+		this(_name, _model, _existingEntity, null);
 	}
 
-	public DuplicateEntityNameException(String _name, EOModel _model, Throwable _throwable) {
-		super(_name, "There is more than one entity named '" + _name + "' in this model group.", _throwable);
+	public DuplicateEntityNameException(String _name, EOModel _model, EOEntity _existingEntity, Throwable _throwable) {
+		super(_name, "There is more than one entity named '" + _name + "' in this model group (one in " + _existingEntity.getModel().getName() + ", the other in " + _model.getName() + ").", _throwable);
 		myModel = _model;
 	}
 
