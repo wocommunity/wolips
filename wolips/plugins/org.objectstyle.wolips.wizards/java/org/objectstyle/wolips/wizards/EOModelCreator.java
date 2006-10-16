@@ -143,7 +143,7 @@ public class EOModelCreator implements IRunnableWithProgress {
 	 * @throws InvocationTargetException
 	 */
 	public void createEOModel(IProgressMonitor monitor) throws CoreException, IOException, EOModelException, InvocationTargetException {
-		EOModelGroup modelGroup = EclipseEOModelGroupFactory.createModelGroup(parentResource.getProject(), new HashSet());
+		EOModelGroup modelGroup = EclipseEOModelGroupFactory.createModelGroup(parentResource.getProject(), new HashSet(), false);
 		EOModel model = new EOModel(modelName);
 		model.setAdaptorName(adaptorName);
 		EODatabaseConfig databaseConfig = new EODatabaseConfig("Default");

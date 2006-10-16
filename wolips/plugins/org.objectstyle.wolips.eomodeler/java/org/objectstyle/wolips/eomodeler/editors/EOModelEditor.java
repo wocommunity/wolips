@@ -54,6 +54,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -463,8 +464,8 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				openingEntityName = name.substring(0, name.indexOf('.'));
 			}
 
-			myLoadFailures = new HashSet();
-			myModel = EclipseEOModelGroupFactory.createModel(fileEditorInput.getFile(), myLoadFailures);
+			myLoadFailures = new LinkedHashSet();
+			myModel = EclipseEOModelGroupFactory.createModel(fileEditorInput.getFile(), myLoadFailures, true);
 			if (openingEntityName != null) {
 				myOpeningEntity = myModel.getEntityNamed(openingEntityName);
 			}
@@ -493,7 +494,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				if (indexFile != null) {
 					IMarker[] markers = indexFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
 					for (int markerNum = 0; markerNum < markers.length; markerNum++) {
-						System.out.println("EOModelEditor.handleModelErrors: deleting " + markers[markerNum]);
+						//System.out.println("EOModelEditor.handleModelErrors: deleting " + markers[markerNum]);
 						markers[markerNum].delete();
 					}
 				}
