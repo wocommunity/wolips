@@ -79,7 +79,6 @@ public class BuildPreferencesPage extends FieldEditorPreferencePage implements I
 		addField(new BooleanFieldEditor(Preferences.PREF_WRITE_XCODE_ON_BUILD, PreferencesMessages.getString("Preferences.WriteXcodeOnBuild.Label"), getFieldEditorParent()));
 		addField(new BooleanFieldEditor(Preferences.PREF_WRITE_XCODE21_ON_BUILD, PreferencesMessages.getString("Preferences.WriteXcode21OnBuild.Label"), getFieldEditorParent()));
 		addField(new BooleanFieldEditor(Preferences.PREF_VALIDATE_WOD_ON_BUILD, PreferencesMessages.getString("Preferences.ValidateWODOnBuild.Label"), getFieldEditorParent()));
-		addField(new BooleanFieldEditor(Preferences.PREF_AUTOEOGENERATE_ON_BUILD, PreferencesMessages.getString("Preferences.AutoEOGenerateOnBuild.Label"), getFieldEditorParent()));
 	}
 
 	/**
