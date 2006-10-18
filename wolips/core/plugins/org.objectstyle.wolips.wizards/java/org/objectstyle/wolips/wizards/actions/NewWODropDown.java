@@ -17,11 +17,9 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.jdt.internal.ui.JavaPluginImages;
 import org.eclipse.jdt.internal.ui.util.CoreUtility;
 import org.eclipse.jdt.ui.actions.AbstractOpenWizardAction;
-import org.eclipse.jdt.ui.actions.OpenNewClassWizardAction;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
@@ -102,7 +100,6 @@ public class NewWODropDown extends Action implements IMenuCreator, IWorkbenchWin
 	public NewWODropDown() {
 		fMenu= null;
 		setMenuCreator(this);
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJavaHelpContextIds.OPEN_CLASS_WIZARD_ACTION);
 	}
 
 	public void dispose() {
@@ -132,7 +129,7 @@ public class NewWODropDown extends Action implements IMenuCreator, IWorkbenchWin
 	}
 	
 	public void run() {
-		new OpenNewClassWizardAction().run();
+		new OpenWOApplicationWizard().run();
 	}
 	
 	public static OpenTypeWizardAction[] getActionFromDescriptors() {
