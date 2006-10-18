@@ -419,7 +419,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractBaseUIActivator {
 			if (workbenchPage != null) {
 				try {
 					String id = null;
-					if (false && editor == null) {
+					if (editor == null) {
 						IEditorDescriptor editorDescriptor = IDE.getDefaultEditor(file);
 						if (editorDescriptor == null) {
 							editorDescriptor = IDE.getEditorDescriptor(file);
