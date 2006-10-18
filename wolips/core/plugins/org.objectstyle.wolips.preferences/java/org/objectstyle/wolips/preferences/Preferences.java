@@ -89,11 +89,6 @@ public class Preferences {
 	public static final String PREF_VALIDATE_WOD_ON_BUILD = "org.objectstyle.wolips.preference.ValidateWODOnBuild";
 
 	/**
-	 * Comment for <code>PREF_AUTOEOGENERATE_ON_BUILD</code>
-	 */
-	public static final String PREF_AUTOEOGENERATE_ON_BUILD = "org.objectstyle.wolips.preference.AutoEOGenerateOnBuild";
-
-	/**
 	 * Comment for <code>PREF_CAPTURE_ANT_OUTPUT</code>
 	 */
 	public static final String PREF_CAPTURE_ANT_OUTPUT = "org.objectstyle.wolips.preference.CapureAntOutput";
@@ -201,9 +196,6 @@ public class Preferences {
 		}
 		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_VALIDATE_WOD_ON_BUILD)) {
 			store.setDefault(Preferences.PREF_VALIDATE_WOD_ON_BUILD, Preferences.trueString);
-		}
-		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_AUTOEOGENERATE_ON_BUILD)) {
-			store.setDefault(Preferences.PREF_AUTOEOGENERATE_ON_BUILD, Preferences.falseString);
 		}
 		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML)) {
 			store.setDefault(Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML, Preferences.falseString);
@@ -426,7 +418,7 @@ public class Preferences {
 	}
 
 	public static boolean shouldAutoEOGeneratorOnBuild() {
-		return Preferences.getBoolean(Preferences.PREF_AUTOEOGENERATE_ON_BUILD);
+		return Preferences.getEOGeneratorPath() != null;
 	}
 
 	public static String getEOGeneratorPath() {
@@ -499,10 +491,6 @@ public class Preferences {
 
 	public static void setValidateWODOnBuild(boolean value) {
 		Preferences.setBoolean(Preferences.PREF_VALIDATE_WOD_ON_BUILD, value);
-	}
-
-	public static void setAutoEOGenerateOnBuild(boolean value) {
-		Preferences.setBoolean(Preferences.PREF_AUTOEOGENERATE_ON_BUILD, value);
 	}
 
 	public static void setWOLipsVersionEarlyStartup(String string) {
