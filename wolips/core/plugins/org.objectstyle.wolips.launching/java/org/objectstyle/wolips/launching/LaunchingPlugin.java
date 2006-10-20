@@ -49,9 +49,18 @@
  */
 package org.objectstyle.wolips.launching;
 
+import java.util.ArrayList;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
+import org.objectstyle.wolips.launching.exceptionhandler.IExceptionHandler;
+import org.objectstyle.wolips.launching.exceptionhandler.internal.ExceptionHandlerWrapper;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -65,6 +74,10 @@ public class LaunchingPlugin extends AbstractBaseUIActivator {
 	private static LaunchingPlugin plugin;
 
 	public static final String PLUGIN_ID = "org.objectstyle.wolips.launching";
+
+	private ExceptionHandlerWrapper[] exceptionHandlerWrapper;
+
+	private static final String EXTENSION_POINT_ID = "org.objectstyle.wolips.launching.exceptionhandlers";
 
 	/**
 	 * The constructor.
@@ -99,5 +112,38 @@ public class LaunchingPlugin extends AbstractBaseUIActivator {
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return AbstractUIPlugin.imageDescriptorFromPlugin("org.objectstyle.wolips.launching", path);
+	}
+
+	/**
+	 * @return The exceptionHandler defined in the exceptionHandler extension
+	 *         point
+	 * @throws CoreException
+	 */
+	private void loadExceptionHandlerExtensionPoint() {
+		IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(EXTENSION_POINT_ID);
+		IExtension[] extensions = extensionPoint.getExtensions();
+		ArrayList arrayList = new ArrayList();
+		for (int i = 0; i < extensions.length; i++) {
+			IConfigurationElement[] configurationElements = extensions[i].getConfigurationElements();
+			for (int j = 0; j < configurationElements.length; j++) {
+				IConfigurationElement configurationElement = configurationElements[j];
+				IExceptionHandler currentBuilder = null;
+				try {
+					currentBuilder = (IExceptionHandler) configurationElement.createExecutableExtension("class");
+					String name = configurationElement.getAttribute("name");
+					arrayList.add(new ExceptionHandlerWrapper(currentBuilder, name));
+				} catch (CoreException e) {
+					this.log("Could not create executable from configuration element: " + configurationElement, e);
+				}
+			}
+		}
+		this.exceptionHandlerWrapper = (ExceptionHandlerWrapper[]) arrayList.toArray(new ExceptionHandlerWrapper[arrayList.size()]);
+	}
+
+	public ExceptionHandlerWrapper[] getExceptionHandlerWrapper() {
+		if (this.exceptionHandlerWrapper == null) {
+			loadExceptionHandlerExtensionPoint();
+		}
+		return exceptionHandlerWrapper;
 	}
 }

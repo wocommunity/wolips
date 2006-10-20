@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2005 - 2006 The ObjectStyle Group,
+ * Copyright (c) 2006 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,25 +53,68 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.locate.scope;
+
+package org.objectstyle.wolips.launching.exceptionhandler;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.objectstyle.wolips.locate.LocatePlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.debug.ui.console.IConsole;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.launching.JavaRuntime;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.swt.widgets.Display;
+import org.objectstyle.wolips.launching.LaunchingPlugin;
 
-public class ComponentLocateScope extends DefaultLocateScope {
+public abstract class AbstractConsoleHandler implements IExceptionHandler {
 
-	public ComponentLocateScope(IProject project, String name) {
-		super(project, new String[] { name + ".java", name + ".api" }, new String[] { name + ".wo" });
+	private IConsole currentConsole;
+
+	public AbstractConsoleHandler() {
+		super();
 	}
 
-	public static ComponentLocateScope createLocateScope(IFile file) {
-		String fileNameWithoutExtension = LocatePlugin.getDefault().fileNameWithoutExtension(file);
-
-		return new ComponentLocateScope(file.getProject(), fileNameWithoutExtension);
+	public int lineAppendedToConsole(String line, IConsole console) {
+		this.currentConsole = console;
+		int linesToSkip = lineAppended(line);
+		this.currentConsole = null;
+		return linesToSkip;
 	}
 
-	public static ComponentLocateScope createLocateScope(IProject project, String fileNameWithoutExtension) {
-		return new ComponentLocateScope(project, fileNameWithoutExtension);
+	public abstract int lineAppended(String line);
+
+	public IConsole getCurrentConsole() {
+		return currentConsole;
+	}
+
+	public IJavaProject getJavaProject() {
+		IJavaProject javaProject = null;
+		try {
+			javaProject = JavaRuntime.getJavaProject(this.currentConsole.getProcess().getLaunch().getLaunchConfiguration());
+		} catch (CoreException e) {
+			LaunchingPlugin.getDefault().log(e);
+		}
+		return javaProject;
+	}
+
+	public void selectAndReveal(IFile file, final String errorMessage, final String errorTitle) {
+		LaunchingPlugin.getDefault().selectAndReveal(file);
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				IStatus status = new Status(IStatus.ERROR, LaunchingPlugin.PLUGIN_ID, IStatus.ERROR, errorMessage, null);
+				ErrorDialog.openError(null, errorTitle, "", status);
+			}
+		});
+	}
+
+	public void selectAndReveal(IFile file, String string, int targetEditorID, final String errorMessage, final String errorTitle) {
+		LaunchingPlugin.getDefault().selectAndReveal(file, string, targetEditorID);
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				IStatus status = new Status(IStatus.ERROR, LaunchingPlugin.PLUGIN_ID, IStatus.ERROR, errorMessage, null);
+				ErrorDialog.openError(null, errorTitle, "", status);
+			}
+		});
 	}
 }
