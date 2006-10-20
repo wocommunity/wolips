@@ -44,7 +44,7 @@ public class BindingValueKeyPath {
 		IType currentType = _contextType;
 		List bindingKeysList = new LinkedList();
 		for (int i = 0; currentType != null && i < myBindingKeyNames.length; i++) {
-			if (myBindingKeyNames[i].startsWith("@")) {
+			if (myBindingKeyNames[i].startsWith("@") || myBindingKeyNames[i].startsWith("|")) {
 				myAmbiguous = true;
 				currentType = null;
 			} else {

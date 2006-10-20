@@ -61,7 +61,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceConstants.OPERATOR, "0,0,0");
 		store.setDefault(PreferenceConstants.COMMENT, "63,127,95");
 		store.setDefault(PreferenceConstants.UNKNOWN, "0,0,0");
-		store.setDefault(PreferenceConstants.ALLOWED_BINDING_CHARACTERS, ".^-@,");
+		store.setDefault(PreferenceConstants.ALLOWED_BINDING_CHARACTERS, ".^-@,|()");
 		store.setDefault(PreferenceConstants.CHECK_BINDING_VALUES, false);
 		store.setDefault(PreferenceConstants.AUTO_INSERT_ON_COMPLETION, true);
 	}
