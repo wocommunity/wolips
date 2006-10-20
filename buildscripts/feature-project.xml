@@ -37,7 +37,7 @@
 			</propertyset>
 		</echoproperties>
 
-		<replace file="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}/feature.xml" token="%build.version" value="${build.version}" />
+		<replace file="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}/feature.xml" token="1.0.6" value="${build.version}" />
 		<replace file="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}/feature.xml" token="%feature.featureName" value="${feature.featureName}" />
 		<replace file="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}/feature.xml" token="%feature.description" value="${feature.description}" />
 		<replace file="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}/feature.xml" token="%feature.providerName" value="${feature.providerName}" />

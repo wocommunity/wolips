@@ -2,7 +2,7 @@
 <feature
       id="org.objectstyle.wolips.base.feature"
       label="%feature.featureName"
-      version="%build.version"
+      version="1.0.6"
       provider-name="%feature.providerName"
       image="%feature.image">
 
@@ -80,14 +80,14 @@
          id="org.objectstyle.wolips.baseforplugins"
          download-size="32"
          install-size="32"
-         version="%build.version"
+         version="1.0.6"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.baseforuiplugins"
          download-size="32"
          install-size="32"
-         version="%build.version"
+         version="1.0.6"
          unpack="false"/>
 
 </feature>
