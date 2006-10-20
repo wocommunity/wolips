@@ -2,7 +2,7 @@
 <feature
       id="org.objectstyle.wolips.maven"
       label="%feature.featureName"
-      version="%build.version"
+      version="1.0.6"
       provider-name="%feature.providerName"
       image="%feature.image">
 
@@ -75,33 +75,33 @@
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.junit"/>
       <import plugin="org.eclipse.ui"/>
-      <import plugin="org.objectstyle.wolips.ui" version="%build.version" match="perfect"/>
-      <import plugin="org.objectstyle.wolips.workbenchutilities" version="%build.version" match="perfect"/>
+      <import plugin="org.objectstyle.wolips.ui" version="1.0.6" match="perfect"/>
+      <import plugin="org.objectstyle.wolips.workbenchutilities" version="1.0.6" match="perfect"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import feature="org.eclipse.jst"/>
-      <import plugin="org.objectstyle.wolips.baseforplugins" version="%build.version" match="perfect"/>
-      <import plugin="org.objectstyle.wolips.baseforuiplugins" version="%build.version" match="perfect"/>
+      <import plugin="org.objectstyle.wolips.baseforplugins" version="1.0.6" match="perfect"/>
+      <import plugin="org.objectstyle.wolips.baseforuiplugins" version="1.0.6" match="perfect"/>
    </requires>
 
    <plugin
          id="org.objectstyle.wolips.maven.core"
          download-size="8"
          install-size="8"
-         version="%build.version"
+         version="1.0.6"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.maven.launching"
          download-size="8"
          install-size="8"
-         version="%build.version"
+         version="1.0.6"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.maven.ui"
          download-size="8"
          install-size="8"
-         version="%build.version"
+         version="1.0.6"
          unpack="false"/>
 
 </feature>

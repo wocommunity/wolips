@@ -2,7 +2,7 @@
 <feature
       id="org.objectstyle.wolips.tptp.feature"
       label="%feature.featureName"
-      version="%build.version"
+      version="1.0.6"
       provider-name="%feature.providerName"
       image="%feature.image">
 
@@ -74,19 +74,19 @@
       <import plugin="org.eclipse.jdt.debug.ui"/>
       <import plugin="org.eclipse.debug.core"/>
       <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="org.objectstyle.wolips.launching" version="%build.version" match="perfect"/>
+      <import plugin="org.objectstyle.wolips.launching" version="1.0.6" match="perfect"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.hyades.trace.ui"/>
       <import plugin="org.eclipse.jdt.launching"/>
       <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.objectstyle.wolips.baseforuiplugins" version="%build.version" match="perfect"/>
+      <import plugin="org.objectstyle.wolips.baseforuiplugins" version="1.0.6" match="perfect"/>
    </requires>
 
    <plugin
          id="org.objectstyle.wolips.tptp.launching"
          download-size="32"
          install-size="32"
-         version="%build.version"
+         version="1.0.6"
          unpack="false"/>
 
 </feature>

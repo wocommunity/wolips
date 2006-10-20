@@ -2,7 +2,7 @@
 <feature
       id="org.objectstyle.wolips.goodies.mac.feature"
       label="%feature.featureName"
-      version="%build.version"
+      version="1.0.6"
       provider-name="%feature.providerName"
       image="%feature.image"
       os="macosx"
@@ -84,14 +84,14 @@
          id="org.objectstyle.wolips.goodies.core.mac"
          download-size="0"
          install-size="32"
-         version="%build.version"
+         version="1.0.6"
          unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.goodies.ui.mac"
          download-size="0"
          install-size="32"
-         version="%build.version"
+         version="1.0.6"
          unpack="false"/>
 
 </feature>
