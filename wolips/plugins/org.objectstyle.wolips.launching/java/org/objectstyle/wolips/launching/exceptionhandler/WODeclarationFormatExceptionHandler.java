@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2005 - 2006 The ObjectStyle Group,
+ * Copyright (c) 2006 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,25 +53,35 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.locate.scope;
+
+package org.objectstyle.wolips.launching.exceptionhandler;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.objectstyle.wolips.locate.LocatePlugin;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.objectstyle.wolips.baseforuiplugins.IEditorTarget;
 
-public class ComponentLocateScope extends DefaultLocateScope {
+public class WODeclarationFormatExceptionHandler extends AbstractConsoleHandler {
 
-	public ComponentLocateScope(IProject project, String name) {
-		super(project, new String[] { name + ".java", name + ".api" }, new String[] { name + ".wo" });
+	public int lineAppended(String line) {
+
+		if (line != null) {
+			String exception = "com.webobjects.foundation.NSForwardException [com.webobjects.appserver._private.WODeclarationFormatException] <WOHTMLTemplateParser> no declaration for dynamic element (or component) named";
+			int exceptionIndex = line.indexOf(exception);
+			if (exceptionIndex >= 0) {
+				int startIndex = line.indexOf('\'', exceptionIndex + exception.length());
+				int endIndex = line.indexOf('\'', startIndex + 1);
+				final String pathString = line.substring(startIndex + 6, endIndex);
+				IPath path = Path.fromOSString(pathString);
+				IPath wodpath = path.append(path.lastSegment() + "d");
+				final String errorMessage = line.substring(133 + exceptionIndex, startIndex - 99 + exceptionIndex);
+				final String declared = line.substring(189 + exceptionIndex, startIndex - 99 + exceptionIndex);
+				final IFile wodfile = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(wodpath);
+				this.selectAndReveal(wodfile, declared, IEditorTarget.TARGET_HTML, errorMessage, "Buggy WOComponent");
+			}
+		}
+		return 5;
 	}
 
-	public static ComponentLocateScope createLocateScope(IFile file) {
-		String fileNameWithoutExtension = LocatePlugin.getDefault().fileNameWithoutExtension(file);
-
-		return new ComponentLocateScope(file.getProject(), fileNameWithoutExtension);
-	}
-
-	public static ComponentLocateScope createLocateScope(IProject project, String fileNameWithoutExtension) {
-		return new ComponentLocateScope(project, fileNameWithoutExtension);
-	}
 }

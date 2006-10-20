@@ -2,6 +2,8 @@
 <?eclipse version="3.0"?>
 <plugin>
 
+	<extension-point id="exceptionhandlers" name="Exception Handlers" schema="schema/exceptionhandlers.exsd"/>
+
 
 <!-- =================================================================================== -->
 <!-- Extension: Antlauncher                                                              -->
@@ -144,5 +146,19 @@
             resolver="org.objectstyle.wolips.launching.variables.WorkingDirResolver"
             description="Resolves the working dir for a WebObjects Application within a WOLips project. Add the ProjectName as the argument.">
       </variable>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: exception handlermn                                                      -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.objectstyle.wolips.launching.exceptionhandlers">
+      <exceptionhandler
+            class="org.objectstyle.wolips.launching.exceptionhandler.NSKeyValueCodingUnknownKeyExceptionHandler"
+            id="org.objectstyle.wolips.launching.exceptionhandler.NSKeyValueCodingUnknownKeyExceptionHandler"
+            name="NSKeyValueCodingUnknownKeyExceptionHandler"/>
+      <exceptionhandler
+            class="org.objectstyle.wolips.launching.exceptionhandler.WODeclarationFormatExceptionHandler"
+            id="org.objectstyle.wolips.launching.exceptionhandler.WODeclarationFormatExceptionHandler"
+            name="WODeclarationFormatExceptionHandler"/>
    </extension>
 </plugin>

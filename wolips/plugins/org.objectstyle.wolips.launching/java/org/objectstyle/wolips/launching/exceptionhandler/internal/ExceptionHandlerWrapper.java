@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2005 - 2006 The ObjectStyle Group,
+ * Copyright (c) 2005 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,25 +53,31 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.locate.scope;
+package org.objectstyle.wolips.launching.exceptionhandler.internal;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.objectstyle.wolips.locate.LocatePlugin;
+import org.objectstyle.wolips.launching.exceptionhandler.IExceptionHandler;
 
-public class ComponentLocateScope extends DefaultLocateScope {
+public final class ExceptionHandlerWrapper {
 
-	public ComponentLocateScope(IProject project, String name) {
-		super(project, new String[] { name + ".java", name + ".api" }, new String[] { name + ".wo" });
+	private final IExceptionHandler exceptionHandler;
+
+	private final String name;
+
+	public ExceptionHandlerWrapper(IExceptionHandler exceptionHandler, String name) {
+		super();
+		this.exceptionHandler = exceptionHandler;
+		this.name = name;
 	}
 
-	public static ComponentLocateScope createLocateScope(IFile file) {
-		String fileNameWithoutExtension = LocatePlugin.getDefault().fileNameWithoutExtension(file);
-
-		return new ComponentLocateScope(file.getProject(), fileNameWithoutExtension);
+	public IExceptionHandler getExceptionHandler() {
+		return this.exceptionHandler;
 	}
 
-	public static ComponentLocateScope createLocateScope(IProject project, String fileNameWithoutExtension) {
-		return new ComponentLocateScope(project, fileNameWithoutExtension);
+	public String getName() {
+		return this.name;
+	}
+
+	public String toString() {
+		return "[ExceptionHandler: name = " + name + "; exceptionHandler = " + exceptionHandler + "]";
 	}
 }

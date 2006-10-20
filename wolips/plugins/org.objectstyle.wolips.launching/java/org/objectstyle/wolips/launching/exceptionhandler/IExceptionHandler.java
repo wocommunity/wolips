@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2005 - 2006 The ObjectStyle Group,
+ * Copyright (c) 2006 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,25 +53,17 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.locate.scope;
+package org.objectstyle.wolips.launching.exceptionhandler;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.objectstyle.wolips.locate.LocatePlugin;
+import org.eclipse.debug.ui.console.IConsole;
 
-public class ComponentLocateScope extends DefaultLocateScope {
 
-	public ComponentLocateScope(IProject project, String name) {
-		super(project, new String[] { name + ".java", name + ".api" }, new String[] { name + ".wo" });
-	}
-
-	public static ComponentLocateScope createLocateScope(IFile file) {
-		String fileNameWithoutExtension = LocatePlugin.getDefault().fileNameWithoutExtension(file);
-
-		return new ComponentLocateScope(file.getProject(), fileNameWithoutExtension);
-	}
-
-	public static ComponentLocateScope createLocateScope(IProject project, String fileNameWithoutExtension) {
-		return new ComponentLocateScope(project, fileNameWithoutExtension);
-	}
+public interface IExceptionHandler {
+	
+	/**
+	 * @param line
+	 * @param console
+	 * @return the number of lines to skip
+	 */
+	public abstract int lineAppendedToConsole(String line, IConsole console);
 }
