@@ -117,4 +117,15 @@ public abstract class AbstractConsoleHandler implements IExceptionHandler {
 			}
 		});
 	}
+
+	public String fileNameWithoutPackage(String fileName) {
+		if (fileName == null) {
+			return fileName;
+		}
+		int index = fileName.lastIndexOf('.');
+		if (index < 0) {
+			return fileName;
+		}
+		return fileName.substring(index + 1);
+	}
 }
