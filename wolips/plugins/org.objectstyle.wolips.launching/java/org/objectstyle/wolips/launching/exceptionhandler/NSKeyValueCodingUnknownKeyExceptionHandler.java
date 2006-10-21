@@ -89,6 +89,7 @@ public class NSKeyValueCodingUnknownKeyExceptionHandler extends AbstractConsoleH
 					if (fileName.startsWith("<")) {
 						fileName = fileName.substring(1);
 					}
+					fileName = this.fileNameWithoutPackage(fileName);
 				} else {
 					fileName = null;
 				}
