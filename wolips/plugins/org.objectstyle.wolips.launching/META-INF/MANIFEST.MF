@@ -30,5 +30,12 @@ Require-Bundle: org.eclipse.core.runtime,
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.launching,
  org.objectstyle.wolips.launching.actions,
+ org.objectstyle.wolips.launching.antlauncher.internal,
+ org.objectstyle.wolips.launching.browsersupport,
+ org.objectstyle.wolips.launching.classpath,
  org.objectstyle.wolips.launching.delegates,
- org.objectstyle.wolips.launching.ui
+ org.objectstyle.wolips.launching.errors,
+ org.objectstyle.wolips.launching.exceptionhandler,
+ org.objectstyle.wolips.launching.exceptionhandler.internal,
+ org.objectstyle.wolips.launching.ui,
+ org.objectstyle.wolips.launching.variables
