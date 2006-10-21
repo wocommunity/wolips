@@ -82,6 +82,13 @@
                name="nature"
                value="org.eclipse.jdt.core.javanature">
          </filter>
+         <action
+               label="Find unused WO code"
+               class="org.objectstyle.wolips.ui.actions.FindUnusedWOCodeAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group4"
+               enablesFor="+"
+               id="org.objectstyle.wolips.ui.actions.FindUnusedWOCodeAction">
+         </action>
       </objectContribution>
 <!-- =================================================================================== -->
 <!-- Extension: File actions                                                             -->
@@ -150,7 +157,7 @@
                icon="icons/eomodeler/webobjects_eomodeler.gif"
                id="org.objectstyle.wolips.ui.actions.OpenEntityModerAction"
                label="Open Entity Modeler"
-               menubarPath="additions"/>
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group0"/>
       </objectContribution>
       <objectContribution
             objectClass="org.eclipse.core.resources.IResource"
