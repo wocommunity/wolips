@@ -2,15 +2,11 @@ package org.objectstyle.woproject.maven2.resources;
 
 //org.apache.maven.plugins:maven-compiler-plugin:compile
 import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
-import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectHelper;
 
 /**
  * resources goal for WebObjects projects.
@@ -28,16 +24,16 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 	 * @required
 	 * @readonly
 	 */
-	private MavenProject project; 
+	private MavenProject project;
 
-    /** 
-     * The set of dependencies required by the project 
-     * @parameter default-value="${project.dependencies}" 
-     * @required 
-     * @readonly 
-     */ 
-    private java.util.ArrayList dependencies; 
-    
+	/** 
+	 * The set of dependencies required by the project 
+	 * @parameter default-value="${project.dependencies}" 
+	 * @required 
+	 * @readonly 
+	 */
+	private java.util.ArrayList dependencies;
+
 	private String mavenRepoLocal = "foo";
 
 	public DefineWOApplicationResourcesMojo() throws MojoExecutionException {
@@ -61,57 +57,10 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 					+ "/" + depenendencyArtifact + "/" + depenendencyVersion
 					+ "/" + depenendencyArtifact + "-" + depenendencyVersion
 					+ ".jar";
-			getLog().info(
-					"Defining wo classpath: dependencyPath: " + dependencyPath);
-		}
-		getLog().info("Defining wo classpath: dependencies");
-		List projectDependencies = this.getProject().getDependencies();
-		dependenciesIterator = projectDependencies.iterator();
-		while (dependenciesIterator.hasNext()) {
-			Dependency dependency = (Dependency) dependenciesIterator.next();
-			String depenendencyGroup = dependency.getGroupId();
-			String depenendencyArtifact = dependency.getArtifactId();
-			String depenendencyVersion = dependency.getVersion();
-			String dependencyPath = mavenRepoLocal + "/" + depenendencyGroup
-					+ "/" + depenendencyArtifact + "/" + depenendencyVersion
-					+ "/" + depenendencyArtifact + "-" + depenendencyVersion
-					+ ".jar";
-			getLog().info(
-					"Defining wo classpath: dependencyPath: " + dependencyPath);
-		}
-		getLog().info("Defining wo classpath: dependencies trail");
-		Set set = this.getProject().getArtifacts();
-		Iterator artifactsIterator = set.iterator();
-		while (artifactsIterator.hasNext()) {
-			Artifact artifact = (Artifact) artifactsIterator.next();
-			dependenciesIterator = artifact.getDependencyTrail().iterator();
-			while (dependenciesIterator.hasNext()) {
-				Dependency dependency = (Dependency) dependenciesIterator
-						.next();
-				String depenendencyGroup = dependency.getGroupId();
-				String depenendencyArtifact = dependency.getArtifactId();
-				String depenendencyVersion = dependency.getVersion();
-				String dependencyPath = mavenRepoLocal + "/"
-						+ depenendencyGroup + "/" + depenendencyArtifact + "/"
-						+ depenendencyVersion + "/" + depenendencyArtifact
-						+ "-" + depenendencyVersion + ".jar";
-				getLog().info(
-						"Defining wo classpath: dependencyPath: "
-								+ dependencyPath);
-			}
-		}
-		getLog().info("Defining wo classpath: artifacts");
-		set = this.getProject().getArtifacts();
-		artifactsIterator = set.iterator();
-		while (artifactsIterator.hasNext()) {
-			Artifact artifact = (Artifact) artifactsIterator.next();
-			String depenendencyGroup = artifact.getGroupId();
-			String depenendencyArtifact = artifact.getArtifactId();
-			String depenendencyVersion = artifact.getVersion();
-			String dependencyPath = mavenRepoLocal + "/" + depenendencyGroup
-					+ "/" + depenendencyArtifact + "/" + depenendencyVersion
-					+ "/" + depenendencyArtifact + "-" + depenendencyVersion
-					+ ".jar";
+			getLog()
+					.info(
+							"dependency.getSystemPath(): "
+									+ dependency.getSystemPath());
 			getLog().info(
 					"Defining wo classpath: dependencyPath: " + dependencyPath);
 		}
