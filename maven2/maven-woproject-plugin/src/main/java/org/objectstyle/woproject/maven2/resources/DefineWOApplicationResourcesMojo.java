@@ -48,9 +48,8 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 	}
 
 	private void defineClasspath() {
-		getLog().info("Defining wo classpath....");
+		getLog().info("Defining wo classpath: dependencies");
 		List dependencies = this.getProject().getDependencies();
-		// Set set = this.getProject().getArtifacts();
 		Iterator dependenciesIterator = dependencies.iterator();
 		while (dependenciesIterator.hasNext()) {
 			Dependency dependency = (Dependency) dependenciesIterator.next();
@@ -61,7 +60,44 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 					+ "/" + depenendencyArtifact + "/" + depenendencyVersion
 					+ "/" + depenendencyArtifact + "-" + depenendencyVersion
 					+ ".jar";
-			getLog().info("Defining wo classpath: dependencyPath: " + dependencyPath);
+			getLog().info(
+					"Defining wo classpath: dependencyPath: " + dependencyPath);
+		}
+		getLog().info("Defining wo classpath: dependencies trail");
+		Set set = this.getProject().getArtifacts();
+		Iterator artifactsIterator = set.iterator();
+		while (artifactsIterator.hasNext()) {
+			Artifact artifact = (Artifact) artifactsIterator.next();
+			dependenciesIterator = artifact.getDependencyTrail().iterator();
+			while (dependenciesIterator.hasNext()) {
+				Dependency dependency = (Dependency) dependenciesIterator
+						.next();
+				String depenendencyGroup = dependency.getGroupId();
+				String depenendencyArtifact = dependency.getArtifactId();
+				String depenendencyVersion = dependency.getVersion();
+				String dependencyPath = mavenRepoLocal + "/"
+						+ depenendencyGroup + "/" + depenendencyArtifact + "/"
+						+ depenendencyVersion + "/" + depenendencyArtifact
+						+ "-" + depenendencyVersion + ".jar";
+				getLog().info(
+						"Defining wo classpath: dependencyPath: "
+								+ dependencyPath);
+			}
+		}
+		getLog().info("Defining wo classpath: artifacts");
+		set = this.getProject().getArtifacts();
+		artifactsIterator = set.iterator();
+		while (artifactsIterator.hasNext()) {
+			Artifact artifact = (Artifact) artifactsIterator.next();
+			String depenendencyGroup = artifact.getGroupId();
+			String depenendencyArtifact = artifact.getArtifactId();
+			String depenendencyVersion = artifact.getVersion();
+			String dependencyPath = mavenRepoLocal + "/" + depenendencyGroup
+					+ "/" + depenendencyArtifact + "/" + depenendencyVersion
+					+ "/" + depenendencyArtifact + "-" + depenendencyVersion
+					+ ".jar";
+			getLog().info(
+					"Defining wo classpath: dependencyPath: " + dependencyPath);
 		}
 	}
 
