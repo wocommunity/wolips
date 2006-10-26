@@ -19,15 +19,6 @@ import org.apache.maven.project.MavenProject;
  */
 public abstract class DefineResourcesMojo extends AbstractMojo {
 
-	/**
-	 * The maven project.
-	 * 
-	 * @parameter expression="${project}"
-	 * @required
-	 * @readonly
-	 */
-	private MavenProject project;
-
 	public DefineResourcesMojo() throws MojoExecutionException {
 		super();
 	}
@@ -63,7 +54,7 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 			Resource resourcesFromAntPatternsetFiles = this.createResources(
 					resourcesIncludeFromAntPatternsetFiles,
 					resourcesExcludeFromAntPatternsetFiles, ".", "Resources");
-			this.project.addResource(resourcesFromAntPatternsetFiles);
+			this.getProject().addResource(resourcesFromAntPatternsetFiles);
 		}
 		String[] webserverResourcesIncludeFromAntPatternsetFiles = this
 				.getWebserverResourcesInclude();
@@ -77,7 +68,7 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 							webserverResourcesIncludeFromAntPatternsetFiles,
 							webserverResourcesExcludeFromAntPatternsetFiles,
 							".", "WebServerResources");
-			this.project.addResource(webserverResourcesFromAntPatternsetFiles);
+			this.getProject().addResource(webserverResourcesFromAntPatternsetFiles);
 		}
 	}
 
@@ -92,7 +83,7 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 							"Defining wo resources: \"Resources\" folder found within project. Adding include...");
 			Resource resourcesFromResourcesFolder = this.createResources(null,
 					null, "Resources", "Resources");
-			this.project.addResource(resourcesFromResourcesFolder);
+			this.getProject().addResource(resourcesFromResourcesFolder);
 		} else {
 			getLog()
 					.info(
@@ -108,7 +99,7 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 			Resource webServerResourcesFromWebServerResourcesFolder = this
 					.createResources(null, null, "WebServerResources",
 							"WebServerResources");
-			this.project
+			this.getProject()
 					.addResource(webServerResourcesFromWebServerResourcesFolder);
 		} else {
 			getLog()
@@ -182,8 +173,8 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 	}
 
 	private String getProjectFolder() {
-		String projectFolder = this.project.getFile().getPath().substring(0,
-				this.project.getFile().getPath().length() - 7);
+		String projectFolder = this.getProject().getFile().getPath().substring(0,
+				this.getProject().getFile().getPath().length() - 7);
 		return projectFolder;
 	}
 
@@ -194,4 +185,6 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 		}
 		return null;
 	}
+
+	public abstract MavenProject getProject();
 }
