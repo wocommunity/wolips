@@ -10,6 +10,7 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectHelper;
 
 /**
  * resources goal for WebObjects projects.
@@ -27,16 +28,23 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 	 * @required
 	 * @readonly
 	 */
-	private MavenProject project;
+	private MavenProject project; 
 
-	/**
-	 * The maven repo.
-	 * 
-	 * @parameter expression="${maven.repo.local}"
-	 * @required
-	 * @readonly
-	 */
-	private String mavenRepoLocal;
+    /** 
+     * The set of dependencies required by the project 
+     * @parameter default-value="${project.dependencies}" 
+     * @required 
+     * @readonly 
+     */ 
+    private java.util.Set dependencies; 
+    /** 
+     * project-helper instance, used to make addition of resources 
+     * simpler. 
+     * @component 
+     */ 
+    private MavenProjectHelper helper; 
+    
+	private String mavenRepoLocal = "foo";
 
 	public DefineWOApplicationResourcesMojo() throws MojoExecutionException {
 		super();
@@ -48,9 +56,23 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 	}
 
 	private void defineClasspath() {
-		getLog().info("Defining wo classpath: dependencies");
-		List dependencies = this.getProject().getDependencies();
+		getLog().info("Defining wo classpath: dependencies from parameter");
 		Iterator dependenciesIterator = dependencies.iterator();
+		while (dependenciesIterator.hasNext()) {
+			Dependency dependency = (Dependency) dependenciesIterator.next();
+			String depenendencyGroup = dependency.getGroupId();
+			String depenendencyArtifact = dependency.getArtifactId();
+			String depenendencyVersion = dependency.getVersion();
+			String dependencyPath = mavenRepoLocal + "/" + depenendencyGroup
+					+ "/" + depenendencyArtifact + "/" + depenendencyVersion
+					+ "/" + depenendencyArtifact + "-" + depenendencyVersion
+					+ ".jar";
+			getLog().info(
+					"Defining wo classpath: dependencyPath: " + dependencyPath);
+		}
+		getLog().info("Defining wo classpath: dependencies");
+		List projectDependencies = this.getProject().getDependencies();
+		dependenciesIterator = projectDependencies.iterator();
 		while (dependenciesIterator.hasNext()) {
 			Dependency dependency = (Dependency) dependenciesIterator.next();
 			String depenendencyGroup = dependency.getGroupId();
