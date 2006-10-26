@@ -9,14 +9,6 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
-
-/**
- * resources goal for WebObjects projects.
- * 
- * @goal define-resources
- * @author uli
- * @since 2.0
- */
 public abstract class DefineResourcesMojo extends AbstractMojo {
 
 	public DefineResourcesMojo() throws MojoExecutionException {
