@@ -17,7 +17,7 @@ import org.apache.maven.project.MavenProject;
  * @author uli
  * @since 2.0
  */
-public class DefineResourcesMojo extends AbstractMojo {
+public abstract class DefineResourcesMojo extends AbstractMojo {
 
 	/**
 	 * The maven project.
@@ -135,7 +135,7 @@ public class DefineResourcesMojo extends AbstractMojo {
 			resource.addExclude("build/**");
 			resource.addExclude("dist/**");
 		}
-		resource.setTargetPath(targetPath);
+		resource.setTargetPath("../" + targetPath);
 		return resource;
 	}
 
