@@ -3,6 +3,7 @@ package org.objectstyle.woproject.maven2.resources;
 //org.apache.maven.plugins:maven-compiler-plugin:compile
 import java.util.Iterator;
 
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -12,6 +13,7 @@ import org.apache.maven.project.MavenProject;
  * resources goal for WebObjects projects.
  * 
  * @goal define-woapplication-resources
+ * @requiresDependencyResolution compile
  * @author uli
  * @since 2.0
  */
@@ -34,7 +36,12 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 	 */
 	private java.util.ArrayList dependencies;
 
-	private String mavenRepoLocal = "foo";
+    /**
+     * @parameter expression="${localRepository}"
+     * @required
+     * @readonly
+     */
+    private ArtifactRepository localRepository;
 
 	public DefineWOApplicationResourcesMojo() throws MojoExecutionException {
 		super();
@@ -53,7 +60,7 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 			String depenendencyGroup = dependency.getGroupId();
 			String depenendencyArtifact = dependency.getArtifactId();
 			String depenendencyVersion = dependency.getVersion();
-			String dependencyPath = mavenRepoLocal + "/" + depenendencyGroup
+			String dependencyPath = localRepository.getBasedir() + "/" + depenendencyGroup
 					+ "/" + depenendencyArtifact + "/" + depenendencyVersion
 					+ "/" + depenendencyArtifact + "-" + depenendencyVersion
 					+ ".jar";
