@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.objectstyle</groupId>
+	<artifactId>woproject-all-parent</artifactId>
+	<version>2.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>WOProject All</name>
+
+	<description>Contains all WOProject projects.</description>
+
+	<url>http://objectstyle.org/woproject/</url>
+
+	<modules>
+		<module>woenvironment</module>
+		<module>woproject</module>
+		<module>maven2</module>
+	</modules>
+
+	<issueManagement>
+		<system>jira</system>
+		<url>http://objectstyle.org/jira/browse/WOL</url>
+	</issueManagement>
+
+
+	<inceptionYear>2001</inceptionYear>
+
+	<mailingLists>
+		<mailingList>
+			<name>WOProject/WOLips Developer List</name>
+			<post>woproject-dev@objectstyle.org</post>
+			<subscribe>woproject-dev-subscribe@objectstyle.org</subscribe>
+			<unsubscribe>woproject-dev-unsubscribe@objectstyle.org</unsubscribe>
+			<archive>http://mail-archives.apache.org/mod_mbox/incubator-cayenne-dev</archive>
+			<otherArchives>
+				<otherArchive>http://objectstyle.org/woproject-old/lists.html</otherArchive>
+			</otherArchives>
+		</mailingList>
+	</mailingLists>
+
+	<organization>
+		<name>ObjectStyle Group</name>
+		<url>http://objectstyle.org/</url>
+	</organization>
+
+	<dependencyManagement>
+		<dependencies>
+
+			<!-- used for scripted plugins -->
+			<dependency>
+				<groupId>org.apache.maven</groupId>
+				<artifactId>maven-script-ant</artifactId>
+				<version>2.0.1</version>
+			</dependency>
+
+			<!-- used for java plugins -->
+			<dependency>
+				<groupId>org.apache.maven</groupId>
+				<artifactId>maven-plugin-api</artifactId>
+				<version>2.0.4</version>
+			</dependency>
+
+			<!-- used as a Mojo superclass for tasks that need to infer dependencies  -->
+			<dependency>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>dependency-maven-plugin</artifactId>
+				<version>1.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.maven</groupId>
+				<artifactId>maven-project</artifactId>
+				<version>2.0.4</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.codehaus.plexus</groupId>
+				<artifactId>plexus-archiver</artifactId>
+				<version>1.0-alpha-3</version>
+			</dependency>
+
+			<dependency>
+				<groupId>ant</groupId>
+				<artifactId>ant</artifactId>
+				<version>1.6.5</version>
+				<exclusions>
+					<exclusion>
+						<groupId>xerces</groupId>
+						<artifactId>xerces</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>xml-apis</groupId>
+						<artifactId>xml-apis</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>3.8.1</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<repositories>
+		<repository>
+			<id>objectstyle</id>
+			<name>ObjectStyle Public Maven2 repo</name>
+			<url>http://objectstyle.org/maven2</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>mergere</id>
+			<name>Mergere Repository</name>
+			<url>http://repo.mergere.com/maven2</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>ignore</checksumPolicy>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</pluginRepository>
+
+	</pluginRepositories>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>objectstyle</id>
+			<name>ObjectStyle Maven2 Repository</name>
+			<url>scp://dev.objectstyle.org/var/maven2</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<build>
+		<defaultGoal>install</defaultGoal>
+	</build>
+</project>
+

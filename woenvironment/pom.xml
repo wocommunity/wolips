@@ -4,35 +4,20 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.objectstyle.woproject.maven2</groupId>
-	<artifactId>woproject-maven2-parent</artifactId>
+	<groupId>org.objectstyle.woproject.ant</groupId>
+	<artifactId>woenvironment</artifactId>
 	<version>2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>WOProject Maven2</name>
+	<name>woenvironment</name>
 
-	<description>Contains WOProject Maven2 plugins collection.</description>
+	<description>Contains woenvironment stuff.</description>
 
-	<modules>
-		<module>maven-japplication-plugin</module>
-		<module>maven-woprojectant-plugin</module>
-		<module>maven-woproject-plugin</module>
-		<module>maven-archetype-woapplication</module>
-	</modules>
+	<url>http://objectstyle.org/woproject/</url>
 
 	<inceptionYear>2001</inceptionYear>
 
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
-				<groupId>org.objectstyle.woproject.ant</groupId>
-				<artifactId>woenvironment</artifactId>
-				<version>2.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>org.objectstyle.woproject.ant</groupId>
-				<artifactId>woproject</artifactId>
-				<version>2.0-SNAPSHOT</version>
-			</dependency>
 
 			<!-- used for scripted plugins -->
 			<dependency>
@@ -91,5 +76,10 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+	</build>
+	
 </project>
 
