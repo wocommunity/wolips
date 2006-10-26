@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project>
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -14,42 +12,22 @@
 
 	<description>Contains WOProject Maven2 plugins collection.</description>
 
-	<url>http://objectstyle.org/woproject/</url>
-
 	<modules>
 		<module>maven-japplication-plugin</module>
+		<module>maven-woprojectant-plugin</module>
 		<module>maven-woproject-plugin</module>
 		<module>maven-archetype-woapplication</module>
 	</modules>
 
-	<issueManagement>
-		<system>jira</system>
-		<url>http://objectstyle.org/jira/browse/WOL</url>
-	</issueManagement>
-
-
 	<inceptionYear>2001</inceptionYear>
-
-	<mailingLists>
-		<mailingList>
-			<name>WOProject/WOLips Developer List</name>
-			<post>woproject-dev@objectstyle.org</post>
-			<subscribe>woproject-dev-subscribe@objectstyle.org</subscribe>
-			<unsubscribe>woproject-dev-unsubscribe@objectstyle.org</unsubscribe>
-			<archive>http://mail-archives.apache.org/mod_mbox/incubator-cayenne-dev</archive>
-			<otherArchives>
-				<otherArchive>http://objectstyle.org/woproject-old/lists.html</otherArchive>
-			</otherArchives>
-		</mailingList>
-	</mailingLists>
-
-	<organization>
-		<name>ObjectStyle Group</name>
-		<url>http://objectstyle.org/</url>
-	</organization>
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>org.objectstyle.woproject.ant</groupId>
+				<artifactId>woenvironment</artifactId>
+				<version>2.0-SNAPSHOT</version>
+			</dependency>
 			<dependency>
 				<groupId>org.objectstyle.woproject.ant</groupId>
 				<artifactId>woproject</artifactId>
@@ -113,51 +91,5 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
-	<repositories>
-		<repository>
-			<id>objectstyle</id>
-			<name>ObjectStyle Public Maven2 repo</name>
-			<url>http://objectstyle.org/maven2</url>
-			<layout>default</layout>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>mergere</id>
-			<name>Mergere Repository</name>
-			<url>http://repo.mergere.com/maven2</url>
-			<layout>default</layout>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-				<checksumPolicy>ignore</checksumPolicy>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</pluginRepository>
-
-	</pluginRepositories>
-
-	<distributionManagement>
-		<snapshotRepository>
-			<id>objectstyle</id>
-			<name>ObjectStyle Maven2 Repository</name>
-			<url>scp://dev.objectstyle.org/var/maven2</url>
-		</snapshotRepository>
-	</distributionManagement>
-
-	<build>
-		<defaultGoal>install</defaultGoal>
-	</build>
 </project>
 
