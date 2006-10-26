@@ -46,7 +46,7 @@
 						org.apache.maven.plugins:maven-surefire-plugin:test
 					</test>
 					<package>
-						org.objectstyle.woproject.maven2:maven-woproject-plugin:woapplication
+						org.objectstyle.woproject.maven2:maven-woproject-plugin:woapplication-ant
 					</package>
 					<install>
 						org.apache.maven.plugins:maven-install-plugin:install
