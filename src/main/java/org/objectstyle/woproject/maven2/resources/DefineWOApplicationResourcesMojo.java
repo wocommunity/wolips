@@ -36,13 +36,7 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
      * @required 
      * @readonly 
      */ 
-    private java.util.Set dependencies; 
-    /** 
-     * project-helper instance, used to make addition of resources 
-     * simpler. 
-     * @component 
-     */ 
-    private MavenProjectHelper helper; 
+    private java.util.ArrayList dependencies; 
     
 	private String mavenRepoLocal = "foo";
 
