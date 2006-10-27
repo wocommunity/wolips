@@ -81,7 +81,7 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 			Dependency dependency = (Dependency) dependenciesIterator.next();
 			String depenendencyGroup = dependency.getGroupId();
 			if(depenendencyGroup != null) {
-				depenendencyGroup.replace('.', File.separatorChar);
+				depenendencyGroup = depenendencyGroup.replace('.', File.separatorChar);
 			}
 			String depenendencyArtifact = dependency.getArtifactId();
 			String depenendencyVersion = dependency.getVersion();
