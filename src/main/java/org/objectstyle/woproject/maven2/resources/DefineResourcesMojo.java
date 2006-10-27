@@ -21,7 +21,10 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 		this.executeResourcesPatternsetFiles();
 		this.executeWebServerResourcesPatternsetFiles();
 		this.executeFolders();
+		this.getProject().getArtifact().setFile( new File( this.getArtifactFileName() ) );
 	}
+
+	protected abstract String getArtifactFileName();
 
 	private void executeResourcesPatternsetFiles()
 			throws MojoExecutionException, MojoFailureException {
