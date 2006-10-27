@@ -93,7 +93,7 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 					+ depenendencyArtifact + "-" + depenendencyVersion + ".jar";
 			getLog().info(
 					"Defining wo classpath: dependencyPath: " + dependencyPath);
-			classPath.append(dependencyPath);
+			classPath.append(dependencyPath + "\n");
 		}
 		String fileName = this.getProjectFolder() + "target" + File.separator
 				+ "classpath.txt";
