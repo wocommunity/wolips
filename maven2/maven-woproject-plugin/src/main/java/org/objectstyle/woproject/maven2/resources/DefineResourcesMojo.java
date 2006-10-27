@@ -155,6 +155,9 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 		String woProjectFolder = this.getWOProjectFolder();
 		File file = new File(woProjectFolder + File.separator
 				+ patternsetFileName);
+		if(!file.exists()) {
+			return null;
+		}
 		PatternsetReader patternsetReader;
 		String[] pattern = null;
 		try {
