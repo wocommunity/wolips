@@ -17,11 +17,12 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		getLog().info("Defining wo resources");
-		this.executePatternsetFiles();
+		this.executeResourcesPatternsetFiles();
+		this.executeWebServerResourcesPatternsetFiles();
 		this.executeFolders();
 	}
 
-	private void executePatternsetFiles() throws MojoExecutionException,
+	private void executeResourcesPatternsetFiles() throws MojoExecutionException,
 			MojoFailureException {
 		getLog().info("Defining wo resources: loading patternsets");
 		String woProjectFolder = getWOProjectFolder();
@@ -47,6 +48,23 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 					resourcesIncludeFromAntPatternsetFiles,
 					resourcesExcludeFromAntPatternsetFiles, ".", "Resources");
 			this.getProject().addResource(resourcesFromAntPatternsetFiles);
+		}
+	}
+
+	private void executeWebServerResourcesPatternsetFiles() throws MojoExecutionException,
+			MojoFailureException {
+		getLog().info("Defining wo webserverresources: loading patternsets");
+		String woProjectFolder = getWOProjectFolder();
+		File woProjectFile = new File(woProjectFolder);
+		if (woProjectFile.exists()) {
+			getLog()
+					.info(
+							"Defining wo webserverresources: \"woproject\" folder found within project. Reading patternsets...");
+		} else {
+			getLog()
+					.info(
+							"Defining wo webserverresources:  No \"woproject\" folder found within project. Skipping patternsets...");
+			return;
 		}
 		String[] webserverResourcesIncludeFromAntPatternsetFiles = this
 				.getWebserverResourcesInclude();
@@ -87,7 +105,7 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 		if (webServerResourcesFile.exists()) {
 			getLog()
 					.info(
-							"Defining wo resources: \"WebServerResources\" folder found within project. Adding include...");
+							"Defining wo webserverresources: \"WebServerResources\" folder found within project. Adding include...");
 			Resource webServerResourcesFromWebServerResourcesFolder = this
 					.createResources(null, null, "WebServerResources",
 							"WebServerResources");
@@ -96,7 +114,7 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 		} else {
 			getLog()
 					.info(
-							"Defining wo resources: No \"WebServerResources\" folder found within project. Skipping include...");
+							"Defining wo webserverresources: No \"WebServerResources\" folder found within project. Skipping include...");
 		}
 	}
 
@@ -117,6 +135,7 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 			}
 			resource.addExclude("build/**");
 			resource.addExclude("dist/**");
+			resource.addExclude("target/**");
 		}
 		resource.setTargetPath("../" + targetPath);
 		return resource;
