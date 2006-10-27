@@ -9,6 +9,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+
 public abstract class DefineResourcesMojo extends AbstractMojo {
 
 	public DefineResourcesMojo() throws MojoExecutionException {
@@ -22,8 +23,8 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 		this.executeFolders();
 	}
 
-	private void executeResourcesPatternsetFiles() throws MojoExecutionException,
-			MojoFailureException {
+	private void executeResourcesPatternsetFiles()
+			throws MojoExecutionException, MojoFailureException {
 		getLog().info("Defining wo resources: loading patternsets");
 		String woProjectFolder = getWOProjectFolder();
 		File woProjectFile = new File(woProjectFolder);
@@ -51,8 +52,8 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 		}
 	}
 
-	private void executeWebServerResourcesPatternsetFiles() throws MojoExecutionException,
-			MojoFailureException {
+	private void executeWebServerResourcesPatternsetFiles()
+			throws MojoExecutionException, MojoFailureException {
 		getLog().info("Defining wo webserverresources: loading patternsets");
 		String woProjectFolder = getWOProjectFolder();
 		File woProjectFile = new File(woProjectFolder);
@@ -78,7 +79,8 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 							webserverResourcesIncludeFromAntPatternsetFiles,
 							webserverResourcesExcludeFromAntPatternsetFiles,
 							".", "WebServerResources");
-			this.getProject().addResource(webserverResourcesFromAntPatternsetFiles);
+			this.getProject().addResource(
+					webserverResourcesFromAntPatternsetFiles);
 		}
 	}
 
@@ -109,8 +111,8 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 			Resource webServerResourcesFromWebServerResourcesFolder = this
 					.createResources(null, null, "WebServerResources",
 							"WebServerResources");
-			this.getProject()
-					.addResource(webServerResourcesFromWebServerResourcesFolder);
+			this.getProject().addResource(
+					webServerResourcesFromWebServerResourcesFolder);
 		} else {
 			getLog()
 					.info(
@@ -137,7 +139,10 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 			resource.addExclude("dist/**");
 			resource.addExclude("target/**");
 		}
-		resource.setTargetPath("../" + targetPath);
+		String fullTargetPath = "../" + this.getProject().getArtifactId()
+				+ "woa" + File.separator + "Contents" + File.separator
+				+ targetPath;
+		resource.setTargetPath(fullTargetPath);
 		return resource;
 	}
 
@@ -184,8 +189,8 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 	}
 
 	protected String getProjectFolder() {
-		String projectFolder = this.getProject().getFile().getPath().substring(0,
-				this.getProject().getFile().getPath().length() - 7);
+		String projectFolder = this.getProject().getFile().getPath().substring(
+				0, this.getProject().getFile().getPath().length() - 7);
 		return projectFolder;
 	}
 
