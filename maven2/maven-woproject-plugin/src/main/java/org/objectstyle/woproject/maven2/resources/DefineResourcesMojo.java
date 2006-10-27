@@ -10,7 +10,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 
-public abstract class DefineResourcesMojo extends AbstractMojo {
+public abstract class DefineResourcesMojo extends WOMojo {
 
 	public DefineResourcesMojo() throws MojoExecutionException {
 		super();
@@ -21,12 +21,7 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 		this.executeResourcesPatternsetFiles();
 		this.executeWebServerResourcesPatternsetFiles();
 		this.executeFolders();
-		String fileName = this.getArtifactFileName();
-		getLog().info("Defining artifact filename: " + fileName);
-		this.getProject().getArtifact().setFile( new File( fileName ) );
 	}
-
-	protected abstract String getArtifactFileName();
 
 	private void executeResourcesPatternsetFiles()
 			throws MojoExecutionException, MojoFailureException {
@@ -195,22 +190,4 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 		String patternsetFileName = "resources.exclude.patternset";
 		return this.readPatternset(patternsetFileName);
 	}
-
-	protected String getProjectFolder() {
-		String projectFolder = this.getProject().getFile().getPath().substring(
-				0, this.getProject().getFile().getPath().length() - 7);
-		return projectFolder;
-	}
-
-	private String getWOProjectFolder() {
-		File file = new File(this.getProjectFolder() + "woproject");
-		if (file.exists()) {
-			return file.getPath();
-		}
-		return null;
-	}
-
-	public abstract String getProductExtension();
-
-	public abstract MavenProject getProject();
 }

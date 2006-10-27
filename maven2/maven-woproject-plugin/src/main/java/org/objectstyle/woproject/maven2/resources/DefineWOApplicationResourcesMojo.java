@@ -120,6 +120,6 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 
 	protected String getArtifactFileName() {
 		return "target" + File.separator + this.getProject().getArtifactId()
-				+ "-" + this.getProject().getVersion() + "tar.gz";
+				+ "-" + this.getProject().getVersion() + ".tar.gz";
 	}
 }
