@@ -68,14 +68,14 @@
 			</lib>
 		</woapplication>
 		
-		<tar tarfile="target/${my.maven.project.artifactId}-${my.maven.project.version}.tar">
+		<tar tarfile="target/${my.maven.project.artifactId}-${my.maven.project.version}-woapplication.tar">
 			<tarfileset dir="target/${my.maven.project.artifactId}.woa">
 			</tarfileset>
 		 </tar>
 		 
-		 <gzip src="target/${my.maven.project.artifactId}-${my.maven.project.version}.tar"
-			  zipfile="target/${my.maven.project.artifactId}-${my.maven.project.version}.tar.gz"/>
-		 <delete file="target/${my.maven.project.artifactId}-${my.maven.project.version}.tar"/>  
+		 <gzip src="target/${my.maven.project.artifactId}-${my.maven.project.version}-woapplication.tar"
+			  zipfile="target/${my.maven.project.artifactId}-${my.maven.project.version}-woapplication.tar.gz"/>
+		 <delete file="target/${my.maven.project.artifactId}-${my.maven.project.version}-woapplication.tar"/>  
 	</target>
 	
 	<!-- ================================================================== -->
