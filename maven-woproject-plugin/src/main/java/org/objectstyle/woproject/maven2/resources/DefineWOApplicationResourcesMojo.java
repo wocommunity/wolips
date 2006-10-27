@@ -58,7 +58,8 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 	}
 
 	private void defineProperties() throws MojoExecutionException {
-		String fileName = this.getProjectFolder() + "wobuild.properties";
+		String fileName = this.getProjectFolder() + "target" + File.separator
+				+ "wobuild.properties";
 		getLog().info("Defining wo properties: writing to file: " + fileName);
 		File file = new File(fileName);
 		FileWriter fileWriter;
@@ -80,13 +81,15 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 		while (dependenciesIterator.hasNext()) {
 			Dependency dependency = (Dependency) dependenciesIterator.next();
 			String depenendencyGroup = dependency.getGroupId();
-			if(depenendencyGroup != null) {
-				depenendencyGroup = depenendencyGroup.replace('.', File.separatorChar);
+			if (depenendencyGroup != null) {
+				depenendencyGroup = depenendencyGroup.replace('.',
+						File.separatorChar);
 			}
 			String depenendencyArtifact = dependency.getArtifactId();
 			String depenendencyVersion = dependency.getVersion();
 			String dependencyPath = depenendencyGroup + File.separator
-					+ depenendencyArtifact + File.separator + depenendencyVersion + File.separator
+					+ depenendencyArtifact + File.separator
+					+ depenendencyVersion + File.separator
 					+ depenendencyArtifact + "-" + depenendencyVersion + ".jar";
 			getLog().info(
 					"Defining wo classpath: dependencyPath: " + dependencyPath);
