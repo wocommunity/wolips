@@ -113,8 +113,13 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 	public MavenProject getProject() {
 		return project;
 	}
-	
+
 	public String getProductExtension() {
 		return "woa";
+	}
+
+	protected String getArtifactFileName() {
+		return "target" + File.separator + this.getProject().getArtifactId()
+				+ "-" + this.getProject().getVersion() + "tar.gz";
 	}
 }
