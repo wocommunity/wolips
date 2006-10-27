@@ -4,15 +4,15 @@
 			<role>
 				org.apache.maven.artifact.handler.ArtifactHandler
 			</role>
-			<role-hint>woapplication</role-hint>
+			<role-hint>woapplication-artifact</role-hint>
 			<implementation>
 				org.apache.maven.artifact.handler.DefaultArtifactHandler
 			</implementation>
 			<configuration>
-				<classifier></classifier>
+				<classifier>woapplication</classifier>
 				<extension>tar.gz</extension>
-				<type>woapplication</type>
-				<packaging>tar.gz</packaging>
+				<type>woapplication-artifact</type>
+				<packaging>woapplication</packaging>
 				<language>java</language>
 				<addedToClasspath>false</addedToClasspath>
 			</configuration>
@@ -45,8 +45,11 @@
 					<test>
 						org.apache.maven.plugins:maven-surefire-plugin:test
 					</test>
-					<package>
+					<generate-test-resources>
 						org.objectstyle.woproject.maven2:maven-woproject-plugin:woapplication
+					</generate-test-resources>
+					<package>
+						org.objectstyle.woproject.maven2:maven-woproject-plugin:package-woapplication
 					</package>
 					<install>
 						org.apache.maven.plugins:maven-install-plugin:install
@@ -106,7 +109,7 @@
 						org.objectstyle.woproject.maven2:maven-woproject-plugin:woframework
 					</generate-test-resources>
 					<package>
-						org.objectstyle.woproject.maven2:maven-woproject-plugin:packagewoframework
+						org.objectstyle.woproject.maven2:maven-woproject-plugin:package-woframework
 					</package>
 					<install>
 						org.apache.maven.plugins:maven-install-plugin:install
