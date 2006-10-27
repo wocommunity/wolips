@@ -95,7 +95,7 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 					"Defining wo classpath: dependencyPath: " + dependencyPath);
 			classPath.append(dependencyPath);
 		}
-		String fileName = this.getProjectFolder() + target + File.separator
+		String fileName = this.getProjectFolder() + "target" + File.separator
 				+ "classpath.txt";
 		getLog().info("Defining wo classpath: writing to file: " + fileName);
 		File file = new File(fileName);
