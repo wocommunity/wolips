@@ -113,4 +113,8 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 	public MavenProject getProject() {
 		return project;
 	}
+	
+	public String getProductExtension() {
+		return "woa";
+	}
 }
