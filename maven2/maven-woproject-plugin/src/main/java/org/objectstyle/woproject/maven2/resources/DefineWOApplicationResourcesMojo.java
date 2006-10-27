@@ -70,7 +70,7 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 			fileWriter.flush();
 			fileWriter.close();
 		} catch (IOException e) {
-			throw new MojoExecutionException("Could not write classpath", e);
+			throw new MojoExecutionException("Could not write wo properties", e);
 		}
 	}
 
