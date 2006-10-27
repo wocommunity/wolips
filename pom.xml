@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project>
+	<parent>
+		<artifactId>woproject-all-parent</artifactId>
+		<groupId>org.objectstyle.woproject</groupId>
+		<version>2.0-SNAPSHOT</version>
+	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.objectstyle.woproject.ant</groupId>
 	<artifactId>woenvironment</artifactId>
 	<version>2.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 	<name>woenvironment</name>
 
 	<description>Contains woenvironment stuff.</description>
@@ -15,71 +20,38 @@
 	<url>http://objectstyle.org/woproject/</url>
 
 	<inceptionYear>2001</inceptionYear>
+	<dependencies>
 
-	<dependencyManagement>
-		<dependencies>
+		<dependency>
+			<groupId>org.objectstyle.cayenne</groupId>
+			<artifactId>cayenne</artifactId>
+		</dependency>
+	</dependencies>
 
-			<!-- used for scripted plugins -->
-			<dependency>
-				<groupId>org.apache.maven</groupId>
-				<artifactId>maven-script-ant</artifactId>
-				<version>2.0.1</version>
-			</dependency>
-
-			<!-- used for java plugins -->
-			<dependency>
-				<groupId>org.apache.maven</groupId>
-				<artifactId>maven-plugin-api</artifactId>
-				<version>2.0.4</version>
-			</dependency>
-
-			<!-- used as a Mojo superclass for tasks that need to infer dependencies  -->
-			<dependency>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>dependency-maven-plugin</artifactId>
-				<version>1.0</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.apache.maven</groupId>
-				<artifactId>maven-project</artifactId>
-				<version>2.0.4</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.codehaus.plexus</groupId>
-				<artifactId>plexus-archiver</artifactId>
-				<version>1.0-alpha-3</version>
-			</dependency>
-
-			<dependency>
-				<groupId>ant</groupId>
-				<artifactId>ant</artifactId>
-				<version>1.6.5</version>
-				<exclusions>
-					<exclusion>
-						<groupId>xerces</groupId>
-						<artifactId>xerces</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>xml-apis</groupId>
-						<artifactId>xml-apis</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>3.8.1</version>
-				<scope>test</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-	
 	<build>
-		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<plugin>
+				<artifactId>maven-plugin-plugin</artifactId>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven</groupId>
+						<artifactId>maven-plugin-tools-ant</artifactId>
+						<version>2.0.1</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>**/KVCImpl.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+		<sourceDirectory>src/java</sourceDirectory>
 	</build>
-	
+
 </project>
 
