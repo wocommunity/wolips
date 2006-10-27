@@ -31,11 +31,12 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 	 */
 	private MavenProject project;
 
-	/** 
-	 * The set of dependencies required by the project 
-	 * @parameter default-value="${project.dependencies}" 
-	 * @required 
-	 * @readonly 
+	/**
+	 * The set of dependencies required by the project
+	 * 
+	 * @parameter default-value="${project.dependencies}"
+	 * @required
+	 * @readonly
 	 */
 	private java.util.ArrayList dependencies;
 
@@ -52,7 +53,24 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		super.execute();
+		this.defineProperties();
 		this.defineClasspath();
+	}
+
+	private void defineProperties() throws MojoExecutionException {
+		String fileName = this.getProjectFolder() + "wobuild.properties";
+		getLog().info("Defining wo properties: writing to file: " + fileName);
+		File file = new File(fileName);
+		FileWriter fileWriter;
+		try {
+			fileWriter = new FileWriter(file);
+			fileWriter.write("maven.localRepository.baseDir = "
+					+ localRepository.getBasedir());
+			fileWriter.flush();
+			fileWriter.close();
+		} catch (IOException e) {
+			throw new MojoExecutionException("Could not write classpath", e);
+		}
 	}
 
 	private void defineClasspath() throws MojoExecutionException {
@@ -64,16 +82,14 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 			String depenendencyGroup = dependency.getGroupId();
 			String depenendencyArtifact = dependency.getArtifactId();
 			String depenendencyVersion = dependency.getVersion();
-			String dependencyPath = localRepository.getBasedir() + "/"
-					+ depenendencyGroup + "/" + depenendencyArtifact + "/"
-					+ depenendencyVersion + "/" + depenendencyArtifact + "-"
-					+ depenendencyVersion + ".jar";
+			String dependencyPath = depenendencyGroup + "/"
+					+ depenendencyArtifact + "/" + depenendencyVersion + "/"
+					+ depenendencyArtifact + "-" + depenendencyVersion + ".jar";
 			getLog().info(
 					"Defining wo classpath: dependencyPath: " + dependencyPath);
 			classPath.append(dependencyPath);
 		}
-		String fileName = this.getProjectFolder() + "target" + File.separator
-				+ "classpath";
+		String fileName = this.getProjectFolder() + "classpath.txt";
 		getLog().info("Defining wo classpath: writing to file: " + fileName);
 		File file = new File(fileName);
 		FileWriter fileWriter;
