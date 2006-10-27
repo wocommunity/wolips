@@ -15,10 +15,20 @@ public abstract class DefineResourcesMojo extends WOMojo {
 	}
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
+		getLog().info("Creating folder");
+		this.executeCreateFolders();
 		getLog().info("Defining wo resources");
 		this.executeResourcesPatternsetFiles();
 		this.executeWebServerResourcesPatternsetFiles();
 		this.executeFolders();
+	}
+
+	private void executeCreateFolders() {
+		File target = new File(this.getProjectFolder() + File.separator
+				+ "target" + File.separator + "classes");
+		if (!target.exists()) {
+			target.mkdirs();
+		}
 	}
 
 	private void executeResourcesPatternsetFiles()
@@ -153,7 +163,7 @@ public abstract class DefineResourcesMojo extends WOMojo {
 		String woProjectFolder = this.getWOProjectFolder();
 		File file = new File(woProjectFolder + File.separator
 				+ patternsetFileName);
-		if(!file.exists()) {
+		if (!file.exists()) {
 			return null;
 		}
 		PatternsetReader patternsetReader;
