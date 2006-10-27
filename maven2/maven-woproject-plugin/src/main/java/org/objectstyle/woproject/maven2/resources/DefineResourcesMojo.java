@@ -139,9 +139,9 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 			resource.addExclude("dist/**");
 			resource.addExclude("target/**");
 		}
-		String fullTargetPath = "../" + this.getProject().getArtifactId()
-				+ "woa" + File.separator + "Contents" + File.separator
-				+ targetPath;
+		String fullTargetPath = "../" + this.getProject().getArtifactId() + "."
+				+ getProductExtension() + File.separator + "Contents"
+				+ File.separator + targetPath;
 		resource.setTargetPath(fullTargetPath);
 		return resource;
 	}
@@ -201,6 +201,8 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 		}
 		return null;
 	}
+
+	public abstract String getProductExtension();
 
 	public abstract MavenProject getProject();
 }
