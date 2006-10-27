@@ -14,7 +14,7 @@ import org.apache.maven.project.MavenProject;
  * @author uli
  * @since 2.0
  */
-public class PackageWOApplicationResourcesMojo extends DefineResourcesMojo {
+public class PackageWOApplicationResourcesMojo extends PackageMojo {
 
 	/**
 	 * The maven project.
@@ -24,15 +24,6 @@ public class PackageWOApplicationResourcesMojo extends DefineResourcesMojo {
 	 * @readonly
 	 */
 	private MavenProject project;
-
-	/**
-	 * The set of dependencies required by the project
-	 * 
-	 * @parameter default-value="${project.dependencies}"
-	 * @required
-	 * @readonly
-	 */
-	private java.util.ArrayList dependencies;
 
 	public PackageWOApplicationResourcesMojo() throws MojoExecutionException {
 		super();
