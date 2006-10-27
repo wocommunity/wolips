@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project>
 	<parent>
-		<artifactId>woproject-maven2-parent</artifactId>
+		<artifactId>maven2</artifactId>
 		<groupId>org.objectstyle.woproject.maven2</groupId>
 		<version>2.0-SNAPSHOT</version>
 	</parent>
