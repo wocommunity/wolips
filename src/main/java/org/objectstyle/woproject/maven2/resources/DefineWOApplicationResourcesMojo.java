@@ -80,10 +80,13 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 		while (dependenciesIterator.hasNext()) {
 			Dependency dependency = (Dependency) dependenciesIterator.next();
 			String depenendencyGroup = dependency.getGroupId();
+			if(depenendencyGroup != null) {
+				depenendencyGroup.replace('.', File.separatorChar);
+			}
 			String depenendencyArtifact = dependency.getArtifactId();
 			String depenendencyVersion = dependency.getVersion();
-			String dependencyPath = depenendencyGroup + "/"
-					+ depenendencyArtifact + "/" + depenendencyVersion + "/"
+			String dependencyPath = depenendencyGroup + File.separator
+					+ depenendencyArtifact + File.separator + depenendencyVersion + File.separator
 					+ depenendencyArtifact + "-" + depenendencyVersion + ".jar";
 			getLog().info(
 					"Defining wo classpath: dependencyPath: " + dependencyPath);
@@ -106,62 +109,4 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 	public MavenProject getProject() {
 		return project;
 	}
-
-	//
-	//
-	// <j:forEach var="artifact" items="${pom.artifacts}">
-	//
-	// <j:set var="dep" value="${artifact.dependency}"/>
-	// <j:set var="depordering"
-	// value="${dep.getProperty('woaclasspath.ordering')}"/>
-	// <j:set var="depclasspathsystementry"
-	// value="${dep.getProperty('woaclasspath.system.entry')}"/>
-	// <j:choose>
-	// <j:when test="${dep.jar != null}">
-	// <j:set var="libname" value="${dep.jar}"/>
-	// </j:when>
-	// <j:otherwise>
-	// <j:set var="libname"
-	// value="${dep.artifactId}-${dep.version}.jar"/>
-	// </j:otherwise>
-	// </j:choose>
-	// <j:set var="lib"
-	// value="${maven.repo.local}${file.separator}${dep.groupId}${file.separator}${dep.type}s${file.separator}${libname}"/>
-	//
-	// <j:choose>
-	// <j:when test="${depclasspathsystementry == null}">
-	// <j:choose>
-	// <j:when
-	// test="${dep.type == 'jar' || dep.type=='ejb' || empty(dep.type)}">
-	// <j:choose>
-	// <echo>Including lib: ${dep.artifactId}</echo>
-	// <j:when test="${depordering != null}">
-	// <j:set var="libwithordering"
-	// value="${maven.ordering.dir}${file.separator}${depordering}${libname}"/>
-	// <ant:copy file="${lib}"
-	// tofile="${libwithordering}"/>
-	// <ant:lib file="${libwithordering}">
-	// </ant:lib>
-	// </j:when>
-	// <j:otherwise>
-	// <ant:lib file="${lib}">
-	// </ant:lib>
-	// </j:otherwise>
-	// </j:choose>
-	// </j:when>
-	// <j:otherwise>
-	// <echo>Unknwon type set for dependency ${dep.artifatId}</echo>
-	// </j:otherwise>
-	// </j:choose>
-	// </j:when>
-	// <j:otherwise>
-	// <ant:frameworks root="${wo.wosystemroot}">
-	// <include name="${depclasspathsystementry}"/>
-	// </ant:frameworks>
-	// <!-- <ant:echo message="${wo.wosystemroot}"/>-->
-	// <ant:echo message="Including lib: ${depclasspathsystementry}"/>
-	// </j:otherwise>
-	// </j:choose>
-	//
-	// </j:forEach>
 }
