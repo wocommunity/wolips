@@ -2,14 +2,8 @@ package org.objectstyle.woproject.maven2.resources;
 
 //org.apache.maven.plugins:maven-compiler-plugin:compile
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Iterator;
 
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 
 /**
