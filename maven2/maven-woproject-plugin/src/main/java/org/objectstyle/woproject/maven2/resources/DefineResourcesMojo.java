@@ -21,7 +21,9 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 		this.executeResourcesPatternsetFiles();
 		this.executeWebServerResourcesPatternsetFiles();
 		this.executeFolders();
-		this.getProject().getArtifact().setFile( new File( this.getArtifactFileName() ) );
+		String fileName = this.getArtifactFileName();
+		getLog().info("Defining artifact filename: " + fileName);
+		this.getProject().getArtifact().setFile( new File( fileName ) );
 	}
 
 	protected abstract String getArtifactFileName();
