@@ -13,7 +13,7 @@ import org.apache.maven.project.MavenProject;
  * @author uli
  * @since 2.0
  */
-public class PackageWOFrameworkResourcesMojo extends DefineResourcesMojo {
+public class PackageWOFrameworkResourcesMojo extends PackageMojo {
 
 	/**
 	 * The maven project.
