@@ -177,7 +177,7 @@
 	</distributionManagement>
 
 	<scm>
-		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject</connection>
+		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject/trunk</connection>
 		<developerConnection>
 			scm:svn:https://svn.objectstyle.org/repos/woproject
 		</developerConnection>
