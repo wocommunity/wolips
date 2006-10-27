@@ -164,7 +164,7 @@ public abstract class DefineResourcesMojo extends AbstractMojo {
 		return this.readPatternset(patternsetFileName);
 	}
 
-	private String getProjectFolder() {
+	protected String getProjectFolder() {
 		String projectFolder = this.getProject().getFile().getPath().substring(0,
 				this.getProject().getFile().getPath().length() - 7);
 		return projectFolder;
