@@ -528,6 +528,7 @@ public abstract class WOTask extends Task {
 	protected void copyLibs() throws BuildException {
 		Copy cp = this.getSubtaskFactory().getResourceCopy();
 		cp.setTodir(new File(resourcesDir(), "Java"));
+		cp.setFlatten(true);
 
 		Enumeration en = lib.elements();
 		while (en.hasMoreElements()) {
