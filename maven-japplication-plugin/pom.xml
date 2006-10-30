@@ -9,7 +9,7 @@
 
 	<artifactId>maven-japplication-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
-	<name>JApplication Maven Plugin</name>
+	<name>Maven JApplication Plugin</name>
 	<dependencies>
 		<dependency>
 			<groupId>org.objectstyle.woproject.ant</groupId>
