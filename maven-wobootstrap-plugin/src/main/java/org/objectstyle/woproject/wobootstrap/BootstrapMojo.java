@@ -53,7 +53,7 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.woproject.maven2.bootstrap;
+package org.objectstyle.woproject.maven2.wobootstrap;
 
 import java.io.File;
 import java.io.IOException;
