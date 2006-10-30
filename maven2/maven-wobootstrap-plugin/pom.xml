@@ -9,7 +9,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>maven-wobootstrap-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
-	<name>WOBootstrap Maven Plugin</name>
+	<name>Maven WOBootstrap Plugin</name>
 
 	<dependencies>
 		<dependency>

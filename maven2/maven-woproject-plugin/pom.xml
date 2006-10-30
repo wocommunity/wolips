@@ -9,7 +9,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>maven-woproject-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
-	<name>WOProject Maven Plugin</name>
+	<name>Maven WOProject Plugin</name>
 
 	<dependencies>
 		<dependency>
