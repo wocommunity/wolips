@@ -39,6 +39,6 @@ public class PackageWOApplicationResourcesMojo extends PackageMojo {
 
 	protected String getArtifactFileName() {
 		return "target" + File.separator + this.getProject().getArtifactId()
-				+ "-" + this.getProject().getVersion() + "-woapplication.tar.gz";
+				+ "-" + this.getProject().getVersion() + ".woapplication.tar.gz";
 	}
 }
