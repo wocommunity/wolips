@@ -15,6 +15,7 @@ public abstract class WOMojo extends AbstractMojo {
 
 	protected String getProjectFolder() {
 		String projectFolder = this.getProject().getFile().getPath().substring(0, this.getProject().getFile().getPath().length() - 7);
+		getLog().info("ProjectFolder = " + projectFolder);
 		return projectFolder;
 	}
 

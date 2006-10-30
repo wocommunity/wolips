@@ -131,7 +131,7 @@ public abstract class DefineResourcesMojo extends WOMojo {
 	private Resource createResources(String[] resourcesInclude,
 			String[] resourcesExclude, String directory, String targetPath) {
 		Resource resource = new Resource();
-		resource.setDirectory(directory);
+		resource.setDirectory(this.getProjectFolder() + directory);
 		if (resourcesInclude != null) {
 			for (int i = 0; i < resourcesInclude.length; i++) {
 				String string = resourcesInclude[i];
