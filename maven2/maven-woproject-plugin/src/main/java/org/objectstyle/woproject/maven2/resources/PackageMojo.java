@@ -14,7 +14,7 @@ public abstract class PackageMojo extends WOMojo {
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		getLog().info("Defining wo resources");
-		String fileName = /*"this.getProjectFolder() + */this.getArtifactFileName();
+		String fileName = this.getProjectFolder() + this.getArtifactFileName();
 		getLog().info("Defining artifact filename: " + fileName);
 		this.getProject().getArtifact().setFile( new File( fileName ) );
 	}
