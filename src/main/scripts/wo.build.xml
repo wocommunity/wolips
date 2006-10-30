@@ -38,7 +38,7 @@
 		<property file="build.properties" />
 		<property file="target/wobuild.properties" />
 		<echo>maven.localRepository.baseDir ${maven.localRepository.baseDir}</echo>
-		<property file="${user.home}${file.separator}Library${file.separator}wobuild.properties" />
+		<!-- property file="${user.home}${file.separator}Library${file.separator}wobuild.properties" />
 		<condition property="wobuild.properties.check.failed">
 			<not>
 				<and>
@@ -47,7 +47,7 @@
 				</and>
 			</not>
 		</condition>
-		<fail message="Could not find ${user.home}${file.separator}Library${file.separator}wobuild.properties." if="wobuild.properties.check.failed" />
+		<fail message="Could not find ${user.home}${file.separator}Library${file.separator}wobuild.properties." if="wobuild.properties.check.failed" / -->
 		<condition property="maven.localRepository.baseDir.check.failed">
 			<not>
 				<isset property="maven.localRepository.baseDir" />
@@ -68,14 +68,14 @@
 			</lib>
 		</woapplication>
 		
-		<tar tarfile="target/${my.maven.project.artifactId}-${my.maven.project.version}-woapplication.tar">
+		<tar tarfile="target/${my.maven.project.artifactId}-${my.maven.project.version}.woapplication.tar">
 			<tarfileset dir="target/${my.maven.project.artifactId}.woa">
 			</tarfileset>
 		 </tar>
 		 
-		 <gzip src="target/${my.maven.project.artifactId}-${my.maven.project.version}-woapplication.tar"
-			  zipfile="target/${my.maven.project.artifactId}-${my.maven.project.version}-woapplication.tar.gz"/>
-		 <delete file="target/${my.maven.project.artifactId}-${my.maven.project.version}-woapplication.tar"/>  
+		 <gzip src="target/${my.maven.project.artifactId}-${my.maven.project.version}.woapplication.tar"
+			  zipfile="target/${my.maven.project.artifactId}-${my.maven.project.version}.woapplication.tar.gz"/>
+		 <delete file="target/${my.maven.project.artifactId}-${my.maven.project.version}.woapplication.tar"/>  
 	</target>
 	
 	<!-- ================================================================== -->
@@ -100,7 +100,7 @@
 			<classes dir="target/classes">
 			</classes>
 		</woframework>
-		<zip zipfile="target/${my.maven.project.artifactId}-${my.maven.project.version}-woframework.jar" roundup="false">
+		<zip zipfile="target/${my.maven.project.artifactId}-${my.maven.project.version}.woframework.jar" roundup="false">
 			<fileset dir="target/${my.maven.project.artifactId}.framework">
 			</fileset>
 		</zip>
