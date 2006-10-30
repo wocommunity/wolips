@@ -35,6 +35,12 @@ public abstract class DefineResourcesMojo extends WOMojo {
 			throws MojoExecutionException, MojoFailureException {
 		getLog().info("Defining wo resources: loading patternsets");
 		String woProjectFolder = getWOProjectFolder();
+		if(woProjectFolder == null) {
+			getLog()
+			.info(
+					"Defining wo resources:  No \"woproject\" folder found within project. Skipping patternsets...");
+			return;
+		}
 		File woProjectFile = new File(woProjectFolder);
 		if (woProjectFile.exists()) {
 			getLog()
@@ -64,6 +70,12 @@ public abstract class DefineResourcesMojo extends WOMojo {
 			throws MojoExecutionException, MojoFailureException {
 		getLog().info("Defining wo webserverresources: loading patternsets");
 		String woProjectFolder = getWOProjectFolder();
+		if(woProjectFolder == null) {
+			getLog()
+			.info(
+					"Defining wo resources:  No \"woproject\" folder found within project. Skipping patternsets...");
+			return;
+		}
 		File woProjectFile = new File(woProjectFolder);
 		if (woProjectFile.exists()) {
 			getLog()
