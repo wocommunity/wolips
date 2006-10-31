@@ -37,7 +37,8 @@ public class PackageWOFrameworkResourcesMojo extends PackageMojo {
 	}
 
 	protected String getArtifactFileName() {
-		return "target" + File.separator + this.getProject().getArtifactId()
-				+ "-" + this.getProject().getVersion() + ".woframework.jar";
+		return null;
+//		return "target" + File.separator + this.getProject().getArtifactId()
+//				+ "-" + this.getProject().getVersion() + ".jar";
 	}
 }
