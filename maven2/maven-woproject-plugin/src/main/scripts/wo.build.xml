@@ -102,6 +102,9 @@
 		</woframework>
 		<zip zipfile="target/${my.maven.project.artifactId}-${my.maven.project.version}.jar" roundup="false">
 			<fileset dir="target/${my.maven.project.artifactId}.framework">
+				<exclude name="**/Java/**"/>
+			</fileset>
+			<fileset dir="target/classes">
 			</fileset>
 		</zip>
 	</target>
