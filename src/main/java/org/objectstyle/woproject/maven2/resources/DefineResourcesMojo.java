@@ -35,10 +35,10 @@ public abstract class DefineResourcesMojo extends WOMojo {
 			throws MojoExecutionException, MojoFailureException {
 		getLog().info("Defining wo resources: loading patternsets");
 		String woProjectFolder = getWOProjectFolder();
-		if(woProjectFolder == null) {
+		if (woProjectFolder == null) {
 			getLog()
-			.info(
-					"Defining wo resources:  No \"woproject\" folder found within project. Skipping patternsets...");
+					.info(
+							"Defining wo resources:  No \"woproject\" folder found within project. Skipping patternsets...");
 			return;
 		}
 		File woProjectFile = new File(woProjectFolder);
@@ -70,10 +70,10 @@ public abstract class DefineResourcesMojo extends WOMojo {
 			throws MojoExecutionException, MojoFailureException {
 		getLog().info("Defining wo webserverresources: loading patternsets");
 		String woProjectFolder = getWOProjectFolder();
-		if(woProjectFolder == null) {
+		if (woProjectFolder == null) {
 			getLog()
-			.info(
-					"Defining wo resources:  No \"woproject\" folder found within project. Skipping patternsets...");
+					.info(
+							"Defining wo resources:  No \"woproject\" folder found within project. Skipping patternsets...");
 			return;
 		}
 		File woProjectFile = new File(woProjectFolder);
@@ -160,12 +160,17 @@ public abstract class DefineResourcesMojo extends WOMojo {
 			resource.addExclude("target/**");
 		}
 		String fullTargetPath = "../" + this.getProject().getArtifactId() + "."
-				+ getProductExtension() + File.separator + "Contents"
-				+ File.separator + targetPath;
+				+ getProductExtension();
+		if (this.hasContentsFolder()) {
+			fullTargetPath = fullTargetPath + File.separator + "Contents";
+		}
+		fullTargetPath = fullTargetPath + File.separator + targetPath;
 		resource.setTargetPath(fullTargetPath);
 		return resource;
 	}
 
+	public abstract boolean hasContentsFolder();
+	
 	private String[] readPatternset(String patternsetFileName) {
 		getLog()
 				.info(
