@@ -117,4 +117,8 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 	public String getProductExtension() {
 		return "woa";
 	}
+
+	public boolean hasContentsFolder() {
+		return true;
+	}
 }
