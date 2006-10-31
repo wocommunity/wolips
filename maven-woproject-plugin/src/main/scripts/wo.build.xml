@@ -100,7 +100,7 @@
 			<classes dir="target/classes">
 			</classes>
 		</woframework>
-		<zip zipfile="target/${my.maven.project.artifactId}-${my.maven.project.version}.woframework.jar" roundup="false">
+		<zip zipfile="target/${my.maven.project.artifactId}-${my.maven.project.version}.jar" roundup="false">
 			<fileset dir="target/${my.maven.project.artifactId}.framework">
 			</fileset>
 		</zip>

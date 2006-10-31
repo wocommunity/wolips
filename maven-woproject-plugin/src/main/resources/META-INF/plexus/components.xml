@@ -60,7 +60,7 @@
 				</phases>
 			</configuration>
 		</component>
-		<component>
+		<!--component>
 			<role>
 				org.apache.maven.artifact.handler.ArtifactHandler
 			</role>
@@ -76,7 +76,7 @@
 				<language>java</language>
 				<addedToClasspath>true</addedToClasspath>
 			</configuration>
-		</component>
+		</component -->
 		<component>
 			<role>
 				org.apache.maven.lifecycle.mapping.LifecycleMapping
