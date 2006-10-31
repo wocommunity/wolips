@@ -40,9 +40,4 @@ public class DefineWOFrameworkResourcesMojo extends DefineResourcesMojo {
 	public String getProductExtension() {
 		return "framework";
 	}
-
-	protected String getArtifactFileName() {
-		return "target" + File.separator + this.getProject().getArtifactId()
-				+ "-" + this.getProject().getVersion() + "-woframework.jar";
-	}
 }
