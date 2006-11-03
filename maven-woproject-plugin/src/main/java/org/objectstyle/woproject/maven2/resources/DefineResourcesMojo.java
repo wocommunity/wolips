@@ -3,6 +3,8 @@ package org.objectstyle.woproject.maven2.resources;
 //org.apache.maven.plugins:maven-compiler-plugin:compile
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -18,9 +20,36 @@ public abstract class DefineResourcesMojo extends WOMojo {
 		getLog().info("Creating folder");
 		this.executeCreateFolders();
 		getLog().info("Defining wo resources");
+		this.executeExistingResources();
+		this.executeExistingWebServerResources();
 		this.executeResourcesPatternsetFiles();
 		this.executeWebServerResourcesPatternsetFiles();
 		this.executeFolders();
+	}
+
+	private void executeExistingWebServerResources() {
+		this.executePatchResources("Resources", this.getFullTargetPath("Resources"));
+	}
+
+	private void executeExistingResources() {
+		this.executePatchResources("WebServerResources", this.getFullTargetPath("WebServerResources"));
+	}
+
+	private void executePatchResources(String existingTargetPath,
+			String newTargetPath) {
+		List list = this.getProject().getResources();
+		Iterator iterator = list.iterator();
+		while (iterator.hasNext()) {
+			Resource resource = (Resource) iterator.next();
+			if (resource.getTargetPath() != null
+					&& resource.getTargetPath().equals(existingTargetPath)) {
+				getLog().info(
+						"Defining wo resources:  Patching target path of resource: "
+								+ resource);
+				resource.setTargetPath(newTargetPath);
+			}
+		}
+
 	}
 
 	private void executeCreateFolders() {
@@ -159,18 +188,23 @@ public abstract class DefineResourcesMojo extends WOMojo {
 			resource.addExclude("dist/**");
 			resource.addExclude("target/**");
 		}
+		String fullTargetPath = this.getFullTargetPath(targetPath);
+		resource.setTargetPath(fullTargetPath);
+		return resource;
+	}
+
+	private String getFullTargetPath(String targetPath) {
 		String fullTargetPath = "../" + this.getProject().getArtifactId() + "."
 				+ getProductExtension();
 		if (this.hasContentsFolder()) {
 			fullTargetPath = fullTargetPath + File.separator + "Contents";
 		}
 		fullTargetPath = fullTargetPath + File.separator + targetPath;
-		resource.setTargetPath(fullTargetPath);
-		return resource;
+		return fullTargetPath;
 	}
 
 	public abstract boolean hasContentsFolder();
-	
+
 	private String[] readPatternset(String patternsetFileName) {
 		getLog()
 				.info(
