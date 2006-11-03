@@ -45,9 +45,6 @@
 					<test>
 						org.apache.maven.plugins:maven-surefire-plugin:test
 					</test>
-					<generate-test-resources>
-						org.objectstyle.woproject.maven2:maven-woproject-plugin:woapplication
-					</generate-test-resources>
 					<package>
 						org.objectstyle.woproject.maven2:maven-woproject-plugin:package-woapplication
 					</package>
@@ -105,9 +102,6 @@
 					<test>
 						org.apache.maven.plugins:maven-surefire-plugin:test
 					</test>
-					<generate-test-resources>
-						org.objectstyle.woproject.maven2:maven-woproject-plugin:woframework
-					</generate-test-resources>
 					<package>
 						org.objectstyle.woproject.maven2:maven-woproject-plugin:package-woframework
 					</package>
