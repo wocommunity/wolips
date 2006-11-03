@@ -68,8 +68,15 @@ public class WindowsWebobjectsLocator implements WebobjectsLocator
 {
 	/**
 	 * The deafult WebObjects root variable on Windows
+	 * @deprecated New versions of JDK throw Exceptions about getenv not more supported. Please use
+	 * the <code>next.root</code> property instead
 	 */
 	protected static final String DEFAULT_WO_ROOT_VARIABLE = "NEXT_ROOT";
+
+	/**
+	 * The deafult WebObjects root property on Windows
+	 */
+	protected static final String DEFAULT_WO_ROOT_PROPERTY = "next.root";
 
 	/**
 	 * The name of the environment that contains the path for WebObjects folder
@@ -82,7 +89,7 @@ public class WindowsWebobjectsLocator implements WebobjectsLocator
 	 */
 	public WindowsWebobjectsLocator()
 	{
-		woRootVariable = DEFAULT_WO_ROOT_VARIABLE;
+		woRootVariable = System.getProperty(DEFAULT_WO_ROOT_PROPERTY);
 	}
 
 	/**
@@ -120,7 +127,7 @@ public class WindowsWebobjectsLocator implements WebobjectsLocator
 	 */
 	public File getWebobjectsRootFolder()
 	{
-		String nextRoot = System.getenv( woRootVariable );
+		String nextRoot = woRootVariable;
 
 		if( nextRoot == null )
 		{
