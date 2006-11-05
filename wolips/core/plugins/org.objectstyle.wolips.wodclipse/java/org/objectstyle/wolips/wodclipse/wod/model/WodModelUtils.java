@@ -76,6 +76,8 @@ import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.preferences.PreferenceConstants;
 import org.objectstyle.wolips.wodclipse.wod.completion.WodBindingUtils;
 
+import com.sun.tools.javac.util.Warner;
+
 /**
  * @author mschrag
  */
@@ -229,6 +231,10 @@ public class WodModelUtils {
 								problems.add(new WodProblem(_wodModel, "There is no key path '" + bindingValue + "' for " + javaFileType.getElementName(), (hasPositions) ? ((DocumentWodBinding) binding).getValuePosition() : null, false, bindingValueKeyPath.getRelatedToFileNames()));
 							} else if (bindingValueKeyPath.isAmbiguous()) {
 								problems.add(new WodProblem(_wodModel, "Unable to verify key path '" + bindingValue + "' for " + javaFileType.getElementName(), (hasPositions) ? ((DocumentWodBinding) binding).getValuePosition() : null, true, bindingValueKeyPath.getRelatedToFileNames()));
+							}
+							String helperFunction = bindingValueKeyPath.getLastBindingKey().getHelperFunction();
+							if (helperFunction != null) {
+								problems.add(new WodProblem(_wodModel, "Unable to verify helper function '" + helperFunction + "'", (hasPositions) ? ((DocumentWodBinding) binding).getValuePosition() : null, true, bindingValueKeyPath.getRelatedToFileNames()));
 							}
 							// else {
 							// String[] validApiValues =
