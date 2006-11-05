@@ -87,6 +87,7 @@ public class WodScanner extends AbstractJavaScanner {
 
 	protected List createRules() {
 		List rules = new ArrayList();
+		rules.add(new WOOGNLRule("~", ";", getToken(PreferenceConstants.BINDING_VALUE), '\\'));
 		rules.add(new WOOGNLRule("\"~", "\"", getToken(PreferenceConstants.BINDING_VALUE), '\\'));
 		rules.add(new StringLiteralRule("\"", "\"", getToken(PreferenceConstants.CONSTANT_BINDING_VALUE), '\\'));
 		rules.add(new StringLiteralRule("'", "'", getToken(PreferenceConstants.CONSTANT_BINDING_VALUE), '\\'));

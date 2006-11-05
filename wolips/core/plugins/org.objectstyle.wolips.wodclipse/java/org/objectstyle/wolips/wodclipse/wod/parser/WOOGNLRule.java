@@ -43,6 +43,7 @@
  */
 package org.objectstyle.wolips.wodclipse.wod.parser;
 
+import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.SingleLineRule;
 
@@ -64,5 +65,13 @@ public class WOOGNLRule extends SingleLineRule {
 
 	public WOOGNLRule(String _startSequence, String _endSequence, IToken _token, char _escapeCharacter, boolean _breaksOnEOF, boolean _escapeContinuesLine) {
 		super(_startSequence, _endSequence, _token, _escapeCharacter, _breaksOnEOF, _escapeContinuesLine);
+	}
+	
+	protected boolean endSequenceDetected(ICharacterScanner scanner) {
+		boolean detected = super.endSequenceDetected(scanner);
+		if (detected && fEndSequence[0] == ';') {
+			scanner.unread();
+		}
+		return detected;
 	}
 }
