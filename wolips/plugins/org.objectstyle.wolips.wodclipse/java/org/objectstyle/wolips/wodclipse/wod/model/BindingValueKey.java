@@ -10,62 +10,69 @@ import org.eclipse.jdt.internal.corext.util.JavaModelUtil;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 
 public class BindingValueKey {
-	private String myBindingName;
+	private String _bindingName;
 
-	private IMember myBindingMember;
+	private IMember _bindingMember;
 
-	private IJavaProject myJavaProject;
+	private IJavaProject _javaProject;
 
-	private IType myNextType;
+	private IType _nextType;
+	
+	private String _helperFunction;
 
-	public BindingValueKey(String _bindingName, IMember _bindingMember, IJavaProject _javaProject) {
-		myBindingName = _bindingName;
-		myBindingMember = _bindingMember;
-		myJavaProject = _javaProject;
+	public BindingValueKey(String bindingName, IMember bindingMember, IJavaProject javaProject, String helperFunction) {
+		_bindingName = bindingName;
+		_bindingMember = bindingMember;
+		_javaProject = javaProject;
+		_helperFunction = helperFunction;
 	}
 
 	public IType getDeclaringType() {
-		return myBindingMember.getDeclaringType();
+		return _bindingMember.getDeclaringType();
 	}
 
 	public String getBindingName() {
-		return myBindingName;
+		return _bindingName;
 	}
 
 	public IMember getBindingMember() {
-		return myBindingMember;
+		return _bindingMember;
+	}
+	
+	public String getHelperFunction() {
+		return _helperFunction;
 	}
 
 	public String getNextTypeName() {
 		try {
 			String nextTypeName;
-			if (myBindingMember instanceof IMethod) {
-				nextTypeName = ((IMethod) myBindingMember).getReturnType();
+			if (_bindingMember instanceof IMethod) {
+				nextTypeName = ((IMethod) _bindingMember).getReturnType();
 			} else {
-				nextTypeName = ((IField) myBindingMember).getTypeSignature();
+				nextTypeName = ((IField) _bindingMember).getTypeSignature();
 			}
 			return nextTypeName;
 		} catch (JavaModelException e) {
-			throw new RuntimeException("Failed to get the next type name for " + myBindingMember + ".", e);
+			throw new RuntimeException("Failed to get the next type name for " + _bindingMember + ".", e);
 		}
 	}
 
 	public IType getNextType() throws JavaModelException {
-		if (myNextType == null) {
+		if (_nextType == null) {
 			String nextTypeName = getNextTypeName();
 			IType typeContext = getDeclaringType();
 			String resolvedNextTypeName = JavaModelUtil.getResolvedTypeName(nextTypeName, typeContext);
 			if (resolvedNextTypeName == null) {
 				WodclipsePlugin.getDefault().log("Failed to resolve type name " + nextTypeName + " in component " + typeContext.getElementName());
-				myNextType = null;
+				_nextType = null;
 			} else {
-				myNextType = JavaModelUtil.findType(myJavaProject, resolvedNextTypeName);
+				_nextType = JavaModelUtil.findType(_javaProject, resolvedNextTypeName);
 			}
 		}
-		return myNextType;
+		return _nextType;
 	}
 
 	public String toString() {
-		return "[BindingKey: bindingName = " + myBindingName + "; bindingMember = " + myBindingMember + "]";
+		return "[BindingKey: bindingName = " + _bindingName + "; bindingMember = " + _bindingMember + "]";
 	}
 }

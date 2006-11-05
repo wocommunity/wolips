@@ -106,8 +106,17 @@ public class WodBindingUtils {
 	public static List createMatchingBindingKeys(IJavaProject _javaProject, IType _type, String _nameStartingWith, boolean _requireExactNameMatch, int _accessorsOrMutators) throws JavaModelException {
 		List bindingKeys = new LinkedList();
 
+		String nameStartingWith = _nameStartingWith;
 		if (_type != null) {
-			String lowercaseNameStartingWith = _nameStartingWith.toLowerCase();
+			String helperFunction = null;
+			int pipeIndex = nameStartingWith.indexOf('|');
+			if (pipeIndex != -1) {
+				helperFunction = nameStartingWith.substring(pipeIndex + 1);
+				nameStartingWith = nameStartingWith.substring(0, pipeIndex);
+			}
+
+			String lowercaseNameStartingWith = nameStartingWith.toLowerCase();
+			
 			ITypeHierarchy typeHierarchy;
 			String typeName = _type.getElementName();
 			// We want to show fields from your WOApplication, WOSession, and
@@ -121,7 +130,7 @@ public class WodBindingUtils {
 			for (int typeNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && typeNum < types.length; typeNum++) {
 				IField[] fields = types[typeNum].getFields();
 				for (int fieldNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && fieldNum < fields.length; fieldNum++) {
-					BindingValueKey bindingKey = WodBindingUtils.createBindingKeyIfMatches(_javaProject, fields[fieldNum], lowercaseNameStartingWith, _requireExactNameMatch, _accessorsOrMutators);
+					BindingValueKey bindingKey = WodBindingUtils.createBindingKeyIfMatches(_javaProject, fields[fieldNum], lowercaseNameStartingWith, _requireExactNameMatch, _accessorsOrMutators, helperFunction);
 					if (bindingKey != null) {
 						bindingKeys.add(bindingKey);
 					}
@@ -133,7 +142,7 @@ public class WodBindingUtils {
 				if (!_requireExactNameMatch || bindingKeys.size() == 0) {
 					IMethod[] methods = types[typeNum].getMethods();
 					for (int methodNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && methodNum < methods.length; methodNum++) {
-						BindingValueKey bindingKey = WodBindingUtils.createBindingKeyIfMatches(_javaProject, methods[methodNum], lowercaseNameStartingWith, _requireExactNameMatch, _accessorsOrMutators);
+						BindingValueKey bindingKey = WodBindingUtils.createBindingKeyIfMatches(_javaProject, methods[methodNum], lowercaseNameStartingWith, _requireExactNameMatch, _accessorsOrMutators, helperFunction);
 						if (bindingKey != null) {
 							bindingKeys.add(bindingKey);
 						}
@@ -148,24 +157,24 @@ public class WodBindingUtils {
 		return bindingKeys;
 	}
 
-	public static BindingValueKey createBindingKeyIfMatches(IJavaProject _javaProject, IMember _member, String _nameStartingWith, boolean _requireExactNameMatch, int _accessorsOrMutators) throws JavaModelException {
+	public static BindingValueKey createBindingKeyIfMatches(IJavaProject javaProject, IMember member, String nameStartingWith, boolean requireExactNameMatch, int accessorsOrMutators, String helperFunction) throws JavaModelException {
 		BindingValueKey bindingKey = null;
 
-		int flags = _member.getFlags();
+		int flags = member.getFlags();
 		if (!Flags.isStatic(flags) && Flags.isPublic(flags)) {
 			String[] possiblePrefixes;
 			boolean memberSignatureMatches;
-			if (_member instanceof IMethod) {
-				IMethod method = (IMethod) _member;
+			if (member instanceof IMethod) {
+				IMethod method = (IMethod) member;
 				int parameterCount = method.getParameterNames().length;
 				String returnType = method.getReturnType();
-				if (_accessorsOrMutators == WodBindingUtils.ACCESSORS_ONLY) {
+				if (accessorsOrMutators == WodBindingUtils.ACCESSORS_ONLY) {
 					memberSignatureMatches = (parameterCount == 0 && !"V".equals(returnType));
 					possiblePrefixes = WodBindingUtils.GET_METHOD_PREFIXES;
-				} else if (_accessorsOrMutators == WodBindingUtils.ACCESSORS_OR_VOID) {
+				} else if (accessorsOrMutators == WodBindingUtils.ACCESSORS_OR_VOID) {
 					memberSignatureMatches = (parameterCount == 0);
 					possiblePrefixes = WodBindingUtils.GET_METHOD_PREFIXES;
-				} else if (_accessorsOrMutators == WodBindingUtils.VOID_ONLY) {
+				} else if (accessorsOrMutators == WodBindingUtils.VOID_ONLY) {
 					memberSignatureMatches = (parameterCount == 0 && "V".equals(returnType));
 					possiblePrefixes = WodBindingUtils.GET_METHOD_PREFIXES;
 				} else {
@@ -178,7 +187,7 @@ public class WodBindingUtils {
 			}
 
 			if (memberSignatureMatches) {
-				String memberName = _member.getElementName();
+				String memberName = member.getElementName();
 				String lowercaseMemberName = memberName.toLowerCase();
 
 				// Run through our list of valid prefixes and look for a match
@@ -189,10 +198,10 @@ public class WodBindingUtils {
 					if (lowercaseMemberName.startsWith(possiblePrefixes[prefixNum])) {
 						int prefixLength = possiblePrefixes[prefixNum].length();
 						String lowercaseMemberNameWithoutPrefix = lowercaseMemberName.substring(prefixLength);
-						if ((_requireExactNameMatch && lowercaseMemberNameWithoutPrefix.equals(_nameStartingWith)) || (!_requireExactNameMatch && lowercaseMemberNameWithoutPrefix.startsWith(_nameStartingWith))) {
+						if ((requireExactNameMatch && lowercaseMemberNameWithoutPrefix.equals(nameStartingWith)) || (!requireExactNameMatch && lowercaseMemberNameWithoutPrefix.startsWith(nameStartingWith))) {
 							String bindingName = WodBindingUtils.toLowercaseFirstLetter(memberName.substring(prefixLength));
-							if (_nameStartingWith.length() > 0 || !bindingName.startsWith("_")) {
-								bindingKey = new BindingValueKey(bindingName, _member, _javaProject);
+							if (nameStartingWith.length() > 0 || !bindingName.startsWith("_")) {
+								bindingKey = new BindingValueKey(bindingName, member, javaProject, helperFunction);
 							}
 						}
 					}
