@@ -94,12 +94,17 @@ public class ClasspathUtils {
 
 	public static ClassLoader createEOModelClassLoader(EOModel _model) throws MalformedURLException, JavaModelException {
 		Set classpathSet = new LinkedHashSet();
-		File modelFolder = _model.getModelFolder();
-		IContainer[] modelContainers = ResourcesPlugin.getWorkspace().getRoot().findContainersForLocation(new Path(modelFolder.getAbsolutePath()));
-		for (int modelContainerNum = 0; modelContainerNum < modelContainers.length; modelContainerNum++) {
-			IContainer modelContainer = modelContainers[modelContainerNum];
-			IProject modelProject = modelContainer.getProject();
-			ClasspathUtils.fillInClasspath(modelProject, classpathSet);
+		if(_model.getProject() == null) {
+			File modelFolder = _model.getModelFolder();
+			IContainer[] modelContainers = ResourcesPlugin.getWorkspace().getRoot().findContainersForLocation(new Path(modelFolder.getAbsolutePath()));
+			for (int modelContainerNum = 0; modelContainerNum < modelContainers.length; modelContainerNum++) {
+				IContainer modelContainer = modelContainers[modelContainerNum];
+				IProject modelProject = modelContainer.getProject();
+				ClasspathUtils.fillInClasspath(modelProject, classpathSet);
+			}
+		}
+		else {
+			ClasspathUtils.fillInClasspath(_model.getProject(), classpathSet);
 		}
 		// AK: we don't want to re-jar each time we make a change....
 		String workSpacePath = VariablesPlugin.getDefault().getWOProjectDevelopmentPath();

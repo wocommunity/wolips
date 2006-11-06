@@ -59,6 +59,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.eclipse.core.resources.IProject;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
@@ -118,8 +119,10 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 	private File myModelFolder;
 
 	private Set myPrototypeAttributeCache;
+	
+	private IProject project;
 
-	public EOModel(String _name) {
+	public EOModel(String _name, IProject project) {
 		myName = _name;
 		myEntities = new PropertyListSet();
 		myStoredProcedures = new PropertyListSet();
@@ -132,8 +135,13 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		// myConnectionDictionaryRepeater = new
 		// PropertyChangeRepeater(IConnectionDictionaryOwner.CONNECTION_DICTIONARY);
 		// setConnectionDictionary(new NotificationMap(), false);
+		this.project = project;
 	}
 
+	public IProject getProject() {
+		return project;
+	}
+	
 	protected void _storedProcedureChanged(EOStoredProcedure _storedProcedure, String _propertyName, Object _oldValue, Object _newValue) {
 		firePropertyChange(EOModel.STORED_PROCEDURE, null, _storedProcedure);
 	}
@@ -1029,11 +1037,11 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		Set failures = new LinkedHashSet();
 
 		EOModelGroup modelGroup = new EOModelGroup();
-		modelGroup.addModelsFromFolder(new File("/Library/Frameworks/ERPrototypes.framework/Resources"), false, failures, false);
-		modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTask"), false, failures, false);
-		modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTAccounting"), false, failures, false);
-		modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTCMS"), false, failures, false);
-		modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTWOExtensions"), false, failures, false);
+		modelGroup.addModelsFromFolder(new File("/Library/Frameworks/ERPrototypes.framework/Resources"), false, failures, false, null);
+		modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTask"), false, failures, false, null);
+		modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTAccounting"), false, failures, false, null);
+		modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTCMS"), false, failures, false, null);
+		modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTWOExtensions"), false, failures, false, null);
 
 		modelGroup.resolve(failures);
 		modelGroup.verify(failures);
