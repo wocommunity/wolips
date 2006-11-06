@@ -76,8 +76,6 @@ import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.preferences.PreferenceConstants;
 import org.objectstyle.wolips.wodclipse.wod.completion.WodBindingUtils;
 
-import com.sun.tools.javac.util.Warner;
-
 /**
  * @author mschrag
  */
