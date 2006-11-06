@@ -95,7 +95,7 @@ public class EclipseEOModelGroupFactory {
 				if (!modelFolder.isAbsolute()) {
 					modelFolder = new File(project.getLocation().toFile(), modelPath);
 				}
-				EOModel modelGroupModel = modelGroup.addModelFromFolder(modelFolder, _failures, _skipOnDuplicates);
+				EOModel modelGroupModel = modelGroup.addModelFromFolder(modelFolder, _failures, _skipOnDuplicates, _modelResource.getProject());
 				if (model == null) {
 					model = modelGroupModel;
 				}
@@ -142,7 +142,7 @@ public class EclipseEOModelGroupFactory {
 							File resourcesFolder = frameworkPath.append("Resources").toFile();
 							if (!_searchedFolders.contains(resourcesFolder) && resourcesFolder.exists()) {
 								_searchedFolders.add(resourcesFolder);
-								_modelGroup.addModelsFromFolder(resourcesFolder, false, _failures, _skipOnDuplicates);
+								_modelGroup.addModelsFromFolder(resourcesFolder, false, _failures, _skipOnDuplicates, _project);
 							}
 						}
 					} else if (entryKind == IClasspathEntry.CPE_PROJECT) {
@@ -187,7 +187,7 @@ public class EclipseEOModelGroupFactory {
 				if (_resource.getType() == IResource.FOLDER) {
 					File resourceFile = _resource.getLocation().toFile();
 					if (!mySearchedFolders.contains(resourceFile) && "eomodeld".equals(_resource.getFileExtension())) {
-						myModelGroup.addModelFromFolder(resourceFile, myFailures, mySkipOnDuplicates);
+						myModelGroup.addModelFromFolder(resourceFile, myFailures, mySkipOnDuplicates, _resource.getProject());
 						visitChildren = false;
 					}
 				}

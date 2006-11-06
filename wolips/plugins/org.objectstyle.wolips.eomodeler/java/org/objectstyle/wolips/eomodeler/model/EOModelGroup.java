@@ -56,6 +56,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.eclipse.core.resources.IProject;
+
 public class EOModelGroup extends EOModelObject {
 	public static final String MODELS = "models";
 
@@ -193,30 +195,30 @@ public class EOModelGroup extends EOModelObject {
 		return matchingModel;
 	}
 
-	public void addModelsFromFolder(File _folder, Set _failures, boolean _skipOnDuplicates) throws IOException, EOModelException {
-		addModelsFromFolder(_folder, true, _failures, _skipOnDuplicates);
+	public void addModelsFromFolder(File _folder, Set _failures, boolean _skipOnDuplicates, IProject project) throws IOException, EOModelException {
+		addModelsFromFolder(_folder, true, _failures, _skipOnDuplicates, project);
 	}
 
-	public void addModelsFromFolder(File _folder, boolean _recursive, Set _failures, boolean _skipOnDuplicates) throws IOException, EOModelException {
+	public void addModelsFromFolder(File _folder, boolean _recursive, Set _failures, boolean _skipOnDuplicates, IProject project) throws IOException, EOModelException {
 		File[] files = _folder.listFiles();
 		for (int fileNum = 0; fileNum < files.length; fileNum++) {
 			String name = files[fileNum].getName();
 			if (files[fileNum].isDirectory()) {
 				if (name.endsWith(".eomodeld")) {
-					addModelFromFolder(files[fileNum], _failures, _skipOnDuplicates);
+					addModelFromFolder(files[fileNum], _failures, _skipOnDuplicates, project);
 				} else if (_recursive) {
-					addModelsFromFolder(files[fileNum], _recursive, _failures, _skipOnDuplicates);
+					addModelsFromFolder(files[fileNum], _recursive, _failures, _skipOnDuplicates, project);
 				}
 			}
 		}
 	}
 
-	public EOModel addModelFromFolder(File _folder, Set _failures, boolean _skipOnDuplicates) throws IOException, EOModelException {
+	public EOModel addModelFromFolder(File _folder, Set _failures, boolean _skipOnDuplicates, IProject project) throws IOException, EOModelException {
 		String name = _folder.getName();
 		String modelName = name.substring(0, name.indexOf('.'));
 		EOModel model = getModelNamed(modelName);
 		if (model == null) {
-			model = new EOModel(modelName);
+			model = new EOModel(modelName, project);
 			model._setModelGroup(this);
 			boolean reloadModel = true;
 			while (reloadModel) {
