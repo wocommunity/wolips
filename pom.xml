@@ -18,7 +18,7 @@
 
 	<modules>
 		<module>woenvironment</module>
-		<module>woproject</module>
+		<module>woproject-ant-tasks</module>
 		<module>maven2</module>
 	</modules>
 
@@ -59,10 +59,55 @@
 	<dependencyManagement>
 		<dependencies>
 
+			<!-- used for wo stuff -->
+			<dependency>
+				<groupId>webobjects.apple</groupId>
+				<artifactId>java-webobjects</artifactId>
+				<version>5.3.2</version>
+			</dependency>
+			<dependency>
+				<groupId>webobjects.apple</groupId>
+				<artifactId>java-foundation</artifactId>
+				<version>5.3.2</version>
+			</dependency>
+			<dependency>
+				<groupId>webobjects.apple</groupId>
+				<artifactId>java-eo-access</artifactId>
+				<version>5.3.2</version>
+			</dependency>
+			<dependency>
+				<groupId>webobjects.apple</groupId>
+				<artifactId>java-eo-application</artifactId>
+				<version>5.3.2</version>
+			</dependency>
+			<dependency>
+				<groupId>webobjects.apple</groupId>
+				<artifactId>java-eo-control</artifactId>
+				<version>5.3.2</version>
+			</dependency>
+			<dependency>
+				<groupId>webobjects.apple</groupId>
+				<artifactId>java-xml</artifactId>
+				<version>5.3.2</version>
+			</dependency>
+			<dependency>
+				<groupId>webobjects.apple</groupId>
+				<artifactId>java-wo-extensions</artifactId>
+				<version>5.3.2</version>
+			</dependency>
+
+			<!-- used for property list parsing -->
 			<dependency>
 				<groupId>org.objectstyle.cayenne</groupId>
 				<artifactId>cayenne</artifactId>
 				<version>1.2-SNAPSHOT</version>
+			</dependency>
+
+			<!-- required by cayenne -->
+			<dependency>
+				<groupId>foundrylogic.vpp</groupId>
+				<artifactId>vpp</artifactId>
+				<version>2.2.1</version>
 			</dependency>
 
 			<!-- used for scripted plugins -->
@@ -127,6 +172,12 @@
 			</dependency>
 
 			<dependency>
+				<groupId>ant</groupId>
+				<artifactId>ant-junit</artifactId>
+				<version>1.6.5</version>
+			</dependency>
+
+			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>3.8.1</version>
@@ -177,7 +228,9 @@
 	</distributionManagement>
 
 	<scm>
-		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject/trunk/woproject</connection>
+		<connection>
+			scm:svn:http://svn.objectstyle.org/repos/woproject/trunk/woproject
+		</connection>
 		<developerConnection>
 			scm:svn:https://svn.objectstyle.org/repos/woproject/trunk/woproject
 		</developerConnection>
