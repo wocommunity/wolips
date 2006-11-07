@@ -31,6 +31,7 @@
 						<phase>install</phase>
 						<configuration>
 							<tasks>
+							<!--
 								<property file="../build.properties" />
 								<property
 									file="${user.home}${file.separator}build.properties" />
