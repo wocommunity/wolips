@@ -58,66 +58,48 @@ package org.objectstyle.woproject.maven2.utils;
 import java.io.File;
 
 /**
- * This class is an implementation of {@link WebobjectsLocator} specific for
- * Windows.
- * 
- * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
- * @since 2.0
+ * @author <a href="mailto:pallas@free.fr">Josef Vanek</a>
+ *
  */
-public class WindowsWebobjectsLocator extends AbstractWebobjectsLocator
-{
-	/**
-	 * The deafult WebObjects root variable on Windows
-	 * @deprecated New versions of JDK throw Exceptions about getenv not more supported. Please use
-	 * the <code>next.root</code> property instead
-	 */
-	protected static final String DEFAULT_WO_ROOT_VARIABLE = "NEXT_ROOT";
+public class UnixWebobjectsLocator extends AbstractWebobjectsLocator {
 
 	/**
-	 * The deafult WebObjects root property on Windows
+	 * The deafult WebObjects root property on Unix
 	 */
 	protected static final String DEFAULT_WO_ROOT_PROPERTY = "next.root";
 
 	/**
 	 * The name of the environment that contains the path for WebObjects folder
 	 */
-	protected final String woRootVariable;
+	private String woRoot;
 
 	/**
 	 * Creates a new <code>WindowsWebobjectsLocator</code> using the default
 	 * WebObjects root variable.
 	 */
-	public WindowsWebobjectsLocator()
-	{
-		woRootVariable = System.getProperty(DEFAULT_WO_ROOT_PROPERTY);
+	public UnixWebobjectsLocator() {
+		woRoot = System.getProperty(DEFAULT_WO_ROOT_PROPERTY);
 	}
 
 	/**
-	 * Creates a new <code>WindowsWebobjectsLocator</code> using the variable
-	 * passed by parameter.
-	 * 
-	 * @param woRootVariable The WebObjects root variable
+	 * @see org.objectstyle.woproject.maven2.utils.WebobjectsLocator#getWebobjectsRootFolder()
 	 */
-	public WindowsWebobjectsLocator( String woRootVariable )
-	{
-		this.woRootVariable = woRootVariable;
+	public File getWebobjectsRootFolder() {
+		return(getWoRoot() != null) ? new File(getWoRoot()) : null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.objectstyle.woproject.maven2.utils.WebobjectsLocator#webobjectsRootDirectory()
+	/**
+	 * @return the woRoot
 	 */
-	public File getWebobjectsRootFolder()
-	{
-		String nextRoot = woRootVariable;
+	public String getWoRoot() {
+		return woRoot;
+	}
 
-		if( nextRoot == null )
-		{
-			return null;
-		}
-
-		return new File( nextRoot );
+	/**
+	 * @param woRoot the woRoot to set
+	 */
+	public void setWoRoot(String woRoot) {
+		this.woRoot = woRoot;
 	}
 
 }

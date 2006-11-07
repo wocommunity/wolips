@@ -1,6 +1,4 @@
-/* ====================================================================
- *
- * The ObjectStyle Group Software License, Version 1.0
+/* The ObjectStyle Group Software License, Version 1.0
  *
  * Copyright (c) 2006 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
@@ -58,66 +56,34 @@ package org.objectstyle.woproject.maven2.utils;
 import java.io.File;
 
 /**
- * This class is an implementation of {@link WebobjectsLocator} specific for
- * Windows.
- * 
- * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
- * @since 2.0
+ * @author <a href="mailto:pallas@free.fr">Josef Vanek</a>
+ *
  */
-public class WindowsWebobjectsLocator extends AbstractWebobjectsLocator
-{
-	/**
-	 * The deafult WebObjects root variable on Windows
-	 * @deprecated New versions of JDK throw Exceptions about getenv not more supported. Please use
-	 * the <code>next.root</code> property instead
-	 */
-	protected static final String DEFAULT_WO_ROOT_VARIABLE = "NEXT_ROOT";
+public abstract class AbstractWebobjectsLocator implements WebobjectsLocator {
 
 	/**
-	 * The deafult WebObjects root property on Windows
+	 * @see org.objectstyle.woproject.maven2.utils.WebobjectsLocator#getWebobjectsLibFolder()
 	 */
-	protected static final String DEFAULT_WO_ROOT_PROPERTY = "next.root";
-
-	/**
-	 * The name of the environment that contains the path for WebObjects folder
-	 */
-	protected final String woRootVariable;
-
-	/**
-	 * Creates a new <code>WindowsWebobjectsLocator</code> using the default
-	 * WebObjects root variable.
-	 */
-	public WindowsWebobjectsLocator()
-	{
-		woRootVariable = System.getProperty(DEFAULT_WO_ROOT_PROPERTY);
-	}
-
-	/**
-	 * Creates a new <code>WindowsWebobjectsLocator</code> using the variable
-	 * passed by parameter.
-	 * 
-	 * @param woRootVariable The WebObjects root variable
-	 */
-	public WindowsWebobjectsLocator( String woRootVariable )
-	{
-		this.woRootVariable = woRootVariable;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.objectstyle.woproject.maven2.utils.WebobjectsLocator#webobjectsRootDirectory()
-	 */
-	public File getWebobjectsRootFolder()
-	{
-		String nextRoot = woRootVariable;
-
-		if( nextRoot == null )
-		{
-			return null;
+	public File getWebobjectsLibFolder() {
+		File woRootFolder = getWebobjectsRootFolder();
+		if (woRootFolder != null) {
+			File lc_tempFile = new File(woRootFolder, "Library/WebObjects/lib");
+			return lc_tempFile.exists() ? lc_tempFile : null; 
 		}
+		return null;
+	}
 
-		return new File( nextRoot );
+	/**
+	 * @see org.objectstyle.woproject.maven2.utils.WebobjectsLocator#getWebobjectsRootFolder()
+	 */
+	public abstract File getWebobjectsRootFolder();
+	
+	/**
+	 * @see org.objectstyle.woproject.maven2.utils.WebobjectsLocator#getWebobjectsVersionFile()
+	 */
+	public File getWebobjectsVersionFile() {
+		File woRootFolder = getWebobjectsRootFolder();
+		return (woRootFolder != null) ? new File(getWebobjectsRootFolder(), "Library/Frameworks/JavaWebObjects.framework/Resources/version.plist" ) : null;
 	}
 
 }

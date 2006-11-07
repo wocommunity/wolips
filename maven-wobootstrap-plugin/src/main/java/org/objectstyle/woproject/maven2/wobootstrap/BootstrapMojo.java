@@ -83,6 +83,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.plexus.util.dag.CycleDetectedException;
 import org.objectstyle.woproject.maven2.utils.MacOsWebobjectsLocator;
+import org.objectstyle.woproject.maven2.utils.UnixWebobjectsLocator;
 import org.objectstyle.woproject.maven2.utils.WebobjectsLocator;
 import org.objectstyle.woproject.maven2.utils.WebobjectsUtils;
 import org.objectstyle.woproject.maven2.utils.WindowsWebobjectsLocator;
@@ -156,6 +157,10 @@ public class BootstrapMojo extends AbstractMojo
 		else if( SystemUtils.IS_OS_WINDOWS )
 		{
 			locator = new WindowsWebobjectsLocator();
+		}
+		else if( SystemUtils.IS_OS_UNIX )
+		{
+			locator = new UnixWebobjectsLocator();
 		}
 		else
 		{

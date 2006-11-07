@@ -64,25 +64,14 @@ import java.io.File;
  * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
  * @since 2.0
  */
-public class MacOsWebobjectsLocator implements WebobjectsLocator
-{
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.objectstyle.woproject.maven2.utils.WebobjectsLocator#webobjectsLibFolder()
-	 */
-	public File getWebobjectsLibFolder()
-	{
-		return new File( getWebobjectsRootFolder(), "Library/WebObjects/lib" );
-	}
+public class MacOsWebobjectsLocator extends AbstractWebobjectsLocator {
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.objectstyle.woproject.maven2.utils.WebobjectsLocator#webobjectsRootDirectory()
 	 */
-	public File getWebobjectsRootFolder()
-	{
+	public File getWebobjectsRootFolder() {
 		return new File( "/" );
 	}
 
@@ -91,8 +80,7 @@ public class MacOsWebobjectsLocator implements WebobjectsLocator
 	 * 
 	 * @see org.objectstyle.woproject.maven2.utils.WebobjectsLocator#webobjectsVersionFile()
 	 */
-	public File getWebobjectsVersionFile()
-	{
+	public File getWebobjectsVersionFile() {
 		return new File( "/System/Library/Frameworks/JavaWebObjects.framework/Resources/version.plist" );
 	}
 
