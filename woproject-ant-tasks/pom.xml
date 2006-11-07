@@ -46,7 +46,7 @@
 			<groupId>ant</groupId>
 			<artifactId>ant-junit</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>foundrylogic.vpp</groupId>
 			<artifactId>vpp</artifactId>
