@@ -26,30 +26,14 @@
 			<groupId>org.objectstyle.cayenne</groupId>
 			<artifactId>cayenne</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>webobjects.apple</groupId>
+			<artifactId>java-foundation</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-plugin-plugin</artifactId>
-				<dependencies>
-					<dependency>
-						<groupId>org.apache.maven</groupId>
-						<artifactId>maven-plugin-tools-ant</artifactId>
-						<version>2.0.1</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>**/KVCImpl.java</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-		</plugins>
 		<sourceDirectory>src/java</sourceDirectory>
 	</build>
 
