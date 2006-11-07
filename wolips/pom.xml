@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+	<parent>
+		<artifactId>woproject-all-parent</artifactId>
+		<groupId>org.objectstyle.woproject</groupId>
+		<version>2.0-SNAPSHOT</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.objectstyle.woproject.maven2</groupId>
+	<artifactId>wolips</artifactId>
+	<version>2.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>wolips All</name>
+
+	<description>
+		Contains WOLIips Eclipse plugins collection.
+	</description>
+
+	<inceptionYear>2001</inceptionYear>
+
+	<build>
+		<plugins>
+
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>install</phase>
+						<configuration>
+							<tasks>
+								<property file="../build.properties" />
+								<property
+									file="${user.home}${file.separator}build.properties" />
+								<property
+									file="${user.home}${file.separator}Library${file.separator}wobuild.properties" />
+								<loadproperties
+									srcfile="../default.properties">
+									<filterchain>
+										<tokenfilter>
+											<replacestring
+												from="$Revision: " to="" />
+											<replacestring from=" $"
+												to="" />
+										</tokenfilter>
+									</filterchain>
+								</loadproperties>
+								<property
+									file="../${project.lib.dir}/lib.properties" />
+								<property
+									name="build.version.to.replace" value="1.0.6" />
+								<echo>
+									****************************************
+									* java.home = ${java.home} *
+									build.compiler = ${build.compiler} *
+									ant.home = ${ant.home} * user.home =
+									${user.home} * build.version =
+									${build.version} *
+									build.version.to.replace =
+									${build.version.to.replace} *
+									build.output.dir =
+									${build.output.dir} *
+									build.output.java.dir =
+									${build.output.java.dir} *
+									build.output.java.test.dir =
+									${build.output.java.test.dir} *
+									build.output.build.dir =
+									${build.output.build.dir} *
+									build.output.dist.dir =
+									${build.output.dist.dir} *
+									build.output.dist.targz.dir =
+									${build.output.dist.targz.dir} *
+									build.output.homepage.dir =
+									${build.output.homepage.dir} *
+									deploy.dir = ${deploy.dir} (set by
+									the buildserver) * eclipse.home =
+									${eclipse.home} * no.clean =
+									${no.clean} * no.docs = ${no.docs} *
+									compile options *
+									compile.deprecation=
+									${compile.deprecation} *
+									compile.debug= ${compile.debug} *
+									compile.optimize=
+									${compile.optimize} *
+									feature.updateSiteName=
+									${feature.updateSiteName} *
+									feature.updateSite=
+									${feature.updateSite}
+									****************************************
+								</echo>
+								<ant dir="." target="all" />
+								<ant dir="." target="dist" />
+-->
+
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>
+

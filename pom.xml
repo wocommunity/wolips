@@ -20,6 +20,7 @@
 		<module>woenvironment</module>
 		<module>woproject-ant-tasks</module>
 		<module>maven2</module>
+		<module>wolips</module>
 	</modules>
 
 	<issueManagement>
