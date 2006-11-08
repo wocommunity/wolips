@@ -28,7 +28,7 @@
 			<configuration>
 				<phases>
 					<validate>
-						org.objectstyle.woproject.maven2:maven-woproject-plugin:define-woapplication-resources
+						org.objectstyle.woproject.maven2:maven-wolifecycle-plugin:define-woapplication-resources
 					</validate>
 					<process-resources>
 						org.apache.maven.plugins:maven-resources-plugin:resources
@@ -46,10 +46,10 @@
 						org.apache.maven.plugins:maven-surefire-plugin:test
 					</test>
 					<generate-test-resources>
-						org.objectstyle.woproject.maven2:maven-woproject-plugin:woapplication
+						org.objectstyle.woproject.maven2:maven-wolifecycle-plugin:woapplication
 					</generate-test-resources>
 					<package>
-						org.objectstyle.woproject.maven2:maven-woproject-plugin:package-woapplication
+						org.objectstyle.woproject.maven2:maven-wolifecycle-plugin:package-woapplication
 					</package>
 					<install>
 						org.apache.maven.plugins:maven-install-plugin:install
@@ -88,7 +88,7 @@
 			<configuration>
 				<phases>
 					<validate>
-						org.objectstyle.woproject.maven2:maven-woproject-plugin:define-woframework-resources
+						org.objectstyle.woproject.maven2:maven-wolifecycle-plugin:define-woframework-resources
 					</validate>
 					<process-resources>
 						org.apache.maven.plugins:maven-resources-plugin:resources
@@ -106,10 +106,10 @@
 						org.apache.maven.plugins:maven-surefire-plugin:test
 					</test>
 					<generate-test-resources>
-						org.objectstyle.woproject.maven2:maven-woproject-plugin:woframework
+						org.objectstyle.woproject.maven2:maven-wolifecycle-plugin:woframework
 					</generate-test-resources>
 					<package>
-						org.objectstyle.woproject.maven2:maven-woproject-plugin:package-woframework
+						org.objectstyle.woproject.maven2:maven-wolifecycle-plugin:package-woframework
 					</package>
 					<install>
 						org.apache.maven.plugins:maven-install-plugin:install
