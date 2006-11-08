@@ -54,6 +54,7 @@
 	</dependencies>
 
 	<build>
+		<defaultGoal>install</defaultGoal>
 		<plugins></plugins>
 		<sourceDirectory>src/java</sourceDirectory>
 		<resources>
