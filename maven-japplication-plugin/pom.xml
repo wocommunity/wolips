@@ -17,7 +17,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.objectstyle.woproject.ant</groupId>
-			<artifactId>woproject</artifactId>
+			<artifactId>woproject-ant-tasks</artifactId>
 		</dependency>
 
 		<dependency>
@@ -40,7 +40,9 @@
 			<artifactId>ant</artifactId>
 		</dependency>
 	</dependencies>
+
 	<build>
+		<defaultGoal>install</defaultGoal>
 		<plugins>
 			<plugin>
 				<artifactId>maven-plugin-plugin</artifactId>
