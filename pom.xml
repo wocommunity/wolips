@@ -22,8 +22,8 @@
 	<modules>
 		<module>maven-wobootstrap-plugin</module>
 		<module>maven-japplication-plugin</module>
-		<module>maven-woproject-plugin</module>
 		<module>maven-archetype-woapplication</module>
+		<module>maven-wolifecycle-plugin</module>
 	</modules>
 
 	<inceptionYear>2001</inceptionYear>
