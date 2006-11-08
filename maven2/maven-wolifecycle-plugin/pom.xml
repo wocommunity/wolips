@@ -7,9 +7,9 @@
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>maven-woproject-plugin</artifactId>
+	<artifactId>maven-wolifecycle-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
-	<name>Maven WOProject Plugin</name>
+	<name>Maven WOLifecycle Plugin</name>
 
 	<dependencies>
 		<dependency>
@@ -51,7 +51,7 @@
 		</dependency>
 	</dependencies>
 
-	
+
 	<build>
 		<defaultGoal>install</defaultGoal>
 		<plugins>
@@ -68,6 +68,20 @@
 					<goalPrefix>woproject</goalPrefix>
 				</configuration>
 			</plugin>
+			<!-- requires maven 2.0.5
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-invoker-plugin</artifactId>
+				<configuration>
+                            <background>true</background>
+                            <debug>true</debug>
+                            <projectsDirectory>${pom.basedir}/../ExampleAll</projectsDirectory>
+                            <pomIncludes>
+                                <pomInclude>pom.xml</pomInclude>
+                            </pomIncludes>
+				</configuration>
+			</plugin>
+			 -->
 		</plugins>
 	</build>
 </project>
