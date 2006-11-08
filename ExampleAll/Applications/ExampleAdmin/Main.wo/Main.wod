@@ -1,0 +1,6 @@
+ExampleAdminComponent: ExampleAdminComponent {
+}
+
+ExampleLogicResult: WOString {
+	value = logicResult;
+}
