@@ -21,7 +21,9 @@
 
 	<inceptionYear>2001</inceptionYear>
 
+
 	<build>
+		<defaultGoal>install</defaultGoal>
 		<plugins>
 
 			<plugin>
@@ -31,28 +33,28 @@
 						<phase>install</phase>
 						<configuration>
 							<tasks>
-							<!--
-								<property file="../build.properties" />
-								<property
+								<!--
+									<property file="../build.properties" />
+									<property
 									file="${user.home}${file.separator}build.properties" />
-								<property
+									<property
 									file="${user.home}${file.separator}Library${file.separator}wobuild.properties" />
-								<loadproperties
+									<loadproperties
 									srcfile="../default.properties">
 									<filterchain>
-										<tokenfilter>
-											<replacestring
-												from="$Revision: " to="" />
-											<replacestring from=" $"
-												to="" />
-										</tokenfilter>
+									<tokenfilter>
+									<replacestring
+									from="$Revision: " to="" />
+									<replacestring from=" $"
+									to="" />
+									</tokenfilter>
 									</filterchain>
-								</loadproperties>
-								<property
+									</loadproperties>
+									<property
 									file="../${project.lib.dir}/lib.properties" />
-								<property
+									<property
 									name="build.version.to.replace" value="1.0.6" />
-								<echo>
+									<echo>
 									****************************************
 									* java.home = ${java.home} *
 									build.compiler = ${build.compiler} *
@@ -90,10 +92,10 @@
 									feature.updateSite=
 									${feature.updateSite}
 									****************************************
-								</echo>
-								<ant dir="." target="all" />
-								<ant dir="." target="dist" />
--->
+									</echo>
+									<ant dir="." target="all" />
+									<ant dir="." target="dist" />
+								-->
 
 							</tasks>
 						</configuration>
