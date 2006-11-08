@@ -1,0 +1,113 @@
+<project xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+
+	<target name="initTaskDefs">
+		<!-- don't forget to update the version! -->
+		<path id="maven.classpath">
+			<pathelement location="target/maven-artifact-ant-2.1-SNAPSHOT-dep.jar" />
+		</path>
+
+		<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant">
+			<classpath refid="maven.classpath" />
+		</typedef>
+
+		<artifact:localRepository id="local.repository" location="${basedir}/target/local-repo" layout="default" />
+
+		<artifact:remoteRepository id="deploy.repository" url="file://localhost/${basedir}/target/deployment-repo" layout="legacy" />
+
+		<artifact:pom file="pom.xml" id="maven.project" />
+
+		<taskdef name="woapplication" classname="org.objectstyle.woproject.ant.WOApplication">
+		</taskdef>
+		<taskdef name="woframework" classname="org.objectstyle.woproject.ant.WOFramework">
+		</taskdef>
+
+	</target>
+
+	<target name="test-pom" depends="initTaskDefs">
+		<artifact:pom file="pom.xml" id="my.maven.project" />
+		<echo>Artifact ID = ${my.maven.project.artifactId}</echo>
+		<echo>Artifact version = ${my.maven.project.version}</echo>
+
+		<echo>Parent Artifact ID = ${my.maven.project.parent.artifactId}</echo>
+	</target>
+	
+	<!-- ================================================================== -->
+	<!-- W O A P L L I C A T I O N P R O P E R T I E S                      -->
+	<!-- ================================================================== -->
+	<target name="woapplicationproperties" depends="test-pom">
+		<property file="build.properties" />
+		<property file="target/wobuild.properties" />
+		<echo>maven.localRepository.baseDir ${maven.localRepository.baseDir}</echo>
+		<!-- property file="${user.home}${file.separator}Library${file.separator}wobuild.properties" />
+		<condition property="wobuild.properties.check.failed">
+			<not>
+				<and>
+					<isset property="wo.wosystemroot" />
+					<isset property="wo.wolocalroot" />
+				</and>
+			</not>
+		</condition>
+		<fail message="Could not find ${user.home}${file.separator}Library${file.separator}wobuild.properties." if="wobuild.properties.check.failed" / -->
+		<condition property="maven.localRepository.baseDir.check.failed">
+			<not>
+				<isset property="maven.localRepository.baseDir" />
+			</not>
+		</condition>
+		<fail message="maven.localRepository.baseDir is not set" if="maven.localRepository.baseDir.check.failed" />
+	</target>
+
+	<target name="build-woapplication" depends="woapplicationproperties">
+		<echo>maven.localRepository.baseDir ${maven.localRepository.baseDir}</echo>
+		<woapplication name="${my.maven.project.artifactId}" stdFrameworks="false" destDir="target" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}">
+			<classes dir="target/classes">
+			</classes>
+			<lib dir="${maven.localRepository.baseDir}">
+				<patternset>
+					<includesfile name="target/classpath.txt" />
+				</patternset>
+			</lib>
+		</woapplication>
+		
+		<tar tarfile="target/${my.maven.project.artifactId}-${my.maven.project.version}.woapplication.tar">
+			<tarfileset dir="target/${my.maven.project.artifactId}.woa/"
+		              prefix="${my.maven.project.artifactId}-${my.maven.project.version}.woa/"
+		              preserveLeadingSlashes="true">
+			</tarfileset>
+		 </tar>
+		 
+		 <gzip src="target/${my.maven.project.artifactId}-${my.maven.project.version}.woapplication.tar"
+			  zipfile="target/${my.maven.project.artifactId}-${my.maven.project.version}.woapplication.tar.gz"/>
+		 <delete file="target/${my.maven.project.artifactId}-${my.maven.project.version}.woapplication.tar"/>  
+	</target>
+	
+	<!-- ================================================================== -->
+	<!-- W O F R A M E W O R K P R O P E R T I E S                          -->
+	<!-- ================================================================== -->
+	<target name="woframeworkproperties" depends="test-pom">
+		<property file="build.properties" />
+		<property file="${user.home}${file.separator}Library${file.separator}wobuild.properties" />
+		<condition property="wobuild.properties.check.failed">
+			<not>
+				<and>
+					<isset property="wo.wosystemroot" />
+					<isset property="wo.wolocalroot" />
+				</and>
+			</not>
+		</condition>  
+	</target>
+
+	<target name="build-woframework" depends="woframeworkproperties">
+		<echo>maven.localRepository.baseDir ${maven.localRepository.baseDir}</echo>
+		<woframework name="${my.maven.project.artifactId}" destDir="target" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}" eoAdaptorClassName="${eoAdaptorClassName}">
+			<classes dir="target/classes">
+			</classes>
+		</woframework>
+		<zip zipfile="target/${my.maven.project.artifactId}-${my.maven.project.version}.jar" roundup="false">
+			<fileset dir="target/${my.maven.project.artifactId}.framework">
+				<exclude name="**/Java/**"/>
+			</fileset>
+			<fileset dir="target/classes">
+			</fileset>
+		</zip>
+	</target>
+</project>
