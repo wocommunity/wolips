@@ -26,7 +26,7 @@
 	</modules>
 
 	<build>
-		<defaultGoal>install</defaultGoal>
+		<defaultGoal>package</defaultGoal>
 	</build>
 	<dependencyManagement>
 		<dependencies>
