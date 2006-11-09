@@ -169,7 +169,7 @@ public class WOGenerator extends CayenneGenerator {
 		 * Fixes some Classgenerator defaults assumed by Cayenne.
 		 */
 		protected void initClassGenerator(ClassGenerator gen, ObjEntity entity, boolean superclass) {
-			super.initClassGenerator_1_1(gen.getClassGenerationInfo(), entity, superclass);
+			super.initClassGenerator(gen, entity, superclass);
 
 			// fix default superclass
 			if (gen.getSuperClassName() == null || gen.getSuperClassName().indexOf("org.objectstyle.cayenne") >= 0) {
