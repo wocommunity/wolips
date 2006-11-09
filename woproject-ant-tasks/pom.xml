@@ -51,6 +51,11 @@
 			<groupId>foundrylogic.vpp</groupId>
 			<artifactId>vpp</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
