@@ -119,6 +119,13 @@
 	</target>
 
 	<!-- ========================================== -->
+	<!-- Build dist wolips maven.                   -->
+	<!-- ========================================== -->
+	<target name="dist.wolips.maven" depends="definestableupdatesite,print.environment,verify.clean,set.clean,call.clean,prepare,wolips">
+		<ant dir="${project.wolips.dir}" target="dist" />
+	</target>
+
+	<!-- ========================================== -->
 	<!-- Build dist.                                -->
 	<!-- ========================================== -->
 	<target name="distnightly" depends="definenightlyupdatesite,distchildren">

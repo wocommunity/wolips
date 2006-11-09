@@ -24,7 +24,7 @@
 
 	<build>
 		<defaultGoal>package</defaultGoal>
-		<plugins>
+		<!--plugins>
 
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -33,7 +33,7 @@
 						<phase>package</phase>
 						<configuration>
 							<tasks>
-								<ant inheritAll="false" dir=".." />
+								<ant inheritAll="false" dir=".." target="dist.wolips.maven"/>
 							</tasks>
 						</configuration>
 						<goals>
@@ -50,7 +50,7 @@
 				</dependencies>
 			</plugin>
 
-		</plugins>
+		</plugins -->
 	</build>
 </project>
 
