@@ -35,7 +35,7 @@
 
 
 	<build>
-		<defaultGoal>install</defaultGoal>
+		<defaultGoal>package</defaultGoal>
 		<sourceDirectory>src/java</sourceDirectory>
 	</build>
 
