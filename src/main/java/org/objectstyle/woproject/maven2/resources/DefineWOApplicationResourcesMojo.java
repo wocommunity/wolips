@@ -46,6 +46,12 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 	 * @readonly
 	 */
 	private ArtifactRepository localRepository;
+	
+	/**
+     * Read patternsets.
+     * @parameter expression="readPatternsets"
+     */
+    private Boolean readPatternsets;
 
 	public DefineWOApplicationResourcesMojo() throws MojoExecutionException {
 		super();
@@ -120,5 +126,9 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 
 	public boolean hasContentsFolder() {
 		return true;
+	}
+
+	protected Boolean readPatternsets() {
+		return readPatternsets;
 	}
 }
