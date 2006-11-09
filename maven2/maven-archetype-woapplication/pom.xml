@@ -24,6 +24,6 @@
 	</dependencies>
 
 	<build>
-		<defaultGoal>install</defaultGoal>
+		<defaultGoal>package</defaultGoal>
 	</build>
 </project>
