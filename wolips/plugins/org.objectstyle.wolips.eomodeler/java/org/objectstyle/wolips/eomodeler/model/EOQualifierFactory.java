@@ -68,6 +68,7 @@ import org.objectstyle.cayenne.exp.parser.ASTLessOrEqual;
 import org.objectstyle.cayenne.exp.parser.ASTLike;
 import org.objectstyle.cayenne.exp.parser.ASTLikeIgnoreCase;
 import org.objectstyle.cayenne.exp.parser.ASTNamedParameter;
+import org.objectstyle.cayenne.exp.parser.ASTNegate;
 import org.objectstyle.cayenne.exp.parser.ASTNot;
 import org.objectstyle.cayenne.exp.parser.ASTNotEqual;
 import org.objectstyle.cayenne.exp.parser.ASTObjPath;
@@ -202,6 +203,26 @@ public class EOQualifierFactory {
 			value = map;
 		} else if (_value instanceof String) {
 			value = _value;
+		} else if (_value instanceof ASTNegate) {
+			Object operand = ((ASTNegate)_value).getOperand(0);
+			EOModelMap map = new EOModelMap();
+			map.setString("class", "NSNumber", false);
+			if (operand instanceof Integer) {
+				map.put("value", new Integer(((Integer)operand).intValue() * -1));
+			}
+			else if (operand instanceof Float) {
+				map.put("value", new Float(((Float)operand).floatValue() * -1.0f));
+			}
+			else if (operand instanceof Double) {
+				map.put("value", new Double(((Double)operand).doubleValue() * -1.0));
+			}
+			else if (operand instanceof Long) {
+				map.put("value", new Long(((Long)operand).longValue() * -1L));
+			}
+			else {
+				throw new IllegalArgumentException("Unknown qualifier value type: negate " + operand + " (type = " + operand.getClass().getName() + ")");
+			}
+			value = map;
 		} else {
 			throw new IllegalArgumentException("Unknown qualifier value type: " + _value + " (type = " + _value.getClass().getName() + ")");
 		}
