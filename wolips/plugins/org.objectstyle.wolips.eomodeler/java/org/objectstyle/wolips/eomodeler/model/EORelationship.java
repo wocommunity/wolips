@@ -49,6 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -185,6 +186,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 			EOJoin newJoin = join.cloneJoin();
 			relationship.addJoin(newJoin, false);
 		}
+		relationship.setUserInfo(new HashMap(getUserInfo()));
 		return relationship;
 	}
 
