@@ -747,12 +747,16 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
 						}
 					}
 				}
+				String valueClassName = getValueClassName();
+				if (valueClassName == null) {
+					_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " does not have a value class name.", true));
+				}
 			}
 		}
 	}
 
 	public String getFullyQualifiedName() {
-		return ((myEntity == null) ? "?" : myEntity.getFullyQualifiedName()) + "/Attribute:" + getName();
+		return ((myEntity == null) ? "?" : myEntity.getFullyQualifiedName()) + ", attr: " + getName();
 	}
 
 	public String toString() {

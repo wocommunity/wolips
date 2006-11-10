@@ -1665,7 +1665,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 	}
 
 	public String getFullyQualifiedName() {
-		return ((myModel == null) ? "?" : myModel.getFullyQualifiedName()) + "/Entity:" + myName;
+		return ((myModel == null) ? "?" : myModel.getFullyQualifiedName()) + ", " + myName;
 	}
 
 	public String toString() {

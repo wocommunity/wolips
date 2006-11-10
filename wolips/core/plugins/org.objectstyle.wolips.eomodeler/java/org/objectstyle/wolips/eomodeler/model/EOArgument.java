@@ -141,7 +141,7 @@ public class EOArgument extends AbstractEOArgument {
 	}
 
 	public String getFullyQualifiedName() {
-		return ((myStoredProcedure == null) ? "?" : myStoredProcedure.getFullyQualifiedName()) + "/Argument:" + getName();
+		return ((myStoredProcedure == null) ? "?" : myStoredProcedure.getFullyQualifiedName()) + ", arg: " + getName();
 	}
 
 	public String toString() {
