@@ -1121,14 +1121,17 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 	}
 
 	protected void _attributeChanged(EOAttribute _attribute, String _propertyName, Object _oldValue, Object _newValue) {
+		myAttributes = new HashSet(myAttributes);
 		firePropertyChange(EOEntity.ATTRIBUTE, null, _attribute);
 	}
 
 	protected void _relationshipChanged(EORelationship _relationship, String _propertyName, Object _oldValue, Object _newValue) {
+		myRelationships = new HashSet(myRelationships);
 		firePropertyChange(EOEntity.RELATIONSHIP, null, _relationship);
 	}
 
 	protected void _fetchSpecificationChanged(EOFetchSpecification _fetchSpecification, String _propertyName, Object _oldValue, Object _newValue) {
+		myFetchSpecs = new HashSet(myFetchSpecs);
 		firePropertyChange(EOEntity.FETCH_SPECIFICATION, null, _fetchSpecification);
 	}
 

@@ -246,6 +246,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 	}
 
 	protected void _entityChanged(EOEntity _entity, String _propertyName, Object _oldValue, Object _newValue) {
+		myEntities = new HashSet(myEntities);
 		firePropertyChange(EOModel.ENTITY, null, _entity);
 	}
 
