@@ -72,6 +72,7 @@ public class EntityModelerPreferencesPage extends FieldEditorPreferencePage impl
 	 */
 	public void createFieldEditors() {
 		addField(new BooleanFieldEditor(Preferences.PREF_ENTITY_MODELER_CHANGE_PERSPECTIVES, PreferencesMessages.getString("Preferences.EntityModelerChangePerspectives.Label"), getFieldEditorParent()));
+		addField(new BooleanFieldEditor(Preferences.PREF_ENTITY_MODELER_SHOW_ERRORS_IN_PROBLEMS_VIEW, PreferencesMessages.getString("Preferences.EntityModelerShowErrorsInProblemsView.Label"), getFieldEditorParent()));
 	}
 
 	/**

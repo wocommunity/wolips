@@ -494,27 +494,30 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				if (indexFile != null) {
 					IMarker[] markers = indexFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
 					for (int markerNum = 0; markerNum < markers.length; markerNum++) {
-						//System.out.println("EOModelEditor.handleModelErrors: deleting " + markers[markerNum]);
+						// System.out.println("EOModelEditor.handleModelErrors:
+						// deleting " + markers[markerNum]);
 						markers[markerNum].delete();
 					}
 				}
 			}
-			Iterator failuresIter = _failures.iterator();
-			while (failuresIter.hasNext()) {
-				EOModelVerificationFailure failure = (EOModelVerificationFailure) failuresIter.next();
-				EOModel model = failure.getModel();
-				IFile indexFile = EOModelEditor.getIndexFile(model);
-				if (indexFile != null) {
-					IMarker marker = indexFile.createMarker(IMarker.PROBLEM);
-					marker.setAttribute(IMarker.MESSAGE, failure.getMessage());
-					int severity;
-					if (failure.isWarning()) {
-						severity = IMarker.SEVERITY_WARNING;
-					} else {
-						severity = IMarker.SEVERITY_ERROR;
+			if (Preferences.shouldEntityModelerShowErrorsInProblemsView()) {
+				Iterator failuresIter = _failures.iterator();
+				while (failuresIter.hasNext()) {
+					EOModelVerificationFailure failure = (EOModelVerificationFailure) failuresIter.next();
+					EOModel model = failure.getModel();
+					IFile indexFile = EOModelEditor.getIndexFile(model);
+					if (indexFile != null) {
+						IMarker marker = indexFile.createMarker(IMarker.PROBLEM);
+						marker.setAttribute(IMarker.MESSAGE, failure.getMessage());
+						int severity;
+						if (failure.isWarning()) {
+							severity = IMarker.SEVERITY_WARNING;
+						} else {
+							severity = IMarker.SEVERITY_ERROR;
+						}
+						marker.setAttribute(IMarker.SEVERITY, new Integer(severity));
+						marker.setAttribute(IMarker.TRANSIENT, false);
 					}
-					marker.setAttribute(IMarker.SEVERITY, new Integer(severity));
-					marker.setAttribute(IMarker.TRANSIENT, false);
 				}
 			}
 		} catch (CoreException e) {
