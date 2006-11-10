@@ -505,7 +505,6 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				EOModel model = failure.getModel();
 				IFile indexFile = EOModelEditor.getIndexFile(model);
 				if (indexFile != null) {
-					System.out.println("EOModelEditor.handleModelErrors: creating " + failure.getMessage());
 					IMarker marker = indexFile.createMarker(IMarker.PROBLEM);
 					marker.setAttribute(IMarker.MESSAGE, failure.getMessage());
 					int severity;
