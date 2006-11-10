@@ -50,6 +50,7 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -112,7 +113,8 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 				storedProcedure.addArgument(clonedArgument);
 			}
 		}
-
+		
+		storedProcedure.setUserInfo(new HashMap(getUserInfo()));
 		return storedProcedure;
 	}
 

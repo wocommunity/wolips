@@ -368,6 +368,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 		EOEntity entity = _cloneJustEntity();
 		entity._cloneAttributesAndRelationshipsFrom(this, false);
 		entity._cloneFetchSpecificationsFrom(this, false);
+		entity.setUserInfo(new HashMap(getUserInfo()));
 		return entity;
 	}
 

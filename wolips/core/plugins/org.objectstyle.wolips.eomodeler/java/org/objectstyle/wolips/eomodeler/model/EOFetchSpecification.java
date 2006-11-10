@@ -52,6 +52,7 @@ package org.objectstyle.wolips.eomodeler.model;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -171,6 +172,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 			fetchSpec.myQualifier = EOQualifierFactory.createExpressionFromQualifierMap(EOQualifierFactory.createQualifierMapFromExpression(myQualifier));
 		}
 		fetchSpec.mySharesObjects = mySharesObjects;
+		fetchSpec.setUserInfo(new HashMap(getUserInfo()));
 		return fetchSpec;
 	}
 

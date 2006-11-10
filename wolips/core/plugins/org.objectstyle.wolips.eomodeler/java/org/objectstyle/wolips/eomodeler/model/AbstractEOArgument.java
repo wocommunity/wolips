@@ -49,6 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
+import java.util.HashMap;
 import java.util.Set;
 
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
@@ -151,6 +152,7 @@ public abstract class AbstractEOArgument extends UserInfoableEOModelObject imple
 		argument.myWidth = myWidth;
 		argument.myAllowsNull = myAllowsNull;
 		argument.myDefinition = myDefinition;
+		argument.setUserInfo(new HashMap(getUserInfo()));
 		return argument;
 	}
 
