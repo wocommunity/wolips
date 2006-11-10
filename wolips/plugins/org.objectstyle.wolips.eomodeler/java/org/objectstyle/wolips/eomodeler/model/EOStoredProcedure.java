@@ -381,7 +381,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 	}
 
 	public String getFullyQualifiedName() {
-		return ((myModel == null) ? "?" : myModel.getFullyQualifiedName()) + "/StoredProc:" + getName();
+		return ((myModel == null) ? "?" : myModel.getFullyQualifiedName()) + ", proc: " + getName();
 	}
 
 	public String toString() {

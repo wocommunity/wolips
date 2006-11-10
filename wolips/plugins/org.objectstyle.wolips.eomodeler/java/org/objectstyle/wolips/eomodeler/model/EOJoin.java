@@ -271,7 +271,7 @@ public class EOJoin extends EOModelObject implements ISortableEOModelObject {
 	}
 
 	public String getFullyQualifiedName() {
-		return ((myRelationship == null) ? "?" : myRelationship.getFullyQualifiedName()) + "/Join:" + getSourceAttributeName() + "=>" + getDestinationAttributeName();
+		return ((myRelationship == null) ? "?" : myRelationship.getFullyQualifiedName()) + ", join: " + getSourceAttributeName() + "=>" + getDestinationAttributeName();
 	}
 
 	public String toString() {

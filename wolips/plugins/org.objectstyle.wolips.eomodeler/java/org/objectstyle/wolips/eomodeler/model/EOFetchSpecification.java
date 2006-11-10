@@ -702,7 +702,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 	}
 
 	public String getFullyQualifiedName() {
-		return ((myEntity == null) ? "?" : myEntity.getFullyQualifiedName()) + "/FetchSpec:" + getName();
+		return ((myEntity == null) ? "?" : myEntity.getFullyQualifiedName()) + ", fspec: " + getName();
 	}
 
 	public String toString() {

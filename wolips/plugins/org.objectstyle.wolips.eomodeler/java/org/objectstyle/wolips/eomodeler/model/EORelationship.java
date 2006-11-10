@@ -659,7 +659,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 		if (!isFlattened()) {
 			String destinationName = myRelationshipMap.getString("destination", true);
 			if (destinationName == null) {
-				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), myEntity.getName() + "'s " + myName + " relationship has no destination entity.", false));
+				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " has no destination entity.", false));
 			} else {
 				myDestination = myEntity.getModel().getModelGroup().getEntityNamed(destinationName);
 				if (myDestination == null) {
@@ -701,6 +701,9 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 		boolean mandatory = BooleanUtils.isTrue(isMandatory());
 		boolean toOne = BooleanUtils.isTrue(isToOne());
 		Iterator joinsIter = myJoins.iterator();
+		if (!joinsIter.hasNext()) {
+			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " does not have any joins.", false));
+		}
 		while (joinsIter.hasNext()) {
 			EOJoin join = (EOJoin) joinsIter.next();
 			join.verify(_failures);
@@ -714,7 +717,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 	}
 
 	public String getFullyQualifiedName() {
-		return ((myEntity == null) ? "?" : myEntity.getFullyQualifiedName()) + "/Relationship:" + getName();
+		return ((myEntity == null) ? "?" : myEntity.getFullyQualifiedName()) + ", rel: " + getName();
 	}
 
 	public String toString() {

@@ -219,7 +219,7 @@ public class EODatabaseConfig extends EOModelObject {
 	}
 
 	public String getFullyQualifiedName() {
-		return ((myModel == null) ? "?" : myModel.getFullyQualifiedName()) + "/DatabaseConfig:" + myName;
+		return ((myModel == null) ? "?" : myModel.getFullyQualifiedName()) + ", dbconfig: " + myName;
 	}
 
 	public void resolve(Set _failures) {
