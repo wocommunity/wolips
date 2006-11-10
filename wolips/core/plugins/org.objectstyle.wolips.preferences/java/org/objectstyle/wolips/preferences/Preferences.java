@@ -128,6 +128,8 @@ public class Preferences {
 
 	public static final String PREF_ENTITY_MODELER_CHANGE_PERSPECTIVES = "org.objectstyle.wolips.Preference.EntityModelerChangePerspectives";
 
+	public static final String PREF_ENTITY_MODELER_SHOW_ERRORS_IN_PROBLEMS_VIEW = "org.objectstyle.wolips.Preference.EntityModelerErrorsInProblemsView";
+
 	/**
 	 * Comment for <code>FLAG_INCLUDE_EXCLUDE_RULES_CHANGED</code>
 	 */
@@ -211,6 +213,9 @@ public class Preferences {
 		}
 		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_ENTITY_MODELER_CHANGE_PERSPECTIVES)) {
 			store.setDefault(Preferences.PREF_ENTITY_MODELER_CHANGE_PERSPECTIVES, Preferences.trueString);
+		}
+		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_ENTITY_MODELER_SHOW_ERRORS_IN_PROBLEMS_VIEW)) {
+			store.setDefault(Preferences.PREF_ENTITY_MODELER_SHOW_ERRORS_IN_PROBLEMS_VIEW, Preferences.trueString);
 		}
 		store.setDefault(Preferences.PREF_LAUNCH_GLOBAL, PreferencesMessages.getString(Preferences.PREF_LAUNCH_GLOBAL));
 		Preferences.SET_DEFAULTS_STRING = null;
@@ -503,6 +508,14 @@ public class Preferences {
 
 	public static boolean shouldEntityModelerChangePerspectives() {
 		return Preferences.getBoolean(Preferences.PREF_ENTITY_MODELER_CHANGE_PERSPECTIVES);
+	}
+
+	public static void setEntityModelerShowErrorsInProblemsView(boolean value) {
+		Preferences.setBoolean(Preferences.PREF_ENTITY_MODELER_SHOW_ERRORS_IN_PROBLEMS_VIEW, value);
+	}
+
+	public static boolean shouldEntityModelerShowErrorsInProblemsView() {
+		return Preferences.getBoolean(Preferences.PREF_ENTITY_MODELER_SHOW_ERRORS_IN_PROBLEMS_VIEW);
 	}
 
 }
