@@ -87,7 +87,13 @@ public class TableUtils {
 		Table table = _viewer.getTable();
 		int columnCount = table.getColumnCount();
 		for (int columnNum = 0; columnNum < columnCount; columnNum++) {
-			table.getColumn(columnNum).pack();
+			TableColumn column = table.getColumn(columnNum);
+			int originalWidth = column.getWidth();
+			column.pack();
+			int newWidth = column.getWidth();
+			if (newWidth < originalWidth) {
+				column.setWidth(originalWidth);
+			}
 		}
 	}
 
