@@ -29,7 +29,7 @@
         </patternset>
             
 	    <ant dir="." antfile="../../../../${project.buildscripts.dir}/plugin-project.xml" target="jar.from.project">
-            <property name="param.project.dir" value="../../../../woproject/src"/>
+            <property name="param.project.dir" value="../../../../${project.woproject.dir}/src"/>
             <property name="param.classes.dir" value="../../../../${build.output.java.dir}"/>
             <property name="param.jar.file" value="woproject.jar"/>
             <property name="param.plugin.name" value="${plugin.name}"/>
