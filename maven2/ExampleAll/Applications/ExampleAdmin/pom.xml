@@ -37,10 +37,6 @@
 		</dependency>
 		<dependency>
 			<groupId>webobjects.apple</groupId>
-			<artifactId>java-eo-application</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>webobjects.apple</groupId>
 			<artifactId>java-eo-control</artifactId>
 		</dependency>
 		<dependency>
