@@ -104,7 +104,7 @@ public abstract class DefineResourcesMojo extends WOMojo {
 		}
 	}
 
-	private void executeFolders() throws MojoExecutionException, MojoFailureException {
+	private void executeFolders() {
 		getLog().info("Defining wo resources: defining default folder");
 		String resourcesPath = getProjectFolder() + "Resources";
 		File resourcesFile = new File(resourcesPath);
@@ -115,7 +115,7 @@ public abstract class DefineResourcesMojo extends WOMojo {
 		} else {
 			getLog().info("Defining wo resources: No \"Resources\" folder found within project. Skipping include...");
 		}
-		String webServerResourcesPath = getProjectFolder() + "WebServerResources/**";
+		String webServerResourcesPath = getProjectFolder() + "WebServerResources";
 		File webServerResourcesFile = new File(webServerResourcesPath);
 		if (webServerResourcesFile.exists()) {
 			getLog().info("Defining wo webserverresources: \"WebServerResources\" folder found within project. Adding include...");
