@@ -112,6 +112,8 @@ public class WOApplication extends WOTask {
 	protected String webXML_WOtaglib = null;
 
 	protected String webXML_CustomContent = null;
+	
+	protected String startupScriptName = null;
 
 	public void release() {
 		super.release();
@@ -637,5 +639,13 @@ public class WOApplication extends WOTask {
 
 	public void setWebXML_CustomContent(String webXML_CustomContent) {
 		this.webXML_CustomContent = webXML_CustomContent;
+	}
+
+	public String getStartupScriptName() {
+		return startupScriptName;
+	}
+
+	public void setStartupScriptName(String startupScriptName) {
+		this.startupScriptName = startupScriptName;
 	}
 }

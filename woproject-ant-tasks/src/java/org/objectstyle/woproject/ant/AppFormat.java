@@ -264,7 +264,11 @@ public class AppFormat extends ProjectFormat {
 		createMappings(runScript, woappPlusVersion() + "/Contents/Windows/appstart.cmd");
 		// add run script to top-level directory
 		File taskDir = getApplicatonTask().taskDir();
-		String topRunScript = new File(taskDir, getName() + ".cmd").getPath();
+		String startupScriptName = this.getApplicatonTask().startupScriptName;
+		if(startupScriptName == null || startupScriptName.length() == 0) {
+			startupScriptName = getName();
+		}
+		String topRunScript = new File(taskDir, startupScriptName + ".cmd").getPath();
 		createMappings(topRunScript, woappPlusVersion() + "/Contents/Windows/appstart.cmd");
 	}
 
@@ -291,7 +295,11 @@ public class AppFormat extends ProjectFormat {
 		createMappings(runScript, woappPlusVersion() + "/Contents/MacOS/appstart");
 		// add run script to top-level directory
 		File taskDir = getApplicatonTask().taskDir();
-		String topRunScript = new File(taskDir, getName()).getPath();
+		String startupScriptName = this.getApplicatonTask().startupScriptName;
+		if(startupScriptName == null || startupScriptName.length() == 0) {
+			startupScriptName = getName();
+		}
+		String topRunScript = new File(taskDir, startupScriptName).getPath();
 		createMappings(topRunScript, woappPlusVersion() + "/Contents/MacOS/appstart");
 	}
 
