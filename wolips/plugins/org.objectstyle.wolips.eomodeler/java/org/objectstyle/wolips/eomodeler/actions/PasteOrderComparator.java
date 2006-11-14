@@ -5,8 +5,7 @@ import java.util.Comparator;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
-
-import com.webobjects.eoaccess.EORelationship;
+import org.objectstyle.wolips.eomodeler.model.EORelationship;
 
 /**
  * When you paste, you always want attributes to come first, then relationships.  This
