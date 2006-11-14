@@ -58,7 +58,7 @@
 
 	<target name="build-woapplication" depends="woapplicationproperties">
 		<echo>maven.localRepository.baseDir ${maven.localRepository.baseDir}</echo>
-		<woapplication name="${my.maven.project.artifactId}" stdFrameworks="false" destDir="target" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}">
+		<woapplication name="${my.maven.project.artifactId}-${my.maven.project.version}" startupScriptName="${my.maven.project.artifactId}" stdFrameworks="false" destDir="target" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}">
 			<classes dir="target/classes">
 			</classes>
 			<lib dir="${maven.localRepository.baseDir}">
@@ -67,10 +67,10 @@
 				</patternset>
 			</lib>
 		</woapplication>
-		
-		<tar tarfile="target/${my.maven.project.artifactId}-${my.maven.project.version}.woapplication.tar">
-			<tarfileset dir="target/${my.maven.project.artifactId}.woa/"
-		              prefix="${my.maven.project.artifactId}-${my.maven.project.version}.woa/"
+
+        <!-- prefix="${my.maven.project.artifactId}-${my.maven.project.version}.woa/" -->
+		<tar tarfile="target/${my.maven.project.artifactId}-${my.maven.project.version}.woapplication.tar" longfile="gnu">
+			<tarfileset dir="target/${my.maven.project.artifactId}-${my.maven.project.version}.woa/"
 		              preserveLeadingSlashes="true">
 			</tarfileset>
 		 </tar>
