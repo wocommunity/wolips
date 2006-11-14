@@ -4,6 +4,7 @@ package org.objectstyle.woproject.maven2.resources;
 import java.io.File;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 
 /**
@@ -40,5 +41,15 @@ public class PackageWOApplicationResourcesMojo extends PackageMojo {
 	protected String getArtifactFileName() {
 		return "target" + File.separator + this.getProject().getArtifactId()
 				+ "-" + this.getProject().getVersion() + ".woapplication.tar.gz";
+	}
+
+	public void execute() throws MojoExecutionException, MojoFailureException {
+		getLog().info("Package wo");
+		String artifactFileName = this.getArtifactFileName();
+		if (artifactFileName != null) {
+			String fileName = this.getProjectFolder() + artifactFileName;
+			getLog().info("Defining artifact filename: " + fileName);
+			this.getProject().getArtifact().setFile(new File(fileName));
+		}
 	}
 }
