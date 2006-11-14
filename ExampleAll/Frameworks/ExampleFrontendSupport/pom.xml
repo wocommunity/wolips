@@ -6,14 +6,14 @@
 		<artifactId>Frameworks</artifactId>
 		<version>1.0.0</version>
 	</parent>
-	
+
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>example</groupId>
 	<artifactId>ExampleFrontendSupport</artifactId>
 	<version>1.0.0</version>
 	<name>ExampleFrontendSupport</name>
 	<packaging>woframework</packaging>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>example</groupId>
@@ -57,10 +57,10 @@
 				<artifactId>maven-wolifecycle-plugin</artifactId>
 				<version>2.0-SNAPSHOT</version>
 				<extensions>true</extensions>
-			        <configuration>
-                                    <readPatternsets>true</readPatternsets>
-                                </configuration>
-                         </plugin>
+				<configuration>
+					<readPatternsets>true</readPatternsets>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
