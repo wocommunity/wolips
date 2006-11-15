@@ -94,10 +94,6 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 
 	private String myVersion;
 
-	private String myAdaptorName;
-
-	//private NotificationMap myConnectionDictionary;
-
 	private Set myEntities;
 
 	private Set myDatabaseConfigs;
@@ -132,9 +128,6 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		myDatabaseConfigs = new PropertyListSet();
 		myVersion = "2.1";
 		myModelMap = new EOModelMap();
-		// myConnectionDictionaryRepeater = new
-		// PropertyChangeRepeater(IConnectionDictionaryOwner.CONNECTION_DICTIONARY);
-		// setConnectionDictionary(new NotificationMap(), false);
 		this.project = project;
 	}
 
@@ -358,10 +351,11 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return myActiveDatabaseConfig;
 	}
 
-	public EODatabaseConfig _createDatabaseConfig(Map _connectionDictionary) {
+	public EODatabaseConfig _createDatabaseConfig(String adaptorName, Map _connectionDictionary) {
 		EODatabaseConfig defaultDatabaseConfig = new EODatabaseConfig(findUnusedDatabaseConfigName("Default"));
+		defaultDatabaseConfig.setAdaptorName(adaptorName);
 		defaultDatabaseConfig.setConnectionDictionary(new HashMap(_connectionDictionary));
-		defaultDatabaseConfig.setPrototype(_getPreferredPrototypeEntity(_connectionDictionary));
+		defaultDatabaseConfig.setPrototype(_getPreferredPrototypeEntity(adaptorName, _connectionDictionary));
 		defaultDatabaseConfig._setModel(this);
 		return defaultDatabaseConfig;
 	}
@@ -388,16 +382,6 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 
 	public EOModelGroup getModelGroup() {
 		return myModelGroup;
-	}
-
-	public String getAdaptorName() {
-		return myAdaptorName;
-	}
-
-	public void setAdaptorName(String _adaptorName) {
-		String oldAdaptorName = myAdaptorName;
-		myAdaptorName = _adaptorName;
-		firePropertyChange(EOModel.ADAPTOR_NAME, _adaptorName, oldAdaptorName);
 	}
 
 	public String getVersion() {
@@ -632,7 +616,6 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		} else {
 			throw new IllegalArgumentException("Unknown version format:" + version);
 		}
-		myAdaptorName = modelMap.getString("adaptorName", true);
 		loadUserInfo(modelMap);
 
 		Set entities = modelMap.getSet("entities");
@@ -700,7 +683,8 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		// If there is a connection dictionary, then look for a database config that is equivalent ...
 		Map connectionDictionary = modelMap.getMap("connectionDictionary", true);
 		if (connectionDictionary != null && !connectionDictionary.isEmpty()) {
-			EODatabaseConfig tempConnectionDictionaryDatabaseConfig = _createDatabaseConfig(connectionDictionary);
+			String adaptorName = modelMap.getString("adaptorName", true);
+			EODatabaseConfig tempConnectionDictionaryDatabaseConfig = _createDatabaseConfig(adaptorName, connectionDictionary);
 			EODatabaseConfig connectionDictionaryDatabaseConfig = null; 
 			Iterator databaseConfigsIter = myDatabaseConfigs.iterator();
 			while (connectionDictionaryDatabaseConfig == null && databaseConfigsIter.hasNext()) {
@@ -737,12 +721,14 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 	public EOModelMap toMap() {
 		EOModelMap modelMap = myModelMap.cloneModelMap();
 		modelMap.setString("EOModelVersion", myVersion, true);
-		modelMap.setString("adaptorName", myAdaptorName, true);
+		String adaptorName = EODatabaseConfig.JDBC_ADAPTOR_NAME;
 		Map connectionDictionary = null;
 		if (myActiveDatabaseConfig != null) {
 			connectionDictionary = myActiveDatabaseConfig.getConnectionDictionary();
+			adaptorName = myActiveDatabaseConfig.getAdaptorName();
 		}
 		modelMap.put("connectionDictionary", connectionDictionary);
+		modelMap.setString("adaptorName", adaptorName, true);
 
 		Set entities = new PropertyListSet();
 		Set entitiesWithSharedObjects = new PropertyListSet();
@@ -918,12 +904,19 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return prototypeAttributeNames;
 	}
 
-	public String getDefaultPrototypeEntityName(String name) {
+	public String _getDefaultPrototypeEntityName(String name) {
 		return "EO" + (name != null ? name : "") + "Prototypes";
 	}
 
-	public String getAdaptorPrototypeEntityName(String name) {
-		String adaptorName = getAdaptorName();
+	public String getAdaptorName() {
+		String adaptorName = EODatabaseConfig.JDBC_ADAPTOR_NAME;
+		if (myActiveDatabaseConfig != null) {
+			adaptorName = myActiveDatabaseConfig.getAdaptorName();
+		}
+		return adaptorName;
+	}
+	
+	public String _getAdaptorPrototypeEntityName(String adaptorName, String name) {
 		String adaptorPrototypeEntityName = null;
 		if (adaptorName != null) {
 			adaptorPrototypeEntityName = "EO" + adaptorName + (name != null ? name : "") + "Prototypes";
@@ -931,7 +924,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return adaptorPrototypeEntityName;
 	}
 
-	public String getDriverPrototypeEntityName(Map _connectionDictionary, String name) {
+	public String _getDriverPrototypeEntityName(Map _connectionDictionary, String name) {
 		String driverPrototypeEntityName = null;
 		String adaptorName = getAdaptorName();
 		// MS: Hardcoded JDBC reference hack ...
@@ -956,20 +949,20 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return driverPrototypeEntityName;
 	}
 
-	public EOEntity _getPreferredPrototypeEntity(Map _connectionDictionary) {
+	public EOEntity _getPreferredPrototypeEntity(String adaptorName, Map connectionDictionary) {
 		EOEntity prototypeEntity = null;
-		String driverPrototypeEntityName = getDriverPrototypeEntityName(_connectionDictionary, null);
+		String driverPrototypeEntityName = _getDriverPrototypeEntityName(connectionDictionary, null);
 		if (driverPrototypeEntityName != null) {
 			prototypeEntity = myModelGroup.getEntityNamed(driverPrototypeEntityName);
 		}
 		if (prototypeEntity == null) {
-			String adaptorPrototypeEntityName = getAdaptorPrototypeEntityName(null);
+			String adaptorPrototypeEntityName = _getAdaptorPrototypeEntityName(adaptorName, null);
 			if (adaptorPrototypeEntityName != null) {
 				prototypeEntity = myModelGroup.getEntityNamed(adaptorPrototypeEntityName);
 			}
 		}
 		if (prototypeEntity == null) {
-			String defaultPrototypeEntityName = getDefaultPrototypeEntityName(null);
+			String defaultPrototypeEntityName = _getDefaultPrototypeEntityName(null);
 			prototypeEntity = myModelGroup.getEntityNamed(defaultPrototypeEntityName);
 		}
 		return prototypeEntity;
@@ -984,13 +977,13 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 			if (activeDatabaseConfig != null) {
 				connectionDictionary = activeDatabaseConfig.getConnectionDictionary();
 			}
-			addPrototypeAttributes(getDefaultPrototypeEntityName(null), prototypeAttributeCache);
-			addPrototypeAttributes(getAdaptorPrototypeEntityName(null), prototypeAttributeCache);
-			addPrototypeAttributes(getDriverPrototypeEntityName(connectionDictionary, null), prototypeAttributeCache);
+			addPrototypeAttributes(_getDefaultPrototypeEntityName(null), prototypeAttributeCache);
+			addPrototypeAttributes(_getAdaptorPrototypeEntityName(getAdaptorName(), null), prototypeAttributeCache);
+			addPrototypeAttributes(_getDriverPrototypeEntityName(connectionDictionary, null), prototypeAttributeCache);
 
-			addPrototypeAttributes(getDefaultPrototypeEntityName(getName()), prototypeAttributeCache);
-			addPrototypeAttributes(getAdaptorPrototypeEntityName(getName()), prototypeAttributeCache);
-			addPrototypeAttributes(getDriverPrototypeEntityName(connectionDictionary, getName()), prototypeAttributeCache);
+			addPrototypeAttributes(_getDefaultPrototypeEntityName(getName()), prototypeAttributeCache);
+			addPrototypeAttributes(_getAdaptorPrototypeEntityName(getAdaptorName(), getName()), prototypeAttributeCache);
+			addPrototypeAttributes(_getDriverPrototypeEntityName(connectionDictionary, getName()), prototypeAttributeCache);
 			
 			if (activeDatabaseConfig != null) {
 				EOEntity prototypeEntity = activeDatabaseConfig.getPrototype();
