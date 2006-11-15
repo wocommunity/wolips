@@ -703,7 +703,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 		boolean mandatory = BooleanUtils.isTrue(isMandatory());
 		boolean toOne = BooleanUtils.isTrue(isToOne());
 		Iterator joinsIter = myJoins.iterator();
-		if (!joinsIter.hasNext()) {
+		if (!joinsIter.hasNext() && !isFlattened()) {
 			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " does not have any joins.", false));
 		}
 		while (joinsIter.hasNext()) {
