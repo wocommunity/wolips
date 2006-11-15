@@ -219,7 +219,7 @@ public abstract class WOTask extends Task {
 	 * 
 	 * @param set
 	 */
-	public void addClasses(FileSet set) {
+	public void addClasses(WOFileSet set) {
 		classes.addElement(set);
 	}
 
@@ -228,7 +228,7 @@ public abstract class WOTask extends Task {
 	 * 
 	 * @param set
 	 */
-	public void addSources(FileSet set) {
+	public void addSources(WOFileSet set) {
 		sources.addElement(set);
 	}
 
@@ -237,7 +237,7 @@ public abstract class WOTask extends Task {
 	 * 
 	 * @param set
 	 */
-	public void addResources(ResourcesSet set) {
+	public void addResources(WOFileSet set) {
 		resources.addElement(set);
 	}
 
@@ -255,7 +255,7 @@ public abstract class WOTask extends Task {
 	 * 
 	 * @param set
 	 */
-	public void addWsresources(ResourcesSet set) {
+	public void addWsresources(WOFileSet set) {
 		wsresources.addElement(set);
 	}
 
@@ -426,14 +426,21 @@ public abstract class WOTask extends Task {
 		// jar.setLocation(new Location(resourcesDir() + "Java" + File.separator
 		// + getJarName() + ".jar"));
 		jar.setDestFile(taskJar);
+                boolean hasFileSets = false;
 		if (hasSources()) {
 			Enumeration en = sources.elements();
 			while (en.hasMoreElements()) {
-				jar.addFileset((FileSet) en.nextElement());
+                            WOFileSet wofs = (WOFileSet) en.nextElement();
+                            if( wofs.testIfCondition() ){
+                                jar.addFileset( (FileSet) wofs );
+                                hasFileSets = true;
+                            }
 			}
 		}
 
-		jar.execute();
+                if( hasFileSets ){
+                    jar.execute();
+                }
 	}
 
 	/**
@@ -451,7 +458,10 @@ public abstract class WOTask extends Task {
 		if (hasClasses()) {
 			Enumeration en = classes.elements();
 			while (en.hasMoreElements()) {
-				jar.addFileset((FileSet) en.nextElement());
+                                WOFileSet wofs = (WOFileSet) en.nextElement();
+                                if( wofs.testIfCondition() ){
+                                    jar.addFileset( (FileSet) wofs );
+                                }
 			}
 		}
 
@@ -474,9 +484,9 @@ public abstract class WOTask extends Task {
 		int count = 0;
 		Enumeration en = resources.elements();
 		while (en.hasMoreElements()) {
-			ResourcesSet rs = (ResourcesSet) en.nextElement();
-			if (rs.testIfCondition()) {
-				cp.addFileset(rs);
+			WOFileSet wofs = (WOFileSet) en.nextElement();
+			if (wofs.testIfCondition()) {
+				cp.addFileset( wofs );
 				count++;
 			}
 		}
@@ -500,9 +510,9 @@ public abstract class WOTask extends Task {
 		int count = 0;
 		Enumeration en = wsresources.elements();
 		while (en.hasMoreElements()) {
-			ResourcesSet rs = (ResourcesSet) en.nextElement();
-			if (rs.testIfCondition()) {
-				cp.addFileset(rs);
+			WOFileSet wofs = (WOFileSet) en.nextElement();
+			if (wofs.testIfCondition()) {
+				cp.addFileset(wofs);
 				count++;
 			}
 		}

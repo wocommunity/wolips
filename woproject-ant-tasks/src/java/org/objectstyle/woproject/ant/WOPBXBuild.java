@@ -156,7 +156,7 @@ public class WOPBXBuild extends Task {
 		 */
 		e = classes.elements();
 		while (e.hasMoreElements()) {
-			task.addClasses((FileSet) e.nextElement());
+			task.addClasses((WOFileSet) e.nextElement());
 		}
 		task.execute();
 	}
@@ -222,7 +222,7 @@ public class WOPBXBuild extends Task {
 		 */
 		i = resourcesFiles.iterator();
 		while (i.hasNext()) {
-			ResourcesSet set = new ResourcesSet();
+			WOFileSet set = new WOFileSet();
 			File tempFile = new File(this.getProject().getBaseDir(), ((PBXBuildFile) i.next()).getPath());
 			set.setProject(this.getProject());
 			if (tempFile.isDirectory()) {
@@ -237,7 +237,7 @@ public class WOPBXBuild extends Task {
 		 */
 		i = webResourcesFiles.iterator();
 		while (i.hasNext()) {
-			ResourcesSet set = new ResourcesSet();
+			WOFileSet set = new WOFileSet();
 			File tempFile = new File(this.getProject().getBaseDir(), ((PBXBuildFile) i.next()).getPath());
 			set.setProject(this.getProject());
 			if (tempFile.isDirectory()) {

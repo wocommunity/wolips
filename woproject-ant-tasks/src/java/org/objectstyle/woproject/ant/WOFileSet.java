@@ -63,20 +63,19 @@ import org.apache.tools.ant.PropertyHelper;
 import org.apache.tools.ant.types.FileSet;
 
 /**
- * A subclass of FileSet with special support for building a destination
- * Resources directory.
+ * A subclass of FileSet with special support for building a destination directory.
  * 
  * @author Bob Schwarzmann
  */
-public class ResourcesSet extends FileSet {
+public class WOFileSet extends FileSet {
 
 	protected String ifCondition = "";
 
 	/**
-	 * Creates new ResourcesSet.
+	 * Creates new WOFileSet.
 	 */
-	public ResourcesSet() {
-		super();
+	public WOFileSet() {
+            super();
 	}
 
 	private static String replaceProperties(Project project, String value, Hashtable keys) throws BuildException {
@@ -93,7 +92,7 @@ public class ResourcesSet extends FileSet {
 			return true;
 		}
 
-		String string = ResourcesSet.replaceProperties(getProject(), ifCondition, getProject().getProperties());
+		String string = WOFileSet.replaceProperties(getProject(), ifCondition, getProject().getProperties());
 		return getProject().getProperty(string) != null;
 	}
 }
