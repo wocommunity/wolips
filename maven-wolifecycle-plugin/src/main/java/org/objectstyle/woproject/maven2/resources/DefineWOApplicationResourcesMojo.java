@@ -225,4 +225,8 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 		}
 		return dependencyPaths;
 	}
+
+	public boolean includesVersionInArtifactName() {
+		return true;
+	}
 }
