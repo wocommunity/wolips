@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2005 - 2006 The ObjectStyle Group,
+ * Copyright (c) 2006 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,15 +55,36 @@
  */
 package org.objectstyle.wolips.locate.scope;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 
-public class JavaLocateScope extends AbstractJavaLocateScope {
+public abstract class AbstractJavaLocateScope extends DefaultLocateScope {
 
-	public JavaLocateScope(IProject project, String fileName) {
-		super(project, new String[] { fileName + ".java" }, null);
+	public AbstractJavaLocateScope(IProject project, String[] includedFilesNames, String[] includedFolderNames) {
+		super(project, includedFilesNames, includedFolderNames);
 	}
 
-	public static JavaLocateScope createLocateScope(String fileName, IProject project) {
-		return new JavaLocateScope(project, fileName);
+	public boolean addToResult(IFile file) {
+		if (file != null) {
+			String extension = file.getFileExtension();
+			if (extension != null && "java".equals(extension)) {
+				IJavaElement javaElement = JavaCore.create(file);
+				if(javaElement == null) {
+					return false;
+				}
+				try {
+					if(javaElement.isStructureKnown()) {
+						// just to get the exception
+					}
+				} catch (JavaModelException e) {
+					return false;
+				}
+			}
+		}
+		return super.addToResult(file);
 	}
+
 }
