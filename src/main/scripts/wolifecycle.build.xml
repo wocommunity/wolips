@@ -30,7 +30,7 @@
 
 		<echo>Parent Artifact ID = ${my.maven.project.parent.artifactId}</echo>
 	</target>
-	
+
 	<!-- ================================================================== -->
 	<!-- W O A P L L I C A T I O N P R O P E R T I E S                      -->
 	<!-- ================================================================== -->
@@ -68,18 +68,18 @@
 			</lib>
 		</woapplication>
 
-        <!-- prefix="${my.maven.project.artifactId}-${my.maven.project.version}.woa/" -->
 		<tar tarfile="target/${my.maven.project.artifactId}-${my.maven.project.version}.woapplication.tar" longfile="gnu">
 			<tarfileset dir="target/${my.maven.project.artifactId}-${my.maven.project.version}.woa/"
-		              preserveLeadingSlashes="true">
+				prefix="${my.maven.project.artifactId}-${my.maven.project.version}.woa/"
+						preserveLeadingSlashes="true">
 			</tarfileset>
-		 </tar>
-		 
-		 <gzip src="target/${my.maven.project.artifactId}-${my.maven.project.version}.woapplication.tar"
+		</tar>
+
+		<gzip src="target/${my.maven.project.artifactId}-${my.maven.project.version}.woapplication.tar"
 			  zipfile="target/${my.maven.project.artifactId}-${my.maven.project.version}.woapplication.tar.gz"/>
-		 <delete file="target/${my.maven.project.artifactId}-${my.maven.project.version}.woapplication.tar"/>  
+		<delete file="target/${my.maven.project.artifactId}-${my.maven.project.version}.woapplication.tar"/>
 	</target>
-	
+
 	<!-- ================================================================== -->
 	<!-- W O F R A M E W O R K P R O P E R T I E S                          -->
 	<!-- ================================================================== -->
@@ -93,7 +93,7 @@
 					<isset property="wo.wolocalroot" />
 				</and>
 			</not>
-		</condition>  
+		</condition>
 	</target>
 
 	<target name="build-woframework" depends="woframeworkproperties">

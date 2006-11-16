@@ -150,7 +150,11 @@ public abstract class DefineResourcesMojo extends WOMojo {
 	}
 
 	private String getFullTargetPath(String targetPath) {
-		String fullTargetPath = "../" + this.getProject().getArtifactId() + "." + getProductExtension();
+		String fullTargetPath = "../" + this.getProject().getArtifactId();
+		if(this.includesVersionInArtifactName()) {
+			fullTargetPath = fullTargetPath + "-" + this.getProject().getVersion();
+		}
+		fullTargetPath = fullTargetPath + "." + getProductExtension();
 		if (this.hasContentsFolder()) {
 			fullTargetPath = fullTargetPath + File.separator + "Contents";
 		}
@@ -159,6 +163,8 @@ public abstract class DefineResourcesMojo extends WOMojo {
 	}
 
 	public abstract boolean hasContentsFolder();
+	
+	public abstract boolean includesVersionInArtifactName();
 
 	private String[] readPatternset(String patternsetFileName) {
 		getLog().info("Defining wo resources: loading \"" + patternsetFileName + "\"");

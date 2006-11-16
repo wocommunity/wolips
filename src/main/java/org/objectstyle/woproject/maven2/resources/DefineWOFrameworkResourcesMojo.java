@@ -52,4 +52,8 @@ public class DefineWOFrameworkResourcesMojo extends DefineResourcesMojo {
 	protected Boolean readPatternsets() {
 		return readPatternsets;
 	}
+
+	public boolean includesVersionInArtifactName() {
+		return false;
+	}
 }
