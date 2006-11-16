@@ -61,6 +61,8 @@ import junit.framework.TestCase;
 
 import org.apache.commons.io.FileUtils;
 import org.easymock.EasyMock;
+import org.objectstyle.woproject.maven2.wobootstrap.utils.WebobjectsLocator;
+import org.objectstyle.woproject.maven2.wobootstrap.utils.WebobjectsUtils;
 
 /**
  * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>

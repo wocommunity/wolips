@@ -53,119 +53,35 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.woproject.maven2.utils;
+package org.objectstyle.woproject.maven2.wobootstrap.utils;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.LineIterator;
 
 /**
- * This class contains some utility methods that retrieves information about the
- * installed WebObjects.
+ * This class is an implementation of {@link WebobjectsLocator} specific for Mac
+ * OS X.
  * 
  * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
  * @since 2.0
  */
-public class WebobjectsUtils
-{
-	/**
-	 * Avoid <code>WebobjectsUtils</code> instantiation.
-	 */
-	WebobjectsUtils()
-	{
-	}
+public class MacOsWebobjectsLocator extends AbstractWebobjectsLocator {
 
-	/**
-	 * Search for WebObjects JARs into the WebObjects lib folder and returns an
-	 * array of files. It uses a <code>WebobjectsLocator</code> to find the
-	 * WebObjects lib folder.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param locator The WebObjects locator
-	 * @return Returns an array of WebObjcts JARs or <code>null</code> if
-	 *         cannot find the libs folder
+	 * @see org.objectstyle.woproject.maven2.utils.WebobjectsLocator#webobjectsRootDirectory()
 	 */
-	public static File[] getWebobjectsJars( WebobjectsLocator locator )
-	{
-		if( locator == null )
-		{
-			return null;
-		}
-
-		File folder = locator.getWebobjectsLibFolder();
-
-		if( folder == null )
-		{
-			return null;
-		}
-
-		Collection jars = FileUtils.listFiles( folder, new String[] { "jar" }, false );
-
-		File files[] = new File[jars.size()];
-
-		return (File[]) jars.toArray( files );
+	public File getWebobjectsRootFolder() {
+		return new File( "/" );
 	}
 
-	/**
-	 * Retrieves the version of installed WebObjects. It uses a
-	 * <code>WebobjectsLocator</code> to find the WebObjects version file.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param locator The WebObjects locator
-	 * @return Returns the WebObjects version or <code>null</code> if cannot
-	 *         discover the WebObjects version
+	 * @see org.objectstyle.woproject.maven2.utils.WebobjectsLocator#webobjectsVersionFile()
 	 */
-	public static String getWebobjectsVersion( WebobjectsLocator locator )
-	{
-		if( locator == null )
-		{
-			return null;
-		}
-
-		File versionFile = locator.getWebobjectsVersionFile();
-
-		if( versionFile == null )
-		{
-			return null;
-		}
-
-		String version = null;
-
-		LineIterator iterator = null;
-
-		try
-		{
-			iterator = FileUtils.lineIterator( versionFile, null );
-
-			while( iterator.hasNext() )
-			{
-				String line = iterator.nextLine();
-
-				if( "<key>CFBundleShortVersionString</key>".equals( line.trim() ) )
-				{
-					String versionLine = iterator.nextLine();
-
-					version = versionLine.trim().replaceAll( "</?string>", "" );
-
-					break;
-				}
-			}
-
-		}
-		catch( IOException exception )
-		{
-			// TODO: hprange, write an info to log instead
-			exception.printStackTrace();
-		}
-		finally
-		{
-			if( iterator != null )
-			{
-				LineIterator.closeQuietly( iterator );
-			}
-		}
-
-		return version;
+	public File getWebobjectsVersionFile() {
+		return new File( "/System/Library/Frameworks/JavaWebObjects.framework/Resources/version.plist" );
 	}
+
 }

@@ -82,11 +82,11 @@ import org.apache.maven.project.DuplicateProjectException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.plexus.util.dag.CycleDetectedException;
-import org.objectstyle.woproject.maven2.utils.MacOsWebobjectsLocator;
-import org.objectstyle.woproject.maven2.utils.UnixWebobjectsLocator;
-import org.objectstyle.woproject.maven2.utils.WebobjectsLocator;
-import org.objectstyle.woproject.maven2.utils.WebobjectsUtils;
-import org.objectstyle.woproject.maven2.utils.WindowsWebobjectsLocator;
+import org.objectstyle.woproject.maven2.wobootstrap.utils.MacOsWebobjectsLocator;
+import org.objectstyle.woproject.maven2.wobootstrap.utils.UnixWebobjectsLocator;
+import org.objectstyle.woproject.maven2.wobootstrap.utils.WebobjectsLocator;
+import org.objectstyle.woproject.maven2.wobootstrap.utils.WebobjectsUtils;
+import org.objectstyle.woproject.maven2.wobootstrap.utils.WindowsWebobjectsLocator;
 
 /**
  * Bootstrap goal for WebObjects projects. Copy all necessary WebObjects jars

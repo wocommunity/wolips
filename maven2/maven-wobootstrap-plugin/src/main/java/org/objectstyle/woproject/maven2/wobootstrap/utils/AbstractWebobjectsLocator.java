@@ -51,7 +51,7 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.woproject.maven2.utils;
+package org.objectstyle.woproject.maven2.wobootstrap.utils;
 
 import java.io.File;
 
@@ -62,7 +62,7 @@ import java.io.File;
 public abstract class AbstractWebobjectsLocator implements WebobjectsLocator {
 
 	/**
-	 * @see org.objectstyle.woproject.maven2.utils.WebobjectsLocator#getWebobjectsLibFolder()
+	 * @see org.objectstyle.woproject.maven2.wobootstrap.utils.WebobjectsLocator#getWebobjectsLibFolder()
 	 */
 	public File getWebobjectsLibFolder() {
 		File woRootFolder = getWebobjectsRootFolder();
@@ -74,12 +74,12 @@ public abstract class AbstractWebobjectsLocator implements WebobjectsLocator {
 	}
 
 	/**
-	 * @see org.objectstyle.woproject.maven2.utils.WebobjectsLocator#getWebobjectsRootFolder()
+	 * @see org.objectstyle.woproject.maven2.wobootstrap.utils.WebobjectsLocator#getWebobjectsRootFolder()
 	 */
 	public abstract File getWebobjectsRootFolder();
 	
 	/**
-	 * @see org.objectstyle.woproject.maven2.utils.WebobjectsLocator#getWebobjectsVersionFile()
+	 * @see org.objectstyle.woproject.maven2.wobootstrap.utils.WebobjectsLocator#getWebobjectsVersionFile()
 	 */
 	public File getWebobjectsVersionFile() {
 		File woRootFolder = getWebobjectsRootFolder();

@@ -63,7 +63,7 @@ import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.easymock.EasyMock;
-import org.objectstyle.woproject.maven2.utils.WebobjectsLocator;
+import org.objectstyle.woproject.maven2.wobootstrap.utils.WebobjectsLocator;
 
 /**
  * Criado em 30/09/2006
