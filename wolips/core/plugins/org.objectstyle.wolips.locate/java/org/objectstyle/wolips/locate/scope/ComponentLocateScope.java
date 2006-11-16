@@ -59,7 +59,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.objectstyle.wolips.locate.LocatePlugin;
 
-public class ComponentLocateScope extends DefaultLocateScope {
+public class ComponentLocateScope extends AbstractJavaLocateScope {
 
 	public ComponentLocateScope(IProject project, String name) {
 		super(project, new String[] { name + ".java", name + ".api" }, new String[] { name + ".wo" });
