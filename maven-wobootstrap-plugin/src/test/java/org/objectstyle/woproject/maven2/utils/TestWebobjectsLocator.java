@@ -58,6 +58,9 @@ package org.objectstyle.woproject.maven2.utils;
 import junit.framework.TestCase;
 
 import org.apache.commons.lang.SystemUtils;
+import org.objectstyle.woproject.maven2.wobootstrap.utils.MacOsWebobjectsLocator;
+import org.objectstyle.woproject.maven2.wobootstrap.utils.WebobjectsLocator;
+import org.objectstyle.woproject.maven2.wobootstrap.utils.WindowsWebobjectsLocator;
 
 /**
  * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
