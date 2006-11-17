@@ -76,7 +76,7 @@ public class EOSortOrdering extends EOModelObject {
 	private String mySelectorName;
 
 	public EOSortOrdering() {
-		mySelectorName = EOSortOrdering.ASCENDING;
+		mySelectorName = EOSortOrdering.SELECTOR_ASCENDING;
 	}
 
 	public EOSortOrdering(String _key, String _selectorName) {
@@ -124,6 +124,8 @@ public class EOSortOrdering extends EOModelObject {
 			mySelectorName = (_ascending) ? EOSortOrdering.SELECTOR_ASCENDING : EOSortOrdering.SELECTOR_DESCENDING;
 		} else if (StringUtils.isSelectorNameEqual(EOSortOrdering.SELECTOR_CASE_INSENSITIVE_ASCENDING, mySelectorName) || StringUtils.isSelectorNameEqual(EOSortOrdering.SELECTOR_CASE_INSENSITIVE_DESCENDING, mySelectorName)) {
 			mySelectorName = (_ascending) ? EOSortOrdering.SELECTOR_CASE_INSENSITIVE_ASCENDING : EOSortOrdering.SELECTOR_CASE_INSENSITIVE_DESCENDING;
+		} else {
+			mySelectorName = EOSortOrdering.SELECTOR_ASCENDING;
 		}
 		firePropertyChange(EOSortOrdering.ASCENDING, oldAscending, Boolean.valueOf(isAscending()));
 		firePropertyChange(EOSortOrdering.SELECTOR_NAME, oldSelectorName, mySelectorName);
@@ -140,6 +142,8 @@ public class EOSortOrdering extends EOModelObject {
 			mySelectorName = (_caseInsensitive) ? EOSortOrdering.SELECTOR_CASE_INSENSITIVE_ASCENDING : EOSortOrdering.SELECTOR_ASCENDING;
 		} else if (StringUtils.isSelectorNameEqual(EOSortOrdering.SELECTOR_DESCENDING, mySelectorName) || StringUtils.isSelectorNameEqual(EOSortOrdering.SELECTOR_CASE_INSENSITIVE_DESCENDING, mySelectorName)) {
 			mySelectorName = (_caseInsensitive) ? EOSortOrdering.SELECTOR_CASE_INSENSITIVE_DESCENDING : EOSortOrdering.SELECTOR_DESCENDING;
+		} else {
+			mySelectorName = EOSortOrdering.SELECTOR_ASCENDING;
 		}
 		firePropertyChange(EOSortOrdering.CASE_INSENSITIVE, oldCaseInsensitive, Boolean.valueOf(isCaseInsensitive()));
 		firePropertyChange(EOSortOrdering.SELECTOR_NAME, oldSelectorName, mySelectorName);
@@ -152,6 +156,10 @@ public class EOSortOrdering extends EOModelObject {
 	public void loadFromMap(EOModelMap _map) {
 		myKey = _map.getString("key", true);
 		mySelectorName = _map.getString("selectorName", true);
+		// MS: Fix for accidental setting of selector name
+		if (EOSortOrdering.ASCENDING.equals(mySelectorName)) {
+			mySelectorName = EOSortOrdering.SELECTOR_ASCENDING;
+		}
 	}
 
 	public EOModelMap toMap() {
