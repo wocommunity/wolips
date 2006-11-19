@@ -137,7 +137,7 @@ public class PackageExplorerDoubleClickHandler implements IPageListener, IPartLi
 	}
 
 	protected synchronized void attachToPartIfNecessary(IWorkbenchPartReference partReference) {
-		if (PackageExplorerPart.VIEW_ID.equals(partReference.getId())) {
+		if (partReference != null && PackageExplorerPart.VIEW_ID.equals(partReference.getId())) {
 			IWorkbenchPart part = partReference.getPart(false);
 			if (part instanceof PackageExplorerPart) {
 				PackageExplorerPart packageExplorerPart = (PackageExplorerPart) part;
