@@ -125,7 +125,7 @@ public class WebobjectsUtils
 
 		File versionFile = locator.getWebobjectsVersionFile();
 
-		if( versionFile == null )
+		if( versionFile == null || !versionFile.exists())
 		{
 			return null;
 		}
