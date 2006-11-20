@@ -129,7 +129,9 @@ public class TestWebServerResourcesFromJarExtractorMojo extends TestCase {
 		mojo.execute();
 
 		assertEquals(1, testWebServerResourcesFromJarExtractorMojoDirectory.list().length);
+		assertEquals("WebServerResources", testWebServerResourcesFromJarExtractorMojoDirectory.list()[0]);
 		assertEquals(1, testWebServerResourcesFromJarExtractorMojoDirectory.listFiles()[0].list().length);
+		assertEquals("mock", testWebServerResourcesFromJarExtractorMojoDirectory.listFiles()[0].list()[0]);
 		assertEquals(3, testWebServerResourcesFromJarExtractorMojoDirectory.listFiles()[0].listFiles()[0].list().length);
 
 	}
