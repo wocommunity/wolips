@@ -1,4 +1,4 @@
-package org.objectstyle.woproject.maven2.resources;
+package org.objectstyle.woproject.maven2.wolifecycle;
 
 //org.apache.maven.plugins:maven-compiler-plugin:compile
 import java.io.File;
