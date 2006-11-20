@@ -143,12 +143,12 @@ public class BootstrapMojo extends AbstractMojo
 	/**
 	 * Creates a new BootstrapMojo. Verify the OS platform and load the
 	 * properties of this plug-ing.
-	 * 
-	 * @throws MojoExecutionException If the os platform is unsupported
+	 * @throws MojoExecutionException 
 	 */
 	public BootstrapMojo() throws MojoExecutionException
 	{
 		super();
+
 
 		if( SystemUtils.IS_OS_MAC_OSX )
 		{
@@ -185,8 +185,6 @@ public class BootstrapMojo extends AbstractMojo
 		installFileProperties.setProperty( "packaging", "jar" );
 	
 		installFileProperties.setProperty( "generatePom", "true" );
-
-		initializeEmbedder();
 	}
 
 	/*
@@ -196,6 +194,7 @@ public class BootstrapMojo extends AbstractMojo
 	 */
 	public void execute() throws MojoExecutionException, MojoFailureException
 	{
+		initializeEmbedder();
 		File[] jars = WebobjectsUtils.getWebobjectsJars( locator );
 
 		if( jars == null )
