@@ -66,9 +66,9 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 
+import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.objectstyle.woproject.maven2.wobootstrap.mojos.AbstractWOMojo;
 
 /**
  * extractWebServerResources goal for WebObjects jars. Copy all webserverresources fram a jar
@@ -78,7 +78,7 @@ import org.objectstyle.woproject.maven2.wobootstrap.mojos.AbstractWOMojo;
  * @author uli
  * @since 2.0
  */
-public class WebServerResourcesFromJarExtractorMojo extends AbstractWOMojo {
+public class WebServerResourcesFromJarExtractorMojo extends AbstractMojo {
 
 	/**
 	 * @parameter
