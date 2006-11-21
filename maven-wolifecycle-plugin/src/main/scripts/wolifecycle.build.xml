@@ -72,12 +72,26 @@
 			<tarfileset dir="target/${my.maven.project.artifactId}-${my.maven.project.version}.woa/"
 				prefix="${my.maven.project.artifactId}-${my.maven.project.version}.woa/"
 						preserveLeadingSlashes="true">
+				<exclude name="**/Contents/WebServerResources/**"/>
+				<exclude name="**/Contents/Frameworks/**"/>
 			</tarfileset>
 		</tar>
 
 		<gzip src="target/${my.maven.project.artifactId}-${my.maven.project.version}.woapplication.tar"
 			  zipfile="target/${my.maven.project.artifactId}-${my.maven.project.version}.woapplication.tar.gz"/>
 		<delete file="target/${my.maven.project.artifactId}-${my.maven.project.version}.woapplication.tar"/>
+
+		<tar tarfile="target/${my.maven.project.artifactId}-${my.maven.project.version}.wowebserverresources.tar" longfile="gnu">
+			<tarfileset dir="target/${my.maven.project.artifactId}-${my.maven.project.version}.woa/"
+				prefix="${my.maven.project.artifactId}-${my.maven.project.version}.woa/"
+						preserveLeadingSlashes="true">
+				<include name="**/WebServerResources/**"/>
+			</tarfileset>
+		</tar>
+
+		<gzip src="target/${my.maven.project.artifactId}-${my.maven.project.version}.wowebserverresources.tar"
+			  zipfile="target/${my.maven.project.artifactId}-${my.maven.project.version}.wowebserverresources.tar.gz"/>
+		<delete file="target/${my.maven.project.artifactId}-${my.maven.project.version}.wowebserverresources.tar"/>
 	</target>
 
 	<!-- ================================================================== -->
