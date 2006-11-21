@@ -186,7 +186,7 @@
 		<snapshotRepository>
 			<id>objectstyle</id>
 			<name>ObjectStyle Maven2 Repository</name>
-			<url>scp://dev.objectstyle.org/var/maven2</url>
+			<url>dav:https://objectstyle.org/maven2</url>
 		</snapshotRepository>
 	</distributionManagement>
 
