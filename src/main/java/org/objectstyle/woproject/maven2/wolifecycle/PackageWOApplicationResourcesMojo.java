@@ -3,6 +3,8 @@ package org.objectstyle.woproject.maven2.wolifecycle;
 //org.apache.maven.plugins:maven-compiler-plugin:compile
 import java.io.File;
 
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
@@ -26,10 +28,17 @@ public class PackageWOApplicationResourcesMojo extends PackageMojo {
 	 */
 	private MavenProject project;
 
+	/**
+	 * @parameter expression="${component.org.apache.maven.artifact.factory.ArtifactFactory}"
+	 * @required
+	 * @readonly
+	 */
+	private ArtifactFactory artifactFactory;
+
 	public PackageWOApplicationResourcesMojo() throws MojoExecutionException {
 		super();
 	}
-	
+
 	public MavenProject getProject() {
 		return project;
 	}
@@ -39,8 +48,11 @@ public class PackageWOApplicationResourcesMojo extends PackageMojo {
 	}
 
 	protected String getArtifactFileName() {
-		return "target" + File.separator + this.getProject().getArtifactId()
-				+ "-" + this.getProject().getVersion() + ".woapplication.tar.gz";
+		return "target" + File.separator + this.getProject().getArtifactId() + "-" + this.getProject().getVersion() + ".woapplication.tar.gz";
+	}
+
+	private String getWOWeberverResourcesArtifactFileName() {
+		return "target" + File.separator + this.getProject().getArtifactId() + "-" + this.getProject().getVersion() + ".wowebserverresources.tar.gz";
 	}
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
@@ -51,5 +63,12 @@ public class PackageWOApplicationResourcesMojo extends PackageMojo {
 			getLog().info("Defining artifact filename: " + fileName);
 			this.getProject().getArtifact().setFile(new File(fileName));
 		}
+		Artifact artifact = artifactFactory.createArtifactWithClassifier(project.getGroupId(), project.getArtifactId(), project.getVersion(), "tar.gz", "wowebserverresources");
+
+		artifact.setFile(new File(this.getWOWeberverResourcesArtifactFileName()));
+		getLog().info("Attaching artifact: artifact.getClassifier() " + artifact.getClassifier());
+
+		getLog().info("Attaching artifact: " + this.getWOWeberverResourcesArtifactFileName());
+		project.addAttachedArtifact(artifact);
 	}
 }
