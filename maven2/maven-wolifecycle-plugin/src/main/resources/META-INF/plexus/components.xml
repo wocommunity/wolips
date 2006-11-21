@@ -4,6 +4,23 @@
 			<role>
 				org.apache.maven.artifact.handler.ArtifactHandler
 			</role>
+			<role-hint>wowebserverresources-artifact</role-hint>
+			<implementation>
+				org.apache.maven.artifact.handler.DefaultArtifactHandler
+			</implementation>
+			<configuration>
+				<classifier>wowebserverresources</classifier>
+				<extension>-wowebserverresources.tar.gz</extension>
+				<type>wowebserverresources-artifact</type>
+				<packaging>wowebserverresources</packaging>
+				<language>java</language>
+				<addedToClasspath>false</addedToClasspath>
+			</configuration>
+		</component>
+		<component>
+			<role>
+				org.apache.maven.artifact.handler.ArtifactHandler
+			</role>
 			<role-hint>woapplication-artifact</role-hint>
 			<implementation>
 				org.apache.maven.artifact.handler.DefaultArtifactHandler
