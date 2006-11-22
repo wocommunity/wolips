@@ -72,8 +72,8 @@
 			<tarfileset dir="target/${my.maven.project.artifactId}-${my.maven.project.version}.woa/"
 				prefix="${my.maven.project.artifactId}-${my.maven.project.version}.woa/"
 						preserveLeadingSlashes="true">
-				<exclude name="**/Contents/WebServerResources/**"/>
-				<exclude name="**/Contents/Frameworks/**"/>
+				<!-- exclude name="**/Contents/WebServerResources/**"/>
+				<exclude name="**/Contents/Frameworks/**"/ -->
 			</tarfileset>
 		</tar>
 
