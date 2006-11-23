@@ -10,16 +10,28 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 
+import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.maven.artifact.factory.ArtifactFactory;
+import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
+import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.artifact.InvalidDependencyVersionException;
+import org.apache.maven.project.artifact.MavenMetadataSource;
 
 /**
  * resources goal for WebObjects projects.
@@ -41,15 +53,6 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 	private MavenProject project;
 
 	/**
-	 * The set of dependencies required by the project
-	 * 
-	 * @parameter default-value="${project.dependencies}"
-	 * @required
-	 * @readonly
-	 */
-	private java.util.ArrayList dependencies;
-
-	/**
 	 * @parameter expression="${localRepository}"
 	 * @required
 	 * @readonly
@@ -62,6 +65,29 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 	 * @parameter expression="readPatternsets"
 	 */
 	private Boolean readPatternsets;
+
+	/**
+	 * @component
+	 */
+	private ArtifactResolver artifactResolver;
+
+	/**
+	 * 
+	 * @component
+	 */
+	private ArtifactFactory artifactFactory;
+
+	/**
+	 * 
+	 * @component
+	 */
+	private ArtifactMetadataSource metadataSource;
+
+	/**
+	 * 
+	 * @parameter expression="${project.remoteArtifactRepositories}"
+	 */
+	private List remoteRepositories;
 
 	private String[][] dependencyPaths;
 
@@ -114,16 +140,20 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 	}
 
 	private void copyJarEntryToFile(String jarFileName, File destinationFolder, JarEntry jarEntry) throws IOException, FileNotFoundException {
-		//getLog().info("Copy webserverresources: jarFileName " + jarFileName + " destinationFolder " + destinationFolder);
+		// getLog().info("Copy webserverresources: jarFileName " + jarFileName +
+		// " destinationFolder " + destinationFolder);
 		String name = jarEntry.getName();
 		String destinationFolderWithPathFromJarEntry = destinationFolder + File.separator + name.substring(0, name.lastIndexOf('/'));
 		String destinationName = name.substring(name.lastIndexOf('/') + 1);
-		//getLog().info("Copy webserverresources: destinationFolderWithPathFromJarEntry " + destinationFolderWithPathFromJarEntry + " destinationName " + destinationName);
+		// getLog().info("Copy webserverresources:
+		// destinationFolderWithPathFromJarEntry " +
+		// destinationFolderWithPathFromJarEntry + " destinationName " +
+		// destinationName);
 		File file = new File(destinationFolderWithPathFromJarEntry, destinationName);
 		if (!file.getParentFile().exists()) {
 			file.getParentFile().mkdirs();
 		}
-		//getLog().info("Copy webserverresources: file " + file);
+		// getLog().info("Copy webserverresources: file " + file);
 		file.createNewFile();
 
 		InputStream is = null;
@@ -202,19 +232,34 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 		return readPatternsets;
 	}
 
-	private String[][] getDependencyPaths() {
+	private String[][] getDependencyPaths() throws MojoExecutionException {
 		if (dependencyPaths == null) {
+			List dependencies = project.getDependencies();
+			Set dependencyArtifacts = null;
+			ArtifactResolutionResult result = null;
+			try {
+				dependencyArtifacts = MavenMetadataSource.createArtifacts(artifactFactory, dependencies, null, null, null);
+				result = artifactResolver.resolveTransitively(dependencyArtifacts, this.project.getArtifact(), Collections.EMPTY_MAP, localRepository, remoteRepositories, metadataSource, null, Collections.EMPTY_LIST);
+
+			} catch (InvalidDependencyVersionException e) {
+				throw new MojoExecutionException("error while resolving dependencies", e);
+			} catch (ArtifactResolutionException e) {
+				throw new MojoExecutionException("error while resolving dependencies", e);
+			} catch (ArtifactNotFoundException e) {
+				throw new MojoExecutionException("error while resolving dependencies", e);
+			}
+			Set artifacts = result.getArtifacts();
 			ArrayList classPathEntriesArray = new ArrayList();
 			ArrayList artfactNameEntriesArray = new ArrayList();
-			Iterator dependenciesIterator = dependencies.iterator();
+			Iterator dependenciesIterator = artifacts.iterator();
 			while (dependenciesIterator.hasNext()) {
-				Dependency dependency = (Dependency) dependenciesIterator.next();
-				String depenendencyGroup = dependency.getGroupId();
+				DefaultArtifact defaultArtifact = (DefaultArtifact) dependenciesIterator.next();
+				String depenendencyGroup = defaultArtifact.getGroupId();
 				if (depenendencyGroup != null) {
 					depenendencyGroup = depenendencyGroup.replace('.', File.separatorChar);
 				}
-				String depenendencyArtifact = dependency.getArtifactId();
-				String depenendencyVersion = dependency.getVersion();
+				String depenendencyArtifact = defaultArtifact.getArtifactId();
+				String depenendencyVersion = defaultArtifact.getVersion();
 				String dependencyPath = depenendencyGroup + File.separator + depenendencyArtifact + File.separator + depenendencyVersion + File.separator + depenendencyArtifact + "-" + depenendencyVersion + ".jar";
 				classPathEntriesArray.add(dependencyPath);
 				artfactNameEntriesArray.add(depenendencyArtifact);
