@@ -20,6 +20,7 @@ public abstract class DefineResourcesMojo extends WOMojo {
 		getLog().info("Creating folder");
 		this.executeCreateFolders();
 		getLog().info("Defining wo resources");
+		this.executeExistingComponents();
 		this.executeExistingResources();
 		this.executeExistingWebServerResources();
 		Boolean readPatternsets = this.readPatternsets();
@@ -38,6 +39,10 @@ public abstract class DefineResourcesMojo extends WOMojo {
 
 	private void executeExistingResources() {
 		this.executePatchResources("WebServerResources", this.getFullTargetPath("WebServerResources"));
+	}
+
+	private void executeExistingComponents() {
+		this.executePatchResources("Components", this.getFullTargetPath("Resources"));
 	}
 
 	private void executePatchResources(String existingTargetPath, String newTargetPath) {
@@ -106,6 +111,15 @@ public abstract class DefineResourcesMojo extends WOMojo {
 
 	private void executeFolders() {
 		getLog().info("Defining wo resources: defining default folder");
+		String componentsPath = getProjectFolder() + "Components";
+		File componentsFile = new File(componentsPath);
+		if (componentsFile.exists()) {
+			getLog().info("Defining wo resources: \"Components\" folder found within project. Adding include...");
+			Resource resourcesFromComponentsFolder = this.createResources(null, null, "Components", "Resources");
+			this.getProject().addResource(resourcesFromComponentsFolder);
+		} else {
+			getLog().info("Defining wo resources: No \"Components\" folder found within project. Skipping include...");
+		}
 		String resourcesPath = getProjectFolder() + "Resources";
 		File resourcesFile = new File(resourcesPath);
 		if (resourcesFile.exists()) {
