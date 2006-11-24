@@ -106,9 +106,7 @@ public abstract class DependencyMojo extends AbstractMojo {
 		for (Iterator i = reactorProjects.iterator(); i.hasNext();) {
 			MavenProject reactorProject = (MavenProject) i.next();
 
-			String key = reactorProject.getGroupId() + ":"
-					+ reactorProject.getArtifactId() + ":"
-					+ reactorProject.getVersion();
+			String key = reactorProject.getGroupId() + ":" + reactorProject.getArtifactId() + ":" + reactorProject.getVersion();
 
 			mappedReactorArtifacts.put(key, reactorProject.getArtifact());
 		}
@@ -129,8 +127,7 @@ public abstract class DependencyMojo extends AbstractMojo {
 		for (Iterator i = reactorProjects.iterator(); i.hasNext();) {
 			MavenProject reactorProject = (MavenProject) i.next();
 
-			for (Iterator j = reactorProject.getArtifacts().iterator(); j
-					.hasNext();) {
+			for (Iterator j = reactorProject.getArtifacts().iterator(); j.hasNext();) {
 				Artifact artifact = (Artifact) j.next();
 
 				// allow use of classifier in lookup
@@ -139,12 +136,9 @@ public abstract class DependencyMojo extends AbstractMojo {
 					classifierKey = artifact.getClassifier() + ":";
 				}
 
-				String key = artifact.getGroupId() + ":"
-						+ artifact.getArtifactId() + ":" + classifierKey
-						+ artifact.getVersion();
+				String key = artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + classifierKey + artifact.getVersion();
 
-				if (!reactorArtifacts.containsKey(key)
-						&& !dependencies.containsKey(key)) {
+				if (!reactorArtifacts.containsKey(key) && !dependencies.containsKey(key)) {
 					dependencies.put(key, artifact);
 				}
 			}

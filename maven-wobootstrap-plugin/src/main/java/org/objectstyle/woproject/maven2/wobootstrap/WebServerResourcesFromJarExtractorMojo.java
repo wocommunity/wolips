@@ -71,8 +71,8 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 /**
- * extractWebServerResources goal for WebObjects jars. Copy all webserverresources fram a jar
- * into a destination folder.
+ * extractWebServerResources goal for WebObjects jars. Copy all
+ * webserverresources fram a jar into a destination folder.
  * 
  * @goal extractWebServerResources
  * @author uli

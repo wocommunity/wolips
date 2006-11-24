@@ -41,16 +41,15 @@ public class PackageWOFrameworkResourcesMojo extends PackageMojo {
 	public MavenProject getProject() {
 		return project;
 	}
-	
+
 	public String getProductExtension() {
 		return "framework";
 	}
 
 	protected String getArtifactFileName() {
-		return this.getProjectFolder() + "target" + File.separator + this.getProject().getArtifactId()
-				+ "-" + this.getProject().getVersion() + ".woframework";
+		return this.getProjectFolder() + "target" + File.separator + this.getProject().getArtifactId() + "-" + this.getProject().getVersion() + ".woframework";
 	}
-	
+
 	protected String getWOFrameworkFileName() {
 		return this.getProjectFolder() + "target" + File.separator + this.getProject().getArtifactId() + "-" + this.getProject().getVersion() + ".jar";
 	}
@@ -63,5 +62,4 @@ public class PackageWOFrameworkResourcesMojo extends PackageMojo {
 		project.addAttachedArtifact(artifact);
 	}
 
-	
 }

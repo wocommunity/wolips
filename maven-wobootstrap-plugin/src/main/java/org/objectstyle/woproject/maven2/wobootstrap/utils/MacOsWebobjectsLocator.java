@@ -72,7 +72,7 @@ public class MacOsWebobjectsLocator extends AbstractWebobjectsLocator {
 	 * @see org.objectstyle.woproject.maven2.utils.WebobjectsLocator#webobjectsRootDirectory()
 	 */
 	public File getWebobjectsRootFolder() {
-		return new File( "/" );
+		return new File("/");
 	}
 
 	/*
@@ -81,7 +81,7 @@ public class MacOsWebobjectsLocator extends AbstractWebobjectsLocator {
 	 * @see org.objectstyle.woproject.maven2.utils.WebobjectsLocator#webobjectsVersionFile()
 	 */
 	public File getWebobjectsVersionFile() {
-		return new File( "/System/Library/Frameworks/JavaWebObjects.framework/Resources/version.plist" );
+		return new File("/System/Library/Frameworks/JavaWebObjects.framework/Resources/version.plist");
 	}
 
 }

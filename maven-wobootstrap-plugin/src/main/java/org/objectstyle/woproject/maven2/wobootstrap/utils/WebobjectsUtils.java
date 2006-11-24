@@ -69,13 +69,11 @@ import org.apache.commons.io.LineIterator;
  * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
  * @since 2.0
  */
-public class WebobjectsUtils
-{
+public class WebobjectsUtils {
 	/**
 	 * Avoid <code>WebobjectsUtils</code> instantiation.
 	 */
-	WebobjectsUtils()
-	{
+	WebobjectsUtils() {
 	}
 
 	/**
@@ -83,50 +81,46 @@ public class WebobjectsUtils
 	 * array of files. It uses a <code>WebobjectsLocator</code> to find the
 	 * WebObjects lib folder.
 	 * 
-	 * @param locator The WebObjects locator
+	 * @param locator
+	 *            The WebObjects locator
 	 * @return Returns an array of WebObjcts JARs or <code>null</code> if
 	 *         cannot find the libs folder
 	 */
-	public static File[] getWebobjectsJars( WebobjectsLocator locator )
-	{
-		if( locator == null )
-		{
+	public static File[] getWebobjectsJars(WebobjectsLocator locator) {
+		if (locator == null) {
 			return null;
 		}
 
 		File folder = locator.getWebobjectsLibFolder();
 
-		if( folder == null )
-		{
+		if (folder == null) {
 			return null;
 		}
 
-		Collection jars = FileUtils.listFiles( folder, new String[] { "jar" }, false );
+		Collection jars = FileUtils.listFiles(folder, new String[] { "jar" }, false);
 
 		File files[] = new File[jars.size()];
 
-		return (File[]) jars.toArray( files );
+		return (File[]) jars.toArray(files);
 	}
 
 	/**
 	 * Retrieves the version of installed WebObjects. It uses a
 	 * <code>WebobjectsLocator</code> to find the WebObjects version file.
 	 * 
-	 * @param locator The WebObjects locator
+	 * @param locator
+	 *            The WebObjects locator
 	 * @return Returns the WebObjects version or <code>null</code> if cannot
 	 *         discover the WebObjects version
 	 */
-	public static String getWebobjectsVersion( WebobjectsLocator locator )
-	{
-		if( locator == null )
-		{
+	public static String getWebobjectsVersion(WebobjectsLocator locator) {
+		if (locator == null) {
 			return null;
 		}
 
 		File versionFile = locator.getWebobjectsVersionFile();
 
-		if( versionFile == null || !versionFile.exists())
-		{
+		if (versionFile == null || !versionFile.exists()) {
 			return null;
 		}
 
@@ -134,35 +128,27 @@ public class WebobjectsUtils
 
 		LineIterator iterator = null;
 
-		try
-		{
-			iterator = FileUtils.lineIterator( versionFile, null );
+		try {
+			iterator = FileUtils.lineIterator(versionFile, null);
 
-			while( iterator.hasNext() )
-			{
+			while (iterator.hasNext()) {
 				String line = iterator.nextLine();
 
-				if( "<key>CFBundleShortVersionString</key>".equals( line.trim() ) )
-				{
+				if ("<key>CFBundleShortVersionString</key>".equals(line.trim())) {
 					String versionLine = iterator.nextLine();
 
-					version = versionLine.trim().replaceAll( "</?string>", "" );
+					version = versionLine.trim().replaceAll("</?string>", "");
 
 					break;
 				}
 			}
 
-		}
-		catch( IOException exception )
-		{
+		} catch (IOException exception) {
 			// TODO: hprange, write an info to log instead
 			exception.printStackTrace();
-		}
-		finally
-		{
-			if( iterator != null )
-			{
-				LineIterator.closeQuietly( iterator );
+		} finally {
+			if (iterator != null) {
+				LineIterator.closeQuietly(iterator);
 			}
 		}
 

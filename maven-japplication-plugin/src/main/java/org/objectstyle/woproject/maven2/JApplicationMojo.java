@@ -197,8 +197,7 @@ public class JApplicationMojo extends DependencyMojo {
 		try {
 			task.execute();
 		} catch (BuildException e) {
-			throw new MojoExecutionException("Failed to build application "
-					+ name, e);
+			throw new MojoExecutionException("Failed to build application " + name, e);
 		}
 	}
 

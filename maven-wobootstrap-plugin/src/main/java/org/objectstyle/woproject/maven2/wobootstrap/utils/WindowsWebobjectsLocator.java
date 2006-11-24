@@ -64,12 +64,13 @@ import java.io.File;
  * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
  * @since 2.0
  */
-public class WindowsWebobjectsLocator extends AbstractWebobjectsLocator
-{
+public class WindowsWebobjectsLocator extends AbstractWebobjectsLocator {
 	/**
 	 * The deafult WebObjects root variable on Windows
-	 * @deprecated New versions of JDK throw Exceptions about getenv not more supported. Please use
-	 * the <code>next.root</code> property instead
+	 * 
+	 * @deprecated New versions of JDK throw Exceptions about getenv not more
+	 *             supported. Please use the <code>next.root</code> property
+	 *             instead
 	 */
 	protected static final String DEFAULT_WO_ROOT_PROPERTY = "next.root";
 
@@ -88,19 +89,19 @@ public class WindowsWebobjectsLocator extends AbstractWebobjectsLocator
 	 * WebObjects root variable.
 	 */
 	public WindowsWebobjectsLocator() {
-				if (woRootVariable == null) {
-						woRootVariable = System.getenv(DEFAULT_WO_ROOT_VARIABLE);
-					}
+		if (woRootVariable == null) {
+			woRootVariable = System.getenv(DEFAULT_WO_ROOT_VARIABLE);
+		}
 	}
 
 	/**
 	 * Creates a new <code>WindowsWebobjectsLocator</code> using the variable
 	 * passed by parameter.
 	 * 
-	 * @param woRootVariable The WebObjects root variable
+	 * @param woRootVariable
+	 *            The WebObjects root variable
 	 */
-	public WindowsWebobjectsLocator( String woRootVariable )
-	{
+	public WindowsWebobjectsLocator(String woRootVariable) {
 		this.woRootVariable = woRootVariable;
 	}
 
@@ -108,11 +109,11 @@ public class WindowsWebobjectsLocator extends AbstractWebobjectsLocator
 	 * (non-Javadoc)
 	 * 
 	 * @see org.objectstyle.woproject.maven2.wobootstrap.utils.WebobjectsLocator#webobjectsRootDirectory()
- 	 */
+	 */
 	public File getWebobjectsRootFolder() {
 		String nextRoot = woRootVariable;
 
-		if( nextRoot == null ) {
+		if (nextRoot == null) {
 			return null;
 		}
 
