@@ -11,7 +11,7 @@ import org.apache.maven.plugin.MojoFailureException;
 
 public abstract class PackageMojo extends WOMojo {
 
-	public PackageMojo() throws MojoExecutionException {
+	public PackageMojo() {
 		super();
 	}
 

@@ -26,7 +26,6 @@ import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
-import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
@@ -91,7 +90,7 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 
 	private String[][] dependencyPaths;
 
-	public DefineWOApplicationResourcesMojo() throws MojoExecutionException {
+	public DefineWOApplicationResourcesMojo() {
 		super();
 	}
 
