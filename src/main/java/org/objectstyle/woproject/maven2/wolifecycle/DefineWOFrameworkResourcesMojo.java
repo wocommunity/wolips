@@ -22,12 +22,13 @@ public class DefineWOFrameworkResourcesMojo extends DefineResourcesMojo {
 	 * @readonly
 	 */
 	private MavenProject project;
-	
+
 	/**
-     * Read patternsets.
-     * @parameter expression="readPatternsets"
-     */
-    private Boolean readPatternsets;
+	 * Read patternsets.
+	 * 
+	 * @parameter expression="readPatternsets"
+	 */
+	private Boolean readPatternsets;
 
 	public DefineWOFrameworkResourcesMojo() {
 		super();
