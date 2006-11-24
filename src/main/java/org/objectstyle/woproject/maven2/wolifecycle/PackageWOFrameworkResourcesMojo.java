@@ -34,7 +34,7 @@ public class PackageWOFrameworkResourcesMojo extends PackageMojo {
 	 */
 	private ArtifactFactory artifactFactory;
 
-	public PackageWOFrameworkResourcesMojo() throws MojoExecutionException {
+	public PackageWOFrameworkResourcesMojo() {
 		super();
 	}
 
