@@ -148,43 +148,35 @@ public class BootstrapMojo extends AbstractMojo {
 	 * @throws MojoExecutionException
 	 *             if any problem occurs during bootstrap execution
 	 */
-	public BootstrapMojo() throws MojoExecutionException
-	{
+	public BootstrapMojo() throws MojoExecutionException {
 		super();
 
-
-		if( SystemUtils.IS_OS_MAC_OSX )
-		{
+		if (SystemUtils.IS_OS_MAC_OSX) {
 			locator = new MacOsWebobjectsLocator();
-		}
-		else if( SystemUtils.IS_OS_WINDOWS )
-		{
+		} else if (SystemUtils.IS_OS_WINDOWS) {
 			locator = new WindowsWebobjectsLocator();
-		}
-		else if( SystemUtils.IS_OS_UNIX )
-		{
+		} else if (SystemUtils.IS_OS_UNIX) {
 			locator = new UnixWebobjectsLocator();
-		}
-		else
-		{
-			throw new MojoExecutionException( "Unsupported OS platform." );
+		} else {
+			throw new MojoExecutionException("Unsupported OS platform.");
 		}
 
 		initialize();
 	}
 
 	/**
-		 * This constructor is only for testing purpose.
-		 * 
-		 * @param locator
-		 *            A locator for WebObjects resources
-		 * @throws MojoExecutionException
-		 *             if any problem occurs during bootstrap execution
-		 */
-		BootstrapMojo(WebobjectsLocator locator) throws MojoExecutionException {
-			this.locator = locator;
-			initialize();
-	 	}
+	 * This constructor is only for testing purpose.
+	 * 
+	 * @param locator
+	 *            A locator for WebObjects resources
+	 * @throws MojoExecutionException
+	 *             if any problem occurs during bootstrap execution
+	 */
+	BootstrapMojo(WebobjectsLocator locator) throws MojoExecutionException {
+		this.locator = locator;
+		initialize();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -219,37 +211,26 @@ public class BootstrapMojo extends AbstractMojo {
 	 * <li>artifactId</li>
 	 * </ul>
 	 * 
-	 	 * @param properties
+	 * @param properties
 	 *            The defined properties
 	 * @throws MojoExecutionException
 	 *             If any exception occur during embedder execution.
 	 */
-	protected boolean executeInstallFile( Properties properties ) throws MojoExecutionException
-	{
-		if( properties == null )
-		{
+	protected boolean executeInstallFile(Properties properties) throws MojoExecutionException {
+		if (properties == null) {
 			return false;
 		}
 
-		try
-		{
-			embedder.execute( pom, Collections.singletonList( "install:install-file" ), eventMonitor, new ConsoleDownloadMonitor(), properties, targetDirectory );
-		}
-		catch( CycleDetectedException exception )
-		{
-			throw new MojoExecutionException( "Error: cycle detected." );
-		}
-		catch( LifecycleExecutionException exception )
-		{
-			throw new MojoExecutionException( "Error in lifecycle execution." );
-		}
-		catch( BuildFailureException exception )
-		{
-			throw new MojoExecutionException( "Error: build failure." );
-		}
-		catch( DuplicateProjectException exception )
-		{
-			throw new MojoExecutionException( "Error: duplicate project." );
+		try {
+			embedder.execute(pom, Collections.singletonList("install:install-file"), eventMonitor, new ConsoleDownloadMonitor(), properties, targetDirectory);
+		} catch (CycleDetectedException exception) {
+			throw new MojoExecutionException("Error: cycle detected.");
+		} catch (LifecycleExecutionException exception) {
+			throw new MojoExecutionException("Error in lifecycle execution.");
+		} catch (BuildFailureException exception) {
+			throw new MojoExecutionException("Error: build failure.");
+		} catch (DuplicateProjectException exception) {
+			throw new MojoExecutionException("Error: duplicate project.");
 		}
 
 		return true;
@@ -258,35 +239,34 @@ public class BootstrapMojo extends AbstractMojo {
 	/**
 	 * Fill the contents of a properties based on a JAR file.
 	 * 
-	 * @param jar The JAR file
+	 * @param jar
+	 *            The JAR file
 	 * @return Returns the populated properties or <code>null</code> if cannot
 	 *         map the JAR file
 	 */
-	protected Properties fillProperties( File jar )
-	{
-		String artifactId = getArtifactIdForJar( jar );
+	protected Properties fillProperties(File jar) {
+		String artifactId = getArtifactIdForJar(jar);
 
-		if( artifactId == null )
-		{
+		if (artifactId == null) {
 			return null;
 		}
 
-		installFileProperties.setProperty( "file", jar.getAbsolutePath() );
-		installFileProperties.setProperty( "artifactId", artifactId );
-		
-				try {
-					File tempPom = File.createTempFile("pom-", ".xml");
-		
-					tempPom.deleteOnExit();
-		
-					PomGenerator generator = new PomGenerator(installFileProperties);
-		
-					generator.writeModel(tempPom);
-		
-					installFileProperties.setProperty("pomFile", tempPom.getAbsolutePath());
-				} catch (IOException exception) {
-					getLog().info("Cannot create a pom file for " + artifactId);
-				}
+		installFileProperties.setProperty("file", jar.getAbsolutePath());
+		installFileProperties.setProperty("artifactId", artifactId);
+
+		try {
+			File tempPom = File.createTempFile("pom-", ".xml");
+
+			tempPom.deleteOnExit();
+
+			PomGenerator generator = new PomGenerator(installFileProperties);
+
+			generator.writeModel(tempPom);
+
+			installFileProperties.setProperty("pomFile", tempPom.getAbsolutePath());
+		} catch (IOException exception) {
+			getLog().info("Cannot create a pom file for " + artifactId);
+		}
 
 		return installFileProperties;
 	}
@@ -306,81 +286,71 @@ public class BootstrapMojo extends AbstractMojo {
 
 		loadNamesMap();
 
-		String jarName = FilenameUtils.getBaseName( jar.getAbsolutePath() );
+		String jarName = FilenameUtils.getBaseName(jar.getAbsolutePath());
 
-		return (String) namesMap.get( jarName.toLowerCase() );
+		return (String) namesMap.get(jarName.toLowerCase());
 	}
 
-		private void initialize() throws MojoExecutionException {
-				InputStream propertiesInputStream = BootstrapMojo.class.getResourceAsStream("/bootstrap.properties");
-		
-				try {
-					pluginProperties.load(propertiesInputStream);
-				} catch (IOException exception) {
-					throw new MojoExecutionException("Cannot load plug-in properties.");
-				}
-		
-				installFileProperties = new Properties();
-		
-				installFileProperties.setProperty("groupId", pluginProperties.getProperty("woproject.convention.group"));
-				installFileProperties.setProperty("version", WebobjectsUtils.getWebobjectsVersion(locator));
-				installFileProperties.setProperty("packaging", "jar");
-			}
-	
-	private void initializeEmbedder() throws MojoExecutionException
-	{
+	private void initialize() throws MojoExecutionException {
+		InputStream propertiesInputStream = BootstrapMojo.class.getResourceAsStream("/bootstrap.properties");
+
+		try {
+			pluginProperties.load(propertiesInputStream);
+		} catch (IOException exception) {
+			throw new MojoExecutionException("Cannot load plug-in properties.");
+		}
+
+		installFileProperties = new Properties();
+
+		installFileProperties.setProperty("groupId", pluginProperties.getProperty("woproject.convention.group"));
+		installFileProperties.setProperty("version", WebobjectsUtils.getWebobjectsVersion(locator));
+		installFileProperties.setProperty("packaging", "jar");
+	}
+
+	private void initializeEmbedder() throws MojoExecutionException {
 		embedder = new MavenEmbedder();
 
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
-		embedder.setClassLoader( classLoader );
-		embedder.setLogger( new MavenEmbedderConsoleLogger() );
+		embedder.setClassLoader(classLoader);
+		embedder.setLogger(new MavenEmbedderConsoleLogger());
 
-		try
-		{
+		try {
 			embedder.start();
-		}
-		catch( MavenEmbedderException exception )
-		{
-			throw new MojoExecutionException( "Cannot start maven embedder." );
+		} catch (MavenEmbedderException exception) {
+			throw new MojoExecutionException("Cannot start maven embedder.");
 		}
 
 		targetDirectory = SystemUtils.getUserDir();
 
-		File pomFile = new File( targetDirectory, "pom.xml" );
+		File pomFile = new File(targetDirectory, "pom.xml");
 
-		try
-		{
-			pom = embedder.readProject( pomFile );
-		}
-		catch( ProjectBuildingException exception )
-		{
-			throw new MojoExecutionException( "Cannot read project POM." );
+		try {
+			pom = embedder.readProject(pomFile);
+		} catch (ProjectBuildingException exception) {
+			throw new MojoExecutionException("Cannot read project POM.");
 		}
 
-		eventMonitor = new DefaultEventMonitor( new PlexusLoggerAdapter( new MavenEmbedderConsoleLogger() ) );
+		eventMonitor = new DefaultEventMonitor(new PlexusLoggerAdapter(new MavenEmbedderConsoleLogger()));
 	}
-	
-	private void loadNamesMap()
-	{
-		if( namesMap != null )
-		{
+
+	private void loadNamesMap() {
+		if (namesMap != null) {
 			return;
 		}
 
-		String defaultNames = pluginProperties.getProperty( "webobjects.default.names" );
+		String defaultNames = pluginProperties.getProperty("webobjects.default.names");
 
-		String originalNames[] = StringUtils.split( defaultNames, "," );
+		String originalNames[] = StringUtils.split(defaultNames, ",");
 
-		String conventionedNames = pluginProperties.getProperty( "woproject.convention.names" );
+		String conventionedNames = pluginProperties.getProperty("woproject.convention.names");
 
-		String artifactIds[] = StringUtils.split( conventionedNames, "," );
+		String artifactIds[] = StringUtils.split(conventionedNames, ",");
 
 		namesMap = new HashMap();
 
-		for( int i = 0; i < originalNames.length; i++ )
-		{
-			namesMap.put( originalNames[i].toLowerCase(), artifactIds[i] );
+		for (int i = 0; i < originalNames.length; i++) {
+			namesMap.put(originalNames[i].toLowerCase(), artifactIds[i]);
 		}
 	}
 }

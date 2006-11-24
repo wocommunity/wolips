@@ -59,7 +59,7 @@ import java.io.File;
 
 /**
  * @author <a href="mailto:pallas@free.fr">Josef Vanek</a>
- *
+ * 
  */
 public class UnixWebobjectsLocator extends AbstractWebobjectsLocator {
 
@@ -85,7 +85,7 @@ public class UnixWebobjectsLocator extends AbstractWebobjectsLocator {
 	 * @see org.objectstyle.woproject.maven2.wobootstrap.utils.WebobjectsLocator#getWebobjectsRootFolder()
 	 */
 	public File getWebobjectsRootFolder() {
-		return(getWoRoot() != null) ? new File(getWoRoot()) : null;
+		return (getWoRoot() != null) ? new File(getWoRoot()) : null;
 	}
 
 	/**
@@ -96,7 +96,8 @@ public class UnixWebobjectsLocator extends AbstractWebobjectsLocator {
 	}
 
 	/**
-	 * @param woRoot the woRoot to set
+	 * @param woRoot
+	 *            the woRoot to set
 	 */
 	public void setWoRoot(String woRoot) {
 		this.woRoot = woRoot;

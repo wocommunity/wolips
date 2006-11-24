@@ -94,8 +94,7 @@ public class PatternsetReader {
 				}
 			}
 		}
-		pattern = (String[]) patternList
-				.toArray(new String[patternList.size()]);
+		pattern = (String[]) patternList.toArray(new String[patternList.size()]);
 	}
 
 	/**

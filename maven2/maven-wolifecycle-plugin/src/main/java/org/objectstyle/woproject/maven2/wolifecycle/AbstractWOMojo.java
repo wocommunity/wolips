@@ -145,14 +145,13 @@ public abstract class AbstractWOMojo extends AbstractMojo {
 		}
 		return resolvedDependencies;
 	}
-	
+
 	public String[] getDependecyPaths() {
 		return this.getResolvedDependencies()[0];
 	}
-	
+
 	public String[] getAtifactNames() {
 		return this.getResolvedDependencies()[1];
 	}
-	
-	
+
 }

@@ -165,7 +165,7 @@ public abstract class DefineResourcesMojo extends WOMojo {
 
 	private String getFullTargetPath(String targetPath) {
 		String fullTargetPath = "../" + this.getProject().getArtifactId();
-		if(this.includesVersionInArtifactName()) {
+		if (this.includesVersionInArtifactName()) {
 			fullTargetPath = fullTargetPath + "-" + this.getProject().getVersion();
 		}
 		fullTargetPath = fullTargetPath + "." + getProductExtension();
@@ -177,7 +177,7 @@ public abstract class DefineResourcesMojo extends WOMojo {
 	}
 
 	public abstract boolean hasContentsFolder();
-	
+
 	public abstract boolean includesVersionInArtifactName();
 
 	private String[] readPatternset(String patternsetFileName) {

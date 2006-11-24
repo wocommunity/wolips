@@ -57,7 +57,7 @@ import java.io.File;
 
 /**
  * @author <a href="mailto:pallas@free.fr">Josef Vanek</a>
- *
+ * 
  */
 public abstract class AbstractWebobjectsLocator implements WebobjectsLocator {
 
@@ -68,7 +68,7 @@ public abstract class AbstractWebobjectsLocator implements WebobjectsLocator {
 		File woRootFolder = getWebobjectsRootFolder();
 		if (woRootFolder != null) {
 			File lc_tempFile = new File(woRootFolder, "Library/WebObjects/lib");
-			return lc_tempFile.exists() ? lc_tempFile : null; 
+			return lc_tempFile.exists() ? lc_tempFile : null;
 		}
 		return null;
 	}
@@ -77,13 +77,13 @@ public abstract class AbstractWebobjectsLocator implements WebobjectsLocator {
 	 * @see org.objectstyle.woproject.maven2.wobootstrap.utils.WebobjectsLocator#getWebobjectsRootFolder()
 	 */
 	public abstract File getWebobjectsRootFolder();
-	
+
 	/**
 	 * @see org.objectstyle.woproject.maven2.wobootstrap.utils.WebobjectsLocator#getWebobjectsVersionFile()
 	 */
 	public File getWebobjectsVersionFile() {
 		File woRootFolder = getWebobjectsRootFolder();
-		return (woRootFolder != null) ? new File(getWebobjectsRootFolder(), "Library/Frameworks/JavaWebObjects.framework/Resources/version.plist" ) : null;
+		return (woRootFolder != null) ? new File(getWebobjectsRootFolder(), "Library/Frameworks/JavaWebObjects.framework/Resources/version.plist") : null;
 	}
 
 }
