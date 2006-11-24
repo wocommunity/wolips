@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>webobjects.apple</groupId>
+  <artifactId>java-eo-access</artifactId>
+  <version>5.3</version>
+  <dependencies>
+    <dependency>
+      <groupId>webobjects.apple</groupId>
+      <artifactId>java-foundation</artifactId>
+      <version>5.3</version>
+    </dependency>
+    <dependency>
+      <groupId>webobjects.apple</groupId>
+      <artifactId>java-eo-control</artifactId>
+      <version>5.3</version>
+    </dependency>
+  </dependencies>
+</project>

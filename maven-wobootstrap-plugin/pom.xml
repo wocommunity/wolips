@@ -5,12 +5,16 @@
 		<groupId>org.objectstyle.woproject.maven2</groupId>
 		<version>2.0-SNAPSHOT</version>
 	</parent>
-
+	
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>maven-wobootstrap-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
 	<name>Maven WOBootstrap Plugin</name>
-
+	
+	<build>
+		<defaultGoal>package</defaultGoal>
+	</build>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
@@ -45,9 +49,11 @@
 			<artifactId>easymock</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>xmlunit</groupId>
+			<artifactId>xmlunit</artifactId>
+			<version>1.0</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
-
-	<build>
-		<defaultGoal>package</defaultGoal>
-	</build>
 </project>
