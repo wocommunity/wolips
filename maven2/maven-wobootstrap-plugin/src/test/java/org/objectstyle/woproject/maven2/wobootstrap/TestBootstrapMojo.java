@@ -72,118 +72,111 @@ import org.objectstyle.woproject.maven2.wobootstrap.utils.WebobjectsLocator;
 /**
  * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
  */
-public class TestBootstrapMojo extends TestCase
-{
+public class TestBootstrapMojo extends TestCase {
 	protected String input[];
 
 	protected BootstrapMojo mojo;
 
 	protected String output[];
 
+	public void notTestWebObjectsNotInstalled() throws Exception {
+		// TODO: fix me
+		// problem with sure fire and classpath (maven stuff used for tests is
+		// 2.0.0 maven embedder requires 2.0.4)
+
+		WebobjectsLocator mockLocator = (WebobjectsLocator) EasyMock.createMock(WebobjectsLocator.class);
+
+		EasyMock.expect(mockLocator.getWebobjectsLibFolder()).andReturn(null);
+
+		mojo.locator = mockLocator;
+
+		EasyMock.replay(new Object[] { mockLocator });
+
+		try {
+			mojo.execute();
+
+			fail("WebOjects not installed, must throws an exception.");
+		} catch (MojoExecutionException exception) {
+			assertEquals("WebObjects lib folder is missing. Maybe WebObjects isn't installed.", exception.getMessage());
+		}
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 */
-	protected void setUp() throws Exception
-	{
+	protected void setUp() throws Exception {
 		super.setUp();
 
 		input = new String[] { "c:/JavaDirectToWeb.jar", "c:/JavaFoundation.jar", "c:/javaeoutil.jar", "c:/JavaXML.jar" };
 
 		output = new String[] { "java-dtw", "java-foundation", "java-eo-util", "java-xml" };
 
-		mojo = new BootstrapMojo();
+		File versionFile = FileUtils.toFile(getClass().getResource("/version.plist"));
+
+		WebobjectsLocator mockLocator = (WebobjectsLocator) EasyMock.createMock(WebobjectsLocator.class);
+
+		EasyMock.expect(mockLocator.getWebobjectsVersionFile()).andReturn(versionFile);
+
+		EasyMock.replay(new Object[] { mockLocator });
+
+		mojo = new BootstrapMojo(mockLocator);
 	}
 
-	public void testArtifatIdConvention() throws Exception
-	{
-		for( int i = 0; i < input.length; i++ )
-		{
-			File jar = new File( input[i] );
+	public void testArtifatIdConvention() throws Exception {
+		for (int i = 0; i < input.length; i++) {
+			File jar = new File(input[i]);
 
-			assertEquals( output[i], mojo.getArtifactIdForJar( jar ) );
+			assertEquals(output[i], mojo.getArtifactIdForJar(jar));
 		}
 	}
 
-	public void testCaseInsensitiveNameMapping() throws Exception
-	{
-		for( int i = 0; i < input.length; i++ )
-		{
+	public void testCaseInsensitiveNameMapping() throws Exception {
+		for (int i = 0; i < input.length; i++) {
 			input[i] = input[i].toLowerCase();
 		}
 
-		for( int i = 0; i < input.length; i++ )
-		{
-			File jar = new File( input[i] );
+		for (int i = 0; i < input.length; i++) {
+			File jar = new File(input[i]);
 
-			assertEquals( output[i], mojo.getArtifactIdForJar( jar ) );
+			assertEquals(output[i], mojo.getArtifactIdForJar(jar));
 		}
 	}
 
-	public void testExecuteEmbedderWithNullProperties() throws Exception
-	{
-		assertFalse( mojo.executeInstallFile( null ) );
+	public void testExecuteEmbedderWithNullProperties() throws Exception {
+		assertFalse(mojo.executeInstallFile(null));
 	}
 
-	public void testFillValidProperties() throws Exception
-	{
-		File resourcesPath = FileUtils.toFile( getClass().getResource( "/" ) );
+	public void testFillValidProperties() throws Exception {
+		File resourcesPath = FileUtils.toFile(getClass().getResource("/"));
 
 		String filePath = "JavaWOExtensions.jar";
 
-		File mockJar = new File( resourcesPath, filePath );
+		File mockJar = new File(resourcesPath, filePath);
 
-		Properties properties = mojo.fillProperties( mockJar );
+		Properties properties = mojo.fillProperties(mockJar);
 
-		assertEquals( "webobjects.apple", properties.getProperty( "groupId" ) );
-		assertNotNull( properties.getProperty( "version" ) );
-		assertEquals( "jar", properties.getProperty( "packaging" ) );
-		assertEquals( mockJar.getAbsolutePath(), properties.getProperty( "file" ) );
-		assertEquals( "java-wo-extensions", properties.getProperty( "artifactId" ) );
+		assertEquals("webobjects.apple", properties.getProperty("groupId"));
+		assertNotNull(properties.getProperty("version"));
+		assertEquals("jar", properties.getProperty("packaging"));
+		assertEquals(mockJar.getAbsolutePath(), properties.getProperty("file"));
+		assertEquals("java-wo-extensions", properties.getProperty("artifactId"));
+		assertNotNull(properties.getProperty("pomFile"));
 	}
 
-	public void testNoJarMapping() throws Exception
-	{
+	public void testNoJarMapping() throws Exception {
 		String filePath = "c:\\JavaWOExtensionsXXX.jar";
 
-		File invalidJar = new File( filePath );
+		File invalidJar = new File(filePath);
 
-		Properties properties = mojo.fillProperties( invalidJar );
+		Properties properties = mojo.fillProperties(invalidJar);
 
-		assertNull( properties );
+		assertNull(properties);
 	}
 
-	public void testNullJarFile() throws Exception
-	{
-		assertNull( mojo.getArtifactIdForJar( null ) );
-		assertNull( mojo.fillProperties( null ) );
-	}
-
-	public void testWebObjectsNotInstalled() throws Exception
-	{
-		//TODO: fix me
-		//problem with sure fire and classpath (maven stuff used for tests is 2.0.0 maven embedder requires 2.0.4)
-		if(5 == 5) {
-			return;
-		}
-		WebobjectsLocator mockLocator = (WebobjectsLocator) EasyMock.createMock( WebobjectsLocator.class );
-
-		EasyMock.expect( mockLocator.getWebobjectsLibFolder() ).andReturn( null );
-
-		mojo.locator = mockLocator;
-
-		EasyMock.replay( new Object[] { mockLocator } );
-
-		try
-		{
-			mojo.execute();
-
-			fail( "WebOjects not installed, must throws an exception." );
-		}
-		catch( MojoExecutionException exception )
-		{
-			assertEquals( "WebObjects lib folder is missing. Maybe WebObjects isn't installed.", exception.getMessage() );
-		}
+	public void testNullJarFile() throws Exception {
+		assertNull(mojo.getArtifactIdForJar(null));
+		assertNull(mojo.fillProperties(null));
 	}
 }

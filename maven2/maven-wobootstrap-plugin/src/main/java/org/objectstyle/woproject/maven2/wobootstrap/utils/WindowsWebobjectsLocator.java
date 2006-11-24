@@ -71,25 +71,26 @@ public class WindowsWebobjectsLocator extends AbstractWebobjectsLocator
 	 * @deprecated New versions of JDK throw Exceptions about getenv not more supported. Please use
 	 * the <code>next.root</code> property instead
 	 */
-	protected static final String DEFAULT_WO_ROOT_VARIABLE = "NEXT_ROOT";
+	protected static final String DEFAULT_WO_ROOT_PROPERTY = "next.root";
 
 	/**
 	 * The deafult WebObjects root property on Windows
 	 */
-	protected static final String DEFAULT_WO_ROOT_PROPERTY = "next.root";
+	protected static final String DEFAULT_WO_ROOT_VARIABLE = "NEXT_ROOT";
 
 	/**
 	 * The name of the environment that contains the path for WebObjects folder
 	 */
-	protected final String woRootVariable;
+	protected String woRootVariable;
 
 	/**
 	 * Creates a new <code>WindowsWebobjectsLocator</code> using the default
 	 * WebObjects root variable.
 	 */
-	public WindowsWebobjectsLocator()
-	{
-		woRootVariable = System.getProperty(DEFAULT_WO_ROOT_PROPERTY);
+	public WindowsWebobjectsLocator() {
+				if (woRootVariable == null) {
+						woRootVariable = System.getenv(DEFAULT_WO_ROOT_VARIABLE);
+					}
 	}
 
 	/**
@@ -106,18 +107,16 @@ public class WindowsWebobjectsLocator extends AbstractWebobjectsLocator
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.objectstyle.woproject.maven2.utils.WebobjectsLocator#webobjectsRootDirectory()
-	 */
-	public File getWebobjectsRootFolder()
-	{
+	 * @see org.objectstyle.woproject.maven2.wobootstrap.utils.WebobjectsLocator#webobjectsRootDirectory()
+ 	 */
+	public File getWebobjectsRootFolder() {
 		String nextRoot = woRootVariable;
 
-		if( nextRoot == null )
-		{
+		if( nextRoot == null ) {
 			return null;
 		}
 
-		return new File( nextRoot );
+		return new File(nextRoot);
 	}
 
 }

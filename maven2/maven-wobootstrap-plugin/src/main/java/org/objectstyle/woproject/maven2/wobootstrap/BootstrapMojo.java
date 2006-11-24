@@ -83,6 +83,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.plexus.util.dag.CycleDetectedException;
 import org.objectstyle.woproject.maven2.wobootstrap.utils.MacOsWebobjectsLocator;
+import org.objectstyle.woproject.maven2.wobootstrap.utils.PomGenerator;
 import org.objectstyle.woproject.maven2.wobootstrap.utils.UnixWebobjectsLocator;
 import org.objectstyle.woproject.maven2.wobootstrap.utils.WebobjectsLocator;
 import org.objectstyle.woproject.maven2.wobootstrap.utils.WebobjectsUtils;
@@ -96,8 +97,8 @@ import org.objectstyle.woproject.maven2.wobootstrap.utils.WindowsWebobjectsLocat
  * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
  * @since 2.0
  */
-public class BootstrapMojo extends AbstractMojo
-{
+public class BootstrapMojo extends AbstractMojo {
+
 	/**
 	 * Maven embedder used to call maven plug-ins functions
 	 */
@@ -143,7 +144,9 @@ public class BootstrapMojo extends AbstractMojo
 	/**
 	 * Creates a new BootstrapMojo. Verify the OS platform and load the
 	 * properties of this plug-ing.
-	 * @throws MojoExecutionException 
+	 * 
+	 * @throws MojoExecutionException
+	 *             if any problem occurs during bootstrap execution
 	 */
 	public BootstrapMojo() throws MojoExecutionException
 	{
@@ -167,48 +170,39 @@ public class BootstrapMojo extends AbstractMojo
 			throw new MojoExecutionException( "Unsupported OS platform." );
 		}
 
-		InputStream propertiesInputStream = BootstrapMojo.class.getResourceAsStream( "/bootstrap.properties" );
-
-		try
-		{
-			pluginProperties.load( propertiesInputStream );
-		}
-		catch( IOException exception )
-		{
-			throw new MojoExecutionException( "Cannot load plug-in properties." );
-		}
-
-		installFileProperties = new Properties();
-
-		installFileProperties.setProperty( "groupId", pluginProperties.getProperty( "woproject.convention.group" ) );
-		installFileProperties.setProperty( "version", WebobjectsUtils.getWebobjectsVersion( locator ) );
-		installFileProperties.setProperty( "packaging", "jar" );
-	
-		installFileProperties.setProperty( "generatePom", "true" );
+		initialize();
 	}
 
+	/**
+		 * This constructor is only for testing purpose.
+		 * 
+		 * @param locator
+		 *            A locator for WebObjects resources
+		 * @throws MojoExecutionException
+		 *             if any problem occurs during bootstrap execution
+		 */
+		BootstrapMojo(WebobjectsLocator locator) throws MojoExecutionException {
+			this.locator = locator;
+			initialize();
+	 	}
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.apache.maven.plugin.Mojo#execute()
 	 */
-	public void execute() throws MojoExecutionException, MojoFailureException
-	{
+	public void execute() throws MojoExecutionException, MojoFailureException {
 		initializeEmbedder();
-		File[] jars = WebobjectsUtils.getWebobjectsJars( locator );
+		File[] jars = WebobjectsUtils.getWebobjectsJars(locator);
 
-		if( jars == null )
-		{
-			throw new MojoExecutionException( "WebObjects lib folder is missing. Maybe WebObjects isn't installed." );
+		if (jars == null) {
+			throw new MojoExecutionException("WebObjects lib folder is missing. Maybe WebObjects isn't installed.");
 		}
 
-		for( int i = 0; i < jars.length; i++ )
-		{
-			Properties properties = fillProperties( jars[i] );
+		for (int i = 0; i < jars.length; i++) {
+			Properties properties = fillProperties(jars[i]);
 
-			if( !executeInstallFile( properties ) )
-			{
-				getLog().warn( "Cannot import the following jar: " + jars[i].getName() );
+			if (!executeInstallFile(properties)) {
+				getLog().warn("Cannot import the following jar: " + jars[i].getName());
 			}
 		}
 	}
@@ -225,9 +219,10 @@ public class BootstrapMojo extends AbstractMojo
 	 * <li>artifactId</li>
 	 * </ul>
 	 * 
-	 * @param properties The defined properties
-	 * @throws MojoExecutionException If any exception occur during embedder
-	 *             execution.
+	 	 * @param properties
+	 *            The defined properties
+	 * @throws MojoExecutionException
+	 *             If any exception occur during embedder execution.
 	 */
 	protected boolean executeInstallFile( Properties properties ) throws MojoExecutionException
 	{
@@ -278,6 +273,20 @@ public class BootstrapMojo extends AbstractMojo
 
 		installFileProperties.setProperty( "file", jar.getAbsolutePath() );
 		installFileProperties.setProperty( "artifactId", artifactId );
+		
+				try {
+					File tempPom = File.createTempFile("pom-", ".xml");
+		
+					tempPom.deleteOnExit();
+		
+					PomGenerator generator = new PomGenerator(installFileProperties);
+		
+					generator.writeModel(tempPom);
+		
+					installFileProperties.setProperty("pomFile", tempPom.getAbsolutePath());
+				} catch (IOException exception) {
+					getLog().info("Cannot create a pom file for " + artifactId);
+				}
 
 		return installFileProperties;
 	}
@@ -285,14 +294,13 @@ public class BootstrapMojo extends AbstractMojo
 	/**
 	 * Resolve the artifactId for a specific JAR file.
 	 * 
-	 * @param jar The JAR file
+	 * @param jar
+	 *            The JAR file
 	 * @return Returns the artifatId or <code>null</code> if cannot find a key
 	 *         that match the JAR file
 	 */
-	protected String getArtifactIdForJar( File jar )
-	{
-		if( jar == null )
-		{
+	protected String getArtifactIdForJar(File jar) {
+		if (jar == null) {
 			return null;
 		}
 
@@ -303,6 +311,22 @@ public class BootstrapMojo extends AbstractMojo
 		return (String) namesMap.get( jarName.toLowerCase() );
 	}
 
+		private void initialize() throws MojoExecutionException {
+				InputStream propertiesInputStream = BootstrapMojo.class.getResourceAsStream("/bootstrap.properties");
+		
+				try {
+					pluginProperties.load(propertiesInputStream);
+				} catch (IOException exception) {
+					throw new MojoExecutionException("Cannot load plug-in properties.");
+				}
+		
+				installFileProperties = new Properties();
+		
+				installFileProperties.setProperty("groupId", pluginProperties.getProperty("woproject.convention.group"));
+				installFileProperties.setProperty("version", WebobjectsUtils.getWebobjectsVersion(locator));
+				installFileProperties.setProperty("packaging", "jar");
+			}
+	
 	private void initializeEmbedder() throws MojoExecutionException
 	{
 		embedder = new MavenEmbedder();
