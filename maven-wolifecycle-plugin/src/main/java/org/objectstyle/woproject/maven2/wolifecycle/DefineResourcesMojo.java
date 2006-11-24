@@ -12,7 +12,7 @@ import org.apache.maven.plugin.MojoFailureException;
 
 public abstract class DefineResourcesMojo extends WOMojo {
 
-	public DefineResourcesMojo() throws MojoExecutionException {
+	public DefineResourcesMojo() {
 		super();
 	}
 
@@ -65,7 +65,7 @@ public abstract class DefineResourcesMojo extends WOMojo {
 		}
 	}
 
-	private void executeResourcesPatternsetFiles() throws MojoExecutionException, MojoFailureException {
+	private void executeResourcesPatternsetFiles() {
 		getLog().info("Defining wo resources: loading patternsets");
 		String woProjectFolder = getWOProjectFolder();
 		if (woProjectFolder == null) {
@@ -87,7 +87,7 @@ public abstract class DefineResourcesMojo extends WOMojo {
 		}
 	}
 
-	private void executeWebServerResourcesPatternsetFiles() throws MojoExecutionException, MojoFailureException {
+	private void executeWebServerResourcesPatternsetFiles() {
 		getLog().info("Defining wo webserverresources: loading patternsets");
 		String woProjectFolder = getWOProjectFolder();
 		if (woProjectFolder == null) {

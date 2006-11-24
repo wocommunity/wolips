@@ -29,7 +29,7 @@ public class DefineWOFrameworkResourcesMojo extends DefineResourcesMojo {
      */
     private Boolean readPatternsets;
 
-	public DefineWOFrameworkResourcesMojo() throws MojoExecutionException {
+	public DefineWOFrameworkResourcesMojo() {
 		super();
 	}
 
