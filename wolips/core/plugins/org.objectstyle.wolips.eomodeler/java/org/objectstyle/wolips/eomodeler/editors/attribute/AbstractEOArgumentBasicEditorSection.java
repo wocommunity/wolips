@@ -218,7 +218,7 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 		myDataTypePanel.setLayout(myDataTypeStackLayout);
 
 		myDataTypeToDataTypePanel = new HashMap();
-		myDataTypeToDataTypePanel.put(EODataType.BIGDECIMAL, new StringDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
+		myDataTypeToDataTypePanel.put(EODataType.BIGDECIMAL, new DecimalNumberDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
 		myDataTypeToDataTypePanel.put(EODataType.BYTE, new StringDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
 		myDataTypeToDataTypePanel.put(EODataType.CUSTOM, new CustomDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
 		myDataTypeToDataTypePanel.put(EODataType.DATA, new DataDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
