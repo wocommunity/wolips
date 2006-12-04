@@ -297,5 +297,5 @@ done
 #
 echo Launching ${SCRIPT_NAME}.woa ...
 
-echo ${JAVA_EXECUTABLE} ${JAVA_EXECUTABLE_ARGS} -classpath WOBootstrap.jar com.webobjects._bootstrap.WOBootstrap ${COMMAND_LINE_ARGS}
-eval exec ${JAVA_EXECUTABLE} ${JAVA_EXECUTABLE_ARGS} -classpath WOBootstrap.jar com.webobjects._bootstrap.WOBootstrap ${COMMAND_LINE_ARGS}
+echo ${JAVA_EXECUTABLE} ${JAVA_EXECUTABLE_ARGS} -classpath WOBootstrap.jar com.webobjects._bootstrap.WOBootstrap ${COMMAND_LINE_ARGS} @-WOFrameworksBaseURL@
+eval exec ${JAVA_EXECUTABLE} ${JAVA_EXECUTABLE_ARGS} -classpath WOBootstrap.jar com.webobjects._bootstrap.WOBootstrap ${COMMAND_LINE_ARGS} @-WOFrameworksBaseURL@

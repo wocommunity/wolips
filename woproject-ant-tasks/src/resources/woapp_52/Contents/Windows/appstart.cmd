@@ -338,8 +338,8 @@ if "%DEBUG%"=="yes" set JVMOPTS=%JVMOPTS% %JDBOPTS%
 
 :: Launch the application.
 echo Launching %~n0.
-echo %JAVAEXE% %JVMOPTS% %JAVAARGS% -classpath WOBootstrap.jar com.webobjects._bootstrap.WOBootstrap %THEARGS%
-call %JAVAEXE% %JVMOPTS% %JAVAARGS% -classpath WOBootstrap.jar com.webobjects._bootstrap.WOBootstrap %THEARGS%
+echo %JAVAEXE% %JVMOPTS% %JAVAARGS% -classpath WOBootstrap.jar com.webobjects._bootstrap.WOBootstrap %THEARGS% @-WOFrameworksBaseURL@
+call %JAVAEXE% %JVMOPTS% %JAVAARGS% -classpath WOBootstrap.jar com.webobjects._bootstrap.WOBootstrap %THEARGS% @-WOFrameworksBaseURL@
 
 :: Capture the exit code returned by the JVM (important in the event
 :: of an error).

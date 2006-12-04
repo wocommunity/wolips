@@ -114,6 +114,8 @@ public class WOApplication extends WOTask {
 	protected String webXML_CustomContent = null;
 	
 	protected String startupScriptName = null;
+	
+	protected String frameworksBaseURL = null;
 
 	public void release() {
 		super.release();
@@ -647,5 +649,13 @@ public class WOApplication extends WOTask {
 
 	public void setStartupScriptName(String startupScriptName) {
 		this.startupScriptName = startupScriptName;
+	}
+
+	public String getFrameworksBaseURL() {
+		return frameworksBaseURL;
+	}
+
+	public void setFrameworksBaseURL(String frameworksBaseURL) {
+		this.frameworksBaseURL = frameworksBaseURL;
 	}
 }

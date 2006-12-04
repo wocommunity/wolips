@@ -261,7 +261,7 @@ public class AppFormat extends ProjectFormat {
 		createMappings(subp, woappPlusVersion() + "/Contents/Windows/SUBPATHS.TXT");
 		// add run script to Win. directory
 		String runScript = new File(winDir, getName() + ".cmd").getPath();
-		createMappings(runScript, woappPlusVersion() + "/Contents/Windows/appstart.cmd");
+		createMappings(runScript, woappPlusVersion() + "/Contents/Windows/appstart.cmd", startupScriptFilter());
 		// add run script to top-level directory
 		File taskDir = getApplicatonTask().taskDir();
 		String startupScriptName = this.getApplicatonTask().startupScriptName;
@@ -269,7 +269,7 @@ public class AppFormat extends ProjectFormat {
 			startupScriptName = getName();
 		}
 		String topRunScript = new File(taskDir, startupScriptName + ".cmd").getPath();
-		createMappings(topRunScript, woappPlusVersion() + "/Contents/Windows/appstart.cmd");
+		createMappings(topRunScript, woappPlusVersion() + "/Contents/Windows/appstart.cmd", startupScriptFilter());
 	}
 
 	/**
@@ -292,7 +292,7 @@ public class AppFormat extends ProjectFormat {
 		createMappings(servercp, woappPlusVersion() + "/Contents/MacOS/MacOSXServerClassPath.txt", classpathFilter('/'));
 		// add run script to Mac directory
 		String runScript = new File(macDir, getName()).getPath();
-		createMappings(runScript, woappPlusVersion() + "/Contents/MacOS/appstart");
+		createMappings(runScript, woappPlusVersion() + "/Contents/MacOS/appstart", startupScriptFilter());
 		// add run script to top-level directory
 		File taskDir = getApplicatonTask().taskDir();
 		String startupScriptName = this.getApplicatonTask().startupScriptName;
@@ -300,7 +300,7 @@ public class AppFormat extends ProjectFormat {
 			startupScriptName = getName();
 		}
 		String topRunScript = new File(taskDir, startupScriptName).getPath();
-		createMappings(topRunScript, woappPlusVersion() + "/Contents/MacOS/appstart");
+		createMappings(topRunScript, woappPlusVersion() + "/Contents/MacOS/appstart", startupScriptFilter());
 	}
 
 	/**
@@ -438,6 +438,22 @@ public class AppFormat extends ProjectFormat {
 	 */
 	public void release() {
 		super.release();
+	}
+
+	/**
+	 * Returns a FilterSet that can be used to build the startup script file.
+	 */
+	public FilterSetCollection startupScriptFilter() {
+		FilterSet filter = new FilterSet();
+		String frameworksBaseURL = this.getApplicatonTask().getFrameworksBaseURL();
+		if(frameworksBaseURL != null && frameworksBaseURL.length() > 0) {
+			frameworksBaseURL = "-WOFrameworksBaseURL " + frameworksBaseURL;
+		}
+		else {
+			frameworksBaseURL = "";
+		}
+		filter.addFilter("-WOFrameworksBaseURL", frameworksBaseURL);
+		return new FilterSetCollection(filter);
 	}
 
 	/**
