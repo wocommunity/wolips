@@ -96,6 +96,7 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 
 		List others = new ArrayList();
 		List resolved = new ArrayList();
+		List projects = new ArrayList();
 
 		// used for duplicate removal
 		Set allEntries = new HashSet();
@@ -108,7 +109,11 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 		// rest
 		for (int i = 0; i < result.length; ++i) {
 			IRuntimeClasspathEntry entry = result[i];
-			IPath projectArchive = _getWOJavaArchive(entry);
+			if (IRuntimeClasspathEntry.PROJECT == entry.getType()) {
+				IProject project = (IProject) entry.getResource();
+				projects.add(project);
+			}
+			IPath projectArchive = getWOJavaArchive(entry);
 			if (projectArchive != null) {
 				// I think this line here breaks things: (hn3000)
 				// resolved.add(entry);
@@ -136,8 +141,11 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 					resolved.add(entry);
 				} else {
 					if (!allEntries.contains(loc)) {
-						resolved.add(entry);
-						allEntries.add(loc);
+						String lastSegment = loc.lastSegment();
+						if (lastSegment != null && !isProjectJar(lastSegment, projects)) {
+							resolved.add(entry);
+							allEntries.add(loc);
+						}
 					}
 				}
 			}
@@ -146,7 +154,17 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 		return result;
 	}
 
-	IPath _getWOJavaArchive(IRuntimeClasspathEntry entry) throws CoreException {
+	private boolean isProjectJar(String lastSegment, List projects) {
+		for (int i = 0; i < projects.size(); i++) {
+			IProject project = (IProject)projects.get(i);
+			if(lastSegment.startsWith(project.getName())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	IPath getWOJavaArchive(IRuntimeClasspathEntry entry) throws CoreException {
 		if (IRuntimeClasspathEntry.PROJECT == entry.getType()) {
 			IProject project = (IProject) entry.getResource();
 			JavaProject javaProject = (JavaProject) JavaCore.create(project).getAdapter(JavaProject.class);
