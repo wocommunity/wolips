@@ -101,7 +101,7 @@
 			<dependency>
 				<groupId>org.objectstyle.cayenne</groupId>
 				<artifactId>cayenne</artifactId>
-				<version>1.1.4-woprojectpatch</version>
+				<version>1.2M12</version>
 			</dependency>
 
 			<!-- required by cayenne -->
