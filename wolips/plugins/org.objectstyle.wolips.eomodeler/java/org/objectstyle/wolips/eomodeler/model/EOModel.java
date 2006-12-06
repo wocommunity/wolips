@@ -60,8 +60,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.core.resources.IProject;
-import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
+import org.objectstyle.wolips.eomodeler.wocompat.PropertyListSerialization;
 
 public class EOModel extends UserInfoableEOModelObject implements IUserInfoable, ISortableEOModelObject {
 	public static final String ENTITY_MODELER_KEY = "_EntityModeler";

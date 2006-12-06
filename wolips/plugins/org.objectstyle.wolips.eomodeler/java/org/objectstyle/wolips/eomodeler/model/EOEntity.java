@@ -56,12 +56,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.kvc.KeyPath;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringUtils;
+import org.objectstyle.wolips.eomodeler.wocompat.PropertyListSerialization;
 
 public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRelative, ISortableEOModelObject {
 	private static final String EONEXT_PRIMARY_KEY_PROCEDURE = "EONextPrimaryKeyProcedure";

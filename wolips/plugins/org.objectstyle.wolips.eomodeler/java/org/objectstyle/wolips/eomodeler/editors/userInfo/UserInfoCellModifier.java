@@ -53,10 +53,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 import org.eclipse.jface.viewers.TableViewer;
-import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.model.EOModelParserDataStructureFactory;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyCellModifier;
+import org.objectstyle.wolips.eomodeler.wocompat.PropertyListSerialization;
 
 public class UserInfoCellModifier extends TablePropertyCellModifier {
 	private NotificationMap myUserInfo;

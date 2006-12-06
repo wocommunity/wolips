@@ -58,9 +58,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringUtils;
+import org.objectstyle.wolips.eomodeler.wocompat.PropertyListSerialization;
 
 public class EOStoredProcedure extends UserInfoableEOModelObject implements ISortableEOModelObject {
 	public static final String NAME = "name";
