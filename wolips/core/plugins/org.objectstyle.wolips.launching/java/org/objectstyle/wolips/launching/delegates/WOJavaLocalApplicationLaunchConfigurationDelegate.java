@@ -118,7 +118,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends JavaLaunc
 			LaunchingPlugin.getDefault().log(ce);
 		}
 		config.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, WORuntimeClasspathProvider.ID);
-		config.setAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER, "true");
+		config.setAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER, "false");
 	}
 
 	public String[] getClasspath(ILaunchConfiguration configuration) throws CoreException {
