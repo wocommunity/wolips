@@ -59,7 +59,7 @@
 	<target name="build-woapplication" depends="woapplicationproperties">
 		<echo>maven.localRepository.baseDir ${maven.localRepository.baseDir}</echo>
 		<woapplication name="${my.maven.project.artifactId}-${my.maven.project.version}"
-			frameworksBaseURL="/WebObjects/${my.maven.project.artifactId}-${my.maven.project.version}/Contents/Frameworks"
+			frameworksBaseURL="/WebObjects/${my.maven.project.artifactId}-${my.maven.project.version}.woa/Contents/Frameworks"
 			startupScriptName="${my.maven.project.artifactId}"
 			stdFrameworks="false" destDir="target"
 			customInfoPListContent="${customInfoPListContent}"
