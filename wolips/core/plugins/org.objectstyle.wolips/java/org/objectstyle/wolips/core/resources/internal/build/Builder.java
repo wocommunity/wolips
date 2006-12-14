@@ -100,10 +100,11 @@ public abstract class Builder extends IncrementalProjectBuilder {
 		IProject project = this.getProject();
 		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
 		IBuildAdapter buildAdapter = projectAdapter.getBuildAdapter();
+		
 		if (kind == IncrementalProjectBuilder.FULL_BUILD) {
 			this.clean(monitor);
 		}
-
+		// System.out.println("Running builder: " + this);
 		Map buildCache = new HashMap();
 		FullBuildDeltaVisitor fullBuildDeltaVisitor = null;
 		IncrementalBuildDeltaVisitor deltaVisitor = null;

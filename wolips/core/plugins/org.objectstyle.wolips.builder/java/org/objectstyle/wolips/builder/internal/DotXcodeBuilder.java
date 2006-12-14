@@ -79,6 +79,8 @@ import org.objectstyle.woenvironment.pb.XcodeProject;
 import org.objectstyle.wolips.builder.BuilderPlugin;
 import org.objectstyle.wolips.core.resources.builder.IFullBuilder;
 import org.objectstyle.wolips.core.resources.builder.IIncrementalBuilder;
+import org.objectstyle.wolips.core.resources.internal.build.BuilderWrapper;
+import org.objectstyle.wolips.core.resources.internal.build.FullBuildDeltaVisitor;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 import org.objectstyle.wolips.preferences.Preferences;
 
@@ -125,8 +127,12 @@ public class DotXcodeBuilder implements IIncrementalBuilder, IFullBuilder {
 	public boolean buildStarted(int kind, Map args, IProgressMonitor monitor, IProject project, Map buildCache) {
 		boolean fullRebuild = (kind == IncrementalProjectBuilder.FULL_BUILD);
 		//System.out.println("DotXcodeBuilder.buildStarted: full rebuild = " + fullRebuild);
+		
+		// AK: this class sucks terribly. Not only that we need to do everything twice, we also only
+		// get the deltas from the "normal" builder, so when we create, we need to run a full build.
+		
 		if (false && kind == IncrementalProjectBuilder.CLEAN_BUILD) {
-			// ak: this doesn't work as when we do a full build, the resources
+			// AK: this doesn't work as when we do a full build, the resources
 			// are updated after the clean runs
 			// and before the full build
 			myXcodeProjects.remove(project.getName());
@@ -137,8 +143,11 @@ public class DotXcodeBuilder implements IIncrementalBuilder, IFullBuilder {
 			if (Preferences.shouldWriteXcodeOnBuild()) {
 				boolean exists = project.getFolder(project.getName() + ".xcode").getFile("project.pbxproj").exists();
 				myXcodeProject = getXcodeProject(project, true);
-				fullRebuild |= !exists;
-				//System.out.println("DotXcodeBuilder.buildStarted: xcode exists = " + exists);
+				fullRebuild |= !exists || myProjectChanged;
+				if(fullRebuild) {
+					fullVisit(kind, args, monitor, project, buildCache);
+				}
+				System.out.println("DotXcodeBuilder.buildStarted: xcode exists = " + exists);
 			} else {
 				myXcodeProject = null;
 			}
@@ -146,7 +155,10 @@ public class DotXcodeBuilder implements IIncrementalBuilder, IFullBuilder {
 			if (Preferences.shouldWriteXcodeProjOnBuild()) {
 				boolean exists = project.getFolder(project.getName() + ".xcodeproj").getFile("project.pbxproj").exists();
 				myXcodeProjProject = getXcodeProjProject(project, true);
-				fullRebuild |= !exists;
+				fullRebuild |= !exists || myProjectChanged;
+				if(fullRebuild) {
+					fullVisit(kind, args, monitor, project, buildCache);
+				}
 				//System.out.println("DotXcodeBuilder.buildStarted: xcodeproj exists = " + exists);
 			} else {
 				myXcodeProjProject = null;
@@ -157,6 +169,21 @@ public class DotXcodeBuilder implements IIncrementalBuilder, IFullBuilder {
 		myProjectChanged |= fullRebuild;
 		// System.out.println("DotXcodeBuilder.buildStarted: rebuild? " + fullRebuild);
 		return fullRebuild;
+	}
+
+	private void fullVisit(int kind, Map args, IProgressMonitor monitor, IProject project, Map buildCache) {
+		BuilderWrapper[] wrappers = new BuilderWrapper[1];
+		wrappers[0] = new BuilderWrapper(this, "DotXCode", "dontknow");
+		FullBuildDeltaVisitor fullBuildDeltaVisitor = new FullBuildDeltaVisitor(wrappers, monitor, buildCache);
+		fullBuildDeltaVisitor.buildStarted(project);
+		try {
+			project.accept(fullBuildDeltaVisitor);
+			buildPreparationDone(kind, args, monitor, project, buildCache);
+			fullBuildDeltaVisitor.visitingDone();
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public boolean buildPreparationDone(int kind, Map args, IProgressMonitor monitor, IProject project, Map buildCache) {
