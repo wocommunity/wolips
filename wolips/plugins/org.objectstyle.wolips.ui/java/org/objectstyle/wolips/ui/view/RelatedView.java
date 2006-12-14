@@ -55,6 +55,7 @@
  */
 package org.objectstyle.wolips.ui.view;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -62,11 +63,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceProxy;
+import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.JavaCore;
@@ -192,6 +198,33 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 				} catch (Exception e) {
 					UIPlugin.getDefault().log(e);
 				}
+			} else if(parent != null && parent instanceof IResource) {
+				try {
+					final IResource resource = (IResource)parent;
+					final List list = new ArrayList();
+					IContainer lproj = resource.getParent();
+					if(lproj.getFileExtension().equals("lproj")) {
+						IContainer p = lproj.getParent();
+						p.accept(new IResourceProxyVisitor() {
+
+							public boolean visit(IResourceProxy proxy) throws CoreException {
+								if(proxy.getName().endsWith(".lproj")) {
+									IContainer f = (IContainer) proxy.requestResource();
+									IResource m = f.findMember(resource.getName());
+									if(m != null) {
+										list.add(m);
+									}
+								}
+								return true;
+							}
+							
+						}, IContainer.DEPTH_ONE);
+						result.addAll(list);
+					}
+
+				} catch (Exception e) {
+					UIPlugin.getDefault().log(e);
+				}
 			}
 			lastParent = parent;
 			Object[] resultList = result.toArray();
@@ -270,7 +303,14 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 					if ("java".equalsIgnoreCase(ext)) {
 						text = "Java";
 					} else {
-						text = ext.toUpperCase();
+						if(!ext.matches("^wod|wo|woo|html|api$")) {
+							text = ext.toUpperCase();
+							if(resource.getParent().getFileExtension().equals("lproj")) {
+								text = resource.getParent().getName().replaceAll("\\.lproj", "");
+							}
+						} else {
+							text = ext.toUpperCase();
+						}
 					}
 					text += " (" + name + ")";
 					if ("eomodeld".equalsIgnoreCase(ext)) {
