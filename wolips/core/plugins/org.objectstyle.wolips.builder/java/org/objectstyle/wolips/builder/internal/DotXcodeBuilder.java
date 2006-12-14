@@ -155,7 +155,7 @@ public class DotXcodeBuilder implements IIncrementalBuilder, IFullBuilder {
 		// System.err.println("Started: " + kind + " " + project.getName() +
 		// "->" + myXcodeProjProject);
 		myProjectChanged |= fullRebuild;
-		//System.out.println("DotXcodeBuilder.buildStarted: rebuild? " + fullRebuild);
+		// System.out.println("DotXcodeBuilder.buildStarted: rebuild? " + fullRebuild);
 		return fullRebuild;
 	}
 
@@ -186,7 +186,7 @@ public class DotXcodeBuilder implements IIncrementalBuilder, IFullBuilder {
 	protected void writeXcodeProject(IProgressMonitor monitor, IProject project, PBXProject xcodeProject, String projectFolderName) throws CoreException {
 		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
 		List frameworkPaths = projectAdapter.getFrameworkPaths();
-		//System.out.println("DotXcodeBuilder.writeXcodeProject: Writing " + project.getName() + " " + xcodeProject);
+		System.out.println("DotXcodeBuilder.writeXcodeProject: Writing " + project.getName() + " " + xcodeProject);
 		Iterator frameworkPathsIter = frameworkPaths.iterator();
 		while (frameworkPathsIter.hasNext()) {
 			IPath frameworkPath = (IPath) frameworkPathsIter.next();
@@ -245,7 +245,7 @@ public class DotXcodeBuilder implements IIncrementalBuilder, IFullBuilder {
 	}
 
 	public void handleWoappResourcesDelta(IResourceDelta delta, IProgressMonitor monitor, Map buildCache) {
-		//System.out.println("DotXcodeBuilder.handleWoappResourcesDelta: " + delta);
+		// System.out.println("DotXcodeBuilder.handleWoappResourcesDelta: " + delta);
 		IResource resource = delta.getResource();
 		if (resource != null) {
 			if (delta.getKind() == IResourceDelta.ADDED) {
@@ -362,15 +362,17 @@ public class DotXcodeBuilder implements IIncrementalBuilder, IFullBuilder {
 	protected boolean shouldAddResource(IResource resource) {
 		boolean shouldAddResource = true;
 		if (resource instanceof IFolder) {
-			// PJYF May 21 2006 We need to exclude the temp wrappers
-			if (!resource.getName().endsWith("~")) {
-				shouldAddResource = false;
+			// PJYF/AK We need to exclude the temp wrappers
+			// AK: we only add folders if they are wrappers
+			shouldAddResource = false;
+			if (resource.getName().endsWith(".wo") || resource.getName().endsWith(".eomodeld")) {
+				shouldAddResource = true;
 			}
 		} else if (resource instanceof IFile) {
 			IContainer parent = resource.getParent();
 			if (parent != null) {
 				String parentName = parent.getName().toLowerCase();
-				// PJYF May 21 2006 We need to exclude the temp wrappers
+				// PJYF/AK We need to exclude the wrapper contents and temp folders
 				if (parentName.endsWith(".eomodeld") || parentName.endsWith(".wo") || parentName.endsWith("~")) {
 					shouldAddResource = false;
 				}
@@ -380,8 +382,8 @@ public class DotXcodeBuilder implements IIncrementalBuilder, IFullBuilder {
 	}
 
 	public void handleWoappResources(IResource resource, IProgressMonitor progressMonitor, Map buildCache) {
-		//System.out.println("DotXcodeBuilder.handleWoappResources: " + resource);
 		boolean shouldAddResource = shouldAddResource(resource);
+		// System.out.println("DotXcodeBuilder.handleWoappResources: " + resource + " " + shouldAddResource);
 		if (shouldAddResource) {
 			String resourcePath = resource.getLocation().toOSString();
 			if (resource instanceof IFolder) {
