@@ -305,7 +305,8 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 					} else {
 						if(!ext.matches("^wod|wo|woo|html|api$")) {
 							text = ext.toUpperCase();
-							if(resource.getParent().getFileExtension().equals("lproj")) {
+							if(resource.getParent() != null 
+									&& resource.getParent().getFileExtension().equals("lproj")) {
 								text = resource.getParent().getName().replaceAll("\\.lproj", "");
 							}
 						} else {
