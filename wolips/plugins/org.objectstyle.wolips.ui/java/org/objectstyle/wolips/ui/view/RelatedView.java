@@ -203,7 +203,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 					final IResource resource = (IResource)parent;
 					final List list = new ArrayList();
 					IContainer lproj = resource.getParent();
-					if(lproj.getFileExtension().equals("lproj")) {
+					if(lproj != null && lproj.getFileExtension().equals("lproj")) {
 						IContainer p = lproj.getParent();
 						p.accept(new IResourceProxyVisitor() {
 
