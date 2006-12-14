@@ -211,7 +211,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 		Combo entityCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
 		myEntityComboViewer = new ComboViewer(entityCombo);
 		myEntityComboViewer.setLabelProvider(new EOEntityLabelProvider());
-		myEntityComboViewer.setContentProvider(new EOEntityListContentProvider(false, true));
+		myEntityComboViewer.setContentProvider(new EOEntityListContentProvider(false, false));
 		GridData entityComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		entityCombo.setLayoutData(entityComboLayoutData);
 
