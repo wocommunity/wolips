@@ -218,15 +218,16 @@ public class EOModelGroup extends EOModelObject {
 		String modelName = name.substring(0, name.indexOf('.'));
 		EOModel model = getModelNamed(modelName);
 		if (model == null) {
-			model = new EOModel(modelName, project);
-			model._setModelGroup(this);
 			boolean reloadModel = true;
 			while (reloadModel) {
+				model = new EOModel(modelName, project);
+				model._setModelGroup(this);
 				try {
 					model.loadFromFolder(_folder, _failures);
 					addModel(model, _failures);
 					reloadModel = false;
 				} catch (DuplicateEntityNameException e) {
+					e.printStackTrace();
 					if (!_skipOnDuplicates) {
 						throw e;
 					}
