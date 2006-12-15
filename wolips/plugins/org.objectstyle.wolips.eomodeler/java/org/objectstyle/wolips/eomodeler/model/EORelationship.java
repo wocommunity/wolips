@@ -261,6 +261,24 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 		inverseRelationship._setEntity(myDestination);
 		return inverseRelationship;
 	}
+	
+	public void createForeignKeyAndJoin(String foreignKeyName, String foreignKeyColumnName) throws EOModelException {
+		EOJoin join = new EOJoin();
+		Set destinationPrimaryKeys = getDestination().getPrimaryKeyAttributes();
+		if (destinationPrimaryKeys.size() > 1) {
+			throw new EOModelException("Unable to autogenerate foreign key because " + getDestination().getName() + " has a compound primary key.");
+		}
+		EOAttribute destinationPrimaryKey = (EOAttribute)destinationPrimaryKeys.iterator().next();
+		EOAttribute sourceAttribute = destinationPrimaryKey.cloneAttribute();
+		sourceAttribute.setName(foreignKeyName);
+		sourceAttribute.setColumnName(foreignKeyColumnName);
+		sourceAttribute.setAllowsNull(Boolean.FALSE);
+		sourceAttribute.setPrimaryKey(Boolean.FALSE);
+		getEntity().addAttribute(sourceAttribute);
+		join.setSourceAttribute(sourceAttribute);
+		join.setDestinationAttribute(destinationPrimaryKey);
+		addJoin(join);
+	}
 
 	public boolean equals(Object _obj) {
 		boolean equals = false;
@@ -443,12 +461,14 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 	
 	public void setMandatoryIfNecessary() {
 		boolean mandatory = false;
-		Iterator joinsIter = getJoins().iterator();
-		while (!mandatory && joinsIter.hasNext()) {
-			EOJoin join = (EOJoin)joinsIter.next();
-			EOAttribute sourceAttribute = join.getSourceAttribute();
-			if (sourceAttribute != null) {
-				mandatory = sourceAttribute.isAllowsNull() == null || !sourceAttribute.isAllowsNull().booleanValue();
+		if (BooleanUtils.isTrue(isToOne())) {
+			Iterator joinsIter = getJoins().iterator();
+			while (!mandatory && joinsIter.hasNext()) {
+				EOJoin join = (EOJoin)joinsIter.next();
+				EOAttribute sourceAttribute = join.getSourceAttribute();
+				if (sourceAttribute != null) {
+					mandatory = sourceAttribute.isAllowsNull() == null || !sourceAttribute.isAllowsNull().booleanValue();
+				}
 			}
 		}
 		setMandatory(Boolean.valueOf(mandatory));
@@ -573,6 +593,17 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 		}
 	}
 
+	public void removeAllJoins() {
+		List oldJoins = myJoins;
+		List newJoins = new LinkedList();
+		myJoins = newJoins;
+		firePropertyChange(EORelationship.JOINS, oldJoins, newJoins);
+		Iterator joinsIter = oldJoins.iterator();
+		while (joinsIter.hasNext()) { 
+			EOJoin join = (EOJoin)joinsIter.next();
+			join._setRelationship(null);
+		}
+	}
 	public void removeJoin(EOJoin _join) {
 		List oldJoins = myJoins;
 		List newJoins = new LinkedList();

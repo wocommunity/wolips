@@ -129,7 +129,7 @@ public class SubclassEntityDialog extends Dialog {
 			myInheritanceType = (InheritanceType) ((IStructuredSelection) myInheritanceTypeViewer.getSelection()).getFirstElement();
 		}
 		if (myRestrictingQualifierText != null) {
-			if (myParentEntity != null && !BooleanUtils.isTrue(myParentEntity.isAbstractEntity())) {
+			if (myParentEntity != null && myInheritanceType == InheritanceType.SINGLE_TABLE) {
 				myRestrictingQualifierText.setEnabled(true);
 				myRestrictingQualifier = myRestrictingQualifierText.getText();
 			} else {

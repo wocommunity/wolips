@@ -215,6 +215,17 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		}
 		entity.setClassName(className);
 		addEntity(entity);
+
+		if (myModelGroup != null && myModelGroup.hasProjectWonder()) {
+			EOAttribute pk = new EOAttribute("id");
+			pk.setPrototype(getPrototypeAttributeNamed("id"));
+			pk.setColumnName("id");
+			pk.setPrimaryKey(Boolean.TRUE);
+			pk.setClassProperty(Boolean.FALSE);
+			pk.setUsedForLocking(Boolean.TRUE);
+			entity.addAttribute(pk);
+		}
+		
 		return entity;
 	}
 

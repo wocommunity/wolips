@@ -53,7 +53,6 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
@@ -99,22 +98,6 @@ public class NewRelationshipAction implements IWorkbenchWindowActionDelegate {
 			if (myEntity1 != null && myEntity2 != null) {
 				CreateRelationshipDialog dialog = new CreateRelationshipDialog(myWindow.getShell(), myEntity1, myEntity2);
 				int results = dialog.open();
-				if (results == Window.OK) {
-					if (dialog.isManyToMany()) {
-						myEntity1.joinInManyToManyWith(myEntity2, dialog.getName(), dialog.getInverseName(), dialog.getJoinEntityName(), dialog.shouldFlatten());
-					} else {
-						EORelationship relationship = dialog.getRelationship();
-						if (relationship != null) {
-							relationship.getEntity().addRelationship(relationship);
-							relationship.setMandatoryIfNecessary();
-						}
-						EORelationship inverseRelationship = dialog.getInverseRelationship();
-						if (inverseRelationship != null) {
-							inverseRelationship.getEntity().addRelationship(inverseRelationship);
-							inverseRelationship.setMandatoryIfNecessary();
-						}
-					}
-				}
 			} else if (myEntity1 != null) {
 				EORelationship newRelationship = myEntity1.addBlankRelationship(Messages.getString("EORelationship.newName"));
 			} else {

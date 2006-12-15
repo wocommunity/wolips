@@ -66,6 +66,10 @@ public class EOModelGroup extends EOModelObject {
 	public EOModelGroup() {
 		myModels = new HashSet();
 	}
+	
+	public boolean hasProjectWonder() {
+		return containsModelNamed("erprototypes");
+	}
 
 	public Set getReferenceFailures() {
 		return new HashSet();
