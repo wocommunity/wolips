@@ -49,8 +49,6 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.entity;
 
-import java.util.Set;
-
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -68,9 +66,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.editors.relationship.JoinsTableEditor;
-import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.model.EOJoin;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
@@ -118,22 +114,10 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 	private Font myTitleFont;
 
 	private boolean myManyToMany;
-
-	private boolean myFlatten;
 	
 	private boolean myCreateFK;
 	
-	private String myFKName;
-	
 	private boolean myCreateInverseFK;
-	
-	private String myInverseFKName;
-	
-	private String myJoinEntityName;
-
-	private String myName;
-
-	private String myInverseName;
 
 	public CreateRelationshipDialog(Shell _shell, EOEntity _entity1, EOEntity _entity2) {
 		super(_shell);
@@ -270,62 +254,34 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		return relationshipDialogArea;
 	}
 
-	public String getName() {
-		return myName;
-	}
-
-	public String getInverseName() {
-		return myInverseName;
-	}
-	
-	public String getJoinEntityName() {
-		return myJoinEntityName;
-	}
-	
-	public boolean shouldFlatten() {
-		return myFlatten;
-	}
-
-	public EORelationship getRelationship() {
-		return myRelationship;
-	}
-
-	public EORelationship getInverseRelationship() {
-		return myInverseRelationship;
-	}
-
-	public boolean isManyToMany() {
-		return myManyToMany;
-	}
-
 	protected void okPressed() {
 		try {
-			myName = myNameText.getText();
-			myInverseName = myInverseNameText.getText();
-			myFKName = myFKNameText.getText();
-			myInverseFKName = myInverseFKNameText.getText();
-			if (isManyToMany()) {
-				myJoinEntityName = myJoinEntityNameText.getText();
-				myFlatten = myFlattenButton.getSelection();
-				myEntity1.joinInManyToManyWith(myEntity2, myName, myInverseName, myJoinEntityName, myFlatten);
+			String name = myNameText.getText();
+			String inverseName = myInverseNameText.getText();
+			if (myManyToMany) {
+				String joinEntityName = myJoinEntityNameText.getText();
+				boolean flatten = myFlattenButton.getSelection();
+				myEntity1.joinInManyToManyWith(myEntity2, name, inverseName, joinEntityName, flatten);
 			}
 			else {
 				if (myCreateButton.getSelection()) {
-					myRelationship.setName(myName);
+					myRelationship.setName(name);
 					myRelationship.setToMany(Boolean.valueOf(myToManyButton.getSelection()));
 					if (myCreateFK) {
 						myRelationship.removeAllJoins();
 						if (myCreateFK) {
-							myRelationship.createForeignKeyAndJoin(myFKName, myFKName);
+							String fkName = myFKNameText.getText();
+							myRelationship.createForeignKeyAndJoin(fkName, fkName);
 						}
 					}
 					myRelationship.setMandatoryIfNecessary();
 					myRelationship.getEntity().addRelationship(myRelationship);
 				}
 				if (myCreateInverseButton.getSelection()) {
-					myInverseRelationship = myRelationship.createInverseRelationshipNamed(myInverseName, myInverseToManyButton.getSelection());
+					myInverseRelationship = myRelationship.createInverseRelationshipNamed(inverseName, myInverseToManyButton.getSelection());
 					if (myCreateInverseFK) {
-						myRelationship.createForeignKeyAndJoin(myInverseFKName, myInverseFKName);
+						String inverseFKName = myInverseFKNameText.getText();
+						myRelationship.createForeignKeyAndJoin(inverseFKName, inverseFKName);
 					}
 					myInverseRelationship.setMandatoryIfNecessary();
 					myInverseRelationship.getEntity().addRelationship(myInverseRelationship);
@@ -402,8 +358,6 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 			toManyChanged();
 		} else if (source == myInverseToManyButton) {
 			inverseToManyChanged();
-		} else if (source == myFlattenButton) {
-			myFlatten = myFlattenButton.getSelection();
 		} else if (source == myCreateFKButton) {
 			_checkManyToMany();
 		} else if (source == myCreateInverseFKButton) {
