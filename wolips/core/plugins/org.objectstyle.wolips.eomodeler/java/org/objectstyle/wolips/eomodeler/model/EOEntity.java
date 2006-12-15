@@ -50,6 +50,7 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -935,6 +936,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 			EOAttribute attribute = (EOAttribute) attributeIter.next();
 			attributeNames[attributeNum] = attribute.getName();
 		}
+		Arrays.sort(attributeNames);
 		return attributeNames;
 	}
 

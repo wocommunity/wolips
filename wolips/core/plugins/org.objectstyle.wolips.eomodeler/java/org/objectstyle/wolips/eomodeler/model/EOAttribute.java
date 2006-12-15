@@ -470,6 +470,7 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
 		myPrimaryKey = _primaryKey;
 		if (_fireEvents && BooleanUtils.isTrue(_primaryKey)) {
 			setAllowsNull(Boolean.FALSE, _fireEvents);
+			setClassProperty(Boolean.FALSE, _fireEvents);
 		}
 		if (_fireEvents) {
 			firePropertyChange(EOAttribute.PRIMARY_KEY, oldPrimaryKey, getPrimaryKey());

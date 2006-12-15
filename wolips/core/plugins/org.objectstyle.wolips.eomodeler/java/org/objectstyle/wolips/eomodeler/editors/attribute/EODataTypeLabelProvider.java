@@ -62,7 +62,7 @@ public class EODataTypeLabelProvider implements ILabelProvider {
 	public String getText(Object _element) {
 		EODataType dataType = (EODataType) _element;
 		StringBuffer displayNameBuffer = new StringBuffer();
-		String valueClass = dataType.getValueClass();
+		String valueClass = dataType.getJavaValueClass();
 		displayNameBuffer.append(dataType.getName());
 		if (valueClass != null) {
 			displayNameBuffer.append(" - ");
