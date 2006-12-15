@@ -300,6 +300,9 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 			myNameText.setText(newName);
 			myOriginalName = newName;
 		}
+		if (!myToManyButton.getSelection()) {
+			myInverseToManyButton.setSelection(true);
+		}
 		_checkManyToMany();
 	}
 
@@ -309,6 +312,9 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 			String newName = myRelationship.getDestination()._findUnusedRelationshipName(myRelationship.getEntity().getName(), myInverseToManyButton.getSelection());
 			myInverseNameText.setText(newName);
 			myOriginalInverseName = newName;
+		}
+		if (!myInverseToManyButton.getSelection()) {
+			myToManyButton.setSelection(true);
 		}
 		_checkManyToMany();
 	}
@@ -329,7 +335,7 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		myFKNameText.setEnabled(myCreateFK);
 		
 		boolean canCreateInverseFK = myCreateInverseButton.getSelection() && !myInverseToManyButton.getSelection();
-		myCreateInverseFK = canCreateFK && myCreateInverseFKButton.getSelection();
+		myCreateInverseFK = canCreateInverseFK && myCreateInverseFKButton.getSelection();
 		myCreateInverseFKButton.setEnabled(canCreateInverseFK);
 		myInverseFKNameText.setEnabled(myCreateInverseFK);
 		
