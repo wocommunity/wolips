@@ -51,10 +51,10 @@ package org.objectstyle.wolips.eomodeler.editors.relationship;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Arrays;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -74,6 +74,7 @@ import org.objectstyle.wolips.eomodeler.utils.AddRemoveButtonGroup;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
+import org.objectstyle.wolips.eomodeler.utils.TableRowDoubleClickHandler;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
 public class JoinsTableEditor extends Composite {
@@ -111,6 +112,7 @@ public class JoinsTableEditor extends Composite {
 		joinsTableLayoutData.heightHint = 100;
 		myJoinsTableViewer.getTable().setLayoutData(joinsTableLayoutData);
 		myJoinsTableViewer.addSelectionChangedListener(myButtonUpdateListener);
+		new DoubleClickNewJoinHandler(myJoinsTableViewer).attach();
 
 		myAddRemoveButtonGroup = new AddRemoveButtonGroup(this, new AddJoinHandler(), new RemoveJoinsHandler());
 	}
@@ -217,6 +219,20 @@ public class JoinsTableEditor extends Composite {
 		if (_newDestination != null) {
 			_newDestination.addPropertyChangeListener(EOEntity.ATTRIBUTE, myAttributesListener);
 			_newDestination.addPropertyChangeListener(EOEntity.ATTRIBUTES, myAttributesListener);
+		}
+	}
+
+	protected class DoubleClickNewJoinHandler extends TableRowDoubleClickHandler {
+		public DoubleClickNewJoinHandler(TableViewer _viewer) {
+			super(_viewer);
+		}
+
+		protected void emptyDoubleSelectionOccurred() {
+			JoinsTableEditor.this.addSelectedJoin();
+		}
+
+		protected void doubleSelectionOccurred(ISelection _selection) {
+			// DO NOTHING
 		}
 	}
 
