@@ -50,6 +50,8 @@
 package org.objectstyle.wolips.eogenerator.model;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
@@ -94,6 +96,11 @@ public class EOGenerateWorkspaceJob extends WorkspaceJob {
 					commandsList.add(tokenizer.nextToken());
 				}
 				String[] tokens = (String[]) commandsList.toArray(new String[commandsList.size()]);
+				if (!new File(eogenModel.getEOGeneratorPath(Preferences.getEOGeneratorPath())).exists()) {
+					output.append("You have either not set the path to your EOGenerator executable, or the current path is incorrect.");
+					myShowResults = true;
+					break;
+				}
 				IProject project = myEOGenFiles[eogenFileNum].getProject();
 				Process process = Runtime.getRuntime().exec(tokens, null, project.getLocation().toFile());
 
@@ -141,6 +148,7 @@ public class EOGenerateWorkspaceJob extends WorkspaceJob {
 				}
 			});
 		}
+		
 		return new Status(IStatus.OK, org.objectstyle.wolips.eogenerator.ui.Activator.PLUGIN_ID, IStatus.OK, "Done", null);
 	}
 }
