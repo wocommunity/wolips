@@ -255,6 +255,7 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 	}
 
 	protected void okPressed() {
+		buttonBar.forceFocus();
 		try {
 			String name = myNameText.getText();
 			String inverseName = myInverseNameText.getText();
