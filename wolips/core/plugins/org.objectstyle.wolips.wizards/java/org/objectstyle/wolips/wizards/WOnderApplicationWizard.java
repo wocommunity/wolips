@@ -66,6 +66,7 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.objectstyle.wolips.core.resources.internal.types.project.ProjectPatternsets;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
+import org.objectstyle.wolips.variables.VariablesPlugin;
 
 /**
  * @author mnolte
@@ -125,6 +126,10 @@ public class WOnderApplicationWizard extends AbstractProjectWizard {
 					WizardsPlugin.getDefault().log(e);
 					throw new InvocationTargetException(e);
 				}
+				String cptype = "";
+				if("true".equals(VariablesPlugin.getDefault().getProperty("wonder.useprojects"))) {
+					cptype = ".usingprojects";
+				}
 				templateEngine.getWolipsContext().setProjectName(projectName);
 				templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
 				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Main.html.vm", path + File.separator + "Components" + File.separator + "Main.wo", "Main.html", "Main.html"));
@@ -135,7 +140,7 @@ public class WOnderApplicationWizard extends AbstractProjectWizard {
 				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/DirectAction.java.vm", path + File.separator + "Sources", "DirectAction.java", "DirectAction.java"));
 				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Main.java.vm", path + File.separator + "Sources", "Main.java", "Main.java"));
 				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Session.java.vm", path + File.separator + "Sources", "Session.java", "Session.java"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/.classpath.vm", path, ".classpath", ".classpath"));
+				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/.classpath" + cptype + ".vm", path, ".classpath", ".classpath"));
 				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/.project.vm", path, ".project", ".project"));
 				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/build.xml.vm", path, "build.xml", "build.xml"));
 				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/build.properties.vm", path, "build.properties", "build.properties"));
