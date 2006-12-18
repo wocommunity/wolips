@@ -104,6 +104,8 @@ public abstract class WOTask extends Task {
 
 	protected Vector lib = new Vector();
 
+	protected boolean hasComponents = true;
+	
 	private SubtaskFactory subtaskFactory;
 
 	// this leaks
@@ -614,6 +616,14 @@ public abstract class WOTask extends Task {
 			}
 		}
 		return flattenfilesNames.iterator();
+	}
+
+	public boolean getHasComponents() {
+		return hasComponents;
+	}
+
+	public void setHasComponents(boolean value) {
+		hasComponents = value;
 	}
 
 }

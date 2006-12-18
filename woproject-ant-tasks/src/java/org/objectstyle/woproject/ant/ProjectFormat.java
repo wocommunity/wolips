@@ -285,8 +285,13 @@ public abstract class ProjectFormat {
 		filter.addFilter("JAR_NAME", getJarName());
 		filter.addFilter("JAR_ARRAY", libString(extLibs));
 		filter.addFilter("CUSTOM_CONTENT", getCustomInfoPListContent());
+		filter.addFilter("HAS_COMPONENTS", "<" + hasComponents() + "/>");
 
 		return new FilterSetCollection(filter);
+	}
+
+	private boolean hasComponents() {
+		return task.getHasComponents();
 	}
 
 	public void log(String msg) {
