@@ -53,20 +53,32 @@
 					<excludesfile name="${WOLipsContext.getAntFolderName()}/classes.exclude.patternset"/> 
 				</patternset>
    			</classes>
-   			<wsresources dir=".">
+   			<wsresources dir="WebServerResources">
       			<patternset>
-  					<includesfile name="${WOLipsContext.getAntFolderName()}/wsresources.include.patternset"/> 
-					<excludesfile name="${WOLipsContext.getAntFolderName()}/wsresources.exclude.patternset"/> 
+  					<include name="**/*"/> 
+					<exclude name="CVS"/> 
+					<exclude name=".svn"/> 
+					<excludesfile name="woproject/wsresources.exclude.patternset"/> 
 				</patternset>
 			</wsresources>
-   			<resources dir=".">
+   			<resources dir="Resources">
       			<patternset>
-  					<includesfile name="${WOLipsContext.getAntFolderName()}/resources.include.patternset"/> 
-					<excludesfile name="${WOLipsContext.getAntFolderName()}/resources.exclude.patternset"/> 
+  					<include name="**/*"/> 
+					<exclude name="CVS"/> 
+					<exclude name=".svn"/> 
+					<excludesfile name="woproject/resources.exclude.patternset"/> 
 				</patternset>
        		</resources>
-			<lib dir=".">
-				<include name="Add .jar's that should be copied in the framework."/>
+   			<resources dir="Components">
+      			<patternset>
+  					<include name="**/*"/> 
+					<exclude name="CVS"/> 
+					<exclude name=".svn"/> 
+					<excludesfile name="woproject/resources.exclude.patternset"/> 
+				</patternset>
+       		</resources>
+			<lib dir="Libraries">
+				<include name="*.jar"/>
 				<exclude name="**/*.framework/**"/>
 			</lib>
    		</woframework>
