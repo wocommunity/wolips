@@ -263,6 +263,32 @@ public class FrameworkSet extends FileSet {
 			return directories;
 		}
 
+
+        public synchronized String[] getIncludedFiles()
+        {
+            // The results of calling jarsPaths() on the FrameworkSet is a 
+            // fully qualified path.  This creates a problem as FileSet qualifies
+            // these file paths with the directory.  To accomodate this, we
+            // trim off the root dir.  This will be added back after getIncludedFiles()
+            // is called.  This (hack) was done instead of making a parallel 
+            // implementation of jarsPath() that returns a partial path.
+            String [] frameworkJars = jarsPath().list();
+            int dirLength = getDir(getProject()).toString().length();
+            for (int i = 0; i < frameworkJars.length; i++)
+            {
+                frameworkJars[i] = frameworkJars[i].substring(dirLength);
+            }
+
+            // The included files are both the normally included files as well as
+            // the jars in the frameworks
+            String[] files = super.getIncludedFiles();
+            String [] all = new String[files.length + frameworkJars.length];
+            System.arraycopy(files, 0, all, 0, files.length);
+            System.arraycopy(frameworkJars, 0, all, files.length, frameworkJars.length);
+
+            return all;
+        }
+        
 		public int compare(Object o1, Object o2) {
 			String frameworkDir1 = (String) o1;
 			String frameworkDir2 = (String) o2;
