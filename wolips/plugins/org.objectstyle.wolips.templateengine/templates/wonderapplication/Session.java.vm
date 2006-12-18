@@ -3,4 +3,6 @@
 import er.extensions.ERXSession;
 
 public class Session extends ERXSession {
+	public Session() {
+	}
 }

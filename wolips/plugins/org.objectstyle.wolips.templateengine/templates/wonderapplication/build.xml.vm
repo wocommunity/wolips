@@ -4,7 +4,7 @@
 	<!-- add optional targets to depends list if needed -->
 	<target name="build" depends="setProps,init.build,build.woapp,war,ssdd"/>
 
-  <target name="compileAndBuild" depends="setProps,init.build,compile,build.woapp,war,ssdd" />
+	<target name="compileAndBuild" depends="setProps,init.build,compile,build.woapp,war,ssdd" />
 
 	<target name="install" depends="setProps,init.install,build.woapp,war,ssdd"/>
 	
@@ -59,15 +59,21 @@
 					<excludesfile name="${WOLipsContext.getAntFolderName()}/classes.exclude.patternset"/> 
 				</patternset>
    			</classes>
-   			<wsresources dir=".">
+   			<wsresources dir="WebServerResources">
       			<patternset>
   					<includesfile name="${WOLipsContext.getAntFolderName()}/wsresources.include.patternset"/> 
 					<excludesfile name="${WOLipsContext.getAntFolderName()}/wsresources.exclude.patternset"/> 
 				</patternset>
 			</wsresources>
-   			<resources dir=".">
+   			<resources dir="Resources">
       			<patternset>
-  					<includesfile name="${WOLipsContext.getAntFolderName()}/resources.include.patternset"/> 
+  					<include name="${WOLipsContext.getAntFolderName()}/resources.include.patternset"/> 
+					<excludesfile name="${WOLipsContext.getAntFolderName()}/resources.exclude.patternset"/> 
+				</patternset>
+       		</resources>
+   			<resources dir="Components">
+      			<patternset>
+  					<include name="${WOLipsContext.getAntFolderName()}/resources.include.patternset"/> 
 					<excludesfile name="${WOLipsContext.getAntFolderName()}/resources.exclude.patternset"/> 
 				</patternset>
        		</resources>
@@ -92,7 +98,7 @@
 				</patternset>
 			</otherclasspath>
 			<lib dir=".">
-				<include name="Add .jar's that should be copied in the woa."/>
+				<include name="Libraries/*.jar"/>
 				<exclude name="**/*.woa/**"/>
 			</lib>
    		</woapplication>
