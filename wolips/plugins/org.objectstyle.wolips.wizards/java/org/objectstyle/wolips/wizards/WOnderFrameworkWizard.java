@@ -69,35 +69,24 @@ import org.objectstyle.wolips.templateengine.TemplateEngine;
 import org.objectstyle.wolips.variables.VariablesPlugin;
 
 /**
- * @author mnolte
- * @author uli
+ * @author ak
  */
-public class WOnderApplicationWizard extends AbstractProjectWizard {
+public class WOnderFrameworkWizard extends AbstractProjectWizard {
 
-	public WOnderApplicationWizard() {
+	public WOnderFrameworkWizard() {
 		super();
 	}
 
 	public String getWindowTitle() {
-		return Messages.getString("WOnderApplicationCreationWizard.title");
+		return Messages.getString("WOnderFrameworkCreationWizard.title");
 	}
 
-	protected String getTemplateFolder() {
-		return "wonderapplication";
-	}
-	
 	private class Operation extends WorkspaceModifyOperation {
 		IProject project = null;
 
-		private String templateFolder;
-
-		/**
-		 * @param project
-		 */
-		public Operation(IProject project, String templateFolder) {
+		public Operation(IProject project) {
 			super();
 			this.project = project;
-			this.templateFolder = templateFolder;
 		}
 
 		protected void execute(IProgressMonitor monitor) throws InvocationTargetException {
@@ -105,8 +94,6 @@ public class WOnderApplicationWizard extends AbstractProjectWizard {
 			String path = this.project.getLocation().toOSString();
 			NullProgressMonitor nullProgressMonitor = new NullProgressMonitor();
 			try {
-				File mainwo = new File(path + File.separator + "Components" + File.separator + "Main.wo");
-				mainwo.mkdirs();
 				File src = new File(path + File.separator + "Sources");
 				src.mkdirs();
 				File resources = new File(path + File.separator + "Resources");
@@ -132,20 +119,12 @@ public class WOnderApplicationWizard extends AbstractProjectWizard {
 				}
 				templateEngine.getWolipsContext().setProjectName(projectName);
 				templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/.classpath" + cptype + ".vm", path, ".classpath", ".classpath"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/.project.vm", path, ".project", ".project"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/build.xml.vm", path, "build.xml", "build.xml"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/build.properties.vm", path, "build.properties", "build.properties"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/CustomInfo.plist.vm", path, "CustomInfo.plist", "CustomInfo.plist"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Main.html.vm", path + File.separator + "Components" + File.separator + "Main.wo", "Main.html", "Main.html"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Main.wod.vm", path + File.separator + "Components" + File.separator + "Main.wo", "Main.wod", "Main.wod"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Main.woo.vm", path + File.separator + "Components" + File.separator + "Main.wo", "Main.woo", "Main.woo"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Main.api.vm", path + File.separator + "Components", "Main.api", "Main.api"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Application.java.vm", path + File.separator + "Sources", "Application.java", "Application.java"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/DirectAction.java.vm", path + File.separator + "Sources", "DirectAction.java", "DirectAction.java"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Main.java.vm", path + File.separator + "Sources", "Main.java", "Main.java"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Session.java.vm", path + File.separator + "Sources", "Session.java", "Session.java"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Properties.vm", path + File.separator + "Resources", "Properties", "Properties"));
+				templateEngine.addTemplate(new TemplateDefinition("wonderframework/.classpath" + cptype + ".vm", path, ".classpath", ".classpath"));
+				templateEngine.addTemplate(new TemplateDefinition("wonderframework/.project.vm", path, ".project", ".project"));
+				templateEngine.addTemplate(new TemplateDefinition("wonderframework/build.xml.vm", path, "build.xml", "build.xml"));
+				templateEngine.addTemplate(new TemplateDefinition("wonderframework/build.properties.vm", path, "build.properties", "build.properties"));
+				templateEngine.addTemplate(new TemplateDefinition("wonderframework/CustomInfo.plist.vm", path, "CustomInfo.plist", "CustomInfo.plist"));
+				templateEngine.addTemplate(new TemplateDefinition("wonderframework/Properties.vm", path + File.separator + "Resources", "Properties", "Properties"));
 				templateEngine.run(nullProgressMonitor);
 				this.project.refreshLocal(IResource.DEPTH_INFINITE, nullProgressMonitor);
 			} catch (Exception e) {
@@ -154,16 +133,11 @@ public class WOnderApplicationWizard extends AbstractProjectWizard {
 		}
 	}
 
-	/**
-	 * (non-Javadoc) Method declared on IWizard
-	 * 
-	 * @return
-	 */
 	public boolean performFinish() {
 		boolean success = super.performFinish();
 		if (success) {
 			IProject project = super.getNewProject();
-			Operation operation = new Operation(project, getTemplateFolder());
+			Operation operation = new Operation(project);
 			try {
 				operation.run(new NullProgressMonitor());
 			} catch (InvocationTargetException e) {
