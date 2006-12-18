@@ -83,9 +83,9 @@ public class WOApplication extends WOTask {
 
 	private final String[] stdFrameworkNames = new String[] { "JavaWebObjects", "JavaWOExtensions", "JavaEOAccess", "JavaEOControl", "JavaFoundation", "JavaJDBCAdaptor", "JavaXML" };
 
-	protected ArrayList frameworkSets = new ArrayList();
+	protected List frameworkSets = new ArrayList();
 
-	protected ArrayList otherClasspathSets = new ArrayList();
+	protected List otherClasspathSets = new ArrayList();
 
 	protected boolean stdFrameworks = true;
 
