@@ -9,7 +9,7 @@
 	<target name="install" depends="setProps,init.install,build.woframework"/>
 	    
 	<target name="clean" depends="setProps">
-	  	<delete dir="${framework.name}.framework"/>
+	  	<delete dir="dist"/>
 	</target>
 
 	<!-- property determination  -->
@@ -37,7 +37,7 @@
 	
 	<target name="init.build">
 		 <tstamp/>
-		<property name="dest.dir" value="."/>
+		<property name="dest.dir" value="dist"/>
 	</target>
 
 	<!-- woproject tasks -->
@@ -53,36 +53,36 @@
 					<excludesfile name="${WOLipsContext.getAntFolderName()}/classes.exclude.patternset"/> 
 				</patternset>
    			</classes>
-   			<wsresources dir=".">
+   			<wsresources dir="WebServerResources">
       			<patternset>
-  					<includesfile name="${WOLipsContext.getAntFolderName()}/wsresources.include.patternset"/> 
-					<excludesfile name="${WOLipsContext.getAntFolderName()}/wsresources.exclude.patternset"/> 
+  					<include name="**/*"/> 
+					<exclude name="CVS"/> 
+					<exclude name=".svn"/> 
+					<excludesfile name="woproject/wsresources.exclude.patternset"/> 
 				</patternset>
 			</wsresources>
-   			<resources dir=".">
+   			<resources dir="Resources">
       			<patternset>
-  					<includesfile name="${WOLipsContext.getAntFolderName()}/resources.include.patternset"/> 
-					<excludesfile name="${WOLipsContext.getAntFolderName()}/resources.exclude.patternset"/> 
+  					<include name="**/*"/> 
+					<exclude name="CVS"/> 
+					<exclude name=".svn"/> 
+					<excludesfile name="woproject/resources.exclude.patternset"/> 
+				</patternset>
+       		</resources>
+   			<resources dir="Components">
+      			<patternset>
+  					<include name="**/*"/> 
+					<exclude name="CVS"/> 
+					<exclude name=".svn"/> 
+					<excludesfile name="woproject/resources.exclude.patternset"/> 
 				</patternset>
        		</resources>
 			<lib dir=".">
-				<include name="Add .jar's that should be copied in the framework."/>
+				<include name=Libraries/*.jar"/>
 				<exclude name="**/*.framework/**"/>
 			</lib>
    		</woframework>
 	</target>
-		
-	<!-- optional targets -->
-	<!-- copy strings files -->	
-	<target name="copy.strings">
-   		 <copy todir="${dest.dir}/${framework.name}.framework/Resources">
-       		<fileset dir="." casesensitive="yes">
-				<include name="*.strings"/>
-        			<include name="**/*.strings"/>
-    			</fileset>
-         		<mapper type="flatten"/>
-     		</copy>
- 	</target>
 
   <target name = "compile" depends = "setProps,init.build" >
     <mkdir dir = "bin"/>
