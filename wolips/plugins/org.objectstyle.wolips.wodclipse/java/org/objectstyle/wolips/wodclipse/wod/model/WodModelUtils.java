@@ -230,7 +230,7 @@ public class WodModelUtils {
 							} else if (bindingValueKeyPath.isAmbiguous()) {
 								problems.add(new WodProblem(_wodModel, "Unable to verify key path '" + bindingValue + "' for " + javaFileType.getElementName(), (hasPositions) ? ((DocumentWodBinding) binding).getValuePosition() : null, true, bindingValueKeyPath.getRelatedToFileNames()));
 							}
-							String helperFunction = bindingValueKeyPath.getLastBindingKey().getHelperFunction();
+							String helperFunction = bindingValueKeyPath.getHelperFunction();
 							if (helperFunction != null) {
 								problems.add(new WodProblem(_wodModel, "Unable to verify helper function '" + helperFunction + "'", (hasPositions) ? ((DocumentWodBinding) binding).getValuePosition() : null, true, bindingValueKeyPath.getRelatedToFileNames()));
 							}

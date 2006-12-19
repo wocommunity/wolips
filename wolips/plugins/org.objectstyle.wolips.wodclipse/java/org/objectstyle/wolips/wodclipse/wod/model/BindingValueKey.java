@@ -18,13 +18,10 @@ public class BindingValueKey {
 
 	private IType _nextType;
 	
-	private String _helperFunction;
-
-	public BindingValueKey(String bindingName, IMember bindingMember, IJavaProject javaProject, String helperFunction) {
+	public BindingValueKey(String bindingName, IMember bindingMember, IJavaProject javaProject) {
 		_bindingName = bindingName;
 		_bindingMember = bindingMember;
 		_javaProject = javaProject;
-		_helperFunction = helperFunction;
 	}
 
 	public IType getDeclaringType() {
@@ -39,10 +36,6 @@ public class BindingValueKey {
 		return _bindingMember;
 	}
 	
-	public String getHelperFunction() {
-		return _helperFunction;
-	}
-
 	public String getNextTypeName() {
 		try {
 			String nextTypeName;

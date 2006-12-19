@@ -23,9 +23,20 @@ public class BindingValueKeyPath {
 	private boolean myValid;
 
 	private boolean myAmbiguous;
+	
+	private String myHelperFunction;
 
 	public BindingValueKeyPath(String _keyPath, IType _contextType, IJavaProject _javaProject) throws JavaModelException {
-		String[] bindingKeyNames = _keyPath.split("\\.");
+		String[] bindingKeyNames;
+		int pipeIndex = _keyPath.indexOf('|');
+		if (pipeIndex == -1) {
+			bindingKeyNames = _keyPath.split("\\.");
+		}
+		else {
+			bindingKeyNames = _keyPath.substring(0, pipeIndex).split("\\.");
+			myHelperFunction = _keyPath.substring(pipeIndex + 1);
+		}
+		
 		// Split tosses empty tokens, so we check to see if we're on the last
 		// "." and fake an empty token in the list
 		if (_keyPath.length() > 0 && _keyPath.charAt(_keyPath.length() - 1) == '.') {
@@ -66,6 +77,10 @@ public class BindingValueKeyPath {
 		}
 	}
 
+	public String getHelperFunction() {
+		return myHelperFunction;
+	}
+	
 	public boolean isAmbiguous() {
 		return myAmbiguous;
 	}
