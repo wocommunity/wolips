@@ -158,18 +158,7 @@
                 <include name="WOtaglib_1_0.tld"/> 
             </fileset> 
         </copy>    	 
-     </target> 
-   
-	<!-- copy strings files -->	
-	<target name="copy.strings">
-   		 <copy todir="${dest.dir}/${project.name}.woa/Contents/Resources">
-       			<fileset dir="." casesensitive="yes">
-				<include name="*.strings"/>
-        			<include name="**/*.strings"/>
-    			</fileset>
-         		<mapper type="flatten"/>
-     		</copy>
- 	</target>
+   </target> 
 
   <target name = "compile" depends = "setProps,init.build" >
     <mkdir dir = "bin"/>
