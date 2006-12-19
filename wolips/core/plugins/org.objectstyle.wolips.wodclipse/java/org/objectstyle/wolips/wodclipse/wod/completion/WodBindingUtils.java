@@ -108,13 +108,6 @@ public class WodBindingUtils {
 
 		String nameStartingWith = _nameStartingWith;
 		if (_type != null) {
-			String helperFunction = null;
-			int pipeIndex = nameStartingWith.indexOf('|');
-			if (pipeIndex != -1) {
-				helperFunction = nameStartingWith.substring(pipeIndex + 1);
-				nameStartingWith = nameStartingWith.substring(0, pipeIndex);
-			}
-
 			String lowercaseNameStartingWith = nameStartingWith.toLowerCase();
 			
 			ITypeHierarchy typeHierarchy;
@@ -130,7 +123,7 @@ public class WodBindingUtils {
 			for (int typeNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && typeNum < types.length; typeNum++) {
 				IField[] fields = types[typeNum].getFields();
 				for (int fieldNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && fieldNum < fields.length; fieldNum++) {
-					BindingValueKey bindingKey = WodBindingUtils.createBindingKeyIfMatches(_javaProject, fields[fieldNum], lowercaseNameStartingWith, _requireExactNameMatch, _accessorsOrMutators, helperFunction);
+					BindingValueKey bindingKey = WodBindingUtils.createBindingKeyIfMatches(_javaProject, fields[fieldNum], lowercaseNameStartingWith, _requireExactNameMatch, _accessorsOrMutators);
 					if (bindingKey != null) {
 						bindingKeys.add(bindingKey);
 					}
@@ -142,7 +135,7 @@ public class WodBindingUtils {
 				if (!_requireExactNameMatch || bindingKeys.size() == 0) {
 					IMethod[] methods = types[typeNum].getMethods();
 					for (int methodNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && methodNum < methods.length; methodNum++) {
-						BindingValueKey bindingKey = WodBindingUtils.createBindingKeyIfMatches(_javaProject, methods[methodNum], lowercaseNameStartingWith, _requireExactNameMatch, _accessorsOrMutators, helperFunction);
+						BindingValueKey bindingKey = WodBindingUtils.createBindingKeyIfMatches(_javaProject, methods[methodNum], lowercaseNameStartingWith, _requireExactNameMatch, _accessorsOrMutators);
 						if (bindingKey != null) {
 							bindingKeys.add(bindingKey);
 						}
@@ -157,7 +150,7 @@ public class WodBindingUtils {
 		return bindingKeys;
 	}
 
-	public static BindingValueKey createBindingKeyIfMatches(IJavaProject javaProject, IMember member, String nameStartingWith, boolean requireExactNameMatch, int accessorsOrMutators, String helperFunction) throws JavaModelException {
+	public static BindingValueKey createBindingKeyIfMatches(IJavaProject javaProject, IMember member, String nameStartingWith, boolean requireExactNameMatch, int accessorsOrMutators) throws JavaModelException {
 		BindingValueKey bindingKey = null;
 
 		int flags = member.getFlags();
@@ -201,7 +194,7 @@ public class WodBindingUtils {
 						if ((requireExactNameMatch && lowercaseMemberNameWithoutPrefix.equals(nameStartingWith)) || (!requireExactNameMatch && lowercaseMemberNameWithoutPrefix.startsWith(nameStartingWith))) {
 							String bindingName = WodBindingUtils.toLowercaseFirstLetter(memberName.substring(prefixLength));
 							if (nameStartingWith.length() > 0 || !bindingName.startsWith("_")) {
-								bindingKey = new BindingValueKey(bindingName, member, javaProject, helperFunction);
+								bindingKey = new BindingValueKey(bindingName, member, javaProject);
 							}
 						}
 					}
