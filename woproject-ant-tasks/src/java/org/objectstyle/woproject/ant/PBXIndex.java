@@ -82,20 +82,20 @@ public class PBXIndex extends Task {
 
 	protected SubtaskFactory subtaskFactory = new SubtaskFactory(this);
 
-	public void addSources(FileSet set) {
-		sources.addElement(set);
+	public void addSources(WOFileSet wofs) {
+            sources.addElement( wofs );
 	}
 
-	public void addResources(FileSet set) {
-		resources.addElement(set);
+	public void addResources(WOFileSet wofs) {
+            resources.addElement( wofs );
 	}
 
-	public void addWsResources(FileSet set) {
-		wsresources.addElement(set);
+	public void addWsResources(WOFileSet wofs) {
+            wsresources.addElement( wofs );
 	}
 
 	public void addFrameworks(FrameworkSet set) {
-		frameworkSets.addElement(set);
+            frameworkSets.addElement(set);
 	}
 
 	/**
@@ -150,58 +150,64 @@ public class PBXIndex extends Task {
 		// Add source file references.
 		it = sources.iterator();
 		while (it.hasNext()) {
-			FileSet fs = (FileSet) it.next();
-			dir = fs.getDir(getProject());
-			DirectoryScanner ds = fs.getDirectoryScanner(getProject());
-			ds.scan();
+                        WOFileSet wofs = (WOFileSet) it.next();
+                        if( wofs.testIfCondition() ){
+                            dir = wofs.getDir(getProject());
+                            DirectoryScanner ds = wofs.getDirectoryScanner(getProject());
+                            ds.scan();
 
-			String[] allFiles = ds.getIncludedFiles();
-			for (int i = 0; i < allFiles.length; i++) {
+                            String[] allFiles = ds.getIncludedFiles();
+                            for (int i = 0; i < allFiles.length; i++) {
 				proj.addSourceReference((new File(dir, fixPath(allFiles[i]))).getAbsolutePath());
-			}
+                            }
 
-			String[] allDirs = ds.getIncludedDirectories();
-			for (int i = 0; i < allDirs.length; i++) {
+                            String[] allDirs = ds.getIncludedDirectories();
+                            for (int i = 0; i < allDirs.length; i++) {
 				proj.addSourceReference((new File(dir, fixPath(allDirs[i]))).getAbsolutePath());
-			}
+                            }
+                        }
 		}
 
 		// Add Resources references.
 		it = resources.iterator();
 		while (it.hasNext()) {
-			FileSet fs = (FileSet) it.next();
-			dir = fs.getDir(getProject());
-			DirectoryScanner ds = fs.getDirectoryScanner(getProject());
-			ds.scan();
+			WOFileSet wofs = (WOFileSet) it.next();
+                        if( wofs.testIfCondition() ){
+                            dir = wofs.getDir(getProject());
+                            DirectoryScanner ds = wofs.getDirectoryScanner(getProject());
+                            ds.scan();
 
-			String[] allFiles = ds.getIncludedFiles();
-			for (int i = 0; i < allFiles.length; i++) {
+                            String[] allFiles = ds.getIncludedFiles();
+                            for (int i = 0; i < allFiles.length; i++) {
 				proj.addResourceFileReference((new File(dir, fixPath(allFiles[i]))).getAbsolutePath());
-			}
+                            }
 
-			String[] allDirs = ds.getIncludedDirectories();
-			for (int i = 0; i < allDirs.length; i++) {
+                            String[] allDirs = ds.getIncludedDirectories();
+                            for (int i = 0; i < allDirs.length; i++) {
 				proj.addResourceFolderReference((new File(dir, fixPath(allDirs[i]))).getAbsolutePath());
-			}
+                            }
+                        }
 		}
 
 		// Add WebServerResources references.
 		it = wsresources.iterator();
 		while (it.hasNext()) {
-			FileSet fs = (FileSet) it.next();
-			dir = fs.getDir(getProject());
-			DirectoryScanner ds = fs.getDirectoryScanner(getProject());
-			ds.scan();
+			WOFileSet wofs = (WOFileSet) it.next();
+                        if( wofs.testIfCondition() ){
+                            dir = wofs.getDir(getProject());
+                            DirectoryScanner ds = wofs.getDirectoryScanner(getProject());
+                            ds.scan();
 
-			String[] allFiles = ds.getIncludedFiles();
-			for (int i = 0; i < allFiles.length; i++) {
+                            String[] allFiles = ds.getIncludedFiles();
+                            for (int i = 0; i < allFiles.length; i++) {
 				proj.addWSResourceFileReference((new File(dir, fixPath(allFiles[i]))).getAbsolutePath());
-			}
+                            }
 
-			String[] allDirs = ds.getIncludedDirectories();
-			for (int i = 0; i < allDirs.length; i++) {
+                            String[] allDirs = ds.getIncludedDirectories();
+                            for (int i = 0; i < allDirs.length; i++) {
 				proj.addWSResourceFolderReference((new File(dir, fixPath(allDirs[i]))).getAbsolutePath());
-			}
+                            }
+                        }
 		}
 
 		// Add framework references.
