@@ -56,6 +56,7 @@
 package org.objectstyle.woproject.maven2;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.apache.maven.artifact.Artifact;
@@ -153,6 +154,24 @@ public class JApplicationMojo extends DependencyMojo {
 	 */
 	protected String version;
 
+	/**
+	 * An array of included artifact items used to filter the list of
+	 * dependencies. Pattern matching is done via a simple String.startsWith()
+	 * check on an artifact name in the form of groupid:artifactid:version.
+	 * 
+	 * @parameter
+	 */
+	protected ArrayList includes;
+
+	/**
+	 * An array of exlcuded artifact items used to filter the list of
+	 * dependencies. Pattern matching is done via a simple String.startsWith()
+	 * check on an artifact name in the form of groupid:artifactid:version.
+	 * 
+	 * @parameter
+	 */
+	protected ArrayList excludes;
+
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
 		if (getLog().isDebugEnabled()) {
@@ -164,6 +183,8 @@ public class JApplicationMojo extends DependencyMojo {
 			getLog().debug("parameter - icon: " + icon);
 			getLog().debug("parameter - jvm: " + jvm);
 			getLog().debug("parameter - jvmOptions: " + jvmOptions);
+			getLog().debug("parameter - includes: " + includes);
+			getLog().debug("parameter - excludes: " + excludes);
 		}
 
 		JApplication task = new JApplication();
@@ -181,6 +202,9 @@ public class JApplicationMojo extends DependencyMojo {
 		task.setJvmOptions(jvmOptions);
 		task.setVersion(version);
 
+		ArtifactMatchPattern includesMatcher = new ArtifactMatchPattern(includes);
+		ArtifactMatchPattern excludesMatcher = new ArtifactMatchPattern(excludes);
+
 		// TODO: andrus, 9/28/2006 - we are bundling all external dependencies
 		// and a current artifact. This will likely break if one of the
 		// dependencies is in the reactor... need to test (and fix) this case.
@@ -188,11 +212,11 @@ public class JApplicationMojo extends DependencyMojo {
 		Iterator it = getDependencies().iterator();
 		while (it.hasNext()) {
 			Artifact a = (Artifact) it.next();
-			addArtifact(task, a);
+			addArtifact(task, a, includesMatcher, excludesMatcher);
 		}
 
 		// add main project artifact
-		addArtifact(task, project.getArtifact());
+		addArtifact(task, project.getArtifact(), includesMatcher, excludesMatcher);
 
 		try {
 			task.execute();
@@ -201,12 +225,17 @@ public class JApplicationMojo extends DependencyMojo {
 		}
 	}
 
-	protected void addArtifact(JApplication task, Artifact artifact) {
+	protected void addArtifact(JApplication task, Artifact artifact, ArtifactMatchPattern includesMatcher, ArtifactMatchPattern excludesMatcher) {
 
-		getLog().debug("packaging artifact '" + artifact.getId() + "'...");
+		if (artifact != null && artifact.getFile() != null) {
+			if (includesMatcher.matchInclude(artifact) && !excludesMatcher.matchExclude(artifact)) {
 
-		FileSet fs = new FileSet();
-		fs.setFile(artifact.getFile());
-		task.addLib(fs);
+				getLog().debug("packaging artifact '" + artifact.getId() + "'...");
+
+				FileSet fs = new FileSet();
+				fs.setFile(artifact.getFile());
+				task.addLib(fs);
+			}
+		}
 	}
 }

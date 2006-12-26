@@ -55,80 +55,48 @@
  */
 package org.objectstyle.woproject.maven2;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.project.MavenProject;
 
-/**
- * @author andrus
- */
-// andrus, 9/28/2006: This is a clone of
-// org.codehaus.mojo.dependency.AbstractFromDependenciesMojo
-// from "maven-dependency-plugin". Inheriting from that class didn't
-// work, so I had to copy the class contents
-public abstract class DependencyMojo extends AbstractMojo {
+class ArtifactMatchPattern {
 
-	/**
-	 * Contains the full list of projects in the reactor.
-	 * 
-	 * @parameter expression="${reactorProjects}"
-	 * @required
-	 * @readonly
-	 */
-	private List reactorProjects;
+	private Collection strings;
 
-	/**
-	 * Creates a Map of artifacts within the reactor using the
-	 * groupId:artifactId:classifer:version as key
-	 * 
-	 * @return A HashMap of all artifacts available in the reactor
-	 */
-	protected Map getMappedReactorArtifacts() {
-		Map mappedReactorArtifacts = new HashMap();
-
-		for (Iterator i = reactorProjects.iterator(); i.hasNext();) {
-			MavenProject reactorProject = (MavenProject) i.next();
-
-			String key = reactorProject.getGroupId() + ":" + reactorProject.getArtifactId() + ":" + reactorProject.getVersion();
-
-			mappedReactorArtifacts.put(key, reactorProject.getArtifact());
-		}
-
-		return mappedReactorArtifacts;
+	ArtifactMatchPattern(Collection patterns) {
+		strings = (patterns != null) ? patterns : Collections.EMPTY_LIST;
 	}
 
-	/**
-	 * Retrieves all artifact dependencies within the reactor.
-	 * 
-	 * @return A set of artifacts that are the dependencies of a given root
-	 *         artifact.
-	 */
-	protected Set getDependencies() {
+	boolean matchInclude(Artifact artifact) {
+		if (strings.isEmpty()) {
+			return true;
+		}
 
-		Map reactorArtifacts = getMappedReactorArtifacts();
-		Map dependencies = new HashMap();
+		return match(artifact);
+	}
 
-		for (Iterator i = reactorProjects.iterator(); i.hasNext();) {
-			MavenProject reactorProject = (MavenProject) i.next();
+	boolean matchExclude(Artifact artifact) {
+		if (strings.isEmpty()) {
+			return false;
+		}
 
-			for (Iterator j = reactorProject.getArtifacts().iterator(); j.hasNext();) {
-				Artifact artifact = (Artifact) j.next();
+		return match(artifact);
+	}
 
-				String key = artifact.getId();
+	private boolean match(Artifact artifact) {
+		String key = artifact.getId();
 
-				if (!reactorArtifacts.containsKey(key) && !dependencies.containsKey(key)) {
-					dependencies.put(key, artifact);
-				}
+		Iterator it = strings.iterator();
+		while (it.hasNext()) {
+			String pattern = (String) it.next();
+			if (key.startsWith(pattern)) {
+
+				return true;
 			}
 		}
 
-		return new HashSet(dependencies.values());
+		return false;
 	}
 }
