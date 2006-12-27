@@ -261,24 +261,6 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 		inverseRelationship._setEntity(myDestination);
 		return inverseRelationship;
 	}
-	
-	public void createForeignKeyAndJoin(String foreignKeyName, String foreignKeyColumnName) throws EOModelException {
-		EOJoin join = new EOJoin();
-		Set destinationPrimaryKeys = getDestination().getPrimaryKeyAttributes();
-		if (destinationPrimaryKeys.size() > 1) {
-			throw new EOModelException("Unable to autogenerate foreign key because " + getDestination().getName() + " has a compound primary key.");
-		}
-		EOAttribute destinationPrimaryKey = (EOAttribute)destinationPrimaryKeys.iterator().next();
-		EOAttribute sourceAttribute = destinationPrimaryKey.cloneAttribute();
-		sourceAttribute.setName(foreignKeyName);
-		sourceAttribute.setColumnName(foreignKeyColumnName);
-		sourceAttribute.setAllowsNull(Boolean.FALSE);
-		sourceAttribute.setPrimaryKey(Boolean.FALSE);
-		getEntity().addAttribute(sourceAttribute);
-		join.setSourceAttribute(sourceAttribute);
-		join.setDestinationAttribute(destinationPrimaryKey);
-		addJoin(join);
-	}
 
 	public boolean equals(Object _obj) {
 		boolean equals = false;

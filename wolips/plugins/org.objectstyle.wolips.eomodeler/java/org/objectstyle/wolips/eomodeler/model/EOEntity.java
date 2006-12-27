@@ -305,8 +305,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 		String entity1ToManyName;
 		if (_flatten) {
 			entity1ToManyName = StringUtils.toPlural(StringUtils.toLowercaseFirstLetter(manyToManyEntity.getName()));
-		}
-		else {
+		} else {
 			entity1ToManyName = _relationshipName;
 		}
 		EORelationship entity1ToManyRelationship = entity1Relationship.createInverseRelationshipNamed(entity1ToManyName, true);
@@ -324,8 +323,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 		String entity2ToManyName;
 		if (_flatten) {
 			entity2ToManyName = StringUtils.toPlural(StringUtils.toLowercaseFirstLetter(manyToManyEntity.getName()));
-		}
-		else {
+		} else {
 			entity2ToManyName = _inverseRelationshipName;
 		}
 		EORelationship entity2ToManyRelationship = entity2Relationship.createInverseRelationshipNamed(entity2ToManyName, true);
@@ -343,6 +341,26 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 		getModel().addEntity(manyToManyEntity);
 
 		return manyToManyEntity;
+	}
+
+	public EOAttribute getSinglePrimaryKeyAttribute() throws EOModelException {
+		Set destinationPrimaryKeys = getPrimaryKeyAttributes();
+		if (destinationPrimaryKeys.size() > 1) {
+			throw new EOModelException(getName() + " has a compound primary key.");
+		}
+		EOAttribute primaryKey = (EOAttribute) destinationPrimaryKeys.iterator().next();
+		return primaryKey;
+	}
+	
+	public EOAttribute createForeignKeyTo(EOEntity foreignEntity, String foreignKeyName, String foreignKeyColumnName, boolean allowsNull) throws EOModelException {
+		EOAttribute foreignPrimaryKey  = foreignEntity.getSinglePrimaryKeyAttribute();
+		EOAttribute foreignKeyAttribute = foreignPrimaryKey.cloneAttribute();
+		foreignKeyAttribute.setName(foreignKeyName);
+		foreignKeyAttribute.setColumnName(foreignKeyColumnName);
+		foreignKeyAttribute.setAllowsNull(Boolean.valueOf(allowsNull));
+		foreignKeyAttribute.setPrimaryKey(Boolean.FALSE);
+		addAttribute(foreignKeyAttribute);
+		return foreignKeyAttribute;
 	}
 
 	public EORelationship createRelationshipTo(EOEntity _destinationEntity, boolean _toMany) {
@@ -842,28 +860,28 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 	public Boolean isAbstractEntity() {
 		return myAbstractEntity;
 	}
-	
+
 	public boolean isInherited() {
 		return getParent() != null;
 	}
-	
+
 	public boolean isSingleTableInheritance() {
 		return isInherited() && ComparisonUtils.equals(getExternalName(), getParent().getExternalName());
 	}
-	
+
 	public boolean isVerticalInheritance() {
 		boolean verticalInheritance = false;
 		if (isInherited() && !isSingleTableInheritance()) {
 			EOEntity parent = getParent();
 			Iterator relationshipsIter = getRelationships().iterator();
 			while (!verticalInheritance && relationshipsIter.hasNext()) {
-				EORelationship relationship = (EORelationship)relationshipsIter.next();
+				EORelationship relationship = (EORelationship) relationshipsIter.next();
 				verticalInheritance = ComparisonUtils.equals(relationship.getDestination(), parent) && !relationship.getClassProperty().booleanValue();
 			}
 		}
 		return verticalInheritance;
 	}
-	
+
 	public boolean isHorizontalInheritance() {
 		return isInherited() && !isSingleTableInheritance() && !isVerticalInheritance();
 	}
