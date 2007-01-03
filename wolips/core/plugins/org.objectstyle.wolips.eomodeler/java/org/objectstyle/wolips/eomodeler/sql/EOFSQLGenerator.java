@@ -396,6 +396,7 @@ public class EOFSQLGenerator {
 		fixDuplicateSingleTableInheritanceDropStatements(sf, flags, sqlBuffer);
 
 		String sql = sf.schemaCreationScriptForEntities(_entities, flags);
+		sql = sql.replaceAll("CREATE TABLE ([^\\s(]+)\\(", "CREATE TABLE $1 (");
 		sqlBuffer.append(sql);
 
 		callModelProcessorMethodIfExists("processSQL", new Object[] { sqlBuffer, _model, _entities, flags });
