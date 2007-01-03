@@ -509,7 +509,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		Iterator entitiesIter = myEntities.iterator();
 		while (matchingEntity == null && entitiesIter.hasNext()) {
 			EOEntity entity = (EOEntity) entitiesIter.next();
-			if (ComparisonUtils.equals(entity.getName(), _name)) {
+			if (ComparisonUtils.equalsIgnoreCase(entity.getName(), _name)) {
 				matchingEntity = entity;
 			}
 		}
