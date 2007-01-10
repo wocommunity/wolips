@@ -225,20 +225,27 @@ public class EOModelGroup extends EOModelObject {
 			boolean reloadModel = true;
 			while (reloadModel) {
 				model = new EOModel(modelName, project);
-				model._setModelGroup(this);
-				try {
-					model.loadFromFolder(_folder, _failures);
-					addModel(model, _failures);
+				File indexFile = model.getIndexFile();
+				if (!indexFile.exists()) {
 					reloadModel = false;
-				} catch (DuplicateEntityNameException e) {
-					e.printStackTrace();
-					if (!_skipOnDuplicates) {
-						throw e;
+					_failures.add(new EOModelVerificationFailure(model, "Skipping model because " + indexFile.getAbsolutePath() + " does not exist.", true));
+				}
+				else {
+					model._setModelGroup(this);
+					try {
+						model.loadFromFolder(_folder, _failures);
+						addModel(model, _failures);
+						reloadModel = false;
+					} catch (DuplicateEntityNameException e) {
+						e.printStackTrace();
+						if (!_skipOnDuplicates) {
+							throw e;
+						}
+						EOEntity existingEntity = e.getExistingEntity();
+						EOModel existingEntityModel = existingEntity.getModel();
+						_failures.add(new EOModelVerificationFailure(model, existingEntityModel.getName() + " and " + model.getName() + " both declare an entity named " + existingEntity.getName() + ", so " + existingEntityModel.getName() + " is being removed. You can create an EOModelGroup file to resolve this.", true, e));
+						removeModel(existingEntityModel, _failures);
 					}
-					EOEntity existingEntity = e.getExistingEntity();
-					EOModel existingEntityModel = existingEntity.getModel();
-					_failures.add(new EOModelVerificationFailure(model, existingEntityModel.getName() + " and " + model.getName() + " both declare an entity named " + existingEntity.getName() + ", so " + existingEntityModel.getName() + " is being removed. You can create an EOModelGroup file to resolve this.", true, e));
-					removeModel(existingEntityModel, _failures);
 				}
 			}
 		}
