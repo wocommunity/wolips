@@ -71,6 +71,8 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.PropertyHelper;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
+import org.apache.tools.ant.types.PatternSet;
+import org.apache.tools.ant.types.selectors.FilenameSelector;
 import org.apache.tools.ant.types.selectors.SelectorUtils;
 
 /**
@@ -85,7 +87,7 @@ public class FrameworkSet extends FileSet {
 	protected File deploymentDir;
 
 	protected String ifCondition = "";
-
+	
 	/**
 	 * Creates new FrameworkSet.
 	 */
@@ -106,6 +108,16 @@ public class FrameworkSet extends FileSet {
 		this.deploymentDir = root;
 	}
 
+	public void setBundles(String value) {
+		String bundles[] = value.split("/");
+		PatternSet ps =  createPatternSet();
+		for (int i = 0; i < bundles.length; i++) {
+			String bundle = bundles[i];
+			String name = "Library/Frameworks/" + bundle + ".framework";
+			ps.createInclude().setName(name);
+		}
+	}
+	
 	public File getDeployedFile(File file) {
 		File result = file;
 		if (this.deploymentDir != null && !getEmbed()) {
@@ -231,8 +243,9 @@ public class FrameworkSet extends FileSet {
 	 */
 	public DirectoryScanner getDirectoryScanner(Project p) {
 		DirectoryScanner ds = super.getDirectoryScanner(p);
-		if (isReference())
+		if (isReference()) {
 			return ds;
+		}
 		// Setup a new type for the directory scanner to avoid sorting included
 		// directories as set by:
 		// http://svn.apache.org/viewcvs.cgi?rev=274976&view=rev
