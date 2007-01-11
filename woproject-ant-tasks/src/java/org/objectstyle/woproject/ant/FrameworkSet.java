@@ -87,8 +87,6 @@ public class FrameworkSet extends FileSet {
 
 	protected String ifCondition = "";
 	
-	protected String bundlePrefix;
-	
 	/**
 	 * Creates new FrameworkSet.
 	 */
@@ -109,16 +107,11 @@ public class FrameworkSet extends FileSet {
 		this.deploymentDir = root;
 	}
 	
-	public void setBundlePrefix(String value) {
-		this.bundlePrefix = value;
-	}
-	
 	public void setBundles(String value) {
 		String bundles[] = value.split("/");
 		PatternSet ps =  createPatternSet();
-		String prefix = (bundlePrefix != null ? bundlePrefix + "/" : "");
 		for (int i = 0; i < bundles.length; i++) {
-			String framework = prefix + bundles[i] + ".framework";
+			String framework = bundles[i] + ".framework";
 			ps.createInclude().setName(framework);
 		}
 	}
