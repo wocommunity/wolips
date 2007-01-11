@@ -72,7 +72,6 @@ import org.apache.tools.ant.PropertyHelper;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.PatternSet;
-import org.apache.tools.ant.types.selectors.FilenameSelector;
 import org.apache.tools.ant.types.selectors.SelectorUtils;
 
 /**
@@ -87,6 +86,8 @@ public class FrameworkSet extends FileSet {
 	protected File deploymentDir;
 
 	protected String ifCondition = "";
+	
+	protected String bundlePrefix;
 	
 	/**
 	 * Creates new FrameworkSet.
@@ -107,14 +108,18 @@ public class FrameworkSet extends FileSet {
 	public void setDeploymentDir(File root) {
 		this.deploymentDir = root;
 	}
-
+	
+	public void setBundlePrefix(String value) {
+		this.bundlePrefix = value;
+	}
+	
 	public void setBundles(String value) {
 		String bundles[] = value.split("/");
 		PatternSet ps =  createPatternSet();
+		String prefix = (bundlePrefix != null ? bundlePrefix + "/" : "");
 		for (int i = 0; i < bundles.length; i++) {
-			String bundle = bundles[i];
-			String name = "Library/Frameworks/" + bundle + ".framework";
-			ps.createInclude().setName(name);
+			String framework = prefix + bundles[i] + ".framework";
+			ps.createInclude().setName(framework);
 		}
 	}
 	
