@@ -16,7 +16,7 @@ public class WOUnit extends JUnitTask {
 	}
 
 	public void execute() throws BuildException {
-		getCommandline().createClasspath(getProject()).createPath().add(FrameworkSet.jarsPathForFrameworkSets(getProject(), frameworkSets, false));
+		getCommandline().createClasspath(getProject()).createPath().add(FrameworkSet.jarsPathForFrameworkSets(getProject(), frameworkSets));
 		super.execute();
 	}
 

@@ -162,9 +162,9 @@ public class AppFormat extends ProjectFormat {
 			fs = new FileSet();
 			fs.setDir(getApplicatonTask().contentsDir());
 			includeJar = fs.createInclude();
-			includeJar.setName("**/Resources/Java/**/*.jar");
+			includeJar.setName("Resources/Java/**/*.jar");
 			includeZip = fs.createInclude();
-			includeZip.setName("**/Resources/Java/**/*.zip");
+			includeZip.setName("Resources/Java/**/*.zip");
 			ds = fs.getDirectoryScanner(task.getProject());
 			files = ds.getIncludedFiles();
 			buf = new StringBuffer();
@@ -194,15 +194,9 @@ public class AppFormat extends ProjectFormat {
 	 * need to be changed when creating files for multiple platforms.
 	 */
 	protected String buildFrameworkPaths() {
-		StringBuffer stringBuffer = new StringBuffer();
-		String[] jarPaths = FrameworkSet.jarsPathForFrameworkSets(task.getProject(), getApplicatonTask().getFrameworkSets(), true).list();
 		WOVariables variables = getApplicatonTask().getWOEnvironment().getWOVariables();
-		for (int jarPathIndex = 0; jarPathIndex < jarPaths.length; jarPathIndex++) {
-			String jarPath = jarPaths[jarPathIndex];
-			log(": Framework JAR " + jarPath, Project.MSG_VERBOSE);
-			stringBuffer.append(variables.encodePath(jarPath)).append("\r\n");
-		}
-		return stringBuffer.toString();
+		String result = FrameworkSet.jarsPathForFrameworkSets(task.getProject(), getApplicatonTask().getFrameworkSets(), variables);
+		return result;
 	}
 
 	/**

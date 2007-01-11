@@ -78,7 +78,7 @@ public class WOCompile extends Javac {
 	}
 
 	public void execute() throws BuildException {
-		setClasspath(FrameworkSet.jarsPathForFrameworkSets(getProject(), frameworkSets, false));
+		setClasspath(FrameworkSet.jarsPathForFrameworkSets(getProject(), frameworkSets));
 		if (dumpClasspath != null) {
 			getProject().setProperty(dumpClasspath, getClasspath().toString());
 		}

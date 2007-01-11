@@ -73,6 +73,7 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.PatternSet;
 import org.apache.tools.ant.types.selectors.SelectorUtils;
+import org.objectstyle.woenvironment.env.WOVariables;
 
 /**
  * A subclass of FileSet that with special support for matching WOFrameworks.
@@ -225,14 +226,33 @@ public class FrameworkSet extends FileSet {
 		return path;
 	}
 
-	public static Path jarsPathForFrameworkSets(Project project, Collection frameworkSets, boolean excludeEmbed) {
+	public static Path jarsPathForFrameworkSets(Project project, Collection frameworkSets) {
 		Path path = new Path(project);
 		for (Iterator frameworkSetIterator = frameworkSets.iterator(); frameworkSetIterator.hasNext();) {
 			FrameworkSet frameworkSet = (FrameworkSet) frameworkSetIterator.next();
-			if (!(excludeEmbed && frameworkSet.getEmbed()))
-				path.append(frameworkSet.jarsPath());
+			path.append(frameworkSet.jarsPath());
 		}
 		return path;
+	}
+
+	public static String jarsPathForFrameworkSets(Project project, Collection frameworkSets, WOVariables variables) {
+		StringBuffer path = new StringBuffer();
+		for (Iterator frameworkSetIterator = frameworkSets.iterator(); frameworkSetIterator.hasNext();) {
+			FrameworkSet frameworkSet = (FrameworkSet) frameworkSetIterator.next();
+			Path jarPath = frameworkSet.jarsPath();
+			String paths[] = jarPath.list();
+			for (int i = 0; i < paths.length; i++) {
+				String item = paths[i];
+				String encodedPath = variables.encodePath(item);
+				if (frameworkSet.getEmbed()) {
+					encodedPath = encodedPath.replaceFirst("\\w+ROOT", "APPROOT");
+				}
+				frameworkSet.log(": Framework JAR " + encodedPath, Project.MSG_VERBOSE);
+
+				path.append(encodedPath).append("\r\n");
+			}
+		}
+		return path.toString();
 	}
 
 	/**
