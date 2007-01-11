@@ -111,8 +111,11 @@ public class FrameworkSet extends FileSet {
 		String bundles[] = value.split("/");
 		PatternSet ps =  createPatternSet();
 		for (int i = 0; i < bundles.length; i++) {
-			String framework = bundles[i] + ".framework";
-			ps.createInclude().setName(framework);
+			String framework = bundles[i];
+			if(framework.trim().length() > 0) {
+				framework = framework + ".framework";
+				ps.createInclude().setName(framework);
+			}
 		}
 	}
 	
