@@ -245,7 +245,7 @@ public class FrameworkSet extends FileSet {
 				String item = paths[i];
 				String encodedPath = variables.encodePath(item);
 				if (frameworkSet.getEmbed()) {
-					encodedPath = encodedPath.replaceFirst("\\w+ROOT", "APPROOT");
+					encodedPath = encodedPath.replaceFirst(".*?(\\w+.framework)", "APPROOT/Frameworks/$1");
 				}
 				frameworkSet.log(": Framework JAR " + encodedPath, Project.MSG_VERBOSE);
 
