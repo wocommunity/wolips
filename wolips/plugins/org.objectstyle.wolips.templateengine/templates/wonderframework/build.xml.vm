@@ -77,8 +77,8 @@
 					<excludesfile name="woproject/resources.exclude.patternset"/> 
 				</patternset>
        		</resources>
-			<lib dir=".">
-				<include name=Libraries/*.jar"/>
+			<lib dir="Libraries">
+				<include name="*.jar"/>
 				<exclude name="**/*.framework/**"/>
 			</lib>
    		</woframework>
