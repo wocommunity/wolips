@@ -14,7 +14,9 @@ Require-Bundle: org.eclipse.jface.text,
  org.eclipse.wst.html.core,
  org.objectstyle.wolips.components,
  org.objectstyle.wolips.editors,
- org.objectstyle.wolips.baseforuiplugins
+ org.objectstyle.wolips.baseforuiplugins,
+ org.eclipse.wst.xml.ui,
+ org.eclipse.ui.workbench.texteditor
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.htmleditor,
  org.objectstyle.wolips.htmleditor.sse,
