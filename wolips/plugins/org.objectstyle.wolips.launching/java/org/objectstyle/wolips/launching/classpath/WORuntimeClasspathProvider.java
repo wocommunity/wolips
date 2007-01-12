@@ -151,6 +151,18 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 			}
 		}
 		result = (IRuntimeClasspathEntry[]) resolved.toArray(new IRuntimeClasspathEntry[resolved.size()]);
+		
+		//move ERExtensions to top of classpath
+		int offset = 0;
+		for (int i = 1; i < result.length; ++i) {
+			IRuntimeClasspathEntry runtimeClasspathEntry = result[i];
+			if(runtimeClasspathEntry.getLocation().indexOf("ERExtensions") >= 0) {
+				result[i] = result[offset];
+				result[offset] = runtimeClasspathEntry;
+				offset++;
+			}
+		}
+		
 		return result;
 	}
 
