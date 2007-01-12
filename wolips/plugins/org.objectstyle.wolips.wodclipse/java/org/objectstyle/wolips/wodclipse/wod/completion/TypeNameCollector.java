@@ -134,7 +134,7 @@ public class TypeNameCollector extends TypeNameRequestor {
 				}
 				if (typeMatches) {
 					ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(type);
-					if (typeHierarchy.contains(myWOElementType)) {
+					if (myWOElementType != null && typeHierarchy.contains(myWOElementType)) {
 						myTypeNames.add(className);
 						myTypeNameToPath.put(className, _path);
 						myTypeNameToType.put(className, type);
