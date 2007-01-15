@@ -12,6 +12,7 @@
 	<packaging>pom</packaging>
 	<name>WOProject All</name>
 
+
 	<description>Contains all WOProject projects.</description>
 
 	<url>http://objectstyle.org/woproject/</url>
