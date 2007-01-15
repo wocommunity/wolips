@@ -5,10 +5,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-
+  
 	<groupId>org.objectstyle.woproject</groupId>
 	<artifactId>woproject-all-parent</artifactId>
-	<version>2.0.0-$Revision$</version>
+	<version>2.1</version>
 	<packaging>pom</packaging>
 	<name>WOProject All</name>
 
@@ -57,98 +57,7 @@
 		<name>ObjectStyle Group</name>
 		<url>http://objectstyle.org/</url>
 	</organization>
-
-	<dependencyManagement>
-		<dependencies>
-
-			<!-- used for wo stuff -->
-			<dependency>
-				<groupId>webobjects.apple</groupId>
-				<artifactId>java-webobjects</artifactId>
-				<version>[5.2,]</version>
-			</dependency>
-			<dependency>
-				<groupId>webobjects.apple</groupId>
-				<artifactId>java-foundation</artifactId>
-				<version>[5.2,]</version>
-			</dependency>
-			<dependency>
-				<groupId>webobjects.apple</groupId>
-				<artifactId>java-eo-access</artifactId>
-				<version>[5.2,]</version>
-			</dependency>
-			<dependency>
-				<groupId>webobjects.apple</groupId>
-				<artifactId>java-eo-application</artifactId>
-				<version>[5.2,]</version>
-			</dependency>
-			<dependency>
-				<groupId>webobjects.apple</groupId>
-				<artifactId>java-eo-control</artifactId>
-				<version>[5.2,]</version>
-			</dependency>
-			<dependency>
-				<groupId>webobjects.apple</groupId>
-				<artifactId>java-xml</artifactId>
-				<version>[5.2,]</version>
-			</dependency>
-			<dependency>
-				<groupId>webobjects.apple</groupId>
-				<artifactId>java-wo-extensions</artifactId>
-				<version>[5.2,]</version>
-			</dependency>
-
-			<!-- used for property list parsing -->
-			<dependency>
-				<groupId>org.objectstyle.cayenne</groupId>
-				<artifactId>cayenne</artifactId>
-				<version>1.2M12</version>
-			</dependency>
-
-			<!-- required by cayenne -->
-			<dependency>
-				<groupId>foundrylogic.vpp</groupId>
-				<artifactId>vpp</artifactId>
-				<version>2.2.1</version>
-			</dependency>
-
-			<dependency>
-				<groupId>ant</groupId>
-				<artifactId>ant</artifactId>
-				<version>1.6.5</version>
-				<exclusions>
-					<exclusion>
-						<groupId>xerces</groupId>
-						<artifactId>xerces</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>xml-apis</groupId>
-						<artifactId>xml-apis</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-
-			<dependency>
-				<groupId>ant</groupId>
-				<artifactId>ant-junit</artifactId>
-				<version>1.6.5</version>
-			</dependency>
-
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>3.8.1</version>
-				<scope>test</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>1.2.13</version>
-				<scope>test</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+	
 	<repositories>
 		<repository>
 			<id>objectstyle</id>
@@ -184,6 +93,11 @@
 	</pluginRepositories>
 
 	<distributionManagement>
+		<repository>
+			<id>objectstyle</id>
+			<name>ObjectStyle Maven2 Repository</name>
+			<url>dav:https://objectstyle.org/maven2</url>
+		</repository>
 		<snapshotRepository>
 			<id>objectstyle</id>
 			<name>ObjectStyle Maven2 Repository</name>
