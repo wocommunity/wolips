@@ -225,6 +225,7 @@ public class EOModelGroup extends EOModelObject {
 			boolean reloadModel = true;
 			while (reloadModel) {
 				model = new EOModel(modelName, project);
+				model.setModelFolder(_folder);
 				File indexFile = model.getIndexFile();
 				if (!indexFile.exists()) {
 					reloadModel = false;

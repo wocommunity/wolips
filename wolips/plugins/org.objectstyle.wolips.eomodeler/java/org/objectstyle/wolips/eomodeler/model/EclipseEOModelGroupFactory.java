@@ -193,7 +193,8 @@ public class EclipseEOModelGroupFactory {
 				}
 				return visitChildren;
 			} catch (Exception e) {
-				throw new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, 0, "Failed to load model in " + _resource + ".", e));
+				e.printStackTrace();
+				throw new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, 0, "Failed to load model in " + _resource + ": " + e, e));
 			}
 		}
 	}
