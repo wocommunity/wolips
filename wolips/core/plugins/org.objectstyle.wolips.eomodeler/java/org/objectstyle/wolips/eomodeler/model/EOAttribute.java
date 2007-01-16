@@ -234,7 +234,7 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
 	}
 
 	public boolean isFlattened() {
-		return getDefinition() != null;
+		return StringUtils.isKeyPath(getDefinition());
 	}
 
 	public boolean isInherited() {

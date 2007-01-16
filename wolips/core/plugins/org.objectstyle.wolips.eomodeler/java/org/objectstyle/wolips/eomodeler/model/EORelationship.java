@@ -102,6 +102,8 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 	private String myName;
 
 	private String myDefinition;
+	
+	private EORelationshipPath myDefinitionPath;
 
 	private Boolean myMandatory;
 
@@ -336,7 +338,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 	}
 
 	public boolean isFlattened() {
-		return myDefinition != null;
+		return StringUtils.isKeyPath(myDefinition);
 	}
 
 	public boolean isInherited() {

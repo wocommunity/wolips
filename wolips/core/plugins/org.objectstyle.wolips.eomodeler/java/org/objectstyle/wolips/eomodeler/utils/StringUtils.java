@@ -135,4 +135,8 @@ public class StringUtils {
 		}
 		return plural;
 	}
+	
+	public static boolean isKeyPath(String str) {
+		return str != null && str.matches("^[^.][a-zA-Z0-9.]+$");
+	}
 }
