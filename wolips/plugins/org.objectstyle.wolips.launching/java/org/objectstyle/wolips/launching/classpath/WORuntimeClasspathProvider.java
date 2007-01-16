@@ -151,7 +151,8 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 			}
 		}
 		result = (IRuntimeClasspathEntry[]) resolved.toArray(new IRuntimeClasspathEntry[resolved.size()]);
-		
+		/* 
+		 * AK: this doesn't work this way
 		//move ERExtensions to top of classpath
 		int offset = 0;
 		for (int i = 1; i < result.length; ++i) {
@@ -162,7 +163,7 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 				offset++;
 			}
 		}
-		
+		*/
 		return result;
 	}
 
