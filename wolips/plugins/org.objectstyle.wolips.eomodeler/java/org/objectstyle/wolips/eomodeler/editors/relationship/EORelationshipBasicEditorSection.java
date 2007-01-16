@@ -266,7 +266,6 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 				myModelComboViewer.getCombo().setEnabled(enabled);
 				myEntityComboViewer.getCombo().setEnabled(enabled);
 				myJoinSemanticComboViewer.getCombo().setEnabled(enabled);
-				myDefinitionText.setEnabled(false);
 				// boolean flattened = myRelationship.isFlattened();
 				// myDefinitionLabel.setVisible(flattened);
 				// myDefinitionText.setVisible(flattened);
@@ -277,9 +276,11 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 	}
 
 	protected void updateModelAndEntityCombosEnabled() {
-		boolean enabled = myRelationship.getJoins().size() == 0 && !myRelationship.isFlattened();
+		boolean hasJoins = myRelationship.getJoins().size() != 0;
+		boolean enabled = !hasJoins && !myRelationship.isFlattened();
 		myModelComboViewer.getCombo().setEnabled(enabled);
 		myEntityComboViewer.getCombo().setEnabled(enabled);
+		myDefinitionText.setEnabled(!hasJoins);
 	}
 
 	protected void updateEntityCombo() {
