@@ -11,6 +11,7 @@
 
 	<groupId>org.objectstyle.woproject.maven2</groupId>
 	<artifactId>wolips</artifactId>
+	<version>SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>WOLips All</name>
 
@@ -22,34 +23,33 @@
 
 
 	<build>
-		<defaultGoal>package</defaultGoal>
 		<!--plugins>
-
+			
 			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<configuration>
-							<tasks>
-								<ant inheritAll="false" dir=".." target="dist.wolips.maven"/>
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>ant</groupId>
-						<artifactId>ant-optional</artifactId>
-						<version>1.5.2</version>
-					</dependency>
-				</dependencies>
+			<artifactId>maven-antrun-plugin</artifactId>
+			<executions>
+			<execution>
+			<phase>package</phase>
+			<configuration>
+			<tasks>
+			<ant inheritAll="false" dir=".." target="dist.wolips.maven"/>
+			</tasks>
+			</configuration>
+			<goals>
+			<goal>run</goal>
+			</goals>
+			</execution>
+			</executions>
+			<dependencies>
+			<dependency>
+			<groupId>ant</groupId>
+			<artifactId>ant-optional</artifactId>
+			<version>1.5.2</version>
+			</dependency>
+			</dependencies>
 			</plugin>
-
-		</plugins -->
+			
+			</plugins -->
 	</build>
 </project>
 
