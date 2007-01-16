@@ -8,6 +8,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>maven-wolifecycle-plugin</artifactId>
+	<version>SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 	<name>Maven WOLifecycle Plugin</name>
 
@@ -49,7 +50,6 @@
 
 
 	<build>
-		<defaultGoal>package</defaultGoal>
 		<plugins>
 			<plugin>
 				<artifactId>maven-plugin-plugin</artifactId>

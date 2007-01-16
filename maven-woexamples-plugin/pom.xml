@@ -8,6 +8,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>maven-woexamples-plugin</artifactId>
+	<version>SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 	<name>Maven WOExamples Plugin</name>
 
@@ -34,8 +35,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<defaultGoal>package</defaultGoal>
-	</build>
 </project>

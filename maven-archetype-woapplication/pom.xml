@@ -8,14 +8,9 @@
 		<version>SNAPSHOT</version>
 	</parent>
 
+	<groupId>org.objectstyle.woproject.maven2</groupId>
 	<artifactId>maven-archetype-woapplication</artifactId>
+	<version>SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 	<name>Maven WebObjects Application Archetype</name>
-
-	<dependencies>
-	</dependencies>
-
-	<build>
-		<defaultGoal>package</defaultGoal>
-	</build>
 </project>
