@@ -63,7 +63,7 @@ import junit.framework.TestCase;
 public class TestBulidWOExamplesMojo extends TestCase {
 
 	public void testParameter() throws Exception {
-		if(5==5) {
+		if (5 == 5) {
 			return;
 		}
 		BulidWOExamplesMojo mojo = new BulidWOExamplesMojo();
