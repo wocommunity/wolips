@@ -700,7 +700,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 			Iterator databaseConfigsIter = myDatabaseConfigs.iterator();
 			while (connectionDictionaryDatabaseConfig == null && databaseConfigsIter.hasNext()) {
 				EODatabaseConfig databaseConfig = (EODatabaseConfig)databaseConfigsIter.next();
-				if (tempConnectionDictionaryDatabaseConfig.isEquivalent(databaseConfig)) {
+				if (tempConnectionDictionaryDatabaseConfig.isEquivalent(databaseConfig, false)) {
 					connectionDictionaryDatabaseConfig = databaseConfig;
 				}
 			}
