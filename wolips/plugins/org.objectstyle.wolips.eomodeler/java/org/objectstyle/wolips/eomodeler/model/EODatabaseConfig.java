@@ -337,10 +337,11 @@ public class EODatabaseConfig extends EOModelObject {
 
 	public void setConnectionDictionary(Map _connectionDictionary, boolean _fireEvents) {
 		Map oldConnectionDictionary = myConnectionDictionary;
-		_connectionDictionary = (_connectionDictionary == null ? new HashMap() : _connectionDictionary);
-		Object password = _connectionDictionary.get(EODatabaseConfig.PASSWORD);
-		if (password != null && !(password instanceof String)) {
-			_connectionDictionary.put(EODatabaseConfig.PASSWORD, String.valueOf(password));
+		if (_connectionDictionary != null) {
+			Object password = _connectionDictionary.get(EODatabaseConfig.PASSWORD);
+			if (password != null && !(password instanceof String)) {
+				_connectionDictionary.put(EODatabaseConfig.PASSWORD, String.valueOf(password));
+			}
 		}
 		myConnectionDictionary = mapChanged(myConnectionDictionary, _connectionDictionary, myConnectionDictionaryRepeater, false);
 		if (_fireEvents) {
