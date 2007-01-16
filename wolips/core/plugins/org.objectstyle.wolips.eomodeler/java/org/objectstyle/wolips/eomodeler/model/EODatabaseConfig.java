@@ -96,45 +96,45 @@ public class EODatabaseConfig extends EOModelObject {
 		return (myName == null) ? super.hashCode() : myName.hashCode();
 	}
 
-	public boolean isEquivalent(EODatabaseConfig _config) {
+	public boolean isEquivalent(EODatabaseConfig config, boolean comparePrototypes) {
 		boolean equivalent = false;
-		if (_config != null) {
-			equivalent = (myConnectionDictionary != null && _config.myConnectionDictionary != null);
+		if (config != null) {
+			equivalent = (myConnectionDictionary != null && config.myConnectionDictionary != null);
 			if (equivalent) {
-				equivalent = ComparisonUtils.equals(myAdaptorName, _config.myAdaptorName);
+				equivalent = ComparisonUtils.equals(myAdaptorName, config.myAdaptorName);
 			}
 			if (equivalent) {
-				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("URL"), _config.myConnectionDictionary.get("URL"));
+				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("URL"), config.myConnectionDictionary.get("URL"));
 			}
 			if (equivalent) {
-				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("username"), _config.myConnectionDictionary.get("username"));
+				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("username"), config.myConnectionDictionary.get("username"));
 			}
 			if (equivalent) {
-				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("password"), _config.myConnectionDictionary.get("password"));
+				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("password"), config.myConnectionDictionary.get("password"));
 			}
 			if (equivalent) {
-				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("plugin"), _config.myConnectionDictionary.get("plugin"));
+				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("plugin"), config.myConnectionDictionary.get("plugin"));
 			}
 			if (equivalent) {
-				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("driver"), _config.myConnectionDictionary.get("driver"));
+				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("driver"), config.myConnectionDictionary.get("driver"));
 			}
 			if (equivalent) {
-				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("serverUrl"), _config.myConnectionDictionary.get("serverUrl"));
+				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("serverUrl"), config.myConnectionDictionary.get("serverUrl"));
 			}
 			if (equivalent) {
-				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("initialContextFactory"), _config.myConnectionDictionary.get("initialContextFactory"));
+				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("initialContextFactory"), config.myConnectionDictionary.get("initialContextFactory"));
 			}
 			if (equivalent) {
-				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("authenticationMethod"), _config.myConnectionDictionary.get("authenticationMethod"));
+				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("authenticationMethod"), config.myConnectionDictionary.get("authenticationMethod"));
 			}
 			if (equivalent) {
-				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("plugInClassName"), _config.myConnectionDictionary.get("plugInClassName"));
+				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("plugInClassName"), config.myConnectionDictionary.get("plugInClassName"));
 			}
 			if (equivalent) {
-				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("scope"), _config.myConnectionDictionary.get("scope"));
+				equivalent = ComparisonUtils.equals(myConnectionDictionary.get("scope"), config.myConnectionDictionary.get("scope"));
 			}
-			if (equivalent) {
-				equivalent = myPrototypeName == null || _config.myPrototypeName == null || myPrototypeName.length() == 0 || _config.myPrototypeName.length() == 0 || ComparisonUtils.equals(myPrototypeName, _config.myPrototypeName);
+			if (equivalent && comparePrototypes) {
+				equivalent = myPrototypeName == null || config.myPrototypeName == null || myPrototypeName.length() == 0 || config.myPrototypeName.length() == 0 || ComparisonUtils.equals(myPrototypeName, config.myPrototypeName);
 			}
 		}
 		return equivalent;
