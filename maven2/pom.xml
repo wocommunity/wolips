@@ -11,6 +11,7 @@
 
 	<groupId>org.objectstyle.woproject.maven2</groupId>
 	<artifactId>maven2</artifactId>
+	<version>SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Maven2 All</name>
 
@@ -27,10 +28,6 @@
 	</modules>
 
 	<inceptionYear>2001</inceptionYear>
-
-	<build>
-		<defaultGoal>package</defaultGoal>
-	</build>
 
 	<dependencyManagement>
 		<dependencies>

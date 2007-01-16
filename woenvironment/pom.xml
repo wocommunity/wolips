@@ -11,6 +11,7 @@
 
 	<groupId>org.objectstyle.woproject.ant</groupId>
 	<artifactId>woenvironment</artifactId>
+	<version>SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>WOEnvironment</name>
 
@@ -44,7 +45,6 @@
 
 
 	<build>
-		<defaultGoal>package</defaultGoal>
 		<sourceDirectory>src/java</sourceDirectory>
 	</build>
 
