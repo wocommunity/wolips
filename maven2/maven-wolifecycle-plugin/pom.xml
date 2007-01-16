@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>maven2</artifactId>
 		<groupId>org.objectstyle.woproject.maven2</groupId>
-		<version>2.1</version>
+		<version>SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
