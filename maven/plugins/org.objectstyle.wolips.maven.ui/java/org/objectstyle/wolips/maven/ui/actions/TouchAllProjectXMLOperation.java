@@ -81,6 +81,10 @@ public class TouchAllProjectXMLOperation extends WorkspaceModifyOperation {
 			if (projectXML != null && projectXML.isAccessible() && projectXML.exists()) {
 				projectXML.touch(monitor);
 			}
+			IFile pomXML = project.getFile("pom.xml");
+			if (pomXML != null && pomXML.isAccessible() && pomXML.exists()) {
+				pomXML.touch(monitor);
+			}
 		}
 	}
 }
