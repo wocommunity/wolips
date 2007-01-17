@@ -18,7 +18,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 
-import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
@@ -252,13 +252,13 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 			ArrayList artfactNameEntriesArray = new ArrayList();
 			Iterator dependenciesIterator = artifacts.iterator();
 			while (dependenciesIterator.hasNext()) {
-				DefaultArtifact defaultArtifact = (DefaultArtifact) dependenciesIterator.next();
-				String depenendencyGroup = defaultArtifact.getGroupId();
+				Artifact artifact = (Artifact) dependenciesIterator.next();
+				String depenendencyGroup = artifact.getGroupId();
 				if (depenendencyGroup != null) {
 					depenendencyGroup = depenendencyGroup.replace('.', File.separatorChar);
 				}
-				String depenendencyArtifact = defaultArtifact.getArtifactId();
-				String depenendencyVersion = defaultArtifact.getVersion();
+				String depenendencyArtifact = artifact.getArtifactId();
+				String depenendencyVersion = artifact.getVersion();
 				String dependencyPath = depenendencyGroup + File.separator + depenendencyArtifact + File.separator + depenendencyVersion + File.separator + depenendencyArtifact + "-" + depenendencyVersion + ".jar";
 				classPathEntriesArray.add(dependencyPath);
 				artfactNameEntriesArray.add(depenendencyArtifact);
