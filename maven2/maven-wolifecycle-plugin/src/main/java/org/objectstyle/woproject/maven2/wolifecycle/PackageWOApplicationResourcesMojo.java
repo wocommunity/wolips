@@ -34,7 +34,7 @@ public class PackageWOApplicationResourcesMojo extends PackageMojo {
 	 * @readonly
 	 */
 	private ArtifactFactory artifactFactory;
-
+	
 	public PackageWOApplicationResourcesMojo() {
 		super();
 	}
@@ -55,7 +55,7 @@ public class PackageWOApplicationResourcesMojo extends PackageMojo {
 		return this.getProjectFolder() + "target" + File.separator + this.getProject().getArtifactId() + "-" + this.getProject().getVersion() + ".woapplication.tar.gz";
 	}
 
-	private String getWOWeberverResourcesArtifactFileName() {
+	private String getWOWebServerResourcesArtifactFileName() {
 		return this.getProjectFolder() + "target" + File.separator + this.getProject().getArtifactId() + "-" + this.getProject().getVersion() + ".wowebserverresources.tar.gz";
 	}
 
@@ -68,8 +68,8 @@ public class PackageWOApplicationResourcesMojo extends PackageMojo {
 		project.addAttachedArtifact(artifact);
 
 		artifact = artifactFactory.createBuildArtifact(project.getGroupId(), project.getArtifactId(), project.getVersion(), "wowebserverresources.tar.gz");
-		artifact.setFile(new File(this.getWOWeberverResourcesArtifactFileName()));
-		getLog().info("Attaching artifact: " + this.getWOWeberverResourcesArtifactFileName());
+		artifact.setFile(new File(this.getWOWebServerResourcesArtifactFileName()));
+		getLog().info("Attaching artifact: " + this.getWOWebServerResourcesArtifactFileName());
 		project.addAttachedArtifact(artifact);
 	}
 }
