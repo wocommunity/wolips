@@ -90,6 +90,13 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 
 	private String[][] dependencyPaths;
 
+	/**
+	 * Read patternsets.
+	 * 
+	 * @parameter expression="includeJavaClientClassesInWebServerResources"
+	 */
+	private Boolean includeJavaClientClassesInWebServerResources;
+
 	public DefineWOApplicationResourcesMojo() {
 		super();
 	}
@@ -142,6 +149,13 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 		// getLog().info("Copy webserverresources: jarFileName " + jarFileName +
 		// " destinationFolder " + destinationFolder);
 		String name = jarEntry.getName();
+		if (this.includeJavaClientClassesInWebServerResources == null || this.includeJavaClientClassesInWebServerResources.booleanValue() == false) {
+
+			String prefix = "WebServerResources/Java";
+			if (name.startsWith(prefix)) {
+				return;
+			}
+		}
 		String destinationFolderWithPathFromJarEntry = destinationFolder + File.separator + name.substring(0, name.lastIndexOf('/'));
 		String destinationName = name.substring(name.lastIndexOf('/') + 1);
 		// getLog().info("Copy webserverresources:
@@ -259,7 +273,11 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 				}
 				String depenendencyArtifact = artifact.getArtifactId();
 				String depenendencyVersion = artifact.getVersion();
-				String dependencyPath = depenendencyGroup + File.separator + depenendencyArtifact + File.separator + depenendencyVersion + File.separator + depenendencyArtifact + "-" + depenendencyVersion + ".jar";
+				String depenendencyBaseVersion = artifact.getBaseVersion();
+				if (artifact.isSnapshot()) {
+					depenendencyBaseVersion = depenendencyBaseVersion.substring(0, depenendencyBaseVersion.indexOf('-') + 1) + "SNAPSHOT";
+				}
+				String dependencyPath = depenendencyGroup + File.separator + depenendencyArtifact + File.separator + depenendencyBaseVersion + File.separator + depenendencyArtifact + "-" + depenendencyVersion + ".jar";
 				classPathEntriesArray.add(dependencyPath);
 				artfactNameEntriesArray.add(depenendencyArtifact);
 			}
