@@ -137,6 +137,6 @@ public class StringUtils {
 	}
 	
 	public static boolean isKeyPath(String str) {
-		r$eturn str != null && str.matches("^[^.][a-zA-Z0-9_.]+$");
+		return str != null && str.matches("^[^.][a-zA-Z0-9_.]+$");
 	}
 }
