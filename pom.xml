@@ -15,10 +15,22 @@
 		<dependency>
 			<groupId>org.objectstyle.woproject.ant</groupId>
 			<artifactId>woenvironment</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>webobjects.apple</groupId>
+					<artifactId>java-foundation</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.objectstyle.woproject.ant</groupId>
 			<artifactId>woproject-ant-tasks</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>webobjects.apple</groupId>
+					<artifactId>java-foundation</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
@@ -46,7 +58,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
 
 	<build>
 		<plugins>
