@@ -3,6 +3,7 @@ package org.objectstyle.wolips.wodclipse.wod.model;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
@@ -25,55 +26,77 @@ public class BindingValueKeyPath {
 	private boolean myAmbiguous;
 	
 	private String myHelperFunction;
+	
+	private Map myTypeContextCache;
 
-	public BindingValueKeyPath(String _keyPath, IType _contextType, IJavaProject _javaProject) throws JavaModelException {
-		String[] bindingKeyNames;
-		int pipeIndex = _keyPath.indexOf('|');
-		if (pipeIndex == -1) {
-			bindingKeyNames = _keyPath.split("\\.");
-		}
-		else {
-			bindingKeyNames = _keyPath.substring(0, pipeIndex).split("\\.");
-			myHelperFunction = _keyPath.substring(pipeIndex + 1);
-		}
-		
-		// Split tosses empty tokens, so we check to see if we're on the last
-		// "." and fake an empty token in the list
-		if (_keyPath.length() > 0 && _keyPath.charAt(_keyPath.length() - 1) == '.') {
-			String[] bindingKeyNamesWithFinalBlank = new String[bindingKeyNames.length + 1];
-			System.arraycopy(bindingKeyNames, 0, bindingKeyNamesWithFinalBlank, 0, bindingKeyNames.length);
-			bindingKeyNamesWithFinalBlank[bindingKeyNamesWithFinalBlank.length - 1] = "";
-			myBindingKeyNames = bindingKeyNamesWithFinalBlank;
-		} else {
-			myBindingKeyNames = bindingKeyNames;
-		}
-
+	public BindingValueKeyPath(String _keyPath, IType _contextType, IJavaProject _javaProject, Map _typeContextCache) throws JavaModelException {
+		myTypeContextCache = _typeContextCache;
 		myJavaProject = _javaProject;
 		myContextType = _contextType;
-
 		myValid = true;
-		IType currentType = _contextType;
-		List bindingKeysList = new LinkedList();
-		for (int i = 0; currentType != null && i < myBindingKeyNames.length; i++) {
-			if (myBindingKeyNames[i].startsWith("@") || myBindingKeyNames[i].startsWith("|")) {
-				myAmbiguous = true;
-				currentType = null;
-			} else {
-				List bindingKeys = WodBindingUtils.createMatchingBindingKeys(_javaProject, currentType, myBindingKeyNames[i], true, WodBindingUtils.ACCESSORS_OR_VOID);
-				if (!bindingKeys.isEmpty()) {
-					// NTS: Deal with multiple matches ...
-					BindingValueKey bindingKey = (BindingValueKey) bindingKeys.get(0);
-					bindingKeysList.add(bindingKey);
-					currentType = bindingKey.getNextType();
-				} else {
-					myValid = false;
-				}
+		
+		boolean isKeyPath = true;
+		// short-circuit for booleans
+		if ("true".equalsIgnoreCase(_keyPath) || "false".equalsIgnoreCase(_keyPath) || "yes".equalsIgnoreCase(_keyPath) || "no".equalsIgnoreCase(_keyPath)) {
+			isKeyPath = false;
+		}
+		else if (_keyPath.length() > 0) {
+			char ch = _keyPath.charAt(0);
+			// short-circuit for quoted strings
+			if (ch == '\"' || ch == '\'') {
+				isKeyPath = false;
+			}
+			// short-circuit for numbers
+			else if (Character.isDigit(ch)) {
+				isKeyPath = false;
 			}
 		}
-		myBindingKeys = (BindingValueKey[]) bindingKeysList.toArray(new BindingValueKey[bindingKeysList.size()]);
-
-		if (!myValid) {
-			myValid = myBindingKeyNames.length == 1 && "true".equalsIgnoreCase(myBindingKeyNames[0]) || "false".equalsIgnoreCase(myBindingKeyNames[0]) || "yes".equalsIgnoreCase(myBindingKeyNames[0]) || "no".equalsIgnoreCase(myBindingKeyNames[0]);
+		
+		if (isKeyPath) {
+			String[] bindingKeyNames;
+			int pipeIndex = _keyPath.indexOf('|');
+			if (pipeIndex == -1) {
+				bindingKeyNames = _keyPath.split("\\.");
+			}
+			else {
+				bindingKeyNames = _keyPath.substring(0, pipeIndex).split("\\.");
+				myHelperFunction = _keyPath.substring(pipeIndex + 1);
+			}
+			
+			// Split tosses empty tokens, so we check to see if we're on the last
+			// "." and fake an empty token in the list
+			if (_keyPath.length() > 0 && _keyPath.charAt(_keyPath.length() - 1) == '.') {
+				String[] bindingKeyNamesWithFinalBlank = new String[bindingKeyNames.length + 1];
+				System.arraycopy(bindingKeyNames, 0, bindingKeyNamesWithFinalBlank, 0, bindingKeyNames.length);
+				bindingKeyNamesWithFinalBlank[bindingKeyNamesWithFinalBlank.length - 1] = "";
+				myBindingKeyNames = bindingKeyNamesWithFinalBlank;
+			} else {
+				myBindingKeyNames = bindingKeyNames;
+			}
+	
+			IType currentType = _contextType;
+			List bindingKeysList = new LinkedList();
+			for (int i = 0; currentType != null && i < myBindingKeyNames.length; i++) {
+				if (myBindingKeyNames[i].startsWith("@") || myBindingKeyNames[i].startsWith("|")) {
+					myAmbiguous = true;
+					currentType = null;
+				} else {
+					List bindingKeys = WodBindingUtils.createMatchingBindingKeys(_javaProject, currentType, myBindingKeyNames[i], true, WodBindingUtils.ACCESSORS_OR_VOID, myTypeContextCache);
+					if (!bindingKeys.isEmpty()) {
+						// NTS: Deal with multiple matches ...
+						BindingValueKey bindingKey = (BindingValueKey) bindingKeys.get(0);
+						bindingKeysList.add(bindingKey);
+						currentType = bindingKey.getNextType();
+					} else {
+						myValid = false;
+					}
+				}
+			}
+			myBindingKeys = (BindingValueKey[]) bindingKeysList.toArray(new BindingValueKey[bindingKeysList.size()]);
+	
+			if (!myValid) {
+				myValid = myBindingKeyNames.length == 1;
+			}
 		}
 	}
 
@@ -128,7 +151,7 @@ public class BindingValueKeyPath {
 			// completion
 			// proposals based on the partial token
 			String bindingKeyName = getLastBindingKeyName();
-			bindingKeysList = WodBindingUtils.createMatchingBindingKeys(myJavaProject, lastType, bindingKeyName, false, WodBindingUtils.ACCESSORS_ONLY);
+			bindingKeysList = WodBindingUtils.createMatchingBindingKeys(myJavaProject, lastType, bindingKeyName, false, WodBindingUtils.ACCESSORS_ONLY, myTypeContextCache);
 		} else {
 			bindingKeysList = null;
 		}

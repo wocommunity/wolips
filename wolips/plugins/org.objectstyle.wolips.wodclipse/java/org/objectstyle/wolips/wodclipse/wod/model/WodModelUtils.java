@@ -91,7 +91,7 @@ public class WodModelUtils {
 		patterns.append("<wo:([^>/\\s]+)\\s*/{0,1}\\s*>");
 		WodModelUtils.WEBOBJECTS_PATTERN = Pattern.compile(patterns.toString(), Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 	}
-
+	
 	public static IWodModel createWodModel(IFile _wodFile, IDocument _wodDocument) {
 		return new DocumentWodModel(_wodFile, _wodDocument);
 	}
@@ -130,7 +130,8 @@ public class WodModelUtils {
 		pw.flush();
 	}
 
-	public static List getSemanticProblems(IWodModel _wodModel, LocalizedComponentsLocateResult _locateResults, IJavaProject _javaProject, Map _elementNameToTypeCache, Map _typeToApiModelWoCache) throws CoreException {
+	public static List getSemanticProblems(IWodModel _wodModel, LocalizedComponentsLocateResult _locateResults, IJavaProject _javaProject, Map _elementNameToTypeCache, Map _typeToApiModelWoCache, Map _typeContextCache) throws CoreException {
+		long a = System.currentTimeMillis();
 		boolean hasPositions = (_wodModel instanceof DocumentWodModel);
 		boolean checkBindingValues = WodclipsePlugin.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.CHECK_BINDING_VALUES);
 
@@ -222,7 +223,7 @@ public class WodModelUtils {
 						IWodBinding binding = (IWodBinding) checkValuesBindingsIter.next();
 						if (binding.shouldValidate() && WodModelUtils.isBindingValueKeyPath(binding)) {
 							String bindingValue = binding.getValue();
-							BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(bindingValue, javaFileType, _javaProject);
+							BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(bindingValue, javaFileType, _javaProject, _typeContextCache);
 							// NTS: Technically these need to be related to
 							// every java file name in the key path
 							if (!bindingValueKeyPath.isValid()) {

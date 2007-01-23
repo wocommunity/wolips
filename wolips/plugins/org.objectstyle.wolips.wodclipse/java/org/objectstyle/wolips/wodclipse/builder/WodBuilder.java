@@ -197,7 +197,7 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
 			provider.connect(input);
 			try {
 				IDocument document = provider.getDocument(input);
-				WodReconcilingStrategy.reconcileWodModel(document, _locateResults, _buildCache, _buildCache);
+				WodReconcilingStrategy.reconcileWodModel(document, _locateResults, _buildCache, _buildCache, _buildCache);
 			} finally {
 				provider.disconnect(input);
 			}

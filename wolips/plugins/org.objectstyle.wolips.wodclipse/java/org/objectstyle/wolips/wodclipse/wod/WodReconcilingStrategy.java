@@ -55,7 +55,7 @@ public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilin
 			IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 				public void run(IProgressMonitor _monitor) throws CoreException {
 					try {
-						WodReconcilingStrategy.reconcileWodModel(myDocument, myWodEditor.getComponentsLocateResults(), new HashMap(), new HashMap());
+						WodReconcilingStrategy.reconcileWodModel(myDocument, myWodEditor.getComponentsLocateResults(), new HashMap(), new HashMap(), new HashMap());
 					} catch (LocateException e) {
 						WodclipsePlugin.getDefault().log(e);
 					}
@@ -103,7 +103,7 @@ public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilin
 		}
 	}
 
-	public static synchronized void reconcileWodModel(IDocument _wodDocument, LocalizedComponentsLocateResult _locateResult, Map _elementNameToTypeCache, Map _typeToApiModelWoCache) throws CoreException {
+	public static synchronized void reconcileWodModel(IDocument _wodDocument, LocalizedComponentsLocateResult _locateResult, Map _elementNameToTypeCache, Map _typeToApiModelWoCache, Map _typeContextCache) throws CoreException {
 		IFile wodFile = _locateResult.getFirstWodFile();
 		WodReconcilingStrategy.deleteWodProblems(wodFile);
 
@@ -114,7 +114,7 @@ public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilin
 
 		try {
 			IJavaProject javaProject = JavaCore.create(wodFile.getProject());
-			List semanticProblems = WodModelUtils.getSemanticProblems(wodModel, _locateResult, javaProject, _elementNameToTypeCache, _typeToApiModelWoCache);
+			List semanticProblems = WodModelUtils.getSemanticProblems(wodModel, _locateResult, javaProject, _elementNameToTypeCache, _typeToApiModelWoCache, _typeContextCache);
 			problems.addAll(semanticProblems);
 		} catch (CoreException e) {
 			WodclipsePlugin.getDefault().log(e);

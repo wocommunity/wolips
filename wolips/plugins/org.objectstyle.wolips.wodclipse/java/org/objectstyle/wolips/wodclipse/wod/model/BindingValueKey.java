@@ -1,5 +1,8 @@
 package org.objectstyle.wolips.wodclipse.wod.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMember;
@@ -17,11 +20,14 @@ public class BindingValueKey {
 	private IJavaProject _javaProject;
 
 	private IType _nextType;
-	
-	public BindingValueKey(String bindingName, IMember bindingMember, IJavaProject javaProject) {
+
+	private Map _typeContextCache;
+
+	public BindingValueKey(String bindingName, IMember bindingMember, IJavaProject javaProject, Map typeContextCache) {
 		_bindingName = bindingName;
 		_bindingMember = bindingMember;
 		_javaProject = javaProject;
+		_typeContextCache = typeContextCache;
 	}
 
 	public IType getDeclaringType() {
@@ -35,7 +41,7 @@ public class BindingValueKey {
 	public IMember getBindingMember() {
 		return _bindingMember;
 	}
-	
+
 	public String getNextTypeName() {
 		try {
 			String nextTypeName;
@@ -53,13 +59,35 @@ public class BindingValueKey {
 	public IType getNextType() throws JavaModelException {
 		if (_nextType == null) {
 			String nextTypeName = getNextTypeName();
-			IType typeContext = getDeclaringType();
-			String resolvedNextTypeName = JavaModelUtil.getResolvedTypeName(nextTypeName, typeContext);
-			if (resolvedNextTypeName == null) {
-				WodclipsePlugin.getDefault().log("Failed to resolve type name " + nextTypeName + " in component " + typeContext.getElementName());
+			// MS: Primitives have a return type of "I" or "C" ... Just skip them because they won't resolve.
+			if (nextTypeName != null && nextTypeName.length() == 0) {
 				_nextType = null;
-			} else {
-				_nextType = JavaModelUtil.findType(_javaProject, resolvedNextTypeName);
+			}
+			else {
+				IType typeContext = getDeclaringType();
+				Map nextTypeCache = (Map) _typeContextCache.get(typeContext);
+				if (nextTypeCache == null) {
+					nextTypeCache = new HashMap();
+					_typeContextCache.put(typeContext, nextTypeCache);
+				}
+				_nextType = (IType)nextTypeCache.get(nextTypeName);
+				if (_nextType == null) {
+					String resolvedNextTypeName = JavaModelUtil.getResolvedTypeName(nextTypeName, typeContext);
+					if (resolvedNextTypeName == null) {
+						WodclipsePlugin.getDefault().log("Failed to resolve type name " + nextTypeName + " in component " + typeContext.getElementName());
+					} else if ("boolean".equals(resolvedNextTypeName) || "byte".equals(resolvedNextTypeName) || "char".equals(resolvedNextTypeName) || "int".equals(resolvedNextTypeName) || "short".equals(resolvedNextTypeName) || "float".equals(resolvedNextTypeName) || "double".equals(resolvedNextTypeName)) {
+						// ignore primitives
+					}
+					else {
+						_nextType = JavaModelUtil.findType(_javaProject, resolvedNextTypeName);
+						if (_nextType != null) {
+							nextTypeCache.put(nextTypeName, _nextType);
+						}
+						else {
+							System.out.println("BindingValueKey.getNextType: couldn't resolve " + resolvedNextTypeName);
+						}
+					}
+				}
 			}
 		}
 		return _nextType;
