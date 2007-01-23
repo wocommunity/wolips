@@ -131,28 +131,30 @@ public class WodBindingUtils {
 					types = typeHierarchy.getAllTypes();
 				}					
 			}
-			for (int typeNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && typeNum < types.length; typeNum++) {
-				IField[] fields = types[typeNum].getFields();
-				for (int fieldNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && fieldNum < fields.length; fieldNum++) {
-					BindingValueKey bindingKey = WodBindingUtils.createBindingKeyIfMatches(_javaProject, fields[fieldNum], lowercaseNameStartingWith, _requireExactNameMatch, _accessorsOrMutators, typeContextCache);
-					if (bindingKey != null) {
-						bindingKeys.add(bindingKey);
-					}
-					// System.out.println("WODCompletionProcessor.nextType:
-					// field " + fields[fieldNum].getElementName() + "=>" +
-					// bindingKey);
-				}
-
-				if (!_requireExactNameMatch || bindingKeys.size() == 0) {
-					IMethod[] methods = types[typeNum].getMethods();
-					for (int methodNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && methodNum < methods.length; methodNum++) {
-						BindingValueKey bindingKey = WodBindingUtils.createBindingKeyIfMatches(_javaProject, methods[methodNum], lowercaseNameStartingWith, _requireExactNameMatch, _accessorsOrMutators, typeContextCache);
+			if (types != null) {
+				for (int typeNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && typeNum < types.length; typeNum++) {
+					IField[] fields = types[typeNum].getFields();
+					for (int fieldNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && fieldNum < fields.length; fieldNum++) {
+						BindingValueKey bindingKey = WodBindingUtils.createBindingKeyIfMatches(_javaProject, fields[fieldNum], lowercaseNameStartingWith, _requireExactNameMatch, _accessorsOrMutators, typeContextCache);
 						if (bindingKey != null) {
 							bindingKeys.add(bindingKey);
 						}
 						// System.out.println("WODCompletionProcessor.nextType:
-						// method " + methods[methodNum].getElementName() + "=>"
-						// + bindingKey);
+						// field " + fields[fieldNum].getElementName() + "=>" +
+						// bindingKey);
+					}
+	
+					if (!_requireExactNameMatch || bindingKeys.size() == 0) {
+						IMethod[] methods = types[typeNum].getMethods();
+						for (int methodNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && methodNum < methods.length; methodNum++) {
+							BindingValueKey bindingKey = WodBindingUtils.createBindingKeyIfMatches(_javaProject, methods[methodNum], lowercaseNameStartingWith, _requireExactNameMatch, _accessorsOrMutators, typeContextCache);
+							if (bindingKey != null) {
+								bindingKeys.add(bindingKey);
+							}
+							// System.out.println("WODCompletionProcessor.nextType:
+							// method " + methods[methodNum].getElementName() + "=>"
+							// + bindingKey);
+						}
 					}
 				}
 			}
