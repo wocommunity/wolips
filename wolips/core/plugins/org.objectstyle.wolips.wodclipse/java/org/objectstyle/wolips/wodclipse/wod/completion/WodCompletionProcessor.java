@@ -400,7 +400,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 
 	protected void fillInBindingNameCompletionProposals(IJavaProject _project, IType _elementType, IPath _wodFilePath, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet, boolean _guessed) throws JavaModelException {
 		String partialToken = partialToken(_token, _tokenOffset, _offset);
-		List bindingKeys = WodBindingUtils.createMatchingBindingKeys(_project, _elementType, partialToken, false, WodBindingUtils.MUTATORS_ONLY);
+		List bindingKeys = WodBindingUtils.createMatchingBindingKeys(_project, _elementType, partialToken, false, WodBindingUtils.MUTATORS_ONLY, new HashMap());
 		WodCompletionProcessor.fillInCompletionProposals(bindingKeys, _token, _tokenOffset, _offset, _completionProposalsSet);
 
 		// API files:
@@ -431,7 +431,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 
 	protected void fillInBindingValueCompletionProposals(IJavaProject _project, IType _elementType, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet, WodScanner _scanner, IDocument _document, boolean _guessed) throws JavaModelException {
 		String partialToken = partialToken(_token, _tokenOffset, _offset);
-		BindingValueKeyPath bindingKeyPath = new BindingValueKeyPath(partialToken, _elementType, _project);
+		BindingValueKeyPath bindingKeyPath = new BindingValueKeyPath(partialToken, _elementType, _project, new HashMap());
 		List possibleBindingKeyMatchesList = bindingKeyPath.getPartialMatchesForLastBindingKey();
 		if (possibleBindingKeyMatchesList != null) {
 			String bindingKeyName = bindingKeyPath.getLastBindingKeyName();
@@ -450,7 +450,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 				int spaceIndex = WodCompletionProcessor.scanBackFor(_document, noSpaceIndex, new char[] { ' ', '\t', '\n', '\r' }, false);
 				String bindingName = _document.get(spaceIndex + 1, noSpaceIndex - spaceIndex);
 				IType elementType = findNearestElementType(_project, _document, _scanner, _offset);
-				String[] validValues = WodBindingUtils.getValidValues(_project, myEditor.getComponentsLocateResults().getDotJavaType(), elementType, bindingName, myElementTypeToWoCache);
+				String[] validValues = WodBindingUtils.getValidValues(_project, myEditor.getComponentsLocateResults().getDotJavaType(), elementType, bindingName, myElementTypeToWoCache, new HashMap());
 				if (validValues != null) {
 					String lowercasePartialToken = partialToken.toLowerCase();
 					for (int i = 0; i < validValues.length; i++) {

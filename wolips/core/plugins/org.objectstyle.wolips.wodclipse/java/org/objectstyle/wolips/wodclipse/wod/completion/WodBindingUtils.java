@@ -32,6 +32,7 @@ import org.objectstyle.wolips.core.resources.types.api.Binding;
 import org.objectstyle.wolips.core.resources.types.api.Wo;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.wod.model.BindingValueKey;
+import org.objectstyle.wolips.wodclipse.wod.util.SubTypeHierachyCache;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 import org.osgi.framework.Bundle;
 
@@ -103,7 +104,7 @@ public class WodBindingUtils {
 		searchEngine.searchAllTypeNames(packageName, typeName, _matchType, IJavaSearchConstants.CLASS, searchScope, _typeNameCollector, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
 	}
 
-	public static List createMatchingBindingKeys(IJavaProject _javaProject, IType _type, String _nameStartingWith, boolean _requireExactNameMatch, int _accessorsOrMutators) throws JavaModelException {
+	public static List createMatchingBindingKeys(IJavaProject _javaProject, IType _type, String _nameStartingWith, boolean _requireExactNameMatch, int _accessorsOrMutators, Map typeContextCache) throws JavaModelException {
 		List bindingKeys = new LinkedList();
 
 		String nameStartingWith = _nameStartingWith;
@@ -111,19 +112,29 @@ public class WodBindingUtils {
 			String lowercaseNameStartingWith = nameStartingWith.toLowerCase();
 			
 			ITypeHierarchy typeHierarchy;
-			String typeName = _type.getElementName();
+
 			// We want to show fields from your WOApplication, WOSession, and
 			// WODirectAction subclasses ...
-			if ("WOApplication".equals(typeName) || "WOSession".equals(typeName) || "WODirectAction".equals(typeName)) {
-				typeHierarchy = _type.newTypeHierarchy(_javaProject, null);
-			} else {
-				typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(_type);
-			}
+			typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(_type);
 			IType[] types = typeHierarchy.getAllTypes();
+			if (types != null) {
+				boolean isUsuallySubclassed = false;
+				for (int typeNum = 0; !isUsuallySubclassed && typeNum < types.length; typeNum ++) {
+					String typeName = types[typeNum].getElementName();
+					if ("WOApplication".equals(typeName) || "WOSession".equals(typeName) || "WODirectAction".equals(typeName)) {
+						isUsuallySubclassed = true;
+					}
+				}
+				if (isUsuallySubclassed) {
+					//typeHierarchy = _type.newTypeHierarchy(_javaProject, null);
+					typeHierarchy = SubTypeHierachyCache.getTypeHierarchy(_type);
+					types = typeHierarchy.getAllTypes();
+				}					
+			}
 			for (int typeNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && typeNum < types.length; typeNum++) {
 				IField[] fields = types[typeNum].getFields();
 				for (int fieldNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && fieldNum < fields.length; fieldNum++) {
-					BindingValueKey bindingKey = WodBindingUtils.createBindingKeyIfMatches(_javaProject, fields[fieldNum], lowercaseNameStartingWith, _requireExactNameMatch, _accessorsOrMutators);
+					BindingValueKey bindingKey = WodBindingUtils.createBindingKeyIfMatches(_javaProject, fields[fieldNum], lowercaseNameStartingWith, _requireExactNameMatch, _accessorsOrMutators, typeContextCache);
 					if (bindingKey != null) {
 						bindingKeys.add(bindingKey);
 					}
@@ -135,7 +146,7 @@ public class WodBindingUtils {
 				if (!_requireExactNameMatch || bindingKeys.size() == 0) {
 					IMethod[] methods = types[typeNum].getMethods();
 					for (int methodNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && methodNum < methods.length; methodNum++) {
-						BindingValueKey bindingKey = WodBindingUtils.createBindingKeyIfMatches(_javaProject, methods[methodNum], lowercaseNameStartingWith, _requireExactNameMatch, _accessorsOrMutators);
+						BindingValueKey bindingKey = WodBindingUtils.createBindingKeyIfMatches(_javaProject, methods[methodNum], lowercaseNameStartingWith, _requireExactNameMatch, _accessorsOrMutators, typeContextCache);
 						if (bindingKey != null) {
 							bindingKeys.add(bindingKey);
 						}
@@ -150,7 +161,7 @@ public class WodBindingUtils {
 		return bindingKeys;
 	}
 
-	public static BindingValueKey createBindingKeyIfMatches(IJavaProject javaProject, IMember member, String nameStartingWith, boolean requireExactNameMatch, int accessorsOrMutators) throws JavaModelException {
+	public static BindingValueKey createBindingKeyIfMatches(IJavaProject javaProject, IMember member, String nameStartingWith, boolean requireExactNameMatch, int accessorsOrMutators, Map typeContextCache) throws JavaModelException {
 		BindingValueKey bindingKey = null;
 
 		int flags = member.getFlags();
@@ -194,7 +205,7 @@ public class WodBindingUtils {
 						if ((requireExactNameMatch && lowercaseMemberNameWithoutPrefix.equals(nameStartingWith)) || (!requireExactNameMatch && lowercaseMemberNameWithoutPrefix.startsWith(nameStartingWith))) {
 							String bindingName = WodBindingUtils.toLowercaseFirstLetter(memberName.substring(prefixLength));
 							if (nameStartingWith.length() > 0 || !bindingName.startsWith("_")) {
-								bindingKey = new BindingValueKey(bindingName, member, javaProject);
+								bindingKey = new BindingValueKey(bindingName, member, javaProject, typeContextCache);
 							}
 						}
 					}
@@ -289,7 +300,7 @@ public class WodBindingUtils {
 		return wo;
 	}
 
-	public static String[] getValidValues(IJavaProject _javaProject, IType _wodJavaFileType, IType _elementType, String _bindingName, Map _elementTypeToWoCache) throws JavaModelException, ApiModelException {
+	public static String[] getValidValues(IJavaProject _javaProject, IType _wodJavaFileType, IType _elementType, String _bindingName, Map _elementTypeToWoCache, Map typeContextCache) throws JavaModelException, ApiModelException {
 		String[] validValues = null;
 		Wo wo = WodBindingUtils.findApiModelWo(_elementType, _elementTypeToWoCache);
 		if (wo != null) {
@@ -325,7 +336,7 @@ public class WodBindingUtils {
 				} else if ("Resources".equals(defaultsName)) {
 					// do nothing for now
 				} else if ("Actions".equals(defaultsName)) {
-					List bindingKeysList = WodBindingUtils.createMatchingBindingKeys(_javaProject, _wodJavaFileType, "", false, WodBindingUtils.VOID_ONLY);
+					List bindingKeysList = WodBindingUtils.createMatchingBindingKeys(_javaProject, _wodJavaFileType, "", false, WodBindingUtils.VOID_ONLY, typeContextCache);
 					validValues = new String[bindingKeysList.size()];
 					for (int i = 0; i < validValues.length; i++) {
 						validValues[i] = ((BindingValueKey) bindingKeysList.get(i)).getBindingName();
