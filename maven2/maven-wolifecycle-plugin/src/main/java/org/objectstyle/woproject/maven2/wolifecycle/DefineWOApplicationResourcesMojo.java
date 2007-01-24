@@ -119,7 +119,7 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 			FileInputStream fileInputStream;
 			try {
 				String jarFileName = localRepository.getBasedir() + File.separator + classpathEntries[0][i];
-				getLog().info("Copy webserverresources: looking into jar named " + jarFileName);
+				getLog().debug("Copy webserverresources: looking into jar named " + jarFileName);
 				fileInputStream = new FileInputStream(jarFileName);
 				JarInputStream jarInputStream = new JarInputStream(fileInputStream);
 				int counter = 0;
@@ -136,7 +136,7 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 						}
 					}
 				}
-				getLog().info("Copy webserverresources: extracted " + counter + " webserverresources from  jar named " + jarFileName);
+				getLog().debug("Copy webserverresources: extracted " + counter + " webserverresources from  jar named " + jarFileName);
 			} catch (FileNotFoundException e) {
 				throw new MojoExecutionException("Could not open file input stream", e);
 			} catch (IOException e) {
@@ -194,7 +194,7 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 
 	private void defineProperties() throws MojoExecutionException {
 		String fileName = this.getProjectFolder() + "target" + File.separator + "wobuild.properties";
-		getLog().info("Defining wo properties: writing to file: " + fileName);
+		getLog().debug("Defining wo properties: writing to file: " + fileName);
 		File file = new File(fileName);
 		FileWriter fileWriter;
 		try {
@@ -208,15 +208,15 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 	}
 
 	private void defineClasspath() throws MojoExecutionException {
-		getLog().info("Defining wo classpath: dependencies from parameter");
+		getLog().debug("Defining wo classpath: dependencies from parameter");
 		String[] classpathEntries = this.getDependencyPaths()[0];
 		StringBuffer classPath = new StringBuffer();
 		for (int i = 0; i < classpathEntries.length; i++) {
-			getLog().info("Defining wo classpath: dependencyPath: " + classpathEntries[i]);
+			getLog().debug("Defining wo classpath: dependencyPath: " + classpathEntries[i]);
 			classPath.append(classpathEntries[i] + "\n");
 		}
 		String fileName = this.getProjectFolder() + "target" + File.separator + "classpath.txt";
-		getLog().info("Defining wo classpath: writing to file: " + fileName);
+		getLog().debug("Defining wo classpath: writing to file: " + fileName);
 		File file = new File(fileName);
 		FileWriter fileWriter;
 		try {

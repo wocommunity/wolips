@@ -64,12 +64,12 @@ public class PackageWOApplicationResourcesMojo extends PackageMojo {
 		Artifact artifact = artifactFactory.createBuildArtifact(project.getGroupId(), project.getArtifactId(), project.getVersion(), "woapplication.tar.gz");
 
 		artifact.setFile(new File(this.getWOApplicationFileName()));
-		getLog().info("Attaching artifact: " + this.getWOApplicationFileName());
+		getLog().debug("Attaching artifact: " + this.getWOApplicationFileName());
 		project.addAttachedArtifact(artifact);
 
 		artifact = artifactFactory.createBuildArtifact(project.getGroupId(), project.getArtifactId(), project.getVersion(), "wowebserverresources.tar.gz");
 		artifact.setFile(new File(this.getWOWebServerResourcesArtifactFileName()));
-		getLog().info("Attaching artifact: " + this.getWOWebServerResourcesArtifactFileName());
+		getLog().debug("Attaching artifact: " + this.getWOWebServerResourcesArtifactFileName());
 		project.addAttachedArtifact(artifact);
 	}
 }
