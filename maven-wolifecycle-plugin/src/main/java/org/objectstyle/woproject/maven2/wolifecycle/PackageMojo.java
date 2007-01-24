@@ -16,14 +16,14 @@ public abstract class PackageMojo extends WOMojo {
 	}
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		getLog().info("Package wo");
+		getLog().debug("Package wo");
 
 		String artifactFileName = this.getArtifactFileName();
 
 		BufferedWriter artifactWriter = null;
 
 		try {
-			getLog().info("Package wo ... writing artifact to: " + artifactFileName);
+			getLog().debug("Package wo ... writing artifact to: " + artifactFileName);
 
 			artifactWriter = new BufferedWriter(new FileWriter(new File(artifactFileName)));
 			artifactWriter.write("\n");
@@ -41,7 +41,7 @@ public abstract class PackageMojo extends WOMojo {
 
 		if (artifactFileName != null) {
 			String fileName = artifactFileName;
-			getLog().info("Defining artifact filename: " + fileName);
+			getLog().debug("Defining artifact filename: " + fileName);
 			this.getProject().getArtifact().setFile(new File(fileName));
 		}
 	}

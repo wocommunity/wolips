@@ -18,7 +18,7 @@ public abstract class DefineResourcesMojo extends WOMojo {
 	}
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		getLog().info("Creating folder");
+		getLog().debug("Creating folder");
 		this.executeCreateFolders();
 		getLog().info("Defining wo resources");
 		this.executeExistingComponents();
@@ -67,17 +67,17 @@ public abstract class DefineResourcesMojo extends WOMojo {
 	}
 
 	private void executeResourcesPatternsetFiles() {
-		getLog().info("Defining wo resources: loading patternsets");
+		getLog().debug("Defining wo resources: loading patternsets");
 		String woProjectFolder = getWOProjectFolder();
 		if (woProjectFolder == null) {
-			getLog().info("Defining wo resources:  No \"woproject\" folder found within project. Skipping patternsets...");
+			getLog().debug("Defining wo resources:  No \"woproject\" folder found within project. Skipping patternsets...");
 			return;
 		}
 		File woProjectFile = new File(woProjectFolder);
 		if (woProjectFile.exists()) {
-			getLog().info("Defining wo resources: \"woproject\" folder found within project. Reading patternsets...");
+			getLog().debug("Defining wo resources: \"woproject\" folder found within project. Reading patternsets...");
 		} else {
-			getLog().info("Defining wo resources:  No \"woproject\" folder found within project. Skipping patternsets...");
+			getLog().debug("Defining wo resources:  No \"woproject\" folder found within project. Skipping patternsets...");
 			return;
 		}
 		String[] resourcesIncludeFromAntPatternsetFiles = this.getResourcesInclude();
@@ -89,17 +89,17 @@ public abstract class DefineResourcesMojo extends WOMojo {
 	}
 
 	private void executeWebServerResourcesPatternsetFiles() {
-		getLog().info("Defining wo webserverresources: loading patternsets");
+		getLog().debug("Defining wo webserverresources: loading patternsets");
 		String woProjectFolder = getWOProjectFolder();
 		if (woProjectFolder == null) {
-			getLog().info("Defining wo resources:  No \"woproject\" folder found within project. Skipping patternsets...");
+			getLog().debug("Defining wo resources:  No \"woproject\" folder found within project. Skipping patternsets...");
 			return;
 		}
 		File woProjectFile = new File(woProjectFolder);
 		if (woProjectFile.exists()) {
-			getLog().info("Defining wo webserverresources: \"woproject\" folder found within project. Reading patternsets...");
+			getLog().debug("Defining wo webserverresources: \"woproject\" folder found within project. Reading patternsets...");
 		} else {
-			getLog().info("Defining wo webserverresources:  No \"woproject\" folder found within project. Skipping patternsets...");
+			getLog().debug("Defining wo webserverresources:  No \"woproject\" folder found within project. Skipping patternsets...");
 			return;
 		}
 		String[] webserverResourcesIncludeFromAntPatternsetFiles = this.getWebserverResourcesInclude();
@@ -111,33 +111,33 @@ public abstract class DefineResourcesMojo extends WOMojo {
 	}
 
 	private void executeFolders() {
-		getLog().info("Defining wo resources: defining default folder");
+		getLog().debug("Defining wo resources: defining default folder");
 		String componentsPath = getProjectFolder() + "Components";
 		File componentsFile = new File(componentsPath);
 		if (componentsFile.exists()) {
-			getLog().info("Defining wo resources: \"Components\" folder found within project. Adding include...");
+			getLog().debug("Defining wo resources: \"Components\" folder found within project. Adding include...");
 			Resource[] resourcesFromComponentsFolder = this.createResources("Components", "Resources");
 			this.addResources(resourcesFromComponentsFolder);
 		} else {
-			getLog().info("Defining wo resources: No \"Components\" folder found within project. Skipping include...");
+			getLog().debug("Defining wo resources: No \"Components\" folder found within project. Skipping include...");
 		}
 		String resourcesPath = getProjectFolder() + "Resources";
 		File resourcesFile = new File(resourcesPath);
 		if (resourcesFile.exists()) {
-			getLog().info("Defining wo resources: \"Resources\" folder found within project. Adding include...");
+			getLog().debug("Defining wo resources: \"Resources\" folder found within project. Adding include...");
 			Resource[] resourcesFromResourcesFolder = this.createResources("Resources", "Resources");
 			this.addResources(resourcesFromResourcesFolder);
 		} else {
-			getLog().info("Defining wo resources: No \"Resources\" folder found within project. Skipping include...");
+			getLog().debug("Defining wo resources: No \"Resources\" folder found within project. Skipping include...");
 		}
 		String webServerResourcesPath = getProjectFolder() + "WebServerResources";
 		File webServerResourcesFile = new File(webServerResourcesPath);
 		if (webServerResourcesFile.exists()) {
-			getLog().info("Defining wo webserverresources: \"WebServerResources\" folder found within project. Adding include...");
+			getLog().debug("Defining wo webserverresources: \"WebServerResources\" folder found within project. Adding include...");
 			Resource[] webServerResourcesFromWebServerResourcesFolder = this.createResources("WebServerResources", "WebServerResources");
 			this.addResources(webServerResourcesFromWebServerResourcesFolder);
 		} else {
-			getLog().info("Defining wo webserverresources: No \"WebServerResources\" folder found within project. Skipping include...");
+			getLog().debug("Defining wo webserverresources: No \"WebServerResources\" folder found within project. Skipping include...");
 		}
 	}
 
