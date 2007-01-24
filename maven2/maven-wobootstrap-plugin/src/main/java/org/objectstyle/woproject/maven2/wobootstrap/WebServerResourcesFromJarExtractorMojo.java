@@ -99,19 +99,16 @@ public class WebServerResourcesFromJarExtractorMojo extends AbstractMojo {
 	}
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		getLog().info("Extract webserverresources");
-		getLog().info("bla");
+		getLog().debug("Extracting webserverresources");
 		if (jarFileName == null) {
 			throw new MojoExecutionException("jarFileName is null");
 		}
-		getLog().info("bla1");
 		if (destinationFolderName == null) {
 			throw new MojoExecutionException("destinationFolderName is null");
 		}
-		getLog().info("bla2");
 		FileInputStream fileInputStream;
 		try {
-			getLog().info("Extract webserverresources: looking into jar named " + jarFileName);
+			getLog().debug("Extract webserverresources: looking into jar named " + jarFileName);
 			fileInputStream = new FileInputStream(jarFileName);
 			JarInputStream jarInputStream = new JarInputStream(fileInputStream);
 			int counter = 0;
@@ -126,7 +123,7 @@ public class WebServerResourcesFromJarExtractorMojo extends AbstractMojo {
 					}
 				}
 			}
-			getLog().info("Extract webserverresources: extracted " + counter + " webserverresources from  jar named " + jarFileName);
+			getLog().debug("Extract webserverresources: extracted " + counter + " webserverresources from  jar named " + jarFileName);
 		} catch (FileNotFoundException e) {
 			throw new MojoExecutionException("Could not open file input stream", e);
 		} catch (IOException e) {
