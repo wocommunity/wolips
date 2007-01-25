@@ -248,11 +248,12 @@ public class FrameworkSet extends FileSet {
 				String item = paths[i];
 				String encodedPath = variables.encodePath(item);
 				if (frameworkSet.getEmbed()) {
+					String prefix = frameworkSet.getDir(project).getAbsolutePath();
+					prefix = variables.encodePath(prefix);
 					if(frameworkSet.hasBundles()) {
 						encodedPath = encodedPath.replaceFirst(".*?(\\w+.framework)", "APPROOT/Frameworks/$1");
 					} else {
-						// ak: this probably isn't correct, as embedded paths don't need to start at some root
-						encodedPath = encodedPath.replaceFirst("\\w+ROOT", "APPROOT/Frameworks");
+						encodedPath = encodedPath.replaceFirst(prefix, "APPROOT/Frameworks");
 					}
 				}
 				frameworkSet.log(": Framework JAR " + encodedPath, Project.MSG_VERBOSE);
