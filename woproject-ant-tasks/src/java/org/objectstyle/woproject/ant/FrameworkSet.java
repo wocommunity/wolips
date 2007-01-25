@@ -84,6 +84,8 @@ public class FrameworkSet extends FileSet {
 
 	protected boolean embed;
 
+	protected boolean hasBundles;
+
 	protected File deploymentDir;
 
 	protected String ifCondition = "";
@@ -114,6 +116,7 @@ public class FrameworkSet extends FileSet {
 		for (int i = 0; i < bundles.length; i++) {
 			String framework = bundles[i];
 			if(framework.trim().length() > 0) {
+				hasBundles = true;
 				framework = framework + ".framework";
 				ps.createInclude().setName(framework);
 			}
@@ -245,7 +248,12 @@ public class FrameworkSet extends FileSet {
 				String item = paths[i];
 				String encodedPath = variables.encodePath(item);
 				if (frameworkSet.getEmbed()) {
-					encodedPath = encodedPath.replaceFirst(".*?(\\w+.framework)", "APPROOT/Frameworks/$1");
+					if(frameworkSet.hasBundles()) {
+						encodedPath = encodedPath.replaceFirst(".*?(\\w+.framework)", "APPROOT/Frameworks/$1");
+					} else {
+						// ak: this probably isn't correct, as embedded paths don't need to start at some root
+						encodedPath = encodedPath.replaceFirst("\\w+ROOT", "APPROOT/Frameworks");
+					}
 				}
 				frameworkSet.log(": Framework JAR " + encodedPath, Project.MSG_VERBOSE);
 
@@ -253,6 +261,10 @@ public class FrameworkSet extends FileSet {
 			}
 		}
 		return path.toString();
+	}
+
+	private boolean hasBundles() {
+		return hasBundles;
 	}
 
 	/**
