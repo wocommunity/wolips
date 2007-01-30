@@ -96,6 +96,8 @@ public class WOnderFrameworkWizard extends AbstractProjectWizard {
 			try {
 				File src = new File(path + File.separator + "Sources");
 				src.mkdirs();
+				File components = new File(path + File.separator + "Components");
+				components.mkdirs();
 				File resources = new File(path + File.separator + "Resources");
 				resources.mkdirs();
 				File wsresources = new File(path + File.separator + "WebServerResources");
