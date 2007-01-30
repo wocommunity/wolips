@@ -253,7 +253,7 @@ public class FrameworkSet extends FileSet {
 					if(frameworkSet.hasBundles()) {
 						encodedPath = encodedPath.replaceFirst(".*?(\\w+.framework)", "APPROOT/Frameworks/$1");
 					} else {
-						encodedPath = encodedPath.replaceFirst(prefix, "APPROOT/Frameworks");
+						encodedPath = encodedPath.replaceFirst(prefix, "APPROOT/Frameworks/");
 					}
 				}
 				frameworkSet.log(": Framework JAR " + encodedPath, Project.MSG_VERBOSE);
