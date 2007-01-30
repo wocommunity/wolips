@@ -249,9 +249,13 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends JavaLaunc
 		File wdFile = javaProject.getWDFolder(theProject, wd);
 		if (null == wdFile) {
 			IPath path = VariablesPlugin.getDefault().getExternalBuildRoot();
-			path = path.append(theProject.getName() + ".woa");
-			wdFile = path.toFile();
-			if (!wdFile.exists()) {
+			if(path != null) {
+				path = path.append(theProject.getName() + ".woa");
+				wdFile = path.toFile();
+				if (!wdFile.exists()) {
+					wdFile = null;
+				}
+			} else {
 				wdFile = null;
 			}
 		}
