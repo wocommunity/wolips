@@ -193,6 +193,9 @@ public class WOApplication extends WOTask {
 				fs = new FileSet();
 				fs.setDir(dir);
 				fs.createInclude().setName("**/" + name);
+				if(startupScriptName != null) {
+					fs.createInclude().setName("**/" + startupScriptName);
+				}
 				fs.createInclude().setName("**/*.sh");
 
 				aChmod = this.getSubtaskFactory().getChmod();
