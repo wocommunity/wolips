@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
 		<artifactId>maven2</artifactId>
 		<groupId>org.objectstyle.woproject.maven2</groupId>
@@ -16,6 +18,7 @@
 		<dependency>
 			<groupId>org.objectstyle.woproject.ant</groupId>
 			<artifactId>woenvironment</artifactId>
+			<version>2.0.3-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>webobjects.apple</groupId>
@@ -26,6 +29,7 @@
 		<dependency>
 			<groupId>org.objectstyle.woproject.ant</groupId>
 			<artifactId>woproject-ant-tasks</artifactId>
+			<version>2.0.3-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>webobjects.apple</groupId>
@@ -36,26 +40,32 @@
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
+			<version>2.0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-embedder</artifactId>
+			<version>2.0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-script-ant</artifactId>
+			<version>2.0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-artifact-ant</artifactId>
+			<version>2.0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
+			<version>1.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
+			<version>2.2</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -76,19 +86,19 @@
 				</configuration>
 			</plugin>
 			<!-- requires maven 2.0.5
-			<plugin>
+				<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-invoker-plugin</artifactId>
 				<configuration>
-                            <background>true</background>
-                            <debug>true</debug>
-                            <projectsDirectory>${pom.basedir}/../ExampleAll</projectsDirectory>
-                            <pomIncludes>
-                                <pomInclude>pom.xml</pomInclude>
-                            </pomIncludes>
+				<background>true</background>
+				<debug>true</debug>
+				<projectsDirectory>${pom.basedir}/../ExampleAll</projectsDirectory>
+				<pomIncludes>
+				<pomInclude>pom.xml</pomInclude>
+				</pomIncludes>
 				</configuration>
-			</plugin>
-			 -->
+				</plugin>
+			-->
 		</plugins>
 	</build>
 </project>
