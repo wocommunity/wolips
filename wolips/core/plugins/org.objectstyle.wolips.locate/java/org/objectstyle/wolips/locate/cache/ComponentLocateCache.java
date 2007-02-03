@@ -57,8 +57,8 @@ package org.objectstyle.wolips.locate.cache;
 
 import java.util.HashMap;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.runtime.CoreException;
@@ -78,34 +78,34 @@ public class ComponentLocateCache implements IResourceChangeListener {
 		projects.remove(projectKey);
 	}
 
-	public void forgetCacheForFile(IFile file) {
-		HashMap projectHashMap = this.project(file.getProject());
+	public void forgetCacheForFile(IResource resource) {
+		HashMap projectHashMap = this.project(resource.getProject());
 		if (projectHashMap == null) {
 			return;
 		}
-		String key = LocatePlugin.getDefault().fileNameWithoutExtension(file);
+		String key = LocatePlugin.getDefault().fileNameWithoutExtension(resource);
 		projectHashMap.remove(key);
 	}
 
-	public LocalizedComponentsLocateResult getLocalizedComponentsLocateResult(IFile file) {
-		HashMap projectHashMap = this.project(file.getProject());
+	public LocalizedComponentsLocateResult getLocalizedComponentsLocateResult(IResource resource) {
+		HashMap projectHashMap = this.project(resource.getProject());
 		if (projectHashMap == null) {
 			return null;
 		}
-		String key = LocatePlugin.getDefault().fileNameWithoutExtension(file);
+		String key = LocatePlugin.getDefault().fileNameWithoutExtension(resource);
 		LocalizedComponentsLocateResult localizedComponentsLocateResult = (LocalizedComponentsLocateResult) projectHashMap.get(key);
 		return localizedComponentsLocateResult;
 	}
 
-	public void addToCache(IFile file, LocalizedComponentsLocateResult localizedComponentsLocateResult) {
+	public void addToCache(IResource resource, LocalizedComponentsLocateResult localizedComponentsLocateResult) {
 
-		HashMap projectHashMap = this.project(file.getProject());
+		HashMap projectHashMap = this.project(resource.getProject());
 		if (projectHashMap == null) {
 			projectHashMap = new HashMap();
-			String projectsKey = file.getProject().getName();
+			String projectsKey = resource.getProject().getName();
 			projects.put(projectsKey, projectHashMap);
 		}
-		String key = LocatePlugin.getDefault().fileNameWithoutExtension(file);
+		String key = LocatePlugin.getDefault().fileNameWithoutExtension(resource);
 		projectHashMap.put(key, localizedComponentsLocateResult);
 	}
 

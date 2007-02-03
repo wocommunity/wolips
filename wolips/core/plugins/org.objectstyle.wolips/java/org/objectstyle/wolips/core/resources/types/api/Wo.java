@@ -142,13 +142,41 @@ public class Wo extends AbstractApiModelElement {
 		return (Validation[]) validationsList.toArray(new Validation[validationsList.size()]);
 	}
 
-	public void createBinding(String name) {
-		Element newBindingElement = this.element.getOwnerDocument().createElement(Binding.BINDING);
-		newBindingElement.setAttribute(Binding.NAME, name);
-		this.element.appendChild(newBindingElement);
-		this.apiModel.markAsDirty();
+	public Binding getBinding(String name) {
+		Binding matchingBinding = null;
+		Binding[] bindings = getBindings();
+		for (int bindingNum = 0; matchingBinding == null && bindingNum < bindings.length; bindingNum++) {
+			Binding binding = bindings[bindingNum];
+			if (name != null && name.equals(binding.getName())) {
+				matchingBinding = binding;
+			}
+		}
+		return matchingBinding;
+	}
+	
+	public boolean containsBinding(String name) {
+		return getBinding(name) == null;
+	}
+	
+	public Binding createBinding(String name) {
+		Binding binding = getBinding(name);
+		if (binding == null) {
+			Element newBindingElement = this.element.getOwnerDocument().createElement(Binding.BINDING);
+			newBindingElement.setAttribute(Binding.NAME, name);
+			this.element.appendChild(newBindingElement);
+			this.apiModel.markAsDirty();
+			binding = getBinding(name);
+		}
+		return binding;
 	}
 
+	public void removeBinding(String name) {
+		Binding binding = getBinding(name);
+		if (binding != null) {
+			removeBinding(binding);
+		}
+	}
+	
 	public void removeBinding(Binding binding) {
 		Validation[] validations = this.getAffectedValidations(binding.getName());
 		for (int i = 0; i < validations.length; i++) {

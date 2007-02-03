@@ -55,10 +55,6 @@
  */
 package org.objectstyle.wolips.apieditor.editor;
 
-import java.io.ByteArrayInputStream;
-
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionEvent;
@@ -73,7 +69,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.wolips.core.resources.types.api.ApiModel;
-import org.objectstyle.wolips.locate.LocatePlugin;
+import org.objectstyle.wolips.core.resources.types.api.ApiModelException;
 
 public class CreatePage extends ApiFormPage {
 
@@ -123,14 +119,11 @@ public class CreatePage extends ApiFormPage {
 			gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 			createApiFileButton.setLayoutData(gd);
 			createApiFileButton.addSelectionListener(new SelectionListener() {
-
 				public void widgetSelected(SelectionEvent e) {
 					FileEditorInput fileEditorInput = (FileEditorInput) apiEditor.getEditorInput();
 					try {
-						String javaFileName = LocatePlugin.getDefault().fileNameWithoutExtension(fileEditorInput.getFile());
-						String content = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" + "<wodefinitions>" + "<wo wocomponentcontent=\"false\" class=\"" + javaFileName + "\">\n\n" + " </wo>" + "</wodefinitions>";
-						fileEditorInput.getFile().create(new ByteArrayInputStream(content.getBytes()), true, new NullProgressMonitor());
-					} catch (CoreException coreException) {
+						new ApiModel(fileEditorInput.getFile());
+					} catch (ApiModelException coreException) {
 						throw new RuntimeException("Failed to create .api file.", coreException);
 					}
 					apiEditor.removePage(0);

@@ -55,59 +55,102 @@
  */
 package org.objectstyle.wolips.core.resources.types.api;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Reader;
+import java.io.Writer;
 import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.objectstyle.wolips.locate.LocatePlugin;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
+import com.sun.org.apache.xml.internal.serialize.OutputFormat;
+import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
+
 public class ApiModel {
+	private Document _document;
 
-	private Document document;
+	private URL _url;
 
-	private URL url;
-	
-	private Reader reader;
+	private Reader _reader;
 
-	private File file;
+	private IFile _eclipseFile;
 
-	private boolean isDirty = false;
+	private File _file;
+
+	private boolean _isDirty;
 
 	public ApiModel(File file) throws ApiModelException {
-		this.file = file;
-		this.parse();
+		_file = file;
+		if (!file.exists()) {
+			String javaFileName = LocatePlugin.getDefault().fileNameWithoutExtension(file);
+			try {
+				FileWriter writer = new FileWriter(file);
+				try {
+					writer.write(ApiModel.blankContent(javaFileName));
+				} finally {
+					writer.close();
+				}
+			} catch (IOException e) {
+				throw new ApiModelException("Failed to create blank API file.", e);
+			}
+		}
+		parse();
+	}
+
+	public ApiModel(IFile file) throws ApiModelException {
+		_eclipseFile = file;
+		_file = file.getLocation().toFile();
+		if (!file.exists()) {
+			String javaFileName = LocatePlugin.getDefault().fileNameWithoutExtension(file);
+			try {
+				file.create(new ByteArrayInputStream(ApiModel.blankContent(javaFileName).getBytes()), true, new NullProgressMonitor());
+			} catch (CoreException e) {
+				throw new ApiModelException("Failed to create blank API file.", e);
+			}
+		}
+		parse();
 	}
 
 	public ApiModel(URL url) throws ApiModelException {
-		this.url = url;
-		this.parse();
+		_url = url;
+		parse();
 	}
 
 	public ApiModel(Reader reader) throws ApiModelException {
-		this.reader = reader;
-		this.parse();
+		_reader = reader;
+		parse();
 	}
-	
+
+	public static String blankContent(String name) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("<?xml version = \"1.0\" encoding = \"UTF-8\" standalone = \"yes\"?>\n");
+		sb.append("<wodefinitions>\n");
+		sb.append("  <wo wocomponentcontent = \"false\" class = \"" + name + "\">");
+		sb.append("  </wo>\n");
+		sb.append("</wodefinitions>\n");
+		return sb.toString();
+	}
+
 	public String getLocation() {
 		String location;
-		if (this.url != null) {
-			location = this.url.toExternalForm();
-		}
-		else if (this.file != null) {
-			location = this.file.getAbsolutePath();
-		}
-		else {
+		if (_url != null) {
+			location = _url.toExternalForm();
+		} else if (_file != null) {
+			location = _file.getAbsolutePath();
+		} else {
 			location = null;
 		}
 		return location;
@@ -116,14 +159,12 @@ public class ApiModel {
 	private void parse() throws ApiModelException {
 		try {
 			DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			if (this.url != null) {
-				this.document = documentBuilder.parse(this.url.toExternalForm());
-			}
-			else if (this.file != null) {
-				this.document = documentBuilder.parse(this.file);
-			}
-			else {
-				this.document = documentBuilder.parse(new InputSource(this.reader));
+			if (_url != null) {
+				_document = documentBuilder.parse(_url.toExternalForm());
+			} else if (_file != null) {
+				_document = documentBuilder.parse(_file);
+			} else {
+				_document = documentBuilder.parse(new InputSource(_reader));
 			}
 		} catch (Throwable e) {
 			throw new ApiModelException("Failed to parse API file " + getLocation() + ".", e);
@@ -131,12 +172,12 @@ public class ApiModel {
 	}
 
 	public Wodefinitions getWODefinitions() {
-		Element element = document.getDocumentElement();
+		Element element = _document.getDocumentElement();
 		return new Wodefinitions(element, this);
 	}
 
 	public Wo getWo() {
-		Wodefinitions wodefinitions = this.getWODefinitions();
+		Wodefinitions wodefinitions = getWODefinitions();
 		if (wodefinitions == null) {
 			return null;
 		}
@@ -144,32 +185,49 @@ public class ApiModel {
 	}
 
 	public void saveChanges() throws ApiModelException {
-		if (file == null) {
+		if (_file == null) {
 			throw new ApiModelException("You can not saveChanges to an ApiModel that is not backed by a file.");
 		}
-		Result result = new StreamResult(file);
-		saveChanges(result);
+		try {
+			FileWriter writer = new FileWriter(_file);
+			try {
+				saveChanges(writer);
+			} finally {
+				writer.close();
+			}
+			if (_eclipseFile != null) {
+				try {
+					_eclipseFile.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
+				} catch (CoreException e) {
+					// ignore
+				}
+			}
+		} catch (IOException ioe) {
+			throw new ApiModelException("Failed to save changes to API file.", ioe);
+		}
 	}
 
-	public void saveChanges(Result result) throws ApiModelException {
-		// Prepare the DOM document for writing
-		Source source = new DOMSource(this.document);
-
-		// Write the DOM document to the file
+	public void saveChanges(Writer writer) throws ApiModelException {
 		try {
-			Transformer xformer = TransformerFactory.newInstance().newTransformer();
-			xformer.transform(source, result);
-			isDirty = false;
+			TransformerFactory xformerFactory = TransformerFactory.newInstance();
+			xformerFactory.setAttribute("indent-number", new Integer(4));
+			OutputFormat outputFormat = new OutputFormat("XML", "UTF-8", true);
+			outputFormat.setIndent(1);
+			outputFormat.setIndenting(true);
+			XMLSerializer serializer = new XMLSerializer(writer, outputFormat);
+			serializer.asDOMSerializer();
+			serializer.serialize(_document);
+			_isDirty = false;
 		} catch (Throwable t) {
 			throw new ApiModelException("Failed to save API file " + getLocation() + ".", t);
 		}
 	}
 
 	public boolean isDirty() {
-		return isDirty;
+		return _isDirty;
 	}
 
 	public void markAsDirty() {
-		isDirty = true;
+		_isDirty = true;
 	}
 }

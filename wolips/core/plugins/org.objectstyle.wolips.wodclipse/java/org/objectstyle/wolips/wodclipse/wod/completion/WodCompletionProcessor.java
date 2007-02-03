@@ -505,8 +505,10 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 		Iterator bindingKeysIter = _bindingKeys.iterator();
 		while (bindingKeysIter.hasNext()) {
 			BindingValueKey bindingKey = (BindingValueKey) bindingKeysIter.next();
-			WodCompletionProposal completionProposal = new WodCompletionProposal(_token, _tokenOffset, _offset, bindingKey.getBindingName());
-			_completionProposalsSet.add(completionProposal);
+			if (!WodBindingUtils.isSystemBindingValueKey(bindingKey, false)) {
+				WodCompletionProposal completionProposal = new WodCompletionProposal(_token, _tokenOffset, _offset, bindingKey.getBindingName());
+				_completionProposalsSet.add(completionProposal);
+			}
 		}
 	}
 }

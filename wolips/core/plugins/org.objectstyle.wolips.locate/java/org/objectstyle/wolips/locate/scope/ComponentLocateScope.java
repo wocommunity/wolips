@@ -55,8 +55,8 @@
  */
 package org.objectstyle.wolips.locate.scope;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.objectstyle.wolips.locate.LocatePlugin;
 
 public class ComponentLocateScope extends AbstractJavaLocateScope {
@@ -65,10 +65,10 @@ public class ComponentLocateScope extends AbstractJavaLocateScope {
 		super(project, new String[] { name + ".java", name + ".api" }, new String[] { name + ".wo" });
 	}
 
-	public static ComponentLocateScope createLocateScope(IFile file) {
-		String fileNameWithoutExtension = LocatePlugin.getDefault().fileNameWithoutExtension(file);
+	public static ComponentLocateScope createLocateScope(IResource resource) {
+		String fileNameWithoutExtension = LocatePlugin.getDefault().fileNameWithoutExtension(resource);
 
-		return new ComponentLocateScope(file.getProject(), fileNameWithoutExtension);
+		return new ComponentLocateScope(resource.getProject(), fileNameWithoutExtension);
 	}
 
 	public static ComponentLocateScope createLocateScope(IProject project, String fileNameWithoutExtension) {
