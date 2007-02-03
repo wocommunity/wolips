@@ -91,14 +91,14 @@
 
 	<distributionManagement>
 		<repository>
-			<id>objectstyle</id>
-			<name>ObjectStyle Maven2 Repository</name>
-			<url>dav:https://objectstyle.org/maven2</url>
+			<id>webobjects.mdimension.com</id>
+			<name>mdimension Maven2 Release Repository</name>
+			<url>scp://webobjects.mdimension.com/Library/WebServer/BuildServer/maven2/releases</url>
 		</repository>
 		<snapshotRepository>
-			<id>objectstyle</id>
-			<name>ObjectStyle Maven2 Repository</name>
-			<url>dav:https://objectstyle.org/maven2</url>
+			<id>webobjects.mdimension.com</id>
+			<name>mdimension Maven2 Snapshot Repository</name>
+			<url>scp://webobjects.mdimension.com/Library/WebServer/BuildServer/maven2/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 
