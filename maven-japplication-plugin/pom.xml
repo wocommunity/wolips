@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -16,6 +18,7 @@
 		<dependency>
 			<groupId>org.objectstyle.woproject.ant</groupId>
 			<artifactId>woenvironment</artifactId>
+			<version>2.0.3-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>webobjects.apple</groupId>
@@ -26,6 +29,7 @@
 		<dependency>
 			<groupId>org.objectstyle.woproject.ant</groupId>
 			<artifactId>woproject-ant-tasks</artifactId>
+			<version>2.0.3-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>webobjects.apple</groupId>
@@ -37,16 +41,19 @@
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
+			<version>2.0.4</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-project</artifactId>
+			<version>2.0.4</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.codehaus.plexus</groupId>
 			<artifactId>plexus-archiver</artifactId>
+			<version>1.0-alpha-8</version>
 		</dependency>
 	</dependencies>
 
