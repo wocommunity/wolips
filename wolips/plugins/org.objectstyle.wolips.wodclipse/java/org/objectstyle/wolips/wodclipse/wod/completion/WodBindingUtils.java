@@ -348,4 +348,24 @@ public class WodBindingUtils {
 		}
 		return validValues;
 	}
+	
+	public static boolean isSystemBindingValueKey(BindingValueKey bindingValueKey, boolean includeCommonKeys) {
+		boolean isSystemBinding = false;
+		if (bindingValueKey != null && "WOComponent".equals(bindingValueKey.getDeclaringType().getElementName())) {
+			String bindingName = bindingValueKey.getBindingName();
+			if ("cachingEnabled".equals(bindingName)) {
+				isSystemBinding = true;
+			}
+			else if ("isPage".equals(bindingName)) {
+				isSystemBinding = true;
+			}
+			else if ("keyAssociations".equals(bindingName)) {
+				isSystemBinding = true;
+			}
+			else if (includeCommonKeys && "context".equals(bindingName)) {
+				isSystemBinding = true;
+			}
+		}
+		return isSystemBinding;
+	}
 }

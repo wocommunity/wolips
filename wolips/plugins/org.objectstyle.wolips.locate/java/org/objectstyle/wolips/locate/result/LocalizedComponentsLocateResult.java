@@ -57,16 +57,19 @@ package org.objectstyle.wolips.locate.result;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.locate.LocateException;
+import org.objectstyle.wolips.locate.LocatePlugin;
 
 public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 	private ArrayList components = new ArrayList();
@@ -113,6 +116,21 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 
 	public IFile getDotApi() {
 		return dotApi;
+	}
+	
+	public IFile getDotApi(boolean guessIfMissing) throws CoreException {
+		IFile apiFile = dotApi;
+		if (apiFile == null && guessIfMissing) {
+			IFile firstHtmlFile = getFirstHtmlFile();
+			IContainer apiFolder = null;
+			if (firstHtmlFile != null) {
+				apiFolder = firstHtmlFile.getParent().getParent();
+			}
+			if (apiFolder != null) {
+				apiFile = apiFolder.getFile(new Path(LocatePlugin.getDefault().fileNameWithoutExtension(firstHtmlFile) + ".api"));
+			}
+		}
+		return apiFile;
 	}
 
 	public IFile getDotJava() {

@@ -44,4 +44,32 @@
           id="org.objectstyle.wolips.wodclipse.builder.WodBuilder"
           name="Wod Builder"/>
  </extension>
+ <extension
+       point="org.eclipse.ui.popupMenus">
+    <objectContribution
+          adaptable="false"
+          id="org.objectstyle.wolips.wodclipse.generateAPI.woContribution"
+          nameFilter="*.wo"
+          objectClass="org.eclipse.core.resources.IFolder">
+       <action
+             class="org.objectstyle.wolips.wodclipse.action.GenerateAPIAction"
+             enablesFor="*"
+             icon="icons/BindingOutline.gif"
+             id="org.objectstyle.wolips.wodclipse.generateAPIActionForWO"
+             label="Generate API File"
+             menubarPath="additions"/>
+    </objectContribution>
+    <objectContribution
+          adaptable="false"
+          id="org.objectstyle.wolips.wodclipse.generateAPI.javaContribution"
+          objectClass="org.eclipse.jdt.core.ICompilationUnit">
+       <action
+             class="org.objectstyle.wolips.wodclipse.action.GenerateAPIAction"
+             enablesFor="*"
+             icon="icons/BindingOutline.gif"
+             id="org.objectstyle.wolips.wodclipse.generateAPIActionForJava"
+             label="Generate API File"
+             menubarPath="additions"/>
+    </objectContribution>
+ </extension>
 </plugin>

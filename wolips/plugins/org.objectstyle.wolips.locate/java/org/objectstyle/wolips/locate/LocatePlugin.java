@@ -55,8 +55,10 @@
  */
 package org.objectstyle.wolips.locate;
 
-import org.eclipse.core.resources.IFile;
+import java.io.File;
+
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.objectstyle.wolips.baseforplugins.AbstractBaseActivator;
@@ -104,16 +106,16 @@ public class LocatePlugin extends AbstractBaseActivator {
 		return plugin;
 	}
 
-	public LocalizedComponentsLocateResult getLocalizedComponentsLocateResult(IFile file) throws CoreException, LocateException {
-		LocalizedComponentsLocateResult localizedComponentsLocateResult = componentsLocateCache.getLocalizedComponentsLocateResult(file);
+	public LocalizedComponentsLocateResult getLocalizedComponentsLocateResult(IResource resource) throws CoreException, LocateException {
+		LocalizedComponentsLocateResult localizedComponentsLocateResult = componentsLocateCache.getLocalizedComponentsLocateResult(resource);
 		if (localizedComponentsLocateResult != null) {
 			return localizedComponentsLocateResult;
 		}
-		ComponentLocateScope componentLocateScope = ComponentLocateScope.createLocateScope(file);
+		ComponentLocateScope componentLocateScope = ComponentLocateScope.createLocateScope(resource);
 		localizedComponentsLocateResult = new LocalizedComponentsLocateResult();
 		Locate locate = new Locate(componentLocateScope, localizedComponentsLocateResult);
 		locate.locate();
-		componentsLocateCache.addToCache(file, localizedComponentsLocateResult);
+		componentsLocateCache.addToCache(resource, localizedComponentsLocateResult);
 		return localizedComponentsLocateResult;
 	}
 
@@ -125,8 +127,17 @@ public class LocatePlugin extends AbstractBaseActivator {
 		return javaLocateResult;
 	}
 
-	public String fileNameWithoutExtension(IFile file) {
+	public String fileNameWithoutExtension(IResource file) {
 		String fileName = file.getName();
+		return fileNameWithoutExtension(fileName);
+	}
+
+	public String fileNameWithoutExtension(File file) {
+		String fileName = file.getName();
+		return fileNameWithoutExtension(fileName);
+	}
+
+	public String fileNameWithoutExtension(String fileName) {
 		String fileNameWithoutExtension;
 		int dotIndex = fileName.indexOf('.');
 		if (dotIndex != -1) {
