@@ -118,16 +118,16 @@ public class DatabaseConfigSection extends AbstractPropertySection {
 	}
 
 	public void setInput(IWorkbenchPart part, ISelection selection) {
-		super.setInput(part, selection);
-
 		disposeBindings();
+		
+		super.setInput(part, selection);
 
 		Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
 		_databaseConfig = (EODatabaseConfig) selectedObject;
 
 		if (_databaseConfig != null) {
 			_bindingContext = BindingFactory.createContext();
-			addBindings(_bindingContext);
+			addBindings();
 		}
 
 		adaptorNameChanged();
@@ -185,6 +185,9 @@ public class DatabaseConfigSection extends AbstractPropertySection {
 	}
 
 	protected void disposeBindings() {
+		if (_bindingContext != null) {
+			_bindingContext.dispose();
+		}
 		if (_prototypeBinding != null) {
 			_prototypeBinding.dispose();
 		}
@@ -201,8 +204,8 @@ public class DatabaseConfigSection extends AbstractPropertySection {
 		}
 	}
 
-	protected void addBindings(DataBindingContext context) {
-		context.bind(_nameText, new Property(getDatabaseConfig(), EODatabaseConfig.NAME), null);
+	protected void addBindings() {
+		_bindingContext.bind(_nameText, new Property(getDatabaseConfig(), EODatabaseConfig.NAME), null);
 		_prototypeComboViewer.setInput(getDatabaseConfig());
 		_prototypeBinding = new ComboViewerBinding(_prototypeComboViewer, getDatabaseConfig(), EODatabaseConfig.PROTOTYPE, null, null, EOPrototypeEntityListContentProvider.BLANK_ENTITY);
 		_adaptorNameComboViewer.setInput(getDatabaseConfig());
