@@ -61,65 +61,72 @@ import org.eclipse.core.resources.IProject;
 
 public class DefaultLocateScope extends AbstractLocateScope {
 
-	private ProjectLocateScope projectLocateScope;
+	private ILocateScope _projectLocateScope;
 
-	private IgnoredFolderLocateScope ignoredFolderScope;
+	private IgnoredFolderLocateScope _ignoredFolderScope;
 
-	private IncludeFileLocateScope includeFileScope;
+	private IncludeFileLocateScope _includeFileScope;
 
-	private IncludeFolderLocateScope includeFolderScope;
+	private IncludeFolderLocateScope _includeFolderScope;
 
 	public DefaultLocateScope(IProject project, String[] includedFilesNames, String[] includedFolderNames) {
 		super();
-		projectLocateScope = new ProjectLocateScope(project);
-		ignoredFolderScope = new DefaultIgnoredFolderLocateScope();
-		includeFileScope = new IncludeFileLocateScope(includedFilesNames, null);
-		includeFolderScope = new IncludeFolderLocateScope(includedFolderNames, null);
+		_projectLocateScope = new ProjectLocateScope(project);
+		_ignoredFolderScope = new DefaultIgnoredFolderLocateScope();
+		_includeFileScope = new IncludeFileLocateScope(includedFilesNames, null);
+		_includeFolderScope = new IncludeFolderLocateScope(includedFolderNames, null);
+	}
+
+	public DefaultLocateScope(ILocateScope projectLocateScope, String[] includedFilesNames, String[] includedFolderNames) {
+		_projectLocateScope = projectLocateScope;
+		_ignoredFolderScope = new DefaultIgnoredFolderLocateScope();
+		_includeFileScope = new IncludeFileLocateScope(includedFilesNames, null);
+		_includeFolderScope = new IncludeFolderLocateScope(includedFolderNames, null);
 	}
 
 	public boolean ignoreContainer(IContainer container) {
-		if (projectLocateScope.ignoreContainer(container)) {
+		if (_projectLocateScope.ignoreContainer(container)) {
 			return true;
 		}
-		if (ignoredFolderScope.ignoreContainer(container)) {
+		if (_ignoredFolderScope.ignoreContainer(container)) {
 			return true;
 		}
-		if (includeFileScope.ignoreContainer(container)) {
+		if (_includeFileScope.ignoreContainer(container)) {
 			return true;
 		}
-		if (includeFolderScope.ignoreContainer(container)) {
+		if (_includeFolderScope.ignoreContainer(container)) {
 			return true;
 		}
 		return false;
 	}
 
 	public boolean addToResult(IFile file) {
-		if (projectLocateScope.addToResult(file)) {
+		if (_projectLocateScope.addToResult(file)) {
 			return true;
 		}
-		if (ignoredFolderScope.addToResult(file)) {
+		if (_ignoredFolderScope.addToResult(file)) {
 			return true;
 		}
-		if (includeFileScope.addToResult(file)) {
+		if (_includeFileScope.addToResult(file)) {
 			return true;
 		}
-		if (includeFolderScope.addToResult(file)) {
+		if (_includeFolderScope.addToResult(file)) {
 			return true;
 		}
 		return false;
 	}
 
 	public boolean addToResult(IContainer container) {
-		if (projectLocateScope.addToResult(container)) {
+		if (_projectLocateScope.addToResult(container)) {
 			return true;
 		}
-		if (ignoredFolderScope.addToResult(container)) {
+		if (_ignoredFolderScope.addToResult(container)) {
 			return true;
 		}
-		if (includeFileScope.addToResult(container)) {
+		if (_includeFileScope.addToResult(container)) {
 			return true;
 		}
-		if (includeFolderScope.addToResult(container)) {
+		if (_includeFolderScope.addToResult(container)) {
 			return true;
 		}
 		return false;

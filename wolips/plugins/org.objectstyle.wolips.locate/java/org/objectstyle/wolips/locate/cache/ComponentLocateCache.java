@@ -97,16 +97,28 @@ public class ComponentLocateCache implements IResourceChangeListener {
 		return localizedComponentsLocateResult;
 	}
 
-	public void addToCache(IResource resource, LocalizedComponentsLocateResult localizedComponentsLocateResult) {
+	public LocalizedComponentsLocateResult getLocalizedComponentsLocateResult(IProject project, String filenameWithoutExtension) {
+		HashMap projectHashMap = this.project(project);
+		if (projectHashMap == null) {
+			return null;
+		}
+		String key = LocatePlugin.getDefault().fileNameWithoutExtension(filenameWithoutExtension);
+		LocalizedComponentsLocateResult localizedComponentsLocateResult = (LocalizedComponentsLocateResult) projectHashMap.get(key);
+		return localizedComponentsLocateResult;
+	}
 
-		HashMap projectHashMap = this.project(resource.getProject());
+	public void addToCache(IResource resource, LocalizedComponentsLocateResult localizedComponentsLocateResult) {
+		addToCache(resource.getProject(), LocatePlugin.getDefault().fileNameWithoutExtension(resource), localizedComponentsLocateResult);
+	}
+
+	public void addToCache(IProject project, String filenameWithoutExtension, LocalizedComponentsLocateResult localizedComponentsLocateResult) {
+		HashMap projectHashMap = this.project(project);
 		if (projectHashMap == null) {
 			projectHashMap = new HashMap();
-			String projectsKey = resource.getProject().getName();
+			String projectsKey = project.getName();
 			projects.put(projectsKey, projectHashMap);
 		}
-		String key = LocatePlugin.getDefault().fileNameWithoutExtension(resource);
-		projectHashMap.put(key, localizedComponentsLocateResult);
+		projectHashMap.put(filenameWithoutExtension, localizedComponentsLocateResult);
 	}
 
 	private HashMap project(IProject project) {

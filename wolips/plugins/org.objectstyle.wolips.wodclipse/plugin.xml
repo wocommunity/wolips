@@ -72,4 +72,28 @@
              menubarPath="additions"/>
     </objectContribution>
  </extension>
+ <extension
+       point="org.eclipse.ui.editorActions">
+    <editorContribution
+          id="org.objectstyle.wolips.wodclipse.editorContribution3"
+          targetID="org.objectstyle.wolips.componenteditor.ComponentEditor">
+       <action
+             class="org.objectstyle.wolips.wodclipse.action.OpenDeclarationAction"
+             definitionId="org.objectstyle.wolips.wodclipse.openDeclaration"
+             id="org.objectstyle.wolips.wodclipse.action.openDeclaration"
+             label="Open WO Declaration"
+             menubarPath="navigate/org.objectstyle.wolips.componenteditor.navigateMenuContribution/group1"/>
+    </editorContribution>
+ </extension>
+ <extension
+       point="org.eclipse.ui.commands">
+    <command
+          categoryId="org.objectstyle.wolips.wodclipse.category"
+          description="Open WO Declaration"
+          id="org.objectstyle.wolips.wodclipse.action.openDeclaration"
+          name="Open WO Declaration"/>
+    <category
+          id="org.objectstyle.wolips.wodclipse.category"
+          name="WOD Editor"/>
+ </extension>
 </plugin>
