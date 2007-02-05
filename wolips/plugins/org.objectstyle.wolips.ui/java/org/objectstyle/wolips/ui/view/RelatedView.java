@@ -65,7 +65,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -192,7 +191,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 			List result = new LinkedList();
 			if (wolipsResource != null) {
 				try {
-					List list = (wolipsResource).getRelatedResources();
+					List list = wolipsResource.getRelatedResources();
 					result.addAll(list);
 
 				} catch (Exception e) {
