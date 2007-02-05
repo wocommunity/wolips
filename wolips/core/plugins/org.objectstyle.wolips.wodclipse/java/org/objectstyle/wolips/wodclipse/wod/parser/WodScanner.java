@@ -112,6 +112,17 @@ public class WodScanner extends AbstractJavaScanner {
 	public Token getToken(String _key) {
 		return super.getToken(_key);
 	}
+	
+	public RulePosition getRulePositionAtOffset(int offset) {
+		RulePosition matchingRulePosition = null;
+		RulePosition rulePosition = null;
+		while (matchingRulePosition == null && (rulePosition = nextRulePosition()) != null) {
+			if (rulePosition.getTokenOffset() <= offset && rulePosition.getTokenEndOffset() > offset) {
+				matchingRulePosition = rulePosition;
+			}
+		}
+		return matchingRulePosition;
+	}
 
 	public RulePosition getFirstRulePositionOfType(Class _ruleType) {
 		RulePosition rulePosition = null;

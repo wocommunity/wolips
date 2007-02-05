@@ -107,15 +107,19 @@ public class LocatePlugin extends AbstractBaseActivator {
 	}
 
 	public LocalizedComponentsLocateResult getLocalizedComponentsLocateResult(IResource resource) throws CoreException, LocateException {
-		LocalizedComponentsLocateResult localizedComponentsLocateResult = componentsLocateCache.getLocalizedComponentsLocateResult(resource);
+		return getLocalizedComponentsLocateResult(resource.getProject(), LocatePlugin.getDefault().fileNameWithoutExtension(resource));
+	}
+
+	public LocalizedComponentsLocateResult getLocalizedComponentsLocateResult(IProject project, String filenameWithoutExtension) throws CoreException, LocateException {
+		LocalizedComponentsLocateResult localizedComponentsLocateResult = componentsLocateCache.getLocalizedComponentsLocateResult(project, filenameWithoutExtension);
 		if (localizedComponentsLocateResult != null) {
 			return localizedComponentsLocateResult;
 		}
-		ComponentLocateScope componentLocateScope = ComponentLocateScope.createLocateScope(resource);
+		ComponentLocateScope componentLocateScope = ComponentLocateScope.createLocateScope(project, filenameWithoutExtension);
 		localizedComponentsLocateResult = new LocalizedComponentsLocateResult();
 		Locate locate = new Locate(componentLocateScope, localizedComponentsLocateResult);
 		locate.locate();
-		componentsLocateCache.addToCache(resource, localizedComponentsLocateResult);
+		componentsLocateCache.addToCache(project, filenameWithoutExtension, localizedComponentsLocateResult);
 		return localizedComponentsLocateResult;
 	}
 

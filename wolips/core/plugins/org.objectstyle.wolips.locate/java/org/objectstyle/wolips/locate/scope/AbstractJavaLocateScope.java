@@ -66,6 +66,10 @@ public abstract class AbstractJavaLocateScope extends DefaultLocateScope {
 	public AbstractJavaLocateScope(IProject project, String[] includedFilesNames, String[] includedFolderNames) {
 		super(project, includedFilesNames, includedFolderNames);
 	}
+	
+	public AbstractJavaLocateScope(ILocateScope projectLocateScope, String[] includedFilesNames, String[] includedFolderNames) {
+		super(projectLocateScope, includedFilesNames, includedFolderNames);
+	}
 
 	public boolean addToResult(IFile file) {
 		if (file != null) {
