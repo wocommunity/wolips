@@ -8,8 +8,22 @@ import org.apache.maven.project.MavenProject;
 
 public abstract class WOMojo extends AbstractMojo {
 
+	public final static String MAVEN_WEBOBJECTS_GROUP_ID = "webobjects/apple";
+
 	public WOMojo() {
 		super();
+	}
+
+	protected boolean isWebobjectAppleGroup(String dependencyGroup) {
+		boolean returnValue = false;
+		if (dependencyGroup != null) {
+			if(dependencyGroup.indexOf('.') >= 0) {
+				throw new IllegalStateException();
+			}
+			returnValue = dependencyGroup.equals(MAVEN_WEBOBJECTS_GROUP_ID);
+		}
+		getLog().debug("WOMojo: isWebobjectAppleGroup: " + dependencyGroup + " return value " + returnValue);
+		return returnValue;
 	}
 
 	protected String getProjectFolder() {
