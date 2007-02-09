@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2006 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2006 - 2007 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -54,7 +54,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchConfigurationDelegate;
 
-import com.jprofiler.integrations.eclipse.A.B;
+import com.jprofiler.integrations.eclipse.internal.ProfilingSession;
 
 /**
  * Launches a local VM.
@@ -64,23 +64,23 @@ public class JProfilerWOJavaLocalApplicationLaunchConfigurationDelegate extends
 
 	public final static String JProfilerWOJavaLocalApplicationID = "org.objectstyle.wolips.jprofiler.launching.JProfilerWOLocalJavaApplication";
 	
-	private B profilingSession;
+	private ProfilingSession profilingSession;
 
 	public void launch(ILaunchConfiguration configuration, String mode,
 			ILaunch launch, IProgressMonitor monitor) throws CoreException {
-		profilingSession = B.A(this,
+		profilingSession = ProfilingSession.createProfilingSession(this,
 				configuration);
-		if (!profilingSession.H()) {
+		if (!profilingSession.sendProfilingRequest()) {
 			return;
 		}
 		super.launch(profilingSession
-				.C(configuration),
+				.getModifiedLaunchConfiguration(configuration),
 				ILaunchManager.RUN_MODE, launch, monitor);
 	}
 
 	public Map getVMSpecificAttributesMap(ILaunchConfiguration configuration)
 			throws CoreException {
-		return profilingSession.A(super
+		return profilingSession.getModifiedAttributesMap(super
 				.getVMSpecificAttributesMap(configuration));
 	}
 
