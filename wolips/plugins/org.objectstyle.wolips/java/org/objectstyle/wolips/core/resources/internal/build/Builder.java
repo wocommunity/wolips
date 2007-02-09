@@ -69,7 +69,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.core.CorePlugin;
 import org.objectstyle.wolips.core.resources.builder.AbstractOldBuilder;
 import org.objectstyle.wolips.core.resources.types.folder.IBuildAdapter;
-import org.objectstyle.wolips.core.resources.types.folder.IWoprojectAdapter;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 
 public abstract class Builder extends IncrementalProjectBuilder {
