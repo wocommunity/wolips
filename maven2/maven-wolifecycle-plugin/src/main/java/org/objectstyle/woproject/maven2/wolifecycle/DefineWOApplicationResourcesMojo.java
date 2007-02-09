@@ -123,7 +123,7 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 		getLog().info("Copy webserverresources");
 		String[][] classpathEntries = this.getDependencyPaths();
 		for (int i = 0; i < classpathEntries[1].length; i++) {
-			if(skipAppleProvidedFrameworks != null && skipAppleProvidedFrameworks.booleanValue() && this.isWebobjectAppleGroup(classpathEntries[2][i])) {
+			if (skipAppleProvidedFrameworks != null && skipAppleProvidedFrameworks.booleanValue() && this.isWebobjectAppleGroup(classpathEntries[2][i])) {
 				getLog().debug("Defining wo classpath: dependencyPath: " + classpathEntries[0][i] + "is in the apple group skipping");
 				continue;
 			}
@@ -222,13 +222,21 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 		getLog().debug("Defining wo classpath: dependencies from parameter");
 		String[][] classpathEntries = this.getDependencyPaths();
 		StringBuffer classPath = new StringBuffer();
-		for (int i = 0; i < classpathEntries[0].length; i++) {
-			getLog().debug("Defining wo classpath: dependencyPath: " + classpathEntries[0][i]);
-			if(skipAppleProvidedFrameworks != null && skipAppleProvidedFrameworks.booleanValue() && this.isWebobjectAppleGroup(classpathEntries[2][i])) {
-				getLog().debug("Defining wo classpath: dependencyPath: " + classpathEntries[0][i] + "is in the apple group skipping");
-				continue;
+		for (int k = 0; k < 2; k++) {
+			for (int i = 0; i < classpathEntries[0].length; i++) {
+				getLog().debug("Defining wo classpath: dependencyPath: " + classpathEntries[0][i]);
+				if(k== 0 && this.isWebobjectAppleGroup(classpathEntries[2][i])) {
+					continue;
+				}
+				if(k== 1 && !this.isWebobjectAppleGroup(classpathEntries[2][i])) {
+					continue;
+				}
+				if (skipAppleProvidedFrameworks != null && skipAppleProvidedFrameworks.booleanValue() && this.isWebobjectAppleGroup(classpathEntries[2][i])) {
+					getLog().debug("Defining wo classpath: dependencyPath: " + classpathEntries[0][i] + "is in the apple group skipping");
+					continue;
+				}
+				classPath.append(classpathEntries[0][i] + "\n");
 			}
-			classPath.append(classpathEntries[0][i] + "\n");
 		}
 		String fileName = this.getProjectFolder() + "target" + File.separator + "classpath.txt";
 		getLog().debug("Defining wo classpath: writing to file: " + fileName);
