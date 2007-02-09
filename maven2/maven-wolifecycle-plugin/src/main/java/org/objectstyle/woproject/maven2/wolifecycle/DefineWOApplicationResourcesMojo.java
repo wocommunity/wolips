@@ -91,11 +91,18 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 	private String[][] dependencyPaths;
 
 	/**
-	 * Read patternsets.
+	 * include JavaClientClasses in WebServerResources.
 	 * 
 	 * @parameter expression="includeJavaClientClassesInWebServerResources"
 	 */
 	private Boolean includeJavaClientClassesInWebServerResources;
+
+	/**
+	 * include webobjects frameworks from apple.
+	 * 
+	 * @parameter expression="includeAppleProvidedFrameworks"
+	 */
+	private Boolean includeAppleProvidedFrameworks;
 
 	public DefineWOApplicationResourcesMojo() {
 		super();
@@ -116,6 +123,10 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 		getLog().info("Copy webserverresources");
 		String[][] classpathEntries = this.getDependencyPaths();
 		for (int i = 0; i < classpathEntries[1].length; i++) {
+			if(includeAppleProvidedFrameworks != null && !includeAppleProvidedFrameworks.booleanValue() && this.isWebobjectAppleGroup(classpathEntries[2][i])) {
+				getLog().debug("Defining wo classpath: dependencyPath: " + classpathEntries[0][i] + "is in the apple group skipping");
+				continue;
+			}
 			FileInputStream fileInputStream;
 			try {
 				String jarFileName = localRepository.getBasedir() + File.separator + classpathEntries[0][i];
@@ -209,11 +220,15 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 
 	private void defineClasspath() throws MojoExecutionException {
 		getLog().debug("Defining wo classpath: dependencies from parameter");
-		String[] classpathEntries = this.getDependencyPaths()[0];
+		String[][] classpathEntries = this.getDependencyPaths();
 		StringBuffer classPath = new StringBuffer();
-		for (int i = 0; i < classpathEntries.length; i++) {
-			getLog().debug("Defining wo classpath: dependencyPath: " + classpathEntries[i]);
-			classPath.append(classpathEntries[i] + "\n");
+		for (int i = 0; i < classpathEntries[0].length; i++) {
+			getLog().debug("Defining wo classpath: dependencyPath: " + classpathEntries[0][i]);
+			if(includeAppleProvidedFrameworks != null && !includeAppleProvidedFrameworks.booleanValue() && this.isWebobjectAppleGroup(classpathEntries[2][i])) {
+				getLog().debug("Defining wo classpath: dependencyPath: " + classpathEntries[0][i] + "is in the apple group skipping");
+				continue;
+			}
+			classPath.append(classpathEntries[0][i] + "\n");
 		}
 		String fileName = this.getProjectFolder() + "target" + File.separator + "classpath.txt";
 		getLog().debug("Defining wo classpath: writing to file: " + fileName);
@@ -264,6 +279,7 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 			Set artifacts = result.getArtifacts();
 			ArrayList classPathEntriesArray = new ArrayList();
 			ArrayList artfactNameEntriesArray = new ArrayList();
+			ArrayList artfactGroupEntriesArray = new ArrayList();
 			Iterator dependenciesIterator = artifacts.iterator();
 			while (dependenciesIterator.hasNext()) {
 				Artifact artifact = (Artifact) dependenciesIterator.next();
@@ -280,10 +296,12 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 				String dependencyPath = depenendencyGroup + File.separator + depenendencyArtifact + File.separator + depenendencyBaseVersion + File.separator + depenendencyArtifact + "-" + depenendencyVersion + ".jar";
 				classPathEntriesArray.add(dependencyPath);
 				artfactNameEntriesArray.add(depenendencyArtifact);
+				artfactGroupEntriesArray.add(depenendencyGroup);
 			}
-			dependencyPaths = new String[2][];
+			dependencyPaths = new String[3][];
 			dependencyPaths[0] = (String[]) classPathEntriesArray.toArray(new String[classPathEntriesArray.size()]);
 			dependencyPaths[1] = (String[]) artfactNameEntriesArray.toArray(new String[artfactNameEntriesArray.size()]);
+			dependencyPaths[2] = (String[]) artfactGroupEntriesArray.toArray(new String[artfactGroupEntriesArray.size()]);
 		}
 		return dependencyPaths;
 	}
