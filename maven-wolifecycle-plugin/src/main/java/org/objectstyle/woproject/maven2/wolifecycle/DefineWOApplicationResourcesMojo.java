@@ -98,11 +98,11 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 	private Boolean includeJavaClientClassesInWebServerResources;
 
 	/**
-	 * include webobjects frameworks from apple.
+	 * skip webobjects frameworks from apple.
 	 * 
-	 * @parameter expression="includeAppleProvidedFrameworks"
+	 * @parameter expression="skipAppleProvidedFrameworks"
 	 */
-	private Boolean includeAppleProvidedFrameworks;
+	private Boolean skipAppleProvidedFrameworks;
 
 	public DefineWOApplicationResourcesMojo() {
 		super();
@@ -123,7 +123,7 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 		getLog().info("Copy webserverresources");
 		String[][] classpathEntries = this.getDependencyPaths();
 		for (int i = 0; i < classpathEntries[1].length; i++) {
-			if(includeAppleProvidedFrameworks != null && !includeAppleProvidedFrameworks.booleanValue() && this.isWebobjectAppleGroup(classpathEntries[2][i])) {
+			if(skipAppleProvidedFrameworks != null && skipAppleProvidedFrameworks.booleanValue() && this.isWebobjectAppleGroup(classpathEntries[2][i])) {
 				getLog().debug("Defining wo classpath: dependencyPath: " + classpathEntries[0][i] + "is in the apple group skipping");
 				continue;
 			}
@@ -224,7 +224,7 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 		StringBuffer classPath = new StringBuffer();
 		for (int i = 0; i < classpathEntries[0].length; i++) {
 			getLog().debug("Defining wo classpath: dependencyPath: " + classpathEntries[0][i]);
-			if(includeAppleProvidedFrameworks != null && !includeAppleProvidedFrameworks.booleanValue() && this.isWebobjectAppleGroup(classpathEntries[2][i])) {
+			if(skipAppleProvidedFrameworks != null && skipAppleProvidedFrameworks.booleanValue() && this.isWebobjectAppleGroup(classpathEntries[2][i])) {
 				getLog().debug("Defining wo classpath: dependencyPath: " + classpathEntries[0][i] + "is in the apple group skipping");
 				continue;
 			}
