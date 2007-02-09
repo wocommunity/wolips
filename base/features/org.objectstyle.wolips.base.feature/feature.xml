@@ -67,13 +67,17 @@
    </license>
 
    <url>
-       <update label="%feature.updateSiteName" url="%feature.updateSite"/>
-       <discovery label="%feature.updateSiteName" url="%feature.updateSite"/>
+      <update label="%feature.updateSiteName"/>
+      <discovery label="%feature.updateSiteName"/>
    </url>
- 
+
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.jface.text"/>
    </requires>
 
    <plugin
