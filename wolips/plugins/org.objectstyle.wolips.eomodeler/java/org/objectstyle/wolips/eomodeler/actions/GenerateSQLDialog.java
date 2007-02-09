@@ -337,7 +337,7 @@ public class GenerateSQLDialog extends Dialog {
 			});
 			Object eofSQLGenerator = SQLUtils.createEOFSQLGenerator(myModel, getEntityNames(), selectedDatabaseConfigMap, getEOModelClassLoader());
 			Method executeSQLMethod = eofSQLGenerator.getClass().getMethod("executeSQL", new Class[] { String.class });
-			String[] statements = allSql.split(";");
+			String[] statements = allSql.split("[;/]");
 			setCancel(false);
 			for (int statementsNum = 0; !myCancel && statementsNum < statements.length; statementsNum++) {
 				String statement = statements[statementsNum];
