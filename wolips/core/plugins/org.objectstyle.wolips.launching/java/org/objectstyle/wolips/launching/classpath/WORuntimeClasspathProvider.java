@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2002 - 2004 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2002 - 2007 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -45,6 +45,7 @@
 
 package org.objectstyle.wolips.launching.classpath;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -63,9 +64,7 @@ import org.objectstyle.wolips.datasets.adaptable.JavaProject;
 
 /**
  * @author hn3000
- * 
- * To change this generated comment go to Window>Preferences>Java>Code
- * Generation>Code Template
+ * @author uli
  */
 public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 	/**
@@ -151,26 +150,68 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 			}
 		}
 		result = (IRuntimeClasspathEntry[]) resolved.toArray(new IRuntimeClasspathEntry[resolved.size()]);
-		/* 
-		 * AK: this doesn't work this way
-		//move ERExtensions to top of classpath
-		int offset = 0;
-		for (int i = 1; i < result.length; ++i) {
+		// sort classpath
+		ArrayList sortedEntries = new ArrayList();
+		ArrayList jars = new ArrayList();
+		ArrayList appleJars = new ArrayList();
+		IRuntimeClasspathEntry woa = null;
+		for (int i = 0; i < result.length; i++) {
 			IRuntimeClasspathEntry runtimeClasspathEntry = result[i];
-			if(runtimeClasspathEntry.getLocation().indexOf("ERExtensions") >= 0) {
-				result[i] = result[offset];
-				result[offset] = runtimeClasspathEntry;
-				offset++;
+			if (isAppleProvided(runtimeClasspathEntry)) {
+				appleJars.add(runtimeClasspathEntry);
+			} else if (isWoa(runtimeClasspathEntry)) {
+				woa = runtimeClasspathEntry;
+			} else {
+				jars.add(runtimeClasspathEntry);
 			}
 		}
-		*/
+		if (jars.size() > 0) {
+			sortedEntries.addAll(jars);
+		}
+		if (appleJars.size() > 0) {
+			sortedEntries.addAll(appleJars);
+		}
+		if (woa != null) {
+			sortedEntries.add(woa);
+		}
+		result = (IRuntimeClasspathEntry[]) sortedEntries.toArray(new IRuntimeClasspathEntry[sortedEntries.size()]);
 		return result;
+	}
+
+	private boolean isAppleProvided(IRuntimeClasspathEntry runtimeClasspathEntry) {
+		String location = runtimeClasspathEntry.getLocation();
+		if (location != null) {
+			// check maven path
+			if (location.indexOf("webobjects" + File.separator + "apple") > 0) {
+				return true;
+			}
+			// check mac path
+			if (location.indexOf("System" + File.separator + "Library") > 0) {
+				return true;
+			}
+			// check win path
+			if (location.indexOf("Apple" + File.separator + "Library") > 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isWoa(IRuntimeClasspathEntry runtimeClasspathEntry) {
+		String location = runtimeClasspathEntry.getLocation();
+		if (location != null) {
+			// check maven path
+			if (location.indexOf(".woa") > 0) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private boolean isProjectJar(String lastSegment, List projects) {
 		for (int i = 0; i < projects.size(); i++) {
-			IProject project = (IProject)projects.get(i);
-			if(lastSegment.startsWith(project.getName())) {
+			IProject project = (IProject) projects.get(i);
+			if (lastSegment.startsWith(project.getName())) {
 				return true;
 			}
 		}
