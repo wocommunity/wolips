@@ -112,12 +112,16 @@ public class AppFormat extends ProjectFormat {
 		prepareMac();
 
 		// add Info.plist
-		String infoFile = new File(getApplicatonTask().contentsDir(), "Info.plist").getPath();
-		createMappings(infoFile, woappPlusVersion() + "/Info.plist", infoFilter(null));
+		String infoFile = new File(getApplicatonTask().contentsDir(),
+				"Info.plist").getPath();
+		createMappings(infoFile, woappPlusVersion() + "/Info.plist",
+				infoFilter(null));
 		// add web.xml
 		if (((WOApplication) this.task).webXML) {
-			String webXMLFile = new File(getApplicatonTask().contentsDir(), "web.xml").getPath();
-			createMappings(webXMLFile, woappPlusVersion() + "/web.xml", webXMLFilter());
+			String webXMLFile = new File(getApplicatonTask().contentsDir(),
+					"web.xml").getPath();
+			createMappings(webXMLFile, woappPlusVersion() + "/web.xml",
+					webXMLFilter());
 		}
 	}
 
@@ -170,9 +174,22 @@ public class AppFormat extends ProjectFormat {
 			buf = new StringBuffer();
 
 			// prepend the path with Resources/Java (for CompilerProxy support)
-			buf.append("APPROOT").append(File.separatorChar).append("Resources").append(File.separatorChar).append("Java").append(File.separatorChar).append("\r\n");
-			for (int i = 0; i < files.length; i++) {
-				buf.append("APPROOT").append(File.separatorChar).append(files[i]).append("\r\n");
+			buf.append("APPROOT").append(File.separatorChar)
+					.append("Resources").append(File.separatorChar).append(
+							"Java").append(File.separatorChar).append("\r\n");
+			for (int k = 0; k < 2; k++) {
+				
+				for (int i = 0; i < files.length; i++) {
+
+					if(k== 0 && files[i].toString().indexOf("webobjects") >= 0) {
+						continue;
+					}
+					if(k== 1 && files[i].toString().indexOf("webobjects") < 0) {
+						continue;
+					}
+					buf.append("APPROOT").append(File.separatorChar).append(
+							files[i]).append("\r\n");
+				}
 			}
 			return buf.toString();
 		} catch (Exception anException) {
@@ -194,8 +211,11 @@ public class AppFormat extends ProjectFormat {
 	 * need to be changed when creating files for multiple platforms.
 	 */
 	protected String buildFrameworkPaths() {
-		WOVariables variables = getApplicatonTask().getWOEnvironment().getWOVariables();
-		String result = FrameworkSet.jarsPathForFrameworkSets(task.getProject(), getApplicatonTask().getFrameworkSets(), variables);
+		WOVariables variables = getApplicatonTask().getWOEnvironment()
+				.getWOVariables();
+		String result = FrameworkSet.jarsPathForFrameworkSets(
+				task.getProject(), getApplicatonTask().getFrameworkSets(),
+				variables);
 		return result;
 	}
 
@@ -230,11 +250,14 @@ public class AppFormat extends ProjectFormat {
 			for (int i = 0; i < size; i++) {
 				// log(": Framework JAR " + (File) someFiles[i],
 				// Project.MSG_VERBOSE);
-				String fileName = this.getApplicatonTask().getWOEnvironment().getWOVariables().encodePathForFile((File) someFiles[i]);
+				String fileName = this.getApplicatonTask().getWOEnvironment()
+						.getWOVariables()
+						.encodePathForFile((File) someFiles[i]);
 
 				// If it's not a jar file and it doesn't have a trailing '/'.
 				// add one in.
-				boolean isJar = fileName.endsWith(".jar") || fileName.endsWith(".zip");
+				boolean isJar = fileName.endsWith(".jar")
+						|| fileName.endsWith(".zip");
 				if (isJar == false && fileName.endsWith("/") == false) {
 					fileName = fileName + "/";
 				}
@@ -250,20 +273,25 @@ public class AppFormat extends ProjectFormat {
 	private void prepareWindows() {
 		File winDir = new File(getApplicatonTask().contentsDir(), "Windows");
 		String cp = new File(winDir, "CLSSPATH.TXT").getPath();
-		createMappings(cp, woappPlusVersion() + "/Contents/Windows/CLSSPATH.TXT", classpathFilter('\\'));
+		createMappings(cp, woappPlusVersion()
+				+ "/Contents/Windows/CLSSPATH.TXT", classpathFilter('\\'));
 		String subp = new File(winDir, "SUBPATHS.TXT").getPath();
-		createMappings(subp, woappPlusVersion() + "/Contents/Windows/SUBPATHS.TXT");
+		createMappings(subp, woappPlusVersion()
+				+ "/Contents/Windows/SUBPATHS.TXT");
 		// add run script to Win. directory
 		String runScript = new File(winDir, getName() + ".cmd").getPath();
-		createMappings(runScript, woappPlusVersion() + "/Contents/Windows/appstart.cmd", startupScriptFilter());
+		createMappings(runScript, woappPlusVersion()
+				+ "/Contents/Windows/appstart.cmd", startupScriptFilter());
 		// add run script to top-level directory
 		File taskDir = getApplicatonTask().taskDir();
 		String startupScriptName = this.getApplicatonTask().startupScriptName;
-		if(startupScriptName == null || startupScriptName.length() == 0) {
+		if (startupScriptName == null || startupScriptName.length() == 0) {
 			startupScriptName = getName();
 		}
-		String topRunScript = new File(taskDir, startupScriptName + ".cmd").getPath();
-		createMappings(topRunScript, woappPlusVersion() + "/Contents/Windows/appstart.cmd", startupScriptFilter());
+		String topRunScript = new File(taskDir, startupScriptName + ".cmd")
+				.getPath();
+		createMappings(topRunScript, woappPlusVersion()
+				+ "/Contents/Windows/appstart.cmd", startupScriptFilter());
 	}
 
 	/**
@@ -272,7 +300,8 @@ public class AppFormat extends ProjectFormat {
 	private void prepareUnix() {
 		File dir = new File(getApplicatonTask().contentsDir(), "UNIX");
 		String cp = new File(dir, "UNIXClassPath.txt").getPath();
-		createMappings(cp, woappPlusVersion() + "/Contents/UNIX/UNIXClassPath.txt", classpathFilter('/'));
+		createMappings(cp, woappPlusVersion()
+				+ "/Contents/UNIX/UNIXClassPath.txt", classpathFilter('/'));
 	}
 
 	/**
@@ -281,20 +310,26 @@ public class AppFormat extends ProjectFormat {
 	private void prepareMac() {
 		File macDir = new File(getApplicatonTask().contentsDir(), "MacOS");
 		String cp = new File(macDir, "MacOSClassPath.txt").getPath();
-		createMappings(cp, woappPlusVersion() + "/Contents/MacOS/MacOSClassPath.txt", classpathFilter('/'));
-		String servercp = new File(macDir, "MacOSXServerClassPath.txt").getPath();
-		createMappings(servercp, woappPlusVersion() + "/Contents/MacOS/MacOSXServerClassPath.txt", classpathFilter('/'));
+		createMappings(cp, woappPlusVersion()
+				+ "/Contents/MacOS/MacOSClassPath.txt", classpathFilter('/'));
+		String servercp = new File(macDir, "MacOSXServerClassPath.txt")
+				.getPath();
+		createMappings(servercp, woappPlusVersion()
+				+ "/Contents/MacOS/MacOSXServerClassPath.txt",
+				classpathFilter('/'));
 		// add run script to Mac directory
 		String runScript = new File(macDir, getName()).getPath();
-		createMappings(runScript, woappPlusVersion() + "/Contents/MacOS/appstart", startupScriptFilter());
+		createMappings(runScript, woappPlusVersion()
+				+ "/Contents/MacOS/appstart", startupScriptFilter());
 		// add run script to top-level directory
 		File taskDir = getApplicatonTask().taskDir();
 		String startupScriptName = this.getApplicatonTask().startupScriptName;
-		if(startupScriptName == null || startupScriptName.length() == 0) {
+		if (startupScriptName == null || startupScriptName.length() == 0) {
 			startupScriptName = getName();
 		}
 		String topRunScript = new File(taskDir, startupScriptName).getPath();
-		createMappings(topRunScript, woappPlusVersion() + "/Contents/MacOS/appstart", startupScriptFilter());
+		createMappings(topRunScript, woappPlusVersion()
+				+ "/Contents/MacOS/appstart", startupScriptFilter());
 	}
 
 	/**
@@ -307,9 +342,12 @@ public class AppFormat extends ProjectFormat {
 			filter.addFilter("FRAMEWORK_JAR", frameworkPaths);
 			filter.addFilter("OTHER_PATHS", otherClasspaths);
 		} else {
-			filter.addFilter("APP_JAR", appPaths.replace(File.separatorChar, pathSeparator));
-			filter.addFilter("FRAMEWORK_JAR", frameworkPaths.replace(File.separatorChar, pathSeparator));
-			filter.addFilter("OTHER_PATHS", otherClasspaths.replace(File.separatorChar, pathSeparator));
+			filter.addFilter("APP_JAR", appPaths.replace(File.separatorChar,
+					pathSeparator));
+			filter.addFilter("FRAMEWORK_JAR", frameworkPaths.replace(
+					File.separatorChar, pathSeparator));
+			filter.addFilter("OTHER_PATHS", otherClasspaths.replace(
+					File.separatorChar, pathSeparator));
 		}
 
 		return filter;
@@ -331,7 +369,8 @@ public class AppFormat extends ProjectFormat {
 	 * @param template
 	 * @param filter
 	 */
-	private void createMappings(String fileName, String template, FilterSet filter) {
+	private void createMappings(String fileName, String template,
+			FilterSet filter) {
 		FilterSetCollection fsCollection = new FilterSetCollection(filter);
 		FilterSet additionalBuildSettingsFilter = additionalBuildSettingsFilter();
 
@@ -362,7 +401,8 @@ public class AppFormat extends ProjectFormat {
 	 * @param template
 	 * @param filter
 	 */
-	private void createMappings(String fileName, String template, FilterSetCollection filter) {
+	private void createMappings(String fileName, String template,
+			FilterSetCollection filter) {
 		templateMap.put(fileName, template);
 		filterMap.put(fileName, filter);
 	}
@@ -389,7 +429,8 @@ public class AppFormat extends ProjectFormat {
 	public String templateForTarget(String targetName) throws BuildException {
 		String template = (String) templateMap.get(targetName);
 		if (template == null) {
-			throw new BuildException("Invalid target, no template found: " + targetName);
+			throw new BuildException("Invalid target, no template found: "
+					+ targetName);
 		}
 		return template;
 	}
@@ -397,7 +438,8 @@ public class AppFormat extends ProjectFormat {
 	/**
 	 * @see org.objectstyle.woproject.ant.ProjectFormat#filtersForTarget(java.lang.String)
 	 */
-	public FilterSetCollection filtersForTarget(String targetName) throws BuildException {
+	public FilterSetCollection filtersForTarget(String targetName)
+			throws BuildException {
 
 		if (!filterMap.containsKey(targetName)) {
 			throw new BuildException("Invalid target: " + targetName);
@@ -439,11 +481,11 @@ public class AppFormat extends ProjectFormat {
 	 */
 	public FilterSetCollection startupScriptFilter() {
 		FilterSet filter = new FilterSet();
-		String frameworksBaseURL = this.getApplicatonTask().getFrameworksBaseURL();
-		if(frameworksBaseURL != null && frameworksBaseURL.length() > 0) {
+		String frameworksBaseURL = this.getApplicatonTask()
+				.getFrameworksBaseURL();
+		if (frameworksBaseURL != null && frameworksBaseURL.length() > 0) {
 			frameworksBaseURL = "-WOFrameworksBaseURL " + frameworksBaseURL;
-		}
-		else {
+		} else {
 			frameworksBaseURL = "";
 		}
 		filter.addFilter("-WOFrameworksBaseURL", frameworksBaseURL);
@@ -459,17 +501,24 @@ public class AppFormat extends ProjectFormat {
 		String paths = "";
 		if (appPaths != null && appPaths.length() > 0) {
 			paths = paths + WEBINFROOT;
-			paths = paths + FileStringScanner.replace(appPaths, "\n", "\n" + WEBINFROOT);
+			paths = paths
+					+ FileStringScanner.replace(appPaths, "\n", "\n"
+							+ WEBINFROOT);
 		}
 		if (frameworkPaths != null && frameworkPaths.length() > 0) {
 			paths = paths + WEBINFROOT;
-			paths = paths + FileStringScanner.replace(frameworkPaths, "\n", "\n" + WEBINFROOT);
+			paths = paths
+					+ FileStringScanner.replace(frameworkPaths, "\n", "\n"
+							+ WEBINFROOT);
 		}
 		if (otherClasspaths != null && otherClasspaths.length() > 0) {
 			paths = paths + WEBINFROOT;
-			paths = paths + FileStringScanner.replace(otherClasspaths, "\n", "\n" + WEBINFROOT);
+			paths = paths
+					+ FileStringScanner.replace(otherClasspaths, "\n", "\n"
+							+ WEBINFROOT);
 		}
-		paths = FileStringScanner.replace(paths, WEBINFROOT + WEBINFROOT, WEBINFROOT);
+		paths = FileStringScanner.replace(paths, WEBINFROOT + WEBINFROOT,
+				WEBINFROOT);
 
 		paths = FileStringScanner.replace(paths, "WOROOT", "");
 
@@ -478,13 +527,17 @@ public class AppFormat extends ProjectFormat {
 		paths = FileStringScanner.replace(paths, "LOCALROOT", "");
 		if (paths.length() > 0) {
 			paths = paths + "++++++++";
-			paths = FileStringScanner.replace(paths, WEBINFROOT + "++++++++", "");
+			paths = FileStringScanner.replace(paths, WEBINFROOT + "++++++++",
+					"");
 		}
 		WOApplication woappTask = (WOApplication) this.task;
-		log(" AppFormat.webXMLFilter().woappTask: " + woappTask, Project.MSG_VERBOSE);
+		log(" AppFormat.webXMLFilter().woappTask: " + woappTask,
+				Project.MSG_VERBOSE);
 		filter.addFilter("WOROOT", woappTask.getWebXML_WOROOT());
 		filter.addFilter("LOCALROOT", woappTask.getWebXML_LOCALROOT());
-		filter.addFilter("WOAINSTALLROOT", woappTask.getWebXML_WOAINSTALLROOT());
+		filter
+				.addFilter("WOAINSTALLROOT", woappTask
+						.getWebXML_WOAINSTALLROOT());
 		filter.addFilter("WOAppMode", woappTask.getWebXML_WOAppMode());
 		filter.addFilter("WOClasspath", paths);
 		filter.addFilter("WOApplicationClass", this.getAppClass());
