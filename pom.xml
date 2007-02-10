@@ -91,12 +91,12 @@
 
 	<distributionManagement>
 		<repository>
-			<id>webobjects.mdimension.com</id>
+			<id>webobjects.mdimension.com/dist/releases</id>
 			<name>mdimension Maven2 Release Repository</name>
 			<url>scp://webobjects.mdimension.com/Library/WebServer/BuildServer/maven2/releases</url>
 		</repository>
 		<snapshotRepository>
-			<id>webobjects.mdimension.com</id>
+			<id>webobjects.mdimension.com/dist/snapshots</id>
 			<name>mdimension Maven2 Snapshot Repository</name>
 			<url>scp://webobjects.mdimension.com/Library/WebServer/BuildServer/maven2/snapshots</url>
 		</snapshotRepository>
