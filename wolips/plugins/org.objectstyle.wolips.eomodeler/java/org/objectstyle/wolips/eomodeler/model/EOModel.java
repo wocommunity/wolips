@@ -61,6 +61,7 @@ import java.util.TreeSet;
 
 import org.eclipse.core.resources.IProject;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
+import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 import org.objectstyle.wolips.eomodeler.wocompat.PropertyListSerialization;
 
 public class EOModel extends UserInfoableEOModelObject implements IUserInfoable, ISortableEOModelObject {
@@ -115,8 +116,8 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 	private File myModelFolder;
 
 	private Set myPrototypeAttributeCache;
-	
-	private IProject project;
+
+	private IProject _project;
 
 	public EOModel(String _name, IProject project) {
 		myName = _name;
@@ -128,13 +129,13 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		myDatabaseConfigs = new PropertyListSet();
 		myVersion = "2.1";
 		myModelMap = new EOModelMap();
-		this.project = project;
+		_project = project;
 	}
 
 	public IProject getProject() {
-		return project;
+		return _project;
 	}
-	
+
 	protected void _storedProcedureChanged(EOStoredProcedure _storedProcedure, String _propertyName, Object _oldValue, Object _newValue) {
 		firePropertyChange(EOModel.STORED_PROCEDURE, null, _storedProcedure);
 	}
@@ -225,7 +226,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 			pk.setUsedForLocking(Boolean.TRUE);
 			entity.addAttribute(pk);
 		}
-		
+
 		return entity;
 	}
 
@@ -333,7 +334,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 			EODatabaseConfig newActiveDatabaseConfig = null;
 			if (!myDatabaseConfigs.isEmpty()) {
 				Iterator databaseConfigsIter = myDatabaseConfigs.iterator();
-				while (newActiveDatabaseConfig == null && databaseConfigsIter.hasNext()) { 
+				while (newActiveDatabaseConfig == null && databaseConfigsIter.hasNext()) {
 					EODatabaseConfig otherDatabaseConfig = (EODatabaseConfig) databaseConfigsIter.next();
 					if (otherDatabaseConfig != _databaseConfig) {
 						newActiveDatabaseConfig = otherDatabaseConfig;
@@ -471,25 +472,82 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return getEntityNamed(_entityName) != null;
 	}
 
-	public void addEntity(EOEntity _entity) throws DuplicateNameException {
-		addEntity(_entity, true, null);
+	public Set importEntitiesFromModel(File sourceModelFolder, Set failures) throws EOModelException, IOException {
+		EOModelGroup sourceModelGroup = new EOModelGroup();
+		EOModel sourceModel = new EOModel("Temp", null);
+		sourceModelGroup.addModel(sourceModel);
+		sourceModel.loadFromFolder(sourceModelFolder, failures);
+		sourceModel.resolve(failures);
+		return importEntitiesFromModel(sourceModel, failures);
+	}
+	
+	public Set importEntitiesFromModel(EOModel sourceModel, Set failures) throws DuplicateNameException {
+		Set clonedEntities = new HashSet();
+		Iterator entitiesIter = sourceModel.getEntities().iterator();
+		while (entitiesIter.hasNext()) {
+			EOEntity entity = (EOEntity) entitiesIter.next();
+			clonedEntities.add(entity.cloneEntity());
+		}
+		addEntities(clonedEntities, failures);
+		Iterator clonedEntitiesIter = clonedEntities.iterator();
+		while (clonedEntitiesIter.hasNext()) {
+			EOEntity clonedEntity = (EOEntity) clonedEntitiesIter.next();
+			clonedEntity.setName(StringUtils.toUppercaseFirstLetter(clonedEntity.getName().toLowerCase()));
+			Iterator clonedAttributesIter = clonedEntity.getAttributes().iterator();
+			while (clonedAttributesIter.hasNext()) {
+				EOAttribute clonedAttribute = (EOAttribute) clonedAttributesIter.next();
+				clonedAttribute.guessPrototype(true);
+				clonedAttribute.setName(clonedAttribute.getName().toLowerCase());
+			}
+			Iterator clonedRelationshipsIter = clonedEntity.getRelationships().iterator();
+			while (clonedRelationshipsIter.hasNext()) {
+				EORelationship clonedRelationship = (EORelationship) clonedRelationshipsIter.next();
+				clonedRelationship.setName(clonedRelationship.getName().toLowerCase());
+			}
+		}
+		return clonedEntities;
+	}
+	
+	public void addEntities(Set entities, Set failures) throws DuplicateNameException {
+		Set oldEntities = new TreeSet(new PropertyListSet());
+		oldEntities.addAll(myEntities);
+
+		Iterator entitiesIter;
+		entitiesIter = entities.iterator();
+		while (entitiesIter.hasNext()) {
+			EOEntity entity = (EOEntity) entitiesIter.next();
+			addEntity(entity, false, false, failures);
+		}
+		entitiesIter = entities.iterator();
+		while (entitiesIter.hasNext()) {
+			EOEntity entity = (EOEntity) entitiesIter.next();
+			entity.pasted();
+		}
+
+		firePropertyChange(EOModel.ENTITIES, oldEntities, myEntities);
 	}
 
-	public void addEntity(EOEntity _entity, boolean _fireEvents, Set _failures) throws DuplicateNameException {
-		_entity._setModel(this);
-		_checkForDuplicateEntityName(_entity, _entity.getName(), _failures);
-		_entity.pasted();
-		myDeletedEntityNames.remove(_entity.getName());
-		if (_fireEvents) {
+	public void addEntity(EOEntity _entity) throws DuplicateNameException {
+		addEntity(_entity, true, true, null);
+	}
+
+	public void addEntity(EOEntity entity, boolean pasteImmediately, boolean fireEvents, Set failures) throws DuplicateNameException {
+		entity._setModel(this);
+		_checkForDuplicateEntityName(entity, entity.getName(), failures);
+		if (pasteImmediately) {
+			entity.pasted();
+		}
+		myDeletedEntityNames.remove(entity.getName());
+		if (fireEvents) {
 			Set oldEntities = null;
 			oldEntities = myEntities;
 			Set newEntities = new TreeSet(new PropertyListSet());
 			newEntities.addAll(myEntities);
-			newEntities.add(_entity);
+			newEntities.add(entity);
 			myEntities = newEntities;
 			firePropertyChange(EOModel.ENTITIES, oldEntities, myEntities);
 		} else {
-			myEntities.add(_entity);
+			myEntities.add(entity);
 		}
 	}
 
@@ -605,7 +663,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		File indexFile = new File(myModelFolder, "index.eomodeld");
 		return indexFile;
 	}
-	
+
 	public void loadFromFolder(File _modelFolder, Set _failures) throws EOModelException, IOException {
 		System.out.println("EOModel.loadFromFolder: " + _modelFolder);
 		File indexFile = new File(_modelFolder, "index.eomodeld");
@@ -643,7 +701,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 					if (fspecFile.exists()) {
 						entity.loadFetchSpecsFromFile(fspecFile, _failures);
 					}
-					addEntity(entity, false, _failures);
+					addEntity(entity, true, false, _failures);
 				} else {
 					_failures.add(new EOModelVerificationFailure(this, "The entity file " + entityFile.getAbsolutePath() + " was missing.", false));
 				}
@@ -686,30 +744,33 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 				addDatabaseConfig(databaseConfig, false, _failures);
 			}
 		}
-		EODatabaseConfig activeDatabaseConfig = null; 
+		EODatabaseConfig activeDatabaseConfig = null;
 		String activeDatabaseConfigName = entityModelerMap.getString("activeDatabaseConfigName", false);
 		if (activeDatabaseConfigName != null) {
 			activeDatabaseConfig = getDatabaseConfigNamed(activeDatabaseConfigName);
 		}
-		// If there is a connection dictionary, then look for a database config that is equivalent ...
+		// If there is a connection dictionary, then look for a database config
+		// that is equivalent ...
 		Map connectionDictionary = modelMap.getMap("connectionDictionary", true);
 		if (connectionDictionary != null && !connectionDictionary.isEmpty()) {
 			String adaptorName = modelMap.getString("adaptorName", true);
 			EODatabaseConfig tempConnectionDictionaryDatabaseConfig = _createDatabaseConfig(adaptorName, connectionDictionary);
-			EODatabaseConfig connectionDictionaryDatabaseConfig = null; 
+			EODatabaseConfig connectionDictionaryDatabaseConfig = null;
 			Iterator databaseConfigsIter = myDatabaseConfigs.iterator();
 			while (connectionDictionaryDatabaseConfig == null && databaseConfigsIter.hasNext()) {
-				EODatabaseConfig databaseConfig = (EODatabaseConfig)databaseConfigsIter.next();
+				EODatabaseConfig databaseConfig = (EODatabaseConfig) databaseConfigsIter.next();
 				if (tempConnectionDictionaryDatabaseConfig.isEquivalent(databaseConfig, false)) {
 					connectionDictionaryDatabaseConfig = databaseConfig;
 				}
 			}
-			// if one isn't found, then make a new database config based off the connection dictionary 
+			// if one isn't found, then make a new database config based off the
+			// connection dictionary
 			if (connectionDictionaryDatabaseConfig == null) {
 				connectionDictionaryDatabaseConfig = tempConnectionDictionaryDatabaseConfig;
 				addDatabaseConfig(connectionDictionaryDatabaseConfig, false, _failures);
 			}
-			// if the identified active database config isn't the connection dictionary config, then
+			// if the identified active database config isn't the connection
+			// dictionary config, then
 			// change the active config to the connection dictionary config
 			if (activeDatabaseConfig != connectionDictionaryDatabaseConfig) {
 				activeDatabaseConfig = connectionDictionaryDatabaseConfig;
@@ -717,13 +778,12 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		}
 		// try to always have at least one active database config
 		if (activeDatabaseConfig == null && !myDatabaseConfigs.isEmpty()) {
-			activeDatabaseConfig = (EODatabaseConfig)myDatabaseConfigs.iterator().next();
+			activeDatabaseConfig = (EODatabaseConfig) myDatabaseConfigs.iterator().next();
 		}
 		if (activeDatabaseConfig != null) {
 			if (ComparisonUtils.equals(activeDatabaseConfig.getName(), activeDatabaseConfigName)) {
-				myActiveDatabaseConfig = activeDatabaseConfig;	
-			}
-			else {
+				myActiveDatabaseConfig = activeDatabaseConfig;
+			} else {
 				setActiveDatabaseConfig(activeDatabaseConfig);
 			}
 		}
@@ -783,8 +843,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		EOModelMap entityModelerMap = new EOModelMap((Map) getUserInfo().get(EOModel.ENTITY_MODELER_KEY));
 		if (myActiveDatabaseConfig == null) {
 			entityModelerMap.remove("activeDatabaseConfigName");
-		}
-		else {
+		} else {
 			entityModelerMap.put("activeDatabaseConfigName", myActiveDatabaseConfig.getName());
 		}
 		Map databaseConfigs = new PropertyListMap();
@@ -926,7 +985,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		}
 		return adaptorName;
 	}
-	
+
 	public String _getAdaptorPrototypeEntityName(String adaptorName, String name) {
 		String adaptorPrototypeEntityName = null;
 		if (adaptorName != null) {
@@ -963,16 +1022,16 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 	public EOEntity _getPreferredPrototypeEntity(String adaptorName, Map connectionDictionary) {
 		EOEntity prototypeEntity = null;
 		String driverPrototypeEntityName = _getDriverPrototypeEntityName(connectionDictionary, null);
-		if (driverPrototypeEntityName != null) {
+		if (driverPrototypeEntityName != null && myModelGroup != null) {
 			prototypeEntity = myModelGroup.getEntityNamed(driverPrototypeEntityName);
 		}
 		if (prototypeEntity == null) {
 			String adaptorPrototypeEntityName = _getAdaptorPrototypeEntityName(adaptorName, null);
-			if (adaptorPrototypeEntityName != null) {
+			if (adaptorPrototypeEntityName != null && myModelGroup != null) {
 				prototypeEntity = myModelGroup.getEntityNamed(adaptorPrototypeEntityName);
 			}
 		}
-		if (prototypeEntity == null) {
+		if (prototypeEntity == null && myModelGroup != null) {
 			String defaultPrototypeEntityName = _getDefaultPrototypeEntityName(null);
 			prototypeEntity = myModelGroup.getEntityNamed(defaultPrototypeEntityName);
 		}
@@ -995,7 +1054,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 			addPrototypeAttributes(_getDefaultPrototypeEntityName(getName()), prototypeAttributeCache);
 			addPrototypeAttributes(_getAdaptorPrototypeEntityName(getAdaptorName(), getName()), prototypeAttributeCache);
 			addPrototypeAttributes(_getDriverPrototypeEntityName(connectionDictionary, getName()), prototypeAttributeCache);
-			
+
 			if (activeDatabaseConfig != null) {
 				EOEntity prototypeEntity = activeDatabaseConfig.getPrototype();
 				if (prototypeEntity != null) {

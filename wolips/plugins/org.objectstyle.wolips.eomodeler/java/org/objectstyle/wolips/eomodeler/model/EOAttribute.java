@@ -179,6 +179,7 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
 
 	public void guessPrototype(boolean _skipIfAlreadyPrototyped) {
 		if (!_skipIfAlreadyPrototyped || getPrototype() == null) {
+			boolean probablyBooleanString = new Integer(5).equals(getWidth()) && ("S".equals(getValueType()) || "c".equals(getValueType()));
 			EOAttribute matchingPrototypeAttribute = null;
 			Iterator prototypeAttributesIter = getEntity().getModel().getPrototypeAttributes().iterator();
 			while (matchingPrototypeAttribute == null && prototypeAttributesIter.hasNext()) {
@@ -190,7 +191,32 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
 						Object currentValue = EOAttribute.getPropertyKey(propertyName).getValue(this);
 						Object prototypeValue = EOAttribute.getPropertyKey(propertyName).getValue(prototypeAttribute);
 						if (prototypeValue != null && !ComparisonUtils.equals(currentValue, prototypeValue)) {
-							prototypeMatches = false;
+							// MS: These are some commonly wrong values that occur when you reverse engineer a database.  We
+							// want to be kind of lenient about these when we're guessing prototype attributes.
+							if (AbstractEOArgument.VALUE_TYPE.equals(propertyName) && ("S".equals(currentValue) || "c".equals(currentValue)) && ("S".equals(prototypeValue) || "c".equals(prototypeValue))) {
+								prototypeMatches = true;
+							}
+							else if (AbstractEOArgument.VALUE_TYPE.equals(propertyName) && "B".equals(currentValue) && "i".equals(prototypeValue)) {
+								prototypeMatches = true;
+							}
+							else if (AbstractEOArgument.VALUE_CLASS_NAME.equals(propertyName) && "NSDecimalNumber".equals(currentValue) && "NSNumber".equals(prototypeValue)) {
+								prototypeMatches = true;
+							}
+							else if (probablyBooleanString && AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME.equals(propertyName) && currentValue == null && "toString".equals(prototypeValue)) {
+								prototypeMatches = true;
+							}
+							else if (probablyBooleanString && AbstractEOArgument.FACTORY_METHOD_ARGUMENT_TYPE.equals(propertyName) && currentValue == null && EOFactoryMethodArgumentType.STRING.equals(prototypeValue)) {
+								prototypeMatches = true;
+							}
+							else if (probablyBooleanString && AbstractEOArgument.VALUE_CLASS_NAME.equals(propertyName) && "NSString".equals(currentValue) && "java.lang.Boolean".equals(prototypeValue)) {
+								prototypeMatches = true;
+							}
+							else if (probablyBooleanString && AbstractEOArgument.VALUE_FACTORY_METHOD_NAME.equals(propertyName) && currentValue == null && "valueOf".equals(prototypeValue)) {
+								prototypeMatches = true;
+							}
+							else {
+								prototypeMatches = false;
+							}
 						}
 					}
 				}

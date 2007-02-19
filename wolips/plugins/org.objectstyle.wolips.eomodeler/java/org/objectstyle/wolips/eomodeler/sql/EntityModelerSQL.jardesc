@@ -12,5 +12,6 @@
 </manifest>
 <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
 <javaElement handleIdentifier="=org.objectstyle.wolips.eomodeler/java&lt;org.objectstyle.wolips.eomodeler.sql{EOFSQLGenerator.java"/>
+<javaElement handleIdentifier="=org.objectstyle.wolips.eomodeler/java&lt;org.objectstyle.wolips.eomodeler.sql{EOFReverseEngineer.java"/>
 </selectedElements>
 </jardesc>

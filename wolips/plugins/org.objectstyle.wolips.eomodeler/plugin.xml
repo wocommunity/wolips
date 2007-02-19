@@ -475,6 +475,18 @@
                </enablement>
          </action>
          <action
+               class="org.objectstyle.wolips.eomodeler.actions.ReverseEngineerAction"
+               icon="icons/reverseEngineer.gif"
+               id="org.objectstyle.wolips.eomodeler.actions.reverseEngineer"
+               label="Reverse Engineer"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="Reverse Engineer">
+               <enablement>
+                   <objectClass name="org.objectstyle.wolips.eomodeler.model.EOModel"/>
+               </enablement>
+         </action>
+         <action
                class="org.objectstyle.wolips.eomodeler.actions.VerifyAction"
                icon="icons/verify.gif"
                id="org.objectstyle.wolips.eomodeler.actions.verify"

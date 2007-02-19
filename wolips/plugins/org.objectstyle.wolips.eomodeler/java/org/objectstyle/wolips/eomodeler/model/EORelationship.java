@@ -102,7 +102,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 	private String myName;
 
 	private String myDefinition;
-	
+
 	private EORelationshipPath myDefinitionPath;
 
 	private Boolean myMandatory;
@@ -154,6 +154,10 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 		if (myEntityBeforeCloning != null) {
 			if (myDestination == myEntityBeforeCloning) {
 				myDestination = myEntity;
+			} else {
+				EOModel model = myEntity.getModel();
+				EOModelGroup modelGroup = model.getModelGroup();
+				myDestination = modelGroup.getEntityNamed(myDestination.getName());
 			}
 			Iterator joinsIter = myJoins.iterator();
 			while (joinsIter.hasNext()) {
@@ -442,13 +446,13 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 		firePropertyChange(EORelationship.MANDATORY, oldMandatory, myMandatory);
 		firePropertyChange(EORelationship.OPTIONAL, BooleanUtils.negate(oldMandatory), BooleanUtils.negate(myMandatory));
 	}
-	
+
 	public void setMandatoryIfNecessary() {
 		boolean mandatory = false;
 		if (BooleanUtils.isTrue(isToOne())) {
 			Iterator joinsIter = getJoins().iterator();
 			while (!mandatory && joinsIter.hasNext()) {
-				EOJoin join = (EOJoin)joinsIter.next();
+				EOJoin join = (EOJoin) joinsIter.next();
 				EOAttribute sourceAttribute = join.getSourceAttribute();
 				if (sourceAttribute != null) {
 					mandatory = sourceAttribute.isAllowsNull() == null || !sourceAttribute.isAllowsNull().booleanValue();
@@ -583,11 +587,12 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 		myJoins = newJoins;
 		firePropertyChange(EORelationship.JOINS, oldJoins, newJoins);
 		Iterator joinsIter = oldJoins.iterator();
-		while (joinsIter.hasNext()) { 
-			EOJoin join = (EOJoin)joinsIter.next();
+		while (joinsIter.hasNext()) {
+			EOJoin join = (EOJoin) joinsIter.next();
 			join._setRelationship(null);
 		}
 	}
+
 	public void removeJoin(EOJoin _join) {
 		List oldJoins = myJoins;
 		List newJoins = new LinkedList();
