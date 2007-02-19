@@ -529,7 +529,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 			if (!_skipExistingNames || getRelationshipNamed(relationship.getName()) == null) {
 				EORelationship clonedRelationship = relationship.cloneRelationship();
 				clonedRelationship.setName(findUnusedRelationshipName(clonedRelationship.getName()));
-				addRelationship(clonedRelationship);
+				addRelationship(clonedRelationship, false, null, true);
 			}
 		}
 	}
@@ -1156,24 +1156,26 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 		firePropertyChange(EOEntity.FETCH_SPECIFICATION, null, _fetchSpecification);
 	}
 
-	public void addRelationship(EORelationship _relationship) throws DuplicateNameException {
-		addRelationship(_relationship, null, true);
+	public void addRelationship(EORelationship relationship) throws DuplicateNameException {
+		addRelationship(relationship, true, null, true);
 	}
 
-	public void addRelationship(EORelationship _relationship, Set _failures, boolean _fireEvents) throws DuplicateNameException {
-		_relationship._setEntity(this);
-		_checkForDuplicateRelationshipName(_relationship, _relationship.getName(), _failures);
-		_relationship.pasted();
+	public void addRelationship(EORelationship relationship, boolean pasteImmediately, Set failures, boolean fireEvents) throws DuplicateNameException {
+		relationship._setEntity(this);
+		_checkForDuplicateRelationshipName(relationship, relationship.getName(), failures);
+		if (pasteImmediately) {
+			relationship.pasted();
+		}
 		Set oldRelationships = null;
-		if (_fireEvents) {
+		if (fireEvents) {
 			oldRelationships = myRelationships;
 			Set newRelationships = new HashSet();
 			newRelationships.addAll(myRelationships);
-			newRelationships.add(_relationship);
+			newRelationships.add(relationship);
 			myRelationships = newRelationships;
 			firePropertyChange(EOEntity.RELATIONSHIPS, oldRelationships, myRelationships);
 		} else {
-			myRelationships.add(_relationship);
+			myRelationships.add(relationship);
 		}
 	}
 
@@ -1306,7 +1308,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 				EOModelMap relationshipMap = new EOModelMap((Map) relationshipIter.next());
 				EORelationship relationship = new EORelationship();
 				relationship.loadFromMap(relationshipMap, _failures);
-				addRelationship(relationship, _failures, false);
+				addRelationship(relationship, true, _failures, false);
 			}
 		}
 
