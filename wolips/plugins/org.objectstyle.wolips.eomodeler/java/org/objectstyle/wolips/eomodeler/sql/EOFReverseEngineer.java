@@ -2,6 +2,7 @@ package org.objectstyle.wolips.eomodeler.sql;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -10,12 +11,12 @@ import com.webobjects.eoaccess.EOAdaptor;
 import com.webobjects.eoaccess.EOAdaptorChannel;
 import com.webobjects.eoaccess.EOAdaptorContext;
 import com.webobjects.foundation.NSArray;
-import com.webobjects.foundation.NSDictionary;
+import com.webobjects.foundation.NSMutableDictionary;
 
 public class EOFReverseEngineer {
 	private String _adaptorName;
 
-	private NSDictionary _connectionDictionary;
+	private NSMutableDictionary _connectionDictionary;
 
 	private EOAdaptor _adaptor;
 
@@ -25,7 +26,14 @@ public class EOFReverseEngineer {
 
 	public EOFReverseEngineer(String adaptorName, Map connectionDictionary) {
 		_adaptorName = adaptorName;
-		_connectionDictionary = new NSDictionary(connectionDictionary, false);
+		_connectionDictionary = new NSMutableDictionary();
+		Iterator entriesIter = connectionDictionary.entrySet().iterator();
+		while (entriesIter.hasNext()) {
+			Map.Entry entry = (Map.Entry)entriesIter.next();
+			if (entry.getValue() != null) {
+				_connectionDictionary.setObjectForKey(entry.getValue(), entry.getKey());
+			}
+		}
 		_adaptor = EOAdaptor.adaptorWithName(_adaptorName);
 		_adaptor.setConnectionDictionary(_connectionDictionary);
 		_adaptor.assertConnectionDictionaryIsValid();
