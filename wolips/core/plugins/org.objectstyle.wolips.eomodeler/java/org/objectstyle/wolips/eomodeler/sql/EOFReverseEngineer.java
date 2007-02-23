@@ -2,6 +2,7 @@ package org.objectstyle.wolips.eomodeler.sql;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -56,7 +57,11 @@ public class EOFReverseEngineer {
 		open();
 		try {
 			NSArray tableNamesArray = _channel.describeTableNames();
-			LinkedList tableNamesList = new LinkedList(tableNamesArray);
+			LinkedList tableNamesList = new LinkedList();
+			Enumeration tableNamesEnum = tableNamesArray.objectEnumerator();
+			while (tableNamesEnum.hasMoreElements()) {
+				tableNamesList.add(tableNamesEnum.nextElement());
+			}
 			return tableNamesList;
 		} finally {
 			close();
