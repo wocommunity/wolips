@@ -12,6 +12,7 @@ import com.webobjects.eoaccess.EOAdaptor;
 import com.webobjects.eoaccess.EOAdaptorChannel;
 import com.webobjects.eoaccess.EOAdaptorContext;
 import com.webobjects.foundation.NSArray;
+import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
 
 public class EOFReverseEngineer {
@@ -77,7 +78,11 @@ public class EOFReverseEngineer {
 	public File reverseEngineerWithTableNamesIntoModel(List tableNamesList) throws IOException {
 		open();
 		try {
-			NSArray tableNamesArray = new NSArray(tableNamesList, false);
+			NSMutableArray tableNamesArray = new NSMutableArray();
+			Iterator tableNamesIter = tableNamesList.iterator();
+			while (tableNamesIter.hasNext()) {
+				tableNamesArray.addObject(tableNamesIter.next());
+			}
 			com.webobjects.eoaccess.EOModel eofModel = _channel.describeModelWithTableNames(tableNamesArray);
 			File tempFile = File.createTempFile("EntityModeler", "tmp");
 			File eomodelFolder = new File(tempFile.getParentFile(), "EM" + System.currentTimeMillis() + ".eomodeld");
