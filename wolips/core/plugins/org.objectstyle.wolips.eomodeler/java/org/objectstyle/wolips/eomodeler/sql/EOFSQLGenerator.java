@@ -81,6 +81,7 @@ import com.webobjects.foundation.NSBundle;
 import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
+import com.webobjects.foundation.NSMutableSet;
 import com.webobjects.foundation.NSSet;
 import com.webobjects.jdbcadaptor.JDBCAdaptor;
 import com.webobjects.jdbcadaptor.JDBCContext;
@@ -133,16 +134,7 @@ public class EOFSQLGenerator {
 		_model = _modelGroup.modelNamed(modelName);
 		Map overrideConnectionDictionary = (Map) databaseConfig.get("connectionDictionary");
 		if (overrideConnectionDictionary != null) {
-			NSMutableDictionary connectionDictionary = new NSMutableDictionary();
-			Iterator overrideConnectionDictionaryIter = overrideConnectionDictionary.entrySet().iterator();
-			while (overrideConnectionDictionaryIter.hasNext()) {
-				Map.Entry overrideEntry = (Map.Entry) overrideConnectionDictionaryIter.next();
-				Object key = overrideEntry.getKey();
-				Object value = overrideEntry.getValue();
-				if (key instanceof String && value instanceof String) {
-					connectionDictionary.setObjectForKey(value, key);
-				}
-			}
+			NSDictionary connectionDictionary = (NSDictionary) EOFSQLGenerator.toWOCollections(overrideConnectionDictionary);
 			_model.setConnectionDictionary(connectionDictionary);
 			String eomodelProcessorClassName = (String) connectionDictionary.objectForKey("eomodelProcessorClassName");
 			if (eomodelProcessorClassName != null) {
@@ -499,7 +491,54 @@ public class EOFSQLGenerator {
 		return (Map) toJavaCollections(jdbc2Info);
 	}
 
-	protected static Object toJavaCollections(Object obj) {
+	public static Object toWOCollections(Object obj) {
+		Object result;
+		if (obj instanceof Map) {
+			NSMutableDictionary nsDict = new NSMutableDictionary();
+			Map map = (Map) obj;
+			Iterator entriesIter = map.entrySet().iterator();
+			while (entriesIter.hasNext()) {
+				Map.Entry entry = (Map.Entry) entriesIter.next();
+				Object key = entry.getKey();
+				Object value = entry.getValue();
+				if (key != null && value != null) {
+					key = toWOCollections(key);
+					value = toWOCollections(value);
+					nsDict.setObjectForKey(value, key);
+				}
+			}
+			result = nsDict;
+		} else if (obj instanceof List) {
+			NSMutableArray nsArray = new NSMutableArray();
+			List list = (List) obj;
+			Iterator valuesEnum = list.iterator();
+			while (valuesEnum.hasNext()) {
+				Object value = valuesEnum.next();
+				if (value != null) {
+					value = toWOCollections(value);
+					nsArray.addObject(value);
+				}
+			}
+			result = nsArray;
+		} else if (obj instanceof Set) {
+			Set set = (Set) obj;
+			NSMutableSet nsSet = new NSMutableSet();
+			Iterator valuesEnum = set.iterator();
+			while (valuesEnum.hasNext()) {
+				Object value = valuesEnum.next();
+				if (value != null) {
+					value = toWOCollections(value);
+					nsSet.addObject(value);
+				}
+			}
+			result = nsSet;
+		} else {
+			result = obj;
+		}
+		return result;
+	}
+
+	public static Object toJavaCollections(Object obj) {
 		Object result;
 		if (obj instanceof NSDictionary) {
 			Map map = new HashMap();

@@ -2,9 +2,6 @@ package org.objectstyle.wolips.eomodeler.sql;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,13 +9,12 @@ import com.webobjects.eoaccess.EOAdaptor;
 import com.webobjects.eoaccess.EOAdaptorChannel;
 import com.webobjects.eoaccess.EOAdaptorContext;
 import com.webobjects.foundation.NSArray;
-import com.webobjects.foundation.NSMutableArray;
-import com.webobjects.foundation.NSMutableDictionary;
+import com.webobjects.foundation.NSDictionary;
 
 public class EOFReverseEngineer {
 	private String _adaptorName;
 
-	private NSMutableDictionary _connectionDictionary;
+	private NSDictionary _connectionDictionary;
 
 	private EOAdaptor _adaptor;
 
@@ -28,14 +24,7 @@ public class EOFReverseEngineer {
 
 	public EOFReverseEngineer(String adaptorName, Map connectionDictionary) {
 		_adaptorName = adaptorName;
-		_connectionDictionary = new NSMutableDictionary();
-		Iterator entriesIter = connectionDictionary.entrySet().iterator();
-		while (entriesIter.hasNext()) {
-			Map.Entry entry = (Map.Entry)entriesIter.next();
-			if (entry.getValue() != null) {
-				_connectionDictionary.setObjectForKey(entry.getValue(), entry.getKey());
-			}
-		}
+		_connectionDictionary = (NSDictionary) EOFSQLGenerator.toWOCollections(connectionDictionary);
 		_adaptor = EOAdaptor.adaptorWithName(_adaptorName);
 		_adaptor.setConnectionDictionary(_connectionDictionary);
 		_adaptor.assertConnectionDictionaryIsValid();
@@ -58,12 +47,7 @@ public class EOFReverseEngineer {
 		open();
 		try {
 			NSArray tableNamesArray = _channel.describeTableNames();
-			LinkedList tableNamesList = new LinkedList();
-			Enumeration tableNamesEnum = tableNamesArray.objectEnumerator();
-			while (tableNamesEnum.hasMoreElements()) {
-				tableNamesList.add(tableNamesEnum.nextElement());
-			}
-			return tableNamesList;
+			return (List) EOFSQLGenerator.toJavaCollections(tableNamesArray);
 		} finally {
 			close();
 		}
@@ -78,11 +62,7 @@ public class EOFReverseEngineer {
 	public File reverseEngineerWithTableNamesIntoModel(List tableNamesList) throws IOException {
 		open();
 		try {
-			NSMutableArray tableNamesArray = new NSMutableArray();
-			Iterator tableNamesIter = tableNamesList.iterator();
-			while (tableNamesIter.hasNext()) {
-				tableNamesArray.addObject(tableNamesIter.next());
-			}
+			NSArray tableNamesArray = (NSArray) EOFSQLGenerator.toWOCollections(tableNamesList);
 			com.webobjects.eoaccess.EOModel eofModel = _channel.describeModelWithTableNames(tableNamesArray);
 			File tempFile = File.createTempFile("EntityModeler", "tmp");
 			File eomodelFolder = new File(tempFile.getParentFile(), "EM" + System.currentTimeMillis() + ".eomodeld");
