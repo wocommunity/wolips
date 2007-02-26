@@ -436,6 +436,9 @@ public abstract class AbstractEOArgument extends UserInfoableEOModelObject imple
 		if (myFactoryMethodArgumentType != null) {
 			argumentMap.setString("factoryMethodArgumentType", myFactoryMethodArgumentType.getID(), true);
 		}
+		else {
+			argumentMap.remove("factoryMethodArgumentType");
+		}
 		argumentMap.setString("adaptorValueConversionMethodName", myAdaptorValueConversionMethodName, true);
 		argumentMap.setBoolean("allowsNull", myAllowsNull, EOModelMap.YN);
 		argumentMap.setString("definition", myDefinition, true);

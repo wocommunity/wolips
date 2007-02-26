@@ -651,6 +651,9 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 		if (myDestination != null) {
 			relationshipMap.setString("destination", myDestination.getName(), true);
 		}
+		else {
+			relationshipMap.remove("destination");
+		}
 		relationshipMap.setString("definition", myDefinition, true);
 		relationshipMap.remove("dataPath");
 		relationshipMap.setBoolean("isMandatory", myMandatory, EOModelMap.YN);
@@ -658,9 +661,15 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 		if (!isFlattened() && myJoinSemantic != null) {
 			relationshipMap.setString("joinSemantic", myJoinSemantic.getID(), true);
 		}
+		else {
+			relationshipMap.remove("joinSemantic");
+		}
 		relationshipMap.setString("name", myName, true);
 		if (myDeleteRule != null && myDeleteRule != EODeleteRule.NULLIFY) {
 			relationshipMap.setString("deleteRule", myDeleteRule.getID(), true);
+		}
+		else {
+			relationshipMap.remove("deleteRule");
 		}
 		relationshipMap.setBoolean("ownsDestination", myOwnsDestination, EOModelMap.YN);
 		relationshipMap.setBoolean("propagatesPrimaryKey", myPropagatesPrimaryKey, EOModelMap.YN);

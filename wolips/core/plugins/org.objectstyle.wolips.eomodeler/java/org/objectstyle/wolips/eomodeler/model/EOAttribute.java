@@ -728,6 +728,9 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
 		if (myPrototypeName != null) {
 			attributeMap.setString("prototypeName", myPrototypeName, true);
 		}
+		else {
+			attributeMap.remove("prototypeName");
+		}
 		attributeMap.setBoolean("isReadOnly", myReadOnly, EOModelMap.YN);
 		attributeMap.setBoolean("isIndexed", myIndexed, EOModelMap.YN);
 		attributeMap.setString("readFormat", myReadFormat, true);
