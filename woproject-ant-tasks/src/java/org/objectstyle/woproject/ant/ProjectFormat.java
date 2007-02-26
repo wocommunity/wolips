@@ -96,6 +96,13 @@ public abstract class ProjectFormat {
 	}
 
 	/**
+	 * Returns a vesion of WebObjects project being built.
+	 */
+	public String getVersion() {
+		return task.getVersion();
+	}
+
+	/**
 	 * Returns a name of the jar WebObjects project being built with ".jar"
 	 * appended.
 	 */
@@ -282,6 +289,7 @@ public abstract class ProjectFormat {
 
 		filter.addFilter("PRINCIPAL_CLASS", principalClassString());
 		filter.addFilter("NAME", getName());
+		filter.addFilter("VERSION", getVersion());
 		filter.addFilter("JAR_NAME", getJarName());
 		filter.addFilter("JAR_ARRAY", libString(extLibs));
 		filter.addFilter("CUSTOM_CONTENT", getCustomInfoPListContent());

@@ -56,6 +56,7 @@
 package org.objectstyle.woproject.ant;
 
 import java.io.File;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -106,6 +107,8 @@ public abstract class WOTask extends Task {
 
 	protected boolean hasComponents = true;
 	
+	protected String version;
+	
 	private SubtaskFactory subtaskFactory;
 
 	// this leaks
@@ -133,6 +136,14 @@ public abstract class WOTask extends Task {
 		return name;
 	}
 
+	public String getVersion() {
+		return version == null ? "" : version;
+	}
+	
+	public void setVersion(String value) {
+		version = value;
+	}
+	
 	/**
 	 * Method setJarName.
 	 * 
