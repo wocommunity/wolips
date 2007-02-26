@@ -64,6 +64,7 @@ public class EOFReverseEngineer {
 		try {
 			NSArray tableNamesArray = (NSArray) EOFSQLGenerator.toWOCollections(tableNamesList);
 			com.webobjects.eoaccess.EOModel eofModel = _channel.describeModelWithTableNames(tableNamesArray);
+			eofModel.beautifyNames();
 			File tempFile = File.createTempFile("EntityModeler", "tmp");
 			File eomodelFolder = new File(tempFile.getParentFile(), "EM" + System.currentTimeMillis() + ".eomodeld");
 			tempFile.delete();

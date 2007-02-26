@@ -61,7 +61,6 @@ import java.util.TreeSet;
 
 import org.eclipse.core.resources.IProject;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
-import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 import org.objectstyle.wolips.eomodeler.wocompat.PropertyListSerialization;
 
 public class EOModel extends UserInfoableEOModelObject implements IUserInfoable, ISortableEOModelObject {
@@ -492,18 +491,18 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		Iterator clonedEntitiesIter = clonedEntities.iterator();
 		while (clonedEntitiesIter.hasNext()) {
 			EOEntity clonedEntity = (EOEntity) clonedEntitiesIter.next();
-			clonedEntity.setName(StringUtils.toUppercaseFirstLetter(clonedEntity.getName().toLowerCase()));
+			//clonedEntity.setName(StringUtils.toUppercaseFirstLetter(clonedEntity.getName().toLowerCase()));
 			Iterator clonedAttributesIter = clonedEntity.getAttributes().iterator();
 			while (clonedAttributesIter.hasNext()) {
 				EOAttribute clonedAttribute = (EOAttribute) clonedAttributesIter.next();
 				clonedAttribute.guessPrototype(true);
-				clonedAttribute.setName(clonedAttribute.getName().toLowerCase());
+				//clonedAttribute.setName(clonedAttribute.getName().toLowerCase());
 			}
-			Iterator clonedRelationshipsIter = clonedEntity.getRelationships().iterator();
-			while (clonedRelationshipsIter.hasNext()) {
-				EORelationship clonedRelationship = (EORelationship) clonedRelationshipsIter.next();
-				clonedRelationship.setName(clonedRelationship.getName().toLowerCase());
-			}
+			//Iterator clonedRelationshipsIter = clonedEntity.getRelationships().iterator();
+			//while (clonedRelationshipsIter.hasNext()) {
+			//	EORelationship clonedRelationship = (EORelationship) clonedRelationshipsIter.next();
+			//	clonedRelationship.setName(clonedRelationship.getName().toLowerCase());
+			//}
 		}
 		return clonedEntities;
 	}
