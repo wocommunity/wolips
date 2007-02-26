@@ -90,16 +90,20 @@ public class EOJoinsCellModifier extends TablePropertyCellModifier {
 		if (_property == EOJoin.DESTINATION_ATTRIBUTE_NAME) {
 			Integer attributeIndex = (Integer) _value;
 			int attributeIndexInt = attributeIndex.intValue();
-			String[] destinationAttributeNames = join.getRelationship().getDestination().getAttributeNames();
-			String attributeName = (attributeIndexInt == -1) ? null : (String) destinationAttributeNames[attributeIndexInt];
-			join.setDestinationAttributeName(attributeName);
+			if (join.getRelationship().getDestination() != null) {
+				String[] destinationAttributeNames = join.getRelationship().getDestination().getAttributeNames();
+				String attributeName = (attributeIndexInt == -1) ? null : (String) destinationAttributeNames[attributeIndexInt];
+				join.setDestinationAttributeName(attributeName);
+			}
 			modified = true;
 		} else if (_property == EOJoin.SOURCE_ATTRIBUTE_NAME) {
 			Integer attributeIndex = (Integer) _value;
 			int attributeIndexInt = attributeIndex.intValue();
-			String[] sourceAttributeNames = join.getRelationship().getEntity().getAttributeNames();
-			String attributeName = (attributeIndexInt == -1) ? null : (String) sourceAttributeNames[attributeIndexInt];
-			join.setSourceAttributeName(attributeName);
+			if (join.getRelationship().getEntity() != null) {
+				String[] sourceAttributeNames = join.getRelationship().getEntity().getAttributeNames();
+				String attributeName = (attributeIndexInt == -1) ? null : (String) sourceAttributeNames[attributeIndexInt];
+				join.setSourceAttributeName(attributeName);
+			}
 			modified = true;
 		}
 		return modified;
