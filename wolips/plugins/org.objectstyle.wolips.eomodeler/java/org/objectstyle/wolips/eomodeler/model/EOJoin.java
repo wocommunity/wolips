@@ -238,8 +238,14 @@ public class EOJoin extends EOModelObject implements ISortableEOModelObject {
 		if (myDestinationAttribute != null) {
 			joinMap.setString("destinationAttribute", myDestinationAttribute.getName(), true);
 		}
+		else {
+			joinMap.remove("destinationAttribute");
+		}
 		if (mySourceAttribute != null) {
 			joinMap.setString("sourceAttribute", mySourceAttribute.getName(), true);
+		}
+		else {
+			joinMap.remove("sourceAttribute");
 		}
 		return joinMap;
 	}
