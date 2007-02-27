@@ -86,6 +86,10 @@
 			  zipfile="target/${my.maven.project.artifactId}-${my.maven.project.version}.woapplication.tar.gz"/>
 		<delete file="target/${my.maven.project.artifactId}-${my.maven.project.version}.woapplication.tar"/>
 
+		<!-- force WebServerResourcesDir -->
+		
+		<mkdir dir="target/${my.maven.project.artifactId}-${my.maven.project.version}.woa/Contents/WebServerResources"/>
+		
 		<tar tarfile="target/${my.maven.project.artifactId}-${my.maven.project.version}.wowebserverresources.tar" longfile="gnu">
 			<tarfileset dir="target/${my.maven.project.artifactId}-${my.maven.project.version}.woa/"
 				prefix="${my.maven.project.artifactId}-${my.maven.project.version}.woa/"
