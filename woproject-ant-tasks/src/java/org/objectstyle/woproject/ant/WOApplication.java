@@ -375,7 +375,7 @@ public class WOApplication extends WOTask {
 	}
 
 	protected File embeddedFrameworksDir() {
-		return new File(contentsDir(), "Frameworks");
+		return new File(contentsDir(), "");
 	}
 
 	protected File resourcesDir() {
