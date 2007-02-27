@@ -86,7 +86,7 @@ public class EOModelMap implements Map {
 
 	public void setBoolean(String _key, Boolean _value, int _booleanStyle) {
 		if (_value == null) {
-			myBackingMap.remove(_value);
+			myBackingMap.remove(_key);
 		} else if (_booleanStyle == EOModelMap.YESNO) {
 			myBackingMap.put(_key, _value.booleanValue() ? "YES" : "NO");
 		} else {
