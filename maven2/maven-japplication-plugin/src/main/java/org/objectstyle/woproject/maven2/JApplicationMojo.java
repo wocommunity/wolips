@@ -60,6 +60,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
@@ -73,7 +74,7 @@ import org.objectstyle.woproject.ant.JApplication;
  * @requiresDependencyResolution compile
  * @author andrus
  */
-public class JApplicationMojo extends DependencyMojo {
+public class JApplicationMojo extends AbstractMojo {
 
 	/**
 	 * The name of the application without OS-specific extension
@@ -174,19 +175,6 @@ public class JApplicationMojo extends DependencyMojo {
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
-		if (getLog().isDebugEnabled()) {
-			getLog().debug("parameter - name: " + name);
-			getLog().debug("parameter - longName: " + longName);
-			getLog().debug("parameter - mainClass:" + mainClass);
-			getLog().debug("parameter - destDir:" + destDir.getAbsolutePath());
-			getLog().debug("parameter - os: " + os);
-			getLog().debug("parameter - icon: " + icon);
-			getLog().debug("parameter - jvm: " + jvm);
-			getLog().debug("parameter - jvmOptions: " + jvmOptions);
-			getLog().debug("parameter - includes: " + includes);
-			getLog().debug("parameter - excludes: " + excludes);
-		}
-
 		JApplication task = new JApplication();
 
 		// TODO, andrus, 9/28/2006 - hook up maven loggers to the Ant project.
@@ -205,11 +193,7 @@ public class JApplicationMojo extends DependencyMojo {
 		ArtifactMatchPattern includesMatcher = new ArtifactMatchPattern(includes);
 		ArtifactMatchPattern excludesMatcher = new ArtifactMatchPattern(excludes);
 
-		// TODO: andrus, 9/28/2006 - we are bundling all external dependencies
-		// and a current artifact. This will likely break if one of the
-		// dependencies is in the reactor... need to test (and fix) this case.
-
-		Iterator it = getDependencies().iterator();
+		Iterator it = project.getCompileArtifacts().iterator();
 		while (it.hasNext()) {
 			Artifact a = (Artifact) it.next();
 			addArtifact(task, a, includesMatcher, excludesMatcher);
