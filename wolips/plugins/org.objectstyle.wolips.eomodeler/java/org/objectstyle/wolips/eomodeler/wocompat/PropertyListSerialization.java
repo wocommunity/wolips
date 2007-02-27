@@ -237,7 +237,7 @@ public class PropertyListSerialization {
 		} else if (plist instanceof String) {
 			out.write(quoteString(plist.toString()));
 		} else if (plist instanceof Number) {
-			out.write(plist.toString());
+      out.write(quoteString(plist.toString()));
 		} else {
 			throw new CayenneRuntimeException("Unsupported class for property list serialization: " + plist.getClass().getName());
 		}
