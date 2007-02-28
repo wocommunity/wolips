@@ -630,9 +630,9 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
 
 	protected void updateDefinitionPath() {
 		if (isFlattened()) {
-			EOAttributePath definitionPath = (EOAttributePath) getEntity().resolveKeyPath(_getDefinition());
-			if (definitionPath.isValid()) {
-				myDefinitionPath = definitionPath;
+			AbstractEOAttributePath definitionPath = getEntity().resolveKeyPath(_getDefinition());
+			if (definitionPath instanceof EOAttributePath && definitionPath.isValid()) {
+				myDefinitionPath = (EOAttributePath) definitionPath;
 			}
 			else {
 				myDefinitionPath = null;

@@ -318,10 +318,9 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 
 	protected void updateDefinitionPath() {
 		if (isFlattened()) {
-			EORelationshipPath definitionPath = (EORelationshipPath) getEntity().resolveKeyPath(_getDefinition());
-			System.out.println("EORelationship.updateDefinitionPath: " + definitionPath);
-			if (definitionPath.isValid()) {
-				myDefinitionPath = definitionPath;
+			AbstractEOAttributePath definitionPath = getEntity().resolveKeyPath(_getDefinition());
+			if (definitionPath instanceof EORelationshipPath && definitionPath.isValid()) {
+				myDefinitionPath = (EORelationshipPath) definitionPath;
 			}
 			else {
 				myDefinitionPath = null;
