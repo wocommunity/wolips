@@ -102,8 +102,15 @@ public abstract class AbstractEOAttributePath implements IUserInfoable, IEOEntit
 		Boolean toMany = null;
 		AbstractEOAttributePath attributePath = this;
 		while (!BooleanUtils.isTrue(toMany) && attributePath != null) {
-			toMany = attributePath.getChildIEOAttribute().isToMany();
-			attributePath = attributePath.getParentRelationshipPath();
+			IEOAttribute childAttribute = attributePath.getChildIEOAttribute();
+			if (childAttribute == null) {
+				toMany = Boolean.FALSE;
+				attributePath = null;
+			}
+			else {
+				toMany = childAttribute.isToMany();
+				attributePath = attributePath.getParentRelationshipPath();
+			}
 		}
 		return toMany;
 	}
@@ -114,12 +121,22 @@ public abstract class AbstractEOAttributePath implements IUserInfoable, IEOEntit
 		return sb.toString();
 	}
 
+	public boolean isValid() {
+		System.out.println("AbstractEOAttributePath.isValid: " + myChildAttribute);
+		return myChildAttribute != null;
+	}
+	
 	protected void toKeyPath(StringBuffer _keyPathBuffer) {
 		if (myParentRelationshipPath != null) {
 			myParentRelationshipPath.toKeyPath(_keyPathBuffer);
 			_keyPathBuffer.append(".");
 		}
-		String name = myChildAttribute.getName();
-		_keyPathBuffer.append(name);
+		if (myChildAttribute != null) {
+			String name = myChildAttribute.getName();
+			_keyPathBuffer.append(name);
+		}
+		else {
+			_keyPathBuffer.append("<invalid>");
+		}
 	}
 }
