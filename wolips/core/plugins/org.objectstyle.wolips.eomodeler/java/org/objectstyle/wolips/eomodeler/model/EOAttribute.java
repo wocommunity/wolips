@@ -121,6 +121,8 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
 	private String myReadFormat;
 
 	private String myWriteFormat;
+	
+	private EOAttributePath myDefinitionPath;
 
 	public EOAttribute() {
 		// DO NOTHING
@@ -260,7 +262,7 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
 	}
 
 	public boolean isFlattened() {
-		return StringUtils.isKeyPath(getDefinition());
+		return StringUtils.isKeyPath(_getDefinition());
 	}
 
 	public boolean isInherited() {
@@ -608,7 +610,36 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
 	}
 
 	public String getDefinition() {
-		return (String) _prototypeValueIfNull(AbstractEOArgument.DEFINITION, super.getDefinition());
+		String definition;
+		if (isFlattened() && myDefinitionPath != null) {
+			definition = myDefinitionPath.toKeyPath();
+		}
+		else {
+			definition = _getDefinition();
+		}
+		return definition;
+	}
+	
+	public EOAttributePath getDefinitionPath() {
+		return myDefinitionPath;
+	}
+	
+	public String _getDefinition() {
+		return (String) _prototypeValueIfNull(AbstractEOArgument.DEFINITION, super._getDefinition());
+	}
+
+	protected void updateDefinitionPath() {
+		if (isFlattened()) {
+			EOAttributePath definitionPath = (EOAttributePath) getEntity().resolveKeyPath(_getDefinition());
+			if (definitionPath.isValid()) {
+				myDefinitionPath = definitionPath;
+			}
+			else {
+				myDefinitionPath = null;
+			}
+		} else {
+			myDefinitionPath = null;
+		}
 	}
 
 	public void setDefinition(String _definition) {

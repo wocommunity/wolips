@@ -53,6 +53,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
+import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
 public abstract class AbstractEOArgument extends UserInfoableEOModelObject implements ISortableEOModelObject {
 	public static final String ALLOWS_NULL = "allowsNull";
@@ -170,7 +171,7 @@ public abstract class AbstractEOArgument extends UserInfoableEOModelObject imple
 	}
 
 	public boolean isFlattened() {
-		return getDefinition() != null;
+		return StringUtils.isKeyPath(_getDefinition());
 	}
 
 	public void setName(String _name) throws DuplicateNameException {
@@ -376,14 +377,24 @@ public abstract class AbstractEOArgument extends UserInfoableEOModelObject imple
 		firePropertyChange(AbstractEOArgument.WIDTH, oldWidth, getWidth());
 	}
 
-	public String getDefinition() {
-		return myDefinition;
-	}
 
 	public void setDefinition(String _definition) {
-		String oldDefinition = getDefinition();
+		String oldDefinition = myDefinition;
 		myDefinition = _definition;
+		updateDefinitionPath();
 		firePropertyChange(AbstractEOArgument.DEFINITION, oldDefinition, getDefinition());
+	}
+	
+	public String getDefinition() {
+		return _getDefinition();
+	}
+	
+	protected String _getDefinition() {  
+		return myDefinition;
+	}
+	
+	protected void updateDefinitionPath() {
+		// DO NOTHING
 	}
 
 	public void loadFromMap(EOModelMap _argumentMap, Set _failures) {

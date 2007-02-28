@@ -351,9 +351,9 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 		EOAttribute primaryKey = (EOAttribute) destinationPrimaryKeys.iterator().next();
 		return primaryKey;
 	}
-	
+
 	public EOAttribute createForeignKeyTo(EOEntity foreignEntity, String foreignKeyName, String foreignKeyColumnName, boolean allowsNull) throws EOModelException {
-		EOAttribute foreignPrimaryKey  = foreignEntity.getSinglePrimaryKeyAttribute();
+		EOAttribute foreignPrimaryKey = foreignEntity.getSinglePrimaryKeyAttribute();
 		EOAttribute foreignKeyAttribute = foreignPrimaryKey.cloneAttribute();
 		foreignKeyAttribute.setName(foreignKeyName);
 		foreignKeyAttribute.setColumnName(foreignKeyColumnName);
@@ -385,7 +385,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 
 	public EOEntity cloneEntity() throws DuplicateNameException {
 		EOEntity entity = _cloneJustEntity();
-		entity._cloneAttributesAndRelationshipsFrom(this, false);
+		entity._cloneAttributesAndRelationshipsFrom(this, false, null, false);
 		entity._cloneFetchSpecificationsFrom(this, false);
 		entity.setUserInfo(new HashMap(getUserInfo()));
 		return entity;
@@ -438,7 +438,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 		if (subclassEntity.isAbstractEntity() != null) {
 			subclassEntity.myAbstractEntity = Boolean.FALSE;
 		}
-		subclassEntity._cloneAttributesAndRelationshipsFrom(this, false);
+		subclassEntity._cloneAttributesAndRelationshipsFrom(this, false, null, false);
 		return subclassEntity;
 	}
 
@@ -450,7 +450,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 		if (subclassEntity.isAbstractEntity() != null) {
 			subclassEntity.myAbstractEntity = Boolean.FALSE;
 		}
-		subclassEntity._cloneAttributesAndRelationshipsFrom(this, false);
+		subclassEntity._cloneAttributesAndRelationshipsFrom(this, false, null, false);
 		return subclassEntity;
 	}
 
@@ -512,14 +512,20 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 		}
 	}
 
-	protected void _cloneAttributesAndRelationshipsFrom(EOEntity _entity, boolean _skipExistingNames) throws DuplicateNameException {
+	// MS: replace with _cloneAttributesAndRelationships(Set) ?
+	protected void _cloneAttributesAndRelationshipsFrom(EOEntity _entity, boolean _skipExistingNames, Set failures, boolean warnOnly) throws DuplicateNameException {
 		Iterator attributesIter = _entity.getAttributes().iterator();
 		while (attributesIter.hasNext()) {
 			EOAttribute attribute = (EOAttribute) attributesIter.next();
 			if (!_skipExistingNames || getAttributeNamed(attribute.getName()) == null) {
-				EOAttribute clonedAttribute = attribute.cloneAttribute();
-				clonedAttribute.setName(findUnusedAttributeName(clonedAttribute.getName()));
-				addAttribute(clonedAttribute);
+				if (failures != null) {
+					failures.add(new EOModelVerificationFailure(getModel(), getFullyQualifiedName() + " was missing the inherited attribute " + attribute.getName() + ".", true));
+				}
+				if (!warnOnly) {
+					EOAttribute clonedAttribute = attribute.cloneAttribute();
+					clonedAttribute.setName(findUnusedAttributeName(clonedAttribute.getName()));
+					addAttribute(clonedAttribute);
+				}
 			}
 		}
 
@@ -527,11 +533,58 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 		while (relationshipsIter.hasNext()) {
 			EORelationship relationship = (EORelationship) relationshipsIter.next();
 			if (!_skipExistingNames || getRelationshipNamed(relationship.getName()) == null) {
+				if (failures != null) {
+					failures.add(new EOModelVerificationFailure(getModel(), getFullyQualifiedName() + " was missing the inherited relationship " + relationship.getName() + ".", true));
+				}
+				if (!warnOnly) {
+					EORelationship clonedRelationship = relationship.cloneRelationship();
+					clonedRelationship.setName(findUnusedRelationshipName(clonedRelationship.getName()));
+					addRelationship(clonedRelationship, false, null, true);
+				}
+			}
+		}
+	}
+
+	protected void _cloneAttributesAndRelationships(Set attributesAndRelationships) throws DuplicateNameException {
+		Iterator attributesAndRelationshipsIter = attributesAndRelationships.iterator();
+		while (attributesAndRelationshipsIter.hasNext()) {
+			Object attributeOrRelationship = attributesAndRelationshipsIter.next();
+			if (attributeOrRelationship instanceof EOAttribute) {
+				EOAttribute attribute = (EOAttribute)attributeOrRelationship;
+				EOAttribute clonedAttribute = attribute.cloneAttribute();
+				clonedAttribute.setName(findUnusedAttributeName(clonedAttribute.getName()));
+				addAttribute(clonedAttribute);
+			}
+			else {
+				EORelationship relationship = (EORelationship)attributeOrRelationship;
 				EORelationship clonedRelationship = relationship.cloneRelationship();
 				clonedRelationship.setName(findUnusedRelationshipName(clonedRelationship.getName()));
 				addRelationship(clonedRelationship, false, null, true);
 			}
 		}
+	}
+	
+	protected Set _findMissingInheritedAttributesAndRelationships() {
+		Set missingInheritedAttributesAndRelationships = new HashSet();
+		EOEntity parentEntity = getParent();
+		if (parentEntity != null) {
+			Iterator attributesIter = parentEntity.getAttributes().iterator();
+			while (attributesIter.hasNext()) {
+				EOAttribute attribute = (EOAttribute) attributesIter.next();
+				if (getAttributeNamed(attribute.getName()) == null) {
+					missingInheritedAttributesAndRelationships.add(attribute);
+				}
+			}
+
+			Iterator relationshipsIter = parentEntity.getRelationships().iterator();
+			while (relationshipsIter.hasNext()) {
+				EORelationship relationship = (EORelationship) relationshipsIter.next();
+				if (getRelationshipNamed(relationship.getName()) == null) {
+					missingInheritedAttributesAndRelationships.add(relationship);
+				}
+			}
+		}
+		return missingInheritedAttributesAndRelationships;
 	}
 
 	public EOEntity getEntity() {
@@ -846,10 +899,13 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 		firePropertyChange(EOEntity.PARENT, oldParent, myParent);
 	}
 
-	public void inheritParentAttributesAndRelationships() throws DuplicateNameException {
+	public void inheritParentAttributesAndRelationships(Set failures, boolean warnOnly) throws DuplicateNameException {
 		EOEntity parent = getParent();
 		if (parent != null) {
-			_cloneAttributesAndRelationshipsFrom(parent, true);
+			if (parent.getModel() == getModel()) {
+				parent.inheritParentAttributesAndRelationships(failures, warnOnly);
+			}
+			_cloneAttributesAndRelationshipsFrom(parent, true, failures, warnOnly);
 		}
 	}
 
@@ -1679,6 +1735,12 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 		EOEntity parent = getParent();
 		if (parent != null && !BooleanUtils.isTrue(parent.isAbstractEntity()) && getRestrictingQualifier() == null && ComparisonUtils.equals(parent.getExternalName(), getExternalName())) {
 			_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + " is a subclass of " + getParent().getName() + " but does not have a restricting qualifier.", false));
+		}
+		try {
+			inheritParentAttributesAndRelationships(_failures, false);
+		}
+		catch (DuplicateNameException e) {
+			_failures.add(new EOModelVerificationFailure(myModel, "Failed to fix inherited attributes and relationships for " + getFullyQualifiedName() + ".", true));
 		}
 
 		Set primaryKeyAttributes = getPrimaryKeyAttributes();

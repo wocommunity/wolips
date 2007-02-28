@@ -294,11 +294,41 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 	public void setDefinition(String _definition) {
 		String oldDefinition = myDefinition;
 		myDefinition = _definition;
+		updateDefinitionPath();
 		firePropertyChange(EORelationship.DEFINITION, oldDefinition, myDefinition);
 	}
 
 	public String getDefinition() {
+		String definition;
+		if (isFlattened() && myDefinitionPath != null) {
+			definition = myDefinitionPath.toKeyPath();
+		} else {
+			definition = _getDefinition();
+		}
+		return definition;
+	}
+
+	public EORelationshipPath getDefinitionPath() {
+		return myDefinitionPath;
+	}
+
+	public String _getDefinition() {
 		return myDefinition;
+	}
+
+	protected void updateDefinitionPath() {
+		if (isFlattened()) {
+			EORelationshipPath definitionPath = (EORelationshipPath) getEntity().resolveKeyPath(_getDefinition());
+			System.out.println("EORelationship.updateDefinitionPath: " + definitionPath);
+			if (definitionPath.isValid()) {
+				myDefinitionPath = definitionPath;
+			}
+			else {
+				myDefinitionPath = null;
+			}
+		} else {
+			myDefinitionPath = null;
+		}
 	}
 
 	public void setClassProperty(Boolean _classProperty) {
@@ -342,7 +372,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 	}
 
 	public boolean isFlattened() {
-		return StringUtils.isKeyPath(myDefinition);
+		return StringUtils.isKeyPath(_getDefinition());
 	}
 
 	public boolean isInherited() {
@@ -650,25 +680,22 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 		EOModelMap relationshipMap = myRelationshipMap.cloneModelMap();
 		if (myDestination != null) {
 			relationshipMap.setString("destination", myDestination.getName(), true);
-		}
-		else {
+		} else {
 			relationshipMap.remove("destination");
 		}
-		relationshipMap.setString("definition", myDefinition, true);
+		relationshipMap.setString("definition", getDefinition(), true);
 		relationshipMap.remove("dataPath");
 		relationshipMap.setBoolean("isMandatory", myMandatory, EOModelMap.YN);
 		relationshipMap.setBoolean("isToMany", myToMany, EOModelMap.YN);
 		if (!isFlattened() && myJoinSemantic != null) {
 			relationshipMap.setString("joinSemantic", myJoinSemantic.getID(), true);
-		}
-		else {
+		} else {
 			relationshipMap.remove("joinSemantic");
 		}
 		relationshipMap.setString("name", myName, true);
 		if (myDeleteRule != null && myDeleteRule != EODeleteRule.NULLIFY) {
 			relationshipMap.setString("deleteRule", myDeleteRule.getID(), true);
-		}
-		else {
+		} else {
 			relationshipMap.remove("deleteRule");
 		}
 		relationshipMap.setBoolean("ownsDestination", myOwnsDestination, EOModelMap.YN);
@@ -697,6 +724,8 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 					_failures.add(new MissingEntityFailure(myEntity.getModel(), destinationName));
 				}
 			}
+		} else {
+			updateDefinitionPath();
 		}
 
 		Iterator joinsIter = myJoins.iterator();
