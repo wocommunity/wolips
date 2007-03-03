@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Third Party Velocity Plug-in
-Bundle-SymbolicName: org.objectstyle.wolips.thirdparty.velocity
+Bundle-SymbolicName: org.objectstyle.wolips.thirdparty.velocity;singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.thirdparty.velocity.Activator
 Bundle-Vendor: objectstyle.org
