@@ -12,6 +12,9 @@
    <feature url="features/org.objectstyle.wolips.goodies.mac.feature_1.0.6.jar" id="org.objectstyle.wolips.goodies.mac.feature" version="1.0.6">
       <category name="Goodies Mac"/>
    </feature>
+   <feature url="features/org.objectstyle.wolips.goodies.win.feature_1.0.6.jar" id="org.objectstyle.wolips.goodies.win.feature" version="1.0.6">
+      <category name="Goodies Win"/>
+   </feature>
    <feature url="features/org.objectstyle.wolips.maven_1.0.6.jar" id="org.objectstyle.wolips.maven" version="1.0.6">
       <category name="Maven Support"/>
    </feature>
@@ -42,6 +45,11 @@
    <category-def name="Goodies Mac" label="Goodies Mac">
       <description>
          Goodies for the Mac.
+      </description>
+   </category-def>
+   <category-def name="Goodies Win" label="Goodies Win">
+      <description>
+         Goodies for the Win.
       </description>
    </category-def>
 </site>
