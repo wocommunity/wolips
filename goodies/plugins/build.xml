@@ -12,6 +12,8 @@
 	<target name="all">
 		<ant dir="org.objectstyle.wolips.goodies.core.mac" target="all" />
 		<ant dir="org.objectstyle.wolips.goodies.ui.mac" target="all" />
+		<ant dir="org.objectstyle.wolips.goodies.core.win" target="all" />
+		<ant dir="org.objectstyle.wolips.goodies.ui.win" target="all" />
 	</target>
 	<!-- ========================================== -->
 	<!-- Build dist.                                -->
@@ -19,6 +21,8 @@
 	<target name="dist">
 		<ant dir="org.objectstyle.wolips.goodies.core.mac" target="dist" />
 		<ant dir="org.objectstyle.wolips.goodies.ui.mac" target="dist" />
+		<ant dir="org.objectstyle.wolips.goodies.core.win" target="dist" />
+		<ant dir="org.objectstyle.wolips.goodies.ui.win" target="dist" />
 	</target>
 
 </project>
