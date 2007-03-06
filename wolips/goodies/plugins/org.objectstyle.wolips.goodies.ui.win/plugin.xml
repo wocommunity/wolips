@@ -16,7 +16,7 @@
             objectClass="org.eclipse.core.resources.IResource"
             id="org.objectstyle.wolips.goodies.ui.win.ResourceContributions">
          <menu
-               label="&amp;Mac Goodies"
+               label="&amp;Win Goodies"
                path="additions"
                id="org.objectstyle.wolips.goodies.ui.win.ResourceContributions">
             <separator
@@ -38,7 +38,7 @@
             adaptable="true"
             id="org.objectstyle.wolips.goodies.ui.win.actions.ShowFileInExplorerAction">
          <action
-               label="Reveal in Finder"
+               label="Show File In Explorer"
                class="org.objectstyle.wolips.goodies.ui.win.actions.ShowFileInExplorerAction"
                menubarPath="org.objectstyle.wolips.goodies.ui.win.ResourceContributions/group1"
                enablesFor="1"
@@ -50,7 +50,7 @@
             adaptable="true"
             id="org.objectstyle.wolips.goodies.ui.win.actions.ShowFileInShellAction">
          <action
-               label="Cd in Terminal"
+               label="Show File In Shell"
                class="org.objectstyle.wolips.goodies.ui.win.actions.ShowFileInShellAction"
                menubarPath="org.objectstyle.wolips.goodies.ui.win.ResourceContributions/group1"
                enablesFor="1"
