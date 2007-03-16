@@ -96,7 +96,9 @@ public class EOModelOutlineLabelProvider implements ILabelProvider, IFontProvide
 
 	public Image getImage(Object _element) {
 		Image image;
-		if (_element instanceof EOModel) {
+		if (_element instanceof String) {
+			image = Activator.getDefault().getImageRegistry().get(Activator.EOMODEL_ICON);
+		} else if (_element instanceof EOModel) {
 			image = Activator.getDefault().getImageRegistry().get(Activator.EOMODEL_ICON);
 		} else if (_element instanceof EOEntity) {
 			image = Activator.getDefault().getImageRegistry().get(Activator.EOENTITY_ICON);
@@ -124,7 +126,9 @@ public class EOModelOutlineLabelProvider implements ILabelProvider, IFontProvide
 
 	public String getText(Object _element) {
 		String text;
-		if (_element instanceof EOModel) {
+		if (_element instanceof String) {
+			text = (String) _element;
+		} else if (_element instanceof EOModel) {
 			EOModel model = (EOModel) _element;
 			text = model.getName();
 		} else if (_element instanceof EOEntity) {
