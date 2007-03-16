@@ -8,7 +8,7 @@
             class="org.objectstyle.wolips.eomodeler.editors.EOModelEditor"
             contributorClass="org.objectstyle.wolips.eomodeler.editors.EOModelEditorContributor"
             default="true"
-            icon="icons/eoModel.gif"
+            icon="icons/eoModel.png"
             id="org.objectstyle.wolips.eomodeler.editors.EOModelEditor"
             matchingStrategy="org.objectstyle.wolips.eomodeler.editors.EOModelMatchingStrategy"
             name="Entity Modeler">
@@ -45,7 +45,7 @@
       </decorator>
       <decorator
             class="org.objectstyle.wolips.eomodeler.decorators.EOModelDecorator"
-            icon="icons/eoModel.gif"
+            icon="icons/eoModel.png"
             id="org.objectstyle.wolips.eomodeler.decorators.EOModelDecorator"
             label="EOModel Decorator"
             lightweight="false"
@@ -60,7 +60,7 @@
          </enablement>
       </decorator>
       <decorator
-            icon="icons/eoFetchSpecification.gif"
+            icon="icons/eoFetchSpecification.png"
             id="org.objectstyle.wolips.eomodeler.decorators.EOFetchSpecDecorator"
             label="EOFetchSpecification Decorator"
             lightweight="false"
@@ -75,7 +75,7 @@
          </enablement>
       </decorator>
       <decorator
-            icon="icons/eoStoredProcedure.gif"
+            icon="icons/eoStoredProcedure.png"
             id="org.objectstyle.wolips.eomodeler.decorators.EOStoredProcedureDecorator"
             label="EOStoredProcedure Decorator"
             lightweight="false"
@@ -110,138 +110,138 @@
                afterTab="org.objectstyle.wolips.eomodeler.tabs.connectionDictionary"
                category="eomodel"
                id="org.objectstyle.wolips.eomodeler.tabs.eomodelUserInfo"
-               image="icons/eoModel.gif"
+               image="icons/eoModel.png"
                label="User Info"/>
          <propertyTab
                category="eoentity"
                id="org.objectstyle.wolips.eomodeler.tabs.eoentityBasic"
-               image="icons/eoEntity.gif"
+               image="icons/eoEntity.png"
                label="Basic"/>
          <propertyTab
                afterTab="org.objectstyle.wolips.eomodeler.tabs.eoentityBasic"
                category="eoentity"
                id="org.objectstyle.wolips.eomodeler.tabs.eoentityAdvanced"
-               image="icons/eoEntity.gif"
+               image="icons/eoEntity.png"
                label="Advanced"/>
          <propertyTab
                afterTab="org.objectstyle.wolips.eomodeler.tabs.eoentityAdvanced"
                category="eoentity"
                id="org.objectstyle.wolips.eomodeler.tabs.eoentitySharedObjects"
-               image="icons/eoEntity.gif"
+               image="icons/eoEntity.png"
                label="Shared Objects"/>
          <propertyTab
                afterTab="org.objectstyle.wolips.eomodeler.tabs.eoentitySharedObjects"
                category="eoentity"
                id="org.objectstyle.wolips.eomodeler.tabs.eoentityStoredProcedures"
-               image="icons/eoStoredProcedure.gif"
+               image="icons/eoStoredProcedure.png"
                label="Stored Procs"/>
          <propertyTab
                afterTab="org.objectstyle.wolips.eomodeler.tabs.eoentityStoredProcedures"
                category="eoentity"
                id="org.objectstyle.wolips.eomodeler.tabs.eoentityUserInfo"
-               image="icons/eoEntity.gif"
+               image="icons/eoEntity.png"
                label="User Info"/>
          <propertyTab
                category="eoattribute"
                id="org.objectstyle.wolips.eomodeler.tabs.eoattributeBasic"
-               image="icons/eoAttribute.gif"
+               image="icons/eoAttribute.png"
                label="Basic"/>
          <propertyTab
                afterTab="org.objectstyle.wolips.eomodeler.tabs.eoattributeBasic"
                category="eoattribute"
                id="org.objectstyle.wolips.eomodeler.tabs.eoattributeAdvanced"
-               image="icons/eoAttribute.gif"
+               image="icons/eoAttribute.png"
                label="Advanced"/>
          <propertyTab
                afterTab="org.objectstyle.wolips.eomodeler.tabs.eoattributeAdvanced"
                category="eoattribute"
                id="org.objectstyle.wolips.eomodeler.tabs.eoattributeUserInfo"
-               image="icons/eoAttribute.gif"
+               image="icons/eoAttribute.png"
                label="User Info"/>
          <propertyTab
                category="eorelationship"
                id="org.objectstyle.wolips.eomodeler.tabs.eorelationshipBasic"
-               image="icons/eoRelationship.gif"
+               image="icons/eoRelationship.png"
                label="Basic"/>
          <propertyTab
                afterTab="org.objectstyle.wolips.eomodeler.tabs.eorelationshipBasic"
                category="eorelationship"
                id="org.objectstyle.wolips.eomodeler.tabs.eorelationshipAdvanced"
-               image="icons/eoRelationship.gif"
+               image="icons/eoRelationship.png"
                label="Advanced"/>
          <propertyTab
                afterTab="org.objectstyle.wolips.eomodeler.tabs.eorelationshipAdvanced"
                category="eorelationship"
                id="org.objectstyle.wolips.eomodeler.tabs.eorelationshipUserInfo"
-               image="icons/eoRelationship.gif"
+               image="icons/eoRelationship.png"
                label="User Info"/>
          <propertyTab
                category="eofetchspec"
                id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecQualifier"
-               image="icons/eoFetchSpecification.gif"
+               image="icons/eoFetchSpecification.png"
                label="Qualifier"/>
          <propertyTab
                afterTab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecQualifier"
                category="eofetchspec"
                id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecSortOrderings"
-               image="icons/eoFetchSpecification.gif"
+               image="icons/eoFetchSpecification.png"
                label="Sort Orderings"/>
          <propertyTab
                afterTab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecSortOrderings"
                category="eofetchspec"
                id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecPrefetching"
-               image="icons/eoFetchSpecification.gif"
+               image="icons/eoFetchSpecification.png"
                label="Prefetching"/>
          <propertyTab
                afterTab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecPrefetching"
                category="eofetchspec"
                id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecRawFetch"
-               image="icons/eoFetchSpecification.gif"
+               image="icons/eoFetchSpecification.png"
                label="Raw Fetch"/>
          <propertyTab
                afterTab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecRawFetch"
                category="eofetchspec"
                id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecOptions"
-               image="icons/eoFetchSpecification.gif"
+               image="icons/eoFetchSpecification.png"
                label="Options"/>
          <propertyTab
                afterTab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecOptions"
                category="eofetchspec"
                id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecSQL"
-               image="icons/eoFetchSpecification.gif"
+               image="icons/eoFetchSpecification.png"
                label="SQL"/>
          <propertyTab
                afterTab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecSQL"
                category="eofetchspec"
                id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecUserInfo"
-               image="icons/eoFetchSpecification.gif"
+               image="icons/eoFetchSpecification.png"
                label="User Info"/>
          <propertyTab
                category="eostoredprocedure"
                id="org.objectstyle.wolips.eomodeler.tabs.eostoredprocedureBasic"
-               image="icons/eoStoredProcedure.gif"
+               image="icons/eoStoredProcedure.png"
                label="Basic"/>
          <propertyTab
                afterTab="org.objectstyle.wolips.eomodeler.tabs.eostoredprocedureBasic"
                category="eostoredprocedure"
                id="org.objectstyle.wolips.eomodeler.tabs.eostoredprocedureUserInfo"
-               image="icons/eoStoredProcedure.gif"
+               image="icons/eoStoredProcedure.png"
                label="User Info"/>
          <propertyTab
                category="eoargument"
                id="org.objectstyle.wolips.eomodeler.tabs.eoargumentBasic"
-               image="icons/eoArgument.gif"
+               image="icons/eoArgument.png"
                label="Basic"/>
          <propertyTab
                afterTab="org.objectstyle.wolips.eomodeler.tabs.eoargumentBasic"
                category="eoargument"
                id="org.objectstyle.wolips.eomodeler.tabs.eoargumentUserInfo"
-               image="icons/eoArgument.gif"
+               image="icons/eoArgument.png"
                label="User Info"/>
          <propertyTab
                category="eodatabaseconfig"
                id="org.objectstyle.wolips.eomodeler.tabs.eodatabaseconfigBasic"
-               image="icons/sql.gif"
+               image="icons/eoDatabaseConfig.png"
                label="Config"/>
       </propertyTabs>
    </extension>
@@ -427,7 +427,7 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             class="org.objectstyle.wolips.eomodeler.EOModelerPerspectiveFactory"
-            icon="icons/eoModel.gif"
+            icon="icons/eoModel.png"
             id="org.objectstyle.wolips.eomodeler.EOModelerPerspective"
             name="Entity Modeler"/>
    </extension>
@@ -440,7 +440,7 @@
             >
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewDatabaseConfigAction"
-               icon="icons/newDatabaseConfig.gif"
+               icon="icons/newDatabaseConfig.png"
                id="org.objectstyle.wolips.eomodeler.actions.newDatabaseConfig"
                label="New Database Config"
                style="push"
@@ -458,7 +458,7 @@
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.GenerateSQLAction"
-               icon="icons/sql.gif"
+               icon="icons/sql.png"
                id="org.objectstyle.wolips.eomodeler.actions.generateSQL"
                label="Generate SQL"
                style="push"
@@ -540,7 +540,7 @@
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewArgumentAction"
-               icon="icons/newArgument.gif"
+               icon="icons/newArgument.png"
                id="org.objectstyle.wolips.eomodeler.actions.newArgument"
                label="New Argument"
                style="push"
@@ -557,7 +557,7 @@
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewStoredProcedureAction"
-               icon="icons/newStoredProcedure.gif"
+               icon="icons/newStoredProcedure.png"
                id="org.objectstyle.wolips.eomodeler.actions.newStoredProcedure"
                label="New Stored Procedure"
                style="push"
@@ -574,7 +574,7 @@
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewFetchSpecAction"
-               icon="icons/newFetchSpecification.gif"
+               icon="icons/newFetchSpecification.png"
                id="org.objectstyle.wolips.eomodeler.actions.newFetchSpec"
                label="New Fetch Specification"
                style="push"
@@ -591,7 +591,7 @@
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewRelationshipAction"
-               icon="icons/newRelationship.gif"
+               icon="icons/newRelationship.png"
                id="org.objectstyle.wolips.eomodeler.actions.newRelationship"
                label="New Relationship"
                style="push"
@@ -608,7 +608,7 @@
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewAttributeAction"
-               icon="icons/newAttribute.gif"
+               icon="icons/newAttribute.png"
                id="org.objectstyle.wolips.eomodeler.actions.newAttribute"
                label="New Attribute"
                style="push"
@@ -625,7 +625,7 @@
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewEntityAction"
-               icon="icons/newEntity.gif"
+               icon="icons/newEntity.png"
                id="org.objectstyle.wolips.eomodeler.actions.newEntity"
                label="New Entity"
                style="push"

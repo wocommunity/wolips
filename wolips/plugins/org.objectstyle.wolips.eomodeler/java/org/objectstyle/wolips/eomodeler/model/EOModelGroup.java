@@ -49,14 +49,15 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.core.resources.IProject;
+import org.objectstyle.wolips.eomodeler.utils.URLUtils;
 
 public class EOModelGroup extends EOModelObject {
 	public static final String MODELS = "models";
@@ -199,37 +200,39 @@ public class EOModelGroup extends EOModelObject {
 		return matchingModel;
 	}
 
-	public void addModelsFromFolder(File _folder, Set _failures, boolean _skipOnDuplicates, IProject project) throws IOException, EOModelException {
+	public void addModelsFromFolder(URL _folder, Set _failures, boolean _skipOnDuplicates, IProject project) throws IOException, EOModelException {
 		addModelsFromFolder(_folder, true, _failures, _skipOnDuplicates, project);
 	}
 
-	public void addModelsFromFolder(File _folder, boolean _recursive, Set _failures, boolean _skipOnDuplicates, IProject project) throws IOException, EOModelException {
-		File[] files = _folder.listFiles();
-		for (int fileNum = 0; fileNum < files.length; fileNum++) {
-			String name = files[fileNum].getName();
-			if (files[fileNum].isDirectory()) {
-				if (name.endsWith(".eomodeld")) {
-					addModelFromFolder(files[fileNum], _failures, _skipOnDuplicates, project);
+	public void addModelsFromFolder(URL _folder, boolean _recursive, Set _failures, boolean _skipOnDuplicates, IProject project) throws IOException, EOModelException {
+		URL[] children = URLUtils.getChildren(_folder);
+		for (int childNum = 0; childNum < children.length; childNum++) {
+			if (URLUtils.isFolder(children[childNum])) {
+				String path = children[childNum].getPath();
+				if (path.endsWith(".eomodeld") || path.endsWith(".eomodeld/")) {
+					addModelFromFolder(children[childNum], _failures, _skipOnDuplicates, project);
 				} else if (_recursive) {
-					addModelsFromFolder(files[fileNum], _recursive, _failures, _skipOnDuplicates, project);
+					addModelsFromFolder(children[childNum], _recursive, _failures, _skipOnDuplicates, project);
 				}
 			}
 		}
 	}
 
-	public EOModel addModelFromFolder(File _folder, Set _failures, boolean _skipOnDuplicates, IProject project) throws IOException, EOModelException {
-		String name = _folder.getName();
+	public EOModel addModelFromFolder(URL _folder, Set _failures, boolean _skipOnDuplicates, IProject project) throws IOException, EOModelException {
+		String path = _folder.getPath();
+		int lastSlashIndex = path.lastIndexOf('/', path.length() - 2);
+		String name = path.substring(lastSlashIndex + 1);
 		String modelName = name.substring(0, name.indexOf('.'));
 		EOModel model = getModelNamed(modelName);
 		if (model == null) {
 			boolean reloadModel = true;
 			while (reloadModel) {
 				model = new EOModel(modelName, project);
-				model.setModelFolder(_folder);
-				File indexFile = model.getIndexFile();
-				if (!indexFile.exists()) {
+				model.setModelURL(_folder);
+				URL indexURL = model.getIndexURL();
+				if (!URLUtils.exists(indexURL)) {
 					reloadModel = false;
-					_failures.add(new EOModelVerificationFailure(model, "Skipping model because " + indexFile.getAbsolutePath() + " does not exist.", true));
+					_failures.add(new EOModelVerificationFailure(model, "Skipping model because " + indexURL + " does not exist.", true));
 				}
 				else {
 					model._setModelGroup(this);

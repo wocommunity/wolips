@@ -1,8 +1,8 @@
 package org.objectstyle.wolips.eomodeler.sql;
 
-import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,21 +14,21 @@ public class SQLUtils {
 	public static Object createEOFSQLGenerator(EOModel model, List entityNames, Map databaseConfig, ClassLoader eomodelClassLoader) throws SecurityException, NoSuchMethodException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
 		Class sqlGeneratorClass = eomodelClassLoader.loadClass("org.objectstyle.wolips.eomodeler.sql.EOFSQLGenerator");
 
-		List modelFiles = new LinkedList();
+		List modelURLs = new LinkedList();
 		// AK: I hope this does the right thing... we add all other models
 		// before the one in question
 		Iterator modelsIter = model.getModelGroup().getModels().iterator();
 		while (modelsIter.hasNext()) {
 			EOModel otherModel = (EOModel) modelsIter.next();
 			if (otherModel != model) {
-				File otherModelFolder = otherModel.getModelFolder();
-				modelFiles.add(otherModelFolder);
+				URL otherModelURL = otherModel.getModelURL();
+				modelURLs.add(otherModelURL);
 			}
 		}
-		modelFiles.add(model.getModelFolder());
+		modelURLs.add(model.getModelURL());
 
 		Constructor sqlGeneratorConstructor = sqlGeneratorClass.getConstructor(new Class[] { String.class, List.class, List.class, Map.class });
-		Object sqlGenerator = sqlGeneratorConstructor.newInstance(new Object[] { model.getName(), modelFiles, entityNames, databaseConfig });
+		Object sqlGenerator = sqlGeneratorConstructor.newInstance(new Object[] { model.getName(), modelURLs, entityNames, databaseConfig });
 		return sqlGenerator;
 	}
 

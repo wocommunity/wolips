@@ -110,7 +110,7 @@ public class ReverseEngineerAction implements IWorkbenchWindowActionDelegate {
 				List selectedTableNamesList = Arrays.asList(dlg.getResult());
 				Method reverseEngineerWithTableNamesIntoModelMethod = reverseEngineer.getClass().getMethod("reverseEngineerWithTableNamesIntoModel", new Class[] { List.class });
 				File reverseEngineeredEOModelFolder = (File) reverseEngineerWithTableNamesIntoModelMethod.invoke(reverseEngineer, new Object[] { selectedTableNamesList });
-				model.importEntitiesFromModel(reverseEngineeredEOModelFolder, new HashSet());
+				model.importEntitiesFromModel(reverseEngineeredEOModelFolder.toURL(), new HashSet());
 			}
 		} catch (Throwable e) {
 			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), e);

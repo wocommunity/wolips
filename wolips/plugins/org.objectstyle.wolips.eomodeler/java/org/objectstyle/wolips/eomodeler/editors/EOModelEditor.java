@@ -52,6 +52,7 @@ package org.objectstyle.wolips.eomodeler.editors;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -114,6 +115,7 @@ import org.objectstyle.wolips.eomodeler.outline.EOModelContentOutlinePage;
 import org.objectstyle.wolips.eomodeler.utils.AbstractAddRemoveChangeRefresher;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
+import org.objectstyle.wolips.eomodeler.utils.URLUtils;
 import org.objectstyle.wolips.preferences.Preferences;
 
 public class EOModelEditor extends MultiPageEditorPart implements IResourceChangeListener, ITabbedPropertySheetPageContributor, ISelectionProvider, IEOModelEditor {
@@ -429,8 +431,8 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		return ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(_file.getAbsolutePath()));
 	}
 
-	protected static IFile getIndexFile(EOModel _model) {
-		return EOModelEditor.getFile(_model.getIndexFile());
+	protected static IFile getIndexFile(EOModel _model) throws MalformedURLException {
+		return EOModelEditor.getFile(URLUtils.cheatAndTurnIntoFile(_model.getIndexURL()));
 	}
 
 	public void init(IEditorSite _site, IEditorInput _editorInput) throws PartInitException {
@@ -522,8 +524,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			}
 		} catch (CoreException e) {
 			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
 		}
-
+		
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				if (!_failures.isEmpty()) {

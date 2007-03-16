@@ -50,6 +50,7 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 import java.io.File;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1549,21 +1550,21 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 		return fetchSpecsMap;
 	}
 
-	public void loadFromFile(File _entityFile, Set _failures) throws EOModelException {
+	public void loadFromURL(URL entityURL, Set failures) throws EOModelException {
 		try {
-			EOModelMap entityMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_entityFile, new EOModelParserDataStructureFactory()));
-			loadFromMap(entityMap, _failures);
+			EOModelMap entityMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromURL(entityURL, new EOModelParserDataStructureFactory()));
+			loadFromMap(entityMap, failures);
 		} catch (Throwable e) {
-			throw new EOModelException("Failed to load entity from '" + _entityFile + "'.", e);
+			throw new EOModelException("Failed to load entity from '" + entityURL + "'.", e);
 		}
 	}
 
-	public void loadFetchSpecsFromFile(File _fetchSpecFile, Set _failures) throws EOModelException {
+	public void loadFetchSpecsFromURL(URL fetchSpecURL, Set failures) throws EOModelException {
 		try {
-			EOModelMap fspecMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_fetchSpecFile, new EOModelParserDataStructureFactory()));
-			loadFetchSpecsFromMap(fspecMap, _failures);
+			EOModelMap fspecMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromURL(fetchSpecURL, new EOModelParserDataStructureFactory()));
+			loadFetchSpecsFromMap(fspecMap, failures);
 		} catch (Throwable e) {
-			throw new EOModelException("Failed to load fetch specifications from '" + _fetchSpecFile + "'.", e);
+			throw new EOModelException("Failed to load fetch specifications from '" + fetchSpecURL + "'.", e);
 		}
 	}
 

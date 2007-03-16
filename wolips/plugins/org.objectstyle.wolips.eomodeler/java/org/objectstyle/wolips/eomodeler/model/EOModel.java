@@ -51,6 +51,8 @@ package org.objectstyle.wolips.eomodeler.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -61,6 +63,7 @@ import java.util.TreeSet;
 
 import org.eclipse.core.resources.IProject;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
+import org.objectstyle.wolips.eomodeler.utils.URLUtils;
 import org.objectstyle.wolips.eomodeler.wocompat.PropertyListSerialization;
 
 public class EOModel extends UserInfoableEOModelObject implements IUserInfoable, ISortableEOModelObject {
@@ -112,7 +115,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 
 	private boolean myDirty;
 
-	private File myModelFolder;
+	private URL myModelURL;
 
 	private Set myPrototypeAttributeCache;
 
@@ -383,12 +386,12 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return (_obj instanceof EOModel && ((EOModel) _obj).myName.equals(myName));
 	}
 
-	public File getModelFolder() {
-		return myModelFolder;
+	public URL getModelURL() {
+		return myModelURL;
 	}
 
-	public void setModelFolder(File _modelFolder) {
-		myModelFolder = _modelFolder;
+	public void setModelURL(URL _modelURL) {
+		myModelURL = _modelURL;
 	}
 
 	public EOModelGroup getModelGroup() {
@@ -471,11 +474,11 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return getEntityNamed(_entityName) != null;
 	}
 
-	public Set importEntitiesFromModel(File sourceModelFolder, Set failures) throws EOModelException, IOException {
+	public Set importEntitiesFromModel(URL sourceModelURL, Set failures) throws EOModelException, IOException {
 		EOModelGroup sourceModelGroup = new EOModelGroup();
 		EOModel sourceModel = new EOModel("Temp", null);
 		sourceModelGroup.addModel(sourceModel);
-		sourceModel.loadFromFolder(sourceModelFolder, failures);
+		sourceModel.loadFromFolder(sourceModelURL, failures);
 		sourceModel.resolve(failures);
 		return importEntitiesFromModel(sourceModel, failures);
 	}
@@ -658,21 +661,21 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		}
 	}
 
-	public File getIndexFile() {
-		File indexFile = new File(myModelFolder, "index.eomodeld");
-		return indexFile;
+	public URL getIndexURL() throws MalformedURLException {
+		URL indexURL = new URL(myModelURL, "index.eomodeld");
+		return indexURL;
 	}
 
-	public void loadFromFolder(File _modelFolder, Set _failures) throws EOModelException, IOException {
+	public void loadFromFolder(URL _modelFolder, Set _failures) throws EOModelException, IOException {
 		System.out.println("EOModel.loadFromFolder: " + _modelFolder);
-		File indexFile = new File(_modelFolder, "index.eomodeld");
-		if (!indexFile.exists()) {
-			throw new EOModelException(indexFile + " does not exist.");
-		}
-		myModelFolder = _modelFolder;
-		Map rawModelMap = (Map) PropertyListSerialization.propertyListFromFile(indexFile, new EOModelParserDataStructureFactory());
+		URL indexURL = new URL(_modelFolder, "index.eomodeld");
+		// if (!indexURL.exists()) {
+		// throw new EOModelException(indexURL + " does not exist.");
+		//		}
+		myModelURL = _modelFolder;
+		Map rawModelMap = (Map) PropertyListSerialization.propertyListFromURL(indexURL, new EOModelParserDataStructureFactory());
 		if (rawModelMap == null) {
-			throw new EOModelException(indexFile + " is corrupted.");
+			throw new EOModelException(indexURL + " is corrupted.");
 		}
 		EOModelMap modelMap = new EOModelMap(rawModelMap);
 		myModelMap = modelMap;
@@ -693,16 +696,16 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 				EOModelMap entityMap = new EOModelMap((Map) entitiesIter.next());
 				String entityName = entityMap.getString("name", true);
 				EOEntity entity = new EOEntity();
-				File entityFile = new File(_modelFolder, entityName + ".plist");
-				if (entityFile.exists()) {
-					entity.loadFromFile(entityFile, _failures);
-					File fspecFile = new File(_modelFolder, entityName + ".fspec");
-					if (fspecFile.exists()) {
-						entity.loadFetchSpecsFromFile(fspecFile, _failures);
+				URL entityURL = new URL(_modelFolder, entityName + ".plist");
+				if (URLUtils.exists(entityURL)) {
+					entity.loadFromURL(entityURL, _failures);
+					URL fspecURL = new URL(_modelFolder, entityName + ".fspec");
+					if (URLUtils.exists(fspecURL)) {
+						entity.loadFetchSpecsFromURL(fspecURL, _failures);
 					}
 					addEntity(entity, true, false, _failures);
 				} else {
-					_failures.add(new EOModelVerificationFailure(this, "The entity file " + entityFile.getAbsolutePath() + " was missing.", false));
+					_failures.add(new EOModelVerificationFailure(this, "The entity file " + entityURL + " was missing.", false));
 				}
 			}
 		}
@@ -713,12 +716,12 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 			while (storedProcedureNamesIter.hasNext()) {
 				String storedProcedureName = (String) storedProcedureNamesIter.next();
 				EOStoredProcedure storedProcedure = new EOStoredProcedure();
-				File storedProcedureFile = new File(_modelFolder, storedProcedureName + ".storedProcedure");
-				if (storedProcedureFile.exists()) {
-					storedProcedure.loadFromFile(storedProcedureFile, _failures);
+				URL storedProcedureURL = new URL(_modelFolder, storedProcedureName + ".storedProcedure");
+				if (URLUtils.exists(storedProcedureURL)) {
+					storedProcedure.loadFromURL(storedProcedureURL, _failures);
 					addStoredProcedure(storedProcedure, false, _failures);
 				} else {
-					_failures.add(new EOModelVerificationFailure(this, "The stored procedure file " + storedProcedureFile.getAbsolutePath() + " was missing.", false));
+					_failures.add(new EOModelVerificationFailure(this, "The stored procedure file " + storedProcedureURL + " was missing.", false));
 				}
 			}
 		}
@@ -863,19 +866,19 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return modelMap;
 	}
 
-	public File saveToFolder(File _parentFolder) throws IOException {
+	public File saveToFolder(File parentFolder) throws IOException {
 		File modelFolder;
-		if (_parentFolder.getName().endsWith(".eomodeld")) {
-			modelFolder = _parentFolder;
+		if (parentFolder.getName().endsWith(".eomodeld")) {
+			modelFolder = parentFolder;
 		} else {
-			modelFolder = new File(_parentFolder, myName + ".eomodeld");
+			modelFolder = new File(parentFolder, myName + ".eomodeld");
 		}
 		if (!modelFolder.exists()) {
 			if (!modelFolder.mkdirs()) {
 				throw new IOException("Failed to create folder '" + modelFolder + "'.");
 			}
 		}
-		myModelFolder = modelFolder;
+		myModelURL = modelFolder.toURL();
 		File indexFile = new File(modelFolder, "index.eomodeld");
 		EOModelMap modelMap = toMap();
 		PropertyListSerialization.propertyListToFile(indexFile, modelMap);
@@ -1094,17 +1097,17 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return matchingAttribute;
 	}
 
-	/** End Prototypes * */
+	/** End Prototypes **/ 
 
 	public static void main(String[] args) throws IOException, EOModelException {
 		Set failures = new LinkedHashSet();
 
 		EOModelGroup modelGroup = new EOModelGroup();
-		modelGroup.addModelsFromFolder(new File("/Library/Frameworks/ERPrototypes.framework/Resources"), false, failures, false, null);
-		modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTask"), false, failures, false, null);
-		modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTAccounting"), false, failures, false, null);
-		modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTCMS"), false, failures, false, null);
-		modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTWOExtensions"), false, failures, false, null);
+		modelGroup.addModelsFromFolder(new File("/Library/Frameworks/ERPrototypes.framework/Resources").toURL(), false, failures, false, null);
+		modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTask").toURL(), false, failures, false, null);
+		modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTAccounting").toURL(), false, failures, false, null);
+		modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTCMS").toURL(), false, failures, false, null);
+		modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTWOExtensions").toURL(), false, failures, false, null);
 
 		modelGroup.resolve(failures);
 		modelGroup.verify(failures);

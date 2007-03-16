@@ -115,7 +115,7 @@ public class EOModelOutlineLabelProvider implements ILabelProvider, IFontProvide
 		} else if (_element instanceof EOArgument) {
 			image = Activator.getDefault().getImageRegistry().get(Activator.EOATTRIBUTE_ICON);
 		} else if (_element instanceof EODatabaseConfig) {
-			image = Activator.getDefault().getImageRegistry().get(Activator.SQL_ICON);
+			image = Activator.getDefault().getImageRegistry().get(Activator.EODATABASECONFIG_ICON);
 		} else {
 			image = null;
 		}
