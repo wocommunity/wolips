@@ -55,6 +55,7 @@
  */
 package org.objectstyle.wolips.eomodeler.wocompat;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -64,6 +65,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -105,6 +107,23 @@ public class PropertyListSerialization {
 		}
 
 		return new Parser(f).propertyList(factory);
+	}
+
+	/**
+	 * Reads a property list file. Returns a property list object, that is
+	 * normally a java.util.List or a java.util.Map, but can also be a String or
+	 * a Number.
+	 * @throws IOException 
+	 */
+	public static Object propertyListFromURL(URL u, ParserDataStructureFactory factory) throws IOException {
+		InputStream is = u.openStream();
+		BufferedInputStream bi = new BufferedInputStream(is);
+		try {
+			return new Parser(bi, "UTF8").propertyList(factory);
+		}
+		finally {
+			bi.close();
+		}
 	}
 
 	/**

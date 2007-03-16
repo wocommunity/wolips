@@ -50,6 +50,7 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 import java.io.File;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -333,12 +334,12 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 		return fetchSpecMap;
 	}
 
-	public void loadFromFile(File _storedProcedureFile, Set _failures) throws EOModelException {
+	public void loadFromURL(URL _storedProcedureURL, Set _failures) throws EOModelException {
 		try {
-			EOModelMap entityMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_storedProcedureFile, new EOModelParserDataStructureFactory()));
+			EOModelMap entityMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromURL(_storedProcedureURL, new EOModelParserDataStructureFactory()));
 			loadFromMap(entityMap, _failures);
 		} catch (Throwable e) {
-			throw new EOModelException("Failed to load stored procedure from '" + _storedProcedureFile + "'.", e);
+			throw new EOModelException("Failed to load stored procedure from '" + _storedProcedureURL + "'.", e);
 		}
 	}
 

@@ -52,6 +52,7 @@ package org.objectstyle.wolips.eomodeler.sql;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -111,7 +112,7 @@ public class EOFSQLGenerator {
 
 	private Object _modelProcessor;
 
-	public EOFSQLGenerator(String modelName, List modelFolders, List entityNames, Map selectedDatabaseConfig) throws MalformedURLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+	public EOFSQLGenerator(String modelName, List modelURLs, List entityNames, Map selectedDatabaseConfig) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		Map databaseConfig = selectedDatabaseConfig;
 		if (databaseConfig == null) {
 			databaseConfig = new HashMap();
@@ -119,10 +120,10 @@ public class EOFSQLGenerator {
 
 		_modelGroup = new EOModelGroup();
 
-		Iterator modelFoldersIter = modelFolders.iterator();
-		while (modelFoldersIter.hasNext()) {
-			File modelFolder = (File) modelFoldersIter.next();
-			_modelGroup.addModelWithPathURL(modelFolder.toURL());
+		Iterator modelURLIter = modelURLs.iterator();
+		while (modelURLIter.hasNext()) {
+			URL modelURL = (URL) modelURLIter.next();
+			_modelGroup.addModelWithPathURL(modelURL);
 		}
 
 		String prototypeEntityName = (String) databaseConfig.get("prototypeEntityName");

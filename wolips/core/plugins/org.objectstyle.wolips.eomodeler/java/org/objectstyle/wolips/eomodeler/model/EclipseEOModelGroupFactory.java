@@ -71,7 +71,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.eogenerator.model.EOGeneratorModel;
 import org.objectstyle.wolips.eogenerator.model.EOModelReference;
 import org.objectstyle.wolips.eomodeler.Activator;
@@ -95,7 +94,7 @@ public class EclipseEOModelGroupFactory {
 				if (!modelFolder.isAbsolute()) {
 					modelFolder = new File(project.getLocation().toFile(), modelPath);
 				}
-				EOModel modelGroupModel = modelGroup.addModelFromFolder(modelFolder, _failures, _skipOnDuplicates, _modelResource.getProject());
+				EOModel modelGroupModel = modelGroup.addModelFromFolder(modelFolder.toURL(), _failures, _skipOnDuplicates, _modelResource.getProject());
 				if (model == null) {
 					model = modelGroupModel;
 				}
@@ -120,40 +119,37 @@ public class EclipseEOModelGroupFactory {
 	protected static void addModelsFromProject(EOModelGroup _modelGroup, IProject _project, Set _searchedFolders, Set _searchedProjects, Set _failures, boolean _skipOnDuplicates) throws IOException, EOModelException, CoreException {
 		if (!_searchedProjects.contains(_project)) {
 			_searchedProjects.add(_project);
-			Project wolipsProject = (Project) _project.getAdapter(Project.class);
-			if (wolipsProject != null && wolipsProject.hasWOLipsNature()) {
-				IJavaProject javaProject = JavaCore.create(_project);
-				IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
-				for (int classpathEntryNum = 0; classpathEntryNum < classpathEntries.length; classpathEntryNum++) {
-					IClasspathEntry entry = classpathEntries[classpathEntryNum];
-					int entryKind = entry.getEntryKind();
-					if (entryKind == IClasspathEntry.CPE_LIBRARY) {
-						IPath path = entry.getPath();
-						IPath frameworkPath = null;
-						while (frameworkPath == null && path.lastSegment() != null) {
-							String lastSegment = path.lastSegment();
-							if (lastSegment != null && lastSegment.endsWith(".framework")) {
-								frameworkPath = path;
-							} else {
-								path = path.removeLastSegments(1);
-							}
+			IJavaProject javaProject = JavaCore.create(_project);
+			IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
+			for (int classpathEntryNum = 0; classpathEntryNum < classpathEntries.length; classpathEntryNum++) {
+				IClasspathEntry entry = classpathEntries[classpathEntryNum];
+				int entryKind = entry.getEntryKind();
+				if (entryKind == IClasspathEntry.CPE_LIBRARY) {
+					IPath path = entry.getPath();
+					IPath frameworkPath = null;
+					while (frameworkPath == null && path.lastSegment() != null) {
+						String lastSegment = path.lastSegment();
+						if (lastSegment != null && lastSegment.endsWith(".framework")) {
+							frameworkPath = path;
+						} else {
+							path = path.removeLastSegments(1);
 						}
-						if (frameworkPath != null) {
-							File resourcesFolder = frameworkPath.append("Resources").toFile();
-							if (!_searchedFolders.contains(resourcesFolder) && resourcesFolder.exists()) {
-								_searchedFolders.add(resourcesFolder);
-								_modelGroup.addModelsFromFolder(resourcesFolder, false, _failures, _skipOnDuplicates, _project);
-							}
-						}
-					} else if (entryKind == IClasspathEntry.CPE_PROJECT) {
-						IPath path = entry.getPath();
-						IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(path.lastSegment());
-						EclipseEOModelGroupFactory.addModelsFromProject(_modelGroup, project, _searchedFolders, _searchedProjects, _failures, _skipOnDuplicates);
 					}
+					if (frameworkPath != null) {
+						File resourcesFolder = frameworkPath.append("Resources").toFile();
+						if (!_searchedFolders.contains(resourcesFolder) && resourcesFolder.exists()) {
+							_searchedFolders.add(resourcesFolder);
+							_modelGroup.addModelsFromFolder(resourcesFolder.toURL(), false, _failures, _skipOnDuplicates, _project);
+						}
+					}
+				} else if (entryKind == IClasspathEntry.CPE_PROJECT) {
+					IPath path = entry.getPath();
+					IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(path.lastSegment());
+					EclipseEOModelGroupFactory.addModelsFromProject(_modelGroup, project, _searchedFolders, _searchedProjects, _failures, _skipOnDuplicates);
 				}
-
-				_project.accept(new ModelVisitor(_modelGroup, _searchedFolders, _failures, _skipOnDuplicates), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
 			}
+
+			_project.accept(new ModelVisitor(_modelGroup, _searchedFolders, _failures, _skipOnDuplicates), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
 		}
 	}
 
@@ -171,7 +167,7 @@ public class EclipseEOModelGroupFactory {
 		private Set myFailures;
 
 		private Set mySearchedFolders;
-		
+
 		private boolean mySkipOnDuplicates;
 
 		public ModelVisitor(EOModelGroup _modelGroup, Set _searchedFolders, Set _failures, boolean _skipOnDuplicates) {
@@ -187,7 +183,7 @@ public class EclipseEOModelGroupFactory {
 				if (_resource.getType() == IResource.FOLDER) {
 					File resourceFile = _resource.getLocation().toFile();
 					if (!mySearchedFolders.contains(resourceFile) && "eomodeld".equals(_resource.getFileExtension())) {
-						myModelGroup.addModelFromFolder(resourceFile, myFailures, mySkipOnDuplicates, _resource.getProject());
+						myModelGroup.addModelFromFolder(resourceFile.toURL(), myFailures, mySkipOnDuplicates, _resource.getProject());
 						visitChildren = false;
 					}
 				}

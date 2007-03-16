@@ -95,8 +95,8 @@ public class ClasspathUtils {
 	public static ClassLoader createEOModelClassLoader(EOModel _model) throws MalformedURLException, JavaModelException {
 		Set classpathSet = new LinkedHashSet();
 		if(_model.getProject() == null) {
-			File modelFolder = _model.getModelFolder();
-			IContainer[] modelContainers = ResourcesPlugin.getWorkspace().getRoot().findContainersForLocation(new Path(modelFolder.getAbsolutePath()));
+			URL modelURL = _model.getModelURL();
+			IContainer[] modelContainers = ResourcesPlugin.getWorkspace().getRoot().findContainersForLocation(new Path(URLUtils.cheatAndTurnIntoFile(modelURL).getAbsolutePath()));
 			for (int modelContainerNum = 0; modelContainerNum < modelContainers.length; modelContainerNum++) {
 				IContainer modelContainer = modelContainers[modelContainerNum];
 				IProject modelProject = modelContainer.getProject();
