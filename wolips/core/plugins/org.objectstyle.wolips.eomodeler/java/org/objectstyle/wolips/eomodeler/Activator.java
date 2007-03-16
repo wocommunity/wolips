@@ -148,10 +148,10 @@ public class Activator extends AbstractBaseUIActivator {
 
 	protected void initializeImageRegistry(ImageRegistry _reg) {
 		super.initializeImageRegistry(_reg);
-		_reg.put(Activator.PRIMARY_KEY_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "/icons/primaryKey.gif"));
-		_reg.put(Activator.LOCKING_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "/icons/locking.gif"));
-		_reg.put(Activator.CLASS_PROPERTY_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "/icons/classProperty.gif"));
-		_reg.put(Activator.CHECK_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/check.gif"));
+		_reg.put(Activator.PRIMARY_KEY_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "/icons/primaryKey.png"));
+		_reg.put(Activator.LOCKING_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "/icons/locking.png"));
+		_reg.put(Activator.CLASS_PROPERTY_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "/icons/classProperty.png"));
+		_reg.put(Activator.CHECK_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/check.png"));
 		_reg.put(Activator.EOMODEL_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoModel.png"));
 		_reg.put(Activator.EOATTRIBUTE_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoAttribute.png"));
 		_reg.put(Activator.EOENTITY_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoEntity.png"));
@@ -159,10 +159,10 @@ public class Activator extends AbstractBaseUIActivator {
 		_reg.put(Activator.EOSTOREDPROCEDURE_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoStoredProcedure.png"));
 		_reg.put(Activator.EORELATIONSHIP_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoRelationship.png"));
 		_reg.put(Activator.EODATABASECONFIG_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoDatabaseConfig.png"));
-		_reg.put(Activator.TO_MANY_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/toMany.gif"));
-		_reg.put(Activator.TO_ONE_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/toOne.gif"));
+		_reg.put(Activator.TO_MANY_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/toMany.png"));
+		_reg.put(Activator.TO_ONE_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/toOne.png"));
 		_reg.put(Activator.ASCENDING_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/ascending.png"));
 		_reg.put(Activator.DESCENDING_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/descending.png"));
-		_reg.put(Activator.SQL_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/sql.gif"));
+		_reg.put(Activator.SQL_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/sql.png"));
 	}
 }
