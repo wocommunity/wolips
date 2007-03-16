@@ -476,7 +476,7 @@
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.ReverseEngineerAction"
-               icon="icons/reverseEngineer.gif"
+               icon="icons/reverseEngineer.png"
                id="org.objectstyle.wolips.eomodeler.actions.reverseEngineer"
                label="Reverse Engineer"
                style="push"
@@ -488,7 +488,7 @@
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.VerifyAction"
-               icon="icons/verify.gif"
+               icon="icons/verify.png"
                id="org.objectstyle.wolips.eomodeler.actions.verify"
                label="Verify Model"
                style="push"
@@ -506,7 +506,7 @@
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.SubclassEntityAction"
-               icon="icons/subclassEntity.gif"
+               icon="icons/subclassEntity.png"
                id="org.objectstyle.wolips.eomodeler.actions.subclassEntity"
                label="Subclass Entity"
                style="push"
@@ -523,7 +523,7 @@
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.FlattenAction"
-               icon="icons/flattenRelationship.gif"
+               icon="icons/flattenRelationship.png"
                id="org.objectstyle.wolips.eomodeler.actions.flatten"
                label="Flatten"
                style="push"
