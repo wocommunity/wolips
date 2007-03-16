@@ -97,7 +97,13 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
 		Object[] children;
 		if (_parentElement instanceof EOModelContainer) {
 			EOModelContainer modelContainer = (EOModelContainer) _parentElement;
-			children = new Object[] { modelContainer.getModel() };
+			EOModel model = modelContainer.getModel();
+			if (model == null) {
+				children = new Object[] { "No Model Loaded" };
+			}
+			else {
+				children = new Object[] { model };
+			}
 		} else if (_parentElement instanceof EOModelGroup) {
 			EOModelGroup modelGroup = (EOModelGroup) _parentElement;
 			Set modelGroupChildren = new TreeSet(new EOSortableEOModelObjectComparator());

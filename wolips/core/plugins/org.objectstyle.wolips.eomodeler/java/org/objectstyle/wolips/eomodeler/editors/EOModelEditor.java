@@ -107,6 +107,7 @@ import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.model.EOModelException;
 import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
@@ -409,7 +410,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	}
 
 	public boolean isDirty() {
-		return myModel.isDirty();
+		return myModel != null && myModel.isDirty();
 	}
 
 	public void doSaveAs() {
@@ -431,7 +432,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		return ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(_file.getAbsolutePath()));
 	}
 
-	protected static IFile getIndexFile(EOModel _model) throws MalformedURLException {
+	protected static IFile getIndexFile(EOModel _model) throws MalformedURLException, EOModelException {
+		if (_model.getIndexURL() == null) {
+			throw new EOModelException("Failed to load model.");
+		}
 		return EOModelEditor.getFile(URLUtils.cheatAndTurnIntoFile(_model.getIndexURL()));
 	}
 
@@ -468,70 +472,82 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 			myLoadFailures = new LinkedHashSet();
 			myModel = EclipseEOModelGroupFactory.createModel(fileEditorInput.getFile(), myLoadFailures, true);
-			if (openingEntityName != null) {
-				myOpeningEntity = myModel.getEntityNamed(openingEntityName);
+			if (myModel == null) {
+				super.init(_site, fileEditorInput);
+				handleModelErrors(myLoadFailures);
+				//throw new EOModelException("Failed to load the requested model.");
 			}
-			fileEditorInput = new FileEditorInput(EOModelEditor.getIndexFile(myModel));
+			else {
+				if (openingEntityName != null) {
+					myOpeningEntity = myModel.getEntityNamed(openingEntityName);
+				}
+				fileEditorInput = new FileEditorInput(EOModelEditor.getIndexFile(myModel));
+				handleModelErrors(myLoadFailures);
+	
+				myModel.addPropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
+				myModel.addPropertyChangeListener(EOModel.ENTITIES, myEntitiesChangeListener);
+				myModel.addPropertyChangeListener(EOModel.STORED_PROCEDURES, myStoredProceduresChangeListener);
+				myModel.addPropertyChangeListener(EOModel.DATABASE_CONFIGS, myDatabaseConfigsChangeListener);
+				super.init(_site, fileEditorInput);
+				updatePartName();
+				_site.setSelectionProvider(this);
+				EOModelEditor.this.editorDirtyStateChanged();
+			}
+		} catch (Throwable e) {
 			handleModelErrors(myLoadFailures);
-
-			myModel.addPropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
-			myModel.addPropertyChangeListener(EOModel.ENTITIES, myEntitiesChangeListener);
-			myModel.addPropertyChangeListener(EOModel.STORED_PROCEDURES, myStoredProceduresChangeListener);
-			myModel.addPropertyChangeListener(EOModel.DATABASE_CONFIGS, myDatabaseConfigsChangeListener);
-			super.init(_site, fileEditorInput);
-			updatePartName();
-			_site.setSelectionProvider(this);
-			EOModelEditor.this.editorDirtyStateChanged();
-		} catch (Exception e) {
 			throw new PartInitException("Failed to create EOModelEditorInput for " + _editorInput + ".", e);
 		}
 	}
 
 	protected void handleModelErrors(final Set _failures) {
-		try {
-			Iterator modelsIter = myModel.getModelGroup().getModels().iterator();
-			while (modelsIter.hasNext()) {
-				EOModel model = (EOModel) modelsIter.next();
-				IFile indexFile = EOModelEditor.getIndexFile(model);
-				if (indexFile != null) {
-					IMarker[] markers = indexFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
-					for (int markerNum = 0; markerNum < markers.length; markerNum++) {
-						// System.out.println("EOModelEditor.handleModelErrors:
-						// deleting " + markers[markerNum]);
-						markers[markerNum].delete();
-					}
-				}
-			}
-			if (Preferences.shouldEntityModelerShowErrorsInProblemsView()) {
-				Iterator failuresIter = _failures.iterator();
-				while (failuresIter.hasNext()) {
-					EOModelVerificationFailure failure = (EOModelVerificationFailure) failuresIter.next();
-					EOModel model = failure.getModel();
+		if (myModel != null) {
+			try {
+				Iterator modelsIter = myModel.getModelGroup().getModels().iterator();
+				while (modelsIter.hasNext()) {
+					EOModel model = (EOModel) modelsIter.next();
 					IFile indexFile = EOModelEditor.getIndexFile(model);
 					if (indexFile != null) {
-						IMarker marker = indexFile.createMarker(IMarker.PROBLEM);
-						marker.setAttribute(IMarker.MESSAGE, failure.getMessage());
-						int severity;
-						if (failure.isWarning()) {
-							severity = IMarker.SEVERITY_WARNING;
-						} else {
-							severity = IMarker.SEVERITY_ERROR;
+						IMarker[] markers = indexFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+						for (int markerNum = 0; markerNum < markers.length; markerNum++) {
+							// System.out.println("EOModelEditor.handleModelErrors:
+							// deleting " + markers[markerNum]);
+							markers[markerNum].delete();
 						}
-						marker.setAttribute(IMarker.SEVERITY, new Integer(severity));
-						marker.setAttribute(IMarker.TRANSIENT, false);
 					}
 				}
+				if (Preferences.shouldEntityModelerShowErrorsInProblemsView()) {
+					Iterator failuresIter = _failures.iterator();
+					while (failuresIter.hasNext()) {
+						EOModelVerificationFailure failure = (EOModelVerificationFailure) failuresIter.next();
+						EOModel model = failure.getModel();
+						IFile indexFile = EOModelEditor.getIndexFile(model);
+						if (indexFile != null) {
+							IMarker marker = indexFile.createMarker(IMarker.PROBLEM);
+							marker.setAttribute(IMarker.MESSAGE, failure.getMessage());
+							int severity;
+							if (failure.isWarning()) {
+								severity = IMarker.SEVERITY_WARNING;
+							} else {
+								severity = IMarker.SEVERITY_ERROR;
+							}
+							marker.setAttribute(IMarker.SEVERITY, new Integer(severity));
+							marker.setAttribute(IMarker.TRANSIENT, false);
+						}
+					}
+				}
+			} catch (CoreException e) {
+				e.printStackTrace();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (EOModelException e) {
+				e.printStackTrace();
 			}
-		} catch (CoreException e) {
-			e.printStackTrace();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
 		}
-		
+
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				if (!_failures.isEmpty()) {
-					EOModelErrorDialog dialog = new EOModelErrorDialog(getEditorSite().getShell(), _failures);
+					EOModelErrorDialog dialog = new EOModelErrorDialog(Display.getCurrent().getActiveShell(), _failures);
 					dialog.setBlockOnOpen(true);
 					dialog.open();
 				}
