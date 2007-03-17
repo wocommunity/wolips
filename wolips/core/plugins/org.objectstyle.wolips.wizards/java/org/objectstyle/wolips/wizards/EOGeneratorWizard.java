@@ -80,6 +80,7 @@ import org.objectstyle.wolips.eogenerator.model.EOGeneratorModel;
 import org.objectstyle.wolips.eogenerator.model.EOModelReference;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EOModelGroup;
+import org.objectstyle.wolips.eomodeler.utils.URLUtils;
 
 /**
  * This is a sample new wizard. Its role is to create a new file resource in the
@@ -200,7 +201,7 @@ public class EOGeneratorWizard extends Wizard implements INewWizard {
 		Iterator modelsIter = modelGroup.getModels().iterator();
 		while (modelsIter.hasNext()) {
 			EOModel modelGroupModel = (EOModel) modelsIter.next();
-			File modelFolder = modelGroupModel.getModelFolder();
+			File modelFolder = URLUtils.cheatAndTurnIntoFile(modelGroupModel.getModelURL());
 			if (modelFolder != null) {
 				Path modelPath = new Path(modelFolder.getAbsolutePath());
 				EOModelReference modelReference = new EOModelReference(modelPath);

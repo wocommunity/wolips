@@ -64,6 +64,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.objectstyle.wolips.eogenerator.model.EOGeneratorModel;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EclipseEOModelGroupFactory;
+import org.objectstyle.wolips.eomodeler.utils.URLUtils;
 import org.objectstyle.wolips.wizards.EOGeneratorWizard;
 
 public class CreateEOGenFromEOModelWorkspaceJob extends WorkspaceJob {
@@ -82,7 +83,7 @@ public class CreateEOGenFromEOModelWorkspaceJob extends WorkspaceJob {
 			String extension = (_createEOModelGroup) ? ".eomodelgroup" : ".eogen";
 			EOModel model = EclipseEOModelGroupFactory.createModel(_modelFile, new HashSet(), true);
 			EOGeneratorModel eogenModel = EOGeneratorWizard.createEOGeneratorModel(_modelFile.getParent(), model);
-			String eogenBasePath = model.getModelFolder().getAbsolutePath();
+			String eogenBasePath = URLUtils.cheatAndTurnIntoFile(model.getModelURL()).getAbsolutePath();
 			int dotIndex = eogenBasePath.lastIndexOf('.');
 			eogenBasePath = eogenBasePath.substring(0, dotIndex);
 			String eogenPath = eogenBasePath + extension;
