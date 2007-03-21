@@ -76,6 +76,7 @@ import org.objectstyle.cayenne.exp.parser.ASTOr;
 import org.objectstyle.cayenne.exp.parser.ASTPath;
 import org.objectstyle.cayenne.exp.parser.AggregateConditionNode;
 import org.objectstyle.cayenne.exp.parser.ConditionNode;
+import org.objectstyle.cayenne.exp.parser.Node;
 import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
 public class EOQualifierFactory {
@@ -111,6 +112,15 @@ public class EOQualifierFactory {
 				exp = EOQualifierFactory.createKeyValueExpression(leftKey, selectorName, new ASTObjPath(rightKey));
 			} else {
 				throw new IllegalArgumentException("Unknown qualifier className '" + className + "'.");
+			}
+			if (exp instanceof Node) {
+				int operandCount = exp.getOperandCount();
+				for (int operand = 0; operand < operandCount; operand++) {
+					Object obj = exp.getOperand(operand);
+					if (obj instanceof Node) {
+						((Node)obj).jjtSetParent((Node)exp);
+					}
+				}
 			}
 		}
 		return exp;

@@ -591,7 +591,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 		firePropertyChange(EOFetchSpecification.USES_DISTINCT, oldUsesDistinct, myUsesDistinct);
 	}
 
-	public void loadFromMap(EOModelMap _map, Set _failures) throws EOModelException {
+	public void loadFromMap(EOModelMap _map, Set _failures) {
 		myFetchSpecMap = _map;
 		// "entityName" = myEntity
 		myClass = _map.getString("class", true);
