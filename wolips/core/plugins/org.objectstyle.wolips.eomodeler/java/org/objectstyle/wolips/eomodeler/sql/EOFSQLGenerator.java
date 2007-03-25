@@ -51,7 +51,6 @@ package org.objectstyle.wolips.eomodeler.sql;
 
 import java.io.File;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -579,7 +578,7 @@ public class EOFSQLGenerator {
 		return result;
 	}
 
-	public static void main(String[] argv) throws MalformedURLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+	public static void main(String[] argv) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		Map flags = new HashMap();
 		flags.put(EOSchemaGeneration.DropTablesKey, "YES");
 		flags.put(EOSchemaGeneration.DropPrimaryKeySupportKey, "YES");
