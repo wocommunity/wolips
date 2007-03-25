@@ -55,7 +55,8 @@ import org.eclipse.jface.util.Assert;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
@@ -64,7 +65,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
-import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -90,7 +91,7 @@ public class KeyComboBoxCellEditor extends CellEditor {
 	/**
 	 * The custom combo box control.
 	 */
-	CCombo comboBox;
+	IHateCCombo comboBox;
 
 	/**
 	 * Default ComboBoxCellEditor style
@@ -172,14 +173,31 @@ public class KeyComboBoxCellEditor extends CellEditor {
 		populateComboBoxItems();
 	}
 
+	private boolean _resizing;
 	/*
 	 * (non-Javadoc) Method declared on CellEditor.
 	 */
 	protected Control createControl(Composite parent) {
 
-		comboBox = new CCombo(parent, getStyle());
+		comboBox = new IHateCCombo(parent, getStyle());
 		comboBox.setFont(parent.getFont());
 
+		comboBox.addControlListener(new ControlListener() {
+			public void controlMoved(ControlEvent e) {
+				if (!_resizing) {
+					_resizing = true;
+					Point location = comboBox.getLocation();
+					location.x -= 3;
+					location.y -= 1;
+					comboBox.setLocation(location);
+					_resizing = false;
+				}
+			}
+			
+			public void controlResized(ControlEvent e) {
+			}
+		});
+		
 		comboBox.addKeyListener(new KeyAdapter() {
 			// hook key pressed - see PR 14201
 			public void keyPressed(KeyEvent e) {
@@ -242,16 +260,20 @@ public class KeyComboBoxCellEditor extends CellEditor {
 	 * CCombo will be wide enough to show its longest item.
 	 */
 	public LayoutData getLayoutData() {
+		LayoutData layoutData = new LayoutData();
+		return layoutData;
+		/*
 		LayoutData layoutData = super.getLayoutData();
 		if ((comboBox == null) || comboBox.isDisposed()) {
 			layoutData.minimumWidth = 60;
 		} else {
 			// make the comboBox 10 characters wide
 			GC gc = new GC(comboBox);
-			layoutData.minimumWidth = (gc.getFontMetrics().getAverageCharWidth() * 10) + 10;
+			layoutData.minimumWidth = (gc.getFontMetrics().getAverageCharWidth() * 10) + 10 + 300;
 			gc.dispose();
 		}
 		return layoutData;
+		*/
 	}
 
 	/**
