@@ -1,3 +1,4 @@
+
 <project name="${WOLipsContext.getProjectName()}" default="build" basedir=".">
 
 	<!-- main targets  -->
@@ -53,31 +54,25 @@
 					<excludesfile name="${WOLipsContext.getAntFolderName()}/classes.exclude.patternset"/> 
 				</patternset>
    			</classes>
-   			<wsresources dir="WebServerResources">
+   			<wsresources dir=".">
       			<patternset>
-  					<include name="**/*"/> 
-					<exclude name="CVS"/> 
-					<exclude name=".svn"/> 
-					<excludesfile name="woproject/wsresources.exclude.patternset"/> 
+					<includesfile name="${WOLipsContext.getAntFolderName()}/wsresources.include.patternset"/> 
+					<excludesfile name="${WOLipsContext.getAntFolderName()}/wsresources.exclude.patternset"/> 
 				</patternset>
 			</wsresources>
-   			<resources dir="Resources">
+   			<resources dir=".">
       			<patternset>
-  					<include name="**/*"/> 
-					<exclude name="CVS"/> 
-					<exclude name=".svn"/> 
-					<excludesfile name="woproject/resources.exclude.patternset"/> 
+					<includesfile name="${WOLipsContext.getAntFolderName()}/resources.include.patternset"/> 
+					<excludesfile name="${WOLipsContext.getAntFolderName()}/resources.exclude.patternset"/> 
 				</patternset>
        		</resources>
-   			<resources dir="Components">
+   			<resources dir=".">
       			<patternset>
-  					<include name="**/*"/> 
-					<exclude name="CVS"/> 
-					<exclude name=".svn"/> 
-					<excludesfile name="woproject/resources.exclude.patternset"/> 
+					<includesfile name="${WOLipsContext.getAntFolderName()}/resources.include.patternset"/> 
+					<excludesfile name="${WOLipsContext.getAntFolderName()}/resources.exclude.patternset"/> 
 				</patternset>
        		</resources>
-			<lib dir="Libraries">
+			<lib dir=".">
 				<include name="*.jar"/>
 				<exclude name="**/*.framework/**"/>
 			</lib>
