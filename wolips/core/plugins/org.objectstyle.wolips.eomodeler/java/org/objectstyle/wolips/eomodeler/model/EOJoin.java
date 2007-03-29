@@ -83,8 +83,8 @@ public class EOJoin extends EOModelObject implements ISortableEOModelObject {
 		return inverseJoin;
 	}
 
-	public Set getReferenceFailures() {
-		return new HashSet();
+	public Set<EOModelVerificationFailure> getReferenceFailures() {
+		return new HashSet<EOModelVerificationFailure>();
 	}
 
 	protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
@@ -250,7 +250,7 @@ public class EOJoin extends EOModelObject implements ISortableEOModelObject {
 		return joinMap;
 	}
 
-	public void resolve(Set _failures) {
+	public void resolve(Set<EOModelVerificationFailure> _failures) {
 		String sourceAttributeName = myJoinMap.getString("sourceAttribute", true);
 		mySourceAttribute = myRelationship.getEntity().getAttributeNamed(sourceAttributeName);
 		if (mySourceAttribute == null) {
@@ -267,7 +267,7 @@ public class EOJoin extends EOModelObject implements ISortableEOModelObject {
 		}
 	}
 
-	public void verify(Set _failures) {
+	public void verify(Set<EOModelVerificationFailure> _failures) {
 		if (mySourceAttribute == null) {
 			_failures.add(new EOModelVerificationFailure(getRelationship().getEntity().getModel(), getRelationship().getEntity().getName() + "'s " + getRelationship().getName() + "'s has a join with a missing source attribute.", false));
 		}

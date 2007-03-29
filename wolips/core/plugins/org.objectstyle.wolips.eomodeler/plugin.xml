@@ -101,6 +101,9 @@
          <propertyCategory category="eostoredprocedure"/>
          <propertyCategory category="eoargument"/>
          <propertyCategory category="eodatabaseconfig"/>
+         <propertyCategory
+               category="eoentityIndex">
+         </propertyCategory>
       </propertyContributor>
    </extension>
    <extension
@@ -243,6 +246,19 @@
                id="org.objectstyle.wolips.eomodeler.tabs.eodatabaseconfigBasic"
                image="icons/eoDatabaseConfig.png"
                label="Config"/>
+         <propertyTab
+               category="eoentityIndex"
+               id="org.objectstyle.wolips.eomodeler.tabs.eoentityIndexBasic"
+               image="icons/eoEntityIndex.png"
+               label="Basic">
+         </propertyTab>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eoentityIndexBasic"
+               category="eoentityIndex"
+               id="org.objectstyle.wolips.eomodeler.tabs.eoentityIndexUserInfo"
+               image="icons/eoEntityIndex.png"
+               label="User Info">
+         </propertyTab>
       </propertyTabs>
    </extension>
    <extension
@@ -421,6 +437,20 @@
                tab="org.objectstyle.wolips.eomodeler.tabs.eodatabaseconfigBasic">
             <input type="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
          </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.entityIndex.EOEntityIndexBasicEditorSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eoentityIndexBasic"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoentityIndexBasic">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOEntityIndex"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.userInfo.UserInfoPropertySection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eoentityIndexUserInfo"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoentityIndexUserInfo">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOEntityIndex"/>
+         </propertySection>
       </propertySections>
    </extension>
    <extension
@@ -535,6 +565,24 @@
                        <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
                        <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
                        <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                   </or>
+               </enablement>
+         </action>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewEntityIndexAction"
+               icon="icons/newEntityIndex.png"
+               id="org.objectstyle.wolips.eomodeler.actions.newEntityIndex"
+               label="New Entity Index"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="New Entity Index">
+               <enablement>
+                   <or>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOEntityIndex"/>
                    </or>
                </enablement>
          </action>

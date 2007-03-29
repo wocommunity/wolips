@@ -59,8 +59,8 @@ import org.objectstyle.wolips.eomodeler.model.EOEntity;
 public class EOAttributesContentProvider implements IStructuredContentProvider {
 	public Object[] getElements(Object _inputElement) {
 		EOEntity entity = (EOEntity) _inputElement;
-		Set attributesList = entity.getAttributes();
-		EOAttribute[] attributes = (EOAttribute[]) attributesList.toArray(new EOAttribute[attributesList.size()]);
+		Set<EOAttribute> attributesList = entity.getAttributes();
+		EOAttribute[] attributes = attributesList.toArray(new EOAttribute[attributesList.size()]);
 		return attributes;
 	}
 

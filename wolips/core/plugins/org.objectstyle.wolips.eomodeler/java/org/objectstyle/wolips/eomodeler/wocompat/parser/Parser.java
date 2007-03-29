@@ -56,9 +56,13 @@
  */
 package org.objectstyle.wolips.eomodeler.wocompat.parser;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.Collection;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
-import java.io.*;
-import java.util.*;
 
 /**
  * NeXT/Apple Property List format parser. 

@@ -153,7 +153,7 @@ public abstract class AbstractEOArgument extends UserInfoableEOModelObject imple
 		argument.myWidth = myWidth;
 		argument.myAllowsNull = myAllowsNull;
 		argument.myDefinition = myDefinition;
-		argument.setUserInfo(new HashMap(getUserInfo()));
+		argument.setUserInfo(new HashMap<Object, Object>(getUserInfo()));
 		return argument;
 	}
 
@@ -397,7 +397,7 @@ public abstract class AbstractEOArgument extends UserInfoableEOModelObject imple
 		// DO NOTHING
 	}
 
-	public void loadFromMap(EOModelMap _argumentMap, Set _failures) {
+	public void loadFromMap(EOModelMap _argumentMap, Set<EOModelVerificationFailure> _failures) {
 		myArgumentMap = _argumentMap;
 		myName = _argumentMap.getString("name", true);
 		if (_argumentMap.containsKey("externalName")) {

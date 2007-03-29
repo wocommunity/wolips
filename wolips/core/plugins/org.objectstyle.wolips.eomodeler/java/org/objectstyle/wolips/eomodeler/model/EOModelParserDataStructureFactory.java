@@ -8,7 +8,7 @@ import org.objectstyle.wolips.eomodeler.wocompat.parser.ParserDataStructureFacto
 
 public class EOModelParserDataStructureFactory implements ParserDataStructureFactory {
 
-	public Collection createCollection(String _keyPath) {
+	public Collection<Object> createCollection(String _keyPath) {
 		boolean createSortedSet = false;
 		if ("root.attributes".equals(_keyPath)) {
 			createSortedSet = true;
@@ -30,6 +30,10 @@ public class EOModelParserDataStructureFactory implements ParserDataStructureFac
 			createSortedSet = true;
 		} else if ("root.primaryKeyAttributes".equals(_keyPath)) {
 			createSortedSet = true;
+		} else if ("root.entityIndexes".equals(_keyPath)) {
+			createSortedSet = true;
+		} else if ("root.entityIndexes.attributes".equals(_keyPath)) {
+			createSortedSet = true;
 		} else if ("root.relationships".equals(_keyPath)) {
 			createSortedSet = true;
 		} else if ("root.relationships.joins".equals(_keyPath)) {
@@ -41,17 +45,17 @@ public class EOModelParserDataStructureFactory implements ParserDataStructureFac
 		} else if (_keyPath.endsWith(".rawRowKeyPaths")) {
 			createSortedSet = true;
 		}
-		Collection collection;
+		Collection<Object> collection;
 		if (createSortedSet) {
-			collection = new PropertyListSet();
+			collection = new PropertyListSet<Object>();
 		} else {
-			collection = new LinkedList();
+			collection = new LinkedList<Object>();
 		}
 		return collection;
 	}
 
-	public Map createMap(String _keyPath) {
-		return new PropertyListMap();
+	public Map<Object, Object> createMap(String _keyPath) {
+		return new PropertyListMap<Object, Object>();
 	}
 
 }

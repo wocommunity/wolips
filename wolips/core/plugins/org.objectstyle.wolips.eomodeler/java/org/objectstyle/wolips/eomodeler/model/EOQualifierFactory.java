@@ -52,7 +52,6 @@ package org.objectstyle.wolips.eomodeler.model;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -118,7 +117,7 @@ public class EOQualifierFactory {
 				for (int operand = 0; operand < operandCount; operand++) {
 					Object obj = exp.getOperand(operand);
 					if (obj instanceof Node) {
-						((Node)obj).jjtSetParent((Node)exp);
+						((Node) obj).jjtSetParent((Node) exp);
 					}
 				}
 			}
@@ -175,12 +174,10 @@ public class EOQualifierFactory {
 		return value;
 	}
 
-	private static Collection createExpressionsFromQualifierMaps(Collection _qualifiers) {
-		List expressions = new LinkedList();
+	private static Collection<Expression> createExpressionsFromQualifierMaps(Collection<Map<Object, Object>> _qualifiers) {
+		List<Expression> expressions = new LinkedList<Expression>();
 		if (_qualifiers != null) {
-			Iterator qualifiersIter = _qualifiers.iterator();
-			while (qualifiersIter.hasNext()) {
-				Map qualifierMap = (Map) qualifiersIter.next();
+			for (Map<Object, Object> qualifierMap : _qualifiers) {
 				Expression exp = EOQualifierFactory.createExpressionFromQualifierMap(new EOModelMap(qualifierMap));
 				expressions.add(exp);
 			}
@@ -214,22 +211,18 @@ public class EOQualifierFactory {
 		} else if (_value instanceof String) {
 			value = _value;
 		} else if (_value instanceof ASTNegate) {
-			Object operand = ((ASTNegate)_value).getOperand(0);
+			Object operand = ((ASTNegate) _value).getOperand(0);
 			EOModelMap map = new EOModelMap();
 			map.setString("class", "NSNumber", false);
 			if (operand instanceof Integer) {
-				map.put("value", new Integer(((Integer)operand).intValue() * -1));
-			}
-			else if (operand instanceof Float) {
-				map.put("value", new Float(((Float)operand).floatValue() * -1.0f));
-			}
-			else if (operand instanceof Double) {
-				map.put("value", new Double(((Double)operand).doubleValue() * -1.0));
-			}
-			else if (operand instanceof Long) {
-				map.put("value", new Long(((Long)operand).longValue() * -1L));
-			}
-			else {
+				map.put("value", new Integer(((Integer) operand).intValue() * -1));
+			} else if (operand instanceof Float) {
+				map.put("value", new Float(((Float) operand).floatValue() * -1.0f));
+			} else if (operand instanceof Double) {
+				map.put("value", new Double(((Double) operand).doubleValue() * -1.0));
+			} else if (operand instanceof Long) {
+				map.put("value", new Long(((Long) operand).longValue() * -1L));
+			} else {
 				throw new IllegalArgumentException("Unknown qualifier value type: negate " + operand + " (type = " + operand.getClass().getName() + ")");
 			}
 			value = map;
@@ -258,8 +251,8 @@ public class EOQualifierFactory {
 		return map;
 	}
 
-	private static List createQualifierMapsFromAggregateConditionNode(AggregateConditionNode _node) {
-		List qualifierMaps = new LinkedList();
+	private static List<EOModelMap> createQualifierMapsFromAggregateConditionNode(AggregateConditionNode _node) {
+		List<EOModelMap> qualifierMaps = new LinkedList<EOModelMap>();
 		int operandCount = _node.getOperandCount();
 		for (int operand = 0; operand < operandCount; operand++) {
 			qualifierMaps.add(EOQualifierFactory.createQualifierMapFromExpression((Expression) _node.getOperand(operand)));

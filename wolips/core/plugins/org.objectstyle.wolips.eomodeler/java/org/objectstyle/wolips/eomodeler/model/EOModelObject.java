@@ -56,9 +56,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.objectstyle.wolips.eomodeler.utils.IPropertyChangeSource;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
-public abstract class EOModelObject implements IAdaptable {
+public abstract class EOModelObject implements IAdaptable, IPropertyChangeSource {
 	private PropertyChangeSupport myPropertyChangeSupport = new PropertyChangeSupport(this);
 
 	public EOModelObject() {
@@ -88,7 +89,7 @@ public abstract class EOModelObject implements IAdaptable {
 		}
 	}
 
-	public abstract Set getReferenceFailures();
+	public abstract Set<EOModelVerificationFailure> getReferenceFailures();
 
 	protected abstract void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue);
 
@@ -98,15 +99,15 @@ public abstract class EOModelObject implements IAdaptable {
 
 	public abstract String getFullyQualifiedName();
 
-	protected NotificationMap mapChanged(NotificationMap _oldMap, Map _newMap, PropertyChangeRepeater _propertyChangeRepeater, boolean _fireEvents) {
-		NotificationMap newMap;
+	protected NotificationMap<Object, Object> mapChanged(NotificationMap<Object, Object> _oldMap, Map<Object, Object> _newMap, PropertyChangeRepeater _propertyChangeRepeater, boolean _fireEvents) {
+		NotificationMap<Object, Object> newMap;
 		if (_oldMap != null) {
 			_oldMap.removePropertyChangeListener(_propertyChangeRepeater);
 		}
 		if (_newMap instanceof NotificationMap) {
-			newMap = (NotificationMap) _newMap;
+			newMap = (NotificationMap<Object, Object>) _newMap;
 		} else {
-			newMap = new NotificationMap(_newMap);
+			newMap = new NotificationMap<Object, Object>(_newMap);
 		}
 		newMap.addPropertyChangeListener(_propertyChangeRepeater);
 		if (_fireEvents) {

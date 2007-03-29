@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 import org.objectstyle.wolips.eomodeler.model.ISortableEOModelObject;
 
-public class EOSortableEOModelObjectComparator implements Comparator {
+public class EOSortableEOModelObjectComparator implements Comparator<Object> {
 	public int compare(Object _o1, Object _o2) {
 		int comparison;
 		if (_o1 == null) {

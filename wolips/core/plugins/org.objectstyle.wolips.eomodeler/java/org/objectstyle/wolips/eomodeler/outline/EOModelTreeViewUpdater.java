@@ -73,9 +73,9 @@ public class EOModelTreeViewUpdater {
 
 	private EOModel myModel;
 
-	private List myEntities;
+	private List<EOEntity> myEntities;
 
-	private List myStoredProcedures;
+	private List<EOStoredProcedure> myStoredProcedures;
 
 	public EOModelTreeViewUpdater(TreeViewer _treeViewer, EOModelOutlineContentProvider _contentProvider) {
 		myTreeViewer = _treeViewer;
@@ -136,8 +136,8 @@ public class EOModelTreeViewUpdater {
 
 	protected void addPropertyChangeListeners() {
 		if (myModel != null) {
-			myEntities = new LinkedList(myModel.getEntities());
-			myStoredProcedures = new LinkedList(myModel.getStoredProcedures());
+			myEntities = new LinkedList<EOEntity>(myModel.getEntities());
+			myStoredProcedures = new LinkedList<EOStoredProcedure>(myModel.getStoredProcedures());
 
 			if (myStoredProcedures != null) {
 				Iterator oldStoredProceduresIter = myStoredProcedures.iterator();
@@ -226,6 +226,10 @@ public class EOModelTreeViewUpdater {
 				} else if (EOEntity.RELATIONSHIP.equals(changedPropertyName)) {
 					EOEntity entity = (EOEntity) _event.getSource();
 					EOModelTreeViewUpdater.this.refreshRelationshipsForEntity(entity);
+				} else if (EOEntity.ENTITY_INDEX.equals(changedPropertyName)) {
+					treeViewer.refresh(true);
+				} else if (EOEntity.ENTITY_INDEXES.equals(changedPropertyName)) {
+					treeViewer.refresh(true);
 				}
 			}
 		}

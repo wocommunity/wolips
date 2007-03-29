@@ -55,7 +55,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-public class PropertyListComparator implements Comparator {
+public class PropertyListComparator implements Comparator<Object> {
 
 	public static final PropertyListComparator AscendingPropertyListComparator = new PropertyListComparator();
 
@@ -65,7 +65,7 @@ public class PropertyListComparator implements Comparator {
 		} else if (arg1 == null) {
 			return 1;
 		} else if (arg0 instanceof String && arg1 instanceof String) {
-			return ((String) arg0).compareTo(arg1);
+			return ((String) arg0).compareTo((String) arg1);
 		} else if (arg0 instanceof Number && arg1 instanceof Number) {
 			double d0 = ((Number) arg0).doubleValue();
 			double d1 = ((Number) arg1).doubleValue();
@@ -76,7 +76,7 @@ public class PropertyListComparator implements Comparator {
 			}
 			return 0;
 		} else if (arg0 instanceof Timestamp && arg1 instanceof Timestamp) {
-			return ((Timestamp) arg0).compareTo(arg1);
+			return ((Timestamp) arg0).compareTo((Timestamp) arg1);
 		} else if (arg0 instanceof ISortableEOModelObject && arg1 instanceof ISortableEOModelObject) {
 			int comparison = compare(((ISortableEOModelObject) arg0).getName(), ((ISortableEOModelObject) arg1).getName());
 			return comparison;

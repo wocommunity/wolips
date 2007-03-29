@@ -123,14 +123,14 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 
 	private EOJoinSemantic myJoinSemantic;
 
-	private List myJoins;
+	private List<EOJoin> myJoins;
 
 	private EOModelMap myRelationshipMap;
 
 	private EOEntity myEntityBeforeCloning;
 
 	public EORelationship() {
-		myJoins = new LinkedList();
+		myJoins = new LinkedList<EOJoin>();
 		myRelationshipMap = new EOModelMap();
 		myDeleteRule = EODeleteRule.getDeleteRuleByID(null);
 		myJoinSemantic = EOJoinSemantic.getJoinSemanticByID(null);
@@ -146,8 +146,8 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 		myDefinition = _definition;
 	}
 
-	public Set getReferenceFailures() {
-		return new HashSet();
+	public Set<EOModelVerificationFailure> getReferenceFailures() {
+		return new HashSet<EOModelVerificationFailure>();
 	}
 
 	public void pasted() throws DuplicateNameException {
@@ -159,9 +159,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 				EOModelGroup modelGroup = model.getModelGroup();
 				myDestination = modelGroup.getEntityNamed(myDestination.getName());
 			}
-			Iterator joinsIter = myJoins.iterator();
-			while (joinsIter.hasNext()) {
-				EOJoin join = (EOJoin) joinsIter.next();
+			for (EOJoin join : myJoins) {
 				join.pasted();
 			}
 			myEntityBeforeCloning = null;
@@ -186,13 +184,11 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 		relationship.myNumberOfToManyFaultsToBatchFetch = myNumberOfToManyFaultsToBatchFetch;
 		relationship.myDeleteRule = myDeleteRule;
 		relationship.myJoinSemantic = myJoinSemantic;
-		Iterator joinsIter = myJoins.iterator();
-		while (joinsIter.hasNext()) {
-			EOJoin join = (EOJoin) joinsIter.next();
+		for (EOJoin join : myJoins) {
 			EOJoin newJoin = join.cloneJoin();
 			relationship.addJoin(newJoin, false);
 		}
-		relationship.setUserInfo(new HashMap(getUserInfo()));
+		relationship.setUserInfo(new HashMap<Object, Object>(getUserInfo()));
 		return relationship;
 	}
 
@@ -215,18 +211,18 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 		if (_relationship == null) {
 			isInverse = false;
 		} else {
-			List inverseJoins = new LinkedList(_relationship.getJoins());
+			List<EOJoin> inverseJoins = new LinkedList<EOJoin>(_relationship.getJoins());
 			if (inverseJoins.size() != myJoins.size()) {
 				isInverse = false;
 			} else {
-				Iterator joinsIter = myJoins.iterator();
+				Iterator<EOJoin> joinsIter = myJoins.iterator();
 				isInverse = true;
 				while (isInverse && joinsIter.hasNext()) {
-					EOJoin join = (EOJoin) joinsIter.next();
+					EOJoin join = joinsIter.next();
 					EOJoin inverseJoin = null;
 					int inverseJoinsSize = inverseJoins.size();
 					for (int inverseJoinNum = 0; inverseJoin == null && inverseJoinNum < inverseJoinsSize; inverseJoinNum++) {
-						EOJoin potentialInverseJoin = (EOJoin) inverseJoins.get(inverseJoinNum);
+						EOJoin potentialInverseJoin = inverseJoins.get(inverseJoinNum);
 						if (potentialInverseJoin.isInverseJoin(join)) {
 							inverseJoin = potentialInverseJoin;
 						}
@@ -243,9 +239,9 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 	public EORelationship getInverseRelationship() {
 		EORelationship inverseRelationship = null;
 		if (myDestination != null) {
-			Iterator relationshipsIter = myDestination.getRelationships().iterator();
+			Iterator<EORelationship> relationshipsIter = myDestination.getRelationships().iterator();
 			while (inverseRelationship == null && relationshipsIter.hasNext()) {
-				EORelationship potentialInverseRelationship = (EORelationship) relationshipsIter.next();
+				EORelationship potentialInverseRelationship = relationshipsIter.next();
 				if (potentialInverseRelationship.isInverseRelationship(this)) {
 					inverseRelationship = potentialInverseRelationship;
 				}
@@ -259,9 +255,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 		inverseRelationship.setClassProperty(getClassProperty());
 		inverseRelationship.setToMany(Boolean.valueOf(_toMany));
 		inverseRelationship.setDestination(myEntity);
-		Iterator joinsIter = getJoins().iterator();
-		while (joinsIter.hasNext()) {
-			EOJoin join = (EOJoin) joinsIter.next();
+		for (EOJoin join : getJoins()) {
 			join.addInverseJoinInto(inverseRelationship, false);
 		}
 		inverseRelationship._setEntity(myDestination);
@@ -283,9 +277,9 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 
 	public boolean isRelatedTo(EOAttribute _attribute) {
 		boolean isRelated = false;
-		Iterator joinsIter = myJoins.iterator();
+		Iterator<EOJoin> joinsIter = myJoins.iterator();
 		while (!isRelated && joinsIter.hasNext()) {
-			EOJoin join = (EOJoin) joinsIter.next();
+			EOJoin join = joinsIter.next();
 			isRelated = join.isRelatedTo(_attribute);
 		}
 		return isRelated;
@@ -479,9 +473,9 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 	public void setMandatoryIfNecessary() {
 		boolean mandatory = false;
 		if (BooleanUtils.isTrue(isToOne())) {
-			Iterator joinsIter = getJoins().iterator();
+			Iterator<EOJoin> joinsIter = getJoins().iterator();
 			while (!mandatory && joinsIter.hasNext()) {
-				EOJoin join = (EOJoin) joinsIter.next();
+				EOJoin join = joinsIter.next();
 				EOAttribute sourceAttribute = join.getSourceAttribute();
 				if (sourceAttribute != null) {
 					mandatory = sourceAttribute.isAllowsNull() == null || !sourceAttribute.isAllowsNull().booleanValue();
@@ -584,7 +578,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 		firePropertyChange(EORelationship.JOINS, null, null);
 	}
 
-	public void setJoins(List _joins) {
+	public void setJoins(List<EOJoin> _joins) {
 		myJoins.clear();
 		myJoins.addAll(_joins);
 		firePropertyChange(EORelationship.JOINS, null, null);
@@ -597,10 +591,10 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 	public void addJoin(EOJoin _join, boolean _fireEvents) {
 		// TODO: Check duplicates?
 		_join._setRelationship(this);
-		List oldJoins = null;
+		List<EOJoin> oldJoins = null;
 		if (_fireEvents) {
 			oldJoins = myJoins;
-			List newJoins = new LinkedList();
+			List<EOJoin> newJoins = new LinkedList<EOJoin>();
 			newJoins.addAll(myJoins);
 			newJoins.add(_join);
 			myJoins = newJoins;
@@ -611,20 +605,18 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 	}
 
 	public void removeAllJoins() {
-		List oldJoins = myJoins;
-		List newJoins = new LinkedList();
+		List<EOJoin> oldJoins = myJoins;
+		List<EOJoin> newJoins = new LinkedList<EOJoin>();
 		myJoins = newJoins;
 		firePropertyChange(EORelationship.JOINS, oldJoins, newJoins);
-		Iterator joinsIter = oldJoins.iterator();
-		while (joinsIter.hasNext()) {
-			EOJoin join = (EOJoin) joinsIter.next();
+		for (EOJoin join : oldJoins) {
 			join._setRelationship(null);
 		}
 	}
 
 	public void removeJoin(EOJoin _join) {
-		List oldJoins = myJoins;
-		List newJoins = new LinkedList();
+		List<EOJoin> oldJoins = myJoins;
+		List<EOJoin> newJoins = new LinkedList<EOJoin>();
 		newJoins.addAll(myJoins);
 		newJoins.remove(_join);
 		myJoins = newJoins;
@@ -632,20 +624,20 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 		_join._setRelationship(null);
 	}
 
-	public List getJoins() {
+	public List<EOJoin> getJoins() {
 		return myJoins;
 	}
 
 	public EOJoin getFirstJoin() {
 		EOJoin join = null;
-		Iterator joinsIter = myJoins.iterator();
+		Iterator<EOJoin> joinsIter = myJoins.iterator();
 		if (joinsIter.hasNext()) {
-			join = (EOJoin) joinsIter.next();
+			join = joinsIter.next();
 		}
 		return join;
 	}
 
-	public void loadFromMap(EOModelMap _relationshipMap, Set _failures) {
+	public void loadFromMap(EOModelMap _relationshipMap, Set<EOModelVerificationFailure> _failures) {
 		myRelationshipMap = _relationshipMap;
 		if (_relationshipMap.containsKey("dataPath")) {
 			myDefinition = _relationshipMap.getString("dataPath", true);
@@ -662,11 +654,10 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 		myOwnsDestination = _relationshipMap.getBoolean("ownsDestination");
 		myNumberOfToManyFaultsToBatchFetch = _relationshipMap.getInteger("numberOfToManyFaultsToBatchFetch");
 		myPropagatesPrimaryKey = _relationshipMap.getBoolean("propagatesPrimaryKey");
-		Set joins = _relationshipMap.getSet("joins");
+		Set<Map> joins = _relationshipMap.getSet("joins");
 		if (joins != null) {
-			Iterator joinsIter = joins.iterator();
-			while (joinsIter.hasNext()) {
-				EOModelMap joinMap = new EOModelMap((Map) joinsIter.next());
+			for (Map originalJoinMap : joins) {
+				EOModelMap joinMap = new EOModelMap(originalJoinMap);
 				EOJoin join = new EOJoin();
 				join.loadFromMap(joinMap, _failures);
 				addJoin(join, false);
@@ -700,10 +691,8 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 		relationshipMap.setBoolean("ownsDestination", myOwnsDestination, EOModelMap.YN);
 		relationshipMap.setBoolean("propagatesPrimaryKey", myPropagatesPrimaryKey, EOModelMap.YN);
 		relationshipMap.setInteger("numberOfToManyFaultsToBatchFetch", myNumberOfToManyFaultsToBatchFetch);
-		Set joins = new PropertyListSet();
-		Iterator joinsIter = myJoins.iterator();
-		while (joinsIter.hasNext()) {
-			EOJoin join = (EOJoin) joinsIter.next();
+		Set<Map> joins = new PropertyListSet<Map>();
+		for (EOJoin join : myJoins) {
 			EOModelMap joinMap = join.toMap();
 			joins.add(joinMap);
 		}
@@ -712,7 +701,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 		return relationshipMap;
 	}
 
-	public void resolve(Set _failures) {
+	public void resolve(Set<EOModelVerificationFailure> _failures) {
 		if (!isFlattened()) {
 			String destinationName = myRelationshipMap.getString("destination", true);
 			if (destinationName == null) {
@@ -727,14 +716,12 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 			updateDefinitionPath();
 		}
 
-		Iterator joinsIter = myJoins.iterator();
-		while (joinsIter.hasNext()) {
-			EOJoin join = (EOJoin) joinsIter.next();
+		for (EOJoin join : myJoins) {
 			join.resolve(_failures);
 		}
 	}
 
-	public void verify(Set _failures) {
+	public void verify(Set<EOModelVerificationFailure> _failures) {
 		String name = getName();
 		if (name == null || name.trim().length() == 0) {
 			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " has an empty name.", false));
@@ -759,12 +746,12 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 		boolean singleTableInheritance = entity != null && entity.isSingleTableInheritance();
 		boolean mandatory = BooleanUtils.isTrue(isMandatory());
 		boolean toOne = BooleanUtils.isTrue(isToOne());
-		Iterator joinsIter = myJoins.iterator();
+		Iterator<EOJoin> joinsIter = myJoins.iterator();
 		if (!joinsIter.hasNext() && !isFlattened()) {
 			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " does not have any joins.", false));
 		}
 		while (joinsIter.hasNext()) {
-			EOJoin join = (EOJoin) joinsIter.next();
+			EOJoin join = joinsIter.next();
 			join.verify(_failures);
 			EOAttribute sourceAttribute = join.getSourceAttribute();
 			if (toOne && mandatory && !singleTableInheritance && sourceAttribute != null && BooleanUtils.isTrue(sourceAttribute.isAllowsNull())) {

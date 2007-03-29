@@ -242,7 +242,7 @@ public class GenerateSQLDialog extends Dialog {
 
 	public void generateSqlInThread() {
 		myCreateOnlySelectedEntities = myCreateSelectedEntitiesButton.getSelection();
-		final Map flags = new HashMap();
+		final Map<String, String> flags = new HashMap<String, String>();
 		flags.put("dropTables", yesNo(myDropTablesButton));
 		flags.put("dropPrimaryKeySupport", yesNo(myDropPrimaryKeySupportButton));
 		flags.put("createTables", yesNo(myCreateTablesButton));

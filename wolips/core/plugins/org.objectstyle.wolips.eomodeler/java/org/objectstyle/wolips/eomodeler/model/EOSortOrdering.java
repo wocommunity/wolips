@@ -89,8 +89,8 @@ public class EOSortOrdering extends EOModelObject {
 		return cloneSortOrdering;
 	}
 
-	public Set getReferenceFailures() {
-		return new HashSet();
+	public Set<EOModelVerificationFailure> getReferenceFailures() {
+		return new HashSet<EOModelVerificationFailure>();
 	}
 
 	protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
@@ -170,7 +170,7 @@ public class EOSortOrdering extends EOModelObject {
 		return sortOrderingMap;
 	}
 
-	public void verify(Set _failures) {
+	public void verify(Set<EOModelVerificationFailure> _failures) {
 		// TODO
 	}
 

@@ -74,6 +74,7 @@ import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModelObject;
+import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
@@ -108,9 +109,9 @@ public class CutAction extends Action implements IWorkbenchWindowActionDelegate 
 			if (mySelection instanceof IStructuredSelection) {
 				selectedObjects = ((IStructuredSelection) mySelection).toArray();
 			}
-			List selectedObjectsList = new LinkedList();
+			List<EOModelObject> selectedObjectsList = new LinkedList<EOModelObject>();
 			if (selectedObjects != null) {
-				Set referenceFailures = new HashSet();
+				Set<EOModelVerificationFailure> referenceFailures = new HashSet<EOModelVerificationFailure>();
 				for (int selectedObjectNum = 0; selectedObjectNum < selectedObjects.length; selectedObjectNum++) {
 					Object selectedObject = selectedObjects[selectedObjectNum];
 					if (selectedObject instanceof EOModelObject) {

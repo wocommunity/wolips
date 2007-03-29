@@ -120,7 +120,7 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
 		modelTreeLayoutData.horizontalSpan = 2;
 		modelTreeLayoutData.heightHint = 100;
 		myModelTreeViewer.getTree().setLayoutData(modelTreeLayoutData);
-		myEntityTreeViewUpdater = new EOEntityTreeViewUpdater(myModelTreeViewer, new EOModelOutlineContentProvider(true, true, true, false, false, false));
+		myEntityTreeViewUpdater = new EOEntityTreeViewUpdater(myModelTreeViewer, new EOModelOutlineContentProvider(true, true, true, false, false, false, false));
 		myModelTreeViewer.addSelectionChangedListener(this);
 
 		myQualifierText = getWidgetFactory().createText(topForm, "", SWT.WRAP | SWT.MULTI | SWT.V_SCROLL);

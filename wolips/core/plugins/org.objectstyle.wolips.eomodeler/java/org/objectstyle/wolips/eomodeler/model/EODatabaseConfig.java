@@ -60,7 +60,7 @@ public class EODatabaseConfig extends EOModelObject {
 
 	private EOEntity myCachedPrototype;
 
-	private NotificationMap myConnectionDictionary;
+	private NotificationMap<Object, Object> myConnectionDictionary;
 
 	private PropertyChangeRepeater myConnectionDictionaryRepeater;
 
@@ -70,7 +70,7 @@ public class EODatabaseConfig extends EOModelObject {
 		myConnectionDictionaryRepeater = new PropertyChangeRepeater(EODatabaseConfig.CONNECTION_DICTIONARY);
 		myDatabaseConfigMap = new EOModelMap();
 		myAdaptorName = EODatabaseConfig.JDBC_ADAPTOR_NAME;
-		setConnectionDictionary(new NotificationMap(), false);
+		setConnectionDictionary(new NotificationMap<Object, Object>(), false);
 	}
 
 	public EODatabaseConfig(String _name) {
@@ -144,7 +144,7 @@ public class EODatabaseConfig extends EOModelObject {
 		EODatabaseConfig databaseConfig = new EODatabaseConfig(myName);
 		databaseConfig.myAdaptorName = myAdaptorName;
 		databaseConfig.myPrototypeName = myPrototypeName;
-		databaseConfig.setConnectionDictionary(new HashMap(myConnectionDictionary));
+		databaseConfig.setConnectionDictionary(new HashMap<Object, Object>(myConnectionDictionary));
 		return databaseConfig;
 	}
 
@@ -331,11 +331,11 @@ public class EODatabaseConfig extends EOModelObject {
 		return (String) getConnectionDictionary().get(EODatabaseConfig.SCOPE);
 	}
 
-	public void setConnectionDictionary(Map _connectionDictionary) {
+	public void setConnectionDictionary(Map<Object, Object> _connectionDictionary) {
 		setConnectionDictionary(_connectionDictionary, true);
 	}
 
-	public void setConnectionDictionary(Map _connectionDictionary, boolean _fireEvents) {
+	public void setConnectionDictionary(Map<Object, Object> _connectionDictionary, boolean _fireEvents) {
 		Map oldConnectionDictionary = myConnectionDictionary;
 		if (_connectionDictionary != null) {
 			Object password = _connectionDictionary.get(EODatabaseConfig.PASSWORD);
@@ -349,7 +349,7 @@ public class EODatabaseConfig extends EOModelObject {
 		}
 	}
 
-	public Map getConnectionDictionary() {
+	public Map<Object, Object> getConnectionDictionary() {
 		return myConnectionDictionary;
 	}
 
@@ -357,11 +357,11 @@ public class EODatabaseConfig extends EOModelObject {
 		return ((myModel == null) ? "?" : myModel.getFullyQualifiedName()) + ", dbconfig: " + myName;
 	}
 
-	public void resolve(Set _failures) {
+	public void resolve(Set<EOModelVerificationFailure> _failures) {
 		// DO NOTHING
 	}
 
-	public void verify(Set _failures) {
+	public void verify(Set<EOModelVerificationFailure> _failures) {
 		// DO NOTHING
 	}
 
@@ -370,7 +370,7 @@ public class EODatabaseConfig extends EOModelObject {
 		return referenceFailures;
 	}
 
-	public void loadFromMap(EOModelMap _map, Set _failures) {
+	public void loadFromMap(EOModelMap _map, Set<EOModelVerificationFailure> _failures) {
 		myDatabaseConfigMap = _map;
 		myAdaptorName = _map.getString("adaptorName", true);
 		if (myAdaptorName == null) {

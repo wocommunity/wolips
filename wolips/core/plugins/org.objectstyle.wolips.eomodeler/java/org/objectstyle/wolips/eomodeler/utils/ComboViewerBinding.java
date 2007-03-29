@@ -63,26 +63,25 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.objectstyle.wolips.eomodeler.kvc.CachingKeyPath;
 import org.objectstyle.wolips.eomodeler.kvc.IKey;
-import org.objectstyle.wolips.eomodeler.model.EOModelObject;
 
 public class ComboViewerBinding implements ISelectionChangedListener, PropertyChangeListener {
 	private ComboViewer myViewer;
 
-	private EOModelObject myObj;
+	private IPropertyChangeSource myObj;
 
 	private String myPropertyName;
 
-	private EOModelObject myListObj;
+	private IPropertyChangeSource myListObj;
 
 	private String myListPropertyName;
 
 	private Object myBlankValue;
 
-	private Map myKeys;
+	private Map<String, IKey> myKeys;
 
-	public ComboViewerBinding(ComboViewer _viewer, EOModelObject _obj, String _propertyName, EOModelObject _listObj, String _listPropertyName, Object _blankValue) {
+	public ComboViewerBinding(ComboViewer _viewer, IPropertyChangeSource _obj, String _propertyName, IPropertyChangeSource _listObj, String _listPropertyName, Object _blankValue) {
 		myViewer = _viewer;
-		myKeys = new HashMap();
+		myKeys = new HashMap<String, IKey>();
 		myObj = _obj;
 		myPropertyName = _propertyName;
 		myListObj = _listObj;
@@ -99,7 +98,7 @@ public class ComboViewerBinding implements ISelectionChangedListener, PropertyCh
 	}
 
 	protected synchronized IKey getKey(String _property) {
-		IKey key = (IKey) myKeys.get(_property);
+		IKey key = myKeys.get(_property);
 		if (key == null) {
 			key = new CachingKeyPath(_property);
 			myKeys.put(_property, key);

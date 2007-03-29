@@ -70,7 +70,6 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.InheritanceType;
-import org.objectstyle.wolips.eomodeler.utils.BooleanUtils;
 
 public class SubclassEntityDialog extends Dialog {
 	private EOModel myModel;
