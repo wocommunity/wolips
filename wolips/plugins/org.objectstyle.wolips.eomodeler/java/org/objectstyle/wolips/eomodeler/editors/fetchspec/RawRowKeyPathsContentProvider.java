@@ -58,7 +58,7 @@ import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 public class RawRowKeyPathsContentProvider implements IStructuredContentProvider {
 	public Object[] getElements(Object _inputElement) {
 		EOFetchSpecification fetchSpec = (EOFetchSpecification) _inputElement;
-		Collection rawRowKeyPathsSet = fetchSpec.getRawRowKeyPaths();
+		Collection<String> rawRowKeyPathsSet = fetchSpec.getRawRowKeyPaths();
 		Object[] rawRowKeyPaths;
 		if (rawRowKeyPathsSet == null) {
 			rawRowKeyPaths = new Object[0];

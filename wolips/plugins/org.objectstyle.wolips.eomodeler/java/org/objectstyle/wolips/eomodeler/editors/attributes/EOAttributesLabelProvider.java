@@ -49,6 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.attributes;
 
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableFontProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -59,19 +60,39 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.objectstyle.wolips.eomodeler.Activator;
+import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 
-public class EOAttributesLabelProvider extends TablePropertyLabelProvider implements ITableColorProvider, ITableFontProvider {
-	private TableViewer myTableViewer;
+public class EOAttributesLabelProvider extends TablePropertyLabelProvider implements ITableColorProvider, ITableFontProvider, ILabelProvider {
+	private TableViewer _tableViewer;
 
-	private Font myInheritedFont;
+	private Font _inheritedFont;
 
-	private Font myFlattenedFont;
+	private Font _flattenedFont;
+	
+	private String _blankText;
 
-	public EOAttributesLabelProvider(TableViewer _tableViewer, String[] _columnProperties) {
-		super(_columnProperties);
-		myTableViewer = _tableViewer;
+	public EOAttributesLabelProvider(String[] columnProperties) {
+		this(null, columnProperties, null);
+	}
+
+	public EOAttributesLabelProvider(String[] columnProperties, String blankText) {
+		this(null, columnProperties, blankText);
+	}
+
+	public EOAttributesLabelProvider(TableViewer tableViewer, String[] columnProperties) {
+		this(tableViewer, columnProperties, null);
+	}
+
+	public EOAttributesLabelProvider(TableViewer tableViewer, String[] columnProperties, String blankText) {
+		super(columnProperties);
+		_tableViewer = tableViewer;
+		_blankText = blankText;
+	}
+	
+	public void setBlankText(String blankText) {
+		_blankText = blankText;
 	}
 
 	public Image getColumnImage(Object _element, String _property) {
@@ -83,7 +104,7 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
 			image = yesNoImage(attribute.isUsedForLocking(), Activator.getDefault().getImageRegistry().get(Activator.LOCKING_ICON), null, null);
 		} else if (_property == EOAttribute.CLASS_PROPERTY) {
 			image = yesNoImage(attribute.isClassProperty(), Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON), null, null);
-		} else if (_property == EOAttribute.ALLOWS_NULL) {
+		} else if (_property == AbstractEOArgument.ALLOWS_NULL) {
 			image = yesNoImage(attribute.isAllowsNull(), Activator.getDefault().getImageRegistry().get(Activator.CHECK_ICON), null, null);
 		}
 		return image;
@@ -102,7 +123,7 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
 			// DO NOTHING
 		} else if (_property == EOAttribute.CLASS_PROPERTY) {
 			// DO NOTHING
-		} else if (_property == EOAttribute.ALLOWS_NULL) {
+		} else if (_property == AbstractEOArgument.ALLOWS_NULL) {
 			// DO NOTHING
 		} else if (_property == EOAttribute.PROTOTYPE) {
 			EOAttribute prototype = attribute.getPrototype();
@@ -111,27 +132,32 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
 			}
 		} else {
 			text = super.getColumnText(_element, _property);
+			if (text == null) {
+				text = _blankText;
+			}
 		}
 		return text;
 	}
 
 	public Font getFont(Object _element, int _columnIndex) {
 		Font font = null;
-		EOAttribute attribute = (EOAttribute) _element;
-		if (attribute.isFlattened()) {
-			if (myFlattenedFont == null) {
-				Font originalFont = myTableViewer.getTable().getFont();
-				FontData[] fontData = myTableViewer.getTable().getFont().getFontData();
-				myFlattenedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD);
+		if (_tableViewer != null) {
+			EOAttribute attribute = (EOAttribute) _element;
+			if (attribute.isFlattened()) {
+				if (_flattenedFont == null) {
+					Font originalFont = _tableViewer.getTable().getFont();
+					FontData[] fontData = _tableViewer.getTable().getFont().getFontData();
+					_flattenedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD);
+				}
+				font = _flattenedFont;
+			} else if (attribute.isInherited()) {
+				if (_inheritedFont == null) {
+					Font originalFont = _tableViewer.getTable().getFont();
+					FontData[] fontData = _tableViewer.getTable().getFont().getFontData();
+					_inheritedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.ITALIC);
+				}
+				font = _inheritedFont;
 			}
-			font = myFlattenedFont;
-		} else if (attribute.isInherited()) {
-			if (myInheritedFont == null) {
-				Font originalFont = myTableViewer.getTable().getFont();
-				FontData[] fontData = myTableViewer.getTable().getFont().getFontData();
-				myInheritedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.ITALIC);
-			}
-			font = myInheritedFont;
 		}
 		return font;
 	}
@@ -158,9 +184,17 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
 	}
 
 	public void dispose() {
-		if (myInheritedFont != null) {
-			myInheritedFont.dispose();
+		if (_inheritedFont != null) {
+			_inheritedFont.dispose();
 		}
 		super.dispose();
+	}
+
+	public Image getImage(Object element) {
+		return getColumnImage(element, AbstractEOArgument.NAME);
+	}
+
+	public String getText(Object element) {
+		return getColumnText(element, AbstractEOArgument.NAME);
 	}
 }

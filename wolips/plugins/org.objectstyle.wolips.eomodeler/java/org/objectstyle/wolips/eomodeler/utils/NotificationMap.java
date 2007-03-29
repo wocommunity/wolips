@@ -7,10 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class NotificationMap implements Map {
+public class NotificationMap<U, V> implements Map<U, V> {
 	public static final String CONTENTS = "__contents__";
 
-	private Map myMap;
+	private Map<U, V> myMap;
 
 	private PropertyChangeSupport myPropertyChangeSupport;
 
@@ -18,9 +18,9 @@ public class NotificationMap implements Map {
 		this(null);
 	}
 
-	public NotificationMap(Map _map) {
+	public NotificationMap(Map<U, V> _map) {
 		if (_map == null) {
-			myMap = new HashMap();
+			myMap = new HashMap<U, V>();
 		} else {
 			myMap = _map;
 		}
@@ -40,7 +40,7 @@ public class NotificationMap implements Map {
 		return myMap.containsValue(_value);
 	}
 
-	public Set entrySet() {
+	public Set<Map.Entry<U, V>> entrySet() {
 		return myMap.entrySet();
 	}
 
@@ -48,7 +48,7 @@ public class NotificationMap implements Map {
 		return myMap.equals(_o);
 	}
 
-	public Object get(Object _key) {
+	public V get(Object _key) {
 		return myMap.get(_key);
 	}
 
@@ -60,12 +60,12 @@ public class NotificationMap implements Map {
 		return myMap.isEmpty();
 	}
 
-	public Set keySet() {
+	public Set<U> keySet() {
 		return myMap.keySet();
 	}
 
-	public Object put(Object _key, Object _value) {
-		Object oldValue = myMap.put(_key, _value);
+	public V put(U _key, V _value) {
+		V oldValue = myMap.put(_key, _value);
 		if (_key instanceof String) {
 			myPropertyChangeSupport.firePropertyChange((String) _key, oldValue, _value);
 			if (oldValue == null) {
@@ -77,13 +77,13 @@ public class NotificationMap implements Map {
 		return oldValue;
 	}
 
-	public void putAll(Map _t) {
+	public void putAll(Map<? extends U, ? extends V> _t) {
 		myMap.putAll(_t);
 		myPropertyChangeSupport.firePropertyChange(NotificationMap.CONTENTS, null, null);
 	}
 
-	public Object remove(Object _key) {
-		Object oldValue = myMap.remove(_key);
+	public V remove(Object _key) {
+		V oldValue = myMap.remove(_key);
 		if (_key instanceof String) {
 			myPropertyChangeSupport.firePropertyChange((String) _key, oldValue, null);
 			myPropertyChangeSupport.firePropertyChange(NotificationMap.CONTENTS, null, null);
@@ -97,7 +97,7 @@ public class NotificationMap implements Map {
 		return myMap.size();
 	}
 
-	public Collection values() {
+	public Collection<V> values() {
 		return myMap.values();
 	}
 

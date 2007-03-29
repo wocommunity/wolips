@@ -85,14 +85,14 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
 
 	private static final String[] PROTOTYPED_PROPERTIES = { AbstractEOArgument.NAME, AbstractEOArgument.COLUMN_NAME, AbstractEOArgument.ALLOWS_NULL, AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, AbstractEOArgument.EXTERNAL_TYPE, AbstractEOArgument.FACTORY_METHOD_ARGUMENT_TYPE, AbstractEOArgument.PRECISION, AbstractEOArgument.SCALE, AbstractEOArgument.VALUE_CLASS_NAME, AbstractEOArgument.VALUE_FACTORY_METHOD_NAME, AbstractEOArgument.VALUE_TYPE, AbstractEOArgument.DEFINITION, AbstractEOArgument.WIDTH, EOAttribute.READ_FORMAT, EOAttribute.WRITE_FORMAT, EOAttribute.INDEXED, EOAttribute.READ_ONLY };
 
-	private static Map myCachedPropertyKeys;
+	private static Map<String, IKey> myCachedPropertyKeys;
 
 	static {
-		myCachedPropertyKeys = new HashMap();
+		myCachedPropertyKeys = new HashMap<String, IKey>();
 	}
 
 	protected static synchronized IKey getPropertyKey(String _property) {
-		IKey key = (IKey) myCachedPropertyKeys.get(_property);
+		IKey key = myCachedPropertyKeys.get(_property);
 		if (key == null) {
 			key = new ResolvedKey(EOAttribute.class, _property);
 			myCachedPropertyKeys.put(_property, key);
@@ -183,9 +183,9 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
 		if (!_skipIfAlreadyPrototyped || getPrototype() == null) {
 			boolean probablyBooleanString = new Integer(5).equals(getWidth()) && ("S".equals(getValueType()) || "c".equals(getValueType()));
 			EOAttribute matchingPrototypeAttribute = null;
-			Iterator prototypeAttributesIter = getEntity().getModel().getPrototypeAttributes().iterator();
+			Iterator<EOAttribute> prototypeAttributesIter = getEntity().getModel().getPrototypeAttributes().iterator();
 			while (matchingPrototypeAttribute == null && prototypeAttributesIter.hasNext()) {
-				EOAttribute prototypeAttribute = (EOAttribute) prototypeAttributesIter.next();
+				EOAttribute prototypeAttribute = prototypeAttributesIter.next();
 				boolean prototypeMatches = true;
 				for (int propertyNum = 0; prototypeMatches && propertyNum < PROTOTYPED_PROPERTIES.length; propertyNum++) {
 					String propertyName = PROTOTYPED_PROPERTIES[propertyNum];
@@ -284,13 +284,13 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
 		return myCachedPrototype;
 	}
 
-	public void clearCachedPrototype(Set _failures, boolean _reload) {
+	public void clearCachedPrototype(Set<EOModelVerificationFailure> _failures, boolean _reload) {
 		if (myPrototypeName != null) {
 			clearCachedPrototype(myPrototypeName, _failures, true, _reload);
 		}
 	}
 
-	public void clearCachedPrototype(String _prototypeName, Set _failures, boolean _callSetPrototype, boolean _reload) {
+	public void clearCachedPrototype(String _prototypeName, Set<EOModelVerificationFailure> _failures, boolean _callSetPrototype, boolean _reload) {
 		myCachedPrototype = null;
 		myPrototypeName = _prototypeName;
 		if (_reload && _prototypeName != null && myEntity != null) {
@@ -322,7 +322,7 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
 		}
 
 		EODataType oldDataType = getDataType();
-		Map oldValues = new HashMap();
+		Map<String, Object> oldValues = new HashMap<String, Object>();
 		for (int propertyNum = 0; propertyNum < PROTOTYPED_PROPERTIES.length; propertyNum++) {
 			String propertyName = PROTOTYPED_PROPERTIES[propertyNum];
 			Object oldValue = EOAttribute.getPropertyKey(propertyName).getValue(this);
@@ -692,28 +692,20 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
 		return myClientClassProperty;
 	}
 
-	public Set getReferenceFailures() {
-		Set referenceFailures = new HashSet();
-		Iterator referencingRelationshipsIter = getReferencingRelationships(true).iterator();
-		while (referencingRelationshipsIter.hasNext()) {
-			EORelationship referencingRelationship = (EORelationship) referencingRelationshipsIter.next();
+	public Set<EOModelVerificationFailure> getReferenceFailures() {
+		Set<EOModelVerificationFailure> referenceFailures = new HashSet<EOModelVerificationFailure>();
+		for (EORelationship referencingRelationship : getReferencingRelationships(true)) {
 			referenceFailures.add(new EOAttributeRelationshipReferenceFailure(this, referencingRelationship));
 		}
 		return referenceFailures;
 	}
 
-	public List getReferencingRelationships(boolean _includeInheritedAttributes) {
-		List referencingRelationships = new LinkedList();
+	public List<EORelationship> getReferencingRelationships(boolean _includeInheritedAttributes) {
+		List<EORelationship> referencingRelationships = new LinkedList<EORelationship>();
 		if (myEntity != null) {
-			Iterator modelsIter = getEntity().getModel().getModelGroup().getModels().iterator();
-			while (modelsIter.hasNext()) {
-				EOModel model = (EOModel) modelsIter.next();
-				Iterator entitiesIter = model.getEntities().iterator();
-				while (entitiesIter.hasNext()) {
-					EOEntity entity = (EOEntity) entitiesIter.next();
-					Iterator relationshipsIter = entity.getRelationships().iterator();
-					while (relationshipsIter.hasNext()) {
-						EORelationship relationship = (EORelationship) relationshipsIter.next();
+			for (EOModel model : getEntity().getModel().getModelGroup().getModels()) {
+				for (EOEntity entity : model.getEntities()) {
+					for (EORelationship relationship : entity.getRelationships()) {
 						if (relationship.isRelatedTo(this)) {
 							referencingRelationships.add(relationship);
 						}
@@ -736,7 +728,7 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
 		return referencingRelationships;
 	}
 
-	public void loadFromMap(EOModelMap _attributeMap, Set _failures) {
+	public void loadFromMap(EOModelMap _attributeMap, Set<EOModelVerificationFailure> _failures) {
 		super.loadFromMap(_attributeMap, _failures);
 		myReadOnly = _attributeMap.getBoolean("isReadOnly");
 		myIndexed = _attributeMap.getBoolean("isIndexed");
@@ -772,12 +764,12 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
 		return attributeMap;
 	}
 
-	public void resolve(Set _failures) {
+	public void resolve(Set<EOModelVerificationFailure> _failures) {
 		String prototypeName = getArgumentMap().getString("prototypeName", true);
 		clearCachedPrototype(prototypeName, _failures, false, true);
 	}
 
-	public void verify(Set _failures) {
+	public void verify(Set<EOModelVerificationFailure> _failures) {
 		String name = getName();
 		if (name == null || name.trim().length() == 0) {
 			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " has an empty name.", false));
@@ -800,9 +792,7 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
 				} else if (columnName.indexOf(' ') != -1) {
 					_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + "'s column name '" + columnName + "' has a space in it.", false));
 				} else {
-					Iterator attributesIter = myEntity.getAttributes().iterator();
-					while (attributesIter.hasNext()) {
-						EOAttribute attribute = (EOAttribute) attributesIter.next();
+					for (EOAttribute attribute : myEntity.getAttributes()) {
 						if (attribute != this && columnName.equals(attribute.getColumnName())) {
 							_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + "'s column name is the same as " + attribute.getFullyQualifiedName() + "'s.", true));
 						}

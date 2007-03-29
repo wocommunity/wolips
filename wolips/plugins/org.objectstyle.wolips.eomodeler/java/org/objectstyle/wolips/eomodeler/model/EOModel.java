@@ -97,19 +97,19 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 
 	private String myVersion;
 
-	private Set myEntities;
+	private Set<EOEntity> myEntities;
 
-	private Set myDatabaseConfigs;
+	private Set<EODatabaseConfig> myDatabaseConfigs;
 
 	private EODatabaseConfig myActiveDatabaseConfig;
 
-	private Set myStoredProcedures;
+	private Set<EOStoredProcedure> myStoredProcedures;
 
-	private Set myDeletedEntityNamesInObjectStore;
+	private Set<String> myDeletedEntityNamesInObjectStore;
 
-	private Set myDeletedEntityNames;
+	private Set<String> myDeletedEntityNames;
 
-	private Set myDeletedStoredProcedureNames;
+	private Set<String> myDeletedStoredProcedureNames;
 
 	private EOModelMap myModelMap;
 
@@ -117,18 +117,18 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 
 	private URL myModelURL;
 
-	private Set myPrototypeAttributeCache;
+	private Set<EOAttribute> myPrototypeAttributeCache;
 
 	private IProject _project;
 
 	public EOModel(String _name, IProject project) {
 		myName = _name;
-		myEntities = new PropertyListSet();
-		myStoredProcedures = new PropertyListSet();
-		myDeletedEntityNamesInObjectStore = new PropertyListSet();
-		myDeletedEntityNames = new PropertyListSet();
-		myDeletedStoredProcedureNames = new PropertyListSet();
-		myDatabaseConfigs = new PropertyListSet();
+		myEntities = new PropertyListSet<EOEntity>();
+		myStoredProcedures = new PropertyListSet<EOStoredProcedure>();
+		myDeletedEntityNamesInObjectStore = new PropertyListSet<String>();
+		myDeletedEntityNames = new PropertyListSet<String>();
+		myDeletedStoredProcedureNames = new PropertyListSet<String>();
+		myDatabaseConfigs = new PropertyListSet<EODatabaseConfig>();
 		myVersion = "2.1";
 		myModelMap = new EOModelMap();
 		_project = project;
@@ -146,19 +146,17 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		myModelGroup = _modelGroup;
 	}
 
-	public Set getReferenceFailures() {
-		return new HashSet();
+	public Set<EOModelVerificationFailure> getReferenceFailures() {
+		return new HashSet<EOModelVerificationFailure>();
 	}
 
 	public String guessPackageName() {
 		return guessPackageName(getEntities());
 	}
 
-	public String guessPackageName(Set _entities) {
+	public String guessPackageName(Set<EOEntity> _entities) {
 		String guessPackageName = null;
-		Iterator entitiesIter = _entities.iterator();
-		while (entitiesIter.hasNext()) {
-			EOEntity entity = (EOEntity) entitiesIter.next();
+		for (EOEntity entity : _entities) {
 			String className = entity.getClassName();
 			if (className != null) {
 				int packageNameEnd = className.lastIndexOf('.');
@@ -253,7 +251,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 	}
 
 	protected void _entityChanged(EOEntity _entity, String _propertyName, Object _oldValue, Object _newValue) {
-		myEntities = new HashSet(myEntities);
+		myEntities = new HashSet<EOEntity>(myEntities);
 		firePropertyChange(EOModel.ENTITY, null, _entity);
 	}
 
@@ -266,9 +264,9 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 
 	public EODatabaseConfig getDatabaseConfigNamed(String _name) {
 		EODatabaseConfig matchingDatabaseConfig = null;
-		Iterator databaseConfigsIter = myDatabaseConfigs.iterator();
+		Iterator<EODatabaseConfig> databaseConfigsIter = myDatabaseConfigs.iterator();
 		while (matchingDatabaseConfig == null && databaseConfigsIter.hasNext()) {
-			EODatabaseConfig entity = (EODatabaseConfig) databaseConfigsIter.next();
+			EODatabaseConfig entity = databaseConfigsIter.next();
 			if (ComparisonUtils.equals(entity.getName(), _name)) {
 				matchingDatabaseConfig = entity;
 			}
@@ -287,7 +285,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return unusedName;
 	}
 
-	public void _checkForDuplicateDatabaseConfigName(EODatabaseConfig _databaseConfig, String _newName, Set _failures) throws DuplicateDatabaseConfigNameException {
+	public void _checkForDuplicateDatabaseConfigName(EODatabaseConfig _databaseConfig, String _newName, Set<EOModelVerificationFailure> _failures) throws DuplicateDatabaseConfigNameException {
 		EODatabaseConfig existingDatabaseConfig = getDatabaseConfigNamed(_newName);
 		if (existingDatabaseConfig != null && existingDatabaseConfig != _databaseConfig) {
 			if (_failures == null) {
@@ -311,14 +309,14 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		addDatabaseConfig(_databaseConfig, true, null);
 	}
 
-	public void addDatabaseConfig(EODatabaseConfig _databaseConfig, boolean _fireEvents, Set _failures) throws DuplicateNameException {
+	public void addDatabaseConfig(EODatabaseConfig _databaseConfig, boolean _fireEvents, Set<EOModelVerificationFailure> _failures) throws DuplicateNameException {
 		_databaseConfig._setModel(this);
 		_checkForDuplicateDatabaseConfigName(_databaseConfig, _databaseConfig.getName(), _failures);
 		_databaseConfig.pasted();
 		if (_fireEvents) {
-			Set oldDatabaseConfigs = null;
+			Set<EODatabaseConfig> oldDatabaseConfigs = null;
 			oldDatabaseConfigs = myDatabaseConfigs;
-			Set newEntities = new TreeSet(new PropertyListSet());
+			Set<EODatabaseConfig> newEntities = new TreeSet<EODatabaseConfig>(new PropertyListSet<EODatabaseConfig>());
 			newEntities.addAll(myDatabaseConfigs);
 			newEntities.add(_databaseConfig);
 			myDatabaseConfigs = newEntities;
@@ -335,9 +333,9 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		if (ComparisonUtils.equals(myActiveDatabaseConfig, _databaseConfig)) {
 			EODatabaseConfig newActiveDatabaseConfig = null;
 			if (!myDatabaseConfigs.isEmpty()) {
-				Iterator databaseConfigsIter = myDatabaseConfigs.iterator();
+				Iterator<EODatabaseConfig> databaseConfigsIter = myDatabaseConfigs.iterator();
 				while (newActiveDatabaseConfig == null && databaseConfigsIter.hasNext()) {
-					EODatabaseConfig otherDatabaseConfig = (EODatabaseConfig) databaseConfigsIter.next();
+					EODatabaseConfig otherDatabaseConfig = databaseConfigsIter.next();
 					if (otherDatabaseConfig != _databaseConfig) {
 						newActiveDatabaseConfig = otherDatabaseConfig;
 					}
@@ -345,8 +343,8 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 			}
 			setActiveDatabaseConfig(newActiveDatabaseConfig);
 		}
-		Set oldDatabaseConfigs = myDatabaseConfigs;
-		Set newDatabaseConfigs = new TreeSet(new PropertyListSet());
+		Set<EODatabaseConfig> oldDatabaseConfigs = myDatabaseConfigs;
+		Set<EODatabaseConfig> newDatabaseConfigs = new TreeSet<EODatabaseConfig>(new PropertyListSet<EODatabaseConfig>());
 		newDatabaseConfigs.addAll(myDatabaseConfigs);
 		newDatabaseConfigs.remove(_databaseConfig);
 		myDatabaseConfigs = newDatabaseConfigs;
@@ -365,16 +363,16 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return myActiveDatabaseConfig;
 	}
 
-	public EODatabaseConfig _createDatabaseConfig(String adaptorName, Map _connectionDictionary) {
+	public EODatabaseConfig _createDatabaseConfig(String adaptorName, Map<Object, Object> _connectionDictionary) {
 		EODatabaseConfig defaultDatabaseConfig = new EODatabaseConfig(findUnusedDatabaseConfigName("Default"));
 		defaultDatabaseConfig.setAdaptorName(adaptorName);
-		defaultDatabaseConfig.setConnectionDictionary(new HashMap(_connectionDictionary));
+		defaultDatabaseConfig.setConnectionDictionary(new HashMap<Object, Object>(_connectionDictionary));
 		defaultDatabaseConfig.setPrototype(_getPreferredPrototypeEntity(adaptorName, _connectionDictionary));
 		defaultDatabaseConfig._setModel(this);
 		return defaultDatabaseConfig;
 	}
 
-	public Set getDatabaseConfigs() {
+	public Set<EODatabaseConfig> getDatabaseConfigs() {
 		return myDatabaseConfigs;
 	}
 
@@ -418,7 +416,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return myName;
 	}
 
-	public Set getEntities() {
+	public Set<EOEntity> getEntities() {
 		return myEntities;
 	}
 
@@ -436,7 +434,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return unusedName;
 	}
 
-	public void _checkForDuplicateEntityName(EOEntity _entity, String _newName, Set _failures) throws DuplicateEntityNameException {
+	public void _checkForDuplicateEntityName(EOEntity _entity, String _newName, Set<EOModelVerificationFailure> _failures) throws DuplicateEntityNameException {
 		EOEntity existingEntity = null;
 		if (myModelGroup != null) {
 			existingEntity = myModelGroup.getEntityNamed(_newName);
@@ -462,7 +460,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 
 	public void _entityNameChanged(String _oldName, String _newName) {
 		if (myDeletedEntityNamesInObjectStore == null) {
-			myDeletedEntityNamesInObjectStore = new PropertyListSet();
+			myDeletedEntityNamesInObjectStore = new PropertyListSet<String>();
 		}
 		myDeletedEntityNamesInObjectStore.add(_oldName);
 		myDeletedEntityNamesInObjectStore.remove(_newName);
@@ -474,7 +472,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return getEntityNamed(_entityName) != null;
 	}
 
-	public Set importEntitiesFromModel(URL sourceModelURL, Set failures) throws EOModelException, IOException {
+	public Set importEntitiesFromModel(URL sourceModelURL, Set<EOModelVerificationFailure> failures) throws EOModelException, IOException {
 		EOModelGroup sourceModelGroup = new EOModelGroup();
 		EOModel sourceModel = new EOModel("Temp", null);
 		sourceModelGroup.addModel(sourceModel);
@@ -483,21 +481,15 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return importEntitiesFromModel(sourceModel, failures);
 	}
 	
-	public Set importEntitiesFromModel(EOModel sourceModel, Set failures) throws DuplicateNameException {
-		Set clonedEntities = new HashSet();
-		Iterator entitiesIter = sourceModel.getEntities().iterator();
-		while (entitiesIter.hasNext()) {
-			EOEntity entity = (EOEntity) entitiesIter.next();
+	public Set<EOEntity> importEntitiesFromModel(EOModel sourceModel, Set<EOModelVerificationFailure> failures) throws DuplicateNameException {
+		Set<EOEntity> clonedEntities = new HashSet<EOEntity>();
+		for (EOEntity entity : sourceModel.getEntities()) {
 			clonedEntities.add(entity.cloneEntity());
 		}
 		addEntities(clonedEntities, failures);
-		Iterator clonedEntitiesIter = clonedEntities.iterator();
-		while (clonedEntitiesIter.hasNext()) {
-			EOEntity clonedEntity = (EOEntity) clonedEntitiesIter.next();
+		for (EOEntity clonedEntity : clonedEntities) {
 			//clonedEntity.setName(StringUtils.toUppercaseFirstLetter(clonedEntity.getName().toLowerCase()));
-			Iterator clonedAttributesIter = clonedEntity.getAttributes().iterator();
-			while (clonedAttributesIter.hasNext()) {
-				EOAttribute clonedAttribute = (EOAttribute) clonedAttributesIter.next();
+			for (EOAttribute clonedAttribute : clonedEntity.getAttributes()) {
 				clonedAttribute.guessPrototype(true);
 				//clonedAttribute.setName(clonedAttribute.getName().toLowerCase());
 			}
@@ -510,19 +502,14 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return clonedEntities;
 	}
 	
-	public void addEntities(Set entities, Set failures) throws DuplicateNameException {
-		Set oldEntities = new TreeSet(new PropertyListSet());
+	public void addEntities(Set<EOEntity> entities, Set<EOModelVerificationFailure> failures) throws DuplicateNameException {
+		Set<EOEntity> oldEntities = new TreeSet<EOEntity>(new PropertyListSet<EOEntity>());
 		oldEntities.addAll(myEntities);
 
-		Iterator entitiesIter;
-		entitiesIter = entities.iterator();
-		while (entitiesIter.hasNext()) {
-			EOEntity entity = (EOEntity) entitiesIter.next();
+		for (EOEntity entity : entities) {
 			addEntity(entity, false, false, failures);
 		}
-		entitiesIter = entities.iterator();
-		while (entitiesIter.hasNext()) {
-			EOEntity entity = (EOEntity) entitiesIter.next();
+		for (EOEntity entity : entities) {
 			entity.pasted();
 		}
 
@@ -533,7 +520,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		addEntity(_entity, true, true, null);
 	}
 
-	public void addEntity(EOEntity entity, boolean pasteImmediately, boolean fireEvents, Set failures) throws DuplicateNameException {
+	public void addEntity(EOEntity entity, boolean pasteImmediately, boolean fireEvents, Set<EOModelVerificationFailure> failures) throws DuplicateNameException {
 		entity._setModel(this);
 		_checkForDuplicateEntityName(entity, entity.getName(), failures);
 		if (pasteImmediately) {
@@ -541,9 +528,9 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		}
 		myDeletedEntityNames.remove(entity.getName());
 		if (fireEvents) {
-			Set oldEntities = null;
+			Set<EOEntity> oldEntities = null;
 			oldEntities = myEntities;
-			Set newEntities = new TreeSet(new PropertyListSet());
+			Set<EOEntity> newEntities = new TreeSet<EOEntity>(new PropertyListSet<EOEntity>());
 			newEntities.addAll(myEntities);
 			newEntities.add(entity);
 			myEntities = newEntities;
@@ -555,8 +542,8 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 
 	public void removeEntity(EOEntity _entity) {
 		myDeletedEntityNames.add(_entity.getName());
-		Set oldEntities = myEntities;
-		Set newEntities = new TreeSet(new PropertyListSet());
+		Set<EOEntity> oldEntities = myEntities;
+		Set<EOEntity> newEntities = new TreeSet<EOEntity>(new PropertyListSet<EOEntity>());
 		newEntities.addAll(myEntities);
 		newEntities.remove(_entity);
 		myEntities = newEntities;
@@ -566,9 +553,9 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 
 	public EOEntity getEntityNamed(String _name) {
 		EOEntity matchingEntity = null;
-		Iterator entitiesIter = myEntities.iterator();
+		Iterator<EOEntity> entitiesIter = myEntities.iterator();
 		while (matchingEntity == null && entitiesIter.hasNext()) {
-			EOEntity entity = (EOEntity) entitiesIter.next();
+			EOEntity entity = entitiesIter.next();
 			if (ComparisonUtils.equalsIgnoreCase(entity.getName(), _name)) {
 				matchingEntity = entity;
 			}
@@ -593,14 +580,14 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		addStoredProcedure(_storedProcedure, true, null);
 	}
 
-	public void addStoredProcedure(EOStoredProcedure _storedProcedure, boolean _fireEvents, Set _failures) throws DuplicateStoredProcedureNameException {
+	public void addStoredProcedure(EOStoredProcedure _storedProcedure, boolean _fireEvents, Set<EOModelVerificationFailure> _failures) throws DuplicateStoredProcedureNameException {
 		_storedProcedure._setModel(this);
 		_checkForDuplicateStoredProcedureName(_storedProcedure, _storedProcedure.getName(), _failures);
 		_storedProcedure.pasted();
 		myDeletedStoredProcedureNames.remove(_storedProcedure.getName());
 		if (_fireEvents) {
-			Set oldStoredProcedures = myStoredProcedures;
-			Set newStoredProcedures = new TreeSet(new PropertyListSet());
+			Set<EOStoredProcedure> oldStoredProcedures = myStoredProcedures;
+			Set<EOStoredProcedure> newStoredProcedures = new TreeSet<EOStoredProcedure>(new PropertyListSet<EOStoredProcedure>());
 			newStoredProcedures.addAll(myStoredProcedures);
 			newStoredProcedures.add(_storedProcedure);
 			myStoredProcedures = newStoredProcedures;
@@ -612,8 +599,8 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 
 	public void removeStoredProcedure(EOStoredProcedure _storedProcedure) {
 		myDeletedStoredProcedureNames.add(_storedProcedure.getName());
-		Set oldStoredProcedures = myStoredProcedures;
-		Set newStoredProcedures = new TreeSet(new PropertyListSet());
+		Set<EOStoredProcedure> oldStoredProcedures = myStoredProcedures;
+		Set<EOStoredProcedure> newStoredProcedures = new TreeSet<EOStoredProcedure>(new PropertyListSet<EOStoredProcedure>());
 		newStoredProcedures.addAll(myStoredProcedures);
 		newStoredProcedures.remove(_storedProcedure);
 		myStoredProcedures = newStoredProcedures;
@@ -632,15 +619,15 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return unusedName;
 	}
 
-	public Set getStoredProcedures() {
+	public Set<EOStoredProcedure> getStoredProcedures() {
 		return myStoredProcedures;
 	}
 
 	public EOStoredProcedure getStoredProcedureNamed(String _name) {
 		EOStoredProcedure matchingStoredProcedure = null;
-		Iterator storedProceduresIter = myStoredProcedures.iterator();
+		Iterator<EOStoredProcedure> storedProceduresIter = myStoredProcedures.iterator();
 		while (matchingStoredProcedure == null && storedProceduresIter.hasNext()) {
-			EOStoredProcedure attribute = (EOStoredProcedure) storedProceduresIter.next();
+			EOStoredProcedure attribute = storedProceduresIter.next();
 			if (ComparisonUtils.equals(attribute.getName(), _name)) {
 				matchingStoredProcedure = attribute;
 			}
@@ -648,7 +635,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return matchingStoredProcedure;
 	}
 
-	public void _checkForDuplicateStoredProcedureName(EOStoredProcedure _storedProcedure, String _newName, Set _failures) throws DuplicateStoredProcedureNameException {
+	public void _checkForDuplicateStoredProcedureName(EOStoredProcedure _storedProcedure, String _newName, Set<EOModelVerificationFailure> _failures) throws DuplicateStoredProcedureNameException {
 		EOStoredProcedure existingStoredProcedure = getStoredProcedureNamed(_newName);
 		if (existingStoredProcedure != null && existingStoredProcedure != _storedProcedure) {
 			if (_failures == null) {
@@ -666,7 +653,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return indexURL;
 	}
 
-	public void loadFromFolder(URL _modelFolder, Set _failures) throws EOModelException, IOException {
+	public void loadFromFolder(URL _modelFolder, Set<EOModelVerificationFailure> _failures) throws EOModelException, IOException {
 		System.out.println("EOModel.loadFromFolder: " + _modelFolder);
 		URL indexURL = new URL(_modelFolder, "index.eomodeld");
 		// if (!indexURL.exists()) {
@@ -689,11 +676,10 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		}
 		loadUserInfo(modelMap);
 
-		Set entities = modelMap.getSet("entities");
+		Set<Map> entities = modelMap.getSet("entities");
 		if (entities != null) {
-			Iterator entitiesIter = entities.iterator();
-			while (entitiesIter.hasNext()) {
-				EOModelMap entityMap = new EOModelMap((Map) entitiesIter.next());
+			for (Map entitiesMap : entities) {
+				EOModelMap entityMap = new EOModelMap(entitiesMap);
 				String entityName = entityMap.getString("name", true);
 				EOEntity entity = new EOEntity();
 				URL entityURL = new URL(_modelFolder, entityName + ".plist");
@@ -710,11 +696,9 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 			}
 		}
 
-		Set storedProcedureNames = modelMap.getSet("storedProcedures");
+		Set<String> storedProcedureNames = modelMap.getSet("storedProcedures");
 		if (storedProcedureNames != null) {
-			Iterator storedProcedureNamesIter = storedProcedureNames.iterator();
-			while (storedProcedureNamesIter.hasNext()) {
-				String storedProcedureName = (String) storedProcedureNamesIter.next();
+			for (String storedProcedureName : storedProcedureNames) {
 				EOStoredProcedure storedProcedure = new EOStoredProcedure();
 				URL storedProcedureURL = new URL(_modelFolder, storedProcedureName + ".storedProcedure");
 				if (URLUtils.exists(storedProcedureURL)) {
@@ -726,23 +710,21 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 			}
 		}
 
-		Map internalInfoMap = modelMap.getMap("internalInfo");
+		Map<Object, Object> internalInfoMap = modelMap.getMap("internalInfo");
 		if (internalInfoMap != null) {
-			Set deletedEntityNamesInObjectStore = modelMap.getSet("_deletedEntityNamesInObjectStore", true);
+			Set<String> deletedEntityNamesInObjectStore = modelMap.getSet("_deletedEntityNamesInObjectStore", true);
 			if (deletedEntityNamesInObjectStore != null) {
 				myDeletedEntityNamesInObjectStore = deletedEntityNamesInObjectStore;
 			}
 		}
 
 		EOModelMap entityModelerMap = new EOModelMap((Map) getUserInfo().get(EOModel.ENTITY_MODELER_KEY));
-		Map databaseConfigs = entityModelerMap.getMap("databaseConfigs");
+		Map<String, Map> databaseConfigs = entityModelerMap.getMap("databaseConfigs");
 		if (databaseConfigs != null) {
-			Iterator databaseConfigsIter = databaseConfigs.entrySet().iterator();
-			while (databaseConfigsIter.hasNext()) {
-				Map.Entry databaseConfigEntry = (Map.Entry) databaseConfigsIter.next();
-				String name = (String) databaseConfigEntry.getKey();
+			for (Map.Entry<String, Map> databaseConfigEntry : databaseConfigs.entrySet()) {
+				String name = databaseConfigEntry.getKey();
 				EODatabaseConfig databaseConfig = new EODatabaseConfig(name);
-				databaseConfig.loadFromMap(new EOModelMap((Map) databaseConfigEntry.getValue()), _failures);
+				databaseConfig.loadFromMap(new EOModelMap(databaseConfigEntry.getValue()), _failures);
 				addDatabaseConfig(databaseConfig, false, _failures);
 			}
 		}
@@ -753,14 +735,14 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		}
 		// If there is a connection dictionary, then look for a database config
 		// that is equivalent ...
-		Map connectionDictionary = modelMap.getMap("connectionDictionary", true);
+		Map<Object, Object> connectionDictionary = modelMap.getMap("connectionDictionary", true);
 		if (connectionDictionary != null && !connectionDictionary.isEmpty()) {
 			String adaptorName = modelMap.getString("adaptorName", true);
 			EODatabaseConfig tempConnectionDictionaryDatabaseConfig = _createDatabaseConfig(adaptorName, connectionDictionary);
 			EODatabaseConfig connectionDictionaryDatabaseConfig = null;
-			Iterator databaseConfigsIter = myDatabaseConfigs.iterator();
+			Iterator<EODatabaseConfig> databaseConfigsIter = myDatabaseConfigs.iterator();
 			while (connectionDictionaryDatabaseConfig == null && databaseConfigsIter.hasNext()) {
-				EODatabaseConfig databaseConfig = (EODatabaseConfig) databaseConfigsIter.next();
+				EODatabaseConfig databaseConfig = databaseConfigsIter.next();
 				if (tempConnectionDictionaryDatabaseConfig.isEquivalent(databaseConfig, false)) {
 					connectionDictionaryDatabaseConfig = databaseConfig;
 				}
@@ -780,7 +762,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		}
 		// try to always have at least one active database config
 		if (activeDatabaseConfig == null && !myDatabaseConfigs.isEmpty()) {
-			activeDatabaseConfig = (EODatabaseConfig) myDatabaseConfigs.iterator().next();
+			activeDatabaseConfig = myDatabaseConfigs.iterator().next();
 		}
 		if (activeDatabaseConfig != null) {
 			if (ComparisonUtils.equals(activeDatabaseConfig.getName(), activeDatabaseConfigName)) {
@@ -803,11 +785,9 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		modelMap.put("connectionDictionary", connectionDictionary);
 		modelMap.setString("adaptorName", adaptorName, true);
 
-		Set entities = new PropertyListSet();
-		Set entitiesWithSharedObjects = new PropertyListSet();
-		Iterator entitiesIter = myEntities.iterator();
-		while (entitiesIter.hasNext()) {
-			EOEntity entity = (EOEntity) entitiesIter.next();
+		Set<Map> entities = new PropertyListSet<Map>();
+		Set<String> entitiesWithSharedObjects = new PropertyListSet<String>();
+		for (EOEntity entity : myEntities) {
 			EOModelMap entityMap = new EOModelMap();
 			entityMap.setString("className", entity.getClassName(), true);
 			EOEntity parent = entity.getParent();
@@ -823,9 +803,9 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 
 		modelMap.setSet("entitiesWithSharedObjects", entitiesWithSharedObjects, true);
 
-		Map internalInfoMap = modelMap.getMap("internalInfo");
+		Map<Object, Object> internalInfoMap = modelMap.getMap("internalInfo");
 		if (internalInfoMap == null) {
-			internalInfoMap = new HashMap();
+			internalInfoMap = new HashMap<Object, Object>();
 		}
 		if (myDeletedEntityNamesInObjectStore != null && !myDeletedEntityNamesInObjectStore.isEmpty()) {
 			internalInfoMap.put("_deletedEntityNamesInObjectStore", myDeletedEntityNamesInObjectStore);
@@ -834,10 +814,8 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		}
 		modelMap.setMap("internalInfo", internalInfoMap, true);
 
-		Set storedProcedures = new PropertyListSet();
-		Iterator storedProceduresIter = myStoredProcedures.iterator();
-		while (storedProceduresIter.hasNext()) {
-			EOStoredProcedure storedProcedure = (EOStoredProcedure) storedProceduresIter.next();
+		Set<String> storedProcedures = new PropertyListSet<String>();
+		for (EOStoredProcedure storedProcedure : myStoredProcedures) {
 			storedProcedures.add(storedProcedure.getName());
 		}
 		modelMap.setSet("storedProcedures", storedProcedures, true);
@@ -848,10 +826,8 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		} else {
 			entityModelerMap.put("activeDatabaseConfigName", myActiveDatabaseConfig.getName());
 		}
-		Map databaseConfigs = new PropertyListMap();
-		Iterator databaseConfigsIter = myDatabaseConfigs.iterator();
-		while (databaseConfigsIter.hasNext()) {
-			EODatabaseConfig databaseConfig = (EODatabaseConfig) databaseConfigsIter.next();
+		Map<String, Map> databaseConfigs = new PropertyListMap<String, Map>();
+		for (EODatabaseConfig databaseConfig : myDatabaseConfigs) {
 			databaseConfigs.put(databaseConfig.getName(), databaseConfig.toMap());
 		}
 		entityModelerMap.setMap("databaseConfigs", databaseConfigs, true);
@@ -884,9 +860,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		PropertyListSerialization.propertyListToFile(indexFile, modelMap);
 
 		if (myDeletedEntityNames != null) {
-			Iterator deletedEntityNameIter = myDeletedEntityNames.iterator();
-			while (deletedEntityNameIter.hasNext()) {
-				String entityName = (String) deletedEntityNameIter.next();
+			for (String entityName : myDeletedEntityNames) {
 				File entityFile = new File(modelFolder, entityName + ".plist");
 				if (entityFile.exists()) {
 					entityFile.delete();
@@ -898,9 +872,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 			}
 		}
 
-		Iterator entitiesIter = myEntities.iterator();
-		while (entitiesIter.hasNext()) {
-			EOEntity entity = (EOEntity) entitiesIter.next();
+		for (EOEntity entity : myEntities) {
 			String entityName = entity.getName();
 			File entityFile = new File(modelFolder, entityName + ".plist");
 			entity.saveToFile(entityFile);
@@ -909,9 +881,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		}
 
 		if (myDeletedStoredProcedureNames != null) {
-			Iterator deletedStoredProcedureNameIter = myDeletedStoredProcedureNames.iterator();
-			while (deletedStoredProcedureNameIter.hasNext()) {
-				String storedProcedureName = (String) deletedStoredProcedureNameIter.next();
+			for (String storedProcedureName : myDeletedStoredProcedureNames) {
 				File storedProcedureFile = new File(modelFolder, storedProcedureName + ".storedProcedure");
 				if (storedProcedureFile.exists()) {
 					storedProcedureFile.delete();
@@ -919,9 +889,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 			}
 		}
 
-		Iterator storedProceduresIter = myStoredProcedures.iterator();
-		while (storedProceduresIter.hasNext()) {
-			EOStoredProcedure storedProcedure = (EOStoredProcedure) storedProceduresIter.next();
+		for (EOStoredProcedure storedProcedure : myStoredProcedures) {
 			String storedProcedureName = storedProcedure.getName();
 			File storedProcedureFile = new File(modelFolder, storedProcedureName + ".storedProcedure");
 			storedProcedure.saveToFile(storedProcedureFile);
@@ -930,20 +898,16 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return modelFolder;
 	}
 
-	public void resolve(Set _failures) {
-		Iterator entitiesIter = myEntities.iterator();
-		while (entitiesIter.hasNext()) {
-			EOEntity entity = (EOEntity) entitiesIter.next();
+	public void resolve(Set<EOModelVerificationFailure> _failures) {
+		for (EOEntity entity : myEntities) {
 			entity.resolve(_failures);
 		}
 	}
 
-	public void verify(Set _failures) {
+	public void verify(Set<EOModelVerificationFailure> _failures) {
 		// TODO
 
-		Iterator entitiesIter = myEntities.iterator();
-		while (entitiesIter.hasNext()) {
-			EOEntity entity = (EOEntity) entitiesIter.next();
+		for (EOEntity entity : myEntities) {
 			entity.verify(_failures);
 		}
 	}
@@ -957,20 +921,16 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 	}
 
 	/** Begin Prototypes * */
-	public synchronized void clearCachedPrototypes(Set _failures, boolean _reload) {
+	public synchronized void clearCachedPrototypes(Set<EOModelVerificationFailure> _failures, boolean _reload) {
 		myPrototypeAttributeCache = null;
-		Iterator entitiesIter = myEntities.iterator();
-		while (entitiesIter.hasNext()) {
-			EOEntity entity = (EOEntity) entitiesIter.next();
+		for (EOEntity entity : myEntities) {
 			entity.clearCachedPrototypes(_failures, _reload);
 		}
 	}
 
-	public synchronized Set getPrototypeAttributeNames() {
-		Set prototypeAttributeNames = new PropertyListSet();
-		Iterator prototypeAttributesIter = getPrototypeAttributes().iterator();
-		while (prototypeAttributesIter.hasNext()) {
-			EOAttribute attribute = (EOAttribute) prototypeAttributesIter.next();
+	public synchronized Set<String> getPrototypeAttributeNames() {
+		Set<String> prototypeAttributeNames = new PropertyListSet<String>();
+		for (EOAttribute attribute : getPrototypeAttributes()) {
 			prototypeAttributeNames.add(attribute.getName());
 		}
 		return prototypeAttributeNames;
@@ -1040,9 +1000,9 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return prototypeEntity;
 	}
 
-	public synchronized Set getPrototypeAttributes() {
+	public synchronized Set<EOAttribute> getPrototypeAttributes() {
 		if (myPrototypeAttributeCache == null) {
-			Map prototypeAttributeCache = new HashMap();
+			Map<String, EOAttribute> prototypeAttributeCache = new HashMap<String, EOAttribute>();
 
 			Map connectionDictionary = null;
 			EODatabaseConfig activeDatabaseConfig = getActiveDatabaseConfig();
@@ -1065,19 +1025,17 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 			}
 
 			// Do we need to support "EOPrototypesToHide" entity?
-			myPrototypeAttributeCache = new PropertyListSet();
+			myPrototypeAttributeCache = new PropertyListSet<EOAttribute>();
 			myPrototypeAttributeCache.addAll(prototypeAttributeCache.values());
 		}
 		return myPrototypeAttributeCache;
 	}
 
-	protected void addPrototypeAttributes(String _prototypeEntityName, Map _prototypeAttributeCache) {
+	protected void addPrototypeAttributes(String _prototypeEntityName, Map<String, EOAttribute> _prototypeAttributeCache) {
 		if (_prototypeEntityName != null) {
 			EOEntity prototypeEntity = myModelGroup.getEntityNamed(_prototypeEntityName);
 			if (prototypeEntity != null) {
-				Iterator attributeIter = prototypeEntity.getAttributes().iterator();
-				while (attributeIter.hasNext()) {
-					EOAttribute prototypeAttribute = (EOAttribute) attributeIter.next();
+				for (EOAttribute prototypeAttribute : prototypeEntity.getAttributes()) {
 					_prototypeAttributeCache.put(prototypeAttribute.getName(), prototypeAttribute);
 				}
 			}
@@ -1086,10 +1044,10 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 
 	public EOAttribute getPrototypeAttributeNamed(String _name) {
 		EOAttribute matchingAttribute = null;
-		Set prototypeAttributes = getPrototypeAttributes();
-		Iterator attributesIter = prototypeAttributes.iterator();
+		Set<EOAttribute> prototypeAttributes = getPrototypeAttributes();
+		Iterator<EOAttribute> attributesIter = prototypeAttributes.iterator();
 		while (matchingAttribute == null && attributesIter.hasNext()) {
-			EOAttribute attribute = (EOAttribute) attributesIter.next();
+			EOAttribute attribute = attributesIter.next();
 			if (attribute.getName().equals(_name)) {
 				matchingAttribute = attribute;
 			}

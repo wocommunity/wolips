@@ -54,7 +54,6 @@ import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -117,11 +116,11 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 
 	private Boolean myLocksObjects;
 
-	private Set myPrefetchingRelationshipKeyPaths;
+	private Set<String> myPrefetchingRelationshipKeyPaths;
 
 	private Boolean myPromptsAfterFetchLimit;
 
-	private Set myRawRowKeyPaths;
+	private Set<String> myRawRowKeyPaths;
 
 	private Boolean myRefreshesRefetchedObjects;
 
@@ -129,7 +128,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 
 	private Boolean myUsesDistinct;
 
-	private List mySortOrderings;
+	private List<EOSortOrdering> mySortOrderings;
 
 	private Expression myQualifier;
 
@@ -144,9 +143,9 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 	public EOFetchSpecification(String _name) {
 		myName = _name;
 		myClass = "EOFetchSpecification";
-		mySortOrderings = new LinkedList();
+		mySortOrderings = new LinkedList<EOSortOrdering>();
 		myFetchSpecMap = new EOModelMap();
-		myPrefetchingRelationshipKeyPaths = new TreeSet();
+		myPrefetchingRelationshipKeyPaths = new TreeSet<String>();
 	}
 
 	public EOFetchSpecification cloneFetchSpecification() {
@@ -156,12 +155,12 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 		fetchSpec.myDeep = myDeep;
 		fetchSpec.myLocksObjects = myLocksObjects;
 		if (myPrefetchingRelationshipKeyPaths != null) {
-			fetchSpec.myPrefetchingRelationshipKeyPaths = new TreeSet();
+			fetchSpec.myPrefetchingRelationshipKeyPaths = new TreeSet<String>();
 			fetchSpec.myPrefetchingRelationshipKeyPaths.addAll(myPrefetchingRelationshipKeyPaths);
 		}
 		fetchSpec.myPromptsAfterFetchLimit = myPromptsAfterFetchLimit;
 		if (myRawRowKeyPaths != null) {
-			fetchSpec.myRawRowKeyPaths = new TreeSet();
+			fetchSpec.myRawRowKeyPaths = new TreeSet<String>();
 			fetchSpec.myRawRowKeyPaths.addAll(myRawRowKeyPaths);
 		}
 		fetchSpec.myRefreshesRefetchedObjects = myRefreshesRefetchedObjects;
@@ -172,7 +171,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 			fetchSpec.myQualifier = EOQualifierFactory.createExpressionFromQualifierMap(EOQualifierFactory.createQualifierMapFromExpression(myQualifier));
 		}
 		fetchSpec.mySharesObjects = mySharesObjects;
-		fetchSpec.setUserInfo(new HashMap(getUserInfo()));
+		fetchSpec.setUserInfo(new HashMap<Object, Object>(getUserInfo()));
 		return fetchSpec;
 	}
 
@@ -231,8 +230,8 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 
 	public void addSortOrdering(EOSortOrdering _sortOrdering, boolean _fireEvents) {
 		if (_fireEvents) {
-			List oldSortOrderings = mySortOrderings;
-			mySortOrderings = new LinkedList(mySortOrderings);
+			List<EOSortOrdering> oldSortOrderings = mySortOrderings;
+			mySortOrderings = new LinkedList<EOSortOrdering>(mySortOrderings);
 			mySortOrderings.add(_sortOrdering);
 			firePropertyChange(EOFetchSpecification.SORT_ORDERINGS, oldSortOrderings, mySortOrderings);
 		} else {
@@ -243,8 +242,8 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 
 	public void removeSortOrdering(EOSortOrdering _sortOrdering, boolean _fireEvents) {
 		if (_fireEvents) {
-			List oldSortOrderings = mySortOrderings;
-			mySortOrderings = new LinkedList(mySortOrderings);
+			List<EOSortOrdering> oldSortOrderings = mySortOrderings;
+			mySortOrderings = new LinkedList<EOSortOrdering>(mySortOrderings);
 			mySortOrderings.remove(_sortOrdering);
 			firePropertyChange(EOFetchSpecification.SORT_ORDERINGS, oldSortOrderings, mySortOrderings);
 		} else {
@@ -253,21 +252,17 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 		_sortOrdering.removePropertyChangeListener(this);
 	}
 
-	public void setSortOrderings(List _sortOrderings, boolean _fireEvents) {
+	public void setSortOrderings(List<EOSortOrdering> _sortOrderings, boolean _fireEvents) {
 		if (_fireEvents) {
-			List oldSortOrderings = mySortOrderings;
+			List<EOSortOrdering> oldSortOrderings = mySortOrderings;
 			if (oldSortOrderings != null) {
-				Iterator oldSortOrderingsIter = oldSortOrderings.iterator();
-				while (oldSortOrderingsIter.hasNext()) {
-					EOSortOrdering sortOrdering = (EOSortOrdering) oldSortOrderingsIter.next();
+				for (EOSortOrdering sortOrdering : oldSortOrderings) {
 					sortOrdering.removePropertyChangeListener(this);
 				}
 			}
 			mySortOrderings = _sortOrderings;
 			if (mySortOrderings != null) {
-				Iterator newSortOrderingsIter = mySortOrderings.iterator();
-				while (newSortOrderingsIter.hasNext()) {
-					EOSortOrdering sortOrdering = (EOSortOrdering) newSortOrderingsIter.next();
+				for (EOSortOrdering sortOrdering : mySortOrderings) {
 					sortOrdering.addPropertyChangeListener(this);
 				}
 			}
@@ -277,7 +272,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 		}
 	}
 
-	public List getSortOrderings() {
+	public List<EOSortOrdering> getSortOrderings() {
 		return mySortOrderings;
 	}
 
@@ -432,14 +427,14 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 		firePropertyChange(EOFetchSpecification.LOCKS_OBJECTS, oldLocksObjects, myLocksObjects);
 	}
 
-	public Collection getPrefetchingRelationshipKeyPaths() {
+	public Collection<String> getPrefetchingRelationshipKeyPaths() {
 		return myPrefetchingRelationshipKeyPaths;
 	}
 
 	public void addPrefetchingRelationshipKeyPath(String _prefetchingRelationshipKeyPath, boolean _fireEvents) {
 		if (_fireEvents) {
-			Set oldPrefetchingRelationshipKeyPaths = myPrefetchingRelationshipKeyPaths;
-			myPrefetchingRelationshipKeyPaths = new TreeSet();
+			Set<String> oldPrefetchingRelationshipKeyPaths = myPrefetchingRelationshipKeyPaths;
+			myPrefetchingRelationshipKeyPaths = new TreeSet<String>();
 			if (oldPrefetchingRelationshipKeyPaths != null) {
 				myPrefetchingRelationshipKeyPaths.addAll(oldPrefetchingRelationshipKeyPaths);
 			}
@@ -452,9 +447,9 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 
 	public void removePrefetchingRelationshipKeyPath(String _prefetchingRelationshipKeyPath, boolean _fireEvents) {
 		if (_fireEvents) {
-			Set oldPrefetchingRelationshipKeyPaths = myPrefetchingRelationshipKeyPaths;
+			Set<String> oldPrefetchingRelationshipKeyPaths = myPrefetchingRelationshipKeyPaths;
 			if (oldPrefetchingRelationshipKeyPaths != null) {
-				myPrefetchingRelationshipKeyPaths = new TreeSet();
+				myPrefetchingRelationshipKeyPaths = new TreeSet<String>();
 				myPrefetchingRelationshipKeyPaths.addAll(oldPrefetchingRelationshipKeyPaths);
 				myPrefetchingRelationshipKeyPaths.remove(_prefetchingRelationshipKeyPath);
 			}
@@ -465,22 +460,20 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 	}
 
 	public void fetchEnterpriseObjects() {
-		Set oldRawRowKeyPaths = myRawRowKeyPaths;
+		Set<String> oldRawRowKeyPaths = myRawRowKeyPaths;
 		myRawRowKeyPaths = null;
 		firePropertyChange(EOFetchSpecification.RAW_ROW_KEY_PATHS, oldRawRowKeyPaths, myRawRowKeyPaths);
 	}
 
 	public void fetchAllAttributesAsRawRows() {
-		Set oldRawRowKeyPaths = myRawRowKeyPaths;
-		myRawRowKeyPaths = new TreeSet();
+		Set<String> oldRawRowKeyPaths = myRawRowKeyPaths;
+		myRawRowKeyPaths = new TreeSet<String>();
 		firePropertyChange(EOFetchSpecification.RAW_ROW_KEY_PATHS, oldRawRowKeyPaths, myRawRowKeyPaths);
 	}
 
 	public void fetchSpecificAttributesAsRawRows() {
 		if (myEntity != null) {
-			String[] attributeNames = myEntity.getAttributeNames();
-			for (int attributeNum = 0; attributeNum < attributeNames.length; attributeNum++) {
-				String attributeName = attributeNames[attributeNum];
+			for (String attributeName : myEntity.getAttributeNames()) {
 				addRawRowKeyPath(attributeName, true);
 			}
 		}
@@ -500,8 +493,8 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 
 	public void addRawRowKeyPath(String _rawRowKeyPath, boolean _fireEvents) {
 		if (_fireEvents) {
-			Set oldRawRowKeyPaths = myRawRowKeyPaths;
-			myRawRowKeyPaths = new TreeSet();
+			Set<String> oldRawRowKeyPaths = myRawRowKeyPaths;
+			myRawRowKeyPaths = new TreeSet<String>();
 			if (oldRawRowKeyPaths != null) {
 				myRawRowKeyPaths.addAll(oldRawRowKeyPaths);
 			}
@@ -514,9 +507,9 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 
 	public void removeRawRowKeyPath(String _rawRowKeyPath, boolean _fireEvents) {
 		if (_fireEvents) {
-			Set oldRawRowKeyPaths = myRawRowKeyPaths;
+			Set<String> oldRawRowKeyPaths = myRawRowKeyPaths;
 			if (oldRawRowKeyPaths != null) {
-				myRawRowKeyPaths = new TreeSet();
+				myRawRowKeyPaths = new TreeSet<String>();
 				myRawRowKeyPaths.addAll(oldRawRowKeyPaths);
 				myRawRowKeyPaths.remove(_rawRowKeyPath);
 			}
@@ -540,11 +533,11 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 		firePropertyChange(EOFetchSpecification.PROMPTS_AFTER_FETCH_LIMIT, oldPromptsAfterFetchLimit, myPromptsAfterFetchLimit);
 	}
 
-	public Collection getRawRowKeyPaths() {
+	public Collection<String> getRawRowKeyPaths() {
 		return myRawRowKeyPaths;
 	}
 
-	public void setRawRowKeyPaths(Set _rawRowKeyPaths) {
+	public void setRawRowKeyPaths(Set<String> _rawRowKeyPaths) {
 		myRawRowKeyPaths = _rawRowKeyPaths;
 		firePropertyChange(EOFetchSpecification.RAW_ROW_KEY_PATHS, null, null);
 	}
@@ -611,11 +604,10 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 		myUsesDistinct = _map.getBoolean("usesDistinct");
 		loadUserInfo(_map);
 
-		List sortOrderings = _map.getList("sortOrderings");
+		List<Map> sortOrderings = _map.getList("sortOrderings");
 		if (sortOrderings != null) {
-			Iterator sortOrderingsIter = sortOrderings.iterator();
-			while (sortOrderingsIter.hasNext()) {
-				EOModelMap sortOrderingMap = new EOModelMap((Map) sortOrderingsIter.next());
+			for (Map originalSortOrderingMap : sortOrderings) {
+				EOModelMap sortOrderingMap = new EOModelMap(originalSortOrderingMap);
 				EOSortOrdering sortOrdering = new EOSortOrdering();
 				sortOrdering.loadFromMap(sortOrderingMap);
 				addSortOrdering(sortOrdering, false);
@@ -648,10 +640,8 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 		fetchSpecMap.setBoolean("usesDistinct", myUsesDistinct, EOModelMap.YESNO);
 		writeUserInfo(fetchSpecMap);
 
-		List sortOrderings = new LinkedList();
-		Iterator sortOrderingsIter = mySortOrderings.iterator();
-		while (sortOrderingsIter.hasNext()) {
-			EOSortOrdering sortOrdering = (EOSortOrdering) sortOrderingsIter.next();
+		List<Map> sortOrderings = new LinkedList<Map>();
+		for (EOSortOrdering sortOrdering : mySortOrderings) {
 			EOModelMap sortOrderingMap = sortOrdering.toMap();
 			sortOrderings.add(sortOrderingMap);
 		}
@@ -670,7 +660,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 		return fetchSpecMap;
 	}
 
-	public void resolve(Set _failures) {
+	public void resolve(Set<EOModelVerificationFailure> _failures) {
 		Map hintsMap = myFetchSpecMap.getMap("hints");
 		if (hintsMap != null) {
 			String storedProcedureName = (String) hintsMap.get("EOStoredProcedureNameHintKey");
@@ -684,14 +674,12 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 		// TODO
 	}
 
-	public void verify(Set _failures) {
+	public void verify(Set<EOModelVerificationFailure> _failures) {
 		// TODO
 		// if (myQualifier != null) {
 		// myQualifier.verify(_failures);
 		// }
-		Iterator sortOrderingsIter = mySortOrderings.iterator();
-		while (sortOrderingsIter.hasNext()) {
-			EOSortOrdering sortOrdering = (EOSortOrdering) sortOrderingsIter.next();
+		for (EOSortOrdering sortOrdering : mySortOrderings) {
 			sortOrdering.verify(_failures);
 		}
 

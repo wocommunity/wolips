@@ -53,7 +53,6 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -76,19 +75,17 @@ import org.objectstyle.wolips.eogenerator.model.EOModelReference;
 import org.objectstyle.wolips.eomodeler.Activator;
 
 public class EclipseEOModelGroupFactory {
-	public static EOModel createModel(IResource _modelResource, Set _failures, boolean _skipOnDuplicates) throws CoreException, IOException, EOModelException, ParseException {
+	public static EOModel createModel(IResource _modelResource, Set<EOModelVerificationFailure> _failures, boolean _skipOnDuplicates) throws CoreException, IOException, EOModelException, ParseException {
 		IProject project = _modelResource.getProject();
 		EOModel model = null;
 		EOModelGroup modelGroup;
 		if ("eomodelgroup".equals(_modelResource.getFileExtension())) {
 			modelGroup = new EOModelGroup();
 			EOGeneratorModel eogeneratorModel = EOGeneratorModel.createModelFromFile((IFile) _modelResource);
-			List modelRefList = new LinkedList();
+			List<EOModelReference> modelRefList = new LinkedList<EOModelReference>();
 			modelRefList.addAll(eogeneratorModel.getModels());
 			modelRefList.addAll(eogeneratorModel.getRefModels());
-			Iterator modelIter = modelRefList.iterator();
-			while (modelIter.hasNext()) {
-				EOModelReference modelRef = (EOModelReference) modelIter.next();
+			for (EOModelReference modelRef : modelRefList) {
 				String modelPath = modelRef.getPath(project);
 				File modelFolder = new File(modelPath);
 				if (!modelFolder.isAbsolute()) {
@@ -116,7 +113,7 @@ public class EclipseEOModelGroupFactory {
 		return model;
 	}
 
-	protected static void addModelsFromProject(EOModelGroup _modelGroup, IProject _project, Set _searchedFolders, Set _searchedProjects, Set _failures, boolean _skipOnDuplicates) throws IOException, EOModelException, CoreException {
+	protected static void addModelsFromProject(EOModelGroup _modelGroup, IProject _project, Set<File> _searchedFolders, Set<IProject> _searchedProjects, Set<EOModelVerificationFailure> _failures, boolean _skipOnDuplicates) throws IOException, EOModelException, CoreException {
 		if (!_searchedProjects.contains(_project)) {
 			_searchedProjects.add(_project);
 			IJavaProject javaProject = JavaCore.create(_project);
@@ -153,9 +150,9 @@ public class EclipseEOModelGroupFactory {
 		}
 	}
 
-	public static EOModelGroup createModelGroup(IProject _project, Set _failures, boolean _skipOnDuplicates) throws CoreException, IOException, EOModelException {
+	public static EOModelGroup createModelGroup(IProject _project, Set<EOModelVerificationFailure> _failures, boolean _skipOnDuplicates) throws CoreException, IOException, EOModelException {
 		EOModelGroup modelGroup = new EOModelGroup();
-		EclipseEOModelGroupFactory.addModelsFromProject(modelGroup, _project, new HashSet(), new HashSet(), _failures, _skipOnDuplicates);
+		EclipseEOModelGroupFactory.addModelsFromProject(modelGroup, _project, new HashSet<File>(), new HashSet<IProject>(), _failures, _skipOnDuplicates);
 		modelGroup.resolve(_failures);
 		modelGroup.verify(_failures);
 		return modelGroup;
@@ -164,13 +161,13 @@ public class EclipseEOModelGroupFactory {
 	protected static class ModelVisitor implements IResourceVisitor {
 		private EOModelGroup myModelGroup;
 
-		private Set myFailures;
+		private Set<EOModelVerificationFailure> myFailures;
 
-		private Set mySearchedFolders;
+		private Set<File> mySearchedFolders;
 
 		private boolean mySkipOnDuplicates;
 
-		public ModelVisitor(EOModelGroup _modelGroup, Set _searchedFolders, Set _failures, boolean _skipOnDuplicates) {
+		public ModelVisitor(EOModelGroup _modelGroup, Set<File> _searchedFolders, Set<EOModelVerificationFailure> _failures, boolean _skipOnDuplicates) {
 			myModelGroup = _modelGroup;
 			myFailures = _failures;
 			mySearchedFolders = _searchedFolders;

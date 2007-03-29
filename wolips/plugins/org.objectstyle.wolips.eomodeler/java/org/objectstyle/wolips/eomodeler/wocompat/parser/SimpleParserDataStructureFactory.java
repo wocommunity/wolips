@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SimpleParserDataStructureFactory implements ParserDataStructureFactory {
-  public Collection createCollection(String keyPath) {
-    return new ArrayList();
+  public Collection<Object> createCollection(String keyPath) {
+    return new ArrayList<Object>();
   }
 
-  public Map createMap(String keyPath) {
-    return new HashMap();
+  public Map<Object, Object> createMap(String keyPath) {
+    return new HashMap<Object, Object>();
   }
 }

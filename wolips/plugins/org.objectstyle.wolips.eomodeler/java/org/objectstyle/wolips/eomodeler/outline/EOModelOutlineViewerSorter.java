@@ -12,6 +12,7 @@ import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOAttributePath;
 import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.model.EOEntityIndex;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
@@ -21,10 +22,10 @@ import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 public class EOModelOutlineViewerSorter extends ViewerSorter {
 	private static final int MAX_ORDER = 9;
 
-	private Map myOrder;
+	private Map<Class, Integer> myOrder;
 
 	public EOModelOutlineViewerSorter() {
-		myOrder = new HashMap();
+		myOrder = new HashMap<Class, Integer>();
 		myOrder.put(EOModel.class, new Integer(0));
 		myOrder.put(EOEntity.class, new Integer(1));
 		myOrder.put(EOAttribute.class, new Integer(2));
@@ -34,7 +35,8 @@ public class EOModelOutlineViewerSorter extends ViewerSorter {
 		myOrder.put(EORelationshipPath.class, new Integer(4));
 		myOrder.put(EOFetchSpecification.class, new Integer(5));
 		myOrder.put(EOStoredProcedure.class, new Integer(6));
-		myOrder.put(EODatabaseConfig.class, new Integer(7));
+		myOrder.put(EOEntityIndex.class, new Integer(7));
+		myOrder.put(EODatabaseConfig.class, new Integer(8));
 	}
 
 	protected int getOrder(Object _obj) {
@@ -42,7 +44,7 @@ public class EOModelOutlineViewerSorter extends ViewerSorter {
 		if (_obj == null) {
 			order = EOModelOutlineViewerSorter.MAX_ORDER;
 		} else {
-			Integer orderInteger = (Integer) myOrder.get(_obj.getClass());
+			Integer orderInteger = myOrder.get(_obj.getClass());
 			if (orderInteger == null) {
 				order = MAX_ORDER;
 			} else {

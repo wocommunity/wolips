@@ -62,12 +62,12 @@ import org.objectstyle.wolips.eomodeler.utils.URLUtils;
 public class EOModelGroup extends EOModelObject {
 	public static final String MODELS = "models";
 
-	private Set myModels;
+	private Set<EOModel> myModels;
 
 	public EOModelGroup() {
-		myModels = new HashSet();
+		myModels = new HashSet<EOModel>();
 	}
-	
+
 	public boolean hasProjectWonder() {
 		return containsModelNamed("erprototypes");
 	}
@@ -80,29 +80,23 @@ public class EOModelGroup extends EOModelObject {
 		// DO NOTHING
 	}
 
-	public Set getModels() {
+	public Set<EOModel> getModels() {
 		return myModels;
 	}
 
-	public Set getEntityNames() {
-		Set entityNames = new TreeSet();
-		Iterator modelsIter = myModels.iterator();
-		while (modelsIter.hasNext()) {
-			EOModel model = (EOModel) modelsIter.next();
-			Iterator entitiesIter = model.getEntities().iterator();
-			while (entitiesIter.hasNext()) {
-				EOEntity entity = (EOEntity) entitiesIter.next();
+	public Set<String> getEntityNames() {
+		Set<String> entityNames = new TreeSet<String>();
+		for (EOModel model : myModels) {
+			for (EOEntity entity : model.getEntities()) {
 				entityNames.add(entity.getName());
 			}
 		}
 		return entityNames;
 	}
 
-	public Set getEntities() {
-		Set allEntities = new HashSet();
-		Iterator modelsIter = myModels.iterator();
-		while (modelsIter.hasNext()) {
-			EOModel model = (EOModel) modelsIter.next();
+	public Set<EOEntity> getEntities() {
+		Set<EOEntity> allEntities = new HashSet<EOEntity>();
+		for (EOModel model : myModels) {
 			allEntities.addAll(model.getEntities());
 		}
 		return allEntities;
@@ -144,12 +138,10 @@ public class EOModelGroup extends EOModelObject {
 		addModel(_model, null);
 	}
 
-	public void addModel(EOModel _model, Set _failures) throws DuplicateEntityNameException, DuplicateModelNameException {
+	public void addModel(EOModel _model, Set<EOModelVerificationFailure> _failures) throws DuplicateEntityNameException, DuplicateModelNameException {
 		_model._setModelGroup(this);
 		_checkForDuplicateModelName(_model, _model.getName());
-		Iterator entitiesIter = _model.getEntities().iterator();
-		while (entitiesIter.hasNext()) {
-			EOEntity entity = (EOEntity) entitiesIter.next();
+		for (EOEntity entity : _model.getEntities()) {
 			_model._checkForDuplicateEntityName(entity, entity.getName(), _failures);
 		}
 		myModels.add(_model);
@@ -157,21 +149,17 @@ public class EOModelGroup extends EOModelObject {
 		firePropertyChange(EOModelGroup.MODELS, null, null);
 	}
 
-	public void removeModel(EOModel _model, Set _failures) {
+	public void removeModel(EOModel _model, Set<EOModelVerificationFailure> _failures) {
 		myModels.remove(_model);
 		clearCachedPrototypes(_failures);
 		firePropertyChange(EOModelGroup.MODELS, null, null);
 		_model._setModelGroup(null);
 	}
 
-	public Set getPrototypeEntities() {
-		Set prototypeEntities = new HashSet();
-		Iterator modelsIter = myModels.iterator();
-		while (modelsIter.hasNext()) {
-			EOModel model = (EOModel) modelsIter.next();
-			Iterator entitiesIter = model.getEntities().iterator();
-			while (entitiesIter.hasNext()) {
-				EOEntity entity = (EOEntity) entitiesIter.next();
+	public Set<EOEntity> getPrototypeEntities() {
+		Set<EOEntity> prototypeEntities = new HashSet<EOEntity>();
+		for (EOModel model : myModels) {
+			for (EOEntity entity : model.getEntities()) {
 				if (entity.isPrototype()) {
 					prototypeEntities.add(entity);
 				}
@@ -180,19 +168,17 @@ public class EOModelGroup extends EOModelObject {
 		return prototypeEntities;
 	}
 
-	protected void clearCachedPrototypes(Set _failures) {
-		Iterator modelsIter = myModels.iterator();
-		while (modelsIter.hasNext()) {
-			EOModel model = (EOModel) modelsIter.next();
+	protected void clearCachedPrototypes(Set<EOModelVerificationFailure> _failures) {
+		for (EOModel model : myModels) {
 			model.clearCachedPrototypes(_failures, false);
 		}
 	}
 
 	public EOModel getModelNamed(String _name) {
 		EOModel matchingModel = null;
-		Iterator modelsIter = myModels.iterator();
+		Iterator<EOModel> modelsIter = myModels.iterator();
 		while (matchingModel == null && modelsIter.hasNext()) {
-			EOModel model = (EOModel) modelsIter.next();
+			EOModel model = modelsIter.next();
 			if (model.getName().equals(_name)) {
 				matchingModel = model;
 			}
@@ -200,25 +186,24 @@ public class EOModelGroup extends EOModelObject {
 		return matchingModel;
 	}
 
-	public void addModelsFromFolder(URL _folder, Set _failures, boolean _skipOnDuplicates, IProject project) throws IOException, EOModelException {
+	public void addModelsFromFolder(URL _folder, Set<EOModelVerificationFailure> _failures, boolean _skipOnDuplicates, IProject project) throws IOException, EOModelException {
 		addModelsFromFolder(_folder, true, _failures, _skipOnDuplicates, project);
 	}
 
-	public void addModelsFromFolder(URL _folder, boolean _recursive, Set _failures, boolean _skipOnDuplicates, IProject project) throws IOException, EOModelException {
-		URL[] children = URLUtils.getChildren(_folder);
-		for (int childNum = 0; childNum < children.length; childNum++) {
-			if (URLUtils.isFolder(children[childNum])) {
-				String path = children[childNum].getPath();
+	public void addModelsFromFolder(URL _folder, boolean _recursive, Set<EOModelVerificationFailure> _failures, boolean _skipOnDuplicates, IProject project) throws IOException, EOModelException {
+		for (URL childURL : URLUtils.getChildren(_folder)) {
+			if (URLUtils.isFolder(childURL)) {
+				String path = childURL.getPath();
 				if (path.endsWith(".eomodeld") || path.endsWith(".eomodeld/")) {
-					addModelFromFolder(children[childNum], _failures, _skipOnDuplicates, project);
+					addModelFromFolder(childURL, _failures, _skipOnDuplicates, project);
 				} else if (_recursive) {
-					addModelsFromFolder(children[childNum], _recursive, _failures, _skipOnDuplicates, project);
+					addModelsFromFolder(childURL, _recursive, _failures, _skipOnDuplicates, project);
 				}
 			}
 		}
 	}
 
-	public EOModel addModelFromFolder(URL _folder, Set _failures, boolean _skipOnDuplicates, IProject project) throws IOException, EOModelException {
+	public EOModel addModelFromFolder(URL _folder, Set<EOModelVerificationFailure> _failures, boolean _skipOnDuplicates, IProject project) throws IOException, EOModelException {
 		String path = _folder.getPath();
 		int lastSlashIndex = path.lastIndexOf('/', path.length() - 2);
 		String name = path.substring(lastSlashIndex + 1);
@@ -233,8 +218,7 @@ public class EOModelGroup extends EOModelObject {
 				if (!URLUtils.exists(indexURL)) {
 					reloadModel = false;
 					_failures.add(new EOModelVerificationFailure(model, "Skipping model because " + indexURL + " does not exist.", true));
-				}
-				else {
+				} else {
 					model._setModelGroup(this);
 					try {
 						model.loadFromFolder(_folder, _failures);
@@ -256,18 +240,14 @@ public class EOModelGroup extends EOModelObject {
 		return model;
 	}
 
-	public void verify(Set _failures) {
-		Iterator modelsIter = myModels.iterator();
-		while (modelsIter.hasNext()) {
-			EOModel model = (EOModel) modelsIter.next();
+	public void verify(Set<EOModelVerificationFailure> _failures) {
+		for (EOModel model : myModels) {
 			model.verify(_failures);
 		}
 	}
 
-	public void resolve(Set _failures) {
-		Iterator modelsIter = myModels.iterator();
-		while (modelsIter.hasNext()) {
-			EOModel model = (EOModel) modelsIter.next();
+	public void resolve(Set<EOModelVerificationFailure> _failures) {
+		for (EOModel model : myModels) {
 			model.resolve(_failures);
 		}
 	}

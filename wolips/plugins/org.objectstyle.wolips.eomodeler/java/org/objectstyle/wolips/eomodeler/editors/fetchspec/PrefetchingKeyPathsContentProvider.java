@@ -58,7 +58,7 @@ import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 public class PrefetchingKeyPathsContentProvider implements IStructuredContentProvider {
 	public Object[] getElements(Object _inputElement) {
 		EOFetchSpecification fetchSpec = (EOFetchSpecification) _inputElement;
-		Collection prefetchingRelationshipKeyPathsSet = fetchSpec.getPrefetchingRelationshipKeyPaths();
+		Collection<String> prefetchingRelationshipKeyPathsSet = fetchSpec.getPrefetchingRelationshipKeyPaths();
 		Object[] prefetchingKeyPaths;
 		if (prefetchingRelationshipKeyPathsSet == null) {
 			prefetchingKeyPaths = new Object[0];

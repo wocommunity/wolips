@@ -82,7 +82,7 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
 	public void createControl(Composite _parent) {
 		super.createControl(_parent);
 		TreeViewer treeViewer = getTreeViewer();
-		myUpdater = new EOModelTreeViewUpdater(treeViewer, new EOModelOutlineContentProvider(true, true, true, true, true, true));
+		myUpdater = new EOModelTreeViewUpdater(treeViewer, new EOModelOutlineContentProvider(true, true, true, true, true, true, true));
 		myUpdater.setModel(myEditor.getModel());
 		updateClipboardHandler();
 		// AK: commenting prevents an error in swt

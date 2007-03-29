@@ -9,22 +9,22 @@ public abstract class UserInfoableEOModelObject extends EOModelObject implements
 
 	private PropertyChangeRepeater myUserInfoRepeater;
 
-	private NotificationMap myUserInfo;
+	private NotificationMap<Object, Object> myUserInfo;
 
 	public UserInfoableEOModelObject() {
 		myUserInfoRepeater = new PropertyChangeRepeater(UserInfoableEOModelObject.USER_INFO);
-		setUserInfo(new NotificationMap(), false);
+		setUserInfo(new NotificationMap<Object, Object>(), false);
 	}
 
-	public NotificationMap getUserInfo() {
+	public NotificationMap<Object, Object> getUserInfo() {
 		return myUserInfo;
 	}
 
-	public void setUserInfo(Map _userInfo) {
+	public void setUserInfo(Map<Object, Object> _userInfo) {
 		setUserInfo(_userInfo, true);
 	}
 
-	public void setUserInfo(Map _userInfo, boolean _fireEvents) {
+	public void setUserInfo(Map<Object, Object> _userInfo, boolean _fireEvents) {
 		myUserInfo = mapChanged(myUserInfo, _userInfo, myUserInfoRepeater, _fireEvents);
 	}
 

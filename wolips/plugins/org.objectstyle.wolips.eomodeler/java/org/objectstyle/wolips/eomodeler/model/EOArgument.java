@@ -84,7 +84,7 @@ public class EOArgument extends AbstractEOArgument {
 		return myDirection;
 	}
 
-	public void loadFromMap(EOModelMap _argumentMap, Set _failures) {
+	public void loadFromMap(EOModelMap _argumentMap, Set<EOModelVerificationFailure> _failures) {
 		super.loadFromMap(_argumentMap, _failures);
 		Integer argumentDirectionNum = _argumentMap.getInteger("parameterDirection");
 		if (argumentDirectionNum == null) {
@@ -103,15 +103,15 @@ public class EOArgument extends AbstractEOArgument {
 		return argumentMap;
 	}
 
-	public Set getReferenceFailures() {
-		return new HashSet();
+	public Set<EOModelVerificationFailure> getReferenceFailures() {
+		return new HashSet<EOModelVerificationFailure>();
 	}
 
-	public void resolve(Set _failures) {
+	public void resolve(Set<EOModelVerificationFailure> _failures) {
 		// DO NOTHING
 	}
 
-	public void verify(Set _failures) {
+	public void verify(Set<EOModelVerificationFailure> _failures) {
 		String name = getName();
 		if (name == null || name.trim().length() == 0) {
 			_failures.add(new EOModelVerificationFailure(myStoredProcedure.getModel(), getFullyQualifiedName() + " has an empty name.", false));

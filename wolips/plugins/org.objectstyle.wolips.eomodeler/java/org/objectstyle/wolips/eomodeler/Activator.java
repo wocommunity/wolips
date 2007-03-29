@@ -65,6 +65,8 @@ public class Activator extends AbstractBaseUIActivator {
 
 	public static final String EOENTITY_ICON = "eoEntity";
 
+	public static final String EOENTITYINDEX_ICON = "eoEntityIndex";
+
 	public static final String EOATTRIBUTE_ICON = "eoAttribute";
 
 	public static final String EORELATIONSHIP_ICON = "eoRelationship";
@@ -155,6 +157,7 @@ public class Activator extends AbstractBaseUIActivator {
 		_reg.put(Activator.EOMODEL_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoModel.png"));
 		_reg.put(Activator.EOATTRIBUTE_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoAttribute.png"));
 		_reg.put(Activator.EOENTITY_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoEntity.png"));
+		_reg.put(Activator.EOENTITYINDEX_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoEntityIndex.png"));
 		_reg.put(Activator.EOFETCHSPEC_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoFetchSpecification.png"));
 		_reg.put(Activator.EOSTOREDPROCEDURE_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoStoredProcedure.png"));
 		_reg.put(Activator.EORELATIONSHIP_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoRelationship.png"));

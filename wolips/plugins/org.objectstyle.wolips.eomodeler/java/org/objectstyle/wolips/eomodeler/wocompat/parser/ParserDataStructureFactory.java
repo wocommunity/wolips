@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 
 public interface ParserDataStructureFactory {
-  public Map createMap(String keyPath);
+  public Map<Object, Object> createMap(String keyPath);
   
-  public Collection createCollection(String keyPath);
+  public Collection<Object> createCollection(String keyPath);
 }

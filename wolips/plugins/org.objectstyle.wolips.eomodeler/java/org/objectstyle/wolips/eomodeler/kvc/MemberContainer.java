@@ -22,10 +22,10 @@ public class MemberContainer {
 
 	private Class myClass;
 
-	private Map myMembers;
+	private Map<String, IKey> myMembers;
 
 	public MemberContainer(Class _class, int _memberType) {
-		myMembers = new HashMap();
+		myMembers = new HashMap<String, IKey>();
 		myClass = _class;
 		myMemberType = _memberType;
 		Class currentClass = _class;
@@ -95,7 +95,7 @@ public class MemberContainer {
 			boolean capitalize = prefix.length() > 1; // Don't capitalize
 														// blank and _ prefixes
 			String keyWithPrefix = prependToKey(prefix, _key, capitalize);
-			matchingMember = (IKey) myMembers.get(keyWithPrefix);
+			matchingMember = myMembers.get(keyWithPrefix);
 		}
 		return matchingMember;
 	}

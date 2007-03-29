@@ -52,7 +52,6 @@ package org.objectstyle.wolips.eomodeler.editors.attribute;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
@@ -73,7 +72,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
@@ -117,7 +115,7 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 
 	private StackLayout myDataTypeStackLayout;
 
-	private Map myDataTypeToDataTypePanel;
+	private Map<EODataType, Composite> myDataTypeToDataTypePanel;
 
 	private DataBindingContext myBindingContext;
 
@@ -217,7 +215,7 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 		myDataTypeStackLayout = new StackLayout();
 		myDataTypePanel.setLayout(myDataTypeStackLayout);
 
-		myDataTypeToDataTypePanel = new HashMap();
+		myDataTypeToDataTypePanel = new HashMap<EODataType, Composite>();
 		myDataTypeToDataTypePanel.put(EODataType.BIGDECIMAL, new DecimalNumberDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
 		myDataTypeToDataTypePanel.put(EODataType.BYTE, new StringDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
 		myDataTypeToDataTypePanel.put(EODataType.CUSTOM, new CustomDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
@@ -240,13 +238,10 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 		myDataTypeToDataTypePanel.put(EODataType.TIME, new DateDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
 		myDataTypeToDataTypePanel.put(EODataType.TIMESTAMP, new DateDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
 
-		Iterator dataTypePanelsIter = myDataTypeToDataTypePanel.values().iterator();
-		while (dataTypePanelsIter.hasNext()) {
-			Composite dataTypePanel = (Composite) dataTypePanelsIter.next();
+		for (Composite dataTypePanel : myDataTypeToDataTypePanel.values()) {
 			dataTypePanel.setBackground(myDataTypePanel.getBackground());
 			getWidgetFactory().paintBordersFor(dataTypePanel);
 		}
-
 	}
 
 	public void setArgument(AbstractEOArgument _argument) {
@@ -308,10 +303,8 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 
 	public void dispose() {
 		disposeBindings();
-		Iterator dataTypePanelsIter = myDataTypeToDataTypePanel.values().iterator();
-		while (dataTypePanelsIter.hasNext()) {
-			IDataTypePanel dataTypePanel = (IDataTypePanel) dataTypePanelsIter.next();
-			dataTypePanel.setArgument(null);
+		for (Composite dataTypePanel : myDataTypeToDataTypePanel.values()) {
+			((IDataTypePanel) dataTypePanel).setArgument(null);
 		}
 		super.dispose();
 	}
@@ -334,9 +327,9 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 		// updateAttributePanel");
 		if (myArgument != null) {
 			EODataType dataType = myArgument.getDataType();
-			Control dataTypePanel = (Control) myDataTypeToDataTypePanel.get(dataType);
+			Composite dataTypePanel = myDataTypeToDataTypePanel.get(dataType);
 			if (dataTypePanel == null) {
-				dataTypePanel = (Control) myDataTypeToDataTypePanel.get(EODataType.CUSTOM);
+				dataTypePanel = myDataTypeToDataTypePanel.get(EODataType.CUSTOM);
 			}
 			if (myDataTypeStackLayout.topControl instanceof IDataTypePanel) {
 				((IDataTypePanel) myDataTypeStackLayout.topControl).setArgument(null);

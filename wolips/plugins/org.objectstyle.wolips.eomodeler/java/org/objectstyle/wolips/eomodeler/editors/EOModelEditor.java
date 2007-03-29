@@ -112,6 +112,7 @@ import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.model.EclipseEOModelGroupFactory;
+import org.objectstyle.wolips.eomodeler.model.IEOAttribute;
 import org.objectstyle.wolips.eomodeler.outline.EOModelContentOutlinePage;
 import org.objectstyle.wolips.eomodeler.utils.AbstractAddRemoveChangeRefresher;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
@@ -160,7 +161,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 	private EOModel myModel;
 
-	private Set myLoadFailures;
+	private Set<EOModelVerificationFailure> myLoadFailures;
 
 	private boolean myEntityPageVisible;
 
@@ -391,7 +392,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		try {
 			IEditorInput input = getEditorInput();
 			if (input != null && myModel != null) {
-				Set failures = new HashSet();
+				Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
 				myModel.verify(failures);
 				handleModelErrors(failures);
 
@@ -470,7 +471,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				openingEntityName = name.substring(0, name.indexOf('.'));
 			}
 
-			myLoadFailures = new LinkedHashSet();
+			myLoadFailures = new LinkedHashSet<EOModelVerificationFailure>();
 			myModel = EclipseEOModelGroupFactory.createModel(fileEditorInput.getFile(), myLoadFailures, true);
 			if (myModel == null) {
 				super.init(_site, fileEditorInput);
@@ -499,12 +500,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		}
 	}
 
-	protected void handleModelErrors(final Set _failures) {
+	protected void handleModelErrors(final Set<EOModelVerificationFailure> _failures) {
 		if (myModel != null) {
 			try {
-				Iterator modelsIter = myModel.getModelGroup().getModels().iterator();
-				while (modelsIter.hasNext()) {
-					EOModel model = (EOModel) modelsIter.next();
+				for (EOModel model : myModel.getModelGroup().getModels()) {
 					IFile indexFile = EOModelEditor.getIndexFile(model);
 					if (indexFile != null) {
 						IMarker[] markers = indexFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
@@ -516,9 +515,9 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 					}
 				}
 				if (Preferences.shouldEntityModelerShowErrorsInProblemsView()) {
-					Iterator failuresIter = _failures.iterator();
+					Iterator<EOModelVerificationFailure> failuresIter = _failures.iterator();
 					while (failuresIter.hasNext()) {
-						EOModelVerificationFailure failure = (EOModelVerificationFailure) failuresIter.next();
+						EOModelVerificationFailure failure = failuresIter.next();
 						EOModel model = failure.getModel();
 						IFile indexFile = EOModelEditor.getIndexFile(model);
 						if (indexFile != null) {
@@ -774,58 +773,58 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		}
 	}
 
-	protected class EntitiesChangeRefresher extends AbstractAddRemoveChangeRefresher {
-		protected void objectsAdded(List _addedObjects) {
+	protected class EntitiesChangeRefresher extends AbstractAddRemoveChangeRefresher<EOEntity> {
+		protected void objectsAdded(List<EOEntity> _addedObjects) {
 			EOModelEditor.this.setSelection(new StructuredSelection(_addedObjects));
 			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
 		}
 
-		protected void objectsRemoved(List _removedObjects) {
+		protected void objectsRemoved(List<EOEntity> _removedObjects) {
 			EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getModel()));
 			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
 		}
 	}
 
-	protected class StoredProceduresChangeRefresher extends AbstractAddRemoveChangeRefresher {
-		protected void objectsAdded(List _addedObjects) {
+	protected class StoredProceduresChangeRefresher extends AbstractAddRemoveChangeRefresher<EOStoredProcedure> {
+		protected void objectsAdded(List<EOStoredProcedure> _addedObjects) {
 			EOModelEditor.this.setSelection(new StructuredSelection(_addedObjects));
 			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOSTOREDPROCEDURE_PAGE));
 		}
 
-		protected void objectsRemoved(List _removedObjects) {
+		protected void objectsRemoved(List<EOStoredProcedure> _removedObjects) {
 			EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getModel()));
 			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
 		}
 	}
 
-	protected class DatabaseConfigsChangeRefresher extends AbstractAddRemoveChangeRefresher {
-		protected void objectsAdded(List _addedObjects) {
+	protected class DatabaseConfigsChangeRefresher extends AbstractAddRemoveChangeRefresher<EODatabaseConfig> {
+		protected void objectsAdded(List<EODatabaseConfig> _addedObjects) {
 			EOModelEditor.this.setSelection(new StructuredSelection(_addedObjects));
 		}
 
-		protected void objectsRemoved(List _removedObjects) {
+		protected void objectsRemoved(List<EODatabaseConfig> _removedObjects) {
 			EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getModel()));
 			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
 		}
 	}
 
-	protected class ArgumentDeletedRefresher extends AbstractAddRemoveChangeRefresher {
-		protected void objectsAdded(List _addedObjects) {
+	protected class ArgumentDeletedRefresher extends AbstractAddRemoveChangeRefresher<EOArgument> {
+		protected void objectsAdded(List<EOArgument> _addedObjects) {
 			// DO NOTHING
 		}
 
-		protected void objectsRemoved(List _removedObjects) {
+		protected void objectsRemoved(List<EOArgument> _removedObjects) {
 			EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getSelectedStoredProcedure()));
 			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOSTOREDPROCEDURE_PAGE));
 		}
 	}
 
-	protected class AttributeAndRelationshipDeletedRefresher extends AbstractAddRemoveChangeRefresher {
-		protected void objectsAdded(List _addedObjects) {
+	protected class AttributeAndRelationshipDeletedRefresher extends AbstractAddRemoveChangeRefresher<IEOAttribute> {
+		protected void objectsAdded(List<IEOAttribute> _addedObjects) {
 			// DO NOTHING
 		}
 
-		protected void objectsRemoved(List _removedObjects) {
+		protected void objectsRemoved(List<IEOAttribute> _removedObjects) {
 			EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getSelectedEntity()));
 			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
 		}

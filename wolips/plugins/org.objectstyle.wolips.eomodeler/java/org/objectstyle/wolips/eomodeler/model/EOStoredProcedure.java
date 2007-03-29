@@ -78,13 +78,13 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 
 	private String myExternalName;
 
-	private List myArguments;
+	private List<EOArgument> myArguments;
 
 	private EOModelMap myStoredProcedureMap;
 
 	public EOStoredProcedure() {
 		myStoredProcedureMap = new EOModelMap();
-		myArguments = new LinkedList();
+		myArguments = new LinkedList<EOArgument>();
 	}
 
 	public EOStoredProcedure(String _name) {
@@ -93,9 +93,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 	}
 
 	public void pasted() {
-		Iterator argumentsIter = getArguments().iterator();
-		while (argumentsIter.hasNext()) {
-			EOArgument argument = (EOArgument) argumentsIter.next();
+		for (EOArgument argument : myArguments) {
 			argument.pasted();
 		}
 	}
@@ -105,9 +103,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 		storedProcedure.myName = myName;
 		storedProcedure.myExternalName = myExternalName;
 
-		Iterator argumentsIter = myArguments.iterator();
-		while (argumentsIter.hasNext()) {
-			EOArgument argument = (EOArgument) argumentsIter.next();
+		for (EOArgument argument : getArguments()) {
 			if (getArgumentNamed(argument.getName()) == null) {
 				EOArgument clonedArgument = argument.cloneArgument();
 				clonedArgument.setName(findUnusedArgumentName(clonedArgument.getName()));
@@ -115,22 +111,18 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 			}
 		}
 		
-		storedProcedure.setUserInfo(new HashMap(getUserInfo()));
+		storedProcedure.setUserInfo(new HashMap<Object, Object>(getUserInfo()));
 		return storedProcedure;
 	}
 
-	public Set getReferenceFailures() {
-		Set referenceFailures = new HashSet();
-		Iterator argumentsIter = myArguments.iterator();
-		while (argumentsIter.hasNext()) {
-			EOArgument argument = (EOArgument) argumentsIter.next();
+	public Set<EOModelVerificationFailure> getReferenceFailures() {
+		Set<EOModelVerificationFailure> referenceFailures = new HashSet<EOModelVerificationFailure>();
+		for (EOArgument argument : myArguments) {
 			referenceFailures.addAll(argument.getReferenceFailures());
 		}
 
 		if (myModel != null) {
-			Iterator entitiesIter = myModel.getEntities().iterator();
-			while (entitiesIter.hasNext()) {
-				EOEntity entity = (EOEntity) entitiesIter.next();
+			for (EOEntity entity : myModel.getEntities()) {
 				if (entity.getDeleteProcedure() == this) {
 					referenceFailures.add(new EOModelVerificationFailure(myModel, entity.getFullyQualifiedName() + " uses " + myName + " as its delete procedure.", false));
 				}
@@ -147,9 +139,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 					referenceFailures.add(new EOModelVerificationFailure(myModel, entity.getFullyQualifiedName() + " uses " + myName + " as its fetch all procedure.", false));
 				}
 
-				Iterator fetchSpecsIter = entity.getFetchSpecs().iterator();
-				while (fetchSpecsIter.hasNext()) {
-					EOFetchSpecification fetchSpec = (EOFetchSpecification) fetchSpecsIter.next();
+				for (EOFetchSpecification fetchSpec : entity.getFetchSpecs()) {
 					if (fetchSpec.getStoredProcedure() == this) {
 						referenceFailures.add(new EOModelVerificationFailure(myModel, fetchSpec.getFullyQualifiedName() + " uses " + myName + " as its stored procedure.", false));
 					}
@@ -223,9 +213,9 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 
 	public EOArgument getArgumentNamed(String _name) {
 		EOArgument matchingArgument = null;
-		Iterator argumentsIter = myArguments.iterator();
+		Iterator<EOArgument> argumentsIter = myArguments.iterator();
 		while (matchingArgument == null && argumentsIter.hasNext()) {
-			EOArgument argument = (EOArgument) argumentsIter.next();
+			EOArgument argument = argumentsIter.next();
 			if (ComparisonUtils.equals(argument.getName(), _name)) {
 				matchingArgument = argument;
 			}
@@ -244,7 +234,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 		return unusedName;
 	}
 
-	public void _checkForDuplicateArgumentName(EOArgument _argument, String _newName, Set _failures) throws DuplicateNameException {
+	public void _checkForDuplicateArgumentName(EOArgument _argument, String _newName, Set<EOModelVerificationFailure> _failures) throws DuplicateNameException {
 		EOArgument existingArgument = getArgumentNamed(_newName);
 		if (existingArgument != null && existingArgument != _argument) {
 			if (_failures == null) {
@@ -268,14 +258,14 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 		addArgument(_argument, null, true);
 	}
 
-	public void addArgument(EOArgument _argument, Set _failures, boolean _fireEvents) throws DuplicateNameException {
+	public void addArgument(EOArgument _argument, Set<EOModelVerificationFailure> _failures, boolean _fireEvents) throws DuplicateNameException {
 		_argument._setStoredProcedure(this);
 		_checkForDuplicateArgumentName(_argument, _argument.getName(), _failures);
 		_argument.pasted();
-		List oldArguments = null;
+		List<EOArgument> oldArguments = null;
 		if (_fireEvents) {
 			oldArguments = myArguments;
-			List newArguments = new LinkedList();
+			List<EOArgument> newArguments = new LinkedList<EOArgument>();
 			newArguments.addAll(myArguments);
 			newArguments.add(_argument);
 			myArguments = newArguments;
@@ -286,8 +276,8 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 	}
 
 	public void removeArgument(EOArgument _argument) {
-		List oldArguments = myArguments;
-		List newArguments = new LinkedList();
+		List<EOArgument> oldArguments = myArguments;
+		List<EOArgument> newArguments = new LinkedList<EOArgument>();
 		newArguments.addAll(myArguments);
 		newArguments.remove(_argument);
 		myArguments = newArguments;
@@ -295,20 +285,19 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 		_argument._setStoredProcedure(null);
 	}
 
-	public List getArguments() {
+	public List<EOArgument> getArguments() {
 		return myArguments;
 	}
 
-	public void loadFromMap(EOModelMap _map, Set _failures) throws EOModelException {
+	public void loadFromMap(EOModelMap _map, Set<EOModelVerificationFailure> _failures) throws EOModelException {
 		myStoredProcedureMap = _map;
 		myName = _map.getString("name", true);
 		myExternalName = _map.getString("externalName", true);
 
-		List argumentsList = _map.getList("arguments", false);
+		List<Map> argumentsList = _map.getList("arguments", false);
 		if (argumentsList != null) {
-			Iterator argumentsIter = argumentsList.iterator();
-			while (argumentsIter.hasNext()) {
-				EOModelMap argumentMap = new EOModelMap((Map) argumentsIter.next());
+			for (Map originalArgumentMap : argumentsList) {
+				EOModelMap argumentMap = new EOModelMap(originalArgumentMap);
 				EOArgument argument = new EOArgument();
 				argument.loadFromMap(argumentMap, _failures);
 				addArgument(argument, _failures, false);
@@ -322,10 +311,8 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 		fetchSpecMap.setString("name", myName, true);
 		fetchSpecMap.setString("externalName", myExternalName, true);
 
-		List arguments = new LinkedList();
-		Iterator argumentsIter = myArguments.iterator();
-		while (argumentsIter.hasNext()) {
-			EOArgument argument = (EOArgument) argumentsIter.next();
+		List<Map> arguments = new LinkedList<Map>();
+		for (EOArgument argument : myArguments) {
 			EOModelMap argumentMap = argument.toMap();
 			arguments.add(argumentMap);
 		}
@@ -334,7 +321,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 		return fetchSpecMap;
 	}
 
-	public void loadFromURL(URL _storedProcedureURL, Set _failures) throws EOModelException {
+	public void loadFromURL(URL _storedProcedureURL, Set<EOModelVerificationFailure> _failures) throws EOModelException {
 		try {
 			EOModelMap entityMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromURL(_storedProcedureURL, new EOModelParserDataStructureFactory()));
 			loadFromMap(entityMap, _failures);
@@ -348,15 +335,13 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 		PropertyListSerialization.propertyListToFile(_storedProcedureFile, storedProcedureMap);
 	}
 
-	public void resolve(Set _failures) {
-		Iterator argumentsIter = myArguments.iterator();
-		while (argumentsIter.hasNext()) {
-			EOArgument argument = (EOArgument) argumentsIter.next();
+	public void resolve(Set<EOModelVerificationFailure> _failures) {
+		for (EOArgument argument : myArguments) {
 			argument.resolve(_failures);
 		}
 	}
 
-	public void verify(Set _failures) {
+	public void verify(Set<EOModelVerificationFailure> _failures) {
 		String name = getName();
 		if (name == null || name.trim().length() == 0) {
 			_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + " has an empty name.", false));
@@ -376,9 +361,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 			_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + "'s table name '" + externalName + "' has a space in it.", false));
 		}
 
-		Iterator argumentsIter = myArguments.iterator();
-		while (argumentsIter.hasNext()) {
-			EOArgument argument = (EOArgument) argumentsIter.next();
+		for (EOArgument argument : myArguments) {
 			argument.verify(_failures);
 		}
 	}

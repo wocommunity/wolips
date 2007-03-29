@@ -49,15 +49,15 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
-public class EOModelVerificationFailure implements Comparable {
+public class EOModelVerificationFailure implements Comparable<EOModelVerificationFailure> {
 	private EOModel myModel;
-	
+
 	private String myMessage;
 
 	private Throwable myRootCause;
 
 	private boolean myWarning;
-	
+
 	public EOModelVerificationFailure(EOModel _model, String _message, boolean _warning) {
 		this(_model, _message, _warning, null);
 	}
@@ -68,11 +68,11 @@ public class EOModelVerificationFailure implements Comparable {
 		myRootCause = _rootCause;
 		myWarning = _warning;
 	}
-	
+
 	public EOModel getModel() {
 		return myModel;
 	}
-	
+
 	public boolean isWarning() {
 		return myWarning;
 	}
@@ -88,9 +88,9 @@ public class EOModelVerificationFailure implements Comparable {
 	public boolean equals(Object _obj) {
 		return (_obj instanceof EOModelVerificationFailure && (_obj == this || (((EOModelVerificationFailure) _obj).myMessage.equals(myMessage)) && myRootCause == null && ((EOModelVerificationFailure) _obj).myRootCause == null));
 	}
-	
-	public int compareTo(Object obj) {
-		return ((obj instanceof EOModelVerificationFailure) ? ((EOModelVerificationFailure)obj).getMessage().compareTo(getMessage()) : -1);
+
+	public int compareTo(EOModelVerificationFailure obj) {
+		return (obj != null) ? obj.getMessage().compareTo(getMessage()) : -1;
 	}
 
 	public String getMessage() {
