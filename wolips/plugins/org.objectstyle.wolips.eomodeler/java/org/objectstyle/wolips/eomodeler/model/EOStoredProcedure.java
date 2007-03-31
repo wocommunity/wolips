@@ -63,7 +63,7 @@ import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 import org.objectstyle.wolips.eomodeler.wocompat.PropertyListSerialization;
 
-public class EOStoredProcedure extends UserInfoableEOModelObject implements ISortableEOModelObject {
+public class EOStoredProcedure extends UserInfoableEOModelObject<EOModel> implements ISortableEOModelObject {
 	public static final String NAME = "name";
 
 	public static final String EXTERNAL_NAME = "externalName";
@@ -96,23 +96,6 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 		for (EOArgument argument : myArguments) {
 			argument.pasted();
 		}
-	}
-
-	public EOStoredProcedure cloneStoredProcedure() throws DuplicateNameException {
-		EOStoredProcedure storedProcedure = new EOStoredProcedure(myName);
-		storedProcedure.myName = myName;
-		storedProcedure.myExternalName = myExternalName;
-
-		for (EOArgument argument : getArguments()) {
-			if (getArgumentNamed(argument.getName()) == null) {
-				EOArgument clonedArgument = argument.cloneArgument();
-				clonedArgument.setName(findUnusedArgumentName(clonedArgument.getName()));
-				storedProcedure.addArgument(clonedArgument);
-			}
-		}
-		
-		storedProcedure.setUserInfo(new HashMap<Object, Object>(getUserInfo()));
-		return storedProcedure;
 	}
 
 	public Set<EOModelVerificationFailure> getReferenceFailures() {
@@ -224,14 +207,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 	}
 
 	public String findUnusedArgumentName(String _newName) {
-		boolean unusedNameFound = (getArgumentNamed(_newName) == null);
-		String unusedName = _newName;
-		for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
-			unusedName = _newName + dupeNameNum;
-			EOArgument renameArgument = getArgumentNamed(unusedName);
-			unusedNameFound = (renameArgument == null);
-		}
-		return unusedName;
+		return _findUnusedName(_newName, "getArgumentNamed");
 	}
 
 	public void _checkForDuplicateArgumentName(EOArgument _argument, String _newName, Set<EOModelVerificationFailure> _failures) throws DuplicateNameException {
@@ -368,6 +344,48 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 
 	public String getFullyQualifiedName() {
 		return ((myModel == null) ? "?" : myModel.getFullyQualifiedName()) + ", proc: " + getName();
+	}
+
+	@Override
+	public EOModelObject<EOModel> _cloneModelObject() {
+		try {
+			EOStoredProcedure storedProcedure = new EOStoredProcedure(myName);
+			storedProcedure.myName = myName;
+			storedProcedure.myExternalName = myExternalName;
+
+			for (EOArgument argument : getArguments()) {
+				if (getArgumentNamed(argument.getName()) == null) {
+					EOArgument clonedArgument = argument._cloneModelObject();
+					clonedArgument.setName(findUnusedArgumentName(clonedArgument.getName()));
+					storedProcedure.addArgument(clonedArgument);
+				}
+			}
+
+			storedProcedure.setUserInfo(new HashMap<Object, Object>(getUserInfo()));
+			return storedProcedure;
+		} catch (DuplicateNameException e) {
+			throw new RuntimeException("A duplicate name was found during a clone, which should never happen.", e);
+		}
+	}
+
+	@Override
+	public Class<EOModel> _getModelParentType() {
+		return EOModel.class;
+	}
+
+	public EOModel _getModelParent() {
+		return getModel();
+	}
+
+	public void _removeFromModelParent(Set<EOModelVerificationFailure> failures) {
+		getModel().removeStoredProcedure(this);
+	}
+
+	public void _addToModelParent(EOModel modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) throws EOModelException {
+		if (findUniqueName) {
+			setName(modelParent.findUnusedStoredProcedureName(getName()));
+		}
+		modelParent.addStoredProcedure(this);
 	}
 
 	public String toString() {

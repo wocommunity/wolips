@@ -52,6 +52,7 @@ package org.objectstyle.wolips.eomodeler.model;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Set;
 
@@ -59,7 +60,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.objectstyle.wolips.eomodeler.utils.IPropertyChangeSource;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
-public abstract class EOModelObject implements IAdaptable, IPropertyChangeSource {
+public abstract class EOModelObject<T> implements IAdaptable, IPropertyChangeSource {
 	private PropertyChangeSupport myPropertyChangeSupport = new PropertyChangeSupport(this);
 
 	public EOModelObject() {
@@ -98,6 +99,41 @@ public abstract class EOModelObject implements IAdaptable, IPropertyChangeSource
 	}
 
 	public abstract String getFullyQualifiedName();
+
+	public String _findUnusedName(String newName, String getMethodName) {
+		try {
+			Method getMethod = getClass().getMethod(getMethodName, String.class);
+			int cutoffLength;
+			for (cutoffLength = newName.length(); cutoffLength > 0; cutoffLength --) {
+				if (!Character.isDigit(newName.charAt(cutoffLength - 1))) {
+					break;
+				}
+			}
+			String newWithoutTrailingNumber = newName.substring(0, cutoffLength);
+			boolean unusedNameFound = (getMethod.invoke(this, newWithoutTrailingNumber) == null);
+			String unusedName = newName;
+			for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
+				unusedName = newName + dupeNameNum;
+				Object existingObject = getMethod.invoke(this, unusedName);
+				unusedNameFound = (existingObject == null);
+			}
+			return unusedName;
+		} catch (Throwable t) {
+			throw new RuntimeException("Failed to find unused name for '" + newName + "' with method '" + getMethodName + "'.", t);
+		}
+	}
+
+	public abstract String getName();
+	
+	public abstract EOModelObject<T> _cloneModelObject();
+
+	public abstract Class<T> _getModelParentType();
+
+	public abstract T _getModelParent();
+
+	public abstract void _removeFromModelParent(Set<EOModelVerificationFailure> failures) throws EOModelException;
+
+	public abstract void _addToModelParent(T modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) throws EOModelException;
 
 	protected NotificationMap<Object, Object> mapChanged(NotificationMap<Object, Object> _oldMap, Map<Object, Object> _newMap, PropertyChangeRepeater _propertyChangeRepeater, boolean _fireEvents) {
 		NotificationMap<Object, Object> newMap;

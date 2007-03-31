@@ -49,9 +49,10 @@
  */
 package org.objectstyle.wolips.eomodeler.actions;
 
-import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.operations.IOperationHistory;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -62,14 +63,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
-import org.objectstyle.wolips.eomodeler.model.EOArgument;
-import org.objectstyle.wolips.eomodeler.model.EOAttribute;
-import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModelObject;
-import org.objectstyle.wolips.eomodeler.model.EORelationship;
-import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
+import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
+import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 
 public class DeleteAction extends Action {
 	private ISelection mySelection;
@@ -77,10 +73,11 @@ public class DeleteAction extends Action {
 	public void dispose() {
 		// DO NOTHING
 	}
-
+	
 	public void selectionChanged(IAction _action, ISelection _selection) {
 		mySelection = _selection;
 	}
+	
 
 	public void run() {
 		Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
@@ -89,40 +86,20 @@ public class DeleteAction extends Action {
 			selectedObjects = ((IStructuredSelection) mySelection).toArray();
 		}
 		if (selectedObjects != null) {
-			Set referenceFailures = new HashSet();
-			for (int selectedObjectNum = 0; selectedObjectNum < selectedObjects.length; selectedObjectNum++) {
-				Object selectedObject = selectedObjects[selectedObjectNum];
-				if (selectedObject instanceof EOModelObject) {
-					referenceFailures.addAll(((EOModelObject) selectedObject).getReferenceFailures());
-				}
-			}
+			Set<EOModelVerificationFailure> referenceFailures = EOModelUtils.getReferenceFailures(selectedObjects);
 			if (!referenceFailures.isEmpty()) {
 				new EOModelErrorDialog(activeShell, referenceFailures).open();
 			} else if (MessageDialog.openConfirm(activeShell, Messages.getString("delete.objectsTitle"), Messages.getString("delete.objectsMessage"))) {
-				for (int selectedObjectNum = 0; selectedObjectNum < selectedObjects.length; selectedObjectNum++) {
-					Object selectedObject = selectedObjects[selectedObjectNum];
-					if (selectedObject instanceof EOEntity) {
-						EOEntity entity = (EOEntity) selectedObject;
-						entity.getModel().removeEntity(entity);
-					} else if (selectedObject instanceof EORelationship) {
-						EORelationship relationship = (EORelationship) selectedObject;
-						relationship.getEntity().removeRelationship(relationship, true);
-					} else if (selectedObject instanceof EOAttribute) {
-						EOAttribute attribute = (EOAttribute) selectedObject;
-						attribute.getEntity().removeAttribute(attribute, true);
-					} else if (selectedObject instanceof EOFetchSpecification) {
-						EOFetchSpecification fetchSpec = (EOFetchSpecification) selectedObject;
-						fetchSpec.getEntity().removeFetchSpecification(fetchSpec);
-					} else if (selectedObject instanceof EOStoredProcedure) {
-						EOStoredProcedure storedProcedure = (EOStoredProcedure) selectedObject;
-						storedProcedure.getModel().removeStoredProcedure(storedProcedure);
-					} else if (selectedObject instanceof EOArgument) {
-						EOArgument argument = (EOArgument) selectedObject;
-						argument.getStoredProcedure().removeArgument(argument);
-					} else if (selectedObject instanceof EODatabaseConfig) {
-						EODatabaseConfig databaseConfig = (EODatabaseConfig) selectedObject;
-						databaseConfig.getModel().removeDatabaseConfig(databaseConfig);
+				try {
+					for (Object obj: selectedObjects) {
+						EOModelObject eoModelObject = (EOModelObject)obj;
+						DeleteOperation operation = new DeleteOperation(eoModelObject);
+						operation.addContext(EOModelUtils.getUndoContext(eoModelObject));
+						IOperationHistory operationHistory = PlatformUI.getWorkbench().getOperationSupport().getOperationHistory();
+						operationHistory.execute(operation, null, null);
 					}
+				} catch (ExecutionException e) {
+					throw new RuntimeException("Failed.", e);
 				}
 			}
 		}

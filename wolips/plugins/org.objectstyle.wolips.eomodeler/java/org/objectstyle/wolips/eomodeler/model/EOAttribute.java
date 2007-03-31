@@ -64,7 +64,7 @@ import org.objectstyle.wolips.eomodeler.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
-public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISortableEOModelObject {
+public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttribute, ISortableEOModelObject {
 	public static final String PRIMARY_KEY = "primaryKey";
 
 	public static final String CLASS_PROPERTY = "classProperty";
@@ -142,21 +142,6 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
 
 	protected AbstractEOArgument _createArgument(String _name) {
 		return new EOAttribute(_name);
-	}
-
-	public EOAttribute cloneAttribute() {
-		EOAttribute attribute = (EOAttribute) _cloneArgument();
-		attribute.myPrototypeName = myPrototypeName;
-		attribute.myCachedPrototype = myCachedPrototype;
-		attribute.myClassProperty = myClassProperty;
-		attribute.myPrimaryKey = myPrimaryKey;
-		attribute.myUsedForLocking = myUsedForLocking;
-		attribute.myClientClassProperty = myClientClassProperty;
-		attribute.myIndexed = myIndexed;
-		attribute.myReadOnly = myReadOnly;
-		attribute.myReadFormat = myReadFormat;
-		attribute.myWriteFormat = myWriteFormat;
-		return attribute;
 	}
 
 	protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
@@ -808,6 +793,42 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
 
 	public String getFullyQualifiedName() {
 		return ((myEntity == null) ? "?" : myEntity.getFullyQualifiedName()) + ", attr: " + getName();
+	}
+
+	@Override
+	public EOAttribute _cloneModelObject() {
+		EOAttribute attribute = (EOAttribute) _cloneArgument();
+		attribute.myPrototypeName = myPrototypeName;
+		attribute.myCachedPrototype = myCachedPrototype;
+		attribute.myClassProperty = myClassProperty;
+		attribute.myPrimaryKey = myPrimaryKey;
+		attribute.myUsedForLocking = myUsedForLocking;
+		attribute.myClientClassProperty = myClientClassProperty;
+		attribute.myIndexed = myIndexed;
+		attribute.myReadOnly = myReadOnly;
+		attribute.myReadFormat = myReadFormat;
+		attribute.myWriteFormat = myWriteFormat;
+		return attribute;
+	}
+
+	@Override
+	public Class<EOEntity> _getModelParentType() {
+		return EOEntity.class;
+	}
+	
+	public EOEntity _getModelParent() {
+		return getEntity();
+	}
+	
+	public void _removeFromModelParent(Set<EOModelVerificationFailure> failures) {
+		getEntity().removeAttribute(this, true);
+	}
+	
+	public void _addToModelParent(EOEntity modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) throws EOModelException {
+		if (findUniqueName) {
+			setName(modelParent.findUnusedAttributeName(getName()));
+		}
+		modelParent.addAttribute(this);
 	}
 
 	public String toString() {

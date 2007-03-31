@@ -8,44 +8,48 @@ import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.operations.RedoActionHandler;
+import org.eclipse.ui.operations.UndoActionHandler;
 import org.objectstyle.wolips.eomodeler.actions.CopyAction;
 import org.objectstyle.wolips.eomodeler.actions.CutAction;
 import org.objectstyle.wolips.eomodeler.actions.DeleteAction;
 import org.objectstyle.wolips.eomodeler.actions.PasteAction;
 
 public class EOModelClipboardHandler implements ISelectionChangedListener {
-	private CutAction myCutAction;
+	private CutAction _cutAction;
 
-	private CopyAction myCopyAction;
+	private CopyAction _copyAction;
 
-	private PasteAction myPasteAction;
+	private PasteAction _pasteAction;
 
-	private DeleteAction myDeleteAction;
+	private DeleteAction _deleteAction;
 
 	public EOModelClipboardHandler() {
 		Clipboard clipboard = new Clipboard(Display.getDefault());
-		myCutAction = new CutAction(clipboard);
-		myCopyAction = new CopyAction(clipboard);
-		myPasteAction = new PasteAction(clipboard);
-		myDeleteAction = new DeleteAction();
+		_cutAction = new CutAction(clipboard);
+		_copyAction = new CopyAction(clipboard);
+		_pasteAction = new PasteAction(clipboard);
+		_deleteAction = new DeleteAction();
 	}
 
-	public void attach(IActionBars _actionBars, final EOModelEditor _editor) {
-		if (_actionBars != null && _editor != null) {
+	public void attach(IActionBars actionBars, final EOModelEditor editor) {
+		if (actionBars != null && editor != null) {
 			// actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(),
 			// getAction(editor, ITextEditorActionConstants.UNDO));
 			// actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(),
 			// getAction(editor, ITextEditorActionConstants.REDO));
 
-			_actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), myDeleteAction);
-			_actionBars.setGlobalActionHandler(ActionFactory.CUT.getId(), myCutAction);
-			_actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), myCopyAction);
-			_actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(), myPasteAction);
-			_actionBars.setGlobalActionHandler(ActionFactory.REVERT.getId(), new Action() {
+			actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), _deleteAction);
+			actionBars.setGlobalActionHandler(ActionFactory.CUT.getId(), _cutAction);
+			actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), _copyAction);
+			actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(), _pasteAction);
+			actionBars.setGlobalActionHandler(ActionFactory.REVERT.getId(), new Action() {
 				public void run() {
-					_editor.revert();
+					editor.revert();
 				}
 			});
+			actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(), new UndoActionHandler(editor.getSite(), editor.getUndoContext()));
+			actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(), new RedoActionHandler(editor.getSite(), editor.getUndoContext()));
 			// actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(),
 			// getAction(editor, ITextEditorActionConstants.SELECT_ALL));
 			// actionBars.setGlobalActionHandler(ActionFactory.FIND.getId(),
@@ -56,12 +60,12 @@ public class EOModelClipboardHandler implements ISelectionChangedListener {
 		}
 	}
 
-	public void selectionChanged(SelectionChangedEvent _event) {
-		ISelection selection = _event.getSelection();
-		myCutAction.selectionChanged(null, selection);
-		myCopyAction.selectionChanged(null, selection);
-		myPasteAction.selectionChanged(null, selection);
-		myDeleteAction.selectionChanged(null, selection);
+	public void selectionChanged(SelectionChangedEvent event) {
+		ISelection selection = event.getSelection();
+		_cutAction.selectionChanged(null, selection);
+		_copyAction.selectionChanged(null, selection);
+		_pasteAction.selectionChanged(null, selection);
+		_deleteAction.selectionChanged(null, selection);
 	}
 
 }

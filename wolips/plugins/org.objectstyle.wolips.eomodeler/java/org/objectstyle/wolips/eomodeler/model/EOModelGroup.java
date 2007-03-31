@@ -59,7 +59,7 @@ import java.util.TreeSet;
 import org.eclipse.core.resources.IProject;
 import org.objectstyle.wolips.eomodeler.utils.URLUtils;
 
-public class EOModelGroup extends EOModelObject {
+public class EOModelGroup extends EOModelObject<Object> {
 	public static final String MODELS = "models";
 
 	private Set<EOModel> myModels;
@@ -103,14 +103,7 @@ public class EOModelGroup extends EOModelObject {
 	}
 
 	public String findUnusedEntityName(String _newName) {
-		String unusedName = _newName;
-		boolean unusedNameFound = (getEntityNamed(_newName) == null);
-		for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
-			unusedName = _newName + dupeNameNum;
-			EOEntity renameEntity = getEntityNamed(unusedName);
-			unusedNameFound = (renameEntity == null);
-		}
-		return unusedName;
+		return _findUnusedName(_newName, "getEntityNamed");
 	}
 
 	public EOEntity getEntityNamed(String _entityName) {
@@ -258,5 +251,35 @@ public class EOModelGroup extends EOModelObject {
 
 	public String toString() {
 		return "[EOModelGroup: models = " + myModels + "]";
+	}
+	
+	@Override
+	public String getName() {
+		return "EOModelGroup";
+	}
+	
+	@Override
+	public EOModelGroup _cloneModelObject() {
+		throw new IllegalStateException("Not implemented");
+	}
+
+	@Override
+	public void _addToModelParent(Object modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) {
+		// DO NOTHING
+	}
+
+	@Override
+	public Class<Object> _getModelParentType() {
+		return null;
+	}
+	
+	@Override
+	public Object _getModelParent() {
+		return null;
+	}
+
+	@Override
+	public void _removeFromModelParent(Set<EOModelVerificationFailure> failures) {
+		// DO NOTHING
 	}
 }

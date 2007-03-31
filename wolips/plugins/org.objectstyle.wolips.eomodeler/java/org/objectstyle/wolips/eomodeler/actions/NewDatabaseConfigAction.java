@@ -49,50 +49,31 @@
  */
 package org.objectstyle.wolips.eomodeler.actions;
 
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import java.util.Set;
+
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.DuplicateNameException;
 import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
-import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
-import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
+import org.objectstyle.wolips.eomodeler.model.EOModelException;
+import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
 
-public class NewDatabaseConfigAction implements IWorkbenchWindowActionDelegate {
-	private EOModel myModel;
-
-	private IWorkbenchWindow myWindow;
-
-	public void dispose() {
-		// DO NOTHING
+public class NewDatabaseConfigAction extends AbstractNewObjectAction<EOModel, EODatabaseConfig> {
+	public NewDatabaseConfigAction() {
+		super(EOModel.class, Messages.getString("EODatabaseConfig.newName"));
 	}
 
-	public void init(IWorkbenchWindow _window) {
-		myWindow = _window;
+	@Override
+	protected EODatabaseConfig createChild(EOModel parent, Set<EOModelVerificationFailure> failures) throws EOModelException {
+		return parent.addBlankDatabaseConfig(Messages.getString("EODatabaseConfig.newName"));
 	}
 
-	public void selectionChanged(IAction _action, ISelection _selection) {
-		myModel = null;
-		if (_selection instanceof IStructuredSelection) {
-			Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-			myModel = EOModelUtils.getRelatedModel(selectedObject);
-		}
+	@Override
+	protected String getNoSelectionMessage() {
+		return Messages.getString("EOEntity.noModelSelectedMessage");
 	}
 
-	public void run(IAction _action) {
-		try {
-			if (myModel != null) {
-				EODatabaseConfig newDatabaseConfig = myModel.addBlankDatabaseConfig(Messages.getString("EODatabaseConfig.newName"));
-			} else {
-				MessageDialog.openError(myWindow.getShell(), Messages.getString("EOEntity.noModelSelectedTitle"), Messages.getString("EOEntity.noModelSelectedMessage"));//$NON-NLS-1$
-			}
-		} catch (DuplicateNameException e) {
-			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), e);
-		}
+	@Override
+	protected String getNoSelectionTitle() {
+		return Messages.getString("EOEntity.noModelSelectedTitle");
 	}
 }

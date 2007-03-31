@@ -55,7 +55,7 @@ import java.util.Set;
 
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
-public class EOEntityIndex extends UserInfoableEOModelObject implements IEOEntityRelative, ISortableEOModelObject {
+public class EOEntityIndex extends UserInfoableEOModelObject<EOEntity> implements IEOEntityRelative, ISortableEOModelObject {
 	public static enum Constraint {
 		Distinct("distinct"), FullText("fulltext"), Spatial("spatial"), None("none");
 
@@ -173,16 +173,6 @@ public class EOEntityIndex extends UserInfoableEOModelObject implements IEOEntit
 		_order = EOEntityIndex.Order.Ascending;
 		_entityIndexMap = new EOModelMap();
 		_attributes = new HashSet<EOAttribute>();
-	}
-
-	public EOEntityIndex cloneEntityIndex() {
-		EOEntityIndex entityIndex = new EOEntityIndex();
-		entityIndex._name = _name;
-		entityIndex._constraint = _constraint;
-		entityIndex._indexType = _indexType;
-		entityIndex._order = _order;
-		entityIndex.setUserInfo(new HashMap<Object, Object>(getUserInfo()));
-		return entityIndex;
 	}
 
 	public Set<EOModelVerificationFailure> getReferenceFailures() {
@@ -366,6 +356,37 @@ public class EOEntityIndex extends UserInfoableEOModelObject implements IEOEntit
 
 	public String getFullyQualifiedName() {
 		return ((_entity == null) ? "?" : _entity.getFullyQualifiedName()) + ", index: " + getName();
+	}
+
+	@Override
+	public EOEntityIndex _cloneModelObject() {
+		EOEntityIndex entityIndex = new EOEntityIndex();
+		entityIndex._name = _name;
+		entityIndex._constraint = _constraint;
+		entityIndex._indexType = _indexType;
+		entityIndex._order = _order;
+		entityIndex.setUserInfo(new HashMap<Object, Object>(getUserInfo()));
+		return entityIndex;
+	}
+
+	@Override
+	public Class<EOEntity> _getModelParentType() {
+		return EOEntity.class;
+	}
+	
+	public EOEntity _getModelParent() {
+		return getEntity();
+	}
+
+	public void _removeFromModelParent(Set<EOModelVerificationFailure> failures) {
+		getEntity().removeEntityIndex(this);
+	}
+
+	public void _addToModelParent(EOEntity modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) throws EOModelException {
+		if (findUniqueName) {
+			setName(modelParent.findUnusedEntityIndexName(getName()));
+		}
+		modelParent.addEntityIndex(this);
 	}
 
 	public String toString() {

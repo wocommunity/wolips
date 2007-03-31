@@ -62,7 +62,7 @@ import org.objectstyle.wolips.eomodeler.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
-public class EORelationship extends UserInfoableEOModelObject implements IEOAttribute, ISortableEOModelObject {
+public class EORelationship extends UserInfoableEOModelObject<EOEntity> implements IEOAttribute, ISortableEOModelObject {
 	public static final String TO_MANY = "toMany";
 
 	public static final String TO_ONE = "toOne";
@@ -164,32 +164,6 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 			}
 			myEntityBeforeCloning = null;
 		}
-	}
-
-	public EORelationship cloneRelationship() {
-		EORelationship relationship = new EORelationship(myName);
-		if (myEntity == null) {
-			relationship.myEntityBeforeCloning = myEntityBeforeCloning;
-		} else {
-			relationship.myEntityBeforeCloning = myEntity;
-		}
-		relationship.myDestination = myDestination;
-		relationship.myDefinition = myDefinition;
-		relationship.myMandatory = myMandatory;
-		relationship.myToMany = myToMany;
-		relationship.myOwnsDestination = myOwnsDestination;
-		relationship.myPropagatesPrimaryKey = myPropagatesPrimaryKey;
-		relationship.myClassProperty = myClassProperty;
-		relationship.myClientClassProperty = myClientClassProperty;
-		relationship.myNumberOfToManyFaultsToBatchFetch = myNumberOfToManyFaultsToBatchFetch;
-		relationship.myDeleteRule = myDeleteRule;
-		relationship.myJoinSemantic = myJoinSemantic;
-		for (EOJoin join : myJoins) {
-			EOJoin newJoin = join.cloneJoin();
-			relationship.addJoin(newJoin, false);
-		}
-		relationship.setUserInfo(new HashMap<Object, Object>(getUserInfo()));
-		return relationship;
 	}
 
 	protected void _joinChanged(EOJoin _join, String _propertyName, Object _oldValue, Object _newValue) {
@@ -764,6 +738,53 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 
 	public String getFullyQualifiedName() {
 		return ((myEntity == null) ? "?" : myEntity.getFullyQualifiedName()) + ", rel: " + getName();
+	}
+
+	@Override
+	public EORelationship _cloneModelObject() {
+		EORelationship relationship = new EORelationship(myName);
+		if (myEntity == null) {
+			relationship.myEntityBeforeCloning = myEntityBeforeCloning;
+		} else {
+			relationship.myEntityBeforeCloning = myEntity;
+		}
+		relationship.myDestination = myDestination;
+		relationship.myDefinition = myDefinition;
+		relationship.myMandatory = myMandatory;
+		relationship.myToMany = myToMany;
+		relationship.myOwnsDestination = myOwnsDestination;
+		relationship.myPropagatesPrimaryKey = myPropagatesPrimaryKey;
+		relationship.myClassProperty = myClassProperty;
+		relationship.myClientClassProperty = myClientClassProperty;
+		relationship.myNumberOfToManyFaultsToBatchFetch = myNumberOfToManyFaultsToBatchFetch;
+		relationship.myDeleteRule = myDeleteRule;
+		relationship.myJoinSemantic = myJoinSemantic;
+		for (EOJoin join : myJoins) {
+			EOJoin newJoin = join._cloneModelObject();
+			relationship.addJoin(newJoin, false);
+		}
+		relationship.setUserInfo(new HashMap<Object, Object>(getUserInfo()));
+		return relationship;
+	}
+	
+	@Override
+	public Class<EOEntity> _getModelParentType() {
+		return EOEntity.class;
+	}
+	
+	public EOEntity _getModelParent() {
+		return getEntity();
+	}
+	
+	public void _removeFromModelParent(Set<EOModelVerificationFailure> failures) {
+		getEntity().removeRelationship(this, true);
+	}
+	
+	public void _addToModelParent(EOEntity modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) throws EOModelException {
+		if (findUniqueName) {
+			setName(modelParent.findUnusedRelationshipName(getName()));
+		}
+		modelParent.addRelationship(this);
 	}
 
 	public String toString() {

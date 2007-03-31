@@ -50,6 +50,8 @@
 package org.objectstyle.wolips.eomodeler.actions;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -61,14 +63,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.objectstyle.wolips.eomodeler.model.EOArgument;
-import org.objectstyle.wolips.eomodeler.model.EOAttribute;
-import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
-import org.objectstyle.wolips.eomodeler.model.EOModel;
-import org.objectstyle.wolips.eomodeler.model.EORelationship;
-import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
+import org.objectstyle.wolips.eomodeler.model.EOModelObject;
+import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
@@ -97,78 +93,23 @@ public class PasteAction extends Action implements IWorkbenchWindowActionDelegat
 
 	public void run() {
 		try {
-			Object selectedObject = null;
+			EOModelObject selectedObject = null;
 			if (mySelection instanceof IStructuredSelection) {
-				selectedObject = ((IStructuredSelection) mySelection).getFirstElement();
+				selectedObject = (EOModelObject) ((IStructuredSelection) mySelection).getFirstElement();
 			}
 			ISelection pastedSelection = LocalSelectionTransfer.getTransfer().getSelection();
 			Object[] clipboardObjects = ((IStructuredSelection) pastedSelection).toArray();
 			Arrays.sort(clipboardObjects, new PasteOrderComparator());
+			Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
 			for (int clipboardObjectNum = 0; clipboardObjectNum < clipboardObjects.length; clipboardObjectNum++) {
 				Object clipboardObject = clipboardObjects[clipboardObjectNum];
-				if (clipboardObject instanceof EOEntity) {
-					EOModel model = EOModelUtils.getRelatedModel(selectedObject);
-					if (model != null) {
-						EOEntity clipboardEntity = (EOEntity) clipboardObject;
-						EOEntity clonedClipboardEntity = clipboardEntity.cloneEntity();
-						clonedClipboardEntity.setName(model.findUnusedEntityName(clonedClipboardEntity.getName()));
-						model.addEntity(clonedClipboardEntity);
-					}
-				} else if (clipboardObject instanceof EOAttribute) {
-					EOEntity entity = EOModelUtils.getRelatedEntity(selectedObject);
-					if (entity != null) {
-						EOAttribute clipboardAttribute = (EOAttribute) clipboardObject;
-						EOAttribute clonedClipboardAttribute = clipboardAttribute.cloneAttribute();
-						clonedClipboardAttribute.setName(entity.findUnusedAttributeName(clonedClipboardAttribute.getName()));
-						entity.addAttribute(clonedClipboardAttribute);
-					}
-				} else if (clipboardObject instanceof EORelationship) {
-					EOEntity entity = EOModelUtils.getRelatedEntity(selectedObject);
-					if (entity != null) {
-						EORelationship clipboardRelationship = (EORelationship) clipboardObject;
-						EORelationship clonedClipboardRelationship = clipboardRelationship.cloneRelationship();
-						clonedClipboardRelationship.setName(entity.findUnusedRelationshipName(clonedClipboardRelationship.getName()));
-						entity.addRelationship(clonedClipboardRelationship);
-					}
-				} else if (clipboardObject instanceof EORelationship) {
-					EOEntity entity = EOModelUtils.getRelatedEntity(selectedObject);
-					if (entity != null) {
-						EORelationship clipboardRelationship = (EORelationship) clipboardObject;
-						EORelationship clonedClipboardRelationship = clipboardRelationship.cloneRelationship();
-						clonedClipboardRelationship.setName(entity.findUnusedRelationshipName(clonedClipboardRelationship.getName()));
-						entity.addRelationship(clonedClipboardRelationship);
-					}
-				} else if (clipboardObject instanceof EOFetchSpecification) {
-					EOEntity entity = EOModelUtils.getRelatedEntity(selectedObject);
-					if (entity != null) {
-						EOFetchSpecification clipboardFetchSpecification = (EOFetchSpecification) clipboardObject;
-						EOFetchSpecification clonedClipboardFetchSpecification = clipboardFetchSpecification.cloneFetchSpecification();
-						clonedClipboardFetchSpecification.setName(entity.findUnusedFetchSpecificationName(clonedClipboardFetchSpecification.getName()));
-						entity.addFetchSpecification(clonedClipboardFetchSpecification);
-					}
-				} else if (clipboardObject instanceof EOStoredProcedure) {
-					EOModel model = EOModelUtils.getRelatedModel(selectedObject);
-					if (model != null) {
-						EOStoredProcedure clipboardStoredProcedure = (EOStoredProcedure) clipboardObject;
-						EOStoredProcedure clonedClipboardStoredProcedure = clipboardStoredProcedure.cloneStoredProcedure();
-						clonedClipboardStoredProcedure.setName(model.findUnusedStoredProcedureName(clonedClipboardStoredProcedure.getName()));
-						model.addStoredProcedure(clonedClipboardStoredProcedure);
-					}
-				} else if (clipboardObject instanceof EOArgument) {
-					EOStoredProcedure storedProcedure = EOModelUtils.getRelatedStoredProcedure(selectedObject);
-					if (storedProcedure != null) {
-						EOArgument clipboardArgument = (EOArgument) clipboardObject;
-						EOArgument clonedClipboardArgument = clipboardArgument.cloneArgument();
-						clonedClipboardArgument.setName(storedProcedure.findUnusedArgumentName(clonedClipboardArgument.getName()));
-						storedProcedure.addArgument(clonedClipboardArgument);
-					}
-				} else if (clipboardObject instanceof EODatabaseConfig) {
-					EOModel model = EOModelUtils.getRelatedModel(selectedObject);
-					if (model != null) {
-						EODatabaseConfig clipboardDatabaseConfig = (EODatabaseConfig) clipboardObject;
-						EODatabaseConfig clonedClipboardDatabaseConfig = clipboardDatabaseConfig.cloneDatabaseConfig();
-						clonedClipboardDatabaseConfig.setName(model.findUnusedDatabaseConfigName(clonedClipboardDatabaseConfig.getName()), false);
-						model.addDatabaseConfig(clonedClipboardDatabaseConfig);
+				if (clipboardObject instanceof EOModelObject) {
+					EOModelObject pasteObject = (EOModelObject) clipboardObject;
+					Class<EOModelObject> modelParentClass = pasteObject._getModelParentType();
+					EOModelObject pasteIntoObject = EOModelUtils.getRelated(modelParentClass, selectedObject);
+					if (pasteIntoObject != null) {
+						EOModelObject clonedPasteObject = pasteObject._cloneModelObject();
+						clonedPasteObject._addToModelParent(pasteIntoObject, true, failures);
 					}
 				}
 			}

@@ -9,7 +9,7 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
-public class EODatabaseConfig extends EOModelObject {
+public class EODatabaseConfig extends EOModelObject<EOModel> {
 	public static final String JDBC_ADAPTOR_NAME = "JDBC";
 	
 	public static final String JNDI_ADAPTOR_NAME = "JNDI";
@@ -138,14 +138,6 @@ public class EODatabaseConfig extends EOModelObject {
 			}
 		}
 		return equivalent;
-	}
-
-	public EODatabaseConfig cloneDatabaseConfig() {
-		EODatabaseConfig databaseConfig = new EODatabaseConfig(myName);
-		databaseConfig.myAdaptorName = myAdaptorName;
-		databaseConfig.myPrototypeName = myPrototypeName;
-		databaseConfig.setConnectionDictionary(new HashMap<Object, Object>(myConnectionDictionary));
-		return databaseConfig;
 	}
 
 	public void pasted() {
@@ -403,5 +395,34 @@ public class EODatabaseConfig extends EOModelObject {
 		}
 		modelMap.setMap("connectionDictionary", myConnectionDictionary, true);
 		return modelMap;
+	}
+
+	@Override
+	public EODatabaseConfig _cloneModelObject() {
+		EODatabaseConfig databaseConfig = new EODatabaseConfig(myName);
+		databaseConfig.myAdaptorName = myAdaptorName;
+		databaseConfig.myPrototypeName = myPrototypeName;
+		databaseConfig.setConnectionDictionary(new HashMap<Object, Object>(myConnectionDictionary));
+		return databaseConfig;
+	}
+
+	@Override
+	public Class<EOModel> _getModelParentType() {
+		return EOModel.class;
+	}
+	
+	public EOModel _getModelParent() {
+		return getModel();
+	}
+	
+	public void _removeFromModelParent(Set<EOModelVerificationFailure> failures) {
+		getModel().removeDatabaseConfig(this);
+	}
+	
+	public void _addToModelParent(EOModel modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) throws EOModelException {
+		if (findUniqueName) {
+			setName(modelParent.findUnusedDatabaseConfigName(getName()));
+		}
+		modelParent.addDatabaseConfig(this);
 	}
 }

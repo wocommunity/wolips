@@ -63,7 +63,7 @@ import java.util.TreeSet;
 import org.objectstyle.cayenne.exp.Expression;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
-public class EOFetchSpecification extends UserInfoableEOModelObject implements IEOEntityRelative, ISortableEOModelObject, PropertyChangeListener {
+public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> implements IEOEntityRelative, ISortableEOModelObject, PropertyChangeListener {
 	public static final String NAME = "name";
 
 	public static final String SORT_ORDERING = "sortOrdering";
@@ -146,33 +146,6 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 		mySortOrderings = new LinkedList<EOSortOrdering>();
 		myFetchSpecMap = new EOModelMap();
 		myPrefetchingRelationshipKeyPaths = new TreeSet<String>();
-	}
-
-	public EOFetchSpecification cloneFetchSpecification() {
-		EOFetchSpecification fetchSpec = new EOFetchSpecification(myName);
-		fetchSpec.myClass = myClass;
-		fetchSpec.myFetchLimit = myFetchLimit;
-		fetchSpec.myDeep = myDeep;
-		fetchSpec.myLocksObjects = myLocksObjects;
-		if (myPrefetchingRelationshipKeyPaths != null) {
-			fetchSpec.myPrefetchingRelationshipKeyPaths = new TreeSet<String>();
-			fetchSpec.myPrefetchingRelationshipKeyPaths.addAll(myPrefetchingRelationshipKeyPaths);
-		}
-		fetchSpec.myPromptsAfterFetchLimit = myPromptsAfterFetchLimit;
-		if (myRawRowKeyPaths != null) {
-			fetchSpec.myRawRowKeyPaths = new TreeSet<String>();
-			fetchSpec.myRawRowKeyPaths.addAll(myRawRowKeyPaths);
-		}
-		fetchSpec.myRefreshesRefetchedObjects = myRefreshesRefetchedObjects;
-		fetchSpec.myRequiresAllQualifierBindingVariables = myRequiresAllQualifierBindingVariables;
-		fetchSpec.myUsesDistinct = myUsesDistinct;
-		fetchSpec.mySortOrderings.addAll(mySortOrderings);
-		if (myQualifier != null) {
-			fetchSpec.myQualifier = EOQualifierFactory.createExpressionFromQualifierMap(EOQualifierFactory.createQualifierMapFromExpression(myQualifier));
-		}
-		fetchSpec.mySharesObjects = mySharesObjects;
-		fetchSpec.setUserInfo(new HashMap<Object, Object>(getUserInfo()));
-		return fetchSpec;
 	}
 
 	public Set getReferenceFailures() {
@@ -693,6 +666,54 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 
 	public String getFullyQualifiedName() {
 		return ((myEntity == null) ? "?" : myEntity.getFullyQualifiedName()) + ", fspec: " + getName();
+	}
+
+	@Override
+	public EOFetchSpecification _cloneModelObject() {
+		EOFetchSpecification fetchSpec = new EOFetchSpecification(myName);
+		fetchSpec.myClass = myClass;
+		fetchSpec.myFetchLimit = myFetchLimit;
+		fetchSpec.myDeep = myDeep;
+		fetchSpec.myLocksObjects = myLocksObjects;
+		if (myPrefetchingRelationshipKeyPaths != null) {
+			fetchSpec.myPrefetchingRelationshipKeyPaths = new TreeSet<String>();
+			fetchSpec.myPrefetchingRelationshipKeyPaths.addAll(myPrefetchingRelationshipKeyPaths);
+		}
+		fetchSpec.myPromptsAfterFetchLimit = myPromptsAfterFetchLimit;
+		if (myRawRowKeyPaths != null) {
+			fetchSpec.myRawRowKeyPaths = new TreeSet<String>();
+			fetchSpec.myRawRowKeyPaths.addAll(myRawRowKeyPaths);
+		}
+		fetchSpec.myRefreshesRefetchedObjects = myRefreshesRefetchedObjects;
+		fetchSpec.myRequiresAllQualifierBindingVariables = myRequiresAllQualifierBindingVariables;
+		fetchSpec.myUsesDistinct = myUsesDistinct;
+		fetchSpec.mySortOrderings.addAll(mySortOrderings);
+		if (myQualifier != null) {
+			fetchSpec.myQualifier = EOQualifierFactory.createExpressionFromQualifierMap(EOQualifierFactory.createQualifierMapFromExpression(myQualifier));
+		}
+		fetchSpec.mySharesObjects = mySharesObjects;
+		fetchSpec.setUserInfo(new HashMap<Object, Object>(getUserInfo()));
+		return fetchSpec;
+	}
+
+	@Override
+	public Class<EOEntity> _getModelParentType() {
+		return EOEntity.class;
+	}
+
+	public EOEntity _getModelParent() {
+		return getEntity();
+	}
+
+	public void _removeFromModelParent(Set<EOModelVerificationFailure> failures) {
+		getEntity().removeFetchSpecification(this);
+	}
+
+	public void _addToModelParent(EOEntity modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) throws EOModelException {
+		if (findUniqueName) {
+			setName(modelParent.findUnusedFetchSpecificationName(getName()));
+		}
+		modelParent.addFetchSpecification(this);
 	}
 
 	public String toString() {
