@@ -105,6 +105,7 @@ import org.objectstyle.wolips.eomodeler.model.EOArgument;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.model.EOEntityIndex;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EOModelException;
@@ -145,6 +146,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 	private EntitiesChangeRefresher myEntitiesChangeListener;
 
+	private FetchSpecsChangeRefresher myFetchSpecsChangeListener;
+
+	private EntityIndexesChangeRefresher myEntityIndexesChangeListener;
+
 	private StoredProceduresChangeRefresher myStoredProceduresChangeListener;
 
 	private DatabaseConfigsChangeRefresher myDatabaseConfigsChangeListener;
@@ -173,6 +178,8 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		mySelectionChangedListeners = new ListenerList();
 		myDirtyModelListener = new DirtyModelListener();
 		myEntitiesChangeListener = new EntitiesChangeRefresher();
+		myFetchSpecsChangeListener = new FetchSpecsChangeRefresher();
+		myEntityIndexesChangeListener = new EntityIndexesChangeRefresher();
 		myStoredProceduresChangeListener = new StoredProceduresChangeRefresher();
 		myDatabaseConfigsChangeListener = new DatabaseConfigsChangeRefresher();
 		myAttributeAndRelationshipListener = new AttributeAndRelationshipDeletedRefresher();
@@ -460,8 +467,11 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			if (myModel != null) {
 				myModel.removePropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
 				myModel.removePropertyChangeListener(EOModel.ENTITIES, myEntitiesChangeListener);
+				myModel.removePropertyChangeListener(EOModel.ENTITIES, myEntitiesChangeListener);
 				myModel.removePropertyChangeListener(EOModel.STORED_PROCEDURES, myStoredProceduresChangeListener);
 				myModel.removePropertyChangeListener(EOModel.DATABASE_CONFIGS, myDatabaseConfigsChangeListener);
+				myModel.removePropertyChangeListener(EOModel.ENTITY + "." + EOEntity.FETCH_SPECIFICATIONS, myFetchSpecsChangeListener);
+				myModel.removePropertyChangeListener(EOModel.ENTITY + "." + EOEntity.ENTITY_INDEXES, myEntityIndexesChangeListener);
 			}
 
 			IFile file = fileEditorInput.getFile();
@@ -489,6 +499,8 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				myModel.addPropertyChangeListener(EOModel.ENTITIES, myEntitiesChangeListener);
 				myModel.addPropertyChangeListener(EOModel.STORED_PROCEDURES, myStoredProceduresChangeListener);
 				myModel.addPropertyChangeListener(EOModel.DATABASE_CONFIGS, myDatabaseConfigsChangeListener);
+				myModel.addPropertyChangeListener(EOModel.ENTITY + "." + EOEntity.FETCH_SPECIFICATIONS, myFetchSpecsChangeListener);
+				myModel.addPropertyChangeListener(EOModel.ENTITY + "." + EOEntity.ENTITY_INDEXES, myEntityIndexesChangeListener);
 				super.init(_site, fileEditorInput);
 				updatePartName();
 				_site.setSelectionProvider(this);
@@ -780,6 +792,30 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		}
 
 		protected void objectsRemoved(List<EOEntity> _removedObjects) {
+			EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getModel()));
+			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
+		}
+	}
+
+	protected class FetchSpecsChangeRefresher extends AbstractAddRemoveChangeRefresher<EOFetchSpecification> {
+		protected void objectsAdded(List<EOFetchSpecification> _addedObjects) {
+			EOModelEditor.this.setSelection(new StructuredSelection(_addedObjects));
+			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
+		}
+
+		protected void objectsRemoved(List<EOFetchSpecification> _removedObjects) {
+			EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getModel()));
+			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
+		}
+	}
+
+	protected class EntityIndexesChangeRefresher extends AbstractAddRemoveChangeRefresher<EOEntityIndex> {
+		protected void objectsAdded(List<EOEntityIndex> _addedObjects) {
+			EOModelEditor.this.setSelection(new StructuredSelection(_addedObjects));
+			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
+		}
+
+		protected void objectsRemoved(List<EOEntityIndex> _removedObjects) {
 			EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getModel()));
 			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
 		}

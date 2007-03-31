@@ -579,10 +579,6 @@
                <enablement>
                    <or>
                        <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOEntityIndex"/>
                    </or>
                </enablement>
          </action>
@@ -596,10 +592,8 @@
                tooltip="New Argument">
                <enablement>
                    <or>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
                        <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
                        <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
                    </or>
                </enablement>
          </action>
@@ -631,9 +625,6 @@
                <enablement>
                    <or>
                        <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
                    </or>
                </enablement>
          </action>
@@ -648,9 +639,6 @@
                <enablement>
                    <or>
                        <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
                    </or>
                </enablement>
          </action>
@@ -665,9 +653,6 @@
                <enablement>
                    <or>
                        <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
                    </or>
                </enablement>
          </action>
