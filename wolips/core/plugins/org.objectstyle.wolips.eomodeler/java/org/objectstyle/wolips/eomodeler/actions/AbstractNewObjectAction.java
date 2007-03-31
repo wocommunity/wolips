@@ -50,88 +50,121 @@
 package org.objectstyle.wolips.eomodeler.actions;
 
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
-import org.eclipse.jface.action.Action;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.operations.AbstractOperation;
+import org.eclipse.core.commands.operations.IOperationHistory;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.util.LocalSelectionTransfer;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
-import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
+import org.objectstyle.wolips.eomodeler.model.EOModelException;
 import org.objectstyle.wolips.eomodeler.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
-public class CutAction extends Action implements IWorkbenchWindowActionDelegate {
-	private IWorkbenchWindow myWindow;
+public abstract class AbstractNewObjectAction<T extends EOModelObject, U extends EOModelObject> implements IWorkbenchWindowActionDelegate {
+	private IWorkbenchWindow _window;
 
-	private ISelection mySelection;
+	private Class<T> _parentType;
 
-	private Clipboard myClipboard;
+	private T _selectedParent;
 
-	public CutAction(Clipboard _clipboard) {
-		myClipboard = _clipboard;
+	private String _label;
+
+	public AbstractNewObjectAction(Class<T> parentType, String label) {
+		_label = label;
+		_parentType = parentType;
+	}
+
+	public String getLabel() {
+		return _label;
 	}
 
 	public void dispose() {
 		// DO NOTHING
 	}
 
-	public void init(IWorkbenchWindow _window) {
-		myWindow = _window;
+	public void init(IWorkbenchWindow window) {
+		_window = window;
 	}
 
-	public void selectionChanged(IAction _action, ISelection _selection) {
-		mySelection = _selection;
-	}
-
-	public void run() {
-		try {
-			Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-			Object[] selectedObjects = null;
-			if (mySelection instanceof IStructuredSelection) {
-				selectedObjects = ((IStructuredSelection) mySelection).toArray();
+	public void selectionChanged(IAction action, ISelection selection) {
+		_selectedParent = null;
+		if (selection instanceof IStructuredSelection) {
+			Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
+			if (selectedObject instanceof EOModelObject) {
+				_selectedParent = (T) EOModelUtils.getRelated(_parentType, (EOModelObject) selectedObject);
 			}
-			List<EOModelObject> selectedObjectsList = new LinkedList<EOModelObject>();
-			if (selectedObjects != null) {
-				Set<EOModelVerificationFailure> referenceFailures = EOModelUtils.getReferenceFailures(selectedObjects);
-				if (!referenceFailures.isEmpty()) {
-					new EOModelErrorDialog(activeShell, referenceFailures).open();
-				} else {
-					Set<EOModelVerificationFailure> cutFailures = new HashSet<EOModelVerificationFailure>();
-					for (int selectedObjectNum = 0; selectedObjectNum < selectedObjects.length; selectedObjectNum++) {
-						Object selectedObject = selectedObjects[selectedObjectNum];
-						if (selectedObject instanceof EOModelObject) {
-							EOModelObject<?> object = (EOModelObject) selectedObject;
-							selectedObjectsList.add(object._cloneModelObject());
-							object._removeFromModelParent(cutFailures);
-						}
-					}
-				}
-				LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(selectedObjectsList));
-				LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
-			}
-		} catch (Throwable t) {
-			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), t);
 		}
 	}
 
-	public void runWithEvent(Event _event) {
-		run();
+	public void run(IAction action) {
+		try {
+			if (_selectedParent != null) {
+				NewOperation operation = new NewOperation(_selectedParent);
+				operation.addContext(EOModelUtils.getUndoContext(_selectedParent));
+				IOperationHistory operationHistory = PlatformUI.getWorkbench().getOperationSupport().getOperationHistory();
+				operationHistory.execute(operation, null, null);
+			} else {
+				MessageDialog.openError(_window.getShell(), getNoSelectionTitle(), getNoSelectionMessage());
+			}
+		} catch (Throwable e) {
+			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), e);
+		}
 	}
 
-	public void run(IAction _action) {
-		run();
+	protected abstract String getNoSelectionTitle();
+
+	protected abstract String getNoSelectionMessage();
+
+	protected abstract U createChild(T parent, Set<EOModelVerificationFailure> failures) throws EOModelException;
+
+	protected class NewOperation extends AbstractOperation {
+		private T _parent;
+
+		private U _child;
+
+		public NewOperation(T parent) {
+			super(AbstractNewObjectAction.this.getLabel());
+			_parent = parent;
+		}
+
+		@Override
+		public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
+			try {
+				Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
+				_child = AbstractNewObjectAction.this.createChild(_parent, failures);
+				return Status.OK_STATUS;
+			} catch (EOModelException e) {
+				throw new ExecutionException("Failed to add new object.", e);
+			}
+		}
+
+		@Override
+		public IStatus redo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
+			return execute(monitor, info);
+		}
+
+		@Override
+		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
+			try {
+				Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
+				_child._removeFromModelParent(failures);
+				return Status.OK_STATUS;
+			} catch (EOModelException e) {
+				throw new ExecutionException("Failed to remove object.", e);
+			}
+		}
 	}
 }

@@ -63,13 +63,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.objectstyle.wolips.eomodeler.model.EOArgument;
-import org.objectstyle.wolips.eomodeler.model.EOAttribute;
-import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
-import org.objectstyle.wolips.eomodeler.model.EORelationship;
-import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
+import org.objectstyle.wolips.eomodeler.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class CopyAction extends Action implements IWorkbenchWindowActionDelegate {
@@ -101,31 +95,13 @@ public class CopyAction extends Action implements IWorkbenchWindowActionDelegate
 			if (mySelection instanceof IStructuredSelection) {
 				selectedObjects = ((IStructuredSelection) mySelection).toArray();
 			}
-			List selectedObjectsList = new LinkedList();
+			List<EOModelObject> selectedObjectsList = new LinkedList<EOModelObject>();
 			if (selectedObjects != null) {
 				for (int selectedObjectNum = 0; selectedObjectNum < selectedObjects.length; selectedObjectNum++) {
 					Object selectedObject = selectedObjects[selectedObjectNum];
-					if (selectedObject instanceof EOEntity) {
-						EOEntity entity = (EOEntity) selectedObject;
-						selectedObjectsList.add(entity.cloneEntity());
-					} else if (selectedObject instanceof EORelationship) {
-						EORelationship relationship = (EORelationship) selectedObject;
-						selectedObjectsList.add(relationship.cloneRelationship());
-					} else if (selectedObject instanceof EOAttribute) {
-						EOAttribute attribute = (EOAttribute) selectedObject;
-						selectedObjectsList.add(attribute.cloneAttribute());
-					} else if (selectedObject instanceof EOFetchSpecification) {
-						EOFetchSpecification fetchSpec = (EOFetchSpecification) selectedObject;
-						selectedObjectsList.add(fetchSpec.cloneFetchSpecification());
-					} else if (selectedObject instanceof EOStoredProcedure) {
-						EOStoredProcedure storedProcedure = (EOStoredProcedure) selectedObject;
-						selectedObjectsList.add(storedProcedure.cloneStoredProcedure());
-					} else if (selectedObject instanceof EOArgument) {
-						EOArgument argument = (EOArgument) selectedObject;
-						selectedObjectsList.add(argument.cloneArgument());
-					} else if (selectedObject instanceof EODatabaseConfig) {
-						EODatabaseConfig databaseConfig = (EODatabaseConfig) selectedObject;
-						selectedObjectsList.add(databaseConfig.cloneDatabaseConfig());
+					if (selectedObject instanceof EOModelObject) {
+						EOModelObject<?> object = (EOModelObject) selectedObject;
+						selectedObjectsList.add(object._cloneModelObject());
 					}
 				}
 			}

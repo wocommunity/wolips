@@ -49,50 +49,31 @@
  */
 package org.objectstyle.wolips.eomodeler.actions;
 
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import java.util.Set;
+
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.DuplicateNameException;
 import org.objectstyle.wolips.eomodeler.model.EOArgument;
+import org.objectstyle.wolips.eomodeler.model.EOModelException;
+import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
-import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
-import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
-public class NewArgumentAction implements IWorkbenchWindowActionDelegate {
-	private EOStoredProcedure myStoredProcedure;
-
-	private IWorkbenchWindow myWindow;
-
-	public void init(IWorkbenchWindow _window) {
-		myWindow = _window;
+public class NewArgumentAction extends AbstractNewObjectAction<EOStoredProcedure, EOArgument> {
+	public NewArgumentAction() {
+		super(EOStoredProcedure.class, Messages.getString("EOArgument.newName"));
 	}
 
-	public void dispose() {
-		// DO NOTHING
+	@Override
+	protected EOArgument createChild(EOStoredProcedure parent, Set<EOModelVerificationFailure> failures) throws EOModelException {
+		return parent.addBlankArgument(Messages.getString("EOArgument.newName"));
 	}
 
-	public void selectionChanged(IAction _action, ISelection _selection) {
-		myStoredProcedure = null;
-		if (_selection instanceof IStructuredSelection) {
-			Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-			myStoredProcedure = EOModelUtils.getRelatedStoredProcedure(selectedObject);
-		}
+	@Override
+	protected String getNoSelectionMessage() {
+		return Messages.getString("EOArgument.noStoredProcedureSelectedMessage");
 	}
 
-	public void run(IAction _action) {
-		try {
-			if (myStoredProcedure != null) {
-				EOArgument newArgument = myStoredProcedure.addBlankArgument(Messages.getString("EOArgument.newName"));
-			} else {
-				MessageDialog.openError(myWindow.getShell(), Messages.getString("EOArgument.noStoredProcedureSelectedTitle"), Messages.getString("EOArgument.noStoredProcedureSelectedMessage"));//$NON-NLS-1$
-			}
-		} catch (DuplicateNameException e) {
-			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), e);
-		}
+	@Override
+	protected String getNoSelectionTitle() {
+		return Messages.getString("EOArgument.noStoredProcedureSelectedTitle");
 	}
 }

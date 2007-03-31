@@ -66,7 +66,7 @@ import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.URLUtils;
 import org.objectstyle.wolips.eomodeler.wocompat.PropertyListSerialization;
 
-public class EOModel extends UserInfoableEOModelObject implements IUserInfoable, ISortableEOModelObject {
+public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements IUserInfoable, ISortableEOModelObject {
 	public static final String ENTITY_MODELER_KEY = "_EntityModeler";
 
 	public static final String DIRTY = "dirty";
@@ -201,13 +201,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 	}
 
 	public EOEntity addBlankEntity(String _name) throws DuplicateNameException {
-		String newEntityNameBase = _name;
-		String newEntityName = newEntityNameBase;
-		int newEntityNum = 0;
-		while (getEntityNamed(newEntityName) != null) {
-			newEntityNum++;
-			newEntityName = newEntityNameBase + newEntityNum;
-		}
+		String newEntityName = findUnusedEntityName(_name);
 		EOEntity entity = new EOEntity(newEntityName);
 		entity.setExternalName(newEntityName);
 		String className = newEntityName;
@@ -278,14 +272,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 	}
 
 	public String findUnusedDatabaseConfigName(String _newName) {
-		String unusedName = _newName;
-		boolean unusedNameFound = (getDatabaseConfigNamed(_newName) == null);
-		for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
-			unusedName = _newName + dupeNameNum;
-			EODatabaseConfig renameDatabaseConfig = getDatabaseConfigNamed(unusedName);
-			unusedNameFound = (renameDatabaseConfig == null);
-		}
-		return unusedName;
+		return _findUnusedName(_newName, "getDatabaseConfigNamed");
 	}
 
 	public void _checkForDuplicateDatabaseConfigName(EODatabaseConfig _databaseConfig, String _newName, Set<EOModelVerificationFailure> _failures) throws DuplicateDatabaseConfigNameException {
@@ -423,18 +410,16 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return myEntities;
 	}
 
-	public String findUnusedEntityName(String _newName) {
-		String unusedName = _newName;
-		boolean unusedNameFound = (myModelGroup.getEntityNamed(_newName) == null && getEntityNamed(_newName) == null);
-		for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
-			unusedName = _newName + dupeNameNum;
-			EOEntity renameEntity = myModelGroup.getEntityNamed(unusedName);
-			if (renameEntity == null) {
-				renameEntity = getEntityNamed(unusedName);
-			}
-			unusedNameFound = (renameEntity == null);
+	public EOEntity _getEntityNamedAndCheckModelGroup(String newName) {
+		EOEntity entity = myModelGroup.getEntityNamed(newName);
+		if (entity == null) {
+			entity = getEntityNamed(newName);
 		}
-		return unusedName;
+		return entity;
+	}
+	
+	public String findUnusedEntityName(String _newName) {
+		return _findUnusedName(_newName, "_getEntityNamedAndCheckModelGroup");
 	}
 
 	public void _checkForDuplicateEntityName(EOEntity _entity, String _newName, Set<EOModelVerificationFailure> _failures) throws DuplicateEntityNameException {
@@ -483,28 +468,30 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		sourceModel.resolve(failures);
 		return importEntitiesFromModel(sourceModel, failures);
 	}
-	
+
 	public Set<EOEntity> importEntitiesFromModel(EOModel sourceModel, Set<EOModelVerificationFailure> failures) throws DuplicateNameException {
 		Set<EOEntity> clonedEntities = new HashSet<EOEntity>();
 		for (EOEntity entity : sourceModel.getEntities()) {
-			clonedEntities.add(entity.cloneEntity());
+			clonedEntities.add(entity._cloneModelObject());
 		}
 		addEntities(clonedEntities, failures);
 		for (EOEntity clonedEntity : clonedEntities) {
-			//clonedEntity.setName(StringUtils.toUppercaseFirstLetter(clonedEntity.getName().toLowerCase()));
+			// clonedEntity.setName(StringUtils.toUppercaseFirstLetter(clonedEntity.getName().toLowerCase()));
 			for (EOAttribute clonedAttribute : clonedEntity.getAttributes()) {
 				clonedAttribute.guessPrototype(true);
-				//clonedAttribute.setName(clonedAttribute.getName().toLowerCase());
+				// clonedAttribute.setName(clonedAttribute.getName().toLowerCase());
 			}
-			//Iterator clonedRelationshipsIter = clonedEntity.getRelationships().iterator();
-			//while (clonedRelationshipsIter.hasNext()) {
-			//	EORelationship clonedRelationship = (EORelationship) clonedRelationshipsIter.next();
-			//	clonedRelationship.setName(clonedRelationship.getName().toLowerCase());
-			//}
+			// Iterator clonedRelationshipsIter =
+			// clonedEntity.getRelationships().iterator();
+			// while (clonedRelationshipsIter.hasNext()) {
+			// EORelationship clonedRelationship = (EORelationship)
+			// clonedRelationshipsIter.next();
+			// clonedRelationship.setName(clonedRelationship.getName().toLowerCase());
+			// }
 		}
 		return clonedEntities;
 	}
-	
+
 	public void addEntities(Set<EOEntity> entities, Set<EOModelVerificationFailure> failures) throws DuplicateNameException {
 		Set<EOEntity> oldEntities = new TreeSet<EOEntity>(new PropertyListSet<EOEntity>());
 		oldEntities.addAll(myEntities);
@@ -612,14 +599,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 	}
 
 	public String findUnusedStoredProcedureName(String _newName) {
-		boolean unusedNameFound = (getStoredProcedureNamed(_newName) == null);
-		String unusedName = _newName;
-		for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
-			unusedName = _newName + dupeNameNum;
-			EOStoredProcedure renameStoredProcedure = getStoredProcedureNamed(unusedName);
-			unusedNameFound = (renameStoredProcedure == null);
-		}
-		return unusedName;
+		return _findUnusedName(_newName, "getStoredProcedureNamed");
 	}
 
 	public Set<EOStoredProcedure> getStoredProcedures() {
@@ -661,7 +641,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		URL indexURL = new URL(_modelFolder, "index.eomodeld");
 		// if (!indexURL.exists()) {
 		// throw new EOModelException(indexURL + " does not exist.");
-		//		}
+		// }
 		myModelURL = _modelFolder;
 		Map rawModelMap = (Map) PropertyListSerialization.propertyListFromURL(indexURL, new EOModelParserDataStructureFactory());
 		if (rawModelMap == null) {
@@ -919,6 +899,34 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return myName;
 	}
 
+	@Override
+	public EOModel _cloneModelObject() {
+		throw new IllegalStateException("Not implemented");
+	}
+
+	@Override
+	public Class<EOModelGroup> _getModelParentType() {
+		return EOModelGroup.class;
+	}
+	
+	@Override
+	public EOModelGroup _getModelParent() {
+		return getModelGroup();
+	}
+
+	@Override
+	public void _addToModelParent(EOModelGroup modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) throws EOModelException {
+		if (findUniqueName) {
+			throw new IllegalArgumentException("Unable to unique model names.");
+		}
+		modelParent.addModel(this, failures);
+	}
+
+	@Override
+	public void _removeFromModelParent(Set<EOModelVerificationFailure> failures) {
+		getModelGroup().removeModel(this, failures);
+	}
+
 	public String toString() {
 		return "[EOModel: name = " + myName + "; entities = " + myEntities + "]";
 	}
@@ -1058,7 +1066,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 		return matchingAttribute;
 	}
 
-	/** End Prototypes **/ 
+	/** End Prototypes * */
 
 	public static void main(String[] args) throws IOException, EOModelException {
 		Set failures = new LinkedHashSet();

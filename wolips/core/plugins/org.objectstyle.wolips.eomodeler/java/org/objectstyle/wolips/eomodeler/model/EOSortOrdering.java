@@ -54,7 +54,7 @@ import java.util.Set;
 
 import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
-public class EOSortOrdering extends EOModelObject {
+public class EOSortOrdering extends EOModelObject<EOFetchSpecification> {
 	public static final String SELECTOR_ASCENDING = "compareAscending";
 
 	public static final String SELECTOR_DESCENDING = "compareDescending";
@@ -82,11 +82,6 @@ public class EOSortOrdering extends EOModelObject {
 	public EOSortOrdering(String _key, String _selectorName) {
 		myKey = _key;
 		mySelectorName = _selectorName;
-	}
-
-	public EOSortOrdering cloneSortOrdering() {
-		EOSortOrdering cloneSortOrdering = new EOSortOrdering(myKey, mySelectorName);
-		return cloneSortOrdering;
 	}
 
 	public Set<EOModelVerificationFailure> getReferenceFailures() {
@@ -172,6 +167,37 @@ public class EOSortOrdering extends EOModelObject {
 
 	public void verify(Set<EOModelVerificationFailure> _failures) {
 		// TODO
+	}
+
+	@Override
+	public String getName() {
+		return getKey();
+	}
+	
+	@Override
+	public EOSortOrdering _cloneModelObject() {
+		EOSortOrdering cloneSortOrdering = new EOSortOrdering(myKey, mySelectorName);
+		return cloneSortOrdering;
+	}
+	
+	@Override
+	public Class<EOFetchSpecification> _getModelParentType() {
+		return EOFetchSpecification.class;
+	}
+	
+	@Override
+	public EOFetchSpecification _getModelParent() {
+		return null;
+	}
+
+	@Override
+	public void _addToModelParent(EOFetchSpecification modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) {
+		// DO NOTHING
+	}
+
+	@Override
+	public void _removeFromModelParent(Set<EOModelVerificationFailure> failures) {
+		// DO NOTHING
 	}
 
 	public String getFullyQualifiedName() {

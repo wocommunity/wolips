@@ -54,7 +54,7 @@ import java.util.Set;
 
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
-public class EOJoin extends EOModelObject implements ISortableEOModelObject {
+public class EOJoin extends EOModelObject<EORelationship> implements ISortableEOModelObject {
 	public static final String DESTINATION_ATTRIBUTE = "destinationAttribute";
 
 	public static final String SOURCE_ATTRIBUTE = "sourceAttribute";
@@ -113,7 +113,7 @@ public class EOJoin extends EOModelObject implements ISortableEOModelObject {
 		if (mySourceAttribute != null) {
 			EOAttribute sourceAttribute = myRelationship.getEntity().getAttributeNamed(mySourceAttribute.getName());
 			if (mySourceAttribute == null) {
-				mySourceAttribute = mySourceAttribute.cloneAttribute();
+				mySourceAttribute = mySourceAttribute._cloneModelObject();
 				myRelationship.getEntity().addAttribute(sourceAttribute);
 			} else {
 				mySourceAttribute = sourceAttribute;
@@ -122,19 +122,12 @@ public class EOJoin extends EOModelObject implements ISortableEOModelObject {
 		if (myDestinationAttribute != null) {
 			EOAttribute destinationAttribute = myRelationship.getDestination().getAttributeNamed(myDestinationAttribute.getName());
 			if (destinationAttribute == null && myDestinationAttribute.getEntity() == myRelationship.getEntity()) {
-				myDestinationAttribute = myDestinationAttribute.cloneAttribute();
+				myDestinationAttribute = myDestinationAttribute._cloneModelObject();
 				myRelationship.getEntity().addAttribute(destinationAttribute);
 			} else {
 				myDestinationAttribute = destinationAttribute;
 			}
 		}
-	}
-
-	public EOJoin cloneJoin() {
-		EOJoin join = new EOJoin();
-		join.mySourceAttribute = mySourceAttribute;
-		join.myDestinationAttribute = myDestinationAttribute;
-		return join;
 	}
 
 	public int hashCode() {
@@ -237,14 +230,12 @@ public class EOJoin extends EOModelObject implements ISortableEOModelObject {
 		EOModelMap joinMap = myJoinMap.cloneModelMap();
 		if (myDestinationAttribute != null) {
 			joinMap.setString("destinationAttribute", myDestinationAttribute.getName(), true);
-		}
-		else {
+		} else {
 			joinMap.remove("destinationAttribute");
 		}
 		if (mySourceAttribute != null) {
 			joinMap.setString("sourceAttribute", mySourceAttribute.getName(), true);
-		}
-		else {
+		} else {
 			joinMap.remove("sourceAttribute");
 		}
 		return joinMap;
@@ -278,6 +269,31 @@ public class EOJoin extends EOModelObject implements ISortableEOModelObject {
 
 	public String getFullyQualifiedName() {
 		return ((myRelationship == null) ? "?" : myRelationship.getFullyQualifiedName()) + ", join: " + getSourceAttributeName() + "=>" + getDestinationAttributeName();
+	}
+
+	@Override
+	public EOJoin _cloneModelObject() {
+		EOJoin join = new EOJoin();
+		join.mySourceAttribute = mySourceAttribute;
+		join.myDestinationAttribute = myDestinationAttribute;
+		return join;
+	}
+	
+	@Override
+	public Class<EORelationship> _getModelParentType() {
+		return EORelationship.class;
+	}
+	
+	public EORelationship _getModelParent() {
+		return getRelationship();
+	}
+
+	public void _removeFromModelParent(Set<EOModelVerificationFailure> failures) {
+		getRelationship().removeJoin(this);
+	}
+
+	public void _addToModelParent(EORelationship modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) {
+		modelParent.addJoin(this);
 	}
 
 	public String toString() {

@@ -59,6 +59,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -117,6 +118,7 @@ import org.objectstyle.wolips.eomodeler.model.IEOAttribute;
 import org.objectstyle.wolips.eomodeler.outline.EOModelContentOutlinePage;
 import org.objectstyle.wolips.eomodeler.utils.AbstractAddRemoveChangeRefresher;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
+import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.utils.URLUtils;
 import org.objectstyle.wolips.preferences.Preferences;
@@ -173,7 +175,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	private boolean myStoredProcedurePageVisible;
 
 	private int mySelectionDepth;
-
+	
 	public EOModelEditor() {
 		mySelectionChangedListeners = new ListenerList();
 		myDirtyModelListener = new DirtyModelListener();
@@ -185,6 +187,20 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		myAttributeAndRelationshipListener = new AttributeAndRelationshipDeletedRefresher();
 		myArgumentListener = new ArgumentDeletedRefresher();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+	}
+	
+	public IUndoContext getUndoContext() {
+		return new EOModelEditorUndoContext();
+	}
+	
+	protected class EOModelEditorUndoContext implements IUndoContext {
+		public String getLabel() {
+			return EOModelUtils.getUndoContext(EOModelEditor.this.getModel()).getLabel();
+		}
+		
+		public boolean matches(IUndoContext context) {
+			return EOModelUtils.getUndoContext(EOModelEditor.this.getModel()).matches(context);
+		}
 	}
 
 	public EOModelContentOutlinePage getContentOutlinePage() {
@@ -270,6 +286,8 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				setSelectedEntity(myOpeningEntity);
 				setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
 			}
+			
+			
 		} catch (PartInitException e) {
 			ErrorDialog.openError(getSite().getShell(), "Error creating editor.", null, e.getStatus());
 		}
@@ -424,7 +442,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	public void doSaveAs() {
 		doSave(null);
 	}
-
+	
 	public void revert() {
 		boolean confirmed = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), Messages.getString("EOModelEditor.revertTitle"), Messages.getString("EOModelEditor.revertMessage"));
 		if (confirmed) {

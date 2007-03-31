@@ -4,12 +4,13 @@ import java.util.Comparator;
 
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.model.EOEntityIndex;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 
 /**
- * When you paste, you always want attributes to come first, then relationships.  This
- * comparator ensures that.
+ * When you paste, you always want attributes to come first, then relationships.
+ * This comparator ensures that.
  * 
  * @author mschrag
  */
@@ -22,6 +23,8 @@ public class PasteOrderComparator implements Comparator {
 			} else if (o2 instanceof EOAttribute) {
 				comparison = -1;
 			} else if (o2 instanceof EOFetchSpecification) {
+				comparison = -1;
+			} else if (o2 instanceof EOEntityIndex) {
 				comparison = -1;
 			} else {
 				comparison = 0;
@@ -54,6 +57,13 @@ public class PasteOrderComparator implements Comparator {
 			} else if (o2 instanceof EORelationship) {
 				comparison = -1;
 			} else {
+				comparison = 0;
+			}
+		} else if (o1 instanceof EOEntityIndex) {
+			if (o2 instanceof EOEntity) {
+				comparison = 1;
+			}
+			else {
 				comparison = 0;
 			}
 		} else {

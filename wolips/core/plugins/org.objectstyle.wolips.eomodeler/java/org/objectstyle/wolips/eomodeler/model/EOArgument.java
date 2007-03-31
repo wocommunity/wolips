@@ -6,7 +6,7 @@ import java.util.Set;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
-public class EOArgument extends AbstractEOArgument {
+public class EOArgument extends AbstractEOArgument<EOStoredProcedure> {
 	public static final String DIRECTION = "direction";
 
 	private EOStoredProcedure myStoredProcedure;
@@ -50,12 +50,6 @@ public class EOArgument extends AbstractEOArgument {
 
 	protected AbstractEOArgument _createArgument(String _name) {
 		return new EOArgument(_name);
-	}
-
-	public EOArgument cloneArgument() {
-		EOArgument argument = (EOArgument) _cloneArgument();
-		argument.myDirection = myDirection;
-		return argument;
 	}
 
 	protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
@@ -142,6 +136,33 @@ public class EOArgument extends AbstractEOArgument {
 
 	public String getFullyQualifiedName() {
 		return ((myStoredProcedure == null) ? "?" : myStoredProcedure.getFullyQualifiedName()) + ", arg: " + getName();
+	}
+
+	@Override
+	public EOArgument _cloneModelObject() {
+		EOArgument argument = (EOArgument) _cloneArgument();
+		argument.myDirection = myDirection;
+		return argument;
+	}
+	
+	@Override
+	public Class<EOStoredProcedure> _getModelParentType() {
+		return EOStoredProcedure.class;
+	}
+	
+	public EOStoredProcedure _getModelParent() {
+		return getStoredProcedure();
+	}
+	
+	public void _removeFromModelParent(Set<EOModelVerificationFailure> failures) {
+		getStoredProcedure().removeArgument(this);
+	}
+	
+	public void _addToModelParent(EOStoredProcedure modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) throws EOModelException {
+		if (findUniqueName) {
+			setName(modelParent.findUnusedArgumentName(getName()));
+		}
+		modelParent.addArgument(this);
 	}
 
 	public String toString() {

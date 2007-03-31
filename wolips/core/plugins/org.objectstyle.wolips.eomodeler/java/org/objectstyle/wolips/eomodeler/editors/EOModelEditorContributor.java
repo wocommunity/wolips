@@ -52,40 +52,47 @@ package org.objectstyle.wolips.eomodeler.editors;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.operations.UndoRedoActionGroup;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 
 public class EOModelEditorContributor extends MultiPageEditorActionBarContributor {
-	private IEditorPart myActiveEditor;
+	private IEditorPart _activeEditor;
 
-	private IEditorPart myActiveEditorPage;
+	private IEditorPart _activeEditorPage;
 
-	private EOModelClipboardHandler myClipboardHandler;
+	private EOModelClipboardHandler _clipboardHandler;
+	
+	private UndoRedoActionGroup _undoRedoGroup;
 
 	public EOModelEditorContributor() {
-		myClipboardHandler = new EOModelClipboardHandler();
+		_clipboardHandler = new EOModelClipboardHandler();
 	}
 
-	public void setActiveEditor(IEditorPart _part) {
-		if (myActiveEditor != null) {
-			((ISelectionProvider) myActiveEditor).removeSelectionChangedListener(myClipboardHandler);
+	public void setActiveEditor(IEditorPart part) {
+		if (_activeEditor != null) {
+			((ISelectionProvider) _activeEditor).removeSelectionChangedListener(_clipboardHandler);
 		}
-		myActiveEditor = _part;
-		if (myActiveEditor != null) {
-			((ISelectionProvider) myActiveEditor).addSelectionChangedListener(myClipboardHandler);
+		_activeEditor = part;
+		if (_activeEditor != null) {
+			((ISelectionProvider) _activeEditor).addSelectionChangedListener(_clipboardHandler);
 		}
-		super.setActiveEditor(_part);
+		super.setActiveEditor(part);
 	}
 
-	public void setActivePage(IEditorPart _editor) {
-		if (myActiveEditor != null) {
-			((ISelectionProvider) myActiveEditorPage).addSelectionChangedListener(myClipboardHandler);
+	public void setActivePage(IEditorPart editor) {
+		if (_activeEditor != null) {
+			((ISelectionProvider) _activeEditorPage).addSelectionChangedListener(_clipboardHandler);
 		}
-		myActiveEditorPage = _editor;
-		if (myActiveEditor != null) {
-			((ISelectionProvider) myActiveEditorPage).addSelectionChangedListener(myClipboardHandler);
+		_activeEditorPage = editor;
+		if (_activeEditor != null) {
+			((ISelectionProvider) _activeEditorPage).addSelectionChangedListener(_clipboardHandler);
 		}
 
+		EOModelEditor modelEditor = (EOModelEditor) _activeEditor;
 		IActionBars actionBars = getActionBars();
-		myClipboardHandler.attach(actionBars, (EOModelEditor) myActiveEditor);
+		_clipboardHandler.attach(actionBars, modelEditor);
+		UndoRedoActionGroup undoRedoGroup = new UndoRedoActionGroup(editor.getSite(), PlatformUI.getWorkbench().getOperationSupport().getUndoContext(), false);
+		undoRedoGroup.fillActionBars(actionBars);
 	}
 }

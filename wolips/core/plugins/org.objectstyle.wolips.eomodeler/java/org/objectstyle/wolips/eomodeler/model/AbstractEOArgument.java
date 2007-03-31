@@ -55,7 +55,7 @@ import java.util.Set;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
-public abstract class AbstractEOArgument extends UserInfoableEOModelObject implements ISortableEOModelObject {
+public abstract class AbstractEOArgument<T extends EOModelObject> extends UserInfoableEOModelObject<T> implements ISortableEOModelObject {
 	public static final String ALLOWS_NULL = "allowsNull";
 
 	public static final String NAME = "name";

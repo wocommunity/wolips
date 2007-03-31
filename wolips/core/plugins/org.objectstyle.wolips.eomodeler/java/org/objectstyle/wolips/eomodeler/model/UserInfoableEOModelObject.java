@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
-public abstract class UserInfoableEOModelObject extends EOModelObject implements IUserInfoable {
+public abstract class UserInfoableEOModelObject<T> extends EOModelObject<T> implements IUserInfoable {
 	public static final String USER_INFO = "userInfo";
 
 	private PropertyChangeRepeater myUserInfoRepeater;
