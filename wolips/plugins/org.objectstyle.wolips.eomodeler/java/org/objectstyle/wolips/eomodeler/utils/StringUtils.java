@@ -50,6 +50,32 @@
 package org.objectstyle.wolips.eomodeler.utils;
 
 public class StringUtils {
+	public static String toShortPrettyClassName(String name) {
+		if (name == null) {
+			return null;
+		}
+		String shortName;
+		int dotIndex = name.lastIndexOf('.');
+		if (dotIndex == -1) {
+			shortName = name;
+		}
+		else {
+			shortName = name.substring(dotIndex + 1);
+		}
+		if (shortName.startsWith("EO")) {
+			shortName = shortName.substring(2);
+		}
+		StringBuffer nameBuffer = new StringBuffer(shortName);
+		for (int i = 0; i < nameBuffer.length(); i ++) {
+			char ch = nameBuffer.charAt(i);
+			if (Character.isUpperCase(ch) && i != 0) {
+				nameBuffer.insert(i, ' ');
+				i ++;
+			}
+		}
+		return nameBuffer.toString();
+	}
+	
 	public static int firstLetterIndex(String _name) {
 		int letterIndex = -1;
 		if (_name != null) {

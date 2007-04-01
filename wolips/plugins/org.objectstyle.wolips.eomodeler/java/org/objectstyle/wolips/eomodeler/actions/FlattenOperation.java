@@ -9,30 +9,32 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.objectstyle.wolips.eomodeler.model.AbstractEOAttributePath;
+import org.objectstyle.wolips.eomodeler.model.DuplicateNameException;
+import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModelException;
-import org.objectstyle.wolips.eomodeler.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
+import org.objectstyle.wolips.eomodeler.model.IEOAttribute;
 
-public class DeleteOperation extends AbstractOperation {
-	private EOModelObject _parent;
+public class FlattenOperation extends AbstractOperation {
+	private AbstractEOAttributePath _attributePath;
 
-	private EOModelObject _child;
+	private IEOAttribute _newAttribute;
 
-	public DeleteOperation(EOModelObject object) {
-		super("Delete " + object.getName());
-		_child = object;
+	public FlattenOperation(AbstractEOAttributePath attributePath) {
+		super("Flatten " + attributePath.toKeyPath());
+		_attributePath = attributePath;
 	}
 
 	@Override
 	public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
 		try {
-			Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
-			_parent = (EOModelObject) _child._getModelParent();
-			_child._removeFromModelParent(failures);
-		} catch (EOModelException e) {
-			throw new ExecutionException("Failed to delete object.", e);
+			EOEntity rootEntity = _attributePath.getRootEntity();
+			_newAttribute = rootEntity.addBlankIEOAttribute(_attributePath);
+			return Status.OK_STATUS;
+		} catch (DuplicateNameException e) {
+			throw new ExecutionException("Failed to flatten.", e);
 		}
-		return Status.OK_STATUS;
 	}
 
 	@Override
@@ -44,11 +46,11 @@ public class DeleteOperation extends AbstractOperation {
 	public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
 		try {
 			Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
-			_child._addToModelParent(_parent, true, failures);
+			_newAttribute._removeFromModelParent(failures);
+			return Status.OK_STATUS;
 		} catch (EOModelException e) {
-			throw new ExecutionException("Failed to add object.", e);
+			throw new ExecutionException("Failed to remove flattened object.", e);
 		}
-		return Status.OK_STATUS;
 	}
 
 }

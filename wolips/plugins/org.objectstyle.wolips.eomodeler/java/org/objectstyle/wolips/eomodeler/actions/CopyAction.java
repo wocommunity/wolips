@@ -52,6 +52,12 @@ package org.objectstyle.wolips.eomodeler.actions;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eclipse.core.commands.operations.AbstractOperation;
+import org.eclipse.core.commands.operations.IOperationHistory;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -63,7 +69,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.eomodeler.model.EOModelObject;
+import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class CopyAction extends Action implements IWorkbenchWindowActionDelegate {
@@ -97,16 +105,17 @@ public class CopyAction extends Action implements IWorkbenchWindowActionDelegate
 			}
 			List<EOModelObject> selectedObjectsList = new LinkedList<EOModelObject>();
 			if (selectedObjects != null) {
-				for (int selectedObjectNum = 0; selectedObjectNum < selectedObjects.length; selectedObjectNum++) {
-					Object selectedObject = selectedObjects[selectedObjectNum];
+				for (Object selectedObject : selectedObjects) {
 					if (selectedObject instanceof EOModelObject) {
 						EOModelObject<?> object = (EOModelObject) selectedObject;
 						selectedObjectsList.add(object._cloneModelObject());
 					}
 				}
+				CopyOperation operation = new CopyOperation(selectedObjectsList);
+				operation.addContext(EOModelUtils.getUndoContext(selectedObjects));
+				IOperationHistory operationHistory = PlatformUI.getWorkbench().getOperationSupport().getOperationHistory();
+				operationHistory.execute(operation, null, null);
 			}
-			LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(selectedObjectsList));
-			LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
 		} catch (Throwable t) {
 			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), t);
 		}
@@ -118,5 +127,40 @@ public class CopyAction extends Action implements IWorkbenchWindowActionDelegate
 
 	public void run(IAction _action) {
 		run();
+	}
+
+	protected class CopyOperation extends AbstractOperation {
+		private List<EOModelObject> _objects;
+
+		private ISelection _previousSelection;
+
+		private long _previousSelectionTime;
+
+		public CopyOperation(List<EOModelObject> objects) {
+			super(EOModelUtils.getOperationLabel("Copy", objects));
+			_objects = objects;
+		}
+
+		@Override
+		public IStatus execute(IProgressMonitor monitor, IAdaptable info) {
+			_previousSelection = LocalSelectionTransfer.getTransfer().getSelection();
+			_previousSelectionTime = LocalSelectionTransfer.getTransfer().getSelectionSetTime();
+			LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(_objects));
+			LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
+			return Status.OK_STATUS;
+		}
+
+		@Override
+		public IStatus redo(IProgressMonitor monitor, IAdaptable info) {
+			return execute(monitor, info);
+		}
+
+		@Override
+		public IStatus undo(IProgressMonitor monitor, IAdaptable info) {
+			LocalSelectionTransfer.getTransfer().setSelection(_previousSelection);
+			LocalSelectionTransfer.getTransfer().setSelectionSetTime(_previousSelectionTime);
+			return Status.OK_STATUS;
+		}
+
 	}
 }

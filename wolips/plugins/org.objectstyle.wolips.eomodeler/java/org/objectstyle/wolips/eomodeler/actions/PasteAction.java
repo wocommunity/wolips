@@ -53,6 +53,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.commands.operations.IOperationHistory;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -63,6 +64,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.eomodeler.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
@@ -100,19 +102,24 @@ public class PasteAction extends Action implements IWorkbenchWindowActionDelegat
 			ISelection pastedSelection = LocalSelectionTransfer.getTransfer().getSelection();
 			Object[] clipboardObjects = ((IStructuredSelection) pastedSelection).toArray();
 			Arrays.sort(clipboardObjects, new PasteOrderComparator());
+
+			SimpleCompositeOperation pasteOperation = new SimpleCompositeOperation(EOModelUtils.getOperationLabel("Paste", Arrays.asList(clipboardObjects)));
 			Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
-			for (int clipboardObjectNum = 0; clipboardObjectNum < clipboardObjects.length; clipboardObjectNum++) {
-				Object clipboardObject = clipboardObjects[clipboardObjectNum];
+			for (Object clipboardObject : clipboardObjects) {
 				if (clipboardObject instanceof EOModelObject) {
-					EOModelObject pasteObject = (EOModelObject) clipboardObject;
-					Class<EOModelObject> modelParentClass = pasteObject._getModelParentType();
+					EOModelObject eoModelObject = (EOModelObject) clipboardObject;
+					Class<EOModelObject> modelParentClass = eoModelObject._getModelParentType();
 					EOModelObject pasteIntoObject = EOModelUtils.getRelated(modelParentClass, selectedObject);
 					if (pasteIntoObject != null) {
-						EOModelObject clonedPasteObject = pasteObject._cloneModelObject();
-						clonedPasteObject._addToModelParent(pasteIntoObject, true, failures);
+						EOModelObject clonedPasteObject = eoModelObject._cloneModelObject();
+						pasteOperation.add(new AddOperation(pasteIntoObject, clonedPasteObject));
 					}
 				}
 			}
+			
+			pasteOperation.addContext(EOModelUtils.getUndoContext(selectedObject));
+			IOperationHistory operationHistory = PlatformUI.getWorkbench().getOperationSupport().getOperationHistory();
+			operationHistory.execute(pasteOperation, null, null);
 		} catch (Throwable t) {
 			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), t);
 		}

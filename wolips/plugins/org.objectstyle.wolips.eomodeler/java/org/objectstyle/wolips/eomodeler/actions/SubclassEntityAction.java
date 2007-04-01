@@ -49,6 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.actions;
 
+
+import org.eclipse.core.commands.operations.IOperationHistory;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -57,67 +59,70 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.editors.entity.SubclassEntityDialog;
-import org.objectstyle.wolips.eomodeler.model.DuplicateNameException;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.IEOEntityRelative;
 import org.objectstyle.wolips.eomodeler.model.InheritanceType;
+import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class SubclassEntityAction implements IWorkbenchWindowActionDelegate {
-	private EOEntity myEntity;
+	private EOEntity _entity;
 
-	private EOModel myModel;
+	private EOModel _model;
 
-	private IWorkbenchWindow myWindow;
+	private IWorkbenchWindow _window;
 
-	public void init(IWorkbenchWindow _window) {
-		myWindow = _window;
+	public void init(IWorkbenchWindow window) {
+		_window = window;
 	}
 
 	public void dispose() {
 		// DO NOTHING
 	}
 
-	public void selectionChanged(IAction _action, ISelection _selection) {
-		myModel = null;
-		myEntity = null;
-		if (_selection instanceof IStructuredSelection) {
-			Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+	public void selectionChanged(IAction action, ISelection selection) {
+		_model = null;
+		_entity = null;
+		if (selection instanceof IStructuredSelection) {
+			Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
 			if (selectedObject instanceof EOModel) {
-				myModel = (EOModel) selectedObject;
+				_model = (EOModel) selectedObject;
 			} else if (selectedObject instanceof IEOEntityRelative) {
-				myEntity = ((IEOEntityRelative) selectedObject).getEntity();
-				myModel = myEntity.getModel();
+				_entity = ((IEOEntityRelative) selectedObject).getEntity();
+				_model = _entity.getModel();
 			}
 		}
 	}
 
-	public void run(IAction _action) {
-		if (myModel != null) {
-			SubclassEntityDialog dialog = new SubclassEntityDialog(myWindow.getShell(), myModel, myEntity);
+	public void run(IAction action) {
+		if (_model != null) {
+			SubclassEntityDialog dialog = new SubclassEntityDialog(_window.getShell(), _model, _entity);
 			dialog.setBlockOnOpen(true);
 			int results = dialog.open();
 			if (results == Window.OK) {
 				String entityName = dialog.getEntityName();
 				if (entityName != null && entityName.trim().length() > 0) {
-					EOEntity parentEntity = dialog.getParentEntity();
-					InheritanceType inheritanceType = dialog.getInheritanceType();
 					try {
-						EOEntity newEntity = parentEntity.subclass(entityName, inheritanceType);
-						newEntity.setRestrictingQualifier(dialog.getRestrictingQualifier());
-						parentEntity.getModel().addEntity(newEntity);
-					} catch (DuplicateNameException e) {
+						EOEntity parentEntity = dialog.getParentEntity();
+						InheritanceType inheritanceType = dialog.getInheritanceType();
+						String restrictingQualifier = dialog.getRestrictingQualifier();
+						SubclassOperation operation = new SubclassOperation(parentEntity, inheritanceType, entityName, restrictingQualifier);
+						operation.addContext(EOModelUtils.getUndoContext(_model));
+						IOperationHistory operationHistory = PlatformUI.getWorkbench().getOperationSupport().getOperationHistory();
+						operationHistory.execute(operation, null, null);
+					} catch (Throwable e) {
 						ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), e);
 					}
 				} else {
-					MessageDialog.openError(myWindow.getShell(), Messages.getString("Subclass.noEntityNameTitle"), Messages.getString("Subclass.noEntityNameMessage"));//$NON-NLS-1$
+					MessageDialog.openError(_window.getShell(), Messages.getString("Subclass.noEntityNameTitle"), Messages.getString("Subclass.noEntityNameMessage"));//$NON-NLS-1$
 				}
 			}
 		} else {
-			MessageDialog.openError(myWindow.getShell(), Messages.getString("Subclass.noModelSelectedTitle"), Messages.getString("Subclass.noModelSelectedMessage"));//$NON-NLS-1$
+			MessageDialog.openError(_window.getShell(), Messages.getString("Subclass.noModelSelectedTitle"), Messages.getString("Subclass.noModelSelectedMessage"));//$NON-NLS-1$
 		}
 	}
 }
