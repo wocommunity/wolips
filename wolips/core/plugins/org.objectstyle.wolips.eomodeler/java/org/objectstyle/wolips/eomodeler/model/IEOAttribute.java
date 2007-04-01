@@ -49,6 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
+import java.util.Set;
+
 public interface IEOAttribute extends IEOEntityRelative, IUserInfoable {
 	public EOEntity getEntity();
 
@@ -77,4 +79,6 @@ public interface IEOAttribute extends IEOEntityRelative, IUserInfoable {
 	public boolean isInherited();
 
 	public Boolean isToMany();
+
+	public void _removeFromModelParent(Set<EOModelVerificationFailure> failures) throws EOModelException;
 }

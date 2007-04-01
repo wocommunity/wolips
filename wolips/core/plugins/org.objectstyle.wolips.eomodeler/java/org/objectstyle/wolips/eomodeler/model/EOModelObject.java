@@ -111,9 +111,9 @@ public abstract class EOModelObject<T> implements IAdaptable, IPropertyChangeSou
 			}
 			String newWithoutTrailingNumber = newName.substring(0, cutoffLength);
 			boolean unusedNameFound = (getMethod.invoke(this, newWithoutTrailingNumber) == null);
-			String unusedName = newName;
+			String unusedName = newWithoutTrailingNumber;
 			for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
-				unusedName = newName + dupeNameNum;
+				unusedName = newWithoutTrailingNumber + dupeNameNum;
 				Object existingObject = getMethod.invoke(this, unusedName);
 				unusedNameFound = (existingObject == null);
 			}

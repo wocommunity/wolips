@@ -49,17 +49,13 @@
  */
 package org.objectstyle.wolips.eomodeler.actions;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.commands.operations.IOperationHistory;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -68,59 +64,50 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
-import org.objectstyle.wolips.eomodeler.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class CutAction extends Action implements IWorkbenchWindowActionDelegate {
-	private IWorkbenchWindow myWindow;
+	private IWorkbenchWindow _window;
 
-	private ISelection mySelection;
+	private ISelection _selection;
 
-	private Clipboard myClipboard;
+	private Clipboard _clipboard;
 
 	public CutAction(Clipboard _clipboard) {
-		myClipboard = _clipboard;
+		_clipboard = _clipboard;
 	}
 
 	public void dispose() {
 		// DO NOTHING
 	}
 
-	public void init(IWorkbenchWindow _window) {
-		myWindow = _window;
+	public void init(IWorkbenchWindow window) {
+		_window = window;
 	}
 
-	public void selectionChanged(IAction _action, ISelection _selection) {
-		mySelection = _selection;
+	public void selectionChanged(IAction action, ISelection selection) {
+		_selection = selection;
 	}
 
 	public void run() {
 		try {
 			Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 			Object[] selectedObjects = null;
-			if (mySelection instanceof IStructuredSelection) {
-				selectedObjects = ((IStructuredSelection) mySelection).toArray();
+			if (_selection instanceof IStructuredSelection) {
+				selectedObjects = ((IStructuredSelection) _selection).toArray();
 			}
-			List<EOModelObject> selectedObjectsList = new LinkedList<EOModelObject>();
 			if (selectedObjects != null) {
 				Set<EOModelVerificationFailure> referenceFailures = EOModelUtils.getReferenceFailures(selectedObjects);
 				if (!referenceFailures.isEmpty()) {
 					new EOModelErrorDialog(activeShell, referenceFailures).open();
 				} else {
-					Set<EOModelVerificationFailure> cutFailures = new HashSet<EOModelVerificationFailure>();
-					for (int selectedObjectNum = 0; selectedObjectNum < selectedObjects.length; selectedObjectNum++) {
-						Object selectedObject = selectedObjects[selectedObjectNum];
-						if (selectedObject instanceof EOModelObject) {
-							EOModelObject<?> object = (EOModelObject) selectedObject;
-							selectedObjectsList.add(object._cloneModelObject());
-							object._removeFromModelParent(cutFailures);
-						}
-					}
+					CutOperation operation = new CutOperation(selectedObjects);
+					operation.addContext(EOModelUtils.getUndoContext(selectedObjects));
+					IOperationHistory operationHistory = PlatformUI.getWorkbench().getOperationSupport().getOperationHistory();
+					operationHistory.execute(operation, null, null);
 				}
-				LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(selectedObjectsList));
-				LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
 			}
 		} catch (Throwable t) {
 			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), t);

@@ -1,6 +1,7 @@
 package org.objectstyle.wolips.eomodeler.utils;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.commands.operations.IUndoContext;
@@ -15,6 +16,40 @@ import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.model.IEOEntityRelative;
 
 public class EOModelUtils {
+	public static String getOperationLabel(String operation, List objs) {
+		StringBuffer operationLabel = new StringBuffer();
+		operationLabel.append(operation);
+		if (objs != null) {
+			if (objs.size() == 1) {
+				Object obj = objs.get(0);
+				if (obj instanceof EOModelObject) {
+					operationLabel.append(" ");
+					operationLabel.append(((EOModelObject) obj).getName());
+				}
+			} else if (objs.size() > 1) {
+				operationLabel.append(" ");
+				operationLabel.append(objs.size());
+				Class objType = null;
+				for (Object obj : objs) {
+					Class thisObjType = obj.getClass();
+					if (objType == null) {
+						objType = thisObjType;
+					} else if (!objType.isAssignableFrom(thisObjType)) {
+						objType = null;
+						break;
+					}
+				}
+				operationLabel.append(" ");
+				if (objType == null) {
+					operationLabel.append("Items");
+				} else {
+					operationLabel.append(StringUtils.toPlural(StringUtils.toShortPrettyClassName(objType.getName())));
+				}
+			}
+		}
+		return operationLabel.toString();
+	}
+
 	public static Set<EOModelVerificationFailure> getReferenceFailures(Object[] selectedObjects) {
 		Set<EOModelVerificationFailure> referenceFailures = new HashSet<EOModelVerificationFailure>();
 		for (int selectedObjectNum = 0; selectedObjectNum < selectedObjects.length; selectedObjectNum++) {
@@ -39,11 +74,9 @@ public class EOModelUtils {
 		} else if (EOStoredProcedure.class.isAssignableFrom(type)) {
 			if (obj instanceof EOStoredProcedure) {
 				relatedObj = obj;
-			}
-			else if (obj instanceof EOArgument) {
-				relatedObj = ((EOArgument)obj).getStoredProcedure();
-			}
-			else {
+			} else if (obj instanceof EOArgument) {
+				relatedObj = ((EOArgument) obj).getStoredProcedure();
+			} else {
 				relatedObj = null;
 			}
 		} else {
@@ -66,8 +99,11 @@ public class EOModelUtils {
 			model = ((EODatabaseConfig) obj).getModel();
 		} else if (obj instanceof Object[]) {
 			Object[] objs = (Object[]) obj;
-			if (objs.length > 0) {
-				model = EOModelUtils.getRelatedModel(objs[0]);
+			for (Object arrayObj : objs) {
+				model = EOModelUtils.getRelatedModel(arrayObj);
+				if (model != null) {
+					break;
+				}
 			}
 		}
 		return model;

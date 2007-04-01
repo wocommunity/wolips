@@ -49,6 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.actions;
 
+import java.util.Arrays;
 import java.util.Set;
 
 import org.eclipse.core.commands.ExecutionException;
@@ -58,6 +59,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -66,6 +68,7 @@ import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
 import org.objectstyle.wolips.eomodeler.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
+import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class DeleteAction extends Action {
 	private ISelection mySelection;
@@ -73,11 +76,10 @@ public class DeleteAction extends Action {
 	public void dispose() {
 		// DO NOTHING
 	}
-	
+
 	public void selectionChanged(IAction _action, ISelection _selection) {
 		mySelection = _selection;
 	}
-	
 
 	public void run() {
 		Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
@@ -86,21 +88,29 @@ public class DeleteAction extends Action {
 			selectedObjects = ((IStructuredSelection) mySelection).toArray();
 		}
 		if (selectedObjects != null) {
-			Set<EOModelVerificationFailure> referenceFailures = EOModelUtils.getReferenceFailures(selectedObjects);
-			if (!referenceFailures.isEmpty()) {
-				new EOModelErrorDialog(activeShell, referenceFailures).open();
-			} else if (MessageDialog.openConfirm(activeShell, Messages.getString("delete.objectsTitle"), Messages.getString("delete.objectsMessage"))) {
-				try {
-					for (Object obj: selectedObjects) {
-						EOModelObject eoModelObject = (EOModelObject)obj;
-						DeleteOperation operation = new DeleteOperation(eoModelObject);
-						operation.addContext(EOModelUtils.getUndoContext(eoModelObject));
+			try {
+				Set<EOModelVerificationFailure> referenceFailures = EOModelUtils.getReferenceFailures(selectedObjects);
+				if (!referenceFailures.isEmpty()) {
+					new EOModelErrorDialog(activeShell, referenceFailures).open();
+				} else if (MessageDialog.openConfirm(activeShell, Messages.getString("delete.objectsTitle"), Messages.getString("delete.objectsMessage"))) {
+					try {
+						SimpleCompositeOperation compositeOperation = new SimpleCompositeOperation(EOModelUtils.getOperationLabel("Delete", Arrays.asList(selectedObjects)));
+						for (Object obj : selectedObjects) {
+							if (obj instanceof EOModelObject) {
+								EOModelObject eoModelObject = (EOModelObject) obj;
+								DeleteOperation operation = new DeleteOperation(eoModelObject);
+								compositeOperation.add(operation);
+							}
+						}
+						compositeOperation.addContext(EOModelUtils.getUndoContext(selectedObjects));
 						IOperationHistory operationHistory = PlatformUI.getWorkbench().getOperationSupport().getOperationHistory();
-						operationHistory.execute(operation, null, null);
+						operationHistory.execute(compositeOperation, null, null);
+					} catch (ExecutionException e) {
+						throw new RuntimeException("Failed to delete.", e);
 					}
-				} catch (ExecutionException e) {
-					throw new RuntimeException("Failed.", e);
 				}
+			} catch (Throwable t) {
+				ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), t);
 			}
 		}
 	}

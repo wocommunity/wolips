@@ -49,6 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.actions;
 
+import org.eclipse.core.commands.operations.IOperationHistory;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -56,45 +57,46 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.AbstractEOAttributePath;
-import org.objectstyle.wolips.eomodeler.model.DuplicateNameException;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.model.IEOAttribute;
+import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class FlattenAction implements IWorkbenchWindowActionDelegate {
-	private IWorkbenchWindow myWindow;
+	private IWorkbenchWindow _window;
 
-	private AbstractEOAttributePath myAttributePath;
+	private AbstractEOAttributePath _attributePath;
 
 	public void dispose() {
 		// DO NOTHING
 	}
 
-	public void init(IWorkbenchWindow _window) {
-		myWindow = _window;
+	public void init(IWorkbenchWindow window) {
+		_window = window;
 	}
 
-	public void selectionChanged(IAction _action, ISelection _selection) {
-		myAttributePath = null;
-		if (_selection instanceof IStructuredSelection) {
-			Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+	public void selectionChanged(IAction action, ISelection selection) {
+		_attributePath = null;
+		if (selection instanceof IStructuredSelection) {
+			Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
 			if (selectedObject instanceof AbstractEOAttributePath) {
-				myAttributePath = (AbstractEOAttributePath) selectedObject;
+				_attributePath = (AbstractEOAttributePath) selectedObject;
 			}
 		}
 	}
 
-	public void run(IAction _action) {
+	public void run(IAction action) {
 		try {
-			if (myAttributePath != null) {
-				EOEntity rootEntity = myAttributePath.getRootEntity();
-				IEOAttribute newAttribute = rootEntity.addBlankIEOAttribute(myAttributePath);
+			if (_attributePath != null) {
+				FlattenOperation operation = new FlattenOperation(_attributePath);
+				operation.addContext(EOModelUtils.getUndoContext(_attributePath));
+				IOperationHistory operationHistory = PlatformUI.getWorkbench().getOperationSupport().getOperationHistory();
+				operationHistory.execute(operation, null, null);
 			} else {
-				MessageDialog.openError(myWindow.getShell(), Messages.getString("EORelationship.noRelationshipOrAttributeSelectedTitle"), Messages.getString("EORelationship.noRelationshipOrAttributeSelectedMessage"));//$NON-NLS-1$
+				MessageDialog.openError(_window.getShell(), Messages.getString("EORelationship.noRelationshipOrAttributeSelectedTitle"), Messages.getString("EORelationship.noRelationshipOrAttributeSelectedMessage"));//$NON-NLS-1$
 			}
-		} catch (DuplicateNameException e) {
+		} catch (Throwable e) {
 			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), e);
 		}
 	}

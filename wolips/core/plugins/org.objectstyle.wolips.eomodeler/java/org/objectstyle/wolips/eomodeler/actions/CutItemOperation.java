@@ -13,13 +13,15 @@ import org.objectstyle.wolips.eomodeler.model.EOModelException;
 import org.objectstyle.wolips.eomodeler.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
 
-public class DeleteOperation extends AbstractOperation {
+public class CutItemOperation extends AbstractOperation {
 	private EOModelObject _parent;
 
 	private EOModelObject _child;
 
-	public DeleteOperation(EOModelObject object) {
-		super("Delete " + object.getName());
+	private EOModelObject _childClone;
+
+	public CutItemOperation(EOModelObject object) {
+		super("Cut");
 		_child = object;
 	}
 
@@ -28,9 +30,10 @@ public class DeleteOperation extends AbstractOperation {
 		try {
 			Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
 			_parent = (EOModelObject) _child._getModelParent();
+			_childClone = _child._cloneModelObject();
 			_child._removeFromModelParent(failures);
 		} catch (EOModelException e) {
-			throw new ExecutionException("Failed to delete object.", e);
+			throw new ExecutionException("Failed to cut object.", e);
 		}
 		return Status.OK_STATUS;
 	}
@@ -46,7 +49,7 @@ public class DeleteOperation extends AbstractOperation {
 			Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
 			_child._addToModelParent(_parent, true, failures);
 		} catch (EOModelException e) {
-			throw new ExecutionException("Failed to add object.", e);
+			throw new ExecutionException("Failed to readd object.", e);
 		}
 		return Status.OK_STATUS;
 	}
