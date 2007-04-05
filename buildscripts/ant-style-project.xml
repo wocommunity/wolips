@@ -14,12 +14,7 @@
     <!-- ============================================= -->
     <target name="java">
        <javac srcdir="${param.src.dir}"
-                destdir="${param.dest.dir}"
-                deprecation="${compile.deprecation}"
-                debug="${compile.debug}"
-                source="${compile.source}"
-                target="${compile.target}"
-                optimize="${compile.optimize}">
+                destdir="${param.dest.dir}">
             <classpath refid="classpath"/>
         </javac>
     </target>
@@ -33,12 +28,7 @@
     <!-- ============================================= -->
     <target name="java.tests">
        <javac srcdir="${param.src.dir}"
-                destdir="${param.dest.dir}"
-                deprecation="${compile.deprecation}"
-                source="${compile.source}"
-                target="${compile.target}"
-                debug="${compile.debug}"
-                optimize="${compile.optimize}">
+                destdir="${param.dest.dir}">
             <classpath refid="classpath-tests"/>
         </javac>
     </target>
