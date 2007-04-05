@@ -10,8 +10,5 @@ Eclipse-LazyStart: true
 Export-Package: org.objectstyle.woenvironment.env,
  org.objectstyle.woenvironment.pb,
  org.objectstyle.woenvironment.pbx,
- org.objectstyle.woenvironment.util,
- org.objectstyle.woproject.ant,
- org.objectstyle.woproject.log4j,
- org.objectstyle.woproject.util
+ org.objectstyle.woenvironment.util
 Require-Bundle: org.objectstyle.wolips.thirdparty.cayenne
