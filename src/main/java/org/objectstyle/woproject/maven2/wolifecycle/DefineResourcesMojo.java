@@ -189,7 +189,7 @@ public abstract class DefineResourcesMojo extends WOMojo {
 				if (fileName.equalsIgnoreCase("Nonlocalized.lproj")) {
 					resource.setTargetPath(fullTargetPath);
 				} else {
-					resource.setTargetPath(fullTargetPath + File.separator + fileName.substring(0, fileName.length() - 6));
+					resource.setTargetPath(fullTargetPath + File.separator + fileName);
 				}
 				resources.add(resource);
 			}
