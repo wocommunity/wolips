@@ -1,10 +1,9 @@
-package org.objectstyle.wolips.eogenerator.locate;
+package org.objectstyle.wolips.locate.scope;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.objectstyle.wolips.locate.scope.ILocateScope;
 
 public class EOGenLocateScope implements ILocateScope {
 	private IProject myProject;

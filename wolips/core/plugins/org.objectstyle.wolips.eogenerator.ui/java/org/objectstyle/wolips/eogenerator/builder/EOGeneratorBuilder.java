@@ -55,13 +55,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.objectstyle.wolips.core.resources.builder.AbstractFullAndIncrementalBuilder;
-import org.objectstyle.wolips.eogenerator.locate.EOGenLocateScope;
 import org.objectstyle.wolips.eogenerator.model.EOGenerateWorkspaceJob;
 import org.objectstyle.wolips.eogenerator.model.EOGeneratorModel;
 import org.objectstyle.wolips.eogenerator.model.EOModelReference;
 import org.objectstyle.wolips.eogenerator.ui.Activator;
 import org.objectstyle.wolips.locate.Locate;
 import org.objectstyle.wolips.locate.result.DefaultLocateResult;
+import org.objectstyle.wolips.locate.scope.EOGenLocateScope;
 import org.objectstyle.wolips.preferences.Preferences;
 
 public class EOGeneratorBuilder extends AbstractFullAndIncrementalBuilder {
