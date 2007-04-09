@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2006 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2006 - 2007 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -176,15 +176,26 @@ public class EclipseEOModelGroupFactory {
 
 		public boolean visit(IResource _resource) throws CoreException {
 			try {
-				boolean visitChildren = true;
+				if(!_resource.isAccessible()) {
+					return false;
+				}
+				if(_resource.isDerived()) {
+					return false;
+				}
+				String name = _resource.getName();
+				if(name != null) {
+					if("build".equals(name)||"dist".equals(name)||"target".equals(name)) {
+						return false;
+					}
+				}
 				if (_resource.getType() == IResource.FOLDER) {
 					File resourceFile = _resource.getLocation().toFile();
 					if (!mySearchedFolders.contains(resourceFile) && "eomodeld".equals(_resource.getFileExtension())) {
 						myModelGroup.addModelFromFolder(resourceFile.toURL(), myFailures, mySkipOnDuplicates, _resource.getProject());
-						visitChildren = false;
+						return false;
 					}
 				}
-				return visitChildren;
+				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, 0, "Failed to load model in " + _resource + ": " + e, e));
