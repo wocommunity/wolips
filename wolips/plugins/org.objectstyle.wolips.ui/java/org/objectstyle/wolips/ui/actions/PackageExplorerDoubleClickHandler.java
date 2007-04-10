@@ -54,6 +54,7 @@ import java.util.Iterator;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.jdt.internal.core.util.WeakHashSet;
 import org.eclipse.jdt.internal.ui.packageview.PackageExplorerPart;
+import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -132,12 +133,12 @@ public class PackageExplorerDoubleClickHandler implements IPageListener, IPartLi
 	}
 
 	protected void findAndAttachToPackageExplorerInPage(IWorkbenchPage page) {
-		IWorkbenchPartReference packageExplorerPartRef = page.findViewReference(PackageExplorerPart.VIEW_ID);
+		IWorkbenchPartReference packageExplorerPartRef = page.findViewReference(JavaUI.ID_PACKAGES);
 		attachToPartIfNecessary(packageExplorerPartRef);
 	}
 
 	protected synchronized void attachToPartIfNecessary(IWorkbenchPartReference partReference) {
-		if (partReference != null && PackageExplorerPart.VIEW_ID.equals(partReference.getId())) {
+		if (partReference != null && JavaUI.ID_PACKAGES.equals(partReference.getId())) {
 			IWorkbenchPart part = partReference.getPart(false);
 			if (part instanceof PackageExplorerPart) {
 				PackageExplorerPart packageExplorerPart = (PackageExplorerPart) part;
