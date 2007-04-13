@@ -46,7 +46,7 @@
          </action>
       </objectContribution>
          <objectContribution
-            objectClass="org.eclipse.core.resources.IContainer"
+            objectClass="org.eclipse.core.resources.IResource"
             adaptable="true"
             id="org.objectstyle.wolips.goodies.ui.win.actions.ShowFileInShellAction">
          <action

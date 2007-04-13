@@ -101,7 +101,7 @@ public class NativeHelper {
 		}
 	}
 
-	public static void cdInTerminal(IContainer container) {
+	public static void cdInTerminal(IResource resource) {
 		try {
 			Class nsApplicationClass = NativeHelper.APPLE_CLASS_LOADER.loadClass("com.apple.cocoa.application.NSApplication");
 			Method nsApplicationSharedApplicationMethod = nsApplicationClass.getMethod("sharedApplication", null);
@@ -114,7 +114,7 @@ public class NativeHelper {
 			Constructor nsMutableDictionaryConstructor = nsMutableDictionaryClass.getConstructor(null);
 			Object errorsDictionary = nsMutableDictionaryConstructor.newInstance(null);
 
-			String containerPath = container.getLocation().toOSString().replaceAll(" ", "\\ ");
+            String containerPath = getParentOfResource(resource).replaceAll(" ", "\\ ");
 			String openInTerminalString = "tell application \"Terminal\"\n do script \"cd " + containerPath + "\"\n activate\nend tell";
 			Object nsAppleScript = nsAppleScriptConstructor.newInstance(new Object[] { openInTerminalString });
 
@@ -123,6 +123,19 @@ public class NativeHelper {
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
+	}
+
+	private static String getParentOfResource(IResource resource) {
+        File file = resource.getLocation().toFile();
+        File path = null;
+        if (file != null) {
+            if (!file.isDirectory() && file.getParentFile() != null) {
+                path = file.getParentFile();
+            } else {
+                path = file;
+            }
+        }
+        return path.getPath();
 	}
 
 }
