@@ -155,7 +155,7 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
 			_progressMonitor.subTask("Touching files related to " + _resource.getName() + " ...");
 		}
 
-		IMarker[] markers = _resource.getProject().findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+		IMarker[] markers = _resource.getProject().findMarkers(WodclipsePlugin.WOD_PROBLEM, true, IResource.DEPTH_INFINITE);
 		Set relatedResources = new HashSet();
 		String name = _resource.getName();
 		for (int markerNum = 0; markerNum < markers.length; markerNum++) {

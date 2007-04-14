@@ -57,6 +57,7 @@ import org.osgi.framework.BundleContext;
  * @author mike
  */
 public class WodclipsePlugin extends AbstractBaseUIActivator {
+	public static final String WOD_PROBLEM = "org.objectstyle.wolips.wodclipse.problem";
 	// The shared instance.
 	private static WodclipsePlugin plugin;
 
