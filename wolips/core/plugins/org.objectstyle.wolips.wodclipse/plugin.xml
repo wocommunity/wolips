@@ -96,4 +96,10 @@
           id="org.objectstyle.wolips.wodclipse.category"
           name="WOD Editor"/>
  </extension>
+ <extension
+       id="org.objectstyle.wolips.wodclipse.problem"
+       name="WOD Problem"
+       point="org.eclipse.core.resources.markers">
+    <super type="org.eclipse.core.resources.problemmarker"/>
+ </extension>
 </plugin>
