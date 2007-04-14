@@ -59,6 +59,8 @@ import org.osgi.framework.BundleContext;
  * The activator class controls the plug-in life cycle
  */
 public class Activator extends AbstractBaseUIActivator {
+	public static final String EOMODEL_PROBLEM_MARKER = "org.objectstyle.wolips.eomodeler.problem";
+	
 	public static final String CHECK_ICON = "check";
 
 	public static final String EOMODEL_ICON = "eoModel";

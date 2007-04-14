@@ -64,9 +64,10 @@ import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
@@ -74,34 +75,34 @@ import org.objectstyle.wolips.eomodeler.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
-public class CopyAction extends Action implements IWorkbenchWindowActionDelegate {
-	private IWorkbenchWindow myWindow;
+public class CopyAction extends Action implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
+	private ISelection _selection;
 
-	private ISelection mySelection;
-
-	private Clipboard myClipboard;
-
-	public CopyAction(Clipboard _clipboard) {
-		myClipboard = _clipboard;
+	public CopyAction() {
+		// DO NOTHING
 	}
 
 	public void dispose() {
 		// DO NOTHING
 	}
 
-	public void init(IWorkbenchWindow _window) {
-		myWindow = _window;
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		// DO NOTHING
 	}
 
-	public void selectionChanged(IAction _action, ISelection _selection) {
-		mySelection = _selection;
+	public void init(IWorkbenchWindow window) {
+		// DO NOTHING
+	}
+
+	public void selectionChanged(IAction action, ISelection selection) {
+		_selection = selection;
 	}
 
 	public void run() {
 		try {
 			Object[] selectedObjects = null;
-			if (mySelection instanceof IStructuredSelection) {
-				selectedObjects = ((IStructuredSelection) mySelection).toArray();
+			if (_selection instanceof IStructuredSelection) {
+				selectedObjects = ((IStructuredSelection) _selection).toArray();
 			}
 			List<EOModelObject> selectedObjectsList = new LinkedList<EOModelObject>();
 			if (selectedObjects != null) {
@@ -121,11 +122,11 @@ public class CopyAction extends Action implements IWorkbenchWindowActionDelegate
 		}
 	}
 
-	public void runWithEvent(Event _event) {
+	public void runWithEvent(Event event) {
 		run();
 	}
 
-	public void run(IAction _action) {
+	public void run(IAction action) {
 		run();
 	}
 

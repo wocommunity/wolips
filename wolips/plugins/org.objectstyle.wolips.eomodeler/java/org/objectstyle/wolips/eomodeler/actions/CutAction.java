@@ -56,10 +56,11 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IViewActionDelegate;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
@@ -68,15 +69,11 @@ import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
-public class CutAction extends Action implements IWorkbenchWindowActionDelegate {
-	private IWorkbenchWindow _window;
-
+public class CutAction extends Action implements IWorkbenchWindowActionDelegate, IViewActionDelegate {
 	private ISelection _selection;
 
-	private Clipboard _clipboard;
-
-	public CutAction(Clipboard _clipboard) {
-		_clipboard = _clipboard;
+	public CutAction() {
+		// DO NOTHING
 	}
 
 	public void dispose() {
@@ -84,7 +81,11 @@ public class CutAction extends Action implements IWorkbenchWindowActionDelegate 
 	}
 
 	public void init(IWorkbenchWindow window) {
-		_window = window;
+		// DO NOTHING
+	}
+	
+	public void init(IViewPart view) {
+		// DO NOTHING
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {

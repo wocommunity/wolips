@@ -55,6 +55,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
@@ -63,42 +64,54 @@ import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 
 public class EOModelTreeViewUpdater {
-	private TreeViewer myTreeViewer;
+	private TreeViewer _treeViewer;
 
-	private ModelPropertyChangeListener myModelListener;
+	private ModelPropertyChangeListener _modelListener;
 
-	private EntityPropertyChangeListener myEntityListener;
+	private EntityPropertyChangeListener _entityListener;
 
-	private StoredProcedurePropertyChangeListener myStoredProcedureListener;
+	private StoredProcedurePropertyChangeListener _storedProcedureListener;
 
-	private EOModel myModel;
+	private EOModel _model;
 
-	private List<EOEntity> myEntities;
+	private List<EOEntity> _entities;
 
-	private List<EOStoredProcedure> myStoredProcedures;
+	private List<EOStoredProcedure> _storedProcedures;
 
-	public EOModelTreeViewUpdater(TreeViewer _treeViewer, EOModelOutlineContentProvider _contentProvider) {
-		myTreeViewer = _treeViewer;
-		myTreeViewer.setContentProvider(_contentProvider);
-		myTreeViewer.setLabelProvider(new EOModelOutlineLabelProvider(myTreeViewer));
-		myTreeViewer.setSorter(new EOModelOutlineViewerSorter());
-		myModelListener = new ModelPropertyChangeListener();
-		myEntityListener = new EntityPropertyChangeListener();
-		myStoredProcedureListener = new StoredProcedurePropertyChangeListener();
+	public EOModelTreeViewUpdater(TreeViewer treeViewer, EOModelOutlineContentProvider contentProvider) {
+		_treeViewer = treeViewer;
+		_treeViewer.setContentProvider(contentProvider);
+		_treeViewer.setLabelProvider(new EOModelOutlineLabelProvider(_treeViewer));
+		_treeViewer.setSorter(new EOModelOutlineViewerSorter());
+		_modelListener = new ModelPropertyChangeListener();
+		_entityListener = new EntityPropertyChangeListener();
+		_storedProcedureListener = new StoredProcedurePropertyChangeListener();
 	}
 
-	public void setModel(EOModel _model) {
+	public void setModel(EOModel model) {
 		removePropertyChangeListeners();
-		myModel = _model;
+		_model = model;
 		addPropertyChangeListeners();
-		if (myTreeViewer != null) {
-			setInput(myTreeViewer);
+		if (_treeViewer != null) {
+			setInput();
 		}
 	}
 
-	protected void setInput(TreeViewer _treeViewer) {
-		_treeViewer.setInput(new EOModelContainer(myModel));
-		_treeViewer.expandToLevel(2);
+	public void showModelGroup() {
+		_treeViewer.setInput(_model.getModelGroup());
+		_treeViewer.expandToLevel(_model, 1);
+		_treeViewer.setSelection(new StructuredSelection(_model));
+	}
+
+	public void showModel() {
+		EOModelContainer container = new EOModelContainer(_model);
+		_treeViewer.setInput(container);
+		_treeViewer.expandToLevel(_model, 1);
+		_treeViewer.setSelection(new StructuredSelection(_model));
+	}
+
+	protected void setInput() {
+		showModel();
 	}
 
 	protected void refreshPropertyChangeListeners() {
@@ -107,64 +120,64 @@ public class EOModelTreeViewUpdater {
 	}
 
 	public EOModel getModel() {
-		return myModel;
+		return _model;
 	}
 
 	protected TreeViewer getTreeViewer() {
-		return myTreeViewer;
+		return _treeViewer;
 	}
 
 	protected void removePropertyChangeListeners() {
-		if (myModel != null) {
-			myModel.removePropertyChangeListener(myModelListener);
-			if (myEntities != null) {
-				Iterator oldEntitiesIter = myEntities.iterator();
+		if (_model != null) {
+			_model.removePropertyChangeListener(_modelListener);
+			if (_entities != null) {
+				Iterator oldEntitiesIter = _entities.iterator();
 				while (oldEntitiesIter.hasNext()) {
 					EOEntity entity = (EOEntity) oldEntitiesIter.next();
-					entity.removePropertyChangeListener(myEntityListener);
+					entity.removePropertyChangeListener(_entityListener);
 				}
 			}
-			if (myStoredProcedures != null) {
-				Iterator oldStoredProceduresIter = myStoredProcedures.iterator();
+			if (_storedProcedures != null) {
+				Iterator oldStoredProceduresIter = _storedProcedures.iterator();
 				while (oldStoredProceduresIter.hasNext()) {
 					EOStoredProcedure storedProcedure = (EOStoredProcedure) oldStoredProceduresIter.next();
-					storedProcedure.removePropertyChangeListener(myStoredProcedureListener);
+					storedProcedure.removePropertyChangeListener(_storedProcedureListener);
 				}
 			}
 		}
 	}
 
 	protected void addPropertyChangeListeners() {
-		if (myModel != null) {
-			myEntities = new LinkedList<EOEntity>(myModel.getEntities());
-			myStoredProcedures = new LinkedList<EOStoredProcedure>(myModel.getStoredProcedures());
+		if (_model != null) {
+			_entities = new LinkedList<EOEntity>(_model.getEntities());
+			_storedProcedures = new LinkedList<EOStoredProcedure>(_model.getStoredProcedures());
 
-			if (myStoredProcedures != null) {
-				Iterator oldStoredProceduresIter = myStoredProcedures.iterator();
+			if (_storedProcedures != null) {
+				Iterator oldStoredProceduresIter = _storedProcedures.iterator();
 				while (oldStoredProceduresIter.hasNext()) {
 					EOStoredProcedure storedProcedure = (EOStoredProcedure) oldStoredProceduresIter.next();
-					storedProcedure.addPropertyChangeListener(myStoredProcedureListener);
+					storedProcedure.addPropertyChangeListener(_storedProcedureListener);
 				}
 			}
 
-			Iterator newEntitiesIter = myEntities.iterator();
+			Iterator newEntitiesIter = _entities.iterator();
 			while (newEntitiesIter.hasNext()) {
 				EOEntity entity = (EOEntity) newEntitiesIter.next();
-				entity.addPropertyChangeListener(myEntityListener);
+				entity.addPropertyChangeListener(_entityListener);
 			}
-			myModel.addPropertyChangeListener(myModelListener);
+			_model.addPropertyChangeListener(_modelListener);
 		}
 	}
 
-	protected void refreshRelationshipsForEntity(EOEntity _entity) {
+	protected void refreshRelationshipsForEntity(EOEntity entity) {
 		TreeViewer treeViewer = getTreeViewer();
 		if (treeViewer != null) {
-			treeViewer.refresh(_entity, true);
+			treeViewer.refresh(entity, true);
 			Object[] expandedElements = treeViewer.getExpandedElements();
 			for (int expandedElementNum = 0; expandedElementNum < expandedElements.length; expandedElementNum++) {
 				if (expandedElements[expandedElementNum] instanceof EORelationshipPath) {
 					EORelationshipPath relationshipPath = (EORelationshipPath) expandedElements[expandedElementNum];
-					if (relationshipPath.getChildRelationship().getEntity().equals(_entity)) {
+					if (relationshipPath.getChildRelationship().getEntity().equals(entity)) {
 						treeViewer.refresh(relationshipPath, true);
 					}
 				}
@@ -173,27 +186,26 @@ public class EOModelTreeViewUpdater {
 	}
 
 	protected class ModelPropertyChangeListener implements PropertyChangeListener {
-		public void propertyChange(PropertyChangeEvent _event) {
+		public void propertyChange(PropertyChangeEvent event) {
 			TreeViewer treeViewer = getTreeViewer();
 			if (treeViewer != null && !treeViewer.getTree().isDisposed()) {
-				String changedPropertyName = _event.getPropertyName();
+				String changedPropertyName = event.getPropertyName();
 				if (EOModel.ENTITIES.equals(changedPropertyName) || EOModel.STORED_PROCEDURES.equals(changedPropertyName) || EOModel.DATABASE_CONFIGS.equals(changedPropertyName) || EOModel.DATABASE_CONFIG.equals(changedPropertyName)) {
 					// getTreeViewer().refresh(true);
 					treeViewer.refresh(true);
 					refreshPropertyChangeListeners();
+				} else if (EOModel.ACTIVE_DATABASE_CONFIG.equals(changedPropertyName)) {
+					treeViewer.refresh(true);
 				}
-        else if (EOModel.ACTIVE_DATABASE_CONFIG.equals(changedPropertyName)) {
-          treeViewer.refresh(true);
-        }
 			}
 		}
 	}
 
 	protected class StoredProcedurePropertyChangeListener implements PropertyChangeListener {
-		public void propertyChange(PropertyChangeEvent _event) {
+		public void propertyChange(PropertyChangeEvent event) {
 			TreeViewer treeViewer = EOModelTreeViewUpdater.this.getTreeViewer();
 			if (treeViewer != null && !treeViewer.getTree().isDisposed()) {
-				String changedPropertyName = _event.getPropertyName();
+				String changedPropertyName = event.getPropertyName();
 				if (EOStoredProcedure.NAME.equals(changedPropertyName)) {
 					treeViewer.refresh(true);
 				} else if (EOStoredProcedure.ARGUMENTS.equals(changedPropertyName)) {
@@ -206,10 +218,10 @@ public class EOModelTreeViewUpdater {
 	}
 
 	protected class EntityPropertyChangeListener implements PropertyChangeListener {
-		public void propertyChange(PropertyChangeEvent _event) {
+		public void propertyChange(PropertyChangeEvent event) {
 			TreeViewer treeViewer = EOModelTreeViewUpdater.this.getTreeViewer();
 			if (treeViewer != null && !treeViewer.getTree().isDisposed()) {
-				String changedPropertyName = _event.getPropertyName();
+				String changedPropertyName = event.getPropertyName();
 				if (EOEntity.NAME.equals(changedPropertyName)) {
 					treeViewer.refresh(true);
 				} else if (EOEntity.FETCH_SPECIFICATIONS.equals(changedPropertyName)) {
@@ -221,10 +233,10 @@ public class EOModelTreeViewUpdater {
 				} else if (EOEntity.ATTRIBUTE.equals(changedPropertyName)) {
 					treeViewer.refresh(true);
 				} else if (EOEntity.RELATIONSHIPS.equals(changedPropertyName)) {
-					EOEntity entity = (EOEntity) _event.getSource();
+					EOEntity entity = (EOEntity) event.getSource();
 					EOModelTreeViewUpdater.this.refreshRelationshipsForEntity(entity);
 				} else if (EOEntity.RELATIONSHIP.equals(changedPropertyName)) {
-					EOEntity entity = (EOEntity) _event.getSource();
+					EOEntity entity = (EOEntity) event.getSource();
 					EOModelTreeViewUpdater.this.refreshRelationshipsForEntity(entity);
 				} else if (EOEntity.ENTITY_INDEX.equals(changedPropertyName)) {
 					treeViewer.refresh(true);

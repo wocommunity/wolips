@@ -49,57 +49,127 @@
  */
 package org.objectstyle.wolips.eomodeler.outline;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
+import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.editors.EOModelClipboardHandler;
 import org.objectstyle.wolips.eomodeler.editors.EOModelEditor;
 
 public class EOModelContentOutlinePage extends ContentOutlinePage {
-	private EOModelTreeViewUpdater myUpdater;
+	private EOModelTreeViewUpdater _updater;
 
-	private EOModelEditor myEditor;
+	private EOModelEditor _editor;
 
-	private EOModelClipboardHandler myClipboardHandler;
+	private EOModelClipboardHandler _clipboardHandler;
 
-	public EOModelContentOutlinePage(EOModelEditor _editor) {
-		myClipboardHandler = new EOModelClipboardHandler();
-		myEditor = _editor;
+	private ToggleModelGroupAction _toggleModelGroupAction;
+
+	private Menu _contextMenu;
+
+	public EOModelContentOutlinePage(EOModelEditor editor) {
+		_clipboardHandler = new EOModelClipboardHandler();
+		_editor = editor;
 	}
 
 	protected void updateClipboardHandler() {
 		IPageSite site = getSite();
-		if (site != null && myEditor != null) {
+		if (site != null && _editor != null) {
 			IActionBars actionBars = site.getActionBars();
-			myClipboardHandler.attach(actionBars, myEditor);
+			_clipboardHandler.attach(actionBars, _editor);
 		}
 	}
 
-	public void createControl(Composite _parent) {
-		super.createControl(_parent);
+	public void createControl(Composite parent) {
+		super.createControl(parent);
 		TreeViewer treeViewer = getTreeViewer();
-		myUpdater = new EOModelTreeViewUpdater(treeViewer, new EOModelOutlineContentProvider(true, true, true, true, true, true, true));
-		myUpdater.setModel(myEditor.getModel());
+		_updater = new EOModelTreeViewUpdater(treeViewer, new EOModelOutlineContentProvider(true, true, true, true, true, true, true));
+		_updater.setModel(_editor.getModel());
 		updateClipboardHandler();
 		// AK: commenting prevents an error in swt
 		// setFocus();
+
+		IActionBars actionBars = getSite().getActionBars();
+		IToolBarManager toolBarManager = actionBars.getToolBarManager();
+		_toggleModelGroupAction = new ToggleModelGroupAction();
+		toolBarManager.add(_toggleModelGroupAction);
+
+		MenuManager menuManager = new MenuManager();
+		menuManager.setRemoveAllWhenShown(true);
+		menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+//		menuManager.addMenuListener(new IMenuListener() {
+//			public void menuAboutToShow(IMenuManager m) {
+//				contextMenuAboutToShow(m);
+//			}
+//		});
+		Tree tree = treeViewer.getTree();
+		_contextMenu = menuManager.createContextMenu(treeViewer.getTree());
+		tree.setMenu(_contextMenu);
+		getSite().registerContextMenu("org.objectstyle.wolips.eomodeler.outline", menuManager, treeViewer);
 	}
 
-	public void init(IPageSite _pageSite) {
-		super.init(_pageSite);
+	@Override
+	public void dispose() {
+		if (_contextMenu != null && !_contextMenu.isDisposed()) {
+			_contextMenu.dispose();
+			_contextMenu = null;
+		}
+		super.dispose();
+	}
+
+	public void init(IPageSite pageSite) {
+		super.init(pageSite);
 		updateClipboardHandler();
 	}
 
-	public void selectionChanged(SelectionChangedEvent _event) {
-		super.selectionChanged(_event);
-		myClipboardHandler.selectionChanged(_event);
+	public void selectionChanged(SelectionChangedEvent event) {
+		super.selectionChanged(event);
+		_clipboardHandler.selectionChanged(event);
 	}
 
-	public void setSelection(ISelection _selection) {
-		super.setSelection(_selection);
+	public void setSelection(ISelection selection) {
+		super.setSelection(selection);
+	}
+
+	public EOModelTreeViewUpdater getUpdater() {
+		return _updater;
+	}
+
+	public class ToggleModelGroupAction extends Action {
+		private boolean _showingModelGroup;
+
+		public ToggleModelGroupAction() {
+			toggleChanged();
+			setImageDescriptor(Activator.getDefault().getImageRegistry().getDescriptor(Activator.EOMODEL_ICON));
+		}
+
+		public void toggleChanged() {
+			if (_showingModelGroup) {
+				getUpdater().showModelGroup();
+				setToolTipText("Show Model");
+				setChecked(false);
+			} else {
+				getUpdater().showModel();
+				setToolTipText("Show ModelGroup");
+				setChecked(true);
+			}
+		}
+
+		@Override
+		public void run() {
+			_showingModelGroup = !_showingModelGroup;
+			toggleChanged();
+		}
 	}
 }

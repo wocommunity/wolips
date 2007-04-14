@@ -63,18 +63,21 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
 import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.sql.SQLUtils;
 import org.objectstyle.wolips.eomodeler.utils.ClasspathUtils;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringLabelProvider;
 
-public class ReverseEngineerAction implements IWorkbenchWindowActionDelegate {
+public class ReverseEngineerAction implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
 	private IWorkbenchWindow _window;
 
 	private ISelection _selection;
@@ -85,6 +88,10 @@ public class ReverseEngineerAction implements IWorkbenchWindowActionDelegate {
 
 	public void init(IWorkbenchWindow window) {
 		_window = window;
+	}
+
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		_window = targetPart.getSite().getWorkbenchWindow();
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
@@ -100,8 +107,8 @@ public class ReverseEngineerAction implements IWorkbenchWindowActionDelegate {
 			Map connectionDictionary = activeDatabaseConfig.getConnectionDictionary();
 			ClassLoader eomodelClassLoader = ClasspathUtils.createEOModelClassLoader(model);
 			Object reverseEngineer = SQLUtils.createEOFReverseEngineer(adaptorName, connectionDictionary, eomodelClassLoader);
-			Method reverseEngineerTableNamesMethod = reverseEngineer.getClass().getMethod("reverseEngineerTableNames", null);
-			List tableNames = (List) reverseEngineerTableNamesMethod.invoke(reverseEngineer, null);
+			Method reverseEngineerTableNamesMethod = reverseEngineer.getClass().getMethod("reverseEngineerTableNames", new Class[0]);
+			List tableNames = (List) reverseEngineerTableNamesMethod.invoke(reverseEngineer, new Object[0]);
 
 			ListSelectionDialog dlg = new ListSelectionDialog(_window.getShell(), tableNames, new StringContentProvider(), new StringLabelProvider(), "Select the tables to reverse engineer:");
 			dlg.setInitialSelections(tableNames.toArray());
@@ -110,7 +117,7 @@ public class ReverseEngineerAction implements IWorkbenchWindowActionDelegate {
 				List selectedTableNamesList = Arrays.asList(dlg.getResult());
 				Method reverseEngineerWithTableNamesIntoModelMethod = reverseEngineer.getClass().getMethod("reverseEngineerWithTableNamesIntoModel", new Class[] { List.class });
 				File reverseEngineeredEOModelFolder = (File) reverseEngineerWithTableNamesIntoModelMethod.invoke(reverseEngineer, new Object[] { selectedTableNamesList });
-				model.importEntitiesFromModel(reverseEngineeredEOModelFolder.toURL(), new HashSet());
+				model.importEntitiesFromModel(reverseEngineeredEOModelFolder.toURL(), new HashSet<EOModelVerificationFailure>());
 			}
 		} catch (Throwable e) {
 			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), e);

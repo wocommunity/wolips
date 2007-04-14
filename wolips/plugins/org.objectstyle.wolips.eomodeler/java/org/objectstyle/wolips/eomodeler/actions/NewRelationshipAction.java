@@ -54,54 +54,59 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.editors.entity.CreateRelationshipDialog;
 import org.objectstyle.wolips.eomodeler.model.DuplicateNameException;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
-public class NewRelationshipAction implements IWorkbenchWindowActionDelegate {
-	private EOEntity myEntity1;
+public class NewRelationshipAction implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
+	private EOEntity _entity1;
 
-	private EOEntity myEntity2;
+	private EOEntity _entity2;
 
-	private IWorkbenchWindow myWindow;
+	private IWorkbenchWindow _window;
 
-	public void init(IWorkbenchWindow _window) {
-		myWindow = _window;
+	public void init(IWorkbenchWindow window) {
+		_window = window;
+	}
+
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		_window = targetPart.getSite().getWorkbenchWindow();
 	}
 
 	public void dispose() {
 		// DO NOTHING
 	}
 
-	public void selectionChanged(IAction _action, ISelection _selection) {
-		myEntity1 = null;
-		myEntity2 = null;
-		if (_selection instanceof IStructuredSelection) {
-			Object[] selectedObjects = ((IStructuredSelection) _selection).toArray();
+	public void selectionChanged(IAction action, ISelection selection) {
+		_entity1 = null;
+		_entity2 = null;
+		if (selection instanceof IStructuredSelection) {
+			Object[] selectedObjects = ((IStructuredSelection) selection).toArray();
 			if (selectedObjects.length == 1) {
-				myEntity1 = EOModelUtils.getRelatedEntity(selectedObjects[0]);
+				_entity1 = EOModelUtils.getRelatedEntity(selectedObjects[0]);
 			} else if (selectedObjects.length == 2) {
-				myEntity1 = EOModelUtils.getRelatedEntity(selectedObjects[0]);
-				myEntity2 = EOModelUtils.getRelatedEntity(selectedObjects[1]);
+				_entity1 = EOModelUtils.getRelatedEntity(selectedObjects[0]);
+				_entity2 = EOModelUtils.getRelatedEntity(selectedObjects[1]);
 			}
 		}
 	}
 
-	public void run(IAction _action) {
+	public void run(IAction action) {
 		try {
-			if (myEntity1 != null && myEntity2 != null) {
-				CreateRelationshipDialog dialog = new CreateRelationshipDialog(myWindow.getShell(), myEntity1, myEntity2);
-				int results = dialog.open();
-			} else if (myEntity1 != null) {
-				EORelationship newRelationship = myEntity1.addBlankRelationship(Messages.getString("EORelationship.newName"));
+			if (_entity1 != null && _entity2 != null) {
+				CreateRelationshipDialog dialog = new CreateRelationshipDialog(_window.getShell(), _entity1, _entity2);
+				dialog.open();
+			} else if (_entity1 != null) {
+				_entity1.addBlankRelationship(Messages.getString("EORelationship.newName"));
 			} else {
-				MessageDialog.openError(myWindow.getShell(), Messages.getString("EORelationship.noEntitySelectedTitle"), Messages.getString("EORelationship.noEntitySelectedMessage"));//$NON-NLS-1$
+				MessageDialog.openError(_window.getShell(), Messages.getString("EORelationship.noEntitySelectedTitle"), Messages.getString("EORelationship.noEntitySelectedMessage"));//$NON-NLS-1$
 			}
 		} catch (DuplicateNameException e) {
 			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), e);

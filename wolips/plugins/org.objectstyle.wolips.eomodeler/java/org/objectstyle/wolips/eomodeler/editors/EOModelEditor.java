@@ -393,7 +393,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			try {
 				IWorkbench workbench = Activator.getDefault().getWorkbench();
 				IWorkbenchPage workbenchPage = workbench.getActiveWorkbenchWindow().getActivePage();
-				if (EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID.equals(workbenchPage.getPerspective().getId())) {
+				if (workbenchPage != null && EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID.equals(workbenchPage.getPerspective().getId())) {
 					IEditorReference[] editorReferences = workbenchPage.getEditorReferences();
 					int eomodelerEditorCount = 0;
 					for (int editorReferenceNum = 0; editorReferenceNum < editorReferences.length; editorReferenceNum++) {
@@ -507,6 +507,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				//throw new EOModelException("Failed to load the requested model.");
 			}
 			else {
+				myModel.setEditing(true);
 				if (openingEntityName != null) {
 					myOpeningEntity = myModel.getEntityNamed(openingEntityName);
 				}
@@ -536,11 +537,17 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				for (EOModel model : myModel.getModelGroup().getModels()) {
 					IFile indexFile = EOModelEditor.getIndexFile(model);
 					if (indexFile != null) {
-						IMarker[] markers = indexFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
-						for (int markerNum = 0; markerNum < markers.length; markerNum++) {
+						IMarker[] oldMarkers = indexFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+						for (int markerNum = 0; markerNum < oldMarkers.length; markerNum++) {
 							// System.out.println("EOModelEditor.handleModelErrors:
 							// deleting " + markers[markerNum]);
-							markers[markerNum].delete();
+							oldMarkers[markerNum].delete();
+						}
+						IMarker[] newMarkers = indexFile.findMarkers(Activator.EOMODEL_PROBLEM_MARKER, true, IResource.DEPTH_INFINITE);
+						for (int markerNum = 0; markerNum < newMarkers.length; markerNum++) {
+							// System.out.println("EOModelEditor.handleModelErrors:
+							// deleting " + markers[markerNum]);
+							newMarkers[markerNum].delete();
 						}
 					}
 				}
@@ -551,7 +558,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 						EOModel model = failure.getModel();
 						IFile indexFile = EOModelEditor.getIndexFile(model);
 						if (indexFile != null) {
-							IMarker marker = indexFile.createMarker(IMarker.PROBLEM);
+							IMarker marker = indexFile.createMarker(Activator.EOMODEL_PROBLEM_MARKER);
 							marker.setAttribute(IMarker.MESSAGE, failure.getMessage());
 							int severity;
 							if (failure.isWarning()) {
@@ -761,14 +768,17 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		public void selectionChanged(SelectionChangedEvent _event) {
 			IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
 			Object selectedObject = selection.getFirstElement();
-			setSelection(selection, false);
-			if (mySelectedObject == null) {
-				mySelectedObject = selectedObject;
-			} else if (mySelectedObject == selectedObject) {
-				EOModelEditor.this.doubleClickedObjectInOutline(selectedObject);
-				mySelectedObject = null;
-			} else {
-				mySelectedObject = selectedObject;
+			EOModel model = EOModelUtils.getRelatedModel(selectedObject);
+			if (model == null || model.isEditing()) {
+				setSelection(selection, false);
+				if (mySelectedObject == null) {
+					mySelectedObject = selectedObject;
+				} else if (mySelectedObject == selectedObject) {
+					EOModelEditor.this.doubleClickedObjectInOutline(selectedObject);
+					mySelectedObject = null;
+				} else {
+					mySelectedObject = selectedObject;
+				}
 			}
 		}
 	}

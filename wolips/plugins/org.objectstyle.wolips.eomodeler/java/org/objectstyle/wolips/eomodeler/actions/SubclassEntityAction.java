@@ -49,7 +49,6 @@
  */
 package org.objectstyle.wolips.eomodeler.actions;
 
-
 import org.eclipse.core.commands.operations.IOperationHistory;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -57,6 +56,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
@@ -69,7 +70,7 @@ import org.objectstyle.wolips.eomodeler.model.InheritanceType;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
-public class SubclassEntityAction implements IWorkbenchWindowActionDelegate {
+public class SubclassEntityAction implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
 	private EOEntity _entity;
 
 	private EOModel _model;
@@ -78,6 +79,10 @@ public class SubclassEntityAction implements IWorkbenchWindowActionDelegate {
 
 	public void init(IWorkbenchWindow window) {
 		_window = window;
+	}
+
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		_window = targetPart.getSite().getWorkbenchWindow();
 	}
 
 	public void dispose() {

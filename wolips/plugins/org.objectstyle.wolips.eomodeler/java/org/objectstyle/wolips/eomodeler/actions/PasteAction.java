@@ -50,8 +50,6 @@
 package org.objectstyle.wolips.eomodeler.actions;
 
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.eclipse.core.commands.operations.IOperationHistory;
 import org.eclipse.jface.action.Action;
@@ -59,52 +57,50 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.eomodeler.model.EOModelObject;
-import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
-public class PasteAction extends Action implements IWorkbenchWindowActionDelegate {
-	private IWorkbenchWindow myWindow;
+public class PasteAction extends Action implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
+	private ISelection _sSelection;
 
-	private ISelection mySelection;
-
-	private Clipboard myClipboard;
-
-	public PasteAction(Clipboard _clipboard) {
-		myClipboard = _clipboard;
+	public PasteAction() {
 	}
 
 	public void dispose() {
 		// DO NOTHING
 	}
 
-	public void init(IWorkbenchWindow _window) {
-		myWindow = _window;
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		// DO NOTHING
 	}
 
-	public void selectionChanged(IAction _action, ISelection _selection) {
-		mySelection = _selection;
+	public void init(IWorkbenchWindow window) {
+		// DO NOTHING
+	}
+
+	public void selectionChanged(IAction action, ISelection selection) {
+		_sSelection = selection;
 	}
 
 	public void run() {
 		try {
 			EOModelObject selectedObject = null;
-			if (mySelection instanceof IStructuredSelection) {
-				selectedObject = (EOModelObject) ((IStructuredSelection) mySelection).getFirstElement();
+			if (_sSelection instanceof IStructuredSelection) {
+				selectedObject = (EOModelObject) ((IStructuredSelection) _sSelection).getFirstElement();
 			}
 			ISelection pastedSelection = LocalSelectionTransfer.getTransfer().getSelection();
 			Object[] clipboardObjects = ((IStructuredSelection) pastedSelection).toArray();
 			Arrays.sort(clipboardObjects, new PasteOrderComparator());
 
 			SimpleCompositeOperation pasteOperation = new SimpleCompositeOperation(EOModelUtils.getOperationLabel("Paste", Arrays.asList(clipboardObjects)));
-			Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
 			for (Object clipboardObject : clipboardObjects) {
 				if (clipboardObject instanceof EOModelObject) {
 					EOModelObject eoModelObject = (EOModelObject) clipboardObject;
@@ -116,7 +112,7 @@ public class PasteAction extends Action implements IWorkbenchWindowActionDelegat
 					}
 				}
 			}
-			
+
 			pasteOperation.addContext(EOModelUtils.getUndoContext(selectedObject));
 			IOperationHistory operationHistory = PlatformUI.getWorkbench().getOperationSupport().getOperationHistory();
 			operationHistory.execute(pasteOperation, null, null);
@@ -125,11 +121,11 @@ public class PasteAction extends Action implements IWorkbenchWindowActionDelegat
 		}
 	}
 
-	public void runWithEvent(Event _event) {
+	public void runWithEvent(Event event) {
 		run();
 	}
 
-	public void run(IAction _action) {
+	public void run(IAction action) {
 		run();
 	}
 }

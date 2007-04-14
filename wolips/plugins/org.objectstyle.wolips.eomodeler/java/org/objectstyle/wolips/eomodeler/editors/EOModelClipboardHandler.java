@@ -4,8 +4,6 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.operations.RedoActionHandler;
@@ -25,10 +23,9 @@ public class EOModelClipboardHandler implements ISelectionChangedListener {
 	private DeleteAction _deleteAction;
 
 	public EOModelClipboardHandler() {
-		Clipboard clipboard = new Clipboard(Display.getDefault());
-		_cutAction = new CutAction(clipboard);
-		_copyAction = new CopyAction(clipboard);
-		_pasteAction = new PasteAction(clipboard);
+		_cutAction = new CutAction();
+		_copyAction = new CopyAction();
+		_pasteAction = new PasteAction();
 		_deleteAction = new DeleteAction();
 	}
 

@@ -62,6 +62,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
@@ -70,7 +72,7 @@ import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
-public class DeleteAction extends Action {
+public class DeleteAction extends Action implements IObjectActionDelegate {
 	private ISelection mySelection;
 
 	public void dispose() {
@@ -79,6 +81,10 @@ public class DeleteAction extends Action {
 
 	public void selectionChanged(IAction _action, ISelection _selection) {
 		mySelection = _selection;
+	}
+
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		// DO NOTHING
 	}
 
 	public void run() {

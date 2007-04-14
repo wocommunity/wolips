@@ -61,6 +61,7 @@ public class NewEntityAction extends AbstractNewObjectAction<EOModel, EOEntity> 
 	public NewEntityAction() {
 		super(EOModel.class, Messages.getString("EOEntity.newName"));
 	}
+	
 
 	@Override
 	protected EOEntity createChild(EOModel parent, Set<EOModelVerificationFailure> failures) throws EOModelException {
