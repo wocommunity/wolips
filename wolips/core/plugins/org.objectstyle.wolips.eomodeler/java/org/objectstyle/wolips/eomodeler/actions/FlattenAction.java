@@ -55,6 +55,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
@@ -63,13 +65,17 @@ import org.objectstyle.wolips.eomodeler.model.AbstractEOAttributePath;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
-public class FlattenAction implements IWorkbenchWindowActionDelegate {
+public class FlattenAction implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
 	private IWorkbenchWindow _window;
 
 	private AbstractEOAttributePath _attributePath;
 
 	public void dispose() {
 		// DO NOTHING
+	}
+
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		_window = targetPart.getSite().getWorkbenchWindow();
 	}
 
 	public void init(IWorkbenchWindow window) {

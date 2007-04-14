@@ -68,7 +68,7 @@ public class EOModelVerificationFailure implements Comparable<EOModelVerificatio
 		myRootCause = _rootCause;
 		myWarning = _warning;
 	}
-
+	
 	public EOModel getModel() {
 		return myModel;
 	}

@@ -38,7 +38,7 @@ public class SubclassOperation extends AbstractOperation {
 		try {
 			_subclassEntity = _parentEntity.subclass(_entityName, _inheritanceType);
 			_subclassEntity.setRestrictingQualifier(_restrictingQualifier);
-			_parentEntity.getModel().addEntity(_subclassEntity);
+			_parentEntity.getModel().getModelGroup().getEditingModel().addEntity(_subclassEntity);
 			return Status.OK_STATUS;
 		} catch (EOModelException e) {
 			throw new ExecutionException("Failed to subclass entity.", e);

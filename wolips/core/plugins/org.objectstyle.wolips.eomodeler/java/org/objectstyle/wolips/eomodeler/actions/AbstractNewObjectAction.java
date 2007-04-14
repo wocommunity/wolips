@@ -64,6 +64,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
@@ -73,7 +76,7 @@ import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
-public abstract class AbstractNewObjectAction<T extends EOModelObject, U extends EOModelObject> implements IWorkbenchWindowActionDelegate {
+public abstract class AbstractNewObjectAction<T extends EOModelObject, U extends EOModelObject> implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
 	private IWorkbenchWindow _window;
 
 	private Class<T> _parentType;
@@ -95,6 +98,10 @@ public abstract class AbstractNewObjectAction<T extends EOModelObject, U extends
 		// DO NOTHING
 	}
 
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		_window = targetPart.getSite().getWorkbenchWindow();
+	}
+
 	public void init(IWorkbenchWindow window) {
 		_window = window;
 	}
@@ -107,6 +114,10 @@ public abstract class AbstractNewObjectAction<T extends EOModelObject, U extends
 				_selectedParent = (T) EOModelUtils.getRelated(_parentType, (EOModelObject) selectedObject);
 			}
 		}
+	}
+	
+	public void init(IViewPart view) {
+		// DO NOTHING
 	}
 
 	public void run(IAction action) {

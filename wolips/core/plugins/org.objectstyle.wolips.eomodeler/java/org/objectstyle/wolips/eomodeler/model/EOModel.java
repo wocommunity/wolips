@@ -114,6 +114,8 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	private EOModelMap myModelMap;
 
 	private boolean myDirty;
+	
+	private boolean _editing;
 
 	private URL myModelURL;
 
@@ -225,6 +227,14 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		return entity;
 	}
 
+	public void setEditing(boolean editing) {
+		_editing = editing;
+	}
+	
+	public boolean isEditing() {
+		return _editing;
+	}
+	
 	public boolean isDirty() {
 		return myDirty;
 	}
@@ -475,10 +485,19 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			clonedEntities.add(entity._cloneModelObject());
 		}
 		addEntities(clonedEntities, failures);
-		for (EOEntity clonedEntity : clonedEntities) {
+		guessPrototypes(clonedEntities);
+		return clonedEntities;
+	}
+	
+	public void guessPrototypes() {
+		guessPrototypes(getEntities());
+	}
+	
+	public void guessPrototypes(Set<EOEntity> entities) {
+		for (EOEntity entity : entities) {
 			// clonedEntity.setName(StringUtils.toUppercaseFirstLetter(clonedEntity.getName().toLowerCase()));
-			for (EOAttribute clonedAttribute : clonedEntity.getAttributes()) {
-				clonedAttribute.guessPrototype(true);
+			for (EOAttribute attribute : entity.getAttributes()) {
+				attribute.guessPrototype(true);
 				// clonedAttribute.setName(clonedAttribute.getName().toLowerCase());
 			}
 			// Iterator clonedRelationshipsIter =
@@ -489,7 +508,6 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			// clonedRelationship.setName(clonedRelationship.getName().toLowerCase());
 			// }
 		}
-		return clonedEntities;
 	}
 
 	public void addEntities(Set<EOEntity> entities, Set<EOModelVerificationFailure> failures) throws DuplicateNameException {
@@ -734,6 +752,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			// connection dictionary
 			if (connectionDictionaryDatabaseConfig == null) {
 				connectionDictionaryDatabaseConfig = tempConnectionDictionaryDatabaseConfig;
+				_failures.add(new EOModelVerificationFailure(this, "No default database config found, creating one from connection dictionary.", true));
 				addDatabaseConfig(connectionDictionaryDatabaseConfig, false, _failures);
 			}
 			// if the identified active database config isn't the connection

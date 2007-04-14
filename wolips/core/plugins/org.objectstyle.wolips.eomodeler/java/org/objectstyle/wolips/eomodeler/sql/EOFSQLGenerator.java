@@ -325,7 +325,6 @@ public class EOFSQLGenerator {
 					mutableAttributesUsedForLocking.removeObject(attribute);
 				}
 			}
-
 			entity.setClassProperties(mutableClassProperties);
 			entity.setAttributesUsedForLocking(mutableAttributesUsedForLocking);
 		}

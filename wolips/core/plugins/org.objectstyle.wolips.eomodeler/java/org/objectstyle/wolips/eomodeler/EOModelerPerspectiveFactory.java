@@ -65,5 +65,6 @@ public class EOModelerPerspectiveFactory implements IPerspectiveFactory {
 
 		IFolderLayout bottomRight = _layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.50f, "left");
 		bottomRight.addView(IPageLayout.ID_PROP_SHEET);
+		bottomRight.addView(IPageLayout.ID_PROBLEM_VIEW);
 	}
 }

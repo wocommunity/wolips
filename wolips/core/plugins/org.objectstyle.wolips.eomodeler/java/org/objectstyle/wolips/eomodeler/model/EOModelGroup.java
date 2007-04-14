@@ -178,6 +178,18 @@ public class EOModelGroup extends EOModelObject<Object> {
 		}
 		return matchingModel;
 	}
+	
+	public EOModel getEditingModel() {
+		EOModel editingModel = null;
+		Iterator<EOModel> modelsIter = myModels.iterator();
+		while (editingModel == null && modelsIter.hasNext()) {
+			EOModel model = modelsIter.next();
+			if (model.isEditing()) {
+				editingModel = model;
+			}
+		}
+		return editingModel;
+	}
 
 	public void addModelsFromFolder(URL _folder, Set<EOModelVerificationFailure> _failures, boolean _skipOnDuplicates, IProject project) throws IOException, EOModelException {
 		addModelsFromFolder(_folder, true, _failures, _skipOnDuplicates, project);

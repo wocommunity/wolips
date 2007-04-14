@@ -26,17 +26,17 @@ public class EOModelOutlineViewerSorter extends ViewerSorter {
 
 	public EOModelOutlineViewerSorter() {
 		myOrder = new HashMap<Class, Integer>();
-		myOrder.put(EOModel.class, new Integer(0));
-		myOrder.put(EOEntity.class, new Integer(1));
-		myOrder.put(EOAttribute.class, new Integer(2));
-		myOrder.put(EOAttributePath.class, new Integer(2));
-		myOrder.put(EOArgument.class, new Integer(3));
-		myOrder.put(EORelationship.class, new Integer(4));
-		myOrder.put(EORelationshipPath.class, new Integer(4));
-		myOrder.put(EOFetchSpecification.class, new Integer(5));
-		myOrder.put(EOStoredProcedure.class, new Integer(6));
-		myOrder.put(EOEntityIndex.class, new Integer(7));
-		myOrder.put(EODatabaseConfig.class, new Integer(8));
+		myOrder.put(EOModel.class, new Integer(1));
+		myOrder.put(EOEntity.class, new Integer(2));
+		myOrder.put(EOAttribute.class, new Integer(3));
+		myOrder.put(EOAttributePath.class, new Integer(3));
+		myOrder.put(EOArgument.class, new Integer(4));
+		myOrder.put(EORelationship.class, new Integer(5));
+		myOrder.put(EORelationshipPath.class, new Integer(5));
+		myOrder.put(EOFetchSpecification.class, new Integer(6));
+		myOrder.put(EOStoredProcedure.class, new Integer(7));
+		myOrder.put(EOEntityIndex.class, new Integer(8));
+		myOrder.put(EODatabaseConfig.class, new Integer(9));
 	}
 
 	protected int getOrder(Object _obj) {
@@ -48,7 +48,12 @@ public class EOModelOutlineViewerSorter extends ViewerSorter {
 			if (orderInteger == null) {
 				order = MAX_ORDER;
 			} else {
-				order = orderInteger.intValue();
+				if (_obj instanceof EOModel && ((EOModel)_obj).isEditing()) {
+					order = 0;
+				}
+				else {
+					order = orderInteger.intValue();
+				}
 			}
 		}
 		return order;

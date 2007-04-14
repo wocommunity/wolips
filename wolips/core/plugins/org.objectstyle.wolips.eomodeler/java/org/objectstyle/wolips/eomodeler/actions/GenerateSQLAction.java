@@ -58,6 +58,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
@@ -65,38 +67,41 @@ import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
-public class GenerateSQLAction implements IWorkbenchWindowActionDelegate {
-	private IWorkbenchWindow myWindow;
+public class GenerateSQLAction implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
+	private IWorkbenchWindow _window;
 
-	private ISelection mySelection;
+	private ISelection _selection;
 
 	public void dispose() {
 		// DO NOTHING
 	}
 
-	public void init(IWorkbenchWindow _window) {
-		myWindow = _window;
+	public void init(IWorkbenchWindow window) {
+		_window = window;
 	}
 
-	public void selectionChanged(IAction _action, ISelection _selection) {
-		mySelection = _selection;
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		_window = targetPart.getSite().getWorkbenchWindow();
 	}
 
-	public void run(IAction _action) {
+	public void selectionChanged(IAction action, ISelection selection) {
+		_selection = selection;
+	}
+
+	public void run(IAction action) {
 		try {
-			if (mySelection instanceof IStructuredSelection) {
+			if (_selection instanceof IStructuredSelection) {
 				EOModel model = null;
 				boolean modelSelected = false;
-				List entityNames = new LinkedList();
-				Iterator selectionIter = ((IStructuredSelection) mySelection).iterator();
+				List<String> entityNames = new LinkedList<String>();
+				Iterator selectionIter = ((IStructuredSelection) _selection).iterator();
 				while (!modelSelected && selectionIter.hasNext()) {
 					Object obj = selectionIter.next();
 					EOEntity entity = EOModelUtils.getRelatedEntity(obj);
 					if (entity != null) {
 						model = entity.getModel();
 						entityNames.add(entity.getName());
-					}
-					else {
+					} else {
 						model = EOModelUtils.getRelatedModel(obj);
 						if (model != null) {
 							modelSelected = true;
@@ -110,9 +115,9 @@ public class GenerateSQLAction implements IWorkbenchWindowActionDelegate {
 
 				if (model != null) {
 					if (model.isDirty()) {
-						MessageDialog.openWarning(myWindow.getShell(), "Model Not Saved", "Your model has unsaved changes. Unsaved changes will not be reflected in generated SQL.");
+						MessageDialog.openWarning(_window.getShell(), "Model Not Saved", "Your model has unsaved changes. Unsaved changes will not be reflected in generated SQL.");
 					}
-					GenerateSQLDialog dialog = new GenerateSQLDialog(myWindow.getShell(), model, entityNames);
+					GenerateSQLDialog dialog = new GenerateSQLDialog(_window.getShell(), model, entityNames);
 					dialog.open();
 				}
 			}

@@ -55,38 +55,45 @@ import java.util.Set;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 
-public class VerifyAction implements IWorkbenchWindowActionDelegate {
-	private IWorkbenchWindow myWindow;
+public class VerifyAction implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
+	private IWorkbenchWindow _window;
 
-	private EOModel myModel;
+	private EOModel _model;
 
 	public void dispose() {
 		// DO NOTHING
 	}
 
-	public void init(IWorkbenchWindow _window) {
-		myWindow = _window;
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		_window = targetPart.getSite().getWorkbenchWindow();
 	}
 
-	public void selectionChanged(IAction _action, ISelection _selection) {
-		myModel = null;
-		if (_selection instanceof IStructuredSelection) {
-			Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-			myModel = EOModelUtils.getRelatedModel(selectedObject);
+	public void init(IWorkbenchWindow window) {
+		_window = window;
+	}
+
+	public void selectionChanged(IAction action, ISelection selection) {
+		_model = null;
+		if (selection instanceof IStructuredSelection) {
+			Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
+			_model = EOModelUtils.getRelatedModel(selectedObject);
 		}
 	}
 
-	public void run(IAction _action) {
-		if (myModel != null) {
-			Set verifyFailures = new HashSet();
-			myModel.verify(verifyFailures);
-			EOModelErrorDialog dialog = new EOModelErrorDialog(myWindow.getShell(), verifyFailures);
+	public void run(IAction action) {
+		if (_model != null) {
+			Set<EOModelVerificationFailure> verifyFailures = new HashSet<EOModelVerificationFailure>();
+			_model.verify(verifyFailures);
+			EOModelErrorDialog dialog = new EOModelErrorDialog(_window.getShell(), verifyFailures);
 			dialog.open();
 		}
 	}

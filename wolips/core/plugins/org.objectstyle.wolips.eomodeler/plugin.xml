@@ -545,9 +545,6 @@
                <enablement>
                    <or>
                        <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
                    </or>
                </enablement>
          </action>
@@ -561,10 +558,8 @@
                tooltip="Flatten">
                <enablement>
                    <or>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOAttributePath"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EORelationshipPath"/>
                    </or>
                </enablement>
          </action>
@@ -607,6 +602,7 @@
                tooltip="New Stored Procedure">
                <enablement>
                    <or>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOModel"/>
                        <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
                        <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
                        <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
@@ -683,6 +679,160 @@
          <part id="org.eclipse.ui.views.ContentOutline"/>
          <part id="org.eclipse.ui.views.PropertySheet"/>
       </actionSetPartAssociation>
+   </extension>
+   <extension
+         id="org.objectstyle.wolips.eomodeler.problem"
+         name="EOModel Problem"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.problemmarker"/>
+      <persistent value="true"/>
+   </extension>
+   <extension
+         id="org.objectstyle.wolips.eomodeler.popupMenus"
+         name="Entity Modeler"
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="org.objectstyle.wolips.eomodeler.outline.eomodel"
+            objectClass="org.objectstyle.wolips.eomodeler.model.EOModel">
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewDatabaseConfigAction"
+               enablesFor="1"
+               icon="icons/newDatabaseConfig.png"
+               id="org.objectstyle.wolips.eomodeler.outline.popup.newDatabaseConfig"
+               label="New Database Config"
+               menubarPath="group1"/>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewEntityIndexAction"
+               enablesFor="1"
+               icon="icons/newEntityIndex.png"
+               id="org.objectstyle.wolips.eomodeler.outline.popup.newEntityIndex"
+               label="New Entity Index"
+               menubarPath="group1"/>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewStoredProcedureAction"
+               enablesFor="1"
+               icon="icons/newStoredProcedure.png"
+               id="org.objectstyle.wolips.eomodeler.outline.popup.newStoredProcedure"
+               label="New Stored Procedure"
+               menubarPath="group1"/>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewEntityAction"
+               enablesFor="1"
+               icon="icons/newEntity.png"
+               id="org.objectstyle.wolips.eomodeler.outline.popup.newEntity"
+               label="New Entity"
+               menubarPath="group1"/>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.ReverseEngineerAction"
+               enablesFor="1"
+               icon="icons/reverseEngineer.png"
+               id="org.objectstyle.wolips.eomodeler.outline.popup.reverseEngineer"
+               label="Reverse Engineer"
+               menubarPath="group2"/>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.VerifyAction"
+               enablesFor="1"
+               icon="icons/verify.png"
+               id="org.objectstyle.wolips.eomodeler.outline.popup.verify"
+               label="Verify Model"
+               menubarPath="group2"/>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.GenerateSQLAction"
+               enablesFor="1"
+               icon="icons/sql.png"
+               id="org.objectstyle.wolips.eomodeler.outline.popup.generateModelSQL"
+               label="Generate SQL"
+               menubarPath="group2"/>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.objectstyle.wolips.eomodeler.outline.eoentity"
+            objectClass="org.objectstyle.wolips.eomodeler.model.EOEntity">
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewFetchSpecAction"
+               enablesFor="1"
+               icon="icons/newFetchSpecification.png"
+               id="org.objectstyle.wolips.eomodeler.outline.popup.newFetchSpecification"
+               label="New Fetch Specification"
+               menubarPath="group1"/>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewRelationshipAction"
+               enablesFor="*"
+               icon="icons/newRelationship.png"
+               id="org.objectstyle.wolips.eomodeler.outline.popup.newRelationship"
+               label="New Relationship"
+               menubarPath="group1"/>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewAttributeAction"
+               enablesFor="1"
+               icon="icons/newAttribute.png"
+               id="org.objectstyle.wolips.eomodeler.outline.popup.newAttribute"
+               label="New Attribute"
+               menubarPath="group1"/>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.GenerateSQLAction"
+               enablesFor="*"
+               icon="icons/sql.png"
+               id="org.objectstyle.wolips.eomodeler.outline.popup.generateEntitySQL"
+               label="Generate SQL"
+               menubarPath="group2"/>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.SubclassEntityAction"
+               enablesFor="1"
+               icon="icons/subclassEntity.png"
+               id="org.objectstyle.wolips.eomodeler.outline.popup.subclassEntity"
+               label="Subclass"
+               menubarPath="group2"/>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.objectstyle.wolips.eomodeler.outline.eorelationshippath"
+            objectClass="org.objectstyle.wolips.eomodeler.model.EORelationshipPath">
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.FlattenAction"
+               enablesFor="1"
+               icon="icons/flattenRelationship.png"
+               id="org.objectstyle.wolips.eomodeler.outline.popup.flattenRelationship"
+               label="Flatten Relationship"
+               menubarPath="group1"/>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.objectstyle.wolips.eomodeler.outline.eoattributepath"
+            objectClass="org.objectstyle.wolips.eomodeler.model.EOAttributePath">
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.FlattenAction"
+               enablesFor="1"
+               icon="icons/flattenRelationship.png"
+               id="org.objectstyle.wolips.eomodeler.outline.popup.flattenAttribute"
+               label="Flatten Attribute"
+               menubarPath="group1"/>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.objectstyle.wolips.eomodeler.outline.eostoredprocedure"
+            objectClass="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure">
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewArgumentAction"
+               enablesFor="1"
+               icon="icons/newArgument.png"
+               id="org.objectstyle.wolips.eomodeler.outline.popup.newArgument"
+               label="New Argument"
+               menubarPath="group1"/>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.objectstyle.wolips.eomodeler.outline.eomodelobject"
+            objectClass="org.objectstyle.wolips.eomodeler.model.EOModelObject">
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.DeleteAction"
+               enablesFor="*"
+               icon="icons/delete.gif"
+               id="org.objectstyle.wolips.eomodeler.outline.popup.delete"
+               label="Delete"
+               menubarPath="group4"/>
+      </objectContribution>
    </extension>
 
 </plugin>

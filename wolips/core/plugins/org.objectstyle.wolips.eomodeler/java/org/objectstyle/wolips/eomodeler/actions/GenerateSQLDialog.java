@@ -1,13 +1,11 @@
 package org.objectstyle.wolips.eomodeler.actions;
 
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -233,7 +231,7 @@ public class GenerateSQLDialog extends Dialog {
 		return selectedDatabaseConfigMap;
 	}
 
-	protected ClassLoader getEOModelClassLoader() throws MalformedURLException, JavaModelException {
+	protected ClassLoader getEOModelClassLoader() throws Exception {
 		if (myEOModelClassLoader == null) {
 			myEOModelClassLoader = ClasspathUtils.createEOModelClassLoader(myModel);
 		}
