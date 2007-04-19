@@ -87,6 +87,8 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 	private IResource resourceToReveal;
 
 	private Button createEOGeneratorFileButton;
+	
+	private Button noneAdaptorButton;
 
 	// widgets
 	// private Button adaptorJDBCCheckbox;
@@ -154,7 +156,9 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 		while (buttonIterator.hasNext()) {
 			currentButton = (Button) buttonIterator.next();
 			if (currentButton.getSelection()) {
-				adaptorName = (String) availableAdaptors.get(currentButton);
+				if (currentButton != noneAdaptorButton) {
+					adaptorName = (String) availableAdaptors.get(currentButton);
+				}
 				break;
 			}
 		}
@@ -192,16 +196,15 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 		AdaptorFilter adaptorFilter = new AdaptorFilter();
 		systemFrameworkDir.listFiles(adaptorFilter);
 		availableAdaptors = new HashMap(adaptorFilter.getAdaptorNames().size() + 1);
-		Button currentAdaptorButton;
 		String buttonText;
 		// add none adaptor entry
-		currentAdaptorButton = new Button(row, SWT.RADIO);
+		noneAdaptorButton = new Button(row, SWT.RADIO);
 		buttonText = "None";
-		currentAdaptorButton.setText(buttonText);
-		currentAdaptorButton.setSelection(true);
-		availableAdaptors.put(currentAdaptorButton, "None");
+		noneAdaptorButton.setText(buttonText);
+		noneAdaptorButton.setSelection(true);
+		availableAdaptors.put(noneAdaptorButton, "None");
 		for (int i = 0; i < adaptorFilter.getAdaptorNames().size(); i++) {
-			currentAdaptorButton = new Button(row, SWT.RADIO);
+			Button currentAdaptorButton = new Button(row, SWT.RADIO);
 			buttonText = (String) adaptorFilter.getAdaptorNames().elementAt(i);
 			currentAdaptorButton.setText(buttonText);
 			availableAdaptors.put(currentAdaptorButton, buttonText);
