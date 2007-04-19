@@ -413,6 +413,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	}
 
 	public void doSave(IProgressMonitor _monitor) {
+		if (!myModel.isEditing()) {
+			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), "You cannot save this model because it is read-only.");
+			return;
+		}
 		showBusy(true);
 		try {
 			IEditorInput input = getEditorInput();
@@ -507,11 +511,17 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				//throw new EOModelException("Failed to load the requested model.");
 			}
 			else {
+				IFile indexFile = EOModelEditor.getIndexFile(myModel);
+				if (indexFile == null) {
+					super.init(_site, fileEditorInput);
+					handleModelErrors(myLoadFailures);
+					return;
+				}
 				myModel.setEditing(true);
 				if (openingEntityName != null) {
 					myOpeningEntity = myModel.getEntityNamed(openingEntityName);
 				}
-				fileEditorInput = new FileEditorInput(EOModelEditor.getIndexFile(myModel));
+				fileEditorInput = new FileEditorInput(indexFile);
 				handleModelErrors(myLoadFailures);
 	
 				myModel.addPropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
