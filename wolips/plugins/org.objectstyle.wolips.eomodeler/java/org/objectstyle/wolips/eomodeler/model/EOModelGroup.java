@@ -214,7 +214,15 @@ public class EOModelGroup extends EOModelObject<Object> {
 		String name = path.substring(lastSlashIndex + 1);
 		String modelName = name.substring(0, name.indexOf('.'));
 		EOModel model = getModelNamed(modelName);
-		if (model == null) {
+		if (model != null) {
+			if (_skipOnDuplicates) {
+				_failures.add(new EOModelVerificationFailure(model, "The model named '" + modelName + "' exists in " + model.getIndexURL() + " and " + _folder + ".  Skipping " + _folder + ".", true));
+			}
+			else {
+				_failures.add(new EOModelVerificationFailure(model, "The model named '" + modelName + "' exists in " + model.getIndexURL() + " and " + _folder + ".", true));
+			}
+		}
+		if (!_skipOnDuplicates || model == null) {
 			boolean reloadModel = true;
 			while (reloadModel) {
 				model = new EOModel(modelName, project);
@@ -241,6 +249,9 @@ public class EOModelGroup extends EOModelObject<Object> {
 					}
 				}
 			}
+		}
+		else {
+			_failures.add(new EOModelVerificationFailure(model, "The model named '" + modelName + "' exists in " + model.getIndexURL() + " and " + _folder + ".  Skipping " + _folder + ".", true));
 		}
 		return model;
 	}
