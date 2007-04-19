@@ -65,41 +65,43 @@ import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 
 public class EORelationshipsLabelProvider extends TablePropertyLabelProvider implements ITableColorProvider, ITableFontProvider {
-	private TableViewer myTableViewer;
+	private TableViewer _tableViewer;
 
-	private Font myFlattenedFont;
+	private Font _flattenedFont;
 
-	private Font myInheritedFont;
+	private Font _inheritedFont;
 
-	public EORelationshipsLabelProvider(TableViewer _tableViewer, String[] _columnProperties) {
-		super(_columnProperties);
-		myTableViewer = _tableViewer;
+	private Font _flattenedInheritedFont;
+
+	public EORelationshipsLabelProvider(TableViewer tableViewer, String[] columnProperties) {
+		super(columnProperties);
+		_tableViewer = tableViewer;
 	}
 
-	public Image getColumnImage(Object _element, String _property) {
-		EORelationship relationship = (EORelationship) _element;
+	public Image getColumnImage(Object element, String property) {
+		EORelationship relationship = (EORelationship) element;
 		Image image = null;
-		if (_property == EORelationship.TO_MANY) {
+		if (property == EORelationship.TO_MANY) {
 			image = yesNoImage(relationship.isToMany(), Activator.getDefault().getImageRegistry().get(Activator.TO_MANY_ICON), Activator.getDefault().getImageRegistry().get(Activator.TO_ONE_ICON), Activator.getDefault().getImageRegistry().get(Activator.TO_ONE_ICON));
-		} else if (_property == EORelationship.CLASS_PROPERTY) {
+		} else if (property == EORelationship.CLASS_PROPERTY) {
 			image = yesNoImage(relationship.isClassProperty(), Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON), null, null);
 		}
 		return image;
 	}
 
-	public String getColumnText(Object _element, String _property) {
-		EORelationship relationship = (EORelationship) _element;
+	public String getColumnText(Object element, String property) {
+		EORelationship relationship = (EORelationship) element;
 		String text = null;
-		if (_property == EORelationship.TO_MANY) {
+		if (property == EORelationship.TO_MANY) {
 			// DO NOTHING
-		} else if (_property == EORelationship.CLASS_PROPERTY) {
+		} else if (property == EORelationship.CLASS_PROPERTY) {
 			// DO NOTHING
-		} else if (_property == EORelationship.DESTINATION) {
+		} else if (property == EORelationship.DESTINATION) {
 			EOEntity destination = relationship.getDestination();
 			if (destination != null) {
 				text = destination.getName();
 			}
-		} else if (_property == EOJoin.SOURCE_ATTRIBUTE) {
+		} else if (property == EOJoin.SOURCE_ATTRIBUTE) {
 			EOJoin firstJoin = relationship.getFirstJoin();
 			if (firstJoin != null) {
 				EOAttribute sourceAttribute = firstJoin.getSourceAttribute();
@@ -107,7 +109,7 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
 					text = sourceAttribute.getName();
 				}
 			}
-		} else if (_property == EOJoin.DESTINATION_ATTRIBUTE) {
+		} else if (property == EOJoin.DESTINATION_ATTRIBUTE) {
 			EOJoin firstJoin = relationship.getFirstJoin();
 			if (firstJoin != null) {
 				EOAttribute destinationAttribute = firstJoin.getDestinationAttribute();
@@ -116,40 +118,50 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
 				}
 			}
 		} else {
-			text = super.getColumnText(_element, _property);
+			text = super.getColumnText(element, property);
 		}
 		return text;
 	}
 
-	public Font getFont(Object _element, int _columnIndex) {
-		EORelationship relationship = (EORelationship) _element;
+	public Font getFont(Object element, int columnIndex) {
+		EORelationship relationship = (EORelationship) element;
 		Font font = null;
-		if (relationship.isFlattened()) {
-			if (myFlattenedFont == null) {
-				Font originalFont = myTableViewer.getTable().getFont();
-				FontData[] fontData = myTableViewer.getTable().getFont().getFontData();
-				myFlattenedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD);
+		boolean inherited = relationship.isInherited();
+		boolean flattened = relationship.isFlattened();
+		if (flattened && inherited) {
+			if (_flattenedInheritedFont == null) {
+				Font originalFont = _tableViewer.getTable().getFont();
+				FontData[] fontData = _tableViewer.getTable().getFont().getFontData();
+				_flattenedInheritedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD | SWT.ITALIC);
 			}
-			font = myFlattenedFont;
-		} else if (relationship.isInherited()) {
-			if (myInheritedFont == null) {
-				Font originalFont = myTableViewer.getTable().getFont();
-				FontData[] fontData = myTableViewer.getTable().getFont().getFontData();
-				myInheritedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.ITALIC);
+			font = _flattenedFont;
+		}
+		else if (flattened) {
+			if (_flattenedFont == null) {
+				Font originalFont = _tableViewer.getTable().getFont();
+				FontData[] fontData = _tableViewer.getTable().getFont().getFontData();
+				_flattenedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD);
 			}
-			font = myInheritedFont;
+			font = _flattenedFont;
+		} else if (inherited) {
+			if (_inheritedFont == null) {
+				Font originalFont = _tableViewer.getTable().getFont();
+				FontData[] fontData = _tableViewer.getTable().getFont().getFontData();
+				_inheritedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.ITALIC);
+			}
+			font = _inheritedFont;
 		}
 		return font;
 	}
 
-	public Color getBackground(Object _element, int _columnIndex) {
-		// EORelationship relationship = (EORelationship) _element;
+	public Color getBackground(Object element, int columnIndex) {
+		// EORelationship relationship = (EORelationship) element;
 		return null;
 	}
 
-	public Color getForeground(Object _element, int _columnIndex) {
+	public Color getForeground(Object element, int columnIndex) {
 		Color color = null;
-		// EORelationship relationships = (EORelationship) _element;
+		// EORelationship relationships = (EORelationship) element;
 		// if (relationships.isInherited()) {
 		// color =
 		// myTableViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY);
@@ -161,11 +173,14 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
 	}
 
 	public void dispose() {
-		if (myFlattenedFont != null) {
-			myFlattenedFont.dispose();
+		if (_flattenedFont != null) {
+			_flattenedFont.dispose();
 		}
-		if (myInheritedFont != null) {
-			myInheritedFont.dispose();
+		if (_inheritedFont != null) {
+			_inheritedFont.dispose();
+		}
+		if (_flattenedInheritedFont != null) {
+			_flattenedInheritedFont.dispose();
 		}
 		super.dispose();
 	}

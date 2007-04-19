@@ -70,6 +70,8 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
 	private Font _inheritedFont;
 
 	private Font _flattenedFont;
+
+	private Font _flattenedInheritedFont;
 	
 	private String _blankText;
 
@@ -143,14 +145,24 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
 		Font font = null;
 		if (_tableViewer != null) {
 			EOAttribute attribute = (EOAttribute) _element;
-			if (attribute.isFlattened()) {
+			boolean inherited = attribute.isInherited();
+			boolean flattened = attribute.isFlattened();
+			if (flattened && inherited) {
+				if (_flattenedInheritedFont == null) {
+					Font originalFont = _tableViewer.getTable().getFont();
+					FontData[] fontData = _tableViewer.getTable().getFont().getFontData();
+					_flattenedInheritedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD | SWT.ITALIC);
+				}
+				font = _flattenedFont;
+			}
+			else if (flattened) {
 				if (_flattenedFont == null) {
 					Font originalFont = _tableViewer.getTable().getFont();
 					FontData[] fontData = _tableViewer.getTable().getFont().getFontData();
 					_flattenedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD);
 				}
 				font = _flattenedFont;
-			} else if (attribute.isInherited()) {
+			} else if (inherited) {
 				if (_inheritedFont == null) {
 					Font originalFont = _tableViewer.getTable().getFont();
 					FontData[] fontData = _tableViewer.getTable().getFont().getFontData();
@@ -186,6 +198,12 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
 	public void dispose() {
 		if (_inheritedFont != null) {
 			_inheritedFont.dispose();
+		}
+		if (_flattenedFont != null) {
+			_flattenedFont.dispose();
+		}
+		if (_flattenedInheritedFont != null) {
+			_flattenedInheritedFont.dispose();
 		}
 		super.dispose();
 	}
