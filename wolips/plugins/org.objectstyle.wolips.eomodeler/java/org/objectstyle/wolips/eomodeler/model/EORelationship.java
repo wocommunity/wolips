@@ -155,9 +155,11 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 			if (myDestination == myEntityBeforeCloning) {
 				myDestination = myEntity;
 			} else {
-				EOModel model = myEntity.getModel();
-				EOModelGroup modelGroup = model.getModelGroup();
-				myDestination = modelGroup.getEntityNamed(myDestination.getName());
+				if (myDestination != null) {
+					EOModel model = myEntity.getModel();
+					EOModelGroup modelGroup = model.getModelGroup();
+					myDestination = modelGroup.getEntityNamed(myDestination.getName());
+				}
 			}
 			for (EOJoin join : myJoins) {
 				join.pasted();
