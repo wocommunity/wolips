@@ -134,7 +134,7 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
 				FontData[] fontData = _tableViewer.getTable().getFont().getFontData();
 				_flattenedInheritedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD | SWT.ITALIC);
 			}
-			font = _flattenedFont;
+			font = _flattenedInheritedFont;
 		}
 		else if (flattened) {
 			if (_flattenedFont == null) {
