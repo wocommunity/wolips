@@ -53,10 +53,13 @@ package org.objectstyle.wolips.refactoring;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.internal.corext.refactoring.changes.CopyResourceChange;
 import org.eclipse.jdt.internal.corext.refactoring.changes.DeleteFileChange;
@@ -67,6 +70,9 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RenameArguments;
 import org.eclipse.ltk.core.refactoring.participants.RenameParticipant;
+import org.objectstyle.wolips.locate.LocateException;
+import org.objectstyle.wolips.locate.LocatePlugin;
+import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 
 /**
  * Plugs into the refactoring process and renames a WOComponent by moving the
@@ -114,9 +120,19 @@ public class WOComponentRenameParticipant extends RenameParticipant {
 			String oldName = mySourceType.getElementName();
 			String newName = arguments.getNewName();
 			if (!oldName.equals(newName)) {
-				IProject project = mySourceType.getJavaProject().getProject();
-				IFolder oldWoFolder = (IFolder) PluginUtils.findResource(project, oldName + ".wo");
-				IFile oldApiFile = (IFile) PluginUtils.findResource(project, oldName + ".api");
+				//IProject project = mySourceType.getJavaProject().getProject();
+				LocalizedComponentsLocateResult existingLocalizedComponentsLocateResult = null;
+				try {
+					IResource resource = mySourceType.getResource();
+					existingLocalizedComponentsLocateResult = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(resource);
+					if(resource == null) {
+						throw new CoreException(new Status(IStatus.ERROR, RefactoringPlugin.getDefault().getBundleID(), IStatus.ERROR, "Could not locate component resource is null: " + mySourceType, null)); //$NON-NLS-1$
+						}
+				} catch (LocateException e) {
+					throw new CoreException(new Status(IStatus.ERROR, RefactoringPlugin.getDefault().getBundleID(), IStatus.ERROR, "Could not locate component: " + mySourceType, null)); //$NON-NLS-1$
+					}
+				IFolder oldWoFolder = (IFolder)existingLocalizedComponentsLocateResult.getFirstWodFile().getParent();
+				IFile oldApiFile = existingLocalizedComponentsLocateResult.getDotApi();
 				if (oldWoFolder != null || oldApiFile != null) {
 					CompositeChange compositeChange = new CompositeChange("Rename WOComponent Files");
 					if (oldApiFile != null) {
