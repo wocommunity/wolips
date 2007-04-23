@@ -50,76 +50,36 @@
 
 package org.objectstyle.wolips.refactoring;
 
-import org.eclipse.ui.plugin.*;
+import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
 import org.osgi.framework.BundleContext;
-import java.util.*;
 
 /**
  * The main plugin class to be used in the desktop.
  * 
  * @author mike
  */
-public class RefactoringPlugin extends AbstractUIPlugin {
-	// The shared instance.
+public class RefactoringPlugin extends AbstractBaseUIActivator {
+	// The plugin.
 	private static RefactoringPlugin plugin;
-
-	// Resource bundle.
-	private ResourceBundle resourceBundle;
 
 	/**
 	 * The constructor.
 	 */
+	// The constructur is very sensitive. Make sure that your stuff works.
+	// If this cunstructor fails, the whole plugin will be disabled.
 	public RefactoringPlugin() {
 		super();
 		plugin = this;
 	}
 
 	/**
-	 * This method is called upon plug-in activation
-	 */
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-	}
-
-	/**
-	 * This method is called when the plug-in is stopped
-	 */
-	public void stop(BundleContext context) throws Exception {
-		super.stop(context);
-		plugin = null;
-		resourceBundle = null;
-	}
-
-	/**
-	 * Returns the shared instance.
+	 * @return the shared instance
 	 */
 	public static RefactoringPlugin getDefault() {
 		return plugin;
 	}
 
-	/**
-	 * Returns the string from the plugin's resource bundle, or 'key' if not
-	 * found.
-	 */
-	public static String getResourceString(String key) {
-		ResourceBundle bundle = RefactoringPlugin.getDefault().getResourceBundle();
-		try {
-			return (bundle != null) ? bundle.getString(key) : key;
-		} catch (MissingResourceException e) {
-			return key;
-		}
-	}
-
-	/**
-	 * Returns the plugin's resource bundle,
-	 */
-	public ResourceBundle getResourceBundle() {
-		try {
-			if (resourceBundle == null)
-				resourceBundle = ResourceBundle.getBundle("org.objectstyle.wolips.refactoring.RefactoringPluginResources");
-		} catch (MissingResourceException x) {
-			resourceBundle = null;
-		}
-		return resourceBundle;
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
 	}
 }
