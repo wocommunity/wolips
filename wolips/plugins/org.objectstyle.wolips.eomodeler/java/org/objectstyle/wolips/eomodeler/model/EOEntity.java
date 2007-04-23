@@ -129,6 +129,8 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	private EOModel myModel;
 
 	private EOEntity myParent;
+	
+	private String myOriginalName;
 
 	private String myName;
 
@@ -741,12 +743,16 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		String oldName = myName;
 		if (myModel != null) {
 			myModel._checkForDuplicateEntityName(this, _name, null);
-			myModel._entityNameChanged(oldName, _name);
+			myModel._entityNameChanged(myOriginalName, oldName, _name);
 		}
 		myName = _name;
 		if (_fireEvents) {
 			firePropertyChange(EOEntity.NAME, oldName, myName);
 		}
+	}
+	
+	public String getOriginalName() {
+		return myOriginalName;
 	}
 
 	public String getClassName() {
@@ -1319,6 +1325,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	public void loadFromMap(EOModelMap _entityMap, Set<EOModelVerificationFailure> _failures) throws DuplicateNameException {
 		myEntityMap = _entityMap;
 		myName = _entityMap.getString("name", true);
+		myOriginalName = myName;
 		myExternalName = _entityMap.getString("externalName", true);
 		myClassName = _entityMap.getString("className", true);
 
