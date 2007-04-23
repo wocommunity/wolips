@@ -773,7 +773,9 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 			if (!isFlattened()) {
 				String columnName = getColumnName();
 				if (columnName == null || columnName.trim().length() == 0) {
-					_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " does not have a column name set.", true));
+					if (getDefinition() == null) {
+						_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " does not have a column name set.", true));
+					}
 				} else if (columnName.indexOf(' ') != -1) {
 					_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + "'s column name '" + columnName + "' has a space in it.", false));
 				} else {
