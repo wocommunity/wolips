@@ -122,7 +122,6 @@ public abstract class AbstractEOAttributePath implements IUserInfoable, IEOEntit
 	}
 
 	public boolean isValid() {
-		System.out.println("AbstractEOAttributePath.isValid: " + myChildAttribute);
 		return myChildAttribute != null;
 	}
 	
