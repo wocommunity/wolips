@@ -456,14 +456,14 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		}
 	}
 
-	public void _entityNameChanged(String _oldName, String _newName) {
+	public void _entityNameChanged(String _originalName, String _oldName, String _newName) {
 		if (myDeletedEntityNamesInObjectStore == null) {
 			myDeletedEntityNamesInObjectStore = new PropertyListSet<String>();
 		}
-		myDeletedEntityNamesInObjectStore.add(_oldName);
-		myDeletedEntityNamesInObjectStore.remove(_newName);
-		myDeletedEntityNames.add(_oldName);
-		myDeletedEntityNames.remove(_newName);
+		myDeletedEntityNamesInObjectStore.add(_originalName);
+		//myDeletedEntityNamesInObjectStore.remove(_newName);
+		myDeletedEntityNames.add(_originalName);
+		//myDeletedEntityNames.remove(_newName);
 	}
 
 	public boolean containsEntityNamed(String _entityName) {
