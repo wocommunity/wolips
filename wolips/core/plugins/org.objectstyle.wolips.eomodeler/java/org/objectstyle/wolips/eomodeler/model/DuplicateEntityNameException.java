@@ -58,7 +58,7 @@ public class DuplicateEntityNameException extends DuplicateNameException {
 	}
 
 	public DuplicateEntityNameException(String name, EOModel model, EOEntity existingEntity, Throwable throwable) {
-		super(name, "There is more than one entity named '" + name + "' in this model group (one in " + existingEntity.getModel().getName() + ", the other in " + model.getName() + ").", throwable);
+		super(name, "There is more than one entity named '" + name + "' in this model group (one in " + existingEntity.getModel().getName() + " - " + existingEntity.getModel().getModelURL() + ", the other in " + model.getName() + " - " + existingEntity.getModel().getModelURL() + ").", throwable);
 		_model = model;
 		_existingEntity = existingEntity;
 	}

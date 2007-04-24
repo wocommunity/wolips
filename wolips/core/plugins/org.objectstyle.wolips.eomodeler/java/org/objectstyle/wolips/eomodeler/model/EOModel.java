@@ -532,6 +532,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	}
 
 	public void addEntity(EOEntity entity, boolean pasteImmediately, boolean fireEvents, Set<EOModelVerificationFailure> failures) throws DuplicateNameException {
+		
 		entity._setModel(this);
 		_checkForDuplicateEntityName(entity, entity.getName(), failures);
 		if (pasteImmediately) {
@@ -658,7 +659,6 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	}
 
 	public void loadFromFolder(URL _modelFolder, Set<EOModelVerificationFailure> _failures) throws EOModelException, IOException {
-		System.out.println("EOModel.loadFromFolder: " + _modelFolder);
 		URL indexURL = new URL(_modelFolder, "index.eomodeld");
 		// if (!indexURL.exists()) {
 		// throw new EOModelException(indexURL + " does not exist.");
@@ -740,7 +740,6 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		// If there is a connection dictionary, then look for a database config
 		// that is equivalent ...
 		Map<Object, Object> connectionDictionary = modelMap.getMap("connectionDictionary", true);
-		System.out.println("EOModel.loadFromFolder:   connDict = " + connectionDictionary);
 		if (connectionDictionary != null && !connectionDictionary.isEmpty()) {
 			String adaptorName = modelMap.getString("adaptorName", true);
 			EODatabaseConfig tempConnectionDictionaryDatabaseConfig = _createDatabaseConfig(adaptorName, connectionDictionary);
@@ -748,7 +747,6 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			Iterator<EODatabaseConfig> databaseConfigsIter = myDatabaseConfigs.iterator();
 			while (connectionDictionaryDatabaseConfig == null && databaseConfigsIter.hasNext()) {
 				EODatabaseConfig databaseConfig = databaseConfigsIter.next();
-				System.out.println("EOModel.loadFromFolder:   dbconfig = " + databaseConfig);
 				if (tempConnectionDictionaryDatabaseConfig.isEquivalent(databaseConfig, false)) {
 					connectionDictionaryDatabaseConfig = databaseConfig;
 				}
@@ -757,8 +755,10 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			// connection dictionary
 			if (connectionDictionaryDatabaseConfig == null) {
 				connectionDictionaryDatabaseConfig = tempConnectionDictionaryDatabaseConfig;
-				System.out.println("EOModel.loadFromFolder:   adding new default db config");
 				addDatabaseConfig(connectionDictionaryDatabaseConfig, false, _failures);
+				if (_editing) {
+					_failures.add(new EOModelVerificationFailure(this, "Creating default database config for model '" + getName() + "'.", true, null));
+				}
 			}
 			// if the identified active database config isn't the connection
 			// dictionary config, then

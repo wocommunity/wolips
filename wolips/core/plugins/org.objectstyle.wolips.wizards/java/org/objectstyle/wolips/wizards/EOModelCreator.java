@@ -150,17 +150,17 @@ public class EOModelCreator implements IRunnableWithProgress {
 		Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
 		IContainer parentContainer = (IContainer) parentResource;
 		IFolder existingModelFolder = parentContainer.getFolder(new Path(modelName + ".eomodeld"));
-		if (existingModelFolder != null && existingModelFolder.exists()) {
+		if (existingModelFolder.exists()) {
 			failures.add(new EOModelVerificationFailure(null, "There's already a model in " + existingModelFolder.getLocation().toOSString() + ".", true, null));
 			EOModelErrorDialog errors = new EOModelErrorDialog(Display.getDefault().getActiveShell(), failures);
 			errors.open();
 			return;
 		}
-		
+
 		boolean createModelGroup = false;
 		EOModelGroup modelGroup;
 		try {
-			modelGroup = EclipseEOModelGroupFactory.createModelGroup(parentResource.getProject(), failures, false);
+			modelGroup = EclipseEOModelGroupFactory.createModelGroup(parentResource.getProject(), failures, true, existingModelFolder.getLocation().toFile().toURL());
 		} catch (Exception e) {
 			failures.clear();
 			failures.add(new EOModelVerificationFailure(null, "Creating empty EOModelGroup for this model because " + e.getMessage(), true, e));
@@ -168,9 +168,10 @@ public class EOModelCreator implements IRunnableWithProgress {
 			createModelGroup = true;
 			EOModelErrorDialog errors = new EOModelErrorDialog(Display.getDefault().getActiveShell(), failures);
 			errors.open();
-			
+
 		}
 		EOModel model = new EOModel(modelName, this.parentResource.getProject());
+		model.setEditing(true);
 		EODatabaseConfig databaseConfig = new EODatabaseConfig("Default");
 		databaseConfig.setAdaptorName(adaptorName);
 		model.addDatabaseConfig(databaseConfig);
@@ -198,8 +199,7 @@ public class EOModelCreator implements IRunnableWithProgress {
 			IFile modelGroupFile = parentContainer.getFile(new Path(baseName + ".eomodelgroup"));
 			modelGroupModel.writeToFile(modelGroupFile, monitor);
 			page.setResourceToReveal(modelGroupFile);
-		}
-		else {
+		} else {
 			page.setResourceToReveal(modelFolder.findMember("index.eomodeld"));
 		}
 

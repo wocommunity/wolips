@@ -513,7 +513,6 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			else {
 				IFile indexFile = EOModelEditor.getIndexFile(myModel);
 				if (indexFile != null) {
-					myModel.setEditing(true);
 					fileEditorInput = new FileEditorInput(indexFile);
 				}
 				if (openingEntityName != null) {
