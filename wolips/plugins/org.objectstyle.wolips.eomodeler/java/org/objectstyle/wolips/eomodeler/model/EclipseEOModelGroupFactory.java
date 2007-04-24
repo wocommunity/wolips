@@ -51,6 +51,7 @@ package org.objectstyle.wolips.eomodeler.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.text.ParseException;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -91,6 +92,9 @@ public class EclipseEOModelGroupFactory {
 				if (!modelFolder.isAbsolute()) {
 					modelFolder = new File(project.getLocation().toFile(), modelPath);
 				}
+				if (model == null) {
+					modelGroup.setEditingModelURL(modelFolder.toURL());
+				}
 				EOModel modelGroupModel = modelGroup.addModelFromFolder(modelFolder.toURL(), _failures, _skipOnDuplicates, _modelResource.getProject());
 				if (model == null) {
 					model = modelGroupModel;
@@ -105,9 +109,8 @@ public class EclipseEOModelGroupFactory {
 			} else {
 				modelContainer = (IContainer) _modelResource;
 			}
-			modelGroup = EclipseEOModelGroupFactory.createModelGroup(project, _failures, _skipOnDuplicates);
-			String modelFileName = modelContainer.getName();
-			String modelName = modelFileName.substring(0, modelFileName.indexOf('.'));
+			String modelName = EOModelGroup.getModelNameFromPath(modelContainer.getName());
+			modelGroup = EclipseEOModelGroupFactory.createModelGroup(project, _failures, _skipOnDuplicates, modelContainer.getLocation().toFile().toURL());
 			model = modelGroup.getModelNamed(modelName);
 		}
 		return model;
@@ -116,6 +119,7 @@ public class EclipseEOModelGroupFactory {
 	protected static void addModelsFromProject(EOModelGroup _modelGroup, IProject _project, Set<File> _searchedFolders, Set<IProject> _searchedProjects, Set<EOModelVerificationFailure> _failures, boolean _skipOnDuplicates) throws IOException, EOModelException, CoreException {
 		if (!_searchedProjects.contains(_project)) {
 			_searchedProjects.add(_project);
+			boolean visitedProject = false;
 			IJavaProject javaProject = JavaCore.create(_project);
 			IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
 			for (int classpathEntryNum = 0; classpathEntryNum < classpathEntries.length; classpathEntryNum++) {
@@ -143,15 +147,21 @@ public class EclipseEOModelGroupFactory {
 					IPath path = entry.getPath();
 					IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(path.lastSegment());
 					EclipseEOModelGroupFactory.addModelsFromProject(_modelGroup, project, _searchedFolders, _searchedProjects, _failures, _skipOnDuplicates);
+				} else if (entryKind == IClasspathEntry.CPE_SOURCE) {
+					visitedProject = true;
+					_project.accept(new ModelVisitor(_modelGroup, _searchedFolders, _failures, _skipOnDuplicates), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
 				}
 			}
 
-			_project.accept(new ModelVisitor(_modelGroup, _searchedFolders, _failures, _skipOnDuplicates), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
+			if (!visitedProject) {
+				_project.accept(new ModelVisitor(_modelGroup, _searchedFolders, _failures, _skipOnDuplicates), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
+			}
 		}
 	}
 
-	public static EOModelGroup createModelGroup(IProject _project, Set<EOModelVerificationFailure> _failures, boolean _skipOnDuplicates) throws CoreException, IOException, EOModelException {
+	public static EOModelGroup createModelGroup(IProject _project, Set<EOModelVerificationFailure> _failures, boolean _skipOnDuplicates, URL editingModelURL) throws CoreException, IOException, EOModelException {
 		EOModelGroup modelGroup = new EOModelGroup();
+		modelGroup.setEditingModelURL(editingModelURL);
 		EclipseEOModelGroupFactory.addModelsFromProject(modelGroup, _project, new HashSet<File>(), new HashSet<IProject>(), _failures, _skipOnDuplicates);
 		modelGroup.resolve(_failures);
 		modelGroup.verify(_failures);
@@ -176,15 +186,15 @@ public class EclipseEOModelGroupFactory {
 
 		public boolean visit(IResource _resource) throws CoreException {
 			try {
-				if(!_resource.isAccessible()) {
+				if (!_resource.isAccessible()) {
 					return false;
 				}
-				if(_resource.isDerived()) {
+				if (_resource.isDerived()) {
 					return false;
 				}
 				String name = _resource.getName();
-				if(name != null) {
-					if("build".equals(name)||"dist".equals(name)||"target".equals(name)) {
+				if (name != null) {
+					if ("build".equals(name) || "dist".equals(name) || "target".equals(name)) {
 						return false;
 					}
 				}
