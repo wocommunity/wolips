@@ -58,10 +58,10 @@ package org.objectstyle.wolips.wizards;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -75,13 +75,17 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.Display;
 import org.objectstyle.wolips.datasets.adaptable.JavaProject;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.eogenerator.model.EOGeneratorModel;
+import org.objectstyle.wolips.eogenerator.model.EOModelReference;
+import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
 import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EOModelException;
 import org.objectstyle.wolips.eomodeler.model.EOModelGroup;
+import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.model.EclipseEOModelGroupFactory;
 
 /**
@@ -143,13 +147,34 @@ public class EOModelCreator implements IRunnableWithProgress {
 	 * @throws InvocationTargetException
 	 */
 	public void createEOModel(IProgressMonitor monitor) throws CoreException, IOException, EOModelException, InvocationTargetException {
-		EOModelGroup modelGroup = EclipseEOModelGroupFactory.createModelGroup(parentResource.getProject(), new HashSet(), false);
+		Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
+		IContainer parentContainer = (IContainer) parentResource;
+		IFolder existingModelFolder = parentContainer.getFolder(new Path(modelName + ".eomodeld"));
+		if (existingModelFolder != null && existingModelFolder.exists()) {
+			failures.add(new EOModelVerificationFailure(null, "There's already a model in " + existingModelFolder.getLocation().toOSString() + ".", true, null));
+			EOModelErrorDialog errors = new EOModelErrorDialog(Display.getDefault().getActiveShell(), failures);
+			errors.open();
+			return;
+		}
+		
+		boolean createModelGroup = false;
+		EOModelGroup modelGroup;
+		try {
+			modelGroup = EclipseEOModelGroupFactory.createModelGroup(parentResource.getProject(), failures, false);
+		} catch (Exception e) {
+			failures.clear();
+			failures.add(new EOModelVerificationFailure(null, "Creating empty EOModelGroup for this model because " + e.getMessage(), true, e));
+			modelGroup = new EOModelGroup();
+			createModelGroup = true;
+			EOModelErrorDialog errors = new EOModelErrorDialog(Display.getDefault().getActiveShell(), failures);
+			errors.open();
+			
+		}
 		EOModel model = new EOModel(modelName, this.parentResource.getProject());
 		EODatabaseConfig databaseConfig = new EODatabaseConfig("Default");
 		databaseConfig.setAdaptorName(adaptorName);
 		model.addDatabaseConfig(databaseConfig);
 		modelGroup.addModel(model);
-		IContainer parentContainer = (IContainer) parentResource;
 		File modelFolderFile = model.saveToFolder(parentContainer.getLocation().toFile());
 		IFolder modelFolder = parentContainer.getFolder(new Path(modelFolderFile.getName()));
 		EOGeneratorModel eogenModel = EOGeneratorWizard.createEOGeneratorModel(parentContainer, model);
@@ -162,7 +187,21 @@ public class EOModelCreator implements IRunnableWithProgress {
 		}
 		eogenModel.writeToFile(eogenFile, monitor);
 		parentContainer.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-		page.setResourceToReveal(modelFolder.findMember("index.eomodeld"));
+
+		if (createModelGroup) {
+			EOGeneratorModel modelGroupModel = EOGeneratorModel.createDefaultModel(parentResource.getProject());
+			if (modelFolder != null) {
+				Path modelPath = new Path(modelFolderFile.getAbsolutePath());
+				EOModelReference modelReference = new EOModelReference(modelPath);
+				modelGroupModel.addModel(modelReference);
+			}
+			IFile modelGroupFile = parentContainer.getFile(new Path(baseName + ".eomodelgroup"));
+			modelGroupModel.writeToFile(modelGroupFile, monitor);
+			page.setResourceToReveal(modelGroupFile);
+		}
+		else {
+			page.setResourceToReveal(modelFolder.findMember("index.eomodeld"));
+		}
 
 		// add adaptor framework
 		if (!"None".equals(adaptorName)) {
