@@ -169,31 +169,34 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 				} else {
 					packageName = "";
 				}
-				if (guessPackageName == null) {
-					guessPackageName = packageName;
-				} else if ("".equals(guessPackageName)) {
-					// it can't change from ""
-				} else if (!guessPackageName.equals(packageName)) {
-					if (guessPackageName.startsWith(packageName)) {
+				// ignore blank package names ...
+				if (!"".equals(packageName)) {
+					if (guessPackageName == null) {
 						guessPackageName = packageName;
-					} else if (packageName.startsWith(guessPackageName)) {
-						// leave it as is
-					} else {
-						int lastMatchingIndex = -1;
-						for (int index = 0; index < guessPackageName.length() && index < packageName.length(); index++) {
-							if (guessPackageName.charAt(index) == packageName.charAt(index)) {
-								lastMatchingIndex = index;
-							} else {
-								break;
-							}
-						}
-						if (lastMatchingIndex != -1) {
-							guessPackageName = guessPackageName.substring(0, lastMatchingIndex);
-							if (guessPackageName.endsWith(".")) {
-								guessPackageName = guessPackageName.substring(0, guessPackageName.length() - 1);
-							}
+					} else if ("".equals(guessPackageName)) {
+						// it can't change from ""
+					} else if (!guessPackageName.equals(packageName)) {
+						if (guessPackageName.startsWith(packageName)) {
+							guessPackageName = packageName;
+						} else if (packageName.startsWith(guessPackageName)) {
+							// leave it as is
 						} else {
-							guessPackageName = "";
+							int lastMatchingIndex = -1;
+							for (int index = 0; index < guessPackageName.length() && index < packageName.length(); index++) {
+								if (guessPackageName.charAt(index) == packageName.charAt(index)) {
+									lastMatchingIndex = index;
+								} else {
+									break;
+								}
+							}
+							if (lastMatchingIndex != -1) {
+								guessPackageName = guessPackageName.substring(0, lastMatchingIndex);
+								if (guessPackageName.endsWith(".")) {
+									guessPackageName = guessPackageName.substring(0, guessPackageName.length() - 1);
+								}
+							} else {
+								guessPackageName = "";
+							}
 						}
 					}
 				}
