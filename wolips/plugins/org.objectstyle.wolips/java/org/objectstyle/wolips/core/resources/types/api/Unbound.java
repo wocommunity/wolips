@@ -70,7 +70,7 @@ public class Unbound extends AbstractUn {
 	public static void addToWoWithBinding(Wo wo, Binding binding) {
 		Element newValidationElement = wo.element.getOwnerDocument().createElement(Validation.VALIDATION);
 		wo.element.appendChild(newValidationElement);
-		newValidationElement.setAttribute(Validation.MESSAGE, "&apos;" + binding.getName() + "&apos; is a required binding");
+		newValidationElement.setAttribute(Validation.MESSAGE, "'" + binding.getName() + "' is a required binding");
 		Element newUnboundElement = wo.element.getOwnerDocument().createElement(UNBOUND);
 		newValidationElement.appendChild(newUnboundElement);
 		newUnboundElement.setAttribute(NAME, binding.getName());

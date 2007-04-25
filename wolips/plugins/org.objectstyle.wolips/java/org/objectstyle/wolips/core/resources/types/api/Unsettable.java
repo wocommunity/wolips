@@ -70,7 +70,7 @@ public class Unsettable extends AbstractUn {
 	public static void addToWoWithBinding(Wo wo, Binding binding) {
 		Element newValidationElement = wo.element.getOwnerDocument().createElement(Validation.VALIDATION);
 		wo.element.appendChild(newValidationElement);
-		newValidationElement.setAttribute(Validation.MESSAGE, "&apos;" + binding.getName() + "&apos; must be bound to a settable value");
+		newValidationElement.setAttribute(Validation.MESSAGE, "'" + binding.getName() + "' must be bound to a settable value");
 		Element newUnsettableElement = wo.element.getOwnerDocument().createElement(UNSETTABLE);
 		newValidationElement.appendChild(newUnsettableElement);
 		newUnsettableElement.setAttribute(NAME, binding.getName());

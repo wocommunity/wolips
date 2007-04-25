@@ -70,7 +70,7 @@ public class Ungettable extends AbstractUn {
 	public static void addToWoWithBinding(Wo wo, Binding binding) {
 		Element newValidationElement = wo.element.getOwnerDocument().createElement(Validation.VALIDATION);
 		wo.element.appendChild(newValidationElement);
-		newValidationElement.setAttribute(Validation.MESSAGE, "&apos;" + binding.getName() + "&apos; must be bound to a gettable value");
+		newValidationElement.setAttribute(Validation.MESSAGE, "'" + binding.getName() + "' must be bound to a gettable value");
 		Element newUngettableElement = wo.element.getOwnerDocument().createElement(UNGETTABLE);
 		newValidationElement.appendChild(newUngettableElement);
 		newUngettableElement.setAttribute(NAME, binding.getName());
