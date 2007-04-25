@@ -70,6 +70,10 @@ public class Wo extends AbstractApiModelElement {
 	protected Wo(Element element, ApiModel apiModel) {
 		super(element, apiModel);
 	}
+	
+	public ApiModel getModel() {
+		return apiModel;
+	}
 
 	public String getClassName() {
 		return element.getAttribute(CLASS);
