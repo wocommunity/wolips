@@ -91,6 +91,8 @@ public class ApiModel {
 
 	private boolean _isDirty;
 
+	private long _lastModified;
+
 	public ApiModel(File file) throws ApiModelException {
 		_file = file;
 		if (!file.exists()) {
@@ -120,6 +122,7 @@ public class ApiModel {
 				throw new ApiModelException("Failed to create blank API file.", e);
 			}
 		}
+		_lastModified = _eclipseFile.getModificationStamp();
 		parse();
 	}
 
@@ -143,6 +146,10 @@ public class ApiModel {
 		return sb.toString();
 	}
 
+	public IFile getEclipseFile() {
+		return _eclipseFile;
+	}
+
 	public String getLocation() {
 		String location;
 		if (_url != null) {
@@ -155,6 +162,22 @@ public class ApiModel {
 		return location;
 	}
 
+	public boolean parseIfNecessary() throws ApiModelException {
+		boolean parsed = false;
+		if (_eclipseFile != null) {
+			if (_eclipseFile.getModificationStamp() != _lastModified) {
+				parse();
+				parsed = true;
+			}
+		} else if (_file != null) {
+			if (_file.lastModified() != _lastModified) {
+				parse();
+				parsed = true;
+			}
+		}
+		return parsed;
+	}
+
 	private void parse() throws ApiModelException {
 		try {
 			DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -165,17 +188,23 @@ public class ApiModel {
 			} else {
 				_document = documentBuilder.parse(new InputSource(_reader));
 			}
+			if (_eclipseFile != null) {
+				_lastModified = _eclipseFile.getModificationStamp();
+			} else if (_file != null) {
+				_lastModified = _file.lastModified();
+			}
 		} catch (Throwable e) {
 			throw new ApiModelException("Failed to parse API file " + getLocation() + ".", e);
 		}
 	}
 
-	public Wodefinitions getWODefinitions() {
+	public Wodefinitions getWODefinitions() throws ApiModelException {
+		parseIfNecessary();
 		Element element = _document.getDocumentElement();
 		return new Wodefinitions(element, this);
 	}
 
-	public Wo getWo() {
+	public Wo getWo() throws ApiModelException {
 		Wodefinitions wodefinitions = getWODefinitions();
 		if (wodefinitions == null) {
 			return null;
