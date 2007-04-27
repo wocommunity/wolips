@@ -92,7 +92,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.WorkbenchException;
-import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -594,41 +593,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 						}
 					};
 					IWorkspace workspace = ResourcesPlugin.getWorkspace();
-					workspace.run(body, new IProgressMonitor() {
-
-						public void beginTask(String name, int totalWork) {
-							// DO NOTHING
-						}
-
-						public void done() {
-							// DO NOTHING
-						}
-
-						public void internalWorked(double work) {
-							// DO NOTHING
-						}
-
-						public boolean isCanceled() {
-							return false;
-						}
-
-						public void setCanceled(boolean value) {
-							// DO NOTHING
-						}
-
-						public void setTaskName(String name) {
-							// DO NOTHING
-						}
-
-						public void subTask(String name) {
-							// DO NOTHING
-						}
-
-						public void worked(int work) {
-							// DO NOTHING
-						}
-
-					});
+					workspace.run(body, new NullProgressMonitor());
 				}
 			} catch (Exception e) {
 				Activator.getDefault().log(e);
