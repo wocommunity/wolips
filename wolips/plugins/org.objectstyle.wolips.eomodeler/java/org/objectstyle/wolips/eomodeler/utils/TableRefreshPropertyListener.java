@@ -51,6 +51,9 @@ package org.objectstyle.wolips.eomodeler.utils;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.TableViewer;
 
@@ -62,6 +65,19 @@ public class TableRefreshPropertyListener implements PropertyChangeListener {
 	}
 
 	public void propertyChange(PropertyChangeEvent _event) {
-		myTableViewer.refresh();
+		Object source = _event.getSource();
+		Object oldValue = _event.getOldValue();
+		Object newValue = _event.getNewValue();
+		if (oldValue instanceof Collection && newValue instanceof Collection) {
+			Set newSet = new HashSet((Collection) newValue);
+			newSet.removeAll((Collection) oldValue);
+			myTableViewer.add(newSet.toArray());
+			Set oldSet = new HashSet((Collection) oldValue);
+			oldSet.removeAll((Collection) newValue);
+			myTableViewer.remove(oldSet.toArray());
+		} else {
+			myTableViewer.refresh(source, true);
+		}
+		// myTableViewer.refresh(false);
 	}
 }
