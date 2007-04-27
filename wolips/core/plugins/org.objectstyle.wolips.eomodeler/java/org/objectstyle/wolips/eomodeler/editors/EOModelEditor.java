@@ -66,10 +66,13 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -89,6 +92,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.WorkbenchException;
+import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -175,7 +179,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	private boolean myStoredProcedurePageVisible;
 
 	private int mySelectionDepth;
-	
+
 	public EOModelEditor() {
 		mySelectionChangedListeners = new ListenerList();
 		myDirtyModelListener = new DirtyModelListener();
@@ -188,16 +192,16 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		myArgumentListener = new ArgumentDeletedRefresher();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 	}
-	
+
 	public IUndoContext getUndoContext() {
 		return new EOModelEditorUndoContext();
 	}
-	
+
 	protected class EOModelEditorUndoContext implements IUndoContext {
 		public String getLabel() {
 			return EOModelUtils.getUndoContext(EOModelEditor.this.getModel()).getLabel();
 		}
-		
+
 		public boolean matches(IUndoContext context) {
 			return EOModelUtils.getUndoContext(EOModelEditor.this.getModel()).matches(context);
 		}
@@ -286,8 +290,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				setSelectedEntity(myOpeningEntity);
 				setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
 			}
-			
-			
+
 		} catch (PartInitException e) {
 			ErrorDialog.openError(getSite().getShell(), "Error creating editor.", null, e.getStatus());
 		}
@@ -446,7 +449,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	public void doSaveAs() {
 		doSave(null);
 	}
-	
+
 	public void revert() {
 		boolean confirmed = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), Messages.getString("EOModelEditor.revertTitle"), Messages.getString("EOModelEditor.revertMessage"));
 		if (confirmed) {
@@ -508,9 +511,9 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			if (myModel == null) {
 				super.init(_site, fileEditorInput);
 				handleModelErrors(myLoadFailures);
-				//throw new EOModelException("Failed to load the requested model.");
-			}
-			else {
+				// throw new EOModelException("Failed to load the requested
+				// model.");
+			} else {
 				IFile indexFile = EOModelEditor.getIndexFile(myModel);
 				if (indexFile != null) {
 					fileEditorInput = new FileEditorInput(indexFile);
@@ -519,7 +522,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 					myOpeningEntity = myModel.getEntityNamed(openingEntityName);
 				}
 				handleModelErrors(myLoadFailures);
-	
+
 				myModel.addPropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
 				myModel.addPropertyChangeListener(EOModel.ENTITIES, myEntitiesChangeListener);
 				myModel.addPropertyChangeListener(EOModel.STORED_PROCEDURES, myStoredProceduresChangeListener);
@@ -540,49 +543,95 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	protected void handleModelErrors(final Set<EOModelVerificationFailure> _failures) {
 		if (myModel != null) {
 			try {
-				for (EOModel model : myModel.getModelGroup().getModels()) {
-					IFile indexFile = EOModelEditor.getIndexFile(model);
-					if (indexFile != null) {
-						IMarker[] oldMarkers = indexFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
-						for (int markerNum = 0; markerNum < oldMarkers.length; markerNum++) {
-							// System.out.println("EOModelEditor.handleModelErrors:
-							// deleting " + markers[markerNum]);
-							oldMarkers[markerNum].delete();
-						}
-						IMarker[] newMarkers = indexFile.findMarkers(Activator.EOMODEL_PROBLEM_MARKER, true, IResource.DEPTH_INFINITE);
-						for (int markerNum = 0; markerNum < newMarkers.length; markerNum++) {
-							// System.out.println("EOModelEditor.handleModelErrors:
-							// deleting " + markers[markerNum]);
-							newMarkers[markerNum].delete();
-						}
-					}
-				}
 				if (Preferences.shouldEntityModelerShowErrorsInProblemsView()) {
-					Iterator<EOModelVerificationFailure> failuresIter = _failures.iterator();
-					while (failuresIter.hasNext()) {
-						EOModelVerificationFailure failure = failuresIter.next();
-						EOModel model = failure.getModel();
-						IFile indexFile = EOModelEditor.getIndexFile(model);
-						if (indexFile != null) {
-							IMarker marker = indexFile.createMarker(Activator.EOMODEL_PROBLEM_MARKER);
-							marker.setAttribute(IMarker.MESSAGE, failure.getMessage());
-							int severity;
-							if (failure.isWarning()) {
-								severity = IMarker.SEVERITY_WARNING;
-							} else {
-								severity = IMarker.SEVERITY_ERROR;
+					IWorkspaceRunnable body = new IWorkspaceRunnable() {
+						public void run(IProgressMonitor monitor) throws CoreException {
+							for (EOModel model : myModel.getModelGroup().getModels()) {
+								try {
+									IFile indexFile = EOModelEditor.getIndexFile(model);
+									if (indexFile != null) {
+										IMarker[] oldMarkers = indexFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+										for (int markerNum = 0; markerNum < oldMarkers.length; markerNum++) {
+											// System.out.println("EOModelEditor.handleModelErrors:
+											// deleting " + markers[markerNum]);
+											oldMarkers[markerNum].delete();
+										}
+										IMarker[] newMarkers = indexFile.findMarkers(Activator.EOMODEL_PROBLEM_MARKER, true, IResource.DEPTH_INFINITE);
+										for (int markerNum = 0; markerNum < newMarkers.length; markerNum++) {
+											// System.out.println("EOModelEditor.handleModelErrors:
+											// deleting " + markers[markerNum]);
+											newMarkers[markerNum].delete();
+										}
+									}
+								} catch (Exception e) {
+									Activator.getDefault().log(e);
+								}
 							}
-							marker.setAttribute(IMarker.SEVERITY, new Integer(severity));
-							marker.setAttribute(IMarker.TRANSIENT, false);
+
+							Iterator<EOModelVerificationFailure> failuresIter = _failures.iterator();
+							while (failuresIter.hasNext()) {
+								EOModelVerificationFailure failure = failuresIter.next();
+								EOModel model = failure.getModel();
+								IFile indexFile;
+								try {
+									indexFile = EOModelEditor.getIndexFile(model);
+									if (indexFile != null) {
+										IMarker marker = indexFile.createMarker(Activator.EOMODEL_PROBLEM_MARKER);
+										marker.setAttribute(IMarker.MESSAGE, failure.getMessage());
+										int severity;
+										if (failure.isWarning()) {
+											severity = IMarker.SEVERITY_WARNING;
+										} else {
+											severity = IMarker.SEVERITY_ERROR;
+										}
+										marker.setAttribute(IMarker.SEVERITY, new Integer(severity));
+										marker.setAttribute(IMarker.TRANSIENT, false);
+									}
+								} catch (Exception e) {
+									Activator.getDefault().log(e);
+								}
+							}
 						}
-					}
+					};
+					IWorkspace workspace = ResourcesPlugin.getWorkspace();
+					workspace.run(body, new IProgressMonitor() {
+
+						public void beginTask(String name, int totalWork) {
+							// DO NOTHING
+						}
+
+						public void done() {
+							// DO NOTHING
+						}
+
+						public void internalWorked(double work) {
+							// DO NOTHING
+						}
+
+						public boolean isCanceled() {
+							return false;
+						}
+
+						public void setCanceled(boolean value) {
+							// DO NOTHING
+						}
+
+						public void setTaskName(String name) {
+							// DO NOTHING
+						}
+
+						public void subTask(String name) {
+							// DO NOTHING
+						}
+
+						public void worked(int work) {
+							// DO NOTHING
+						}
+
+					});
 				}
-			} catch (CoreException e) {
-				e.printStackTrace();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (EOModelException e) {
-				e.printStackTrace();
+			} catch (Exception e) {
+				Activator.getDefault().log(e);
 			}
 		}
 
