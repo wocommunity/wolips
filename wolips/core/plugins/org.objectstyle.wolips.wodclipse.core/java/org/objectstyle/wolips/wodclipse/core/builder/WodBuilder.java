@@ -53,9 +53,11 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.core.resources.builder.AbstractFullAndIncrementalBuilder;
+import org.objectstyle.wolips.core.resources.builder.IBuilder;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
@@ -65,12 +67,14 @@ import org.objectstyle.wolips.wodclipse.core.util.WodModelUtils;
 
 public class WodBuilder extends AbstractFullAndIncrementalBuilder {
   private boolean _validateTemplates;
+  private int _buildKind;
 
   public WodBuilder() {
     super();
   }
 
   public boolean buildStarted(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
+    _buildKind = _kind;
     _validateTemplates = Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.VALIDATE_TEMPLATES_KEY);
     return false;
   }
@@ -106,11 +110,15 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
           IFile file = (IFile) _resource;
           String fileExtension = file.getFileExtension();
           if ("wod".equals(fileExtension)) {
-            file.touch(_monitor);
+            if (_buildKind == IncrementalProjectBuilder.FULL_BUILD) {
+              file.touch(_monitor);
+            }
             validate = true;
           }
           else if ("html".equals(fileExtension) && _resource.getParent().getName().endsWith(".wo")) {
-            file.touch(_monitor);
+            if (_buildKind == IncrementalProjectBuilder.FULL_BUILD) {
+              file.touch(_monitor);
+            }
             validate = true;
           }
           else if ("api".equals(fileExtension)) {
