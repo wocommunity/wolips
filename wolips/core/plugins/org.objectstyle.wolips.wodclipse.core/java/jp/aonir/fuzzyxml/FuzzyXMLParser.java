@@ -194,6 +194,28 @@ public class FuzzyXMLParser {
       }
       lastIndex = matcher.end();
     }
+
+    if (stack.size() > 0 && nonCloseElements.size() > 0) {
+      FuzzyXMLElementImpl lastElement = (FuzzyXMLElementImpl) nonCloseElements.get(nonCloseElements.size() - 1);
+      String lowercaseLastElementName = lastElement.getName().toLowerCase();
+      if (!looseTags.contains(lowercaseLastElementName)) {
+        fireErrorEvent(lastElement.getOffset(), lastElement.getLength(), Messages.getMessage("error.noCloseTag", lastElement.getName()), null);
+      }
+
+      for (FuzzyXMLNode openNode : stack) {
+        if (openNode instanceof FuzzyXMLElementImpl) {
+          FuzzyXMLElementImpl openElement = (FuzzyXMLElementImpl) openNode;
+          openElement.setLength(lastIndex - openElement.getOffset());
+          if (openElement.getParentNode() == null) {
+            roots.add(openElement);
+          }
+          else {
+            ((FuzzyXMLElementImpl) openElement.getParentNode()).appendChildWithNoCheck(openElement);
+          }
+        }
+      }
+    }
+
     FuzzyXMLElement docElement = null;
     if (roots.size() == 0) {
       docElement = new FuzzyXMLElementImpl(null, "document", 0, originalSource.length());
@@ -207,13 +229,6 @@ public class FuzzyXMLParser {
     }
     FuzzyXMLDocumentImpl doc = new FuzzyXMLDocumentImpl(docElement, docType);
     doc.setHTML(this.isHTML);
-    if (stack.size() > 0 && nonCloseElements.size() > 0) {
-      FuzzyXMLElement lastElement = nonCloseElements.get(nonCloseElements.size() - 1);
-      String lowercaseLastElementName = lastElement.getName().toLowerCase();
-      if (!looseTags.contains(lowercaseLastElementName)) {
-        fireErrorEvent(lastElement.getOffset(), lastElement.getLength(), Messages.getMessage("error.noCloseTag", lastElement.getName()), null);
-      }
-    }
     return doc;
   }
 
@@ -291,7 +306,7 @@ public class FuzzyXMLParser {
   private void handleCloseTag(int offset, int end, String text) {
     handleCloseTag(offset, end, text, true);
   }
-  
+
   private void handleCloseTag(int offset, int end, String text, boolean showMismatchError) {
     if (stack.size() == 0) {
       return;
@@ -335,8 +350,14 @@ public class FuzzyXMLParser {
             int lastOpenElementEndOffset = lastOpenElement.getOffset() + lastOpenElement.getLength();
             stack.push(lastOpenElement);
             handleCloseTag(lastOpenElementEndOffset, lastOpenElementEndOffset, "/" + lastOpenElement.getName(), false);
-            lastOpenElement = (FuzzyXMLElementImpl) stack.pop();
-            lowercaseLastOpenElementName = lastOpenElement.getName().toLowerCase();
+            if (stack.size() == 0) {
+              lastOpenElement = null;
+              lowercaseLastOpenElementName = null;
+            }
+            else {
+              lastOpenElement = (FuzzyXMLElementImpl) stack.pop();
+              lowercaseLastOpenElementName = lastOpenElement.getName().toLowerCase();
+            }
           }
         }
         else {
@@ -399,23 +420,25 @@ public class FuzzyXMLParser {
       }
     }
 
-    // 空タグの場合は空のテキストノードを追加しておく
-    if (lastOpenElement.getChildren().length == 0) {
-      lastOpenElement.appendChild(new FuzzyXMLTextImpl(getParent(), "", offset, 0));
-    }
-    lastOpenElement.setLength(end - lastOpenElement.getOffset());
-    nonCloseElements.remove(lastOpenElement);
-    if (lastOpenElement.getParentNode() == null) {
-      roots.add(lastOpenElement);
-      for (FuzzyXMLElement error : nonCloseElements) {
-        //System.out.println(error.getName() + "は閉じていません。");
-        if (showMismatchError) {
-          fireErrorEvent(error.getOffset(), error.getLength(), Messages.getMessage("error.noCloseTag", error.getName()), error);
+    if (lastOpenElement != null) {
+      // 空タグの場合は空のテキストノードを追加しておく
+      if (lastOpenElement.getChildren().length == 0) {
+        lastOpenElement.appendChild(new FuzzyXMLTextImpl(getParent(), "", offset, 0));
+      }
+      lastOpenElement.setLength(end - lastOpenElement.getOffset());
+      nonCloseElements.remove(lastOpenElement);
+      if (lastOpenElement.getParentNode() == null) {
+        roots.add(lastOpenElement);
+        for (FuzzyXMLElement error : nonCloseElements) {
+          //System.out.println(error.getName() + "は閉じていません。");
+          if (showMismatchError) {
+            fireErrorEvent(error.getOffset(), error.getLength(), Messages.getMessage("error.noCloseTag", error.getName()), error);
+          }
         }
       }
-    }
-    else {
-      ((FuzzyXMLElementImpl) lastOpenElement.getParentNode()).appendChildWithNoCheck(lastOpenElement);
+      else {
+        ((FuzzyXMLElementImpl) lastOpenElement.getParentNode()).appendChildWithNoCheck(lastOpenElement);
+      }
     }
   }
 
