@@ -56,13 +56,13 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.PartInitException;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
-import org.objectstyle.wolips.htmleditor.sse.StructuredTextEditorWO;
+import org.objectstyle.wolips.templateeditor.TemplateEditor;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
-import org.objectstyle.wolips.wodclipse.wod.WodEditor;
+import org.objectstyle.wolips.wodclipse.editor.WodEditor;
 
 public class HtmlWodTab extends ComponentEditorTab {
-
-	private StructuredTextEditorWO structuredTextEditorWO;
+	//private StructuredTextEditorWO structuredTextEditorWO;
+	private TemplateEditor templateEditor;
 
 	private WodEditor wodEditor;
 
@@ -80,7 +80,7 @@ public class HtmlWodTab extends ComponentEditorTab {
 
 	public IEditorPart getActiveEmbeddedEditor() {
 		if (htmlActive) {
-			return structuredTextEditorWO;
+			return templateEditor;
 		}
 		return wodEditor;
 	}
@@ -89,15 +89,15 @@ public class HtmlWodTab extends ComponentEditorTab {
 		SashForm htmlSashform = new SashForm(this.getParentSashForm(), SWT.VERTICAL);
 		SashForm wodSashform = new SashForm(this.getParentSashForm(), SWT.VERTICAL);
 
-		structuredTextEditorWO = new StructuredTextEditorWO();
-		IEditorSite htmlSite = this.getComponentEditorPart().publicCreateSite(structuredTextEditorWO);
+		templateEditor = new TemplateEditor();
+		IEditorSite htmlSite = this.getComponentEditorPart().publicCreateSite(templateEditor);
 		try {
-			structuredTextEditorWO.init(htmlSite, htmlInput);
+			templateEditor.init(htmlSite, htmlInput);
 		} catch (PartInitException e) {
 			ComponenteditorPlugin.getDefault().log(e);
 		}
-		createInnerPartControl(htmlSashform, structuredTextEditorWO);
-		structuredTextEditorWO.addPropertyListener(new IPropertyListener() {
+		createInnerPartControl(htmlSashform, templateEditor);
+		templateEditor.addPropertyListener(new IPropertyListener() {
 			public void propertyChanged(Object source, int propertyId) {
 				HtmlWodTab.this.getComponentEditorPart().publicHandlePropertyChange(propertyId);
 			}
@@ -138,7 +138,7 @@ public class HtmlWodTab extends ComponentEditorTab {
 			}
 		});
 
-		structuredTextEditorWO.initEditorInteraction(this.getComponentEditorPart().getEditorInteraction());
+		templateEditor.initEditorInteraction(this.getComponentEditorPart().getEditorInteraction());
 		wodEditor.initEditorInteraction(this.getComponentEditorPart().getEditorInteraction());
 
 		this.addWebObjectsTagNamesListener();
@@ -148,33 +148,31 @@ public class HtmlWodTab extends ComponentEditorTab {
 		if (wodEditor.isDirty()) {
 			wodEditor.doSave(monitor);
 		}
-		if (structuredTextEditorWO.isDirty()) {
-			structuredTextEditorWO.doSave(monitor);
+		if (templateEditor.isDirty()) {
+			templateEditor.doSave(monitor);
 		}
 	}
 
 	public void close(boolean save) {
 		wodEditor.close(save);
-		structuredTextEditorWO.close(save);
+//		templateEditor.close(save);
 	}
 	
 	public void dispose() {
 		wodEditor.dispose();
-		structuredTextEditorWO.dispose();
+		templateEditor.dispose();
 	}
 
 	public boolean isDirty() {
-		return wodEditor.isDirty() || structuredTextEditorWO.isDirty();
+		return wodEditor.isDirty() || templateEditor.isDirty();
 	}
 
 	private void addWebObjectsTagNamesListener() {
-		structuredTextEditorWO.getSelectionProvider().addSelectionChangedListener(new ISelectionChangedListener() {
-
-			public void selectionChanged(SelectionChangedEvent event) {
-				WodclipsePlugin.getDefault().updateWebObjectsTagNames(null);
-			}
-
-		});
+//		templateEditor.getSelectionProvider().addSelectionChangedListener(new ISelectionChangedListener() {
+//			public void selectionChanged(SelectionChangedEvent event) {
+//				WodclipsePlugin.getDefault().updateWebObjectsTagNames(null);
+//			}
+//		});
 		final WodEditor finalWodEditor = wodEditor;
 		wodEditor.getSelectionProvider().addSelectionChangedListener(new ISelectionChangedListener() {
 

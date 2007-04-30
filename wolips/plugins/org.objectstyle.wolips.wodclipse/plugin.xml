@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-
  	<extension
          point="org.eclipse.ui.editors">
       <editor
-            class="org.objectstyle.wolips.wodclipse.wod.WodEditor"
+            class="org.objectstyle.wolips.wodclipse.editor.WodEditor"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             default="false"
             icon="icons/WODEditor.gif"
@@ -17,18 +16,6 @@
       </editor>
    </extension>
    <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            class="org.objectstyle.wolips.wodclipse.preferences.WodEditorPreferencePage"
-            category="org.objectstyle.wolips.preferences.PreferencesPage"
-            id="org.objectstyle.wolips.wodclipse.preferences.WodEditorPreferencePage"
-            name="Wod Editor Preferences"/>
-   </extension>
-   <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer class="org.objectstyle.wolips.wodclipse.preferences.PreferenceInitializer"/>
-   </extension>
-   <extension
          point="org.eclipse.ui.contexts">
       <context
             description="Editing Wod Files Context"
@@ -37,13 +24,6 @@
             parentId="org.eclipse.ui.textEditorScope"/>
    </extension>
 		
- <extension
-       point="org.objectstyle.wolips.builders">
-    <builder
-          class="org.objectstyle.wolips.wodclipse.builder.WodBuilder"
-          id="org.objectstyle.wolips.wodclipse.builder.WodBuilder"
-          name="Wod Builder"/>
- </extension>
  <extension
        point="org.eclipse.ui.popupMenus">
     <objectContribution
@@ -95,11 +75,5 @@
     <category
           id="org.objectstyle.wolips.wodclipse.category"
           name="WOD Editor"/>
- </extension>
- <extension
-       id="org.objectstyle.wolips.wodclipse.problem"
-       name="WOD Problem"
-       point="org.eclipse.core.resources.markers">
-    <super type="org.eclipse.core.resources.problemmarker"/>
  </extension>
 </plugin>

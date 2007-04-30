@@ -17,9 +17,9 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.objectstyle.wolips.locate.Locate;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.locate.scope.ComponentLocateScope;
-import org.objectstyle.wolips.wodclipse.wod.parser.ElementTypeRule;
-import org.objectstyle.wolips.wodclipse.wod.parser.RulePosition;
-import org.objectstyle.wolips.wodclipse.wod.parser.WodScanner;
+import org.objectstyle.wolips.wodclipse.core.parser.ElementTypeRule;
+import org.objectstyle.wolips.wodclipse.core.parser.RulePosition;
+import org.objectstyle.wolips.wodclipse.core.parser.WodScanner;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 public class OpenDeclarationAction extends Action implements IEditorActionDelegate {

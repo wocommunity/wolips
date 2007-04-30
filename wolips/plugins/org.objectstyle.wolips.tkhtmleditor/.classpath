@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="**/CVS/" kind="src" path="java"/>
+	<classpathentry exported="true" kind="lib" path="lib/xml-apis.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xercesImpl.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/trang.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/Tidy.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/ss_css2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.apache.commons.jrcs.diff.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/js.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/JavaScriptExecutor.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/dtdparser121.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

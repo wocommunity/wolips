@@ -68,12 +68,13 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.objectstyle.wolips.baseforuiplugins.IEditorTarget;
 import org.objectstyle.wolips.componenteditor.outline.ComponentEditorOutline;
 import org.objectstyle.wolips.components.editor.EditorInteraction;
+import org.objectstyle.wolips.components.editor.IComponentEditor;
 import org.objectstyle.wolips.components.input.ComponentEditorInput;
 
 /**
  * @author uli
  */
-public class ComponentEditorPart extends MultiPageEditorPart implements IEditorTarget, IResourceChangeListener {
+public class ComponentEditorPart extends MultiPageEditorPart implements IEditorTarget, IResourceChangeListener, IComponentEditor {
 
 	ComponentEditorInput componentEditorInput;
 
@@ -292,11 +293,11 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 		return componentEditorInput;
 	}
 
-	protected IEditorPart getEditor(int pageIndex) {
+	public IEditorPart getEditor(int pageIndex) {
 		return componentEditorTabs[this.getActivePage()].getActiveEmbeddedEditor();
 	}
 
-	protected IEditorPart getActiveEditor() {
+	public IEditorPart getActiveEditor() {
 		return componentEditorTabs[this.getActivePage()].getActiveEmbeddedEditor();
 	}
 

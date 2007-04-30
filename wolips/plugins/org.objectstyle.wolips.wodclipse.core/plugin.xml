@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.objectstyle.wolips.preferences.PreferencesPage"
+            class="org.objectstyle.wolips.wodclipse.core.preferences.TagShortcutPreferencePage"
+            id="org.objectstyle.wolips.wodclipse.preferences.TagShortcutPreferencePage"
+            name="Inline Tag Shortcuts"/>
+      <page
+            class="org.objectstyle.wolips.wodclipse.core.preferences.WodEditorPreferencePage"
+            category="org.objectstyle.wolips.preferences.PreferencesPage"
+            id="org.objectstyle.wolips.wodclipse.preferences.WodEditorPreferencePage"
+            name="Wod Editor Preferences"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.objectstyle.wolips.wodclipse.core.preferences.PreferenceInitializer"/>
+   </extension>
+		
+ <extension
+       id="org.objectstyle.wolips.wodclipse.problem"
+       name="WOD Problem"
+       point="org.eclipse.core.resources.markers">
+    <super type="org.eclipse.core.resources.problemmarker"/>
+      <persistent value="true"/>
+ </extension>
+		
+ <extension
+       point="org.objectstyle.wolips.builders">
+    <builder
+          class="org.objectstyle.wolips.wodclipse.core.builder.WodBuilder"
+          id="org.objectstyle.wolips.wodclipse.core.builder.WodBuilder"
+          name="Wod Builder"/>
+ </extension>
+</plugin>

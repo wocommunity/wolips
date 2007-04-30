@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <!--====================================================-->
+   <!-- Extention points -->
+   <!--====================================================-->
+   <extension-point id="customTagConverter" name="customTagConverter" schema="schema/customTagConverter.exsd"/>
+   <extension-point id="customTagAttributeAssist" name="customTagAttributeAssist" schema="schema/customTagAttributeAssist.exsd"/>
+   <extension-point id="paletteItem" name="paletteItem" schema="schema/paletteItem.exsd"/>
+   <extension-point id="noValidationNatures" name="noValidationNatures" schema="schema/noValidationNatures.exsd"/>
+   <extension-point id="fileAssistProcessor" name="fileAssistProcessor" schema="schema/fileAssistProcessor.exsd"/>
+   <extension-point id="hyperlinkProvider" name="hyperlinkProvider" schema="schema/hyperlinkProvider.exsd"/>
+   <extension-point id="tldLocator" name="tldLocator" schema="schema/tldLocator.exsd"/>
+   <extension-point id="customTagValidator" name="customTagValidator" schema="schema/customTagValidator.exsd"/>
+   <extension-point id="preferenceContributer" name="preferenceContributer" schema="schema/preferenceContributer.exsd"/>   
+   <extension-point id="pagefilter" name="pagefilter" schema="schema/pagefilter.exsd"/>   
+   
+   <!--====================================================-->
+   <!-- Editors -->
+   <!--====================================================-->
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="tk.eclipse.plugin.htmleditor.editors.HTMLEditor"
+            contributorClass="tk.eclipse.plugin.htmleditor.editors.HTMLEditorContributor"
+            default="false"
+            extensions="html,xhtml"
+            icon="icons/html.png"
+            id="tk.eclipse.plugin.htmleditor.editors.HTMLEditor"
+            name="%plugin.editor.htmleditor"/>
+      <editor
+            class="tk.eclipse.plugin.csseditor.editors.CSSEditor"
+            contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
+            extensions="css"
+            icon="icons/css.png"
+            id="tk.eclipse.plugin.csseditor.editors.CSSEditor"
+            name="%plugin.editor.csseditor"/>
+      <editor
+            class="tk.eclipse.plugin.jspeditor.editors.JSPEditor"
+            contributorClass="tk.eclipse.plugin.jspeditor.editors.JSPEditorContributor"
+            extensions="jsp,jspf"
+            icon="icons/jsp.png"
+            id="tk.eclipse.plugin.jspeditor.editors.JSPEditor"
+            name="%plugin.editor.jspeditor"/>
+      <editor
+            class="tk.eclipse.plugin.xmleditor.editors.XMLEditor"
+            contributorClass="tk.eclipse.plugin.xmleditor.editors.XMLEditorContributor"
+            extensions="xml,tld,xsl"
+            icon="icons/xml.png"
+            id="tk.eclipse.plugin.xmleditor.editors.XMLEditor"
+            name="%plugin.editor.xmleditor">
+      </editor>
+      <editor
+            class="tk.eclipse.plugin.dtdeditor.editors.DTDEditor"
+            contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
+            extensions="dtd"
+            icon="icons/dtd.gif"
+            id="tk.eclipse.plugin.dtdeditor.editors.DTDEditor"
+            name="%plugin.editor.dtdeditor"/>
+      <editor
+            class="tk.eclipse.plugin.jseditor.editors.JavaScriptEditor"
+            contributorClass="tk.eclipse.plugin.jseditor.editors.JavaScriptEditorContributor"
+            extensions="js"
+            icon="icons/javascript.gif"
+            id="tk.eclipse.plugin.jseditor.editors.JavaScriptEditor"
+            name="%plugin.editor.jseditor"/>
+      <editor
+            class="org.objectstyle.wolips.templateeditor.TemplateEditor"
+            contributorClass="org.objectstyle.wolips.templateeditor.TemplateEditorContributor"
+            default="true"
+            extensions="html,xhtml"
+            icon="icons/html.png"
+            id="org.objectstyle.wolips.TemplateEditor"
+            name="Template Editor"/>
+      <!--
+      <editor
+            class="tk.eclipse.plugin.htmleditor.editors.WebBrowser"
+            extensions="url"
+            icon="icons/web.gif"
+            id="tk.eclipse.plugin.htmleditor.editors.WebBrowser"
+            name="%plugin.editor.webbrowser"/>
+      -->
+   </extension>
+   <!--====================================================-->
+   <!-- Wizards -->
+   <!--====================================================-->
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            name="%plugin.preference.category"
+            id="tk.eclipse.plugin.htmleditor"/>
+      <wizard
+            class="tk.eclipse.plugin.htmleditor.wizards.HTMLNewWizard"
+            icon="icons/html.png"
+            category="tk.eclipse.plugin.htmleditor"
+            name="%plugin.wizard.html"
+            id="tk.eclipse.plugin.htmleditor.wizards.HTMLNewWizard"/>
+      <!--
+      <wizard
+            icon="icons/web.gif"
+            class="tk.eclipse.plugin.htmleditor.wizards.URLNewWizard"
+            category="tk.eclipse.plugin.htmleditor"
+            name="%plugin.wizard.url"
+            id="tk.eclipse.plugin.htmleditor.wizards.URLNewWizard"/>
+      -->
+      <wizard
+            class="tk.eclipse.plugin.htmleditor.wizards.JSPNewWizard"
+            icon="icons/jsp.png"
+            category="tk.eclipse.plugin.htmleditor"
+            name="%plugin.wizard.jsp"
+            id="tk.eclipse.plugin.htmleditor.wizards.JSPNewWizard"/>
+      <wizard
+            class="tk.eclipse.plugin.htmleditor.wizards.XMLNewWizard"
+            icon="icons/xml.png"
+            category="tk.eclipse.plugin.htmleditor"
+            name="%plugin.wizard.xml"
+            id="tk.eclipse.plugin.htmleditor.wizards.XMLNewWizard"/>
+   </extension>
+   
+   <!--====================================================-->
+   <!-- Preferences -->
+   <!--====================================================-->
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="tk.eclipse.plugin.htmleditor.HTMLEditorPreferencePage"
+            name="%plugin.preference.category"
+            id="tk.eclipse.plugin.htmleditor.category"/>
+      <!--
+      <page
+            class="tk.eclipse.plugin.htmleditor.AppearancePreferencePage"
+            category="tk.eclipse.plugin.htmleditor.category"
+            name="%plugin.preference.appearance"
+            id="tk.eclipse.plugin.htmleditor.page1"/>
+      -->
+      <page
+            class="tk.eclipse.plugin.htmleditor.CustomAssistPreferencePage"
+            category="tk.eclipse.plugin.htmleditor.category/tk.eclipse.plugin.htmleditor.AssistPreferencePage"
+            name="%plugin.preference.customassist"
+            id="tk.eclipse.plugin.htmleditor.CustomAssistPreferencePage"/>
+      <page
+            class="tk.eclipse.plugin.htmleditor.DTDPreferencePage"
+            category="tk.eclipse.plugin.htmleditor.category"
+            name="%plugin.preference.dtd"
+            id="tk.eclipse.plugin.htmleditor.DTDPreferencePage"/>
+      <page
+            class="tk.eclipse.plugin.htmleditor.TLDPreferencePage"
+            category="tk.eclipse.plugin.htmleditor.category"
+            name="%plugin.preference.tld"
+            id="tk.eclipse.plugin.htmleditor.TLDPreferencePage"/>
+      <page
+            class="tk.eclipse.plugin.htmleditor.AssistPreferencePage"
+            category="tk.eclipse.plugin.htmleditor.category"
+            name="%plugin.preference.codeassist"
+            id="tk.eclipse.plugin.htmleditor.AssistPreferencePage"/>
+      <page
+            class="tk.eclipse.plugin.htmleditor.CSSEditorPreferencePage"
+            category="tk.eclipse.plugin.htmleditor.category"
+            name="%plugin.preference.csseditor"
+            id="tk.eclipse.plugin.htmleditor.CSSEditorPreferencePage"/>
+      <page
+            class="tk.eclipse.plugin.htmleditor.JSPEditorPreferencePage"
+            category="tk.eclipse.plugin.htmleditor.category"
+            name="%plugin.preference.jspeditor"
+            id="tk.eclipse.plugin.htmleditor.JSPEditorPreferencePage"/>
+      <page
+            class="tk.eclipse.plugin.htmleditor.JavaScriptEditorPreferencePage"
+            category="tk.eclipse.plugin.htmleditor.category"
+            name="%plugin.preference.jseditor"
+            id="tk.eclipse.plugin.htmleditor.JavaScriptEditorPreferencePage"/>
+      <page
+            class="tk.eclipse.plugin.htmleditor.tasktag.HTMLTaskTagPreferencePage"
+            category="tk.eclipse.plugin.htmleditor.category"
+            name="%plugin.preference.tasktag"
+            id="tk.eclipse.plugin.htmleditor.tasktag.HTMLTaskTagPreferencePage"/>
+      <page
+            class="tk.eclipse.plugin.htmleditor.XMLPreferencePage"
+            category="tk.eclipse.plugin.htmleditor.category"
+            name="XML"
+            id="tk.eclipse.plugin.htmleditor.XMLPreferencePage"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="tk.eclipse.plugin.htmleditor.HTMLPreferenceInitializer"/>
+   </extension>
+   
+   <!--====================================================-->
+   <!-- Views -->
+   <!--====================================================-->
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="%plugin.preference.category"
+            id="tk.eclipse.plugin.htmleditor"/>
+      <view
+            icon="icons/image.gif"
+            category="tk.eclipse.plugin.htmleditor"
+            class="tk.eclipse.plugin.htmleditor.views.ImageView"
+            name="%plugin.views.image"
+            id="tk.eclipse.plugin.htmleditor.views.ImageView"/>
+            
+      <view
+            class="tk.eclipse.plugin.htmleditor.views.PaletteView"
+            category="tk.eclipse.plugin.htmleditor"
+            icon="icons/palette.gif"
+            name="%plugin.views.palette"
+            id="tk.eclipse.plugin.htmleditor.views.PaletteView"/>
+   </extension>
+   <!--====================================================-->
+   <!-- Project properties -->
+   <!--====================================================-->
+   <extension
+         id="tk.eclipse.plugin.htmleditor.HTMLProjectPropertyPage"
+         point="org.eclipse.ui.propertyPages">
+      <page
+            objectClass="org.eclipse.core.resources.IProject"
+            name="%plugin.preference.category"
+            adaptable="true"
+            class="tk.eclipse.plugin.htmleditor.HTMLProjectPropertyPage"
+            id="tk.eclipse.plugin.htmleditor.HTMLProjectPropertyPage" />
+      <page
+            adaptable="true"
+            category="tk.eclipse.plugin.htmleditor.HTMLProjectPropertyPage"
+            class="tk.eclipse.plugin.htmleditor.JavaScriptPropertyPage"
+            id="tk.eclipse.plugin.htmleditor.JavaScriptPropertyPage"
+            name="JavaScript"
+            objectClass="org.eclipse.core.resources.IProject"/>
+   </extension>
+   
+   <extension point="org.objectstyle.wolips.tkhtmleditor.fileAssistProcessor">
+      <processor class="tk.eclipse.plugin.htmleditor.assist.FileAssistProcessor"/>
+   </extension>
+   
+   <!--
+   <extension
+         point="org.eclipse.debug.core.sourceLocators">
+      <sourceLocator
+            class="tk.eclipse.plugin.jspeditor.editors.JSPSourceLocator"
+            name="JSP Source Locator"
+            id="tk.eclipse.plugin.jspeditor.JSPSourceLocator"/>
+   </extension>
+   -->
+   
+   <!--====================================================-->
+   <!-- Template -->
+   <!--====================================================-->
+   <extension
+         point="org.eclipse.ui.editors.templates">
+      <contextType
+            class="tk.eclipse.plugin.htmleditor.template.HTMLContextType"
+            name="HTML/JSP/XML"
+            id="tk.eclipse.plugin.htmleditor.templateContextType.html"/>
+      <contextType
+            class="tk.eclipse.plugin.htmleditor.template.JavaScriptContextType"
+            name="JavaScript"
+            id="tk.eclipse.plugin.htmleditor.templateContextType.javascript"/>
+      <!--
+      <include
+            file="templates/templates.xml"/>
+      -->
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="tk.eclipse.plugin.htmleditor.template.HTMLTemplatePreferencePage"
+            category="tk.eclipse.plugin.htmleditor.category/tk.eclipse.plugin.htmleditor.AssistPreferencePage"
+            name="%plugin.preference.template"
+            id="tk.eclipse.plugin.htmleditor.template.HTMLTemplatePreferencePage"/>
+   </extension>
+   
+   <!--====================================================-->
+   <!-- nature and builder -->
+   <!--====================================================-->
+   <extension
+         id="HTMLProjectNature"
+         name="HTMLProjectNature"
+         point="org.eclipse.core.resources.natures">
+      <!--
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
+      -->
+      <runtime>
+         <run
+               class="tk.eclipse.plugin.htmleditor.HTMLProjectNature">
+         </run>
+      </runtime>
+   </extension>
+   <extension
+         id="HTMLProjectBuilder"
+         name="HTMLProjectBuilder"
+         point="org.eclipse.core.resources.builders">
+      <builder>
+         <run class="tk.eclipse.plugin.htmleditor.HTMLProjectBuilder"/>
+      </builder>
+   </extension>
+   
+   <!--====================================================-->
+   <!-- JavaScript Launcher -->
+   <!--====================================================-->
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="tk.eclipse.plugin.jseditor.launch.JavaScriptLaunchConfigurationDelegate"
+            id="tk.eclipse.plugin.jseditor.launch.JavaScriptLaunchConfigurationType"
+            modes="run"
+            name="%plugin.launcher.javascript"
+            public="true">
+         <fileExtension
+               default="false"
+               extension="js"/>
+      </launchConfigurationType>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            configTypeID="tk.eclipse.plugin.jseditor.launch.JavaScriptLaunchConfigurationType"
+            icon="icons/javascript.gif"
+            id="tk.eclipse.plugin.jseditor.launch.launchConfigurationTypeImage"/>
+   </extension>
+   <extension
+		 point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+	  <launchConfigurationTabGroup
+			type="tk.eclipse.plugin.jseditor.launch.JavaScriptLaunchConfigurationType"
+			class="tk.eclipse.plugin.jseditor.launch.JavaScriptTabGroup"
+			id="tk.eclipse.plugin.jseditor.launch.JavaScriptTabGroup">
+	  </launchConfigurationTabGroup>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut
+            class="tk.eclipse.plugin.jseditor.launch.JavaScriptLaunchShortcut"
+            icon="icons/javascript.gif"
+            id="tk.eclipse.plugin.jseditor.launch.JavaScriptLaunchShortcut"
+            label="%plugin.launcher.javascript"
+            modes="run">
+         <contextualLaunch>
+            <enablement>
+               <with variable="selection">
+                  <count value="1"/>
+                  <iterate>
+                     <test
+                           property="org.eclipse.debug.ui.matchesPattern"
+                           value="*.js"/>
+                  </iterate>
+               </with>
+            </enablement>
+         </contextualLaunch>
+      </shortcut>
+   </extension>
+   <extension
+         point="org.eclipse.jdt.core.classpathVariableInitializer">
+      <classpathVariableInitializer
+            class="tk.eclipse.plugin.htmleditor.WebAppClasspathVariableInitializer"
+            variable="WEBAPP_LIBS"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            id="tk.eclipse.plugin.htmleditor"
+            name="Eclipse HTML Editor"/>
+      <command
+            categoryId="tk.eclipse.plugin.htmleditor"
+            id="tk.eclipse.plugin.xmleditor.format"
+            name="%plugin.command.formatXML"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="tk.eclipse.plugin.xmleditor.format"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+SHIFT+F"/>
+   </extension>
+   
+   
+</plugin>

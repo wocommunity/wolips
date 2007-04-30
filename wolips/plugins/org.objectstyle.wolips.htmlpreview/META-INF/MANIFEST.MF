@@ -9,9 +9,6 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jface.text,
- org.eclipse.wst.html.core,
- org.eclipse.wst.sse.core,
- org.eclipse.wst.xml.core,
  org.objectstyle.wolips.components,
  org.objectstyle.wolips.baseforuiplugins
 Eclipse-LazyStart: true
