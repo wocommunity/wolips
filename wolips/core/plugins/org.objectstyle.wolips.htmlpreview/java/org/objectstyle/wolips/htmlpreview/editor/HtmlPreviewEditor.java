@@ -43,12 +43,7 @@
  */
 package org.objectstyle.wolips.htmlpreview.editor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.graphics.Image;
@@ -59,18 +54,9 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.wst.html.core.internal.provisional.HTML40Namespace;
-import org.eclipse.wst.sse.core.StructuredModelManager;
-import org.eclipse.wst.sse.core.internal.provisional.IStructuredModel;
-import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion;
-import org.eclipse.wst.xml.core.internal.provisional.document.IDOMElement;
-import org.eclipse.wst.xml.core.internal.provisional.document.IDOMModel;
 import org.objectstyle.wolips.components.editor.EditorInteraction;
 import org.objectstyle.wolips.components.editor.IEmbeddedEditor;
 import org.objectstyle.wolips.components.editor.IEmbeddedEditorSelected;
-import org.objectstyle.wolips.htmlpreview.HtmlPreviewPlugin;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 
 /**
  * based on an eclipse.org example
@@ -95,6 +81,7 @@ public class HtmlPreviewEditor implements IEmbeddedEditor, IEmbeddedEditorSelect
 	 * Update the contents of the Preview page
 	 */
 	private void updatePreviewContent() {
+    /*
 		if (editorInteraction == null) {
 			return;
 		}
@@ -168,6 +155,7 @@ public class HtmlPreviewEditor implements IEmbeddedEditor, IEmbeddedEditorSelect
 			if (editModel != null)
 				editModel.releaseFromRead();
 		}
+    */
 		//
 		// String location = null;
 		// if (getEditorInput().getAdapter(IFile.class) != null) {
@@ -192,10 +180,10 @@ public class HtmlPreviewEditor implements IEmbeddedEditor, IEmbeddedEditorSelect
 		// Logger.logException(e1);
 		// }
 
-		boolean rendered = browser.setText(htmlSource.get());
-		if (!rendered) {
-			HtmlPreviewPlugin.getDefault().log("Can't create preview");
-		}
+		//boolean rendered = browser.setText(htmlSource.get());
+		//if (!rendered) {
+		//	HtmlPreviewPlugin.getDefault().log("Can't create preview");
+		//}
 	}
 
 	public void initEditorInteraction(EditorInteraction intiEditorInteraction) {

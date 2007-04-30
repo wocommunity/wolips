@@ -100,16 +100,9 @@
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.ltk.core.refactoring"/>
       <import plugin="org.eclipse.text"/>
-      <import plugin="org.eclipse.wst.sse.core"/>
-      <import plugin="org.eclipse.wst.html.ui"/>
-      <import plugin="org.eclipse.wst.sse.ui"/>
-      <import plugin="org.eclipse.wst.xml.core"/>
-      <import plugin="org.eclipse.wst.html.core"/>
-      <import plugin="org.eclipse.wst.xml.ui"/>
       <import plugin="org.eclipse.ui.views.properties.tabbed"/>
       <import plugin="org.eclipse.jface.databinding"/>
       <import feature="org.objectstyle.wolips.base.feature" version="1.0.6" match="perfect"/>
-      <import feature="org.eclipse.jst"/>
       <import plugin="org.objectstyle.wolips.baseforplugins" version="1.0.6" match="perfect"/>
       <import plugin="org.objectstyle.wolips.baseforuiplugins" version="1.0.6" match="perfect"/>
    </requires>
@@ -190,6 +183,13 @@
          install-size="8"
          version="1.0.6"
          unpack="false"/>
+      
+   <plugin
+         id="org.objectstyle.wolips.tkhtmleditor"
+         download-size="100"
+         install-size="100"
+         version="1.0.6"
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.ui"
@@ -207,6 +207,13 @@
 
    <plugin
          id="org.objectstyle.wolips.wizards"
+         download-size="100"
+         install-size="100"
+         version="1.0.6"
+         unpack="false"/>
+      
+   <plugin
+         id="org.objectstyle.wolips.wodclipse.core"
          download-size="100"
          install-size="100"
          version="1.0.6"
@@ -276,13 +283,6 @@
 
    <plugin
          id="org.objectstyle.wolips.editors"
-         download-size="32"
-         install-size="32"
-         version="1.0.6"
-         unpack="false"/>
-
-   <plugin
-         id="org.objectstyle.wolips.htmleditor"
          download-size="32"
          install-size="32"
          version="1.0.6"

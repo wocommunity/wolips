@@ -6,29 +6,19 @@ Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.wodclipse.WodclipsePlugin
 Bundle-Vendor: objectstyle.org
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ui.ide,
- org.eclipse.ui.editors,
- org.eclipse.ui,
- org.eclipse.jface.text,
- org.eclipse.ui.workbench.texteditor,
- org.eclipse.core.resources,
+Require-Bundle: org.eclipse.ui.editors,
  org.eclipse.jdt.core,
  org.eclipse.jdt.ui,
- org.objectstyle.wolips.workbenchutilities,
- org.objectstyle.wolips,
  org.eclipse.ui.views,
- org.objectstyle.wolips.preferences,
- org.objectstyle.wolips.htmleditor,
- org.objectstyle.wolips.locate,
- org.objectstyle.wolips.components,
+ org.objectstyle.wolips,
  org.objectstyle.wolips.baseforuiplugins,
- org.objectstyle.wolips.baseforplugins
+ org.objectstyle.wolips.components,
+ org.objectstyle.wolips.locate,
+ org.objectstyle.wolips.preferences,
+ org.objectstyle.wolips.workbenchutilities,
+ org.objectstyle.wolips.wodclipse.core
 Eclipse-LazyStart: true
+Bundle-ClassPath: .
 Export-Package: org.objectstyle.wolips.wodclipse,
- org.objectstyle.wolips.wodclipse.builder,
- org.objectstyle.wolips.wodclipse.preferences,
- org.objectstyle.wolips.wodclipse.wod,
- org.objectstyle.wolips.wodclipse.wod.completion,
- org.objectstyle.wolips.wodclipse.wod.model,
- org.objectstyle.wolips.wodclipse.wod.parser
+ org.objectstyle.wolips.wodclipse.action,
+ org.objectstyle.wolips.wodclipse.editor

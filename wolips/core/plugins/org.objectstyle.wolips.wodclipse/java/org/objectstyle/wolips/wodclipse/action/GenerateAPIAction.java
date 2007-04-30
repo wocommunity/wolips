@@ -49,28 +49,21 @@
  */
 package org.objectstyle.wolips.wodclipse.action;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.objectstyle.wolips.core.resources.types.api.ApiModel;
-import org.objectstyle.wolips.core.resources.types.api.ApiModelException;
 import org.objectstyle.wolips.core.resources.types.api.Wo;
-import org.objectstyle.wolips.locate.LocateException;
-import org.objectstyle.wolips.locate.LocatePlugin;
-import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
-import org.objectstyle.wolips.wodclipse.wod.completion.WodBindingUtils;
-import org.objectstyle.wolips.wodclipse.wod.model.BindingValueKey;
+import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
+import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
+import org.objectstyle.wolips.wodclipse.core.model.BindingValueKey;
+import org.objectstyle.wolips.wodclipse.core.util.WodReflectionUtils;
 
 public class GenerateAPIAction implements IObjectActionDelegate {
 	private ISelection _selection;
@@ -94,32 +87,25 @@ public class GenerateAPIAction implements IObjectActionDelegate {
 	public void run() {
 		try {
 			if (_selection instanceof IStructuredSelection) {
-				Map typeContextCache = new HashMap();
 				Object[] selectedObjects = ((IStructuredSelection) _selection).toArray();
 				for (int i = 0; i < selectedObjects.length; i++) {
 					IResource resource = (IResource) selectedObjects[i];
-					LocalizedComponentsLocateResult componentsLocateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(resource);
-					List bindingKeys = WodBindingUtils.createMatchingBindingKeys(JavaCore.create(resource.getProject()), componentsLocateResults.getDotJavaType(), "", false, WodBindingUtils.MUTATORS_ONLY, typeContextCache);
-					IFile apiFile = componentsLocateResults.getDotApi(true);
+					WodParserCache cache = WodParserCache.parser(resource);
+					List<BindingValueKey> bindingKeys = WodReflectionUtils.getBindingKeys(cache.getJavaProject(), cache.getComponentType(), "", false, WodReflectionUtils.MUTATORS_ONLY, cache);
+					IFile apiFile = cache.getApiFile();
 					ApiModel apiModel = new ApiModel(apiFile);
 					Wo wo = apiModel.getWo();
-					Iterator bindingKeysIter = bindingKeys.iterator();
-					while (bindingKeysIter.hasNext()) {
-						BindingValueKey bindingKey = (BindingValueKey) bindingKeysIter.next();
-						if (!WodBindingUtils.isSystemBindingValueKey(bindingKey, true)) {
-							String bindingName = bindingKey.getBindingName();
+					for (BindingValueKey binding : bindingKeys) {
+						if (!WodReflectionUtils.isSystemBindingValueKey(binding, true)) {
+							String bindingName = binding.getBindingName();
 							wo.createBinding(bindingName);
 						}
 					}
 					apiModel.saveChanges();
 				}
 			}
-		} catch (CoreException e) {
-			e.printStackTrace();
-		} catch (LocateException e) {
-			e.printStackTrace();
-		} catch (ApiModelException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			WodclipsePlugin.getDefault().log(e);
 		}
 	}
 }
