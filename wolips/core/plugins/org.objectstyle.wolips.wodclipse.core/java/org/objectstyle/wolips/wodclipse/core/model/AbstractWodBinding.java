@@ -147,9 +147,11 @@ public abstract class AbstractWodBinding implements IWodBinding {
       boolean validateOGNL = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.VALIDATE_OGNL_KEY);
       if (validateOGNL && isOGNL()) {
         int lineNumber = getLineNumber();
-        int tildeIndex = bindingValue.indexOf('~') + 1;
         boolean inQuotes = bindingValue.startsWith("\"");
-        String ognl = bindingValue.substring(tildeIndex);
+        if (inQuotes) {
+          bindingValue = bindingValue.substring(1, bindingValue.length() - 1);
+        }
+        String ognl = bindingValue.substring(1);
         ognl = ognl.replaceAll("\\\\'", " ");
         ognl = ognl.replaceAll("'[^']*'", "''");
         if (inQuotes) {
@@ -164,7 +166,7 @@ public abstract class AbstractWodBinding implements IWodBinding {
         for (int i = 0; i < ognl.length(); i++) {
           char ch = ognl.charAt(i);
           if (identifierStartChar == -1) {
-            if (Character.isJavaIdentifierStart(ch)) {
+            if (Character.isJavaIdentifierStart(ch) || ch == '@' || ch == '#') {
               identifierStartChar = i;
             }
           }
@@ -188,8 +190,8 @@ public abstract class AbstractWodBinding implements IWodBinding {
                 }
               }
             }
+            identifierStartChar = -1;
           }
-          identifierStartChar = -1;
         }
       }
 
