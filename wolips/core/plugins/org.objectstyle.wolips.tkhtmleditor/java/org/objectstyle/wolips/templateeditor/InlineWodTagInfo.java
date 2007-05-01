@@ -44,7 +44,7 @@ public class InlineWodTagInfo extends TagInfo {
 
   public String getExpandedElementTypeName() {
     String elementTypeName = _elementTypeName;
-    if (_tagShortcut == null) {
+    if (_tagShortcut != null) {
       elementTypeName = _tagShortcut.getActual();
     }
     return elementTypeName;
