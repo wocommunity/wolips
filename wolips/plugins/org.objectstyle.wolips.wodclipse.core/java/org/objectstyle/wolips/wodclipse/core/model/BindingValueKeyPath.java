@@ -171,15 +171,37 @@ public class BindingValueKeyPath {
     return lastBindingKeyName;
   }
 
-  public BindingValueKey getLastBindingKey() {
-    BindingValueKey bindingKey;
-    if (_bindingKeys.length > 0) {
-      bindingKey = _bindingKeys[_bindingKeys.length - 1];
+  public String getNextToLastBindingKeyName() {
+    String nextToLastBindingKeyName;
+    if (_bindingKeyNames.length > 1) {
+      nextToLastBindingKeyName = _bindingKeyNames[_bindingKeyNames.length - 2];
     }
     else {
-      bindingKey = null;
+      nextToLastBindingKeyName = null;
     }
-    return bindingKey;
+    return nextToLastBindingKeyName;
+  }
+
+  public BindingValueKey getLastBindingKey() {
+    BindingValueKey lastBindingKey;
+    if (_bindingKeys.length > 0) {
+      lastBindingKey = _bindingKeys[_bindingKeys.length - 1];
+    }
+    else {
+      lastBindingKey = null;
+    }
+    return lastBindingKey;
+  }
+
+  public BindingValueKey getNextToLastBindingKey() {
+    BindingValueKey nextToLastBindingKey;
+    if (_bindingKeys.length > 1) {
+      nextToLastBindingKey = _bindingKeys[_bindingKeys.length - 2];
+    }
+    else {
+      nextToLastBindingKey = null;
+    }
+    return nextToLastBindingKey;
   }
 
   public IType getLastType() throws JavaModelException {
@@ -195,17 +217,30 @@ public class BindingValueKeyPath {
   }
 
   public List<BindingValueKey> getPartialMatchesForLastBindingKey() throws JavaModelException {
-    List<BindingValueKey> bindingKeysList;
-    IType lastType = getLastType();
-    if (lastType != null) {
-      // Jump forward to the last '.' and look for valid "get" method
-      // completion
-      // proposals based on the partial token
-      String bindingKeyName = getLastBindingKeyName();
-      bindingKeysList = WodReflectionUtils.getBindingKeys(_javaProject, lastType, bindingKeyName, false, WodReflectionUtils.ACCESSORS_ONLY, _cache);
+    List<BindingValueKey> bindingKeysList = null;
+    String partialBindingKeyName;
+    BindingValueKey lastBindingKey;
+    if (_bindingKeyNames.length == _bindingKeys.length) {
+      partialBindingKeyName = getLastBindingKeyName();
+      lastBindingKey = getNextToLastBindingKey();
     }
     else {
-      bindingKeysList = null;
+      partialBindingKeyName = getLastBindingKeyName();
+      lastBindingKey = getLastBindingKey();
+    }
+
+    IType lastType;
+    if (lastBindingKey == null) {
+      lastType = _contextType;
+    }
+    else {
+      lastType = lastBindingKey.getNextType();
+    }
+
+    if (lastType != null) {
+      // Jump forward to the last '.' and look for valid "get" method
+      // completion proposals based on the partial token
+      bindingKeysList = WodReflectionUtils.getBindingKeys(_javaProject, lastType, partialBindingKeyName, false, WodReflectionUtils.ACCESSORS_ONLY, _cache);
     }
     return bindingKeysList;
   }
