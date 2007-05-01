@@ -346,7 +346,7 @@ public class FuzzyXMLParser {
         }
 
         if (looseTag) {
-          while (looseTags.contains(lowercaseLastOpenElementName)) {
+          while (!lowercaseLastOpenElementName.equals(lowercaseCloseTagName) && looseTags.contains(lowercaseLastOpenElementName)) {
             int lastOpenElementEndOffset = lastOpenElement.getOffset() + lastOpenElement.getLength();
             stack.push(lastOpenElement);
             handleCloseTag(lastOpenElementEndOffset, lastOpenElementEndOffset, "/" + lastOpenElement.getName(), false);
