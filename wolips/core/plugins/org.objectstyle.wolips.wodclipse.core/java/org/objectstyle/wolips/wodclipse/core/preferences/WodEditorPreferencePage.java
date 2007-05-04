@@ -78,7 +78,9 @@ public class WodEditorPreferencePage extends FieldEditorPreferencePage implement
     addField(new BooleanFieldEditor(PreferenceConstants.ERROR_ON_HTML_ERRORS_KEY, "Show HTML Template Errors", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.VALIDATE_TEMPLATES_KEY, "Validate WOD / Inline Bindings", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.VALIDATE_BINDING_VALUES, "Validate Binding Values", getFieldEditorParent()));
+    addField(new BooleanFieldEditor(PreferenceConstants.WARN_ON_MISSING_COLLECTION_KEY, "... Warn if Missing Key on NSDictionary/NSArray", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.ERROR_ON_MISSING_NSKVC_KEY, "... Error if Missing Key on 'implements NSKeyValueCoding'", getFieldEditorParent()));
+    addField(new BooleanFieldEditor(PreferenceConstants.WARN_ON_MISSING_NSKVC_KEY, "... Warn if Missing Key on 'implements NSKeyValueCoding'", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.WARN_ON_AMBIGUOUS_KEY, "... Warn on Ambiguous Key Paths", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.WARN_ON_HELPER_FUNCTION_KEY, "... Warn on Helper Functions", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.VALIDATE_OGNL_KEY, "... Validate OGNL", getFieldEditorParent()));

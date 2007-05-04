@@ -86,16 +86,26 @@ public class WodReflectionUtils {
   }
 
   public static boolean isNSKeyValueCoding(IType type) throws JavaModelException {
-    boolean isNSKeyValueCoding = false;
+	  return WodReflectionUtils.isType(type, new String[] { "com.webobjects.foundation.NSKeyValueCoding" });
+  }
+
+  public static boolean isNSCollection(IType type) throws JavaModelException {
+	  return WodReflectionUtils.isType(type, new String[] { "com.webobjects.foundation.NSDictionary", "com.webobjects.foundation.NSArray", "com.webobjects.foundation.NSSet" });
+  }
+
+  public static boolean isType(IType type, String[] possibleTypes) throws JavaModelException {
+    boolean isType = false;
     ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(type);
     IType[] types = typeHierarchy.getAllTypes();
-    for (int typeNum = 0; !isNSKeyValueCoding && typeNum < types.length; typeNum++) {
+    for (int typeNum = 0; !isType && typeNum < types.length; typeNum++) {
       String name = types[typeNum].getFullyQualifiedName();
-      if ("com.webobjects.foundation.NSKeyValueCoding".equals(name)) {
-        isNSKeyValueCoding = true;
+      for (int possibleTypeNum = 0; !isType && possibleTypeNum < possibleTypes.length; possibleTypeNum ++) {
+	      if (possibleTypes[possibleTypeNum].equals(name)) {
+	        isType = true;
+	      }
       }
     }
-    return isNSKeyValueCoding;
+    return isType;
   }
 
   public static List<BindingValueKey> getBindingKeys(IJavaProject _javaProject, IType _type, String _nameStartingWith, boolean _requireExactNameMatch, int _accessorsOrMutators, WodParserCache cache) throws JavaModelException {

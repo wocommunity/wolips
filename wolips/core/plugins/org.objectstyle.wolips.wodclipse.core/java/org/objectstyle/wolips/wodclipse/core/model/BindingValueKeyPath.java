@@ -27,6 +27,8 @@ public class BindingValueKeyPath {
 
   private boolean _valid;
 
+  private boolean _nsCollection;
+
   private boolean _nsKVC;
 
   private boolean _ambiguous;
@@ -102,6 +104,9 @@ public class BindingValueKeyPath {
           else {
             if (WodReflectionUtils.isNSKeyValueCoding(currentType)) {
               _nsKVC = true;
+              if (WodReflectionUtils.isNSCollection(currentType)) {
+            	  _nsCollection = true;
+              }
               _ambiguous = true;
             }
             else {
@@ -140,6 +145,10 @@ public class BindingValueKeyPath {
     return _nsKVC;
   }
 
+  public boolean isNSCollection() {
+    return _nsCollection;
+  }
+  
   public String getValidKeyPath() {
     return _validKeyPath;
   }

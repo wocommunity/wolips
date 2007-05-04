@@ -92,7 +92,9 @@ public abstract class AbstractWodBinding implements IWodBinding {
   public abstract int getLineNumber();
 
   public void fillInBindingProblems(IJavaProject javaProject, IType javaFileType, List<WodProblem> problems, WodParserCache cache) throws JavaModelException {
-    boolean errorMissingNSKVCKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.ERROR_ON_MISSING_NSKVC_KEY);
+    boolean warnOnMissingCollectionKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.WARN_ON_MISSING_COLLECTION_KEY);
+    boolean errorOnMissingNSKVCKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.ERROR_ON_MISSING_NSKVC_KEY);
+    boolean warnOnMissingNSKVCKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.WARN_ON_MISSING_NSKVC_KEY);
     boolean warnOnAmbiguousKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.WARN_ON_AMBIGUOUS_KEY);
     boolean warnOnHelperFunction = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.WARN_ON_HELPER_FUNCTION_KEY);
     if (shouldValidate()) {
@@ -103,7 +105,7 @@ public abstract class AbstractWodBinding implements IWodBinding {
         BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(bindingValue, javaFileType, javaProject, cache);
         // NTS: Technically these need to be related to
         // every java file name in the key path
-        if (!bindingValueKeyPath.isValid() || (bindingValueKeyPath.isNSKeyValueCoding() && errorMissingNSKVCKey)) {
+        if (!bindingValueKeyPath.isValid() || (bindingValueKeyPath.isNSKeyValueCoding() && errorOnMissingNSKVCKey && !bindingValueKeyPath.isNSCollection())) {
           String validKeyPath = bindingValueKeyPath.getValidKeyPath();
           if (validKeyPath.length() == 0) {
             problems.add(new WodBindingValueProblem(bindingName, "There is no key '" + bindingValueKeyPath.getInvalidKey() + "' in " + javaFileType.getElementName(), getValuePosition(), lineNumber, false, bindingValueKeyPath.getRelatedToFileNames()));
@@ -112,13 +114,26 @@ public abstract class AbstractWodBinding implements IWodBinding {
             problems.add(new WodBindingValueProblem(bindingName, "There is no key '" + bindingValueKeyPath.getInvalidKey() + "' for the keypath '" + validKeyPath + "' in " + javaFileType.getElementName(), getValuePosition(), lineNumber, false, bindingValueKeyPath.getRelatedToFileNames()));
           }
         }
-        else if (bindingValueKeyPath.isNSKeyValueCoding()) {
-          String validKeyPath = bindingValueKeyPath.getValidKeyPath();
-          if (validKeyPath.length() == 0) {
-            problems.add(new WodBindingValueProblem(bindingName, "Unable to verify the key '" + bindingValueKeyPath.getInvalidKey() + "' because " + javaFileType.getElementName() + " implements NSKeyValueCoding", getValuePosition(), lineNumber, true, bindingValueKeyPath.getRelatedToFileNames()));
+        else if (bindingValueKeyPath.isNSCollection()) {
+          if (warnOnMissingCollectionKey) {
+            String validKeyPath = bindingValueKeyPath.getValidKeyPath();
+            if (validKeyPath.length() == 0) {
+              problems.add(new WodBindingValueProblem(bindingName, "Unable to verify key '" + bindingValueKeyPath.getInvalidKey() + "' because " + javaFileType.getElementName() + " is a collection", getValuePosition(), lineNumber, true, bindingValueKeyPath.getRelatedToFileNames()));
+            }
+            else {
+              problems.add(new WodBindingValueProblem(bindingName, "Unable to verify key '" + bindingValueKeyPath.getInvalidKey() + "' because the keypath '" + validKeyPath + "' in " + javaFileType.getElementName() + " is a collection", getValuePosition(), lineNumber, true, bindingValueKeyPath.getRelatedToFileNames()));
+            }
           }
-          else {
-            problems.add(new WodBindingValueProblem(bindingName, "Unable to verify the key '" + bindingValueKeyPath.getInvalidKey() + "' because the keypath '" + validKeyPath + "' in " + javaFileType.getElementName() + " implements NSKeyValueCoding", getValuePosition(), lineNumber, true, bindingValueKeyPath.getRelatedToFileNames()));
+        }
+        else if (bindingValueKeyPath.isNSKeyValueCoding()) {
+          if (warnOnMissingNSKVCKey) {
+            String validKeyPath = bindingValueKeyPath.getValidKeyPath();
+            if (validKeyPath.length() == 0) {
+              problems.add(new WodBindingValueProblem(bindingName, "Unable to verify the key '" + bindingValueKeyPath.getInvalidKey() + "' because " + javaFileType.getElementName() + " implements NSKeyValueCoding", getValuePosition(), lineNumber, true, bindingValueKeyPath.getRelatedToFileNames()));
+            }
+            else {
+              problems.add(new WodBindingValueProblem(bindingName, "Unable to verify the key '" + bindingValueKeyPath.getInvalidKey() + "' because the keypath '" + validKeyPath + "' in " + javaFileType.getElementName() + " implements NSKeyValueCoding", getValuePosition(), lineNumber, true, bindingValueKeyPath.getRelatedToFileNames()));
+            }
           }
         }
         else if (warnOnAmbiguousKey && bindingValueKeyPath.isAmbiguous()) {
