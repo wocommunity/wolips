@@ -47,31 +47,35 @@ package org.objectstyle.wolips.wodclipse.core.preferences;
  * @author mike
  */
 public class PreferenceConstants {
-	public static final String ELEMENT_NAME = "ComponentName";
+  public static final String ELEMENT_NAME = "ComponentName";
 
-	public static final String ELEMENT_TYPE = "ComponentType";
+  public static final String ELEMENT_TYPE = "ComponentType";
 
-	public static final String BINDING_NAME = "BindingName";
+  public static final String BINDING_NAME = "BindingName";
 
-	public static final String BINDING_VALUE = "BindingValue";
+  public static final String BINDING_VALUE = "BindingValue";
 
-	public static final String CONSTANT_BINDING_VALUE = "ConstantBindingValue";
+  public static final String CONSTANT_BINDING_VALUE = "ConstantBindingValue";
 
-	public static final String PARENT_BINDING_VALUE = "ParentBindingValue";
+  public static final String PARENT_BINDING_VALUE = "ParentBindingValue";
 
-	public static final String OPERATOR = "Operator";
+  public static final String OPERATOR = "Operator";
 
-	public static final String COMMENT = "Comment";
+  public static final String COMMENT = "Comment";
 
-	public static final String UNKNOWN = "Unknown";
+  public static final String UNKNOWN = "Unknown";
 
-	public static final String ALLOWED_BINDING_CHARACTERS = "AllowedBindingCharacters";
+  public static final String ALLOWED_BINDING_CHARACTERS = "AllowedBindingCharacters";
 
-	public static final String VALIDATE_BINDING_VALUES = "CheckBindingValues";
+  public static final String VALIDATE_BINDING_VALUES = "CheckBindingValues";
 
-	public static final String AUTO_INSERT_ON_COMPLETION = "AutoInsertOnCompletion";
+  public static final String AUTO_INSERT_ON_COMPLETION = "AutoInsertOnCompletion";
+
+  public static final String WARN_ON_MISSING_COLLECTION_KEY = "WarnOnMissingCollectionKey";
 
   public static final String ERROR_ON_MISSING_NSKVC_KEY = "ErrorOnMissingNSKVCKey";
+
+  public static final String WARN_ON_MISSING_NSKVC_KEY = "WarnOnMissingNSKVCKey";
 
   public static final String VALIDATE_OGNL_KEY = "ValidateOGNLKey";
 

@@ -71,7 +71,9 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     store.setDefault(PreferenceConstants.VALIDATE_BINDING_VALUES, true);
     store.setDefault(PreferenceConstants.VALIDATE_OGNL_KEY, true);
     store.setDefault(PreferenceConstants.AUTO_INSERT_ON_COMPLETION, true);
+    store.setDefault(PreferenceConstants.WARN_ON_MISSING_COLLECTION_KEY, true);
     store.setDefault(PreferenceConstants.ERROR_ON_MISSING_NSKVC_KEY, true);
+    store.setDefault(PreferenceConstants.WARN_ON_MISSING_NSKVC_KEY, false);
     store.setDefault(PreferenceConstants.WARN_ON_AMBIGUOUS_KEY, true);
     store.setDefault(PreferenceConstants.ERROR_ON_HTML_ERRORS_KEY, true);
     store.setDefault(PreferenceConstants.WARN_ON_HELPER_FUNCTION_KEY, true);
