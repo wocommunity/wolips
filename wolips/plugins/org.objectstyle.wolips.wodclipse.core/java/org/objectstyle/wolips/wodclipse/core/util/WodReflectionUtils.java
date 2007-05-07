@@ -90,7 +90,7 @@ public class WodReflectionUtils {
   }
 
   public static boolean isNSCollection(IType type) throws JavaModelException {
-	  return WodReflectionUtils.isType(type, new String[] { "com.webobjects.foundation.NSDictionary", "com.webobjects.foundation.NSArray", "com.webobjects.foundation.NSSet" });
+	  return WodReflectionUtils.isType(type, new String[] { "com.webobjects.foundation.NSDictionary", "com.webobjects.foundation.NSArray", "com.webobjects.foundation.NSSet", "er.extensions.ERXLocalizer" });
   }
 
   public static boolean isType(IType type, String[] possibleTypes) throws JavaModelException {
