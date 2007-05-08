@@ -60,7 +60,6 @@ import java.util.Map;
 import org.w3c.dom.Element;
 
 public class Not extends AbstractValidationChild {
-
 	protected final static String NOT = "not";
 
 	protected Not(Element element, ApiModel apiModel) {

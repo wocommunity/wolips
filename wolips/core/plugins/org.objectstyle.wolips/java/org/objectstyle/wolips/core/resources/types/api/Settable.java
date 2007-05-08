@@ -60,7 +60,6 @@ import java.util.Map;
 import org.w3c.dom.Element;
 
 public class Settable extends AbstractUn {
-
 	protected final static String SETTABLE = "settable";
 
 	protected Settable(Element element, ApiModel apiModel) {

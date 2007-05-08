@@ -55,7 +55,6 @@
  */
 package org.objectstyle.wolips.core.resources.types.api;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -71,68 +70,68 @@ public abstract class AbstractValidationChild extends AbstractApiModelElement im
 
 	public Unsettable[] getUnsettables() {
 		List unsetableElements = getChildrenElementsByTagName(Unsettable.UNSETTABLE);
-		ArrayList unsetables = new ArrayList();
+		List<Unsettable> unsetables = new LinkedList<Unsettable>();
 		for (int i = 0; i < unsetableElements.size(); i++) {
 			Element unsettableElement = (Element) unsetableElements.get(i);
 			Unsettable validation = new Unsettable(unsettableElement, apiModel);
 			unsetables.add(validation);
 		}
-		return (Unsettable[]) unsetables.toArray(new Unsettable[unsetables.size()]);
+		return unsetables.toArray(new Unsettable[unsetables.size()]);
 	}
 
 	public Settable[] getSettables() {
 		List setableElements = getChildrenElementsByTagName(Settable.SETTABLE);
-		ArrayList setables = new ArrayList();
+		List<Settable> setables = new LinkedList<Settable>();
 		for (int i = 0; i < setableElements.size(); i++) {
 			Element settableElement = (Element) setableElements.get(i);
 			Settable settable = new Settable(settableElement, apiModel);
 			setables.add(settable);
 		}
-		return (Settable[]) setables.toArray(new Settable[setables.size()]);
+		return setables.toArray(new Settable[setables.size()]);
 	}
 
 	public Ungettable[] getUngettables() {
 		List ungetableElements = getChildrenElementsByTagName(Ungettable.UNGETTABLE);
-		ArrayList ungetables = new ArrayList();
+		List<Ungettable> ungetables = new LinkedList<Ungettable>();
 		for (int i = 0; i < ungetableElements.size(); i++) {
 			Element ungettableElement = (Element) ungetableElements.get(i);
 			Ungettable validation = new Ungettable(ungettableElement, apiModel);
 			ungetables.add(validation);
 		}
-		return (Ungettable[]) ungetables.toArray(new Ungettable[ungetables.size()]);
+		return ungetables.toArray(new Ungettable[ungetables.size()]);
 	}
 
 	public Gettable[] getGettables() {
 		List getableElements = getChildrenElementsByTagName(Gettable.GETTABLE);
-		ArrayList getables = new ArrayList();
+		List<Gettable> getables = new LinkedList<Gettable>();
 		for (int i = 0; i < getableElements.size(); i++) {
 			Element gettableElement = (Element) getableElements.get(i);
 			Gettable gettable = new Gettable(gettableElement, apiModel);
 			getables.add(gettable);
 		}
-		return (Gettable[]) getables.toArray(new Gettable[getables.size()]);
+		return getables.toArray(new Gettable[getables.size()]);
 	}
 
 	public Unbound[] getUnbounds() {
 		List unsetableElements = getChildrenElementsByTagName(Unbound.UNBOUND);
-		ArrayList unsetables = new ArrayList();
+		List<Unbound> unsetables = new LinkedList<Unbound>();
 		for (int i = 0; i < unsetableElements.size(); i++) {
 			Element unboundElement = (Element) unsetableElements.get(i);
 			Unbound validation = new Unbound(unboundElement, apiModel);
 			unsetables.add(validation);
 		}
-		return (Unbound[]) unsetables.toArray(new Unbound[unsetables.size()]);
+		return unsetables.toArray(new Unbound[unsetables.size()]);
 	}
 
 	public Bound[] getBounds() {
 		List setableElements = getChildrenElementsByTagName(Bound.BOUND);
-		ArrayList setables = new ArrayList();
+		List<Bound> setables = new LinkedList<Bound>();
 		for (int i = 0; i < setableElements.size(); i++) {
 			Element boundElement = (Element) setableElements.get(i);
 			Bound bound = new Bound(boundElement, apiModel);
 			setables.add(bound);
 		}
-		return (Bound[]) setables.toArray(new Bound[setables.size()]);
+		return setables.toArray(new Bound[setables.size()]);
 	}
 
 	public And getAnd() {
@@ -176,7 +175,7 @@ public abstract class AbstractValidationChild extends AbstractApiModelElement im
 	}
 
 	public IValidation[] getValidationChildren() {
-		List validationChildren = new LinkedList();
+		List<IValidation> validationChildren = new LinkedList<IValidation>();
 		Count count = this.getCount();
 		if (count != null) {
 			validationChildren.add(count);
@@ -223,7 +222,7 @@ public abstract class AbstractValidationChild extends AbstractApiModelElement im
 			Gettable gettable = gettables[i];
 			validationChildren.add(gettable);
 		}
-		IValidation[] validations = (IValidation[]) validationChildren.toArray(new IValidation[validationChildren.size()]);
+		IValidation[] validations = validationChildren.toArray(new IValidation[validationChildren.size()]);
 		return validations;
 	}
 
