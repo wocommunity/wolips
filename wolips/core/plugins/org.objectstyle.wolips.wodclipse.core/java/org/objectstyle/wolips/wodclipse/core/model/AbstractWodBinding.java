@@ -51,6 +51,7 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
+import org.objectstyle.wolips.wodclipse.core.preferences.BindingValidationRule;
 import org.objectstyle.wolips.wodclipse.core.preferences.PreferenceConstants;
 
 /**
@@ -96,120 +97,141 @@ public abstract class AbstractWodBinding implements IWodBinding {
     boolean errorOnMissingNSKVCKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.ERROR_ON_MISSING_NSKVC_KEY);
     boolean warnOnMissingNSKVCKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.WARN_ON_MISSING_NSKVC_KEY);
     boolean warnOnAmbiguousKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.WARN_ON_AMBIGUOUS_KEY);
+    boolean warnOnOperator = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.WARN_ON_OPERATOR_KEY);
     boolean warnOnHelperFunction = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.WARN_ON_HELPER_FUNCTION_KEY);
     if (shouldValidate()) {
       String bindingName = getName();
       String bindingValue = getValue();
-      if (isKeyPath()) {
-        int lineNumber = getLineNumber();
-        BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(bindingValue, javaFileType, javaProject, cache);
-        // NTS: Technically these need to be related to
-        // every java file name in the key path
-        if (!bindingValueKeyPath.isValid() || (bindingValueKeyPath.isNSKeyValueCoding() && errorOnMissingNSKVCKey && !bindingValueKeyPath.isNSCollection())) {
-          String validKeyPath = bindingValueKeyPath.getValidKeyPath();
-          if (validKeyPath.length() == 0) {
-            problems.add(new WodBindingValueProblem(bindingName, "There is no key '" + bindingValueKeyPath.getInvalidKey() + "' in " + javaFileType.getElementName(), getValuePosition(), lineNumber, false, bindingValueKeyPath.getRelatedToFileNames()));
-          }
-          else {
-            problems.add(new WodBindingValueProblem(bindingName, "There is no key '" + bindingValueKeyPath.getInvalidKey() + "' for the keypath '" + validKeyPath + "' in " + javaFileType.getElementName(), getValuePosition(), lineNumber, false, bindingValueKeyPath.getRelatedToFileNames()));
+
+      boolean explicitlyValid = false;
+      String javaFileTypeName = javaFileType.getElementName();
+      if (javaFileTypeName != null) {
+        List<BindingValidationRule> bindingValidationRules = cache.getBindingValidationRules();
+        for (int i = 0; !explicitlyValid && i < bindingValidationRules.size(); i++) {
+          BindingValidationRule bindingValidationRule = bindingValidationRules.get(i);
+          if (javaFileTypeName.matches(bindingValidationRule.getTypeRegex())) {
+            explicitlyValid = bindingValue != null && bindingValue.matches(bindingValidationRule.getValidBindingRegex());
           }
         }
-        else if (bindingValueKeyPath.isNSCollection()) {
-          if (warnOnMissingCollectionKey) {
-            String validKeyPath = bindingValueKeyPath.getValidKeyPath();
-            if (validKeyPath.length() == 0) {
-              problems.add(new WodBindingValueProblem(bindingName, "Unable to verify key '" + bindingValueKeyPath.getInvalidKey() + "' because " + javaFileType.getElementName() + " is a collection", getValuePosition(), lineNumber, true, bindingValueKeyPath.getRelatedToFileNames()));
-            }
-            else {
-              problems.add(new WodBindingValueProblem(bindingName, "Unable to verify key '" + bindingValueKeyPath.getInvalidKey() + "' because the keypath '" + validKeyPath + "' in " + javaFileType.getElementName() + " is a collection", getValuePosition(), lineNumber, true, bindingValueKeyPath.getRelatedToFileNames()));
-            }
-          }
-        }
-        else if (bindingValueKeyPath.isNSKeyValueCoding()) {
-          if (warnOnMissingNSKVCKey) {
-            String validKeyPath = bindingValueKeyPath.getValidKeyPath();
-            if (validKeyPath.length() == 0) {
-              problems.add(new WodBindingValueProblem(bindingName, "Unable to verify the key '" + bindingValueKeyPath.getInvalidKey() + "' because " + javaFileType.getElementName() + " implements NSKeyValueCoding", getValuePosition(), lineNumber, true, bindingValueKeyPath.getRelatedToFileNames()));
-            }
-            else {
-              problems.add(new WodBindingValueProblem(bindingName, "Unable to verify the key '" + bindingValueKeyPath.getInvalidKey() + "' because the keypath '" + validKeyPath + "' in " + javaFileType.getElementName() + " implements NSKeyValueCoding", getValuePosition(), lineNumber, true, bindingValueKeyPath.getRelatedToFileNames()));
-            }
-          }
-        }
-        else if (warnOnAmbiguousKey && bindingValueKeyPath.isAmbiguous()) {
-          String validKeyPath = bindingValueKeyPath.getValidKeyPath();
-          if (validKeyPath.length() == 0) {
-            problems.add(new WodBindingValueProblem(bindingName, "Unable to verify the key '" + bindingValueKeyPath.getInvalidKey() + "' in " + javaFileType.getElementName(), getValuePosition(), lineNumber, true, bindingValueKeyPath.getRelatedToFileNames()));
-          }
-          else {
-            problems.add(new WodBindingValueProblem(bindingName, "Unable to verify the key '" + bindingValueKeyPath.getInvalidKey() + "' for the path '" + validKeyPath + "' in " + javaFileType.getElementName(), getValuePosition(), lineNumber, true, bindingValueKeyPath.getRelatedToFileNames()));
-          }
-        }
-        String helperFunction = bindingValueKeyPath.getHelperFunction();
-        if (warnOnHelperFunction && helperFunction != null) {
-          problems.add(new WodBindingValueProblem(bindingName, "Unable to verify helper function '" + helperFunction + "'", getValuePosition(), lineNumber, true, bindingValueKeyPath.getRelatedToFileNames()));
-        }
-        // else {
-        // String[] validApiValues = WodBindingUtils.getValidValues(elementType, getName(), typeToApiModelWoCache);
-        // if (validApiValues != null &&
-        // !Arrays.asList(validApiValues).contains(bindingValue))
-        // {
-        // problems.add(new WodProblem(wodModel, "The .api file for " + wodJavaType.getElementName() + " declares '" + bindingValue + "' to be an invalid value.", getValuePosition(), false));
-        // }
-        // }
       }
 
-      boolean validateOGNL = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.VALIDATE_OGNL_KEY);
-      if (validateOGNL && isOGNL()) {
-        int lineNumber = getLineNumber();
-        boolean inQuotes = bindingValue.startsWith("\"");
-        if (inQuotes) {
-          bindingValue = bindingValue.substring(1, bindingValue.length() - 1);
-        }
-        String ognl = bindingValue.substring(1);
-        ognl = ognl.replaceAll("\\\\'", " ");
-        ognl = ognl.replaceAll("'[^']*'", "''");
-        if (inQuotes) {
-          ognl = ognl.replaceAll("\\\\\"[^\"]*\\\\\"", "\\\"\\\"");
-        }
-        else {
-          ognl = ognl.replaceAll("\\\\\"", " ");
-          ognl = ognl.replaceAll("\"[^\"]*\"", "\"\"");
-        }
-        ognl = ognl + " ";
-        int identifierStartChar = -1;
-        for (int i = 0; i < ognl.length(); i++) {
-          char ch = ognl.charAt(i);
-          if (identifierStartChar == -1) {
-            if (Character.isJavaIdentifierStart(ch) || ch == '@' || ch == '#') {
-              identifierStartChar = i;
+      if (!explicitlyValid) {
+        if (isKeyPath()) {
+          int lineNumber = getLineNumber();
+          BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(bindingValue, javaFileType, javaProject, cache);
+          // NTS: Technically these need to be related to
+          // every java file name in the key path
+          if (!bindingValueKeyPath.isValid() || (bindingValueKeyPath.isNSKeyValueCoding() && errorOnMissingNSKVCKey && !bindingValueKeyPath.isNSCollection())) {
+            String validKeyPath = bindingValueKeyPath.getValidKeyPath();
+            if (validKeyPath.length() == 0) {
+              problems.add(new WodBindingValueProblem(bindingName, "There is no key '" + bindingValueKeyPath.getInvalidKey() + "' in " + javaFileType.getElementName(), getValuePosition(), lineNumber, false, bindingValueKeyPath.getRelatedToFileNames()));
+            }
+            else {
+              problems.add(new WodBindingValueProblem(bindingName, "There is no key '" + bindingValueKeyPath.getInvalidKey() + "' for the keypath '" + validKeyPath + "' in " + javaFileType.getElementName(), getValuePosition(), lineNumber, false, bindingValueKeyPath.getRelatedToFileNames()));
             }
           }
-          else if (!Character.isJavaIdentifierPart(ch) && ch != '.' && ch != '@' && ch != '#') {
-            String ognlBindingValue = ognl.substring(identifierStartChar, i);
-            // null
-            if (!ognlBindingValue.startsWith("@") && !ognlBindingValue.startsWith("#") && !ognlBindingValue.equalsIgnoreCase("null") && !ognlBindingValue.equalsIgnoreCase("this") && !ognlBindingValue.equalsIgnoreCase("new")) {
-              // function call
-              String nextStr = ognl.substring(i).trim();
-              if (!nextStr.startsWith("()")) {
-                SimpleWodBinding ognlBinding = new SimpleWodBinding(bindingName, ognlBindingValue, getNamePosition(), getValuePosition(), getLineNumber());
-                try {
-                  List<WodProblem> ognlProblems = new LinkedList<WodProblem>();
-                  ognlBinding.fillInBindingProblems(javaProject, javaFileType, ognlProblems, cache);
-                  for (WodProblem ognlProblem : ognlProblems) {
-                    problems.add(new WodBindingValueProblem(bindingName, ognlProblem.getMessage(), getValuePosition(), lineNumber, ognlProblem.isWarning(), ognlProblem.getRelatedToFileNames()));
-                  }
-                }
-                catch (Exception e) {
-                  Activator.getDefault().log(e);
-                }
+          else if (bindingValueKeyPath.isNSCollection()) {
+            if (warnOnMissingCollectionKey) {
+              String validKeyPath = bindingValueKeyPath.getValidKeyPath();
+              if (validKeyPath.length() == 0) {
+                problems.add(new WodBindingValueProblem(bindingName, "Unable to verify key '" + bindingValueKeyPath.getInvalidKey() + "' because " + javaFileType.getElementName() + " is a collection", getValuePosition(), lineNumber, true, bindingValueKeyPath.getRelatedToFileNames()));
+              }
+              else {
+                problems.add(new WodBindingValueProblem(bindingName, "Unable to verify key '" + bindingValueKeyPath.getInvalidKey() + "' because the keypath '" + validKeyPath + "' in " + javaFileType.getElementName() + " is a collection", getValuePosition(), lineNumber, true, bindingValueKeyPath.getRelatedToFileNames()));
               }
             }
-            identifierStartChar = -1;
+          }
+          else if (bindingValueKeyPath.isNSKeyValueCoding()) {
+            if (warnOnMissingNSKVCKey) {
+              String validKeyPath = bindingValueKeyPath.getValidKeyPath();
+              if (validKeyPath.length() == 0) {
+                problems.add(new WodBindingValueProblem(bindingName, "Unable to verify the key '" + bindingValueKeyPath.getInvalidKey() + "' because " + javaFileType.getElementName() + " implements NSKeyValueCoding", getValuePosition(), lineNumber, true, bindingValueKeyPath.getRelatedToFileNames()));
+              }
+              else {
+                problems.add(new WodBindingValueProblem(bindingName, "Unable to verify the key '" + bindingValueKeyPath.getInvalidKey() + "' because the keypath '" + validKeyPath + "' in " + javaFileType.getElementName() + " implements NSKeyValueCoding", getValuePosition(), lineNumber, true, bindingValueKeyPath.getRelatedToFileNames()));
+              }
+            }
+          }
+          else if (warnOnAmbiguousKey && bindingValueKeyPath.isAmbiguous()) {
+            String validKeyPath = bindingValueKeyPath.getValidKeyPath();
+            if (validKeyPath.length() == 0) {
+              problems.add(new WodBindingValueProblem(bindingName, "Unable to verify the key '" + bindingValueKeyPath.getInvalidKey() + "' in " + javaFileType.getElementName(), getValuePosition(), lineNumber, true, bindingValueKeyPath.getRelatedToFileNames()));
+            }
+            else {
+              problems.add(new WodBindingValueProblem(bindingName, "Unable to verify the key '" + bindingValueKeyPath.getInvalidKey() + "' for the path '" + validKeyPath + "' in " + javaFileType.getElementName(), getValuePosition(), lineNumber, true, bindingValueKeyPath.getRelatedToFileNames()));
+            }
+          }
+
+          String operator = bindingValueKeyPath.getOperator();
+          if (warnOnAmbiguousKey && operator != null) {
+            problems.add(new WodBindingValueProblem(bindingName, "Unable to verify operator '" + operator + "'", getValuePosition(), lineNumber, true, bindingValueKeyPath.getRelatedToFileNames()));
+          }
+
+          String helperFunction = bindingValueKeyPath.getHelperFunction();
+          if (warnOnHelperFunction && helperFunction != null) {
+            problems.add(new WodBindingValueProblem(bindingName, "Unable to verify helper function '" + helperFunction + "'", getValuePosition(), lineNumber, true, bindingValueKeyPath.getRelatedToFileNames()));
+          }
+          // else {
+          // String[] validApiValues = WodBindingUtils.getValidValues(elementType, getName(), typeToApiModelWoCache);
+          // if (validApiValues != null &&
+          // !Arrays.asList(validApiValues).contains(bindingValue))
+          // {
+          // problems.add(new WodProblem(wodModel, "The .api file for " + wodJavaType.getElementName() + " declares '" + bindingValue + "' to be an invalid value.", getValuePosition(), false));
+          // }
+          // }
+        }
+  
+        boolean validateOGNL = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.VALIDATE_OGNL_KEY);
+        if (validateOGNL && isOGNL()) {
+          int lineNumber = getLineNumber();
+          boolean inQuotes = bindingValue.startsWith("\"");
+          if (inQuotes) {
+            bindingValue = bindingValue.substring(1, bindingValue.length() - 1);
+          }
+          String ognl = bindingValue.substring(1);
+          ognl = ognl.replaceAll("\\\\'", " ");
+          ognl = ognl.replaceAll("'[^']*'", "''");
+          if (inQuotes) {
+            ognl = ognl.replaceAll("\\\\\"[^\"]*\\\\\"", "\\\"\\\"");
+          }
+          else {
+            ognl = ognl.replaceAll("\\\\\"", " ");
+            ognl = ognl.replaceAll("\"[^\"]*\"", "\"\"");
+          }
+          ognl = ognl + " ";
+          int identifierStartChar = -1;
+          for (int i = 0; i < ognl.length(); i++) {
+            char ch = ognl.charAt(i);
+            if (identifierStartChar == -1) {
+              if (Character.isJavaIdentifierStart(ch) || ch == '@' || ch == '#') {
+                identifierStartChar = i;
+              }
+            }
+            else if (!Character.isJavaIdentifierPart(ch) && ch != '.' && ch != '@' && ch != '#') {
+              String ognlBindingValue = ognl.substring(identifierStartChar, i);
+              // null
+              if (!ognlBindingValue.startsWith("@") && !ognlBindingValue.startsWith("#") && !ognlBindingValue.equalsIgnoreCase("null") && !ognlBindingValue.equalsIgnoreCase("this") && !ognlBindingValue.equalsIgnoreCase("new")) {
+                // function call
+                String nextStr = ognl.substring(i).trim();
+                if (!nextStr.startsWith("()")) {
+                  SimpleWodBinding ognlBinding = new SimpleWodBinding(bindingName, ognlBindingValue, getNamePosition(), getValuePosition(), getLineNumber());
+                  try {
+                    List<WodProblem> ognlProblems = new LinkedList<WodProblem>();
+                    ognlBinding.fillInBindingProblems(javaProject, javaFileType, ognlProblems, cache);
+                    for (WodProblem ognlProblem : ognlProblems) {
+                      problems.add(new WodBindingValueProblem(bindingName, ognlProblem.getMessage(), getValuePosition(), lineNumber, ognlProblem.isWarning(), ognlProblem.getRelatedToFileNames()));
+                    }
+                  }
+                  catch (Exception e) {
+                    Activator.getDefault().log(e);
+                  }
+                }
+              }
+              identifierStartChar = -1;
+            }
           }
         }
       }
-
     }
   }
 

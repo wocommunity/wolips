@@ -27,22 +27,22 @@ import org.objectstyle.wolips.preferences.TableViewerSupport;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 
 /**
- * The preference page to add / edit / remove TagShortcuts.
+ * The preference page to add / edit / remove BindingValidationRules.
  * 
  * @author Naoki Takezoe
- * @see tk.eclipse.plugin.htmleditor.tasktag.ITagShortcutDetector
- * @see tk.eclipse.plugin.htmleditor.tasktag.TagShortcut
+ * @see tk.eclipse.plugin.htmleditor.tasktag.IBindingValidationRuleDetector
+ * @see tk.eclipse.plugin.htmleditor.tasktag.BindingValidationRule
  * @see tk.eclipse.plugin.htmleditor.HTMLProjectBuilder
  */
-public class TagShortcutPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+public class BindingValidationRulePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
   private TableViewer _viewer;
-  private List<TagShortcut> _model = new ArrayList<TagShortcut>();
-  private List<TagShortcut> _oldModel = new ArrayList<TagShortcut>();
+  private List<BindingValidationRule> _model = new ArrayList<BindingValidationRule>();
+  private List<BindingValidationRule> _oldModel = new ArrayList<BindingValidationRule>();
 
-  public TagShortcutPreferencePage() {
+  public BindingValidationRulePreferencePage() {
     setPreferenceStore(Activator.getDefault().getPreferenceStore());
-    setTitle("Tag Shortcuts");
-    setDescription("Tag shortcuts are for use with inline bindings. You must have these shortcuts declared at runtime as well. The definitions here are for html validation.\n\nIf you are using WOTagProcessor, you can define shortcuts that map additional keys like 'edit'=>'ERXWOTemplate','templateName=edit'.");
+    setTitle("Binding Validation Rules");
+    setDescription("Binding validation rules let you specify the regex for components and the regexes for valid binding values on those components.  For instance, component .*\\.MDT.* and binding value ^localizer\\..* would say that any component with MDT in its name that uses a binding value starting with 'localizer\\.' automatically validates.");
   }
 
   @Override
@@ -54,36 +54,31 @@ public class TagShortcutPreferencePage extends PreferencePage implements IWorkbe
         Table table = viewer.getTable();
 
         TableColumn col1 = new TableColumn(table, SWT.LEFT);
-        col1.setText("Shortcut");
-        col1.setWidth(100);
+        col1.setText("Component Regex");
+        col1.setWidth(150);
 
         TableColumn col2 = new TableColumn(table, SWT.LEFT);
-        col2.setText("Actual Tag");
+        col2.setText("Valid Binding Regex");
         col2.setWidth(150);
-
-        TableColumn col3 = new TableColumn(table, SWT.LEFT);
-        col3.setText("Attributes");
-        col3.setWidth(200);
       }
 
       @Override
       protected Object doAdd() {
-        TagShortcutDialog dialog = new TagShortcutDialog(getShell());
+        BindingValidationRuleDialog dialog = new BindingValidationRuleDialog(getShell());
         if (dialog.open() == Dialog.OK) {
-          return dialog.getTagShortcut();
+          return dialog.getBindingValidationRule();
         }
         return null;
       }
 
       @Override
       protected void doEdit(Object obj) {
-        TagShortcut _tagShortcut = (TagShortcut) obj;
-        TagShortcutDialog dialog = new TagShortcutDialog(getShell(), _tagShortcut);
+        BindingValidationRule bindingValidationRule = (BindingValidationRule) obj;
+        BindingValidationRuleDialog dialog = new BindingValidationRuleDialog(getShell(), bindingValidationRule);
         if (dialog.open() == Dialog.OK) {
-          TagShortcut newElement = dialog.getTagShortcut();
-          _tagShortcut.setShortcut(newElement.getShortcut());
-          _tagShortcut.setActual(newElement.getActual());
-          _tagShortcut.setAttributesAsString(newElement.getAttributesAsString());
+          BindingValidationRule newElement = dialog.getBindingValidationRule();
+          bindingValidationRule.setTypeRegex(newElement.getTypeRegex());
+          bindingValidationRule.setValidBindingRegex(newElement.getValidBindingRegex());
         }
       }
 
@@ -91,20 +86,18 @@ public class TagShortcutPreferencePage extends PreferencePage implements IWorkbe
       protected ITableLabelProvider createLabelProvider() {
         return new ITableLabelProvider() {
 
-          public Image getColumnImage(Object tagShortcut, int columnIndex) {
+          public Image getColumnImage(Object _tagShortcut, int columnIndex) {
             return null;
           }
 
-          public String getColumnText(Object tagShortcut, int columnIndex) {
+          public String getColumnText(Object bindingValidationRule, int columnIndex) {
             switch (columnIndex) {
             case 0:
-              return ((TagShortcut) tagShortcut).getShortcut();
+              return ((BindingValidationRule) bindingValidationRule).getTypeRegex();
             case 1:
-              return ((TagShortcut) tagShortcut).getActual();
-            case 2:
-              return ((TagShortcut) tagShortcut).getAttributesAsString();
+              return ((BindingValidationRule) bindingValidationRule).getValidBindingRegex();
             default:
-              return tagShortcut.toString();
+              return bindingValidationRule.toString();
             }
           }
 
@@ -114,7 +107,7 @@ public class TagShortcutPreferencePage extends PreferencePage implements IWorkbe
           public void dispose() {
           }
 
-          public boolean isLabelProperty(Object tagShortcut, String property) {
+          public boolean isLabelProperty(Object bindingValidationRule, String property) {
             return false;
           }
 
@@ -126,7 +119,7 @@ public class TagShortcutPreferencePage extends PreferencePage implements IWorkbe
     };
 
     _viewer = support.getTableViewer();
-    _model.addAll(TagShortcut.loadFromPreference(false));
+    _model.addAll(BindingValidationRule.loadFromPreference(false));
     syncModels();
     _viewer.refresh();
 
@@ -136,14 +129,14 @@ public class TagShortcutPreferencePage extends PreferencePage implements IWorkbe
   @Override
   protected void performDefaults() {
     _model.clear();
-    _model.addAll(TagShortcut.loadFromPreference(true));
+    _model.addAll(BindingValidationRule.loadFromPreference(true));
     _viewer.refresh();
     processChange();
   }
 
   @Override
   public boolean performOk() {
-    TagShortcut.saveToPreference(_model);
+    BindingValidationRule.saveToPreference(_model);
     processChange();
     return true;
   }
@@ -164,7 +157,7 @@ public class TagShortcutPreferencePage extends PreferencePage implements IWorkbe
   }
 
   private void processChange() {
-    if (TagShortcut.hasChange(_oldModel, _model)) {
+    if (BindingValidationRule.hasChange(_oldModel, _model)) {
       syncModels();
 //      try {
 //        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -183,22 +176,21 @@ public class TagShortcutPreferencePage extends PreferencePage implements IWorkbe
   }
 
   /**
-   * The dialog to add / edit TagShortcuts.
+   * The dialog to add / edit BindingValidationRules.
    */
-  private class TagShortcutDialog extends Dialog {
-    private Text _shortcutTag;
-    private Text _actualTag;
-    private Text _attributes;
-    private TagShortcut _tagShortcut;
+  private class BindingValidationRuleDialog extends Dialog {
+    private Text _typeRegex;
+    private Text _validBindingRegex;
+    private BindingValidationRule _bindingValidationRule;
 
-    public TagShortcutDialog(Shell parentShell) {
+    public BindingValidationRuleDialog(Shell parentShell) {
       super(parentShell);
       setShellStyle(getShellStyle() | SWT.RESIZE);
     }
 
-    public TagShortcutDialog(Shell parentShell, TagShortcut tagShortcut) {
+    public BindingValidationRuleDialog(Shell parentShell, BindingValidationRule bindingValidationRule) {
       super(parentShell);
-      _tagShortcut = tagShortcut;
+      _bindingValidationRule = bindingValidationRule;
     }
 
     @Override
@@ -217,56 +209,46 @@ public class TagShortcutPreferencePage extends PreferencePage implements IWorkbe
       composite.setLayout(new GridLayout(2, false));
 
       Label label = new Label(composite, SWT.NULL);
-      label.setText("Shortcut");
+      label.setText("Component Regex");
 
-      _shortcutTag = new Text(composite, SWT.BORDER);
-      if (_tagShortcut != null) {
-        _shortcutTag.setText(_tagShortcut.getShortcut());
+      _typeRegex = new Text(composite, SWT.BORDER);
+      if (_bindingValidationRule != null) {
+        _typeRegex.setText(_bindingValidationRule.getTypeRegex());
       }
-      _shortcutTag.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      _typeRegex.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
       label = new Label(composite, SWT.NULL);
-      label.setText("Actual Tag");
+      label.setText("Valid Binding Regex");
 
-      _actualTag = new Text(composite, SWT.BORDER);
-      if (_tagShortcut != null) {
-        _actualTag.setText(_tagShortcut.getActual());
+      _validBindingRegex = new Text(composite, SWT.BORDER);
+      if (_bindingValidationRule != null) {
+        _validBindingRegex.setText(_bindingValidationRule.getValidBindingRegex());
       }
-      _actualTag.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-      label = new Label(composite, SWT.NULL);
-      label.setText("Attributes");
-
-      _attributes = new Text(composite, SWT.BORDER);
-      if (_tagShortcut != null) {
-        _attributes.setText(_tagShortcut.getAttributesAsString());
-      }
-      _attributes.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      _validBindingRegex.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
       return composite;
     }
 
     @Override
     protected void okPressed() {
-      if (_shortcutTag.getText().length() == 0) {
-        MessageDialog.openError(getParentShell(), "Shortcut Required", "You must set a shortcut tag name.");
+      if (_typeRegex.getText().length() == 0) {
+        MessageDialog.openError(getParentShell(), "Component Regex Required", "You must set a component regex.");
         return;
       }
-      if (_actualTag.getText().length() == 0) {
-        MessageDialog.openError(getParentShell(), "Actual Tag Required", "You must set the actual tag name.");
+      if (_validBindingRegex.getText().length() == 0) {
+        MessageDialog.openError(getParentShell(), "Valid Binding Regex Required", "You must set a valid binding regex.");
         return;
       }
 
-      String shortcut = _shortcutTag.getText();
-      String actual = _actualTag.getText();
-      String attributes = _attributes.getText();
-      _tagShortcut = new TagShortcut(shortcut, actual, attributes);
+      String typeRegex = _typeRegex.getText();
+      String validBindingRegex = _validBindingRegex.getText();
+      _bindingValidationRule = new BindingValidationRule(typeRegex, validBindingRegex);
 
       super.okPressed();
     }
 
-    public TagShortcut getTagShortcut() {
-      return _tagShortcut;
+    public BindingValidationRule getBindingValidationRule() {
+      return _bindingValidationRule;
     }
   }
 

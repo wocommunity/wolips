@@ -76,6 +76,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     store.setDefault(PreferenceConstants.WARN_ON_MISSING_NSKVC_KEY, false);
     store.setDefault(PreferenceConstants.WARN_ON_AMBIGUOUS_KEY, true);
     store.setDefault(PreferenceConstants.ERROR_ON_HTML_ERRORS_KEY, true);
+    store.setDefault(PreferenceConstants.WARN_ON_OPERATOR_KEY, true);
     store.setDefault(PreferenceConstants.WARN_ON_HELPER_FUNCTION_KEY, true);
 
     List<TagShortcut> tagShortcuts = new ArrayList<TagShortcut>();
@@ -100,5 +101,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     tagShortcuts.add(new TagShortcut("submit", "WOSubmitButton", new HashMap<String, String>()));
     tagShortcuts.add(new TagShortcut("localized", "ERXLocalizedString", new HashMap<String, String>()));
     TagShortcut.saveDefaultToPreference(tagShortcuts);
+
+    List<BindingValidationRule> validationRules = new ArrayList<BindingValidationRule>();
+    BindingValidationRule.saveDefaultToPreference(validationRules);
   }
 }

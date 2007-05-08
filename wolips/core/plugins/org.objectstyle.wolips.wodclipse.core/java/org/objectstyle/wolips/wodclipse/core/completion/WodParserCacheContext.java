@@ -6,13 +6,16 @@ import java.util.Map;
 import org.apache.commons.collections.map.ReferenceMap;
 import org.eclipse.jdt.core.IType;
 import org.objectstyle.wolips.core.resources.types.api.Wo;
+import org.objectstyle.wolips.wodclipse.core.preferences.BindingValidationRule;
 import org.objectstyle.wolips.wodclipse.core.preferences.TagShortcut;
 
 public class WodParserCacheContext {
   private Map _elementNameToTypeCache;
   private Map _elementTypeToWoCache;
   private String _tagShortcutsStr;
+  private String _bindingValidationRulesStr;
   private List<TagShortcut> _tagShortcuts;
+  private List<BindingValidationRule> _bindingValidationRules;
 
   public WodParserCacheContext() {
     clearCache();
@@ -53,5 +56,14 @@ public class WodParserCacheContext {
       _tagShortcuts = TagShortcut.loadFromPreference(false);
     }
     return _tagShortcuts;
+  }
+
+  public synchronized List<BindingValidationRule> getBindingValidationRules() {
+    String bindingValidationRulesStr = BindingValidationRule._loadFromPreference(false);
+    if ((bindingValidationRulesStr == null && _bindingValidationRulesStr != null) || (bindingValidationRulesStr != null && !bindingValidationRulesStr.equals(_bindingValidationRulesStr))) {
+      _bindingValidationRulesStr = bindingValidationRulesStr;
+      _bindingValidationRules = BindingValidationRule.loadFromPreference(false);
+    }
+    return _bindingValidationRules;
   }
 }

@@ -88,13 +88,13 @@ public class TagShortcut {
     return false;
   }
 
-  public static boolean hasChange(List tags1, List tags2) {
+  public static boolean hasChange(List<TagShortcut> tags1, List<TagShortcut> tags2) {
     if (tags1.size() != tags2.size()) {
       return true;
     }
     for (int i = 0; i < tags1.size(); i++) {
-      TagShortcut tag1 = (TagShortcut) tags1.get(i);
-      TagShortcut tag2 = (TagShortcut) tags2.get(i);
+      TagShortcut tag1 = tags1.get(i);
+      TagShortcut tag2 = tags2.get(i);
       if (!tag1.equals(tag2)) {
         return true;
       }

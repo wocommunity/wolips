@@ -82,6 +82,7 @@ public class WodEditorPreferencePage extends FieldEditorPreferencePage implement
     addField(new BooleanFieldEditor(PreferenceConstants.ERROR_ON_MISSING_NSKVC_KEY, "... Error if Missing Key on 'implements NSKeyValueCoding'", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.WARN_ON_MISSING_NSKVC_KEY, "... Warn if Missing Key on 'implements NSKeyValueCoding'", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.WARN_ON_AMBIGUOUS_KEY, "... Warn on Ambiguous Key Paths", getFieldEditorParent()));
+    addField(new BooleanFieldEditor(PreferenceConstants.WARN_ON_OPERATOR_KEY, "... Warn on @Operator", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.WARN_ON_HELPER_FUNCTION_KEY, "... Warn on Helper Functions", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.VALIDATE_OGNL_KEY, "... Validate OGNL", getFieldEditorParent()));
   }

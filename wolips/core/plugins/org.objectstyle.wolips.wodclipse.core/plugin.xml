@@ -9,6 +9,11 @@
             id="org.objectstyle.wolips.wodclipse.preferences.TagShortcutPreferencePage"
             name="Inline Tag Shortcuts"/>
       <page
+            category="org.objectstyle.wolips.preferences.PreferencesPage"
+            class="org.objectstyle.wolips.wodclipse.core.preferences.BindingValidationRulePreferencePage"
+            id="org.objectstyle.wolips.wodclipse.preferences.BindingValidationRulePreferencePage"
+            name="Binding Validation Rules"/>
+      <page
             class="org.objectstyle.wolips.wodclipse.core.preferences.WodEditorPreferencePage"
             category="org.objectstyle.wolips.preferences.PreferencesPage"
             id="org.objectstyle.wolips.wodclipse.preferences.WodEditorPreferencePage"
