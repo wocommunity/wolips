@@ -44,8 +44,8 @@
 package org.objectstyle.wolips.wodclipse.core.model;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -97,38 +97,16 @@ public abstract class AbstractWodModel implements IWodModel {
     return _elements;
   }
 
-  public void writeWodFormat(Writer writer, boolean alphabetize) {
-    PrintWriter pw = new PrintWriter(writer);
+  public void writeWodFormat(Writer writer, boolean alphabetize) throws IOException {
     List<IWodElement> elementsList = getElements();
     if (alphabetize) {
       elementsList = new LinkedList<IWodElement>(elementsList);
-      // Collections.sort(elementsList);
+      Collections.sort(elementsList, new WodElementComparator());
     }
-    Iterator elementsIter = elementsList.iterator();
-    while (elementsIter.hasNext()) {
-      IWodElement element = (IWodElement) elementsIter.next();
-      pw.print(element.getElementName());
-      pw.print(" : ");
-      pw.print(element.getElementType());
-      pw.print(" { ");
-      pw.println();
-      Iterator bindingsIter = element.getBindings().iterator();
-      while (bindingsIter.hasNext()) {
-        IWodBinding binding = (IWodBinding) bindingsIter.next();
-        pw.print("  ");
-        pw.print(binding.getName());
-        pw.print(" = ");
-        pw.print(binding.getValue());
-        pw.print(";");
-        pw.println();
-      }
-      pw.print("}");
-      pw.println();
-      if (elementsIter.hasNext()) {
-        pw.println();
-      }
+    for (IWodElement element : elementsList) {
+      element.writeWodFormat(writer, alphabetize);
+      writer.write("\n");
     }
-    pw.flush();
   }
 
   public List<WodProblem> getProblems(IJavaProject javaProject, IType javaFileType, WodParserCache cache) throws CoreException, IOException {

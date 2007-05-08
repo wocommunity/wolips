@@ -44,6 +44,8 @@
 package org.objectstyle.wolips.wodclipse.core.model;
 
 import java.io.IOException;
+import java.io.Writer;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -107,6 +109,46 @@ public abstract class AbstractWodElement implements IWodElement, Comparable {
       comparison = -1;
     }
     return comparison;
+  }
+  
+  public void writeWodFormat(Writer writer, boolean alphabetize) throws IOException {
+    List<IWodBinding> bindings = getBindings();
+    if (alphabetize) {
+      bindings = new LinkedList<IWodBinding>(bindings);
+      Collections.sort(bindings, new WodBindingComparator());
+    }
+    writer.write(getElementName());
+    writer.write(" : ");
+    writer.write(getElementType());
+    writer.write(" {");
+    writer.write("\n");
+    for (IWodBinding binding : bindings) {
+      binding.writeWodFormat(writer);
+      writer.write("\n");
+    }
+    writer.write("}\n");
+  }
+  
+  public void writeInlineFormat(Writer writer, String content, boolean alphabetize) throws IOException {
+    List<IWodBinding> bindings = getBindings();
+    if (alphabetize) {
+      bindings = new LinkedList<IWodBinding>(bindings);
+      Collections.sort(bindings, new WodBindingComparator());
+    }
+    writer.write("<wo:");
+    writer.write(getElementType());
+    for (IWodBinding binding : bindings) {
+      binding.writeInlineFormat(writer);
+    }
+    if (content == null) {
+      writer.write("/>");
+    }
+    else {
+      writer.write(content);
+      writer.write("</wo:");
+      writer.write(getElementType());
+      writer.write(">");
+    }
   }
   
   public abstract int getLineNumber();
