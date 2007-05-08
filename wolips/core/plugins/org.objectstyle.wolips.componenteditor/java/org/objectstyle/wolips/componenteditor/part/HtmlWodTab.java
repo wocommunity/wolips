@@ -144,6 +144,18 @@ public class HtmlWodTab extends ComponentEditorTab {
 		this.addWebObjectsTagNamesListener();
 	}
 
+/**
+ * @return the template editor for this html/wod composite.
+ */
+	
+	public TemplateEditor templateEditor() { return templateEditor; }
+	
+/**
+ * @return the wod editor for this html/wod composite.
+ */
+	
+	public WodEditor wodEditor() { return wodEditor; }
+	
 	public void doSave(IProgressMonitor monitor) {
 		if (wodEditor.isDirty()) {
 			wodEditor.doSave(monitor);
