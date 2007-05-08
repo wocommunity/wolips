@@ -55,10 +55,10 @@ public class EclipseEOClassLoaderFactory implements IEOClassLoaderFactory {
 			// AK: we don't want to re-jar each time we make a change....
 			String workSpacePath = VariablesPlugin.getDefault().getWOProjectDevelopmentPath();
 			if (workSpacePath != null) {
-				URL classUrl = new URL("file://" + workSpacePath + "wolips/core/plugins/org.objectstyle.wolips.eomodeler/bin/");
+				URL classUrl = new URL("file://" + workSpacePath + "wolips/core/plugins/org.objectstyle.wolips.eomodeler.core/bin/");
 				classpathSet.add(classUrl);
 			}
-			Bundle bundle = InternalPlatform.getDefault().getBundle("org.objectstyle.wolips.eomodeler");
+			Bundle bundle = InternalPlatform.getDefault().getBundle("org.objectstyle.wolips.eomodeler.core");
 			URL sqlJarUrl = bundle.getEntry("/lib/EntityModelerSQL.jar");
 			if (sqlJarUrl != null) {
 				classpathSet.add(sqlJarUrl);

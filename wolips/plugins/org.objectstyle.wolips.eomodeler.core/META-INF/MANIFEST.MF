@@ -20,5 +20,4 @@ Export-Package: org.objectstyle.wolips.eomodeler.core,
  org.objectstyle.wolips.eomodeler.core.wocompat,
  org.objectstyle.wolips.eomodeler.core.wocompat.parser,
  org.objectstyle.wolips.eomodeler.sql
-Bundle-ClassPath: lib/EntityModelerSQL.jar,
- .
+Bundle-ClassPath: .
