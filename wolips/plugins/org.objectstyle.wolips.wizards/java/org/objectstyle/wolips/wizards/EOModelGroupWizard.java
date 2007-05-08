@@ -74,7 +74,8 @@ import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.objectstyle.wolips.eogenerator.model.EOGeneratorModel;
+import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel;
+import org.objectstyle.wolips.eogenerator.jdt.EOGeneratorCreator;
 
 /**
  * This is a sample new wizard. Its role is to create a new file resource in the
@@ -86,9 +87,9 @@ import org.objectstyle.wolips.eogenerator.model.EOGeneratorModel;
  */
 
 public class EOModelGroupWizard extends Wizard implements INewWizard {
-	private EOModelGroupWizardPage myPage;
+	private EOModelGroupWizardPage _page;
 
-	private ISelection mySelection;
+	private ISelection _selection;
 
 	/**
 	 * Constructor for EOGeneratorWizard.
@@ -103,8 +104,8 @@ public class EOModelGroupWizard extends Wizard implements INewWizard {
 	 */
 
 	public void addPages() {
-		myPage = new EOModelGroupWizardPage(mySelection);
-		addPage(myPage);
+		_page = new EOModelGroupWizardPage(_selection);
+		addPage(_page);
 	}
 
 	/**
@@ -112,8 +113,8 @@ public class EOModelGroupWizard extends Wizard implements INewWizard {
 	 * will create an operation and run it using wizard as execution context.
 	 */
 	public boolean performFinish() {
-		final String containerName = myPage.getContainerName();
-		final String fileName = myPage.getFileName();
+		final String containerName = _page.getContainerName();
+		final String fileName = _page.getFileName();
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
@@ -154,7 +155,7 @@ public class EOModelGroupWizard extends Wizard implements INewWizard {
 		IContainer container = (IContainer) resource;
 		final IFile file = container.getFile(new Path(fileName));
 		try {
-			EOGeneratorModel model = EOGeneratorModel.createDefaultModel(container.getProject());
+			EOGeneratorModel model = EOGeneratorCreator.createDefaultModel(container.getProject());
 			model.writeToFile(file, monitor);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -186,6 +187,6 @@ public class EOModelGroupWizard extends Wizard implements INewWizard {
 	 * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
 	 */
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		mySelection = selection;
+		_selection = selection;
 	}
 }

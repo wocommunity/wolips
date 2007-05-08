@@ -76,11 +76,12 @@ import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.objectstyle.wolips.eogenerator.model.EOGeneratorModel;
-import org.objectstyle.wolips.eogenerator.model.EOModelReference;
-import org.objectstyle.wolips.eomodeler.model.EOModel;
-import org.objectstyle.wolips.eomodeler.model.EOModelGroup;
-import org.objectstyle.wolips.eomodeler.utils.URLUtils;
+import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel;
+import org.objectstyle.wolips.eogenerator.core.model.EOModelReference;
+import org.objectstyle.wolips.eogenerator.jdt.EOGeneratorCreator;
+import org.objectstyle.wolips.eomodeler.core.model.EOModel;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
+import org.objectstyle.wolips.eomodeler.core.utils.URLUtils;
 
 /**
  * This is a sample new wizard. Its role is to create a new file resource in the
@@ -92,9 +93,9 @@ import org.objectstyle.wolips.eomodeler.utils.URLUtils;
  */
 
 public class EOGeneratorWizard extends Wizard implements INewWizard {
-	private EOGeneratorWizardPage myPage;
+	private EOGeneratorWizardPage _page;
 
-	private ISelection mySelection;
+	private ISelection _selection;
 
 	/**
 	 * Constructor for EOGeneratorWizard.
@@ -109,8 +110,8 @@ public class EOGeneratorWizard extends Wizard implements INewWizard {
 	 */
 
 	public void addPages() {
-		myPage = new EOGeneratorWizardPage(mySelection);
-		addPage(myPage);
+		_page = new EOGeneratorWizardPage(_selection);
+		addPage(_page);
 	}
 
 	/**
@@ -118,8 +119,8 @@ public class EOGeneratorWizard extends Wizard implements INewWizard {
 	 * will create an operation and run it using wizard as execution context.
 	 */
 	public boolean performFinish() {
-		final String containerName = myPage.getContainerName();
-		final String fileName = myPage.getFileName();
+		final String containerName = _page.getContainerName();
+		final String fileName = _page.getFileName();
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
@@ -160,7 +161,7 @@ public class EOGeneratorWizard extends Wizard implements INewWizard {
 		IContainer container = (IContainer) resource;
 		final IFile file = container.getFile(new Path(fileName));
 		try {
-			EOGeneratorModel model = EOGeneratorModel.createDefaultModel(container.getProject());
+			EOGeneratorModel model = EOGeneratorCreator.createDefaultModel(container.getProject());
 			model.writeToFile(file, monitor);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -192,11 +193,11 @@ public class EOGeneratorWizard extends Wizard implements INewWizard {
 	 * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
 	 */
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		mySelection = selection;
+		_selection = selection;
 	}
 
 	public static EOGeneratorModel createEOGeneratorModel(IContainer parentResource, EOModel targetModel) {
-		EOGeneratorModel eogenModel = EOGeneratorModel.createDefaultModel(parentResource.getProject());
+		EOGeneratorModel eogenModel = EOGeneratorCreator.createDefaultModel(parentResource.getProject());
 		EOModelGroup modelGroup = targetModel.getModelGroup();
 		Iterator modelsIter = modelGroup.getModels().iterator();
 		while (modelsIter.hasNext()) {

@@ -61,10 +61,11 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.objectstyle.wolips.eogenerator.model.EOGeneratorModel;
-import org.objectstyle.wolips.eomodeler.model.EOModel;
-import org.objectstyle.wolips.eomodeler.model.EclipseEOModelGroupFactory;
-import org.objectstyle.wolips.eomodeler.utils.URLUtils;
+import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel;
+import org.objectstyle.wolips.eomodeler.core.model.EOModel;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
+import org.objectstyle.wolips.eomodeler.core.model.IEOModelGroupFactory;
+import org.objectstyle.wolips.eomodeler.core.utils.URLUtils;
 import org.objectstyle.wolips.wizards.EOGeneratorWizard;
 
 public class CreateEOGenFromEOModelWorkspaceJob extends WorkspaceJob {
@@ -81,7 +82,7 @@ public class CreateEOGenFromEOModelWorkspaceJob extends WorkspaceJob {
 	public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
 		try {
 			String extension = (_createEOModelGroup) ? ".eomodelgroup" : ".eogen";
-			EOModel model = EclipseEOModelGroupFactory.createModel(_modelFile, new HashSet(), true);
+			EOModel model = IEOModelGroupFactory.Utility.loadModel(_modelFile, new HashSet<EOModelVerificationFailure>(), true);
 			EOGeneratorModel eogenModel = EOGeneratorWizard.createEOGeneratorModel(_modelFile.getParent(), model);
 			String eogenBasePath = URLUtils.cheatAndTurnIntoFile(model.getModelURL()).getAbsolutePath();
 			int dotIndex = eogenBasePath.lastIndexOf('.');
