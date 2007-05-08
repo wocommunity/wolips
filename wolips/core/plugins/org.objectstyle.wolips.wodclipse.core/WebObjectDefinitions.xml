@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="yes"?> 
 <wodefinitions>
 
-  <wo class="WOGenericElement" wocomponentcontent = "false">
+  <wo class="WOGenericElement">
     <binding name="formValue" passthrough="NO"/>
     <binding name="formValues" passthrough="NO"/>
     <binding name="invokeAction" passthrough="NO" defaults="Actions"/>
@@ -57,7 +57,7 @@
     </validation>
   </wo>
 
-  <wo class="WOBody" wocomponentcontent = "false">
+  <wo class="WOBody" wocomponentcontent = "true">
     <binding name="filename" passthrough="NO" defaults="Resources"/>
     <binding name="framework" passthrough="NO" defaults="Frameworks"/>
     <binding name="src" passthrough="NO"/>
@@ -81,7 +81,7 @@
     </validation>
   </wo>
 
-  <wo class="WOForm" wocomponentcontent = "false">
+  <wo class="WOForm" wocomponentcontent = "true">
     <binding name="actionClass" passthrough="NO" defaults="Direct Action Classes"/>
     <binding name="enctype"/>
     <binding name="queryDictionary" passthrough="NO"/>
@@ -439,7 +439,7 @@
     </validation>
   </wo>
 
-  <wo class="WOGenericContainer" wocomponentcontent = "false">
+  <wo class="WOGenericContainer" wocomponentcontent = "true">
     <binding name="formValue" passthrough="NO"/>
     <binding name="formValues" passthrough="NO"/>
     <binding name="invokeAction" passthrough="NO" defaults="Actions"/>
@@ -466,7 +466,7 @@
     </validation>
   </wo>
 
-  <wo class="WOJavaScript" wocomponentcontent = "false">
+  <wo class="WOJavaScript" wocomponentcontent = "true">
     <binding name="hideInComment" passthrough="NO" defaults="YES/NO"/>
     <binding name="scriptSource" passthrough="NO"/>
     <binding name="scriptString" passthrough="NO"/>
@@ -518,7 +518,7 @@
     <!-- no validation rules -->
   </wo>
 
-  <wo class="WOConditional" wocomponentcontent = "false">
+  <wo class="WOConditional" wocomponentcontent = "true">
     <binding name="negate" passthrough="NO" defaults="YES/NO"/>
     <binding name="condition" passthrough="NO" required="YES"/>
 
@@ -612,7 +612,7 @@
     </validation>
   </wo>
 
-  <wo class="WOHyperlink" wocomponentcontent = "false">
+  <wo class="WOHyperlink" wocomponentcontent = "true">
     <binding name="actionClass" passthrough="NO" defaults="Direct Action Classes"/>
     <binding name="target" passthrough="NO"/>
     <binding name="fragmentIdentifier"/>
@@ -699,7 +699,7 @@
     </validation>
   </wo>
 
-  <wo class="WORepetition" wocomponentcontent = "false">
+  <wo class="WORepetition" wocomponentcontent = "true">
     <binding name="item" passthrough="NO" settable="YES"/>
     <binding name="list" passthrough="NO"/>
     <binding name="count" passthrough="NO"/>
@@ -972,7 +972,7 @@
     </validation>
   </wo>
 
-  <wo class="WOXMLNode" wocomponentcontent = "false">
+  <wo class="WOXMLNode" wocomponentcontent = "true">
     <binding name="elementName" passthrough="NO" required="YES"/>
 
     <!-- no validation rules -->
