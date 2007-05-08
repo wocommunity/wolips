@@ -56,9 +56,9 @@ import java.util.Set;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.objectstyle.wolips.eomodeler.kvc.KVCComparator;
-import org.objectstyle.wolips.eomodeler.model.EOAttribute;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.core.kvc.KVCComparator;
+import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 
 public class EOPrototypeListContentProvider implements IStructuredContentProvider {
 	public static final Object BLANK_ENTITY = "";

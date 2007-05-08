@@ -51,7 +51,7 @@ package org.objectstyle.wolips.eomodeler.editors.entity;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.objectstyle.wolips.eomodeler.model.InheritanceType;
+import org.objectstyle.wolips.eomodeler.core.model.InheritanceType;
 
 public class InheritanceTypeContentProvider implements IStructuredContentProvider {
 

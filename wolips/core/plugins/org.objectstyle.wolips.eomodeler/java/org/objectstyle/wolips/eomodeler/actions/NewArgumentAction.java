@@ -52,10 +52,10 @@ package org.objectstyle.wolips.eomodeler.actions;
 import java.util.Set;
 
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.EOArgument;
-import org.objectstyle.wolips.eomodeler.model.EOModelException;
-import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
-import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
+import org.objectstyle.wolips.eomodeler.core.model.EOArgument;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
+import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
 
 public class NewArgumentAction extends AbstractNewObjectAction<EOStoredProcedure, EOArgument> {
 	public NewArgumentAction() {

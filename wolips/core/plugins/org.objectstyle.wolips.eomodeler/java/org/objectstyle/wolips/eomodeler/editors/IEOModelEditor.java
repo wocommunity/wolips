@@ -49,7 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.editors;
 
-import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 
 public interface IEOModelEditor {
 	public EOModel getModel();

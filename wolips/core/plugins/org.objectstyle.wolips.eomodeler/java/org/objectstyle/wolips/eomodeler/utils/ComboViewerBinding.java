@@ -61,8 +61,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
-import org.objectstyle.wolips.eomodeler.kvc.CachingKeyPath;
-import org.objectstyle.wolips.eomodeler.kvc.IKey;
+import org.objectstyle.wolips.eomodeler.core.kvc.CachingKeyPath;
+import org.objectstyle.wolips.eomodeler.core.kvc.IKey;
+import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
+import org.objectstyle.wolips.eomodeler.core.utils.IPropertyChangeSource;
 
 public class ComboViewerBinding implements ISelectionChangedListener, PropertyChangeListener {
 	private ComboViewer myViewer;

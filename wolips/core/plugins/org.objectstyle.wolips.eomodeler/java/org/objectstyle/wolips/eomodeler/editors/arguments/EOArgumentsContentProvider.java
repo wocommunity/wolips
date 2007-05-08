@@ -53,8 +53,8 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.objectstyle.wolips.eomodeler.model.EOArgument;
-import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
+import org.objectstyle.wolips.eomodeler.core.model.EOArgument;
+import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
 
 public class EOArgumentsContentProvider implements IStructuredContentProvider {
 	public Object[] getElements(Object _inputElement) {

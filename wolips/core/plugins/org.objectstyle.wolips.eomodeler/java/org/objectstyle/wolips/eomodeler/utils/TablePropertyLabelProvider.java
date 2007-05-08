@@ -55,8 +55,8 @@ import java.util.Map;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.objectstyle.wolips.eomodeler.kvc.CachingKeyPath;
-import org.objectstyle.wolips.eomodeler.kvc.KeyPath;
+import org.objectstyle.wolips.eomodeler.core.kvc.CachingKeyPath;
+import org.objectstyle.wolips.eomodeler.core.kvc.KeyPath;
 
 public class TablePropertyLabelProvider implements ITableLabelProvider {
 	private String[] myColumnProperties;

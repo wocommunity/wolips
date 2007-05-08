@@ -1,7 +1,7 @@
 package org.objectstyle.wolips.eomodeler.editors.relationship;
 
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.EOJoin;
+import org.objectstyle.wolips.eomodeler.core.model.EOJoin;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 
 public class EOJoinsLabelProvider extends TablePropertyLabelProvider {

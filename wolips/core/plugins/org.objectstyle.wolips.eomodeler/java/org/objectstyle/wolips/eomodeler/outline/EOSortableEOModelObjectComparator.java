@@ -2,7 +2,7 @@ package org.objectstyle.wolips.eomodeler.outline;
 
 import java.util.Comparator;
 
-import org.objectstyle.wolips.eomodeler.model.ISortableEOModelObject;
+import org.objectstyle.wolips.eomodeler.core.model.ISortableEOModelObject;
 
 public class EOSortableEOModelObjectComparator implements Comparator<Object> {
 	public int compare(Object _o1, Object _o2) {

@@ -55,9 +55,9 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.objectstyle.wolips.eomodeler.Activator;
-import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
-import org.objectstyle.wolips.eomodeler.model.EOArgument;
-import org.objectstyle.wolips.eomodeler.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.core.model.AbstractEOArgument;
+import org.objectstyle.wolips.eomodeler.core.model.EOArgument;
+import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 
 public class EOArgumentsLabelProvider extends TablePropertyLabelProvider implements ITableColorProvider, ITableFontProvider {

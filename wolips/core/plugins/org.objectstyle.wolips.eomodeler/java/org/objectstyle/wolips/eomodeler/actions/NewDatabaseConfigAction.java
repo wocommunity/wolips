@@ -52,10 +52,10 @@ package org.objectstyle.wolips.eomodeler.actions;
 import java.util.Set;
 
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
-import org.objectstyle.wolips.eomodeler.model.EOModel;
-import org.objectstyle.wolips.eomodeler.model.EOModelException;
-import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
+import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
+import org.objectstyle.wolips.eomodeler.core.model.EOModel;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 
 public class NewDatabaseConfigAction extends AbstractNewObjectAction<EOModel, EODatabaseConfig> {
 	public NewDatabaseConfigAction() {

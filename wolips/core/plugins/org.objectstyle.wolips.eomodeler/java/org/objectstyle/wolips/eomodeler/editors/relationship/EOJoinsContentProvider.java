@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.objectstyle.wolips.eomodeler.model.EOJoin;
-import org.objectstyle.wolips.eomodeler.model.EORelationship;
+import org.objectstyle.wolips.eomodeler.core.model.EOJoin;
+import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 
 public class EOJoinsContentProvider implements IStructuredContentProvider {
 	public Object[] getElements(Object _inputElement) {

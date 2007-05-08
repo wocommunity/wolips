@@ -58,8 +58,8 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.objectstyle.wolips.eomodeler.kvc.CachingKeyPath;
-import org.objectstyle.wolips.eomodeler.kvc.KeyPath;
+import org.objectstyle.wolips.eomodeler.core.kvc.CachingKeyPath;
+import org.objectstyle.wolips.eomodeler.core.kvc.KeyPath;
 
 public class TablePropertyViewerSorter extends ViewerSorter {
 	private String[] myColumnProperties;

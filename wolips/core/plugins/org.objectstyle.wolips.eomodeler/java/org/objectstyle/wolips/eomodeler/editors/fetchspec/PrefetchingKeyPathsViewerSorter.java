@@ -1,6 +1,6 @@
 package org.objectstyle.wolips.eomodeler.editors.fetchspec;
 
-import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
+import org.objectstyle.wolips.eomodeler.core.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
 
 public class PrefetchingKeyPathsViewerSorter extends TablePropertyViewerSorter {

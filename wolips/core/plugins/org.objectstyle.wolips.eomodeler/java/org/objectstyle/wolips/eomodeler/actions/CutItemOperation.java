@@ -9,9 +9,9 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.objectstyle.wolips.eomodeler.model.EOModelException;
-import org.objectstyle.wolips.eomodeler.model.EOModelObject;
-import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelObject;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 
 public class CutItemOperation extends AbstractOperation {
 	private EOModelObject _parent;

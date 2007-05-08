@@ -16,7 +16,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 
 public class EOModelErrorDialog extends Dialog {
 	private Set myFailures;

@@ -51,7 +51,7 @@ package org.objectstyle.wolips.eomodeler.editors.databaseConfig;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
+import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
 
 public class ScopeContentProvider implements IStructuredContentProvider {
 	public Object[] getElements(Object inputElement) {

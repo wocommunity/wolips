@@ -78,12 +78,12 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.EOModelParserDataStructureFactory;
-import org.objectstyle.wolips.eomodeler.model.IUserInfoable;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelParserDataStructureFactory;
+import org.objectstyle.wolips.eomodeler.core.model.IUserInfoable;
+import org.objectstyle.wolips.eomodeler.core.utils.NotificationMap;
+import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.utils.AddRemoveButtonGroup;
-import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
-import org.objectstyle.wolips.eomodeler.wocompat.PropertyListSerialization;
 
 public class UserInfoPropertySection extends AbstractPropertySection {
 	public static final String KEY = "key";

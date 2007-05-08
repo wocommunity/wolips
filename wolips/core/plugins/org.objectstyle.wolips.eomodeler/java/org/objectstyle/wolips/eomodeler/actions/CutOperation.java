@@ -11,8 +11,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.objectstyle.wolips.eomodeler.model.EOModelObject;
-import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelObject;
+import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 
 public class CutOperation extends SimpleCompositeOperation {
 	private List<EOModelObject> _clipboardObjects;

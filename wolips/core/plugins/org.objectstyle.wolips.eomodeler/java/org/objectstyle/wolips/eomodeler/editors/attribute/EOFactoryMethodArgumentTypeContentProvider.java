@@ -53,7 +53,7 @@ import java.util.LinkedList;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.objectstyle.wolips.eomodeler.model.EOFactoryMethodArgumentType;
+import org.objectstyle.wolips.eomodeler.core.model.EOFactoryMethodArgumentType;
 
 public class EOFactoryMethodArgumentTypeContentProvider implements IStructuredContentProvider {
 	public static String BLANK_ARGUMENT_TYPE = "";

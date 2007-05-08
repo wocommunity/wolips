@@ -50,9 +50,9 @@
 package org.objectstyle.wolips.eomodeler.editors.arguments;
 
 import org.eclipse.jface.viewers.TableViewer;
-import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
-import org.objectstyle.wolips.eomodeler.model.EOArgument;
-import org.objectstyle.wolips.eomodeler.model.EOArgumentDirection;
+import org.objectstyle.wolips.eomodeler.core.model.AbstractEOArgument;
+import org.objectstyle.wolips.eomodeler.core.model.EOArgument;
+import org.objectstyle.wolips.eomodeler.core.model.EOArgumentDirection;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyCellModifier;
 
 public class EOArgumentsCellModifier extends TablePropertyCellModifier {

@@ -71,8 +71,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.EORelationship;
-import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
+import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
+import org.objectstyle.wolips.eomodeler.core.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
 public class EORelationshipAdvancedEditorSection extends AbstractPropertySection {

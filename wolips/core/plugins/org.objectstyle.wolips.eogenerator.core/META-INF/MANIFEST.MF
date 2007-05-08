@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: EOGenerator Core
+Bundle-SymbolicName: org.objectstyle.wolips.eogenerator.core; singleton:=true
+Bundle-Version: 1.0.6
+Bundle-Activator: org.objectstyle.wolips.eogenerator.core.Activator
+Bundle-Vendor: objectstyle.org
+Bundle-Localization: plugin
+Require-Bundle: org.objectstyle.wolips.preferences,
+ org.objectstyle.wolips.locate,
+ org.objectstyle.wolips,
+ org.objectstyle.wolips.baseforplugins,
+ org.eclipse.core.resources
+Eclipse-LazyStart: true
+Export-Package: org.objectstyle.wolips.eogenerator.core,
+ org.objectstyle.wolips.eogenerator.core.builder,
+ org.objectstyle.wolips.eogenerator.core.model

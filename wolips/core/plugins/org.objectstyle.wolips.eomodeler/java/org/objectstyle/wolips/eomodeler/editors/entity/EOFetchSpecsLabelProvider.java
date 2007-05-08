@@ -51,7 +51,7 @@ package org.objectstyle.wolips.eomodeler.editors.entity;
 
 import org.eclipse.swt.graphics.Image;
 import org.objectstyle.wolips.eomodeler.Activator;
-import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
+import org.objectstyle.wolips.eomodeler.core.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 
 public class EOFetchSpecsLabelProvider extends TablePropertyLabelProvider {

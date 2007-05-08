@@ -76,6 +76,9 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.core.model.AbstractEOArgument;
+import org.objectstyle.wolips.eomodeler.core.model.EODataType;
+import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.editors.dataType.CustomDataTypePanel;
 import org.objectstyle.wolips.eomodeler.editors.dataType.DataDataTypePanel;
 import org.objectstyle.wolips.eomodeler.editors.dataType.DateDataTypePanel;
@@ -84,11 +87,8 @@ import org.objectstyle.wolips.eomodeler.editors.dataType.DoubleDataTypePanel;
 import org.objectstyle.wolips.eomodeler.editors.dataType.IDataTypePanel;
 import org.objectstyle.wolips.eomodeler.editors.dataType.IntegerDataTypePanel;
 import org.objectstyle.wolips.eomodeler.editors.dataType.StringDataTypePanel;
-import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
-import org.objectstyle.wolips.eomodeler.model.EODataType;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
-import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
 public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPropertySection {
 	private static String COLUMN = "Column";

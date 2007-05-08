@@ -64,8 +64,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
-import org.objectstyle.wolips.eomodeler.model.EOModelObject;
-import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelObject;
+import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class PasteAction extends Action implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {

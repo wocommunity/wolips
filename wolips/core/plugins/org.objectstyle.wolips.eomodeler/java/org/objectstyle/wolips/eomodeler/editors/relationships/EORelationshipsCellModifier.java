@@ -50,7 +50,7 @@
 package org.objectstyle.wolips.eomodeler.editors.relationships;
 
 import org.eclipse.jface.viewers.TableViewer;
-import org.objectstyle.wolips.eomodeler.model.EORelationship;
+import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyCellModifier;
 
 public class EORelationshipsCellModifier extends TablePropertyCellModifier {

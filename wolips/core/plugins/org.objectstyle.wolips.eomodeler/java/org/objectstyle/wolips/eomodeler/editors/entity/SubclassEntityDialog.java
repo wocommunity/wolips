@@ -67,9 +67,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.model.EOModel;
-import org.objectstyle.wolips.eomodeler.model.InheritanceType;
+import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.core.model.EOModel;
+import org.objectstyle.wolips.eomodeler.core.model.InheritanceType;
 
 public class SubclassEntityDialog extends Dialog {
 	private EOModel myModel;

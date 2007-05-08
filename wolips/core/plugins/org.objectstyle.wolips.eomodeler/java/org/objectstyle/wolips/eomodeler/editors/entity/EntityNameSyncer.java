@@ -3,8 +3,8 @@ package org.objectstyle.wolips.eomodeler.editors.entity;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
+import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
 
 public class EntityNameSyncer implements PropertyChangeListener {
 

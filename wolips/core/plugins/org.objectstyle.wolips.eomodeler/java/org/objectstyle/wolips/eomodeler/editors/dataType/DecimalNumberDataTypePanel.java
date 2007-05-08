@@ -58,7 +58,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
+import org.objectstyle.wolips.eomodeler.core.model.AbstractEOArgument;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
 public class DecimalNumberDataTypePanel extends Composite implements IDataTypePanel {

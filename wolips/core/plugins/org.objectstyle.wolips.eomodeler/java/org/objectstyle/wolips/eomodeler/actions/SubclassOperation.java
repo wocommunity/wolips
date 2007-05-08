@@ -9,10 +9,10 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.model.EOModelException;
-import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
-import org.objectstyle.wolips.eomodeler.model.InheritanceType;
+import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
+import org.objectstyle.wolips.eomodeler.core.model.InheritanceType;
 
 public class SubclassOperation extends AbstractOperation {
 	private EOEntity _parentEntity;

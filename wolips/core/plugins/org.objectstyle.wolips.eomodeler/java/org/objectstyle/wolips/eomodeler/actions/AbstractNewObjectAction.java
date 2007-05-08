@@ -70,10 +70,10 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
-import org.objectstyle.wolips.eomodeler.model.EOModelException;
-import org.objectstyle.wolips.eomodeler.model.EOModelObject;
-import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
-import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelObject;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
+import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public abstract class AbstractNewObjectAction<T extends EOModelObject, U extends EOModelObject> implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {

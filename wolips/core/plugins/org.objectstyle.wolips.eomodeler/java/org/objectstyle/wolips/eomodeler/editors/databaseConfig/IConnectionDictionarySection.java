@@ -49,7 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.databaseConfig;
 
-import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
+import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
 
 public interface IConnectionDictionarySection {
 	public void setInput(EODatabaseConfig databaseContext);

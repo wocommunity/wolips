@@ -136,7 +136,21 @@
          unpack="false"/>
 
    <plugin
+         id="org.objectstyle.wolips.eogenerator.core"
+         download-size="68"
+         install-size="68"
+         version="1.0.6"
+         unpack="false"/>
+
+   <plugin
          id="org.objectstyle.wolips.eogenerator.ui"
+         download-size="68"
+         install-size="68"
+         version="1.0.6"
+         unpack="false"/>
+
+   <plugin
+         id="org.objectstyle.wolips.eogenerator.jdt"
          download-size="68"
          install-size="68"
          version="1.0.6"
@@ -324,7 +338,21 @@
          unpack="false"/>
 
    <plugin
+         id="org.objectstyle.wolips.eomodeler.core"
+         download-size="144"
+         install-size="144"
+         version="1.0.6"
+         unpack="false"/>
+
+   <plugin
          id="org.objectstyle.wolips.eomodeler"
+         download-size="144"
+         install-size="144"
+         version="1.0.6"
+         unpack="false"/>
+
+   <plugin
+         id="org.objectstyle.wolips.eomodeler.eclipse"
          download-size="144"
          install-size="144"
          version="1.0.6"

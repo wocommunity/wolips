@@ -53,7 +53,7 @@ import java.util.Collection;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
+import org.objectstyle.wolips.eomodeler.core.model.EOFetchSpecification;
 
 public class RawRowKeyPathsContentProvider implements IStructuredContentProvider {
 	public Object[] getElements(Object _inputElement) {

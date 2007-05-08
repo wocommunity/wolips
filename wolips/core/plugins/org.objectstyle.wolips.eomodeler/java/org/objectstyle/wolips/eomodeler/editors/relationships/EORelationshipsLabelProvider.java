@@ -58,10 +58,10 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.objectstyle.wolips.eomodeler.Activator;
-import org.objectstyle.wolips.eomodeler.model.EOAttribute;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.model.EOJoin;
-import org.objectstyle.wolips.eomodeler.model.EORelationship;
+import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.core.model.EOJoin;
+import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 
 public class EORelationshipsLabelProvider extends TablePropertyLabelProvider implements ITableColorProvider, ITableFontProvider {

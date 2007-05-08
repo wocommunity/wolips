@@ -61,8 +61,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.AbstractEOAttributePath;
-import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
+import org.objectstyle.wolips.eomodeler.core.model.AbstractEOAttributePath;
+import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class FlattenAction implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
