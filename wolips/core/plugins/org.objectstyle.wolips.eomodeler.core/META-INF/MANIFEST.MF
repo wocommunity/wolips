@@ -18,6 +18,5 @@ Export-Package: org.objectstyle.wolips.eomodeler.core,
  org.objectstyle.wolips.eomodeler.core.sql,
  org.objectstyle.wolips.eomodeler.core.utils,
  org.objectstyle.wolips.eomodeler.core.wocompat,
- org.objectstyle.wolips.eomodeler.core.wocompat.parser,
- org.objectstyle.wolips.eomodeler.sql
+ org.objectstyle.wolips.eomodeler.core.wocompat.parser
 Bundle-ClassPath: .
