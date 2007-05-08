@@ -55,7 +55,8 @@
  */
 package org.objectstyle.wolips.core.resources.types.api;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.w3c.dom.Element;
@@ -70,7 +71,7 @@ public class Wo extends AbstractApiModelElement {
 	protected Wo(Element element, ApiModel apiModel) {
 		super(element, apiModel);
 	}
-	
+
 	public ApiModel getModel() {
 		return apiModel;
 	}
@@ -99,31 +100,41 @@ public class Wo extends AbstractApiModelElement {
 		}
 	}
 
+	public Binding[] getRequiredBindings() {
+		List<Binding> requiredBindings = new LinkedList<Binding>();
+		for (Binding binding : getBindings()) {
+			if (binding.isRequired()) {
+				requiredBindings.add(binding);
+			}
+		}
+		return requiredBindings.toArray(new Binding[requiredBindings.size()]);
+	}
+
 	public Binding[] getBindings() {
 		NodeList bindingElements = element.getElementsByTagName(Binding.BINDING);
-		ArrayList bindings = new ArrayList();
+		List<Binding> bindings = new LinkedList<Binding>();
 		for (int i = 0; i < bindingElements.getLength(); i++) {
 			Element bindingElement = (Element) bindingElements.item(i);
 			Binding binding = new Binding(bindingElement, apiModel, this);
 			bindings.add(binding);
 		}
-		return (Binding[]) bindings.toArray(new Binding[bindings.size()]);
+		return bindings.toArray(new Binding[bindings.size()]);
 	}
 
 	public Validation[] getValidations() {
 		NodeList validationElements = element.getElementsByTagName(Validation.VALIDATION);
-		ArrayList validations = new ArrayList();
+		List<Validation> validations = new LinkedList<Validation>();
 		for (int i = 0; i < validationElements.getLength(); i++) {
 			Element validationElement = (Element) validationElements.item(i);
 			Validation validation = new Validation(validationElement, apiModel);
 			validations.add(validation);
 		}
-		return (Validation[]) validations.toArray(new Validation[validations.size()]);
+		return validations.toArray(new Validation[validations.size()]);
 	}
 
 	public Validation[] getAffectedValidations(String bindingName) {
 		Validation[] validations = this.getValidations();
-		ArrayList validationsList = new ArrayList();
+		List<Validation> validationsList = new LinkedList<Validation>();
 		for (int i = 0; i < validations.length; i++) {
 			Validation validation = validations[i];
 			if (validation.isAffectedByBindingNamed(bindingName)) {
@@ -131,19 +142,19 @@ public class Wo extends AbstractApiModelElement {
 			}
 
 		}
-		return (Validation[]) validationsList.toArray(new Validation[validationsList.size()]);
+		return validationsList.toArray(new Validation[validationsList.size()]);
 	}
 
 	public Validation[] getFailedValidations(Map _bindings) {
 		Validation[] validations = this.getValidations();
-		ArrayList validationsList = new ArrayList();
+		List<Validation> validationsList = new LinkedList<Validation>();
 		for (int i = 0; i < validations.length; i++) {
 			Validation validation = validations[i];
 			if (validation.evaluate(_bindings)) {
 				validationsList.add(validation);
 			}
 		}
-		return (Validation[]) validationsList.toArray(new Validation[validationsList.size()]);
+		return validationsList.toArray(new Validation[validationsList.size()]);
 	}
 
 	public Binding getBinding(String name) {
@@ -157,11 +168,11 @@ public class Wo extends AbstractApiModelElement {
 		}
 		return matchingBinding;
 	}
-	
+
 	public boolean containsBinding(String name) {
 		return getBinding(name) == null;
 	}
-	
+
 	public Binding createBinding(String name) {
 		Binding binding = getBinding(name);
 		if (binding == null) {
@@ -180,7 +191,7 @@ public class Wo extends AbstractApiModelElement {
 			removeBinding(binding);
 		}
 	}
-	
+
 	public void removeBinding(Binding binding) {
 		Validation[] validations = this.getAffectedValidations(binding.getName());
 		for (int i = 0; i < validations.length; i++) {

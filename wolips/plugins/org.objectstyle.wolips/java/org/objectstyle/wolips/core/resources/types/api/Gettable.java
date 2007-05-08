@@ -60,7 +60,6 @@ import java.util.Map;
 import org.w3c.dom.Element;
 
 public class Gettable extends AbstractUn {
-
 	protected final static String GETTABLE = "gettable";
 
 	protected Gettable(Element element, ApiModel apiModel) {

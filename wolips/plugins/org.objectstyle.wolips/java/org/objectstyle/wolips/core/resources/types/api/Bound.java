@@ -60,7 +60,6 @@ import java.util.Map;
 import org.w3c.dom.Element;
 
 public class Bound extends AbstractUn {
-
 	protected final static String BOUND = "bound";
 
 	protected Bound(Element element, ApiModel apiModel) {

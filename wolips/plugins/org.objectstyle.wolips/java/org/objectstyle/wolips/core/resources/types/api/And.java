@@ -66,7 +66,7 @@ public class And extends AbstractValidationChild {
 	protected And(Element element, ApiModel apiModel) {
 		super(element, apiModel);
 	}
-
+	
 	public boolean evaluate(Map _bindings) {
 		boolean evaluation = true;
 		IValidation[] validationChildren = getValidationChildren();
