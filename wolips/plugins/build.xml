@@ -69,8 +69,12 @@
 		<ant dir="org.objectstyle.wolips.targetbuilder" target="dist" />
 		<ant dir="org.objectstyle.wolips.team" target="dist" />
 		<ant dir="org.objectstyle.wolips.templateengine" target="dist" />
+		<ant dir="org.objectstyle.wolips.eogenerator.core" target="dist" />
+		<ant dir="org.objectstyle.wolips.eogenerator.jdt" target="dist" />
 		<ant dir="org.objectstyle.wolips.eogenerator.ui" target="dist" />
+		<ant dir="org.objectstyle.wolips.eomodeler.core" target="dist" />
 		<ant dir="org.objectstyle.wolips.eomodeler" target="dist" />
+		<ant dir="org.objectstyle.wolips.eomodeler.eclipse" target="dist" />
 		<ant dir="org.objectstyle.wolips.wizards" target="dist" />
 		<ant dir="org.objectstyle.wolips.editors" target="dist" />
 		<ant dir="org.objectstyle.wolips.components" target="dist" />
