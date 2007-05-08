@@ -261,13 +261,15 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 		return editorPart;
 	}
 
+	public HtmlWodTab htmlWodTab() { return htmlWodTabs[0]; }
+	
 	public void switchToHtml() {
-		this.htmlWodTabs[0].setHtmlActive();
+		this.htmlWodTab().setHtmlActive();
 		switchToPage(0);
 	}
 
 	public void switchToWod() {
-		this.htmlWodTabs[0].setWodActive();
+		this.htmlWodTab().setWodActive();
 		switchToPage(0);
 	}
 

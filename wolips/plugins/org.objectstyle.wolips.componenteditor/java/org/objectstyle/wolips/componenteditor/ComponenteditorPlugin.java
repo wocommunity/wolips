@@ -44,6 +44,7 @@
 package org.objectstyle.wolips.componenteditor;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
@@ -55,6 +56,11 @@ import org.osgi.framework.BundleContext;
  * @author mike
  */
 public class ComponenteditorPlugin extends AbstractBaseUIActivator {
+	
+	public static final String COMPONENT_WOCONDITIONAL_ICON = "conditional";
+	
+	public static final String PLUGIN_ID = "org.objectstyle.wolips.componenteditor";
+	
 	// The shared instance.
 	private static ComponenteditorPlugin plugin;
 
@@ -65,6 +71,12 @@ public class ComponenteditorPlugin extends AbstractBaseUIActivator {
 		super();
 		plugin = this;
 	}
+	
+	protected void initializeImageRegistry(ImageRegistry _reg) {
+		super.initializeImageRegistry(_reg);
+		_reg.put(ComponenteditorPlugin.COMPONENT_WOCONDITIONAL_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(ComponenteditorPlugin.PLUGIN_ID, "/icons/conditional.png"));
+	}
+
 
 	/**
 	 * This method is called upon plug-in activation
@@ -97,7 +109,7 @@ public class ComponenteditorPlugin extends AbstractBaseUIActivator {
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin("org.objectstyle.wolips.componenteditor", path);
+		return AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
 
 	public Image getImage(String key) {
