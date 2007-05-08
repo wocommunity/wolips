@@ -47,6 +47,7 @@ import org.objectstyle.wolips.wodclipse.core.model.HtmlElementName;
 import org.objectstyle.wolips.wodclipse.core.model.HtmlProblem;
 import org.objectstyle.wolips.wodclipse.core.model.IWodModel;
 import org.objectstyle.wolips.wodclipse.core.model.WodProblem;
+import org.objectstyle.wolips.wodclipse.core.preferences.BindingValidationRule;
 import org.objectstyle.wolips.wodclipse.core.preferences.PreferenceConstants;
 import org.objectstyle.wolips.wodclipse.core.preferences.TagShortcut;
 import org.objectstyle.wolips.wodclipse.core.util.WodApiUtils;
@@ -96,7 +97,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
       woFolder = (IContainer) resource;
     }
     else {
-      woFolder = (IContainer) resource.getParent();
+      woFolder = resource.getParent();
     }
     String key = woFolder.getLocation().toPortableString();
     WodParserCache cache = (WodParserCache) _parsers.get(key);
@@ -375,5 +376,9 @@ public class WodParserCache implements FuzzyXMLErrorListener {
 
   public List<TagShortcut> getTagShortcuts() {
     return _context.getTagShortcuts();
+  }
+
+  public List<BindingValidationRule> getBindingValidationRules() {
+    return _context.getBindingValidationRules();
   }
 }

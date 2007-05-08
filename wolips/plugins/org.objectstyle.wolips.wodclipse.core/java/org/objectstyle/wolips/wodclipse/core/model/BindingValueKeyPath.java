@@ -23,6 +23,8 @@ public class BindingValueKeyPath {
 
   private String _validKeyPath;
 
+  private String _operator;
+
   private String _invalidKey;
 
   private boolean _valid;
@@ -61,19 +63,27 @@ public class BindingValueKeyPath {
     }
 
     if (isKeyPath) {
-      String[] bindingKeyNames;
+      String partialKeyPath;
       int pipeIndex = keyPath.indexOf('|');
       if (pipeIndex == -1) {
-        bindingKeyNames = keyPath.split("\\.");
+        partialKeyPath = keyPath;
       }
       else {
-        bindingKeyNames = keyPath.substring(0, pipeIndex).split("\\.");
+        partialKeyPath = keyPath.substring(0, pipeIndex);
         _helperFunction = keyPath.substring(pipeIndex + 1);
       }
 
+      String[] bindingKeyNames;
+      int atIndex = partialKeyPath.indexOf('@');
+      if (atIndex != -1) {
+        _operator = partialKeyPath.substring(atIndex + 1);
+        partialKeyPath = partialKeyPath.substring(0, atIndex);
+      }
+      bindingKeyNames = partialKeyPath.split("\\.");
+
       // Split tosses empty tokens, so we check to see if we're on the last
       // "." and fake an empty token in the list
-      if (keyPath.length() > 0 && keyPath.charAt(keyPath.length() - 1) == '.') {
+      if (keyPath.length() > 0 && keyPath.charAt(keyPath.length() - 1) == '.' && _operator == null && _helperFunction == null) {
         String[] bindingKeyNamesWithFinalBlank = new String[bindingKeyNames.length + 1];
         System.arraycopy(bindingKeyNames, 0, bindingKeyNamesWithFinalBlank, 0, bindingKeyNames.length);
         bindingKeyNamesWithFinalBlank[bindingKeyNamesWithFinalBlank.length - 1] = "";
@@ -88,33 +98,26 @@ public class BindingValueKeyPath {
       List<BindingValueKey> bindingKeysList = new LinkedList<BindingValueKey>();
       for (int keyNum = 0; currentType != null && keyNum < _bindingKeyNames.length; keyNum++) {
         // we can't verify helper functions or @arrayOps
-        if (_bindingKeyNames[keyNum].startsWith("@") || _bindingKeyNames[keyNum].startsWith("|")) {
-          _ambiguous = true;
-          invalidKeyNum = keyNum;
-          currentType = null;
+        List bindingKeys = WodReflectionUtils.getBindingKeys(_javaProject, currentType, _bindingKeyNames[keyNum], true, WodReflectionUtils.ACCESSORS_OR_VOID, cache);
+        if (!bindingKeys.isEmpty()) {
+          // NTS: Deal with multiple matches ...
+          BindingValueKey bindingKey = (BindingValueKey) bindingKeys.get(0);
+          bindingKeysList.add(bindingKey);
+          currentType = bindingKey.getNextType();
         }
         else {
-          List bindingKeys = WodReflectionUtils.getBindingKeys(_javaProject, currentType, _bindingKeyNames[keyNum], true, WodReflectionUtils.ACCESSORS_OR_VOID, cache);
-          if (!bindingKeys.isEmpty()) {
-            // NTS: Deal with multiple matches ...
-            BindingValueKey bindingKey = (BindingValueKey) bindingKeys.get(0);
-            bindingKeysList.add(bindingKey);
-            currentType = bindingKey.getNextType();
+          if (WodReflectionUtils.isNSKeyValueCoding(currentType)) {
+            _nsKVC = true;
+            if (WodReflectionUtils.isNSCollection(currentType)) {
+              _nsCollection = true;
+            }
+            _ambiguous = true;
           }
           else {
-            if (WodReflectionUtils.isNSKeyValueCoding(currentType)) {
-              _nsKVC = true;
-              if (WodReflectionUtils.isNSCollection(currentType)) {
-            	  _nsCollection = true;
-              }
-              _ambiguous = true;
-            }
-            else {
-              _valid = false;
-            }
-            invalidKeyNum = keyNum;
-            currentType = null;
+            _valid = false;
           }
+          invalidKeyNum = keyNum;
+          currentType = null;
         }
       }
 
@@ -141,6 +144,10 @@ public class BindingValueKeyPath {
     }
   }
 
+  public String getOperator() {
+    return _operator;
+  }
+
   public boolean isNSKeyValueCoding() {
     return _nsKVC;
   }
@@ -148,7 +155,7 @@ public class BindingValueKeyPath {
   public boolean isNSCollection() {
     return _nsCollection;
   }
-  
+
   public String getValidKeyPath() {
     return _validKeyPath;
   }
@@ -227,29 +234,37 @@ public class BindingValueKeyPath {
 
   public List<BindingValueKey> getPartialMatchesForLastBindingKey() throws JavaModelException {
     List<BindingValueKey> bindingKeysList = null;
-    String partialBindingKeyName;
-    BindingValueKey lastBindingKey;
-    if (_bindingKeyNames.length == _bindingKeys.length) {
-      partialBindingKeyName = getLastBindingKeyName();
-      lastBindingKey = getNextToLastBindingKey();
+    if (_helperFunction != null) {
+      // if there's a helper function, we can't do completion
+    }
+    else if (_operator != null) {
+      // if there's an operator, we can't do completion
     }
     else {
-      partialBindingKeyName = getLastBindingKeyName();
-      lastBindingKey = getLastBindingKey();
-    }
+      String partialBindingKeyName;
+      BindingValueKey lastBindingKey;
+      if (_bindingKeyNames.length == _bindingKeys.length) {
+        partialBindingKeyName = getLastBindingKeyName();
+        lastBindingKey = getNextToLastBindingKey();
+      }
+      else {
+        partialBindingKeyName = getLastBindingKeyName();
+        lastBindingKey = getLastBindingKey();
+      }
 
-    IType lastType;
-    if (lastBindingKey == null) {
-      lastType = _contextType;
-    }
-    else {
-      lastType = lastBindingKey.getNextType();
-    }
+      IType lastType;
+      if (lastBindingKey == null) {
+        lastType = _contextType;
+      }
+      else {
+        lastType = lastBindingKey.getNextType();
+      }
 
-    if (lastType != null) {
-      // Jump forward to the last '.' and look for valid "get" method
-      // completion proposals based on the partial token
-      bindingKeysList = WodReflectionUtils.getBindingKeys(_javaProject, lastType, partialBindingKeyName, false, WodReflectionUtils.ACCESSORS_ONLY, _cache);
+      if (lastType != null) {
+        // Jump forward to the last '.' and look for valid "get" method
+        // completion proposals based on the partial token
+        bindingKeysList = WodReflectionUtils.getBindingKeys(_javaProject, lastType, partialBindingKeyName, false, WodReflectionUtils.ACCESSORS_ONLY, _cache);
+      }
     }
     return bindingKeysList;
   }

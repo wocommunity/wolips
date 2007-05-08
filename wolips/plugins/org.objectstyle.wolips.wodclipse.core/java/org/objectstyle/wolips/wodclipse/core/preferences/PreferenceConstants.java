@@ -83,9 +83,13 @@ public class PreferenceConstants {
 
   public static final String ERROR_ON_HTML_ERRORS_KEY = "ErrorOnHtmlErrorsKey";
 
+  public static final String WARN_ON_OPERATOR_KEY = "WarnOnOperatorKey";
+
   public static final String WARN_ON_HELPER_FUNCTION_KEY = "WarnOnHelperFunctionKey";
 
   public static final String VALIDATE_TEMPLATES_KEY = "ValidateTemplatesKey";
 
   public static final String TAG_SHORTCUTS_KEY = "TagShortcuts";
+
+  public static final String BINDING_VALIDATION_RULES_KEY = "BindingValidationRules";
 }
