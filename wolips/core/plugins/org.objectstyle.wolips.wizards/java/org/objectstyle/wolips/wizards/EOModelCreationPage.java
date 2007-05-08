@@ -59,7 +59,10 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -82,13 +85,13 @@ import org.objectstyle.wolips.variables.VariablesPlugin;
  * @author uli The one and only page in the eo model creation wizard
  */
 public class EOModelCreationPage extends WizardNewWOResourcePage {
-	private HashMap availableAdaptors;
+	private Map<Button, String> _availableAdaptors;
 
-	private IResource resourceToReveal;
+	private IResource _resourceToReveal;
 
-	private Button createEOGeneratorFileButton;
+	private Button _createEOGeneratorFileButton;
 	
-	private Button noneAdaptorButton;
+	private Button _noneAdaptorButton;
 
 	// widgets
 	// private Button adaptorJDBCCheckbox;
@@ -129,9 +132,9 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 		createAvailableAdaptorButtons(group);
 		new Label(composite, SWT.NONE); // vertical spacer
 
-		createEOGeneratorFileButton = new Button(composite, SWT.CHECK);
-		createEOGeneratorFileButton.setText("Create EOGenerator File?");
-		createEOGeneratorFileButton.setSelection(true);
+		_createEOGeneratorFileButton = new Button(composite, SWT.CHECK);
+		_createEOGeneratorFileButton.setText("Create EOGenerator File?");
+		_createEOGeneratorFileButton.setSelection(true);
 
 		setPageComplete(validatePage());
 	}
@@ -150,14 +153,14 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 		IProject actualProject = ResourcesPlugin.getWorkspace().getRoot().getProject(getContainerFullPath().segment(0));
 		// determine adaptor
 		String adaptorName = "";
-		boolean createEOGeneratorFile = createEOGeneratorFileButton.getSelection();
+		boolean createEOGeneratorFile = _createEOGeneratorFileButton.getSelection();
 		Button currentButton;
-		Iterator buttonIterator = availableAdaptors.keySet().iterator();
+		Iterator buttonIterator = _availableAdaptors.keySet().iterator();
 		while (buttonIterator.hasNext()) {
 			currentButton = (Button) buttonIterator.next();
 			if (currentButton.getSelection()) {
-				if (currentButton != noneAdaptorButton) {
-					adaptorName = (String) availableAdaptors.get(currentButton);
+				if (currentButton != _noneAdaptorButton) {
+					adaptorName = _availableAdaptors.get(currentButton);
 				}
 				break;
 			}
@@ -195,19 +198,19 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 		File systemFrameworkDir = new File(VariablesPlugin.getDefault().getSystemRoot().append("Library").append("Frameworks").toOSString());
 		AdaptorFilter adaptorFilter = new AdaptorFilter();
 		systemFrameworkDir.listFiles(adaptorFilter);
-		availableAdaptors = new HashMap(adaptorFilter.getAdaptorNames().size() + 1);
+		_availableAdaptors = new HashMap<Button, String>(adaptorFilter.getAdaptorNames().size() + 1);
 		String buttonText;
 		// add none adaptor entry
-		noneAdaptorButton = new Button(row, SWT.RADIO);
+		_noneAdaptorButton = new Button(row, SWT.RADIO);
 		buttonText = "None";
-		noneAdaptorButton.setText(buttonText);
-		noneAdaptorButton.setSelection(true);
-		availableAdaptors.put(noneAdaptorButton, "None");
+		_noneAdaptorButton.setText(buttonText);
+		_noneAdaptorButton.setSelection(true);
+		_availableAdaptors.put(_noneAdaptorButton, "None");
 		for (int i = 0; i < adaptorFilter.getAdaptorNames().size(); i++) {
 			Button currentAdaptorButton = new Button(row, SWT.RADIO);
-			buttonText = (String) adaptorFilter.getAdaptorNames().elementAt(i);
+			buttonText = adaptorFilter.getAdaptorNames().get(i);
 			currentAdaptorButton.setText(buttonText);
-			availableAdaptors.put(currentAdaptorButton, buttonText);
+			_availableAdaptors.put(currentAdaptorButton, buttonText);
 		}
 	}
 
@@ -223,11 +226,11 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 
 		private static final String ADAPTOR_POSTFIX = "Adaptor.framework";
 
-		private Vector adaptorNames;
+		private List<String> adaptorNames;
 
 		public AdaptorFilter() {
 			super();
-			adaptorNames = new Vector();
+			adaptorNames = new LinkedList<String>();
 		}
 
 		public boolean accept(File dir, String name) {
@@ -245,16 +248,16 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 		 * 
 		 * @return Vector
 		 */
-		public Vector getAdaptorNames() {
+		public List<String> getAdaptorNames() {
 			return adaptorNames;
 		}
 	}
 
 	public IResource getResourceToReveal() {
-		return resourceToReveal;
+		return _resourceToReveal;
 	}
 
 	public void setResourceToReveal(IResource resourceToReveal) {
-		this.resourceToReveal = resourceToReveal;
+		this._resourceToReveal = resourceToReveal;
 	}
 }

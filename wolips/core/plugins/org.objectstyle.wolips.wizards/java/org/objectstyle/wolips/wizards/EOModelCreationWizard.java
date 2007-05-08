@@ -65,26 +65,26 @@ import org.eclipse.ui.IWorkbench;
  * @author uli
  */
 public class EOModelCreationWizard extends Wizard implements INewWizard {
-	private EOModelCreationPage mainPage;
+	private EOModelCreationPage _mainPage;
 
 	public EOModelCreationWizard() {
 		super();
 	}
 
 	public void addPages() {
-		addPage(mainPage);
+		addPage(_mainPage);
 	}
 
 	public boolean performFinish() {
-		boolean returnValue = mainPage.createEOModel();
+		boolean returnValue = _mainPage.createEOModel();
 		if (returnValue) {
-			WizardsPlugin.selectAndReveal(mainPage.getResourceToReveal());
+			WizardsPlugin.selectAndReveal(_mainPage.getResourceToReveal());
 		}
 		return returnValue;
 	}
 
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		mainPage = new EOModelCreationPage(selection);
+		_mainPage = new EOModelCreationPage(selection);
 		setWindowTitle(Messages.getString("EOModelCreationWizard.title"));
 		setDefaultPageImageDescriptor(WizardsPlugin.WOCOMPONENT_WIZARD_BANNER());
 	}
