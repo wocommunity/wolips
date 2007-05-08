@@ -43,6 +43,8 @@
  */
 package org.objectstyle.wolips.wodclipse.core.model;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.List;
 
 import org.eclipse.jdt.core.IJavaProject;
@@ -70,4 +72,8 @@ public interface IWodBinding extends IWodUnit {
   public Position getValuePosition();
 
   public void fillInBindingProblems(IJavaProject javaProject, IType javaFileType, List<WodProblem> problems, WodParserCache cache) throws JavaModelException;
+
+  public void writeInlineFormat(Writer writer) throws IOException;
+
+  public void writeWodFormat(Writer writer) throws IOException;
 }

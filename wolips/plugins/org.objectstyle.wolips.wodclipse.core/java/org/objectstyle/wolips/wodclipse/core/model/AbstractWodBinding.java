@@ -43,6 +43,8 @@
  */
 package org.objectstyle.wolips.wodclipse.core.model;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -72,6 +74,33 @@ public abstract class AbstractWodBinding implements IWodBinding {
     return _validate;
   }
 
+  public void writeWodFormat(Writer writer) throws IOException {
+    writer.write("  ");
+    writer.write(getName());
+    writer.write(" = ");
+    writer.write(getValue());
+    writer.write(";");
+  }
+
+  public void writeInlineFormat(Writer writer) throws IOException {
+    writer.write(" ");
+    writer.write(getName());
+    writer.write(" = ");
+    if (isLiteral()) {
+      writer.write(getValue());
+    }
+    else if (isOGNL()) {
+      writer.write("\"");
+      writer.write(getValue());
+      writer.write("\"");
+    }
+    else {
+      writer.write("\"$");
+      writer.write(getValue());
+      writer.write("\"");
+    }
+  }
+  
   public boolean isKeyPath() {
     String bindingValue = getValue();
     boolean isBindingValueKeyPath;
@@ -85,6 +114,11 @@ public abstract class AbstractWodBinding implements IWodBinding {
     return isBindingValueKeyPath;
   }
 
+  public boolean isLiteral() {
+    String bindingValue = getValue();
+    return bindingValue != null && bindingValue.startsWith("\"");
+  }
+  
   public boolean isOGNL() {
     String bindingValue = getValue();
     return bindingValue != null && (bindingValue.startsWith("~") || bindingValue.startsWith("\"~"));

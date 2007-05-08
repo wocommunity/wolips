@@ -44,6 +44,7 @@
 package org.objectstyle.wolips.wodclipse.core.model;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 
@@ -73,4 +74,8 @@ public interface IWodElement extends IWodUnit {
   public Position getElementTypePosition();
 
   public void fillInProblems(IJavaProject javaProject, IType javaFileType, boolean checkBindingValues, List<WodProblem> problems, WodParserCache cache) throws JavaModelException, CoreException, IOException;
+
+  public void writeInlineFormat(Writer writer, String contents, boolean alphabetize) throws IOException;
+
+  public void writeWodFormat(Writer writer, boolean alphabetize) throws IOException;
 }

@@ -64,8 +64,8 @@ public interface IWodModel extends IWodUnit {
   public List<IWodElement> getElements();
 
   public IWodUnit getWodUnitAtIndex(int _index);
-
-  public void writeWodFormat(Writer writer, boolean alphabetize);
+  
+  public void writeWodFormat(Writer writer, boolean alphabetize) throws IOException;
 
   public List<WodProblem> getProblems(IJavaProject javaProject, IType javaFileType, WodParserCache cache) throws JavaModelException, CoreException, IOException;
 
