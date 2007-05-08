@@ -52,7 +52,7 @@ package org.objectstyle.wolips.eomodeler.editors.relationship;
 import java.util.Arrays;
 
 import org.eclipse.jface.viewers.TableViewer;
-import org.objectstyle.wolips.eomodeler.model.EOJoin;
+import org.objectstyle.wolips.eomodeler.core.model.EOJoin;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyCellModifier;
 
 public class EOJoinsCellModifier extends TablePropertyCellModifier {

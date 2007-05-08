@@ -53,8 +53,8 @@ import java.util.Set;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.objectstyle.wolips.eomodeler.model.EOAttribute;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 
 public class EOAttributesContentProvider implements IStructuredContentProvider {
 	public Object[] getElements(Object _inputElement) {

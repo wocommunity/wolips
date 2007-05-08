@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         id="org.objectstyle.wolips.eomodeler.eomodelGroupFactory.eclipse"
+         name="Eclipse EOModel Group Factories"
+         point="org.objectstyle.wolips.eomodeler.eomodelGroupFactory">
+      <modelGroupFactory
+            class="org.objectstyle.wolips.eomodeler.eclipse.EclipseEOModelGroupFactory"
+            id="org.objectstyle.wolips.eomodeler.eclipse.modelGroupFactory"
+            name="Eclipse EOModelGroup Factory"/>
+   </extension>
+   <extension
+         id="org.objectstyle.wolips.eomodeler.eoclassLoaderFactory.eclipse"
+         name="Eclipse EOClassLoader Factory"
+         point="org.objectstyle.wolips.eomodeler.eoclassLoaderFactory">
+      <eoclassLoaderFactory
+            class="org.objectstyle.wolips.eomodeler.eclipse.EclipseEOClassLoaderFactory"
+            id="org.objectstyle.wolips.eomodeler.eclipse.eoclassLoaderFactory"
+            name="Eclipse EOClassLoader Factory"/>
+   </extension>
+</plugin>

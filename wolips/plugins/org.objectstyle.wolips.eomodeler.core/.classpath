@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="java"/>
+	<classpathentry exported="true" kind="lib" path="lib/EntityModelerSQL.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaEOAccess.framework/Versions/A/Resources/Java/javaeoaccess.jar"/>
+	<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaJDBCAdaptor.framework/Resources/Java/javajdbcadaptor.jar"/>
+	<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaFoundation.framework/Versions/A/Resources/Java/javafoundation.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

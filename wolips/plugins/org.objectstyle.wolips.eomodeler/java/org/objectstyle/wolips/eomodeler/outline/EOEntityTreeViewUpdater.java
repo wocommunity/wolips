@@ -50,7 +50,7 @@
 package org.objectstyle.wolips.eomodeler.outline;
 
 import org.eclipse.jface.viewers.TreeViewer;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 
 public class EOEntityTreeViewUpdater extends EOModelTreeViewUpdater {
 	private EOEntity myEntity;

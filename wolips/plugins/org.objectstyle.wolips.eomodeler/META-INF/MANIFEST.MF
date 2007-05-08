@@ -5,29 +5,31 @@ Bundle-SymbolicName: org.objectstyle.wolips.eomodeler; singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.eomodeler.Activator
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.jdt.core,
- org.eclipse.ui.views.properties.tabbed,
+Require-Bundle: org.eclipse.ui.views.properties.tabbed,
  org.eclipse.jface.databinding,
- org.objectstyle.wolips.eogenerator.ui,
- org.objectstyle.wolips.variables,
  org.objectstyle.wolips.preferences,
  org.objectstyle.wolips.baseforuiplugins,
- org.objectstyle.wolips.thirdparty.cayenne
+ org.objectstyle.wolips.thirdparty.cayenne,
+ org.objectstyle.wolips.eomodeler.core
 Eclipse-LazyStart: true
 Bundle-Vendor: objectstyle.org
 Export-Package: org.objectstyle.wolips.eomodeler,
  org.objectstyle.wolips.eomodeler.actions,
  org.objectstyle.wolips.eomodeler.decorators,
  org.objectstyle.wolips.eomodeler.editors,
- org.objectstyle.wolips.eomodeler.editors.databaseConfig,
+ org.objectstyle.wolips.eomodeler.editors.arguments,
  org.objectstyle.wolips.eomodeler.editors.attribute,
  org.objectstyle.wolips.eomodeler.editors.attributes,
+ org.objectstyle.wolips.eomodeler.editors.dataType,
+ org.objectstyle.wolips.eomodeler.editors.databaseConfig,
  org.objectstyle.wolips.eomodeler.editors.entities,
  org.objectstyle.wolips.eomodeler.editors.entity,
+ org.objectstyle.wolips.eomodeler.editors.entityIndex,
+ org.objectstyle.wolips.eomodeler.editors.fetchspec,
  org.objectstyle.wolips.eomodeler.editors.relationship,
  org.objectstyle.wolips.eomodeler.editors.relationships,
+ org.objectstyle.wolips.eomodeler.editors.storedProcedure,
+ org.objectstyle.wolips.eomodeler.editors.storedProcedures,
  org.objectstyle.wolips.eomodeler.editors.userInfo,
- org.objectstyle.wolips.eomodeler.kvc,
- org.objectstyle.wolips.eomodeler.model,
  org.objectstyle.wolips.eomodeler.outline,
  org.objectstyle.wolips.eomodeler.utils

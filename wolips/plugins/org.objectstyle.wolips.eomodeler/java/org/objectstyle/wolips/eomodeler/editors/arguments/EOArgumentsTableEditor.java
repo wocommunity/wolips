@@ -61,8 +61,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.part.EditorPart;
-import org.objectstyle.wolips.eomodeler.model.EOModel;
-import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
+import org.objectstyle.wolips.eomodeler.core.model.EOModel;
+import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
 
 public class EOArgumentsTableEditor extends EditorPart implements ISelectionProvider {
 	private EOArgumentsTableViewer myArgumentsTableViewer;

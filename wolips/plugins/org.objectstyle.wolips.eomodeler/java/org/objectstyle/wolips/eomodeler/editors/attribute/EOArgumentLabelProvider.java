@@ -52,7 +52,7 @@ package org.objectstyle.wolips.eomodeler.editors.attribute;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
-import org.objectstyle.wolips.eomodeler.model.EOArgumentDirection;
+import org.objectstyle.wolips.eomodeler.core.model.EOArgumentDirection;
 
 public class EOArgumentLabelProvider implements ILabelProvider {
 	public Image getImage(Object _element) {

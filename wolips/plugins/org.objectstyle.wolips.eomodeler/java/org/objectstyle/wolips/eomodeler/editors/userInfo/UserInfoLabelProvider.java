@@ -51,9 +51,9 @@ package org.objectstyle.wolips.eomodeler.editors.userInfo;
 
 import java.io.ByteArrayOutputStream;
 
-import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
+import org.objectstyle.wolips.eomodeler.core.utils.NotificationMap;
+import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
-import org.objectstyle.wolips.eomodeler.wocompat.PropertyListSerialization;
 
 public class UserInfoLabelProvider extends TablePropertyLabelProvider {
 	private NotificationMap myUserInfo;

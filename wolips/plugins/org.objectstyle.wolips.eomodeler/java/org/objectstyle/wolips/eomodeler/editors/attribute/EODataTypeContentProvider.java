@@ -51,7 +51,7 @@ package org.objectstyle.wolips.eomodeler.editors.attribute;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.objectstyle.wolips.eomodeler.model.EODataType;
+import org.objectstyle.wolips.eomodeler.core.model.EODataType;
 
 public class EODataTypeContentProvider implements IStructuredContentProvider {
 	public Object[] getElements(Object _inputElement) {

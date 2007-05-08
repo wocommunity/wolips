@@ -49,7 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.entities;
 
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 
 public class EOEntitiesConstants {
 	public static final String[] COLUMNS = { EOEntity.NAME, EOEntity.EXTERNAL_NAME, EOEntity.CLASS_NAME, EOEntity.PARENT };

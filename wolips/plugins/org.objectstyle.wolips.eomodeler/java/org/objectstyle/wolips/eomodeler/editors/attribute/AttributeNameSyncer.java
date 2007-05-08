@@ -3,9 +3,9 @@ package org.objectstyle.wolips.eomodeler.editors.attribute;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
-import org.objectstyle.wolips.eomodeler.model.EOAttribute;
-import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
+import org.objectstyle.wolips.eomodeler.core.model.AbstractEOArgument;
+import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
 
 public class AttributeNameSyncer implements PropertyChangeListener {
 

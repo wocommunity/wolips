@@ -68,12 +68,12 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
-import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
-import org.objectstyle.wolips.eomodeler.model.EOModel;
-import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
-import org.objectstyle.wolips.eomodeler.sql.SQLUtils;
-import org.objectstyle.wolips.eomodeler.utils.ClasspathUtils;
-import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
+import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
+import org.objectstyle.wolips.eomodeler.core.model.EOModel;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
+import org.objectstyle.wolips.eomodeler.core.model.IEOClassLoaderFactory;
+import org.objectstyle.wolips.eomodeler.core.sql.SQLUtils;
+import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringLabelProvider;
 
@@ -105,7 +105,7 @@ public class ReverseEngineerAction implements IWorkbenchWindowActionDelegate, IO
 			EODatabaseConfig activeDatabaseConfig = model.getActiveDatabaseConfig();
 			String adaptorName = activeDatabaseConfig.getAdaptorName();
 			Map connectionDictionary = activeDatabaseConfig.getConnectionDictionary();
-			ClassLoader eomodelClassLoader = ClasspathUtils.createEOModelClassLoader(model);
+			ClassLoader eomodelClassLoader = IEOClassLoaderFactory.Utility.createClassLoader(model);
 			Object reverseEngineer = SQLUtils.createEOFReverseEngineer(adaptorName, connectionDictionary, eomodelClassLoader);
 			Method reverseEngineerTableNamesMethod = reverseEngineer.getClass().getMethod("reverseEngineerTableNames", new Class[0]);
 			List tableNames = (List) reverseEngineerTableNamesMethod.invoke(reverseEngineer, new Object[0]);

@@ -101,29 +101,29 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.EOModelerPerspectiveFactory;
 import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.core.model.AbstractEOAttributePath;
+import org.objectstyle.wolips.eomodeler.core.model.EOArgument;
+import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
+import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.core.model.EOEntityIndex;
+import org.objectstyle.wolips.eomodeler.core.model.EOFetchSpecification;
+import org.objectstyle.wolips.eomodeler.core.model.EOModel;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
+import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
+import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
+import org.objectstyle.wolips.eomodeler.core.model.IEOAttribute;
+import org.objectstyle.wolips.eomodeler.core.model.IEOModelGroupFactory;
+import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
+import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
+import org.objectstyle.wolips.eomodeler.core.utils.URLUtils;
 import org.objectstyle.wolips.eomodeler.editors.arguments.EOArgumentsTableEditor;
 import org.objectstyle.wolips.eomodeler.editors.entities.EOEntitiesTableEditor;
 import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityEditor;
-import org.objectstyle.wolips.eomodeler.model.AbstractEOAttributePath;
-import org.objectstyle.wolips.eomodeler.model.EOArgument;
-import org.objectstyle.wolips.eomodeler.model.EOAttribute;
-import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.model.EOEntityIndex;
-import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
-import org.objectstyle.wolips.eomodeler.model.EOModel;
-import org.objectstyle.wolips.eomodeler.model.EOModelException;
-import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
-import org.objectstyle.wolips.eomodeler.model.EORelationship;
-import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
-import org.objectstyle.wolips.eomodeler.model.EclipseEOModelGroupFactory;
-import org.objectstyle.wolips.eomodeler.model.IEOAttribute;
 import org.objectstyle.wolips.eomodeler.outline.EOModelContentOutlinePage;
 import org.objectstyle.wolips.eomodeler.utils.AbstractAddRemoveChangeRefresher;
-import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
-import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
-import org.objectstyle.wolips.eomodeler.utils.URLUtils;
 import org.objectstyle.wolips.preferences.Preferences;
 
 public class EOModelEditor extends MultiPageEditorPart implements IResourceChangeListener, ITabbedPropertySheetPageContributor, ISelectionProvider, IEOModelEditor {
@@ -409,7 +409,8 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 					}
 				}
 			} catch (WorkbenchException e) {
-				ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), e);
+				//ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), e);
+				Activator.getDefault().log(e);
 			}
 		}
 	}
@@ -506,7 +507,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			}
 
 			myLoadFailures = new LinkedHashSet<EOModelVerificationFailure>();
-			myModel = EclipseEOModelGroupFactory.createModel(fileEditorInput.getFile(), myLoadFailures, true);
+			myModel = IEOModelGroupFactory.Utility.loadModel(fileEditorInput.getFile(), myLoadFailures, true);
 			if (myModel == null) {
 				super.init(_site, fileEditorInput);
 				handleModelErrors(myLoadFailures);
@@ -543,9 +544,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		if (myModel != null) {
 			try {
 				if (Preferences.shouldEntityModelerShowErrorsInProblemsView()) {
+					final EOModel editingModel = myModel;
 					IWorkspaceRunnable body = new IWorkspaceRunnable() {
 						public void run(IProgressMonitor monitor) throws CoreException {
-							for (EOModel model : myModel.getModelGroup().getModels()) {
+							for (EOModel model : editingModel.getModelGroup().getModels()) {
 								try {
 									IFile indexFile = EOModelEditor.getIndexFile(model);
 									if (indexFile != null) {
@@ -729,7 +731,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 						getStoredProcedureEditor().setSelection(_selection);
 						setActivePage(getPageNum(EOModelEditor.EOSTOREDPROCEDURE_PAGE));
 					} else if (selectedObject instanceof EODatabaseConfig) {
-						EODatabaseConfig selectedDatabaseConfig = (EODatabaseConfig) selectedObject;
+						// EODatabaseConfig selectedDatabaseConfig = (EODatabaseConfig) selectedObject;
 						setSelectedEntity(null);
 						setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
 					}

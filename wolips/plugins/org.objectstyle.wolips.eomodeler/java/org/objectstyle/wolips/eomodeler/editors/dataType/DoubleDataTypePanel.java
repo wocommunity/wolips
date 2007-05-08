@@ -52,7 +52,7 @@ package org.objectstyle.wolips.eomodeler.editors.dataType;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
-import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
+import org.objectstyle.wolips.eomodeler.core.model.AbstractEOArgument;
 
 public class DoubleDataTypePanel extends Composite implements IDataTypePanel {
 	public DoubleDataTypePanel(Composite _parent, int _style, TabbedPropertySheetWidgetFactory _widgetFactory) {

@@ -2,7 +2,7 @@ package org.objectstyle.wolips.eomodeler.editors.entityIndex;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.objectstyle.wolips.eomodeler.model.EOEntityIndex;
+import org.objectstyle.wolips.eomodeler.core.model.EOEntityIndex;
 
 public class EOEntityIndexAttributesContentProvider implements IStructuredContentProvider {
 

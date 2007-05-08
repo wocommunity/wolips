@@ -51,8 +51,8 @@ package org.objectstyle.wolips.eomodeler.editors.storedProcedures;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.objectstyle.wolips.eomodeler.model.EOModel;
-import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
+import org.objectstyle.wolips.eomodeler.core.model.EOModel;
+import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 
 public class EOStoredProceduresContentProvider implements IStructuredContentProvider {
 	public Object[] getElements(Object _inputElement) {

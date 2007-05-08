@@ -51,7 +51,7 @@ package org.objectstyle.wolips.eomodeler.editors.fetchspec;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
+import org.objectstyle.wolips.eomodeler.core.model.EOFetchSpecification;
 
 public class EOSortOrderingsContentProvider implements IStructuredContentProvider {
 	public Object[] getElements(Object _inputElement) {

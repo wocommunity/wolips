@@ -57,11 +57,11 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.model.EOModel;
-import org.objectstyle.wolips.eomodeler.model.EOModelContainer;
-import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
-import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
+import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.core.model.EOModel;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelContainer;
+import org.objectstyle.wolips.eomodeler.core.model.EORelationshipPath;
+import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
 
 public class EOModelTreeViewUpdater {
 	private TreeViewer _treeViewer;
@@ -98,16 +98,20 @@ public class EOModelTreeViewUpdater {
 	}
 
 	public void showModelGroup() {
-		_treeViewer.setInput(_model.getModelGroup());
-		_treeViewer.expandToLevel(_model, 1);
-		_treeViewer.setSelection(new StructuredSelection(_model));
+		if (_model != null) {
+			_treeViewer.setInput(_model.getModelGroup());
+			_treeViewer.expandToLevel(_model, 1);
+			_treeViewer.setSelection(new StructuredSelection(_model));
+		}
 	}
 
 	public void showModel() {
-		EOModelContainer container = new EOModelContainer(_model);
-		_treeViewer.setInput(container);
-		_treeViewer.expandToLevel(_model, 1);
-		_treeViewer.setSelection(new StructuredSelection(_model));
+		if (_model != null) {
+			EOModelContainer container = new EOModelContainer(_model);
+			_treeViewer.setInput(container);
+			_treeViewer.expandToLevel(_model, 1);
+			_treeViewer.setSelection(new StructuredSelection(_model));
+		}
 	}
 
 	protected void setInput() {

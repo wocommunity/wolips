@@ -51,7 +51,7 @@ package org.objectstyle.wolips.eomodeler.editors.relationship;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.objectstyle.wolips.eomodeler.model.EODeleteRule;
+import org.objectstyle.wolips.eomodeler.core.model.EODeleteRule;
 
 public class EODeleteRuleContentProvider implements IStructuredContentProvider {
 	public Object[] getElements(Object _inputElement) {

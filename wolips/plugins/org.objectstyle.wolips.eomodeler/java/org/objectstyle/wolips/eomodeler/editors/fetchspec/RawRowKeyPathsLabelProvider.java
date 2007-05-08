@@ -1,7 +1,7 @@
 package org.objectstyle.wolips.eomodeler.editors.fetchspec;
 
 import org.eclipse.swt.graphics.Image;
-import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
+import org.objectstyle.wolips.eomodeler.core.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 
 public class RawRowKeyPathsLabelProvider extends TablePropertyLabelProvider {

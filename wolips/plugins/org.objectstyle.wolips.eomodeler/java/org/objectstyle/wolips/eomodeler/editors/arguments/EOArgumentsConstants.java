@@ -49,8 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.arguments;
 
-import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
-import org.objectstyle.wolips.eomodeler.model.EOArgument;
+import org.objectstyle.wolips.eomodeler.core.model.AbstractEOArgument;
+import org.objectstyle.wolips.eomodeler.core.model.EOArgument;
 
 public class EOArgumentsConstants {
 	public static final String[] COLUMNS = { AbstractEOArgument.NAME, AbstractEOArgument.COLUMN_NAME, EOArgument.DIRECTION };

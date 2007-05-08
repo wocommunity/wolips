@@ -60,9 +60,9 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TableItem;
-import org.objectstyle.wolips.eomodeler.kvc.CachingKeyPath;
-import org.objectstyle.wolips.eomodeler.kvc.Key;
-import org.objectstyle.wolips.eomodeler.kvc.KeyPath;
+import org.objectstyle.wolips.eomodeler.core.kvc.CachingKeyPath;
+import org.objectstyle.wolips.eomodeler.core.kvc.Key;
+import org.objectstyle.wolips.eomodeler.core.kvc.KeyPath;
 
 public class TablePropertyCellModifier implements ICellModifier, ISelectionChangedListener {
 	private TableViewer myTableViewer;

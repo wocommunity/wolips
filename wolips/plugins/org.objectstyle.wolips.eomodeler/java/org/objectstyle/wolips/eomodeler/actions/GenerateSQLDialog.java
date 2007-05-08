@@ -32,10 +32,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
-import org.objectstyle.wolips.eomodeler.model.EOModel;
-import org.objectstyle.wolips.eomodeler.sql.SQLUtils;
-import org.objectstyle.wolips.eomodeler.utils.ClasspathUtils;
+import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
+import org.objectstyle.wolips.eomodeler.core.model.EOModel;
+import org.objectstyle.wolips.eomodeler.core.model.IEOClassLoaderFactory;
+import org.objectstyle.wolips.eomodeler.core.sql.SQLUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class GenerateSQLDialog extends Dialog {
@@ -76,7 +76,7 @@ public class GenerateSQLDialog extends Dialog {
 	private Cursor myWaitCursor;
 
 	private Button myExecuteSqlButton;
-	
+
 	private boolean myCreateOnlySelectedEntities;
 
 	public GenerateSQLDialog(Shell _parentShell, EOModel _model, List _entityNames) {
@@ -233,7 +233,7 @@ public class GenerateSQLDialog extends Dialog {
 
 	protected ClassLoader getEOModelClassLoader() throws Exception {
 		if (myEOModelClassLoader == null) {
-			myEOModelClassLoader = ClasspathUtils.createEOModelClassLoader(myModel);
+			myEOModelClassLoader = IEOClassLoaderFactory.Utility.createClassLoader(myModel);
 		}
 		return myEOModelClassLoader;
 	}
@@ -321,7 +321,7 @@ public class GenerateSQLDialog extends Dialog {
 	protected Cursor getWaitCursor() {
 		return myWaitCursor;
 	}
-	
+
 	protected List getEntityNames() {
 		return (myCreateOnlySelectedEntities) ? myEntityNames : null;
 	}

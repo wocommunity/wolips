@@ -55,7 +55,7 @@ import java.util.Set;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 
 public class UserInfoContentProvider implements IStructuredContentProvider {
 	public void dispose() {

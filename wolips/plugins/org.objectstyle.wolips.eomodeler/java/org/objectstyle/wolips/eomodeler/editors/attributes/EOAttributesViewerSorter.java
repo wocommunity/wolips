@@ -49,7 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.attributes;
 
-import org.objectstyle.wolips.eomodeler.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
 
 public class EOAttributesViewerSorter extends TablePropertyViewerSorter {

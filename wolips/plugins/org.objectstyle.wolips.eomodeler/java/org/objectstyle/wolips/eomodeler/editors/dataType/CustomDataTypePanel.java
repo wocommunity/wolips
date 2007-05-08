@@ -60,10 +60,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.core.model.AbstractEOArgument;
+import org.objectstyle.wolips.eomodeler.core.model.EOFactoryMethodArgumentType;
 import org.objectstyle.wolips.eomodeler.editors.attribute.EOFactoryMethodArgumentTypeContentProvider;
 import org.objectstyle.wolips.eomodeler.editors.attribute.EOFactoryMethodArgumentTypeLabelProvider;
-import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
-import org.objectstyle.wolips.eomodeler.model.EOFactoryMethodArgumentType;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 

@@ -56,9 +56,9 @@ import java.util.Set;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.objectstyle.wolips.eomodeler.kvc.KVCComparator;
-import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
-import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
+import org.objectstyle.wolips.eomodeler.core.kvc.KVCComparator;
+import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
+import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 
 public class EOStoredProceduresListContentProvider implements IStructuredContentProvider {
 	public static final Object BLANK_STORED_PROCEDURE = "";
