@@ -32,9 +32,12 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
 import org.eclipse.ui.part.FileEditorInput;
+import org.objectstyle.wolips.core.resources.types.api.ApiModelException;
+import org.objectstyle.wolips.core.resources.types.api.Wo;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
@@ -46,8 +49,10 @@ import org.objectstyle.wolips.wodclipse.core.model.IWodModel;
 import org.objectstyle.wolips.wodclipse.core.model.WodProblem;
 import org.objectstyle.wolips.wodclipse.core.preferences.PreferenceConstants;
 import org.objectstyle.wolips.wodclipse.core.preferences.TagShortcut;
+import org.objectstyle.wolips.wodclipse.core.util.WodApiUtils;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 import org.objectstyle.wolips.wodclipse.core.util.WodModelUtils;
+import org.objectstyle.wolips.wodclipse.core.util.WodReflectionUtils;
 import org.objectstyle.wolips.wodclipse.core.validation.TemplateValidator;
 
 public class WodParserCache implements FuzzyXMLErrorListener {
@@ -205,6 +210,19 @@ public class WodParserCache implements FuzzyXMLErrorListener {
 
   public IWodModel getWodModel() {
     return _wodModel;
+  }
+  
+  public Wo getWo(String elementName) throws ApiModelException, JavaModelException {
+    IType elementType = getElementType(elementName);
+    return getWo(elementType);
+  }
+
+  public IType getElementType(String elementName) throws JavaModelException {
+    return WodReflectionUtils.findElementType(_javaProject, elementName, false, this);
+  }
+  
+  public Wo getWo(IType type) throws ApiModelException {
+    return WodApiUtils.findApiModelWo(type, this);
   }
 
   public void parseHtmlAndWodIfNecessary() throws CoreException, IOException {
