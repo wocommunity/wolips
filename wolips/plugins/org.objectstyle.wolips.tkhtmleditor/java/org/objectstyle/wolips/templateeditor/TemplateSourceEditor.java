@@ -5,6 +5,7 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IFileEditorInput;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
@@ -21,6 +22,11 @@ public class TemplateSourceEditor extends HTMLSourceEditor {
     super(config);
     //    setAction(ACTION_JSP_COMMENT, new JSPCommentAction());
     //    setAction(ACTION_TOGGLE_BREAKPOINT, new ToggleBreakPointAction());
+  }
+
+  @Override
+  public void createPartControl(Composite parent) {
+    super.createPartControl(parent);
   }
 
   @Override

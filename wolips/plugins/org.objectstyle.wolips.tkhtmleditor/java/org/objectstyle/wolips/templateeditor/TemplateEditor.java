@@ -2,6 +2,7 @@ package org.objectstyle.wolips.templateeditor;
 
 import org.eclipse.core.runtime.content.IContentDescriber;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.swt.widgets.Composite;
 import org.objectstyle.wolips.components.editor.EditorInteraction;
 import org.objectstyle.wolips.components.editor.IEmbeddedEditor;
 import org.objectstyle.wolips.components.editor.IHtmlDocumentProvider;
@@ -20,6 +21,14 @@ public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtml
   public TemplateEditor() {
     super();
     ContentDescriberWO.ANSWER = IContentDescriber.VALID;
+  }
+
+  @Override
+  public void createPartControl(Composite parent) {
+    super.createPartControl(parent);
+    TemplateTripleClickAdapter tripleClickAdapter = new TemplateTripleClickAdapter(this);
+    getSourceEditor().getViewer().getTextWidget().addMouseListener(tripleClickAdapter);
+    getSourceEditor().getViewer().getTextWidget().addMouseMoveListener(tripleClickAdapter);
   }
 
   public TemplateSourceEditor getSourceEditor() {
