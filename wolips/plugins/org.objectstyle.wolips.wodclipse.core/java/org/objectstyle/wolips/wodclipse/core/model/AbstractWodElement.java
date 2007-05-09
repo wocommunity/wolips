@@ -73,6 +73,8 @@ public abstract class AbstractWodElement implements IWodElement, Comparable {
 
   private boolean _isTemporary;
 
+  private String _tagName;
+  
   public AbstractWodElement() {
     _bindings = new LinkedList<IWodBinding>();
   }
@@ -130,25 +132,53 @@ public abstract class AbstractWodElement implements IWodElement, Comparable {
   }
   
   public void writeInlineFormat(Writer writer, String content, boolean alphabetize) throws IOException {
+    writeInlineFormat(writer, content, alphabetize, true, true, true);
+  }
+  
+  public void writeInlineFormat(Writer writer, String content, boolean alphabetize, boolean showOpenTag, boolean showContent, boolean showCloseTag) throws IOException {
     List<IWodBinding> bindings = getBindings();
     if (alphabetize) {
       bindings = new LinkedList<IWodBinding>(bindings);
       Collections.sort(bindings, new WodBindingComparator());
     }
-    writer.write("<wo:");
-    writer.write(getElementType());
-    for (IWodBinding binding : bindings) {
-      binding.writeInlineFormat(writer);
+    if (showOpenTag) {
+      writer.write("<");
+      writer.write(getTagName());
+      for (IWodBinding binding : bindings) {
+        binding.writeInlineFormat(writer);
+      }
+      if (content == null) {
+        writer.write("/>");
+      }
+      else {
+        writer.write(">");
+      }
     }
-    if (content == null) {
-      writer.write("/>");
+    if (content != null) {
+      if (showContent) {
+        writer.write(content);
+      }
+      if (showCloseTag) {
+        writer.write("</");
+        writer.write(getTagName());
+        writer.write(">");
+      }
+    }
+  }
+
+  public void setTagName(String tagName) {
+    _tagName = tagName;
+  }
+  
+  public String getTagName() {
+    String tagName;
+    if (_tagName == null) {
+      tagName = "wo: " + getElementType();
     }
     else {
-      writer.write(content);
-      writer.write("</wo:");
-      writer.write(getElementType());
-      writer.write(">");
+      tagName = _tagName;
     }
+    return tagName;
   }
   
   public abstract int getLineNumber();
