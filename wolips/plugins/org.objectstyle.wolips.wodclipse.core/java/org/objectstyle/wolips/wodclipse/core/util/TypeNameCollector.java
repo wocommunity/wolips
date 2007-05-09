@@ -89,6 +89,10 @@ public class TypeNameCollector extends TypeNameRequestor {
     _woElementType = _project.findType("com.webobjects.appserver.WOElement");
   }
 
+  public Set<String> getTypeNames() {
+    return _typeNames;
+  }
+  
   public boolean isExactMatch() {
     return _typeNames.size() == 1;
   }
