@@ -55,11 +55,14 @@
  */
 package org.objectstyle.wolips.core.resources.types.api;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.Writer;
 import java.net.URL;
 
@@ -184,7 +187,27 @@ public class ApiModel {
 			if (_url != null) {
 				_document = documentBuilder.parse(_url.toExternalForm());
 			} else if (_file != null) {
-				_document = documentBuilder.parse(_file);
+				// MS: This is really silly, but I guess WOBuilder (or something else back in the day) produced
+				// API files that claim to be encoding 'macintosh'.  Well, there is no such encoding, at 
+				// least as far as Java is concerned.  So we proprocess the api file and switch out the
+				// encoding for UTF-8 instead.  Super lame.  I know.
+				StringBuffer apiBuffer = new StringBuffer();
+				FileReader apiReader = new FileReader(_file);
+				try {
+					BufferedReader bufferedApiReader = new BufferedReader(apiReader);
+					String line = bufferedApiReader.readLine();
+					if (line != null && line.startsWith("<?")) {
+						apiBuffer.append(line.replaceAll("encoding=\"macintosh\"", "encoding=\"UTF-8\""));
+					}
+					while ((line = bufferedApiReader.readLine()) != null) {
+						apiBuffer.append(line);
+					}
+				}
+				finally {
+					apiReader.close();
+				}
+				StringReader apiBufferReader = new StringReader(apiBuffer.toString());
+				_document = documentBuilder.parse(new InputSource(apiBufferReader));
 			} else {
 				_document = documentBuilder.parse(new InputSource(_reader));
 			}
