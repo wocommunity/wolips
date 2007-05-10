@@ -8,7 +8,7 @@
             class="org.objectstyle.wolips.apieditor.editor.ApiEditor"
             default="false"
             extensions="api"
-            icon="icons/ApiEditor.gif"
+            icon="icons/file-api.gif"
             id="org.objectstyle.wolips.wodclipse.api.ApiEditor"
             name="Api Editor">
 			<contentTypeBinding
