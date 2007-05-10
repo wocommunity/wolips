@@ -25,7 +25,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.objectstyle.wolips.baseforplugins,
  org.objectstyle.wolips.wodclipse.core,
  org.eclipse.ui.editors,
- org.objectstyle.wolips.tkhtmleditor
+ org.objectstyle.wolips.tkhtmleditor,
+ org.eclipse.jdt.core,
+ org.objectstyle.wolips
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.componenteditor,
  org.objectstyle.wolips.componenteditor.contributor,

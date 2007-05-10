@@ -1,6 +1,7 @@
 package org.objectstyle.wolips.componenteditor.actions;
 
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
 
 /**
  * <P>This class is used in the dialogue box for the user to be able
