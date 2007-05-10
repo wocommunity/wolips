@@ -306,6 +306,24 @@
 				toolbarPath="/Normal/additions"
 				tooltip="Insert WOForm Component">
 			</action>
+			<action
+				class="org.objectstyle.wolips.componenteditor.actions.InsertAnyComponentAction"
+				icon="icons/anycomponent.png"
+				id="org.objectstyle.wolips.componenteditor.actions.InsertAnyComponentAction"
+				label="Insert Component"
+				style="push"
+				toolbarPath="/Normal/additions"
+				tooltip="Insert Component">
+			</action>
+			<action
+				class="org.objectstyle.wolips.componenteditor.actions.InsertHtmlTagAction"
+				icon="icons/form.png"
+				id="org.objectstyle.wolips.componenteditor.actions.InsertHtmlTagAction"
+				label="Insert Tag"
+				style="push"
+				toolbarPath="/Normal/additions"
+				tooltip="Insert Tag">
+			</action>
 		</editorContribution>
 </extension>
 
