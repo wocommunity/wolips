@@ -7,7 +7,7 @@
             class="org.objectstyle.wolips.wodclipse.editor.WodEditor"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             default="false"
-            icon="icons/WODEditor.gif"
+            icon="icons/file-wod.png"
             id="org.objectstyle.wolips.wodclipse.WodEditor"
             name="Wod Editor">
 			<contentTypeBinding
@@ -34,7 +34,7 @@
        <action
              class="org.objectstyle.wolips.wodclipse.action.GenerateAPIAction"
              enablesFor="*"
-             icon="icons/BindingOutline.gif"
+             icon="icons/file-api.gif"
              id="org.objectstyle.wolips.wodclipse.generateAPIActionForWO"
              label="Generate API File"
              menubarPath="additions"/>
@@ -46,7 +46,7 @@
        <action
              class="org.objectstyle.wolips.wodclipse.action.GenerateAPIAction"
              enablesFor="*"
-             icon="icons/BindingOutline.gif"
+             icon="icons/file-api.gif"
              id="org.objectstyle.wolips.wodclipse.generateAPIActionForJava"
              label="Generate API File"
              menubarPath="additions"/>
