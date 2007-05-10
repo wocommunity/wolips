@@ -236,7 +236,7 @@ public class WodContentOutlinePage extends ContentOutlinePage {
 
 			public Image getImage(Object element) {
 				if (image == null) {
-					ImageDescriptor desc = WodclipsePlugin.getImageDescriptor("icons/BindingOutline.gif");
+					ImageDescriptor desc = WodclipsePlugin.getImageDescriptor("icons/wod-element.gif");
 					if (desc != null) {
 						image = desc.createImage();
 					}
