@@ -16,6 +16,10 @@ public class SimpleWodBinding extends AbstractWodBinding {
     this(name, value, null, null, -1);
   }
 
+  public SimpleWodBinding(String name, String value, boolean literal) {
+    this(name, (literal) ? ("\"" + value + "\"") : value, null, null, -1);
+  }
+
   public SimpleWodBinding(String name, String value, Position namePosition, Position valuePosition, int lineNumber) {
     _name = name;
     _value = value;
