@@ -45,9 +45,7 @@ package org.objectstyle.wolips.wodclipse.core.completion;
 
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
@@ -65,7 +63,7 @@ public class WodCompletionProposal implements Comparable, ICompletionProposal {
 
   private String _replacementString;
 
-  private int fReplacementLength;
+  private int _replacementLength;
 
   private String _displayString;
 
@@ -92,31 +90,13 @@ public class WodCompletionProposal implements Comparable, ICompletionProposal {
     _offset = offset;
     _replacementOffset = replacementOffset;
     _replacementString = replacementString;
-    fReplacementLength = replacementLength;
+    _replacementLength = replacementLength;
     _displayString = displayString;
     _cursorPosition = cursorPosition;
 
     _image = image;
     _contextInformation = null;
     _additionalProposalInfo = null;
-  }
-
-  public void apply(ITextViewer viewer, char trigger, int stateMask, int offset) {
-    System.out.println("WodCompletionProposal.apply: a");
-    //System.out.println("WodCompletionProposal.apply: " + viewer + ", " + trigger + ", " + stateMask + ", " + offset);
-    apply(viewer.getDocument());
-  }
-
-  public void selected(ITextViewer viewer, boolean smartToggle) {
-    // DO NOTHING
-  }
-
-  public void unselected(ITextViewer viewer) {
-    // DO NOTHING
-  }
-
-  public boolean validate(IDocument document, int offset, DocumentEvent event) {
-    return true;
   }
 
   public void setCorrespondingType(IType correspondingType) {
@@ -175,7 +155,7 @@ public class WodCompletionProposal implements Comparable, ICompletionProposal {
   public void apply(IDocument document) {
     System.out.println("WodCompletionProposal.apply: " + document);
     try {
-      document.replace(_replacementOffset, fReplacementLength, _replacementString);
+      document.replace(_replacementOffset, _replacementLength, _replacementString);
     }
     catch (BadLocationException x) {
       // ignore
