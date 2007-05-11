@@ -107,8 +107,8 @@ public class EOGeneratorBuilder extends AbstractFullAndIncrementalBuilder {
 
 				Set<IFile> referencingEOGenFiles = new HashSet<IFile>();
 				IResource[] eogenFiles = result.getResources();
-				for (int eogenFileNum = 0; eogenFileNum < eogenFiles.length; eogenFileNum++) {
-					IFile eogenFile = (IFile) eogenFiles[eogenFileNum];
+				for (IResource eogenResource : eogenFiles) {
+					IFile eogenFile = (IFile) eogenResource;
 					EOGeneratorModel eogenModel = EOGeneratorModel.createModelFromFile(eogenFile);
 					if (eogenModel.isModelReferenced(modifiedModelReference)) {
 						referencingEOGenFiles.add(eogenFile);
@@ -121,6 +121,7 @@ public class EOGeneratorBuilder extends AbstractFullAndIncrementalBuilder {
 				eogenerateJob.schedule();
 			}
 		} catch (Throwable e) {
+			e.printStackTrace();
 			Activator.getDefault().log(e);
 		}
 	}

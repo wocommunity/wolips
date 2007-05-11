@@ -59,6 +59,6 @@ import org.eclipse.core.resources.IProject;
 
 public class EOGenLocateScope extends DefaultLocateScope {
 	public EOGenLocateScope(IProject project) {
-		super(project, new String[] {"eogen"}, null);
+		super(project, null, new String[] {"eogen"}, null, new DefaultIgnoredFolderLocateScope(true));
 	}
 }

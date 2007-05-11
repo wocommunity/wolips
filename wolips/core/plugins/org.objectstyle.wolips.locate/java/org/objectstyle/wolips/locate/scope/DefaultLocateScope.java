@@ -70,10 +70,14 @@ public class DefaultLocateScope extends AbstractLocateScope {
 	private IncludeFolderLocateScope _includeFolderScope;
 
 	public DefaultLocateScope(IProject project, String[] includedFilesNames, String[] includedFolderNames) {
+		this(project, includedFilesNames, null, includedFolderNames, new DefaultIgnoredFolderLocateScope());
+	}
+
+	public DefaultLocateScope(IProject project, String[] includedFilesNames, String[] includedFileExt, String[] includedFolderNames, IgnoredFolderLocateScope ignoredFolderScope) {
 		super();
 		_projectLocateScope = new ProjectLocateScope(project);
-		_ignoredFolderScope = new DefaultIgnoredFolderLocateScope();
-		_includeFileScope = new IncludeFileLocateScope(includedFilesNames, null);
+		_ignoredFolderScope = ignoredFolderScope;
+		_includeFileScope = new IncludeFileLocateScope(includedFilesNames, includedFileExt);
 		_includeFolderScope = new IncludeFolderLocateScope(includedFolderNames, null);
 	}
 
