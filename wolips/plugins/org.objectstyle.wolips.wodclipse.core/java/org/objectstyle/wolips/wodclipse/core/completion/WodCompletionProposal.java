@@ -86,7 +86,6 @@ public class WodCompletionProposal implements Comparable, ICompletionProposal, I
 
   public WodCompletionProposal(String token, int replacementOffset, int offset, String replacementString, String displayString, int cursorPosition) {
     this(token, replacementOffset, token.length(), offset, replacementString, null, cursorPosition, null);
-
   }
 
   public WodCompletionProposal(String token, int replacementOffset, int replacementLength, int offset, String replacementString, String displayString, int cursorPosition, Image image) {
@@ -104,7 +103,7 @@ public class WodCompletionProposal implements Comparable, ICompletionProposal, I
   }
 
   public void apply(ITextViewer viewer, char trigger, int stateMask, int offset) {
-    System.out.println("WodCompletionProposal.apply: " + viewer + ", " + trigger + ", " + stateMask + ", " + offset);
+    //System.out.println("WodCompletionProposal.apply: " + viewer + ", " + trigger + ", " + stateMask + ", " + offset);
     apply(viewer.getDocument());
   }
 
