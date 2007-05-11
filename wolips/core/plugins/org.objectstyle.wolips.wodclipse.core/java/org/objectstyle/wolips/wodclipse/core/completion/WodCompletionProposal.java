@@ -49,7 +49,6 @@ import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
-import org.eclipse.jface.text.contentassist.ICompletionProposalExtension2;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -57,7 +56,7 @@ import org.eclipse.swt.graphics.Point;
 /**
  * @author mike
  */
-public class WodCompletionProposal implements Comparable, ICompletionProposal, ICompletionProposalExtension2 {
+public class WodCompletionProposal implements Comparable, ICompletionProposal {
   private String _token;
 
   private int _replacementOffset;
@@ -103,6 +102,7 @@ public class WodCompletionProposal implements Comparable, ICompletionProposal, I
   }
 
   public void apply(ITextViewer viewer, char trigger, int stateMask, int offset) {
+    System.out.println("WodCompletionProposal.apply: a");
     //System.out.println("WodCompletionProposal.apply: " + viewer + ", " + trigger + ", " + stateMask + ", " + offset);
     apply(viewer.getDocument());
   }
