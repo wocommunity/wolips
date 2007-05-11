@@ -6,9 +6,9 @@
       provider-name="%feature.providerName"
       image="%feature.image">
 
-    <description url="http://objectstyle.org/confluence/display/WOL/Home">
+   <description url="http://objectstyle.org/confluence/display/WOL/Home">
       %feature.description
-    </description>
+   </description>
 
    <copyright>
       %feature.copyright
@@ -67,7 +67,7 @@
    </license>
 
    <url>
-      <update label="%feature.updateSiteName" url="%feature.updateSite"/>
+      <update label="%feature.updateSiteName"/>
    </url>
 
    <requires>
@@ -78,7 +78,6 @@
       <import plugin="org.objectstyle.wolips.ui" version="1.0.6" match="perfect"/>
       <import plugin="org.objectstyle.wolips.workbenchutilities" version="1.0.6" match="perfect"/>
       <import plugin="org.eclipse.ui.ide"/>
-      <import feature="org.eclipse.jst"/>
       <import plugin="org.objectstyle.wolips.baseforplugins" version="1.0.6" match="perfect"/>
       <import plugin="org.objectstyle.wolips.baseforuiplugins" version="1.0.6" match="perfect"/>
    </requires>
