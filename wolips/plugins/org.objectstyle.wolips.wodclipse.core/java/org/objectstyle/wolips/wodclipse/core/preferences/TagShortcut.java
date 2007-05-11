@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.objectstyle.wolips.wodclipse.core.Activator;
-
 public class TagShortcut {
   private String _shortcut;
   private String _actual;
@@ -102,20 +99,7 @@ public class TagShortcut {
     return false;
   }
 
-  public static String _loadFromPreference(boolean defaults) {
-    IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-    String value = null;
-    if (defaults) {
-      value = store.getDefaultString(PreferenceConstants.TAG_SHORTCUTS_KEY);
-    }
-    else {
-      value = store.getString(PreferenceConstants.TAG_SHORTCUTS_KEY);
-    }
-    return value;
-  }
-
-  public static List<TagShortcut> loadFromPreference(boolean defaults) {
-    String value = TagShortcut._loadFromPreference(defaults);
+  public static List<TagShortcut> fromPreferenceString(String value) {
     List<TagShortcut> list = new ArrayList<TagShortcut>();
     if (value != null) {
       String[] values = value.split("\n");
@@ -135,8 +119,7 @@ public class TagShortcut {
     return list;
   }
 
-  public static void saveToPreference(List<TagShortcut> list) {
-    IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+  public static String toPreferenceString(List<TagShortcut> list) {
     StringBuffer sb = new StringBuffer();
     for (int i = 0; i < list.size(); i++) {
       TagShortcut tag = list.get(i);
@@ -151,19 +134,6 @@ public class TagShortcut {
       }
       sb.append("\n");
     }
-    store.setValue(PreferenceConstants.TAG_SHORTCUTS_KEY, sb.toString());
-  }
-
-  public static void saveDefaultToPreference(List<TagShortcut> list) {
-    IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-    StringBuffer sb = new StringBuffer();
-    for (int i = 0; i < list.size(); i++) {
-      TagShortcut tag = list.get(i);
-      sb.append(tag.getShortcut());
-      sb.append("\t");
-      sb.append(tag.getActual());
-      sb.append("\n");
-    }
-    store.setDefault(PreferenceConstants.TAG_SHORTCUTS_KEY, sb.toString());
+    return sb.toString();
   }
 }

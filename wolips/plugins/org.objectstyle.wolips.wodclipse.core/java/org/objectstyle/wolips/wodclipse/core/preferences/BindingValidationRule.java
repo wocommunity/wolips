@@ -3,9 +3,6 @@ package org.objectstyle.wolips.wodclipse.core.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.objectstyle.wolips.wodclipse.core.Activator;
-
 public class BindingValidationRule {
   private String _typeRegex;
   private String _validBindingRegex;
@@ -14,23 +11,23 @@ public class BindingValidationRule {
     _typeRegex = typeRegex;
     _validBindingRegex = validBindingRegex;
   }
-  
+
   public String getTypeRegex() {
     return _typeRegex;
   }
-  
+
   public void setTypeRegex(String typeRegex) {
     _typeRegex = typeRegex;
   }
-  
+
   public String getValidBindingRegex() {
     return _validBindingRegex;
   }
-  
+
   public void setValidBindingRegex(String validBindingRegex) {
     _validBindingRegex = validBindingRegex;
   }
-  
+
   @Override
   protected BindingValidationRule clone() {
     return new BindingValidationRule(getTypeRegex(), getValidBindingRegex());
@@ -59,20 +56,7 @@ public class BindingValidationRule {
     return false;
   }
 
-  public static String _loadFromPreference(boolean defaults) {
-    IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-    String value = null;
-    if (defaults) {
-      value = store.getDefaultString(PreferenceConstants.BINDING_VALIDATION_RULES_KEY);
-    }
-    else {
-      value = store.getString(PreferenceConstants.BINDING_VALIDATION_RULES_KEY);
-    }
-    return value;
-  }
-
-  public static List<BindingValidationRule> loadFromPreference(boolean defaults) {
-    String value = BindingValidationRule._loadFromPreference(defaults);
+  public static List<BindingValidationRule> fromPreferenceString(String value) {
     List<BindingValidationRule> list = new ArrayList<BindingValidationRule>();
     if (value != null) {
       String[] values = value.split("\n");
@@ -88,8 +72,7 @@ public class BindingValidationRule {
     return list;
   }
 
-  public static void saveToPreference(List<BindingValidationRule> list) {
-    IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+  public static String toPreferenceString(List<BindingValidationRule> list) {
     StringBuffer sb = new StringBuffer();
     for (int i = 0; i < list.size(); i++) {
       BindingValidationRule rules = list.get(i);
@@ -98,19 +81,6 @@ public class BindingValidationRule {
       sb.append(rules.getValidBindingRegex());
       sb.append("\n");
     }
-    store.setValue(PreferenceConstants.BINDING_VALIDATION_RULES_KEY, sb.toString());
-  }
-
-  public static void saveDefaultToPreference(List<BindingValidationRule> list) {
-    IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-    StringBuffer sb = new StringBuffer();
-    for (int i = 0; i < list.size(); i++) {
-      BindingValidationRule rule = list.get(i);
-      sb.append(rule.getTypeRegex());
-      sb.append("\t");
-      sb.append(rule.getValidBindingRegex());
-      sb.append("\n");
-    }
-    store.setDefault(PreferenceConstants.TAG_SHORTCUTS_KEY, sb.toString());
+    return sb.toString();
   }
 }
