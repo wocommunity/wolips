@@ -210,26 +210,14 @@ public class TemplateAssistProcessor extends HTMLAssistProcessor {
     else if ("name".equals(attrInfo.getAttributeName()) && WodHtmlUtils.isWOTag(tagName)) {
       List<AssistInfo> attributeValuesList = new LinkedList<AssistInfo>();
       try {
-        // we REALLY need a cache here also ...
-        LocalizedComponentsLocateResult componentsLocateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(getFile());
-        IFile wodFile = componentsLocateResults.getFirstWodFile();
-        if (wodFile != null) {
-          FileEditorInput input = new FileEditorInput(wodFile);
-          WodFileDocumentProvider provider = new WodFileDocumentProvider();
-          provider.connect(input);
-          try {
-            IDocument wodDocument = provider.getDocument(input);
-            IWodModel wodModel = WodModelUtils.createWodModel(wodFile, wodDocument);
-            for (IWodElement wodElement : wodModel.getElements()) {
-              String wodElementName = wodElement.getElementName();
-              if (wodElementName.toLowerCase().startsWith(value)) {
-                AssistInfo assist = new AssistInfo(wodElementName);
-                attributeValuesList.add(assist);
-              }
+        IWodModel wodModel = _cache.getWodModel();
+        if (wodModel != null) {
+          for (IWodElement wodElement : wodModel.getElements()) {
+            String wodElementName = wodElement.getElementName();
+            if (wodElementName.toLowerCase().startsWith(value.toLowerCase())) {
+              AssistInfo assist = new AssistInfo(wodElementName);
+              attributeValuesList.add(assist);
             }
-          }
-          finally {
-            provider.disconnect(input);
           }
         }
       }
