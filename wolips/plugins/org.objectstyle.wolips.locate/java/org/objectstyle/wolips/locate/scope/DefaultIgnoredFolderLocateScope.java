@@ -58,7 +58,11 @@ package org.objectstyle.wolips.locate.scope;
 public class DefaultIgnoredFolderLocateScope extends IgnoredFolderLocateScope {
 
 	public DefaultIgnoredFolderLocateScope() {
-		super(new String[] { "build", "dist", "target" }, new String[] { "framework", "woa" });
+		this(false);
+	}
+
+	public DefaultIgnoredFolderLocateScope(boolean ignoreWOs) {
+		super(new String[] { "build", "dist", "target" }, (ignoreWOs) ? new String[] { "framework", "woa", "wo" } : new String[] { "framework", "woa" });
 	}
 
 }

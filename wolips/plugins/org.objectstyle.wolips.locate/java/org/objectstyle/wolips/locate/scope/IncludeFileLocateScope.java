@@ -72,14 +72,14 @@ public class IncludeFileLocateScope extends AbstractLocateScope {
 	public boolean addToResult(IFile file) {
 		if (names != null) {
 			for (int i = 0; i < names.length; i++) {
-				if (file.getName().equals(names[i])) {
+				if (names[i].equals(file.getName())) {
 					return true;
 				}
 			}
 		}
 		if (extensions != null) {
 			for (int i = 0; i < extensions.length; i++) {
-				if (file.getFileExtension().equals(extensions[i])) {
+				if (extensions[i].equals(file.getFileExtension())) {
 					return true;
 				}
 			}
