@@ -43,7 +43,6 @@
  */
 package org.objectstyle.wolips.wodclipse.editor;
 
-import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -279,13 +278,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 			WodclipsePlugin.getDefault().log(e);
 		}
 
-		ICompletionProposal[] completionProposals = new ICompletionProposal[completionProposalsSet.size()];
-		Iterator completionProposalsIter = completionProposalsSet.iterator();
-		for (int i = 0; completionProposalsIter.hasNext(); i++) {
-			WodCompletionProposal wodCompletionProposal = (WodCompletionProposal) completionProposalsIter.next();
-			completionProposals[i] = wodCompletionProposal.toCompletionProposal();
-		}
-		return completionProposals;
+		return completionProposalsSet.toArray(new WodCompletionProposal[completionProposalsSet.size()]);
 	}
 
 	public String getErrorMessage() {
