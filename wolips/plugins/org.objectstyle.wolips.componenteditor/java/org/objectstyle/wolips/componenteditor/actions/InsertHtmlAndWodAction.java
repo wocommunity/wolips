@@ -32,45 +32,7 @@ import org.objectstyle.wolips.wodclipse.editor.WodEditor;
  * 
  */
 
-public abstract class InsertHtmlAndWodAction extends ActionDelegate implements IEditorActionDelegate {
-	private IEditorPart _activeEditor;
-
-	/**
-	 * <P>
-	 * This method will return the current template editor or null if there is
-	 * not a current template editor.
-	 * </P>
-	 */
-	protected TemplateEditor getTemplateEditor() {
-		if (null != _activeEditor) {
-			ComponentEditorPart cep = (ComponentEditorPart) _activeEditor;
-			HtmlWodTab hwt = cep.htmlWodTab();
-
-			if (null != hwt) {
-				return hwt.templateEditor();
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * <P>
-	 * This method will return the current WOD editor or null if there is not a
-	 * current WOD editor.
-	 * </P>
-	 */
-	protected WodEditor getWodEditor() {
-		if (null != _activeEditor) {
-			ComponentEditorPart cep = (ComponentEditorPart) _activeEditor;
-			HtmlWodTab hwt = cep.htmlWodTab();
-
-			if (null != hwt) {
-				return hwt.wodEditor();
-			}
-		}
-		return null;
-	}
-
+public abstract class InsertHtmlAndWodAction extends AbstractTemplateAction {
 	/**
 	 * <P>
 	 * This method should return the required bindings that the component must
@@ -291,9 +253,5 @@ public abstract class InsertHtmlAndWodAction extends ActionDelegate implements I
 				}
 			}
 		}
-	}
-
-	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
-		_activeEditor = targetEditor;
 	}
 }
