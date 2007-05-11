@@ -44,87 +44,179 @@
 package org.objectstyle.wolips.wodclipse.core.completion;
 
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jface.text.contentassist.CompletionProposal;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.DocumentEvent;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.jface.text.contentassist.ICompletionProposalExtension2;
+import org.eclipse.jface.text.contentassist.IContextInformation;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 
 /**
  * @author mike
  */
-public class WodCompletionProposal implements Comparable {
-	private String _token;
+public class WodCompletionProposal implements Comparable, ICompletionProposal, ICompletionProposalExtension2 {
+  private String _token;
 
-	private int _tokenOffset;
+  private int _replacementOffset;
 
-	private int _offset;
+  private int _offset;
 
-	private String _proposal;
+  private String _replacementString;
 
-	private String _display;
+  private int fReplacementLength;
 
-	private int _cursorOffset;
+  private String _displayString;
 
-	private IType _correspondingType;
+  private int _cursorPosition;
 
-	public WodCompletionProposal(String token, int tokenOffset, int offset, String proposal) {
-		this(token, tokenOffset, offset, proposal, null, proposal.length());
-	}
+  private IType _correspondingType;
 
-	public WodCompletionProposal(String token, int tokenOffset, int offset, String proposal, String display, int cursorOffset) {
-		_token = token;
-		_tokenOffset = tokenOffset;
-		_offset = offset;
-		_proposal = proposal;
-		_display = display;
-		_cursorOffset = cursorOffset;
-	}
+  private Image _image;
 
-	public void setCorrespondingType(IType correspondingType) {
-		_correspondingType = correspondingType;
-	}
+  private IContextInformation _contextInformation;
 
-	public IType getCorrespondingType() {
-		return _correspondingType;
-	}
+  private String _additionalProposalInfo;
 
-	public String getProposal() {
-		return _proposal;
-	}
+  public WodCompletionProposal(String token, int replacementOffset, int offset, String replacementString) {
+    this(token, replacementOffset, offset, replacementString, null, replacementString.length());
+  }
 
-	public CompletionProposal toCompletionProposal() {
-		CompletionProposal completionProposal = new CompletionProposal(_proposal, _tokenOffset, _token.length(), _cursorOffset, null, _display, null, null);
-		return completionProposal;
-	}
+  public WodCompletionProposal(String token, int replacementOffset, int offset, String replacementString, String displayString, int cursorPosition) {
+    this(token, replacementOffset, token.length(), offset, replacementString, null, cursorPosition, null);
 
-	@Override
+  }
+
+  public WodCompletionProposal(String token, int replacementOffset, int replacementLength, int offset, String replacementString, String displayString, int cursorPosition, Image image) {
+    _token = token;
+    _offset = offset;
+    _replacementOffset = replacementOffset;
+    _replacementString = replacementString;
+    fReplacementLength = replacementLength;
+    _displayString = displayString;
+    _cursorPosition = cursorPosition;
+
+    _image = image;
+    _contextInformation = null;
+    _additionalProposalInfo = null;
+  }
+
+  public void apply(ITextViewer viewer, char trigger, int stateMask, int offset) {
+    System.out.println("WodCompletionProposal.apply: " + viewer + ", " + trigger + ", " + stateMask + ", " + offset);
+    apply(viewer.getDocument());
+  }
+
+  public void selected(ITextViewer viewer, boolean smartToggle) {
+    // DO NOTHING
+  }
+
+  public void unselected(ITextViewer viewer) {
+    // DO NOTHING
+  }
+
+  public boolean validate(IDocument document, int offset, DocumentEvent event) {
+    return true;
+  }
+
+  public void setCorrespondingType(IType correspondingType) {
+    _correspondingType = correspondingType;
+  }
+
+  public IType getCorrespondingType() {
+    return _correspondingType;
+  }
+
+  public String getProposal() {
+    return _replacementString;
+  }
+
+  @Override
   public boolean equals(Object obj) {
-		return (obj instanceof WodCompletionProposal && ((WodCompletionProposal) obj)._proposal.equals(_proposal));
-	}
+    return (obj instanceof WodCompletionProposal && ((WodCompletionProposal) obj)._replacementString.equals(_replacementString));
+  }
 
-	@Override
+  @Override
   public int hashCode() {
-		return _proposal.hashCode();
-	}
+    return _replacementString.hashCode();
+  }
 
-	public int compareTo(Object obj) {
-		int comparison;
-		if (obj instanceof WodCompletionProposal) {
-			String proposal = _proposal;
-			String otherProposal = ((WodCompletionProposal) obj)._proposal;
-			if (proposal.startsWith("_")) {
-				if (otherProposal.startsWith("_")) {
-					comparison = _proposal.compareTo(((WodCompletionProposal) obj)._proposal);
-				} else {
-					comparison = 1;
-				}
-			} else {
-				if (otherProposal.startsWith("_")) {
-					comparison = -1;
-				} else {
-					comparison = proposal.compareTo(otherProposal);
-				}
-			}
-		} else {
-			comparison = -1;
-		}
-		return comparison;
-	}
+  public int compareTo(Object obj) {
+    int comparison;
+    if (obj instanceof WodCompletionProposal) {
+      String proposal = _replacementString;
+      String otherProposal = ((WodCompletionProposal) obj)._replacementString;
+      if (proposal.startsWith("_")) {
+        if (otherProposal.startsWith("_")) {
+          comparison = _replacementString.compareTo(((WodCompletionProposal) obj)._replacementString);
+        }
+        else {
+          comparison = 1;
+        }
+      }
+      else {
+        if (otherProposal.startsWith("_")) {
+          comparison = -1;
+        }
+        else {
+          comparison = proposal.compareTo(otherProposal);
+        }
+      }
+    }
+    else {
+      comparison = -1;
+    }
+    return comparison;
+  }
+
+  /*
+   * @see ICompletionProposal#apply(IDocument)
+   */
+  public void apply(IDocument document) {
+    System.out.println("WodCompletionProposal.apply: " + document);
+    try {
+      document.replace(_replacementOffset, fReplacementLength, _replacementString);
+    }
+    catch (BadLocationException x) {
+      // ignore
+    }
+  }
+
+  /*
+   * @see ICompletionProposal#getSelection(IDocument)
+   */
+  public Point getSelection(IDocument document) {
+    return new Point(_replacementOffset + _cursorPosition, 0);
+  }
+
+  /*
+   * @see ICompletionProposal#getContextInformation()
+   */
+  public IContextInformation getContextInformation() {
+    return _contextInformation;
+  }
+
+  /*
+   * @see ICompletionProposal#getImage()
+   */
+  public Image getImage() {
+    return _image;
+  }
+
+  /*
+   * @see ICompletionProposal#getDisplayString()
+   */
+  public String getDisplayString() {
+    if (_displayString != null)
+      return _displayString;
+    return _replacementString;
+  }
+
+  /*
+   * @see ICompletionProposal#getAdditionalProposalInfo()
+   */
+  public String getAdditionalProposalInfo() {
+    return _additionalProposalInfo;
+  }
 }
