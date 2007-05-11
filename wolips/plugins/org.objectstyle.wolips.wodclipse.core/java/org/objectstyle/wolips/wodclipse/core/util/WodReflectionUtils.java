@@ -86,11 +86,11 @@ public class WodReflectionUtils {
   }
 
   public static boolean isNSKeyValueCoding(IType type) throws JavaModelException {
-	  return WodReflectionUtils.isType(type, new String[] { "com.webobjects.foundation.NSKeyValueCoding" });
+    return WodReflectionUtils.isType(type, new String[] { "com.webobjects.foundation.NSKeyValueCoding" });
   }
 
   public static boolean isNSCollection(IType type) throws JavaModelException {
-	  return WodReflectionUtils.isType(type, new String[] { "com.webobjects.foundation.NSDictionary", "com.webobjects.foundation.NSArray", "com.webobjects.foundation.NSSet", "er.extensions.ERXLocalizer" });
+    return WodReflectionUtils.isType(type, new String[] { "com.webobjects.foundation.NSDictionary", "com.webobjects.foundation.NSArray", "com.webobjects.foundation.NSSet", "er.extensions.ERXLocalizer" });
   }
 
   public static boolean isType(IType type, String[] possibleTypes) throws JavaModelException {
@@ -99,10 +99,10 @@ public class WodReflectionUtils {
     IType[] types = typeHierarchy.getAllTypes();
     for (int typeNum = 0; !isType && typeNum < types.length; typeNum++) {
       String name = types[typeNum].getFullyQualifiedName();
-      for (int possibleTypeNum = 0; !isType && possibleTypeNum < possibleTypes.length; possibleTypeNum ++) {
-	      if (possibleTypes[possibleTypeNum].equals(name)) {
-	        isType = true;
-	      }
+      for (int possibleTypeNum = 0; !isType && possibleTypeNum < possibleTypes.length; possibleTypeNum++) {
+        if (possibleTypes[possibleTypeNum].equals(name)) {
+          isType = true;
+        }
       }
     }
     return isType;
@@ -176,23 +176,29 @@ public class WodReflectionUtils {
       boolean memberSignatureMatches;
       if (member instanceof IMethod) {
         IMethod method = (IMethod) member;
-        int parameterCount = method.getParameterNames().length;
-        String returnType = method.getReturnType();
-        if (accessorsOrMutators == WodReflectionUtils.ACCESSORS_ONLY) {
-          memberSignatureMatches = (parameterCount == 0 && !"V".equals(returnType));
+        if (method.isConstructor()) {
           possiblePrefixes = WodReflectionUtils.GET_METHOD_PREFIXES;
-        }
-        else if (accessorsOrMutators == WodReflectionUtils.ACCESSORS_OR_VOID) {
-          memberSignatureMatches = (parameterCount == 0);
-          possiblePrefixes = WodReflectionUtils.GET_METHOD_PREFIXES;
-        }
-        else if (accessorsOrMutators == WodReflectionUtils.VOID_ONLY) {
-          memberSignatureMatches = (parameterCount == 0 && "V".equals(returnType));
-          possiblePrefixes = WodReflectionUtils.GET_METHOD_PREFIXES;
+          memberSignatureMatches = false;
         }
         else {
-          memberSignatureMatches = (parameterCount == 1 && "V".equals(returnType));
-          possiblePrefixes = WodReflectionUtils.SET_METHOD_PREFIXES;
+          int parameterCount = method.getParameterNames().length;
+          String returnType = method.getReturnType();
+          if (accessorsOrMutators == WodReflectionUtils.ACCESSORS_ONLY) {
+            memberSignatureMatches = (parameterCount == 0 && !"V".equals(returnType));
+            possiblePrefixes = WodReflectionUtils.GET_METHOD_PREFIXES;
+          }
+          else if (accessorsOrMutators == WodReflectionUtils.ACCESSORS_OR_VOID) {
+            memberSignatureMatches = (parameterCount == 0);
+            possiblePrefixes = WodReflectionUtils.GET_METHOD_PREFIXES;
+          }
+          else if (accessorsOrMutators == WodReflectionUtils.VOID_ONLY) {
+            memberSignatureMatches = (parameterCount == 0 && "V".equals(returnType));
+            possiblePrefixes = WodReflectionUtils.GET_METHOD_PREFIXES;
+          }
+          else {
+            memberSignatureMatches = (parameterCount == 1 && "V".equals(returnType));
+            possiblePrefixes = WodReflectionUtils.SET_METHOD_PREFIXES;
+          }
         }
       }
       else {
