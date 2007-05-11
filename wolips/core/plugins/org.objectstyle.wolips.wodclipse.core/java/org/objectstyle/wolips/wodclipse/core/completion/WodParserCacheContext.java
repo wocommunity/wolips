@@ -6,7 +6,9 @@ import java.util.Map;
 import org.apache.commons.collections.map.ReferenceMap;
 import org.eclipse.jdt.core.IType;
 import org.objectstyle.wolips.core.resources.types.api.Wo;
+import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.preferences.BindingValidationRule;
+import org.objectstyle.wolips.wodclipse.core.preferences.PreferenceConstants;
 import org.objectstyle.wolips.wodclipse.core.preferences.TagShortcut;
 
 public class WodParserCacheContext {
@@ -50,19 +52,19 @@ public class WodParserCacheContext {
   }
 
   public synchronized List<TagShortcut> getTagShortcuts() {
-    String tagShortcutsStr = TagShortcut._loadFromPreference(false);
+    String tagShortcutsStr = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.TAG_SHORTCUTS_KEY);
     if ((tagShortcutsStr == null && _tagShortcutsStr != null) || (tagShortcutsStr != null && !tagShortcutsStr.equals(_tagShortcutsStr))) {
       _tagShortcutsStr = tagShortcutsStr;
-      _tagShortcuts = TagShortcut.loadFromPreference(false);
+      _tagShortcuts = TagShortcut.fromPreferenceString(tagShortcutsStr);
     }
     return _tagShortcuts;
   }
 
   public synchronized List<BindingValidationRule> getBindingValidationRules() {
-    String bindingValidationRulesStr = BindingValidationRule._loadFromPreference(false);
+    String bindingValidationRulesStr = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.BINDING_VALIDATION_RULES_KEY);
     if ((bindingValidationRulesStr == null && _bindingValidationRulesStr != null) || (bindingValidationRulesStr != null && !bindingValidationRulesStr.equals(_bindingValidationRulesStr))) {
       _bindingValidationRulesStr = bindingValidationRulesStr;
-      _bindingValidationRules = BindingValidationRule.loadFromPreference(false);
+      _bindingValidationRules = BindingValidationRule.fromPreferenceString(bindingValidationRulesStr);
     }
     return _bindingValidationRules;
   }

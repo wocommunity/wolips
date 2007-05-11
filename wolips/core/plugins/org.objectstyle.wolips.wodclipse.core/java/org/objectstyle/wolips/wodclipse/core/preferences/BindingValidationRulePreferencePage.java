@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -40,9 +41,13 @@ public class BindingValidationRulePreferencePage extends PreferencePage implemen
   private List<BindingValidationRule> _oldModel = new ArrayList<BindingValidationRule>();
 
   public BindingValidationRulePreferencePage() {
-    setPreferenceStore(Activator.getDefault().getPreferenceStore());
     setTitle("Binding Validation Rules");
     setDescription("Binding validation rules let you specify the regex for components and the regexes for valid binding values on those components.  For instance, component .*\\.MDT.* and binding value ^localizer\\..* would say that any component with MDT in its name that uses a binding value starting with 'localizer\\.' automatically validates.");
+  }
+
+  @Override
+  protected IPreferenceStore doGetPreferenceStore() {
+    return Activator.getDefault().getPreferenceStore();
   }
 
   @Override
@@ -119,7 +124,7 @@ public class BindingValidationRulePreferencePage extends PreferencePage implemen
     };
 
     _viewer = support.getTableViewer();
-    _model.addAll(BindingValidationRule.loadFromPreference(false));
+    _model.addAll(BindingValidationRule.fromPreferenceString(getPreferenceStore().getString(PreferenceConstants.BINDING_VALIDATION_RULES_KEY)));
     syncModels();
     _viewer.refresh();
 
@@ -129,15 +134,16 @@ public class BindingValidationRulePreferencePage extends PreferencePage implemen
   @Override
   protected void performDefaults() {
     _model.clear();
-    _model.addAll(BindingValidationRule.loadFromPreference(true));
+    _model.addAll(BindingValidationRule.fromPreferenceString(getPreferenceStore().getDefaultString(PreferenceConstants.BINDING_VALIDATION_RULES_KEY)));
     _viewer.refresh();
     processChange();
   }
 
   @Override
   public boolean performOk() {
-    BindingValidationRule.saveToPreference(_model);
+    getPreferenceStore().setValue(PreferenceConstants.BINDING_VALIDATION_RULES_KEY, BindingValidationRule.toPreferenceString(_model));
     processChange();
+    Activator.getDefault().savePluginPreferences();
     return true;
   }
 
@@ -159,19 +165,19 @@ public class BindingValidationRulePreferencePage extends PreferencePage implemen
   private void processChange() {
     if (BindingValidationRule.hasChange(_oldModel, _model)) {
       syncModels();
-//      try {
-//        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-//        IProject[] projects = root.getProjects();
-//        for (int i = 0; i < projects.length; i++) {
-//          IProjectAdapter wolipsProjectAdaptor = (IProjectAdapter) projects[i].getAdapter(IProjectAdapter.class);
-//          if (wolipsProjectAdaptor != null) {
-//            projects[i].build(IncrementalProjectBuilder.CLEAN_BUILD, new NullProgressMonitor());
-//          }
-//        }
-//      }
-//      catch (Exception ex) {
-//        Activator.getDefault().log(ex);
-//      }
+      //      try {
+      //        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+      //        IProject[] projects = root.getProjects();
+      //        for (int i = 0; i < projects.length; i++) {
+      //          IProjectAdapter wolipsProjectAdaptor = (IProjectAdapter) projects[i].getAdapter(IProjectAdapter.class);
+      //          if (wolipsProjectAdaptor != null) {
+      //            projects[i].build(IncrementalProjectBuilder.CLEAN_BUILD, new NullProgressMonitor());
+      //          }
+      //        }
+      //      }
+      //      catch (Exception ex) {
+      //        Activator.getDefault().log(ex);
+      //      }
     }
   }
 

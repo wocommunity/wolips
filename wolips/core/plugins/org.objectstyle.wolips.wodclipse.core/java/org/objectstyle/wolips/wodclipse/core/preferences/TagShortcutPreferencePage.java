@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -40,9 +41,13 @@ public class TagShortcutPreferencePage extends PreferencePage implements IWorkbe
   private List<TagShortcut> _oldModel = new ArrayList<TagShortcut>();
 
   public TagShortcutPreferencePage() {
-    setPreferenceStore(Activator.getDefault().getPreferenceStore());
     setTitle("Tag Shortcuts");
     setDescription("Tag shortcuts are for use with inline bindings. You must have these shortcuts declared at runtime as well. The definitions here are for html validation.\n\nIf you are using WOTagProcessor, you can define shortcuts that map additional keys like 'edit'=>'ERXWOTemplate','templateName=edit'.");
+  }
+
+  @Override
+  protected IPreferenceStore doGetPreferenceStore() {
+    return Activator.getDefault().getPreferenceStore();
   }
 
   @Override
@@ -126,7 +131,7 @@ public class TagShortcutPreferencePage extends PreferencePage implements IWorkbe
     };
 
     _viewer = support.getTableViewer();
-    _model.addAll(TagShortcut.loadFromPreference(false));
+    _model.addAll(TagShortcut.fromPreferenceString(getPreferenceStore().getString(PreferenceConstants.TAG_SHORTCUTS_KEY)));
     syncModels();
     _viewer.refresh();
 
@@ -136,15 +141,16 @@ public class TagShortcutPreferencePage extends PreferencePage implements IWorkbe
   @Override
   protected void performDefaults() {
     _model.clear();
-    _model.addAll(TagShortcut.loadFromPreference(true));
+    _model.addAll(TagShortcut.fromPreferenceString(getPreferenceStore().getDefaultString(PreferenceConstants.TAG_SHORTCUTS_KEY)));
     _viewer.refresh();
     processChange();
   }
 
   @Override
   public boolean performOk() {
-    TagShortcut.saveToPreference(_model);
+    getPreferenceStore().setValue(PreferenceConstants.TAG_SHORTCUTS_KEY, TagShortcut.toPreferenceString(_model));
     processChange();
+    Activator.getDefault().savePluginPreferences();
     return true;
   }
 
@@ -166,19 +172,19 @@ public class TagShortcutPreferencePage extends PreferencePage implements IWorkbe
   private void processChange() {
     if (TagShortcut.hasChange(_oldModel, _model)) {
       syncModels();
-//      try {
-//        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-//        IProject[] projects = root.getProjects();
-//        for (int i = 0; i < projects.length; i++) {
-//          IProjectAdapter wolipsProjectAdaptor = (IProjectAdapter) projects[i].getAdapter(IProjectAdapter.class);
-//          if (wolipsProjectAdaptor != null) {
-//            projects[i].build(IncrementalProjectBuilder.CLEAN_BUILD, new NullProgressMonitor());
-//          }
-//        }
-//      }
-//      catch (Exception ex) {
-//        Activator.getDefault().log(ex);
-//      }
+      //      try {
+      //        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+      //        IProject[] projects = root.getProjects();
+      //        for (int i = 0; i < projects.length; i++) {
+      //          IProjectAdapter wolipsProjectAdaptor = (IProjectAdapter) projects[i].getAdapter(IProjectAdapter.class);
+      //          if (wolipsProjectAdaptor != null) {
+      //            projects[i].build(IncrementalProjectBuilder.CLEAN_BUILD, new NullProgressMonitor());
+      //          }
+      //        }
+      //      }
+      //      catch (Exception ex) {
+      //        Activator.getDefault().log(ex);
+      //      }
     }
   }
 

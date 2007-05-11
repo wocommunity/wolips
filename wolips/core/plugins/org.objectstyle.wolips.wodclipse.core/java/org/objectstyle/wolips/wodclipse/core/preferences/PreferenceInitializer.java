@@ -57,27 +57,27 @@ import org.objectstyle.wolips.wodclipse.core.Activator;
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
   @Override
   public void initializeDefaultPreferences() {
-    IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-    store.setDefault(PreferenceConstants.ELEMENT_NAME, "65,0,197");
-    store.setDefault(PreferenceConstants.ELEMENT_TYPE, "63,127,95");
-    store.setDefault(PreferenceConstants.BINDING_NAME, "138,23,100");
-    store.setDefault(PreferenceConstants.BINDING_VALUE, "0,65,216");
-    store.setDefault(PreferenceConstants.CONSTANT_BINDING_VALUE, "42,0,255");
-    store.setDefault(PreferenceConstants.OPERATOR, "0,0,0");
-    store.setDefault(PreferenceConstants.COMMENT, "63,127,95");
-    store.setDefault(PreferenceConstants.UNKNOWN, "0,0,0");
-    store.setDefault(PreferenceConstants.ALLOWED_BINDING_CHARACTERS, ".^-@,|()");
-    store.setDefault(PreferenceConstants.VALIDATE_TEMPLATES_KEY, true);
-    store.setDefault(PreferenceConstants.VALIDATE_BINDING_VALUES, true);
-    store.setDefault(PreferenceConstants.VALIDATE_OGNL_KEY, true);
-    store.setDefault(PreferenceConstants.AUTO_INSERT_ON_COMPLETION, true);
-    store.setDefault(PreferenceConstants.WARN_ON_MISSING_COLLECTION_KEY, true);
-    store.setDefault(PreferenceConstants.ERROR_ON_MISSING_NSKVC_KEY, true);
-    store.setDefault(PreferenceConstants.WARN_ON_MISSING_NSKVC_KEY, false);
-    store.setDefault(PreferenceConstants.WARN_ON_AMBIGUOUS_KEY, true);
-    store.setDefault(PreferenceConstants.ERROR_ON_HTML_ERRORS_KEY, true);
-    store.setDefault(PreferenceConstants.WARN_ON_OPERATOR_KEY, true);
-    store.setDefault(PreferenceConstants.WARN_ON_HELPER_FUNCTION_KEY, true);
+    IPreferenceStore prefs = Activator.getDefault().getPreferenceStore();
+    prefs.setDefault(PreferenceConstants.ELEMENT_NAME, "65,0,197");
+    prefs.setDefault(PreferenceConstants.ELEMENT_TYPE, "63,127,95");
+    prefs.setDefault(PreferenceConstants.BINDING_NAME, "138,23,100");
+    prefs.setDefault(PreferenceConstants.BINDING_VALUE, "0,65,216");
+    prefs.setDefault(PreferenceConstants.CONSTANT_BINDING_VALUE, "42,0,255");
+    prefs.setDefault(PreferenceConstants.OPERATOR, "0,0,0");
+    prefs.setDefault(PreferenceConstants.COMMENT, "63,127,95");
+    prefs.setDefault(PreferenceConstants.UNKNOWN, "0,0,0");
+    prefs.setDefault(PreferenceConstants.ALLOWED_BINDING_CHARACTERS, ".^-@,|()");
+    prefs.setDefault(PreferenceConstants.VALIDATE_TEMPLATES_KEY, true);
+    prefs.setDefault(PreferenceConstants.VALIDATE_BINDING_VALUES, true);
+    prefs.setDefault(PreferenceConstants.VALIDATE_OGNL_KEY, true);
+    prefs.setDefault(PreferenceConstants.AUTO_INSERT_ON_COMPLETION, true);
+    prefs.setDefault(PreferenceConstants.WARN_ON_MISSING_COLLECTION_KEY, true);
+    prefs.setDefault(PreferenceConstants.ERROR_ON_MISSING_NSKVC_KEY, true);
+    prefs.setDefault(PreferenceConstants.WARN_ON_MISSING_NSKVC_KEY, false);
+    prefs.setDefault(PreferenceConstants.WARN_ON_AMBIGUOUS_KEY, true);
+    prefs.setDefault(PreferenceConstants.ERROR_ON_HTML_ERRORS_KEY, true);
+    prefs.setDefault(PreferenceConstants.WARN_ON_OPERATOR_KEY, true);
+    prefs.setDefault(PreferenceConstants.WARN_ON_HELPER_FUNCTION_KEY, true);
 
     List<TagShortcut> tagShortcuts = new ArrayList<TagShortcut>();
     tagShortcuts.add(new TagShortcut("string", "WOString", new HashMap<String, String>()));
@@ -100,9 +100,9 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     tagShortcuts.add(new TagShortcut("form", "WOForm", new HashMap<String, String>()));
     tagShortcuts.add(new TagShortcut("submit", "WOSubmitButton", new HashMap<String, String>()));
     tagShortcuts.add(new TagShortcut("localized", "ERXLocalizedString", new HashMap<String, String>()));
-    TagShortcut.saveDefaultToPreference(tagShortcuts);
+    prefs.setDefault(PreferenceConstants.TAG_SHORTCUTS_KEY, TagShortcut.toPreferenceString(tagShortcuts));
 
     List<BindingValidationRule> validationRules = new ArrayList<BindingValidationRule>();
-    BindingValidationRule.saveDefaultToPreference(validationRules);
+    prefs.setDefault(PreferenceConstants.BINDING_VALIDATION_RULES_KEY, BindingValidationRule.toPreferenceString(validationRules));
   }
 }
