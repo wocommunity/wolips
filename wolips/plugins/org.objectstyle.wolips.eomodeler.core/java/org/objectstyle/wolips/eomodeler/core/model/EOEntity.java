@@ -751,6 +751,10 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		}
 	}
 	
+	public void entitySaved() {
+		myOriginalName = myName;
+	}
+	
 	public String getOriginalName() {
 		return myOriginalName;
 	}
