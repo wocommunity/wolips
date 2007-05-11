@@ -885,6 +885,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			entity.saveToFile(entityFile);
 			File fspecFile = new File(modelFolder, entityName + ".fspec");
 			entity.saveFetchSpecsToFile(fspecFile);
+			entity.entitySaved();
 		}
 
 		if (myDeletedStoredProcedureNames != null) {
