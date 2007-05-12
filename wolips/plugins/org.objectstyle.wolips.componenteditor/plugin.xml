@@ -67,6 +67,11 @@
                 categoryId="org.objectstyle.wolips.componenteditor.componenteditorcommands"
                 id="org.objectstyle.wolips.componenteditor.editors.towobuilder">
         </command>
+        <command
+              categoryId="org.objectstyle.wolips.componenteditor.componenteditorcommands"
+              description="Rename..."
+              id="org.objectstyle.wolips.componenteditor.editors.command.refactorRename"
+              name="Rename..."/>
     </extension>
     <extension point="org.eclipse.ui.bindings">
 		<key
@@ -99,6 +104,11 @@
         		contextId="org.eclipse.ui.contexts.window"
         		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
         		sequence="M1+M3+6"/>
+  <key
+        commandId="org.objectstyle.wolips.componenteditor.editors.command.refactorRename"
+        contextId="org.objectstyle.wolips.componenteditor.componentEditorScope"
+        schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+        sequence="M1+2 R"/>
 	</extension>
 	
 	<extension point = "org.eclipse.ui.editorActions">
@@ -111,6 +121,13 @@
  				<separator name="group1"/>
  				<separator name="group2"/>
 		  </menu>
+         <menu
+               id="org.objectstyle.wolips.componenteditor.refactorMenuContribution"
+               label="&amp;Refactor"
+               path="edit/additions">
+            <separator name="group1"/>
+            <separator name="group2"/>
+         </menu>
          <action
                class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToWOBuilderActionDelegate"
                definitionId="org.objectstyle.wolips.componenteditor.editors.towobuilder"
@@ -147,6 +164,13 @@
                id="org.objectstyle.wolips.componenteditor.editors.switchtojava"
                label="Switch to Java Editor"
                menubarPath="navigate/org.objectstyle.wolips.componenteditor.navigateMenuContribution/group1"/>
+         <action
+               class="org.objectstyle.wolips.componenteditor.actions.QuickRenameElementAction"
+               definitionId="org.objectstyle.wolips.componenteditor.editors.command.refactorRename"
+               id="org.objectstyle.wolips.componenteditor.editors.action.refactorRename"
+               label="Rename..."
+               menubarPath="edit/org.objectstyle.wolips.componenteditor.refactorMenuContribution/group1"
+               />
 		</editorContribution>
       <editorContribution 
          id="org.objectstyle.wolips.javaeditor.editorActionsContribution" 
@@ -190,15 +214,6 @@
 			id="org.objectstyle.wolips.componenteditor.actionSet"
 			label="Component Editor">
 			<action
-				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOStringAction"
-				icon="icons/string.png"
-				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOString"
-				label="Insert WOString Component"
-				style="push"
-				toolbarPath="/Normal/additions"
-				tooltip="Insert WOString Component">
-			</action>
-			<action
 				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOConditionalAction"
 				icon="icons/conditional.png"
 				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOConditional"
@@ -206,6 +221,15 @@
 				style="push"
 				toolbarPath="/Normal/additions"
 				tooltip="Insert WOConditional Component">
+			</action>
+			<action
+				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOStringAction"
+				icon="icons/string.png"
+				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOString"
+				label="Insert WOString Component"
+				style="push"
+				toolbarPath="/Normal/additions"
+				tooltip="Insert WOString Component">
 			</action>
 			<action
 				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOHyperlinkAction"
@@ -317,7 +341,7 @@
 			</action>
 			<action
 				class="org.objectstyle.wolips.componenteditor.actions.InsertHtmlTagAction"
-				icon="icons/form.png"
+				icon="icons/anybasictag.png"
 				id="org.objectstyle.wolips.componenteditor.actions.InsertHtmlTagAction"
 				label="Insert Tag"
 				style="push"
@@ -326,5 +350,13 @@
 			</action>
 		</editorContribution>
 </extension>
+ <extension
+       point="org.eclipse.ui.contexts">
+    <context
+          description="Editing Components Context"
+          id="org.objectstyle.wolips.componenteditor.componentEditorScope"
+          name="Editing Components"
+          parentId="org.eclipse.ui.textEditorScope"/>
+ </extension>
 
 </plugin>

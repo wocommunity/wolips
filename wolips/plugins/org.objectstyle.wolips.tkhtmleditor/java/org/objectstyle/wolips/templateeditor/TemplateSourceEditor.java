@@ -3,10 +3,12 @@ package org.objectstyle.wolips.templateeditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IFileEditorInput;
+import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 
@@ -22,6 +24,11 @@ public class TemplateSourceEditor extends HTMLSourceEditor {
     super(config);
     //    setAction(ACTION_JSP_COMMENT, new JSPCommentAction());
     //    setAction(ACTION_TOGGLE_BREAKPOINT, new ToggleBreakPointAction());
+  }
+
+  @Override
+  protected void initializeKeyBindingScopes() {
+    setKeyBindingScopes(new String[] { "org.objectstyle.wolips.componenteditor.componentEditorScope" }); //$NON-NLS-1$
   }
 
   @Override
@@ -46,9 +53,7 @@ public class TemplateSourceEditor extends HTMLSourceEditor {
       ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
         public void run(IProgressMonitor monitor) {
           try {
-            IFileEditorInput input = (IFileEditorInput) getEditorInput();
-            IFile inputFile = input.getFile();
-            WodParserCache cache = WodParserCache.parser(inputFile);
+            WodParserCache cache = TemplateSourceEditor.this.getParserCache();
             cache.parseHtmlAndWodIfNecessary();
             cache.validate();
           }
@@ -61,6 +66,13 @@ public class TemplateSourceEditor extends HTMLSourceEditor {
     catch (Exception ex) {
       HTMLPlugin.logException(ex);
     }
+  }
+
+  public WodParserCache getParserCache() throws CoreException, LocateException {
+    IFileEditorInput input = (IFileEditorInput) getEditorInput();
+    IFile inputFile = input.getFile();
+    WodParserCache cache = WodParserCache.parser(inputFile);
+    return cache;
   }
 
   public TemplateOutlinePage getTemplateOutlinePage() {

@@ -2,6 +2,7 @@ package tk.eclipse.plugin.htmleditor.editors;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -128,6 +129,7 @@ public class HTMLSourceEditor extends TextEditor {
 
   private ProjectionSupport fProjectionSupport;
 
+  @Override
   protected ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
     ISourceViewer viewer = new ProjectionViewer(parent, ruler, fOverviewRuler, true, styles);
     getSourceViewerDecorationSupport(viewer);
@@ -139,6 +141,7 @@ public class HTMLSourceEditor extends TextEditor {
     return this.getSourceViewer();
   }
 
+  @Override
   public void createPartControl(Composite parent) {
     super.createPartControl(parent);
 
@@ -172,11 +175,13 @@ public class HTMLSourceEditor extends TextEditor {
   //	}
 
   /** This method is called when configuration is changed. */
+  @Override
   protected boolean affectsTextPresentation(PropertyChangeEvent event) {
     return super.affectsTextPresentation(event) || colorProvider.affectsTextPresentation(event);
   }
 
   /** This method is called when configuration is changed. */
+  @Override
   protected void handlePreferenceStoreChanged(PropertyChangeEvent event) {
     colorProvider.handlePreferenceStoreChanged(event);
     updateAssistProperties(event);
@@ -250,11 +255,13 @@ public class HTMLSourceEditor extends TextEditor {
     addAction(menu, GROUP_HTML, ACTION_COMMENT);
   }
 
-  protected final void editorContextMenuAboutToShow(IMenuManager menu) {
+  @Override
+  protected void editorContextMenuAboutToShow(IMenuManager menu) {
     super.editorContextMenuAboutToShow(menu);
     addContextMenuActions(menu);
   }
 
+  @Override
   protected void updateSelectionDependentActions() {
     super.updateSelectionDependentActions();
     ITextSelection sel = (ITextSelection) getSelectionProvider().getSelection();
@@ -370,6 +377,7 @@ public class HTMLSourceEditor extends TextEditor {
    }
    */
 
+  @Override
   public void dispose() {
     if (isFileEditorInput() && validation) {
       try {
@@ -412,6 +420,7 @@ public class HTMLSourceEditor extends TextEditor {
     return new File(file.getLocation().makeAbsolute().toFile().getParentFile(), "." + file.getName());
   }
 
+  @Override
   protected void createActions() {
     super.createActions();
     // add content assist action
@@ -420,6 +429,7 @@ public class HTMLSourceEditor extends TextEditor {
     setAction(ACTION_COMPLETION, action);
   }
 
+  @Override
   public Object getAdapter(Class adapter) {
     if (IContentOutlinePage.class.equals(adapter)) {
       return outlinePage;
@@ -451,7 +461,8 @@ public class HTMLSourceEditor extends TextEditor {
     }
   }
 
-  protected final void doSetInput(IEditorInput input) throws CoreException {
+  @Override
+  protected void doSetInput(IEditorInput input) throws CoreException {
     setDocumentProvider(createDocumentProvider(input));
     if (input instanceof IFileEditorInput) {
       IFile file = ((IFileEditorInput) input).getFile();
@@ -463,11 +474,13 @@ public class HTMLSourceEditor extends TextEditor {
     super.doSetInput(input);
   }
 
+  @Override
   public void doSave(IProgressMonitor progressMonitor) {
     super.doSave(progressMonitor);
     update();
   }
 
+  @Override
   public void doSaveAs() {
     super.doSaveAs();
     update();
@@ -580,8 +593,8 @@ public class HTMLSourceEditor extends TextEditor {
         return;
       }
 
-      ArrayList list = new ArrayList();
-      Stack stack = new Stack();
+      List<FoldingInfo> list = new ArrayList<FoldingInfo>();
+      Stack<FoldingInfo> stack = new Stack<FoldingInfo>();
       IDocument doc = getDocumentProvider().getDocument(getEditorInput());
 
       String xml = HTMLUtil.scriptlet2space(HTMLUtil.comment2space(doc.get(), true), true);
@@ -639,7 +652,7 @@ public class HTMLSourceEditor extends TextEditor {
         if (text.startsWith("/")) {
           text = text.substring(1, text.length());
           while (stack.size() != 0) {
-            FoldingInfo info = (FoldingInfo) stack.pop();
+            FoldingInfo info = stack.pop();
             if (info.getType().equalsIgnoreCase(text) || (info.getType().toLowerCase().startsWith("wo:") && text.toLowerCase().startsWith("wo"))) {
               info.setEnd(matcher.end());
               // Don't fold if start offset and end offset are same line
@@ -758,6 +771,7 @@ public class HTMLSourceEditor extends TextEditor {
       setAccelerator(SWT.CTRL | '\\');
     }
 
+    @Override
     public void run() {
       ITextSelection sel = (ITextSelection) getSelectionProvider().getSelection();
       IDocument doc = getDocumentProvider().getDocument(getEditorInput());
@@ -779,6 +793,7 @@ public class HTMLSourceEditor extends TextEditor {
       setAccelerator(SWT.CTRL | '/');
     }
 
+    @Override
     public void run() {
       ITextSelection sel = (ITextSelection) getSelectionProvider().getSelection();
       IDocument doc = getDocumentProvider().getDocument(getEditorInput());
@@ -807,6 +822,7 @@ public class HTMLSourceEditor extends TextEditor {
       setEnabled(true);
     }
 
+    @Override
     public void run() {
       IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
       try {

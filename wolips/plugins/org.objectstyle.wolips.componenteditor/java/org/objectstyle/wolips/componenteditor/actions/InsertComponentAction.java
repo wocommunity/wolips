@@ -7,6 +7,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -40,11 +41,11 @@ public abstract class InsertComponentAction extends InsertHtmlAndWodAction {
 		Wo wo = null;
 		if (componentName != null) {
 			TemplateEditor te = getTemplateEditor();
-	
+
 			if (null != te) {
 				IFileEditorInput input = (IFileEditorInput) te.getEditorInput();
 				IFile file = input.getFile();
-	
+
 				try {
 					WodParserCache cache = WodParserCache.parser(file);
 					wo = cache.getWo(componentName);
@@ -68,7 +69,7 @@ public abstract class InsertComponentAction extends InsertHtmlAndWodAction {
 		}
 		return requiredBindings;
 	}
-	
+
 	protected boolean canHaveComponentContent(String componentName) {
 		boolean componentContent = false;
 		Wo wo = getWo(componentName);
@@ -77,7 +78,7 @@ public abstract class InsertComponentAction extends InsertHtmlAndWodAction {
 		}
 		return componentContent;
 	}
-	
+
 	/**
 	 * <P>
 	 * This is a standard suffix for the component names. For example, you might
@@ -100,17 +101,20 @@ public abstract class InsertComponentAction extends InsertHtmlAndWodAction {
 		InsertComponentSpecification ics = new InsertComponentSpecification(getComponentName());
 		ics.setComponentInstanceNameSuffix(getComponentInstanceNameSuffix());
 
-		IWorkbenchWindow ww = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		InsertComponentDialogue dialog = new InsertComponentDialogue(ww.getShell(), ics);
-		dialog.open();
+		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		InsertComponentDialogue dialog = new InsertComponentDialogue(window.getShell(), ics);
+		int results = dialog.open();
+		if (results == Window.OK) {
+			ics.setRequiredBindings(getRequiredBindings(ics.getComponentName()));
 
-		ics.setRequiredBindings(getRequiredBindings(ics.getComponentName()));
-
-		if (!ics.isInline()) {
-			ics.setTagName("webobject");
-			Map<String, String> attributes = new HashMap<String, String>();
-			attributes.put("name", ics.getComponentInstanceName());
-			ics.setAttributes(attributes);
+			if (!ics.isInline()) {
+				ics.setTagName("webobject");
+				Map<String, String> attributes = new HashMap<String, String>();
+				attributes.put("name", ics.getComponentInstanceName());
+				ics.setAttributes(attributes);
+			}
+		} else {
+			ics = null;
 		}
 
 		return ics;
