@@ -218,11 +218,11 @@ public class FuzzyXMLParser {
 
     FuzzyXMLElement docElement = null;
     if (roots.size() == 0) {
-      docElement = new FuzzyXMLElementImpl(null, "document", 0, originalSource.length());
+      docElement = new FuzzyXMLElementImpl(null, "document", 0, originalSource.length(), 0);
       //docElement.appendChild(root);
     }
     else {
-      docElement = new FuzzyXMLElementImpl(null, "document", roots.get(0).getOffset(), roots.get(0).getLength());
+      docElement = new FuzzyXMLElementImpl(null, "document", roots.get(0).getOffset(), roots.get(0).getLength(), 0);
       for (FuzzyXMLElementImpl root : roots) {
         ((FuzzyXMLElementImpl) docElement).appendChildWithNoCheck(root);
       }
@@ -446,7 +446,7 @@ public class FuzzyXMLParser {
   private void handleEmptyTag(int offset, int end) {
     TagInfo info = parseTagContents(originalSource.substring(offset + 1, end - 1));
     FuzzyXMLNode parent = getParent();
-    FuzzyXMLElementImpl element = new FuzzyXMLElementImpl(parent, info.name, offset, end - offset);
+    FuzzyXMLElementImpl element = new FuzzyXMLElementImpl(parent, info.name, offset, end - offset, info.nameOffset);
     if (parent == null) {
       roots.add(element);
     }
@@ -456,7 +456,7 @@ public class FuzzyXMLParser {
     // 属性を追加
     AttrInfo[] attrs = info.getAttrs();
     for (int i = 0; i < attrs.length; i++) {
-      FuzzyXMLAttributeImpl attr = new FuzzyXMLAttributeImpl(element, attrs[i].name, attrs[i].value, attrs[i].offset + offset, attrs[i].end - attrs[i].offset + 1);
+      FuzzyXMLAttributeImpl attr = new FuzzyXMLAttributeImpl(element, attrs[i].name, attrs[i].value, attrs[i].offset + offset, attrs[i].end - attrs[i].offset + 1, attrs[i].valueOffset);
       element.appendChild(attr);
     }
   }
@@ -474,7 +474,7 @@ public class FuzzyXMLParser {
   /** 開始タグを処理します。 */
   private void handleStartTag(int offset, int end) {
     TagInfo info = parseTagContents(originalSource.substring(offset + 1, end - 1));
-    FuzzyXMLElementImpl element = new FuzzyXMLElementImpl(getParent(), info.name, offset, end - offset);
+    FuzzyXMLElementImpl element = new FuzzyXMLElementImpl(getParent(), info.name, offset, end - offset, info.nameOffset);
     // 属性を追加
     AttrInfo[] attrs = info.getAttrs();
     for (int i = 0; i < attrs.length; i++) {
@@ -488,7 +488,7 @@ public class FuzzyXMLParser {
       //				}
       //				element.addNamespaceURI(prefix,uri);
       //			}
-      FuzzyXMLAttributeImpl attr = new FuzzyXMLAttributeImpl(element, attrs[i].name, attrs[i].value, attrs[i].offset + offset, attrs[i].end - attrs[i].offset + 1);
+      FuzzyXMLAttributeImpl attr = new FuzzyXMLAttributeImpl(element, attrs[i].name, attrs[i].value, attrs[i].offset + offset, attrs[i].end - attrs[i].offset + 1, attrs[i].valueOffset);
       attr.setQuoteCharacter(attrs[i].quote);
       if (attrs[i].value.indexOf('"') >= 0 || attrs[i].value.indexOf('\'') >= 0 || attrs[i].value.indexOf('<') >= 0 || attrs[i].value.indexOf('>') >= 0 || attrs[i].value.indexOf('&') >= 0) {
         attr.setEscape(false);
@@ -510,7 +510,8 @@ public class FuzzyXMLParser {
   /** タグ部分をパースします。 */
   private TagInfo parseTagContents(String text) {
     // トリム
-    text = text.trim();
+    Range trimmedRange = Range.trimmedRange(text);
+    text = trimmedRange.trim(text);
     // 閉じタグだったら最後のスラッシュを削除
     if (text.endsWith("/")) {
       text = text.substring(0, text.length() - 1);
@@ -519,6 +520,7 @@ public class FuzzyXMLParser {
     TagInfo info = new TagInfo();
     if (FuzzyXMLUtil.getSpaceIndex(text) != -1) {
       info.name = text.substring(0, FuzzyXMLUtil.getSpaceIndex(text)).trim();
+      info.nameOffset = trimmedRange.getOffset();
       parseAttributeContents(info, text);
     }
     else {
@@ -535,6 +537,7 @@ public class FuzzyXMLParser {
     String name = null;
     char quote = 0;
     int start = -1;
+    int valueOffset = -1;
     boolean escape = false;
 
     for (int i = 0; i < text.length(); i++) {
@@ -554,12 +557,16 @@ public class FuzzyXMLParser {
           state = 3;
           name = sb.toString().trim();
           sb.setLength(0);
+          valueOffset = -1;
         }
         else {
           sb.append(c);
         }
       }
       else if (state == 3 && !FuzzyXMLUtil.isWhitespace(c)) {
+        if (valueOffset == -1) {
+          valueOffset = i;
+        }
         if (c == '\'' || c == '\"') {
           quote = c;
         }
@@ -579,6 +586,7 @@ public class FuzzyXMLParser {
           AttrInfo attr = new AttrInfo();
           attr.name = name;
           attr.value = FuzzyXMLUtil.decode(sb.toString(), isHTML);
+          attr.valueOffset = valueOffset;
           attr.offset = start;
           attr.end = i + 1;
           attr.quote = quote;
@@ -609,6 +617,7 @@ public class FuzzyXMLParser {
       AttrInfo attr = new AttrInfo();
       attr.name = name;
       attr.value = FuzzyXMLUtil.decode(sb.toString(), isHTML);
+      attr.valueOffset = valueOffset;
       attr.offset = start;
       attr.end = text.length();
       attr.quote = quote;
@@ -627,6 +636,7 @@ public class FuzzyXMLParser {
 
   private class TagInfo {
     private String name;
+    private int nameOffset;
     private ArrayList<AttrInfo> attrs = new ArrayList<AttrInfo>();
 
     public void addAttr(AttrInfo attr) {
@@ -649,8 +659,45 @@ public class FuzzyXMLParser {
     private String name;
     private String value;
     private int offset;
+    private int valueOffset;
     private int end;
     private char quote;
+  }
+
+  public static class Range {
+    private int _offset;
+    private int _length;
+
+    public Range() {
+    }
+
+    public int getOffset() {
+      return _offset;
+    }
+
+    public int getLength() {
+      return _length;
+    }
+    
+    public String trim(String str) {
+      return str.substring(_offset, _offset + _length);
+    }
+
+    public static Range trimmedRange(String str) {
+      int i = 0;
+      int length = str.length();
+      Range r = new Range();
+      for (i = 0; i < length && str.charAt(i) <= ' '; i++) {
+        // DO NOTHING
+      }
+      r._offset = i;
+
+      for (i = length - 1; i > r._offset && str.charAt(i) <= ' '; i--) {
+        // DO NOTHING
+      }
+      r._length = (i - r._offset + 1);
+      return r;
+    }
   }
 
 }

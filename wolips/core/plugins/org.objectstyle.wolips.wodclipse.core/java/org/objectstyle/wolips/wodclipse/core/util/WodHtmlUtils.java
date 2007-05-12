@@ -17,6 +17,17 @@ public class WodHtmlUtils {
     WodHtmlUtils.WEBOBJECTS_PATTERN = Pattern.compile(patterns.toString(), Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
   }
 
+  public static boolean isInline(String tagName) {
+    boolean isWOTag = false;
+    if (tagName != null) {
+      String lowercaseTagName = tagName.toLowerCase();
+      if (lowercaseTagName.startsWith("wo:")) {
+        isWOTag = true;
+      }
+    }
+    return isWOTag;
+  }
+  
   public static boolean isWOTag(String tagName) {
     boolean isWOTag = false;
     if (tagName != null) {

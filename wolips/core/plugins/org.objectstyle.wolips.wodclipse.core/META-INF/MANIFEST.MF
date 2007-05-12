@@ -53,5 +53,6 @@ Export-Package: jp.aonir.fuzzyxml,
  org.objectstyle.wolips.wodclipse.core.model,
  org.objectstyle.wolips.wodclipse.core.parser,
  org.objectstyle.wolips.wodclipse.core.preferences,
+ org.objectstyle.wolips.wodclipse.core.refactoring,
  org.objectstyle.wolips.wodclipse.core.util,
  org.objectstyle.wolips.wodclipse.core.validation

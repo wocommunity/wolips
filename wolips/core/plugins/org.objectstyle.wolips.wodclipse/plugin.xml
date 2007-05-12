@@ -15,14 +15,6 @@
             /> 
       </editor>
    </extension>
-   <extension
-         point="org.eclipse.ui.contexts">
-      <context
-            description="Editing Wod Files Context"
-            id="org.objectstyle.wolips.wodclipse.wodEditorScope"
-            name="Editing Wod Files"
-            parentId="org.eclipse.ui.textEditorScope"/>
-   </extension>
 		
  <extension
        point="org.eclipse.ui.popupMenus">
@@ -34,7 +26,7 @@
        <action
              class="org.objectstyle.wolips.wodclipse.action.GenerateAPIAction"
              enablesFor="*"
-             icon="icons/file-api.gif"
+             icon="icons/file-api.png"
              id="org.objectstyle.wolips.wodclipse.generateAPIActionForWO"
              label="Generate API File"
              menubarPath="additions"/>
@@ -46,7 +38,7 @@
        <action
              class="org.objectstyle.wolips.wodclipse.action.GenerateAPIAction"
              enablesFor="*"
-             icon="icons/file-api.gif"
+             icon="icons/file-api.png"
              id="org.objectstyle.wolips.wodclipse.generateAPIActionForJava"
              label="Generate API File"
              menubarPath="additions"/>

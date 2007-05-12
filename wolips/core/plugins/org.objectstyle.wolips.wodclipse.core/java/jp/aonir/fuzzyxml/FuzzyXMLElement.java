@@ -5,7 +5,10 @@ public interface FuzzyXMLElement extends FuzzyXMLNode {
 	
 	public String getName();
 	
-	
+  public int getNameOffset();
+  
+  public int getNameLength();
+
 	public FuzzyXMLNode[] getChildren();
 	
 	public boolean hasChildren();

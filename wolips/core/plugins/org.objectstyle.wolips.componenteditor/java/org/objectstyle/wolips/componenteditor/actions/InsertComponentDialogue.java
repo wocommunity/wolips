@@ -29,7 +29,7 @@ public class InsertComponentDialogue extends org.eclipse.jface.dialogs.Dialog {
 	public final static String LABEL_COMPONENT_INSTANCE_NAME = "Supply a name for your component:";
 
 	// no time to localise :-(
-	public final static String LABEL_COMPONENT_NAME = "Component Type:";
+	public final static String LABEL_COMPONENT_NAME = "Component Name:";
 
 	// user interface elements which the user interacts with.
 
@@ -57,17 +57,21 @@ public class InsertComponentDialogue extends org.eclipse.jface.dialogs.Dialog {
 	protected Control createDialogArea(Composite parent) {
 		Composite control = (Composite) super.createDialogArea(parent);
 		GridLayout layout = new GridLayout(1, true);
+		layout.marginTop = 10;
+		layout.marginRight = 10;
+		layout.marginBottom = 10;
+		layout.marginLeft = 10;
 
 		control.setLayout(layout);
 
 		if (_insertComponentSpecification.getComponentName() == null) {
 			_componentNameLabel = new Label(control, 0);
 			_componentNameLabel.setText(LABEL_COMPONENT_NAME);
-	
+
 			_componentNameText = new Text(control, SWT.BORDER);
 			_componentNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		}
-		
+
 		_inline = new Button(control, SWT.CHECK);
 		_inline.setText("Inline bindings?");
 		_inline.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -81,8 +85,7 @@ public class InsertComponentDialogue extends org.eclipse.jface.dialogs.Dialog {
 
 		if (null != _insertComponentSpecification.getComponentInstanceName()) {
 			_componentInstanceNameText.setText(_insertComponentSpecification.getComponentInstanceName());
-		}
-		else {
+		} else {
 			if (null != _insertComponentSpecification.getComponentInstanceNameSuffix()) {
 				_componentInstanceNameText.setText(_insertComponentSpecification.getComponentInstanceNameSuffix());
 			}
@@ -92,7 +95,7 @@ public class InsertComponentDialogue extends org.eclipse.jface.dialogs.Dialog {
 			public void widgetDefaultSelected(SelectionEvent e) {
 				widgetSelected(e);
 			}
-			
+
 			public void widgetSelected(SelectionEvent e) {
 				_componentInstanceLabel.setEnabled(!_inline.getSelection());
 				_componentInstanceNameText.setEnabled(!_inline.getSelection());
@@ -104,7 +107,7 @@ public class InsertComponentDialogue extends org.eclipse.jface.dialogs.Dialog {
 	// these two methods handle buttons getting pressed.
 
 	public void cancelPressed() {
-		_insertComponentSpecification.setComponentInstanceName(null);
+		_insertComponentSpecification = null;
 		super.cancelPressed();
 	}
 
@@ -117,4 +120,7 @@ public class InsertComponentDialogue extends org.eclipse.jface.dialogs.Dialog {
 		super.okPressed();
 	}
 
+	public InsertComponentSpecification getInsertComponentSpecification() {
+		return _insertComponentSpecification;
+	}
 }

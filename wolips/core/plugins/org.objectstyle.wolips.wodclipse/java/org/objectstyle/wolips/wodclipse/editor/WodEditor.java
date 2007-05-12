@@ -44,7 +44,6 @@
 package org.objectstyle.wolips.wodclipse.editor;
 
 import java.util.ResourceBundle;
-import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -152,8 +151,12 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 		}
 	}
 
+	public ISourceViewer getViewer() {
+		return getSourceViewer();
+	}
+	
 	protected void initializeKeyBindingScopes() {
-		setKeyBindingScopes(new String[] { "org.objectstyle.wolips.wodclipse.wodEditorScope" });
+		setKeyBindingScopes(new String[] { "org.objectstyle.wolips.componenteditor.componentEditorScope" });
 	}
 
 	protected ISourceViewer createSourceViewer(Composite parent, IVerticalRuler verticalRuler, int styles) {
