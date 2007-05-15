@@ -285,11 +285,5 @@ public class ResourcesLabelDecorator implements ILabelDecorator {
 			hashcode |= this.overlayImageFilename.hashCode();
 			return hashcode;
 		}
-		
-		@Override
-		public Image createImage() {
-			System.out.println("WOImageDescriptor.createImage: creating " + this.baseImage + ", " + this.overlayImageFilename);
-			return super.createImage();
-		}
 	}
 }
