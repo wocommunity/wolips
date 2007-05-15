@@ -53,6 +53,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.internal.ui.viewsupport.ImageDescriptorRegistry;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorPart;
@@ -71,6 +72,8 @@ import org.osgi.framework.BundleContext;
 public class UIPlugin extends AbstractBaseUIActivator {
 	// The shared instance.
 	private static UIPlugin plugin;
+
+	private ImageDescriptorRegistry _imageDescriptorRegistry;
 
 	/**
 	 * The constructor.
@@ -123,5 +126,16 @@ public class UIPlugin extends AbstractBaseUIActivator {
 			UIPlugin.getDefault().log(e);
 		}
 		return null;
+	}
+
+	public static ImageDescriptorRegistry getImageDescriptorRegistry() {
+		return getDefault().internalGetImageDescriptorRegistry();
+	}
+
+	private synchronized ImageDescriptorRegistry internalGetImageDescriptorRegistry() {
+		if (_imageDescriptorRegistry == null) {
+			_imageDescriptorRegistry = new ImageDescriptorRegistry();
+		}
+		return _imageDescriptorRegistry;
 	}
 }

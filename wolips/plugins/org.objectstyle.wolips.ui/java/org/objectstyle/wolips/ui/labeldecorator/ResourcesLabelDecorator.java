@@ -66,6 +66,7 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 import org.objectstyle.wolips.core.resources.types.project.IProjectPatternsets;
+import org.objectstyle.wolips.ui.UIPlugin;
 
 /**
  * @author mnolte
@@ -88,7 +89,7 @@ public class ResourcesLabelDecorator implements ILabelDecorator {
 	 * @return Image
 	 */
 	private Image createImagewithName(Image image, String aString) {
-		return new WOImageDescriptor(image, aString).createImage();
+		return UIPlugin.getImageDescriptorRegistry().get(new WOImageDescriptor(image, aString));
 	}
 
 	/**
@@ -205,7 +206,10 @@ public class ResourcesLabelDecorator implements ILabelDecorator {
 	 * Generation.
 	 */
 	private class WOImageDescriptor extends CompositeImageDescriptor {
-
+		private Image baseImage;
+		
+		private String overlayImageFilename;
+		
 		private ImageData baseImageData;
 
 		private ImageData overlayImageData;
@@ -221,9 +225,11 @@ public class ResourcesLabelDecorator implements ILabelDecorator {
 		public WOImageDescriptor(Image image, String overlayImageFilename) {
 			super();
 			if (image != null) {
+				this.baseImage = image;
 				this.baseImageData = image.getImageData();
 				this.size = new Point(this.baseImageData.width, this.baseImageData.height);
 			}
+			this.overlayImageFilename = overlayImageFilename;
 			this.overlayImageData = ImageDescriptor.createFromFile(ResourcesLabelDecorator.class, overlayImageFilename).getImageData();
 			if (this.size == null) {
 				this.size = new Point(this.overlayImageData.width, this.overlayImageData.height);
@@ -251,6 +257,39 @@ public class ResourcesLabelDecorator implements ILabelDecorator {
 		 */
 		protected Point getSize() {
 			return this.size;
+		}
+
+		public boolean equals(Object object) {
+			if (object == null || !WOImageDescriptor.class.equals(object.getClass()))
+				return false;
+
+			WOImageDescriptor other = (WOImageDescriptor) object;
+			boolean equals = true;
+			if (baseImage == null) {
+				equals = (other.baseImage == null);
+			}
+			else {
+				equals = baseImage.equals(other.baseImage);
+			}
+			if (equals) {
+				equals = this.overlayImageFilename.equals(other.overlayImageFilename);
+			}
+			return equals;
+		}
+
+		public int hashCode() {
+			int hashcode = 0;
+			if (this.baseImage != null) {
+				hashcode |= this.baseImage.hashCode();
+			}
+			hashcode |= this.overlayImageFilename.hashCode();
+			return hashcode;
+		}
+		
+		@Override
+		public Image createImage() {
+			System.out.println("WOImageDescriptor.createImage: creating " + this.baseImage + ", " + this.overlayImageFilename);
+			return super.createImage();
 		}
 	}
 }
