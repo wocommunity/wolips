@@ -313,4 +313,12 @@ public class WodContentOutlinePage extends ContentOutlinePage {
 			}
 		}
 	}
+	
+	@Override
+	public void dispose() {
+		if (image != null) {
+			image.dispose();
+		}
+		super.dispose();
+	}
 }
