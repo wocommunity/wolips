@@ -209,9 +209,10 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 	}
 
 	private boolean isProjectJar(String lastSegment, List projects) {
+        String lower = lastSegment.toLowerCase();
 		for (int i = 0; i < projects.size(); i++) {
 			IProject project = (IProject) projects.get(i);
-			if (lastSegment.startsWith(project.getName())) {
+			if (lower.startsWith((project.getName() + ".jar").toLowerCase())) {
 				return true;
 			}
 		}
