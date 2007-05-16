@@ -462,13 +462,15 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 		for (EOAttribute inheritedAttribute : getAttributes()) {
 			if (!primaryKeyAttributes.contains(inheritedAttribute) && BooleanUtils.isTrue(inheritedAttribute.isClassProperty())) {
-				subclassEntity.addBlankAttribute(new EOAttributePath(new EORelationshipPath(null, superclassRelationship), inheritedAttribute));
+				EOAttributePath inheritedAttributePath = new EOAttributePath(new EORelationshipPath(null, superclassRelationship), inheritedAttribute);
+				subclassEntity.addBlankAttribute(inheritedAttribute.getName(), inheritedAttributePath);
 			}
 		}
 
 		for (EORelationship inheritedRelationship : getRelationships()) {
 			if (BooleanUtils.isTrue(inheritedRelationship.isClassProperty())) {
-				subclassEntity.addBlankRelationship(new EORelationshipPath(new EORelationshipPath(null, superclassRelationship), inheritedRelationship));
+				EORelationshipPath inheritedRelationshipPath = new EORelationshipPath(new EORelationshipPath(null, superclassRelationship), inheritedRelationship);
+				subclassEntity.addBlankRelationship(inheritedRelationship.getName(), inheritedRelationshipPath);
 			}
 		}
 
