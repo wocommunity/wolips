@@ -52,6 +52,7 @@ package org.objectstyle.wolips.eomodeler.editors;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -76,6 +77,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -83,6 +86,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -179,6 +183,8 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 	private int mySelectionDepth;
 
+	private Object myCreatePagesLock = new Object();
+
 	public EOModelEditor() {
 		mySelectionChangedListeners = new ListenerList();
 		myDirtyModelListener = new DirtyModelListener();
@@ -266,32 +272,34 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	}
 
 	protected void createPages() {
-		try {
-			myEntitiesTableEditor = new EOEntitiesTableEditor();
+		synchronized (myCreatePagesLock) {
+			try {
+				myEntitiesTableEditor = new EOEntitiesTableEditor();
 
-			addPage(myEntitiesTableEditor, getEditorInput());
-			setPageText(getPageNum(EOModelEditor.EOMODEL_PAGE), Messages.getString("EOModelEditor.entitiesTab"));
+				addPage(myEntitiesTableEditor, getEditorInput());
+				setPageText(getPageNum(EOModelEditor.EOMODEL_PAGE), Messages.getString("EOModelEditor.entitiesTab"));
 
-			myEntityEditor = new EOEntityEditor();
+				myEntityEditor = new EOEntityEditor();
 
-			EOModelSelectionChangedListener modelSelectionChangedListener = new EOModelSelectionChangedListener();
-			myEntitiesTableEditor.addSelectionChangedListener(modelSelectionChangedListener);
-			myEntitiesTableEditor.setModel(myModel);
+				EOModelSelectionChangedListener modelSelectionChangedListener = new EOModelSelectionChangedListener();
+				myEntitiesTableEditor.addSelectionChangedListener(modelSelectionChangedListener);
+				myEntitiesTableEditor.setModel(myModel);
 
-			EOEntitySelectionChangedListener entitySelectionChangedListener = new EOEntitySelectionChangedListener();
-			myEntityEditor.addSelectionChangedListener(entitySelectionChangedListener);
+				EOEntitySelectionChangedListener entitySelectionChangedListener = new EOEntitySelectionChangedListener();
+				myEntityEditor.addSelectionChangedListener(entitySelectionChangedListener);
 
-			myStoredProcedureEditor = new EOArgumentsTableEditor();
-			EOArgumentSelectionChangedListener argumentSelectionChangedListener = new EOArgumentSelectionChangedListener();
-			myStoredProcedureEditor.addSelectionChangedListener(argumentSelectionChangedListener);
+				myStoredProcedureEditor = new EOArgumentsTableEditor();
+				EOArgumentSelectionChangedListener argumentSelectionChangedListener = new EOArgumentSelectionChangedListener();
+				myStoredProcedureEditor.addSelectionChangedListener(argumentSelectionChangedListener);
 
-			if (myOpeningEntity != null) {
-				setSelectedEntity(myOpeningEntity);
-				setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
+				if (myOpeningEntity != null) {
+					setSelectedEntity(myOpeningEntity);
+					setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
+				}
+
+			} catch (PartInitException e) {
+				ErrorDialog.openError(getSite().getShell(), "Error creating editor.", null, e.getStatus());
 			}
-
-		} catch (PartInitException e) {
-			ErrorDialog.openError(getSite().getShell(), "Error creating editor.", null, e.getStatus());
 		}
 	}
 
@@ -479,23 +487,9 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		return EOModelEditor.getFile(URLUtils.cheatAndTurnIntoFile(_model.getIndexURL()));
 	}
 
-	public void init(IEditorSite _site, IEditorInput _editorInput) throws PartInitException {
+	protected void loadInBackground(IProgressMonitor progressMonitor) {
 		try {
-			if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CHANGE_PERSPECTIVES_KEY)) {
-				IWorkbench workbench = Activator.getDefault().getWorkbench();
-				workbench.showPerspective(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID, workbench.getActiveWorkbenchWindow());
-			}
-		} catch (WorkbenchException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			IFileEditorInput fileEditorInput;
-			if (_editorInput instanceof IFileEditorInput) {
-				fileEditorInput = (IFileEditorInput) _editorInput;
-			} else {
-				throw new PartInitException("Unknown editor input: " + _editorInput + ".");
-			}
+			IFileEditorInput fileEditorInput = (IFileEditorInput) getEditorInput();
 			if (myModel != null) {
 				myModel.removePropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
 				myEntitiesChangeListener.stop();
@@ -518,41 +512,115 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			}
 
 			myLoadFailures = new LinkedHashSet<EOModelVerificationFailure>();
-			myModel = IEOModelGroupFactory.Utility.loadModel(fileEditorInput.getFile(), myLoadFailures, true);
-			if (myModel == null) {
-				super.init(_site, fileEditorInput);
+
+			EOModel model = IEOModelGroupFactory.Utility.loadModel(fileEditorInput.getFile(), myLoadFailures, true, progressMonitor);
+			if (model == null) {
+				// super.init(_site, fileEditorInput);
 				handleModelErrors(myLoadFailures);
 				// throw new EOModelException("Failed to load the requested
 				// model.");
 			} else {
-				IFile indexFile = EOModelEditor.getIndexFile(myModel);
+				IFile indexFile = EOModelEditor.getIndexFile(model);
 				if (indexFile != null) {
 					fileEditorInput = new FileEditorInput(indexFile);
 				}
 				if (openingEntityName != null) {
-					myOpeningEntity = myModel.getEntityNamed(openingEntityName);
+					myOpeningEntity = model.getEntityNamed(openingEntityName);
 				}
 				handleModelErrors(myLoadFailures);
 
-				myModel.addPropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
+				model.addPropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
 				myEntitiesChangeListener.start();
-				myModel.addPropertyChangeListener(EOModel.ENTITIES, myEntitiesChangeListener);
+				model.addPropertyChangeListener(EOModel.ENTITIES, myEntitiesChangeListener);
 				myStoredProceduresChangeListener.start();
-				myModel.addPropertyChangeListener(EOModel.STORED_PROCEDURES, myStoredProceduresChangeListener);
+				model.addPropertyChangeListener(EOModel.STORED_PROCEDURES, myStoredProceduresChangeListener);
 				myDatabaseConfigsChangeListener.start();
-				myModel.addPropertyChangeListener(EOModel.DATABASE_CONFIGS, myDatabaseConfigsChangeListener);
+				model.addPropertyChangeListener(EOModel.DATABASE_CONFIGS, myDatabaseConfigsChangeListener);
 				myFetchSpecsChangeListener.start();
-				myModel.addPropertyChangeListener(EOModel.ENTITY + "." + EOEntity.FETCH_SPECIFICATIONS, myFetchSpecsChangeListener);
+				model.addPropertyChangeListener(EOModel.ENTITY + "." + EOEntity.FETCH_SPECIFICATIONS, myFetchSpecsChangeListener);
 				myEntityIndexesChangeListener.start();
-				myModel.addPropertyChangeListener(EOModel.ENTITY + "." + EOEntity.ENTITY_INDEXES, myEntityIndexesChangeListener);
-				super.init(_site, fileEditorInput);
+				model.addPropertyChangeListener(EOModel.ENTITY + "." + EOEntity.ENTITY_INDEXES, myEntityIndexesChangeListener);
+				// setInput(new EOModelEditorInput(fileEditorInput));
+				// init(getEditorSite(), new
+				// EOModelEditorInput(fileEditorInput));
 				updatePartName();
-				_site.setSelectionProvider(this);
+				getEditorSite().setSelectionProvider(this);
 				EOModelEditor.this.editorDirtyStateChanged();
+
+				synchronized (myCreatePagesLock) {
+					myModel = model;
+					if (myEntitiesTableEditor != null) {
+						Display.getDefault().asyncExec(new Runnable() {
+							public void run() {
+								myEntitiesTableEditor.setModel(myModel);
+								getContentOutlinePage().getUpdater().setModel(myModel);
+							}
+						});
+					}
+				}
 			}
 		} catch (Throwable e) {
 			handleModelErrors(myLoadFailures);
-			throw new PartInitException("Failed to create EOModelEditorInput for " + _editorInput + ".", e);
+			e.printStackTrace();
+			// throw new PartInitException("Failed to create EOModelEditorInput
+			// for " + getEditorInput() + ".", e);
+		}
+	}
+
+	public void init(IEditorSite _site, IEditorInput _editorInput) throws PartInitException {
+		try {
+			if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CHANGE_PERSPECTIVES_KEY)) {
+				IWorkbench workbench = Activator.getDefault().getWorkbench();
+				workbench.showPerspective(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID, workbench.getActiveWorkbenchWindow());
+			}
+			super.init(_site, _editorInput);
+
+			final Shell shell = Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					ProgressMonitorDialog progressMonitor = new ProgressMonitorDialog(shell);
+					try {
+						progressMonitor.run(true, true, new IRunnableWithProgress() {
+							public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+								loadInBackground(monitor);
+							}
+						});
+					} catch (InvocationTargetException e) {
+						e.printStackTrace();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+			// boolean openInWindow = true ||
+			// Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.OPEN_IN_WINDOW_KEY);
+			// if (openInWindow) {
+			// if (!openingWindow) {
+			// openingWindow = true;
+			// try {
+			// IWorkbenchWindow newWindow =
+			// Activator.getDefault().getWorkbench().openWorkbenchWindow(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID,
+			// null);
+			// newWindow.getActivePage().openEditor(_editorInput,
+			// EOMODEL_EDITOR_ID);
+			// }
+			// finally {
+			// openingWindow = false;
+			// }
+			// //workbench.showPerspective(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID,
+			// workbench.getActiveWorkbenchWindow());
+			// throw new PartInitException("Skip");
+			// }
+			// }
+			// else if
+			// (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CHANGE_PERSPECTIVES_KEY))
+			// {
+			// IWorkbench workbench = Activator.getDefault().getWorkbench();
+			// workbench.showPerspective(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID,
+			// workbench.getActiveWorkbenchWindow());
+			// }
+		} catch (WorkbenchException e) {
+			e.printStackTrace();
 		}
 	}
 

@@ -57,6 +57,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.eomodeler.core.utils.URLUtils;
 
 public class EOModelGroup extends EOModelObject<Object> {
@@ -215,33 +216,34 @@ public class EOModelGroup extends EOModelObject<Object> {
 		return modelName;
 	}
 
-	public void loadModelsFromFolder(URL folder, Set<EOModelVerificationFailure> failures) throws IOException, EOModelException {
-		loadModelsFromFolder(folder, -1, failures, true, null);
+	public void loadModelsFromFolder(URL folder, Set<EOModelVerificationFailure> failures, IProgressMonitor progressMonitor) throws IOException, EOModelException {
+		loadModelsFromFolder(folder, -1, failures, true, null, progressMonitor);
 	}
 
-	public void loadModelsFromFolder(URL folder, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates) throws IOException, EOModelException {
-		loadModelsFromFolder(folder, -1, failures, skipOnDuplicates, null);
+	public void loadModelsFromFolder(URL folder, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws IOException, EOModelException {
+		loadModelsFromFolder(folder, -1, failures, skipOnDuplicates, null, progressMonitor);
 	}
 
-	public void loadModelsFromFolder(URL folder, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProject project) throws IOException, EOModelException {
-		loadModelsFromFolder(folder, -1, failures, skipOnDuplicates, project);
+	public void loadModelsFromFolder(URL folder, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProject project, IProgressMonitor progressMonitor) throws IOException, EOModelException {
+		loadModelsFromFolder(folder, -1, failures, skipOnDuplicates, project, progressMonitor);
 	}
 
-	public void loadModelsFromFolder(URL folder, int maxDepth, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProject project) throws IOException, EOModelException {
+	public void loadModelsFromFolder(URL folder, int maxDepth, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProject project, IProgressMonitor progressMonitor) throws IOException, EOModelException {
 		String path = folder.getPath();
 		if (path.endsWith(".eomodeld") || path.endsWith(".eomodeld/")) {
-			loadModelFromFolder(folder, failures, skipOnDuplicates, project);
+			loadModelFromFolder(folder, failures, skipOnDuplicates, project, progressMonitor);
 		} else if (maxDepth != 0) {
 			for (URL childURL : URLUtils.getChildren(folder)) {
 				if (URLUtils.isFolder(childURL)) {
-					loadModelsFromFolder(childURL, maxDepth - 1, failures, skipOnDuplicates, project);
+					loadModelsFromFolder(childURL, maxDepth - 1, failures, skipOnDuplicates, project, progressMonitor);
 				}
 			}
 		}
 	}
 
-	public EOModel loadModelFromFolder(URL modelFolder, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProject project) throws IOException, EOModelException {
+	public EOModel loadModelFromFolder(URL modelFolder, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProject project, IProgressMonitor progressMonitor) throws IOException, EOModelException {
 		String modelName = EOModelGroup.getModelNameFromURL(modelFolder);
+		progressMonitor.setTaskName("Loading model " + modelName + " ...");
 		EOModel model = getModelNamed(modelName);
 		if (model != null) {
 			if (skipOnDuplicates) {

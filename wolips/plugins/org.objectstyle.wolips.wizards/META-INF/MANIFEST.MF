@@ -7,12 +7,8 @@ Bundle-Activator: org.objectstyle.wolips.wizards.WizardsPlugin
 Bundle-Vendor: objectstyle.org
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.jdt.ui,
- org.eclipse.core.runtime,
  org.objectstyle.wolips.templateengine,
- org.eclipse.ui.ide,
- org.eclipse.ui,
  org.eclipse.jdt.core,
- org.eclipse.core.resources,
  org.objectstyle.wolips.variables,
  org.objectstyle.wolips.workbenchutilities,
  org.junit,
@@ -21,9 +17,9 @@ Require-Bundle: org.eclipse.jdt.ui,
  org.objectstyle.wolips,
  org.objectstyle.wolips.datasets,
  org.objectstyle.wolips.eogenerator.core,
- org.objectstyle.wolips.eogenerator.jdt,
  org.objectstyle.wolips.eomodeler.core,
- org.objectstyle.wolips.eomodeler
+ org.objectstyle.wolips.eomodeler,
+ org.objectstyle.wolips.eogenerator.jdt
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.wizards,
  org.objectstyle.wolips.wizards.actions
