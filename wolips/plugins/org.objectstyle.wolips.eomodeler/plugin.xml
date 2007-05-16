@@ -696,13 +696,6 @@
                label="New Database Config"
                menubarPath="group1"/>
          <action
-               class="org.objectstyle.wolips.eomodeler.actions.NewEntityIndexAction"
-               enablesFor="1"
-               icon="icons/newEntityIndex.png"
-               id="org.objectstyle.wolips.eomodeler.outline.popup.newEntityIndex"
-               label="New Entity Index"
-               menubarPath="group1"/>
-         <action
                class="org.objectstyle.wolips.eomodeler.actions.NewStoredProcedureAction"
                enablesFor="1"
                icon="icons/newStoredProcedure.png"
@@ -742,6 +735,13 @@
             adaptable="false"
             id="org.objectstyle.wolips.eomodeler.outline.eoentity"
             objectClass="org.objectstyle.wolips.eomodeler.core.model.EOEntity">
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewEntityIndexAction"
+               enablesFor="1"
+               icon="icons/newEntityIndex.png"
+               id="org.objectstyle.wolips.eomodeler.outline.popup.newEntityIndex"
+               label="New Entity Index"
+               menubarPath="group1"/>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewFetchSpecAction"
                enablesFor="1"
