@@ -140,7 +140,17 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 
 	protected AbstractEOArgument _cloneArgument() {
 		AbstractEOArgument argument = _createArgument(myName);
-		argument.myColumnName = myColumnName;
+		_cloneIntoArgument(argument, false);
+		return argument;
+	}
+	
+	public void _cloneIntoArgument(AbstractEOArgument argument, boolean updatingFlattenedAttribute) {
+		if (!updatingFlattenedAttribute) {
+			argument.myColumnName = "";
+		}
+		else {
+			argument.myColumnName = myColumnName;
+		}
 		argument.myExternalType = myExternalType;
 		argument.myValueType = myValueType;
 		argument.myValueClassName = myValueClassName;
@@ -152,9 +162,10 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		argument.myServerTimeZone = myServerTimeZone;
 		argument.myWidth = myWidth;
 		argument.myAllowsNull = myAllowsNull;
-		argument.myDefinition = myDefinition;
+		if (!updatingFlattenedAttribute) {
+			argument.myDefinition = myDefinition;
+		}
 		argument.setUserInfo(new HashMap<Object, Object>(getUserInfo()));
-		return argument;
 	}
 
 	public int hashCode() {

@@ -121,7 +121,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	private String myReadFormat;
 
 	private String myWriteFormat;
-	
+
 	private EOAttributePath myDefinitionPath;
 
 	public EOAttribute() {
@@ -178,30 +178,25 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 						Object currentValue = EOAttribute.getPropertyKey(propertyName).getValue(this);
 						Object prototypeValue = EOAttribute.getPropertyKey(propertyName).getValue(prototypeAttribute);
 						if (prototypeValue != null && !ComparisonUtils.equals(currentValue, prototypeValue)) {
-							// MS: These are some commonly wrong values that occur when you reverse engineer a database.  We
-							// want to be kind of lenient about these when we're guessing prototype attributes.
+							// MS: These are some commonly wrong values that
+							// occur when you reverse engineer a database. We
+							// want to be kind of lenient about these when we're
+							// guessing prototype attributes.
 							if (AbstractEOArgument.VALUE_TYPE.equals(propertyName) && ("S".equals(currentValue) || "c".equals(currentValue)) && ("S".equals(prototypeValue) || "c".equals(prototypeValue))) {
 								prototypeMatches = true;
-							}
-							else if (AbstractEOArgument.VALUE_TYPE.equals(propertyName) && "B".equals(currentValue) && "i".equals(prototypeValue)) {
+							} else if (AbstractEOArgument.VALUE_TYPE.equals(propertyName) && "B".equals(currentValue) && "i".equals(prototypeValue)) {
 								prototypeMatches = true;
-							}
-							else if (AbstractEOArgument.VALUE_CLASS_NAME.equals(propertyName) && "NSDecimalNumber".equals(currentValue) && "NSNumber".equals(prototypeValue)) {
+							} else if (AbstractEOArgument.VALUE_CLASS_NAME.equals(propertyName) && "NSDecimalNumber".equals(currentValue) && "NSNumber".equals(prototypeValue)) {
 								prototypeMatches = true;
-							}
-							else if (probablyBooleanString && AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME.equals(propertyName) && currentValue == null && "toString".equals(prototypeValue)) {
+							} else if (probablyBooleanString && AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME.equals(propertyName) && currentValue == null && "toString".equals(prototypeValue)) {
 								prototypeMatches = true;
-							}
-							else if (probablyBooleanString && AbstractEOArgument.FACTORY_METHOD_ARGUMENT_TYPE.equals(propertyName) && currentValue == null && EOFactoryMethodArgumentType.STRING.equals(prototypeValue)) {
+							} else if (probablyBooleanString && AbstractEOArgument.FACTORY_METHOD_ARGUMENT_TYPE.equals(propertyName) && currentValue == null && EOFactoryMethodArgumentType.STRING.equals(prototypeValue)) {
 								prototypeMatches = true;
-							}
-							else if (probablyBooleanString && AbstractEOArgument.VALUE_CLASS_NAME.equals(propertyName) && "NSString".equals(currentValue) && "java.lang.Boolean".equals(prototypeValue)) {
+							} else if (probablyBooleanString && AbstractEOArgument.VALUE_CLASS_NAME.equals(propertyName) && "NSString".equals(currentValue) && "java.lang.Boolean".equals(prototypeValue)) {
 								prototypeMatches = true;
-							}
-							else if (probablyBooleanString && AbstractEOArgument.VALUE_FACTORY_METHOD_NAME.equals(propertyName) && currentValue == null && "valueOf".equals(prototypeValue)) {
+							} else if (probablyBooleanString && AbstractEOArgument.VALUE_FACTORY_METHOD_NAME.equals(propertyName) && currentValue == null && "valueOf".equals(prototypeValue)) {
 								prototypeMatches = true;
-							}
-							else {
+							} else {
 								prototypeMatches = false;
 							}
 						}
@@ -598,17 +593,16 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		String definition;
 		if (isFlattened() && myDefinitionPath != null) {
 			definition = myDefinitionPath.toKeyPath();
-		}
-		else {
+		} else {
 			definition = _getDefinition();
 		}
 		return definition;
 	}
-	
+
 	public EOAttributePath getDefinitionPath() {
 		return myDefinitionPath;
 	}
-	
+
 	public String _getDefinition() {
 		return (String) _prototypeValueIfNull(AbstractEOArgument.DEFINITION, super._getDefinition());
 	}
@@ -618,8 +612,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 			AbstractEOAttributePath definitionPath = getEntity().resolveKeyPath(_getDefinition());
 			if (definitionPath instanceof EOAttributePath && definitionPath.isValid()) {
 				myDefinitionPath = (EOAttributePath) definitionPath;
-			}
-			else {
+			} else {
 				myDefinitionPath = null;
 			}
 		} else {
@@ -732,11 +725,17 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	}
 
 	public EOModelMap toMap() {
+//		WOL-368		
+//		EOAttributePath attributePath = getDefinitionPath();
+//		if (attributePath != null) {
+//			EOAttribute flattenedAttribute = attributePath.getChildAttribute();
+//			flattenedAttribute._cloneIntoArgument(this, true);
+//		}
+
 		EOModelMap attributeMap = super.toMap();
 		if (myPrototypeName != null) {
 			attributeMap.setString("prototypeName", myPrototypeName, true);
-		}
-		else {
+		} else {
 			attributeMap.remove("prototypeName");
 		}
 		attributeMap.setBoolean("isReadOnly", myReadOnly, EOModelMap.YN);
@@ -800,6 +799,13 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	@Override
 	public EOAttribute _cloneModelObject() {
 		EOAttribute attribute = (EOAttribute) _cloneArgument();
+		return attribute;
+	}
+
+	@Override
+	public void _cloneIntoArgument(AbstractEOArgument argument, boolean updatingFlattenedAttribute) {
+		super._cloneIntoArgument(argument, updatingFlattenedAttribute);
+		EOAttribute attribute = (EOAttribute) argument;
 		attribute.myPrototypeName = myPrototypeName;
 		attribute.myCachedPrototype = myCachedPrototype;
 		attribute.myClassProperty = myClassProperty;
@@ -810,22 +816,21 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		attribute.myReadOnly = myReadOnly;
 		attribute.myReadFormat = myReadFormat;
 		attribute.myWriteFormat = myWriteFormat;
-		return attribute;
 	}
 
 	@Override
 	public Class<EOEntity> _getModelParentType() {
 		return EOEntity.class;
 	}
-	
+
 	public EOEntity _getModelParent() {
 		return getEntity();
 	}
-	
+
 	public void _removeFromModelParent(Set<EOModelVerificationFailure> failures) {
 		getEntity().removeAttribute(this, true);
 	}
-	
+
 	public void _addToModelParent(EOEntity modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) throws EOModelException {
 		if (findUniqueName) {
 			setName(modelParent.findUnusedAttributeName(getName()));
