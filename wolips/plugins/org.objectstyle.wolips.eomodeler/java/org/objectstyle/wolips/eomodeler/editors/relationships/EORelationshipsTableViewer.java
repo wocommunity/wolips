@@ -62,7 +62,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -75,7 +74,9 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
+import org.objectstyle.wolips.eomodeler.utils.EMTextCellEditor;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
+import org.objectstyle.wolips.eomodeler.utils.StayEditingCellEditorListener;
 import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
 import org.objectstyle.wolips.eomodeler.utils.TableRowDoubleClickHandler;
 import org.objectstyle.wolips.eomodeler.utils.TableRowRefreshPropertyListener;
@@ -120,9 +121,11 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
 		CellEditor[] cellEditors = new CellEditor[EORelationshipsConstants.COLUMNS.length];
 		cellEditors[TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.TO_MANY)] = new CheckboxCellEditor();
 		cellEditors[TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.CLASS_PROPERTY)] = new CheckboxCellEditor();
-		cellEditors[TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.NAME)] = new TextCellEditor(relationshipsTable);
+		cellEditors[TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.NAME)] = new EMTextCellEditor(relationshipsTable);
 		myRelationshipsTableViewer.setCellModifier(new EORelationshipsCellModifier(myRelationshipsTableViewer));
 		myRelationshipsTableViewer.setCellEditors(cellEditors);
+		
+		new StayEditingCellEditorListener(myRelationshipsTableViewer, TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.NAME));
 	}
 
 	public void setEntity(EOEntity _entity) {

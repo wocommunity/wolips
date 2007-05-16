@@ -56,7 +56,6 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -68,8 +67,10 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.editors.IEOModelEditor;
+import org.objectstyle.wolips.eomodeler.utils.EMTextCellEditor;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
+import org.objectstyle.wolips.eomodeler.utils.StayEditingCellEditorListener;
 import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
 import org.objectstyle.wolips.eomodeler.utils.TableRowDoubleClickHandler;
 import org.objectstyle.wolips.eomodeler.utils.TableRowRefreshPropertyListener;
@@ -94,12 +95,17 @@ public class EOEntitiesTableViewer extends Composite implements ISelectionProvid
 		TableUtils.sort(myEntitiesTableViewer, EOEntity.NAME);
 
 		CellEditor[] cellEditors = new CellEditor[EOEntitiesConstants.COLUMNS.length];
-		cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.NAME)] = new TextCellEditor(entitiesTable);
-		cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.EXTERNAL_NAME)] = new TextCellEditor(entitiesTable);
-		cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.CLASS_NAME)] = new TextCellEditor(entitiesTable);
+		cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.NAME)] = new EMTextCellEditor(entitiesTable);
+		cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.EXTERNAL_NAME)] = new EMTextCellEditor(entitiesTable);
+		cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.CLASS_NAME)] = new EMTextCellEditor(entitiesTable);
 		cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.PARENT)] = new KeyComboBoxCellEditor(entitiesTable, new String[0], SWT.READ_ONLY);
 		myEntitiesTableViewer.setCellModifier(new EOEntitiesCellModifier(myEntitiesTableViewer, cellEditors));
 		myEntitiesTableViewer.setCellEditors(cellEditors);
+		
+		new StayEditingCellEditorListener(myEntitiesTableViewer, TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.NAME));
+		new StayEditingCellEditorListener(myEntitiesTableViewer, TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.EXTERNAL_NAME));
+		new StayEditingCellEditorListener(myEntitiesTableViewer, TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.CLASS_NAME));
+		new StayEditingCellEditorListener(myEntitiesTableViewer, TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.PARENT));
 
 		myTableRefresher = new TableRefreshPropertyListener(myEntitiesTableViewer);
 		myTableRowRefresher = new TableRowRefreshPropertyListener(myEntitiesTableViewer);
@@ -107,6 +113,7 @@ public class EOEntitiesTableViewer extends Composite implements ISelectionProvid
 
 	public void setModel(EOModel _model) {
 		if (myModel != null) {
+			//myTableRefresher.start();
 			myModel.removePropertyChangeListener(EOModel.ENTITIES, myTableRefresher);
 			myModel.removePropertyChangeListener(EOModel.ENTITY, myTableRowRefresher);
 		}
@@ -122,6 +129,7 @@ public class EOEntitiesTableViewer extends Composite implements ISelectionProvid
 		TableColumn parentName = myEntitiesTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.PARENT));
 		parentName.setWidth(Math.max(parentName.getWidth(), 100));
 		if (myModel != null) {
+			//myTableRefresher.stop();
 			myModel.addPropertyChangeListener(EOModel.ENTITIES, myTableRefresher);
 			myModel.addPropertyChangeListener(EOModel.ENTITY, myTableRowRefresher);
 		}

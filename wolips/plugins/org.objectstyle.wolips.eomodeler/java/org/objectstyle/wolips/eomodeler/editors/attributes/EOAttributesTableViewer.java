@@ -55,7 +55,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -68,8 +67,11 @@ import org.objectstyle.wolips.eomodeler.actions.NewAttributeAction;
 import org.objectstyle.wolips.eomodeler.core.model.AbstractEOArgument;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.utils.EMTableViewer;
+import org.objectstyle.wolips.eomodeler.utils.EMTextCellEditor;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
+import org.objectstyle.wolips.eomodeler.utils.StayEditingCellEditorListener;
 import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
 import org.objectstyle.wolips.eomodeler.utils.TableRowDoubleClickHandler;
 import org.objectstyle.wolips.eomodeler.utils.TableRowRefreshPropertyListener;
@@ -77,7 +79,7 @@ import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 import org.objectstyle.wolips.eomodeler.utils.TriStateCellEditor;
 
 public class EOAttributesTableViewer extends Composite implements ISelectionProvider {
-	private TableViewer myAttributesTableViewer;
+	private EMTableViewer myAttributesTableViewer;
 
 	private EOEntity myEntity;
 
@@ -86,7 +88,7 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
 	private TableRefreshPropertyListener myParentChangedRefresher;
 
 	private TableRowRefreshPropertyListener myTableRowRefresher;
-	
+
 	public EOAttributesTableViewer(Composite _parent, int _style) {
 		super(_parent, _style);
 
@@ -124,11 +126,15 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
 
 		CellEditor[] cellEditors = new CellEditor[EOAttributesConstants.COLUMNS.length];
 		cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PROTOTYPE)] = new KeyComboBoxCellEditor(attributesTable, new String[0], SWT.READ_ONLY);
-		cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.NAME)] = new TextCellEditor(attributesTable);
-		cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.COLUMN_NAME)] = new TextCellEditor(attributesTable);
+		cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.NAME)] = new EMTextCellEditor(attributesTable);
+		cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.COLUMN_NAME)] = new EMTextCellEditor(attributesTable);
 		updateCellEditors(cellEditors);
 		myAttributesTableViewer.setCellModifier(new EOAttributesCellModifier(myAttributesTableViewer, cellEditors));
 		myAttributesTableViewer.setCellEditors(cellEditors);
+		
+		new StayEditingCellEditorListener(myAttributesTableViewer, TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PROTOTYPE));
+		new StayEditingCellEditorListener(myAttributesTableViewer, TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.NAME));
+		new StayEditingCellEditorListener(myAttributesTableViewer, TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.COLUMN_NAME));
 	}
 
 	public void setEntity(EOEntity _entity) {
@@ -160,7 +166,7 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
 		return myEntity;
 	}
 
-	public TableViewer getTableViewer() {
+	public EMTableViewer getTableViewer() {
 		return myAttributesTableViewer;
 	}
 
@@ -194,7 +200,7 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
 	public void setSelection(ISelection _selection) {
 		myAttributesTableViewer.setSelection(_selection);
 	}
-	
+
 	@Override
 	public void dispose() {
 		myAttributesChangedRefresher.stop();
@@ -219,27 +225,28 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
 		}
 	}
 
-//	protected class AttributesChangeRefresher extends TableRefreshPropertyListener implements Runnable  {
-//		public AttributesChangeRefresher(TableViewer _tableViewer) {
-//			super(_tableViewer);
-//		}
-//		
-//		public void propertyChange(PropertyChangeEvent _event) {
-//			super.propertyChange(_event);
-//			Set<EOAttribute> oldValues = (Set<EOAttribute>) _event.getOldValue();
-//			Set<EOAttribute> newValues = (Set<EOAttribute>) _event.getNewValue();
-//			if (newValues != null && oldValues != null) {
-//				if (newValues.size() > oldValues.size()) {
-//					List<EOAttribute> newList = new LinkedList<EOAttribute>(newValues);
-//					newList.removeAll(oldValues);
-//					synchronized (_addedAttributes) {
-//						System.out.println("AttributesChangeRefresher.propertyChange: changed");
-//						_addedAttributes.addAll(newList);
-//					}
-//					_throttle.ping();
-//				}
-//				TableUtils.packTableColumns(EOAttributesTableViewer.this.getTableViewer());
-//			}
-//		}
-//	}
+	// protected class AttributesChangeRefresher extends
+	// TableRefreshPropertyListener implements Runnable {
+	// public AttributesChangeRefresher(TableViewer _tableViewer) {
+	// super(_tableViewer);
+	// }
+	//		
+	// public void propertyChange(PropertyChangeEvent _event) {
+	// super.propertyChange(_event);
+	// Set<EOAttribute> oldValues = (Set<EOAttribute>) _event.getOldValue();
+	// Set<EOAttribute> newValues = (Set<EOAttribute>) _event.getNewValue();
+	// if (newValues != null && oldValues != null) {
+	// if (newValues.size() > oldValues.size()) {
+	// List<EOAttribute> newList = new LinkedList<EOAttribute>(newValues);
+	// newList.removeAll(oldValues);
+	// synchronized (_addedAttributes) {
+	// System.out.println("AttributesChangeRefresher.propertyChange: changed");
+	// _addedAttributes.addAll(newList);
+	// }
+	// _throttle.ping();
+	// }
+	// TableUtils.packTableColumns(EOAttributesTableViewer.this.getTableViewer());
+	// }
+	// }
+	// }
 }

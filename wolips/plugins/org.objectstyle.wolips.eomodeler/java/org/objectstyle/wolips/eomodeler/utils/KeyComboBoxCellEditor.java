@@ -173,6 +173,10 @@ public class KeyComboBoxCellEditor extends CellEditor {
 		populateComboBoxItems();
 	}
 
+	public IHateCCombo getComboBox() {
+		return comboBox;
+	}
+	
 	private boolean _resizing;
 	/*
 	 * (non-Javadoc) Method declared on CellEditor.
