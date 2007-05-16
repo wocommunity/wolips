@@ -55,7 +55,6 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -441,7 +440,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			if (input != null && myModel != null) {
 				Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
 				myModel.verify(failures);
-				handleModelErrors(failures);
+				handleModelErrors(failures, false);
 
 				IFile originalFile = ((IFileEditorInput) input).getFile();
 				IContainer originalFolder = originalFile.getParent();
@@ -516,7 +515,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			EOModel model = IEOModelGroupFactory.Utility.loadModel(fileEditorInput.getFile(), myLoadFailures, true, progressMonitor);
 			if (model == null) {
 				// super.init(_site, fileEditorInput);
-				handleModelErrors(myLoadFailures);
+				handleModelErrors(myLoadFailures, true);
 				// throw new EOModelException("Failed to load the requested
 				// model.");
 			} else {
@@ -527,7 +526,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				if (openingEntityName != null) {
 					myOpeningEntity = model.getEntityNamed(openingEntityName);
 				}
-				handleModelErrors(myLoadFailures);
+				handleModelErrors(myLoadFailures, false);
 
 				model.addPropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
 				myEntitiesChangeListener.start();
@@ -560,7 +559,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				}
 			}
 		} catch (Throwable e) {
-			handleModelErrors(myLoadFailures);
+			handleModelErrors(myLoadFailures, true);
 			e.printStackTrace();
 			// throw new PartInitException("Failed to create EOModelEditorInput
 			// for " + getEditorInput() + ".", e);
@@ -624,7 +623,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		}
 	}
 
-	protected void handleModelErrors(final Set<EOModelVerificationFailure> _failures) {
+	protected void handleModelErrors(final Set<EOModelVerificationFailure> _failures, boolean forceOpen) {
 		if (myModel != null) {
 			try {
 				if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.SHOW_ERRORS_IN_PROBLEMS_VIEW_KEY)) {
@@ -653,9 +652,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 								}
 							}
 
-							Iterator<EOModelVerificationFailure> failuresIter = _failures.iterator();
-							while (failuresIter.hasNext()) {
-								EOModelVerificationFailure failure = failuresIter.next();
+							for (EOModelVerificationFailure failure : _failures) {
 								EOModel model = failure.getModel();
 								IFile indexFile;
 								try {
@@ -686,15 +683,38 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			}
 		}
 
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				if (!_failures.isEmpty()) {
-					EOModelErrorDialog dialog = new EOModelErrorDialog(Display.getCurrent().getActiveShell(), _failures);
-					dialog.setBlockOnOpen(true);
-					dialog.open();
-				}
+		boolean warnings = false;
+		boolean errors = false;
+		for (EOModelVerificationFailure failure : _failures) {
+			if (failure.isWarning()) {
+				warnings = true;
+			} else {
+				errors = true;
 			}
-		});
+		}
+
+		boolean openWindow = false;
+		if (forceOpen) {
+			openWindow = true;
+		} else {
+			if (errors && Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.OPEN_WINDOW_ON_VERIFICATION_ERRORS_KEY)) {
+				openWindow = true;
+			}
+			if (warnings && Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.OPEN_WINDOW_ON_VERIFICATION_WARNINGS_KEY)) {
+				openWindow = true;
+			}
+		}
+		if (openWindow) {
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					if (!_failures.isEmpty()) {
+						EOModelErrorDialog dialog = new EOModelErrorDialog(Display.getCurrent().getActiveShell(), _failures);
+						dialog.setBlockOnOpen(true);
+						dialog.open();
+					}
+				}
+			});
+		}
 	}
 
 	protected void updatePartName() {
