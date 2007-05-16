@@ -51,11 +51,14 @@ package org.objectstyle.wolips.eomodeler.actions;
 
 import java.util.Set;
 
+import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.core.model.DuplicateNameException;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
+import org.objectstyle.wolips.eomodeler.preferences.PreferenceConstants;
 
 public class NewAttributeAction extends AbstractNewObjectAction<EOEntity, EOAttribute> {
 	public NewAttributeAction() {
@@ -64,7 +67,14 @@ public class NewAttributeAction extends AbstractNewObjectAction<EOEntity, EOAttr
 
 	@Override
 	protected EOAttribute createChild(EOEntity parent, Set<EOModelVerificationFailure> failures) throws EOModelException {
-		return parent.addBlankAttribute(Messages.getString("EOAttribute.newName"));
+		return createAttribute(parent);
+	}
+	
+	public static final EOAttribute createAttribute(EOEntity entity) throws DuplicateNameException {
+		EOAttribute newAttribute = entity.addBlankAttribute(Messages.getString("EOAttribute.newName"));
+		newAttribute.setAllowsNull(Boolean.valueOf(Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.ALLOWS_NULL_DEFAULT_KEY)));
+		newAttribute.setUsedForLocking(Boolean.valueOf(Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.USED_FOR_LOCKING_DEFAULT_KEY)));
+		return newAttribute;
 	}
 
 	@Override

@@ -343,11 +343,6 @@
             class="org.objectstyle.wolips.ui.preferences.EOGeneratorPreferencesPage"
             id="org.objectstyle.wolips.preferences.EOGeneratorPreferencesPage">
       </page>
-      <page
-            category="org.objectstyle.wolips.preferences.PreferencesPage"
-            class="org.objectstyle.wolips.ui.preferences.EntityModelerPreferencesPage"
-            id="org.objectstyle.wolips.preferences.EntityModelerPreferencesPage"
-            name="Entity Modeler"/>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Decorators                                                               -->
