@@ -8,7 +8,7 @@
             class="org.objectstyle.wolips.componenteditor.part.ComponentEditor"
             contributorClass="org.objectstyle.wolips.componenteditor.contributor.ComponentEditorContributor"
             default="true"
-            icon="icons/ComponentEditor.gif"
+            icon="icons/file-wod.png"
             id="org.objectstyle.wolips.componenteditor.ComponentEditor"
             matchingStrategy="org.objectstyle.wolips.componenteditor.launcher.ComponentEditorMatchingStrategy"
             name="WOComponent Editor">
@@ -214,15 +214,6 @@
 			id="org.objectstyle.wolips.componenteditor.actionSet"
 			label="Component Editor">
 			<action
-				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOConditionalAction"
-				icon="icons/conditional.png"
-				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOConditional"
-				label="Insert WOConditional Component"
-				style="push"
-				toolbarPath="/Normal/additions"
-				tooltip="Insert WOConditional Component">
-			</action>
-			<action
 				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOStringAction"
 				icon="icons/string.png"
 				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOString"
@@ -232,13 +223,13 @@
 				tooltip="Insert WOString Component">
 			</action>
 			<action
-				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOHyperlinkAction"
-				icon="icons/hyperlink.png"
-				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOHyperlink"
-				label="Insert WOHyperlink Component"
+				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOConditionalAction"
+				icon="icons/conditional.png"
+				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOConditional"
+				label="Insert WOConditional Component"
 				style="push"
 				toolbarPath="/Normal/additions"
-				tooltip="Insert WOHyperlink Component">
+				tooltip="Insert WOConditional Component">
 			</action>
 			<action
 				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWORepetitionAction"
@@ -248,6 +239,15 @@
 				style="push"
 				toolbarPath="/Normal/additions"
 				tooltip="Insert WORepetition Component">
+			</action>
+			<action
+				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOHyperlinkAction"
+				icon="icons/hyperlink.png"
+				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOHyperlink"
+				label="Insert WOHyperlink Component"
+				style="push"
+				toolbarPath="/Normal/additions"
+				tooltip="Insert WOHyperlink Component">
 			</action>
 			<action
 				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOTextFieldAction"
