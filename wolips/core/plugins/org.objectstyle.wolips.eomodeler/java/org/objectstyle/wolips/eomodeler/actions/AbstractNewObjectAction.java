@@ -84,6 +84,8 @@ public abstract class AbstractNewObjectAction<T extends EOModelObject, U extends
 	private T _selectedParent;
 
 	private String _label;
+	
+	private IStructuredSelection _selection;
 
 	public AbstractNewObjectAction(Class<T> parentType, String label) {
 		_label = label;
@@ -109,11 +111,16 @@ public abstract class AbstractNewObjectAction<T extends EOModelObject, U extends
 	public void selectionChanged(IAction action, ISelection selection) {
 		_selectedParent = null;
 		if (selection instanceof IStructuredSelection) {
+			_selection = ((IStructuredSelection)selection);
 			Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
 			if (selectedObject instanceof EOModelObject) {
 				_selectedParent = (T) EOModelUtils.getRelated(_parentType, (EOModelObject) selectedObject);
 			}
 		}
+	}
+	
+	public IStructuredSelection getSelection() {
+		return _selection;
 	}
 	
 	public void init(IViewPart view) {
