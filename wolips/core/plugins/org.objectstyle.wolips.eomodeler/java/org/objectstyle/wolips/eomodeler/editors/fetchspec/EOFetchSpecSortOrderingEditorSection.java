@@ -58,7 +58,6 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -81,6 +80,8 @@ import org.objectstyle.wolips.eomodeler.core.model.EOSortOrdering;
 import org.objectstyle.wolips.eomodeler.outline.EOEntityTreeViewUpdater;
 import org.objectstyle.wolips.eomodeler.outline.EOModelOutlineContentProvider;
 import org.objectstyle.wolips.eomodeler.utils.AddRemoveButtonGroup;
+import org.objectstyle.wolips.eomodeler.utils.EMTextCellEditor;
+import org.objectstyle.wolips.eomodeler.utils.StayEditingCellEditorListener;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyCellModifier;
 import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
 import org.objectstyle.wolips.eomodeler.utils.TableRowRefreshPropertyListener;
@@ -145,11 +146,13 @@ public class EOFetchSpecSortOrderingEditorSection extends AbstractPropertySectio
 		myTableRowRefresher = new TableRowRefreshPropertyListener(mySortOrderingsTableViewer);
 
 		CellEditor[] cellEditors = new CellEditor[EOSortOrderingsConstants.COLUMNS.length];
-		cellEditors[TableUtils.getColumnNumber(EOSortOrderingsConstants.COLUMNS, EOSortOrdering.KEY)] = new TextCellEditor(mySortOrderingsTableViewer.getTable());
+		cellEditors[TableUtils.getColumnNumber(EOSortOrderingsConstants.COLUMNS, EOSortOrdering.KEY)] = new EMTextCellEditor(mySortOrderingsTableViewer.getTable());
 		cellEditors[TableUtils.getColumnNumber(EOSortOrderingsConstants.COLUMNS, EOSortOrdering.ASCENDING)] = new CheckboxCellEditor(mySortOrderingsTableViewer.getTable());
 		cellEditors[TableUtils.getColumnNumber(EOSortOrderingsConstants.COLUMNS, EOSortOrdering.CASE_INSENSITIVE)] = new CheckboxCellEditor(mySortOrderingsTableViewer.getTable());
 		mySortOrderingsTableViewer.setCellEditors(cellEditors);
 		mySortOrderingsTableViewer.setCellModifier(new TablePropertyCellModifier(mySortOrderingsTableViewer));
+
+		new StayEditingCellEditorListener(mySortOrderingsTableViewer, TableUtils.getColumnNumber(EOSortOrderingsConstants.COLUMNS, EOSortOrdering.KEY));
 
 		myAddRemoveButtonGroup = new AddRemoveButtonGroup(topForm, new AddSortOrderingHandler(), new RemoveSortOrderingHandler());
 		myAddRemoveButtonGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));

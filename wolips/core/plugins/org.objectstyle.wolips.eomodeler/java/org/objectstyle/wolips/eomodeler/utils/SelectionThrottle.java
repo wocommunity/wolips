@@ -49,22 +49,30 @@
  */
 package org.objectstyle.wolips.eomodeler.utils;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.widgets.Display;
+import org.objectstyle.wolips.baseforplugins.util.Throttle;
 
-public class TableRefreshPropertyListener implements PropertyChangeListener {
-	private SelectionThrottle _throttle;
+public class SelectionThrottle implements Runnable {
+	private Throttle _throttle;
 
-	private TableViewer _tableViewer;
+	private IThrottledSelectionHandler _selectionHandler;
 
-	public TableRefreshPropertyListener(TableViewer tableViewer) {
-		_tableViewer = tableViewer;
-		_throttle = new SelectionThrottle(new SelectionThrottle.TableViewerSelectionHandler(tableViewer));
+	private List _addedObjects;
+
+	private List _removedObjects;
+
+	public SelectionThrottle(IThrottledSelectionHandler selectionHandler) {
+		_selectionHandler = selectionHandler;
+		_addedObjects = new LinkedList();
+		_removedObjects = new LinkedList();
+		_throttle = new Throttle(250, this);
 	}
 
 	public void start() {
@@ -75,24 +83,58 @@ public class TableRefreshPropertyListener implements PropertyChangeListener {
 		_throttle.stop();
 	}
 
-	public void propertyChange(PropertyChangeEvent event) {
-		Object source = event.getSource();
-		Object oldValue = event.getOldValue();
-		Object newValue = event.getNewValue();
-		if (oldValue instanceof Collection && newValue instanceof Collection) {
-			Set newSet = new HashSet((Collection) newValue);
-			newSet.removeAll((Collection) oldValue);
-			_tableViewer.add(newSet.toArray());
-			Set oldSet = new HashSet((Collection) oldValue);
-			oldSet.removeAll((Collection) newValue);
-			_tableViewer.remove(oldSet.toArray());
-			_throttle.objectsAdded(newSet);
-			_throttle.objectsRemoved(oldSet);
-			TableUtils.packTableColumns(_tableViewer);
-		} else {
-			System.out.println("TableRefreshPropertyListener.propertyChange: refresh all " + oldValue + ", " + newValue);
-			_tableViewer.refresh(source, true);
+	public void run() {
+		final List addedObjects;
+		synchronized (_addedObjects) {
+			addedObjects = _addedObjects;
+			_addedObjects = new LinkedList();
 		}
-		// myTableViewer.refresh(false);
+		// final List removedObjects;
+		synchronized (_removedObjects) {
+			// removedObjects = _removedObjects;
+			_removedObjects = new LinkedList();
+		}
+		if (!addedObjects.isEmpty()) {
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					_selectionHandler.changeSelection(new StructuredSelection(addedObjects));
+				}
+			});
+		}
+	}
+
+	public void objectsAdded(Collection addedObjects) {
+		if (!addedObjects.isEmpty()) {
+			synchronized (_addedObjects) {
+				_addedObjects.addAll(addedObjects);
+			}
+			_throttle.ping();
+		}
+	}
+
+	public void objectsRemoved(Collection removedObjects) {
+		if (!removedObjects.isEmpty()) {
+			synchronized (_removedObjects) {
+				_removedObjects.addAll(removedObjects);
+			}
+			_throttle.ping();
+		}
+	}
+
+	public static class TableViewerSelectionHandler implements IThrottledSelectionHandler {
+		private TableViewer _tableViewer;
+
+		public TableViewerSelectionHandler(TableViewer tableViewer) {
+			_tableViewer = tableViewer;
+		}
+
+		public void changeSelection(ISelection selection) {
+			_tableViewer.setSelection(selection);
+			_tableViewer.getTable().forceFocus();
+		}
+	}
+
+	public static interface IThrottledSelectionHandler {
+		public void changeSelection(ISelection selection);
 	}
 }

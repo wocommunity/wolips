@@ -64,8 +64,8 @@ public class TableUtils {
 		return TableUtils.createTableViewer(_parent, SWT.FULL_SELECTION, _messagePrefix, _columns, _contentProvider, _labelProvider, _sorter);
 	}
 
-	public static TableViewer createTableViewer(Composite _parent, int _style, String _messagePrefix, String[] _columns, IStructuredContentProvider _contentProvider, ITableLabelProvider _labelProvider, ViewerSorter _sorter) {
-		TableViewer tableViewer = new TableViewer(_parent, _style);
+	public static EMTableViewer createTableViewer(Composite _parent, int _style, String _messagePrefix, String[] _columns, IStructuredContentProvider _contentProvider, ITableLabelProvider _labelProvider, ViewerSorter _sorter) {
+		EMTableViewer tableViewer = new EMTableViewer(_parent, _style);
 		tableViewer.setColumnProperties(_columns);
 		if (_contentProvider != null) {
 			tableViewer.setContentProvider(_contentProvider);

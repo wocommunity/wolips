@@ -61,7 +61,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
@@ -83,6 +82,8 @@ import org.objectstyle.wolips.eomodeler.core.model.IUserInfoable;
 import org.objectstyle.wolips.eomodeler.core.utils.NotificationMap;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.utils.AddRemoveButtonGroup;
+import org.objectstyle.wolips.eomodeler.utils.EMTextCellEditor;
+import org.objectstyle.wolips.eomodeler.utils.StayEditingCellEditorListener;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
 public class UserInfoPropertySection extends AbstractPropertySection {
@@ -117,10 +118,13 @@ public class UserInfoPropertySection extends AbstractPropertySection {
 		myUserInfoTableViewer = TableUtils.createTableViewer(composite, SWT.BORDER | SWT.FLAT | SWT.FULL_SELECTION | SWT.SINGLE, "UserInfo", UserInfoPropertySection.COLUMNS, new UserInfoContentProvider(), new UserInfoLabelProvider(UserInfoPropertySection.COLUMNS), new ViewerSorter());
 
 		CellEditor[] cellEditors = new CellEditor[UserInfoPropertySection.COLUMNS.length];
-		cellEditors[TableUtils.getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.KEY)] = new TextCellEditor(myUserInfoTableViewer.getTable());
-		cellEditors[TableUtils.getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.VALUE)] = new TextCellEditor(myUserInfoTableViewer.getTable());
+		cellEditors[TableUtils.getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.KEY)] = new EMTextCellEditor(myUserInfoTableViewer.getTable());
+		cellEditors[TableUtils.getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.VALUE)] = new EMTextCellEditor(myUserInfoTableViewer.getTable());
 		myUserInfoTableViewer.setCellModifier(new UserInfoCellModifier(myUserInfoTableViewer));
 		myUserInfoTableViewer.setCellEditors(cellEditors);
+		
+		new StayEditingCellEditorListener(myUserInfoTableViewer, TableUtils.getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.KEY));
+		new StayEditingCellEditorListener(myUserInfoTableViewer, TableUtils.getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.VALUE));
 
 		FormData tableFormData = new FormData();
 		tableFormData.left = new FormAttachment(0, 5);
