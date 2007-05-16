@@ -56,7 +56,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.part.FileEditorInput;
-import org.objectstyle.wolips.eogenerator.model.EOGeneratorModel;
+import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel;
 
 public class EOGeneratorEditor extends FormEditor {
 	private EOGeneratorModel myModel;
