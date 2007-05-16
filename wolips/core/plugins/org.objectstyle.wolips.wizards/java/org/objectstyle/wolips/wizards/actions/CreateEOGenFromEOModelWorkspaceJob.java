@@ -57,6 +57,7 @@ import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -82,7 +83,7 @@ public class CreateEOGenFromEOModelWorkspaceJob extends WorkspaceJob {
 	public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
 		try {
 			String extension = (_createEOModelGroup) ? ".eomodelgroup" : ".eogen";
-			EOModel model = IEOModelGroupFactory.Utility.loadModel(_modelFile, new HashSet<EOModelVerificationFailure>(), true);
+			EOModel model = IEOModelGroupFactory.Utility.loadModel(_modelFile, new HashSet<EOModelVerificationFailure>(), true, new NullProgressMonitor());
 			EOGeneratorModel eogenModel = EOGeneratorWizard.createEOGeneratorModel(_modelFile.getParent(), model);
 			String eogenBasePath = URLUtils.cheatAndTurnIntoFile(model.getModelURL()).getAbsolutePath();
 			int dotIndex = eogenBasePath.lastIndexOf('.');

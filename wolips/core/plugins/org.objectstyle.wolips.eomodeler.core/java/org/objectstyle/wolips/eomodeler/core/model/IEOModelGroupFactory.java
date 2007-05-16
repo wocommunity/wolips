@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.objectstyle.wolips.eomodeler.core.Activator;
 
@@ -43,7 +44,7 @@ public interface IEOModelGroupFactory {
 	 * @throws EOModelException
 	 *             if there is a problem loading models
 	 */
-	public EOModel loadModel(Object modelResource, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates) throws EOModelException;
+	public EOModel loadModel(Object modelResource, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws EOModelException;
 
 	/**
 	 * Returns whether or not this factory can load a model group from the given
@@ -68,26 +69,26 @@ public interface IEOModelGroupFactory {
 	 * @throws EOModelException
 	 *             if there is a problem loading models
 	 */
-	public EOModelGroup loadModelGroup(Object modelGroupResource, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, URL editingModelURL) throws EOModelException;
+	public EOModelGroup loadModelGroup(Object modelGroupResource, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, URL editingModelURL, IProgressMonitor progressMonitor) throws EOModelException;
 
 	public class Utility {
-		public static EOModel loadModel(Object modelResource, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates) throws EOModelException {
+		public static EOModel loadModel(Object modelResource, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws EOModelException {
 			EOModel model = null;
 			List<IEOModelGroupFactory> modelGroupFactories = IEOModelGroupFactory.Utility.modelGroupFactories();
 			for (IEOModelGroupFactory modelGroupFactory : modelGroupFactories) {
 				if (modelGroupFactory.canLoadModelFrom(modelResource)) {
-					model = modelGroupFactory.loadModel(modelResource, failures, skipOnDuplicates);
+					model = modelGroupFactory.loadModel(modelResource, failures, skipOnDuplicates, progressMonitor);
 				}
 			}
 			return model;
 		}
 
-		public static EOModelGroup loadModelGroup(Object modelGroupResource, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, URL editingModelURL) throws EOModelException {
+		public static EOModelGroup loadModelGroup(Object modelGroupResource, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, URL editingModelURL, IProgressMonitor progressMonitor) throws EOModelException {
 			EOModelGroup modelGroup = null;
 			List<IEOModelGroupFactory> modelGroupFactories = IEOModelGroupFactory.Utility.modelGroupFactories();
 			for (IEOModelGroupFactory modelGroupFactory : modelGroupFactories) {
 				if (modelGroupFactory.canLoadModelGroupFrom(modelGroupResource)) {
-					modelGroup = modelGroupFactory.loadModelGroup(modelGroupResource, failures, skipOnDuplicates, editingModelURL);
+					modelGroup = modelGroupFactory.loadModelGroup(modelGroupResource, failures, skipOnDuplicates, editingModelURL, progressMonitor);
 				}
 			}
 			return modelGroup;

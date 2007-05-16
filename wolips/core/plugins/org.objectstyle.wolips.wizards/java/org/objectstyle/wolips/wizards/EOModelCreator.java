@@ -69,6 +69,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -161,7 +162,7 @@ public class EOModelCreator implements IRunnableWithProgress {
 		boolean createModelGroup = false;
 		EOModelGroup modelGroup;
 		try {
-			modelGroup = IEOModelGroupFactory.Utility.loadModelGroup(_parentResource.getProject(), failures, true, existingModelFolder.getLocation().toFile().toURL());
+			modelGroup = IEOModelGroupFactory.Utility.loadModelGroup(_parentResource.getProject(), failures, true, existingModelFolder.getLocation().toFile().toURL(), new NullProgressMonitor());
 		} catch (Exception e) {
 			failures.clear();
 			failures.add(new EOModelVerificationFailure(null, "Creating empty EOModelGroup for this model because " + e.getMessage(), true, e));

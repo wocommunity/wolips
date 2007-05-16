@@ -62,6 +62,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.URLUtils;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
@@ -1097,11 +1098,12 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		Set<EOModelVerificationFailure> failures = new LinkedHashSet<EOModelVerificationFailure>();
 
 		EOModelGroup modelGroup = new EOModelGroup();
-		modelGroup.loadModelsFromFolder(new File("/Library/Frameworks/ERPrototypes.framework/Resources").toURL(), failures);
-		modelGroup.loadModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTask").toURL(), failures);
-		modelGroup.loadModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTAccounting").toURL(), failures);
-		modelGroup.loadModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTCMS").toURL(), failures);
-		modelGroup.loadModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTWOExtensions").toURL(), failures);
+		NullProgressMonitor progressMonitor = new NullProgressMonitor();
+		modelGroup.loadModelsFromFolder(new File("/Library/Frameworks/ERPrototypes.framework/Resources").toURL(), failures, progressMonitor);
+		modelGroup.loadModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTask").toURL(), failures, progressMonitor);
+		modelGroup.loadModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTAccounting").toURL(), failures, progressMonitor);
+		modelGroup.loadModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTCMS").toURL(), failures, progressMonitor);
+		modelGroup.loadModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTWOExtensions").toURL(), failures, progressMonitor);
 
 		modelGroup.resolve(failures);
 		modelGroup.verify(failures);

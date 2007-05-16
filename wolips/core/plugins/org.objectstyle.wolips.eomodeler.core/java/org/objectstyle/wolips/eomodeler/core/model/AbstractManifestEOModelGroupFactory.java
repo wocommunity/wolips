@@ -6,13 +6,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 public abstract class AbstractManifestEOModelGroupFactory implements IEOModelGroupFactory {
 	public boolean canLoadModelFrom(Object modelResource) {
 		return modelResource instanceof IResource || modelResource instanceof File;
 	}
 
-	public EOModel loadModel(Object modelResource, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates) throws EOModelException {
+	public EOModel loadModel(Object modelResource, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws EOModelException {
 		File selectedModelFile;
 		if (modelResource instanceof IResource) {
 			selectedModelFile = ((IResource) modelResource).getLocation().toFile();
@@ -36,9 +37,9 @@ public abstract class AbstractManifestEOModelGroupFactory implements IEOModelGro
 			modelGroup.setEditingModelURL(selectedModelFolder.toURL());
 			List<ManifestSearchFolder> searchFolders = getSearchFolders(selectedModelFolder);
 			for (ManifestSearchFolder searchFolder : searchFolders) {
-				modelGroup.loadModelsFromFolder(searchFolder.getFolder().toURL(), searchFolder.getDepth(), failures, skipOnDuplicates, null);
+				modelGroup.loadModelsFromFolder(searchFolder.getFolder().toURL(), searchFolder.getDepth(), failures, skipOnDuplicates, null, progressMonitor);
 			}
-			EOModel model = modelGroup.loadModelFromFolder(selectedModelFolder.toURL(), failures, skipOnDuplicates, null);
+			EOModel model = modelGroup.loadModelFromFolder(selectedModelFolder.toURL(), failures, skipOnDuplicates, null, progressMonitor);
 			modelGroup.resolve(failures);
 			modelGroup.verify(failures);
 			return model;
@@ -47,12 +48,12 @@ public abstract class AbstractManifestEOModelGroupFactory implements IEOModelGro
 		}
 	}
 
-	protected EOModelGroup loadModelGroup(Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates) throws EOModelException {
+	protected EOModelGroup loadModelGroup(Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws EOModelException {
 		try {
 			EOModelGroup modelGroup = new EOModelGroup();
 			List<ManifestSearchFolder> searchFolders = getSearchFolders(null);
 			for (ManifestSearchFolder searchFolder : searchFolders) {
-				modelGroup.loadModelsFromFolder(searchFolder.getFolder().toURL(), searchFolder.getDepth(), failures, skipOnDuplicates, null);
+				modelGroup.loadModelsFromFolder(searchFolder.getFolder().toURL(), searchFolder.getDepth(), failures, skipOnDuplicates, null, progressMonitor);
 			}
 			modelGroup.resolve(failures);
 			modelGroup.verify(failures);
