@@ -827,5 +827,17 @@
                menubarPath="group4"/>
       </objectContribution>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.objectstyle.wolips.eomodeler.preferences.PreferenceInitializer"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.objectstyle.wolips.preferences.PreferencesPage"
+            class="org.objectstyle.wolips.eomodeler.preferences.EntityModelerPreferencePage"
+            id="org.objectstyle.wolips.eomodeler.preferences.EOModelPreferencePage"
+            name="Entity Modeler"/>
+   </extension>
 
 </plugin>

@@ -84,11 +84,6 @@ public class Preferences {
 	public static final String PREF_WRITE_XCODE21_ON_BUILD = "org.objectstyle.wolips.preference.WriteXcode21OnBuild";
 
 	/**
-	 * Comment for <code>PREF_VALIDATE_WOD_ON_BUILD</code>
-	 */
-	public static final String PREF_VALIDATE_WOD_ON_BUILD = "org.objectstyle.wolips.preference.ValidateWODOnBuild";
-
-	/**
 	 * Comment for <code>PREF_AUTOEOGENERATE_ON_BUILD</code>
 	 */
 	public static final String PREF_AUTOEOGENERATE_ON_BUILD = "org.objectstyle.wolips.preference.AutoEOGenerateOnBuild";
@@ -130,10 +125,6 @@ public class Preferences {
 	public static final String PREF_EOGENERATOR_JAVA_TEMPLATE = "org.objectstyle.wolips.Preference.EOGeneratorTemplate";
 
 	public static final String PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE = "org.objectstyle.wolips.Preference.EOGeneratorSubclassTemplate";
-
-	public static final String PREF_ENTITY_MODELER_CHANGE_PERSPECTIVES = "org.objectstyle.wolips.Preference.EntityModelerChangePerspectives";
-
-	public static final String PREF_ENTITY_MODELER_SHOW_ERRORS_IN_PROBLEMS_VIEW = "org.objectstyle.wolips.Preference.EntityModelerErrorsInProblemsView";
 
 	/**
 	 * Comment for <code>FLAG_INCLUDE_EXCLUDE_RULES_CHANGED</code>
@@ -201,9 +192,6 @@ public class Preferences {
 		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_WRITE_XCODE21_ON_BUILD)) {
 			store.setDefault(Preferences.PREF_WRITE_XCODE21_ON_BUILD, Preferences.trueString);
 		}
-		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_VALIDATE_WOD_ON_BUILD)) {
-			store.setDefault(Preferences.PREF_VALIDATE_WOD_ON_BUILD, Preferences.trueString);
-		}
 		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_AUTOEOGENERATE_ON_BUILD)) {
 			store.setDefault(Preferences.PREF_AUTOEOGENERATE_ON_BUILD, Preferences.falseString);
 		}
@@ -218,12 +206,6 @@ public class Preferences {
 		}
 		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_WOLIPS_VERSION_EARLY_STARTUP)) {
 			store.setDefault(Preferences.PREF_WOLIPS_VERSION_EARLY_STARTUP, "0.0.0");
-		}
-		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_ENTITY_MODELER_CHANGE_PERSPECTIVES)) {
-			store.setDefault(Preferences.PREF_ENTITY_MODELER_CHANGE_PERSPECTIVES, Preferences.trueString);
-		}
-		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_ENTITY_MODELER_SHOW_ERRORS_IN_PROBLEMS_VIEW)) {
-			store.setDefault(Preferences.PREF_ENTITY_MODELER_SHOW_ERRORS_IN_PROBLEMS_VIEW, Preferences.trueString);
 		}
 		store.setDefault(Preferences.PREF_LAUNCH_GLOBAL, PreferencesMessages.getString(Preferences.PREF_LAUNCH_GLOBAL));
 		Preferences.SET_DEFAULTS_STRING = null;
@@ -426,10 +408,6 @@ public class Preferences {
 		return Preferences.getBoolean(Preferences.PREF_WRITE_XCODE21_ON_BUILD);
 	}
 
-	public static boolean shouldValidateWODOnBuild() {
-		return Preferences.getBoolean(Preferences.PREF_VALIDATE_WOD_ON_BUILD);
-	}
-
 	public static boolean shouldAutoEOGeneratorOnBuild() {
 		return Preferences.getBoolean(Preferences.PREF_AUTOEOGENERATE_ON_BUILD);
 	}
@@ -502,10 +480,6 @@ public class Preferences {
 		Preferences.setBoolean(Preferences.PREF_WRITE_XCODE21_ON_BUILD, value);
 	}
 
-	public static void setValidateWODOnBuild(boolean value) {
-		Preferences.setBoolean(Preferences.PREF_VALIDATE_WOD_ON_BUILD, value);
-	}
-
 	public static void setAutoEOGenerateOnBuild(boolean value) {
 		Preferences.setBoolean(Preferences.PREF_AUTOEOGENERATE_ON_BUILD, value);
 	}
@@ -513,21 +487,4 @@ public class Preferences {
 	public static void setWOLipsVersionEarlyStartup(String string) {
 		Preferences.setString(Preferences.PREF_WOLIPS_VERSION_EARLY_STARTUP, string);
 	}
-
-	public static void setEntityModelerChangePerspective(boolean value) {
-		Preferences.setBoolean(Preferences.PREF_ENTITY_MODELER_CHANGE_PERSPECTIVES, value);
-	}
-
-	public static boolean shouldEntityModelerChangePerspectives() {
-		return Preferences.getBoolean(Preferences.PREF_ENTITY_MODELER_CHANGE_PERSPECTIVES);
-	}
-
-	public static void setEntityModelerShowErrorsInProblemsView(boolean value) {
-		Preferences.setBoolean(Preferences.PREF_ENTITY_MODELER_SHOW_ERRORS_IN_PROBLEMS_VIEW, value);
-	}
-
-	public static boolean shouldEntityModelerShowErrorsInProblemsView() {
-		return Preferences.getBoolean(Preferences.PREF_ENTITY_MODELER_SHOW_ERRORS_IN_PROBLEMS_VIEW);
-	}
-
 }

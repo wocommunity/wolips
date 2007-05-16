@@ -122,9 +122,9 @@ import org.objectstyle.wolips.eomodeler.editors.arguments.EOArgumentsTableEditor
 import org.objectstyle.wolips.eomodeler.editors.entities.EOEntitiesTableEditor;
 import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityEditor;
 import org.objectstyle.wolips.eomodeler.outline.EOModelContentOutlinePage;
+import org.objectstyle.wolips.eomodeler.preferences.PreferenceConstants;
 import org.objectstyle.wolips.eomodeler.utils.AbstractAddRemoveChangeRefresher;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
-import org.objectstyle.wolips.preferences.Preferences;
 
 public class EOModelEditor extends MultiPageEditorPart implements IResourceChangeListener, ITabbedPropertySheetPageContributor, ISelectionProvider, IEOModelEditor {
 	public static final String EOMODEL_EDITOR_ID = "org.objectstyle.wolips.eomodeler.editors.EOModelEditor";
@@ -391,7 +391,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 		super.dispose();
 
-		if (Preferences.shouldEntityModelerChangePerspectives()) {
+		if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CHANGE_PERSPECTIVES_KEY)) {
 			try {
 				IWorkbench workbench = Activator.getDefault().getWorkbench();
 				IWorkbenchPage workbenchPage = workbench.getActiveWorkbenchWindow().getActivePage();
@@ -474,7 +474,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 	public void init(IEditorSite _site, IEditorInput _editorInput) throws PartInitException {
 		try {
-			if (Preferences.shouldEntityModelerChangePerspectives()) {
+			if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CHANGE_PERSPECTIVES_KEY)) {
 				IWorkbench workbench = Activator.getDefault().getWorkbench();
 				workbench.showPerspective(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID, workbench.getActiveWorkbenchWindow());
 			}
@@ -543,7 +543,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	protected void handleModelErrors(final Set<EOModelVerificationFailure> _failures) {
 		if (myModel != null) {
 			try {
-				if (Preferences.shouldEntityModelerShowErrorsInProblemsView()) {
+				if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.SHOW_ERRORS_IN_PROBLEMS_VIEW_KEY)) {
 					final EOModel editingModel = myModel;
 					IWorkspaceRunnable body = new IWorkspaceRunnable() {
 						public void run(IProgressMonitor monitor) throws CoreException {

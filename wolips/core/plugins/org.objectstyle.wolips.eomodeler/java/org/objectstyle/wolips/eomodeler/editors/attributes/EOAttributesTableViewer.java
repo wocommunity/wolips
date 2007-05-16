@@ -70,7 +70,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.objectstyle.wolips.eomodeler.Activator;
-import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.actions.NewAttributeAction;
 import org.objectstyle.wolips.eomodeler.core.model.AbstractEOArgument;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
@@ -206,7 +206,7 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
 
 		protected void emptyDoubleSelectionOccurred() {
 			try {
-				EOAttributesTableViewer.this.getEntity().addBlankAttribute(Messages.getString("EOAttribute.newName"));
+				NewAttributeAction.createAttribute(EOAttributesTableViewer.this.getEntity());
 			} catch (Throwable e) {
 				ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), e);
 			}
