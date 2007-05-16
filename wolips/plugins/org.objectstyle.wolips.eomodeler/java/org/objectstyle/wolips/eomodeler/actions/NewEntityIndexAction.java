@@ -49,9 +49,14 @@
  */
 package org.objectstyle.wolips.eomodeler.actions;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntityIndex;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
@@ -64,7 +69,25 @@ public class NewEntityIndexAction extends AbstractNewObjectAction<EOEntity, EOEn
 
 	@Override
 	protected EOEntityIndex createChild(EOEntity parent, Set<EOModelVerificationFailure> failures) throws EOModelException {
-		return parent.addBlankEntityIndex(Messages.getString("EOEntityIndex.newName"));
+		IStructuredSelection selection = getSelection();
+		List<EOAttribute> attributes = new LinkedList<EOAttribute>();
+		Iterator selectionIter = selection.iterator();
+		while (selectionIter.hasNext()) {
+			Object selectedObject = selectionIter.next();
+			if (selectedObject instanceof EOAttribute) {
+				EOAttribute selectedAttribute = (EOAttribute) selectedObject;
+				if (selectedAttribute.getEntity().equals(parent)) {
+					attributes.add(selectedAttribute);
+				}
+			}
+		}
+		EOEntityIndex entityIndex;
+		if (attributes.isEmpty()) {
+			entityIndex = parent.addBlankEntityIndex(Messages.getString("EOEntityIndex.newName"));
+		} else {
+			entityIndex = parent.addEntityIndex(attributes);
+		}
+		return entityIndex;
 	}
 
 	@Override

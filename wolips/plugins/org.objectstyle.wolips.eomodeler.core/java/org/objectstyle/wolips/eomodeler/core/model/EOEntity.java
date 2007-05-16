@@ -55,6 +55,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -1247,6 +1248,21 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		}
 	}
 
+	public EOEntityIndex addEntityIndex(List<EOAttribute> attributes) throws DuplicateEntityIndexNameException {
+		StringBuffer nameBuffer = new StringBuffer();
+		for (EOAttribute attribute : attributes) {
+			nameBuffer.append(attribute.getName());
+			nameBuffer.append("_");
+		}
+		nameBuffer.append("idx");
+		String name = nameBuffer.toString();
+		EOEntityIndex entityIndex = addBlankEntityIndex(name);
+		for (EOAttribute attribute : attributes) {
+			entityIndex.addAttribute(attribute);
+		}
+		return entityIndex;
+	}
+	
 	public EOEntityIndex addBlankEntityIndex(String _name) throws DuplicateEntityIndexNameException {
 		String newEntityIndexName = findUnusedEntityIndexName(_name);
 		EOEntityIndex entityIndex = new EOEntityIndex();

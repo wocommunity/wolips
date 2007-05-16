@@ -780,6 +780,18 @@
       </objectContribution>
       <objectContribution
             adaptable="false"
+            id="org.objectstyle.wolips.eomodeler.outline.eoattribute"
+            objectClass="org.objectstyle.wolips.eomodeler.core.model.EOAttribute">
+               <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewEntityIndexAction"
+               enablesFor="+"
+               icon="icons/newEntityIndex.png"
+               id="org.objectstyle.wolips.eomodeler.outline.popup.newEntityIndexFromAttribute"
+               label="New Entity Index"
+               menubarPath="group1"/>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
             id="org.objectstyle.wolips.eomodeler.outline.eorelationshippath"
             objectClass="org.objectstyle.wolips.eomodeler.core.model.EORelationshipPath">
          <action
