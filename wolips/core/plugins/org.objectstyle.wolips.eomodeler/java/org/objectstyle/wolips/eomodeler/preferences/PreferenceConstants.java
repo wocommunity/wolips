@@ -6,4 +6,6 @@ public class PreferenceConstants {
 	public static final String OPEN_IN_WINDOW_KEY = "EntityModelerOpenInWindow";
 	public static final String CHANGE_PERSPECTIVES_KEY = "EntityModelerChangePerspectives";
 	public static final String SHOW_ERRORS_IN_PROBLEMS_VIEW_KEY = "EntityModelerErrorsInProblemsView";
+	public static final String OPEN_WINDOW_ON_VERIFICATION_WARNINGS_KEY = "EntityModelerOpenWindowOnVerificationWarnings";
+	public static final String OPEN_WINDOW_ON_VERIFICATION_ERRORS_KEY = "EntityModelerOpenWindowOnVerificationErrors";
 }
