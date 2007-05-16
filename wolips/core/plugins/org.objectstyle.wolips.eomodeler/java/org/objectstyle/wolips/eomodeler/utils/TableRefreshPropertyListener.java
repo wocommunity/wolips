@@ -53,30 +53,81 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.widgets.Display;
+import org.objectstyle.wolips.baseforplugins.util.Throttle;
 
-public class TableRefreshPropertyListener implements PropertyChangeListener {
-	private TableViewer myTableViewer;
+public class TableRefreshPropertyListener implements PropertyChangeListener, Runnable {
+	private Throttle _throttle;
 
-	public TableRefreshPropertyListener(TableViewer _tableViewer) {
-		myTableViewer = _tableViewer;
+	private TableViewer _tableViewer;
+
+	private List _addedObjects;
+
+	private List _removedObjects;
+
+	public TableRefreshPropertyListener(TableViewer tableViewer) {
+		_tableViewer = tableViewer;
+		_addedObjects = new LinkedList();
+		_removedObjects = new LinkedList();
+		_throttle = new Throttle(250, this);
 	}
 
-	public void propertyChange(PropertyChangeEvent _event) {
-		Object source = _event.getSource();
-		Object oldValue = _event.getOldValue();
-		Object newValue = _event.getNewValue();
+	public void start() {
+		_throttle.start();
+	}
+
+	public void stop() {
+		_throttle.stop();
+	}
+
+	public void run() {
+		final List addedObjects;
+		synchronized (_addedObjects) {
+			addedObjects = _addedObjects;
+			_addedObjects = new LinkedList();
+		}
+		final List removedObjects;
+		synchronized (_removedObjects) {
+			removedObjects = _removedObjects;
+			_removedObjects = new LinkedList();
+		}
+		if (!addedObjects.isEmpty()) {
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					_tableViewer.setSelection(new StructuredSelection(addedObjects));
+				}
+			});
+		}
+	}
+
+	public void propertyChange(PropertyChangeEvent event) {
+		Object source = event.getSource();
+		Object oldValue = event.getOldValue();
+		Object newValue = event.getNewValue();
 		if (oldValue instanceof Collection && newValue instanceof Collection) {
 			Set newSet = new HashSet((Collection) newValue);
 			newSet.removeAll((Collection) oldValue);
-			myTableViewer.add(newSet.toArray());
+			_tableViewer.add(newSet.toArray());
 			Set oldSet = new HashSet((Collection) oldValue);
 			oldSet.removeAll((Collection) newValue);
-			myTableViewer.remove(oldSet.toArray());
+			_tableViewer.remove(oldSet.toArray());
+			_throttle.ping();
+			synchronized (_addedObjects) {
+				_addedObjects.addAll(newSet);
+			}
+			synchronized (_removedObjects) {
+				_removedObjects.addAll(oldSet);
+			}
+			TableUtils.packTableColumns(_tableViewer);
 		} else {
-			myTableViewer.refresh(source, true);
+			System.out.println("TableRefreshPropertyListener.propertyChange: refresh all " + oldValue + ", " + newValue);
+			_tableViewer.refresh(source, true);
 		}
 		// myTableViewer.refresh(false);
 	}

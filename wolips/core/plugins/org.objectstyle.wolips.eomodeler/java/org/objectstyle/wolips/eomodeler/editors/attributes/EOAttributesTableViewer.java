@@ -49,17 +49,11 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.attributes;
 
-import java.beans.PropertyChangeEvent;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
@@ -87,12 +81,12 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
 
 	private EOEntity myEntity;
 
-	private AttributesChangeRefresher myAttributesChangedRefresher;
+	private TableRefreshPropertyListener myAttributesChangedRefresher;
 
 	private TableRefreshPropertyListener myParentChangedRefresher;
 
 	private TableRowRefreshPropertyListener myTableRowRefresher;
-
+	
 	public EOAttributesTableViewer(Composite _parent, int _style) {
 		super(_parent, _style);
 
@@ -100,7 +94,7 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
 		myAttributesTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EOAttribute", EOAttributesConstants.COLUMNS, new EOAttributesContentProvider(), null, new EOAttributesViewerSorter(EOAttributesConstants.COLUMNS));
 		myAttributesTableViewer.setLabelProvider(new EOAttributesLabelProvider(myAttributesTableViewer, EOAttributesConstants.COLUMNS));
 		new DoubleClickNewAttributeHandler(myAttributesTableViewer).attach();
-		myAttributesChangedRefresher = new AttributesChangeRefresher(myAttributesTableViewer);
+		myAttributesChangedRefresher = new TableRefreshPropertyListener(myAttributesTableViewer);
 		myParentChangedRefresher = new TableRefreshPropertyListener(myAttributesTableViewer);
 		myTableRowRefresher = new TableRowRefreshPropertyListener(myAttributesTableViewer);
 		Table attributesTable = myAttributesTableViewer.getTable();
@@ -139,6 +133,7 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
 
 	public void setEntity(EOEntity _entity) {
 		if (myEntity != null) {
+			myAttributesChangedRefresher.stop();
 			myEntity.removePropertyChangeListener(EOEntity.PARENT, myParentChangedRefresher);
 			myEntity.removePropertyChangeListener(EOEntity.ATTRIBUTES, myAttributesChangedRefresher);
 			myEntity.removePropertyChangeListener(EOEntity.ATTRIBUTE, myTableRowRefresher);
@@ -155,6 +150,7 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
 			TableColumn allowsNullColumn = myAttributesTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.ALLOWS_NULL));
 			allowsNullColumn.setWidth(Math.max(allowsNullColumn.getWidth(), 30));
 			myEntity.addPropertyChangeListener(EOEntity.PARENT, myParentChangedRefresher);
+			myAttributesChangedRefresher.start();
 			myEntity.addPropertyChangeListener(EOEntity.ATTRIBUTES, myAttributesChangedRefresher);
 			myEntity.addPropertyChangeListener(EOEntity.ATTRIBUTE, myTableRowRefresher);
 		}
@@ -198,6 +194,12 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
 	public void setSelection(ISelection _selection) {
 		myAttributesTableViewer.setSelection(_selection);
 	}
+	
+	@Override
+	public void dispose() {
+		myAttributesChangedRefresher.stop();
+		super.dispose();
+	}
 
 	protected class DoubleClickNewAttributeHandler extends TableRowDoubleClickHandler {
 		public DoubleClickNewAttributeHandler(TableViewer _viewer) {
@@ -217,23 +219,27 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
 		}
 	}
 
-	protected class AttributesChangeRefresher extends TableRefreshPropertyListener {
-		public AttributesChangeRefresher(TableViewer _tableViewer) {
-			super(_tableViewer);
-		}
-
-		public void propertyChange(PropertyChangeEvent _event) {
-			super.propertyChange(_event);
-			Set oldValues = (Set) _event.getOldValue();
-			Set newValues = (Set) _event.getNewValue();
-			if (newValues != null && oldValues != null) {
-				if (newValues.size() > oldValues.size()) {
-					List newList = new LinkedList(newValues);
-					newList.removeAll(oldValues);
-					EOAttributesTableViewer.this.setSelection(new StructuredSelection(newList));
-				}
-				TableUtils.packTableColumns(EOAttributesTableViewer.this.getTableViewer());
-			}
-		}
-	}
+//	protected class AttributesChangeRefresher extends TableRefreshPropertyListener implements Runnable  {
+//		public AttributesChangeRefresher(TableViewer _tableViewer) {
+//			super(_tableViewer);
+//		}
+//		
+//		public void propertyChange(PropertyChangeEvent _event) {
+//			super.propertyChange(_event);
+//			Set<EOAttribute> oldValues = (Set<EOAttribute>) _event.getOldValue();
+//			Set<EOAttribute> newValues = (Set<EOAttribute>) _event.getNewValue();
+//			if (newValues != null && oldValues != null) {
+//				if (newValues.size() > oldValues.size()) {
+//					List<EOAttribute> newList = new LinkedList<EOAttribute>(newValues);
+//					newList.removeAll(oldValues);
+//					synchronized (_addedAttributes) {
+//						System.out.println("AttributesChangeRefresher.propertyChange: changed");
+//						_addedAttributes.addAll(newList);
+//					}
+//					_throttle.ping();
+//				}
+//				TableUtils.packTableColumns(EOAttributesTableViewer.this.getTableViewer());
+//			}
+//		}
+//	}
 }
