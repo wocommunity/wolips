@@ -41,7 +41,7 @@
  * Group, please see <http://objectstyle.org/> .
  *  
  */
-package org.objectstyle.wolips.wodclipse.editor;
+package org.objectstyle.wolips.baseforplugins.util;
 
 /**
  * Throttle provides a mechanism for throttling back the execution of 

@@ -49,11 +49,9 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.relationships;
 
-import java.beans.PropertyChangeEvent;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -88,7 +86,7 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
 
 	private EOEntity myEntity;
 
-	private RelationshipsChangeRefresher myRelationshipsChangedRefresher;
+	private TableRefreshPropertyListener myRelationshipsChangedRefresher;
 
 	private TableRefreshPropertyListener myParentChangedRefresher;
 
@@ -103,7 +101,7 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
 		myRelationshipsTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EORelationship", EORelationshipsConstants.COLUMNS, new EORelationshipsContentProvider(), null, new EORelationshipsViewerSorter(EORelationshipsConstants.COLUMNS));
 		myRelationshipsTableViewer.setLabelProvider(new EORelationshipsLabelProvider(myRelationshipsTableViewer, EORelationshipsConstants.COLUMNS));
 		new DoubleClickNewRelationshipHandler(myRelationshipsTableViewer).attach();
-		myRelationshipsChangedRefresher = new RelationshipsChangeRefresher(myRelationshipsTableViewer);
+		myRelationshipsChangedRefresher = new TableRefreshPropertyListener(myRelationshipsTableViewer);
 		myParentChangedRefresher = new TableRefreshPropertyListener(myRelationshipsTableViewer);
 		myTableRowRefresher = new TableRowRefreshPropertyListener(myRelationshipsTableViewer);
 
@@ -129,6 +127,7 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
 
 	public void setEntity(EOEntity _entity) {
 		if (myEntity != null) {
+			myRelationshipsChangedRefresher.stop();
 			myEntity.removePropertyChangeListener(EOEntity.PARENT, myParentChangedRefresher);
 			myEntity.removePropertyChangeListener(EOEntity.RELATIONSHIPS, myRelationshipsChangedRefresher);
 			myEntity.removePropertyChangeListener(EOEntity.RELATIONSHIP, myTableRowRefresher);
@@ -140,9 +139,16 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
 			TableColumn nameColumn = myRelationshipsTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.NAME));
 			nameColumn.setWidth(Math.max(nameColumn.getWidth(), 100));
 			myEntity.addPropertyChangeListener(EOEntity.PARENT, myParentChangedRefresher);
+			myRelationshipsChangedRefresher.start();
 			myEntity.addPropertyChangeListener(EOEntity.RELATIONSHIPS, myRelationshipsChangedRefresher);
 			myEntity.addPropertyChangeListener(EOEntity.RELATIONSHIP, myTableRowRefresher);
 		}
+	}
+	
+	@Override
+	public void dispose() {
+		myRelationshipsChangedRefresher.stop();
+		super.dispose();
 	}
 
 	public EOEntity getEntity() {
@@ -212,23 +218,23 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
 		}
 	}
 
-	protected class RelationshipsChangeRefresher extends TableRefreshPropertyListener {
-		public RelationshipsChangeRefresher(TableViewer _tableViewer) {
-			super(_tableViewer);
-		}
-
-		public void propertyChange(PropertyChangeEvent _event) {
-			super.propertyChange(_event);
-			Set oldValues = (Set) _event.getOldValue();
-			Set newValues = (Set) _event.getNewValue();
-			if (newValues != null && oldValues != null) {
-				if (newValues.size() > oldValues.size()) {
-					List newList = new LinkedList(newValues);
-					newList.removeAll(oldValues);
-					EORelationshipsTableViewer.this.setSelection(new StructuredSelection(newList));
-				}
-				TableUtils.packTableColumns(EORelationshipsTableViewer.this.getTableViewer());
-			}
-		}
-	}
+//	protected class RelationshipsChangeRefresher extends TableRefreshPropertyListener {
+//		public RelationshipsChangeRefresher(TableViewer _tableViewer) {
+//			super(_tableViewer);
+//		}
+//
+//		public void propertyChange(PropertyChangeEvent _event) {
+//			super.propertyChange(_event);
+//			Set oldValues = (Set) _event.getOldValue();
+//			Set newValues = (Set) _event.getNewValue();
+//			if (newValues != null && oldValues != null) {
+//				if (newValues.size() > oldValues.size()) {
+//					List newList = new LinkedList(newValues);
+//					newList.removeAll(oldValues);
+//					EORelationshipsTableViewer.this.setSelection(new StructuredSelection(newList));
+//				}
+//				TableUtils.packTableColumns(EORelationshipsTableViewer.this.getTableViewer());
+//			}
+//		}
+//	}
 }
