@@ -606,14 +606,20 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		String newAttributeName = findUnusedAttributeName(_name);
 		EOAttribute attribute;
 		if (_flattenAttribute != null) {
-			attribute = new EOAttribute(newAttributeName, _flattenAttribute.toKeyPath());
+			EOAttribute attributeToFlatten = _flattenAttribute.getChildAttribute();
+			attribute = attributeToFlatten._cloneModelObject();
+			attribute.setName(newAttributeName);
+			attribute.setColumnName("");
+			attribute.setClassProperty(Boolean.TRUE);
+			addAttribute(attribute);
+			attribute.setDefinition(_flattenAttribute.toKeyPath());
 		} else {
 			attribute = new EOAttribute(newAttributeName);
 			attribute.setUsedForLocking(Boolean.TRUE);
+			attribute.setColumnName(newAttributeName);
+			attribute.setClassProperty(Boolean.TRUE);
+			addAttribute(attribute);
 		}
-		attribute.setClassProperty(Boolean.TRUE);
-		attribute.setColumnName(newAttributeName);
-		addAttribute(attribute);
 		return attribute;
 	}
 
