@@ -37,12 +37,5 @@
                menubarPath="additions"/>
       </objectContribution>
    </extension>
-   <extension
-         point="org.objectstyle.wolips.builders">
-      <builder
-            class="org.objectstyle.wolips.eogenerator.builder.EOGeneratorBuilder"
-            id="org.objectstyle.wolips.eogenerator.builder.EOGeneratorBuilder"
-            name="EOGenerator Builder"/>
-   </extension>
 
 </plugin>

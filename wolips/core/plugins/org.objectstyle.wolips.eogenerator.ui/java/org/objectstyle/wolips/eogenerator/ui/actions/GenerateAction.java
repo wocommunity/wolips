@@ -57,25 +57,29 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
-import org.objectstyle.wolips.eogenerator.model.EOGenerateWorkspaceJob;
+import org.objectstyle.wolips.eogenerator.core.model.EOGenerateWorkspaceJob;
+import org.objectstyle.wolips.eogenerator.core.model.MarkerEOGeneratorListener;
+import org.objectstyle.wolips.eogenerator.ui.DialogEOGeneratorListener;
 
 public class GenerateAction implements IObjectActionDelegate {
-	private ISelection mySelection;
+	private ISelection _selection;
 
 	public GenerateAction() {
 		super();
 	}
 
-	public void setActivePart(IAction _action, IWorkbenchPart _targetPart) {
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 		// do nothing
 	}
 
-	public void run(IAction _action) {
+	public void run(IAction action) {
 		try {
-			IStructuredSelection selection = (IStructuredSelection) mySelection;
+			IStructuredSelection selection = (IStructuredSelection) _selection;
 			if (selection != null && !selection.isEmpty()) {
 				IFile eogenFile = (IFile) selection.getFirstElement();
-				EOGenerateWorkspaceJob generateJob = new EOGenerateWorkspaceJob(new IFile[] { eogenFile }, true);
+				EOGenerateWorkspaceJob generateJob = new EOGenerateWorkspaceJob(new IFile[] { eogenFile });
+				generateJob.addListener(new MarkerEOGeneratorListener());
+				generateJob.addListener(new DialogEOGeneratorListener());
 				generateJob.schedule();
 			}
 		} catch (Throwable t) {
@@ -84,7 +88,7 @@ public class GenerateAction implements IObjectActionDelegate {
 		}
 	}
 
-	public void selectionChanged(IAction _action, ISelection _selection) {
-		mySelection = _selection;
+	public void selectionChanged(IAction action, ISelection selection) {
+		_selection = selection;
 	}
 }

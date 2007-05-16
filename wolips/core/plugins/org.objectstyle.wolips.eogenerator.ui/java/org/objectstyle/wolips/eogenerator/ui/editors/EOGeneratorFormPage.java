@@ -95,53 +95,54 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.part.FileEditorInput;
-import org.objectstyle.wolips.eogenerator.model.EOGeneratorModel;
-import org.objectstyle.wolips.eogenerator.model.EOModelReference;
+import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel;
+import org.objectstyle.wolips.eogenerator.core.model.EOModelReference;
+import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel.Define;
 
 public class EOGeneratorFormPage extends FormPage {
-	EOGeneratorModel myModel;
+	EOGeneratorModel _model;
 
-	private FormEntry myDestinationEntry;
+	private FormEntry _destinationEntry;
 
-	private FormEntry mySubclassDestinationEntry;
+	private FormEntry _subclassDestinationEntry;
 
-	private FormEntry myTemplatesFolderEntry;
+	private FormEntry _templatesFolderEntry;
 
-	private FormEntry myTemplateEntry;
+	private FormEntry _templateEntry;
 
-	private FormEntry mySubclassTemplateEntry;
+	private FormEntry _subclassTemplateEntry;
 
-	private FormEntry myPrefixEntry;
+	private FormEntry _prefixEntry;
 
-	private FormEntry myFilenameTemplateEntry;
+	private FormEntry _filenameTemplateEntry;
 
 	// private Button myVerboseButton;
-	Button myJavaButton;
+	Button _javaButton;
 
-	Button myJavaClientButton;
+	Button _javaClientButton;
 
-	Button myPackageDirsButton;
+	Button _packageDirsButton;
 
-	TableViewer myModelsTableViewer;
+	TableViewer _modelsTableViewer;
 
-	TableViewer myRefModelsTableViewer;
+	TableViewer _refModelsTableViewer;
 
-	TableViewer myDefinesTableViewer;
+	TableViewer _definesTableViewer;
 
-	private boolean myModelGroupEditor;
+	private boolean _modelGroupEditor;
 
-	public EOGeneratorFormPage(FormEditor _editor, EOGeneratorModel _model, boolean _modelGroupEditor) {
-		super(_editor, "EOGeneratorForm", (_modelGroupEditor) ? "EOModelGroup Form" : "EOGenerator Form");
-		myModel = _model;
-		myModelGroupEditor = _modelGroupEditor;
+	public EOGeneratorFormPage(FormEditor editor, EOGeneratorModel model, boolean modelGroupEditor) {
+		super(editor, "EOGeneratorForm", (modelGroupEditor) ? "EOModelGroup Form" : "EOGenerator Form");
+		_model = model;
+		_modelGroupEditor = modelGroupEditor;
 	}
 
-	protected void setInput(IEditorInput _input) {
-		super.setInput(_input);
+	protected void setInput(IEditorInput input) {
+		super.setInput(input);
 	}
 
-	protected String getString(String _name) {
-		return _name;
+	protected String getString(String name) {
+		return name;
 	}
 
 	protected void createFormContent(IManagedForm managedForm) {
@@ -161,23 +162,23 @@ public class EOGeneratorFormPage extends FormPage {
 
 		ModelsTableContentProvider modelsModel = new ModelsTableContentProvider();
 		String modelsDescription;
-		if (myModelGroupEditor) {
+		if (_modelGroupEditor) {
 			modelsDescription = "For editing a model group, there should only be one entry in the model list.  If there are multiple models, they will all be loaded into the group, but the first entry will be the model that is opened by entity modeler.";
 		} else {
 			modelsDescription = "These models will have Java files generated for all of their entities.";
 		}
-		myModelsTableViewer = createModelsSection("Models", modelsDescription, toolkit, body, modelsModel, modelsModel, new ModelAddModelListener(), new ModelRemoveModelListener());
+		_modelsTableViewer = createModelsSection("Models", modelsDescription, toolkit, body, modelsModel, modelsModel, new ModelAddModelListener(), new ModelRemoveModelListener());
 
 		RefModelsTableContentProvider refModelsModel = new RefModelsTableContentProvider();
 		String refModelDescription;
-		if (myModelGroupEditor) {
+		if (_modelGroupEditor) {
 			refModelDescription = "Add all addition models that should be a model of this model group into the list below.";
 		} else {
 			refModelDescription = "These models are used to resolve type references from models listed in the first section.  No Java files will be generated for these models.";
 		}
-		myRefModelsTableViewer = createModelsSection("Referenced Models", refModelDescription, toolkit, body, refModelsModel, refModelsModel, new RefModelAddModelListener(), new RefModelRemoveModelListener());
+		_refModelsTableViewer = createModelsSection("Referenced Models", refModelDescription, toolkit, body, refModelsModel, refModelsModel, new RefModelAddModelListener(), new RefModelRemoveModelListener());
 
-		if (!myModelGroupEditor) {
+		if (!_modelGroupEditor) {
 			createNamingSection(toolkit, body);
 
 			createPathsSection(toolkit, body);
@@ -190,19 +191,19 @@ public class EOGeneratorFormPage extends FormPage {
 		form.reflow(true);
 	}
 
-	private TableViewer createModelsSection(String _title, String _description, FormToolkit _toolkit, Composite _parent, IStructuredContentProvider _contentProvider, ITableLabelProvider _labelProvider, SelectionListener _addListener, SelectionListener _removeListener) {
-		Composite modelsSection = createSection(_toolkit, _parent, _title, _description, 1, 2);
-		Table modelsTable = _toolkit.createTable(modelsSection, SWT.FULL_SELECTION | SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
+	private TableViewer createModelsSection(String title, String description, FormToolkit toolkit, Composite parent, IStructuredContentProvider contentProvider, ITableLabelProvider labelProvider, SelectionListener addListener, SelectionListener removeListener) {
+		Composite modelsSection = createSection(toolkit, parent, title, description, 1, 2);
+		Table modelsTable = toolkit.createTable(modelsSection, SWT.FULL_SELECTION | SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
 
 		GridData modelsTableGridData = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
 		modelsTableGridData.heightHint = 75;
 		modelsTable.setLayoutData(modelsTableGridData);
 
 		TableViewer modelsTableViewer = new TableViewer(modelsTable);
-		modelsTableViewer.setContentProvider(_contentProvider);
-		modelsTableViewer.setLabelProvider(_labelProvider);
+		modelsTableViewer.setContentProvider(contentProvider);
+		modelsTableViewer.setLabelProvider(labelProvider);
 
-		Composite modelsButtonsComposite = _toolkit.createComposite(modelsSection);
+		Composite modelsButtonsComposite = toolkit.createComposite(modelsSection);
 		modelsButtonsComposite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
 		GridLayout modelsButtonsLayout = new GridLayout();
 		modelsButtonsLayout.marginTop = 0;
@@ -212,99 +213,99 @@ public class EOGeneratorFormPage extends FormPage {
 		modelsButtonsLayout.numColumns = 1;
 		modelsButtonsComposite.setLayout(modelsButtonsLayout);
 
-		Button modelsAddButton = _toolkit.createButton(modelsButtonsComposite, "Add...", SWT.PUSH);
+		Button modelsAddButton = toolkit.createButton(modelsButtonsComposite, "Add...", SWT.PUSH);
 		GridData modelsAddButtonGridData = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		modelsAddButton.setLayoutData(modelsAddButtonGridData);
-		modelsAddButton.addSelectionListener(_addListener);
+		modelsAddButton.addSelectionListener(addListener);
 
-		Button modelsRemoveButton = _toolkit.createButton(modelsButtonsComposite, "Remove", SWT.PUSH);
+		Button modelsRemoveButton = toolkit.createButton(modelsButtonsComposite, "Remove", SWT.PUSH);
 		GridData modelsRemoveButtonGridData = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		modelsRemoveButton.setLayoutData(modelsRemoveButtonGridData);
-		modelsRemoveButton.addSelectionListener(_removeListener);
+		modelsRemoveButton.addSelectionListener(removeListener);
 
 		return modelsTableViewer;
 	}
 
 	protected EOGeneratorModel getModel() {
-		return myModel;
+		return _model;
 	}
 
-	protected void createNamingSection(FormToolkit _toolkit, Composite _parent) {
-		Composite namingSection = createSection(_toolkit, _parent, "File Names", "These settings control the names of the produced files.", 1, 2);
+	protected void createNamingSection(FormToolkit toolkit, Composite parent) {
+		Composite namingSection = createSection(toolkit, parent, "File Names", "These settings control the names of the produced files.", 1, 2);
 		GridLayout namingSectionLayout = (GridLayout) namingSection.getLayout();
 		namingSectionLayout.horizontalSpacing = 10;
 
-		myFilenameTemplateEntry = new FormEntry(namingSection, _toolkit, "Filename Template", SWT.NONE);
-		myFilenameTemplateEntry.setValue(myModel.getFilenameTemplate());
-		myFilenameTemplateEntry.setFormEntryListener(new EOFormEntryAdapter() {
-			public void textValueChanged(FormEntry _entry) {
-				EOGeneratorFormPage.this.getModel().setFilenameTemplate(_entry.getValue());
+		_filenameTemplateEntry = new FormEntry(namingSection, toolkit, "Filename Template", SWT.NONE);
+		_filenameTemplateEntry.setValue(_model.getFilenameTemplate());
+		_filenameTemplateEntry.setFormEntryListener(new EOFormEntryAdapter() {
+			public void textValueChanged(FormEntry entry) {
+				EOGeneratorFormPage.this.getModel().setFilenameTemplate(entry.getValue());
 				getEditor().editorDirtyStateChanged();
 			}
 
-			public void textDirty(FormEntry _entry) {
-				EOGeneratorFormPage.this.getModel().setFilenameTemplate(_entry.getText().getText());
+			public void textDirty(FormEntry entry) {
+				EOGeneratorFormPage.this.getModel().setFilenameTemplate(entry.getText().getText());
 				getEditor().editorDirtyStateChanged();
 			}
 		});
 
-		myPrefixEntry = new FormEntry(namingSection, _toolkit, "Prefix", SWT.NONE);
-		myPrefixEntry.setValue(myModel.getPrefix());
-		myPrefixEntry.setFormEntryListener(new EOFormEntryAdapter() {
-			public void textValueChanged(FormEntry _entry) {
-				EOGeneratorFormPage.this.getModel().setPrefix(_entry.getValue());
+		_prefixEntry = new FormEntry(namingSection, toolkit, "Prefix", SWT.NONE);
+		_prefixEntry.setValue(_model.getPrefix());
+		_prefixEntry.setFormEntryListener(new EOFormEntryAdapter() {
+			public void textValueChanged(FormEntry entry) {
+				EOGeneratorFormPage.this.getModel().setPrefix(entry.getValue());
 				getEditor().editorDirtyStateChanged();
 			}
 
-			public void textDirty(FormEntry _entry) {
-				EOGeneratorFormPage.this.getModel().setPrefix(_entry.getText().getText());
+			public void textDirty(FormEntry entry) {
+				EOGeneratorFormPage.this.getModel().setPrefix(entry.getText().getText());
 				getEditor().editorDirtyStateChanged();
 			}
 		});
 	}
 
-	protected void createPathsSection(FormToolkit _toolkit, Composite _parent) {
+	protected void createPathsSection(FormToolkit toolkit, Composite parent) {
 		FileEditorInput editorInput = (FileEditorInput) getEditorInput();
 		IFile eogenFile = editorInput.getFile();
 		final IProject project = eogenFile.getProject();
 
-		Composite pathsSection = createSection(_toolkit, _parent, "Destination Paths", "These paths specify where generated files will be written and are project-relative.", 1, 3);
+		Composite pathsSection = createSection(toolkit, parent, "Destination Paths", "These paths specify where generated files will be written and are project-relative.", 1, 3);
 		GridLayout pathsSectionLayout = (GridLayout) pathsSection.getLayout();
 		pathsSectionLayout.horizontalSpacing = 10;
 
-		Label packageDirsLabel = _toolkit.createLabel(pathsSection, "Create Packages?");
-		packageDirsLabel.setForeground(_toolkit.getColors().getColor(FormColors.TITLE));
+		Label packageDirsLabel = toolkit.createLabel(pathsSection, "Create Packages?");
+		packageDirsLabel.setForeground(toolkit.getColors().getColor(FormColors.TITLE));
 
-		myPackageDirsButton = _toolkit.createButton(pathsSection, "", SWT.CHECK);
+		_packageDirsButton = toolkit.createButton(pathsSection, "", SWT.CHECK);
 		GridData packageDirsButtonGridData = new GridData(GridData.VERTICAL_ALIGN_CENTER);
 		packageDirsButtonGridData.horizontalSpan = 2;
-		myPackageDirsButton.setLayoutData(packageDirsButtonGridData);
-		myPackageDirsButton.setSelection(myModel.isPackageDirs() != null && myModel.isPackageDirs().booleanValue());
-		myPackageDirsButton.addSelectionListener(new SelectionListener() {
+		_packageDirsButton.setLayoutData(packageDirsButtonGridData);
+		_packageDirsButton.setSelection(_model.isPackageDirs() != null && _model.isPackageDirs().booleanValue());
+		_packageDirsButton.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent _e) {
 				widgetSelected(_e);
 			}
 
 			public void widgetSelected(SelectionEvent _e) {
-				EOGeneratorFormPage.this.getModel().setPackageDirs(Boolean.valueOf(myPackageDirsButton.getSelection()));
+				EOGeneratorFormPage.this.getModel().setPackageDirs(Boolean.valueOf(_packageDirsButton.getSelection()));
 				getEditor().editorDirtyStateChanged();
 			}
 		});
 
-		myDestinationEntry = new FormEntry(pathsSection, _toolkit, "Destination", "Browse...", false);
-		myDestinationEntry.setValue(myModel.getDestination());
-		myDestinationEntry.setFormEntryListener(new EOFormEntryAdapter() {
-			public void textValueChanged(FormEntry _entry) {
-				EOGeneratorFormPage.this.getModel().setDestination(_entry.getValue());
+		_destinationEntry = new FormEntry(pathsSection, toolkit, "Destination", "Browse...", false);
+		_destinationEntry.setValue(_model.getDestination());
+		_destinationEntry.setFormEntryListener(new EOFormEntryAdapter() {
+			public void textValueChanged(FormEntry entry) {
+				EOGeneratorFormPage.this.getModel().setDestination(entry.getValue());
 				getEditor().editorDirtyStateChanged();
 			}
 
-			public void textDirty(FormEntry _entry) {
-				EOGeneratorFormPage.this.getModel().setDestination(_entry.getText().getText());
+			public void textDirty(FormEntry entry) {
+				EOGeneratorFormPage.this.getModel().setDestination(entry.getText().getText());
 				getEditor().editorDirtyStateChanged();
 			}
 
-			public void browseButtonSelected(FormEntry _entry) {
+			public void browseButtonSelected(FormEntry entry) {
 				ContainerSelectionDialog containerDialog = new ContainerSelectionDialog(getEditorSite().getShell(), project, false, "Select the folder to write autogenerated files into.");
 				containerDialog.open();
 				Object[] selectedContainers = containerDialog.getResult();
@@ -312,26 +313,26 @@ public class EOGeneratorFormPage extends FormPage {
 					IPath selectedPath = (IPath) selectedContainers[0];
 					IFolder selectedFolder = project.getParent().getFolder(selectedPath);
 					IPath projectRelativePath = selectedFolder.getProjectRelativePath();
-					_entry.setValue(projectRelativePath.toPortableString());
+					entry.setValue(projectRelativePath.toPortableString());
 				}
-				_entry.getText().forceFocus();
+				entry.getText().forceFocus();
 			}
 		});
 
-		mySubclassDestinationEntry = new FormEntry(pathsSection, _toolkit, "Subclass Destination", "Browse...", false);
-		mySubclassDestinationEntry.setValue(myModel.getSubclassDestination());
-		mySubclassDestinationEntry.setFormEntryListener(new EOFormEntryAdapter() {
-			public void textValueChanged(FormEntry _entry) {
-				EOGeneratorFormPage.this.getModel().setSubclassDestination(_entry.getValue());
+		_subclassDestinationEntry = new FormEntry(pathsSection, toolkit, "Subclass Destination", "Browse...", false);
+		_subclassDestinationEntry.setValue(_model.getSubclassDestination());
+		_subclassDestinationEntry.setFormEntryListener(new EOFormEntryAdapter() {
+			public void textValueChanged(FormEntry entry) {
+				EOGeneratorFormPage.this.getModel().setSubclassDestination(entry.getValue());
 				getEditor().editorDirtyStateChanged();
 			}
 
-			public void textDirty(FormEntry _entry) {
-				EOGeneratorFormPage.this.getModel().setSubclassDestination(_entry.getText().getText());
+			public void textDirty(FormEntry entry) {
+				EOGeneratorFormPage.this.getModel().setSubclassDestination(entry.getText().getText());
 				getEditor().editorDirtyStateChanged();
 			}
 
-			public void browseButtonSelected(FormEntry _entry) {
+			public void browseButtonSelected(FormEntry entry) {
 				ContainerSelectionDialog containerDialog = new ContainerSelectionDialog(getEditorSite().getShell(), project, false, "Select the folder to generate customizable files into.");
 				containerDialog.open();
 				Object[] selectedContainers = containerDialog.getResult();
@@ -339,124 +340,124 @@ public class EOGeneratorFormPage extends FormPage {
 					IPath selectedPath = (IPath) selectedContainers[0];
 					IFolder selectedFolder = project.getParent().getFolder(selectedPath);
 					IPath projectRelativePath = selectedFolder.getProjectRelativePath();
-					_entry.setValue(projectRelativePath.toPortableString());
+					entry.setValue(projectRelativePath.toPortableString());
 				}
-				_entry.getText().forceFocus();
+				entry.getText().forceFocus();
 			}
 		});
 
-		Composite templatesSection = createSection(_toolkit, _parent, "Templates", "These paths specify the templates that will be used to generate files.  If left blank, the defaults from the EOGenerator preference page will be used.", 1, 3);
+		Composite templatesSection = createSection(toolkit, parent, "Templates", "These paths specify the templates that will be used to generate files.  If left blank, the defaults from the EOGenerator preference page will be used.", 1, 3);
 		GridLayout templatesSectionLayout = (GridLayout) templatesSection.getLayout();
 		templatesSectionLayout.horizontalSpacing = 10;
 
-		Label javaLabel = _toolkit.createLabel(templatesSection, "Java?");
-		javaLabel.setForeground(_toolkit.getColors().getColor(FormColors.TITLE));
+		Label javaLabel = toolkit.createLabel(templatesSection, "Java?");
+		javaLabel.setForeground(toolkit.getColors().getColor(FormColors.TITLE));
 
-		myJavaButton = _toolkit.createButton(templatesSection, "", SWT.CHECK);
+		_javaButton = toolkit.createButton(templatesSection, "", SWT.CHECK);
 		GridData javaButtonGridData = new GridData(GridData.VERTICAL_ALIGN_CENTER);
 		javaButtonGridData.horizontalSpan = 2;
-		myJavaButton.setLayoutData(packageDirsButtonGridData);
-		myJavaButton.setSelection(myModel.isJava() != null && myModel.isJava().booleanValue());
-		myJavaButton.addSelectionListener(new SelectionListener() {
+		_javaButton.setLayoutData(packageDirsButtonGridData);
+		_javaButton.setSelection(_model.isJava() != null && _model.isJava().booleanValue());
+		_javaButton.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent _e) {
 				widgetSelected(_e);
 			}
 
 			public void widgetSelected(SelectionEvent _e) {
-				EOGeneratorFormPage.this.getModel().setJava(Boolean.valueOf(myJavaButton.getSelection()));
+				EOGeneratorFormPage.this.getModel().setJava(Boolean.valueOf(_javaButton.getSelection()));
 				getEditor().editorDirtyStateChanged();
 			}
 		});
 
-		Label javaClientLabel = _toolkit.createLabel(templatesSection, "Java Client?");
-		javaClientLabel.setForeground(_toolkit.getColors().getColor(FormColors.TITLE));
+		Label javaClientLabel = toolkit.createLabel(templatesSection, "Java Client?");
+		javaClientLabel.setForeground(toolkit.getColors().getColor(FormColors.TITLE));
 
-		myJavaClientButton = _toolkit.createButton(templatesSection, "", SWT.CHECK);
+		_javaClientButton = toolkit.createButton(templatesSection, "", SWT.CHECK);
 		GridData javaClientButtonGridData = new GridData(GridData.VERTICAL_ALIGN_CENTER);
 		javaClientButtonGridData.horizontalSpan = 2;
-		myJavaClientButton.setLayoutData(packageDirsButtonGridData);
-		myJavaClientButton.setSelection(myModel.isJavaClient() != null && myModel.isJavaClient().booleanValue());
-		myJavaClientButton.addSelectionListener(new SelectionListener() {
+		_javaClientButton.setLayoutData(packageDirsButtonGridData);
+		_javaClientButton.setSelection(_model.isJavaClient() != null && _model.isJavaClient().booleanValue());
+		_javaClientButton.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent _e) {
 				widgetSelected(_e);
 			}
 
 			public void widgetSelected(SelectionEvent _e) {
-				EOGeneratorFormPage.this.getModel().setJavaClient(Boolean.valueOf(myJavaClientButton.getSelection()));
+				EOGeneratorFormPage.this.getModel().setJavaClient(Boolean.valueOf(_javaClientButton.getSelection()));
 				getEditor().editorDirtyStateChanged();
 			}
 		});
 
-		myTemplatesFolderEntry = new FormEntry(templatesSection, _toolkit, "Templates Folder", "Browse...", false);
-		myTemplatesFolderEntry.setValue(myModel.getTemplateDir(null));
-		myTemplatesFolderEntry.setFormEntryListener(new EOFormEntryAdapter() {
-			public void textValueChanged(FormEntry _entry) {
-				EOGeneratorFormPage.this.getModel().setTemplateDir(_entry.getValue());
+		_templatesFolderEntry = new FormEntry(templatesSection, toolkit, "Templates Folder", "Browse...", false);
+		_templatesFolderEntry.setValue(_model.getTemplateDir(null));
+		_templatesFolderEntry.setFormEntryListener(new EOFormEntryAdapter() {
+			public void textValueChanged(FormEntry entry) {
+				EOGeneratorFormPage.this.getModel().setTemplateDir(entry.getValue());
 				getEditor().editorDirtyStateChanged();
 			}
 
-			public void textDirty(FormEntry _entry) {
-				EOGeneratorFormPage.this.getModel().setTemplateDir(_entry.getText().getText());
+			public void textDirty(FormEntry entry) {
+				EOGeneratorFormPage.this.getModel().setTemplateDir(entry.getText().getText());
 				getEditor().editorDirtyStateChanged();
 			}
 
-			public void browseButtonSelected(FormEntry _entry) {
+			public void browseButtonSelected(FormEntry entry) {
 				DirectoryDialog directoryDialog = new DirectoryDialog(getEditorSite().getShell());
 				directoryDialog.setMessage("Select the folder that contains your EOGenerator templates.");
-				directoryDialog.setFilterPath(_entry.getValue());
+				directoryDialog.setFilterPath(entry.getValue());
 				String selectedDirectory = directoryDialog.open();
 				if (selectedDirectory != null) {
-					_entry.setValue(selectedDirectory);
+					entry.setValue(selectedDirectory);
 				}
-				_entry.getText().forceFocus();
+				entry.getText().forceFocus();
 			}
 		});
 
-		myTemplateEntry = new FormEntry(templatesSection, _toolkit, "Template", "Browse...", false);
-		myTemplateEntry.setValue(myModel.getJavaTemplate(null));
-		myTemplateEntry.setFormEntryListener(new EOFormEntryAdapter() {
-			public void textValueChanged(FormEntry _entry) {
-				EOGeneratorFormPage.this.getModel().setJavaTemplate(_entry.getValue());
+		_templateEntry = new FormEntry(templatesSection, toolkit, "Template", "Browse...", false);
+		_templateEntry.setValue(_model.getJavaTemplate(null));
+		_templateEntry.setFormEntryListener(new EOFormEntryAdapter() {
+			public void textValueChanged(FormEntry entry) {
+				EOGeneratorFormPage.this.getModel().setJavaTemplate(entry.getValue());
 				getEditor().editorDirtyStateChanged();
 			}
 
-			public void textDirty(FormEntry _entry) {
-				EOGeneratorFormPage.this.getModel().setJavaTemplate(_entry.getText().getText());
+			public void textDirty(FormEntry entry) {
+				EOGeneratorFormPage.this.getModel().setJavaTemplate(entry.getText().getText());
 				getEditor().editorDirtyStateChanged();
 			}
 
-			public void browseButtonSelected(FormEntry _entry) {
-				EOGeneratorFormPage.this.selectTemplate("Select the superclass template.", _entry);
-				_entry.getText().forceFocus();
+			public void browseButtonSelected(FormEntry entry) {
+				EOGeneratorFormPage.this.selectTemplate("Select the superclass template.", entry);
+				entry.getText().forceFocus();
 			}
 		});
 
-		mySubclassTemplateEntry = new FormEntry(templatesSection, _toolkit, "Subclass Template", "Browse...", false);
-		mySubclassTemplateEntry.setValue(myModel.getSubclassJavaTemplate(null));
-		mySubclassTemplateEntry.setFormEntryListener(new EOFormEntryAdapter() {
-			public void textValueChanged(FormEntry _entry) {
-				EOGeneratorFormPage.this.getModel().setSubclassJavaTemplate(_entry.getValue());
+		_subclassTemplateEntry = new FormEntry(templatesSection, toolkit, "Subclass Template", "Browse...", false);
+		_subclassTemplateEntry.setValue(_model.getSubclassJavaTemplate(null));
+		_subclassTemplateEntry.setFormEntryListener(new EOFormEntryAdapter() {
+			public void textValueChanged(FormEntry entry) {
+				EOGeneratorFormPage.this.getModel().setSubclassJavaTemplate(entry.getValue());
 				getEditor().editorDirtyStateChanged();
 			}
 
-			public void textDirty(FormEntry _entry) {
-				EOGeneratorFormPage.this.getModel().setSubclassJavaTemplate(_entry.getText().getText());
+			public void textDirty(FormEntry entry) {
+				EOGeneratorFormPage.this.getModel().setSubclassJavaTemplate(entry.getText().getText());
 				getEditor().editorDirtyStateChanged();
 			}
 
-			public void browseButtonSelected(FormEntry _entry) {
-				EOGeneratorFormPage.this.selectTemplate("Select the subclass template.", _entry);
-				_entry.getText().forceFocus();
+			public void browseButtonSelected(FormEntry entry) {
+				EOGeneratorFormPage.this.selectTemplate("Select the subclass template.", entry);
+				entry.getText().forceFocus();
 			}
 		});
 	}
 
-	protected void selectTemplate(String _text, FormEntry _entry) {
+	protected void selectTemplate(String text, FormEntry entry) {
 		FileDialog templateDialog = new FileDialog(getEditorSite().getShell());
-		templateDialog.setFileName(myTemplatesFolderEntry.getValue());
-		templateDialog.setText(_text);
+		templateDialog.setFileName(_templatesFolderEntry.getValue());
+		templateDialog.setText(text);
 		templateDialog.setFilterExtensions(new String[] { "*.eotemplate" });
-		String templateDir = myTemplatesFolderEntry.getValue();
+		String templateDir = _templatesFolderEntry.getValue();
 		if (templateDir != null) {
 			templateDialog.setFilterPath(templateDir);
 		}
@@ -469,13 +470,13 @@ public class EOGeneratorFormPage extends FormPage {
 				}
 				selectedTemplate = selectedTemplate.substring(templateDirLength);
 			}
-			_entry.setValue(selectedTemplate);
+			entry.setValue(selectedTemplate);
 		}
 	}
 
-	protected void createDefinesSection(FormToolkit _toolkit, Composite _parent) {
-		Composite definesSection = createSection(_toolkit, _parent, "Defines", "These variables will turn into EOGenerator -define-Xxx parameters that will be accessible in your templates (i.e. EOGenericRecord, etc)", 1, 2);
-		Table definesTable = _toolkit.createTable(definesSection, SWT.FULL_SELECTION | SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
+	protected void createDefinesSection(FormToolkit toolkit, Composite parent) {
+		Composite definesSection = createSection(toolkit, parent, "Defines", "These variables will turn into EOGenerator -define-Xxx parameters that will be accessible in your templates (i.e. EOGenericRecord, etc)", 1, 2);
+		Table definesTable = toolkit.createTable(definesSection, SWT.FULL_SELECTION | SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
 
 		definesTable.setLinesVisible(true);
 		definesTable.setHeaderVisible(true);
@@ -488,16 +489,16 @@ public class EOGeneratorFormPage extends FormPage {
 		defineValueTableColumn.setWidth(400);
 		defineValueTableColumn.setText("Value");
 
-		myDefinesTableViewer = new TableViewer(definesTable);
+		_definesTableViewer = new TableViewer(definesTable);
 		DefinesTableContentProvider definesModel = new DefinesTableContentProvider();
-		myDefinesTableViewer.setContentProvider(definesModel);
-		myDefinesTableViewer.setLabelProvider(definesModel);
-		myDefinesTableViewer.addDoubleClickListener(new DefinesDoubleClickListener());
+		_definesTableViewer.setContentProvider(definesModel);
+		_definesTableViewer.setLabelProvider(definesModel);
+		_definesTableViewer.addDoubleClickListener(new DefinesDoubleClickListener());
 
 		GridData definesTableGridData = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
 		definesTableGridData.heightHint = 125;
 		definesTable.setLayoutData(definesTableGridData);
-		Composite definesButtonsComposite = _toolkit.createComposite(definesSection);
+		Composite definesButtonsComposite = toolkit.createComposite(definesSection);
 		definesButtonsComposite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
 		GridLayout definesButtonsLayout = new GridLayout();
 		definesButtonsLayout.marginTop = 0;
@@ -507,44 +508,44 @@ public class EOGeneratorFormPage extends FormPage {
 		definesButtonsLayout.numColumns = 1;
 		definesButtonsComposite.setLayout(definesButtonsLayout);
 
-		Button definesAddButton = _toolkit.createButton(definesButtonsComposite, "Add...", SWT.PUSH);
+		Button definesAddButton = toolkit.createButton(definesButtonsComposite, "Add...", SWT.PUSH);
 		GridData definesAddButtonGridData = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		definesAddButton.setLayoutData(definesAddButtonGridData);
 		definesAddButton.addSelectionListener(new DefineAddModelListener());
 
-		Button definesRemoveButton = _toolkit.createButton(definesButtonsComposite, "Remove", SWT.PUSH);
+		Button definesRemoveButton = toolkit.createButton(definesButtonsComposite, "Remove", SWT.PUSH);
 		GridData definesRemoveButtonGridData = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		definesRemoveButton.setLayoutData(definesRemoveButtonGridData);
 		definesRemoveButton.addSelectionListener(new DefinesRemoveModelListener());
 	}
 
 	protected void updateViewsFromModel() {
-		myModelsTableViewer.setInput(myModel);
-		myRefModelsTableViewer.setInput(myModel);
-		if (!myModelGroupEditor) {
-			myDefinesTableViewer.setInput(myModel);
-			myDestinationEntry.setValue(myModel.getDestination());
-			mySubclassDestinationEntry.setValue(myModel.getSubclassDestination());
-			mySubclassTemplateEntry.setValue(myModel.getSubclassJavaTemplate(null));
-			myTemplateEntry.setValue(myModel.getJavaTemplate(null));
-			myTemplatesFolderEntry.setValue(myModel.getTemplateDir(null));
+		_modelsTableViewer.setInput(_model);
+		_refModelsTableViewer.setInput(_model);
+		if (!_modelGroupEditor) {
+			_definesTableViewer.setInput(_model);
+			_destinationEntry.setValue(_model.getDestination());
+			_subclassDestinationEntry.setValue(_model.getSubclassDestination());
+			_subclassTemplateEntry.setValue(_model.getSubclassJavaTemplate(null));
+			_templateEntry.setValue(_model.getJavaTemplate(null));
+			_templatesFolderEntry.setValue(_model.getTemplateDir(null));
 		}
 	}
 
-	protected Composite createSection(FormToolkit _toolkit, Composite _parent, String _title, String _description, int _spanColumns, int _sectionColumns) {
-		int style = (_description == null) ? ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED : ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED | Section.DESCRIPTION;
-		Section section = _toolkit.createSection(_parent, style);
+	protected Composite createSection(FormToolkit toolkit, Composite parent, String title, String description, int spanColumns, int sectionColumns) {
+		int style = (description == null) ? ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED : ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED | Section.DESCRIPTION;
+		Section section = toolkit.createSection(parent, style);
 		GridLayout sectionLayout = new GridLayout();
 		section.setLayout(sectionLayout);
-		section.setText(_title);
-		if (_description != null) {
-			section.setDescription(_description);
+		section.setText(title);
+		if (description != null) {
+			section.setDescription(description);
 		}
 		GridData sectionGridData = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		sectionGridData.horizontalSpan = _spanColumns;
+		sectionGridData.horizontalSpan = spanColumns;
 		section.setLayoutData(sectionGridData);
 
-		Composite sectionClient = _toolkit.createComposite(section, SWT.NONE);
+		Composite sectionClient = toolkit.createComposite(section, SWT.NONE);
 		GridData sectionClientGridData = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		sectionClient.setLayoutData(sectionClientGridData);
 		GridLayout sectionClientLayout = new GridLayout();
@@ -552,35 +553,35 @@ public class EOGeneratorFormPage extends FormPage {
 		sectionClientLayout.marginWidth = 0;
 		sectionClientLayout.verticalSpacing = 0;
 		sectionClientLayout.horizontalSpacing = 0;
-		sectionClientLayout.numColumns = _sectionColumns;
+		sectionClientLayout.numColumns = sectionColumns;
 		sectionClient.setLayout(sectionClientLayout);
 		section.setClient(sectionClient);
 
 		return sectionClient;
 	}
 
-	protected void addDefine(String _name, String _value) {
-		InputDialog nameDialog = new InputDialog(getEditorSite().getShell(), "Enter Name", "Enter the name of this variable.", _name, null);
+	protected void addDefine(String name, String value) {
+		InputDialog nameDialog = new InputDialog(getEditorSite().getShell(), "Enter Name", "Enter the name of this variable.", name, null);
 		int nameRetval = nameDialog.open();
 		if (nameRetval == Window.OK) {
-			String name = nameDialog.getValue();
-			if (name != null && name.trim().length() > 0) {
-				InputDialog valueDialog = new InputDialog(getEditorSite().getShell(), "Enter Value", "Enter the value of this variable.", _value, null);
+			String dialogName = nameDialog.getValue();
+			if (dialogName != null && dialogName.trim().length() > 0) {
+				InputDialog valueDialog = new InputDialog(getEditorSite().getShell(), "Enter Value", "Enter the value of this variable.", value, null);
 				int valueRetval = valueDialog.open();
 				if (valueRetval == Window.OK) {
-					String value = valueDialog.getValue();
-					if (value != null && value.trim().length() > 0) {
-						EOGeneratorModel.Define define = new EOGeneratorModel.Define(name, value);
-						List defines = myModel.getDefines();
-						LinkedList newDefines = new LinkedList(defines);
-						if (_name != null && _name.trim().length() > 0) {
-							EOGeneratorModel.Define oldDefine = new EOGeneratorModel.Define(_name, _value);
+					String dialogValue = valueDialog.getValue();
+					if (dialogValue != null && dialogValue.trim().length() > 0) {
+						EOGeneratorModel.Define define = new EOGeneratorModel.Define(dialogName, dialogValue);
+						List<Define> defines = _model.getDefines();
+						List<Define> newDefines = new LinkedList<Define>(defines);
+						if (name != null && name.trim().length() > 0) {
+							EOGeneratorModel.Define oldDefine = new EOGeneratorModel.Define(name, value);
 							newDefines.remove(oldDefine);
 						}
 						newDefines.remove(define);
 						newDefines.add(define);
-						myModel.setDefines(newDefines);
-						myDefinesTableViewer.refresh();
+						_model.setDefines(newDefines);
+						_definesTableViewer.refresh();
 						getEditor().editorDirtyStateChanged();
 					}
 				}
@@ -589,32 +590,32 @@ public class EOGeneratorFormPage extends FormPage {
 	}
 
 	protected class ModelRemoveModelListener implements SelectionListener {
-		public void widgetDefaultSelected(SelectionEvent _e) {
-			widgetSelected(_e);
+		public void widgetDefaultSelected(SelectionEvent event) {
+			widgetSelected(event);
 		}
 
-		public void widgetSelected(SelectionEvent _e) {
-			IStructuredSelection selection = (IStructuredSelection) myModelsTableViewer.getSelection();
+		public void widgetSelected(SelectionEvent event) {
+			IStructuredSelection selection = (IStructuredSelection) _modelsTableViewer.getSelection();
 			if (!selection.isEmpty()) {
-				List models = EOGeneratorFormPage.this.getModel().getModels();
-				LinkedList newModels = new LinkedList(models);
+				List<EOModelReference> models = EOGeneratorFormPage.this.getModel().getModels();
+				List<EOModelReference> newModels = new LinkedList<EOModelReference>(models);
 				Object[] selections = selection.toArray();
 				for (int i = 0; i < selections.length; i++) {
 					newModels.remove(selections[i]);
 				}
 				EOGeneratorFormPage.this.getModel().setModels(newModels);
-				myModelsTableViewer.refresh();
+				_modelsTableViewer.refresh();
 				getEditor().editorDirtyStateChanged();
 			}
 		}
 	}
 
 	protected class ModelAddModelListener implements SelectionListener {
-		public void widgetDefaultSelected(SelectionEvent _e) {
-			widgetSelected(_e);
+		public void widgetDefaultSelected(SelectionEvent event) {
+			widgetSelected(event);
 		}
 
-		public void widgetSelected(SelectionEvent _e) {
+		public void widgetSelected(SelectionEvent event) {
 			FileEditorInput editorInput = (FileEditorInput) getEditorInput();
 			IFile eogenFile = editorInput.getFile();
 			IProject project = eogenFile.getProject();
@@ -630,45 +631,45 @@ public class EOGeneratorFormPage extends FormPage {
 			}
 		}
 
-		protected void addModel(EOModelReference _eoModel) {
-			List models = EOGeneratorFormPage.this.getModel().getModels();
-			if (!models.contains(_eoModel)) {
-				LinkedList newModels = new LinkedList(models);
-				newModels.add(_eoModel);
+		protected void addModel(EOModelReference eoModel) {
+			List<EOModelReference> models = EOGeneratorFormPage.this.getModel().getModels();
+			if (!models.contains(eoModel)) {
+				List<EOModelReference> newModels = new LinkedList<EOModelReference>(models);
+				newModels.add(eoModel);
 				EOGeneratorFormPage.this.getModel().setModels(newModels);
-				myModelsTableViewer.refresh();
+				_modelsTableViewer.refresh();
 				getEditor().editorDirtyStateChanged();
 			}
 		}
 	}
 
 	protected class RefModelRemoveModelListener implements SelectionListener {
-		public void widgetDefaultSelected(SelectionEvent _e) {
-			widgetSelected(_e);
+		public void widgetDefaultSelected(SelectionEvent event) {
+			widgetSelected(event);
 		}
 
-		public void widgetSelected(SelectionEvent _e) {
-			IStructuredSelection selection = (IStructuredSelection) myRefModelsTableViewer.getSelection();
+		public void widgetSelected(SelectionEvent event) {
+			IStructuredSelection selection = (IStructuredSelection) _refModelsTableViewer.getSelection();
 			if (!selection.isEmpty()) {
-				List refModels = EOGeneratorFormPage.this.getModel().getRefModels();
-				LinkedList newRefModels = new LinkedList(refModels);
+				List<EOModelReference> refModels = EOGeneratorFormPage.this.getModel().getRefModels();
+				List<EOModelReference> newRefModels = new LinkedList<EOModelReference>(refModels);
 				Object[] selections = selection.toArray();
 				for (int i = 0; i < selections.length; i++) {
 					newRefModels.remove(selections[i]);
 				}
 				EOGeneratorFormPage.this.getModel().setRefModels(newRefModels);
-				myRefModelsTableViewer.refresh();
+				_refModelsTableViewer.refresh();
 				getEditor().editorDirtyStateChanged();
 			}
 		}
 	}
 
 	protected class RefModelAddModelListener implements SelectionListener {
-		public void widgetDefaultSelected(SelectionEvent _e) {
-			widgetSelected(_e);
+		public void widgetDefaultSelected(SelectionEvent event) {
+			widgetSelected(event);
 		}
 
-		public void widgetSelected(SelectionEvent _e) {
+		public void widgetSelected(SelectionEvent event) {
 			// FileEditorInput editorInput = (FileEditorInput) getEditorInput();
 			// IFile eogenFile = editorInput.getFile();
 			DirectoryDialog directoryDialog = new DirectoryDialog(getEditorSite().getShell());
@@ -680,52 +681,52 @@ public class EOGeneratorFormPage extends FormPage {
 			}
 		}
 
-		protected void addModel(EOModelReference _eoModel) {
-			List refModels = EOGeneratorFormPage.this.getModel().getRefModels();
-			if (!refModels.contains(_eoModel)) {
-				LinkedList newRefModels = new LinkedList(refModels);
-				newRefModels.add(_eoModel);
+		protected void addModel(EOModelReference eoModel) {
+			List<EOModelReference> refModels = EOGeneratorFormPage.this.getModel().getRefModels();
+			if (!refModels.contains(eoModel)) {
+				List<EOModelReference> newRefModels = new LinkedList<EOModelReference>(refModels);
+				newRefModels.add(eoModel);
 				EOGeneratorFormPage.this.getModel().setRefModels(newRefModels);
-				myRefModelsTableViewer.refresh();
+				_refModelsTableViewer.refresh();
 				getEditor().editorDirtyStateChanged();
 			}
 		}
 	}
 
 	protected class DefinesRemoveModelListener implements SelectionListener {
-		public void widgetDefaultSelected(SelectionEvent _e) {
-			widgetSelected(_e);
+		public void widgetDefaultSelected(SelectionEvent event) {
+			widgetSelected(event);
 		}
 
-		public void widgetSelected(SelectionEvent _e) {
-			IStructuredSelection selection = (IStructuredSelection) myDefinesTableViewer.getSelection();
+		public void widgetSelected(SelectionEvent event) {
+			IStructuredSelection selection = (IStructuredSelection) _definesTableViewer.getSelection();
 			if (!selection.isEmpty()) {
-				List defines = EOGeneratorFormPage.this.getModel().getDefines();
-				LinkedList newDefines = new LinkedList(defines);
+				List<Define> defines = EOGeneratorFormPage.this.getModel().getDefines();
+				List<Define> newDefines = new LinkedList<Define>(defines);
 				Object[] selections = selection.toArray();
 				for (int i = 0; i < selections.length; i++) {
 					newDefines.remove(selections[i]);
 				}
 				EOGeneratorFormPage.this.getModel().setDefines(newDefines);
-				myDefinesTableViewer.refresh();
+				_definesTableViewer.refresh();
 				getEditor().editorDirtyStateChanged();
 			}
 		}
 	}
 
 	protected class DefineAddModelListener implements SelectionListener {
-		public void widgetDefaultSelected(SelectionEvent _e) {
-			widgetSelected(_e);
+		public void widgetDefaultSelected(SelectionEvent event) {
+			widgetSelected(event);
 		}
 
-		public void widgetSelected(SelectionEvent _e) {
+		public void widgetSelected(SelectionEvent event) {
 			EOGeneratorFormPage.this.addDefine("", "");
 		}
 	}
 
 	protected class DefinesDoubleClickListener implements IDoubleClickListener {
-		public void doubleClick(DoubleClickEvent _event) {
-			IStructuredSelection selection = (IStructuredSelection) myDefinesTableViewer.getSelection();
+		public void doubleClick(DoubleClickEvent event) {
+			IStructuredSelection selection = (IStructuredSelection) _definesTableViewer.getSelection();
 			if (!selection.isEmpty()) {
 				EOGeneratorModel.Define define = (EOGeneratorModel.Define) selection.getFirstElement();
 				if (define != null) {
@@ -736,41 +737,41 @@ public class EOGeneratorFormPage extends FormPage {
 	}
 
 	protected class EOFormEntryAdapter implements IFormEntryListener {
-		public void browseButtonSelected(FormEntry _entry) {
+		public void browseButtonSelected(FormEntry entry) {
 			// do nothing
 		}
 
-		public void focusGained(FormEntry _entry) {
+		public void focusGained(FormEntry entry) {
 			// do nothing
 		}
 
-		public void selectionChanged(FormEntry _entry) {
+		public void selectionChanged(FormEntry entry) {
 			// do nothing
 		}
 
-		public void textDirty(FormEntry _entry) {
+		public void textDirty(FormEntry entry) {
 			// do nothing
 		}
 
-		public void textValueChanged(FormEntry _entry) {
+		public void textValueChanged(FormEntry entry) {
 			// do nothing
 		}
 
-		public void linkActivated(HyperlinkEvent _e) {
+		public void linkActivated(HyperlinkEvent event) {
 			// do nothing
 		}
 
-		public void linkEntered(HyperlinkEvent _e) {
+		public void linkEntered(HyperlinkEvent event) {
 			// do nothing
 		}
 
-		public void linkExited(HyperlinkEvent _e) {
+		public void linkExited(HyperlinkEvent event) {
 			// do nothing
 		}
 	}
 
 	protected class DefinesTableContentProvider implements IStructuredContentProvider, ITableLabelProvider {
-		public Object[] getElements(Object _inputElement) {
+		public Object[] getElements(Object inputElement) {
 			Object[] models = EOGeneratorFormPage.this.getModel().getDefines().toArray();
 			return models;
 		}
@@ -779,20 +780,20 @@ public class EOGeneratorFormPage extends FormPage {
 			// do nothing
 		}
 
-		public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			// do nothing
 		}
 
-		public Image getColumnImage(Object _element, int _columnIndex) {
+		public Image getColumnImage(Object element, int columnIndex) {
 			return null;
 		}
 
-		public String getColumnText(Object _element, int _columnIndex) {
-			EOGeneratorModel.Define define = (EOGeneratorModel.Define) _element;
+		public String getColumnText(Object element, int columnIndex) {
+			EOGeneratorModel.Define define = (EOGeneratorModel.Define) element;
 			String text;
-			if (_columnIndex == 0) {
+			if (columnIndex == 0) {
 				text = define.getName();
-			} else if (_columnIndex == 1) {
+			} else if (columnIndex == 1) {
 				text = define.getValue();
 			} else {
 				text = "";
@@ -800,15 +801,15 @@ public class EOGeneratorFormPage extends FormPage {
 			return text;
 		}
 
-		public void addListener(ILabelProviderListener _listener) {
+		public void addListener(ILabelProviderListener listener) {
 			// do nothing
 		}
 
-		public boolean isLabelProperty(Object _element, String _property) {
+		public boolean isLabelProperty(Object element, String property) {
 			return false;
 		}
 
-		public void removeListener(ILabelProviderListener _listener) {
+		public void removeListener(ILabelProviderListener listener) {
 			// do nothing
 		}
 	}
@@ -818,42 +819,42 @@ public class EOGeneratorFormPage extends FormPage {
 			// do nothing
 		}
 
-		public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			// do nothing
 		}
 
-		public Image getColumnImage(Object _element, int _columnIndex) {
+		public Image getColumnImage(Object element, int columnIndex) {
 			return null;
 		}
 
-		public String getColumnText(Object _element, int _columnIndex) {
-			EOModelReference model = (EOModelReference) _element;
-			String name = model.getPath(myModel.getProject());
+		public String getColumnText(Object element, int columnIndex) {
+			EOModelReference model = (EOModelReference) element;
+			String name = model.getPath(_model.getProject());
 			return name;
 		}
 
-		public void addListener(ILabelProviderListener _listener) {
+		public void addListener(ILabelProviderListener listener) {
 			// do nothing
 		}
 
-		public boolean isLabelProperty(Object _element, String _property) {
+		public boolean isLabelProperty(Object element, String property) {
 			return false;
 		}
 
-		public void removeListener(ILabelProviderListener _listener) {
+		public void removeListener(ILabelProviderListener listener) {
 			// do nothing
 		}
 	}
 
 	protected class ModelsTableContentProvider extends AbstractModelsTableContentProvider {
-		public Object[] getElements(Object _inputElement) {
+		public Object[] getElements(Object inputElement) {
 			Object[] models = EOGeneratorFormPage.this.getModel().getModels().toArray();
 			return models;
 		}
 	}
 
 	protected class RefModelsTableContentProvider extends AbstractModelsTableContentProvider {
-		public Object[] getElements(Object _inputElement) {
+		public Object[] getElements(Object inputElement) {
 			Object[] models = EOGeneratorFormPage.this.getModel().getRefModels().toArray();
 			return models;
 		}
