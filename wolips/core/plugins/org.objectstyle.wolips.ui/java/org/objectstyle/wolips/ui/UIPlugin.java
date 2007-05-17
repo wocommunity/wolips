@@ -60,7 +60,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
-import org.objectstyle.wolips.ui.actions.PackageExplorerDoubleClickHandler;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -93,8 +92,6 @@ public class UIPlugin extends AbstractBaseUIActivator {
 
 	public void start(BundleContext _context) throws Exception {
 		super.start(_context);
-		PackageExplorerDoubleClickHandler doubleClickHandler = new PackageExplorerDoubleClickHandler();
-		getWorkbench().getActiveWorkbenchWindow().addPageListener(doubleClickHandler);
 	}
 
 	/**

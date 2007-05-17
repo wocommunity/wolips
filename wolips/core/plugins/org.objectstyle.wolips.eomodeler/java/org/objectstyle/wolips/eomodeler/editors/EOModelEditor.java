@@ -591,33 +591,6 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 					}
 				}
 			});
-			// boolean openInWindow = true ||
-			// Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.OPEN_IN_WINDOW_KEY);
-			// if (openInWindow) {
-			// if (!openingWindow) {
-			// openingWindow = true;
-			// try {
-			// IWorkbenchWindow newWindow =
-			// Activator.getDefault().getWorkbench().openWorkbenchWindow(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID,
-			// null);
-			// newWindow.getActivePage().openEditor(_editorInput,
-			// EOMODEL_EDITOR_ID);
-			// }
-			// finally {
-			// openingWindow = false;
-			// }
-			// //workbench.showPerspective(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID,
-			// workbench.getActiveWorkbenchWindow());
-			// throw new PartInitException("Skip");
-			// }
-			// }
-			// else if
-			// (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CHANGE_PERSPECTIVES_KEY))
-			// {
-			// IWorkbench workbench = Activator.getDefault().getWorkbench();
-			// workbench.showPerspective(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID,
-			// workbench.getActiveWorkbenchWindow());
-			// }
 		} catch (WorkbenchException e) {
 			e.printStackTrace();
 		}

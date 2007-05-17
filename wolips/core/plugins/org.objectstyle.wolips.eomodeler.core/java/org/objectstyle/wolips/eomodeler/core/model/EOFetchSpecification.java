@@ -692,7 +692,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 			fetchSpec.myQualifier = EOQualifierFactory.createExpressionFromQualifierMap(EOQualifierFactory.createQualifierMapFromExpression(myQualifier));
 		}
 		fetchSpec.mySharesObjects = mySharesObjects;
-		fetchSpec.setUserInfo(new HashMap<Object, Object>(getUserInfo()));
+		_cloneUserInfoInto(fetchSpec);
 		return fetchSpec;
 	}
 

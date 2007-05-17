@@ -147,19 +147,6 @@
          </action>
       </objectContribution>
       <objectContribution
-            adaptable="true"
-            id="org.objectstyle.wolips.ui.actions.OpenEntityModerAction"
-            nameFilter="*.eomodeld"
-            objectClass="org.eclipse.core.resources.IContainer">
-         <action
-               class="org.objectstyle.wolips.ui.actions.OpenEntityModelerAction"
-               enablesFor="1"
-               icon="icons/eomodeler/webobjects_eomodeler.gif"
-               id="org.objectstyle.wolips.ui.actions.OpenEntityModerAction"
-               label="Open Entity Modeler"
-               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group0"/>
-      </objectContribution>
-      <objectContribution
             objectClass="org.eclipse.core.resources.IResource"
             adaptable="true"
             id="org.objectstyle.wolips.ui.actions.AddToWOAppResourcesIncludePatternsetAction">

@@ -66,6 +66,7 @@ public class EntityModelerPreferencePage extends FieldEditorPreferencePage imple
 		addField(new BooleanFieldEditor(PreferenceConstants.OPEN_WINDOW_ON_VERIFICATION_ERRORS_KEY, Messages.getString("Preferences.OpenWindowOnVerificationErrorsLabel"), getFieldEditorParent()));
 		addField(new BooleanFieldEditor(PreferenceConstants.OPEN_WINDOW_ON_VERIFICATION_WARNINGS_KEY, Messages.getString("Preferences.OpenWindowOnVerificationWarningsLabel"), getFieldEditorParent()));
 		addField(new BooleanFieldEditor(PreferenceConstants.CHANGE_PERSPECTIVES_KEY, Messages.getString("Preferences.ChangePerspectivesLabel"), getFieldEditorParent()));
+		addField(new BooleanFieldEditor(PreferenceConstants.OPEN_IN_WINDOW_KEY, Messages.getString("Preferences.OpenInWindowLabel"), getFieldEditorParent()));
 		addField(new BooleanFieldEditor(PreferenceConstants.USED_FOR_LOCKING_DEFAULT_KEY, Messages.getString("Preferences.DefaultUsedForLockingLabel"), getFieldEditorParent()));
 		addField(new BooleanFieldEditor(PreferenceConstants.ALLOWS_NULL_DEFAULT_KEY, Messages.getString("Preferences.DefaultAllowsNullLabel"), getFieldEditorParent()));
 	}

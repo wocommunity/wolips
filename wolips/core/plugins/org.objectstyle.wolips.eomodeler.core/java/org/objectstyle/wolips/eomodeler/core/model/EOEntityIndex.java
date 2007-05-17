@@ -365,7 +365,7 @@ public class EOEntityIndex extends UserInfoableEOModelObject<EOEntity> implement
 		entityIndex._constraint = _constraint;
 		entityIndex._indexType = _indexType;
 		entityIndex._order = _order;
-		entityIndex.setUserInfo(new HashMap<Object, Object>(getUserInfo()));
+		_cloneUserInfoInto(entityIndex);
 		return entityIndex;
 	}
 

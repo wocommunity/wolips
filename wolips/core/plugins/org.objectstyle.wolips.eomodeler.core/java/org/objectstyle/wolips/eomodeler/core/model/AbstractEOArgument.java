@@ -49,7 +49,6 @@
  */
 package org.objectstyle.wolips.eomodeler.core.model;
 
-import java.util.HashMap;
 import java.util.Set;
 
 import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
@@ -141,6 +140,7 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 	protected AbstractEOArgument _cloneArgument() {
 		AbstractEOArgument argument = _createArgument(myName);
 		_cloneIntoArgument(argument, false);
+		_cloneUserInfoInto(argument);
 		return argument;
 	}
 	
@@ -165,7 +165,6 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		if (!updatingFlattenedAttribute) {
 			argument.myDefinition = myDefinition;
 		}
-		argument.setUserInfo(new HashMap<Object, Object>(getUserInfo()));
 	}
 
 	public int hashCode() {
