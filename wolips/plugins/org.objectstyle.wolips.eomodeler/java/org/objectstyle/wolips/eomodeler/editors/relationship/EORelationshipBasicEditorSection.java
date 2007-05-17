@@ -211,7 +211,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 		Combo entityCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
 		myEntityComboViewer = new ComboViewer(entityCombo);
 		myEntityComboViewer.setLabelProvider(new EOEntityLabelProvider());
-		myEntityComboViewer.setContentProvider(new EOEntityListContentProvider(false, false));
+		myEntityComboViewer.setContentProvider(new EOEntityListContentProvider(false, true));
 		GridData entityComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		entityCombo.setLayoutData(entityComboLayoutData);
 
@@ -245,6 +245,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 			myRelationship = relationship;
 			if (myRelationship != null) {
 				myRelationship.addPropertyChangeListener(EORelationship.JOINS, myJoinsListener);
+				myRelationship.addPropertyChangeListener(EORelationship.DEFINITION, myJoinsListener);
 				myJoinsTableEditor.setRelationship(myRelationship);
 				myModelComboViewer.setInput(myRelationship);
 				myEntityComboViewer.setInput(myRelationship);
@@ -262,10 +263,6 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 				myJoinSemanticBinding = new ComboViewerBinding(myJoinSemanticComboViewer, myRelationship, EORelationship.JOIN_SEMANTIC, myRelationship.getEntity().getModel().getModelGroup(), EOModelGroup.MODELS, null);
 				myEntityBinding = new ComboViewerBinding(myEntityComboViewer, myRelationship, EORelationship.DESTINATION, myRelationship.getEntity().getModel(), EOModel.ENTITIES, null);
 
-				boolean enabled = !myRelationship.isFlattened();
-				myModelComboViewer.getCombo().setEnabled(enabled);
-				myEntityComboViewer.getCombo().setEnabled(enabled);
-				myJoinSemanticComboViewer.getCombo().setEnabled(enabled);
 				// boolean flattened = myRelationship.isFlattened();
 				// myDefinitionLabel.setVisible(flattened);
 				// myDefinitionText.setVisible(flattened);
@@ -276,10 +273,12 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 	}
 
 	protected void updateModelAndEntityCombosEnabled() {
+		boolean joinsEnabled = !myRelationship.isFlattened();
 		boolean hasJoins = myRelationship.getJoins().size() != 0;
-		boolean enabled = !hasJoins && !myRelationship.isFlattened();
+		boolean enabled = !hasJoins && joinsEnabled;
 		myModelComboViewer.getCombo().setEnabled(enabled);
 		myEntityComboViewer.getCombo().setEnabled(enabled);
+		myJoinSemanticComboViewer.getCombo().setEnabled(enabled);
 		myDefinitionText.setEnabled(!hasJoins);
 	}
 
@@ -292,6 +291,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 	protected void disposeBindings() {
 		if (myRelationship != null) {
 			myRelationship.removePropertyChangeListener(EORelationship.JOINS, myJoinsListener);
+			myRelationship.removePropertyChangeListener(EORelationship.DEFINITION, myJoinsListener);
 		}
 		if (myBindingContext != null) {
 			myBindingContext.dispose();
