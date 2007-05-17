@@ -145,7 +145,7 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 	}
 	
 	public void _cloneIntoArgument(AbstractEOArgument argument, boolean updatingFlattenedAttribute) {
-		if (!updatingFlattenedAttribute) {
+		if (updatingFlattenedAttribute) {
 			argument.myColumnName = "";
 		}
 		else {
