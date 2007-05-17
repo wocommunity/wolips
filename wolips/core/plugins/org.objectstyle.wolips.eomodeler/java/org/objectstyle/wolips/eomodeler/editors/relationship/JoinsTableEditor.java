@@ -125,6 +125,7 @@ public class JoinsTableEditor extends Composite {
 			if (myRelationship != null) {
 				myRelationship.addPropertyChangeListener(EORelationship.DESTINATION, myRelationshipListener);
 				myRelationship.addPropertyChangeListener(EORelationship.JOINS, myRelationshipListener);
+				myRelationship.addPropertyChangeListener(EORelationship.DEFINITION, myRelationshipListener);
 
 				myJoinsTableViewer.setInput(myRelationship);
 				TableUtils.sort(myJoinsTableViewer, EOJoin.SOURCE_ATTRIBUTE);
@@ -141,8 +142,9 @@ public class JoinsTableEditor extends Composite {
 	}
 
 	protected void updateButtons() {
-		boolean buttonsEnabled = isEnabled() && myRelationship.getDestination() != null;
-		boolean removeEnabled = buttonsEnabled && !myJoinsTableViewer.getSelection().isEmpty() && !myRelationship.isFlattened();
+		boolean joinsEnabled = !myRelationship.isFlattened();
+		boolean buttonsEnabled = isEnabled() && myRelationship.getDestination() != null && joinsEnabled;
+		boolean removeEnabled = buttonsEnabled && !myJoinsTableViewer.getSelection().isEmpty() && joinsEnabled;
 		boolean addEnabled = buttonsEnabled;
 		myAddRemoveButtonGroup.setRemoveEnabled(removeEnabled);
 		myAddRemoveButtonGroup.setAddEnabled(addEnabled);
@@ -188,6 +190,7 @@ public class JoinsTableEditor extends Composite {
 
 	public void disposeBindings() {
 		if (myRelationship != null) {
+			myRelationship.removePropertyChangeListener(EORelationship.DEFINITION, myRelationshipListener);
 			myRelationship.removePropertyChangeListener(EORelationship.DESTINATION, myRelationshipListener);
 			myRelationship.removePropertyChangeListener(EORelationship.JOINS, myRelationshipListener);
 			EOEntity destination = myRelationship.getDestination();
@@ -209,6 +212,11 @@ public class JoinsTableEditor extends Composite {
 		disposeBindings();
 	}
 
+	protected void definitionChanged() {
+		updateJoins();
+		updateButtons();
+	}
+	
 	protected void destinationChanged(EOEntity _oldDestination, EOEntity _newDestination) {
 		if (_oldDestination != null) {
 			_oldDestination.removePropertyChangeListener(EOEntity.ATTRIBUTE, myAttributesListener);
@@ -250,7 +258,10 @@ public class JoinsTableEditor extends Composite {
 	protected class RelationshipListener implements PropertyChangeListener {
 		public void propertyChange(PropertyChangeEvent _event) {
 			String propertyName = _event.getPropertyName();
-			if (propertyName.equals(EORelationship.DESTINATION)) {
+			if (propertyName.equals(EORelationship.DEFINITION)) {
+				JoinsTableEditor.this.definitionChanged();
+			}
+			else if (propertyName.equals(EORelationship.DESTINATION)) {
 				EOEntity oldDestination = (EOEntity) _event.getOldValue();
 				EOEntity newDestination = (EOEntity) _event.getNewValue();
 				JoinsTableEditor.this.destinationChanged(oldDestination, newDestination);
