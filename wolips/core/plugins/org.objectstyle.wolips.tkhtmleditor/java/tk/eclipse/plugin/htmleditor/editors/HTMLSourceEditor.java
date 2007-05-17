@@ -330,7 +330,7 @@ public class HTMLSourceEditor extends TextEditor {
    * If it's required to update some information about the editor,
    * do override at the subclass.
    */
-  protected void update() {
+  public void update() {
     updateFolding();
     updateAssist();
     outlinePage.update();
