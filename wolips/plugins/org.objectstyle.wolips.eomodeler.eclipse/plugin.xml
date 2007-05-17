@@ -19,4 +19,8 @@
             id="org.objectstyle.wolips.eomodeler.eclipse.eoclassLoaderFactory"
             name="Eclipse EOClassLoader Factory"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup class="org.objectstyle.wolips.eomodeler.eclipse.EntityModelerStartup"/>
+   </extension>
 </plugin>

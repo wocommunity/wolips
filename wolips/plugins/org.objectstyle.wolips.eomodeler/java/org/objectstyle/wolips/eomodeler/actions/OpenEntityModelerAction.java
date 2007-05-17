@@ -53,26 +53,28 @@
  * <http://objectstyle.org/>.
  *
  */
-
-package org.objectstyle.wolips.ui.actions;
-
-import java.util.ArrayList;
+package org.objectstyle.wolips.eomodeler.actions;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.WorkbenchException;
+import org.eclipse.ui.internal.UIPlugin;
+import org.eclipse.ui.part.FileEditorInput;
+import org.objectstyle.wolips.eomodeler.Activator;
+import org.objectstyle.wolips.eomodeler.EOModelerPerspectiveFactory;
+import org.objectstyle.wolips.eomodeler.editors.EOModelEditor;
+import org.objectstyle.wolips.eomodeler.preferences.PreferenceConstants;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResource;
 
 /**
- * @author ulrich
+ * @author ulrich/mschrag
  */
 public class OpenEntityModelerAction extends AbstractActionOnIResource {
-	private static final String eoModelExtension = ".eomodeld";
-
-	/**
-	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
-	 */
 	public void run(IAction action) {
 		OpenEntityModelerAction.openResourceIfPossible(getActionResource());
 	}
@@ -80,18 +82,28 @@ public class OpenEntityModelerAction extends AbstractActionOnIResource {
 	public static boolean openResourceIfPossible(IResource actionResource) {
 		boolean opened = false;
 		if (actionResource != null) {
-			if (actionResource.getFileExtension() == null || !actionResource.getName().endsWith(OpenEntityModelerAction.eoModelExtension)) {
-				return false;
+			IFile editorFile = null;
+			if (actionResource.getName().endsWith(".eomodeld") && actionResource instanceof IFolder) {
+				IFolder eomodeldFolder = (IFolder) actionResource;
+				editorFile = eomodeldFolder.getFile("index.eomodeld");
+			} else if (actionResource.getName().equals("index.eomodeld") && actionResource instanceof IFile) {
+				editorFile = (IFile) actionResource;
+			} else if (actionResource.getName().endsWith(".plist") && actionResource instanceof IFile && actionResource.getParent().getFile(new Path("index.eomodeld")).exists()) {
+				editorFile = (IFile) actionResource;
 			}
-			String fileName = actionResource.getName();
-			fileName = fileName.substring(0, fileName.length() - OpenEntityModelerAction.eoModelExtension.length());
-
-			ArrayList list = new ArrayList();
-			WorkbenchUtilitiesPlugin.findFilesInResourceByName(list, actionResource, "index" + OpenEntityModelerAction.eoModelExtension);
-			if (list.size() > 0) {
-				IFile indexFile = (IFile) list.get(0);
-				WorkbenchUtilitiesPlugin.open(indexFile, "org.objectstyle.wolips.eomodeler.editors.EOModelEditor");
-				opened = true;
+			if (editorFile != null && editorFile.exists()) {
+				if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.OPEN_IN_WINDOW_KEY)) {
+					try {
+						IWorkbenchWindow window = UIPlugin.getDefault().getWorkbench().openWorkbenchWindow(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID, null);
+						window.getActivePage().openEditor(new FileEditorInput(editorFile), EOModelEditor.EOMODEL_EDITOR_ID);
+						opened = true;
+					} catch (WorkbenchException e) {
+						Activator.getDefault().log(e);
+					}
+				}
+				else {
+					WorkbenchUtilitiesPlugin.open(editorFile, EOModelEditor.EOMODEL_EDITOR_ID);
+				}
 			}
 		}
 		return opened;

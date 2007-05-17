@@ -361,7 +361,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject<EOModel> implem
 				}
 			}
 
-			storedProcedure.setUserInfo(new HashMap<Object, Object>(getUserInfo()));
+			_cloneUserInfoInto(storedProcedure);
 			return storedProcedure;
 		} catch (DuplicateNameException e) {
 			throw new RuntimeException("A duplicate name was found during a clone, which should never happen.", e);

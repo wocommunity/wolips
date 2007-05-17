@@ -57,6 +57,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     prefs.setDefault(PreferenceConstants.ALLOWS_NULL_DEFAULT_KEY, false);
     prefs.setDefault(PreferenceConstants.USED_FOR_LOCKING_DEFAULT_KEY, true);
     prefs.setDefault(PreferenceConstants.CHANGE_PERSPECTIVES_KEY, true);
+    prefs.setDefault(PreferenceConstants.OPEN_IN_WINDOW_KEY, false);
     prefs.setDefault(PreferenceConstants.SHOW_ERRORS_IN_PROBLEMS_VIEW_KEY, true);
     prefs.setDefault(PreferenceConstants.OPEN_WINDOW_ON_VERIFICATION_ERRORS_KEY, true);
     prefs.setDefault(PreferenceConstants.OPEN_WINDOW_ON_VERIFICATION_WARNINGS_KEY, true);

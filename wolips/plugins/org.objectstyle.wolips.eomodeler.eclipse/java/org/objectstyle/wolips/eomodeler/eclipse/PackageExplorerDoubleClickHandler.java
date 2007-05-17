@@ -47,7 +47,7 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.ui.actions;
+package org.objectstyle.wolips.eomodeler.eclipse;
 
 import java.util.Iterator;
 
@@ -62,10 +62,15 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.IPageListener;
 import org.eclipse.ui.IPartListener2;
+import org.eclipse.ui.IWindowListener;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
-import org.eclipse.ui.internal.UIPlugin;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+import org.objectstyle.wolips.eomodeler.actions.OpenEntityModelerAction;
+import org.objectstyle.wolips.ui.actions.OpenWOAction;
 
 /**
  * Eclipse does not understand how to open a bundle folder. This handler sneaks
@@ -74,12 +79,33 @@ import org.eclipse.ui.internal.UIPlugin;
  * 
  * @author mschrag
  */
-public class PackageExplorerDoubleClickHandler implements IPageListener, IPartListener2, IDoubleClickListener {
+public class PackageExplorerDoubleClickHandler implements IPageListener, IPartListener2, IDoubleClickListener, IWindowListener {
 	private WeakHashSet _listeningPackageExplorers;
 
 	public PackageExplorerDoubleClickHandler() {
 		_listeningPackageExplorers = new WeakHashSet();
-		IWorkbenchPage[] pages = UIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getPages();
+		IWorkbench workbench = PlatformUI.getWorkbench();
+		workbench.addWindowListener(this);
+		IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
+		for (IWorkbenchWindow window : windows) {
+			windowOpened(window);
+		}
+	}
+
+	public void windowActivated(IWorkbenchWindow window) {
+		// do nothing
+	}
+
+	public void windowClosed(IWorkbenchWindow window) {
+		// do nothing
+	}
+
+	public void windowDeactivated(IWorkbenchWindow window) {
+		// do nothing
+	}
+
+	public void windowOpened(IWorkbenchWindow window) {
+		IWorkbenchPage[] pages = window.getPages();
 		for (int i = 0; i < pages.length; i++) {
 			IWorkbenchPage page = pages[i];
 			findAndAttachToPackageExplorerInPage(page);

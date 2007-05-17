@@ -685,6 +685,19 @@
          name="Entity Modeler"
          point="org.eclipse.ui.popupMenus">
       <objectContribution
+            adaptable="true"
+            id="org.objectstyle.wolips.eomodeler.actions.OpenEntityModelerAction"
+            nameFilter="*.eomodeld"
+            objectClass="org.eclipse.core.resources.IContainer">
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.OpenEntityModelerAction"
+               enablesFor="1"
+               icon="icons/eoModel.png"
+               id="org.objectstyle.wolips.eomodeler.actions.OpenEntityModelerAction"
+               label="Open Entity Modeler"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group0"/>
+      </objectContribution>
+      <objectContribution
             adaptable="false"
             id="org.objectstyle.wolips.eomodeler.outline.eomodel"
             objectClass="org.objectstyle.wolips.eomodeler.core.model.EOModel">

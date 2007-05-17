@@ -765,7 +765,7 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 			EOJoin newJoin = join._cloneModelObject();
 			relationship.addJoin(newJoin, false);
 		}
-		relationship.setUserInfo(new HashMap<Object, Object>(getUserInfo()));
+		_cloneUserInfoInto(relationship);
 		return relationship;
 	}
 	

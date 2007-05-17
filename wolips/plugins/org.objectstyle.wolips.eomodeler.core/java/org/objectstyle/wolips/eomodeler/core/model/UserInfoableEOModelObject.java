@@ -4,7 +4,9 @@ import java.util.Map;
 
 import org.objectstyle.wolips.eomodeler.core.utils.NotificationMap;
 
-public abstract class UserInfoableEOModelObject<T> extends EOModelObject<T> implements IUserInfoable {
+import com.uwyn.rife.tools.ObjectUtils;
+
+public abstract class UserInfoableEOModelObject<T> extends EOModelObject<T> implements IUserInfoable, Cloneable {
 	public static final String USER_INFO = "userInfo";
 
 	private PropertyChangeRepeater myUserInfoRepeater;
@@ -38,6 +40,14 @@ public abstract class UserInfoableEOModelObject<T> extends EOModelObject<T> impl
 			setUserInfo(_modelMap.getMap("userDictionary", true), false);
 		} else {
 			setUserInfo(_modelMap.getMap("userInfo", true), false);
+		}
+	}
+	
+	protected void _cloneUserInfoInto(UserInfoableEOModelObject<T> obj) {
+		try {
+			obj.setUserInfo(ObjectUtils.deepClone(myUserInfo));
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException("Failed to clone user info: " + obj + ".", e);
 		}
 	}
 }

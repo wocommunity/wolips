@@ -49,10 +49,10 @@
  */
 package org.objectstyle.wolips.eomodeler.eclipse;
 
-import org.objectstyle.wolips.baseforplugins.AbstractBaseActivator;
+import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
 import org.osgi.framework.BundleContext;
 
-public class Activator extends AbstractBaseActivator {
+public class Activator extends AbstractBaseUIActivator {
 	public static final String PLUGIN_ID = "org.objectstyle.wolips.eomodeler.eclipse";
 
 	private static Activator _plugin;

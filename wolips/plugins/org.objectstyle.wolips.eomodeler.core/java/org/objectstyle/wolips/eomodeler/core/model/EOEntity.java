@@ -1805,7 +1805,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			entity._cloneAttributesAndRelationshipsFrom(this, false, null, false);
 			entity._cloneFetchSpecificationsFrom(this, false);
 			entity._cloneEntityIndexesFrom(this, false);
-			entity.setUserInfo(new HashMap<Object, Object>(getUserInfo()));
+			_cloneUserInfoInto(entity);
 			return entity;
 		}
 		catch (DuplicateNameException e) {

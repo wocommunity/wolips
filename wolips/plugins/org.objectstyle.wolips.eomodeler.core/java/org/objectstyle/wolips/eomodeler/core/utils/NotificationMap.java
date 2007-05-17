@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class NotificationMap<U, V> implements Map<U, V> {
+public class NotificationMap<U, V> implements Map<U, V>, Cloneable {
 	public static final String CONTENTS = "__contents__";
 
 	private Map<U, V> myMap;
@@ -25,6 +25,12 @@ public class NotificationMap<U, V> implements Map<U, V> {
 			myMap = _map;
 		}
 		myPropertyChangeSupport = new PropertyChangeSupport(this);
+	}
+	
+	@Override
+	public NotificationMap<U, V> clone() throws CloneNotSupportedException {
+		NotificationMap map = new NotificationMap<U, V>(new HashMap(myMap));
+		return map;
 	}
 
 	public void clear() {
