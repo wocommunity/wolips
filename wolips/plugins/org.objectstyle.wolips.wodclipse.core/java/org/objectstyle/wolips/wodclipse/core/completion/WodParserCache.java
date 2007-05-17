@@ -13,7 +13,6 @@ import jp.aonir.fuzzyxml.FuzzyXMLParser;
 import jp.aonir.fuzzyxml.event.FuzzyXMLErrorEvent;
 import jp.aonir.fuzzyxml.event.FuzzyXMLErrorListener;
 
-import org.apache.commons.collections.map.ReferenceMap;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -50,6 +49,7 @@ import org.objectstyle.wolips.wodclipse.core.model.WodProblem;
 import org.objectstyle.wolips.wodclipse.core.preferences.BindingValidationRule;
 import org.objectstyle.wolips.wodclipse.core.preferences.PreferenceConstants;
 import org.objectstyle.wolips.wodclipse.core.preferences.TagShortcut;
+import org.objectstyle.wolips.wodclipse.core.util.LimitedLRUCache;
 import org.objectstyle.wolips.wodclipse.core.util.WodApiUtils;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 import org.objectstyle.wolips.wodclipse.core.util.WodModelUtils;
@@ -80,7 +80,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   private boolean _validated;
 
   private static WodParserCacheContext _context;
-  private static Map _parsers;
+  private static LimitedLRUCache<String, WodParserCache> _parsers;
 
   public static synchronized WodParserCache parser(IResource resource) throws CoreException, LocateException {
     return WodParserCache.parser(resource, true);
@@ -88,8 +88,8 @@ public class WodParserCache implements FuzzyXMLErrorListener {
 
   public static synchronized WodParserCache parser(IResource resource, boolean createIfMissing) throws CoreException, LocateException {
     if (_parsers == null) {
-      _parsers = new ReferenceMap(ReferenceMap.HARD, ReferenceMap.SOFT);
-      ResourcesPlugin.getWorkspace().addResourceChangeListener(new WodHtmlResourceChangeListener());
+      _parsers = new LimitedLRUCache<String, WodParserCache>(10);
+      //ResourcesPlugin.getWorkspace().addResourceChangeListener(new WodHtmlResourceChangeListener());
       _context = new WodParserCacheContext();
     }
     IContainer woFolder;
@@ -100,14 +100,14 @@ public class WodParserCache implements FuzzyXMLErrorListener {
       woFolder = resource.getParent();
     }
     String key = woFolder.getLocation().toPortableString();
-    WodParserCache cache = (WodParserCache) _parsers.get(key);
+    WodParserCache cache =  _parsers.get(key);
     if (cache == null && createIfMissing) {
       cache = new WodParserCache(woFolder);
       _parsers.put(key, cache);
     }
     return cache;
   }
-
+  
   protected static class WodHtmlResourceChangeListener implements IResourceChangeListener, IResourceDeltaVisitor {
     public void resourceChanged(IResourceChangeEvent event) {
       IResourceDelta delta = event.getDelta();
@@ -196,13 +196,9 @@ public class WodParserCache implements FuzzyXMLErrorListener {
     validate();
     return _htmlElementCache;
   }
-
-  public Map getElementNameToTypeCache() {
-    return _context.getElementNameToTypeCache();
-  }
-
-  public Map getElementTypeToWoCache() {
-    return _context.getElementTypeToWoCache();
+  
+  public WodParserCacheContext getContext() {
+    return _context;
   }
 
   public Map getTypeContextCache() {

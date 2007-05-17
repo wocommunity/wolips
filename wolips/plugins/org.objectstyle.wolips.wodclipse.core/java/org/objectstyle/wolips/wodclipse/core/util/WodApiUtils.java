@@ -26,80 +26,77 @@ import org.osgi.framework.Bundle;
 
 public class WodApiUtils {
 
-  public static Wo findApiModelWo(IType elementType, WodParserCache wodContext) throws ApiModelException {
-    Object cachedWo = wodContext.getElementTypeToWoCache().get(elementType);
-    Wo wo = null;
+  public static Wo findApiModelWo(IType elementType, WodParserCache cache) throws ApiModelException {
+    Wo wo = cache.getContext().getApiForType(elementType);
 
-    if (cachedWo != null) {
-      if (cachedWo instanceof String) {
-        return null;
-      }
-      else if (cachedWo instanceof Wo) {
-        wo = (Wo) cachedWo;
-        ApiModel model = wo.getModel();
-        if (model.parseIfNecessary()) {
-          wo = null;
-        }
+    if (wo != null) {
+      ApiModel model = wo.getModel();
+      if (model.parseIfNecessary()) {
+        cache.getContext().clearApiForElementType(elementType);
+        wo = null;
       }
     }
 
     if (wo == null) {
-      ApiModel apiModel = null;
-      IOpenable typeContainer = elementType.getOpenable();
-      if (typeContainer instanceof IClassFile) {
-        IClassFile classFile = (IClassFile) typeContainer;
-        IJavaElement parent = classFile.getParent();
-        if (parent instanceof IPackageFragment) {
-          IPackageFragment parentPackage = (IPackageFragment) parent;
-          IPath packagePath = parentPackage.getPath();
-          IPath apiPath = packagePath.removeLastSegments(2).append(elementType.getElementName()).addFileExtension("api");
-          File apiFile = apiPath.toFile();
-          boolean fileExists = apiFile.exists();
-          if (!fileExists && parentPackage.getElementName().startsWith("com.webobjects")) {
-            Bundle bundle = Activator.getDefault().getBundle();
-            URL woDefinitionsURL = bundle.getEntry("/WebObjectDefinitions.xml");
-            // apiFile = new
-            // File("/Users/mschrag/Documents/workspace/org.objectstyle.wolips.wodclipse/java/org/objectstyle/wolips/wodclipse/api/WebObjectDefinitions.xml");
-            apiModel = new ApiModel(woDefinitionsURL);
-          }
-          else if (fileExists) {
-            apiModel = new ApiModel(apiFile);
-          }
-        }
-      }
-      else if (typeContainer instanceof ICompilationUnit) {
-        //ICompilationUnit cu = (ICompilationUnit) typeContainer;
-        //IResource resource = cu.getCorrespondingResource();
-        //String name = resource.getName();
-        List apiResources = WorkbenchUtilitiesPlugin.findResourcesInProjectByNameAndExtensions(elementType.getJavaProject().getProject(), elementType.getElementName(), new String[] { "api" }, false);
-        if (apiResources != null && apiResources.size() > 0) {
-          IResource apiResource = (IResource) apiResources.get(0);
-          apiModel = new ApiModel(apiResource.getLocation().toFile());
-        }
-      }
-
-      if (apiModel != null) {
-        Wo[] wos = apiModel.getWODefinitions().getWos();
-        if (wos.length == 0) {
-          // leave it alone
-        }
-        else if (wos.length == 1) {
-          wo = wos[0];
-        }
-        else {
-          for (int i = 0; wo == null && i < wos.length; i++) {
-            if (elementType.getElementName().equals(wos[i].getClassName())) {
-              wo = wos[i];
+      Boolean apiMissing = cache.getContext().apiMissingForElementType(elementType);
+      if (apiMissing == null || !apiMissing.booleanValue()) {
+        ApiModel apiModel = null;
+        IOpenable typeContainer = elementType.getOpenable();
+        if (typeContainer instanceof IClassFile) {
+          IClassFile classFile = (IClassFile) typeContainer;
+          IJavaElement parent = classFile.getParent();
+          if (parent instanceof IPackageFragment) {
+            IPackageFragment parentPackage = (IPackageFragment) parent;
+            IPath packagePath = parentPackage.getPath();
+            IPath apiPath = packagePath.removeLastSegments(2).append(elementType.getElementName()).addFileExtension("api");
+            File apiFile = apiPath.toFile();
+            boolean fileExists = apiFile.exists();
+            if (!fileExists && parentPackage.getElementName().startsWith("com.webobjects")) {
+              Bundle bundle = Activator.getDefault().getBundle();
+              URL woDefinitionsURL = bundle.getEntry("/WebObjectDefinitions.xml");
+              // apiFile = new
+              // File("/Users/mschrag/Documents/workspace/org.objectstyle.wolips.wodclipse/java/org/objectstyle/wolips/wodclipse/api/WebObjectDefinitions.xml");
+              apiModel = new ApiModel(woDefinitionsURL);
+            }
+            else if (fileExists) {
+              apiModel = new ApiModel(apiFile);
             }
           }
         }
-      }
+        else if (typeContainer instanceof ICompilationUnit) {
+          //ICompilationUnit cu = (ICompilationUnit) typeContainer;
+          //IResource resource = cu.getCorrespondingResource();
+          //String name = resource.getName();
+          List apiResources = WorkbenchUtilitiesPlugin.findResourcesInProjectByNameAndExtensions(elementType.getJavaProject().getProject(), elementType.getElementName(), new String[] { "api" }, false);
+          if (apiResources != null && apiResources.size() > 0) {
+            IResource apiResource = (IResource) apiResources.get(0);
+            apiModel = new ApiModel(apiResource.getLocation().toFile());
+          }
+        }
 
-      if (wo == null) {
-        wodContext.getElementTypeToWoCache().put(elementType, "NOAPI");
-      }
-      else {
-        wodContext.getElementTypeToWoCache().put(elementType, wo);
+        if (apiModel != null) {
+          Wo[] wos = apiModel.getWODefinitions().getWos();
+          if (wos.length == 0) {
+            // leave it alone
+          }
+          else if (wos.length == 1) {
+            wo = wos[0];
+          }
+          else {
+            for (int i = 0; wo == null && i < wos.length; i++) {
+              if (elementType.getElementName().equals(wos[i].getClassName())) {
+                wo = wos[i];
+              }
+            }
+          }
+        }
+
+        if (wo == null) {
+          cache.getContext().setApiMissingForElementType(true, elementType);
+        }
+        else {
+          cache.getContext().setApiForType(wo, elementType);
+        }
       }
     }
 

@@ -68,6 +68,7 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.internal.core.JavaModelManager;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.locate.LocatePlugin;
 
@@ -76,7 +77,7 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 
 	private IFile dotJava;
 
-	private IType dotJavaType;
+	//private IType dotJavaType;
 
 	private IFile dotApi;
 
@@ -138,6 +139,7 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 	}
 
 	public IType getDotJavaType() throws JavaModelException {
+		IType dotJavaType = null;
 		if (dotJavaType == null) {
 			IFile javaFile = getDotJava();
 			if (javaFile != null) {
