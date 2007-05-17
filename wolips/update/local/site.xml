@@ -9,10 +9,10 @@
    <feature url="features/org.objectstyle.wolips.tptp.feature_1.0.6.jar" id="org.objectstyle.wolips.tptp.feature" version="1.0.6">
       <category name="Profiling Support"/>
    </feature>
-   <feature url="features/org.objectstyle.wolips.goodies.mac.feature_1.0.6.jar" id="org.objectstyle.wolips.goodies.mac.feature" version="1.0.6">
+ <feature url="features/org.objectstyle.wolips.goodies.mac.feature_1.0.6.jar" id="org.objectstyle.wolips.goodies.mac.feature" version="1.0.6" os="macosx"> 
       <category name="Goodies Mac"/>
    </feature>
-   <feature url="features/org.objectstyle.wolips.goodies.win.feature_1.0.6.jar" id="org.objectstyle.wolips.goodies.win.feature" version="1.0.6">
+ <feature url="features/org.objectstyle.wolips.goodies.win.feature_1.0.6.jar" id="org.objectstyle.wolips.goodies.win.feature" version="1.0.6" os="win32"> 
       <category name="Goodies Win"/>
    </feature>
    <feature url="features/org.objectstyle.wolips.maven_1.0.6.jar" id="org.objectstyle.wolips.maven" version="1.0.6">
