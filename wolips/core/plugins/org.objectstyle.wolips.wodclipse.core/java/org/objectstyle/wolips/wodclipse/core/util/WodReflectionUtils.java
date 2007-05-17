@@ -48,8 +48,12 @@ public class WodReflectionUtils {
 
   public static IType findElementType(IJavaProject _javaProject, String _elementTypeName, boolean _requireTypeInProject, WodParserCache cache) throws JavaModelException {
     // Search the current project for the given element type name
-    IType type = (IType) cache.getElementNameToTypeCache().get(_elementTypeName);
-    if (type == null) {
+    String typeName = cache.getContext().getElementTypeNamed(_elementTypeName);
+    IType type = null;
+    if (typeName != null) {
+      type = _javaProject.findType(typeName);
+    }
+    else if (typeName == null) {
       TypeNameCollector typeNameCollector = new TypeNameCollector(_javaProject, _requireTypeInProject);
       WodReflectionUtils.findMatchingElementClassNames(_elementTypeName, SearchPattern.R_EXACT_MATCH, typeNameCollector);
       if (typeNameCollector.isExactMatch()) {
@@ -62,7 +66,7 @@ public class WodReflectionUtils {
         type = typeNameCollector.getTypeForClassName(matchingElementClassName);
       }
       if (type != null) {
-        cache.getElementNameToTypeCache().put(_elementTypeName, type);
+        cache.getContext().setElementTypeForName(type, _elementTypeName);
       }
     }
     return type;

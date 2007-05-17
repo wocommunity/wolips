@@ -3,17 +3,18 @@ package org.objectstyle.wolips.wodclipse.core.completion;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.map.ReferenceMap;
 import org.eclipse.jdt.core.IType;
 import org.objectstyle.wolips.core.resources.types.api.Wo;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.preferences.BindingValidationRule;
 import org.objectstyle.wolips.wodclipse.core.preferences.PreferenceConstants;
 import org.objectstyle.wolips.wodclipse.core.preferences.TagShortcut;
+import org.objectstyle.wolips.wodclipse.core.util.LimitedLRUCache;
 
 public class WodParserCacheContext {
-  private Map _elementNameToTypeCache;
-  private Map _elementTypeToWoCache;
+  private Map<String, String> _elementNameToTypeCache;
+  private Map<String, Wo> _elementTypeToApiCache;
+  private Map<String, Boolean> _elementTypeToApiMissingCache;
   private String _tagShortcutsStr;
   private String _bindingValidationRulesStr;
   private List<TagShortcut> _tagShortcuts;
@@ -24,31 +25,71 @@ public class WodParserCacheContext {
   }
 
   public synchronized void clearCache() {
-    _elementNameToTypeCache = new ReferenceMap(ReferenceMap.HARD, ReferenceMap.WEAK);
-    _elementTypeToWoCache = new ReferenceMap(ReferenceMap.WEAK, ReferenceMap.HARD);
+    _elementNameToTypeCache = new LimitedLRUCache<String, String>(100);
+    _elementTypeToApiCache = new LimitedLRUCache<String, Wo>(100);
+    _elementTypeToApiMissingCache = new LimitedLRUCache<String, Boolean>(100);
   }
 
-  public synchronized void clearCache(String elementName) {
-    IType elementType = (IType) _elementNameToTypeCache.remove(elementName);
-    if (elementType != null) {
-      _elementTypeToWoCache.remove(elementType);
+  public synchronized void clearCacheForElementNamed(String elementName) {
+    String elementTypeName = _elementNameToTypeCache.remove(elementName);
+    if (elementTypeName != null) {
+      clearCacheForElementTypeNamed(elementTypeName);
     }
   }
 
   public synchronized void clearCache(IType elementType) {
-    Wo wo = (Wo) _elementTypeToWoCache.remove(elementType);
+    clearApiForElementType(elementType);
     String elementName = elementType.getElementName();
     if (elementName != null) {
       _elementNameToTypeCache.remove(elementName);
     }
   }
-
-  public Map getElementNameToTypeCache() {
-    return _elementNameToTypeCache;
+  
+  public synchronized void clearCacheForElementTypeNamed(String elementTypeName) {
+    clearApiForElementTypeName(elementTypeName);
+    _elementNameToTypeCache.remove(elementTypeName);
+  }
+  
+  public void clearApiForElementType(IType type) {
+    _elementTypeToApiMissingCache.remove(type);
+    _elementTypeToApiCache.remove(type);
+  }
+  
+  public void clearApiForElementTypeName(String elementTypeName) {
+    _elementTypeToApiMissingCache.remove(elementTypeName);
+    _elementTypeToApiCache.remove(elementTypeName);
   }
 
-  public Map getElementTypeToWoCache() {
-    return _elementTypeToWoCache;
+  public Boolean apiMissingForElementType(IType type) {
+    Boolean missing = _elementTypeToApiMissingCache.get(type);
+    return missing;
+  }
+
+  public void setApiMissingForElementType(boolean missing, IType type) {
+    if (missing) {
+      _elementTypeToApiMissingCache.put(type.getFullyQualifiedName(), Boolean.TRUE);
+    }
+    else {
+      _elementTypeToApiMissingCache.put(type.getFullyQualifiedName(), Boolean.FALSE);
+    }
+  }
+
+  public Wo getApiForType(IType type) {
+    Wo wo = _elementTypeToApiCache.get(type);
+    return wo;
+  }
+
+  public void setApiForType(Wo wo, IType type) {
+    _elementTypeToApiCache.put(type.getFullyQualifiedName(), wo);
+    setApiMissingForElementType(false, type);
+  }
+  
+  public String getElementTypeNamed(String elementName) {
+    return _elementNameToTypeCache.get(elementName);
+  }
+  
+  public void setElementTypeForName(IType elementType, String elementName) {
+    _elementNameToTypeCache.put(elementName, elementType.getFullyQualifiedName());
   }
 
   public synchronized List<TagShortcut> getTagShortcuts() {
