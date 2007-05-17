@@ -60,7 +60,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 public abstract class AbstractValidationChild extends AbstractApiModelElement implements IValidation {
 
@@ -134,96 +133,72 @@ public abstract class AbstractValidationChild extends AbstractApiModelElement im
 		return setables.toArray(new Bound[setables.size()]);
 	}
 
-	public And getAnd() {
-		NodeList list = element.getChildNodes();
-		assert (list.getLength() == 0 || list.getLength() == 1);
-		List elements = getChildrenElementsByTagName(And.AND);
-		if (elements == null || elements.size() == 0) {
-			return null;
+	public And[] getAnds() {
+		List andElements = getChildrenElementsByTagName(And.AND);
+		List<And> ands = new LinkedList<And>();
+		for (int i = 0; i < andElements.size(); i++) {
+			Element andElement = (Element) andElements.get(i);
+			And and = new And(andElement, apiModel);
+			ands.add(and);
 		}
-		return new And((Element) elements.get(0), apiModel);
+		return ands.toArray(new And[ands.size()]);
 	}
 
-	public Count getCount() {
-		NodeList list = element.getChildNodes();
-		assert (list.getLength() == 0 || list.getLength() == 1);
-		List elements = getChildrenElementsByTagName(Count.COUNT);
-		if (elements == null || elements.size() == 0) {
-			return null;
+	public Count[] getCounts() {
+		List countElements = getChildrenElementsByTagName(Count.COUNT);
+		List<Count> counts = new LinkedList<Count>();
+		for (int i = 0; i < countElements.size(); i++) {
+			Element countElement = (Element) countElements.get(i);
+			Count count = new Count(countElement, apiModel);
+			counts.add(count);
 		}
-		return new Count((Element) elements.get(0), apiModel);
+		return counts.toArray(new Count[counts.size()]);
 	}
 
-	public Or getOr() {
-		NodeList list = element.getChildNodes();
-		assert (list.getLength() == 0 || list.getLength() == 1);
-		List elements = getChildrenElementsByTagName(Or.OR);
-		if (elements == null || elements.size() == 0) {
-			return null;
+	public Or[] getOrs() {
+		List orElements = getChildrenElementsByTagName(Or.OR);
+		List<Or> ors = new LinkedList<Or>();
+		for (int i = 0; i < orElements.size(); i++) {
+			Element orElement = (Element) orElements.get(i);
+			Or or = new Or(orElement, apiModel);
+			ors.add(or);
 		}
-		return new Or((Element) elements.get(0), apiModel);
+		return ors.toArray(new Or[ors.size()]);
 	}
 
-	public Not getNot() {
-		NodeList list = element.getChildNodes();
-		assert (list.getLength() == 0 || list.getLength() == 1);
-		List elements = getChildrenElementsByTagName(Not.NOT);
-		if (elements == null || elements.size() == 0) {
-			return null;
+	public Not[] getNots() {
+		List notElements = getChildrenElementsByTagName(Not.NOT);
+		List<Not> nots = new LinkedList<Not>();
+		for (int i = 0; i < notElements.size(); i++) {
+			Element notElement = (Element) notElements.get(i);
+			Not not = new Not(notElement, apiModel);
+			nots.add(not);
 		}
-		return new Not((Element) elements.get(0), apiModel);
+		return nots.toArray(new Not[nots.size()]);
 	}
 
 	public IValidation[] getValidationChildren() {
 		List<IValidation> validationChildren = new LinkedList<IValidation>();
-		Count count = this.getCount();
-		if (count != null) {
-			validationChildren.add(count);
-		}
-		And and = this.getAnd();
-		if (and != null) {
-			validationChildren.add(and);
-		}
-		Or or = this.getOr();
-		if (or != null) {
-			validationChildren.add(or);
-		}
-		Not not = this.getNot();
-		if (not != null) {
-			validationChildren.add(not);
-		}
-		Unbound[] unbounds = this.getUnbounds();
-		for (int i = 0; i < unbounds.length; i++) {
-			Unbound unbound = unbounds[i];
-			validationChildren.add(unbound);
-		}
-		Bound[] bounds = this.getBounds();
-		for (int i = 0; i < bounds.length; i++) {
-			Bound bound = bounds[i];
-			validationChildren.add(bound);
-		}
-		Unsettable[] unsettables = this.getUnsettables();
-		for (int i = 0; i < unsettables.length; i++) {
-			Unsettable unsettable = unsettables[i];
-			validationChildren.add(unsettable);
-		}
-		Settable[] settables = this.getSettables();
-		for (int i = 0; i < settables.length; i++) {
-			Settable settable = settables[i];
-			validationChildren.add(settable);
-		}
-		Ungettable[] ungettables = this.getUngettables();
-		for (int i = 0; i < ungettables.length; i++) {
-			Ungettable ungettable = ungettables[i];
-			validationChildren.add(ungettable);
-		}
-		Gettable[] gettables = this.getGettables();
-		for (int i = 0; i < gettables.length; i++) {
-			Gettable gettable = gettables[i];
-			validationChildren.add(gettable);
-		}
+		addValidationChildren(validationChildren, getCounts());
+		addValidationChildren(validationChildren, getAnds());
+		addValidationChildren(validationChildren, getOrs());
+		addValidationChildren(validationChildren, getNots());
+		addValidationChildren(validationChildren, getUnbounds());
+		addValidationChildren(validationChildren, getBounds());
+		addValidationChildren(validationChildren, getUnsettables());
+		addValidationChildren(validationChildren, getSettables());
+		addValidationChildren(validationChildren, getUngettables());
+		addValidationChildren(validationChildren, getGettables());
 		IValidation[] validations = validationChildren.toArray(new IValidation[validationChildren.size()]);
 		return validations;
+	}
+
+	protected void addValidationChildren(List<IValidation> allValidationChildren, IValidation[] validationChildren) {
+		if (validationChildren != null) {
+			for (IValidation child : validationChildren) {
+				allValidationChildren.add(child);
+			}
+		}
 	}
 
 	public boolean isAffectedByBindingNamed(String bindingName) {
