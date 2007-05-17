@@ -864,7 +864,12 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			if (parent.getModel() == getModel()) {
 				parent.inheritParentAttributesAndRelationships(failures, warnOnly);
 			}
-			_cloneAttributesAndRelationshipsFrom(parent, true, failures, warnOnly);
+			if (isVerticalInheritance()) {
+				// MS: Need to do this
+			}
+			else {
+				_cloneAttributesAndRelationshipsFrom(parent, true, failures, warnOnly);
+			}
 		}
 	}
 
@@ -891,7 +896,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			Iterator relationshipsIter = getRelationships().iterator();
 			while (!verticalInheritance && relationshipsIter.hasNext()) {
 				EORelationship relationship = (EORelationship) relationshipsIter.next();
-				verticalInheritance = ComparisonUtils.equals(relationship.getDestination(), parent) && !relationship.getClassProperty().booleanValue();
+				verticalInheritance = ComparisonUtils.equals(relationship.getDestination(), parent) && (relationship.getClassProperty() == null || !relationship.getClassProperty().booleanValue());
 			}
 		}
 		return verticalInheritance;
