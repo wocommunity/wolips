@@ -38,6 +38,7 @@
 	<!-- ========================================== -->
 	<target name="jar">
 		<patternset id="param.classes.patternset.refid">
+			<include name="**/com/uwyn/rife/tools/**" />
 			<include name="**/org/objectstyle/wolips/eomodeler/core/**" />
 		</patternset>
 
