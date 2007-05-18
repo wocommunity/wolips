@@ -1468,6 +1468,9 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		if (myParent != null) {
 			entityMap.setString("parent", myParent.getName(), true);
 		}
+		else {
+			entityMap.remove("parent");
+		}
 		entityMap.setBoolean("cachesObjects", myCachesObjects, EOModelMap.YN);
 		entityMap.setBoolean("isAbstractEntity", myAbstractEntity, EOModelMap.YN);
 		entityMap.remove("isFetchable");
