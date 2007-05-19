@@ -67,7 +67,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelObject;
-import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelReferenceFailure;
 import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
@@ -95,10 +95,29 @@ public class DeleteAction extends Action implements IObjectActionDelegate {
 		}
 		if (selectedObjects != null) {
 			try {
-				Set<EOModelVerificationFailure> referenceFailures = EOModelUtils.getReferenceFailures(selectedObjects);
-				if (!referenceFailures.isEmpty()) {
-					new EOModelErrorDialog(activeShell, referenceFailures).open();
-				} else if (MessageDialog.openConfirm(activeShell, Messages.getString("delete.objectsTitle"), Messages.getString("delete.objectsMessage"))) {
+				Set<EOModelReferenceFailure> referenceFailures = EOModelUtils.getReferenceFailures(selectedObjects);
+				boolean delete = false;
+				if (referenceFailures.isEmpty()) {
+					delete = MessageDialog.openConfirm(activeShell, Messages.getString("delete.objectsTitle"), Messages.getString("delete.objectsMessage"));
+				}
+				else {
+					int results = new EOModelErrorDialog(activeShell, referenceFailures, true).open();
+					if (results == EOModelErrorDialog.DELETE_ANYWAY_ID) {
+						delete = MessageDialog.openConfirm(activeShell, Messages.getString("deleteAnyway.objectsTitle"), Messages.getString("deleteAnyway.objectsMessage"));
+						if (delete) {
+							Set<EOModelObject> recommendedDeletions = EOModelUtils.getRecommendedDeletions(selectedObjects);
+							selectedObjects = recommendedDeletions.toArray();
+							
+							Set<EOModelReferenceFailure> deleteAnywayReferenceFailures = EOModelUtils.getReferenceFailures(selectedObjects);
+							if (!deleteAnywayReferenceFailures.isEmpty()) {
+								delete = false;
+								new EOModelErrorDialog(activeShell, referenceFailures, false).open();
+							}
+						}
+					}
+				}
+				
+				if (delete) {
 					try {
 						SimpleCompositeOperation compositeOperation = new SimpleCompositeOperation(EOModelUtils.getOperationLabel("Delete", Arrays.asList(selectedObjects)));
 						for (Object obj : selectedObjects) {
