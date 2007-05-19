@@ -51,7 +51,6 @@ package org.objectstyle.wolips.eomodeler.core.model;
 
 import java.io.File;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -98,8 +97,8 @@ public class EOStoredProcedure extends UserInfoableEOModelObject<EOModel> implem
 		}
 	}
 
-	public Set<EOModelVerificationFailure> getReferenceFailures() {
-		Set<EOModelVerificationFailure> referenceFailures = new HashSet<EOModelVerificationFailure>();
+	public Set<EOModelReferenceFailure> getReferenceFailures() {
+		Set<EOModelReferenceFailure> referenceFailures = new HashSet<EOModelReferenceFailure>();
 		for (EOArgument argument : myArguments) {
 			referenceFailures.addAll(argument.getReferenceFailures());
 		}
@@ -107,24 +106,24 @@ public class EOStoredProcedure extends UserInfoableEOModelObject<EOModel> implem
 		if (myModel != null) {
 			for (EOEntity entity : myModel.getEntities()) {
 				if (entity.getDeleteProcedure() == this) {
-					referenceFailures.add(new EOModelVerificationFailure(myModel, entity.getFullyQualifiedName() + " uses " + myName + " as its delete procedure.", false));
+					referenceFailures.add(new EOStoredProcedureEntityReferenceFailure(entity, this, EOEntity.DELETE_PROCEDURE));
 				}
 				if (entity.getInsertProcedure() == this) {
-					referenceFailures.add(new EOModelVerificationFailure(myModel, entity.getFullyQualifiedName() + " uses " + myName + " as its insert procedure.", false));
+					referenceFailures.add(new EOStoredProcedureEntityReferenceFailure(entity, this, EOEntity.INSERT_PROCEDURE));
 				}
 				if (entity.getNextPrimaryKeyProcedure() == this) {
-					referenceFailures.add(new EOModelVerificationFailure(myModel, entity.getFullyQualifiedName() + " uses " + myName + " as its next primary key procedure.", false));
+					referenceFailures.add(new EOStoredProcedureEntityReferenceFailure(entity, this, EOEntity.NEXT_PRIMARY_KEY_PROCEDURE));
 				}
 				if (entity.getFetchWithPrimaryKeyProcedure() == this) {
-					referenceFailures.add(new EOModelVerificationFailure(myModel, entity.getFullyQualifiedName() + " uses " + myName + " as its fetch with primary key procedure.", false));
+					referenceFailures.add(new EOStoredProcedureEntityReferenceFailure(entity, this, EOEntity.FETCH_WITH_PRIMARY_KEY_PROCEDURE));
 				}
 				if (entity.getFetchAllProcedure() == this) {
-					referenceFailures.add(new EOModelVerificationFailure(myModel, entity.getFullyQualifiedName() + " uses " + myName + " as its fetch all procedure.", false));
+					referenceFailures.add(new EOStoredProcedureEntityReferenceFailure(entity, this, EOEntity.FETCH_ALL_PROCEDURE));
 				}
 
 				for (EOFetchSpecification fetchSpec : entity.getFetchSpecs()) {
 					if (fetchSpec.getStoredProcedure() == this) {
-						referenceFailures.add(new EOModelVerificationFailure(myModel, fetchSpec.getFullyQualifiedName() + " uses " + myName + " as its stored procedure.", false));
+						referenceFailures.add(new EOStoredProcedureFetchSpecReferenceFailure(fetchSpec, this));
 					}
 				}
 			}

@@ -670,12 +670,34 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		return myClientClassProperty;
 	}
 
-	public Set<EOModelVerificationFailure> getReferenceFailures() {
-		Set<EOModelVerificationFailure> referenceFailures = new HashSet<EOModelVerificationFailure>();
+	public Set<EOModelReferenceFailure> getReferenceFailures() {
+		Set<EOModelReferenceFailure> referenceFailures = new HashSet<EOModelReferenceFailure>();
 		for (EORelationship referencingRelationship : getReferencingRelationships(true)) {
-			referenceFailures.add(new EOAttributeRelationshipReferenceFailure(this, referencingRelationship));
+			referenceFailures.add(new EORelationshipAttributeReferenceFailure(referencingRelationship, this));
+		}
+		for (EOAttribute referencingAttributes : getReferencingFlattenedAttributes()) {
+			referenceFailures.add(new EOFlattenedAttributeAttributeReferenceFailure(referencingAttributes, this));
 		}
 		return referenceFailures;
+	}
+
+	public List<EOAttribute> getReferencingFlattenedAttributes() {
+		List<EOAttribute> referencingFlattenedAttributes = new LinkedList<EOAttribute>();
+		if (myEntity != null) {
+			for (EOModel model : getEntity().getModel().getModelGroup().getModels()) {
+				for (EOEntity entity : model.getEntities()) {
+					for (EOAttribute attribute : entity.getAttributes()) {
+						if (attribute.isFlattened()) {
+							EOAttributePath attributePath = attribute.getDefinitionPath();
+							if (attributePath != null && attributePath.isRelatedTo(this)) {
+								referencingFlattenedAttributes.add(attribute);
+							}
+						}
+					}
+				}
+			}
+		}
+		return referencingFlattenedAttributes;
 	}
 
 	public List<EORelationship> getReferencingRelationships(boolean _includeInheritedAttributes) {
@@ -725,12 +747,12 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	}
 
 	public EOModelMap toMap() {
-//		WOL-368		
-//		EOAttributePath attributePath = getDefinitionPath();
-//		if (attributePath != null) {
-//			EOAttribute flattenedAttribute = attributePath.getChildAttribute();
-//			flattenedAttribute._cloneIntoArgument(this, true);
-//		}
+		// WOL-368
+		// EOAttributePath attributePath = getDefinitionPath();
+		// if (attributePath != null) {
+		// EOAttribute flattenedAttribute = attributePath.getChildAttribute();
+		// flattenedAttribute._cloneIntoArgument(this, true);
+		// }
 
 		EOModelMap attributeMap = super.toMap();
 		if (myPrototypeName != null) {

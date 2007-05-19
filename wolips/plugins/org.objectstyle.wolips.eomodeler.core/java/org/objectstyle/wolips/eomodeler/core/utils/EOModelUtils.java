@@ -11,7 +11,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelObject;
-import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelReferenceFailure;
 import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.core.model.IEOEntityRelative;
 
@@ -50,14 +50,48 @@ public class EOModelUtils {
 		return operationLabel.toString();
 	}
 
-	public static Set<EOModelVerificationFailure> getReferenceFailures(Object[] selectedObjects) {
-		Set<EOModelVerificationFailure> referenceFailures = new HashSet<EOModelVerificationFailure>();
-		for (int selectedObjectNum = 0; selectedObjectNum < selectedObjects.length; selectedObjectNum++) {
-			Object selectedObject = selectedObjects[selectedObjectNum];
+	public static Set<EOModelObject> getRecommendedDeletions(Object[] selectedObjects) {
+		Set<EOModelReferenceFailure> beforeReferenceFailures = EOModelUtils.getReferenceFailures(selectedObjects); 
+		Set<EOModelObject> allRecommendedObjectsSet = new HashSet<EOModelObject>();
+		for (Object selectedObject : selectedObjects) {
 			if (selectedObject instanceof EOModelObject) {
-				referenceFailures.addAll(((EOModelObject) selectedObject).getReferenceFailures());
+				EOModelObject modelObject = (EOModelObject) selectedObject;
+				allRecommendedObjectsSet.add(modelObject);
 			}
 		}
+		for (EOModelReferenceFailure referenceFailure : beforeReferenceFailures) {
+			Set<EOModelObject> recommendedDeletions = referenceFailure.getRecommendedDeletions();
+			for (EOModelObject recommendedDelete : recommendedDeletions) {
+				allRecommendedObjectsSet.add(recommendedDelete);
+			}
+		}
+		Object[] recommendedObjects = allRecommendedObjectsSet.toArray();
+		Set<EOModelReferenceFailure> afterReferenceFailures = EOModelUtils.getReferenceFailures(recommendedObjects);
+		if (beforeReferenceFailures.size() != afterReferenceFailures.size()) {
+			allRecommendedObjectsSet = EOModelUtils.getRecommendedDeletions(recommendedObjects);
+		}
+		return allRecommendedObjectsSet;
+	}
+
+	public static Set<EOModelReferenceFailure> getReferenceFailures(Object[] selectedObjects) {
+		Set<EOModelObject> deletedObjects = new HashSet<EOModelObject>();
+		Set<EOModelReferenceFailure> referenceFailures = new HashSet<EOModelReferenceFailure>();
+		for (Object selectedObject : selectedObjects) {
+			if (selectedObject instanceof EOModelObject) {
+				EOModelObject modelObject = (EOModelObject) selectedObject;
+				deletedObjects.add(modelObject);
+				referenceFailures.addAll(modelObject.getReferenceFailures());
+			}
+		}
+		
+		for (EOModelObject deletedObject : deletedObjects) {
+			for (EOModelReferenceFailure referenceFailure : new HashSet<EOModelReferenceFailure>(referenceFailures)) {
+				if (referenceFailure.getReferencingObject().equals(deletedObject)) {
+					referenceFailures.remove(referenceFailure);
+				}
+			}
+		}
+
 		return referenceFailures;
 	}
 

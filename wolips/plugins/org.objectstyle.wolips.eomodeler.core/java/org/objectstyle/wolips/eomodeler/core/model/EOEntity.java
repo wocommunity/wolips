@@ -807,14 +807,14 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		return (_obj instanceof EOEntity && ((_obj == this) || ComparisonUtils.equals(myName, ((EOEntity) _obj).myName)));
 	}
 
-	public Set<EOModelVerificationFailure> getReferenceFailures() {
-		Set<EOModelVerificationFailure> referenceFailures = new HashSet<EOModelVerificationFailure>();
+	public Set<EOModelReferenceFailure> getReferenceFailures() {
+		Set<EOModelReferenceFailure> referenceFailures = new HashSet<EOModelReferenceFailure>();
 		for (EOEntity referencingEntity : getChildrenEntities()) {
-			referenceFailures.add(new EOEntityParentReferenceFailure(this, referencingEntity));
+			referenceFailures.add(new EOEntityParentReferenceFailure(referencingEntity, this));
 		}
 
 		for (EORelationship referencingRelationship : getReferencingRelationships()) {
-			referenceFailures.add(new EOEntityRelationshipReferenceFailure(this, referencingRelationship));
+			referenceFailures.add(new EOEntityRelationshipReferenceFailure(referencingRelationship, this));
 		}
 		return referenceFailures;
 	}
@@ -1631,6 +1631,20 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		}
 	}
 
+	public void resolveFlattened(Set<EOModelVerificationFailure> _failures) {
+		for (EOAttribute attribute : myAttributes) {
+			if (attribute.isFlattened()) {
+				attribute.resolve(_failures);
+			}
+		}
+
+		for (EORelationship relationship : myRelationships) {
+			if (relationship.isFlattened()) {
+				relationship.resolve(_failures);
+			}
+		}
+	}
+	
 	public void resolve(Set<EOModelVerificationFailure> _failures) {
 		String parentName = myEntityMap.getString("parent", true);
 		if (parentName != null) {

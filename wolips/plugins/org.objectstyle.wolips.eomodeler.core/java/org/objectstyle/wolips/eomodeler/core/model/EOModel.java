@@ -150,8 +150,8 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		myModelGroup = _modelGroup;
 	}
 
-	public Set<EOModelVerificationFailure> getReferenceFailures() {
-		return new HashSet<EOModelVerificationFailure>();
+	public Set<EOModelReferenceFailure> getReferenceFailures() {
+		return new HashSet<EOModelReferenceFailure>();
 	}
 
 	public String guessPackageName() {
@@ -480,6 +480,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		sourceModelGroup.addModel(sourceModel);
 		sourceModel.loadFromFolder(sourceModelURL, failures);
 		sourceModel.resolve(failures);
+		sourceModel.resolveFlattened(failures);
 		return importEntitiesFromModel(sourceModel, failures);
 	}
 
@@ -910,6 +911,12 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	public void resolve(Set<EOModelVerificationFailure> _failures) {
 		for (EOEntity entity : myEntities) {
 			entity.resolve(_failures);
+		}
+	}
+
+	public void resolveFlattened(Set<EOModelVerificationFailure> _failures) {
+		for (EOEntity entity : myEntities) {
+			entity.resolveFlattened(_failures);
 		}
 	}
 

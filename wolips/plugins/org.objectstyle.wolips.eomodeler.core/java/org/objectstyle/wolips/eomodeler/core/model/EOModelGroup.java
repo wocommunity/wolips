@@ -79,8 +79,8 @@ public class EOModelGroup extends EOModelObject<Object> {
 		return containsModelNamed("erprototypes");
 	}
 
-	public Set getReferenceFailures() {
-		return new HashSet();
+	public Set<EOModelReferenceFailure> getReferenceFailures() {
+		return new HashSet<EOModelReferenceFailure>();
 	}
 
 	protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
@@ -299,6 +299,9 @@ public class EOModelGroup extends EOModelObject<Object> {
 	public void resolve(Set<EOModelVerificationFailure> _failures) {
 		for (EOModel model : _models) {
 			model.resolve(_failures);
+		}
+		for (EOModel model : _models) {
+			model.resolveFlattened(_failures);
 		}
 	}
 

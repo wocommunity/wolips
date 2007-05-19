@@ -356,10 +356,9 @@ public class EODatabaseConfig extends EOModelObject<EOModel> {
 	public void verify(Set<EOModelVerificationFailure> _failures) {
 		// DO NOTHING
 	}
-
-	public Set getReferenceFailures() {
-		Set referenceFailures = new HashSet();
-		return referenceFailures;
+	
+	public Set<EOModelReferenceFailure> getReferenceFailures() {
+		return new HashSet<EOModelReferenceFailure>();
 	}
 
 	public void loadFromMap(EOModelMap _map, Set<EOModelVerificationFailure> _failures) {

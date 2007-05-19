@@ -49,8 +49,17 @@
  */
 package org.objectstyle.wolips.eomodeler.core.model;
 
-public class EOEntityRelationshipReferenceFailure extends EOModelVerificationFailure {
-	public EOEntityRelationshipReferenceFailure(EOEntity _entity, EORelationship _relationship) {
-		super(_entity.getModel(), _entity.getName() + " is the destination of the relationship " + _relationship.getFullyQualifiedName() + ".", false);
+import java.util.HashSet;
+import java.util.Set;
+
+public class EOEntityRelationshipReferenceFailure extends EOModelReferenceFailure<EORelationship, EOEntity> {
+	public EOEntityRelationshipReferenceFailure(EORelationship relationship, EOEntity entity) {
+		super(relationship, entity, entity.getName() + " is the destination of the relationship " + relationship.getFullyQualifiedName() + ".", false);
+	}
+	
+	public Set<EOModelObject> getRecommendedDeletions() {
+		Set<EOModelObject> recommendedDeletions = new HashSet<EOModelObject>();
+		recommendedDeletions.add(getReferencingObject());
+		return recommendedDeletions;
 	}
 }

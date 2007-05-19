@@ -49,7 +49,6 @@
  */
 package org.objectstyle.wolips.eomodeler.core.model;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -146,8 +145,53 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 		myDefinition = _definition;
 	}
 
-	public Set<EOModelVerificationFailure> getReferenceFailures() {
-		return new HashSet<EOModelVerificationFailure>();
+	public Set<EOModelReferenceFailure> getReferenceFailures() {
+		Set<EOModelReferenceFailure> referenceFailures = new HashSet<EOModelReferenceFailure>();
+		for (EORelationship referencingRelationship : getReferencingFlattenedRelationships()) {
+			referenceFailures.add(new EOFlattenedRelationshipRelationshipReferenceFailure(referencingRelationship, this));
+		}
+		for (EOAttribute referencingAttributes : getReferencingFlattenedAttributes()) {
+			referenceFailures.add(new EOFlattenedAttributeRelationshipReferenceFailure(referencingAttributes, this));
+		}
+		return referenceFailures;
+	}
+
+	public List<EOAttribute> getReferencingFlattenedAttributes() {
+		List<EOAttribute> referencingFlattenedAttributes = new LinkedList<EOAttribute>();
+		if (myEntity != null) {
+			for (EOModel model : getEntity().getModel().getModelGroup().getModels()) {
+				for (EOEntity entity : model.getEntities()) {
+					for (EOAttribute attribute : entity.getAttributes()) {
+						if (attribute.isFlattened()) {
+							EOAttributePath attributePath = attribute.getDefinitionPath();
+							if (attributePath != null && attributePath.isRelatedTo(this)) {
+								referencingFlattenedAttributes.add(attribute);
+							}
+						}
+					}
+				}
+			}
+		}
+		return referencingFlattenedAttributes;
+	}
+
+	public List<EORelationship> getReferencingFlattenedRelationships() {
+		List<EORelationship> referencingFlattenedAttributes = new LinkedList<EORelationship>();
+		if (myEntity != null) {
+			for (EOModel model : getEntity().getModel().getModelGroup().getModels()) {
+				for (EOEntity entity : model.getEntities()) {
+					for (EORelationship relationship : entity.getRelationships()) {
+						if (relationship.isFlattened()) {
+							EORelationshipPath relationshipPath = relationship.getDefinitionPath();
+							if (relationshipPath != null && relationshipPath.isRelatedTo(this)) {
+								referencingFlattenedAttributes.add(relationship);
+							}
+						}
+					}
+				}
+			}
+		}
+		return referencingFlattenedAttributes;
 	}
 
 	public void pasted() throws DuplicateNameException {
@@ -279,6 +323,7 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 	}
 
 	public EORelationshipPath getDefinitionPath() {
+		//updateDefinitionPath();
 		return myDefinitionPath;
 	}
 
@@ -291,8 +336,7 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 			AbstractEOAttributePath definitionPath = getEntity().resolveKeyPath(_getDefinition());
 			if (definitionPath instanceof EORelationshipPath && definitionPath.isValid()) {
 				myDefinitionPath = (EORelationshipPath) definitionPath;
-			}
-			else {
+			} else {
 				myDefinitionPath = null;
 			}
 		} else {
@@ -768,20 +812,20 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 		_cloneUserInfoInto(relationship);
 		return relationship;
 	}
-	
+
 	@Override
 	public Class<EOEntity> _getModelParentType() {
 		return EOEntity.class;
 	}
-	
+
 	public EOEntity _getModelParent() {
 		return getEntity();
 	}
-	
+
 	public void _removeFromModelParent(Set<EOModelVerificationFailure> failures) {
 		getEntity().removeRelationship(this, true);
 	}
-	
+
 	public void _addToModelParent(EOEntity modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) throws EOModelException {
 		if (findUniqueName) {
 			setName(modelParent.findUnusedRelationshipName(getName()));
