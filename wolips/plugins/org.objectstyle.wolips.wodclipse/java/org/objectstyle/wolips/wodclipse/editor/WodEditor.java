@@ -125,11 +125,18 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 		super.performSaveAs(progressMonitor);
 		updateValidation();
 	}
-	
+
 	@Override
 	protected void performSave(boolean overwrite, IProgressMonitor progressMonitor) {
 		super.performSave(overwrite, progressMonitor);
 		updateValidation();
+	}
+
+	public WodParserCache getWodParserCache() throws CoreException, LocateException {
+		IFileEditorInput input = (IFileEditorInput) getEditorInput();
+		IFile inputFile = input.getFile();
+		WodParserCache cache = WodParserCache.parser(inputFile);
+		return cache;
 	}
 
 	protected void updateValidation() {
@@ -137,9 +144,7 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 			ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) {
 					try {
-						IFileEditorInput input = (IFileEditorInput) getEditorInput();
-						IFile inputFile = input.getFile();
-						WodParserCache cache = WodParserCache.parser(inputFile);
+						WodParserCache cache = getWodParserCache();
 						cache.parseHtmlAndWodIfNecessary();
 						cache.validate();
 					} catch (Exception ex) {
@@ -155,7 +160,7 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 	public ISourceViewer getViewer() {
 		return getSourceViewer();
 	}
-	
+
 	protected void initializeKeyBindingScopes() {
 		setKeyBindingScopes(new String[] { "org.objectstyle.wolips.componenteditor.componentEditorScope" });
 	}
@@ -223,10 +228,22 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 				getWodOutlineUpdateThrottle().ping();
 			}
 		});
+
+		try {
+			getWodParserCache().setWodDocument(document);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		_wodOutlineUpdateThrottle.start();
 	}
 
 	public void dispose() {
+		try {
+			getWodParserCache().setWodDocument(null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		_wodOutlineUpdateThrottle.stop();
 		super.dispose();
 	}

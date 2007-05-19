@@ -37,6 +37,31 @@ public class TemplateSourceEditor extends HTMLSourceEditor {
   }
 
   @Override
+  public void dispose() {
+    try {
+      WodParserCache cache = TemplateSourceEditor.this.getParserCache();
+      cache.setHtmlDocument(null);
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+    super.dispose();
+    
+  }
+  
+  @Override
+  public void update() {
+    try {
+      WodParserCache cache = TemplateSourceEditor.this.getParserCache();
+      cache.setHtmlDocument(getDocumentProvider().getDocument(getEditorInput()));
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+    super.update();
+  }
+  
+  @Override
   protected void doValidate() {
     //    if(!isFileEditorInput()){
     //      return;

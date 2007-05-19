@@ -13,6 +13,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Position;
+import org.eclipse.jface.text.link.ILinkedModeListener;
 import org.eclipse.jface.text.link.LinkedModeModel;
 import org.eclipse.jface.text.link.LinkedModeUI;
 import org.eclipse.jface.text.link.LinkedPosition;
@@ -25,7 +26,7 @@ import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
 public class QuickElementRefactor {
   public static void rename(int offset, ITextViewer htmlViewer, ITextViewer wodViewer, WodParserCache cache) throws BadLocationException, CoreException, IOException {
-    FuzzyXMLDocument htmlModel = cache.getHtmlDocument();
+    FuzzyXMLDocument htmlModel = cache.getHtmlXmlDocument();
     FuzzyXMLElement element = htmlModel.getElementByOffset(offset);
     if (element != null && WodHtmlUtils.isWOTag(element.getName())) {
       String woElementName = element.getAttributeValue("name");
@@ -33,13 +34,14 @@ public class QuickElementRefactor {
         QuickElementRefactor.renameElement(woElementName, htmlViewer, wodViewer, cache);
       }
     }
-  } 
+  }
 
-  public static void renameElement(String woElementName, ITextViewer htmlViewer, ITextViewer wodViewer, WodParserCache cache) throws BadLocationException, CoreException, IOException {
-    FuzzyXMLDocument htmlModel = cache.getHtmlDocument();
+  public static void renameElement(String woElementName, ITextViewer htmlViewer, ITextViewer wodViewer, final WodParserCache cache) throws BadLocationException, CoreException, IOException {
+    FuzzyXMLDocument htmlModel = cache.getHtmlXmlDocument();
     FuzzyXMLNode[] woTags = NodeSelectUtil.getNodeByFilter(htmlModel.getDocumentElement(), new NamedWebobjectTagFilter(woElementName));
 
     IDocument htmlDocument = htmlViewer.getDocument();
+    LinkedModeModel.closeAllModels(htmlDocument);
     LinkedPositionGroup linkedGroup = new LinkedPositionGroup();
     int sequence = 0;
     for (FuzzyXMLNode woTag : woTags) {
@@ -54,6 +56,7 @@ public class QuickElementRefactor {
 
     //LinkedPositionGroup wodGroup = new LinkedPositionGroup();
     IDocument wodDocument = wodViewer.getDocument();
+    LinkedModeModel.closeAllModels(wodDocument);
     IWodModel wodModel = cache.getWodModel();
     IWodElement wodElement = wodModel.getElementNamed(woElementName);
     if (wodElement != null) {
@@ -67,11 +70,30 @@ public class QuickElementRefactor {
       LinkedModeModel model = new LinkedModeModel();
       model.addGroup(linkedGroup);
       model.forceInstall();
+
       //    JavaEditor editor = getJavaEditor();
       //    if (editor != null) {
       //      model.addLinkingListener(new EditorHighlightingSynchronizer(editor));
       //    }
 
+      model.addLinkingListener(new ILinkedModeListener() {
+        public void resume(LinkedModeModel model, int flags) {
+          // DO NOTHING
+        }
+
+        public void suspend(LinkedModeModel model) {
+          // DO NOTHING
+        }
+
+        public void left(LinkedModeModel model, int flags) {
+          try {
+            cache.clearCache();
+          }
+          catch (Exception e) {
+            e.printStackTrace();
+          }
+        }
+      });
       LinkedModeUI htmlUI = new EditorLinkedModeUI(model, new ITextViewer[] { htmlViewer, wodViewer });
       //    ui.setInitialOffset(offset);
       htmlUI.setExitPosition(htmlViewer, 0, 0, LinkedPositionGroup.NO_STOP);
