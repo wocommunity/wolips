@@ -90,7 +90,7 @@ public abstract class EOModelObject<T> implements IAdaptable, IPropertyChangeSou
 		}
 	}
 
-	public abstract Set<EOModelVerificationFailure> getReferenceFailures();
+	public abstract Set<EOModelReferenceFailure> getReferenceFailures();
 
 	protected abstract void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue);
 

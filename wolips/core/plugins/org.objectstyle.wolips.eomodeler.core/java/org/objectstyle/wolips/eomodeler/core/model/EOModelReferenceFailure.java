@@ -49,8 +49,28 @@
  */
 package org.objectstyle.wolips.eomodeler.core.model;
 
-public class EOAttributeRelationshipReferenceFailure extends EOModelVerificationFailure {
-	public EOAttributeRelationshipReferenceFailure(EOAttribute _attribute, EORelationship _relationship) {
-		super(_attribute.getEntity().getModel(), _attribute.getName() + " is referenced by the relationship " + _relationship.getFullyQualifiedName() + ".", false);
+import java.util.Set;
+
+import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
+
+public abstract class EOModelReferenceFailure<T extends EOModelObject, U extends EOModelObject> extends EOModelVerificationFailure {
+	private T _referencingObject;
+
+	private U _referencedObject;
+
+	public EOModelReferenceFailure(T referencingObject, U referencedObject, String _message, boolean _warning) {
+		super(EOModelUtils.getRelatedModel(referencedObject), _message, _warning);
+		_referencedObject = referencedObject;
+		_referencingObject = referencingObject;
 	}
+
+	public T getReferencingObject() {
+		return _referencingObject;
+	}
+
+	public U getReferencedObject() {
+		return _referencedObject;
+	}
+	
+	public abstract Set<EOModelObject> getRecommendedDeletions();
 }

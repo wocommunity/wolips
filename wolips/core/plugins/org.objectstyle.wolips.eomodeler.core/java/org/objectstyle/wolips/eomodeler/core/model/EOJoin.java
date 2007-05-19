@@ -83,8 +83,8 @@ public class EOJoin extends EOModelObject<EORelationship> implements ISortableEO
 		return inverseJoin;
 	}
 
-	public Set<EOModelVerificationFailure> getReferenceFailures() {
-		return new HashSet<EOModelVerificationFailure>();
+	public Set<EOModelReferenceFailure> getReferenceFailures() {
+		return new HashSet<EOModelReferenceFailure>();
 	}
 
 	protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {

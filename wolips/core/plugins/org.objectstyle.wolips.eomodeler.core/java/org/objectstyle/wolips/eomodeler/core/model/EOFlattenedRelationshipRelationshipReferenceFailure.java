@@ -52,9 +52,9 @@ package org.objectstyle.wolips.eomodeler.core.model;
 import java.util.HashSet;
 import java.util.Set;
 
-public class EOEntityParentReferenceFailure extends EOModelReferenceFailure<EOEntity, EOEntity> {
-	public EOEntityParentReferenceFailure(EOEntity child, EOEntity parent) {
-		super(child, parent, child.getName() + " is a child of " + parent.getFullyQualifiedName(), false);
+public class EOFlattenedRelationshipRelationshipReferenceFailure extends EOModelReferenceFailure<EORelationship, EORelationship> {
+	public EOFlattenedRelationshipRelationshipReferenceFailure(EORelationship flattenedRelationship, EORelationship relationship) {
+		super(flattenedRelationship, relationship, relationship.getName() + " is referenced by the flattened relationship " + flattenedRelationship.getFullyQualifiedName() + ".", false);
 	}
 	
 	public Set<EOModelObject> getRecommendedDeletions() {

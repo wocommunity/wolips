@@ -49,7 +49,6 @@
  */
 package org.objectstyle.wolips.eomodeler.core.model;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -175,8 +174,8 @@ public class EOEntityIndex extends UserInfoableEOModelObject<EOEntity> implement
 		_attributes = new HashSet<EOAttribute>();
 	}
 
-	public Set<EOModelVerificationFailure> getReferenceFailures() {
-		return new HashSet<EOModelVerificationFailure>();
+	public Set<EOModelReferenceFailure> getReferenceFailures() {
+		return new HashSet<EOModelReferenceFailure>();
 	}
 
 	protected void _propertyChanged(String propertyName, Object oldValue, Object newValue) {

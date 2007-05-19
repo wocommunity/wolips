@@ -96,9 +96,9 @@ public class EOArgument extends AbstractEOArgument<EOStoredProcedure> {
 		}
 		return argumentMap;
 	}
-
-	public Set<EOModelVerificationFailure> getReferenceFailures() {
-		return new HashSet<EOModelVerificationFailure>();
+	
+	public Set<EOModelReferenceFailure> getReferenceFailures() {
+		return new HashSet<EOModelReferenceFailure>();
 	}
 
 	public void resolve(Set<EOModelVerificationFailure> _failures) {

@@ -49,6 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.core.model;
 
+import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
+
 public class EOAttributePath extends AbstractEOAttributePath {
 	public EOAttributePath(EORelationshipPath _parentRelationshipPath, EOAttribute _childAttribute) {
 		super(_parentRelationshipPath, _childAttribute);
@@ -56,5 +58,9 @@ public class EOAttributePath extends AbstractEOAttributePath {
 
 	public EOAttribute getChildAttribute() {
 		return (EOAttribute) getChildIEOAttribute();
+	}
+	
+	public boolean isRelatedTo(EOAttribute attribute) {
+		return ComparisonUtils.equals(getChildAttribute(), attribute);
 	}
 }
