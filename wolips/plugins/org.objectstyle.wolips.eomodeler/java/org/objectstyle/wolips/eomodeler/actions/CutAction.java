@@ -64,7 +64,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
-import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelReferenceFailure;
 import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
@@ -100,7 +100,7 @@ public class CutAction extends Action implements IWorkbenchWindowActionDelegate,
 				selectedObjects = ((IStructuredSelection) _selection).toArray();
 			}
 			if (selectedObjects != null) {
-				Set<EOModelVerificationFailure> referenceFailures = EOModelUtils.getReferenceFailures(selectedObjects);
+				Set<EOModelReferenceFailure> referenceFailures = EOModelUtils.getReferenceFailures(selectedObjects);
 				if (!referenceFailures.isEmpty()) {
 					new EOModelErrorDialog(activeShell, referenceFailures).open();
 				} else {
