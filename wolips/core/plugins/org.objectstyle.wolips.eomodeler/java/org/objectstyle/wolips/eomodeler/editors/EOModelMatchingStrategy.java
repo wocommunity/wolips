@@ -84,8 +84,10 @@ public class EOModelMatchingStrategy implements IEditorMatchingStrategy {
 						String entityName = possibleEditorFile.getName();
 						entityName = entityName.substring(0, entityName.indexOf('.'));
 						EOModel eoModel = eomodelEditorPart.getModel();
-						EOEntity entity = eoModel.getEntityNamed(entityName);
-						eomodelEditorPart.setSelectedEntity(entity);
+						if (eoModel != null) {
+							EOEntity entity = eoModel.getEntityNamed(entityName);
+							eomodelEditorPart.setSelectedEntity(entity);
+						}
 					}
 				}
 			}
