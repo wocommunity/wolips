@@ -93,7 +93,7 @@ public class EOGenerateWorkspaceJob extends WorkspaceJob {
 				setName("EOGenerating " + eogenFile + " ...");
 				try {
 					EOGeneratorModel eogenModel = EOGeneratorModel.createModelFromFile(eogenFile);
-					eogenModel.setVerbose(Boolean.FALSE);
+					eogenModel.setVerbose(eogenModel.isVerbose());
 					String eogenFileContents = eogenModel.writeToString(Preferences.getEOGeneratorPath(), Preferences.getEOGeneratorTemplateDir(), Preferences.getEOGeneratorJavaTemplate(), Preferences.getEOGeneratorSubclassJavaTemplate());
 					List<String> commandsList = new LinkedList<String>();
 					CommandLineTokenizer tokenizer = new CommandLineTokenizer(eogenFileContents);

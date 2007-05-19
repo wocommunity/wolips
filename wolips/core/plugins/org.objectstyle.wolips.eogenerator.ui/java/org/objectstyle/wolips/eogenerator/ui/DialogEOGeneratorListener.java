@@ -8,7 +8,12 @@ import org.objectstyle.wolips.eogenerator.ui.dialogs.EOGeneratorResultsDialog;
 
 public class DialogEOGeneratorListener implements IEOGeneratorListener {
 	private StringBuffer _output;
+	private Shell _shell;
 
+	public DialogEOGeneratorListener(Shell shell) {
+		_shell = shell;
+	}
+	
 	public void eogeneratorStarted() {
 		_output = new StringBuffer();
 	}
@@ -18,7 +23,7 @@ public class DialogEOGeneratorListener implements IEOGeneratorListener {
 	}
 
 	public void eogeneratorSucceeded(IFile eogenFile, String results) {
-		appendLines(eogenFile, "No Changes.");
+		appendLines(eogenFile, results);
 	}
 
 	public void eogeneratorFinished() {
@@ -26,7 +31,7 @@ public class DialogEOGeneratorListener implements IEOGeneratorListener {
 			final String output = _output.toString();
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
-					EOGeneratorResultsDialog resultsDialog = new EOGeneratorResultsDialog(new Shell(), output.toString());
+					EOGeneratorResultsDialog resultsDialog = new EOGeneratorResultsDialog(_shell, output.toString());
 					resultsDialog.open();
 				}
 			});
@@ -36,10 +41,15 @@ public class DialogEOGeneratorListener implements IEOGeneratorListener {
 	protected void appendLines(IFile eogenFile, String results) {
 		_output.append(eogenFile.getLocation().toOSString());
 		_output.append(":\n");
-		for (String line : results.split("\n")) {
-			_output.append("\t");
-			_output.append(line);
-			_output.append("\n");
+		if (results.length() == 0) {
+			_output.append("\tFinished.\n");
+		}
+		else {
+			for (String line : results.split("\n")) {
+				_output.append("\t");
+				_output.append(line);
+				_output.append("\n");
+			}
 		}
 		_output.append("\n\n");
 	}

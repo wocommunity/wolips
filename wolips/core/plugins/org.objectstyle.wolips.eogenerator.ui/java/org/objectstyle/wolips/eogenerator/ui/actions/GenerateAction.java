@@ -63,13 +63,14 @@ import org.objectstyle.wolips.eogenerator.ui.DialogEOGeneratorListener;
 
 public class GenerateAction implements IObjectActionDelegate {
 	private ISelection _selection;
+	private IWorkbenchPart _workbenchPart;
 
 	public GenerateAction() {
 		super();
 	}
 
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		// do nothing
+		_workbenchPart = targetPart;
 	}
 
 	public void run(IAction action) {
@@ -79,7 +80,7 @@ public class GenerateAction implements IObjectActionDelegate {
 				IFile eogenFile = (IFile) selection.getFirstElement();
 				EOGenerateWorkspaceJob generateJob = new EOGenerateWorkspaceJob(new IFile[] { eogenFile });
 				generateJob.addListener(new MarkerEOGeneratorListener());
-				generateJob.addListener(new DialogEOGeneratorListener());
+				generateJob.addListener(new DialogEOGeneratorListener(_workbenchPart.getSite().getShell()));
 				generateJob.schedule();
 			}
 		} catch (Throwable t) {
