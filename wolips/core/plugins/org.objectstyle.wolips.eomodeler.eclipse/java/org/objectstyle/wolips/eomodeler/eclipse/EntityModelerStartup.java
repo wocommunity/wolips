@@ -6,7 +6,6 @@ import org.eclipse.ui.PlatformUI;
 public class EntityModelerStartup implements IStartup {
 
 	public void earlyStartup() {
-		System.out.println("EntityModelerStartup.earlyStartup: STARTUP");
 		PackageExplorerDoubleClickHandler doubleClickHandler = new PackageExplorerDoubleClickHandler();
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().addPageListener(doubleClickHandler);
 	}
