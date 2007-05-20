@@ -8,13 +8,10 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.text.ITextViewerExtension;
 import org.eclipse.jface.text.Region;
-import org.eclipse.ui.IEditorActionDelegate;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.actions.ActionDelegate;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
-import org.objectstyle.wolips.componenteditor.part.ComponentEditorPart;
-import org.objectstyle.wolips.componenteditor.part.HtmlWodTab;
 import org.objectstyle.wolips.core.resources.types.api.Binding;
 import org.objectstyle.wolips.templateeditor.TemplateEditor;
 import org.objectstyle.wolips.wodclipse.core.model.SimpleWodBinding;
@@ -153,80 +150,87 @@ public abstract class InsertHtmlAndWodAction extends AbstractTemplateAction {
 
 				// insert the WebObjects component into the template portion.
 				try {
-					int selectionStartOffset = teDocTSel.getOffset();
-					int selectionEndOffset = teDocTSel.getOffset() + teDocTSel.getLength();
-
-					if (canHaveComponentContent(ics.getComponentName())) {
-						int selectionStartLine = teDocTSel.getStartLine();
-						int selectionEndLine = teDocTSel.getEndLine();
-
-						StringWriter startTagWriter = new StringWriter();
-						htmlElement.writeInlineFormat(startTagWriter, "", true, true, false, false);
-						String startTag = startTagWriter.toString();
-
-						StringWriter endTagWriter = new StringWriter();
-						htmlElement.writeInlineFormat(endTagWriter, "", true, false, false, true);
-						String endTag = endTagWriter.toString();
-
-						String indentText = getIndentText(teDoc, selectionStartOffset);
-						IRegion startLineRegion = teDoc.getLineInformationOfOffset(selectionStartOffset);
-						IRegion endLineRegion = teDoc.getLineInformationOfOffset(selectionEndOffset);
-
-						// MS: If the selection starts within the indent
-						// area, then you're actually selecting
-						// from the beginning of the line, not splitting an
-						// existing line of HTML.
-						int selectionLineStartOffset = (selectionStartOffset - startLineRegion.getOffset());
-						boolean selectionStartedInIndent = (indentText.length() >= selectionLineStartOffset);
-
-						if (selectionStartLine == selectionEndLine) {
-							if (selectionEndOffset == endLineRegion.getOffset()) {
-								teDoc.replace(selectionEndOffset - 1, 0, endTag);
+					ITextViewerExtension teExt = (ITextViewerExtension)te.getSourceEditor().getViewer();
+					teExt.getRewriteTarget().beginCompoundChange();
+					try {
+						int selectionStartOffset = teDocTSel.getOffset();
+						int selectionEndOffset = teDocTSel.getOffset() + teDocTSel.getLength();
+	
+						if (canHaveComponentContent(ics.getComponentName())) {
+							int selectionStartLine = teDocTSel.getStartLine();
+							int selectionEndLine = teDocTSel.getEndLine();
+	
+							StringWriter startTagWriter = new StringWriter();
+							htmlElement.writeInlineFormat(startTagWriter, "", true, true, false, false);
+							String startTag = startTagWriter.toString();
+	
+							StringWriter endTagWriter = new StringWriter();
+							htmlElement.writeInlineFormat(endTagWriter, "", true, false, false, true);
+							String endTag = endTagWriter.toString();
+	
+							String indentText = getIndentText(teDoc, selectionStartOffset);
+							IRegion startLineRegion = teDoc.getLineInformationOfOffset(selectionStartOffset);
+							IRegion endLineRegion = teDoc.getLineInformationOfOffset(selectionEndOffset);
+	
+							// MS: If the selection starts within the indent
+							// area, then you're actually selecting
+							// from the beginning of the line, not splitting an
+							// existing line of HTML.
+							int selectionLineStartOffset = (selectionStartOffset - startLineRegion.getOffset());
+							boolean selectionStartedInIndent = (indentText.length() >= selectionLineStartOffset);
+	
+							if (selectionStartLine == selectionEndLine) {
+								if (selectionEndOffset == endLineRegion.getOffset()) {
+									teDoc.replace(selectionEndOffset - 1, 0, endTag);
+								} else {
+									teDoc.replace(selectionEndOffset, 0, endTag);
+								}
+	
+								if (selectionStartedInIndent) {
+									teDoc.replace(startLineRegion.getOffset() + indentText.length(), 0, startTag);
+								} else {
+									teDoc.replace(selectionStartOffset, 0, startTag);
+								}
 							} else {
-								teDoc.replace(selectionEndOffset, 0, endTag);
-							}
-
-							if (selectionStartedInIndent) {
-								teDoc.replace(startLineRegion.getOffset() + indentText.length(), 0, startTag);
-							} else {
-								teDoc.replace(selectionStartOffset, 0, startTag);
+								int indentEndOffset;
+								String lastLineIndentText = getIndentText(teDoc, selectionEndOffset);
+								int selectionLineEndOffset = (selectionEndOffset - endLineRegion.getOffset());
+								if (lastLineIndentText.length() >= selectionLineEndOffset) {
+									String endText = indentText + endTag + "\n";
+									teDoc.replace(endLineRegion.getOffset(), 0, endText);
+									indentEndOffset = 1;
+								} else {
+									String endText = "\n" + indentText + endTag + "\n" + indentText;
+									teDoc.replace(selectionEndOffset, 0, endText);
+									indentEndOffset = 2;
+								}
+	
+								int indentStartOffset;
+								if (selectionStartedInIndent) {
+									indentStartOffset = 1;
+									String startText = startTag + "\n" + indentText;
+									teDoc.replace(startLineRegion.getOffset() + indentText.length(), 0, startText);
+								} else {
+									indentStartOffset = 2;
+									String startText = "\n" + indentText + startTag + "\n" + indentText;
+									teDoc.replace(selectionStartOffset, 0, startText);
+								}
+								for (int line = selectionStartLine + indentStartOffset; line <= selectionEndLine + indentEndOffset; line++) {
+									int lineOffset = teDoc.getLineOffset(line);
+									teDoc.replace(lineOffset, 0, "\t");
+								}
 							}
 						} else {
-							int indentEndOffset;
-							String lastLineIndentText = getIndentText(teDoc, selectionEndOffset);
-							int selectionLineEndOffset = (selectionEndOffset - endLineRegion.getOffset());
-							if (lastLineIndentText.length() >= selectionLineEndOffset) {
-								String endText = indentText + endTag + "\n";
-								teDoc.replace(endLineRegion.getOffset(), 0, endText);
-								indentEndOffset = 1;
-							} else {
-								String endText = "\n" + indentText + endTag + "\n" + indentText;
-								teDoc.replace(selectionEndOffset, 0, endText);
-								indentEndOffset = 2;
-							}
-
-							int indentStartOffset;
-							if (selectionStartedInIndent) {
-								indentStartOffset = 1;
-								String startText = startTag + "\n" + indentText;
-								teDoc.replace(startLineRegion.getOffset() + indentText.length(), 0, startText);
-							} else {
-								indentStartOffset = 2;
-								String startText = "\n" + indentText + startTag + "\n" + indentText;
-								teDoc.replace(selectionStartOffset, 0, startText);
-							}
-							for (int line = selectionStartLine + indentStartOffset; line <= selectionEndLine + indentEndOffset; line++) {
-								int lineOffset = teDoc.getLineOffset(line);
-								teDoc.replace(lineOffset, 0, "\t");
-							}
+							StringWriter startTagWriter = new StringWriter();
+							htmlElement.writeInlineFormat(startTagWriter, null, true, true, false, true);
+							String tag = startTagWriter.toString();
+							teDoc.replace(selectionStartOffset, 0, tag);
 						}
-					} else {
-						StringWriter startTagWriter = new StringWriter();
-						htmlElement.writeInlineFormat(startTagWriter, null, true, true, false, true);
-						String tag = startTagWriter.toString();
-						teDoc.replace(selectionStartOffset, 0, tag);
 					}
-
+					finally {
+						teExt.getRewriteTarget().endCompoundChange();
+					}
+					
 					// insert the WebObjects component into the bindings
 					// portion.
 					if (!ics.isInline()) {
