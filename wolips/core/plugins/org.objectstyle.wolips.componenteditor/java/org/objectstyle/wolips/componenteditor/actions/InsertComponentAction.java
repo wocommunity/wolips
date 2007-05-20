@@ -7,6 +7,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -60,6 +62,19 @@ public abstract class InsertComponentAction extends InsertHtmlAndWodAction {
 		}
 		return wo;
 	}
+	
+	protected IJavaProject getJavaProject() {
+		IJavaProject javaProject = null;
+		TemplateEditor te = getTemplateEditor();
+		if (te != null) {
+			IFileEditorInput input = (IFileEditorInput) te.getEditorInput();
+			IFile file = input.getFile();
+			if (file != null) {
+				javaProject = JavaCore.create(file.getProject());
+			}
+		}
+		return javaProject;
+	}
 
 	protected Binding[] getRequiredBindings(String componentName) {
 		Binding[] requiredBindings = null;
@@ -102,7 +117,7 @@ public abstract class InsertComponentAction extends InsertHtmlAndWodAction {
 		ics.setComponentInstanceNameSuffix(getComponentInstanceNameSuffix());
 
 		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		InsertComponentDialogue dialog = new InsertComponentDialogue(window.getShell(), ics);
+		InsertComponentDialogue dialog = new InsertComponentDialogue(window.getShell(), getJavaProject(), ics);
 		int results = dialog.open();
 		if (results == Window.OK) {
 			ics.setRequiredBindings(getRequiredBindings(ics.getComponentName()));

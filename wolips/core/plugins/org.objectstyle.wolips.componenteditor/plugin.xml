@@ -72,6 +72,11 @@
               description="Rename..."
               id="org.objectstyle.wolips.componenteditor.editors.command.refactorRename"
               name="Rename..."/>
+        <command
+              categoryId="org.objectstyle.wolips.componenteditor.componenteditorcommands"
+              description="Insert Component"
+              id="org.objectstyle.wolips.componenteditor.editors.command.InsertAnyComponentAction"
+              name="Insert Component"/>
     </extension>
     <extension point="org.eclipse.ui.bindings">
 		<key
@@ -104,11 +109,16 @@
         		contextId="org.eclipse.ui.contexts.window"
         		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
         		sequence="M1+M3+6"/>
-  <key
-        commandId="org.objectstyle.wolips.componenteditor.editors.command.refactorRename"
-        contextId="org.objectstyle.wolips.componenteditor.componentEditorScope"
-        schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-        sequence="M1+2 R"/>
+		<key
+        		commandId="org.objectstyle.wolips.componenteditor.editors.command.InsertAnyComponentAction"
+        		contextId="org.objectstyle.wolips.componenteditor.componentEditorScope"
+        		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+        		sequence="M1+6"/>
+	  <key
+	        commandId="org.objectstyle.wolips.componenteditor.editors.command.refactorRename"
+	        contextId="org.objectstyle.wolips.componenteditor.componentEditorScope"
+	        schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+	        sequence="M1+2 R"/>
 	</extension>
 	
 	<extension point = "org.eclipse.ui.editorActions">
@@ -220,11 +230,19 @@
 			description="Component Editor Actions"
 			id="org.objectstyle.wolips.componenteditor.actionSet"
 			label="Component Editor">
+			<menu
+			   id="org.objectstyle.wolips.componenteditor.insertMenuContribution"
+			   label="&amp;Insert"
+			   path="edit/additions">
+				<separator name="group1"/>
+				<separator name="group2"/>
+			</menu>
 			<action
 				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOStringAction"
 				icon="icons/string.png"
 				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOString"
 				label="Insert WOString Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
 				style="push"
 				toolbarPath="/Normal/additions"
 				tooltip="Insert WOString Component">
@@ -234,6 +252,7 @@
 				icon="icons/conditional.png"
 				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOConditional"
 				label="Insert WOConditional Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
 				style="push"
 				toolbarPath="/Normal/additions"
 				tooltip="Insert WOConditional Component">
@@ -243,6 +262,7 @@
 				icon="icons/repetition.png"
 				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWORepetition"
 				label="Insert WORepetition Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
 				style="push"
 				toolbarPath="/Normal/additions"
 				tooltip="Insert WORepetition Component">
@@ -252,6 +272,7 @@
 				icon="icons/hyperlink.png"
 				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOHyperlink"
 				label="Insert WOHyperlink Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
 				style="push"
 				toolbarPath="/Normal/additions"
 				tooltip="Insert WOHyperlink Component">
@@ -261,6 +282,7 @@
 				icon="icons/textfield.png"
 				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOTextField"
 				label="Insert WOTextField Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
 				style="push"
 				toolbarPath="/Normal/additions"
 				tooltip="Insert WOTextField Component">
@@ -270,6 +292,7 @@
 				icon="icons/image.png"
 				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOImage"
 				label="Insert WOImage Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
 				style="push"
 				toolbarPath="/Normal/additions"
 				tooltip="Insert WOImage Component">
@@ -279,6 +302,7 @@
 				icon="icons/submit.png"
 				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOSubmitButton"
 				label="Insert WOSubmitButton Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
 				style="push"
 				toolbarPath="/Normal/additions"
 				tooltip="Insert WOSubmitButton Component">
@@ -288,6 +312,7 @@
 				icon="icons/radio.png"
 				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWORadioButton"
 				label="Insert WORadioButton Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
 				style="push"
 				toolbarPath="/Normal/additions"
 				tooltip="Insert WORadioButton Component">
@@ -297,6 +322,7 @@
 				icon="icons/checkbox.png"
 				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOCheckBox"
 				label="Insert WOCheckBox Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
 				style="push"
 				toolbarPath="/Normal/additions"
 				tooltip="Insert WOCheckBox Component">
@@ -306,6 +332,7 @@
 				icon="icons/textarea.png"
 				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOTextArea"
 				label="Insert WOTextArea Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
 				style="push"
 				toolbarPath="/Normal/additions"
 				tooltip="Insert WOTextArea Component">
@@ -315,6 +342,7 @@
 				icon="icons/popup.png"
 				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOPopUpButton"
 				label="Insert WOPopUpButton Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
 				style="push"
 				toolbarPath="/Normal/additions"
 				tooltip="Insert WOPopUpButton Component">
@@ -324,6 +352,7 @@
 				icon="icons/browser.png"
 				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOBrowser"
 				label="Insert WOBrowser Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
 				style="push"
 				toolbarPath="/Normal/additions"
 				tooltip="Insert WOBrowser Component">
@@ -333,6 +362,7 @@
 				icon="icons/form.png"
 				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOForm"
 				label="Insert WOForm Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
 				style="push"
 				toolbarPath="/Normal/additions"
 				tooltip="Insert WOForm Component">
@@ -341,7 +371,9 @@
 				class="org.objectstyle.wolips.componenteditor.actions.InsertAnyComponentAction"
 				icon="icons/anycomponent.png"
 				id="org.objectstyle.wolips.componenteditor.actions.InsertAnyComponentAction"
+				definitionId="org.objectstyle.wolips.componenteditor.editors.command.InsertAnyComponentAction"
 				label="Insert Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
 				style="push"
 				toolbarPath="/Normal/additions"
 				tooltip="Insert Component">
@@ -351,6 +383,7 @@
 				icon="icons/anybasictag.png"
 				id="org.objectstyle.wolips.componenteditor.actions.InsertHtmlTagAction"
 				label="Insert Tag"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
 				style="push"
 				toolbarPath="/Normal/additions"
 				tooltip="Insert Tag">
