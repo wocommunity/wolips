@@ -462,17 +462,18 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			subclassEntity.addAttribute(subclassPrimaryKeyAttribute);
 		}
 
-		for (EOAttribute inheritedAttribute : getAttributes()) {
-			if (!primaryKeyAttributes.contains(inheritedAttribute) && BooleanUtils.isTrue(inheritedAttribute.isClassProperty())) {
-				EOAttributePath inheritedAttributePath = new EOAttributePath(new EORelationshipPath(null, superclassRelationship), inheritedAttribute);
-				subclassEntity.addBlankAttribute(inheritedAttribute.getName(), inheritedAttributePath);
+		for (EOAttribute parentAttribute : getAttributes()) {
+			if (!primaryKeyAttributes.contains(parentAttribute)) {
+				EOAttributePath inheritedAttributePath = new EOAttributePath(new EORelationshipPath(null, superclassRelationship), parentAttribute);
+				EOAttribute inheritedAttribute = subclassEntity.addBlankAttribute(parentAttribute.getName(), inheritedAttributePath);
+				inheritedAttribute.setClassProperty(parentAttribute.isClassProperty());
 			}
 		}
 
-		for (EORelationship inheritedRelationship : getRelationships()) {
-			if (BooleanUtils.isTrue(inheritedRelationship.isClassProperty())) {
-				EORelationshipPath inheritedRelationshipPath = new EORelationshipPath(new EORelationshipPath(null, superclassRelationship), inheritedRelationship);
-				subclassEntity.addBlankRelationship(inheritedRelationship.getName(), inheritedRelationshipPath);
+		for (EORelationship parentRelationship : getRelationships()) {
+			if (BooleanUtils.isTrue(parentRelationship.isClassProperty())) {
+				EORelationshipPath inheritedRelationshipPath = new EORelationshipPath(new EORelationshipPath(null, superclassRelationship), parentRelationship);
+				subclassEntity.addBlankRelationship(parentRelationship.getName(), inheritedRelationshipPath);
 			}
 		}
 
