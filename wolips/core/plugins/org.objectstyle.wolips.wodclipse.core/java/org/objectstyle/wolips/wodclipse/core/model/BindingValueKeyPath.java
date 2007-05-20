@@ -241,7 +241,7 @@ public class BindingValueKeyPath {
       // if there's a helper function, we can't do completion
     }
     else if (_operator != null) {
-      // if there's an operator, we can't do completion
+      bindingKeysList = WodReflectionUtils.getBindingKeys(_javaProject, getLastType(), "@" + _operator, false, WodReflectionUtils.ACCESSORS_ONLY, _cache);
     }
     else {
       String partialBindingKeyName;
