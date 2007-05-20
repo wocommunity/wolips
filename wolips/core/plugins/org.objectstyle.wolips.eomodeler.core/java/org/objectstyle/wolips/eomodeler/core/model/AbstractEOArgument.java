@@ -439,7 +439,9 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		argumentMap.setString("name", getName(), true);
 		// If columnName is prototyped, EOModeler leaves out the columnName. If,
 		// however, columnName is MISSING, then it needs to write a "".
-		if (myColumnName == null && getColumnName() == null) {
+		if (isFlattened()) {
+			argumentMap.remove("columnName");
+		} else if (myColumnName == null && getColumnName() == null) {
 			argumentMap.setString("columnName", "", false);
 		} else {
 			argumentMap.setString("columnName", myColumnName, false);
