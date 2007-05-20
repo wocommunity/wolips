@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 
 import jp.aonir.fuzzyxml.event.FuzzyXMLErrorEvent;
 import jp.aonir.fuzzyxml.event.FuzzyXMLErrorListener;
-import jp.aonir.fuzzyxml.internal.AbstractFuzzyXMLNode;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLAttributeImpl;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLCDATAImpl;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLCommentImpl;
@@ -69,6 +68,7 @@ public class FuzzyXMLParser {
     addLooseTag("meta");
     addLooseTag("link");
     addLooseTag("input");
+    addLooseTag("spacer");
   }
 
   /**
