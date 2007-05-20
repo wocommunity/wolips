@@ -47,10 +47,7 @@ public class BindingValueKeyPath {
 
     boolean isKeyPath = true;
     // short-circuit for booleans
-    if ("true".equalsIgnoreCase(keyPath) || "false".equalsIgnoreCase(keyPath) || "yes".equalsIgnoreCase(keyPath) || "no".equalsIgnoreCase(keyPath)) {
-      isKeyPath = false;
-    }
-    else if (keyPath.length() > 0) {
+    if (keyPath.length() > 0) {
       char ch = keyPath.charAt(0);
       // short-circuit for quoted strings
       if (ch == '\"' || ch == '\'') {
@@ -137,6 +134,12 @@ public class BindingValueKeyPath {
 
       _bindingKeys = bindingKeysList.toArray(new BindingValueKey[bindingKeysList.size()]);
 
+      if ("true".equalsIgnoreCase(keyPath) || "false".equalsIgnoreCase(keyPath) || "yes".equalsIgnoreCase(keyPath) || "no".equalsIgnoreCase(keyPath)) {
+        _ambiguous = false;
+        _valid = true;
+        _nsKVC = false;
+        _nsCollection = false;
+      }
       // ... I have no idea why this was here.  I wish I had commented it originally
       //if (!_valid) {
       //_valid = _bindingKeyNames.length == 1;
