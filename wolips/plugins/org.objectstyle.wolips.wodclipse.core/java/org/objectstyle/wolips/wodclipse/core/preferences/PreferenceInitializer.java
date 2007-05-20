@@ -103,7 +103,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     prefs.setDefault(PreferenceConstants.TAG_SHORTCUTS_KEY, TagShortcut.toPreferenceString(tagShortcuts));
 
     List<BindingValidationRule> validationRules = new ArrayList<BindingValidationRule>();
-    validationRules.add(new BindingValidationRule(".*", "^session\\.localized.*"));
+    validationRules.add(new BindingValidationRule(".*", "^session\\.localizer\\..*"));
     validationRules.add(new BindingValidationRule(".*", "^d2wContext\\..*"));
     validationRules.add(new BindingValidationRule(".*", "^localContext\\..*"));
     prefs.setDefault(PreferenceConstants.BINDING_VALIDATION_RULES_KEY, BindingValidationRule.toPreferenceString(validationRules));
