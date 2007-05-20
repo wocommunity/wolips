@@ -97,7 +97,7 @@ public class SelectionThrottle implements Runnable {
 		if (!addedObjects.isEmpty()) {
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
-					_selectionHandler.changeSelection(new StructuredSelection(addedObjects));
+					_selectionHandler.changeSelection(new StructuredSelection(addedObjects.get(0)));
 				}
 			});
 		}
