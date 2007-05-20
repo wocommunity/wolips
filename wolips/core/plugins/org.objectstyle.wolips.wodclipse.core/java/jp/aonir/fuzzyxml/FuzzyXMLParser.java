@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import jp.aonir.fuzzyxml.event.FuzzyXMLErrorEvent;
 import jp.aonir.fuzzyxml.event.FuzzyXMLErrorListener;
+import jp.aonir.fuzzyxml.internal.AbstractFuzzyXMLNode;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLAttributeImpl;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLCDATAImpl;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLCommentImpl;
@@ -347,9 +348,22 @@ public class FuzzyXMLParser {
 
         if (looseTag) {
           while (!lowercaseLastOpenElementName.equals(lowercaseCloseTagName) && looseTags.contains(lowercaseLastOpenElementName)) {
-            int lastOpenElementEndOffset = lastOpenElement.getOffset() + lastOpenElement.getLength();
+            int lastOpenElementEndOffset = end;
+            //int lastOpenElementEndOffset = lastOpenElement.getOffset() + lastOpenElement.getLength();
             stack.push(lastOpenElement);
             handleCloseTag(lastOpenElementEndOffset, lastOpenElementEndOffset, "/" + lastOpenElement.getName(), false);
+            
+            /*
+            FuzzyXMLElement looseElement = lastOpenElement;
+            FuzzyXMLNode[] looseElementChildren = lastOpenElement.getChildren();
+            FuzzyXMLElement looseElementParent = (FuzzyXMLElement) lastOpenElement.getParentNode();
+            for (FuzzyXMLNode looseElementChild : looseElementChildren) {
+              looseElement.removeChild(looseElementChild);
+              looseElementParent.insertAfter(looseElementChild, looseElement);
+              //((AbstractFuzzyXMLNode) looseElementChild).setOffset(looseElementChild.getOffset() + 1);
+            }
+            */
+            
             if (stack.size() == 0) {
               lastOpenElement = null;
               lowercaseLastOpenElementName = null;
