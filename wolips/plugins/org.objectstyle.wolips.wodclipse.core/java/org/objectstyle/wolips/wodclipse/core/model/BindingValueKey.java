@@ -32,7 +32,7 @@ public class BindingValueKey {
   }
 
   public IType getDeclaringType() {
-    return _bindingMember.getDeclaringType();
+    return (_bindingMember == null) ? null : _bindingMember.getDeclaringType();
   }
 
   public String getBindingName() {

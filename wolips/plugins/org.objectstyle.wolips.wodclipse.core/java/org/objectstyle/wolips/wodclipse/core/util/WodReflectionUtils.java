@@ -1,7 +1,9 @@
 package org.objectstyle.wolips.wodclipse.core.util;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.IField;
@@ -121,6 +123,8 @@ public class WodReflectionUtils {
 
       ITypeHierarchy typeHierarchy;
 
+      Set<String> additionalProposals = new HashSet<String>();
+      
       // We want to show fields from your WOApplication, WOSession, and
       // WODirectAction subclasses ...
       typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(_type);
@@ -132,13 +136,31 @@ public class WodReflectionUtils {
           if ("WOApplication".equals(typeName) || "WOSession".equals(typeName) || "WODirectAction".equals(typeName)) {
             isUsuallySubclassed = true;
           }
+          else if ("NSArray".equals(typeName)) {
+            additionalProposals.add("@avg");
+            additionalProposals.add("@count");
+            additionalProposals.add("@min");
+            additionalProposals.add("@max");
+            additionalProposals.add("@sum");
+            additionalProposals.add("@sort");
+            additionalProposals.add("@sortAsc");
+            additionalProposals.add("@sortDesc");
+          }
         }
+        
+        for (String additionalProposal : additionalProposals) {
+          if (additionalProposal.startsWith(_nameStartingWith)) {
+            bindingKeys.add(new BindingValueKey(additionalProposal, null, _javaProject, cache));
+          }
+        }
+        
         if (isUsuallySubclassed) {
           //typeHierarchy = _type.newTypeHierarchy(_javaProject, null);
           typeHierarchy = SubTypeHierachyCache.getTypeHierarchy(_type);
           types = typeHierarchy.getAllTypes();
         }
       }
+      
       if (types != null) {
         for (int typeNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && typeNum < types.length; typeNum++) {
           IField[] fields = types[typeNum].getFields();
@@ -259,7 +281,7 @@ public class WodReflectionUtils {
 
   public static boolean isSystemBindingValueKey(BindingValueKey bindingValueKey, boolean includeCommonKeys) {
     boolean isSystemBinding = false;
-    if (bindingValueKey != null && "WOComponent".equals(bindingValueKey.getDeclaringType().getElementName())) {
+    if (bindingValueKey != null && bindingValueKey.getDeclaringType() != null && "WOComponent".equals(bindingValueKey.getDeclaringType().getElementName())) {
       String bindingName = bindingValueKey.getBindingName();
       if ("cachingEnabled".equals(bindingName)) {
         isSystemBinding = true;

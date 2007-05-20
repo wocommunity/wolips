@@ -107,7 +107,13 @@ public class WodCompletionUtils {
     BindingValueKeyPath bindingKeyPath = new BindingValueKeyPath(partialToken, elementType, project, cache);
     List<BindingValueKey> possibleBindingKeyMatchesList = bindingKeyPath.getPartialMatchesForLastBindingKey();
     if (possibleBindingKeyMatchesList != null) {
-      String bindingKeyName = bindingKeyPath.getLastBindingKeyName();
+      String bindingKeyName;
+      if (bindingKeyPath.getOperator() != null) {
+        bindingKeyName = "@" + bindingKeyPath.getOperator();
+      }
+      else {
+        bindingKeyName = bindingKeyPath.getLastBindingKeyName();
+      }
       _fillInCompletionProposals(possibleBindingKeyMatchesList, bindingKeyName, tokenOffset + partialToken.lastIndexOf('.') + 1, offset, completionProposalsSet);
     }
 

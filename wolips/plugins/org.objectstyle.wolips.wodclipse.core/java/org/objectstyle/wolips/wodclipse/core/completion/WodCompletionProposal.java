@@ -153,7 +153,6 @@ public class WodCompletionProposal implements Comparable, ICompletionProposal {
    * @see ICompletionProposal#apply(IDocument)
    */
   public void apply(IDocument document) {
-    System.out.println("WodCompletionProposal.apply: " + document);
     try {
       document.replace(_replacementOffset, _replacementLength, _replacementString);
     }
