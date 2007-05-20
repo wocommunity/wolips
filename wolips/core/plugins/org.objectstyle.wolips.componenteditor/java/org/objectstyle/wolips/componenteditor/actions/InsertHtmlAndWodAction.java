@@ -150,6 +150,7 @@ public abstract class InsertHtmlAndWodAction extends AbstractTemplateAction {
 
 				// insert the WebObjects component into the template portion.
 				try {
+					ITextViewerExtension weExt = (ITextViewerExtension)we.getViewer();
 					ITextViewerExtension teExt = (ITextViewerExtension)te.getSourceEditor().getViewer();
 					teExt.getRewriteTarget().beginCompoundChange();
 					try {

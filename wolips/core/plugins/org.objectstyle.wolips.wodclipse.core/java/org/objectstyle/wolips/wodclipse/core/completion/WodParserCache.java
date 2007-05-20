@@ -33,7 +33,9 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IUndoManager;
 import org.eclipse.jface.text.Position;
+import org.eclipse.jface.text.TextViewerUndoManager;
 import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.wolips.core.resources.types.api.ApiModelException;
 import org.objectstyle.wolips.core.resources.types.api.Wo;
@@ -67,6 +69,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   private IWodModel _wodModel;
   private IDocument _wodDocument;
   private boolean _wodDocumentChanged;
+  private IUndoManager _undoManager;
 
   private LocalizedComponentsLocateResult _componentsLocateResults;
   private IProject _project;
@@ -137,8 +140,12 @@ public class WodParserCache implements FuzzyXMLErrorListener {
 
   protected WodParserCache(IContainer woFolder) throws CoreException, LocateException {
     _woFolder = woFolder;
-
+    _undoManager = new TextViewerUndoManager(25);
     clearCache();
+  }
+  
+  public IUndoManager getUndoManager() {
+    return _undoManager;
   }
 
   public IType getComponentType() {

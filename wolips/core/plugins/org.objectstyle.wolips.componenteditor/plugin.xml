@@ -171,6 +171,13 @@
                label="Rename..."
                menubarPath="edit/org.objectstyle.wolips.componenteditor.refactorMenuContribution/group1"
                />
+         <action
+               class="org.objectstyle.wolips.componenteditor.actions.CleanWOBuilderElementNamesAction"
+               definitionId="org.objectstyle.wolips.componenteditor.editors.command.cleanWOBuilderElementNames"
+               id="org.objectstyle.wolips.componenteditor.editors.action.cleanWOBuilderElementNames"
+               label="Clean WOBuilder Names..."
+               menubarPath="edit/org.objectstyle.wolips.componenteditor.refactorMenuContribution/group1"
+               />
 		</editorContribution>
       <editorContribution 
          id="org.objectstyle.wolips.javaeditor.editorActionsContribution" 
