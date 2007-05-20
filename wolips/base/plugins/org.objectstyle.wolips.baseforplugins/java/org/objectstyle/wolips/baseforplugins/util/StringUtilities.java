@@ -1,6 +1,23 @@
 package org.objectstyle.wolips.baseforplugins.util;
 
 public class StringUtilities {
+	/**
+	 * checks if the specified String contains only digits.
+	 * 
+	 * @param aString,
+	 *            the string to check
+	 * @return true if the string contains only digits, false otherwise
+	 */
+	public static boolean isDigitsOnly(String aString) {
+		for (int i = aString.length(); i-- > 0;) {
+			char c = aString.charAt(i);
+			if (!Character.isDigit(c)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public static String toCommandlineParameterFormat(String _parameter, String _value, boolean _escapeSpacesAndQuotes) {
 		StringBuffer commandlineFormat = new StringBuffer();
 		commandlineFormat.append(_parameter);
