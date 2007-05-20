@@ -24,19 +24,19 @@ import org.objectstyle.wolips.wodclipse.core.model.IWodElement;
 import org.objectstyle.wolips.wodclipse.core.model.IWodModel;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
-public class QuickElementRefactor {
-  public static void rename(int offset, ITextViewer htmlViewer, ITextViewer wodViewer, WodParserCache cache) throws BadLocationException, CoreException, IOException {
+public class QuickElementRenameRefactoring {
+  public static void run(int offset, ITextViewer htmlViewer, ITextViewer wodViewer, WodParserCache cache) throws BadLocationException, CoreException, IOException {
     FuzzyXMLDocument htmlModel = cache.getHtmlXmlDocument();
     FuzzyXMLElement element = htmlModel.getElementByOffset(offset);
     if (element != null && WodHtmlUtils.isWOTag(element.getName())) {
       String woElementName = element.getAttributeValue("name");
       if (woElementName != null) {
-        QuickElementRefactor.renameElement(woElementName, htmlViewer, wodViewer, cache);
+        QuickElementRenameRefactoring.run(woElementName, htmlViewer, wodViewer, cache);
       }
     }
   }
 
-  public static void renameElement(String woElementName, ITextViewer htmlViewer, ITextViewer wodViewer, final WodParserCache cache) throws BadLocationException, CoreException, IOException {
+  public static void run(String woElementName, ITextViewer htmlViewer, ITextViewer wodViewer, final WodParserCache cache) throws BadLocationException, CoreException, IOException {
     FuzzyXMLDocument htmlModel = cache.getHtmlXmlDocument();
     FuzzyXMLNode[] woTags = NodeSelectUtil.getNodeByFilter(htmlModel.getDocumentElement(), new NamedWebobjectTagFilter(woElementName));
 
