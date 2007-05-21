@@ -60,6 +60,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.objectstyle.wolips.eomodeler.Activator;
+import org.objectstyle.wolips.eomodeler.core.model.AbstractEOAttributePath;
 import org.objectstyle.wolips.eomodeler.core.model.EOArgument;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttributePath;
@@ -71,6 +72,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.core.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
+import org.objectstyle.wolips.eomodeler.core.model.IEOAttribute;
 import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 
@@ -79,8 +81,12 @@ public class EOModelOutlineLabelProvider implements ILabelProvider, IFontProvide
 
 	private Font _inheritedFont;
 
+	private Font _flattenedFont;
+
+	private Font _flattenedInheritedFont;
+
 	private Font _activeFont;
-	
+
 	public EOModelOutlineLabelProvider(TreeViewer treeViewer) {
 		_treeViewer = treeViewer;
 	}
@@ -92,6 +98,12 @@ public class EOModelOutlineLabelProvider implements ILabelProvider, IFontProvide
 	public void dispose() {
 		if (_inheritedFont != null) {
 			_inheritedFont.dispose();
+		}
+		if (_flattenedFont != null) {
+			_flattenedFont.dispose();
+		}
+		if (_flattenedInheritedFont != null) {
+			_flattenedInheritedFont.dispose();
 		}
 		if (_activeFont != null) {
 			_activeFont.dispose();
@@ -176,33 +188,77 @@ public class EOModelOutlineLabelProvider implements ILabelProvider, IFontProvide
 		return text;
 	}
 
+	protected Font getInheritedFont() {
+		if (_inheritedFont == null) {
+			Font originalFont = _treeViewer.getTree().getFont();
+			FontData[] fontData = _treeViewer.getTree().getFont().getFontData();
+			_inheritedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.ITALIC);
+		}
+		return _inheritedFont;
+	}
+
+	protected Font getFlattenedFont() {
+		if (_flattenedFont == null) {
+			Font originalFont = _treeViewer.getTree().getFont();
+			FontData[] fontData = _treeViewer.getTree().getFont().getFontData();
+			_flattenedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD);
+		}
+		return _flattenedFont;
+	}
+
+	protected Font getFlattenedInheritedFont() {
+		if (_flattenedInheritedFont == null) {
+			Font originalFont = _treeViewer.getTree().getFont();
+			FontData[] fontData = _treeViewer.getTree().getFont().getFontData();
+			_flattenedInheritedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD | SWT.ITALIC);
+		}
+		return _flattenedInheritedFont;
+	}
+
+	protected Font getActiveFont() {
+		if (_activeFont == null) {
+			Font originalFont = _treeViewer.getTree().getFont();
+			FontData[] fontData = _treeViewer.getTree().getFont().getFontData();
+			_activeFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD);
+		}
+		return _activeFont;
+	}
+
 	public Font getFont(Object element) {
 		Font font = null;
 		if (element instanceof EOEntity) {
 			EOEntity entity = (EOEntity) element;
 			if (BooleanUtils.isTrue(entity.isAbstractEntity())) {
-				if (_inheritedFont == null) {
-					Font originalFont = _treeViewer.getTree().getFont();
-					FontData[] fontData = _treeViewer.getTree().getFont().getFontData();
-					_inheritedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.ITALIC);
-				}
-				font = _inheritedFont;
+				font = getInheritedFont();
 			}
-		}
-		else if (element instanceof EODatabaseConfig) {
+		} else if (element instanceof EODatabaseConfig) {
 			EODatabaseConfig databaseConfig = (EODatabaseConfig) element;
 			if (databaseConfig.isActive()) {
-				if (_activeFont == null) {
-					Font originalFont = _treeViewer.getTree().getFont();
-					FontData[] fontData = _treeViewer.getTree().getFont().getFontData();
-					_activeFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD);
+				font = getActiveFont();
+			}
+		} else {
+			IEOAttribute attribute = null;
+			if (element instanceof IEOAttribute) {
+				attribute = (IEOAttribute) element;
+			} else if (element instanceof AbstractEOAttributePath) {
+				AbstractEOAttributePath attributePath = (AbstractEOAttributePath) element;
+				attribute = attributePath.getChildIEOAttribute();
+			}
+			if (attribute != null) {
+				boolean flattened = attribute.isFlattened();
+				boolean inherited = attribute.isInherited();
+				if (flattened && inherited) {
+					font = getFlattenedInheritedFont();
+				} else if (flattened) {
+					font = getFlattenedFont();
+				} else if (inherited) {
+					font = getInheritedFont();
 				}
-				font = _activeFont;
 			}
 		}
 		return font;
 	}
-	
+
 	public Color getForeground(Object element) {
 		EOModel relatedModel = EOModelUtils.getRelatedModel(element);
 		if (relatedModel == null || !relatedModel.isEditing()) {
@@ -210,7 +266,7 @@ public class EOModelOutlineLabelProvider implements ILabelProvider, IFontProvide
 		}
 		return null;
 	}
-	
+
 	public Color getBackground(Object element) {
 		return null;
 	}
