@@ -141,6 +141,48 @@ public class FuzzyXMLParser {
     return parse(new String(bytes, encode));
   }
 
+  protected int _parse(String source, int initialOffset, boolean woOnly) {
+    // パースを開始
+    Matcher matcher = tag.matcher(source);
+    int lastIndex = initialOffset - 1;
+    while (matcher.find()) {
+      int start = matcher.start() + initialOffset;
+      int end = matcher.end() + initialOffset;
+      if (lastIndex != (initialOffset - 1) && lastIndex < start) {
+        handleText(lastIndex, start, true);
+      }
+      String text = matcher.group(1).trim();
+      // 閉じタグ
+      if (!woOnly && text.startsWith("%")) {
+        // ignore
+        handleText(start, end, false);
+      }
+      else if (!woOnly && text.startsWith("?")) {
+        handleDeclaration(start, end);
+      }
+      else if (!woOnly && (text.startsWith("!DOCTYPE") || text.startsWith("!doctype"))) {
+        handleDoctype(start, end, text);
+      }
+      else if (!woOnly && text.startsWith("![CDATA[")) {
+        handleCDATA(start, end, originalSource.substring(start, end));
+      }
+      else if (text.startsWith("/") && (!woOnly || WodHtmlUtils.isWOTag(text.substring(1)))) {
+        handleCloseTag(start, end, text);
+      }
+      else if (!woOnly && text.startsWith("!--")) {
+        handleComment(start, end, originalSource.substring(start, end));
+      }
+      else if (text.endsWith("/") && (!woOnly || WodHtmlUtils.isWOTag(text))) {
+        handleEmptyTag(start, end);
+      }
+      else if (!woOnly || WodHtmlUtils.isWOTag(text)) {
+        handleStartTag(start, end);
+      }
+      lastIndex = end;
+    }
+    return lastIndex;
+  }
+  
   /**
    * 引数として渡されたXMLソースをパースしてFuzzyXMLDocumentオブジェクトを返却します。
    * 
@@ -159,42 +201,7 @@ public class FuzzyXMLParser {
     source = FuzzyXMLUtil.processing2space(source, true);
     source = FuzzyXMLUtil.escapeString(source);
 
-    // パースを開始
-    Matcher matcher = tag.matcher(source);
-    int lastIndex = -1;
-    while (matcher.find()) {
-      if (lastIndex != -1 && lastIndex < matcher.start()) {
-        handleText(lastIndex, matcher.start(), true);
-      }
-      String text = matcher.group(1).trim();
-      // 閉じタグ
-      if (text.startsWith("%")) {
-        // ignore
-        handleText(matcher.start(), matcher.end(), false);
-      }
-      else if (text.startsWith("?")) {
-        handleDeclaration(matcher.start(), matcher.end());
-      }
-      else if (text.startsWith("!DOCTYPE") || text.startsWith("!doctype")) {
-        handleDoctype(matcher.start(), matcher.end(), text);
-      }
-      else if (text.startsWith("![CDATA[")) {
-        handleCDATA(matcher.start(), matcher.end(), originalSource.substring(matcher.start(), matcher.end()));
-      }
-      else if (text.startsWith("/")) {
-        handleCloseTag(matcher.start(), matcher.end(), text);
-      }
-      else if (text.startsWith("!--")) {
-        handleComment(matcher.start(), matcher.end(), originalSource.substring(matcher.start(), matcher.end()));
-      }
-      else if (text.endsWith("/")) {
-        handleEmptyTag(matcher.start(), matcher.end());
-      }
-      else {
-        handleStartTag(matcher.start(), matcher.end());
-      }
-      lastIndex = matcher.end();
-    }
+    int lastIndex = _parse(source, 0, false);
 
     if (stack.size() > 0 && nonCloseElements.size() > 0) {
       FuzzyXMLElementImpl lastElement = (FuzzyXMLElementImpl) nonCloseElements.get(nonCloseElements.size() - 1);
@@ -240,6 +247,13 @@ public class FuzzyXMLParser {
       text = text.replaceFirst("\\]\\]>", "");
       FuzzyXMLCDATAImpl cdata = new FuzzyXMLCDATAImpl(getParent(), text, offset, end - offset);
       ((FuzzyXMLElement) getParent()).appendChild(cdata);
+      
+      stack.push(cdata);
+      _parse(text, offset + "<![CDATA[".length(), true);
+      FuzzyXMLNode poppedNode = stack.pop();
+      if (poppedNode != cdata) {
+        stack.push(poppedNode);
+      }
     }
   }
 

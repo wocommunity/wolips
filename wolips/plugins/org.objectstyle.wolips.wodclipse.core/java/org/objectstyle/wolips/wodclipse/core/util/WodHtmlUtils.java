@@ -31,8 +31,8 @@ public class WodHtmlUtils {
   public static boolean isWOTag(String tagName) {
     boolean isWOTag = false;
     if (tagName != null) {
-      String lowercaseTagName = tagName.toLowerCase();
-      if (lowercaseTagName.startsWith("webobject") || lowercaseTagName.equals("wo") || lowercaseTagName.startsWith("wo:")) {
+      String lowercaseTagName = tagName.trim().toLowerCase();
+      if (lowercaseTagName.startsWith("webobject") || lowercaseTagName.equals("wo") || lowercaseTagName.startsWith("wo ") || lowercaseTagName.startsWith("wo:")) {
         isWOTag = true;
       }
     }

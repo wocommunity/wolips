@@ -1,9 +1,9 @@
 package tk.eclipse.plugin.htmleditor.editors;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import jp.aonir.fuzzyxml.FuzzyXMLAttribute;
+import jp.aonir.fuzzyxml.FuzzyXMLCDATA;
 import jp.aonir.fuzzyxml.FuzzyXMLComment;
 import jp.aonir.fuzzyxml.FuzzyXMLDocType;
 import jp.aonir.fuzzyxml.FuzzyXMLDocument;
@@ -12,7 +12,6 @@ import jp.aonir.fuzzyxml.FuzzyXMLNode;
 import jp.aonir.fuzzyxml.FuzzyXMLParser;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -27,8 +26,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
-import org.objectstyle.wolips.locate.LocateException;
-import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 
 import tk.eclipse.plugin.htmleditor.HTMLPlugin;
 
@@ -100,7 +97,10 @@ public class HTMLOutlinePage extends ContentOutlinePage implements IHTMLOutlineP
   }
 
   protected Image getNodeImage(FuzzyXMLNode element) {
-    if (element instanceof FuzzyXMLElement) {
+    if (element instanceof FuzzyXMLCDATA) {
+      return null;
+    }
+    else if (element instanceof FuzzyXMLElement) {
       FuzzyXMLElement e = (FuzzyXMLElement) element;
       if (e.getName().equalsIgnoreCase("html")) {
         return HTMLPlugin.getDefault().getImageRegistry().get(HTMLPlugin.ICON_TAG_HTML);
@@ -181,6 +181,9 @@ public class HTMLOutlinePage extends ContentOutlinePage implements IHTMLOutlineP
   }
 
   protected String getNodeText(FuzzyXMLNode node) {
+    if (node instanceof FuzzyXMLCDATA) {
+      return "CDATA";
+    }
     if (node instanceof FuzzyXMLElement) {
       StringBuffer sb = new StringBuffer();
       FuzzyXMLAttribute[] attrs = ((FuzzyXMLElement) node).getAttributes();
