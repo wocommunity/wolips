@@ -49,20 +49,41 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.dataType;
 
+import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
+import org.eclipse.jface.internal.databinding.provisional.description.Property;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
+import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.AbstractEOArgument;
+import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
 public class IntegerDataTypePanel extends Composite implements IDataTypePanel {
+	private Text myPrecisionText;
+
+	private DataBindingContext myBindingContext;
+
 	public IntegerDataTypePanel(Composite _parent, int _style, TabbedPropertySheetWidgetFactory _widgetFactory) {
 		super(_parent, _style);
 		setBackground(_parent.getBackground());
 		setLayout(new GridLayout(2, false));
+		_widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.PRECISION), SWT.NONE);
+		myPrecisionText = new Text(this, SWT.BORDER);
+		GridData precisionFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myPrecisionText.setLayoutData(precisionFieldLayoutData);
 	}
 
 	public void setArgument(AbstractEOArgument _argument) {
-		// DO NOTHING
+		if (myBindingContext != null) {
+			myBindingContext.dispose();
+		}
+		if (_argument != null) {
+			myBindingContext = BindingFactory.createContext();
+			myBindingContext.bind(myPrecisionText, new Property(_argument, AbstractEOArgument.PRECISION), null);
+		}
 	}
 
 	public void dispose() {
