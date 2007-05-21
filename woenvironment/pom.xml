@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
 		<artifactId>woproject-all-parent</artifactId>
 		<groupId>org.objectstyle.woproject</groupId>
 		<version>2.0.6-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-
-	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.objectstyle.woproject.ant</groupId>
 	<artifactId>woenvironment</artifactId>
@@ -36,14 +36,13 @@
 		</dependency>
 
 		<dependency>
-			<groupId>webobjects.apple</groupId>
-			<artifactId>java-foundation</artifactId>
+			<groupId>com.apple.webobjects</groupId>
+			<artifactId>JavaFoundation</artifactId>
 			<version>[5.2,)</version>
 		</dependency>
 
 	</dependencies>
-
-
+	
 	<build>
 		<sourceDirectory>src/java</sourceDirectory>
 	</build>

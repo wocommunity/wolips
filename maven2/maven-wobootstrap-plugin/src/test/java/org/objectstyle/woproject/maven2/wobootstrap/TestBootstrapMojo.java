@@ -111,7 +111,7 @@ public class TestBootstrapMojo extends TestCase {
 
 		input = new String[] { "c:/JavaDirectToWeb.jar", "c:/JavaFoundation.jar", "c:/javaeoutil.jar", "c:/JavaXML.jar" };
 
-		output = new String[] { "java-dtw", "java-foundation", "java-eo-util", "java-xml" };
+		output = new String[] { "JavaDirectToWeb", "JavaFoundation", "javaeoutil", "JavaXML" };
 
 		File versionFile = FileUtils.toFile(getClass().getResource("/version.plist"));
 
@@ -157,11 +157,11 @@ public class TestBootstrapMojo extends TestCase {
 
 		Properties properties = mojo.fillProperties(mockJar);
 
-		assertEquals("webobjects.apple", properties.getProperty("groupId"));
+		assertEquals("com.apple.webobjects", properties.getProperty("groupId"));
 		assertNotNull(properties.getProperty("version"));
 		assertEquals("jar", properties.getProperty("packaging"));
 		assertEquals(mockJar.getAbsolutePath(), properties.getProperty("file"));
-		assertEquals("java-wo-extensions", properties.getProperty("artifactId"));
+		assertEquals("JavaWOExtensions", properties.getProperty("artifactId"));
 		assertNotNull(properties.getProperty("pomFile"));
 	}
 

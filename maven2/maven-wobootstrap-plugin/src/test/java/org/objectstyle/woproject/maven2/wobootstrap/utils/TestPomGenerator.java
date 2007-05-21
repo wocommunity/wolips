@@ -18,9 +18,9 @@ import org.custommonkey.xmlunit.XMLTestCase;
 public class TestPomGenerator extends XMLTestCase {
 	protected PomGenerator generator;
 
-	protected static final String ARTIFACT_ID = "java-eo-access";
+	protected static final String ARTIFACT_ID = "JavaEOAccess";
 
-	protected static final String GROUP_ID = "webobjects.apple";
+	protected static final String GROUP_ID = "com.apple.webobjects";
 
 	protected static final String VERSION = "5.3";
 
@@ -57,7 +57,7 @@ public class TestPomGenerator extends XMLTestCase {
 
 		assertEquals(2, dependencies.size());
 
-		String[] expectedDependencies = { "java-foundation", "java-eo-control" };
+		String[] expectedDependencies = { "JavaFoundation", "JavaEOControl" };
 
 		for (int i = 0; i < expectedDependencies.length; i++) {
 			Dependency dependency = (Dependency) dependencies.get(i);
