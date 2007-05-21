@@ -84,6 +84,9 @@ public class PackageExplorerDoubleClickHandler implements IPageListener, IPartLi
 
 	public PackageExplorerDoubleClickHandler() {
 		_listeningPackageExplorers = new WeakHashSet();
+	}
+	
+	public void registerListeners() {
 		IWorkbench workbench = PlatformUI.getWorkbench();
 		workbench.addWindowListener(this);
 		IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
