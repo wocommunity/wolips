@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>maven-japplication-plugin</name>
-	<comment>Contains WOProject Maven2 plugins collection.</comment>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -11,8 +10,14 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>org.maven.ide.eclipse.maven2Builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>org.maven.ide.eclipse.maven2Nature</nature>
 	</natures>
 </projectDescription>
