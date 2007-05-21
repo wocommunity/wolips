@@ -50,6 +50,8 @@
 package org.objectstyle.wolips.eomodeler.outline;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -107,12 +109,11 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
 
 		MenuManager menuManager = new MenuManager();
 		menuManager.setRemoveAllWhenShown(true);
-		menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-//		menuManager.addMenuListener(new IMenuListener() {
-//			public void menuAboutToShow(IMenuManager m) {
-//				contextMenuAboutToShow(m);
-//			}
-//		});
+		menuManager.addMenuListener(new IMenuListener() {
+			public void menuAboutToShow(IMenuManager m) {
+				m.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+			}
+		});
 		Tree tree = treeViewer.getTree();
 		_contextMenu = menuManager.createContextMenu(treeViewer.getTree());
 		tree.setMenu(_contextMenu);
