@@ -806,9 +806,28 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 						}
 					}
 				}
+				
 				String valueClassName = getValueClassName();
 				if (valueClassName == null) {
 					_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " does not have a value class name.", true));
+				}
+				
+				Boolean classProperty = isClassProperty();
+				if (classProperty != null && classProperty.booleanValue()) {
+					List<EORelationship> referencingRelationships = getReferencingRelationships(true);
+					for (EORelationship relationship : referencingRelationships) {
+						boolean foreignKey = false;
+						if (relationship.isToOne() != null && relationship.isToOne().booleanValue()) {
+							for (EOJoin join : relationship.getJoins()) {
+								if (this.equals(join.getSourceAttribute())) {
+									foreignKey = true;
+								}
+							}
+						}
+						if (foreignKey) {
+							_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " is a class property, but is used as a foreign key in the relationship " + relationship.getFullyQualifiedName() + ".", true));
+						}
+					}
 				}
 			}
 		}
