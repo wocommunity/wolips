@@ -544,7 +544,11 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				// EOModelEditorInput(fileEditorInput));
 				updatePartName();
 				getEditorSite().setSelectionProvider(this);
-				EOModelEditor.this.editorDirtyStateChanged();
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						EOModelEditor.this.editorDirtyStateChanged();
+					}
+				});
 
 				synchronized (myCreatePagesLock) {
 					myModel = model;
