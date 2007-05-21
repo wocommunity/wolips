@@ -4,7 +4,7 @@ import jp.aonir.fuzzyxml.FuzzyXMLCDATA;
 import jp.aonir.fuzzyxml.FuzzyXMLNode;
 
 
-public class FuzzyXMLCDATAImpl extends AbstractFuzzyXMLNode implements FuzzyXMLCDATA {
+public class FuzzyXMLCDATAImpl extends FuzzyXMLElementImpl implements FuzzyXMLCDATA {
     
     private String value;
     
@@ -13,7 +13,7 @@ public class FuzzyXMLCDATAImpl extends AbstractFuzzyXMLNode implements FuzzyXMLC
     }
 
     public FuzzyXMLCDATAImpl(FuzzyXMLNode parent, String value, int offset, int length) {
-        super(parent, offset, length);
+        super(parent, "", offset, length, -1);
         this.value = value;
     }
     
