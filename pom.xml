@@ -1,13 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.objectstyle.woproject</groupId>
 	<artifactId>woproject-all-parent</artifactId>
-	<version>2.0.6-SNAPSHOT</version>
+	<version>2.0.6</version>
 	<packaging>pom</packaging>
 	<name>WOProject All</name>
 
@@ -109,13 +107,9 @@
 	</distributionManagement>
 
 	<scm>
-		<connection>
-			scm:svn:http://svn.objectstyle.org/repos/woproject/trunk/woproject
-		</connection>
-		<developerConnection>
-			scm:svn:https://svn.objectstyle.org/repos/woproject/trunk/woproject
-		</developerConnection>
-		<url>http://svn.objectstyle.org/repos/woproject</url>
+		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject/tags/woproject-all-parent-2.0.6</connection>
+		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/tags/woproject-all-parent-2.0.6</developerConnection>
+		<url>http://svn.objectstyle.org/repos/woproject/tags/woproject-all-parent-2.0.6</url>
 	</scm>
 
 	<reporting>
