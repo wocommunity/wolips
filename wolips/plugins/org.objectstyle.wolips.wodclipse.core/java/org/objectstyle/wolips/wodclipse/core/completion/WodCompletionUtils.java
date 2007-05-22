@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
@@ -39,13 +40,13 @@ public class WodCompletionUtils {
     }
   }
 
-  public static void fillInElementTypeCompletionProposals(IJavaProject project, String token, int tokenOffset, int offset, Set<WodCompletionProposal> completionProposalsSet, boolean guessed) throws JavaModelException {
+  public static void fillInElementTypeCompletionProposals(IJavaProject project, String token, int tokenOffset, int offset, Set<WodCompletionProposal> completionProposalsSet, boolean guessed, IProgressMonitor progressMonitor) throws JavaModelException {
     // Lookup type names that extend WOElement based on the current partial
     // token
     TypeNameCollector typeNameCollector = new TypeNameCollector(project, false);
     String partialToken = partialToken(token, tokenOffset, offset);
     if (partialToken.length() > 0) {
-      WodReflectionUtils.findMatchingElementClassNames(partialToken, SearchPattern.R_PREFIX_MATCH, typeNameCollector);
+      WodReflectionUtils.findMatchingElementClassNames(partialToken, SearchPattern.R_PREFIX_MATCH, typeNameCollector, progressMonitor);
       boolean includePackageName = token.indexOf('.') != -1;
       Iterator matchingElementClassNamesIter = typeNameCollector.typeNames();
       while (matchingElementClassNamesIter.hasNext()) {

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaProject;
@@ -57,7 +58,7 @@ public class WodReflectionUtils {
     }
     else if (typeName == null) {
       TypeNameCollector typeNameCollector = new TypeNameCollector(_javaProject, _requireTypeInProject);
-      WodReflectionUtils.findMatchingElementClassNames(_elementTypeName, SearchPattern.R_EXACT_MATCH, typeNameCollector);
+      WodReflectionUtils.findMatchingElementClassNames(_elementTypeName, SearchPattern.R_EXACT_MATCH, typeNameCollector, null);
       if (typeNameCollector.isExactMatch()) {
         String matchingElementClassName = typeNameCollector.firstTypeName();
         type = typeNameCollector.getTypeForClassName(matchingElementClassName);
@@ -74,7 +75,7 @@ public class WodReflectionUtils {
     return type;
   }
 
-  public static void findMatchingElementClassNames(String _elementTypeName, int _matchType, TypeNameCollector _typeNameCollector) throws JavaModelException {
+  public static void findMatchingElementClassNames(String _elementTypeName, int _matchType, TypeNameCollector _typeNameCollector, IProgressMonitor progressMonitor) throws JavaModelException {
     SearchEngine searchEngine = new SearchEngine();
     IJavaSearchScope searchScope = SearchEngine.createWorkspaceScope();
     int lastDotIndex = _elementTypeName.lastIndexOf('.');
@@ -88,7 +89,7 @@ public class WodReflectionUtils {
       packageName = _elementTypeName.substring(0, lastDotIndex).toCharArray();
       typeName = _elementTypeName.substring(lastDotIndex + 1).toCharArray();
     }
-    searchEngine.searchAllTypeNames(packageName, typeName, _matchType, IJavaSearchConstants.CLASS, searchScope, _typeNameCollector, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
+    searchEngine.searchAllTypeNames(packageName, typeName, _matchType, IJavaSearchConstants.CLASS, searchScope, _typeNameCollector, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, progressMonitor);
   }
 
   public static boolean isNSKeyValueCoding(IType type) throws JavaModelException {
