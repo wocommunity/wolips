@@ -101,7 +101,7 @@ public class TemplateAssistProcessor extends HTMLAssistProcessor {
       IJavaProject javaProject = getJavaProject();
       try {
         Set<WodCompletionProposal> proposals = new HashSet<WodCompletionProposal>();
-        WodCompletionUtils.fillInElementTypeCompletionProposals(javaProject, partialElementType, 0, partialElementType.length(), proposals, false);
+        WodCompletionUtils.fillInElementTypeCompletionProposals(javaProject, partialElementType, 0, partialElementType.length(), proposals, false, null);
         for (TagShortcut tagShortcut : _cache.getTagShortcuts()) {
           String shortcut = tagShortcut.getShortcut();
           if (shortcut.startsWith(partialElementType.toLowerCase())) {
