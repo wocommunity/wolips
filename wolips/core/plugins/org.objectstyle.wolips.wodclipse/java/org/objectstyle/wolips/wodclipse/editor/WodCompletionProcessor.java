@@ -236,7 +236,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 					Set<String> alreadyUsedElementNames = WodScanner.getTextForRulesOfType(document, ElementNameRule.class);
 					WodCompletionUtils.fillInElementNameCompletionProposals(alreadyUsedElementNames, token, tokenOffset, offset, completionProposalsSet, guessed, cache.getHtmlElementCache());
 				} else if (tokenType == PreferenceConstants.ELEMENT_TYPE) {
-					WodCompletionUtils.fillInElementTypeCompletionProposals(javaProject, token, tokenOffset, offset, completionProposalsSet, guessed);
+					WodCompletionUtils.fillInElementTypeCompletionProposals(javaProject, token, tokenOffset, offset, completionProposalsSet, guessed, null);
 				} else if (tokenType == PreferenceConstants.BINDING_NAME) {
 					IType elementType = findNearestElementType(javaProject, document, scanner, tokenOffset, cache);
 					WodCompletionUtils.fillInBindingNameCompletionProposals(javaProject, elementType, token, tokenOffset, offset, completionProposalsSet, guessed, cache);
