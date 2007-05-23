@@ -21,6 +21,8 @@ public class BindingValueKey {
   private IJavaProject _javaProject;
 
   private IType _nextType;
+  
+  private String _nextTypeName;
 
   private WodParserCache _cache;
 
@@ -29,6 +31,10 @@ public class BindingValueKey {
     _bindingMember = bindingMember;
     _javaProject = javaProject;
     _cache = cache;
+  }
+  
+  public void setNextType(IType nextType) {
+    _nextType = nextType;
   }
 
   public IType getDeclaringType() {
@@ -46,7 +52,13 @@ public class BindingValueKey {
   public String getNextTypeName() {
     try {
       String nextTypeName;
-      if (_bindingMember instanceof IMethod) {
+      if (_nextType != null) {
+        nextTypeName = _nextType.getFullyQualifiedName();
+      }
+      else if (_bindingMember == null) {
+        nextTypeName = null;
+      }
+      else if (_bindingMember instanceof IMethod) {
         nextTypeName = ((IMethod) _bindingMember).getReturnType();
       }
       else {
@@ -63,7 +75,10 @@ public class BindingValueKey {
     if (_nextType == null) {
       String nextTypeName = getNextTypeName();
       // MS: Primitives have a return type of "I" or "C" ... Just skip them because they won't resolve.
-      if (nextTypeName != null && nextTypeName.length() == 0) {
+      if (nextTypeName == null) {
+        _nextType = null;
+      }
+      else if (nextTypeName != null && nextTypeName.length() == 0) {
         _nextType = null;
       }
       else {

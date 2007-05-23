@@ -131,6 +131,7 @@ public class WodReflectionUtils {
       typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(_type);
       IType[] types = typeHierarchy.getAllTypes();
       if (types != null) {
+        IType nextType = null;
         boolean isUsuallySubclassed = false;
         for (int typeNum = 0; !isUsuallySubclassed && typeNum < types.length; typeNum++) {
           String typeName = types[typeNum].getElementName();
@@ -146,12 +147,16 @@ public class WodReflectionUtils {
             additionalProposals.add("@sort");
             additionalProposals.add("@sortAsc");
             additionalProposals.add("@sortDesc");
+            nextType = types[typeNum];
           }
         }
         
         for (String additionalProposal : additionalProposals) {
           if (additionalProposal.startsWith(_nameStartingWith)) {
-            bindingKeys.add(new BindingValueKey(additionalProposal, null, _javaProject, cache));
+            BindingValueKey additionalKey = new BindingValueKey(additionalProposal, null, _javaProject, cache);
+            // MS: this is a hack to prevent NPE's because we don't know the next type right now ...
+            //additionalKey.setNextType(nextType);
+            bindingKeys.add(additionalKey);
           }
         }
         
