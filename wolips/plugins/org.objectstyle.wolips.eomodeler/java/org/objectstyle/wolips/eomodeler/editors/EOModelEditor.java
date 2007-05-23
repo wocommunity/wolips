@@ -442,12 +442,12 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				myModel.verify(failures);
 				handleModelErrors(failures, false);
 
-				IFile originalFile = ((IFileEditorInput) input).getFile();
-				IContainer originalFolder = originalFile.getParent();
-
-				myModel.saveToFolder(originalFolder.getParent().getLocation().toFile());
+				IFile indexFile = EOModelEditor.getIndexFile(myModel);
+				IContainer eomodelFolder = indexFile.getParent();
+				System.out.println("EOModelEditor.doSave: saving " + eomodelFolder.getName() + " to " + eomodelFolder.getParent().getLocation().toFile());
+				myModel.saveToFolder(eomodelFolder.getParent().getLocation().toFile());
 				myModel.setDirty(false);
-				originalFolder.refreshLocal(IResource.DEPTH_INFINITE, _monitor);
+				eomodelFolder.refreshLocal(IResource.DEPTH_INFINITE, _monitor);
 			}
 		} catch (Throwable t) {
 			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), t);
