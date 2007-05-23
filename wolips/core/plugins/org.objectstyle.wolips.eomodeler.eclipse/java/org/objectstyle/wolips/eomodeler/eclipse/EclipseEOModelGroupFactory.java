@@ -140,7 +140,7 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 		return model;
 	}
 
-	protected void addModelsFromProject(EOModelGroup modelGroup, IProject project, Set<File> searchedFolders, Set<IProject> searchedProjects, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws IOException, EOModelException, CoreException {
+	protected void addModelsFromProject(EOModelGroup modelGroup, IProject project, Set<File> searchedFolders, Set<IProject> searchedProjects, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, URL editingModelURL, IProgressMonitor progressMonitor) throws IOException, EOModelException, CoreException {
 		if (!searchedProjects.contains(project)) {
 			progressMonitor.setTaskName("Adding models from " + project.getName() + " ...");
 			searchedProjects.add(project);
@@ -171,7 +171,7 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 				} else if (entryKind == IClasspathEntry.CPE_PROJECT) {
 					IPath path = entry.getPath();
 					IProject dependsOnProject = ResourcesPlugin.getWorkspace().getRoot().getProject(path.lastSegment());
-					addModelsFromProject(modelGroup, dependsOnProject, searchedFolders, searchedProjects, failures, skipOnDuplicates, progressMonitor);
+					addModelsFromProject(modelGroup, dependsOnProject, searchedFolders, searchedProjects, failures, skipOnDuplicates, editingModelURL, progressMonitor);
 				} else if (entryKind == IClasspathEntry.CPE_SOURCE) {
 					visitedProject = true;
 					project.accept(new ModelVisitor(modelGroup, searchedFolders, failures, skipOnDuplicates, progressMonitor), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
@@ -203,7 +203,7 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 		progressMonitor.setTaskName("Loading model group ...");
 		EOModelGroup modelGroup = new EOModelGroup();
 		modelGroup.setEditingModelURL(editingModelURL);
-		addModelsFromProject(modelGroup, project, new HashSet<File>(), new HashSet<IProject>(), failures, skipOnDuplicates, progressMonitor);
+		addModelsFromProject(modelGroup, project, new HashSet<File>(), new HashSet<IProject>(), failures, skipOnDuplicates, editingModelURL, progressMonitor);
 		modelGroup.resolve(failures);
 		modelGroup.verify(failures);
 		return modelGroup;
@@ -236,12 +236,21 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 				if (resource.isDerived()) {
 					return false;
 				}
+				
 				String name = resource.getName();
 				if (name != null) {
 					if ("build".equals(name) || "dist".equals(name) || "target".equals(name) || name.endsWith(".wo")) {
 						return false;
 					}
+					
+					if (name.endsWith(".framework") || name.endsWith(".woa")) {
+						String projectName = resource.getProject().getName();
+						if (name.equals(projectName + ".framework") || name.equals(projectName + ".woa")) {
+							return false;
+						}
+					}
 				}
+				
 				if (resource.getType() == IResource.FOLDER) {
 					_progressMonitor.setTaskName("Scanning " + resource.getName() + " ...");
 					File resourceFile = resource.getLocation().toFile();
