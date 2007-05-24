@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.locate.result;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -68,16 +69,15 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.internal.core.JavaModelManager;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.locate.LocatePlugin;
 
 public class LocalizedComponentsLocateResult extends AbstractLocateResult {
-	private ArrayList components = new ArrayList();
+	private List<IFolder> components = new ArrayList<IFolder>();
 
 	private IFile dotJava;
 
-	//private IType dotJavaType;
+	// private IType dotJavaType;
 
 	private IFile dotApi;
 
@@ -88,7 +88,7 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 	public void add(IResource resource) throws LocateException {
 		super.add(resource);
 		if (resource.getType() == IResource.FOLDER) {
-			components.add(resource);
+			components.add((IFolder) resource);
 		} else if (resource.getType() == IResource.FILE) {
 			IFile file = (IFile) resource;
 			String extension = resource.getFileExtension();
@@ -112,13 +112,13 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 	}
 
 	public IFolder[] getComponents() {
-		return (IFolder[]) components.toArray(new IFolder[components.size()]);
+		return components.toArray(new IFolder[components.size()]);
 	}
 
 	public IFile getDotApi() {
 		return dotApi;
 	}
-	
+
 	public IFile getDotApi(boolean guessIfMissing) throws CoreException {
 		IFile apiFile = dotApi;
 		if (apiFile == null && guessIfMissing) {
@@ -140,26 +140,27 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 
 	public IType getDotJavaType() throws JavaModelException {
 		IType dotJavaType = null;
-		if (dotJavaType == null) {
-			IFile javaFile = getDotJava();
-			if (javaFile != null) {
-				IJavaElement javaElement = JavaCore.create(javaFile);
-				if (javaElement instanceof ICompilationUnit) {
-					IType[] types = ((ICompilationUnit) javaElement).getTypes();
-					// NTS: What do we do about multiple types in a file??
-					if (types.length > 0) {
-						dotJavaType = types[0];
-					}
+		// MS: Don't hold onto java types
+		// if (dotJavaType == null) {
+		IFile javaFile = getDotJava();
+		if (javaFile != null) {
+			IJavaElement javaElement = JavaCore.create(javaFile);
+			if (javaElement instanceof ICompilationUnit) {
+				IType[] types = ((ICompilationUnit) javaElement).getTypes();
+				// NTS: What do we do about multiple types in a file??
+				if (types.length > 0) {
+					dotJavaType = types[0];
 				}
 			}
 		}
+		// }
 		return dotJavaType;
 	}
 
 	public IFile getFirstHtmlFile() throws CoreException {
 		IFile htmlFile;
 		if (components.size() > 0) {
-			IFolder componentFolder = (IFolder) components.get(0);
+			IFolder componentFolder = components.get(0);
 			htmlFile = LocalizedComponentsLocateResult.getHtml(componentFolder);
 		} else {
 			htmlFile = null;
@@ -170,7 +171,7 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 	public IFile getFirstWodFile() throws CoreException {
 		IFile wodFile;
 		if (components.size() > 0) {
-			IFolder componentFolder = (IFolder) components.get(0);
+			IFolder componentFolder = components.get(0);
 			wodFile = LocalizedComponentsLocateResult.getWod(componentFolder);
 		} else {
 			wodFile = null;
@@ -181,12 +182,41 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 	public IFile getFirstWooFile() throws CoreException {
 		IFile wooFile;
 		if (components.size() > 0) {
-			IFolder componentFolder = (IFolder) components.get(0);
+			IFolder componentFolder = components.get(0);
 			wooFile = LocalizedComponentsLocateResult.getWoo(componentFolder);
 		} else {
 			wooFile = null;
 		}
 		return wooFile;
+	}
+
+	public boolean isValid() {
+		boolean valid = true;
+
+		for (IFolder component : components) {
+			if (!component.exists()) {
+				valid = false;
+			}
+		}
+    
+		if (dotApi == null) {
+			try {
+				IFile guessDotApi = getDotApi(true);
+				if (guessDotApi != null && guessDotApi.exists()) {
+					valid = false;
+				}
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+		} else if (!dotApi.exists()) {
+			valid = false;
+		}
+
+		if (dotJava != null && !dotJava.exists()) {
+			valid = false;
+		}
+
+		return valid;
 	}
 
 	public static IFile getHtml(IFolder component) throws CoreException {

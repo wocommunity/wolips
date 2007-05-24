@@ -65,21 +65,21 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.objectstyle.wolips.locate.LocatePlugin;
 
 public abstract class AbstractProjectReferencesLocateScope implements ILocateScope {
-	private IProject myProject;
+	private IProject project;
 
-	private List myProjects;
+	private List<IProject> projects;
 
-	private boolean myFindProjectsThatDependOnThis;
+	private boolean findProjectsThatDependOnThis;
 
-	private boolean myFindProjectsThatThisDependsOn;
+	private boolean findProjectsThatThisDependsOn;
 
-	private boolean myIncludeThis;
+	private boolean includeThis;
 
-	public AbstractProjectReferencesLocateScope(IProject project, boolean _findProjectsThatDependOnThis, boolean _findProjectsThatThisDependOn, boolean _includeThis) {
-		myProject = project;
-		myIncludeThis = _includeThis;
-		myFindProjectsThatDependOnThis = _findProjectsThatDependOnThis;
-		myFindProjectsThatThisDependsOn = _findProjectsThatThisDependOn;
+	public AbstractProjectReferencesLocateScope(IProject project, boolean findProjectsThatDependOnThis, boolean findProjectsThatThisDependOn, boolean includeThis) {
+		this.project = project;
+		this.includeThis = includeThis;
+		this.findProjectsThatDependOnThis = findProjectsThatDependOnThis;
+		this.findProjectsThatThisDependsOn = findProjectsThatThisDependOn;
 	}
 
 	public boolean ignoreContainer(IContainer container) {
@@ -92,18 +92,18 @@ public abstract class AbstractProjectReferencesLocateScope implements ILocateSco
 	protected abstract boolean _ignoreContainer(IContainer _container);
 
 	private boolean ignoreProject(IProject projectToValidate) {
-		if (myProjects == null) {
-			myProjects = new LinkedList();
+		if (projects == null) {
+			projects = new LinkedList<IProject>();
 			IProject[] allProjects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 			for (int projectNum = 0; projectNum < allProjects.length; projectNum++) {
-				if (myIncludeThis && myProject.equals(allProjects[projectNum])) {
-					myProjects.add(allProjects[projectNum]);
-				} else if ((myFindProjectsThatDependOnThis && doesProjectDependOnProject(allProjects[projectNum], myProject)) || (myFindProjectsThatThisDependsOn && doesProjectDependOnProject(myProject, allProjects[projectNum]))) {
-					myProjects.add(allProjects[projectNum]);
+				if (includeThis && project.equals(allProjects[projectNum])) {
+					projects.add(allProjects[projectNum]);
+				} else if ((findProjectsThatDependOnThis && doesProjectDependOnProject(allProjects[projectNum], project)) || (findProjectsThatThisDependsOn && doesProjectDependOnProject(project, allProjects[projectNum]))) {
+					projects.add(allProjects[projectNum]);
 				}
 			}
 		}
-		return !myProjects.contains(projectToValidate);
+		return !projects.contains(projectToValidate);
 	}
 
 	private boolean doesProjectDependOnProject(IProject _project, IProject _maybeDependsOnProject) {

@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.locate.result;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -63,11 +64,11 @@ import org.objectstyle.wolips.locate.LocateException;
 
 public class JavaLocateResult extends AbstractLocateResult {
 
-	private ArrayList dotJava;
+	private List<IFile> dotJava;
 
 	public JavaLocateResult() {
 		super();
-		dotJava = new ArrayList();
+		dotJava = new ArrayList<IFile>();
 	}
 
 	public void add(IResource resource) throws LocateException {
@@ -84,6 +85,6 @@ public class JavaLocateResult extends AbstractLocateResult {
 	}
 
 	public IFile[] getDotJava() {
-		return (IFile[]) dotJava.toArray(new IFile[dotJava.size()]);
+		return dotJava.toArray(new IFile[dotJava.size()]);
 	}
 }
