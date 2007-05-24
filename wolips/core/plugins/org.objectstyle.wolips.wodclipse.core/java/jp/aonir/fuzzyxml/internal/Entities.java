@@ -420,8 +420,8 @@ public class Entities {
     }
 
     static class PrimitiveEntityMap implements EntityMap {
-        private Map mapNameToValue = new HashMap();
-        private HashMap mapValueToName = new HashMap();
+        private Map<String, Integer> mapNameToValue = new HashMap<String, Integer>();
+        private Map<Integer, String> mapValueToName = new HashMap<Integer, String>();
 
         /**
          * {@inheritDoc}
@@ -435,25 +435,25 @@ public class Entities {
          * {@inheritDoc}
          */
         public String name(int value) {
-            return (String) mapValueToName.get(new Integer(value));
+            return mapValueToName.get(new Integer(value));
         }
 
         /**
          * {@inheritDoc}
          */
         public int value(String name) {
-            Object value = mapNameToValue.get(name);
+            Integer value = mapNameToValue.get(name);
             if (value == null) {
                 return -1;
             }
-            return ((Integer) value).intValue();
+            return value.intValue();
         }
     }
 
 
     static abstract class MapIntMap implements Entities.EntityMap {
-        protected Map mapNameToValue;
-        protected Map mapValueToName;
+        protected Map<String, Integer> mapNameToValue;
+        protected Map<Integer, String> mapValueToName;
 
         /**
          * {@inheritDoc}
@@ -467,18 +467,18 @@ public class Entities {
          * {@inheritDoc}
          */
         public String name(int value) {
-            return (String) mapValueToName.get(new Integer(value));
+            return mapValueToName.get(new Integer(value));
         }
 
         /**
          * {@inheritDoc}
          */
         public int value(String name) {
-            Object value = mapNameToValue.get(name);
+            Integer value = mapNameToValue.get(name);
             if (value == null) {
                 return -1;
             }
-            return ((Integer) value).intValue();
+            return value.intValue();
         }
     }
 
@@ -487,8 +487,8 @@ public class Entities {
          * Constructs a new instance of <code>HashEntityMap</code>.
          */
         public HashEntityMap() {
-            mapNameToValue = new HashMap();
-            mapValueToName = new HashMap();
+            mapNameToValue = new HashMap<String, Integer>();
+            mapValueToName = new HashMap<Integer, String>();
         }
     }
 
@@ -497,8 +497,8 @@ public class Entities {
        * Constructs a new instance of <code>TreeEntityMap</code>.
        */
         public TreeEntityMap() {
-            mapNameToValue = new TreeMap();
-            mapValueToName = new TreeMap();
+            mapNameToValue = new TreeMap<String, Integer>();
+            mapValueToName = new TreeMap<Integer, String>();
         }
     }
 
@@ -509,6 +509,7 @@ public class Entities {
         /**
          * {@inheritDoc}
          */
+        @Override
         public String name(int value) {
             if (value < LOOKUP_TABLE_SIZE) {
                 return lookupTable()[value];
@@ -666,6 +667,7 @@ public class Entities {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void add(String name, int value) {
             ensureCapacity(size + 1);
             int insertAt = binarySearch(value);
@@ -683,6 +685,7 @@ public class Entities {
         /**
          * {@inheritDoc}
          */
+        @Override
         public String name(int value) {
             int index = binarySearch(value);
             if (index < 0) {

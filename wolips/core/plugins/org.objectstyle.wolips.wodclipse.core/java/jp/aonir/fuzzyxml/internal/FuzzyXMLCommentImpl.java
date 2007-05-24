@@ -6,20 +6,20 @@ import jp.aonir.fuzzyxml.FuzzyXMLNode;
 
 public class FuzzyXMLCommentImpl extends AbstractFuzzyXMLNode implements FuzzyXMLComment {
     
-    private String value;
+    private String _value;
     
     public FuzzyXMLCommentImpl(String value) {
         super();
-        this.value = value;
+        this._value = value;
     }
     
     public FuzzyXMLCommentImpl(FuzzyXMLNode parent,String value,int offset,int length) {
         super(parent,offset,length);
-        this.value = value;
+        this._value = value;
     }
 
     public String getValue() {
-        return value;
+        return _value;
     }
     
     public String toXMLString(){
@@ -31,6 +31,7 @@ public class FuzzyXMLCommentImpl extends AbstractFuzzyXMLNode implements FuzzyXM
         return "<!-- " + FuzzyXMLUtil.escape(getValue(), isHTML) + " -->";
     }
     
+    @Override
     public String toString(){
         return "comment: " + getValue();
     }

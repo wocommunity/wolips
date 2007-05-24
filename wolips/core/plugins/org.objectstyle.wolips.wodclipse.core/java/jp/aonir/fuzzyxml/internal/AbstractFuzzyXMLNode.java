@@ -5,10 +5,10 @@ import jp.aonir.fuzzyxml.FuzzyXMLNode;
 
 public abstract class AbstractFuzzyXMLNode implements FuzzyXMLNode {
 	
-	private int offset = -1;
-	private int length = -1;
-	private FuzzyXMLNode parent;
-	private FuzzyXMLDocumentImpl doc;
+	private int _offset = -1;
+	private int _length = -1;
+	private FuzzyXMLNode _parent;
+	private FuzzyXMLDocumentImpl _doc;
 //	private String namespaceURI;
 //	private String prefix;
 	
@@ -40,27 +40,27 @@ public abstract class AbstractFuzzyXMLNode implements FuzzyXMLNode {
 //	}
 	
 	public void setLength(int length){
-		this.length = length;
+		this._length = length;
 	}
 	
 	public int getLength() {
-		return length;
+		return _length;
 	}
 	
 	public int getOffset() {
-		return offset;
+		return _offset;
 	}
 	
 	public FuzzyXMLNode getParentNode() {
-		return parent;
+		return _parent;
 	}
 	
 	public void setOffset(int offset){
-		this.offset = offset;
+		this._offset = offset;
 	}
 	
 	public void setParentNode(FuzzyXMLNode parent){
-		this.parent = parent;
+		this._parent = parent;
 	}
 	
 	/**
@@ -96,10 +96,10 @@ public abstract class AbstractFuzzyXMLNode implements FuzzyXMLNode {
 	}
 	
 	public void setDocument(FuzzyXMLDocumentImpl doc){
-	    this.doc = doc;
+	    this._doc = doc;
 	}
 	
 	public FuzzyXMLDocumentImpl getDocument(){
-	    return doc;
+	    return _doc;
 	}
 }

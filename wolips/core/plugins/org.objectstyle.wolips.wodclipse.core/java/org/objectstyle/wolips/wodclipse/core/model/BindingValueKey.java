@@ -83,7 +83,7 @@ public class BindingValueKey {
       }
       else {
         IType typeContext = getDeclaringType();
-        Map<String, IType> nextTypeCache = (Map<String, IType>) _cache.getTypeContextCache().get(typeContext);
+        Map<String, IType> nextTypeCache = _cache.getTypeContextCache().get(typeContext);
         if (nextTypeCache == null) {
           nextTypeCache = new HashMap<String, IType>();
           _cache.getTypeContextCache().put(typeContext, nextTypeCache);
