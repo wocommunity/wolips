@@ -121,15 +121,10 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
  */
 public final class RelatedView extends ViewPart implements ISelectionListener, IPartListener {
 	protected class ViewContentProvider implements ITreeContentProvider {
-
-		Object currentInput = null;
-
-		private Object lastParent;
-
-		ViewLabelProvider labelProvider;
+		private ViewLabelProvider labelProvider;
 
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-			this.currentInput = newInput;
+			// DO NOTHING
 		}
 
 		public void dispose() {
@@ -137,70 +132,52 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 		}
 
 		public Object[] getElements(Object parent) {
+			Object actualParent = parent;
 			IWOLipsResource wolipsResource = null;
 			// MS: If we add the dependency it is a circular dependency, so that
 			// sucks ... We'll just do it Reflection-Style.
-			if (parent != null && parent.getClass().getName().equals("org.objectstyle.wolips.components.input.ComponentEditorFileEditorInput")) {
+			if (actualParent != null && actualParent.getClass().getName().equals("org.objectstyle.wolips.components.input.ComponentEditorFileEditorInput")) {
 				try {
-					parent = parent.getClass().getMethod("getFile", null).invoke(parent, null);
+					actualParent = actualParent.getClass().getMethod("getFile", (Class[])null).invoke(actualParent, (Object[])null);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				// System.out.println("ViewContentProvider.getElements: " +
 				// parent);
-			} else if (parent != null && parent.getClass().getName().startsWith("org.eclipse.wst")) {
-				// MS: Total hack ... HTML editor returns its element as a
-				// TextImpl. I'm not how to get back to the IResource from
-				// that. It just so happens that there's always a previous
-				// selection that is something we CAN use
-				parent = lastParent;
-				// try {
-				// Object structuredDocRegion =
-				// parent.getClass().getMethod("getFirstStructuredDocumentRegion",
-				// null).invoke(parent, null);
-				// Object structuredDoc =
-				// structuredDocRegion.getClass().getMethod("getParentDocument",
-				// null).invoke(structuredDocRegion, null);
-				// System.out.println("ViewContentProvider.getElements: " +
-				// structuredDoc);
-				// }
-				// catch (Exception e) {
-				// e.printStackTrace();
-				// }
 			}
-			if (parent instanceof IFileEditorInput) {
-				IFileEditorInput input = (IFileEditorInput) parent;
+			if (actualParent instanceof IFileEditorInput) {
+				IFileEditorInput input = (IFileEditorInput) actualParent;
 				try {
 					// HACK AK: we should use sth more generic here
 					if ("java".equals(input.getFile().getFileExtension())) {
-						parent = JavaCore.createCompilationUnitFrom(input.getFile());
+						actualParent = JavaCore.createCompilationUnitFrom(input.getFile());
 					}
 				} catch (Exception ex) {
 					UIPlugin.getDefault().log(ex);
 				}
 			}
-			if (parent instanceof IMember) {
-				parent = ((IMember) parent).getCompilationUnit();
+			if (actualParent instanceof IMember) {
+				actualParent = ((IMember) actualParent).getCompilationUnit();
 			}
-			if (parent instanceof IResource) {
-				wolipsResource = WOLipsCore.getWOLipsModel().getWOLipsResource((IResource) parent);
+			if (actualParent instanceof IResource) {
+				wolipsResource = WOLipsCore.getWOLipsModel().getWOLipsResource((IResource) actualParent);
 				// getViewer().setInput(wolipsResource);
-			} else if (parent instanceof ICompilationUnit) {
-				wolipsResource = WOLipsCore.getWOLipsModel().getWOLipsCompilationUnit((ICompilationUnit) parent);
+			} else if (actualParent instanceof ICompilationUnit) {
+				wolipsResource = WOLipsCore.getWOLipsModel().getWOLipsCompilationUnit((ICompilationUnit) actualParent);
 			}
-			List result = new LinkedList();
+			List<IResource> result = new LinkedList<IResource>();
 			if (wolipsResource != null) {
 				try {
-					List list = wolipsResource.getRelatedResources();
+					List<IResource> list = wolipsResource.getRelatedResources();
 					result.addAll(list);
 
 				} catch (Exception e) {
 					UIPlugin.getDefault().log(e);
 				}
-			} else if(parent != null && parent instanceof IResource) {
+			} else if(actualParent != null && actualParent instanceof IResource) {
 				try {
-					final IResource resource = (IResource)parent;
-					final List list = new ArrayList();
+					final IResource resource = (IResource)actualParent;
+					final List<IResource> list = new ArrayList<IResource>();
 					IContainer lproj = resource.getParent();
 					if(lproj != null && "lprog".equals(lproj.getFileExtension())) {
 						IContainer p = lproj.getParent();
@@ -217,7 +194,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 								return true;
 							}
 							
-						}, IContainer.DEPTH_ONE);
+						}, IResource.DEPTH_ONE);
 						result.addAll(list);
 					}
 
@@ -225,7 +202,6 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 					UIPlugin.getDefault().log(e);
 				}
 			}
-			lastParent = parent;
 			Object[] resultList = result.toArray();
 			// labelProvider needs the element list to check for duplicate
 			// filenames
@@ -266,7 +242,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 	}
 
 	class ViewLabelProvider extends AppearanceAwareLabelProvider implements ITableLabelProvider {
-		private Set duplicateFilenameSet;
+		private Set<IResource> duplicateResourceSet;
 
 		public ViewLabelProvider() {
 			super(AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS | JavaElementLabels.P_COMPRESSED, AppearanceAwareLabelProvider.DEFAULT_IMAGEFLAGS | JavaElementImageProvider.SMALL_ICONS);
@@ -275,18 +251,18 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 
 		public void setResultList(Object[] items) {
 			int length = items.length;
-			duplicateFilenameSet = new HashSet(length);
-			Map filenameToItemMap = new HashMap(length);
+			duplicateResourceSet = new HashSet<IResource>(length);
+			Map<String, IResource> filenameToItemMap = new HashMap<String, IResource>(length);
 			int i = length;
 			while (i-- > 0) {
 				if (!(items[i] instanceof IResource)) {
 					continue;
 				}
 				IResource thisResource = (IResource) items[i];
-				IResource otherResource = (IResource) filenameToItemMap.get(thisResource.getName());
+				IResource otherResource = filenameToItemMap.get(thisResource.getName());
 				if (otherResource != null) {
-					duplicateFilenameSet.add(thisResource);
-					duplicateFilenameSet.add(otherResource);
+					duplicateResourceSet.add(thisResource);
+					duplicateResourceSet.add(otherResource);
 				}
 				filenameToItemMap.put(thisResource.getName(), thisResource);
 			}
@@ -316,7 +292,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 					if ("eomodeld".equalsIgnoreCase(ext)) {
 						text = name;
 					}
-					if (duplicateFilenameSet.contains(resource)) {
+					if (duplicateResourceSet.contains(resource)) {
 						text += " - " + resource.getProject().getName();
 					}
 				}
