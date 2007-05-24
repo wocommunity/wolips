@@ -227,9 +227,7 @@
 	<extension point="org.eclipse.ui.editorActions">
 		<editorContribution
 			targetID="org.objectstyle.wolips.componenteditor.ComponentEditor"
-			description="Component Editor Actions"
-			id="org.objectstyle.wolips.componenteditor.actionSet"
-			label="Component Editor">
+			id="org.objectstyle.wolips.componenteditor.actionSet">
 			<menu
 			   id="org.objectstyle.wolips.componenteditor.insertMenuContribution"
 			   label="&amp;Insert"
