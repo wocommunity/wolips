@@ -57,8 +57,9 @@ package org.objectstyle.wolips.jdt.classpath;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
@@ -80,7 +81,7 @@ public final class WOClasspathContainer implements IClasspathContainer {
 
 	private IClasspathEntry[] classpathEntries = null;
 
-	private static Hashtable allClasspathEntries = new Hashtable();
+	private static Map<String, Set<IClasspathEntry>> allClasspathEntries = new HashMap<String, Set<IClasspathEntry>>();
 
 	private IPath id;
 
@@ -126,7 +127,7 @@ public final class WOClasspathContainer implements IClasspathContainer {
 	}
 
 	private void initPath() {
-		Set path = new LinkedHashSet();
+		Set<IClasspathEntry> path = new LinkedHashSet<IClasspathEntry>();
 		IPath[] paths = VariablesPlugin.getDefault().getFrameworkRoots();
 		for (int i = 1; i < id.segmentCount(); i++) {
 			for (int h = 0; h < paths.length; h++) {
@@ -163,21 +164,21 @@ public final class WOClasspathContainer implements IClasspathContainer {
 								}
 								IClasspathEntry entry = JavaCore.newLibraryEntry(archivePath, source, null, null, javadoc, false);
 								path.add(entry);
-								Set entrySet = (Set) allClasspathEntries.get(framework);
+								Set<IClasspathEntry> entrySet = WOClasspathContainer.allClasspathEntries.get(framework);
 								if (entrySet == null) {
-									entrySet = new LinkedHashSet();
-									allClasspathEntries.put(framework, entrySet);
+									entrySet = new LinkedHashSet<IClasspathEntry>();
+									WOClasspathContainer.allClasspathEntries.put(framework, entrySet);
 								}
 								entrySet.add(entry);
 							}
 						}
 					}
 				} else {
-					path.addAll((Set) allClasspathEntries.get(framework));
+					path.addAll(allClasspathEntries.get(framework));
 					h = paths.length;
 				}
 			}
 		}
-		classpathEntries = (IClasspathEntry[]) path.toArray(new IClasspathEntry[path.size()]);
+		classpathEntries = path.toArray(new IClasspathEntry[path.size()]);
 	}
 }

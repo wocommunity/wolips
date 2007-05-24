@@ -58,6 +58,7 @@ package org.objectstyle.wolips.jdt.classpath.model;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author ulrich
@@ -66,10 +67,10 @@ public class FrameworkFilenameFilter implements FilenameFilter {
 
 	private Root root;
 
-	private ArrayList arrayList = new ArrayList();
+	private List<Framework> frameworks = new ArrayList<Framework>();
 
-	protected ArrayList frameworks() {
-		return this.arrayList;
+	protected List<Framework> frameworks() {
+		return this.frameworks;
 	}
 
 	/**
@@ -98,7 +99,7 @@ public class FrameworkFilenameFilter implements FilenameFilter {
 				result = (0 != jarFiles.length) || (0 != zipFiles.length);
 				Framework framework = new Framework(name.substring(0, name.length() - ".framework".length()), this.root, jarFiles, zipFiles, srcFile);
 
-				this.arrayList.add(framework);
+				this.frameworks.add(framework);
 			}
 
 		}
@@ -112,7 +113,7 @@ public class FrameworkFilenameFilter implements FilenameFilter {
 	 */
 	protected void setRoot(Root root) {
 		this.root = root;
-		this.arrayList = new ArrayList();
+		this.frameworks = new ArrayList<Framework>();
 	}
 
 	private static final class WildcardFilenameFilter implements FilenameFilter {

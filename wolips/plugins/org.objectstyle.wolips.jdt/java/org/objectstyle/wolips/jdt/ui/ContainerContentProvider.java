@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.jdt.ui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -135,7 +136,7 @@ public class ContainerContentProvider implements ITreeContentProvider, ILabelPro
 	}
 
 	private void setCheckedElements() {
-		ArrayList checked = new ArrayList();
+		List<Framework> checked = new ArrayList<Framework>();
 		Root[] roots = JdtPlugin.getDefault().getClasspathModel().getRoots();
 		for (int i = 0; i < roots.length; i++) {
 			Framework[] frameworks = roots[i].getEntries();
@@ -153,7 +154,7 @@ public class ContainerContentProvider implements ITreeContentProvider, ILabelPro
 	 * @return
 	 */
 	public IClasspathEntry getClasspathEntry() {
-		ArrayList checked = new ArrayList();
+		List<Framework> checked = new ArrayList<Framework>();
 		Root[] roots = JdtPlugin.getDefault().getClasspathModel().getRoots();
 		for (int i = 0; i < roots.length; i++) {
 			Framework[] frameworks = roots[i].getEntries();
@@ -164,7 +165,7 @@ public class ContainerContentProvider implements ITreeContentProvider, ILabelPro
 					}
 				}
 		}
-		this.container.setContent((Framework[]) checked.toArray(new Framework[checked.size()]));
+		this.container.setContent(checked.toArray(new Framework[checked.size()]));
 		return JavaCore.newContainerEntry(this.container.getPath(), false);
 	}
 

@@ -63,4 +63,20 @@ package org.objectstyle.wolips.jdt.classpath;
  */
 public class PathCoderException extends Exception {
 
+	public PathCoderException() {
+		super();
+	}
+
+	public PathCoderException(String arg0, Throwable arg1) {
+		super(arg0, arg1);
+	}
+
+	public PathCoderException(String arg0) {
+		super(arg0);
+	}
+
+	public PathCoderException(Throwable arg0) {
+		super(arg0);
+	}
+  
 }

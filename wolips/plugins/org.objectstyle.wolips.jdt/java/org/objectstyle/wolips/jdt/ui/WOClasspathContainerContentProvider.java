@@ -58,6 +58,7 @@ package org.objectstyle.wolips.jdt.ui;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -84,7 +85,7 @@ public class WOClasspathContainerContentProvider implements ITreeContentProvider
 
 	private CheckboxTreeViewer checkboxTreeViewer;
 
-	protected ArrayList allEntries = new ArrayList();
+	protected List<String> allEntries = new ArrayList<String>();
 
 	private boolean isExported = false;
 

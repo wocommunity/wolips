@@ -57,6 +57,7 @@ package org.objectstyle.wolips.jdt.classpath.model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 
@@ -84,7 +85,7 @@ public class Root {
 	 */
 	public Framework[] getEntries() {
 		if (this.entries == null) {
-			ArrayList frameworks = new ArrayList();
+			List<Framework> frameworks = new ArrayList<Framework>();
 			File fwBase = new File(this.rootPath.toOSString());
 			if (fwBase.exists() && fwBase.isDirectory()) {
 				FrameworkFilenameFilter frameworkFilenameFilter = new FrameworkFilenameFilter();
@@ -92,7 +93,7 @@ public class Root {
 				fwBase.listFiles(frameworkFilenameFilter);
 				frameworks.addAll(frameworkFilenameFilter.frameworks());
 			}
-			this.entries = (Framework[]) frameworks.toArray(new Framework[frameworks.size()]);
+			this.entries = frameworks.toArray(new Framework[frameworks.size()]);
 		}
 		return this.entries;
 	}

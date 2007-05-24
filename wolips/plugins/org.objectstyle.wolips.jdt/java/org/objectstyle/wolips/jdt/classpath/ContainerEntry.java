@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.jdt.classpath;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -68,7 +69,7 @@ import org.objectstyle.wolips.jdt.classpath.model.Framework;
  * @author ulrich
  */
 public class ContainerEntry implements Comparable {
-	private ArrayList entries = new ArrayList();
+	private List<IClasspathEntry> entries = new ArrayList<IClasspathEntry>();
 
 	private String name;
 
@@ -156,7 +157,7 @@ public class ContainerEntry implements Comparable {
 	/**
 	 * @return Returns the entries.
 	 */
-	public ArrayList getEntries() {
+	public List<IClasspathEntry> getEntries() {
 		return this.entries;
 	}
 
@@ -192,17 +193,15 @@ public class ContainerEntry implements Comparable {
 	 * @param framework
 	 */
 	public void push(Framework framework) {
-		entries = new ArrayList();
+		entries = new ArrayList<IClasspathEntry>();
 		this.srcPath = framework.getSrcPath();
 		this.javaDocPath = framework.getJavaDocPath();
 		this.order = framework.getOrder();
 		this.exported = framework.isExported();
-		if (framework != null) {
-			IPath[] libraryPaths = framework.getLibraryPaths();
-			for (int j = 0; j < libraryPaths.length; j++) {
-				IClasspathEntry entry = JavaCore.newLibraryEntry(libraryPaths[j], framework.getSrcPath(), this.javaDocPath, this.exported);
-				this.entries.add(entry);
-			}
+		IPath[] libraryPaths = framework.getLibraryPaths();
+		for (int j = 0; j < libraryPaths.length; j++) {
+			IClasspathEntry entry = JavaCore.newLibraryEntry(libraryPaths[j], framework.getSrcPath(), this.javaDocPath, this.exported);
+			this.entries.add(entry);
 		}
 		if (this.order == null) {
 			order = "0";

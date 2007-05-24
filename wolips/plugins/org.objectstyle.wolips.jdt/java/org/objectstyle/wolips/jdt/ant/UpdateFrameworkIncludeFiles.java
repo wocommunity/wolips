@@ -45,6 +45,7 @@ package org.objectstyle.wolips.jdt.ant;
 
 import java.io.ByteArrayInputStream;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -86,10 +87,10 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 	 */
 	protected synchronized void buildIncludeFiles() {
 		// avoid creating two entries for one classPath Entry
-		HashSet resolvedEntries = new HashSet();
+		Set<IClasspathEntry> resolvedEntries = new HashSet<IClasspathEntry>();
 
 		// avoid double entries
-		HashSet generatedEntries = new HashSet();
+		Set<String> generatedEntries = new HashSet<String>();
 
 		// add wo classpath entries
 		IJavaProject myJavaProject = JavaCore.create(this.getIProject());

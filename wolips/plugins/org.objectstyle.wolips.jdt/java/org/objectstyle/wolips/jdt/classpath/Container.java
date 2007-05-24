@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.jdt.classpath;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -145,7 +146,7 @@ public class Container implements IClasspathContainer {
 	 * @param frameworks
 	 */
 	public void setContent(Framework[] frameworks) {
-		ArrayList newEntries = new ArrayList();
+		List<ContainerEntry> newEntries = new ArrayList<ContainerEntry>();
 		for (int i = 0; i < frameworks.length; i++) {
 			Framework framework = frameworks[i];
 			ContainerEntry containerEntry = null;

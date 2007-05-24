@@ -57,6 +57,7 @@ package org.objectstyle.wolips.jdt.ant;
 
 import java.io.ByteArrayInputStream;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -94,7 +95,7 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 	 */
 	protected void buildIncludeFiles() {
 		// avoid double entries
-		HashSet resolvedEntries = new HashSet();
+		Set<IClasspathEntry> resolvedEntries = new HashSet<IClasspathEntry>();
 		// add wo classpath entries
 		IJavaProject myJavaProject = JavaCore.create(this.getIProject());
 		IClasspathEntry[] classPaths;

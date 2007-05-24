@@ -57,6 +57,7 @@ package org.objectstyle.wolips.jdt.classpath;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -67,7 +68,7 @@ import org.objectstyle.wolips.jdt.classpath.model.Framework;
  * @author ulrich
  */
 public class ContainerEntries {
-	ArrayList entries = new ArrayList();
+	private List<ContainerEntry> entries = new ArrayList<ContainerEntry>();
 
 	/**
 	 * 
@@ -95,12 +96,12 @@ public class ContainerEntries {
 	 * @return
 	 */
 	public IClasspathEntry[] getEntries() {
-		ArrayList arrayList = new ArrayList();
+		List<IClasspathEntry> arrayList = new ArrayList<IClasspathEntry>();
 		for (int i = 0; i < this.entries.size(); i++) {
-			ContainerEntry containerEntry = (ContainerEntry) this.entries.get(i);
+			ContainerEntry containerEntry = this.entries.get(i);
 			arrayList.addAll(containerEntry.getEntries());
 		}
-		return (IClasspathEntry[]) arrayList.toArray(new IClasspathEntry[this.entries.size()]);
+		return arrayList.toArray(new IClasspathEntry[this.entries.size()]);
 	}
 
 	/**
@@ -109,7 +110,7 @@ public class ContainerEntries {
 	public IPath getPath() {
 		IPath path = new Path("");
 		for (int i = 0; i < this.entries.size(); i++) {
-			ContainerEntry containerEntry = (ContainerEntry) this.entries.get(i);
+			ContainerEntry containerEntry = this.entries.get(i);
 			IPath entryPath = containerEntry.getPath();
 			path = path.append(PathCoder.encode(entryPath));
 		}
@@ -138,7 +139,7 @@ public class ContainerEntries {
 	 */
 	public ContainerEntry getEntry(Framework framework) {
 		for (int i = 0; i < this.entries.size(); i++) {
-			ContainerEntry containerEntry = (ContainerEntry) this.entries.get(i);
+			ContainerEntry containerEntry = this.entries.get(i);
 			if (framework.getName().equals(containerEntry.getName())) {
 				return containerEntry;
 			}
@@ -149,10 +150,10 @@ public class ContainerEntries {
 	/**
 	 * @param entries
 	 */
-	public void setEntries(ArrayList entries) {
-		ContainerEntry[] containerEntries = (ContainerEntry[]) entries.toArray(new ContainerEntry[entries.size()]);
+	public void setEntries(List<ContainerEntry> entries) {
+		ContainerEntry[] containerEntries = entries.toArray(new ContainerEntry[entries.size()]);
 		Arrays.sort(containerEntries);
-		this.entries = new ArrayList();
+		this.entries = new ArrayList<ContainerEntry>();
 		for (int i = 0; i < containerEntries.length; i++) {
 			this.entries.add(containerEntries[i]);
 		}

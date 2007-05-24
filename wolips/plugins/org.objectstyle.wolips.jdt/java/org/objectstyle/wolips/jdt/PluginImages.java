@@ -58,6 +58,7 @@ package org.objectstyle.wolips.jdt;
 
 import java.net.URL;
 
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
@@ -78,8 +79,9 @@ public class PluginImages {
 	 * @return
 	 */
 	public static final Image WOFRAMEWORK_ROOT_IMAGE() {
-		if (WOFRAMEWORK_ROOT_IMAGE == null)
+		if (WOFRAMEWORK_ROOT_IMAGE == null) {
 			WOFRAMEWORK_ROOT_IMAGE = createImageDescriptor("icons/frameworks/framework_root.gif").createImage(false);
+		}
 		return WOFRAMEWORK_ROOT_IMAGE;
 	}
 
@@ -87,8 +89,9 @@ public class PluginImages {
 	 * @return
 	 */
 	public static final Image WOFRAMEWORK_IMAGE() {
-		if (WOFRAMEWORK_IMAGE == null)
+		if (WOFRAMEWORK_IMAGE == null) {
 			WOFRAMEWORK_IMAGE = createImageDescriptor("icons/frameworks/framework.gif").createImage(false);
+		}
 		return WOFRAMEWORK_IMAGE;
 	}
 
@@ -96,8 +99,9 @@ public class PluginImages {
 	 * @return
 	 */
 	public static final Image WOSTANDARD_FRAMEWORK_IMAGE() {
-		if (WOSTANDARD_FRAMEWORK_IMAGE == null)
+		if (WOSTANDARD_FRAMEWORK_IMAGE == null) {
 			WOSTANDARD_FRAMEWORK_IMAGE = createImageDescriptor("icons/frameworks/standard_framework.gif").createImage(false);
+		}
 		return WOSTANDARD_FRAMEWORK_IMAGE;
 	}
 
@@ -109,9 +113,10 @@ public class PluginImages {
 	 * @return
 	 */
 	private static ImageDescriptor createImageDescriptor(String path) {
-		URL url = JdtPlugin.getDefault().find(new Path(path));
-		if (url != null)
+		URL url = FileLocator.find(JdtPlugin.getDefault().getBundle(), new Path(path), null);
+		if (url != null) {
 			return ImageDescriptor.createFromURL(url);
+		}
 		return ImageDescriptor.getMissingImageDescriptor();
 	}
 }
