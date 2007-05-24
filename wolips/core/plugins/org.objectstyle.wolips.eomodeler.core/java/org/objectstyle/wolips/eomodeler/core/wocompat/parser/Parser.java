@@ -70,6 +70,7 @@ import org.apache.log4j.Logger;
  * <p>Contributed by Jeff Martin <reportmill@yahoo.com> and Josh from Report Mill -
  * <a href="http://www.reportmill.com/">http://www.reportmill.com/</a></p>
  */
+@SuppressWarnings("all")
 public class Parser implements ParserConstants {
     public static final String ROOT = "root";
     private static Logger logObj = Logger.getLogger(Parser.class);

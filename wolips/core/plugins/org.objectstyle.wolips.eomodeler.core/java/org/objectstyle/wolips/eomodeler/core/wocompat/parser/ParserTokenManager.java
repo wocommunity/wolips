@@ -56,6 +56,7 @@
  */
 package org.objectstyle.wolips.eomodeler.core.wocompat.parser;
 
+@SuppressWarnings("all")
 public class ParserTokenManager implements ParserConstants
 {
   public  java.io.PrintStream debugStream = System.out;

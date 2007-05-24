@@ -52,7 +52,6 @@ package org.objectstyle.wolips.eomodeler.core.model;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -557,6 +556,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 		firePropertyChange(EOFetchSpecification.USES_DISTINCT, oldUsesDistinct, myUsesDistinct);
 	}
 
+	@SuppressWarnings("unused")
 	public void loadFromMap(EOModelMap _map, Set _failures) {
 		myFetchSpecMap = _map;
 		// "entityName" = myEntity

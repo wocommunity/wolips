@@ -460,6 +460,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public void _entityNameChanged(String _originalName, String _oldName, String _newName) {
 		if (myDeletedEntityNamesInObjectStore == null) {
 			myDeletedEntityNamesInObjectStore = new PropertyListSet<String>();

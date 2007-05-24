@@ -188,6 +188,7 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		setName(_name, true);
 	}
 
+	@SuppressWarnings("unused")
 	public void setName(String _name, boolean _fireEvents) throws DuplicateNameException {
 		String oldName = getName();
 		myName = _name;
@@ -407,7 +408,8 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		// DO NOTHING
 	}
 
-	public void loadFromMap(EOModelMap _argumentMap, Set<EOModelVerificationFailure> _failures) {
+  @SuppressWarnings("unused") 
+  public void loadFromMap(EOModelMap _argumentMap, Set<EOModelVerificationFailure> _failures) {
 		myArgumentMap = _argumentMap;
 		myName = _argumentMap.getString("name", true);
 		if (_argumentMap.containsKey("externalName")) {

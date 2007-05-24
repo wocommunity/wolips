@@ -165,6 +165,7 @@ public class EOSortOrdering extends EOModelObject<EOFetchSpecification> {
 		return sortOrderingMap;
 	}
 
+	@SuppressWarnings("unused")
 	public void verify(Set<EOModelVerificationFailure> _failures) {
 		// TODO
 	}

@@ -61,6 +61,7 @@ package org.objectstyle.wolips.eomodeler.core.wocompat.parser;
  * contain only ASCII characters (without unicode processing).
  */
 
+@SuppressWarnings("all")
 public class SimpleCharStream
 {
   public static final boolean staticFlag = false;
