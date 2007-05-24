@@ -70,7 +70,8 @@ public class PBXFileReference extends PBXReference {
 		super(ref);
 	}
 
-	protected String fileSeparator() {
+	@Override
+  protected String fileSeparator() {
 		return "";
 	}
 }

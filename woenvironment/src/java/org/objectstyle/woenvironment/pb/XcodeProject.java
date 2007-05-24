@@ -64,9 +64,11 @@ import java.util.Map;
  * @author Jonathan 'Wolf' Rentzsch
  * @author Anjo Krank
  */
+@SuppressWarnings("unchecked")
 public class XcodeProject extends PBXProject {
 
-	protected Map newFolderReference(String name, String path) {
+  @Override
+  protected Map newFolderReference(String name, String path) {
 		Map result = map(new Object[] { "isa", "PBXFolderReference", "refType", (new File(path)).isAbsolute() ? "0" : "2", "name", name, "path", path });
 		// AK: wrapper-type folders need an extra flag so they get recognized
 		if (path.endsWith(".wo") || path.endsWith(".eomodeld") || path.endsWith(".nib")) {
@@ -76,7 +78,8 @@ public class XcodeProject extends PBXProject {
 		return result;
 	}
 
-	protected Map newPBXProj(Map objectsTable, ObjectsTable.ID rootObject) {
+	@Override
+  protected Map newPBXProj(Map objectsTable, ObjectsTable.ID rootObject) {
 		return map(new Object[] { "archiveVersion", "1", "objectVersion", "39", "rootObject", rootObject, "objects", objectsTable });
 	}
 }

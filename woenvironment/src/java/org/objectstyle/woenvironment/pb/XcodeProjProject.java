@@ -68,20 +68,25 @@ import org.objectstyle.woenvironment.pb.PBXProject.ObjectsTable.ID;
  * 
  * @author Mike Schrag
  */
+@SuppressWarnings("unchecked")
 public class XcodeProjProject extends PBXProject {
-	protected Map newFrameworkReference(String name, String path) {
+	@Override
+  protected Map newFrameworkReference(String name, String path) {
 		return map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", "wrapper.framework", "sourceTree", "<absolute>", "name", name, "path", path });
 	}
 
-	protected Map newGroup(String name, List childrenIDs) {
+	@Override
+  protected Map newGroup(String name, List childrenIDs) {
 		return map(new Object[] { "isa", "PBXGroup", "sourceTree", "<group>", "name", name, "children", childrenIDs });
 	}
 
-	protected Map newFileReference(String name, String path) {
+	@Override
+  protected Map newFileReference(String name, String path) {
 		return map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", "sourcecode.java", "sourceTree", new File(path).isAbsolute() ? "<absolute>" : "<group>", "name", name, "path", path });
 	}
 
-	protected Map newFolderReference(String name, String path) {
+	@Override
+  protected Map newFolderReference(String name, String path) {
 		String lastKnownFileType;
 		if (path.endsWith(".eomodeld")) {
 			lastKnownFileType = "wrapper.eomodeld";
@@ -96,7 +101,8 @@ public class XcodeProjProject extends PBXProject {
 		return result;
 	}
 
-	protected Map newAntTarget(List _buildPhaseIDs, ObjectsTable _objectsTable) {
+	@Override
+  protected Map newAntTarget(List _buildPhaseIDs, ObjectsTable _objectsTable) {
 		Map result = map(new Object[] { "isa", "PBXLegacyTarget", "buildArgumentsString", "-emacs $(ACTION)", "buildSettings", new HashMap(), "buildToolPath", "/Developer/Java/Ant/bin/ant", "passBuildSettingsInEnvironment", "1", "name", "Ant", "buildPhases", _buildPhaseIDs });
 		List buildConfigurations = new LinkedList();
 		buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(map(new Object[] { "COPY_PHASE_STRIP", "NO" }), "Debug")));
@@ -107,7 +113,8 @@ public class XcodeProjProject extends PBXProject {
 		return result;
 	}
 
-	protected Map newProject(ID _groupID, List _targetIDs, ObjectsTable _objectsTable) {
+	@Override
+  protected Map newProject(ID _groupID, List _targetIDs, ObjectsTable _objectsTable) {
 		Map project = super.newProject(_groupID, _targetIDs, _objectsTable);
 
 		List buildConfigurations = new LinkedList();
@@ -126,16 +133,19 @@ public class XcodeProjProject extends PBXProject {
 		return project;
 	}
 
-	protected Map newBuildConfigurationList(List _buildConfigurations, boolean _defaultConfigurationIsVisible, String _defaultConfigurationName) {
+	@Override
+  protected Map newBuildConfigurationList(List _buildConfigurations, boolean _defaultConfigurationIsVisible, String _defaultConfigurationName) {
 		Map buildConfigurationList = map(new Object[] { "buildConfigurations", _buildConfigurations, "defaultConfigurationIsVisible", (_defaultConfigurationIsVisible) ? "1" : "0", "defaultConfigurationName", _defaultConfigurationName, "isa", "XCConfigurationList" });
 		return buildConfigurationList;
 	}
 
-	protected Map newPBXProj(Map objectsTable, ObjectsTable.ID rootObject) {
+	@Override
+  protected Map newPBXProj(Map objectsTable, ObjectsTable.ID rootObject) {
 		return map(new Object[] { "archiveVersion", "1", "classes", new HashMap(), "objectVersion", "42", "rootObject", rootObject, "objects", objectsTable });
 	}
 
-	protected boolean hasBuildPhases() {
+	@Override
+  protected boolean hasBuildPhases() {
 		return true;
 	}
 

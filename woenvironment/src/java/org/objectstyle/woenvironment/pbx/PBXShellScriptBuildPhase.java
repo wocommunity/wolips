@@ -64,6 +64,7 @@ import java.util.Vector;
  * To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Generation - Code and Comments
  */
+@SuppressWarnings("unchecked")
 public class PBXShellScriptBuildPhase extends PBXBuildPhase {
 	public final static String _KNEEDEDFILENAMES = "neededFileNames";
 
