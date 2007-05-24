@@ -56,13 +56,14 @@
 package org.objectstyle.wolips.locate.result;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 import org.objectstyle.wolips.locate.LocateException;
 
 public abstract class AbstractLocateResult implements ILocateResult {
 
-	private ArrayList resources = new ArrayList();
+	private List<IResource> resources = new ArrayList<IResource>();
 
 	public AbstractLocateResult() {
 		super();
@@ -73,6 +74,6 @@ public abstract class AbstractLocateResult implements ILocateResult {
 	}
 
 	public IResource[] getResources() {
-		return (IResource[]) resources.toArray(new IResource[resources.size()]);
+		return resources.toArray(new IResource[resources.size()]);
 	}
 }

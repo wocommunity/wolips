@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.locate.cache;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -66,8 +67,7 @@ import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 
 public class ComponentLocateCache implements IResourceChangeListener {
-
-	private HashMap projects = new HashMap();
+	private Map<String, Map<String, LocalizedComponentsLocateResult>> projects = new HashMap<String, Map<String, LocalizedComponentsLocateResult>>();
 
 	public ComponentLocateCache() {
 		super();
@@ -79,7 +79,7 @@ public class ComponentLocateCache implements IResourceChangeListener {
 	}
 
 	public void forgetCacheForFile(IResource resource) {
-		HashMap projectHashMap = this.project(resource.getProject());
+		Map<String, LocalizedComponentsLocateResult> projectHashMap = this.project(resource.getProject());
 		if (projectHashMap == null) {
 			return;
 		}
@@ -88,22 +88,22 @@ public class ComponentLocateCache implements IResourceChangeListener {
 	}
 
 	public LocalizedComponentsLocateResult getLocalizedComponentsLocateResult(IResource resource) {
-		HashMap projectHashMap = this.project(resource.getProject());
+		Map<String, LocalizedComponentsLocateResult> projectHashMap = this.project(resource.getProject());
 		if (projectHashMap == null) {
 			return null;
 		}
 		String key = LocatePlugin.getDefault().fileNameWithoutExtension(resource);
-		LocalizedComponentsLocateResult localizedComponentsLocateResult = (LocalizedComponentsLocateResult) projectHashMap.get(key);
+		LocalizedComponentsLocateResult localizedComponentsLocateResult = projectHashMap.get(key);
 		return localizedComponentsLocateResult;
 	}
 
 	public LocalizedComponentsLocateResult getLocalizedComponentsLocateResult(IProject project, String filenameWithoutExtension) {
-		HashMap projectHashMap = this.project(project);
+		Map<String, LocalizedComponentsLocateResult> projectHashMap = this.project(project);
 		if (projectHashMap == null) {
 			return null;
 		}
 		String key = LocatePlugin.getDefault().fileNameWithoutExtension(filenameWithoutExtension);
-		LocalizedComponentsLocateResult localizedComponentsLocateResult = (LocalizedComponentsLocateResult) projectHashMap.get(key);
+		LocalizedComponentsLocateResult localizedComponentsLocateResult = projectHashMap.get(key);
 		return localizedComponentsLocateResult;
 	}
 
@@ -112,17 +112,17 @@ public class ComponentLocateCache implements IResourceChangeListener {
 	}
 
 	public void addToCache(IProject project, String filenameWithoutExtension, LocalizedComponentsLocateResult localizedComponentsLocateResult) {
-		HashMap projectHashMap = this.project(project);
+		Map<String, LocalizedComponentsLocateResult> projectHashMap = this.project(project);
 		if (projectHashMap == null) {
-			projectHashMap = new HashMap();
+			projectHashMap = new HashMap<String, LocalizedComponentsLocateResult>();
 			String projectsKey = project.getName();
 			projects.put(projectsKey, projectHashMap);
 		}
 		projectHashMap.put(filenameWithoutExtension, localizedComponentsLocateResult);
 	}
 
-	private HashMap project(IProject project) {
-		HashMap projectHashMap = (HashMap) projects.get(project.getName());
+	private Map<String, LocalizedComponentsLocateResult> project(IProject project) {
+		Map<String, LocalizedComponentsLocateResult> projectHashMap = projects.get(project.getName());
 		return projectHashMap;
 	}
 
@@ -132,7 +132,7 @@ public class ComponentLocateCache implements IResourceChangeListener {
 				event.getDelta().accept(new PreCloseVisitor(this));
 			} catch (CoreException e) {
 				LocatePlugin.getDefault().log(e);
-				projects = new HashMap();
+				projects = new HashMap<String, Map<String, LocalizedComponentsLocateResult>>();
 			}
 		}
 
@@ -141,7 +141,7 @@ public class ComponentLocateCache implements IResourceChangeListener {
 				event.getDelta().accept(new PreDeleteVisitor(this));
 			} catch (CoreException e) {
 				LocatePlugin.getDefault().log(e);
-				projects = new HashMap();
+				projects = new HashMap<String, Map<String, LocalizedComponentsLocateResult>>();
 			}
 		}
 	}
