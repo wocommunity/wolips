@@ -349,10 +349,12 @@ public class EODatabaseConfig extends EOModelObject<EOModel> {
 		return ((myModel == null) ? "?" : myModel.getFullyQualifiedName()) + ", dbconfig: " + myName;
 	}
 
+	@SuppressWarnings("unused")
 	public void resolve(Set<EOModelVerificationFailure> _failures) {
 		// DO NOTHING
 	}
 
+	@SuppressWarnings("unused")
 	public void verify(Set<EOModelVerificationFailure> _failures) {
 		// DO NOTHING
 	}
@@ -361,6 +363,7 @@ public class EODatabaseConfig extends EOModelObject<EOModel> {
 		return new HashSet<EOModelReferenceFailure>();
 	}
 
+	@SuppressWarnings("unused")
 	public void loadFromMap(EOModelMap _map, Set<EOModelVerificationFailure> _failures) {
 		myDatabaseConfigMap = _map;
 		myAdaptorName = _map.getString("adaptorName", true);

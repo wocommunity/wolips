@@ -140,6 +140,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject<EOModel> implem
 		return myModel;
 	}
 
+	@SuppressWarnings("unused")
 	protected void _argumentChanged(EOArgument _argument, String _propertyName, Object _oldValue, Object _newValue) {
 		firePropertyChange(EOStoredProcedure.ARGUMENT, null, _argument);
 	}

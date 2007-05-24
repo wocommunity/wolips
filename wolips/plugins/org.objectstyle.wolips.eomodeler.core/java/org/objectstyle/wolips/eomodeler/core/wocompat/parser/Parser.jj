@@ -76,6 +76,7 @@ import java.util.*;
  * <p>Contributed by Jeff Martin <reportmill@yahoo.com> and Josh from Report Mill -
  * <a href="http://www.reportmill.com/">http://www.reportmill.com/</a></p>
  */
+@SuppressWarnings("all")
 public class Parser {
     public static final String ROOT = "root";
     private static Logger logObj = Logger.getLogger(Parser.class);

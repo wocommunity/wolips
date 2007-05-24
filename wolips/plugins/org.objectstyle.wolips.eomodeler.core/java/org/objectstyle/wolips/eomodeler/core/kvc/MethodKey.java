@@ -64,7 +64,7 @@ public class MethodKey implements IKey {
 
 	public Object getValue(Object _instance) {
 		try {
-			return myMethod.invoke(_instance, null);
+			return myMethod.invoke(_instance, (Object[]) null);
 		} catch (Throwable t) {
 			throw new RuntimeException("Failed to get value from method " + myMethod + " on  " + _instance + ".", t);
 		}

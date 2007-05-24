@@ -212,6 +212,7 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 		}
 	}
 
+	@SuppressWarnings("unused")
 	protected void _joinChanged(EOJoin _join, String _propertyName, Object _oldValue, Object _newValue) {
 		firePropertyChange(EORelationship.JOIN, null, _join);
 	}
@@ -323,7 +324,7 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 	}
 
 	public EORelationshipPath getDefinitionPath() {
-		//updateDefinitionPath();
+		// updateDefinitionPath();
 		return myDefinitionPath;
 	}
 

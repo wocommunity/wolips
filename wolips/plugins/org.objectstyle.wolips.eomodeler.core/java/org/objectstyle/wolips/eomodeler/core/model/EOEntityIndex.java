@@ -311,6 +311,7 @@ public class EOEntityIndex extends UserInfoableEOModelObject<EOEntity> implement
 		return _attributes;
 	}
 
+	@SuppressWarnings("unused")
 	public void loadFromMap(EOModelMap _map, Set<EOModelVerificationFailure> _failures) {
 		_entityIndexMap = _map;
 		_name = _map.getString("name", true);
@@ -349,6 +350,7 @@ public class EOEntityIndex extends UserInfoableEOModelObject<EOEntity> implement
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public void verify(Set<EOModelVerificationFailure> _failures) {
 		// DO NOTHING
 	}

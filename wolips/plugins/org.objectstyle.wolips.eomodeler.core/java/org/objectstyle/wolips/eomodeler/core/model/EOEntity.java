@@ -130,7 +130,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	private EOModel myModel;
 
 	private EOEntity myParent;
-	
+
 	private String myOriginalName;
 
 	private String myName;
@@ -761,11 +761,11 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			firePropertyChange(EOEntity.NAME, oldName, myName);
 		}
 	}
-	
+
 	public void entitySaved() {
 		myOriginalName = myName;
 	}
-	
+
 	public String getOriginalName() {
 		return myOriginalName;
 	}
@@ -868,8 +868,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			}
 			if (isVerticalInheritance()) {
 				// MS: Need to do this
-			}
-			else {
+			} else {
 				_cloneAttributesAndRelationshipsFrom(parent, true, failures, warnOnly);
 			}
 		}
@@ -1082,6 +1081,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		}
 	}
 
+	@SuppressWarnings("unused")
 	protected void _attributeChanged(EOAttribute _attribute, String _propertyName, Object _oldValue, Object _newValue) {
 		myAttributes = new HashSet<EOAttribute>(myAttributes);
 		// firePropertyChange(EOEntity.ATTRIBUTE + "." + _propertyName, new
@@ -1090,6 +1090,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		firePropertyChange(EOEntity.ATTRIBUTE, null, _attribute);
 	}
 
+	@SuppressWarnings("unused")
 	protected void _relationshipChanged(EORelationship _relationship, String _propertyName, Object _oldValue, Object _newValue) {
 		myRelationships = new HashSet<EORelationship>(myRelationships);
 		// firePropertyChange(EOEntity.RELATIONSHIP + "." + _propertyName, new
@@ -1098,6 +1099,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		firePropertyChange(EOEntity.RELATIONSHIP, null, _relationship);
 	}
 
+	@SuppressWarnings("unused")
 	protected void _fetchSpecificationChanged(EOFetchSpecification _fetchSpecification, String _propertyName, Object _oldValue, Object _newValue) {
 		myFetchSpecs = new HashSet<EOFetchSpecification>(myFetchSpecs);
 		// firePropertyChange(EOEntity.FETCH_SPECIFICATION + "." +
@@ -1106,6 +1108,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		firePropertyChange(EOEntity.FETCH_SPECIFICATION, null, _fetchSpecification);
 	}
 
+	@SuppressWarnings("unused")
 	protected void _entityIndexChanged(EOEntityIndex _entityIndex, String _propertyName, Object _oldValue, Object _newValue) {
 		myEntityIndexes = new HashSet<EOEntityIndex>(myEntityIndexes);
 		// firePropertyChange(EOEntity.ENTITY_INDEX + "." + _propertyName, new
@@ -1269,7 +1272,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		}
 		return entityIndex;
 	}
-	
+
 	public EOEntityIndex addBlankEntityIndex(String _name) throws DuplicateEntityIndexNameException {
 		String newEntityIndexName = findUnusedEntityIndexName(_name);
 		EOEntityIndex entityIndex = new EOEntityIndex();
@@ -1437,7 +1440,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		Set<String> sharedObjectFetchSpecificationNames = myEntityMap.getSet("sharedObjectFetchSpecificationNames");
 
 		if (_map != null && !_map.isEmpty()) {
-			Set<Map.Entry<Object, Map>> fetchSpecEntries = (Set<Map.Entry<Object, Map>>) _map.entrySet();
+			Set<Map.Entry<Object, Map>> fetchSpecEntries = _map.entrySet();
 			for (Map.Entry<Object, Map> fetchSpecEntry : fetchSpecEntries) {
 				_addFetchSpecificationFromMap(fetchSpecEntry, _failures, sharedObjectFetchSpecificationNames);
 			}
@@ -1469,8 +1472,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		entityMap.setString("className", myClassName, true);
 		if (myParent != null) {
 			entityMap.setString("parent", myParent.getName(), true);
-		}
-		else {
+		} else {
 			entityMap.remove("parent");
 		}
 		entityMap.setBoolean("cachesObjects", myCachesObjects, EOModelMap.YN);
@@ -1645,7 +1647,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			}
 		}
 	}
-	
+
 	public void resolve(Set<EOModelVerificationFailure> _failures) {
 		String parentName = myEntityMap.getString("parent", true);
 		if (parentName != null) {
@@ -1831,8 +1833,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			entity._cloneEntityIndexesFrom(this, false);
 			_cloneUserInfoInto(entity);
 			return entity;
-		}
-		catch (DuplicateNameException e) {
+		} catch (DuplicateNameException e) {
 			throw new RuntimeException("A duplicate name was found during a clone, which should never happen.", e);
 		}
 	}
@@ -1841,7 +1842,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	public Class<EOModel> _getModelParentType() {
 		return EOModel.class;
 	}
-	
+
 	public EOModel _getModelParent() {
 		return getModel();
 	}

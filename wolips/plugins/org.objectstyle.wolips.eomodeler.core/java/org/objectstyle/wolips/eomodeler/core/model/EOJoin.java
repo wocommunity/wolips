@@ -222,6 +222,7 @@ public class EOJoin extends EOModelObject<EORelationship> implements ISortableEO
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public void loadFromMap(EOModelMap _joinMap, Set _failures) {
 		myJoinMap = _joinMap;
 	}

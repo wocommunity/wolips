@@ -101,6 +101,7 @@ public class EOArgument extends AbstractEOArgument<EOStoredProcedure> {
 		return new HashSet<EOModelReferenceFailure>();
 	}
 
+  @SuppressWarnings("unused")
 	public void resolve(Set<EOModelVerificationFailure> _failures) {
 		// DO NOTHING
 	}
