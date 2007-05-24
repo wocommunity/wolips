@@ -103,19 +103,23 @@ public abstract class EOModelObject<T> implements IAdaptable, IPropertyChangeSou
 	public String _findUnusedName(String newName, String getMethodName) {
 		try {
 			Method getMethod = getClass().getMethod(getMethodName, String.class);
-			int cutoffLength;
-			for (cutoffLength = newName.length(); cutoffLength > 0; cutoffLength --) {
-				if (!Character.isDigit(newName.charAt(cutoffLength - 1))) {
-					break;
+			boolean unusedNameFound = (getMethod.invoke(this, newName) == null);
+			String unusedName = newName;
+			if (!unusedNameFound) {
+				int cutoffLength;
+				for (cutoffLength = newName.length(); cutoffLength > 0; cutoffLength --) {
+					if (!Character.isDigit(newName.charAt(cutoffLength - 1))) {
+						break;
+					}
 				}
-			}
-			String newWithoutTrailingNumber = newName.substring(0, cutoffLength);
-			boolean unusedNameFound = (getMethod.invoke(this, newWithoutTrailingNumber) == null);
-			String unusedName = newWithoutTrailingNumber;
-			for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
-				unusedName = newWithoutTrailingNumber + dupeNameNum;
-				Object existingObject = getMethod.invoke(this, unusedName);
-				unusedNameFound = (existingObject == null);
+				String newWithoutTrailingNumber = newName.substring(0, cutoffLength);
+				unusedNameFound = (getMethod.invoke(this, newWithoutTrailingNumber) == null);
+				unusedName = newWithoutTrailingNumber;
+				for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
+					unusedName = newWithoutTrailingNumber + dupeNameNum;
+					Object existingObject = getMethod.invoke(this, unusedName);
+					unusedNameFound = (existingObject == null);
+				}
 			}
 			return unusedName;
 		} catch (Throwable t) {
