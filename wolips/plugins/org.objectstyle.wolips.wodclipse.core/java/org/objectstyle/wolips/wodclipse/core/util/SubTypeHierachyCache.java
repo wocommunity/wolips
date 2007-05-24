@@ -2,6 +2,7 @@ package org.objectstyle.wolips.wodclipse.core.util;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -58,8 +59,10 @@ public class SubTypeHierachyCache {
 
   private static final int CACHE_SIZE = 8;
 
-  private static ArrayList fgHierarchyCache = new ArrayList(CACHE_SIZE);
-  private static Map fgMethodOverrideTesterCache = new LRUMap(CACHE_SIZE);
+  private static List<HierarchyCacheEntry> fgHierarchyCache = new ArrayList<HierarchyCacheEntry>(CACHE_SIZE);
+  
+  @SuppressWarnings("unchecked")
+  private static Map<IType, MethodOverrideTester> fgMethodOverrideTesterCache = new LRUMap(CACHE_SIZE);
 
   private static int fgCacheHits = 0;
   private static int fgCacheMisses = 0;
@@ -74,12 +77,12 @@ public class SubTypeHierachyCache {
   public static MethodOverrideTester getMethodOverrideTester(IType type) throws JavaModelException {
     MethodOverrideTester test = null;
     synchronized (fgMethodOverrideTesterCache) {
-      test = (MethodOverrideTester) fgMethodOverrideTesterCache.get(type);
+      test = fgMethodOverrideTesterCache.get(type);
     }
     if (test == null) {
       ITypeHierarchy hierarchy = getTypeHierarchy(type); // don't nest the locks
       synchronized (fgMethodOverrideTesterCache) {
-        test = (MethodOverrideTester) fgMethodOverrideTesterCache.get(type); // test again after waiting a long time for 'getTypeHierarchy'
+        test = fgMethodOverrideTesterCache.get(type); // test again after waiting a long time for 'getTypeHierarchy'
         if (test == null) {
           test = new MethodOverrideTester(type, hierarchy);
           fgMethodOverrideTesterCache.put(type, test);
@@ -122,9 +125,9 @@ public class SubTypeHierachyCache {
       if (nEntries >= CACHE_SIZE) {
         // find obsolete entries or remove entry that was least recently accessed
         HierarchyCacheEntry oldest = null;
-        ArrayList obsoleteHierarchies = new ArrayList(CACHE_SIZE);
+        List<HierarchyCacheEntry> obsoleteHierarchies = new ArrayList<HierarchyCacheEntry>(CACHE_SIZE);
         for (int i = 0; i < nEntries; i++) {
-          HierarchyCacheEntry entry = (HierarchyCacheEntry) fgHierarchyCache.get(i);
+          HierarchyCacheEntry entry = fgHierarchyCache.get(i);
           ITypeHierarchy curr = entry.getTypeHierarchy();
           if (!curr.exists() || hierarchy.contains(curr.getType())) {
             obsoleteHierarchies.add(entry);
@@ -137,7 +140,7 @@ public class SubTypeHierachyCache {
         }
         if (!obsoleteHierarchies.isEmpty()) {
           for (int i = 0; i < obsoleteHierarchies.size(); i++) {
-            removeHierarchyEntryFromCache((HierarchyCacheEntry) obsoleteHierarchies.get(i));
+            removeHierarchyEntryFromCache(obsoleteHierarchies.get(i));
           }
         }
         else if (oldest != null) {
@@ -161,7 +164,7 @@ public class SubTypeHierachyCache {
   private static ITypeHierarchy findTypeHierarchyInCache(IType type) {
     synchronized (fgHierarchyCache) {
       for (int i = fgHierarchyCache.size() - 1; i >= 0; i--) {
-        HierarchyCacheEntry curr = (HierarchyCacheEntry) fgHierarchyCache.get(i);
+        HierarchyCacheEntry curr = fgHierarchyCache.get(i);
         ITypeHierarchy hierarchy = curr.getTypeHierarchy();
         if (!hierarchy.exists()) {
           removeHierarchyEntryFromCache(curr);

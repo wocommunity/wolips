@@ -60,7 +60,7 @@ import org.objectstyle.wolips.wodclipse.core.validation.TemplateValidator;
 
 public class WodParserCache implements FuzzyXMLErrorListener {
   private Map<String, HtmlElementName> _htmlElementCache;
-  private Map _typeContextCache;
+  private Map<IType, Map<String, IType>> _typeContextCache;
   private FuzzyXMLDocument _htmlXmlDocument;
   private String _htmlContents;
   private IDocument _htmlDocument;
@@ -187,7 +187,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
     _clearHtmlCache();
     _clearWodCache();
     clearValidationCache();
-    _typeContextCache = new HashMap();
+    _typeContextCache = new HashMap<IType, Map<String, IType>>();
   }
 
   public void clearValidationCache() {
@@ -212,7 +212,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
     return _context;
   }
 
-  public Map getTypeContextCache() {
+  public Map<IType, Map<String, IType>> getTypeContextCache() {
     return _typeContextCache;
   }
 

@@ -5,44 +5,45 @@ import jp.aonir.fuzzyxml.FuzzyXMLProcessingInstruction;
 
 public class FuzzyXMLProcessingInstructionImpl extends AbstractFuzzyXMLNode implements FuzzyXMLProcessingInstruction {
 
-	private String name;
-	private String data;
+	private String _name;
+	private String _data;
 	
 	public FuzzyXMLProcessingInstructionImpl(String name,String data){
 		super();
-		this.name = name;
-		this.data = data;
+		this._name = name;
+		this._data = data;
 	}
 	
 	public FuzzyXMLProcessingInstructionImpl(FuzzyXMLElement parent,String name,String data,int offset,int length){
 		super(parent,offset,length);
-		this.name = name;
-		this.data = data;
+		this._name = name;
+		this._data = data;
 	}
 	
 	public String getData() {
-		return data;
+		return _data;
 	}
 	
 	public String getName() {
-		return name;
+		return _name;
 	}
 
 	public void setData(String data) {
-		int length = this.data.length();
-		this.data = data;
+		int length = this._data.length();
+		this._data = data;
 		// 更新イベントを発火
 		fireModifyEvent(toXMLString(),getOffset(),getLength());
 		// 位置情報を更新
 		appendOffset((FuzzyXMLElement)getParentNode(),getOffset(),data.length() - length);
 	}
 	
-	public String toString(){
-		return "PI: " + name;
+	@Override
+  public String toString(){
+		return "PI: " + _name;
 	}
 	
 	public String toXMLString() {
-		return "<?" + name + " " + data + "?>";
+		return "<?" + _name + " " + _data + "?>";
 	}
 
 }

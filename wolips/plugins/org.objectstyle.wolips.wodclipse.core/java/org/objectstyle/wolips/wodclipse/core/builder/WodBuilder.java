@@ -43,7 +43,6 @@
  */
 package org.objectstyle.wolips.wodclipse.core.builder;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -57,7 +56,6 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.core.resources.builder.AbstractFullAndIncrementalBuilder;
-import org.objectstyle.wolips.core.resources.builder.IBuilder;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
@@ -169,7 +167,7 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
     }
 
     IMarker[] markers = _resource.getProject().findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
-    Set relatedResources = new HashSet();
+    Set<IResource> relatedResources = new HashSet<IResource>();
     String name = _resource.getName();
     for (int markerNum = 0; markerNum < markers.length; markerNum++) {
       // System.out.println("WodBuilder.touchRelatedResources: Checking "
@@ -193,7 +191,7 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
     }
   }
 
-  protected void validateWodFile(IFile file, IProgressMonitor _progressMonitor) throws CoreException, IOException, LocateException {
+  protected void validateWodFile(IFile file, IProgressMonitor _progressMonitor) throws CoreException, LocateException {
     String _resourceName = file.getName();
     if (_progressMonitor != null) {
       _progressMonitor.subTask("Locating components for " + _resourceName + " ...");

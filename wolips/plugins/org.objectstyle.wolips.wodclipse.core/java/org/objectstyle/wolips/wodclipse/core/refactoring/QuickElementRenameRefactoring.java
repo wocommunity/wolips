@@ -67,16 +67,16 @@ public class QuickElementRenameRefactoring {
     }
 
     if (!linkedGroup.isEmpty()) {
-      LinkedModeModel model = new LinkedModeModel();
-      model.addGroup(linkedGroup);
-      model.forceInstall();
+      LinkedModeModel linkedModeModel = new LinkedModeModel();
+      linkedModeModel.addGroup(linkedGroup);
+      linkedModeModel.forceInstall();
 
       //    JavaEditor editor = getJavaEditor();
       //    if (editor != null) {
       //      model.addLinkingListener(new EditorHighlightingSynchronizer(editor));
       //    }
 
-      model.addLinkingListener(new ILinkedModeListener() {
+      linkedModeModel.addLinkingListener(new ILinkedModeListener() {
         public void resume(LinkedModeModel model, int flags) {
           // DO NOTHING
         }
@@ -94,7 +94,7 @@ public class QuickElementRenameRefactoring {
           }
         }
       });
-      LinkedModeUI htmlUI = new EditorLinkedModeUI(model, new ITextViewer[] { htmlViewer, wodViewer });
+      LinkedModeUI htmlUI = new EditorLinkedModeUI(linkedModeModel, new ITextViewer[] { htmlViewer, wodViewer });
       //    ui.setInitialOffset(offset);
       htmlUI.setExitPosition(htmlViewer, 0, 0, LinkedPositionGroup.NO_STOP);
       htmlUI.enter();

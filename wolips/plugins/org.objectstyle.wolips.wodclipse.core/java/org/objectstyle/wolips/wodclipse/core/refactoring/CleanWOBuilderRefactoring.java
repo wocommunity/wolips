@@ -21,7 +21,7 @@ public class CleanWOBuilderRefactoring implements IRunnableWithProgress {
     _cache = cache;
   }
   
-  public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+  public void run(IProgressMonitor monitor) throws InvocationTargetException {
     List<ElementRename> elementRenames = new LinkedList<ElementRename>();
     Set<String> elementNames = new HashSet<String>();
     IWodModel wodModel = _cache.getWodModel();

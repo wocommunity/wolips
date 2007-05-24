@@ -21,10 +21,11 @@ public class XPath {
         return (FuzzyXMLNode)ctx.selectSingleNode(xpath);
     }
 
+    @SuppressWarnings("unchecked")
     public static FuzzyXMLNode[] selectNodes(FuzzyXMLElement element,String xpath){
         JXPathContext ctx = JXPathContext.newContext(element);
-        List list = ctx.selectNodes(xpath);
-        return (FuzzyXMLNode[])list.toArray(new FuzzyXMLNode[list.size()]);
+        List<FuzzyXMLNode> list = ctx.selectNodes(xpath);
+        return list.toArray(new FuzzyXMLNode[list.size()]);
     }
     
     public static Object getValue(FuzzyXMLElement element,String xpath){

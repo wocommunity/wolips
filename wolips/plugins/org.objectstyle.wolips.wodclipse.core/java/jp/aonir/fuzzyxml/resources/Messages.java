@@ -21,6 +21,6 @@ public class Messages {
 	
 	public static String getMessage(String key,String[] params){
 		String message = resource.getString(key);
-		return MessageFormat.format(message, params);
+		return MessageFormat.format(message, (Object[]) params);
 	}
 }

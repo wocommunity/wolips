@@ -6,10 +6,10 @@ import jp.aonir.fuzzyxml.FuzzyXMLNode;
 
 public class FuzzyXMLAttributeImpl extends AbstractFuzzyXMLNode implements FuzzyXMLAttribute {
 
-  private char quote = '"';
-  private boolean escape = true;
-  private String name;
-  private String value;
+  private char _quote = '"';
+  private boolean _escape = true;
+  private String _name;
+  private String _value;
   private int _valueOffset;
 
   public FuzzyXMLAttributeImpl(String name) {
@@ -23,13 +23,13 @@ public class FuzzyXMLAttributeImpl extends AbstractFuzzyXMLNode implements Fuzzy
 
   public FuzzyXMLAttributeImpl(FuzzyXMLNode parent, String name, String value, int offset, int length, int valueOffset) {
     super(parent, offset, length);
-    this.name = name;
-    this.value = value;
+    this._name = name;
+    this._value = value;
     _valueOffset = valueOffset;
   }
 
   public String getName() {
-    return name;
+    return _name;
   }
   
   public int getNameOffset() {
@@ -37,7 +37,7 @@ public class FuzzyXMLAttributeImpl extends AbstractFuzzyXMLNode implements Fuzzy
   }
   
   public int getNameLength() {
-    return name != null ? name.length() : 0;
+    return _name != null ? _name.length() : 0;
   }
   
   public int getValueOffset() {
@@ -45,12 +45,12 @@ public class FuzzyXMLAttributeImpl extends AbstractFuzzyXMLNode implements Fuzzy
   }
   
   public int getValueLength() {
-    return value != null ? value.length() : 0;
+    return _value != null ? _value.length() : 0;
   }
   
   public int getValueDataOffset() {
     int offset = 0;
-    if (value != null) {
+    if (_value != null) {
       offset = getValueOffset();
       if (isQuoted()) {
         offset ++;
@@ -61,19 +61,19 @@ public class FuzzyXMLAttributeImpl extends AbstractFuzzyXMLNode implements Fuzzy
   
   public int getValueDataLength() {
     int length = 0;
-    if (value != null) {
+    if (_value != null) {
       length = getValueLength();
     }
     return length;
   }
 
   public void setValue(String value) {
-    if (this.value == null) {
-      this.value = "";
+    if (this._value == null) {
+      this._value = "";
     }
 
-    int length = this.value.length();
-    this.value = value;
+    int length = this._value.length();
+    this._value = value;
 
     // 更新イベントを発火
     fireModifyEvent(toXMLString(), getOffset(), getLength());
@@ -82,27 +82,27 @@ public class FuzzyXMLAttributeImpl extends AbstractFuzzyXMLNode implements Fuzzy
   }
 
   public String getValue() {
-    return value;
+    return _value;
   }
 
   public boolean isQuoted() {
-    return quote != 0;
+    return _quote != 0;
   }
   
   public char getQuoteCharacter() {
-    return quote;
+    return _quote;
   }
 
   public void setQuoteCharacter(char c) {
-    quote = c;
+    _quote = c;
   }
 
   public void setEscape(boolean escape) {
-    this.escape = escape;
+    this._escape = escape;
   }
 
   public boolean isEscape() {
-    return this.escape;
+    return this._escape;
   }
 
   public String toXMLString() {
@@ -115,24 +115,25 @@ public class FuzzyXMLAttributeImpl extends AbstractFuzzyXMLNode implements Fuzzy
     sb.append(" ");
     sb.append(FuzzyXMLUtil.escape(getName(), isHTML));
     sb.append("=");
-    sb.append(quote);
-    if (escape) {
+    sb.append(_quote);
+    if (_escape) {
       sb.append(FuzzyXMLUtil.escape(getValue(), isHTML));
     }
     else {
       String value = getValue();
       for (int i = 0; i < value.length(); i++) {
         char c = value.charAt(i);
-        if (quote == c) {
+        if (_quote == c) {
           sb.append('\\');
         }
         sb.append(c);
       }
     }
-    sb.append(quote);
+    sb.append(_quote);
     return sb.toString();
   }
 
+  @Override
   public String toString() {
     return "attr: " + getName() + "=" + getValue();
   }

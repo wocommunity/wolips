@@ -6,7 +6,7 @@ import jp.aonir.fuzzyxml.FuzzyXMLNode;
 
 public class FuzzyXMLCDATAImpl extends FuzzyXMLElementImpl implements FuzzyXMLCDATA {
     
-    private String value;
+    private String _value;
     
     public FuzzyXMLCDATAImpl(String value) {
         this(null,value,-1,-1);
@@ -14,17 +14,20 @@ public class FuzzyXMLCDATAImpl extends FuzzyXMLElementImpl implements FuzzyXMLCD
 
     public FuzzyXMLCDATAImpl(FuzzyXMLNode parent, String value, int offset, int length) {
         super(parent, "", offset, length, -1);
-        this.value = value;
+        this._value = value;
     }
     
+    @Override
     public String getValue(){
-        return this.value;
+        return this._value;
     }
     
+    @Override
     public String toXMLString() {
         return "<![CDATA[" + FuzzyXMLUtil.escapeCDATA(getValue()) + "]]>";
     }
     
+    @Override
     public String toString(){
         return "CDATA: " + getValue();
     }

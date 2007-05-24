@@ -1,6 +1,7 @@
 package jp.aonir.fuzzyxml.internal;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import jp.aonir.fuzzyxml.FuzzyXMLAttribute;
 import jp.aonir.fuzzyxml.FuzzyXMLElement;
@@ -11,9 +12,9 @@ import jp.aonir.fuzzyxml.FuzzyXMLText;
 
 public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXMLElement {
 
-  private ArrayList children = new ArrayList();
-  private ArrayList attributes = new ArrayList();
-  private String name;
+  private List<FuzzyXMLNode> _children = new ArrayList<FuzzyXMLNode>();
+  private List<FuzzyXMLAttribute> _attributes = new ArrayList<FuzzyXMLAttribute>();
+  private String _name;
   private int _nameOffset;
 
   //	private HashMap namespace = new HashMap();
@@ -24,7 +25,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
 
   public FuzzyXMLElementImpl(FuzzyXMLNode parent, String name, int offset, int length, int nameOffset) {
     super(parent, offset, length);
-    this.name = name;
+    this._name = name;
     _nameOffset = nameOffset;
   }
   
@@ -33,11 +34,11 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   }
   
   public int getNameLength() {
-    return name != null ? name.length() : 0;
+    return _name != null ? _name.length() : 0;
   }
 
   public String getName() {
-    return name;
+    return _name;
   }
 
   /**
@@ -141,11 +142,11 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
       setAttribute((FuzzyXMLAttribute) node);
     }
     else {
-      if (children.contains(node)) {
+      if (_children.contains(node)) {
         return;
       }
       if (getDocument() == null) {
-        children.add(node);
+        _children.add(node);
         return;
       }
       // 追加するノードの位置(最後)を計算
@@ -166,9 +167,9 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
           nodeImpl.setLength(node.toXMLString().length());
         }
 
-        children.add(node);
+        _children.add(node);
         String xml = toXMLString();
-        children.remove(node);
+        _children.remove(node);
 
         // イベントの発火
         if (fireEvent) {
@@ -177,7 +178,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
           appendOffset(this, offset, xml.length() - length);
         }
 
-        children.add(node);
+        _children.add(node);
 
       }
       else {
@@ -197,27 +198,22 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
           nodeImpl.setLength(node.toXMLString().length());
         }
 
-        children.add(node);
+        _children.add(node);
       }
     }
   }
 
   public FuzzyXMLAttribute[] getAttributes() {
-    return (FuzzyXMLAttribute[]) attributes.toArray(new FuzzyXMLAttribute[attributes.size()]);
+    return _attributes.toArray(new FuzzyXMLAttribute[_attributes.size()]);
   }
 
   public FuzzyXMLNode[] getChildren() {
     // アトリビュートは含まない？
-    return (FuzzyXMLNode[]) children.toArray(new FuzzyXMLNode[children.size()]);
+    return _children.toArray(new FuzzyXMLNode[_children.size()]);
   }
 
   public boolean hasChildren() {
-    if (children.size() == 0) {
-      return false;
-    }
-    else {
-      return true;
-    }
+	  return _children.size() > 0;
   }
 
   public void insertAfter(FuzzyXMLNode newChild, FuzzyXMLNode refChild) {
@@ -278,7 +274,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     appendOffset(this, offset, nodeImpl.toXMLString().length());
 
     // 最後に追加
-    this.children.add(index, nodeImpl);
+    this._children.add(index, nodeImpl);
   }
 
   public void replaceChild(FuzzyXMLNode newChild, FuzzyXMLNode refChild) {
@@ -288,8 +284,8 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     }
     // 置換するノードのインデックスを取得
     int index = -1;
-    for (int i = 0; i < children.size(); i++) {
-      if (refChild == children.get(i)) {
+    for (int i = 0; i < _children.size(); i++) {
+      if (refChild == _children.get(i)) {
         index = i;
         break;
       }
@@ -298,7 +294,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     if (index == -1) {
       return;
     }
-    children.remove(index);
+    _children.remove(index);
 
     AbstractFuzzyXMLNode nodeImpl = (AbstractFuzzyXMLNode) newChild;
     nodeImpl.setParentNode(this);
@@ -311,7 +307,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     // 位置情報の更新
     appendOffset(this, refChild.getOffset(), newChild.getLength() - refChild.getLength());
 
-    children.add(index, newChild);
+    _children.add(index, newChild);
   }
 
   public void removeChild(FuzzyXMLNode oldChild) {
@@ -319,12 +315,12 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
       removeAttributeNode((FuzzyXMLAttribute) oldChild);
       return;
     }
-    if (children.contains(oldChild)) {
+    if (_children.contains(oldChild)) {
       // デタッチ
       ((AbstractFuzzyXMLNode) oldChild).setParentNode(null);
       ((AbstractFuzzyXMLNode) oldChild).setDocument(null);
       // リストから削除
-      children.remove(oldChild);
+      _children.remove(oldChild);
       // イベントの発火
       fireModifyEvent("", oldChild.getOffset(), oldChild.getLength());
       // 位置情報の更新
@@ -335,11 +331,11 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   public void setAttribute(FuzzyXMLAttribute attr) {
     FuzzyXMLAttribute attrNode = getAttributeNode(attr.getName());
     if (attrNode == null) {
-      if (attributes.contains(attr)) {
+      if (_attributes.contains(attr)) {
         return;
       }
       if (getDocument() == null) {
-        attributes.add(attr);
+        _attributes.add(attr);
         return;
       }
       FuzzyXMLAttributeImpl attrImpl = (FuzzyXMLAttributeImpl) attr;
@@ -358,7 +354,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
       // 最後に追加
       attrImpl.setOffset(offset);
       attrImpl.setLength(attrImpl.toXMLString().length());
-      attributes.add(attrImpl);
+      _attributes.add(attrImpl);
     }
     else {
       // この場合はアトリビュートのsetValueメソッド内でイベント発火
@@ -382,12 +378,12 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   }
 
   public void removeAttributeNode(FuzzyXMLAttribute attr) {
-    if (attributes.contains(attr)) {
+    if (_attributes.contains(attr)) {
       // デタッチ
       ((AbstractFuzzyXMLNode) attr).setParentNode(null);
       ((AbstractFuzzyXMLNode) attr).setDocument(null);
       // リストから削除
-      attributes.remove(attr);
+      _attributes.remove(attr);
       // イベントの発火
       fireModifyEvent("", attr.getOffset(), attr.getLength());
       // 位置情報の更新
@@ -432,6 +428,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     return sb.toString();
   }
 
+  @Override
   public boolean equals(Object obj) {
     if (obj instanceof FuzzyXMLElement) {
       FuzzyXMLElement element = (FuzzyXMLElement) obj;
@@ -479,6 +476,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     }
   }
 
+  @Override
   public void setDocument(FuzzyXMLDocumentImpl doc) {
     super.setDocument(doc);
     FuzzyXMLNode[] nodes = getChildren();
@@ -491,6 +489,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     }
   }
 
+  @Override
   public String toString() {
     return "element: " + getName();
   }

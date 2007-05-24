@@ -3,10 +3,8 @@ package org.objectstyle.wolips.wodclipse.core.model;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Position;
 import org.objectstyle.wolips.wodclipse.core.Activator;
-import org.objectstyle.wolips.wodclipse.core.document.DocumentWodModel;
 
 public class WodProblem {
   public static final String RELATED_TO_FILE_NAMES = "org.objectstyle.wolips.wodclipse.wod.RelatedToFileNames";
