@@ -59,6 +59,7 @@ package org.objectstyle.woenvironment.util;
 import java.io.*;
 import java.util.*;
 
+@SuppressWarnings("all")
 public class Parser implements ParserConstants {
 	public Hashtable parseStrings;
 

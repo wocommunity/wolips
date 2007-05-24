@@ -63,6 +63,7 @@ package org.objectstyle.woenvironment.util;
  * An implementation of interface CharStream, where the stream is assumed to
  * contain only ASCII characters (without unicode processing).
  */
+@SuppressWarnings("all")
 public class SimpleCharStream {
 	public static final boolean staticFlag = false;
 

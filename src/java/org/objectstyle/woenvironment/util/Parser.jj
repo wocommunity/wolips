@@ -15,6 +15,7 @@ import java.io.*;
 import java.util.*;
 
 
+@SuppressWarnings("all")
 public class Parser {
    public Hashtable parseStrings;
    

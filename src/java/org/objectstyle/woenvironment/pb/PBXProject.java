@@ -68,6 +68,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
+import org.objectstyle.woenvironment.pb.PBXProject.ObjectsTable.ID;
 
 /**
  * A <b>PBXProject</b> represents a Project Builder X project package (<code>*.pbproj</code>).
@@ -75,6 +76,7 @@ import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
  * @author Jonathan 'Wolf' Rentzsch
  * @author Anjo Krank
  */
+@SuppressWarnings("unchecked")
 public class PBXProject {
 	public void addSourceReference(String path) {
 		if (!_sourceRefs.contains(path))
@@ -301,7 +303,7 @@ public class PBXProject {
 
 	protected ArrayList _sourceRefs = new ArrayList();
 
-	protected Map map(Object[] keyValues) {
+  protected Map map(Object[] keyValues) {
 		Map result = new TreeMap();
 		for (int i = 0; i < keyValues.length; i += 2) {
 			result.put(keyValues[i], keyValues[i + 1]);
@@ -353,9 +355,9 @@ public class PBXProject {
 		return map(new Object[] { "isa", "PBXToolTarget", "buildSettings", new HashMap(), "name", "Web Server", "buildPhases", buildPhaseIDs });
 	}
 
-	protected Map newAntTarget(List buildPhaseIDs, ObjectsTable objectsTable) {
+  protected Map newAntTarget(List buildPhaseIDs, ObjectsTable objectsTable) {
 		Map result = map(new Object[] { "isa", "PBXLegacyTarget", "buildArgumentsString", "-emacs $(ACTION)", "buildSettings", new HashMap(), "buildToolPath", "/Developer/Java/Ant/bin/ant", "passBuildSettingsInEnvironment", "1", "name", "Ant", "buildPhases", buildPhaseIDs });
-		List buildConfigurations = new LinkedList();
+		List<ID> buildConfigurations = new LinkedList<ID>();
 		buildConfigurations.add(objectsTable.insert(newBuildConfiguration(map(new Object[] { "COPY_PHASE_STRIP", "NO" }), "Debug")));
 		buildConfigurations.add(objectsTable.insert(newBuildConfiguration(map(new Object[] { "COPY_PHASE_STRIP", "YES" }), "Release")));
 		buildConfigurations.add(objectsTable.insert(newBuildConfiguration(new HashMap(), "Default")));
@@ -402,7 +404,8 @@ public class PBXProject {
 				_value = value;
 			}
 
-			public String toString() {
+			@Override
+      public String toString() {
 				String hexValue = Integer.toHexString(_value);
 				StringBuffer result = new StringBuffer(24);
 				for (int i = 24 - hexValue.length(); i > 0; i--) {
@@ -420,28 +423,33 @@ public class PBXProject {
 			// as with the container classes PropertyListSerialization
 			// would attempt to look into us, which isn't the right thing
 			// to do.
-			public double doubleValue() {
+			@Override
+      public double doubleValue() {
 				return 0;
 			}
 
-			public float floatValue() {
+			@Override
+      public float floatValue() {
 				return 0;
 			}
 
-			public int intValue() {
+			@Override
+      public int intValue() {
 				return 0;
 			}
 
-			public long longValue() {
+			@Override
+      public long longValue() {
 				return 0;
 			}
 
-			public short shortValue() {
+			@Override
+      public short shortValue() {
 				return 0;
 			}
 		}
 
-		public ObjectsTable() {
+    public ObjectsTable() {
 			super(new Comparator() {
 				public int compare(Object a, Object b) {
 					if (a == b)
@@ -455,7 +463,7 @@ public class PBXProject {
 			});
 		}
 
-		public ID insert(Object object) {
+    public ID insert(Object object) {
 			ID id = new ID(_unique++);
 			put(id, object);
 			return id;

@@ -77,6 +77,7 @@ import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
  * @author uli
  * @author Andrei Adamchik
  */
+@SuppressWarnings("unchecked")
 public class PBProject {
 	public static final String DEFAULT_APP_PROJECT = "pbindex/woapp/PB.project";
 
@@ -194,7 +195,7 @@ public class PBProject {
 		}
 	}
 
-	private Map sortedMap(Map _map) {
+  private Map sortedMap(Map _map) {
 		TreeMap sortedMap = new TreeMap(_map);
 		Iterator entriesIter = sortedMap.entrySet().iterator();
 		while (entriesIter.hasNext()) {

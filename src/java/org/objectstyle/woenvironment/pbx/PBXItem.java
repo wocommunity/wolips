@@ -72,6 +72,7 @@ import java.util.Vector;
  * To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Generation - Code and Comments
  */
+@SuppressWarnings("unchecked")
 public class PBXItem {
 	public static final String _KISA = "isa";
 
@@ -96,11 +97,12 @@ public class PBXItem {
 		return aString;
 	}
 
-	public String toString() {
+	@Override
+  public String toString() {
 		StringWriter writer = new StringWriter();
 		try {
 			Field[] fields = this.getClass().getFields();
-			SortedSet keys = new TreeSet();
+			SortedSet<Object> keys = new TreeSet<Object>();
 			for (int i = 0; i < fields.length; i++) {
 				if (fields[i].getName().startsWith("_K"))
 					keys.add(fields[i].get(this));
@@ -113,8 +115,8 @@ public class PBXItem {
 				char[] chars = key.toCharArray();
 				chars[0] = Character.toUpperCase(chars[0]);
 				String methodName = "get" + new String(chars);
-				Method method = this.getClass().getMethod(methodName, null);
-				Object ob = method.invoke(this, null);
+				Method method = this.getClass().getMethod(methodName, (Class[])null);
+				Object ob = method.invoke(this, (Object[])null);
 				if (ob == null)
 					continue;
 				if (ob instanceof PBXItem)

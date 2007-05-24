@@ -63,6 +63,7 @@ import java.util.Vector;
  * To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Generation - Code and Comments
  */
+@SuppressWarnings("unchecked")
 public class PBXProject extends PBXItem {
 	public final static String _KBUILDSTYLES = "buildStyles";
 

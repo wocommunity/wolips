@@ -59,6 +59,7 @@ package org.objectstyle.woenvironment.util;
 /**
  * Describes the input token stream.
  */
+@SuppressWarnings("all")
 public class Token {
 	/**
 	 * An integer that describes the kind of this token. This numbering system
