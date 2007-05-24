@@ -56,7 +56,8 @@
 
 package org.objectstyle.wolips.ui.preferences;
 
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -97,9 +98,9 @@ public class LaunchPreferencesPage extends PreferencePage implements IWorkbenchP
 
 	private String preferencesKey;
 
-	private Vector allParameter;
+	private List<String> allParameter;
 
-	private Vector allArguments;
+	private List<String> allArguments;
 
 	public void init(IWorkbench workbench) {
 		setDescription(PreferencesMessages.getString("LaunchPreferencesPage.description")); //$NON-NLS-1$
@@ -207,8 +208,8 @@ public class LaunchPreferencesPage extends PreferencePage implements IWorkbenchP
 		boolean[] enabled = new boolean[count];
 		TableItem[] items = this.includeTable.getItems();
 		for (int i = 0; i < count; i++) {
-			parameter[i] = (String) this.allParameter.get(i);
-			arguments[i] = (String) this.allArguments.get(i);
+			parameter[i] = this.allParameter.get(i);
+			arguments[i] = this.allArguments.get(i);
 			enabled[i] = items[i].getChecked();
 		}
 		Preferences.setLaunchInfoForKey(parameter, arguments, enabled, this.preferencesKey);
@@ -227,8 +228,8 @@ public class LaunchPreferencesPage extends PreferencePage implements IWorkbenchP
 	}
 
 	private void fillTable(ILaunchInfo[] launchInfoArray) {
-		this.allArguments = new Vector();
-		this.allParameter = new Vector();
+		this.allArguments = new LinkedList<String>();
+		this.allParameter = new LinkedList<String>();
 		for (int i = 0; i < launchInfoArray.length; i++) {
 			ILaunchInfo launchInfo = launchInfoArray[i];
 			TableItem item = new TableItem(this.includeTable, SWT.NONE);
@@ -292,15 +293,15 @@ public class LaunchPreferencesPage extends PreferencePage implements IWorkbenchP
 		if (selection.length != 1)
 			return;
 		int index = selection[0];
-		InputDialog argumentDialog = new InputDialog(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), PreferencesMessages.getString("IgnorePreferencePage.enterPatternLong"), this.allArguments.elementAt(index).toString(), null); //$NON-NLS-1$ //$NON-NLS-2$
+		InputDialog argumentDialog = new InputDialog(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), PreferencesMessages.getString("IgnorePreferencePage.enterPatternLong"), this.allArguments.get(index), null); //$NON-NLS-1$ //$NON-NLS-2$
 		argumentDialog.open();
 		if (argumentDialog.getReturnCode() != Window.OK)
 			return;
 		String argument = argumentDialog.getValue();
-		String parameter = (String) this.allParameter.elementAt(index);
+		String parameter = this.allParameter.get(index);
 		TableItem item = this.includeTable.getItem(index);
 		item.setText(StringUtilities.toCommandlineParameterFormat(parameter, argument, false));
-		this.allArguments.setElementAt(argument, index);
+		this.allArguments.set(index, argument);
 	}
 
 	void handleSelection() {
