@@ -59,6 +59,7 @@ package org.objectstyle.wolips.jdt.ui;
 // http://www.eclipse.org/articles/Understanding%20Layouts/Understanding%20Layouts.htm
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.ui.wizards.IClasspathContainerPage;
@@ -106,17 +107,19 @@ public class WOClassPathContainerPage extends WizardPage implements IClasspathCo
 		this._uiList.setContentProvider(this.path);
 		this._uiList.setLabelProvider(this.path);
 		this._uiList.setInput(this.path);
-		ArrayList checked = new ArrayList();
+		List<WOClasspathContainerEntry> checked = new ArrayList<WOClasspathContainerEntry>();
 		WOClasspathContainerRoot[] roots = this.path.getRoots();
-		if (roots != null)
+		if (roots != null) {
 			for (int i = 0; i < roots.length; i++) {
 				WOClasspathContainerEntry[] entries = roots[i].getEntries();
-				if (entries != null)
+				if (entries != null) {
 					for (int j = 0; j < entries.length; j++) {
 						if (entries[j].isChecked())
 							checked.add(entries[j]);
 					}
+				}
 			}
+		}
 		this._uiList.setCheckedElements(checked.toArray());
 
 		Label lbl = new Label(thisPage, SWT.SINGLE);

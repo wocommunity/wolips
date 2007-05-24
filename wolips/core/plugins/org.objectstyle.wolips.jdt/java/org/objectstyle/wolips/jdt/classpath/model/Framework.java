@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.jdt.classpath.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 
@@ -100,14 +101,14 @@ public class Framework {
 	 * @return
 	 */
 	public IPath[] getLibraryPaths() {
-		ArrayList arrayList = new ArrayList(this.jarFiles.length + this.zipFiles.length);
+		List<IPath> arrayList = new ArrayList<IPath>(this.jarFiles.length + this.zipFiles.length);
 		for (int i = 0; i < this.jarFiles.length; i++) {
 			arrayList.add(this.libraryPath(this.jarFiles[i]));
 		}
 		for (int i = 0; i < this.zipFiles.length; i++) {
 			arrayList.add(this.libraryPath(this.zipFiles[i]));
 		}
-		return (IPath[]) arrayList.toArray(new IPath[arrayList.size()]);
+		return arrayList.toArray(new IPath[arrayList.size()]);
 	}
 
 	private IPath libraryPath(String string) {

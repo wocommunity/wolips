@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.jdt.classpath;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -73,7 +74,7 @@ public class PathCoder {
 	 * @throws PathCoderException
 	 */
 	public static IPath[] decode(IPath path) throws PathCoderException {
-		ArrayList arrayList = new ArrayList();
+		List<IPath> arrayList = new ArrayList<IPath>();
 		int segmentCount = path.segmentCount();
 		// if something goes wrong max 2048 runs
 		for (int i = 0; i < segmentCount && i < 2048;) {
@@ -90,7 +91,7 @@ public class PathCoder {
 			arrayList.add(entryPath);
 			i = i + integer.intValue() + 1;
 		}
-		return (IPath[]) arrayList.toArray(new IPath[arrayList.size()]);
+		return arrayList.toArray(new IPath[arrayList.size()]);
 	}
 
 	/**
@@ -99,11 +100,12 @@ public class PathCoder {
 	 * @return
 	 */
 	public static IPath encode(IPath path) {
+		IPath encodePath = path;
 		if (path == null) {
-			path = new Path("nil");
+			encodePath = new Path("nil");
 		}
-		IPath returnValue = new Path(path.segmentCount() + "");
-		returnValue = returnValue.append(path);
+		IPath returnValue = new Path(encodePath.segmentCount() + "");
+		returnValue = returnValue.append(encodePath);
 		return returnValue;
 	}
 }
