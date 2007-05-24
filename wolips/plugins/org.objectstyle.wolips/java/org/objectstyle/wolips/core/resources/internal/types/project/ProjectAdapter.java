@@ -92,6 +92,9 @@ import org.objectstyle.wolips.core.resources.internal.types.AbstractResourceAdap
 import org.objectstyle.wolips.core.resources.types.IPBDotProjectOwner;
 import org.objectstyle.wolips.core.resources.types.file.IPBDotProjectAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IBuildAdapter;
+import org.objectstyle.wolips.core.resources.types.folder.IDotApplicationAdapter;
+import org.objectstyle.wolips.core.resources.types.folder.IDotFrameworkAdapter;
+import org.objectstyle.wolips.core.resources.types.folder.IProductAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IWoprojectAdapter;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 
@@ -190,6 +193,26 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 			return null;
 		}
 		return (IBuildAdapter) resource.getAdapter(IBuildAdapter.class);
+	}
+
+	public IDotApplicationAdapter getDotApplicationAdapter() {
+		IResource resource = this.getUnderlyingProject().getFolder(this.getUnderlyingResource().getProject().getName() + "." + IDotApplicationAdapter.FILE_NAME_EXTENSION);
+		return (IDotApplicationAdapter) resource.getAdapter(IDotApplicationAdapter.class);
+	}
+
+	public IDotFrameworkAdapter getDotFrameworkAdapter() {
+		IResource resource = this.getUnderlyingProject().getFolder(this.getUnderlyingResource().getProject().getName() + "." + IDotFrameworkAdapter.FILE_NAME_EXTENSION);
+		return (IDotFrameworkAdapter) resource.getAdapter(IDotFrameworkAdapter.class);
+	}
+
+	public IProductAdapter getProductAdapter() {
+		IProject project = this.getUnderlyingResource().getProject();
+		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
+		if (projectAdapter.isFramework()) {
+			return this.getDotFrameworkAdapter();
+		}
+
+		return this.getDotApplicationAdapter();
 	}
 
 	public List getFrameworkPaths() {

@@ -63,6 +63,9 @@ import org.eclipse.core.runtime.IPath;
 import org.objectstyle.wolips.core.resources.types.IPBDotProjectOwner;
 import org.objectstyle.wolips.core.resources.types.IResourceType;
 import org.objectstyle.wolips.core.resources.types.folder.IBuildAdapter;
+import org.objectstyle.wolips.core.resources.types.folder.IDotApplicationAdapter;
+import org.objectstyle.wolips.core.resources.types.folder.IDotFrameworkAdapter;
+import org.objectstyle.wolips.core.resources.types.folder.IProductAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IWoprojectAdapter;
 
 public interface IProjectAdapter extends IResourceType, IPBDotProjectOwner {
@@ -74,6 +77,12 @@ public interface IProjectAdapter extends IResourceType, IPBDotProjectOwner {
 	public abstract boolean isApplication();
 
 	public abstract IBuildAdapter getBuildAdapter();
+
+	public abstract IDotApplicationAdapter getDotApplicationAdapter();
+
+	public abstract IDotFrameworkAdapter getDotFrameworkAdapter();
+
+	public abstract IProductAdapter getProductAdapter();
 
 	public abstract IWoprojectAdapter getWoprojectAdapter();
 
