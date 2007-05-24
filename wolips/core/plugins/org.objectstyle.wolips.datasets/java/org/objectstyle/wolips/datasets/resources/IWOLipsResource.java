@@ -108,7 +108,7 @@ public interface IWOLipsResource {
 	/**
 	 * @return Returns a List of related IWOLipsResource s.
 	 */
-	public abstract List getRelatedResources();
+	public abstract List<IResource> getRelatedResources();
 
 	/**
 	 * Opens the resource in a Editor.
