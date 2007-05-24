@@ -107,14 +107,14 @@ public class WodParserCache implements FuzzyXMLErrorListener {
       woFolder = resource.getParent();
     }
     String key = woFolder.getLocation().toPortableString();
-    WodParserCache cache =  _parsers.get(key);
+    WodParserCache cache = _parsers.get(key);
     if (cache == null && createIfMissing) {
       cache = new WodParserCache(woFolder);
       _parsers.put(key, cache);
     }
     return cache;
   }
-  
+
   protected static class WodHtmlResourceChangeListener implements IResourceChangeListener, IResourceDeltaVisitor {
     public void resourceChanged(IResourceChangeEvent event) {
       IResourceDelta delta = event.getDelta();
@@ -143,12 +143,13 @@ public class WodParserCache implements FuzzyXMLErrorListener {
     _undoManager = new TextViewerUndoManager(25);
     clearCache();
   }
-  
+
   public IUndoManager getUndoManager() {
     return _undoManager;
   }
 
-  public IType getComponentType() {
+  public IType getComponentType() throws CoreException, LocateException {
+	checkLocateResults();
     return _componentType;
   }
 
@@ -173,9 +174,16 @@ public class WodParserCache implements FuzzyXMLErrorListener {
     _wodModel = null;
     _lastWodParseTime = -1;
   }
+  
+  protected void checkLocateResults() throws CoreException, LocateException {
+	  if (_componentsLocateResults != null) {
+		  if (!_componentsLocateResults.isValid()) {
+			  clearLocateResultsCache();
+		  }
+	  }
+  }
 
-  public void clearCache() throws CoreException, LocateException {
-    //System.out.println("WodParserCache.WodParserCache: Reloading " + _woFolder);
+  public void clearLocateResultsCache() throws CoreException, LocateException {
     _componentsLocateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(_woFolder);
     _project = _woFolder.getProject();
     _javaProject = JavaCore.create(_project);
@@ -183,6 +191,11 @@ public class WodParserCache implements FuzzyXMLErrorListener {
     _wodFile = _componentsLocateResults.getFirstWodFile();
     _apiFile = _componentsLocateResults.getDotApi(true);
     _componentType = _componentsLocateResults.getDotJavaType();
+  }
+
+  public void clearCache() throws CoreException, LocateException {
+    //System.out.println("WodParserCache.WodParserCache: Reloading " + _woFolder);
+    clearLocateResultsCache();
 
     _clearHtmlCache();
     _clearWodCache();
@@ -195,6 +208,9 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   }
 
   public LocalizedComponentsLocateResult getComponentsLocateResults() {
+	  if (_componentsLocateResults.isValid()) {
+		  
+	  }
     return _componentsLocateResults;
   }
 
@@ -207,7 +223,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
     validate();
     return _htmlElementCache;
   }
-  
+
   public WodParserCacheContext getContext() {
     return _context;
   }
@@ -219,7 +235,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   public IWodModel getWodModel() {
     return _wodModel;
   }
-  
+
   public Wo getWo(String elementName) throws ApiModelException, JavaModelException {
     IType elementType = getElementType(elementName);
     return getWo(elementType);
@@ -228,30 +244,30 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   public IType getElementType(String elementName) throws JavaModelException {
     return WodReflectionUtils.findElementType(_javaProject, elementName, false, this);
   }
-  
+
   public Wo getWo(IType type) throws ApiModelException {
     return WodApiUtils.findApiModelWo(type, this);
   }
-  
+
   public void setWodDocument(IDocument wodDocument) {
     _wodDocument = wodDocument;
     _wodDocumentChanged = true;
   }
-  
+
   public IDocument getWodDocument() {
     return _wodDocument;
   }
-  
+
   public void setHtmlDocument(IDocument htmlDocument) {
     _htmlDocumentChanged = true;
     _htmlDocument = htmlDocument;
     //System.out.println("WodParserCache.setHtmlDocument: " + htmlDocument);
   }
-  
+
   public IDocument getHtmlDocument() {
     return _htmlDocument;
   }
-  
+
   public void parseHtmlAndWodIfNecessary() throws CoreException, IOException {
     boolean parseHtml = _htmlDocumentChanged || (_htmlFile != null && ((_htmlFile.exists() && _htmlFile.getModificationStamp() != _lastHtmlParseTime) || (!_htmlFile.exists() && _lastHtmlParseTime > 0)));
     if (parseHtml) {
@@ -263,7 +279,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
         _htmlContents = _htmlDocument.get();
         _htmlContents = _htmlContents.replaceAll("\r\n", " \n");
         _htmlContents = _htmlContents.replaceAll("\r", "\n");
-  
+
         FuzzyXMLParser parser = new FuzzyXMLParser();
         parser.addErrorListener(this);
         _htmlXmlDocument = parser.parse(_htmlContents);
@@ -412,7 +428,8 @@ public class WodParserCache implements FuzzyXMLErrorListener {
     return _htmlFile;
   }
 
-  public IFile getApiFile() {
+  public IFile getApiFile() throws CoreException, LocateException {
+	checkLocateResults();
     return _apiFile;
   }
 
