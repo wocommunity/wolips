@@ -104,7 +104,7 @@ public class WodContentOutlinePage extends ContentOutlinePage {
 
 		protected IPositionUpdater fPositionUpdater = new DefaultPositionUpdater(SEGMENTS);
 
-		protected List fContent = new ArrayList(10);
+		protected List<Segment> fContent = new ArrayList<Segment>(10);
 
 		protected void parse(IDocument document) {
 			try {
@@ -165,6 +165,7 @@ public class WodContentOutlinePage extends ContentOutlinePage {
 		/*
 		 * @see IContentProvider#isDeleted(Object)
 		 */
+		@SuppressWarnings("unused")
 		public boolean isDeleted(Object element) {
 			return false;
 		}

@@ -275,6 +275,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 				}
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			WodclipsePlugin.getDefault().log(e);
 		}
 

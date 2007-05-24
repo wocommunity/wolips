@@ -27,7 +27,7 @@ public class WodAnnotationHover implements IAnnotationHover, ITextHover {
 		String hoverInfo = null;
 		List annotationsList = getAnnotationsForLine(_sourceViewer, _lineNumber);
 		if (annotationsList != null) {
-			List messagesList = new ArrayList();
+			List<String> messagesList = new ArrayList<String>();
 			Iterator annotationsIter = annotationsList.iterator();
 			while (annotationsIter.hasNext()) {
 				Annotation annotation = (Annotation) annotationsIter.next();
@@ -40,7 +40,7 @@ public class WodAnnotationHover implements IAnnotationHover, ITextHover {
 				}
 			}
 			if (messagesList.size() == 1) {
-				hoverInfo = (String) messagesList.get(0);
+				hoverInfo = messagesList.get(0);
 			} else if (messagesList.size() > 1) {
 				hoverInfo = formatMessages(messagesList);
 			}
@@ -90,8 +90,8 @@ public class WodAnnotationHover implements IAnnotationHover, ITextHover {
 		return buffer.toString();
 	}
 
-	private List getAnnotationsForLine(ISourceViewer _viewer, int _line) {
-		List annotationsList = new ArrayList();
+	private List<Annotation> getAnnotationsForLine(ISourceViewer _viewer, int _line) {
+		List<Annotation> annotationsList = new ArrayList<Annotation>();
 		IDocument document = _viewer.getDocument();
 		IAnnotationModel model = _viewer.getAnnotationModel();
 		if (model != null) {
