@@ -1,6 +1,7 @@
 package tk.eclipse.plugin.htmleditor.editors;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import jp.aonir.fuzzyxml.FuzzyXMLAttribute;
 import jp.aonir.fuzzyxml.FuzzyXMLCDATA;
@@ -48,6 +49,7 @@ public class HTMLOutlinePage extends ContentOutlinePage implements IHTMLOutlineP
     return doc;
   }
 
+  @Override
   public void createControl(Composite parent) {
     super.createControl(parent);
     TreeViewer viewer = getTreeViewer();
@@ -86,13 +88,14 @@ public class HTMLOutlinePage extends ContentOutlinePage implements IHTMLOutlineP
       //if (this.doc == null) {
       this.doc = createParser().parse(editor.getHTMLSource());
       //}
+
+      TreeViewer viewer = getTreeViewer();
+      if (viewer != null) {
+        viewer.refresh();
+      }
     }
     catch (Exception e) {
       e.printStackTrace();
-    }
-    TreeViewer viewer = getTreeViewer();
-    if (viewer != null) {
-      viewer.refresh();
     }
   }
 
@@ -164,7 +167,7 @@ public class HTMLOutlinePage extends ContentOutlinePage implements IHTMLOutlineP
   }
 
   protected Object[] getNodeChildren(FuzzyXMLElement element) {
-    ArrayList children = new ArrayList();
+    List<FuzzyXMLNode> children = new ArrayList<FuzzyXMLNode>();
     FuzzyXMLNode[] nodes = element.getChildren();
     for (int i = 0; i < nodes.length; i++) {
       if (nodes[i] instanceof FuzzyXMLElement) {
@@ -177,7 +180,7 @@ public class HTMLOutlinePage extends ContentOutlinePage implements IHTMLOutlineP
         children.add(nodes[i]);
       }
     }
-    return (FuzzyXMLNode[]) children.toArray(new FuzzyXMLNode[children.size()]);
+    return children.toArray(new FuzzyXMLNode[children.size()]);
   }
 
   protected String getNodeText(FuzzyXMLNode node) {
@@ -211,6 +214,7 @@ public class HTMLOutlinePage extends ContentOutlinePage implements IHTMLOutlineP
 
   /** root element. */
   private class RootNode {
+    private boolean _updating;
 
     public RootNode() {
       super();
@@ -221,24 +225,40 @@ public class HTMLOutlinePage extends ContentOutlinePage implements IHTMLOutlineP
       //			return new FileNode[]{
       //				new FileNode(file.getName())
       //			};
-      ArrayList children = new ArrayList();
+      List<FuzzyXMLNode> children = new ArrayList<FuzzyXMLNode>();
       if (doc == null) {
-        update();
-      }
-      if (doc.getDocumentType() != null) {
-        children.add(doc.getDocumentType());
-      }
-      FuzzyXMLNode[] nodes = doc.getDocumentElement().getChildren();
-      for (int i = 0; i < nodes.length; i++) {
-        if (nodes[i] instanceof FuzzyXMLElement) {
-          children.add(nodes[i]);
-          //				} else if(nodes[i] instanceof FuzzyXMLText && ((FuzzyXMLText)nodes[i]).getValue().startsWith("<%")){
-          //					children.add(nodes[i]);
+        if (_updating) {
+          System.out.println("RootNode.getChildren: Attempted to update root node while already in an update pass.");
+        }
+        else {
+          _updating = true;
+          try {
+            update();
+          }
+          finally {
+            _updating = false;
+          }
         }
       }
-      return (FuzzyXMLNode[]) children.toArray(new FuzzyXMLNode[children.size()]);
+
+      if (doc != null) {
+        if (doc.getDocumentType() != null) {
+          children.add(doc.getDocumentType());
+        }
+        FuzzyXMLNode[] nodes = doc.getDocumentElement().getChildren();
+        for (int i = 0; i < nodes.length; i++) {
+          if (nodes[i] instanceof FuzzyXMLElement) {
+            children.add(nodes[i]);
+            //				} else if(nodes[i] instanceof FuzzyXMLText && ((FuzzyXMLText)nodes[i]).getValue().startsWith("<%")){
+            //					children.add(nodes[i]);
+          }
+        }
+      }
+
+      return children.toArray(new FuzzyXMLNode[children.size()]);
     }
 
+    @Override
     public boolean equals(Object obj) {
       if (obj instanceof RootNode) {
         return true;
@@ -294,6 +314,7 @@ public class HTMLOutlinePage extends ContentOutlinePage implements IHTMLOutlineP
   /** LabelProvider of HTMLOutlinePage */
   private class HTMLLabelProvider extends LabelProvider {
 
+    @Override
     public Image getImage(Object element) {
       if (element instanceof FuzzyXMLNode) {
         return getNodeImage((FuzzyXMLNode) element);
@@ -301,6 +322,7 @@ public class HTMLOutlinePage extends ContentOutlinePage implements IHTMLOutlineP
       return null;
     }
 
+    @Override
     public String getText(Object element) {
       if (element instanceof FuzzyXMLNode) {
         return getNodeText((FuzzyXMLNode) element);
@@ -325,9 +347,9 @@ public class HTMLOutlinePage extends ContentOutlinePage implements IHTMLOutlineP
           ((HTMLSourceEditor) editorPart).selectAndReveal(offset, 0);
         }
         else {
-          HTMLSourceEditor editor = (HTMLSourceEditor) editorPart.getAdapter(HTMLSourceEditor.class);
-          if (editor != null) {
-            editor.selectAndReveal(offset, 0);
+          HTMLSourceEditor sourceEditor = (HTMLSourceEditor) editorPart.getAdapter(HTMLSourceEditor.class);
+          if (sourceEditor != null) {
+            sourceEditor.selectAndReveal(offset, 0);
           }
         }
       }
