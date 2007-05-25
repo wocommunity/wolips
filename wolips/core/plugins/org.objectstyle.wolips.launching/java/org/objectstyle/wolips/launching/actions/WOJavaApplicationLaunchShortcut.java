@@ -56,12 +56,14 @@
 
 package org.objectstyle.wolips.launching.actions;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.internal.debug.ui.launcher.JavaApplicationLaunchShortcut;
+import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchConfigurationDelegate;
 
 /**
@@ -78,14 +80,19 @@ public class WOJavaApplicationLaunchShortcut extends JavaApplicationLaunchShortc
 	}
 
 	protected ILaunchConfiguration createConfiguration(IType type) {
-		ILaunchConfiguration config = super.createConfiguration(type);
+		ILaunchConfiguration config = null;
+		ILaunchConfigurationWorkingCopy wc = null;
 		try {
-			ILaunchConfigurationWorkingCopy wc = config.getWorkingCopy();
+			ILaunchConfigurationType configType = getConfigurationType();
+			wc = configType.newInstance(null, getLaunchManager().generateUniqueLaunchConfigurationNameFrom(type.getJavaProject().getProject().getName() + ": " + type.getElementName()));
+			wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, type.getFullyQualifiedName());
+			wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, type.getJavaProject().getElementName());
+			wc.setMappedResources(new IResource[] {type.getJavaProject().getProject()});
 			WOJavaLocalApplicationLaunchConfigurationDelegate.initConfiguration(wc);
 			config = wc.doSave();
 		} catch (CoreException exception) {
-			reportErorr(exception);
-		}
+			reportErorr(exception);		
+		} 
 		return config;
 	}
 }
