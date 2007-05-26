@@ -51,6 +51,18 @@
          </description>
       </wizard>
       <wizard
+            name="WOnderD2WApplication"
+            icon="icons/woproject/d2wapplication_wiz.gif"
+            category="org.objectstyle.wolips.wizards"
+            project="true"
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.wonderd2wapplication">
+            <class class="org.objectstyle.wolips.wizards.WOnderD2WApplicationWizard">
+              <parameter name="wotype" value="true"/>
+            </class>
+         <description>
+         </description>
+      </wizard>
+      <wizard
             name="WOnderFramework"
             icon="icons/woproject/woframework_wiz.gif"
             category="org.objectstyle.wolips.wizards"

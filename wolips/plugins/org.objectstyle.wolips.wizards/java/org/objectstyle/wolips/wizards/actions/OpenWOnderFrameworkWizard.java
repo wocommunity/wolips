@@ -57,7 +57,7 @@
 package org.objectstyle.wolips.wizards.actions;
 
 import org.eclipse.ui.INewWizard;
-import org.objectstyle.wolips.wizards.WOnderApplicationWizard;
+import org.objectstyle.wolips.wizards.WOnderFrameworkWizard;
 
 /**
  * @author uli
@@ -65,6 +65,6 @@ import org.objectstyle.wolips.wizards.WOnderApplicationWizard;
 public class OpenWOnderFrameworkWizard extends AbstractOpenWizardAction {
 
 	protected INewWizard createWizard() {
-		return new WOnderApplicationWizard();
+		return new WOnderFrameworkWizard();
 	}
 }
