@@ -118,6 +118,46 @@
                id="org.objectstyle.wolips.ui.Perspective">
          </perspective>
       </shortcut>
+      <shortcut
+            label="Wonder ERXMainRunner"
+            icon="icons/launching/WOLips16-16.png"
+            modes="run, debug"
+            class="org.objectstyle.wolips.launching.actions.ERXMainApplicationLaunchShortcut"
+            id="org.objectstyle.wolips.launching.ERXMainApplicationLaunchShortcut">
+         <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate>
+                 <or>
+                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.java"/>
+                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.class"/>
+                   <instanceof value="org.eclipse.jdt.core.IJavaElement"/>
+                 </or>
+                 <test property="org.eclipse.jdt.debug.ui.hasMainType"/>
+               </iterate>
+             </with>
+           </enablement>
+  		 </contextualLaunch>
+         <perspective
+               id="org.eclipse.jdt.ui.JavaPerspective">
+         </perspective>
+         <perspective
+               id="org.eclipse.jdt.ui.JavaHierarchyPerspective">
+         </perspective>
+         <perspective
+               id="org.eclipse.jdt.ui.JavaBrowsingPerspective">
+         </perspective>
+         <perspective
+               id="org.eclipse.debug.ui.DebugPerspective">
+         </perspective>
+         <perspective
+               id="org.eclipse.pde.PDEPerspective">
+         </perspective>
+         <perspective
+               id="org.objectstyle.wolips.ui.Perspective">
+         </perspective>
+      </shortcut>
    </extension>
    <extension point="org.eclipse.debug.ui.consoleLineTrackers">
    	<consoleLineTracker
