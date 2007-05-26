@@ -13,6 +13,8 @@ public class FuzzyXMLUtil {
   /** スクリプト部分を取得するための正規表現 */
   private static Pattern script = Pattern.compile("(<script.*?>)(.*?)(</script>)", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 
+  private static Pattern woTag = Pattern.compile("<(/*)(wo|webobject)(s*[^>]*)>", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+
   /**
    * スクリプト部分（&lt;script ... &gt;～&lt;/script&gt;で囲まれた範囲）の
    * 文字列を半角スペースに置換します。
@@ -21,7 +23,6 @@ public class FuzzyXMLUtil {
    * @return 変換後の文字列
    */
   public static String escapeScript(String source) {
-    Pattern woTag = Pattern.compile("<(/*)(wo|webobject)(s*[^>]*)>", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
     StringBuffer sb = new StringBuffer();
     int lastIndex = 0;
     Matcher matcher = script.matcher(source);
@@ -135,9 +136,23 @@ public class FuzzyXMLUtil {
           sb.append("<!--");
           length = length - 7;
         }
-        for (int i = 0; i < length; i++) {
+
+        int i = 0;
+        Matcher woMatcher = woTag.matcher(source.substring(index + 4, end));
+        while (woMatcher.find()) {
+          int woTagStart = woMatcher.start();
+          int woTagEnd = woMatcher.end();
+          for (; woTagStart > i; woTagStart --) {
+            sb.append(" ");
+          }
+          sb.append(woMatcher.group());
+          i = woTagEnd;
+        }
+        
+        for (; i < length; i++) {
           sb.append(" ");
         }
+        
         if (contentsOnly) {
           sb.append("-->");
         }
