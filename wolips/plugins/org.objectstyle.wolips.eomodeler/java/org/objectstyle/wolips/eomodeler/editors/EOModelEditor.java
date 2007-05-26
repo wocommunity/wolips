@@ -512,7 +512,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 			myLoadFailures = new LinkedHashSet<EOModelVerificationFailure>();
 
-			EOModel model = IEOModelGroupFactory.Utility.loadModel(fileEditorInput.getFile(), myLoadFailures, true, progressMonitor);
+			EOModel model = IEOModelGroupFactory.Utility.loadModel(file, myLoadFailures, true, progressMonitor);
 			if (model == null) {
 				// super.init(_site, fileEditorInput);
 				handleModelErrors(myLoadFailures, true);
