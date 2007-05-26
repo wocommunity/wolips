@@ -71,9 +71,6 @@ import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 public class PasteAction extends Action implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
 	private ISelection _sSelection;
 
-	public PasteAction() {
-	}
-
 	public void dispose() {
 		// DO NOTHING
 	}
