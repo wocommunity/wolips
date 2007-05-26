@@ -55,7 +55,8 @@ public class HTMLProjectPropertyPage extends PropertyPage {
 		super();
 	}
 
-	protected Control createContents(Composite parent) {
+	@Override
+  protected Control createContents(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		composite.setLayout(layout);
@@ -87,7 +88,8 @@ public class HTMLProjectPropertyPage extends PropertyPage {
 		Button button = new Button(panel, SWT.BUTTON1);
 		button.setText(HTMLPlugin.getResourceString("Button.Browse"));
 		button.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
+			@Override
+      public void widgetSelected(SelectionEvent e) {
 				selectFolder();
 			}
 		});
@@ -152,12 +154,14 @@ public class HTMLProjectPropertyPage extends PropertyPage {
 		checkTaskTag.setChecked(params.getDetectTaskTag());
 	}
 	
-	protected void performDefaults() {
+	@Override
+  protected void performDefaults() {
 		params = new HTMLProjectParams();
 		fillControls();
 	}
 	
-	public boolean performOk() {
+	@Override
+  public boolean performOk() {
 		// TODO input check?
 		
 		try {
@@ -192,7 +196,7 @@ public class HTMLProjectPropertyPage extends PropertyPage {
 			Class[] acceptedClasses = new Class[] { IProject.class, IFolder.class };
 			ISelectionStatusValidator validator = new TypedElementSelectionValidator(acceptedClasses, false);
 			IProject[] allProjects = wsroot.getProjects();
-			ArrayList rejectedElements = new ArrayList(allProjects.length);
+			ArrayList<IProject> rejectedElements = new ArrayList<IProject>(allProjects.length);
 			for (int i = 0; i < allProjects.length; i++) {
 				if (!allProjects[i].equals(currProject)) {
 					rejectedElements.add(allProjects[i]);

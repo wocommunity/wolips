@@ -34,7 +34,7 @@ public class CustomElement {
 		this.displayName = displayName;
 	}
 	
-	public static List loadFromPreference(boolean defaults){
+	public static List<CustomElement> loadFromPreference(boolean defaults){
 		IPreferenceStore store = HTMLPlugin.getDefault().getPreferenceStore();
 		String value = null;
 		if(defaults){
@@ -42,7 +42,7 @@ public class CustomElement {
 		} else {
 			value = store.getString(HTMLPlugin.PREF_CUSTOM_ELEMENTS);
 		}
-		List list = new ArrayList();
+		List<CustomElement> list = new ArrayList<CustomElement>();
 		if(value!=null){
 			String[] values = value.split("\n");
 			for(int i=0;i<values.length;i++){
@@ -55,11 +55,11 @@ public class CustomElement {
 		return list;
 	}
 	
-	public static void saveToPreference(List list){
+	public static void saveToPreference(List<CustomElement> list){
 		IPreferenceStore store = HTMLPlugin.getDefault().getPreferenceStore();
 		StringBuffer sb = new StringBuffer();
 		for(int i=0;i<list.size();i++){
-			CustomElement element = (CustomElement)list.get(i);
+			CustomElement element = list.get(i);
 			sb.append(element.getDisplayName());
 			sb.append("\t");
 			sb.append(element.getAssistString());

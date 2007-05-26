@@ -22,12 +22,12 @@ public class DTDPartitionScanner extends RuleBasedPartitionScanner {
 		IToken htmlTag = new Token(HTMLPartitionScanner.HTML_TAG);
 //		IToken defaultToken = new Token(IDocument.DEFAULT_CONTENT_TYPE);
 		
-		List rules = new ArrayList();
+		List<IPredicateRule> rules = new ArrayList<IPredicateRule>();
 		
 		rules.add(new MultiLineRule("<!--", "-->", htmlComment));
 		rules.add(new MultiLineRule("<",">", htmlTag));
 		
-		setPredicateRules((IPredicateRule[])rules.toArray(new IPredicateRule[rules.size()]));
+		setPredicateRules(rules.toArray(new IPredicateRule[rules.size()]));
 	}
 
 }

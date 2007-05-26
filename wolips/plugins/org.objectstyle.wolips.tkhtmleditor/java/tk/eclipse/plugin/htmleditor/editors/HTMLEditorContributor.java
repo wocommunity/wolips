@@ -19,18 +19,21 @@ public class HTMLEditorContributor extends MultiPageEditorActionBarContributor {
 		contributer.addActionId(HTMLSourceEditor.ACTION_COMMENT);
 	}
 	
-	public void init(IActionBars bars, IWorkbenchPage page) {
+	@Override
+  public void init(IActionBars bars, IWorkbenchPage page) {
 		super.init(bars, page);
 		contributer.init(bars,page);
 	}
 	
-	public void setActivePage(IEditorPart activeEditor) {
+	@Override
+  public void setActivePage(IEditorPart activeEditor) {
 		if(activeEditor instanceof HTMLSourceEditor){
 		} else {
 		}
 	}
 	
-	public void setActiveEditor(IEditorPart part) {
+	@Override
+  public void setActiveEditor(IEditorPart part) {
 		if(part instanceof HTMLEditor){
 			part = ((HTMLEditor)part).getPaletteTarget();
 			contributer.setActiveEditor(part);
@@ -38,7 +41,8 @@ public class HTMLEditorContributor extends MultiPageEditorActionBarContributor {
 		super.setActiveEditor(part);
 	}
 	
-	public void dispose(){
+	@Override
+  public void dispose(){
 		contributer.dispose();
 		super.dispose();
 	}

@@ -44,13 +44,14 @@ public class JSPSourceEditor extends HTMLSourceEditor {
 		setAction(ACTION_TOGGLE_BREAKPOINT, new ToggleBreakPointAction());
 	}
 	
-	protected void doValidate(){
+	@Override
+  protected void doValidate(){
 //		if(!isFileEditorInput()){
 //			return;
 //		}
 		try {
 			String[] natureIds = HTMLPlugin.getDefault().getNoValidationNatureId();
-			IFile file = ((IFileEditorInput)getEditorInput()).getFile();
+			final IFile file = ((IFileEditorInput)getEditorInput()).getFile();
 			for(int i=0;i<natureIds.length;i++){
 				if(file.getProject().hasNature(natureIds[i])){
 					return;
@@ -60,13 +61,11 @@ public class JSPSourceEditor extends HTMLSourceEditor {
 			ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
 					try {
-						IFileEditorInput input = (IFileEditorInput)getEditorInput();
-						IFile file = input.getFile();
 						file.deleteMarkers(IMarker.PROBLEM,false,0);
 						
 						HTMLProjectParams params = new HTMLProjectParams(file.getProject());
 						if(params.getValidateJSP()){
-							new JSPValidator(input.getFile()).doValidate();
+							new JSPValidator(file).doValidate();
 						}
 					} catch(Exception ex){
 						//HTMLPlugin.logException(ex);
@@ -78,7 +77,8 @@ public class JSPSourceEditor extends HTMLSourceEditor {
 		}
 	}
 	
-	protected IHTMLOutlinePage createOutlinePage() {
+	@Override
+  protected IHTMLOutlinePage createOutlinePage() {
 		return new JSPOutlinePage(this);
 	}
 	
@@ -88,12 +88,14 @@ public class JSPSourceEditor extends HTMLSourceEditor {
 //		return source;
 //	}
 	
-	protected void addContextMenuActions(IMenuManager menu) {
+	@Override
+  protected void addContextMenuActions(IMenuManager menu) {
 		super.addContextMenuActions(menu);
 		addAction(menu,GROUP_HTML,ACTION_JSP_COMMENT);
 	}
 	
-	protected void updateSelectionDependentActions() {
+	@Override
+  protected void updateSelectionDependentActions() {
 		super.updateSelectionDependentActions();
 		ITextSelection sel = (ITextSelection)getSelectionProvider().getSelection();
 		if(sel.getText().equals("")){
@@ -103,7 +105,8 @@ public class JSPSourceEditor extends HTMLSourceEditor {
 		}
 	}
 
-	protected void rulerContextMenuAboutToShow(IMenuManager menu) {
+	@Override
+  protected void rulerContextMenuAboutToShow(IMenuManager menu) {
 		menu.add(getAction(ACTION_TOGGLE_BREAKPOINT));
 		super.rulerContextMenuAboutToShow(menu);
 	}
@@ -111,7 +114,8 @@ public class JSPSourceEditor extends HTMLSourceEditor {
 	/**
 	 * Update informations about code-completion.
 	 */
-	protected void updateAssist(){
+	@Override
+  protected void updateAssist(){
 		super.updateAssist();
 		
 		JSPConfiguration config = (JSPConfiguration)getSourceViewerConfiguration();
@@ -137,7 +141,8 @@ public class JSPSourceEditor extends HTMLSourceEditor {
 			setAccelerator(SWT.CTRL | SWT.ALT | '/');
 		}
 		
-		public void run() {
+		@Override
+    public void run() {
 			ITextSelection sel = (ITextSelection)getSelectionProvider().getSelection();
 			IDocument doc = getDocumentProvider().getDocument(getEditorInput());
 			String text = sel.getText().trim();
@@ -162,7 +167,8 @@ public class JSPSourceEditor extends HTMLSourceEditor {
 			setEnabled(true);
 		}
 		
-		public void run(){
+		@Override
+    public void run(){
 			IBreakpointManager manager = DebugPlugin.getDefault().getBreakpointManager();
 			IBreakpoint[] breakpoints = manager.getBreakpoints();
 			IEditorInput input = getEditorInput();

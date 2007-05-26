@@ -19,7 +19,8 @@ public class JSPOutlinePage extends HTMLOutlinePage {
 		super(editor);
 	}
 	
-	protected Image getNodeImage(FuzzyXMLNode element){
+	@Override
+  protected Image getNodeImage(FuzzyXMLNode element){
 		if(element instanceof FuzzyXMLElement){
 			return super.getNodeImage(element);
 		} else if(element instanceof FuzzyXMLText){
@@ -32,7 +33,8 @@ public class JSPOutlinePage extends HTMLOutlinePage {
 		return super.getNodeImage(element);
 	}
 	
-	protected String getNodeText(FuzzyXMLNode node){
+	@Override
+  protected String getNodeText(FuzzyXMLNode node){
 		if(node instanceof FuzzyXMLText){
 			String text = ((FuzzyXMLText)node).getValue();
 			if(text.startsWith("<%--")){
@@ -48,8 +50,9 @@ public class JSPOutlinePage extends HTMLOutlinePage {
 		return super.getNodeText(node);
 	}
 	
-	protected Object[] getNodeChildren(FuzzyXMLElement element){
-		ArrayList children = new ArrayList();
+	@Override
+  protected Object[] getNodeChildren(FuzzyXMLElement element){
+		ArrayList<FuzzyXMLNode> children = new ArrayList<FuzzyXMLNode>();
 		FuzzyXMLNode[] nodes = element.getChildren();
 		for(int i=0;i<nodes.length;i++){
 			if(nodes[i] instanceof FuzzyXMLElement){
@@ -62,7 +65,7 @@ public class JSPOutlinePage extends HTMLOutlinePage {
 				children.add(nodes[i]);
 			}
 		}
-		return (FuzzyXMLNode[])children.toArray(new FuzzyXMLNode[children.size()]);
+		return children.toArray(new FuzzyXMLNode[children.size()]);
 	}
 	
 

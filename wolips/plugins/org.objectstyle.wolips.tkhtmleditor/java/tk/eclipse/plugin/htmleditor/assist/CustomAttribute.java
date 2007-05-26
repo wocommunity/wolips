@@ -36,7 +36,7 @@ public class CustomAttribute {
 		this.targetTag = targetTag;
 	}
 	
-	public static List loadFromPreference(boolean defaults){
+	public static List<CustomAttribute> loadFromPreference(boolean defaults){
 		IPreferenceStore store = HTMLPlugin.getDefault().getPreferenceStore();
 		String value = null;
 		if(defaults){
@@ -44,7 +44,7 @@ public class CustomAttribute {
 		} else {
 			value = store.getString(HTMLPlugin.PREF_CUSTOM_ATTRS);
 		}
-		List list = new ArrayList();
+		List<CustomAttribute> list = new ArrayList<CustomAttribute>();
 		if(value!=null){
 			String[] values = value.split("\n");
 			for(int i=0;i<values.length;i++){
@@ -57,11 +57,11 @@ public class CustomAttribute {
 		return list;
 	}
 	
-	public static void saveToPreference(List list){
+	public static void saveToPreference(List<CustomAttribute> list){
 		IPreferenceStore store = HTMLPlugin.getDefault().getPreferenceStore();
 		StringBuffer sb = new StringBuffer();
 		for(int i=0;i<list.size();i++){
-			CustomAttribute attrInfo = (CustomAttribute)list.get(i);
+			CustomAttribute attrInfo = list.get(i);
 			sb.append(attrInfo.getTargetTag());
 			sb.append("\t");
 			sb.append(attrInfo.getAttributeName());

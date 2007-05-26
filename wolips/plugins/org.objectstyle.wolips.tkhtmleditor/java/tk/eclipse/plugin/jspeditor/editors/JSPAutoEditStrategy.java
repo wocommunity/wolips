@@ -21,7 +21,8 @@ import tk.eclipse.plugin.htmleditor.editors.HTMLAutoEditStrategy;
  */
 public class JSPAutoEditStrategy extends HTMLAutoEditStrategy {
 	
-	public void customizeDocumentCommand(IDocument d, DocumentCommand c) {
+	@Override
+  public void customizeDocumentCommand(IDocument d, DocumentCommand c) {
 		try {
 //			if("%".equals(c.text) && c.offset > 0){
 //				if(d.getChar(c.offset - 1) == '<'){

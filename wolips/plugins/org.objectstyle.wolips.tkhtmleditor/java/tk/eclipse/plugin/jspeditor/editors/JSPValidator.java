@@ -58,7 +58,8 @@ public class JSPValidator extends HTMLValidator implements IJSPValidationMarkerC
 		this.info = info;
 	}
 	
-	protected void validateDocument(FuzzyXMLDocument doc){
+	@Override
+  protected void validateDocument(FuzzyXMLDocument doc){
 		if(doc!=null){
 			if(this.info==null){
 				this.info = JSPInfo.getJSPInfo(getFile(), getContent());
@@ -67,11 +68,13 @@ public class JSPValidator extends HTMLValidator implements IJSPValidationMarkerC
 		}
 	}
 	
-	protected boolean validateUsingFuzzyXML() {
+	@Override
+  protected boolean validateUsingFuzzyXML() {
 		return true;
 	}
 	
-	protected boolean validateUsingTidy() {
+	@Override
+  protected boolean validateUsingTidy() {
 		return false;
 	}
 	
@@ -95,7 +98,7 @@ public class JSPValidator extends HTMLValidator implements IJSPValidationMarkerC
 					}
 					
 					if(validator!=null){
-						HashMap attrMap = new HashMap();
+						HashMap<String, String> attrMap = new HashMap<String, String>();
 						FuzzyXMLAttribute[] attrs = element.getAttributes();
 						for(int i=0;i<attrs.length;i++){
 							attrMap.put(attrs[i].getName(),attrs[i].getValue());
@@ -190,7 +193,8 @@ public class JSPValidator extends HTMLValidator implements IJSPValidationMarkerC
 	 * Call any contributed JSP filter extensions
 	 * @since 2.0.5
 	 */
-	protected String filterContents( String jspContents, IFile file) {
+	@Override
+  protected String filterContents( String jspContents, IFile file) {
 		IJSPFilter[] jspFilters = HTMLPlugin.getDefault().getJSPFilters();
 		for ( int i = 0; i < jspFilters.length; i++) {
 			jspContents = jspFilters[i].filterJSP(jspContents, file);

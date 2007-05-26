@@ -24,7 +24,8 @@ public class XMLConfiguration extends HTMLConfiguration {
 	 * 
 	 * @return the <code>XMLAssistProcessor</code>
 	 */
-	protected HTMLAssistProcessor createAssistProcessor() {
+	@Override
+  protected HTMLAssistProcessor createAssistProcessor() {
 		return new XMLAssistProcessor();
 	}
 	
@@ -45,7 +46,8 @@ public class XMLConfiguration extends HTMLConfiguration {
 	 *   <li>component</li>
 	 * </li>
 	 */	
-	protected HTMLHyperlinkDetector createHyperlinkDetector() {
+	@Override
+  protected HTMLHyperlinkDetector createHyperlinkDetector() {
 		if(this.classNameHyperlinkProvider == null){
 			this.classNameHyperlinkProvider = new ClassNameHyperLinkProvider();
 		}

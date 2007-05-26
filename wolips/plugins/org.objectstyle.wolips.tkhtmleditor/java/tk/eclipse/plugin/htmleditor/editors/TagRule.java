@@ -8,7 +8,8 @@ public class TagRule extends MultiLineRule {
 		super("<", ">", token);
 	}
 	
-	protected boolean sequenceDetected(ICharacterScanner scanner,char[] sequence,boolean eofAllowed) {
+	@Override
+  protected boolean sequenceDetected(ICharacterScanner scanner,char[] sequence,boolean eofAllowed) {
 		if (sequence[0] == '<') {
 			int c = scanner.read();
 			if (c=='?' || c=='!' || c=='%') {
@@ -30,7 +31,8 @@ public class TagRule extends MultiLineRule {
 		return super.sequenceDetected(scanner, sequence, eofAllowed);
 	}
 	
-	protected boolean endSequenceDetected(ICharacterScanner scanner) {
+	@Override
+  protected boolean endSequenceDetected(ICharacterScanner scanner) {
 		
 		int c;
 		boolean doubleQuoted = false;

@@ -45,7 +45,7 @@ public class ClassNameAssistProcessor {
 			HTMLUtil.setContentsToCU(unit, source);
 			unit.codeComplete(source.length() - 2, collector, DefaultWorkingCopyOwner.PRIMARY);
 			IJavaCompletionProposal[] proposals = collector.getJavaCompletionProposals();
-			List result = new ArrayList();
+			List<AssistInfo> result = new ArrayList<AssistInfo>();
 			
 			for(int j=0;j<proposals.length;j++){
 				if(proposals[j].getImage()!=null){
@@ -63,7 +63,7 @@ public class ClassNameAssistProcessor {
 				}
 			}
 			
-			return (AssistInfo[])result.toArray(new AssistInfo[result.size()]);
+			return result.toArray(new AssistInfo[result.size()]);
 			
 		} catch(Exception ex){
 			ex.printStackTrace();
@@ -88,19 +88,23 @@ public class ClassNameAssistProcessor {
 			this.proposal = proposal;
 		}
 		
-		public String getDisplayString() {
+		@Override
+    public String getDisplayString() {
 			return proposal.getDisplayString();
 		}
 
-		public Image getImage() {
+		@Override
+    public Image getImage() {
 			return proposal.getImage();
 		}
 
-		public String getReplaceString() {
+		@Override
+    public String getReplaceString() {
 			return proposal.getReplacementString();
 		}
 
-		public ICompletionProposal toCompletionProposal(int offset, String matchString, Image defaultImage) {
+		@Override
+    public ICompletionProposal toCompletionProposal(int offset, String matchString, Image defaultImage) {
 			proposal.setReplacementOffset(offset - matchString.length());
 			proposal.setReplacementLength(matchString.length());
 			proposal.setCursorPosition(proposal.getReplacementString().length());

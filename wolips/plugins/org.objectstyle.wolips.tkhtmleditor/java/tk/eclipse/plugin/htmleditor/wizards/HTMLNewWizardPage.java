@@ -45,7 +45,8 @@ public class HTMLNewWizardPage extends WizardNewFileCreationPage {
 //		this.selection = selection;
 	}
 
-	public void createControl(Composite parent) {
+	@Override
+  public void createControl(Composite parent) {
 		super.createControl(parent);
 		this.setFileName("newfile.html");
 		Composite container = new Composite((Composite)getControl(),SWT.NONE);
@@ -69,7 +70,8 @@ public class HTMLNewWizardPage extends WizardNewFileCreationPage {
 		}
 	}
 	
-	protected InputStream getInitialContents() {
+	@Override
+  protected InputStream getInitialContents() {
 		// DOCTYPE
 		int i = comboDocType.getSelectionIndex();
 		if(i<0){

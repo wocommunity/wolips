@@ -27,9 +27,9 @@ import tk.eclipse.plugin.htmleditor.HTMLPlugin;
  */
 public class XMLNewWizard extends Wizard implements INewWizard {
 	
-	private IStructuredSelection selection;
-	private XMLNewWizardPage page1;
-	private XMLDTDWizardPage page2;
+	private IStructuredSelection _selection;
+	private XMLNewWizardPage _page1;
+	private XMLDTDWizardPage _page2;
 	
 	public XMLNewWizard() {
 		super();
@@ -37,22 +37,24 @@ public class XMLNewWizard extends Wizard implements INewWizard {
 		setWindowTitle(HTMLPlugin.getResourceString("XMLNewWizardPage.Title"));
 	}
 	
-	public void addPages() {
-		page1 = new XMLNewWizardPage("page1",selection);
-		page1.setFileName("newfile.xml");
-		page1.setTitle(HTMLPlugin.getResourceString("XMLNewWizardPage.Title"));
-		page1.setDescription(HTMLPlugin.getResourceString("XMLNewWizardPage.Description"));
+	@Override
+  public void addPages() {
+		_page1 = new XMLNewWizardPage("page1",_selection);
+		_page1.setFileName("newfile.xml");
+		_page1.setTitle(HTMLPlugin.getResourceString("XMLNewWizardPage.Title"));
+		_page1.setDescription(HTMLPlugin.getResourceString("XMLNewWizardPage.Description"));
 		
-		page2 = new XMLDTDWizardPage("page2", page1);
-		addPage(page1);
-		addPage(page2);
+		_page2 = new XMLDTDWizardPage("page2", _page1);
+		addPage(_page1);
+		addPage(_page2);
 	}
 	
-	public boolean performFinish() {
-		page1.setSchemaInfo(page2.getUseDTD(),page2.getPublicID(),page2.getSystemID(),
-				page2.getUseXSD(),page2.getSchemaURI(),page2.getDocumentRoot());
+	@Override
+  public boolean performFinish() {
+		_page1.setSchemaInfo(_page2.getUseDTD(),_page2.getPublicID(),_page2.getSystemID(),
+				_page2.getUseXSD(),_page2.getSchemaURI(),_page2.getDocumentRoot());
 		
-		IFile file = page1.createNewFile();
+		IFile file = _page1.createNewFile();
 		if(file==null){
 			return false;
 		}
@@ -68,7 +70,7 @@ public class XMLNewWizard extends Wizard implements INewWizard {
 	}
 	
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		this.selection = selection;
+		this._selection = selection;
 	}
 	
 //	private InputStream getInitialContents(){

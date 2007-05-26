@@ -17,17 +17,20 @@ public class BooleanPropertyDescriptor extends PropertyDescriptor {
 		super(id,displayName);
 	}
 	
+    @Override
     public CellEditor createPropertyEditor(Composite parent) {
         CellEditor editor = new ComboBoxCellEditor(
         		parent, new String[]{"true","false"},SWT.READ_ONLY){
-        	protected void doSetValue(Object value){
+        	@Override
+          protected void doSetValue(Object value){
         		if(((Boolean)value).booleanValue()){
         			super.doSetValue(new Integer(0));
         		} else {
         			super.doSetValue(new Integer(1));
         		}
         	}
-        	protected Object doGetValue(){
+        	@Override
+          protected Object doGetValue(){
         		int selection = ((Integer)super.doGetValue()).intValue();
         		if(selection==0){
         			return new Boolean(true);

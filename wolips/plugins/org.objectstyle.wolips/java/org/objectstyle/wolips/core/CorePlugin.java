@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.core;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -109,7 +110,7 @@ public class CorePlugin extends AbstractBaseActivator {
 	private void loadBuilderExtensionPoint() {
 		IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(EXTENSION_POINT_ID);
 		IExtension[] extensions = extensionPoint.getExtensions();
-		ArrayList arrayList = new ArrayList();
+		List<BuilderWrapper> arrayList = new ArrayList<BuilderWrapper>();
 		for (int i = 0; i < extensions.length; i++) {
 			IConfigurationElement[] configurationElements = extensions[i].getConfigurationElements();
 			for (int j = 0; j < configurationElements.length; j++) {
@@ -125,21 +126,21 @@ public class CorePlugin extends AbstractBaseActivator {
 				}
 			}
 		}
-		this.builderWrapper = (BuilderWrapper[]) arrayList.toArray(new BuilderWrapper[arrayList.size()]);
+		this.builderWrapper = arrayList.toArray(new BuilderWrapper[arrayList.size()]);
 	}
 
 	public BuilderWrapper[] getBuilderWrapper(String context) {
 		if (this.builderWrapper == null) {
 			loadBuilderExtensionPoint();
 		}
-		ArrayList builderWrapperList = new ArrayList();
+		List<BuilderWrapper> builderWrapperList = new ArrayList<BuilderWrapper>();
 		for (int i = 0; i < builderWrapper.length; i++) {
 			BuilderWrapper currentBuilderWrapper = builderWrapper[i];
 			if (currentBuilderWrapper.validInContext(context)) {
 				builderWrapperList.add(currentBuilderWrapper);
 			}
 		}
-		return (BuilderWrapper[]) builderWrapperList.toArray(new BuilderWrapper[builderWrapperList.size()]);
+		return builderWrapperList.toArray(new BuilderWrapper[builderWrapperList.size()]);
 	}
 
 }

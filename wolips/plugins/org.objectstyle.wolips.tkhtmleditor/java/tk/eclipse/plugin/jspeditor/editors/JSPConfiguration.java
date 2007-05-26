@@ -38,7 +38,8 @@ public class JSPConfiguration extends HTMLConfiguration {
 	/**
 	 * @since 2.0.3
 	 */
-	protected HTMLHyperlinkDetector createHyperlinkDetector() {
+	@Override
+  protected HTMLHyperlinkDetector createHyperlinkDetector() {
 		HTMLHyperlinkDetector hyperlink = super.createHyperlinkDetector();
 		hyperlink.addHyperlinkProvider(new JSPHyperlinkProvider());
 		
@@ -56,7 +57,8 @@ public class JSPConfiguration extends HTMLConfiguration {
 	 * @return the <code>JSPAssistProcessor</code>
 	 * @see JSPAssistProcessor
 	 */
-	protected HTMLAssistProcessor createAssistProcessor() {
+	@Override
+  protected HTMLAssistProcessor createAssistProcessor() {
 		return new JSPAssistProcessor();
 	}
 	
@@ -66,7 +68,8 @@ public class JSPConfiguration extends HTMLConfiguration {
 	 * @return the <code>JSPScriptletScanner</code>
 	 * @see JSPScriptletScanner
 	 */
-	protected RuleBasedScanner getScriptScanner() {
+	@Override
+  protected RuleBasedScanner getScriptScanner() {
 		if (scriptletScanner == null) {
 			scriptletScanner = new JSPScriptletScanner(getColorProvider());
 			scriptletScanner.setDefaultReturnToken(
@@ -81,7 +84,8 @@ public class JSPConfiguration extends HTMLConfiguration {
 	 * @return the <code>JSPDirectiveScanner</code>
 	 * @see JSPDirectiveScanner
 	 */
-	protected RuleBasedScanner getDirectiveScanner() {
+	@Override
+  protected RuleBasedScanner getDirectiveScanner() {
 		if (directiveScanner == null) {
 			directiveScanner = new JSPDirectiveScanner(getColorProvider());
 			directiveScanner.setDefaultReturnToken(
@@ -97,11 +101,13 @@ public class JSPConfiguration extends HTMLConfiguration {
 	 * @since 2.0.3
 	 * @see JSPAutoEditStrategy
 	 */
-	protected HTMLAutoEditStrategy createAutoEditStrategy(){
+	@Override
+  protected HTMLAutoEditStrategy createAutoEditStrategy(){
 		return new JSPAutoEditStrategy();
 	}
 
-	public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
+	@Override
+  public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
 		if(assistant==null){
 			assistant = super.getContentAssistant(sourceViewer);
 			

@@ -62,7 +62,7 @@ import org.objectstyle.wolips.core.resources.pattern.IPatternList;
 
 public class PatternList implements IPatternList {
 
-	private ArrayList patternList = new ArrayList();
+	private ArrayList<Pattern> patternList = new ArrayList<Pattern>();
 
 	public PatternList() {
 		super();
@@ -88,12 +88,12 @@ public class PatternList implements IPatternList {
 	}
 
 	public IPattern[] getPattern() {
-		return (IPattern[]) this.patternList.toArray(new IPattern[this.patternList.size()]);
+		return this.patternList.toArray(new IPattern[this.patternList.size()]);
 	}
 
 	public boolean matches(String string) {
 		for (int i = 0; i < this.patternList.size(); i++) {
-			IPattern pattern = (IPattern) this.patternList.get(i);
+			IPattern pattern = this.patternList.get(i);
 			if (pattern.matches(string)) {
 				return true;
 			}

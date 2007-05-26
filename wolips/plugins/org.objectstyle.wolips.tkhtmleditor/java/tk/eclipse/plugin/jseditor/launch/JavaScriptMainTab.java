@@ -73,7 +73,8 @@ public class JavaScriptMainTab extends AbstractLaunchConfigurationTab {
 		Button browseFile = new Button(fileGroup, SWT.PUSH);
 		browseFile.setText(HTMLPlugin.getResourceString("Button.Browse"));
 		browseFile.addSelectionListener(new SelectionAdapter(){
-			public void widgetSelected(SelectionEvent evt){
+			@Override
+      public void widgetSelected(SelectionEvent evt){
 				String text = browseJavaScriptFile();
 				if(text!=null){
 					file.setText(text);
@@ -90,7 +91,8 @@ public class JavaScriptMainTab extends AbstractLaunchConfigurationTab {
 		includeGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		tableViewer = new JavaScriptLibraryTable(includeGroup){
-			protected void modelChanged(){
+			@Override
+      protected void modelChanged(){
 				updateLaunchConfigurationDialog();
 			}
 		};
@@ -139,7 +141,8 @@ public class JavaScriptMainTab extends AbstractLaunchConfigurationTab {
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
 	}
 
-	public void initializeFrom(ILaunchConfiguration configuration) {
+	@SuppressWarnings("unchecked")
+  public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
 			String scriptFile = configuration.getAttribute(
 					JavaScriptLaunchConstants.ATTR_JAVASCRIPT_FILE, "");
@@ -147,7 +150,7 @@ public class JavaScriptMainTab extends AbstractLaunchConfigurationTab {
 			
 			java.util.List includes = configuration.getAttribute(
 					JavaScriptLaunchConstants.ATTR_JAVASCRIPT_INCLUDES, Collections.EMPTY_LIST);
-			List tableModel = tableViewer.getModel();
+			List<Object> tableModel = tableViewer.getModel();
 			tableModel.clear();
 			IWorkspaceRoot wsroot = ResourcesPlugin.getWorkspace().getRoot();
 			for(int i=0;i<includes.size();i++){
@@ -171,7 +174,7 @@ public class JavaScriptMainTab extends AbstractLaunchConfigurationTab {
 		configuration.setAttribute(JavaScriptLaunchConstants.ATTR_JAVASCRIPT_FILE, file.getText());
 		
 		List tableModel = tableViewer.getModel();
-		List includeFiles = new ArrayList();
+		List<String> includeFiles = new ArrayList<String>();
 		for(int i=0;i<tableModel.size();i++){
 			Object obj = tableModel.get(i);
 			if(obj instanceof File){
@@ -187,7 +190,8 @@ public class JavaScriptMainTab extends AbstractLaunchConfigurationTab {
 		return HTMLPlugin.getResourceString("Launcher.JavaScript.Tabs.Main");
 	}
 
-	public Image getImage() {
+	@Override
+  public Image getImage() {
 		return HTMLPlugin.getDefault().getImageRegistry().get(HTMLPlugin.ICON_JAVASCRIPT);
 	}
 	
@@ -203,7 +207,8 @@ public class JavaScriptMainTab extends AbstractLaunchConfigurationTab {
 				new WorkbenchLabelProvider(), new WorkbenchContentProvider());
 		dialog.setInput(ResourcesPlugin.getWorkspace());
 		dialog.addFilter(new ViewerFilter(){
-	    	public boolean select(Viewer viewer, Object parentElement, Object element){
+	    	@Override
+        public boolean select(Viewer viewer, Object parentElement, Object element){
 				if(element instanceof IProject || element instanceof IFolder){
 					return true;
 				}

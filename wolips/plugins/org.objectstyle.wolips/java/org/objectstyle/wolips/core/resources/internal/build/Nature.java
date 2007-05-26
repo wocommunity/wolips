@@ -155,18 +155,18 @@ public abstract class Nature implements IProjectNature {
 	private void removeBuilder(String aBuilder) throws CoreException {
 		IProjectDescription desc = null;
 		ICommand[] coms = null;
-		ArrayList comList = null;
-		List tmp = null;
+		ArrayList<ICommand> comList = null;
+		List<ICommand> tmp = null;
 		ICommand[] newCom = null;
 		try {
 			desc = this.getProject().getDescription();
 			coms = desc.getBuildSpec();
-			comList = new ArrayList();
+			comList = new ArrayList<ICommand>();
 			tmp = Arrays.asList(coms);
 			comList.addAll(tmp);
 			boolean foundJBuilder = false;
 			for (int i = 0; i < comList.size(); i++) {
-				if (((ICommand) comList.get(i)).getBuilderName().equals(aBuilder)) {
+				if (comList.get(i).getBuilderName().equals(aBuilder)) {
 					comList.remove(i);
 					foundJBuilder = true;
 				}
@@ -174,7 +174,7 @@ public abstract class Nature implements IProjectNature {
 			if (foundJBuilder) {
 				newCom = new ICommand[comList.size()];
 				for (int i = 0; i < comList.size(); i++) {
-					newCom[i] = (ICommand) comList.get(i);
+					newCom[i] = comList.get(i);
 				}
 				desc.setBuildSpec(newCom);
 				this.getProject().setDescription(desc, null);
@@ -249,9 +249,9 @@ public abstract class Nature implements IProjectNature {
 		if (nature == null) {
 			IProjectDescription description = project.getDescription();
 			{
-				List naturesList = new ArrayList(Arrays.asList(description.getNatureIds()));
+				List<String> naturesList = new ArrayList<String>(Arrays.asList(description.getNatureIds()));
 				naturesList.add(id);
-				description.setNatureIds((String[]) naturesList.toArray(new String[naturesList.size()]));
+				description.setNatureIds(naturesList.toArray(new String[naturesList.size()]));
 				project.setDescription(description, monitor);
 			}
 		} else {

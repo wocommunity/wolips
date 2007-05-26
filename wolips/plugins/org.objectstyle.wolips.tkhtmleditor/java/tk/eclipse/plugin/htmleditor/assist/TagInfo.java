@@ -1,14 +1,15 @@
 package tk.eclipse.plugin.htmleditor.assist;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TagInfo {
   private String tagName;
   private boolean hasBody;
   private boolean emptyTag;
   private String description;
-  private ArrayList attributes = new ArrayList();
-  private ArrayList children = new ArrayList();
+  private List<AttributeInfo> attributes = new ArrayList<AttributeInfo>();
+  private List<String> children = new ArrayList<String>();
   private boolean _requiresAttributes;
 
   public static final int NONE = 0;
@@ -70,7 +71,7 @@ public class TagInfo {
     if (!requiresAttributes) {
       ArrayList list = new ArrayList();
       for (int i = 0; !requiresAttributes && i < attributes.size(); i++) {
-        AttributeInfo info = (AttributeInfo) attributes.get(i);
+        AttributeInfo info = attributes.get(i);
         if (info.isRequired()) {
           requiresAttributes = true;
         }
@@ -85,7 +86,7 @@ public class TagInfo {
   public void addAttributeInfo(AttributeInfo attribute) {
     int i = 0;
     for (; i < attributes.size(); i++) {
-      AttributeInfo info = (AttributeInfo) attributes.get(i);
+      AttributeInfo info = attributes.get(i);
       if (info.getAttributeName().compareTo(attribute.getAttributeName()) > 0) {
         break;
       }
@@ -98,7 +99,7 @@ public class TagInfo {
    * @return an array of all attribute information
    */
   public AttributeInfo[] getAttributeInfo() {
-    return (AttributeInfo[]) this.attributes.toArray(new AttributeInfo[this.attributes.size()]);
+    return this.attributes.toArray(new AttributeInfo[this.attributes.size()]);
   }
 
   /**
@@ -106,14 +107,14 @@ public class TagInfo {
    * @return an array of required attribute information
    */
   public AttributeInfo[] getRequiredAttributeInfo() {
-    ArrayList list = new ArrayList();
+    ArrayList<AttributeInfo> list = new ArrayList<AttributeInfo>();
     for (int i = 0; i < attributes.size(); i++) {
-      AttributeInfo info = (AttributeInfo) attributes.get(i);
+      AttributeInfo info = attributes.get(i);
       if (info.isRequired()) {
         list.add(info);
       }
     }
-    return (AttributeInfo[]) list.toArray(new AttributeInfo[list.size()]);
+    return list.toArray(new AttributeInfo[list.size()]);
   }
 
   /**
@@ -123,7 +124,7 @@ public class TagInfo {
    */
   public AttributeInfo getAttributeInfo(String name) {
     for (int i = 0; i < attributes.size(); i++) {
-      AttributeInfo info = (AttributeInfo) attributes.get(i);
+      AttributeInfo info = attributes.get(i);
       if (info.getAttributeName().equals(name)) {
         return info;
       }
@@ -146,9 +147,10 @@ public class TagInfo {
    * @return an array of child tag names
    */
   public String[] getChildTagNames() {
-    return (String[]) children.toArray(new String[children.size()]);
+    return children.toArray(new String[children.size()]);
   }
 
+  @Override
   public boolean equals(Object obj) {
     if (obj instanceof TagInfo) {
       TagInfo tagInfo = (TagInfo) obj;

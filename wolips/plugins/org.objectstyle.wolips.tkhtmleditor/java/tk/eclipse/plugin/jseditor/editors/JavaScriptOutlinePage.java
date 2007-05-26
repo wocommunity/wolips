@@ -29,7 +29,8 @@ public class JavaScriptOutlinePage extends ContentOutlinePage {
 		this.editor = editor;
 	}
 	
-	public void createControl(Composite parent) {
+	@Override
+  public void createControl(Composite parent) {
 		super.createControl(parent);
 		model = new JavaScriptModel(editor.getDocumentProvider().getDocument(editor.getEditorInput()).get());
 		TreeViewer viewer = getTreeViewer();
@@ -91,7 +92,8 @@ public class JavaScriptOutlinePage extends ContentOutlinePage {
 	
 	/** LabelProvider implementation for JavaScriptOutlinePage. */
 	private class JavaScriptLabelProvider extends LabelProvider {
-		public Image getImage(Object element){
+		@Override
+    public Image getImage(Object element){
 			if(element instanceof JavaScriptFunction){
 				return HTMLPlugin.getDefault().getImageRegistry().get(HTMLPlugin.ICON_FUNCTION);
 			}

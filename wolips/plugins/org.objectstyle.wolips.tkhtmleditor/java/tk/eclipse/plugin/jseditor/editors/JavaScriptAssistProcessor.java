@@ -37,7 +37,7 @@ import tk.eclipse.plugin.jseditor.launch.JavaScriptLibraryTable;
  */
 public class JavaScriptAssistProcessor extends HTMLTemplateAssistProcessor { /* implements IContentAssistProcessor {*/
 	
-	private static List staticAssistInfo = new ArrayList();
+	private static List<AssistInfo> staticAssistInfo = new ArrayList<AssistInfo>();
 	
 	// assist proposal types
 	private static final int VARIABLE =  0;
@@ -62,7 +62,7 @@ public class JavaScriptAssistProcessor extends HTMLTemplateAssistProcessor { /* 
 			"Function", "Math", "NativeError", "Number", "Object", "RegExp", "String"
 	};
 	
-	private static Map STATIC_MEMBERS = new HashMap();
+	private static Map<String, AssistInfo[]> STATIC_MEMBERS = new HashMap<String, AssistInfo[]>();
 	
 	static {
 //		// add keyword to static assist informations
@@ -127,7 +127,7 @@ public class JavaScriptAssistProcessor extends HTMLTemplateAssistProcessor { /* 
 		STATIC_MEMBERS.put("Object", object);
 	}
 	
-	private List functions = new ArrayList();
+	private List<AssistInfo> functions = new ArrayList<AssistInfo>();
 	
 	/**
 	 * Returns source code to parse from <code>ITextViewer</code>.
@@ -143,21 +143,22 @@ public class JavaScriptAssistProcessor extends HTMLTemplateAssistProcessor { /* 
 		return viewer.getDocument().get();
 	}
 	
-	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
-		List proposal = new ArrayList();
+	@Override
+  public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
+		List<ICompletionProposal> proposal = new ArrayList<ICompletionProposal>();
 		String source = getSource(viewer);
 		
 		String[] words = getLastWord(viewer, offset);
 		String last = words[0];
 		String word = words[1];
 		
-		List addedStrings = new ArrayList();
+		List<String> addedStrings = new ArrayList<String>();
 		
 		if(last.endsWith(".")){
 			String objName = last.substring(0, last.length()-1);
-			AssistInfo[] info = (AssistInfo[])STATIC_MEMBERS.get(objName);
+			AssistInfo[] info = STATIC_MEMBERS.get(objName);
 			if(info==null && !isNumeric(objName)){
-				info = (AssistInfo[])STATIC_MEMBERS.get("Object");
+				info = STATIC_MEMBERS.get("Object");
 			}
 			if(info!=null){
 				for(int i=0;i<info.length;i++){
@@ -168,7 +169,7 @@ public class JavaScriptAssistProcessor extends HTMLTemplateAssistProcessor { /* 
 			}
 		} else {
 			for(int i=0;i<staticAssistInfo.size();i++){
-				AssistInfo info = (AssistInfo)staticAssistInfo.get(i);
+				AssistInfo info = staticAssistInfo.get(i);
 				if(info.replaceString.startsWith(word)){
 					proposal.add(info.createCompletionProposal(offset, word));
 				}
@@ -210,7 +211,7 @@ public class JavaScriptAssistProcessor extends HTMLTemplateAssistProcessor { /* 
 		}
 		
 		for(int i=0;i<functions.size();i++){
-			AssistInfo info = (AssistInfo)functions.get(i);
+			AssistInfo info = functions.get(i);
 			if(info.replaceString.startsWith(word) && !addedStrings.contains(info.replaceString)){
 				proposal.add(info.createCompletionProposal(offset, word));
 				addedStrings.add(info.replaceString);
@@ -224,7 +225,7 @@ public class JavaScriptAssistProcessor extends HTMLTemplateAssistProcessor { /* 
 		
 		// sort
 		HTMLUtil.sortCompilationProposal(proposal);
-		ICompletionProposal[] prop = (ICompletionProposal[])proposal.toArray(new ICompletionProposal[proposal.size()]);
+		ICompletionProposal[] prop = proposal.toArray(new ICompletionProposal[proposal.size()]);
 		
 		return prop;
 	}
@@ -336,27 +337,33 @@ public class JavaScriptAssistProcessor extends HTMLTemplateAssistProcessor { /* 
 		}
 	}
 	
-	public IContextInformation[] computeContextInformation(ITextViewer viewer, int offset) {
+	@Override
+  public IContextInformation[] computeContextInformation(ITextViewer viewer, int offset) {
 		return new ContextInformation[0];
 	}
 
-	public char[] getCompletionProposalAutoActivationCharacters() {
+	@Override
+  public char[] getCompletionProposalAutoActivationCharacters() {
 		return new char[0];
 	}
 
-	public char[] getContextInformationAutoActivationCharacters() {
+	@Override
+  public char[] getContextInformationAutoActivationCharacters() {
 		return new char[0];
 	}
 
-	public String getErrorMessage() {
+	@Override
+  public String getErrorMessage() {
 		return "error";
 	}
 
-	public IContextInformationValidator getContextInformationValidator() {
+	@Override
+  public IContextInformationValidator getContextInformationValidator() {
 		return new ContextInformationValidator(this);
 	}
 	
-	protected TemplateContextType getContextType(ITextViewer viewer, IRegion region) {
+	@Override
+  protected TemplateContextType getContextType(ITextViewer viewer, IRegion region) {
 		HTMLTemplateManager manager = HTMLTemplateManager.getInstance();
 		return manager.getContextTypeRegistry().getContextType(JavaScriptContextType.CONTEXT_TYPE);
 	}

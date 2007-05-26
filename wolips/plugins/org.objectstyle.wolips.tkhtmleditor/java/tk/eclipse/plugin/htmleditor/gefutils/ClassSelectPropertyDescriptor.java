@@ -24,7 +24,8 @@ public class ClassSelectPropertyDescriptor extends AbstractDialogPropertyDescrip
 		super(id, displayName);
 	}
 	
-	protected Object openDialogBox(Object obj, Control cellEditorWindow) {
+	@Override
+  protected Object openDialogBox(Object obj, Control cellEditorWindow) {
 		IEditorPart editorPart = HTMLUtil.getActiveEditor();
 		
 		IFileEditorInput input = (IFileEditorInput)editorPart.getEditorInput();

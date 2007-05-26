@@ -26,8 +26,8 @@ import tk.eclipse.plugin.htmleditor.HTMLPlugin;
  */
 public class HTMLNewWizard extends Wizard implements INewWizard {
 	
-	private HTMLNewWizardPage page;
-	private ISelection selection;
+	private HTMLNewWizardPage _page;
+	private ISelection _selection;
 
 	/**
 	 * Constructor for HTMLNewWizard.
@@ -42,9 +42,10 @@ public class HTMLNewWizard extends Wizard implements INewWizard {
 	 * Adding the page to the wizard.
 	 */
 
-	public void addPages() {
-		page = new HTMLNewWizardPage(selection);
-		addPage(page);
+	@Override
+  public void addPages() {
+		_page = new HTMLNewWizardPage(_selection);
+		addPage(_page);
 	}
 
 	/**
@@ -52,8 +53,9 @@ public class HTMLNewWizard extends Wizard implements INewWizard {
 	 * the wizard. We will create an operation and run it
 	 * using wizard as execution context.
 	 */
-	public boolean performFinish() {
-		IFile file = page.createNewFile();
+	@Override
+  public boolean performFinish() {
+		IFile file = _page.createNewFile();
 		if(file==null){
 			return false;
 		}
@@ -73,6 +75,6 @@ public class HTMLNewWizard extends Wizard implements INewWizard {
 	 * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
 	 */
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		this.selection = selection;
+		this._selection = selection;
 	}
 }

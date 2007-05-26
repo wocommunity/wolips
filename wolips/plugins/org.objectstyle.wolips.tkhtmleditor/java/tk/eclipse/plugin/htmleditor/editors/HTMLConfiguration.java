@@ -40,43 +40,44 @@ import tk.eclipse.plugin.htmleditor.assist.InnerJavaScriptAssistProcessor;
  */
 public class HTMLConfiguration extends SourceViewerConfiguration {
 	
-	private HTMLDoubleClickStrategy doubleClickStrategy;
+	private HTMLDoubleClickStrategy _doubleClickStrategy;
 	
-	private HTMLScanner scanner;
-	private HTMLTagScanner tagScanner;
-	private RuleBasedScanner commentScanner;
-	private RuleBasedScanner scriptScanner;
-	private RuleBasedScanner doctypeScanner;
-	private RuleBasedScanner directiveScanner;
-	private RuleBasedScanner javaScriptScanner;
-	private RuleBasedScanner cssScanner;
+	private HTMLScanner _scanner;
+	private HTMLTagScanner _tagScanner;
+	private RuleBasedScanner _commentScanner;
+	private RuleBasedScanner _scriptScanner;
+	private RuleBasedScanner _doctypeScanner;
+	private RuleBasedScanner _directiveScanner;
+	private RuleBasedScanner _javaScriptScanner;
+	private RuleBasedScanner _cssScanner;
 	
-	private ColorProvider colorProvider;
+	private ColorProvider _colorProvider;
 	
-	private IEditorPart editor;
+	private IEditorPart _editor;
 
-	private ContentAssistant assistant;
-	private HTMLAssistProcessor processor;
-	private InnerJavaScriptAssistProcessor jsProcessor;
-	private InnerCSSAssistProcessor cssProcessor;
+	private ContentAssistant _assistant;
+	private HTMLAssistProcessor _processor;
+	private InnerJavaScriptAssistProcessor _jsProcessor;
+	private InnerCSSAssistProcessor _cssProcessor;
 	
-	private HTMLAutoEditStrategy autoEditStrategy;
-	private HTMLHyperlinkDetector hyperlinkDetector;
+	private HTMLAutoEditStrategy _autoEditStrategy;
+	private HTMLHyperlinkDetector _hyperlinkDetector;
 
 	public HTMLConfiguration(ColorProvider colorProvider) {
-		this.colorProvider = colorProvider;
+		this._colorProvider = colorProvider;
 	}
 	
   public IEditorPart getEditorPart() {
-    return editor;
+    return _editor;
   }
   
 	public void setEditorPart(IEditorPart editor){
-		this.editor = editor;
+		this._editor = editor;
 	}
 	
-	public IAnnotationHover getAnnotationHover(ISourceViewer sourceViewer) {
-		return new HTMLAnnotationHover(editor);
+	@Override
+  public IAnnotationHover getAnnotationHover(ISourceViewer sourceViewer) {
+		return new HTMLAnnotationHover(_editor);
 	}
 	
 	/**
@@ -97,26 +98,27 @@ public class HTMLConfiguration extends SourceViewerConfiguration {
 	 * @since 2.0.3
 	 */
 	public final HTMLHyperlinkDetector getHyperlinkDetector(){
-		if(this.hyperlinkDetector==null){
-			this.hyperlinkDetector = createHyperlinkDetector();
+		if(this._hyperlinkDetector==null){
+			this._hyperlinkDetector = createHyperlinkDetector();
 		}
-		return this.hyperlinkDetector;
+		return this._hyperlinkDetector;
 	}
 	
 	/**
 	 * @since 2.0.3
 	 */
 	public final HTMLAutoEditStrategy getAutoEditStrategy(){
-		if(this.autoEditStrategy==null){
-			this.autoEditStrategy = createAutoEditStrategy();
+		if(this._autoEditStrategy==null){
+			this._autoEditStrategy = createAutoEditStrategy();
 		}
-		return this.autoEditStrategy;
+		return this._autoEditStrategy;
 	}
 	
 	/**
 	 * Returns all supportted content types.
 	 */
-	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
+	@Override
+  public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
 		return new String[] {
 			IDocument.DEFAULT_CONTENT_TYPE,
 			HTMLPartitionScanner.HTML_COMMENT,
@@ -131,7 +133,8 @@ public class HTMLConfiguration extends SourceViewerConfiguration {
 	/**
 	 * @since 2.0.3
 	 */
-	public IHyperlinkDetector[] getHyperlinkDetectors(ISourceViewer sourceViewer) {
+	@Override
+  public IHyperlinkDetector[] getHyperlinkDetectors(ISourceViewer sourceViewer) {
 		if (sourceViewer == null){
 			return null;
 		}
@@ -147,7 +150,8 @@ public class HTMLConfiguration extends SourceViewerConfiguration {
 	/**
 	 * @since 2.0.3
 	 */
-	public final IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
+	@Override
+  public final IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
 		return new IAutoEditStrategy[]{ createAutoEditStrategy() };
 	}
 	
@@ -155,10 +159,10 @@ public class HTMLConfiguration extends SourceViewerConfiguration {
 	 * Creates or Returns the assist processor for HTML.
 	 */
 	public HTMLAssistProcessor getAssistProcessor(){
-		if(processor==null){
-			processor = createAssistProcessor();
+		if(_processor==null){
+			_processor = createAssistProcessor();
 		}
-		return processor;
+		return _processor;
 	}
 	
 	/**
@@ -173,164 +177,167 @@ public class HTMLConfiguration extends SourceViewerConfiguration {
 	 * Creates or Returns the assist processor for inner JavaScript.
 	 */
 	public InnerJavaScriptAssistProcessor getJavaScriptAssistProcessor(){
-		if(jsProcessor==null){
-			jsProcessor = new InnerJavaScriptAssistProcessor(getAssistProcessor());
+		if(_jsProcessor==null){
+			_jsProcessor = new InnerJavaScriptAssistProcessor(getAssistProcessor());
 		}
-		return jsProcessor;
+		return _jsProcessor;
 	}
 	
 	/**
 	 * Creates or Returns the assist processor for inner JavaScript.
 	 */
 	public InnerCSSAssistProcessor getCSSAssistProcessor(){
-		if(cssProcessor==null){
-			cssProcessor = new InnerCSSAssistProcessor(getAssistProcessor());
+		if(_cssProcessor==null){
+			_cssProcessor = new InnerCSSAssistProcessor(getAssistProcessor());
 		}
-		return cssProcessor;
+		return _cssProcessor;
 	}
 	
 	/**
 	 * Creates or Returns the <code>IContentAssistant</code>.
 	 */
-	public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
-		if(assistant==null){
-			assistant = new ContentAssistant();
-			assistant.setInformationControlCreator(new IInformationControlCreator() {
+	@Override
+  public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
+		if(_assistant==null){
+			_assistant = new ContentAssistant();
+			_assistant.setInformationControlCreator(new IInformationControlCreator() {
 				public IInformationControl createInformationControl(Shell parent) {
 					return new DefaultInformationControl(parent);
 				}});
-			assistant.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
-			assistant.enableAutoInsert(true);
+			_assistant.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
+			_assistant.enableAutoInsert(true);
 			
 			HTMLAssistProcessor processor = getAssistProcessor();
-			assistant.setContentAssistProcessor(processor,IDocument.DEFAULT_CONTENT_TYPE);
-			assistant.setContentAssistProcessor(processor,HTMLPartitionScanner.HTML_TAG);
+			_assistant.setContentAssistProcessor(processor,IDocument.DEFAULT_CONTENT_TYPE);
+			_assistant.setContentAssistProcessor(processor,HTMLPartitionScanner.HTML_TAG);
 			
 			InnerJavaScriptAssistProcessor jsProcessor = getJavaScriptAssistProcessor();
-			assistant.setContentAssistProcessor(jsProcessor,HTMLPartitionScanner.JAVASCRIPT);
+			_assistant.setContentAssistProcessor(jsProcessor,HTMLPartitionScanner.JAVASCRIPT);
 			
 			InnerCSSAssistProcessor cssProcessor = getCSSAssistProcessor();
-			assistant.setContentAssistProcessor(cssProcessor,HTMLPartitionScanner.HTML_CSS);
+			_assistant.setContentAssistProcessor(cssProcessor,HTMLPartitionScanner.HTML_CSS);
 			
-			assistant.install(sourceViewer);
+			_assistant.install(sourceViewer);
 			
 			// ï‚äÆÇÃê›íËÇîΩâf
 			IPreferenceStore store = HTMLPlugin.getDefault().getPreferenceStore();
-			assistant.enableAutoActivation(store.getBoolean(HTMLPlugin.PREF_ASSIST_AUTO));
-			assistant.setAutoActivationDelay(store.getInt(HTMLPlugin.PREF_ASSIST_TIMES));
+			_assistant.enableAutoActivation(store.getBoolean(HTMLPlugin.PREF_ASSIST_AUTO));
+			_assistant.setAutoActivationDelay(store.getInt(HTMLPlugin.PREF_ASSIST_TIMES));
 			processor.setAutoAssistChars(store.getString(HTMLPlugin.PREF_ASSIST_CHARS).toCharArray());
 			processor.setAssistCloseTag(store.getBoolean(HTMLPlugin.PREF_ASSIST_CLOSE));
 		}
-		return assistant;
+		return _assistant;
 	}
 	
 	/**
 	 * Returns <code>ITextDoubleClickStrategy</code>.
 	 */
-	public ITextDoubleClickStrategy getDoubleClickStrategy(ISourceViewer sourceViewer,String contentType) {
-		if (doubleClickStrategy == null){
-			doubleClickStrategy = new HTMLDoubleClickStrategy();
+	@Override
+  public ITextDoubleClickStrategy getDoubleClickStrategy(ISourceViewer sourceViewer,String contentType) {
+		if (_doubleClickStrategy == null){
+			_doubleClickStrategy = new HTMLDoubleClickStrategy();
 		}
-		return doubleClickStrategy;
+		return _doubleClickStrategy;
 	}
 	
 	/**
 	 * Creates or Returns the scanner for HTML.
 	 */
 	protected HTMLScanner getHTMLScanner() {
-		if (scanner == null) {
-			scanner = new HTMLScanner(colorProvider);
-			scanner.setDefaultReturnToken(
-					colorProvider.getToken(HTMLPlugin.PREF_COLOR_FG));
+		if (_scanner == null) {
+			_scanner = new HTMLScanner(_colorProvider);
+			_scanner.setDefaultReturnToken(
+					_colorProvider.getToken(HTMLPlugin.PREF_COLOR_FG));
 		}
-		return scanner;
+		return _scanner;
 	}
 	
 	/**
 	 * Creates or Returns the scanner for HTML tags.
 	 */
 	protected HTMLTagScanner getTagScanner() {
-		if (tagScanner == null) {
-			tagScanner = new HTMLTagScanner(colorProvider);
-			tagScanner.setDefaultReturnToken(
-					colorProvider.getToken(HTMLPlugin.PREF_COLOR_TAG));
+		if (_tagScanner == null) {
+			_tagScanner = new HTMLTagScanner(_colorProvider);
+			_tagScanner.setDefaultReturnToken(
+					_colorProvider.getToken(HTMLPlugin.PREF_COLOR_TAG));
 		}
-		return tagScanner;
+		return _tagScanner;
 	}
 	
 	/**
 	 * Creates or Returns the scanner for HTML comments.
 	 */
 	protected RuleBasedScanner getCommentScanner() {
-		if (commentScanner == null) {
-			commentScanner = new RuleBasedScanner();
-			commentScanner.setDefaultReturnToken(
-					colorProvider.getToken(HTMLPlugin.PREF_COLOR_COMMENT));
+		if (_commentScanner == null) {
+			_commentScanner = new RuleBasedScanner();
+			_commentScanner.setDefaultReturnToken(
+					_colorProvider.getToken(HTMLPlugin.PREF_COLOR_COMMENT));
 		}
-		return commentScanner;
+		return _commentScanner;
 	}
 	
 	/**
 	 * Creates or Returns the scanner for scriptlets (&lt;% ... %&gt;).
 	 */
 	protected RuleBasedScanner getScriptScanner() {
-		if (scriptScanner == null) {
-			scriptScanner = new RuleBasedScanner();
-			scriptScanner.setDefaultReturnToken(
-					colorProvider.getToken(HTMLPlugin.PREF_COLOR_SCRIPT));
+		if (_scriptScanner == null) {
+			_scriptScanner = new RuleBasedScanner();
+			_scriptScanner.setDefaultReturnToken(
+					_colorProvider.getToken(HTMLPlugin.PREF_COLOR_SCRIPT));
 		}
-		return scriptScanner;
+		return _scriptScanner;
 	}
 	
 	/**
 	 * Creates or Returns the scanner for directives (&lt;%@ ... %&gt;).
 	 */
 	protected RuleBasedScanner getDirectiveScanner(){
-		if (directiveScanner == null) {
-			directiveScanner = new RuleBasedScanner();
-			directiveScanner.setDefaultReturnToken(
-					colorProvider.getToken(HTMLPlugin.PREF_COLOR_SCRIPT));
+		if (_directiveScanner == null) {
+			_directiveScanner = new RuleBasedScanner();
+			_directiveScanner.setDefaultReturnToken(
+					_colorProvider.getToken(HTMLPlugin.PREF_COLOR_SCRIPT));
 		}
-		return directiveScanner;
+		return _directiveScanner;
 	}
 	
 	/**
 	 * Creates or Returns the scanner for DOCTYPE decl.
 	 */
 	protected RuleBasedScanner getDoctypeScanner(){
-		if (doctypeScanner == null) {
-			doctypeScanner = new RuleBasedScanner();
-			doctypeScanner.setDefaultReturnToken(
-					colorProvider.getToken(HTMLPlugin.PREF_COLOR_DOCTYPE));
+		if (_doctypeScanner == null) {
+			_doctypeScanner = new RuleBasedScanner();
+			_doctypeScanner.setDefaultReturnToken(
+					_colorProvider.getToken(HTMLPlugin.PREF_COLOR_DOCTYPE));
 		}
-		return doctypeScanner;
+		return _doctypeScanner;
 	}
 	
 	/**
 	 * Creates or Returns the scanner for inner JavaScript.
 	 */
 	protected RuleBasedScanner getJavaScriptScanner() {
-		if (javaScriptScanner == null) {
-			javaScriptScanner = new InnerJavaScriptScanner(colorProvider);
-			javaScriptScanner.setDefaultReturnToken(
-					colorProvider.getToken(HTMLPlugin.PREF_COLOR_FG));
+		if (_javaScriptScanner == null) {
+			_javaScriptScanner = new InnerJavaScriptScanner(_colorProvider);
+			_javaScriptScanner.setDefaultReturnToken(
+					_colorProvider.getToken(HTMLPlugin.PREF_COLOR_FG));
 		}
-		return javaScriptScanner;
+		return _javaScriptScanner;
 	}
 	
 	/**
 	 * Creates or Returns the scanner for inner CSS.
 	 */
 	protected RuleBasedScanner getCSSScanner() {
-		if (cssScanner == null) {
-			cssScanner = new InnerCSSScanner(colorProvider);
-			cssScanner.setDefaultReturnToken(
-					colorProvider.getToken(HTMLPlugin.PREF_COLOR_FG));
+		if (_cssScanner == null) {
+			_cssScanner = new InnerCSSScanner(_colorProvider);
+			_cssScanner.setDefaultReturnToken(
+					_colorProvider.getToken(HTMLPlugin.PREF_COLOR_FG));
 		}
-		return cssScanner;
+		return _cssScanner;
 	}
 	
-	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
+	@Override
+  public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
 		PresentationReconciler reconciler = new PresentationReconciler();
 
 		DefaultDamagerRepairer dr = null;
@@ -374,7 +381,7 @@ public class HTMLConfiguration extends SourceViewerConfiguration {
 	 * Returns the <code>ColorProvider</code>.
 	 */
 	protected ColorProvider getColorProvider(){
-		return this.colorProvider;
+		return this._colorProvider;
 	}
 	
 	private class HTMLTagDamagerRepairer extends DefaultDamagerRepairer {
@@ -384,7 +391,8 @@ public class HTMLConfiguration extends SourceViewerConfiguration {
 		}
 		
 		// TODO This method works with 3.0 and 3.1.2 but does't work well with Eclipse 3.1.1.
-		public IRegion getDamageRegion(ITypedRegion partition, DocumentEvent e, boolean documentPartitioningChanged) {
+		@Override
+    public IRegion getDamageRegion(ITypedRegion partition, DocumentEvent e, boolean documentPartitioningChanged) {
 			if (!documentPartitioningChanged) {
 				String source = fDocument.get();
 				int start = source.substring(0, e.getOffset()).lastIndexOf('<');
@@ -419,7 +427,8 @@ public class HTMLConfiguration extends SourceViewerConfiguration {
 		}
 		
 		// TODO This method works with 3.0 and 3.1.2 but does't work well with Eclipse 3.1.1.
-		public IRegion getDamageRegion(ITypedRegion partition, DocumentEvent e, boolean documentPartitioningChanged) {
+		@Override
+    public IRegion getDamageRegion(ITypedRegion partition, DocumentEvent e, boolean documentPartitioningChanged) {
 			if (!documentPartitioningChanged) {
 				String source = fDocument.get();
 				int start = source.substring(0, e.getOffset()).lastIndexOf("/*");

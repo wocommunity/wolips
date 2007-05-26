@@ -16,31 +16,32 @@ public class JSPEditorPreferencePage extends FieldEditorPreferencePage implement
 	private ColorFieldEditor colorKeyword;
 
 	public JSPEditorPreferencePage() {
-		super(GRID); //$NON-NLS-1$
+		super(GRID); 
 		setPreferenceStore(HTMLPlugin.getDefault().getPreferenceStore());
 	}
 
 	public void init(IWorkbench workbench) {
 	}
 	
-	protected void createFieldEditors() {
+	@Override
+  protected void createFieldEditors() {
 		setTitle(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.JSP"));
 		
 		Composite parent = getFieldEditorParent();
 		
 		colorComment = new ColorFieldEditor(HTMLPlugin.PREF_JSP_COMMENT,
 					HTMLPlugin.getResourceString("HTMLEditorPreferencePage.JSPCommentColor"),
-					parent); //$NON-NLS-1$
+					parent); 
 		addField(colorComment);
 		
 		colorString = new ColorFieldEditor(HTMLPlugin.PREF_JSP_STRING,
 					HTMLPlugin.getResourceString("HTMLEditorPreferencePage.JSPStringColor"),
-					parent); //$NON-NLS-1$
+					parent); 
 		addField(colorString);
 		
 		colorKeyword = new ColorFieldEditor(HTMLPlugin.PREF_JSP_KEYWORD,
 				HTMLPlugin.getResourceString("HTMLEditorPreferencePage.JSPKeywordColor"),
-				parent); //$NON-NLS-1$
+				parent); 
 		addField(colorKeyword);
 	}
 

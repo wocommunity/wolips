@@ -27,7 +27,8 @@ import org.osgi.framework.Bundle;
 public class WebAppClasspathVariableInitializer extends
 		ClasspathVariableInitializer {
 	
-	public void initialize(String variable) {
+	@Override
+  public void initialize(String variable) {
 		Bundle bundle = HTMLPlugin.getDefault().getBundle();
 		if(bundle==null){
 			JavaCore.removeClasspathVariable(variable, null);

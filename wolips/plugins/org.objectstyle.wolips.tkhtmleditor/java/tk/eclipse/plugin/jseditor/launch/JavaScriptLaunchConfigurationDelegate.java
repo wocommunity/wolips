@@ -63,7 +63,7 @@ public class JavaScriptLaunchConfigurationDelegate extends AbstractJavaLaunchCon
 				JavaScriptLaunchConstants.JAVASCRIPT_EXECUTOR,
 				JavaScriptLaunchUtil.getClassPathAsStringArray());
 		
-		List args = new ArrayList();
+		List<String> args = new ArrayList<String>();
 		
 		String script = configuration.getAttribute(
 				JavaScriptLaunchConstants.ATTR_JAVASCRIPT_FILE, "");
@@ -86,7 +86,7 @@ public class JavaScriptLaunchConfigurationDelegate extends AbstractJavaLaunchCon
 		}
 		
 		runConfig.setVMArguments(execArgs.getVMArgumentsArray());
-		runConfig.setProgramArguments((String[])args.toArray(new String[args.size()]));
+		runConfig.setProgramArguments(args.toArray(new String[args.size()]));
 		runConfig.setWorkingDirectory(workingDirName);
 		runConfig.setEnvironment(envp);
 		

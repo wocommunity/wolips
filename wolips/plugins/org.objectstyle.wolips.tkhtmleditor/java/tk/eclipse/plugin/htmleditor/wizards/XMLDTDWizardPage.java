@@ -70,7 +70,8 @@ public class XMLDTDWizardPage extends WizardPage {
 		radioNone.setText(HTMLPlugin.getResourceString("XMLDTDWizardPage.NoSchema"));
 		radioNone.setSelection(true);
 		radioNone.addSelectionListener(new SelectionAdapter(){
-			public void widgetSelected(SelectionEvent evt){
+			@Override
+      public void widgetSelected(SelectionEvent evt){
 				if(radioNone.getSelection()){
 					textPublicID.setEnabled(false);
 					comboSystemID.setEnabled(false);
@@ -85,7 +86,8 @@ public class XMLDTDWizardPage extends WizardPage {
 		radioDTD = new Button(radios,SWT.RADIO);
 		radioDTD.setText(HTMLPlugin.getResourceString("XMLDTDWizardPage.UseDID"));
 		radioDTD.addSelectionListener(new SelectionAdapter(){
-			public void widgetSelected(SelectionEvent evt){
+			@Override
+      public void widgetSelected(SelectionEvent evt){
 				if(radioDTD.getSelection()){
 					textPublicID.setEnabled(true);
 					comboSystemID.setEnabled(true);
@@ -100,7 +102,8 @@ public class XMLDTDWizardPage extends WizardPage {
 		radioXSD = new Button(radios,SWT.RADIO);
 		radioXSD.setText(HTMLPlugin.getResourceString("XMLDTDWizardPage.UseXSD"));
 		radioXSD.addSelectionListener(new SelectionAdapter(){
-			public void widgetSelected(SelectionEvent evt){
+			@Override
+      public void widgetSelected(SelectionEvent evt){
 				if(radioXSD.getSelection()){
 					textPublicID.setEnabled(false);
 					comboSystemID.setEnabled(false);
@@ -163,7 +166,8 @@ public class XMLDTDWizardPage extends WizardPage {
 		buttonLoadDTD = new Button(composite,SWT.PUSH);
 		buttonLoadDTD.setText(HTMLPlugin.getResourceString("XMLDTDWizardPage.LoadDTD"));
 		buttonLoadDTD.addSelectionListener(new SelectionAdapter(){
-			public void widgetSelected(SelectionEvent evt){
+			@Override
+      public void widgetSelected(SelectionEvent evt){
 				try {
 					if(getUseDTD()){
 						// Load elements from DTD

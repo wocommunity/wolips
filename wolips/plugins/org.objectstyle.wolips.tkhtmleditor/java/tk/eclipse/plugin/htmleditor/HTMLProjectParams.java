@@ -23,16 +23,16 @@ import org.eclipse.core.runtime.QualifiedName;
  */
 public class HTMLProjectParams {
 
-	private String root = "/";
-	private boolean useDTD = true;
-	private boolean validateXML = true;
-	private boolean validateHTML = true;
-	private boolean validateJSP = true;
-	private boolean validateDTD = true;
-	private boolean validateJS = true;
-	private boolean removeMarkers = false;
-	private boolean detectTaskTag = false;
-	private String[] javaScripts = new String[0];
+	private String _root = "/";
+	private boolean _useDTD = true;
+	private boolean _validateXML = true;
+	private boolean _validateHTML = true;
+	private boolean _validateJSP = true;
+	private boolean _validateDTD = true;
+	private boolean _validateJS = true;
+	private boolean _removeMarkers = false;
+	private boolean _detectTaskTag = false;
+	private String[] _javaScripts = new String[0];
 	
 	public static final String P_ROOT = "root";
 	public static final String P_USE_DTD = "useDTD";
@@ -66,7 +66,7 @@ public class HTMLProjectParams {
 	 * @return Root of the web application
 	 */
 	public String getRoot() {
-		return root;
+		return _root;
 	}
 	
 	/**
@@ -75,7 +75,7 @@ public class HTMLProjectParams {
 	 * @param webAppRoot Root of the web application
 	 */
 	public void setRoot(String webAppRoot) {
-		this.root = webAppRoot;
+		this._root = webAppRoot;
 	}
 	
 	/**
@@ -86,7 +86,7 @@ public class HTMLProjectParams {
 	 * </ul>
 	 */
 	public void setUseDTD(boolean useDTD){
-		this.useDTD = useDTD;
+		this._useDTD = useDTD;
 	}
 	
 	/**
@@ -97,71 +97,71 @@ public class HTMLProjectParams {
 	 * </ul>
 	 */
 	public boolean getUseDTD(){
-		return this.useDTD;
+		return this._useDTD;
 	}
 	
 	public void setValidateHTML(boolean validateHTML){
-		this.validateHTML = validateHTML;
+		this._validateHTML = validateHTML;
 	}
 	
 	public boolean getValidateHTML(){
-		return this.validateHTML;
+		return this._validateHTML;
 	}
 	
 	public void setValidateJSP(boolean validateJSP){
-		this.validateJSP = validateJSP;
+		this._validateJSP = validateJSP;
 	}
 	
 	public boolean getValidateJSP(){
-		return this.validateJSP;
+		return this._validateJSP;
 	}
 	
 	public void setValidateDTD(boolean validateDTD){
-		this.validateDTD = validateDTD;
+		this._validateDTD = validateDTD;
 	}
 	
 	public boolean getValidateDTD(){
-		return this.validateDTD;
+		return this._validateDTD;
 	}
 	
 	public void setValidateJavaScript(boolean validateJS){
-		this.validateJS = validateJS;
+		this._validateJS = validateJS;
 	}
 	
 	public boolean getValidateJavaScript(){
-		return this.validateJS;
+		return this._validateJS;
 	}
 	
 	public void setValidateXML(boolean validateXML){
-		this.validateXML = validateXML;
+		this._validateXML = validateXML;
 	}
 	
 	public boolean getValidateXML(){
-		return this.validateXML;
+		return this._validateXML;
 	}
 	
 	public void setRemoveMarkers(boolean removeMarkers){
-		this.removeMarkers = removeMarkers;
+		this._removeMarkers = removeMarkers;
 	}
 	
 	public boolean getRemoveMarkers(){
-		return this.removeMarkers;
+		return this._removeMarkers;
 	}
 	
 	public void setDetectTaskTag(boolean detectTaskTag){
-		this.detectTaskTag = detectTaskTag;
+		this._detectTaskTag = detectTaskTag;
 	}
 	
 	public boolean getDetectTaskTag(){
-		return this.detectTaskTag;
+		return this._detectTaskTag;
 	}
 	
 	public void setJavaScripts(String[] javaScripts){
-		this.javaScripts = javaScripts;
+		this._javaScripts = javaScripts;
 	}
 	
 	public String[] getJavaScripts(){
-		return this.javaScripts;
+		return this._javaScripts;
 	}
 	
 	/**
@@ -173,21 +173,21 @@ public class HTMLProjectParams {
 	public void save(IProject project) throws Exception {
 		IFile configFile = project.getFile(".amateras");
 		Properties props = new Properties();
-		props.put(P_ROOT, root);
-		props.put(P_USE_DTD, String.valueOf(useDTD));
-		props.put(P_VALIDATE_XML, String.valueOf(validateXML));
-		props.put(P_VALIDATE_HTML, String.valueOf(validateHTML));
-		props.put(P_VALIDATE_JSP, String.valueOf(validateJSP));
-		props.put(P_VALIDATE_DTD, String.valueOf(validateDTD));
-		props.put(P_VALIDATE_JS, String.valueOf(validateJS));
-		props.put(P_REMOVE_MARKERS, String.valueOf(removeMarkers));
+		props.put(P_ROOT, _root);
+		props.put(P_USE_DTD, String.valueOf(_useDTD));
+		props.put(P_VALIDATE_XML, String.valueOf(_validateXML));
+		props.put(P_VALIDATE_HTML, String.valueOf(_validateHTML));
+		props.put(P_VALIDATE_JSP, String.valueOf(_validateJSP));
+		props.put(P_VALIDATE_DTD, String.valueOf(_validateDTD));
+		props.put(P_VALIDATE_JS, String.valueOf(_validateJS));
+		props.put(P_REMOVE_MARKERS, String.valueOf(_removeMarkers));
 		
 		StringBuffer sb = new StringBuffer();
-		for(int i=0;i<javaScripts.length;i++){
+		for(int i=0;i<_javaScripts.length;i++){
 			if(i!=0){
 				sb.append("\n");
 			}
-			sb.append(javaScripts[i]);
+			sb.append(_javaScripts[i]);
 		}
 		props.put(P_JAVA_SCRIPTS, sb.toString());
 		
@@ -197,7 +197,7 @@ public class HTMLProjectParams {
 		}
 		props.store(new FileOutputStream(file), "EclipseHTMLEditor configuration file");
 		
-		if(detectTaskTag){
+		if(_detectTaskTag){
 			addNature(project);
 		} else {
 			removeNature(project);
@@ -224,13 +224,13 @@ public class HTMLProjectParams {
 	private void removeNature(IProject project) throws CoreException {
 		IProjectDescription description = project.getDescription();
 		String[] natures = description.getNatureIds();
-		List newNatures = new ArrayList();
+		List<String> newNatures = new ArrayList<String>();
 		for(int i=0;i<natures.length;i++){
 			if(!natures[i].equals(HTMLProjectNature.HTML_NATURE_ID)){
 				newNatures.add(natures[i]);
 			}
 		}
-		description.setNatureIds((String[])newNatures.toArray(new String[newNatures.size()]));
+		description.setNatureIds(newNatures.toArray(new String[newNatures.size()]));
 		project.setDescription(description, null);
 	}
 	
@@ -257,7 +257,7 @@ public class HTMLProjectParams {
 			Properties props = new Properties();
 			props.load(new FileInputStream(file));
 			
-			root = props.getProperty(P_ROOT);
+			_root = props.getProperty(P_ROOT);
 			useDTD = props.getProperty(P_USE_DTD);
 			validateXML = props.getProperty(P_VALIDATE_XML);
 			validateHTML = props.getProperty(P_VALIDATE_HTML);
@@ -273,7 +273,7 @@ public class HTMLProjectParams {
 			
 		} else {
 			// for old versions
-			this.root = project.getPersistentProperty(
+			this._root = project.getPersistentProperty(
 					new QualifiedName(HTMLPlugin.getDefault().getPluginId(), P_ROOT));
 			useDTD = project.getPersistentProperty(
 					new QualifiedName(HTMLPlugin.getDefault().getPluginId(), P_USE_DTD));
@@ -281,27 +281,27 @@ public class HTMLProjectParams {
 					HTMLPlugin.getDefault().getPluginId(), P_VALIDATE_HTML));
 		}
 		
-		if(this.root==null){
-			this.root = "/";
+		if(this._root==null){
+			this._root = "/";
 		}
 		
-		this.useDTD = getBooleanValue(useDTD, true);
-		this.validateXML = getBooleanValue(validateXML, true);
-		this.validateHTML = getBooleanValue(validateHTML, true);
-		this.validateJSP = getBooleanValue(validateJSP, true);
-		this.validateDTD = getBooleanValue(validateDTD, true);
-		this.validateJS = getBooleanValue(validateJS, true);
-		this.removeMarkers = getBooleanValue(removeMarkers, false);
-		this.detectTaskTag = project.hasNature(HTMLProjectNature.HTML_NATURE_ID);
+		this._useDTD = getBooleanValue(useDTD, true);
+		this._validateXML = getBooleanValue(validateXML, true);
+		this._validateHTML = getBooleanValue(validateHTML, true);
+		this._validateJSP = getBooleanValue(validateJSP, true);
+		this._validateDTD = getBooleanValue(validateDTD, true);
+		this._validateJS = getBooleanValue(validateJS, true);
+		this._removeMarkers = getBooleanValue(removeMarkers, false);
+		this._detectTaskTag = project.hasNature(HTMLProjectNature.HTML_NATURE_ID);
 		
 		String[] dim = javaScripts.split("\n");
-		List list = new ArrayList();
+		List<String> list = new ArrayList<String>();
 		for(int i=0;i<dim.length;i++){
 			if(dim[i].trim().length()!=0){
 				list.add(dim[i]);
 			}
 		}
-		this.javaScripts = (String[])list.toArray(new String[list.size()]);
+		this._javaScripts = list.toArray(new String[list.size()]);
 	}
 	
 	private boolean getBooleanValue(String value, boolean defaultValue){

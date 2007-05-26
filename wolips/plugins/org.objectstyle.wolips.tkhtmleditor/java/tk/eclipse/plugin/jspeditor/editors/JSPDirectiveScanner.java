@@ -23,7 +23,7 @@ public class JSPDirectiveScanner extends RuleBasedScanner {
 	public JSPDirectiveScanner(ColorProvider provider){
 		IToken string = provider.getToken(HTMLPlugin.PREF_COLOR_STRING);
 		IToken script = provider.getToken(HTMLPlugin.PREF_COLOR_SCRIPT);
-		List rules = new ArrayList();
+		List<IRule> rules = new ArrayList<IRule>();
 		
 		rules.add(new SingleLineRule("\"", "\"", string, '\\'));
 		rules.add(new SingleLineRule("\'", "\'", string, '\\'));
@@ -48,6 +48,6 @@ public class JSPDirectiveScanner extends RuleBasedScanner {
 		rules.add(delimitor);
 		
 		
-		setRules((IRule[])rules.toArray(new IRule[rules.size()]));
+		setRules(rules.toArray(new IRule[rules.size()]));
 	}
 }

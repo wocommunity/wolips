@@ -14,7 +14,8 @@ import tk.eclipse.plugin.htmleditor.editors.HTMLPartitionScanner;
  */
 public class DTDTextDocumentProvider extends TextFileDocumentProvider {
 	
-	protected FileInfo createFileInfo(Object element) throws CoreException {
+	@Override
+  protected FileInfo createFileInfo(Object element) throws CoreException {
 		FileInfo info = super.createFileInfo(element);
 		if(info==null){
 			info = createEmptyFileInfo();

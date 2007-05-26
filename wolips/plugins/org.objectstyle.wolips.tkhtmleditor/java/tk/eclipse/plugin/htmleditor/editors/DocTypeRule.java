@@ -13,7 +13,8 @@ public class DocTypeRule extends MultiLineRule {
 		super("<!DOCTYPE", ">", token);
 	}
 	
-	protected boolean endSequenceDetected(ICharacterScanner scanner) {
+	@Override
+  protected boolean endSequenceDetected(ICharacterScanner scanner) {
 		
 		int c;
 		boolean quoted = false;

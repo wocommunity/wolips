@@ -118,7 +118,7 @@ public class JSPPreviewConverter {
 				}
 			}
 			if(converter!=null){
-				HashMap attrMap = new HashMap();
+				HashMap<String, String> attrMap = new HashMap<String, String>();
 				FuzzyXMLAttribute[] attrs = element.getAttributes();
 				for(int i=0;i<attrs.length;i++){
 					attrMap.put(attrs[i].getName(),attrs[i].getValue());

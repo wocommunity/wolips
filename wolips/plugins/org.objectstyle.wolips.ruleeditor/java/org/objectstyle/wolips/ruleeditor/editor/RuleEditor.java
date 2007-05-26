@@ -520,6 +520,6 @@ public class RuleEditor {
 	}
 
 	public void setFocus() {
+		// DO NOTHING
 	}
-
 }

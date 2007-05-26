@@ -29,29 +29,35 @@ public class SpinnerFieldEditor extends FieldEditor {
         createControl(parent);
 	}
 
-	protected void adjustForNumColumns(int numColumns) {
+	@Override
+  protected void adjustForNumColumns(int numColumns) {
 	}
 
-	protected void doFillIntoGrid(Composite parent, int numColumns) {
+	@Override
+  protected void doFillIntoGrid(Composite parent, int numColumns) {
         getLabelControl(parent);
         getSpinnerControl(parent);
 	}
 
-	protected void doLoad() {
+	@Override
+  protected void doLoad() {
 		spinner.setSelection(
 				getPreferenceStore().getInt(getPreferenceName()));
 	}
 
-	protected void doLoadDefault() {
+	@Override
+  protected void doLoadDefault() {
 		spinner.setSelection(
 				getPreferenceStore().getDefaultInt(getPreferenceName()));
 	}
 
-	protected void doStore() {
+	@Override
+  protected void doStore() {
 		getPreferenceStore().setValue(getPreferenceName(), spinner.getSelection());
 	}
 
-	public int getNumberOfControls() {
+	@Override
+  public int getNumberOfControls() {
 		return 2;
 	}
 	

@@ -45,7 +45,8 @@ public class MultiPageEditorOutlinePage extends Page implements IContentOutlineP
 		}
 	}
 	
-	public void createControl(Composite parent) {
+	@Override
+  public void createControl(Composite parent) {
 		control = new Composite(parent, SWT.NULL);
 		control.setLayout(new FillLayout());
 		if(activePage!=null){
@@ -73,14 +74,16 @@ public class MultiPageEditorOutlinePage extends Page implements IContentOutlineP
 		}
 	}
 
-	public Control getControl() {
+	@Override
+  public Control getControl() {
 		if(activePage!=null){
 			activePage.getControl();
 		}
 		return control;
 	}
 
-	public void setFocus() {
+	@Override
+  public void setFocus() {
 		if(activePage!=null){
 			activePage.setFocus();
 		}

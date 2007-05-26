@@ -24,11 +24,13 @@ public class JSPEditor extends HTMLEditor {
 		super();
 	}
 	
-	protected HTMLSourceEditor createHTMLSourceEditor(HTMLConfiguration config) {
+	@Override
+  protected HTMLSourceEditor createHTMLSourceEditor(HTMLConfiguration config) {
 		return new JSPSourceEditor(config);
 	}
 	
-	protected HTMLConfiguration getSourceViewerConfiguration() {
+	@Override
+  protected HTMLConfiguration getSourceViewerConfiguration() {
 		if(configuration==null){
 			configuration = new JSPConfiguration(HTMLPlugin.getDefault().getColorProvider());
 		}
@@ -38,17 +40,18 @@ public class JSPEditor extends HTMLEditor {
 	/**
 	 * Update preview.
 	 */
-	public void updatePreview(){
-		if(!(editor instanceof HTMLEditorPart)){
+	@Override
+  public void updatePreview(){
+		if(!(_editor instanceof HTMLEditorPart)){
 			return;
 		}
 		try {
-			if(!((HTMLEditorPart)editor).isFileEditorInput()){
+			if(!((HTMLEditorPart)_editor).isFileEditorInput()){
 				return;
 			}
 			// write to temporary file
-			HTMLEditorPart editor = (HTMLEditorPart)this.editor;
-			IFileEditorInput input = (IFileEditorInput)this.editor.getEditorInput();
+			HTMLEditorPart editor = (HTMLEditorPart)this._editor;
+			IFileEditorInput input = (IFileEditorInput)this._editor.getEditorInput();
 			String charset = input.getFile().getCharset();
 			String html    = editor.getSourceEditor().getDocumentProvider().getDocument(input).get();
 			// replace JSP parts
@@ -60,13 +63,13 @@ public class JSPEditor extends HTMLEditor {
 			pw.write(html);
 			pw.close();
 			
-			if(prevTempFile!=null && prevTempFile.equals(tmpFile)){
+			if(_prevTempFile!=null && _prevTempFile.equals(tmpFile)){
 				editor.getBrowser().refresh();
 			} else {
-				if(prevTempFile!=null){
-					prevTempFile.delete();
+				if(_prevTempFile!=null){
+					_prevTempFile.delete();
 				}
-				prevTempFile = tmpFile;
+				_prevTempFile = tmpFile;
 				editor.getBrowser().setUrl("file://" + tmpFile.getAbsolutePath()); //$NON-NLS-1$
 			}
 		} catch(Exception ex){

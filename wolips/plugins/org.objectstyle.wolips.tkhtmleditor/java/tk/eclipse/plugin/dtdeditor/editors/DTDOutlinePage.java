@@ -40,7 +40,8 @@ public class DTDOutlinePage extends ContentOutlinePage implements IHTMLOutlinePa
 		this.editor = editor;
 	}
 	
-	public void createControl(Composite parent) {
+	@Override
+  public void createControl(Composite parent) {
 		super.createControl(parent);
 		TreeViewer viewer = getTreeViewer();
 		if(root==null){
@@ -67,8 +68,8 @@ public class DTDOutlinePage extends ContentOutlinePage implements IHTMLOutlinePa
 		int index = 0;
 		int last = 0;
 		
-		Map attrMap = new HashMap();
-		Map elementMap = new HashMap();
+		Map<String, List<DTDNode>> attrMap = new HashMap<String, List<DTDNode>>();
+		Map<String, DTDNode> elementMap = new HashMap<String, DTDNode>();
 		
 		while((index = source.indexOf("<!", last))>=0){
 			if(source.startsWith("<!ELEMENT",index)){
@@ -83,9 +84,9 @@ public class DTDOutlinePage extends ContentOutlinePage implements IHTMLOutlinePa
 				String text = source.substring(index, source.indexOf(">", index)+1);
 				text = text.replaceAll("\\s+"," ");
 				String[] dim = text.split(" ");
-				List list = (List)attrMap.get(dim[1]);
+				List<DTDNode> list = attrMap.get(dim[1]);
 				if(list==null){
-					list = new ArrayList();
+					list = new ArrayList<DTDNode>();
 					attrMap.put(dim[1], list);
 				}
 				list.add(new DTDNode(index, text, HTMLPlugin.ICON_ATTLIST));
@@ -107,11 +108,11 @@ public class DTDOutlinePage extends ContentOutlinePage implements IHTMLOutlinePa
 		}
 		
 		// put ATTLIST to ELEMENT
-		for(Iterator ite = attrMap.entrySet().iterator(); ite.hasNext();){
-			Map.Entry entry = (Map.Entry)ite.next();
-			String key = (String)entry.getKey();
-			List attrs = (List)entry.getValue();
-			DTDNode element = (DTDNode)elementMap.get(key);
+		for(Iterator<Map.Entry<String, List<DTDNode>>> ite = attrMap.entrySet().iterator(); ite.hasNext();){
+		  Map.Entry<String, List<DTDNode>> entry = ite.next();
+			String key = entry.getKey();
+			List attrs = entry.getValue();
+			DTDNode element = elementMap.get(key);
 			for(int i=0;i<attrs.size();i++){
 				DTDNode attr = (DTDNode)attrs.get(i);
 				if(element==null){
@@ -131,14 +132,14 @@ public class DTDOutlinePage extends ContentOutlinePage implements IHTMLOutlinePa
 	/** The root node of this outline page. */
 	private class DTDRootNode {
 		
-		private List children = new ArrayList();
+		private List<DTDNode> children = new ArrayList<DTDNode>();
 		
 		public void add(DTDNode node){
 			children.add(node);
 		}
 		
 		public DTDNode[] getChildren(){
-			return (DTDNode[])this.children.toArray(new DTDNode[this.children.size()]);
+			return this.children.toArray(new DTDNode[this.children.size()]);
 		}
 		
 		public void clear(){
@@ -153,7 +154,7 @@ public class DTDOutlinePage extends ContentOutlinePage implements IHTMLOutlinePa
 		private int position;
 		private String text;
 		private String image;
-		private List children = new ArrayList();
+		private List<DTDNode> children = new ArrayList<DTDNode>();
 		private DTDNode parent;
 		
 		public DTDNode(int position, String text, String image){
@@ -171,7 +172,7 @@ public class DTDOutlinePage extends ContentOutlinePage implements IHTMLOutlinePa
 		}
 		
 		public DTDNode[] getChildren(){
-			return (DTDNode[])this.children.toArray(new DTDNode[this.children.size()]);
+			return this.children.toArray(new DTDNode[this.children.size()]);
 		}
 		
 		public void setParent(DTDNode parent){
@@ -182,7 +183,8 @@ public class DTDOutlinePage extends ContentOutlinePage implements IHTMLOutlinePa
 			return this.parent;
 		}
 		
-		public String toString(){
+		@Override
+    public String toString(){
 			return this.text;
 		}
 		
@@ -238,7 +240,8 @@ public class DTDOutlinePage extends ContentOutlinePage implements IHTMLOutlinePa
 	/** LabelProvider of HTMLOutlinePage */
 	private class DTDLabelProvider extends LabelProvider {
 		
-		public Image getImage(Object element) {
+		@Override
+    public Image getImage(Object element) {
 			if(element instanceof DTDNode){
 				return HTMLPlugin.getDefault().getImageRegistry().get(((DTDNode)element).getImage());
 			}

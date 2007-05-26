@@ -19,18 +19,18 @@ import tk.eclipse.plugin.htmleditor.HTMLPlugin;
  */
 public class JavaScriptLaunchUtil {
 	
-	private static File[] files;
+	private static File[] _files;
 	
 	public static File[] getClassPaths(){
-		if(files!=null){
-			return files;
+		if(_files!=null){
+			return _files;
 		}
 		File dir = HTMLPlugin.getDefault().getStateLocation().toFile();
-		files = new File[]{
+		_files = new File[]{
 				new File(dir, "js.jar"),
 				new File(dir, "JavaScriptExecutor.jar"),
 		};
-		return files;
+		return _files;
 	}
 	
 	public static String[] getClassPathAsStringArray(){

@@ -1,6 +1,5 @@
 package tk.eclipse.plugin.htmleditor.assist;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,8 +11,6 @@ import jp.aonir.fuzzyxml.FuzzyXMLNode;
 import jp.aonir.fuzzyxml.FuzzyXMLParser;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
-import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.w3c.css.sac.AttributeCondition;
 import org.w3c.css.sac.Condition;
@@ -48,8 +45,8 @@ import com.steadystate.css.parser.CSSOMParser;
  */
 public class CSSAssistProcessor {
 
-  private HashMap rules = new HashMap();
-  private IFile file;
+  private HashMap<String, ArrayList<String>> _rules = new HashMap<String, ArrayList<String>>();
+  private IFile _file;
 
   /**
    * Reload informations of code completion.
@@ -57,8 +54,8 @@ public class CSSAssistProcessor {
    * @param source HTML
    */
   public void reload(IFile file, String source) {
-    this.file = file;
-    rules.clear();
+    this._file = file;
+    _rules.clear();
     source = HTMLUtil.scriptlet2space(source, false);
     FuzzyXMLDocument doc;
     if ("html".equalsIgnoreCase(file.getFileExtension())) {
@@ -140,7 +137,7 @@ public class CSSAssistProcessor {
       //			}
     }
     // ‘Š‘ÎƒpƒX
-    return file.getProject().getFile(file.getParent().getProjectRelativePath().append(path));
+    return _file.getProject().getFile(_file.getParent().getProjectRelativePath().append(path));
   }
 
   /**
@@ -177,14 +174,14 @@ public class CSSAssistProcessor {
                 }
                 if (cond instanceof AttributeCondition) {
                   AttributeCondition attrCond = (AttributeCondition) cond;
-                  if (rules.get(tagName) == null) {
-                    ArrayList classes = new ArrayList();
+                  if (_rules.get(tagName) == null) {
+                    ArrayList<String> classes = new ArrayList<String>();
                     //										classes.add(new AssistInfo(attrCond.getValue()));
                     classes.add(attrCond.getValue());
-                    rules.put(tagName, classes);
+                    _rules.put(tagName, classes);
                   }
                   else {
-                    ArrayList classes = (ArrayList) rules.get(tagName);
+                    ArrayList<String> classes = _rules.get(tagName);
                     //										classes.add(new AssistInfo(attrCond.getValue()));
                     classes.add(attrCond.getValue());
                   }
@@ -215,18 +212,18 @@ public class CSSAssistProcessor {
         value = "";
       }
 
-      ArrayList assists = new ArrayList();
-      ArrayList all = (ArrayList) rules.get("*");
+      ArrayList<String> assists = new ArrayList<String>();
+      ArrayList<String> all = _rules.get("*");
       if (all != null) {
         assists.addAll(all);
       }
-      if (rules.get(tagName.toLowerCase()) != null) {
-        ArrayList list = (ArrayList) rules.get(tagName.toLowerCase());
+      if (_rules.get(tagName.toLowerCase()) != null) {
+        ArrayList<String> list = _rules.get(tagName.toLowerCase());
         assists.addAll(list);
       }
       AssistInfo[] info = new AssistInfo[assists.size()];
       for (int i = 0; i < assists.size(); i++) {
-        String keyword = (String) assists.get(i);
+        String keyword = assists.get(i);
         info[i] = new AssistInfo(value + keyword, keyword);
       }
       return info;

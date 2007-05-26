@@ -10,29 +10,29 @@ import java.util.List;
  */
 public class JavaScriptFunction implements JavaScriptElement, JavaScriptContext {
 	
-	private String name;
-	private String arguments;
-	private int offset;
-	private int end;
-	private List children = new ArrayList();
-	private JavaScriptContext parent;
+	private String _name;
+	private String _arguments;
+	private int _offset;
+	private int _end;
+	private List<JavaScriptElement> _children = new ArrayList<JavaScriptElement>();
+	private JavaScriptContext _parent;
 	
 	public JavaScriptFunction(String name, String arguments, int offset){
-		this.name = name;
-		this.arguments = arguments;
-		this.offset = offset;
+		this._name = name;
+		this._arguments = arguments;
+		this._offset = offset;
 	}
 	
 	public String getArguments() {
-		return arguments;
+		return _arguments;
 	}
 	
 	public String getName() {
-		return name;
+		return _name;
 	}
 	
 	public int getOffset(){
-		return offset;
+		return _offset;
 	}
 	
 	public int getStartOffset(){
@@ -40,27 +40,27 @@ public class JavaScriptFunction implements JavaScriptElement, JavaScriptContext 
 	}
 	
 	public void setEndOffset(int end){
-		this.end = end;
+		this._end = end;
 	}
 	
 	public int getEndOffset(){
-		return end;
+		return _end;
 	}
 	
 	public void add(JavaScriptFunction func){
-		this.children.add(func);
+		this._children.add(func);
 	}
 	
 	public void add(JavaScriptVariable var){
-		this.children.add(var);
+		this._children.add(var);
 	}
 	
 	public JavaScriptElement[] getChildren(){
-		return (JavaScriptElement[])this.children.toArray(new JavaScriptElement[this.children.size()]);
+		return this._children.toArray(new JavaScriptElement[this._children.size()]);
 	}
 	
 	public JavaScriptElement[] getVisibleElements(){
-		List list = new ArrayList();
+		List<JavaScriptElement> list = new ArrayList<JavaScriptElement>();
 		JavaScriptContext context = this;
 		while(true){
 			JavaScriptElement[] children = context.getChildren();
@@ -74,19 +74,20 @@ public class JavaScriptFunction implements JavaScriptElement, JavaScriptContext 
 				context = context.getParent();
 			}
 		}
-		return (JavaScriptElement[])list.toArray(new JavaScriptElement[list.size()]);
+		return list.toArray(new JavaScriptElement[list.size()]);
 	}
 	
 	public void setParent(JavaScriptContext context){
-		this.parent = context;
+		this._parent = context;
 	}
 	
 	public JavaScriptContext getParent(){
-		return parent;
+		return _parent;
 	}
 
 	
-	public String toString(){
-		return name + "(" + arguments + ")";
+	@Override
+  public String toString(){
+		return _name + "(" + _arguments + ")";
 	}
 }

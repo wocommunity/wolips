@@ -29,13 +29,13 @@ import tk.eclipse.plugin.htmleditor.HTMLUtil;
  */
 public class HTMLValidator implements FuzzyXMLErrorListener {
 	
-	private String original;
-	private String contents;
-	private IFile file;
+	private String _original;
+	private String _contents;
+	private IFile _file;
 	
 	private Pattern TIDY_ERROR = Pattern.compile("^line ([0-9]+?) column ([0-9]+?) - (.+?)$",Pattern.DOTALL);
 	
-	private boolean showXMLErrors;
+	private boolean _showXMLErrors;
 	
 	/**
 	 * Constructor.
@@ -43,8 +43,8 @@ public class HTMLValidator implements FuzzyXMLErrorListener {
 	 * @param file IFile that is validated by this class.
 	 */
 	public HTMLValidator(IFile file){
-		this.file = file;
-    showXMLErrors = showXMLErrors();
+		this._file = file;
+    _showXMLErrors = showXMLErrors();
 	}
   
   public boolean showXMLErrors() {
@@ -66,7 +66,7 @@ public class HTMLValidator implements FuzzyXMLErrorListener {
 					tidy.setXHTML(false);
 					tidy.setCharEncoding(org.w3c.tidy.Configuration.RAW);
 					tidy.setErrout(new PrintWriter(out, true));
-					tidy.parse(file.getContents(), null);
+					tidy.parse(_file.getContents(), null);
 					
 					String errors = new String(out.toByteArray());
 					
@@ -80,11 +80,11 @@ public class HTMLValidator implements FuzzyXMLErrorListener {
 							if(matcher.matches()){
 								String message = matcher.group(3);
 								if(message.startsWith("Warning")){
-									HTMLUtil.addMarker(file, IMarker.SEVERITY_WARNING, 
+									HTMLUtil.addMarker(_file, IMarker.SEVERITY_WARNING, 
 											Integer.parseInt(matcher.group(1)),
 											matcher.group(3));
 								} else {
-									HTMLUtil.addMarker(file, IMarker.SEVERITY_ERROR, 
+									HTMLUtil.addMarker(_file, IMarker.SEVERITY_ERROR, 
 											Integer.parseInt(matcher.group(1)),
 											matcher.group(3));
 								}
@@ -101,13 +101,13 @@ public class HTMLValidator implements FuzzyXMLErrorListener {
 			
 			// Validates using FuzzyXML
 			if(validateUsingFuzzyXML()){
-				this.original = new String(HTMLUtil.readStream(file.getContents()), file.getCharset());
-				String contents = filterContents(this.original, file);
+				this._original = new String(HTMLUtil.readStream(_file.getContents()), _file.getCharset());
+				String contents = filterContents(this._original, _file);
 				contents = HTMLUtil.scriptlet2space(contents,false);
 				
-				this.contents = contents;
-				this.contents = this.contents.replaceAll("\r\n"," \n");
-				this.contents = this.contents.replaceAll("\r"  ,"\n");
+				this._contents = contents;
+				this._contents = this._contents.replaceAll("\r\n"," \n");
+				this._contents = this._contents.replaceAll("\r"  ,"\n");
 				
 				FuzzyXMLParser parser = new FuzzyXMLParser();
 				parser.addErrorListener( this);
@@ -166,7 +166,7 @@ public class HTMLValidator implements FuzzyXMLErrorListener {
 	 * @return the IFile object, target of this validator
 	 */
 	protected IFile getFile(){
-		return this.file;
+		return this._file;
 	}
 	
 	/**
@@ -175,7 +175,7 @@ public class HTMLValidator implements FuzzyXMLErrorListener {
 	 * @return the original source code
 	 */
 	protected String getContent(){
-		return this.original;
+		return this._original;
 	}
 	
 	/**
@@ -189,7 +189,7 @@ public class HTMLValidator implements FuzzyXMLErrorListener {
 	 * an offset at the start of the line is not included.
 	 */
 	protected int getLineAtOffset(int offset){
-		String text = contents.substring(0,offset+1);
+		String text = _contents.substring(0,offset+1);
 		return text.split("\n").length;
 	}
 
@@ -207,7 +207,7 @@ public class HTMLValidator implements FuzzyXMLErrorListener {
 	}
 	
   protected boolean showXMLError(FuzzyXMLErrorEvent event) {
-    return showXMLErrors;
+    return _showXMLErrors;
   }
   
 	public void error(FuzzyXMLErrorEvent event) {

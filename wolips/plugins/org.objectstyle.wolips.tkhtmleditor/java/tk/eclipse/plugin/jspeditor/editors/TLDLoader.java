@@ -28,7 +28,7 @@ import tk.eclipse.plugin.htmleditor.gefutils.JarAcceptor;
  */
 public class TLDLoader {
 	
-	private static HashMap cache = new HashMap();
+	private static HashMap<String, byte[]> cache = new HashMap<String, byte[]>();
 	
 	/**
 	 * Returns the TLD file as <code>InputStream</code>.
@@ -95,13 +95,13 @@ public class TLDLoader {
 			}
 		}
 		
-		byte[] bytes = (byte[])cache.get(uri);
+		byte[] bytes = cache.get(uri);
 		return new ByteArrayInputStream(bytes);
 	}
 	
 	/** Load configurations from <code>IPreferenceStore</code>. */
 	private static Map getPreferenceTLD(){
-		HashMap map = new HashMap();
+		HashMap<String, String> map = new HashMap<String, String>();
 		
 		IPreferenceStore store = HTMLPlugin.getDefault().getPreferenceStore();
 		String[] uri  = store.getString(HTMLPlugin.PREF_TLD_URI).split("\n");

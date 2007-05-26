@@ -39,10 +39,11 @@ public class DTDAssistProcessor extends HTMLAssistProcessor {
 	private Pattern elementPattern = Pattern.compile("<!ELEMENT\\s+(.*?)\\s");
 	private Pattern entityPattern = Pattern.compile("<!ENTITY\\s+%\\s(.*?)\\s");
 	
-	private List elements = new ArrayList();
-	private List entities = new ArrayList();
+	private List<String> elements = new ArrayList<String>();
+	private List<String> entities = new ArrayList<String>();
 	
-	public void update(HTMLSourceEditor editor, String source){
+	@Override
+  public void update(HTMLSourceEditor editor, String source){
 		elements.clear();
 		source = FuzzyXMLUtil.comment2space(source, false);
 		Matcher matcher = elementPattern.matcher(source);
@@ -57,7 +58,8 @@ public class DTDAssistProcessor extends HTMLAssistProcessor {
 		}
 	}
 	
-	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer,int documentOffset) {
+	@Override
+  public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer,int documentOffset) {
 		
 		String text = FuzzyXMLUtil.comment2space(viewer.getDocument().get(), false);
 		text = text.substring(0, documentOffset);
@@ -65,7 +67,7 @@ public class DTDAssistProcessor extends HTMLAssistProcessor {
 		String word = getWord(text);
 		int context = getContext(text);
 		
-		List list = new ArrayList();
+		List<ICompletionProposal> list = new ArrayList<ICompletionProposal>();
 		
 		if(word.startsWith("<") || context==UNDEF){
 			for(int i=0;i<DECLS.length;i++){
@@ -76,7 +78,7 @@ public class DTDAssistProcessor extends HTMLAssistProcessor {
 			}
 		} else if(context==ATTLIST_ELEMENT || context==ELEMENT_CONTENT){
 			for(int i=0;i<elements.size();i++){
-				String element = (String)elements.get(i);
+				String element = elements.get(i);
 				if(element.startsWith(word)){
 					list.add(createProposal(element, element, word, documentOffset, element.length(), HTMLPlugin.ICON_ELEMENT));
 				}
@@ -88,7 +90,7 @@ public class DTDAssistProcessor extends HTMLAssistProcessor {
 				}
 			}
 			for(int i=0;i<entities.size();i++){
-				String value = (String)entities.get(i);
+				String value = entities.get(i);
 				if(value.startsWith(word)){
 					list.add(createProposal(value, value, word, documentOffset, value.length(), HTMLPlugin.ICON_VALUE));
 				}
@@ -118,7 +120,7 @@ public class DTDAssistProcessor extends HTMLAssistProcessor {
 		}
 		
 		HTMLUtil.sortCompilationProposal(list);
-		ICompletionProposal[] prop = (ICompletionProposal[])list.toArray(new ICompletionProposal[list.size()]);
+		ICompletionProposal[] prop = list.toArray(new ICompletionProposal[list.size()]);
 		return prop;
 	}
 	
@@ -204,7 +206,8 @@ public class DTDAssistProcessor extends HTMLAssistProcessor {
 	/* (non-Javadoc)
 	 * @see tk.eclipse.plugin.htmleditor.assist.HTMLAssistProcessor#enableTemplate()
 	 */
-	public boolean enableTemplate() {
+	@Override
+  public boolean enableTemplate() {
 		return false;
 	}
 }

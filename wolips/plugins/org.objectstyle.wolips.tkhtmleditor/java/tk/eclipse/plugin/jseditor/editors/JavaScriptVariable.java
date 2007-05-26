@@ -23,7 +23,8 @@ public class JavaScriptVariable implements JavaScriptElement {
 		return offset;
 	}
 	
-	public String toString(){
+	@Override
+  public String toString(){
 		return getName();
 	}
 }

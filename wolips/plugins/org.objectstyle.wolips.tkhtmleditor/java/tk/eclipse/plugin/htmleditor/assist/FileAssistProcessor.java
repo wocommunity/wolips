@@ -17,16 +17,16 @@ import tk.eclipse.plugin.htmleditor.IFileAssistProcessor;
  */
 public class FileAssistProcessor implements IFileAssistProcessor {
 	
-	private IFile file;
+	private IFile _file;
 	
 	public void reload(IFile file){
-		this.file = file;
+		this._file = file;
 	}
 	
 	public AssistInfo[] getAssistInfo(String value){
 		
 		IPath  path   = null;
-		String parent = null;;
+		String parent = null;
 		
 		// if value starts with '/', don't completion.
 		if(value.startsWith("/")){
@@ -40,7 +40,7 @@ public class FileAssistProcessor implements IFileAssistProcessor {
 		}
 		// if value doesn't start with '/', process as a relative path from a file
 		if(path==null){
-			path = file.getParent().getProjectRelativePath();
+			path = _file.getParent().getProjectRelativePath();
 		}
 		
 		// create path of parent folder
@@ -51,12 +51,12 @@ public class FileAssistProcessor implements IFileAssistProcessor {
 		} else{
 			parent = "";
 		}
-		IResource resource = file.getProject().findMember(path);
+		IResource resource = _file.getProject().findMember(path);
 		if(resource!=null && resource.exists() && resource instanceof IContainer){
 			try {
 				IContainer container = (IContainer)resource;
 				IResource[] children = container.members();
-				ArrayList list = new ArrayList();
+				ArrayList<AssistInfo> list = new ArrayList<AssistInfo>();
 				for(int i=0;i<children.length;i++){
 					// ignore dot files.
 					if(children[i].getName().startsWith(".")){
@@ -79,7 +79,7 @@ public class FileAssistProcessor implements IFileAssistProcessor {
 							image
 					));
 				}
-				return (AssistInfo[])list.toArray(new AssistInfo[list.size()]);
+				return list.toArray(new AssistInfo[list.size()]);
 			} catch(Exception ex){
 				HTMLPlugin.logException(ex);
 			}

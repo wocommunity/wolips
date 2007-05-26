@@ -37,8 +37,8 @@ public class JavaScriptScanner extends RuleBasedScanner {
 	};
 	
 	public JavaScriptScanner(ColorProvider colorProvider){
-		List rules = createRules(colorProvider);
-		setRules((IRule[])rules.toArray(new IRule[rules.size()]));
+		List<IRule> rules = createRules(colorProvider);
+		setRules(rules.toArray(new IRule[rules.size()]));
 	}
 	
 	/**
@@ -48,13 +48,13 @@ public class JavaScriptScanner extends RuleBasedScanner {
 	 * @param colorProvider ColorProvider
 	 * @return the list of <code>IRule</code>
 	 */
-	protected List createRules(ColorProvider colorProvider){
+	protected List<IRule> createRules(ColorProvider colorProvider){
 		IToken normal  = colorProvider.getToken(HTMLPlugin.PREF_COLOR_FG);
 		IToken string  = colorProvider.getToken(HTMLPlugin.PREF_COLOR_JSSTRING);
 		IToken comment = colorProvider.getToken(HTMLPlugin.PREF_COLOR_JSCOMMENT);
 		IToken keyword = colorProvider.getToken(HTMLPlugin.PREF_COLOR_JSKEYWORD);
 		
-		List rules = new ArrayList();
+		List<IRule> rules = new ArrayList<IRule>();
 		rules.add(new SingleLineRule("\"", "\"", string, '\\'));
 		rules.add(new SingleLineRule("'", "'", string, '\\'));
 		rules.add(new EndOfLineRule("//", comment));

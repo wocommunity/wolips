@@ -17,7 +17,8 @@ public class DTDConfiguration extends HTMLConfiguration {
 		super(colorProvider);
 	}
 	
-	protected HTMLTagScanner getTagScanner() {
+	@Override
+  protected HTMLTagScanner getTagScanner() {
 		if (tagScanner == null) {
 			tagScanner = new DTDTagScanner(getColorProvider());
 			tagScanner.setDefaultReturnToken(
@@ -26,7 +27,8 @@ public class DTDConfiguration extends HTMLConfiguration {
 		return tagScanner;
 	}
 	
-	protected HTMLAssistProcessor createAssistProcessor() {
+	@Override
+  protected HTMLAssistProcessor createAssistProcessor() {
 		return new DTDAssistProcessor();
 	}
 }

@@ -32,27 +32,27 @@ import tk.eclipse.plugin.htmleditor.HTMLUtil;
  */
 public class JSPInfo {
 	
-	private static Map jspInfoMap = new HashMap();
+	private static Map<IFile, JSPInfoCache> _jspInfoMap = new HashMap<IFile, JSPInfoCache>();
 	
 	private static class JSPInfoCache {
 		private JSPInfo jspInfo;
 		private long timestamp;
 	}
 	
-	private ArrayList tldInfoList  = new ArrayList();
-	private FuzzyXMLDocument doc;
+	private ArrayList<TLDInfo> _tldInfoList  = new ArrayList<TLDInfo>();
+	private FuzzyXMLDocument _doc;
 	
 	// Regular expressions
 //	private Pattern pagePattern    = Pattern.compile("<%@\\s*page\\s+(.+?)%>",Pattern.DOTALL);
-	private Pattern taglibPattern  = Pattern.compile("<%@\\s*taglib\\s+(.+?)%>",Pattern.DOTALL);
-	private Pattern uriPattern     = Pattern.compile("uri\\s*=\\s*\"(.+?)\"");
-	private Pattern tagdirPattern  = Pattern.compile("tagdir\\s*=\\s*\"(.+?)\"");
-	private Pattern prefixPattern  = Pattern.compile("prefix\\s*=\\s*\"(.+?)\"");
-	private Pattern includePattern = Pattern.compile("<%@\\s*include\\s+(.+?)%>",Pattern.DOTALL);
-	private Pattern filePattern    = Pattern.compile("file\\s*=\\s*\"(.+?)\"");
+	private Pattern _taglibPattern  = Pattern.compile("<%@\\s*taglib\\s+(.+?)%>",Pattern.DOTALL);
+	private Pattern _uriPattern     = Pattern.compile("uri\\s*=\\s*\"(.+?)\"");
+	private Pattern _tagdirPattern  = Pattern.compile("tagdir\\s*=\\s*\"(.+?)\"");
+	private Pattern _prefixPattern  = Pattern.compile("prefix\\s*=\\s*\"(.+?)\"");
+	private Pattern _includePattern = Pattern.compile("<%@\\s*include\\s+(.+?)%>",Pattern.DOTALL);
+	private Pattern _filePattern    = Pattern.compile("file\\s*=\\s*\"(.+?)\"");
 	
 	public static JSPInfo getJSPInfo(IFile file, String source){
-		JSPInfoCache cache = (JSPInfoCache)jspInfoMap.get(file);
+		JSPInfoCache cache = _jspInfoMap.get(file);
 		if(cache!=null){
 			if(file.getLocalTimeStamp()==cache.timestamp){
 				return cache.jspInfo;
@@ -62,7 +62,7 @@ public class JSPInfo {
 		cache = new JSPInfoCache();
 		cache.jspInfo = info;
 		cache.timestamp = file.getLocalTimeStamp();
-		jspInfoMap.put(file, cache);
+		_jspInfoMap.put(file, cache);
 		return info;
 	}
 	
@@ -77,7 +77,7 @@ public class JSPInfo {
 	}
 	
 	public FuzzyXMLDocument getDocument(){
-		return this.doc;
+		return this._doc;
 	}
 	
 	/**
@@ -101,10 +101,10 @@ public class JSPInfo {
 				basedir = basedir.getFolder(new Path(webapproot));
 			}
 
-			Matcher matcher = includePattern.matcher(source);
+			Matcher matcher = _includePattern.matcher(source);
 			while (matcher.find()) {
 				String content = matcher.group(1);
-				String fileInc = getAttribute(content, filePattern);
+				String fileInc = getAttribute(content, _filePattern);
 				if(fileInc==null){
 					continue;
 				}
@@ -123,7 +123,7 @@ public class JSPInfo {
 						JSPInfo info = new JSPInfo(incJspFile, contents);
 						TLDInfo[] tldInfos = info.getTLDInfo();
 						for (int i = 0; i < tldInfos.length; i++) {
-							tldInfoList.add(tldInfos[i]);
+							_tldInfoList.add(tldInfos[i]);
 						}
 					}
 				} catch (IOException ioe) {
@@ -139,33 +139,33 @@ public class JSPInfo {
 //				taglibInsertIndex = matcher.end();
 //			}
 			// getting taglib directive
-			matcher = taglibPattern.matcher(source);
+			matcher = _taglibPattern.matcher(source);
 			while(matcher.find()){
 				// parsing taglib directive
 				String content = matcher.group(1);
-				String tagdir = getAttribute(content, tagdirPattern);
+				String tagdir = getAttribute(content, _tagdirPattern);
 				if(tagdir != null){
-					String prefix = getAttribute(content,prefixPattern);
+					String prefix = getAttribute(content,_prefixPattern);
 					TLDInfo info = TLDInfo.getTLDInfoFromTagdir(file,prefix,tagdir);
 					if(info!=null){
-						tldInfoList.add(info);
+						_tldInfoList.add(info);
 					}
 				} else {
-					String uri    = getAttribute(content,uriPattern);
-					String prefix = getAttribute(content,prefixPattern);
+					String uri    = getAttribute(content,_uriPattern);
+					String prefix = getAttribute(content,_prefixPattern);
 					// creation TLDInfo
 //					taglibInsertIndex = matcher.end();
 					TLDInfo info = TLDInfo.getTLDInfo(file,prefix,uri);
 					if(info!=null){
-						tldInfoList.add(info);
+						_tldInfoList.add(info);
 					}
 				}
 			}
 			
 			// getting TLDs from xmlns
 			try {
-				this.doc = new FuzzyXMLParser().parse(HTMLUtil.scriptlet2space(source,false));
-				FuzzyXMLElement root = (FuzzyXMLElement)XPath.selectSingleNode(doc.getDocumentElement(),"*");
+				this._doc = new FuzzyXMLParser().parse(HTMLUtil.scriptlet2space(source,false));
+				FuzzyXMLElement root = (FuzzyXMLElement)XPath.selectSingleNode(_doc.getDocumentElement(),"*");
 				if(root!=null){
 					FuzzyXMLAttribute[] attrs = root.getAttributes();
 					for(int i=0;i<attrs.length;i++){
@@ -186,7 +186,7 @@ public class JSPInfo {
 									info = TLDInfo.getTLDInfo(file,dim[1],value);
 								}
 								if(info!=null){
-									tldInfoList.add(info);
+									_tldInfoList.add(info);
 								}
 							}
 						}
@@ -214,7 +214,7 @@ public class JSPInfo {
 									JSPInfo info = new JSPInfo(incFile, contents, false);
 									TLDInfo[] tldInfos = info.getTLDInfo();
 									for (int k = 0; k < tldInfos.length; k++) {
-										tldInfoList.add(tldInfos[k]);
+										_tldInfoList.add(tldInfos[k]);
 									}
 								}
 							}
@@ -264,7 +264,7 @@ public class JSPInfo {
 	 * @return an array of TLDInfo.
 	 */
 	public TLDInfo[] getTLDInfo(){
-		return (TLDInfo[])tldInfoList.toArray(new TLDInfo[tldInfoList.size()]);
+		return _tldInfoList.toArray(new TLDInfo[_tldInfoList.size()]);
 	}
 	
 }

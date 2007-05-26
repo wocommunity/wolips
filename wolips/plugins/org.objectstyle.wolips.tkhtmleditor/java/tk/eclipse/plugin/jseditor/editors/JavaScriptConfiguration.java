@@ -49,7 +49,8 @@ public class JavaScriptConfiguration extends SourceViewerConfiguration {
 		return defaultScanner;
 	}
 	
-	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
+	@Override
+  public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
 		return new String[] {
 			IDocument.DEFAULT_CONTENT_TYPE,
 			JavaScriptPartitionScanner.JS_COMMENT};
@@ -62,7 +63,8 @@ public class JavaScriptConfiguration extends SourceViewerConfiguration {
 		return assistProcessor;
 	}
 	
-	public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
+	@Override
+  public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
 		ContentAssistant assistant = new ContentAssistant();
 		assistant.enableAutoInsert(true);
 		assistant.setContentAssistProcessor(getAssistProcessor(),IDocument.DEFAULT_CONTENT_TYPE);
@@ -71,7 +73,8 @@ public class JavaScriptConfiguration extends SourceViewerConfiguration {
 		return assistant;
 	}
 	
-	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
+	@Override
+  public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
 		PresentationReconciler reconciler = new PresentationReconciler();
 		
 		DefaultDamagerRepairer dr = null;
@@ -90,7 +93,8 @@ public class JavaScriptConfiguration extends SourceViewerConfiguration {
 	/**
 	 * @since 2.0.3
 	 */
-	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
+	@Override
+  public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
 		return new IAutoEditStrategy[]{
 			new JavaScriptAutoEditStrategy()
 		};

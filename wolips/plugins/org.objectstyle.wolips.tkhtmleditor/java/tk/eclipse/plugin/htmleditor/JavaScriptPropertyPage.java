@@ -28,7 +28,8 @@ public class JavaScriptPropertyPage extends PropertyPage {
 		setDescription(HTMLPlugin.getResourceString("JavaScriptPropertyPage.Description"));
 	}
 	
-	protected Control createContents(Composite parent) {
+	@Override
+  protected Control createContents(Composite parent) {
 		tableViewer = new JavaScriptLibraryTable(parent);
 		try {
 			params = new HTMLProjectParams(getProject());
@@ -39,7 +40,8 @@ public class JavaScriptPropertyPage extends PropertyPage {
 		return tableViewer.getControl();
 	}
 	
-	private void fillControls(){
+	@SuppressWarnings("unchecked")
+  private void fillControls(){
 		List tableModel = tableViewer.getModel();
 		tableModel.clear();
 		String[] javaScripts = params.getJavaScripts();
@@ -49,7 +51,7 @@ public class JavaScriptPropertyPage extends PropertyPage {
 			if(javaScripts[i].startsWith(JavaScriptLibraryTable.PREFIX)){
 				IResource resource = wsroot.findMember(javaScripts[i].substring(JavaScriptLibraryTable.PREFIX.length()));
 				if(resource!=null && resource instanceof IFile && resource.exists()){
-					tableModel.add((IFile)resource);
+					tableModel.add(resource);
 				}
 			} else {
 				tableModel.add(new File(javaScripts[i]));
@@ -58,12 +60,14 @@ public class JavaScriptPropertyPage extends PropertyPage {
 		tableViewer.refresh();
 	}
 	
-	protected void performDefaults() {
+	@Override
+  protected void performDefaults() {
 		params = new HTMLProjectParams();
 		fillControls();
 	}
 	
-	public boolean performOk() {
+	@Override
+  public boolean performOk() {
 		// save configuration
 		try {
 			params = new HTMLProjectParams(getProject());

@@ -19,8 +19,9 @@ public class JavaScriptTaskTagDetector extends AbstractTaskTagDetector {
 		addSupportedExtension("js");
 	}
 	
-	public void doDetect() throws Exception {
-		JavaScriptModel model = new JavaScriptModel(this.contents);
+	@Override
+  public void doDetect() throws Exception {
+		JavaScriptModel model = new JavaScriptModel(this._contents);
 		JavaScriptComment[] comments = model.getComments();
 		for(int i=0;i<comments.length;i++){
 			detectTaskTag(comments[i].getText(), comments[i].getOffset());

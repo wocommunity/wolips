@@ -49,7 +49,8 @@ public class XMLNewWizardPage extends WizardNewFileCreationPage {
 		return createFileHandle(newFilePath);
 	}
 	
-	protected InputStream getInitialContents() {
+	@Override
+  protected InputStream getInitialContents() {
 		// charset encoding
 		String projectName = getContainerFullPath().segment(0);
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);

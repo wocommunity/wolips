@@ -28,7 +28,8 @@ public class ChooseColorAction extends Action {
 		this.editor = editor;
 	}
 	
-	public void run() {
+	@Override
+  public void run() {
 		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 		ColorDialog dialog = new ColorDialog(window.getShell());
 		RGB color = dialog.open();

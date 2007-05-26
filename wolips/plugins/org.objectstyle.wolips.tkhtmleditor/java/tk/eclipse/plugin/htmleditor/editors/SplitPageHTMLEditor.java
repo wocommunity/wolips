@@ -39,98 +39,105 @@ import tk.eclipse.plugin.htmleditor.HTMLPlugin;
 public class SplitPageHTMLEditor extends EditorPart implements IResourceChangeListener,HTMLEditorPart {
 	
 	/** HTML source editor */
-	private HTMLSourceEditor editor;
+	private HTMLSourceEditor _editor;
 	/** Browser widget for preview */
-	private Browser browser;
+	private Browser _browser;
 	/** wrapper */
-	private HTMLEditor wrapper;
+	private HTMLEditor _wrapper;
 	/** horizontal split or vertical split */
-	private boolean isHorizontal;
+	private boolean _isHorizontal;
 	/** EditorSite */
-	private SplitEditorSite site;
+	private SplitEditorSite _site;
 	
 	
 	public SplitPageHTMLEditor(HTMLEditor wrapper,boolean isHorizontal,HTMLSourceEditor editor) {
 		super();
-		this.wrapper = wrapper;
-		this.isHorizontal = isHorizontal;
-		this.editor = editor;
+		this._wrapper = wrapper;
+		this._isHorizontal = isHorizontal;
+		this._editor = editor;
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 	}
 	
 	public Browser getBrowser() {
-		return browser;
+		return _browser;
 	}
 	
 	public HTMLSourceEditor getSourceEditor() {
-		return editor;
+		return _editor;
 	}
 	
-	public void doSave(IProgressMonitor monitor) {
-		editor.doSave(monitor);
-		wrapper.updatePreview();
+	@Override
+  public void doSave(IProgressMonitor monitor) {
+		_editor.doSave(monitor);
+		_wrapper.updatePreview();
 	}
 
-	public void doSaveAs() {
-		editor.doSaveAs();
-		setInput(editor.getEditorInput());
+	@Override
+  public void doSaveAs() {
+		_editor.doSaveAs();
+		setInput(_editor.getEditorInput());
 		setPartName(getEditorInput().getName());
-		wrapper.updatePreview();
+		_wrapper.updatePreview();
 	}
 
-	public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
+	@Override
+  public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
 		setSite(site);
 		setInput(editorInput);
 		setPartName(editorInput.getName());
 	}
 
-	public boolean isDirty() {
-		if(editor!=null){
-			return editor.isDirty();
+	@Override
+  public boolean isDirty() {
+		if(_editor!=null){
+			return _editor.isDirty();
 		}
 		return false;
 	}
 
-	public boolean isSaveAsAllowed() {
+	@Override
+  public boolean isSaveAsAllowed() {
 		return true;
 	}
 	
-	public void dispose() {		
+	@Override
+  public void dispose() {		
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
-		site.dispose();
+		_site.dispose();
 		super.dispose();
 	}
 	
-	public void createPartControl(Composite parent) {
+	@Override
+  public void createPartControl(Composite parent) {
 		try {
 			// Don't split when EditorInput isn't IFileEditorInput
 			if(!(getEditorInput() instanceof IFileEditorInput)){
-				editor.init(getEditorSite(), getEditorInput());
-				editor.addPropertyListener(new IPropertyListener() {
+				_editor.init(getEditorSite(), getEditorInput());
+				_editor.addPropertyListener(new IPropertyListener() {
 					public void propertyChanged(Object source, int propertyId) {
 						firePropertyChange(propertyId);
 					}
 				});
-				editor.createPartControl(parent);
+				_editor.createPartControl(parent);
 				return;
 			}
 			
 			SashForm sash = null;
-			if(isHorizontal){
+			if(_isHorizontal){
 				sash = new SashForm(parent,SWT.VERTICAL);
 			} else {
 				sash = new SashForm(parent,SWT.HORIZONTAL);
 			}
-			site = new SplitEditorSite(editor, getEditorSite());
-			editor.init(site, getEditorInput());
-			editor.addPropertyListener(new IPropertyListener() {
+			_site = new SplitEditorSite(_editor, getEditorSite());
+			_editor.init(_site, getEditorInput());
+			_editor.addPropertyListener(new IPropertyListener() {
 				public void propertyChanged(Object source, int propertyId) {
 					firePropertyChange(propertyId);
 				}
 			});
-			editor.createPartControl(sash);
-			browser = new Browser(sash,SWT.NONE);
-			wrapper.updatePreview();
+			_editor.createPartControl(sash);
+			_browser = new Browser(sash,SWT.NONE);
+			_wrapper.updatePreview();
 		} catch (PartInitException e) {
 			HTMLPlugin.logException(e);
 			ErrorDialog.openError(getSite().getShell(),
@@ -138,21 +145,22 @@ public class SplitPageHTMLEditor extends EditorPart implements IResourceChangeLi
 		}
 	}
 
-	public void setFocus() {
-		editor.setFocus();
+	@Override
+  public void setFocus() {
+		_editor.setFocus();
 	}
 	
 	public void gotoMarker(IMarker marker) {
-		IDE.gotoMarker(editor, marker);
+		IDE.gotoMarker(_editor, marker);
 	}
 	
 	public void setOffset(int offset){
-		editor.selectAndReveal(offset,0);
+		_editor.selectAndReveal(offset,0);
 	}
 	
 	public void resourceChanged(final IResourceChangeEvent event){
 		if(event.getType() == IResourceChangeEvent.POST_CHANGE){
-			final IEditorInput input = editor.getEditorInput();
+			final IEditorInput input = _editor.getEditorInput();
 			if(input instanceof IFileEditorInput){
 				Display.getDefault().asyncExec(new Runnable(){
 					public void run(){
@@ -170,16 +178,18 @@ public class SplitPageHTMLEditor extends EditorPart implements IResourceChangeLi
 	}
 	
 	public boolean isFileEditorInput(){
-		return editor.isFileEditorInput();
+		return _editor.isFileEditorInput();
 	}
 	
-	public Object getAdapter(Class adapter) {
-		return editor.getAdapter(adapter);
+	@Override
+  public Object getAdapter(Class adapter) {
+		return _editor.getAdapter(adapter);
 	}
 	
-	protected void firePropertyChange(int propertyId) {
+	@Override
+  protected void firePropertyChange(int propertyId) {
 		super.firePropertyChange(propertyId);
-		wrapper.firePropertyChange2(propertyId);
+		_wrapper.firePropertyChange2(propertyId);
 	}
 	
 	/**
@@ -189,7 +199,7 @@ public class SplitPageHTMLEditor extends EditorPart implements IResourceChangeLi
 		
 		private HTMLSourceEditor editor;
 		private IEditorSite site;
-		private ArrayList menuExtenders;
+		private ArrayList<PopupMenuExtender> menuExtenders;
 
 		
 		public SplitEditorSite(HTMLSourceEditor editor, IEditorSite site){
@@ -227,7 +237,7 @@ public class SplitPageHTMLEditor extends EditorPart implements IResourceChangeLi
 		
 		public void registerContextMenu(String menuId, MenuManager menuManager, ISelectionProvider selectionProvider) {
 			if (menuExtenders == null) {
-				menuExtenders = new ArrayList(1);
+				menuExtenders = new ArrayList<PopupMenuExtender>(1);
 			}
 			menuExtenders.add(new PopupMenuExtender(menuId, menuManager, selectionProvider, editor));
 		}
@@ -259,7 +269,7 @@ public class SplitPageHTMLEditor extends EditorPart implements IResourceChangeLi
 		public void dispose() {
 			if (menuExtenders != null) {
 				for (int i = 0; i < menuExtenders.size(); i++) {
-					((PopupMenuExtender)menuExtenders.get(i)).dispose();
+					menuExtenders.get(i).dispose();
 				}
 				menuExtenders = null;
 			}

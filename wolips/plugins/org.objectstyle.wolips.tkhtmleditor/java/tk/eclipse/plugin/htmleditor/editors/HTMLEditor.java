@@ -32,167 +32,213 @@ import tk.eclipse.plugin.htmleditor.views.IPaletteTarget;
  * @see tk.eclipse.plugin.htmleditor.editors.SplitPageHTMLEditor
  */
 public class HTMLEditor extends EditorPart implements IPaletteTarget {
-	
-	protected EditorPart editor;
-	protected File prevTempFile = null;
-	
-	public HTMLEditor() {
-		super();
-		IPreferenceStore store = HTMLPlugin.getDefault().getPreferenceStore();
-		String type = store.getString(HTMLPlugin.PREF_EDITOR_TYPE);
-		if(type.equals("horizontal")){
-			editor = new SplitPageHTMLEditor(this,true,createHTMLSourceEditor(getSourceViewerConfiguration()));
-		} else if(type.equals("vertical")){
-			editor = new SplitPageHTMLEditor(this,false,createHTMLSourceEditor(getSourceViewerConfiguration()));
-		} else if(type.equals("tab")){
-			editor = new MultiPageHTMLEditor(this,createHTMLSourceEditor(getSourceViewerConfiguration()));
-		} else {
-			editor = createHTMLSourceEditor(getSourceViewerConfiguration());
-			editor.addPropertyListener(new IPropertyListener() {
-				public void propertyChanged(Object source, int propertyId) {
-					firePropertyChange(propertyId);
-				}
-			});
-		}
-	}
-	
-	protected HTMLConfiguration getSourceViewerConfiguration(){
-	    return new HTMLConfiguration(HTMLPlugin.getDefault().getColorProvider());
-	}
-	
-	protected HTMLSourceEditor createHTMLSourceEditor(HTMLConfiguration config){
-		return new HTMLSourceEditor(config);
-	}
-	
-	public HTMLSourceEditor getPaletteTarget() {
-		if(editor instanceof HTMLSourceEditor){
-			return (HTMLSourceEditor)editor;
-		} else {
-			return ((HTMLEditorPart)editor).getSourceEditor();
-		}
-	}
-	
-	/**
-	 * Update preview
-	 */
-	public void updatePreview(){
-		if(!(editor instanceof HTMLEditorPart)){
-			return;
-		}
-	    try {
-			if(!((HTMLEditorPart)editor).isFileEditorInput()){
-				return;
-			}
-			
-			// write to temporary file
-		    HTMLEditorPart editor = (HTMLEditorPart)this.editor;
-		    IFileEditorInput input = (IFileEditorInput)this.editor.getEditorInput();
-		    String charset = input.getFile().getCharset();
-			String html    = editor.getSourceEditor().getDocumentProvider().getDocument(input).get();
-			// replace JSP part
-			//html = HTMLUtil.convertJSP(html);
-			
-			File tmpFile = editor.getSourceEditor().getTempFile();
-			FileOutputStream out = new FileOutputStream(tmpFile);
-			PrintWriter pw = new PrintWriter(new OutputStreamWriter(out, charset), true); 
-			pw.write(html);
-			pw.close();
-			
-			if(prevTempFile!=null && prevTempFile.equals(tmpFile)){
-				editor.getBrowser().refresh();
-			} else {
-				if(prevTempFile!=null){
-					prevTempFile.delete();
-				}
-				prevTempFile = tmpFile;
-				editor.getBrowser().setUrl("file://" + tmpFile.getAbsolutePath()); //$NON-NLS-1$
-			}
-	    } catch(Exception ex){
-	    	HTMLPlugin.logException(ex);
-	    }
-	}
-	
-	public void createPartControl(Composite parent) {
-		editor.createPartControl(parent);
-	}
-	
-	public void dispose() {
-		editor.dispose();
-		super.dispose();
-	}
-	public void doSave(IProgressMonitor monitor) {
-		editor.doSave(monitor);
-		//updateFlag = true;
-	}
-	public void doSaveAs() {
-		editor.doSaveAs();
-		//updateFlag = true;
-	}
-  
-//	public boolean equals(Object arg0) {
-//		return editor.equals(arg0);
-//	}
-	public Object getAdapter(Class adapter) {
-		return editor.getAdapter(adapter);
-	}
-	public String getContentDescription() {
-		return editor.getContentDescription();
-	}
-	public IEditorInput getEditorInput() {
-		return editor.getEditorInput();
-	}
-	public IEditorSite getEditorSite() {
-		return editor.getEditorSite();
-	}
-	public String getPartName() {
-		return editor.getPartName();
-	}
-	public IWorkbenchPartSite getSite() {
-		return editor.getSite();
-	}
-	public String getTitle() {
-		return editor.getTitle();
-	}
-	public Image getTitleImage() {
-		return editor.getTitleImage();
-	}
-	public String getTitleToolTip() {
-		return editor.getTitleToolTip();
-	}
-	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
-		editor.init(site, input);
-	}
-	public boolean isDirty() {
-		return editor.isDirty();
-	}
-	public boolean isSaveAsAllowed() {
-		return editor.isSaveAsAllowed();
-	}
-	public boolean isSaveOnCloseNeeded() {
-		return editor.isSaveOnCloseNeeded();
-	}
-	public void setFocus() {
-		editor.setFocus();
-	}
-	public void setInitializationData(IConfigurationElement config,String propertyName, Object data){
-		editor.setInitializationData(config, propertyName, data);
-	}
-	public void showBusy(boolean busy) {
-		editor.showBusy(busy);
-	}
-	/** change to the source editor, and move calet to the specified offset. */
-	public void setOffset(int offset){
-		if(editor instanceof SplitPageHTMLEditor){
-			((SplitPageHTMLEditor)editor).setOffset(offset);
-		} else if(editor instanceof MultiPageHTMLEditor){
-			((MultiPageHTMLEditor)editor).setOffset(offset);
-		} else if(editor instanceof HTMLSourceEditor){
-			((HTMLSourceEditor)editor).selectAndReveal(offset, 0);
-		}
-	}
-	
-	public void firePropertyChange2(int propertyId) {
-		super.firePropertyChange(propertyId);
-	}
-	
+
+  protected EditorPart _editor;
+  protected File _prevTempFile = null;
+
+  public HTMLEditor() {
+    super();
+    IPreferenceStore store = HTMLPlugin.getDefault().getPreferenceStore();
+    String type = store.getString(HTMLPlugin.PREF_EDITOR_TYPE);
+    if (type.equals("horizontal")) {
+      _editor = new SplitPageHTMLEditor(this, true, createHTMLSourceEditor(getSourceViewerConfiguration()));
+    }
+    else if (type.equals("vertical")) {
+      _editor = new SplitPageHTMLEditor(this, false, createHTMLSourceEditor(getSourceViewerConfiguration()));
+    }
+    else if (type.equals("tab")) {
+      _editor = new MultiPageHTMLEditor(this, createHTMLSourceEditor(getSourceViewerConfiguration()));
+    }
+    else {
+      _editor = createHTMLSourceEditor(getSourceViewerConfiguration());
+      _editor.addPropertyListener(new IPropertyListener() {
+        public void propertyChanged(Object source, int propertyId) {
+          firePropertyChange(propertyId);
+        }
+      });
+    }
+  }
+
+  protected HTMLConfiguration getSourceViewerConfiguration() {
+    return new HTMLConfiguration(HTMLPlugin.getDefault().getColorProvider());
+  }
+
+  protected HTMLSourceEditor createHTMLSourceEditor(HTMLConfiguration config) {
+    return new HTMLSourceEditor(config);
+  }
+
+  public HTMLSourceEditor getPaletteTarget() {
+    if (_editor instanceof HTMLSourceEditor) {
+      return (HTMLSourceEditor) _editor;
+    }
+    else {
+      return ((HTMLEditorPart) _editor).getSourceEditor();
+    }
+  }
+
+  /**
+   * Update preview
+   */
+  public void updatePreview() {
+    if (!(_editor instanceof HTMLEditorPart)) {
+      return;
+    }
+    try {
+      if (!((HTMLEditorPart) _editor).isFileEditorInput()) {
+        return;
+      }
+
+      // write to temporary file
+      HTMLEditorPart editor = (HTMLEditorPart) this._editor;
+      IFileEditorInput input = (IFileEditorInput) this._editor.getEditorInput();
+      String charset = input.getFile().getCharset();
+      String html = editor.getSourceEditor().getDocumentProvider().getDocument(input).get();
+      // replace JSP part
+      //html = HTMLUtil.convertJSP(html);
+
+      File tmpFile = editor.getSourceEditor().getTempFile();
+      FileOutputStream out = new FileOutputStream(tmpFile);
+      PrintWriter pw = new PrintWriter(new OutputStreamWriter(out, charset), true);
+      pw.write(html);
+      pw.close();
+
+      if (_prevTempFile != null && _prevTempFile.equals(tmpFile)) {
+        editor.getBrowser().refresh();
+      }
+      else {
+        if (_prevTempFile != null) {
+          _prevTempFile.delete();
+        }
+        _prevTempFile = tmpFile;
+        editor.getBrowser().setUrl("file://" + tmpFile.getAbsolutePath()); //$NON-NLS-1$
+      }
+    }
+    catch (Exception ex) {
+      HTMLPlugin.logException(ex);
+    }
+  }
+
+  @Override
+  public void createPartControl(Composite parent) {
+    _editor.createPartControl(parent);
+  }
+
+  @Override
+  public void dispose() {
+    _editor.dispose();
+    super.dispose();
+  }
+
+  @Override
+  public void doSave(IProgressMonitor monitor) {
+    _editor.doSave(monitor);
+    //updateFlag = true;
+  }
+
+  @Override
+  public void doSaveAs() {
+    _editor.doSaveAs();
+    //updateFlag = true;
+  }
+
+  //	public boolean equals(Object arg0) {
+  //		return editor.equals(arg0);
+  //	}
+  @Override
+  public Object getAdapter(Class adapter) {
+    return _editor.getAdapter(adapter);
+  }
+
+  @Override
+  public String getContentDescription() {
+    return _editor.getContentDescription();
+  }
+
+  @Override
+  public IEditorInput getEditorInput() {
+    return _editor.getEditorInput();
+  }
+
+  @Override
+  public IEditorSite getEditorSite() {
+    return _editor.getEditorSite();
+  }
+
+  @Override
+  public String getPartName() {
+    return _editor.getPartName();
+  }
+
+  @Override
+  public IWorkbenchPartSite getSite() {
+    return _editor.getSite();
+  }
+
+  @Override
+  public String getTitle() {
+    return _editor.getTitle();
+  }
+
+  @Override
+  public Image getTitleImage() {
+    return _editor.getTitleImage();
+  }
+
+  @Override
+  public String getTitleToolTip() {
+    return _editor.getTitleToolTip();
+  }
+
+  @Override
+  public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+    _editor.init(site, input);
+  }
+
+  @Override
+  public boolean isDirty() {
+    return _editor.isDirty();
+  }
+
+  @Override
+  public boolean isSaveAsAllowed() {
+    return _editor.isSaveAsAllowed();
+  }
+
+  @Override
+  public boolean isSaveOnCloseNeeded() {
+    return _editor.isSaveOnCloseNeeded();
+  }
+
+  @Override
+  public void setFocus() {
+    _editor.setFocus();
+  }
+
+  @Override
+  public void setInitializationData(IConfigurationElement config, String propertyName, Object data) {
+    _editor.setInitializationData(config, propertyName, data);
+  }
+
+  @Override
+  public void showBusy(boolean busy) {
+    _editor.showBusy(busy);
+  }
+
+  /** change to the source editor, and move calet to the specified offset. */
+  public void setOffset(int offset) {
+    if (_editor instanceof SplitPageHTMLEditor) {
+      ((SplitPageHTMLEditor) _editor).setOffset(offset);
+    }
+    else if (_editor instanceof MultiPageHTMLEditor) {
+      ((MultiPageHTMLEditor) _editor).setOffset(offset);
+    }
+    else if (_editor instanceof HTMLSourceEditor) {
+      ((HTMLSourceEditor) _editor).selectAndReveal(offset, 0);
+    }
+  }
+
+  public void firePropertyChange2(int propertyId) {
+    super.firePropertyChange(propertyId);
+  }
+
 }

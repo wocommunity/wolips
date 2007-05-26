@@ -1,6 +1,7 @@
 package tk.eclipse.plugin.htmleditor;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import jp.aonir.fuzzyxml.FuzzyXMLAttribute;
 import jp.aonir.fuzzyxml.FuzzyXMLDocument;
@@ -43,7 +44,7 @@ import tk.eclipse.plugin.htmleditor.editors.HTMLSourceEditor;
 public class HTMLHyperlinkDetector implements IHyperlinkDetector {
 	
 	private HTMLSourceEditor editor;
-	private ArrayList providers = new ArrayList();
+	private List<IHyperlinkProvider> providers = new ArrayList<IHyperlinkProvider>();
 	
 	/**
 	 * @param editor the <code>HTMLSourceEditor</code> instance
@@ -123,7 +124,7 @@ public class HTMLHyperlinkDetector implements IHyperlinkDetector {
 			}
 			IFile file = ((IFileEditorInput)editor.getEditorInput()).getFile();
 			for(int i=0;i<providers.size();i++){
-				IHyperlinkProvider provider = (IHyperlinkProvider)this.providers.get(i);
+				IHyperlinkProvider provider = this.providers.get(i);
 				HTMLHyperlinkInfo info = provider.getHyperlinkInfo(file,doc,element,attrName,attrValue,offset);
 				if(info!=null && info.getObject()!=null){
 					return info;

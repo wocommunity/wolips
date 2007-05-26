@@ -18,14 +18,15 @@ public class CSSEditorPreferencePage extends FieldEditorPreferencePage implement
 	private ColorFieldEditor colorValue;
 	
 	public CSSEditorPreferencePage() {
-		super(GRID); //$NON-NLS-1$
+		super(GRID); 
 		setPreferenceStore(HTMLPlugin.getDefault().getPreferenceStore());
 	}
 
 	public void init(IWorkbench workbench) {
 	}
 	
-	protected void createFieldEditors() {
+	@Override
+  protected void createFieldEditors() {
 		setTitle(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.CSS"));
 		
 		Composite parent = getFieldEditorParent();

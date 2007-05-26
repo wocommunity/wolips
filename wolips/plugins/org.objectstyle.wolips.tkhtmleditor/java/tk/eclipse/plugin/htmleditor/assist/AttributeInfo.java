@@ -1,6 +1,7 @@
 package tk.eclipse.plugin.htmleditor.assist;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AttributeInfo {
 
@@ -9,7 +10,7 @@ public class AttributeInfo {
 	private int attributeType;
 	private boolean required = false;
 	private String description;
-	private ArrayList values = new ArrayList();
+	private List<String> values = new ArrayList<String>();
 	
 	public static final int NONE       = 0;
 	public static final int ALIGN      = 1;
@@ -82,7 +83,7 @@ public class AttributeInfo {
 	}
 	
 	public String[] getValues(){
-	    return (String[])this.values.toArray(new String[this.values.size()]);
+	    return this.values.toArray(new String[this.values.size()]);
 	}
 
 	public String getDescription() {

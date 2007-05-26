@@ -19,7 +19,8 @@ public class HTMLCharacterPairMatcher extends AbstractCharacterPairMatcher {
 		addBlockCharacter('<', '>');
 	}
 	
-	protected String getSource(IDocument doc){
+	@Override
+  protected String getSource(IDocument doc){
 		String text = doc.get();
 		text = FuzzyXMLUtil.escapeString(text);
 		text = HTMLUtil.comment2space(text, true);

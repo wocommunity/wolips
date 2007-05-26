@@ -42,19 +42,21 @@ import tk.eclipse.plugin.htmleditor.HTMLProjectNature;
  */
 public class HTMLTaskTagPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 	
-	private TableViewer viewer;
-	private List model = new ArrayList();
-	private List oldModel = new ArrayList();
+	private TableViewer _viewer;
+	private List<TaskTag> _model = new ArrayList<TaskTag>();
+	private List<TaskTag> _oldModel = new ArrayList<TaskTag>();
 	
 	public HTMLTaskTagPreferencePage(){
 		setPreferenceStore(HTMLPlugin.getDefault().getPreferenceStore());
 		setTitle(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.TaskTag"));
 	}
 	
-	protected Control createContents(Composite parent) {
-		TableViewerSupport support = new TableViewerSupport(model, parent){
+	@Override
+  protected Control createContents(Composite parent) {
+		TableViewerSupport support = new TableViewerSupport(_model, parent){
 
-			protected void initTableViewer(TableViewer viewer) {
+			@Override
+      protected void initTableViewer(TableViewer viewer) {
 				Table table = viewer.getTable();
 				
 				TableColumn col1 = new TableColumn(table,SWT.LEFT);
@@ -66,7 +68,8 @@ public class HTMLTaskTagPreferencePage extends PreferencePage implements IWorkbe
 				col2.setWidth(100);
 			}
 
-			protected Object doAdd() {
+			@Override
+      protected Object doAdd() {
 				TaskTagDialog dialog = new TaskTagDialog(getShell());
 				if(dialog.open()==Dialog.OK){
 					return dialog.getTaskTag();
@@ -74,7 +77,8 @@ public class HTMLTaskTagPreferencePage extends PreferencePage implements IWorkbe
 				return null;
 			}
 
-			protected void doEdit(Object obj) {
+			@Override
+      protected void doEdit(Object obj) {
 				TaskTag element = (TaskTag)obj;
 				TaskTagDialog dialog = new TaskTagDialog(getShell(), element);
 				if(dialog.open()==Dialog.OK){
@@ -84,7 +88,8 @@ public class HTMLTaskTagPreferencePage extends PreferencePage implements IWorkbe
 				}
 			}
 
-			protected ITableLabelProvider createLabelProvider() {
+			@Override
+      protected ITableLabelProvider createLabelProvider() {
 				return new ITableLabelProvider(){
 				    
 					public Image getColumnImage(Object element, int columnIndex){
@@ -116,32 +121,34 @@ public class HTMLTaskTagPreferencePage extends PreferencePage implements IWorkbe
 			
 		};
 		
-		viewer = support.getTableViewer();
-		model.addAll(TaskTag.loadFromPreference(false));
+		_viewer = support.getTableViewer();
+		_model.addAll(TaskTag.loadFromPreference(false));
 		syncModels();
-		viewer.refresh();
+		_viewer.refresh();
 		
 		return support.getControl();
 	}
 	
-	protected void performDefaults() {
-		model.clear();
-		model.addAll(TaskTag.loadFromPreference(true));
-		viewer.refresh();
+	@Override
+  protected void performDefaults() {
+		_model.clear();
+		_model.addAll(TaskTag.loadFromPreference(true));
+		_viewer.refresh();
 		processChange();
 	}
 	
-	public boolean performOk() {
-		TaskTag.saveToPreference(model);
+	@Override
+  public boolean performOk() {
+		TaskTag.saveToPreference(_model);
 		processChange();
 		return true;
 	}
 	
 	private void syncModels(){
 		try {
-			oldModel.clear();
-			for(int i=0;i<model.size();i++){
-				oldModel.add(((TaskTag)model.get(i)).clone());
+			_oldModel.clear();
+			for(int i=0;i<_model.size();i++){
+				_oldModel.add(_model.get(i).clone());
 			}
 		} catch(Exception ex){
 			HTMLPlugin.logException(ex);
@@ -152,7 +159,7 @@ public class HTMLTaskTagPreferencePage extends PreferencePage implements IWorkbe
 	}
 	
 	private void processChange(){
-		if(TaskTag.hasChange(oldModel, model)){
+		if(TaskTag.hasChange(_oldModel, _model)){
 			syncModels();
 			try {
 				IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -187,13 +194,15 @@ public class HTMLTaskTagPreferencePage extends PreferencePage implements IWorkbe
 			this.element = element;
 		}
 		
-		protected Point getInitialSize() {
+		@Override
+    protected Point getInitialSize() {
 			Point size = super.getInitialSize();
 			size.x = 300;
 			return size;
 		}
 
-		protected Control createDialogArea(Composite parent) {
+		@Override
+    protected Control createDialogArea(Composite parent) {
 			getShell().setText(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.TaskTag"));
 			
 			Composite composite = new Composite(parent, SWT.NULL);
@@ -226,7 +235,8 @@ public class HTMLTaskTagPreferencePage extends PreferencePage implements IWorkbe
 			return composite;
 		}
 		
-		protected void okPressed() {
+		@Override
+    protected void okPressed() {
 			if(textTag.getText().length()==0){
 				HTMLPlugin.openAlertDialog(HTMLPlugin.createMessage(
 						HTMLPlugin.getResourceString("Error.Required"),

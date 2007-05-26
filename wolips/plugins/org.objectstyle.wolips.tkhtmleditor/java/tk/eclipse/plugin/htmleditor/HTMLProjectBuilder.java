@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 
+import tk.eclipse.plugin.htmleditor.tasktag.AbstractTaskTagDetector;
 import tk.eclipse.plugin.htmleditor.tasktag.HTMLTaskTagDetector;
 import tk.eclipse.plugin.htmleditor.tasktag.ITaskTagDetector;
 import tk.eclipse.plugin.htmleditor.tasktag.JavaScriptTaskTagDetector;
@@ -30,7 +31,7 @@ import tk.eclipse.plugin.htmleditor.tasktag.TaskTag;
  */
 public class HTMLProjectBuilder extends IncrementalProjectBuilder {
 	
-	private List taskTagDetectors = new ArrayList();
+	private List<AbstractTaskTagDetector> taskTagDetectors = new ArrayList<AbstractTaskTagDetector>();
 	private TaskTag[] tags;
 	
 	public HTMLProjectBuilder(){
@@ -38,10 +39,11 @@ public class HTMLProjectBuilder extends IncrementalProjectBuilder {
 		taskTagDetectors.add(new JavaScriptTaskTagDetector());
 	}
 	
-	protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
+	@Override
+  protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
 		
-		List list = TaskTag.loadFromPreference(false);
-		tags = (TaskTag[])list.toArray(new TaskTag[list.size()]);
+		List<TaskTag> list = TaskTag.loadFromPreference(false);
+		tags = list.toArray(new TaskTag[list.size()]);
 		
 		if(getProject()==null){
 			return null;
@@ -70,7 +72,7 @@ public class HTMLProjectBuilder extends IncrementalProjectBuilder {
 					processContainer((IContainer)resources[i]);
 				} else if(resources[i] instanceof IFile){
 					for(int j=0;j<taskTagDetectors.size();j++){
-						final ITaskTagDetector detector = (ITaskTagDetector)taskTagDetectors.get(j);
+						final ITaskTagDetector detector = taskTagDetectors.get(j);
 						if(detector.isSupported((IFile)resources[i])){
 							applyDetector(resources[i], detector);
 							break;
@@ -93,7 +95,7 @@ public class HTMLProjectBuilder extends IncrementalProjectBuilder {
 			final IResource resource = children[i].getResource();
 			if(resource!=null && resource instanceof IFile && resource.exists()){
 				for(int j=0;j<taskTagDetectors.size();j++){
-					final ITaskTagDetector detector = (ITaskTagDetector)taskTagDetectors.get(j);
+					final ITaskTagDetector detector = taskTagDetectors.get(j);
 					if(detector.isSupported((IFile)resource)){
 						applyDetector(resource, detector);
 						break;

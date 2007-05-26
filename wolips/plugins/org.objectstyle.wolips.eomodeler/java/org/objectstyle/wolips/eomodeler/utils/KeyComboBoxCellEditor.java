@@ -199,6 +199,7 @@ public class KeyComboBoxCellEditor extends CellEditor {
 			}
 			
 			public void controlResized(ControlEvent e) {
+				// DO NOTHING
 			}
 		});
 		
