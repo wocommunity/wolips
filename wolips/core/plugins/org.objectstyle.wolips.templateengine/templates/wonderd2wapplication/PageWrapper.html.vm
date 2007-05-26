@@ -5,7 +5,8 @@
     <webobject name="BodyContainer">
       <table border="0" cellpadding="4" cellspacing="0" width="99%">
          <tr>
-            <td valign="top" align="left" width="130"><webobject name="Header"></webobject></td>
+            <td valign="top" align="left" width="130"><webobject name="Header"></webobject><webobject name = "IsDebug"><webobject name="ERD2WDebugFlags"></webobject></webobject>
+</td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
             <td align="center" valign="top">

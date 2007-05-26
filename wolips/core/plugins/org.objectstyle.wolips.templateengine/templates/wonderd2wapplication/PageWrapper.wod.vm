@@ -13,3 +13,10 @@ Head: D2WHead {
 Header: MenuHeader {
 }
 
+ERD2WDebugFlags : ERD2WDebugFlags {
+	context = d2wContext;
+}
+
+IsDebug :WOConditional {
+	condition = application.isDevelopmentMode;
+}
