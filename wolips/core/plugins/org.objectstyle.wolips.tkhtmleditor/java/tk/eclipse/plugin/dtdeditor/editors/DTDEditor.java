@@ -47,12 +47,14 @@ public class DTDEditor extends HTMLSourceEditor {
 		setAction(ACTION_GEN_XSD,new GenerateXSDAction());
 	}
 	
-	public void createPartControl(Composite parent) {
+	@Override
+  public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
 		getPairMatcher().setDelimiter('<');
 	}
 	
-	protected IDocumentProvider createDocumentProvider(IEditorInput input){
+	@Override
+  protected IDocumentProvider createDocumentProvider(IEditorInput input){
 		if(input instanceof IFileEditorInput){
 			return new DTDTextDocumentProvider();
 		} else if(input instanceof IStorageEditorInput){
@@ -62,17 +64,20 @@ public class DTDEditor extends HTMLSourceEditor {
 		}
 	}
 	
-	protected IHTMLOutlinePage createOutlinePage() {
+	@Override
+  protected IHTMLOutlinePage createOutlinePage() {
 		return new DTDOutlinePage(this);
 	}
 	
-	protected void addContextMenuActions(IMenuManager menu){
+	@Override
+  protected void addContextMenuActions(IMenuManager menu){
 		menu.add(new Separator(GROUP_HTML));
 		addAction(menu,GROUP_HTML,ACTION_COMMENT);
 		addAction(menu,GROUP_HTML,ACTION_GEN_XSD);
 	}
 	
-	protected void doValidate() {
+	@Override
+  protected void doValidate() {
 		try {
 			ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
@@ -91,7 +96,7 @@ public class DTDEditor extends HTMLSourceEditor {
 					} catch(DTDParseException ex){
 						DTDErrorInfo error = new DTDErrorInfo(ex);
 						IMarker marker = file.createMarker(IMarker.PROBLEM);
-						Map map = new HashMap();
+						Map<String, Object> map = new HashMap<String, Object>();
 						map.put(IMarker.SEVERITY, new Integer(IMarker.SEVERITY_ERROR));
 						map.put(IMarker.MESSAGE, error.getError());
 						map.put(IMarker.LINE_NUMBER,new Integer(error.getLine()));
@@ -142,7 +147,8 @@ public class DTDEditor extends HTMLSourceEditor {
 			super(HTMLPlugin.getResourceString("XMLEditor.GenerateXSD"), 
 					HTMLPlugin.getDefault().getImageRegistry().getDescriptor(HTMLPlugin.ICON_XSD));
 		}
-		public void run() {
+		@Override
+    public void run() {
 			FileDialog dialog = new FileDialog(getViewer().getTextWidget().getShell(),SWT.SAVE);
 			dialog.setFilterExtensions(new String[]{"*.xsd"});
 			String file = dialog.open();

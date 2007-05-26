@@ -11,10 +11,10 @@ import java.util.regex.Pattern;
  */
 public class JavaScriptModel implements JavaScriptContext {
 	
-	private List children = new ArrayList();
-	private List comments = new ArrayList();
-	private JavaScriptContext context;
-	private int endOffset;
+	private List<JavaScriptElement> _children = new ArrayList<JavaScriptElement>();
+	private List<JavaScriptComment> _comments = new ArrayList<JavaScriptComment>();
+	private JavaScriptContext _context;
+	private int _endOffset;
 	
 	public JavaScriptModel(String source){
 		update(source);
@@ -25,7 +25,7 @@ public class JavaScriptModel implements JavaScriptContext {
 	}
 	
 	public int getEndOffset(){
-		return endOffset;
+		return _endOffset;
 	}
 	
 	public JavaScriptContext getContextFromOffset(int offset){
@@ -54,10 +54,10 @@ public class JavaScriptModel implements JavaScriptContext {
 	 * @param source JavaScript
 	 */
 	public void update(String source){
-		this.children.clear();
-		this.comments.clear();
-		this.endOffset = source.length();
-		context = this;
+		this._children.clear();
+		this._comments.clear();
+		this._endOffset = source.length();
+		_context = this;
 		
 		boolean whitespace = true;
 		char quote = 0;
@@ -86,7 +86,7 @@ public class JavaScriptModel implements JavaScriptContext {
 						i++;
 						nc = source.charAt(i+1);
 					}
-					comments.add(new JavaScriptComment(start, i+1,
+					_comments.add(new JavaScriptComment(start, i+1,
 							source.substring(start, i+1)));
 				}
 				if(nc == '*'){
@@ -95,13 +95,13 @@ public class JavaScriptModel implements JavaScriptContext {
 					if(i==-1){
 						break;
 					}
-					comments.add(new JavaScriptComment(start, i+2,
+					_comments.add(new JavaScriptComment(start, i+2,
 							source.substring(start, i+2)));
 				}
 			}
 			// var
 			if(whitespace && c=='v'){
-				int result = parseVariable(source, i, context);
+				int result = parseVariable(source, i, _context);
 				if(result!=0){
 					whitespace = true;
 					i += result;
@@ -110,21 +110,21 @@ public class JavaScriptModel implements JavaScriptContext {
 			}
 			// function
 			if(whitespace && c=='f'){
-				Object[] result = parseFunction(source, i, context);
+				Object[] result = parseFunction(source, i, _context);
 				if(result != null){
 					whitespace = true;
 					i += ((Integer)result[0]).intValue();
-					context = (JavaScriptFunction)result[1];
+					_context = (JavaScriptFunction)result[1];
 					continue;
 				}
 			}
 			// end function
 			if(c=='}'){
-				if(context.getParent()!=null){
-					if(context instanceof JavaScriptFunction){
-						((JavaScriptFunction)context).setEndOffset(i);
+				if(_context.getParent()!=null){
+					if(_context instanceof JavaScriptFunction){
+						((JavaScriptFunction)_context).setEndOffset(i);
 					}
-					context = context.getParent();
+					_context = _context.getParent();
 				}
 			}
 			// whitespace
@@ -166,15 +166,15 @@ public class JavaScriptModel implements JavaScriptContext {
 
 	
 	public void add(JavaScriptFunction func) {
-		this.children.add(func);
+		this._children.add(func);
 	}
 	
 	public void add(JavaScriptVariable var) {
-		this.children.add(var);
+		this._children.add(var);
 	}
 	
 	public JavaScriptElement[] getChildren(){
-		return (JavaScriptElement[])this.children.toArray(new JavaScriptElement[this.children.size()]);
+		return this._children.toArray(new JavaScriptElement[this._children.size()]);
 	}
 	
 	public JavaScriptElement[] getVisibleElements(){
@@ -186,7 +186,7 @@ public class JavaScriptModel implements JavaScriptContext {
 	}
 	
 	public JavaScriptComment[] getComments(){
-		return (JavaScriptComment[])this.comments.toArray(new JavaScriptComment[this.comments.size()]);
+		return this._comments.toArray(new JavaScriptComment[this._comments.size()]);
 	}
 	
 }

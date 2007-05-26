@@ -44,7 +44,8 @@ public class TLDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		setDescription(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.LocalTLD"));
 	}
 	
-	protected Control createContents(Composite parent) {
+	@Override
+  protected Control createContents(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout(2,false));
 		// create table
@@ -53,7 +54,8 @@ public class TLDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		table.addSelectionListener(new SelectionAdapter(){
-			public void widgetSelected(SelectionEvent evt){
+			@Override
+      public void widgetSelected(SelectionEvent evt){
 				TableItem[] items = table.getSelection();
 				boolean enable = false;
 				if(items.length > 0){
@@ -86,7 +88,8 @@ public class TLDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		buttonAdd.setLayoutData(createButtonGridData());
 		buttonAdd.addSelectionListener(
 				new SelectionAdapter(){
-					public void widgetSelected(SelectionEvent evt){
+					@Override
+          public void widgetSelected(SelectionEvent evt){
 						TLDDialog dialog = new TLDDialog(getShell());
 						if(dialog.open()==Dialog.OK){
 							TableItem item = new TableItem(table,SWT.NONE);
@@ -100,7 +103,8 @@ public class TLDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		buttonEdit.setEnabled(false);
 		buttonEdit.addSelectionListener(
 				new SelectionAdapter(){
-					public void widgetSelected(SelectionEvent evt){
+					@Override
+          public void widgetSelected(SelectionEvent evt){
 						TableItem[] items = table.getSelection();
 						if(items.length > 0){
 							String uri  = items[0].getText(0);
@@ -118,7 +122,8 @@ public class TLDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		buttonRemove.setEnabled(false);
 		buttonRemove.addSelectionListener(
 				new SelectionAdapter(){
-					public void widgetSelected(SelectionEvent evt){
+					@Override
+          public void widgetSelected(SelectionEvent evt){
 						int[] indices = table.getSelectionIndices();
 						table.remove(indices);
 					}
@@ -130,7 +135,8 @@ public class TLDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		return composite;
 	}
 	
-	public boolean performOk() {
+	@Override
+  public boolean performOk() {
 		IPreferenceStore store = getPreferenceStore();
 		TableItem[] items = table.getItems();
 		StringBuffer uri  = new StringBuffer();
@@ -147,7 +153,8 @@ public class TLDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		return true;
 	}
 	
-	protected void performDefaults() {
+	@Override
+  protected void performDefaults() {
 		IPreferenceStore store = getPreferenceStore();
 		table.removeAll();
 		
@@ -213,13 +220,15 @@ public class TLDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 			this.path = path;
 		}
 		
-		protected void constrainShellSize() {
+		@Override
+    protected void constrainShellSize() {
 			Shell shell = getShell();
 			shell.pack();
 			shell.setSize(400,shell.getSize().y);
 		}
 		
-		protected Control createDialogArea(Composite parent) {
+		@Override
+    protected Control createDialogArea(Composite parent) {
 			getShell().setText(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.TLD"));
 			
 			Composite container = new Composite(parent,SWT.NULL);
@@ -247,7 +256,8 @@ public class TLDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 			button.setText("...");
 			button.addSelectionListener(
 					new SelectionAdapter(){
-						public void widgetSelected(SelectionEvent evt){
+						@Override
+            public void widgetSelected(SelectionEvent evt){
 							FileDialog openDialog = new FileDialog(getShell(),SWT.OPEN);
 							String openFile = openDialog.open();
 							if(openFile!=null){
@@ -262,7 +272,8 @@ public class TLDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 			return container;
 		}
 		
-		protected void validate(){
+		@Override
+    protected void validate(){
 			if(textUri.getText().equals("")){
 				setErrorMessage(HTMLPlugin.createMessage(
 					HTMLPlugin.getResourceString("Error.Required"),
@@ -279,7 +290,8 @@ public class TLDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 			setErrorMessage(null);
 		}
 		
-		protected void okPressed() {
+		@Override
+    protected void okPressed() {
 			uri  = textUri.getText();
 			path = textPath.getText();
 			super.okPressed();

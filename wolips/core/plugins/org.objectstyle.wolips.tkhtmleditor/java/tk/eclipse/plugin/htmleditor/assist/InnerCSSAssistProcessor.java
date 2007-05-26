@@ -27,7 +27,8 @@ public class InnerCSSAssistProcessor extends CSSAssistProcessor {
 		this.processor = processor;
 	}
 	
-	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
+	@Override
+  public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
 		
 		String source = viewer.getDocument().get();
 		String subSource = source.substring(0, offset);
@@ -50,7 +51,8 @@ public class InnerCSSAssistProcessor extends CSSAssistProcessor {
 		return super.computeCompletionProposals(viewer, offset);
 	}
 	
-	protected String getSource(ITextViewer viewer) {
+	@Override
+  protected String getSource(ITextViewer viewer) {
 		StringBuffer sb = new StringBuffer();
 		String source = viewer.getDocument().get();
 		int lastIndex = 0;

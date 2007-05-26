@@ -25,11 +25,13 @@ public class HTMLTemplatePreferencePage extends TemplatePreferencePage  implemen
 		}
 	}
 
-	protected boolean isShowFormatterSetting() {
+	@Override
+  protected boolean isShowFormatterSetting() {
 		return false;
 	}
 	
-	public boolean performOk() {
+	@Override
+  public boolean performOk() {
 		boolean ok = super.performOk();
 		HTMLPlugin.getDefault().savePluginPreferences();
 		return ok;

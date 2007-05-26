@@ -61,15 +61,17 @@ public class TaskTag implements Cloneable {
 		this.tag = tag;
 	}
 	
-	protected Object clone() throws CloneNotSupportedException {
+	@Override
+  protected TaskTag clone() throws CloneNotSupportedException {
 		return new TaskTag(getTag(), getPriority());
 	}
 
-	public boolean equals(Object obj){
+	@Override
+  public boolean equals(Object obj){
 		if(obj instanceof TaskTag){
-			TaskTag tag = (TaskTag)obj;
-			return getTag().equals(tag.getTag()) &&
-				getPriority()==tag.getPriority();
+			TaskTag otherTag = (TaskTag)obj;
+			return getTag().equals(otherTag.getTag()) &&
+				getPriority()==otherTag.getPriority();
 		}
 		return false;
 	}
@@ -88,7 +90,7 @@ public class TaskTag implements Cloneable {
 		return false;
 	}
 	
-	public static List loadFromPreference(boolean defaults){
+	public static List<TaskTag> loadFromPreference(boolean defaults){
 		IPreferenceStore store = HTMLPlugin.getDefault().getPreferenceStore();
 		String value = null;
 		if(defaults){
@@ -96,7 +98,7 @@ public class TaskTag implements Cloneable {
 		} else {
 			value = store.getString(HTMLPlugin.PREF_TASK_TAGS);
 		}
-		List list = new ArrayList();
+		List<TaskTag> list = new ArrayList<TaskTag>();
 		if(value!=null){
 			String[] values = value.split("\n");
 			for(int i=0;i<values.length;i++){
@@ -109,11 +111,11 @@ public class TaskTag implements Cloneable {
 		return list;
 	}
 	
-	public static void saveToPreference(List list){
+	public static void saveToPreference(List<TaskTag> list){
 		IPreferenceStore store = HTMLPlugin.getDefault().getPreferenceStore();
 		StringBuffer sb = new StringBuffer();
 		for(int i=0;i<list.size();i++){
-			TaskTag tag = (TaskTag)list.get(i);
+			TaskTag tag = list.get(i);
 			sb.append(tag.getTag());
 			sb.append("\t");
 			sb.append(tag.getPriority());

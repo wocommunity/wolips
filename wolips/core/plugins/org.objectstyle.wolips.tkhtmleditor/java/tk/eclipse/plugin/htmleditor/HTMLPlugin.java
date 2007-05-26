@@ -153,7 +153,7 @@ public class HTMLPlugin extends AbstractUIPlugin {
 			"gif","png","jpg","jpeg","bmp"
 	};
 	
-	private static Map innerDTD = new LinkedHashMap();
+	private static Map<String, String> innerDTD = new LinkedHashMap<String, String>();
 	static {
 		innerDTD.put("http://java.sun.com/j2ee/dtds/web-app_2_2.dtd","/DTD/web-app_2_2.dtd");
 		innerDTD.put("http://java.sun.com/dtd/web-app_2_3.dtd","/DTD/web-app_2_3.dtd");
@@ -173,7 +173,7 @@ public class HTMLPlugin extends AbstractUIPlugin {
 		innerDTD.put("xml.xsd","/XSD/xml.xsd");
 	}
 	
-	private static Map innerTLD = new LinkedHashMap();
+	private static Map<String, String> innerTLD = new LinkedHashMap<String, String>();
 	static {
 		innerTLD.put("http://java.sun.com/jstl/core_rt","/TLD/c-1_0-rt.tld");
 		innerTLD.put("http://java.sun.com/jstl/core","/TLD/c-1_0.tld");
@@ -211,18 +211,19 @@ public class HTMLPlugin extends AbstractUIPlugin {
 		return this.colorProvider;
 	}
 	
-	public static Map getInnerDTD(){
+	public static Map<String, String> getInnerDTD(){
 		return innerDTD;
 	}
 	
-	public static Map getInnerTLD(){
+	public static Map<String, String> getInnerTLD(){
 		return innerTLD;
 	}
 	
 	/**
 	 * This method is called upon plug-in activation
 	 */
-	public void start(BundleContext context) throws Exception {
+	@Override
+  public void start(BundleContext context) throws Exception {
 		super.start(context);
 		colorProvider = new ColorProvider(getPreferenceStore());
 		
@@ -231,7 +232,8 @@ public class HTMLPlugin extends AbstractUIPlugin {
 		UpdateUI.getDefault();
 	}
 	
-	protected void initializeImageRegistry(ImageRegistry reg) {
+	@Override
+  protected void initializeImageRegistry(ImageRegistry reg) {
 		super.initializeImageRegistry(reg);
 		reg.put(ICON_HTML,ImageDescriptor.createFromURL(getBundle().getEntry("/icons/html.png")));
 		reg.put(ICON_XML,ImageDescriptor.createFromURL(getBundle().getEntry("/icons/xml.png")));
@@ -294,7 +296,8 @@ public class HTMLPlugin extends AbstractUIPlugin {
 	/**
 	 * This method is called when the plug-in is stopped
 	 */
-	public void stop(BundleContext context) throws Exception {
+	@Override
+  public void stop(BundleContext context) throws Exception {
 		JavaScriptLaunchUtil.removeLibraries();
 		colorProvider.dispose();
 		super.stop(context);
@@ -402,7 +405,7 @@ public class HTMLPlugin extends AbstractUIPlugin {
 	
 	public String[] getNoValidationNatureId(){
 		if(noValidationNatureIds==null){
-			ArrayList list = new ArrayList();
+			List<String> list = new ArrayList<String>();
 			IExtensionRegistry registry = Platform.getExtensionRegistry();
 			IExtensionPoint point = registry.getExtensionPoint(getPluginId() + ".noValidationNatures");
 			IExtension[] extensions = point.getExtensions();
@@ -415,7 +418,7 @@ public class HTMLPlugin extends AbstractUIPlugin {
 					}
 				}
 			}
-			noValidationNatureIds = (String[])list.toArray(new String[list.size()]);
+			noValidationNatureIds = list.toArray(new String[list.size()]);
 		}
 		return noValidationNatureIds;
 	}
@@ -424,13 +427,13 @@ public class HTMLPlugin extends AbstractUIPlugin {
 	 * Returns contributed IFileAssistProcessor.
 	 */
 	public IFileAssistProcessor[] getFileAssistProcessors(){
-		List list = loadContributedClasses("fileAssistProcessor", "processor");
-		return (IFileAssistProcessor[])list.toArray(new IFileAssistProcessor[list.size()]);
+		List<IFileAssistProcessor> list = loadContributedClasses("fileAssistProcessor", "processor");
+		return list.toArray(new IFileAssistProcessor[list.size()]);
 	}
 
 	
 	/** This contains URI and ICustomTagConverterContributer */
-	private HashMap converterContributers = null;
+	private HashMap<String, ICustomTagConverterContributer> converterContributers = null;
 	
 	/**
 	 * Returns contributed ICustomTagConverterContributer.
@@ -438,7 +441,7 @@ public class HTMLPlugin extends AbstractUIPlugin {
 	public ICustomTagConverterContributer getCustomTagContributer(String uri){
 		try {
 			if(converterContributers==null){
-				converterContributers = new HashMap();
+				converterContributers = new HashMap<String, ICustomTagConverterContributer>();
 				IExtensionRegistry registry = Platform.getExtensionRegistry();
 				IExtensionPoint point = registry.getExtensionPoint(getPluginId() + ".customTagConverter");
 				IExtension[] extensions = point.getExtensions();
@@ -453,7 +456,7 @@ public class HTMLPlugin extends AbstractUIPlugin {
 					}
 				}
 			}
-			return (ICustomTagConverterContributer)converterContributers.get(uri);
+			return converterContributers.get(uri);
 		} catch(Exception ex){
 			logException(ex);
 			return null;
@@ -461,7 +464,7 @@ public class HTMLPlugin extends AbstractUIPlugin {
 	}
 	
 	/** List of ICustomTagAttributeAssist */
-	private List customTagAttrAssists = null;
+	private List<ICustomTagAttributeAssist> customTagAttrAssists = null;
 
 	/**
 	 * Returns contributed ICustomTagAttributeAssist.
@@ -470,11 +473,11 @@ public class HTMLPlugin extends AbstractUIPlugin {
 		if(customTagAttrAssists==null){
 			customTagAttrAssists = loadContributedClasses("customTagAttributeAssist", "customTagAttributeAssist");
 		}
-		return (ICustomTagAttributeAssist[])customTagAttrAssists.toArray(new ICustomTagAttributeAssist[customTagAttrAssists.size()]);
+		return customTagAttrAssists.toArray(new ICustomTagAttributeAssist[customTagAttrAssists.size()]);
 	}
 	
 	/** List of IHyperlinkProvider */
-	private List hyperlinkProviders = null;
+	private List<IHyperlinkProvider> hyperlinkProviders = null;
 	
 	/**
 	 * Returns contributed IHyperlinkProvider.
@@ -483,11 +486,11 @@ public class HTMLPlugin extends AbstractUIPlugin {
 		if(hyperlinkProviders==null){
 			hyperlinkProviders = loadContributedClasses("hyperlinkProvider", "provider");
 		}
-		return (IHyperlinkProvider[])hyperlinkProviders.toArray(new IHyperlinkProvider[hyperlinkProviders.size()]);
+		return hyperlinkProviders.toArray(new IHyperlinkProvider[hyperlinkProviders.size()]);
 	}
 	
 	/** List of IPaletteContributer */
-	private HashMap palette = null;
+	private HashMap<String, IPaletteContributer> palette = null;
 	
 	/**
 	 * Returns contributed IPaletteContributer which was registered as specified group name.
@@ -496,7 +499,7 @@ public class HTMLPlugin extends AbstractUIPlugin {
 		if(palette==null){
 			loadPalleteContributer();
 		}
-		return (IPaletteContributer)palette.get(group);
+		return palette.get(group);
 	}
 	
 	/**
@@ -506,7 +509,7 @@ public class HTMLPlugin extends AbstractUIPlugin {
 		if(palette==null){
 			loadPalleteContributer();
 		}
-		return (String[])palette.keySet().toArray(new String[0]);
+		return palette.keySet().toArray(new String[0]);
 	}
 	
 	/**
@@ -514,7 +517,7 @@ public class HTMLPlugin extends AbstractUIPlugin {
 	 */
 	private void loadPalleteContributer(){
 		try {
-			palette = new HashMap();
+			palette = new HashMap<String, IPaletteContributer>();
 			IExtensionRegistry registry = Platform.getExtensionRegistry();
 			IExtensionPoint point = registry.getExtensionPoint(getPluginId() + ".paletteItem");
 			IExtension[] extensions = point.getExtensions();
@@ -534,7 +537,7 @@ public class HTMLPlugin extends AbstractUIPlugin {
 	}
 	
 	/** This contains URI and ICustomTagConverterContributer */
-	private HashMap validatorContributers = null;
+	private HashMap<String, ICustomTagValidatorContributer> validatorContributers = null;
 
 	/**
 	 * Returns contributed <code>ICustomTagValidatorContributer</code>.
@@ -542,7 +545,7 @@ public class HTMLPlugin extends AbstractUIPlugin {
 	public ICustomTagValidatorContributer getCustomTagValidatorContributer(String uri){
 		try {
 			if(validatorContributers==null){
-				validatorContributers = new HashMap();
+				validatorContributers = new HashMap<String, ICustomTagValidatorContributer>();
 				IExtensionRegistry registry = Platform.getExtensionRegistry();
 				IExtensionPoint point = registry.getExtensionPoint(getPluginId() + ".customTagValidator");
 				IExtension[] extensions = point.getExtensions();
@@ -557,7 +560,7 @@ public class HTMLPlugin extends AbstractUIPlugin {
 					}
 				}
 			}
-			return (ICustomTagValidatorContributer)validatorContributers.get(uri);
+			return validatorContributers.get(uri);
 		} catch(Exception ex){
 			logException(ex);
 			return null;
@@ -565,7 +568,7 @@ public class HTMLPlugin extends AbstractUIPlugin {
 	}
 	
 	/** List of ITLDLocator */
-	private HashSet tldlocators = null;
+	private HashSet<ITLDLocator> tldlocators = null;
 
 	/**
 	 * Returns the array of contributed <code>ITLDLocator</code>s.
@@ -574,12 +577,12 @@ public class HTMLPlugin extends AbstractUIPlugin {
 		if(tldlocators == null){
 			loadTLDLocatorContributions();
 		}
-		return (ITLDLocator[])tldlocators.toArray(new ITLDLocator[tldlocators.size()]);
+		return tldlocators.toArray(new ITLDLocator[tldlocators.size()]);
 	}
 
 	private void loadTLDLocatorContributions() {
 		try {
-			tldlocators = new HashSet();
+			tldlocators = new HashSet<ITLDLocator>();
 			IExtensionRegistry registry = Platform.getExtensionRegistry();
 			IExtensionPoint point = registry.getExtensionPoint(getPluginId() + ".tldLocator");
 			IExtension[] extensions = point.getExtensions();
@@ -615,8 +618,8 @@ public class HTMLPlugin extends AbstractUIPlugin {
 			return jspFilters;
 		}
 		
-		List filters = loadContributedClasses("pagefilter", "jspfilter");
-		jspFilters = (IJSPFilter[]) filters.toArray(new IJSPFilter[filters.size()]);
+		List<IJSPFilter> filters = loadContributedClasses("pagefilter", "jspfilter");
+		jspFilters = filters.toArray(new IJSPFilter[filters.size()]);
 
 		return jspFilters;
 	}
@@ -624,8 +627,9 @@ public class HTMLPlugin extends AbstractUIPlugin {
 	/**
 	 * @since 2.0.5
 	 */
-	private static List loadContributedClasses(String extPointId, String elementName){
-		List result = new ArrayList();
+	@SuppressWarnings("unchecked")
+  private static <T> List<T> loadContributedClasses(String extPointId, String elementName){
+		List<T> result = new ArrayList<T>();
 		try {
 			IExtensionRegistry registry = Platform.getExtensionRegistry();
 			IExtensionPoint point = registry.getExtensionPoint(getDefault().getPluginId() + "." + extPointId);
@@ -634,7 +638,7 @@ public class HTMLPlugin extends AbstractUIPlugin {
 				IConfigurationElement[] elements = extensions[i].getConfigurationElements();
 				for (int j = 0; j < elements.length; j++) {
 					if (elementName.equals(elements[j].getName())) {
-						result.add(elements[j].createExecutableExtension("class"));
+						result.add((T)elements[j].createExecutableExtension("class"));
 					}
 				}
 			}

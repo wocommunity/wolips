@@ -23,21 +23,25 @@ import tk.eclipse.plugin.htmleditor.HTMLPlugin;
  */
 public class HTMLTemplateAssistProcessor extends TemplateCompletionProcessor {
 
-	protected Template[] getTemplates(String contextTypeId) {
+	@Override
+  protected Template[] getTemplates(String contextTypeId) {
 		HTMLTemplateManager manager = HTMLTemplateManager.getInstance();
 		return manager.getTemplateStore().getTemplates();
 	}
 
-	protected TemplateContextType getContextType(ITextViewer viewer, IRegion region) {
+	@Override
+  protected TemplateContextType getContextType(ITextViewer viewer, IRegion region) {
 		HTMLTemplateManager manager = HTMLTemplateManager.getInstance();
 		return manager.getContextTypeRegistry().getContextType(HTMLContextType.CONTEXT_TYPE);
 	}
 
-	protected Image getImage(Template template) {
+	@Override
+  protected Image getImage(Template template) {
 		return HTMLPlugin.getDefault().getImageRegistry().get(HTMLPlugin.ICON_TEMPLATE);
 	}
 	
-	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
+	@Override
+  public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
 
 		ITextSelection selection= (ITextSelection) viewer.getSelectionProvider().getSelection();
 
@@ -55,7 +59,7 @@ public class HTMLTemplateAssistProcessor extends TemplateCompletionProcessor {
 
 		Template[] templates= getTemplates(context.getContextType().getId());
 
-		List matches= new ArrayList();
+		List<ICompletionProposal> matches= new ArrayList<ICompletionProposal>();
 		for (int i= 0; i < templates.length; i++) {
 			Template template= templates[i];
 			try {
@@ -68,7 +72,7 @@ public class HTMLTemplateAssistProcessor extends TemplateCompletionProcessor {
 				matches.add(createProposal(template, context, (IRegion) region, getRelevance(template, prefix)));
 		}
 
-		return (ICompletionProposal[]) matches.toArray(new ICompletionProposal[matches.size()]);
+		return matches.toArray(new ICompletionProposal[matches.size()]);
 	}
 	
 }

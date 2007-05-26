@@ -20,12 +20,14 @@ public class JSPNewWizardPage extends HTMLNewWizardPage {
 		setDescription(HTMLPlugin.getResourceString("JSPNewWizardPage.Description"));
 	}
 	
-	public void createControl(Composite parent) {
+	@Override
+  public void createControl(Composite parent) {
 		super.createControl(parent);
 		this.setFileName("newfile.jsp");
 	}
 	
-	protected InputStream getInitialContents() {
+	@Override
+  protected InputStream getInitialContents() {
 		InputStream in = super.getInitialContents();
 		// charset
 		String projectName = getContainerFullPath().segment(0);

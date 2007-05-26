@@ -33,7 +33,7 @@ public class TLDParser {
 	private IJavaProject project;
 	private String uri = null;
 	private String prefix = "";
-	private ArrayList result = new ArrayList();
+	private ArrayList<TagInfo> result = new ArrayList<TagInfo>();
 
 	/**
 	 * Use the specified prefix.
@@ -66,7 +66,7 @@ public class TLDParser {
 	 * 
 	 * @return <code>List</code> which contains <code>TagInfo</code>
 	 */
-	public List getResult(){
+	public List<TagInfo> getResult(){
 		return result;
 	}
 
@@ -110,7 +110,7 @@ public class TLDParser {
 	private TagInfo parseTagElement(Element tag){
 		NodeList children = tag.getChildNodes();
 		
-		List attributes = new ArrayList();
+		List<AttributeInfo> attributes = new ArrayList<AttributeInfo>();
 		String name = null;
 		String description = "";
 		boolean hasBody = true;
@@ -136,7 +136,7 @@ public class TLDParser {
 		TagInfo info = new TagInfo(name, hasBody);
 		info.setDescription(description);
 		for(int i=0;i<attributes.size();i++){
-			info.addAttributeInfo((AttributeInfo)attributes.get(i));
+			info.addAttributeInfo(attributes.get(i));
 		}
 
 		return info;
@@ -214,7 +214,7 @@ public class TLDParser {
 	private TagInfo parseTagFileElement(Element tagFile) throws Exception {
 		NodeList children = tagFile.getChildNodes();
 		
-		List attributes = new ArrayList();
+		List<AttributeInfo> attributes = new ArrayList<AttributeInfo>();
 		String name = null;
 		String description = "";
 		boolean hasBody = true;
@@ -246,7 +246,7 @@ public class TLDParser {
 		TagInfo info = new TagInfo(name, hasBody);
 		info.setDescription(description);
 		for(int i=0;i<attributes.size();i++){
-			info.addAttributeInfo((AttributeInfo)attributes.get(i));
+			info.addAttributeInfo(attributes.get(i));
 		}
 
 		return info;

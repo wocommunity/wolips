@@ -50,7 +50,7 @@ public class JSPScriptletScanner extends RuleBasedScanner {
 		IToken keyword = provider.getToken(HTMLPlugin.PREF_JSP_KEYWORD);
 		IToken script  = provider.getToken(HTMLPlugin.PREF_COLOR_SCRIPT);
 		
-		List rules = new ArrayList();
+		List<IRule> rules = new ArrayList<IRule>();
 		
 		rules.add(new MultiLineRule("/*" , "*/" , comment));
 		rules.add(new EndOfLineRule("//", comment));
@@ -83,6 +83,6 @@ public class JSPScriptletScanner extends RuleBasedScanner {
 		rules.add(delimitor);
 		
 		rules.add(new WhitespaceRule(new JavaWhitespaceDetector()));
-		setRules((IRule[])rules.toArray(new IRule[rules.size()]));
+		setRules(rules.toArray(new IRule[rules.size()]));
 	}
 }

@@ -70,6 +70,10 @@ public class Throttle implements Runnable {
 		_runnable = runnable;
 	}
 
+	public synchronized int pingCount() {
+		return _pingCount;
+	}
+	
 	public synchronized void ping() {
 		_pingCount++;
 		notifyAll();

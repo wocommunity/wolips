@@ -16,8 +16,8 @@ import org.eclipse.swt.widgets.Display;
 
 public class ColorProvider {
 	
-	private Map colorTable = new HashMap(10);
-	private Map tokenTable = new HashMap(10);	
+	private Map<RGB, Color> colorTable = new HashMap<RGB, Color>(10);
+	private Map<String, Token> tokenTable = new HashMap<String, Token>(10);	
 	IPreferenceStore store;
 	
 	public ColorProvider(IPreferenceStore store) {
@@ -25,7 +25,7 @@ public class ColorProvider {
 	}
 	
 	public IToken getToken(String prefKey){
-	   Token token = (Token) tokenTable.get(prefKey);
+	   Token token = tokenTable.get(prefKey);
 	   if (token == null){
 		  String colorName = store.getString(prefKey);
 		  RGB rgb = StringConverter.asRGB(colorName);
@@ -49,7 +49,7 @@ public class ColorProvider {
 	}
 	
 	private Color getColor(RGB rgb) {
-		Color color = (Color) colorTable.get(rgb);
+		Color color = colorTable.get(rgb);
 		if (color == null){
 		   color = new Color(Display.getCurrent(), rgb);
 		   colorTable.put(rgb, color);
@@ -58,13 +58,13 @@ public class ColorProvider {
 	}
 
 	public boolean affectsTextPresentation(PropertyChangeEvent event){
-	   Token token = (Token) tokenTable.get(event.getProperty());
+	   Token token = tokenTable.get(event.getProperty());
 	   return (token != null);
 	}
 
 	public void handlePreferenceStoreChanged(PropertyChangeEvent event){
 	   String prefKey = event.getProperty();
-	   Token token = (Token) tokenTable.get(prefKey);
+	   Token token = tokenTable.get(prefKey);
 	   if (token != null){
 		  String colorName = store.getString(prefKey);
 		  RGB rgb = StringConverter.asRGB(colorName);

@@ -90,7 +90,8 @@ public class JavaScriptEditor extends TextEditor {
 		setAction(ACTION_COMMENT,new CommentAction());
 	}
 	
-	protected void updateSelectionDependentActions() {
+	@Override
+  protected void updateSelectionDependentActions() {
 		super.updateSelectionDependentActions();
 		ITextSelection sel = (ITextSelection)getSelectionProvider().getSelection();
 		if(sel.getText().equals("")){
@@ -100,20 +101,23 @@ public class JavaScriptEditor extends TextEditor {
 		}
 	}
 	
-	protected ISourceViewer createSourceViewer(Composite parent,IVerticalRuler ruler, int styles) {
+	@Override
+  protected ISourceViewer createSourceViewer(Composite parent,IVerticalRuler ruler, int styles) {
 		ISourceViewer viewer= new ProjectionViewer(parent, ruler, fOverviewRuler, true, styles); 
 		getSourceViewerDecorationSupport(viewer);
 		viewer.getTextWidget().addVerifyListener(softTabListener);
 		return viewer; 
 	}
 	
-	protected final void editorContextMenuAboutToShow(IMenuManager menu) {
+	@Override
+  protected final void editorContextMenuAboutToShow(IMenuManager menu) {
 		super.editorContextMenuAboutToShow(menu);
 		menu.add(new Separator(GROUP_JAVASCRIPT));
 		addAction(menu, GROUP_JAVASCRIPT, ACTION_COMMENT);
 	}
 	
-	protected void doSetInput(IEditorInput input) throws CoreException {
+	@Override
+  protected void doSetInput(IEditorInput input) throws CoreException {
 		if(input instanceof IFileEditorInput){
 			setDocumentProvider(new JavaScriptTextDocumentProvider());
 		} else if(input instanceof IStorageEditorInput){
@@ -124,12 +128,14 @@ public class JavaScriptEditor extends TextEditor {
 		super.doSetInput(input);
 	}
 	
-	public void doSave(IProgressMonitor progressMonitor) {
+	@Override
+  public void doSave(IProgressMonitor progressMonitor) {
 		super.doSave(progressMonitor);
 		update();
 	}
 	
-	public void createPartControl(Composite parent) {
+	@Override
+  public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
 		
 		ProjectionViewer viewer = (ProjectionViewer)getSourceViewer();
@@ -203,7 +209,8 @@ public class JavaScriptEditor extends TextEditor {
 		}
 	}
 	
-	public void dispose() {
+	@Override
+  public void dispose() {
 		if(getEditorInput() instanceof IFileEditorInput){
 			try {
 				ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
@@ -226,16 +233,19 @@ public class JavaScriptEditor extends TextEditor {
 		super.dispose();
 	}
 	
-	public void doSaveAs() {
+	@Override
+  public void doSaveAs() {
 		super.doSaveAs();
 		update();
 	}
 	
-	protected boolean affectsTextPresentation(PropertyChangeEvent event) {
+	@Override
+  protected boolean affectsTextPresentation(PropertyChangeEvent event) {
 		return super.affectsTextPresentation(event) || colorProvider.affectsTextPresentation(event);
 	}
 	
-	protected void handlePreferenceStoreChanged(PropertyChangeEvent event){
+	@Override
+  protected void handlePreferenceStoreChanged(PropertyChangeEvent event){
 		colorProvider.handlePreferenceStoreChanged(event);
 //		updateAssistProperties(event);
 		
@@ -249,7 +259,8 @@ public class JavaScriptEditor extends TextEditor {
 		softTabListener.preferenceChanged(event);
 	}	
 	
-	protected void createActions() {
+	@Override
+  protected void createActions() {
 	    super.createActions();
 	    // Add a content assist action
 	    IAction action = new ContentAssistAction(
@@ -258,7 +269,8 @@ public class JavaScriptEditor extends TextEditor {
 	    setAction("ContentAssistProposal", action);
 	}
 	
-	public Object getAdapter(Class adapter){
+	@Override
+  public Object getAdapter(Class adapter){
 		if(IContentOutlinePage.class.equals(adapter)){
 			return outline;
 		}
@@ -282,8 +294,8 @@ public class JavaScriptEditor extends TextEditor {
 			IDocument doc = getDocumentProvider().getDocument(getEditorInput());
 			String source = doc.get();
 			
-			ArrayList list = new ArrayList();
-			Stack stack = new Stack();
+			ArrayList<FoldingInfo> list = new ArrayList<FoldingInfo>();
+			Stack<FoldingInfo> stack = new Stack<FoldingInfo>();
 			FoldingInfo prev = null;
 			char quote = 0;
 			boolean escape = false;
@@ -313,7 +325,7 @@ public class JavaScriptEditor extends TextEditor {
 				// end comment
 				} else if(c=='*' && source.length() > i+1 && !stack.isEmpty() && quote==0){
 					if(source.charAt(i+1)=='/' && prev.getType().equals("comment")){
-						FoldingInfo info = (FoldingInfo)stack.pop();
+						FoldingInfo info = stack.pop();
 						if(doc.getLineOfOffset(info.getStart())!=doc.getLineOfOffset(i)){
 							list.add(new FoldingInfo(info.getStart(), i+2 + FoldingInfo.countUpLineDelimiter(source, i+2), "comment"));
 						}
@@ -332,7 +344,7 @@ public class JavaScriptEditor extends TextEditor {
 					}
 				// close blace
 				} else if(c=='}' && prev!=null && !prev.getType().equals("comment") && quote==0){
-					FoldingInfo info = (FoldingInfo)stack.pop();
+					FoldingInfo info = stack.pop();
 					if(info.getType().equals("function") && doc.getLineOfOffset(info.getStart())!=doc.getLineOfOffset(i)){
 						list.add(new FoldingInfo(info.getStart(), i+2 + FoldingInfo.countUpLineDelimiter(source, i+2), "function"));
 					}
@@ -371,7 +383,8 @@ public class JavaScriptEditor extends TextEditor {
 			setAccelerator(SWT.CTRL | '/');
 		}
 		
-		public void run() {
+		@Override
+    public void run() {
 			ITextSelection sel = (ITextSelection)getSelectionProvider().getSelection();
 			IDocument doc = getDocumentProvider().getDocument(getEditorInput());
 			String text = sel.getText();

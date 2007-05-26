@@ -26,11 +26,11 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  */
 public class XMLPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 	
-	private IWorkbench workbench;
-	private Button enableClassName;
-	private List classNameAttrs;
-	private Button addClassName;
-	private Button removeClassName;
+	private IWorkbench _workbench;
+	private Button _enableClassName;
+	private List _classNameAttrs;
+	private Button _addClassName;
+	private Button _removeClassName;
 	
 	public XMLPreferencePage() {
 		super(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.XML"));
@@ -44,28 +44,31 @@ public class XMLPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 * @param parent the parent <code>Composite</code>
 	 * @retrun the created <code>Control</code> which contains contents.
 	 */
-	protected Control createContents(Composite parent) {
+	@Override
+  protected Control createContents(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NULL);
 		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 		composite.setLayout(new GridLayout(2, false));
 		
 		// checkbox to toggle the classname support
-		enableClassName = new Button(composite, SWT.CHECK);
-		enableClassName.setText(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.EnableClassName"));
-		enableClassName.addSelectionListener(new SelectionAdapter(){
-			public void widgetSelected(SelectionEvent e){
+		_enableClassName = new Button(composite, SWT.CHECK);
+		_enableClassName.setText(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.EnableClassName"));
+		_enableClassName.addSelectionListener(new SelectionAdapter(){
+			@Override
+      public void widgetSelected(SelectionEvent e){
 				updateControls();
 			}
 		});
 		GridData gd = new GridData();
 		gd.horizontalSpan = 2;
-		enableClassName.setLayoutData(gd);
+		_enableClassName.setLayoutData(gd);
 		
 		// listbox
-		classNameAttrs = new List(composite, SWT.BORDER|SWT.MULTI|SWT.V_SCROLL);
-		classNameAttrs.setLayoutData(new GridData(GridData.FILL_BOTH));
-		classNameAttrs.addSelectionListener(new SelectionAdapter(){
-			public void widgetSelected(SelectionEvent e){
+		_classNameAttrs = new List(composite, SWT.BORDER|SWT.MULTI|SWT.V_SCROLL);
+		_classNameAttrs.setLayoutData(new GridData(GridData.FILL_BOTH));
+		_classNameAttrs.addSelectionListener(new SelectionAdapter(){
+			@Override
+      public void widgetSelected(SelectionEvent e){
 				updateControls();
 			}
 		});
@@ -77,13 +80,14 @@ public class XMLPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		buttons.setLayout(layout);
 		buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
 		
-		addClassName = new Button(buttons, SWT.PUSH);
-		addClassName.setText(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.AddAttribute"));
-		addClassName.setLayoutData(createButtonGridData());
-		addClassName.addSelectionListener(new SelectionAdapter(){
-			public void widgetSelected(SelectionEvent e){
+		_addClassName = new Button(buttons, SWT.PUSH);
+		_addClassName.setText(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.AddAttribute"));
+		_addClassName.setLayoutData(createButtonGridData());
+		_addClassName.addSelectionListener(new SelectionAdapter(){
+			@Override
+      public void widgetSelected(SelectionEvent e){
 				InputDialog dialog = new InputDialog(
-						workbench.getActiveWorkbenchWindow().getShell(), 
+						_workbench.getActiveWorkbenchWindow().getShell(), 
 						HTMLPlugin.getResourceString("HTMLEditorPreferencePage.Dialog.Title"), 
 						HTMLPlugin.getResourceString("HTMLEditorPreferencePage.Dialog.Message"), 
 						"",
@@ -94,28 +98,29 @@ public class XMLPreferencePage extends PreferencePage implements IWorkbenchPrefe
 							}
 				});
 				if(dialog.open()==InputDialog.OK){
-					classNameAttrs.add(dialog.getValue());
+					_classNameAttrs.add(dialog.getValue());
 				}
 			}
 		});
 		
-		removeClassName = new Button(buttons, SWT.PUSH);
-		removeClassName.setText(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.RemoveAttribute"));
-		removeClassName.setLayoutData(createButtonGridData());
-		removeClassName.addSelectionListener(new SelectionAdapter(){
-			public void widgetSelected(SelectionEvent e){
-				classNameAttrs.remove(classNameAttrs.getSelectionIndices());
+		_removeClassName = new Button(buttons, SWT.PUSH);
+		_removeClassName.setText(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.RemoveAttribute"));
+		_removeClassName.setLayoutData(createButtonGridData());
+		_removeClassName.addSelectionListener(new SelectionAdapter(){
+			@Override
+      public void widgetSelected(SelectionEvent e){
+				_classNameAttrs.remove(_classNameAttrs.getSelectionIndices());
 			}
 		});
 		
 		// fill initial values
 		IPreferenceStore store = getPreferenceStore();
-		enableClassName.setSelection(
+		_enableClassName.setSelection(
 				store.getBoolean(HTMLPlugin.PREF_ENABLE_CLASSNAME));
 		String[] values = StringConverter.asArray(
 				store.getString(HTMLPlugin.PREF_CLASSNAME_ATTRS));
 		for(int i=0;i<values.length;i++){
-			classNameAttrs.add(values[i]);
+			_classNameAttrs.add(values[i]);
 		}
 		
 		updateControls();
@@ -126,12 +131,12 @@ public class XMLPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 * Updates controls status.
 	 */
 	private void updateControls(){
-		boolean enableClassName = this.enableClassName.getSelection();
-		classNameAttrs.setEnabled(enableClassName);
-		addClassName.setEnabled(enableClassName);
-		removeClassName.setEnabled(enableClassName);
+		boolean enableClassName = this._enableClassName.getSelection();
+		_classNameAttrs.setEnabled(enableClassName);
+		_addClassName.setEnabled(enableClassName);
+		_removeClassName.setEnabled(enableClassName);
 		if(enableClassName){
-			removeClassName.setEnabled(classNameAttrs.getSelectionCount()>0);
+			_removeClassName.setEnabled(_classNameAttrs.getSelectionCount()>0);
 		}
 	}
 	
@@ -152,32 +157,34 @@ public class XMLPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 * @param workbench the <code>IWorkbench</code> instance
 	 */
 	public void init(IWorkbench workbench) {
-		this.workbench = workbench;
+		this._workbench = workbench;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
 	 */
-	protected void performDefaults() {
+	@Override
+  protected void performDefaults() {
 		IPreferenceStore store = getPreferenceStore();
-		enableClassName.setSelection(
+		_enableClassName.setSelection(
 				store.getDefaultBoolean(HTMLPlugin.PREF_ENABLE_CLASSNAME));
 		String[] values = StringConverter.asArray(
 				store.getDefaultString(HTMLPlugin.PREF_CLASSNAME_ATTRS));
-		classNameAttrs.removeAll();
+		_classNameAttrs.removeAll();
 		for(int i=0;i<values.length;i++){
-			classNameAttrs.add(values[i]);
+			_classNameAttrs.add(values[i]);
 		}
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.preference.PreferencePage#performOk()
 	 */
-	public boolean performOk() {
+	@Override
+  public boolean performOk() {
 		IPreferenceStore store = getPreferenceStore();
-		store.setValue(HTMLPlugin.PREF_ENABLE_CLASSNAME, enableClassName.getSelection());
+		store.setValue(HTMLPlugin.PREF_ENABLE_CLASSNAME, _enableClassName.getSelection());
 		
-		String[] items = classNameAttrs.getItems();
+		String[] items = _classNameAttrs.getItems();
 		StringBuffer sb = new StringBuffer();
 		for(int i=0;i<items.length;i++){
 			if(i!=0){

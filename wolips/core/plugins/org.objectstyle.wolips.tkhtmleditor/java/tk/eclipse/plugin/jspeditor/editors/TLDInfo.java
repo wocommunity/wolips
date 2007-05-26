@@ -13,6 +13,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.JavaCore;
 
 import tk.eclipse.plugin.htmleditor.HTMLProjectParams;
+import tk.eclipse.plugin.htmleditor.assist.TagInfo;
 
 public class TLDInfo {
 	
@@ -20,10 +21,10 @@ public class TLDInfo {
 	private String uri;
 	private String taglibUri;
 	private String tagdir;
-	private List tagInfoList = new ArrayList();
+	private List<TagInfo> tagInfoList = new ArrayList<TagInfo>();
 	
 	/** cache results of TLD parsing */
-	private static HashMap cache = new HashMap();
+	private static HashMap<String, TLDInfo> cache = new HashMap<String, TLDInfo>();
 	
 	/**
 	 * This method returns empty TLDInfo.
@@ -55,7 +56,7 @@ public class TLDInfo {
 	 */
 	public static TLDInfo getTLDInfo(IFile file,String prefix,String uri){
 		if(cache.get(uri)!=null){
-			return (TLDInfo)cache.get(uri);
+			return cache.get(uri);
 		}
 		try {
 			return new TLDInfo(file,prefix,uri);
@@ -73,7 +74,7 @@ public class TLDInfo {
 		super();
 		this.prefix = prefix;
 		this.tagdir = tagdir;
-		this.tagInfoList = new ArrayList();
+		this.tagInfoList = new ArrayList<TagInfo>();
 		
 		File[] files = folder.listFiles();
 		for(int i=0;i<files.length;i++){
@@ -169,11 +170,12 @@ public class TLDInfo {
 	 * Returns List of all TagInfo.
 	 * @return List of TagInfo
 	 */
-	public List getTagInfo(){
+	public List<TagInfo> getTagInfo(){
 		return tagInfoList;
 	}
 	
-	public String toString(){
+	@Override
+  public String toString(){
 		StringBuffer sb = new StringBuffer();
 		sb.append("[TLDInfo]");
 		sb.append(" uri=").append(getUri());

@@ -25,14 +25,15 @@ import tk.eclipse.plugin.htmleditor.HTMLPlugin;
  */
 public class HTMLSourceEditorContributer extends TextEditorActionContributor {
 	
-	private List actionIds = new ArrayList();
-	private List actions = new ArrayList();
+	private List<String> actionIds = new ArrayList<String>();
+	private List<RetargetTextEditorAction> actions = new ArrayList<RetargetTextEditorAction>();
 	
 	public void addActionId(String id){
 		this.actionIds.add(id);
 	}
 	
-	public void setActiveEditor(IEditorPart part) {
+	@Override
+  public void setActiveEditor(IEditorPart part) {
 		super.setActiveEditor(part);
 		doSetActiveEditor(part);
 	}
@@ -44,8 +45,8 @@ public class HTMLSourceEditorContributer extends TextEditorActionContributor {
 		}
 		if(textEditor!=null){
 			for(int i=0;i<this.actions.size();i++){
-				RetargetTextEditorAction action = (RetargetTextEditorAction)actions.get(i);
-				IAction targetAction = textEditor.getAction((String)actionIds.get(i));
+				RetargetTextEditorAction action = actions.get(i);
+				IAction targetAction = textEditor.getAction(actionIds.get(i));
 				if(targetAction!=null){
 					action.setAccelerator(targetAction.getAccelerator());
 					action.setAction(targetAction);
@@ -57,7 +58,8 @@ public class HTMLSourceEditorContributer extends TextEditorActionContributor {
 		}
 	}
 	
-	public void init(IActionBars bars) {
+	@Override
+  public void init(IActionBars bars) {
 		super.init(bars);
 		
 		IMenuManager menuManager = bars.getMenuManager();

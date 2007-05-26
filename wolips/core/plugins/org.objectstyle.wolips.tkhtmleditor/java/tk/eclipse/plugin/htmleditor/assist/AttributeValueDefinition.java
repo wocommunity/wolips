@@ -21,7 +21,7 @@ public class AttributeValueDefinition {
 		"radio","button","reset","submit","file"
 	};
 	
-	private static HashMap map = new HashMap();
+	private static HashMap<Integer, String[]> map = new HashMap<Integer, String[]>();
 	
 	static {
 		addAttributeValues(AttributeInfo.ALIGN,align);
@@ -39,7 +39,7 @@ public class AttributeValueDefinition {
 		if(map.get(key)==null){
 			return new String[0];
 		}
-		return (String[])map.get(key);
+		return map.get(key);
 	}
 	
 }

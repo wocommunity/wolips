@@ -263,7 +263,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends JavaLaunc
 			wdFile = super.verifyWorkingDirectory(configuration);
 		}
 		if (((wdFile == null) || (wdFile.toString().indexOf(".woa") < 0))) {
-			abort(MessageFormat.format(LaunchingMessages.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.Working_directory_is_not_a_woa__{0}_12"), new String[] { wdFile.toString() }), null, IJavaLaunchConfigurationConstants.ERR_WORKING_DIRECTORY_DOES_NOT_EXIST); //$NON-NLS-1$
+			abort(MessageFormat.format(LaunchingMessages.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.Working_directory_is_not_a_woa__{0}_12"), new Object[] { wdFile.toString() }), null, IJavaLaunchConfigurationConstants.ERR_WORKING_DIRECTORY_DOES_NOT_EXIST); //$NON-NLS-1$
 		}
 
 		return wdFile;

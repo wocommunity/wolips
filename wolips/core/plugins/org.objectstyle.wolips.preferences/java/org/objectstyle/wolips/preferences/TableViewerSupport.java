@@ -161,9 +161,6 @@ public abstract class TableViewerSupport {
 	public static class ListContentProvider implements IStructuredContentProvider {
 		List fContents;	
 
-		public ListContentProvider() {
-		}
-		
 		public Object[] getElements(Object input) {
 			if (fContents != null && fContents == input)
 				return fContents.toArray();
@@ -179,6 +176,7 @@ public abstract class TableViewerSupport {
 		}
 
 		public void dispose() {
+			// DO NOTHING
 		}
 		
 		public boolean isDeleted(Object o) {

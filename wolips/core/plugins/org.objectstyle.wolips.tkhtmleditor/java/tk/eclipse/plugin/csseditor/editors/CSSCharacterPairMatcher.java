@@ -14,7 +14,8 @@ public class CSSCharacterPairMatcher extends AbstractCharacterPairMatcher {
 		addBlockCharacter('{', '}');
 	}
 	
-	protected String getSource(IDocument document){
+	@Override
+  protected String getSource(IDocument document){
 		return HTMLUtil.cssComment2space(document.get());
 	}
 

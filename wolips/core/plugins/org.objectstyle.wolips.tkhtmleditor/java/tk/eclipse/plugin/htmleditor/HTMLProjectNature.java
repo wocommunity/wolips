@@ -40,13 +40,13 @@ public class HTMLProjectNature implements IProjectNature {
 	public void deconfigure() throws CoreException {
 		IProjectDescription desc = project.getDescription();
 		ICommand[] commands = desc.getBuildSpec();
-		ArrayList list = new ArrayList();
+		ArrayList<ICommand> list = new ArrayList<ICommand>();
 		for(int i=0;i<commands.length;i++){
 			if(!commands[i].getBuilderName().equals(HTML_BUILDER_ID)){
 				list.add(commands[i]);
 			}
 		}
-		desc.setBuildSpec((ICommand[])list.toArray(new ICommand[list.size()]));
+		desc.setBuildSpec(list.toArray(new ICommand[list.size()]));
 		project.setDescription(desc,null);
 	}
 

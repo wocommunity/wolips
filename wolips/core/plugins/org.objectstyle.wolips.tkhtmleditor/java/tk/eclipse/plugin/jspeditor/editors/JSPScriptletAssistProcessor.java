@@ -53,7 +53,7 @@ public class JSPScriptletAssistProcessor implements IContentAssistProcessor {
 						collector, DefaultWorkingCopyOwner.PRIMARY);
 				
 				IJavaCompletionProposal[] proposals = collector.getJavaCompletionProposals();
-				List list = new ArrayList();
+				List<ICompletionProposal> list = new ArrayList<ICompletionProposal>();
 				for(int i=0;i<proposals.length;i++){
 					if(proposals[i] instanceof AbstractJavaCompletionProposal){
 						AbstractJavaCompletionProposal proposal = (AbstractJavaCompletionProposal)proposals[i];
@@ -64,7 +64,7 @@ public class JSPScriptletAssistProcessor implements IContentAssistProcessor {
 						list.add(proposal);
 					}
 				}
-				return (ICompletionProposal[])list.toArray(new ICompletionProposal[list.size()]);
+				return list.toArray(new ICompletionProposal[list.size()]);
 			}			
 		} catch(Exception e){
 			HTMLPlugin.logException(e);

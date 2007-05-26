@@ -32,12 +32,12 @@ public class CompilationProblemRequestor implements IProblemRequestor {
 
     private boolean fIsRunning = false;
 
-    private List fCollectedProblems;
+    private List<IProblem> fCollectedProblems;
 
     public void beginReporting() {
 
         fIsRunning = true;
-        fCollectedProblems = new ArrayList();
+        fCollectedProblems = new ArrayList<IProblem>();
     }
 
     public void acceptProblem(IProblem problem) {
@@ -78,7 +78,7 @@ public class CompilationProblemRequestor implements IProblemRequestor {
      */
     private void startCollectingProblems() {
 
-        fCollectedProblems = new ArrayList();
+        fCollectedProblems = new ArrayList<IProblem>();
     }
 
     /**

@@ -18,7 +18,7 @@ import org.eclipse.swt.layout.GridLayout;
  */
 public class FieldAssistUtils {
 	
-	private static HashMap unitMap = new HashMap();
+	private static HashMap<IJavaProject, ICompilationUnit> unitMap = new HashMap<IJavaProject, ICompilationUnit>();
 	
 	/**
 	 * Set contents of the compilation unit to the translated jsp text.
@@ -57,7 +57,7 @@ public class FieldAssistUtils {
 			IJavaProject project) throws JavaModelException {
 		
 		if(unitMap.get(project) != null){
-			return (ICompilationUnit)unitMap.get(project);
+			return unitMap.get(project);
 		}
 		
 		IPackageFragment root = project.getPackageFragments()[0];

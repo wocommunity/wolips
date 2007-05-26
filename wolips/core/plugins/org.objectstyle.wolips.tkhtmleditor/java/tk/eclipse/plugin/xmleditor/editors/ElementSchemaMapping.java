@@ -46,12 +46,12 @@ public class ElementSchemaMapping {
 	 * 
 	 * @param list the list which contans models
 	 */
-	public static void saveToPreference(List list){
+	public static void saveToPreference(List<ElementSchemaMapping> list){
 		IPreferenceStore store = HTMLPlugin.getDefault().getPreferenceStore();
 		
 		StringBuffer sb = new StringBuffer();
 		for(int i=0;i<list.size();i++){
-			ElementSchemaMapping mapping = (ElementSchemaMapping)list.get(i);
+			ElementSchemaMapping mapping = list.get(i);
 			sb.append(mapping.getRootElement());
 			sb.append("\t");
 			sb.append(mapping.getFilePath());
@@ -66,9 +66,9 @@ public class ElementSchemaMapping {
 	 * 
 	 * @return the list which contans loaded models
 	 */
-	public static List loadFromPreference(){
+	public static List<ElementSchemaMapping> loadFromPreference(){
 		IPreferenceStore store = HTMLPlugin.getDefault().getPreferenceStore();
-		List list = new ArrayList();
+		List<ElementSchemaMapping> list = new ArrayList<ElementSchemaMapping>();
 		
 		String customMappings = store.getString(HTMLPlugin.PREF_SCHEMA_MAPPINGS);
 		String[] dim = customMappings.split("\n");

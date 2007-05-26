@@ -37,8 +37,8 @@ public class CustomAssistPreferencePage extends PreferencePage implements IWorkb
 	private TableViewer attributeTableViewer;
 	private TableViewer elementTableViewer;
 	
-	private List elementModel = new ArrayList();
-	private List attributeModel = new ArrayList();
+	private List<CustomElement> elementModel = new ArrayList<CustomElement>();
+	private List<CustomAttribute> attributeModel = new ArrayList<CustomAttribute>();
 	
 	public CustomAssistPreferencePage(){
 		super("CustomAssist");
@@ -49,7 +49,8 @@ public class CustomAssistPreferencePage extends PreferencePage implements IWorkb
 	public void init(IWorkbench workbench) {
 	}
 
-	protected Control createContents(Composite parent) {
+	@Override
+  protected Control createContents(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NULL);
 		
 		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -78,7 +79,8 @@ public class CustomAssistPreferencePage extends PreferencePage implements IWorkb
 	private Control createElementArea(TabFolder tabFolder){
 		TableViewerSupport support = new TableViewerSupport(elementModel, tabFolder){
 
-			protected void initTableViewer(TableViewer viewer) {
+			@Override
+      protected void initTableViewer(TableViewer viewer) {
 				Table table = viewer.getTable();
 				
 				TableColumn col1 = new TableColumn(table, SWT.NULL);
@@ -90,7 +92,8 @@ public class CustomAssistPreferencePage extends PreferencePage implements IWorkb
 				col2.setWidth(200);
 			}
 
-			protected Object doAdd() {
+			@Override
+      protected Object doAdd() {
 				CustomElementDialog dialog = new CustomElementDialog(getShell());
 				if(dialog.open()==Dialog.OK){
 					return dialog.getCustomElement();
@@ -98,7 +101,8 @@ public class CustomAssistPreferencePage extends PreferencePage implements IWorkb
 				return null;
 			}
 
-			protected void doEdit(Object obj) {
+			@Override
+      protected void doEdit(Object obj) {
 				CustomElement element = (CustomElement)obj;
 				CustomElementDialog dialog = new CustomElementDialog(getShell(), element);
 				if(dialog.open()==Dialog.OK){
@@ -108,7 +112,8 @@ public class CustomAssistPreferencePage extends PreferencePage implements IWorkb
 				}
 			}
 
-			protected ITableLabelProvider createLabelProvider() {
+			@Override
+      protected ITableLabelProvider createLabelProvider() {
 				return new CustomAssistLabelProvider();
 			}
 		};
@@ -120,7 +125,8 @@ public class CustomAssistPreferencePage extends PreferencePage implements IWorkb
 	private Control createAttributeArea(TabFolder tabFolder){
 		TableViewerSupport support = new TableViewerSupport(attributeModel, tabFolder){
 
-			protected void initTableViewer(TableViewer viewer) {
+			@Override
+      protected void initTableViewer(TableViewer viewer) {
 				Table table = viewer.getTable();
 				
 				TableColumn col1 = new TableColumn(table, SWT.NULL);
@@ -132,7 +138,8 @@ public class CustomAssistPreferencePage extends PreferencePage implements IWorkb
 				col2.setWidth(200);
 			}
 
-			protected Object doAdd() {
+			@Override
+      protected Object doAdd() {
 				CustomAttributeDialog dialog = new CustomAttributeDialog(getShell());
 				if(dialog.open()==Dialog.OK){
 					return dialog.getCustomAttribute();
@@ -140,7 +147,8 @@ public class CustomAssistPreferencePage extends PreferencePage implements IWorkb
 				return null;
 			}
 
-			protected void doEdit(Object obj) {
+			@Override
+      protected void doEdit(Object obj) {
 				CustomAttribute attrInfo = (CustomAttribute)obj;
 				CustomAttributeDialog dialog = new CustomAttributeDialog(getShell(), attrInfo);
 				if(dialog.open()==Dialog.OK){
@@ -150,7 +158,8 @@ public class CustomAssistPreferencePage extends PreferencePage implements IWorkb
 				}
 			}
 
-			protected ITableLabelProvider createLabelProvider() {
+			@Override
+      protected ITableLabelProvider createLabelProvider() {
 				return new CustomAssistLabelProvider();
 			}
 			
@@ -160,7 +169,8 @@ public class CustomAssistPreferencePage extends PreferencePage implements IWorkb
 		return support.getControl();
 	}
 	
-	protected void performDefaults() {
+	@Override
+  protected void performDefaults() {
 		attributeModel.clear();
 		attributeModel.addAll(CustomAttribute.loadFromPreference(true));
 		attributeTableViewer.refresh();
@@ -170,7 +180,8 @@ public class CustomAssistPreferencePage extends PreferencePage implements IWorkb
 		elementTableViewer.refresh();
 	}
 	
-	public boolean performOk() {
+	@Override
+  public boolean performOk() {
 		CustomAttribute.saveToPreference(attributeModel);
 		CustomElement.saveToPreference(elementModel);
 		return true;
@@ -237,13 +248,15 @@ public class CustomAssistPreferencePage extends PreferencePage implements IWorkb
 			this.element = element;
 		}
 		
-		protected Point getInitialSize() {
+		@Override
+    protected Point getInitialSize() {
 			Point size = super.getInitialSize();
 			size.x = 300;
 			return size;
 		}
 
-		protected Control createDialogArea(Composite parent) {
+		@Override
+    protected Control createDialogArea(Composite parent) {
 			getShell().setText(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.CustomElements"));
 			
 			Composite composite = new Composite(parent, SWT.NULL);
@@ -278,7 +291,8 @@ public class CustomAssistPreferencePage extends PreferencePage implements IWorkb
 			return composite;
 		}
 		
-		protected void okPressed() {
+		@Override
+    protected void okPressed() {
 			if(displayName.getText().length()==0){
 				HTMLPlugin.openAlertDialog(HTMLPlugin.createMessage(
 						HTMLPlugin.getResourceString("Error.Required"),
@@ -319,13 +333,15 @@ public class CustomAssistPreferencePage extends PreferencePage implements IWorkb
 			this.attrInfo = attrInfo;
 		}
 		
-		protected Point getInitialSize() {
+		@Override
+    protected Point getInitialSize() {
 			Point size = super.getInitialSize();
 			size.x = 300;
 			return size;
 		}
 		
-		protected Control createDialogArea(Composite parent) {
+		@Override
+    protected Control createDialogArea(Composite parent) {
 			getShell().setText(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.CustomAttributes"));
 			
 			Composite composite = new Composite(parent, SWT.NULL);
@@ -355,7 +371,8 @@ public class CustomAssistPreferencePage extends PreferencePage implements IWorkb
 			return composite;
 		}
 		
-		protected void okPressed() {
+		@Override
+    protected void okPressed() {
 			if(target.getText().length()==0){
 				HTMLPlugin.openAlertDialog(HTMLPlugin.createMessage(
 						HTMLPlugin.getResourceString("Error.Required"),

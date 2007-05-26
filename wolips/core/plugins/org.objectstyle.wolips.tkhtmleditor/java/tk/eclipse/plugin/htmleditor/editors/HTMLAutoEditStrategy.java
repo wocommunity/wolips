@@ -27,7 +27,8 @@ public class HTMLAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		}
 	}
 	
-	public void customizeDocumentCommand(IDocument d, DocumentCommand c) {
+	@Override
+  public void customizeDocumentCommand(IDocument d, DocumentCommand c) {
 		try {
 			if("-".equals(c.text) && c.offset >= 3 && d.get(c.offset - 3, 3).equals("<!-")){
 				c.text = "-  -->";

@@ -38,7 +38,7 @@ import tk.eclipse.plugin.jseditor.launch.JavaScriptLibraryTable;
 public class JavaScriptHyperlinkDetector implements IHyperlinkDetector {
 
 	/** Functions which are defined in the library files */
-	private List functions = new ArrayList();
+	private List<FunctionInfo> functions = new ArrayList<FunctionInfo>();
 	
 	/**
 	 * Returns hyperlinks or null.
@@ -96,7 +96,7 @@ public class JavaScriptHyperlinkDetector implements IHyperlinkDetector {
 		
 		// libraries
 		for(int i=0;i<functions.size();i++){
-			FunctionInfo info = (FunctionInfo)functions.get(i);
+			FunctionInfo info = functions.get(i);
 			if(info.function.getName().equals(word)){
 				IRegion hyperlinkRegion = new Region(offset, word.length());
 				return new IHyperlink[]{

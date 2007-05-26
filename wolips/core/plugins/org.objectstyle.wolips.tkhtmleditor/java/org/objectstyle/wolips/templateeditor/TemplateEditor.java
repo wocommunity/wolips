@@ -33,11 +33,11 @@ public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtml
 
   public TemplateSourceEditor getSourceEditor() {
     TemplateSourceEditor sourceEditor;
-    if (this.editor instanceof TemplateSourceEditor) {
-      sourceEditor = (TemplateSourceEditor) this.editor;
+    if (this._editor instanceof TemplateSourceEditor) {
+      sourceEditor = (TemplateSourceEditor) this._editor;
     }
     else {
-      HTMLEditorPart htmlEditorPart = (HTMLEditorPart) this.editor;
+      HTMLEditorPart htmlEditorPart = (HTMLEditorPart) this._editor;
       sourceEditor = (TemplateSourceEditor) htmlEditorPart.getSourceEditor();
     }
     return sourceEditor;

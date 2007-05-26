@@ -20,11 +20,11 @@ public abstract class AbstractCharacterPairMatcher implements ICharacterPairMatc
 	private int fAnchor;
 	private boolean enable;
 	
-	private Map pairMap = new HashMap();
+	private Map<String, String> pairMap = new HashMap<String, String>();
 	
-	private List startBlock = new ArrayList();
-	private List endBlock   = new ArrayList();
-	private List quote      = new ArrayList();
+	private List<String> startBlock = new ArrayList<String>();
+	private List<String> endBlock   = new ArrayList<String>();
+	private List<String> quote      = new ArrayList<String>();
 	
 	private char delimiter = '=';
 	
@@ -167,7 +167,7 @@ public abstract class AbstractCharacterPairMatcher implements ICharacterPairMatc
 	}
 	
 	private char getPairCharacter(char c){
-		String pair = (String)pairMap.get(String.valueOf(c));
+		String pair = pairMap.get(String.valueOf(c));
 		if(pair==null){
 			return 0;
 		}

@@ -59,7 +59,7 @@ import tk.eclipse.plugin.htmleditor.editors.IHTMLOutlinePage;
  */
 public class XMLEditor extends HTMLSourceEditor {
 	
-	private ArrayList resolvers = new ArrayList();
+	private ArrayList<IDTDResolver> resolvers = new ArrayList<IDTDResolver>();
 	
 	public static final String GROUP_XML = "_xml";
 	public static final String ACTION_GEN_DTD = "_generate_dtd";
@@ -67,8 +67,8 @@ public class XMLEditor extends HTMLSourceEditor {
 	public static final String ACTION_ESCAPE_XML = "_escape_xml";
 	public static final String ACTION_FORMAT_XML = "_format_xml";
 	
-	private String[] classNameAttributes = null;
-	private List schemaMappings = null;
+	private String[] _classNameAttributes = null;
+	private List<ElementSchemaMapping> _schemaMappings = null;
 	
 	/**
 	 * The constructor.
@@ -92,38 +92,40 @@ public class XMLEditor extends HTMLSourceEditor {
 		setAction(ACTION_ESCAPE_XML, new EscapeXMLAction());
 	}
 	
-	protected void createActions() {
+	@Override
+  protected void createActions() {
 	    super.createActions();
 	    // add content content format action
 		setAction(ACTION_FORMAT_XML, new FormatXMLAction());
 	}
 	
 	/** This method is called when configuration is changed. */
-	protected void handlePreferenceStoreChanged(PropertyChangeEvent event){
+	@Override
+  protected void handlePreferenceStoreChanged(PropertyChangeEvent event){
 		super.handlePreferenceStoreChanged(event);
-		classNameAttributes = null;
-		schemaMappings = null;
+		_classNameAttributes = null;
+		_schemaMappings = null;
 	}
 	
-	public List getSchemaMappings(){
-		if(schemaMappings==null){
-			schemaMappings = ElementSchemaMapping.loadFromPreference();
+	public List<ElementSchemaMapping> getSchemaMappings(){
+		if(_schemaMappings==null){
+			_schemaMappings = ElementSchemaMapping.loadFromPreference();
 		}
-		return schemaMappings;
+		return _schemaMappings;
 	}
 	
 	public String[] getClassNameAttributes(){
-		if(classNameAttributes==null){
+		if(_classNameAttributes==null){
 			// Load classname attrs from the preference store
 			IPreferenceStore store = getPreferenceStore();
 			if(store.getBoolean(HTMLPlugin.PREF_ENABLE_CLASSNAME)){
-				classNameAttributes = StringConverter.asArray(
+				_classNameAttributes = StringConverter.asArray(
 						store.getString(HTMLPlugin.PREF_CLASSNAME_ATTRS));
 			} else {
-				classNameAttributes = new String[0];
+				_classNameAttributes = new String[0];
 			}
 		}
-		return classNameAttributes;
+		return _classNameAttributes;
 	}
 	
 	/**
@@ -131,7 +133,8 @@ public class XMLEditor extends HTMLSourceEditor {
 	 * 
 	 * @see XMLOutlinePage
 	 */
-	protected IHTMLOutlinePage createOutlinePage(){
+	@Override
+  protected IHTMLOutlinePage createOutlinePage(){
 		return new XMLOutlinePage(this);
 	}
 
@@ -151,7 +154,7 @@ public class XMLEditor extends HTMLSourceEditor {
 	 * @return an array of <code>IDTDResolver</code>
 	 */
 	public IDTDResolver[] getDTDResolvers(){
-		return (IDTDResolver[])resolvers.toArray(new IDTDResolver[resolvers.size()]);
+		return resolvers.toArray(new IDTDResolver[resolvers.size()]);
 	}
 	
 	/**
@@ -160,7 +163,8 @@ public class XMLEditor extends HTMLSourceEditor {
 	 * If <code>getValidation()</code> returns <code>false</code>,
 	 * this method do nothing.
 	 */
-	protected void doValidate(){
+	@Override
+  protected void doValidate(){
 		try {
 			ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
@@ -265,9 +269,9 @@ public class XMLEditor extends HTMLSourceEditor {
 		if(useElementMapping){
 			String firstTag = getFirstTag(xml);
 			if(firstTag!=null){
-				List schemaMappings = getSchemaMappings();
+				List<ElementSchemaMapping> schemaMappings = getSchemaMappings();
 				for(int i=0;i<schemaMappings.size();i++){
-					ElementSchemaMapping mapping = (ElementSchemaMapping)schemaMappings.get(i);
+					ElementSchemaMapping mapping = schemaMappings.get(i);
 					if(mapping.getRootElement().equals(firstTag) && mapping.getFilePath().endsWith(".dtd")){
 						return "file:" + mapping.getFilePath();
 					}
@@ -349,7 +353,8 @@ public class XMLEditor extends HTMLSourceEditor {
 	/**
 	 * Update informations about code-completion.
 	 */
-	protected void updateAssist(){
+	@Override
+  protected void updateAssist(){
 		try {
 			XMLConfiguration config = (XMLConfiguration)getSourceViewerConfiguration();
 			config.getClassNameHyperlinkProvider().setEditor(this);
@@ -405,7 +410,8 @@ public class XMLEditor extends HTMLSourceEditor {
 		}
 	}
 	
-	protected void addContextMenuActions(IMenuManager menu){
+	@Override
+  protected void addContextMenuActions(IMenuManager menu){
 		menu.add(new Separator(GROUP_HTML));
 		//addAction(menu,GROUP_HTML,ACTION_OPEN_PALETTE);
 		addAction(menu,GROUP_HTML,ACTION_ESCAPE_XML);
@@ -416,7 +422,8 @@ public class XMLEditor extends HTMLSourceEditor {
 		addAction(menu,GROUP_XML,ACTION_GEN_XSD);
 	}
 	
-	protected void updateSelectionDependentActions() {
+	@Override
+  protected void updateSelectionDependentActions() {
 		super.updateSelectionDependentActions();
 		ITextSelection sel = (ITextSelection)getSelectionProvider().getSelection();
 		if(sel.getText().equals("")){
@@ -440,7 +447,8 @@ public class XMLEditor extends HTMLSourceEditor {
 			setAccelerator(SWT.CTRL | '\\');
 		}
 		
-		public void run() {
+		@Override
+    public void run() {
 			ITextSelection sel = (ITextSelection)getSelectionProvider().getSelection();
 			IDocument doc = getDocumentProvider().getDocument(getEditorInput());
 			try {
@@ -459,7 +467,8 @@ public class XMLEditor extends HTMLSourceEditor {
 			super(HTMLPlugin.getResourceString("XMLEditor.GenerateDTD"),
 					HTMLPlugin.getDefault().getImageRegistry().getDescriptor(HTMLPlugin.ICON_DTD));
 		}
-		public void run() {
+		@Override
+    public void run() {
 			FileDialog dialog = new FileDialog(getViewer().getTextWidget().getShell(),SWT.SAVE);
 			dialog.setFilterExtensions(new String[]{"*.dtd"});
 			String file = dialog.open();
@@ -481,7 +490,8 @@ public class XMLEditor extends HTMLSourceEditor {
 			super(HTMLPlugin.getResourceString("XMLEditor.GenerateXSD"),
 					HTMLPlugin.getDefault().getImageRegistry().getDescriptor(HTMLPlugin.ICON_XSD));
 		}
-		public void run() {
+		@Override
+    public void run() {
 			FileDialog dialog = new FileDialog(getViewer().getTextWidget().getShell(),SWT.SAVE);
 			dialog.setFilterExtensions(new String[]{"*.xsd"});
 			String file = dialog.open();
@@ -503,7 +513,8 @@ public class XMLEditor extends HTMLSourceEditor {
 			super(HTMLPlugin.getResourceString("XMLEditor.FormatXML"));
 			setActionDefinitionId("tk.eclipse.plugin.xmleditor.format");
 		}
-		public void run(){
+		@Override
+    public void run(){
 			try {
 				// Format XML using XSL
 				IEditorInput input = getEditorInput();

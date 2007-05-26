@@ -28,7 +28,7 @@ import tk.eclipse.plugin.htmleditor.HTMLUtil;
 public class DTDResolver implements EntityResolver2 {
 	
 //	private static HashMap namedXSDMap = new HashMap();
-	private HashMap map = new HashMap();
+	private HashMap<String, String> map = new HashMap<String, String>();
 	private IDTDResolver[] resolvers = null;
 	private File basedir;
 	
@@ -84,7 +84,7 @@ public class DTDResolver implements EntityResolver2 {
 			}
 		}
 		// get from preferences
-		String path = (String)map.get(url);
+		String path = map.get(url);
 		if(path!=null){
 			File file = new File(path);
 			if(file.exists() && file.isFile()){

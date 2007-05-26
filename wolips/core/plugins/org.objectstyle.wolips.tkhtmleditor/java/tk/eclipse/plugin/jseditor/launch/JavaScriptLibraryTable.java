@@ -41,15 +41,15 @@ public class JavaScriptLibraryTable {
 	
 	public static final String PREFIX = "entry:";
 	
-	private TableViewer tableViewer;
-	private List tableModel = new ArrayList();
+	private TableViewer _tableViewer;
+	private List<Object> _tableModel = new ArrayList<Object>();
 	
-	private Composite composite;
-	private Button add;
-	private Button addExternal;
-	private Button remove;
-	private Button up;
-	private Button down;
+	private Composite _composite;
+	private Button _add;
+	private Button _addExternal;
+	private Button _remove;
+	private Button _up;
+	private Button _down;
 	
 	/**
 	 * The constructor.
@@ -57,22 +57,23 @@ public class JavaScriptLibraryTable {
 	 * @param parent the parent component
 	 */
 	public JavaScriptLibraryTable(final Composite parent){
-		composite = new Composite(parent, SWT.NULL);
-		composite.setLayout(new GridLayout(2, false));
-		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+		_composite = new Composite(parent, SWT.NULL);
+		_composite.setLayout(new GridLayout(2, false));
+		_composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
 		// list
-		tableViewer = new TableViewer(composite);
+		_tableViewer = new TableViewer(_composite);
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.widthHint = 250;
-		tableViewer.getTable().setLayoutData(gd);
-		tableViewer.getTable().addSelectionListener(new SelectionAdapter(){
-			public void widgetSelected(SelectionEvent evt){
+		_tableViewer.getTable().setLayoutData(gd);
+		_tableViewer.getTable().addSelectionListener(new SelectionAdapter(){
+			@Override
+      public void widgetSelected(SelectionEvent evt){
 				updateButtons();
 			}
 		});
-		tableViewer.setContentProvider(new TableViewerSupport.ListContentProvider());
-		tableViewer.setLabelProvider(new ITableLabelProvider(){
+		_tableViewer.setContentProvider(new TableViewerSupport.ListContentProvider());
+		_tableViewer.setLabelProvider(new ITableLabelProvider(){
 			public Image getColumnImage(Object element, int columnIndex) {
 				if(element instanceof File){
 					return HTMLPlugin.getDefault().getImageRegistry().get(HTMLPlugin.ICON_JAR_EXT);
@@ -99,21 +100,22 @@ public class JavaScriptLibraryTable {
 			public void removeListener(ILabelProviderListener listener) {
 			}
 		});
-		tableViewer.setInput(tableModel);
+		_tableViewer.setInput(_tableModel);
 		
 		// buttons
-		Composite buttons = new Composite(composite, SWT.NULL);
+		Composite buttons = new Composite(_composite, SWT.NULL);
 		GridLayout layout = new GridLayout();
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
 		buttons.setLayout(layout);
 		buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
 		
-		add = new Button(buttons, SWT.PUSH);
-		add.setText(HTMLPlugin.getResourceString("Button.Add"));
-		add.setLayoutData(createButtonGridData());
-		add.addSelectionListener(new SelectionAdapter(){
-			public void widgetSelected(SelectionEvent evt){
+		_add = new Button(buttons, SWT.PUSH);
+		_add.setText(HTMLPlugin.getResourceString("Button.Add"));
+		_add.setLayoutData(createButtonGridData());
+		_add.addSelectionListener(new SelectionAdapter(){
+			@Override
+      public void widgetSelected(SelectionEvent evt){
 				IWorkspaceRoot wsroot = ResourcesPlugin.getWorkspace().getRoot();
 				ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(
 						parent.getShell(),
@@ -135,7 +137,7 @@ public class JavaScriptLibraryTable {
 							if(!((IFile)selection[i]).getName().endsWith(".js")){
 								return ngStatus;
 							}
-							if(tableModel.contains(selection[i])){
+							if(_tableModel.contains(selection[i])){
 								return ngStatus;
 							}
 						}
@@ -148,19 +150,20 @@ public class JavaScriptLibraryTable {
 				if (dialog.open() == Dialog.OK) {
 					Object[] results = dialog.getResult();
 					for(int i=0;i<results.length;i++){
-						tableModel.add((IFile)results[i]);
+						_tableModel.add(results[i]);
 					}
-					tableViewer.refresh();
+					_tableViewer.refresh();
 					modelChanged();
 				}
 			}
 		});
 		
-		addExternal = new Button(buttons, SWT.PUSH);
-		addExternal.setText(HTMLPlugin.getResourceString("Button.AddExternal"));
-		addExternal.setLayoutData(createButtonGridData());
-		addExternal.addSelectionListener(new SelectionAdapter(){
-			public void widgetSelected(SelectionEvent evt){
+		_addExternal = new Button(buttons, SWT.PUSH);
+		_addExternal.setText(HTMLPlugin.getResourceString("Button.AddExternal"));
+		_addExternal.setLayoutData(createButtonGridData());
+		_addExternal.addSelectionListener(new SelectionAdapter(){
+			@Override
+      public void widgetSelected(SelectionEvent evt){
 				FileDialog dialog = new FileDialog(parent.getShell(), SWT.OPEN|SWT.MULTI);
 				dialog.setFilterExtensions(new String[]{"*.js"});
 				String result = dialog.open();
@@ -168,51 +171,54 @@ public class JavaScriptLibraryTable {
 					String dir = dialog.getFilterPath();
 					String[] fileNames = dialog.getFileNames();
 					for(int i=0;i<fileNames.length;i++){
-						tableModel.add(new File(dir, fileNames[i]));
+						_tableModel.add(new File(dir, fileNames[i]));
 					}
-					tableViewer.refresh();
+					_tableViewer.refresh();
 					modelChanged();
 				}
 			}
 		});
 		
-		remove = new Button(buttons, SWT.PUSH);
-		remove.setText(HTMLPlugin.getResourceString("Button.Remove"));
-		remove.setLayoutData(createButtonGridData());
-		remove.addSelectionListener(new SelectionAdapter(){
-			public void widgetSelected(SelectionEvent evt){
-				IStructuredSelection sel = (IStructuredSelection)tableViewer.getSelection();
-				tableModel.removeAll(sel.toList());
+		_remove = new Button(buttons, SWT.PUSH);
+		_remove.setText(HTMLPlugin.getResourceString("Button.Remove"));
+		_remove.setLayoutData(createButtonGridData());
+		_remove.addSelectionListener(new SelectionAdapter(){
+			@Override
+      public void widgetSelected(SelectionEvent evt){
+				IStructuredSelection sel = (IStructuredSelection)_tableViewer.getSelection();
+				_tableModel.removeAll(sel.toList());
 				updateButtons();
-				tableViewer.refresh();
+				_tableViewer.refresh();
 				modelChanged();
 			}
 		});
 		
-		up = new Button(buttons, SWT.PUSH);
-		up.setText(HTMLPlugin.getResourceString("Button.Up"));
-		up.setLayoutData(createButtonGridData());
-		up.addSelectionListener(new SelectionAdapter(){
-			public void widgetSelected(SelectionEvent evt){
-				int index = tableViewer.getTable().getSelectionIndex();
+		_up = new Button(buttons, SWT.PUSH);
+		_up.setText(HTMLPlugin.getResourceString("Button.Up"));
+		_up.setLayoutData(createButtonGridData());
+		_up.addSelectionListener(new SelectionAdapter(){
+			@Override
+      public void widgetSelected(SelectionEvent evt){
+				int index = _tableViewer.getTable().getSelectionIndex();
 				if(index > 0){
-					tableModel.add(index, tableModel.remove(index - 1));
-					tableViewer.refresh();
+					_tableModel.add(index, _tableModel.remove(index - 1));
+					_tableViewer.refresh();
 					modelChanged();
 					updateButtons();
 				}
 			}
 		});
 		
-		down = new Button(buttons, SWT.PUSH);
-		down.setText(HTMLPlugin.getResourceString("Button.Down"));
-		down.setLayoutData(createButtonGridData());
-		down.addSelectionListener(new SelectionAdapter(){
-			public void widgetSelected(SelectionEvent evt){
-				int index = tableViewer.getTable().getSelectionIndex();
-				if(index < tableModel.size() - 1){
-					tableModel.add(index, tableModel.remove(index + 1));
-					tableViewer.refresh();
+		_down = new Button(buttons, SWT.PUSH);
+		_down.setText(HTMLPlugin.getResourceString("Button.Down"));
+		_down.setLayoutData(createButtonGridData());
+		_down.addSelectionListener(new SelectionAdapter(){
+			@Override
+      public void widgetSelected(SelectionEvent evt){
+				int index = _tableViewer.getTable().getSelectionIndex();
+				if(index < _tableModel.size() - 1){
+					_tableModel.add(index, _tableModel.remove(index + 1));
+					_tableViewer.refresh();
 					modelChanged();
 					updateButtons();
 				}
@@ -226,11 +232,11 @@ public class JavaScriptLibraryTable {
 	 * Updates button status.
 	 */
 	protected void updateButtons(){
-		remove.setEnabled(tableViewer.getTable().getSelectionCount() != 0);
-		up.setEnabled(tableViewer.getTable().getSelectionCount() == 1 &&
-				tableViewer.getTable().getSelectionIndex() > 0);
-		down.setEnabled(tableViewer.getTable().getSelectionCount() == 1 &&
-				tableViewer.getTable().getSelectionIndex() < tableModel.size() - 1);
+		_remove.setEnabled(_tableViewer.getTable().getSelectionCount() != 0);
+		_up.setEnabled(_tableViewer.getTable().getSelectionCount() == 1 &&
+				_tableViewer.getTable().getSelectionIndex() > 0);
+		_down.setEnabled(_tableViewer.getTable().getSelectionCount() == 1 &&
+				_tableViewer.getTable().getSelectionIndex() < _tableModel.size() - 1);
 	}
 	
 	/**
@@ -248,7 +254,7 @@ public class JavaScriptLibraryTable {
 	 * @return the control
 	 */
 	public Control getControl(){
-		return composite;
+		return _composite;
 	}
 	
 	/**
@@ -257,14 +263,14 @@ public class JavaScriptLibraryTable {
 	 * @return the table model
 	 */
 	public List getModel(){
-		return tableModel;
+		return _tableModel;
 	}
 	
 	/**
 	 * Refreshes the <code>TableViewer</code>.
 	 */
 	public void refresh(){
-		tableViewer.refresh();
+		_tableViewer.refresh();
 	}
 	
 	/**

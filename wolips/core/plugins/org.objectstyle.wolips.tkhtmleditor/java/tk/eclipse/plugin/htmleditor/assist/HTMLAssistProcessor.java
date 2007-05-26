@@ -37,33 +37,33 @@ import tk.eclipse.plugin.htmleditor.template.HTMLTemplateAssistProcessor;
  */
 public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*implements IContentAssistProcessor {*/
 
-  private boolean xhtmlMode = false;
-  private char[] chars = {};
-  private Image tagImage;
-  private Image attrImage;
-  private Image valueImage;
-  private boolean assistCloseTag = true;
-  private List customAttrs = CustomAttribute.loadFromPreference(false);
-  private List customElems = CustomElement.loadFromPreference(false);
-  private Set customElemNames = new HashSet();
-  protected CSSAssistProcessor cssAssist = new CSSAssistProcessor();
-  protected IFileAssistProcessor[] fileAssistProcessors;
+  private boolean _xhtmlMode = false;
+  private char[] _chars = {};
+  private Image _tagImage;
+  private Image _attrImage;
+  private Image _valueImage;
+  private boolean _assistCloseTag = true;
+  private List<CustomAttribute> _customAttrs = CustomAttribute.loadFromPreference(false);
+  private List<CustomElement> _customElems = CustomElement.loadFromPreference(false);
+  private Set<String> _customElemNames = new HashSet<String>();
+  protected CSSAssistProcessor _cssAssist = new CSSAssistProcessor();
+  protected IFileAssistProcessor[] _fileAssistProcessors;
 
-  private int offset;
-  private FuzzyXMLDocument doc;
+  private int _offset;
+  private FuzzyXMLDocument _doc;
   private ITextViewer _textViewer;
 
   /**
    * The constructor.
    */
   public HTMLAssistProcessor() {
-    tagImage = HTMLPlugin.getDefault().getImageRegistry().get(HTMLPlugin.ICON_TAG);
-    attrImage = HTMLPlugin.getDefault().getImageRegistry().get(HTMLPlugin.ICON_ATTR);
-    valueImage = HTMLPlugin.getDefault().getImageRegistry().get(HTMLPlugin.ICON_VALUE);
-    fileAssistProcessors = HTMLPlugin.getDefault().getFileAssistProcessors();
+    _tagImage = HTMLPlugin.getDefault().getImageRegistry().get(HTMLPlugin.ICON_TAG);
+    _attrImage = HTMLPlugin.getDefault().getImageRegistry().get(HTMLPlugin.ICON_ATTR);
+    _valueImage = HTMLPlugin.getDefault().getImageRegistry().get(HTMLPlugin.ICON_VALUE);
+    _fileAssistProcessors = HTMLPlugin.getDefault().getFileAssistProcessors();
 
-    for (int i = 0; i < customElems.size(); i++) {
-      customElemNames.add(((CustomElement) customElems.get(i)).getDisplayName());
+    for (int i = 0; i < _customElems.size(); i++) {
+      _customElemNames.add(_customElems.get(i).getDisplayName());
     }
   }
 
@@ -72,17 +72,17 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
   }
 
   public void setXHTMLMode(boolean xhtmlMode) {
-    this.xhtmlMode = xhtmlMode;
+    this._xhtmlMode = xhtmlMode;
   }
 
   public void setAutoAssistChars(char[] chars) {
     if (chars != null) {
-      this.chars = chars;
+      this._chars = chars;
     }
   }
 
   public void setAssistCloseTag(boolean assistCloseTag) {
-    this.assistCloseTag = assistCloseTag;
+    this._assistCloseTag = assistCloseTag;
   }
 
   /**
@@ -96,31 +96,31 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
   protected AssistInfo[] getAttributeValues(String tagName, String value, TagInfo tagInfo, AttributeInfo attrInfo) {
     // CSS
     if (attrInfo.getAttributeType() == AttributeInfo.CSS) {
-      return cssAssist.getAssistInfo(tagName, value);
+      return _cssAssist.getAssistInfo(tagName, value);
     }
     // FILE
     if (attrInfo.getAttributeType() == AttributeInfo.FILE) {
-      ArrayList list = new ArrayList();
-      for (int i = 0; i < fileAssistProcessors.length; i++) {
-        AssistInfo[] assists = fileAssistProcessors[i].getAssistInfo(value);
+      ArrayList<AssistInfo> list = new ArrayList<AssistInfo>();
+      for (int i = 0; i < _fileAssistProcessors.length; i++) {
+        AssistInfo[] assists = _fileAssistProcessors[i].getAssistInfo(value);
         for (int j = 0; j < assists.length; j++) {
           list.add(assists[j]);
         }
       }
-      return (AssistInfo[]) list.toArray(new AssistInfo[list.size()]);
+      return list.toArray(new AssistInfo[list.size()]);
     }
     // IDREF
     if (attrInfo.getAttributeType() == AttributeInfo.IDREF) {
-      ArrayList list = new ArrayList();
+      ArrayList<AssistInfo> list = new ArrayList<AssistInfo>();
       String[] ids = getIDs();
       for (int i = 0; i < ids.length; i++) {
         list.add(new AssistInfo(ids[i]));
       }
-      return (AssistInfo[]) list.toArray(new AssistInfo[list.size()]);
+      return list.toArray(new AssistInfo[list.size()]);
     }
     // IDREFS
     if (attrInfo.getAttributeType() == AttributeInfo.IDREFS) {
-      ArrayList list = new ArrayList();
+      ArrayList<AssistInfo> list = new ArrayList<AssistInfo>();
       String[] ids = getIDs();
       String prefix = value;
       if (prefix.length() != 0 && !prefix.endsWith(" ")) {
@@ -129,7 +129,7 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
       for (int i = 0; i < ids.length; i++) {
         list.add(new AssistInfo(prefix + ids[i], ids[i]));
       }
-      return (AssistInfo[]) list.toArray(new AssistInfo[list.size()]);
+      return list.toArray(new AssistInfo[list.size()]);
     }
     // ETC
     String[] values = AttributeValueDefinition.getAttributeValues(attrInfo.getAttributeType());
@@ -147,15 +147,15 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
    */
   protected String[] getIDs() {
     FuzzyXMLDocument doc = getDocument();
-    List list = new ArrayList();
+    List<String> list = new ArrayList<String>();
     if (doc != null) {
       FuzzyXMLElement element = doc.getDocumentElement();
       extractID(element, list);
     }
-    return (String[]) list.toArray(new String[list.size()]);
+    return list.toArray(new String[list.size()]);
   }
 
-  private void extractID(FuzzyXMLElement element, List list) {
+  private void extractID(FuzzyXMLElement element, List<String> list) {
     FuzzyXMLAttribute[] attrs = element.getAttributes();
     for (int i = 0; i < attrs.length; i++) {
       TagInfo tagInfo = getTagInfo(element.getName());
@@ -211,7 +211,7 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
    * @return the <code>FuzzyXMLElement</code>
    */
   protected FuzzyXMLElement getOffsetElement() {
-    return doc.getElementByOffset(offset);
+    return _doc.getElementByOffset(_offset);
   }
 
   /**
@@ -220,7 +220,7 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
    * @return the <code>FuzzyXMLDocument</code>
    */
   protected FuzzyXMLDocument getDocument() {
-    return doc;
+    return _doc;
   }
 
   protected ITextViewer getTextViewer() {
@@ -238,8 +238,8 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
     String attr = dim[3];
     String next = viewer.getDocument().get().substring(documentOffset);
 
-    this.offset = documentOffset;
-    this.doc = new FuzzyXMLParser().parse(viewer.getDocument().get());
+    this._offset = documentOffset;
+    this._doc = new FuzzyXMLParser().parse(viewer.getDocument().get());
 
     List<ICompletionProposal> list = new ArrayList<ICompletionProposal>();
     List<TagInfo> tagList = getTagList();
@@ -260,7 +260,7 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
               //									keywords[i].getReplaceString().length(),
               //									keywords[i].getImage()==null ? valueImage : keywords[i].getImage(),
               //									keywords[i].getDisplayString(), null, null));
-              list.add(keywords[i].toCompletionProposal(documentOffset, value, valueImage));
+              list.add(keywords[i].toCompletionProposal(documentOffset, value, _valueImage));
             }
           }
         }
@@ -287,7 +287,7 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
         if (tagInfo instanceof TextInfo) {
           TextInfo textInfo = (TextInfo) tagInfo;
           if ((textInfo.getText().toLowerCase()).indexOf(word) == 0) {
-            list.add(new CompletionProposal(textInfo.getText(), documentOffset - word.length(), word.length(), textInfo.getPosition(), tagImage, textInfo.getDisplayString(), null, tagInfo.getDescription()));
+            list.add(new CompletionProposal(textInfo.getText(), documentOffset - word.length(), word.length(), textInfo.getPosition(), _tagImage, textInfo.getDisplayString(), null, tagInfo.getDescription()));
           }
           continue;
         }
@@ -310,7 +310,7 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
           boolean forceAttributePosition = (requireAttrs.length == 0 && tagInfo.requiresAttributes());
           if (tagInfo.hasBody()) {
             assistKeyword = assistKeyword + ">";
-            if (assistCloseTag) {
+            if (_assistCloseTag) {
               if (position == 0) {
                 position = assistKeyword.length();
               }
@@ -318,7 +318,7 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
             }
           }
           else {
-            if (tagInfo.isEmptyTag() && xhtmlMode == false) {
+            if (tagInfo.isEmptyTag() && _xhtmlMode == false) {
               assistKeyword = assistKeyword + ">";
             }
             else {
@@ -333,7 +333,7 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
               position --;
             }
             else if (tagInfo.isEmptyTag()) {
-              if (xhtmlMode) {
+              if (_xhtmlMode) {
                 position -= 2;
               }
               else {
@@ -342,7 +342,7 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
             }
           }
           try {
-            list.add(new CompletionProposal(assistKeyword, documentOffset - word.length() + 1, word.length() - 1, position, tagImage, tagName, null, tagInfo.getDescription()));
+            list.add(new CompletionProposal(assistKeyword, documentOffset - word.length() + 1, word.length() - 1, position, _tagImage, tagName, null, tagInfo.getDescription()));
           }
           catch (Exception ex) {
             ex.printStackTrace();
@@ -350,8 +350,8 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
         }
       }
       // custom elements
-      for (int i = 0; i < customElems.size(); i++) {
-        CustomElement element = (CustomElement) customElems.get(i);
+      for (int i = 0; i < _customElems.size(); i++) {
+        CustomElement element = _customElems.get(i);
         if ((element.getAssistString().toLowerCase()).indexOf(word) == 0) {
           int position = element.getAssistString().indexOf('"');
           if (position == -1) {
@@ -360,7 +360,7 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
           if (position == -1) {
             position = element.getAssistString().length();
           }
-          list.add(new CompletionProposal(element.getAssistString(), documentOffset - word.length(), word.length(), position + 1, tagImage, element.getDisplayName(), null, null));
+          list.add(new CompletionProposal(element.getAssistString(), documentOffset - word.length(), word.length(), position + 1, _tagImage, element.getDisplayName(), null, null));
         }
       }
       // attribute
@@ -382,16 +382,16 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
               assistKeyword = attrList[j].getAttributeName();
               position = 0;
             }
-            list.add(new CompletionProposal(assistKeyword, documentOffset - word.length(), word.length(), attrList[j].getAttributeName().length() + position, attrImage, attrList[j].getAttributeName(), null, attrList[j].getDescription()));
+            list.add(new CompletionProposal(assistKeyword, documentOffset - word.length(), word.length(), attrList[j].getAttributeName().length() + position, _attrImage, attrList[j].getAttributeName(), null, attrList[j].getDescription()));
           }
         }
       }
       // custom attributes
-      for (int i = 0; i < customAttrs.size(); i++) {
-        CustomAttribute attrInfo = (CustomAttribute) customAttrs.get(i);
+      for (int i = 0; i < _customAttrs.size(); i++) {
+        CustomAttribute attrInfo = _customAttrs.get(i);
         if (attrInfo.getTargetTag().equals("*") || attrInfo.getTargetTag().equals(tagName)) {
-          if (tagName.indexOf(":") < 0 || customElemNames.contains(tagName)) {
-            list.add(new CompletionProposal(attrInfo.getAttributeName() + " = \"\"", documentOffset - word.length(), word.length(), attrInfo.getAttributeName().length() + 2, attrImage, attrInfo.getAttributeName(), null, null));
+          if (tagName.indexOf(":") < 0 || _customElemNames.contains(tagName)) {
+            list.add(new CompletionProposal(attrInfo.getAttributeName() + " = \"\"", documentOffset - word.length(), word.length(), attrInfo.getAttributeName().length() + 2, _attrImage, attrInfo.getAttributeName(), null, null));
           }
         }
       }
@@ -399,13 +399,13 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
     }
     else if (!last.equals("")) {
       TagInfo info = getTagInfo(last);
-      if (info == null || xhtmlMode == true || info.hasBody() || !info.isEmptyTag()) {
+      if (info == null || _xhtmlMode == true || info.hasBody() || !info.isEmptyTag()) {
         String assistKeyword = "</" + last + ">";
         int length = 0;
         if (assistKeyword.toLowerCase().startsWith(word)) {
           length = word.length();
         }
-        list.add(new CompletionProposal(assistKeyword, documentOffset - length, length, assistKeyword.length(), tagImage, assistKeyword, null, null));
+        list.add(new CompletionProposal(assistKeyword, documentOffset - length, length, assistKeyword.length(), _tagImage, assistKeyword, null, null));
       }
     }
 
@@ -418,7 +418,7 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
       }
     }
 
-    ICompletionProposal[] prop = (ICompletionProposal[]) list.toArray(new ICompletionProposal[list.size()]);
+    ICompletionProposal[] prop = list.toArray(new ICompletionProposal[list.size()]);
     return prop;
   }
   
@@ -449,7 +449,7 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
 
     // TODO It's dirty...
     StringBuffer sb = new StringBuffer();
-    Stack stack = new Stack();
+    Stack<String> stack = new Stack<String>();
     String word = "";
     String prevTag = "";
     String lastTag = "";
@@ -529,7 +529,7 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
     }
 
     if (stack.size() != 0) {
-      lastTag = (String) stack.pop();
+      lastTag = stack.pop();
     }
     // Hmm... it's not perfect...
     if (attr.endsWith("=")) {
@@ -555,23 +555,28 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
     }
   }
 
+  @Override
   public IContextInformation[] computeContextInformation(ITextViewer viewer, int documentOffset) {
     ContextInformation[] info = new ContextInformation[0];
     return info;
   }
 
+  @Override
   public char[] getCompletionProposalAutoActivationCharacters() {
-    return chars;
+    return _chars;
   }
 
+  @Override
   public char[] getContextInformationAutoActivationCharacters() {
-    return chars;
+    return _chars;
   }
 
+  @Override
   public IContextInformationValidator getContextInformationValidator() {
     return new ContextInformationValidator(this);
   }
 
+  @Override
   public String getErrorMessage() {
     return "Error";
   }
@@ -586,17 +591,17 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
     IEditorInput editorInput = editor.getEditorInput();
     if (editorInput instanceof IFileEditorInput) {
       IFileEditorInput input = (IFileEditorInput) editorInput;
-      cssAssist.reload(input.getFile(), source);
-      customAttrs = CustomAttribute.loadFromPreference(false);
-      customElems = CustomElement.loadFromPreference(false);
+      _cssAssist.reload(input.getFile(), source);
+      _customAttrs = CustomAttribute.loadFromPreference(false);
+      _customElems = CustomElement.loadFromPreference(false);
 
-      customElemNames.clear();
-      for (int i = 0; i < customElems.size(); i++) {
-        customElemNames.add(((CustomElement) customElems.get(i)).getDisplayName());
+      _customElemNames.clear();
+      for (int i = 0; i < _customElems.size(); i++) {
+        _customElemNames.add(_customElems.get(i).getDisplayName());
       }
 
-      for (int i = 0; i < fileAssistProcessors.length; i++) {
-        fileAssistProcessors[i].reload(input.getFile());
+      for (int i = 0; i < _fileAssistProcessors.length; i++) {
+        _fileAssistProcessors[i].reload(input.getFile());
       }
     }
   }

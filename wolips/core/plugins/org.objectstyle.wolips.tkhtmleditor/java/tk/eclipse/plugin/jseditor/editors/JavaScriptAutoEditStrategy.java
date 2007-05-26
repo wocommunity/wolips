@@ -13,7 +13,8 @@ import org.eclipse.jface.text.IDocument;
  */
 public class JavaScriptAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	
-	public void customizeDocumentCommand(IDocument document, DocumentCommand command) {
+	@Override
+  public void customizeDocumentCommand(IDocument document, DocumentCommand command) {
 		if(command.text.equals("{")){
 			append(command, "}", 1);
 			return;

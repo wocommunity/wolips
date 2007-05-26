@@ -13,7 +13,8 @@ public class JavaScriptCharacterPairMatcher extends AbstractCharacterPairMatcher
 		addBlockCharacter('(', ')');
 	}
 	
-	protected String getSource(IDocument doc){
+	@Override
+  protected String getSource(IDocument doc){
 		return JavaScriptUtil.removeComments(doc.get());
 	}
 	

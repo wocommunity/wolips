@@ -17,10 +17,10 @@ import tk.eclipse.plugin.htmleditor.HTMLUtil;
  */
 public abstract class AbstractTaskTagDetector implements ITaskTagDetector {
 
-	protected String contents;
-	protected IFile file;
-	protected TaskTag[] tags;
-	private List extensions = new ArrayList();
+	protected String _contents;
+	protected IFile _file;
+	protected TaskTag[] _tags;
+	private List<String> _extensions = new ArrayList<String>();
 	
 	/**
 	 * Adds supported file extensions.
@@ -28,13 +28,13 @@ public abstract class AbstractTaskTagDetector implements ITaskTagDetector {
 	 * @param ext the file extension (dot isn't required)
 	 */
 	protected void addSupportedExtension(String ext){
-		extensions.add(ext);
+		_extensions.add(ext);
 	}
 	
 	public boolean isSupported(IFile file) {
 		String fileName = file.getName();
-		for(int i=0;i<extensions.size();i++){
-			String ext = (String)extensions.get(i);
+		for(int i=0;i<_extensions.size();i++){
+			String ext = _extensions.get(i);
 			if(fileName.endsWith("." + ext)){
 				return true;
 			}
@@ -43,15 +43,15 @@ public abstract class AbstractTaskTagDetector implements ITaskTagDetector {
 	}
 
 	public void detect(IFile file, TaskTag[] tags) throws Exception {
-		this.file = file;
-		this.tags = tags;
+		this._file = file;
+		this._tags = tags;
 		
-		this.contents = new String(
+		this._contents = new String(
 				HTMLUtil.readStream(file.getContents()), 
 				file.getCharset());
 		
-		this.contents = this.contents.replaceAll("\r\n", "\n");
-		this.contents = this.contents.replaceAll("\r", "\n");
+		this._contents = this._contents.replaceAll("\r\n", "\n");
+		this._contents = this._contents.replaceAll("\r", "\n");
 		
 		doDetect();
 	}
@@ -67,10 +67,10 @@ public abstract class AbstractTaskTagDetector implements ITaskTagDetector {
 	protected void detectTaskTag(String value, int offset){
 		String[] lines = value.split("\n");
 		for(int i=0;i<lines.length;i++){
-			tags : for(int j=0;j<tags.length;j++){
-				int index = lines[i].indexOf(tags[j].getTag());
+			tags : for(int j=0;j<_tags.length;j++){
+				int index = lines[i].indexOf(_tags[j].getTag());
 				if(index >= 0){
-					HTMLUtil.addTaskMarker(file, IMarker.PRIORITY_NORMAL, 
+					HTMLUtil.addTaskMarker(_file, IMarker.PRIORITY_NORMAL, 
 							getLineAtOffset(offset) + i,
 							lines[i].substring(index));
 					break tags;
@@ -80,7 +80,7 @@ public abstract class AbstractTaskTagDetector implements ITaskTagDetector {
 	}
 	
 	private int getLineAtOffset(int offset){
-		String text = this.contents.substring(0,offset);
+		String text = this._contents.substring(0,offset);
 		int line  = 0;
 		int index = 0;
 		while((index = text.indexOf('\n', index))>=0){

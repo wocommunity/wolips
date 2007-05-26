@@ -46,7 +46,7 @@ public class JSPDirectiveAssistProcessor implements IContentAssistProcessor {
 			"include", "page", "taglib"
 	};
 	
-	private static final Map ATTRIBUTES = new HashMap();
+	private static final Map<String, String[]> ATTRIBUTES = new HashMap<String, String[]>();
 	static {
 		ATTRIBUTES.put("include", new String[]{"file"});
 		ATTRIBUTES.put("page", new String[]{"language","extends","import","session","buffer","autoFlush","isThreadSafe",
@@ -140,7 +140,7 @@ public class JSPDirectiveAssistProcessor implements IContentAssistProcessor {
 				HTMLUtil.setContentsToCU(unit, value);
 				unit.codeComplete(value.length(), collector, DefaultWorkingCopyOwner.PRIMARY);
 				IJavaCompletionProposal[] proposals = collector.getJavaCompletionProposals();
-				List result = new ArrayList();
+				List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 				for(int i=0;i<proposals.length;i++){
 					if(proposals[i] instanceof AbstractJavaCompletionProposal){
 						AbstractJavaCompletionProposal proposal = (AbstractJavaCompletionProposal)proposals[i];
@@ -151,7 +151,7 @@ public class JSPDirectiveAssistProcessor implements IContentAssistProcessor {
 						result.add(proposal);
 					}
 				}
-				return (ICompletionProposal[])result.toArray(new ICompletionProposal[result.size()]);
+				return result.toArray(new ICompletionProposal[result.size()]);
 			}
 		} catch(Exception ex){
 			HTMLPlugin.logException(ex);
@@ -163,7 +163,7 @@ public class JSPDirectiveAssistProcessor implements IContentAssistProcessor {
 	 * Returns attribute value completion prosposals.
 	 */
 	private ICompletionProposal[] getAttributeValues(String directive,String attr,String lastWord,int offset){
-		List values = new ArrayList();
+		List<String> values = new ArrayList<String>();
 		
 		if(directive.equals("page")){
 			if(attr.equals("autoFlush") || attr.equals("session") || 
@@ -175,10 +175,10 @@ public class JSPDirectiveAssistProcessor implements IContentAssistProcessor {
 		
 		if(directive.equals("taglib")){
 			if(attr.equals("uri")){
-				Map innerTLD = HTMLPlugin.getInnerTLD();
-				Iterator ite = innerTLD.keySet().iterator();
+				Map<String, String> innerTLD = HTMLPlugin.getInnerTLD();
+				Iterator<String> ite = innerTLD.keySet().iterator();
 				while(ite.hasNext()){
-					values.add((String)ite.next());
+					values.add(ite.next());
 				}
 				IPreferenceStore store = HTMLPlugin.getDefault().getPreferenceStore();
 				String[] uri = store.getString(HTMLPlugin.PREF_TLD_URI).split("\n");
@@ -189,10 +189,10 @@ public class JSPDirectiveAssistProcessor implements IContentAssistProcessor {
 		}
 		
 		lastWord = lastWord.substring(1);
-		List assistInfos = new ArrayList();
+		List<ICompletionProposal> assistInfos = new ArrayList<ICompletionProposal>();
 		
 		for(int i=0;i<values.size();i++){
-			String value = (String)values.get(i);
+			String value = values.get(i);
 			if(value.startsWith(lastWord)){
 				assistInfos.add(new CompletionProposal(
 						value,
@@ -205,14 +205,14 @@ public class JSPDirectiveAssistProcessor implements IContentAssistProcessor {
 			}
 		}
 		
-		return (ICompletionProposal[])assistInfos.toArray(new ICompletionProposal[assistInfos.size()]);
+		return assistInfos.toArray(new ICompletionProposal[assistInfos.size()]);
 	}
 	
 	/**
 	 * Returns JSP direcive completion proposals.
 	 */
 	private ICompletionProposal[] getDirectives(String lastWord,int offset){
-		List assistInfos = new ArrayList();
+		List<ICompletionProposal> assistInfos = new ArrayList<ICompletionProposal>();
 		
 		for(int i=0;i<DIRECTIVES.length;i++){
 			String directive = DIRECTIVES[i];
@@ -228,19 +228,19 @@ public class JSPDirectiveAssistProcessor implements IContentAssistProcessor {
 			}
 		}
 		
-		return (ICompletionProposal[])assistInfos.toArray(new ICompletionProposal[assistInfos.size()]);
+		return assistInfos.toArray(new ICompletionProposal[assistInfos.size()]);
 	}
 
 	/**
 	 * Returns directive attribute completion proposals.
 	 */
 	private ICompletionProposal[] getAttributes(String directive,String lastWord,int offset){
-		String attrs[] = (String[])ATTRIBUTES.get(directive);
+		String attrs[] = ATTRIBUTES.get(directive);
 		if(attrs==null){
 			return new ICompletionProposal[0];
 		}
 		
-		List assistInfos = new ArrayList();
+		List<ICompletionProposal> assistInfos = new ArrayList<ICompletionProposal>();
 		
 		for(int i=0;i<attrs.length;i++){
 			String attrName = attrs[i];
@@ -257,7 +257,7 @@ public class JSPDirectiveAssistProcessor implements IContentAssistProcessor {
 			}
 		}
 		
-		return (ICompletionProposal[])assistInfos.toArray(new ICompletionProposal[assistInfos.size()]);
+		return assistInfos.toArray(new ICompletionProposal[assistInfos.size()]);
 	}
 	
 	public IContextInformation[] computeContextInformation(ITextViewer viewer, int offset) {

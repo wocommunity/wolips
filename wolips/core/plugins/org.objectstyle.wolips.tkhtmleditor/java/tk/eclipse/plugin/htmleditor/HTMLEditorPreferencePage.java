@@ -42,66 +42,67 @@ public class HTMLEditorPreferencePage extends FieldEditorPreferencePage implemen
 	private BooleanFieldEditor showXMLErrors;
 	
 	public HTMLEditorPreferencePage() {
-		super(GRID); //$NON-NLS-1$
+		super(GRID); 
 		setPreferenceStore(HTMLPlugin.getDefault().getPreferenceStore());
 	}
 
 	public void init(IWorkbench workbench) {
 	}
 	
-	protected void createFieldEditors() {
+	@Override
+  protected void createFieldEditors() {
 		setTitle(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.Appearance"));
 		
 		Composite parent = getFieldEditorParent();
 		
 		colorForeground = new ColorFieldEditor(HTMLPlugin.PREF_COLOR_FG,
 				HTMLPlugin.getResourceString("HTMLEditorPreferencePage.ForegroundColor"),
-				parent); //$NON-NLS-1$
+				parent); 
 		addField(colorForeground);
 
 		colorBackground = new SystemColorFieldEditor(HTMLPlugin.PREF_COLOR_BG,HTMLPlugin.PREF_COLOR_BG_DEF,
 				HTMLPlugin.getResourceString("HTMLEditorPreferencePage.BackgroundColor"),
-				parent); //$NON-NLS-1$
+				parent); 
 		addField(colorBackground);
 	
 		colorTag = new ColorFieldEditor(HTMLPlugin.PREF_COLOR_TAG,
 					HTMLPlugin.getResourceString("HTMLEditorPreferencePage.TagColor"),
-					parent); //$NON-NLS-1$
+					parent); 
 		addField(colorTag);
 		
     colorAttribute = new ColorFieldEditor(HTMLPlugin.PREF_COLOR_ATTRIBUTE,
         HTMLPlugin.getResourceString("HTMLEditorPreferencePage.AttributeColor"),
-        parent); //$NON-NLS-1$
+        parent); 
     addField(colorAttribute);
     
     colorOGNL = new ColorFieldEditor(HTMLPlugin.PREF_COLOR_OGNL,
         HTMLPlugin.getResourceString("HTMLEditorPreferencePage.AttributeOGNLColor"),
-        parent); //$NON-NLS-1$
+        parent); 
     addField(colorOGNL);
     
     colorDynamic = new ColorFieldEditor(HTMLPlugin.PREF_COLOR_DYNAMIC,
         HTMLPlugin.getResourceString("HTMLEditorPreferencePage.AttributeDynamicColor"),
-        parent); //$NON-NLS-1$
+        parent); 
     addField(colorDynamic);
   
 		colorComment = new ColorFieldEditor(HTMLPlugin.PREF_COLOR_COMMENT,
 					HTMLPlugin.getResourceString("HTMLEditorPreferencePage.CommentColor"),
-					parent); //$NON-NLS-1$
+					parent); 
 		addField(colorComment);
 		
 		colorDoctype = new ColorFieldEditor(HTMLPlugin.PREF_COLOR_DOCTYPE,
 					HTMLPlugin.getResourceString("HTMLEditorPreferencePage.DocTypeColor"),
-					parent); //$NON-NLS-1$
+					parent); 
 		addField(colorDoctype);
 		
 		colorString = new ColorFieldEditor(HTMLPlugin.PREF_COLOR_STRING,
 					HTMLPlugin.getResourceString("HTMLEditorPreferencePage.StringColor"),
-					parent); //$NON-NLS-1$
+					parent); 
 		addField(colorString);
 		
 		colorScriptlet = new ColorFieldEditor(HTMLPlugin.PREF_COLOR_SCRIPT,
 					HTMLPlugin.getResourceString("HTMLEditorPreferencePage.ScriptColor"),
-					parent); //$NON-NLS-1$
+					parent); 
 		addField(colorScriptlet);
 		
 //		colorCssProperty = new ColorFieldEditor(HTMLPlugin.PREF_COLOR_CSSPROP,
@@ -151,7 +152,8 @@ public class HTMLEditorPreferencePage extends FieldEditorPreferencePage implemen
 			this.booleanName = booleanName;
 		}
 		
-		protected void doFillIntoGrid(Composite parent, int numColumns) {
+		@Override
+    protected void doFillIntoGrid(Composite parent, int numColumns) {
 			Control control = getLabelControl(parent);
 			GridData gd = new GridData();
 			gd.horizontalSpan = numColumns - 1;
@@ -174,25 +176,29 @@ public class HTMLEditorPreferencePage extends FieldEditorPreferencePage implemen
 			checkbox = new Button(composite,SWT.CHECK);
 			checkbox.setText(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.SystemDefault"));
 			checkbox.addSelectionListener(new SelectionAdapter(){
-				public void widgetSelected(SelectionEvent evt){
+				@Override
+        public void widgetSelected(SelectionEvent evt){
 					colorButton.setEnabled(!checkbox.getSelection());
 				}
 			});
 		}
 		
-		protected void doLoad() {
+		@Override
+    protected void doLoad() {
 			super.doLoad();
 			checkbox.setSelection(getPreferenceStore().getBoolean(booleanName));
 			colorButton.setEnabled(!checkbox.getSelection());
 		}
 		
-		protected void doLoadDefault() {
+		@Override
+    protected void doLoadDefault() {
 			super.doLoadDefault();
 			checkbox.setSelection(getPreferenceStore().getDefaultBoolean(booleanName));
 			colorButton.setEnabled(!checkbox.getSelection());
 		}
 
-		protected void doStore() {
+		@Override
+    protected void doStore() {
 			super.doStore();
 			getPreferenceStore().setValue(booleanName,checkbox.getSelection());
 		}
@@ -208,7 +214,8 @@ public class HTMLEditorPreferencePage extends FieldEditorPreferencePage implemen
 			this.parent = parent;
 		}
 		
-		protected void valueChanged(boolean oldValue, boolean newValue) {
+		@Override
+    protected void valueChanged(boolean oldValue, boolean newValue) {
 			super.valueChanged(oldValue, newValue);
 			softTabWidth.setEnabled(newValue,parent);
 		}
@@ -222,7 +229,8 @@ public class HTMLEditorPreferencePage extends FieldEditorPreferencePage implemen
 		}
 		
 		
-		protected void doFillIntoGrid(Composite parent, int numColumns) {
+		@Override
+    protected void doFillIntoGrid(Composite parent, int numColumns) {
 			super.doFillIntoGrid(parent, numColumns);
 			GridData gd = (GridData)getTextControl().getLayoutData();
 			gd.horizontalAlignment = 0;

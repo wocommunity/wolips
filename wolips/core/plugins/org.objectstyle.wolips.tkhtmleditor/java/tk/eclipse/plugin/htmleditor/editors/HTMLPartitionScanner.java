@@ -39,7 +39,7 @@ public class HTMLPartitionScanner extends RuleBasedPartitionScanner {
 		IToken javaScript    = new Token(JAVASCRIPT);
 		IToken htmlCss       = new Token(HTML_CSS);
 
-		List rules = new ArrayList();
+		List<IPredicateRule> rules = new ArrayList<IPredicateRule>();
 
 		rules.add(new MultiLineRule("<!--", "-->", htmlComment));
 		rules.add(new MultiLineRule("<%--", "--%>", htmlComment));
@@ -52,6 +52,6 @@ public class HTMLPartitionScanner extends RuleBasedPartitionScanner {
 		rules.add(new MultiLineRule("<style", "</style>", htmlCss));
 		rules.add(new TagRule(htmlTag));
 		
-		setPredicateRules((IPredicateRule[])rules.toArray(new IPredicateRule[rules.size()]));
+		setPredicateRules(rules.toArray(new IPredicateRule[rules.size()]));
 	}
 }

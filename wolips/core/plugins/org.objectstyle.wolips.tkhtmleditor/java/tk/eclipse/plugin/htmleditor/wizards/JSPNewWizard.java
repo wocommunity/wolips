@@ -15,8 +15,8 @@ import tk.eclipse.plugin.htmleditor.HTMLPlugin;
 
 public class JSPNewWizard extends Wizard implements INewWizard {
 	
-	private JSPNewWizardPage page;
-	private ISelection selection;
+	private JSPNewWizardPage _page;
+	private ISelection _selection;
 
 	public JSPNewWizard() {
 		super();
@@ -24,13 +24,15 @@ public class JSPNewWizard extends Wizard implements INewWizard {
 		setWindowTitle(HTMLPlugin.getResourceString("JSPNewWizardPage.Title"));
 	}
 	
-	public void addPages(){
-		page = new JSPNewWizardPage(selection);
-		addPage(page);
+	@Override
+  public void addPages(){
+		_page = new JSPNewWizardPage(_selection);
+		addPage(_page);
 	}
 	
-	public boolean performFinish() {
-		IFile file = page.createNewFile();
+	@Override
+  public boolean performFinish() {
+		IFile file = _page.createNewFile();
 		if(file==null){
 			return false;
 		}
@@ -45,6 +47,6 @@ public class JSPNewWizard extends Wizard implements INewWizard {
 	}
 
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		this.selection = selection;
+		this._selection = selection;
 	}
 }

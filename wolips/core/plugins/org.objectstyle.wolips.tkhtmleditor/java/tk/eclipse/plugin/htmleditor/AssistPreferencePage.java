@@ -34,7 +34,8 @@ public class AssistPreferencePage extends PreferencePage implements IWorkbenchPr
 		setPreferenceStore(HTMLPlugin.getDefault().getPreferenceStore());
 	}
 	
-	protected Control createContents(Composite parent) {
+	@Override
+  protected Control createContents(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout(2,false));
 		
@@ -47,7 +48,8 @@ public class AssistPreferencePage extends PreferencePage implements IWorkbenchPr
 		checkEnableAutoActivation.setLayoutData(createGridData(2));
 		checkEnableAutoActivation.addSelectionListener(
 				new SelectionAdapter(){
-					public void widgetSelected(SelectionEvent evt){
+					@Override
+          public void widgetSelected(SelectionEvent evt){
 						if(checkEnableAutoActivation.getSelection()){
 							textAutoActivationChars.setEnabled(true);
 							textAutoActivationDelay.setEnabled(true);
@@ -116,7 +118,8 @@ public class AssistPreferencePage extends PreferencePage implements IWorkbenchPr
 	public void init(IWorkbench workbench) {
 	}
 	
-	public boolean performOk() {
+	@Override
+  public boolean performOk() {
 		IPreferenceStore store = getPreferenceStore();
 		store.setValue(HTMLPlugin.PREF_ASSIST_CLOSE ,checkCloseTag.getSelection());
 		store.setValue(HTMLPlugin.PREF_ASSIST_AUTO  ,checkEnableAutoActivation.getSelection());
@@ -125,7 +128,8 @@ public class AssistPreferencePage extends PreferencePage implements IWorkbenchPr
 		return true;
 	}
 	
-	protected void performDefaults() {
+	@Override
+  protected void performDefaults() {
 		IPreferenceStore store = getPreferenceStore();
 		checkCloseTag.setSelection(store.getBoolean(HTMLPlugin.PREF_ASSIST_CLOSE));
 		checkEnableAutoActivation.setSelection(store.getBoolean(HTMLPlugin.PREF_ASSIST_AUTO));

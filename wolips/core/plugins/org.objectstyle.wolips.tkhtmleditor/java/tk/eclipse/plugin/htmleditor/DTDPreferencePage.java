@@ -50,7 +50,7 @@ public class DTDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	private Button buttonCache;
 	
 	private CustomSchemaTableViewer customSchemaViewer;
-	private List customSchemaModel = new ArrayList();
+	private List<ElementSchemaMapping> customSchemaModel = new ArrayList<ElementSchemaMapping>();
 	
 	public DTDPreferencePage() {
 		super(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.DTD"));
@@ -58,7 +58,8 @@ public class DTDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		setDescription(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.LocalDTD"));
 	}
 	
-	protected Control createContents(Composite parent) {
+	@Override
+  protected Control createContents(Composite parent) {
 		
 		TabFolder folder = new TabFolder(parent, SWT.NULL);
 		folder.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -76,7 +77,8 @@ public class DTDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		table.addSelectionListener(new SelectionAdapter(){
-			public void widgetSelected(SelectionEvent evt){
+			@Override
+      public void widgetSelected(SelectionEvent evt){
 				TableItem[] items = table.getSelection();
 				boolean enable = false;
 				if(items.length > 0){
@@ -108,7 +110,8 @@ public class DTDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		buttonAdd.setLayoutData(createButtonGridData());
 		buttonAdd.addSelectionListener(
 				new SelectionAdapter(){
-					public void widgetSelected(SelectionEvent evt){
+					@Override
+          public void widgetSelected(SelectionEvent evt){
 						DTDDialog dialog = new DTDDialog(getShell());
 						if(dialog.open()==Dialog.OK){
 							TableItem item = new TableItem(table,SWT.NONE);
@@ -122,7 +125,8 @@ public class DTDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		buttonEdit.setEnabled(false);
 		buttonEdit.addSelectionListener(
 				new SelectionAdapter(){
-					public void widgetSelected(SelectionEvent evt){
+					@Override
+          public void widgetSelected(SelectionEvent evt){
 						TableItem[] items = table.getSelection();
 						if(items.length > 0){
 							String uri  = items[0].getText(0);
@@ -140,7 +144,8 @@ public class DTDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		buttonRemove.setEnabled(false);
 		buttonRemove.addSelectionListener(
 				new SelectionAdapter(){
-					public void widgetSelected(SelectionEvent evt){
+					@Override
+          public void widgetSelected(SelectionEvent evt){
 						int[] indices = table.getSelectionIndices();
 						table.remove(indices);
 					}
@@ -166,7 +171,8 @@ public class DTDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		return composite;
 	}
 	
-	public boolean performOk() {
+	@Override
+  public boolean performOk() {
 		IPreferenceStore store = getPreferenceStore();
 		TableItem[] items = table.getItems();
 		StringBuffer uri  = new StringBuffer();
@@ -186,7 +192,8 @@ public class DTDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		return true;
 	}
 	
-	protected void performDefaults() {
+	@Override
+  protected void performDefaults() {
 		IPreferenceStore store = getPreferenceStore();
 		table.removeAll();
 		
@@ -216,7 +223,8 @@ public class DTDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 			super(model, parent);
 		}
 		
-		protected ITableLabelProvider createLabelProvider() {
+		@Override
+    protected ITableLabelProvider createLabelProvider() {
 			return new ITableLabelProvider(){
 				public Image getColumnImage(Object element, int columnIndex) {
 					return null;
@@ -246,7 +254,8 @@ public class DTDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 			};
 		}
 
-		protected Object doAdd() {
+		@Override
+    protected Object doAdd() {
 			CustomSchemaDialog dialog = new CustomSchemaDialog(getShell());
 			if(dialog.open()==Dialog.OK){
 				ElementSchemaMapping mapping = new ElementSchemaMapping(
@@ -256,7 +265,8 @@ public class DTDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 			return null;
 		}
 
-		protected void doEdit(Object obj) {
+		@Override
+    protected void doEdit(Object obj) {
 			ElementSchemaMapping mapping = (ElementSchemaMapping)obj;
 			CustomSchemaDialog dialog = new CustomSchemaDialog(
 					getShell(), mapping.getRootElement(), mapping.getFilePath());
@@ -266,12 +276,13 @@ public class DTDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 			}
 		}
 
-		protected void initTableViewer(TableViewer viewer) {
-			Table table = viewer.getTable();
-			TableColumn col1 = new TableColumn(table,SWT.LEFT);
+		@Override
+    protected void initTableViewer(TableViewer viewer) {
+			Table viewerTable = viewer.getTable();
+			TableColumn col1 = new TableColumn(viewerTable,SWT.LEFT);
 			col1.setText(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.RootElement"));
 			col1.setWidth(100);
-			TableColumn col2 = new TableColumn(table,SWT.LEFT);
+			TableColumn col2 = new TableColumn(viewerTable,SWT.LEFT);
 			col2.setText(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.LocalPath"));
 			col2.setWidth(150);
 		}
@@ -303,7 +314,8 @@ public class DTDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 			super(parentShell, name, path);
 		}
 		
-		protected String getNameLabel(){
+		@Override
+    protected String getNameLabel(){
 			return HTMLPlugin.getResourceString("HTMLEditorPreferencePage.Dialog.RootElement");
 		}
 	}
@@ -328,7 +340,8 @@ public class DTDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 			this.path = path;
 		}
 		
-		protected Point getInitialSize() {
+		@Override
+    protected Point getInitialSize() {
 			Point size = super.getInitialSize();
 			size.x = 400;
 			return size;
@@ -338,7 +351,8 @@ public class DTDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 			return HTMLPlugin.getResourceString("HTMLEditorPreferencePage.Dialog.Uri");
 		}
 		
-		protected Control createDialogArea(Composite parent) {
+		@Override
+    protected Control createDialogArea(Composite parent) {
 			getShell().setText(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.DTD"));
 			
 			Composite container = new Composite(parent,SWT.NULL);
@@ -366,7 +380,8 @@ public class DTDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 			button.setText("...");
 			button.addSelectionListener(
 					new SelectionAdapter(){
-						public void widgetSelected(SelectionEvent evt){
+						@Override
+            public void widgetSelected(SelectionEvent evt){
 							FileDialog openDialog = new FileDialog(getShell(),SWT.OPEN);
 							openDialog.setFileName(textPath.getText());
 							String openFile = openDialog.open();
@@ -382,7 +397,8 @@ public class DTDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 			return container;
 		}
 		
-		protected void validate(){
+		@Override
+    protected void validate(){
 			if(textName.getText().equals("")){
 				setErrorMessage(HTMLPlugin.createMessage(
 					HTMLPlugin.getResourceString("Error.Required"),
@@ -399,7 +415,8 @@ public class DTDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 			setErrorMessage(null);
 		}
 		
-		protected void okPressed() {
+		@Override
+    protected void okPressed() {
 			name = textName.getText();
 			path = textPath.getText();
 			super.okPressed();

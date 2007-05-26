@@ -11,7 +11,8 @@ import org.eclipse.ui.editors.text.TextFileDocumentProvider;
  */
 public class CSSTextDocumentProvider extends TextFileDocumentProvider {
 	
-	protected FileInfo createFileInfo(Object element) throws CoreException {
+	@Override
+  protected FileInfo createFileInfo(Object element) throws CoreException {
 		FileInfo info = super.createFileInfo(element);
 		if(info==null){
 			info = createEmptyFileInfo();

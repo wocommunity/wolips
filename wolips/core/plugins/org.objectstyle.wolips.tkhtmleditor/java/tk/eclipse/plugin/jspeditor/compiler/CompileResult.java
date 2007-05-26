@@ -31,7 +31,8 @@ public class CompileResult {
 		return this.footer;
 	}
 	
-	public String toString(){
+	@Override
+  public String toString(){
 		return header + body + footer;
 	}
 	

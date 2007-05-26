@@ -10,7 +10,8 @@ import tk.eclipse.plugin.htmleditor.editors.HTMLPartitionScanner;
 
 public class DTDFileDocumentProvider extends FileDocumentProvider {
 	
-	public IDocument createDocument(Object element) throws CoreException {
+	@Override
+  public IDocument createDocument(Object element) throws CoreException {
 		IDocument document = super.createDocument(element);
 		if (document != null) {
 			IDocumentPartitioner partitioner =

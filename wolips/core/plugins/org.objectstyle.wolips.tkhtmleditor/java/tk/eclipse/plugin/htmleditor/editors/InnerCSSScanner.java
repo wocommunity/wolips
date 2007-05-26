@@ -3,6 +3,7 @@ package tk.eclipse.plugin.htmleditor.editors;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.MultiLineRule;
 import org.eclipse.jface.text.rules.SingleLineRule;
@@ -23,11 +24,12 @@ public class InnerCSSScanner extends CSSBlockScanner {
 		super(colorProvider);
 	}
 	
-	protected List createRules(ColorProvider colorProvider) {
+	@Override
+  protected List<IRule> createRules(ColorProvider colorProvider) {
 		IToken tag = colorProvider.getToken(HTMLPlugin.PREF_COLOR_TAG);
 		IToken comment = colorProvider.getToken(HTMLPlugin.PREF_COLOR_CSSCOMMENT);
 		
-		List rules = new ArrayList();
+		List<IRule> rules = new ArrayList<IRule>();
 		rules.add(new SingleLineRule("<style", ">", tag));
 		rules.add(new SingleLineRule("</style", ">", tag));
 		rules.add(new MultiLineRule("/*", "*/", comment));

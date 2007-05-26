@@ -369,12 +369,10 @@ public class HTMLUtil {
 	 * 
 	 * @param prop the list of ICompletionProposal
 	 */
-	public static void sortCompilationProposal(List prop){
-		Collections.sort(prop,new Comparator(){
-			public int compare(Object o1,Object o2){
-				ICompletionProposal c1 = (ICompletionProposal)o1;
-				ICompletionProposal c2 = (ICompletionProposal)o2;
-				return c1.getDisplayString().compareTo(c2.getDisplayString());
+	public static void sortCompilationProposal(List<ICompletionProposal> prop){
+		Collections.sort(prop,new Comparator<ICompletionProposal>(){
+			public int compare(ICompletionProposal o1, ICompletionProposal o2){
+				return o1.getDisplayString().compareTo(o2.getDisplayString());
 			}
 		});
 	}
@@ -410,7 +408,7 @@ public class HTMLUtil {
 	public static void addMarker(IResource resource, int type, int line, String message){
 		try {
 			IMarker marker = resource.createMarker(IMarker.PROBLEM);
-			Map map = new HashMap();
+			Map<String, Object> map = new HashMap<String, Object>();
 			map.put(IMarker.SEVERITY, new Integer(type));
 			map.put(IMarker.MESSAGE, message);
 			map.put(IMarker.LINE_NUMBER,new Integer(line));
@@ -433,7 +431,7 @@ public class HTMLUtil {
 	public static void addTaskMarker(IResource resource,int priority, int line, String message){
 		try {
 			IMarker marker = resource.createMarker(IMarker.TASK);
-			Map map = new HashMap();
+			Map<String, Object> map = new HashMap<String, Object>();
 			map.put(IMarker.PRIORITY, new Integer(priority));
 			map.put(IMarker.MESSAGE, message);
 			map.put(IMarker.LINE_NUMBER,new Integer(line));
@@ -456,7 +454,7 @@ public class HTMLUtil {
 	public static void addMarker(IResource resource,int type, int line, int offset,int length,String message){
 		try {
 			IMarker marker = resource.createMarker(IMarker.PROBLEM);
-			Map map = new HashMap();
+			Map<String, Object> map = new HashMap<String, Object>();
 			map.put(IMarker.SEVERITY, new Integer(type));
 			map.put(IMarker.MESSAGE, message);
 			map.put(IMarker.CHAR_START,new Integer(offset));
@@ -596,7 +594,7 @@ public class HTMLUtil {
 		return editorPart;
 	}
 	
-	private static HashMap unitMap = new HashMap();
+	private static HashMap<IJavaProject, ICompilationUnit> unitMap = new HashMap<IJavaProject, ICompilationUnit>();
 	
 	/**
 	 * Creates the <code>ICompilationUnit</code> to use temporary.
@@ -610,7 +608,7 @@ public class HTMLUtil {
 			IJavaProject project) throws JavaModelException {
 		
 		if(unitMap.get(project) != null){
-			return (ICompilationUnit)unitMap.get(project);
+			return unitMap.get(project);
 		}
 		
 		IPackageFragment root = project.getPackageFragments()[0];

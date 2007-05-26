@@ -157,7 +157,7 @@ public class PBDotProjectAdapter extends AbstractFileAdapter implements IPBDotPr
 	 * 
 	 */
 	public void addLocalFrameworkSectionToPBProject() {
-		List actualFrameworkSearch = this.pbProject.getFrameworkSearch();
+		List<String> actualFrameworkSearch = this.pbProject.getFrameworkSearch();
 		if (actualFrameworkSearch == null) {
 			this.pbProject.setFrameworkSearch(new ArrayList());
 			actualFrameworkSearch = this.pbProject.getFrameworkSearch();
@@ -174,7 +174,7 @@ public class PBDotProjectAdapter extends AbstractFileAdapter implements IPBDotPr
 		}
 	}
 
-	private void addToListIfListNotContains(List list, Object object) {
+	private void addToListIfListNotContains(List<Object> list, Object object) {
 		if (!list.contains(object)) {
 			list.add(object);
 			this.saveRequired = true;

@@ -8,21 +8,21 @@ import tk.eclipse.plugin.jspeditor.editors.JSPInfo;
 
 public class HTMLConverter extends AbstractCustomTagConverter {
 	
-	private String tagName = null;
+	private String _tagName = null;
 	
 	public HTMLConverter(String tagName){
-		this.tagName = tagName;
+		this._tagName = tagName;
 	}
 	
 	protected String convertStartTag(Map attributes) {
-		return "<" + createTag(tagName,attributes) + ">";
+		return "<" + createTag(_tagName,attributes) + ">";
 	}
 	
 	protected String convertEndTag() {
-		if(tagName.indexOf(" ")!=-1){
-			return "</" + tagName.substring(0,tagName.indexOf(" ")) + ">";
+		if(_tagName.indexOf(" ")!=-1){
+			return "</" + _tagName.substring(0,_tagName.indexOf(" ")) + ">";
 		} else {
-			return "</" + tagName + ">";
+			return "</" + _tagName + ">";
 		}
 	}
 	

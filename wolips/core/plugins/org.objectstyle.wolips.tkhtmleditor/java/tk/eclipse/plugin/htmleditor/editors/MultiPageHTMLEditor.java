@@ -32,25 +32,25 @@ import tk.eclipse.plugin.htmleditor.HTMLPlugin;
 public class MultiPageHTMLEditor extends MultiPageEditorPart implements IResourceChangeListener, HTMLEditorPart {
 
 	/** HTML source editor */
-	private HTMLSourceEditor editor;
+	private HTMLSourceEditor _editor;
 	/** Browser widget for preview */
-	private Browser browser;
+	private Browser _browser;
 	/** wrapper */
-	private HTMLEditor wrapper;
+	private HTMLEditor _wrapper;
 	
 	public MultiPageHTMLEditor(HTMLEditor wrapper,HTMLSourceEditor editor) {
 		super();
-		this.wrapper = wrapper;
-		this.editor  = editor;
+		this._wrapper = wrapper;
+		this._editor  = editor;
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 	}
 	
 	public Browser getBrowser() {
-		return browser;
+		return _browser;
 	}
 	
 	public HTMLSourceEditor getSourceEditor() {
-		return editor;
+		return _editor;
 	}
 	
 //	protected IEditorSite createSite(IEditorPart editor) {
@@ -59,7 +59,7 @@ public class MultiPageHTMLEditor extends MultiPageEditorPart implements IResourc
 	
 	private void createPage0() {
 		try {
-			int index = addPage(editor, getEditorInput());
+			int index = addPage(_editor, getEditorInput());
 			setPageText(index, HTMLPlugin.getResourceString("MultiPageHTMLEditor.Source")); //$NON-NLS-1$
 			setPartName(getEditorInput().getName());
 		} catch (PartInitException e) {
@@ -70,21 +70,23 @@ public class MultiPageHTMLEditor extends MultiPageEditorPart implements IResourc
 	
 	private void createPage1() {
 		if(isFileEditorInput()){
-			browser = new Browser(getContainer(),SWT.NONE);
-			int index = addPage(browser);
+			_browser = new Browser(getContainer(),SWT.NONE);
+			int index = addPage(_browser);
 			setPageText(index, HTMLPlugin.getResourceString("MultiPageHTMLEditor.Preview")); //$NON-NLS-1$
 		}
 	}
 
-	protected void createPages() {
+	@Override
+  protected void createPages() {
 		createPage0();
 		createPage1();
 	}
 	
-	public void dispose() {
+	@Override
+  public void dispose() {
 		// テンポラリファイルがあったら削除する
 		if(isFileEditorInput()){
-			File tmpFile = editor.getTempFile();
+			File tmpFile = _editor.getTempFile();
 			if(tmpFile.exists()){
 				tmpFile.delete();
 			}
@@ -93,11 +95,13 @@ public class MultiPageHTMLEditor extends MultiPageEditorPart implements IResourc
 		super.dispose();
 	}
 	
-	public void doSave(IProgressMonitor monitor) {
+	@Override
+  public void doSave(IProgressMonitor monitor) {
 		getEditor(0).doSave(monitor);
 	}
 	
-	public void doSaveAs() {
+	@Override
+  public void doSaveAs() {
 		IEditorPart editor = getEditor(0);
 		editor.doSaveAs();
 		setInput(editor.getEditorInput());
@@ -109,34 +113,37 @@ public class MultiPageHTMLEditor extends MultiPageEditorPart implements IResourc
 		IDE.gotoMarker(getEditor(0), marker);
 	}
 	
-	public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
+	@Override
+  public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
 		super.init(site, editorInput);
 	}
 	
 	public boolean isFileEditorInput(){
-		return editor.isFileEditorInput();
+		return _editor.isFileEditorInput();
 	}
 	
-	public boolean isSaveAsAllowed() {
+	@Override
+  public boolean isSaveAsAllowed() {
 		return true;
 	}
 	
-	protected void pageChange(int newPageIndex) {
+	@Override
+  protected void pageChange(int newPageIndex) {
 		super.pageChange(newPageIndex);
 		if(newPageIndex==1){
-		    wrapper.updatePreview();
+		    _wrapper.updatePreview();
 		}
 	}
 	
 	/** Change to the source editor, and move calet to the specified offset. */
 	public void setOffset(int offset){
 		setActivePage(0);
-		editor.selectAndReveal(offset,0);
+		_editor.selectAndReveal(offset,0);
 	}
 	
 	public void resourceChanged(final IResourceChangeEvent event){
 		if(event.getType() == IResourceChangeEvent.POST_CHANGE){
-			final IEditorInput input = editor.getEditorInput();
+			final IEditorInput input = _editor.getEditorInput();
 			if(input instanceof IFileEditorInput){
 				Display.getDefault().asyncExec(new Runnable(){
 					public void run(){
@@ -153,13 +160,15 @@ public class MultiPageHTMLEditor extends MultiPageEditorPart implements IResourc
 		}
 	}
 	
-	public Object getAdapter(Class adapter) {
-		return editor.getAdapter(adapter);
+	@Override
+  public Object getAdapter(Class adapter) {
+		return _editor.getAdapter(adapter);
 	}
 	
-	protected void firePropertyChange(int propertyId) {
+	@Override
+  protected void firePropertyChange(int propertyId) {
 		super.firePropertyChange(propertyId);
-		wrapper.firePropertyChange2(propertyId);
+		_wrapper.firePropertyChange2(propertyId);
 	}
 	
 //	/** IEditorSite for the source editor. */

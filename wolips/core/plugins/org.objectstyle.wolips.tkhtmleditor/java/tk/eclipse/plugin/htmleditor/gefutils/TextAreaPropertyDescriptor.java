@@ -22,7 +22,8 @@ public class TextAreaPropertyDescriptor extends
 		super(id, displayName);
 	}
 
-	protected Object openDialogBox(Object obj, Control cellEditorWindow) {
+	@Override
+  protected Object openDialogBox(Object obj, Control cellEditorWindow) {
 		String value = (String)obj;
 		TextAreaDialog dialog = new TextAreaDialog(cellEditorWindow.getShell(), value);
 		if(dialog.open()==TextAreaDialog.OK){
@@ -43,11 +44,13 @@ public class TextAreaPropertyDescriptor extends
 			setShellStyle(getShellStyle()|SWT.RESIZE);
 		}
 		
-		protected Point getInitialSize() {
+		@Override
+    protected Point getInitialSize() {
 			return new Point(350, 300);
 		}
 		
-		protected Control createDialogArea(Composite parent) {
+		@Override
+    protected Control createDialogArea(Composite parent) {
 			getShell().setText(getDisplayName());
 			
 			Composite composite = new Composite(parent, SWT.NULL);
@@ -61,7 +64,8 @@ public class TextAreaPropertyDescriptor extends
 			return composite;
 		}
 
-		protected void okPressed() {
+		@Override
+    protected void okPressed() {
 			result = this.text.getText();
 			super.okPressed();
 		}

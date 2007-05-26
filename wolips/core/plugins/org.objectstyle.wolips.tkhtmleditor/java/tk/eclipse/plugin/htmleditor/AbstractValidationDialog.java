@@ -25,7 +25,8 @@ public abstract class AbstractValidationDialog extends Dialog {
 		setShellStyle(getShellStyle()|SWT.RESIZE);
 	}
 	
-	protected Control createContents(Composite parent) {
+	@Override
+  protected Control createContents(Composite parent) {
 		// create the top level composite for the dialog
 		Composite composite = new Composite(parent, 0);
 		GridLayout layout = new GridLayout();

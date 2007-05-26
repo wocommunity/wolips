@@ -34,7 +34,8 @@ public abstract class AbstractDialogPropertyDescriptor extends PropertyDescripto
 		super(id, displayName);
 	}
 	
-	public CellEditor createPropertyEditor(Composite parent) {
+	@Override
+  public CellEditor createPropertyEditor(Composite parent) {
 		ValueCellEditor editor = new ValueCellEditor(parent);
 		if (getValidator() != null){
 			editor.setValidator(getValidator());
@@ -46,29 +47,31 @@ public abstract class AbstractDialogPropertyDescriptor extends PropertyDescripto
 	
 	protected class ValueCellEditor extends CellEditor {
 
-		private Text text;
-		private Composite editor;
-		private Button button;
-		private boolean isSelection = false;
-		private boolean isDeleteable = false;
-		private boolean isSelectable = false;
-		private Object value = null;
+		private Text _text;
+		private Composite _editor;
+		private Button _button;
+		private boolean _isSelection = false;
+		private boolean _isDeleteable = false;
+		private boolean _isSelectable = false;
+		private Object _value = null;
 		
 		private class DialogCellLayout extends Layout {
-			public void layout(Composite editor, boolean force) {
+			@Override
+      public void layout(Composite editor, boolean force) {
 				Rectangle bounds = editor.getClientArea();
-				Point size = button.computeSize(SWT.DEFAULT, SWT.DEFAULT, force);
-				if (text != null){
-					text.setBounds(0, 0, bounds.width-size.x, bounds.height);
+				Point size = _button.computeSize(SWT.DEFAULT, SWT.DEFAULT, force);
+				if (_text != null){
+					_text.setBounds(0, 0, bounds.width-size.x, bounds.height);
 				}
-				button.setBounds(bounds.width-size.x, 0, size.x, bounds.height);
+				_button.setBounds(bounds.width-size.x, 0, size.x, bounds.height);
 			}
-			public Point computeSize(Composite editor, int wHint, int hHint, boolean force) {
+			@Override
+      public Point computeSize(Composite editor, int wHint, int hHint, boolean force) {
 				if (wHint != SWT.DEFAULT && hHint != SWT.DEFAULT){
 					return new Point(wHint, hHint);
 				}
-				Point contentsSize = text.computeSize(SWT.DEFAULT, SWT.DEFAULT, force); 
-				Point buttonSize   = button.computeSize(SWT.DEFAULT, SWT.DEFAULT, force);
+				Point contentsSize = _text.computeSize(SWT.DEFAULT, SWT.DEFAULT, force); 
+				Point buttonSize   = _button.computeSize(SWT.DEFAULT, SWT.DEFAULT, force);
 				
 				Point result = new Point(buttonSize.x,Math.max(contentsSize.y, buttonSize.y));
 				return result;
@@ -79,61 +82,68 @@ public abstract class AbstractDialogPropertyDescriptor extends PropertyDescripto
 			super(parent, SWT.NONE);
 		}
 		
-		protected Control createControl(Composite parent) {
+		@Override
+    protected Control createControl(Composite parent) {
 	
 			Font font = parent.getFont();
 			Color bg  = parent.getBackground();
 	
-			editor = new Composite(parent, getStyle());
-			editor.setFont(font);
-			editor.setBackground(bg);
-			editor.setLayout(new DialogCellLayout());
+			_editor = new Composite(parent, getStyle());
+			_editor.setFont(font);
+			_editor.setBackground(bg);
+			_editor.setLayout(new DialogCellLayout());
 			
-			text = new Text(editor,SWT.NULL);
-		    text.addKeyListener(new KeyAdapter() {
-		    	public void keyReleased(KeyEvent e) {
+			_text = new Text(_editor,SWT.NULL);
+		    _text.addKeyListener(new KeyAdapter() {
+		    	@Override
+          public void keyReleased(KeyEvent e) {
 		    		if (e.character == '\u001b') { // Escape
 						fireCancelEditor();
 					} else if (e.character == '\r'){ // Enter
-						Object newValue = text.getText();
+						Object newValue = _text.getText();
 						updateValue(newValue);
 					}
 		    	}
-		    	public void keyPressed(KeyEvent e) {
+		    	@Override
+          public void keyPressed(KeyEvent e) {
 					checkSelection();
 					checkDeleteable();
 					checkSelectable();
 		    	}
 		    });
-			text.addMouseListener(new MouseAdapter() {
-				public void mouseUp(MouseEvent e) {
+			_text.addMouseListener(new MouseAdapter() {
+				@Override
+        public void mouseUp(MouseEvent e) {
 					checkSelection();
 					checkDeleteable();
 					checkSelectable();
 				}
 			});
-			text.addFocusListener(new FocusAdapter() {
-				public void focusLost(FocusEvent e) {
-					Object newValue = text.getText();
+			_text.addFocusListener(new FocusAdapter() {
+				@Override
+        public void focusLost(FocusEvent e) {
+					Object newValue = _text.getText();
 					updateValue(newValue);
 				}
 			});
-			text.setFont(parent.getFont());
-			text.setBackground(parent.getBackground());
+			_text.setFont(parent.getFont());
+			_text.setBackground(parent.getBackground());
 			
-			button = new Button(editor, SWT.DOWN);
-			button.setText("...");
-			button.setFont(font);
-			button.addKeyListener(new KeyAdapter() {
-				public void keyReleased(KeyEvent e) {
+			_button = new Button(_editor, SWT.DOWN);
+			_button.setText("...");
+			_button.setFont(font);
+			_button.addKeyListener(new KeyAdapter() {
+				@Override
+        public void keyReleased(KeyEvent e) {
 					if (e.character == '\u001b') { // Escape
 						fireCancelEditor();
 					}
 				}
 			});
-			button.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent event) {
-					Object newValue = openDialogBox(editor);
+			_button.addSelectionListener(new SelectionAdapter() {
+				@Override
+        public void widgetSelected(SelectionEvent event) {
+					Object newValue = openDialogBox(_editor);
 					if (newValue != null) {
 						updateValue(newValue);
 					}
@@ -141,9 +151,9 @@ public abstract class AbstractDialogPropertyDescriptor extends PropertyDescripto
 			});
 			
 			setValueValid(true);
-			updateContents(value);
+			updateContents(_value);
 			
-			return editor;
+			return _editor;
 		}
 		
 		private void updateValue(Object newValue){
@@ -159,12 +169,14 @@ public abstract class AbstractDialogPropertyDescriptor extends PropertyDescripto
 			}
 		}
 		
-		protected Object doGetValue() {
-			return value;
+		@Override
+    protected Object doGetValue() {
+			return _value;
 		}
 
-		protected void doSetFocus() {
-		    button.setFocus();
+		@Override
+    protected void doSetFocus() {
+		    _button.setFocus();
 //			text.setFocus();
 //			text.selectAll();
 			checkSelection();
@@ -172,94 +184,103 @@ public abstract class AbstractDialogPropertyDescriptor extends PropertyDescripto
 			checkSelectable();
 		}
 
-		protected void doSetValue(Object value) {
-			this.value = value;
+		@Override
+    protected void doSetValue(Object value) {
+			this._value = value;
 			updateContents(value);
 		}
 		
 		
 		private void checkDeleteable() {
-			boolean oldIsDeleteable = isDeleteable;
-			isDeleteable = isDeleteEnabled();
-			if (oldIsDeleteable != isDeleteable) {
+			boolean oldIsDeleteable = _isDeleteable;
+			_isDeleteable = isDeleteEnabled();
+			if (oldIsDeleteable != _isDeleteable) {
 				fireEnablementChanged(DELETE);
 			}
 		}
 
 		private void checkSelectable() {
-			boolean oldIsSelectable = isSelectable;
-			isSelectable = isSelectAllEnabled();
-			if (oldIsSelectable != isSelectable) {
+			boolean oldIsSelectable = _isSelectable;
+			_isSelectable = isSelectAllEnabled();
+			if (oldIsSelectable != _isSelectable) {
 				fireEnablementChanged(SELECT_ALL);
 			}
 		}
 
 		private void checkSelection() {
-			boolean oldIsSelection = isSelection;
-			isSelection = text.getSelectionCount() > 0;
-			if (oldIsSelection != isSelection) {
+			boolean oldIsSelection = _isSelection;
+			_isSelection = _text.getSelectionCount() > 0;
+			if (oldIsSelection != _isSelection) {
 				fireEnablementChanged(COPY);
 				fireEnablementChanged(CUT);
 			}
 		}
 		
-		public boolean isCopyEnabled() {
-			if (text == null || text.isDisposed())
+		@Override
+    public boolean isCopyEnabled() {
+			if (_text == null || _text.isDisposed())
 				return false;
-			return text.getSelectionCount() > 0;
+			return _text.getSelectionCount() > 0;
 		}
 
-		public boolean isCutEnabled() {
-			if (text == null || text.isDisposed())
+		@Override
+    public boolean isCutEnabled() {
+			if (_text == null || _text.isDisposed())
 				return false;
-			return text.getSelectionCount() > 0;
+			return _text.getSelectionCount() > 0;
 		}
 
-		public boolean isDeleteEnabled() {
-			if (text == null || text.isDisposed())
+		@Override
+    public boolean isDeleteEnabled() {
+			if (_text == null || _text.isDisposed())
 				return false;
-			return text.getSelectionCount() > 0 || text.getCaretPosition() < text.getCharCount();
+			return _text.getSelectionCount() > 0 || _text.getCaretPosition() < _text.getCharCount();
 		}
 
-		public boolean isPasteEnabled() {
-			if (text == null || text.isDisposed())
+		@Override
+    public boolean isPasteEnabled() {
+			if (_text == null || _text.isDisposed())
 				return false;
 			return true;
 		}
 
 		public boolean isSaveAllEnabled() {
-			if (text == null || text.isDisposed())
+			if (_text == null || _text.isDisposed())
 				return false;
 			return true;
 		}
 
-		public boolean isSelectAllEnabled() {
-			if (text == null || text.isDisposed())
+		@Override
+    public boolean isSelectAllEnabled() {
+			if (_text == null || _text.isDisposed())
 				return false;
-			return text.getCharCount() > 0;
+			return _text.getCharCount() > 0;
 		}
 
-		public void performCopy() {
-			text.copy();
+		@Override
+    public void performCopy() {
+			_text.copy();
 		}
 
-		public void performCut() {
-			text.cut();
+		@Override
+    public void performCut() {
+			_text.cut();
 			checkSelection(); 
 			checkDeleteable();
 			checkSelectable();
 		}
 
-		public void performDelete() {
-			if (text.getSelectionCount() > 0)
+		@Override
+    public void performDelete() {
+			if (_text.getSelectionCount() > 0)
 				// remove the contents of the current selection
-				text.insert(""); //$NON-NLS-1$
+				_text.insert(""); //$NON-NLS-1$
 			else {
 				// remove the next character
-				int pos = text.getCaretPosition();
-				if (pos < text.getCharCount()) {
-					text.setSelection(pos, pos + 1);
-					text.insert(""); //$NON-NLS-1$
+				int pos = _text.getCaretPosition();
+				if (pos < _text.getCharCount()) {
+					_text.setSelection(pos, pos + 1);
+					_text.insert(""); //$NON-NLS-1$
 				}
 			}
 			checkSelection(); 
@@ -267,32 +288,34 @@ public abstract class AbstractDialogPropertyDescriptor extends PropertyDescripto
 			checkSelectable();
 		}
 
-		public void performPaste() {
-			text.paste();
+		@Override
+    public void performPaste() {
+			_text.paste();
 			checkSelection(); 
 			checkDeleteable();
 			checkSelectable();
 		}
 
-		public void performSelectAll() {
-			text.selectAll();
+		@Override
+    public void performSelectAll() {
+			_text.selectAll();
 			checkSelection(); 
 			checkDeleteable();
 		}
 		
 		protected Object openDialogBox(Control cellEditorWindow){
-			return AbstractDialogPropertyDescriptor.this.openDialogBox(value, cellEditorWindow);
+			return AbstractDialogPropertyDescriptor.this.openDialogBox(_value, cellEditorWindow);
 		}
 		
 		protected void updateContents(Object value) {
-			if (this.text == null){
+			if (this._text == null){
 				return;
 			}	
 			String text = "";//$NON-NLS-1$
 			if (value != null){
 				text = value.toString();
 			}
-			this.text.setText(text);
+			this._text.setText(text);
 		}
 	}
 

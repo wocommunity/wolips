@@ -19,14 +19,16 @@ public class XMLOutlinePage extends HTMLOutlinePage {
 		super(editor);
 	}
 	
-	protected Image getNodeImage(FuzzyXMLNode element){
+	@Override
+  protected Image getNodeImage(FuzzyXMLNode element){
 		if(element instanceof FuzzyXMLElement){
 			return HTMLPlugin.getDefault().getImageRegistry().get(HTMLPlugin.ICON_TAG);
 		}
 		return super.getNodeImage(element);
 	}
 	
-	protected boolean isHTML(){
+	@Override
+  protected boolean isHTML(){
 		return false;
 	}
 }

@@ -13,6 +13,8 @@ import org.eclipse.jdt.ui.text.java.IJavaCompletionProposal;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 
+import tk.eclipse.plugin.htmleditor.assist.FieldAssistUtils.ContentProposalImpl;
+
 /**
  * 
  * @author Naoki Takezoe
@@ -46,7 +48,7 @@ public class PackageNameContentProposalProvider implements IContentProposalProvi
 			FieldAssistUtils.setContentsToCU(unit, source);
 			unit.codeComplete(source.length(), collector, DefaultWorkingCopyOwner.PRIMARY);
 			IJavaCompletionProposal[] proposals = collector.getJavaCompletionProposals();
-			List result = new ArrayList();
+			List<ContentProposalImpl> result = new ArrayList<ContentProposalImpl>();
 			
 			for(int j=0;j<proposals.length;j++){
 				if(proposals[j].getImage()!=null){
@@ -64,7 +66,7 @@ public class PackageNameContentProposalProvider implements IContentProposalProvi
 				}
 			}
 			
-			return (IContentProposal[])result.toArray(new IContentProposal[result.size()]);
+			return result.toArray(new IContentProposal[result.size()]);
 			
 		} catch(Exception ex){
 			ex.printStackTrace();

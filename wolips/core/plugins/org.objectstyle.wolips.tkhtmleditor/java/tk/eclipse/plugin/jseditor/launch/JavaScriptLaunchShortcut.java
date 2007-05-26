@@ -80,7 +80,7 @@ public class JavaScriptLaunchShortcut implements ILaunchShortcut {
 		try {
 			HTMLProjectParams params = new HTMLProjectParams(file.getProject());
 			String[] javaScripts = params.getJavaScripts();
-			List includes = new ArrayList();
+			List<String> includes = new ArrayList<String>();
 			for(int i=0;i<javaScripts.length;i++){
 				includes.add(javaScripts[i]);
 			}
