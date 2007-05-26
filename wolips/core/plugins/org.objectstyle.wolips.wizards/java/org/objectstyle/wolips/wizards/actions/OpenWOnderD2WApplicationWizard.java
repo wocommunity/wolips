@@ -57,14 +57,14 @@
 package org.objectstyle.wolips.wizards.actions;
 
 import org.eclipse.ui.INewWizard;
-import org.objectstyle.wolips.wizards.WOnderApplicationWizard;
+import org.objectstyle.wolips.wizards.WOnderFrameworkWizard;
 
 /**
  * @author uli
  */
-public class OpenWOnderApplicationWizard extends AbstractOpenWizardAction {
+public class OpenWOnderD2WApplicationWizard extends AbstractOpenWizardAction {
 
 	protected INewWizard createWizard() {
-		return new WOnderApplicationWizard();
+		return new WOnderFrameworkWizard();
 	}
 }
