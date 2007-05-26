@@ -230,7 +230,9 @@ public class FuzzyXMLParser {
       //docElement.appendChild(root);
     }
     else {
-      docElement = new FuzzyXMLElementImpl(null, "document", roots.get(0).getOffset(), roots.get(0).getLength(), 0);
+      FuzzyXMLElementImpl firstRoot = roots.get(0);
+      FuzzyXMLElementImpl lastRoot = roots.get(roots.size() - 1);
+      docElement = new FuzzyXMLElementImpl(null, "document", firstRoot.getOffset(), lastRoot.getOffset() + lastRoot.getLength() - firstRoot.getOffset(), 0);
       for (FuzzyXMLElementImpl root : roots) {
         ((FuzzyXMLElementImpl) docElement).appendChildWithNoCheck(root);
       }
@@ -485,7 +487,21 @@ public class FuzzyXMLParser {
     AttrInfo[] attrs = info.getAttrs();
     for (int i = 0; i < attrs.length; i++) {
       FuzzyXMLAttributeImpl attr = new FuzzyXMLAttributeImpl(element, attrs[i].name, attrs[i].value, attrs[i].offset + offset, attrs[i].end - attrs[i].offset + 1, attrs[i].valueOffset);
+      attr.setQuoteCharacter(attrs[i].quote);
+      if (attrs[i].value.indexOf('"') >= 0 || attrs[i].value.indexOf('\'') >= 0 || attrs[i].value.indexOf('<') >= 0 || attrs[i].value.indexOf('>') >= 0 || attrs[i].value.indexOf('&') >= 0) {
+        attr.setEscape(false);
+      }
       element.appendChild(attr);
+    }
+
+    
+    for (FuzzyXMLAttribute attr : element.getAttributes()) {
+      stack.push(element);
+      _parse(attr.getValue(), element.getOffset() + attr.getValueDataOffset() + 1, true);
+      FuzzyXMLNode poppedNode = stack.pop();
+      if (poppedNode != element) {
+        stack.push(poppedNode);
+      }
     }
   }
 
@@ -525,6 +541,15 @@ public class FuzzyXMLParser {
     }
     stack.push(element);
     nonCloseElements.add(element);
+
+    for (FuzzyXMLAttribute attr : element.getAttributes()) {
+      stack.push(element);
+      _parse(attr.getValue(), element.getOffset() + attr.getValueDataOffset() + 1, true);
+      FuzzyXMLNode poppedNode = stack.pop();
+      if (poppedNode != element) {
+        stack.push(poppedNode);
+      }
+    }
   }
 
   /** スタックの最後の要素を取得します(スタックからは削除しません)。 */
@@ -619,6 +644,7 @@ public class FuzzyXMLParser {
           attr.end = i + 1;
           attr.quote = quote;
           info.addAttr(attr);
+
           // reset
           sb.setLength(0);
           state = 1;

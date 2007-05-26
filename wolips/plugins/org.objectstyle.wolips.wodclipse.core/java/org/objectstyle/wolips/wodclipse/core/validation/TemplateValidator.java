@@ -226,8 +226,8 @@ public class TemplateValidator {
                 elementError = false;
                 int offset = attribute.getOffset() + 1;
                 marker.setAttribute(IMarker.LINE_NUMBER, WodHtmlUtils.getLineAtOffset(_cache.getHtmlContents(), offset));
-                marker.setAttribute(IMarker.CHAR_START, offset + attribute.getLength() - attribute.getValue().length() - 2);
-                marker.setAttribute(IMarker.CHAR_END, offset + attribute.getLength() - 2);
+                marker.setAttribute(IMarker.CHAR_START, _element.getOffset() + attribute.getValueDataOffset() + 1);
+                marker.setAttribute(IMarker.CHAR_END, _element.getOffset() + attribute.getValueDataOffset() + 1 + attribute.getValueDataLength());
               }
             }
 
