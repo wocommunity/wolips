@@ -4,7 +4,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.ITextSelection;
 import org.objectstyle.wolips.templateeditor.TemplateEditor;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
-import org.objectstyle.wolips.wodclipse.core.refactoring.QuickElementRenameRefactoring;
+import org.objectstyle.wolips.wodclipse.core.refactoring.QuickRenameRefactoring;
 import org.objectstyle.wolips.wodclipse.editor.WodEditor;
 
 public class QuickRenameElementAction extends AbstractTemplateAction {
@@ -17,7 +17,7 @@ public class QuickRenameElementAction extends AbstractTemplateAction {
 				ITextSelection templateSelection = (ITextSelection) templateEditor.getSourceEditor().getSelectionProvider().getSelection();
 				int offset = templateSelection.getOffset();
 				WodParserCache cache = templateEditor.getSourceEditor().getParserCache();
-				QuickElementRenameRefactoring.run(offset, templateEditor.getSourceEditor().getViewer(), wodEditor.getViewer(), cache);
+				QuickRenameRefactoring.rename(offset, templateEditor.getSourceEditor().getViewer(), wodEditor.getViewer(), cache);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
