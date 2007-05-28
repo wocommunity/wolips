@@ -342,8 +342,10 @@ public class FuzzyXMLParser {
     FuzzyXMLElementImpl lastOpenElement = (FuzzyXMLElementImpl) stack.pop();
     String lowercaseLastOpenElementName = lastOpenElement.getName().toLowerCase();
     String lowercaseCloseTagName = tagName.toLowerCase();
+    
+    boolean closeTagMatches = lowercaseLastOpenElementName.equals(lowercaseCloseTagName);
     //System.out.println("FuzzyXMLParser.handleCloseTag: lastOpen = " + lowercaseLastOpenElementName + ", close = " + lowercaseCloseTagName);
-    if (!lowercaseLastOpenElementName.equals(lowercaseCloseTagName)) {
+    if (!closeTagMatches) {
       // Allow </wo> to close </wo:if>
       boolean looseNamespace = false;
       int colonIndex = lowercaseLastOpenElementName.indexOf(':');
@@ -456,6 +458,11 @@ public class FuzzyXMLParser {
         lastOpenElement.appendChild(new FuzzyXMLTextImpl(getParent(), "", offset, 0));
       }
       lastOpenElement.setLength(end - lastOpenElement.getOffset());
+      if (closeTagMatches) {
+        lastOpenElement.setCloseTagOffset(offset);
+        lastOpenElement.setCloseTagLength(end - offset);
+        lastOpenElement.setCloseNameOffset(text.indexOf(tagName));
+      }
       nonCloseElements.remove(lastOpenElement);
       if (lastOpenElement.getParentNode() == null) {
         roots.add(lastOpenElement);

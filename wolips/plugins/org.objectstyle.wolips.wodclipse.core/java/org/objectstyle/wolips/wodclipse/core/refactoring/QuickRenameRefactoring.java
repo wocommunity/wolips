@@ -24,19 +24,39 @@ import org.objectstyle.wolips.wodclipse.core.model.IWodElement;
 import org.objectstyle.wolips.wodclipse.core.model.IWodModel;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
-public class QuickElementRenameRefactoring {
-  public static void run(int offset, ITextViewer htmlViewer, ITextViewer wodViewer, WodParserCache cache) throws BadLocationException, CoreException, IOException {
+public class QuickRenameRefactoring {
+  public static void rename(int offset, ITextViewer htmlViewer, ITextViewer wodViewer, WodParserCache cache) throws BadLocationException, CoreException, IOException {
     FuzzyXMLDocument htmlModel = cache.getHtmlXmlDocument();
     FuzzyXMLElement element = htmlModel.getElementByOffset(offset);
-    if (element != null && WodHtmlUtils.isWOTag(element.getName())) {
-      String woElementName = element.getAttributeValue("name");
-      if (woElementName != null) {
-        QuickElementRenameRefactoring.run(woElementName, htmlViewer, wodViewer, cache);
+    if (element != null) {
+      String tagName = element.getName();
+      if (tagName != null && element.getOffset() + element.getNameOffset() + 1 <= offset && element.getOffset() + element.getNameOffset() + element.getNameLength() >= offset) {
+        QuickRenameRefactoring.renameTag(element, htmlViewer, cache);
+      }
+      else if (WodHtmlUtils.isWOTag(tagName)) {
+        FuzzyXMLAttribute nameAttribute = element.getAttributeNode("name");
+        String woElementName = nameAttribute.getValue();
+        if (woElementName != null && element.getOffset() + nameAttribute.getValueDataOffset() + 1 <= offset && element.getOffset() + nameAttribute.getValueDataOffset() + nameAttribute.getValueDataLength() >= offset) {
+          QuickRenameRefactoring.renameElement(woElementName, htmlViewer, wodViewer, cache);
+        }
       }
     }
   }
 
-  public static void run(String woElementName, ITextViewer htmlViewer, ITextViewer wodViewer, final WodParserCache cache) throws BadLocationException, CoreException, IOException {
+  public static void renameTag(FuzzyXMLElement element, ITextViewer htmlViewer, final WodParserCache cache) throws BadLocationException {
+    IDocument htmlDocument = htmlViewer.getDocument();
+    LinkedModeModel.closeAllModels(htmlDocument);
+    LinkedPositionGroup linkedGroup = new LinkedPositionGroup();
+    
+    linkedGroup.addPosition(new LinkedPosition(htmlDocument, element.getOffset() + element.getNameOffset() + 1, element.getNameLength(), 0));
+    if (element.hasCloseTag()) {
+      linkedGroup.addPosition(new LinkedPosition(htmlDocument, element.getCloseTagOffset() + element.getCloseNameOffset() + 1, element.getCloseNameLength(), 1));
+    }
+    
+    QuickRenameRefactoring.enterLinkedMode(linkedGroup, cache, htmlViewer);
+  }
+
+  public static void renameElement(String woElementName, ITextViewer htmlViewer, ITextViewer wodViewer, final WodParserCache cache) throws BadLocationException, CoreException, IOException {
     FuzzyXMLDocument htmlModel = cache.getHtmlXmlDocument();
     FuzzyXMLNode[] woTags = NodeSelectUtil.getNodeByFilter(htmlModel.getDocumentElement(), new NamedWebobjectTagFilter(woElementName));
 
@@ -66,6 +86,10 @@ public class QuickElementRenameRefactoring {
       }
     }
 
+    QuickRenameRefactoring.enterLinkedMode(linkedGroup, cache, htmlViewer, wodViewer);
+  }
+
+  protected static void enterLinkedMode(LinkedPositionGroup linkedGroup, final WodParserCache cache, ITextViewer... textViewers) throws BadLocationException {
     if (!linkedGroup.isEmpty()) {
       LinkedModeModel linkedModeModel = new LinkedModeModel();
       linkedModeModel.addGroup(linkedGroup);
@@ -94,9 +118,9 @@ public class QuickElementRenameRefactoring {
           }
         }
       });
-      LinkedModeUI htmlUI = new EditorLinkedModeUI(linkedModeModel, new ITextViewer[] { htmlViewer, wodViewer });
+      LinkedModeUI htmlUI = new EditorLinkedModeUI(linkedModeModel, textViewers);
       //    ui.setInitialOffset(offset);
-      htmlUI.setExitPosition(htmlViewer, 0, 0, LinkedPositionGroup.NO_STOP);
+      htmlUI.setExitPosition(textViewers[0], 0, 0, LinkedPositionGroup.NO_STOP);
       htmlUI.enter();
     }
   }

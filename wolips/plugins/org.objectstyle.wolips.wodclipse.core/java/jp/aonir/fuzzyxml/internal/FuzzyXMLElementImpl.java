@@ -16,7 +16,11 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   private List<FuzzyXMLAttribute> _attributes = new ArrayList<FuzzyXMLAttribute>();
   private String _name;
   private int _nameOffset;
-
+  
+  private int _closeTagOffset;
+  private int _closeTagLength;
+  private int _closeNameOffset;
+  
   //	private HashMap namespace = new HashMap();
 
   public FuzzyXMLElementImpl(String name) {
@@ -27,6 +31,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     super(parent, offset, length);
     this._name = name;
     _nameOffset = nameOffset;
+    _closeNameOffset = -1;
   }
   
   public int getNameOffset() {
@@ -37,6 +42,38 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     return _name != null ? _name.length() : 0;
   }
 
+  public boolean hasCloseTag() {
+    return _closeTagOffset != -1;
+  }
+  
+  public void setCloseTagOffset(int closeTagOffset) {
+    _closeTagOffset = closeTagOffset;
+  }
+  
+  public int getCloseTagOffset() {
+    return _closeTagOffset;
+  }
+
+  public void setCloseTagLength(int closeTagLength) {
+    _closeTagLength = closeTagLength;
+  }
+  
+  public int getCloseTagLength() {
+    return _closeTagLength;
+  }
+  
+  public void setCloseNameOffset(int closeNameOffset) {
+    _closeNameOffset = closeNameOffset;
+  }
+  
+  public int getCloseNameOffset() {
+    return _closeNameOffset;
+  }
+
+  public int getCloseNameLength() {
+    return getNameLength();
+  }
+  
   public String getName() {
     return _name;
   }
