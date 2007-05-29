@@ -3,6 +3,7 @@
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WODirectAction;
 import com.webobjects.appserver.WORequest;
+import er.directtoweb.ERD2WDirectAction;
 
 public class DirectAction extends ERD2WDirectAction {
 
