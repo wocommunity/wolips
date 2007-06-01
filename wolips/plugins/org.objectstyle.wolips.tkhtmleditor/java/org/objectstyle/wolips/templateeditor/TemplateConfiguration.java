@@ -1,8 +1,11 @@
 package org.objectstyle.wolips.templateeditor;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.ui.part.FileEditorInput;
+import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
+import org.objectstyle.wolips.wodclipse.core.preferences.PreferenceConstants;
 
 import tk.eclipse.plugin.htmleditor.ColorProvider;
 import tk.eclipse.plugin.htmleditor.assist.HTMLAssistProcessor;
@@ -49,7 +52,10 @@ public class TemplateConfiguration extends HTMLConfiguration {
   @Override
   protected HTMLAssistProcessor createAssistProcessor() {
     try {
-      return new TemplateAssistProcessor(getEditorPart(), WodParserCache.parser(((FileEditorInput) getEditorPart().getEditorInput()).getFile()));
+      IFile file = ((FileEditorInput) getEditorPart().getEditorInput()).getFile();
+      WodParserCache parserCache = WodParserCache.parser(file);
+      boolean wo54 = Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.WO54_KEY);
+      return new TemplateAssistProcessor(getEditorPart(), parserCache, wo54);
     }
     catch (Exception e) {
       throw new RuntimeException("Failed to create assist processor.", e);

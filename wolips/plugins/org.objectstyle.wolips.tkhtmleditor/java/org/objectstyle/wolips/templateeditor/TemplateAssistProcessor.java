@@ -45,8 +45,10 @@ public class TemplateAssistProcessor extends HTMLAssistProcessor {
   //private ClassNameAssistProcessor classNameProcessor = new ClassNameAssistProcessor();
   private IFile _file;
   private IEditorPart _editorPart;
+  private boolean _wo54;
 
-  public TemplateAssistProcessor(IEditorPart editorPart, WodParserCache wodParserCache) {
+  public TemplateAssistProcessor(IEditorPart editorPart, WodParserCache wodParserCache, boolean wo54) {
+    _wo54 = wo54;
     _editorPart = editorPart;
     _cache = wodParserCache;
     _tagList = new ArrayList<TagInfo>(TagDefinition.getTagInfoAsList());
@@ -149,8 +151,19 @@ public class TemplateAssistProcessor extends HTMLAssistProcessor {
       try {
         InlineWodTagInfo wodTagInfo = (InlineWodTagInfo) tagInfo;
         String bindingValue = value;
+        String prefix = "$";
+        String suffix = "";
         if (value.startsWith("$")) {
           bindingValue = value.substring(1);
+          prefix = "$";
+        }
+        else if (_wo54 && value.startsWith("[")) {
+          prefix = "[";
+          bindingValue = value.substring(1);
+          if (value.endsWith("]")) {
+            bindingValue = value.substring(0, bindingValue.length() - 1);
+            suffix = "]";
+          }
         }
         IFile wodFile = getFile();
         String componentTypeName = wodFile.getLocation().removeFileExtension().lastSegment();
@@ -188,7 +201,7 @@ public class TemplateAssistProcessor extends HTMLAssistProcessor {
               proposalString = proposalString.substring(1, proposalString.length() - 1);
             }
             else {
-              proposalString = "$" + proposalString;
+              proposalString = prefix + proposalString + suffix;
             }
           }
           AssistInfo assist = new AssistInfo(proposalString);

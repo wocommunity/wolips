@@ -446,7 +446,6 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
    * </ul>
    */
   protected String[] getLastWord(String text) {
-
     // TODO It's dirty...
     StringBuffer sb = new StringBuffer();
     Stack<String> stack = new Stack<String>();
@@ -547,7 +546,7 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
     if (c == ' ' || c == '(' || c == ')' || c == ',' //|| c == '.' 
         || c == ';' || c == '\n' || c == '\r' || c == '\t' || c == '+' || c == '>' || c == '<' || c == '*' || c == '^' //|| c == '{'
         //|| c == '}' 
-        || c == '[' || c == ']' || c == '"' || c == '\'') {
+        /*|| c == '[' || c == ']'*/ || c == '"' || c == '\'') {
       return true;
     }
     else {

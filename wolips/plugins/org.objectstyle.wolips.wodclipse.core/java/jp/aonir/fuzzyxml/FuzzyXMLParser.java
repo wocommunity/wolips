@@ -48,6 +48,7 @@ public class FuzzyXMLParser {
   private Pattern _docTypePublic = Pattern.compile("PUBLIC[ \r\n\t]+\"(.*?)\"[ \r\n\t]+\"(.*?)\"");
   private Pattern _docTypeSystem = Pattern.compile("SYSTEM[ \r\n\t]+\"(.*?)\"");
   private Pattern _docTypeSubset = Pattern.compile("\\[([^\\]]*)\\]>");
+  private Pattern _invalidStringPattern = Pattern.compile("([<>&'])");
 
   public FuzzyXMLParser(boolean wo54) {
     this(wo54, false);
@@ -186,7 +187,7 @@ public class FuzzyXMLParser {
     }
     return lastIndex;
   }
-  
+
   /**
    * 引数として渡されたXMLソースをパースしてFuzzyXMLDocumentオブジェクトを返却します。
    * 
@@ -253,7 +254,7 @@ public class FuzzyXMLParser {
       text = text.replaceFirst("\\]\\]>", "");
       FuzzyXMLCDATAImpl cdata = new FuzzyXMLCDATAImpl(getParent(), text, offset, end - offset);
       ((FuzzyXMLElement) getParent()).appendChild(cdata);
-      
+
       _stack.push(cdata);
       _parse(text, offset + "<![CDATA[".length(), true);
       FuzzyXMLNode poppedNode = _stack.pop();
@@ -346,7 +347,7 @@ public class FuzzyXMLParser {
     FuzzyXMLElementImpl lastOpenElement = (FuzzyXMLElementImpl) _stack.pop();
     String lowercaseLastOpenElementName = lastOpenElement.getName().toLowerCase();
     String lowercaseCloseTagName = tagName.toLowerCase();
-    
+
     boolean closeTagMatches = lowercaseLastOpenElementName.equals(lowercaseCloseTagName);
     //System.out.println("FuzzyXMLParser.handleCloseTag: lastOpen = " + lowercaseLastOpenElementName + ", close = " + lowercaseCloseTagName);
     if (!closeTagMatches) {
@@ -374,18 +375,18 @@ public class FuzzyXMLParser {
             //int lastOpenElementEndOffset = lastOpenElement.getOffset() + lastOpenElement.getLength();
             _stack.push(lastOpenElement);
             handleCloseTag(lastOpenElementEndOffset, lastOpenElementEndOffset, "/" + lastOpenElement.getName(), false);
-            
+
             /*
-            FuzzyXMLElement looseElement = lastOpenElement;
-            FuzzyXMLNode[] looseElementChildren = lastOpenElement.getChildren();
-            FuzzyXMLElement looseElementParent = (FuzzyXMLElement) lastOpenElement.getParentNode();
-            for (FuzzyXMLNode looseElementChild : looseElementChildren) {
-              looseElement.removeChild(looseElementChild);
-              looseElementParent.insertAfter(looseElementChild, looseElement);
-              //((AbstractFuzzyXMLNode) looseElementChild).setOffset(looseElementChild.getOffset() + 1);
-            }
-            */
-            
+             FuzzyXMLElement looseElement = lastOpenElement;
+             FuzzyXMLNode[] looseElementChildren = lastOpenElement.getChildren();
+             FuzzyXMLElement looseElementParent = (FuzzyXMLElement) lastOpenElement.getParentNode();
+             for (FuzzyXMLNode looseElementChild : looseElementChildren) {
+             looseElement.removeChild(looseElementChild);
+             looseElementParent.insertAfter(looseElementChild, looseElement);
+             //((AbstractFuzzyXMLNode) looseElementChild).setOffset(looseElementChild.getOffset() + 1);
+             }
+             */
+
             if (_stack.size() == 0) {
               lastOpenElement = null;
               lowercaseLastOpenElementName = null;
@@ -483,6 +484,18 @@ public class FuzzyXMLParser {
     }
   }
 
+  private void checkAttributeValue(FuzzyXMLAttribute attr) {
+    String str = attr.getValue();
+    if (str != null) {
+      str = str.replaceAll("&amp;", " ");
+      Matcher invalidStringMatcher = _invalidStringPattern.matcher(str);
+      while (invalidStringMatcher.find()) {
+        String invalidPart = invalidStringMatcher.group();
+        fireErrorEvent(attr.getValueOffset(), attr.getValueLength(), "The character '" + invalidPart + "' must be escaped.", attr);
+      }
+    }
+  }
+
   /** 空タグを処理します。 */
   private void handleEmptyTag(int offset, int end) {
     TagInfo info = parseTagContents(_originalSource.substring(offset + 1, end - 1));
@@ -505,11 +518,13 @@ public class FuzzyXMLParser {
       element.appendChild(attr);
     }
 
-    
     for (FuzzyXMLAttribute attr : element.getAttributes()) {
       _stack.push(element);
       if (!_wo54) {
         _parse(attr.getValue(), element.getOffset() + attr.getValueDataOffset() + 1, true);
+      }
+      else {
+        checkAttributeValue(attr);
       }
       FuzzyXMLNode poppedNode = _stack.pop();
       if (poppedNode != element) {
@@ -559,6 +574,9 @@ public class FuzzyXMLParser {
       _stack.push(element);
       if (!_wo54) {
         _parse(attr.getValue(), element.getOffset() + attr.getValueDataOffset() + 1, true);
+      }
+      else {
+        checkAttributeValue(attr);
       }
       FuzzyXMLNode poppedNode = _stack.pop();
       if (poppedNode != element) {
@@ -747,7 +765,7 @@ public class FuzzyXMLParser {
     public int getLength() {
       return _length;
     }
-    
+
     public String trim(String str) {
       return str.substring(_offset, _offset + _length);
     }
