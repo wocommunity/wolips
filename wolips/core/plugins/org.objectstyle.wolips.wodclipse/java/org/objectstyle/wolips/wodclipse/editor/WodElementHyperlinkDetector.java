@@ -31,15 +31,19 @@ public class WodElementHyperlinkDetector implements IHyperlinkDetector {
 		List<WodHyperlink> hyperlinks = new LinkedList<WodHyperlink>();
 		try {
 			IFileEditorInput input = (IFileEditorInput) _editor.getEditorInput();
-			IFile file = input.getFile();
-			WodParserCache cache = WodParserCache.parser(file);
-			IWodModel model = cache.getWodModel();
-			for (IWodElement element : model.getElements()) {
-				Position typePosition = element.getElementTypePosition();
-				if (typePosition.getOffset() < region.getOffset() && typePosition.getOffset() + typePosition.getLength() > region.getOffset()) {
-					Region elementRegion = new Region(typePosition.getOffset(), typePosition.getLength());
-					WodHyperlink hyperlink = new WodHyperlink(elementRegion, element.getElementType(), cache);
-					hyperlinks.add(hyperlink);
+			if (input != null) {
+				IFile file = input.getFile();
+				WodParserCache cache = WodParserCache.parser(file);
+				IWodModel model = cache.getWodModel();
+				if (model != null) {
+					for (IWodElement element : model.getElements()) {
+						Position typePosition = element.getElementTypePosition();
+						if (typePosition != null && typePosition.getOffset() < region.getOffset() && typePosition.getOffset() + typePosition.getLength() > region.getOffset()) {
+							Region elementRegion = new Region(typePosition.getOffset(), typePosition.getLength());
+							WodHyperlink hyperlink = new WodHyperlink(elementRegion, element.getElementType(), cache);
+							hyperlinks.add(hyperlink);
+						}
+					}
 				}
 			}
 		} catch (Exception e) {
