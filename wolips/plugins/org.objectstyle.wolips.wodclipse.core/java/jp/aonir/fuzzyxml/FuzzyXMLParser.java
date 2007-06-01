@@ -491,7 +491,7 @@ public class FuzzyXMLParser {
       Matcher invalidStringMatcher = _invalidStringPattern.matcher(str);
       while (invalidStringMatcher.find()) {
         String invalidPart = invalidStringMatcher.group();
-        fireErrorEvent(attr.getValueOffset(), attr.getValueLength(), "The character '" + invalidPart + "' must be escaped.", attr);
+        fireErrorEvent(attr.getParentNode().getOffset() + attr.getValueDataOffset() + 1, attr.getValueDataLength(), "The character '" + invalidPart + "' must be escaped.", attr);
       }
     }
   }
