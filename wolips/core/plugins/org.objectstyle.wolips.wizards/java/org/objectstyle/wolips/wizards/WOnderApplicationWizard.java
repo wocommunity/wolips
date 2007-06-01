@@ -72,7 +72,7 @@ import org.objectstyle.wolips.variables.VariablesPlugin;
  * @author mnolte
  * @author uli
  */
-public class WOnderApplicationWizard extends AbstractProjectWizard {
+public class WOnderApplicationWizard extends AbstractWonderProjectWizard {
 
 	public WOnderApplicationWizard() {
 		super();
@@ -105,20 +105,7 @@ public class WOnderApplicationWizard extends AbstractProjectWizard {
 			String path = this.project.getLocation().toOSString();
 			NullProgressMonitor nullProgressMonitor = new NullProgressMonitor();
 			try {
-				File mainwo = new File(path + File.separator + "Components" + File.separator + "Main.wo");
-				mainwo.mkdirs();
-				File src = new File(path + File.separator + "Sources");
-				src.mkdirs();
-				File resources = new File(path + File.separator + "Resources");
-				resources.mkdirs();
-				File wsresources = new File(path + File.separator + "WebServerResources");
-				wsresources.mkdirs();
-				File libraries = new File(path + File.separator + "Libraries");
-				libraries.mkdirs();
-				File bin = new File(path + File.separator + "bin");
-				bin.mkdirs();
-				File ant = new File(path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME);
-				ant.mkdirs();
+				prepare(path);
 				TemplateEngine templateEngine = new TemplateEngine();
 				try {
 					templateEngine.init();
@@ -137,10 +124,7 @@ public class WOnderApplicationWizard extends AbstractProjectWizard {
 				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/build.xml.vm", path, "build.xml", "build.xml"));
 				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/build.properties.vm", path, "build.properties", "build.properties"));
 				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/CustomInfo.plist.vm", path, "CustomInfo.plist", "CustomInfo.plist"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Main.html.vm", path + File.separator + "Components" + File.separator + "Main.wo", "Main.html", "Main.html"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Main.wod.vm", path + File.separator + "Components" + File.separator + "Main.wo", "Main.wod", "Main.wod"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Main.woo.vm", path + File.separator + "Components" + File.separator + "Main.wo", "Main.woo", "Main.woo"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Main.api.vm", path + File.separator + "Components", "Main.api", "Main.api"));
+				addComponentDefinition(templateFolder, templateEngine, path, "Main");
 				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Application.java.vm", path + File.separator + "Sources", "Application.java", "Application.java"));
 				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/DirectAction.java.vm", path + File.separator + "Sources", "DirectAction.java", "DirectAction.java"));
 				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Main.java.vm", path + File.separator + "Sources", "Main.java", "Main.java"));

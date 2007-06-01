@@ -71,7 +71,7 @@ import org.objectstyle.wolips.variables.VariablesPlugin;
 /**
  * @author ak
  */
-public class WOnderFrameworkWizard extends AbstractProjectWizard {
+public class WOnderFrameworkWizard extends AbstractWonderProjectWizard {
 
 	public WOnderFrameworkWizard() {
 		super();
@@ -94,20 +94,7 @@ public class WOnderFrameworkWizard extends AbstractProjectWizard {
 			String path = this.project.getLocation().toOSString();
 			NullProgressMonitor nullProgressMonitor = new NullProgressMonitor();
 			try {
-				File src = new File(path + File.separator + "Sources");
-				src.mkdirs();
-				File components = new File(path + File.separator + "Components");
-				components.mkdirs();
-				File resources = new File(path + File.separator + "Resources");
-				resources.mkdirs();
-				File wsresources = new File(path + File.separator + "WebServerResources");
-				wsresources.mkdirs();
-				File libraries = new File(path + File.separator + "Libraries");
-				libraries.mkdirs();
-				File bin = new File(path + File.separator + "bin");
-				bin.mkdirs();
-				File ant = new File(path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME);
-				ant.mkdirs();
+				prepare(path);
 				TemplateEngine templateEngine = new TemplateEngine();
 				try {
 					templateEngine.init();

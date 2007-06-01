@@ -72,7 +72,7 @@ import org.objectstyle.wolips.variables.VariablesPlugin;
  * @author mnolte
  * @author uli
  */
-public class WOnderD2WApplicationWizard extends AbstractProjectWizard {
+public class WOnderD2WApplicationWizard extends AbstractWonderProjectWizard {
 
 	public WOnderD2WApplicationWizard() {
 		super();
@@ -100,33 +100,12 @@ public class WOnderD2WApplicationWizard extends AbstractProjectWizard {
 			this.templateFolder = templateFolder;
 		}
 
-		private void addComponentDefinition(TemplateEngine engine, String path, String name) {
-			File wo = new File(path + File.separator + "Components" + File.separator + name + ".wo");
-			wo.mkdirs();
-			engine.addTemplate(new TemplateDefinition(templateFolder + "/" + name + ".html.vm", path + File.separator + "Components" + File.separator  + name + ".wo", name + ".html", name + ".html"));
-			engine.addTemplate(new TemplateDefinition(templateFolder + "/" + name + ".wod.vm", path + File.separator + "Components" + File.separator  + name + ".wo", name + ".wod", name + ".wod"));
-			engine.addTemplate(new TemplateDefinition(templateFolder + "/" + name + ".woo.vm", path + File.separator + "Components" + File.separator  + name + ".wo", name + ".woo", name + ".woo"));
-			engine.addTemplate(new TemplateDefinition(templateFolder + "/" + name + ".api.vm", path + File.separator + "Components" + File.separator  + name + ".wo", name + ".api", name + ".api"));
-			engine.addTemplate(new TemplateDefinition(templateFolder + "/" + name + ".java.vm", path + File.separator + "Sources", name + ".java", name + ".java"));
-		}
-
 		protected void execute(IProgressMonitor monitor) throws InvocationTargetException {
 			String projectName = this.project.getName();
 			String path = this.project.getLocation().toOSString();
 			NullProgressMonitor nullProgressMonitor = new NullProgressMonitor();
 			try {
-				File src = new File(path + File.separator + "Sources");
-				src.mkdirs();
-				File resources = new File(path + File.separator + "Resources");
-				resources.mkdirs();
-				File wsresources = new File(path + File.separator + "WebServerResources");
-				wsresources.mkdirs();
-				File libraries = new File(path + File.separator + "Libraries");
-				libraries.mkdirs();
-				File bin = new File(path + File.separator + "bin");
-				bin.mkdirs();
-				File ant = new File(path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME);
-				ant.mkdirs();
+				prepare(path);
 				TemplateEngine templateEngine = new TemplateEngine();
 				try {
 					templateEngine.init();
@@ -145,9 +124,9 @@ public class WOnderD2WApplicationWizard extends AbstractProjectWizard {
 				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/build.xml.vm", path, "build.xml", "build.xml"));
 				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/build.properties.vm", path, "build.properties", "build.properties"));
 				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/CustomInfo.plist.vm", path, "CustomInfo.plist", "CustomInfo.plist"));
-				addComponentDefinition(templateEngine, path, "Main");
-				addComponentDefinition(templateEngine, path, "MenuHeader");
-				addComponentDefinition(templateEngine, path, "PageWrapper");
+				addComponentDefinition(templateFolder, templateEngine, path, "Main");
+				addComponentDefinition(templateFolder, templateEngine, path, "MenuHeader");
+				addComponentDefinition(templateFolder, templateEngine, path, "PageWrapper");
 				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Application.java.vm", path + File.separator + "Sources", "Application.java", "Application.java"));
 				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/DirectAction.java.vm", path + File.separator + "Sources", "DirectAction.java", "DirectAction.java"));
 				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Session.java.vm", path + File.separator + "Sources", "Session.java", "Session.java"));
