@@ -44,6 +44,7 @@
 package org.objectstyle.wolips.componenteditor.outline;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
@@ -80,11 +81,11 @@ public class ComponentEditorOutline extends Page implements IContentOutlinePage,
 
 	private ISelection selection;
 
-	private ArrayList listeners;
+	private List<ISelectionChangedListener> listeners;
 
 	public ComponentEditorOutline() {
 		super();
-		listeners = new ArrayList();
+		listeners = new ArrayList<ISelectionChangedListener>();
 	}
 
 	public void createControl(Composite parent) {
@@ -132,7 +133,7 @@ public class ComponentEditorOutline extends Page implements IContentOutlinePage,
 			return;
 		SelectionChangedEvent e = new SelectionChangedEvent(this, selection);
 		for (int i = 0; i < listeners.size(); i++) {
-			((ISelectionChangedListener) listeners.get(i)).selectionChanged(e);
+			listeners.get(i).selectionChanged(e);
 		}
 	}
 

@@ -73,7 +73,7 @@ public interface IWodBinding extends IWodUnit {
 
   public void fillInBindingProblems(IJavaProject javaProject, IType javaFileType, List<WodProblem> problems, WodParserCache cache) throws JavaModelException;
 
-  public void writeInlineFormat(Writer writer) throws IOException;
+  public void writeInlineFormat(Writer writer, String prefix, String suffix) throws IOException;
 
   public void writeWodFormat(Writer writer) throws IOException;
 }

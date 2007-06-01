@@ -82,7 +82,7 @@ public abstract class AbstractWodBinding implements IWodBinding {
     writer.write(";");
   }
 
-  public void writeInlineFormat(Writer writer) throws IOException {
+  public void writeInlineFormat(Writer writer, String prefix, String suffix) throws IOException {
     writer.write(" ");
     writer.write(getName());
     writer.write(" = ");
@@ -95,8 +95,10 @@ public abstract class AbstractWodBinding implements IWodBinding {
       writer.write("\"");
     }
     else {
-      writer.write("\"$");
+      writer.write("\"");
+      writer.write(prefix);
       writer.write(getValue());
+      writer.write(suffix);
       writer.write("\"");
     }
   }

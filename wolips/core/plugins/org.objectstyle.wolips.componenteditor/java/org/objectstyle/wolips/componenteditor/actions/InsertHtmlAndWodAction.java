@@ -150,7 +150,6 @@ public abstract class InsertHtmlAndWodAction extends AbstractTemplateAction {
 
 				// insert the WebObjects component into the template portion.
 				try {
-					ITextViewerExtension weExt = (ITextViewerExtension)we.getViewer();
 					ITextViewerExtension teExt = (ITextViewerExtension)te.getSourceEditor().getViewer();
 					teExt.getRewriteTarget().beginCompoundChange();
 					try {
@@ -162,11 +161,11 @@ public abstract class InsertHtmlAndWodAction extends AbstractTemplateAction {
 							int selectionEndLine = teDocTSel.getEndLine();
 	
 							StringWriter startTagWriter = new StringWriter();
-							htmlElement.writeInlineFormat(startTagWriter, "", true, true, false, false);
+							htmlElement.writeInlineFormat(startTagWriter, "", true, true, false, false, "$", "");
 							String startTag = startTagWriter.toString();
 	
 							StringWriter endTagWriter = new StringWriter();
-							htmlElement.writeInlineFormat(endTagWriter, "", true, false, false, true);
+							htmlElement.writeInlineFormat(endTagWriter, "", true, false, false, true, "$", "");
 							String endTag = endTagWriter.toString();
 	
 							String indentText = getIndentText(teDoc, selectionStartOffset);
@@ -223,7 +222,7 @@ public abstract class InsertHtmlAndWodAction extends AbstractTemplateAction {
 							}
 						} else {
 							StringWriter startTagWriter = new StringWriter();
-							htmlElement.writeInlineFormat(startTagWriter, null, true, true, false, true);
+							htmlElement.writeInlineFormat(startTagWriter, null, true, true, false, true, "$", "");
 							String tag = startTagWriter.toString();
 							teDoc.replace(selectionStartOffset, 0, tag);
 						}

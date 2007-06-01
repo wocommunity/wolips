@@ -30,11 +30,13 @@ import org.objectstyle.wolips.wodclipse.core.preferences.TagShortcut;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
 public class TemplateValidator {
+  private boolean _wo54;
   private WodParserCache _cache;
   private Set<FuzzyXMLElement> _woElements;
 
   public TemplateValidator(WodParserCache cache) {
     _cache = cache;
+    _wo54 = Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.WO54_KEY);
   }
 
   /**
@@ -166,6 +168,9 @@ public class TemplateValidator {
     String bindingValue = value;
     if (bindingValue.startsWith("$")) {
       bindingValue = bindingValue.substring(1);
+    }
+    else if (_wo54 && bindingValue.startsWith("[") && bindingValue.endsWith("]")) {
+      bindingValue = bindingValue.substring(1, bindingValue.length() - 1);
     }
     else {
       bindingValue = "\"" + bindingValue + "\"";
