@@ -88,7 +88,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
    * </p>
    * @param text í«â¡Ç∑ÇÈéqóvëfÇä‹ÇÒÇæXMLÇÃífï–ÅB
    */
-  public void appendChildrenFromText(String text) {
+  public void appendChildrenFromText(String text, boolean wo54) {
     if (text.length() == 0) {
       return;
     }
@@ -101,7 +101,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
 
     String parseText = "<root>" + text + "</root>";
 
-    FuzzyXMLElement root = new FuzzyXMLParser().parse(parseText).getDocumentElement();
+    FuzzyXMLElement root = new FuzzyXMLParser(wo54).parse(parseText).getDocumentElement();
     ((AbstractFuzzyXMLNode) root).appendOffset(root, 0, -6);
     ((AbstractFuzzyXMLNode) root).appendOffset(root, 0, offset);
     FuzzyXMLNode[] nodes = ((FuzzyXMLElement) root.getChildren()[0]).getChildren();

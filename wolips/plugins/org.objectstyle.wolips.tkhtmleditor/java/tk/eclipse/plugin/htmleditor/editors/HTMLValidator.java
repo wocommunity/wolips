@@ -109,7 +109,7 @@ public class HTMLValidator implements FuzzyXMLErrorListener {
 				this._contents = this._contents.replaceAll("\r\n"," \n");
 				this._contents = this._contents.replaceAll("\r"  ,"\n");
 				
-				FuzzyXMLParser parser = new FuzzyXMLParser();
+				FuzzyXMLParser parser = new FuzzyXMLParser(false);
 				parser.addErrorListener( this);
 //				parser.addErrorListener(new HTMLParseErrorListener());
 				FuzzyXMLDocument doc = parser.parse(contents);

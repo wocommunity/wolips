@@ -169,7 +169,7 @@ public class JSPPreviewConverter {
 	 * @return processed JSP
 	 */
 	private static String processTag(String jsp,JSPInfo info){
-		FuzzyXMLDocument doc = new FuzzyXMLParser().parse(jsp);
+		FuzzyXMLDocument doc = new FuzzyXMLParser(false).parse(jsp);
 		FuzzyXMLNode[] nodes = doc.getDocumentElement().getChildren();
 		StringBuffer sb = new StringBuffer();
 		for(int i=0;i<nodes.length;i++){

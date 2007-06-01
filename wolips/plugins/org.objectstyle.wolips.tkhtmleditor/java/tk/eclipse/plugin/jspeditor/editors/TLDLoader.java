@@ -121,7 +121,7 @@ public class TLDLoader {
 		
 		if(webXML.exists() && webXML.isFile()){
 			try {
-				FuzzyXMLDocument doc = new FuzzyXMLParser().parse(new FileInputStream(webXML));
+				FuzzyXMLDocument doc = new FuzzyXMLParser(false).parse(new FileInputStream(webXML));
 				FuzzyXMLNode[] nodes = XPath.selectNodes(doc.getDocumentElement(),"/web-app/taglib|/web-app/jsp-config/taglib");
 				
 				for(int i=0;i<nodes.length;i++){
@@ -150,7 +150,7 @@ public class TLDLoader {
 				if(entry.getName().endsWith(".tld")){
 					byte[] bytes = HTMLUtil.readStream(file.getInputStream(entry));
 					try {
-						FuzzyXMLDocument doc = new FuzzyXMLParser().parse(new ByteArrayInputStream(bytes));
+						FuzzyXMLDocument doc = new FuzzyXMLParser(false).parse(new ByteArrayInputStream(bytes));
 						String nodeURI = HTMLUtil.getXPathValue(doc.getDocumentElement(),"/taglib/uri/child::text()");
 						if(nodeURI!=null && uri.equals(nodeURI)){
 							return bytes;

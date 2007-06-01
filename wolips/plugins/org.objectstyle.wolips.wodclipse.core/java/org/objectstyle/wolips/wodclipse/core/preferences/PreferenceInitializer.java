@@ -107,5 +107,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     validationRules.add(new BindingValidationRule(".*", "^d2wContext\\..*"));
     validationRules.add(new BindingValidationRule(".*", "^localContext\\..*"));
     prefs.setDefault(PreferenceConstants.BINDING_VALIDATION_RULES_KEY, BindingValidationRule.toPreferenceString(validationRules));
+
+    prefs.setDefault(PreferenceConstants.WO54_KEY, false);
   }
 }

@@ -328,7 +328,7 @@ public class XMLEditor extends HTMLSourceEditor {
 	 * Extracts the first element name in the given xml source.
 	 */
 	private static String getFirstTag(String xml){
-		FuzzyXMLDocument doc = new FuzzyXMLParser().parse(xml);
+		FuzzyXMLDocument doc = new FuzzyXMLParser(false).parse(xml);
 		FuzzyXMLNode[] nodes = doc.getDocumentElement().getChildren();
 		for(int i=0;i<nodes.length;i++){
 			if(nodes[i] instanceof FuzzyXMLElement){

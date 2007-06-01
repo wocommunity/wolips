@@ -87,7 +87,7 @@ public class HTMLHyperlinkDetector implements IHyperlinkDetector {
 	}
 	
 	private IHyperlink detectHyperlink(IDocument doc, int offset){
-		FuzzyXMLDocument document = new FuzzyXMLParser().parse(editor.getHTMLSource());
+		FuzzyXMLDocument document = new FuzzyXMLParser(false).parse(editor.getHTMLSource());
 		FuzzyXMLElement element = document.getElementByOffset(offset);
 		if(element==null){
 			return null;

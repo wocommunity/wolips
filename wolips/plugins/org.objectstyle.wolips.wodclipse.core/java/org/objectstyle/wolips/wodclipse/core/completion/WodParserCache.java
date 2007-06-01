@@ -280,7 +280,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
         _htmlContents = _htmlContents.replaceAll("\r\n", " \n");
         _htmlContents = _htmlContents.replaceAll("\r", "\n");
 
-        FuzzyXMLParser parser = new FuzzyXMLParser();
+        FuzzyXMLParser parser = new FuzzyXMLParser(Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.WO54_KEY));
         parser.addErrorListener(this);
         _htmlXmlDocument = parser.parse(_htmlContents);
         if (_htmlFile != null) {
@@ -311,7 +311,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
         _htmlContents = _htmlContents.replaceAll("\r\n", " \n");
         _htmlContents = _htmlContents.replaceAll("\r", "\n");
 
-        FuzzyXMLParser parser = new FuzzyXMLParser();
+        FuzzyXMLParser parser = new FuzzyXMLParser(Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.WO54_KEY));
         parser.addErrorListener(this);
         _htmlXmlDocument = parser.parse(_htmlContents);
         _lastHtmlParseTime = _htmlFile.getModificationStamp();

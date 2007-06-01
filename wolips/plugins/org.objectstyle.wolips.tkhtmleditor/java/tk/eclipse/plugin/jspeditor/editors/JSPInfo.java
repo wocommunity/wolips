@@ -164,7 +164,7 @@ public class JSPInfo {
 			
 			// getting TLDs from xmlns
 			try {
-				this._doc = new FuzzyXMLParser().parse(HTMLUtil.scriptlet2space(source,false));
+				this._doc = new FuzzyXMLParser(false).parse(HTMLUtil.scriptlet2space(source,false));
 				FuzzyXMLElement root = (FuzzyXMLElement)XPath.selectSingleNode(_doc.getDocumentElement(),"*");
 				if(root!=null){
 					FuzzyXMLAttribute[] attrs = root.getAttributes();
@@ -202,7 +202,7 @@ public class JSPInfo {
 					IPath path = new Path(webapproot).append("/WEB-INF/web.xml");
 					IFile webXML = file.getProject().getFile(path);
 					if(webXML!=null && webXML.exists()){
-						FuzzyXMLDocument doc = new FuzzyXMLParser().parse(webXML.getContents());
+						FuzzyXMLDocument doc = new FuzzyXMLParser(false).parse(webXML.getContents());
 						FuzzyXMLNode[] nodes = HTMLUtil.selectXPathNodes(doc.getDocumentElement(),
 							"/web-app/jsp-config/jsp-property-group[url-pattern='*.jsp']");
 						for(int i=0;i<nodes.length;i++){

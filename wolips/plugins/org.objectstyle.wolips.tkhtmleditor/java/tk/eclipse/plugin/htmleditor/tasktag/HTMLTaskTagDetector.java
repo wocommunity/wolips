@@ -39,7 +39,7 @@ public class HTMLTaskTagDetector extends AbstractTaskTagDetector {
 	
 	@Override
   public void doDetect() throws Exception {
-		FuzzyXMLDocument doc = new FuzzyXMLParser().parse(this._contents);
+		FuzzyXMLDocument doc = new FuzzyXMLParser(false).parse(this._contents);
 		processElement(doc.getDocumentElement());
 	}
 	
