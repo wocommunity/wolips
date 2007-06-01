@@ -75,7 +75,7 @@ public interface IWodElement extends IWodUnit {
 
   public void fillInProblems(IJavaProject javaProject, IType javaFileType, boolean checkBindingValues, List<WodProblem> problems, WodParserCache cache) throws JavaModelException, CoreException, IOException;
 
-  public void writeInlineFormat(Writer writer, String contents, boolean alphabetize) throws IOException;
+  public void writeInlineFormat(Writer writer, String contents, boolean alphabetize, String bindingPrefix, String bindingSuffix) throws IOException;
 
   public void writeWodFormat(Writer writer, boolean alphabetize) throws IOException;
 }
