@@ -68,7 +68,7 @@ public class CSSAssistProcessor {
       }
     }
     else {
-      doc = new FuzzyXMLParser().parse(source);
+      doc = new FuzzyXMLParser(false).parse(source);
     }
     if (doc != null) {
       processElement(doc.getDocumentElement());

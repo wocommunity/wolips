@@ -239,7 +239,7 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
     String next = viewer.getDocument().get().substring(documentOffset);
 
     this._offset = documentOffset;
-    this._doc = new FuzzyXMLParser().parse(viewer.getDocument().get());
+    this._doc = new FuzzyXMLParser(false).parse(viewer.getDocument().get());
 
     List<ICompletionProposal> list = new ArrayList<ICompletionProposal>();
     List<TagInfo> tagList = getTagList();

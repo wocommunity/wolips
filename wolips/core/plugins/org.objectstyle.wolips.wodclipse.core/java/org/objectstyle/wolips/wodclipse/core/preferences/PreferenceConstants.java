@@ -92,4 +92,6 @@ public class PreferenceConstants {
   public static final String TAG_SHORTCUTS_KEY = "TagShortcuts";
 
   public static final String BINDING_VALIDATION_RULES_KEY = "BindingValidationRules";
+  
+  public static final String WO54_KEY = "WO 5.4";
 }

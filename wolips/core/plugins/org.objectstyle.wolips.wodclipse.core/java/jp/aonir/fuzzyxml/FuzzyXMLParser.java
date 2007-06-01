@@ -28,47 +28,51 @@ import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
 public class FuzzyXMLParser {
 
-  private Stack<FuzzyXMLNode> stack = new Stack<FuzzyXMLNode>();
-  private String originalSource;
-  private List<FuzzyXMLElementImpl> roots;
-  private FuzzyXMLDocType docType;
+  private Stack<FuzzyXMLNode> _stack = new Stack<FuzzyXMLNode>();
+  private String _originalSource;
+  private List<FuzzyXMLElementImpl> _roots;
+  private FuzzyXMLDocType _docType;
 
-  private List<FuzzyXMLErrorListener> listeners = new ArrayList<FuzzyXMLErrorListener>();
-  private List<FuzzyXMLElement> nonCloseElements = new ArrayList<FuzzyXMLElement>();
-  private List<String> looseNamespaces = new ArrayList<String>();
-  private List<String> looseTags = new ArrayList<String>();
+  private List<FuzzyXMLErrorListener> _listeners = new ArrayList<FuzzyXMLErrorListener>();
+  private List<FuzzyXMLElement> _nonCloseElements = new ArrayList<FuzzyXMLElement>();
+  private List<String> _looseNamespaces = new ArrayList<String>();
+  private List<String> _looseTags = new ArrayList<String>();
 
-  private boolean isHTML = false;
+  private boolean _wo54 = false;
+  private boolean _isHTML = false;
 
   // パースに使用する正規表現
-  private Pattern tag = Pattern.compile("<((|/)([^<>]*))([^<]|>)");
+  private Pattern _tag = Pattern.compile("<((|/)([^<>]*))([^<]|>)");
   //	private Pattern attr = Pattern.compile("([\\w:]+?)\\s*=(\"|')([^\"]*?)\\2");
-  private Pattern docTypeName = Pattern.compile("^<!DOCTYPE[ \r\n\t]+([\\w\\-_]*)");
-  private Pattern docTypePublic = Pattern.compile("PUBLIC[ \r\n\t]+\"(.*?)\"[ \r\n\t]+\"(.*?)\"");
-  private Pattern docTypeSystem = Pattern.compile("SYSTEM[ \r\n\t]+\"(.*?)\"");
-  private Pattern docTypeSubset = Pattern.compile("\\[([^\\]]*)\\]>");
+  private Pattern _docTypeName = Pattern.compile("^<!DOCTYPE[ \r\n\t]+([\\w\\-_]*)");
+  private Pattern _docTypePublic = Pattern.compile("PUBLIC[ \r\n\t]+\"(.*?)\"[ \r\n\t]+\"(.*?)\"");
+  private Pattern _docTypeSystem = Pattern.compile("SYSTEM[ \r\n\t]+\"(.*?)\"");
+  private Pattern _docTypeSubset = Pattern.compile("\\[([^\\]]*)\\]>");
 
-  public FuzzyXMLParser() {
-    this(false);
+  public FuzzyXMLParser(boolean wo54) {
+    this(wo54, false);
   }
 
-  public FuzzyXMLParser(boolean isHTML) {
+  public FuzzyXMLParser(boolean wo54, boolean isHTML) {
     super();
-    this.roots = new LinkedList<FuzzyXMLElementImpl>();
-    this.isHTML = isHTML;
+    _wo54 = wo54;
+    _roots = new LinkedList<FuzzyXMLElementImpl>();
+    _isHTML = isHTML;
     // MS: Hardcoded that "wo" is a loose namespace
     addLooseNamespace("wo");
     addLooseNamespace("webobject");
     addLooseNamespace("webobjects");
-    addLooseTag("img");
-    addLooseTag("br");
-    addLooseTag("p");
-    addLooseTag("hr");
-    addLooseTag("li");
-    addLooseTag("meta");
-    addLooseTag("link");
-    addLooseTag("input");
-    addLooseTag("spacer");
+    if (!_wo54) {
+      addLooseTag("img");
+      addLooseTag("br");
+      addLooseTag("p");
+      addLooseTag("hr");
+      addLooseTag("li");
+      addLooseTag("meta");
+      addLooseTag("link");
+      addLooseTag("input");
+      addLooseTag("spacer");
+    }
   }
 
   /**
@@ -77,7 +81,7 @@ public class FuzzyXMLParser {
    * @param looseTag the name of the tag to make loose
    */
   public void addLooseTag(String looseTag) {
-    looseTags.add(looseTag);
+    _looseTags.add(looseTag);
   }
 
   /**
@@ -88,7 +92,7 @@ public class FuzzyXMLParser {
    * @param namespace the name of the namespace to make loose
    */
   public void addLooseNamespace(String namespace) {
-    looseNamespaces.add(namespace);
+    _looseNamespaces.add(namespace);
   }
 
   /**
@@ -97,12 +101,12 @@ public class FuzzyXMLParser {
    * @param listener リスナ
    */
   public void addErrorListener(FuzzyXMLErrorListener listener) {
-    this.listeners.add(listener);
+    _listeners.add(listener);
   }
 
   private void fireErrorEvent(int offset, int length, String message, FuzzyXMLNode node) {
     FuzzyXMLErrorEvent evt = new FuzzyXMLErrorEvent(offset, length, message, node);
-    for (FuzzyXMLErrorListener listener : listeners) {
+    for (FuzzyXMLErrorListener listener : _listeners) {
       listener.error(evt);
     }
   }
@@ -143,7 +147,7 @@ public class FuzzyXMLParser {
 
   protected int _parse(String source, int initialOffset, boolean woOnly) {
     // パースを開始
-    Matcher matcher = tag.matcher(source);
+    Matcher matcher = _tag.matcher(source);
     int lastIndex = initialOffset - 1;
     while (matcher.find()) {
       int start = matcher.start() + initialOffset;
@@ -164,13 +168,13 @@ public class FuzzyXMLParser {
         handleDoctype(start, end, text);
       }
       else if (!woOnly && text.startsWith("![CDATA[")) {
-        handleCDATA(start, end, originalSource.substring(start, end));
+        handleCDATA(start, end, _originalSource.substring(start, end));
       }
       else if (text.startsWith("/") && (!woOnly || WodHtmlUtils.isWOTag(text.substring(1)))) {
         handleCloseTag(start, end, text);
       }
       else if (!woOnly && text.startsWith("!--")) {
-        handleComment(start, end, originalSource.substring(start, end));
+        handleComment(start, end, _originalSource.substring(start, end));
       }
       else if (text.endsWith("/") && (!woOnly || WodHtmlUtils.isWOTag(text))) {
         handleEmptyTag(start, end);
@@ -191,7 +195,7 @@ public class FuzzyXMLParser {
    */
   public FuzzyXMLDocument parse(String source) {
     // オリジナルのソースを保存しておく
-    originalSource = source;
+    _originalSource = source;
     // コメント、CDATA、DOCTYPE部分を除去
     source = FuzzyXMLUtil.comment2space(source, true);
     source = FuzzyXMLUtil.escapeScript(source);
@@ -203,19 +207,19 @@ public class FuzzyXMLParser {
 
     int lastIndex = _parse(source, 0, false);
 
-    if (stack.size() > 0 && nonCloseElements.size() > 0) {
-      FuzzyXMLElementImpl lastElement = (FuzzyXMLElementImpl) nonCloseElements.get(nonCloseElements.size() - 1);
+    if (_stack.size() > 0 && _nonCloseElements.size() > 0) {
+      FuzzyXMLElementImpl lastElement = (FuzzyXMLElementImpl) _nonCloseElements.get(_nonCloseElements.size() - 1);
       String lowercaseLastElementName = lastElement.getName().toLowerCase();
-      if (!looseTags.contains(lowercaseLastElementName)) {
+      if (!_looseTags.contains(lowercaseLastElementName)) {
         fireErrorEvent(lastElement.getOffset(), lastElement.getLength(), Messages.getMessage("error.noCloseTag", lastElement.getName()), null);
       }
 
-      for (FuzzyXMLNode openNode : stack) {
+      for (FuzzyXMLNode openNode : _stack) {
         if (openNode instanceof FuzzyXMLElementImpl) {
           FuzzyXMLElementImpl openElement = (FuzzyXMLElementImpl) openNode;
           openElement.setLength(lastIndex - openElement.getOffset());
           if (openElement.getParentNode() == null) {
-            roots.add(openElement);
+            _roots.add(openElement);
           }
           else {
             ((FuzzyXMLElementImpl) openElement.getParentNode()).appendChildWithNoCheck(openElement);
@@ -225,20 +229,20 @@ public class FuzzyXMLParser {
     }
 
     FuzzyXMLElement docElement = null;
-    if (roots.size() == 0) {
-      docElement = new FuzzyXMLElementImpl(null, "document", 0, originalSource.length(), 0);
+    if (_roots.size() == 0) {
+      docElement = new FuzzyXMLElementImpl(null, "document", 0, _originalSource.length(), 0);
       //docElement.appendChild(root);
     }
     else {
-      FuzzyXMLElementImpl firstRoot = roots.get(0);
-      FuzzyXMLElementImpl lastRoot = roots.get(roots.size() - 1);
+      FuzzyXMLElementImpl firstRoot = _roots.get(0);
+      FuzzyXMLElementImpl lastRoot = _roots.get(_roots.size() - 1);
       docElement = new FuzzyXMLElementImpl(null, "document", firstRoot.getOffset(), lastRoot.getOffset() + lastRoot.getLength() - firstRoot.getOffset(), 0);
-      for (FuzzyXMLElementImpl root : roots) {
+      for (FuzzyXMLElementImpl root : _roots) {
         ((FuzzyXMLElementImpl) docElement).appendChildWithNoCheck(root);
       }
     }
-    FuzzyXMLDocumentImpl doc = new FuzzyXMLDocumentImpl(docElement, docType);
-    doc.setHTML(this.isHTML);
+    FuzzyXMLDocumentImpl doc = new FuzzyXMLDocumentImpl(docElement, _docType);
+    doc.setHTML(_isHTML);
     return doc;
   }
 
@@ -250,20 +254,20 @@ public class FuzzyXMLParser {
       FuzzyXMLCDATAImpl cdata = new FuzzyXMLCDATAImpl(getParent(), text, offset, end - offset);
       ((FuzzyXMLElement) getParent()).appendChild(cdata);
       
-      stack.push(cdata);
+      _stack.push(cdata);
       _parse(text, offset + "<![CDATA[".length(), true);
-      FuzzyXMLNode poppedNode = stack.pop();
+      FuzzyXMLNode poppedNode = _stack.pop();
       if (poppedNode != cdata) {
-        stack.push(poppedNode);
+        _stack.push(poppedNode);
       }
     }
   }
 
   /** テキストノードを処理します。 */
   private void handleText(int offset, int end, boolean escape) {
-    String text = originalSource.substring(offset, end);
+    String text = _originalSource.substring(offset, end);
     if (getParent() != null) {
-      FuzzyXMLTextImpl textNode = new FuzzyXMLTextImpl(getParent(), FuzzyXMLUtil.decode(text, isHTML), offset, end - offset);
+      FuzzyXMLTextImpl textNode = new FuzzyXMLTextImpl(getParent(), FuzzyXMLUtil.decode(text, _isHTML), offset, end - offset);
       textNode.setEscape(escape);
       ((FuzzyXMLElement) getParent()).appendChild(textNode);
     }
@@ -273,7 +277,7 @@ public class FuzzyXMLParser {
   private void handleDeclaration(int offset, int end) {
     if (getParent() != null) {
       // 余計な部分を削る
-      String text = originalSource.substring(offset, end);
+      String text = _originalSource.substring(offset, end);
       text = text.replaceFirst("^<\\?", "");
       text = text.replaceFirst("\\?>$", "");
       text = text.trim();
@@ -289,33 +293,33 @@ public class FuzzyXMLParser {
 
   /** DOCTYPE宣言を処理します。 */
   private void handleDoctype(int offset, int end, String text) {
-    if (docType == null) {
+    if (_docType == null) {
       String name = "";
       String publicId = "";
       String systemId = "";
       String internalSubset = "";
 
-      text = originalSource.substring(offset, end);
-      Matcher matcher = docTypeName.matcher(text);
+      text = _originalSource.substring(offset, end);
+      Matcher matcher = _docTypeName.matcher(text);
       if (matcher.find()) {
         name = matcher.group(1);
       }
-      matcher = docTypePublic.matcher(text);
+      matcher = _docTypePublic.matcher(text);
       if (matcher.find()) {
         publicId = matcher.group(1);
         systemId = matcher.group(2);
       }
       else {
-        matcher = docTypeSystem.matcher(text);
+        matcher = _docTypeSystem.matcher(text);
         if (matcher.find()) {
           systemId = matcher.group(1);
         }
       }
-      matcher = docTypeSubset.matcher(text);
+      matcher = _docTypeSubset.matcher(text);
       if (matcher.find()) {
         internalSubset = matcher.group(1);
       }
-      docType = new FuzzyXMLDocTypeImpl(null, name, publicId, systemId, internalSubset, offset, end - offset);
+      _docType = new FuzzyXMLDocTypeImpl(null, name, publicId, systemId, internalSubset, offset, end - offset);
     }
   }
 
@@ -325,7 +329,7 @@ public class FuzzyXMLParser {
   }
 
   private void handleCloseTag(int offset, int end, String text, boolean showMismatchError) {
-    if (stack.size() == 0) {
+    if (_stack.size() == 0) {
       return;
     }
     String tagName = text.substring(1).trim();
@@ -339,7 +343,7 @@ public class FuzzyXMLParser {
       }
     }
 
-    FuzzyXMLElementImpl lastOpenElement = (FuzzyXMLElementImpl) stack.pop();
+    FuzzyXMLElementImpl lastOpenElement = (FuzzyXMLElementImpl) _stack.pop();
     String lowercaseLastOpenElementName = lastOpenElement.getName().toLowerCase();
     String lowercaseCloseTagName = tagName.toLowerCase();
     
@@ -351,7 +355,7 @@ public class FuzzyXMLParser {
       int colonIndex = lowercaseLastOpenElementName.indexOf(':');
       if (colonIndex != -1) {
         String elementNamespace = lowercaseLastOpenElementName.substring(0, colonIndex);
-        if (lowercaseCloseTagName.equals(elementNamespace) && looseNamespaces.contains(elementNamespace)) {
+        if (lowercaseCloseTagName.equals(elementNamespace) && _looseNamespaces.contains(elementNamespace)) {
           tagName = lastOpenElement.getName();
           lowercaseCloseTagName = lowercaseLastOpenElementName;
           looseNamespace = true;
@@ -360,15 +364,15 @@ public class FuzzyXMLParser {
 
       if (!looseNamespace) {
         boolean looseTag = false;
-        if (looseTags.contains(lowercaseLastOpenElementName)) {
+        if (_looseTags.contains(lowercaseLastOpenElementName)) {
           looseTag = true;
         }
 
         if (looseTag) {
-          while (lowercaseLastOpenElementName != null && !lowercaseLastOpenElementName.equals(lowercaseCloseTagName) && looseTags.contains(lowercaseLastOpenElementName)) {
+          while (lowercaseLastOpenElementName != null && !lowercaseLastOpenElementName.equals(lowercaseCloseTagName) && _looseTags.contains(lowercaseLastOpenElementName)) {
             int lastOpenElementEndOffset = end;
             //int lastOpenElementEndOffset = lastOpenElement.getOffset() + lastOpenElement.getLength();
-            stack.push(lastOpenElement);
+            _stack.push(lastOpenElement);
             handleCloseTag(lastOpenElementEndOffset, lastOpenElementEndOffset, "/" + lastOpenElement.getName(), false);
             
             /*
@@ -382,19 +386,19 @@ public class FuzzyXMLParser {
             }
             */
             
-            if (stack.size() == 0) {
+            if (_stack.size() == 0) {
               lastOpenElement = null;
               lowercaseLastOpenElementName = null;
             }
             else {
-              lastOpenElement = (FuzzyXMLElementImpl) stack.pop();
+              lastOpenElement = (FuzzyXMLElementImpl) _stack.pop();
               lowercaseLastOpenElementName = lastOpenElement.getName().toLowerCase();
             }
           }
         }
         else {
           FuzzyXMLElement matchingOpenElement = null;
-          for (FuzzyXMLElement nonCloseElement : nonCloseElements) {
+          for (FuzzyXMLElement nonCloseElement : _nonCloseElements) {
             if (nonCloseElement.getName().equalsIgnoreCase(lowercaseCloseTagName)) {
               matchingOpenElement = nonCloseElement;
             }
@@ -403,7 +407,7 @@ public class FuzzyXMLParser {
             if (showMismatchError) {
               fireErrorEvent(offset, end - offset, Messages.getMessage("error.noStartTag", tagName), null);
             }
-            stack.push(lastOpenElement);
+            _stack.push(lastOpenElement);
             return;
           }
 
@@ -412,9 +416,9 @@ public class FuzzyXMLParser {
             fireErrorEvent(offset, end - offset, "</" + tagName + "> occurred before </" + lastOpenElement.getName() + ">", null);
             fireErrorEvent(lastOpenElement.getOffset(), lastOpenElement.getLength(), "</" + tagName + "> occurred before </" + lastOpenElement.getName() + ">", null);
           }
-          stack.push(lastOpenElement);
+          _stack.push(lastOpenElement);
           handleCloseTag(offset, offset, "/" + lastOpenElement.getName(), false);
-          lastOpenElement = (FuzzyXMLElementImpl) stack.pop();
+          lastOpenElement = (FuzzyXMLElementImpl) _stack.pop();
           lowercaseLastOpenElementName = lastOpenElement.getName().toLowerCase();
         }
         /*
@@ -463,10 +467,10 @@ public class FuzzyXMLParser {
         lastOpenElement.setCloseTagLength(end - offset);
         lastOpenElement.setCloseNameOffset(text.indexOf(tagName));
       }
-      nonCloseElements.remove(lastOpenElement);
+      _nonCloseElements.remove(lastOpenElement);
       if (lastOpenElement.getParentNode() == null) {
-        roots.add(lastOpenElement);
-        for (FuzzyXMLElement error : nonCloseElements) {
+        _roots.add(lastOpenElement);
+        for (FuzzyXMLElement error : _nonCloseElements) {
           //System.out.println(error.getName() + "は閉じていません。");
           if (showMismatchError) {
             fireErrorEvent(error.getOffset(), error.getLength(), Messages.getMessage("error.noCloseTag", error.getName()), error);
@@ -481,11 +485,11 @@ public class FuzzyXMLParser {
 
   /** 空タグを処理します。 */
   private void handleEmptyTag(int offset, int end) {
-    TagInfo info = parseTagContents(originalSource.substring(offset + 1, end - 1));
+    TagInfo info = parseTagContents(_originalSource.substring(offset + 1, end - 1));
     FuzzyXMLNode parent = getParent();
     FuzzyXMLElementImpl element = new FuzzyXMLElementImpl(parent, info.name, offset, end - offset, info.nameOffset);
     if (parent == null) {
-      roots.add(element);
+      _roots.add(element);
     }
     else {
       ((FuzzyXMLElement) parent).appendChild(element);
@@ -503,11 +507,13 @@ public class FuzzyXMLParser {
 
     
     for (FuzzyXMLAttribute attr : element.getAttributes()) {
-      stack.push(element);
-      _parse(attr.getValue(), element.getOffset() + attr.getValueDataOffset() + 1, true);
-      FuzzyXMLNode poppedNode = stack.pop();
+      _stack.push(element);
+      if (!_wo54) {
+        _parse(attr.getValue(), element.getOffset() + attr.getValueDataOffset() + 1, true);
+      }
+      FuzzyXMLNode poppedNode = _stack.pop();
       if (poppedNode != element) {
-        stack.push(poppedNode);
+        _stack.push(poppedNode);
       }
     }
   }
@@ -524,7 +530,7 @@ public class FuzzyXMLParser {
 
   /** 開始タグを処理します。 */
   private void handleStartTag(int offset, int end) {
-    TagInfo info = parseTagContents(originalSource.substring(offset + 1, end - 1));
+    TagInfo info = parseTagContents(_originalSource.substring(offset + 1, end - 1));
     FuzzyXMLElementImpl element = new FuzzyXMLElementImpl(getParent(), info.name, offset, end - offset, info.nameOffset);
     // 属性を追加
     AttrInfo[] attrs = info.getAttrs();
@@ -546,25 +552,27 @@ public class FuzzyXMLParser {
       }
       element.appendChild(attr);
     }
-    stack.push(element);
-    nonCloseElements.add(element);
+    _stack.push(element);
+    _nonCloseElements.add(element);
 
     for (FuzzyXMLAttribute attr : element.getAttributes()) {
-      stack.push(element);
-      _parse(attr.getValue(), element.getOffset() + attr.getValueDataOffset() + 1, true);
-      FuzzyXMLNode poppedNode = stack.pop();
+      _stack.push(element);
+      if (!_wo54) {
+        _parse(attr.getValue(), element.getOffset() + attr.getValueDataOffset() + 1, true);
+      }
+      FuzzyXMLNode poppedNode = _stack.pop();
       if (poppedNode != element) {
-        stack.push(poppedNode);
+        _stack.push(poppedNode);
       }
     }
   }
 
   /** スタックの最後の要素を取得します(スタックからは削除しません)。 */
   private FuzzyXMLNode getParent() {
-    if (stack.size() == 0) {
+    if (_stack.size() == 0) {
       return null;
     }
-    return stack.get(stack.size() - 1);
+    return _stack.get(_stack.size() - 1);
   }
 
   /** タグ部分をパースします。 */
@@ -645,7 +653,7 @@ public class FuzzyXMLParser {
           // add an attribute
           AttrInfo attr = new AttrInfo();
           attr.name = name;
-          attr.value = FuzzyXMLUtil.decode(sb.toString(), isHTML);
+          attr.value = FuzzyXMLUtil.decode(sb.toString(), _isHTML);
           attr.valueOffset = valueOffset;
           attr.offset = start;
           attr.end = i + 1;
@@ -677,7 +685,7 @@ public class FuzzyXMLParser {
     if (state == 4 && quote == 0) {
       AttrInfo attr = new AttrInfo();
       attr.name = name;
-      attr.value = FuzzyXMLUtil.decode(sb.toString(), isHTML);
+      attr.value = FuzzyXMLUtil.decode(sb.toString(), _isHTML);
       attr.valueOffset = valueOffset;
       attr.offset = start;
       attr.end = text.length();
