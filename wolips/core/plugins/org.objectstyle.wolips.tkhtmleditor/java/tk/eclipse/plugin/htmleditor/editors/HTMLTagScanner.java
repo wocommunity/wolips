@@ -22,6 +22,8 @@ public class HTMLTagScanner extends RuleBasedScanner {
       new MultiLineRule("\'~" , "\'" , ognlBinding, '\\'),
       new MultiLineRule("\"$" , "\"" , dynamicBinding, '\\'),
       new MultiLineRule("\'$" , "\'" , dynamicBinding, '\\'),
+      new MultiLineRule("\"[" , "]\"" , dynamicBinding, '\\'),
+      new MultiLineRule("\'[" , "]\'" , dynamicBinding, '\\'),
       new MultiLineRule("\"" , "\"" , literal, '\\'),
       new MultiLineRule("'"  , "'"  , literal, '\\'),
       new WhitespaceRule(new HTMLWhitespaceDetector()),
