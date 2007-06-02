@@ -18,6 +18,10 @@ import org.objectstyle.wolips.wodclipse.editor.WodEditor;
 public abstract class AbstractTemplateAction extends ActionDelegate implements IEditorActionDelegate {
 	private IEditorPart _activeEditor;
 
+	protected ComponentEditorPart getComponentEditorPart() {
+		return (ComponentEditorPart)_activeEditor;
+	}
+	
 	/**
 	 * This method will return the current template editor or null if there is
 	 * not a current template editor.
