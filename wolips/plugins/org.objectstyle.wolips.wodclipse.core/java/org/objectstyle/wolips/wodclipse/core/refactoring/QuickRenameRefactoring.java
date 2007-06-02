@@ -22,48 +22,60 @@ import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.model.IWodElement;
 import org.objectstyle.wolips.wodclipse.core.model.IWodModel;
+import org.objectstyle.wolips.wodclipse.core.model.IWodUnit;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
 public class QuickRenameRefactoring {
-  public static void rename(int offset, ITextViewer htmlViewer, ITextViewer wodViewer, WodParserCache cache) throws BadLocationException, CoreException, IOException {
-    FuzzyXMLDocument htmlModel = cache.getHtmlXmlDocument();
-    FuzzyXMLElement element = htmlModel.getElementByOffset(offset);
-    if (element != null) {
-      String tagName = element.getName();
-      if (tagName != null && element.getOffset() + element.getNameOffset() + 1 <= offset && element.getOffset() + element.getNameOffset() + element.getNameLength() >= offset) {
-        QuickRenameRefactoring.renameTag(element, htmlViewer, cache);
-      }
-      else if (WodHtmlUtils.isWOTag(tagName)) {
-        FuzzyXMLAttribute nameAttribute = element.getAttributeNode("name");
-        String woElementName = nameAttribute.getValue();
-        if (woElementName != null && element.getOffset() + nameAttribute.getValueDataOffset() + 1 <= offset && element.getOffset() + nameAttribute.getValueDataOffset() + nameAttribute.getValueDataLength() >= offset) {
-          QuickRenameRefactoring.renameElement(woElementName, htmlViewer, wodViewer, cache);
+  public static void renameWodSelection(int offset, ITextViewer htmlViewer, ITextViewer wodViewer, WodParserCache cache) throws BadLocationException, CoreException, IOException {
+    IWodModel wodModel = cache.getWodModel();
+    IWodUnit wodUnit = wodModel.getWodUnitAtIndex(offset);
+    if (wodUnit != null && wodUnit instanceof IWodElement) {
+      IWodElement wodElement = (IWodElement) wodUnit;
+      Position elementNamePosition = wodElement.getElementNamePosition();
+      if (elementNamePosition != null && elementNamePosition.includes(offset)) {
+        String elementName = wodElement.getElementName();
+        if (elementName != null) {
+          QuickRenameRefactoring.renameElement(elementName, htmlViewer, wodViewer, cache, false);
         }
       }
     }
   }
 
-  public static void renameTag(FuzzyXMLElement element, ITextViewer htmlViewer, final WodParserCache cache) throws BadLocationException {
+  public static void renameHtmlSelection(int offset, ITextViewer htmlViewer, ITextViewer wodViewer, WodParserCache cache) throws BadLocationException, CoreException, IOException {
+    FuzzyXMLDocument htmlModel = cache.getHtmlXmlDocument();
+    FuzzyXMLElement element = htmlModel.getElementByOffset(offset);
+    if (element != null) {
+      String tagName = element.getName();
+      if (tagName != null && element.getOffset() + element.getNameOffset() + 1 <= offset && element.getOffset() + element.getNameOffset() + element.getNameLength() >= offset) {
+        QuickRenameRefactoring.renameHtmlTag(element, htmlViewer, cache);
+      }
+      else if (WodHtmlUtils.isWOTag(tagName)) {
+        FuzzyXMLAttribute nameAttribute = element.getAttributeNode("name");
+        String woElementName = nameAttribute.getValue();
+        if (woElementName != null && element.getOffset() + nameAttribute.getValueDataOffset() + 1 <= offset && element.getOffset() + nameAttribute.getValueDataOffset() + nameAttribute.getValueDataLength() >= offset) {
+          QuickRenameRefactoring.renameElement(woElementName, htmlViewer, wodViewer, cache, true);
+        }
+      }
+    }
+  }
+
+  public static void renameHtmlTag(FuzzyXMLElement element, ITextViewer htmlViewer, final WodParserCache cache) throws BadLocationException {
     IDocument htmlDocument = htmlViewer.getDocument();
     LinkedModeModel.closeAllModels(htmlDocument);
     LinkedPositionGroup linkedGroup = new LinkedPositionGroup();
-    
+
     linkedGroup.addPosition(new LinkedPosition(htmlDocument, element.getOffset() + element.getNameOffset() + 1, element.getNameLength(), 0));
     if (element.hasCloseTag()) {
       linkedGroup.addPosition(new LinkedPosition(htmlDocument, element.getCloseTagOffset() + element.getCloseNameOffset() + 1, element.getCloseNameLength(), 1));
     }
-    
+
     QuickRenameRefactoring.enterLinkedMode(linkedGroup, cache, htmlViewer);
   }
 
-  public static void renameElement(String woElementName, ITextViewer htmlViewer, ITextViewer wodViewer, final WodParserCache cache) throws BadLocationException, CoreException, IOException {
+  protected static int linkHtml(String woElementName, IDocument htmlDocument, LinkedPositionGroup linkedGroup, WodParserCache cache, int sequence) throws BadLocationException, CoreException, IOException {
     FuzzyXMLDocument htmlModel = cache.getHtmlXmlDocument();
     FuzzyXMLNode[] woTags = NodeSelectUtil.getNodeByFilter(htmlModel.getDocumentElement(), new NamedWebobjectTagFilter(woElementName));
-
-    IDocument htmlDocument = htmlViewer.getDocument();
     LinkedModeModel.closeAllModels(htmlDocument);
-    LinkedPositionGroup linkedGroup = new LinkedPositionGroup();
-    int sequence = 0;
     for (FuzzyXMLNode woTag : woTags) {
       FuzzyXMLElement woElement = (FuzzyXMLElement) woTag;
       FuzzyXMLAttribute woNameAttr = woElement.getAttributeNode("name");
@@ -73,9 +85,10 @@ public class QuickRenameRefactoring {
         linkedGroup.addPosition(new LinkedPosition(htmlDocument, offset, length, sequence++));
       }
     }
+    return sequence;
+  }
 
-    //LinkedPositionGroup wodGroup = new LinkedPositionGroup();
-    IDocument wodDocument = wodViewer.getDocument();
+  protected static int linkWod(String woElementName, IDocument wodDocument, LinkedPositionGroup linkedGroup, WodParserCache cache, int sequence) throws BadLocationException {
     LinkedModeModel.closeAllModels(wodDocument);
     IWodModel wodModel = cache.getWodModel();
     IWodElement wodElement = wodModel.getElementNamed(woElementName);
@@ -85,7 +98,22 @@ public class QuickRenameRefactoring {
         linkedGroup.addPosition(new LinkedPosition(wodDocument, namePosition.getOffset(), namePosition.getLength(), sequence++));
       }
     }
+    return sequence;
+  }
 
+  public static void renameElement(String woElementName, ITextViewer htmlViewer, ITextViewer wodViewer, final WodParserCache cache, boolean highlightHtml) throws BadLocationException, CoreException, IOException {
+    int sequence = 0;
+    LinkedPositionGroup linkedGroup = new LinkedPositionGroup();
+    IDocument htmlDocument = htmlViewer.getDocument();
+    IDocument wodDocument = wodViewer.getDocument();
+    if (highlightHtml) {
+      sequence = QuickRenameRefactoring.linkHtml(woElementName, htmlDocument, linkedGroup, cache, sequence);
+      sequence = QuickRenameRefactoring.linkWod(woElementName, wodDocument, linkedGroup, cache, sequence);
+    }
+    else {
+      sequence = QuickRenameRefactoring.linkWod(woElementName, wodDocument, linkedGroup, cache, sequence);
+      sequence = QuickRenameRefactoring.linkHtml(woElementName, htmlDocument, linkedGroup, cache, sequence);
+    }
     QuickRenameRefactoring.enterLinkedMode(linkedGroup, cache, htmlViewer, wodViewer);
   }
 
