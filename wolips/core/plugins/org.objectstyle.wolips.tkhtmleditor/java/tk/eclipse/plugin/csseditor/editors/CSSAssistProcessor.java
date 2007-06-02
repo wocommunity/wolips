@@ -30,14 +30,14 @@ public class CSSAssistProcessor implements IContentAssistProcessor {
     List<ICompletionProposal> proposals = new LinkedList<ICompletionProposal>();
     try {
       IDocument document = viewer.getDocument();
-
+      
       // state 0 = selector
       // state 1 = property name
       // state 2 = property value
       int colonIndex = -1;
       boolean done = false;
       int state = 0;
-      for (int currentOffset = offset; !done && currentOffset > 0; currentOffset--) {
+      for (int currentOffset = offset - 1; !done && currentOffset > 0; currentOffset--) {
         char ch = document.getChar(currentOffset);
         if (ch == '}') {
           state = 0;
