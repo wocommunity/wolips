@@ -1,5 +1,6 @@
 package org.objectstyle.wolips.wodclipse.core.validation;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,12 +43,13 @@ public class TemplateValidator {
   /**
    * Validates the HTML document.
    * @throws CoreException 
+   * @throws IOException 
    */
-  public void validate(FuzzyXMLDocument doc) throws CoreException {
+  public void validate(FuzzyXMLDocument doc) throws CoreException, IOException {
     visitDocument(doc, true);
   }
 
-  public void visitDocument(FuzzyXMLDocument doc, boolean validate) throws CoreException {
+  public void visitDocument(FuzzyXMLDocument doc, boolean validate) throws CoreException, IOException {
     if (doc != null) {
       _woElements = new HashSet<FuzzyXMLElement>();
 
