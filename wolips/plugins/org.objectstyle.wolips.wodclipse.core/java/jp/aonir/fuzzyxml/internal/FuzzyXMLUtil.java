@@ -437,4 +437,13 @@ public class FuzzyXMLUtil {
     return false;
   }
 
+  public static boolean isAllUppercase(String str) {
+    boolean uppercase = true;
+    for (int i = str.length() - 1; uppercase && i >= 0; i --) {
+      if (!Character.isUpperCase(str.charAt(i))) {
+        uppercase = false;
+      }
+    }
+    return uppercase;
+  }
 }

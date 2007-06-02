@@ -1,7 +1,9 @@
 package jp.aonir.fuzzyxml.internal;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import jp.aonir.fuzzyxml.FuzzyXMLAttribute;
 import jp.aonir.fuzzyxml.FuzzyXMLElement;
@@ -16,11 +18,11 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   private List<FuzzyXMLAttribute> _attributes = new ArrayList<FuzzyXMLAttribute>();
   private String _name;
   private int _nameOffset;
-  
+
   private int _closeTagOffset;
   private int _closeTagLength;
   private int _closeNameOffset;
-  
+
   //	private HashMap namespace = new HashMap();
 
   public FuzzyXMLElementImpl(String name) {
@@ -33,11 +35,11 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     _nameOffset = nameOffset;
     _closeNameOffset = -1;
   }
-  
+
   public int getNameOffset() {
     return _nameOffset;
   }
-  
+
   public int getNameLength() {
     return _name != null ? _name.length() : 0;
   }
@@ -45,11 +47,11 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   public boolean hasCloseTag() {
     return _closeTagOffset != -1;
   }
-  
+
   public void setCloseTagOffset(int closeTagOffset) {
     _closeTagOffset = closeTagOffset;
   }
-  
+
   public int getCloseTagOffset() {
     return _closeTagOffset;
   }
@@ -57,15 +59,15 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   public void setCloseTagLength(int closeTagLength) {
     _closeTagLength = closeTagLength;
   }
-  
+
   public int getCloseTagLength() {
     return _closeTagLength;
   }
-  
+
   public void setCloseNameOffset(int closeNameOffset) {
     _closeNameOffset = closeNameOffset;
   }
-  
+
   public int getCloseNameOffset() {
     return _closeNameOffset;
   }
@@ -73,7 +75,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   public int getCloseNameLength() {
     return getNameLength();
   }
-  
+
   public String getName() {
     return _name;
   }
@@ -194,18 +196,18 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
         FuzzyXMLAttribute[] attrs = getAttributes();
         offset = getOffset() + getName().length();
         for (int i = 0; i < attrs.length; i++) {
-          offset = offset + attrs[i].toXMLString().length();
+          offset = offset + attrs[i].toXMLString(new RenderContext(getDocument().isHTML())).length();
         }
         // ここ微妙？
         offset = offset + 2;
 
         nodeImpl.setOffset(offset);
         if (fireEvent) {
-          nodeImpl.setLength(node.toXMLString().length());
+          nodeImpl.setLength(node.toXMLString(new RenderContext(getDocument().isHTML())).length());
         }
 
         _children.add(node);
-        String xml = toXMLString();
+        String xml = toXMLString(new RenderContext(getDocument().isHTML()));
         _children.remove(node);
 
         // イベントの発火
@@ -224,15 +226,15 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
         }
         // イベントの発火
         if (fireEvent) {
-          fireModifyEvent(nodeImpl.toXMLString(), offset, 0);
+          fireModifyEvent(nodeImpl.toXMLString(new RenderContext(getDocument().isHTML())), offset, 0);
           // 位置情報の更新
-          appendOffset(this, offset, node.toXMLString().length());
+          appendOffset(this, offset, node.toXMLString(new RenderContext(getDocument().isHTML())).length());
         }
 
         // 最後に追加
         nodeImpl.setOffset(offset);
         if (fireEvent) {
-          nodeImpl.setLength(node.toXMLString().length());
+          nodeImpl.setLength(node.toXMLString(new RenderContext(getDocument().isHTML())).length());
         }
 
         _children.add(node);
@@ -250,7 +252,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   }
 
   public boolean hasChildren() {
-	  return _children.size() > 0;
+    return _children.size() > 0;
   }
 
   public void insertAfter(FuzzyXMLNode newChild, FuzzyXMLNode refChild) {
@@ -299,16 +301,16 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     }
     int offset = target.getOffset();
     // イベントの発火
-    fireModifyEvent(newChild.toXMLString(), offset, 0);
+    fireModifyEvent(newChild.toXMLString(new RenderContext(getDocument().isHTML())), offset, 0);
 
     AbstractFuzzyXMLNode nodeImpl = (AbstractFuzzyXMLNode) newChild;
     nodeImpl.setParentNode(this);
     nodeImpl.setDocument(getDocument());
     nodeImpl.setOffset(offset);
-    nodeImpl.setLength(newChild.toXMLString().length());
+    nodeImpl.setLength(newChild.toXMLString(new RenderContext(getDocument().isHTML())).length());
 
     // 位置情報の更新
-    appendOffset(this, offset, nodeImpl.toXMLString().length());
+    appendOffset(this, offset, nodeImpl.toXMLString(new RenderContext(getDocument().isHTML())).length());
 
     // 最後に追加
     this._children.add(index, nodeImpl);
@@ -337,10 +339,10 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     nodeImpl.setParentNode(this);
     nodeImpl.setDocument(getDocument());
     nodeImpl.setOffset(refChild.getOffset());
-    nodeImpl.setLength(newChild.toXMLString().length());
+    nodeImpl.setLength(newChild.toXMLString(new RenderContext(getDocument().isHTML())).length());
 
     // イベントの発火
-    fireModifyEvent(newChild.toXMLString(), refChild.getOffset(), refChild.getLength());
+    fireModifyEvent(newChild.toXMLString(new RenderContext(getDocument().isHTML())), refChild.getOffset(), refChild.getLength());
     // 位置情報の更新
     appendOffset(this, refChild.getOffset(), newChild.getLength() - refChild.getLength());
 
@@ -382,15 +384,15 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
       FuzzyXMLAttribute[] attrs = getAttributes();
       int offset = getOffset() + getName().length() + 1;
       for (int i = 0; i < attrs.length; i++) {
-        offset = offset + attrs[i].toXMLString().length();
+        offset = offset + attrs[i].toXMLString(new RenderContext(getDocument().isHTML())).length();
       }
       // 更新イベントを発火
-      fireModifyEvent(attr.toXMLString(), offset, 0);
+      fireModifyEvent(attr.toXMLString(new RenderContext(getDocument().isHTML())), offset, 0);
       // 位置情報の更新
-      appendOffset(this, offset, attr.toXMLString().length());
+      appendOffset(this, offset, attr.toXMLString(new RenderContext(getDocument().isHTML())).length());
       // 最後に追加
       attrImpl.setOffset(offset);
-      attrImpl.setLength(attrImpl.toXMLString().length());
+      attrImpl.setLength(attrImpl.toXMLString(new RenderContext(getDocument().isHTML())).length());
       _attributes.add(attrImpl);
     }
     else {
@@ -439,30 +441,115 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     return sb.toString();
   }
 
-  public String toXMLString() {
-    boolean isHTML = false;
-    if (getDocument() != null) {
-      isHTML = getDocument().isHTML();
-    }
+  public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer) {
+    boolean isHTML = renderContext.isHtml();
 
-    StringBuffer sb = new StringBuffer();
-    sb.append("<").append(FuzzyXMLUtil.escape(getName(), isHTML));
+    renderContext.appendIndent(xmlBuffer);
+    String tagName = FuzzyXMLUtil.escape(getName(), isHTML);
+    if (renderContext.isLowercaseTags() && FuzzyXMLUtil.isAllUppercase(tagName)) {
+      tagName = tagName.toLowerCase();
+    }
+    xmlBuffer.append("<").append(tagName);
     FuzzyXMLAttribute[] attrs = getAttributes();
     for (int i = 0; i < attrs.length; i++) {
-      sb.append(attrs[i].toXMLString());
+      attrs[i].toXMLString(renderContext, xmlBuffer);
     }
     FuzzyXMLNode[] children = getChildren();
     if (children.length == 0) {
-      sb.append("/>");
+      if (renderContext.isSpaceInEmptyTags()) {
+        xmlBuffer.append(" ");
+      }
+      xmlBuffer.append("/>");
     }
     else {
-      sb.append(">");
-      for (int i = 0; i < children.length; i++) {
-        sb.append(children[i].toXMLString());
+      xmlBuffer.append(">");
+
+      boolean isScript = "script".equalsIgnoreCase(getName());
+      Set<FuzzyXMLText> hiddenTextNodes = new HashSet<FuzzyXMLText>();
+      int textBlocks = 0;
+      boolean newlines = false;
+      if (renderContext.isShowNewlines()) {
+        for (int i = 0; i < children.length; i++) {
+          if (children[i] instanceof FuzzyXMLElement) {
+            newlines = true;
+          }
+          else if (children[i] instanceof FuzzyXMLText) {
+            FuzzyXMLText text = (FuzzyXMLText) children[i];
+            if (renderContext.isTrim()) {
+              String value = text.getValue().trim();
+              if (value.length() == 0) {
+                hiddenTextNodes.add(text);
+              }
+              else {
+                textBlocks++;
+                if (value.indexOf('\n') >= 0) {
+                  textBlocks++;
+                }
+              }
+            }
+          }
+        }
+        if (textBlocks > 1) {
+          newlines = true;
+        }
       }
-      sb.append("</").append(FuzzyXMLUtil.escape(getName(), isHTML)).append(">");
+
+      if (renderContext.isShowNewlines() && newlines) {
+        xmlBuffer.append("\n");
+      }
+      renderContext.indent();
+
+      boolean lastNodeWasText = false;
+      for (int i = 0; i < children.length; i++) {
+        if (renderContext.isShowNewlines() && lastNodeWasText && children[i] instanceof FuzzyXMLElement) {
+          xmlBuffer.append("\n");
+        }
+
+        boolean isText = children[i] instanceof FuzzyXMLText;
+        boolean wasTextEscaped = false;
+        boolean oldTrim = renderContext.isTrim();
+        if (isText) {
+          FuzzyXMLText text = (FuzzyXMLText) children[i];
+          wasTextEscaped = text.isEscape();
+          if (!hiddenTextNodes.contains(children[i])) {
+            if (!lastNodeWasText && newlines) {
+              renderContext.appendIndent(xmlBuffer);
+            }
+            lastNodeWasText = true;
+          }
+        }
+        else {
+          lastNodeWasText = false;
+        }
+
+        if (isText && isScript) {
+          ((FuzzyXMLText)children[i]).setEscape(false);
+          renderContext.setTrim(false);
+        }
+
+        children[i].toXMLString(renderContext, xmlBuffer);
+        
+        if (isText && isScript) {
+          ((FuzzyXMLText)children[i]).setEscape(wasTextEscaped);
+          renderContext.setTrim(oldTrim);
+        }
+      }
+
+      if (renderContext.isShowNewlines() && lastNodeWasText && textBlocks > 1) {
+        xmlBuffer.append("\n");
+      }
+
+      renderContext.outdent();
+      if (newlines || (lastNodeWasText && textBlocks > 1)) {
+        renderContext.appendIndent(xmlBuffer);
+      }
+
+      xmlBuffer.append("</").append(tagName).append(">");
     }
-    return sb.toString();
+
+    if (renderContext.isShowNewlines()) {
+      xmlBuffer.append("\n");
+    }
   }
 
   @Override

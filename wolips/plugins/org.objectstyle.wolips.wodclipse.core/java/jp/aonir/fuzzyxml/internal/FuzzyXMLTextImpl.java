@@ -24,15 +24,24 @@ public class FuzzyXMLTextImpl extends AbstractFuzzyXMLNode implements FuzzyXMLTe
     return FuzzyXMLUtil.decode(_value, getDocument().isHTML());
   }
 
-  public String toXMLString() {
-    if (_escape) {
-      boolean isHTML = false;
-      if (getDocument() != null) {
-        isHTML = getDocument().isHTML();
+  public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer) {
+    String value = getValue();
+    boolean showText = true;
+    if (renderContext.isTrim()) {
+      value = value.trim();
+      if (value.length() == 0) {
+        showText = false;
       }
-      return FuzzyXMLUtil.escape(getValue(), isHTML);
     }
-    return getValue();
+    if (showText) {
+      if (_escape) {
+        boolean isHTML = renderContext.isHtml();
+        xmlBuffer.append(FuzzyXMLUtil.escape(value, isHTML));
+      }
+      else {
+        xmlBuffer.append(value);
+      }
+    }
   }
 
   @Override
