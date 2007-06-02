@@ -12,6 +12,8 @@ import jp.aonir.fuzzyxml.FuzzyXMLElement;
 import jp.aonir.fuzzyxml.FuzzyXMLNode;
 import jp.aonir.fuzzyxml.FuzzyXMLParser;
 
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ContextInformation;
@@ -226,20 +228,38 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
   protected ITextViewer getTextViewer() {
     return _textViewer;
   }
-  
+
   @Override
   public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int documentOffset) {
     _textViewer = viewer;
-    String text = viewer.getDocument().get().substring(0, documentOffset);
+    IDocument document = viewer.getDocument();
+    String text = document.get().substring(0, documentOffset);
     String[] dim = getLastWord(text);
     String word = dim[0].toLowerCase();
     String prev = dim[1].toLowerCase();
     String last = dim[2];
     String attr = dim[3];
-    String next = viewer.getDocument().get().substring(documentOffset);
+    boolean inTag = false;
+    try {
+      for (int i = documentOffset; i < document.getLength(); i++) {
+        char ch = document.getChar(i);
+        if (ch == '<') {
+          break;
+        }
+        else if (ch == '>') {
+          inTag = true;
+          break;
+        }
+      }
+    }
+    catch (BadLocationException e) {
+      // ignore;
+      e.printStackTrace();
+    }
+    String next = document.get().substring(documentOffset);
 
     this._offset = documentOffset;
-    this._doc = new FuzzyXMLParser(false).parse(viewer.getDocument().get());
+    this._doc = new FuzzyXMLParser(false).parse(document.get());
 
     List<ICompletionProposal> list = new ArrayList<ICompletionProposal>();
     List<TagInfo> tagList = getTagList();
@@ -297,32 +317,41 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
           String assistKeyword = tagName;
           int position = 0;
           // required attributes
-          AttributeInfo[] requireAttrs = tagInfo.getRequiredAttributeInfo();
-          for (int j = 0; j < requireAttrs.length; j++) {
-            assistKeyword = assistKeyword + " " + requireAttrs[j].getAttributeName();
-            if (requireAttrs[j].hasValue()) {
-              assistKeyword = assistKeyword + " = \"\"";
-              if (j == 0) {
-                position = tagName.length() + requireAttrs[j].getAttributeName().length() + 5;
+          AttributeInfo[] requireAttrs;
+          if (inTag) {
+            requireAttrs = new AttributeInfo[0];
+            position = tagName.length() + 1;
+          }
+          else {
+            requireAttrs = tagInfo.getRequiredAttributeInfo();
+            for (int j = 0; j < requireAttrs.length; j++) {
+              assistKeyword = assistKeyword + " " + requireAttrs[j].getAttributeName();
+              if (requireAttrs[j].hasValue()) {
+                assistKeyword = assistKeyword + " = \"\"";
+                if (j == 0) {
+                  position = tagName.length() + requireAttrs[j].getAttributeName().length() + 5;
+                }
               }
             }
           }
           boolean forceAttributePosition = (requireAttrs.length == 0 && tagInfo.requiresAttributes());
-          if (tagInfo.hasBody()) {
-            assistKeyword = assistKeyword + ">";
-            if (_assistCloseTag) {
-              if (position == 0) {
-                position = assistKeyword.length();
-              }
-              assistKeyword = assistKeyword + "</" + tagName + ">";
-            }
-          }
-          else {
-            if (tagInfo.isEmptyTag() && _xhtmlMode == false) {
+          if (!inTag) {
+            if (tagInfo.hasBody()) {
               assistKeyword = assistKeyword + ">";
+              if (_assistCloseTag) {
+                if (position == 0) {
+                  position = assistKeyword.length();
+                }
+                assistKeyword = assistKeyword + "</" + tagName + ">";
+              }
             }
             else {
-              assistKeyword = assistKeyword + "/>";
+              if (tagInfo.isEmptyTag() && _xhtmlMode == false) {
+                assistKeyword = assistKeyword + ">";
+              }
+              else {
+                assistKeyword = assistKeyword + "/>";
+              }
             }
           }
           if (position == 0) {
@@ -330,14 +359,14 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
           }
           if (forceAttributePosition && position > 0) {
             if (tagInfo.hasBody()) {
-              position --;
+              position--;
             }
             else if (tagInfo.isEmptyTag()) {
               if (_xhtmlMode) {
                 position -= 2;
               }
               else {
-                position --;
+                position--;
               }
             }
           }
@@ -421,7 +450,7 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
     ICompletionProposal[] prop = list.toArray(new ICompletionProposal[list.size()]);
     return prop;
   }
-  
+
   protected List<TagInfo> getDynamicTagInfo(String tagName) {
     return null;
   }
@@ -546,7 +575,7 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
     if (c == ' ' || c == '(' || c == ')' || c == ',' //|| c == '.' 
         || c == ';' || c == '\n' || c == '\r' || c == '\t' || c == '+' || c == '>' || c == '<' || c == '*' || c == '^' //|| c == '{'
         //|| c == '}' 
-        /*|| c == '[' || c == ']'*/ || c == '"' || c == '\'') {
+        /*|| c == '[' || c == ']'*/|| c == '"' || c == '\'') {
       return true;
     }
     else {
