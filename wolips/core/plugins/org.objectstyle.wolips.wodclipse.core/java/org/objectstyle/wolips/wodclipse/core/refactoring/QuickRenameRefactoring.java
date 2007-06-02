@@ -28,14 +28,16 @@ import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 public class QuickRenameRefactoring {
   public static void renameWodSelection(int offset, ITextViewer htmlViewer, ITextViewer wodViewer, WodParserCache cache) throws BadLocationException, CoreException, IOException {
     IWodModel wodModel = cache.getWodModel();
-    IWodUnit wodUnit = wodModel.getWodUnitAtIndex(offset);
-    if (wodUnit != null && wodUnit instanceof IWodElement) {
-      IWodElement wodElement = (IWodElement) wodUnit;
-      Position elementNamePosition = wodElement.getElementNamePosition();
-      if (elementNamePosition != null && elementNamePosition.includes(offset)) {
-        String elementName = wodElement.getElementName();
-        if (elementName != null) {
-          QuickRenameRefactoring.renameElement(elementName, htmlViewer, wodViewer, cache, false);
+    if (wodModel != null) {
+      IWodUnit wodUnit = wodModel.getWodUnitAtIndex(offset);
+      if (wodUnit != null && wodUnit instanceof IWodElement) {
+        IWodElement wodElement = (IWodElement) wodUnit;
+        Position elementNamePosition = wodElement.getElementNamePosition();
+        if (elementNamePosition != null && elementNamePosition.includes(offset)) {
+          String elementName = wodElement.getElementName();
+          if (elementName != null) {
+            QuickRenameRefactoring.renameElement(elementName, htmlViewer, wodViewer, cache, false);
+          }
         }
       }
     }
@@ -88,7 +90,7 @@ public class QuickRenameRefactoring {
     return sequence;
   }
 
-  protected static int linkWod(String woElementName, IDocument wodDocument, LinkedPositionGroup linkedGroup, WodParserCache cache, int sequence) throws BadLocationException {
+  protected static int linkWod(String woElementName, IDocument wodDocument, LinkedPositionGroup linkedGroup, WodParserCache cache, int sequence) throws BadLocationException, CoreException, IOException {
     LinkedModeModel.closeAllModels(wodDocument);
     IWodModel wodModel = cache.getWodModel();
     IWodElement wodElement = wodModel.getElementNamed(woElementName);

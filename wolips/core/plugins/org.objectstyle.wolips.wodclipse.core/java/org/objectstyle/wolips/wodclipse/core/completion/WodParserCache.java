@@ -232,7 +232,11 @@ public class WodParserCache implements FuzzyXMLErrorListener {
     return _typeContextCache;
   }
 
-  public IWodModel getWodModel() {
+  public IWodModel getWodModel() throws CoreException, IOException {
+    if (_wodModel == null) {
+      parseHtmlAndWodIfNecessary();
+      validate();
+    }
     return _wodModel;
   }
 
