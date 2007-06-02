@@ -35,6 +35,7 @@ public class CleanWOBuilderRefactoring implements IRunnableWithProgress {
       String elementName = wodElement.getElementName();
       if (elementName.startsWith(shortTypeName) && StringUtilities.isDigitsOnly(elementName.substring(shortTypeName.length()))) {
         String newName = null;
+        boolean forceAppendNumber = false;
         
         if ("WOConditional".equals(typeName)) {
           String conditionValue = (String) wodElement.getBindingsMap().get("condition");
@@ -49,11 +50,38 @@ public class CleanWOBuilderRefactoring implements IRunnableWithProgress {
           String value = (String) wodElement.getBindingsMap().get("value");
           newName = newNameFromBindingValue(null, value, null);
         }
+        else if ("WOSubmitButton".equals(typeName)) {
+          String action = (String) wodElement.getBindingsMap().get("action");
+          if (action != null) {
+            newName = newNameFromBindingValue(null, action + "Button", null);
+          }
+          else {
+            newName = "Button";
+          }
+        }
+        else if ("WOHyperlink".equals(typeName)) {
+          String action = (String) wodElement.getBindingsMap().get("action");
+          if (action != null) {
+            newName = newNameFromBindingValue(null, action + "Link", null);
+          }
+          else {
+            newName = "Link";
+          }
+        }
+        else if ("WORepetition".equals(typeName)) {
+          String list = (String) wodElement.getBindingsMap().get("list");
+          newName = newNameFromBindingValue(null, list, null);
+        }
+        else if ("WOGenericContainer".equals(typeName) || "WOGenericElement".equals(typeName)) {
+          String genericElementName = (String) wodElement.getBindingsMap().get("elementName");
+          newName = newNameFromBindingValue(null, genericElementName, null);
+          forceAppendNumber = true;
+        }
         
         if (newName != null) {
           String uniqueNewName = newName;
           int counter = 1;
-          while (wodModel.getElementNamed(newName) != null || elementNames.contains(uniqueNewName)) {
+          while ((counter == 1 && forceAppendNumber) || wodModel.getElementNamed(newName) != null || elementNames.contains(uniqueNewName)) {
             uniqueNewName = newName + String.valueOf(counter ++);
           }
           elementRenames.add(new ElementRename(elementName, uniqueNewName));
@@ -67,7 +95,9 @@ public class CleanWOBuilderRefactoring implements IRunnableWithProgress {
   
   protected String newNameFromBindingValue(String prefix, String value, String suffix) {
     String newName = null;
-    if (value != null && !value.startsWith("\"") && !value.startsWith("~")) {
+    if (value != null && !value.startsWith("\"~")) {
+      value = value.replaceAll(" ", "_");
+      value = value.replaceAll("\"", "");
       String[] keys = value.split("\\.");
       StringBuffer newNameBuffer = new StringBuffer();
       if (prefix != null) {
