@@ -75,7 +75,7 @@ public class FuzzyXMLParser {
       addLooseTag("spacer");
     }
   }
-
+  
   /**
    * A "loose" tag is like br or p where you allow close tags to not exist.
    * 

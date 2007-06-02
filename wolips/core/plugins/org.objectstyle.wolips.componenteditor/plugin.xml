@@ -74,6 +74,11 @@
               name="Rename..."/>
         <command
               categoryId="org.objectstyle.wolips.componenteditor.componenteditorcommands"
+              description="Format"
+              id="org.objectstyle.wolips.componenteditor.editors.command.format"
+              name="Format"/>
+        <command
+              categoryId="org.objectstyle.wolips.componenteditor.componenteditorcommands"
               description="Insert Component"
               id="org.objectstyle.wolips.componenteditor.editors.command.InsertAnyComponentAction"
               name="Insert Component"/>
@@ -119,6 +124,11 @@
 	        contextId="org.objectstyle.wolips.componenteditor.componentEditorScope"
 	        schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
 	        sequence="M1+2 R"/>
+	  <key
+	        commandId="org.objectstyle.wolips.componenteditor.editors.command.format"
+	        contextId="org.objectstyle.wolips.componenteditor.componentEditorScope"
+	        schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+	        sequence="M1+M2+F"/>
 	</extension>
 	
 	<extension point = "org.eclipse.ui.editorActions">
@@ -174,6 +184,13 @@
                id="org.objectstyle.wolips.componenteditor.editors.switchtojava"
                label="Switch to Java Editor"
                menubarPath="navigate/org.objectstyle.wolips.componenteditor.navigateMenuContribution/group1"/>
+         <action
+               class="org.objectstyle.wolips.componenteditor.actions.FormatAction"
+               definitionId="org.objectstyle.wolips.componenteditor.editors.command.format"
+               id="org.objectstyle.wolips.componenteditor.editors.action.format"
+               label="Format"
+               menubarPath="edit/org.objectstyle.wolips.componenteditor.refactorMenuContribution/group1"
+               />
          <action
                class="org.objectstyle.wolips.componenteditor.actions.QuickRenameElementAction"
                definitionId="org.objectstyle.wolips.componenteditor.editors.command.refactorRename"

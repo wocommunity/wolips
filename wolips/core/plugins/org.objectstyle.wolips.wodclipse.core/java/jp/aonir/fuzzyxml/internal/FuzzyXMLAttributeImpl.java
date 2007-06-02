@@ -1,5 +1,7 @@
 package jp.aonir.fuzzyxml.internal;
 
+import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
+
 import jp.aonir.fuzzyxml.FuzzyXMLAttribute;
 import jp.aonir.fuzzyxml.FuzzyXMLElement;
 import jp.aonir.fuzzyxml.FuzzyXMLNode;
@@ -76,7 +78,7 @@ public class FuzzyXMLAttributeImpl extends AbstractFuzzyXMLNode implements Fuzzy
     this._value = value;
 
     // 更新イベントを発火
-    fireModifyEvent(toXMLString(), getOffset(), getLength());
+    fireModifyEvent(toXMLString(new RenderContext(getDocument().isHTML())), getOffset(), getLength());
     // 位置情報を更新
     appendOffset((FuzzyXMLElement) getParentNode(), getOffset(), value.length() - length);
   }
@@ -105,32 +107,49 @@ public class FuzzyXMLAttributeImpl extends AbstractFuzzyXMLNode implements Fuzzy
     return this._escape;
   }
 
-  public String toXMLString() {
-    boolean isHTML = false;
-    if (getDocument() != null) {
-      isHTML = getDocument().isHTML();
-    }
+  public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer) {
+    boolean isHTML = renderContext.isHtml();
 
-    StringBuffer sb = new StringBuffer();
-    sb.append(" ");
-    sb.append(FuzzyXMLUtil.escape(getName(), isHTML));
-    sb.append("=");
-    sb.append(_quote);
+    xmlBuffer.append(" ");
+    String attributeName = FuzzyXMLUtil.escape(getName(), isHTML);
+    if (renderContext.isLowercaseAttributes()) {
+      FuzzyXMLNode parentNode = getParentNode();
+      boolean inlineTag = (parentNode instanceof FuzzyXMLElement && WodHtmlUtils.isInline(((FuzzyXMLElement)parentNode).getName()));
+      if (!inlineTag && FuzzyXMLUtil.isAllUppercase(attributeName)) {
+        attributeName = attributeName.toLowerCase();
+      }
+    }
+    xmlBuffer.append(attributeName);
+    if (renderContext.isSpacesAroundEquals()) {
+      xmlBuffer.append(" ");
+    }
+    xmlBuffer.append("=");
+    if (renderContext.isSpacesAroundEquals()) {
+      xmlBuffer.append(" ");
+    }
+    char quote = _quote;
+    if (renderContext.isAddMissingQuotes()) {
+      quote = '"';
+    }
+    if (quote != 0) {
+      xmlBuffer.append(quote);
+    }
     if (_escape) {
-      sb.append(FuzzyXMLUtil.escape(getValue(), isHTML));
+      xmlBuffer.append(FuzzyXMLUtil.escape(getValue(), isHTML));
     }
     else {
       String value = getValue();
       for (int i = 0; i < value.length(); i++) {
         char c = value.charAt(i);
         if (_quote == c) {
-          sb.append('\\');
+          xmlBuffer.append('\\');
         }
-        sb.append(c);
+        xmlBuffer.append(c);
       }
     }
-    sb.append(_quote);
-    return sb.toString();
+    if (quote != 0) {
+      xmlBuffer.append(quote);
+    }
   }
 
   @Override
