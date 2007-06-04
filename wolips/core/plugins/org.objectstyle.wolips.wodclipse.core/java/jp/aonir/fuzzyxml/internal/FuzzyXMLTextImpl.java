@@ -18,14 +18,15 @@ public class FuzzyXMLTextImpl extends AbstractFuzzyXMLNode implements FuzzyXMLTe
   }
 
   public String getValue() {
-    if (getDocument() == null) {
-      return FuzzyXMLUtil.decode(_value, false);
-    }
-    return FuzzyXMLUtil.decode(_value, getDocument().isHTML());
+//    if (getDocument() == null) {
+//      return FuzzyXMLUtil.decode(_value, false);
+//    }
+//    return FuzzyXMLUtil.decode(_value, getDocument().isHTML());
+    return _value;
   }
 
   public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer) {
-    String value = getValue();
+    String value = _value;
     boolean showText = true;
     if (renderContext.isTrim()) {
       value = value.trim();
@@ -36,7 +37,8 @@ public class FuzzyXMLTextImpl extends AbstractFuzzyXMLNode implements FuzzyXMLTe
     if (showText) {
       if (_escape) {
         boolean isHTML = renderContext.isHtml();
-        xmlBuffer.append(FuzzyXMLUtil.escape(value, isHTML));
+        //FuzzyXMLUtil.escape(value, isHTML)
+        xmlBuffer.append(value);
       }
       else {
         xmlBuffer.append(value);

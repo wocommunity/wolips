@@ -268,7 +268,8 @@ public class FuzzyXMLParser {
   private void handleText(int offset, int end, boolean escape) {
     String text = _originalSource.substring(offset, end);
     if (getParent() != null) {
-      FuzzyXMLTextImpl textNode = new FuzzyXMLTextImpl(getParent(), FuzzyXMLUtil.decode(text, _isHTML), offset, end - offset);
+      //FuzzyXMLUtil.decode(text, _isHTML)
+      FuzzyXMLTextImpl textNode = new FuzzyXMLTextImpl(getParent(), text, offset, end - offset);
       textNode.setEscape(escape);
       ((FuzzyXMLElement) getParent()).appendChild(textNode);
     }
@@ -487,7 +488,7 @@ public class FuzzyXMLParser {
   private void checkAttributeValue(FuzzyXMLAttribute attr) {
     String str = attr.getValue();
     if (str != null) {
-      str = str.replaceAll("&amp;", " ");
+      str = str.replaceAll("&[^&; \"]+;", " ");
       Matcher invalidStringMatcher = _invalidStringPattern.matcher(str);
       while (invalidStringMatcher.find()) {
         String invalidPart = invalidStringMatcher.group();
@@ -671,7 +672,7 @@ public class FuzzyXMLParser {
           // add an attribute
           AttrInfo attr = new AttrInfo();
           attr.name = name;
-          attr.value = FuzzyXMLUtil.decode(sb.toString(), _isHTML);
+          attr.value = sb.toString();//FuzzyXMLUtil.decode(sb.toString(), _isHTML);
           attr.valueOffset = valueOffset;
           attr.offset = start;
           attr.end = i + 1;
@@ -703,7 +704,7 @@ public class FuzzyXMLParser {
     if (state == 4 && quote == 0) {
       AttrInfo attr = new AttrInfo();
       attr.name = name;
-      attr.value = FuzzyXMLUtil.decode(sb.toString(), _isHTML);
+      attr.value = sb.toString();//FuzzyXMLUtil.decode(sb.toString(), _isHTML);
       attr.valueOffset = valueOffset;
       attr.offset = start;
       attr.end = text.length();
