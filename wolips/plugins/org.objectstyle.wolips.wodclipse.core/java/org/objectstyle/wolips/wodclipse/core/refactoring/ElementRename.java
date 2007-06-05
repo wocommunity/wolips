@@ -103,6 +103,7 @@ public class ElementRename {
     if (value != null && !value.startsWith("\"~")) {
       value = value.replaceAll(" ", "_");
       value = value.replaceAll("\"", "");
+      value = value.replaceAll("[@,]", ".");
       String[] keys = value.split("\\.");
       StringBuffer newNameBuffer = new StringBuffer();
       if (prefix != null) {
