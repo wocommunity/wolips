@@ -45,10 +45,16 @@ package org.objectstyle.wolips.eomodeler.preferences;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.core.model.EOArgument;
+import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
+import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
 /**
  * @author mschrag
@@ -69,6 +75,12 @@ public class EntityModelerPreferencePage extends FieldEditorPreferencePage imple
 		addField(new BooleanFieldEditor(PreferenceConstants.OPEN_IN_WINDOW_KEY, Messages.getString("Preferences.OpenInWindowLabel"), getFieldEditorParent()));
 		addField(new BooleanFieldEditor(PreferenceConstants.USED_FOR_LOCKING_DEFAULT_KEY, Messages.getString("Preferences.DefaultUsedForLockingLabel"), getFieldEditorParent()));
 		addField(new BooleanFieldEditor(PreferenceConstants.ALLOWS_NULL_DEFAULT_KEY, Messages.getString("Preferences.DefaultAllowsNullLabel"), getFieldEditorParent()));
+		addField(new BooleanFieldEditor(PreferenceConstants.ALLOWS_NULL_DEFAULT_KEY, Messages.getString("Preferences.DefaultAllowsNullLabel"), getFieldEditorParent()));
+
+		addField(new StringFieldEditor(TableUtils.getPreferenceNameForTableNamed(EOEntity.class.getName()), "Entity Columns", getFieldEditorParent()));
+		addField(new StringFieldEditor(TableUtils.getPreferenceNameForTableNamed(EOAttribute.class.getName()), "Attribute Columns", getFieldEditorParent()));
+		addField(new StringFieldEditor(TableUtils.getPreferenceNameForTableNamed(EORelationship.class.getName()), "Relationship Columns", getFieldEditorParent()));
+		addField(new StringFieldEditor(TableUtils.getPreferenceNameForTableNamed(EOArgument.class.getName()), "Argument Columns", getFieldEditorParent()));
 	}
 
 	public void init(IWorkbench workbench) {
