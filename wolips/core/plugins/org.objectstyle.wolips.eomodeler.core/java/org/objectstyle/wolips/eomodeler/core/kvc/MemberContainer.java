@@ -48,6 +48,8 @@ public class MemberContainer {
 			if (setMember == null) {
 				if (_instance instanceof Map) {
 					setMember = new MapKey(_name);
+				} else if (myMemberType == MemberContainer.GET) {
+					throw new IllegalArgumentException("There is no get-method named '" + _name + "' on the class " + myClass.getName() + ".");
 				} else {
 					throw new IllegalArgumentException("There is no set-method named '" + _name + "' on the class " + myClass.getName() + ".");
 				}
