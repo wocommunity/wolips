@@ -11,6 +11,10 @@ public class SimpleWodElement extends AbstractWodElement {
     _type = type;
   }
 
+  public void setElementName(String name) {
+    _name = name;
+  }
+
   public String getElementName() {
     return _name;
   }

@@ -13,15 +13,14 @@ import jp.aonir.fuzzyxml.util.NodeSelectUtil;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.text.DocumentRewriteSession;
-import org.eclipse.jface.text.DocumentRewriteSessionType;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IDocumentExtension4;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.ReplaceEdit;
+import org.eclipse.text.edits.TextEdit;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.model.IWodElement;
 import org.objectstyle.wolips.wodclipse.core.model.IWodModel;
+import org.objectstyle.wolips.wodclipse.core.util.WodDocumentUtils;
 
 public class RenameElementsRefactoring implements IRunnableWithProgress {
   private List<ElementRename> _renames;
@@ -36,47 +35,35 @@ public class RenameElementsRefactoring implements IRunnableWithProgress {
     try {
       IDocument htmlDocument = _cache.getHtmlDocument();
       if (htmlDocument != null) {
-        IDocumentExtension4 htmlDoc4 = (IDocumentExtension4) htmlDocument;
-        DocumentRewriteSession htmlRewriteSession = htmlDoc4.startRewriteSession(DocumentRewriteSessionType.UNRESTRICTED);
-        try {
-          MultiTextEdit multiEdit = new MultiTextEdit();
-          for (ElementRename rename : _renames) {
-            FuzzyXMLDocument htmlModel = _cache.getHtmlXmlDocument();
-            FuzzyXMLNode[] woTags = NodeSelectUtil.getNodeByFilter(htmlModel.getDocumentElement(), new NamedWebobjectTagFilter(rename.getOldName()));
+        List<TextEdit> htmlEdits = new LinkedList<TextEdit>();
+        for (ElementRename rename : _renames) {
+          FuzzyXMLDocument htmlModel = _cache.getHtmlXmlDocument();
+          FuzzyXMLNode[] woTags = NodeSelectUtil.getNodeByFilter(htmlModel.getDocumentElement(), new NamedWebobjectTagFilter(rename.getOldName()));
 
-            for (FuzzyXMLNode woTag : woTags) {
-              FuzzyXMLElement woElement = (FuzzyXMLElement) woTag;
-              FuzzyXMLAttribute woNameAttr = woElement.getAttributeNode("name");
-              if (woNameAttr != null) {
-                int offset = woElement.getOffset() + woNameAttr.getValueDataOffset() + 1;
-                int length = woNameAttr.getValueDataLength();
-                multiEdit.addChild(new ReplaceEdit(offset, length, rename.getNewName()));
-              }
+          for (FuzzyXMLNode woTag : woTags) {
+            FuzzyXMLElement woElement = (FuzzyXMLElement) woTag;
+            FuzzyXMLAttribute woNameAttr = woElement.getAttributeNode("name");
+            if (woNameAttr != null) {
+              int offset = woElement.getOffset() + woNameAttr.getValueDataOffset() + 1;
+              int length = woNameAttr.getValueDataLength();
+              htmlEdits.add(new ReplaceEdit(offset, length, rename.getNewName()));
             }
           }
-          multiEdit.apply(htmlDocument);
-        }
-        finally {
-          htmlDoc4.stopRewriteSession(htmlRewriteSession);
+
+          WodDocumentUtils.applyEdits(htmlDocument, htmlEdits);
         }
       }
 
       IDocument wodDocument = _cache.getWodDocument();
       if (wodDocument != null) {
         IWodModel wodModel = _cache.getWodModel();
-        IDocumentExtension4 wodDoc4 = (IDocumentExtension4) wodDocument;
-        DocumentRewriteSession wodRewriteSession = wodDoc4.startRewriteSession(DocumentRewriteSessionType.UNRESTRICTED);
-        try {
-          MultiTextEdit multiEdit = new MultiTextEdit();
-          for (ElementRename rename : _renames) {
-            IWodElement wodElement = wodModel.getElementNamed(rename.getOldName());
-            multiEdit.addChild(new ReplaceEdit(wodElement.getElementNamePosition().getOffset(), wodElement.getElementNamePosition().getLength(), rename.getNewName()));
-          }
-          multiEdit.apply(wodDocument);
+        List<TextEdit> wodEdits = new LinkedList<TextEdit>();
+        MultiTextEdit multiEdit = new MultiTextEdit();
+        for (ElementRename rename : _renames) {
+          IWodElement wodElement = wodModel.getElementNamed(rename.getOldName());
+          wodEdits.add(new ReplaceEdit(wodElement.getElementNamePosition().getOffset(), wodElement.getElementNamePosition().getLength(), rename.getNewName()));
         }
-        finally {
-          wodDoc4.stopRewriteSession(wodRewriteSession);
-        }
+        WodDocumentUtils.applyEdits(wodDocument, wodEdits);
       }
     }
     catch (Exception e) {

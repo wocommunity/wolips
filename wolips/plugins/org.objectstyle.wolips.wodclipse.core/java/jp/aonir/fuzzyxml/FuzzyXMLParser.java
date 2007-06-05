@@ -466,7 +466,7 @@ public class FuzzyXMLParser {
       lastOpenElement.setLength(end - lastOpenElement.getOffset());
       if (closeTagMatches) {
         lastOpenElement.setCloseTagOffset(offset);
-        lastOpenElement.setCloseTagLength(end - offset);
+        lastOpenElement.setCloseTagLength(end - offset - 2);
         lastOpenElement.setCloseNameOffset(text.indexOf(tagName));
       }
       _nonCloseElements.remove(lastOpenElement);

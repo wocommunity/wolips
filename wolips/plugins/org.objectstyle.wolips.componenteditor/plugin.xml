@@ -74,6 +74,11 @@
               name="Rename..."/>
         <command
               categoryId="org.objectstyle.wolips.componenteditor.componenteditorcommands"
+              description="Convert Inline to WOD"
+              id="org.objectstyle.wolips.componenteditor.editors.command.refactorConvertToWod"
+              name="Convert Inline to WOD"/>
+        <command
+              categoryId="org.objectstyle.wolips.componenteditor.componenteditorcommands"
               description="Format"
               id="org.objectstyle.wolips.componenteditor.editors.command.format"
               name="Format"/>
@@ -124,6 +129,11 @@
 	        contextId="org.objectstyle.wolips.componenteditor.componentEditorScope"
 	        schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
 	        sequence="M1+2 R"/>
+	  <key
+	        commandId="org.objectstyle.wolips.componenteditor.editors.command.refactorConvertToWod"
+	        contextId="org.objectstyle.wolips.componenteditor.componentEditorScope"
+	        schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+	        sequence="M1+2 W"/>
 	  <key
 	        commandId="org.objectstyle.wolips.componenteditor.editors.command.format"
 	        contextId="org.objectstyle.wolips.componenteditor.componentEditorScope"
@@ -203,6 +213,13 @@
                definitionId="org.objectstyle.wolips.componenteditor.editors.command.cleanWOBuilderElementNames"
                id="org.objectstyle.wolips.componenteditor.editors.action.cleanWOBuilderElementNames"
                label="Clean WOBuilder Names..."
+               menubarPath="edit/org.objectstyle.wolips.componenteditor.refactorMenuContribution/group1"
+               />
+         <action
+               class="org.objectstyle.wolips.componenteditor.actions.ConvertInlineToWodAction"
+               definitionId="org.objectstyle.wolips.componenteditor.editors.command.refactorConvertToWod"
+               id="org.objectstyle.wolips.componenteditor.editors.action.refactorConvertToWod"
+               label="Convert Inline to WOD"
                menubarPath="edit/org.objectstyle.wolips.componenteditor.refactorMenuContribution/group1"
                />
 		</editorContribution>

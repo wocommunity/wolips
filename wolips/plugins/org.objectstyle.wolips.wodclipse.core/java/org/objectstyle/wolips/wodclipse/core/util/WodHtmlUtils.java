@@ -1,10 +1,18 @@
 package org.objectstyle.wolips.wodclipse.core.util;
 
+import java.util.Map;
 import java.util.regex.Pattern;
+
+import jp.aonir.fuzzyxml.FuzzyXMLAttribute;
+import jp.aonir.fuzzyxml.FuzzyXMLElement;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
+import org.objectstyle.wolips.wodclipse.core.model.SimpleWodBinding;
+import org.objectstyle.wolips.wodclipse.core.model.SimpleWodElement;
+import org.objectstyle.wolips.wodclipse.core.preferences.TagShortcut;
 
 public class WodHtmlUtils {
   public static Pattern WEBOBJECTS_PATTERN;
@@ -27,7 +35,7 @@ public class WodHtmlUtils {
     }
     return isWOTag;
   }
-  
+
   public static boolean isWOTag(String tagName) {
     boolean isWOTag = false;
     if (tagName != null) {
@@ -64,6 +72,56 @@ public class WodHtmlUtils {
       }
     }
     return lineCount;
+  }
+
+  public static String toBindingValue(String value, boolean wo54) {
+    String bindingValue = value;
+    if (bindingValue.startsWith("$")) {
+      bindingValue = bindingValue.substring(1);
+    }
+    else if (wo54 && bindingValue.startsWith("[") && bindingValue.endsWith("]")) {
+      bindingValue = bindingValue.substring(1, bindingValue.length() - 1);
+    }
+    else {
+      bindingValue = "\"" + bindingValue + "\"";
+    }
+    return bindingValue;
+  }
+
+  public static SimpleWodElement toWodElement(FuzzyXMLElement element, boolean wo54, WodParserCache cache) {
+    String elementName = element.getName();
+    String namespaceElementName = elementName.substring("wo:".length()).trim();
+
+    TagShortcut matchingTagShortcut = null;
+    for (TagShortcut tagShortcut : cache.getTagShortcuts()) {
+      if (namespaceElementName.equalsIgnoreCase(tagShortcut.getShortcut())) {
+        matchingTagShortcut = tagShortcut;
+      }
+    }
+    if (matchingTagShortcut != null) {
+      namespaceElementName = matchingTagShortcut.getActual();
+    }
+
+    SimpleWodElement wodElement = new SimpleWodElement("_temp", namespaceElementName);
+    wodElement.setTemporary(true);
+
+    if (matchingTagShortcut != null) {
+      for (Map.Entry<String, String> shortcutAttribute : matchingTagShortcut.getAttributes().entrySet()) {
+        String value = WodHtmlUtils.toBindingValue(shortcutAttribute.getValue(), wo54);
+        SimpleWodBinding wodBinding = new SimpleWodBinding(shortcutAttribute.getKey(), value);
+        wodElement.addBinding(wodBinding);
+      }
+    }
+
+    FuzzyXMLAttribute[] attributes = element.getAttributes();
+    for (FuzzyXMLAttribute attribute : attributes) {
+      String name = attribute.getName();
+      String originalValue = attribute.getValue();
+      String value = WodHtmlUtils.toBindingValue(originalValue, wo54);
+      SimpleWodBinding wodBinding = new SimpleWodBinding(name, value);
+      wodElement.addBinding(wodBinding);
+    }
+    return wodElement;
   }
 
 }

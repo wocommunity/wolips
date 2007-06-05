@@ -15,7 +15,7 @@ public class CleanWOBuilderElementNamesAction extends AbstractTemplateAction {
 			WodEditor wodEditor = getWodEditor();
 			if (templateEditor != null && wodEditor != null) {
 				WodParserCache cache = templateEditor.getSourceEditor().getParserCache();
-				CleanWOBuilderRefactoring.run(cache, new NullProgressMonitor());
+				CleanWOBuilderRefactoring.run(cache, false, new NullProgressMonitor());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
