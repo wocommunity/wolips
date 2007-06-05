@@ -9,6 +9,8 @@ public interface FuzzyXMLElement extends FuzzyXMLNode {
   
   public int getNameLength();
 
+  public int getOpenTagLength();
+
   public boolean hasCloseTag();
   
   public int getCloseTagOffset();

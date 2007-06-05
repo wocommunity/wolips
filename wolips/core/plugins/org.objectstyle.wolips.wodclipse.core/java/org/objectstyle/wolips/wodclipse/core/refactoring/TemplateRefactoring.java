@@ -10,6 +10,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.document.WodFileDocumentProvider;
 
@@ -59,6 +60,13 @@ public class TemplateRefactoring {
         htmlProvider.disconnect(htmlInput);
         cache.setHtmlDocument(null);
       }
+    }
+    
+    try {
+      cache.clearCache();
+    }
+    catch (LocateException e) {
+      e.printStackTrace();
     }
   }
 }

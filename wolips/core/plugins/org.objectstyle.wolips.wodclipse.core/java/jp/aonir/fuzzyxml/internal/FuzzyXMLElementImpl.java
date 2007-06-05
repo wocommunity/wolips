@@ -18,7 +18,8 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   private List<FuzzyXMLAttribute> _attributes = new ArrayList<FuzzyXMLAttribute>();
   private String _name;
   private int _nameOffset;
-
+  
+  private int _openTagLength;
   private int _closeTagOffset;
   private int _closeTagLength;
   private int _closeNameOffset;
@@ -33,7 +34,13 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     super(parent, offset, length);
     this._name = name;
     _nameOffset = nameOffset;
+    _closeTagOffset = -1;
     _closeNameOffset = -1;
+    _openTagLength = length - 2;
+  }
+
+  public int getOpenTagLength() {
+    return _openTagLength;
   }
 
   public int getNameOffset() {

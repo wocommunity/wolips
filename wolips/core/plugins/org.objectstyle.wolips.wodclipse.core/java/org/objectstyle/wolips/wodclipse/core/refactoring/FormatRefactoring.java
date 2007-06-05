@@ -23,6 +23,8 @@ public class FormatRefactoring implements IRunnableWithProgress {
 
   public void run(IProgressMonitor monitor) throws InvocationTargetException {
     try {
+      _cache.clearCache();
+      
       FuzzyXMLDocument htmlModel = _cache.getHtmlXmlDocument();
       FuzzyXMLElement documentElement = htmlModel.getDocumentElement();
       IDocument htmlDocument = _cache.getHtmlDocument();

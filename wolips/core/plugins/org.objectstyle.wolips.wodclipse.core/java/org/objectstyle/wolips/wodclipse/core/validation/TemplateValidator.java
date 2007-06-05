@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import jp.aonir.fuzzyxml.FuzzyXMLAttribute;
@@ -21,13 +20,10 @@ import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.model.HtmlElementName;
 import org.objectstyle.wolips.wodclipse.core.model.IWodElement;
 import org.objectstyle.wolips.wodclipse.core.model.IWodModel;
-import org.objectstyle.wolips.wodclipse.core.model.SimpleWodBinding;
-import org.objectstyle.wolips.wodclipse.core.model.SimpleWodElement;
 import org.objectstyle.wolips.wodclipse.core.model.WodBindingNameProblem;
 import org.objectstyle.wolips.wodclipse.core.model.WodBindingValueProblem;
 import org.objectstyle.wolips.wodclipse.core.model.WodProblem;
 import org.objectstyle.wolips.wodclipse.core.preferences.PreferenceConstants;
-import org.objectstyle.wolips.wodclipse.core.preferences.TagShortcut;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
 public class TemplateValidator {
@@ -91,45 +87,13 @@ public class TemplateValidator {
     }
 
     String elementName = element.getName();
-    int colonIndex = elementName.indexOf(':');
-    if (colonIndex > 0) {
+    if (WodHtmlUtils.isInline(elementName)) {
       if (validate) {
-        String namespace = elementName.substring(0, colonIndex);
-        if ("wo".equalsIgnoreCase(namespace)) {
-          String namespaceElementName = elementName.substring(colonIndex + 1);
-          TagShortcut matchingTagShortcut = null;
-          for (TagShortcut tagShortcut : _cache.getTagShortcuts()) {
-            if (namespaceElementName.equalsIgnoreCase(tagShortcut.getShortcut())) {
-              matchingTagShortcut = tagShortcut;
-            }
-          }
-          if (matchingTagShortcut != null) {
-            namespaceElementName = matchingTagShortcut.getActual();
-          }
-          SimpleWodElement wodElement = new SimpleWodElement("_temp", namespaceElementName);
-          wodElement.setTemporary(true);
-
-          if (matchingTagShortcut != null) {
-            for (Map.Entry<String, String> shortcutAttribute : matchingTagShortcut.getAttributes().entrySet()) {
-              String value = toBindingValue(shortcutAttribute.getValue());
-              SimpleWodBinding wodBinding = new SimpleWodBinding(shortcutAttribute.getKey(), value);
-              wodElement.addBinding(wodBinding);
-            }
-          }
-
-          List<WodProblem> wodProblems = new LinkedList<WodProblem>();
-
+        IWodElement wodElement = WodHtmlUtils.toWodElement(element, _wo54, _cache);
+        if (wodElement != null) {
           boolean validateBindingValues = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.VALIDATE_BINDING_VALUES);
           boolean validateOGNL = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.VALIDATE_OGNL_KEY);
-          FuzzyXMLAttribute[] attributes = element.getAttributes();
-          for (FuzzyXMLAttribute attribute : attributes) {
-            String name = attribute.getName();
-            String originalValue = attribute.getValue();
-            String value = toBindingValue(originalValue);
-            SimpleWodBinding wodBinding = new SimpleWodBinding(name, value);
-            wodElement.addBinding(wodBinding);
-          }
-
+          List<WodProblem> wodProblems = new LinkedList<WodProblem>();
           try {
             wodElement.fillInProblems(_cache.getJavaProject(), _cache.getComponentType(), validateBindingValues, wodProblems, _cache);
             inlineProblems.add(new InlineWodProblem(element, wodProblems));
@@ -164,20 +128,6 @@ public class TemplateValidator {
         visitElement((FuzzyXMLElement) nodes[i], inlineProblems, validate);
       }
     }
-  }
-
-  protected String toBindingValue(String value) {
-    String bindingValue = value;
-    if (bindingValue.startsWith("$")) {
-      bindingValue = bindingValue.substring(1);
-    }
-    else if (_wo54 && bindingValue.startsWith("[") && bindingValue.endsWith("]")) {
-      bindingValue = bindingValue.substring(1, bindingValue.length() - 1);
-    }
-    else {
-      bindingValue = "\"" + bindingValue + "\"";
-    }
-    return bindingValue;
   }
 
   public class InlineWodProblem {
