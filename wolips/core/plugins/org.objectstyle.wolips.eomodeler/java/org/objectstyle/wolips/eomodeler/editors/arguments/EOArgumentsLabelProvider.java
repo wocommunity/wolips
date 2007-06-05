@@ -68,7 +68,7 @@ public class EOArgumentsLabelProvider extends TablePropertyLabelProvider impleme
 	public Image getColumnImage(Object _element, String _property) {
 		EOArgument argument = (EOArgument) _element;
 		Image image = null;
-		if (_property == AbstractEOArgument.ALLOWS_NULL) {
+		if (AbstractEOArgument.ALLOWS_NULL.equals(_property)) {
 			image = yesNoImage(argument.isAllowsNull(), Activator.getDefault().getImageRegistry().get(Activator.CHECK_ICON), null, null);
 		}
 		return image;
@@ -81,9 +81,9 @@ public class EOArgumentsLabelProvider extends TablePropertyLabelProvider impleme
 	public String getColumnText(Object _element, String _property) {
 		EOArgument argument = (EOArgument) _element;
 		String text = null;
-		if (_property == AbstractEOArgument.ALLOWS_NULL) {
+		if (AbstractEOArgument.ALLOWS_NULL.equals(_property)) {
 			// DO NOTHING
-		} else if (_property == EOArgument.DIRECTION) {
+		} else if (EOArgument.DIRECTION.equals(_property)) {
 			text = argument.getDirection().getName();
 		} else {
 			text = super.getColumnText(_element, _property);

@@ -54,14 +54,14 @@ import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
 
 public class EOAttributesViewerSorter extends TablePropertyViewerSorter {
 
-	public EOAttributesViewerSorter(String[] _properties) {
-		super(_properties);
+	public EOAttributesViewerSorter(String tableName) {
+		super(tableName);
 	}
 
 	public Object getComparisonValue(Object _obj, String _property) {
 		EOAttribute attribute = (EOAttribute) _obj;
 		Object value = null;
-		if (_property == EOAttribute.PROTOTYPE) {
+		if (EOAttribute.PROTOTYPE.equals(_property)) {
 			EOAttribute prototype = attribute.getPrototype();
 			if (prototype != null) {
 				value = prototype.getName();

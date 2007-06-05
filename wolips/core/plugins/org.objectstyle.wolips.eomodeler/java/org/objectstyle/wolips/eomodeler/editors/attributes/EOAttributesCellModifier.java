@@ -67,7 +67,7 @@ public class EOAttributesCellModifier extends TablePropertyCellModifier {
 
 	private CellEditor[] myCellEditors;
 
-	private List myPrototypeNames;
+	private List<String> myPrototypeNames;
 
 	public EOAttributesCellModifier(TableViewer _attributesTableViewer, CellEditor[] _cellEditors) {
 		super(_attributesTableViewer);
@@ -80,13 +80,16 @@ public class EOAttributesCellModifier extends TablePropertyCellModifier {
 		// if (attribute.isInherited()) {
 		// canModify = false;
 		// }
-		if (_property == EOAttribute.PROTOTYPE) {
+		if (EOAttribute.PROTOTYPE.equals(_property)) {
 			EOEntity entity = (EOEntity) getTableViewer().getInput();
-			myPrototypeNames = new LinkedList(entity.getModel().getPrototypeAttributeNames());
+			myPrototypeNames = new LinkedList<String>(entity.getModel().getPrototypeAttributeNames());
 			myPrototypeNames.add(0, EOAttributesCellModifier.NO_PROTOYPE_VALUE);
-			String[] prototypeNames = (String[]) myPrototypeNames.toArray(new String[myPrototypeNames.size()]);
-			KeyComboBoxCellEditor cellEditor = (KeyComboBoxCellEditor) myCellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, _property)];
-			cellEditor.setItems(prototypeNames);
+			String[] prototypeNames = myPrototypeNames.toArray(new String[myPrototypeNames.size()]);
+			int columnNumber = TableUtils.getColumnNumberForTablePropertyNamed(EOAttribute.class.getName(), _property);
+			if (columnNumber != -1) {
+				KeyComboBoxCellEditor cellEditor = (KeyComboBoxCellEditor) myCellEditors[columnNumber];
+				cellEditor.setItems(prototypeNames);
+			}
 		}
 		return canModify;
 	}
@@ -94,7 +97,7 @@ public class EOAttributesCellModifier extends TablePropertyCellModifier {
 	public Object getValue(Object _element, String _property) {
 		EOAttribute attribute = (EOAttribute) _element;
 		Object value = null;
-		if (_property == EOAttribute.PROTOTYPE) {
+		if (EOAttribute.PROTOTYPE.equals(_property)) {
 			EOAttribute prototype = attribute.getPrototype();
 			String prototypeName;
 			if (prototype == null) {
@@ -103,7 +106,7 @@ public class EOAttributesCellModifier extends TablePropertyCellModifier {
 				prototypeName = prototype.getName();
 			}
 			value = new Integer(myPrototypeNames.indexOf(prototypeName));
-		} else if (_property == AbstractEOArgument.ALLOWS_NULL || _property == EOAttribute.CLASS_PROPERTY || _property == EOAttribute.CLIENT_CLASS_PROPERTY || _property == EOAttribute.INDEXED || _property == EOAttribute.PRIMARY_KEY || _property == EOAttribute.READ_ONLY || _property == EOAttribute.USED_FOR_LOCKING) {
+		} else if (AbstractEOArgument.ALLOWS_NULL.equals(_property) || EOAttribute.CLASS_PROPERTY.equals(_property) || EOAttribute.CLIENT_CLASS_PROPERTY.equals(_property) || EOAttribute.INDEXED.equals(_property) || EOAttribute.PRIMARY_KEY.equals(_property) || EOAttribute.READ_ONLY.equals(_property) || EOAttribute.USED_FOR_LOCKING.equals(_property)) {
 			value = super.getValue(_element, _property);
 			if (value == null) {
 				value = Boolean.FALSE;
@@ -117,7 +120,7 @@ public class EOAttributesCellModifier extends TablePropertyCellModifier {
 	protected boolean _modify(Object _element, String _property, Object _value) throws Throwable {
 		boolean modified = false;
 		EOAttribute attribute = (EOAttribute) _element;
-		if (_property == EOAttribute.PROTOTYPE) {
+		if (EOAttribute.PROTOTYPE.equals(_property)) {
 			Integer prototypeIndex = (Integer) _value;
 			int prototypeIndexInt = prototypeIndex.intValue();
 			String prototypeName = (prototypeIndexInt == -1) ? null : (String) myPrototypeNames.get(prototypeIndexInt);

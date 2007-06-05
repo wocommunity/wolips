@@ -129,14 +129,18 @@ public class EOFetchSpecSortOrderingEditorSection extends AbstractPropertySectio
 		myEntityTreeViewUpdater = new EOEntityTreeViewUpdater(myModelTreeViewer, new EOModelOutlineContentProvider(true, true, true, false, false, false, false));
 		myModelTreeViewer.addSelectionChangedListener(this);
 
-		mySortOrderingsTableViewer = TableUtils.createTableViewer(topForm, "EOFetchSpecification", EOSortOrderingsConstants.COLUMNS, new EOSortOrderingsContentProvider(), new EOSortOrderingsLabelProvider(EOSortOrderingsConstants.COLUMNS), null);
+		mySortOrderingsTableViewer = TableUtils.createTableViewer(topForm, "EOFetchSpecification", EOSortOrdering.class.getName(), new EOSortOrderingsContentProvider(), new EOSortOrderingsLabelProvider(EOSortOrdering.class.getName()), null);
 
-		TableColumn ascendingColumn = mySortOrderingsTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOSortOrderingsConstants.COLUMNS, EOSortOrdering.ASCENDING));
-		ascendingColumn.setText("");
-		ascendingColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.ASCENDING_ICON));
+		TableColumn ascendingColumn = TableUtils.getColumn(mySortOrderingsTableViewer, EOSortOrdering.class.getName(), EOSortOrdering.ASCENDING);
+		if (ascendingColumn != null) {
+			ascendingColumn.setText("");
+			ascendingColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.ASCENDING_ICON));
+		}
 
-		TableColumn caseInsensitiveColumn = mySortOrderingsTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOSortOrderingsConstants.COLUMNS, EOSortOrdering.CASE_INSENSITIVE));
-		caseInsensitiveColumn.setText("i/s");
+		TableColumn caseInsensitiveColumn = TableUtils.getColumn(mySortOrderingsTableViewer, EOSortOrdering.class.getName(), EOSortOrdering.CASE_INSENSITIVE);
+		if (caseInsensitiveColumn != null) {
+			caseInsensitiveColumn.setText("i/s");
+		}
 
 		GridData sortOrderingsTableLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		sortOrderingsTableLayoutData.heightHint = 100;
@@ -145,14 +149,14 @@ public class EOFetchSpecSortOrderingEditorSection extends AbstractPropertySectio
 		mySortOrderingsChangedRefresher = new TableRefreshPropertyListener(mySortOrderingsTableViewer);
 		myTableRowRefresher = new TableRowRefreshPropertyListener(mySortOrderingsTableViewer);
 
-		CellEditor[] cellEditors = new CellEditor[EOSortOrderingsConstants.COLUMNS.length];
-		cellEditors[TableUtils.getColumnNumber(EOSortOrderingsConstants.COLUMNS, EOSortOrdering.KEY)] = new EMTextCellEditor(mySortOrderingsTableViewer.getTable());
-		cellEditors[TableUtils.getColumnNumber(EOSortOrderingsConstants.COLUMNS, EOSortOrdering.ASCENDING)] = new CheckboxCellEditor(mySortOrderingsTableViewer.getTable());
-		cellEditors[TableUtils.getColumnNumber(EOSortOrderingsConstants.COLUMNS, EOSortOrdering.CASE_INSENSITIVE)] = new CheckboxCellEditor(mySortOrderingsTableViewer.getTable());
+		CellEditor[] cellEditors = new CellEditor[TableUtils.getColumnsForTableNamed(EOSortOrdering.class.getName()).length];
+		TableUtils.setCellEditor(EOSortOrdering.class.getName(), EOSortOrdering.KEY, new EMTextCellEditor(mySortOrderingsTableViewer.getTable()), cellEditors);
+		TableUtils.setCellEditor(EOSortOrdering.class.getName(), EOSortOrdering.ASCENDING, new CheckboxCellEditor(mySortOrderingsTableViewer.getTable()), cellEditors);
+		TableUtils.setCellEditor(EOSortOrdering.class.getName(), EOSortOrdering.CASE_INSENSITIVE, new CheckboxCellEditor(mySortOrderingsTableViewer.getTable()), cellEditors);
 		mySortOrderingsTableViewer.setCellEditors(cellEditors);
 		mySortOrderingsTableViewer.setCellModifier(new TablePropertyCellModifier(mySortOrderingsTableViewer));
 
-		new StayEditingCellEditorListener(mySortOrderingsTableViewer, TableUtils.getColumnNumber(EOSortOrderingsConstants.COLUMNS, EOSortOrdering.KEY));
+		new StayEditingCellEditorListener(mySortOrderingsTableViewer, EOSortOrdering.class.getName(), EOSortOrdering.KEY);
 
 		myAddRemoveButtonGroup = new AddRemoveButtonGroup(topForm, new AddSortOrderingHandler(), new RemoveSortOrderingHandler());
 		myAddRemoveButtonGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));

@@ -53,14 +53,14 @@ import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 
 public class EOEntitiesLabelProvider extends TablePropertyLabelProvider {
-	public EOEntitiesLabelProvider(String[] _columnProperties) {
-		super(_columnProperties);
+	public EOEntitiesLabelProvider(String tableName) {
+		super(tableName);
 	}
 
 	public String getColumnText(Object _element, String _property) {
 		EOEntity entity = (EOEntity) _element;
 		String text = null;
-		if (_property == EOEntity.PARENT) {
+		if (EOEntity.PARENT.equals(_property)) {
 			EOEntity parent = entity.getParent();
 			if (parent != null) {
 				text = parent.getName();

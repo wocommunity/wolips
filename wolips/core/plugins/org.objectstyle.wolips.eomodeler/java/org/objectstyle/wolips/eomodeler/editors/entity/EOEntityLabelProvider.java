@@ -61,7 +61,7 @@ public class EOEntityLabelProvider implements ILabelProvider {
 
 	public String getText(Object _element) {
 		String text = null;
-		if (_element == EOEntityListContentProvider.BLANK_ENTITY) {
+		if (EOEntityListContentProvider.BLANK_ENTITY.equals(_element)) {
 			// DO NOTHING
 		} else if (_element instanceof EOEntity) {
 			EOEntity entity = (EOEntity) _element;

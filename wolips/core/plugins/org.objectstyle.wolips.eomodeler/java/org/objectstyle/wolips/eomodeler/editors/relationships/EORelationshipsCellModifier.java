@@ -60,7 +60,7 @@ public class EORelationshipsCellModifier extends TablePropertyCellModifier {
 
 	public Object getValue(Object _element, String _property) {
 		Object value;
-		if (_property == EORelationship.CLASS_PROPERTY || _property == EORelationship.CLIENT_CLASS_PROPERTY || _property == EORelationship.MANDATORY || _property == EORelationship.OPTIONAL || _property == EORelationship.TO_MANY || _property == EORelationship.TO_ONE) {
+		if (EORelationship.CLASS_PROPERTY.equals(_property)  || EORelationship.CLIENT_CLASS_PROPERTY.equals(_property) || EORelationship.MANDATORY.equals(_property) || EORelationship.OPTIONAL.equals(_property) || EORelationship.TO_MANY.equals(_property) || EORelationship.TO_ONE.equals(_property)) {
 			value = super.getValue(_element, _property);
 			if (value == null) {
 				value = Boolean.FALSE;
@@ -78,7 +78,7 @@ public class EORelationshipsCellModifier extends TablePropertyCellModifier {
 		// canModify = false;
 		// }
 		// else {
-		canModify = (_property == EORelationship.CLASS_PROPERTY || _property == EORelationship.NAME);
+		canModify = (EORelationship.CLASS_PROPERTY.equals(_property) || EORelationship.NAME.equals(_property));
 		// }
 		return canModify;
 	}

@@ -63,10 +63,10 @@ public class EOArgumentsCellModifier extends TablePropertyCellModifier {
 	public Object getValue(Object _element, String _property) {
 		EOArgument argument = (EOArgument) _element;
 		Object value = null;
-		if (_property == EOArgument.DIRECTION) {
+		if (EOArgument.DIRECTION.equals(_property)) {
 			EOArgumentDirection direction = argument.getDirection();
 			value = new Integer(direction.getID());
-		} else if (_property == AbstractEOArgument.ALLOWS_NULL) {
+		} else if (AbstractEOArgument.ALLOWS_NULL.equals(_property)) {
 			value = super.getValue(_element, _property);
 			if (value == null) {
 				value = Boolean.FALSE;
@@ -80,7 +80,7 @@ public class EOArgumentsCellModifier extends TablePropertyCellModifier {
 	protected boolean _modify(Object _element, String _property, Object _value) throws Throwable {
 		boolean modified = false;
 		EOArgument argument = (EOArgument) _element;
-		if (_property == EOArgument.DIRECTION) {
+		if (EOArgument.DIRECTION.equals(_property)) {
 			Integer argumentID = (Integer) _value;
 			int argumentIDInt = argumentID.intValue();
 			EOArgumentDirection direction = EOArgumentDirection.getArgumentDirectionByID(argumentIDInt);

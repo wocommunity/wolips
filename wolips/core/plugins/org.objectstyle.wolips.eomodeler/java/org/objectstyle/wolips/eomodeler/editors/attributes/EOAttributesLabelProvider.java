@@ -75,20 +75,24 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
 	
 	private String _blankText;
 
-	public EOAttributesLabelProvider(String[] columnProperties) {
-		this(null, columnProperties, null);
+	public EOAttributesLabelProvider(String[] properties) {
+		super(properties);
 	}
 
-	public EOAttributesLabelProvider(String[] columnProperties, String blankText) {
-		this(null, columnProperties, blankText);
+	public EOAttributesLabelProvider(String tableName) {
+		this(null, tableName, null);
 	}
 
-	public EOAttributesLabelProvider(TableViewer tableViewer, String[] columnProperties) {
-		this(tableViewer, columnProperties, null);
+	public EOAttributesLabelProvider(String tableName, String blankText) {
+		this(null, tableName, blankText);
 	}
 
-	public EOAttributesLabelProvider(TableViewer tableViewer, String[] columnProperties, String blankText) {
-		super(columnProperties);
+	public EOAttributesLabelProvider(TableViewer tableViewer, String tableName) {
+		this(tableViewer, tableName, null);
+	}
+
+	public EOAttributesLabelProvider(TableViewer tableViewer, String tableName, String blankText) {
+		super(tableName);
 		_tableViewer = tableViewer;
 		_blankText = blankText;
 	}
@@ -100,13 +104,13 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
 	public Image getColumnImage(Object _element, String _property) {
 		EOAttribute attribute = (EOAttribute) _element;
 		Image image = null;
-		if (_property == EOAttribute.PRIMARY_KEY) {
+		if (EOAttribute.PRIMARY_KEY.equals(_property)) {
 			image = yesNoImage(attribute.isPrimaryKey(), Activator.getDefault().getImageRegistry().get(Activator.PRIMARY_KEY_ICON), null, null);
-		} else if (_property == EOAttribute.USED_FOR_LOCKING) {
+		} else if (EOAttribute.USED_FOR_LOCKING.equals(_property)) {
 			image = yesNoImage(attribute.isUsedForLocking(), Activator.getDefault().getImageRegistry().get(Activator.LOCKING_ICON), null, null);
-		} else if (_property == EOAttribute.CLASS_PROPERTY) {
+		} else if (EOAttribute.CLASS_PROPERTY.equals(_property)) {
 			image = yesNoImage(attribute.isClassProperty(), Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON), null, null);
-		} else if (_property == AbstractEOArgument.ALLOWS_NULL) {
+		} else if (AbstractEOArgument.ALLOWS_NULL.equals(_property)) {
 			image = yesNoImage(attribute.isAllowsNull(), Activator.getDefault().getImageRegistry().get(Activator.CHECK_ICON), null, null);
 		}
 		return image;
@@ -119,15 +123,15 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
 	public String getColumnText(Object _element, String _property) {
 		EOAttribute attribute = (EOAttribute) _element;
 		String text = null;
-		if (_property == EOAttribute.PRIMARY_KEY) {
+		if (EOAttribute.PRIMARY_KEY.equals(_property)) {
 			// DO NOTHING
-		} else if (_property == EOAttribute.USED_FOR_LOCKING) {
+		} else if (EOAttribute.USED_FOR_LOCKING.equals(_property)) {
 			// DO NOTHING
-		} else if (_property == EOAttribute.CLASS_PROPERTY) {
+		} else if (EOAttribute.CLASS_PROPERTY.equals(_property)) {
 			// DO NOTHING
-		} else if (_property == AbstractEOArgument.ALLOWS_NULL) {
+		} else if (AbstractEOArgument.ALLOWS_NULL.equals(_property)) {
 			// DO NOTHING
-		} else if (_property == EOAttribute.PROTOTYPE) {
+		} else if (EOAttribute.PROTOTYPE.equals(_property)) {
 			EOAttribute prototype = attribute.getPrototype();
 			if (prototype != null) {
 				text = prototype.getName();

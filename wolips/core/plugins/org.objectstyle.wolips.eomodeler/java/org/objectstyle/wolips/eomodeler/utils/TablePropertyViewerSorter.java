@@ -70,17 +70,21 @@ public class TablePropertyViewerSorter extends ViewerSorter {
 
 	private Map myKeys;
 
-	public TablePropertyViewerSorter(String[] _columnProperties) {
-		myColumnProperties = _columnProperties;
+	public TablePropertyViewerSorter(String tableName) {
+		this(TableUtils.getColumnsForTableNamed(tableName));
+	}
+	
+	public TablePropertyViewerSorter(String[] columnProperties) {
+		myColumnProperties = columnProperties;
 		myKeys = new HashMap();
-		for (int keyNum = 0; keyNum < _columnProperties.length; keyNum++) {
-			KeyPath keyPath = new CachingKeyPath(_columnProperties[keyNum]);
-			myKeys.put(_columnProperties[keyNum], keyPath);
+		for (int keyNum = 0; keyNum < columnProperties.length; keyNum++) {
+			KeyPath keyPath = new CachingKeyPath(columnProperties[keyNum]);
+			myKeys.put(columnProperties[keyNum], keyPath);
 		}
 	}
 
 	public void sort(TableViewer _viewer, String _property) {
-		int matchingColumn = TableUtils.getColumnNumber(myColumnProperties, _property);
+		int matchingColumn = TableUtils._getColumnNumber(myColumnProperties, _property);
 		if (matchingColumn != -1) {
 			sort(_viewer, matchingColumn);
 		}

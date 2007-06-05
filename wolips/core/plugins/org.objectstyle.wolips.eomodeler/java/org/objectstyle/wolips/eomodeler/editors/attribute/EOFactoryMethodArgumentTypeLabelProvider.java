@@ -61,7 +61,7 @@ public class EOFactoryMethodArgumentTypeLabelProvider implements ILabelProvider 
 
 	public String getText(Object _element) {
 		String text;
-		if (_element == EOFactoryMethodArgumentTypeContentProvider.BLANK_ARGUMENT_TYPE) {
+		if (EOFactoryMethodArgumentTypeContentProvider.BLANK_ARGUMENT_TYPE.equals(_element)) {
 			text = "";
 		}
 		else {

@@ -16,7 +16,7 @@ public class PrefetchingKeyPathsLabelProvider extends TablePropertyLabelProvider
 	public String getColumnText(Object _element, String _property) {
 		String prefetchingRelationshipKeyPath = (String) _element;
 		String text = null;
-		if (_property == EOFetchSpecification.PREFETCHING_RELATIONSHIP_KEY_PATH) {
+		if (EOFetchSpecification.PREFETCHING_RELATIONSHIP_KEY_PATH.equals(_property)) {
 			text = prefetchingRelationshipKeyPath;
 		} else {
 			text = super.getColumnText(_element, _property);

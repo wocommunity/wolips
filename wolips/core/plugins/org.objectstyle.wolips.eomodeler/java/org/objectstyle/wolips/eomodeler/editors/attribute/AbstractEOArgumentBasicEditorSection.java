@@ -311,7 +311,7 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 
 	protected void updateTextfromDerivedComboViewer() {
 		IStructuredSelection selection = (IStructuredSelection) myDerivedComboViewer.getSelection();
-		if (selection.getFirstElement() == AbstractEOArgumentBasicEditorSection.COLUMN) {
+		if (AbstractEOArgumentBasicEditorSection.COLUMN.equals(selection.getFirstElement())) {
 			myColumnNameDefinitionLayout.topControl = myColumnNameText;
 			if (myArgument.getDefinition() != null) {
 				myArgument.setDefinition(null);
@@ -322,6 +322,7 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 		myColumnNameDefinitionComposite.layout();
 	}
 
+	@SuppressWarnings("unused")
 	protected void updateAttributePanel(EODataType _oldDataType) {
 		// System.out.println("AbstractEOArgumentBasicEditorSection.updateAttributePanel:
 		// updateAttributePanel");
