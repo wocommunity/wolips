@@ -49,9 +49,8 @@ public class RenameElementsRefactoring implements IRunnableWithProgress {
               htmlEdits.add(new ReplaceEdit(offset, length, rename.getNewName()));
             }
           }
-
-          WodDocumentUtils.applyEdits(htmlDocument, htmlEdits);
         }
+        WodDocumentUtils.applyEdits(htmlDocument, htmlEdits);
       }
 
       IDocument wodDocument = _cache.getWodDocument();
