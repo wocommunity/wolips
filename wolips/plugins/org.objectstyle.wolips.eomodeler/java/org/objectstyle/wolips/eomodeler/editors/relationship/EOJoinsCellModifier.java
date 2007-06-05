@@ -68,12 +68,12 @@ public class EOJoinsCellModifier extends TablePropertyCellModifier {
 	public Object getValue(Object _element, String _property) {
 		EOJoin join = (EOJoin) _element;
 		Object value = null;
-		if (_property == EOJoin.DESTINATION_ATTRIBUTE_NAME) {
+		if (EOJoin.DESTINATION_ATTRIBUTE_NAME.equals(_property)) {
 			String attributeName = join.getDestinationAttributeName();
 			if (attributeName != null) {
 				value = new Integer(Arrays.asList(join.getRelationship().getDestination().getAttributeNames()).indexOf(attributeName));
 			}
-		} else if (_property == EOJoin.SOURCE_ATTRIBUTE_NAME) {
+		} else if (EOJoin.SOURCE_ATTRIBUTE_NAME.equals(_property)) {
 			String attributeName = join.getSourceAttributeName();
 			if (attributeName != null) {
 				value = new Integer(Arrays.asList(join.getRelationship().getEntity().getAttributeNames()).indexOf(attributeName));
@@ -87,7 +87,7 @@ public class EOJoinsCellModifier extends TablePropertyCellModifier {
 	protected boolean _modify(Object _element, String _property, Object _value) throws Throwable {
 		boolean modified = false;
 		EOJoin join = (EOJoin) _element;
-		if (_property == EOJoin.DESTINATION_ATTRIBUTE_NAME) {
+		if (EOJoin.DESTINATION_ATTRIBUTE_NAME.equals(_property)) {
 			Integer attributeIndex = (Integer) _value;
 			int attributeIndexInt = attributeIndex.intValue();
 			if (join.getRelationship().getDestination() != null) {
@@ -96,7 +96,7 @@ public class EOJoinsCellModifier extends TablePropertyCellModifier {
 				join.setDestinationAttributeName(attributeName);
 			}
 			modified = true;
-		} else if (_property == EOJoin.SOURCE_ATTRIBUTE_NAME) {
+		} else if (EOJoin.SOURCE_ATTRIBUTE_NAME.equals(_property)) {
 			Integer attributeIndex = (Integer) _value;
 			int attributeIndexInt = attributeIndex.intValue();
 			if (join.getRelationship().getEntity() != null) {

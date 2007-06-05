@@ -88,24 +88,24 @@ public class EOEntitiesTableViewer extends Composite implements ISelectionProvid
 	public EOEntitiesTableViewer(Composite _parent, int _style) {
 		super(_parent, _style);
 		setLayout(new GridLayout(1, true));
-		myEntitiesTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EOEntity", EOEntitiesConstants.COLUMNS, new EOEntitiesContentProvider(), new EOEntitiesLabelProvider(EOEntitiesConstants.COLUMNS), new EOEntitiesViewerSorter(EOEntitiesConstants.COLUMNS));
+		myEntitiesTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EOEntity", EOEntity.class.getName(), new EOEntitiesContentProvider(), new EOEntitiesLabelProvider(EOEntity.class.getName()), new EOEntitiesViewerSorter(EOEntity.class.getName()));
 		new DoubleClickNewEntityHandler(myEntitiesTableViewer).attach();
 		Table entitiesTable = myEntitiesTableViewer.getTable();
 		entitiesTable.setLayoutData(new GridData(GridData.FILL_BOTH));
 		TableUtils.sort(myEntitiesTableViewer, EOEntity.NAME);
 
-		CellEditor[] cellEditors = new CellEditor[EOEntitiesConstants.COLUMNS.length];
-		cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.NAME)] = new EMTextCellEditor(entitiesTable);
-		cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.EXTERNAL_NAME)] = new EMTextCellEditor(entitiesTable);
-		cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.CLASS_NAME)] = new EMTextCellEditor(entitiesTable);
-		cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.PARENT)] = new KeyComboBoxCellEditor(entitiesTable, new String[0], SWT.READ_ONLY);
+		CellEditor[] cellEditors = new CellEditor[TableUtils.getColumnsForTableNamed(EOEntity.class.getName()).length];
+		TableUtils.setCellEditor(EOEntity.class.getName(), EOEntity.NAME, new EMTextCellEditor(entitiesTable), cellEditors);
+		TableUtils.setCellEditor(EOEntity.class.getName(), EOEntity.EXTERNAL_NAME, new EMTextCellEditor(entitiesTable), cellEditors);
+		TableUtils.setCellEditor(EOEntity.class.getName(), EOEntity.CLASS_NAME, new EMTextCellEditor(entitiesTable), cellEditors);
+		TableUtils.setCellEditor(EOEntity.class.getName(), EOEntity.PARENT, new KeyComboBoxCellEditor(entitiesTable, new String[0], SWT.READ_ONLY), cellEditors);
 		myEntitiesTableViewer.setCellModifier(new EOEntitiesCellModifier(myEntitiesTableViewer, cellEditors));
 		myEntitiesTableViewer.setCellEditors(cellEditors);
 		
-		new StayEditingCellEditorListener(myEntitiesTableViewer, TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.NAME));
-		new StayEditingCellEditorListener(myEntitiesTableViewer, TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.EXTERNAL_NAME));
-		new StayEditingCellEditorListener(myEntitiesTableViewer, TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.CLASS_NAME));
-		new StayEditingCellEditorListener(myEntitiesTableViewer, TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.PARENT));
+		new StayEditingCellEditorListener(myEntitiesTableViewer, EOEntity.class.getName(), EOEntity.NAME);
+		new StayEditingCellEditorListener(myEntitiesTableViewer, EOEntity.class.getName(), EOEntity.EXTERNAL_NAME);
+		new StayEditingCellEditorListener(myEntitiesTableViewer, EOEntity.class.getName(), EOEntity.CLASS_NAME);
+		new StayEditingCellEditorListener(myEntitiesTableViewer, EOEntity.class.getName(), EOEntity.PARENT);
 
 		myTableRefresher = new TableRefreshPropertyListener(myEntitiesTableViewer);
 		myTableRowRefresher = new TableRowRefreshPropertyListener(myEntitiesTableViewer);
@@ -120,14 +120,22 @@ public class EOEntitiesTableViewer extends Composite implements ISelectionProvid
 		myModel = _model;
 		myEntitiesTableViewer.setInput(myModel);
 		TableUtils.packTableColumns(myEntitiesTableViewer);
-		TableColumn nameColumn = myEntitiesTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.NAME));
-		nameColumn.setWidth(Math.max(nameColumn.getWidth(), 100));
-		TableColumn externalName = myEntitiesTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.EXTERNAL_NAME));
-		externalName.setWidth(Math.max(externalName.getWidth(), 100));
-		TableColumn className = myEntitiesTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.CLASS_NAME));
-		className.setWidth(Math.max(className.getWidth(), 100));
-		TableColumn parentName = myEntitiesTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.PARENT));
-		parentName.setWidth(Math.max(parentName.getWidth(), 100));
+		TableColumn nameColumn = TableUtils.getColumn(myEntitiesTableViewer, EOEntity.class.getName(), EOEntity.NAME);
+		if (nameColumn != null) {
+			nameColumn.setWidth(Math.max(nameColumn.getWidth(), 100));
+		}
+		TableColumn externalName = TableUtils.getColumn(myEntitiesTableViewer, EOEntity.class.getName(), EOEntity.EXTERNAL_NAME);
+		if (externalName != null) {
+			externalName.setWidth(Math.max(externalName.getWidth(), 100));
+		}
+		TableColumn className = TableUtils.getColumn(myEntitiesTableViewer, EOEntity.class.getName(), EOEntity.CLASS_NAME);
+		if (className != null) {
+			className.setWidth(Math.max(className.getWidth(), 100));
+		}
+		TableColumn parentName = TableUtils.getColumn(myEntitiesTableViewer, EOEntity.class.getName(), EOEntity.PARENT);
+		if (parentName != null) {
+			parentName.setWidth(Math.max(parentName.getWidth(), 100));
+		}
 		if (myModel != null) {
 			//myTableRefresher.stop();
 			myModel.addPropertyChangeListener(EOModel.ENTITIES, myTableRefresher);

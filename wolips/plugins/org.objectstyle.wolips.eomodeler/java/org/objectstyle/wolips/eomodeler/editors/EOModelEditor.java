@@ -555,8 +555,12 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 					if (myEntitiesTableEditor != null) {
 						Display.getDefault().asyncExec(new Runnable() {
 							public void run() {
-								myEntitiesTableEditor.setModel(myModel);
-								getContentOutlinePage().getUpdater().setModel(myModel);
+								if (myEntitiesTableEditor != null) {
+									myEntitiesTableEditor.setModel(myModel);
+								}
+								if (getContentOutlinePage() != null && getContentOutlinePage().getUpdater() != null) {
+									getContentOutlinePage().getUpdater().setModel(myModel);
+								}
 							}
 						});
 					}

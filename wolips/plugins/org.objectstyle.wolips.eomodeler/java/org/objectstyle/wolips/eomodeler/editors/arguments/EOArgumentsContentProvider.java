@@ -59,8 +59,8 @@ import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
 public class EOArgumentsContentProvider implements IStructuredContentProvider {
 	public Object[] getElements(Object _inputElement) {
 		EOStoredProcedure storedProcedure = (EOStoredProcedure) _inputElement;
-		List argumentsList = storedProcedure.getArguments();
-		EOArgument[] arguments = (EOArgument[]) argumentsList.toArray(new EOArgument[argumentsList.size()]);
+		List<EOArgument> argumentsList = storedProcedure.getArguments();
+		EOArgument[] arguments = argumentsList.toArray(new EOArgument[argumentsList.size()]);
 		return arguments;
 	}
 

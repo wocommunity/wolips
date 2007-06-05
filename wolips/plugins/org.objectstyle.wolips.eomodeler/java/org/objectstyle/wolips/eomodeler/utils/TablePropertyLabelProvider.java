@@ -63,6 +63,10 @@ public class TablePropertyLabelProvider implements ITableLabelProvider {
 
 	private Map myKeys;
 
+	public TablePropertyLabelProvider(String tableName) {
+		this(TableUtils.getColumnsForTableNamed(tableName));
+	}
+
 	public TablePropertyLabelProvider(String[] _columnProperties) {
 		myColumnProperties = _columnProperties;
 		myKeys = new HashMap();

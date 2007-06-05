@@ -93,14 +93,14 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
 
 	private TableRowRefreshPropertyListener myTableRowRefresher;
 
-	private List mySelectionListeners;
+	private List<ISelectionChangedListener> mySelectionListeners;
 
 	public EORelationshipsTableViewer(Composite _parent, int _style) {
 		super(_parent, _style);
 		setLayout(new GridLayout(1, true));
-		mySelectionListeners = new LinkedList();
-		myRelationshipsTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EORelationship", EORelationshipsConstants.COLUMNS, new EORelationshipsContentProvider(), null, new EORelationshipsViewerSorter(EORelationshipsConstants.COLUMNS));
-		myRelationshipsTableViewer.setLabelProvider(new EORelationshipsLabelProvider(myRelationshipsTableViewer, EORelationshipsConstants.COLUMNS));
+		mySelectionListeners = new LinkedList<ISelectionChangedListener>();
+		myRelationshipsTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EORelationship", EORelationship.class.getName(), new EORelationshipsContentProvider(), null, new EORelationshipsViewerSorter(EORelationship.class.getName()));
+		myRelationshipsTableViewer.setLabelProvider(new EORelationshipsLabelProvider(myRelationshipsTableViewer, EORelationship.class.getName()));
 		new DoubleClickNewRelationshipHandler(myRelationshipsTableViewer).attach();
 		myRelationshipsChangedRefresher = new TableRefreshPropertyListener(myRelationshipsTableViewer);
 		myParentChangedRefresher = new TableRefreshPropertyListener(myRelationshipsTableViewer);
@@ -109,23 +109,27 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
 		Table relationshipsTable = myRelationshipsTableViewer.getTable();
 		relationshipsTable.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		TableColumn toManyColumn = relationshipsTable.getColumn(TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.TO_MANY));
-		toManyColumn.setText("");
+		TableColumn toManyColumn = TableUtils.getColumn(myRelationshipsTableViewer, EORelationship.class.getName(), EORelationship.TO_MANY);
+		if (toManyColumn != null) {
+			toManyColumn.setText("");
+		}
 
-		TableColumn classPropertyColumn = relationshipsTable.getColumn(TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.CLASS_PROPERTY));
-		classPropertyColumn.setText("");
-		classPropertyColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON));
+		TableColumn classPropertyColumn = TableUtils.getColumn(myRelationshipsTableViewer, EORelationship.class.getName(), EORelationship.CLASS_PROPERTY);
+		if (classPropertyColumn != null) {
+			classPropertyColumn.setText("");
+			classPropertyColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON));
+		}
 
 		TableUtils.sort(myRelationshipsTableViewer, EORelationship.NAME);
 
-		CellEditor[] cellEditors = new CellEditor[EORelationshipsConstants.COLUMNS.length];
-		cellEditors[TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.TO_MANY)] = new CheckboxCellEditor();
-		cellEditors[TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.CLASS_PROPERTY)] = new CheckboxCellEditor();
-		cellEditors[TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.NAME)] = new EMTextCellEditor(relationshipsTable);
+		CellEditor[] cellEditors = new CellEditor[TableUtils.getColumnsForTableNamed(EORelationship.class.getName()).length];
+		TableUtils.setCellEditor(EORelationship.class.getName(), EORelationship.TO_MANY, new CheckboxCellEditor(), cellEditors);
+		TableUtils.setCellEditor(EORelationship.class.getName(), EORelationship.CLASS_PROPERTY, new CheckboxCellEditor(), cellEditors);
+		TableUtils.setCellEditor(EORelationship.class.getName(), EORelationship.NAME, new EMTextCellEditor(relationshipsTable), cellEditors);
 		myRelationshipsTableViewer.setCellModifier(new EORelationshipsCellModifier(myRelationshipsTableViewer));
 		myRelationshipsTableViewer.setCellEditors(cellEditors);
-		
-		new StayEditingCellEditorListener(myRelationshipsTableViewer, TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.NAME));
+
+		new StayEditingCellEditorListener(myRelationshipsTableViewer, EORelationship.class.getName(), EORelationship.NAME);
 	}
 
 	public void setEntity(EOEntity _entity) {
@@ -139,15 +143,17 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
 		if (myEntity != null) {
 			myRelationshipsTableViewer.setInput(myEntity);
 			TableUtils.packTableColumns(myRelationshipsTableViewer);
-			TableColumn nameColumn = myRelationshipsTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.NAME));
-			nameColumn.setWidth(Math.max(nameColumn.getWidth(), 100));
+			TableColumn nameColumn = TableUtils.getColumn(myRelationshipsTableViewer, EORelationship.class.getName(), EORelationship.NAME);
+			if (nameColumn != null) {
+				nameColumn.setWidth(Math.max(nameColumn.getWidth(), 100));
+			}
 			myEntity.addPropertyChangeListener(EOEntity.PARENT, myParentChangedRefresher);
 			myRelationshipsChangedRefresher.start();
 			myEntity.addPropertyChangeListener(EOEntity.RELATIONSHIPS, myRelationshipsChangedRefresher);
 			myEntity.addPropertyChangeListener(EOEntity.RELATIONSHIP, myTableRowRefresher);
 		}
 	}
-	
+
 	@Override
 	public void dispose() {
 		myRelationshipsChangedRefresher.stop();
@@ -221,23 +227,25 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
 		}
 	}
 
-//	protected class RelationshipsChangeRefresher extends TableRefreshPropertyListener {
-//		public RelationshipsChangeRefresher(TableViewer _tableViewer) {
-//			super(_tableViewer);
-//		}
-//
-//		public void propertyChange(PropertyChangeEvent _event) {
-//			super.propertyChange(_event);
-//			Set oldValues = (Set) _event.getOldValue();
-//			Set newValues = (Set) _event.getNewValue();
-//			if (newValues != null && oldValues != null) {
-//				if (newValues.size() > oldValues.size()) {
-//					List newList = new LinkedList(newValues);
-//					newList.removeAll(oldValues);
-//					EORelationshipsTableViewer.this.setSelection(new StructuredSelection(newList));
-//				}
-//				TableUtils.packTableColumns(EORelationshipsTableViewer.this.getTableViewer());
-//			}
-//		}
-//	}
+	// protected class RelationshipsChangeRefresher extends
+	// TableRefreshPropertyListener {
+	// public RelationshipsChangeRefresher(TableViewer _tableViewer) {
+	// super(_tableViewer);
+	// }
+	//
+	// public void propertyChange(PropertyChangeEvent _event) {
+	// super.propertyChange(_event);
+	// Set oldValues = (Set) _event.getOldValue();
+	// Set newValues = (Set) _event.getNewValue();
+	// if (newValues != null && oldValues != null) {
+	// if (newValues.size() > oldValues.size()) {
+	// List newList = new LinkedList(newValues);
+	// newList.removeAll(oldValues);
+	// EORelationshipsTableViewer.this.setSelection(new
+	// StructuredSelection(newList));
+	// }
+	// TableUtils.packTableColumns(EORelationshipsTableViewer.this.getTableViewer());
+	// }
+	// }
+	// }
 }

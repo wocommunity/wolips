@@ -118,13 +118,13 @@ public class UserInfoPropertySection extends AbstractPropertySection {
 		myUserInfoTableViewer = TableUtils.createTableViewer(composite, SWT.BORDER | SWT.FLAT | SWT.FULL_SELECTION | SWT.SINGLE, "UserInfo", UserInfoPropertySection.COLUMNS, new UserInfoContentProvider(), new UserInfoLabelProvider(UserInfoPropertySection.COLUMNS), new ViewerSorter());
 
 		CellEditor[] cellEditors = new CellEditor[UserInfoPropertySection.COLUMNS.length];
-		cellEditors[TableUtils.getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.KEY)] = new EMTextCellEditor(myUserInfoTableViewer.getTable());
-		cellEditors[TableUtils.getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.VALUE)] = new EMTextCellEditor(myUserInfoTableViewer.getTable());
+		cellEditors[TableUtils._getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.KEY)] = new EMTextCellEditor(myUserInfoTableViewer.getTable());
+		cellEditors[TableUtils._getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.VALUE)] = new EMTextCellEditor(myUserInfoTableViewer.getTable());
 		myUserInfoTableViewer.setCellModifier(new UserInfoCellModifier(myUserInfoTableViewer));
 		myUserInfoTableViewer.setCellEditors(cellEditors);
 		
-		new StayEditingCellEditorListener(myUserInfoTableViewer, TableUtils.getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.KEY));
-		new StayEditingCellEditorListener(myUserInfoTableViewer, TableUtils.getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.VALUE));
+		new StayEditingCellEditorListener(myUserInfoTableViewer, TableUtils._getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.KEY));
+		new StayEditingCellEditorListener(myUserInfoTableViewer, TableUtils._getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.VALUE));
 
 		FormData tableFormData = new FormData();
 		tableFormData.left = new FormAttachment(0, 5);

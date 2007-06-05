@@ -88,7 +88,7 @@ public class EOArgumentsTableViewer extends Composite implements ISelectionProvi
 		super(_parent, _style);
 
 		setLayout(new GridLayout(1, true));
-		myArgumentsTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EOArgument", EOArgumentsConstants.COLUMNS, new EOArgumentsContentProvider(), new EOArgumentsLabelProvider(EOArgumentsConstants.COLUMNS), new TablePropertyViewerSorter(EOArgumentsConstants.COLUMNS));
+		myArgumentsTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EOArgument", EOArgument.class.getName(), new EOArgumentsContentProvider(), new EOArgumentsLabelProvider(TableUtils.getColumnsForTableNamed(EOArgument.class.getName())), new TablePropertyViewerSorter(EOArgument.class.getName()));
 		new DoubleClickNewAttributeHandler(myArgumentsTableViewer).attach();
 		myArgumentsChangedRefresher = new TableRefreshPropertyListener(myArgumentsTableViewer);
 		myTableRowRefresher = new TableRowRefreshPropertyListener(myArgumentsTableViewer);
@@ -103,20 +103,20 @@ public class EOArgumentsTableViewer extends Composite implements ISelectionProvi
 		//
 		TableUtils.sort(myArgumentsTableViewer, AbstractEOArgument.NAME);
 
-		CellEditor[] cellEditors = new CellEditor[EOArgumentsConstants.COLUMNS.length];
-		cellEditors[TableUtils.getColumnNumber(EOArgumentsConstants.COLUMNS, AbstractEOArgument.NAME)] = new EMTextCellEditor(argumentsTable);
-		cellEditors[TableUtils.getColumnNumber(EOArgumentsConstants.COLUMNS, AbstractEOArgument.COLUMN_NAME)] = new EMTextCellEditor(argumentsTable);
+		CellEditor[] cellEditors = new CellEditor[TableUtils.getColumnsForTableNamed(EOArgument.class.getName()).length];
+		TableUtils.setCellEditor(EOArgument.class.getName(), AbstractEOArgument.NAME, new EMTextCellEditor(argumentsTable), cellEditors);
+		TableUtils.setCellEditor(EOArgument.class.getName(), AbstractEOArgument.COLUMN_NAME, new EMTextCellEditor(argumentsTable), cellEditors);
 		String[] argumentDirectionNames = new String[EOArgumentDirection.ARGUMENT_DIRECTIONS.length];
 		for (int argumentDirectionNum = 0; argumentDirectionNum < argumentDirectionNames.length; argumentDirectionNum++) {
 			argumentDirectionNames[argumentDirectionNum] = EOArgumentDirection.ARGUMENT_DIRECTIONS[argumentDirectionNum].getName();
 		}
-		cellEditors[TableUtils.getColumnNumber(EOArgumentsConstants.COLUMNS, EOArgument.DIRECTION)] = new KeyComboBoxCellEditor(argumentsTable, argumentDirectionNames);
+		TableUtils.setCellEditor(EOArgument.class.getName(), EOArgument.DIRECTION, new KeyComboBoxCellEditor(argumentsTable, argumentDirectionNames), cellEditors);
 		myArgumentsTableViewer.setCellModifier(new EOArgumentsCellModifier(myArgumentsTableViewer));
 		myArgumentsTableViewer.setCellEditors(cellEditors);
 		
-		new StayEditingCellEditorListener(myArgumentsTableViewer, TableUtils.getColumnNumber(EOArgumentsConstants.COLUMNS, AbstractEOArgument.NAME));
-		new StayEditingCellEditorListener(myArgumentsTableViewer, TableUtils.getColumnNumber(EOArgumentsConstants.COLUMNS, AbstractEOArgument.COLUMN_NAME));
-		new StayEditingCellEditorListener(myArgumentsTableViewer, TableUtils.getColumnNumber(EOArgumentsConstants.COLUMNS, EOArgument.DIRECTION));
+		new StayEditingCellEditorListener(myArgumentsTableViewer, EOArgument.class.getName(), AbstractEOArgument.NAME);
+		new StayEditingCellEditorListener(myArgumentsTableViewer, EOArgument.class.getName(), AbstractEOArgument.COLUMN_NAME);
+		new StayEditingCellEditorListener(myArgumentsTableViewer, EOArgument.class.getName(), EOArgument.DIRECTION);
 	}
 
 	public void setStoredProcedure(EOStoredProcedure _storedProcedure) {

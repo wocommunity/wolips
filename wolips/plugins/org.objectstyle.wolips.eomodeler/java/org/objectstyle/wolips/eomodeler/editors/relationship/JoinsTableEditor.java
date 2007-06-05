@@ -66,6 +66,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TableColumn;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOJoin;
@@ -100,11 +101,11 @@ public class JoinsTableEditor extends Composite {
 		GridLayout layout = new GridLayout();
 		setLayout(layout);
 
-		myJoinsTableViewer = TableUtils.createTableViewer(this, SWT.BORDER | SWT.FLAT | SWT.MULTI | SWT.FULL_SELECTION, "EOJoin", EOJoinsConstants.COLUMNS, new EOJoinsContentProvider(), new EOJoinsLabelProvider(EOJoinsConstants.COLUMNS), new TablePropertyViewerSorter(EOJoinsConstants.COLUMNS));
+		myJoinsTableViewer = TableUtils.createTableViewer(this, SWT.BORDER | SWT.FLAT | SWT.MULTI | SWT.FULL_SELECTION, "EOJoin", EOJoin.class.getName(), new EOJoinsContentProvider(), new EOJoinsLabelProvider(EOJoin.class.getName()), new TablePropertyViewerSorter(EOJoin.class.getName()));
 
-		CellEditor[] cellEditors = new CellEditor[EOJoinsConstants.COLUMNS.length];
-		cellEditors[TableUtils.getColumnNumber(EOJoinsConstants.COLUMNS, EOJoin.SOURCE_ATTRIBUTE_NAME)] = new KeyComboBoxCellEditor(myJoinsTableViewer.getTable(), new String[0], SWT.READ_ONLY);
-		cellEditors[TableUtils.getColumnNumber(EOJoinsConstants.COLUMNS, EOJoin.DESTINATION_ATTRIBUTE_NAME)] = new KeyComboBoxCellEditor(myJoinsTableViewer.getTable(), new String[0], SWT.READ_ONLY);
+		CellEditor[] cellEditors = new CellEditor[TableUtils.getColumnsForTableNamed(EOJoin.class.getName()).length];
+		TableUtils.setCellEditor(EOJoin.class.getName(), EOJoin.SOURCE_ATTRIBUTE_NAME, new KeyComboBoxCellEditor(myJoinsTableViewer.getTable(), new String[0], SWT.READ_ONLY), cellEditors);
+		TableUtils.setCellEditor(EOJoin.class.getName(), EOJoin.DESTINATION_ATTRIBUTE_NAME, new KeyComboBoxCellEditor(myJoinsTableViewer.getTable(), new String[0], SWT.READ_ONLY), cellEditors);
 		myJoinsTableViewer.setCellModifier(new EOJoinsCellModifier(myJoinsTableViewer));
 		myJoinsTableViewer.setCellEditors(cellEditors);
 
@@ -153,17 +154,23 @@ public class JoinsTableEditor extends Composite {
 	protected void updateJoins() {
 		if (myJoinsTableViewer != null) {
 			myJoinsTableViewer.setInput(myRelationship);
-			KeyComboBoxCellEditor sourceCellEditor = (KeyComboBoxCellEditor) myJoinsTableViewer.getCellEditors()[TableUtils.getColumnNumber(EOJoinsConstants.COLUMNS, EOJoin.SOURCE_ATTRIBUTE_NAME)];
 			EOEntity source = myRelationship.getEntity();
 			if (source != null) {
-				myJoinsTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOJoinsConstants.COLUMNS, EOJoin.SOURCE_ATTRIBUTE_NAME)).setText(source.getName());
-				sourceCellEditor.setItems(source.getAttributeNames());
+				TableColumn sourceColumn = TableUtils.getColumn(myJoinsTableViewer, EOJoin.class.getName(), EOJoin.SOURCE_ATTRIBUTE_NAME);
+				if (sourceColumn != null) {
+					sourceColumn.setText(source.getName());
+					KeyComboBoxCellEditor sourceCellEditor = (KeyComboBoxCellEditor) TableUtils.getCellEditor(myJoinsTableViewer, EOJoin.class.getName(), EOJoin.SOURCE_ATTRIBUTE_NAME);
+					sourceCellEditor.setItems(source.getAttributeNames());
+				}
 			}
-			KeyComboBoxCellEditor destinationCellEditor = (KeyComboBoxCellEditor) myJoinsTableViewer.getCellEditors()[TableUtils.getColumnNumber(EOJoinsConstants.COLUMNS, EOJoin.DESTINATION_ATTRIBUTE_NAME)];
 			EOEntity destination = myRelationship.getDestination();
 			if (destination != null) {
-				myJoinsTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOJoinsConstants.COLUMNS, EOJoin.DESTINATION_ATTRIBUTE_NAME)).setText(destination.getName());
-				destinationCellEditor.setItems(destination.getAttributeNames());
+				TableColumn destinationColumn = TableUtils.getColumn(myJoinsTableViewer, EOJoin.class.getName(), EOJoin.DESTINATION_ATTRIBUTE_NAME);
+				if (destinationColumn != null) {
+					destinationColumn.setText(destination.getName());
+					KeyComboBoxCellEditor destinationCellEditor = (KeyComboBoxCellEditor) TableUtils.getCellEditor(myJoinsTableViewer, EOJoin.class.getName(), EOJoin.DESTINATION_ATTRIBUTE_NAME);
+					destinationCellEditor.setItems(destination.getAttributeNames());
+				}
 			}
 			TableUtils.packTableColumns(myJoinsTableViewer);
 		}
@@ -216,7 +223,7 @@ public class JoinsTableEditor extends Composite {
 		updateJoins();
 		updateButtons();
 	}
-	
+
 	protected void destinationChanged(EOEntity _oldDestination, EOEntity _newDestination) {
 		if (_oldDestination != null) {
 			_oldDestination.removePropertyChangeListener(EOEntity.ATTRIBUTE, myAttributesListener);
@@ -260,8 +267,7 @@ public class JoinsTableEditor extends Composite {
 			String propertyName = _event.getPropertyName();
 			if (propertyName.equals(EORelationship.DEFINITION)) {
 				JoinsTableEditor.this.definitionChanged();
-			}
-			else if (propertyName.equals(EORelationship.DESTINATION)) {
+			} else if (propertyName.equals(EORelationship.DESTINATION)) {
 				EOEntity oldDestination = (EOEntity) _event.getOldValue();
 				EOEntity newDestination = (EOEntity) _event.getNewValue();
 				JoinsTableEditor.this.destinationChanged(oldDestination, newDestination);

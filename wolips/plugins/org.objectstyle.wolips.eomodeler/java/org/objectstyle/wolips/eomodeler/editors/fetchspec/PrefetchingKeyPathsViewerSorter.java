@@ -10,7 +10,7 @@ public class PrefetchingKeyPathsViewerSorter extends TablePropertyViewerSorter {
 
 	public Object getComparisonValue(Object _obj, String _property) {
 		Object comparisonValue;
-		if (_property == EOFetchSpecification.PREFETCHING_RELATIONSHIP_KEY_PATH) {
+		if (EOFetchSpecification.PREFETCHING_RELATIONSHIP_KEY_PATH.equals(_property)) {
 			comparisonValue = _obj;
 		} else {
 			comparisonValue = super.getComparisonValue(_obj, _property);

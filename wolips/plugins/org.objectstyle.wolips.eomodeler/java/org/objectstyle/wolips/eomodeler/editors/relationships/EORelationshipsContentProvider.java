@@ -59,8 +59,8 @@ import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 public class EORelationshipsContentProvider implements IStructuredContentProvider {
 	public Object[] getElements(Object _inputElement) {
 		EOEntity entity = (EOEntity) _inputElement;
-		Set relationshipsList = entity.getRelationships();
-		EORelationship[] relationships = (EORelationship[]) relationshipsList.toArray(new EORelationship[relationshipsList.size()]);
+		Set<EORelationship> relationshipsList = entity.getRelationships();
+		EORelationship[] relationships = relationshipsList.toArray(new EORelationship[relationshipsList.size()]);
 		return relationships;
 	}
 

@@ -16,7 +16,7 @@ public class RawRowKeyPathsLabelProvider extends TablePropertyLabelProvider {
 	public String getColumnText(Object _element, String _property) {
 		String rawRowRelationshipKeyPath = (String) _element;
 		String text = null;
-		if (_property == EOFetchSpecification.RAW_ROW_KEY_PATH) {
+		if (EOFetchSpecification.RAW_ROW_KEY_PATH.equals(_property)) {
 			text = rawRowRelationshipKeyPath;
 		} else {
 			text = super.getColumnText(_element, _property);

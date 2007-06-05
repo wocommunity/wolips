@@ -63,8 +63,6 @@ public class EOModelEditorContributor extends MultiPageEditorActionBarContributo
 
 	private EOModelClipboardHandler _clipboardHandler;
 	
-	private UndoRedoActionGroup _undoRedoGroup;
-
 	public EOModelEditorContributor() {
 		_clipboardHandler = new EOModelClipboardHandler();
 	}

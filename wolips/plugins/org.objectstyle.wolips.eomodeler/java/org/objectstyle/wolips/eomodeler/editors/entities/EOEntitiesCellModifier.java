@@ -74,13 +74,16 @@ public class EOEntitiesCellModifier extends TablePropertyCellModifier {
 	}
 
 	protected boolean _canModify(Object _element, String _property) {
-		if (_property == EOEntity.PARENT) {
+		if (EOEntity.PARENT.equals(_property)) {
 			EOModel model = (EOModel) getTableViewer().getInput();
 			myEntityNames = new LinkedList(model.getModelGroup().getEntityNames());
 			myEntityNames.add(0, EOEntitiesCellModifier.NO_PARENT_VALUE);
 			String[] entityNames = (String[]) myEntityNames.toArray(new String[myEntityNames.size()]);
-			KeyComboBoxCellEditor cellEditor = (KeyComboBoxCellEditor) myCellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, _property)];
-			cellEditor.setItems(entityNames);
+			int columnNumber = TableUtils.getColumnNumberForTablePropertyNamed(EOEntity.class.getName(), _property);
+			if (columnNumber != -1) {
+				KeyComboBoxCellEditor cellEditor = (KeyComboBoxCellEditor) myCellEditors[columnNumber];
+				cellEditor.setItems(entityNames);
+			}
 		}
 		return true;
 	}
@@ -88,7 +91,7 @@ public class EOEntitiesCellModifier extends TablePropertyCellModifier {
 	public Object getValue(Object _element, String _property) {
 		EOEntity entity = (EOEntity) _element;
 		Object value = null;
-		if (_property == EOEntity.PARENT) {
+		if (EOEntity.PARENT.equals(_property)) {
 			EOEntity parent = entity.getParent();
 			String parentName;
 			if (parent == null) {
@@ -106,7 +109,7 @@ public class EOEntitiesCellModifier extends TablePropertyCellModifier {
 	protected boolean _modify(Object _element, String _property, Object _value) throws Throwable {
 		boolean modified = false;
 		EOEntity entity = (EOEntity) _element;
-		if (_property == EOEntity.PARENT) {
+		if (EOEntity.PARENT.equals(_property)) {
 			Integer parentNameIndex = (Integer) _value;
 			int parentNameIndexInt = parentNameIndex.intValue();
 			String parentName = (parentNameIndexInt == -1) ? null : (String) myEntityNames.get(parentNameIndexInt);

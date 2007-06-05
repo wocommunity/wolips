@@ -73,17 +73,17 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
 
 	private Font _flattenedInheritedFont;
 
-	public EORelationshipsLabelProvider(TableViewer tableViewer, String[] columnProperties) {
-		super(columnProperties);
+	public EORelationshipsLabelProvider(TableViewer tableViewer, String tableName) {
+		super(tableName);
 		_tableViewer = tableViewer;
 	}
 
 	public Image getColumnImage(Object element, String property) {
 		EORelationship relationship = (EORelationship) element;
 		Image image = null;
-		if (property == EORelationship.TO_MANY) {
+		if (EORelationship.TO_MANY.equals(property)) {
 			image = yesNoImage(relationship.isToMany(), Activator.getDefault().getImageRegistry().get(Activator.TO_MANY_ICON), Activator.getDefault().getImageRegistry().get(Activator.TO_ONE_ICON), Activator.getDefault().getImageRegistry().get(Activator.TO_ONE_ICON));
-		} else if (property == EORelationship.CLASS_PROPERTY) {
+		} else if (EORelationship.CLASS_PROPERTY.equals(property)) {
 			image = yesNoImage(relationship.isClassProperty(), Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON), null, null);
 		}
 		return image;
@@ -92,16 +92,16 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
 	public String getColumnText(Object element, String property) {
 		EORelationship relationship = (EORelationship) element;
 		String text = null;
-		if (property == EORelationship.TO_MANY) {
+		if (EORelationship.TO_MANY.equals(property)) {
 			// DO NOTHING
-		} else if (property == EORelationship.CLASS_PROPERTY) {
+		} else if (EORelationship.CLASS_PROPERTY.equals(property)) {
 			// DO NOTHING
-		} else if (property == EORelationship.DESTINATION) {
+		} else if (EORelationship.DESTINATION.equals(property)) {
 			EOEntity destination = relationship.getDestination();
 			if (destination != null) {
 				text = destination.getName();
 			}
-		} else if (property == EOJoin.SOURCE_ATTRIBUTE) {
+		} else if (EOJoin.SOURCE_ATTRIBUTE.equals(property)) {
 			EOJoin firstJoin = relationship.getFirstJoin();
 			if (firstJoin != null) {
 				EOAttribute sourceAttribute = firstJoin.getSourceAttribute();
@@ -109,7 +109,7 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
 					text = sourceAttribute.getName();
 				}
 			}
-		} else if (property == EOJoin.DESTINATION_ATTRIBUTE) {
+		} else if (EOJoin.DESTINATION_ATTRIBUTE.equals(property)) {
 			EOJoin firstJoin = relationship.getFirstJoin();
 			if (firstJoin != null) {
 				EOAttribute destinationAttribute = firstJoin.getDestinationAttribute();

@@ -15,17 +15,23 @@ public class StayEditingCellEditorListener implements ICellEditorListener, Selec
 
 	private int _column;
 
+	public StayEditingCellEditorListener(TableViewer tableViewer, String tableName, String propertyName) {
+		this(tableViewer, TableUtils.getColumnNumberForTablePropertyNamed(tableName, propertyName));
+	}
+	
 	public StayEditingCellEditorListener(TableViewer tableViewer, int column) {
 		_tableViewer = tableViewer;
-		CellEditor cellEditor = _tableViewer.getCellEditors()[column];
-		if (cellEditor instanceof EMTextCellEditor) {
-			((EMTextCellEditor) cellEditor).getText().addSelectionListener(this);
-			((EMTextCellEditor) cellEditor).getText().addTraverseListener(this);
-		} else if (cellEditor instanceof KeyComboBoxCellEditor) {
-			((KeyComboBoxCellEditor) cellEditor).getComboBox().addSelectionListener(this);
-			((KeyComboBoxCellEditor) cellEditor).getComboBox().addTraverseListener(this);
-		}
 		_column = column;
+		if (_column != -1) {
+			CellEditor cellEditor = _tableViewer.getCellEditors()[_column];
+			if (cellEditor instanceof EMTextCellEditor) {
+				((EMTextCellEditor) cellEditor).getText().addSelectionListener(this);
+				((EMTextCellEditor) cellEditor).getText().addTraverseListener(this);
+			} else if (cellEditor instanceof KeyComboBoxCellEditor) {
+				((KeyComboBoxCellEditor) cellEditor).getComboBox().addSelectionListener(this);
+				((KeyComboBoxCellEditor) cellEditor).getComboBox().addTraverseListener(this);
+			}
+		}
 	}
 
 	public TableViewer getTableViewer() {
@@ -49,8 +55,7 @@ public class StayEditingCellEditorListener implements ICellEditorListener, Selec
 					});
 				}
 			}
-		}
-		else if (e.detail == SWT.TRAVERSE_TAB_PREVIOUS) {
+		} else if (e.detail == SWT.TRAVERSE_TAB_PREVIOUS) {
 			int selectionIndex = _tableViewer.getTable().getSelectionIndex();
 			if (selectionIndex != -1) {
 				final Object thisObject = _tableViewer.getElementAt(selectionIndex);

@@ -61,7 +61,7 @@ public class EOStoredProceduresLabelProvider implements ILabelProvider {
 
 	public String getText(Object _element) {
 		String text = null;
-		if (_element == EOStoredProceduresListContentProvider.BLANK_STORED_PROCEDURE) {
+		if (EOStoredProceduresListContentProvider.BLANK_STORED_PROCEDURE.equals(_element)) {
 			// DO NOTHING
 		} else if (_element instanceof EOStoredProcedure) {
 			EOStoredProcedure storedProcedure = (EOStoredProcedure) _element;

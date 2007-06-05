@@ -69,6 +69,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
@@ -131,12 +132,15 @@ public class EOEntitySharedObjectsEditorSection extends AbstractPropertySection 
 		myShareFetchSpecsButton.setText(Messages.getString("EOEntity.shareFetchSpecs"));
 		myShareFetchSpecsButton.addSelectionListener(new ShareFetchSpecsListener());
 
-		myFetchSpecsViewer = TableUtils.createTableViewer(topForm, SWT.BORDER | SWT.FLAT | SWT.MULTI | SWT.FULL_SELECTION, "EOFetchSpecification", EOFetchSpecsConstants.COLUMNS, new EOFetchSpecsContentProvider(), new EOFetchSpecsLabelProvider(EOFetchSpecsConstants.COLUMNS), new TablePropertyViewerSorter(EOFetchSpecsConstants.COLUMNS));
-		myFetchSpecsViewer.getTable().getColumns()[TableUtils.getColumnNumber(EOFetchSpecsConstants.COLUMNS, EOFetchSpecification.SHARES_OBJECTS)].setText("");
-		myFetchSpecsViewer.getTable().getColumns()[TableUtils.getColumnNumber(EOFetchSpecsConstants.COLUMNS, EOFetchSpecification.SHARES_OBJECTS)].setImage(Activator.getDefault().getImageRegistry().get(Activator.CHECK_ICON));
+		myFetchSpecsViewer = TableUtils.createTableViewer(topForm, SWT.BORDER | SWT.FLAT | SWT.MULTI | SWT.FULL_SELECTION, "EOFetchSpecification", EOFetchSpecification.class.getName(), new EOFetchSpecsContentProvider(), new EOFetchSpecsLabelProvider(EOFetchSpecification.class.getName()), new TablePropertyViewerSorter(EOFetchSpecification.class.getName()));
+		TableColumn nameColumn = TableUtils.getColumn(myFetchSpecsViewer, EOFetchSpecification.class.getName(), EOFetchSpecification.SHARES_OBJECTS);
+		if (nameColumn != null) {
+			nameColumn.setText("");
+			nameColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.CHECK_ICON));
+		}
 
 		CellEditor[] cellEditors = new CellEditor[1];
-		cellEditors[TableUtils.getColumnNumber(EOFetchSpecsConstants.COLUMNS, EOFetchSpecification.SHARES_OBJECTS)] = new CheckboxCellEditor(myFetchSpecsViewer.getTable());
+		TableUtils.setCellEditor(EOFetchSpecification.class.getName(), EOFetchSpecification.SHARES_OBJECTS, new CheckboxCellEditor(myFetchSpecsViewer.getTable()), cellEditors);
 		myFetchSpecsViewer.setCellModifier(new TablePropertyCellModifier(myFetchSpecsViewer));
 		myFetchSpecsViewer.setCellEditors(cellEditors);
 		GridData fetchSpecsLayoutData = new GridData(GridData.FILL_BOTH);

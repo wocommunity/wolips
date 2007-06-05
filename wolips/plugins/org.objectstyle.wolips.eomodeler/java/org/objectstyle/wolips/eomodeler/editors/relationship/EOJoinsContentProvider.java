@@ -10,8 +10,8 @@ import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 public class EOJoinsContentProvider implements IStructuredContentProvider {
 	public Object[] getElements(Object _inputElement) {
 		EORelationship relationship = (EORelationship) _inputElement;
-		List joinsList = relationship.getJoins();
-		EOJoin[] joins = (EOJoin[]) joinsList.toArray(new EOJoin[joinsList.size()]);
+		List<EOJoin> joinsList = relationship.getJoins();
+		EOJoin[] joins = joinsList.toArray(new EOJoin[joinsList.size()]);
 		return joins;
 	}
 
