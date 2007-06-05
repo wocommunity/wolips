@@ -69,11 +69,11 @@ public class UserInfoLabelProvider extends TablePropertyLabelProvider {
 	public String getColumnText(Object _element, String _property) {
 		String text = null;
 		Object key = _element;
-		if (_property == UserInfoPropertySection.KEY) {
+		if (UserInfoPropertySection.KEY.equals(_property)) {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			PropertyListSerialization.propertyListToStream(baos, key);
 			text = new String(baos.toByteArray());
-		} else if (_property == UserInfoPropertySection.VALUE) {
+		} else if (UserInfoPropertySection.VALUE.equals(_property)) {
 			if (myUserInfo != null) {
 				Object valueObj = myUserInfo.get(key);
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();

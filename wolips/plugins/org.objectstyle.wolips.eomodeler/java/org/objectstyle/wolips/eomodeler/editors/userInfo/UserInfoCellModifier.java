@@ -73,9 +73,9 @@ public class UserInfoCellModifier extends TablePropertyCellModifier {
 	public Object getValue(Object _element, String _property) {
 		Object key = _element;
 		Object valueObj;
-		if (_property == UserInfoPropertySection.KEY) {
+		if (UserInfoPropertySection.KEY.equals(_property)) {
 			valueObj = key;
-		} else if (_property == UserInfoPropertySection.VALUE) {
+		} else if (UserInfoPropertySection.VALUE.equals(_property)) {
 			valueObj = myUserInfo.get(key);
 		} else {
 			valueObj = super.getValue(_element, _property);
@@ -93,13 +93,13 @@ public class UserInfoCellModifier extends TablePropertyCellModifier {
 	protected boolean _modify(Object _element, String _property, Object _value) throws Throwable {
 		boolean modified = false;
 		Object key = _element;
-		if (_property == UserInfoPropertySection.KEY) {
+		if (UserInfoPropertySection.KEY.equals(_property)) {
 			Object oldValue = myUserInfo.remove(key);
 			String keyStr = (String) _value;
 			Object keyObj = PropertyListSerialization.propertyListFromStream(new ByteArrayInputStream(keyStr.getBytes()), new EOModelParserDataStructureFactory());
 			myUserInfo.put(keyObj, oldValue);
 			modified = true;
-		} else if (_property == UserInfoPropertySection.VALUE) {
+		} else if (UserInfoPropertySection.VALUE.equals(_property)) {
 			String valueStr = (String) _value;
 			Object valueObj = PropertyListSerialization.propertyListFromStream(new ByteArrayInputStream(valueStr.getBytes()), new EOModelParserDataStructureFactory());
 			myUserInfo.put(key, valueObj);
