@@ -479,7 +479,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		EOModelGroup sourceModelGroup = new EOModelGroup();
 		EOModel sourceModel = new EOModel("Temp", null);
 		sourceModelGroup.addModel(sourceModel);
-		sourceModel.loadFromFolder(sourceModelURL, failures);
+		sourceModel.loadFromFolder(sourceModelURL, false, failures);
 		sourceModel.resolve(failures);
 		sourceModel.resolveFlattened(failures);
 		return importEntitiesFromModel(sourceModel, failures);
@@ -661,7 +661,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		return indexURL;
 	}
 
-	public void loadFromFolder(URL _modelFolder, Set<EOModelVerificationFailure> _failures) throws EOModelException, IOException {
+	public void loadFromFolder(URL _modelFolder, boolean createMissingDatabaseConfig, Set<EOModelVerificationFailure> _failures) throws EOModelException, IOException {
 		URL indexURL = new URL(_modelFolder, "index.eomodeld");
 		// if (!indexURL.exists()) {
 		// throw new EOModelException(indexURL + " does not exist.");
@@ -759,7 +759,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			if (connectionDictionaryDatabaseConfig == null) {
 				connectionDictionaryDatabaseConfig = tempConnectionDictionaryDatabaseConfig;
 				addDatabaseConfig(connectionDictionaryDatabaseConfig, false, _failures);
-				if (_editing) {
+				if (_editing && createMissingDatabaseConfig) {
 					_failures.add(new EOModelVerificationFailure(this, "Creating default database config for model '" + getName() + "'.", true, null));
 				}
 			}
@@ -1102,6 +1102,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 
 	/** End Prototypes * */
 
+	/*
 	public static void main(String[] args) throws IOException, EOModelException {
 		Set<EOModelVerificationFailure> failures = new LinkedHashSet<EOModelVerificationFailure>();
 
@@ -1127,4 +1128,5 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		mdtaskModel.saveToFolder(outputPath);
 		System.out.println("EOModel.main: Done.");
 	}
+	*/
 }

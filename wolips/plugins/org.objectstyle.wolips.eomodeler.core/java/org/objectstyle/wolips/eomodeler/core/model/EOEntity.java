@@ -1806,7 +1806,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public String getFullyQualifiedName() {
-		return ((myModel == null) ? "?" : myModel.getFullyQualifiedName()) + ", " + myName;
+		return ((myModel == null) ? "?" : myModel.getFullyQualifiedName()) + "/" + myName;
 	}
 
 	protected EOEntity _cloneJustEntity() {

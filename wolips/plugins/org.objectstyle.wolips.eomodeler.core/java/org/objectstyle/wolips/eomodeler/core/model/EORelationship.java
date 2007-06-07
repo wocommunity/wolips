@@ -784,7 +784,7 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 	}
 
 	public String getFullyQualifiedName() {
-		return ((myEntity == null) ? "?" : myEntity.getFullyQualifiedName()) + ", rel: " + getName();
+		return ((myEntity == null) ? "?" : myEntity.getFullyQualifiedName()) + "/rel: " + getName();
 	}
 
 	@Override

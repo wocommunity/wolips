@@ -59,6 +59,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.objectstyle.wolips.eomodeler.core.kvc.KVCComparator;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 
 public class EOPrototypeListContentProvider implements IStructuredContentProvider {
 	public static final Object BLANK_ENTITY = "";
@@ -73,6 +74,8 @@ public class EOPrototypeListContentProvider implements IStructuredContentProvide
 		Set prototypeAttributesList;
 		if (_inputElement instanceof EOAttribute) {
 			prototypeAttributesList = ((EOAttribute) _inputElement).getEntity().getModel().getPrototypeAttributes();
+		} else if (_inputElement instanceof EOModel) {
+				prototypeAttributesList = ((EOModel) _inputElement).getPrototypeAttributes();
 		} else {
 			throw new IllegalArgumentException("Unknown input element: " + _inputElement);
 		}
