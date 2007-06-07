@@ -665,7 +665,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 	}
 
 	public String getFullyQualifiedName() {
-		return ((myEntity == null) ? "?" : myEntity.getFullyQualifiedName()) + ", fspec: " + getName();
+		return ((myEntity == null) ? "?" : myEntity.getFullyQualifiedName()) + "/fspec: " + getName();
 	}
 
 	@Override

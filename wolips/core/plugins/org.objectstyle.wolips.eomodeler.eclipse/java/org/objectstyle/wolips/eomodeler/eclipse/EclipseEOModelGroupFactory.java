@@ -79,6 +79,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.model.IEOModelGroupFactory;
+import org.objectstyle.wolips.eomodeler.preferences.PreferenceConstants;
 
 public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 	public boolean canLoadModelFrom(Object modelResource) {
@@ -104,6 +105,7 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 		EOModelGroup modelGroup;
 		if ("eomodelgroup".equals(modelResource.getFileExtension())) {
 			modelGroup = new EOModelGroup();
+			modelGroup.setCreateDefaultDatabaseConfig(org.objectstyle.wolips.eomodeler.Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CREATE_DEFAULT_DATABASE_CONFIG)); 
 			EOGeneratorModel eogeneratorModel = EOGeneratorModel.createModelFromFile((IFile) modelResource);
 			List<EOModelReference> modelRefList = new LinkedList<EOModelReference>();
 			modelRefList.addAll(eogeneratorModel.getModels());
@@ -202,6 +204,7 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 	public EOModelGroup loadModelGroup(IProject project, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, URL editingModelURL, IProgressMonitor progressMonitor) throws CoreException, IOException, EOModelException {
 		progressMonitor.setTaskName("Loading model group ...");
 		EOModelGroup modelGroup = new EOModelGroup();
+		modelGroup.setCreateDefaultDatabaseConfig(org.objectstyle.wolips.eomodeler.Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CREATE_DEFAULT_DATABASE_CONFIG)); 
 		modelGroup.setEditingModelURL(editingModelURL);
 		addModelsFromProject(modelGroup, project, new HashSet<File>(), new HashSet<IProject>(), failures, skipOnDuplicates, editingModelURL, progressMonitor);
 		modelGroup.resolve(failures);

@@ -343,7 +343,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject<EOModel> implem
 	}
 
 	public String getFullyQualifiedName() {
-		return ((myModel == null) ? "?" : myModel.getFullyQualifiedName()) + ", proc: " + getName();
+		return ((myModel == null) ? "?" : myModel.getFullyQualifiedName()) + "/proc: " + getName();
 	}
 
 	@Override

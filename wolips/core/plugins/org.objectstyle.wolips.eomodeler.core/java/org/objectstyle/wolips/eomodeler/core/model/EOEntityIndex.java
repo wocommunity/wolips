@@ -356,7 +356,7 @@ public class EOEntityIndex extends UserInfoableEOModelObject<EOEntity> implement
 	}
 
 	public String getFullyQualifiedName() {
-		return ((_entity == null) ? "?" : _entity.getFullyQualifiedName()) + ", index: " + getName();
+		return ((_entity == null) ? "?" : _entity.getFullyQualifiedName()) + "/index: " + getName();
 	}
 
 	@Override

@@ -66,9 +66,20 @@ public class EOModelGroup extends EOModelObject<Object> {
 	private Set<EOModel> _models;
 
 	private URL _editingModelURL;
+	
+	private boolean _createDefaultDatabaseConfig;
 
 	public EOModelGroup() {
 		_models = new HashSet<EOModel>();
+		_createDefaultDatabaseConfig = true;
+	}
+	
+	public void setCreateDefaultDatabaseConfig(boolean createDefaultDatabaseConfig) {
+		_createDefaultDatabaseConfig = createDefaultDatabaseConfig;
+	}
+	
+	public boolean isCreateDefaultDatabaseConfig() {
+		return _createDefaultDatabaseConfig;
 	}
 
 	public void setEditingModelURL(URL editingModelURL) {
@@ -271,7 +282,7 @@ public class EOModelGroup extends EOModelObject<Object> {
 						if (_editingModelURL == null || modelFolder.equals(_editingModelURL)) {
 							model.setEditing(true);
 						}
-						model.loadFromFolder(modelFolder, failures);
+						model.loadFromFolder(modelFolder, _createDefaultDatabaseConfig, failures);
 						addModel(model, failures);
 						reloadModel = false;
 					} catch (DuplicateEntityNameException e) {

@@ -321,6 +321,9 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 				IKey propertyKey = EOAttribute.getPropertyKey(propertyName);
 				Object newValue = propertyKey.getValue(this);
 				Object oldValue = oldValues.get(propertyName);
+				if (AbstractEOArgument.NAME.equals(propertyName) && newValue == null) {
+					newValue = oldValue;
+				}
 				propertyKey.setValue(this, newValue);
 				firePropertyChange(propertyName, oldValue, newValue);
 			}
@@ -834,7 +837,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	}
 
 	public String getFullyQualifiedName() {
-		return ((myEntity == null) ? "?" : myEntity.getFullyQualifiedName()) + ", attr: " + getName();
+		return ((myEntity == null) ? "?" : myEntity.getFullyQualifiedName()) + "/attr: " + getName();
 	}
 
 	@Override

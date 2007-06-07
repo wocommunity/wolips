@@ -346,7 +346,7 @@ public class EODatabaseConfig extends EOModelObject<EOModel> {
 	}
 
 	public String getFullyQualifiedName() {
-		return ((myModel == null) ? "?" : myModel.getFullyQualifiedName()) + ", dbconfig: " + myName;
+		return ((myModel == null) ? "?" : myModel.getFullyQualifiedName()) + "/dbconfig: " + myName;
 	}
 
 	@SuppressWarnings("unused")
