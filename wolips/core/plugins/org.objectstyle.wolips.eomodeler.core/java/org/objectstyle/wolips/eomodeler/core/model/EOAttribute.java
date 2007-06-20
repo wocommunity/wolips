@@ -793,6 +793,9 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), "Attribute " + getFullyQualifiedName() + " is named 'entityName', which is a method in EOEnterpriseObject.", true));
 			}
 		}
+		if (myPrototypeName != null && myPrototypeName.length() > 0 && getPrototype() == null) {
+			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " references the prototype '" + myPrototypeName + "' which no longer appears to exist.", true));
+		}
 		if (!myEntity.isPrototype()) {
 			if (!isFlattened()) {
 				String columnName = getColumnName();
