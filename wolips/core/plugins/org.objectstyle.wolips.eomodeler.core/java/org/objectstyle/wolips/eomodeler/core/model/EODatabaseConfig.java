@@ -354,9 +354,10 @@ public class EODatabaseConfig extends EOModelObject<EOModel> {
 		// DO NOTHING
 	}
 
-	@SuppressWarnings("unused")
 	public void verify(Set<EOModelVerificationFailure> _failures) {
-		// DO NOTHING
+		if (myPrototypeName != null && myPrototypeName.length() > 0 && getPrototype() == null) {
+			_failures.add(new EOModelVerificationFailure(getModel(), getFullyQualifiedName() + " references the prototype entity '" + myPrototypeName + "' which no longer appears to exist.", true));
+		}
 	}
 	
 	public Set<EOModelReferenceFailure> getReferenceFailures() {
