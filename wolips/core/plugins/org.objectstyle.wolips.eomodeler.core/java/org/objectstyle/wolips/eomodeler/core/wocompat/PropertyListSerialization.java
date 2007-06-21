@@ -59,13 +59,14 @@ import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -119,7 +120,7 @@ public class PropertyListSerialization {
 		InputStream is = u.openStream();
 		BufferedInputStream bi = new BufferedInputStream(is);
 		try {
-			return new Parser(bi, "UTF8").propertyList(factory);
+			return new Parser(bi, "UTF-8").propertyList(factory);
 		}
 		finally {
 			bi.close();
@@ -132,7 +133,7 @@ public class PropertyListSerialization {
 	 * be a String or a Number.
 	 */
 	public static Object propertyListFromStream(InputStream in) {
-		return new Parser(in).propertyList();
+		return new Parser(in, "UTF-8").propertyList();
 	}
 
 	/**
@@ -141,7 +142,7 @@ public class PropertyListSerialization {
 	 * be a String or a Number.
 	 */
 	public static Object propertyListFromStream(InputStream in, ParserDataStructureFactory factory) {
-		return new Parser(in).propertyList(factory);
+		return new Parser(in, "UTF-8").propertyList(factory);
 	}
 
 	/**
@@ -149,7 +150,7 @@ public class PropertyListSerialization {
 	 */
 	public static void propertyListToFile(File f, Object plist) {
 		try {
-			BufferedWriter out = new BufferedWriter(new FileWriter(f));
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), Charset.forName("UTF-8")));
 			try {
 				writeObject("", out, plist);
 			} finally {
@@ -165,7 +166,7 @@ public class PropertyListSerialization {
 	 */
 	public static void propertyListToStream(OutputStream os, Object plist) {
 		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(os));
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(os, Charset.forName("UTF-8")));
 			try {
 				writeObject("", out, plist);
 			} finally {
