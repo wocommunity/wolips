@@ -56,13 +56,9 @@
 package org.objectstyle.wolips.wizards;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.objectstyle.wolips.core.resources.internal.types.project.ProjectPatternsets;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
@@ -85,82 +81,35 @@ public class WOnderD2WApplicationWizard extends AbstractWonderProjectWizard {
 	protected String getTemplateFolder() {
 		return "wonderd2wapplication";
 	}
-	
-	private class Operation extends WorkspaceModifyOperation {
-		IProject project = null;
 
-		private String templateFolder;
-
-		/**
-		 * @param project
-		 */
-		public Operation(IProject project, String templateFolder) {
-			super();
-			this.project = project;
-			this.templateFolder = templateFolder;
+	@Override
+	protected void _createProject(IProject project, IProgressMonitor progressMonitor) throws Exception {
+		String templateFolder = getTemplateFolder();
+		String projectName = project.getName();
+		String path = project.getLocation().toOSString();
+		prepare(path);
+		TemplateEngine templateEngine = new TemplateEngine();
+		templateEngine.init();
+		String cptype = "";
+		if ("true".equals(VariablesPlugin.getDefault().getProperty("wonder.useprojects"))) {
+			cptype = ".usingprojects";
 		}
-
-		protected void execute(IProgressMonitor monitor) throws InvocationTargetException {
-			String projectName = this.project.getName();
-			String path = this.project.getLocation().toOSString();
-			NullProgressMonitor nullProgressMonitor = new NullProgressMonitor();
-			try {
-				prepare(path);
-				TemplateEngine templateEngine = new TemplateEngine();
-				try {
-					templateEngine.init();
-				} catch (Exception e) {
-					WizardsPlugin.getDefault().log(e);
-					throw new InvocationTargetException(e);
-				}
-				String cptype = "";
-				if("true".equals(VariablesPlugin.getDefault().getProperty("wonder.useprojects"))) {
-					cptype = ".usingprojects";
-				}
-				templateEngine.getWolipsContext().setProjectName(projectName);
-				templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/.classpath" + cptype + ".vm", path, ".classpath", ".classpath"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/.project.vm", path, ".project", ".project"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/build.xml.vm", path, "build.xml", "build.xml"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/build.properties.vm", path, "build.properties", "build.properties"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/CustomInfo.plist.vm", path, "CustomInfo.plist", "CustomInfo.plist"));
-				addComponentDefinition(templateFolder, templateEngine, path, "Main");
-				addComponentDefinition(templateFolder, templateEngine, path, "MenuHeader");
-				addComponentDefinition(templateFolder, templateEngine, path, "PageWrapper");
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Application.java.vm", path + File.separator + "Sources", "Application.java", "Application.java"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/DirectAction.java.vm", path + File.separator + "Sources", "DirectAction.java", "DirectAction.java"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Session.java.vm", path + File.separator + "Sources", "Session.java", "Session.java"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Properties.vm", path + File.separator + "Resources", "Properties", "Properties"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/user.d2wmodel.vm", path + File.separator + "Resources", "user.d2wmodel", "user.d2wmodel"));
-				templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/d2w.d2wmodel.vm", path + File.separator + "Resources", "d2w.d2wmodel", "d2w.d2wmodel"));
-				templateEngine.run(nullProgressMonitor);
-				this.project.refreshLocal(IResource.DEPTH_INFINITE, nullProgressMonitor);
-			} catch (Exception e) {
-				throw new InvocationTargetException(e);
-			}
-		}
-	}
-
-	/**
-	 * (non-Javadoc) Method declared on IWizard
-	 * 
-	 * @return
-	 */
-	public boolean performFinish() {
-		boolean success = super.performFinish();
-		if (success) {
-			IProject project = super.getNewProject();
-			Operation operation = new Operation(project, getTemplateFolder());
-			try {
-				operation.run(new NullProgressMonitor());
-			} catch (InvocationTargetException e) {
-				WizardsPlugin.getDefault().log(e);
-				success = false;
-			} catch (InterruptedException e) {
-				WizardsPlugin.getDefault().log(e);
-				success = false;
-			}
-		}
-		return success;
+		templateEngine.getWolipsContext().setProjectName(projectName);
+		templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
+		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/.classpath" + cptype + ".vm", path, ".classpath", ".classpath"));
+		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/.project.vm", path, ".project", ".project"));
+		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/build.xml.vm", path, "build.xml", "build.xml"));
+		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/build.properties.vm", path, "build.properties", "build.properties"));
+		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/CustomInfo.plist.vm", path, "CustomInfo.plist", "CustomInfo.plist"));
+		addComponentDefinition(templateFolder, templateEngine, path, "Main");
+		addComponentDefinition(templateFolder, templateEngine, path, "MenuHeader");
+		addComponentDefinition(templateFolder, templateEngine, path, "PageWrapper");
+		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Application.java.vm", path + File.separator + "Sources", "Application.java", "Application.java"));
+		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/DirectAction.java.vm", path + File.separator + "Sources", "DirectAction.java", "DirectAction.java"));
+		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Session.java.vm", path + File.separator + "Sources", "Session.java", "Session.java"));
+		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Properties.vm", path + File.separator + "Resources", "Properties", "Properties"));
+		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/user.d2wmodel.vm", path + File.separator + "Resources", "user.d2wmodel", "user.d2wmodel"));
+		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/d2w.d2wmodel.vm", path + File.separator + "Resources", "d2w.d2wmodel", "d2w.d2wmodel"));
+		templateEngine.run(progressMonitor);
 	}
 }

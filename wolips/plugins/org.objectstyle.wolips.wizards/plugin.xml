@@ -39,6 +39,18 @@
          </description>
       </wizard>
       <wizard
+            name="WO Project from Template"
+            icon="icons/woproject/woapplication_wiz.gif"
+            category="org.objectstyle.wolips.wizards"
+            project="true"
+            id="org.objectstyle.wolips.wizards.new.projectFromTemplate">
+            <class class="org.objectstyle.wolips.wizards.template.NewProjectFromTemplateWizard">
+              <parameter name = "wotype" value = "true"/>
+            </class>
+         <description>
+         </description>
+      </wizard>
+      <wizard
             name="WOnderApplication"
             icon="icons/woproject/woapplication_wiz.gif"
             category="org.objectstyle.wolips.wizards"

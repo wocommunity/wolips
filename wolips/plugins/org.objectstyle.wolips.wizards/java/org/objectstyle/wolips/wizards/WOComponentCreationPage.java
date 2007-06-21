@@ -238,7 +238,7 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 	}
 
 	IPackageFragment choosePackage() {
-		List packagesList = new LinkedList();
+		List<IJavaElement> packagesList = new LinkedList<IJavaElement>();
 		try {
 			IProject actualProject = ResourcesPlugin.getWorkspace().getRoot().getProject(getContainerFullPath().segment(0));
 			IJavaProject javaProject = JavaModelManager.getJavaModelManager().getJavaModel().getJavaProject(actualProject);
@@ -255,7 +255,7 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 			// JTourBusPlugin.log(e);
 			e.printStackTrace();
 		}
-		IJavaElement[] packages = (IJavaElement[]) packagesList.toArray(new IJavaElement[packagesList.size()]);
+		IJavaElement[] packages = packagesList.toArray(new IJavaElement[packagesList.size()]);
 
 		ElementListSelectionDialog dialog = new ElementListSelectionDialog(getShell(), new JavaElementLabelProvider(JavaElementLabelProvider.SHOW_DEFAULT));
 		dialog.setIgnoreCase(false);

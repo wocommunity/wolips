@@ -133,7 +133,7 @@ public class NewWODropDown extends Action implements IMenuCreator, IWorkbenchWin
 	}
 	
 	public static OpenTypeWizardAction[] getActionFromDescriptors() {
-		ArrayList containers= new ArrayList();
+		ArrayList<OpenTypeWizardAction> containers= new ArrayList<OpenTypeWizardAction>();
 		
 		IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(PlatformUI.PLUGIN_ID, PL_NEW);
 		if (extensionPoint != null) {
@@ -145,7 +145,7 @@ public class NewWODropDown extends Action implements IMenuCreator, IWorkbenchWin
 				}
 			}
 		}
-		return (OpenTypeWizardAction[]) containers.toArray(new OpenTypeWizardAction[containers.size()]);
+		return containers.toArray(new OpenTypeWizardAction[containers.size()]);
 	}
 		
 	private static boolean isJavaTypeWizard(IConfigurationElement element) {

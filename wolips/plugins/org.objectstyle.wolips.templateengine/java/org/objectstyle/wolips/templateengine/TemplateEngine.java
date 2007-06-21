@@ -60,92 +60,91 @@ import java.io.FileWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.runtime.resource.loader.JarResourceLoader;
+import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
 /**
  * @author ulrich
  */
 public class TemplateEngine implements IRunnableWithProgress {
-	private VelocityContext context = null;
+	public static final String WOLIPS_LOADER = "wolips";
 
-	private ArrayList templates = null;
+	public static final String FILE_LOADER = "file";
 
-	private VelocityEngine velocityEngine = null;
+	private VelocityContext _context;
 
-	private WOLipsContext wolipsContext;
+	private List<TemplateDefinition> _templates;
 
-	/**
-	 * @throws Exception
-	 */
+	private VelocityEngine _velocityEngine;
+
+	private WOLipsContext _wolipsContext;
+
+	private String _templatePath;
+	
 	public void init() throws Exception {
 		/*
 		 * create a new instance of the engine
 		 */
-		this.velocityEngine = new VelocityEngine();//jar.resource.loader.path
-		this.velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.NullLogSystem");
+		_velocityEngine = new VelocityEngine();
+		_velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.NullLogSystem");
+
 		/*
 		 * initialize the engine
 		 */
 		String userHomeWOLipsPath = System.getProperty("user.home") + File.separator + "Library" + File.separator + "WOLips";
-		URL url = null;
-		url = Platform.resolve(TemplateEnginePlugin.baseURL());
+		URL url = FileLocator.resolve(TemplateEnginePlugin.baseURL());
 		String templatePaths = userHomeWOLipsPath + ", ";
 		Path path = new Path(url.getPath());
 		templatePaths = templatePaths + path.append("templates").toOSString();
-		this.velocityEngine.setProperty("resource.loader", "wolips");
-		this.velocityEngine.setProperty("wolips.resource.loader.class", "org.objectstyle.wolips.thirdparty.velocity.resourceloader.ResourceLoader");
-		this.velocityEngine.setProperty("wolips.resource.loader.bundle", TemplateEnginePlugin.getDefault().getBundle());
-//		this.velocityEngine.setProperty("jar.resource.loader.path", "jar:" + TemplateEnginePlugin.getDefault().getBundle().getResource("plugin.xml").getFile());
-		this.velocityEngine.init();
-		this.context = new VelocityContext();
-		this.templates = new ArrayList();
-		this.wolipsContext = new WOLipsContext();
-		this.setPropertyForKey(this.wolipsContext, WOLipsContext.Key);
-//		SAXBuilder builder;
-//		Document myContext = null;
-//		try {
-//			builder = new SAXBuilder();
-//			myContext = builder.build(userHomeWOLipsPath + File.separator + "MyContext.xml");
-//		} catch (Exception ee) {
-//			// We can ignore this exception, it`s thrown if the xml document is
-//			// not found.
-//			// Per default there is no such file
-//			builder = null;
-//		}
-//		if (myContext != null) {
-//			this.setPropertyForKey(myContext, "MyContext");
-//		}
+
+		_velocityEngine.setProperty("resource.loader", "wolips, file");
+
+		// _velocityEngine.setProperty("resource.loader", "wolips");
+		_velocityEngine.setProperty("wolips.resource.loader.class", org.objectstyle.wolips.thirdparty.velocity.resourceloader.ResourceLoader.class.getName());
+		_velocityEngine.setProperty("wolips.resource.loader.bundle", TemplateEnginePlugin.getDefault().getBundle());
+
+		// _velocityEngine.setProperty("resource.loader", "file");
+		_velocityEngine.setProperty("file.resource.loader.class", FileResourceLoader.class.getName());
+		_velocityEngine.setProperty("file.resource.loader.path", _templatePath);
+		_velocityEngine.init();
+		_context = new VelocityContext();
+		_templates = new LinkedList<TemplateDefinition>();
+		_wolipsContext = new WOLipsContext();
+		setPropertyForKey(_wolipsContext, WOLipsContext.Key);
+	}
+
+	public void setTemplatePath(String loaderPath) {
+		_templatePath = loaderPath;
 	}
 
 	/**
 	 * @param template
 	 */
 	public void addTemplate(TemplateDefinition template) {
-		this.templates.add(template);
+		_templates.add(template);
 	}
 
 	/**
 	 * @param templateDefinitions
 	 */
 	public void addTemplates(TemplateDefinition[] templateDefinitions) {
-		if (this.templates == null) {
+		if (_templates == null) {
 			return;
 		}
-		for (int i = 0; i < templateDefinitions.length; i++) {
-			TemplateDefinition templateDefinition = templateDefinitions[i];
-			this.templates.add(templateDefinition);
+		for (TemplateDefinition templateDefinition : templateDefinitions) {
+			_templates.add(templateDefinition);
 		}
 	}
 
@@ -154,7 +153,7 @@ public class TemplateEngine implements IRunnableWithProgress {
 	 * @param key
 	 */
 	public void setPropertyForKey(Object property, String key) {
-		this.context.put(key, property);
+		_context.put(key, property);
 	}
 
 	/*
@@ -163,11 +162,10 @@ public class TemplateEngine implements IRunnableWithProgress {
 	 * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	public void run(IProgressMonitor monitor) throws InvocationTargetException {
-		setDateInContext();
 		try {
-			for (int i = 0; i < this.templates.size(); i++) {
-				TemplateDefinition templateDefinition = (TemplateDefinition) this.templates.get(i);
-				this.run(templateDefinition);
+			setDateInContext();
+			for (TemplateDefinition templateDefinition : _templates) {
+				run(templateDefinition);
 			}
 		} catch (Exception e) {
 			throw new InvocationTargetException(e);
@@ -182,7 +180,7 @@ public class TemplateEngine implements IRunnableWithProgress {
 			 * make a writer, and merge the template 'against' the context
 			 */
 			String templateName = templateDefinition.getTemplateName();
-			Template template = this.velocityEngine.getTemplate(templateName);
+			Template template = _velocityEngine.getTemplate(templateName);
 			writer = new FileWriter(templateDefinition.getDestinationPath());
 			file = new File(templateDefinition.getDestinationPath());
 			File parentDir = file.getParentFile();
@@ -190,7 +188,7 @@ public class TemplateEngine implements IRunnableWithProgress {
 				parentDir.mkdirs();
 			}
 			writer = new FileWriter(file);
-			template.merge(this.context, writer);
+			template.merge(_context, writer);
 		} catch (Exception e) {
 			System.out.println("Exception : " + e);
 		} finally {
@@ -209,7 +207,7 @@ public class TemplateEngine implements IRunnableWithProgress {
 	 * @return Returns the wolipsContext.
 	 */
 	public WOLipsContext getWolipsContext() {
-		return this.wolipsContext;
+		return _wolipsContext;
 	}
 
 	/**
@@ -220,7 +218,6 @@ public class TemplateEngine implements IRunnableWithProgress {
 		DateFormat timeFormat = DateFormat.getTimeInstance();
 		Date currentDate = Calendar.getInstance().getTime();
 		String date = dateFormat.format(currentDate) + " " + timeFormat.format(currentDate);
-		this.setPropertyForKey(date, "Date");
-
+		setPropertyForKey(date, "Date");
 	}
 }

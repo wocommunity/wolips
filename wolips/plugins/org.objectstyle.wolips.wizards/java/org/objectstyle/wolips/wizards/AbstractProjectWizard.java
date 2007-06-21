@@ -57,12 +57,11 @@ package org.objectstyle.wolips.wizards;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 
 /**
  * @author ulrich
  */
-public abstract class AbstractProjectWizard extends BasicNewProjectResourceWizard {
+public abstract class AbstractProjectWizard extends NewWOProjectWizard {
 	public AbstractProjectWizard() {
 		super();
 	}

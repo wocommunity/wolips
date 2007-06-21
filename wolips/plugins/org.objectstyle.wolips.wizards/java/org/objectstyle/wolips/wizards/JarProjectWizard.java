@@ -56,13 +56,9 @@
 package org.objectstyle.wolips.wizards;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
 
@@ -80,72 +76,22 @@ public class JarProjectWizard extends AbstractProjectWizard {
 		return Messages.getString("JarProjectCreationWizard.title");
 	}
 
-	private class Operation extends WorkspaceModifyOperation {
-		IProject project = null;
-
-		/**
-		 * @param project
-		 */
-		public Operation(IProject project) {
-			super();
-			this.project = project;
-		}
-
-		protected void execute(IProgressMonitor monitor) throws InvocationTargetException {
-
-			String projectName = this.project.getName();
-			String path = this.project.getLocation().toOSString();
-			NullProgressMonitor nullProgressMonitor = new NullProgressMonitor();
-			try {
-				File src = new File(path + File.separator + "src");
-				src.mkdirs();
-				File bin = new File(path + File.separator + "bin");
-				bin.mkdirs();
-				// project.close(nullProgressMonitor);
-				TemplateEngine templateEngine = new TemplateEngine();
-				try {
-					templateEngine.init();
-				} catch (Exception e) {
-					WizardsPlugin.getDefault().log(e);
-					throw new InvocationTargetException(e);
-				}
-				templateEngine.getWolipsContext().setProjectName(projectName);
-				templateEngine.addTemplate(new TemplateDefinition("jarproject/.classpath.vm", path, ".classpath", ".classpath"));
-				templateEngine.addTemplate(new TemplateDefinition("jarproject/.project.vm", path, ".project", ".project"));
-				templateEngine.addTemplate(new TemplateDefinition("jarproject/build.xml.vm", path, "build.xml", "build.xml"));
-				templateEngine.addTemplate(new TemplateDefinition("jarproject/build.properties.vm", path, "build.properties", "build.properties"));
-				templateEngine.run(new NullProgressMonitor());
-				// project.open(nullProgressMonitor);
-				// RunAnt runAnt = new RunAnt();
-				// runAnt.asAnt(path + File.separator
-				// + IWOLipsModel.DEFAULT_BUILD_FILENAME, null, null);
-				this.project.refreshLocal(IResource.DEPTH_INFINITE, nullProgressMonitor);
-			} catch (Exception e) {
-				throw new InvocationTargetException(e);
-			}
-		}
-	}
-
-	/**
-	 * (non-Javadoc) Method declared on IWizard
-	 * 
-	 * @return
-	 */
-	public boolean performFinish() {
-		boolean success = super.performFinish();
-		if (success) {
-			IProject project = super.getNewProject();
-			Operation operation = new Operation(project);
-			try {
-				operation.run(new NullProgressMonitor());
-			} catch (InvocationTargetException e) {
-				WizardsPlugin.getDefault().log(e);
-				success = false;
-			} catch (InterruptedException e) {
-				WizardsPlugin.getDefault().log(e);
-				success = false;
-			}
-		}
-		return success;
+	@Override
+	protected void _createProject(IProject project, IProgressMonitor progressMonitor) throws Exception {
+		String projectName = project.getName();
+		String path = project.getLocation().toOSString();
+		File src = new File(path + File.separator + "src");
+		src.mkdirs();
+		File bin = new File(path + File.separator + "bin");
+		bin.mkdirs();
+		// project.close(nullProgressMonitor);
+		TemplateEngine templateEngine = new TemplateEngine();
+		templateEngine.init();
+		templateEngine.getWolipsContext().setProjectName(projectName);
+		templateEngine.addTemplate(new TemplateDefinition("jarproject/.classpath.vm", path, ".classpath", ".classpath"));
+		templateEngine.addTemplate(new TemplateDefinition("jarproject/.project.vm", path, ".project", ".project"));
+		templateEngine.addTemplate(new TemplateDefinition("jarproject/build.xml.vm", path, "build.xml", "build.xml"));
+		templateEngine.addTemplate(new TemplateDefinition("jarproject/build.properties.vm", path, "build.properties", "build.properties"));
+		templateEngine.run(progressMonitor);
 	}
 }

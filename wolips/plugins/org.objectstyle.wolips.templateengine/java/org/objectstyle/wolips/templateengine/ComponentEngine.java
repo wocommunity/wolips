@@ -206,15 +206,19 @@ public class ComponentEngine extends AbstractEngine {
 	}
 
 	/**
-	 * @param string
+	 * @param templateName
 	 */
-	public void setSelectedTemplateName(String string) {
+	public void setSelectedTemplateName(String templateName) {
 		String[] names = this.names();
 		for (int i = 0; i < names.length; i++) {
 			if (names[i].equals(this.templateFolder[i].getTemplatesDocument().getName())) {
 				this.selectedTemplateFolder = this.templateFolder[i];
 			}
 		}
+	}
+	
+	public TemplateFolder getSelectedTemplateFolder() {
+		return selectedTemplateFolder;
 	}
 
 	public void run(IProgressMonitor monitor) throws InvocationTargetException {
