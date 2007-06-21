@@ -56,13 +56,9 @@
 package org.objectstyle.wolips.wizards;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.objectstyle.wolips.core.resources.internal.types.project.ProjectPatternsets;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
@@ -81,82 +77,41 @@ public class WOFrameworkWizard extends AbstractProjectWizard {
 		return Messages.getString("WOFrameworkCreationWizard.title");
 	}
 
-	private class Operation extends WorkspaceModifyOperation {
-		IProject project = null;
-
-		public Operation(IProject project) {
-			super();
-			this.project = project;
-		}
-
-		protected void execute(IProgressMonitor monitor) throws InvocationTargetException {
-			String projectName = this.project.getName();
-			String path = this.project.getLocation().toOSString();
-			NullProgressMonitor nullProgressMonitor = new NullProgressMonitor();
-			try {
-				File src = new File(path + File.separator + "src");
-				src.mkdirs();
-				File bin = new File(path + File.separator + "bin");
-				bin.mkdirs();
-				// File xcode = new File(path + File.separator + projectName
-				// + ".xcode");
-				// xcode.mkdirs();
-				// File xcodeproj = new File(path + File.separator + projectName
-				// + ".xcodeproj");
-				// xcodeproj.mkdirs();
-				File ant = new File(path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME);
-				ant.mkdirs();
-				// project.close(nullProgressMonitor);
-				TemplateEngine templateEngine = new TemplateEngine();
-				try {
-					templateEngine.init();
-				} catch (Exception e) {
-					WizardsPlugin.getDefault().log(e);
-					throw new InvocationTargetException(e);
-				}
-				templateEngine.getWolipsContext().setProjectName(projectName);
-				templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
-				templateEngine.addTemplate(new TemplateDefinition("woframework/.classpath.vm", path, ".classpath", ".classpath"));
-				templateEngine.addTemplate(new TemplateDefinition("woframework/.project.vm", path, ".project", ".project"));
-				templateEngine.addTemplate(new TemplateDefinition("woframework/build.xml.vm", path, "build.xml", "build.xml"));
-				templateEngine.addTemplate(new TemplateDefinition("woframework/build.properties.vm", path, "build.properties", "build.properties"));
-				templateEngine.addTemplate(new TemplateDefinition("woframework/CustomInfo.plist.vm", path, "CustomInfo.plist", "CustomInfo.plist"));
-				templateEngine.addTemplate(new TemplateDefinition("woframework/Makefile.vm", path, "Makefile", "Makefile"));
-				templateEngine.addTemplate(new TemplateDefinition("woframework/Makefile.postamble.vm", path, "Makefile.postamble", "Makefile.postamble"));
-				templateEngine.addTemplate(new TemplateDefinition("woframework/Makefile.preamble.vm", path, "Makefile.preamble", "Makefile.preamble"));
-				templateEngine.addTemplate(new TemplateDefinition("woframework/PB.project.vm", path, "PB.project", "PB.project"));
-				templateEngine.addTemplate(new TemplateDefinition("woframework/Properties.vm", path, "Properties", "Properties"));
-				// templateEngine.addTemplate(new TemplateDefinition(
-				// "woframework/project.pbxproj.vm", path + File.separator
-				// + projectName + ".xcode", "project.pbxproj",
-				// "project.pbxproj"));
-				templateEngine.run(nullProgressMonitor);
-				// project.open(nullProgressMonitor);
-				// RunAnt runAnt = new RunAnt();
-				// runAnt.asAnt(path + File.separator
-				// + IWOLipsModel.DEFAULT_BUILD_FILENAME, null, null);
-				this.project.refreshLocal(IResource.DEPTH_INFINITE, nullProgressMonitor);
-			} catch (Exception e) {
-				throw new InvocationTargetException(e);
-			}
-		}
-	}
-
-	public boolean performFinish() {
-		boolean success = super.performFinish();
-		if (success) {
-			IProject project = super.getNewProject();
-			Operation operation = new Operation(project);
-			try {
-				operation.run(new NullProgressMonitor());
-			} catch (InvocationTargetException e) {
-				WizardsPlugin.getDefault().log(e);
-				success = false;
-			} catch (InterruptedException e) {
-				WizardsPlugin.getDefault().log(e);
-				success = false;
-			}
-		}
-		return success;
+	@Override
+	protected void _createProject(IProject project, IProgressMonitor progressMonitor) throws Exception {
+		String projectName = project.getName();
+		String path = project.getLocation().toOSString();
+		File src = new File(path + File.separator + "src");
+		src.mkdirs();
+		File bin = new File(path + File.separator + "bin");
+		bin.mkdirs();
+		// File xcode = new File(path + File.separator + projectName
+		// + ".xcode");
+		// xcode.mkdirs();
+		// File xcodeproj = new File(path + File.separator + projectName
+		// + ".xcodeproj");
+		// xcodeproj.mkdirs();
+		File ant = new File(path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME);
+		ant.mkdirs();
+		// project.close(nullProgressMonitor);
+		TemplateEngine templateEngine = new TemplateEngine();
+		templateEngine.init();
+		templateEngine.getWolipsContext().setProjectName(projectName);
+		templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
+		templateEngine.addTemplate(new TemplateDefinition("woframework/.classpath.vm", path, ".classpath", ".classpath"));
+		templateEngine.addTemplate(new TemplateDefinition("woframework/.project.vm", path, ".project", ".project"));
+		templateEngine.addTemplate(new TemplateDefinition("woframework/build.xml.vm", path, "build.xml", "build.xml"));
+		templateEngine.addTemplate(new TemplateDefinition("woframework/build.properties.vm", path, "build.properties", "build.properties"));
+		templateEngine.addTemplate(new TemplateDefinition("woframework/CustomInfo.plist.vm", path, "CustomInfo.plist", "CustomInfo.plist"));
+		templateEngine.addTemplate(new TemplateDefinition("woframework/Makefile.vm", path, "Makefile", "Makefile"));
+		templateEngine.addTemplate(new TemplateDefinition("woframework/Makefile.postamble.vm", path, "Makefile.postamble", "Makefile.postamble"));
+		templateEngine.addTemplate(new TemplateDefinition("woframework/Makefile.preamble.vm", path, "Makefile.preamble", "Makefile.preamble"));
+		templateEngine.addTemplate(new TemplateDefinition("woframework/PB.project.vm", path, "PB.project", "PB.project"));
+		templateEngine.addTemplate(new TemplateDefinition("woframework/Properties.vm", path, "Properties", "Properties"));
+		// templateEngine.addTemplate(new TemplateDefinition(
+		// "woframework/project.pbxproj.vm", path + File.separator
+		// + projectName + ".xcode", "project.pbxproj",
+		// "project.pbxproj"));
+		templateEngine.run(progressMonitor);
 	}
 }

@@ -64,6 +64,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -82,7 +83,7 @@ public abstract class AbstractEngine implements IRunnableWithProgress {
 
 	private VelocityContext context = null;
 
-	private ArrayList templates = null;
+	private List<TemplateDefinition> templates = null;
 
 	private VelocityEngine velocityEngine = null;
 
@@ -110,7 +111,7 @@ public abstract class AbstractEngine implements IRunnableWithProgress {
 //		this.velocityEngine.setProperty("jar.resource.loader.path", "jar:" + TemplateEnginePlugin.getDefault().getBundle().getResource("plugin.xml").getFile());
 		this.velocityEngine.init();
 		this.context = new VelocityContext();
-		this.templates = new ArrayList();
+		this.templates = new ArrayList<TemplateDefinition>();
 		this.setPropertyForKey(this, WOLipsContext.Key);
 //		SAXBuilder builder;
 //		Document myContext = null;
@@ -165,7 +166,7 @@ public abstract class AbstractEngine implements IRunnableWithProgress {
 	public void run(IProgressMonitor monitor) throws InvocationTargetException {
 		try {
 			for (int i = 0; i < this.templates.size(); i++) {
-				TemplateDefinition templateDefinition = (TemplateDefinition) this.templates.get(i);
+				TemplateDefinition templateDefinition = this.templates.get(i);
 				this.run(templateDefinition);
 			}
 		} catch (Exception e) {

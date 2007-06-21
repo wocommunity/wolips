@@ -81,62 +81,25 @@ public class WOnderFrameworkWizard extends AbstractWonderProjectWizard {
 		return Messages.getString("WOnderFrameworkCreationWizard.title");
 	}
 
-	private class Operation extends WorkspaceModifyOperation {
-		IProject project = null;
-
-		public Operation(IProject project) {
-			super();
-			this.project = project;
+	@Override
+	protected void _createProject(IProject project, IProgressMonitor progressMonitor) throws Exception {
+		String projectName = project.getName();
+		String path = project.getLocation().toOSString();
+		prepare(path);
+		TemplateEngine templateEngine = new TemplateEngine();
+		templateEngine.init();
+		String cptype = "";
+		if ("true".equals(VariablesPlugin.getDefault().getProperty("wonder.useprojects"))) {
+			cptype = ".usingprojects";
 		}
-
-		protected void execute(IProgressMonitor monitor) throws InvocationTargetException {
-			String projectName = this.project.getName();
-			String path = this.project.getLocation().toOSString();
-			NullProgressMonitor nullProgressMonitor = new NullProgressMonitor();
-			try {
-				prepare(path);
-				TemplateEngine templateEngine = new TemplateEngine();
-				try {
-					templateEngine.init();
-				} catch (Exception e) {
-					WizardsPlugin.getDefault().log(e);
-					throw new InvocationTargetException(e);
-				}
-				String cptype = "";
-				if("true".equals(VariablesPlugin.getDefault().getProperty("wonder.useprojects"))) {
-					cptype = ".usingprojects";
-				}
-				templateEngine.getWolipsContext().setProjectName(projectName);
-				templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
-				templateEngine.addTemplate(new TemplateDefinition("wonderframework/.classpath" + cptype + ".vm", path, ".classpath", ".classpath"));
-				templateEngine.addTemplate(new TemplateDefinition("wonderframework/.project.vm", path, ".project", ".project"));
-				templateEngine.addTemplate(new TemplateDefinition("wonderframework/build.xml.vm", path, "build.xml", "build.xml"));
-				templateEngine.addTemplate(new TemplateDefinition("wonderframework/build.properties.vm", path, "build.properties", "build.properties"));
-				templateEngine.addTemplate(new TemplateDefinition("wonderframework/CustomInfo.plist.vm", path, "CustomInfo.plist", "CustomInfo.plist"));
-				templateEngine.addTemplate(new TemplateDefinition("wonderframework/Properties.vm", path + File.separator + "Resources", "Properties", "Properties"));
-				templateEngine.run(nullProgressMonitor);
-				this.project.refreshLocal(IResource.DEPTH_INFINITE, nullProgressMonitor);
-			} catch (Exception e) {
-				throw new InvocationTargetException(e);
-			}
-		}
-	}
-
-	public boolean performFinish() {
-		boolean success = super.performFinish();
-		if (success) {
-			IProject project = super.getNewProject();
-			Operation operation = new Operation(project);
-			try {
-				operation.run(new NullProgressMonitor());
-			} catch (InvocationTargetException e) {
-				WizardsPlugin.getDefault().log(e);
-				success = false;
-			} catch (InterruptedException e) {
-				WizardsPlugin.getDefault().log(e);
-				success = false;
-			}
-		}
-		return success;
+		templateEngine.getWolipsContext().setProjectName(projectName);
+		templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
+		templateEngine.addTemplate(new TemplateDefinition("wonderframework/.classpath" + cptype + ".vm", path, ".classpath", ".classpath"));
+		templateEngine.addTemplate(new TemplateDefinition("wonderframework/.project.vm", path, ".project", ".project"));
+		templateEngine.addTemplate(new TemplateDefinition("wonderframework/build.xml.vm", path, "build.xml", "build.xml"));
+		templateEngine.addTemplate(new TemplateDefinition("wonderframework/build.properties.vm", path, "build.properties", "build.properties"));
+		templateEngine.addTemplate(new TemplateDefinition("wonderframework/CustomInfo.plist.vm", path, "CustomInfo.plist", "CustomInfo.plist"));
+		templateEngine.addTemplate(new TemplateDefinition("wonderframework/Properties.vm", path + File.separator + "Resources", "Properties", "Properties"));
+		templateEngine.run(progressMonitor);
 	}
 }

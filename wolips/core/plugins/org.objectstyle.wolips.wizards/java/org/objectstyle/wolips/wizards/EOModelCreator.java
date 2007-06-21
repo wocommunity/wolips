@@ -212,7 +212,7 @@ public class EOModelCreator implements IRunnableWithProgress {
 		// add adaptor framework
 		if (!"None".equals(_adaptorName)) {
 			IJavaProject projectToUpdate = JavaCore.create(_parentResource.getProject());
-			List newAdaptorFrameworkList = new LinkedList();
+			List<String> newAdaptorFrameworkList = new LinkedList<String>();
 			newAdaptorFrameworkList.add("Java" + _adaptorName + "Adaptor." + IWOLipsModel.EXT_FRAMEWORK);
 			JavaProject javaProject = (JavaProject) projectToUpdate.getAdapter(JavaProject.class);
 			IClasspathEntry[] newClasspathEntries = javaProject.addFrameworkListToClasspathEntries(newAdaptorFrameworkList);
