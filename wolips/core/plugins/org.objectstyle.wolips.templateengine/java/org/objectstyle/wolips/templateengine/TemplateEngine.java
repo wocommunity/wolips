@@ -117,7 +117,9 @@ public class TemplateEngine implements IRunnableWithProgress {
 
 		// _velocityEngine.setProperty("resource.loader", "file");
 		_velocityEngine.setProperty("file.resource.loader.class", FileResourceLoader.class.getName());
-		_velocityEngine.setProperty("file.resource.loader.path", _templatePath);
+		if (_templatePath != null) {
+			_velocityEngine.setProperty("file.resource.loader.path", _templatePath);
+		}
 		_velocityEngine.init();
 		_context = new VelocityContext();
 		_templates = new LinkedList<TemplateDefinition>();
