@@ -9,7 +9,8 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.jdt.core,
- org.objectstyle.wolips.baseforplugins
+ org.objectstyle.wolips.baseforplugins,
+ org.eclipse.ui
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.locate,
  org.objectstyle.wolips.locate.result,

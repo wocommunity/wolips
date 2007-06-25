@@ -69,6 +69,8 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.locate.LocatePlugin;
 
@@ -94,23 +96,41 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 			String extension = resource.getFileExtension();
 			if (extension.equals("java")) {
 				if (dotJava != null) {
-					throw new LocateException("Duplicate located: " + dotJava + " " + file);
+					String message = "Duplicate located: " + dotJava + " " + file;
+					alert(message);
+					throw new LocateException(message);
 				}
 				dotJava = file;
 			} else if (extension.equals("api")) {
 				if (dotApi != null) {
-					throw new LocateException("Duplicate located: " + dotApi + " " + file);
+					String message = "Duplicate located: " + dotApi + " " + file;
+					alert(message);
+					throw new LocateException(message);
 				}
 				dotApi = file;
 			} else {
-				throw new LocateException("unknown extension on " + file);
+				String message = "unknown extension on " + file;
+				alert(message);
+				throw new LocateException(message);
 			}
 
 		} else {
-			throw new LocateException("unsupported type " + resource);
+			String message = "unsupported type " + resource;
+			alert(message);
+			throw new LocateException(message);
 		}
 	}
 
+	private void alert(final String message) {
+		Display.getCurrent().asyncExec(new Runnable() {
+
+			public void run() {
+				MessageDialog.openError(null, "", message);
+			}
+			
+		});
+	}
+	
 	public IFolder[] getComponents() {
 		return components.toArray(new IFolder[components.size()]);
 	}
