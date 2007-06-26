@@ -360,14 +360,14 @@
 				tooltip="Insert WOCheckBox Component">
 			</action>
 			<action
-				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOTextAreaAction"
+				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOTextAction"
 				icon="icons/textarea.png"
-				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOTextArea"
-				label="Insert WOTextArea Component"
+				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOText"
+				label="Insert WOText Component"
 				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
 				style="push"
 				toolbarPath="/Normal/additions"
-				tooltip="Insert WOTextArea Component">
+				tooltip="Insert WOText Component">
 			</action>
 			<action
 				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOPopUpButtonAction"
