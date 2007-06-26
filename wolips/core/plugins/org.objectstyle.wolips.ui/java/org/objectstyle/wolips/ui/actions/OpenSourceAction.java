@@ -57,7 +57,9 @@
 package org.objectstyle.wolips.ui.actions;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.IAction;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResource;
@@ -73,12 +75,14 @@ public class OpenSourceAction extends AbstractActionOnIResource {
 	public void run(IAction action) {
 		if (getActionResource() != null) {
 			String fileName = getActionResource().getName();
-			if (fileName.endsWith(".wod"))
+			if (fileName.endsWith(".wod")) {
 				fileName = fileName.substring(0, fileName.length() - 4);
-			if (fileName.endsWith(".wo"))
+			}
+			if (fileName.endsWith(".wo")) {
 				fileName = fileName.substring(0, fileName.length() - 3);
+			}
 
-			ArrayList list = new ArrayList();
+			List<IResource> list = new ArrayList<IResource>();
 			WorkbenchUtilitiesPlugin.findFilesInResourceByName(list, getIProject(), fileName + ".java");
 			WorkbenchUtilitiesPlugin.open(list);
 		}
