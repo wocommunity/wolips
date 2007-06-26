@@ -51,8 +51,10 @@ package org.objectstyle.wolips.eomodeler.core.model;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -185,6 +187,14 @@ public class EOModelGroup extends EOModelObject<Object> {
 		}
 	}
 
+	public Map<EOAttribute, Set<EORelationship>> _createReferencingRelationshipsCache() {
+		Map<EOAttribute, Set<EORelationship>> cache = new HashMap<EOAttribute, Set<EORelationship>>();
+		for (EOModel model : getModels()) {
+			model._createReferencingRelationshipsCache(cache);
+		}
+		return cache;
+	}
+
 	public EOModel getModelNamed(String _name) {
 		EOModel matchingModel = null;
 		Iterator<EOModel> modelsIter = _models.iterator();
@@ -302,8 +312,9 @@ public class EOModelGroup extends EOModelObject<Object> {
 	}
 
 	public void verify(Set<EOModelVerificationFailure> _failures) {
+		VerificationContext verificationContext = new VerificationContext(_createReferencingRelationshipsCache());
 		for (EOModel model : _models) {
-			model.verify(_failures);
+			model.verify(_failures, verificationContext);
 		}
 	}
 

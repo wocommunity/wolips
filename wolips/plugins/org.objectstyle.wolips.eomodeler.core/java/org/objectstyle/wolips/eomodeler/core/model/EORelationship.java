@@ -306,6 +306,23 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 		return isRelated;
 	}
 
+	public Set<EOAttribute> getRelatedAttributes() {
+		Set<EOAttribute> relatedAttributes = new HashSet<EOAttribute>();
+		Iterator<EOJoin> joinsIter = myJoins.iterator();
+		while (joinsIter.hasNext()) {
+			EOJoin join = joinsIter.next();
+			EOAttribute sourceAttribute = join.getSourceAttribute();
+			if (sourceAttribute != null) {
+				relatedAttributes.add(sourceAttribute);
+			}
+			EOAttribute destinationAttribute = join.getDestinationAttribute();
+			if (destinationAttribute != null) {
+				relatedAttributes.add(destinationAttribute);
+			}
+		}
+		return relatedAttributes;
+	}
+
 	public void setDefinition(String _definition) {
 		String oldDefinition = myDefinition;
 		myDefinition = _definition;

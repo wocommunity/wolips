@@ -159,7 +159,18 @@ public class EOJoin extends EOModelObject<EORelationship> implements ISortableEO
 	}
 
 	public boolean isRelatedTo(EOAttribute _attribute) {
-		return (getSourceAttribute() != null && getSourceAttribute().equals(_attribute)) || (getDestinationAttribute() != null && getDestinationAttribute().equals(_attribute));
+		boolean isRelatedTo = false;
+		EOAttribute sourceAttribute = getSourceAttribute();
+		if (sourceAttribute != null && sourceAttribute.equals(_attribute)) {
+			isRelatedTo = true;
+		}
+		else {
+			EOAttribute destinationAttribute = getDestinationAttribute();
+			if (destinationAttribute != null && destinationAttribute.equals(_attribute)) {
+				isRelatedTo = true;
+			}
+		}
+		return isRelatedTo;
 	}
 
 	public String getSourceAttributeName() {

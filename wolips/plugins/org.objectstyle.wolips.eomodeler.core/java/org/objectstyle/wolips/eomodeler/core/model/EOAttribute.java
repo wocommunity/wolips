@@ -674,8 +674,9 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	}
 
 	public Set<EOModelReferenceFailure> getReferenceFailures() {
+		Map<EOAttribute, Set<EORelationship>> referencingRelationshipsCache = getEntity().getModel().getModelGroup()._createReferencingRelationshipsCache();
 		Set<EOModelReferenceFailure> referenceFailures = new HashSet<EOModelReferenceFailure>();
-		for (EORelationship referencingRelationship : getReferencingRelationships(true)) {
+		for (EORelationship referencingRelationship : getReferencingRelationships(true, referencingRelationshipsCache)) {
 			referenceFailures.add(new EORelationshipAttributeReferenceFailure(referencingRelationship, this));
 		}
 		for (EOAttribute referencingAttributes : getReferencingFlattenedAttributes()) {
@@ -703,27 +704,22 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		return referencingFlattenedAttributes;
 	}
 
-	public List<EORelationship> getReferencingRelationships(boolean _includeInheritedAttributes) {
-		List<EORelationship> referencingRelationships = new LinkedList<EORelationship>();
+	public Set<EORelationship> getReferencingRelationships(boolean includeInheritedAttributes, Map<EOAttribute, Set<EORelationship>> referencingRelationshipsCache) {
+		Set<EORelationship> referencingRelationships = new HashSet<EORelationship>();
 		if (myEntity != null) {
-			for (EOModel model : getEntity().getModel().getModelGroup().getModels()) {
-				for (EOEntity entity : model.getEntities()) {
-					for (EORelationship relationship : entity.getRelationships()) {
-						if (relationship.isRelatedTo(this)) {
-							referencingRelationships.add(relationship);
-						}
-					}
-				}
+			Set<EORelationship> directReferencingRelationships = referencingRelationshipsCache.get(this);
+			if (directReferencingRelationships != null) {
+				referencingRelationships.addAll(directReferencingRelationships);
 			}
 
-			if (_includeInheritedAttributes && myEntity != null) {
+			if (includeInheritedAttributes && myEntity != null) {
 				String name = getName();
 				Iterator childrenEntitiesIter = myEntity.getChildrenEntities().iterator();
 				while (childrenEntitiesIter.hasNext()) {
 					EOEntity childEntity = (EOEntity) childrenEntitiesIter.next();
 					EOAttribute childAttribute = childEntity.getAttributeNamed(name);
 					if (childAttribute != null) {
-						referencingRelationships.addAll(childAttribute.getReferencingRelationships(_includeInheritedAttributes));
+						referencingRelationships.addAll(childAttribute.getReferencingRelationships(includeInheritedAttributes, referencingRelationshipsCache));
 					}
 				}
 			}
@@ -778,7 +774,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		clearCachedPrototype(prototypeName, _failures, false, true);
 	}
 
-	public void verify(Set<EOModelVerificationFailure> _failures) {
+	public void verify(Set<EOModelVerificationFailure> _failures, VerificationContext verificationContext) {
 		String name = getName();
 		if (name == null || name.trim().length() == 0) {
 			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " has an empty name.", false));
@@ -820,7 +816,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 				
 				Boolean classProperty = isClassProperty();
 				if (classProperty != null && classProperty.booleanValue()) {
-					List<EORelationship> referencingRelationships = getReferencingRelationships(true);
+					Set<EORelationship> referencingRelationships = getReferencingRelationships(true, verificationContext.getReferencingRelationshipsCache());
 					for (EORelationship relationship : referencingRelationships) {
 						boolean foreignKey = false;
 						if (relationship.isToOne() != null && relationship.isToOne().booleanValue()) {
