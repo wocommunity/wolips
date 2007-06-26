@@ -100,7 +100,7 @@ public class PackageExplorerDoubleClickHandler implements IPageListener, IPartLi
 	}
 
 	public void windowClosed(IWorkbenchWindow window) {
-		// do nothing
+		window.removePageListener(this);
 	}
 
 	public void windowDeactivated(IWorkbenchWindow window) {
@@ -108,10 +108,11 @@ public class PackageExplorerDoubleClickHandler implements IPageListener, IPartLi
 	}
 
 	public void windowOpened(IWorkbenchWindow window) {
+		window.addPageListener(this);
 		IWorkbenchPage[] pages = window.getPages();
 		for (int i = 0; i < pages.length; i++) {
 			IWorkbenchPage page = pages[i];
-			findAndAttachToPackageExplorerInPage(page);
+			pageOpened(page);
 		}
 	}
 
@@ -122,11 +123,11 @@ public class PackageExplorerDoubleClickHandler implements IPageListener, IPartLi
 
 	public void pageClosed(IWorkbenchPage _page) {
 		_page.removePartListener(this);
-		// do nothing
 	}
 
 	public void pageOpened(IWorkbenchPage _page) {
-		// do nothing
+		_page.addPartListener(this);
+		findAndAttachToPackageExplorerInPage(_page);
 	}
 
 	public void partActivated(IWorkbenchPartReference _partRef) {
