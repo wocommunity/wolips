@@ -85,7 +85,7 @@ public class TPTPWOLocalJavaApplicationTabGroup extends AbstractLaunchConfigurat
 		tabs.add(new CommonWOArgumentsTab());
 		tabs.add(new LogTab());
 		tabs.add(new JavaClasspathTab());
-		tabs.add(new ProfileTab(false, true));
+		tabs.add(new ProfileTab(true));
 		tabs.add(new SourceLookupTab());
 		tabs.add(new ProfileEnvironmentTab());
 		tabs.add(new CommonTab());
