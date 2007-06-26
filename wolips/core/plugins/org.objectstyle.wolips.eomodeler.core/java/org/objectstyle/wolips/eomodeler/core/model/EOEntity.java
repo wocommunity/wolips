@@ -1749,59 +1749,59 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		}
 	}
 
-	public void verify(Set<EOModelVerificationFailure> _failures) {
+	public void verify(Set<EOModelVerificationFailure> failures, VerificationContext verificationContext) {
 		String name = getName();
 		if (name == null || name.trim().length() == 0) {
-			_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + " has an empty name.", false));
+			failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + " has an empty name.", false));
 		} else {
 			if (name.indexOf(' ') != -1) {
-				_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + "'s name has a space in it.", false));
+				failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + "'s name has a space in it.", false));
 			}
 			if (!StringUtils.isUppercaseFirstLetter(myName)) {
-				_failures.add(new EOModelVerificationFailure(myModel, "Entity names should be capitalized, but " + getFullyQualifiedName() + " is not.", true));
+				failures.add(new EOModelVerificationFailure(myModel, "Entity names should be capitalized, but " + getFullyQualifiedName() + " is not.", true));
 			}
 		}
 
 		for (EOAttribute attribute : myAttributes) {
-			attribute.verify(_failures);
+			attribute.verify(failures, verificationContext);
 		}
 
 		for (EORelationship relationship : myRelationships) {
-			relationship.verify(_failures);
+			relationship.verify(failures);
 		}
 
 		for (EOFetchSpecification fetchSpec : myFetchSpecs) {
-			fetchSpec.verify(_failures);
+			fetchSpec.verify(failures);
 		}
 
 		for (EOEntityIndex entityIndex : myEntityIndexes) {
-			entityIndex.verify(_failures);
+			entityIndex.verify(failures);
 		}
 
 		if (!isPrototype()) {
 			String externalName = getExternalName();
 			if (externalName == null || externalName.trim().length() == 0) {
 				if (!BooleanUtils.isTrue(isAbstractEntity())) {
-					_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + " has an empty table name.", false));
+					failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + " has an empty table name.", false));
 				}
 			} else if (externalName.indexOf(' ') != -1) {
-				_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + "'s table name '" + externalName + "' has a space in it.", false));
+				failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + "'s table name '" + externalName + "' has a space in it.", false));
 			}
 		}
 
 		EOEntity parent = getParent();
 		if (parent != null && !BooleanUtils.isTrue(parent.isAbstractEntity()) && getRestrictingQualifier() == null && ComparisonUtils.equals(parent.getExternalName(), getExternalName())) {
-			_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + " is a subclass of " + getParent().getName() + " but does not have a restricting qualifier.", false));
+			failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + " is a subclass of " + getParent().getName() + " but does not have a restricting qualifier.", false));
 		}
 		try {
-			inheritParentAttributesAndRelationships(_failures, false);
+			inheritParentAttributesAndRelationships(failures, false);
 		} catch (DuplicateNameException e) {
-			_failures.add(new EOModelVerificationFailure(myModel, "Failed to fix inherited attributes and relationships for " + getFullyQualifiedName() + ".", true));
+			failures.add(new EOModelVerificationFailure(myModel, "Failed to fix inherited attributes and relationships for " + getFullyQualifiedName() + ".", true));
 		}
 
 		Set<EOAttribute> primaryKeyAttributes = getPrimaryKeyAttributes();
 		if (primaryKeyAttributes.isEmpty()) {
-			_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + " does not have a primary key.", false));
+			failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + " does not have a primary key.", false));
 		}
 	}
 

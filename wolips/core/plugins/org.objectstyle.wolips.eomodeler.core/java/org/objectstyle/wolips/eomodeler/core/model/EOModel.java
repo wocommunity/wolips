@@ -56,13 +56,11 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.URLUtils;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
@@ -374,6 +372,28 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		defaultDatabaseConfig.setPrototype(_getPreferredPrototypeEntity(adaptorName, _connectionDictionary));
 		defaultDatabaseConfig._setModel(this);
 		return defaultDatabaseConfig;
+	}
+
+	public Map<EOAttribute, Set<EORelationship>> _createReferencingRelationshipsCache() {
+		Map<EOAttribute, Set<EORelationship>> cache = new HashMap<EOAttribute, Set<EORelationship>>();
+		_createReferencingRelationshipsCache(cache);
+		return cache;
+	}
+	
+	public void _createReferencingRelationshipsCache(Map<EOAttribute, Set<EORelationship>> cache) {
+		for (EOEntity entity : getEntities()) {
+			for (EORelationship relationship : entity.getRelationships()) {
+				Set<EOAttribute> relatedAttributes = relationship.getRelatedAttributes();
+				for (EOAttribute attribute : relatedAttributes) {
+					Set<EORelationship> relatedRelationships = cache.get(attribute);
+					if (relatedRelationships == null) {
+						relatedRelationships = new HashSet<EORelationship>();
+						cache.put(attribute, relatedRelationships);
+					}
+					relatedRelationships.add(relationship);
+				}
+			}
+		}
 	}
 
 	public Set<EODatabaseConfig> getDatabaseConfigs() {
@@ -922,10 +942,22 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	}
 
 	public void verify(Set<EOModelVerificationFailure> _failures) {
+		VerificationContext verificationContext;
+		EOModelGroup modelGroup = getModelGroup();
+		if (modelGroup == null) {
+			verificationContext = new VerificationContext(_createReferencingRelationshipsCache());
+		}
+		else {
+			verificationContext = new VerificationContext(modelGroup._createReferencingRelationshipsCache());
+		}
+		verify(_failures, verificationContext);
+	}
+
+	public void verify(Set<EOModelVerificationFailure> _failures, VerificationContext verificationContext) {
 		// TODO
 
 		for (EOEntity entity : myEntities) {
-			entity.verify(_failures);
+			entity.verify(_failures, verificationContext);
 		}
 	}
 
@@ -1103,30 +1135,32 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	/** End Prototypes * */
 
 	/*
-	public static void main(String[] args) throws IOException, EOModelException {
-		Set<EOModelVerificationFailure> failures = new LinkedHashSet<EOModelVerificationFailure>();
-
-		EOModelGroup modelGroup = new EOModelGroup();
-		NullProgressMonitor progressMonitor = new NullProgressMonitor();
-		modelGroup.loadModelsFromFolder(new File("/Library/Frameworks/ERPrototypes.framework/Resources").toURL(), failures, progressMonitor);
-		modelGroup.loadModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTask").toURL(), failures, progressMonitor);
-		modelGroup.loadModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTAccounting").toURL(), failures, progressMonitor);
-		modelGroup.loadModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTCMS").toURL(), failures, progressMonitor);
-		modelGroup.loadModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTWOExtensions").toURL(), failures, progressMonitor);
-
-		modelGroup.resolve(failures);
-		modelGroup.verify(failures);
-		Iterator failuresIter = failures.iterator();
-		while (failuresIter.hasNext()) {
-			EOModelVerificationFailure failure = (EOModelVerificationFailure) failuresIter.next();
-			System.out.println("EOModel.main: " + failure);
-		}
-
-		File outputPath = new File("/tmp");
-		System.out.println("EOModel.main: Saving model to " + outputPath + " ...");
-		EOModel mdtaskModel = modelGroup.getModelNamed("MDTask");
-		mdtaskModel.saveToFolder(outputPath);
-		System.out.println("EOModel.main: Done.");
-	}
-	*/
+	 * public static void main(String[] args) throws IOException,
+	 * EOModelException { Set<EOModelVerificationFailure> failures = new
+	 * LinkedHashSet<EOModelVerificationFailure>();
+	 * 
+	 * EOModelGroup modelGroup = new EOModelGroup(); NullProgressMonitor
+	 * progressMonitor = new NullProgressMonitor();
+	 * modelGroup.loadModelsFromFolder(new
+	 * File("/Library/Frameworks/ERPrototypes.framework/Resources").toURL(),
+	 * failures, progressMonitor); modelGroup.loadModelsFromFolder(new
+	 * File("/Users/mschrag/Documents/workspace/MDTask").toURL(), failures,
+	 * progressMonitor); modelGroup.loadModelsFromFolder(new
+	 * File("/Users/mschrag/Documents/workspace/MDTAccounting").toURL(),
+	 * failures, progressMonitor); modelGroup.loadModelsFromFolder(new
+	 * File("/Users/mschrag/Documents/workspace/MDTCMS").toURL(), failures,
+	 * progressMonitor); modelGroup.loadModelsFromFolder(new
+	 * File("/Users/mschrag/Documents/workspace/MDTWOExtensions").toURL(),
+	 * failures, progressMonitor);
+	 * 
+	 * modelGroup.resolve(failures); modelGroup.verify(failures); Iterator
+	 * failuresIter = failures.iterator(); while (failuresIter.hasNext()) {
+	 * EOModelVerificationFailure failure = (EOModelVerificationFailure)
+	 * failuresIter.next(); System.out.println("EOModel.main: " + failure); }
+	 * 
+	 * File outputPath = new File("/tmp"); System.out.println("EOModel.main:
+	 * Saving model to " + outputPath + " ..."); EOModel mdtaskModel =
+	 * modelGroup.getModelNamed("MDTask"); mdtaskModel.saveToFolder(outputPath);
+	 * System.out.println("EOModel.main: Done."); }
+	 */
 }
