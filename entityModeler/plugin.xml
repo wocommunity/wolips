@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         id="EntityModeler"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="entitymodeler.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         id="entityModeler.eomodelGroupFactory"
+         name="Entity Modeler EOModelGroup Factories"
+         point="org.objectstyle.wolips.eomodeler.eomodelGroupFactory">
+      <modelGroupFactory
+            class="entitymodeler.model.SimpleManifestEOModelGroupFactory"
+            id="entitymodeler.SimpleManifestEOModelGroupFactory"
+            name="Simple Manifest EOModelGroup Factory"/>
+   </extension>
+   <extension
+         id="entityModeler.eoclassLoaderFactory"
+         name="Entity Modeler EOClassLoader Factory"
+         point="org.objectstyle.wolips.eomodeler.eoclassLoaderFactory">
+      <eoclassLoaderFactory
+            class="entitymodeler.model.SimpleEOClassLoaderFactory"
+            id="entitymodeler.SimpleEOClassLoaderFactory"
+            name="Simple EOClassLoader Factory"/>
+   </extension>
+   <extension
+         id="EntityModeler"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="EntityModeler.EntityModeler"
+            name="Entity Modeler">
+         <property
+               name="startupForegroundColor"
+               value="000000"/>
+         <property
+               name="startupMessageRect"
+               value="0,0,0,0"/>
+         <property
+               name="startupProgressRect"
+               value="0,0,0,0"/>
+         <property
+               name="aboutImage"
+               value="icons/EntityModelerSplash.jpg"/>
+         <property
+               name="windowImages"
+               value="icons/EntityModeler.png,icons/EntityModeler.png,icons/EntityModeler.png,icons/EntityModeler.png,icons/EntityModeler.png"/>
+      </product>
+   </extension>
+
+</plugin>

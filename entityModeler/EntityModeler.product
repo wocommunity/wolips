@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.1"?>
+
+<product name="Entity Modeler" id="EntityModeler.EntityModeler" application="EntityModeler.EntityModeler" useFeatures="false">
+
+   <aboutInfo>
+      <image path="icons/EntityModelerSplash.jpg"/>
+   </aboutInfo>
+
+   <configIni use="default"/>
+
+   <launcherArgs>
+      <programArgs>-data @noDefault</programArgs>
+      <programArgsMac>-data @noDefault</programArgsMac>
+   </launcherArgs>
+
+   <windowImages i16="icons/EntityModeler.png" i32="icons/EntityModeler.png" i48="icons/EntityModeler.png" i64="icons/EntityModeler.png" i128="icons/EntityModeler.png"/>
+
+   <splash
+      startupProgressRect="0,0,0,0"
+      startupMessageRect="0,0,0,0"
+      startupForegroundColor="000000" />
+   <launcher name="Entity Modeler">
+      <macosx icon="/EntityModeler/icons/EntityModeler.icns"/>
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <plugins>
+      <plugin id="EntityModeler"/>
+      <plugin id="com.ibm.icu"/>
+      <plugin id="org.eclipse.ant.core"/>
+      <plugin id="org.eclipse.core.commands"/>
+      <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.expressions"/>
+      <plugin id="org.eclipse.core.filesystem"/>
+      <plugin id="org.eclipse.core.filesystem.macosx" fragment="true"/>
+      <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.resources"/>
+      <plugin id="org.eclipse.core.resources.compatibility" fragment="true"/>
+      <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.core.runtime.compatibility"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.auth"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
+      <plugin id="org.eclipse.core.variables"/>
+      <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.jface"/>
+      <plugin id="org.eclipse.jface.databinding"/>
+      <plugin id="org.eclipse.jface.text"/>
+      <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.eclipse.swt"/>
+      <plugin id="org.eclipse.swt.carbon.macosx" fragment="true"/>
+      <plugin id="org.eclipse.text"/>
+      <plugin id="org.eclipse.ui"/>
+      <plugin id="org.eclipse.ui.carbon" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms"/>
+      <plugin id="org.eclipse.ui.ide"/>
+      <plugin id="org.eclipse.ui.views"/>
+      <plugin id="org.eclipse.ui.views.properties.tabbed"/>
+      <plugin id="org.eclipse.ui.workbench"/>
+      <plugin id="org.eclipse.ui.workbench.texteditor"/>
+      <plugin id="org.eclipse.update.configurator"/>
+      <plugin id="org.eclipse.update.core"/>
+      <plugin id="org.eclipse.update.ui"/>
+      <plugin id="org.objectstyle.wolips.baseforplugins"/>
+      <plugin id="org.objectstyle.wolips.baseforuiplugins"/>
+      <plugin id="org.objectstyle.wolips.eomodeler"/>
+      <plugin id="org.objectstyle.wolips.eomodeler.core"/>
+      <plugin id="org.objectstyle.wolips.preferences"/>
+      <plugin id="org.objectstyle.wolips.thirdparty.cayenne"/>
+      <plugin id="org.objectstyle.wolips.thirdparty.commonscollections"/>
+      <plugin id="org.objectstyle.wolips.thirdparty.log4j"/>
+      <plugin id="org.objectstyle.wolips.thirdparty.velocity"/>
+   </plugins>
+
+</product>

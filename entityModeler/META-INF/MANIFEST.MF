@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: EntityModeler Plug-in
+Bundle-SymbolicName: EntityModeler; singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: entitymodeler.Activator
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.ui.ide,
+ org.objectstyle.wolips.eomodeler,
+ org.objectstyle.wolips.eomodeler.core,
+ org.eclipse.ui.views.properties.tabbed
+Eclipse-LazyStart: true
+Export-Package: entitymodeler
