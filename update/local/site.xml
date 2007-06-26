@@ -9,11 +9,11 @@
    <feature url="features/org.objectstyle.wolips.tptp.feature_1.0.6.jar" id="org.objectstyle.wolips.tptp.feature" version="1.0.6">
       <category name="Profiling Support"/>
    </feature>
- <feature url="features/org.objectstyle.wolips.goodies.mac.feature_1.0.6.jar" id="org.objectstyle.wolips.goodies.mac.feature" version="1.0.6" os="macosx"> 
-      <category name="Goodies Mac"/>
+   <feature url="features/org.objectstyle.wolips.goodies.mac.feature_1.0.6.jar" id="org.objectstyle.wolips.goodies.mac.feature" version="1.0.6" os="macosx">
+      <category name="Standard Install"/>
    </feature>
- <feature url="features/org.objectstyle.wolips.goodies.win.feature_1.0.6.jar" id="org.objectstyle.wolips.goodies.win.feature" version="1.0.6" os="win32"> 
-      <category name="Goodies Win"/>
+   <feature url="features/org.objectstyle.wolips.goodies.win.feature_1.0.6.jar" id="org.objectstyle.wolips.goodies.win.feature" version="1.0.6" os="win32">
+      <category name="Standard Install"/>
    </feature>
    <feature url="features/org.objectstyle.wolips.maven_1.0.6.jar" id="org.objectstyle.wolips.maven" version="1.0.6">
       <category name="Maven Support"/>
@@ -40,16 +40,6 @@
    <category-def name="Maven Support" label="Maven Support">
       <description>
          maven
-      </description>
-   </category-def>
-   <category-def name="Goodies Mac" label="Goodies Mac">
-      <description>
-         Goodies for the Mac.
-      </description>
-   </category-def>
-   <category-def name="Goodies Win" label="Goodies Win">
-      <description>
-         Goodies for the Win.
       </description>
    </category-def>
 </site>
