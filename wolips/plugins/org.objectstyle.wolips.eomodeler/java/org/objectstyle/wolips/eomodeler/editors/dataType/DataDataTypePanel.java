@@ -49,8 +49,9 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.dataType;
 
-import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
-import org.eclipse.jface.internal.databinding.provisional.description.Property;
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -59,7 +60,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.AbstractEOArgument;
-import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
 public class DataDataTypePanel extends Composite implements IDataTypePanel {
 	private Text myExternalWidthText;
@@ -81,8 +81,8 @@ public class DataDataTypePanel extends Composite implements IDataTypePanel {
 			myBindingContext.dispose();
 		}
 		if (_argument != null) {
-			myBindingContext = BindingFactory.createContext();
-			myBindingContext.bind(myExternalWidthText, new Property(_argument, AbstractEOArgument.WIDTH), null);
+			myBindingContext = new DataBindingContext();
+			myBindingContext.bindValue(SWTObservables.observeText(myExternalWidthText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.WIDTH), null, null);
 		}
 	}
 

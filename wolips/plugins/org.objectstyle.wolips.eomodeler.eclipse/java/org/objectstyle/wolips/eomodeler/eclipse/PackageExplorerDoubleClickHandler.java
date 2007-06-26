@@ -191,7 +191,7 @@ public class PackageExplorerDoubleClickHandler implements IPageListener, IPartLi
 				Object selectedObj = selectedObjectsIter.next();
 				if (selectedObj instanceof IFolder) {
 					IFolder selectedFolder = (IFolder) selectedObj;
-					if (!OpenEntityModelerAction.openResourceIfPossible(selectedFolder)) {
+					if (!OpenEntityModelerAction.openResourceIfPossible(null, selectedFolder)) {
 						OpenWOAction.openResourceIfPossible(selectedFolder);
 					}
 				}

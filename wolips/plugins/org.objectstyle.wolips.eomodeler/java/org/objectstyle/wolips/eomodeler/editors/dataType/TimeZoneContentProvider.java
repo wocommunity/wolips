@@ -73,7 +73,7 @@ public class TimeZoneContentProvider implements IStructuredContentProvider {
 	}
 
 	static {
-		List timeZoneList = new LinkedList();
+		List<String> timeZoneList = new LinkedList<String>();
 		timeZoneList.add("");
 		timeZoneList.add("Africa/Abidjan");
 		timeZoneList.add("Africa/Accra");
@@ -610,6 +610,6 @@ public class TimeZoneContentProvider implements IStructuredContentProvider {
 		timeZoneList.add("WET");
 		timeZoneList.add("Zulu");
 		timeZoneList.add("posixrules");
-		TimeZoneContentProvider.TIME_ZONES = (String[]) timeZoneList.toArray(new String[timeZoneList.size()]);
+		TimeZoneContentProvider.TIME_ZONES = timeZoneList.toArray(new String[timeZoneList.size()]);
 	}
 }

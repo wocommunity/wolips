@@ -52,7 +52,7 @@ package org.objectstyle.wolips.eomodeler.editors.entity;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
+import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ISelection;
@@ -78,7 +78,6 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.DuplicateFetchSpecNameException;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOFetchSpecification;
-import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyCellModifier;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
@@ -155,7 +154,7 @@ public class EOEntitySharedObjectsEditorSection extends AbstractPropertySection 
 		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
 		myEntity = (EOEntity) selectedObject;
 		if (myEntity != null) {
-			myBindingContext = BindingFactory.createContext();
+			myBindingContext = new DataBindingContext();
 			myEntity.addPropertyChangeListener(EOEntity.FETCH_SPECIFICATION, myFetchSpecListener);
 			myEntity.addPropertyChangeListener(EOEntity.FETCH_SPECIFICATIONS, myFetchSpecListener);
 			myFetchSpecsViewer.setInput(myEntity);

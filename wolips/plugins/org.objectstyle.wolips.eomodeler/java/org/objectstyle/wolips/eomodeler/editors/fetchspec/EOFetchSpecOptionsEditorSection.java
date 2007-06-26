@@ -49,10 +49,9 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.fetchspec;
 
-import org.eclipse.jface.internal.databinding.provisional.BindSpec;
-import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
-import org.eclipse.jface.internal.databinding.provisional.description.Property;
-import org.eclipse.jface.internal.databinding.provisional.validation.RegexStringValidator;
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -69,34 +68,33 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOFetchSpecification;
-import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
 public class EOFetchSpecOptionsEditorSection extends AbstractPropertySection {
-	private EOFetchSpecification myFetchSpecification;
+	private EOFetchSpecification _fetchSpecification;
 
-	private Text myFetchLimitText;
+	private Text _fetchLimitText;
 
-	private Button myPromptsAfterFetchLimitButton;
+	private Button _promptsAfterFetchLimitButton;
 
-	private Button myDeepButton;
+	private Button _deepButton;
 
-	private Button myUsesDistinctButton;
+	private Button _usesDistinctButton;
 
-	private Button myLockObjectsButton;
+	private Button _lockObjectsButton;
 
-	private Button myRefreshesRefetchedObjectsButton;
+	private Button _refreshesRefetchedObjectsButton;
 
-	private Button myRequiresAllQualifierBindingVariablesButton;
+	private Button _requiresAllQualifierBindingVariablesButton;
 
-	private DataBindingContext myBindingContext;
+	private DataBindingContext _bindingContext;
 
 	public EOFetchSpecOptionsEditorSection() {
 		// DO NOTHING
 	}
 
-	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
-		super.createControls(_parent, _tabbedPropertySheetPage);
-		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
+	public void createControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
+		super.createControls(parent, tabbedPropertySheetPage);
+		Composite form = getWidgetFactory().createFlatFormComposite(parent);
 		FormLayout formLayout = new FormLayout();
 		form.setLayout(formLayout);
 
@@ -112,51 +110,53 @@ public class EOFetchSpecOptionsEditorSection extends AbstractPropertySection {
 		topForm.setLayout(topFormLayout);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.FETCH_LIMIT), SWT.NONE);
-		myFetchLimitText = new Text(topForm, SWT.BORDER);
+		_fetchLimitText = new Text(topForm, SWT.BORDER);
 		GridData fetchLimitLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-		myFetchLimitText.setLayoutData(fetchLimitLayoutData);
+		_fetchLimitText.setLayoutData(fetchLimitLayoutData);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.PROMPTS_AFTER_FETCH_LIMIT), SWT.NONE);
-		myPromptsAfterFetchLimitButton = new Button(topForm, SWT.CHECK);
+		_promptsAfterFetchLimitButton = new Button(topForm, SWT.CHECK);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.DEEP), SWT.NONE);
-		myDeepButton = new Button(topForm, SWT.CHECK);
+		_deepButton = new Button(topForm, SWT.CHECK);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.USES_DISTINCT), SWT.NONE);
-		myUsesDistinctButton = new Button(topForm, SWT.CHECK);
+		_usesDistinctButton = new Button(topForm, SWT.CHECK);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.LOCKS_OBJECTS), SWT.NONE);
-		myLockObjectsButton = new Button(topForm, SWT.CHECK);
+		_lockObjectsButton = new Button(topForm, SWT.CHECK);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.REFRESHES_REFETCHED_OBJECTS), SWT.NONE);
-		myRefreshesRefetchedObjectsButton = new Button(topForm, SWT.CHECK);
+		_refreshesRefetchedObjectsButton = new Button(topForm, SWT.CHECK);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.REQUIRES_ALL_QUALIFIER_BINDING_VARIABLES), SWT.NONE);
-		myRequiresAllQualifierBindingVariablesButton = new Button(topForm, SWT.CHECK);
+		_requiresAllQualifierBindingVariablesButton = new Button(topForm, SWT.CHECK);
 
 	}
 
-	public void setInput(IWorkbenchPart _part, ISelection _selection) {
-		super.setInput(_part, _selection);
+	public void setInput(IWorkbenchPart part, ISelection selection) {
+		super.setInput(part, selection);
 		disposeBindings();
 
-		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-		myFetchSpecification = (EOFetchSpecification) selectedObject;
-		if (myFetchSpecification != null) {
-			myBindingContext = BindingFactory.createContext();
-			myBindingContext.bind(myFetchLimitText, new Property(myFetchSpecification, EOFetchSpecification.FETCH_LIMIT), new BindSpec(null, null, new RegexStringValidator("^[0-9]*$", "^[0-9]+$", "Please enter a number"), null));
-			myBindingContext.bind(myPromptsAfterFetchLimitButton, new Property(myFetchSpecification, EOFetchSpecification.PROMPTS_AFTER_FETCH_LIMIT), null);
-			myBindingContext.bind(myDeepButton, new Property(myFetchSpecification, EOFetchSpecification.DEEP), null);
-			myBindingContext.bind(myUsesDistinctButton, new Property(myFetchSpecification, EOFetchSpecification.USES_DISTINCT), null);
-			myBindingContext.bind(myLockObjectsButton, new Property(myFetchSpecification, EOFetchSpecification.LOCKS_OBJECTS), null);
-			myBindingContext.bind(myRefreshesRefetchedObjectsButton, new Property(myFetchSpecification, EOFetchSpecification.REFRESHES_REFETCHED_OBJECTS), null);
-			myBindingContext.bind(myRequiresAllQualifierBindingVariablesButton, new Property(myFetchSpecification, EOFetchSpecification.REQUIRES_ALL_QUALIFIER_BINDING_VARIABLES), null);
+		Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
+		_fetchSpecification = (EOFetchSpecification) selectedObject;
+		if (_fetchSpecification != null) {
+			_bindingContext = new DataBindingContext();
+			_bindingContext.bindValue(SWTObservables.observeText(_fetchLimitText, SWT.Modify), BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.FETCH_LIMIT), null, null);
+			// new BindSpec(null, null, new RegexStringValidator("^[0-9]*$",
+			// "^[0-9]+$", "Please enter a number"), null));
+			_bindingContext.bindValue(SWTObservables.observeSelection(_promptsAfterFetchLimitButton), BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.PROMPTS_AFTER_FETCH_LIMIT), null, null);
+			_bindingContext.bindValue(SWTObservables.observeSelection(_deepButton), BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.DEEP), null, null);
+			_bindingContext.bindValue(SWTObservables.observeSelection(_usesDistinctButton), BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.USES_DISTINCT), null, null);
+			_bindingContext.bindValue(SWTObservables.observeSelection(_lockObjectsButton), BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.LOCKS_OBJECTS), null, null);
+			_bindingContext.bindValue(SWTObservables.observeSelection(_refreshesRefetchedObjectsButton), BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.REFRESHES_REFETCHED_OBJECTS), null, null);
+			_bindingContext.bindValue(SWTObservables.observeSelection(_requiresAllQualifierBindingVariablesButton), BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.REQUIRES_ALL_QUALIFIER_BINDING_VARIABLES), null, null);
 		}
 	}
 
 	protected void disposeBindings() {
-		if (myBindingContext != null) {
-			myBindingContext.dispose();
+		if (_bindingContext != null) {
+			_bindingContext.dispose();
 		}
 	}
 

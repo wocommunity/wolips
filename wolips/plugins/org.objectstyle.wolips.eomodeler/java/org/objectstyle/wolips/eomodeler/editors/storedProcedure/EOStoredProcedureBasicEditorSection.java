@@ -49,8 +49,9 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.storedProcedure;
 
-import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
-import org.eclipse.jface.internal.databinding.provisional.description.Property;
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -68,24 +69,23 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
-import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
 public class EOStoredProcedureBasicEditorSection extends AbstractPropertySection implements ISelectionChangedListener {
-	private EOStoredProcedure myStoredProcedure;
+	private EOStoredProcedure _storedProcedure;
 
-	private Text myNameText;
+	private Text _nameText;
 
-	private Text myExternalNameText;
+	private Text _externalNameText;
 
-	private DataBindingContext myBindingContext;
+	private DataBindingContext _bindingContext;
 
 	public EOStoredProcedureBasicEditorSection() {
 		// DO NOTHING
 	}
 
-	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
-		super.createControls(_parent, _tabbedPropertySheetPage);
-		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
+	public void createControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
+		super.createControls(parent, tabbedPropertySheetPage);
+		Composite form = getWidgetFactory().createFlatFormComposite(parent);
 		FormLayout formLayout = new FormLayout();
 		form.setLayout(formLayout);
 
@@ -101,32 +101,32 @@ public class EOStoredProcedureBasicEditorSection extends AbstractPropertySection
 		topForm.setLayout(topFormLayout);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOStoredProcedure." + EOStoredProcedure.NAME), SWT.NONE);
-		myNameText = new Text(topForm, SWT.BORDER);
+		_nameText = new Text(topForm, SWT.BORDER);
 		GridData nameLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-		myNameText.setLayoutData(nameLayoutData);
+		_nameText.setLayoutData(nameLayoutData);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOStoredProcedure." + EOStoredProcedure.EXTERNAL_NAME), SWT.NONE);
-		myExternalNameText = new Text(topForm, SWT.BORDER);
+		_externalNameText = new Text(topForm, SWT.BORDER);
 		GridData externalLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-		myExternalNameText.setLayoutData(externalLayoutData);
+		_externalNameText.setLayoutData(externalLayoutData);
 	}
 
-	public void setInput(IWorkbenchPart _part, ISelection _selection) {
-		super.setInput(_part, _selection);
+	public void setInput(IWorkbenchPart part, ISelection selection) {
+		super.setInput(part, selection);
 		disposeBindings();
 
-		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-		myStoredProcedure = (EOStoredProcedure) selectedObject;
-		if (myStoredProcedure != null) {
-			myBindingContext = BindingFactory.createContext();
-			myBindingContext.bind(myNameText, new Property(myStoredProcedure, EOStoredProcedure.NAME), null);
-			myBindingContext.bind(myExternalNameText, new Property(myStoredProcedure, EOStoredProcedure.EXTERNAL_NAME), null);
+		Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
+		_storedProcedure = (EOStoredProcedure) selectedObject;
+		if (_storedProcedure != null) {
+			_bindingContext = new DataBindingContext();
+			_bindingContext.bindValue(SWTObservables.observeText(_nameText, SWT.Modify), BeansObservables.observeValue(_storedProcedure, EOStoredProcedure.NAME), null, null);
+			_bindingContext.bindValue(SWTObservables.observeText(_externalNameText, SWT.Modify), BeansObservables.observeValue(_storedProcedure, EOStoredProcedure.EXTERNAL_NAME), null, null);
 		}
 	}
 
 	protected void disposeBindings() {
-		if (myBindingContext != null) {
-			myBindingContext.dispose();
+		if (_bindingContext != null) {
+			_bindingContext.dispose();
 		}
 	}
 
@@ -135,7 +135,7 @@ public class EOStoredProcedureBasicEditorSection extends AbstractPropertySection
 		disposeBindings();
 	}
 
-	public void selectionChanged(SelectionChangedEvent _event) {
+	public void selectionChanged(SelectionChangedEvent event) {
 		// DO NOTHING
 	}
 }

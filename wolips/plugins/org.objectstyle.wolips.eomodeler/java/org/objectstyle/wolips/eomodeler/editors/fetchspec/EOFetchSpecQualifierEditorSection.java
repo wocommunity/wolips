@@ -49,8 +49,9 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.fetchspec;
 
-import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
-import org.eclipse.jface.internal.databinding.provisional.description.Property;
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -74,28 +75,27 @@ import org.objectstyle.wolips.eomodeler.core.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.core.model.IEOAttribute;
 import org.objectstyle.wolips.eomodeler.outline.EOEntityTreeViewUpdater;
 import org.objectstyle.wolips.eomodeler.outline.EOModelOutlineContentProvider;
-import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
 public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection implements ISelectionChangedListener {
-	private EOFetchSpecification myFetchSpecification;
+	private EOFetchSpecification _fetchSpecification;
 
-	private Text myNameText;
+	private Text _nameText;
 
-	private Text myQualifierText;
+	private Text _qualifierText;
 
-	private TreeViewer myModelTreeViewer;
+	private TreeViewer _modelTreeViewer;
 
-	private EOEntityTreeViewUpdater myEntityTreeViewUpdater;
+	private EOEntityTreeViewUpdater _entityTreeViewUpdater;
 
-	private DataBindingContext myBindingContext;
+	private DataBindingContext _bindingContext;
 
 	public EOFetchSpecQualifierEditorSection() {
 		// DO NOTHING
 	}
 
-	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
-		super.createControls(_parent, _tabbedPropertySheetPage);
-		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
+	public void createControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
+		super.createControls(parent, tabbedPropertySheetPage);
+		Composite form = getWidgetFactory().createFlatFormComposite(parent);
 		FormLayout formLayout = new FormLayout();
 		form.setLayout(formLayout);
 
@@ -111,44 +111,44 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
 		topForm.setLayout(topFormLayout);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.NAME), SWT.NONE);
-		myNameText = new Text(topForm, SWT.BORDER);
+		_nameText = new Text(topForm, SWT.BORDER);
 		GridData nameLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-		myNameText.setLayoutData(nameLayoutData);
+		_nameText.setLayoutData(nameLayoutData);
 
-		myModelTreeViewer = new TreeViewer(topForm);
+		_modelTreeViewer = new TreeViewer(topForm);
 		GridData modelTreeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		modelTreeLayoutData.horizontalSpan = 2;
 		modelTreeLayoutData.heightHint = 100;
-		myModelTreeViewer.getTree().setLayoutData(modelTreeLayoutData);
-		myEntityTreeViewUpdater = new EOEntityTreeViewUpdater(myModelTreeViewer, new EOModelOutlineContentProvider(true, true, true, false, false, false, false));
-		myModelTreeViewer.addSelectionChangedListener(this);
+		_modelTreeViewer.getTree().setLayoutData(modelTreeLayoutData);
+		_entityTreeViewUpdater = new EOEntityTreeViewUpdater(_modelTreeViewer, new EOModelOutlineContentProvider(true, true, true, false, false, false, false));
+		_modelTreeViewer.addSelectionChangedListener(this);
 
-		myQualifierText = getWidgetFactory().createText(topForm, "", SWT.WRAP | SWT.MULTI | SWT.V_SCROLL);
-		myQualifierText.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+		_qualifierText = getWidgetFactory().createText(topForm, "", SWT.WRAP | SWT.MULTI | SWT.V_SCROLL);
+		_qualifierText.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
 
 		GridData qualifierLayoutData = new GridData(GridData.FILL_BOTH);
 		qualifierLayoutData.horizontalSpan = 2;
 		qualifierLayoutData.heightHint = 150;
-		myQualifierText.setLayoutData(qualifierLayoutData);
+		_qualifierText.setLayoutData(qualifierLayoutData);
 	}
 
-	public void setInput(IWorkbenchPart _part, ISelection _selection) {
-		super.setInput(_part, _selection);
+	public void setInput(IWorkbenchPart part, ISelection selection) {
+		super.setInput(part, selection);
 		disposeBindings();
 
-		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-		myFetchSpecification = (EOFetchSpecification) selectedObject;
-		if (myFetchSpecification != null) {
-			myBindingContext = BindingFactory.createContext();
-			myBindingContext.bind(myNameText, new Property(myFetchSpecification, EOFetchSpecification.NAME), null);
-			myBindingContext.bind(myQualifierText, new Property(myFetchSpecification, EOFetchSpecification.QUALIFIER_STRING), null);
-			myEntityTreeViewUpdater.setEntity(myFetchSpecification.getEntity());
+		Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
+		_fetchSpecification = (EOFetchSpecification) selectedObject;
+		if (_fetchSpecification != null) {
+			_bindingContext = new DataBindingContext();
+			_bindingContext.bindValue(SWTObservables.observeText(_nameText, SWT.Modify), BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.NAME), null, null);
+			_bindingContext.bindValue(SWTObservables.observeText(_qualifierText, SWT.Modify), BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.QUALIFIER_STRING), null, null);
+			_entityTreeViewUpdater.setEntity(_fetchSpecification.getEntity());
 		}
 	}
 
 	protected void disposeBindings() {
-		if (myBindingContext != null) {
-			myBindingContext.dispose();
+		if (_bindingContext != null) {
+			_bindingContext.dispose();
 		}
 	}
 
@@ -157,8 +157,8 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
 		disposeBindings();
 	}
 
-	public void selectionChanged(SelectionChangedEvent _event) {
-		IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
+	public void selectionChanged(SelectionChangedEvent event) {
+		IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 		String keyPath;
 		Object selectedObject = selection.getFirstElement();
 		if (selectedObject instanceof IEOAttribute) {
@@ -169,9 +169,9 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
 			keyPath = null;
 		}
 		if (keyPath != null) {
-			String qualifierString = myQualifierText.getText();
+			String qualifierString = _qualifierText.getText();
 			if (qualifierString != null) {
-				int caretPosition = myQualifierText.getCaretPosition();
+				int caretPosition = _qualifierText.getCaretPosition();
 				int startPosition = caretPosition;
 				for (startPosition = caretPosition - 1; startPosition > 0; startPosition--) {
 					char ch = qualifierString.charAt(startPosition);
@@ -187,13 +187,13 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
 						break;
 					}
 				}
-				myQualifierText.setSelection(startPosition, endPosition);
+				_qualifierText.setSelection(startPosition, endPosition);
 				if (startPosition > 0 && qualifierString.charAt(startPosition - 1) != ' ' && qualifierString.charAt(startPosition - 1) != '(') {
 					keyPath = " " + keyPath;
 				}
 			}
-			myQualifierText.insert(keyPath);
-			myQualifierText.setFocus();
+			_qualifierText.insert(keyPath);
+			_qualifierText.setFocus();
 		}
 	}
 }

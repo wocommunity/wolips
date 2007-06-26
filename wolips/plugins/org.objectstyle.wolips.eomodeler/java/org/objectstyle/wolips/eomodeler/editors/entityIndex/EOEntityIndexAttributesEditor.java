@@ -53,8 +53,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
+import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -78,7 +78,6 @@ import org.objectstyle.wolips.eomodeler.core.utils.IPropertyChangeSource;
 import org.objectstyle.wolips.eomodeler.editors.attributes.EOAttributesContentProvider;
 import org.objectstyle.wolips.eomodeler.editors.attributes.EOAttributesLabelProvider;
 import org.objectstyle.wolips.eomodeler.utils.AddRemoveButtonGroup;
-import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 
 public class EOEntityIndexAttributesEditor extends Composite implements IPropertyChangeSource {
@@ -169,7 +168,8 @@ public class EOEntityIndexAttributesEditor extends Composite implements IPropert
 			_entityIndex = entityIndex;
 			if (_entityIndex != null) {
 				_selectedAttribute = null;
-				_dataBindingContext = BindingFactory.createContext();
+				_dataBindingContext = new DataBindingContext();
+				//_dataBindingContext.bindValue(ViewersObservables.observeSingleSelection(_attributesComboViewer), BeansObservables.observeValue(this, "selectedAttribute"), null, null);
 				_selectedAttributeBinding = new ComboViewerBinding(_attributesComboViewer, this, "selectedAttribute", null, null, null);
 
 				updateAttributes();

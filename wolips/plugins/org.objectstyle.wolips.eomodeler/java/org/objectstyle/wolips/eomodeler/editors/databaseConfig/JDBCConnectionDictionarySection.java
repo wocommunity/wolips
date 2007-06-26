@@ -49,8 +49,9 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.databaseConfig;
 
-import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
-import org.eclipse.jface.internal.databinding.provisional.description.Property;
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -59,7 +60,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
-import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
 public class JDBCConnectionDictionarySection extends Composite implements IConnectionDictionarySection {
 	private EODatabaseConfig _databaseConfig;
@@ -107,12 +107,12 @@ public class JDBCConnectionDictionarySection extends Composite implements IConne
 		_databaseConfig = databaseContext;
 
 		if (_databaseConfig != null) {
-			_bindingContext = BindingFactory.createContext();
-			_bindingContext.bind(_usernameText, new Property(_databaseConfig, EODatabaseConfig.USERNAME), null);
-			_bindingContext.bind(_passwordText, new Property(_databaseConfig, EODatabaseConfig.PASSWORD), null);
-			_bindingContext.bind(_urlText, new Property(_databaseConfig, EODatabaseConfig.URL), null);
-			_bindingContext.bind(_driverText, new Property(_databaseConfig, EODatabaseConfig.DRIVER), null);
-			_bindingContext.bind(_pluginText, new Property(_databaseConfig, EODatabaseConfig.PLUGIN), null);
+			_bindingContext = new DataBindingContext();
+			_bindingContext.bindValue(SWTObservables.observeText(_usernameText, SWT.Modify), BeansObservables.observeValue(_databaseConfig, EODatabaseConfig.USERNAME), null, null);
+			_bindingContext.bindValue(SWTObservables.observeText(_passwordText, SWT.Modify), BeansObservables.observeValue(_databaseConfig, EODatabaseConfig.PASSWORD), null, null);
+			_bindingContext.bindValue(SWTObservables.observeText(_urlText, SWT.Modify), BeansObservables.observeValue(_databaseConfig, EODatabaseConfig.URL), null, null);
+			_bindingContext.bindValue(SWTObservables.observeText(_driverText, SWT.Modify), BeansObservables.observeValue(_databaseConfig, EODatabaseConfig.DRIVER), null, null);
+			_bindingContext.bindValue(SWTObservables.observeText(_pluginText, SWT.Modify), BeansObservables.observeValue(_databaseConfig, EODatabaseConfig.PLUGIN), null, null);
 		}
 	}
 
