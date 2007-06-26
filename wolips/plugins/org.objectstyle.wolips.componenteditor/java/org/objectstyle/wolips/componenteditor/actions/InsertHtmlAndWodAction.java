@@ -180,7 +180,7 @@ public abstract class InsertHtmlAndWodAction extends AbstractTemplateAction {
 							boolean selectionStartedInIndent = (indentText.length() >= selectionLineStartOffset);
 	
 							if (selectionStartLine == selectionEndLine) {
-								if (selectionEndOffset == endLineRegion.getOffset()) {
+								if (selectionEndOffset == endLineRegion.getOffset() && selectionEndOffset > 0) {
 									teDoc.replace(selectionEndOffset - 1, 0, endTag);
 								} else {
 									teDoc.replace(selectionEndOffset, 0, endTag);
@@ -236,13 +236,15 @@ public abstract class InsertHtmlAndWodAction extends AbstractTemplateAction {
 					if (!ics.isInline()) {
 						int firstBindingValueOffset = -1;
 
+						int offset = weDoc.getLength();
 						StringWriter wodElementWriter = new StringWriter();
-						wodElementWriter.write("\n\n");
+						if (offset > 0) {
+							wodElementWriter.write("\n");
+						}
 						wodElement.writeWodFormat(wodElementWriter, true);
 						wodElementWriter.flush();
 						String wodElementStr = wodElementWriter.toString();
 
-						int offset = weDoc.getLength();
 						weDoc.replace(offset, 0, wodElementStr);
 
 						if (-1 != firstBindingValueOffset) {
