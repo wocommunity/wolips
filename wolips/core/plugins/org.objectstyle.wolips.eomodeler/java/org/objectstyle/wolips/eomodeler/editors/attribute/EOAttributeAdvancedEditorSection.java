@@ -49,8 +49,9 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.attribute;
 
-import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
-import org.eclipse.jface.internal.databinding.provisional.description.Property;
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -68,7 +69,6 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttributePath;
-import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
 public class EOAttributeAdvancedEditorSection extends AbstractPropertySection {
 	private EOAttribute myAttribute;
@@ -138,13 +138,14 @@ public class EOAttributeAdvancedEditorSection extends AbstractPropertySection {
 		}
 
 		if (myAttribute != null) {
-			myBindingContext = BindingFactory.createContext();
-			myBindingContext.bind(myReadOnlyButton, new Property(myAttribute, EOAttribute.READ_ONLY), null);
-			// myBindingContext.bind(myIndexedButton, new Property(myAttribute,
+			myBindingContext = new DataBindingContext();
+			myBindingContext.bindValue(SWTObservables.observeSelection(myReadOnlyButton), BeansObservables.observeValue(myAttribute, EOAttribute.READ_ONLY), null, null);
+			// myBindingContext.bindValue(myIndexedButton,
+			// BeansObservables.observeValue(myAttribute,
 			// EOAttribute.INDEXED), null);
-			myBindingContext.bind(myClientClassPropertyButton, new Property(myAttribute, EOAttribute.CLIENT_CLASS_PROPERTY), null);
-			myBindingContext.bind(myReadFormatText, new Property(myAttribute, EOAttribute.READ_FORMAT), null);
-			myBindingContext.bind(myWriteFormatText, new Property(myAttribute, EOAttribute.WRITE_FORMAT), null);
+			myBindingContext.bindValue(SWTObservables.observeSelection(myClientClassPropertyButton), BeansObservables.observeValue(myAttribute, EOAttribute.CLIENT_CLASS_PROPERTY), null, null);
+			myBindingContext.bindValue(SWTObservables.observeText(myReadFormatText, SWT.Modify), BeansObservables.observeValue(myAttribute, EOAttribute.READ_FORMAT), null, null);
+			myBindingContext.bindValue(SWTObservables.observeText(myWriteFormatText, SWT.Modify), BeansObservables.observeValue(myAttribute, EOAttribute.WRITE_FORMAT), null, null);
 		}
 	}
 

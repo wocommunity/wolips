@@ -3,8 +3,9 @@ package org.objectstyle.wolips.eomodeler.editors.databaseConfig;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
-import org.eclipse.jface.internal.databinding.provisional.description.Property;
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -27,7 +28,6 @@ import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityLabelProvider;
 import org.objectstyle.wolips.eomodeler.editors.entity.EOPrototypeEntityListContentProvider;
-import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 import org.objectstyle.wolips.eomodeler.utils.StringLabelProvider;
 
@@ -126,7 +126,7 @@ public class DatabaseConfigSection extends AbstractPropertySection {
 		_databaseConfig = (EODatabaseConfig) selectedObject;
 
 		if (_databaseConfig != null) {
-			_bindingContext = BindingFactory.createContext();
+			_bindingContext = new DataBindingContext();
 			addBindings();
 		}
 
@@ -205,7 +205,7 @@ public class DatabaseConfigSection extends AbstractPropertySection {
 	}
 
 	protected void addBindings() {
-		_bindingContext.bind(_nameText, new Property(getDatabaseConfig(), EODatabaseConfig.NAME), null);
+		_bindingContext.bindValue(SWTObservables.observeText(_nameText, SWT.Modify), BeansObservables.observeValue(getDatabaseConfig(), EODatabaseConfig.NAME), null, null);
 		_prototypeComboViewer.setInput(getDatabaseConfig());
 		_prototypeBinding = new ComboViewerBinding(_prototypeComboViewer, getDatabaseConfig(), EODatabaseConfig.PROTOTYPE, null, null, EOPrototypeEntityListContentProvider.BLANK_ENTITY);
 		_adaptorNameComboViewer.setInput(getDatabaseConfig());

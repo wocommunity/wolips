@@ -6,12 +6,13 @@ Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.eomodeler.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui.views.properties.tabbed,
- org.eclipse.jface.databinding,
  org.objectstyle.wolips.preferences,
  org.objectstyle.wolips.baseforuiplugins,
  org.objectstyle.wolips.thirdparty.cayenne,
  org.objectstyle.wolips.eomodeler.core,
- org.objectstyle.wolips.workbenchutilities
+ org.eclipse.core.databinding,
+ org.eclipse.core.databinding.beans,
+ org.eclipse.jface.databinding
 Eclipse-LazyStart: true
 Bundle-Vendor: objectstyle.org
 Export-Package: org.objectstyle.wolips.eomodeler,

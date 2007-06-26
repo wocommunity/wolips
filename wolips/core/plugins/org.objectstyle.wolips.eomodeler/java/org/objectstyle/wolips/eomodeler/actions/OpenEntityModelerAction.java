@@ -57,29 +57,67 @@ package org.objectstyle.wolips.eomodeler.actions;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
-import org.eclipse.ui.internal.UIPlugin;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.EOModelerPerspectiveFactory;
 import org.objectstyle.wolips.eomodeler.editors.EOModelEditor;
 import org.objectstyle.wolips.eomodeler.preferences.PreferenceConstants;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
-import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResource;
 
 /**
  * @author ulrich/mschrag
  */
-public class OpenEntityModelerAction extends AbstractActionOnIResource {
-	public void run(IAction action) {
-		OpenEntityModelerAction.openResourceIfPossible(getActionResource());
+public class OpenEntityModelerAction implements IObjectActionDelegate {
+	private IResource _actionResource;
+
+	private IWorkbenchPart _part;
+
+	public void dispose() {
+		_actionResource = null;
 	}
 
-	public static boolean openResourceIfPossible(IResource actionResource) {
+	public void run(IAction action) {
+		OpenEntityModelerAction.openResourceIfPossible(_part, _actionResource);
+	}
+
+	/**
+	 * Resets the project when the selection is changed.
+	 */
+	public void selectionChanged(IAction action, ISelection selection) {
+		Object obj = (((IStructuredSelection) selection).getFirstElement());
+		_actionResource = null;
+		if (obj != null && obj instanceof IResource) {
+			_actionResource = (IResource) obj;
+		}
+		if (obj != null && obj instanceof IProject) {
+			_actionResource = (IProject) obj;
+		}
+	}
+
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		_part = targetPart;
+	}
+
+	public static boolean openResourceIfPossible(IWorkbenchPart part, IResource actionResource) {
+		IWorkbenchWindow existingWindow;
+		if (part == null) {
+			existingWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		} else {
+			existingWindow = part.getSite().getWorkbenchWindow();
+		}
+
 		boolean opened = false;
 		if (actionResource != null) {
 			IFile editorFile = null;
@@ -94,15 +132,20 @@ public class OpenEntityModelerAction extends AbstractActionOnIResource {
 			if (editorFile != null && editorFile.exists()) {
 				if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.OPEN_IN_WINDOW_KEY)) {
 					try {
-						IWorkbenchWindow window = UIPlugin.getDefault().getWorkbench().openWorkbenchWindow(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID, null);
+						IWorkbenchWindow window = existingWindow.getWorkbench().openWorkbenchWindow(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID, null);
 						window.getActivePage().openEditor(new FileEditorInput(editorFile), EOModelEditor.EOMODEL_EDITOR_ID);
 						opened = true;
 					} catch (WorkbenchException e) {
 						Activator.getDefault().log(e);
 					}
-				}
-				else {
-					WorkbenchUtilitiesPlugin.open(editorFile, EOModelEditor.EOMODEL_EDITOR_ID);
+				} else {
+					try {
+						IDE.openEditor(existingWindow.getActivePage(), editorFile, EOModelEditor.EOMODEL_EDITOR_ID);
+					} catch (PartInitException e) {
+						Activator.getDefault().log(e);
+					}
+					// WorkbenchUtilitiesPlugin.open(editorFile,
+					// EOModelEditor.EOMODEL_EDITOR_ID);
 				}
 			}
 		}

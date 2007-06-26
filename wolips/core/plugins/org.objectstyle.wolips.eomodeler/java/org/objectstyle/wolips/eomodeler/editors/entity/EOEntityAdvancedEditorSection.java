@@ -49,10 +49,9 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.entity;
 
-import org.eclipse.jface.internal.databinding.provisional.BindSpec;
-import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
-import org.eclipse.jface.internal.databinding.provisional.description.Property;
-import org.eclipse.jface.internal.databinding.provisional.validation.RegexStringValidator;
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -69,7 +68,6 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
 public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 	private EOEntity myEntity;
@@ -136,12 +134,14 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
 		myEntity = (EOEntity) selectedObject;
 		if (myEntity != null) {
-			myBindingContext = BindingFactory.createContext();
-			myBindingContext.bind(myMaxNumberOfInstancesToBatchFetchText, new Property(myEntity, EOEntity.MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH), new BindSpec(null, null, new RegexStringValidator("^[0-9]*$", "^[0-9]+$", "Please enter a number"), null));
-			myBindingContext.bind(myCacheInMemoryButton, new Property(myEntity, EOEntity.CACHES_OBJECTS), null);
-			myBindingContext.bind(myReadOnlyButton, new Property(myEntity, EOEntity.READ_ONLY), null);
-			myBindingContext.bind(myExternalQueryText, new Property(myEntity, EOEntity.EXTERNAL_QUERY), null);
-			myBindingContext.bind(myClientClassNameText, new Property(myEntity, EOEntity.CLIENT_CLASS_NAME), null);
+			myBindingContext = new DataBindingContext();
+			myBindingContext.bindValue(SWTObservables.observeText(myMaxNumberOfInstancesToBatchFetchText, SWT.Modify), BeansObservables.observeValue(myEntity, EOEntity.MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH), null, null);
+			// new BindSpec(null, null, new RegexStringValidator("^[0-9]*$",
+			// "^[0-9]+$", "Please enter a number"), null));
+			myBindingContext.bindValue(SWTObservables.observeSelection(myCacheInMemoryButton), BeansObservables.observeValue(myEntity, EOEntity.CACHES_OBJECTS), null, null);
+			myBindingContext.bindValue(SWTObservables.observeSelection(myReadOnlyButton), BeansObservables.observeValue(myEntity, EOEntity.READ_ONLY), null, null);
+			myBindingContext.bindValue(SWTObservables.observeText(myExternalQueryText, SWT.Modify), BeansObservables.observeValue(myEntity, EOEntity.EXTERNAL_QUERY), null, null);
+			myBindingContext.bindValue(SWTObservables.observeText(myClientClassNameText, SWT.Modify), BeansObservables.observeValue(myEntity, EOEntity.CLIENT_CLASS_NAME), null, null);
 		}
 	}
 

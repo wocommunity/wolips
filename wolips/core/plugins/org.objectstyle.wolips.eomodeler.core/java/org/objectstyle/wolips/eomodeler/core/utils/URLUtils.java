@@ -1,8 +1,14 @@
 package org.objectstyle.wolips.eomodeler.core.utils;
 
 import java.io.File;
-import java.net.MalformedURLException;
+import java.io.IOException;
+import java.net.JarURLConnection;
 import java.net.URL;
+import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class URLUtils {
 	public static boolean isFolder(URL url) {
@@ -17,7 +23,7 @@ public class URLUtils {
 		return isFolder;
 	}
 
-	public static URL[] getChildren(URL url) throws MalformedURLException {
+	public static URL[] getChildren(URL url) throws IOException {
 		URL[] children;
 		String protocol = url.getProtocol();
 		if ("file".equals(protocol)) {
@@ -28,6 +34,22 @@ public class URLUtils {
 				File child = files[i];
 				children[i] = child.toURL();
 			}
+		} else if ("jar".equals(protocol)) {
+			List<URL> childEntries = new LinkedList<URL>();
+			JarURLConnection conn = (JarURLConnection) url.openConnection();
+			JarFile jarFile = conn.getJarFile();
+			JarEntry folderJarEntry = conn.getJarEntry();
+			String folderName = folderJarEntry.getName();
+			Enumeration<JarEntry> jarEntriesEnum = jarFile.entries();
+			while (jarEntriesEnum.hasMoreElements()) {
+				JarEntry jarEntry = jarEntriesEnum.nextElement();
+				String name = jarEntry.getName();
+				if (name.startsWith(folderName)) {
+					URL childURL = new URL(url, name);
+					childEntries.add(childURL);
+				}
+			}
+			children = childEntries.toArray(new URL[childEntries.size()]);
 		} else {
 			throw new IllegalArgumentException(url + " is not a File.");
 		}

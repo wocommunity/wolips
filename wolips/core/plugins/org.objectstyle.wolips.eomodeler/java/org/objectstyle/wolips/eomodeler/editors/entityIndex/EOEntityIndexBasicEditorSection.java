@@ -49,8 +49,9 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.entityIndex;
 
-import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
-import org.eclipse.jface.internal.databinding.provisional.description.Property;
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -70,9 +71,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntityIndex;
-import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 
 public class EOEntityIndexBasicEditorSection extends AbstractPropertySection implements ISelectionChangedListener {
@@ -165,8 +164,18 @@ public class EOEntityIndexBasicEditorSection extends AbstractPropertySection imp
 			_orderCombo.setInput(_entityIndex);
 			_attributesEditor.setEntityIndex(_entityIndex);
 
-			_bindingContext = BindingFactory.createContext();
-			_bindingContext.bind(_nameText, new Property(_entityIndex, EOEntity.NAME), null);
+			_bindingContext = new DataBindingContext();
+			_bindingContext.bindValue(SWTObservables.observeText(_nameText, SWT.Modify), BeansObservables.observeValue(_entityIndex, EOEntityIndex.NAME), null, null);
+			// _bindingContext.bindValue(ViewersObservables.observeSingleSelection(_constraintCombo),
+			// BeansObservables.observeValue(_entityIndex,
+			// EOEntityIndex.CONSTRAINT), null, null);
+			// _bindingContext.bindValue(ViewersObservables.observeSingleSelection(_indexTypeCombo),
+			// BeansObservables.observeValue(_entityIndex,
+			// EOEntityIndex.INDEX_TYPE), null, null);
+			// _bindingContext.bindValue(ViewersObservables.observeSingleSelection(_orderCombo),
+			// BeansObservables.observeValue(_entityIndex, EOEntityIndex.ORDER),
+			// null, null);
+
 			_constraintBinding = new ComboViewerBinding(_constraintCombo, _entityIndex, EOEntityIndex.CONSTRAINT, null, null, null);
 			_indexTypeBinding = new ComboViewerBinding(_indexTypeCombo, _entityIndex, EOEntityIndex.INDEX_TYPE, null, null, null);
 			_orderBinding = new ComboViewerBinding(_orderCombo, _entityIndex, EOEntityIndex.ORDER, null, null, null);
