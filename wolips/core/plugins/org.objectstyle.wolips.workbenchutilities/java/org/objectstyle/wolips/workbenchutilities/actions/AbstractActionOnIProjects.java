@@ -110,16 +110,16 @@ public abstract class AbstractActionOnIProjects implements IObjectActionDelegate
 	public void selectionChanged(IAction action, ISelection selection) {
 		IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 		this.projects = null;
-		ArrayList arrayList = new ArrayList();
+		ArrayList<IProject> arrayList = new ArrayList<IProject>();
 		Iterator iterator = structuredSelection.iterator();
 		while (iterator.hasNext()) {
 			Object obj = iterator.next();
 			if (obj != null && obj instanceof IProject)
-				arrayList.add(obj);
+				arrayList.add((IProject)obj);
 			if (obj != null && obj instanceof IJavaProject)
 				arrayList.add(((IJavaProject) obj).getProject());
 		}
-		this.projects = (IProject[]) arrayList.toArray(new IProject[arrayList.size()]);
+		this.projects = arrayList.toArray(new IProject[arrayList.size()]);
 	}
 
 	/**
