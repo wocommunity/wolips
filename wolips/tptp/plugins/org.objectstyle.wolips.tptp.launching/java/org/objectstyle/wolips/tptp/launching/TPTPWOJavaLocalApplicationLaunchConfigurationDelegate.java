@@ -53,7 +53,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.hyades.trace.internal.ui.TraceConstants;
 import org.eclipse.hyades.trace.ui.HyadesConstants;
 import org.eclipse.hyades.trace.ui.UIPlugin;
 import org.eclipse.hyades.trace.ui.internal.launcher.IProfileLaunchConfigurationConstants;
@@ -63,6 +62,7 @@ import org.eclipse.hyades.trace.ui.internal.launcher.TraceArguments;
 import org.eclipse.hyades.trace.ui.internal.util.PDCoreUtil;
 import org.eclipse.hyades.trace.ui.internal.util.TraceMessages;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.tptp.platform.common.ui.trace.internal.CommonUITraceConstants;
 import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchConfigurationDelegate;
 
 /**
@@ -105,9 +105,8 @@ public class TPTPWOJavaLocalApplicationLaunchConfigurationDelegate extends WOJav
 
 			String hostName = conf.getAttribute(IProfileLaunchConfigurationConstants.ATTR_HOSTNAME, "localhost");
 			int port = conf.getAttribute(IProfileLaunchConfigurationConstants.ATTR_PORT, store.getInt(HyadesConstants.LOCALHOST_PORT));
-			String projectName = conf.getAttribute(IProfileLaunchConfigurationConstants.ATTR_DESTINATION_PROJECT, store.getString(TraceConstants.TRACE_PROJECT_NAME));
-			String monitorName = conf.getAttribute(IProfileLaunchConfigurationConstants.ATTR_DESTINATION_MONITOR, store.getString(TraceConstants.TRACE_MONITOR_NAME));
-
+			String projectName = conf.getAttribute(IProfileLaunchConfigurationConstants.ATTR_DESTINATION_PROJECT, store.getString(CommonUITraceConstants.TRACE_PROJECT_NAME));
+			String monitorName = conf.getAttribute(IProfileLaunchConfigurationConstants.ATTR_DESTINATION_MONITOR, store.getString(CommonUITraceConstants.TRACE_MONITOR_NAME));
 			args.setHostName(hostName);
 			args.setPortNumber(port);
 
