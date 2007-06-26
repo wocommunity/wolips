@@ -57,7 +57,9 @@
 package org.objectstyle.wolips.ui.actions;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.IAction;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResource;
@@ -77,7 +79,7 @@ public class OpenEOModelIndexAction extends AbstractActionOnIResource {
 			String fileName = getActionResource().getName();
 			fileName = fileName.substring(0, fileName.length() - this.eoModelExtension.length());
 
-			ArrayList list = new ArrayList();
+			List<IResource> list = new ArrayList<IResource>();
 			WorkbenchUtilitiesPlugin.findFilesInResourceByName(list, getActionResource(), "index" + this.eoModelExtension);
 			WorkbenchUtilitiesPlugin.open(list);
 		}
