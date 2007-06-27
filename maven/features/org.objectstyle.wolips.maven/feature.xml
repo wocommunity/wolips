@@ -67,8 +67,8 @@
    </license>
 
    <url>
-      <update label="%feature.updateSiteName"/>
-   </url>
+      <update label="%feature.updateSiteName" url="%feature.updateSite"/>
+  </url>
 
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
