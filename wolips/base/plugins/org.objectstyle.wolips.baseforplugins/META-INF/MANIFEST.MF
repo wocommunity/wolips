@@ -4,7 +4,6 @@ Bundle-Name: WOLips Base For Plugins Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.baseforplugins
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.baseforplugins.Activator
-Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.baseforplugins,

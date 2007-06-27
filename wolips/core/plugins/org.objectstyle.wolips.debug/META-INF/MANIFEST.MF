@@ -5,9 +5,7 @@ Bundle-SymbolicName: org.objectstyle.wolips.debug; singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.debug.Activator
 Bundle-Vendor: objectstyle.org
-Bundle-Localization: plugin
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.debug.core,
+Require-Bundle: org.eclipse.debug.core,
  org.eclipse.jdt.debug,
  org.objectstyle.wolips.baseforplugins
 Eclipse-LazyStart: true

@@ -5,7 +5,6 @@ Bundle-SymbolicName: org.objectstyle.wolips.eogenerator.core; singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.eogenerator.core.Activator
 Bundle-Vendor: objectstyle.org
-Bundle-Localization: plugin
 Require-Bundle: org.objectstyle.wolips.preferences,
  org.objectstyle.wolips.locate,
  org.objectstyle.wolips,

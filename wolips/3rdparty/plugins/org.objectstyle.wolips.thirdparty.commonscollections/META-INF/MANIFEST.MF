@@ -5,7 +5,6 @@ Bundle-SymbolicName: org.objectstyle.wolips.thirdparty.commonscollections
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.thirdparty.commonscollections.Activator
 Bundle-Vendor: objectsyle.org
-Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.thirdparty.commonscollections,
