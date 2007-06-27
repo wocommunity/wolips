@@ -126,7 +126,7 @@ public final class WOClasspathContainer implements IClasspathContainer {
 		return id;
 	}
 
-	private void initPath() {
+	private synchronized void initPath() {
 		Set<IClasspathEntry> path = new LinkedHashSet<IClasspathEntry>();
 		IPath[] paths = VariablesPlugin.getDefault().getFrameworkRoots();
 		for (int i = 1; i < id.segmentCount(); i++) {
