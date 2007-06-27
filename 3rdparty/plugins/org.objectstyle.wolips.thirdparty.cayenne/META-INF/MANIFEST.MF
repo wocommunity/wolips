@@ -4,11 +4,10 @@ Bundle-Name: WOLips Third Party Cayenne Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.thirdparty.cayenne; singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Vendor: objectstyle.org
-Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.objectstyle.wolips.thirdparty.log4j;visibility:=reexport,
  org.objectstyle.wolips.thirdparty.commonscollections;visibility:=reexport,
- org.objectstyle.wolips.thirdparty.velocity
+ org.objectstyle.wolips.thirdparty.velocity;visibility:=reexport
 Eclipse-LazyStart: true
 Bundle-Activator: org.objectstyle.wolips.thirdparty.cayenne.Activator
 Export-Package: org.objectstyle.cayenne,

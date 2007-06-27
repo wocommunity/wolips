@@ -5,8 +5,6 @@ Bundle-SymbolicName: org.objectstyle.wolips.documentation; singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.documentation.DocumentationPlugin
 Bundle-Vendor: objectstyle.org
-Bundle-Localization: plugin
-Require-Bundle: org.eclipse.core.runtime,
- org.objectstyle.wolips.baseforplugins
+Require-Bundle: org.objectstyle.wolips.baseforplugins
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.documentation
