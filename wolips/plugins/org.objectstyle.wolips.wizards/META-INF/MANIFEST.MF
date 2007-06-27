@@ -5,7 +5,6 @@ Bundle-SymbolicName: org.objectstyle.wolips.wizards; singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.wizards.WizardsPlugin
 Bundle-Vendor: objectstyle.org
-Bundle-Localization: plugin
 Require-Bundle: org.eclipse.jdt.ui,
  org.objectstyle.wolips.templateengine,
  org.eclipse.jdt.core,
@@ -19,8 +18,7 @@ Require-Bundle: org.eclipse.jdt.ui,
  org.objectstyle.wolips.eogenerator.core,
  org.objectstyle.wolips.eomodeler.core,
  org.objectstyle.wolips.eomodeler,
- org.objectstyle.wolips.eogenerator.jdt,
- org.objectstyle.wolips.thirdparty.velocity
+ org.objectstyle.wolips.eogenerator.jdt
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.wizards,
  org.objectstyle.wolips.wizards.actions

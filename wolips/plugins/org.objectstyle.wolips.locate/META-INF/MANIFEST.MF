@@ -5,9 +5,7 @@ Bundle-SymbolicName: org.objectstyle.wolips.locate; singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.locate.LocatePlugin
 Bundle-Vendor: objectstyle.org
-Bundle-Localization: plugin
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.core.resources,
+Require-Bundle: org.eclipse.core.resources,
  org.eclipse.jdt.core,
  org.objectstyle.wolips.baseforplugins,
  org.eclipse.ui

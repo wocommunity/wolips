@@ -4,18 +4,15 @@ Bundle-Name: Eomodeler Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.eomodeler.eclipse;singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.eomodeler.eclipse.Activator
-Bundle-Localization: plugin
 Require-Bundle: org.eclipse.jdt.core,
- org.eclipse.core.resources,
- org.objectstyle.wolips.baseforplugins,
  org.objectstyle.wolips.variables,
  org.objectstyle.wolips.eogenerator.core,
  org.objectstyle.wolips.eomodeler.core,
  org.objectstyle.wolips.baseforuiplugins,
  org.eclipse.jdt.ui,
- org.objectstyle.wolips.workbenchutilities,
  org.objectstyle.wolips.ui,
- org.objectstyle.wolips.eomodeler
+ org.objectstyle.wolips.eomodeler,
+ org.objectstyle.wolips.workbenchutilities
 Eclipse-LazyStart: true
 Bundle-Vendor: objectstyle.org
 Export-Package: org.objectstyle.wolips.eomodeler.eclipse

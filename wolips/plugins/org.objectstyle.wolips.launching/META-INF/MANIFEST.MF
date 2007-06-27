@@ -5,16 +5,10 @@ Bundle-SymbolicName: org.objectstyle.wolips.launching; singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.launching.LaunchingPlugin
 Bundle-Vendor: objectstyle.org
-Bundle-Localization: plugin
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ui,
- org.eclipse.debug.ui,
- org.eclipse.debug.core,
- org.eclipse.core.resources,
+Require-Bundle: org.eclipse.debug.ui,
  org.eclipse.jdt.core,
  org.eclipse.jdt.launching,
  org.objectstyle.wolips.workbenchutilities,
- org.eclipse.jface.text,
  org.objectstyle.wolips.preferences,
  org.eclipse.ui.browser,
  org.eclipse.jdt.debug.ui,
@@ -23,9 +17,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.variables,
  org.objectstyle.wolips.ant,
  org.objectstyle.wolips.datasets,
- org.eclipse.ui.ide,
  org.objectstyle.wolips.baseforuiplugins,
- org.objectstyle.wolips.baseforplugins,
  org.objectstyle.wolips.locate
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.launching,
