@@ -5,7 +5,6 @@ Bundle-SymbolicName: org.objectstyle.wolips.eogenerator.ui; singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.eogenerator.ui.Activator
 Bundle-Vendor: objectstyle.org
-Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui.forms,
  org.eclipse.pde.ui,
  org.objectstyle.wolips.baseforuiplugins,

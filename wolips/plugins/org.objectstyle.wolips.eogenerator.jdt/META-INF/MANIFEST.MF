@@ -5,11 +5,7 @@ Bundle-SymbolicName: org.objectstyle.wolips.eogenerator.jdt; singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.eogenerator.jdt.Activator
 Bundle-Vendor: objectstyle.org
-Bundle-Localization: plugin
-Require-Bundle: org.objectstyle.wolips.preferences,
- org.objectstyle.wolips.locate,
- org.objectstyle.wolips,
- org.objectstyle.wolips.baseforplugins,
+Require-Bundle: org.objectstyle.wolips.baseforplugins,
  org.objectstyle.wolips.eogenerator.core,
  org.eclipse.jdt.core,
  org.eclipse.core.resources
