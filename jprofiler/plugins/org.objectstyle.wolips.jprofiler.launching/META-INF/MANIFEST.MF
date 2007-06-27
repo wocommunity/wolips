@@ -13,7 +13,7 @@ Require-Bundle: org.eclipse.jdt.debug.ui,
  org.objectstyle.wolips.baseforuiplugins,
  org.eclipse.jdt.launching,
  org.eclipse.jdt.core,
- com.jprofiler.integrations.eclipse;bundle-version="4.3.1",
+ com.jprofiler.integrations.eclipse;bundle-version="5.0",
  org.eclipse.core.runtime,
  org.eclipse.core.resources
 Eclipse-LazyStart: true

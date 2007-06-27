@@ -67,9 +67,9 @@
    </license>
 
    <url>
-         <update label="%feature.updateSiteName" url="%feature.updateSite"/>
+          <update label="%feature.updateSiteName" url="%feature.updateSite"/>
        	<discovery label="%feature.updateSiteName" url="%feature.updateSite"/>
-   </url>
+  </url>
 
    <requires>
       <import plugin="org.eclipse.jdt.debug.ui"/>
@@ -82,7 +82,7 @@
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
-      <import plugin="com.jprofiler.integrations.eclipse" version="4.3.1" match="greaterOrEqual"/>
+      <import plugin="com.jprofiler.integrations.eclipse" version="5.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
