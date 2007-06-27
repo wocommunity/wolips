@@ -67,7 +67,8 @@
    </license>
 
    <url>
-      <update label="%feature.updateSiteName" url="%feature.updateSite"/>
+         <update label="%feature.updateSiteName" url="%feature.updateSite"/>
+       	<discovery label="%feature.updateSiteName" url="%feature.updateSite"/>
   </url>
 
    <requires>
