@@ -4,10 +4,7 @@ Bundle-Name: Entity Modeler Core
 Bundle-SymbolicName: org.objectstyle.wolips.eomodeler.core; singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.eomodeler.core.Activator
-Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui.views.properties.tabbed,
- org.eclipse.jface.databinding,
- org.objectstyle.wolips.preferences,
  org.objectstyle.wolips.baseforuiplugins,
  org.objectstyle.wolips.thirdparty.cayenne
 Eclipse-LazyStart: true
