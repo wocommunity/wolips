@@ -5,11 +5,7 @@ Bundle-SymbolicName: org.objectstyle.wolips.htmlpreview
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.htmlpreview.HtmlPreviewPlugin
 Bundle-Vendor: objectstyle.org
-Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.eclipse.jface.text,
- org.objectstyle.wolips.components,
+Require-Bundle: org.objectstyle.wolips.components,
  org.objectstyle.wolips.baseforuiplugins
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.htmlpreview.editor,

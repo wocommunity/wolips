@@ -5,7 +5,6 @@ Bundle-SymbolicName: org.objectstyle.wolips.wodclipse; singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.wodclipse.WodclipsePlugin
 Bundle-Vendor: objectstyle.org
-Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui.editors,
  org.eclipse.jdt.core,
  org.eclipse.jdt.ui,
@@ -14,7 +13,6 @@ Require-Bundle: org.eclipse.ui.editors,
  org.objectstyle.wolips.baseforuiplugins,
  org.objectstyle.wolips.components,
  org.objectstyle.wolips.locate,
- org.objectstyle.wolips.preferences,
  org.objectstyle.wolips.workbenchutilities,
  org.objectstyle.wolips.wodclipse.core
 Eclipse-LazyStart: true

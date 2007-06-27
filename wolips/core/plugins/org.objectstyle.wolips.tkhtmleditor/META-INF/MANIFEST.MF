@@ -5,7 +5,6 @@ Bundle-SymbolicName: org.objectstyle.wolips.tkhtmleditor;singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: tk.eclipse.plugin.htmleditor.HTMLPlugin
 Bundle-Vendor: objectstyle.org
-Bundle-Localization: plugin
 Export-Package: DTD,
  TLD,
  XSD,
@@ -180,7 +179,6 @@ Require-Bundle: org.eclipse.ui.editors,
  org.eclipse.update.ui,
  org.eclipse.jdt.core,
  org.eclipse.jdt.ui,
- org.eclipse.debug.core,
  org.eclipse.debug.ui,
  org.eclipse.jdt.debug,
  org.eclipse.jdt.launching,
