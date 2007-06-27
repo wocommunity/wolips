@@ -6,9 +6,9 @@
       provider-name="%feature.providerName"
       image="%feature.image">
 
-    <description url="http://objectstyle.org/confluence/display/WOL/Home">
+   <description url="http://objectstyle.org/confluence/display/WOL/Home">
       %feature.description
-    </description>
+   </description>
 
    <copyright>
       %feature.copyright
@@ -67,7 +67,8 @@
    </license>
 
    <url>
-      <update label="%feature.updateSiteName" url="%feature.updateSite"/>
+         <update label="%feature.updateSiteName" url="%feature.updateSite"/>
+       	<discovery label="%feature.updateSiteName" url="%feature.updateSite"/>
    </url>
 
    <requires>
@@ -79,10 +80,9 @@
       <import plugin="org.objectstyle.wolips.baseforuiplugins" version="1.0.6" match="perfect"/>
       <import plugin="org.eclipse.jdt.launching"/>
       <import plugin="org.eclipse.jdt.core"/>
-      <!-- The jprofiler plugin has no feature so we can't include it here -->
-      <!-- import plugin="com.jprofiler.integrations.eclipse"/ -->
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
+      <import plugin="com.jprofiler.integrations.eclipse" version="4.3.1" match="greaterOrEqual"/>
    </requires>
 
    <plugin

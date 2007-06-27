@@ -67,19 +67,18 @@
    </license>
 
    <url>
-      <update label="%feature.updateSiteName" url="%feature.updateSite"/>
-  </url>
+         <update label="%feature.updateSiteName" url="%feature.updateSite"/>
+       	<discovery label="%feature.updateSiteName" url="%feature.updateSite"/>
+   </url>
 
    <requires>
-      <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.junit"/>
-      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.objectstyle.wolips.baseforplugins" version="1.0.6" match="perfect"/>
       <import plugin="org.objectstyle.wolips.ui" version="1.0.6" match="perfect"/>
       <import plugin="org.objectstyle.wolips.workbenchutilities" version="1.0.6" match="perfect"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.objectstyle.wolips.baseforplugins" version="1.0.6" match="perfect"/>
       <import plugin="org.objectstyle.wolips.baseforuiplugins" version="1.0.6" match="perfect"/>
+      <import plugin="org.objectstyle.wolips.maven.core"/>
    </requires>
 
    <plugin
