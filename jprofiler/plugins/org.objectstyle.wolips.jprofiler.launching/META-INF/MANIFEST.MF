@@ -5,7 +5,6 @@ Bundle-SymbolicName: org.objectstyle.wolips.jprofiler.launching; singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.jprofiler.launching.Activator
 Bundle-Vendor: objectstyle.org
-Bundle-Localization: plugin
 Require-Bundle: org.eclipse.jdt.debug.ui,
  org.eclipse.debug.core,
  org.eclipse.debug.ui,

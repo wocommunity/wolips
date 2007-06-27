@@ -4,22 +4,14 @@ Bundle-Name: WOLips WODclips Core Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.wodclipse.core; singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.wodclipse.core.Activator
-Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.eclipse.jface.text,
- org.eclipse.core.resources,
- org.objectstyle.wolips,
+Require-Bundle: org.objectstyle.wolips,
  org.eclipse.jdt.core,
- org.eclipse.jdt.source,
- org.eclipse.jdt,
  org.eclipse.jdt.ui,
  org.objectstyle.wolips.preferences,
  org.objectstyle.wolips.baseforuiplugins,
  org.objectstyle.wolips.locate,
  org.objectstyle.wolips.workbenchutilities,
- org.eclipse.ui.editors,
- org.objectstyle.wolips.thirdparty.commonscollections
+ org.eclipse.ui.editors
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,
  lib/commons-jxpath-1.2.jar

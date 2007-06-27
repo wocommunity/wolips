@@ -5,7 +5,6 @@ Bundle-SymbolicName: org.objectstyle.wolips.goodies.core.mac;singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.goodies.core.mac.MacPlugin
 Bundle-Vendor: objectstyle.org
-Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources
 Eclipse-LazyStart: true
