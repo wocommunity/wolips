@@ -2,15 +2,18 @@ package org.objectstyle.wolips.eomodeler.core.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.objectstyle.wolips.eomodeler.core.utils.URLUtils;
 
 public abstract class AbstractManifestEOModelGroupFactory implements IEOModelGroupFactory {
 	public boolean canLoadModelFrom(Object modelResource) {
-		return modelResource instanceof IResource || modelResource instanceof File;
+		return modelResource instanceof IResource || modelResource instanceof File || modelResource instanceof URL || modelResource instanceof URI;
 	}
 
 	public EOModel loadModel(Object modelResource, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws EOModelException {
@@ -19,9 +22,18 @@ public abstract class AbstractManifestEOModelGroupFactory implements IEOModelGro
 			selectedModelFile = ((IResource) modelResource).getLocation().toFile();
 		} else if (modelResource instanceof File) {
 			selectedModelFile = (File) modelResource;
+		} else if (modelResource instanceof URL) {
+			selectedModelFile = URLUtils.cheatAndTurnIntoFile((URL) modelResource);
+		} else if (modelResource instanceof URI) {
+			selectedModelFile = URLUtils.cheatAndTurnIntoFile((URI) modelResource);
 		} else {
 			throw new EOModelException("Unknown model resource: " + modelResource);
 		}
+		
+		if (selectedModelFile == null) {
+			throw new EOModelException("Unknown model resource: " + modelResource);
+		}
+		
 		File selectedModelFolder;
 		if (selectedModelFile.isFile()) {
 			selectedModelFolder = selectedModelFile.getParentFile();

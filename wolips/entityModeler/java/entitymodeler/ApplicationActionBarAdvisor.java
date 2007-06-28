@@ -3,12 +3,8 @@ package entitymodeler;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.action.ToolBarContributionItem;
-import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.swt.SWT;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
@@ -38,7 +34,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
   private IWorkbenchAction _aboutAction;
 
   //private OpenViewAction openViewAction;
-  //private Action messagePopupAction;
+  //private IWorkbenchAction messagePopupAction;
 
   public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
     super(configurer);
@@ -94,7 +90,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     //openViewAction = new OpenViewAction(window, "Open Another Message View", View.ID);
     //register(openViewAction);
 
-    //messagePopupAction = new MessagePopupAction("Open Message", window);
+    //messagePopupAction = ActionFactory.ABOUT.create(window);
     //register(messagePopupAction);
   }
 
@@ -148,9 +144,11 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
   @Override
   protected void fillCoolBar(ICoolBarManager coolBar) {
-    IToolBarManager toolbar = new ToolBarManager(SWT.FLAT | SWT.RIGHT);
-    coolBar.add(new ToolBarContributionItem(toolbar, "main"));
+    //IToolBarManager toolbar = new ToolBarManager(SWT.FLAT | SWT.RIGHT);
+    //coolBar.add(new ToolBarContributionItem(toolbar, "main"));
     //toolbar.add(openViewAction);
     //toolbar.add(messagePopupAction);
+    //coolBar.setLockLayout(true);
+    
   }
 }

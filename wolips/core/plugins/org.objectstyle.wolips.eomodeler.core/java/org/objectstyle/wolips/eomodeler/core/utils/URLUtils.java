@@ -3,6 +3,7 @@ package org.objectstyle.wolips.eomodeler.core.utils;
 import java.io.File;
 import java.io.IOException;
 import java.net.JarURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.LinkedList;
@@ -11,6 +12,47 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class URLUtils {
+	public static String getExtension(URL url) {
+		return URLUtils.getExtension(url.getPath());
+	}
+	
+	public static String getExtension(URI uri) {
+		return URLUtils.getExtension(uri.getPath());
+	}
+	
+	public static String getExtension(String path) {
+		String extension = null;
+		if (path != null) {
+			int dotIndex = path.lastIndexOf('.');
+			if (dotIndex != -1) {
+				extension = path.substring(dotIndex + 1);
+			}
+		}
+		return extension;
+	}
+	
+	public static String getName(URL url) {
+		return URLUtils.getName(url.getPath());
+	}
+	
+	public static String getName(URI uri) {
+		return URLUtils.getName(uri.getPath());
+	}
+	
+	public static String getName(String path) {
+		String name = null;
+		if (path != null) {
+			int slashIndex = path.lastIndexOf('/');
+			if (slashIndex != -1) {
+				name = path.substring(slashIndex + 1);
+			}
+			else {
+				name = path;
+			}
+		}
+		return name;
+	}
+	
 	public static boolean isFolder(URL url) {
 		boolean isFolder = false;
 		String protocol = url.getProtocol();
@@ -54,6 +96,17 @@ public class URLUtils {
 			throw new IllegalArgumentException(url + " is not a File.");
 		}
 		return children;
+	}
+
+	public static File cheatAndTurnIntoFile(URI uri) {
+		File f;
+		String scheme = uri.getScheme();
+		if ("file".equals(scheme)) {
+			f = new File(uri.getPath());
+		} else {
+			throw new IllegalArgumentException(uri + " is not a File.");
+		}
+		return f;
 	}
 
 	public static File cheatAndTurnIntoFile(URL url) {

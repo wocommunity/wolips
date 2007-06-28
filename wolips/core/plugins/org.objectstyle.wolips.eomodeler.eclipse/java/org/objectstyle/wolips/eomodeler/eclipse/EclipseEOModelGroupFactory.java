@@ -51,6 +51,7 @@ package org.objectstyle.wolips.eomodeler.eclipse;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.HashSet;
@@ -80,14 +81,29 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.model.IEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.preferences.PreferenceConstants;
+import org.objectstyle.wolips.eomodeler.utils.EclipseFileUtils;
 
 public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 	public boolean canLoadModelFrom(Object modelResource) {
-		return modelResource instanceof IResource;
+		return modelResource instanceof IResource || modelResource instanceof URL || modelResource instanceof URI;
+	}
+
+	protected IResource getEclipseResourceForModelResource(Object modelResource) {
+		IResource resource = null;
+		if (modelResource instanceof IResource) {
+			resource = (IResource) modelResource;
+		} else if (modelResource instanceof URL) {
+			resource = EclipseFileUtils.getEclipseFile((URL) modelResource);
+		} else if (modelResource instanceof URI) {
+			resource = EclipseFileUtils.getEclipseFile((URI) modelResource);
+		} else {
+			resource = null;
+		}
+		return resource;
 	}
 
 	public EOModel loadModel(Object modelResource, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws EOModelException {
-		IResource resource = (IResource) modelResource;
+		IResource resource = getEclipseResourceForModelResource(modelResource);
 		EOModel model;
 		try {
 			model = createModel(resource, failures, skipOnDuplicates, progressMonitor);
@@ -105,7 +121,7 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 		EOModelGroup modelGroup;
 		if ("eomodelgroup".equals(modelResource.getFileExtension())) {
 			modelGroup = new EOModelGroup();
-			modelGroup.setCreateDefaultDatabaseConfig(org.objectstyle.wolips.eomodeler.Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CREATE_DEFAULT_DATABASE_CONFIG)); 
+			modelGroup.setCreateDefaultDatabaseConfig(org.objectstyle.wolips.eomodeler.Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CREATE_DEFAULT_DATABASE_CONFIG));
 			EOGeneratorModel eogeneratorModel = EOGeneratorModel.createModelFromFile((IFile) modelResource);
 			List<EOModelReference> modelRefList = new LinkedList<EOModelReference>();
 			modelRefList.addAll(eogeneratorModel.getModels());
@@ -204,7 +220,7 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 	public EOModelGroup loadModelGroup(IProject project, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, URL editingModelURL, IProgressMonitor progressMonitor) throws CoreException, IOException, EOModelException {
 		progressMonitor.setTaskName("Loading model group ...");
 		EOModelGroup modelGroup = new EOModelGroup();
-		modelGroup.setCreateDefaultDatabaseConfig(org.objectstyle.wolips.eomodeler.Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CREATE_DEFAULT_DATABASE_CONFIG)); 
+		modelGroup.setCreateDefaultDatabaseConfig(org.objectstyle.wolips.eomodeler.Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CREATE_DEFAULT_DATABASE_CONFIG));
 		modelGroup.setEditingModelURL(editingModelURL);
 		addModelsFromProject(modelGroup, project, new HashSet<File>(), new HashSet<IProject>(), failures, skipOnDuplicates, editingModelURL, progressMonitor);
 		modelGroup.resolve(failures);
@@ -220,7 +236,7 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 		private Set<File> _searchedFolders;
 
 		private boolean _skipOnDuplicates;
-		
+
 		private IProgressMonitor _progressMonitor;
 
 		public ModelVisitor(EOModelGroup modelGroup, Set<File> searchedFolders, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) {
@@ -239,13 +255,13 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 				if (resource.isDerived()) {
 					return false;
 				}
-				
+
 				String name = resource.getName();
 				if (name != null) {
 					if ("build".equals(name) || "dist".equals(name) || "target".equals(name) || name.endsWith(".wo")) {
 						return false;
 					}
-					
+
 					if (name.endsWith(".framework") || name.endsWith(".woa")) {
 						String projectName = resource.getProject().getName();
 						if (name.equals(projectName + ".framework") || name.equals(projectName + ".woa")) {
@@ -253,7 +269,7 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 						}
 					}
 				}
-				
+
 				if (resource.getType() == IResource.FOLDER) {
 					_progressMonitor.setTaskName("Scanning " + resource.getName() + " ...");
 					File resourceFile = resource.getLocation().toFile();

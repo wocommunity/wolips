@@ -50,6 +50,14 @@
          <property
                name="windowImages"
                value="icons/EntityModeler.png,icons/EntityModeler.png,icons/EntityModeler.png,icons/EntityModeler.png,icons/EntityModeler.png"/>
+         <property
+               name="appName"
+               value="Entity Modeler">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
       </product>
    </extension>
 
