@@ -53,14 +53,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.commands.operations.IUndoContext;
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -73,7 +72,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
@@ -90,12 +88,11 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.WorkbenchException;
-import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
@@ -112,7 +109,6 @@ import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntityIndex;
 import org.objectstyle.wolips.eomodeler.core.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
-import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
@@ -127,6 +123,7 @@ import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityEditor;
 import org.objectstyle.wolips.eomodeler.outline.EOModelContentOutlinePage;
 import org.objectstyle.wolips.eomodeler.preferences.PreferenceConstants;
 import org.objectstyle.wolips.eomodeler.utils.AbstractAddRemoveChangeRefresher;
+import org.objectstyle.wolips.eomodeler.utils.EclipseFileUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class EOModelEditor extends MultiPageEditorPart implements IResourceChangeListener, ITabbedPropertySheetPageContributor, ISelectionProvider, IEOModelEditor {
@@ -429,7 +426,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		}
 	}
 
-	public void doSave(IProgressMonitor _monitor) {
+	public void doSave(IProgressMonitor monitor) {
 		if (!myModel.isEditing()) {
 			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), "You cannot save this model because it is read-only.");
 			return;
@@ -442,12 +439,16 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				myModel.verify(failures);
 				handleModelErrors(failures, false);
 
-				IFile indexFile = EOModelEditor.getIndexFile(myModel);
-				IContainer eomodelFolder = indexFile.getParent();
-				System.out.println("EOModelEditor.doSave: saving " + eomodelFolder.getName() + " to " + eomodelFolder.getParent().getLocation().toFile());
-				myModel.saveToFolder(eomodelFolder.getParent().getLocation().toFile());
+				File externalIndexFile = EclipseFileUtils.getExternalIndexFile(myModel);
+				File externalModelFolder = externalIndexFile.getParentFile();
+				System.out.println("EOModelEditor.doSave: saving " + myModel.getName() + " to " + externalModelFolder);
+				myModel.saveToFolder(externalModelFolder.getParentFile());
 				myModel.setDirty(false);
-				eomodelFolder.refreshLocal(IResource.DEPTH_INFINITE, _monitor);
+				
+				IFile eclipseIndexFile = EclipseFileUtils.getEclipseFile(externalIndexFile);
+				if (eclipseIndexFile != null) {
+					eclipseIndexFile.getParent().getParent().refreshLocal(IResource.DEPTH_INFINITE, monitor);
+				}
 			}
 		} catch (Throwable t) {
 			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), t);
@@ -475,20 +476,9 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		}
 	}
 
-	protected static IFile getFile(File _file) {
-		return ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(_file.getAbsolutePath()));
-	}
-
-	protected static IFile getIndexFile(EOModel _model) throws MalformedURLException, EOModelException {
-		if (_model.getIndexURL() == null) {
-			throw new EOModelException("Failed to load model.");
-		}
-		return EOModelEditor.getFile(URLUtils.cheatAndTurnIntoFile(_model.getIndexURL()));
-	}
-
 	protected void loadInBackground(IProgressMonitor progressMonitor) {
 		try {
-			IFileEditorInput fileEditorInput = (IFileEditorInput) getEditorInput();
+			IURIEditorInput editorInput = (IURIEditorInput) getEditorInput();
 			if (myModel != null) {
 				myModel.removePropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
 				myEntitiesChangeListener.stop();
@@ -503,26 +493,24 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				myModel.removePropertyChangeListener(EOModel.ENTITY + "." + EOEntity.ENTITY_INDEXES, myEntityIndexesChangeListener);
 			}
 
-			IFile file = fileEditorInput.getFile();
+			URI indexURL = editorInput.getURI();
+			
 			String openingEntityName = null;
-			if ("plist".equalsIgnoreCase(file.getFileExtension())) {
-				String name = file.getName();
+			if ("plist".equalsIgnoreCase(URLUtils.getExtension(indexURL))) {
+				String name = URLUtils.getName(indexURL);
 				openingEntityName = name.substring(0, name.indexOf('.'));
 			}
 
 			myLoadFailures = new LinkedHashSet<EOModelVerificationFailure>();
 
-			EOModel model = IEOModelGroupFactory.Utility.loadModel(file, myLoadFailures, true, progressMonitor);
+			EOModel model = IEOModelGroupFactory.Utility.loadModel(indexURL, myLoadFailures, true, progressMonitor);
 			if (model == null) {
 				// super.init(_site, fileEditorInput);
 				handleModelErrors(myLoadFailures, true);
 				// throw new EOModelException("Failed to load the requested
 				// model.");
 			} else {
-				IFile indexFile = EOModelEditor.getIndexFile(model);
-				if (indexFile != null) {
-					fileEditorInput = new FileEditorInput(indexFile);
-				}
+				editorInput = EclipseFileUtils.getEditorInput(model);
 				if (openingEntityName != null) {
 					myOpeningEntity = model.getEntityNamed(openingEntityName);
 				}
@@ -613,7 +601,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 						public void run(IProgressMonitor monitor) throws CoreException {
 							for (EOModel model : editingModel.getModelGroup().getModels()) {
 								try {
-									IFile indexFile = EOModelEditor.getIndexFile(model);
+									IFile indexFile = EclipseFileUtils.getEclipseIndexFile(model);
 									if (indexFile != null) {
 										IMarker[] oldMarkers = indexFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
 										for (int markerNum = 0; markerNum < oldMarkers.length; markerNum++) {
@@ -637,7 +625,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 								EOModel model = failure.getModel();
 								IFile indexFile;
 								try {
-									indexFile = EOModelEditor.getIndexFile(model);
+									indexFile = EclipseFileUtils.getEclipseIndexFile(model);
 									if (indexFile != null) {
 										IMarker marker = indexFile.createMarker(Activator.EOMODEL_PROBLEM_MARKER);
 										marker.setAttribute(IMarker.MESSAGE, failure.getMessage());
@@ -720,12 +708,13 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 	public void resourceChanged(final IResourceChangeEvent _event) {
 		if (_event.getType() == IResourceChangeEvent.PRE_CLOSE) {
-			final IFileEditorInput input = (IFileEditorInput) getEditorInput();
+			final IURIEditorInput input = (IURIEditorInput) getEditorInput();
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
 					IWorkbenchPage[] pages = getSite().getWorkbenchWindow().getPages();
 					for (int pageNum = 0; pageNum < pages.length; pageNum++) {
-						if (input.getFile().getProject().equals(_event.getResource())) {
+						IFile eclipseIndexFile = EclipseFileUtils.getEclipseFile(input.getURI());
+						if (eclipseIndexFile != null && eclipseIndexFile.getProject().equals(_event.getResource())) {
 							IEditorPart editorPart = pages[pageNum].findEditor(input);
 							pages[pageNum].closeEditor(editorPart, true);
 						}

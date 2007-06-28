@@ -23,7 +23,7 @@ public class OpenAction extends Action implements ActionFactory.IWorkbenchAction
   @Override
   public void run() {
     DirectoryDialog dialog = new DirectoryDialog(_window.getShell());
-    dialog.setFilterPath("*.eomodeld");
+    //dialog.setFilterPath("*.eomodeld");
     String selectedDirectory = dialog.open();
     if (selectedDirectory != null) {
       try {
