@@ -256,6 +256,12 @@
                id="org.objectstyle.wolips.javaeditor.editors.switchtohtml"
                label="Switch to Html Editor"
                menubarPath="navigate/org.objectstyle.wolips.javaeditor.navigateMenuContribution/group1"/>
+         <action
+               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToJavaEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.componenteditor.editors.tojava"
+               id="org.objectstyle.wolips.componenteditor.editors.switchtojava"
+               label="Switch to Java Editor"
+               menubarPath="navigate/org.objectstyle.wolips.javaeditor.navigateMenuContribution/group1"/>
 		</editorContribution>
 	</extension>
 	<extension point="org.eclipse.ui.editorActions">
