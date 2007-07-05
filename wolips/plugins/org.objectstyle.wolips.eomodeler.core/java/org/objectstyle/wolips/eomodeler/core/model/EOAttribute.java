@@ -381,7 +381,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	}
 
 	public void setReadOnly(Boolean _readOnly, boolean _fireEvents) {
-		Boolean oldReadOnly = getAllowsNull();
+		Boolean oldReadOnly = getReadOnly();
 		myReadOnly = (Boolean) _nullIfPrototyped(EOAttribute.READ_ONLY, _readOnly);
 		if (_fireEvents) {
 			firePropertyChange(EOAttribute.READ_ONLY, oldReadOnly, getReadOnly());
