@@ -50,41 +50,54 @@
 package org.objectstyle.wolips.eomodeler.actions;
 
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.widgets.Display;
-import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.core.model.DuplicateNameException;
-import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
-import org.objectstyle.wolips.eomodeler.editors.entity.CreateRelationshipDialog;
-import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
+import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
-public class NewRelationshipAction extends AbstractObjectAction {
-	public void run(IAction action) {
-		try {
-			EOEntity entity1 = null;
-			EOEntity entity2 = null;
-			IStructuredSelection selection = getSelection();
-			if (selection != null) {
-				Object[] selectedObjects = selection.toArray();
-				if (selectedObjects.length == 1) {
-					entity1 = EOModelUtils.getRelatedEntity(selectedObjects[0]);
-				} else if (selectedObjects.length == 2) {
-					entity1 = EOModelUtils.getRelatedEntity(selectedObjects[0]);
-					entity2 = EOModelUtils.getRelatedEntity(selectedObjects[1]);
-				}
+public abstract class AbstractObjectAction implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
+	private IWorkbenchWindow _window;
+
+	private IStructuredSelection _selection;
+
+	public void dispose() {
+		// DO NOTHING
+	}
+
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		_window = targetPart.getSite().getWorkbenchWindow();
+	}
+
+	public void init(IViewPart view) {
+		// DO NOTHING
+	}
+
+	public void init(IWorkbenchWindow window) {
+		_window = window;
+	}
+
+	public void selectionChanged(IAction action, ISelection selection) {
+		if (selection == null || selection.isEmpty()) {
+			if (clearSelection()) {
+				_selection = null;
 			}
-			if (entity1 != null && entity2 != null) {
-				CreateRelationshipDialog dialog = new CreateRelationshipDialog(getWindow().getShell(), entity1, entity2);
-				dialog.open();
-			} else if (entity1 != null) {
-				entity1.addBlankRelationship(Messages.getString("EORelationship.newName"));
-			} else {
-				MessageDialog.openError(getWindow().getShell(), Messages.getString("EORelationship.noEntitySelectedTitle"), Messages.getString("EORelationship.noEntitySelectedMessage"));//$NON-NLS-1$
-			}
-		} catch (DuplicateNameException e) {
-			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), e);
+		} else if (selection instanceof IStructuredSelection) {
+			_selection = ((IStructuredSelection) selection);
 		}
+	}
+
+	protected boolean clearSelection() {
+		return false;
+	}
+
+	protected IWorkbenchWindow getWindow() {
+		return _window;
+	}
+
+	protected IStructuredSelection getSelection() {
+		return _selection;
 	}
 }

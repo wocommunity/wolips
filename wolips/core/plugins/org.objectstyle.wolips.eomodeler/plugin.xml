@@ -476,15 +476,6 @@
                style="push"
                toolbarPath="/Normal"
                tooltip="New Database Config">
-               <enablement>
-                   <or>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EOModel"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.IEOEntityRelative"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EOArgument"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig"/>
-                   </or>
-               </enablement>
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.GenerateSQLAction"
@@ -494,15 +485,6 @@
                style="push"
                toolbarPath="/Normal"
                tooltip="Generate SQL">
-               <enablement>
-                   <or>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EOModel"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.IEOEntityRelative"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EOArgument"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig"/>
-                   </or>
-               </enablement>
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.ReverseEngineerAction"
@@ -512,9 +494,6 @@
                style="push"
                toolbarPath="/Normal"
                tooltip="Reverse Engineer">
-               <enablement>
-                   <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EOModel"/>
-               </enablement>
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.VerifyAction"
@@ -524,15 +503,6 @@
                style="push"
                toolbarPath="/Normal"
                tooltip="Verify Model">
-               <enablement>
-                   <or>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EOModel"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.IEOEntityRelative"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EOArgument"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig"/>
-                   </or>
-               </enablement>
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.SubclassEntityAction"
@@ -542,11 +512,6 @@
                style="push"
                toolbarPath="/Normal"
                tooltip="Subclass Entity">
-               <enablement>
-                   <or>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.IEOEntityRelative"/>
-                   </or>
-               </enablement>
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.FlattenAction"
@@ -556,12 +521,6 @@
                style="push"
                toolbarPath="/Normal"
                tooltip="Flatten">
-               <enablement>
-                   <or>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EOAttributePath"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EORelationshipPath"/>
-                   </or>
-               </enablement>
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewEntityIndexAction"
@@ -571,11 +530,6 @@
                style="push"
                toolbarPath="/Normal"
                tooltip="New Entity Index">
-               <enablement>
-                   <or>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.IEOEntityRelative"/>
-                   </or>
-               </enablement>
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewArgumentAction"
@@ -585,12 +539,6 @@
                style="push"
                toolbarPath="/Normal"
                tooltip="New Argument">
-               <enablement>
-                   <or>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EOArgument"/>
-                   </or>
-               </enablement>
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewStoredProcedureAction"
@@ -600,15 +548,6 @@
                style="push"
                toolbarPath="/Normal"
                tooltip="New Stored Procedure">
-               <enablement>
-                   <or>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EOModel"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.IEOEntityRelative"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EOArgument"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig"/>
-                   </or>
-               </enablement>
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewFetchSpecAction"
@@ -618,11 +557,6 @@
                style="push"
                toolbarPath="/Normal"
                tooltip="New Fetch Specification">
-               <enablement>
-                   <or>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.IEOEntityRelative"/>
-                   </or>
-               </enablement>
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewRelationshipAction"
@@ -632,11 +566,6 @@
                style="push"
                toolbarPath="/Normal"
                tooltip="New Relationship">
-               <enablement>
-                   <or>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.IEOEntityRelative"/>
-                   </or>
-               </enablement>
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewAttributeAction"
@@ -646,11 +575,6 @@
                style="push"
                toolbarPath="/Normal"
                tooltip="New Attribute">
-               <enablement>
-                   <or>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.IEOEntityRelative"/>
-                   </or>
-               </enablement>
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewEntityAction"
@@ -660,15 +584,6 @@
                style="push"
                toolbarPath="/Normal"
                tooltip="New Entity">
-               <enablement>
-                   <or>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EOModel"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.IEOEntityRelative"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EOArgument"/>
-                       <objectClass name="org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig"/>
-                   </or>
-               </enablement>
          </action>
       </actionSet>
    </extension>
@@ -676,7 +591,7 @@
          point="org.eclipse.ui.actionSetPartAssociations">
       <actionSetPartAssociation targetID="org.objectstyle.wolips.eomodeler.actionSet">
          <part id="org.objectstyle.wolips.eomodeler.editors.EOModelEditor"/>
-         <part id="org.eclipse.ui.views.ContentOutlineTest"/>
+         <part id="org.eclipse.ui.views.ContentOutline"/>
          <part id="org.eclipse.ui.views.PropertySheet"/>
       </actionSetPartAssociation>
    </extension>
