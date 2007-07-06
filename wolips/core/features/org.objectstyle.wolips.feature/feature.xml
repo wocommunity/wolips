@@ -86,7 +86,6 @@
       <import plugin="org.objectstyle.wolips.baseforuiplugins"/>
       <import plugin="org.objectstyle.wolips.preferences"/>
       <import plugin="org.eclipse.ui.forms"/>
-      <import plugin="org.eclipse.pde.ui"/>
       <import plugin="org.objectstyle.wolips.eogenerator.core"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.objectstyle.wolips.datasets"/>
