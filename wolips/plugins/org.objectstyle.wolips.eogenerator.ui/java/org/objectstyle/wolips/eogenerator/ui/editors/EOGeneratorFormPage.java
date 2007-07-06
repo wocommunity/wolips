@@ -49,15 +49,20 @@
  */
 package org.objectstyle.wolips.eogenerator.ui.editors;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -68,8 +73,6 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
-import org.eclipse.pde.internal.ui.parts.FormEntry;
-import org.eclipse.pde.internal.ui.parts.IFormEntryListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -83,13 +86,13 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
-import org.eclipse.ui.forms.FormColors;
+import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
@@ -100,41 +103,33 @@ import org.objectstyle.wolips.eogenerator.core.model.EOModelReference;
 import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel.Define;
 
 public class EOGeneratorFormPage extends FormPage {
-	EOGeneratorModel _model;
+	private EOGeneratorModel _model;
 
-	private FormEntry _destinationEntry;
+	private TableViewer _modelsTableViewer;
 
-	private FormEntry _subclassDestinationEntry;
+	private TableViewer _refModelsTableViewer;
 
-	private FormEntry _templatesFolderEntry;
-
-	private FormEntry _templateEntry;
-
-	private FormEntry _subclassTemplateEntry;
-
-	private FormEntry _prefixEntry;
-
-	private FormEntry _filenameTemplateEntry;
-
-	// private Button myVerboseButton;
-	Button _javaButton;
-
-	Button _javaClientButton;
-
-	Button _packageDirsButton;
-
-	TableViewer _modelsTableViewer;
-
-	TableViewer _refModelsTableViewer;
-
-	TableViewer _definesTableViewer;
+	private TableViewer _definesTableViewer;
 
 	private boolean _modelGroupEditor;
+
+	private DirtyModelListener _dirtyModelListener;
+
+	private DataBindingContext _bindingContext;
 
 	public EOGeneratorFormPage(FormEditor editor, EOGeneratorModel model, boolean modelGroupEditor) {
 		super(editor, "EOGeneratorForm", (modelGroupEditor) ? "EOModelGroup Form" : "EOGenerator Form");
 		_model = model;
+		_dirtyModelListener = new DirtyModelListener();
+		_model.addPropertyChangeListener(EOGeneratorModel.DIRTY, _dirtyModelListener);
 		_modelGroupEditor = modelGroupEditor;
+	}
+
+	@Override
+	public void dispose() {
+		_bindingContext.dispose();
+		_model.removePropertyChangeListener(EOGeneratorModel.DIRTY, _dirtyModelListener);
+		super.dispose();
 	}
 
 	protected void setInput(IEditorInput input) {
@@ -146,6 +141,8 @@ public class EOGeneratorFormPage extends FormPage {
 	}
 
 	protected void createFormContent(IManagedForm managedForm) {
+		_bindingContext = new DataBindingContext();
+
 		ScrolledForm form = managedForm.getForm();
 		form.setText("EOGenerator");
 
@@ -235,33 +232,17 @@ public class EOGeneratorFormPage extends FormPage {
 		GridLayout namingSectionLayout = (GridLayout) namingSection.getLayout();
 		namingSectionLayout.horizontalSpacing = 10;
 
-		_filenameTemplateEntry = new FormEntry(namingSection, toolkit, "Filename Template", SWT.NONE);
-		_filenameTemplateEntry.setValue(_model.getFilenameTemplate());
-		_filenameTemplateEntry.setFormEntryListener(new EOFormEntryAdapter() {
-			public void textValueChanged(FormEntry entry) {
-				EOGeneratorFormPage.this.getModel().setFilenameTemplate(entry.getValue());
-				getEditor().editorDirtyStateChanged();
-			}
+		Label filenameTemplateLabel = toolkit.createLabel(namingSection, "Filename Template:");
+		filenameTemplateLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+		Text filenameTemplate = toolkit.createText(namingSection, null);
+		filenameTemplate.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		_bindingContext.bindValue(SWTObservables.observeText(filenameTemplate, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.FILENAME_TEMPLATE), null, null);
 
-			public void textDirty(FormEntry entry) {
-				EOGeneratorFormPage.this.getModel().setFilenameTemplate(entry.getText().getText());
-				getEditor().editorDirtyStateChanged();
-			}
-		});
-
-		_prefixEntry = new FormEntry(namingSection, toolkit, "Prefix", SWT.NONE);
-		_prefixEntry.setValue(_model.getPrefix());
-		_prefixEntry.setFormEntryListener(new EOFormEntryAdapter() {
-			public void textValueChanged(FormEntry entry) {
-				EOGeneratorFormPage.this.getModel().setPrefix(entry.getValue());
-				getEditor().editorDirtyStateChanged();
-			}
-
-			public void textDirty(FormEntry entry) {
-				EOGeneratorFormPage.this.getModel().setPrefix(entry.getText().getText());
-				getEditor().editorDirtyStateChanged();
-			}
-		});
+		Label prefixLabel = toolkit.createLabel(namingSection, "Prefix:");
+		prefixLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+		Text prefixEntry = toolkit.createText(namingSection, null);
+		prefixEntry.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		_bindingContext.bindValue(SWTObservables.observeText(prefixEntry, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.PREFIX), null, null);
 	}
 
 	protected void createPathsSection(FormToolkit toolkit, Composite parent) {
@@ -274,38 +255,26 @@ public class EOGeneratorFormPage extends FormPage {
 		pathsSectionLayout.horizontalSpacing = 10;
 
 		Label packageDirsLabel = toolkit.createLabel(pathsSection, "Create Packages?");
-		packageDirsLabel.setForeground(toolkit.getColors().getColor(FormColors.TITLE));
-
-		_packageDirsButton = toolkit.createButton(pathsSection, "", SWT.CHECK);
+		packageDirsLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+		Button packageDirsButton = toolkit.createButton(pathsSection, "", SWT.CHECK);
 		GridData packageDirsButtonGridData = new GridData(GridData.VERTICAL_ALIGN_CENTER);
 		packageDirsButtonGridData.horizontalSpan = 2;
-		_packageDirsButton.setLayoutData(packageDirsButtonGridData);
-		_packageDirsButton.setSelection(_model.isPackageDirs() != null && _model.isPackageDirs().booleanValue());
-		_packageDirsButton.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(SelectionEvent _e) {
-				widgetSelected(_e);
+		packageDirsButton.setLayoutData(packageDirsButtonGridData);
+		_bindingContext.bindValue(SWTObservables.observeSelection(packageDirsButton), BeansObservables.observeValue(_model, EOGeneratorModel.PACKAGE_DIRS), null, null);
+
+		Label destinationLabel = toolkit.createLabel(pathsSection, "Destination:");
+		destinationLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+		final Text destination = toolkit.createText(pathsSection, null);
+		destination.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		_bindingContext.bindValue(SWTObservables.observeText(destination, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.DESTINATION), null, null);
+
+		Button destinationBrowse = toolkit.createButton(pathsSection, "Browse...", SWT.PUSH);
+		destinationBrowse.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent selectionevent) {
+				widgetSelected(selectionevent);
 			}
 
-			public void widgetSelected(SelectionEvent _e) {
-				EOGeneratorFormPage.this.getModel().setPackageDirs(Boolean.valueOf(_packageDirsButton.getSelection()));
-				getEditor().editorDirtyStateChanged();
-			}
-		});
-
-		_destinationEntry = new FormEntry(pathsSection, toolkit, "Destination", "Browse...", false);
-		_destinationEntry.setValue(_model.getDestination());
-		_destinationEntry.setFormEntryListener(new EOFormEntryAdapter() {
-			public void textValueChanged(FormEntry entry) {
-				EOGeneratorFormPage.this.getModel().setDestination(entry.getValue());
-				getEditor().editorDirtyStateChanged();
-			}
-
-			public void textDirty(FormEntry entry) {
-				EOGeneratorFormPage.this.getModel().setDestination(entry.getText().getText());
-				getEditor().editorDirtyStateChanged();
-			}
-
-			public void browseButtonSelected(FormEntry entry) {
+			public void widgetSelected(SelectionEvent selectionevent) {
 				ContainerSelectionDialog containerDialog = new ContainerSelectionDialog(getEditorSite().getShell(), project, false, "Select the folder to write autogenerated files into.");
 				containerDialog.open();
 				Object[] selectedContainers = containerDialog.getResult();
@@ -313,26 +282,25 @@ public class EOGeneratorFormPage extends FormPage {
 					IPath selectedPath = (IPath) selectedContainers[0];
 					IFolder selectedFolder = project.getParent().getFolder(selectedPath);
 					IPath projectRelativePath = selectedFolder.getProjectRelativePath();
-					entry.setValue(projectRelativePath.toPortableString());
+					EOGeneratorFormPage.this.getModel().setDestination(projectRelativePath.toPortableString());
 				}
-				entry.getText().forceFocus();
+				destination.forceFocus();
 			}
 		});
 
-		_subclassDestinationEntry = new FormEntry(pathsSection, toolkit, "Subclass Destination", "Browse...", false);
-		_subclassDestinationEntry.setValue(_model.getSubclassDestination());
-		_subclassDestinationEntry.setFormEntryListener(new EOFormEntryAdapter() {
-			public void textValueChanged(FormEntry entry) {
-				EOGeneratorFormPage.this.getModel().setSubclassDestination(entry.getValue());
-				getEditor().editorDirtyStateChanged();
+		Label subclassDestinationLabel = toolkit.createLabel(pathsSection, "Subclass Destination:");
+		subclassDestinationLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+		final Text subclassDestination = toolkit.createText(pathsSection, null);
+		subclassDestination.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		_bindingContext.bindValue(SWTObservables.observeText(subclassDestination, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.SUBCLASS_DESTINATION), null, null);
+
+		Button subclassDestinationBrowse = toolkit.createButton(pathsSection, "Browse...", SWT.PUSH);
+		subclassDestinationBrowse.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent selectionevent) {
+				widgetSelected(selectionevent);
 			}
 
-			public void textDirty(FormEntry entry) {
-				EOGeneratorFormPage.this.getModel().setSubclassDestination(entry.getText().getText());
-				getEditor().editorDirtyStateChanged();
-			}
-
-			public void browseButtonSelected(FormEntry entry) {
+			public void widgetSelected(SelectionEvent selectionevent) {
 				ContainerSelectionDialog containerDialog = new ContainerSelectionDialog(getEditorSite().getShell(), project, false, "Select the folder to generate customizable files into.");
 				containerDialog.open();
 				Object[] selectedContainers = containerDialog.getResult();
@@ -340,9 +308,9 @@ public class EOGeneratorFormPage extends FormPage {
 					IPath selectedPath = (IPath) selectedContainers[0];
 					IFolder selectedFolder = project.getParent().getFolder(selectedPath);
 					IPath projectRelativePath = selectedFolder.getProjectRelativePath();
-					entry.setValue(projectRelativePath.toPortableString());
+					EOGeneratorFormPage.this.getModel().setSubclassDestination(projectRelativePath.toPortableString());
 				}
-				entry.getText().forceFocus();
+				subclassDestination.forceFocus();
 			}
 		});
 
@@ -351,117 +319,99 @@ public class EOGeneratorFormPage extends FormPage {
 		templatesSectionLayout.horizontalSpacing = 10;
 
 		Label javaLabel = toolkit.createLabel(templatesSection, "Java?");
-		javaLabel.setForeground(toolkit.getColors().getColor(FormColors.TITLE));
-
-		_javaButton = toolkit.createButton(templatesSection, "", SWT.CHECK);
+		javaLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+		Button javaButton = toolkit.createButton(templatesSection, "", SWT.CHECK);
 		GridData javaButtonGridData = new GridData(GridData.VERTICAL_ALIGN_CENTER);
 		javaButtonGridData.horizontalSpan = 2;
-		_javaButton.setLayoutData(packageDirsButtonGridData);
-		_javaButton.setSelection(_model.isJava() != null && _model.isJava().booleanValue());
-		_javaButton.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(SelectionEvent _e) {
-				widgetSelected(_e);
-			}
-
-			public void widgetSelected(SelectionEvent _e) {
-				EOGeneratorFormPage.this.getModel().setJava(Boolean.valueOf(_javaButton.getSelection()));
-				getEditor().editorDirtyStateChanged();
-			}
-		});
+		javaButton.setLayoutData(packageDirsButtonGridData);
+		_bindingContext.bindValue(SWTObservables.observeSelection(javaButton), BeansObservables.observeValue(_model, EOGeneratorModel.JAVA), null, null);
 
 		Label javaClientLabel = toolkit.createLabel(templatesSection, "Java Client?");
-		javaClientLabel.setForeground(toolkit.getColors().getColor(FormColors.TITLE));
-
-		_javaClientButton = toolkit.createButton(templatesSection, "", SWT.CHECK);
+		javaClientLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+		Button javaClientButton = toolkit.createButton(templatesSection, "", SWT.CHECK);
 		GridData javaClientButtonGridData = new GridData(GridData.VERTICAL_ALIGN_CENTER);
 		javaClientButtonGridData.horizontalSpan = 2;
-		_javaClientButton.setLayoutData(packageDirsButtonGridData);
-		_javaClientButton.setSelection(_model.isJavaClient() != null && _model.isJavaClient().booleanValue());
-		_javaClientButton.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(SelectionEvent _e) {
-				widgetSelected(_e);
+		javaClientButton.setLayoutData(packageDirsButtonGridData);
+		_bindingContext.bindValue(SWTObservables.observeSelection(javaClientButton), BeansObservables.observeValue(_model, EOGeneratorModel.JAVA_CLIENT), null, null);
+
+		Label templatesFolderLabel = toolkit.createLabel(pathsSection, "Templates Folder:");
+		templatesFolderLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+		final Text templatesFolder = toolkit.createText(pathsSection, null);
+		templatesFolder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		_bindingContext.bindValue(SWTObservables.observeText(templatesFolder, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.TEMPLATE_DIR), null, null);
+
+		Button templatesFolderBrowse = toolkit.createButton(pathsSection, "Browse...", SWT.PUSH);
+		templatesFolderBrowse.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent selectionevent) {
+				widgetSelected(selectionevent);
 			}
 
-			public void widgetSelected(SelectionEvent _e) {
-				EOGeneratorFormPage.this.getModel().setJavaClient(Boolean.valueOf(_javaClientButton.getSelection()));
-				getEditor().editorDirtyStateChanged();
-			}
-		});
-
-		_templatesFolderEntry = new FormEntry(templatesSection, toolkit, "Templates Folder", "Browse...", false);
-		_templatesFolderEntry.setValue(_model.getTemplateDir(null));
-		_templatesFolderEntry.setFormEntryListener(new EOFormEntryAdapter() {
-			public void textValueChanged(FormEntry entry) {
-				EOGeneratorFormPage.this.getModel().setTemplateDir(entry.getValue());
-				getEditor().editorDirtyStateChanged();
-			}
-
-			public void textDirty(FormEntry entry) {
-				EOGeneratorFormPage.this.getModel().setTemplateDir(entry.getText().getText());
-				getEditor().editorDirtyStateChanged();
-			}
-
-			public void browseButtonSelected(FormEntry entry) {
+			public void widgetSelected(SelectionEvent selectionevent) {
 				DirectoryDialog directoryDialog = new DirectoryDialog(getEditorSite().getShell());
 				directoryDialog.setMessage("Select the folder that contains your EOGenerator templates.");
-				directoryDialog.setFilterPath(entry.getValue());
+				directoryDialog.setFilterPath(EOGeneratorFormPage.this.getModel().getTemplateDir());
 				String selectedDirectory = directoryDialog.open();
 				if (selectedDirectory != null) {
-					entry.setValue(selectedDirectory);
+					EOGeneratorFormPage.this.getModel().setTemplateDir(selectedDirectory);
 				}
-				entry.getText().forceFocus();
+				templatesFolder.forceFocus();
 			}
 		});
 
-		_templateEntry = new FormEntry(templatesSection, toolkit, "Template", "Browse...", false);
-		_templateEntry.setValue(_model.getJavaTemplate(null));
-		_templateEntry.setFormEntryListener(new EOFormEntryAdapter() {
-			public void textValueChanged(FormEntry entry) {
-				EOGeneratorFormPage.this.getModel().setJavaTemplate(entry.getValue());
-				getEditor().editorDirtyStateChanged();
+		Label templateLabel = toolkit.createLabel(pathsSection, "Template:");
+		templateLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+		final Text template = toolkit.createText(pathsSection, null);
+		template.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		_bindingContext.bindValue(SWTObservables.observeText(template, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.JAVA_TEMPLATE), null, null);
+
+		Button templateBrowse = toolkit.createButton(pathsSection, "Browse...", SWT.PUSH);
+		templateBrowse.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent selectionevent) {
+				widgetSelected(selectionevent);
 			}
 
-			public void textDirty(FormEntry entry) {
-				EOGeneratorFormPage.this.getModel().setJavaTemplate(entry.getText().getText());
-				getEditor().editorDirtyStateChanged();
-			}
-
-			public void browseButtonSelected(FormEntry entry) {
-				EOGeneratorFormPage.this.selectTemplate("Select the superclass template.", entry);
-				entry.getText().forceFocus();
+			public void widgetSelected(SelectionEvent selectionevent) {
+				String selectedTemplate = EOGeneratorFormPage.this.selectTemplate("Select the superclass template.");
+				if (selectedTemplate != null) {
+					EOGeneratorFormPage.this.getModel().setJavaTemplate(selectedTemplate);
+				}
+				template.forceFocus();
 			}
 		});
 
-		_subclassTemplateEntry = new FormEntry(templatesSection, toolkit, "Subclass Template", "Browse...", false);
-		_subclassTemplateEntry.setValue(_model.getSubclassJavaTemplate(null));
-		_subclassTemplateEntry.setFormEntryListener(new EOFormEntryAdapter() {
-			public void textValueChanged(FormEntry entry) {
-				EOGeneratorFormPage.this.getModel().setSubclassJavaTemplate(entry.getValue());
-				getEditor().editorDirtyStateChanged();
+		Label subclassTemplateLabel = toolkit.createLabel(pathsSection, "Subclass Template:");
+		subclassTemplateLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+		final Text subclassTemplate = toolkit.createText(pathsSection, null);
+		subclassTemplate.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		_bindingContext.bindValue(SWTObservables.observeText(subclassTemplate, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.SUBCLASS_JAVA_TEMPLATE), null, null);
+
+		Button subclassTemplateBrowse = toolkit.createButton(pathsSection, "Browse...", SWT.PUSH);
+		subclassTemplateBrowse.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent selectionevent) {
+				widgetSelected(selectionevent);
 			}
 
-			public void textDirty(FormEntry entry) {
-				EOGeneratorFormPage.this.getModel().setSubclassJavaTemplate(entry.getText().getText());
-				getEditor().editorDirtyStateChanged();
-			}
-
-			public void browseButtonSelected(FormEntry entry) {
-				EOGeneratorFormPage.this.selectTemplate("Select the subclass template.", entry);
-				entry.getText().forceFocus();
+			public void widgetSelected(SelectionEvent selectionevent) {
+				String selectedTemplate = EOGeneratorFormPage.this.selectTemplate("Select the subclass template.");
+				if (selectedTemplate != null) {
+					EOGeneratorFormPage.this.getModel().setSubclassJavaTemplate(selectedTemplate);
+				}
+				subclassTemplate.forceFocus();
 			}
 		});
 	}
 
-	protected void selectTemplate(String text, FormEntry entry) {
+	protected String selectTemplate(String text) {
+		String selectedTemplate = null;
 		FileDialog templateDialog = new FileDialog(getEditorSite().getShell());
-		templateDialog.setFileName(_templatesFolderEntry.getValue());
+		templateDialog.setFileName(_model.getTemplateDir());
 		templateDialog.setText(text);
 		templateDialog.setFilterExtensions(new String[] { "*.eotemplate" });
-		String templateDir = _templatesFolderEntry.getValue();
+		String templateDir = _model.getTemplateDir();
 		if (templateDir != null) {
 			templateDialog.setFilterPath(templateDir);
 		}
-		String selectedTemplate = templateDialog.open();
+		selectedTemplate = templateDialog.open();
 		if (selectedTemplate != null) {
 			if (templateDir != null && selectedTemplate.startsWith(templateDir)) {
 				int templateDirLength = templateDir.length();
@@ -470,8 +420,8 @@ public class EOGeneratorFormPage extends FormPage {
 				}
 				selectedTemplate = selectedTemplate.substring(templateDirLength);
 			}
-			entry.setValue(selectedTemplate);
 		}
+		return selectedTemplate;
 	}
 
 	protected void createDefinesSection(FormToolkit toolkit, Composite parent) {
@@ -524,11 +474,11 @@ public class EOGeneratorFormPage extends FormPage {
 		_refModelsTableViewer.setInput(_model);
 		if (!_modelGroupEditor) {
 			_definesTableViewer.setInput(_model);
-			_destinationEntry.setValue(_model.getDestination());
-			_subclassDestinationEntry.setValue(_model.getSubclassDestination());
-			_subclassTemplateEntry.setValue(_model.getSubclassJavaTemplate(null));
-			_templateEntry.setValue(_model.getJavaTemplate(null));
-			_templatesFolderEntry.setValue(_model.getTemplateDir(null));
+			// _destinationEntry.setValue(_model.getDestination());
+			// _subclassDestinationEntry.setValue(_model.getSubclassDestination());
+			// _subclassTemplateEntry.setValue(_model.getSubclassJavaTemplate(null));
+			// _templateEntry.setValue(_model.getJavaTemplate(null));
+			// _templatesFolderEntry.setValue(_model.getTemplateDir(null));
 		}
 	}
 
@@ -582,9 +532,28 @@ public class EOGeneratorFormPage extends FormPage {
 						newDefines.add(define);
 						_model.setDefines(newDefines);
 						_definesTableViewer.refresh();
-						getEditor().editorDirtyStateChanged();
 					}
 				}
+			}
+		}
+	}
+
+	public TableViewer getModelsTableViewer() {
+		return _modelsTableViewer;
+	}
+
+	public TableViewer getRefModelsTableViewer() {
+		return _refModelsTableViewer;
+	}
+
+	public TableViewer getDefinesTableViewer() {
+		return _definesTableViewer;
+	}
+
+	protected class DirtyModelListener implements PropertyChangeListener {
+		public void propertyChange(PropertyChangeEvent event) {
+			if (EOGeneratorModel.DIRTY.equals(event.getPropertyName())) {
+				EOGeneratorFormPage.this.getEditor().editorDirtyStateChanged();
 			}
 		}
 	}
@@ -595,7 +564,7 @@ public class EOGeneratorFormPage extends FormPage {
 		}
 
 		public void widgetSelected(SelectionEvent event) {
-			IStructuredSelection selection = (IStructuredSelection) _modelsTableViewer.getSelection();
+			IStructuredSelection selection = (IStructuredSelection) EOGeneratorFormPage.this.getModelsTableViewer().getSelection();
 			if (!selection.isEmpty()) {
 				List<EOModelReference> models = EOGeneratorFormPage.this.getModel().getModels();
 				List<EOModelReference> newModels = new LinkedList<EOModelReference>(models);
@@ -604,8 +573,7 @@ public class EOGeneratorFormPage extends FormPage {
 					newModels.remove(selections[i]);
 				}
 				EOGeneratorFormPage.this.getModel().setModels(newModels);
-				_modelsTableViewer.refresh();
-				getEditor().editorDirtyStateChanged();
+				EOGeneratorFormPage.this.getModelsTableViewer().refresh();
 			}
 		}
 	}
@@ -637,8 +605,7 @@ public class EOGeneratorFormPage extends FormPage {
 				List<EOModelReference> newModels = new LinkedList<EOModelReference>(models);
 				newModels.add(eoModel);
 				EOGeneratorFormPage.this.getModel().setModels(newModels);
-				_modelsTableViewer.refresh();
-				getEditor().editorDirtyStateChanged();
+				EOGeneratorFormPage.this.getModelsTableViewer().refresh();
 			}
 		}
 	}
@@ -649,7 +616,7 @@ public class EOGeneratorFormPage extends FormPage {
 		}
 
 		public void widgetSelected(SelectionEvent event) {
-			IStructuredSelection selection = (IStructuredSelection) _refModelsTableViewer.getSelection();
+			IStructuredSelection selection = (IStructuredSelection) EOGeneratorFormPage.this.getRefModelsTableViewer().getSelection();
 			if (!selection.isEmpty()) {
 				List<EOModelReference> refModels = EOGeneratorFormPage.this.getModel().getRefModels();
 				List<EOModelReference> newRefModels = new LinkedList<EOModelReference>(refModels);
@@ -658,8 +625,7 @@ public class EOGeneratorFormPage extends FormPage {
 					newRefModels.remove(selections[i]);
 				}
 				EOGeneratorFormPage.this.getModel().setRefModels(newRefModels);
-				_refModelsTableViewer.refresh();
-				getEditor().editorDirtyStateChanged();
+				EOGeneratorFormPage.this.getRefModelsTableViewer().refresh();
 			}
 		}
 	}
@@ -687,8 +653,7 @@ public class EOGeneratorFormPage extends FormPage {
 				List<EOModelReference> newRefModels = new LinkedList<EOModelReference>(refModels);
 				newRefModels.add(eoModel);
 				EOGeneratorFormPage.this.getModel().setRefModels(newRefModels);
-				_refModelsTableViewer.refresh();
-				getEditor().editorDirtyStateChanged();
+				EOGeneratorFormPage.this.getRefModelsTableViewer().refresh();
 			}
 		}
 	}
@@ -699,7 +664,7 @@ public class EOGeneratorFormPage extends FormPage {
 		}
 
 		public void widgetSelected(SelectionEvent event) {
-			IStructuredSelection selection = (IStructuredSelection) _definesTableViewer.getSelection();
+			IStructuredSelection selection = (IStructuredSelection) EOGeneratorFormPage.this.getDefinesTableViewer().getSelection();
 			if (!selection.isEmpty()) {
 				List<Define> defines = EOGeneratorFormPage.this.getModel().getDefines();
 				List<Define> newDefines = new LinkedList<Define>(defines);
@@ -708,8 +673,7 @@ public class EOGeneratorFormPage extends FormPage {
 					newDefines.remove(selections[i]);
 				}
 				EOGeneratorFormPage.this.getModel().setDefines(newDefines);
-				_definesTableViewer.refresh();
-				getEditor().editorDirtyStateChanged();
+				EOGeneratorFormPage.this.getDefinesTableViewer().refresh();
 			}
 		}
 	}
@@ -726,47 +690,13 @@ public class EOGeneratorFormPage extends FormPage {
 
 	protected class DefinesDoubleClickListener implements IDoubleClickListener {
 		public void doubleClick(DoubleClickEvent event) {
-			IStructuredSelection selection = (IStructuredSelection) _definesTableViewer.getSelection();
+			IStructuredSelection selection = (IStructuredSelection) EOGeneratorFormPage.this.getDefinesTableViewer().getSelection();
 			if (!selection.isEmpty()) {
 				EOGeneratorModel.Define define = (EOGeneratorModel.Define) selection.getFirstElement();
 				if (define != null) {
 					EOGeneratorFormPage.this.addDefine(define.getName(), define.getValue());
 				}
 			}
-		}
-	}
-
-	protected class EOFormEntryAdapter implements IFormEntryListener {
-		public void browseButtonSelected(FormEntry entry) {
-			// do nothing
-		}
-
-		public void focusGained(FormEntry entry) {
-			// do nothing
-		}
-
-		public void selectionChanged(FormEntry entry) {
-			// do nothing
-		}
-
-		public void textDirty(FormEntry entry) {
-			// do nothing
-		}
-
-		public void textValueChanged(FormEntry entry) {
-			// do nothing
-		}
-
-		public void linkActivated(HyperlinkEvent event) {
-			// do nothing
-		}
-
-		public void linkEntered(HyperlinkEvent event) {
-			// do nothing
-		}
-
-		public void linkExited(HyperlinkEvent event) {
-			// do nothing
 		}
 	}
 
@@ -829,7 +759,7 @@ public class EOGeneratorFormPage extends FormPage {
 
 		public String getColumnText(Object element, int columnIndex) {
 			EOModelReference model = (EOModelReference) element;
-			String name = model.getPath(_model.getProject());
+			String name = model.getPath(EOGeneratorFormPage.this.getModel().getProject());
 			return name;
 		}
 

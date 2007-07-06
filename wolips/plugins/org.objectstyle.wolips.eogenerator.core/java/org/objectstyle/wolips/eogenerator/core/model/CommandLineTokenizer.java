@@ -198,4 +198,13 @@ public class CommandLineTokenizer implements Enumeration {
 
 		return token.toString();
 	}
+	
+	public static void main(String[] args) throws ParseException {
+		String str = "This is a \"Test of \\\" quotes in a string\" and C:\\\\Path";
+		CommandLineTokenizer tokenizer = new CommandLineTokenizer(str);
+		while (tokenizer.hasMoreTokens()) {
+			String token = tokenizer.nextToken();
+			System.out.println(token);
+		}
+	}
 }

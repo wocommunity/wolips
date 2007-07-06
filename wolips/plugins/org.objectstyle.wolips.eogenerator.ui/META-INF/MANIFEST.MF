@@ -6,9 +6,11 @@ Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.eogenerator.ui.Activator
 Bundle-Vendor: objectstyle.org
 Require-Bundle: org.eclipse.ui.forms,
- org.eclipse.pde.ui,
  org.objectstyle.wolips.baseforuiplugins,
- org.objectstyle.wolips.eogenerator.core
+ org.objectstyle.wolips.eogenerator.core,
+ org.eclipse.core.databinding,
+ org.eclipse.jface.databinding,
+ org.eclipse.core.databinding.beans
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.eogenerator.ui,
  org.objectstyle.wolips.eogenerator.ui.actions,
