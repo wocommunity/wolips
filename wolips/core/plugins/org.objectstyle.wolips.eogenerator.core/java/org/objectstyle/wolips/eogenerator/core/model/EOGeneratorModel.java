@@ -49,6 +49,8 @@
  */
 package org.objectstyle.wolips.eogenerator.core.model;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -68,6 +70,42 @@ import org.eclipse.core.runtime.Path;
 import org.objectstyle.wolips.preferences.Preferences;
 
 public class EOGeneratorModel {
+	public static final String EOGENERATOR_PATH = "eogeneratorPath";
+
+	public static final String MODELS = "models";
+
+	public static final String REF_MODELS = "refModels";
+
+	public static final String DESTINATION = "destination";
+
+	public static final String SUBCLASS_DESTINATION = "subclassDestination";
+
+	public static final String TEMPLATE_DIR = "templateDir";
+
+	public static final String JAVA_TEMPLATE = "javaTemplate";
+
+	public static final String SUBCLASS_JAVA_TEMPLATE = "subclassJavaTemplate";
+
+	public static final String DEFINES = "defines";
+
+	public static final String PACKAGE_DIRS = "packageDirs";
+
+	public static final String JAVA = "java";
+
+	public static final String JAVA_CLIENT = "javaClient";
+
+	public static final String VERBOSE = "verbose";
+
+	public static final String PREFIX = "prefix";
+
+	public static final String FILENAME_TEMPLATE = "filenameTemplate";
+
+	public static final String CUSTOM_SETTINGS = "customSettings";
+
+	public static final String DIRTY = "dirty";
+
+	private PropertyChangeSupport _propertyChangeSupport;
+	
 	private IProject _project;
 
 	private String _eogeneratorPath;
@@ -115,10 +153,27 @@ public class EOGeneratorModel {
 	}
 
 	public EOGeneratorModel() {
+		_propertyChangeSupport = new PropertyChangeSupport(this);
 		_models = new LinkedList<EOModelReference>();
 		_refModels = new LinkedList<EOModelReference>();
 		_defines = new LinkedList<Define>();
 		_customSettings = new LinkedList<String>();
+	}
+	
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		_propertyChangeSupport.addPropertyChangeListener(listener);
+	}
+
+	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		_propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+	}
+
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		_propertyChangeSupport.removePropertyChangeListener(listener);
+	}
+
+	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		_propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
 	}
 
 	public void writeToFile(IFile file, IProgressMonitor monitor) throws CoreException, IOException {
@@ -280,8 +335,10 @@ public class EOGeneratorModel {
 	}
 
 	public void setDefines(List<Define> defines) {
+		List<Define> oldDefines = _defines;
 		_defines = defines;
-		_dirty = true;
+		_propertyChangeSupport.firePropertyChange(EOGeneratorModel.DEFINES, oldDefines, _defines);
+		setDirty(true);
 	}
 
 	public String getDestination() {
@@ -290,8 +347,10 @@ public class EOGeneratorModel {
 
 	public void setDestination(String destination) {
 		if (isNew(_destination, destination)) {
+			String oldDestination = _destination;
 			_destination = destination;
-			_dirty = true;
+			_propertyChangeSupport.firePropertyChange(EOGeneratorModel.DESTINATION, oldDestination, _destination);
+			setDirty(true);
 		}
 	}
 
@@ -309,9 +368,15 @@ public class EOGeneratorModel {
 
 	public void setEOGeneratorPath(String eogeneratorPath, boolean markAsDirty) {
 		if (isNew(_eogeneratorPath, eogeneratorPath)) {
+			String oldEOGeneratorPath = _eogeneratorPath;
 			_eogeneratorPath = eogeneratorPath;
-			_dirty = markAsDirty;
+			_propertyChangeSupport.firePropertyChange(EOGeneratorModel.EOGENERATOR_PATH, oldEOGeneratorPath, _eogeneratorPath);
+			setDirty(markAsDirty);
 		}
+	}
+
+	public Boolean getJavaClient() {
+		return isJavaClient();
 	}
 
 	public Boolean isJavaClient() {
@@ -319,19 +384,31 @@ public class EOGeneratorModel {
 	}
 
 	public void setJavaClient(Boolean javaClient) {
+		Boolean oldJavaClient = _javaClient;
 		_javaClient = javaClient;
-		_dirty = true;
+		_propertyChangeSupport.firePropertyChange(EOGeneratorModel.JAVA_CLIENT, oldJavaClient, _javaClient);
+		setDirty(true);
 	}
 
+	public Boolean getJava() {
+		return isJava();
+	}
+	
 	public Boolean isJava() {
 		return _java;
 	}
 
 	public void setJava(Boolean java) {
+		Boolean oldJava = _java;
 		_java = java;
-		_dirty = true;
+		_propertyChangeSupport.firePropertyChange(EOGeneratorModel.JAVA, oldJava, _java);
+		setDirty(true);
 	}
 
+	public String getJavaTemplate() {
+		return getJavaTemplate(null);
+	}
+	
 	public String getJavaTemplate(String defaultJavaTemplate) {
 		String javaTemplate = _javaTemplate;
 		if (_javaTemplate == null || _javaTemplate.trim().length() == 0) {
@@ -342,8 +419,10 @@ public class EOGeneratorModel {
 
 	public void setJavaTemplate(String javaTemplate) {
 		if (isNew(_javaTemplate, javaTemplate)) {
+			String oldJavaTemplate = _javaTemplate;
 			_javaTemplate = javaTemplate;
-			_dirty = true;
+			_propertyChangeSupport.firePropertyChange(EOGeneratorModel.JAVA_TEMPLATE, oldJavaTemplate, _javaTemplate);
+			setDirty(true);
 		}
 	}
 
@@ -364,22 +443,32 @@ public class EOGeneratorModel {
 	}
 
 	public void setModels(List<EOModelReference> models) {
+		List<EOModelReference> oldModels = _models;
 		_models = models;
-		_dirty = true;
+		_propertyChangeSupport.firePropertyChange(EOGeneratorModel.MODELS, oldModels, _models);
+		setDirty(true);
 	}
 
 	public void addModel(EOModelReference modelReference) {
+		List<EOModelReference> oldModels = new LinkedList<EOModelReference>(_models);
 		_models.add(modelReference);
-		_dirty = true;
+		_propertyChangeSupport.firePropertyChange(EOGeneratorModel.MODELS, oldModels, _models);
+		setDirty(true);
 	}
 
+	public Boolean getPackageDirs() {
+		return isPackageDirs();
+	}
+	
 	public Boolean isPackageDirs() {
 		return _packageDirs;
 	}
 
 	public void setPackageDirs(Boolean packageDirs) {
+		Boolean oldPackageDirs = _packageDirs;
 		_packageDirs = packageDirs;
-		_dirty = true;
+		_propertyChangeSupport.firePropertyChange(EOGeneratorModel.PACKAGE_DIRS, oldPackageDirs, _packageDirs);
+		setDirty(true);
 	}
 
 	public List<EOModelReference> getRefModels() {
@@ -387,13 +476,17 @@ public class EOGeneratorModel {
 	}
 
 	public void setRefModels(List<EOModelReference> refModels) {
+		List<EOModelReference> oldRefModels = _refModels;
 		_refModels = refModels;
-		_dirty = true;
+		_propertyChangeSupport.firePropertyChange(EOGeneratorModel.REF_MODELS, oldRefModels, _refModels);
+		setDirty(true);
 	}
 
 	public void addRefModel(EOModelReference modelReference) {
+		List<EOModelReference> oldRefModels = new LinkedList<EOModelReference>(_refModels);
 		_refModels.add(modelReference);
-		_dirty = true;
+		_propertyChangeSupport.firePropertyChange(EOGeneratorModel.REF_MODELS, oldRefModels, _refModels);
+		setDirty(true);
 	}
 
 	public String getSubclassDestination() {
@@ -402,11 +495,17 @@ public class EOGeneratorModel {
 
 	public void setSubclassDestination(String subclassDestination) {
 		if (isNew(_subclassDestination, subclassDestination)) {
+			String oldSubclassDestination = _subclassDestination;
 			_subclassDestination = subclassDestination;
-			_dirty = true;
+			_propertyChangeSupport.firePropertyChange(EOGeneratorModel.SUBCLASS_DESTINATION, oldSubclassDestination, _subclassDestination);
+			setDirty(true);
 		}
 	}
 
+	public String getSubclassJavaTemplate() {
+		return getSubclassJavaTemplate(null);
+	}
+	
 	public String getSubclassJavaTemplate(String defaultSubclassJavaTemplate) {
 		String subclassJavaTemplate = _subclassJavaTemplate;
 		if (_subclassJavaTemplate == null || _subclassJavaTemplate.trim().length() == 0) {
@@ -417,11 +516,17 @@ public class EOGeneratorModel {
 
 	public void setSubclassJavaTemplate(String subclassJavaTemplate) {
 		if (isNew(_subclassJavaTemplate, subclassJavaTemplate)) {
+			String oldSubclassJavaTemplate = _subclassJavaTemplate;
 			_subclassJavaTemplate = subclassJavaTemplate;
-			_dirty = true;
+			_propertyChangeSupport.firePropertyChange(EOGeneratorModel.SUBCLASS_JAVA_TEMPLATE, oldSubclassJavaTemplate, _subclassJavaTemplate);
+			setDirty(true);
 		}
 	}
 
+	public String getTemplateDir() {
+		return getTemplateDir(null);
+	}
+	
 	public String getTemplateDir(String defaultTemplateDir) {
 		String templateDir = _templateDir;
 		if (_templateDir == null || _templateDir.trim().length() == 0) {
@@ -435,15 +540,19 @@ public class EOGeneratorModel {
 
 	public void setTemplateDir(String templateDir) {
 		if (isNew(_templateDir, templateDir)) {
+			String oldTemplateDir = _templateDir;
 			_templateDir = templateDir;
-			_dirty = true;
+			_propertyChangeSupport.firePropertyChange(EOGeneratorModel.TEMPLATE_DIR, oldTemplateDir, _templateDir);
+			setDirty(true);
 		}
 	}
 
 	public void setPrefix(String prefix) {
 		if (isNew(_prefix, prefix)) {
+			String oldPrefix = _prefix;
 			_prefix = prefix;
-			_dirty = true;
+			_propertyChangeSupport.firePropertyChange(EOGeneratorModel.PREFIX, oldPrefix, _prefix);
+			setDirty(true);
 		}
 	}
 
@@ -453,8 +562,10 @@ public class EOGeneratorModel {
 
 	public void setFilenameTemplate(String filenameTemplate) {
 		if (isNew(_filenameTemplate, filenameTemplate)) {
+			String oldFilenameTemplate = _filenameTemplate;
 			_filenameTemplate = filenameTemplate;
-			_dirty = true;
+			_propertyChangeSupport.firePropertyChange(EOGeneratorModel.FILENAME_TEMPLATE, oldFilenameTemplate, _filenameTemplate);
+			setDirty(true);
 		}
 	}
 
@@ -462,17 +573,25 @@ public class EOGeneratorModel {
 		return _filenameTemplate;
 	}
 
+	public Boolean getVerbose() {
+		return isVerbose();
+	}
+	
 	public Boolean isVerbose() {
 		return _verbose;
 	}
 
 	public void setVerbose(Boolean verbose) {
+		Boolean oldVerbose = _verbose;
 		_verbose = verbose;
-		_dirty = true;
+		_propertyChangeSupport.firePropertyChange(EOGeneratorModel.VERBOSE, oldVerbose, _verbose);
+		setDirty(true);
 	}
 
 	public void setDirty(boolean dirty) {
+		boolean oldDirty = _dirty;
 		_dirty = dirty;
+		_propertyChangeSupport.firePropertyChange(EOGeneratorModel.DIRTY, oldDirty, _dirty);
 	}
 
 	public boolean isDirty() {
@@ -545,37 +664,26 @@ public class EOGeneratorModel {
 	}
 
 	/*
-	public static EOGeneratorModel createDefaultModel(IProject project) {
-		EOGeneratorModel model = new EOGeneratorModel(project);
-		model.setJava(Boolean.TRUE);
-		model.setPackageDirs(Boolean.TRUE);
-		model.setVerbose(Boolean.TRUE);
-		// model.setEOGeneratorPath(Preferences.getEOGeneratorPath());
-		// model.setJavaTemplate(Preferences.getEOGeneratorJavaTemplate());
-		// model.setTemplateDir(Preferences.getEOGeneratorTemplateDir());
-		// model.setSubclassJavaTemplate(Preferences.getEOGeneratorSubclassJavaTemplate());
-		try {
-			IJavaProject javaProject = JavaCore.create(project);
-			if (javaProject != null) {
-				IClasspathEntry[] classpathEntry = javaProject.getRawClasspath();
-				for (int classpathEntryNum = 0; classpathEntryNum < classpathEntry.length; classpathEntryNum++) {
-					IClasspathEntry entry = classpathEntry[classpathEntryNum];
-					if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-						IPath path = entry.getPath();
-						if (path != null) {
-							IFolder sourceFolder = project.getWorkspace().getRoot().getFolder(path);
-							IPath projectRelativePath = sourceFolder.getProjectRelativePath();
-							String projectRelativePathStr = projectRelativePath.toPortableString();
-							model.setDestination(projectRelativePathStr);
-							model.setSubclassDestination(projectRelativePathStr);
-						}
-					}
-				}
-			}
-		} catch (JavaModelException e) {
-			e.printStackTrace();
-		}
-		return model;
-	}
-	*/
+	 * public static EOGeneratorModel createDefaultModel(IProject project) {
+	 * EOGeneratorModel model = new EOGeneratorModel(project);
+	 * model.setJava(Boolean.TRUE); model.setPackageDirs(Boolean.TRUE);
+	 * model.setVerbose(Boolean.TRUE); //
+	 * model.setEOGeneratorPath(Preferences.getEOGeneratorPath()); //
+	 * model.setJavaTemplate(Preferences.getEOGeneratorJavaTemplate()); //
+	 * model.setTemplateDir(Preferences.getEOGeneratorTemplateDir()); //
+	 * model.setSubclassJavaTemplate(Preferences.getEOGeneratorSubclassJavaTemplate());
+	 * try { IJavaProject javaProject = JavaCore.create(project); if
+	 * (javaProject != null) { IClasspathEntry[] classpathEntry =
+	 * javaProject.getRawClasspath(); for (int classpathEntryNum = 0;
+	 * classpathEntryNum < classpathEntry.length; classpathEntryNum++) {
+	 * IClasspathEntry entry = classpathEntry[classpathEntryNum]; if
+	 * (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) { IPath path =
+	 * entry.getPath(); if (path != null) { IFolder sourceFolder =
+	 * project.getWorkspace().getRoot().getFolder(path); IPath
+	 * projectRelativePath = sourceFolder.getProjectRelativePath(); String
+	 * projectRelativePathStr = projectRelativePath.toPortableString();
+	 * model.setDestination(projectRelativePathStr);
+	 * model.setSubclassDestination(projectRelativePathStr); } } } } } catch
+	 * (JavaModelException e) { e.printStackTrace(); } return model; }
+	 */
 }
