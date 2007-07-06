@@ -61,14 +61,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelObject;
@@ -76,16 +70,10 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
-public abstract class AbstractNewObjectAction<T extends EOModelObject, U extends EOModelObject> implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
-	private IWorkbenchWindow _window;
-
+public abstract class AbstractNewObjectAction<T extends EOModelObject, U extends EOModelObject> extends AbstractObjectAction {
 	private Class<T> _parentType;
 
-	private T _selectedParent;
-
 	private String _label;
-	
-	private IStructuredSelection _selection;
 
 	public AbstractNewObjectAction(Class<T> parentType, String label) {
 		_label = label;
@@ -96,46 +84,23 @@ public abstract class AbstractNewObjectAction<T extends EOModelObject, U extends
 		return _label;
 	}
 
-	public void dispose() {
-		// DO NOTHING
-	}
-
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		_window = targetPart.getSite().getWorkbenchWindow();
-	}
-
-	public void init(IWorkbenchWindow window) {
-		_window = window;
-	}
-
-	public void selectionChanged(IAction action, ISelection selection) {
-		_selectedParent = null;
-		if (selection instanceof IStructuredSelection) {
-			_selection = ((IStructuredSelection)selection);
-			Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
-			if (selectedObject instanceof EOModelObject) {
-				_selectedParent = (T) EOModelUtils.getRelated(_parentType, (EOModelObject) selectedObject);
-			}
-		}
-	}
-	
-	public IStructuredSelection getSelection() {
-		return _selection;
-	}
-	
-	public void init(IViewPart view) {
-		// DO NOTHING
-	}
-
 	public void run(IAction action) {
 		try {
-			if (_selectedParent != null) {
-				NewOperation operation = new NewOperation(_selectedParent);
-				operation.addContext(EOModelUtils.getUndoContext(_selectedParent));
+			T selectedObject = null;
+			IStructuredSelection selection = getSelection();
+			if (selection != null) {
+				Object firstElement = selection.getFirstElement();
+				if (firstElement instanceof EOModelObject) {
+					selectedObject = (T) EOModelUtils.getRelated(_parentType, (EOModelObject) firstElement);
+				}
+			}
+			if (selectedObject != null) {
+				NewOperation operation = new NewOperation(selectedObject);
+				operation.addContext(EOModelUtils.getUndoContext(selectedObject));
 				IOperationHistory operationHistory = PlatformUI.getWorkbench().getOperationSupport().getOperationHistory();
 				operationHistory.execute(operation, null, null);
 			} else {
-				MessageDialog.openError(_window.getShell(), getNoSelectionTitle(), getNoSelectionMessage());
+				MessageDialog.openError(getWindow().getShell(), getNoSelectionTitle(), getNoSelectionMessage());
 			}
 		} catch (Throwable e) {
 			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), e);
