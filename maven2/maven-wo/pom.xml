@@ -7,7 +7,7 @@
 		<artifactId>maven2</artifactId>
 		<groupId>org.objectstyle.woproject.maven2</groupId>
 		<version>2.0.6-SNAPSHOT</version>
-		<relativePath>..</relativePath>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>maven-wo</artifactId>

@@ -5,7 +5,7 @@
 		<artifactId>maven2</artifactId>
 		<groupId>org.objectstyle.woproject.maven2</groupId>
 		<version>2.0.7-SNAPSHOT</version>
-		<relativePath>..</relativePath>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>maven-japplication-plugin</artifactId>
@@ -40,13 +40,13 @@
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
-			<version>2.0.6</version>
+			<version>2.0.7</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-project</artifactId>
-			<version>2.0.6</version>
+			<version>2.0.7</version>
 		</dependency>
 
 		<dependency>

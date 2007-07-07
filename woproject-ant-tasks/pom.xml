@@ -5,7 +5,7 @@
 		<artifactId>woproject-all-parent</artifactId>
 		<groupId>org.objectstyle.woproject</groupId>
 		<version>2.0.7-SNAPSHOT</version>
-		<relativePath>..</relativePath>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<groupId>org.objectstyle.woproject.ant</groupId>
@@ -20,12 +20,13 @@
 
 	<inceptionYear>2001</inceptionYear>
 	<dependencies>
-		<dependency>
+	
+		<dependency>			
 			<groupId>org.objectstyle.woproject.ant</groupId>
 			<artifactId>woenvironment</artifactId>
 			<version>2.0.7-SNAPSHOT</version>
 		</dependency>
-
+		
 		<dependency>
 			<groupId>ant</groupId>
 			<artifactId>ant</artifactId>
