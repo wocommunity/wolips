@@ -10,7 +10,6 @@ er.javamail.smtpPassword=
 #########################################################################
 # Log4j Configuration
 #########################################################################
-log4j.loggerFactory=er.extensions.ERXLogger$Factory
 
 # Set root category priority to DEBUG and its only appender to A1.
 log4j.rootCategory=DEBUG, A1
