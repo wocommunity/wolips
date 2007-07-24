@@ -57,7 +57,7 @@ public class OperatorRule extends WordPredicateRule {
 		myWordDetector = _detector;
 	}
 
-	public boolean isWordDetectorOfType(Class _wordDetectorType) {
+	public boolean isWordDetectorOfType(Class<?> _wordDetectorType) {
 		return myWordDetector.getClass().isAssignableFrom(_wordDetectorType);
 	}
 }

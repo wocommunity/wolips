@@ -71,20 +71,24 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
     super();
   }
 
+  @SuppressWarnings("unchecked")
   public boolean buildStarted(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
     _buildKind = _kind;
     _validateTemplates = Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.VALIDATE_TEMPLATES_KEY);
     return false;
   }
 
+  @SuppressWarnings("unchecked")
   public boolean buildPreparationDone(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
     return false;
   }
 
+  @SuppressWarnings("unchecked")
   public void handleClasses(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
     // DO NOTHING
   }
 
+  @SuppressWarnings("unchecked")
   public void handleSource(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
     if (_validateTemplates) {
       try {
@@ -96,10 +100,12 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public void handleClasspath(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
     // DO NOTHING
   }
 
+  @SuppressWarnings("unchecked")
   public void handleOther(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
     if (_validateTemplates) {
       try {
@@ -153,14 +159,17 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public void handleWebServerResources(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
     // DO NOTHING
   }
 
+  @SuppressWarnings("unchecked")
   public void handleWoappResources(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
     // DO NOTHING
   }
 
+  @SuppressWarnings("unchecked")
   protected void touchRelatedResources(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) throws CoreException {
     if (_progressMonitor != null) {
       _progressMonitor.subTask("Touching files related to " + _resource.getName() + " ...");
@@ -183,9 +192,9 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
       }
     }
 
-    Iterator relatedResourcesIter = relatedResources.iterator();
+    Iterator<IResource> relatedResourcesIter = relatedResources.iterator();
     while (relatedResourcesIter.hasNext()) {
-      IResource relatedResource = (IResource) relatedResourcesIter.next();
+      IResource relatedResource = relatedResourcesIter.next();
       handleWoappResources(relatedResource, _progressMonitor, _buildCache);
       // relatedResource.touch(_progressMonitor);
     }

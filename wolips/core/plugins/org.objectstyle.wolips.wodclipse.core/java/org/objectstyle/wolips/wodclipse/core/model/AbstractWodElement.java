@@ -68,7 +68,7 @@ import org.objectstyle.wolips.wodclipse.core.util.WodReflectionUtils;
 /**
  * @author mschrag
  */
-public abstract class AbstractWodElement implements IWodElement, Comparable {
+public abstract class AbstractWodElement implements IWodElement, Comparable<IWodElement> {
   private List<IWodBinding> _bindings;
 
   private boolean _isTemporary;
@@ -93,23 +93,17 @@ public abstract class AbstractWodElement implements IWodElement, Comparable {
 
   public Map<String, Object> getBindingsMap() {
     Map<String, Object> bindingsMap = new HashMap<String, Object>();
-    Iterator bindingsIter = _bindings.iterator();
+    Iterator<IWodBinding> bindingsIter = _bindings.iterator();
     while (bindingsIter.hasNext()) {
-      IWodBinding binding = (IWodBinding) bindingsIter.next();
+      IWodBinding binding = bindingsIter.next();
       bindingsMap.put(binding.getName(), binding.getValue());
     }
     return bindingsMap;
   }
 
-  public int compareTo(Object _otherObj) {
-    int comparison;
-    if (_otherObj instanceof IWodElement) {
-      String otherName = ((IWodElement) _otherObj).getElementName();
-      comparison = getElementName().compareTo(otherName);
-    }
-    else {
-      comparison = -1;
-    }
+  public int compareTo(IWodElement otherElement) {
+    String otherName = otherElement.getElementName();
+    int comparison = getElementName().compareTo(otherName);
     return comparison;
   }
   
@@ -201,7 +195,7 @@ public abstract class AbstractWodElement implements IWodElement, Comparable {
       try {
         wo = WodApiUtils.findApiModelWo(elementType, cache);
         if (wo != null) {
-          Map bindingsMap = getBindingsMap();
+          Map<String, Object> bindingsMap = getBindingsMap();
           Binding[] bindings = wo.getBindings();
           for (int i = 0; i < bindings.length; i++) {
             String bindingName = bindings[i].getName();
@@ -222,9 +216,9 @@ public abstract class AbstractWodElement implements IWodElement, Comparable {
     }
 
     Set<String> bindingNames = new HashSet<String>();
-    Iterator checkForDuplicateBindingsIter = getBindings().iterator();
+    Iterator<IWodBinding> checkForDuplicateBindingsIter = getBindings().iterator();
     while (checkForDuplicateBindingsIter.hasNext()) {
-      IWodBinding binding = (IWodBinding) checkForDuplicateBindingsIter.next();
+      IWodBinding binding = checkForDuplicateBindingsIter.next();
       String bindingName = binding.getName();
       if (bindingNames.contains(bindingName)) {
         problems.add(new WodBindingNameProblem(bindingName, "Duplicate binding named '" + bindingName + "'", binding.getNamePosition(), binding.getLineNumber(), false, (String) null));
@@ -235,9 +229,9 @@ public abstract class AbstractWodElement implements IWodElement, Comparable {
     }
 
     if (checkBindingValues && javaFileType != null) {
-      Iterator bindingsIter = getBindings().iterator();
+      Iterator<IWodBinding> bindingsIter = getBindings().iterator();
       while (bindingsIter.hasNext()) {
-        IWodBinding binding = (IWodBinding) bindingsIter.next();
+        IWodBinding binding = bindingsIter.next();
         try {
           binding.fillInBindingProblems(javaProject, javaFileType, problems, cache);
         }

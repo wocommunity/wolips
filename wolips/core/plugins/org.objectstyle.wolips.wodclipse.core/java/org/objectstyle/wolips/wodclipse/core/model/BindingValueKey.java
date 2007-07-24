@@ -9,6 +9,7 @@ import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.Signature;
 import org.eclipse.jdt.internal.corext.util.JavaModelUtil;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
@@ -21,7 +22,9 @@ public class BindingValueKey {
   private IJavaProject _javaProject;
 
   private IType _nextType;
-  
+
+  private IType _nextTypeArgument;
+
   private String _nextTypeName;
 
   private WodParserCache _cache;
@@ -32,7 +35,7 @@ public class BindingValueKey {
     _javaProject = javaProject;
     _cache = cache;
   }
-  
+
   public void setNextType(IType nextType) {
     _nextType = nextType;
   }
@@ -71,7 +74,17 @@ public class BindingValueKey {
     }
   }
 
+  public IType getNextTypeArgument() throws JavaModelException {
+    ensureNextTypeInfoLoaded();
+    return _nextTypeArgument;
+  }
+
   public IType getNextType() throws JavaModelException {
+    ensureNextTypeInfoLoaded();
+    return _nextType;
+  }
+
+  protected void ensureNextTypeInfoLoaded() throws JavaModelException {
     if (_nextType == null) {
       String nextTypeName = getNextTypeName();
       // MS: Primitives have a return type of "I" or "C" ... Just skip them because they won't resolve.
@@ -82,34 +95,42 @@ public class BindingValueKey {
         _nextType = null;
       }
       else {
-        IType typeContext = getDeclaringType();
-        Map<String, IType> nextTypeCache = _cache.getTypeContextCache().get(typeContext);
-        if (nextTypeCache == null) {
-          nextTypeCache = new HashMap<String, IType>();
-          _cache.getTypeContextCache().put(typeContext, nextTypeCache);
+        IType declaringType = getDeclaringType();
+        String[] typeArguments = Signature.getTypeArguments(nextTypeName);
+        if (typeArguments.length == 1) {
+          _nextTypeArgument = getTypeForNameInType(typeArguments[0], declaringType);
         }
-        _nextType = nextTypeCache.get(nextTypeName);
-        if (_nextType == null) {
-          String resolvedNextTypeName = JavaModelUtil.getResolvedTypeName(nextTypeName, typeContext);
-          if (resolvedNextTypeName == null) {
-            Activator.getDefault().log("Failed to resolve type name " + nextTypeName + " in component " + typeContext.getElementName());
-          }
-          else if ("boolean".equals(resolvedNextTypeName) || "byte".equals(resolvedNextTypeName) || "char".equals(resolvedNextTypeName) || "int".equals(resolvedNextTypeName) || "short".equals(resolvedNextTypeName) || "float".equals(resolvedNextTypeName) || "double".equals(resolvedNextTypeName)) {
-            // ignore primitives
-          }
-          else {
-            _nextType = JavaModelUtil.findType(_javaProject, resolvedNextTypeName);
-            if (_nextType != null) {
-              nextTypeCache.put(nextTypeName, _nextType);
-            }
-            else {
-              System.out.println("BindingValueKey.getNextType: couldn't resolve " + resolvedNextTypeName);
-            }
-          }
+        _nextType = getTypeForNameInType(nextTypeName, declaringType);
+      }
+    }
+  }
+
+  protected IType getTypeForNameInType(String typeName, IType declaringType) throws JavaModelException {
+    Map<String, IType> nextTypeCache = _cache.getTypeContextCache().get(declaringType);
+    if (nextTypeCache == null) {
+      nextTypeCache = new HashMap<String, IType>();
+      _cache.getTypeContextCache().put(declaringType, nextTypeCache);
+    }
+    IType type = nextTypeCache.get(typeName);
+    if (type == null) {
+      String resolvedNextTypeName = JavaModelUtil.getResolvedTypeName(typeName, declaringType);
+      if (resolvedNextTypeName == null) {
+        Activator.getDefault().log("Failed to resolve type name " + typeName + " in component " + declaringType.getElementName());
+      }
+      else if ("boolean".equals(resolvedNextTypeName) || "byte".equals(resolvedNextTypeName) || "char".equals(resolvedNextTypeName) || "int".equals(resolvedNextTypeName) || "short".equals(resolvedNextTypeName) || "float".equals(resolvedNextTypeName) || "double".equals(resolvedNextTypeName)) {
+        // ignore primitives
+      }
+      else {
+        type = JavaModelUtil.findType(_javaProject, resolvedNextTypeName);
+        if (type != null) {
+          nextTypeCache.put(typeName, type);
+        }
+        else {
+          System.out.println("BindingValueKey.getNextType: couldn't resolve " + resolvedNextTypeName);
         }
       }
     }
-    return _nextType;
+    return type;
   }
 
   @Override

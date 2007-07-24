@@ -48,9 +48,9 @@ public class WodCompletionUtils {
     if (partialToken.length() > 0) {
       WodReflectionUtils.findMatchingElementClassNames(partialToken, SearchPattern.R_PREFIX_MATCH, typeNameCollector, progressMonitor);
       boolean includePackageName = token.indexOf('.') != -1;
-      Iterator matchingElementClassNamesIter = typeNameCollector.typeNames();
+      Iterator<String> matchingElementClassNamesIter = typeNameCollector.typeNames();
       while (matchingElementClassNamesIter.hasNext()) {
-        String matchingElementTypeName = (String) matchingElementClassNamesIter.next();
+        String matchingElementTypeName = matchingElementClassNamesIter.next();
         String elementTypeName;
         if (includePackageName) {
           elementTypeName = matchingElementTypeName;

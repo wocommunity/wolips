@@ -22,7 +22,7 @@ public class BindingValueKeyPath {
   private BindingValueKey[] _bindingKeys;
 
   private String _originalKeyPath;
-  
+
   private String _validKeyPath;
 
   private String _operator;
@@ -98,26 +98,33 @@ public class BindingValueKeyPath {
       List<BindingValueKey> bindingKeysList = new LinkedList<BindingValueKey>();
       for (int keyNum = 0; currentType != null && keyNum < _bindingKeyNames.length; keyNum++) {
         // we can't verify helper functions or @arrayOps
-        List bindingKeys = WodReflectionUtils.getBindingKeys(_javaProject, currentType, _bindingKeyNames[keyNum], true, WodReflectionUtils.ACCESSORS_OR_VOID, cache);
+        List<BindingValueKey> bindingKeys = WodReflectionUtils.getBindingKeys(_javaProject, currentType, _bindingKeyNames[keyNum], true, WodReflectionUtils.ACCESSORS_OR_VOID, cache);
         if (!bindingKeys.isEmpty()) {
           // NTS: Deal with multiple matches ...
-          BindingValueKey bindingKey = (BindingValueKey) bindingKeys.get(0);
+          BindingValueKey bindingKey = bindingKeys.get(0);
           bindingKeysList.add(bindingKey);
           currentType = bindingKey.getNextType();
         }
         else {
-          if (WodReflectionUtils.isNSKeyValueCoding(currentType)) {
+          if (WodReflectionUtils.isNSKeyValueCoding(currentType) || "java.lang.Object".equals(currentType.getFullyQualifiedName())) {
             _nsKVC = true;
             if (WodReflectionUtils.isNSCollection(currentType)) {
               _nsCollection = true;
+              _ambiguous = true;
+              invalidKeyNum = keyNum;
+              currentType = null;
             }
-            _ambiguous = true;
+            else {
+              _ambiguous = true;
+              invalidKeyNum = keyNum;
+              currentType = null;
+            }
           }
           else {
             _valid = false;
+            invalidKeyNum = keyNum;
+            currentType = null;
           }
-          invalidKeyNum = keyNum;
-          currentType = null;
         }
       }
 
@@ -153,7 +160,7 @@ public class BindingValueKeyPath {
   public String getOriginalKeyPath() {
     return _originalKeyPath;
   }
-  
+
   public String getOperator() {
     return _operator;
   }

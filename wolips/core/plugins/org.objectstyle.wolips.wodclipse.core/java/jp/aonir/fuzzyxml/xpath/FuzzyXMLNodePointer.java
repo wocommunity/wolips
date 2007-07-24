@@ -9,6 +9,7 @@ import jp.aonir.fuzzyxml.FuzzyXMLCDATA;
 import jp.aonir.fuzzyxml.FuzzyXMLComment;
 import jp.aonir.fuzzyxml.FuzzyXMLDocument;
 import jp.aonir.fuzzyxml.FuzzyXMLElement;
+import jp.aonir.fuzzyxml.FuzzyXMLNode;
 import jp.aonir.fuzzyxml.FuzzyXMLText;
 
 import org.apache.commons.jxpath.ri.Compiler;
@@ -126,7 +127,7 @@ public class FuzzyXMLNodePointer extends NodePointer {
       return 1;
     }
     else if ((node1 instanceof FuzzyXMLAttribute) && (node2 instanceof FuzzyXMLAttribute)) {
-      List list = Arrays.asList(((FuzzyXMLElement) getNode()).getAttributes());
+      List<FuzzyXMLAttribute> list = Arrays.asList(((FuzzyXMLElement) getNode()).getAttributes());
       int length = list.size();
       for (int i = 0; i < length; i++) {
         Object n = list.get(i);
@@ -144,7 +145,7 @@ public class FuzzyXMLNodePointer extends NodePointer {
       throw new RuntimeException("JXPath internal error: " + "compareChildNodes called for " + _node);
     }
 
-    List children = Arrays.asList(((FuzzyXMLElement) _node).getChildren());
+    List<FuzzyXMLNode> children = Arrays.asList(((FuzzyXMLElement) _node).getChildren());
     int length = children.size();
     for (int i = 0; i < length; i++) {
       Object n = children.get(i);

@@ -123,9 +123,9 @@ public abstract class AbstractWodModel implements IWodModel {
   public void fillInProblems(IJavaProject javaProject, IType javaFileType, boolean checkBindingValues, List<WodProblem> problems, WodParserCache cache) throws CoreException, IOException {
     problems.addAll(_parseProblems);
     Set<String> wodElementNames = new HashSet<String>();
-    Iterator elementsIter = getElements().iterator();
+    Iterator<IWodElement> elementsIter = getElements().iterator();
     while (elementsIter.hasNext()) {
-      IWodElement element = (IWodElement) elementsIter.next();
+      IWodElement element = elementsIter.next();
       String elementName = element.getElementName();
       if (wodElementNames.contains(elementName)) {
         problems.add(new WodElementProblem("Duplicate definition of '" + elementName + "'", element.getElementNamePosition(), element.getLineNumber(), false, (String) null));

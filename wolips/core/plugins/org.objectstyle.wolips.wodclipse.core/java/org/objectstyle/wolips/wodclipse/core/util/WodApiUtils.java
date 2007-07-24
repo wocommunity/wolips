@@ -72,9 +72,9 @@ public class WodApiUtils {
             //ICompilationUnit cu = (ICompilationUnit) typeContainer;
             //IResource resource = cu.getCorrespondingResource();
             //String name = resource.getName();
-            List apiResources = WorkbenchUtilitiesPlugin.findResourcesInProjectByNameAndExtensions(elementType.getJavaProject().getProject(), elementType.getElementName(), new String[] { "api" }, false);
+            List<IResource> apiResources = WorkbenchUtilitiesPlugin.findResourcesInProjectByNameAndExtensions(elementType.getJavaProject().getProject(), elementType.getElementName(), new String[] { "api" }, false);
             if (apiResources != null && apiResources.size() > 0) {
-              IResource apiResource = (IResource) apiResources.get(0);
+              IResource apiResource = apiResources.get(0);
               apiModel = new ApiModel(apiResource.getLocation().toFile());
             }
           }
@@ -155,10 +155,10 @@ public class WodApiUtils {
           // do nothing for now
         }
         else if ("Actions".equals(defaultsName)) {
-          List bindingKeysList = WodReflectionUtils.getBindingKeys(javaProject, wodJavaFileType, "", false, WodReflectionUtils.VOID_ONLY, wodContext);
+          List<BindingValueKey> bindingKeysList = WodReflectionUtils.getBindingKeys(javaProject, wodJavaFileType, "", false, WodReflectionUtils.VOID_ONLY, wodContext);
           validValues = new String[bindingKeysList.size()];
           for (int i = 0; i < validValues.length; i++) {
-            validValues[i] = ((BindingValueKey) bindingKeysList.get(i)).getBindingName();
+            validValues[i] = bindingKeysList.get(i).getBindingName();
           }
         }
       }

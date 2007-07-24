@@ -52,6 +52,8 @@ import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.model.AbstractWodModel;
+import org.objectstyle.wolips.wodclipse.core.model.IWodBinding;
+import org.objectstyle.wolips.wodclipse.core.model.IWodElement;
 import org.objectstyle.wolips.wodclipse.core.model.IWodUnit;
 import org.objectstyle.wolips.wodclipse.core.model.WodProblem;
 import org.objectstyle.wolips.wodclipse.core.parser.AssignmentOperatorWordDetector;
@@ -274,13 +276,13 @@ public class DocumentWodModel extends AbstractWodModel {
 
   public IWodUnit getWodUnitAtIndex(int _index) {
     IWodUnit wodUnit = null;
-    Iterator elementsIter = getElements().iterator();
+    Iterator<IWodElement> elementsIter = getElements().iterator();
     while (wodUnit == null && elementsIter.hasNext()) {
-      DocumentWodElement element = (DocumentWodElement) elementsIter.next();
+      IWodElement element = elementsIter.next();
       if (isIndexContainedByWodUnit(_index, element)) {
-        Iterator bindingsIter = element.getBindings().iterator();
+        Iterator<IWodBinding> bindingsIter = element.getBindings().iterator();
         while (wodUnit == null && bindingsIter.hasNext()) {
-          DocumentWodBinding binding = (DocumentWodBinding) bindingsIter.next();
+          IWodBinding binding = bindingsIter.next();
           if (isIndexContainedByWodUnit(_index, binding)) {
             wodUnit = binding;
           }
