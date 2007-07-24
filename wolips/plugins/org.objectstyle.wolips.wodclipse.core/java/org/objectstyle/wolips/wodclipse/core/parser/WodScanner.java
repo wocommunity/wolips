@@ -211,11 +211,11 @@ public class WodScanner extends AbstractJavaScanner {
 		return rulePositions;
 	}
 
-	public static List<String> getTextForRulePositions(List _rulePositions) throws BadLocationException {
+	public static List<String> getTextForRulePositions(List<RulePosition> _rulePositions) throws BadLocationException {
 		List<String> text = new LinkedList<String>();
-		Iterator rulePositionsIter = _rulePositions.iterator();
+		Iterator<RulePosition> rulePositionsIter = _rulePositions.iterator();
 		while (rulePositionsIter.hasNext()) {
-			RulePosition rulePosition = (RulePosition) rulePositionsIter.next();
+			RulePosition rulePosition = rulePositionsIter.next();
 			text.add(rulePosition.getText());
 		}
 		return text;

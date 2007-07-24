@@ -54,7 +54,7 @@ import org.eclipse.swt.graphics.Point;
 /**
  * @author mike
  */
-public class WodCompletionProposal implements Comparable, ICompletionProposal {
+public class WodCompletionProposal implements Comparable<ICompletionProposal>, ICompletionProposal {
   private String _token;
 
   private int _replacementOffset;
@@ -121,7 +121,7 @@ public class WodCompletionProposal implements Comparable, ICompletionProposal {
     return _replacementString.hashCode();
   }
 
-  public int compareTo(Object obj) {
+  public int compareTo(ICompletionProposal obj) {
     int comparison;
     if (obj instanceof WodCompletionProposal) {
       String proposal = _replacementString;

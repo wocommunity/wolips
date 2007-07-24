@@ -1,11 +1,12 @@
 package jp.aonir.fuzzyxml.xpath;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import jp.aonir.fuzzyxml.FuzzyXMLDocument;
 import jp.aonir.fuzzyxml.FuzzyXMLElement;
+import jp.aonir.fuzzyxml.FuzzyXMLNode;
 
 import org.apache.commons.jxpath.ri.compiler.NodeTest;
 import org.apache.commons.jxpath.ri.model.NodeIterator;
@@ -19,7 +20,7 @@ public class FuzzyXMLNodeIterator implements NodeIterator {
   private boolean _reverse;
   private int _position = 0;
   private int _index = 0;
-  private List _children;
+  private List<FuzzyXMLNode> _children;
   private Object _child;
 
   /**
@@ -33,13 +34,13 @@ public class FuzzyXMLNodeIterator implements NodeIterator {
     // TBD: optimize me for different node tests
     Object node = parent.getNode();
     if (node instanceof FuzzyXMLDocument) {
-      this._children = Arrays.asList(new Object[] { ((FuzzyXMLDocument) node).getDocumentElement() });
+      this._children = Arrays.asList(new FuzzyXMLNode[] { ((FuzzyXMLDocument) node).getDocumentElement() });
     }
     else if (node instanceof FuzzyXMLElement) {
       this._children = Arrays.asList(((FuzzyXMLElement) node).getChildren());
     }
     else {
-      this._children = Collections.EMPTY_LIST;
+      this._children = new ArrayList<FuzzyXMLNode>();
     }
     this._nodeTest = nodeTest;
     this._reverse = reverse;

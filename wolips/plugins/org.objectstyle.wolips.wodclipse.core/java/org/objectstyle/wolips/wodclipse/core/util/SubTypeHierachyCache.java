@@ -94,8 +94,8 @@ public class SubTypeHierachyCache {
 
   private static void removeMethodOverrideTester(ITypeHierarchy hierarchy) {
     synchronized (fgMethodOverrideTesterCache) {
-      for (Iterator iter = fgMethodOverrideTesterCache.values().iterator(); iter.hasNext();) {
-        MethodOverrideTester curr = (MethodOverrideTester) iter.next();
+      for (Iterator<MethodOverrideTester> iter = fgMethodOverrideTesterCache.values().iterator(); iter.hasNext();) {
+        MethodOverrideTester curr = iter.next();
         if (curr.getTypeHierarchy().equals(hierarchy)) {
           iter.remove();
         }

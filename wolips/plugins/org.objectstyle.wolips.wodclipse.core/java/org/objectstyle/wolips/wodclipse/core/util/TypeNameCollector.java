@@ -105,7 +105,7 @@ public class TypeNameCollector extends TypeNameRequestor {
     return _typeNames.iterator().next();
   }
 
-  public Iterator typeNames() {
+  public Iterator<String> typeNames() {
     return _typeNames.iterator();
   }
 
