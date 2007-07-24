@@ -355,7 +355,7 @@ void comboEvent (Event event) {
 			arrow = null;
 			break;
 		case SWT.Move:
-			dropDown (false);
+			//dropDown (false);
 			break;
 		case SWT.Resize:
 			internalLayout (false);
@@ -1284,7 +1284,14 @@ public void setEnabled (boolean enabled) {
 }
 public boolean setFocus () {
 	checkWidget();
-	return text.setFocus ();
+	boolean focused;
+	if (popup.isVisible()) {
+		focused = popup.setFocus();
+	}
+	else {
+		focused = text.setFocus ();
+	}
+	return focused;
 }
 public void setFont (Font font) {
 	super.setFont (font);
