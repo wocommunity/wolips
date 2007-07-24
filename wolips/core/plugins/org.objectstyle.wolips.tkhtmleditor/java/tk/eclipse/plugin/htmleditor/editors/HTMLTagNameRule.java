@@ -58,7 +58,7 @@ public class HTMLTagNameRule extends WordRule implements IPredicateRule {
 
   protected static class HTMLTagWordDetector implements IWordDetector {
     public boolean isWordPart(char c) {
-      return Character.isLetterOrDigit(c) || c == ':';
+      return Character.isLetterOrDigit(c) || c == ':' || c == '_';
     }
   
     public boolean isWordStart(char c) {
