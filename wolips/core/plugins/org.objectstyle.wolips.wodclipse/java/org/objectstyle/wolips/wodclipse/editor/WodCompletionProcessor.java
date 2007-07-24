@@ -292,7 +292,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 		IType type;
 		int colonOffset = WodCompletionProcessor.scanBackFor(_document, _offset, new char[] { ':' }, false);
 		if (colonOffset != -1) {
-			_scanner.setRange(_document, colonOffset, _offset);
+			_scanner.setRange(_document, colonOffset, _offset - colonOffset);
 			RulePosition elementRulePosition = _scanner.getFirstRulePositionOfType(ElementTypeRule.class);
 			if (elementRulePosition != null) {
 				String elementTypeName = elementRulePosition.getText();
