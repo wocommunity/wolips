@@ -203,7 +203,22 @@ public class WodReflectionUtils {
     BindingValueKey bindingKey = null;
 
     int flags = member.getFlags();
-    if (!Flags.isStatic(flags) && Flags.isPublic(flags)) {
+    IType declaringType = member.getDeclaringType();
+    String declaringTypePackageName = declaringType.getPackageFragment().getElementName();
+    boolean visible = false;
+    // Don't show static methods and fields
+    if (Flags.isStatic(flags)) {
+      visible = false;
+    }
+    // Public bindings are always visible
+    else if (Flags.isPublic(flags)) {
+      visible = true;
+    }
+    // Components that are not in a package can have bindings to protected fields
+    else if (!Flags.isPrivate(flags) && (declaringTypePackageName == null || declaringTypePackageName.length() == 0)) {
+      visible = true;
+    }
+    if (visible) {
       String[] possiblePrefixes;
       boolean memberSignatureMatches;
       if (member instanceof IMethod) {
