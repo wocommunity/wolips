@@ -50,7 +50,7 @@ public class EMTextCellEditor extends TextCellEditor {
 						try {
 							Text resizedText = (Text) e.widget;
 							Point size = resizedText.getSize();
-							resizedText.setSize(size.x - 4, size.y);
+							resizedText.setSize(size.x - 4, size.y + 1);
 						} finally {
 							_resizing = false;
 						}
