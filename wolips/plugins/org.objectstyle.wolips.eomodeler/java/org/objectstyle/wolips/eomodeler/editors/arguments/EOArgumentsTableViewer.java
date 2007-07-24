@@ -90,7 +90,7 @@ public class EOArgumentsTableViewer extends Composite implements ISelectionProvi
 		setLayout(new GridLayout(1, true));
 		myArgumentsTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EOArgument", EOArgument.class.getName(), new EOArgumentsContentProvider(), new EOArgumentsLabelProvider(TableUtils.getColumnsForTableNamed(EOArgument.class.getName())), new TablePropertyViewerSorter(EOArgument.class.getName()));
 		new DoubleClickNewAttributeHandler(myArgumentsTableViewer).attach();
-		myArgumentsChangedRefresher = new TableRefreshPropertyListener(myArgumentsTableViewer);
+		myArgumentsChangedRefresher = new TableRefreshPropertyListener("ArgumentsChanged", myArgumentsTableViewer);
 		myTableRowRefresher = new TableRowRefreshPropertyListener(myArgumentsTableViewer);
 		Table argumentsTable = myArgumentsTableViewer.getTable();
 		argumentsTable.setLayoutData(new GridData(GridData.FILL_BOTH));

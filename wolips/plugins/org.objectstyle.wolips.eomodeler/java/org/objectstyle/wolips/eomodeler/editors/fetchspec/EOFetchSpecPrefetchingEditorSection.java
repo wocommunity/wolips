@@ -123,7 +123,7 @@ public class EOFetchSpecPrefetchingEditorSection extends AbstractPropertySection
 		prefetchKeyPathsTableLayoutData.heightHint = 100;
 		myPrefetchKeyPathsTableViewer.getTable().setLayoutData(prefetchKeyPathsTableLayoutData);
 		myPrefetchKeyPathsTableViewer.addSelectionChangedListener(this);
-		myPrefetchKeyPathsChangedRefresher = new TableRefreshPropertyListener(myPrefetchKeyPathsTableViewer);
+		myPrefetchKeyPathsChangedRefresher = new TableRefreshPropertyListener("PrefetchKeyPathsChanged", myPrefetchKeyPathsTableViewer);
 
 		myAddRemoveButtonGroup = new AddRemoveButtonGroup(topForm, new AddPrefetchKeyPathHandler(), new RemovePrefetchKeyPathHandler());
 		myAddRemoveButtonGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));

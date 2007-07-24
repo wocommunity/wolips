@@ -609,7 +609,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 											// deleting " + markers[markerNum]);
 											oldMarkers[markerNum].delete();
 										}
-										IMarker[] newMarkers = indexFile.findMarkers(Activator.EOMODEL_PROBLEM_MARKER, true, IResource.DEPTH_INFINITE);
+										IMarker[] newMarkers = indexFile.findMarkers(org.objectstyle.wolips.eomodeler.core.Activator.EOMODEL_PROBLEM_MARKER, true, IResource.DEPTH_INFINITE);
 										for (int markerNum = 0; markerNum < newMarkers.length; markerNum++) {
 											// System.out.println("EOModelEditor.handleModelErrors:
 											// deleting " + markers[markerNum]);
@@ -627,7 +627,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 								try {
 									indexFile = EclipseFileUtils.getEclipseIndexFile(model);
 									if (indexFile != null) {
-										IMarker marker = indexFile.createMarker(Activator.EOMODEL_PROBLEM_MARKER);
+										IMarker marker = indexFile.createMarker(org.objectstyle.wolips.eomodeler.core.Activator.EOMODEL_PROBLEM_MARKER);
 										marker.setAttribute(IMarker.MESSAGE, failure.getMessage());
 										int severity;
 										if (failure.isWarning()) {
@@ -911,6 +911,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	}
 
 	protected class EntitiesChangeRefresher extends AbstractAddRemoveChangeRefresher<EOEntity> {
+		public EntitiesChangeRefresher() {
+			super("EntitiesChange");
+		}
+
 		public void changeSelection(ISelection selection) {
 			EOModelEditor.this.setSelection(selection);
 			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
@@ -927,6 +931,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	}
 
 	protected class FetchSpecsChangeRefresher extends AbstractAddRemoveChangeRefresher<EOFetchSpecification> {
+		public FetchSpecsChangeRefresher() {
+			super("FetchSpecsChange");
+		}
+
 		public void changeSelection(ISelection selection) {
 			EOModelEditor.this.setSelection(selection);
 			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
@@ -943,6 +951,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	}
 
 	protected class EntityIndexesChangeRefresher extends AbstractAddRemoveChangeRefresher<EOEntityIndex> {
+		public EntityIndexesChangeRefresher() {
+			super("EntityIndexesChange");
+		}
+
 		public void changeSelection(ISelection selection) {
 			EOModelEditor.this.setSelection(selection);
 			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
@@ -959,6 +971,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	}
 
 	protected class StoredProceduresChangeRefresher extends AbstractAddRemoveChangeRefresher<EOStoredProcedure> {
+		public StoredProceduresChangeRefresher() {
+			super("StoredProceduresChange");
+		}
+
 		public void changeSelection(ISelection selection) {
 			EOModelEditor.this.setSelection(selection);
 			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOSTOREDPROCEDURE_PAGE));
@@ -975,6 +991,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	}
 
 	protected class DatabaseConfigsChangeRefresher extends AbstractAddRemoveChangeRefresher<EODatabaseConfig> {
+		public DatabaseConfigsChangeRefresher() {
+			super("DatabaseConfigsChange");
+		}
+
 		public void changeSelection(ISelection selection) {
 			EOModelEditor.this.setSelection(selection);
 		}
@@ -990,6 +1010,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	}
 
 	protected class ArgumentDeletedRefresher extends AbstractAddRemoveChangeRefresher<EOArgument> {
+		public ArgumentDeletedRefresher() {
+			super("ArgumentDeleted");
+		}
+
 		public void changeSelection(ISelection selection) {
 			EOModelEditor.this.setSelection(selection);
 		}
@@ -1005,6 +1029,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	}
 
 	protected class AttributeAndRelationshipDeletedRefresher extends AbstractAddRemoveChangeRefresher<IEOAttribute> {
+		public AttributeAndRelationshipDeletedRefresher() {
+			super("AttributeAndRelationshipDeleted");
+		}
+		
 		public void changeSelection(ISelection selection) {
 			EOModelEditor.this.setSelection(selection);
 		}

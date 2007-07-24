@@ -53,6 +53,8 @@ package org.objectstyle.wolips.baseforplugins.util;
  *
  */
 public class Throttle implements Runnable {
+	private String _name;
+	
 	private Thread _throttleThread;
 
 	private boolean _running;
@@ -65,7 +67,8 @@ public class Throttle implements Runnable {
 
 	private Runnable _runnable;
 
-	public Throttle(long sleepTime, Runnable runnable) {
+	public Throttle(String name, long sleepTime, Runnable runnable) {
+		_name = name;
 		_sleepTime = sleepTime;
 		_runnable = runnable;
 	}
@@ -81,7 +84,7 @@ public class Throttle implements Runnable {
 
 	public synchronized void start() {
 		if (_throttleThread == null) {
-			_throttleThread = new Thread(this);
+			_throttleThread = new Thread(this, _name);
 			_throttleThread.start();
 			while (!_running) {
 				try {

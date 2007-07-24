@@ -60,6 +60,8 @@ import org.eclipse.swt.widgets.Display;
 import org.objectstyle.wolips.baseforplugins.util.Throttle;
 
 public class SelectionThrottle implements Runnable {
+	private String _name;
+	
 	private Throttle _throttle;
 
 	private IThrottledSelectionHandler _selectionHandler;
@@ -68,11 +70,11 @@ public class SelectionThrottle implements Runnable {
 
 	private List _removedObjects;
 
-	public SelectionThrottle(IThrottledSelectionHandler selectionHandler) {
+	public SelectionThrottle(String name, IThrottledSelectionHandler selectionHandler) {
 		_selectionHandler = selectionHandler;
 		_addedObjects = new LinkedList();
 		_removedObjects = new LinkedList();
-		_throttle = new Throttle(250, this);
+		_throttle = new Throttle(_name, 250, this);
 	}
 
 	public void start() {

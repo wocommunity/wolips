@@ -11,8 +11,8 @@ import org.objectstyle.wolips.eomodeler.utils.SelectionThrottle.IThrottledSelect
 public abstract class AbstractAddRemoveChangeRefresher<T> implements PropertyChangeListener, IThrottledSelectionHandler {
 	private SelectionThrottle _selectionThrottle;
 
-	public AbstractAddRemoveChangeRefresher() {
-		_selectionThrottle = new SelectionThrottle(this);
+	public AbstractAddRemoveChangeRefresher(String name) {
+		_selectionThrottle = new SelectionThrottle(name, this);
 	}
 	
 	public void start() {
