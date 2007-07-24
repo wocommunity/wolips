@@ -58,6 +58,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
+import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.objectstyle.wolips.wodclipse.core.Activator;
@@ -67,7 +68,7 @@ import org.objectstyle.wolips.wodclipse.core.preferences.PreferenceConstants;
  * @author mike
  */
 public class WodScanner extends AbstractJavaScanner {
-	private static String[] WOD_TOKENS = { PreferenceConstants.ELEMENT_NAME, PreferenceConstants.ELEMENT_TYPE, PreferenceConstants.BINDING_NAME, PreferenceConstants.BINDING_VALUE, PreferenceConstants.CONSTANT_BINDING_VALUE, PreferenceConstants.OPERATOR, PreferenceConstants.COMMENT, PreferenceConstants.UNKNOWN };
+	private static String[] WOD_TOKENS = { PreferenceConstants.ELEMENT_NAME, PreferenceConstants.ELEMENT_TYPE, PreferenceConstants.BINDING_NAME, PreferenceConstants.BINDING_VALUE, PreferenceConstants.OGNL_BINDING_VALUE, PreferenceConstants.CONSTANT_BINDING_VALUE, PreferenceConstants.OPERATOR, PreferenceConstants.COMMENT, PreferenceConstants.UNKNOWN };
 
 	public static WodScanner newWODScanner() {
 		IColorManager colorManager = JavaPlugin.getDefault().getJavaTextTools().getColorManager();
@@ -89,13 +90,16 @@ public class WodScanner extends AbstractJavaScanner {
 	@Override
   protected List<IRule> createRules() {
 		List<IRule> rules = new ArrayList<IRule>();
-		rules.add(new WOOGNLRule("~", ";", getToken(PreferenceConstants.BINDING_VALUE), '\\'));
-		rules.add(new WOOGNLRule("\"~", "\"", getToken(PreferenceConstants.BINDING_VALUE), '\\'));
+    rules.add(new MultilineCommentRule(getToken(PreferenceConstants.COMMENT)));
+    rules.add(new CommentRule(getToken(PreferenceConstants.COMMENT)));
+    rules.add(new SingleLineRule("\"~", "\"", getToken(PreferenceConstants.OGNL_BINDING_VALUE), '\\', true, false));
+    rules.add(new SingleLineRule("\"~", null, getToken(PreferenceConstants.OGNL_BINDING_VALUE), '\\', true, false));
+		rules.add(new WOOGNLRule("~", ";", getToken(PreferenceConstants.OGNL_BINDING_VALUE), '\\'));
+    rules.add(new SingleLineRule("~", null, getToken(PreferenceConstants.OGNL_BINDING_VALUE), '\\', true, false));
 		rules.add(new StringLiteralRule("\"", "\"", getToken(PreferenceConstants.CONSTANT_BINDING_VALUE), '\\'));
 		rules.add(new StringLiteralRule("'", "'", getToken(PreferenceConstants.CONSTANT_BINDING_VALUE), '\\'));
+    rules.add(new SingleLineRule("\"", null, getToken(PreferenceConstants.CONSTANT_BINDING_VALUE), '\\', true, false));
 		rules.add(new WhitespaceRule(new WodWhitespaceDetector()));
-		rules.add(new MultilineCommentRule(getToken(PreferenceConstants.COMMENT)));
-		rules.add(new CommentRule(getToken(PreferenceConstants.COMMENT)));
 		rules.add(new OperatorRule(new ElementTypeOperatorWordDetector(), getToken(PreferenceConstants.OPERATOR)));
 		rules.add(new OperatorRule(new OpenDefinitionWordDetector(), getToken(PreferenceConstants.OPERATOR)));
 		rules.add(new OperatorRule(new AssignmentOperatorWordDetector(), getToken(PreferenceConstants.OPERATOR)));

@@ -125,7 +125,7 @@ public class WodReflectionUtils {
       ITypeHierarchy typeHierarchy;
 
       Set<String> additionalProposals = new HashSet<String>();
-      
+
       // We want to show fields from your WOApplication, WOSession, and
       // WODirectAction subclasses ...
       typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(_type);
@@ -150,7 +150,7 @@ public class WodReflectionUtils {
             nextType = types[typeNum];
           }
         }
-        
+
         for (String additionalProposal : additionalProposals) {
           if (additionalProposal.startsWith(_nameStartingWith)) {
             BindingValueKey additionalKey = new BindingValueKey(additionalProposal, null, _javaProject, cache);
@@ -159,14 +159,14 @@ public class WodReflectionUtils {
             bindingKeys.add(additionalKey);
           }
         }
-        
+
         if (isUsuallySubclassed) {
           //typeHierarchy = _type.newTypeHierarchy(_javaProject, null);
           typeHierarchy = SubTypeHierachyCache.getTypeHierarchy(_type);
           types = typeHierarchy.getAllTypes();
         }
       }
-      
+
       if (types != null) {
         for (int typeNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && typeNum < types.length; typeNum++) {
           IField[] fields = types[typeNum].getFields();
@@ -285,21 +285,62 @@ public class WodReflectionUtils {
     return lowercaseFirstLetterMemberName;
   }
 
-  public static boolean isSystemBindingValueKey(BindingValueKey bindingValueKey, boolean includeCommonKeys) {
+  public static Set<String> _systemTypeNames;
+  public static Set<String> _uselessSystemBindings;
+  public static Set<String> _usefulSystemBindings;
+  static {
+    _systemTypeNames = new HashSet<String>();
+    _systemTypeNames.add("Object");
+    _systemTypeNames.add("WOElement");
+    _systemTypeNames.add("WOActionResults");
+    _systemTypeNames.add("WOComponent");
+    
+    _uselessSystemBindings = new HashSet<String>();
+    _uselessSystemBindings.add("baseURL");
+    _uselessSystemBindings.add("bindingKeys");
+    _uselessSystemBindings.add("cachingEnabled");
+    _uselessSystemBindings.add("childTemplate");
+    _uselessSystemBindings.add("class");
+    _uselessSystemBindings.add("clone");
+    _uselessSystemBindings.add("componentDefinition");
+    _uselessSystemBindings.add("componentUnroll");
+    _uselessSystemBindings.add("frameworkName");
+    _uselessSystemBindings.add("generateResponse");
+    _uselessSystemBindings.add("hashCode");
+    _uselessSystemBindings.add("isCachingEnabled");
+    _uselessSystemBindings.add("isEventLoggingEnabled");
+    _uselessSystemBindings.add("isPage");
+    _uselessSystemBindings.add("isStateless");
+    _uselessSystemBindings.add("keyAssociations");
+    _uselessSystemBindings.add("name");
+    _uselessSystemBindings.add("page");
+    _uselessSystemBindings.add("parent");
+    _uselessSystemBindings.add("path");
+    _uselessSystemBindings.add("pathURL");
+    _uselessSystemBindings.add("synchronizesVariablesWithBindings");
+    _uselessSystemBindings.add("template");
+    _uselessSystemBindings.add("toString");
+    _uselessSystemBindings.add("unroll");
+    
+    _usefulSystemBindings = new HashSet<String>();
+    _usefulSystemBindings.add("application");
+    _usefulSystemBindings.add("context");
+    _usefulSystemBindings.add("hasSession");
+    _usefulSystemBindings.add("session");
+  }
+
+  public static boolean isSystemBindingValueKey(BindingValueKey bindingValueKey, boolean showUsefulSystemBindings) {
     boolean isSystemBinding = false;
-    if (bindingValueKey != null && bindingValueKey.getDeclaringType() != null && "WOComponent".equals(bindingValueKey.getDeclaringType().getElementName())) {
-      String bindingName = bindingValueKey.getBindingName();
-      if ("cachingEnabled".equals(bindingName)) {
-        isSystemBinding = true;
-      }
-      else if ("isPage".equals(bindingName)) {
-        isSystemBinding = true;
-      }
-      else if ("keyAssociations".equals(bindingName)) {
-        isSystemBinding = true;
-      }
-      else if (includeCommonKeys && "context".equals(bindingName)) {
-        isSystemBinding = true;
+    if (bindingValueKey != null && bindingValueKey.getDeclaringType() != null) {
+      String declaringTypeName = bindingValueKey.getDeclaringType().getElementName();
+      if (WodReflectionUtils._systemTypeNames.contains(declaringTypeName)) {
+        String bindingName = bindingValueKey.getBindingName();
+        if (!showUsefulSystemBindings && WodReflectionUtils._usefulSystemBindings.contains(bindingName)) {
+          isSystemBinding = true;
+        }
+        else if (WodReflectionUtils._uselessSystemBindings.contains(bindingName)) {
+          isSystemBinding = true;
+        }
       }
     }
     return isSystemBinding;
