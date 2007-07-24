@@ -124,9 +124,10 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
+            category="org.objectstyle.wolips.preferences.PreferencesPage"
             class="tk.eclipse.plugin.htmleditor.HTMLEditorPreferencePage"
-            name="%plugin.preference.category"
-            id="tk.eclipse.plugin.htmleditor.category"/>
+            id="tk.eclipse.plugin.htmleditor.category"
+            name="%plugin.preference.category"/>
       <!--
       <page
             class="tk.eclipse.plugin.htmleditor.AppearancePreferencePage"
