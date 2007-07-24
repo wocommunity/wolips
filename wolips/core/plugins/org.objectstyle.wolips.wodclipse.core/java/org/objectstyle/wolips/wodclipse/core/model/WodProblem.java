@@ -79,12 +79,11 @@ public class WodProblem {
 
     IMarker marker = null;
     try {
-      //marker = file.createMarker(WodclipsePlugin.WOD_PROBLEM);
       if (_forceFile != null) {
-        marker = _forceFile.createMarker(IMarker.PROBLEM);
+        marker = _forceFile.createMarker(Activator.TEMPLATE_PROBLEM_MARKER);
       }
       else {
-        marker = file.createMarker(IMarker.PROBLEM);
+        marker = file.createMarker(Activator.TEMPLATE_PROBLEM_MARKER);
       }
       marker.setAttribute(IMarker.MESSAGE, getMessage());
       int severity;
@@ -119,6 +118,7 @@ public class WodProblem {
       }
     }
     catch (CoreException e) {
+      e.printStackTrace();
       Activator.getDefault().log(e);
     }
 //    catch (BadLocationException e) {

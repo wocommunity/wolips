@@ -56,7 +56,7 @@ public class HtmlProblem {
   public IMarker createMarker(IFile file) {
     IMarker marker = null;
     try {
-      marker = _htmlFile.createMarker(IMarker.PROBLEM);
+      marker = _htmlFile.createMarker(Activator.TEMPLATE_PROBLEM_MARKER);
       marker.setAttribute(IMarker.MESSAGE, getMessage());
       int severity;
       if (isWarning()) {

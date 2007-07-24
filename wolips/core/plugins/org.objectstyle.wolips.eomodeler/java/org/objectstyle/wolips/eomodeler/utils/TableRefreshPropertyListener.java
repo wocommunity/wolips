@@ -62,9 +62,9 @@ public class TableRefreshPropertyListener implements PropertyChangeListener {
 
 	private TableViewer _tableViewer;
 
-	public TableRefreshPropertyListener(TableViewer tableViewer) {
+	public TableRefreshPropertyListener(String name, TableViewer tableViewer) {
 		_tableViewer = tableViewer;
-		_throttle = new SelectionThrottle(new SelectionThrottle.TableViewerSelectionHandler(tableViewer));
+		_throttle = new SelectionThrottle(name, new SelectionThrottle.TableViewerSelectionHandler(tableViewer));
 	}
 
 	public void start() {

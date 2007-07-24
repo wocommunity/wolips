@@ -141,7 +141,7 @@ public class EOFetchSpecRawFetchEditorSection extends AbstractPropertySection im
 		rawRowKeyPathsTableLayoutData.heightHint = 100;
 		myRawRowKeyPathsTableViewer.getTable().setLayoutData(rawRowKeyPathsTableLayoutData);
 		myRawRowKeyPathsTableViewer.addSelectionChangedListener(this);
-		myRawRowKeyPathsChangedRefresher = new TableRefreshPropertyListener(myRawRowKeyPathsTableViewer);
+		myRawRowKeyPathsChangedRefresher = new TableRefreshPropertyListener("RawRowKeyPathsChanged", myRawRowKeyPathsTableViewer);
 
 		myAddRemoveButtonGroup = new AddRemoveButtonGroup(topForm, new AddRawRowKeyPathHandler(), new RemoveRawRowKeyPathHandler());
 		myAddRemoveButtonGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));

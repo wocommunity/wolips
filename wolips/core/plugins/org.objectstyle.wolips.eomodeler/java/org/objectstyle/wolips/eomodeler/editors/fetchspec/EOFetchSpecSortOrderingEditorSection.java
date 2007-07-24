@@ -146,7 +146,7 @@ public class EOFetchSpecSortOrderingEditorSection extends AbstractPropertySectio
 		sortOrderingsTableLayoutData.heightHint = 100;
 		mySortOrderingsTableViewer.getTable().setLayoutData(sortOrderingsTableLayoutData);
 		mySortOrderingsTableViewer.addSelectionChangedListener(this);
-		mySortOrderingsChangedRefresher = new TableRefreshPropertyListener(mySortOrderingsTableViewer);
+		mySortOrderingsChangedRefresher = new TableRefreshPropertyListener("SortOrderingsChanged", mySortOrderingsTableViewer);
 		myTableRowRefresher = new TableRowRefreshPropertyListener(mySortOrderingsTableViewer);
 
 		CellEditor[] cellEditors = new CellEditor[TableUtils.getColumnsForTableNamed(EOSortOrdering.class.getName()).length];

@@ -143,7 +143,7 @@ public class EOFetchSpecSQLEditorSection extends AbstractPropertySection impleme
 		rawRowKeyPathsTableLayoutData.heightHint = 100;
 		_storedProcedureTableViewer.getTable().setLayoutData(rawRowKeyPathsTableLayoutData);
 		_storedProcedureTableViewer.addSelectionChangedListener(this);
-		_storedProcedureChangedRefresher = new TableRefreshPropertyListener(_storedProcedureTableViewer);
+		_storedProcedureChangedRefresher = new TableRefreshPropertyListener("StoredProcedureChanged", _storedProcedureTableViewer);
 	}
 
 	public void setInput(IWorkbenchPart part, ISelection selection) {

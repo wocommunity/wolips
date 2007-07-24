@@ -102,8 +102,8 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
 		myRelationshipsTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EORelationship", EORelationship.class.getName(), new EORelationshipsContentProvider(), null, new EORelationshipsViewerSorter(EORelationship.class.getName()));
 		myRelationshipsTableViewer.setLabelProvider(new EORelationshipsLabelProvider(myRelationshipsTableViewer, EORelationship.class.getName()));
 		new DoubleClickNewRelationshipHandler(myRelationshipsTableViewer).attach();
-		myRelationshipsChangedRefresher = new TableRefreshPropertyListener(myRelationshipsTableViewer);
-		myParentChangedRefresher = new TableRefreshPropertyListener(myRelationshipsTableViewer);
+		myRelationshipsChangedRefresher = new TableRefreshPropertyListener("RelationshipsChanged", myRelationshipsTableViewer);
+		myParentChangedRefresher = new TableRefreshPropertyListener("EntityParentChanged", myRelationshipsTableViewer);
 		myTableRowRefresher = new TableRowRefreshPropertyListener(myRelationshipsTableViewer);
 
 		Table relationshipsTable = myRelationshipsTableViewer.getTable();

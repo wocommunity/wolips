@@ -96,8 +96,8 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
 		myAttributesTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EOAttribute", EOAttribute.class.getName(), new EOAttributesContentProvider(), null, new EOAttributesViewerSorter(EOAttribute.class.getName()));
 		myAttributesTableViewer.setLabelProvider(new EOAttributesLabelProvider(myAttributesTableViewer, EOAttribute.class.getName()));
 		new DoubleClickNewAttributeHandler(myAttributesTableViewer).attach();
-		myAttributesChangedRefresher = new TableRefreshPropertyListener(myAttributesTableViewer);
-		myParentChangedRefresher = new TableRefreshPropertyListener(myAttributesTableViewer);
+		myAttributesChangedRefresher = new TableRefreshPropertyListener("AttributesChanged", myAttributesTableViewer);
+		myParentChangedRefresher = new TableRefreshPropertyListener("ParentChanged", myAttributesTableViewer);
 		myTableRowRefresher = new TableRowRefreshPropertyListener(myAttributesTableViewer);
 		Table attributesTable = myAttributesTableViewer.getTable();
 		attributesTable.setLayoutData(new GridData(GridData.FILL_BOTH));

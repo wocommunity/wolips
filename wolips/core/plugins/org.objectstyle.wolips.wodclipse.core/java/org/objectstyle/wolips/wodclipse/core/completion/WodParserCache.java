@@ -27,7 +27,6 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
@@ -275,11 +274,11 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   public void parseHtmlAndWodIfNecessary() throws CoreException, IOException {
     boolean parseHtml = _htmlDocumentChanged || (_htmlFile != null && ((_htmlFile.exists() && _htmlFile.getModificationStamp() != _lastHtmlParseTime) || (!_htmlFile.exists() && _lastHtmlParseTime > 0)));
     if (parseHtml) {
-      System.out.println("WodParserCache.parseHtmlAndWodIfNecessary: Parse HTML " + parseHtml);
+      //System.out.println("WodParserCache.parseHtmlAndWodIfNecessary: Parse HTML " + parseHtml);
       _clearHtmlCache();
 
       if (_htmlDocument != null) {
-        System.out.println("WodParserCache.parseHtmlAndWodIfNecessary:   ... from document");
+        //System.out.println("WodParserCache.parseHtmlAndWodIfNecessary:   ... from document");
         _htmlContents = _htmlDocument.get();
         _htmlContents = _htmlContents.replaceAll("\r\n", " \n");
         _htmlContents = _htmlContents.replaceAll("\r", "\n");
@@ -293,7 +292,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
         _htmlDocumentChanged = false;
       }
       else if (_htmlFile != null && _htmlFile.exists()) {
-        System.out.println("WodParserCache.parseHtmlAndWodIfNecessary:   ... from file");
+        //System.out.println("WodParserCache.parseHtmlAndWodIfNecessary:   ... from file");
         InputStream in = _htmlFile.getContents();
         try {
           ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -332,9 +331,9 @@ public class WodParserCache implements FuzzyXMLErrorListener {
 
     boolean parseWod = _wodDocumentChanged || (_wodFile != null && ((_wodFile.exists() && _wodFile.getModificationStamp() != _lastWodParseTime) || (!_wodFile.exists() && _lastWodParseTime > 0)));
     if (parseWod) {
-      System.out.println("WodParserCache.parseHtmlAndWodIfNecessary: Parsing WOD " + _wodFile);
+      //System.out.println("WodParserCache.parseHtmlAndWodIfNecessary: Parsing WOD " + _wodFile);
       if (_wodDocument != null) {
-        System.out.println("WodParserCache.parseHtmlAndWodIfNecessary:   ... From document");
+        //System.out.println("WodParserCache.parseHtmlAndWodIfNecessary:   ... From document");
         _wodModel = WodModelUtils.createWodModel(_wodFile, _wodDocument);
         if (_wodFile != null) {
           _lastWodParseTime = _wodFile.getModificationStamp();
@@ -342,7 +341,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
         _wodDocumentChanged = false;
       }
       else if (_wodFile != null && _wodFile.exists()) {
-        System.out.println("WodParserCache.parseHtmlAndWodIfNecessary:   ... From file");
+        //System.out.println("WodParserCache.parseHtmlAndWodIfNecessary:   ... From file");
         FileEditorInput input = new FileEditorInput(_wodFile);
         WodFileDocumentProvider provider = new WodFileDocumentProvider();
         provider.connect(input);
@@ -399,12 +398,13 @@ public class WodParserCache implements FuzzyXMLErrorListener {
             }
           }
           catch (Exception e) {
+            e.printStackTrace();
             Activator.getDefault().log(e);
           }
         }
       };
       IWorkspace workspace = ResourcesPlugin.getWorkspace();
-      workspace.run(body, new NullProgressMonitor());
+      workspace.run(body, null, IWorkspace.AVOID_UPDATE, null);
     }
   }
 

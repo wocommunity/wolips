@@ -7,10 +7,11 @@ import org.osgi.framework.BundleContext;
  * The activator class controls the plug-in life cycle
  */
 public class Activator extends AbstractBaseUIActivator {
-  public static final String WOD_PROBLEM = "org.objectstyle.wolips.wodclipse.problem";
-
   // The plug-in ID
   public static final String PLUGIN_ID = "org.objectstyle.wolips.wodclipse.core";
+
+  public static final String TEMPLATE_PROBLEM_MARKER = Activator.PLUGIN_ID + ".problem";
+
 
   // The shared instance
   private static Activator plugin;

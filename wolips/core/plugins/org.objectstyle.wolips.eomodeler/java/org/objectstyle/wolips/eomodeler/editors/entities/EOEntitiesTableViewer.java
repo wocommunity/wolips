@@ -107,7 +107,7 @@ public class EOEntitiesTableViewer extends Composite implements ISelectionProvid
 		new StayEditingCellEditorListener(myEntitiesTableViewer, EOEntity.class.getName(), EOEntity.CLASS_NAME);
 		new StayEditingCellEditorListener(myEntitiesTableViewer, EOEntity.class.getName(), EOEntity.PARENT);
 
-		myTableRefresher = new TableRefreshPropertyListener(myEntitiesTableViewer);
+		myTableRefresher = new TableRefreshPropertyListener("EntitiesChanged", myEntitiesTableViewer);
 		myTableRowRefresher = new TableRowRefreshPropertyListener(myEntitiesTableViewer);
 	}
 

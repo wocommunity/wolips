@@ -100,7 +100,7 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 	private Throttle _wodOutlineUpdateThrottle;
 
 	public WodEditor() {
-		_wodOutlineUpdateThrottle = new Throttle(1000, new WodOutlineUpdater());
+		_wodOutlineUpdateThrottle = new Throttle("WodOutline", 1000, new WodOutlineUpdater());
 		setSourceViewerConfiguration(new WodSourceViewerConfiguration(this));
 	}
 
@@ -141,6 +141,7 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 
 	protected void updateValidation() {
 		try {
+			//resource.getWorkspace().run(r, null,IWorkspace.AVOID_UPDATE, null);
 			ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) {
 					try {
