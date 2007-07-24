@@ -71,6 +71,7 @@ public class SelectionThrottle implements Runnable {
 	private List _removedObjects;
 
 	public SelectionThrottle(String name, IThrottledSelectionHandler selectionHandler) {
+		_name = name;
 		_selectionHandler = selectionHandler;
 		_addedObjects = new LinkedList();
 		_removedObjects = new LinkedList();
