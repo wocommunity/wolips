@@ -3,8 +3,8 @@
 	<classpathentry kind="src" path="java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaEOAccess.framework/Versions/A/Resources/Java/javaeoaccess.jar"/>
-	<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaJDBCAdaptor.framework/Resources/Java/javajdbcadaptor.jar"/>
-	<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaFoundation.framework/Versions/A/Resources/Java/javafoundation.jar"/>
+	<classpathentry kind="lib" path="/Library/WebObjects/lib/JavaFoundation.jar"/>
+	<classpathentry kind="lib" path="/Library/WebObjects/lib/JavaEOAccess.jar"/>
+	<classpathentry kind="lib" path="/Library/WebObjects/lib/JavaJDBCAdaptor.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
