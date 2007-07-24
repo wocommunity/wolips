@@ -55,6 +55,8 @@ public class PreferenceConstants {
 
   public static final String BINDING_VALUE = "BindingValue";
 
+  public static final String OGNL_BINDING_VALUE = "OgnlBindingValue";
+
   public static final String CONSTANT_BINDING_VALUE = "ConstantBindingValue";
 
   public static final String PARENT_BINDING_VALUE = "ParentBindingValue";

@@ -71,16 +71,16 @@ public class WodCompletionUtils {
   }
 
   public static void fillInBindingNameCompletionProposals(IJavaProject project, IType elementType, String token, int tokenOffset, int offset, Set<WodCompletionProposal> completionProposalsSet, boolean guessed, WodParserCache cache) throws JavaModelException {
-    String partialToken = partialToken(token, tokenOffset, offset);
-    List<BindingValueKey> bindingKeys = WodReflectionUtils.getBindingKeys(project, elementType, partialToken, false, WodReflectionUtils.MUTATORS_ONLY, cache);
-    _fillInCompletionProposals(bindingKeys, token, tokenOffset, offset, completionProposalsSet);
+    String partialToken = WodCompletionUtils.partialToken(token, tokenOffset, offset);
+    boolean showReflectionBindings = true;
 
     // API files:
     try {
       Wo wo = WodApiUtils.findApiModelWo(elementType, cache);
       if (wo != null) {
         String lowercasePartialToken = partialToken.toLowerCase();
-        for (Binding binding : wo.getBindings()) {
+        Binding[] bindings = wo.getBindings();
+        for (Binding binding : bindings) {
           String bindingName = binding.getName();
           String lowercaseBindingName = bindingName.toLowerCase();
           if (lowercaseBindingName.startsWith(lowercasePartialToken)) {
@@ -94,11 +94,20 @@ public class WodCompletionUtils {
             completionProposalsSet.add(completionProposal);
           }
         }
+        
+        if (bindings != null && bindings.length > 0) {
+          showReflectionBindings = false;
+        }
       }
     }
     catch (Throwable t) {
       // It's not that big a deal ... give up on api files
       t.printStackTrace();
+    }
+
+    if (showReflectionBindings) {
+      List<BindingValueKey> bindingKeys = WodReflectionUtils.getBindingKeys(project, elementType, partialToken, false, WodReflectionUtils.MUTATORS_ONLY, cache);
+      WodCompletionUtils._fillInCompletionProposals(bindingKeys, token, tokenOffset, offset, completionProposalsSet, false);
     }
   }
 
@@ -115,11 +124,11 @@ public class WodCompletionUtils {
       else {
         bindingKeyName = bindingKeyPath.getLastBindingKeyName();
       }
-      _fillInCompletionProposals(possibleBindingKeyMatchesList, bindingKeyName, tokenOffset + partialToken.lastIndexOf('.') + 1, offset, completionProposalsSet);
+      WodCompletionUtils._fillInCompletionProposals(possibleBindingKeyMatchesList, bindingKeyName, tokenOffset + partialToken.lastIndexOf('.') + 1, offset, completionProposalsSet, true);
     }
 
     // Only do binding type checks if you're on the first of a keypath ...
-    if (bindingKeyPath.getLength() == 1) {
+    if (bindingKeyPath != null && bindingKeyPath.getLength() == 1) {
       checkBindingType = true;
     }
     return checkBindingType;
@@ -137,11 +146,11 @@ public class WodCompletionUtils {
     return partialToken;
   }
 
-  protected static void _fillInCompletionProposals(List<BindingValueKey> bindingKeys, String token, int tokenOffset, int offset, Set<WodCompletionProposal> completionProposalsSet) {
+  protected static void _fillInCompletionProposals(List<BindingValueKey> bindingKeys, String token, int tokenOffset, int offset, Set<WodCompletionProposal> completionProposalsSet, boolean showUsefulSystemBindings) {
     Iterator<BindingValueKey> bindingKeysIter = bindingKeys.iterator();
     while (bindingKeysIter.hasNext()) {
       BindingValueKey bindingKey = bindingKeysIter.next();
-      if (!WodReflectionUtils.isSystemBindingValueKey(bindingKey, false)) {
+      if (!WodReflectionUtils.isSystemBindingValueKey(bindingKey, showUsefulSystemBindings)) {
         WodCompletionProposal completionProposal = new WodCompletionProposal(token, tokenOffset, offset, bindingKey.getBindingName());
         completionProposalsSet.add(completionProposal);
       }

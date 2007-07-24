@@ -82,7 +82,7 @@ public class WodCompletionProposal implements Comparable, ICompletionProposal {
   }
 
   public WodCompletionProposal(String token, int replacementOffset, int offset, String replacementString, String displayString, int cursorPosition) {
-    this(token, replacementOffset, token.length(), offset, replacementString, null, cursorPosition, null);
+    this(token, replacementOffset, token.length(), offset, replacementString, displayString, cursorPosition, null);
   }
 
   public WodCompletionProposal(String token, int replacementOffset, int replacementLength, int offset, String replacementString, String displayString, int cursorPosition, Image image) {
@@ -186,8 +186,9 @@ public class WodCompletionProposal implements Comparable, ICompletionProposal {
    * @see ICompletionProposal#getDisplayString()
    */
   public String getDisplayString() {
-    if (_displayString != null)
+    if (_displayString != null) {
       return _displayString;
+    }
     return _replacementString;
   }
 

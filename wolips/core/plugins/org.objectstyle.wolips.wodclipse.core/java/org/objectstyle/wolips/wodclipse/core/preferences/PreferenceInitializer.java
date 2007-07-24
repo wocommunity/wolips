@@ -62,6 +62,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     prefs.setDefault(PreferenceConstants.ELEMENT_TYPE, "63,127,95");
     prefs.setDefault(PreferenceConstants.BINDING_NAME, "138,23,100");
     prefs.setDefault(PreferenceConstants.BINDING_VALUE, "0,65,216");
+    prefs.setDefault(PreferenceConstants.OGNL_BINDING_VALUE, "184,93,0");
     prefs.setDefault(PreferenceConstants.CONSTANT_BINDING_VALUE, "42,0,255");
     prefs.setDefault(PreferenceConstants.OPERATOR, "0,0,0");
     prefs.setDefault(PreferenceConstants.COMMENT, "63,127,95");

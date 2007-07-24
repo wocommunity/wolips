@@ -21,6 +21,8 @@ public class BindingValueKeyPath {
 
   private BindingValueKey[] _bindingKeys;
 
+  private String _originalKeyPath;
+  
   private String _validKeyPath;
 
   private String _operator;
@@ -44,6 +46,7 @@ public class BindingValueKeyPath {
     _javaProject = javaProject;
     _contextType = contextType;
     _valid = true;
+    _originalKeyPath = keyPath;
 
     boolean isKeyPath = true;
     // short-circuit for booleans
@@ -147,6 +150,10 @@ public class BindingValueKeyPath {
     }
   }
 
+  public String getOriginalKeyPath() {
+    return _originalKeyPath;
+  }
+  
   public String getOperator() {
     return _operator;
   }
@@ -181,7 +188,7 @@ public class BindingValueKeyPath {
 
   public String getLastBindingKeyName() {
     String lastBindingKeyName;
-    if (_bindingKeyNames.length > 0) {
+    if (_bindingKeyNames != null && _bindingKeyNames.length > 0) {
       lastBindingKeyName = _bindingKeyNames[_bindingKeyNames.length - 1];
     }
     else {
@@ -203,7 +210,7 @@ public class BindingValueKeyPath {
 
   public BindingValueKey getLastBindingKey() {
     BindingValueKey lastBindingKey;
-    if (_bindingKeys.length > 0) {
+    if (_bindingKeys != null && _bindingKeys.length > 0) {
       lastBindingKey = _bindingKeys[_bindingKeys.length - 1];
     }
     else {
@@ -242,6 +249,9 @@ public class BindingValueKeyPath {
     }
     else if (_operator != null) {
       bindingKeysList = WodReflectionUtils.getBindingKeys(_javaProject, getLastType(), "@" + _operator, false, WodReflectionUtils.ACCESSORS_ONLY, _cache);
+    }
+    else if (_bindingKeys == null) {
+      bindingKeysList = WodReflectionUtils.getBindingKeys(_javaProject, getLastType(), _originalKeyPath, false, WodReflectionUtils.ACCESSORS_ONLY, _cache);
     }
     else {
       String partialBindingKeyName;
@@ -288,6 +298,6 @@ public class BindingValueKeyPath {
   }
 
   public int getLength() {
-    return _bindingKeyNames.length;
+    return _bindingKeyNames == null ? 1 : _bindingKeyNames.length;
   }
 }

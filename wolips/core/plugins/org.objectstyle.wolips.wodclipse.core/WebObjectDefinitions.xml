@@ -9,6 +9,10 @@
     <binding name="otherTagString" passthrough="NO"/>
     <binding name="omitTags" passthrough="NO" defaults="YES/NO"/>
     <binding name="elementID" passthrough="NO"/>
+    
+    <binding name="id" />
+    <binding name="class" />
+    <binding name="style" />
 
     <validation message="'name' must be bound when either 'formValue' or 'formValues' is bound">
       <and>
@@ -29,12 +33,16 @@
   </wo>
 
   <wo class="WORadioButton">
-    <binding name="name"/>
     <binding name="checked" passthrough="NO" settable="YES"/>
     <binding name="disabled" passthrough="NO" defaults="YES/NO"/>
     <binding name="otherTagString" passthrough="NO"/>
     <binding name="selection" passthrough="NO" settable="YES"/>
     <binding name="value"/>
+
+    <binding name="id" />
+    <binding name="name" />
+    <binding name="class" />
+    <binding name="style" />
 
     <validation message="exactly one of 'checked' or 'value' must be bound">
       <count test="!=1">
@@ -66,6 +74,9 @@
     <binding name="mimeType" passthrough="NO" defaults="MIME Types"/>
     <binding name="data" passthrough="NO"/>
 
+    <binding name="class" />
+    <binding name="style" />
+    
     <validation message="'filename' must be bound when 'framework' is bound">
       <and>
         <bound name="framework"/>
@@ -91,6 +102,12 @@
     <binding name="otherTagString" passthrough="NO"/>
     <binding name="target" passthrough="NO"/>
     <binding name="multipleSubmit" passthrough="NO" defaults="YES/NO"/>
+    
+    <binding name="id" />
+    <binding name="method" />
+    <binding name="name" />
+    <binding name="class" />
+    <binding name="style" />
 
     <validation message="either one of 'action' or 'href' may be bound, or one or both of 'actionClass' or 'directActionName' may be bound">
       <count test="&gt;1">
@@ -109,8 +126,12 @@
     <binding name="checked" passthrough="NO" settable="YES"/>
     <binding name="disabled" passthrough="NO" defaults="YES/NO"/>
     <binding name="otherTagString" passthrough="NO"/>
-    <binding name="name"/>
     <binding name="selection" passthrough="NO" settable="YES"/>
+
+    <binding name="id" />
+    <binding name="name" />
+    <binding name="class" />
+    <binding name="style" />
 
     <validation message="exactly one of 'checked' or 'value' must be bound">
       <count test="!=1">
@@ -144,7 +165,6 @@
     <binding name="list" passthrough="NO" required="YES"/>
     <binding name="displayString" passthrough="NO"/>
     <binding name="disabled" passthrough="NO" defaults="YES/NO"/>
-    <binding name="name"/>
     <binding name="value" passthrough="NO"/>
     <binding name="item" passthrough="NO"/>
     <binding name="otherTagString" passthrough="NO"/>
@@ -152,6 +172,11 @@
     <binding name="noSelectionString" passthrough="NO"/>
     <binding name="escapeHTML" passthrough="NO" defaults="YES/NO"/>
 
+    <binding name="id" />
+    <binding name="name" />
+    <binding name="class" />
+    <binding name="style" />
+    
     <validation message="'list' must not be a constant">
       <and>
         <bound name="list"/>
@@ -259,6 +284,10 @@
     <binding name="value" passthrough="NO" settable="YES"/>
     <binding name="x" passthrough="NO" settable="YES"/>
     <binding name="y" passthrough="NO" settable="YES"/>
+
+    <binding name="id" />
+    <binding name="class" />
+    <binding name="style" />
 
     <validation message="the 'secure' attribute has no effect on the 'href' attribute">
       <and>
@@ -402,6 +431,11 @@
     <binding name="overwrite" defaults="Boolean"/>
     <binding name="finalFilePath" settable="YES"/>
 
+    <binding name="id" />
+    <binding name="name" />
+    <binding name="class" />
+    <binding name="style" />
+
     <validation message="exactly one of 'data', 'inputStream', 'outputStream', or 'streamToFilePath' must be bound">
       <count test="!=1">
         <bound name="data"/>
@@ -448,6 +482,11 @@
     <binding name="omitTags" passthrough="NO" defaults="YES/NO"/>
     <binding name="elementID" passthrough="NO"/>
 
+    <binding name="id" />
+    <binding name="name" />
+    <binding name="class" />
+    <binding name="style" />
+
     <validation message="'name' must be bound when either 'formValue' or 'formValues' is bound">
       <and>
         <or>
@@ -483,13 +522,17 @@
   </wo>
 
   <wo class="WOTextField">
-    <binding name="name"/>
     <binding name="formatter" passthrough="NO"/>
     <binding name="value" settable="YES" required="YES"/>
     <binding name="otherTagString" passthrough="NO"/>
     <binding name="numberformat" passthrough="NO" defaults="Number Format Strings"/>
     <binding name="dateformat" passthrough="NO" defaults="Date Format Strings"/>
     <binding name="disabled" passthrough="NO" defaults="YES/NO"/>
+
+    <binding name="id" />
+    <binding name="name" />
+    <binding name="class" />
+    <binding name="style" />
 
     <validation message="no more than one of 'dateFormat', 'numberFormat', or 'formatter' may be bound">
       <count test="&gt;1">
@@ -501,19 +544,27 @@
   </wo>
 
   <wo class="WOPasswordField">
-    <binding name="name"/>
     <binding name="otherTagString" passthrough="NO"/>
     <binding name="value" settable="YES" required="YES"/>
     <binding name="disabled" passthrough="NO" defaults="YES/NO"/>
+
+    <binding name="id" />
+    <binding name="name" />
+    <binding name="class" />
+    <binding name="style" />
 
     <!-- no validation rules -->
   </wo>
 
   <wo class="WOHiddenField">
-    <binding name="name"/>
     <binding name="otherTagString" passthrough="NO"/>
     <binding name="value" settable="YES" required="YES"/>
     <binding name="disabled" passthrough="NO" defaults="YES/NO"/>
+
+    <binding name="id" />
+    <binding name="name" />
+    <binding name="class" />
+    <binding name="style" />
 
     <!-- no validation rules -->
   </wo>
@@ -547,11 +598,15 @@
   <wo class="WOSubmitButton">
     <binding name="action" passthrough="NO" defaults="Actions"/>
     <binding name="otherTagString" passthrough="NO"/>
-    <binding name="name"/>
     <binding name="value"/>
     <binding name="actionClass" passthrough="NO" defaults="Direct Action Classes"/>
     <binding name="directActionName" passthrough="NO" defaults="Direct Actions"/>
     <binding name="disabled" passthrough="NO" defaults="YES/NO"/>
+
+    <binding name="id" />
+    <binding name="name" />
+    <binding name="class" />
+    <binding name="style" />
 
     <validation message="either 'action', or one or both of 'actionClass' or 'directActionName' may be bound">
       <count test="!=1">
@@ -573,6 +628,10 @@
     <binding name="otherTagString" passthrough="NO"/>
     <binding name="src"/>
     <binding name="value" passthrough="NO"/>
+
+    <binding name="id" />
+    <binding name="class" />
+    <binding name="style" />
 
     <validation message="exactly one of 'data', 'filename', 'src', or 'value' must be bound">
       <count test="!=1">
@@ -625,6 +684,11 @@
     <binding name="otherTagString" passthrough="NO"/>
     <binding name="disabled" passthrough="NO" defaults="YES/NO"/>
     <binding name="secure" passthrough="NO" defaults="YES/NO"/>
+
+    <binding name="id" />
+    <binding name="name" />
+    <binding name="class" />
+    <binding name="style" />
 
     <validation message="the 'secure' attribute has no effect on the 'href' attribute">
       <and>
@@ -751,7 +815,6 @@
     <binding name="imageMapFile" passthrough="NO"/>
     <binding name="key" passthrough="NO"/>
     <binding name="mimeType" passthrough="NO" defaults="MIME Types"/>
-    <binding name="name"/>
     <binding name="otherTagString" passthrough="NO"/>
     <binding name="src"/>
     <binding name="value" passthrough="NO" settable="YES"/>
@@ -759,6 +822,11 @@
     <binding name="y" passthrough="NO" settable="YES"/>
     <binding name="actionClass" passthrough="NO" defaults="Direct Action Classes"/>
     <binding name="directActionName" passthrough="NO" defaults="Direct Actions"/>
+
+    <binding name="id" />
+    <binding name="name" />
+    <binding name="class" />
+    <binding name="style" />
 
     <validation message="either 'action', or one or both of 'actionClass' or 'directActionName' may be bound">
       <and>
@@ -795,10 +863,14 @@
   </wo>
 
   <wo class="WOText">
-    <binding name="name"/>
     <binding name="otherTagString" passthrough="NO"/>
     <binding name="value" passthrough="NO" settable="YES" required="YES"/>
     <binding name="disabled" passthrough="NO" defaults="YES/NO"/>
+
+    <binding name="id" />
+    <binding name="name" />
+    <binding name="class" />
+    <binding name="style" />
 
     <!-- no validation rules -->
   </wo>
@@ -813,6 +885,10 @@
     <binding name="border"/>
     <binding name="filename" passthrough="NO" defaults="Resources"/>
     <binding name="otherTagString" passthrough="NO"/>
+
+    <binding name="id" />
+    <binding name="class" />
+    <binding name="style" />
 
     <validation message="exactly one of 'data', 'filename', or 'src' must be bound">
       <count test="!=1">
@@ -871,9 +947,13 @@
 
   <wo class="WOResetButton">
     <binding name="otherTagString" passthrough="NO"/>
-    <binding name="name"/>
     <binding name="value"/>
     <binding name="disabled" passthrough="NO" defaults="YES/NO"/>
+
+    <binding name="id" />
+    <binding name="name" />
+    <binding name="class" />
+    <binding name="style" />
 
     <!-- no validation rules -->
   </wo>
@@ -933,12 +1013,16 @@
     <binding name="longdesc"/>
     <binding name="marginheight"/>
     <binding name="marginwidth"/>
-    <binding name="name" passthrough="NO"/>
     <binding name="pageName" passthrough="NO" defaults="Page Names"/>
     <binding name="scrolling" defaults="Boolean"/>
     <binding name="src"/>
     <binding name="value" passthrough="NO"/>
     <binding name="width"/>
+
+    <binding name="id" />
+    <binding name="name" />
+    <binding name="class" />
+    <binding name="style" />
 
     <validation message="either 'pageName', or one or both of 'src' or 'value' may be bound">
       <count test="!=1">
