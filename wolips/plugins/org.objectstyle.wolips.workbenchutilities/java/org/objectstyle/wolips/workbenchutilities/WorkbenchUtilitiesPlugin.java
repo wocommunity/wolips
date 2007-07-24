@@ -184,7 +184,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractBaseUIActivator {
 	 * @return The list of resources.
 	 * @deprecated Use the locate stuff.
 	 */
-	public final static List findResourcesInProjectByNameAndExtensions(IProject project, String name, String[] extensions, boolean includesReferencedProjects) {
+	public final static List<IResource> findResourcesInProjectByNameAndExtensions(IProject project, String name, String[] extensions, boolean includesReferencedProjects) {
 		if (includesReferencedProjects) {
 			IProject[] projects = WorkbenchUtilitiesPlugin.getWorkspace().getRoot().getProjects();
 			List<IProject> referencedProjects = new ArrayList<IProject>();
@@ -212,10 +212,11 @@ public class WorkbenchUtilitiesPlugin extends AbstractBaseUIActivator {
 	 * @return List of IResource
 	 * @deprecated Use the locate stuff.
 	 */
-	public final static List findResourcesInResourcesByNameAndExtensions(IResource[] resources, String name, String[] extensions) {
+	public final static List<IResource> findResourcesInResourcesByNameAndExtensions(IResource[] resources, String name, String[] extensions) {
 		List<IResource> list = new ArrayList<IResource>();
-		for (int i = 0; i < resources.length; i++)
+		for (int i = 0; i < resources.length; i++) {
 			list.addAll(WorkbenchUtilitiesPlugin.findResourcesInResourceByNameAndExtensions(resources[i], name, extensions));
+		}
 		return list;
 	}
 
