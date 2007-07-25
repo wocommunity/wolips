@@ -555,6 +555,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				}
 			}
 		} catch (Throwable e) {
+			myLoadFailures.add(new EOModelVerificationFailure(null, "Failed to load model.", false, e));
 			handleModelErrors(myLoadFailures, true);
 			e.printStackTrace();
 			// throw new PartInitException("Failed to create EOModelEditorInput
@@ -580,9 +581,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 								loadInBackground(monitor);
 							}
 						});
-					} catch (InvocationTargetException e) {
-						e.printStackTrace();
-					} catch (InterruptedException e) {
+					} catch (Throwable e) {
 						e.printStackTrace();
 					}
 				}

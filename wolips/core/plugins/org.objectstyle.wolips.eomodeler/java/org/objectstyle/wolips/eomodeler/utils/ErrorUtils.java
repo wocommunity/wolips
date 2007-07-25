@@ -7,6 +7,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.widgets.Shell;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
 
 public class ErrorUtils {
 	public static void openErrorDialog(Shell _parent, String _title, String _message) {
@@ -45,7 +46,7 @@ public class ErrorUtils {
 		}
 		final String message;
 		if (_message == null) {
-			message = ErrorUtils.getErrorMessage(_throwable);
+			message = StringUtils.getErrorMessage(_throwable);
 		} else {
 			message = _message;
 		}
@@ -54,35 +55,5 @@ public class ErrorUtils {
 				ErrorDialog.openError(_parent, title, message, new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, message, throwable));
 			}
 		});
-	}
-
-	public static String getErrorMessage(Throwable _t) {
-		StringBuffer messageBuffer = new StringBuffer();
-		Throwable t = _t;
-		while (t != null) {
-			String message = t.getMessage();
-			if (message == null && !(t instanceof InvocationTargetException)) {
-				String name = t.getClass().getName();
-				int lastDotIndex = name.lastIndexOf('.');
-				name = name.substring(lastDotIndex + 1);
-				message = name;
-			}
-
-			if (message != null) {
-				message = message.trim();
-				messageBuffer.append(message);
-				if (!message.endsWith(".")) { //$NON-NLS-1$
-					messageBuffer.append(". "); //$NON-NLS-1$
-				}
-			}
-
-			Throwable cause = _t.getCause();
-			if (t == cause) {
-				t = null;
-			} else {
-				t = cause;
-			}
-		}
-		return messageBuffer.toString();
 	}
 }
