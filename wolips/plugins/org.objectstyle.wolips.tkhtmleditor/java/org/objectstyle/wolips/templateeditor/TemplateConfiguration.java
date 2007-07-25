@@ -8,6 +8,7 @@ import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.preferences.PreferenceConstants;
 
 import tk.eclipse.plugin.htmleditor.ColorProvider;
+import tk.eclipse.plugin.htmleditor.HTMLHyperlinkDetector;
 import tk.eclipse.plugin.htmleditor.assist.HTMLAssistProcessor;
 import tk.eclipse.plugin.htmleditor.editors.HTMLConfiguration;
 
@@ -27,6 +28,25 @@ public class TemplateConfiguration extends HTMLConfiguration {
   public TemplateConfiguration(ColorProvider colorProvider) {
     super(colorProvider);
   }
+  
+  @Override
+  protected HTMLHyperlinkDetector createHyperlinkDetector() {
+    HTMLHyperlinkDetector hyperlinkDetector = super.createHyperlinkDetector();
+    hyperlinkDetector.addHyperlinkProvider(new InlineWodElementHyperlinkProvider());
+    return hyperlinkDetector;
+  }
+  
+//  @Override
+//  public IHyperlinkDetector[] getHyperlinkDetectors(ISourceViewer sourceViewer) {
+//    IHyperlinkDetector[] hyperlinkDetectors = super.getHyperlinkDetectors(sourceViewer);
+//    if (hyperlinkDetectors != null) {
+//      IHyperlinkDetector[] moreHyperlinkDetectors = new IHyperlinkDetector[hyperlinkDetectors.length + 1];
+//      System.arraycopy(hyperlinkDetectors, 0, moreHyperlinkDetectors, 1, hyperlinkDetectors.length);
+//      moreHyperlinkDetectors[0] = new InlineWodEle
+//    }
+    // TODO Auto-generated method stub
+//    return super.getHyperlinkDetectors(sourceViewer);
+//  }
 
   //  /**
   //   * @since 2.0.3
