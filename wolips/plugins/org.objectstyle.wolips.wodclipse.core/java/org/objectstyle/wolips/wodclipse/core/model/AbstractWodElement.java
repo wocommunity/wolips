@@ -57,6 +57,9 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.Position;
+import org.eclipse.jface.text.Region;
 import org.objectstyle.wolips.core.resources.types.api.Binding;
 import org.objectstyle.wolips.core.resources.types.api.Validation;
 import org.objectstyle.wolips.core.resources.types.api.Wo;
@@ -242,6 +245,21 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
     }
   }
 
+  public boolean isWithin(IRegion region) {
+    Position typePosition = getElementTypePosition();
+    return typePosition != null && typePosition.getOffset() < region.getOffset() && typePosition.getOffset() + typePosition.getLength() > region.getOffset();
+  }
+  
+  public WodHyperlink toWodHyperlink(WodParserCache cache) {
+    WodHyperlink hyperlink = null;
+    Position typePosition = getElementTypePosition();
+    if (typePosition != null) {
+      Region elementRegion = new Region(typePosition.getOffset(), typePosition.getLength());
+      hyperlink = new WodHyperlink(elementRegion, getElementType(), cache);
+    }
+    return hyperlink;
+  }
+  
   @Override
   public String toString() {
     return "[" + getClass().getName() + ": elementName = " + getElementName() + ";  elementType = " + getElementType() + "; bindings = " + _bindings + "]";

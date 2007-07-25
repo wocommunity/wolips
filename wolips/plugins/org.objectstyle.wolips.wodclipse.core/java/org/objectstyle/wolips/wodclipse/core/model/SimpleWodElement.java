@@ -5,6 +5,7 @@ import org.eclipse.jface.text.Position;
 public class SimpleWodElement extends AbstractWodElement {
   private String _name;
   private String _type;
+  private Position _elementTypePosition;
 
   public SimpleWodElement(String name, String type) {
     _name = name;
@@ -35,8 +36,12 @@ public class SimpleWodElement extends AbstractWodElement {
     return null;
   }
 
+  public void setElementTypePosition(Position elementTypePosition) {
+    _elementTypePosition = elementTypePosition;
+  }
+  
   public Position getElementTypePosition() {
-    return null;
+    return _elementTypePosition;
   }
 
   @Override

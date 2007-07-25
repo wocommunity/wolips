@@ -9,6 +9,7 @@ import jp.aonir.fuzzyxml.FuzzyXMLElement;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.text.Position;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.model.SimpleWodBinding;
 import org.objectstyle.wolips.wodclipse.core.model.SimpleWodElement;
@@ -87,10 +88,12 @@ public class WodHtmlUtils {
     }
     return bindingValue;
   }
-
+  
   public static SimpleWodElement toWodElement(FuzzyXMLElement element, boolean wo54, WodParserCache cache) {
     String elementName = element.getName();
     String namespaceElementName = elementName.substring("wo:".length()).trim();
+    int elementTypePosition = element.getOffset() + element.getNameOffset() + "wo:".length() + 1;
+    int elementTypeLength = namespaceElementName.length();
 
     TagShortcut matchingTagShortcut = null;
     for (TagShortcut tagShortcut : cache.getTagShortcuts()) {
@@ -103,6 +106,7 @@ public class WodHtmlUtils {
     }
 
     SimpleWodElement wodElement = new SimpleWodElement("_temp", namespaceElementName);
+    wodElement.setElementTypePosition(new Position(elementTypePosition, elementTypeLength));
     wodElement.setTemporary(true);
 
     if (matchingTagShortcut != null) {
