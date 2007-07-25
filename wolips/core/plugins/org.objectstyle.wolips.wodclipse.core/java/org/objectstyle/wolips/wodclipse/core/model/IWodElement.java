@@ -52,6 +52,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Position;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 
@@ -78,4 +79,8 @@ public interface IWodElement extends IWodUnit {
   public void writeInlineFormat(Writer writer, String contents, boolean alphabetize, String bindingPrefix, String bindingSuffix) throws IOException;
 
   public void writeWodFormat(Writer writer, boolean alphabetize) throws IOException;
+  
+  public boolean isWithin(IRegion region);
+
+  public WodHyperlink toWodHyperlink(WodParserCache cache);
 }
