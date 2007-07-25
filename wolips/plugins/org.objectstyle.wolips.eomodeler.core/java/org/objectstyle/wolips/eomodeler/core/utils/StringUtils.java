@@ -49,6 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.core.utils;
 
+import java.lang.reflect.InvocationTargetException;
+
 public class StringUtils {
 	public static String toShortPrettyClassName(String name) {
 		if (name == null) {
@@ -164,5 +166,46 @@ public class StringUtils {
 	
 	public static boolean isKeyPath(String str) {
 		return str != null && str.matches("^[^.][a-zA-Z0-9_.]+$");
+	}
+
+	public static String getErrorMessage(Throwable _t) {
+		return StringUtils.getErrorMessage(null, _t);
+	}
+	
+	public static String getErrorMessage(String initialMessage, Throwable _t) {
+		StringBuffer messageBuffer = new StringBuffer();
+		if (initialMessage != null) {
+			messageBuffer.append(initialMessage);
+			if (_t != null) {
+				messageBuffer.append(" ");
+			}
+		}
+		
+		Throwable t = _t;
+		while (t != null) {
+			String message = t.getMessage();
+			if (message == null && !(t instanceof InvocationTargetException)) {
+				String name = t.getClass().getName();
+				int lastDotIndex = name.lastIndexOf('.');
+				name = name.substring(lastDotIndex + 1);
+				message = name;
+			}
+
+			if (message != null) {
+				message = message.trim();
+				messageBuffer.append(message);
+				if (!message.endsWith(".")) { //$NON-NLS-1$
+					messageBuffer.append(". "); //$NON-NLS-1$
+				}
+			}
+
+			Throwable cause = _t.getCause();
+			if (t == cause) {
+				t = null;
+			} else {
+				t = cause;
+			}
+		}
+		return messageBuffer.toString();
 	}
 }

@@ -49,6 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.core.model;
 
+import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
+
 public class EOModelVerificationFailure implements Comparable<EOModelVerificationFailure> {
 	private EOModel myModel;
 
@@ -94,7 +96,7 @@ public class EOModelVerificationFailure implements Comparable<EOModelVerificatio
 	}
 
 	public String getMessage() {
-		return myMessage;
+		return StringUtils.getErrorMessage(myMessage, myRootCause);
 	}
 
 	public Throwable getRootCause() {
