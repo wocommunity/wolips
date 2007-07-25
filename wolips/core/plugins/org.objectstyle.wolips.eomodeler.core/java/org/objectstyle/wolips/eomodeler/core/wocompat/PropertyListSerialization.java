@@ -55,16 +55,7 @@
  */
 package org.objectstyle.wolips.eomodeler.core.wocompat;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Collection;
@@ -120,7 +111,7 @@ public class PropertyListSerialization {
 		InputStream is = u.openStream();
 		BufferedInputStream bi = new BufferedInputStream(is);
 		try {
-			return new Parser(bi, "UTF-8").propertyList(factory);
+			return new Parser(bi/*, "UTF-8"*/).propertyList(factory);
 		}
 		finally {
 			bi.close();
@@ -133,7 +124,7 @@ public class PropertyListSerialization {
 	 * be a String or a Number.
 	 */
 	public static Object propertyListFromStream(InputStream in) {
-		return new Parser(in, "UTF-8").propertyList();
+		return new Parser(in/*, "UTF-8"*/).propertyList();
 	}
 
 	/**
@@ -142,7 +133,7 @@ public class PropertyListSerialization {
 	 * be a String or a Number.
 	 */
 	public static Object propertyListFromStream(InputStream in, ParserDataStructureFactory factory) {
-		return new Parser(in, "UTF-8").propertyList(factory);
+		return new Parser(in/*, "UTF-8"*/).propertyList(factory);
 	}
 
 	/**
@@ -150,7 +141,7 @@ public class PropertyListSerialization {
 	 */
 	public static void propertyListToFile(File f, Object plist) {
 		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), Charset.forName("UTF-8")));
+			BufferedWriter out = new BufferedWriter(new EscapingWriter(new OutputStreamWriter(new FileOutputStream(f), Charset.forName("UTF-8"))));
 			try {
 				writeObject("", out, plist);
 			} finally {
@@ -160,13 +151,49 @@ public class PropertyListSerialization {
 			throw new CayenneRuntimeException("Error saving plist.", ioex);
 		}
 	}
+	
+	public static class EscapingWriter extends FilterWriter {
+
+		protected EscapingWriter(Writer arg0) {
+			super(arg0);
+		}
+		
+		@Override
+		public void write(int c) throws IOException {
+			if ((c & ~127) > 0) {
+				super.write("\\");
+				super.write("U");
+				String hex = Integer.toHexString(c);
+				int len = hex.length();
+				while(len++<4) {
+					super.write('0');
+				}
+				super.write(hex);
+			} else {
+				super.write(c);
+			}
+		}
+		
+		@Override
+		public void write(char[] cbuf, int off, int len) throws IOException {
+			for (int i=0; i < len; i++) {
+				write(cbuf[i+off]);
+			}
+		}
+		
+		@Override
+		public void write(String str, int off, int len) throws IOException {
+			write(str.toCharArray(), off, len);
+		}
+		
+	}
 
 	/**
 	 * Saves property list to file.
 	 */
 	public static void propertyListToStream(OutputStream os, Object plist) {
 		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(os, Charset.forName("UTF-8")));
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(os/*, Charset.forName("UTF-8")*/));
 			try {
 				writeObject("", out, plist);
 			} finally {
