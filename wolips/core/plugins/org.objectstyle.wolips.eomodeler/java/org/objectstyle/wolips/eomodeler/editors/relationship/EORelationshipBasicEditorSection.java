@@ -249,7 +249,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 				_joinsTableEditor.setRelationship(_relationship);
 				_modelComboViewer.setInput(_relationship);
 				_entityComboViewer.setInput(_relationship);
-				_modelComboViewer.setSelection(new StructuredSelection(_relationship.getEntity().getModel()));
+				_modelComboViewer.setSelection(new StructuredSelection(_relationship.getDestination().getModel()));
 
 				_bindingContext = new DataBindingContext();
 				_bindingContext.bindValue(SWTObservables.observeText(_nameText, SWT.Modify), BeansObservables.observeValue(_relationship, EORelationship.NAME), null, null);
