@@ -180,7 +180,8 @@ public final class WOLipsModel implements IWOLipsModel {
 			if (compilationUnit == null || compilationUnit.getCorrespondingResource() == null || !compilationUnit.getCorrespondingResource().isAccessible())
 				return null;
 		} catch (JavaModelException e) {
-			DataSetsPlugin.getDefault().getPluginLogger().log(e);
+			// ak: this can happen a lot during refactoring and we can't use the error anyway
+			// DataSetsPlugin.getDefault().getPluginLogger().log(e);
 			return null;
 		}
 		final int compilationUnitType = this.getWOLipsCompilationUnitType(compilationUnit);
