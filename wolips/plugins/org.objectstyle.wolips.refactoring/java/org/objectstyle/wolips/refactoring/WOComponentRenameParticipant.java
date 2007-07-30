@@ -120,53 +120,56 @@ public class WOComponentRenameParticipant extends RenameParticipant {
 			String oldName = mySourceType.getElementName();
 			String newName = arguments.getNewName();
 			if (!oldName.equals(newName)) {
-				//IProject project = mySourceType.getJavaProject().getProject();
+				// IProject project =
+				// mySourceType.getJavaProject().getProject();
 				LocalizedComponentsLocateResult existingLocalizedComponentsLocateResult = null;
 				try {
 					IResource resource = mySourceType.getResource();
 					existingLocalizedComponentsLocateResult = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(resource);
-					if(resource == null) {
-						throw new CoreException(new Status(IStatus.ERROR, RefactoringPlugin.getDefault().getBundleID(), IStatus.ERROR, "Could not locate component resource is null: " + mySourceType, null)); //$NON-NLS-1$
+					if (resource != null) {
+						IFolder[] oldWoFolders = existingLocalizedComponentsLocateResult.getComponents();
+						IFile oldApiFile = existingLocalizedComponentsLocateResult.getDotApi();
+						if (oldApiFile != null || oldWoFolders.length > 0) {
+							CompositeChange compositeChange = new CompositeChange("Rename WOComponent Files");
+							if (oldApiFile != null) {
+								// compositeChange.add(new
+								// RenameResourceChange(oldApiFile, newName + ".api"));
+								CompositeChange renameApiFileChange = new CompositeChange("Rename " + oldApiFile.getName() + ".");
+								renameApiFileChange.add(new CopyResourceChange(oldApiFile, oldApiFile.getParent(), new FixedNewNameQuery(newName + ".api")));
+								renameApiFileChange.add(new DeleteFileChange(oldApiFile, true));
+								compositeChange.add(renameApiFileChange);
+							}
+							for (int i = 0; i < oldWoFolders.length; i++) {
+								IFolder oldWoFolder = oldWoFolders[i];
+								if (oldWoFolder != null) {
+									IFolder newWoFolder = oldWoFolder.getParent().getFolder(new Path(newName + ".wo"));
+									CompositeChange renameWoFolderChange = new CompositeChange("Rename " + oldWoFolder.getName() + ".");
+
+									// compositeChange.add(createRenameChange(woFolder,
+									// newName + ".wo"));
+									renameWoFolderChange.add(new CreateFolderChange(newWoFolder));
+									String[] renameExtensions = { ".html", ".wod", ".woo" };
+									for (int j = 0; j < renameExtensions.length; j++) {
+										IFile woFile = oldWoFolder.getFile(oldName + renameExtensions[j]);
+										if (woFile.exists()) {
+											// compositeChange.add(new
+											// RenameResourceChange(woFile, newName +
+											// renameExtensions[i]));
+											CompositeChange renameWoFileChange = new CompositeChange("Rename " + woFile.getName() + ".");
+											renameWoFileChange.add(new CopyResourceChange(woFile, newWoFolder, new FixedNewNameQuery(newName + renameExtensions[j])));
+											renameWoFileChange.add(new DeleteFileChange(woFile, true));
+											renameWoFolderChange.add(renameWoFileChange);
+										}
+									}
+									renameWoFolderChange.add(new DeleteFolderChange(oldWoFolder, true));
+									compositeChange.add(renameWoFolderChange);
+								}
+							}
+							change = compositeChange;
 						}
+					}
 				} catch (LocateException e) {
 					throw new CoreException(new Status(IStatus.ERROR, RefactoringPlugin.getDefault().getBundleID(), IStatus.ERROR, "Could not locate component: " + mySourceType, null)); //$NON-NLS-1$
-					}
-				IFolder oldWoFolder = (IFolder)existingLocalizedComponentsLocateResult.getFirstWodFile().getParent();
-				IFile oldApiFile = existingLocalizedComponentsLocateResult.getDotApi();
-				if (oldWoFolder != null || oldApiFile != null) {
-					CompositeChange compositeChange = new CompositeChange("Rename WOComponent Files");
-					if (oldApiFile != null) {
-						// compositeChange.add(new
-						// RenameResourceChange(oldApiFile, newName + ".api"));
-						CompositeChange renameApiFileChange = new CompositeChange("Rename " + oldApiFile.getName() + ".");
-						renameApiFileChange.add(new CopyResourceChange(oldApiFile, oldApiFile.getParent(), new FixedNewNameQuery(newName + ".api")));
-						renameApiFileChange.add(new DeleteFileChange(oldApiFile, true));
-						compositeChange.add(renameApiFileChange);
-					}
-					if (oldWoFolder != null) {
-						IFolder newWoFolder = oldWoFolder.getParent().getFolder(new Path(newName + ".wo"));
-						CompositeChange renameWoFolderChange = new CompositeChange("Rename " + oldWoFolder.getName() + ".");
-
-						// compositeChange.add(createRenameChange(woFolder,
-						// newName + ".wo"));
-						renameWoFolderChange.add(new CreateFolderChange(newWoFolder));
-						String[] renameExtensions = { ".html", ".wod", ".woo" };
-						for (int i = 0; i < renameExtensions.length; i++) {
-							IFile woFile = oldWoFolder.getFile(oldName + renameExtensions[i]);
-							if (woFile.exists()) {
-								// compositeChange.add(new
-								// RenameResourceChange(woFile, newName +
-								// renameExtensions[i]));
-								CompositeChange renameWoFileChange = new CompositeChange("Rename " + woFile.getName() + ".");
-								renameWoFileChange.add(new CopyResourceChange(woFile, newWoFolder, new FixedNewNameQuery(newName + renameExtensions[i])));
-								renameWoFileChange.add(new DeleteFileChange(woFile, true));
-								renameWoFolderChange.add(renameWoFileChange);
-							}
-						}
-						renameWoFolderChange.add(new DeleteFolderChange(oldWoFolder, true));
-						compositeChange.add(renameWoFolderChange);
-					}
-					change = compositeChange;
 				}
 			}
 		}
