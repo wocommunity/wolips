@@ -92,8 +92,8 @@ public class WodScanner extends AbstractJavaScanner {
 		List<IRule> rules = new ArrayList<IRule>();
     rules.add(new MultilineCommentRule(getToken(PreferenceConstants.COMMENT)));
     rules.add(new CommentRule(getToken(PreferenceConstants.COMMENT)));
-    rules.add(new SingleLineRule("\"~", "\"", getToken(PreferenceConstants.OGNL_BINDING_VALUE), '\\', true, false));
-    rules.add(new SingleLineRule("\"~", null, getToken(PreferenceConstants.OGNL_BINDING_VALUE), '\\', true, false));
+    rules.add(new WOOGNLRule("\"~", "\"", getToken(PreferenceConstants.OGNL_BINDING_VALUE), '\\', true, false));
+    rules.add(new WOOGNLRule("\"~", null, getToken(PreferenceConstants.OGNL_BINDING_VALUE), '\\', true, false));
 		rules.add(new WOOGNLRule("~", ";", getToken(PreferenceConstants.OGNL_BINDING_VALUE), '\\'));
     rules.add(new SingleLineRule("~", null, getToken(PreferenceConstants.OGNL_BINDING_VALUE), '\\', true, false));
 		rules.add(new StringLiteralRule("\"", "\"", getToken(PreferenceConstants.CONSTANT_BINDING_VALUE), '\\'));
