@@ -51,23 +51,23 @@ import org.eclipse.jface.text.rules.SingleLineRule;
  * @author mschrag
  */
 public class WOOGNLRule extends SingleLineRule {
-	public WOOGNLRule(String _startSequence, String _endSequence, IToken _token) {
-		super(_startSequence, _endSequence, _token);
-	}
+	public WOOGNLRule(String startSequence, String endSequence, IToken token, char escapeCharacter, boolean breaksOnEOF, boolean escapeContinuesLine) {
+    super(startSequence, endSequence, token, escapeCharacter, breaksOnEOF, escapeContinuesLine);
+  }
 
-	public WOOGNLRule(String _startSequence, String _endSequence, IToken _token, char _escapeCharacter) {
-		super(_startSequence, _endSequence, _token, _escapeCharacter);
-	}
+  public WOOGNLRule(String startSequence, String endSequence, IToken token, char escapeCharacter, boolean breaksOnEOF) {
+    super(startSequence, endSequence, token, escapeCharacter, breaksOnEOF);
+  }
 
-	public WOOGNLRule(String _startSequence, String _endSequence, IToken _token, char _escapeCharacter, boolean _breaksOnEOF) {
-		super(_startSequence, _endSequence, _token, _escapeCharacter, _breaksOnEOF);
-	}
+  public WOOGNLRule(String startSequence, String endSequence, IToken token, char escapeCharacter) {
+    super(startSequence, endSequence, token, escapeCharacter);
+  }
 
-	public WOOGNLRule(String _startSequence, String _endSequence, IToken _token, char _escapeCharacter, boolean _breaksOnEOF, boolean _escapeContinuesLine) {
-		super(_startSequence, _endSequence, _token, _escapeCharacter, _breaksOnEOF, _escapeContinuesLine);
-	}
-	
-	@Override
+  public WOOGNLRule(String startSequence, String endSequence, IToken token) {
+    super(startSequence, endSequence, token);
+  }
+
+  @Override
   protected boolean endSequenceDetected(ICharacterScanner scanner) {
 		boolean detected = super.endSequenceDetected(scanner);
 		if (detected && fEndSequence[0] == ';') {
