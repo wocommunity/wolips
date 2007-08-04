@@ -76,6 +76,7 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EODeleteRule;
+import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOJoinSemantic;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
@@ -249,7 +250,10 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 				_joinsTableEditor.setRelationship(_relationship);
 				_modelComboViewer.setInput(_relationship);
 				_entityComboViewer.setInput(_relationship);
-				_modelComboViewer.setSelection(new StructuredSelection(_relationship.getDestination().getModel()));
+				EOEntity destinationEntity = _relationship.getDestination();
+				if (destinationEntity != null) {
+					_modelComboViewer.setSelection(new StructuredSelection(destinationEntity.getModel()));
+				}
 
 				_bindingContext = new DataBindingContext();
 				_bindingContext.bindValue(SWTObservables.observeText(_nameText, SWT.Modify), BeansObservables.observeValue(_relationship, EORelationship.NAME), null, null);
