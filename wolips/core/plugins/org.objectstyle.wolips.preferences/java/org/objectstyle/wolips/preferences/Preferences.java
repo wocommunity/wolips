@@ -290,15 +290,15 @@ public class Preferences {
 		if (string == null)
 			return new ILaunchInfo[0];
 		StringTokenizer stringTokenizer = new StringTokenizer(string, "<>");
-		Vector vector = new Vector();
+		Vector<String> vector = new Vector<String>();
 		while (stringTokenizer.hasMoreElements()) {
-			Object token = stringTokenizer.nextElement();
+			String token = stringTokenizer.nextToken();
 			vector.add(token);
 		}
 		ILaunchInfo[] launchInfo = new ILaunchInfo[vector.size() / 3];
 		int j = 0;
 		for (int i = 0; i < launchInfo.length; i++) {
-			launchInfo[i] = new LaunchInfo((String) vector.elementAt(j), (String) vector.elementAt(j + 1), (String) vector.elementAt(j + 2));
+			launchInfo[i] = new LaunchInfo(vector.elementAt(j), vector.elementAt(j + 1), vector.elementAt(j + 2));
 			j = j + 3;
 		}
 		return launchInfo;

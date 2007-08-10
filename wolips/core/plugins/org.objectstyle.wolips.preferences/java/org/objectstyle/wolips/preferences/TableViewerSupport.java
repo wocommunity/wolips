@@ -132,7 +132,7 @@ public abstract class TableViewerSupport {
 		viewer.setInput(model);
 	}
 	
-	protected abstract void initTableViewer(TableViewer viewer);
+	protected abstract void initTableViewer(TableViewer tableViewer);
 	protected abstract Object doAdd();	
 	protected abstract void doEdit(Object obj);
 	protected void doRemove(List objList){
