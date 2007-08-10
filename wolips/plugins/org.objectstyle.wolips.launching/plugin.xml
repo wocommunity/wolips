@@ -78,46 +78,44 @@
 <!-- =================================================================================== -->
    <extension
          point="org.eclipse.debug.ui.launchShortcuts">
-      <shortcut
+  <shortcut
             label="WOApplication"
             icon="icons/launching/WOLips16-16.png"
             modes="run, debug"
             class="org.objectstyle.wolips.launching.actions.WOJavaApplicationLaunchShortcut"
             id="org.objectstyle.wolips.launching.WOJavaApplicationLaunchShortcut">
-         <contextualLaunch>
-           <enablement>
-             <with variable="selection">
-               <count value="1"/>
-               <iterate>
-                 <or>
-                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.java"/>
-                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.class"/>
-                   <instanceof value="org.eclipse.jdt.core.IJavaElement"/>
-                 </or>
-                 <test property="org.eclipse.jdt.debug.ui.hasMainType"/>
-               </iterate>
-             </with>
-           </enablement>
-  		 </contextualLaunch>
-         <perspective
-               id="org.eclipse.jdt.ui.JavaPerspective">
-         </perspective>
-         <perspective
-               id="org.eclipse.jdt.ui.JavaHierarchyPerspective">
-         </perspective>
-         <perspective
-               id="org.eclipse.jdt.ui.JavaBrowsingPerspective">
-         </perspective>
-         <perspective
-               id="org.eclipse.debug.ui.DebugPerspective">
-         </perspective>
-         <perspective
-               id="org.eclipse.pde.PDEPerspective">
-         </perspective>
-         <perspective
-               id="org.objectstyle.wolips.ui.Perspective">
-         </perspective>
-      </shortcut>
+    <description
+     description="Runs a local WOApplication"
+     mode="run">
+    </description>
+    <description
+     description="Debugs a local WOApplication"
+     mode="debug">
+    </description>
+  <contextualLaunch>
+  <enablement>
+    <with variable="selection">
+     <count value="1"/>
+      <iterate>
+       <or>
+        <test property="org.eclipse.jdt.launching.hasMain"/>
+         <and>
+          <test property="org.eclipse.jdt.launching.isContainer"/>
+          <test property="org.eclipse.jdt.launching.hasProjectNature" args="org.eclipse.jdt.core.javanature"/>
+          <or>
+          	<test property="org.eclipse.jdt.launching.hasProjectNature" args="org.objectstyle.wolips.incrementalapplicationnature"/>
+          	<test property="org.eclipse.jdt.launching.hasProjectNature" args="org.objectstyle.wolips.antapplicationnature"/>
+          </or>
+         </and>
+        </or>
+      </iterate>
+     </with>
+  </enablement>
+  </contextualLaunch>
+  <configurationType
+    id="org.objectstyle.wolips.launching.WOLocalJavaApplication">
+  </configurationType>
+  </shortcut>
       <shortcut
             label="Wonder ERXMainRunner"
             icon="icons/launching/WOLips16-16.png"
@@ -188,7 +186,7 @@
       </variable>
    </extension>
 <!-- =================================================================================== -->
-<!-- Extension: exception handlermn                                                      -->
+<!-- Extension: exception handler                                                        -->
 <!-- =================================================================================== -->
    <extension
          point="org.objectstyle.wolips.launching.exceptionhandlers">
@@ -196,6 +194,9 @@
             class="org.objectstyle.wolips.launching.exceptionhandler.NSKeyValueCodingUnknownKeyExceptionHandler"
             id="org.objectstyle.wolips.launching.exceptionhandler.NSKeyValueCodingUnknownKeyExceptionHandler"
             name="NSKeyValueCodingUnknownKeyExceptionHandler"/>
+   </extension>
+   <extension
+         point="org.objectstyle.wolips.launching.exceptionhandlers">
       <exceptionhandler
             class="org.objectstyle.wolips.launching.exceptionhandler.WODeclarationFormatExceptionHandler"
             id="org.objectstyle.wolips.launching.exceptionhandler.WODeclarationFormatExceptionHandler"
