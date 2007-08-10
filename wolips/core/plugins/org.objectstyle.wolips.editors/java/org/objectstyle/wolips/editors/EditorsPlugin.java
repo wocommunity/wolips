@@ -67,6 +67,8 @@ public class EditorsPlugin extends AbstractBaseUIActivator {
 
 	public static String WodEditorID = "org.objectstyle.wolips.wodclipse.WodEditor";
 
+	public static String WooEditorID = "org.objectstyle.wolips.wooeditor.editors.WooEditor";
+
 	public static String ComponentEditorID = "org.objectstyle.wolips.componenteditor.ComponentEditor";
 
 	public static String WOBuilderID = "org.objectstyle.wolips.editors.editor.wobuilder";

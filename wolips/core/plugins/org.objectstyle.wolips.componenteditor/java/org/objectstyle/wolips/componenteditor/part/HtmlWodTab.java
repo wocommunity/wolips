@@ -59,6 +59,7 @@ import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.templateeditor.TemplateEditor;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.editor.WodEditor;
+import org.objectstyle.wolips.wooeditor.editors.WooEditor;
 
 public class HtmlWodTab extends ComponentEditorTab {
 	//private StructuredTextEditorWO structuredTextEditorWO;
@@ -66,16 +67,21 @@ public class HtmlWodTab extends ComponentEditorTab {
 
 	private WodEditor wodEditor;
 
+	private WooEditor wooEditor;
+	
 	boolean htmlActive;
 
 	private IEditorInput htmlInput;
 
 	private IEditorInput wodInput;
 
-	public HtmlWodTab(ComponentEditorPart componentEditorPart, int tabIndex, IEditorInput htmlInput, IEditorInput wodInput) {
+	private IEditorInput wooInput;
+
+	public HtmlWodTab(ComponentEditorPart componentEditorPart, int tabIndex, IEditorInput htmlInput, IEditorInput wodInput,IEditorInput wooInput) {
 		super(componentEditorPart, tabIndex);
 		this.htmlInput = htmlInput;
 		this.wodInput = wodInput;
+		this.wooInput = wooInput;
 	}
 
 	public IEditorPart getActiveEmbeddedEditor() {
@@ -87,7 +93,9 @@ public class HtmlWodTab extends ComponentEditorTab {
 
 	public void createTab() {
 		SashForm htmlSashform = new SashForm(this.getParentSashForm(), SWT.VERTICAL);
-		SashForm wodSashform = new SashForm(this.getParentSashForm(), SWT.VERTICAL);
+		SashForm wodAndWooSashform = new SashForm(this.getParentSashForm(), SWT.HORIZONTAL | SWT.SMOOTH);
+		SashForm wodSashform = new SashForm(wodAndWooSashform, SWT.HORIZONTAL);
+		SashForm wooSashform = new SashForm(wodAndWooSashform, SWT.HORIZONTAL);
 
 		templateEditor = new TemplateEditor();
 		IEditorSite htmlSite = this.getComponentEditorPart().publicCreateSite(templateEditor);
@@ -135,6 +143,20 @@ public class HtmlWodTab extends ComponentEditorTab {
 				htmlActive = false;
 				HtmlWodTab.this.getComponentEditorPart().pageChange(HtmlWodTab.this.getTabIndex());
 				HtmlWodTab.this.getComponentEditorPart().updateOutline();
+			}
+		});
+		
+		wooEditor = new WooEditor();
+		IEditorSite wooSite = this.getComponentEditorPart().publicCreateSite(wooEditor);
+		try {
+			wooEditor.init(wooSite, wooInput);
+		} catch (PartInitException e) {
+			ComponenteditorPlugin.getDefault().log(e);
+		}
+		createInnerPartControl(wooSashform, wooEditor);
+		wooEditor.addPropertyListener(new IPropertyListener() {
+			public void propertyChanged(Object source, int propertyId) {
+				HtmlWodTab.this.getComponentEditorPart().publicHandlePropertyChange(propertyId);
 			}
 		});
 

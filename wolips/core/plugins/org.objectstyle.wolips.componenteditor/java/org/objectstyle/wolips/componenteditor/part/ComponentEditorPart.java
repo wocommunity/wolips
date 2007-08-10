@@ -133,19 +133,22 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 			return;
 		}
 		IEditorInput[] editorInput = componentEditorInput.getComponentEditors();
-		componentEditorTabs = new ComponentEditorTab[editorInput.length / 2 + 2];
-		htmlWodTabs = new HtmlWodTab[editorInput.length / 2];
+		componentEditorTabs = new ComponentEditorTab[editorInput.length / 3 + 2];
+		htmlWodTabs = new HtmlWodTab[editorInput.length / 3];
 		// htmlwod tabs
 		IFileEditorInput htmlInput = null;
 		IFileEditorInput wodInput = null;
+		IFileEditorInput wooInput = null;
 		int j = 0;
 		int tabIndex = 0;
-		for (int i = 0; i < editorInput.length / 2; i++) {
+		for (int i = 0; i < editorInput.length / 3; i++) {
 			htmlInput = (IFileEditorInput) editorInput[j];
 			j++;
 			wodInput = (IFileEditorInput) editorInput[j];
 			j++;
-			HtmlWodTab htmlWodTab = new HtmlWodTab(this, tabIndex, htmlInput, wodInput);
+			wooInput = (IFileEditorInput) editorInput[j];
+			j++;
+			HtmlWodTab htmlWodTab = new HtmlWodTab(this, tabIndex, htmlInput, wodInput, wooInput);
 			componentEditorTabs[tabIndex] = htmlWodTab;
 			htmlWodTabs[tabIndex] = htmlWodTab;
 			htmlWodTab.createTab();

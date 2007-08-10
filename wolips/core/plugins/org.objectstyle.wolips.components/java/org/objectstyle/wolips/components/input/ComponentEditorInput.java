@@ -81,27 +81,37 @@ public class ComponentEditorInput extends MultiEditorInput implements IPersistab
 
 	private static ComponentEditorInput create(LocalizedComponentsLocateResult localizedComponentsLocateResult) throws CoreException {
 		IFolder[] folder = localizedComponentsLocateResult.getComponents();
-		int folderCountTimesTwo = folder.length * 2;
+		int folderCountTimesThree = folder.length * 3;
 		String allIds[] = null;
 		ComponentEditorFileEditorInput allInput[] = null;
 		ComponentEditorFileEditorInput allComponentInput[] = null;
 		ComponentEditorFileEditorInput apiInput = null;
-		allIds = new String[folderCountTimesTwo + 1];
-		allInput = new ComponentEditorFileEditorInput[folderCountTimesTwo + 1];
-		allComponentInput = new ComponentEditorFileEditorInput[folderCountTimesTwo];
+		allIds = new String[folderCountTimesThree + 1];
+		allInput = new ComponentEditorFileEditorInput[folderCountTimesThree + 1];
+		allComponentInput = new ComponentEditorFileEditorInput[folderCountTimesThree];
 		int j = 0;
 		IFile htmlFile = null;
 		IFile wodFile = null;
+		IFile wooFile = null;
 		for (int i = 0; i < folder.length; i++) {
 			IFolder currentFolder = folder[i];
 			htmlFile = LocalizedComponentsLocateResult.getHtml(currentFolder);
 			wodFile = LocalizedComponentsLocateResult.getWod(currentFolder);
+			wooFile = LocalizedComponentsLocateResult.getWoo(currentFolder);
 			allIds[j] = EditorsPlugin.HTMLEditorID;
 			allInput[j] = new ComponentEditorFileEditorInput(htmlFile);
 			allComponentInput[j] = allInput[j];
 			j++;
 			allIds[j] = EditorsPlugin.WodEditorID;
 			allInput[j] = new ComponentEditorFileEditorInput(wodFile);
+			allComponentInput[j] = allInput[j];
+			j++;
+			allIds[j] = EditorsPlugin.WooEditorID;
+			if(wooFile == null) {
+				allInput[j] = null;
+			} else {
+				allInput[j] = new ComponentEditorFileEditorInput(wooFile);
+			}
 			allComponentInput[j] = allInput[j];
 			j++;
 		}
