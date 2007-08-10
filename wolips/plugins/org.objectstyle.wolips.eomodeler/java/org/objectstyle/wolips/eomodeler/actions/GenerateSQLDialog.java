@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Text;
 import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.IEOClassLoaderFactory;
-import org.objectstyle.wolips.eomodeler.core.sql.SQLUtils;
+import org.objectstyle.wolips.eomodeler.core.utils.SQLUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class GenerateSQLDialog extends Dialog {
