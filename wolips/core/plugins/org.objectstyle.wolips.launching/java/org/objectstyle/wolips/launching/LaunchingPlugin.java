@@ -122,7 +122,7 @@ public class LaunchingPlugin extends AbstractBaseUIActivator {
 	private void loadExceptionHandlerExtensionPoint() {
 		IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(EXTENSION_POINT_ID);
 		IExtension[] extensions = extensionPoint.getExtensions();
-		ArrayList arrayList = new ArrayList();
+		ArrayList<ExceptionHandlerWrapper> arrayList = new ArrayList<ExceptionHandlerWrapper>();
 		for (int i = 0; i < extensions.length; i++) {
 			IConfigurationElement[] configurationElements = extensions[i].getConfigurationElements();
 			for (int j = 0; j < configurationElements.length; j++) {
@@ -137,7 +137,7 @@ public class LaunchingPlugin extends AbstractBaseUIActivator {
 				}
 			}
 		}
-		this.exceptionHandlerWrapper = (ExceptionHandlerWrapper[]) arrayList.toArray(new ExceptionHandlerWrapper[arrayList.size()]);
+		this.exceptionHandlerWrapper = arrayList.toArray(new ExceptionHandlerWrapper[arrayList.size()]);
 	}
 
 	public ExceptionHandlerWrapper[] getExceptionHandlerWrapper() {
