@@ -559,11 +559,14 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            adaptable="true"
-            objectClass="org.eclipse.core.resources.IProject"
             name="WOLips Build"
             class="org.objectstyle.wolips.ui.propertypages.ProjectNaturePage"
-            id="org.objectstyle.wolips.ui.propertypages.ProjectNaturePage">
+            id="org.objectstyle.wolips.ui.propertypages.ProjectNaturePage"> 
+            <enabledWhen>
+             <instanceof
+                  value="org.eclipse.core.resources.IProject">
+             </instanceof>
+          </enabledWhen>
          <filter
                name="nature"
                value="org.eclipse.jdt.core.javanature">
