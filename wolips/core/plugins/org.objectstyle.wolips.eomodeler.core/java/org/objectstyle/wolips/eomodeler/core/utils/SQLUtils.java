@@ -1,4 +1,4 @@
-package org.objectstyle.wolips.eomodeler.core.sql;
+package org.objectstyle.wolips.eomodeler.core.utils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
