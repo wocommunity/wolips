@@ -107,11 +107,7 @@ public class ComponentEditorInput extends MultiEditorInput implements IPersistab
 			allComponentInput[j] = allInput[j];
 			j++;
 			allIds[j] = EditorsPlugin.WooEditorID;
-			if(wooFile == null) {
-				allInput[j] = null;
-			} else {
-				allInput[j] = new ComponentEditorFileEditorInput(wooFile);
-			}
+			allInput[j] = new ComponentEditorFileEditorInput(wooFile);
 			allComponentInput[j] = allInput[j];
 			j++;
 		}
@@ -130,7 +126,10 @@ public class ComponentEditorInput extends MultiEditorInput implements IPersistab
 		ComponentEditorInput input = new ComponentEditorInput(allIds, allInput, allComponentInput, apiInput);
 		input.localizedComponentsLocateResult = localizedComponentsLocateResult;
 		for (int i = 0; i < allInput.length; i++) {
-			allInput[i].setComponentEditorInput(input);
+			ComponentEditorFileEditorInput componentEditorFileEditorInput = allInput[i];
+			if(componentEditorFileEditorInput != null) {
+				componentEditorFileEditorInput.setComponentEditorInput(input);
+			}
 		}
 		return input;
 	}
