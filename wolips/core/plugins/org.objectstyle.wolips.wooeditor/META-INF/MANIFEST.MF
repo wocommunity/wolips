@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WOLips WOOEditor Variables Plug-in
+Bundle-SymbolicName: org.objectstyle.wolips.wooeditor; singleton:=true
+Bundle-Version: 1.0.6
+Bundle-Activator: org.objectstyle.wolips.wooeditor.Activator
+Bundle-Vendor: objectstyle.org
+Require-Bundle: org.eclipse.ui.editors,
+ org.objectstyle.wolips.baseforuiplugins
+Eclipse-LazyStart: true
+Export-Package: org.objectstyle.wolips.wooeditor;uses:="org.objectstyle.wolips.baseforuiplugins,org.osgi.framework",
+ org.objectstyle.wolips.wooeditor.editors;
+  uses:="org.eclipse.jface.text.rules,
+   org.eclipse.jface.text.presentation,
+   org.eclipse.swt.graphics,
+   org.eclipse.jface.text,
+   org.eclipse.ui.editors.text,
+   org.eclipse.jface.text.source"

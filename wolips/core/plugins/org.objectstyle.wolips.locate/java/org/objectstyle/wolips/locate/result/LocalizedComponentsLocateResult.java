@@ -240,18 +240,18 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 	}
 
 	public static IFile getHtml(IFolder component) throws CoreException {
-		return LocalizedComponentsLocateResult.getMemberWithExtension(component, "html");
+		return LocalizedComponentsLocateResult.getMemberWithExtension(component, "html", true);
 	}
 
 	public static IFile getWod(IFolder component) throws CoreException {
-		return LocalizedComponentsLocateResult.getMemberWithExtension(component, "wod");
+		return LocalizedComponentsLocateResult.getMemberWithExtension(component, "wod", true);
 	}
 
 	public static IFile getWoo(IFolder component) throws CoreException {
-		return LocalizedComponentsLocateResult.getMemberWithExtension(component, "woo");
+		return LocalizedComponentsLocateResult.getMemberWithExtension(component, "woo", false);
 	}
 
-	private static IFile getMemberWithExtension(IFolder folder, String extension) throws CoreException {
+	private static IFile getMemberWithExtension(IFolder folder, String extension, boolean mustExist) throws CoreException {
 		IResource[] member = folder.members();
 		for (int i = 0; i < member.length; i++) {
 			IResource resource = member[i];
@@ -260,6 +260,9 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 				return (IFile) resource;
 			}
 
+		}
+		if(!mustExist) {
+			return folder.getFile(LocatePlugin.getDefault().fileNameWithoutExtension(folder.getName()) + "." + extension);
 		}
 		return null;
 	}
