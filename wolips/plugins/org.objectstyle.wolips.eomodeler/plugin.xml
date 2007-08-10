@@ -131,7 +131,7 @@
                category="eoentity"
                id="org.objectstyle.wolips.eomodeler.tabs.eoentitySharedObjects"
                image="icons/eoEntity.png"
-               label="Shared Objects"/>
+               label="Shared"/>
          <propertyTab
                afterTab="org.objectstyle.wolips.eomodeler.tabs.eoentitySharedObjects"
                category="eoentity"
