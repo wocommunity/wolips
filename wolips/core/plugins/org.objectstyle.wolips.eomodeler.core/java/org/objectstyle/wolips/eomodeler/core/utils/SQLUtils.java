@@ -12,7 +12,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 
 public class SQLUtils {
 	public static Object createEOFSQLGenerator(EOModel model, List entityNames, Map databaseConfig, ClassLoader eomodelClassLoader) throws SecurityException, NoSuchMethodException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
-		Class sqlGeneratorClass = eomodelClassLoader.loadClass("org.objectstyle.wolips.eomodeler.sql.EOFSQLGenerator");
+		Class sqlGeneratorClass = eomodelClassLoader.loadClass("org.objectstyle.wolips.eomodeler.core.sql.EOFSQLGenerator");
 
 		List modelURLs = new LinkedList();
 		// AK: I hope this does the right thing... we add all other models
@@ -33,7 +33,7 @@ public class SQLUtils {
 	}
 
 	public static Object createEOFReverseEngineer(String adaptorName, Map connectionDictionary, ClassLoader eomodelClassLoader) throws SecurityException, NoSuchMethodException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
-		Class reverseEngineerClass = eomodelClassLoader.loadClass("org.objectstyle.wolips.eomodeler.sql.EOFReverseEngineer");
+		Class reverseEngineerClass = eomodelClassLoader.loadClass("org.objectstyle.wolips.eomodeler.core.sql.EOFReverseEngineer");
 		Constructor reverseEngineerConstructor = reverseEngineerClass.getConstructor(new Class[] { String.class, Map.class });
 		Object reverseEngineer = reverseEngineerConstructor.newInstance(new Object[] { adaptorName, connectionDictionary });
 		return reverseEngineer;
