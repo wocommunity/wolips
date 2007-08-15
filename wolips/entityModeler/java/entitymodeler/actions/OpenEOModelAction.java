@@ -2,18 +2,20 @@ package entitymodeler.actions;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
 
 import entitymodeler.ApplicationWorkbenchAdvisor;
 
-public class OpenAction extends Action implements ActionFactory.IWorkbenchAction {
+public class OpenEOModelAction extends Action implements ActionFactory.IWorkbenchAction {
   private IWorkbenchWindow _window;
 
-  public OpenAction(IWorkbenchWindow window) {
+  public OpenEOModelAction(IWorkbenchWindow window) {
     _window = window;
     setText("&Open ...");
+    setAccelerator(SWT.COMMAND | 'O');//SWTKeySupport.convertKeyStrokeToAccelerator(KeyStroke.getInstance("s"));
   }
 
   public void dispose() {

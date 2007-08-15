@@ -20,7 +20,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
   @Override
   public void preWindowOpen() {
     IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-    configurer.setInitialSize(new Point(1024, 768));
+    configurer.setInitialSize(new Point(1200, 675));
     configurer.setShowCoolBar(true);
     configurer.setShowStatusLine(false);
     configurer.setTitle("Entity Modeler");

@@ -46,11 +46,12 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
   public void postStartup() {
     super.postStartup();
     try {
-      String[] nonFrameworkArgs = EclipseEnvironmentInfo.getDefault().getNonFrameworkArgs();
+      String[] nonFrameworkArgs = EclipseEnvironmentInfo.getDefault().getCommandLineArgs();
 
       String modelPath = null;
       boolean optionValue = false;
       for (String nonFrameworkArg : nonFrameworkArgs) {
+        System.out.println("ApplicationWorkbenchAdvisor.postStartup: " + nonFrameworkArg);
         if (nonFrameworkArg.startsWith("-")) {
           optionValue = true;
         }
