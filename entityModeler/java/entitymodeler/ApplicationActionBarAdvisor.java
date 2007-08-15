@@ -1,7 +1,9 @@
 package entitymodeler;
 
 import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.ICoolBarManager;
+import org.eclipse.jface.action.IMenuListener2;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -12,7 +14,8 @@ import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 
-import entitymodeler.actions.OpenAction;
+import entitymodeler.actions.NewEOModelAction;
+import entitymodeler.actions.OpenEOModelAction;
 
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
   // Actions - important to allocate these only in makeActions, and then use them
@@ -49,7 +52,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     // the window is closed.
 
     // File
-    _newAction = ActionFactory.NEW.create(window);
+    _newAction = ApplicationActionBarAdvisor.NEW.create(window);
     register(_newAction);
 
     _openAction = ApplicationActionBarAdvisor.OPEN.create(window);
@@ -94,13 +97,25 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     //register(messagePopupAction);
   }
 
+  public static final ActionFactory NEW = new ActionFactory("new") {//$NON-NLS-1$
+    @Override
+    public IWorkbenchAction create(IWorkbenchWindow window) {
+      if (window == null) {
+        throw new IllegalArgumentException();
+      }
+      NewEOModelAction action = new NewEOModelAction(window);
+      action.setId(getId());
+      return action;
+    }
+  };
+
   public static final ActionFactory OPEN = new ActionFactory("open") {//$NON-NLS-1$
     @Override
     public IWorkbenchAction create(IWorkbenchWindow window) {
       if (window == null) {
         throw new IllegalArgumentException();
       }
-      IWorkbenchAction action = new OpenAction(window);
+      IWorkbenchAction action = new OpenEOModelAction(window);
       action.setId(getId());
       return action;
     }
@@ -127,6 +142,25 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     //fileMenu.add(openViewAction);
     fileMenu.add(new Separator());
     fileMenu.add(_exitAction);
+    
+    // MS: Eclipse core plugins inject some dumb shit into
+    // the File menu that there doesn't appear to be a
+    // good way to remove.  So I'm going to do it
+    // the hard way ...
+    fileMenu.addMenuListener(new IMenuListener2() {
+      public void menuAboutToHide(IMenuManager manager) {
+      }
+
+      public void menuAboutToShow(IMenuManager manager) {
+        IContributionItem[] items = manager.getItems();
+        for (IContributionItem item : items) {
+          String id = item.getId();
+          if ("new.ext".equals(id) || "org.eclipse.ui.openLocalFile".equals(id)) {
+            manager.remove(item);
+          }
+        }
+      }
+    });
 
     editMenu.add(_undoAction);
     editMenu.add(_redoAction);
@@ -149,6 +183,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     //toolbar.add(openViewAction);
     //toolbar.add(messagePopupAction);
     //coolBar.setLockLayout(true);
-    
+
   }
 }

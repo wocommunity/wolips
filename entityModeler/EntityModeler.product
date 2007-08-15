@@ -7,7 +7,7 @@
       <image path="icons/EntityModelerSplash.jpg"/>
    </aboutInfo>
 
-   <configIni use="default"/>
+   <configIni use="custom" path="/EntityModeler/config.ini"/>
 
    <launcherArgs>
    </launcherArgs>

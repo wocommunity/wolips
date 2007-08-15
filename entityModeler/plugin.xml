@@ -60,5 +60,19 @@
          </property>
       </product>
    </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            category="EntityModeler.wizards"
+            class="entitymodeler.wizards.NewEOModelWizard"
+            icon="icons/eoModel.png"
+            id="EntityModeler.newEOModel"
+            name="EOModel">
+      </wizard>
+      <category
+            id="EntityModeler.wizards"
+            name="Entity Modeler">
+      </category>
+   </extension>
 
 </plugin>
