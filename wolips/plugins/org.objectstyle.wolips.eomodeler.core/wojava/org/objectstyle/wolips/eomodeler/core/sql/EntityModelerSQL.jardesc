@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jardesc>
-<jar path="org.objectstyle.wolips.eomodeler/lib/EntityModelerSQL.jar"/>
-<options buildIfNeeded="true" compress="true" descriptionLocation="/org.objectstyle.wolips.eomodeler/EntityModelerSQL.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="true" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+<jar path="org.objectstyle.wolips.eomodeler.core/lib/EntityModelerSQL.jar"/>
+<options buildIfNeeded="true" compress="true" descriptionLocation="/org.objectstyle.wolips.eomodeler.core/wojava/org.objectstyle.wolips.eomodeler.core.sql/EntityModelerSQL.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="true" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
 <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
 <selectedProjects/>
 <manifest generateManifest="true" manifestLocation="/AssetVaultImporter/MANIFEST.MF" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
@@ -11,7 +11,7 @@
 </sealing>
 </manifest>
 <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-<javaElement handleIdentifier="=org.objectstyle.wolips.eomodeler/wojava&lt;org.objectstyle.wolips.eomodeler.sql{EOFSQLGenerator.java"/>
-<javaElement handleIdentifier="=org.objectstyle.wolips.eomodeler/wojava&lt;org.objectstyle.wolips.eomodeler.sql{EOFReverseEngineer.java"/>
+<javaElement handleIdentifier="=org.objectstyle.wolips.eomodeler.core/wojava&lt;org.objectstyle.wolips.eomodeler.core.sql{EOFSQLGenerator.java"/>
+<javaElement handleIdentifier="=org.objectstyle.wolips.eomodeler.core/wojava&lt;org.objectstyle.wolips.eomodeler.core.sql{EOFReverseEngineer.java"/>
 </selectedElements>
 </jardesc>
