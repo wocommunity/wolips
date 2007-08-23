@@ -7,7 +7,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.internal.adaptor.EclipseEnvironmentInfo;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -45,30 +44,6 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
   @Override
   public void postStartup() {
     super.postStartup();
-    try {
-      String[] nonFrameworkArgs = EclipseEnvironmentInfo.getDefault().getCommandLineArgs();
-
-      String modelPath = null;
-      boolean optionValue = false;
-      for (String nonFrameworkArg : nonFrameworkArgs) {
-        System.out.println("ApplicationWorkbenchAdvisor.postStartup: " + nonFrameworkArg);
-        if (nonFrameworkArg.startsWith("-")) {
-          optionValue = true;
-        }
-        else if (optionValue) {
-          optionValue = false;
-        }
-        else {
-          modelPath = nonFrameworkArg;
-        }
-      }
-
-      System.out.println("ApplicationWorkbenchAdvisor.postStartup: " + modelPath);
-      ApplicationWorkbenchAdvisor.openModelPath(modelPath);
-    }
-    catch (Throwable t) {
-      t.printStackTrace();
-    }
   }
 
   public static void openModelPath(String modelPath) throws CoreException {
