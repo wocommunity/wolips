@@ -25,9 +25,9 @@
          name="Entity Modeler EOClassLoader Factory"
          point="org.objectstyle.wolips.eomodeler.eoclassLoaderFactory">
       <eoclassLoaderFactory
-            class="entitymodeler.model.SimpleEOClassLoaderFactory"
-            id="entitymodeler.SimpleEOClassLoaderFactory"
-            name="Simple EOClassLoader Factory"/>
+            class="entitymodeler.model.SimpleManifestEOClassLoaderFactory"
+            id="entitymodeler.SimpleManifestEOClassLoaderFactory"
+            name="Simple Manifest EOClassLoader Factory"/>
    </extension>
    <extension
          id="EntityModeler"
@@ -36,20 +36,14 @@
             application="EntityModeler.EntityModeler"
             name="Entity Modeler">
          <property
-               name="startupForegroundColor"
-               value="000000"/>
-         <property
-               name="startupMessageRect"
-               value="0,0,0,0"/>
-         <property
                name="startupProgressRect"
                value="0,0,0,0"/>
          <property
                name="aboutImage"
-               value="icons/EntityModelerSplash.jpg"/>
+               value="icons/EntityModelerSmall.png"/>
          <property
                name="windowImages"
-               value="icons/EntityModeler.png,icons/EntityModeler.png,icons/EntityModeler.png,icons/EntityModeler.png,icons/EntityModeler.png"/>
+               value="icons/EntityModeler16.png,icons/EntityModeler32.png,icons/EntityModeler48.png,icons/EntityModeler64.png,icons/EntityModeler128.png"/>
          <property
                name="appName"
                value="Entity Modeler">
@@ -75,4 +69,158 @@
       </category>
    </extension>
 
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="Entity Modeler Actions"
+            id="org.objectstyle.wolips.eomodeler.actionSet"
+            label="Entity Modeler"
+            visible="true">
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewDatabaseConfigAction"
+               icon="icons/newDatabaseConfig32.png"
+               id="org.objectstyle.wolips.eomodeler.actions.newDatabaseConfig"
+               label="New Database Config"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="New Database Config">
+         </action>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.GenerateSQLAction"
+               icon="icons/sql32.png"
+               id="org.objectstyle.wolips.eomodeler.actions.generateSQL"
+               label="Generate SQL"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="Generate SQL">
+         </action>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.ReverseEngineerAction"
+               icon="icons/reverseEngineer32.png"
+               id="org.objectstyle.wolips.eomodeler.actions.reverseEngineer"
+               label="Reverse Engineer"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="Reverse Engineer">
+         </action>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.VerifyAction"
+               icon="icons/verify32.png"
+               id="org.objectstyle.wolips.eomodeler.actions.verify"
+               label="Verify Model"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="Verify Model">
+         </action>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.SubclassEntityAction"
+               icon="icons/subclassEntity32.png"
+               id="org.objectstyle.wolips.eomodeler.actions.subclassEntity"
+               label="Subclass Entity"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="Subclass Entity">
+         </action>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.FlattenAction"
+               icon="icons/flattenRelationship32.png"
+               id="org.objectstyle.wolips.eomodeler.actions.flatten"
+               label="Flatten"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="Flatten">
+         </action>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewEntityIndexAction"
+               icon="icons/newEntityIndex32.png"
+               id="org.objectstyle.wolips.eomodeler.actions.newEntityIndex"
+               label="New Entity Index"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="New Entity Index">
+         </action>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewArgumentAction"
+               icon="icons/newArgument32.png"
+               id="org.objectstyle.wolips.eomodeler.actions.newArgument"
+               label="New Argument"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="New Argument">
+         </action>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewStoredProcedureAction"
+               icon="icons/newStoredProcedure32.png"
+               id="org.objectstyle.wolips.eomodeler.actions.newStoredProcedure"
+               label="New Stored Procedure"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="New Stored Procedure">
+         </action>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewFetchSpecAction"
+               icon="icons/newFetchSpecification32.png"
+               id="org.objectstyle.wolips.eomodeler.actions.newFetchSpec"
+               label="New Fetch Specification"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="New Fetch Specification">
+         </action>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewRelationshipAction"
+               icon="icons/newRelationship32.png"
+               id="org.objectstyle.wolips.eomodeler.actions.newRelationship"
+               label="New Relationship"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="New Relationship">
+         </action>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewAttributeAction"
+               icon="icons/newAttribute32.png"
+               id="org.objectstyle.wolips.eomodeler.actions.newAttribute"
+               label="New Attribute"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="New Attribute">
+         </action>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewEntityAction"
+               icon="icons/newEntity32.png"
+               id="org.objectstyle.wolips.eomodeler.actions.newEntity"
+               label="New Entity"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="New Entity">
+         </action>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSetPartAssociations">
+      <actionSetPartAssociation targetID="org.objectstyle.wolips.eomodeler.actionSet">
+         <part id="org.objectstyle.wolips.eomodeler.editors.EOModelEditor"/>
+         <part id="org.eclipse.ui.views.ContentOutline"/>
+         <part id="org.eclipse.ui.views.PropertySheet"/>
+      </actionSetPartAssociation>
+   </extension>
+   <extension
+         id="org.objectstyle.wolips.eomodeler.sqlGeneratorFactory.eclipse"
+         name="Eclipse SQL Generator Factories"
+         point="org.objectstyle.wolips.eomodeler.sqlGeneratorFactory">
+      <sqlGeneratorFactory
+            class="org.objectstyle.wolips.eomodeler.core.sql.EOFSQLGeneratorFactory"
+            id="org.objectstyle.wolips.eomodeler.eclipse.sqlGeneratorFactory"
+            name="Eclipse SQL Generator Factory">
+      </sqlGeneratorFactory>
+   </extension>
+   <extension
+         id="org.objectstyle.wolips.eomodeler.sqlReverseEngineerFactory.eclipse"
+         name="Eclipse SQL Reverse Engineer Factories"
+         point="org.objectstyle.wolips.eomodeler.sqlReverseEngineerFactory">
+      <sqlReverseEngineerFactory
+            class="org.objectstyle.wolips.eomodeler.core.sql.EOFSQLReverseEngineerFactory"
+            id="org.objectstyle.wolips.eomodeler.eclipse.sqlReverseEngineerFactory"
+            name="Eclipse SQL Reverse Engineer Factory">
+      </sqlReverseEngineerFactory>
+   </extension>
 </plugin>

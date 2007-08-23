@@ -4,10 +4,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -16,14 +13,14 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.model.IEOModelGroupFactory;
-import org.objectstyle.wolips.eomodeler.editors.EOModelEditor;
 import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
+
+import entitymodeler.ApplicationWorkbenchAdvisor;
 
 public class NewEOModelAction extends Action implements ActionFactory.IWorkbenchAction {
   private IWorkbenchWindow _window;
@@ -87,9 +84,7 @@ public class NewEOModelAction extends Action implements ActionFactory.IWorkbench
           model.addDatabaseConfig(databaseConfig);
           model.saveToFolder(modelFolder);
 
-          IFileStore fileStore = EFS.getLocalFileSystem().getStore(new Path(modelFolder.getAbsolutePath()));
-          IFileStore fs = fileStore.getChild("index.eomodeld");
-          _window.getActivePage().openEditor(new FileStoreEditorInput(fs), EOModelEditor.EOMODEL_EDITOR_ID);
+          ApplicationWorkbenchAdvisor.openModelPath(modelFolder.getAbsolutePath());
         }
         catch (Throwable t) {
           t.printStackTrace();

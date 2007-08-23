@@ -20,14 +20,16 @@ public class SimpleManifestEOModelGroupFactory extends AbstractManifestEOModelGr
   @Override
   public List<ManifestSearchFolder> getSearchFolders(File selectedModelFolder) throws IOException {
     List<ManifestSearchFolder> searchFolders = new LinkedList<ManifestSearchFolder>();
-    fillInSearchFolders(new File(selectedModelFolder, "EntityModeler.manifest"), searchFolders);
-    fillInSearchFolders(new File(selectedModelFolder, ".EntityModeler.manifest"), searchFolders);
-    fillInSearchFolders(new File(System.getProperty("user.home"), "EntityModeler.manifest"), searchFolders);
-    fillInSearchFolders(new File(System.getProperty("user.home"), ".EntityModeler.manifest"), searchFolders);
-    fillInSearchFolders(new File(System.getProperty("user.home") + "/Library", "EntityModeler.manifest"), searchFolders);
-    fillInSearchFolders(new File(System.getProperty("user.home") + "/Library", ".EntityModeler.manifest"), searchFolders);
-    fillInSearchFolders(new File(System.getProperty("user.home") + "/Library/Preferences", "EntityModeler.manifest"), searchFolders);
-    fillInSearchFolders(new File(System.getProperty("user.home") + "/Library/Preferences", ".EntityModeler.manifest"), searchFolders);
+    fillInSearchFolders(new File(selectedModelFolder, "EntityModeler.modelpath"), searchFolders);
+    fillInSearchFolders(new File(selectedModelFolder, ".EntityModeler.modelpath"), searchFolders);
+    fillInSearchFolders(new File(selectedModelFolder.getParentFile(), "EntityModeler.modelpath"), searchFolders);
+    fillInSearchFolders(new File(selectedModelFolder.getParentFile(), ".EntityModeler.modelpath"), searchFolders);
+    fillInSearchFolders(new File(System.getProperty("user.home"), "EntityModeler.modelpath"), searchFolders);
+    fillInSearchFolders(new File(System.getProperty("user.home"), ".EntityModeler.modelpath"), searchFolders);
+    fillInSearchFolders(new File(System.getProperty("user.home") + "/Library", "EntityModeler.modelpath"), searchFolders);
+    fillInSearchFolders(new File(System.getProperty("user.home") + "/Library", ".EntityModeler.modelpath"), searchFolders);
+    fillInSearchFolders(new File(System.getProperty("user.home") + "/Library/Preferences", "EntityModeler.modelpath"), searchFolders);
+    fillInSearchFolders(new File(System.getProperty("user.home") + "/Library/Preferences", ".EntityModeler.modelpath"), searchFolders);
     return searchFolders;
   }
 

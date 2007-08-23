@@ -1,5 +1,6 @@
 package entitymodeler;
 
+import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.ICoolBarManager;
@@ -45,12 +46,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
   @Override
   protected void makeActions(final IWorkbenchWindow window) {
-    // Creates the actions and registers them.
-    // Registering is needed to ensure that key bindings work.
-    // The corresponding commands keybindings are defined in the plugin.xml file.
-    // Registering also provides automatic disposal of the actions when
-    // the window is closed.
-
     // File
     _newAction = ApplicationActionBarAdvisor.NEW.create(window);
     register(_newAction);
@@ -174,6 +169,17 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
     // Help
     helpMenu.add(_aboutAction);
+
+    // MS: Most Mac apps don't have icons on menu items ...
+    for (IContributionItem menu : menuBar.getItems()) {
+      if (menu instanceof MenuManager) {
+        for (IContributionItem menuItem : ((MenuManager)menu).getItems()) {
+          if (menuItem instanceof ActionContributionItem) {
+            ((ActionContributionItem)menuItem).getAction().setImageDescriptor(null);
+          }
+        }
+      }
+    }
   }
 
   @Override
@@ -183,6 +189,5 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     //toolbar.add(openViewAction);
     //toolbar.add(messagePopupAction);
     //coolBar.setLockLayout(true);
-
   }
 }

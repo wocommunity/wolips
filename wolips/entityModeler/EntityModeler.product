@@ -4,7 +4,7 @@
 <product name="Entity Modeler" id="EntityModeler.EntityModeler" application="EntityModeler.EntityModeler" useFeatures="false">
 
    <aboutInfo>
-      <image path="icons/EntityModelerSplash.jpg"/>
+      <image path="icons/EntityModelerSmall.png"/>
    </aboutInfo>
 
    <configIni use="custom" path="/EntityModeler/config.ini"/>
@@ -12,12 +12,11 @@
    <launcherArgs>
    </launcherArgs>
 
-   <windowImages i16="icons/EntityModeler.png" i32="icons/EntityModeler.png" i48="icons/EntityModeler.png" i64="icons/EntityModeler.png" i128="icons/EntityModeler.png"/>
+   <windowImages i16="icons/EntityModeler16.png" i32="icons/EntityModeler32.png" i48="icons/EntityModeler48.png" i64="icons/EntityModeler64.png" i128="icons/EntityModeler128.png"/>
 
    <splash
-      startupProgressRect="0,0,0,0"
-      startupMessageRect="0,0,0,0"
-      startupForegroundColor="000000" />
+      location="EntityModeler"
+      startupProgressRect="0,0,0,0" />
    <launcher name="Entity Modeler">
       <macosx icon="/EntityModeler/icons/EntityModeler.icns"/>
       <solaris/>
@@ -25,6 +24,7 @@
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>

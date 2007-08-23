@@ -22,7 +22,26 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
     IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
     configurer.setInitialSize(new Point(1200, 675));
     configurer.setShowCoolBar(true);
-    configurer.setShowStatusLine(false);
+    configurer.setShowStatusLine(true);
     configurer.setTitle("Entity Modeler");
+  }
+  
+  @Override
+  public void postWindowOpen() {
+    super.postWindowOpen();
+    getWindowConfigurer().getActionBarConfigurer().getCoolBarManager().setLockLayout(true);
+//    IContributionItem[] items = getWindowConfigurer().getActionBarConfigurer().getCoolBarManager().getItems();
+//    for (IContributionItem item : items) {
+//      if (item instanceof ToolBarContributionItem2) {
+//        ToolBarContributionItem2 tbcItem = (ToolBarContributionItem2)item;
+//        IContributionItem[] tbItems = tbcItem.getToolBarManager().getItems();
+//        for (IContributionItem tbItem : tbItems) {
+//          if (tbItem instanceof PluginActionCoolBarContributionItem) {
+//            PluginActionCoolBarContributionItem pac = (PluginActionCoolBarContributionItem)tbItem;
+//            pac.setMode(PluginActionCoolBarContributionItem.MODE_FORCE_TEXT);
+//          }
+//        }
+//      }
+//    }
   }
 }
