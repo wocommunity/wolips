@@ -50,11 +50,9 @@
 package org.objectstyle.wolips.eomodeler.actions;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -72,8 +70,9 @@ import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.model.IEOClassLoaderFactory;
+import org.objectstyle.wolips.eomodeler.core.sql.IEOSQLReverseEngineer;
+import org.objectstyle.wolips.eomodeler.core.sql.IEOSQLReverseEngineerFactory;
 import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
-import org.objectstyle.wolips.eomodeler.core.utils.SQLUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringLabelProvider;
 
@@ -103,20 +102,19 @@ public class ReverseEngineerAction implements IWorkbenchWindowActionDelegate, IO
 			Object obj = ((IStructuredSelection) _selection).getFirstElement();
 			EOModel model = EOModelUtils.getRelatedModel(obj);
 			EODatabaseConfig activeDatabaseConfig = model.getActiveDatabaseConfig();
-			String adaptorName = activeDatabaseConfig.getAdaptorName();
-			Map connectionDictionary = activeDatabaseConfig.getConnectionDictionary();
 			ClassLoader eomodelClassLoader = IEOClassLoaderFactory.Utility.createClassLoader(model);
-			Object reverseEngineer = SQLUtils.createEOFReverseEngineer(adaptorName, connectionDictionary, eomodelClassLoader);
-			Method reverseEngineerTableNamesMethod = reverseEngineer.getClass().getMethod("reverseEngineerTableNames", new Class[0]);
-			List tableNames = (List) reverseEngineerTableNamesMethod.invoke(reverseEngineer, new Object[0]);
+			IEOSQLReverseEngineer reverseEngineer = IEOSQLReverseEngineerFactory.Utility.reverseEngineerFactory().reverseEngineer(activeDatabaseConfig, eomodelClassLoader);
+			List<String> tableNames = reverseEngineer.reverseEngineerTableNames();
 
 			ListSelectionDialog dlg = new ListSelectionDialog(_window.getShell(), tableNames, new StringContentProvider(), new StringLabelProvider(), "Select the tables to reverse engineer:");
 			dlg.setInitialSelections(tableNames.toArray());
 			dlg.setTitle("Reverse Engineer");
 			if (dlg.open() == Window.OK) {
-				List selectedTableNamesList = Arrays.asList(dlg.getResult());
-				Method reverseEngineerWithTableNamesIntoModelMethod = reverseEngineer.getClass().getMethod("reverseEngineerWithTableNamesIntoModel", new Class[] { List.class });
-				File reverseEngineeredEOModelFolder = (File) reverseEngineerWithTableNamesIntoModelMethod.invoke(reverseEngineer, new Object[] { selectedTableNamesList });
+				Object[] selectedTableNameObjs = dlg.getResult();
+				String[] selectedTableNames = new String[selectedTableNameObjs.length];
+				System.arraycopy(selectedTableNameObjs, 0, selectedTableNames, 0, selectedTableNameObjs.length);
+				List<String> selectedTableNamesList = Arrays.asList(selectedTableNames);
+				File reverseEngineeredEOModelFolder = reverseEngineer.reverseEngineerWithTableNamesIntoModel(selectedTableNamesList);
 				model.importEntitiesFromModel(reverseEngineeredEOModelFolder.toURL(), new HashSet<EOModelVerificationFailure>());
 			}
 		} catch (Throwable e) {

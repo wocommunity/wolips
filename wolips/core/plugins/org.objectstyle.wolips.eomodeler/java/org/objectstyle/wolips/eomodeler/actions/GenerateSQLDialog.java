@@ -1,6 +1,5 @@
 package org.objectstyle.wolips.eomodeler.actions;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +34,8 @@ import org.eclipse.swt.widgets.Text;
 import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.IEOClassLoaderFactory;
-import org.objectstyle.wolips.eomodeler.core.utils.SQLUtils;
+import org.objectstyle.wolips.eomodeler.core.sql.IEOSQLGenerator;
+import org.objectstyle.wolips.eomodeler.core.sql.IEOSQLGeneratorFactory;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class GenerateSQLDialog extends Dialog {
@@ -61,9 +61,9 @@ public class GenerateSQLDialog extends Dialog {
 
 	private EOModel myModel;
 
-	private List myEntityNames;
+	private List<String> myEntityNames;
 
-	private Set myDatabaseConfigs;
+	private Set<EODatabaseConfig> myDatabaseConfigs;
 
 	private ComboViewer myDatabaseConfigComboViewer;
 
@@ -79,7 +79,7 @@ public class GenerateSQLDialog extends Dialog {
 
 	private boolean myCreateOnlySelectedEntities;
 
-	public GenerateSQLDialog(Shell _parentShell, EOModel _model, List _entityNames) {
+	public GenerateSQLDialog(Shell _parentShell, EOModel _model, List<String> _entityNames) {
 		super(_parentShell);
 		myModel = _model;
 		myEntityNames = _entityNames;
@@ -216,7 +216,7 @@ public class GenerateSQLDialog extends Dialog {
 		return mySqlText;
 	}
 
-	protected Map getSelectedDatabaseConfigMap() {
+	protected EODatabaseConfig getSelectedDatabaseConfig() {
 		EODatabaseConfig selectedDatabaseConfig = null;
 		if (myDatabaseConfigComboViewer != null) {
 			IStructuredSelection selection = (IStructuredSelection) myDatabaseConfigComboViewer.getSelection();
@@ -224,11 +224,7 @@ public class GenerateSQLDialog extends Dialog {
 		} else {
 			selectedDatabaseConfig = myModel.getActiveDatabaseConfig();
 		}
-		Map selectedDatabaseConfigMap = null;
-		if (selectedDatabaseConfig != null) {
-			selectedDatabaseConfigMap = selectedDatabaseConfig.toMap().getBackingMap();
-		}
-		return selectedDatabaseConfigMap;
+		return selectedDatabaseConfig;
 	}
 
 	protected ClassLoader getEOModelClassLoader() throws Exception {
@@ -249,10 +245,10 @@ public class GenerateSQLDialog extends Dialog {
 		flags.put("foreignKeyConstraints", yesNo(myCreateForeignKeyConstraintsButton));
 		flags.put("createDatabase", yesNo(myCreateDatabaseButton));
 		flags.put("dropDatabase", yesNo(myDropDatabaseButton));
-		final Map selectedDatabaseConfigMap = getSelectedDatabaseConfigMap();
+		final EODatabaseConfig selectedDatabaseConfig = getSelectedDatabaseConfig();
 		Thread generateSqlThread = new Thread(new Runnable() {
 			public void run() {
-				generateSql(flags, selectedDatabaseConfigMap);
+				generateSql(flags, selectedDatabaseConfig);
 			}
 		}, "Generate SQL");
 		generateSqlThread.start();
@@ -262,7 +258,7 @@ public class GenerateSQLDialog extends Dialog {
 		return myExecuteSqlButton;
 	}
 
-	protected synchronized void generateSql(Map flags, Map selectedDatabaseConfigMap) {
+	protected synchronized void generateSql(Map flags, EODatabaseConfig selectedDatabaseConfig) {
 		try {
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
@@ -270,9 +266,8 @@ public class GenerateSQLDialog extends Dialog {
 					getExecuteSqlButton().setEnabled(false);
 				}
 			});
-			Object eofSQLGenerator = SQLUtils.createEOFSQLGenerator(myModel, getEntityNames(), selectedDatabaseConfigMap, getEOModelClassLoader());
-			Method getSchemaCreationScriptMethod = eofSQLGenerator.getClass().getMethod("getSchemaCreationScript", new Class[] { Map.class });
-			final String sqlScript = (String) getSchemaCreationScriptMethod.invoke(eofSQLGenerator, new Object[] { flags });
+			IEOSQLGenerator sqlGenerator = IEOSQLGeneratorFactory.Utility.sqlGeneratorFactory().sqlGenerator(myModel, getEntityNames(), selectedDatabaseConfig, getEOModelClassLoader());
+			final String sqlScript = sqlGenerator.generateSchemaCreationScript(flags);
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
 					getSqlText().setText(sqlScript);
@@ -304,10 +299,10 @@ public class GenerateSQLDialog extends Dialog {
 		boolean confirmed = MessageDialog.openConfirm(getShell(), "Execute SQL", "Are you sure you want to execute this SQL?");
 		if (confirmed) {
 			final String sqlString = getSqlString();
-			final Map selectedDatabaseConfigMap = getSelectedDatabaseConfigMap();
+			final EODatabaseConfig selectedDatabaseConfig = getSelectedDatabaseConfig();
 			Thread executeSqlThread = new Thread(new Runnable() {
 				public void run() {
-					executeSql(sqlString, selectedDatabaseConfigMap);
+					executeSql(sqlString, selectedDatabaseConfig);
 				}
 			}, "Execute SQL");
 			executeSqlThread.start();
@@ -322,19 +317,18 @@ public class GenerateSQLDialog extends Dialog {
 		return myWaitCursor;
 	}
 
-	protected List getEntityNames() {
+	protected List<String> getEntityNames() {
 		return (myCreateOnlySelectedEntities) ? myEntityNames : null;
 	}
 
-	protected synchronized void executeSql(String allSql, Map selectedDatabaseConfigMap) {
+	protected synchronized void executeSql(String allSql, EODatabaseConfig selectedDatabaseConfig) {
 		try {
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
 					getShell().setCursor(getWaitCursor());
 				}
 			});
-			Object eofSQLGenerator = SQLUtils.createEOFSQLGenerator(myModel, getEntityNames(), selectedDatabaseConfigMap, getEOModelClassLoader());
-			Method executeSQLMethod = eofSQLGenerator.getClass().getMethod("executeSQL", new Class[] { String.class });
+			IEOSQLGenerator sqlGenerator = IEOSQLGeneratorFactory.Utility.sqlGeneratorFactory().sqlGenerator(myModel, getEntityNames(), selectedDatabaseConfig, getEOModelClassLoader());
 			String[] statements = allSql.split("[;/]");
 			setCancel(false);
 			for (int statementsNum = 0; !myCancel && statementsNum < statements.length; statementsNum++) {
@@ -342,7 +336,7 @@ public class GenerateSQLDialog extends Dialog {
 				statement = statement.trim().replaceAll("[\n\r]", " ");
 				if (statement.length() > 0) {
 					try {
-						executeSQLMethod.invoke(eofSQLGenerator, new Object[] { statement });
+						sqlGenerator.executeSQL(statement);
 					} catch (final Throwable t) {
 						Display.getDefault().syncExec(new Runnable() {
 							public void run() {
