@@ -3,6 +3,8 @@
 <plugin>
    <extension-point id="org.objectstyle.wolips.eomodeler.eomodelGroupFactory" name="EOModel Group Factory" schema="schema/org.objectstyle.wolips.eomodeler.eomodelGroupFactory.exsd"/>
    <extension-point id="org.objectstyle.wolips.eomodeler.eoclassLoaderFactory" name="EOClassLoader Factory" schema="schema/org.objectstyle.wolips.eomodeler.eoclassLoaderFactory.exsd"/>
+   <extension-point id="org.objectstyle.wolips.eomodeler.sqlGeneratorFactory" name="EOModel SQL Generator Factory" schema="schema/org.objectstyle.wolips.eomodeler.sqlGeneratorFactory.exsd"/>
+   <extension-point id="org.objectstyle.wolips.eomodeler.sqlReverseEngineerFactory" name="EOModel SQL Reverse Engineer Factory" schema="schema/org.objectstyle.wolips.eomodeler.sqlReverseEngineerFactory.exsd"/>
 
    <extension
          id="problem"

@@ -11,7 +11,7 @@ import com.webobjects.eoaccess.EOAdaptorContext;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSDictionary;
 
-public class EOFReverseEngineer {
+public class EOFSQLReverseEngineer implements IEOSQLReverseEngineer {
 	private String _adaptorName;
 
 	private NSDictionary _connectionDictionary;
@@ -22,9 +22,9 @@ public class EOFReverseEngineer {
 
 	private EOAdaptorChannel _channel;
 
-	public EOFReverseEngineer(String adaptorName, Map connectionDictionary) {
+	public EOFSQLReverseEngineer(String adaptorName, Map connectionDictionary) {
 		_adaptorName = adaptorName;
-		_connectionDictionary = (NSDictionary) EOFSQLGenerator.toWOCollections(connectionDictionary);
+		_connectionDictionary = (NSDictionary) EOFSQLUtils.toWOCollections(connectionDictionary);
 		_adaptor = EOAdaptor.adaptorWithName(_adaptorName);
 		_adaptor.setConnectionDictionary(_connectionDictionary);
 		_adaptor.assertConnectionDictionaryIsValid();
@@ -47,7 +47,7 @@ public class EOFReverseEngineer {
 		open();
 		try {
 			NSArray tableNamesArray = _channel.describeTableNames();
-			return (List) EOFSQLGenerator.toJavaCollections(tableNamesArray);
+			return (List) EOFSQLUtils.toJavaCollections(tableNamesArray);
 		} finally {
 			close();
 		}
@@ -62,7 +62,7 @@ public class EOFReverseEngineer {
 	public File reverseEngineerWithTableNamesIntoModel(List tableNamesList) throws IOException {
 		open();
 		try {
-			NSArray tableNamesArray = (NSArray) EOFSQLGenerator.toWOCollections(tableNamesList);
+			NSArray tableNamesArray = (NSArray) EOFSQLUtils.toWOCollections(tableNamesList);
 			com.webobjects.eoaccess.EOModel eofModel = _channel.describeModelWithTableNames(tableNamesArray);
 			eofModel.beautifyNames();
 			File tempFile = File.createTempFile("EntityModeler", "tmp");
