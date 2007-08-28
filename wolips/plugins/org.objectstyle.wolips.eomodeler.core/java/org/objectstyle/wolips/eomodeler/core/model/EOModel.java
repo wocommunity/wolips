@@ -716,6 +716,9 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 					if (URLUtils.exists(fspecURL)) {
 						entity.loadFetchSpecsFromURL(fspecURL, _failures);
 					}
+					if (entity.getName() == null) {
+						_failures.add(new EOModelVerificationFailure(this, "The entity file " + entityURL + " defines an entity with no name.", false));
+					}
 					addEntity(entity, true, false, _failures);
 				} else {
 					_failures.add(new EOModelVerificationFailure(this, "The entity file " + entityURL + " was missing.", false));
