@@ -1,5 +1,6 @@
 package entitymodeler;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.swt.widgets.Display;
@@ -20,6 +21,17 @@ public class Application implements IApplication {
     display.addListener(43, new Listener() {
     //display.addListener(SWT.ExternalOpen, new Listener() {
       public void handleEvent(Event event) {
+        String[] modelPaths = (String[])event.data;
+        if (modelPaths != null) {
+          for (String modelPath : modelPaths) {
+            try {
+              ApplicationWorkbenchAdvisor.openModelPath(modelPath);
+            }
+            catch (CoreException e) {
+              e.printStackTrace();
+            }
+          }
+        }
         System.out.println(".run: external open");
       }
     });

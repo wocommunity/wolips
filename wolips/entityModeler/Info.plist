@@ -10,7 +10,7 @@
 	<key>CFBundleIconFile</key>
 		<string>EntityModeler.icns</string>
 	<key>CFBundleIdentifier</key>
-		<string>org.eclipse.eclipse</string>
+		<string>org.objectstyle.wolips.entityModeler</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 		<string>6.0</string>
 	<key>CFBundleName</key>
