@@ -102,17 +102,21 @@ public abstract class EOModelObject<T> implements IAdaptable, IPropertyChangeSou
 
 	public String _findUnusedName(String newName, String getMethodName) {
 		try {
+			String safeNewName = newName;
+			if (safeNewName == null) {
+				safeNewName = "MISSING";
+			}
 			Method getMethod = getClass().getMethod(getMethodName, String.class);
-			boolean unusedNameFound = (getMethod.invoke(this, newName) == null);
-			String unusedName = newName;
+			boolean unusedNameFound = (getMethod.invoke(this, safeNewName) == null);
+			String unusedName = safeNewName;
 			if (!unusedNameFound) {
 				int cutoffLength;
-				for (cutoffLength = newName.length(); cutoffLength > 0; cutoffLength --) {
-					if (!Character.isDigit(newName.charAt(cutoffLength - 1))) {
+				for (cutoffLength = safeNewName.length(); cutoffLength > 0; cutoffLength --) {
+					if (!Character.isDigit(safeNewName.charAt(cutoffLength - 1))) {
 						break;
 					}
 				}
-				String newWithoutTrailingNumber = newName.substring(0, cutoffLength);
+				String newWithoutTrailingNumber = safeNewName.substring(0, cutoffLength);
 				unusedNameFound = (getMethod.invoke(this, newWithoutTrailingNumber) == null);
 				unusedName = newWithoutTrailingNumber;
 				for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
