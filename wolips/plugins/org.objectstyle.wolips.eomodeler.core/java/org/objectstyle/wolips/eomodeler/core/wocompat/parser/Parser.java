@@ -56,13 +56,9 @@
  */
 package org.objectstyle.wolips.eomodeler.core.wocompat.parser;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.Collection;
-import java.util.Map;
-
 import org.apache.log4j.Logger;
+import java.io.*;
+import java.util.*;
 
 /**
  * NeXT/Apple Property List format parser. 
@@ -110,14 +106,15 @@ public class Parser implements ParserConstants {
   final public Object object(ParserDataStructureFactory factory, String parentKeyPath) throws ParseException {
         Object node;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 8:
+    case 9:
       node = collection(factory, parentKeyPath);
                                                           {if (true) return node;}
       break;
-    case 10:
+    case 11:
       node = dictionary(factory, parentKeyPath);
                                                           {if (true) return node;}
       break;
+    case STRINGYINT:
     case INT:
     case FLOAT:
     case STRING:
@@ -135,6 +132,10 @@ public class Parser implements ParserConstants {
 
   final public Object leaf() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case STRINGYINT:
+      jj_consume_token(STRINGYINT);
+                 {if (true) return token.image;}
+      break;
     case INT:
       jj_consume_token(INT);
           {if (true) return Integer.valueOf(token.image);}
@@ -161,13 +162,14 @@ public class Parser implements ParserConstants {
 
   final public Map dictionary(ParserDataStructureFactory factory, String parentKeyPath) throws ParseException {
         Map h;
-    jj_consume_token(10);
+    jj_consume_token(11);
               h = factory.createMap(parentKeyPath);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case STRINGYINT:
     case INT:
     case FLOAT:
-    case 8:
-    case 10:
+    case 9:
+    case 11:
     case STRING:
     case QUOTED_STRING:
       keyValuePair(factory, parentKeyPath, h);
@@ -178,12 +180,12 @@ public class Parser implements ParserConstants {
         } else {
           break label_1;
         }
-        jj_consume_token(13);
+        jj_consume_token(14);
         keyValuePair(factory, parentKeyPath, h);
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 13:
-        jj_consume_token(13);
+      case 14:
+        jj_consume_token(14);
         break;
       default:
         jj_la1[2] = jj_gen;
@@ -194,7 +196,7 @@ public class Parser implements ParserConstants {
       jj_la1[3] = jj_gen;
       ;
     }
-    jj_consume_token(11);
+    jj_consume_token(12);
               {if (true) return h;}
     throw new Error("Missing return statement in function");
   }
@@ -202,45 +204,51 @@ public class Parser implements ParserConstants {
   final public void keyValuePair(ParserDataStructureFactory factory, String parentKeyPath, Map map) throws ParseException {
         Object key, val;
     key = object(factory, parentKeyPath);
-    jj_consume_token(7);
+    jj_consume_token(8);
     val = object(factory, parentKeyPath + "." + key);
                                                                    map.put(key, val);
   }
 
   final public Collection collection(ParserDataStructureFactory factory, String parentKeyPath) throws ParseException {
-  Collection v;
-  Object o;
-    jj_consume_token(8);
-         v = factory.createCollection(parentKeyPath);
+        Collection v;
+        Object o;
+    jj_consume_token(9);
+              v = factory.createCollection(parentKeyPath);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case STRINGYINT:
     case INT:
     case FLOAT:
-    case 8:
-    case 10:
+    case 9:
+    case 11:
     case STRING:
     case QUOTED_STRING:
       o = object(factory, parentKeyPath);
-                                         v.add(o);
+                                                     v.add(o);
       label_2:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case 12:
+        if (jj_2_2(2)) {
           ;
-          break;
-        default:
-          jj_la1[4] = jj_gen;
+        } else {
           break label_2;
         }
-        jj_consume_token(12);
+        jj_consume_token(13);
         o = object(factory, parentKeyPath);
-                                              v.add(o);
+                                                            v.add(o);
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case 13:
+        jj_consume_token(13);
+        break;
+      default:
+        jj_la1[4] = jj_gen;
+        ;
       }
       break;
     default:
       jj_la1[5] = jj_gen;
       ;
     }
-    jj_consume_token(9);
+    jj_consume_token(10);
         {if (true) return v;}
     throw new Error("Missing return statement in function");
   }
@@ -252,15 +260,11 @@ public class Parser implements ParserConstants {
     finally { jj_save(0, xla); }
   }
 
-  final private boolean jj_3R_9() {
-    if (jj_scan_token(10)) return true;
-    return false;
-  }
-
-  final private boolean jj_3_1() {
-    if (jj_scan_token(13)) return true;
-    if (jj_3R_3()) return true;
-    return false;
+  final private boolean jj_2_2(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_2(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(1, xla); }
   }
 
   final private boolean jj_3R_7() {
@@ -268,8 +272,19 @@ public class Parser implements ParserConstants {
     return false;
   }
 
+  final private boolean jj_3_1() {
+    if (jj_scan_token(14)) return true;
+    if (jj_3R_3()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_6() {
     if (jj_3R_9()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_15() {
+    if (jj_scan_token(STRING)) return true;
     return false;
   }
 
@@ -292,22 +307,28 @@ public class Parser implements ParserConstants {
   }
 
   final private boolean jj_3R_14() {
-    if (jj_scan_token(STRING)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_13() {
     if (jj_scan_token(QUOTED_STRING)) return true;
     return false;
   }
 
-  final private boolean jj_3R_12() {
+  final private boolean jj_3R_13() {
     if (jj_scan_token(FLOAT)) return true;
     return false;
   }
 
-  final private boolean jj_3R_11() {
+  final private boolean jj_3_2() {
+    if (jj_scan_token(13)) return true;
+    if (jj_3R_4()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_12() {
     if (jj_scan_token(INT)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_11() {
+    if (jj_scan_token(STRINGYINT)) return true;
     return false;
   }
 
@@ -320,10 +341,18 @@ public class Parser implements ParserConstants {
     jj_scanpos = xsp;
     if (jj_3R_13()) {
     jj_scanpos = xsp;
-    if (jj_3R_14()) return true;
+    if (jj_3R_14()) {
+    jj_scanpos = xsp;
+    if (jj_3R_15()) return true;
     }
     }
     }
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_8() {
+    if (jj_scan_token(9)) return true;
     return false;
   }
 
@@ -332,13 +361,13 @@ public class Parser implements ParserConstants {
     return false;
   }
 
-  final private boolean jj_3R_8() {
-    if (jj_scan_token(8)) return true;
+  final private boolean jj_3R_9() {
+    if (jj_scan_token(11)) return true;
     return false;
   }
 
   public ParserTokenManager token_source;
-  SimpleCharStream jj_input_stream;
+  JavaCharStream jj_input_stream;
   public Token token, jj_nt;
   private int jj_ntk;
   private Token jj_scanpos, jj_lastpos;
@@ -352,9 +381,9 @@ public class Parser implements ParserConstants {
       jj_la1_0();
    }
    private static void jj_la1_0() {
-      jj_la1_0 = new int[] {0x40020560,0x40020060,0x2000,0x40020560,0x1000,0x40020560,};
+      jj_la1_0 = new int[] {0x80040ae0,0x800400e0,0x4000,0x80040ae0,0x2000,0x80040ae0,};
    }
-  final private JJCalls[] jj_2_rtns = new JJCalls[1];
+  final private JJCalls[] jj_2_rtns = new JJCalls[2];
   private boolean jj_rescan = false;
   private int jj_gc = 0;
 
@@ -362,7 +391,7 @@ public class Parser implements ParserConstants {
      this(stream, null);
   }
   public Parser(java.io.InputStream stream, String encoding) {
-    try { jj_input_stream = new SimpleCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
+    try { jj_input_stream = new JavaCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
     token_source = new ParserTokenManager(jj_input_stream);
     token = new Token();
     jj_ntk = -1;
@@ -385,7 +414,7 @@ public class Parser implements ParserConstants {
   }
 
   public Parser(java.io.Reader stream) {
-    jj_input_stream = new SimpleCharStream(stream, 1, 1);
+    jj_input_stream = new JavaCharStream(stream, 1, 1);
     token_source = new ParserTokenManager(jj_input_stream);
     token = new Token();
     jj_ntk = -1;
@@ -529,8 +558,8 @@ public class Parser implements ParserConstants {
 
   public ParseException generateParseException() {
     jj_expentries.removeAllElements();
-    boolean[] la1tokens = new boolean[31];
-    for (int i = 0; i < 31; i++) {
+    boolean[] la1tokens = new boolean[32];
+    for (int i = 0; i < 32; i++) {
       la1tokens[i] = false;
     }
     if (jj_kind >= 0) {
@@ -546,7 +575,7 @@ public class Parser implements ParserConstants {
         }
       }
     }
-    for (int i = 0; i < 31; i++) {
+    for (int i = 0; i < 32; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
@@ -571,7 +600,7 @@ public class Parser implements ParserConstants {
 
   final private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 2; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -579,6 +608,7 @@ public class Parser implements ParserConstants {
           jj_la = p.arg; jj_lastpos = jj_scanpos = p.first;
           switch (i) {
             case 0: jj_3_1(); break;
+            case 1: jj_3_2(); break;
           }
         }
         p = p.next;
