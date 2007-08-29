@@ -59,10 +59,11 @@ package org.objectstyle.wolips.eomodeler.core.wocompat.parser;
 public interface ParserConstants {
 
   int EOF = 0;
-  int INT = 5;
-  int FLOAT = 6;
-  int STRING = 17;
-  int QUOTED_STRING = 30;
+  int STRINGYINT = 5;
+  int INT = 6;
+  int FLOAT = 7;
+  int STRING = 18;
+  int QUOTED_STRING = 31;
 
   int DEFAULT = 0;
   int WithinComment = 1;
@@ -74,6 +75,7 @@ public interface ParserConstants {
     "\"\\r\"",
     "\"\\n\"",
     "\"\\t\"",
+    "<STRINGYINT>",
     "<INT>",
     "<FLOAT>",
     "\"=\"",
@@ -84,11 +86,11 @@ public interface ParserConstants {
     "\",\"",
     "\";\"",
     "\"//\"",
-    "<token of kind 15>",
     "<token of kind 16>",
+    "<token of kind 17>",
     "<STRING>",
     "\"\\\"\"",
-    "<token of kind 19>",
+    "<token of kind 20>",
     "\"\\\\\\\\\"",
     "\"\\\\a\"",
     "\"\\\\b\"",
@@ -97,8 +99,8 @@ public interface ParserConstants {
     "\"\\\\v\"",
     "\"\\\\f\"",
     "\"\\\\\\\"\"",
-    "<token of kind 28>",
     "<token of kind 29>",
+    "<token of kind 30>",
     "\"\\\"\"",
   };
 

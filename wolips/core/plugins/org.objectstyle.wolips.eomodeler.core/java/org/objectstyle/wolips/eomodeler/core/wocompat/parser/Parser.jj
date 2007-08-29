@@ -97,7 +97,7 @@ public class Parser {
         return propertyList(new SimpleParserDataStructureFactory());
     }
     
-    public Object propertyList(IParserDataStructureFactory factory) {
+    public Object propertyList(ParserDataStructureFactory factory) {
         try {
             return object(factory, Parser.ROOT);
         }
@@ -127,7 +127,8 @@ SKIP :
 
 TOKEN :
 { 
-	< INT:	("-")?(["0"-"9"])+ >
+	< STRINGYINT: ("0")(["0"-"9"])+ >
+|	< INT:	("-")?(["0"-"9"])+ >
 |	< FLOAT: ("-")?((["0"-"9"])*"."(["0"-"9"])+)(["e","E"](["-","+"])?(["0"-"9"])+)? >
 }
 
@@ -215,7 +216,7 @@ SKIP :
   < QUOTED_STRING: "\"" > { image.setLength(image.length()-1); matchedToken.image = image.toString(); } : DEFAULT
 }
 
-Object object(IParserDataStructureFactory factory, String parentKeyPath) :
+Object object(ParserDataStructureFactory factory, String parentKeyPath) :
 {
 	Object node;
 }
@@ -230,13 +231,14 @@ Object object(IParserDataStructureFactory factory, String parentKeyPath) :
 Object leaf() :
 {}
 { 
-  <INT> { return Integer.valueOf(token.image); }
+  <STRINGYINT> { return token.image; }
+| <INT> { return Integer.valueOf(token.image); }
 | <FLOAT> { return Double.valueOf(token.image); }
 | <QUOTED_STRING> { return token.image; }
 | <STRING> { return token.image; }
 }
 
-Map dictionary(IParserDataStructureFactory factory, String parentKeyPath) : 
+Map dictionary(ParserDataStructureFactory factory, String parentKeyPath) : 
 { 
 	Map h;
 }
@@ -244,18 +246,16 @@ Map dictionary(IParserDataStructureFactory factory, String parentKeyPath) :
 	"{"  {h = factory.createMap(parentKeyPath); }
 	 (
 		keyValuePair(factory, parentKeyPath, h)
-		(
-			LOOKAHEAD(2) ";" keyValuePair(factory, parentKeyPath, h)
-    	)* 
-    	
-    	// last semicolon is optional
-    	( ";" )?
-    )?
+		( LOOKAHEAD(2) ";" keyValuePair(factory, parentKeyPath, h) )* 
+
+   	// last semicolon is optional
+   	( ";" )?
+  )?
     
 	"}" { return h; }
 }
 
-void keyValuePair(IParserDataStructureFactory factory, String parentKeyPath, Map map) :
+void keyValuePair(ParserDataStructureFactory factory, String parentKeyPath, Map map) :
 {
 	Object key, val;
 }
@@ -265,14 +265,21 @@ void keyValuePair(IParserDataStructureFactory factory, String parentKeyPath, Map
 		val = object(factory, parentKeyPath + "." + key) { map.put(key, val); }
 }
 
-Collection collection(IParserDataStructureFactory factory, String parentKeyPath) : 
-{ Collection v;
-  Object o;
+Collection collection(ParserDataStructureFactory factory, String parentKeyPath) : 
+{
+	Collection v;
+	Object o;
 }
 {
-   "(" { v = factory.createCollection(parentKeyPath); } (
-      o=object(factory, parentKeyPath) { v.add(o); }
-      ("," o=object(factory, parentKeyPath) { v.add(o); } )*
-     )?
-   ")" {return v;}
+	"(" { v = factory.createCollection(parentKeyPath); }
+	
+	(
+		o = object(factory, parentKeyPath) { v.add(o); }
+    ( LOOKAHEAD(2) "," o = object(factory, parentKeyPath) { v.add(o); } )*
+
+   	// last semicolon is optional
+   	( "," )?
+  )?
+	 
+  ")" { return v; }
 }
