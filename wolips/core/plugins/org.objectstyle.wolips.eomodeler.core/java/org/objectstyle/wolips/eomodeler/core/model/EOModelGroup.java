@@ -49,6 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.core.model;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -66,11 +67,11 @@ public class EOModelGroup extends EOModelObject<Object> {
 	public static final String MODELS = "models";
 
 	private Set<EOModel> _models;
-
-	private URL _editingModelURL;
 	
 	private boolean _createDefaultDatabaseConfig;
 
+	private String _editingModelName;
+	
 	public EOModelGroup() {
 		_models = new HashSet<EOModel>();
 		_createDefaultDatabaseConfig = true;
@@ -82,10 +83,6 @@ public class EOModelGroup extends EOModelObject<Object> {
 	
 	public boolean isCreateDefaultDatabaseConfig() {
 		return _createDefaultDatabaseConfig;
-	}
-
-	public void setEditingModelURL(URL editingModelURL) {
-		_editingModelURL = editingModelURL;
 	}
 
 	public boolean hasProjectWonder() {
@@ -207,32 +204,69 @@ public class EOModelGroup extends EOModelObject<Object> {
 		return matchingModel;
 	}
 
+	/**
+	 * Sets the URL of the model that is being editing (considered the primary model).
+	 * 
+	 * @param editingModelURL the url of the model that is in edit mode
+	 */
+	public void setEditingModelURL(URL editingModelURL) {
+		setEditingModelName(EOModelGroup.getModelNameForURL(editingModelURL));
+	}
+	
+	/**
+	 * Sets the name of the model that is being editing (considered the primary model).
+	 * 
+	 * @param editingModelName the name of the model that is in edit mode
+	 */
+	public void setEditingModelName(String editingModelName) {
+		_editingModelName = editingModelName;
+	}
+	
+	/**
+	 * Returns the name of the model that is being editing (considered the primary model).
+	 * 
+	 * @return the name of the model that is in edit mode
+	 */
+	public String getEditingModelName() {
+		return _editingModelName;
+	}
+	
+	/**
+	 * Returns the model that is being editing (considered the primary model).
+	 * 
+	 * @return the model that is in edit mode
+	 */
 	public EOModel getEditingModel() {
-		EOModel editingModel = null;
-		Iterator<EOModel> modelsIter = _models.iterator();
-		while (editingModel == null && modelsIter.hasNext()) {
-			EOModel model = modelsIter.next();
-			if (model.isEditing()) {
-				editingModel = model;
+		return getModelNamed(_editingModelName);
+	}
+
+	/**
+	 * Returns the model name for the given URL.
+	 * 
+	 * @param url the URL to lookup (could be index.eomodeld file, or .eomodeld folder)
+	 * @return the model name for the given URL
+	 */
+	public static String getModelNameForURL(URL url) {
+		File file = URLUtils.cheatAndTurnIntoFile(url);
+		return EOModelGroup.getModelNameForFile(file);
+	}
+
+	/**
+	 * Returns the model name for the given URL.
+	 * 
+	 * @param url the URL to lookup (could be index.eomodeld file, or .eomodeld folder)
+	 * @return the model name for the given URL
+	 */
+	public static String getModelNameForFile(File file) {
+		String modelName = null;
+		if (file != null) {
+			String fileName = file.getName();
+			if (file.getName().equals("index.eomodeld")) {
+				fileName = file.getParentFile().getName();
 			}
-		}
-		return editingModel;
-	}
-
-	public static String getModelNameFromURL(URL url) {
-		return EOModelGroup.getModelNameFromPath(url.getPath());
-	}
-
-	public static String getModelNameFromPath(String path) {
-		int lastSlashIndex = path.lastIndexOf('/', path.length() - 2);
-		String name = path;
-		if (lastSlashIndex != -1) {
-			name = path.substring(lastSlashIndex + 1);
-		}
-		int dotIndex = name.lastIndexOf('.');
-		String modelName = name;
-		if (dotIndex != -1) {
-			modelName = name.substring(0, dotIndex);
+			if (fileName.endsWith(".eomodeld")) {
+				modelName = fileName.substring(0, fileName.lastIndexOf('.'));
+			}
 		}
 		return modelName;
 	}
@@ -263,7 +297,7 @@ public class EOModelGroup extends EOModelObject<Object> {
 	}
 
 	public EOModel loadModelFromFolder(URL modelFolder, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProject project, IProgressMonitor progressMonitor) throws IOException, EOModelException {
-		String modelName = EOModelGroup.getModelNameFromURL(modelFolder);
+		String modelName = EOModelGroup.getModelNameForURL(modelFolder);
 		progressMonitor.setTaskName("Loading model " + modelName + " ...");
 		EOModel model = getModelNamed(modelName);
 		if (model != null) {
@@ -288,10 +322,6 @@ public class EOModelGroup extends EOModelObject<Object> {
 				} else {
 					model._setModelGroup(this);
 					try {
-						System.out.println("EOModelGroup.loadModelFromFolder: " + _editingModelURL + ", " + modelFolder);
-						if (_editingModelURL == null || modelFolder.equals(_editingModelURL)) {
-							model.setEditing(true);
-						}
 						model.loadFromFolder(modelFolder, _createDefaultDatabaseConfig, failures);
 						addModel(model, failures);
 						reloadModel = false;
