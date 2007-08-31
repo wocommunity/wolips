@@ -200,6 +200,8 @@ public class EOModelTreeViewUpdater {
 					refreshPropertyChangeListeners();
 				} else if (EOModel.ACTIVE_DATABASE_CONFIG.equals(changedPropertyName)) {
 					treeViewer.refresh(true);
+				} else if (EOModel.DIRTY.equals(changedPropertyName)) {
+					treeViewer.refresh(true);
 				}
 			}
 		}

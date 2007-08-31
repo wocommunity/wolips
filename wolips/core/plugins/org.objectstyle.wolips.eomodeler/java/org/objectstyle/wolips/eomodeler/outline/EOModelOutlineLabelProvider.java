@@ -149,6 +149,9 @@ public class EOModelOutlineLabelProvider implements ILabelProvider, IFontProvide
 		} else if (_element instanceof EOModel) {
 			EOModel model = (EOModel) _element;
 			text = model.getName();
+			if (model.isDirty()) {
+				text = text + "*";
+			}
 		} else if (_element instanceof EOEntity) {
 			EOEntity entity = (EOEntity) _element;
 			text = entity.getName();
@@ -260,10 +263,10 @@ public class EOModelOutlineLabelProvider implements ILabelProvider, IFontProvide
 	}
 
 	public Color getForeground(Object element) {
-		EOModel relatedModel = EOModelUtils.getRelatedModel(element);
-		if (relatedModel == null || !relatedModel.isEditing()) {
-			return _treeViewer.getTree().getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY);
-		}
+//		EOModel relatedModel = EOModelUtils.getRelatedModel(element);
+//		if (relatedModel == null || !relatedModel.isEditing()) {
+//			return _treeViewer.getTree().getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY);
+//		}
 		return null;
 	}
 
