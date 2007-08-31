@@ -51,7 +51,6 @@ package org.objectstyle.wolips.eomodeler.editors;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.HashSet;
@@ -427,27 +426,47 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	}
 
 	public void doSave(IProgressMonitor monitor) {
-		if (!myModel.isEditing()) {
-			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), "You cannot save this model because it is read-only.");
-			return;
-		}
+		// if (!myModel.isEditing()) {
+		// ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(),
+		// "You cannot save this model because it is read-only.");
+		// return;
+		// }
 		showBusy(true);
 		try {
 			IEditorInput input = getEditorInput();
 			if (input != null && myModel != null) {
 				Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
-				myModel.verify(failures);
+
+				for (EOModel model : myModel.getModelGroup().getModels()) {
+					if (model.isDirty()) {
+						monitor.beginTask("Checking " + model.getName() + " ...", IProgressMonitor.UNKNOWN);
+						try {
+							model.verify(failures);
+							if (!model.canSave()) {
+								failures.add(new EOModelVerificationFailure(model, "You modified the model '" + model.getName() + "', but you are not able to save it to '" + model.getIndexURL() + "'.", false));
+							}
+						} finally {
+							monitor.done();
+						}
+					}
+				}
+
 				handleModelErrors(failures, false);
 
-				File externalIndexFile = EclipseFileUtils.getExternalIndexFile(myModel);
-				File externalModelFolder = externalIndexFile.getParentFile();
-				System.out.println("EOModelEditor.doSave: saving " + myModel.getName() + " to " + externalModelFolder);
-				myModel.saveToFolder(externalModelFolder.getParentFile());
-				myModel.setDirty(false);
-				
-				IFile eclipseIndexFile = EclipseFileUtils.getEclipseFile(externalIndexFile);
-				if (eclipseIndexFile != null) {
-					eclipseIndexFile.getParent().getParent().refreshLocal(IResource.DEPTH_INFINITE, monitor);
+				for (EOModel model : myModel.getModelGroup().getModels()) {
+					if (model.isDirty() && model.canSave()) {
+						monitor.beginTask("Saving " + model.getName() + " ...", IProgressMonitor.UNKNOWN);
+						try {
+							model.save();
+
+							IFile eclipseIndexFile = EclipseFileUtils.getEclipseFile(myModel.getIndexURL());
+							if (eclipseIndexFile != null) {
+								eclipseIndexFile.getParent().getParent().refreshLocal(IResource.DEPTH_INFINITE, monitor);
+							}
+						} finally {
+							monitor.done();
+						}
+					}
 				}
 			}
 		} catch (Throwable t) {
@@ -494,7 +513,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			}
 
 			URI indexURL = editorInput.getURI();
-			
+
 			String openingEntityName = null;
 			if ("plist".equalsIgnoreCase(URLUtils.getExtension(indexURL))) {
 				String name = URLUtils.getName(indexURL);
@@ -865,17 +884,17 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
 			Object selectedObject = selection.getFirstElement();
 			EOModel model = EOModelUtils.getRelatedModel(selectedObject);
-			if (model == null || model.isEditing()) {
-				setSelection(selection, false);
-				if (mySelectedObject == null) {
-					mySelectedObject = selectedObject;
-				} else if (mySelectedObject == selectedObject) {
-					EOModelEditor.this.doubleClickedObjectInOutline(selectedObject);
-					mySelectedObject = null;
-				} else {
-					mySelectedObject = selectedObject;
-				}
+			// if (model == null || model.isEditing()) {
+			setSelection(selection, false);
+			if (mySelectedObject == null) {
+				mySelectedObject = selectedObject;
+			} else if (mySelectedObject == selectedObject) {
+				EOModelEditor.this.doubleClickedObjectInOutline(selectedObject);
+				mySelectedObject = null;
+			} else {
+				mySelectedObject = selectedObject;
 			}
+			// }
 		}
 	}
 
@@ -1031,7 +1050,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		public AttributeAndRelationshipDeletedRefresher() {
 			super("AttributeAndRelationshipDeleted");
 		}
-		
+
 		public void changeSelection(ISelection selection) {
 			EOModelEditor.this.setSelection(selection);
 		}
