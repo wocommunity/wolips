@@ -114,8 +114,6 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 
 	private boolean myDirty;
 
-	private boolean _editing;
-
 	private URL myModelURL;
 
 	private Set<EOAttribute> myPrototypeAttributeCache;
@@ -229,14 +227,12 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		return entity;
 	}
 
-	public void setEditing(boolean editing) {
-		_editing = editing;
-	}
-
 	public boolean isEditing() {
-		return _editing;
+		EOModelGroup modelGroup = getModelGroup();
+		boolean editing = (modelGroup == null || getName().equals(modelGroup.getEditingModelName()));
+		return editing;
 	}
-
+	
 	public boolean isDirty() {
 		return myDirty;
 	}
@@ -379,7 +375,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		_createReferencingRelationshipsCache(cache);
 		return cache;
 	}
-	
+
 	public void _createReferencingRelationshipsCache(Map<EOAttribute, Set<EORelationship>> cache) {
 		for (EOEntity entity : getEntities()) {
 			for (EORelationship relationship : entity.getRelationships()) {
@@ -782,7 +778,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			if (connectionDictionaryDatabaseConfig == null) {
 				connectionDictionaryDatabaseConfig = tempConnectionDictionaryDatabaseConfig;
 				addDatabaseConfig(connectionDictionaryDatabaseConfig, false, _failures);
-				if (_editing && createMissingDatabaseConfig) {
+				if (canSave() && createMissingDatabaseConfig) {
 					_failures.add(new EOModelVerificationFailure(this, "Creating default database config for model '" + getName() + "'.", true, null));
 				}
 			}
@@ -874,14 +870,87 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 
 		return modelMap;
 	}
+	
+	/**
+	 * Returns the .eomodeld for the given folder. If this is an .eomodeld
+	 * folder, it returns the folder you pass in. Otherwise, it creates a child
+	 * with this model's name.
+	 * 
+	 * @param folder
+	 *            the folder to write to
+	 * @return the corresponding .eomodeld folder
+	 */
+	public File _eomodeldFolderForFolder(File folder) {
+		File modelFolder;
+		if (folder.getName().endsWith(".eomodeld")) {
+			modelFolder = folder;
+		} else {
+			modelFolder = new File(folder, myName + ".eomodeld");
+		}
+		return modelFolder;
+	}
+
+	/**
+	 * Returns true if you are able to write this model to the folder it was loaded from.
+	 * 
+	 * @return true if you are able to save this model
+	 * @throws MalformedURLException if the index URL is invalid
+	 */
+	public boolean canSave() throws MalformedURLException {
+		boolean canSave;
+		URL indexURL = getIndexURL();
+		if (indexURL == null) {
+			canSave = false;
+		}
+		else {
+			File indexFile = URLUtils.cheatAndTurnIntoFile(indexURL);
+			File modelFolder = indexFile.getParentFile();
+			canSave = canSaveToFolder(modelFolder);
+		}
+		return canSave;
+	}
+	
+	/**
+	 * Returns true if you are able to write this model to the given folder.
+	 * 
+	 * @param parentFolder
+	 *            the folder to write the model into
+	 * @return true if you are able to write to the folder
+	 */
+	public boolean canSaveToFolder(File parentFolder) {
+		boolean canSave;
+		File modelFolder = _eomodeldFolderForFolder(parentFolder);
+		if (modelFolder.exists()) {
+			if (modelFolder.isFile()) {
+				canSave = false;
+			} else {
+				canSave = modelFolder.canWrite();
+			}
+		} else {
+			canSave = modelFolder.getParentFile().canWrite();
+		}
+		return canSave;
+	}
+
+	/**
+	 * Saves this model to the same folder it was loaded from.
+	 * 
+	 * @return the .eomodeld folder
+	 * @throws IOException if the model could not be saved
+	 */
+	public File save() throws IOException {
+		URL indexURL = getIndexURL();
+		if (indexURL == null) {
+			throw new IOException("This model has no index file URL.");
+		}
+		File indexFile = URLUtils.cheatAndTurnIntoFile(indexURL);
+		File modelFolder = indexFile.getParentFile();
+		System.out.println("EOModel.save: " + myName + " to " + modelFolder);
+		return saveToFolder(modelFolder.getParentFile());
+	}
 
 	public File saveToFolder(File parentFolder) throws IOException {
-		File modelFolder;
-		if (parentFolder.getName().endsWith(".eomodeld")) {
-			modelFolder = parentFolder;
-		} else {
-			modelFolder = new File(parentFolder, myName + ".eomodeld");
-		}
+		File modelFolder = _eomodeldFolderForFolder(parentFolder);
 		if (!modelFolder.exists()) {
 			if (!modelFolder.mkdirs()) {
 				throw new IOException("Failed to create folder '" + modelFolder + "'.");
@@ -928,6 +997,8 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			File storedProcedureFile = new File(modelFolder, storedProcedureName + ".storedProcedure");
 			storedProcedure.saveToFile(storedProcedureFile);
 		}
+		
+		setDirty(false);
 
 		return modelFolder;
 	}
@@ -949,8 +1020,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		EOModelGroup modelGroup = getModelGroup();
 		if (modelGroup == null) {
 			verificationContext = new VerificationContext(_createReferencingRelationshipsCache());
-		}
-		else {
+		} else {
 			verificationContext = new VerificationContext(modelGroup._createReferencingRelationshipsCache());
 		}
 		verify(_failures, verificationContext);
