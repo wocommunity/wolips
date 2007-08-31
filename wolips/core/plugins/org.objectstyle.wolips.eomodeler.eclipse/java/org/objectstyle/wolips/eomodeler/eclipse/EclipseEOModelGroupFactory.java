@@ -151,7 +151,7 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 			} else {
 				modelContainer = (IContainer) modelResource;
 			}
-			String modelName = EOModelGroup.getModelNameFromPath(modelContainer.getName());
+			String modelName = EOModelGroup.getModelNameForFile(modelContainer.getLocation().toFile());
 			modelGroup = loadModelGroup(project, failures, skipOnDuplicates, modelContainer.getLocation().toFile().toURL(), progressMonitor);
 			model = modelGroup.getModelNamed(modelName);
 		}
