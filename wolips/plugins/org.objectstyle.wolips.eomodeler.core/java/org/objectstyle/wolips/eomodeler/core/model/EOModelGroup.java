@@ -59,28 +59,28 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.objectstyle.wolips.eomodeler.core.utils.URLUtils;
 
 public class EOModelGroup extends EOModelObject<Object> {
 	public static final String MODELS = "models";
 
 	private Set<EOModel> _models;
-	
+
 	private boolean _createDefaultDatabaseConfig;
 
 	private String _editingModelName;
-	
+
 	public EOModelGroup() {
 		_models = new HashSet<EOModel>();
 		_createDefaultDatabaseConfig = true;
 	}
-	
+
 	public void setCreateDefaultDatabaseConfig(boolean createDefaultDatabaseConfig) {
 		_createDefaultDatabaseConfig = createDefaultDatabaseConfig;
 	}
-	
+
 	public boolean isCreateDefaultDatabaseConfig() {
 		return _createDefaultDatabaseConfig;
 	}
@@ -101,6 +101,10 @@ public class EOModelGroup extends EOModelObject<Object> {
 		return _models;
 	}
 
+	public Set<EOModel> getSortedModels() {
+		return new PropertyListSet<EOModel>(_models);
+	}
+
 	public Set<String> getEntityNames() {
 		Set<String> entityNames = new TreeSet<String>();
 		for (EOModel model : _models) {
@@ -117,6 +121,10 @@ public class EOModelGroup extends EOModelObject<Object> {
 			allEntities.addAll(model.getEntities());
 		}
 		return allEntities;
+	}
+
+	public Set<EOEntity> getSortedEntities() {
+		return new PropertyListSet<EOEntity>(getEntities());
 	}
 
 	public String findUnusedEntityName(String _newName) {
@@ -205,32 +213,37 @@ public class EOModelGroup extends EOModelObject<Object> {
 	}
 
 	/**
-	 * Sets the URL of the model that is being editing (considered the primary model).
+	 * Sets the URL of the model that is being editing (considered the primary
+	 * model).
 	 * 
-	 * @param editingModelURL the url of the model that is in edit mode
+	 * @param editingModelURL
+	 *            the url of the model that is in edit mode
 	 */
 	public void setEditingModelURL(URL editingModelURL) {
 		setEditingModelName(EOModelGroup.getModelNameForURL(editingModelURL));
 	}
-	
+
 	/**
-	 * Sets the name of the model that is being editing (considered the primary model).
+	 * Sets the name of the model that is being editing (considered the primary
+	 * model).
 	 * 
-	 * @param editingModelName the name of the model that is in edit mode
+	 * @param editingModelName
+	 *            the name of the model that is in edit mode
 	 */
 	public void setEditingModelName(String editingModelName) {
 		_editingModelName = editingModelName;
 	}
-	
+
 	/**
-	 * Returns the name of the model that is being editing (considered the primary model).
+	 * Returns the name of the model that is being editing (considered the
+	 * primary model).
 	 * 
 	 * @return the name of the model that is in edit mode
 	 */
 	public String getEditingModelName() {
 		return _editingModelName;
 	}
-	
+
 	/**
 	 * Returns the model that is being editing (considered the primary model).
 	 * 
@@ -243,7 +256,9 @@ public class EOModelGroup extends EOModelObject<Object> {
 	/**
 	 * Returns the model name for the given URL.
 	 * 
-	 * @param url the URL to lookup (could be index.eomodeld file, or .eomodeld folder)
+	 * @param url
+	 *            the URL to lookup (could be index.eomodeld file, or .eomodeld
+	 *            folder)
 	 * @return the model name for the given URL
 	 */
 	public static String getModelNameForURL(URL url) {
@@ -254,7 +269,9 @@ public class EOModelGroup extends EOModelObject<Object> {
 	/**
 	 * Returns the model name for the given URL.
 	 * 
-	 * @param url the URL to lookup (could be index.eomodeld file, or .eomodeld folder)
+	 * @param url
+	 *            the URL to lookup (could be index.eomodeld file, or .eomodeld
+	 *            folder)
 	 * @return the model name for the given URL
 	 */
 	public static String getModelNameForFile(File file) {
@@ -271,33 +288,48 @@ public class EOModelGroup extends EOModelObject<Object> {
 		return modelName;
 	}
 
-	public void loadModelsFromFolder(URL folder, Set<EOModelVerificationFailure> failures, IProgressMonitor progressMonitor) throws IOException, EOModelException {
-		loadModelsFromFolder(folder, -1, failures, true, null, progressMonitor);
+	public EOModel loadModelFromURL(URL url) throws IOException, EOModelException {
+		Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
+		EOModel model = loadModelFromURL(url, failures, true, new NullProgressMonitor());
+		if (failures.size() > 0) {
+			throw new EOModelException("Failed to load model from URL '" + url + "': " + failures);
+		}
+		return model;
 	}
 
-	public void loadModelsFromFolder(URL folder, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws IOException, EOModelException {
-		loadModelsFromFolder(folder, -1, failures, skipOnDuplicates, null, progressMonitor);
+	public EOModel loadModelFromURL(URL url, Set<EOModelVerificationFailure> failures) throws IOException, EOModelException {
+		EOModel model = loadModelFromURL(url, failures, true, new NullProgressMonitor());
+		return model;
 	}
 
-	public void loadModelsFromFolder(URL folder, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProject project, IProgressMonitor progressMonitor) throws IOException, EOModelException {
-		loadModelsFromFolder(folder, -1, failures, skipOnDuplicates, project, progressMonitor);
+	public EOModel loadModelFromURL(URL url, Set<EOModelVerificationFailure> failures, IProgressMonitor progressMonitor) throws IOException, EOModelException {
+		EOModel model = loadModelFromURL(url, failures, true, progressMonitor);
+		return model;
 	}
 
-	public void loadModelsFromFolder(URL folder, int maxDepth, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProject project, IProgressMonitor progressMonitor) throws IOException, EOModelException {
-		String path = folder.getPath();
+	public void loadModelsFromURL(URL url, Set<EOModelVerificationFailure> failures, IProgressMonitor progressMonitor) throws IOException, EOModelException {
+		loadModelsFromURL(url, -1, failures, true, progressMonitor);
+	}
+
+	protected void loadModelsFromURL(URL url, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws IOException, EOModelException {
+		loadModelsFromURL(url, -1, failures, skipOnDuplicates, progressMonitor);
+	}
+
+	public void loadModelsFromURL(URL url, int maxDepth, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws IOException, EOModelException {
+		String path = url.getPath();
 		if (path.endsWith(".eomodeld") || path.endsWith(".eomodeld/")) {
-			loadModelFromFolder(folder, failures, skipOnDuplicates, project, progressMonitor);
+			loadModelFromURL(url, failures, skipOnDuplicates, progressMonitor);
 		} else if (maxDepth != 0) {
-			for (URL childURL : URLUtils.getChildren(folder)) {
+			for (URL childURL : URLUtils.getChildren(url)) {
 				if (URLUtils.isFolder(childURL)) {
-					loadModelsFromFolder(childURL, maxDepth - 1, failures, skipOnDuplicates, project, progressMonitor);
+					loadModelsFromURL(childURL, maxDepth - 1, failures, skipOnDuplicates, progressMonitor);
 				}
 			}
 		}
 	}
 
-	public EOModel loadModelFromFolder(URL modelFolder, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProject project, IProgressMonitor progressMonitor) throws IOException, EOModelException {
-		String modelName = EOModelGroup.getModelNameForURL(modelFolder);
+	public EOModel loadModelFromURL(URL modelURL, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws IOException, EOModelException {
+		String modelName = EOModelGroup.getModelNameForURL(modelURL);
 		progressMonitor.setTaskName("Loading model " + modelName + " ...");
 		EOModel model = getModelNamed(modelName);
 		if (model != null) {
@@ -307,14 +339,14 @@ public class EOModelGroup extends EOModelObject<Object> {
 				// model.getIndexURL() + " and " + _folder + ". Skipping " +
 				// _folder + ".", true));
 			} else {
-				failures.add(new EOModelVerificationFailure(model, "The model named '" + modelName + "' exists in " + model.getIndexURL() + " and " + modelFolder + ".", true));
+				failures.add(new EOModelVerificationFailure(model, "The model named '" + modelName + "' exists in " + model.getIndexURL() + " and " + modelURL + ".", true));
 			}
 		}
 		if (!skipOnDuplicates || model == null) {
 			boolean reloadModel = true;
 			while (reloadModel) {
-				model = new EOModel(modelName, project);
-				model.setModelURL(modelFolder);
+				model = new EOModel(modelName);
+				model.setModelURL(modelURL);
 				URL indexURL = model.getIndexURL();
 				if (!URLUtils.exists(indexURL)) {
 					reloadModel = false;
@@ -322,7 +354,7 @@ public class EOModelGroup extends EOModelObject<Object> {
 				} else {
 					model._setModelGroup(this);
 					try {
-						model.loadFromFolder(modelFolder, _createDefaultDatabaseConfig, failures);
+						model.loadFromURL(modelURL, _createDefaultDatabaseConfig, failures);
 						addModel(model, failures);
 						reloadModel = false;
 					} catch (DuplicateEntityNameException e) {
