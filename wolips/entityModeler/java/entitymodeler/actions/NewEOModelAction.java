@@ -77,7 +77,7 @@ public class NewEOModelAction extends Action implements ActionFactory.IWorkbench
         }
 
         try {
-          EOModel model = new EOModel(modelName, null);
+          EOModel model = new EOModel(modelName);
           //model.setEditing(true);
           EODatabaseConfig databaseConfig = new EODatabaseConfig("Default");
           databaseConfig.setAdaptorName("JDBC");
