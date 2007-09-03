@@ -135,7 +135,7 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 				if (model == null) {
 					modelGroup.setEditingModelURL(modelFolder.toURL());
 				}
-				EOModel modelGroupModel = modelGroup.loadModelFromFolder(modelFolder.toURL(), failures, skipOnDuplicates, modelResource.getProject(), progressMonitor);
+				EOModel modelGroupModel = modelGroup.loadModelFromURL(modelFolder.toURL(), failures, skipOnDuplicates, progressMonitor);
 				if (model == null) {
 					model = modelGroupModel;
 				}
@@ -183,7 +183,7 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 						File resourcesFolder = frameworkPath.append("Resources").toFile();
 						if (!searchedFolders.contains(resourcesFolder) && resourcesFolder.exists()) {
 							searchedFolders.add(resourcesFolder);
-							modelGroup.loadModelsFromFolder(resourcesFolder.toURL(), 1, failures, skipOnDuplicates, project, progressMonitor);
+							modelGroup.loadModelsFromURL(resourcesFolder.toURL(), 1, failures, skipOnDuplicates, progressMonitor);
 						}
 					}
 				} else if (entryKind == IClasspathEntry.CPE_PROJECT) {
@@ -274,7 +274,7 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 					_progressMonitor.setTaskName("Scanning " + resource.getName() + " ...");
 					File resourceFile = resource.getLocation().toFile();
 					if (!_searchedFolders.contains(resourceFile) && "eomodeld".equals(resource.getFileExtension())) {
-						_modelGroup.loadModelFromFolder(resourceFile.toURL(), _failures, _skipOnDuplicates, resource.getProject(), _progressMonitor);
+						_modelGroup.loadModelFromURL(resourceFile.toURL(), _failures, _skipOnDuplicates, _progressMonitor);
 						return false;
 					}
 				}

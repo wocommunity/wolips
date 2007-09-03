@@ -19,6 +19,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.eomodeler.core.model.AbstractEOClassLoader;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.utils.URLUtils;
+import org.objectstyle.wolips.eomodeler.utils.EclipseFileUtils;
 import org.objectstyle.wolips.variables.VariablesPlugin;
 
 public class EclipseEOClassLoaderFactory extends AbstractEOClassLoader {
@@ -34,16 +35,23 @@ public class EclipseEOClassLoaderFactory extends AbstractEOClassLoader {
 	
 	@Override
 	protected void fillInModelClasspath(EOModel model, Set<URL> classpathUrls) throws Exception {
-		if (model.getProject() == null) {
+		IProject project = null;
+		IFile eclipseFile = EclipseFileUtils.getEclipseFile(model.getModelURL());
+		if (eclipseFile != null) {
+			project = eclipseFile.getProject();
+		}
+		if (project == null) {
 			URL modelURL = model.getModelURL();
-			IContainer[] modelContainers = ResourcesPlugin.getWorkspace().getRoot().findContainersForLocation(new Path(URLUtils.cheatAndTurnIntoFile(modelURL).getAbsolutePath()));
-			for (int modelContainerNum = 0; modelContainerNum < modelContainers.length; modelContainerNum++) {
-				IContainer modelContainer = modelContainers[modelContainerNum];
-				IProject modelProject = modelContainer.getProject();
-				fillInProjectClasspath(modelProject, classpathUrls);
+			if (modelURL != null) {
+				IContainer[] modelContainers = ResourcesPlugin.getWorkspace().getRoot().findContainersForLocation(new Path(URLUtils.cheatAndTurnIntoFile(modelURL).getAbsolutePath()));
+				for (int modelContainerNum = 0; modelContainerNum < modelContainers.length; modelContainerNum++) {
+					IContainer modelContainer = modelContainers[modelContainerNum];
+					IProject modelProject = modelContainer.getProject();
+					fillInProjectClasspath(modelProject, classpathUrls);
+				}
 			}
 		} else {
-			fillInProjectClasspath(model.getProject(), classpathUrls);
+			fillInProjectClasspath(project, classpathUrls);
 		}
 	}
 
