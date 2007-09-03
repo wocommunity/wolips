@@ -115,6 +115,11 @@
                id="org.objectstyle.wolips.eomodeler.tabs.eomodelUserInfo"
                label="User Info"/>
          <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eomodelUserInfo"
+               category="eomodel"
+               id="org.objectstyle.wolips.eomodeler.tabs.eomodelDocs"
+               label="Docs"/>
+         <propertyTab
                category="eoentity"
                id="org.objectstyle.wolips.eomodeler.tabs.eoentityBasic"
                label="Basic"/>
@@ -139,6 +144,11 @@
                id="org.objectstyle.wolips.eomodeler.tabs.eoentityUserInfo"
                label="User Info"/>
          <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eoentityUserInfo"
+               category="eoentity"
+               id="org.objectstyle.wolips.eomodeler.tabs.eoentityDocs"
+               label="Docs"/>
+         <propertyTab
                category="eoattribute"
                id="org.objectstyle.wolips.eomodeler.tabs.eoattributeBasic"
                label="Basic"/>
@@ -153,6 +163,11 @@
                id="org.objectstyle.wolips.eomodeler.tabs.eoattributeUserInfo"
                label="User Info"/>
          <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eoattributeUserInfo"
+               category="eoattribute"
+               id="org.objectstyle.wolips.eomodeler.tabs.eoattributeDocs"
+               label="Docs"/>
+         <propertyTab
                category="eorelationship"
                id="org.objectstyle.wolips.eomodeler.tabs.eorelationshipBasic"
                label="Basic"/>
@@ -166,6 +181,11 @@
                category="eorelationship"
                id="org.objectstyle.wolips.eomodeler.tabs.eorelationshipUserInfo"
                label="User Info"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eorelationshipUserInfo"
+               category="eorelationship"
+               id="org.objectstyle.wolips.eomodeler.tabs.eorelationshipDocs"
+               label="Docs"/>
          <propertyTab
                category="eofetchspec"
                id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecQualifier"
@@ -201,6 +221,11 @@
                id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecUserInfo"
                label="User Info"/>
          <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecUserInfo"
+               category="eofetchspec"
+               id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecDocs"
+               label="Docs"/>
+         <propertyTab
                category="eostoredprocedure"
                id="org.objectstyle.wolips.eomodeler.tabs.eostoredprocedureBasic"
                label="Basic"/>
@@ -210,6 +235,11 @@
                id="org.objectstyle.wolips.eomodeler.tabs.eostoredprocedureUserInfo"
                label="User Info"/>
          <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eostoredprocedureUserInfo"
+               category="eostoredprocedure"
+               id="org.objectstyle.wolips.eomodeler.tabs.eostoredprocedureDocs"
+               label="Docs"/>
+         <propertyTab
                category="eoargument"
                id="org.objectstyle.wolips.eomodeler.tabs.eoargumentBasic"
                label="Basic"/>
@@ -218,6 +248,11 @@
                category="eoargument"
                id="org.objectstyle.wolips.eomodeler.tabs.eoargumentUserInfo"
                label="User Info"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eoargumentUserInfo"
+               category="eoargument"
+               id="org.objectstyle.wolips.eomodeler.tabs.eoargumentDocs"
+               label="Docs"/>
          <propertyTab
                category="eodatabaseconfig"
                id="org.objectstyle.wolips.eomodeler.tabs.eodatabaseconfigBasic"
@@ -233,6 +268,12 @@
                id="org.objectstyle.wolips.eomodeler.tabs.eoentityIndexUserInfo"
                label="User Info">
          </propertyTab>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eoentityIndexUserInfo"
+               category="eoentityIndex"
+               id="org.objectstyle.wolips.eomodeler.tabs.eoentityIndexDocs"
+               label="Docs">
+         </propertyTab>
       </propertyTabs>
    </extension>
    <extension
@@ -242,6 +283,12 @@
                class="org.objectstyle.wolips.eomodeler.editors.userInfo.UserInfoPropertySection"
                id="org.objectstyle.wolips.eomodeler.sections.eomodelUserInfo"
                tab="org.objectstyle.wolips.eomodeler.tabs.eomodelUserInfo">
+            <input type="org.objectstyle.wolips.eomodeler.core.model.EOModel"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.userInfo.DocumentationPropertySection"
+               id="org.objectstyle.wolips.eomodeler.sections.eomodelDocs"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eomodelDocs">
             <input type="org.objectstyle.wolips.eomodeler.core.model.EOModel"/>
          </propertySection>
          <propertySection
@@ -273,6 +320,12 @@
             <input type="org.objectstyle.wolips.eomodeler.core.model.EOEntity"/>
          </propertySection>
          <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.userInfo.DocumentationPropertySection"
+               id="org.objectstyle.wolips.eomodeler.sections.eoentityDocs"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoentityDocs">
+            <input type="org.objectstyle.wolips.eomodeler.core.model.EOEntity"/>
+         </propertySection>
+         <propertySection
                class="org.objectstyle.wolips.eomodeler.editors.attribute.EOAttributeBasicEditorSection"
                enablesFor="1"
                id="org.objectstyle.wolips.eomodeler.sections.eoattributeBasic"
@@ -297,6 +350,12 @@
             <input type="org.objectstyle.wolips.eomodeler.core.model.EOAttributePath"/>
          </propertySection>
          <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.userInfo.DocumentationPropertySection"
+               id="org.objectstyle.wolips.eomodeler.sections.eoattributeDocs"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoattributeDocs">
+            <input type="org.objectstyle.wolips.eomodeler.core.model.EOAttribute"/>
+         </propertySection>
+         <propertySection
                class="org.objectstyle.wolips.eomodeler.editors.relationship.EORelationshipBasicEditorSection"
                enablesFor="1"
                id="org.objectstyle.wolips.eomodeler.sections.eorelationshipBasic"
@@ -319,6 +378,12 @@
                tab="org.objectstyle.wolips.eomodeler.tabs.eorelationshipUserInfo">
             <input type="org.objectstyle.wolips.eomodeler.core.model.EORelationship"/>
             <input type="org.objectstyle.wolips.eomodeler.core.model.EORelationshipPath"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.userInfo.DocumentationPropertySection"
+               id="org.objectstyle.wolips.eomodeler.sections.eorelationshipDocs"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eorelationshipDocs">
+            <input type="org.objectstyle.wolips.eomodeler.core.model.EORelationship"/>
          </propertySection>
          <propertySection
                class="org.objectstyle.wolips.eomodeler.editors.fetchspec.EOFetchSpecQualifierEditorSection"
@@ -370,6 +435,12 @@
             <input type="org.objectstyle.wolips.eomodeler.core.model.EOFetchSpecification"/>
          </propertySection>
          <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.userInfo.DocumentationPropertySection"
+               id="org.objectstyle.wolips.eomodeler.sections.eofetchspecDocs"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecDocs">
+            <input type="org.objectstyle.wolips.eomodeler.core.model.EOFetchSpecification"/>
+         </propertySection>
+         <propertySection
                class="org.objectstyle.wolips.eomodeler.editors.storedProcedure.EOStoredProcedureBasicEditorSection"
                enablesFor="1"
                id="org.objectstyle.wolips.eomodeler.sections.eostoredprocedureBasic"
@@ -384,6 +455,12 @@
             <input type="org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure"/>
          </propertySection>
          <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.userInfo.DocumentationPropertySection"
+               id="org.objectstyle.wolips.eomodeler.sections.eostoredprocedureDocs"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eostoredprocedureDocs">
+            <input type="org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure"/>
+         </propertySection>
+         <propertySection
                class="org.objectstyle.wolips.eomodeler.editors.attribute.EOArgumentBasicEditorSection"
                enablesFor="1"
                id="org.objectstyle.wolips.eomodeler.sections.eoargumentBasic"
@@ -395,6 +472,12 @@
                enablesFor="1"
                id="org.objectstyle.wolips.eomodeler.sections.eoargumentUserInfo"
                tab="org.objectstyle.wolips.eomodeler.tabs.eoargumentUserInfo">
+            <input type="org.objectstyle.wolips.eomodeler.core.model.EOArgument"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.userInfo.DocumentationPropertySection"
+               id="org.objectstyle.wolips.eomodeler.sections.eoargumentDocs"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoargumentDocs">
             <input type="org.objectstyle.wolips.eomodeler.core.model.EOArgument"/>
          </propertySection>
          <propertySection
@@ -423,6 +506,12 @@
                enablesFor="1"
                id="org.objectstyle.wolips.eomodeler.sections.eoentityIndexUserInfo"
                tab="org.objectstyle.wolips.eomodeler.tabs.eoentityIndexUserInfo">
+            <input type="org.objectstyle.wolips.eomodeler.core.model.EOEntityIndex"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.userInfo.DocumentationPropertySection"
+               id="org.objectstyle.wolips.eomodeler.sections.eoindexDocs"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoindexDocs">
             <input type="org.objectstyle.wolips.eomodeler.core.model.EOEntityIndex"/>
          </propertySection>
       </propertySections>
