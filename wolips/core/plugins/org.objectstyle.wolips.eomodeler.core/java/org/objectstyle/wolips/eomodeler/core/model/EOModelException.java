@@ -50,11 +50,11 @@
 package org.objectstyle.wolips.eomodeler.core.model;
 
 public class EOModelException extends Exception {
-	public EOModelException(String _message) {
-		this(_message, null);
+	public EOModelException(String message) {
+		this(message, null);
 	}
 
-	public EOModelException(String _message, Throwable _throwable) {
-		super(_message, _throwable);
+	public EOModelException(String message, Throwable throwable) {
+		super(message, throwable);
 	}
 }

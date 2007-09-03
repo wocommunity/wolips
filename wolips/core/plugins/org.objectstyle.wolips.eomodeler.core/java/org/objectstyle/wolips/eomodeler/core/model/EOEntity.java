@@ -837,7 +837,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public Set<EOEntity> getChildrenEntities() {
-		Set<EOEntity> children = new HashSet<EOEntity>();
+		Set<EOEntity> children = new PropertyListSet<EOEntity>();
 		if (myModel != null) {
 			for (EOModel model : getModel().getModelGroup().getModels()) {
 				for (EOEntity entity : model.getEntities()) {
@@ -963,6 +963,10 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		return myAttributes;
 	}
 
+	public Set<EOAttribute> getSortedAttributes() {
+		return new PropertyListSet<EOAttribute>(myAttributes);
+	}
+
 	public String[] getAttributeNames() {
 		Set<EOAttribute> attributes = getAttributes();
 		String[] attributeNames = new String[attributes.size()];
@@ -979,12 +983,24 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		return myRelationships;
 	}
 
+	public Set<EORelationship> getSortedRelationships() {
+		return new PropertyListSet<EORelationship>(myRelationships);
+	}
+
 	public Set<EOFetchSpecification> getFetchSpecs() {
 		return myFetchSpecs;
 	}
 
+	public Set<EOFetchSpecification> getSortedFetchSpecs() {
+		return new PropertyListSet<EOFetchSpecification>(myFetchSpecs);
+	}
+
 	public Set<EOEntityIndex> getEntityIndexes() {
 		return myEntityIndexes;
+	}
+
+	public Set<EOEntityIndex> getSortedEntityIndex() {
+		return new PropertyListSet<EOEntityIndex>(myEntityIndexes);
 	}
 
 	public String findUnusedAttributeName(String _newName) {

@@ -49,9 +49,9 @@ public abstract class AbstractManifestEOModelGroupFactory implements IEOModelGro
 			modelGroup.setEditingModelURL(selectedModelFolder.toURL());
 			List<ManifestSearchFolder> searchFolders = getSearchFolders(selectedModelFolder);
 			for (ManifestSearchFolder searchFolder : searchFolders) {
-				modelGroup.loadModelsFromFolder(searchFolder.getFolder().toURL(), searchFolder.getDepth(), failures, skipOnDuplicates, null, progressMonitor);
+				modelGroup.loadModelsFromURL(searchFolder.getFolder().toURL(), searchFolder.getDepth(), failures, skipOnDuplicates, progressMonitor);
 			}
-			EOModel model = modelGroup.loadModelFromFolder(selectedModelFolder.toURL(), failures, skipOnDuplicates, null, progressMonitor);
+			EOModel model = modelGroup.loadModelFromURL(selectedModelFolder.toURL(), failures, skipOnDuplicates, progressMonitor);
 			modelGroup.resolve(failures);
 			modelGroup.verify(failures);
 			return model;
@@ -65,7 +65,7 @@ public abstract class AbstractManifestEOModelGroupFactory implements IEOModelGro
 			EOModelGroup modelGroup = new EOModelGroup();
 			List<ManifestSearchFolder> searchFolders = getSearchFolders(null);
 			for (ManifestSearchFolder searchFolder : searchFolders) {
-				modelGroup.loadModelsFromFolder(searchFolder.getFolder().toURL(), searchFolder.getDepth(), failures, skipOnDuplicates, null, progressMonitor);
+				modelGroup.loadModelsFromURL(searchFolder.getFolder().toURL(), searchFolder.getDepth(), failures, skipOnDuplicates, progressMonitor);
 			}
 			modelGroup.resolve(failures);
 			modelGroup.verify(failures);

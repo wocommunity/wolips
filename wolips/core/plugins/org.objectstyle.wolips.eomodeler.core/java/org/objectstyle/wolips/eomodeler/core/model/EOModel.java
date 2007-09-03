@@ -60,14 +60,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.eclipse.core.resources.IProject;
 import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.URLUtils;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 
-public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements IUserInfoable, ISortableEOModelObject {
-	public static final String ENTITY_MODELER_KEY = "_EntityModeler";
-
+public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements ISortableEOModelObject {
 	public static final String DIRTY = "dirty";
 
 	public static final String ENTITY = "entity";
@@ -118,9 +115,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 
 	private Set<EOAttribute> myPrototypeAttributeCache;
 
-	private IProject _project;
-
-	public EOModel(String _name, IProject project) {
+	public EOModel(String _name) {
 		myName = _name;
 		myEntities = new PropertyListSet<EOEntity>();
 		myStoredProcedures = new PropertyListSet<EOStoredProcedure>();
@@ -130,11 +125,20 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		myDatabaseConfigs = new PropertyListSet<EODatabaseConfig>();
 		myVersion = "2.1";
 		myModelMap = new EOModelMap();
-		_project = project;
 	}
 
-	public IProject getProject() {
-		return _project;
+	public EOModel(URL modelURL) throws EOModelException, IOException {
+		this(EOModelGroup.getModelNameForURL(modelURL));
+		Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
+		loadFromURL(modelURL, failures);
+		if (failures.size() > 0) {
+			throw new EOModelException("Failed to load model from URL '" + modelURL + "': " + failures);
+		}
+	}
+
+	public EOModel(URL modelURL, Set<EOModelVerificationFailure> failures) throws EOModelException, IOException {
+		this(EOModelGroup.getModelNameForURL(modelURL));
+		loadFromURL(modelURL, failures);
 	}
 
 	protected void _storedProcedureChanged(EOStoredProcedure _storedProcedure, String _propertyName, Object _oldValue, Object _newValue) {
@@ -440,6 +444,10 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		return myEntities;
 	}
 
+	public Set<EOEntity> getSortedEntities() {
+		return new PropertyListSet<EOEntity>(myEntities);
+	}
+
 	public EOEntity _getEntityNamedAndCheckModelGroup(String newName) {
 		EOEntity entity = myModelGroup.getEntityNamed(newName);
 		if (entity == null) {
@@ -493,9 +501,9 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 
 	public Set importEntitiesFromModel(URL sourceModelURL, Set<EOModelVerificationFailure> failures) throws EOModelException, IOException {
 		EOModelGroup sourceModelGroup = new EOModelGroup();
-		EOModel sourceModel = new EOModel("Temp", null);
+		EOModel sourceModel = new EOModel("Temp");
 		sourceModelGroup.addModel(sourceModel);
-		sourceModel.loadFromFolder(sourceModelURL, false, failures);
+		sourceModel.loadFromURL(sourceModelURL, false, failures);
 		sourceModel.resolve(failures);
 		sourceModel.resolveFlattened(failures);
 		return importEntitiesFromModel(sourceModel, failures);
@@ -647,6 +655,10 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		return myStoredProcedures;
 	}
 
+	public Set<EOStoredProcedure> getSortedStoredProcedures() {
+		return new PropertyListSet<EOStoredProcedure>(myStoredProcedures);
+	}
+
 	public EOStoredProcedure getStoredProcedureNamed(String _name) {
 		EOStoredProcedure matchingStoredProcedure = null;
 		Iterator<EOStoredProcedure> storedProceduresIter = myStoredProcedures.iterator();
@@ -677,7 +689,11 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		return indexURL;
 	}
 
-	public void loadFromFolder(URL _modelFolder, boolean createMissingDatabaseConfig, Set<EOModelVerificationFailure> _failures) throws EOModelException, IOException {
+	public void loadFromURL(URL modelURL, Set<EOModelVerificationFailure> failures) throws EOModelException, IOException {
+		loadFromURL(modelURL, true, failures);
+	}
+
+	public void loadFromURL(URL _modelFolder, boolean createMissingDatabaseConfig, Set<EOModelVerificationFailure> _failures) throws EOModelException, IOException {
 		URL indexURL = new URL(_modelFolder, "index.eomodeld");
 		// if (!indexURL.exists()) {
 		// throw new EOModelException(indexURL + " does not exist.");
@@ -744,7 +760,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			}
 		}
 
-		EOModelMap entityModelerMap = new EOModelMap((Map) getUserInfo().get(EOModel.ENTITY_MODELER_KEY));
+		EOModelMap entityModelerMap = new EOModelMap((Map) getUserInfo().get(UserInfoableEOModelObject.ENTITY_MODELER_KEY));
 		Map<String, Map> databaseConfigs = entityModelerMap.getMap("databaseConfigs");
 		if (databaseConfigs != null) {
 			for (Map.Entry<String, Map> databaseConfigEntry : databaseConfigs.entrySet()) {
@@ -849,7 +865,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		}
 		modelMap.setSet("storedProcedures", storedProcedures, true);
 
-		EOModelMap entityModelerMap = new EOModelMap((Map) getUserInfo().get(EOModel.ENTITY_MODELER_KEY));
+		EOModelMap entityModelerMap = new EOModelMap((Map) getUserInfo().get(UserInfoableEOModelObject.ENTITY_MODELER_KEY));
 		if (myActiveDatabaseConfig == null) {
 			entityModelerMap.remove("activeDatabaseConfigName");
 		} else {
@@ -861,9 +877,9 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		}
 		entityModelerMap.setMap("databaseConfigs", databaseConfigs, true);
 		if (entityModelerMap.isEmpty()) {
-			getUserInfo().remove(EOModel.ENTITY_MODELER_KEY);
+			getUserInfo().remove(UserInfoableEOModelObject.ENTITY_MODELER_KEY);
 		} else {
-			getUserInfo().put(EOModel.ENTITY_MODELER_KEY, entityModelerMap);
+			getUserInfo().put(UserInfoableEOModelObject.ENTITY_MODELER_KEY, entityModelerMap);
 		}
 
 		writeUserInfo(modelMap);

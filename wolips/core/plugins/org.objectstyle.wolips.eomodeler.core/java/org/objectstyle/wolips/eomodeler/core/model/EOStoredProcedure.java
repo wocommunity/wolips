@@ -265,6 +265,10 @@ public class EOStoredProcedure extends UserInfoableEOModelObject<EOModel> implem
 		return myArguments;
 	}
 
+	public List<EOArgument> getSortedArguments() {
+		return myArguments;
+	}
+
 	public void loadFromMap(EOModelMap _map, Set<EOModelVerificationFailure> _failures) throws EOModelException {
 		myStoredProcedureMap = _map;
 		myName = _map.getString("name", true);

@@ -111,11 +111,16 @@ public class URLUtils {
 
 	public static File cheatAndTurnIntoFile(URL url) {
 		File f;
-		String protocol = url.getProtocol();
-		if ("file".equals(protocol)) {
-			f = new File(url.getPath());
-		} else {
-			throw new IllegalArgumentException(url + " is not a File.");
+		if (url == null) {
+			f = null;
+		}
+		else {
+			String protocol = url.getProtocol();
+			if ("file".equals(protocol)) {
+				f = new File(url.getPath());
+			} else {
+				throw new IllegalArgumentException(url + " is not a File.");
+			}
 		}
 		return f;
 	}
