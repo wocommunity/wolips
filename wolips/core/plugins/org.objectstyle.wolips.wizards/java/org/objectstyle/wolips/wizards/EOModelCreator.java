@@ -172,12 +172,12 @@ public class EOModelCreator implements IRunnableWithProgress {
 			errors.open();
 		}
 
-		EOModel model = new EOModel(_modelName, _parentResource.getProject());
-		model.setEditing(true);
+		EOModel model = new EOModel(_modelName);
 		EODatabaseConfig databaseConfig = new EODatabaseConfig("Default");
 		databaseConfig.setAdaptorName(_adaptorName);
 		model.addDatabaseConfig(databaseConfig);
 		modelGroup.addModel(model);
+		modelGroup.setEditingModelName(_modelName);
 
 		File modelFolderFile = model.saveToFolder(parentContainer.getLocation().toFile());
 		IFolder modelFolder = parentContainer.getFolder(new Path(modelFolderFile.getName()));
