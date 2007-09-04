@@ -110,26 +110,26 @@
             objectClass="org.eclipse.core.resources.IFile"
             adaptable="true"
             nameFilter="*.wod"
-            id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
+            id="org.objectstyle.wolips.ui.actions.OpenSourceActionContribution">
          <action
                label="Open .java"
                class="org.objectstyle.wolips.ui.actions.OpenSourceAction"
                menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group0"
                enablesFor="1"
-               id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
+               id="org.objectstyle.wolips.ui.actions.OpenSourceFromWodAction">
          </action>
       </objectContribution>
       <objectContribution
             objectClass="org.eclipse.core.resources.IContainer"
             adaptable="true"
             nameFilter="*.wo"
-            id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
+            id="org.objectstyle.wolips.ui.actions.OpenSourceActionContribution">
          <action
                label="Open .java"
                class="org.objectstyle.wolips.ui.actions.OpenSourceAction"
                menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group0"
                enablesFor="1"
-               id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
+               id="org.objectstyle.wolips.ui.actions.OpenSourceFromWoAction">
          </action>
       </objectContribution>
       <objectContribution
