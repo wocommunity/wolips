@@ -162,42 +162,47 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 		if (!searchedProjects.contains(project)) {
 			progressMonitor.setTaskName("Adding models from " + project.getName() + " ...");
 			searchedProjects.add(project);
-			boolean visitedProject = false;
-			IJavaProject javaProject = JavaCore.create(project);
-			IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
-			for (int classpathEntryNum = 0; classpathEntryNum < classpathEntries.length; classpathEntryNum++) {
-				IClasspathEntry entry = classpathEntries[classpathEntryNum];
-				int entryKind = entry.getEntryKind();
-				if (entryKind == IClasspathEntry.CPE_LIBRARY) {
-					IPath path = entry.getPath();
-					IPath frameworkPath = null;
-					while (frameworkPath == null && path.lastSegment() != null) {
-						String lastSegment = path.lastSegment();
-						if (lastSegment != null && lastSegment.endsWith(".framework")) {
-							frameworkPath = path;
-						} else {
-							path = path.removeLastSegments(1);
+			if (!project.exists()) {
+				failures.add(new EOModelVerificationFailure(null, "The dependent project '" + project.getName() + "' does not exist.", false));
+			}
+			else {
+				boolean visitedProject = false;
+				IJavaProject javaProject = JavaCore.create(project);
+				IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
+				for (int classpathEntryNum = 0; classpathEntryNum < classpathEntries.length; classpathEntryNum++) {
+					IClasspathEntry entry = classpathEntries[classpathEntryNum];
+					int entryKind = entry.getEntryKind();
+					if (entryKind == IClasspathEntry.CPE_LIBRARY) {
+						IPath path = entry.getPath();
+						IPath frameworkPath = null;
+						while (frameworkPath == null && path.lastSegment() != null) {
+							String lastSegment = path.lastSegment();
+							if (lastSegment != null && lastSegment.endsWith(".framework")) {
+								frameworkPath = path;
+							} else {
+								path = path.removeLastSegments(1);
+							}
 						}
-					}
-					if (frameworkPath != null) {
-						File resourcesFolder = frameworkPath.append("Resources").toFile();
-						if (!searchedFolders.contains(resourcesFolder) && resourcesFolder.exists()) {
-							searchedFolders.add(resourcesFolder);
-							modelGroup.loadModelsFromURL(resourcesFolder.toURL(), 1, failures, skipOnDuplicates, progressMonitor);
+						if (frameworkPath != null) {
+							File resourcesFolder = frameworkPath.append("Resources").toFile();
+							if (!searchedFolders.contains(resourcesFolder) && resourcesFolder.exists()) {
+								searchedFolders.add(resourcesFolder);
+								modelGroup.loadModelsFromURL(resourcesFolder.toURL(), 1, failures, skipOnDuplicates, progressMonitor);
+							}
 						}
+					} else if (entryKind == IClasspathEntry.CPE_PROJECT) {
+						IPath path = entry.getPath();
+						IProject dependsOnProject = ResourcesPlugin.getWorkspace().getRoot().getProject(path.lastSegment());
+						addModelsFromProject(modelGroup, dependsOnProject, searchedFolders, searchedProjects, failures, skipOnDuplicates, editingModelURL, progressMonitor);
+					} else if (entryKind == IClasspathEntry.CPE_SOURCE) {
+						visitedProject = true;
+						project.accept(new ModelVisitor(modelGroup, searchedFolders, failures, skipOnDuplicates, progressMonitor), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
 					}
-				} else if (entryKind == IClasspathEntry.CPE_PROJECT) {
-					IPath path = entry.getPath();
-					IProject dependsOnProject = ResourcesPlugin.getWorkspace().getRoot().getProject(path.lastSegment());
-					addModelsFromProject(modelGroup, dependsOnProject, searchedFolders, searchedProjects, failures, skipOnDuplicates, editingModelURL, progressMonitor);
-				} else if (entryKind == IClasspathEntry.CPE_SOURCE) {
-					visitedProject = true;
+				}
+	
+				if (!visitedProject) {
 					project.accept(new ModelVisitor(modelGroup, searchedFolders, failures, skipOnDuplicates, progressMonitor), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
 				}
-			}
-
-			if (!visitedProject) {
-				project.accept(new ModelVisitor(modelGroup, searchedFolders, failures, skipOnDuplicates, progressMonitor), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
 			}
 		}
 	}
