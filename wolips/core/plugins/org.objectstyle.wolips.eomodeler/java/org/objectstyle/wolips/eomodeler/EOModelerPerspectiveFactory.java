@@ -52,6 +52,7 @@ package org.objectstyle.wolips.eomodeler;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
+import org.objectstyle.wolips.eomodeler.outline.EOModelOutline;
 
 public class EOModelerPerspectiveFactory implements IPerspectiveFactory {
 	public static final String EOMODELER_PERSPECTIVE_ID = "org.objectstyle.wolips.eomodeler.EOModelerPerspective";
@@ -60,7 +61,7 @@ public class EOModelerPerspectiveFactory implements IPerspectiveFactory {
 		String editorArea = _layout.getEditorArea();
 
 		IFolderLayout topLeft = _layout.createFolder("left", IPageLayout.LEFT, 0.45f, editorArea);
-		topLeft.addView(IPageLayout.ID_OUTLINE);
+		topLeft.addView(EOModelOutline.ID_OUTLINE);
 		// topLeft.addView("org.eclipse.jdt.ui.PackageExplorer");
 
 		IFolderLayout bottomRight = _layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.50f, "left");
