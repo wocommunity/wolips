@@ -708,5 +708,15 @@
             id="org.objectstyle.wolips.eomodeler.preferences.EOModelPreferencePage"
             name="Entity Modeler"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            class="org.objectstyle.wolips.eomodeler.outline.EOModelOutline"
+            icon="icons/eoModel.png"
+            id="org.objectstyle.wolips.eomodeler.outline.EOModelOutline"
+            name="EOModel Outline">
+      </view>
+   </extension>
 
 </plugin>
