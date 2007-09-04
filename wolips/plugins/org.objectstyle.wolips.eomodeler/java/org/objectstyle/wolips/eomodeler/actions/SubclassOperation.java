@@ -10,12 +10,15 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.model.InheritanceType;
 
 public class SubclassOperation extends AbstractOperation {
 	private EOEntity _parentEntity;
+	
+	private EOModel _destinationModel;
 
 	private EOEntity _subclassEntity;
 
@@ -25,10 +28,11 @@ public class SubclassOperation extends AbstractOperation {
 
 	private String _restrictingQualifier;
 
-	public SubclassOperation(EOEntity parentEntity, InheritanceType inheritanceType, String entityName, String restrictingQualifier) {
+	public SubclassOperation(EOEntity parentEntity, InheritanceType inheritanceType, EOModel destinationModel, String entityName, String restrictingQualifier) {
 		super("Subclass " + parentEntity.getName());
 		_parentEntity = parentEntity;
 		_inheritanceType = inheritanceType;
+		_destinationModel = destinationModel;
 		_entityName = entityName;
 		_restrictingQualifier = restrictingQualifier;
 	}
@@ -38,7 +42,7 @@ public class SubclassOperation extends AbstractOperation {
 		try {
 			_subclassEntity = _parentEntity.subclass(_entityName, _inheritanceType);
 			_subclassEntity.setRestrictingQualifier(_restrictingQualifier);
-			_parentEntity.getModel().getModelGroup().getEditingModel().addEntity(_subclassEntity);
+			_destinationModel.addEntity(_subclassEntity);
 			return Status.OK_STATUS;
 		} catch (EOModelException e) {
 			throw new ExecutionException("Failed to subclass entity.", e);

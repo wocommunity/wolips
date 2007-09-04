@@ -105,7 +105,7 @@ public class SubclassEntityAction implements IWorkbenchWindowActionDelegate, IOb
 
 	public void run(IAction action) {
 		if (_model != null) {
-			SubclassEntityDialog dialog = new SubclassEntityDialog(_window.getShell(), _model, _entity);
+			SubclassEntityDialog dialog = new SubclassEntityDialog(_window.getShell(), _model, _entity, _model.getModelGroup().getEditingModel());
 			dialog.setBlockOnOpen(true);
 			int results = dialog.open();
 			if (results == Window.OK) {
@@ -115,7 +115,8 @@ public class SubclassEntityAction implements IWorkbenchWindowActionDelegate, IOb
 						EOEntity parentEntity = dialog.getParentEntity();
 						InheritanceType inheritanceType = dialog.getInheritanceType();
 						String restrictingQualifier = dialog.getRestrictingQualifier();
-						SubclassOperation operation = new SubclassOperation(parentEntity, inheritanceType, entityName, restrictingQualifier);
+						EOModel destinationModel = dialog.getDestinationModel();
+						SubclassOperation operation = new SubclassOperation(parentEntity, inheritanceType, destinationModel, entityName, restrictingQualifier);
 						operation.addContext(EOModelUtils.getUndoContext(_model));
 						IOperationHistory operationHistory = PlatformUI.getWorkbench().getOperationSupport().getOperationHistory();
 						operationHistory.execute(operation, null, null);
