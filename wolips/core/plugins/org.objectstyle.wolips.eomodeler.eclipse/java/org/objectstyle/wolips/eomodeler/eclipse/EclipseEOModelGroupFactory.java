@@ -165,6 +165,9 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 			if (!project.exists()) {
 				failures.add(new EOModelVerificationFailure(null, "The dependent project '" + project.getName() + "' does not exist.", false));
 			}
+			else if (!project.isOpen()) {
+				failures.add(new EOModelVerificationFailure(null, "The dependent project '" + project.getName() + "' exists but is not open.", false));
+			}
 			else {
 				boolean visitedProject = false;
 				IJavaProject javaProject = JavaCore.create(project);
