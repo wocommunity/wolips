@@ -187,7 +187,12 @@ public abstract class InsertHtmlAndWodAction extends AbstractTemplateAction {
 								}
 	
 								if (selectionStartedInIndent) {
-									teDoc.replace(startLineRegion.getOffset() + indentText.length(), 0, startTag);
+									if (indentText.length() == 0) {
+										teDoc.replace(startLineRegion.getOffset() - 1, 0, startTag);
+									}
+									else {
+										teDoc.replace(startLineRegion.getOffset() + indentText.length(), 0, startTag);
+									}
 								} else {
 									teDoc.replace(selectionStartOffset, 0, startTag);
 								}
