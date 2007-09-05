@@ -143,6 +143,11 @@ public class WodParserCache implements FuzzyXMLErrorListener {
     clearCache();
   }
 
+  public WodParserCache() throws CoreException, LocateException {
+    _undoManager = new TextViewerUndoManager(25);
+    clearCache();
+  }
+
   public IUndoManager getUndoManager() {
     return _undoManager;
   }
@@ -158,6 +163,21 @@ public class WodParserCache implements FuzzyXMLErrorListener {
 
   public IJavaProject getJavaProject() {
     return _javaProject;
+  }
+  
+  // MS: This is not a complete clone at the moment ... I just needed a 
+  // partial clone for preview.
+  public WodParserCache cloneCache() throws CoreException, LocateException {
+    WodParserCache cache = new WodParserCache();
+    cache._componentsLocateResults = _componentsLocateResults;
+    cache._javaProject = _javaProject;
+    cache._project = _project;
+    cache._componentType = _componentType;
+    cache._woFolder = _woFolder;
+    cache._htmlFile = _htmlFile;
+    cache._wodFile = _wodFile;
+    cache._apiFile = _apiFile;
+    return cache;
   }
 
   public void _clearHtmlCache() {
@@ -183,13 +203,15 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   }
 
   public void clearLocateResultsCache() throws CoreException, LocateException {
-    _componentsLocateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(_woFolder);
-    _project = _woFolder.getProject();
-    _javaProject = JavaCore.create(_project);
-    _htmlFile = _componentsLocateResults.getFirstHtmlFile();
-    _wodFile = _componentsLocateResults.getFirstWodFile();
-    _apiFile = _componentsLocateResults.getDotApi(true);
-    _componentType = _componentsLocateResults.getDotJavaType();
+    if (_woFolder != null) {
+      _componentsLocateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(_woFolder);
+      _project = _woFolder.getProject();
+      _javaProject = JavaCore.create(_project);
+      _htmlFile = _componentsLocateResults.getFirstHtmlFile();
+      _wodFile = _componentsLocateResults.getFirstWodFile();
+      _apiFile = _componentsLocateResults.getDotApi(true);
+      _componentType = _componentsLocateResults.getDotJavaType();
+    }
   }
 
   public void clearCache() throws CoreException, LocateException {
@@ -320,6 +342,16 @@ public class WodParserCache implements FuzzyXMLErrorListener {
         _lastHtmlParseTime = _htmlFile.getModificationStamp();
         _htmlDocumentChanged = false;
       }
+      else if (_htmlContents != null) {
+        _htmlContents = _htmlContents.replaceAll("\r\n", " \n");
+        _htmlContents = _htmlContents.replaceAll("\r", "\n");
+
+        FuzzyXMLParser parser = new FuzzyXMLParser(Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.WO54_KEY));
+        parser.addErrorListener(this);
+        _htmlXmlDocument = parser.parse(_htmlContents);
+        _lastHtmlParseTime = System.currentTimeMillis();
+        _htmlDocumentChanged = false;
+      }
       else {
         _htmlXmlDocument = null;
         _htmlContents = null;
@@ -424,6 +456,14 @@ public class WodParserCache implements FuzzyXMLErrorListener {
     return _htmlXmlDocument;
   }
 
+  public void setHtmlContents(String htmlContents) {
+    _htmlContents = htmlContents;
+    _htmlXmlDocument = null;
+    _htmlFile = null;
+    _htmlDocument = null;
+    _htmlDocumentChanged = true;
+  }
+  
   public String getHtmlContents() {
     return _htmlContents;
   }

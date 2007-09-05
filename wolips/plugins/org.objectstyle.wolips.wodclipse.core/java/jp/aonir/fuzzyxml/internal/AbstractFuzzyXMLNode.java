@@ -106,7 +106,10 @@ public abstract class AbstractFuzzyXMLNode implements FuzzyXMLNode {
 
   public String toXMLString(RenderContext renderContext) {
     StringBuffer xmlBuffer = new StringBuffer();
-    toXMLString(renderContext, xmlBuffer);
+    RenderDelegate delegate = renderContext.getDelegate();
+    if (delegate == null || delegate.renderNode(this, renderContext, xmlBuffer)) {
+      toXMLString(renderContext, xmlBuffer);
+    }
     return xmlBuffer.toString();
   }
 }

@@ -67,6 +67,10 @@ public class WodProblem {
   }
 
   public IMarker createMarker(IFile file) {
+    if (file == null) {
+      return null;
+    }
+    
     Position problemPosition = getPosition();
 
     // String type = "org.eclipse.ui.workbench.texteditor.error";

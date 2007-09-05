@@ -94,6 +94,18 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
     return _bindings;
   }
 
+  public IWodBinding getBindingNamed(String name) {
+    IWodBinding matchingBinding = null;
+    Iterator<IWodBinding> wodBindingsIter = _bindings.iterator();
+    while (matchingBinding == null && wodBindingsIter.hasNext()) {
+      IWodBinding wodBinding = wodBindingsIter.next();
+      if (name.equals(wodBinding.getName())) {
+        matchingBinding = wodBinding;
+      }
+    }
+    return matchingBinding;
+  }
+
   public Map<String, Object> getBindingsMap() {
     Map<String, Object> bindingsMap = new HashMap<String, Object>();
     Iterator<IWodBinding> bindingsIter = _bindings.iterator();
