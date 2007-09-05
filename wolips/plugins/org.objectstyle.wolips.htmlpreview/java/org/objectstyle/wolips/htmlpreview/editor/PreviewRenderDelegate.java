@@ -133,8 +133,8 @@ public class PreviewRenderDelegate implements RenderDelegate {
 					} else if ("WOGenericContainer".equals(elementTypeName)) {
 						IWodBinding elementNameBinding = wodElement.getBindingNamed("elementName");
 						String elementName;
-						if (elementNameBinding != null) {
-							elementName = elementNameBinding.getValue();
+						if (elementNameBinding != null && !elementNameBinding.isKeyPath()) {
+							elementName = elementNameBinding.getValue().replaceAll("\"", "");
 						} else {
 							elementName = "div";
 						}
@@ -144,8 +144,8 @@ public class PreviewRenderDelegate implements RenderDelegate {
 					} else if ("WOGenericElement".equals(elementTypeName)) {
 						IWodBinding elementNameBinding = wodElement.getBindingNamed("elementName");
 						String elementName;
-						if (elementNameBinding != null) {
-							elementName = elementNameBinding.getValue();
+						if (elementNameBinding != null && !elementNameBinding.isKeyPath()) {
+							elementName = elementNameBinding.getValue().replaceAll("\"", "");
 						} else {
 							elementName = "div";
 						}
