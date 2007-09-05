@@ -43,7 +43,12 @@
  */
 package org.objectstyle.wolips.htmlpreview.editor;
 
+import jp.aonir.fuzzyxml.FuzzyXMLDocument;
+import jp.aonir.fuzzyxml.FuzzyXMLElement;
+import jp.aonir.fuzzyxml.internal.RenderContext;
+
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.graphics.Image;
@@ -57,6 +62,9 @@ import org.eclipse.ui.PartInitException;
 import org.objectstyle.wolips.components.editor.EditorInteraction;
 import org.objectstyle.wolips.components.editor.IEmbeddedEditor;
 import org.objectstyle.wolips.components.editor.IEmbeddedEditorSelected;
+import org.objectstyle.wolips.htmlpreview.HtmlPreviewPlugin;
+import org.objectstyle.wolips.templateeditor.TemplateEditor;
+import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 
 /**
  * based on an eclipse.org example
@@ -65,142 +73,57 @@ import org.objectstyle.wolips.components.editor.IEmbeddedEditorSelected;
  */
 public class HtmlPreviewEditor implements IEmbeddedEditor, IEmbeddedEditorSelected, IEditorPart {
 
-	private EditorInteraction editorInteraction;
+	private EditorInteraction _editorInteraction;
 
-	private IEditorSite site;
+	private IEditorSite _site;
 
-	private IEditorInput input;
+	private IEditorInput _input;
 
-	private Browser browser;
-
-	public HtmlPreviewEditor() {
-		super();
-	}
+	private Browser _browser;
 
 	/**
 	 * Update the contents of the Preview page
 	 */
 	private void updatePreviewContent() {
-    /*
-		if (editorInteraction == null) {
+		if (_editorInteraction == null) {
 			return;
 		}
-		IDocument editDocument = editorInteraction.getHtmlDocumentProvider().getHtmlEditDocument();
-		IDocument htmlSource = new org.eclipse.jface.text.Document(editDocument.get());
 
-		IStructuredModel editModel = null;
-		int insertOffset = 0;
-		List removalRegions = new ArrayList(2);
+		IDocument editDocument = _editorInteraction.getHtmlDocumentProvider().getHtmlEditDocument();
+		String documentContents = editDocument.get();
+
 		try {
-			editModel = StructuredModelManager.getModelManager().getExistingModelForRead(editDocument);
-			if (editModel != null && editModel instanceof IDOMModel) {
-				Document document = ((IDOMModel) editModel).getDocument();
-				// remove meta tags specifying encoding as required by Browser
-				// API
-				NodeList metaElements = document.getElementsByTagName(HTML40Namespace.ElementName.META);
-				for (int i = 0; i < metaElements.getLength(); i++) {
-					IDOMElement meta = (IDOMElement) metaElements.item(i);
-					if (insertOffset == 0)
-						insertOffset = meta.getStartOffset();
-					insertOffset = Math.max(0, Math.min(insertOffset, meta.getStartOffset()));
-					String attributeNameHttpEquiv = meta.getAttribute(HTML40Namespace.ATTR_NAME_HTTP_EQUIV);
-					String attributeNameContent = meta.getAttribute(HTML40Namespace.ATTR_NAME_CONTENT);
-					if (attributeNameHttpEquiv != null && attributeNameHttpEquiv.equals("Content-Type") && attributeNameContent != null && attributeNameContent.indexOf("charset") > 0) { //$NON-NLS-2$ //$NON-NLS-1$
-						if (meta.getStartStructuredDocumentRegion() != null)
-							removalRegions.add(meta.getStartStructuredDocumentRegion());
-						if (meta.getEndStructuredDocumentRegion() != null)
-							removalRegions.add(meta.getEndStructuredDocumentRegion());
-					}
-				}
-				// remove existing base elements with hrefs so we can add one
-				// for the local location
-				NodeList baseElements = document.getElementsByTagName(HTML40Namespace.ElementName.BASE);
-				for (int i = 0; i < baseElements.getLength(); i++) {
-					IDOMElement base = (IDOMElement) baseElements.item(i);
-					if (insertOffset == 0)
-						insertOffset = base.getStartOffset();
-					insertOffset = Math.max(0, Math.min(insertOffset, base.getStartOffset()));
-					if (base.getStartStructuredDocumentRegion() != null)
-						removalRegions.add(base.getStartStructuredDocumentRegion());
-					if (base.getEndStructuredDocumentRegion() != null)
-						removalRegions.add(base.getEndStructuredDocumentRegion());
-				}
-			}
-
-			for (int i = removalRegions.size() - 1; i >= 0; i--) {
-				IStructuredDocumentRegion region = (IStructuredDocumentRegion) removalRegions.get(i);
-				try {
-					htmlSource.replace(region.getStartOffset(), region.getEndOffset() - region.getStartOffset(), ""); //$NON-NLS-1$
-				} catch (BadLocationException e1) {
-					HtmlPreviewPlugin.getDefault().log(e1);
-				}
-			}
-
-			if (editModel != null && editModel instanceof IDOMModel && insertOffset == 0) {
-				Document document = ((IDOMModel) editModel).getDocument();
-				NodeList headElements = document.getElementsByTagName(HTML40Namespace.ElementName.HEAD);
-				if (headElements.getLength() > 0) {
-					IDOMElement head = (IDOMElement) headElements.item(0);
-					if (head.getStartStructuredDocumentRegion() != null) {
-						insertOffset = head.getStartStructuredDocumentRegion().getEndOffset();
-					} else {
-						insertOffset = head.getEndOffset();
-					}
-				}
-
-			}
+			WodParserCache cache = ((TemplateEditor) _editorInteraction.getHtmlDocumentProvider()).getSourceEditor().getParserCache();
+			FuzzyXMLDocument htmlDocument = cache.getHtmlXmlDocument();
+			RenderContext renderContext = new RenderContext(true);
+			renderContext.setDelegate(new PreviewRenderDelegate(cache));
+			FuzzyXMLElement documentElement = htmlDocument.getDocumentElement();
+			documentContents = documentElement.toXMLString(renderContext);
 		} catch (Exception e) {
-			HtmlPreviewPlugin.getDefault().log(e);
-		} finally {
-			if (editModel != null)
-				editModel.releaseFromRead();
+			e.printStackTrace();
 		}
-    */
-		//
-		// String location = null;
-		// if (getEditorInput().getAdapter(IFile.class) != null) {
-		// location = "file:" + ((IFile)
-		// getEditorInput().getAdapter(IFile.class)).getLocation();
-		// //$NON-NLS-1$
-		// }
-		// else if (getEditorInput() instanceof ILocationProvider) {
-		// location = "file:" + ((ILocationProvider)
-		// getEditorInput()).getPath(getEditorInput()); //$NON-NLS-1$
-		// }
-		// else {
-		// location = "file:" +
-		// ResourcesPlugin.getWorkspace().getRoot().getLocation(); //$NON-NLS-1$
-		// }
-		//
-		// try {
-		// htmlSource.replace(insertOffset, 0, "<base href=\"" + location + "\"
-		// />"); //$NON-NLS-2$ //$NON-NLS-1$
-		// }
-		// catch (BadLocationException e1) {
-		// Logger.logException(e1);
-		// }
 
-		//boolean rendered = browser.setText(htmlSource.get());
-		//if (!rendered) {
-		//	HtmlPreviewPlugin.getDefault().log("Can't create preview");
-		//}
+		boolean rendered = _browser.setText(documentContents);
+		if (!rendered) {
+			HtmlPreviewPlugin.getDefault().log("Can't create preview of component HTML.");
+		}
 	}
 
-	public void initEditorInteraction(EditorInteraction intiEditorInteraction) {
-		this.editorInteraction = intiEditorInteraction;
+	public void initEditorInteraction(EditorInteraction editorInteraction) {
+		this._editorInteraction = editorInteraction;
 	}
 
 	public IEditorInput getEditorInput() {
-		return input;
+		return _input;
 	}
 
 	public IEditorSite getEditorSite() {
-		return site;
+		return _site;
 	}
 
 	public void init(IEditorSite initSite, IEditorInput initInput) throws PartInitException {
-		this.site = initSite;
-		this.input = initInput;
+		this._site = initSite;
+		this._input = initInput;
 	}
 
 	public void addPropertyListener(IPropertyListener listener) {
@@ -208,11 +131,12 @@ public class HtmlPreviewEditor implements IEmbeddedEditor, IEmbeddedEditorSelect
 	}
 
 	public void createPartControl(Composite parent) {
-		browser = new Browser(parent, SWT.READ_ONLY);
+		_browser = new Browser(parent, SWT.READ_ONLY);
+
 	}
 
 	public IWorkbenchPartSite getSite() {
-		return site;
+		return _site;
 	}
 
 	public String getTitle() {
@@ -256,11 +180,11 @@ public class HtmlPreviewEditor implements IEmbeddedEditor, IEmbeddedEditorSelect
 	}
 
 	public void dispose() {
-		browser.dispose();
+		_browser.dispose();
 	}
 
 	public void setFocus() {
-		browser.setFocus();
+		_browser.setFocus();
 	}
 
 	public void editorSelected() {
@@ -268,6 +192,8 @@ public class HtmlPreviewEditor implements IEmbeddedEditor, IEmbeddedEditorSelect
 	}
 
 	public EditorInteraction getEditorInteraction() {
-		return editorInteraction;
+		return _editorInteraction;
 	}
+	
+	
 }
