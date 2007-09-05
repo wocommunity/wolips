@@ -250,22 +250,21 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 	}
 
 	public String getTitleToolTip() {
-		StringBuffer toolTip = new StringBuffer();
-
+		String componentName = null;
 		IEditorInput[] editorInputArray = componentEditorInput.getInput();
-		for (int i = 0; i < editorInputArray.length; i++) {
+		for (int i = 0; componentName == null && i < editorInputArray.length; i++) {
 			IFile inputFileFromEditor = ResourceUtil.getFile(editorInputArray[i]);
 			if (inputFileFromEditor == null) {
 				continue;
 			}
-			IPath pathFromInputFile = inputFileFromEditor.getFullPath();
-			if (pathFromInputFile == null) {
-				continue;
+			String name = inputFileFromEditor.getName();
+			int dotIndex = name.lastIndexOf('.');
+			if (dotIndex != -1) {
+				name = name.substring(0, dotIndex);
 			}
-			toolTip.append(pathFromInputFile.toString());
-			toolTip.append("\n");
+			componentName = name;
 		}
-		return toolTip.toString();
+		return componentName + " WOComponent";
 	}
 
 	public Object getAdapter(Class adapter) {
