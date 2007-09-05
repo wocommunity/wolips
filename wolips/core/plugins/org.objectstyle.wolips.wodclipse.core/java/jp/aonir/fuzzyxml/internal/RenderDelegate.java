@@ -3,6 +3,10 @@ package jp.aonir.fuzzyxml.internal;
 import jp.aonir.fuzzyxml.FuzzyXMLNode;
 
 public interface RenderDelegate {
+  public void beforeRender(RenderContext renderContext, StringBuffer xmlBuffer);
+  
+  public void afterRender(RenderContext renderContext, StringBuffer xmlBuffer);
+
   public boolean renderNode(FuzzyXMLNode node, RenderContext renderContext, StringBuffer xmlBuffer);
   
   public boolean beforeOpenTag(FuzzyXMLNode node, RenderContext renderContext, StringBuffer xmlBuffer);
