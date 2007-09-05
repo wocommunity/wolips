@@ -108,6 +108,7 @@ public class HTMLPlugin extends AbstractUIPlugin {
 	
   public static final String PREF_COLOR_ATTRIBUTE  = "_pref_color_attribute";
 	public static final String PREF_COLOR_TAG        = "_pref_color_tag";
+  public static final String PREF_COLOR_WO_TAG     = "_pref_color_wo_tag";
 	public static final String PREF_COLOR_COMMENT    = "_pref_color_comment";
 	public static final String PREF_COLOR_STRING     = "_pref_color_string";
 	public static final String PREF_COLOR_DOCTYPE    = "_pref_color_doctype";
