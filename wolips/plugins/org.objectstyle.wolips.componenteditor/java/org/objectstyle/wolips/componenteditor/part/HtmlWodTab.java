@@ -55,6 +55,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.internal.editors.text.PreviousPulldownActionDelegate;
 import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.templateeditor.TemplateEditor;
@@ -63,7 +64,6 @@ import org.objectstyle.wolips.wodclipse.editor.WodEditor;
 import org.objectstyle.wolips.wooeditor.editors.WooEditor;
 
 public class HtmlWodTab extends ComponentEditorTab {
-	// private StructuredTextEditorWO structuredTextEditorWO;
 	private TemplateEditor templateEditor;
 
 	private WodEditor wodEditor;
