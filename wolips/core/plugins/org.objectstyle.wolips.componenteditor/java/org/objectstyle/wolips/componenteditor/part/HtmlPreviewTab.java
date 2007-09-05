@@ -75,6 +75,7 @@ public class HtmlPreviewTab extends ComponentEditorTab {
 			ComponenteditorPlugin.getDefault().log(e);
 		}
 		createInnerPartControl(this.getParentSashForm(), htmlPreviewEditor);
+		htmlPreviewEditor.initEditorInteraction(this.getComponentEditorPart().getEditorInteraction());
 	}
 
 	public void doSave(IProgressMonitor monitor) {
