@@ -18,7 +18,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   private List<FuzzyXMLAttribute> _attributes = new ArrayList<FuzzyXMLAttribute>();
   private String _name;
   private int _nameOffset;
-  
+
   private int _openTagLength;
   private int _closeTagOffset;
   private int _closeTagLength;
@@ -451,111 +451,142 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer) {
     boolean isHTML = renderContext.isHtml();
 
-    renderContext.appendIndent(xmlBuffer);
-    String tagName = FuzzyXMLUtil.escape(getName(), isHTML);
-    if (renderContext.isLowercaseTags() && FuzzyXMLUtil.isAllUppercase(tagName)) {
-      tagName = tagName.toLowerCase();
+    boolean renderSurroundingTags = true;
+    RenderDelegate delegate = renderContext.getDelegate();
+    if (delegate != null) {
+      renderSurroundingTags = delegate.beforeOpenTag(this, renderContext, xmlBuffer);
     }
-    xmlBuffer.append("<").append(tagName);
-    FuzzyXMLAttribute[] attrs = getAttributes();
-    for (int i = 0; i < attrs.length; i++) {
-      attrs[i].toXMLString(renderContext, xmlBuffer);
-    }
-    FuzzyXMLNode[] children = getChildren();
-    if (children.length == 0) {
-      if (renderContext.isSpaceInEmptyTags()) {
-        xmlBuffer.append(" ");
+    try {
+      String tagName = FuzzyXMLUtil.escape(getName(), isHTML);
+      if (renderContext.isLowercaseTags() && FuzzyXMLUtil.isAllUppercase(tagName)) {
+        tagName = tagName.toLowerCase();
       }
-      xmlBuffer.append("/>");
-    }
-    else {
-      xmlBuffer.append(">");
-
-      boolean isScript = "script".equalsIgnoreCase(getName());
-      Set<FuzzyXMLText> hiddenTextNodes = new HashSet<FuzzyXMLText>();
-      int textBlocks = 0;
-      boolean newlines = false;
-      if (renderContext.isShowNewlines()) {
-        for (int i = 0; i < children.length; i++) {
-          if (children[i] instanceof FuzzyXMLElement) {
-            newlines = true;
+      
+      if (renderSurroundingTags) {
+        renderContext.appendIndent(xmlBuffer);
+        xmlBuffer.append("<").append(tagName);
+        FuzzyXMLAttribute[] attrs = getAttributes();
+        for (int i = 0; i < attrs.length; i++) {
+          attrs[i].toXMLString(renderContext, xmlBuffer);
+        }
+      }
+      FuzzyXMLNode[] children = getChildren();
+      if (children.length == 0) {
+        if (renderSurroundingTags) {
+          if (renderContext.isSpaceInEmptyTags()) {
+            xmlBuffer.append(" ");
           }
-          else if (children[i] instanceof FuzzyXMLText) {
-            FuzzyXMLText text = (FuzzyXMLText) children[i];
-            if (renderContext.isTrim()) {
-              String value = text.getValue().trim();
-              if (value.length() == 0) {
-                hiddenTextNodes.add(text);
-              }
-              else {
-                textBlocks++;
-                if (value.indexOf('\n') >= 0) {
+          xmlBuffer.append("/>");
+        }
+      }
+      else {
+        if (renderSurroundingTags) {
+          xmlBuffer.append(">");
+        }
+
+        boolean isScript = "script".equalsIgnoreCase(getName());
+        Set<FuzzyXMLText> hiddenTextNodes = new HashSet<FuzzyXMLText>();
+        int textBlocks = 0;
+        boolean newlines = false;
+        if (renderContext.isShowNewlines()) {
+          for (int i = 0; i < children.length; i++) {
+            if (children[i] instanceof FuzzyXMLElement) {
+              newlines = true;
+            }
+            else if (children[i] instanceof FuzzyXMLText) {
+              FuzzyXMLText text = (FuzzyXMLText) children[i];
+              if (renderContext.isTrim()) {
+                String value = text.getValue().trim();
+                if (value.length() == 0) {
+                  hiddenTextNodes.add(text);
+                }
+                else {
                   textBlocks++;
+                  if (value.indexOf('\n') >= 0) {
+                    textBlocks++;
+                  }
                 }
               }
             }
           }
+          if (textBlocks > 1) {
+            newlines = true;
+          }
         }
-        if (textBlocks > 1) {
-          newlines = true;
+
+        if (renderContext.isShowNewlines() && newlines) {
+          xmlBuffer.append("\n");
         }
-      }
+        renderContext.indent();
 
-      if (renderContext.isShowNewlines() && newlines) {
-        xmlBuffer.append("\n");
-      }
-      renderContext.indent();
+        if (delegate != null) {
+          delegate.afterOpenTag(this, renderContext, xmlBuffer);
+        }
 
-      boolean lastNodeWasText = false;
-      for (int i = 0; i < children.length; i++) {
-        if (renderContext.isShowNewlines() && lastNodeWasText && children[i] instanceof FuzzyXMLElement) {
+        boolean lastNodeWasText = false;
+        for (int i = 0; i < children.length; i++) {
+          if (renderContext.isShowNewlines() && lastNodeWasText && children[i] instanceof FuzzyXMLElement) {
+            xmlBuffer.append("\n");
+          }
+
+          boolean isText = children[i] instanceof FuzzyXMLText;
+          boolean wasTextEscaped = false;
+          boolean oldTrim = renderContext.isTrim();
+          if (isText) {
+            FuzzyXMLText text = (FuzzyXMLText) children[i];
+            wasTextEscaped = text.isEscape();
+            if (!hiddenTextNodes.contains(children[i])) {
+              if (!lastNodeWasText && newlines) {
+                renderContext.appendIndent(xmlBuffer);
+              }
+              lastNodeWasText = true;
+            }
+          }
+          else {
+            lastNodeWasText = false;
+          }
+
+          if (isText && isScript) {
+            ((FuzzyXMLText) children[i]).setEscape(false);
+            renderContext.setTrim(false);
+          }
+
+          if (delegate == null || delegate.renderNode(children[i], renderContext, xmlBuffer)) {
+            children[i].toXMLString(renderContext, xmlBuffer);
+          }
+
+          if (isText && isScript) {
+            ((FuzzyXMLText) children[i]).setEscape(wasTextEscaped);
+            renderContext.setTrim(oldTrim);
+          }
+        }
+
+        if (renderContext.isShowNewlines() && lastNodeWasText && textBlocks > 1) {
           xmlBuffer.append("\n");
         }
 
-        boolean isText = children[i] instanceof FuzzyXMLText;
-        boolean wasTextEscaped = false;
-        boolean oldTrim = renderContext.isTrim();
-        if (isText) {
-          FuzzyXMLText text = (FuzzyXMLText) children[i];
-          wasTextEscaped = text.isEscape();
-          if (!hiddenTextNodes.contains(children[i])) {
-            if (!lastNodeWasText && newlines) {
-              renderContext.appendIndent(xmlBuffer);
-            }
-            lastNodeWasText = true;
+        if (delegate != null) {
+          delegate.beforeCloseTag(this, renderContext, xmlBuffer);
+        }
+
+        renderContext.outdent();
+        if (renderSurroundingTags) {
+          if (newlines || (lastNodeWasText && textBlocks > 1)) {
+            renderContext.appendIndent(xmlBuffer);
           }
-        }
-        else {
-          lastNodeWasText = false;
-        }
-
-        if (isText && isScript) {
-          ((FuzzyXMLText)children[i]).setEscape(false);
-          renderContext.setTrim(false);
-        }
-
-        children[i].toXMLString(renderContext, xmlBuffer);
-        
-        if (isText && isScript) {
-          ((FuzzyXMLText)children[i]).setEscape(wasTextEscaped);
-          renderContext.setTrim(oldTrim);
+  
+          xmlBuffer.append("</").append(tagName).append(">");
         }
       }
 
-      if (renderContext.isShowNewlines() && lastNodeWasText && textBlocks > 1) {
+      if (renderContext.isShowNewlines()) {
         xmlBuffer.append("\n");
       }
-
-      renderContext.outdent();
-      if (newlines || (lastNodeWasText && textBlocks > 1)) {
-        renderContext.appendIndent(xmlBuffer);
-      }
-
-      xmlBuffer.append("</").append(tagName).append(">");
     }
-
-    if (renderContext.isShowNewlines()) {
-      xmlBuffer.append("\n");
+    finally {
+      if (delegate != null) {
+        delegate.afterCloseTag(this, renderContext, xmlBuffer);
+      }
     }
   }
 
@@ -622,7 +653,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
 
   @Override
   public String toString() {
-    return "element: " + getName();
+    return "element: " + getName() + "; attributes = " + _attributes;
   }
 
   public void removeAllChildren() {

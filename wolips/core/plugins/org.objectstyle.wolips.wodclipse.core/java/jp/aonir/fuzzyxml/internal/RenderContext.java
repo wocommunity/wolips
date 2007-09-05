@@ -1,5 +1,8 @@
 package jp.aonir.fuzzyxml.internal;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class RenderContext {
   private int _indent;
   private int _indentSize;
@@ -12,12 +15,31 @@ public class RenderContext {
   private boolean _trim;
   private boolean _lowercaseTags;
   private boolean _lowercaseAttributes;
+  private RenderDelegate _delegate;
+  private Map<String, Object> _attributes;
 
   public RenderContext(boolean html) {
     _indentSize = 0;
     _showNewlines = false;
     _indentTabs = false;
     _html = html;
+    _attributes = new HashMap<String, Object>();
+  }
+  
+  public void setAttribute(String key, Object value) {
+    _attributes.put(key, value);
+  }
+  
+  public Object getAttribute(String key) {
+    return _attributes.get(key);
+  }
+  
+  public void setDelegate(RenderDelegate delegate) {
+    _delegate = delegate;
+  }
+  
+  public RenderDelegate getDelegate() {
+    return _delegate;
   }
   
   public void setLowercaseTags(boolean lowercaseTags) {
