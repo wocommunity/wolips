@@ -13,6 +13,7 @@ public class HTMLTagScanner extends RuleBasedScanner {
   public HTMLTagScanner(ColorProvider colorProvider) {
     IToken literal = colorProvider.getToken(HTMLPlugin.PREF_COLOR_STRING);
     IToken tagName = colorProvider.getToken(HTMLPlugin.PREF_COLOR_TAG);
+    IToken woTagName = colorProvider.getToken(HTMLPlugin.PREF_COLOR_WO_TAG);
     IToken attributeName = colorProvider.getToken(HTMLPlugin.PREF_COLOR_ATTRIBUTE);
     IToken ognlBinding = colorProvider.getToken(HTMLPlugin.PREF_COLOR_OGNL);
     IToken dynamicBinding = colorProvider.getToken(HTMLPlugin.PREF_COLOR_DYNAMIC);
@@ -27,7 +28,7 @@ public class HTMLTagScanner extends RuleBasedScanner {
       new MultiLineRule("\"" , "\"" , literal, '\\'),
       new MultiLineRule("'"  , "'"  , literal, '\\'),
       new WhitespaceRule(new HTMLWhitespaceDetector()),
-      new HTMLTagNameRule(tagName),
+      new HTMLTagNameRule(tagName, woTagName),
       new HTMLAttributeNameRule(attributeName)
     };
     

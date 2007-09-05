@@ -9,6 +9,7 @@ public interface IHTMLColorConstants {
 	RGB STRING       = new RGB( 42,   0, 255);
 	RGB DEFAULT      = new RGB(  0,   0,   0);
 	RGB TAG          = new RGB( 63, 127, 127);
+  RGB WO_TAG       = new RGB(  3,  67,  67);
   RGB ATTRIBUTE    = new RGB(127,   0, 127);
 	RGB SCRIPT       = new RGB(184,  93,   0);
 	RGB CSS_PROP     = new RGB(  0,   0, 255);

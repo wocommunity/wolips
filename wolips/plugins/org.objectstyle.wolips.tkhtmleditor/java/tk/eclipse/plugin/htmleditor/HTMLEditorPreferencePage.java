@@ -27,6 +27,7 @@ public class HTMLEditorPreferencePage extends FieldEditorPreferencePage implemen
 	private ColorFieldEditor colorForeground;
 	private SystemColorFieldEditor colorBackground;
 	private ColorFieldEditor colorTag;
+  private ColorFieldEditor colorWoTag;
   private ColorFieldEditor colorAttribute;
   private ColorFieldEditor colorOGNL;
   private ColorFieldEditor colorDynamic;
@@ -69,6 +70,11 @@ public class HTMLEditorPreferencePage extends FieldEditorPreferencePage implemen
 					HTMLPlugin.getResourceString("HTMLEditorPreferencePage.TagColor"),
 					parent); 
 		addField(colorTag);
+	  
+    colorWoTag = new ColorFieldEditor(HTMLPlugin.PREF_COLOR_WO_TAG,
+          HTMLPlugin.getResourceString("HTMLEditorPreferencePage.WoTagColor"),
+          parent); 
+    addField(colorWoTag);
 		
     colorAttribute = new ColorFieldEditor(HTMLPlugin.PREF_COLOR_ATTRIBUTE,
         HTMLPlugin.getResourceString("HTMLEditorPreferencePage.AttributeColor"),

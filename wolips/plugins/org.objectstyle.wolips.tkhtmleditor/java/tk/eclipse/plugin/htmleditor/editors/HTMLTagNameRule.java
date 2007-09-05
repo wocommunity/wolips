@@ -8,8 +8,10 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WordRule;
 
 public class HTMLTagNameRule extends WordRule implements IPredicateRule {
-  public HTMLTagNameRule(IToken defaultToken) {
+  private IToken _woToken;
+  public HTMLTagNameRule(IToken defaultToken, IToken woToken) {
     super(new HTMLTagWordDetector(), defaultToken);
+    _woToken = woToken;
   }
 
   public IToken getSuccessToken() {
@@ -19,13 +21,13 @@ public class HTMLTagNameRule extends WordRule implements IPredicateRule {
   @Override
   public IToken evaluate(ICharacterScanner scanner) {
     IToken token;
-    int column = scanner.getColumn();
-    if (column >= 1) {
+    int startColumn = scanner.getColumn();
+    if (startColumn >= 1) {
       boolean isTag = false;
       scanner.unread();
       int ch = scanner.read();
       if (ch == '/') {
-        if (column >= 2) {
+        if (startColumn >= 2) {
           scanner.unread();
           scanner.unread();
           ch = scanner.read();
@@ -38,8 +40,17 @@ public class HTMLTagNameRule extends WordRule implements IPredicateRule {
       else if (ch == '<') {
         isTag = true;
       }
+      
+      int possibleWoChar = scanner.read();
+      boolean possibleWoTag = possibleWoChar == 'w' || possibleWoChar == 'W';
+      scanner.unread();
+      
       if (isTag) {
         token = super.evaluate(scanner);
+        if (possibleWoTag && token == fDefaultToken) {
+          int endColumn = scanner.getColumn();
+          token = _woToken;
+        }
       }
       else {
         token = Token.UNDEFINED;
