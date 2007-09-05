@@ -42,8 +42,8 @@
 		<ant dir="org.objectstyle.wolips.wodclipse.core" target="all" />
 		<ant dir="org.objectstyle.wolips.wodclipse" target="all" />
 		<ant dir="org.objectstyle.wolips.tkhtmleditor" target="all" />
-		<ant dir="org.objectstyle.wolips.componenteditor" target="all" />
 		<ant dir="org.objectstyle.wolips.htmlpreview" target="all" />
+		<ant dir="org.objectstyle.wolips.componenteditor" target="all" />
 		<ant dir="org.objectstyle.wolips.ruleeditor" target="all" />
 		<ant dir="org.objectstyle.wolips.woproject" target="all" />
 		<ant dir="org.objectstyle.wolips.woproject.ant" target="all" />
