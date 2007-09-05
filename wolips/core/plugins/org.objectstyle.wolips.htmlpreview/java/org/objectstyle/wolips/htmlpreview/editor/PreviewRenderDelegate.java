@@ -26,6 +26,8 @@ public class PreviewRenderDelegate implements RenderDelegate {
 	private Stack<WodParserCache> _caches;
 
 	private Stack<FuzzyXMLNode> _nodes;
+	
+	private boolean _previewStyleRendered;
 
 	public PreviewRenderDelegate(WodParserCache cache) {
 		_caches = new Stack<WodParserCache>();
@@ -33,6 +35,16 @@ public class PreviewRenderDelegate implements RenderDelegate {
 		_caches.push(cache);
 	}
 
+	public void beforeRender(RenderContext renderContext, StringBuffer xmlBuffer) {
+		_previewStyleRendered = false;
+	}
+	
+	public void afterRender(RenderContext renderContext, StringBuffer xmlBuffer) {
+		if (!_previewStyleRendered) {
+			renderPreviewStyle(xmlBuffer);
+		}
+	}
+	
 	public boolean renderNode(FuzzyXMLNode node, RenderContext renderContext, StringBuffer xmlBuffer) {
 		if (node instanceof FuzzyXMLElement) {
 			FuzzyXMLElement element = (FuzzyXMLElement) node;
@@ -231,34 +243,38 @@ public class PreviewRenderDelegate implements RenderDelegate {
 		if (node instanceof FuzzyXMLElement) {
 			FuzzyXMLElement element = (FuzzyXMLElement) node;
 			if ("head".equalsIgnoreCase(element.getName())) {
-				xmlBuffer.append("<style>");
-				xmlBuffer.append("span.wodclipse_block {");
-				xmlBuffer.append("  display: inline;");
-				xmlBuffer.append("  padding: 3px;");
-				xmlBuffer.append("}");
-				xmlBuffer.append("span.wodclipse_block span.wodclipse_tag {");
-				xmlBuffer.append("}");
-				xmlBuffer.append("span.wodclipse_WOString {");
-				xmlBuffer.append("  color: red;");
-				xmlBuffer.append("}");
-				xmlBuffer.append("span.wodclipse_WOConditional {");
-				xmlBuffer.append("  /*border: 1px dashed blue;*/");
-				xmlBuffer.append("}");
-				xmlBuffer.append("span.wodclipse_WOConditional span.wodclipse_tag {");
-				xmlBuffer.append("  color: blue;");
-				xmlBuffer.append("}");
-				xmlBuffer.append("span.wodclipse_WORepetition {");
-				xmlBuffer.append("  /*border: 1px dashed green;*/");
-				xmlBuffer.append("}");
-				xmlBuffer.append("span.wodclipse_WORepetition span.wodclipse_tag {");
-				xmlBuffer.append("  color: green;");
-				xmlBuffer.append("}");
-				xmlBuffer.append("</style>");
+				renderPreviewStyle(xmlBuffer);
 			}
 		}
 	}
 
 	public void afterCloseTag(FuzzyXMLNode node, RenderContext renderContext, StringBuffer xmlBuffer) {
 		// DO NOTHING
+	}
+	
+	protected void renderPreviewStyle(StringBuffer xmlBuffer) {
+		xmlBuffer.append("<style>");
+		xmlBuffer.append("span.wodclipse_block {");
+		xmlBuffer.append("  display: inline;");
+		xmlBuffer.append("  padding: 3px;");
+		xmlBuffer.append("}");
+		xmlBuffer.append("span.wodclipse_block span.wodclipse_tag {");
+		xmlBuffer.append("}");
+		xmlBuffer.append("span.wodclipse_WOString {");
+		xmlBuffer.append("  color: red;");
+		xmlBuffer.append("}");
+		xmlBuffer.append("span.wodclipse_WOConditional {");
+		xmlBuffer.append("  /*border: 1px dashed blue;*/");
+		xmlBuffer.append("}");
+		xmlBuffer.append("span.wodclipse_WOConditional span.wodclipse_tag {");
+		xmlBuffer.append("  color: blue;");
+		xmlBuffer.append("}");
+		xmlBuffer.append("span.wodclipse_WORepetition {");
+		xmlBuffer.append("  /*border: 1px dashed green;*/");
+		xmlBuffer.append("}");
+		xmlBuffer.append("span.wodclipse_WORepetition span.wodclipse_tag {");
+		xmlBuffer.append("  color: green;");
+		xmlBuffer.append("}");
+		xmlBuffer.append("</style>");
 	}
 }
