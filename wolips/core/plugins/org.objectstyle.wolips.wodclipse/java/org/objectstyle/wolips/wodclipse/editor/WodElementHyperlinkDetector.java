@@ -44,6 +44,13 @@ public class WodElementHyperlinkDetector implements IHyperlinkDetector {
 		} catch (Exception e) {
 			Activator.getDefault().log(e);
 		}
-		return hyperlinks.toArray(new WodHyperlink[hyperlinks.size()]);
+		IHyperlink[] hyperlinksArray;
+		if (hyperlinks.size() == 0) {
+			hyperlinksArray = null;
+		}
+		else {
+			hyperlinksArray = hyperlinks.toArray(new WodHyperlink[hyperlinks.size()]);
+		}
+		return hyperlinksArray;
 	}
 }
