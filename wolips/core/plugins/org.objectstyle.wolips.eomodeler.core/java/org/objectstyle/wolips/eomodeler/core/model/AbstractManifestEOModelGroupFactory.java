@@ -16,6 +16,10 @@ public abstract class AbstractManifestEOModelGroupFactory implements IEOModelGro
 		return modelResource instanceof IResource || modelResource instanceof File || modelResource instanceof URL || modelResource instanceof URI;
 	}
 
+	public boolean canLoadModelGroupFrom(Object modelGroupResource) {
+		return modelGroupResource instanceof File;
+	}
+
 	public EOModel loadModel(Object modelResource, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws EOModelException {
 		File selectedModelFile;
 		if (modelResource instanceof IResource) {
@@ -29,11 +33,11 @@ public abstract class AbstractManifestEOModelGroupFactory implements IEOModelGro
 		} else {
 			throw new EOModelException("Unknown model resource: " + modelResource);
 		}
-		
+
 		if (selectedModelFile == null) {
 			throw new EOModelException("Unknown model resource: " + modelResource);
 		}
-		
+
 		File selectedModelFolder;
 		if (selectedModelFile.isFile()) {
 			selectedModelFolder = selectedModelFile.getParentFile();
@@ -60,10 +64,11 @@ public abstract class AbstractManifestEOModelGroupFactory implements IEOModelGro
 		}
 	}
 
-	protected EOModelGroup loadModelGroup(Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws EOModelException {
+	public EOModelGroup loadModelGroup(Object modelGroupResource, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, URL editingModelURL, IProgressMonitor progressMonitor) throws EOModelException {
 		try {
 			EOModelGroup modelGroup = new EOModelGroup();
 			List<ManifestSearchFolder> searchFolders = getSearchFolders(null);
+			modelGroup.setEditingModelURL(editingModelURL);
 			for (ManifestSearchFolder searchFolder : searchFolders) {
 				modelGroup.loadModelsFromURL(searchFolder.getFolder().toURL(), searchFolder.getDepth(), failures, skipOnDuplicates, progressMonitor);
 			}
