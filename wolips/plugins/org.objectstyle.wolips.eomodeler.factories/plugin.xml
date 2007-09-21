@@ -6,7 +6,7 @@
          name="Entity Modeler EOModelGroup Factories"
          point="org.objectstyle.wolips.eomodeler.eomodelGroupFactory">
       <modelGroupFactory
-            class="entitymodeler.model.SimpleManifestEOModelGroupFactory"
+            class="org.objectstyle.wolips.eomodeler.factories.SimpleManifestEOModelGroupFactory"
             id="entitymodeler.SimpleManifestEOModelGroupFactory"
             name="Simple Manifest EOModelGroup Factory"/>
    </extension>
@@ -15,7 +15,7 @@
          name="Entity Modeler EOClassLoader Factory"
          point="org.objectstyle.wolips.eomodeler.eoclassLoaderFactory">
       <eoclassLoaderFactory
-            class="entitymodeler.model.SimpleManifestEOClassLoaderFactory"
+            class="org.objectstyle.wolips.eomodeler.factories.SimpleManifestEOClassLoaderFactory"
             id="entitymodeler.SimpleManifestEOClassLoaderFactory"
             name="Simple Manifest EOClassLoader Factory"/>
    </extension>
