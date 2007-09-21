@@ -10,7 +10,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.objectstyle.wolips.eomodeler,
  org.objectstyle.wolips.eomodeler.core,
  org.eclipse.ui.views.properties.tabbed,
- org.eclipse.core.filesystem
+ org.eclipse.core.filesystem,
+ org.objectstyle.wolips.eomodeler.factories
 Eclipse-LazyStart: true
 Bundle-Vendor: objectstyle.org
 Export-Package: entitymodeler

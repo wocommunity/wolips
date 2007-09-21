@@ -1,0 +1,186 @@
+<html>
+<head>
+	<title>$entity.model.name, $entity.name</title>
+	<link href = "../../eomodeldoc.css" rel = "stylesheet" type = "text/css">
+	<script src = "../../prototype.js"/>
+</head>
+<body>
+
+<div class = "entity section">
+	<h1>
+	<a href = "../content.html">$entity.model.name</a> / $entity.name
+	</h1>
+	#if ($entity.documentation)
+	<div class = "documentation">$entity.documentation</div>
+	#end
+
+	<a class = "entity" href = "javascript:void(0)" onclick = "$$('.entity .details').each(function(e) { e.toggle() })">toggle details</a>
+	<table class = "details" style = "display: none">
+		#if ($entity.externalName)
+		<tr>
+			<th>External Name</th>
+			<td>$entity.externalName</td>
+		</tr>
+		#end
+
+		#if ($entity.className)
+		<tr>
+			<th>Class Name</th>
+			<td>$entity.className</td>
+		</tr>
+		#end
+
+		#if ($entity.parent)
+		<tr>
+			<th>Parent</th>
+			<td><a href = "../../$entity.parent.model.name/content.html">$entity.parent.model.name</a> / <a href = "../../$entity.parent.model.name/entities/${entity.parent.name}.html">$entity.parent.name</a></td>
+		</tr>
+		#end
+
+		#if (!$entity.childrenEntities.empty)
+		<tr>
+			<th>Children</th>
+			<td>
+				#foreach ($child in $entity.childrenEntities)
+					<a href = "../../$child.model.name/content.html">$child.model.name</a> / <a href = "../../$child.model.name/entities/${child.name}.html">$child.name</a>,
+				#end
+			</td>
+		</tr>
+		#end
+	</table>
+</div>
+
+<div class = "section">
+	<h2 class = "attributes">Attributes</h2>
+	<a class = "attributes" href = "javascript:void(0)" onclick = "$$('.attribute .details').each(function(e) { e.toggle() })">toggle details</a>
+	<a class = "attributes" href = "javascript:void(0)" onclick = "$$('.attribute.nonClassProperty').each(function(e) { e.toggle() })">toggle non-class</a>
+	<ul class = "attributes">
+		#foreach ($attribute in $entity.sortedAttributes)
+		#if ($attribute.classProperty)
+		<li class = "attribute">
+		#else
+		<li class = "attribute nonClassProperty" style = "display: none">
+		#end
+		
+			<div class = "name">$attribute.name</div>
+			#if ($attribute.documentation)
+			<div class = "documentation">$attribute.documentation</div>
+			#end
+			<table class = "details" style = "display: none">
+				#if ($attribute.columnName)
+				<tr>
+					<th>Column Name</th>
+					<td>$attribute.columnName</td>
+				</tr>
+				#end
+				#if ($attribute.definition)
+				<tr>
+					<th>Definition</th>
+					<td>$attribute.definition</td>
+				</tr>
+				#end
+				#if ($attribute.externalType)
+				<tr>
+					<th>External Type</th>
+					<td>$attribute.externalType</td>
+				</tr>
+				#end
+				#if ($attribute.width)
+				<tr>
+					<th>Width</th>
+					<td>$attribute.width</td>
+				</tr>
+				#end
+				#if ($attribute.scale)
+				<tr>
+					<th>Scale</th>
+					<td>$attribute.scale</td>
+				</tr>
+				#end
+				#if ($attribute.precision)
+				<tr>
+					<th>Precision</th>
+					<td>$attribute.precision</td>
+				</tr>
+				#end
+			</table>
+		</li>
+		#end
+	</ul>
+</div>
+
+<div class = "section">
+	<h2 class = "relationships">Relationships</h2>
+	<a class = "relationships" href = "javascript:void(0)" onclick = "$$('.relationship .details').each(function(e) { e.toggle() })">toggle details</a>
+	<a class = "relationships" href = "javascript:void(0)" onclick = "$$('.relationship.nonClassProperty').each(function(e) { e.toggle() })">toggle non-class</a>
+	<ul class = "relationships">
+		#foreach ($relationship in $entity.sortedRelationships)
+		#if ($relationship.classProperty)
+		<li class = "relationship">
+		#else
+		<li class = "relationship nonClassProperty" style = "display: none">
+		#end
+		
+			<div class = "name">$relationship.name</div>
+			#if ($relationship.documentation)
+			<div class = "documentation">$relationship.documentation</div>
+			#end
+	
+			<table class = "details" style = "display: none">
+				<tr>
+					<th>Cardinality</th>
+					<td>
+						#if ($relationship.toOne)
+							#if ($relationship.mandatory)
+								To-One (Required)
+							#else
+								To-One (Optional)
+							#end
+						#else
+						To-Many
+						#end
+					</td>
+				</tr>
+
+				#if ($relationship.destination)
+				<tr>
+					<th>Destination</th>
+					<td><a href = "../../$relationship.destination.model.name/content.html">$relationship.destination.model.name</a> / <a href = "../../$relationship.destination.model.name/entities/${relationship.destination.name}.html">$relationship.destination.name</a></td>
+				</tr>
+				#end
+			</table>
+		</li>
+		#end
+	</ul>
+</div>
+
+<div class = "section">
+	<h2 class = "fetchSpecs">Fetch Specifications</h2>
+	<ul class = "fetchSpecs">
+		#foreach ($fetchSpec in $entity.sortedFetchSpecs)
+		<li class = "fetchSpec">
+			<div class = "name">$fetchSpec.name</div>
+			#if ($fetchSpec.documentation)
+			<div class = "documentation">$fetchSpec.documentation</div>
+			#end
+		</li>
+		#end
+	</ul>
+</div>
+
+<div class = "section">
+	<h2 class = "entityIndexes">Indexes</h2>
+	<ul class = "entityIndexes">
+		#foreach ($entityIndex in $entity.sortedEntityIndexes)
+		<li class = "entityIndex>
+			<div class = "name">$entityIndex.name</div>
+			#if ($entityIndex.documentation)
+			<div class = "documentation">$entityIndex.documentation</div>
+			#end
+		</li>
+		#end
+	</ul>
+</div>
+
+</body>
+</html>

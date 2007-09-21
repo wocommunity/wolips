@@ -1,0 +1,132 @@
+body {
+	font-family: Helvetica;
+	font-size: 1em;
+}
+
+h1 {
+	font-size: 1.4em;
+	margin: 0px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+h1 span.parent {
+	font-size: 80%;
+}
+
+h2 {
+	font-size: 1.2em;
+	margin: 0px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+h3 {
+	font-size: 1em;
+	margin: 0px;
+	margin-top: 10px;
+	margin-bottom: 5px;
+}
+
+h4 {
+	font-size: 1em;
+	margin: 0px;
+}
+
+ul {
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+}
+
+ul li {
+	margin-left: 20px;
+}
+
+div.documentation {
+	font-size: 1.0em;
+}
+
+li.nonClassProperty {
+	color: rgb(175, 175, 175);
+}
+
+li.nonClassProperty div.documentation {
+	color: rgb(175, 175, 175);
+}
+
+div.section {
+	padding: 0px;
+	margin-top: 15px;
+}
+
+div.section h2 {
+	margin: 0px;
+	padding: 3px;
+	margin-bottom: 0px;
+}
+
+div.section div.name {
+	font-weight: bold;
+}
+
+div.section div.documentation {
+}
+
+div.section a.entity {
+	font-size: 0.8em;
+	text-decoration: none;
+	margin-left: 20px;
+}
+
+div.section a.attributes {
+	font-size: 0.8em;
+	text-decoration: none;
+	margin-left: 20px;
+}
+
+div.section a.relationships {
+	font-size: 0.8em;
+	text-decoration: none;
+	margin-left: 20px;
+}
+
+ul.attributes li.attribute {
+	margin-bottom: 10px;
+}
+
+ul.relationships li.relationship {
+	margin-bottom: 10px;
+}
+
+ul.fetchSpecs li.fetchSpec {
+	margin-bottom: 10px;
+}
+
+ul.entityIndexes li.entityIndex {
+	margin-bottom: 10px;
+}
+
+table.details {
+	margin-left: 20px;
+	font-size: 0.8em;
+	padding: 0px;
+	color: rgb(175, 175, 175);
+}
+
+table.details th {
+	text-align: left;
+	font-weight: normal;
+	text-transform: lowercase;
+	padding: 0px;
+	padding-right: 5px;
+}
+
+table.details td {
+	padding: 0px;
+	color: rgb(0, 0, 0);
+}
+
+table.details td a {
+	text-decoration: none;
+}
