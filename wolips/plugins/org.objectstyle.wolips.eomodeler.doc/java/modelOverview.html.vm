@@ -1,0 +1,26 @@
+<html>
+<head>
+	<title>$model.name</title>
+	<link href = "../eomodeldoc.css" rel = "stylesheet" type = "text/css">
+	<script src = "../prototype.js"/>
+</head>
+<body>
+
+<h1><a href = "content.html" target = "content">$model.name</a></h1>
+
+<h2>Entities</h2>
+<ul>
+	#foreach($entity in $model.sortedEntities)
+	<li><a href = "entities/${entity.name}.html" target = "content">$entity.name</a></li>
+	#end
+</ul>
+
+<h2>Stored Procedures</h2>
+<ul>
+	#foreach($storedProcedure in $model.sortedStoredProcedures)
+	<li><a href = "storedProcedures/${storedProcedure.name}.html" target = "content">$storedProcedure.name</a></li>
+	#end
+</ul>
+
+</body>
+</html>

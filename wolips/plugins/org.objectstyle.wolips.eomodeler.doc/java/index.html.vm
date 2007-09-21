@@ -1,0 +1,15 @@
+<html>
+<head>
+	<title>...</title>
+	<link href = "eomodeldoc.css" rel = "stylesheet" type = "text/css">
+	<script src = "prototype.js"/>
+</head>
+<frameset cols = "30%, 70%">
+	<frameset rows = "30%, 70%">
+		<frame src = "models.html" name = "models" />
+		<frame src = "overview.html" name = "overview" />
+	</frameset>
+
+	<frame src = "content.html" name = "content" />
+</frameset>
+</html>

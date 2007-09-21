@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.objectstyle.wolips.eomodeler.doc"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.objectstyle.wolips.eomodeler"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.objectstyle.wolips.eomodeler.core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.objectstyle.wolips.eomodeler.factories"/>
+	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.equinox.common_3.3.0.v20070426.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

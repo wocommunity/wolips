@@ -1,0 +1,19 @@
+<html>
+<head>
+	<title>${storedProcedure.model.name}, ${storedProcedure.name}</title>
+	<link href = "../../eomodeldoc.css" rel = "stylesheet" type = "text/css">
+	<script src = "../../prototype.js"/>
+</head>
+<body>
+<h1>${storedProcedure.model.name}</h1>
+<h2>${storedProcedure.name}</h2>
+
+<h3>Arguments</h3>
+<ul>
+	#foreach($argument in $storedProcedure.sortedArguments)
+	<li>${argument.name}</li>
+	#end
+</ul>
+
+</body>
+</html>

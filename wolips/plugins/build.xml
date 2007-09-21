@@ -34,6 +34,8 @@
 		<ant dir="org.objectstyle.wolips.eomodeler.core" target="all" />
 		<ant dir="org.objectstyle.wolips.eomodeler" target="all" />
 		<ant dir="org.objectstyle.wolips.eomodeler.eclipse" target="all" />
+		<ant dir="org.objectstyle.wolips.eomodeler.factories" target="all" />
+		<ant dir="org.objectstyle.wolips.eomodeler.doc" target="all" />
 		<ant dir="org.objectstyle.wolips.wizards" target="all" />
 		<ant dir="org.objectstyle.wolips.wooeditor" target="all" />
 		<ant dir="org.objectstyle.wolips.editors" target="all" />
