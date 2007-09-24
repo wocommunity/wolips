@@ -34,24 +34,24 @@ public class EOModelDoc {
         outputFolder = new File(args[++argNum]);
       }
     }
-    
+
     if (outputFolder == null) {
       System.out.println("eomodeldoc -output /path/to/output/folder [-model /path/to/model.eomodeld]* [-modelgroup /path/to/working/dir] [-templates /path/to/templates]");
       System.exit(0);
     }
 
-    EOModelGroup modelGroup;
+    EOModelGroup modelGroup = new EOModelGroup();
+    Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
     if (modelPaths.size() == 0) {
       IEOModelGroupFactory modelGroupFactory = new SimpleManifestEOModelGroupFactory();
-      Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
-      modelGroup = modelGroupFactory.loadModelGroup(modelGroupFolder, failures, true, null, new NullProgressMonitor());
+      modelGroupFactory.loadModelGroup(modelGroupFolder, modelGroup, failures, true, new NullProgressMonitor());
     }
     else {
-      modelGroup = new EOModelGroup();
       for (String modelPath : modelPaths) {
         modelGroup.loadModelFromURL(new File(modelPath).toURL());
       }
-      modelGroup.resolve(new HashSet<EOModelVerificationFailure>());
+      modelGroup.resolve(failures);
+      modelGroup.verify(failures);
     }
     EOModelDocGenerator.generate(modelGroup, outputFolder, templateFolder);
   }
