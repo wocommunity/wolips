@@ -959,6 +959,26 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		firePropertyChange(EOEntity.ATTRIBUTES, null, null);
 	}
 
+	public Set<EOAttribute> getNonClassAttributes() {
+		Set<EOAttribute> nonClassAttributes = new HashSet<EOAttribute>();
+		for (EOAttribute attribute : getAttributes()) {
+			if (attribute.isClassProperty() == null || !attribute.isClassProperty().booleanValue()) {
+				nonClassAttributes.add(attribute);
+			}
+		}
+		return nonClassAttributes;
+	}
+
+	public Set<EOAttribute> getInheritedAttributes() {
+		Set<EOAttribute> inheritedAttributes = new HashSet<EOAttribute>();
+		for (EOAttribute attribute : getAttributes()) {
+			if (attribute.isInherited()) {
+				inheritedAttributes.add(attribute);
+			}
+		}
+		return inheritedAttributes;
+	}
+
 	public Set<EOAttribute> getAttributes() {
 		return myAttributes;
 	}
@@ -977,6 +997,26 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		}
 		Arrays.sort(attributeNames);
 		return attributeNames;
+	}
+
+	public Set<EORelationship> getNonClassRelationships() {
+		Set<EORelationship> nonClassRelationships = new HashSet<EORelationship>();
+		for (EORelationship relationship : getRelationships()) {
+			if (relationship.isClassProperty() == null && !relationship.isClassProperty().booleanValue()) {
+				nonClassRelationships.add(relationship);
+			}
+		}
+		return nonClassRelationships;
+	}
+
+	public Set<EORelationship> getInheritedRelationships() {
+		Set<EORelationship> inheritedRelationships = new HashSet<EORelationship>();
+		for (EORelationship relationship : getRelationships()) {
+			if (relationship.isInherited()) {
+				inheritedRelationships.add(relationship);
+			}
+		}
+		return inheritedRelationships;
 	}
 
 	public Set<EORelationship> getRelationships() {
@@ -999,7 +1039,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		return myEntityIndexes;
 	}
 
-	public Set<EOEntityIndex> getSortedEntityIndex() {
+	public Set<EOEntityIndex> getSortedEntityIndexes() {
 		return new PropertyListSet<EOEntityIndex>(myEntityIndexes);
 	}
 
