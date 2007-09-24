@@ -70,6 +70,10 @@ div.section div.name {
 	font-weight: bold;
 }
 
+div.section div.destination {
+	font-size: 0.8em;
+}
+
 div.section div.documentation {
 }
 
@@ -77,6 +81,26 @@ div.section a.entity {
 	font-size: 0.8em;
 	text-decoration: none;
 	margin-left: 20px;
+}
+
+div.section.entity div.parentEntity {
+	font-size: 0.60em;
+	display: inline;
+}
+
+div.section.entity div.childrenEntities {
+	font-size: 0.60em;
+}
+
+span.entity.abstract {
+	font-style: italic;
+}
+
+div.section.attributes div.name {
+}
+
+div.section.attributes div.externalType {
+	font-size: 0.8em;
 }
 
 div.section a.attributes {
@@ -89,6 +113,39 @@ div.section a.relationships {
 	font-size: 0.8em;
 	text-decoration: none;
 	margin-left: 20px;
+}
+
+div.section a.fetchSpecs {
+	font-size: 0.8em;
+	text-decoration: none;
+	margin-left: 20px;
+}
+
+ol.sortOrderings {
+	list-style-type: none;
+	padding-left: 0px;
+	margin-left: 0px;
+}
+
+ol.sortOrderings li {
+	padding-left: 0px;
+	margin-left: 0px;
+}
+
+div.section.attributes {
+	border-style: 1px solid red;
+	float: left;
+	width: 50%;
+}
+
+div.section.relationships {
+	border-style: 1px solid blue;
+	float: right;
+	width: 50%;
+}
+
+div.section.fetchSpecs {
+	clear: both;
 }
 
 ul.attributes li.attribute {

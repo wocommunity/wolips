@@ -8,19 +8,23 @@
 
 <h1>$model.name</h1>
 
+#if (!$model.sortedEntities.empty)
 <h2>Entities</h2>
 <ul>
 	#foreach($entity in $model.sortedEntities)
 	<li><a href = "entities/${entity.name}.html" target = "content">$entity.name</a></li>
 	#end
 </ul>
+#end
 
+#if (!$model.sortedStoredProcedures.empty)
 <h2>Stored Procedures</h2>
 <ul>
 	#foreach($storedProcedure in $model.sortedStoredProcedures)
 	<li><a href = "storedProcedures/${storedProcedure.name}.html" target = "content">$storedProcedure.name</a></li>
 	#end
 </ul>
+#end
 
 </body>
 </html>
