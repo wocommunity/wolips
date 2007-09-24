@@ -2,9 +2,9 @@ package org.objectstyle.wolips.eomodeler.utils;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.objectstyle.wolips.eomodeler.utils.SelectionThrottle.IThrottledSelectionHandler;
 
@@ -25,8 +25,8 @@ public abstract class AbstractAddRemoveChangeRefresher<T> implements PropertyCha
 
 	@SuppressWarnings("unchecked")
 	public void propertyChange(PropertyChangeEvent _event) {
-		Set<T> oldValues = (Set<T>) _event.getOldValue();
-		Set<T> newValues = (Set<T>) _event.getNewValue();
+		Collection<T> oldValues = (Collection<T>) _event.getOldValue();
+		Collection<T> newValues = (Collection<T>) _event.getNewValue();
 		if (newValues != null && oldValues != null) {
 			if (newValues.size() > oldValues.size()) {
 				List<T> newList = new LinkedList<T>(newValues);
