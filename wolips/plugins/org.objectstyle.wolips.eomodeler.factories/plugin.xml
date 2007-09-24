@@ -9,6 +9,10 @@
             class="org.objectstyle.wolips.eomodeler.factories.SimpleManifestEOModelGroupFactory"
             id="entitymodeler.SimpleManifestEOModelGroupFactory"
             name="Simple Manifest EOModelGroup Factory"/>
+      <modelGroupFactory
+            class="org.objectstyle.wolips.eomodeler.factories.IDEAProjectEOModelGroupFactory"
+            id="entitymodeler.IDEAProjectEOModelGroupFactory"
+            name="IDEA Project EOModelGroup Factory"/>
    </extension>
    <extension
          id="entityModeler.eoclassLoaderFactory"
