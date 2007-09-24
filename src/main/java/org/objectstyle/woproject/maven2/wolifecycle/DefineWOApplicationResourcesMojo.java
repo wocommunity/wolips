@@ -187,17 +187,29 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 				classPath.append(classpathEntries[0][i] + "\n");
 			}
 		}
-		String fileName = this.getProjectFolder() + "target" + File.separator + "classpath.txt";
-		getLog().debug("Defining wo classpath: writing to file: " + fileName);
-		File file = new File(fileName);
-		FileWriter fileWriter;
+		String classpathTxtFileName = this.getProjectFolder() + "target" + File.separator + "classpath.txt";
+		getLog().debug("Defining wo classpath: writing to file: " + classpathTxtFileName);
+		File classpathTxtFile = new File(classpathTxtFileName);
+		FileWriter classpathTxtFileWriter;
 		try {
-			fileWriter = new FileWriter(file);
-			fileWriter.write(classPath.toString());
-			fileWriter.flush();
-			fileWriter.close();
+			classpathTxtFileWriter = new FileWriter(classpathTxtFile);
+			classpathTxtFileWriter.write(classPath.toString());
+			classpathTxtFileWriter.flush();
+			classpathTxtFileWriter.close();
 		} catch (IOException e) {
-			throw new MojoExecutionException("Could not write classpath", e);
+			throw new MojoExecutionException("Could not write classpath.txt", e);
+		}
+		String classpathPropertiesFileName = this.getProjectFolder() + "target" + File.separator + "classpath.properties";
+		getLog().debug("Defining wo classpath: writing to file: " + classpathPropertiesFileName);
+		File classpathPropertiesFile = new File(classpathPropertiesFileName);
+		FileWriter classpathPropertiesFileWriter;
+		try {
+			classpathPropertiesFileWriter = new FileWriter(classpathPropertiesFile);
+			classpathPropertiesFileWriter.write("classpath.localRepository.baseDir " + localRepository.getBasedir());
+			classpathPropertiesFileWriter.flush();
+			classpathPropertiesFileWriter.close();
+		} catch (IOException e) {
+			throw new MojoExecutionException("Could not write classpath.properties", e);
 		}
 	}
 
