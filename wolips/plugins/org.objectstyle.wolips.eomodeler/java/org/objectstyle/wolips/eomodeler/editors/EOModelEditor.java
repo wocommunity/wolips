@@ -108,6 +108,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntityIndex;
 import org.objectstyle.wolips.eomodeler.core.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
@@ -522,7 +523,9 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 			myLoadFailures = new LinkedHashSet<EOModelVerificationFailure>();
 
-			EOModel model = IEOModelGroupFactory.Utility.loadModel(indexURL, myLoadFailures, true, progressMonitor);
+			EOModelGroup modelGroup = new EOModelGroup();
+			IEOModelGroupFactory.Utility.loadModelGroup(indexURL, modelGroup, myLoadFailures, true, indexURL.toURL(), progressMonitor);
+			EOModel model = modelGroup.getEditingModel();
 			if (model == null) {
 				// super.init(_site, fileEditorInput);
 				handleModelErrors(myLoadFailures, true);
@@ -883,7 +886,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		public void selectionChanged(SelectionChangedEvent _event) {
 			IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
 			Object selectedObject = selection.getFirstElement();
-			EOModel model = EOModelUtils.getRelatedModel(selectedObject);
+			// EOModel model = EOModelUtils.getRelatedModel(selectedObject);
 			// if (model == null || model.isEditing()) {
 			setSelection(selection, false);
 			if (mySelectedObject == null) {
