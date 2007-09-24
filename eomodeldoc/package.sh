@@ -4,11 +4,11 @@ TEMPDIR=/tmp/eomodeldocjar
 OUTPUT=/tmp
 
 mkdir -p $TEMPDIR
-cp -r $WORKSPACE/woproject/wolips/eomodeldoc/bin/* $TEMPDIR
 cp -r $WORKSPACE/org.objectstyle.wolips.eomodeler/bin/* $TEMPDIR
 cp -r $WORKSPACE/org.objectstyle.wolips.eomodeler.core/bin/* $TEMPDIR
 cp -r $WORKSPACE/org.objectstyle.wolips.eomodeler.eclipse/bin/* $TEMPDIR
 cp -r $WORKSPACE/org.objectstyle.wolips.thirdparty.cayenne/bin/* $TEMPDIR
+cp -r $WORKSPACE/woproject/wolips/eomodeldoc/bin/* $TEMPDIR
 cp -r $WORKSPACE/woproject/wolips/core/plugins/org.objectstyle.wolips.eomodeler.doc/bin/* $TEMPDIR
 cp -r $WORKSPACE/woproject/wolips/core/plugins/org.objectstyle.wolips.eomodeler.factories/bin/* $TEMPDIR
 
