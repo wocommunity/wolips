@@ -1,5 +1,7 @@
 package org.objectstyle.wolips.htmlpreview.editor;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,6 +15,21 @@ import jp.aonir.fuzzyxml.internal.RenderDelegate;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jdt.core.IType;
 import org.objectstyle.wolips.core.resources.types.api.Wo;
+import org.objectstyle.wolips.htmlpreview.editor.tags.DefaultTagDelegate;
+import org.objectstyle.wolips.htmlpreview.editor.tags.WOBrowserTagDelegate;
+import org.objectstyle.wolips.htmlpreview.editor.tags.WOCheckBoxTagDelegate;
+import org.objectstyle.wolips.htmlpreview.editor.tags.WOComponentContentTagDelegate;
+import org.objectstyle.wolips.htmlpreview.editor.tags.WOConditionalTagDelegate;
+import org.objectstyle.wolips.htmlpreview.editor.tags.WOGenericContainerTagDelegate;
+import org.objectstyle.wolips.htmlpreview.editor.tags.WOGenericElementTagDelegate;
+import org.objectstyle.wolips.htmlpreview.editor.tags.WOHyperlinkTagDelegate;
+import org.objectstyle.wolips.htmlpreview.editor.tags.WOImageTagDelegate;
+import org.objectstyle.wolips.htmlpreview.editor.tags.WOPopUpButtonTagDelegate;
+import org.objectstyle.wolips.htmlpreview.editor.tags.WORepetitionTagDelegate;
+import org.objectstyle.wolips.htmlpreview.editor.tags.WOStringTagDelegate;
+import org.objectstyle.wolips.htmlpreview.editor.tags.WOSubmitButtonTagDelegate;
+import org.objectstyle.wolips.htmlpreview.editor.tags.WOTextFieldTagDelegate;
+import org.objectstyle.wolips.htmlpreview.editor.tags.WOTextTagDelegate;
 import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
@@ -23,9 +40,15 @@ import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 import org.objectstyle.wolips.wodclipse.core.util.WodReflectionUtils;
 
 public class PreviewRenderDelegate implements RenderDelegate {
+	private static final String DEFAULT = "__default";
+
+	private Map<String, TagDelegate> _tagDelegates;
+	
 	private Stack<WodParserCache> _caches;
 
 	private Stack<FuzzyXMLNode> _nodes;
+	
+	private StringBuffer _cssBuffer;
 	
 	private boolean _previewStyleRendered;
 
@@ -33,10 +56,32 @@ public class PreviewRenderDelegate implements RenderDelegate {
 		_caches = new Stack<WodParserCache>();
 		_nodes = new Stack<FuzzyXMLNode>();
 		_caches.push(cache);
+		_cssBuffer = new StringBuffer();
+
+		_tagDelegates = new HashMap<String, TagDelegate>();
+		_tagDelegates.put("WOString", new WOStringTagDelegate());
+		_tagDelegates.put("ERXLocalizedString", new WOStringTagDelegate());
+		_tagDelegates.put("WOConditional", new WOConditionalTagDelegate());
+		_tagDelegates.put("WOComponentContent", new WOComponentContentTagDelegate());
+		_tagDelegates.put("WORepetition", new WORepetitionTagDelegate());
+		_tagDelegates.put("WOGenericContainer", new WOGenericContainerTagDelegate());
+		_tagDelegates.put("WOGenericElement", new WOGenericElementTagDelegate());
+		_tagDelegates.put("WOTextField", new WOTextFieldTagDelegate());
+		_tagDelegates.put("FocusTextField", new WOTextFieldTagDelegate());
+		_tagDelegates.put("WOCheckBox", new WOCheckBoxTagDelegate());
+		_tagDelegates.put("WOPopUpButton", new WOPopUpButtonTagDelegate());
+		_tagDelegates.put("WOText", new WOTextTagDelegate());
+		_tagDelegates.put("FocusText", new WOTextTagDelegate());
+		_tagDelegates.put("WOSubmitButton", new WOSubmitButtonTagDelegate());
+		_tagDelegates.put("WOHyperlink", new WOHyperlinkTagDelegate());
+		_tagDelegates.put("WOImage", new WOImageTagDelegate());
+		_tagDelegates.put("WOBrowser", new WOBrowserTagDelegate());
+		_tagDelegates.put(PreviewRenderDelegate.DEFAULT, new DefaultTagDelegate());
 	}
 
 	public void beforeRender(RenderContext renderContext, StringBuffer xmlBuffer) {
 		_previewStyleRendered = false;
+		_cssBuffer = new StringBuffer();
 	}
 	
 	public void afterRender(RenderContext renderContext, StringBuffer xmlBuffer) {
@@ -60,6 +105,10 @@ public class PreviewRenderDelegate implements RenderDelegate {
 						wodElement = cache.getWodModel().getElementNamed(elementName);
 					}
 
+					if (wodElement == null) {
+						return true;
+					}
+					
 					String elementTypeName = wodElement.getElementType();
 					IType type = WodReflectionUtils.findElementType(cache.getJavaProject(), elementTypeName, false, cache);
 					LocalizedComponentsLocateResult componentsLocateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(type.getJavaProject().getProject(), wodElement.getElementType());
@@ -102,114 +151,12 @@ public class PreviewRenderDelegate implements RenderDelegate {
 								_caches.pop();
 							}
 						}
-					} else if ("WOString".equals(elementTypeName)) {
-						IWodBinding valueBinding = wodElement.getBindingNamed("value");
-						if (valueBinding.isKeyPath()) {
-							xmlBuffer.append("<span class = \"wodclipse_WOString\">[" + valueBinding.getValue() + "]</span>");
-						} else {
-							xmlBuffer.append(valueBinding.getValue());
-						}
-					} else if ("WOConditional".equals(elementTypeName)) {
-						IWodBinding conditionBinding = wodElement.getBindingNamed("condition");
-						String conditionName;
-						if (conditionBinding != null) {
-							conditionName = conditionBinding.getValue();
-						} else {
-							conditionName = "WOConditional";
-						}
-						IWodBinding negateBinding = wodElement.getBindingNamed("negate");
-						if (negateBinding != null && ("true".equalsIgnoreCase(negateBinding.getValue()) || "yes".equalsIgnoreCase(negateBinding.getValue()))) {
-							conditionName = "!" + conditionName;
-						}
-						xmlBuffer.append("<span class = \"wodclipse_block wodclipse_WOConditional\"><span class = \"wodclipse_tag wodclipse_open_tag\">[if " + conditionName + "]</span>");
-						node.toXMLString(renderContext, xmlBuffer);
-						xmlBuffer.append("<span class = \"wodclipse_tag wodclipse_close_tag\">[/if " + conditionName + "]</span></span>");
-					} else if ("WOComponentContent".equals(elementTypeName)) {
-						WodParserCache parentCache = _caches.pop();
-						try {
-							_nodes.peek().toXMLString(renderContext, xmlBuffer);
-						} finally {
-							_caches.push(parentCache);
-						}
-					} else if ("WORepetition".equals(elementTypeName)) {
-						IWodBinding listBinding = wodElement.getBindingNamed("list");
-						String listName;
-						if (listBinding != null) {
-							listName = listBinding.getValue();
-						} else {
-							listName = "WORepetition";
-						}
-						xmlBuffer.append("<span class = \"wodclipse_block wodclipse_WORepetition\"><span class = \"wodclipse_tag wodclipse_open_tag\">[loop " + listName + "]</span>");
-						node.toXMLString(renderContext, xmlBuffer);
-						xmlBuffer.append("<span class = \"wodclipse_tag wodclipse_close_tag\">[/loop " + listName + "]</span></span>");
-					} else if ("WOGenericContainer".equals(elementTypeName)) {
-						IWodBinding elementNameBinding = wodElement.getBindingNamed("elementName");
-						String elementName;
-						if (elementNameBinding != null && !elementNameBinding.isKeyPath()) {
-							elementName = elementNameBinding.getValue().replaceAll("\"", "");
-						} else {
-							elementName = "div";
-						}
-						xmlBuffer.append("<" + elementName + ">");
-						node.toXMLString(renderContext, xmlBuffer);
-						xmlBuffer.append("</" + elementName + ">");
-					} else if ("WOGenericElement".equals(elementTypeName)) {
-						IWodBinding elementNameBinding = wodElement.getBindingNamed("elementName");
-						String elementName;
-						if (elementNameBinding != null && !elementNameBinding.isKeyPath()) {
-							elementName = elementNameBinding.getValue().replaceAll("\"", "");
-						} else {
-							elementName = "div";
-						}
-						xmlBuffer.append("<" + elementName + " />");
-					} else if ("WOTextField".equals(elementTypeName) || "FocusTextField".equals(elementTypeName)) {
-						IWodBinding valueBinding = wodElement.getBindingNamed("value");
-						String value;
-						if (valueBinding != null) {
-							value = valueBinding.getValue();
-						} else {
-							value = "";
-						}
-						xmlBuffer.append("<input type = \"text\" value = \"" + value + "\"/>");
-					} else if ("WOCheckBox".equals(elementTypeName)) {
-						xmlBuffer.append("<input type = \"checkbox\">");
-					} else if ("WOPopUpButton".equals(elementTypeName)) {
-						IWodBinding listBinding = wodElement.getBindingNamed("list");
-						String list;
-						if (listBinding != null) {
-							list = listBinding.getValue();
-						} else {
-							list = "";
-						}
-						xmlBuffer.append("<select><option>" + list + "</option></select>");
-					} else if ("WOText".equals(elementTypeName) || "FocusText".equals(elementTypeName)) {
-						IWodBinding valueBinding = wodElement.getBindingNamed("value");
-						String value;
-						if (valueBinding != null) {
-							value = valueBinding.getValue();
-						} else {
-							value = "";
-						}
-						xmlBuffer.append("<textarea>" + value + "</textarea>");
-					} else if ("WOSubmitButton".equals(elementTypeName)) {
-						IWodBinding valueBinding = wodElement.getBindingNamed("value");
-						String value;
-						if (valueBinding != null) {
-							if (valueBinding.isKeyPath()) {
-								value = valueBinding.getValue();
-							} else {
-								value = valueBinding.getValue().replaceAll("\"", "");
-							}
-						} else {
-							value = "Submit";
-						}
-						xmlBuffer.append("<input type = \"submit\" value = \"" + value + "\"/>");
-					} else if ("WOHyperlink".equals(elementTypeName)) {
-						xmlBuffer.append("<a href = \"#\">");
-						node.toXMLString(renderContext, xmlBuffer);
-						xmlBuffer.append("</a>");
 					} else {
-						node.toXMLString(renderContext, xmlBuffer);
+						TagDelegate tagDelegate = _tagDelegates.get(elementTypeName);
+						if (tagDelegate == null) {
+							tagDelegate = _tagDelegates.get(PreviewRenderDelegate.DEFAULT);
+						}
+						tagDelegate.renderNode(wodElement, element, renderContext, xmlBuffer, _cssBuffer, _caches, _nodes);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -240,12 +187,7 @@ public class PreviewRenderDelegate implements RenderDelegate {
 	}
 
 	public void beforeCloseTag(FuzzyXMLNode node, RenderContext renderContext, StringBuffer xmlBuffer) {
-		if (node instanceof FuzzyXMLElement) {
-			FuzzyXMLElement element = (FuzzyXMLElement) node;
-			if ("head".equalsIgnoreCase(element.getName())) {
-				renderPreviewStyle(xmlBuffer);
-			}
-		}
+		// DO NOTHING
 	}
 
 	public void afterCloseTag(FuzzyXMLNode node, RenderContext renderContext, StringBuffer xmlBuffer) {
@@ -255,26 +197,16 @@ public class PreviewRenderDelegate implements RenderDelegate {
 	protected void renderPreviewStyle(StringBuffer xmlBuffer) {
 		xmlBuffer.append("<style>");
 		xmlBuffer.append("span.wodclipse_block {");
-		xmlBuffer.append("  display: inline;");
+		xmlBuffer.append("  display: block;");
 		xmlBuffer.append("  padding: 3px;");
+		xmlBuffer.append("}");
+		xmlBuffer.append("span.wodclipse_block:hover {");
+		xmlBuffer.append("  background-color: rgba(220, 220, 255, 0.50);");
 		xmlBuffer.append("}");
 		xmlBuffer.append("span.wodclipse_block span.wodclipse_tag {");
 		xmlBuffer.append("}");
-		xmlBuffer.append("span.wodclipse_WOString {");
-		xmlBuffer.append("  color: red;");
-		xmlBuffer.append("}");
-		xmlBuffer.append("span.wodclipse_WOConditional {");
-		xmlBuffer.append("  /*border: 1px dashed blue;*/");
-		xmlBuffer.append("}");
-		xmlBuffer.append("span.wodclipse_WOConditional span.wodclipse_tag {");
-		xmlBuffer.append("  color: blue;");
-		xmlBuffer.append("}");
-		xmlBuffer.append("span.wodclipse_WORepetition {");
-		xmlBuffer.append("  /*border: 1px dashed green;*/");
-		xmlBuffer.append("}");
-		xmlBuffer.append("span.wodclipse_WORepetition span.wodclipse_tag {");
-		xmlBuffer.append("  color: green;");
-		xmlBuffer.append("}");
+		xmlBuffer.append(_cssBuffer);
 		xmlBuffer.append("</style>");
+		_previewStyleRendered = true;
 	}
 }
