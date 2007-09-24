@@ -70,11 +70,21 @@ public class URLUtils {
 		String protocol = url.getProtocol();
 		if ("file".equals(protocol)) {
 			File f = new File(url.getPath()).getAbsoluteFile();
-			File[] files = f.listFiles();
-			children = new URL[files.length];
-			for (int i = 0; i < files.length; i++) {
-				File child = files[i];
-				children[i] = child.toURL();
+			if (!f.exists()) {
+				children = new URL[0];
+			}
+			else {
+				File[] files = f.listFiles();
+				if (files == null) {
+					children = new URL[0];
+				}
+				else {
+					children = new URL[files.length];
+					for (int i = 0; i < files.length; i++) {
+						File child = files[i];
+						children[i] = child.toURL();
+					}
+				}
 			}
 		} else if ("jar".equals(protocol)) {
 			List<URL> childEntries = new LinkedList<URL>();

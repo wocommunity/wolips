@@ -794,7 +794,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			if (connectionDictionaryDatabaseConfig == null) {
 				connectionDictionaryDatabaseConfig = tempConnectionDictionaryDatabaseConfig;
 				addDatabaseConfig(connectionDictionaryDatabaseConfig, false, _failures);
-				if (canSave() && createMissingDatabaseConfig) {
+				if (canSave() && createMissingDatabaseConfig && isEditing()) {
 					_failures.add(new EOModelVerificationFailure(this, "Creating default database config for model '" + getName() + "'.", true, null));
 				}
 			}

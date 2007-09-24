@@ -21,77 +21,33 @@ import org.objectstyle.wolips.eomodeler.core.Activator;
  */
 public interface IEOModelGroupFactory {
 	/**
-	 * Returns whether or not this factory can load a model from the given
-	 * resource.
-	 * 
-	 * @param modelResource
-	 *            the resource to check
-	 * @return true if this factory can load the given modelResource
-	 */
-	public boolean canLoadModelFrom(Object modelResource);
-
-	/**
-	 * Returns an EOModel inside of an EOModelGroup.
-	 * 
-	 * @param modelResource
-	 *            the File, IFile, IFolder, etc that represents the model to
-	 *            load
-	 * @param failures
-	 *            the set of failures during load
-	 * @param skipOnDuplicates
-	 *            whether or not to skip duplicate models
-	 * @return the loaded EOModel
-	 * @throws EOModelException
-	 *             if there is a problem loading models
-	 */
-	public EOModel loadModel(Object modelResource, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws EOModelException;
-
-	/**
-	 * Returns whether or not this factory can load a model group from the given
-	 * resource.
-	 * 
-	 * @param modelGroupResource
-	 *            the resource to check
-	 * @return true if this factory can load the given modelResource
-	 */
-	public boolean canLoadModelGroupFrom(Object modelGroupResource);
-
-	/**
-	 * Returns an entire loaded EOModelGroup.
+	 * Loads models into the specified EOModelGroup based on the
+	 * modelGroupResource provided.
 	 * 
 	 * @param modelGroupResource
 	 *            the IProject, Folder, etc to load the model group from
+	 * @param modelGroup
+	 *            the model group to load into
 	 * @param failures
 	 *            the set of failures during load
 	 * @param skipOnDuplicates
 	 *            whether or not to skip duplicate models
-	 * @return the loaded EOModelGroup
 	 * @throws EOModelException
 	 *             if there is a problem loading models
 	 */
-	public EOModelGroup loadModelGroup(Object modelGroupResource, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, URL editingModelURL, IProgressMonitor progressMonitor) throws EOModelException;
+	public void loadModelGroup(Object modelGroupResource, EOModelGroup modelGroup, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws EOModelException;
 
 	public class Utility {
-		public static EOModel loadModel(Object modelResource, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws EOModelException {
-			EOModel model = null;
+		public static void loadModelGroup(Object modelGroupResource, EOModelGroup modelGroup, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, URL editingModelURL, IProgressMonitor progressMonitor) throws EOModelException {
+			modelGroup.setEditingModelURL(editingModelURL);
 			List<IEOModelGroupFactory> modelGroupFactories = IEOModelGroupFactory.Utility.modelGroupFactories();
 			for (IEOModelGroupFactory modelGroupFactory : modelGroupFactories) {
-				if (modelGroupFactory.canLoadModelFrom(modelResource)) {
-					model = modelGroupFactory.loadModel(modelResource, failures, skipOnDuplicates, progressMonitor);
-				}
+				modelGroupFactory.loadModelGroup(modelGroupResource, modelGroup, failures, skipOnDuplicates, progressMonitor);
 			}
-			return model;
-		}
-
-		public static EOModelGroup loadModelGroup(Object modelGroupResource, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, URL editingModelURL, IProgressMonitor progressMonitor) throws EOModelException {
-			EOModelGroup modelGroup = null;
-			List<IEOModelGroupFactory> modelGroupFactories = IEOModelGroupFactory.Utility.modelGroupFactories();
-			for (IEOModelGroupFactory modelGroupFactory : modelGroupFactories) {
-				if (modelGroupFactory.canLoadModelGroupFrom(modelGroupResource)) {
-					modelGroup = modelGroupFactory.loadModelGroup(modelGroupResource, failures, skipOnDuplicates, editingModelURL, progressMonitor);
-				}
-			}
-			return modelGroup;
+			progressMonitor.setTaskName("Resolving model dependencies ...");
+			modelGroup.resolve(failures);
+			progressMonitor.setTaskName("Verifying model ...");
+			modelGroup.verify(failures);
 		}
 
 		public static List<IEOModelGroupFactory> modelGroupFactories() {
