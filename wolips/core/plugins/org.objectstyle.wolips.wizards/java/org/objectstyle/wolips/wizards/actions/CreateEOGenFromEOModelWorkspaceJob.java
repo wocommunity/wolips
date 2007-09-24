@@ -64,6 +64,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.model.IEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.core.utils.URLUtils;
@@ -83,7 +84,9 @@ public class CreateEOGenFromEOModelWorkspaceJob extends WorkspaceJob {
 	public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
 		try {
 			String extension = (_createEOModelGroup) ? ".eomodelgroup" : ".eogen";
-			EOModel model = IEOModelGroupFactory.Utility.loadModel(_modelFile, new HashSet<EOModelVerificationFailure>(), true, new NullProgressMonitor());
+			EOModelGroup modelGroup = new EOModelGroup();
+			IEOModelGroupFactory.Utility.loadModelGroup(_modelFile, modelGroup, new HashSet<EOModelVerificationFailure>(), true, _modelFile.getLocationURI().toURL(), new NullProgressMonitor());
+			EOModel model = modelGroup.getEditingModel();
 			EOGeneratorModel eogenModel = EOGeneratorWizard.createEOGeneratorModel(_modelFile.getParent(), model);
 			String eogenBasePath = URLUtils.cheatAndTurnIntoFile(model.getModelURL()).getAbsolutePath();
 			int dotIndex = eogenBasePath.lastIndexOf('.');
