@@ -9,8 +9,8 @@ import java.util.Set;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
-import org.objectstyle.wolips.eomodeler.core.model.IEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.doc.EOModelDocGenerator;
+import org.objectstyle.wolips.eomodeler.factories.IDEAProjectEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.factories.SimpleManifestEOModelGroupFactory;
 
 public class EOModelDoc {
@@ -43,16 +43,16 @@ public class EOModelDoc {
     EOModelGroup modelGroup = new EOModelGroup();
     Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
     if (modelPaths.size() == 0) {
-      IEOModelGroupFactory modelGroupFactory = new SimpleManifestEOModelGroupFactory();
-      modelGroupFactory.loadModelGroup(modelGroupFolder, modelGroup, failures, true, new NullProgressMonitor());
+      new SimpleManifestEOModelGroupFactory().loadModelGroup(modelGroupFolder, modelGroup, failures, true, new NullProgressMonitor());
+      new IDEAProjectEOModelGroupFactory().loadModelGroup(modelGroupFolder, modelGroup, failures, true, new NullProgressMonitor());
     }
     else {
       for (String modelPath : modelPaths) {
         modelGroup.loadModelFromURL(new File(modelPath).toURL());
       }
-      modelGroup.resolve(failures);
-      modelGroup.verify(failures);
     }
+    modelGroup.resolve(failures);
+    modelGroup.verify(failures);
     EOModelDocGenerator.generate(modelGroup, outputFolder, templateFolder);
   }
 }
