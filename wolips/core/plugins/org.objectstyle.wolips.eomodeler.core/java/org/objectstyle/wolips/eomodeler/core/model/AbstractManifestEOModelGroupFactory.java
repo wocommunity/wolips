@@ -30,8 +30,10 @@ public abstract class AbstractManifestEOModelGroupFactory implements IEOModelGro
 			}
 
 			List<ManifestSearchFolder> searchFolders = getSearchFolders(modelGroupFile);
-			for (ManifestSearchFolder searchFolder : searchFolders) {
-				modelGroup.loadModelsFromURL(searchFolder.getFolder().toURL(), searchFolder.getDepth(), failures, skipOnDuplicates, progressMonitor);
+			if (searchFolders != null) {
+				for (ManifestSearchFolder searchFolder : searchFolders) {
+					modelGroup.loadModelsFromURL(searchFolder.getFolder().toURL(), searchFolder.getDepth(), failures, skipOnDuplicates, progressMonitor);
+				}
 			}
 			if (modelGroupFile != null && modelGroupFile.getName().endsWith(".eomodeld")) {
 				modelGroup.loadModelsFromURL(modelGroupFile.toURL(), 1, failures, skipOnDuplicates, progressMonitor);
