@@ -82,18 +82,15 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 
 		String ideaProjectPath = ideaModuleFile.getParentFile().getAbsolutePath();
 		Document ideaModuleDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(ideaModuleFile);
-		XPathExpression sourceFoldersExpression = XPathFactory.newInstance().newXPath().compile("//module/component/content/sourceFolder");
-		NodeList sourceFolderNodes = (NodeList) sourceFoldersExpression.evaluate(ideaModuleDocument, XPathConstants.NODESET);
-		for (int sourceFolderNum = 0; sourceFolderNum < sourceFolderNodes.getLength(); sourceFolderNum++) {
-			Element sourceFolderElement = (Element) sourceFolderNodes.item(sourceFolderNum);
-			String sourceFolderPath = sourceFolderElement.getAttribute("url");
-			sourceFolderPath = sourceFolderPath.replaceAll("^file://", "");
-			sourceFolderPath = sourceFolderPath.replaceAll("\\$MODULE_DIR\\$", ideaProjectPath);
-			File sourceFolder = new File(sourceFolderPath).getAbsoluteFile();
-			// MS: Only add folders named "Resources"?
-			if (sourceFolderPath.contains("/Resources")) {
-				searchFolders.add(new ManifestSearchFolder(sourceFolder));
-			}
+		XPathExpression sourceFoldersExpression = XPathFactory.newInstance().newXPath().compile("//module/component/content");
+		NodeList contentNodes = (NodeList) sourceFoldersExpression.evaluate(ideaModuleDocument, XPathConstants.NODESET);
+		for (int contentNum = 0; contentNum < contentNodes.getLength(); contentNum++) {
+			Element contentElement = (Element) contentNodes.item(contentNum);
+			String contentPath = contentElement.getAttribute("url");
+			contentPath = contentPath.replaceAll("^file://", "");
+			contentPath = contentPath.replaceAll("\\$MODULE_DIR\\$", ideaProjectPath);
+			File contentFolder = new File(contentPath).getAbsoluteFile();
+			searchFolders.add(new ManifestSearchFolder(contentFolder));
 		}
 
 		XPathExpression ideaModulesExpression = XPathFactory.newInstance().newXPath().compile("//module/component/orderEntry");
