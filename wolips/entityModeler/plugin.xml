@@ -12,24 +12,6 @@
       </application>
    </extension>
    <extension
-         id="entityModeler.eomodelGroupFactory"
-         name="Entity Modeler EOModelGroup Factories"
-         point="org.objectstyle.wolips.eomodeler.eomodelGroupFactory">
-      <modelGroupFactory
-            class="entitymodeler.model.SimpleManifestEOModelGroupFactory"
-            id="entitymodeler.SimpleManifestEOModelGroupFactory"
-            name="Simple Manifest EOModelGroup Factory"/>
-   </extension>
-   <extension
-         id="entityModeler.eoclassLoaderFactory"
-         name="Entity Modeler EOClassLoader Factory"
-         point="org.objectstyle.wolips.eomodeler.eoclassLoaderFactory">
-      <eoclassLoaderFactory
-            class="entitymodeler.model.SimpleManifestEOClassLoaderFactory"
-            id="entitymodeler.SimpleManifestEOClassLoaderFactory"
-            name="Simple Manifest EOClassLoader Factory"/>
-   </extension>
-   <extension
          id="EntityModeler"
          point="org.eclipse.core.runtime.products">
       <product
@@ -202,25 +184,5 @@
          <part id="org.eclipse.ui.views.ContentOutline"/>
          <part id="org.eclipse.ui.views.PropertySheet"/>
       </actionSetPartAssociation>
-   </extension>
-   <extension
-         id="org.objectstyle.wolips.eomodeler.sqlGeneratorFactory.eclipse"
-         name="Eclipse SQL Generator Factories"
-         point="org.objectstyle.wolips.eomodeler.sqlGeneratorFactory">
-      <sqlGeneratorFactory
-            class="org.objectstyle.wolips.eomodeler.core.sql.EOFSQLGeneratorFactory"
-            id="org.objectstyle.wolips.eomodeler.eclipse.sqlGeneratorFactory"
-            name="Eclipse SQL Generator Factory">
-      </sqlGeneratorFactory>
-   </extension>
-   <extension
-         id="org.objectstyle.wolips.eomodeler.sqlReverseEngineerFactory.eclipse"
-         name="Eclipse SQL Reverse Engineer Factories"
-         point="org.objectstyle.wolips.eomodeler.sqlReverseEngineerFactory">
-      <sqlReverseEngineerFactory
-            class="org.objectstyle.wolips.eomodeler.core.sql.EOFSQLReverseEngineerFactory"
-            id="org.objectstyle.wolips.eomodeler.eclipse.sqlReverseEngineerFactory"
-            name="Eclipse SQL Reverse Engineer Factory">
-      </sqlReverseEngineerFactory>
    </extension>
 </plugin>

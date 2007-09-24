@@ -63,9 +63,9 @@ public class NewEOModelAction extends Action implements ActionFactory.IWorkbench
         }
 
         boolean createModelGroup = false;
-        EOModelGroup modelGroup;
+        EOModelGroup modelGroup = new EOModelGroup();
         try {
-          modelGroup = IEOModelGroupFactory.Utility.loadModelGroup(modelFolder, failures, true, modelFolder.toURL(), new NullProgressMonitor());
+          IEOModelGroupFactory.Utility.loadModelGroup(modelFolder, modelGroup, failures, true, modelFolder.toURL(), new NullProgressMonitor());
         }
         catch (Exception e) {
           failures.clear();
