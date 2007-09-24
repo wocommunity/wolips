@@ -160,9 +160,9 @@ public class EOModelCreator implements IRunnableWithProgress {
 		}
 
 		boolean createModelGroup = false;
-		EOModelGroup modelGroup;
+		EOModelGroup modelGroup = new EOModelGroup();
 		try {
-			modelGroup = IEOModelGroupFactory.Utility.loadModelGroup(_parentResource.getProject(), failures, true, existingModelFolder.getLocation().toFile().toURL(), new NullProgressMonitor());
+			IEOModelGroupFactory.Utility.loadModelGroup(_parentResource, modelGroup, failures, true, existingModelFolder.getLocation().toFile().toURL(), new NullProgressMonitor());
 		} catch (Exception e) {
 			failures.clear();
 			failures.add(new EOModelVerificationFailure(null, "Creating empty EOModelGroup for this model because " + e.getMessage(), true, e));
