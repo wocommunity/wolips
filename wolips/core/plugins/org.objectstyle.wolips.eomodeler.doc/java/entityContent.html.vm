@@ -29,7 +29,9 @@
 	<div class = "documentation">$entity.documentation</div>
 	#end
 
-	<a class = "entity" href = "javascript:void(0)" onclick = "$$('.entity .details').each(function(e) { e.toggle() })">toggle details</a>
+	<div class = "actions">
+		<a href = "javascript:void(0)" onclick = "$$('.entity .details').each(function(e) { e.toggle() })">toggle details</a>
+	</div>
 	<table class = "details" style = "display: none">
 		#if ($entity.externalName)
 		<tr>
@@ -48,15 +50,23 @@
 </div>
 
 <div class = "section attributes">
-	<h2 class = "attributes">Attributes</h2>
-	<a class = "attributes" href = "javascript:void(0)" onclick = "$$('.attribute .details').each(function(e) { e.toggle() })">toggle details</a>
-	#if (!$entity.nonClassAttributes.empty)
-	<a class = "attributes" href = "javascript:void(0)" onclick = "$$('.attribute.nonClassProperty').each(function(e) { e.toggle() })">toggle non-class</a>
-	#end
-	#if (!$entity.inheritedAttributes.empty)
-	<a class = "attributes" href = "javascript:void(0)" onclick = "$$('.attribute.inheritedProperty').each(function(e) { e.toggle() })">toggle inherited</a>
-	#end
-	<ul class = "attributes">
+	<h2>Attributes</h2>
+	<div class = "actions">
+		#if (!$entity.attributes.empty)
+		<a href = "javascript:void(0)" onclick = "$$('.attribute .details').each(function(e) { e.toggle() })">toggle details</a>
+		#end
+		#if (!$entity.nonClassAttributes.empty)
+		<a href = "javascript:void(0)" onclick = "$$('.attribute.nonClassProperty').each(function(e) { e.toggle() })">toggle non-class</a>
+		#end
+		#if (!$entity.inheritedAttributes.empty)
+		<a href = "javascript:void(0)" onclick = "$$('.attribute.inheritedProperty').each(function(e) { e.toggle() })">toggle inherited</a>
+		#end
+		#if ($entity.attributes.empty)
+		no attributes
+		#end
+	</div>
+	#if (!$entity.attributes.empty)
+	<ul>
 		#foreach ($attribute in $entity.sortedAttributes)
 		#if ($attribute.classProperty)
 			#if ($attribute.inherited)
@@ -74,7 +84,7 @@
 		
 			<div class = "name">$attribute.name</div>
 			#if ($attribute.externalType)
-			<div class = "externalType">$attribute.externalType</div>
+			<div class = "mainDetail">$attribute.externalType</div>
 			#end
 			
 			#if ($attribute.documentation)
@@ -115,17 +125,26 @@
 		</li>
 		#end
 	</ul>
+	#end
 </div>
 
 <div class = "section relationships">
-	<h2 class = "relationships">Relationships</h2>
-	<a class = "relationships" href = "javascript:void(0)" onclick = "$$('.relationship .details').each(function(e) { e.toggle() })">toggle details</a>
-	#if (!$entity.nonClassRelationships.empty)
-	<a class = "relationships" href = "javascript:void(0)" onclick = "$$('.relationship.nonClassProperty').each(function(e) { e.toggle() })">toggle non-class</a>
-	#end
-	#if (!$entity.inheritedRelationships.empty)
-	<a class = "relationships" href = "javascript:void(0)" onclick = "$$('.relationship.inheritedProperty').each(function(e) { e.toggle() })">toggle inherited</a>
-	#end
+	<h2>Relationships</h2>
+	<div class = "actions">
+		#if (!$entity.relationships.empty)
+		<a href = "javascript:void(0)" onclick = "$$('.relationship .details').each(function(e) { e.toggle() })">toggle details</a>
+		#end
+		#if (!$entity.nonClassRelationships.empty)
+		<a href = "javascript:void(0)" onclick = "$$('.relationship.nonClassProperty').each(function(e) { e.toggle() })">toggle non-class</a>
+		#end
+		#if (!$entity.inheritedRelationships.empty)
+		<a href = "javascript:void(0)" onclick = "$$('.relationship.inheritedProperty').each(function(e) { e.toggle() })">toggle inherited</a>
+		#end
+		#if ($entity.relationships.empty)
+		no relationships
+		#end
+	</div>
+	#if (!$entity.relationships.empty)
 	<ul class = "relationships">
 		#foreach ($relationship in $entity.sortedRelationships)
 		#if ($relationship.classProperty)
@@ -144,7 +163,7 @@
 		
 			<div class = "name">$relationship.name</div>
 			#if ($relationship.destination)
-			<div class = "destination"><a href = "../../$relationship.destination.model.name/content.html">$relationship.destination.model.name</a> / <a href = "../../$relationship.destination.model.name/entities/${relationship.destination.name}.html">$relationship.destination.name</a></div>
+			<div class = "mainDetail"><a href = "../../$relationship.destination.model.name/content.html">$relationship.destination.model.name</a> / <a href = "../../$relationship.destination.model.name/entities/${relationship.destination.name}.html">$relationship.destination.name</a></div>
 			#end
 			#if ($relationship.documentation)
 			<div class = "documentation">$relationship.documentation</div>
@@ -169,13 +188,21 @@
 		</li>
 		#end
 	</ul>
+	#end
 </div>
 
-#if (!$entity.sortedFetchSpecs.empty)
 <div class = "section fetchSpecs">
-	<h2 class = "fetchSpecs">Fetch Specifications</h2>
-	<a class = "fetchSpecs" href = "javascript:void(0)" onclick = "$$('.fetchSpec .details').each(function(e) { e.toggle() })">toggle details</a>
-	<ul class = "fetchSpecs">
+	<h2>Fetch Specifications</h2>
+	<div class = "actions">
+		#if (!$entity.fetchSpecs.empty)
+		<a href = "javascript:void(0)" onclick = "$$('.fetchSpec .details').each(function(e) { e.toggle() })">toggle details</a>
+		#end
+		#if ($entity.fetchSpecs.empty)
+		no fetch specification
+		#end
+	</div>
+	#if (!$entity.fetchSpecs.empty)
+	<ul>
 		#foreach ($fetchSpec in $entity.sortedFetchSpecs)
 		<li class = "fetchSpec">
 			<div class = "name">$fetchSpec.name</div>
@@ -238,15 +265,21 @@
 		</li>
 		#end
 	</ul>
+	#end
 </div>
-#end
 
-#if (!$entity.sortedEntityIndexes.empty)
 <div class = "section entityIndexes">
-	<h2 class = "entityIndexes">Indexes</h2>
-	<ul class = "entityIndexes">
+	<h2>Entity Indexes</h2>
+	<div class = "actions">
+		#if ($entity.entityIndexes.empty)
+			no entity indexes
+		#end
+		&nbsp;
+	</div>
+	#if (!$entity.entityIndexes.empty)
+	<ul>
 		#foreach ($entityIndex in $entity.sortedEntityIndexes)
-		<li class = "entityIndex>
+		<li class = "entityIndex">
 			<div class = "name">$entityIndex.name</div>
 			#if ($entityIndex.documentation)
 			<div class = "documentation">$entityIndex.documentation</div>
@@ -254,8 +287,8 @@
 		</li>
 		#end
 	</ul>
+	#end
 </div>
-#end
 
 </body>
 </html>
