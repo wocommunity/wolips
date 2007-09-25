@@ -142,12 +142,12 @@ public class EOGenerator {
 	public static void main(String[] args) throws Exception {
 		EOGeneratorModel eogeneratorModel = new EOGeneratorModel();
 		eogeneratorModel.addModel(new EOModelReference(new Path("/Users/mschrag/Documents/workspace/MDTask/MDTask.eomodeld")));
-		eogeneratorModel.addRefModel(new EOModelReference(new Path("/Users/mschrag/Documents/workspace/MDTAccounting/MDTAccounting.eomodeld")));
+		eogeneratorModel.addModel(new EOModelReference(new Path("/Users/mschrag/Documents/workspace/MDTAccounting/MDTAccounting.eomodeld")));
 		eogeneratorModel.addRefModel(new EOModelReference(new Path("/Users/mschrag/Documents/workspace/ERPrototypes/Resources/erprototypes.eomodeld")));
 		eogeneratorModel.setPrefix("_");
 		eogeneratorModel.setDestination("/tmp/src");
 		eogeneratorModel.setSubclassDestination("/tmp/src");
-		eogeneratorModel.setDefine("EOGenericRecord", "ERXGenericRecord");
+		eogeneratorModel.setDefine("EOGenericRecord", "er.extensions.ERXGenericRecord");
 
 		EOGenerator.generate(eogeneratorModel);
 	}

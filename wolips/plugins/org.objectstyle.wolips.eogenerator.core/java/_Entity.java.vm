@@ -23,7 +23,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   private static Logger LOG = Logger.getLogger(${entity.prefixClassNameWithoutPackage}.class);
 
   public $entity.classNameWithoutPackage localInstanceOf${entity.name}(EOEditingContext editingContext) {
-    $entity.prefixClassNameWithoutPackage localInstance = ($entity.classNameWithoutPackage)EOUtilities.localInstanceOfObject(editingContext, this);
+    $entity.classNameWithoutPackage localInstance = ($entity.classNameWithoutPackage)EOUtilities.localInstanceOfObject(editingContext, this);
     if (localInstance == null) {
       throw new IllegalStateException("You attempted to localInstance " + this + ", which has not yet committed.");
     }
@@ -163,35 +163,20 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 
 #end
   public static ${entity.classNameWithoutPackage} create${entity.name}(EOEditingContext editingContext#foreach ($attribute in $entity.sortedClassAttributes)
-#if (!$attribute.allowsNull)#if ($attribute.userInfo.ERXConstantClassName), ${attribute.userInfo.ERXConstantClassName}#else, ${attribute.javaClassName}#end ${attribute.name}#end
-#end
-#foreach ($attribute in $entity.parent.sortedClassAttributes)
 #if (!$attribute.allowsNull)
 #set ($restrictingQualifierKey = 'false')
 #foreach ($qualifierKey in $entity.restrictingQualifierKeys)#if ($attribute.name == $qualifierKey)#set ($restrictingQualifierKey = 'true')#end#end
 #if ($restrictingQualifierKey == 'false')
-#if ($attribute.userInfo.ERXConstantClassName), ${attribute.userInfo.ERXConstantClassName}#else, ${attribute.javaClassName}#end $attribute.name#end
+#if ($attribute.userInfo.ERXConstantClassName), ${attribute.userInfo.ERXConstantClassName}#else, ${attribute.javaClassName}#end ${attribute.name}
 #end
 #end
-#foreach ($relationship in $entity.parent.sortedClassToOneRelationships)
-#if ($relationship.mandatory && !($relationship.ownsDestination && $relationship.propagatesPrimaryKey)), ${relationship.destination.classNameWithDefault} ${relationship.name}#end
 #end
-#foreach ($relationship in $entity.parent.sortedClassToOneRelationships)
+#foreach ($relationship in $entity.sortedClassToOneRelationships)
 #if ($relationship.mandatory && !($relationship.ownsDestination && $relationship.propagatesPrimaryKey)), ${relationship.destination.classNameWithDefault} ${relationship.name}#end
 #end
 ) {
     ${entity.classNameWithoutPackage} eo = (${entity.classNameWithoutPackage})EOUtilities.createAndInsertInstance(editingContext, ${entity.prefixClassNameWithoutPackage}.ENTITY_NAME);
 #foreach ($attribute in $entity.sortedClassAttributes)
-#if (!$attribute.allowsNull)
-    eo.set${attribute.capitalizedName}($attribute.name);
-#end
-#end
-#foreach ($relationship in $entity.sortedToOneRelationships)
-#if ($relationship.mandatory && !($relationship.ownsDestination && $relationship.propagatesPrimaryKey))
-    eo.set${relationship.capitalizedName}Relationship(${relationship.name});
-#end
-#end
-#foreach ($attribute in $entity.parent.sortedClassAttributes)
 #if (!$attribute.allowsNull)
 #set ($restrictingQualifierKey = 'false')
 #foreach ($qualifierKey in $entity.restrictingQualifierKeys) 
@@ -204,7 +189,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 #end
 #end
 #end
-#foreach ($relationship in $entity.parent.sortedToOneRelationships)
+#foreach ($relationship in $entity.sortedToOneRelationships)
 #if ($relationship.mandatory && !($relationship.ownsDestination && $relationship.propagatesPrimaryKey))
     eo.set${relationship.capitalizedName}Relationship(${relationship.name});
 #end
@@ -249,5 +234,21 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 
   public static ${entity.classNameWithoutPackage} fetchRequired${entity.name}(EOEditingContext editingContext, String keyName, Object value) {
     return ${entity.prefixClassNameWithoutPackage}.fetchRequired${entity.name}(editingContext, new EOKeyValueQualifier(keyName, EOQualifier.QualifierOperatorEqual, value));
+  }
+
+  public static ${entity.classNameWithoutPackage} fetchRequired${entity.classNameWithoutPackage}(EOEditingContext editingContext, EOQualifier qualifier) {
+    ${entity.classNameWithoutPackage} eoObject = ${entity.prefixClassNameWithoutPackage}.fetch${entity.classNameWithoutPackage}(editingContext, qualifier);
+    if (eoObject == null) {
+      throw new NoSuchElementException("There was no ${entity.name} that matched the qualifier '" + qualifier + "'.");
+    }
+    return eoObject;
+  }
+
+  public static ${entity.classNameWithoutPackage} localInstanceOf${entity.classNameWithoutPackage}(EOEditingContext editingContext, ${entity.classNameWithoutPackage} eo) {
+    ${entity.classNameWithoutPackage} localInstance = (eo == null) ? null : (${entity.classNameWithoutPackage})EOUtilities.localInstanceOfObject(editingContext, eo);
+    if (localInstance == null && eo != null) {
+      throw new IllegalStateException("You attempted to localInstance " + eo + ", which has not yet committed.");
+    }
+    return localInstance;
   }
 }
