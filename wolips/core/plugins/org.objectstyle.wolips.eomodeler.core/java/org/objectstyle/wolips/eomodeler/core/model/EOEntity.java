@@ -850,6 +850,10 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		return children;
 	}
 
+	public boolean hasParent() {
+		return myParent != null;
+	}
+
 	public EOEntity getParent() {
 		return myParent;
 	}
@@ -959,6 +963,20 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		firePropertyChange(EOEntity.ATTRIBUTES, null, null);
 	}
 
+	public Set<EOAttribute> getClassAttributes() {
+		Set<EOAttribute> classAttributes = new HashSet<EOAttribute>();
+		for (EOAttribute attribute : getAttributes()) {
+			if (attribute.isClassProperty() != null && attribute.isClassProperty().booleanValue()) {
+				classAttributes.add(attribute);
+			}
+		}
+		return classAttributes;
+	}
+
+	public Set<EOAttribute> getSortedClassAttributes() {
+		return new PropertyListSet<EOAttribute>(getClassAttributes());
+	}
+
 	public Set<EOAttribute> getNonClassAttributes() {
 		Set<EOAttribute> nonClassAttributes = new HashSet<EOAttribute>();
 		for (EOAttribute attribute : getAttributes()) {
@@ -999,10 +1017,24 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		return attributeNames;
 	}
 
+	public Set<EORelationship> getClassRelationships() {
+		Set<EORelationship> classRelationships = new HashSet<EORelationship>();
+		for (EORelationship relationship : getRelationships()) {
+			if (relationship.isClassProperty() != null && relationship.isClassProperty().booleanValue()) {
+				classRelationships.add(relationship);
+			}
+		}
+		return classRelationships;
+	}
+
+	public Set<EORelationship> getSortedClassRelationships() {
+		return new PropertyListSet<EORelationship>(getClassRelationships());
+	}
+
 	public Set<EORelationship> getNonClassRelationships() {
 		Set<EORelationship> nonClassRelationships = new HashSet<EORelationship>();
 		for (EORelationship relationship : getRelationships()) {
-			if (relationship.isClassProperty() == null && !relationship.isClassProperty().booleanValue()) {
+			if (relationship.isClassProperty() == null || !relationship.isClassProperty().booleanValue()) {
 				nonClassRelationships.add(relationship);
 			}
 		}
@@ -1017,6 +1049,62 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			}
 		}
 		return inheritedRelationships;
+	}
+
+	public Set<EORelationship> getToOneRelationships() {
+		Set<EORelationship> toOneRelationships = new HashSet<EORelationship>();
+		for (EORelationship relationship : getRelationships()) {
+			if (relationship.isToOne() != null && relationship.isToOne().booleanValue()) {
+				toOneRelationships.add(relationship);
+			}
+		}
+		return toOneRelationships;
+	}
+
+	public Set<EORelationship> getSortedToOneRelationships() {
+		return new PropertyListSet<EORelationship>(getToOneRelationships());
+	}
+
+	public Set<EORelationship> getClassToOneRelationships() {
+		Set<EORelationship> toOneRelationships = new HashSet<EORelationship>();
+		for (EORelationship relationship : getRelationships()) {
+			if (relationship.isToOne() != null && relationship.isToOne().booleanValue() && relationship.isClassProperty() != null && relationship.isClassProperty()) {
+				toOneRelationships.add(relationship);
+			}
+		}
+		return toOneRelationships;
+	}
+
+	public Set<EORelationship> getSortedClassToOneRelationships() {
+		return new PropertyListSet<EORelationship>(getClassToOneRelationships());
+	}
+
+	public Set<EORelationship> getToManyRelationships() {
+		Set<EORelationship> toManyRelationships = new HashSet<EORelationship>();
+		for (EORelationship relationship : getRelationships()) {
+			if (relationship.isToMany() != null && relationship.isToMany().booleanValue()) {
+				toManyRelationships.add(relationship);
+			}
+		}
+		return toManyRelationships;
+	}
+
+	public Set<EORelationship> getSortedToManyRelationships() {
+		return new PropertyListSet<EORelationship>(getToManyRelationships());
+	}
+
+	public Set<EORelationship> getClassToManyRelationships() {
+		Set<EORelationship> toManyRelationships = new HashSet<EORelationship>();
+		for (EORelationship relationship : getRelationships()) {
+			if (relationship.isToMany() != null && relationship.isToMany().booleanValue() && relationship.isClassProperty() != null && relationship.isClassProperty()) {
+				toManyRelationships.add(relationship);
+			}
+		}
+		return toManyRelationships;
+	}
+
+	public Set<EORelationship> getSortedClassToManyRelationships() {
+		return new PropertyListSet<EORelationship>(getClassToManyRelationships());
 	}
 
 	public Set<EORelationship> getRelationships() {
