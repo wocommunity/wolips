@@ -1,0 +1,193 @@
+AssistantActiveConditional: WOConditional {
+	condition = isWebAssistantEnabled;
+}
+
+BASHeaderNoduleBottom: WOImage {
+	filename="BASHeaderNoduleBottom.png";
+	framework="JavaDirectToWeb";
+	width="100%";
+	height="24";
+    style="width:50px;";
+    id="BASHeaderNoduleBottom";
+}
+
+BASHeaderNoduleBottomLeft: WOImage {
+	filename="BASHeaderNoduleBottomLeft.png";
+	framework="JavaDirectToWeb";
+	width="21";
+	height="24";
+}
+
+BASHeaderNoduleBottomRight: WOImage {
+	filename="BASHeaderNoduleBottomRight.png";
+	framework="JavaDirectToWeb";
+	width="21";
+	height="24";
+}
+
+BASHeaderNoduleLeft: WOImage {
+	filename="BASHeaderNoduleLeft.png";
+	framework="JavaDirectToWeb";
+	width="53";
+	height="110";
+}
+
+BASHeaderNoduleRight: WOImage {
+	filename="BASHeaderNoduleRight.png";
+	framework="JavaDirectToWeb";
+	width="52";
+	height="110";
+}
+
+BASHeaderNoduleTop: WOImage {
+	filename="BASHeaderNoduleTop.png";
+	framework="JavaDirectToWeb";
+	width="100%";
+	height="7";
+}
+
+BASHeaderNoduleTopLeft: WOImage {
+	filename="BASHeaderNoduleTopLeft.png";
+	framework="JavaDirectToWeb";
+	width="21";
+	height="7";
+}
+
+BASHeaderNoduleTopRight: WOImage {
+	filename="BASHeaderNoduleTopRight.png";
+	framework="JavaDirectToWeb";
+	width="21";
+	height="7";
+}
+
+D2WLink: WOHyperlink {
+	href = "http://www.apple.com/WebObjects/";
+}
+
+D2WLink2: WOHyperlink {
+	href = "http://www.apple.com/WebObjects/";
+}
+
+D2WLogo: WOImage {
+	alt = "Direct to Web - WebObjects 5.0";
+	border = "0";
+	filename = "DTW.png";
+	framework = "JavaDirectToWeb";
+	height = "75";
+	name = "Direct to Web - WebObjects 5.0";
+	width = "87";
+}
+
+D2WLogo2: WOImage {
+	alt = "Direct to Web - WebObjects 5.0";
+	border = "0";
+	filename = "DTW.png";
+	framework = "JavaDirectToWeb";
+	height = "75";
+	name = "Direct to Web - WebObjects 5.0";
+	width = "87";
+	onmouseover = "//fade(this,1,2);";
+	onmouseout = "//fade(this,0.2,0.3);";
+	id="wogearsButton";
+}
+
+EntitiesForm: WOForm {
+}
+
+EntitiesPopup: WOPopUpButton {
+	item = entityNameInList;
+	list = visibleEntityNames;
+	selection = manipulatedEntityName;
+}
+
+FindButton: WOImageButton {
+	action = findEntityAction;
+	alt = "Builds a Query Component for the selected Entity";
+	border = "0";
+	filename = "ButtonBuildQuery.png";
+	framework = "JavaDirectToWeb";
+	height = "75";
+	name = "Builds a Query Component for the selected Entity";
+	width = "90";
+	id="findButton";
+}
+
+HasValidSession: WOConditional {
+	condition = context.hasSession;
+}
+
+HomeButton: WOImage {
+	alt = "Exit to Top/Home";
+	border = "0";
+	filename = "ButtonHome.png";
+	framework = "JavaDirectToWeb";
+	height = "75";
+	name = "Exit to Top/Home";
+	width = "90";
+	id="homeButton";
+}
+
+HomeLink: WOHyperlink {
+	action = homeAction;
+}
+
+LoginButton: WOImage {
+	alt = "Logout";
+	border = "0";
+	filename = "ButtonLogout.png";
+	framework = "JavaDirectToWeb";
+	height = "75";
+	name = "Logout";
+	width = "90";
+	id="logoutButton";
+}
+
+LoginLink: WOHyperlink {
+	action = logout;
+	target = "_top";
+}
+
+NewButton: WOImageButton {
+	action = newObjectAction;
+	alt = "Creates a new Object of the selected Entity";
+	border = "0";
+	filename = "ButtonNew.png";
+	framework = "JavaDirectToWeb";
+	height = "75";
+	name = "Creates a new Object of the selected Entity";
+	width = "90";
+	id="newButton";
+}
+
+NoValidSession: WOConditional {
+	condition = context.hasSession;
+	negate = true;
+}
+
+RemoteControl: D2WRemoteControl {
+}
+
+ShowAssistantButton: WOImage {
+	alt = "Activates the WebAssistant";
+	border = "0";
+	filename = "ButtonCustomize.png";
+	framework = "JavaDirectToWeb";
+	height = "75";
+	name = "Activates the WebAssistant";
+	width = "90";
+	id="customizeButton";
+}
+
+ShowAssistantLink: WOHyperlink {
+	action = showWebAssistant;
+}
+
+
+
+
+
+
+
+
+
+

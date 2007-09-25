@@ -1,0 +1,10 @@
+// Created by Direct to Web's Project Builder Wizard
+
+import com.webobjects.appserver.*;
+
+public class PageWrapper extends WOComponent {
+	private static final long serialVersionUID = 1L;
+    public PageWrapper(WOContext aContext) {
+        super(aContext);
+    }
+}

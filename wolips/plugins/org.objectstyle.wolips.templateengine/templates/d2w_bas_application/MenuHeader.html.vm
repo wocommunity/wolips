@@ -1,0 +1,90 @@
+
+   <center>
+ <table id="menuHeader" height="110" border="0" cellpadding="0" cellspacing="0">
+<webobject name="EntitiesForm">
+  <tr>
+    <td rowspan="3">
+      <webobject name="BASHeaderNoduleLeft"></webobject></td>
+  <td colspan="3" height="7">
+
+<table cellspacing="0" border="0" cellpadding="0" width="100%" height="7">
+<tr>
+	<td width="21" height="7"><webobject name="BASHeaderNoduleTopLeft"></webobject></td>
+	<td height="7"><webobject name="BASHeaderNoduleTop"></webobject></td>
+	<td width="21" height="7"><webobject name="BASHeaderNoduleTopRight"></webobject></td>
+</tr>
+</table>
+
+  </td>
+    <td rowspan="3">
+      <webobject name="BASHeaderNoduleRight"></webobject></td>
+  </tr>
+  <tr>
+    <td colspan="3" bgcolor="white" height="79">
+
+	
+	
+   
+      <table border="0" cellpadding="0" height="79" cellspacing="0" id="oldTable">
+         <tr>
+            <webobject name="HasValidSession">
+               <td>
+                  <table border="0" cellpadding="0" cellspacing="0">
+                     <tr valign="middle">
+                        <td align="left" valign="middle"> <b>Entities:</b><br>
+                           <webobject name="EntitiesPopup"></webobject>
+                        </td>
+                        <td align="left">
+                           <webobject name="FindButton"></webobject>
+                        </td><td align="left"><webobject name="NewButton"></webobject></td>
+                     </tr>
+                  </table>
+               </td>
+               <td>
+                  <table border="0" cellpadding="0" cellspacing="0">
+                     <tr valign="middle">
+                        <td align="center" valign="middle"><webobject name="HomeLink"><webobject name="HomeButton"></webobject></webobject></td>
+                        <td align="center" valign="middle"><webobject name="LoginLink"><webobject name="LoginButton"></webobject></webobject></td>
+                        <webobject name="AssistantActiveConditional">
+                           <td align="center">
+                              <webobject name="ShowAssistantLink"><webobject name="ShowAssistantButton"></webobject></webobject></td>
+                        </webobject>
+                        <td align="right" valign="middle"><webobject name="D2WLink2"><webobject name="D2WLogo2"></webobject></webobject></td>
+                     </tr>
+                  </table>
+               </td>
+            </webobject>
+            <webobject name="NoValidSession">
+               <td>
+                  <table border="0" cellpadding="0" cellspacing="0">
+                     <tr valign="middle">
+                        <td align="right" valign="middle"><webobject name="D2WLink"><webobject name="D2WLogo"></webobject></webobject></td>
+                     </tr>
+                  </table>
+               </td>
+            </webobject>
+         </tr>
+      </table>
+	  
+	  
+	  
+
+	  </td>
+  </tr>
+  <tr>
+  <td colspan="3" height="24">
+
+<table cellspacing="0" border="0" cellpadding="0" width="100%" height="24"><tr>
+<td width="21" height="24"><webobject name="BASHeaderNoduleBottomLeft"></webobject></td>
+<td height="24"><webobject name="BASHeaderNoduleBottom"></webobject></td>
+<td width="21" height="24"><webobject name="BASHeaderNoduleBottomRight"></webobject></td>
+</tr></table>
+
+  </td>
+  </tr>
+</webobject></table>
+	  
+	  
+   </center>
+
+<webobject name="RemoteControl"></webobject>
