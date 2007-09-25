@@ -55,13 +55,18 @@ import org.eclipse.core.runtime.Path;
 
 public class PathUtils {
 	public static String getRelativePath(IProject projectContext, IPath path) {
-		IPath projectPath = projectContext.getLocation();
+		IPath projectPath;
+		if (projectContext == null) {
+			projectPath = null;
+		} else {
+			projectPath = projectContext.getLocation();
+		}
 		return PathUtils.getRelativePath(projectPath, path);
 	}
 
 	public static String getRelativePath(IPath projectPath, IPath path) {
 		String modelPathStr;
-		if (path.isAbsolute()) {
+		if (projectPath != null && path.isAbsolute()) {
 			if (projectPath.isPrefixOf(path)) {
 				modelPathStr = path.removeFirstSegments(projectPath.segmentCount()).toPortableString();
 			} else {

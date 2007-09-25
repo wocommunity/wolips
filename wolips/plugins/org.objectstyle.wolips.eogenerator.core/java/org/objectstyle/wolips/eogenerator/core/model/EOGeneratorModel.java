@@ -105,7 +105,7 @@ public class EOGeneratorModel {
 	public static final String DIRTY = "dirty";
 
 	private PropertyChangeSupport _propertyChangeSupport;
-	
+
 	private IProject _project;
 
 	private String _eogeneratorPath;
@@ -159,7 +159,7 @@ public class EOGeneratorModel {
 		_defines = new LinkedList<Define>();
 		_customSettings = new LinkedList<String>();
 	}
-	
+
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		_propertyChangeSupport.addPropertyChangeListener(listener);
 	}
@@ -330,6 +330,36 @@ public class EOGeneratorModel {
 		return _project;
 	}
 
+	public void addDefine(Define define) {
+		_defines.add(define);
+	}
+
+	public void setDefine(String name, String value) {
+		Define define = getDefineNamed(name);
+		if (define == null) {
+			addDefine(new Define(name, value));
+		} else {
+			define.setValue(value);
+		}
+	}
+
+	public Define getDefineNamed(String name) {
+		for (Define define : getDefines()) {
+			if (name.equals(define.getName())) {
+				return define;
+			}
+		}
+		return null;
+	}
+
+	public String getDefineValueNamed(String name) {
+		Define define = getDefineNamed(name);
+		if (define != null) {
+			return define.getValue();
+		}
+		return null;
+	}
+
 	public List<Define> getDefines() {
 		return _defines;
 	}
@@ -393,7 +423,7 @@ public class EOGeneratorModel {
 	public Boolean getJava() {
 		return isJava();
 	}
-	
+
 	public Boolean isJava() {
 		return _java;
 	}
@@ -408,7 +438,7 @@ public class EOGeneratorModel {
 	public String getJavaTemplate() {
 		return getJavaTemplate(null);
 	}
-	
+
 	public String getJavaTemplate(String defaultJavaTemplate) {
 		String javaTemplate = _javaTemplate;
 		if (_javaTemplate == null || _javaTemplate.trim().length() == 0) {
@@ -459,7 +489,7 @@ public class EOGeneratorModel {
 	public Boolean getPackageDirs() {
 		return isPackageDirs();
 	}
-	
+
 	public Boolean isPackageDirs() {
 		return _packageDirs;
 	}
@@ -505,7 +535,7 @@ public class EOGeneratorModel {
 	public String getSubclassJavaTemplate() {
 		return getSubclassJavaTemplate(null);
 	}
-	
+
 	public String getSubclassJavaTemplate(String defaultSubclassJavaTemplate) {
 		String subclassJavaTemplate = _subclassJavaTemplate;
 		if (_subclassJavaTemplate == null || _subclassJavaTemplate.trim().length() == 0) {
@@ -526,7 +556,7 @@ public class EOGeneratorModel {
 	public String getTemplateDir() {
 		return getTemplateDir(null);
 	}
-	
+
 	public String getTemplateDir(String defaultTemplateDir) {
 		String templateDir = _templateDir;
 		if (_templateDir == null || _templateDir.trim().length() == 0) {
@@ -576,7 +606,7 @@ public class EOGeneratorModel {
 	public Boolean getVerbose() {
 		return isVerbose();
 	}
-	
+
 	public Boolean isVerbose() {
 		return _verbose;
 	}
@@ -640,6 +670,10 @@ public class EOGeneratorModel {
 
 		public String getValue() {
 			return _value;
+		}
+
+		public void setValue(String value) {
+			_value = value;
 		}
 	}
 
