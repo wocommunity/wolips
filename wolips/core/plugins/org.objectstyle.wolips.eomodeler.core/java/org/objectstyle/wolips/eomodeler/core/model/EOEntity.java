@@ -840,7 +840,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		return prefixClassName;
 	}
 
-	public boolean hasClassName() {
+	public boolean isClassNameSet() {
 		return myClassName != null;
 	}
 
@@ -924,7 +924,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		return children;
 	}
 
-	public boolean hasParent() {
+	public boolean isParentSet() {
 		return myParent != null;
 	}
 
