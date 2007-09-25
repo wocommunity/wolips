@@ -72,9 +72,31 @@ public class EOModelGroup extends EOModelObject<Object> {
 
 	private String _editingModelName;
 
+	private String _eogenericRecordClassName;
+
+	private String _prefix;
+
 	public EOModelGroup() {
 		_models = new HashSet<EOModel>();
 		_createDefaultDatabaseConfig = true;
+		_prefix = "_";
+		_eogenericRecordClassName = "com.webobjects.eocontrol.EOGenericRecord";
+	}
+
+	public void setPrefix(String prefix) {
+		_prefix = prefix;
+	}
+
+	public String getPrefix() {
+		return _prefix;
+	}
+
+	public void setEOGenericRecordClassName(String eogenericRecordClassName) {
+		_eogenericRecordClassName = eogenericRecordClassName;
+	}
+
+	public String getEOGenericRecordClassName() {
+		return _eogenericRecordClassName;
 	}
 
 	public void setCreateDefaultDatabaseConfig(boolean createDefaultDatabaseConfig) {
