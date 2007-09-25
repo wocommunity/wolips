@@ -56,13 +56,9 @@
 package org.objectstyle.wolips.wizards;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.objectstyle.wolips.core.resources.internal.types.project.ProjectPatternsets;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
@@ -77,6 +73,11 @@ public class WOnderFrameworkWizard extends AbstractWonderProjectWizard {
 		super();
 	}
 
+	@Override
+	protected WizardType wizardType(){
+		return WizardType.WONDER_FRAMEWORK_WIZARD;
+	}
+	
 	public String getWindowTitle() {
 		return Messages.getString("WOnderFrameworkCreationWizard.title");
 	}
@@ -101,5 +102,7 @@ public class WOnderFrameworkWizard extends AbstractWonderProjectWizard {
 		templateEngine.addTemplate(new TemplateDefinition("wonderframework/CustomInfo.plist.vm", path, "CustomInfo.plist", "CustomInfo.plist"));
 		templateEngine.addTemplate(new TemplateDefinition("wonderframework/Properties.vm", path + File.separator + "Resources", "Properties", "Properties"));
 		templateEngine.run(progressMonitor);
+		
+		createEOModelSupport(project);
 	}
 }

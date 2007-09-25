@@ -73,6 +73,11 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 		super();
 	}
 
+	@Override
+	protected WizardType wizardType(){
+		return WizardType.WO_APPLICATION_WIZARD;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -91,8 +96,7 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 		String templateFolder = getTemplateFolder();
 		String projectName = project.getName();
 		String path = project.getLocation().toOSString();
-		File mainwo = new File(path + File.separator + "Main.wo");
-		mainwo.mkdirs();
+
 		File src = new File(path + File.separator + "src");
 		src.mkdirs();
 		File bin = new File(path + File.separator + "bin");
@@ -110,9 +114,9 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 		templateEngine.init();
 		templateEngine.getWolipsContext().setProjectName(projectName);
 		templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
-		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Main.html.vm", path + File.separator + "Main.wo", "Main.html", "Main.html"));
-		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Main.wod.vm", path + File.separator + "Main.wo", "Main.wod", "Main.wod"));
-		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Main.woo.vm", path + File.separator + "Main.wo", "Main.woo", "Main.woo"));
+
+		addComponentDefinition(templateFolder, templateEngine, path, "Main");
+		
 		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Application.java.vm", path + File.separator + "src", "Application.java", "Application.java"));
 		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/DirectAction.java.vm", path + File.separator + "src", "DirectAction.java", "DirectAction.java"));
 		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Main.java.vm", path + File.separator + "src", "Main.java", "Main.java"));
@@ -128,7 +132,6 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/build.xml.vm", path, "build.xml", "build.xml"));
 		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/build.properties.vm", path, "build.properties", "build.properties"));
 		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/CustomInfo.plist.vm", path, "CustomInfo.plist", "CustomInfo.plist"));
-		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Main.api.vm", path, "Main.api", "Main.api"));
 		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Makefile.vm", path, "Makefile.postamble", "Makefile.postamble"));
 		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Makefile.postamble.vm", path, "Makefile.postamble", "Makefile.postamble"));
 		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Makefile.preamble.vm", path, "Makefile.preamble", "Makefile.preamble"));
@@ -138,6 +141,14 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 		// "woapplication/project.pbxproj.vm", path
 		// + File.separator + projectName + ".xcode",
 		// "project.pbxproj", "project.pbxproj"));
+		
+		createWebServicesSupport(project, templateEngine);
+		
 		templateEngine.run(progressMonitor);
+		
+		createEOModelSupport(project);
+
 	}
+	
+
 }

@@ -25,6 +25,11 @@ public class NewProjectFromTemplateWizard extends NewWOProjectWizard {
 	}
 
 	@Override
+	protected WizardType wizardType() {
+		return WizardType.NEWPROJECT_TEMPLATE_WIZARD;
+	}
+	
+	@Override
 	public void createPageControls(Composite pageContainer) {
 		super.createPageControls(pageContainer);
 	}
@@ -82,4 +87,5 @@ public class NewProjectFromTemplateWizard extends NewWOProjectWizard {
 		}
 
 	}
+
 }

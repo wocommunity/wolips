@@ -74,6 +74,11 @@ public class WOnderApplicationWizard extends AbstractWonderProjectWizard {
 		super();
 	}
 
+	@Override
+	protected WizardType wizardType(){
+		return WizardType.WONDER_APPLICATION_WIZARD;
+	}
+	
 	public String getWindowTitle() {
 		return Messages.getString("WOnderApplicationCreationWizard.title");
 	}
@@ -108,5 +113,7 @@ public class WOnderApplicationWizard extends AbstractWonderProjectWizard {
 		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Session.java.vm", path + File.separator + "Sources", "Session.java", "Session.java"));
 		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Properties.vm", path + File.separator + "Resources", "Properties", "Properties"));
 		templateEngine.run(progressMonitor);
+		
+		createEOModelSupport(project);
 	}
 }
