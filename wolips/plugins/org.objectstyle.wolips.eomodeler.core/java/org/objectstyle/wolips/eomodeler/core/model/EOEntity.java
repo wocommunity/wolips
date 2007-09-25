@@ -1017,7 +1017,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	public Set<String> getRestrictingQualifierKeys() {
 		Set<String> restrictingQualifierKeys;
-		if (myRestrictingQualifier != null) {
+		if (myRestrictingQualifier == null) {
 			restrictingQualifierKeys = new HashSet<String>();
 		}
 		else {
