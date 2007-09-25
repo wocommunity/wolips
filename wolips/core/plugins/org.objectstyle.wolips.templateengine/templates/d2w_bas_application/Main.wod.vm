@@ -1,0 +1,45 @@
+AssistantConditional: WOConditional {
+	condition = isAssistantCheckboxVisible;
+}
+
+DirectToWebPlaque: WOImage {
+	alt = "Direct to Web - WebObjects 5.0";
+	filename = "DTW.gif";
+	framework = "JavaDirectToWeb";
+	height = "49";
+	name = "Direct to Web - WebObjects 5.0";
+	width = "196";
+}
+
+LACheckbox: WOCheckBox {
+	checked = wantsWebAssistant;
+}
+
+LoginButton: WOSubmitButton {
+	action = defaultPage;
+	value = "Login";
+}
+
+LoginForm: WOForm {
+}
+
+PasswordField: WOPasswordField {
+	value = password;
+	size = "16";
+}
+
+UsernameField: WOTextField {
+	value = username;
+	size = "16";
+}
+
+BodyTag: WOBody {
+  bgcolor="#EEEEEE";
+  onload="fixStuff()";
+  filename="BASBackground.gif";
+  framework="JavaDirectToWeb";
+}
+
+loginDarwinShadow: DarwinShadow {
+  elementID="theLoginWindow";
+}

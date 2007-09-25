@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+   <head>
+      <title>Direct to Web</title>
+   </head>
+   <webobject name="BodyContainer">
+      <webobject name="LoginForm">
+
+
+		<table cellspacing="0" cellpadding="0" border="0" style="width:100%; position:absolute; left:0px; top:20%;">
+			<tr><td valign="center" align="center">
+
+
+<webobject name=DarwinShadow1>
+<table cellspacing="0" cellpadding="10" border="0" bgcolor="#181818"><tr><td><table cellspacing="20" cellpadding="0" border="0" bgcolor="#000"><tr><td>
+            <table border="0" cellpadding="4" cellspacing="2">
+               <tr valign="middle">
+                  <td align="center"><webobject name="DirectToWebPlaque"></webobject></td>
+               </tr>
+               <tr>
+                  <td align=center>
+                     <table cellspacing="0" border="0" cellpadding="4">
+                        <tr>
+						   <webobject name="AssistantConditional">
+                           <th align="right" rowspan=2>Assistant:
+                              <webobject name="LACheckbox"></webobject>&nbsp;&nbsp;&nbsp;&nbsp;
+                           </th></webobject>
+                           <th align="right">Username:</th>
+                           <td align="right">
+                              <webobject name="UsernameField"></webobject>
+                           </td>
+                           <td align="center" rowspan="2">
+                              <webobject name="LoginButton"></webobject>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th align="right">Password: </th>
+                           <td align="right">
+                              <webobject name="PasswordField"></webobject>
+                           </td>
+                        </tr>
+                     </table>
+                  </td>
+               </tr>
+            </table>
+			</td></tr>
+		</table>			</td></tr>
+		</table>
+</webobject>
+
+</td></tr>
+		</table>
+
+
+      </webobject>
+   </webobject>
+</html>

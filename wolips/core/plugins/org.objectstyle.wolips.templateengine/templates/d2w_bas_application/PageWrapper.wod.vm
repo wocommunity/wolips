@@ -1,0 +1,28 @@
+Body: WOComponentContent {
+	_unroll = true;
+}
+
+BodyDarwinShadow: DarwinShadow {
+  elementID="theBodyTable";
+}
+
+BodyTag: WOBody {
+  bgcolor="#EEEEEE";
+  onload="fixStuff()";
+  filename="BASBackground.gif";
+  framework="JavaDirectToWeb";
+}
+
+Head: BASHead {
+	_unroll = true;
+}
+
+Header: MenuHeader {
+}
+
+spacerGifImage: WOImage {
+    style="visibility:hidden; position:absolute; left:0px; top:0px; width:1px; height:1px;";
+	filename="spacer.gif";
+	framework = "JavaDirectToWeb";
+	id="spacerGifImage";
+}
