@@ -367,6 +367,18 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	public String getName() {
 		return (String) _prototypeValueIfNull(AbstractEOArgument.NAME, super.getName());
 	}
+	
+	public String getUppercaseUnderscoreName() {
+		return StringUtils.camelCaseToUnderscore(getName()).toUpperCase();
+	}
+	
+	public String getCapitalizedName() {
+		String name = getName();
+		if (name != null) {
+			name = StringUtils.toUppercaseFirstLetter(name);
+		}
+		return name;
+	}
 
 	public Boolean getReadOnly() {
 		return isReadOnly();
@@ -560,6 +572,38 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		super.setServerTimeZone((String) _nullIfPrototyped(AbstractEOArgument.SERVER_TIME_ZONE, _serverTimeZone));
 	}
 
+	public String getJavaClassName() {
+		String className = getValueClassName();
+		if ("Number".equals(className) || "NSNumber".equals(className)) {
+			String valueType = getValueType();
+			if ("B".equals(valueType)) {
+				className = "BigDecimal";
+			}
+			else if ("b".equals(valueType)) {
+				className = "Byte";
+			}
+			else if ("d".equals(valueType)) {
+				className = "Double";
+			}
+			else if ("f".equals(valueType)) {
+				className = "Float";
+			}
+			else if ("i".equals(valueType)) {
+				className = "Integer";
+			}
+			else if ("l".equals(valueType)) {
+				className = "Long";
+			}
+			else if ("s".equals(valueType)) {
+				className = "Short";
+			}
+		}
+		else if ("NSString".equals(className)) {
+			className = "String";
+		}
+		return className;
+	}
+	
 	public String getValueClassName() {
 		return (String) _prototypeValueIfNull(AbstractEOArgument.VALUE_CLASS_NAME, super.getValueClassName());
 	}

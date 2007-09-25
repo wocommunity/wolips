@@ -143,6 +143,23 @@ public class StringUtils {
 	public static boolean isSelectorNameEqual(String _expectedName, String _possibleName) {
 		return _expectedName.equals(_possibleName) || (_expectedName + ":").equals(_possibleName);
 	}
+    
+    /**
+     * Converts ThisIsATest to this_is_a_test
+     * @param camelString the StringWithCaps
+     * @return the StringWithoutUnderscores
+     */
+    public static String camelCaseToUnderscore(String camelString) {
+    	StringBuffer underscore = new StringBuffer();
+    	for (int i = 0; i < camelString.length(); i ++) {
+    		char ch = camelString.charAt(i);
+    		if (Character.isUpperCase(ch) && i > 0) {
+    			underscore.append("_");
+    		}
+    		underscore.append(ch);
+    	}
+    	return underscore.toString();
+    }
 
 	public static String toPlural(String _str) {
 		String plural;
