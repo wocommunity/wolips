@@ -9,17 +9,19 @@ import java.util.*;
 import org.apache.log4j.Logger;
 
 @SuppressWarnings("all")
-public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($entity.hasParent)$entity.parent.classNameWithDefault#else$EOGenericRecord#end {
+public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($entity.parentSet)${entity.parent.classNameWithDefault}#else${EOGenericRecord}#end {
 	public static final String ENTITY_NAME = "$entity.name";
+
 	// Attributes
 #foreach ($attribute in $entity.sortedClassAttributes)
 	public static final String ${attribute.uppercaseUnderscoreName}_KEY = "$attribute.name";
 #end
+
 	// Relationships
 #foreach ($relationship in $entity.sortedClassRelationships)
 	public static final String ${relationship.uppercaseUnderscoreName}_KEY = "$relationship.name";
 #end
-	// Logger
+
   private static Logger LOG = Logger.getLogger(${entity.prefixClassNameWithoutPackage}.class);
 
   public $entity.classNameWithoutPackage localInstanceOf${entity.name}(EOEditingContext editingContext) {
@@ -31,6 +33,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   }
 
 #foreach ($attribute in $entity.sortedClassAttributes)
+#if (!$attribute.inherited)
 #if ($attribute.userInfo.ERXConstantClassName)
   public $attribute.userInfo.ERXConstantClassName ${attribute.name}() {
     Number value = (Number)storedValueForKey("$attribute.name");
@@ -54,12 +57,14 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 #end
 
 #end
-#foreach ($relationship in $entity.sortedToOneRelationships) 
+#end
+#foreach ($relationship in $entity.sortedToOneRelationships)
+#if (!$relationship.inherited) 
   public $relationship.destination.classNameWithDefault ${relationship.name}() {
     return ($relationship.destination.classNameWithDefault)storedValueForKey("$relationship.name");
   }
 
-  public void set${relationship.capitalizedName}($relationship.destination.classNameWithDefault value) {
+  public void set${relationship.capitalizedName}Relationship($relationship.destination.classNameWithDefault value) {
     if (${entity.prefixClassNameWithoutPackage}.LOG.isDebugEnabled()) {
       ${entity.prefixClassNameWithoutPackage}.LOG.debug("updating $relationship.name from " + ${relationship.name}() + " to " + value);
     }
@@ -74,7 +79,9 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   }
   
 #end
+#end
 #foreach ($relationship in $entity.sortedToManyRelationships)
+#if (!$relationship.inherited) 
   public NSArray<${relationship.destination.classNameWithDefault}> ${relationship.name}() {
     return (NSArray<${relationship.destination.classNameWithDefault}>)storedValueForKey("${relationship.name}");
   }
@@ -108,7 +115,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
         qualifiers.addObject(inverseQualifier);
         fullQualifier = new EOAndQualifier(qualifiers);
       }
-      results = ${relationship.destination.classNameWithDefault}.fetch${relationship.destination.name}s(editingContext(), fullQualifier, sortOrderings);
+      results = ${relationship.destination.classNameWithDefault}.fetch${relationship.destination.pluralName}(editingContext(), fullQualifier, sortOrderings);
     }
     else {
 #end
@@ -161,6 +168,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
     }
   }
 
+#end
 #end
   public static ${entity.classNameWithoutPackage} create${entity.name}(EOEditingContext editingContext#foreach ($attribute in $entity.sortedClassAttributes)
 #if (!$attribute.allowsNull)

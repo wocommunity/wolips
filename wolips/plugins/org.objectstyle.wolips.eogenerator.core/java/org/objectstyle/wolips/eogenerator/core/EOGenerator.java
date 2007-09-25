@@ -1,8 +1,16 @@
 package org.objectstyle.wolips.eogenerator.core;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.security.MessageDigest;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -143,7 +151,9 @@ public class EOGenerator {
 		EOGeneratorModel eogeneratorModel = new EOGeneratorModel();
 		eogeneratorModel.addModel(new EOModelReference(new Path("/Users/mschrag/Documents/workspace/MDTask/MDTask.eomodeld")));
 		eogeneratorModel.addModel(new EOModelReference(new Path("/Users/mschrag/Documents/workspace/MDTAccounting/MDTAccounting.eomodeld")));
+		eogeneratorModel.addModel(new EOModelReference(new Path("/Users/mschrag/Documents/workspace/MDTWOExtensions/MDTWOExtensions.eomodeld")));
 		eogeneratorModel.addRefModel(new EOModelReference(new Path("/Users/mschrag/Documents/workspace/ERPrototypes/Resources/erprototypes.eomodeld")));
+		eogeneratorModel.addRefModel(new EOModelReference(new Path("/Users/mschrag/Documents/workspace/ERAttachment/Resources/erattachment.eomodeld")));
 		eogeneratorModel.setPrefix("_");
 		eogeneratorModel.setDestination("/tmp/src");
 		eogeneratorModel.setSubclassDestination("/tmp/src");
@@ -159,11 +169,65 @@ public class EOGenerator {
 				throw new IOException("Unable to create the folder " + outputFile.getParentFile() + ".");
 			}
 		}
-		FileWriter outputWriter = new FileWriter(outputFile);
-		try {
-			template.merge(context, outputWriter);
-		} finally {
-			outputWriter.close();
+
+		if (!outputFile.exists()) {
+		  System.out.println("EOGenerator.writeTemplate: writing the first time ...");
+			FileWriter newFileWriter = new FileWriter(outputFile);
+			BufferedWriter newFileBufferedWriter = new BufferedWriter(newFileWriter);
+			try {
+				template.merge(context, newFileBufferedWriter);
+			} finally {
+				newFileBufferedWriter.close();
+			}
+		} else {
+			ByteArrayOutputStream newFileContentsStream = new ByteArrayOutputStream();
+			Writer newFileContentsWriter = new OutputStreamWriter(newFileContentsStream);
+			try {
+				template.merge(context, newFileContentsWriter);
+			} finally {
+				newFileContentsWriter.close();
+			}
+			byte[] newFileContents = newFileContentsStream.toByteArray();
+			for (int i = 0; i < newFileContents.length; i ++) {
+			  System.out.println("EOGenerator.writeTemplate: " + i + ": " + (char)newFileContents[i]);
+			}
+
+			MessageDigest md5 = MessageDigest.getInstance("MD5");
+			byte[] newFileDigest = md5.digest(newFileContents);
+
+			md5.reset();
+			FileInputStream existingFileStream = new FileInputStream(outputFile);
+			try {
+			  System.out.println("EOGenerator.writeTemplate: existing = " + outputFile.length());
+				byte[] buffer = new byte[2048];
+				while (existingFileStream.available() > 0) {
+					int bytesRead = existingFileStream.read(buffer);
+					md5.digest(buffer, 0, bytesRead);
+					System.out.println("EOGenerator.writeTemplate: " + bytesRead);
+				}
+			} finally {
+				existingFileStream.close();
+			}
+			byte[] existingFileDigest = md5.digest();
+
+      boolean templateChanged = false;
+			for (int i = 0; !templateChanged && i < existingFileDigest.length; i++) {
+			  System.out.println("EOGenerator.writeTemplate: " + i + "=" + newFileDigest[i] + "," + existingFileDigest[i]);
+				templateChanged = (newFileDigest[i] != existingFileDigest[i]);
+			}
+			if (templateChanged) {
+			  System.out.println("EOGenerator.writeTemplate: changed! " + outputFile);
+				FileOutputStream newFileStream = new FileOutputStream(outputFile);
+				BufferedOutputStream newFileBufferedStream = new BufferedOutputStream(newFileStream);
+				try {
+					newFileBufferedStream.write(newFileContents);
+				} finally {
+					newFileBufferedStream.close();
+				}
+			}
+			else {
+			  System.out.println("EOGenerator.writeTemplate: skipping " + outputFile);
+			}
 		}
 	}
 }
