@@ -305,13 +305,18 @@ public class EOQualifierFactory {
 
 	public static Set<String> getQualifierKeysFromExpression(Expression expression) {
 		Set<String> keys = new HashSet<String>();
+		try {
 		EOQualifierFactory.fillInQualifierKeysFromExpression(expression, keys);
+		}
+		catch (Throwable t) {
+			t.printStackTrace();
+		}
 		return keys;
 	}
 
 	public static void fillInQualifierKeysFromExpression(Expression expression, Set<String> keys) {
 		if (expression instanceof ConditionNode) {
-			String key = (String) ((ASTEqual) expression.getOperand(0)).getOperand(0);
+			String key = (String) ((ASTPath) expression.getOperand(0)).getOperand(0);
 			keys.add(key);
 		} else if (expression instanceof AggregateConditionNode) {
 			int operandCount = expression.getOperandCount();
