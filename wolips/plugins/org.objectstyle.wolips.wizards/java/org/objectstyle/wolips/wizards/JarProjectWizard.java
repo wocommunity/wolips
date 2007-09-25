@@ -71,7 +71,12 @@ public class JarProjectWizard extends AbstractProjectWizard {
 	public JarProjectWizard() {
 		super();
 	}
-
+	
+	@Override
+	protected WizardType wizardType(){
+		return WizardType.JARPROJECT_WIZARD;
+	}
+	
 	public String getWindowTitle() {
 		return Messages.getString("JarProjectCreationWizard.title");
 	}

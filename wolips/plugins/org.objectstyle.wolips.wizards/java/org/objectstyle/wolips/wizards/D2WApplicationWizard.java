@@ -62,6 +62,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.core.resources.internal.types.project.ProjectPatternsets;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
+import org.objectstyle.wolips.wizards.D2WApplicationConfigurationPage.D2WLook;
 
 /**
  * @author mnolte
@@ -73,20 +74,39 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 		super();
 	}
 
+	protected WizardType wizardType(){
+		return WizardType.D2W_APPLICATION_WIZARD;
+	}
+
 	public String getWindowTitle() {
 		return Messages.getString("D2WApplicationWizard.title");
 	}
 
+	public String pathForTemplateLook(D2WLook look) {
+
+		if (look == D2WLook.BASIC) {
+			return "d2w_bas_application";
+		} else if (look == D2WLook.NEUTRAL) {
+			return "d2w_neu_application";
+		} else if (look == D2WLook.WEBOBJECTS) {
+			return "d2w_wol_application";
+		} else if (look == D2WLook.CLASSIC) {
+			return "d2w_application";
+		} else if (look == D2WLook.WONDER) {
+			return "wonderd2wapplication";
+		}
+
+		return "d2w_bas_application"; 
+	}
+
 	@Override
 	protected void _createProject(IProject project, IProgressMonitor progressMonitor) throws Exception {
+
+		String pathRoot = pathForTemplateLook(currentD2WLook());
 		String projectName = project.getName();
 		String path = project.getLocation().toOSString();
-		File mainwo = new File(path + File.separator + "Main.wo");
-		mainwo.mkdirs();
-		File menuHeaderwo = new File(path + File.separator + "MenuHeader.wo");
-		menuHeaderwo.mkdirs();
-		File pageWrapperwo = new File(path + File.separator + "PageWrapper.wo");
-		pageWrapperwo.mkdirs();
+		File xcodeproj = new File (path + File.separator + projectName + ".xcode");
+		xcodeproj.mkdirs();
 		File src = new File(path + File.separator + "src");
 		src.mkdirs();
 		File bin = new File(path + File.separator + "bin");
@@ -97,42 +117,40 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 		templateEngine.init();
 		templateEngine.getWolipsContext().setProjectName(projectName);
 		templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/Main.html.vm", path + File.separator + "Main.wo", "Main.html", "Main.html"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/Main.wod.vm", path + File.separator + "Main.wo", "Main.wod", "Main.wod"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/Main.woo.vm", path + File.separator + "Main.wo", "Main.woo", "Main.woo"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/MenuHeader.html.vm", path + File.separator + "MenuHeader.wo", "MenuHeader.html", "MenuHeader.html"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/MenuHeader.wod.vm", path + File.separator + "MenuHeader.wo", "MenuHeader.wod", "MenuHeader.wod"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/MenuHeader.woo.vm", path + File.separator + "MenuHeader.wo", "MenuHeader.woo", "MenuHeader.woo"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/PageWrapper.html.vm", path + File.separator + "PageWrapper.wo", "PageWrapper.html", "PageWrapper.html"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/PageWrapper.wod.vm", path + File.separator + "PageWrapper.wo", "PageWrapper.wod", "PageWrapper.wod"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/Main.woo.vm", path + File.separator + "PageWrapper.wo", "PageWrapper.woo", "PageWrapper.woo"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/Application.java.vm", path + File.separator + "src", "Application.java", "Application.java"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/DirectAction.java.vm", path + File.separator + "src", "DirectAction.java", "DirectAction.java"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/Main.java.vm", path + File.separator + "src", "Main.java", "Main.java"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/MenuHeader.java.vm", path + File.separator + "src", "MenuHeader.java", "MenuHeader.java"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/PageWrapper.java.vm", path + File.separator + "src", "PageWrapper.java", "PageWrapper.java"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/Session.java.vm", path + File.separator + "src", "Session.java", "Session.java"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/.classpath.vm", path, ".classpath", ".classpath"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/.project.vm", path, ".project", ".project"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/ant.classpaths.user.home.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.classpaths.user.home", "ant.classpaths.user.home"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/ant.classpaths.wo.wolocalroot.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.classpaths.wo.wolocalroot", "ant.classpaths.wo.wolocalroot"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/ant.classpaths.wo.wosystemroot.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.classpaths.wo.wosystemroot", "ant.classpaths.wo.wosystemroot"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/ant.frameworks.user.home.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.frameworks.user.home", "ant.frameworks.user.home"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/ant.frameworks.wo.wolocalroot.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.frameworks.wo.wolocalroot", "ant.frameworks.wo.wolocalroot"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/ant.frameworks.wo.wosystemroot.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.frameworks.wo.wosystemroot", "ant.frameworks.wo.wosystemroot"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/build.xml.vm", path, "build.xml", "build.xml"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/build.properties.vm", path, "build.properties", "build.properties"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/CustomInfo.plist.vm", path, "CustomInfo.plist", "CustomInfo.plist"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/Main.api.vm", path, "Main.api", "Main.api"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/MenuHeader.api.vm", path, "MenuHeader.api", "MenuHeader.api"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/PageWrapper.api.vm", path, "PageWrapper.api", "PageWrapper.api"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/Makefile.vm", path, "Makefile", "Makefile"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/Makefile.postamble.vm", path, "Makefile.postamble", "Makefile.postamble"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/Makefile.preamble.vm", path, "Makefile.preamble", "Makefile.preamble"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/PB.project.vm", path, "PB.project", "PB.project"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/Properties.vm", path, "Properties", "Properties"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/project.pbxproj.vm", path + File.separator + projectName + ".xcode", "project.pbxproj", "project.pbxproj"));
-		templateEngine.addTemplate(new TemplateDefinition("d2w_application/user.d2wmodel.vm", path, "user.d2wmodel", "user.d2wmodel"));
+
+		addComponentDefinition(pathRoot, templateEngine, path, "Main");
+		addComponentDefinition(pathRoot, templateEngine, path, "MenuHeader");
+		addComponentDefinition(pathRoot, templateEngine, path, "PageWrapper");
+		
+		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/Application.java.vm", path + File.separator + "src", "Application.java", "Application.java"));
+		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/DirectAction.java.vm", path + File.separator + "src", "DirectAction.java", "DirectAction.java"));
+		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/Session.java.vm", path + File.separator + "src", "Session.java", "Session.java"));
+
+		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/.classpath.vm", path, ".classpath", ".classpath"));
+		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/.project.vm", path, ".project", ".project"));
+		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/ant.classpaths.user.home.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.classpaths.user.home", "ant.classpaths.user.home"));
+		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/ant.classpaths.wo.wolocalroot.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.classpaths.wo.wolocalroot", "ant.classpaths.wo.wolocalroot"));
+		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/ant.classpaths.wo.wosystemroot.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.classpaths.wo.wosystemroot", "ant.classpaths.wo.wosystemroot"));
+		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/ant.frameworks.user.home.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.frameworks.user.home", "ant.frameworks.user.home"));
+		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/ant.frameworks.wo.wolocalroot.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.frameworks.wo.wolocalroot", "ant.frameworks.wo.wolocalroot"));
+		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/ant.frameworks.wo.wosystemroot.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.frameworks.wo.wosystemroot", "ant.frameworks.wo.wosystemroot"));
+		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/build.xml.vm", path, "build.xml", "build.xml"));
+		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/build.properties.vm", path, "build.properties", "build.properties"));
+		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/CustomInfo.plist.vm", path, "CustomInfo.plist", "CustomInfo.plist"));
+		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/Makefile.vm", path, "Makefile", "Makefile"));
+		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/Makefile.postamble.vm", path, "Makefile.postamble", "Makefile.postamble"));
+		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/Makefile.preamble.vm", path, "Makefile.preamble", "Makefile.preamble"));
+		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/PB.project.vm", path, "PB.project", "PB.project"));
+		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/Properties.vm", path, "Properties", "Properties"));
+		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/project.pbxproj.vm", path + File.separator + projectName + ".xcode", "project.pbxproj", "project.pbxproj"));
+		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/user.d2wmodel.vm", path, "user.d2wmodel", "user.d2wmodel"));
+
+		createWebServicesSupport(project, templateEngine);
+		
 		templateEngine.run(progressMonitor);
+
+		createEOModelSupport(project);
+		
+
 	}
 }

@@ -76,6 +76,18 @@ public class WizardsPlugin extends AbstractBaseUIActivator {
 
 	private static ImageDescriptor WOPROJECT_WIZARD_BANNER;
 
+	private static ImageDescriptor EOMODEL_ICON;
+	
+	private static ImageDescriptor D2W_BASIC_ICON;
+	
+	private static ImageDescriptor D2W_NEU_ICON;
+	
+	private static ImageDescriptor D2W_WOL_ICON;
+	
+	private static ImageDescriptor D2W_CLASSIC_ICON;
+	
+	private static ImageDescriptor D2W_WONDER_ICON;
+	
 	/**
 	 * The constructor.
 	 */
@@ -132,7 +144,43 @@ public class WizardsPlugin extends AbstractBaseUIActivator {
 			WOPROJECT_WIZARD_BANNER = getImageDescriptor("icons/wizban/webobjects_wiz.gif");
 		return WOPROJECT_WIZARD_BANNER;
 	}
+	
+	public static final ImageDescriptor EOMODEL_ICON() {
+		if (EOMODEL_ICON == null)
+			EOMODEL_ICON = getImageDescriptor("icons/woproject/eoModel.png");
+		return EOMODEL_ICON;
+	}
 
+	public static final ImageDescriptor D2W_BASIC_ICON() {
+		if (D2W_BASIC_ICON == null)
+			D2W_BASIC_ICON = getImageDescriptor("icons/woproject/d2w_basic.gif");
+		return D2W_BASIC_ICON;
+	}
+	
+	public static final ImageDescriptor D2W_WOL_ICON() {
+		if (D2W_WOL_ICON == null)
+			D2W_WOL_ICON = getImageDescriptor("icons/woproject/d2w_wol.gif");
+		return D2W_WOL_ICON;
+	}
+	
+	public static final ImageDescriptor D2W_NEU_ICON() {
+		if (D2W_NEU_ICON == null)
+			D2W_NEU_ICON = getImageDescriptor("icons/woproject/d2w_neu.gif");
+		return D2W_NEU_ICON;
+	}
+	
+	public static final ImageDescriptor D2W_CLASSIC_ICON() {
+		if (D2W_CLASSIC_ICON == null)
+			D2W_CLASSIC_ICON = getImageDescriptor("icons/woproject/d2w_classic.gif");
+		return D2W_CLASSIC_ICON;
+	}
+	
+	public static final ImageDescriptor D2W_WONDER_ICON() {
+		if (D2W_WONDER_ICON == null)
+			D2W_WONDER_ICON = getImageDescriptor("icons/woproject/d2w_wonder.png");
+		return D2W_WONDER_ICON;
+	}
+	
 	public static void selectAndReveal(IResource[] resources) {
 		if (resources != null) {
 			for (int i = 0; i < resources.length; i++) {

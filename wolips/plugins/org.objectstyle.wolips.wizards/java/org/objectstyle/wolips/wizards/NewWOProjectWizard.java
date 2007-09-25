@@ -1,8 +1,10 @@
 package org.objectstyle.wolips.wizards;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,10 +27,12 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IPerspectiveRegistry;
@@ -55,24 +59,28 @@ import org.eclipse.ui.internal.registry.PerspectiveDescriptor;
 import org.eclipse.ui.internal.util.PrefUtil;
 import org.eclipse.ui.internal.wizards.newresource.ResourceMessages;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
+import org.objectstyle.wolips.templateengine.TemplateDefinition;
+import org.objectstyle.wolips.templateengine.TemplateEngine;
+import org.objectstyle.wolips.wizards.D2WApplicationConfigurationPage.D2WLook;
+import org.objectstyle.wolips.wizards.actions.EOModelImportSupport;
 
 /**
  * Standard workbench wizard that creates a new project resource in the
  * workspace.
  * <p>
- * This class may be instantiated and used without further configuration; this
- * class is not intended to be subclassed.
+ * This class may be instantiated and used without further configuration.  WOLips wizards
+ * extensively subclass this for project creation.
  * </p>
  * <p>
  * Example:
- * 
+ *
  * <pre>
  * IWorkbenchWizard wizard = new BasicNewProjectResourceWizard();
  * wizard.init(workbench, selection);
  * WizardDialog dialog = new WizardDialog(shell, wizard);
  * dialog.open();
  * </pre>
- * 
+ *
  * During the call to <code>open</code>, the wizard dialog is presented to
  * the user. When the user hits Finish, a project resource with the
  * user-specified name is created, the dialog closes, and the call to
@@ -92,15 +100,31 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	 * Extension attribute name for preferred perspectives.
 	 */
 	private static final String PREFERRED_PERSPECTIVES = "preferredPerspectives"; //$NON-NLS-1$
+	/**
+	 * New Project from Template wizard
+	 */
+	protected static final int NEWPROJECT_TEMPLATE_WIZARD = 0;
+	/**
+	 * Valid project wizard types: WO_APPLICATION_WIZARD, D2W_APPLICATION_WIZARD, D2WS_APPLICATION_WIZARD, JARPROJECT_WIZARD, WO_FRAMEWORK_WIZARD, WONDER_APPLICATION_WIZARD, WONDER_D2W_APPLICATION_WIZARD, WONDER_FRAMEWORK_WIZARD, NEWPROJECT_TEMPLATE_WIZARD
+	 */
+	public enum WizardType {WO_APPLICATION_WIZARD, D2W_APPLICATION_WIZARD, D2WS_APPLICATION_WIZARD, JARPROJECT_WIZARD, WO_FRAMEWORK_WIZARD, WONDER_APPLICATION_WIZARD, WONDER_D2W_APPLICATION_WIZARD, WONDER_FRAMEWORK_WIZARD, NEWPROJECT_TEMPLATE_WIZARD }
 
 	private WizardNewProjectCreationPage _mainPage;
 
 	private WizardNewProjectReferencePage _referencePage;
 
+	protected EOModelResourceImportPage _eomodelImportPage;
+
+	protected D2WApplicationConfigurationPage _d2wConfigurationPage;
+	
+	protected PackageSpecifierWizardPage _packagePage;
+	
+	protected WOWebServicesWizardPage  _webservicesSupportPage;
+	
 	private IProject _newProject;
 
 	/**
-	 * The config element which declares this wizard.
+	 * The configuration element which declares this wizard.
 	 */
 	private IConfigurationElement _configElement;
 
@@ -116,6 +140,13 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 		setDialogSettings(section);
 	}
 
+	/**
+	 * For simple wizard type identification.  A sub-classer must implement.  Valid types are
+	 * WO_APPLICATION_WIZARD, D2W_APPLICATION_WIZARD, JARPROJECT_WIZARD, WO_FRAMEWORK_WIZARD, WONDER_APPLICATION_WIZARD, WONDER_D2W_APPLICATION_WIZARD, WONDER_FRAMEWORK_WIZARD = 7;
+	 * @return wizard type
+	 */
+	protected abstract WizardType wizardType();
+
 	/*
 	 * (non-Javadoc) Method declared on IWizard.
 	 */
@@ -125,19 +156,56 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 		_mainPage = createMainPage();
 		addPage(_mainPage);
 
+		//FIXME: currently broken
+//		if (wizardType() == WizardType.D2W_APPLICATION_WIZARD || wizardType() == WizardType.WO_APPLICATION_WIZARD || wizardType() == WizardType.WONDER_APPLICATION_WIZARD || wizardType() == WizardType.WONDER_D2W_APPLICATION_WIZARD) {
+//			_packagePage = createPackageSpecifierWizardPage();
+//			if (_packagePage != null) {
+//				addPage(_packagePage);
+//			}
+//		}
+		
 		_referencePage = createReferencePage();
 		if (_referencePage != null) {
 			addPage(_referencePage);
 		}
+
+		_eomodelImportPage = createEOModelImportResourcePage();
+		if (_eomodelImportPage != null) {
+			addPage(_eomodelImportPage);
+		}
+		
+		if (wizardType() == WizardType.D2W_APPLICATION_WIZARD) {
+			_d2wConfigurationPage = createD2WConfigurationPage();
+			
+			if (_d2wConfigurationPage != null) {
+				addPage(_d2wConfigurationPage);
+			}
+		}
+		
+		if (wizardType() == WizardType.WO_APPLICATION_WIZARD || wizardType() == WizardType.D2W_APPLICATION_WIZARD || wizardType() == WizardType.WO_FRAMEWORK_WIZARD) {
+			_webservicesSupportPage = createWebServicesSupportPage();
+			if (_webservicesSupportPage != null) {
+				addPage(_webservicesSupportPage);
+			}
+		}
+	}
+	
+	protected String getPageDescription() {
+		String description = ResourceMessages.NewProject_description;
+		if (wizardType() == WizardType.D2W_APPLICATION_WIZARD ) {
+			description = Messages.getString("D2WApplicationWizard.description");
+		} 
+		
+		return description;
 	}
 
 	protected WizardNewProjectCreationPage createMainPage() {
 		WizardNewProjectCreationPage mainPage = new WizardNewProjectCreationPage("basicNewProjectPage");//$NON-NLS-1$
 		mainPage.setTitle(ResourceMessages.NewProject_title);
-		mainPage.setDescription(ResourceMessages.NewProject_description);
+		mainPage.setDescription(getPageDescription());
 		return mainPage;
 	}
-	
+
 	protected WizardNewProjectReferencePage createReferencePage() {
 		WizardNewProjectReferencePage referencePage = null;
 		if (ResourcesPlugin.getWorkspace().getRoot().getProjects().length > 0) {
@@ -148,11 +216,46 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 		return referencePage;
 	}
 
+
+	protected EOModelResourceImportPage createEOModelImportResourcePage() {
+		EOModelResourceImportPage importResourcePage = new EOModelResourceImportPage("basicReferenceProjectPage");
+		importResourcePage.setTitle(Messages.getString("EOModelResourceImportPage.title"));
+		importResourcePage.setDescription(Messages.getString("EOModelResourceImportPage.description"));
+		importResourcePage.setMessage(Messages.getString("EOModelResourceImportPage.message"));
+		return importResourcePage;
+	}
+
+	protected D2WApplicationConfigurationPage createD2WConfigurationPage() {
+		D2WApplicationConfigurationPage d2wConfigPage = new D2WApplicationConfigurationPage("basicReferenceProjectPage", IMessageProvider.NONE);
+		d2wConfigPage.setTitle(Messages.getString("D2WApplicationConfigurationPage.title"));
+		d2wConfigPage.setDescription(Messages.getString("D2WApplicationConfigurationPage.description"));
+		return d2wConfigPage;
+	}
+
+	protected PackageSpecifierWizardPage createPackageSpecifierWizardPage() {
+		PackageSpecifierWizardPage packagePage = new PackageSpecifierWizardPage("basicReferenceProjectPage", new StructuredSelection());
+		packagePage.setTitle("Specify package: ");
+		packagePage.setMessage("Default package for all Java source generated for project");
+		packagePage.setDescription("Default package for all Java source generated for project");
+		return packagePage;
+	}
+	
+	protected WOWebServicesWizardPage createWebServicesSupportPage() {
+		WOWebServicesWizardPage webservicesPage = null;
+		if (ResourcesPlugin.getWorkspace().getRoot().getProjects().length > 0) {
+			webservicesPage = new WOWebServicesWizardPage("basicReferenceProjectPage", IMessageProvider.NONE);//$NON-NLS-1$
+			webservicesPage.setTitle("Add WebServices Support");
+			webservicesPage.setDescription("Enable Client and Server WebServices support");
+		}
+		return webservicesPage;
+	}
+	
+	
 	/**
 	 * Creates a new project resource with the selected name.
 	 * <p>
 	 * In normal usage, this method is invoked after the user has pressed Finish
-	 * on the wizard; the enablement of the Finish button implies that all
+	 * on the wizard; enabling of the Finish button implies that all
 	 * controls on the pages currently contain valid values.
 	 * </p>
 	 * <p>
@@ -160,7 +263,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	 * successfully created; subsequent invocations of this method will answer
 	 * the same project resource without attempting to create it again.
 	 * </p>
-	 * 
+	 *
 	 * @return the created project resource, or <code>null</code> if the
 	 *         project was not created
 	 */
@@ -230,14 +333,14 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 
 	/**
 	 * Creates a project resource given the project handle and description.
-	 * 
+	 *
 	 * @param description
 	 *            the project description to create a project resource for
 	 * @param projectHandle
 	 *            the project handle to create a project resource for
 	 * @param monitor
 	 *            the progress monitor to show visual progress with
-	 * 
+	 *
 	 * @exception CoreException
 	 *                if the operation fails
 	 * @exception OperationCanceledException
@@ -273,7 +376,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 
 	/**
 	 * Returns the newly created project.
-	 * 
+	 *
 	 * @return the created project, or <code>null</code> if project not
 	 *         created
 	 */
@@ -370,7 +473,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	/**
 	 * Updates the perspective based on the current settings in the
 	 * Workbench/Perspectives preference page.
-	 * 
+	 *
 	 * Use the setting for the new perspective opening if we are set to open in
 	 * a new perspective.
 	 * <p>
@@ -379,10 +482,10 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	 * wizard's <code>IConfigurationElement</code>. That is the configuration
 	 * element to pass into this method.
 	 * </p>
-	 * 
+	 *
 	 * @param configElement -
 	 *            the element we are updating with
-	 * 
+	 *
 	 * @see IPreferenceConstants#OPM_NEW_WINDOW
 	 * @see IPreferenceConstants#OPM_ACTIVE_PAGE
 	 * @see IWorkbenchPreferenceConstants#NO_NEW_PERSPECTIVE
@@ -485,7 +588,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	/**
 	 * Adds to the list all perspective IDs in the Workbench who's original ID
 	 * matches the given ID.
-	 * 
+	 *
 	 * @param perspectiveIds
 	 *            the list of perspective IDs to supplement.
 	 * @param id
@@ -507,13 +610,13 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 
 	/**
 	 * Prompts the user for whether to switch perspectives.
-	 * 
+	 *
 	 * @param window
 	 *            The workbench window in which to switch perspectives; must not
 	 *            be <code>null</code>
 	 * @param finalPersp
 	 *            The perspective to switch to; must not be <code>null</code>.
-	 * 
+	 *
 	 * @return <code>true</code> if it's OK to switch, <code>false</code>
 	 *         otherwise
 	 */
@@ -550,4 +653,75 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 		}
 		return result == IDialogConstants.YES_ID;
 	}
+
+	/*
+	 * Template Engine Support
+	 */
+	
+	/*
+	 * Default implementation cribbed and modified from AbstractWonderProject
+	 */
+	protected void addComponentDefinition(String templateFolder, TemplateEngine engine, String path, String name) {
+		File wo = new File(path + File.separator + name + ".wo");
+		wo.mkdirs();
+		engine.addTemplate(new TemplateDefinition(templateFolder + "/" + name + ".html.vm", path + File.separator  + name + ".wo", name + ".html", name + ".html"));
+		engine.addTemplate(new TemplateDefinition(templateFolder + "/" + name + ".wod.vm", path + File.separator  + name + ".wo", name + ".wod", name + ".wod"));
+		engine.addTemplate(new TemplateDefinition(templateFolder + "/" + name + ".woo.vm", path + File.separator  + name + ".wo", name + ".woo", name + ".woo"));
+		engine.addTemplate(new TemplateDefinition(templateFolder + "/" + name + ".api.vm", path, name + ".api", name + ".api"));
+		engine.addTemplate(new TemplateDefinition(templateFolder + "/" + name + ".java.vm", path + File.separator + "src", name + ".java", name + ".java"));
+	}
+	
+	/*
+	 * EOModel Support
+	 */
+	//key = file name, value = full path to file including file name
+	protected HashMap <String,String> getEOModelPaths() {
+		if (_eomodelImportPage == null) {
+			return new HashMap<String,String>();
+		}
+		return _eomodelImportPage.getModelPaths();
+	}
+	
+	/**
+	 * Called by subclassers that want EOModel support.  Doesn't use the template engine.
+	 * @param project to add support
+	 */
+	public void createEOModelSupport(IProject project) {
+		//Move any specified models over
+		HashMap <String, String> paths = getEOModelPaths();
+		EOModelImportSupport.importEOModelsToProject(paths, project);
+	}
+
+	/*
+	 * D2W Support 
+	 */
+	protected D2WLook currentD2WLook() {
+		if (_d2wConfigurationPage == null) {
+			return D2WLook.BASIC;
+		}
+		return _d2wConfigurationPage.currentLook();
+	}
+	
+	/**
+	 * Create WebServices support
+	 * @param project to add support
+	 */
+	/*
+	 * FIXME: technically the templates for these files are stored in JavaWebObjects.framework/Resources/template_server.wsdd and JavaWebServicesClient.framework/Resources/template_client.wsdd
+	 * and could be copied from there instead if we are able to cleanly detect their install location (mainly non OSX platforms).
+	 */
+	public void createWebServicesSupport(IProject project, TemplateEngine engine) {
+		String path = project.getLocation().toOSString();
+		
+		if (_webservicesSupportPage != null) {
+			if (_webservicesSupportPage.getClientSupport()) {
+				engine.addTemplate(new TemplateDefinition("wowebservices"+"/client.wsdd.vm", path, "client.wsdd", "client.wsdd"));
+			}
+			
+			if (_webservicesSupportPage.getServerSupport()) {
+				engine.addTemplate(new TemplateDefinition("wowebservices"+"/server.wsdd.vm", path, "server.wsdd", "server.wsdd"));
+			}
+		}
+	}
+
 }

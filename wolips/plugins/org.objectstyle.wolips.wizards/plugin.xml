@@ -9,7 +9,7 @@
    <extension
          point="org.eclipse.ui.newWizards">
       <category
-            name="WOLips WO 5.1 and 5.2"
+            name="WOLips"
             id="org.objectstyle.wolips.wizards">
       </category>
       <wizard
@@ -27,15 +27,57 @@
          </selection>
       </wizard>
       <wizard
-            name="WOApplication"
-            icon="icons/woproject/woapplication_wiz.gif"
             category="org.objectstyle.wolips.wizards"
-            project="true"
-            id="org.objectstyle.wolips.wizards.new.wo.5.1.application">
+            helpHref="http://developer.apple.com/documentation/WebObjects/Web_Applications/index.html"
+            icon="icons/woproject/woapplication_wiz.gif"
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.application"
+            name="WebObjects Application"
+            project="true">
             <class class="org.objectstyle.wolips.wizards.WOApplicationWizard">
               <parameter name="wotype" value="true"/>
             </class>
          <description>
+            Build a basic WebObjects Application.
+         </description>
+      </wizard>
+      <wizard
+            name="WebObjects Framework"
+            icon="icons/woproject/woframework_wiz.gif"
+            category="org.objectstyle.wolips.wizards"
+            project="true"
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.framework">
+            <class class="org.objectstyle.wolips.wizards.WOFrameworkWizard">
+              <parameter name="wotype" value="true"/>
+            </class>
+         <description>
+         </description>
+      </wizard>
+      <wizard
+            category="org.objectstyle.wolips.wizards"
+            helpHref="http://developer.apple.com/documentation/WebObjects/Developing_With_D2W/Introduction/chapter_1_section_1.html"
+            icon="icons/woproject/d2wapplication_wiz.gif"
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.d2wapplication"
+            name="Direct To Web Application"
+            project="true">
+            <class class="org.objectstyle.wolips.wizards.D2WApplicationWizard">
+              <parameter name="wotype" value="true"/>
+            </class>
+         <description>
+            Build a Direct To Web Application
+         </description>
+      </wizard>
+            <wizard
+            category="org.objectstyle.wolips.wizards"
+            helpHref="http://developer.apple.com/DOCUMENTATION/WebObjects/Web_Services/index.html?http://developer.apple.com/DOCUMENTATION/WebObjects/Web_Services/About/chapter_1_section_1.html"
+            icon="icons/woproject/d2wapplication_wiz.gif"
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.d2wsapplication"
+            name="Direct To WebService Application"
+            project="true">
+            <class class="org.objectstyle.wolips.wizards.D2WebServiceApplicationWizard">
+              <parameter name="wotype" value="true"/>
+            </class>
+         <description>
+            Build a Direct To WebService Application
          </description>
       </wizard>
       <wizard
@@ -81,30 +123,6 @@
             project="true"
             id="org.objectstyle.wolips.wizards.new.wo.5.1.wonderframework">
             <class class="org.objectstyle.wolips.wizards.WOnderFrameworkWizard">
-              <parameter name="wotype" value="true"/>
-            </class>
-         <description>
-         </description>
-      </wizard>
-      <wizard
-            name="D2WApplication"
-            icon="icons/woproject/d2wapplication_wiz.gif"
-            category="org.objectstyle.wolips.wizards"
-            project="true"
-            id="org.objectstyle.wolips.wizards.new.wo.5.1.d2wapplication">
-            <class class="org.objectstyle.wolips.wizards.D2WApplicationWizard">
-              <parameter name="wotype" value="true"/>
-            </class>
-         <description>
-         </description>
-      </wizard>
-      <wizard
-            name="WOFramework"
-            icon="icons/woproject/woframework_wiz.gif"
-            category="org.objectstyle.wolips.wizards"
-            project="true"
-            id="org.objectstyle.wolips.wizards.new.wo.5.1.framework">
-            <class class="org.objectstyle.wolips.wizards.WOFrameworkWizard">
               <parameter name="wotype" value="true"/>
             </class>
          <description>
@@ -184,20 +202,22 @@
             visible="false"
             id="org.objectstyle.wolips.wizards.ElementCreationActionSet">
         <action
-               id="org.objectstyle.wolips.wizards.actions.NewWODropDown"
-               toolbarPath="Normal/WOLipsWizards"
-               class="org.objectstyle.wolips.wizards.actions.NewWODropDown"
-               icon="icons/wolips/WOLips16-16.png"
-               label="WO"
-               style="pulldown">
+              class="org.objectstyle.wolips.wizards.actions.NewWODropDown"
+              icon="icons/wolips/WOLips16-16.png"
+              id="org.objectstyle.wolips.wizards.actions.NewWODropDown"
+              label="WO"
+              style="pulldown"
+              toolbarPath="Normal/WOLipsWizards"
+              tooltip="Create new project">
          </action>
         <action
-               id="org.objectstyle.wolips.wizards.actions.NewEODropDown"
-               toolbarPath="Normal/WOLipsWizards"
-               class="org.objectstyle.wolips.wizards.actions.NewEODropDown"
-               icon="icons/woproject/eomodelGroup_wiz.gif"
-               label="EO"
-               style="pulldown">
+              class="org.objectstyle.wolips.wizards.actions.NewEODropDown"
+              icon="icons/woproject/eomodelGroup_wiz.gif"
+              id="org.objectstyle.wolips.wizards.actions.NewEODropDown"
+              label="EO"
+              style="pulldown"
+              toolbarPath="Normal/WOLipsWizards"
+              tooltip="Entity Modeler actions">
          </action>
       </actionSet>
    </extension>
@@ -250,5 +270,19 @@
                label="Create EOModelGroup File"
                menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group0"/>
       </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.importWizards">
+      <category
+            id="org.objectstyle.wolips.wizards.wolipsimport"
+            name="WOLips">
+      </category>
+      <wizard
+            category="WOLips"
+            class="org.objectstyle.wolips.wizards.actions.NewEOModelImportWizard"
+            icon="icons/woproject/eomodel_wiz.gif"
+            id="org.objectstyle.wolips.wizards.eomodelimportwizard"
+            name="Import EOModel">
+      </wizard>
    </extension>
 </plugin>

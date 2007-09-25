@@ -74,6 +74,11 @@ public class WOnderD2WApplicationWizard extends AbstractWonderProjectWizard {
 		super();
 	}
 
+	@Override
+	protected WizardType wizardType(){
+		return WizardType.WONDER_D2W_APPLICATION_WIZARD;
+	}
+	
 	public String getWindowTitle() {
 		return Messages.getString("WOnderD2WApplicationCreationWizard.title");
 	}
@@ -111,5 +116,7 @@ public class WOnderD2WApplicationWizard extends AbstractWonderProjectWizard {
 		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/user.d2wmodel.vm", path + File.separator + "Resources", "user.d2wmodel", "user.d2wmodel"));
 		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/d2w.d2wmodel.vm", path + File.separator + "Resources", "d2w.d2wmodel", "d2w.d2wmodel"));
 		templateEngine.run(progressMonitor);
+		
+		createEOModelSupport(project);
 	}
 }

@@ -72,6 +72,11 @@ public class WOFrameworkWizard extends AbstractProjectWizard {
 	public WOFrameworkWizard() {
 		super();
 	}
+	
+	@Override
+	protected WizardType wizardType(){
+		return WizardType.WO_FRAMEWORK_WIZARD;
+	}
 
 	public String getWindowTitle() {
 		return Messages.getString("WOFrameworkCreationWizard.title");
@@ -112,6 +117,12 @@ public class WOFrameworkWizard extends AbstractProjectWizard {
 		// "woframework/project.pbxproj.vm", path + File.separator
 		// + projectName + ".xcode", "project.pbxproj",
 		// "project.pbxproj"));
+		
+		createWebServicesSupport(project, templateEngine);
+		
 		templateEngine.run(progressMonitor);
+		
+		createEOModelSupport(project);
+
 	}
 }

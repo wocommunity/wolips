@@ -116,7 +116,7 @@ public abstract class WizardNewWOResourcePage extends WizardNewFileCreationPage 
 			WorkbenchUtilitiesPlugin.errorDialog(getShell(), "Error", "Error while creating resource", e.getTargetException());
 			return false;
 		} catch (InterruptedException e) {
-			// cancelling is disabled
+			// canceling is disabled
 			return false;
 		}
 		return true;
