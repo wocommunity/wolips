@@ -739,6 +739,10 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		firePropertyChange(EOEntity.READ_ONLY, oldReadOnly, myReadOnly);
 	}
 
+	public String getPluralName() {
+		return StringUtils.toPlural(myName);
+	}
+	
 	public String getName() {
 		return myName;
 	}
@@ -768,6 +772,76 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	public String getOriginalName() {
 		return myOriginalName;
+	}
+
+	public String getClassNameWithDefault() {
+		String className = myClassName;
+		if (className == null) {
+			className = getModel().getModelGroup().getEOGenericRecordClassName();
+		}
+		return className;
+	}
+
+	public String getPackageName() {
+		String packageName;
+		String className = getClassNameWithDefault();
+		if (className == null) {
+			packageName = null;
+		} else {
+			int lastDotIndex = className.lastIndexOf('.');
+			if (lastDotIndex == -1) {
+				packageName = null;
+			} else {
+				packageName = className.substring(0, lastDotIndex);
+			}
+		}
+		return packageName;
+	}
+
+	public String getClassNameWithoutPackage() {
+		String classNameWithoutPackage;
+		String className = getClassNameWithDefault();
+		if (className == null) {
+			classNameWithoutPackage = null;
+		} else {
+			int lastDotIndex = className.lastIndexOf('.');
+			if (lastDotIndex == -1) {
+				classNameWithoutPackage = className;
+			} else {
+				classNameWithoutPackage = className.substring(lastDotIndex + 1);
+			}
+		}
+		return classNameWithoutPackage;
+	}
+
+	public String getPrefixClassNameWithoutPackage() {
+		String prefixClassNameWithoutPackage = getClassNameWithoutPackage();
+		if (prefixClassNameWithoutPackage != null) {
+			String prefix = getModel().getModelGroup().getPrefix();
+			prefixClassNameWithoutPackage = prefix + prefixClassNameWithoutPackage;
+		}
+		return prefixClassNameWithoutPackage;
+	}
+
+	public String getPrefixClassName() {
+		String prefixClassName;
+		String className = getClassNameWithDefault();
+		if (className == null) {
+			prefixClassName = null;
+		} else {
+			String prefix = getModel().getModelGroup().getPrefix();
+			int lastDotIndex = className.lastIndexOf('.');
+			if (lastDotIndex == -1) {
+				prefixClassName = prefix + className;
+			} else {
+				prefixClassName = className.substring(0, lastDotIndex + 1) + prefix + className.substring(lastDotIndex + 1);
+			}
+		}
+		return prefixClassName;
+	}
+
+	public boolean hasClassName() {
+		return myClassName != null;
 	}
 
 	public String getClassName() {
@@ -939,6 +1013,17 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		String oldRestrictingQualifier = myRestrictingQualifier;
 		myRestrictingQualifier = _restrictingQualifier;
 		firePropertyChange(EOEntity.RESTRICTING_QUALIFIER, oldRestrictingQualifier, myRestrictingQualifier);
+	}
+
+	public Set<String> getRestrictingQualifierKeys() {
+		Set<String> restrictingQualifierKeys;
+		if (myRestrictingQualifier != null) {
+			restrictingQualifierKeys = new HashSet<String>();
+		}
+		else {
+			restrictingQualifierKeys = EOQualifierFactory.getQualifierKeysFromQualifierString(myRestrictingQualifier);
+		}
+		return restrictingQualifierKeys;
 	}
 
 	public void clearCachedPrototypes(Set<EOModelVerificationFailure> _failures, boolean _reload) {

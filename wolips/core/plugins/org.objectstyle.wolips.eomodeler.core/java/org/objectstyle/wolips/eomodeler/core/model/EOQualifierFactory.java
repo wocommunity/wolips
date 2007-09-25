@@ -52,9 +52,11 @@ package org.objectstyle.wolips.eomodeler.core.model;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.objectstyle.cayenne.exp.Expression;
 import org.objectstyle.cayenne.exp.ExpressionParameter;
@@ -295,4 +297,32 @@ public class EOQualifierFactory {
 		}
 		return map;
 	}
+
+	public static Set<String> getQualifierKeysFromQualifierString(String qualifierString) {
+		Expression expression = EOQualifierFactory.fromString(qualifierString);
+		return EOQualifierFactory.getQualifierKeysFromExpression(expression);
+	}
+
+	public static Set<String> getQualifierKeysFromExpression(Expression expression) {
+		Set<String> keys = new HashSet<String>();
+		EOQualifierFactory.fillInQualifierKeysFromExpression(expression, keys);
+		return keys;
+	}
+
+	public static void fillInQualifierKeysFromExpression(Expression expression, Set<String> keys) {
+		if (expression instanceof ConditionNode) {
+			String key = (String) ((ASTEqual) expression.getOperand(0)).getOperand(0);
+			keys.add(key);
+		} else if (expression instanceof AggregateConditionNode) {
+			int operandCount = expression.getOperandCount();
+			for (int operand = 0; operand < operandCount; operand++) {
+				EOQualifierFactory.fillInQualifierKeysFromExpression((Expression) expression.getOperand(operand), keys);
+			}
+		} else if (expression instanceof ASTNot) {
+			EOQualifierFactory.fillInQualifierKeysFromExpression((Expression) ((ASTNot) expression).getOperand(0), keys);
+		} else {
+			throw new IllegalArgumentException("Unknown expression " + expression + ".");
+		}
+	}
+
 }
