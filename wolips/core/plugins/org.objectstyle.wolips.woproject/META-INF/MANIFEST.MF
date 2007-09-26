@@ -3,11 +3,14 @@ Bundle-ManifestVersion: 2
 Bundle-Name: WOLips WOProject Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.woproject
 Bundle-Version: 1.0.6
-Bundle-ClassPath: lib/woproject.jar
+Bundle-ClassPath: lib/woproject.jar,
+ .
 Bundle-Vendor: objectstyle.org
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.woenvironment.env,
  org.objectstyle.woenvironment.pb,
  org.objectstyle.woenvironment.pbx,
  org.objectstyle.woenvironment.util
-Require-Bundle: org.objectstyle.wolips.thirdparty.cayenne;visibility:=reexport
+Require-Bundle: org.objectstyle.wolips.thirdparty.cayenne;visibility:=reexport,
+ org.objectstyle.wolips.baseforplugins
+Bundle-Activator: org.objectstyle.wolips.woproject.Activator
