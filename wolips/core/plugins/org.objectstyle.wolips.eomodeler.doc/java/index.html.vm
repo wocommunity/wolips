@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>...</title>
+	<title>EOModelDoc</title>
 	<link href = "eomodeldoc.css" rel = "stylesheet" type = "text/css">
 	<script src = "prototype.js"/>
 </head>
