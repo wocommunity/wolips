@@ -11,9 +11,11 @@ cp -r $WORKSPACE/org.objectstyle.wolips.thirdparty.cayenne/bin/* $TEMPDIR
 cp -r $WORKSPACE/woproject/wolips/eomodeldoc/bin/* $TEMPDIR
 cp -r $WORKSPACE/woproject/wolips/core/plugins/org.objectstyle.wolips.eomodeler.doc/bin/* $TEMPDIR
 cp -r $WORKSPACE/woproject/wolips/core/plugins/org.objectstyle.wolips.eomodeler.factories/bin/* $TEMPDIR
-
+cp -r $WORKSPACE/woproject/wolips/core/plugins/org.objectstyle.wolips.eomodeler.factories/bin/* $TEMPDIR
 cd $TEMPDIR
 
+cp $WORKSPACE/org.objectstyle.wolips.woproject/lib/woproject.jar $TEMPDIR
+jar xvf woproject.jar
 cp $ECLIPSE/plugins/org.eclipse.equinox.common_3.3.0.v20070426.jar $TEMPDIR
 jar xvf org.eclipse.equinox.common_3.3.0.v20070426.jar
 cp $ECLIPSE/plugins/org.eclipse.core.resources_3.3.0.v20070604.jar $TEMPDIR
