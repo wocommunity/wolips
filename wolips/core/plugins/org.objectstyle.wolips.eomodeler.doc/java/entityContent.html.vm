@@ -84,7 +84,13 @@
 		
 			<div class = "name">$attribute.name</div>
 			#if ($attribute.externalType)
-			<div class = "mainDetail">$attribute.externalType</div>
+			<div class = "mainDetail">
+				#if ($attribute.prototype)
+				$attribute.prototype.name ($attribute.externalType)
+				#else
+				$attribute.externalType
+				#end
+			</div>
 			#end
 			
 			#if ($attribute.documentation)
