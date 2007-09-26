@@ -1,5 +1,5 @@
 WORKSPACE=/Users/mschrag/Documents/workspace
-ECLIPSE=/Users/mschrag/Desktop/eclipse
+ECLIPSE=/Developer/Applications/eclipse
 TEMPDIR=/tmp/eomodeldocjar
 OUTPUT=/tmp
 
@@ -16,6 +16,10 @@ cd $TEMPDIR
 
 cp $ECLIPSE/plugins/org.eclipse.equinox.common_3.3.0.v20070426.jar $TEMPDIR
 jar xvf org.eclipse.equinox.common_3.3.0.v20070426.jar
+cp $ECLIPSE/plugins/org.eclipse.core.resources_3.3.0.v20070604.jar $TEMPDIR
+jar xvf org.eclipse.core.resources_3.3.0.v20070604.jar
+cp $ECLIPSE/plugins/org.eclipse.core.jobs_3.3.1.R33x_v20070709.jar $TEMPDIR
+jar xvf org.eclipse.core.jobs_3.3.1.R33x_v20070709.jar
 cp $WORKSPACE/org.objectstyle.wolips.thirdparty.cayenne/lib/cayenne-1.2M12.jar $TEMPDIR
 jar xvf cayenne-1.2M12.jar
 
