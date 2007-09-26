@@ -13,6 +13,10 @@
             class="org.objectstyle.wolips.eomodeler.factories.IDEAProjectEOModelGroupFactory"
             id="entitymodeler.IDEAProjectEOModelGroupFactory"
             name="IDEA Project EOModelGroup Factory"/>
+      <modelGroupFactory
+            class="org.objectstyle.wolips.eomodeler.factories.EclipseProjectEOModelGroupFactory"
+            id="entitymodeler.EclipseProjectEOModelGroupFactory"
+            name="Eclipse Project EOModelGroup Factory"/>
    </extension>
    <extension
          id="entityModeler.eoclassLoaderFactory"
