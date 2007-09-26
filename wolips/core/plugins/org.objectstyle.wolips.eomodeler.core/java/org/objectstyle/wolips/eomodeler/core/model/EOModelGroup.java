@@ -342,7 +342,7 @@ public class EOModelGroup extends EOModelObject<Object> {
 		if (path.endsWith(".eomodeld") || path.endsWith(".eomodeld/")) {
 			loadModelFromURL(url, failures, skipOnDuplicates, progressMonitor);
 		} else if (maxDepth != 0) {
-			for (URL childURL : URLUtils.getChildren(url)) {
+			for (URL childURL : URLUtils.getChildrenFolders(url)) {
 				if (URLUtils.isFolder(childURL)) {
 					loadModelsFromURL(childURL, maxDepth - 1, failures, skipOnDuplicates, progressMonitor);
 				}

@@ -65,7 +65,7 @@ public class URLUtils {
 		return isFolder;
 	}
 
-	public static URL[] getChildren(URL url) throws IOException {
+	public static URL[] getChildrenFolders(URL url) throws IOException {
 		URL[] children;
 		String protocol = url.getProtocol();
 		if ("file".equals(protocol)) {
@@ -79,11 +79,14 @@ public class URLUtils {
 					children = new URL[0];
 				}
 				else {
-					children = new URL[files.length];
+					List<URL> childrenList = new LinkedList<URL>();
 					for (int i = 0; i < files.length; i++) {
 						File child = files[i];
-						children[i] = child.toURL();
+						if (!child.isHidden() && child.isDirectory()) {
+							childrenList.add(child.toURL());
+						}
 					}
+					children = childrenList.toArray(new URL[childrenList.size()]);
 				}
 			}
 		} else if ("jar".equals(protocol)) {
