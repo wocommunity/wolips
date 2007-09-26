@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.doc.EOModelDocGenerator;
+import org.objectstyle.wolips.eomodeler.factories.EclipseProjectEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.factories.IDEAProjectEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.factories.SimpleManifestEOModelGroupFactory;
 
@@ -45,6 +46,7 @@ public class EOModelDoc {
     if (modelPaths.size() == 0) {
       new SimpleManifestEOModelGroupFactory().loadModelGroup(modelGroupFolder, modelGroup, failures, true, new NullProgressMonitor());
       new IDEAProjectEOModelGroupFactory().loadModelGroup(modelGroupFolder, modelGroup, failures, true, new NullProgressMonitor());
+      new EclipseProjectEOModelGroupFactory().loadModelGroup(modelGroupFolder, modelGroup, failures, true, new NullProgressMonitor());
     }
     else {
       for (String modelPath : modelPaths) {
