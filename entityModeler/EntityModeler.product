@@ -83,6 +83,7 @@
       <plugin id="org.objectstyle.wolips.thirdparty.commonscollections"/>
       <plugin id="org.objectstyle.wolips.thirdparty.log4j"/>
       <plugin id="org.objectstyle.wolips.thirdparty.velocity"/>
+      <plugin id="org.objectstyle.wolips.woproject"/>
    </plugins>
 
 </product>
