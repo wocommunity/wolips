@@ -57,15 +57,33 @@ import org.objectstyle.wolips.eomodeler.outline.EOModelOutline;
 public class EOModelerPerspectiveFactory implements IPerspectiveFactory {
 	public static final String EOMODELER_PERSPECTIVE_ID = "org.objectstyle.wolips.eomodeler.EOModelerPerspective";
 
-	public void createInitialLayout(IPageLayout _layout) {
-		String editorArea = _layout.getEditorArea();
+	private static boolean _locked;
 
-		IFolderLayout topLeft = _layout.createFolder("left", IPageLayout.LEFT, 0.45f, editorArea);
+	public static void setLocked(boolean locked) {
+		EOModelerPerspectiveFactory._locked = locked;
+	}
+
+	public void createInitialLayout(IPageLayout layout) {
+		String editorArea = layout.getEditorArea();
+		if (EOModelerPerspectiveFactory._locked) {
+			layout.setFixed(true);
+		}
+
+		IFolderLayout topLeft = layout.createFolder("left", IPageLayout.LEFT, 0.45f, editorArea);
 		topLeft.addView(EOModelOutline.ID_OUTLINE);
 		// topLeft.addView("org.eclipse.jdt.ui.PackageExplorer");
 
-		IFolderLayout bottomRight = _layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.50f, "left");
+		IFolderLayout bottomRight = layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.50f, "left");
 		bottomRight.addView(IPageLayout.ID_PROP_SHEET);
 		bottomRight.addView(IPageLayout.ID_PROBLEM_VIEW);
+
+		if (EOModelerPerspectiveFactory._locked) {
+			layout.getViewLayout(EOModelOutline.ID_OUTLINE).setCloseable(false);
+			layout.getViewLayout(EOModelOutline.ID_OUTLINE).setMoveable(false);
+			layout.getViewLayout(IPageLayout.ID_PROP_SHEET).setCloseable(false);
+			layout.getViewLayout(IPageLayout.ID_PROP_SHEET).setMoveable(false);
+			layout.getViewLayout(IPageLayout.ID_PROBLEM_VIEW).setCloseable(false);
+			layout.getViewLayout(IPageLayout.ID_PROBLEM_VIEW).setMoveable(false);
+		}
 	}
 }
