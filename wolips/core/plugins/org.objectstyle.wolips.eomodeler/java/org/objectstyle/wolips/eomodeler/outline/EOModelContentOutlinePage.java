@@ -96,6 +96,22 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
 	public void createControl(Composite parent) {
 		super.createControl(parent);
 		TreeViewer treeViewer = getTreeViewer();
+
+//		TreeViewerFocusCellManager focusCellManager = new TreeViewerFocusCellManager(treeViewer, new FocusCellOwnerDrawHighlighter(treeViewer));
+//		ColumnViewerEditorActivationStrategy actSupport2 = new ColumnViewerEditorActivationStrategy(treeViewer) {
+//			protected boolean isEditorActivationEvent(ColumnViewerEditorActivationEvent event) {
+//				return event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION;
+//			}
+//		};
+//		ColumnViewerEditorActivationStrategy actSupport = new ColumnViewerEditorActivationStrategy(treeViewer);
+//		
+//		TreeViewerEditor.create(treeViewer, focusCellManager, actSupport, ColumnViewerEditor.TABBING_HORIZONTAL | ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR | ColumnViewerEditor.TABBING_VERTICAL | ColumnViewerEditor.KEYBOARD_ACTIVATION);
+//
+//		TreeViewerColumn column = new TreeViewerColumn(treeViewer, SWT.NONE);
+//		column.setLabelProvider(new EOModelOutlineColumnLabelProvider(treeViewer));
+//		column.setEditingSupport(new EOModelOutlineEditingSupport(treeViewer));
+//		column.getColumn().setWidth(200);
+
 		_updater = new EOModelTreeViewUpdater(treeViewer, new EOModelOutlineContentProvider(true, true, true, true, true, true, true));
 		_updater.setModel(_editor.getModel());
 		updateClipboardHandler();
