@@ -93,6 +93,10 @@ public class EOJoin extends EOModelObject<EORelationship> implements ISortableEO
 		}
 	}
 
+	public void setName(String name) throws DuplicateNameException {
+		throw new RuntimeException("uh .... what?");
+	}
+	
 	public String getName() {
 		return ((mySourceAttribute != null) ? mySourceAttribute.getName() : "") + ((myDestinationAttribute != null) ? myDestinationAttribute.getName() : "");
 	}
