@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.PlatformUI;
+import org.objectstyle.wolips.eomodeler.EOModelerPerspectiveFactory;
 
 /**
  * This class controls all aspects of the application's execution
@@ -17,6 +18,8 @@ public class Application implements IApplication {
   }
 
   public Object start(IApplicationContext context) throws Exception {
+    EOModelerPerspectiveFactory.setLocked(true);
+    
     Display display = PlatformUI.createDisplay();
     display.addListener(43, new Listener() {
     //display.addListener(SWT.ExternalOpen, new Listener() {
