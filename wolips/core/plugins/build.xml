@@ -28,13 +28,13 @@
 		<ant dir="org.objectstyle.wolips.targetbuilder" target="all" />
 		<ant dir="org.objectstyle.wolips.team" target="all" />
 		<ant dir="org.objectstyle.wolips.templateengine" target="all" />
+		<ant dir="org.objectstyle.wolips.eomodeler.core" target="all" />
+		<ant dir="org.objectstyle.wolips.eomodeler.factories" target="all" />
 		<ant dir="org.objectstyle.wolips.eogenerator.core" target="all" />
 		<ant dir="org.objectstyle.wolips.eogenerator.jdt" target="all" />
 		<ant dir="org.objectstyle.wolips.eogenerator.ui" target="all" />
-		<ant dir="org.objectstyle.wolips.eomodeler.core" target="all" />
 		<ant dir="org.objectstyle.wolips.eomodeler" target="all" />
 		<ant dir="org.objectstyle.wolips.eomodeler.eclipse" target="all" />
-		<ant dir="org.objectstyle.wolips.eomodeler.factories" target="all" />
 		<ant dir="org.objectstyle.wolips.eomodeler.doc" target="all" />
 		<ant dir="org.objectstyle.wolips.wizards" target="all" />
 		<ant dir="org.objectstyle.wolips.wooeditor" target="all" />
