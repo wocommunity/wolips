@@ -1,8 +1,8 @@
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2006 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -96,7 +96,7 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 			return "wonderd2wapplication";
 		}
 
-		return "d2w_bas_application"; 
+		return "d2w_bas_application";
 	}
 
 	@Override
@@ -107,8 +107,19 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 		String path = project.getLocation().toOSString();
 		File xcodeproj = new File (path + File.separator + projectName + ".xcode");
 		xcodeproj.mkdirs();
-		File src = new File(path + File.separator + "src");
-		src.mkdirs();
+
+		//Java Package support
+		String packagePath = "";
+		String packageName = "";
+		String fullSrcPath = path+File.separator+"src";
+		if (_packagePage != null) {
+			packageName = _packagePage.getTextData();
+			packagePath = _packagePage.getConvertedPath();
+			fullSrcPath += File.separator+packagePath;
+
+		}
+		createJavaPackageSupport(project, packagePath);
+
 		File bin = new File(path + File.separator + "bin");
 		bin.mkdirs();
 		File ant = new File(path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME);
@@ -117,14 +128,15 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 		templateEngine.init();
 		templateEngine.getWolipsContext().setProjectName(projectName);
 		templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
+		templateEngine.getWolipsContext().setPackageName(packageName);
 
-		addComponentDefinition(pathRoot, templateEngine, path, "Main");
-		addComponentDefinition(pathRoot, templateEngine, path, "MenuHeader");
-		addComponentDefinition(pathRoot, templateEngine, path, "PageWrapper");
-		
-		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/Application.java.vm", path + File.separator + "src", "Application.java", "Application.java"));
-		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/DirectAction.java.vm", path + File.separator + "src", "DirectAction.java", "DirectAction.java"));
-		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/Session.java.vm", path + File.separator + "src", "Session.java", "Session.java"));
+		addComponentDefinition(pathRoot, templateEngine, path, "Main", packagePath);
+		addComponentDefinition(pathRoot, templateEngine, path, "MenuHeader", packagePath);
+		addComponentDefinition(pathRoot, templateEngine, path, "PageWrapper", packagePath);
+
+		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/Application.java.vm", fullSrcPath, "Application.java", "Application.java"));
+		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/DirectAction.java.vm", fullSrcPath, "DirectAction.java", "DirectAction.java"));
+		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/Session.java.vm", fullSrcPath, "Session.java", "Session.java"));
 
 		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/.classpath.vm", path, ".classpath", ".classpath"));
 		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/.project.vm", path, ".project", ".project"));
@@ -146,11 +158,11 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/user.d2wmodel.vm", path, "user.d2wmodel", "user.d2wmodel"));
 
 		createWebServicesSupport(project, templateEngine);
-		
+
 		templateEngine.run(progressMonitor);
 
 		createEOModelSupport(project);
-		
+
 
 	}
 }

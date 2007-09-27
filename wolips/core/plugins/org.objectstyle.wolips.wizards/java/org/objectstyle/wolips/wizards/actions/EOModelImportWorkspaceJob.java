@@ -20,18 +20,18 @@ public class EOModelImportWorkspaceJob extends WorkspaceJob {
 		_project = project;
 		_modelPaths = paths;
 	}
-	
+
 	@Override
 	public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
 		try {
 			 boolean copied = EOModelImportSupport.importEOModelsToProject(_modelPaths, _project);
-			
+
 			 if (!copied) {
-				 System.out.println("Failed to copy models!!!!");
+				 MessageDialog.openError(new Shell(), "EOModel import failed", "Did not import to: "+_modelPaths.values());
 			 }
 		} catch (Throwable t) {
 			t.printStackTrace();
-			MessageDialog.openError(new Shell(), "Generate Failed", t.getMessage());
+			MessageDialog.openError(new Shell(), "EOModel import failed", t.getMessage());
 		}
 		return new Status(IStatus.OK, org.objectstyle.wolips.eogenerator.ui.Activator.PLUGIN_ID, IStatus.OK, "Done", null);
 	}
