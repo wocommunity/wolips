@@ -135,8 +135,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     //fileMenu.add(new Separator());
     //fileMenu.add(messagePopupAction);
     //fileMenu.add(openViewAction);
-    fileMenu.add(new Separator());
-    fileMenu.add(_exitAction);
+    //fileMenu.add(new Separator());
+    //fileMenu.add(_exitAction);
     
     // MS: Eclipse core plugins inject some dumb shit into
     // the File menu that there doesn't appear to be a
