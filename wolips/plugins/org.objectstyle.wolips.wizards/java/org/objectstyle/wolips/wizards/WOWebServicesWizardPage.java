@@ -12,8 +12,10 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.dialogs.WizardNewLinkPage;
 
 public class WOWebServicesWizardPage extends WizardNewLinkPage {
-	public static final String CLIENT_WEBSERVICES_STRING = "client web services";
-	public static final String SERVER_WEBSERVICES_STRING = "server web services";
+	public static final String CLIENT_WEBSERVICES_STRING = Messages.getString("WOWebServicesWizardPage.checkbox.client.label");
+	public static final String SERVER_WEBSERVICES_STRING = Messages.getString("WOWebServicesWizardPage.checkbox.server.label");
+	public static final String CLIENT_OPTIONS_STRING = Messages.getString("WOWebServicesWizardPage.options.client.text");
+	public static final String SERVER_OPTIONS_STRING = Messages.getString("WOWebServicesWizardPage.options.server.text");
 	
 	Button clientWebServiceCheckBox;
 	Button serverWebServiceCheckBox;
@@ -54,7 +56,7 @@ public class WOWebServicesWizardPage extends WizardNewLinkPage {
         clientGroup.setLayout(clientlayout);
         clientGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
                 | GridData.GRAB_HORIZONTAL));
-        clientGroup.setText("Client Support");
+        clientGroup.setText(CLIENT_OPTIONS_STRING);
         clientGroup.setFont(topLevel.getFont());
         
 		clientWebServiceCheckBox = new Button(clientGroup, SWT.CHECK);
@@ -67,7 +69,7 @@ public class WOWebServicesWizardPage extends WizardNewLinkPage {
         serverGroup.setLayout(serverlayout);
         serverGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
                 | GridData.GRAB_HORIZONTAL));
-        serverGroup.setText("Server Support");
+        serverGroup.setText(SERVER_OPTIONS_STRING);
         serverGroup.setFont(topLevel.getFont());
         
 		serverWebServiceCheckBox = new Button(serverGroup, SWT.CHECK);
@@ -85,9 +87,8 @@ public class WOWebServicesWizardPage extends WizardNewLinkPage {
 			clientEnabled = s.getSelection();
 		} else if (s.equals(serverWebServiceCheckBox)){
 			serverEnabled = s.getSelection();
-		}  else {
-			//do anything?
-		}
+		} 
+		
 		return true;
 	}
 

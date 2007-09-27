@@ -1,4 +1,9 @@
-// Created by Direct to Web's Project Builder Wizard
+// Created by ${WOLipsContext.getPluginName()} at ${Date}
+
+#if( ${WOLipsContext.CreatePackageDeclaration} )
+package ${WOLipsContext.getPackageName()};
+#end
+
 
 import com.webobjects.foundation.*;
 import com.webobjects.appserver.*;

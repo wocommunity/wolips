@@ -86,6 +86,15 @@ import org.objectstyle.wolips.wizards.actions.EOModelImportSupport;
  * user-specified name is created, the dialog closes, and the call to
  * <code>open</code> returns.
  * </p>
+ * @see D2WApplicationWizard
+ * @see WOApplicationWizard
+ * @see WOFrameworkWizard
+ * @see D2WebSErviceApplicationWizard
+ * @see WOnderApplicationWizard
+ * @see WOnderFrameworkWizard
+ * @see WOSubprojectCreationWizard
+ * @see WOJarProjectWizard
+ * @see WOWebServicesWizardPage
  */
 public abstract class NewWOProjectWizard extends BasicNewResourceWizard implements IExecutableExtension {
 
@@ -107,7 +116,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	/**
 	 * Valid project wizard types: WO_APPLICATION_WIZARD, D2W_APPLICATION_WIZARD, D2WS_APPLICATION_WIZARD, JARPROJECT_WIZARD, WO_FRAMEWORK_WIZARD, WONDER_APPLICATION_WIZARD, WONDER_D2W_APPLICATION_WIZARD, WONDER_FRAMEWORK_WIZARD, NEWPROJECT_TEMPLATE_WIZARD
 	 */
-	public enum WizardType {WO_APPLICATION_WIZARD, D2W_APPLICATION_WIZARD, D2WS_APPLICATION_WIZARD, JARPROJECT_WIZARD, WO_FRAMEWORK_WIZARD, WONDER_APPLICATION_WIZARD, WONDER_D2W_APPLICATION_WIZARD, WONDER_FRAMEWORK_WIZARD, NEWPROJECT_TEMPLATE_WIZARD }
+	public enum WizardType {WO_APPLICATION_WIZARD, D2W_APPLICATION_WIZARD, D2WS_APPLICATION_WIZARD, JARPROJECT_WIZARD, WO_FRAMEWORK_WIZARD, WONDER_APPLICATION_WIZARD, WONDER_D2W_APPLICATION_WIZARD, WONDER_FRAMEWORK_WIZARD, NEWPROJ_TEMPLATE_WIZARD }
 
 	private WizardNewProjectCreationPage _mainPage;
 
@@ -116,11 +125,11 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	protected EOModelResourceImportPage _eomodelImportPage;
 
 	protected D2WApplicationConfigurationPage _d2wConfigurationPage;
-	
+
 	protected PackageSpecifierWizardPage _packagePage;
-	
+
 	protected WOWebServicesWizardPage  _webservicesSupportPage;
-	
+
 	private IProject _newProject;
 
 	/**
@@ -152,18 +161,18 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	 */
 	public void addPages() {
 		super.addPages();
-
+		WizardType wizardType = wizardType();
 		_mainPage = createMainPage();
 		addPage(_mainPage);
 
-		//FIXME: currently broken
-//		if (wizardType() == WizardType.D2W_APPLICATION_WIZARD || wizardType() == WizardType.WO_APPLICATION_WIZARD || wizardType() == WizardType.WONDER_APPLICATION_WIZARD || wizardType() == WizardType.WONDER_D2W_APPLICATION_WIZARD) {
-//			_packagePage = createPackageSpecifierWizardPage();
-//			if (_packagePage != null) {
-//				addPage(_packagePage);
-//			}
-//		}
-		
+
+		if (wizardType == WizardType.D2W_APPLICATION_WIZARD || wizardType == WizardType.WO_APPLICATION_WIZARD || wizardType == WizardType.D2WS_APPLICATION_WIZARD) {
+			_packagePage = createPackageSpecifierWizardPage();
+			if (_packagePage != null) {
+				addPage(_packagePage);
+			}
+		}
+
 		_referencePage = createReferencePage();
 		if (_referencePage != null) {
 			addPage(_referencePage);
@@ -173,29 +182,29 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 		if (_eomodelImportPage != null) {
 			addPage(_eomodelImportPage);
 		}
-		
-		if (wizardType() == WizardType.D2W_APPLICATION_WIZARD) {
+
+		if (wizardType == WizardType.D2W_APPLICATION_WIZARD) {
 			_d2wConfigurationPage = createD2WConfigurationPage();
-			
+
 			if (_d2wConfigurationPage != null) {
 				addPage(_d2wConfigurationPage);
 			}
 		}
-		
-		if (wizardType() == WizardType.WO_APPLICATION_WIZARD || wizardType() == WizardType.D2W_APPLICATION_WIZARD || wizardType() == WizardType.WO_FRAMEWORK_WIZARD) {
+
+		if (wizardType == WizardType.WO_APPLICATION_WIZARD || wizardType == WizardType.D2W_APPLICATION_WIZARD || wizardType == WizardType.WO_FRAMEWORK_WIZARD) {
 			_webservicesSupportPage = createWebServicesSupportPage();
 			if (_webservicesSupportPage != null) {
 				addPage(_webservicesSupportPage);
 			}
 		}
 	}
-	
+
 	protected String getPageDescription() {
 		String description = ResourceMessages.NewProject_description;
 		if (wizardType() == WizardType.D2W_APPLICATION_WIZARD ) {
 			description = Messages.getString("D2WApplicationWizard.description");
-		} 
-		
+		}
+
 		return description;
 	}
 
@@ -216,7 +225,6 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 		return referencePage;
 	}
 
-
 	protected EOModelResourceImportPage createEOModelImportResourcePage() {
 		EOModelResourceImportPage importResourcePage = new EOModelResourceImportPage("basicReferenceProjectPage");
 		importResourcePage.setTitle(Messages.getString("EOModelResourceImportPage.title"));
@@ -233,24 +241,24 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	}
 
 	protected PackageSpecifierWizardPage createPackageSpecifierWizardPage() {
-		PackageSpecifierWizardPage packagePage = new PackageSpecifierWizardPage("basicReferenceProjectPage", new StructuredSelection());
+		PackageSpecifierWizardPage packagePage = new PackageSpecifierWizardPage("basicReferenceProjectPage", IMessageProvider.NONE);
 		packagePage.setTitle("Specify package: ");
 		packagePage.setMessage("Default package for all Java source generated for project");
 		packagePage.setDescription("Default package for all Java source generated for project");
 		return packagePage;
 	}
-	
+
 	protected WOWebServicesWizardPage createWebServicesSupportPage() {
 		WOWebServicesWizardPage webservicesPage = null;
 		if (ResourcesPlugin.getWorkspace().getRoot().getProjects().length > 0) {
 			webservicesPage = new WOWebServicesWizardPage("basicReferenceProjectPage", IMessageProvider.NONE);//$NON-NLS-1$
-			webservicesPage.setTitle("Add WebServices Support");
-			webservicesPage.setDescription("Enable Client and Server WebServices support");
+			webservicesPage.setTitle(Messages.getString("WOWebServicesWizardPage.title"));
+			webservicesPage.setDescription(Messages.getString("WOWebServicesWizardPage.description"));
 		}
 		return webservicesPage;
 	}
-	
-	
+
+
 	/**
 	 * Creates a new project resource with the selected name.
 	 * <p>
@@ -657,20 +665,41 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	/*
 	 * Template Engine Support
 	 */
-	
+
 	/*
 	 * Default implementation cribbed and modified from AbstractWonderProject
+	 * Create a component in the default java package
 	 */
 	protected void addComponentDefinition(String templateFolder, TemplateEngine engine, String path, String name) {
-		File wo = new File(path + File.separator + name + ".wo");
-		wo.mkdirs();
-		engine.addTemplate(new TemplateDefinition(templateFolder + "/" + name + ".html.vm", path + File.separator  + name + ".wo", name + ".html", name + ".html"));
-		engine.addTemplate(new TemplateDefinition(templateFolder + "/" + name + ".wod.vm", path + File.separator  + name + ".wo", name + ".wod", name + ".wod"));
-		engine.addTemplate(new TemplateDefinition(templateFolder + "/" + name + ".woo.vm", path + File.separator  + name + ".wo", name + ".woo", name + ".woo"));
-		engine.addTemplate(new TemplateDefinition(templateFolder + "/" + name + ".api.vm", path, name + ".api", name + ".api"));
-		engine.addTemplate(new TemplateDefinition(templateFolder + "/" + name + ".java.vm", path + File.separator + "src", name + ".java", name + ".java"));
+		addComponentDefinition (templateFolder, engine, path, name, "");
 	}
-	
+
+	/**
+	 * Create a component within a specific package
+	 * @param templateFolder
+	 * @param engine
+	 * @param rootPath
+	 * @param name
+	 * @param packagePath
+	 */
+	protected void addComponentDefinition(String templateFolder, TemplateEngine engine, String rootPath, String name, String packagePath) {
+		//create component dir
+		String componentPath = rootPath + File.separator  + name + ".wo";
+		File wo = new File(componentPath);
+		wo.mkdirs();
+
+		//create src dirs
+		String fullPackagePath = (packagePath != null && packagePath.length() > 0) ? rootPath + File.separator + "src"+File.separator+packagePath : rootPath + File.separator + "src";
+		File srcPath = new File(fullPackagePath);
+		srcPath.mkdirs();
+
+		engine.addTemplate(new TemplateDefinition(templateFolder + "/" + name + ".html.vm", componentPath, name + ".html", name + ".html"));
+		engine.addTemplate(new TemplateDefinition(templateFolder + "/" + name + ".wod.vm", componentPath, name + ".wod", name + ".wod"));
+		engine.addTemplate(new TemplateDefinition(templateFolder + "/" + name + ".woo.vm", componentPath, name + ".woo", name + ".woo"));
+		engine.addTemplate(new TemplateDefinition(templateFolder + "/" + name + ".api.vm", rootPath, name + ".api", name + ".api"));
+		engine.addTemplate(new TemplateDefinition(templateFolder + "/" + name + ".java.vm", fullPackagePath, name + ".java", name + ".java"));
+	}
+
 	/*
 	 * EOModel Support
 	 */
@@ -681,7 +710,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 		}
 		return _eomodelImportPage.getModelPaths();
 	}
-	
+
 	/**
 	 * Called by subclassers that want EOModel support.  Doesn't use the template engine.
 	 * @param project to add support
@@ -693,7 +722,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	}
 
 	/*
-	 * D2W Support 
+	 * D2W Support
 	 */
 	protected D2WLook currentD2WLook() {
 		if (_d2wConfigurationPage == null) {
@@ -701,7 +730,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 		}
 		return _d2wConfigurationPage.currentLook();
 	}
-	
+
 	/**
 	 * Create WebServices support
 	 * @param project to add support
@@ -712,16 +741,27 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	 */
 	public void createWebServicesSupport(IProject project, TemplateEngine engine) {
 		String path = project.getLocation().toOSString();
-		
+
 		if (_webservicesSupportPage != null) {
 			if (_webservicesSupportPage.getClientSupport()) {
 				engine.addTemplate(new TemplateDefinition("wowebservices"+"/client.wsdd.vm", path, "client.wsdd", "client.wsdd"));
 			}
-			
+
 			if (_webservicesSupportPage.getServerSupport()) {
 				engine.addTemplate(new TemplateDefinition("wowebservices"+"/server.wsdd.vm", path, "server.wsdd", "server.wsdd"));
 			}
 		}
 	}
 
+	/*
+	 * Java Package Support
+	 */
+	public void createJavaPackageSupport (IProject project, String packagePath) {
+		String fullPath = project.getLocation().toOSString()+File.separator+"src";
+		if (packagePath.length() > 0) {
+			fullPath = fullPath+File.separator+packagePath;
+		}
+		File pFile = new File(fullPath);
+		pFile.mkdirs();
+	}
 }

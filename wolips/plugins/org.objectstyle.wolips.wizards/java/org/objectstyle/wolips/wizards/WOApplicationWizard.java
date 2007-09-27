@@ -1,8 +1,8 @@
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2006 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -77,10 +77,10 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 	protected WizardType wizardType(){
 		return WizardType.WO_APPLICATION_WIZARD;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.objectstyle.wolips.wizards.AbstractWOWizard#getWindowTitle()
 	 */
 	public String getWindowTitle() {
@@ -97,8 +97,17 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 		String projectName = project.getName();
 		String path = project.getLocation().toOSString();
 
-		File src = new File(path + File.separator + "src");
-		src.mkdirs();
+		//Java Package support
+		String packagePath = "";
+		String packageName = "";
+		String fullSrcPath = path+File.separator+"src";
+		if (_packagePage != null) {
+			packageName = _packagePage.getTextData();
+			packagePath = _packagePage.getConvertedPath();
+			fullSrcPath += File.separator+packagePath;
+		}
+		createJavaPackageSupport(project, packagePath);
+
 		File bin = new File(path + File.separator + "bin");
 		bin.mkdirs();
 		// File xcode = new File(path + File.separator + projectName
@@ -114,13 +123,14 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 		templateEngine.init();
 		templateEngine.getWolipsContext().setProjectName(projectName);
 		templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
+		templateEngine.getWolipsContext().setPackageName(packageName);
 
-		addComponentDefinition(templateFolder, templateEngine, path, "Main");
-		
-		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Application.java.vm", path + File.separator + "src", "Application.java", "Application.java"));
-		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/DirectAction.java.vm", path + File.separator + "src", "DirectAction.java", "DirectAction.java"));
-		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Main.java.vm", path + File.separator + "src", "Main.java", "Main.java"));
-		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Session.java.vm", path + File.separator + "src", "Session.java", "Session.java"));
+		addComponentDefinition(templateFolder, templateEngine, path, "Main", packagePath);
+
+		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Application.java.vm", fullSrcPath, "Application.java", "Application.java"));
+		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/DirectAction.java.vm", fullSrcPath, "DirectAction.java", "DirectAction.java"));
+		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/Session.java.vm", fullSrcPath, "Session.java", "Session.java"));
+
 		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/.classpath.vm", path, ".classpath", ".classpath"));
 		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/.project.vm", path, ".project", ".project"));
 		templateEngine.addTemplate(new TemplateDefinition(templateFolder + "/ant.classpaths.user.home.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.classpaths.user.home", "ant.classpaths.user.home"));
@@ -141,14 +151,14 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 		// "woapplication/project.pbxproj.vm", path
 		// + File.separator + projectName + ".xcode",
 		// "project.pbxproj", "project.pbxproj"));
-		
+
 		createWebServicesSupport(project, templateEngine);
-		
+
 		templateEngine.run(progressMonitor);
-		
+
 		createEOModelSupport(project);
 
 	}
-	
+
 
 }

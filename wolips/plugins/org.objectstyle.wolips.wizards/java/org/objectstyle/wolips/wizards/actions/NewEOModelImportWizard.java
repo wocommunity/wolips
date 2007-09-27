@@ -17,26 +17,21 @@ public class NewEOModelImportWizard  extends Wizard implements IImportWizard {
 	IWorkbench aWorkBench;
 	String projectPath;
 	IProject project;
-	
-//	public NewEOModelImportWizard () {
-//
-//	}
-	
+
 	public void addPages() {
-		importPage = new EOModelResourceImportPage("EOModelImportPage"); //$NON-NLS-1$ 
+		importPage = new EOModelResourceImportPage("EOModelImportPage", true); //$NON-NLS-1$
 		addPage(importPage);
 	}
-	
+
 	@Override
 	public boolean performFinish() {
-		
+
 		if (importPage != null && project != null) {
 			HashMap <String, String> paths = importPage.getModelPaths();
-//			return EOModelImportSupport.importEOModelsToProject(paths, project);
 			EOModelImportWorkspaceJob job = new EOModelImportWorkspaceJob("eomodel import", paths, project);
 			job.schedule();
 		}
-		
+
 		return true;
 	}
 
@@ -44,7 +39,7 @@ public class NewEOModelImportWizard  extends Wizard implements IImportWizard {
 		currentSelection = selection;
 		aWorkBench = workbench;
 		project = null;
-		
+
 		//FIXME: validate if we actual have a project selected
 		Object o = selection.getFirstElement();
 
@@ -56,7 +51,7 @@ public class NewEOModelImportWizard  extends Wizard implements IImportWizard {
 		} else {
 			System.out.println("Project not selected! Object: "+o);
 		}
-		
+
 	}
 
 

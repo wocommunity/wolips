@@ -1,8 +1,8 @@
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2006 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -77,21 +77,33 @@ public class D2WebServiceApplicationWizard extends AbstractProjectWizard {
 	public String getWindowTitle() {
 		return Messages.getString("D2WebServiceApplicationWizard.title");
 	}
-	
+
 	protected String getTemplateFolder() {
 		return "d2webservice_application";
 	}
-	
+
 
 	@Override
 	protected void _createProject(IProject project, IProgressMonitor progressMonitor) throws Exception {
-		
+
 		String projectName = project.getName();
 		String path = project.getLocation().toOSString();
 		String rootTemplate = getTemplateFolder();
-		
-		File src = new File(path + File.separator + "src");
-		src.mkdirs();
+
+		//Java Package support
+		String packagePath = "";
+		String packageName = "";
+		String fullSrcPath = path+File.separator+"src";
+		if (_packagePage != null) {
+			packageName = _packagePage.getTextData();
+			packagePath = _packagePage.getConvertedPath();
+			fullSrcPath += File.separator+packagePath;
+		}
+		createJavaPackageSupport(project, packagePath);
+
+
+		File xcode = new File(path + File.separator + projectName + ".xcode");
+		xcode.mkdirs();
 		File bin = new File(path + File.separator + "bin");
 		bin.mkdirs();
 		File ant = new File(path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME);
@@ -101,14 +113,16 @@ public class D2WebServiceApplicationWizard extends AbstractProjectWizard {
 
 		templateEngine.getWolipsContext().setProjectName(projectName);
 		templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
-		
-		addComponentDefinition(rootTemplate, templateEngine, path, "Main");
-		addComponentDefinition(rootTemplate, templateEngine, path, "MenuHeader");
-		addComponentDefinition(rootTemplate, templateEngine, path, "PageWrapper");
-		
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/Application.java.vm", path + File.separator + "src", "Application.java", "Application.java"));
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/DirectAction.java.vm", path + File.separator + "src", "DirectAction.java", "DirectAction.java"));
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/Session.java.vm", path + File.separator + "src", "Session.java", "Session.java"));
+		templateEngine.getWolipsContext().setPackageName(packageName);
+
+		addComponentDefinition(rootTemplate, templateEngine, path, "Main", packagePath);
+		addComponentDefinition(rootTemplate, templateEngine, path, "MenuHeader", packagePath);
+		addComponentDefinition(rootTemplate, templateEngine, path, "PageWrapper", packagePath);
+
+		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/Application.java.vm", fullSrcPath, "Application.java", "Application.java"));
+		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/DirectAction.java.vm", fullSrcPath, "DirectAction.java", "DirectAction.java"));
+		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/Session.java.vm", fullSrcPath, "Session.java", "Session.java"));
+
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/.classpath.vm", path, ".classpath", ".classpath"));
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/.project.vm", path, ".project", ".project"));
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/ant.classpaths.user.home.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.classpaths.user.home", "ant.classpaths.user.home"));
@@ -128,13 +142,13 @@ public class D2WebServiceApplicationWizard extends AbstractProjectWizard {
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/Properties.vm", path, "Properties", "Properties"));
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/project.pbxproj.vm", path + File.separator + projectName + ".xcode", "project.pbxproj", "project.pbxproj"));
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/user.d2wmodel.vm", path, "user.d2wmodel", "user.d2wmodel"));
-		
+
 		//FIXME: these are auto-copied from templates but don't have to.  See comments in createWebServicesSupport()
 		templateEngine.addTemplate(new TemplateDefinition("d2webservice_application/template_server.wsdd.vm", path, "server.wsdd", "server.wsdd"));
 		templateEngine.addTemplate(new TemplateDefinition("d2webservice_application/template_client.wsdd.vm", path, "client.wsdd", "client.wsdd"));
-			
+
 		templateEngine.run(progressMonitor);
-		
+
 		createEOModelSupport(project);
 	}
 
