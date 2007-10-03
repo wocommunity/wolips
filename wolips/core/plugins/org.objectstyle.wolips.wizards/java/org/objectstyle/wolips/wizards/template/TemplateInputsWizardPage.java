@@ -9,6 +9,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -92,30 +93,42 @@ public class TemplateInputsWizardPage extends WizardPage {
 				if (_inputs != null) {
 					for (ProjectInput input : _inputs) {
 						input.setValue(null);
-						
+
 						Label label = new Label(composite, SWT.NONE);
 						label.setText(input.getQuestion());
 						_questionLabels.put(input, label);
-	
+
 						Object value = input.getValue();
-	
+
 						Control control;
 						ProjectInput.Type type = input.getType();
-						if (type == ProjectInput.Type.String) {
-							control = new Text(composite, SWT.NONE);
-							((Text) control).setText((String) value);
-						} else if (type == ProjectInput.Type.Integer) {
-							control = new Spinner(composite, SWT.NONE);
-							if (value != null) {
-								((Spinner) control).setSelection(((Integer) value).intValue());
+						if (input.hasOptions()) {
+							Combo combo = new Combo(composite, SWT.READ_ONLY);
+							for (ProjectInput.Option option : input.getOptions()) {
+								combo.add(option.getName());
 							}
-						} else if (type == ProjectInput.Type.Boolean) {
-							control = new Button(composite, SWT.CHECK);
-							if (value != null) {
-								((Button) control).setSelection(((Boolean) value).booleanValue());
+							ProjectInput.Option selectedOption = input.getSelectedOption();
+							if (selectedOption != null) {
+								combo.select(input.getOptions().indexOf(selectedOption));
 							}
+							control = combo;
 						} else {
-							throw new IllegalArgumentException("Unknown type " + type + ".");
+							if (type == ProjectInput.Type.String) {
+								control = new Text(composite, SWT.NONE);
+								((Text) control).setText((String) value);
+							} else if (type == ProjectInput.Type.Integer) {
+								control = new Spinner(composite, SWT.NONE);
+								if (value != null) {
+									((Spinner) control).setSelection(((Integer) value).intValue());
+								}
+							} else if (type == ProjectInput.Type.Boolean) {
+								control = new Button(composite, SWT.CHECK);
+								if (value != null) {
+									((Button) control).setSelection(((Boolean) value).booleanValue());
+								}
+							} else {
+								throw new IllegalArgumentException("Unknown type " + type + ".");
+							}
 						}
 						control.setLayoutData(new GridData());
 						_questionControls.put(input, control);
@@ -126,15 +139,21 @@ public class TemplateInputsWizardPage extends WizardPage {
 			if (_inputs != null) {
 				for (ProjectInput input : _inputs) {
 					Control control = _questionControls.get(input);
-					ProjectInput.Type type = input.getType();
-					if (type == ProjectInput.Type.String) {
-						input.setValue(((Text) control).getText());
-					} else if (type == ProjectInput.Type.Integer) {
-						input.setValue(Integer.valueOf(((Spinner) control).getSelection()));
-					} else if (type == ProjectInput.Type.Boolean) {
-						input.setValue(Boolean.valueOf(((Button) control).getSelection()));
+					if (input.hasOptions()) {
+						int selectedOptionIndex = ((Combo) control).getSelectionIndex();
+						ProjectInput.Option selectedOption = input.getOptions().get(selectedOptionIndex);
+						input.setSelectedOption(selectedOption);
 					} else {
-						throw new IllegalArgumentException("Unknown type " + type + ".");
+						ProjectInput.Type type = input.getType();
+						if (type == ProjectInput.Type.String) {
+							input.setValue(((Text) control).getText());
+						} else if (type == ProjectInput.Type.Integer) {
+							input.setValue(Integer.valueOf(((Spinner) control).getSelection()));
+						} else if (type == ProjectInput.Type.Boolean) {
+							input.setValue(Boolean.valueOf(((Button) control).getSelection()));
+						} else {
+							throw new IllegalArgumentException("Unknown type " + type + ".");
+						}
 					}
 				}
 			}
