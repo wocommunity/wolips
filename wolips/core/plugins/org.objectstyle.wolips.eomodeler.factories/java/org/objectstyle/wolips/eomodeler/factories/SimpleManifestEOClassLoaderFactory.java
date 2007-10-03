@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Set;
 
+import org.objectstyle.wolips.baseforplugins.util.URLUtils;
 import org.objectstyle.wolips.eomodeler.core.model.AbstractEOClassLoader;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
-import org.objectstyle.wolips.eomodeler.core.utils.URLUtils;
 
 public class SimpleManifestEOClassLoaderFactory extends AbstractEOClassLoader {
 	@Override
