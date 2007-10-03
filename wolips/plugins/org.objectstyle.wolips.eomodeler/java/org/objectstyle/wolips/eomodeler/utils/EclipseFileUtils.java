@@ -15,9 +15,9 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
+import org.objectstyle.wolips.baseforplugins.util.URLUtils;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
-import org.objectstyle.wolips.eomodeler.core.utils.URLUtils;
 
 public class EclipseFileUtils {
 	public static IURIEditorInput getEditorInput(EOModel model) throws MalformedURLException, EOModelException, CoreException, URISyntaxException {
