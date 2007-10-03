@@ -1,12 +1,15 @@
 package org.objectstyle.wolips.wizards.template;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.widgets.Composite;
+import org.objectstyle.wolips.baseforplugins.util.URLUtils;
 import org.objectstyle.wolips.core.resources.internal.types.project.ProjectPatternsets;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
@@ -17,11 +20,15 @@ public class NewProjectFromTemplateWizard extends NewWOProjectWizard {
 
 	private TemplateInputsWizardPage _templateInputsPage;
 
-	private File _templateBaseFolder;
+	private List<File> _templateBaseFolders;
 
 	public NewProjectFromTemplateWizard() {
-		// MS: This needs a Win/Mac check ...
-		_templateBaseFolder = new File(System.getProperty("user.home"), "Library/Application Support/WOLips/Project Templates");
+		_templateBaseFolders = new LinkedList<File>();
+		_templateBaseFolders.add(URLUtils.cheatAndTurnIntoFile(TemplateEngine.class.getResource("/ProjectTemplates")));
+		_templateBaseFolders.add(new File("/Library/Application Support/WOLips/Project Templates"));
+		_templateBaseFolders.add(new File(System.getProperty("user.home"), "Documents and Settings/Application Data/WOLips/Project Templates"));
+		_templateBaseFolders.add(new File(System.getProperty("user.home"), "Documents and Settings/AppData/Local/WOLips/Project Templates"));
+		_templateBaseFolders.add(new File(System.getProperty("user.home"), "Library/Application Support/WOLips/Project Templates"));
 	}
 
 	@Override
@@ -36,18 +43,25 @@ public class NewProjectFromTemplateWizard extends NewWOProjectWizard {
 
 	@Override
 	public void addPages() {
-		_selectTemplatePage = new SelectTemplateWizardPage(_templateBaseFolder);
+		_selectTemplatePage = new SelectTemplateWizardPage(_templateBaseFolders);
 		addPage(_selectTemplatePage);
 
 		_templateInputsPage = new TemplateInputsWizardPage();
 		addPage(_templateInputsPage);
-
+		
 		super.addPages();
 	}
 
 	@Override
 	public IWizardPage getNextPage(IWizardPage page) {
-		IWizardPage nextPage = super.getNextPage(page);
+		IWizardPage currentPage = page;
+		if (currentPage == _selectTemplatePage) {
+			ProjectTemplate selectedTemplate = _selectTemplatePage.getSelectedProjectTemplate();
+			if (selectedTemplate != null && selectedTemplate.getInputs().size() == 0) {
+				currentPage = _templateInputsPage;
+			}
+		}
+		IWizardPage nextPage = super.getNextPage(currentPage);
 		if (nextPage == _templateInputsPage) {
 			_templateInputsPage.setProjectTemplate(_selectTemplatePage.getSelectedProjectTemplate());
 		}
@@ -55,8 +69,10 @@ public class NewProjectFromTemplateWizard extends NewWOProjectWizard {
 	}
 
 	protected void _createProject(IProject project, IProgressMonitor progressMonitor) throws Exception {
+		ProjectTemplate selectedTemplate = _selectTemplatePage.getSelectedProjectTemplate();
+
 		TemplateEngine templateEngine = new TemplateEngine();
-		templateEngine.setTemplatePath(_templateBaseFolder.getAbsolutePath());
+		templateEngine.setTemplatePath(selectedTemplate.getFolder().getParentFile().getAbsolutePath());
 		templateEngine.init();
 
 		templateEngine.getWolipsContext().setProjectName(project.getName());
@@ -66,8 +82,7 @@ public class NewProjectFromTemplateWizard extends NewWOProjectWizard {
 			templateEngine.setPropertyForKey(input.getValue(), input.getName());
 		}
 
-		ProjectTemplate selectedTemplate = _selectTemplatePage.getSelectedProjectTemplate();
-		_createProject(templateEngine, _templateBaseFolder, project.getLocation().toFile(), selectedTemplate.getFolder(), progressMonitor);
+		_createProject(templateEngine, selectedTemplate.getFolder().getParentFile(), project.getLocation().toFile(), selectedTemplate.getFolder(), progressMonitor);
 		templateEngine.run(progressMonitor);
 	}
 

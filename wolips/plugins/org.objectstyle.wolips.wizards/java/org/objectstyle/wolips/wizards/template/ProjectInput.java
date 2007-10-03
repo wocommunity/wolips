@@ -1,5 +1,10 @@
 package org.objectstyle.wolips.wizards.template;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
+
 /**
  * ProjectInput represents a single input variable for a template definition.
  * 
@@ -24,6 +29,8 @@ public class ProjectInput {
 
 	private Object _defaultValue;
 
+	private List<ProjectInput.Option> _options;
+
 	private Object _value;
 
 	/**
@@ -37,6 +44,7 @@ public class ProjectInput {
 	public ProjectInput(String name, ProjectInput.Type type) {
 		_name = name;
 		_type = type;
+		_options = new LinkedList<Option>();
 	}
 
 	/**
@@ -110,15 +118,21 @@ public class ProjectInput {
 	 *            the default value for this input as a string
 	 */
 	public void setDefaultText(String defaultText) {
+		_defaultValue = toObjectValue(defaultText);
+	}
+
+	protected Object toObjectValue(String text) {
+		Object value;
 		if (_type == ProjectInput.Type.String) {
-			_defaultValue = defaultText;
+			value = text;
 		} else if (_type == ProjectInput.Type.Integer) {
-			_defaultValue = Integer.valueOf(defaultText);
+			value = Integer.valueOf(text);
 		} else if (_type == ProjectInput.Type.Boolean) {
-			_defaultValue = Boolean.valueOf(defaultText);
+			value = Boolean.valueOf(text);
 		} else {
-			throw new IllegalArgumentException("Unknown value '" + defaultText + "' for type " + _type + ".");
+			throw new IllegalArgumentException("Unknown value '" + text + "' for type " + _type + ".");
 		}
+		return value;
 	}
 
 	/**
@@ -144,8 +158,125 @@ public class ProjectInput {
 		}
 		return value;
 	}
+	
+	/**
+	 * Adds an option to the options list.
+	 * 
+	 * @param name the name of the option
+	 * @param textValue the text value of the option
+	 */
+	public void addOption(String name, String textValue) {
+		_options.add(new ProjectInput.Option(name, toObjectValue(textValue)));
+	}
+
+	/**
+	 * Sets the possible options for this input.
+	 * 
+	 * @param options
+	 *            the options for this input
+	 */
+	public void setOptions(List<ProjectInput.Option> options) {
+		_options = options;
+	}
+
+	/**
+	 * Returns whether or not this input has multiple options.
+	 * 
+	 * @return whether or not this input has multiple options
+	 */
+	public boolean hasOptions() {
+		return _options != null && _options.size() > 0; 
+	}
+	
+	/**
+	 * Returns the possible options for this input.
+	 * 
+	 * @return the possible options for this input
+	 */
+	public List<ProjectInput.Option> getOptions() {
+		return _options;
+	}
+
+	/**
+	 * Sets the currently selected option.
+	 * 
+	 * @param option
+	 *            the currently selected option
+	 */
+	public void setSelectedOption(ProjectInput.Option option) {
+		if (option == null) {
+			_value = null;
+		} else {
+			_value = option.getValue();
+		}
+	}
+
+	/**
+	 * Returns the currently selected option.
+	 * 
+	 * @return the currently selected option
+	 */
+	public ProjectInput.Option getSelectedOption() {
+		Option selectedOption = null;
+		if (_options != null) {
+			Object value = getValue();
+			for (Option option : _options) {
+				if (ComparisonUtils.equals(option.getValue(), value)) {
+					selectedOption = option;
+				}
+			}
+		}
+		return selectedOption;
+	}
 
 	public String toString() {
 		return "[ProjectInput: name = " + _name + "; value = " + _value + "]";
+	}
+
+	/**
+	 * Option represents a single value from an enumerated type value.
+	 * 
+	 * @author mschrag
+	 */
+	public static class Option {
+		private String _name;
+
+		private Object _value;
+
+		/**
+		 * Construct an Option.
+		 * 
+		 * @param name
+		 *            the name of this option
+		 * @param value
+		 *            the value of this option
+		 */
+		public Option(String name, Object value) {
+			_name = name;
+			_value = value;
+		}
+
+		/**
+		 * Returns the name of this option.
+		 * 
+		 * @return the name of this option
+		 */
+		public String getName() {
+			return _name;
+		}
+
+		/**
+		 * Returns the value of this option.
+		 * 
+		 * @return the value of this option
+		 */
+		public Object getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return "[ProjectInput.Option: name = " + _name + "]";
+		}
 	}
 }

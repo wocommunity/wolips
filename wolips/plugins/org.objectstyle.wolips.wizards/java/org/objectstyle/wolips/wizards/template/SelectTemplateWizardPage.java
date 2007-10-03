@@ -17,19 +17,19 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 public class SelectTemplateWizardPage extends WizardPage implements ISelectionChangedListener, IDoubleClickListener {
-	private File _templateBaseFolder;
-
+	private List<File> _templateBaseFolders;
+	
 	private List<ProjectTemplate> _templates;
 
 	private ListViewer _templateViewer;
 
 	private ProjectTemplate _selectedProjectTemplate;
 
-	protected SelectTemplateWizardPage(File templateBaseFolder) {
+	protected SelectTemplateWizardPage(List<File> templateBaseFolders) {
 		super("Select Template");
 		setPageComplete(false);
-		_templateBaseFolder = templateBaseFolder;
-		_templates = ProjectTemplate.loadProjectTemplates(templateBaseFolder);
+		_templateBaseFolders = templateBaseFolders;
+		_templates = ProjectTemplate.loadProjectTemplates(templateBaseFolders);
 	}
 
 	public List<ProjectTemplate> getProjectTemplates() {
@@ -51,7 +51,7 @@ public class SelectTemplateWizardPage extends WizardPage implements ISelectionCh
 		if (_templates.size() == 0) {
 			setTitle("No Templates Found");
 			Label noTemplatesLabel = new Label(composite, SWT.NONE);
-			noTemplatesLabel.setText("There are no templates in the '" + _templateBaseFolder.getAbsolutePath() + "' folder.");
+			noTemplatesLabel.setText("There are no templates in folders " + _templateBaseFolders);
 		} else {
 			setTitle("Select a Template");
 			_templateViewer = new ListViewer(composite, SWT.SINGLE);
