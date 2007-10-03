@@ -19,6 +19,7 @@ Require-Bundle: org.eclipse.search,
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.ui,
  org.objectstyle.wolips.ui.actions,
+ org.objectstyle.wolips.ui.labeldecorator,
  org.objectstyle.wolips.ui.preferences,
  org.objectstyle.wolips.ui.propertypages,
  org.objectstyle.wolips.ui.view
