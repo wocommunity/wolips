@@ -60,8 +60,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.objectstyle.wolips.baseforplugins.util.URLUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
-import org.objectstyle.wolips.eomodeler.core.utils.URLUtils;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 
 public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements ISortableEOModelObject {

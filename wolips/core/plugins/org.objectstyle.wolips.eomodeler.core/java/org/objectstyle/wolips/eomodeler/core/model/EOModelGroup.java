@@ -61,7 +61,7 @@ import java.util.TreeSet;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.objectstyle.wolips.eomodeler.core.utils.URLUtils;
+import org.objectstyle.wolips.baseforplugins.util.URLUtils;
 
 public class EOModelGroup extends EOModelObject<Object> {
 	public static final String MODELS = "models";
