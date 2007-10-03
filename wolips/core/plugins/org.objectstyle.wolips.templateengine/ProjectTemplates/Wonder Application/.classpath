@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="Sources"/>
-	#if (${useProjects})
+	#if (${linkToWonderProjects})
 	<classpathentry combineaccessrules="false" kind="src" path="/ERJars"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ERExtensions"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ERPrototypes"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JavaWOExtensions"/>
-	<classpathentry kind="con" path="org.objectstyle.wolips.WO_CLASSPATH/JavaEOAccess/JavaEOControl/JavaFoundation/JavaJDBCAdaptor/JavaWebObjects/JavaXML"/>
-	#else
-	<classpathentry kind="con" path="org.objectstyle.wolips.WO_CLASSPATH/ERExtensions/ERJars/ERPrototypes/JavaWOExtensions/JavaEOAccess/JavaEOControl/JavaFoundation/JavaJDBCAdaptor/JavaWebObjects/JavaXML"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	#end
+	#if (${linkToWonderFrameworks})
+	<classpathentry kind="con" path="org.objectstyle.wolips.WO_CLASSPATH/ERExtensions/ERJars/ERPrototypes/JavaWOExtensions/JavaEOAccess/JavaEOControl/JavaFoundation/JavaJDBCAdaptor/JavaWebObjects/JavaXML"/>
+	#else
+	<classpathentry kind="con" path="org.objectstyle.wolips.WO_CLASSPATH/JavaEOAccess/JavaEOControl/JavaFoundation/JavaJDBCAdaptor/JavaWebObjects/JavaXML"/>
+	#end
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
