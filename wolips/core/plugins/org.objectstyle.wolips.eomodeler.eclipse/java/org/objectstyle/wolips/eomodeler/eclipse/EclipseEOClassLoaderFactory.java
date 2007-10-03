@@ -16,9 +16,9 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.objectstyle.wolips.baseforplugins.util.URLUtils;
 import org.objectstyle.wolips.eomodeler.core.model.AbstractEOClassLoader;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
-import org.objectstyle.wolips.eomodeler.core.utils.URLUtils;
 import org.objectstyle.wolips.eomodeler.utils.EclipseFileUtils;
 import org.objectstyle.wolips.variables.VariablesPlugin;
 
