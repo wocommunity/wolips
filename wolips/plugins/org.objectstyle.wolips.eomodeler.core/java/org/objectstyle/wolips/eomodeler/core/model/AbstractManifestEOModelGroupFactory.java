@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.objectstyle.wolips.eomodeler.core.utils.URLUtils;
+import org.objectstyle.wolips.baseforplugins.util.URLUtils;
 
 public abstract class AbstractManifestEOModelGroupFactory implements IEOModelGroupFactory {
 	public void loadModelGroup(Object modelGroupResource, EOModelGroup modelGroup, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws EOModelException {
