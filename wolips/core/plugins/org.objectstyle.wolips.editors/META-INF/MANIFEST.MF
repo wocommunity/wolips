@@ -5,11 +5,11 @@ Bundle-SymbolicName: org.objectstyle.wolips.editors; singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.editors.EditorsPlugin
 Bundle-Vendor: objectstyle.org
-Require-Bundle: org.objectstyle.wolips.ui,
+Require-Bundle: org.objectstyle.wolips.baseforuiplugins,
+ org.objectstyle.wolips.ui,
  org.objectstyle.wolips.workbenchutilities,
  org.eclipse.ui.forms,
- org.objectstyle.wolips,
- org.objectstyle.wolips.baseforuiplugins
+ org.objectstyle.wolips
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.editors,
  org.objectstyle.wolips.editors.contentdescriber,
