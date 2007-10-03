@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template name = "Wonder Application">
+	<inputs>
+		<input name = "useProjects" type = "Boolean">
+			<question>Link to Eclipse Projects?</question>
+			<default>false</default>
+		</input>
+	</inputs>
+</template>
