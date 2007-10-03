@@ -14,6 +14,7 @@ import org.objectstyle.wolips.core.resources.internal.types.project.ProjectPatte
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
 import org.objectstyle.wolips.wizards.NewWOProjectWizard;
+import org.objectstyle.wolips.wizards.WizardsPlugin;
 
 public class NewProjectFromTemplateWizard extends NewWOProjectWizard {
 	private SelectTemplateWizardPage _selectTemplatePage;
@@ -24,7 +25,15 @@ public class NewProjectFromTemplateWizard extends NewWOProjectWizard {
 
 	public NewProjectFromTemplateWizard() {
 		_templateBaseFolders = new LinkedList<File>();
-		_templateBaseFolders.add(URLUtils.cheatAndTurnIntoFile(TemplateEngine.class.getResource("/ProjectTemplates")));
+		try {
+		File projectTemplatesFile = URLUtils.cheatAndTurnIntoFile(TemplateEngine.class.getResource("/ProjectTemplates"));
+		if (projectTemplatesFile != null) {
+			_templateBaseFolders.add(projectTemplatesFile);
+		}
+		}
+		catch (IllegalArgumentException e) {
+			WizardsPlugin.getDefault().log(e);
+		}
 		_templateBaseFolders.add(new File("/Library/Application Support/WOLips/Project Templates"));
 		_templateBaseFolders.add(new File(System.getProperty("user.home"), "Documents and Settings/Application Data/WOLips/Project Templates"));
 		_templateBaseFolders.add(new File(System.getProperty("user.home"), "Documents and Settings/AppData/Local/WOLips/Project Templates"));
