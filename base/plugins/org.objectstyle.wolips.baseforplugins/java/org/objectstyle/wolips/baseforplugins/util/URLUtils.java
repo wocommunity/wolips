@@ -4,12 +4,15 @@ import java.io.File;
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+
+import org.eclipse.osgi.framework.internal.core.BundleURLConnection;
 
 public class URLUtils {
 	public static String getExtension(URL url) {
@@ -68,6 +71,12 @@ public class URLUtils {
 	public static URL[] getChildrenFolders(URL url) throws IOException {
 		URL[] children;
 		String protocol = url.getProtocol();
+		if ("bundleresource".equals(protocol)) {
+			BundleURLConnection conn = (BundleURLConnection)url.openConnection();
+			url = conn.getFileURL();
+			protocol = url.getProtocol();
+		}
+				
 		if ("file".equals(protocol)) {
 			File f = new File(url.getPath()).getAbsoluteFile();
 			if (!f.exists()) {
@@ -106,7 +115,7 @@ public class URLUtils {
 			}
 			children = childEntries.toArray(new URL[childEntries.size()]);
 		} else {
-			throw new IllegalArgumentException(url + " is not a File.");
+			throw new IllegalArgumentException(url + " is not a format that can have its children retrieved.");
 		}
 		return children;
 	}
@@ -131,6 +140,15 @@ public class URLUtils {
 			String protocol = url.getProtocol();
 			if ("file".equals(protocol)) {
 				f = new File(url.getPath());
+			} else if ("bundleresource".equals(protocol)) {
+				try {
+					BundleURLConnection conn = (BundleURLConnection) url.openConnection();
+					f = new File(conn.getFileURL().toURI());
+				} catch (IOException e) {
+					throw new IllegalArgumentException(url + " cannot be turned into a File.", e);
+				} catch (URISyntaxException e) {
+					throw new IllegalArgumentException(url + " cannot be turned into a File.", e);
+				}
 			} else {
 				throw new IllegalArgumentException(url + " is not a File.");
 			}
