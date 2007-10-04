@@ -126,7 +126,7 @@ public class EOFetchSpecSortOrderingEditorSection extends AbstractPropertySectio
 		GridData modelTreeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		modelTreeLayoutData.heightHint = 100;
 		myModelTreeViewer.getTree().setLayoutData(modelTreeLayoutData);
-		myEntityTreeViewUpdater = new EOEntityTreeViewUpdater(myModelTreeViewer, new EOModelOutlineContentProvider(true, true, true, false, false, false, false));
+		myEntityTreeViewUpdater = new EOEntityTreeViewUpdater(myModelTreeViewer, new EOModelOutlineContentProvider(true, true, true, false, false, false, false, true));
 		myModelTreeViewer.addSelectionChangedListener(this);
 
 		mySortOrderingsTableViewer = TableUtils.createTableViewer(topForm, "EOFetchSpecification", EOSortOrdering.class.getName(), new EOSortOrderingsContentProvider(), new EOSortOrderingsLabelProvider(EOSortOrdering.class.getName()), null);

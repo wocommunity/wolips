@@ -87,8 +87,10 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
 	private boolean _showEntityIndexes;
 
 	private boolean _showDatabaseConfigs;
+	
+	private boolean _showNonClassProperties;
 
-	public EOModelOutlineContentProvider(boolean showEntities, boolean showAttributes, boolean showRelationships, boolean showFetchSpecs, boolean showStoredProcedures, boolean showDatabaseConfigs, boolean showEntityIndexes) {
+	public EOModelOutlineContentProvider(boolean showEntities, boolean showAttributes, boolean showRelationships, boolean showFetchSpecs, boolean showStoredProcedures, boolean showDatabaseConfigs, boolean showEntityIndexes, boolean showNonClassProperties) {
 		_showEntities = showEntities;
 		_showAttributes = showAttributes;
 		_showRelationships = showRelationships;
@@ -96,6 +98,15 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
 		_showStoredProcedures = showStoredProcedures;
 		_showDatabaseConfigs = showDatabaseConfigs;
 		_showEntityIndexes = showEntityIndexes;
+		_showNonClassProperties = showNonClassProperties;
+	}
+	
+	public void setShowNonClassProperties(boolean showNonClassProperties) {
+		_showNonClassProperties = showNonClassProperties;
+	}
+	
+	public boolean isShowNonClassProperties() {
+		return _showNonClassProperties;
 	}
 
 	public Object[] getChildren(Object _parentElement) {
@@ -130,10 +141,20 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
 			EOEntity entity = (EOEntity) _parentElement;
 			Set<EOModelObject> entityChildren = new TreeSet<EOModelObject>(new EOSortableEOModelObjectComparator());
 			if (_showAttributes) {
-				entityChildren.addAll(entity.getAttributes());
+				if (_showNonClassProperties) {
+					entityChildren.addAll(entity.getAttributes());
+				}
+				else {
+					entityChildren.addAll(entity.getClassAttributes());
+				}
 			}
 			if (_showRelationships) {
-				entityChildren.addAll(entity.getRelationships());
+				if (_showNonClassProperties) {
+					entityChildren.addAll(entity.getRelationships());
+				}
+				else {
+					entityChildren.addAll(entity.getClassRelationships());
+				}
 			}
 			if (_showFetchSpecs) {
 				entityChildren.addAll(entity.getFetchSpecs());
