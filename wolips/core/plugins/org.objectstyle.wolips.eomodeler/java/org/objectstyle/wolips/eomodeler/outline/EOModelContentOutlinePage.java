@@ -76,6 +76,8 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
 
 	private EOModelClipboardHandler _clipboardHandler;
 
+	private ToggleNonClassPropertiesAction _toggleNonClassPropertiesAction;
+
 	private ToggleModelGroupAction _toggleModelGroupAction;
 
 	private Menu _contextMenu;
@@ -97,22 +99,34 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
 		super.createControl(parent);
 		TreeViewer treeViewer = getTreeViewer();
 
-//		TreeViewerFocusCellManager focusCellManager = new TreeViewerFocusCellManager(treeViewer, new FocusCellOwnerDrawHighlighter(treeViewer));
-//		ColumnViewerEditorActivationStrategy actSupport2 = new ColumnViewerEditorActivationStrategy(treeViewer) {
-//			protected boolean isEditorActivationEvent(ColumnViewerEditorActivationEvent event) {
-//				return event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION;
-//			}
-//		};
-//		ColumnViewerEditorActivationStrategy actSupport = new ColumnViewerEditorActivationStrategy(treeViewer);
-//		
-//		TreeViewerEditor.create(treeViewer, focusCellManager, actSupport, ColumnViewerEditor.TABBING_HORIZONTAL | ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR | ColumnViewerEditor.TABBING_VERTICAL | ColumnViewerEditor.KEYBOARD_ACTIVATION);
-//
-//		TreeViewerColumn column = new TreeViewerColumn(treeViewer, SWT.NONE);
-//		column.setLabelProvider(new EOModelOutlineColumnLabelProvider(treeViewer));
-//		column.setEditingSupport(new EOModelOutlineEditingSupport(treeViewer));
-//		column.getColumn().setWidth(200);
+		// TreeViewerFocusCellManager focusCellManager = new
+		// TreeViewerFocusCellManager(treeViewer, new
+		// FocusCellOwnerDrawHighlighter(treeViewer));
+		// ColumnViewerEditorActivationStrategy actSupport2 = new
+		// ColumnViewerEditorActivationStrategy(treeViewer) {
+		// protected boolean
+		// isEditorActivationEvent(ColumnViewerEditorActivationEvent event) {
+		// return event.eventType ==
+		// ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION;
+		// }
+		// };
+		// ColumnViewerEditorActivationStrategy actSupport = new
+		// ColumnViewerEditorActivationStrategy(treeViewer);
+		//		
+		// TreeViewerEditor.create(treeViewer, focusCellManager, actSupport,
+		// ColumnViewerEditor.TABBING_HORIZONTAL |
+		// ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR |
+		// ColumnViewerEditor.TABBING_VERTICAL |
+		// ColumnViewerEditor.KEYBOARD_ACTIVATION);
+		//
+		// TreeViewerColumn column = new TreeViewerColumn(treeViewer, SWT.NONE);
+		// column.setLabelProvider(new
+		// EOModelOutlineColumnLabelProvider(treeViewer));
+		// column.setEditingSupport(new
+		// EOModelOutlineEditingSupport(treeViewer));
+		// column.getColumn().setWidth(200);
 
-		_updater = new EOModelTreeViewUpdater(treeViewer, new EOModelOutlineContentProvider(true, true, true, true, true, true, true));
+		_updater = new EOModelTreeViewUpdater(treeViewer, new EOModelOutlineContentProvider(true, true, true, true, true, true, true, true));
 		_updater.setModel(_editor.getModel());
 		updateClipboardHandler();
 		// AK: commenting prevents an error in swt
@@ -120,6 +134,8 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
 
 		IActionBars actionBars = getSite().getActionBars();
 		IToolBarManager toolBarManager = actionBars.getToolBarManager();
+		_toggleNonClassPropertiesAction = new ToggleNonClassPropertiesAction();
+		toolBarManager.add(_toggleNonClassPropertiesAction);
 		_toggleModelGroupAction = new ToggleModelGroupAction();
 		toolBarManager.add(_toggleModelGroupAction);
 
@@ -164,28 +180,65 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
 	}
 
 	public class ToggleModelGroupAction extends Action {
-		private boolean _showingModelGroup;
+		private boolean _showModelGroup;
 
 		public ToggleModelGroupAction() {
-			toggleChanged();
+			_showModelGroup = true;
+			refreshUI();
 			setImageDescriptor(Activator.getDefault().getImageRegistry().getDescriptor(Activator.EOMODEL_ICON));
 		}
 
 		public void toggleChanged() {
-			if (_showingModelGroup) {
-				getUpdater().showModelGroup();
-				setToolTipText("Show Model");
-				setChecked(false);
-			} else {
+			_showModelGroup = !_showModelGroup;
+			refreshUI();
+		}
+
+		public void refreshUI() {
+			if (_showModelGroup) {
 				getUpdater().showModel();
 				setToolTipText("Show ModelGroup");
+				setChecked(false);
+			} else {
+				getUpdater().showModelGroup();
+				setToolTipText("Show Model");
 				setChecked(true);
 			}
 		}
 
 		@Override
 		public void run() {
-			_showingModelGroup = !_showingModelGroup;
+			toggleChanged();
+		}
+	}
+
+	public class ToggleNonClassPropertiesAction extends Action {
+		private boolean _showNonClassProperties;
+
+		public ToggleNonClassPropertiesAction() {
+			_showNonClassProperties = false;
+			refreshUI();
+			setImageDescriptor(Activator.getDefault().getImageRegistry().getDescriptor(Activator.CLASS_PROPERTY_ICON));
+		}
+
+		public void toggleChanged() {
+			_showNonClassProperties = !_showNonClassProperties;
+			refreshUI();
+		}
+
+		public void refreshUI() {
+			if (_showNonClassProperties) {
+				getUpdater().showNonClassProperties();
+				setToolTipText("Hide Non-Class Properties");
+				setChecked(true);
+			} else {
+				getUpdater().hideNonClassProperties();
+				setToolTipText("Show Non-Class Properties");
+				setChecked(false);
+			}
+		}
+
+		@Override
+		public void run() {
 			toggleChanged();
 		}
 	}

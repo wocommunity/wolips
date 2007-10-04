@@ -115,7 +115,7 @@ public class EOFetchSpecPrefetchingEditorSection extends AbstractPropertySection
 		GridData modelTreeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		modelTreeLayoutData.heightHint = 100;
 		myModelTreeViewer.getTree().setLayoutData(modelTreeLayoutData);
-		myEntityTreeViewUpdater = new EOEntityTreeViewUpdater(myModelTreeViewer, new EOModelOutlineContentProvider(true, false, true, false, false, false, false));
+		myEntityTreeViewUpdater = new EOEntityTreeViewUpdater(myModelTreeViewer, new EOModelOutlineContentProvider(true, false, true, false, false, false, false, true));
 		myModelTreeViewer.addSelectionChangedListener(this);
 
 		myPrefetchKeyPathsTableViewer = TableUtils.createTableViewer(topForm, "EOFetchSpecification", EOPrefetchingKeyPathsConstants.COLUMNS, new PrefetchingKeyPathsContentProvider(), new PrefetchingKeyPathsLabelProvider(EOPrefetchingKeyPathsConstants.COLUMNS), new PrefetchingKeyPathsViewerSorter(EOPrefetchingKeyPathsConstants.COLUMNS));

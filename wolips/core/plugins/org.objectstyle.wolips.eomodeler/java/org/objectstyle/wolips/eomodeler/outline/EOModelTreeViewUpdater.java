@@ -66,6 +66,8 @@ import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
 public class EOModelTreeViewUpdater {
 	private TreeViewer _treeViewer;
 
+	private EOModelOutlineContentProvider _contentProvider;
+
 	private ModelPropertyChangeListener _modelListener;
 
 	private EntityPropertyChangeListener _entityListener;
@@ -80,6 +82,7 @@ public class EOModelTreeViewUpdater {
 
 	public EOModelTreeViewUpdater(TreeViewer treeViewer, EOModelOutlineContentProvider contentProvider) {
 		_treeViewer = treeViewer;
+		_contentProvider = contentProvider;
 		_treeViewer.setContentProvider(contentProvider);
 		_treeViewer.setLabelProvider(new EOModelOutlineLabelProvider(_treeViewer));
 		_treeViewer.setSorter(new EOModelOutlineViewerSorter());
@@ -111,6 +114,20 @@ public class EOModelTreeViewUpdater {
 			_treeViewer.setInput(container);
 			_treeViewer.expandToLevel(_model, 1);
 			_treeViewer.setSelection(new StructuredSelection(_model));
+		}
+	}
+
+	public void showNonClassProperties() {
+		if (_treeViewer != null && _contentProvider != null && !_contentProvider.isShowNonClassProperties()) {
+			_contentProvider.setShowNonClassProperties(true);
+			_treeViewer.refresh(true);
+		}
+	}
+
+	public void hideNonClassProperties() {
+		if (_treeViewer != null && _contentProvider != null && _contentProvider.isShowNonClassProperties()) {
+			_contentProvider.setShowNonClassProperties(false);
+			_treeViewer.refresh(true);
 		}
 	}
 
