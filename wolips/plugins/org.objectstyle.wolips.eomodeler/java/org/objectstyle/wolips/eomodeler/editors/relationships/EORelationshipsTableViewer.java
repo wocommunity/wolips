@@ -63,8 +63,8 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
@@ -97,7 +97,7 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
 
 	public EORelationshipsTableViewer(Composite _parent, int _style) {
 		super(_parent, _style);
-		setLayout(new GridLayout(1, true));
+		setLayout(new FillLayout());
 		mySelectionListeners = new LinkedList<ISelectionChangedListener>();
 		myRelationshipsTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EORelationship", EORelationship.class.getName(), new EORelationshipsContentProvider(), null, new EORelationshipsViewerSorter(EORelationship.class.getName()));
 		myRelationshipsTableViewer.setLabelProvider(new EORelationshipsLabelProvider(myRelationshipsTableViewer, EORelationship.class.getName()));

@@ -82,7 +82,10 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
 
 	private Menu _contextMenu;
 
+	private boolean _selectedWithOutline;
+
 	public EOModelContentOutlinePage(EOModelEditor editor) {
+		_selectedWithOutline = true;
 		_clipboardHandler = new EOModelClipboardHandler();
 		_editor = editor;
 	}
@@ -150,6 +153,9 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
 		_contextMenu = menuManager.createContextMenu(treeViewer.getTree());
 		tree.setMenu(_contextMenu);
 		getSite().registerContextMenu("org.objectstyle.wolips.eomodeler.outline", menuManager, treeViewer);
+
+		treeViewer.setInput(EOModelOutlineContentProvider.MODEL_LOADING_OBJ);
+		treeViewer.expandAll();
 	}
 
 	@Override
@@ -166,13 +172,22 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
 		updateClipboardHandler();
 	}
 
+	public boolean isSelectedWithOutline() {
+		return _selectedWithOutline;
+	}
+	
 	public void selectionChanged(SelectionChangedEvent event) {
 		super.selectionChanged(event);
 		_clipboardHandler.selectionChanged(event);
 	}
 
 	public void setSelection(ISelection selection) {
-		super.setSelection(selection);
+		_selectedWithOutline = false;
+		try {
+			super.setSelection(selection);
+		} finally {
+			_selectedWithOutline = true;
+		}
 	}
 
 	public EOModelTreeViewUpdater getUpdater() {

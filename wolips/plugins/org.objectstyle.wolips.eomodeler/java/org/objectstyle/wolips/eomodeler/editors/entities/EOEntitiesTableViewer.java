@@ -57,8 +57,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
@@ -87,7 +87,7 @@ public class EOEntitiesTableViewer extends Composite implements ISelectionProvid
 
 	public EOEntitiesTableViewer(Composite _parent, int _style) {
 		super(_parent, _style);
-		setLayout(new GridLayout(1, true));
+		setLayout(new FillLayout());
 		myEntitiesTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EOEntity", EOEntity.class.getName(), new EOEntitiesContentProvider(), new EOEntitiesLabelProvider(EOEntity.class.getName()), new EOEntitiesViewerSorter(EOEntity.class.getName()));
 		new DoubleClickNewEntityHandler(myEntitiesTableViewer).attach();
 		Table entitiesTable = myEntitiesTableViewer.getTable();

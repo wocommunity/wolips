@@ -56,8 +56,8 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
@@ -91,8 +91,7 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
 
 	public EOAttributesTableViewer(Composite _parent, int _style) {
 		super(_parent, _style);
-
-		setLayout(new GridLayout(1, true));
+		setLayout(new FillLayout());
 		myAttributesTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EOAttribute", EOAttribute.class.getName(), new EOAttributesContentProvider(), null, new EOAttributesViewerSorter(EOAttribute.class.getName()));
 		myAttributesTableViewer.setLabelProvider(new EOAttributesLabelProvider(myAttributesTableViewer, EOAttribute.class.getName()));
 		new DoubleClickNewAttributeHandler(myAttributesTableViewer).attach();
