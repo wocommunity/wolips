@@ -115,6 +115,19 @@ public class WodReflectionUtils {
     return isType;
   }
 
+  public static Set<String> getArrayOperators() {
+    Set<String> operators = new HashSet<String>();
+    operators.add("avg");
+    operators.add("count");
+    operators.add("min");
+    operators.add("max");
+    operators.add("sum");
+    operators.add("sort");
+    operators.add("sortAsc");
+    operators.add("sortDesc");
+    return operators;
+  }
+  
   public static List<BindingValueKey> getBindingKeys(IJavaProject _javaProject, IType _type, String _nameStartingWith, boolean _requireExactNameMatch, int _accessorsOrMutators, WodParserCache cache) throws JavaModelException {
     List<BindingValueKey> bindingKeys = new LinkedList<BindingValueKey>();
 
@@ -139,14 +152,9 @@ public class WodReflectionUtils {
             isUsuallySubclassed = true;
           }
           else if ("NSArray".equals(typeName)) {
-            additionalProposals.add("@avg");
-            additionalProposals.add("@count");
-            additionalProposals.add("@min");
-            additionalProposals.add("@max");
-            additionalProposals.add("@sum");
-            additionalProposals.add("@sort");
-            additionalProposals.add("@sortAsc");
-            additionalProposals.add("@sortDesc");
+            for (String operator : WodReflectionUtils.getArrayOperators()) {
+              additionalProposals.add("@" + operator);
+            }
             nextType = types[typeNum];
           }
         }
