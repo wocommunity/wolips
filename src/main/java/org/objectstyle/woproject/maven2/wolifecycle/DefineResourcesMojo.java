@@ -29,7 +29,8 @@ public abstract class DefineResourcesMojo extends WOMojo {
 			this.executeResourcesPatternsetFiles();
 			this.executeWebServerResourcesPatternsetFiles();
 		}
-		this.executeFolders();
+		this.executeDefineProjectWonderStyleFolders();
+		this.executeDefineWOStyleFolders();
 	}
 
 	protected abstract Boolean readPatternsets();
@@ -110,8 +111,8 @@ public abstract class DefineResourcesMojo extends WOMojo {
 		}
 	}
 
-	private void executeFolders() {
-		getLog().debug("Defining wo resources: defining default folder");
+	private void executeDefineProjectWonderStyleFolders() {
+		getLog().debug("Defining wo resources: defining default folder WOnder style");
 		String componentsPath = getProjectFolder() + "Components";
 		File componentsFile = new File(componentsPath);
 		if (componentsFile.exists()) {
@@ -138,6 +139,28 @@ public abstract class DefineResourcesMojo extends WOMojo {
 			this.addResources(webServerResourcesFromWebServerResourcesFolder);
 		} else {
 			getLog().debug("Defining wo webserverresources: No \"WebServerResources\" folder found within project. Skipping include...");
+		}
+	}
+
+	private void executeDefineWOStyleFolders() {
+		getLog().debug("Defining wo resources: defining default folder WO style");
+		String resourcesPath = getProjectFolder() + "wo-resources" +File.separator + "Resources";
+		File resourcesFile = new File(resourcesPath);
+		if (resourcesFile.exists()) {
+			getLog().debug("Defining wo resources: "  + "wo-resources" +File.separator +"\"Resources\" folder found within project. Adding include...");
+			Resource[] resourcesFromResourcesFolder = this.createResources("Resources", "Resources");
+			this.addResources(resourcesFromResourcesFolder);
+		} else {
+			getLog().debug("Defining wo resources: No "  + "wo-resources" +File.separator +"\"Resources\" folder found within project. Skipping include...");
+		}
+		String webServerResourcesPath = getProjectFolder() + "wo-resources" +File.separator + "WebServerResources";
+		File webServerResourcesFile = new File(webServerResourcesPath);
+		if (webServerResourcesFile.exists()) {
+			getLog().debug("Defining wo webserverresources: "  + "wo-resources" +File.separator +"\"WebServerResources\" folder found within project. Adding include...");
+			Resource[] webServerResourcesFromWebServerResourcesFolder = this.createResources("WebServerResources", "WebServerResources");
+			this.addResources(webServerResourcesFromWebServerResourcesFolder);
+		} else {
+			getLog().debug("Defining wo webserverresources: No "  + "wo-resources" +File.separator +"\"WebServerResources\" folder found within project. Skipping include...");
 		}
 	}
 
