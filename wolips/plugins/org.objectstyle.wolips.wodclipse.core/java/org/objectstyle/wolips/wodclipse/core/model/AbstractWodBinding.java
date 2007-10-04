@@ -55,6 +55,7 @@ import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.preferences.BindingValidationRule;
 import org.objectstyle.wolips.wodclipse.core.preferences.PreferenceConstants;
+import org.objectstyle.wolips.wodclipse.core.util.WodReflectionUtils;
 
 /**
  * @author mschrag
@@ -199,7 +200,7 @@ public abstract class AbstractWodBinding implements IWodBinding {
           }
 
           String operator = bindingValueKeyPath.getOperator();
-          if (warnOnAmbiguousKey && operator != null) {
+          if (warnOnOperator && operator != null && !WodReflectionUtils.getArrayOperators().contains(operator)) {
             problems.add(new WodBindingValueProblem(bindingName, "Unable to verify operator '" + operator + "'", getValuePosition(), lineNumber, true, bindingValueKeyPath.getRelatedToFileNames()));
           }
 
