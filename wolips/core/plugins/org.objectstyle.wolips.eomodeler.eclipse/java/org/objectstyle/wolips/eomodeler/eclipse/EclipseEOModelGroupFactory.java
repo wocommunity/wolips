@@ -93,7 +93,7 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 				if ("eomodelgroup".equals(modelGroupEclipseResource.getFileExtension())) {
 					addModelsFromEOModelGroupFile((IFile) modelGroupEclipseResource, modelGroup, failures, skipOnDuplicates, progressMonitor);
 				} else {
-					addModelsFromProject(modelGroup, project, new HashSet<File>(), new HashSet<IProject>(), failures, skipOnDuplicates, progressMonitor);
+					addModelsFromProject(modelGroup, project, new HashSet<File>(), new HashSet<IProject>(), failures, skipOnDuplicates, progressMonitor, 0);
 					// modelGroup.resolve(failures);
 					// modelGroup.verify(failures);
 				}
@@ -164,7 +164,7 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 	// return model;
 	// }
 
-	protected void addModelsFromProject(EOModelGroup modelGroup, IProject project, Set<File> searchedFolders, Set<IProject> searchedProjects, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws IOException, EOModelException, CoreException {
+	protected void addModelsFromProject(EOModelGroup modelGroup, IProject project, Set<File> searchedFolders, Set<IProject> searchedProjects, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor, int depth) throws IOException, EOModelException, CoreException {
 		if (!searchedProjects.contains(project)) {
 			progressMonitor.setTaskName("Adding models from " + project.getName() + " ...");
 			searchedProjects.add(project);
@@ -176,6 +176,10 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 				boolean visitedProject = false;
 				IJavaProject javaProject = JavaCore.create(project);
 				IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
+				boolean showProgress = (depth == 0); 
+				if (showProgress) {
+					progressMonitor.beginTask("Scanning " + project.getName() + " classpath ...", classpathEntries.length + 1);
+				}
 				for (int classpathEntryNum = 0; classpathEntryNum < classpathEntries.length; classpathEntryNum++) {
 					IClasspathEntry entry = classpathEntries[classpathEntryNum];
 					int entryKind = entry.getEntryKind();
@@ -200,15 +204,21 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 					} else if (entryKind == IClasspathEntry.CPE_PROJECT) {
 						IPath path = entry.getPath();
 						IProject dependsOnProject = ResourcesPlugin.getWorkspace().getRoot().getProject(path.lastSegment());
-						addModelsFromProject(modelGroup, dependsOnProject, searchedFolders, searchedProjects, failures, skipOnDuplicates, progressMonitor);
+						addModelsFromProject(modelGroup, dependsOnProject, searchedFolders, searchedProjects, failures, skipOnDuplicates, progressMonitor, depth + 1);
 					} else if (entryKind == IClasspathEntry.CPE_SOURCE) {
 						visitedProject = true;
 						project.accept(new ModelVisitor(modelGroup, searchedFolders, failures, skipOnDuplicates, progressMonitor), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
+					}
+					if (showProgress) {
+						progressMonitor.worked(1);
 					}
 				}
 
 				if (!visitedProject) {
 					project.accept(new ModelVisitor(modelGroup, searchedFolders, failures, skipOnDuplicates, progressMonitor), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
+					if (showProgress) {
+						progressMonitor.worked(1);
+					}
 				}
 			}
 		}
