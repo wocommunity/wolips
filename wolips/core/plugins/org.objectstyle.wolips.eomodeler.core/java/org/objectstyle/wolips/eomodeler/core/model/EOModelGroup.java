@@ -352,7 +352,7 @@ public class EOModelGroup extends EOModelObject<Object> {
 
 	public EOModel loadModelFromURL(URL modelURL, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws IOException, EOModelException {
 		String modelName = EOModelGroup.getModelNameForURL(modelURL);
-		progressMonitor.setTaskName("Loading model " + modelName + " ...");
+		progressMonitor.setTaskName("Loading " + modelName + " ...");
 		EOModel model = getModelNamed(modelName);
 		if (model != null) {
 			if (skipOnDuplicates) {
