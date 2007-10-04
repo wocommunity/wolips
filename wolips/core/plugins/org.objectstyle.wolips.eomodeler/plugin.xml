@@ -510,8 +510,8 @@
          </propertySection>
          <propertySection
                class="org.objectstyle.wolips.eomodeler.editors.userInfo.DocumentationPropertySection"
-               id="org.objectstyle.wolips.eomodeler.sections.eoindexDocs"
-               tab="org.objectstyle.wolips.eomodeler.tabs.eoindexDocs">
+               id="org.objectstyle.wolips.eomodeler.sections.eoentityIndexDocs"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoentityIndexDocs">
             <input type="org.objectstyle.wolips.eomodeler.core.model.EOEntityIndex"/>
          </propertySection>
       </propertySections>

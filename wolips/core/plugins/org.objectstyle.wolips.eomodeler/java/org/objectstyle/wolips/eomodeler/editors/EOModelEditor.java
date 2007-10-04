@@ -51,7 +51,6 @@ package org.objectstyle.wolips.eomodeler.editors;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -73,8 +72,6 @@ import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -82,7 +79,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -496,7 +492,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		}
 	}
 
-	protected void loadInBackground(IProgressMonitor progressMonitor) {
+	public void _loadInBackground(IProgressMonitor progressMonitor) {
 		try {
 			IURIEditorInput editorInput = (IURIEditorInput) getEditorInput();
 			if (myModel != null) {
@@ -585,29 +581,32 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		}
 	}
 
-	public void init(IEditorSite _site, IEditorInput _editorInput) throws PartInitException {
+	public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
 		try {
 			if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CHANGE_PERSPECTIVES_KEY)) {
 				IWorkbench workbench = Activator.getDefault().getWorkbench();
 				workbench.showPerspective(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID, workbench.getActiveWorkbenchWindow());
 			}
-			super.init(_site, _editorInput);
+			super.init(site, editorInput);
 
-			final Shell shell = Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					ProgressMonitorDialog progressMonitor = new ProgressMonitorDialog(shell);
-					try {
-						progressMonitor.run(true, true, new IRunnableWithProgress() {
-							public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-								loadInBackground(monitor);
-							}
-						});
-					} catch (Throwable e) {
-						e.printStackTrace();
-					}
-				}
-			});
+			LoadEOModelWorkspaceJob loadModelJob = new LoadEOModelWorkspaceJob(this, editorInput);
+			loadModelJob.schedule();
+
+//			final Shell shell = Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
+//			Display.getDefault().asyncExec(new Runnable() {
+//				public void run() {
+//					ProgressMonitorDialog progressMonitor = new ProgressMonitorDialog(shell);
+//					try {
+//						progressMonitor.run(true, true, new IRunnableWithProgress() {
+//							public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+//								_loadInBackground(monitor);
+//							}
+//						});
+//					} catch (Throwable e) {
+//						e.printStackTrace();
+//					}
+//				}
+//			});
 		} catch (WorkbenchException e) {
 			e.printStackTrace();
 		}
@@ -886,18 +885,20 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		public void selectionChanged(SelectionChangedEvent _event) {
 			IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
 			Object selectedObject = selection.getFirstElement();
-			// EOModel model = EOModelUtils.getRelatedModel(selectedObject);
-			// if (model == null || model.isEditing()) {
 			setSelection(selection, false);
-			if (mySelectedObject == null) {
-				mySelectedObject = selectedObject;
-			} else if (mySelectedObject == selectedObject) {
+			if (myContentOutlinePage.isSelectedWithOutline()) {
 				EOModelEditor.this.doubleClickedObjectInOutline(selectedObject);
-				mySelectedObject = null;
-			} else {
-				mySelectedObject = selectedObject;
 			}
-			// }
+			else {
+				if (mySelectedObject == null) {
+					mySelectedObject = selectedObject;
+				} else if (mySelectedObject == selectedObject) {
+					EOModelEditor.this.doubleClickedObjectInOutline(selectedObject);
+					mySelectedObject = null;
+				} else {
+					mySelectedObject = selectedObject;
+				}
+			}
 		}
 	}
 

@@ -55,8 +55,8 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
@@ -86,8 +86,7 @@ public class EOArgumentsTableViewer extends Composite implements ISelectionProvi
 
 	public EOArgumentsTableViewer(Composite _parent, int _style) {
 		super(_parent, _style);
-
-		setLayout(new GridLayout(1, true));
+		setLayout(new FillLayout());
 		myArgumentsTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EOArgument", EOArgument.class.getName(), new EOArgumentsContentProvider(), new EOArgumentsLabelProvider(TableUtils.getColumnsForTableNamed(EOArgument.class.getName())), new TablePropertyViewerSorter(EOArgument.class.getName()));
 		new DoubleClickNewAttributeHandler(myArgumentsTableViewer).attach();
 		myArgumentsChangedRefresher = new TableRefreshPropertyListener("ArgumentsChanged", myArgumentsTableViewer);

@@ -101,6 +101,7 @@ public class EOEntitiesTableEditor extends EditorPart implements ISelectionProvi
 	public void createPartControl(Composite _parent) {
 		myEntitiesTableViewer = new EOEntitiesTableViewer(_parent, SWT.NONE);
 		myEntitiesTableViewer.setLayoutData(new GridData(GridData.FILL_BOTH));
+
 		updateEntitiesTableViewer();
 	}
 

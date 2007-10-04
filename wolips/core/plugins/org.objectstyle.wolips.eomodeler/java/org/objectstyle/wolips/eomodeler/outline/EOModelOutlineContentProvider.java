@@ -72,6 +72,8 @@ import org.objectstyle.wolips.eomodeler.core.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
 
 public class EOModelOutlineContentProvider implements ITreeContentProvider {
+	public static final Object MODEL_LOADING_OBJ = new Object();
+
 	private Object _modelContainer;
 
 	private boolean _showEntities;
@@ -87,7 +89,7 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
 	private boolean _showEntityIndexes;
 
 	private boolean _showDatabaseConfigs;
-	
+
 	private boolean _showNonClassProperties;
 
 	public EOModelOutlineContentProvider(boolean showEntities, boolean showAttributes, boolean showRelationships, boolean showFetchSpecs, boolean showStoredProcedures, boolean showDatabaseConfigs, boolean showEntityIndexes, boolean showNonClassProperties) {
@@ -100,18 +102,20 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
 		_showEntityIndexes = showEntityIndexes;
 		_showNonClassProperties = showNonClassProperties;
 	}
-	
+
 	public void setShowNonClassProperties(boolean showNonClassProperties) {
 		_showNonClassProperties = showNonClassProperties;
 	}
-	
+
 	public boolean isShowNonClassProperties() {
 		return _showNonClassProperties;
 	}
 
 	public Object[] getChildren(Object _parentElement) {
 		Object[] children;
-		if (_parentElement instanceof EOModelContainer) {
+		if (_parentElement == MODEL_LOADING_OBJ) {
+			children = new Object[] { "Please Wait ..." };
+		} else if (_parentElement instanceof EOModelContainer) {
 			EOModelContainer modelContainer = (EOModelContainer) _parentElement;
 			EOModel model = modelContainer.getModel();
 			if (model == null) {
@@ -143,16 +147,14 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
 			if (_showAttributes) {
 				if (_showNonClassProperties) {
 					entityChildren.addAll(entity.getAttributes());
-				}
-				else {
+				} else {
 					entityChildren.addAll(entity.getClassAttributes());
 				}
 			}
 			if (_showRelationships) {
 				if (_showNonClassProperties) {
 					entityChildren.addAll(entity.getRelationships());
-				}
-				else {
+				} else {
 					entityChildren.addAll(entity.getClassRelationships());
 				}
 			}
@@ -179,7 +181,7 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
 			arguments.addAll(storedProcedure.getArguments());
 			children = arguments.toArray();
 		} else {
-			children = null;
+			children = new Object[0];
 		}
 		return children;
 	}
@@ -233,7 +235,9 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
 
 	public boolean hasChildren(Object _element) {
 		boolean hasChildren = true;
-		if (_element instanceof EOFetchSpecification) {
+		if (_element == EOModelOutlineContentProvider.MODEL_LOADING_OBJ) {
+			hasChildren = false;
+		} else if (_element instanceof EOFetchSpecification) {
 			hasChildren = false;
 		} else if (_element instanceof EOAttribute) {
 			hasChildren = false;
