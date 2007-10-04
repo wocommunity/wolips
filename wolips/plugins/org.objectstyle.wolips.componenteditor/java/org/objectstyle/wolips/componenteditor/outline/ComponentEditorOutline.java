@@ -112,7 +112,9 @@ public class ComponentEditorOutline extends Page implements IContentOutlinePage,
 	}
 
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
-		listeners.add(listener);
+		if (listeners != null) {
+			listeners.add(listener);
+		}
 	}
 
 	public ISelection getSelection() {
@@ -120,7 +122,9 @@ public class ComponentEditorOutline extends Page implements IContentOutlinePage,
 	}
 
 	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
-		listeners.remove(listener);
+		if (listeners != null) {
+			listeners.remove(listener);
+		}
 	}
 
 	public void selectionChanged(SelectionChangedEvent event) {
