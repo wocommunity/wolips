@@ -28,64 +28,108 @@
 			<dependency>
 				<groupId>webobjects.apple</groupId>
 				<artifactId>java-webobjects</artifactId>
-				<version>5.3.2</version>
+				<version>[5.2,)</version>
 			</dependency>
 			<dependency>
 				<groupId>webobjects.apple</groupId>
 				<artifactId>java-foundation</artifactId>
-				<version>5.3.2</version>
+				<version>[5.2,)</version>
 			</dependency>
 			<dependency>
 				<groupId>webobjects.apple</groupId>
 				<artifactId>java-eo-access</artifactId>
-				<version>5.3.2</version>
+				<version>[5.2,)</version>
 			</dependency>
 			<dependency>
 				<groupId>webobjects.apple</groupId>
 				<artifactId>java-eo-application</artifactId>
-				<version>5.3.2</version>
+				<version>[5.2,)</version>
 			</dependency>
 			<dependency>
 				<groupId>webobjects.apple</groupId>
 				<artifactId>java-eo-control</artifactId>
-				<version>5.3.2</version>
+				<version>[5.2,)</version>
 			</dependency>
 			<dependency>
 				<groupId>webobjects.apple</groupId>
 				<artifactId>java-xml</artifactId>
-				<version>5.3.2</version>
+				<version>[5.2,)</version>
 			</dependency>
 			<dependency>
 				<groupId>webobjects.apple</groupId>
 				<artifactId>java-jdbc-adaptor</artifactId>
-				<version>5.3.2</version>
+				<version>[5.2,)</version>
 			</dependency>
 			<dependency>
 				<groupId>webobjects.apple</groupId>
 				<artifactId>java-wo-extensions</artifactId>
-				<version>5.3.2</version>
+				<version>[5.2,)</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
-	<distributionManagement>
-		<repository>
-			<id>example.repository</id>
-			<name>Example Internal Repository</name>
-			<url>
-				scp://example-host/remote/repository
-			</url>
-		</repository>
-		<snapshotRepository>
-			<id>example.repository</id>
-			<name>Example Internal Snapshot Repository</name>
-			<url>
-				scp://example-host/snapshot/repository
-			</url>
-		</snapshotRepository>
-	</distributionManagement>
+	
 	<build>
-		<defaultGoal>package</defaultGoal>
+		<plugins>
+			<plugin>
+				<groupId>org.objectstyle.woproject.maven2</groupId>
+				<artifactId>maven-wolifecycle-plugin</artifactId>
+				<extensions>true</extensions>
+				<version>2.0.8-SNAPSHOT</version>
+			</plugin>
+		</plugins>
 	</build>
+	
+
+	<repositories>
+		<repository>
+			<id>webobjects.mdimension.com/releases</id>
+			<name>mdimension maven 2 releases repo</name>
+			<url>http://webobjects.mdimension.com/maven2/releases</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+		<repository>
+			<id>webobjects.mdimension.com/snapshots</id>
+			<name>mdimension maven 2 snapshots repo</name>
+			<url>http://webobjects.mdimension.com/maven2/snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>webobjects.mdimension.com/plugin/releases</id>
+			<name>mdimension maven 2 releases repo</name>
+			<url>http://webobjects.mdimension.com/maven2/releases</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</pluginRepository>
+		<pluginRepository>
+			<id>webobjects.mdimension.com/plugin/snapshots</id>
+			<name>mdimension maven 2 snapshot repo</name>
+			<url>http://webobjects.mdimension.com/maven2/snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories>
+	
 </project>
 
