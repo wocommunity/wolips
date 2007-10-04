@@ -56,37 +56,54 @@
 
 	<repositories>
 		<repository>
-			<id>objectstyle</id>
-			<name>ObjectStyle Public Maven2 repo</name>
-			<url>http://objectstyle.org/maven2</url>
-			<layout>default</layout>
+			<id>webobjects.mdimension.com/releases</id>
+			<name>mdimension maven 2 releases repo</name>
+			<url>http://webobjects.mdimension.com/maven2/releases</url>
 			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
+				<enabled>false</enabled>
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
+			</releases>
+		</repository>
+		<repository>
+			<id>webobjects.mdimension.com/snapshots</id>
+			<name>mdimension maven 2 snapshots repo</name>
+			<url>http://webobjects.mdimension.com/maven2/snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
 			</releases>
 		</repository>
 	</repositories>
 
 	<pluginRepositories>
 		<pluginRepository>
-			<id>mergere</id>
-			<name>Mergere Repository</name>
-			<url>http://repo.mergere.com/maven2</url>
-			<layout>default</layout>
+			<id>webobjects.mdimension.com/plugin/releases</id>
+			<name>mdimension maven 2 releases repo</name>
+			<url>http://webobjects.mdimension.com/maven2/releases</url>
 			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-				<checksumPolicy>ignore</checksumPolicy>
+				<enabled>false</enabled>
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
 		</pluginRepository>
-
+		<pluginRepository>
+			<id>webobjects.mdimension.com/plugin/snapshots</id>
+			<name>mdimension maven 2 snapshot repo</name>
+			<url>http://webobjects.mdimension.com/maven2/snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</pluginRepository>
 	</pluginRepositories>
+
 
 	<distributionManagement>
 		<repository>
