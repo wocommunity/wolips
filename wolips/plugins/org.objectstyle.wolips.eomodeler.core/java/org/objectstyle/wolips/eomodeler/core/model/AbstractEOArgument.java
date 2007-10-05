@@ -49,8 +49,10 @@
  */
 package org.objectstyle.wolips.eomodeler.core.model;
 
+import java.util.Iterator;
 import java.util.Set;
 
+import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
 
@@ -210,7 +212,11 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 	}
 
 	public void setAllowsNull(Boolean _allowsNull) {
-		setAllowsNull(_allowsNull, true);
+		_setAllowsNull(_allowsNull, true);
+	}
+
+	public void _setAllowsNull(Boolean _allowsNull, boolean _fireEvents) {
+		setAllowsNull(_allowsNull, _fireEvents);
 	}
 
 	public void setAllowsNull(Boolean _allowsNull, boolean _fireEvents) {
