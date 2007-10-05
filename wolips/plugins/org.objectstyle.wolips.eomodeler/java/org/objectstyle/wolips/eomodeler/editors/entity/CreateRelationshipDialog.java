@@ -111,6 +111,8 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 
 	private Button myFlattenButton;
 
+	private Label myJoinEntityNameLabel;
+
 	private Text myJoinEntityNameText;
 
 	private Font myTitleFont;
@@ -221,11 +223,11 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		inverseFKNameData.widthHint = 200;
 		myInverseFKNameText.setLayoutData(inverseFKNameData);
 
-		Label joinEntityNameLabel = new Label(relationshipDialogArea, SWT.NONE);
-		joinEntityNameLabel.setText(Messages.getString("CreateRelationshipDialog.joinEntityNameLabel"));
+		myJoinEntityNameLabel = new Label(relationshipDialogArea, SWT.NONE);
+		myJoinEntityNameLabel.setText(Messages.getString("CreateRelationshipDialog.joinEntityNameLabel"));
 		GridData joinEntityNameLabelData = new GridData();
 		joinEntityNameLabelData.verticalIndent = 15;
-		joinEntityNameLabel.setLayoutData(joinEntityNameLabelData);
+		myJoinEntityNameLabel.setLayoutData(joinEntityNameLabelData);
 
 		myJoinEntityNameText = new Text(relationshipDialogArea, SWT.BORDER);
 		GridData joinEntityNameData = new GridData(GridData.FILL_HORIZONTAL);
@@ -345,7 +347,14 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		myCreateInverseFKButton.setEnabled(canCreateInverseFK);
 		myInverseFKNameText.setEnabled(myCreateInverseFK);
 
-		myJoinsTableEditor.setVisible(!myManyToMany && !myCreateFK && !myCreateInverseFK);
+		boolean joinsTableVisible = !myManyToMany && !myCreateFK && !myCreateInverseFK;
+		myJoinsTableEditor.setVisible(joinsTableVisible);
+		if (!joinsTableVisible) {
+			((GridData)myJoinsTableEditor.getLayoutData()).heightHint = 0;
+		}
+		else {
+			((GridData)myJoinsTableEditor.getLayoutData()).heightHint = -1;
+		}
 
 		String fkName = myFKNameText.getText();
 		if (fkName == null || fkName.length() == 0) {
@@ -357,6 +366,24 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		if (inverseFKName == null || inverseFKName.length() == 0) {
 			String newName = myRelationship.getDestination().findUnusedAttributeName(StringUtils.toLowercaseFirstLetter(myRelationship.getEntity().getName()) + "ID");
 			myInverseFKNameText.setText(newName);
+		}
+
+		myJoinEntityNameLabel.setVisible(myManyToMany);
+		myJoinEntityNameText.setVisible(myManyToMany);
+		myFlattenButton.setVisible(myManyToMany);
+		if (!myManyToMany) {
+			((GridData) myJoinEntityNameLabel.getLayoutData()).heightHint = 0;
+			((GridData) myJoinEntityNameText.getLayoutData()).heightHint = 0;
+			((GridData) myFlattenButton.getLayoutData()).heightHint = 0;
+		}
+		else {
+			((GridData) myJoinEntityNameLabel.getLayoutData()).heightHint = -1;
+			((GridData) myJoinEntityNameText.getLayoutData()).heightHint = -1;
+			((GridData) myFlattenButton.getLayoutData()).heightHint = -1;
+		}
+		
+		if (getShell().isVisible()) {
+			getShell().pack();
 		}
 	}
 
