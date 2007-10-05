@@ -1,10 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: %plugin.name
+Bundle-Name: WOLips Html Editor
 Bundle-SymbolicName: org.objectstyle.wolips.tkhtmleditor;singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: tk.eclipse.plugin.htmleditor.HTMLPlugin
 Bundle-Vendor: objectstyle.org
+Bundle-Localization: plugin
 Export-Package: DTD,
  TLD,
  XSD,
