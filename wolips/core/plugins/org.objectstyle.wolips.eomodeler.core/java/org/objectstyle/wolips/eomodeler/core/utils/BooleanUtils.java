@@ -64,4 +64,8 @@ public class BooleanUtils {
 	public static boolean isTrue(Boolean _bool) {
 		return (_bool != null && _bool.booleanValue());
 	}
+
+	public static boolean isFalse(Boolean _bool) {
+		return (_bool == null || !_bool.booleanValue());
+	}
 }

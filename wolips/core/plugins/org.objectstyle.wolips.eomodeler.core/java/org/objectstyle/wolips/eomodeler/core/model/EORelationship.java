@@ -514,6 +514,20 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 	}
 
 	public void setMandatory(Boolean _mandatory) {
+		_setMandatory(_mandatory);
+		if (BooleanUtils.isTrue(isToOne())) {
+			Iterator<EOJoin> joinsIter = getJoins().iterator();
+			while (joinsIter.hasNext()) {
+				EOJoin join = joinsIter.next();
+				EOAttribute sourceAttribute = join.getSourceAttribute();
+				if (sourceAttribute != null) {
+					sourceAttribute._setAllowsNull(BooleanUtils.negate(_mandatory), true);
+				}
+			}
+		}
+	}
+
+	public void _setMandatory(Boolean _mandatory) {
 		Boolean oldMandatory = myMandatory;
 		myMandatory = _mandatory;
 		firePropertyChange(EORelationship.MANDATORY, oldMandatory, myMandatory);
@@ -528,7 +542,7 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 				EOJoin join = joinsIter.next();
 				EOAttribute sourceAttribute = join.getSourceAttribute();
 				if (sourceAttribute != null) {
-					mandatory = sourceAttribute.isAllowsNull() == null || !sourceAttribute.isAllowsNull().booleanValue();
+					mandatory = BooleanUtils.isFalse(sourceAttribute.isAllowsNull());
 				}
 			}
 		}

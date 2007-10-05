@@ -424,6 +424,20 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		return (Boolean) _prototypeValueIfNull(AbstractEOArgument.ALLOWS_NULL, super.isAllowsNull());
 	}
 
+	@Override
+	public void setAllowsNull(Boolean allowsNull) {
+		super.setAllowsNull(allowsNull);
+
+		Boolean mandatory = BooleanUtils.negate(allowsNull);
+		Map<EOAttribute, Set<EORelationship>> referencingRelationshipsCache = getEntity().getModel().getModelGroup()._createReferencingRelationshipsCache();
+		Set<EORelationship> referencingRelationships = getReferencingRelationships(true, referencingRelationshipsCache);
+		for (EORelationship referencingRelationship : referencingRelationships) {
+			if (BooleanUtils.isTrue(referencingRelationship.isToOne())) {
+				referencingRelationship._setMandatory(mandatory);
+			}
+		}
+	}
+	
 	public void setAllowsNull(Boolean _allowsNull, boolean _fireEvents) {
 		Boolean newAllowsNull = _allowsNull;
 		if (_fireEvents && BooleanUtils.isTrue(getPrimaryKey())) {
