@@ -55,9 +55,13 @@
  */
 package org.objectstyle.wolips.core.resources.internal.build;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
@@ -100,7 +104,7 @@ public abstract class Builder extends IncrementalProjectBuilder {
 		IProject project = this.getProject();
 		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
 		IBuildAdapter buildAdapter = projectAdapter.getBuildAdapter();
-		
+
 		if (kind == IncrementalProjectBuilder.FULL_BUILD) {
 			this.clean(monitor);
 		}
@@ -113,6 +117,7 @@ public abstract class Builder extends IncrementalProjectBuilder {
 		} else {
 			deltaVisitor = new IncrementalBuildDeltaVisitor(builderWrappers, monitor, buildCache);
 		}
+
 		IResourceDelta projectDelta = getDelta(project);
 		this.invokeOldBuilder(kind, args, monitor, projectDelta);
 		this.notifyBuilderBuildStarted(kind, args, monitor, buildCache);
@@ -137,24 +142,38 @@ public abstract class Builder extends IncrementalProjectBuilder {
 		}
 		if (buildAdapter != null) {
 			buildAdapter.markAsDerivated(monitor);
-		}
-		else {
+		} else {
 			IProductAdapter productAdapter = projectAdapter.getProductAdapter();
-			if(productAdapter != null) {
+			if (productAdapter != null) {
 				productAdapter.markAsDerivated(monitor);
 			}
 		}
-//		IWoprojectAdapter woprojectAdapter = projectAdapter.getWoprojectAdapter();
-//		if (woprojectAdapter != null) {
-//			woprojectAdapter.markAsDerivated(monitor);
-//		}
+		// IWoprojectAdapter woprojectAdapter =
+		// projectAdapter.getWoprojectAdapter();
+		// if (woprojectAdapter != null) {
+		// woprojectAdapter.markAsDerivated(monitor);
+		// }
 		final IProject workspaceRunnableProject = project;
 		IWorkspaceRunnable workspaceRunnable = new IWorkspaceRunnable() {
-
 			public void run(IProgressMonitor runInWorkspaceMonitor) throws CoreException {
-
 				workspaceRunnableProject.refreshLocal(IResource.DEPTH_INFINITE, runInWorkspaceMonitor);
-
+				// MS: touch a build/.version file to notify rapid turnaround of
+				// changes
+				IFolder buildFolder = workspaceRunnableProject.getFolder(IBuildAdapter.FILE_NAME_BUILD);
+				if (buildFolder.exists()) {
+					try {
+						IFile buildVersion = buildFolder.getFile(".version");
+						InputStream versionInputStream = new ByteArrayInputStream(String.valueOf(System.currentTimeMillis()).getBytes());
+						if (buildVersion.exists()) {
+							buildVersion.setContents(versionInputStream, IResource.FORCE | IResource.DERIVED, runInWorkspaceMonitor);
+						} else {
+							buildVersion.create(versionInputStream, IResource.FORCE | IResource.DERIVED, runInWorkspaceMonitor);
+						}
+					} catch (Throwable t) {
+						// MS: Don't let this kill the build ...
+						CorePlugin.getDefault().log(t);
+					}
+				}
 			}
 		};
 		ResourcesPlugin.getWorkspace().run(workspaceRunnable, workspaceRunnableProject, 0, (IProgressMonitor) null);
