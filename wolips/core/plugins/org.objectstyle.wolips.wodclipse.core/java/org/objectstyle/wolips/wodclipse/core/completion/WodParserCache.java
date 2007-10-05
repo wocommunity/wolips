@@ -153,7 +153,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   }
 
   public IType getComponentType() throws CoreException, LocateException {
-	checkLocateResults();
+    checkLocateResults();
     return _componentType;
   }
 
@@ -164,7 +164,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   public IJavaProject getJavaProject() {
     return _javaProject;
   }
-  
+
   // MS: This is not a complete clone at the moment ... I just needed a 
   // partial clone for preview.
   public WodParserCache cloneCache() throws CoreException, LocateException {
@@ -193,13 +193,13 @@ public class WodParserCache implements FuzzyXMLErrorListener {
     _wodModel = null;
     _lastWodParseTime = -1;
   }
-  
+
   protected void checkLocateResults() throws CoreException, LocateException {
-	  if (_componentsLocateResults != null) {
-		  if (!_componentsLocateResults.isValid()) {
-			  clearLocateResultsCache();
-		  }
-	  }
+    if (_componentsLocateResults != null) {
+      if (!_componentsLocateResults.isValid()) {
+        clearLocateResultsCache();
+      }
+    }
   }
 
   public void clearLocateResultsCache() throws CoreException, LocateException {
@@ -229,9 +229,9 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   }
 
   public LocalizedComponentsLocateResult getComponentsLocateResults() {
-	  if (_componentsLocateResults.isValid()) {
-		  
-	  }
+    if (_componentsLocateResults.isValid()) {
+
+    }
     return _componentsLocateResults;
   }
 
@@ -414,18 +414,22 @@ public class WodParserCache implements FuzzyXMLErrorListener {
               if (_htmlXmlDocument != null && (_htmlFile == null || _htmlFile.exists())) {
                 boolean errorOnHtmlErrorsKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.ERROR_ON_HTML_ERRORS_KEY);
                 if (errorOnHtmlErrorsKey) {
-                  for (HtmlProblem problem : _htmlParserProblems) {
-                    problem.createMarker(_htmlFile);
+                  if (_htmlFile.exists()) {
+                    for (HtmlProblem problem : _htmlParserProblems) {
+                      problem.createMarker(_htmlFile);
+                    }
                   }
                 }
                 new TemplateValidator(WodParserCache.this).validate(_htmlXmlDocument);
               }
             }
 
-            if (_wodModel != null && _wodFile.exists()) {
+            if (_wodModel != null) {
               List<WodProblem> wodProblems = _wodModel.getProblems(_javaProject, _componentType, WodParserCache.this);
-              for (WodProblem wodProblem : wodProblems) {
-                wodProblem.createMarker(_wodFile);
+              if (_wodFile.exists()) {
+                for (WodProblem wodProblem : wodProblems) {
+                  wodProblem.createMarker(_wodFile);
+                }
               }
             }
           }
@@ -463,7 +467,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
     _htmlDocument = null;
     _htmlDocumentChanged = true;
   }
-  
+
   public String getHtmlContents() {
     return _htmlContents;
   }
@@ -473,7 +477,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   }
 
   public IFile getApiFile() throws CoreException, LocateException {
-	checkLocateResults();
+    checkLocateResults();
     return _apiFile;
   }
 
