@@ -403,15 +403,15 @@ public class WodParserCache implements FuzzyXMLErrorListener {
           try {
             //System.out.println("WodParserCache.validate: Validate " + _woFolder);
             _validated = true;
-            if (_wodFile != null) {
+            if (_wodFile != null && _wodFile.exists()) {
               WodModelUtils.deleteWodProblems(_wodFile);
             }
-            if (_htmlFile != null) {
+            if (_htmlFile != null && _htmlFile.exists()) {
               WodModelUtils.deleteWodProblems(_htmlFile);
             }
 
             if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.VALIDATE_TEMPLATES_KEY)) {
-              if (_htmlXmlDocument != null) {
+              if (_htmlXmlDocument != null && (_htmlFile == null || _htmlFile.exists())) {
                 boolean errorOnHtmlErrorsKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.ERROR_ON_HTML_ERRORS_KEY);
                 if (errorOnHtmlErrorsKey) {
                   for (HtmlProblem problem : _htmlParserProblems) {
@@ -422,7 +422,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
               }
             }
 
-            if (_wodModel != null) {
+            if (_wodModel != null && _wodFile.exists()) {
               List<WodProblem> wodProblems = _wodModel.getProblems(_javaProject, _componentType, WodParserCache.this);
               for (WodProblem wodProblem : wodProblems) {
                 wodProblem.createMarker(_wodFile);
