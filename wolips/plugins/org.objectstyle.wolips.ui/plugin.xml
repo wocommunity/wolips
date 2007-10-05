@@ -562,15 +562,6 @@
             name="WOLips Build"
             class="org.objectstyle.wolips.ui.propertypages.ProjectNaturePage"
             id="org.objectstyle.wolips.ui.propertypages.ProjectNaturePage"> 
-            <enabledWhen>
-             <instanceof
-                  value="org.eclipse.core.resources.IProject">
-             </instanceof>
-          </enabledWhen>
-         <filter
-               name="nature"
-               value="org.eclipse.jdt.core.javanature">
-         </filter>
       </page>
    </extension>
 
