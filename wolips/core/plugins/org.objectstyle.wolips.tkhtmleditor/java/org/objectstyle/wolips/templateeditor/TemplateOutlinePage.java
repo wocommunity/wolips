@@ -230,7 +230,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
             else {
               _browser.execute("expand('" + nodeID + "');");
             }
-            _browser.redraw();
+            _browser.execute("scroll(window.pageXOffset, window.pageYOffset)");
           }
         }
       }
