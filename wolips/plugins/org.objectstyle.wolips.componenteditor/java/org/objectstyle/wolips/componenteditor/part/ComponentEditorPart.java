@@ -67,7 +67,7 @@ import org.eclipse.ui.part.MultiPageSelectionProvider;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.objectstyle.wolips.baseforuiplugins.IEditorTarget;
 import org.objectstyle.wolips.componenteditor.outline.ComponentEditorOutline;
-import org.objectstyle.wolips.components.editor.EditorInteraction;
+import org.objectstyle.wolips.components.editor.ComponentEditorInteraction;
 import org.objectstyle.wolips.components.editor.IComponentEditor;
 import org.objectstyle.wolips.components.input.ComponentEditorInput;
 
@@ -78,7 +78,7 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 
 	ComponentEditorInput componentEditorInput;
 
-	private EditorInteraction editorInteraction = new EditorInteraction();
+	private ComponentEditorInteraction editorInteraction = new ComponentEditorInteraction();
 
 	private ComponentEditorOutline componentEditorOutline;
 
@@ -350,7 +350,7 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 		return super.getContainer();
 	}
 
-	public EditorInteraction getEditorInteraction() {
+	public ComponentEditorInteraction getEditorInteraction() {
 		return editorInteraction;
 	}
 
