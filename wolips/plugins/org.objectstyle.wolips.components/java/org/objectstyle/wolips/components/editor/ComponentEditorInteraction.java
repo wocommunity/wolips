@@ -43,43 +43,65 @@
  */
 package org.objectstyle.wolips.components.editor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author uli
  */
-public class EditorInteraction {
+public class ComponentEditorInteraction {
+	private Set<IWebobjectTagListener> _webObjectTagListeners;
 
-	private IWebobjectTagListener webObjectTagListener;
+	private IHtmlDocumentProvider _htmlDocumentProvider;
 
-	private IHtmlDocumentProvider htmlDocumentProvider;
+	private IWodDocumentProvider _wodDocumentProvider;
 
-	private IWodDocumentProvider wodDocumentProvider;
-
-	public EditorInteraction() {
-		super();
+	public ComponentEditorInteraction() {
+		_webObjectTagListeners = new HashSet<IWebobjectTagListener>();
 	}
 
-	public void setWebObjectTagListener(IWebobjectTagListener webobjectTagListener) {
-		this.webObjectTagListener = webobjectTagListener;
+	public void addWebObjectTagListener(IWebobjectTagListener webobjectTagListener) {
+		synchronized (_webObjectTagListeners) {
+			_webObjectTagListeners.add(webobjectTagListener);
+		}
 	}
 
-	public void fireWebobjectTagChanged(String name) {
-		this.webObjectTagListener.webObjectTagSelected(name);
+	public void removeWebObjectTagListener(IWebobjectTagListener webobjectTagListener) {
+		synchronized (_webObjectTagListeners) {
+			_webObjectTagListeners.remove(webobjectTagListener);
+		}
+	}
+
+	public void fireWebObjectChanged() {
+		synchronized (_webObjectTagListeners) {
+			for (IWebobjectTagListener webObjectTagListener : _webObjectTagListeners) {
+				webObjectTagListener.webObjectChanged();
+			}
+		}
+	}
+
+	public void fireWebObjectTagSelected(String name) {
+		synchronized (_webObjectTagListeners) {
+			for (IWebobjectTagListener webObjectTagListener : _webObjectTagListeners) {
+				webObjectTagListener.webObjectTagSelected(name);
+			}
+		}
 	}
 
 	public IHtmlDocumentProvider getHtmlDocumentProvider() {
-		return htmlDocumentProvider;
+		return _htmlDocumentProvider;
 	}
 
 	public void setHtmlDocumentProvider(IHtmlDocumentProvider htmlDocumentProvider) {
-		this.htmlDocumentProvider = htmlDocumentProvider;
+		_htmlDocumentProvider = htmlDocumentProvider;
 	}
 
 	public IWodDocumentProvider getWodDocumentProvider() {
-		return wodDocumentProvider;
+		return _wodDocumentProvider;
 	}
 
 	public void setWodDocumentProvider(IWodDocumentProvider wodDocumentProvider) {
-		this.wodDocumentProvider = wodDocumentProvider;
+		_wodDocumentProvider = wodDocumentProvider;
 	}
 
 }
