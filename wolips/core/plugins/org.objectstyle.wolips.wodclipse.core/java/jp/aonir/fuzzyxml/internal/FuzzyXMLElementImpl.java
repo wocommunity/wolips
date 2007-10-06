@@ -261,6 +261,28 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   public boolean hasChildren() {
     return _children.size() > 0;
   }
+  
+  public boolean isEmpty() {
+    boolean empty = !hasChildren();
+    if (!empty) {
+      empty = true;
+      for (FuzzyXMLNode child : _children) {
+        if (child instanceof FuzzyXMLText) {
+          FuzzyXMLText text = (FuzzyXMLText)child;
+          String textValue = text.getValue();
+          if (textValue != null && textValue.trim().length() > 0) {
+            empty = false;
+            break;
+          }
+        }
+        else {
+          empty = false;
+          break;
+        }
+      }
+    }
+    return empty;
+  }
 
   public void insertAfter(FuzzyXMLNode newChild, FuzzyXMLNode refChild) {
     // アトリビュートの場合はなにもしない
