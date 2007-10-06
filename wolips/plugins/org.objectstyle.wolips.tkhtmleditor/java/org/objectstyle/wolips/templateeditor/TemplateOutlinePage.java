@@ -341,17 +341,20 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
 
   @SuppressWarnings("unchecked")
   protected ProjectionAnnotation getLastAnnotationForNode(FuzzyXMLNode node, ProjectionAnnotationModel model) {
-    int index = node.getOffset();
     ProjectionAnnotation lastAnnotation = null;
-    Iterator<ProjectionAnnotation> annotationsIter = model.getAnnotationIterator();
-    while (annotationsIter.hasNext()) {
-      ProjectionAnnotation annotation = annotationsIter.next();
-      if (model.getPosition(annotation).getOffset() == index) {
-        lastAnnotation = annotation;
+    if (model != null) {
+      int index = node.getOffset();
+      Iterator<ProjectionAnnotation> annotationsIter = model.getAnnotationIterator();
+      while (annotationsIter.hasNext()) {
+        ProjectionAnnotation annotation = annotationsIter.next();
+        if (model.getPosition(annotation).getOffset() == index) {
+          lastAnnotation = annotation;
+        }
       }
     }
     return lastAnnotation;
   }
+  
   public void addSelectionChangedListener(ISelectionChangedListener listener) {
     _selectionChangedListeners.add(listener);
   }
