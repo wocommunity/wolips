@@ -125,11 +125,9 @@ public class HtmlWodTab extends ComponentEditorTab {
 			}
 		});
 		wodEditor.getSelectionProvider().addSelectionChangedListener(new ISelectionChangedListener() {
-
 			public void selectionChanged(SelectionChangedEvent event) {
 				WodclipsePlugin.getDefault().updateWebObjectsTagNames(null);
 			}
-
 		});
 		WodclipsePlugin.getDefault().updateWebObjectsTagNames(wodEditor);
 		htmlSashform.addListener(SWT.Activate, new Listener() {
