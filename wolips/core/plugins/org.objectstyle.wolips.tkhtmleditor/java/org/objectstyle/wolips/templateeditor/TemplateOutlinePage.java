@@ -157,15 +157,6 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
       documentContentsBuffer.append("function collapse(id) { document.getElementById(id + '_contents').style.display = 'none'; document.getElementById(id + '_toggle').innerHTML = '+'; }");
       documentContentsBuffer.append("</script>");
 
-//       function hideElement(id) {
-//        document.getElementById( id).style.visibility = "hidden";
-//        document.getElementById( id).style.display = "none";
-//       }
-//
-//       function showSingleElement(id) {
-//        document.getElementById(id).style.visibility = "visible";
-//        document.getElementById(id).style.display = "block";
-//       }
       renderElement(documentElement, renderContext, documentContentsBuffer, cache);
       documentContentsBuffer.append("</body></html>");
       String documentContents = documentContentsBuffer.toString();
