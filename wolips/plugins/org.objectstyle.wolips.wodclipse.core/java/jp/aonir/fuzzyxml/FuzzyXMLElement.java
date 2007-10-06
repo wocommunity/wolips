@@ -25,6 +25,8 @@ public interface FuzzyXMLElement extends FuzzyXMLNode {
 	
 	public boolean hasChildren();
 	
+	public boolean isEmpty();
+	
 	public void appendChild(FuzzyXMLNode node);
 	
 	public void insertBefore(FuzzyXMLNode newChild,FuzzyXMLNode refChild);
