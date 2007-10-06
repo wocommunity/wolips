@@ -2,6 +2,7 @@ package org.objectstyle.wolips.templateeditor;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,9 @@ import jp.aonir.fuzzyxml.FuzzyXMLParser;
 import jp.aonir.fuzzyxml.FuzzyXMLText;
 import jp.aonir.fuzzyxml.internal.RenderContext;
 
+import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
+import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
+import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -42,6 +46,9 @@ import tk.eclipse.plugin.htmleditor.editors.IHTMLOutlinePage;
  * This shows the outline of HTML document.
  */
 public class TemplateOutlinePage extends Page implements IContentOutlinePage, IHTMLOutlinePage, StatusTextListener {
+  private static final String COLLAPSE_STRING = "&ndash;";
+  private static final String EXPAND_STRING = "+";
+  
   private TemplateSourceEditor _editor;
   private FuzzyXMLDocument _doc;
 
@@ -152,8 +159,8 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
       documentContentsBuffer.append("</style>");
       documentContentsBuffer.append("<script>");
       documentContentsBuffer.append("function expandCollapse(id) { if ('none' == document.getElementById(id + '_contents').style.display) { expand(id); } else { collapse(id); } }");
-      documentContentsBuffer.append("function expand(id) { document.getElementById(id + '_contents').style.display = 'block'; document.getElementById(id + '_toggle').innerHTML = '&ndash;'; window.status = 'expand:' + id; }");
-      documentContentsBuffer.append("function collapse(id) { document.getElementById(id + '_contents').style.display = 'none'; document.getElementById(id + '_toggle').innerHTML = '+'; window.status = 'collapse:' + id; }");
+      documentContentsBuffer.append("function expand(id) { document.getElementById(id + '_contents').style.display = 'block'; document.getElementById(id + '_toggle').innerHTML = '" + TemplateOutlinePage.COLLAPSE_STRING + "'; window.status = 'expand:' + id; }");
+      documentContentsBuffer.append("function collapse(id) { document.getElementById(id + '_contents').style.display = 'none'; document.getElementById(id + '_toggle').innerHTML = '" + TemplateOutlinePage.EXPAND_STRING + "'; window.status = 'collapse:' + id; }");
       documentContentsBuffer.append("</script>");
 
       renderElement(documentElement, renderContext, documentContentsBuffer, cache);
@@ -168,7 +175,6 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
     catch (Exception e) {
       e.printStackTrace();
     }
-
   }
 
   protected void renderElement(FuzzyXMLNode node, RenderContext renderContext, StringBuffer renderBuffer, WodParserCache cache) {
@@ -191,10 +197,10 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
       if (!empty) {
         renderBuffer.append("<div id = \"" + nodeID + "_toggle\" class = \"expandcollapse\" onclick = \"expandCollapse('" + nodeID + "')\">");
         if (_collapsedIDs.contains(nodeID)) {
-          renderBuffer.append("+");
+          renderBuffer.append(TemplateOutlinePage.EXPAND_STRING);
         }
         else {
-          renderBuffer.append("&ndash;");
+          renderBuffer.append(TemplateOutlinePage.COLLAPSE_STRING);
         }
         renderBuffer.append("</div>");
       }
@@ -295,6 +301,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
     _browser.setFocus();
   }
 
+  @SuppressWarnings("unchecked")
   public void changed(StatusTextEvent event) {
     String text = event.text;
     int colonIndex = text.indexOf(':');
@@ -312,12 +319,39 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
     }
     else if ("expand".equals(command)) {
       _collapsedIDs.remove(target);
+
+      FuzzyXMLNode selectedNode = _nodeMap.get(target);
+      ProjectionAnnotationModel model = ((ProjectionViewer)_editor.getViewer()).getProjectionAnnotationModel();
+      ProjectionAnnotation lastAnnotation = getLastAnnotationForNode(selectedNode, model);
+      if (lastAnnotation != null) {
+        model.expand(lastAnnotation);
+      }
     }
     else if ("collapse".equals(command)) {
       _collapsedIDs.add(target);
+
+      FuzzyXMLNode selectedNode = _nodeMap.get(target);
+      ProjectionAnnotationModel model = ((ProjectionViewer)_editor.getViewer()).getProjectionAnnotationModel();
+      ProjectionAnnotation lastAnnotation = getLastAnnotationForNode(selectedNode, model);
+      if (lastAnnotation != null) {
+        model.collapse(lastAnnotation);
+      }
     }
   }
 
+  @SuppressWarnings("unchecked")
+  protected ProjectionAnnotation getLastAnnotationForNode(FuzzyXMLNode node, ProjectionAnnotationModel model) {
+    int index = node.getOffset();
+    ProjectionAnnotation lastAnnotation = null;
+    Iterator<ProjectionAnnotation> annotationsIter = model.getAnnotationIterator();
+    while (annotationsIter.hasNext()) {
+      ProjectionAnnotation annotation = annotationsIter.next();
+      if (model.getPosition(annotation).getOffset() == index) {
+        lastAnnotation = annotation;
+      }
+    }
+    return lastAnnotation;
+  }
   public void addSelectionChangedListener(ISelectionChangedListener listener) {
     _selectionChangedListeners.add(listener);
   }
