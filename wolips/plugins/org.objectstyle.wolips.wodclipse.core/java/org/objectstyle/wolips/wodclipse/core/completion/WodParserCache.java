@@ -414,7 +414,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
               if (_htmlXmlDocument != null && (_htmlFile == null || _htmlFile.exists())) {
                 boolean errorOnHtmlErrorsKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.ERROR_ON_HTML_ERRORS_KEY);
                 if (errorOnHtmlErrorsKey) {
-                  if (_htmlFile.exists()) {
+                  if (_htmlFile != null && _htmlFile.exists()) {
                     for (HtmlProblem problem : _htmlParserProblems) {
                       problem.createMarker(_htmlFile);
                     }
