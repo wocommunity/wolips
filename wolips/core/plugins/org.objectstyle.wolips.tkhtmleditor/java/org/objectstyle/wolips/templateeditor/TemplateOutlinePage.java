@@ -1,9 +1,11 @@
 package org.objectstyle.wolips.templateeditor;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import jp.aonir.fuzzyxml.FuzzyXMLDocument;
 import jp.aonir.fuzzyxml.FuzzyXMLElement;
@@ -14,7 +16,6 @@ import jp.aonir.fuzzyxml.internal.RenderContext;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
@@ -23,9 +24,6 @@ import org.eclipse.swt.browser.StatusTextEvent;
 import org.eclipse.swt.browser.StatusTextListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.objectstyle.wolips.wodclipse.core.Activator;
@@ -37,8 +35,6 @@ import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
 import tk.eclipse.plugin.htmleditor.HTMLPlugin;
 import tk.eclipse.plugin.htmleditor.HTMLUtil;
-import tk.eclipse.plugin.htmleditor.editors.HTMLEditor;
-import tk.eclipse.plugin.htmleditor.editors.HTMLSourceEditor;
 import tk.eclipse.plugin.htmleditor.editors.IHTMLOutlinePage;
 
 /**
@@ -55,10 +51,13 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
   
   private List<ISelectionChangedListener> _selectionChangedListeners;
   private ISelection _selection;
+  
+  private Set<String> _collapsedIDs;
 
   public TemplateOutlinePage(TemplateSourceEditor editor) {
     _editor = editor;
     _selectionChangedListeners = new LinkedList<ISelectionChangedListener>();
+    _collapsedIDs = new HashSet<String>();
   }
 
   public FuzzyXMLDocument getDoc() {
@@ -153,8 +152,8 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
       documentContentsBuffer.append("</style>");
       documentContentsBuffer.append("<script>");
       documentContentsBuffer.append("function expandCollapse(id) { if ('none' == document.getElementById(id + '_contents').style.display) { expand(id); } else { collapse(id); } }");
-      documentContentsBuffer.append("function expand(id) { document.getElementById(id + '_contents').style.display = 'block'; document.getElementById(id + '_toggle').innerHTML = '&ndash;'; }");
-      documentContentsBuffer.append("function collapse(id) { document.getElementById(id + '_contents').style.display = 'none'; document.getElementById(id + '_toggle').innerHTML = '+'; }");
+      documentContentsBuffer.append("function expand(id) { document.getElementById(id + '_contents').style.display = 'block'; document.getElementById(id + '_toggle').innerHTML = '&ndash;'; window.status = 'expand:' + id; }");
+      documentContentsBuffer.append("function collapse(id) { document.getElementById(id + '_contents').style.display = 'none'; document.getElementById(id + '_toggle').innerHTML = '+'; window.status = 'collapse:' + id; }");
       documentContentsBuffer.append("</script>");
 
       renderElement(documentElement, renderContext, documentContentsBuffer, cache);
@@ -190,7 +189,14 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
       renderBuffer.append("<div id = \"" + nodeID + "\" class = \"" + className + "\">");
 
       if (!empty) {
-        renderBuffer.append("<div id = \"" + nodeID + "_toggle\" class = \"expandcollapse\" onclick = \"expandCollapse('" + nodeID + "')\">&ndash;</div>");
+        renderBuffer.append("<div id = \"" + nodeID + "_toggle\" class = \"expandcollapse\" onclick = \"expandCollapse('" + nodeID + "')\">");
+        if (_collapsedIDs.contains(nodeID)) {
+          renderBuffer.append("+");
+        }
+        else {
+          renderBuffer.append("&ndash;");
+        }
+        renderBuffer.append("</div>");
       }
       
       renderBuffer.append("<div class = \"summary\" onclick = \"window.status = 'open:" + nodeID + "'\">");
@@ -223,7 +229,11 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
               renderBuffer.append("</table>");
             }
           } else {
-            renderBuffer.append("<div class = \"title missing\">" + nodeName + "</div>");
+            String missingName = element.getAttributeValue("name");
+            if (missingName == null) {
+              missingName = nodeName;
+            }
+            renderBuffer.append("<div class = \"title missing\">" + missingName + "</div>");
           }
         } catch (Throwable t) {
           // IGNORE
@@ -248,7 +258,11 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
         // don't show style
       } else {
         if (!empty) {
-          renderBuffer.append("<div id = \"" + nodeID + "_contents\" class = \"contents\">");
+          renderBuffer.append("<div id = \"" + nodeID + "_contents\" class = \"contents\"");
+          if (_collapsedIDs.contains(nodeID)) {
+            renderBuffer.append(" style = \"display: none\"");
+          }
+          renderBuffer.append(">");
           FuzzyXMLNode[] children = element.getChildren();
           for (FuzzyXMLNode child : children) {
             renderElement(child, renderContext, renderBuffer, cache);
@@ -267,31 +281,6 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
         renderBuffer.append("<div class = \"text\">" + nodeStr + "</div>");
       } else {
         renderBuffer.append(nodeStr);
-      }
-    }
-  }
-
-  /** This listener is called when selection of TreeViewer is changed. */
-  private class HTMLSelectionChangedListener implements ISelectionChangedListener {
-    public void selectionChanged(SelectionChangedEvent event) {
-      IStructuredSelection sel = (IStructuredSelection) event.getSelection();
-      Object element = sel.getFirstElement();
-      if (element instanceof FuzzyXMLNode) {
-        int offset = ((FuzzyXMLNode) element).getOffset();
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IEditorPart editorPart = page.getActiveEditor();
-        if (editorPart instanceof HTMLEditor) {
-          ((HTMLEditor) editorPart).setOffset(offset);
-        }
-        else if (editorPart instanceof HTMLSourceEditor) {
-          ((HTMLSourceEditor) editorPart).selectAndReveal(offset, 0);
-        }
-        else {
-          HTMLSourceEditor sourceEditor = (HTMLSourceEditor) editorPart.getAdapter(HTMLSourceEditor.class);
-          if (sourceEditor != null) {
-            sourceEditor.selectAndReveal(offset, 0);
-          }
-        }
       }
     }
   }
@@ -320,6 +309,12 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
       }
       _editor.selectAndReveal(selectedNode.getOffset(), selectedNode.getLength());
       _editor.getViewer().getTextWidget().setFocus();
+    }
+    else if ("expand".equals(command)) {
+      _collapsedIDs.remove(target);
+    }
+    else if ("collapse".equals(command)) {
+      _collapsedIDs.add(target);
     }
   }
 
