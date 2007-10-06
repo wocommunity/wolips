@@ -1,6 +1,7 @@
 package org.objectstyle.wolips.templateeditor;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.StatusTextEvent;
@@ -50,9 +52,13 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
   private Browser _browser;
   private int _counter;
   private Map<String, FuzzyXMLNode> _nodeMap;
+  
+  private List<ISelectionChangedListener> _selectionChangedListeners;
+  private ISelection _selection;
 
   public TemplateOutlinePage(TemplateSourceEditor editor) {
     _editor = editor;
+    _selectionChangedListeners = new LinkedList<ISelectionChangedListener>();
   }
 
   public FuzzyXMLDocument getDoc() {
@@ -65,18 +71,6 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
     _browser.addStatusTextListener(this);
 
     update();
-  }
-
-  public void changed(StatusTextEvent event) {
-    String text = event.text;
-    int colonIndex = text.indexOf(':');
-    String command = text.substring(0, colonIndex);
-    String target = text.substring(colonIndex + 1);
-    if ("open".equals(command)) {
-      FuzzyXMLNode selectedNode = _nodeMap.get(target);
-      _editor.getViewer().setSelectedRange(selectedNode.getOffset(), selectedNode.getLength());
-      _editor.getViewer().revealRange(selectedNode.getOffset(), selectedNode.getLength());
-    }
   }
 
   protected boolean isHTML() {
@@ -294,22 +288,37 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
     _browser.setFocus();
   }
 
+  public void changed(StatusTextEvent event) {
+    String text = event.text;
+    int colonIndex = text.indexOf(':');
+    String command = text.substring(0, colonIndex);
+    String target = text.substring(colonIndex + 1);
+    if ("open".equals(command)) {
+      FuzzyXMLNode selectedNode = _nodeMap.get(target);
+      _selection = new StructuredSelection(selectedNode);
+      SelectionChangedEvent selectionChangedEvent = new SelectionChangedEvent(this, _selection);
+      for (ISelectionChangedListener listener : _selectionChangedListeners) {
+        listener.selectionChanged(selectionChangedEvent);
+      }
+      _editor.getViewer().setSelectedRange(selectedNode.getOffset(), selectedNode.getLength());
+      _editor.getViewer().revealRange(selectedNode.getOffset(), selectedNode.getLength());
+      _editor.getViewer().getTextWidget().setFocus();
+    }
+  }
+
   public void addSelectionChangedListener(ISelectionChangedListener listener) {
-    // TODO Auto-generated method stub
+    _selectionChangedListeners.add(listener);
   }
 
   public ISelection getSelection() {
-    // TODO Auto-generated method stub
-    return null;
+    return _selection;
   }
 
   public void removeSelectionChangedListener(ISelectionChangedListener listener) {
-    // TODO Auto-generated method stub
-
+    _selectionChangedListeners.remove(listener);
   }
 
   public void setSelection(ISelection selection) {
-    // TODO Auto-generated method stub
-
+    System.out.println("TemplateOutlinePage.setSelection: " + selection);
   }
 }
