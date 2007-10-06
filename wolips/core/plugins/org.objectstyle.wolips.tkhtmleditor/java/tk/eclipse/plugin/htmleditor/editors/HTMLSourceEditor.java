@@ -29,6 +29,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.ITextViewerExtension2;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.source.IOverviewRuler;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.MatchingCharacterPainter;
@@ -135,6 +136,10 @@ public class HTMLSourceEditor extends TextEditor {
     getSourceViewerDecorationSupport(viewer);
     viewer.getTextWidget().addVerifyListener(softTabListener);
     return viewer;
+  }
+
+  public IOverviewRuler getOverviewRuler() {
+    return super.getOverviewRuler();
   }
 
   public ISourceViewer getViewer() {
@@ -402,6 +407,10 @@ public class HTMLSourceEditor extends TextEditor {
     fProjectionSupport.dispose();
     pairMatcher.dispose();
     super.dispose();
+  }
+  
+  public ProjectionSupport getProjectionSupport() {
+    return fProjectionSupport;
   }
 
   /**
