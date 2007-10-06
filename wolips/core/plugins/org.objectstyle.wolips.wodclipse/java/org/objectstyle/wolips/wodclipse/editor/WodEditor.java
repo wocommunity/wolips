@@ -70,7 +70,7 @@ import org.eclipse.ui.texteditor.ContentAssistAction;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.objectstyle.wolips.baseforplugins.util.Throttle;
-import org.objectstyle.wolips.components.editor.EditorInteraction;
+import org.objectstyle.wolips.components.editor.ComponentEditorInteraction;
 import org.objectstyle.wolips.components.editor.IEmbeddedEditor;
 import org.objectstyle.wolips.components.editor.IWebobjectTagListener;
 import org.objectstyle.wolips.components.editor.IWodDocumentProvider;
@@ -95,7 +95,7 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 
 	private LocalizedComponentsLocateResult _componentsLocateResults;
 
-	private EditorInteraction _editorInteraction;
+	private ComponentEditorInteraction _editorInteraction;
 
 	private Throttle _wodOutlineUpdateThrottle;
 
@@ -118,18 +118,21 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 	protected void performRevert() {
 		super.performRevert();
 		updateValidation();
+	    _editorInteraction.fireWebObjectChanged();
 	}
 
 	@Override
 	protected void performSaveAs(IProgressMonitor progressMonitor) {
 		super.performSaveAs(progressMonitor);
 		updateValidation();
+	    _editorInteraction.fireWebObjectChanged();
 	}
 
 	@Override
 	protected void performSave(boolean overwrite, IProgressMonitor progressMonitor) {
 		super.performSave(overwrite, progressMonitor);
 		updateValidation();
+	    _editorInteraction.fireWebObjectChanged();
 	}
 
 	public WodParserCache getWodParserCache() throws CoreException, LocateException {
@@ -270,12 +273,16 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 		return _componentsLocateResults;
 	}
 
-	public void initEditorInteraction(EditorInteraction editorInteraction) {
+	public void initEditorInteraction(ComponentEditorInteraction editorInteraction) {
 		_editorInteraction = editorInteraction;
-		_editorInteraction.setWebObjectTagListener(this);
+		_editorInteraction.addWebObjectTagListener(this);
 		_editorInteraction.setWodDocumentProvider(this);
 	}
 
+	public void webObjectChanged() {
+		// DO NOTHING
+	}
+	
 	public void webObjectTagSelected(String name) {
 		try {
 			IDocument document = getDocumentProvider().getDocument(getEditorInput());
@@ -295,7 +302,7 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 		return document;
 	}
 
-	public EditorInteraction getEditorInteraction() {
+	public ComponentEditorInteraction getEditorInteraction() {
 		return _editorInteraction;
 	}
 
