@@ -59,7 +59,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
-import org.objectstyle.wolips.components.editor.EditorInteraction;
+import org.objectstyle.wolips.components.editor.ComponentEditorInteraction;
 import org.objectstyle.wolips.components.editor.IEmbeddedEditor;
 import org.objectstyle.wolips.components.editor.IEmbeddedEditorSelected;
 import org.objectstyle.wolips.htmlpreview.HtmlPreviewPlugin;
@@ -73,7 +73,7 @@ import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
  */
 public class HtmlPreviewEditor implements IEmbeddedEditor, IEmbeddedEditorSelected, IEditorPart {
 
-	private EditorInteraction _editorInteraction;
+	private ComponentEditorInteraction _editorInteraction;
 
 	private IEditorSite _site;
 
@@ -109,7 +109,7 @@ public class HtmlPreviewEditor implements IEmbeddedEditor, IEmbeddedEditorSelect
 		}
 	}
 
-	public void initEditorInteraction(EditorInteraction editorInteraction) {
+	public void initEditorInteraction(ComponentEditorInteraction editorInteraction) {
 		this._editorInteraction = editorInteraction;
 	}
 
@@ -191,7 +191,7 @@ public class HtmlPreviewEditor implements IEmbeddedEditor, IEmbeddedEditorSelect
 		updatePreviewContent();
 	}
 
-	public EditorInteraction getEditorInteraction() {
+	public ComponentEditorInteraction getEditorInteraction() {
 		return _editorInteraction;
 	}
 	
