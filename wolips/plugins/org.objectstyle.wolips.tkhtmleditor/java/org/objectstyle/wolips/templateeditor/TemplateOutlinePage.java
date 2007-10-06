@@ -117,8 +117,15 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
       documentContentsBuffer.append("div.element.wo { border: 1px solid rgb(200, 200, 255); border-right: none; }");
       documentContentsBuffer.append("div.element.document { margin: 0px; padding: 0px; border: none; }");
 
-      documentContentsBuffer.append("div.element div.summary { white-space: nowrap; background-color: rgb(240, 240, 240); border-bottom: 1px solid rgb(230, 230, 230); padding: 3px; }");
-      documentContentsBuffer.append("div.element.wo div.summary { background-color: rgb(240, 240, 255); border-bottom: 1px solid rgb(200, 200, 255); }");
+      documentContentsBuffer.append("div.element div.expandcollapse { cursor: pointer; float: right; background-color: rgb(255, 255, 255); width: 10px; border: 1px solid rgb(230, 230, 230); border-top: none; padding-left: 3px; padding-right: 3px; text-align: center; }");
+      documentContentsBuffer.append("div.element div.expandcollapse:hover { font-weight: bold; border-width: 2px; border-right-width: 1px; }");
+      documentContentsBuffer.append("div.element div.expandcollapse:active { font-weight: bold; border-width: 2px; border-right-width: 1px; background-color: rgb(230, 230, 230); }");
+      documentContentsBuffer.append("div.element.wo div.expandcollapse { border-color: rgb(200, 200, 255); }");
+      documentContentsBuffer.append("div.element.wo div.expandcollapse:active { background-color: rgb(200, 200, 255); }");
+      documentContentsBuffer.append("div.element.document > div.expandcollapse { display: none; }");
+
+      documentContentsBuffer.append("div.element div.summary { cursor: pointer; white-space: nowrap; background-color: rgb(240, 240, 240); padding: 3px; }");
+      documentContentsBuffer.append("div.element.wo div.summary { background-color: rgb(240, 240, 255); }");
       documentContentsBuffer.append("div.element.document div.summary { margin: 0px; padding: 0px; border: none; display: none; }");
 
       documentContentsBuffer.append("div.element div.summary div.title { font-weight: bold; }");
@@ -132,9 +139,9 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
       documentContentsBuffer.append("div.element div.summary table.bindings td { color: rgb(150, 0, 0); }");
       documentContentsBuffer.append("div.element div.summary table.bindings td.literal { color: rgb(0, 0, 150); }");
 
-      documentContentsBuffer.append("div.element div.contents { background-color: rgb(255, 255, 255); padding-left: 10px; padding-right: 0px; padding-top: 5px; padding-bottom: 5px; }");
+      documentContentsBuffer.append("div.element div.contents { background-color: rgb(255, 255, 255); padding-left: 10px; padding-right: 0px; padding-top: 5px; padding-bottom: 5px; border-top: 1px solid rgb(230, 230, 230); }");
       documentContentsBuffer.append("div.element.document div.contents { margin: 0px; padding: 0px; border: none; }");
-      documentContentsBuffer.append("div.element.wo div.contents { background-color: rgb(250, 250, 255); }");
+      documentContentsBuffer.append("div.element.wo div.contents { background-color: rgb(250, 250, 255); border-color: rgb(200, 200, 255); }");
 
       documentContentsBuffer.append("div.element div.summary:hover { border-color: rgb(210, 210, 210); }");
       documentContentsBuffer.append("div.element div.summary:hover { background-color: rgb(220, 220, 220); }");
@@ -144,6 +151,21 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
       documentContentsBuffer.append("div.text { display: inline; }");
 
       documentContentsBuffer.append("</style>");
+      documentContentsBuffer.append("<script>");
+      documentContentsBuffer.append("function expandCollapse(id) { if ('none' == document.getElementById(id + '_contents').style.display) { expand(id); } else { collapse(id); } }");
+      documentContentsBuffer.append("function expand(id) { document.getElementById(id + '_contents').style.display = 'block'; document.getElementById(id + '_toggle').innerHTML = '&ndash;'; }");
+      documentContentsBuffer.append("function collapse(id) { document.getElementById(id + '_contents').style.display = 'none'; document.getElementById(id + '_toggle').innerHTML = '+'; }");
+      documentContentsBuffer.append("</script>");
+
+//       function hideElement(id) {
+//        document.getElementById( id).style.visibility = "hidden";
+//        document.getElementById( id).style.display = "none";
+//       }
+//
+//       function showSingleElement(id) {
+//        document.getElementById(id).style.visibility = "visible";
+//        document.getElementById(id).style.display = "block";
+//       }
       renderElement(documentElement, renderContext, documentContentsBuffer, cache);
       documentContentsBuffer.append("</body></html>");
       String documentContents = documentContentsBuffer.toString();
@@ -164,6 +186,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
     _nodeMap.put(nodeID, node);
     if (node instanceof FuzzyXMLElement) {
       FuzzyXMLElement element = (FuzzyXMLElement) node;
+      boolean empty = element.isEmpty();
       String nodeName = element.getName();
       String className = "element " + nodeName.replace(':', '_');
 
@@ -175,6 +198,10 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
 
       renderBuffer.append("<div id = \"" + nodeID + "\" class = \"" + className + "\">");
 
+      if (!empty) {
+        renderBuffer.append("<div id = \"" + nodeID + "_toggle\" class = \"expandcollapse\" onclick = \"expandCollapse('" + nodeID + "')\">&ndash;</div>");
+      }
+      
       renderBuffer.append("<div class = \"summary\" onclick = \"window.status = 'open:" + nodeID + "'\">");
 
       if (woTag) {
@@ -229,8 +256,8 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
       } else if ("style".equalsIgnoreCase(nodeName)) {
         // don't show style
       } else {
-        if (!element.isEmpty()) {
-          renderBuffer.append("<div class = \"contents\">");
+        if (!empty) {
+          renderBuffer.append("<div id = \"" + nodeID + "_contents\" class = \"contents\">");
           FuzzyXMLNode[] children = element.getChildren();
           for (FuzzyXMLNode child : children) {
             renderElement(child, renderContext, renderBuffer, cache);
@@ -300,8 +327,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
       for (ISelectionChangedListener listener : _selectionChangedListeners) {
         listener.selectionChanged(selectionChangedEvent);
       }
-      _editor.getViewer().setSelectedRange(selectedNode.getOffset(), selectedNode.getLength());
-      _editor.getViewer().revealRange(selectedNode.getOffset(), selectedNode.getLength());
+      _editor.selectAndReveal(selectedNode.getOffset(), selectedNode.getLength());
       _editor.getViewer().getTextWidget().setFocus();
     }
   }
