@@ -1,11 +1,13 @@
 package org.objectstyle.wolips.templateeditor;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.content.IContentDescriber;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.widgets.Composite;
-import org.objectstyle.wolips.components.editor.EditorInteraction;
+import org.objectstyle.wolips.components.editor.ComponentEditorInteraction;
 import org.objectstyle.wolips.components.editor.IEmbeddedEditor;
 import org.objectstyle.wolips.components.editor.IHtmlDocumentProvider;
+import org.objectstyle.wolips.components.editor.IWebobjectTagListener;
 import org.objectstyle.wolips.editors.contentdescriber.ContentDescriberWO;
 
 import tk.eclipse.plugin.htmleditor.HTMLPlugin;
@@ -14,9 +16,9 @@ import tk.eclipse.plugin.htmleditor.editors.HTMLEditor;
 import tk.eclipse.plugin.htmleditor.editors.HTMLEditorPart;
 import tk.eclipse.plugin.htmleditor.editors.HTMLSourceEditor;
 
-public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtmlDocumentProvider {
+public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtmlDocumentProvider, IWebobjectTagListener {
   private TemplateConfiguration _configuration;
-  private EditorInteraction _editorInteraction;
+  private ComponentEditorInteraction _editorInteraction;
 
   public TemplateEditor() {
     super();
@@ -43,10 +45,11 @@ public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtml
     return sourceEditor;
   }
 
-  public void initEditorInteraction(EditorInteraction initEditorInteraction) {
+  public void initEditorInteraction(ComponentEditorInteraction initEditorInteraction) {
     this._editorInteraction = initEditorInteraction;
     getSourceEditor().getSelectionProvider().addSelectionChangedListener(new TemplateOutlineSelectionHandler(this, _editorInteraction));
     _editorInteraction.setHtmlDocumentProvider(this);
+    _editorInteraction.addWebObjectTagListener(this);
   }
 
   public IDocument getHtmlEditDocument() {
@@ -54,7 +57,7 @@ public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtml
     return htmlDocument;
   }
 
-  public EditorInteraction getEditorInteraction() {
+  public ComponentEditorInteraction getEditorInteraction() {
     return _editorInteraction;
   }
 
@@ -70,6 +73,20 @@ public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtml
       _configuration = new TemplateConfiguration(HTMLPlugin.getDefault().getColorProvider());
     }
     return _configuration;
+  }
+
+  @Override
+  public void doSave(IProgressMonitor monitor) {
+    super.doSave(monitor);
+    _editorInteraction.fireWebObjectChanged();
+  }
+  
+  public void webObjectChanged() {
+    getSourceEditor().getTemplateOutlinePage().update();
+  }
+  
+  public void webObjectTagSelected(String name) {
+    // DO NOTHING
   }
 
   /**

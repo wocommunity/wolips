@@ -6,14 +6,14 @@ import jp.aonir.fuzzyxml.FuzzyXMLElement;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.objectstyle.wolips.components.editor.EditorInteraction;
+import org.objectstyle.wolips.components.editor.ComponentEditorInteraction;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
 public class TemplateOutlineSelectionHandler implements ISelectionChangedListener {
   private TemplateEditor _editor;
-  private EditorInteraction _editorInteraction;
+  private ComponentEditorInteraction _editorInteraction;
 
-  public TemplateOutlineSelectionHandler(TemplateEditor editor, EditorInteraction editorInteraction) {
+  public TemplateOutlineSelectionHandler(TemplateEditor editor, ComponentEditorInteraction editorInteraction) {
     _editor = editor;
     _editorInteraction = editorInteraction;
   }
@@ -33,7 +33,7 @@ public class TemplateOutlineSelectionHandler implements ISelectionChangedListene
             if (WodHtmlUtils.isWOTag(tagName)) {
               String woElementName = selectedElement.getAttributeValue("name");
               if (woElementName != null && woElementName.length() > 0) {
-                _editorInteraction.fireWebobjectTagChanged(woElementName);
+                _editorInteraction.fireWebObjectTagSelected(woElementName);
               }
             }
           }
