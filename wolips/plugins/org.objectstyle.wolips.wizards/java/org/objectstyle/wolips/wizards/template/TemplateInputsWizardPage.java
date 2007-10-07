@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -50,10 +51,10 @@ public class TemplateInputsWizardPage extends WizardPage {
 	}
 
 	public void createControl(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NULL);
+		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setFont(parent.getFont());
-		composite.setLayout(new GridLayout(2, false));
 		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+		composite.setLayout(new GridLayout(2, false));
 
 		initializeDialogUnits(parent);
 
@@ -114,23 +115,29 @@ public class TemplateInputsWizardPage extends WizardPage {
 							control = combo;
 						} else {
 							if (type == ProjectInput.Type.String) {
-								control = new Text(composite, SWT.NONE);
+								control = new Text(composite, SWT.BORDER | SWT.SINGLE);
+								((Text) control).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+								((Text) control).setText((String) value);
+							} else if (type == ProjectInput.Type.Package) {
+								control = new Text(composite, SWT.BORDER | SWT.SINGLE);
+								((Text) control).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 								((Text) control).setText((String) value);
 							} else if (type == ProjectInput.Type.Integer) {
 								control = new Spinner(composite, SWT.NONE);
 								if (value != null) {
 									((Spinner) control).setSelection(((Integer) value).intValue());
+									control.setLayoutData(new GridData());
 								}
 							} else if (type == ProjectInput.Type.Boolean) {
 								control = new Button(composite, SWT.CHECK);
 								if (value != null) {
 									((Button) control).setSelection(((Boolean) value).booleanValue());
+									control.setLayoutData(new GridData());
 								}
 							} else {
 								throw new IllegalArgumentException("Unknown type " + type + ".");
 							}
 						}
-						control.setLayoutData(new GridData());
 						_questionControls.put(input, control);
 					}
 				}
@@ -147,6 +154,8 @@ public class TemplateInputsWizardPage extends WizardPage {
 						ProjectInput.Type type = input.getType();
 						if (type == ProjectInput.Type.String) {
 							input.setValue(((Text) control).getText());
+						} else if (type == ProjectInput.Type.Package) {
+							input.setValue(((Text) control).getText());
 						} else if (type == ProjectInput.Type.Integer) {
 							input.setValue(Integer.valueOf(((Spinner) control).getSelection()));
 						} else if (type == ProjectInput.Type.Boolean) {
@@ -159,6 +168,6 @@ public class TemplateInputsWizardPage extends WizardPage {
 			}
 		}
 
-		composite.pack(true);
+		composite.layout(true, true);
 	}
 }
