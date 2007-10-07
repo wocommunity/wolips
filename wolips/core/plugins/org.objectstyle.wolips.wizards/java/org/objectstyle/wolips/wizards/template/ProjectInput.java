@@ -18,7 +18,7 @@ public class ProjectInput {
 	 * @author mschrag
 	 */
 	public static enum Type {
-		String, Integer, Boolean
+		String, Integer, Boolean, Package
 	}
 
 	private String _name;
@@ -124,6 +124,8 @@ public class ProjectInput {
 	protected Object toObjectValue(String text) {
 		Object value;
 		if (_type == ProjectInput.Type.String) {
+			value = text;
+		} else if (_type == ProjectInput.Type.Package) {
 			value = text;
 		} else if (_type == ProjectInput.Type.Integer) {
 			value = Integer.valueOf(text);

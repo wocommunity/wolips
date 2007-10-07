@@ -41,7 +41,7 @@ public class SelectTemplateWizardPage extends WizardPage implements ISelectionCh
 	}
 
 	public void createControl(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NULL);
+		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setFont(parent.getFont());
 		composite.setLayout(new GridLayout());
 		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
