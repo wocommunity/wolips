@@ -71,6 +71,8 @@ public interface IWodBinding extends IWodUnit {
 
   public boolean isOGNL();
 
+  public boolean isTrueValue();
+  
   public Position getNamePosition();
 
   public Position getValuePosition();
