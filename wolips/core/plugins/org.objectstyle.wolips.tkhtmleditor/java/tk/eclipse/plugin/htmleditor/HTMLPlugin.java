@@ -148,7 +148,9 @@ public class HTMLPlugin extends AbstractUIPlugin {
 	public static final String PREF_ENABLE_CLASSNAME = "__pref_enable_classname";
 	public static final String PREF_CLASSNAME_ATTRS  = "__pref_classname_attrs";
 	public static final String PREF_SCHEMA_MAPPINGS  = "__pref_schema_mappings";
-	
+
+  public static final String PREF_TEMPLATE_COMPACT_VIEW  = "_pref_template_compact_view";
+
 	
 	public static final String[] SUPPORTED_IMAGE_TYPES = {
 			"gif","png","jpg","jpeg","bmp"
