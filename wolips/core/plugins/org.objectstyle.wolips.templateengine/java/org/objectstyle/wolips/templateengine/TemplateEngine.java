@@ -151,11 +151,32 @@ public class TemplateEngine implements IRunnableWithProgress {
 	}
 
 	/**
-	 * @param property
-	 * @param key
+	 * Sets the property for the given key.
+	 * 
+	 * @param property the property value
+	 * @param key the property key
 	 */
 	public void setPropertyForKey(Object property, String key) {
 		_context.put(key, property);
+	}
+	
+	/**
+	 * Returns the property value for the given key.
+	 * 
+	 * @param key the key to lookup
+	 * @return the property value for the given key
+	 */
+	public Object getPropertyForKey(String key) {
+		return _context.get(key);
+	}
+	
+	/**
+	 * Returns the keys from this template engine.
+	 * 
+	 * @return the keys from this template engine
+	 */
+	public Object[] getKeys() {
+		return _context.getKeys();
 	}
 
 	/*
