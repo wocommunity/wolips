@@ -16,6 +16,8 @@ public class HTMLPreferenceInitializer extends AbstractPreferenceInitializer {
 	@Override
   public void initializeDefaultPreferences() {
 		IPreferenceStore store = HTMLPlugin.getDefault().getPreferenceStore();
+    store.setDefault(HTMLPlugin.PREF_TEMPLATE_COMPACT_VIEW, true);
+    
 		store.setDefault(HTMLPlugin.PREF_COLOR_TAG,StringConverter.asString(IHTMLColorConstants.TAG));
     store.setDefault(HTMLPlugin.PREF_COLOR_WO_TAG,StringConverter.asString(IHTMLColorConstants.WO_TAG));
     store.setDefault(HTMLPlugin.PREF_COLOR_ATTRIBUTE,StringConverter.asString(IHTMLColorConstants.ATTRIBUTE));
