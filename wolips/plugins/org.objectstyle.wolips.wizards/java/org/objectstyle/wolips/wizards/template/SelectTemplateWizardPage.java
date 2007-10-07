@@ -54,7 +54,7 @@ public class SelectTemplateWizardPage extends WizardPage implements ISelectionCh
 			noTemplatesLabel.setText("There are no templates in folders " + _templateBaseFolders);
 		} else {
 			setTitle("Select a Template");
-			_templateViewer = new ListViewer(composite, SWT.SINGLE);
+			_templateViewer = new ListViewer(composite, SWT.SINGLE | SWT.V_SCROLL | SWT.BORDER);
 			_templateViewer.setLabelProvider(new TemplateLabelProvider());
 			_templateViewer.setContentProvider(new TemplateContentProvider());
 			_templateViewer.setInput(_templates);
