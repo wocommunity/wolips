@@ -60,12 +60,16 @@ public interface IWodBinding extends IWodUnit {
   public String getName();
 
   public String getValue();
-  
+
   public int getLineNumber();
 
   public boolean shouldValidate();
 
   public boolean isKeyPath();
+
+  public boolean isLiteral();
+
+  public boolean isOGNL();
 
   public Position getNamePosition();
 
