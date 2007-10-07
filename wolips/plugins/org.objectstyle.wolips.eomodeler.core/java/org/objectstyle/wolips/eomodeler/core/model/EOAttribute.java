@@ -367,11 +367,11 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	public String getName() {
 		return (String) _prototypeValueIfNull(AbstractEOArgument.NAME, super.getName());
 	}
-	
+
 	public String getUppercaseUnderscoreName() {
 		return StringUtils.camelCaseToUnderscore(getName()).toUpperCase();
 	}
-	
+
 	public String getCapitalizedName() {
 		String name = getName();
 		if (name != null) {
@@ -429,15 +429,24 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		super.setAllowsNull(allowsNull);
 
 		Boolean mandatory = BooleanUtils.negate(allowsNull);
-		Map<EOAttribute, Set<EORelationship>> referencingRelationshipsCache = getEntity().getModel().getModelGroup()._createReferencingRelationshipsCache();
-		Set<EORelationship> referencingRelationships = getReferencingRelationships(true, referencingRelationshipsCache);
-		for (EORelationship referencingRelationship : referencingRelationships) {
-			if (BooleanUtils.isTrue(referencingRelationship.isToOne())) {
-				referencingRelationship._setMandatory(mandatory);
+		EOEntity entity = getEntity();
+		if (entity != null) {
+			EOModel model = entity.getModel();
+			if (model != null) {
+				EOModelGroup modelGroup = model.getModelGroup();
+				if (modelGroup != null) {
+					Map<EOAttribute, Set<EORelationship>> referencingRelationshipsCache = modelGroup._createReferencingRelationshipsCache();
+					Set<EORelationship> referencingRelationships = getReferencingRelationships(true, referencingRelationshipsCache);
+					for (EORelationship referencingRelationship : referencingRelationships) {
+						if (BooleanUtils.isTrue(referencingRelationship.isToOne())) {
+							referencingRelationship._setMandatory(mandatory);
+						}
+					}
+				}
 			}
 		}
 	}
-	
+
 	public void setAllowsNull(Boolean _allowsNull, boolean _fireEvents) {
 		Boolean newAllowsNull = _allowsNull;
 		if (_fireEvents && BooleanUtils.isTrue(getPrimaryKey())) {
@@ -592,35 +601,27 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 			String valueType = getValueType();
 			if ("B".equals(valueType)) {
 				className = "BigDecimal";
-			}
-			else if ("b".equals(valueType)) {
+			} else if ("b".equals(valueType)) {
 				className = "Byte";
-			}
-			else if ("d".equals(valueType)) {
+			} else if ("d".equals(valueType)) {
 				className = "Double";
-			}
-			else if ("f".equals(valueType)) {
+			} else if ("f".equals(valueType)) {
 				className = "Float";
-			}
-			else if ("i".equals(valueType)) {
+			} else if ("i".equals(valueType)) {
 				className = "Integer";
-			}
-			else if ("l".equals(valueType)) {
+			} else if ("l".equals(valueType)) {
 				className = "Long";
-			}
-			else if ("s".equals(valueType)) {
+			} else if ("s".equals(valueType)) {
 				className = "Short";
 			}
-		}
-		else if ("NSString".equals(className)) {
+		} else if ("NSString".equals(className)) {
 			className = "String";
-		}
-		else if ("NSCalendarDate".equals(className)) {
+		} else if ("NSCalendarDate".equals(className)) {
 			className = "NSTimestamp";
 		}
 		return className;
 	}
-	
+
 	public String getValueClassName() {
 		return (String) _prototypeValueIfNull(AbstractEOArgument.VALUE_CLASS_NAME, super.getValueClassName());
 	}
@@ -869,12 +870,12 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 						}
 					}
 				}
-				
+
 				String valueClassName = getValueClassName();
 				if (valueClassName == null) {
 					_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " does not have a value class name.", true));
 				}
-				
+
 				Boolean classProperty = isClassProperty();
 				if (classProperty != null && classProperty.booleanValue()) {
 					Set<EORelationship> referencingRelationships = getReferencingRelationships(true, verificationContext.getReferencingRelationshipsCache());
