@@ -104,6 +104,11 @@ public abstract class AbstractWodBinding implements IWodBinding {
     }
   }
   
+  public boolean isTrueValue() {
+    String bindingValue = getValue();
+    return "true".equalsIgnoreCase(bindingValue) || "yes".equalsIgnoreCase(bindingValue);
+  }
+  
   public boolean isKeyPath() {
     String bindingValue = getValue();
     boolean isBindingValueKeyPath;
