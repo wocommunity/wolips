@@ -100,11 +100,13 @@ public class NewProjectFromTemplateWizard extends NewWOProjectWizard {
 		List<String> templateKeys = new LinkedList<String>();
 		for (Object key : keys) {
 			if (key instanceof String) {
-				templateKeys.add((String)key);
+				templateKeys.add((String) key);
 			}
 		}
+		// MS: Sort inverse by name so "basePackage_folder" evaluates before
+		// "basePackage" (so the longer one wins).
 		Collections.sort(templateKeys, new ReverseStringLengthComparator());
-		
+
 		_createProject(templateEngine, selectedTemplate.getFolder().getParentFile(), project.getLocation().toFile(), selectedTemplate.getFolder(), templateKeys, progressMonitor);
 		templateEngine.run(progressMonitor);
 	}
