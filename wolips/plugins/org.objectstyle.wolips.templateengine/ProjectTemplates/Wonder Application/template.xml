@@ -2,11 +2,11 @@
 <template name = "Wonder Application">
 	<inputs>
 		<input name = "linkToWonderProjects" type = "Boolean">
-			<question>Link to Wonder Projects?</question>
+			<question>Link to Wonder Eclipse Projects?</question>
 			<default>false</default>
 		</input>
 		<input name = "linkToWonderFrameworks" type = "Boolean">
-			<question>Link to Wonder Frameworks?</question>
+			<question>Link to Installed Wonder Frameworks?</question>
 			<default>true</default>
 		</input>
 	</inputs>
