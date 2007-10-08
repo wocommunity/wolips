@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.2"?>
+<?eclipse version="3.0"?>
 <plugin>
 
-   <extension
+ 	<extension
          point="org.eclipse.ui.editors">
-      <editor
-            name="WooEditor"
+	 <editor
+            default="false"
             extensions="woo"
-            icon="icons/sample.gif"
-            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
-            class="org.objectstyle.wolips.wooeditor.editors.WooEditor"
-            id="org.objectstyle.wolips.wooeditor.editors.WooEditor">
+            icon="icons/WooEditor.gif"
+            id="org.objectstyle.wolips.wooeditor.editor.WooEditor"
+            class="org.objectstyle.wolips.wooeditor.editor.WooEditor"
+            name="WOO Archive Editor">
+			<contentTypeBinding
+               contentTypeId="org.objectstyle.wolips.editors.woo"
+            />
       </editor>
    </extension>
 
