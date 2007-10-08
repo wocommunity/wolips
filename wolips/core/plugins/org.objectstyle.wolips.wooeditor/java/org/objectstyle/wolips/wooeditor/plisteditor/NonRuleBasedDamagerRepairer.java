@@ -1,4 +1,4 @@
-package org.objectstyle.wolips.wooeditor.editors;
+package org.objectstyle.wolips.wooeditor.plisteditor;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
@@ -20,7 +20,7 @@ public class NonRuleBasedDamagerRepairer
 	protected IDocument fDocument;
 	/** The default text attribute if non is returned as data by the current token */
 	protected TextAttribute fDefaultTextAttribute;
-	
+
 	/**
 	 * Constructor for NonRuleBasedDamagerRepairer.
 	 */

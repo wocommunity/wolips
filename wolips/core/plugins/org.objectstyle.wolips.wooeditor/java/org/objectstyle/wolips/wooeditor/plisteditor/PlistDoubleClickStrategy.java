@@ -1,8 +1,8 @@
-package org.objectstyle.wolips.wooeditor.editors;
+package org.objectstyle.wolips.wooeditor.plisteditor;
 
 import org.eclipse.jface.text.*;
 
-public class XMLDoubleClickStrategy implements ITextDoubleClickStrategy {
+public class PlistDoubleClickStrategy implements ITextDoubleClickStrategy {
 	protected ITextViewer fText;
 
 	public void doubleClicked(ITextViewer part) {
