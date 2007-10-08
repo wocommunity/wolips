@@ -46,8 +46,13 @@ package org.objectstyle.wolips.componenteditor.part;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IEditorInput;
@@ -55,13 +60,12 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.internal.editors.text.PreviousPulldownActionDelegate;
 import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.templateeditor.TemplateEditor;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.editor.WodEditor;
-import org.objectstyle.wolips.wooeditor.editors.WooEditor;
+import org.objectstyle.wolips.wooeditor.editor.WooEditor;
 
 public class HtmlWodTab extends ComponentEditorTab {
 	private TemplateEditor templateEditor;
@@ -77,6 +81,8 @@ public class HtmlWodTab extends ComponentEditorTab {
 	private IEditorInput wodInput;
 
 	private IEditorInput wooInput;
+	
+	private CTabFolder container;
 
 	public HtmlWodTab(ComponentEditorPart componentEditorPart, int tabIndex, IEditorInput htmlInput, IEditorInput wodInput, IEditorInput wooInput) {
 		super(componentEditorPart, tabIndex);
@@ -84,7 +90,7 @@ public class HtmlWodTab extends ComponentEditorTab {
 		this.wodInput = wodInput;
 		this.wooInput = wooInput;
 	}
-
+	
 	public IEditorPart getActiveEmbeddedEditor() {
 		if (htmlActive) {
 			return templateEditor;
@@ -94,10 +100,15 @@ public class HtmlWodTab extends ComponentEditorTab {
 
 	public void createTab() {
 		SashForm htmlSashform = new SashForm(this.getParentSashForm(), SWT.VERTICAL);
-		SashForm wodAndWooSashform = new SashForm(this.getParentSashForm(), SWT.HORIZONTAL | SWT.SMOOTH);
-		SashForm wodSashform = new SashForm(wodAndWooSashform, SWT.HORIZONTAL);
-		SashForm wooSashform = new SashForm(wodAndWooSashform, SWT.HORIZONTAL);
 
+		
+		
+		SashForm wodAndWooSashform = new SashForm(this.getParentSashForm(), SWT.HORIZONTAL | SWT.SMOOTH);
+		
+		final CTabFolder wodAndWooCTabFolder = new CTabFolder(wodAndWooSashform, SWT.BOTTOM
+				| SWT.FLAT);
+		
+		
 		templateEditor = new TemplateEditor();
 		IEditorSite htmlSite = this.getComponentEditorPart().publicCreateSite(templateEditor);
 		try {
@@ -118,7 +129,18 @@ public class HtmlWodTab extends ComponentEditorTab {
 		} catch (PartInitException e) {
 			ComponenteditorPlugin.getDefault().log(e);
 		}
-		createInnerPartControl(wodSashform, wodEditor);
+		
+		Composite wodParent = new Composite(wodAndWooCTabFolder,
+				Window.getDefaultOrientation());
+		wodParent.setLayout(new FillLayout());
+		wodEditor.createPartControl(wodParent);
+		
+		CTabItem wodItem = new CTabItem(wodAndWooCTabFolder, SWT.NONE, 0);
+		wodItem.setControl(wodParent);
+		wodItem.setText("wod");
+		
+		
+//		createInnerPartControl(wodSashform, wodEditor);
 		wodEditor.addPropertyListener(new IPropertyListener() {
 			public void propertyChanged(Object source, int propertyId) {
 				HtmlWodTab.this.getComponentEditorPart().publicHandlePropertyChange(propertyId);
@@ -137,7 +159,8 @@ public class HtmlWodTab extends ComponentEditorTab {
 				HtmlWodTab.this.getComponentEditorPart().updateOutline();
 			}
 		});
-		wodSashform.addListener(SWT.Activate, new Listener() {
+		
+		wodParent.addListener(SWT.Activate, new Listener() {
 			public void handleEvent(Event event) {
 				htmlActive = false;
 				HtmlWodTab.this.getComponentEditorPart().pageChange(HtmlWodTab.this.getTabIndex());
@@ -154,17 +177,46 @@ public class HtmlWodTab extends ComponentEditorTab {
 			} catch (PartInitException e) {
 				ComponenteditorPlugin.getDefault().log(e);
 			}
-			createInnerPartControl(wooSashform, wooEditor);
+//			createInnerPartControl(wooSashform, wooEditor);
+			
+			Composite wooParent = new Composite(wodAndWooCTabFolder,
+					Window.getDefaultOrientation());
+			wooParent.setLayout(new FillLayout());
+			
+			
+			
+
+			wooParent.addListener(SWT.Activate, new Listener() {
+				public void handleEvent(Event event) {
+					htmlActive = false;
+					HtmlWodTab.this.getComponentEditorPart().pageChange(HtmlWodTab.this.getTabIndex());
+					HtmlWodTab.this.getComponentEditorPart().updateOutline();
+				}
+			});
+			
+			
+			
+			wooEditor.createPartControl(wooParent);
+			
+			CTabItem wooItem = new CTabItem(wodAndWooCTabFolder, SWT.NONE, 1);
+			wooItem.setControl(wooParent);
+			wooItem.setText("woo");
+			
+			
 			wooEditor.addPropertyListener(new IPropertyListener() {
 				public void propertyChanged(Object source, int propertyId) {
 					HtmlWodTab.this.getComponentEditorPart().publicHandlePropertyChange(propertyId);
 				}
 			});
 		}
+		
+		
+		
 		templateEditor.initEditorInteraction(this.getComponentEditorPart().getEditorInteraction());
 		wodEditor.initEditorInteraction(this.getComponentEditorPart().getEditorInteraction());
 
 		this.addWebObjectsTagNamesListener();
+		wodAndWooCTabFolder.setFocus();
 	}
 
 	/**
