@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2005 - 2006 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2007 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -133,7 +133,7 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 			return;
 		}
 		IEditorInput[] editorInput = componentEditorInput.getComponentEditors();
-		componentEditorTabs = new ComponentEditorTab[editorInput.length / 3 + 2];
+		componentEditorTabs = new ComponentEditorTab[editorInput.length / 3 * 2 + 2];
 		htmlWodTabs = new HtmlWodTab[editorInput.length / 3];
 		// htmlwod tabs
 		IFileEditorInput htmlInput = null;
@@ -148,12 +148,21 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 			j++;
 			wooInput = (IFileEditorInput) editorInput[j];
 			j++;
-			HtmlWodTab htmlWodTab = new HtmlWodTab(this, tabIndex, htmlInput, wodInput, wooInput);
+			HtmlWodTab htmlWodTab = new HtmlWodTab(this, tabIndex, htmlInput, wodInput);
 			componentEditorTabs[tabIndex] = htmlWodTab;
 			htmlWodTabs[tabIndex] = htmlWodTab;
 			htmlWodTab.createTab();
 			this.addPage(htmlWodTab);
 			this.setPageText(tabIndex, "Component");
+			tabIndex++;
+			
+			
+
+			WooTab wooTab = new WooTab(this, tabIndex, wooInput);
+			componentEditorTabs[tabIndex] = wooTab;
+			wooTab.createTab();
+			this.addPage(wooTab);
+			this.setPageText(tabIndex, "DisplayGroups");
 			tabIndex++;
 		}
 
