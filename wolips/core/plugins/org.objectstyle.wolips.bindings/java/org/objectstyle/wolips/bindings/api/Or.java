@@ -55,6 +55,7 @@
  */
 package org.objectstyle.wolips.bindings.api;
 
+import java.util.List;
 import java.util.Map;
 
 import org.w3c.dom.Element;
@@ -66,11 +67,12 @@ public class Or extends AbstractValidationChild {
 		super(element, apiModel);
 	}
 
-	public boolean evaluate(Map _bindings) {
+	@Override
+  public boolean evaluate(Map<String, String> bindings) {
 		boolean evaluation = false;
-		IValidation[] validationChildren = getValidationChildren();
-		for (int i = 0; !evaluation && i < validationChildren.length; i++) {
-			evaluation = validationChildren[i].evaluate(_bindings);
+		List<IValidation> validationChildren = getValidationChildren();
+		for (int i = 0; !evaluation && i < validationChildren.size(); i++) {
+			evaluation = validationChildren.get(i).evaluate(bindings);
 		}
 		return evaluation;
 	}

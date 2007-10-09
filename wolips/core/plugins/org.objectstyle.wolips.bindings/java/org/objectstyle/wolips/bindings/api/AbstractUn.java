@@ -55,6 +55,9 @@
  */
 package org.objectstyle.wolips.bindings.api;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.w3c.dom.Element;
 
 public abstract class AbstractUn extends AbstractApiModelElement implements IValidation {
@@ -73,8 +76,8 @@ public abstract class AbstractUn extends AbstractApiModelElement implements IVal
 		element.setAttribute(NAME, className);
 	}
 
-	public IValidation[] getValidationChildren() {
-		return new IValidation[0];
+	public List<IValidation> getValidationChildren() {
+		return new LinkedList<IValidation>();
 	}
 
 	public boolean isAffectedByBindingNamed(String bindingName) {

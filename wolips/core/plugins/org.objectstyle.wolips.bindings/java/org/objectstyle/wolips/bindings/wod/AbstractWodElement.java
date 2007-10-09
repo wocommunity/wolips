@@ -119,8 +119,8 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
     return value;
   }
 
-  public Map<String, Object> getBindingsMap() {
-    Map<String, Object> bindingsMap = new HashMap<String, Object>();
+  public Map<String, String> getBindingsMap() {
+    Map<String, String> bindingsMap = new HashMap<String, String>();
     Iterator<IWodBinding> bindingsIter = _bindings.iterator();
     while (bindingsIter.hasNext()) {
       IWodBinding binding = bindingsIter.next();
@@ -230,18 +230,17 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
       try {
         wo = ApiUtils.findApiModelWo(elementType, typeCache.getApiCache());
         if (wo != null) {
-          Map<String, Object> bindingsMap = getBindingsMap();
-          Binding[] bindings = wo.getBindings();
-          for (int i = 0; i < bindings.length; i++) {
-            String bindingName = bindings[i].getName();
-            if (bindings[i].isExplicitlyRequired() && !bindingsMap.containsKey(bindingName)) {
-              problems.add(new WodElementProblem("Binding '" + bindingName + "' is required for " + wo.getClassName(), getElementNamePosition(), lineNumber, false, elementTypeName + ".api"));
+          Map<String, String> bindingsMap = getBindingsMap();
+          List<Binding> bindings = wo.getBindings();
+          for (Binding binding : bindings) {
+            String bindingName = binding.getName();
+            if (binding.isExplicitlyRequired() && !bindingsMap.containsKey(bindingName)) {
+              problems.add(new ApiBindingValidationProblem(binding, getElementNamePosition(), lineNumber, false, elementTypeName + ".api"));
             }
           }
-          Validation[] failedValidations = wo.getFailedValidations(bindingsMap);
-          for (int i = 0; i < failedValidations.length; i++) {
-            String failedValidationMessage = failedValidations[i].getMessage();
-            problems.add(new WodElementProblem(failedValidationMessage, getElementNamePosition(), lineNumber, false, elementTypeName + ".api"));
+          List<Validation> failedValidations = wo.getFailedValidations(bindingsMap);
+          for (Validation failedValidation : failedValidations) {
+            problems.add(new ApiElementValidationProblem(failedValidation, getElementNamePosition(), lineNumber, false, elementTypeName + ".api"));
           }
         }
       }

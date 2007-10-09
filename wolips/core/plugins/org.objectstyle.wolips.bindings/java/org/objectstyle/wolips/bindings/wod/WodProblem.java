@@ -64,6 +64,6 @@ public class WodProblem {
 
   @Override
   public String toString() {
-    return "[WodProblem: message = " + _message + "]";
+    return "[" + getClass().getName() + ": message = " + _message + "]";
   }
 }

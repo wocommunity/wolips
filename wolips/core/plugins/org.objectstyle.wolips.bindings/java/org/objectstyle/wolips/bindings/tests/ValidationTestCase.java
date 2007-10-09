@@ -2,6 +2,7 @@ package org.objectstyle.wolips.bindings.tests;
 
 import java.io.StringReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -34,19 +35,18 @@ public class ValidationTestCase extends TestCase {
 		StringReader sr = new StringReader(api);
 		ApiModel model = new ApiModel(sr);
 		
-		Map bindings = new HashMap();
+		Map<String, String> bindings = new HashMap<String, String>();
 		bindings.put("attributeTypeName", "\"value\"");
-		Validation[] failedValidations = model.getWo().getFailedValidations(bindings);
-		assertEquals(0, failedValidations.length);
+		List<Validation> failedValidations = model.getWo().getFailedValidations(bindings);
+		assertEquals(0, failedValidations.size());
 
 		bindings.clear();
 		bindings.put("addressType", "currentAddressType");
 		bindings.put("key", "currentKey");
 		failedValidations = model.getWo().getFailedValidations(bindings);
-		assertEquals(0, failedValidations.length);
+		assertEquals(0, failedValidations.size());
 
-		for (int validationNum = 0; validationNum < failedValidations.length; validationNum++) {
-			Validation validation = failedValidations[validationNum];
+		for (Validation validation : failedValidations) {
 			System.out.println("ValidationTestCase.testTest: " + validation.getMessage());
 		}
 	}

@@ -1,5 +1,6 @@
 package org.objectstyle.wolips.bindings.api;
 
+import java.util.List;
 import java.util.Map;
 
 import org.objectstyle.wolips.bindings.Activator;
@@ -22,11 +23,12 @@ public class Count extends AbstractValidationChild {
 		element.setAttribute(TEST, test);
 	}
 
-	public boolean evaluate(Map _bindings) {
+	@Override
+  public boolean evaluate(Map<String, String> bindings) {
 		int count = 0;
-		IValidation[] validationChildren = getValidationChildren();
-		for (int i = 0; i < validationChildren.length; i++) {
-			boolean evaluation = validationChildren[i].evaluate(_bindings);
+		List<IValidation> validationChildren = getValidationChildren();
+		for (IValidation validation : validationChildren) {
+			boolean evaluation = validation.evaluate(bindings);
 			if (evaluation) {
 				count++;
 			}

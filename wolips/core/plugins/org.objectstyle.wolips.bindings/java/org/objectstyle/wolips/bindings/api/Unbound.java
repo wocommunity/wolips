@@ -55,42 +55,41 @@
  */
 package org.objectstyle.wolips.bindings.api;
 
+import java.util.List;
 import java.util.Map;
 
 import org.w3c.dom.Element;
 
 public class Unbound extends AbstractUn {
 
-	protected final static String UNBOUND = "unbound";
+  protected final static String UNBOUND = "unbound";
 
-	protected Unbound(Element element, ApiModel apiModel) {
-		super(element, apiModel);
-	}
+  protected Unbound(Element element, ApiModel apiModel) {
+    super(element, apiModel);
+  }
 
-	public static void addToWoWithBinding(Wo wo, Binding binding) {
-		Element newValidationElement = wo.element.getOwnerDocument().createElement(Validation.VALIDATION);
-		wo.element.appendChild(newValidationElement);
-		newValidationElement.setAttribute(Validation.MESSAGE, "'" + binding.getName() + "' is a required binding");
-		Element newUnboundElement = wo.element.getOwnerDocument().createElement(UNBOUND);
-		newValidationElement.appendChild(newUnboundElement);
-		newUnboundElement.setAttribute(NAME, binding.getName());
-	}
+  public static void addToWoWithBinding(Wo wo, Binding binding) {
+    Element newValidationElement = wo.element.getOwnerDocument().createElement(Validation.VALIDATION);
+    wo.element.appendChild(newValidationElement);
+    newValidationElement.setAttribute(Validation.MESSAGE, "'" + binding.getName() + "' is a required binding");
+    Element newUnboundElement = wo.element.getOwnerDocument().createElement(UNBOUND);
+    newValidationElement.appendChild(newUnboundElement);
+    newUnboundElement.setAttribute(NAME, binding.getName());
+  }
 
-	public static void removeFromWoWithBinding(Wo wo, Binding binding) {
-		Validation[] validations = wo.getValidations();
-		for (int i = validations.length - 1; i > 0; i--) {
-			Validation validation = validations[i];
-			Unbound[] unbounds = validation.getUnbounds();
-			if (unbounds.length == 1) {
-				if (unbounds[0].isAffectedByBindingNamed(binding.getName())) {
-					validation.element.removeChild(unbounds[0].element);
-				}
-			}
-		}
-	}
+  public static void removeFromWoWithBinding(Wo wo, Binding binding) {
+    List<Validation> validations = wo.getValidations();
+    for (int i = validations.size() - 1; i > 0; i--) {
+      Validation validation = validations.get(i);
+      List<Unbound> unbounds = validation.getUnbounds();
+      if (unbounds.size() == 1 && unbounds.get(0).isAffectedByBindingNamed(binding.getName())) {
+        validation.element.removeChild(unbounds.get(0).element);
+      }
+    }
+  }
 
-	public boolean evaluate(Map _bindings) {
-		String bindingName = getName();
-		return !_bindings.containsKey(bindingName);
-	}
+  public boolean evaluate(Map<String, String> bindings) {
+    String bindingName = getName();
+    return !bindings.containsKey(bindingName);
+  }
 }

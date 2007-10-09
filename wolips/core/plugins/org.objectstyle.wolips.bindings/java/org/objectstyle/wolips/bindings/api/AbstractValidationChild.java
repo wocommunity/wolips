@@ -67,117 +67,117 @@ public abstract class AbstractValidationChild extends AbstractApiModelElement im
 		super(element, apiModel);
 	}
 
-	public Unsettable[] getUnsettables() {
-		List unsetableElements = getChildrenElementsByTagName(Unsettable.UNSETTABLE);
-		List<Unsettable> unsetables = new LinkedList<Unsettable>();
+	public List<Unsettable> getUnsettables() {
+		List<Element> unsetableElements = getChildrenElementsByTagName(Unsettable.UNSETTABLE);
+		List<Unsettable> unsettables = new LinkedList<Unsettable>();
 		for (int i = 0; i < unsetableElements.size(); i++) {
-			Element unsettableElement = (Element) unsetableElements.get(i);
+			Element unsettableElement = unsetableElements.get(i);
 			Unsettable validation = new Unsettable(unsettableElement, apiModel);
-			unsetables.add(validation);
+			unsettables.add(validation);
 		}
-		return unsetables.toArray(new Unsettable[unsetables.size()]);
+		return unsettables;
 	}
 
-	public Settable[] getSettables() {
-		List setableElements = getChildrenElementsByTagName(Settable.SETTABLE);
-		List<Settable> setables = new LinkedList<Settable>();
+	public List<Settable> getSettables() {
+		List<Element> setableElements = getChildrenElementsByTagName(Settable.SETTABLE);
+		List<Settable> settables = new LinkedList<Settable>();
 		for (int i = 0; i < setableElements.size(); i++) {
-			Element settableElement = (Element) setableElements.get(i);
+			Element settableElement = setableElements.get(i);
 			Settable settable = new Settable(settableElement, apiModel);
-			setables.add(settable);
+			settables.add(settable);
 		}
-		return setables.toArray(new Settable[setables.size()]);
+		return settables;
 	}
 
-	public Ungettable[] getUngettables() {
-		List ungetableElements = getChildrenElementsByTagName(Ungettable.UNGETTABLE);
-		List<Ungettable> ungetables = new LinkedList<Ungettable>();
+	public List<Ungettable> getUngettables() {
+		List<Element> ungetableElements = getChildrenElementsByTagName(Ungettable.UNGETTABLE);
+		List<Ungettable> ungettables = new LinkedList<Ungettable>();
 		for (int i = 0; i < ungetableElements.size(); i++) {
-			Element ungettableElement = (Element) ungetableElements.get(i);
+			Element ungettableElement = ungetableElements.get(i);
 			Ungettable validation = new Ungettable(ungettableElement, apiModel);
-			ungetables.add(validation);
+			ungettables.add(validation);
 		}
-		return ungetables.toArray(new Ungettable[ungetables.size()]);
+		return ungettables;
 	}
 
-	public Gettable[] getGettables() {
-		List getableElements = getChildrenElementsByTagName(Gettable.GETTABLE);
-		List<Gettable> getables = new LinkedList<Gettable>();
+	public List<Gettable> getGettables() {
+		List<Element> getableElements = getChildrenElementsByTagName(Gettable.GETTABLE);
+		List<Gettable> gettables = new LinkedList<Gettable>();
 		for (int i = 0; i < getableElements.size(); i++) {
-			Element gettableElement = (Element) getableElements.get(i);
+			Element gettableElement = getableElements.get(i);
 			Gettable gettable = new Gettable(gettableElement, apiModel);
-			getables.add(gettable);
+			gettables.add(gettable);
 		}
-		return getables.toArray(new Gettable[getables.size()]);
+		return gettables;
 	}
 
-	public Unbound[] getUnbounds() {
-		List unsetableElements = getChildrenElementsByTagName(Unbound.UNBOUND);
-		List<Unbound> unsetables = new LinkedList<Unbound>();
+	public List<Unbound> getUnbounds() {
+		List<Element> unsetableElements = getChildrenElementsByTagName(Unbound.UNBOUND);
+		List<Unbound> unsettables = new LinkedList<Unbound>();
 		for (int i = 0; i < unsetableElements.size(); i++) {
-			Element unboundElement = (Element) unsetableElements.get(i);
+			Element unboundElement = unsetableElements.get(i);
 			Unbound validation = new Unbound(unboundElement, apiModel);
-			unsetables.add(validation);
+			unsettables.add(validation);
 		}
-		return unsetables.toArray(new Unbound[unsetables.size()]);
+		return unsettables;
 	}
 
-	public Bound[] getBounds() {
-		List setableElements = getChildrenElementsByTagName(Bound.BOUND);
-		List<Bound> setables = new LinkedList<Bound>();
+	public List<Bound> getBounds() {
+		List<Element> setableElements = getChildrenElementsByTagName(Bound.BOUND);
+		List<Bound> settables = new LinkedList<Bound>();
 		for (int i = 0; i < setableElements.size(); i++) {
-			Element boundElement = (Element) setableElements.get(i);
+			Element boundElement = setableElements.get(i);
 			Bound bound = new Bound(boundElement, apiModel);
-			setables.add(bound);
+			settables.add(bound);
 		}
-		return setables.toArray(new Bound[setables.size()]);
+		return settables;
 	}
 
-	public And[] getAnds() {
-		List andElements = getChildrenElementsByTagName(And.AND);
+	public List<And> getAnds() {
+		List<Element> andElements = getChildrenElementsByTagName(And.AND);
 		List<And> ands = new LinkedList<And>();
 		for (int i = 0; i < andElements.size(); i++) {
-			Element andElement = (Element) andElements.get(i);
+			Element andElement = andElements.get(i);
 			And and = new And(andElement, apiModel);
 			ands.add(and);
 		}
-		return ands.toArray(new And[ands.size()]);
+		return ands;
 	}
 
-	public Count[] getCounts() {
-		List countElements = getChildrenElementsByTagName(Count.COUNT);
+	public List<Count> getCounts() {
+		List<Element> countElements = getChildrenElementsByTagName(Count.COUNT);
 		List<Count> counts = new LinkedList<Count>();
 		for (int i = 0; i < countElements.size(); i++) {
-			Element countElement = (Element) countElements.get(i);
+			Element countElement = countElements.get(i);
 			Count count = new Count(countElement, apiModel);
 			counts.add(count);
 		}
-		return counts.toArray(new Count[counts.size()]);
+		return counts;
 	}
 
-	public Or[] getOrs() {
-		List orElements = getChildrenElementsByTagName(Or.OR);
+	public List<Or> getOrs() {
+		List<Element> orElements = getChildrenElementsByTagName(Or.OR);
 		List<Or> ors = new LinkedList<Or>();
 		for (int i = 0; i < orElements.size(); i++) {
-			Element orElement = (Element) orElements.get(i);
+			Element orElement = orElements.get(i);
 			Or or = new Or(orElement, apiModel);
 			ors.add(or);
 		}
-		return ors.toArray(new Or[ors.size()]);
+		return ors;
 	}
 
-	public Not[] getNots() {
-		List notElements = getChildrenElementsByTagName(Not.NOT);
+	public List<Not> getNots() {
+		List<Element> notElements = getChildrenElementsByTagName(Not.NOT);
 		List<Not> nots = new LinkedList<Not>();
 		for (int i = 0; i < notElements.size(); i++) {
-			Element notElement = (Element) notElements.get(i);
+			Element notElement = notElements.get(i);
 			Not not = new Not(notElement, apiModel);
 			nots.add(not);
 		}
-		return nots.toArray(new Not[nots.size()]);
+		return nots;
 	}
 
-	public IValidation[] getValidationChildren() {
+	public List<IValidation> getValidationChildren() {
 		List<IValidation> validationChildren = new LinkedList<IValidation>();
 		addValidationChildren(validationChildren, getCounts());
 		addValidationChildren(validationChildren, getAnds());
@@ -189,26 +189,23 @@ public abstract class AbstractValidationChild extends AbstractApiModelElement im
 		addValidationChildren(validationChildren, getSettables());
 		addValidationChildren(validationChildren, getUngettables());
 		addValidationChildren(validationChildren, getGettables());
-		IValidation[] validations = validationChildren.toArray(new IValidation[validationChildren.size()]);
-		return validations;
+		return validationChildren;
 	}
 
-	protected void addValidationChildren(List<IValidation> allValidationChildren, IValidation[] validationChildren) {
+	protected void addValidationChildren(List<IValidation> allValidationChildren, List<? extends IValidation> validationChildren) {
 		if (validationChildren != null) {
-			for (IValidation child : validationChildren) {
-				allValidationChildren.add(child);
-			}
+		  allValidationChildren.addAll(validationChildren);
 		}
 	}
 
 	public boolean isAffectedByBindingNamed(String bindingName) {
 		boolean isAffectedByBindingName = false;
-		IValidation[] validationChildren = getValidationChildren();
-		for (int i = 0; !isAffectedByBindingName && i < validationChildren.length; i++) {
-			isAffectedByBindingName = validationChildren[i].isAffectedByBindingNamed(bindingName);
+		List<IValidation> validationChildren = getValidationChildren();
+		for (int i = 0; !isAffectedByBindingName && i < validationChildren.size(); i++) {
+			isAffectedByBindingName = validationChildren.get(i).isAffectedByBindingNamed(bindingName);
 		}
 		return isAffectedByBindingName;
 	}
 
-	public abstract boolean evaluate(Map _bindings);
+	public abstract boolean evaluate(Map<String, String> bindings);
 }
