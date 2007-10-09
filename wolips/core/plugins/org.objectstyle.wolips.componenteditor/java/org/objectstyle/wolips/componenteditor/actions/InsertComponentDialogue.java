@@ -85,7 +85,7 @@ public class InsertComponentDialogue extends org.eclipse.jface.dialogs.Dialog {
 			componentNameCombo = new Combo(control, SWT.BORDER);
 			GridData componentNameTextLayout = new GridData(GridData.FILL_HORIZONTAL);
 			componentNameCombo.setLayoutData(componentNameTextLayout);
-			componentNameCombo.addModifyListener(new ComponentLiveSearch(_project, _progressMonitor));
+			new ComponentLiveSearch(_project, _progressMonitor).attachTo(componentNameCombo);
 		}
 
 		_inline = new Button(control, SWT.CHECK);
