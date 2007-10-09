@@ -43,10 +43,6 @@
  */
 package org.objectstyle.wolips.wodclipse.core.preferences;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.objectstyle.wolips.wodclipse.core.Activator;
@@ -67,48 +63,5 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     prefs.setDefault(PreferenceConstants.OPERATOR, "0,0,0");
     prefs.setDefault(PreferenceConstants.COMMENT, "63,127,95");
     prefs.setDefault(PreferenceConstants.UNKNOWN, "0,0,0");
-    prefs.setDefault(PreferenceConstants.ALLOWED_BINDING_CHARACTERS, ".^-@,|()");
-    prefs.setDefault(PreferenceConstants.VALIDATE_TEMPLATES_KEY, true);
-    prefs.setDefault(PreferenceConstants.VALIDATE_BINDING_VALUES, true);
-    prefs.setDefault(PreferenceConstants.VALIDATE_OGNL_KEY, true);
-    prefs.setDefault(PreferenceConstants.AUTO_INSERT_ON_COMPLETION, true);
-    prefs.setDefault(PreferenceConstants.WARN_ON_MISSING_COLLECTION_KEY, true);
-    prefs.setDefault(PreferenceConstants.ERROR_ON_MISSING_NSKVC_KEY, true);
-    prefs.setDefault(PreferenceConstants.WARN_ON_MISSING_NSKVC_KEY, false);
-    prefs.setDefault(PreferenceConstants.WARN_ON_AMBIGUOUS_KEY, true);
-    prefs.setDefault(PreferenceConstants.ERROR_ON_HTML_ERRORS_KEY, true);
-    prefs.setDefault(PreferenceConstants.WARN_ON_OPERATOR_KEY, true);
-    prefs.setDefault(PreferenceConstants.WARN_ON_HELPER_FUNCTION_KEY, true);
-
-    List<TagShortcut> tagShortcuts = new ArrayList<TagShortcut>();
-    tagShortcuts.add(new TagShortcut("string", "WOString", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("str", "WOString", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("else", "ERXElse", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("if", "WOConditional", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("not", "WOConditional", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("condition", "WOConditional", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("conditional", "WOConditional", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("link", "WOHyperlink", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("loop", "WORepetition", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("textfield", "WOTextField", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("checkbox", "WOCheckBox", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("hidden", "WOHiddenField", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("select", "WOPopUpButton", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("radio", "WORadioButton", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("password", "WOPasswordField", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("upload", "WOFileUpload", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("text", "WOText", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("form", "WOForm", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("submit", "WOSubmitButton", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("localized", "ERXLocalizedString", new HashMap<String, String>()));
-    prefs.setDefault(PreferenceConstants.TAG_SHORTCUTS_KEY, TagShortcut.toPreferenceString(tagShortcuts));
-
-    List<BindingValidationRule> validationRules = new ArrayList<BindingValidationRule>();
-    validationRules.add(new BindingValidationRule(".*", "^session\\.localizer\\..*"));
-    validationRules.add(new BindingValidationRule(".*", "^d2wContext\\..*"));
-    validationRules.add(new BindingValidationRule(".*", "^localContext\\..*"));
-    prefs.setDefault(PreferenceConstants.BINDING_VALIDATION_RULES_KEY, BindingValidationRule.toPreferenceString(validationRules));
-
-    prefs.setDefault(PreferenceConstants.WO54_KEY, false);
   }
 }

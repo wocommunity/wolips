@@ -12,7 +12,6 @@ public class Activator extends AbstractBaseUIActivator {
 
   public static final String TEMPLATE_PROBLEM_MARKER = Activator.PLUGIN_ID + ".problem";
 
-
   // The shared instance
   private static Activator plugin;
 

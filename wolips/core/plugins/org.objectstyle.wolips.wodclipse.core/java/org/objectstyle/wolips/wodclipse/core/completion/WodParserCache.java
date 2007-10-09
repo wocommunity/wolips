@@ -3,10 +3,8 @@ package org.objectstyle.wolips.wodclipse.core.completion;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import jp.aonir.fuzzyxml.FuzzyXMLDocument;
 import jp.aonir.fuzzyxml.FuzzyXMLParser;
@@ -36,30 +34,35 @@ import org.eclipse.jface.text.IUndoManager;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.TextViewerUndoManager;
 import org.eclipse.ui.part.FileEditorInput;
-import org.objectstyle.wolips.core.resources.types.api.ApiModelException;
-import org.objectstyle.wolips.core.resources.types.api.Wo;
+import org.objectstyle.wolips.bindings.Activator;
+import org.objectstyle.wolips.bindings.api.ApiCache;
+import org.objectstyle.wolips.bindings.api.ApiModelException;
+import org.objectstyle.wolips.bindings.api.ApiUtils;
+import org.objectstyle.wolips.bindings.api.Wo;
+import org.objectstyle.wolips.bindings.preferences.PreferenceConstants;
+import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
+import org.objectstyle.wolips.bindings.utils.LimitedLRUCache;
+import org.objectstyle.wolips.bindings.wod.BindingValidationRule;
+import org.objectstyle.wolips.bindings.wod.HtmlElementCache;
+import org.objectstyle.wolips.bindings.wod.HtmlElementName;
+import org.objectstyle.wolips.bindings.wod.IWodModel;
+import org.objectstyle.wolips.bindings.wod.TagShortcut;
+import org.objectstyle.wolips.bindings.wod.TypeCache;
+import org.objectstyle.wolips.bindings.wod.WodProblem;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
-import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.document.WodFileDocumentProvider;
-import org.objectstyle.wolips.wodclipse.core.model.HtmlElementName;
-import org.objectstyle.wolips.wodclipse.core.model.HtmlProblem;
-import org.objectstyle.wolips.wodclipse.core.model.IWodModel;
-import org.objectstyle.wolips.wodclipse.core.model.WodProblem;
-import org.objectstyle.wolips.wodclipse.core.preferences.BindingValidationRule;
-import org.objectstyle.wolips.wodclipse.core.preferences.PreferenceConstants;
-import org.objectstyle.wolips.wodclipse.core.preferences.TagShortcut;
-import org.objectstyle.wolips.wodclipse.core.util.LimitedLRUCache;
-import org.objectstyle.wolips.wodclipse.core.util.WodApiUtils;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 import org.objectstyle.wolips.wodclipse.core.util.WodModelUtils;
-import org.objectstyle.wolips.wodclipse.core.util.WodReflectionUtils;
+import org.objectstyle.wolips.wodclipse.core.validation.HtmlProblem;
 import org.objectstyle.wolips.wodclipse.core.validation.TemplateValidator;
 
 public class WodParserCache implements FuzzyXMLErrorListener {
-  private Map<String, HtmlElementName> _htmlElementCache;
-  private Map<IType, Map<String, IType>> _typeContextCache;
+  private static ApiCache _apiCache;
+  private TypeCache _typeCache;
+
+  private HtmlElementCache _htmlElementCache;
   private FuzzyXMLDocument _htmlXmlDocument;
   private String _htmlContents;
   private IDocument _htmlDocument;
@@ -85,7 +88,6 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   private long _lastHtmlParseTime;
   private boolean _validated;
 
-  private static WodParserCacheContext _context;
   private static LimitedLRUCache<String, WodParserCache> _parsers;
 
   public static synchronized WodParserCache parser(IResource resource) throws CoreException, LocateException {
@@ -96,7 +98,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
     if (_parsers == null) {
       _parsers = new LimitedLRUCache<String, WodParserCache>(10);
       //ResourcesPlugin.getWorkspace().addResourceChangeListener(new WodHtmlResourceChangeListener());
-      _context = new WodParserCacheContext();
+      _apiCache = new ApiCache();
     }
     IContainer woFolder;
     if (resource instanceof IFolder) {
@@ -138,12 +140,16 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   }
 
   protected WodParserCache(IContainer woFolder) throws CoreException, LocateException {
+    _typeCache = new TypeCache(_apiCache);
+    _htmlElementCache = new HtmlElementCache();
     _woFolder = woFolder;
     _undoManager = new TextViewerUndoManager(25);
     clearCache();
   }
 
   public WodParserCache() throws CoreException, LocateException {
+	_typeCache = new TypeCache(_apiCache);
+	_htmlElementCache = new HtmlElementCache();
     _undoManager = new TextViewerUndoManager(25);
     clearCache();
   }
@@ -183,7 +189,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   public void _clearHtmlCache() {
     //System.out.println("WodParserCache._clearModelCache: Clearing " + _woFolder + " cache");
     _htmlParserProblems = new LinkedList<HtmlProblem>();
-    _htmlElementCache = new HashMap<String, HtmlElementName>();
+    _htmlElementCache.clearCache();
     _htmlXmlDocument = null;
     _lastHtmlParseTime = -1;
   }
@@ -221,7 +227,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
     _clearHtmlCache();
     _clearWodCache();
     clearValidationCache();
-    _typeContextCache = new HashMap<IType, Map<String, IType>>();
+    _typeCache.clearCache();
   }
 
   public void clearValidationCache() {
@@ -236,23 +242,23 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   }
 
   public void addHtmlElement(HtmlElementName htmlElementName) {
-    _htmlElementCache.put(htmlElementName.getName(), htmlElementName);
+    _htmlElementCache.addHtmlElement(htmlElementName);
   }
 
-  public Map<String, HtmlElementName> getHtmlElementCache() throws CoreException, IOException {
+  public HtmlElementCache getHtmlElementCache() throws CoreException, IOException {
     parseHtmlAndWodIfNecessary();
     validate();
     return _htmlElementCache;
   }
 
-  public WodParserCacheContext getContext() {
-    return _context;
+  public ApiCache getApiCache() {
+    return _apiCache;
   }
 
-  public Map<IType, Map<String, IType>> getTypeContextCache() {
-    return _typeContextCache;
+  public TypeCache getTypeCache() {
+    return _typeCache;
   }
-
+  
   public IWodModel getWodModel() throws CoreException, IOException {
     if (_wodModel == null) {
       parseHtmlAndWodIfNecessary();
@@ -267,11 +273,11 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   }
 
   public IType getElementType(String elementName) throws JavaModelException {
-    return WodReflectionUtils.findElementType(_javaProject, elementName, false, this);
+    return BindingReflectionUtils.findElementType(_javaProject, elementName, false, _typeCache);
   }
 
   public Wo getWo(IType type) throws ApiModelException {
-    return WodApiUtils.findApiModelWo(type, this);
+    return ApiUtils.findApiModelWo(type, _apiCache);
   }
 
   public void setWodDocument(IDocument wodDocument) {
@@ -305,7 +311,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
         _htmlContents = _htmlContents.replaceAll("\r\n", " \n");
         _htmlContents = _htmlContents.replaceAll("\r", "\n");
 
-        FuzzyXMLParser parser = new FuzzyXMLParser(Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.WO54_KEY));
+        FuzzyXMLParser parser = new FuzzyXMLParser(Activator.getDefault().isWO54());
         parser.addErrorListener(this);
         _htmlXmlDocument = parser.parse(_htmlContents);
         if (_htmlFile != null) {
@@ -336,7 +342,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
         _htmlContents = _htmlContents.replaceAll("\r\n", " \n");
         _htmlContents = _htmlContents.replaceAll("\r", "\n");
 
-        FuzzyXMLParser parser = new FuzzyXMLParser(Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.WO54_KEY));
+        FuzzyXMLParser parser = new FuzzyXMLParser(Activator.getDefault().isWO54());
         parser.addErrorListener(this);
         _htmlXmlDocument = parser.parse(_htmlContents);
         _lastHtmlParseTime = _htmlFile.getModificationStamp();
@@ -346,7 +352,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
         _htmlContents = _htmlContents.replaceAll("\r\n", " \n");
         _htmlContents = _htmlContents.replaceAll("\r", "\n");
 
-        FuzzyXMLParser parser = new FuzzyXMLParser(Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.WO54_KEY));
+        FuzzyXMLParser parser = new FuzzyXMLParser(Activator.getDefault().isWO54());
         parser.addErrorListener(this);
         _htmlXmlDocument = parser.parse(_htmlContents);
         _lastHtmlParseTime = System.currentTimeMillis();
@@ -425,10 +431,10 @@ public class WodParserCache implements FuzzyXMLErrorListener {
             }
 
             if (_wodModel != null) {
-              List<WodProblem> wodProblems = _wodModel.getProblems(_javaProject, _componentType, WodParserCache.this);
+              List<WodProblem> wodProblems = _wodModel.getProblems(_javaProject, _componentType, WodParserCache.this._typeCache, WodParserCache.this._htmlElementCache);
               if (_wodFile.exists()) {
                 for (WodProblem wodProblem : wodProblems) {
-                  wodProblem.createMarker(_wodFile);
+                  WodModelUtils.createMarker(_wodFile, wodProblem);
                 }
               }
             }
@@ -486,20 +492,14 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   }
 
   public TagShortcut getTagShortcutNamed(String shortcut) {
-    TagShortcut matchingTagShortcut = null;
-    for (TagShortcut tagShortcut : _context.getTagShortcuts()) {
-      if (matchingTagShortcut == null && tagShortcut.getShortcut().equalsIgnoreCase(shortcut)) {
-        matchingTagShortcut = tagShortcut;
-      }
-    }
-    return matchingTagShortcut;
+    return _apiCache.getTagShortcutNamed(shortcut);
   }
 
   public List<TagShortcut> getTagShortcuts() {
-    return _context.getTagShortcuts();
+    return _apiCache.getTagShortcuts();
   }
 
   public List<BindingValidationRule> getBindingValidationRules() {
-    return _context.getBindingValidationRules();
+    return _apiCache.getBindingValidationRules();
   }
 }

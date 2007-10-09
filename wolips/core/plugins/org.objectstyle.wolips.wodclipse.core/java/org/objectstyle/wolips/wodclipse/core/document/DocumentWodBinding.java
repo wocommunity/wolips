@@ -45,8 +45,8 @@ package org.objectstyle.wolips.wodclipse.core.document;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Position;
+import org.objectstyle.wolips.bindings.wod.AbstractWodBinding;
 import org.objectstyle.wolips.wodclipse.core.Activator;
-import org.objectstyle.wolips.wodclipse.core.model.AbstractWodBinding;
 import org.objectstyle.wolips.wodclipse.core.parser.RulePosition;
 
 /**

@@ -4,35 +4,25 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="org.objectstyle.wolips.preferences.PreferencesPage"
-            class="org.objectstyle.wolips.wodclipse.core.preferences.TagShortcutPreferencePage"
-            id="org.objectstyle.wolips.wodclipse.preferences.TagShortcutPreferencePage"
-            name="Inline Tag Shortcuts"/>
-      <page
-            category="org.objectstyle.wolips.preferences.PreferencesPage"
-            class="org.objectstyle.wolips.wodclipse.core.preferences.BindingValidationRulePreferencePage"
-            id="org.objectstyle.wolips.wodclipse.preferences.BindingValidationRulePreferencePage"
-            name="Binding Validation Rules"/>
-      <page
             class="org.objectstyle.wolips.wodclipse.core.preferences.WodEditorPreferencePage"
             category="org.objectstyle.wolips.preferences.PreferencesPage"
             id="org.objectstyle.wolips.wodclipse.preferences.WodEditorPreferencePage"
-            name="Wod Editor Preferences"/>
+            name="WOD Editor"/>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer class="org.objectstyle.wolips.wodclipse.core.preferences.PreferenceInitializer"/>
    </extension>
-		
+	
  <extension
        id="problem"
        name="WebObjects Template Problems"
        point="org.eclipse.core.resources.markers">
-	  <super type="org.eclipse.core.resources.problemmarker"/>
-	  <super type="org.eclipse.core.resources.textmarker"/>
+    <super type="org.eclipse.core.resources.problemmarker"/>
+    <super type="org.eclipse.core.resources.textmarker"/>
       <persistent value="true"/>
  </extension>
-		
+	
  <extension
        point="org.objectstyle.wolips.builders">
     <builder

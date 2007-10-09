@@ -9,9 +9,9 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.objectstyle.wolips.bindings.wod.IWodElement;
+import org.objectstyle.wolips.bindings.wod.IWodModel;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
-import org.objectstyle.wolips.wodclipse.core.model.IWodElement;
-import org.objectstyle.wolips.wodclipse.core.model.IWodModel;
 
 public class CleanWOBuilderRefactoring implements IRunnableWithProgress {
   private WodParserCache _cache;

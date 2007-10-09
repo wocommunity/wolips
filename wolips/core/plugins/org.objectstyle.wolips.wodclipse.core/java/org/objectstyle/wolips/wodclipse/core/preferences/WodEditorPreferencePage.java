@@ -43,10 +43,8 @@
  */
 package org.objectstyle.wolips.wodclipse.core.preferences;
 
-import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.ColorFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.objectstyle.wolips.wodclipse.core.Activator;
@@ -58,7 +56,7 @@ public class WodEditorPreferencePage extends FieldEditorPreferencePage implement
   public WodEditorPreferencePage() {
     super(GRID);
     setPreferenceStore(Activator.getDefault().getPreferenceStore());
-    setDescription("WOD Editor Preferences");
+    setDescription("WOD Editor");
   }
 
   @Override
@@ -72,21 +70,6 @@ public class WodEditorPreferencePage extends FieldEditorPreferencePage implement
     addField(new ColorFieldEditor(PreferenceConstants.OPERATOR, "Operator Color", getFieldEditorParent()));
     addField(new ColorFieldEditor(PreferenceConstants.COMMENT, "Comment Color", getFieldEditorParent()));
     addField(new ColorFieldEditor(PreferenceConstants.UNKNOWN, "Unknown Color", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.AUTO_INSERT_ON_COMPLETION, "Auto-Insert {'s, :'s, and ='s", getFieldEditorParent()));
-    // AK: this actually belongs to the build prefs section, but this
-    // resides in another framework and isn't used anywhere else...
-    addField(new StringFieldEditor(PreferenceConstants.ALLOWED_BINDING_CHARACTERS, "Allowed Binding Characters", 15, getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.ERROR_ON_HTML_ERRORS_KEY, "Show HTML Template Errors", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.VALIDATE_TEMPLATES_KEY, "Validate WOD / Inline Bindings", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.VALIDATE_BINDING_VALUES, "Validate Binding Values", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.WARN_ON_MISSING_COLLECTION_KEY, "... Warn if Missing Key on NSDictionary/NSArray", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.ERROR_ON_MISSING_NSKVC_KEY, "... Error if Missing Key on 'implements NSKeyValueCoding'", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.WARN_ON_MISSING_NSKVC_KEY, "... Warn if Missing Key on 'implements NSKeyValueCoding'", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.WARN_ON_AMBIGUOUS_KEY, "... Warn on Ambiguous Key Paths", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.WARN_ON_OPERATOR_KEY, "... Warn on @Operator", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.WARN_ON_HELPER_FUNCTION_KEY, "... Warn on Helper Functions", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.VALIDATE_OGNL_KEY, "... Validate OGNL", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.WO54_KEY, "WO 5.4", getFieldEditorParent()));
   }
 
   public void init(IWorkbench workbench) {

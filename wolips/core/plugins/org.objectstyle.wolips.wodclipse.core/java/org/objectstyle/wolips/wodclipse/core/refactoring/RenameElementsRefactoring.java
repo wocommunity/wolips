@@ -17,9 +17,9 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
+import org.objectstyle.wolips.bindings.wod.IWodElement;
+import org.objectstyle.wolips.bindings.wod.IWodModel;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
-import org.objectstyle.wolips.wodclipse.core.model.IWodElement;
-import org.objectstyle.wolips.wodclipse.core.model.IWodModel;
 import org.objectstyle.wolips.wodclipse.core.util.WodDocumentUtils;
 
 public class RenameElementsRefactoring implements IRunnableWithProgress {

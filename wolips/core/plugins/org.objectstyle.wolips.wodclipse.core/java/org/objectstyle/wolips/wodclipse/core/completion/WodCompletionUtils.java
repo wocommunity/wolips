@@ -2,7 +2,6 @@ package org.objectstyle.wolips.wodclipse.core.completion;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -10,23 +9,24 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.search.SearchPattern;
-import org.objectstyle.wolips.core.resources.types.api.Binding;
-import org.objectstyle.wolips.core.resources.types.api.Wo;
-import org.objectstyle.wolips.wodclipse.core.model.BindingValueKey;
-import org.objectstyle.wolips.wodclipse.core.model.BindingValueKeyPath;
-import org.objectstyle.wolips.wodclipse.core.model.HtmlElementName;
-import org.objectstyle.wolips.wodclipse.core.util.TypeNameCollector;
-import org.objectstyle.wolips.wodclipse.core.util.WodApiUtils;
-import org.objectstyle.wolips.wodclipse.core.util.WodReflectionUtils;
+import org.objectstyle.wolips.bindings.api.ApiUtils;
+import org.objectstyle.wolips.bindings.api.Binding;
+import org.objectstyle.wolips.bindings.api.Wo;
+import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
+import org.objectstyle.wolips.bindings.utils.TypeNameCollector;
+import org.objectstyle.wolips.bindings.wod.BindingValueKey;
+import org.objectstyle.wolips.bindings.wod.BindingValueKeyPath;
+import org.objectstyle.wolips.bindings.wod.HtmlElementCache;
+import org.objectstyle.wolips.bindings.wod.TypeCache;
 
 public class WodCompletionUtils {
   protected static boolean shouldSmartInsert() {
     return true;
   }
 
-  public static void fillInElementNameCompletionProposals(Set<String> alreadyUsedElementNames, String token, int tokenOffset, int offset, Set<WodCompletionProposal> completionProposalsSet, boolean guessed, Map<String, HtmlElementName> validElementNames) {
+  public static void fillInElementNameCompletionProposals(Set<String> alreadyUsedElementNames, String token, int tokenOffset, int offset, Set<WodCompletionProposal> completionProposalsSet, boolean guessed, HtmlElementCache validElementNames) {
     String partialToken = partialToken(token, tokenOffset, offset).toLowerCase();
-    for (String validElementName : validElementNames.keySet()) {
+    for (String validElementName : validElementNames.elementNames()) {
       if (validElementName.toLowerCase().startsWith(partialToken) && !alreadyUsedElementNames.contains(validElementName)) {
         WodCompletionProposal completionProposal;
         if (WodCompletionUtils.shouldSmartInsert() && guessed) {
@@ -46,7 +46,7 @@ public class WodCompletionUtils {
     TypeNameCollector typeNameCollector = new TypeNameCollector(project, false);
     String partialToken = partialToken(token, tokenOffset, offset);
     if (partialToken.length() > 0) {
-      WodReflectionUtils.findMatchingElementClassNames(partialToken, SearchPattern.R_PREFIX_MATCH, typeNameCollector, progressMonitor);
+      BindingReflectionUtils.findMatchingElementClassNames(partialToken, SearchPattern.R_PREFIX_MATCH, typeNameCollector, progressMonitor);
       boolean includePackageName = token.indexOf('.') != -1;
       Iterator<String> matchingElementClassNamesIter = typeNameCollector.typeNames();
       while (matchingElementClassNamesIter.hasNext()) {
@@ -56,7 +56,7 @@ public class WodCompletionUtils {
           elementTypeName = matchingElementTypeName;
         }
         else {
-          elementTypeName = WodReflectionUtils.getShortClassName(matchingElementTypeName);
+          elementTypeName = BindingReflectionUtils.getShortClassName(matchingElementTypeName);
         }
         WodCompletionProposal completionProposal;
         if (WodCompletionUtils.shouldSmartInsert() && guessed) {
@@ -70,13 +70,13 @@ public class WodCompletionUtils {
     }
   }
 
-  public static void fillInBindingNameCompletionProposals(IJavaProject project, IType elementType, String token, int tokenOffset, int offset, Set<WodCompletionProposal> completionProposalsSet, boolean guessed, WodParserCache cache) throws JavaModelException {
+  public static void fillInBindingNameCompletionProposals(IJavaProject project, IType elementType, String token, int tokenOffset, int offset, Set<WodCompletionProposal> completionProposalsSet, boolean guessed, TypeCache cache) throws JavaModelException {
     String partialToken = WodCompletionUtils.partialToken(token, tokenOffset, offset);
     boolean showReflectionBindings = true;
 
     // API files:
     try {
-      Wo wo = WodApiUtils.findApiModelWo(elementType, cache);
+      Wo wo = ApiUtils.findApiModelWo(elementType, cache.getApiCache());
       if (wo != null) {
         String lowercasePartialToken = partialToken.toLowerCase();
         Binding[] bindings = wo.getBindings();
@@ -106,12 +106,12 @@ public class WodCompletionUtils {
     }
 
     if (showReflectionBindings) {
-      List<BindingValueKey> bindingKeys = WodReflectionUtils.getBindingKeys(project, elementType, partialToken, false, WodReflectionUtils.MUTATORS_ONLY, cache);
+      List<BindingValueKey> bindingKeys = BindingReflectionUtils.getBindingKeys(project, elementType, partialToken, false, BindingReflectionUtils.MUTATORS_ONLY, cache);
       WodCompletionUtils._fillInCompletionProposals(bindingKeys, token, tokenOffset, offset, completionProposalsSet, false);
     }
   }
 
-  public static boolean fillInBindingValueCompletionProposals(IJavaProject project, IType elementType, String token, int tokenOffset, int offset, Set<WodCompletionProposal> completionProposalsSet, WodParserCache cache) throws JavaModelException {
+  public static boolean fillInBindingValueCompletionProposals(IJavaProject project, IType elementType, String token, int tokenOffset, int offset, Set<WodCompletionProposal> completionProposalsSet, TypeCache cache) throws JavaModelException {
     boolean checkBindingType = false;
     String partialToken = partialToken(token, tokenOffset, offset);
     BindingValueKeyPath bindingKeyPath = new BindingValueKeyPath(partialToken, elementType, project, cache);
@@ -150,7 +150,7 @@ public class WodCompletionUtils {
     Iterator<BindingValueKey> bindingKeysIter = bindingKeys.iterator();
     while (bindingKeysIter.hasNext()) {
       BindingValueKey bindingKey = bindingKeysIter.next();
-      if (!WodReflectionUtils.isSystemBindingValueKey(bindingKey, showUsefulSystemBindings)) {
+      if (!BindingReflectionUtils.isSystemBindingValueKey(bindingKey, showUsefulSystemBindings)) {
         WodCompletionProposal completionProposal = new WodCompletionProposal(token, tokenOffset, offset, bindingKey.getBindingName());
         completionProposalsSet.add(completionProposal);
       }

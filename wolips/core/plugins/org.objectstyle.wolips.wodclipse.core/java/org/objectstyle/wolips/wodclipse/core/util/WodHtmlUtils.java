@@ -12,11 +12,12 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.Position;
+import org.objectstyle.wolips.bindings.api.ApiCache;
+import org.objectstyle.wolips.bindings.wod.IWodElement;
+import org.objectstyle.wolips.bindings.wod.SimpleWodBinding;
+import org.objectstyle.wolips.bindings.wod.SimpleWodElement;
+import org.objectstyle.wolips.bindings.wod.TagShortcut;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
-import org.objectstyle.wolips.wodclipse.core.model.IWodElement;
-import org.objectstyle.wolips.wodclipse.core.model.SimpleWodBinding;
-import org.objectstyle.wolips.wodclipse.core.model.SimpleWodElement;
-import org.objectstyle.wolips.wodclipse.core.preferences.TagShortcut;
 
 public class WodHtmlUtils {
   public static Pattern WEBOBJECTS_PATTERN;
@@ -91,7 +92,7 @@ public class WodHtmlUtils {
     }
     return bindingValue;
   }
-  
+
   /**
    * If the element is inline bindings, create a SimpleWodElement.  If the element is no inline, then
    * return the corresponding WOD element entry.
@@ -105,17 +106,22 @@ public class WodHtmlUtils {
    */
   public static IWodElement getOrCreateWodElement(FuzzyXMLElement element, boolean wo54, WodParserCache cache) throws CoreException, IOException {
     IWodElement wodElement;
-    if (WodHtmlUtils.isInline(element.getName())) {
-      wodElement = WodHtmlUtils.toWodElement(element, false, cache);
+    if (WodHtmlUtils.isWOTag(element.getName())) {
+      if (WodHtmlUtils.isInline(element.getName())) {
+        wodElement = WodHtmlUtils.toWodElement(element, false, cache.getApiCache());
+      }
+      else {
+        String elementName = element.getAttributeValue("name");
+        wodElement = cache.getWodModel().getElementNamed(elementName);
+      }
     }
     else {
-      String elementName = element.getAttributeValue("name");
-      wodElement = cache.getWodModel().getElementNamed(elementName);
+      wodElement = null;
     }
     return wodElement;
   }
-  
-  public static SimpleWodElement toWodElement(FuzzyXMLElement element, boolean wo54, WodParserCache cache) {
+
+  public static SimpleWodElement toWodElement(FuzzyXMLElement element, boolean wo54, ApiCache cache) {
     String elementName = element.getName();
     String namespaceElementName = elementName.substring("wo:".length()).trim();
     int elementTypePosition = element.getOffset() + element.getNameOffset() + "wo:".length() + 1;

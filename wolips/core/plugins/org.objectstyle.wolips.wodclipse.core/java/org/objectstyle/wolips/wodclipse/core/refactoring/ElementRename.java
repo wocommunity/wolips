@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.objectstyle.wolips.baseforplugins.util.StringUtilities;
-import org.objectstyle.wolips.wodclipse.core.model.IWodElement;
-import org.objectstyle.wolips.wodclipse.core.model.IWodModel;
+import org.objectstyle.wolips.bindings.wod.IWodElement;
+import org.objectstyle.wolips.bindings.wod.IWodModel;
 
 public class ElementRename {
   private String _oldName;
