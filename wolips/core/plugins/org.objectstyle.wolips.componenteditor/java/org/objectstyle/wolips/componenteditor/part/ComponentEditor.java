@@ -296,12 +296,12 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 			if (pathFromInputFile.equals(pathFromResource)) {
 				IEditorPart editorPart = null;
 				if (pathFromInputFile.getFileExtension().equals("html")) {
-					htmlWodTabs[0].setHtmlActive();
-					editorPart = htmlWodTabs[0].getActiveEmbeddedEditor();
+					htmlWodTab().setHtmlActive();
+					editorPart = htmlWodTab().getActiveEmbeddedEditor();
 				}
 				if (pathFromInputFile.getFileExtension().equals("wod")) {
-					htmlWodTabs[0].setWodActive();
-					editorPart = htmlWodTabs[0].getActiveEmbeddedEditor();
+					htmlWodTab().setWodActive();
+					editorPart = htmlWodTab().getActiveEmbeddedEditor();
 				}
 				if (editorPart == null) {
 					continue;
@@ -310,10 +310,10 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 				if (gotoMarker == null) {
 					return;
 				}
-				if (htmlWodTabs[0].htmlActive) {
+				if (htmlWodTab().htmlActive) {
 					this.switchToHtml();
 				}
-				if (!htmlWodTabs[0].htmlActive) {
+				if (!htmlWodTab().htmlActive) {
 					this.switchToWod();
 				}
 				gotoMarker.gotoMarker(marker);

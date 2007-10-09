@@ -11,11 +11,11 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.ITextViewerExtension;
 import org.eclipse.jface.text.Region;
 import org.eclipse.ui.actions.ActionDelegate;
+import org.objectstyle.wolips.bindings.api.Binding;
+import org.objectstyle.wolips.bindings.wod.SimpleWodBinding;
+import org.objectstyle.wolips.bindings.wod.SimpleWodElement;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
-import org.objectstyle.wolips.core.resources.types.api.Binding;
 import org.objectstyle.wolips.templateeditor.TemplateEditor;
-import org.objectstyle.wolips.wodclipse.core.model.SimpleWodBinding;
-import org.objectstyle.wolips.wodclipse.core.model.SimpleWodElement;
 import org.objectstyle.wolips.wodclipse.editor.WodEditor;
 
 /**

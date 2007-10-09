@@ -2,7 +2,7 @@ package org.objectstyle.wolips.componenteditor.actions;
 
 import java.util.Map;
 
-import org.objectstyle.wolips.core.resources.types.api.Binding;
+import org.objectstyle.wolips.bindings.api.Binding;
 
 /**
  * <P>

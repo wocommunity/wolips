@@ -4,7 +4,7 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.objectstyle.wolips.core.resources.types.api.Binding;
+import org.objectstyle.wolips.bindings.api.Binding;
 
 public class InsertHtmlTagAction extends InsertHtmlAndWodAction {
 	@Override

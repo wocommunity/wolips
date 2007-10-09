@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WOLips WODclips Core Plug-in
+Bundle-SymbolicName: org.objectstyle.wolips.bindings; singleton:=true
+Bundle-Version: 1.0.6
+Bundle-Activator: org.objectstyle.wolips.bindings.Activator
+Require-Bundle: org.objectstyle.wolips,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.ui,
+ org.objectstyle.wolips.preferences,
+ org.objectstyle.wolips.baseforuiplugins,
+ org.objectstyle.wolips.locate,
+ org.objectstyle.wolips.workbenchutilities,
+ org.eclipse.ui.editors
+Eclipse-LazyStart: true
+Bundle-ClassPath: .
+Export-Package: org.objectstyle.wolips.bindings,
+ org.objectstyle.wolips.bindings.api,
+ org.objectstyle.wolips.bindings.preferences,
+ org.objectstyle.wolips.bindings.utils,
+ org.objectstyle.wolips.bindings.wod

@@ -14,7 +14,11 @@ import jp.aonir.fuzzyxml.internal.RenderDelegate;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jdt.core.IType;
-import org.objectstyle.wolips.core.resources.types.api.Wo;
+import org.objectstyle.wolips.bindings.api.ApiUtils;
+import org.objectstyle.wolips.bindings.api.Wo;
+import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
+import org.objectstyle.wolips.bindings.wod.IWodBinding;
+import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.htmlpreview.editor.tags.DefaultTagDelegate;
 import org.objectstyle.wolips.htmlpreview.editor.tags.WOBrowserTagDelegate;
 import org.objectstyle.wolips.htmlpreview.editor.tags.WOCheckBoxTagDelegate;
@@ -33,11 +37,7 @@ import org.objectstyle.wolips.htmlpreview.editor.tags.WOTextTagDelegate;
 import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
-import org.objectstyle.wolips.wodclipse.core.model.IWodBinding;
-import org.objectstyle.wolips.wodclipse.core.model.IWodElement;
-import org.objectstyle.wolips.wodclipse.core.util.WodApiUtils;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
-import org.objectstyle.wolips.wodclipse.core.util.WodReflectionUtils;
 
 public class PreviewRenderDelegate implements RenderDelegate {
 	private static final String DEFAULT = "__default";
@@ -99,7 +99,7 @@ public class PreviewRenderDelegate implements RenderDelegate {
 					WodParserCache cache = _caches.peek();
 					IWodElement wodElement;
 					if (WodHtmlUtils.isInline(tagName)) {
-						wodElement = WodHtmlUtils.toWodElement(element, false, cache);
+						wodElement = WodHtmlUtils.toWodElement(element, false, cache.getApiCache());
 					} else {
 						String elementName = element.getAttributeValue("name");
 						wodElement = cache.getWodModel().getElementNamed(elementName);
@@ -110,13 +110,13 @@ public class PreviewRenderDelegate implements RenderDelegate {
 					}
 					
 					String elementTypeName = wodElement.getElementType();
-					IType type = WodReflectionUtils.findElementType(cache.getJavaProject(), elementTypeName, false, cache);
+					IType type = BindingReflectionUtils.findElementType(cache.getJavaProject(), elementTypeName, false, cache.getTypeCache());
 					LocalizedComponentsLocateResult componentsLocateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(type.getJavaProject().getProject(), wodElement.getElementType());
 					IFile htmlFile = componentsLocateResults.getFirstHtmlFile();
 					if (htmlFile != null) {
 						WodParserCache nestedCache = WodParserCache.parser(htmlFile);
 						if (nestedCache != null) {
-							Wo apiModel = WodApiUtils.findApiModelWo(type, nestedCache);
+							Wo apiModel = ApiUtils.findApiModelWo(type, nestedCache.getTypeCache().getApiCache());
 							if (apiModel != null) {
 								String preview = apiModel.getPreview();
 								if (preview != null) {

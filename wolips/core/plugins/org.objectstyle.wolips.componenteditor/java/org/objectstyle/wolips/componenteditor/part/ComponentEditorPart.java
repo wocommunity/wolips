@@ -70,19 +70,26 @@ import org.objectstyle.wolips.componenteditor.outline.ComponentEditorOutline;
 import org.objectstyle.wolips.components.editor.ComponentEditorInteraction;
 import org.objectstyle.wolips.components.editor.IComponentEditor;
 import org.objectstyle.wolips.components.input.ComponentEditorInput;
+import org.objectstyle.wolips.templateeditor.TemplateEditor;
+import org.objectstyle.wolips.wodclipse.editor.WodEditor;
 
 /**
  * @author uli
  */
 public class ComponentEditorPart extends MultiPageEditorPart implements IEditorTarget, IResourceChangeListener, IComponentEditor {
-
+	public static final int HTML_TAB = 0;
+	public static final int WOD_TAB = 0;
+	public static final int WOO_TAB = 1;
+	public static final int PREVIEW_TAB = 2;
+	public static final int API_TAB = 3;
+	
 	ComponentEditorInput componentEditorInput;
 
 	private ComponentEditorInteraction editorInteraction = new ComponentEditorInteraction();
 
 	private ComponentEditorOutline componentEditorOutline;
 
-	protected HtmlWodTab[] htmlWodTabs;
+	private HtmlWodTab[] htmlWodTabs;
 
 	private HtmlPreviewTab htmlPreviewTab;
 
@@ -118,10 +125,6 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 			setPartName(partName);
 		}
 		site.setSelectionProvider(new ComponentEditorPartSelectionProvider(this));
-	}
-
-	public Object getJavaFile() {
-		return ((IFileEditorInput) componentEditorInput.getInput()[0]).getFile();
 	}
 
 	public IEditorInput getEditorInput() {
@@ -273,16 +276,16 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 		return editorPart;
 	}
 
-	public HtmlWodTab htmlWodTab() { return htmlWodTabs[0]; }
+	public HtmlWodTab htmlWodTab() { return htmlWodTabs[ComponentEditorPart.HTML_TAB]; }
 	
 	public void switchToHtml() {
 		this.htmlWodTab().setHtmlActive();
-		switchToPage(0);
+		switchToPage(IEditorTarget.TARGET_HTML);
 	}
 
 	public void switchToWod() {
 		this.htmlWodTab().setWodActive();
-		switchToPage(0);
+		switchToPage(IEditorTarget.TARGET_HTML);
 	}
 
 	public void switchToPreview() {
@@ -305,6 +308,14 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 
 	public ComponentEditorInput getComponentEditorInput() {
 		return componentEditorInput;
+	}
+	
+	public TemplateEditor getTemplateEditor() {
+		return htmlWodTab().templateEditor();
+	}
+	
+	public WodEditor getWodEditor() {
+		return htmlWodTab().wodEditor();
 	}
 
 	public IEditorPart getEditor(int pageIndex) {
