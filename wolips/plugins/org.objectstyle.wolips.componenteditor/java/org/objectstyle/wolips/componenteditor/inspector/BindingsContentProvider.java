@@ -1,8 +1,13 @@
 package org.objectstyle.wolips.componenteditor.inspector;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.objectstyle.wolips.bindings.api.Binding;
+import org.objectstyle.wolips.bindings.api.IApiBinding;
 import org.objectstyle.wolips.bindings.api.Wo;
 import org.objectstyle.wolips.bindings.wod.IWodBinding;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
@@ -31,7 +36,23 @@ public class BindingsContentProvider implements IStructuredContentProvider {
 						Wo api = wodElement.getApi(_javaProject, _cache);
 						if (api != null) {
 							apiFound = true;
-							wodBindings = api.getBindings();
+							List<IApiBinding> visibleBindings = new LinkedList<IApiBinding>();
+							List<Binding> apiBindings = api.getBindings();
+							visibleBindings.addAll(apiBindings);
+							for (IWodBinding wodBinding : wodElement.getBindings()) {
+								String bindingName = wodBinding.getName();
+								boolean wodBindingDefinedInApi = false; 
+								for (IApiBinding apiBinding : apiBindings) {
+									if (apiBinding.getName().equals(bindingName)) {
+										wodBindingDefinedInApi = true;
+										break;
+									}
+								}
+								if (!wodBindingDefinedInApi) {
+									visibleBindings.add(wodBinding);
+								}
+							}
+							wodBindings = visibleBindings.toArray();
 						}
 					} catch (Throwable t) {
 						t.printStackTrace();

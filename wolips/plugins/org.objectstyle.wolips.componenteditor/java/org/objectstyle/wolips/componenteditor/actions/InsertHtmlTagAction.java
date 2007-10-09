@@ -1,5 +1,8 @@
 package org.objectstyle.wolips.componenteditor.actions;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -13,8 +16,8 @@ public class InsertHtmlTagAction extends InsertHtmlAndWodAction {
 	}
 
 	@Override
-	public Binding[] getRequiredBindings(String componentName) {
-		return new Binding[0];
+	public List<Binding> getRequiredBindings(String componentName) {
+		return new LinkedList<Binding>();
 	}
 
 	@Override

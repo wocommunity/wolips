@@ -1,6 +1,7 @@
 package org.objectstyle.wolips.componenteditor.actions;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
@@ -76,8 +77,8 @@ public abstract class InsertComponentAction extends InsertHtmlAndWodAction {
 		return javaProject;
 	}
 
-	protected Binding[] getRequiredBindings(String componentName) {
-		Binding[] requiredBindings = null;
+	protected List<Binding> getRequiredBindings(String componentName) {
+		List<Binding> requiredBindings = null;
 		Wo wo = getWo(componentName);
 		if (wo != null) {
 			requiredBindings = wo.getRequiredBindings();
@@ -89,7 +90,7 @@ public abstract class InsertComponentAction extends InsertHtmlAndWodAction {
 		boolean componentContent = false;
 		Wo wo = getWo(componentName);
 		if (wo != null) {
-			componentContent = wo.getIsWocomponentcontent();
+			componentContent = wo.isComponentContent();
 		}
 		return componentContent;
 	}
