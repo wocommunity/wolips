@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+ <extension
+       point="org.eclipse.core.runtime.preferences">
+    <initializer class="org.objectstyle.wolips.bindings.preferences.PreferenceInitializer"/>
+ </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.objectstyle.wolips.preferences.PreferencesPage"
+            class="org.objectstyle.wolips.bindings.preferences.TagShortcutPreferencePage"
+            id="org.objectstyle.wolips.bindings.preferences.TagShortcutPreferencePage"
+            name="Inline Tag Shortcuts"/>
+      <page
+            category="org.objectstyle.wolips.preferences.PreferencesPage"
+            class="org.objectstyle.wolips.bindings.preferences.BindingValidationRulePreferencePage"
+            id="org.objectstyle.wolips.bindings.preferences.BindingValidationRulePreferencePage"
+            name="Binding Validation Rules"/>
+      <page
+            category="org.objectstyle.wolips.preferences.PreferencesPage"
+            class="org.objectstyle.wolips.bindings.preferences.BindingValidationPreferencePage"
+            id="org.objectstyle.wolips.bindings.preferences.BindingValidationPreferencePage"
+            name="Binding Validation"/>
+   </extension>
+
+</plugin>
