@@ -149,7 +149,7 @@ div.section.entity div.childrenEntities {
 	font-size: 0.60em;
 }
 
-span.entity.abstract {
+.entity.abstract {
 	font-style: italic;
 }
 
