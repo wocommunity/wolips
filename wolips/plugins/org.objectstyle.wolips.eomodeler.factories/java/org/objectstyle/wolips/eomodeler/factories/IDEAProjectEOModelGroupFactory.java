@@ -51,7 +51,7 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 							rootPath = rootPath.replaceAll("^[^:]+://", "");
 							rootPath = rootPath.replaceAll("\\$PROJECT_DIR\\$", ideaProjectPath);
 							rootPath = rootPath.replaceAll("(.*\\.framework/Resources).*", "$1");
-							ideaLibraries.put(libraryName, new File(rootPath).getAbsoluteFile());
+							ideaLibraries.put(libraryName, new File(rootPath).getCanonicalFile());
 							break;
 						}
 					}
@@ -62,7 +62,7 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 					Element ideaModuleElement = (Element) ideaModuleNodes.item(ideaModuleNum);
 					String ideaModulePath = ideaModuleElement.getAttribute("filepath");
 					ideaModulePath = ideaModulePath.replaceAll("\\$PROJECT_DIR\\$", ideaProjectPath);
-					File ideaModuleFile = new File(ideaModulePath).getAbsoluteFile();
+					File ideaModuleFile = new File(ideaModulePath).getCanonicalFile();
 					processIdeaModuleFile(ideaModuleFile, searchFolders, ideaLibraries, visitedModulePaths);
 				}
 			} catch (Exception e) {
@@ -89,7 +89,7 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 			String contentPath = contentElement.getAttribute("url");
 			contentPath = contentPath.replaceAll("^file://", "");
 			contentPath = contentPath.replaceAll("\\$MODULE_DIR\\$", ideaProjectPath);
-			File contentFolder = new File(contentPath).getAbsoluteFile();
+			File contentFolder = new File(contentPath).getCanonicalFile();
 			searchFolders.add(new ManifestSearchFolder(contentFolder));
 		}
 
@@ -100,7 +100,7 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 			String ideaModuleType = ideaModuleElement.getAttribute("type");
 			if ("module".equals(ideaModuleType)) {
 				String ideaModuleName = ideaModuleElement.getAttribute("module-name");
-				File dependentModuleFile = new File(ideaModuleFile.getParentFile(), ideaModuleName + ".iml").getAbsoluteFile();
+				File dependentModuleFile = new File(ideaModuleFile.getParentFile(), ideaModuleName + ".iml").getCanonicalFile();
 				processIdeaModuleFile(dependentModuleFile, searchFolders, ideaLibraries, visitedModulePaths);
 			} else if ("library".equals(ideaModuleType)) {
 				String ideaLibraryName = ideaModuleElement.getAttribute("name");
