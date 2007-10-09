@@ -85,8 +85,8 @@ import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.objectstyle.wolips.core.resources.types.api.Binding;
-import org.objectstyle.wolips.core.resources.types.api.Binding.BindingNameChangedListener;
+import org.objectstyle.wolips.bindings.api.Binding;
+import org.objectstyle.wolips.bindings.api.Binding.BindingNameChangedListener;
 
 public class BindingsPageBlock extends MasterDetailsBlock implements BindingNameChangedListener {
 	FormPage page;

@@ -65,8 +65,8 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.wolips.apieditor.ApieditorPlugin;
-import org.objectstyle.wolips.core.resources.types.api.ApiModel;
-import org.objectstyle.wolips.core.resources.types.api.ApiModelException;
+import org.objectstyle.wolips.bindings.api.ApiModel;
+import org.objectstyle.wolips.bindings.api.ApiModelException;
 
 public class ApiEditor extends FormEditor {
 

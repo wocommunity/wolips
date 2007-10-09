@@ -7,7 +7,8 @@ Bundle-Activator: org.objectstyle.wolips.apieditor.ApieditorPlugin
 Bundle-Vendor: objectstyle.org
 Require-Bundle: org.eclipse.ui.forms,
  org.objectstyle.wolips,
- org.objectstyle.wolips.baseforuiplugins
+ org.objectstyle.wolips.baseforuiplugins,
+ org.objectstyle.wolips.bindings
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.apieditor,
  org.objectstyle.wolips.apieditor.editor
