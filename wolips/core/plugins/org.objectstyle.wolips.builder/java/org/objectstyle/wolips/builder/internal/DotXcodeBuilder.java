@@ -147,7 +147,7 @@ public class DotXcodeBuilder implements IIncrementalBuilder, IFullBuilder {
 				if(fullRebuild) {
 					fullVisit(kind, args, monitor, project, buildCache);
 				}
-				System.out.println("DotXcodeBuilder.buildStarted: xcode exists = " + exists);
+				//System.out.println("DotXcodeBuilder.buildStarted: xcode exists = " + exists);
 			} else {
 				myXcodeProject = null;
 			}
@@ -213,7 +213,7 @@ public class DotXcodeBuilder implements IIncrementalBuilder, IFullBuilder {
 	protected void writeXcodeProject(IProgressMonitor monitor, IProject project, PBXProject xcodeProject, String projectFolderName) throws CoreException {
 		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
 		List frameworkPaths = projectAdapter.getFrameworkPaths();
-		System.out.println("DotXcodeBuilder.writeXcodeProject: Writing " + project.getName() + " " + xcodeProject);
+		//System.out.println("DotXcodeBuilder.writeXcodeProject: Writing " + project.getName() + " " + xcodeProject);
 		Iterator frameworkPathsIter = frameworkPaths.iterator();
 		while (frameworkPathsIter.hasNext()) {
 			IPath frameworkPath = (IPath) frameworkPathsIter.next();
