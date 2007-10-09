@@ -58,12 +58,12 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
-import org.objectstyle.wolips.core.resources.types.api.ApiModel;
-import org.objectstyle.wolips.core.resources.types.api.Wo;
+import org.objectstyle.wolips.bindings.api.ApiModel;
+import org.objectstyle.wolips.bindings.api.Wo;
+import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
+import org.objectstyle.wolips.bindings.wod.BindingValueKey;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
-import org.objectstyle.wolips.wodclipse.core.model.BindingValueKey;
-import org.objectstyle.wolips.wodclipse.core.util.WodReflectionUtils;
 
 public class GenerateAPIAction implements IObjectActionDelegate {
 	private ISelection _selection;
@@ -91,12 +91,12 @@ public class GenerateAPIAction implements IObjectActionDelegate {
 				for (int i = 0; i < selectedObjects.length; i++) {
 					IResource resource = (IResource) selectedObjects[i];
 					WodParserCache cache = WodParserCache.parser(resource);
-					List<BindingValueKey> bindingKeys = WodReflectionUtils.getBindingKeys(cache.getJavaProject(), cache.getComponentType(), "", false, WodReflectionUtils.MUTATORS_ONLY, cache);
+					List<BindingValueKey> bindingKeys = BindingReflectionUtils.getBindingKeys(cache.getJavaProject(), cache.getComponentType(), "", false, BindingReflectionUtils.MUTATORS_ONLY, cache.getTypeCache());
 					IFile apiFile = cache.getApiFile();
 					ApiModel apiModel = new ApiModel(apiFile);
 					Wo wo = apiModel.getWo();
 					for (BindingValueKey binding : bindingKeys) {
-						if (!WodReflectionUtils.isSystemBindingValueKey(binding, true)) {
+						if (!BindingReflectionUtils.isSystemBindingValueKey(binding, true)) {
 							String bindingName = binding.getBindingName();
 							wo.createBinding(bindingName);
 						}

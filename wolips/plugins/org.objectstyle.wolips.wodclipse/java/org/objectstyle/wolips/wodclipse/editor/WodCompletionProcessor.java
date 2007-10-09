@@ -67,6 +67,9 @@ import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
+import org.objectstyle.wolips.bindings.api.ApiUtils;
+import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
+import org.objectstyle.wolips.bindings.wod.TypeCache;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.core.completion.WodCompletionProposal;
 import org.objectstyle.wolips.wodclipse.core.completion.WodCompletionUtils;
@@ -84,8 +87,6 @@ import org.objectstyle.wolips.wodclipse.core.parser.OperatorRule;
 import org.objectstyle.wolips.wodclipse.core.parser.RulePosition;
 import org.objectstyle.wolips.wodclipse.core.parser.WodScanner;
 import org.objectstyle.wolips.wodclipse.core.preferences.PreferenceConstants;
-import org.objectstyle.wolips.wodclipse.core.util.WodApiUtils;
-import org.objectstyle.wolips.wodclipse.core.util.WodReflectionUtils;
 
 /**
  * @author mike
@@ -117,7 +118,8 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 		Set<WodCompletionProposal> completionProposalsSet = new TreeSet<WodCompletionProposal>();
 		try {
 			int offset = _offset;
-			WodParserCache cache = WodParserCache.parser(((FileEditorInput) _editor.getEditorInput()).getFile());
+			WodParserCache wodParserCache = WodParserCache.parser(((FileEditorInput) _editor.getEditorInput()).getFile());
+			TypeCache typeCache = wodParserCache.getTypeCache();
 			IDocument document = viewer.getDocument();
 			IEditorInput input = _editor.getEditorInput();
 			if (input instanceof IPathEditorInput) {
@@ -234,16 +236,16 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 					// been mapped, we
 					// reparse the wod file. Lame.
 					Set<String> alreadyUsedElementNames = WodScanner.getTextForRulesOfType(document, ElementNameRule.class);
-					WodCompletionUtils.fillInElementNameCompletionProposals(alreadyUsedElementNames, token, tokenOffset, offset, completionProposalsSet, guessed, cache.getHtmlElementCache());
+					WodCompletionUtils.fillInElementNameCompletionProposals(alreadyUsedElementNames, token, tokenOffset, offset, completionProposalsSet, guessed, wodParserCache.getHtmlElementCache());
 				} else if (tokenType == PreferenceConstants.ELEMENT_TYPE) {
 					WodCompletionUtils.fillInElementTypeCompletionProposals(javaProject, token, tokenOffset, offset, completionProposalsSet, guessed, null);
 				} else if (tokenType == PreferenceConstants.BINDING_NAME) {
-					IType elementType = findNearestElementType(javaProject, document, scanner, tokenOffset, cache);
-					WodCompletionUtils.fillInBindingNameCompletionProposals(javaProject, elementType, token, tokenOffset, offset, completionProposalsSet, guessed, cache);
+					IType elementType = findNearestElementType(javaProject, document, scanner, tokenOffset, typeCache);
+					WodCompletionUtils.fillInBindingNameCompletionProposals(javaProject, elementType, token, tokenOffset, offset, completionProposalsSet, guessed, typeCache);
 				} else if (tokenType == PreferenceConstants.BINDING_VALUE) {
 					String elementTypeName = path.removeFileExtension().lastSegment();
-					IType elementType = WodReflectionUtils.findElementType(javaProject, elementTypeName, true, cache);
-					boolean checkBindingValue = WodCompletionUtils.fillInBindingValueCompletionProposals(javaProject, elementType, token, tokenOffset, offset, completionProposalsSet, cache);
+					IType elementType = BindingReflectionUtils.findElementType(javaProject, elementTypeName, true, typeCache);
+					boolean checkBindingValue = WodCompletionUtils.fillInBindingValueCompletionProposals(javaProject, elementType, token, tokenOffset, offset, completionProposalsSet, typeCache);
 					if (checkBindingValue) {
 						try {
 							// We might (probably do) have a syntactically
@@ -256,8 +258,8 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 							int noSpaceIndex = WodCompletionProcessor.scanBackFor(document, equalsIndex - 1, new char[] { ' ', '\t', '\n', '\r' }, true);
 							int spaceIndex = WodCompletionProcessor.scanBackFor(document, noSpaceIndex, new char[] { ' ', '\t', '\n', '\r' }, false);
 							String bindingName = document.get(spaceIndex + 1, noSpaceIndex - spaceIndex);
-							elementType = findNearestElementType(javaProject, document, scanner, offset, cache);
-							String[] validValues = WodApiUtils.getValidValues(javaProject, _editor.getComponentsLocateResults().getDotJavaType(), elementType, bindingName, cache);
+							elementType = findNearestElementType(javaProject, document, scanner, offset, typeCache);
+							String[] validValues = ApiUtils.getValidValues(javaProject, _editor.getComponentsLocateResults().getDotJavaType(), elementType, bindingName, typeCache);
 							if (validValues != null) {
 								String partialToken = WodCompletionUtils.partialToken(token, tokenOffset, offset);
 								String lowercasePartialToken = partialToken.toLowerCase();
@@ -286,7 +288,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 		return null;
 	}
 
-	protected IType findNearestElementType(IJavaProject _project, IDocument _document, WodScanner _scanner, int _offset, WodParserCache cache) throws BadLocationException, JavaModelException {
+	protected IType findNearestElementType(IJavaProject _project, IDocument _document, WodScanner _scanner, int _offset, TypeCache cache) throws BadLocationException, JavaModelException {
 		// Go hunting for the element type in a potentially malformed document
 		// ...
 		IType type;
@@ -296,7 +298,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 			RulePosition elementRulePosition = _scanner.getFirstRulePositionOfType(ElementTypeRule.class);
 			if (elementRulePosition != null) {
 				String elementTypeName = elementRulePosition.getText();
-				type = WodReflectionUtils.findElementType(_project, elementTypeName, false, cache);
+				type = BindingReflectionUtils.findElementType(_project, elementTypeName, false, cache);
 			} else {
 				// we didn't find a ElementTypeRule
 				type = null;
