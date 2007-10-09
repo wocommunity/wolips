@@ -1,34 +1,22 @@
 package org.objectstyle.wolips.componenteditor.actions;
 
-import java.util.HashSet;
-import java.util.Set;
 
-import org.eclipse.core.resources.WorkspaceJob;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.objectstyle.wolips.wodclipse.core.completion.WodCompletionProposal;
-import org.objectstyle.wolips.wodclipse.core.completion.WodCompletionUtils;
+import org.objectstyle.wolips.wodclipse.action.ComponentLiveSearch;
 
 /**
  * <P>
@@ -53,7 +41,7 @@ public class InsertComponentDialogue extends org.eclipse.jface.dialogs.Dialog {
 
 	protected Label _componentNameLabel;
 
-	protected Combo _componentNameCombo;
+	protected Combo componentNameCombo;
 
 	protected Label _componentInstanceLabel;
 
@@ -70,8 +58,6 @@ public class InsertComponentDialogue extends org.eclipse.jface.dialogs.Dialog {
 	protected InsertComponentSpecification _insertComponentSpecification;
 
 	protected IProgressMonitor _progressMonitor;
-
-	protected Object _completionLock = new Object();
 
 	public InsertComponentDialogue(Shell parentShell, IJavaProject project, InsertComponentSpecification insertComponentSpecification) {
 		super(parentShell);
@@ -96,54 +82,10 @@ public class InsertComponentDialogue extends org.eclipse.jface.dialogs.Dialog {
 			GridData componentNameLabelLayout = new GridData(GridData.FILL_HORIZONTAL);
 			_componentNameLabel.setLayoutData(componentNameLabelLayout);
 
-			_componentNameCombo = new Combo(control, SWT.BORDER);
+			componentNameCombo = new Combo(control, SWT.BORDER);
 			GridData componentNameTextLayout = new GridData(GridData.FILL_HORIZONTAL);
-			_componentNameCombo.setLayoutData(componentNameTextLayout);
-			_componentNameCombo.addModifyListener(new ModifyListener() {
-				private String _lastSearch;
-
-				public void modifyText(ModifyEvent e) {
-					Point selection = _componentNameCombo.getSelection();
-					final String partialName;
-					if (selection != null && selection.x != selection.y) {
-						partialName = _componentNameCombo.getText().substring(0, selection.x);
-					} else {
-						partialName = _componentNameCombo.getText();
-					}
-					if (_lastSearch == null || !_lastSearch.equals(partialName)) {
-						_lastSearch = partialName;
-						_progressMonitor.setCanceled(true);
-
-						WorkspaceJob job = new WorkspaceJob("Searching for components named '" + partialName + "*' ...") {
-							public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
-								synchronized (_completionLock) {
-									_progressMonitor.setCanceled(false);
-									try {
-										final Set<WodCompletionProposal> proposals = new HashSet<WodCompletionProposal>();
-										WodCompletionUtils.fillInElementTypeCompletionProposals(_project, partialName, 0, partialName.length(), proposals, false, _progressMonitor);
-										if (!_progressMonitor.isCanceled()) {
-											Display.getDefault().asyncExec(new Runnable() {
-												public void run() {
-													_componentNameCombo.removeAll();
-													for (WodCompletionProposal elementName : proposals) {
-														_componentNameCombo.add(elementName.getDisplayString());
-													}
-												}
-											});
-										}
-									} catch (OperationCanceledException t) {
-										// ignore
-									} catch (Throwable t) {
-										t.printStackTrace();
-									}
-									return Status.OK_STATUS;
-								}
-							}
-						};
-						job.schedule();
-					}
-				}
-			});
+			componentNameCombo.setLayoutData(componentNameTextLayout);
+			componentNameCombo.addModifyListener(new ComponentLiveSearch(_project, _progressMonitor));
 		}
 
 		_inline = new Button(control, SWT.CHECK);
@@ -184,8 +126,8 @@ public class InsertComponentDialogue extends org.eclipse.jface.dialogs.Dialog {
 	}
 
 	public void okPressed() {
-		if (_componentNameCombo != null) {
-			_insertComponentSpecification.setComponentName(_componentNameCombo.getText());
+		if (componentNameCombo != null) {
+			_insertComponentSpecification.setComponentName(componentNameCombo.getText());
 		}
 		_insertComponentSpecification.setComponentInstanceName(_componentInstanceNameText.getText());
 		_insertComponentSpecification.setInline(_inline.getSelection());

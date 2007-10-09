@@ -436,5 +436,14 @@
           name="Editing Components"
           parentId="org.eclipse.ui.contexts.window"/>
  </extension>
+     <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="Bindings Inspector"
+            category="org.objectstyle.wolips.ui"
+            class="org.objectstyle.wolips.componenteditor.inspector.BindingsInspector"
+            id="org.objectstyle.wolips.componenteditor.inspector.BindingsInspector">
+      </view>
+   	 </extension>
 
 </plugin>
