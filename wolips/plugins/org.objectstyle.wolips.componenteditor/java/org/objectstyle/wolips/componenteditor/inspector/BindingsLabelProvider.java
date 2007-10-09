@@ -91,11 +91,13 @@ public class BindingsLabelProvider implements ITableLabelProvider, ITableColorPr
 		}
 		return color;
 	}
-	
+
 	public Font getFont(Object element, int columnIndex) {
 		Font font = null;
-		if (element instanceof IWodBinding) {
-			font = JFaceResources.getFontRegistry().getBold(JFaceResources.DIALOG_FONT);
+		if (columnIndex == 0) {
+			if (element instanceof IWodBinding) {
+				font = JFaceResources.getFontRegistry().getBold(JFaceResources.DIALOG_FONT);
+			}
 		}
 		return font;
 	}

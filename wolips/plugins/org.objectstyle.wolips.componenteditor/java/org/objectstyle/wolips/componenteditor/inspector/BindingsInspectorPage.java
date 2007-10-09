@@ -82,7 +82,7 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 		}
 
 		if (_componentLiveSearch != null) {
-			_elementTypeField.removeModifyListener(_componentLiveSearch);
+			_componentLiveSearch.detachFrom(_elementTypeField);
 		}
 		_wodElement = wodElement;
 		_bindingsLabelProvider.setContext(_wodElement, _wodProblems);
@@ -120,7 +120,7 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 		}
 		if (parserCache != null) {
 			_componentLiveSearch = new ComponentLiveSearch(parserCache.getJavaProject(), new NullProgressMonitor());
-			_elementTypeField.addModifyListener(_componentLiveSearch);
+			_componentLiveSearch.attachTo(_elementTypeField);
 		}
 	}
 
@@ -142,6 +142,7 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 		_elementTypeLabel.setText("Component Type");
 		_elementTypeField = new Combo(_control, SWT.BORDER);
 		_elementTypeField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		_elementTypeField.setVisibleItemCount(5);
 
 		Composite bindingsTableContainer = new Composite(_control, SWT.NONE);
 		GridData bindingsTableContainerData = new GridData(GridData.FILL_BOTH);
