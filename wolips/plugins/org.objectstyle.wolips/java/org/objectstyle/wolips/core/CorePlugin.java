@@ -63,7 +63,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
-import org.objectstyle.wolips.baseforplugins.AbstractBaseActivator;
+import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
 import org.objectstyle.wolips.core.resources.builder.IBuilder;
 import org.objectstyle.wolips.core.resources.internal.build.BuilderWrapper;
 import org.osgi.framework.BundleContext;
@@ -71,7 +71,10 @@ import org.osgi.framework.BundleContext;
 /**
  * The main plugin class to be used in the desktop.
  */
-public class CorePlugin extends AbstractBaseActivator {
+public class CorePlugin extends AbstractBaseUIActivator {
+	// The plug-in ID
+	public static final String PLUGIN_ID = "org.objectstyle.wolips.core";
+
 	// The shared instance.
 	private static CorePlugin plugin;
 
@@ -142,5 +145,4 @@ public class CorePlugin extends AbstractBaseActivator {
 		}
 		return builderWrapperList.toArray(new BuilderWrapper[builderWrapperList.size()]);
 	}
-
 }
