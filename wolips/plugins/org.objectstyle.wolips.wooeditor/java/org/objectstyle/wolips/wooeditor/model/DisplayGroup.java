@@ -303,12 +303,10 @@ public class DisplayGroup implements IPropertyChangeSource {
 	public List<String> getSortList() {
 		if (myEntity != null) {
 			try {
-				List<String> attribList = new ArrayList<String>();
-				Set<EOAttribute> attributes = myEntity.getAttributes();
+				Set<EOAttribute> attributes = myEntity.getClassAttributes();
+				List<String> attribList = new ArrayList<String>(attributes.size());
 				for (EOAttribute attribute : attributes) {
-					if (attribute.getClassProperty() != null) {
-						attribList.add(attribute.getName());
-					}
+					attribList.add(attribute.getName());
 				}
 				Collections.sort(attribList);
 				return attribList;
