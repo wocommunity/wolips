@@ -9,12 +9,13 @@ import jp.aonir.fuzzyxml.FuzzyXMLElement;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.Position;
+import org.objectstyle.wolips.bindings.wod.WodBindingNameProblem;
+import org.objectstyle.wolips.bindings.wod.WodBindingValueProblem;
+import org.objectstyle.wolips.bindings.wod.WodProblem;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
-import org.objectstyle.wolips.wodclipse.core.model.WodBindingNameProblem;
-import org.objectstyle.wolips.wodclipse.core.model.WodBindingValueProblem;
-import org.objectstyle.wolips.wodclipse.core.model.WodProblem;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
+import org.objectstyle.wolips.wodclipse.core.util.WodModelUtils;
 
 public class InlineWodProblem {
   private WodParserCache _cache;
@@ -51,7 +52,7 @@ public class InlineWodProblem {
 
   public void createProblemMarkers() {
     for (WodProblem wodProblem : _wodProblems) {
-      IMarker marker = wodProblem.createMarker(_cache.getHtmlFile());
+      IMarker marker = WodModelUtils.createMarker(_cache.getHtmlFile(), wodProblem);
       try {
         if (marker != null) {
           boolean elementError = true;

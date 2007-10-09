@@ -19,10 +19,10 @@ import org.eclipse.jface.text.link.LinkedModeUI;
 import org.eclipse.jface.text.link.LinkedPosition;
 import org.eclipse.jface.text.link.LinkedPositionGroup;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
+import org.objectstyle.wolips.bindings.wod.IWodElement;
+import org.objectstyle.wolips.bindings.wod.IWodModel;
+import org.objectstyle.wolips.bindings.wod.IWodUnit;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
-import org.objectstyle.wolips.wodclipse.core.model.IWodElement;
-import org.objectstyle.wolips.wodclipse.core.model.IWodModel;
-import org.objectstyle.wolips.wodclipse.core.model.IWodUnit;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
 public class QuickRenameRefactoring {

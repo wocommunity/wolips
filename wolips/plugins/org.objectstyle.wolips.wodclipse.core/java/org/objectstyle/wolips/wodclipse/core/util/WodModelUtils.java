@@ -52,14 +52,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.Position;
 import org.eclipse.ui.part.FileEditorInput;
+import org.objectstyle.wolips.bindings.wod.HtmlElementCache;
+import org.objectstyle.wolips.bindings.wod.IWodModel;
+import org.objectstyle.wolips.bindings.wod.TypeCache;
+import org.objectstyle.wolips.bindings.wod.WodProblem;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.wodclipse.core.Activator;
-import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.document.DocumentWodModel;
 import org.objectstyle.wolips.wodclipse.core.document.WodFileDocumentProvider;
-import org.objectstyle.wolips.wodclipse.core.model.IWodModel;
-import org.objectstyle.wolips.wodclipse.core.model.WodProblem;
 
 /**
  * @author mschrag
@@ -78,7 +80,7 @@ public class WodModelUtils {
     }
   }
 
-  public static void validateWodDocument(IDocument wodDocument, LocalizedComponentsLocateResult locateResult, WodParserCache cache) {
+  public static void validateWodDocument(IDocument wodDocument, LocalizedComponentsLocateResult locateResult, TypeCache typeCache, HtmlElementCache htmlCache) {
     try {
       IFile wodFile = locateResult.getFirstWodFile();
       if (wodFile != null) {
@@ -86,9 +88,9 @@ public class WodModelUtils {
 
         IJavaProject javaProject = JavaCore.create(wodFile.getProject());
         IWodModel wodModel = WodModelUtils.createWodModel(wodFile, wodDocument);
-        List<WodProblem> problems = wodModel.getProblems(javaProject, locateResult.getDotJavaType(), cache);
+        List<WodProblem> problems = wodModel.getProblems(javaProject, locateResult.getDotJavaType(), typeCache, htmlCache);
         for (WodProblem problem : problems) {
-          problem.createMarker(wodFile);
+          WodModelUtils.createMarker(wodFile, problem);
         }
       }
     }
@@ -97,16 +99,81 @@ public class WodModelUtils {
     }
   }
 
-  public static void validateWodFile(IFile wodFile, LocalizedComponentsLocateResult locateResults, WodParserCache cache) throws CoreException {
+  public static void validateWodFile(IFile wodFile, LocalizedComponentsLocateResult locateResults, TypeCache typeCache, HtmlElementCache htmlCache) throws CoreException {
     FileEditorInput input = new FileEditorInput(wodFile);
     WodFileDocumentProvider provider = new WodFileDocumentProvider();
     provider.connect(input);
     try {
       IDocument document = provider.getDocument(input);
-      WodModelUtils.validateWodDocument(document, locateResults, cache);
+      WodModelUtils.validateWodDocument(document, locateResults, typeCache, htmlCache);
     }
     finally {
       provider.disconnect(input);
     }
+  }
+
+  public static IMarker createMarker(IFile file, WodProblem wodProblem) {
+    if (file == null) {
+      return null;
+    }
+    
+    Position problemPosition = wodProblem.getPosition();
+
+    // String type = "org.eclipse.ui.workbench.texteditor.error";
+    // String type = "org.eclipse.ui.workbench.texteditor.warning";
+    // Annotation problemAnnotation = new Annotation(type, false,
+    // problem.getMessage());
+    // Position problemPosition = currentPosition.getPosition();
+    // annotationModel.addAnnotation(problemAnnotation,
+    // problemPosition);
+
+    IMarker marker = null;
+    try {
+      if (wodProblem.getForceFile() != null) {
+        marker = wodProblem.getForceFile().createMarker(Activator.TEMPLATE_PROBLEM_MARKER);
+      }
+      else {
+        marker = file.createMarker(Activator.TEMPLATE_PROBLEM_MARKER);
+      }
+      marker.setAttribute(IMarker.MESSAGE, wodProblem.getMessage());
+      int severity;
+      if (wodProblem.isWarning()) {
+        severity = IMarker.SEVERITY_WARNING;
+      }
+      else {
+        severity = IMarker.SEVERITY_ERROR;
+      }
+      marker.setAttribute(IMarker.SEVERITY, new Integer(severity));
+      if (problemPosition != null) {
+//        IWodModel model = getModel();
+//        if (_lineNumber == -1 && model instanceof DocumentWodModel) {
+//          marker.setAttribute(IMarker.LINE_NUMBER, ((DocumentWodModel) model).getDocument().getLineOfOffset(problemPosition.getOffset()));
+//        }
+//        else
+        if (wodProblem.getLineNumber() != -1) {
+          marker.setAttribute(IMarker.LINE_NUMBER, wodProblem.getLineNumber());
+        }
+        marker.setAttribute(IMarker.CHAR_START, problemPosition.getOffset());
+        marker.setAttribute(IMarker.CHAR_END, problemPosition.getOffset() + problemPosition.getLength());
+      }
+      marker.setAttribute(IMarker.TRANSIENT, false);
+      String[] relatedToFileNames = wodProblem.getRelatedToFileNames();
+      if (relatedToFileNames != null) {
+        StringBuffer relatedToFileNamesBuffer = new StringBuffer();
+        for (int i = 0; i < relatedToFileNames.length; i++) {
+          relatedToFileNamesBuffer.append(relatedToFileNames[i]);
+          relatedToFileNamesBuffer.append(", ");
+        }
+        marker.setAttribute(WodProblem.RELATED_TO_FILE_NAMES, relatedToFileNamesBuffer.toString());
+      }
+    }
+    catch (CoreException e) {
+      e.printStackTrace();
+      Activator.getDefault().log(e);
+    }
+//    catch (BadLocationException e) {
+//      Activator.getDefault().log(e);
+//    }
+    return marker;
   }
 }

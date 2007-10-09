@@ -47,9 +47,9 @@ import java.util.Iterator;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Position;
+import org.objectstyle.wolips.bindings.wod.AbstractWodElement;
+import org.objectstyle.wolips.bindings.wod.IWodBinding;
 import org.objectstyle.wolips.wodclipse.core.Activator;
-import org.objectstyle.wolips.wodclipse.core.model.AbstractWodElement;
-import org.objectstyle.wolips.wodclipse.core.model.IWodBinding;
 import org.objectstyle.wolips.wodclipse.core.parser.RulePosition;
 
 /**

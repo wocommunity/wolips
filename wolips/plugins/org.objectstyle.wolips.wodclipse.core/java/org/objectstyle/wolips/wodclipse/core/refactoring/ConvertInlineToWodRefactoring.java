@@ -18,10 +18,10 @@ import org.eclipse.text.edits.InsertEdit;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
+import org.objectstyle.wolips.bindings.wod.IWodElement;
+import org.objectstyle.wolips.bindings.wod.IWodModel;
+import org.objectstyle.wolips.bindings.wod.SimpleWodElement;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
-import org.objectstyle.wolips.wodclipse.core.model.IWodElement;
-import org.objectstyle.wolips.wodclipse.core.model.IWodModel;
-import org.objectstyle.wolips.wodclipse.core.model.SimpleWodElement;
 import org.objectstyle.wolips.wodclipse.core.util.WodDocumentUtils;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
@@ -47,7 +47,7 @@ public class ConvertInlineToWodRefactoring implements IRunnableWithProgress {
         IWodModel wodModel = _cache.getWodModel();
         String tagName = element.getName();
         if (WodHtmlUtils.isInline(tagName)) {
-          SimpleWodElement wodElement = WodHtmlUtils.toWodElement(element, _wo54, _cache);
+          SimpleWodElement wodElement = WodHtmlUtils.toWodElement(element, _wo54, _cache.getApiCache());
           ElementRename elementRename = ElementRename.newUniqueName(wodModel, wodElement, true);
           wodElement.setElementName(elementRename.getNewName());
 

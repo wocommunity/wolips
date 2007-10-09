@@ -11,7 +11,8 @@ Require-Bundle: org.objectstyle.wolips,
  org.objectstyle.wolips.baseforuiplugins,
  org.objectstyle.wolips.locate,
  org.objectstyle.wolips.workbenchutilities,
- org.eclipse.ui.editors
+ org.eclipse.ui.editors,
+ org.objectstyle.wolips.bindings
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,
  lib/commons-jxpath-1.2.jar
@@ -41,7 +42,6 @@ Export-Package: jp.aonir.fuzzyxml,
  org.objectstyle.wolips.wodclipse.core.builder,
  org.objectstyle.wolips.wodclipse.core.completion,
  org.objectstyle.wolips.wodclipse.core.document,
- org.objectstyle.wolips.wodclipse.core.model,
  org.objectstyle.wolips.wodclipse.core.parser,
  org.objectstyle.wolips.wodclipse.core.preferences,
  org.objectstyle.wolips.wodclipse.core.refactoring,

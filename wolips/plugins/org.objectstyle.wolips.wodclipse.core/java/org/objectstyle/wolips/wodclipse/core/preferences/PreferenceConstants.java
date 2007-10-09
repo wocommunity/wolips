@@ -66,34 +66,4 @@ public class PreferenceConstants {
   public static final String COMMENT = "Comment";
 
   public static final String UNKNOWN = "Unknown";
-
-  public static final String ALLOWED_BINDING_CHARACTERS = "AllowedBindingCharacters";
-
-  public static final String VALIDATE_BINDING_VALUES = "CheckBindingValues";
-
-  public static final String AUTO_INSERT_ON_COMPLETION = "AutoInsertOnCompletion";
-
-  public static final String WARN_ON_MISSING_COLLECTION_KEY = "WarnOnMissingCollectionKey";
-
-  public static final String ERROR_ON_MISSING_NSKVC_KEY = "ErrorOnMissingNSKVCKey";
-
-  public static final String WARN_ON_MISSING_NSKVC_KEY = "WarnOnMissingNSKVCKey";
-
-  public static final String VALIDATE_OGNL_KEY = "ValidateOGNLKey";
-
-  public static final String WARN_ON_AMBIGUOUS_KEY = "WarnOnAmbiguousKey";
-
-  public static final String ERROR_ON_HTML_ERRORS_KEY = "ErrorOnHtmlErrorsKey";
-
-  public static final String WARN_ON_OPERATOR_KEY = "WarnOnOperatorKey";
-
-  public static final String WARN_ON_HELPER_FUNCTION_KEY = "WarnOnHelperFunctionKey";
-
-  public static final String VALIDATE_TEMPLATES_KEY = "ValidateTemplatesKey";
-
-  public static final String TAG_SHORTCUTS_KEY = "TagShortcuts";
-
-  public static final String BINDING_VALIDATION_RULES_KEY = "BindingValidationRules";
-  
-  public static final String WO54_KEY = "WO 5.4";
 }
