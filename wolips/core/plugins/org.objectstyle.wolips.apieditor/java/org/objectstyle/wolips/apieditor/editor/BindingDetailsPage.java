@@ -77,8 +77,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
-import org.objectstyle.wolips.core.resources.types.api.ApiModel;
-import org.objectstyle.wolips.core.resources.types.api.Binding;
+import org.objectstyle.wolips.bindings.api.ApiModel;
+import org.objectstyle.wolips.bindings.api.Binding;
 
 /**
  * @author uli
