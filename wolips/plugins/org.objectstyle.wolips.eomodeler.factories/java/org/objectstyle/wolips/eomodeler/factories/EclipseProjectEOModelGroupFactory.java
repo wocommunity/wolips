@@ -46,7 +46,6 @@ public class EclipseProjectEOModelGroupFactory extends AbstractManifestEOModelGr
 
 		File buildFolder = new File(eclipseProjectFolder, "build");
 		if (buildFolder.exists()) {
-			System.out.println("EclipseProjectEOModelGroupFactory.processEclipseProject: BUILD " + buildFolder);
 			File buildResourcesFolder;
 			File frameworkResourcesFolder = new File(buildFolder, eclipseProjectFolder.getName() + ".framework" + File.separator + "Resources");
 			if (frameworkResourcesFolder.exists()) {
