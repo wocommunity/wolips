@@ -3,6 +3,72 @@
 	<title>$entity.model.name, $entity.name</title>
 	<link href = "../../eomodeldoc.css" rel = "stylesheet" type = "text/css">
 	<script src = "../../prototype.js"/>
+	<script>
+		visibility = {};
+		
+		visibility['attribute'] = {}
+		visibility['attribute']['details'] = false;
+		visibility['attribute']['nonClassProperty'] = false;
+		visibility['attribute']['inheritedProperty'] = true;
+
+		visibility['relationship'] = {}
+		visibility['relationship']['details'] = false;
+		visibility['relationship']['nonClassProperty'] = false;
+		visibility['relationship']['inheritedProperty'] = true;
+
+		visibility['fetchSpec'] = {}
+		visibility['fetchSpec']['details'] = false;
+
+		visibility['entityIndex'] = {}
+		visibility['entityIndex']['details'] = false;
+
+		function toggleProperty(elementType, flagName) {
+			visibility[elementType][flagName] = !visibility[elementType][flagName];
+			updateProperties(elementType, visibility[elementType]['nonClassProperty'], visibility[elementType]['inheritedProperty'], visibility[elementType]['details']);
+		}
+		
+		function updateProperties(propertyClassName, nonClassVisible, inheritedVisible, detailsVisible) {
+			$$('.' + propertyClassName).each(function(e) {
+				var propertyVisible = true;
+				if (e.hasClassName('nonClassProperty') && !nonClassVisible) {
+					propertyVisible = false;
+				}
+				else if (e.hasClassName('inheritedProperty') && !inheritedVisible) {
+					propertyVisible = false;
+				}
+				if (propertyVisible) {
+					e.show();
+				}
+				else {
+					e.hide();
+				}
+			});
+
+			$$('.' + propertyClassName + ' .details').each(function(e) { 
+				if (detailsVisible) {
+					e.show();
+				}
+				else {
+					e.hide();
+				}
+			});
+
+			updateToggleLink($(propertyClassName + '_details_toggle'), detailsVisible, 'details');
+			updateToggleLink($(propertyClassName + '_nonClassProperty_toggle'), nonClassVisible, 'non-class');
+			updateToggleLink($(propertyClassName + '_inheritedProperty_toggle'), inheritedVisible, 'inherited');
+		}
+		
+		function updateToggleLink(toggleLink, visible, displayName) {
+			if (toggleLink) {
+				if (visible) {
+					toggleLink.innerHTML = 'hide ' + displayName;
+				}
+				else {
+					toggleLink.innerHTML = 'show ' + displayName;
+				}
+			}
+		}
+	</script>		
 </head>
 <body>
 
@@ -14,13 +80,13 @@
 		<a href = "../content.html">$entity.model.name</a> / $entity.name
 	#end
 	#if ($entity.parent)
-	<div class = "parentEntity"> : <a href = "../../$entity.parent.model.name/content.html">$entity.parent.model.name</a> / <a href = "../../$entity.parent.model.name/entities/${entity.parent.name}.html">$entity.parent.name</a></div>
+	<div class = "parentEntity"> : <a href = "../../$entity.parent.model.name/entities/${entity.parent.name}.html">$entity.parent.name</a></div>
 	#end
 	#if (!$entity.childrenEntities.empty)
 	<div class = "childrenEntities">
 		parent of 
 		#foreach ($child in $entity.childrenEntities)
-			<a href = "../../$child.model.name/content.html">$child.model.name</a> / <a href = "../../$child.model.name/entities/${child.name}.html">$child.name</a>,
+			<a href = "../../$child.model.name/entities/${child.name}.html">$child.name</a>,
 		#end
 	</div>
 	#end
@@ -29,10 +95,7 @@
 	<div class = "documentation">$entity.documentation</div>
 	#end
 
-	<div class = "actions">
-		<a href = "javascript:void(0)" onclick = "$$('.entity .details').each(function(e) { e.toggle() })">toggle details</a>
-	</div>
-	<table class = "details" style = "display: none">
+	<table class = "details">
 		#if ($entity.externalName)
 		<tr>
 			<th>External Name</th>
@@ -53,13 +116,13 @@
 	<h2>Attributes</h2>
 	<div class = "actions">
 		#if (!$entity.attributes.empty)
-		<a href = "javascript:void(0)" onclick = "$$('.attribute .details').each(function(e) { e.toggle() })">toggle details</a>
+		<a id = "attribute_details_toggle" href = "javascript:void(0)" onclick = "toggleProperty('attribute', 'details')">show details</a>
 		#end
 		#if (!$entity.nonClassAttributes.empty)
-		<a href = "javascript:void(0)" onclick = "$$('.attribute.nonClassProperty').each(function(e) { e.toggle() })">toggle non-class</a>
+		<a id = "attribute_nonClassProperty_toggle" href = "javascript:void(0)" onclick = "toggleProperty('attribute', 'nonClassProperty')">show non-class</a>
 		#end
 		#if (!$entity.inheritedAttributes.empty)
-		<a href = "javascript:void(0)" onclick = "$$('.attribute.inheritedProperty').each(function(e) { e.toggle() })">toggle inherited</a>
+		<a id = "attribute_inheritedProperty_toggle" href = "javascript:void(0)" onclick = "toggleProperty('attribute', 'inheritedProperty')">hide inherited</a>
 		#end
 		#if ($entity.attributes.empty)
 		no attributes
@@ -70,37 +133,37 @@
 		#foreach ($attribute in $entity.sortedAttributes)
 		#if ($attribute.classProperty)
 			#if ($attribute.inherited)
-		<li class = "attribute inheritedProperty">
+		<li class = "attribute classProperty inheritedProperty">
 			#else
-		<li class = "attribute">
+		<li class = "attribute classProperty nonInheritedProperty">
 			#end
 		#else
 			#if ($attribute.inherited)
 		<li class = "attribute nonClassProperty inheritedProperty" style = "display: none">
 			#else
-		<li class = "attribute nonClassProperty" style = "display: none">
+		<li class = "attribute nonClassProperty nonInheritedProperty" style = "display: none">
 			#end
 		#end
 		
 			<div class = "name">$attribute.name</div>
-			#if ($attribute.externalType)
-			<div class = "mainDetail">
-				#if ($attribute.prototype)
-				$attribute.prototype.name ($attribute.externalType)
-				#else
-				$attribute.externalType
-				#end
-			</div>
+			#if ($attribute.columnName)
+				<div class = "mainDetail">
+				$attribute.columnName
+				</div>
 			#end
 			
 			#if ($attribute.documentation)
 			<div class = "documentation">$attribute.documentation</div>
 			#end
 			<table class = "details" style = "display: none">
-				#if ($attribute.columnName)
+				#if ($attribute.externalType)
 				<tr>
-					<th>Column Name</th>
-					<td>$attribute.columnName</td>
+					<th>External Type</th>
+					#if ($attribute.prototype)
+					<td>$attribute.prototype.name ($attribute.externalType)</td>
+					#else
+					<td>$attribute.externalType</td>
+					#end
 				</tr>
 				#end
 				#if ($attribute.definition)
@@ -138,13 +201,13 @@
 	<h2>Relationships</h2>
 	<div class = "actions">
 		#if (!$entity.relationships.empty)
-		<a href = "javascript:void(0)" onclick = "$$('.relationship .details').each(function(e) { e.toggle() })">toggle details</a>
+		<a id = "relationship_details_toggle" href = "javascript:void(0)" onclick = "toggleProperty('relationship', 'details')">show details</a>
 		#end
 		#if (!$entity.nonClassRelationships.empty)
-		<a href = "javascript:void(0)" onclick = "$$('.relationship.nonClassProperty').each(function(e) { e.toggle() })">toggle non-class</a>
+		<a id = "relationship_nonClassProperty_toggle"href = "javascript:void(0)" onclick = "toggleProperty('relationship', 'nonClassProperty')">show non-class</a>
 		#end
 		#if (!$entity.inheritedRelationships.empty)
-		<a href = "javascript:void(0)" onclick = "$$('.relationship.inheritedProperty').each(function(e) { e.toggle() })">toggle inherited</a>
+		<a id = "relationship_inheritedProperty_toggle" href = "javascript:void(0)" onclick = "toggleProperty('relationship', 'inheritedProperty')">hide inherited</a>
 		#end
 		#if ($entity.relationships.empty)
 		no relationships
@@ -155,21 +218,21 @@
 		#foreach ($relationship in $entity.sortedRelationships)
 		#if ($relationship.classProperty)
 			#if ($relationship.inherited)
-		<li class = "relationship inheritedProperty">
+		<li class = "relationship classProperty inheritedProperty">
 			#else
-		<li class = "relationship">
+		<li class = "relationship classProperty nonInheritedProperty">
 			#end
 		#else
 			#if ($relationship.inherited)
 		<li class = "relationship nonClassProperty inheritedProperty" style = "display: none">
 			#else
-		<li class = "relationship nonClassProperty" style = "display: none">
+		<li class = "relationship nonClassProperty nonInheritedProperty" style = "display: none">
 			#end
 		#end
 		
 			<div class = "name">$relationship.name</div>
 			#if ($relationship.destination)
-			<div class = "mainDetail"><a href = "../../$relationship.destination.model.name/content.html">$relationship.destination.model.name</a> / <a href = "../../$relationship.destination.model.name/entities/${relationship.destination.name}.html">$relationship.destination.name</a></div>
+			<div class = "mainDetail"><a href = "../../$relationship.destination.model.name/entities/${relationship.destination.name}.html">$relationship.destination.name</a></div>
 			#end
 			#if ($relationship.documentation)
 			<div class = "documentation">$relationship.documentation</div>
@@ -201,7 +264,7 @@
 	<h2>Fetch Specifications</h2>
 	<div class = "actions">
 		#if (!$entity.fetchSpecs.empty)
-		<a href = "javascript:void(0)" onclick = "$$('.fetchSpec .details').each(function(e) { e.toggle() })">toggle details</a>
+		<a id = "fetchSpec_details_toggle" href = "javascript:void(0)" onclick = "toggleProperty('fetchSpec', 'details')">show details</a>
 		#end
 		#if ($entity.fetchSpecs.empty)
 		no fetch specification
