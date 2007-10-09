@@ -189,7 +189,8 @@ Require-Bundle: org.eclipse.ui.editors,
  org.objectstyle.wolips.components,
  org.objectstyle.wolips.editors,
  org.objectstyle.wolips.baseforuiplugins,
- org.objectstyle.wolips.preferences
+ org.objectstyle.wolips.preferences,
+ org.objectstyle.wolips.bindings
 Eclipse-LazyStart: true
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: lib/xml-apis.jar,
