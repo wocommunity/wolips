@@ -79,7 +79,7 @@ public class WodCompletionUtils {
       Wo wo = ApiUtils.findApiModelWo(elementType, cache.getApiCache());
       if (wo != null) {
         String lowercasePartialToken = partialToken.toLowerCase();
-        Binding[] bindings = wo.getBindings();
+        List<Binding> bindings = wo.getBindings();
         for (Binding binding : bindings) {
           String bindingName = binding.getName();
           String lowercaseBindingName = bindingName.toLowerCase();
@@ -95,7 +95,7 @@ public class WodCompletionUtils {
           }
         }
         
-        if (bindings != null && bindings.length > 0) {
+        if (bindings != null && bindings.size() > 0) {
           showReflectionBindings = false;
         }
       }
