@@ -16,13 +16,15 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
 import org.objectstyle.wolips.wodclipse.core.completion.WodCompletionProposal;
 import org.objectstyle.wolips.wodclipse.core.completion.WodCompletionUtils;
 
-public class ComponentLiveSearch implements ModifyListener {
+public class ComponentLiveSearch implements ModifyListener, SelectionListener {
 	private IJavaProject _project;
 
 	private IProgressMonitor _progressMonitor;
@@ -30,10 +32,35 @@ public class ComponentLiveSearch implements ModifyListener {
 	private String _lastSearch;
 
 	private Object _completionLock = new Object();
-	
+
 	public ComponentLiveSearch(IJavaProject project, IProgressMonitor progressMonitor) {
 		_project = project;
 		_progressMonitor = progressMonitor;
+	}
+
+	public void attachTo(Combo combo) {
+		if (combo != null) {
+			combo.addModifyListener(this);
+			combo.addSelectionListener(this);
+		}
+	}
+
+	public void detachFrom(Combo combo) {
+		if (combo != null) {
+			combo.removeModifyListener(this);
+			combo.removeSelectionListener(this);
+		}
+	}
+
+	public void widgetDefaultSelected(SelectionEvent e) {
+		widgetSelected(e);
+	}
+
+	public void widgetSelected(SelectionEvent e) {
+		Combo componentNameCombo = (Combo) e.getSource();
+		if (componentNameCombo.getItemCount() > 0) {
+			componentNameCombo.select(0);
+		}
 	}
 
 	public void modifyText(ModifyEvent e) {
@@ -49,7 +76,7 @@ public class ComponentLiveSearch implements ModifyListener {
 			_lastSearch = partialName;
 			_progressMonitor.setCanceled(true);
 
-			WorkspaceJob job = new WorkspaceJob("Searching for components named '" + partialName + "*' ...") {
+			WorkspaceJob job = new WorkspaceJob("Searching for components ...") {
 				public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
 					synchronized (_completionLock) {
 						_progressMonitor.setCanceled(false);
@@ -60,15 +87,24 @@ public class ComponentLiveSearch implements ModifyListener {
 								Display.getDefault().asyncExec(new Runnable() {
 									public void run() {
 										componentNameCombo.remove(0, componentNameCombo.getItemCount() - 1);
+										boolean exactMatch = false;
 										for (WodCompletionProposal elementName : proposals) {
-											componentNameCombo.add(elementName.getDisplayString());
+											String displayString = elementName.getDisplayString();
+											if (displayString != null && displayString.equals(_lastSearch)) {
+												exactMatch = true;
+											}
+											componentNameCombo.add(displayString);
 										}
 										try {
 											Method setListVisible = componentNameCombo.getClass().getDeclaredMethod("setListVisible", boolean.class);
 											setListVisible.setAccessible(true);
-											setListVisible.invoke(componentNameCombo, true);
-										} catch (Throwable e) {
-											e.printStackTrace();
+											if (!(exactMatch && componentNameCombo.getItemCount() == 1)) {
+												setListVisible.invoke(componentNameCombo, true);
+											} else {
+												setListVisible.invoke(componentNameCombo, false);
+											}
+										} catch (Throwable ex) {
+											ex.printStackTrace();
 										}
 									}
 								});
