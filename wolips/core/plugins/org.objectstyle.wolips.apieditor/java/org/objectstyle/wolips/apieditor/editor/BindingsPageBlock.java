@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.apieditor.editor;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -106,12 +107,11 @@ public class BindingsPageBlock extends MasterDetailsBlock implements BindingName
 			try {
 				if (inputElement instanceof IEditorInput) {
 					ApiEditor apiEditor = (ApiEditor) page.getEditor();
-					Binding[] bindings = apiEditor.getModel().getWODefinitions().getWo().getBindings();
-					for (int i = 0; i < bindings.length; i++) {
-						Binding binding = bindings[i];
+					List<Binding> bindings = apiEditor.getModel().getWODefinitions().getWo().getBindings();
+					for (Binding binding : bindings) {
 						binding.setBindingNameChangedListener(BindingsPageBlock.this);
 					}
-					return bindings;
+					return bindings.toArray();
 				}
 				return new Object[0];
 			} catch (Throwable t) {
