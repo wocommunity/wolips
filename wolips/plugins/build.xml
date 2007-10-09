@@ -15,6 +15,7 @@
 		<ant dir="org.objectstyle.wolips.preferences" target="all" />
 		<ant dir="org.objectstyle.wolips.locate" target="all" />
 		<ant dir="org.objectstyle.wolips" target="all" />
+		<ant dir="org.objectstyle.wolips.bindings" target="all" />
 		<ant dir="org.objectstyle.wolips.datasets" target="all" />
 		<ant dir="org.objectstyle.wolips.ant" target="all" />
 		<ant dir="org.objectstyle.wolips.documentation" target="all" />
@@ -60,6 +61,7 @@
 		<ant dir="org.objectstyle.wolips.preferences" target="dist" />
 		<ant dir="org.objectstyle.wolips.locate" target="dist" />
 		<ant dir="org.objectstyle.wolips" target="dist" />
+		<ant dir="org.objectstyle.wolips.bindings" target="dist" />
 		<ant dir="org.objectstyle.wolips.datasets" target="dist" />
 		<ant dir="org.objectstyle.wolips.ant" target="dist" />
 		<ant dir="org.objectstyle.wolips.documentation" target="dist" />
