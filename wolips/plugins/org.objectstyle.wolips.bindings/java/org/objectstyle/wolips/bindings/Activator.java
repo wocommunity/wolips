@@ -2,7 +2,6 @@ package org.objectstyle.wolips.bindings;
 
 import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
 import org.objectstyle.wolips.bindings.preferences.PreferenceConstants;
-import org.objectstyle.wolips.core.CorePlugin;
 import org.osgi.framework.BundleContext;
 
 /**

@@ -55,6 +55,8 @@
  */
 package org.objectstyle.wolips.bindings.api;
 
+import java.util.List;
+
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
@@ -78,6 +80,10 @@ public class Binding extends AbstractApiModelElement implements IApiBinding {
 		this.parent = parent;
 	}
 
+	public Wo getElement() {
+	  return parent;
+	}
+	
 	public String getName() {
 		return element.getAttribute(NAME);
 	}
@@ -124,14 +130,12 @@ public class Binding extends AbstractApiModelElement implements IApiBinding {
 	public boolean isRequired() {
 		boolean required = isExplicitlyRequired();
 		if (!required) {
-			Validation[] validations = parent.getValidations();
-			for (int i = 0; !required && i < validations.length; i++) {
-				Validation validation = validations[i];
-				Unbound[] unbounds = validation.getUnbounds();
-				if (unbounds.length == 1) {
-					if (unbounds[0].isAffectedByBindingNamed(this.getName())) {
-						required = true;
-					}
+			List<Validation> validations = parent.getValidations();
+			for (int i = 0; !required && i < validations.size(); i++) {
+				Validation validation = validations.get(i);
+				List<Unbound> unbounds = validation.getUnbounds();
+				if (unbounds.size() == 1 && unbounds.get(0).isAffectedByBindingNamed(this.getName())) {
+					required = true;
 				}
 			}
 		}
@@ -151,14 +155,11 @@ public class Binding extends AbstractApiModelElement implements IApiBinding {
 	}
 
 	public boolean isWillSet() {
-		Validation[] validations = parent.getValidations();
-		for (int i = 0; i < validations.length; i++) {
-			Validation validation = validations[i];
-			Unsettable[] unsettables = validation.getUnsettables();
-			if (unsettables.length == 1) {
-				if (unsettables[0].isAffectedByBindingNamed(this.getName())) {
-					return true;
-				}
+		List<Validation> validations = parent.getValidations();
+		for (Validation validation : validations) {
+			List<Unsettable> unsettables = validation.getUnsettables();
+			if (unsettables.size() == 1 && unsettables.get(0).isAffectedByBindingNamed(this.getName())) {
+				return true;
 			}
 		}
 		return false;

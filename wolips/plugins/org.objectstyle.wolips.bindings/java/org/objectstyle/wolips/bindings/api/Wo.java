@@ -71,177 +71,176 @@ import org.w3c.dom.Text;
 
 public class Wo extends AbstractApiModelElement {
 
-	private final static String CLASS = "class";
+  private final static String CLASS = "class";
 
-	private final static String WOCOMPONENTCONTENT = "wocomponentcontent";
+  private final static String WOCOMPONENTCONTENT = "wocomponentcontent";
 
-	protected Wo(Element element, ApiModel apiModel) {
-		super(element, apiModel);
-	}
+  protected Wo(Element element, ApiModel apiModel) {
+    super(element, apiModel);
+  }
 
-	public ApiModel getModel() {
-		return apiModel;
-	}
+  public ApiModel getModel() {
+    return apiModel;
+  }
 
-	public String getClassName() {
-		return element.getAttribute(CLASS);
-	}
+  public String getClassName() {
+    return element.getAttribute(CLASS);
+  }
 
-	public void setClassName(String className) {
-		element.setAttribute(CLASS, className);
-	}
+  public void setClassName(String className) {
+    element.setAttribute(CLASS, className);
+  }
 
-	public boolean getIsWocomponentcontent() {
-		String value = element.getAttribute(WOCOMPONENTCONTENT);
-		if (value == null) {
-			return false;
-		}
-		return value.equals("true");
-	}
+  public boolean isComponentContent() {
+    String value = element.getAttribute(WOCOMPONENTCONTENT);
+    if (value == null) {
+      return false;
+    }
+    return value.equals("true");
+  }
 
-	public void setIsWocomponentcontent(boolean isWocomponentcontent) {
-		if (isWocomponentcontent) {
-			element.setAttribute(WOCOMPONENTCONTENT, "true");
-		} else {
-			element.setAttribute(WOCOMPONENTCONTENT, "false");
-		}
-	}
+  public void setComponentContent(boolean isComponentContent) {
+    if (isComponentContent) {
+      element.setAttribute(WOCOMPONENTCONTENT, "true");
+    }
+    else {
+      element.setAttribute(WOCOMPONENTCONTENT, "false");
+    }
+  }
 
-	public Binding[] getRequiredBindings() {
-		List<Binding> requiredBindings = new LinkedList<Binding>();
-		for (Binding binding : getBindings()) {
-			if (binding.isRequired()) {
-				requiredBindings.add(binding);
-			}
-		}
-		return requiredBindings.toArray(new Binding[requiredBindings.size()]);
-	}
+  public List<Binding> getRequiredBindings() {
+    List<Binding> requiredBindings = new LinkedList<Binding>();
+    for (Binding binding : getBindings()) {
+      if (binding.isRequired()) {
+        requiredBindings.add(binding);
+      }
+    }
+    return requiredBindings;
+  }
 
-	public Binding[] getBindings() {
-		NodeList bindingElements = element.getElementsByTagName(Binding.BINDING);
-		List<Binding> bindings = new LinkedList<Binding>();
-		for (int i = 0; i < bindingElements.getLength(); i++) {
-			Element bindingElement = (Element) bindingElements.item(i);
-			Binding binding = new Binding(bindingElement, apiModel, this);
-			bindings.add(binding);
-		}
-		return bindings.toArray(new Binding[bindings.size()]);
-	}
+  public List<Binding> getBindings() {
+    NodeList bindingElements = element.getElementsByTagName(Binding.BINDING);
+    List<Binding> bindings = new LinkedList<Binding>();
+    for (int i = 0; i < bindingElements.getLength(); i++) {
+      Element bindingElement = (Element) bindingElements.item(i);
+      Binding binding = new Binding(bindingElement, apiModel, this);
+      bindings.add(binding);
+    }
+    return bindings;
+  }
 
-	public Validation[] getValidations() {
-		NodeList validationElements = element.getElementsByTagName(Validation.VALIDATION);
-		List<Validation> validations = new LinkedList<Validation>();
-		for (int i = 0; i < validationElements.getLength(); i++) {
-			Element validationElement = (Element) validationElements.item(i);
-			Validation validation = new Validation(validationElement, apiModel);
-			validations.add(validation);
-		}
-		return validations.toArray(new Validation[validations.size()]);
-	}
+  public List<Validation> getValidations() {
+    NodeList validationElements = element.getElementsByTagName(Validation.VALIDATION);
+    List<Validation> validations = new LinkedList<Validation>();
+    for (int i = 0; i < validationElements.getLength(); i++) {
+      Element validationElement = (Element) validationElements.item(i);
+      Validation validation = new Validation(validationElement, apiModel);
+      validations.add(validation);
+    }
+    return validations;
+  }
 
-	public Validation[] getAffectedValidations(String bindingName) {
-		Validation[] validations = this.getValidations();
-		List<Validation> validationsList = new LinkedList<Validation>();
-		for (int i = 0; i < validations.length; i++) {
-			Validation validation = validations[i];
-			if (validation.isAffectedByBindingNamed(bindingName)) {
-				validationsList.add(validation);
-			}
+  public List<Validation> getAffectedValidations(String bindingName) {
+    List<Validation> validations = getValidations();
+    List<Validation> affectedValidations = new LinkedList<Validation>();
+    for (Validation validation : validations) {
+      if (validation.isAffectedByBindingNamed(bindingName)) {
+        affectedValidations.add(validation);
+      }
+    }
+    return affectedValidations;
+  }
 
-		}
-		return validationsList.toArray(new Validation[validationsList.size()]);
-	}
+  public List<Validation> getFailedValidations(Map<String, String> bindings) {
+    List<Validation> validations = getValidations();
+    List<Validation> failedValidations = new LinkedList<Validation>();
+    for (Validation validation : validations) {
+      if (validation.evaluate(bindings)) {
+        failedValidations.add(validation);
+      }
+    }
+    return failedValidations;
+  }
 
-	public Validation[] getFailedValidations(Map _bindings) {
-		Validation[] validations = this.getValidations();
-		List<Validation> validationsList = new LinkedList<Validation>();
-		for (int i = 0; i < validations.length; i++) {
-			Validation validation = validations[i];
-			if (validation.evaluate(_bindings)) {
-				validationsList.add(validation);
-			}
-		}
-		return validationsList.toArray(new Validation[validationsList.size()]);
-	}
+  public Binding getBinding(String name) {
+    Binding matchingBinding = null;
+    List<Binding> bindings = getBindings();
+    for (int bindingNum = 0; matchingBinding == null && bindingNum < bindings.size(); bindingNum++) {
+      Binding binding = bindings.get(bindingNum);
+      if (name != null && name.equals(binding.getName())) {
+        matchingBinding = binding;
+      }
+    }
+    return matchingBinding;
+  }
 
-	public Binding getBinding(String name) {
-		Binding matchingBinding = null;
-		Binding[] bindings = getBindings();
-		for (int bindingNum = 0; matchingBinding == null && bindingNum < bindings.length; bindingNum++) {
-			Binding binding = bindings[bindingNum];
-			if (name != null && name.equals(binding.getName())) {
-				matchingBinding = binding;
-			}
-		}
-		return matchingBinding;
-	}
+  public boolean containsBinding(String name) {
+    return getBinding(name) == null;
+  }
 
-	public boolean containsBinding(String name) {
-		return getBinding(name) == null;
-	}
+  public Binding createBinding(String name) {
+    Binding binding = getBinding(name);
+    if (binding == null) {
+      Element newBindingElement = this.element.getOwnerDocument().createElement(Binding.BINDING);
+      newBindingElement.setAttribute(Binding.NAME, name);
+      this.element.appendChild(newBindingElement);
+      this.apiModel.markAsDirty();
+      binding = getBinding(name);
+    }
+    return binding;
+  }
 
-	public Binding createBinding(String name) {
-		Binding binding = getBinding(name);
-		if (binding == null) {
-			Element newBindingElement = this.element.getOwnerDocument().createElement(Binding.BINDING);
-			newBindingElement.setAttribute(Binding.NAME, name);
-			this.element.appendChild(newBindingElement);
-			this.apiModel.markAsDirty();
-			binding = getBinding(name);
-		}
-		return binding;
-	}
+  public void removeBinding(String name) {
+    Binding binding = getBinding(name);
+    if (binding != null) {
+      removeBinding(binding);
+    }
+  }
 
-	public void removeBinding(String name) {
-		Binding binding = getBinding(name);
-		if (binding != null) {
-			removeBinding(binding);
-		}
-	}
+  public void removeBinding(Binding binding) {
+    List<Validation> affectedValidations = getAffectedValidations(binding.getName());
+    for (Validation affectedValidation : affectedValidations) {
+      this.element.removeChild(affectedValidation.element);
+    }
+    this.element.removeChild(binding.element);
+    this.apiModel.markAsDirty();
+  }
 
-	public void removeBinding(Binding binding) {
-		Validation[] validations = this.getAffectedValidations(binding.getName());
-		for (int i = 0; i < validations.length; i++) {
-			this.element.removeChild(validations[i].element);
-		}
-		this.element.removeChild(binding.element);
-		this.apiModel.markAsDirty();
-	}
-
-	public String getPreview() {
-		String preview = null;
-		NodeList previewNodes = this.element.getElementsByTagName("preview");
-		if (previewNodes.getLength() == 1) {
-			StringWriter sw = new StringWriter();
-			TransformerFactory xformerFactory = TransformerFactory.newInstance();
-			xformerFactory.setAttribute("indent-number", new Integer(4));
-			OutputFormat outputFormat = new OutputFormat("XML", "UTF-8", true);
-			outputFormat.setIndent(1);
-			outputFormat.setIndenting(true);
-			outputFormat.setOmitXMLDeclaration(true);
-			XMLSerializer serializer = new XMLSerializer(sw, outputFormat);
-			try {
-				serializer.asDOMSerializer();
-				for (int nodeNum = 0; nodeNum < previewNodes.getLength(); nodeNum++) {
-					Element previewElement = (Element) previewNodes.item(nodeNum);
-					NodeList previewChildren = previewElement.getChildNodes();
-					for (int childNum = 0; childNum < previewChildren.getLength(); childNum++) {
-						Node childElement = previewChildren.item(childNum);
-						if (childElement instanceof Element) {
-							serializer.serialize((Element) childElement);
-						}
-						else if (childElement instanceof Text) {
-							sw.append(((Text)childElement).getTextContent());
-						}
-					}
-				}
-				preview = sw.toString();
-			} catch (Exception e) {
-				e.printStackTrace();
-				preview = null;
-			}
-		}
-		return preview;
-	}
+  public String getPreview() {
+    String preview = null;
+    NodeList previewNodes = this.element.getElementsByTagName("preview");
+    if (previewNodes.getLength() == 1) {
+      StringWriter sw = new StringWriter();
+      TransformerFactory xformerFactory = TransformerFactory.newInstance();
+      xformerFactory.setAttribute("indent-number", new Integer(4));
+      OutputFormat outputFormat = new OutputFormat("XML", "UTF-8", true);
+      outputFormat.setIndent(1);
+      outputFormat.setIndenting(true);
+      outputFormat.setOmitXMLDeclaration(true);
+      XMLSerializer serializer = new XMLSerializer(sw, outputFormat);
+      try {
+        serializer.asDOMSerializer();
+        for (int nodeNum = 0; nodeNum < previewNodes.getLength(); nodeNum++) {
+          Element previewElement = (Element) previewNodes.item(nodeNum);
+          NodeList previewChildren = previewElement.getChildNodes();
+          for (int childNum = 0; childNum < previewChildren.getLength(); childNum++) {
+            Node childElement = previewChildren.item(childNum);
+            if (childElement instanceof Element) {
+              serializer.serialize((Element) childElement);
+            }
+            else if (childElement instanceof Text) {
+              sw.append(((Text) childElement).getTextContent());
+            }
+          }
+        }
+        preview = sw.toString();
+      }
+      catch (Exception e) {
+        e.printStackTrace();
+        preview = null;
+      }
+    }
+    return preview;
+  }
 
 }

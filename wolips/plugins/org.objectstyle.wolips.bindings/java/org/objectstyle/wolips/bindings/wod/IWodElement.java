@@ -75,7 +75,7 @@ public interface IWodElement extends IWodUnit {
 
   public String getBindingValue(String name);
 
-  public Map<String, Object> getBindingsMap();
+  public Map<String, String> getBindingsMap();
 
   public Position getElementNamePosition();
 

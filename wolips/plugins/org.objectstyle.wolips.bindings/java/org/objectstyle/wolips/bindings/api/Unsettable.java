@@ -55,44 +55,43 @@
  */
 package org.objectstyle.wolips.bindings.api;
 
+import java.util.List;
 import java.util.Map;
 
 import org.w3c.dom.Element;
 
 public class Unsettable extends AbstractUn {
 
-	protected final static String UNSETTABLE = "unsettable";
+  protected final static String UNSETTABLE = "unsettable";
 
-	protected Unsettable(Element element, ApiModel apiModel) {
-		super(element, apiModel);
-	}
+  protected Unsettable(Element element, ApiModel apiModel) {
+    super(element, apiModel);
+  }
 
-	public static void addToWoWithBinding(Wo wo, Binding binding) {
-		Element newValidationElement = wo.element.getOwnerDocument().createElement(Validation.VALIDATION);
-		wo.element.appendChild(newValidationElement);
-		newValidationElement.setAttribute(Validation.MESSAGE, "'" + binding.getName() + "' must be bound to a settable value");
-		Element newUnsettableElement = wo.element.getOwnerDocument().createElement(UNSETTABLE);
-		newValidationElement.appendChild(newUnsettableElement);
-		newUnsettableElement.setAttribute(NAME, binding.getName());
-	}
+  public static void addToWoWithBinding(Wo wo, Binding binding) {
+    Element newValidationElement = wo.element.getOwnerDocument().createElement(Validation.VALIDATION);
+    wo.element.appendChild(newValidationElement);
+    newValidationElement.setAttribute(Validation.MESSAGE, "'" + binding.getName() + "' must be bound to a settable value");
+    Element newUnsettableElement = wo.element.getOwnerDocument().createElement(UNSETTABLE);
+    newValidationElement.appendChild(newUnsettableElement);
+    newUnsettableElement.setAttribute(NAME, binding.getName());
+  }
 
-	public static void removeFromWoWithBinding(Wo wo, Binding binding) {
-		Validation[] validations = wo.getValidations();
-		for (int i = validations.length - 1; i > 0; i--) {
-			Validation validation = validations[i];
-			Unsettable[] unsettables = validation.getUnsettables();
-			if (unsettables.length == 1) {
-				if (unsettables[0].isAffectedByBindingNamed(binding.getName())) {
-					validation.element.removeChild(unsettables[0].element);
-				}
-			}
-		}
-	}
+  public static void removeFromWoWithBinding(Wo wo, Binding binding) {
+    List<Validation> validations = wo.getValidations();
+    for (int i = validations.size() - 1; i > 0; i--) {
+      Validation validation = validations.get(i);
+      List<Unsettable> unsettables = validation.getUnsettables();
+      if (unsettables.size() == 1 && unsettables.get(0).isAffectedByBindingNamed(binding.getName())) {
+        validation.element.removeChild(unsettables.get(0).element);
+      }
+    }
+  }
 
-	public boolean evaluate(Map _bindings) {
-		String bindingName = getName();
-		String bindingValue = (String) _bindings.get(bindingName);
-		boolean evaluation = (bindingValue != null && bindingValue.startsWith("\"") && !bindingValue.startsWith("\"~"));
-		return evaluation;
-	}
+  public boolean evaluate(Map<String, String> bindings) {
+    String bindingName = getName();
+    String bindingValue = bindings.get(bindingName);
+    boolean evaluation = (bindingValue != null && bindingValue.startsWith("\"") && !bindingValue.startsWith("\"~"));
+    return evaluation;
+  }
 }

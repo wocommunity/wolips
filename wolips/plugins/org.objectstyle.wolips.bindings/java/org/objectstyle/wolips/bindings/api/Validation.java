@@ -55,34 +55,36 @@
  */
 package org.objectstyle.wolips.bindings.api;
 
+import java.util.List;
 import java.util.Map;
 
 import org.w3c.dom.Element;
 
 public class Validation extends AbstractValidationChild {
 
-	public final static String MESSAGE = "message";
+  public final static String MESSAGE = "message";
 
-	public final static String VALIDATION = "validation";
+  public final static String VALIDATION = "validation";
 
-	protected Validation(Element element, ApiModel apiModel) {
-		super(element, apiModel);
-	}
+  protected Validation(Element element, ApiModel apiModel) {
+    super(element, apiModel);
+  }
 
-	public String getMessage() {
-		return element.getAttribute(MESSAGE);
-	}
+  public String getMessage() {
+    return element.getAttribute(MESSAGE);
+  }
 
-	public void setMessage(String className) {
-		element.setAttribute(MESSAGE, className);
-	}
+  public void setMessage(String className) {
+    element.setAttribute(MESSAGE, className);
+  }
 
-	public boolean evaluate(Map _bindings) {
-		boolean evaluation = true;
-		IValidation[] validationChildren = getValidationChildren();
-		for (int i = 0; evaluation && i < validationChildren.length; i++) {
-			evaluation = validationChildren[i].evaluate(_bindings);
-		}
-		return evaluation;
-	}
+  @Override
+  public boolean evaluate(Map<String, String> bindings) {
+    boolean evaluation = true;
+    List<IValidation> validationChildren = getValidationChildren();
+    for (int i = 0; evaluation && i < validationChildren.size(); i++) {
+      evaluation = validationChildren.get(i).evaluate(bindings);
+    }
+    return evaluation;
+  }
 }

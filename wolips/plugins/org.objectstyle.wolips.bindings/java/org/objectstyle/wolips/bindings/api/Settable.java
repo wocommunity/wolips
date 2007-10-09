@@ -66,9 +66,9 @@ public class Settable extends AbstractUn {
 		super(element, apiModel);
 	}
 
-	public boolean evaluate(Map _bindings) {
+	public boolean evaluate(Map<String, String> bindings) {
 		String bindingName = getName();
-		String bindingValue = (String) _bindings.get(bindingName);
+		String bindingValue = bindings.get(bindingName);
 		boolean evaluation = (bindingValue != null && (!bindingValue.startsWith("\"") || bindingValue.startsWith("\"~")));
 		return evaluation;
 	}

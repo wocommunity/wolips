@@ -55,6 +55,7 @@
  */
 package org.objectstyle.wolips.bindings.api;
 
+import java.util.List;
 import java.util.Map;
 
 import org.w3c.dom.Element;
@@ -66,13 +67,14 @@ public class Not extends AbstractValidationChild {
 		super(element, apiModel);
 	}
 
-	public boolean evaluate(Map _bindings) {
+	@Override
+  public boolean evaluate(Map<String, String> bindings) {
 		// NTS: What do we do when NOT has more than one child? I just and the
 		// not's together right now
 		boolean evaluation = true;
-		IValidation[] validationChildren = getValidationChildren();
-		for (int i = 0; i < validationChildren.length; i++) {
-			evaluation = evaluation && !validationChildren[i].evaluate(_bindings);
+		List<IValidation> validationChildren = getValidationChildren();
+		for (IValidation validation : validationChildren) {
+			evaluation = evaluation && !validation.evaluate(bindings);
 		}
 		return evaluation;
 	}
