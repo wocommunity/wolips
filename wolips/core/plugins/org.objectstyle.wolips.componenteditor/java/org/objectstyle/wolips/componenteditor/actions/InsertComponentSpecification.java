@@ -1,5 +1,6 @@
 package org.objectstyle.wolips.componenteditor.actions;
 
+import java.util.List;
 import java.util.Map;
 
 import org.objectstyle.wolips.bindings.api.Binding;
@@ -19,27 +20,27 @@ import org.objectstyle.wolips.bindings.api.Binding;
 
 public class InsertComponentSpecification {
 	private String _tagName;
-	
+
 	private String _componentName;
 
 	private String _componentInstanceName;
 
 	private String _componentInstanceNameSuffix;
 
-	private Binding[] _requiredBindings;
-	
+	private List<Binding> _requiredBindings;
+
 	private Map<String, String> _attributes;
-	
+
 	private boolean _inline;
-	
+
 	public InsertComponentSpecification(String componentName) {
 		_componentName = componentName;
 	}
-	
+
 	public void setAttributes(Map<String, String> attributes) {
 		_attributes = attributes;
 	}
-	
+
 	public Map<String, String> getHtmlAttributes() {
 		return _attributes;
 	}
@@ -47,11 +48,11 @@ public class InsertComponentSpecification {
 	public void setTagName(String tagName) {
 		_tagName = tagName;
 	}
-	
+
 	public String getTagName() {
 		return _tagName;
 	}
-	
+
 	public String getComponentName() {
 		return _componentName;
 	}
@@ -76,18 +77,18 @@ public class InsertComponentSpecification {
 		_componentInstanceNameSuffix = componentInstanceNameSuffix;
 	}
 
-	public Binding[] getRequiredBindings() {
+	public List<Binding> getRequiredBindings() {
 		return _requiredBindings;
 	}
 
-	public void setRequiredBindings(Binding[] requiredBindings) {
+	public void setRequiredBindings(List<Binding> requiredBindings) {
 		_requiredBindings = requiredBindings;
 	}
 
 	public void setInline(boolean inline) {
 		_inline = inline;
 	}
-	
+
 	public boolean isInline() {
 		return _inline;
 	}

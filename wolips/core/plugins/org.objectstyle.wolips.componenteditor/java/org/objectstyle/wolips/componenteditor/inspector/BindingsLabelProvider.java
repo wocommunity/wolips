@@ -1,25 +1,32 @@
 package org.objectstyle.wolips.componenteditor.inspector;
 
+import java.util.List;
+
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableColorProvider;
+import org.eclipse.jface.viewers.ITableFontProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.objectstyle.wolips.bindings.api.IApiBinding;
+import org.objectstyle.wolips.bindings.wod.ApiBindingValidationProblem;
+import org.objectstyle.wolips.bindings.wod.ApiElementValidationProblem;
 import org.objectstyle.wolips.bindings.wod.IWodBinding;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
+import org.objectstyle.wolips.bindings.wod.WodProblem;
 
-public class BindingsLabelProvider implements ITableLabelProvider, ITableColorProvider {
+public class BindingsLabelProvider implements ITableLabelProvider, ITableColorProvider, ITableFontProvider {
 	private IWodElement _wodElement;
 
-	public void setWodElement(IWodElement wodElement) {
-		_wodElement = wodElement;
-	}
+	private List<WodProblem> _problems;
 
-	public IWodElement getWodElement() {
-		return _wodElement;
+	public void setContext(IWodElement wodElement, List<WodProblem> problems) {
+		_wodElement = wodElement;
+		_problems = problems;
 	}
 
 	public Image getColumnImage(Object element, int columnIndex) {
@@ -61,23 +68,35 @@ public class BindingsLabelProvider implements ITableLabelProvider, ITableColorPr
 	}
 
 	public Color getForeground(Object element, int columnIndex) {
-		Color color;
+		Color color = null;
 		IApiBinding apiBinding = (IApiBinding) element;
-		if (apiBinding.isRequired()) {
-			IWodBinding wodBinding = _wodElement.getBindingNamed(apiBinding.getName());
-			if (wodBinding == null) {
+		if (_problems != null) {
+			String bindingName = apiBinding.getName();
+			boolean hasValidationProblem = false;
+			for (WodProblem problem : _problems) {
+				if (problem instanceof ApiBindingValidationProblem) {
+					ApiBindingValidationProblem validationProblem = (ApiBindingValidationProblem) problem;
+					hasValidationProblem = validationProblem.getBindingName().equals(bindingName);
+				} else if (problem instanceof ApiElementValidationProblem) {
+					ApiElementValidationProblem validationProblem = (ApiElementValidationProblem) problem;
+					hasValidationProblem = validationProblem.getValidation().isAffectedByBindingNamed(bindingName);
+				}
+				if (hasValidationProblem) {
+					break;
+				}
+			}
+			if (hasValidationProblem) {
 				color = Display.getCurrent().getSystemColor(SWT.COLOR_RED);
 			}
-			else {
-				color = null;
-			}
 		}
-		else {
-			color = null;
-		}
-		// IWodBinding wodBinding = (IWodBinding) element;
-		// _wodElement.fillInProblems(javaProject, javaFileType, true, problems,
-		// cache)
 		return color;
+	}
+	
+	public Font getFont(Object element, int columnIndex) {
+		Font font = null;
+		if (element instanceof IWodBinding) {
+			font = JFaceResources.getFontRegistry().getBold(JFaceResources.DIALOG_FONT);
+		}
+		return font;
 	}
 }

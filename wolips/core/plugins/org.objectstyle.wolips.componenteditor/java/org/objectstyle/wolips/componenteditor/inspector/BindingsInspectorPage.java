@@ -1,5 +1,7 @@
 package org.objectstyle.wolips.componenteditor.inspector;
 
+import java.util.List;
+
 import jp.aonir.fuzzyxml.FuzzyXMLDocument;
 import jp.aonir.fuzzyxml.FuzzyXMLElement;
 import jp.aonir.fuzzyxml.FuzzyXMLParser;
@@ -30,12 +32,14 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.Page;
 import org.objectstyle.wolips.bindings.Activator;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
+import org.objectstyle.wolips.bindings.wod.WodProblem;
 import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
 import org.objectstyle.wolips.templateeditor.TemplateEditor;
 import org.objectstyle.wolips.templateeditor.TemplateSourceEditor;
 import org.objectstyle.wolips.wodclipse.action.ComponentLiveSearch;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
+import org.objectstyle.wolips.wodclipse.core.util.WodModelUtils;
 
 public class BindingsInspectorPage extends Page implements IAdaptable, ISelectionListener {
 	private Composite _control;
@@ -51,15 +55,17 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 	private TableViewer _bindingsTableViewer;
 
 	private BindingsLabelProvider _bindingsLabelProvider;
-	
+
 	private BindingsContentProvider _bindingsContentProvider;
 
 	private IWodElement _wodElement;
 
+	private List<WodProblem> _wodProblems;
+
 	private ComponentEditor _templateEditorPart;
 
 	private PartListener _partListener;
-	
+
 	private ComponentLiveSearch _componentLiveSearch;
 
 	public BindingsInspectorPage() {
@@ -74,12 +80,12 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 		if (_elementNameField.isDisposed() || _elementTypeField.isDisposed() || _bindingsTableViewer.getTable().isDisposed()) {
 			return;
 		}
-		
+
 		if (_componentLiveSearch != null) {
 			_elementTypeField.removeModifyListener(_componentLiveSearch);
 		}
 		_wodElement = wodElement;
-		_bindingsLabelProvider.setWodElement(_wodElement);
+		_bindingsLabelProvider.setContext(_wodElement, _wodProblems);
 		WodParserCache parserCache = null;
 		if (_templateEditorPart != null) {
 			try {
@@ -88,8 +94,7 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}
-		else {
+		} else {
 			_bindingsContentProvider.setContext(null, null);
 		}
 		if (_bindingsTableViewer != null && !_bindingsTableViewer.getControl().isDisposed()) {
@@ -101,15 +106,13 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 			if (_wodElement.isTemporary()) {
 				_elementNameField.setText("inline");
 				_elementNameField.setEnabled(false);
-			}
-			else {
+			} else {
 				_elementNameField.setText(_wodElement.getElementName());
 				_elementNameField.setEnabled(true);
 			}
 			_elementTypeField.setText(_wodElement.getElementType());
 			_elementTypeField.setEnabled(true);
-		}
-		else {
+		} else {
 			_elementNameField.setText("none");
 			_elementNameField.setEnabled(false);
 			_elementTypeField.setText("");
@@ -144,8 +147,8 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 		GridData bindingsTableContainerData = new GridData(GridData.FILL_BOTH);
 		bindingsTableContainerData.horizontalSpan = 2;
 		bindingsTableContainer.setLayoutData(bindingsTableContainerData);
-//		bindingsTableContainer.setLayout(new GridLayout());
-		
+		// bindingsTableContainer.setLayout(new GridLayout());
+
 		_bindingsTableViewer = new TableViewer(bindingsTableContainer, SWT.BORDER | SWT.V_SCROLL | SWT.FULL_SELECTION);
 		_bindingsLabelProvider = new BindingsLabelProvider();
 		_bindingsContentProvider = new BindingsContentProvider();
@@ -154,24 +157,24 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 
 		TableColumnLayout bindingsTableLayout = new TableColumnLayout();
 		bindingsTableContainer.setLayout(bindingsTableLayout);
-		
+
 		Table bindingsTable = _bindingsTableViewer.getTable();
 		bindingsTable.setHeaderVisible(true);
 		bindingsTable.setLinesVisible(true);
-//		GridData bindingsTableData = new GridData(GridData.FILL_BOTH);
-//		//bindingsTableData.horizontalSpan = 2;
-//		bindingsTable.setLayoutData(bindingsTableData);
+		// GridData bindingsTableData = new GridData(GridData.FILL_BOTH);
+		// //bindingsTableData.horizontalSpan = 2;
+		// bindingsTable.setLayoutData(bindingsTableData);
 
 		TableColumn nameColumn = new TableColumn(bindingsTable, SWT.LEFT);
 		nameColumn.setText("Attribute");
 		bindingsTableLayout.setColumnData(nameColumn, new ColumnWeightData(50, true));
-		//nameColumn.setWidth(100);
+		// nameColumn.setWidth(100);
 
 		TableColumn valueColumn = new TableColumn(bindingsTable, SWT.LEFT);
 		valueColumn.setText("Binding");
-		//valueColumn.setWidth(150);
+		// valueColumn.setWidth(150);
 		bindingsTableLayout.setColumnData(valueColumn, new ColumnWeightData(50, true));
-		
+
 		setWodElement(null);
 	}
 
@@ -242,10 +245,9 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 						ITextSelection textSelection = (ITextSelection) realSelection;
 						FuzzyXMLDocument doc;
 						if (templateSourceEditor.isDirty()) {
-						    FuzzyXMLParser parser = new FuzzyXMLParser(Activator.getDefault().isWO54(), true);
-						    doc = parser.parse(templateSourceEditor.getHTMLSource());
-						}
-						else {
+							FuzzyXMLParser parser = new FuzzyXMLParser(Activator.getDefault().isWO54(), true);
+							doc = parser.parse(templateSourceEditor.getHTMLSource());
+						} else {
 							doc = cache.getHtmlXmlDocument();
 						}
 						FuzzyXMLElement element = doc.getElementByOffset(textSelection.getOffset());
@@ -260,6 +262,8 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 							wodElement = WodHtmlUtils.getOrCreateWodElement(element, false, cache);
 						}
 					}
+					_wodProblems = null;
+					_wodProblems = WodModelUtils.getProblems(wodElement, cache);
 				} catch (Throwable t) {
 					t.printStackTrace();
 				}

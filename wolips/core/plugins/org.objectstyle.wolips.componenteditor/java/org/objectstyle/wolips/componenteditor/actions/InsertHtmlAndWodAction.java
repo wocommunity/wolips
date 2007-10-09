@@ -1,6 +1,7 @@
 package org.objectstyle.wolips.componenteditor.actions;
 
 import java.io.StringWriter;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jface.action.IAction;
@@ -36,7 +37,7 @@ public abstract class InsertHtmlAndWodAction extends AbstractTemplateAction {
 	 * have and so we may as well shove these in at the same time.
 	 * </P>
 	 */
-	protected abstract Binding[] getRequiredBindings(String componentName);
+	protected abstract List<Binding> getRequiredBindings(String componentName);
 
 	/**
 	 * <P>
@@ -117,7 +118,7 @@ public abstract class InsertHtmlAndWodAction extends AbstractTemplateAction {
 
 			if (ics != null) {
 				SimpleWodElement wodElement = new SimpleWodElement(ics.getComponentInstanceName(), ics.getComponentName());
-				Binding[] bindings = ics.getRequiredBindings();
+				List<Binding> bindings = ics.getRequiredBindings();
 				if (bindings != null) {
 					for (Binding binding : bindings) {
 						wodElement.addBinding(new SimpleWodBinding(binding.getName(), "", true));
