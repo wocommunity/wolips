@@ -27,6 +27,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelMap;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelParserDataStructureFactory;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
+import org.objectstyle.wolips.eomodeler.core.model.IEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.core.model.PropertyListMap;
 import org.objectstyle.wolips.eomodeler.core.utils.IPropertyChangeSource;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
@@ -128,12 +129,11 @@ public class WooModel implements IPropertyChangeSource {
 	public EOModelGroup getModelGroup() {
 		if (myModelGroup == null) {
 			myModelGroup = new EOModelGroup();
-			EclipseEOModelGroupFactory eogroupFactory = new EclipseEOModelGroupFactory();
 			Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
 			try {
-				eogroupFactory.loadModelGroup(myFile
-						.getProject(),myModelGroup, failures, true,
-						new NullProgressMonitor());
+				IEOModelGroupFactory.Utility.loadModelGroup(
+						myFile.getProject(), myModelGroup, failures, true,
+						new URL("file://"), new NullProgressMonitor());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
