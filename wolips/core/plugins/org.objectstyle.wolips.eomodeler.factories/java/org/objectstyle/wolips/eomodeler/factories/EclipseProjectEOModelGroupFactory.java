@@ -46,6 +46,7 @@ public class EclipseProjectEOModelGroupFactory extends AbstractManifestEOModelGr
 
 		File buildFolder = new File(eclipseProjectFolder, "build");
 		if (buildFolder.exists()) {
+			System.out.println("EclipseProjectEOModelGroupFactory.processEclipseProject: BUILD " + buildFolder);
 			File buildResourcesFolder;
 			File frameworkResourcesFolder = new File(buildFolder, eclipseProjectFolder.getName() + ".framework" + File.separator + "Resources");
 			if (frameworkResourcesFolder.exists()) {
@@ -73,7 +74,7 @@ public class EclipseProjectEOModelGroupFactory extends AbstractManifestEOModelGr
 			String kind = eclipseClasspathEntryElement.getAttribute("kind");
 			String path = eclipseClasspathEntryElement.getAttribute("path");
 			if ("src".equals(kind) && path != null && path.startsWith("/")) {
-				File referencedProjectFolder = new File(eclipseProjectFolder.getParentFile(), path).getAbsoluteFile();
+				File referencedProjectFolder = new File(eclipseProjectFolder.getParentFile(), path).getCanonicalFile();
 				processEclipseProject(referencedProjectFolder, searchFolders, visitedProjects, env);
 			} else if ("con".equals(kind) && path != null && path.startsWith("org.objectstyle.wolips.WO_CLASSPATH/")) {
 				String[] frameworkNames = path.split("/");
@@ -85,15 +86,15 @@ public class EclipseProjectEOModelGroupFactory extends AbstractManifestEOModelGr
 					File matchingFrameworkFolder = null;
 					File userFrameworkFolder = new File(userFrameworksFolder, frameworkFolderName);
 					if (userFrameworkFolder.exists()) {
-						matchingFrameworkFolder = userFrameworkFolder.getAbsoluteFile();
+						matchingFrameworkFolder = userFrameworkFolder.getCanonicalFile();
 					} else {
 						File localFrameworkFolder = new File(localFrameworksFolder, frameworkFolderName);
 						if (localFrameworkFolder.exists()) {
-							matchingFrameworkFolder = localFrameworkFolder.getAbsoluteFile();
+							matchingFrameworkFolder = localFrameworkFolder.getCanonicalFile();
 						} else {
 							File systemFrameworkFolder = new File(systemFrameworksFolder, frameworkFolderName);
 							if (systemFrameworkFolder.exists()) {
-								matchingFrameworkFolder = systemFrameworkFolder.getAbsoluteFile();
+								matchingFrameworkFolder = systemFrameworkFolder.getCanonicalFile();
 							}
 						}
 					}
@@ -106,13 +107,13 @@ public class EclipseProjectEOModelGroupFactory extends AbstractManifestEOModelGr
 		}
 	}
 
-	protected File findEclipseProjectFolder(File folder) {
+	protected File findEclipseProjectFolder(File folder) throws IOException {
 		File eclipseProjectFolder = null;
 		if (folder != null) {
 			if (folder.isDirectory()) {
 				File possibleEclipseProjectFile = new File(folder, ".classpath");
 				if (possibleEclipseProjectFile.exists()) {
-					eclipseProjectFolder = folder.getAbsoluteFile();
+					eclipseProjectFolder = folder.getCanonicalFile();
 				}
 			}
 			if (eclipseProjectFolder == null) {

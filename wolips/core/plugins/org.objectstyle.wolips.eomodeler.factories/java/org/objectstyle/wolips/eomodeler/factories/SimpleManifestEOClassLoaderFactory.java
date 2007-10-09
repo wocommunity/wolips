@@ -38,7 +38,7 @@ public class SimpleManifestEOClassLoaderFactory extends AbstractEOClassLoader {
 			try {
 				String searchFolderPath;
 				while ((searchFolderPath = manifestReader.readLine()) != null) {
-					File searchFolder = new File(searchFolderPath).getAbsoluteFile();
+					File searchFolder = new File(searchFolderPath).getCanonicalFile();
 					if (searchFolder != null && searchFolder.exists()) {
 						if (searchFolder.getName().endsWith(".framework")) {
 							File javaFolder = new File(searchFolder, "Resources/Java");
