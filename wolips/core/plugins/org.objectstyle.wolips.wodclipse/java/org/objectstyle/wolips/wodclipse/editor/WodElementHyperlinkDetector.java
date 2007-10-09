@@ -9,11 +9,11 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.ui.IFileEditorInput;
+import org.objectstyle.wolips.bindings.wod.IWodElement;
+import org.objectstyle.wolips.bindings.wod.IWodModel;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
-import org.objectstyle.wolips.wodclipse.core.model.IWodElement;
-import org.objectstyle.wolips.wodclipse.core.model.IWodModel;
-import org.objectstyle.wolips.wodclipse.core.model.WodHyperlink;
+import org.objectstyle.wolips.wodclipse.core.document.WodHyperlink;
 
 public class WodElementHyperlinkDetector implements IHyperlinkDetector {
 	private WodEditor _editor;
@@ -35,7 +35,7 @@ public class WodElementHyperlinkDetector implements IHyperlinkDetector {
 					if (wodElements != null) {
 						for (IWodElement element : wodElements) {
 							if (element.isWithin(region)) {
-								hyperlinks.add(element.toWodHyperlink(cache));
+								hyperlinks.add(WodHyperlink.toWodHyperlink(element, cache));
 							}
 						}
 					}

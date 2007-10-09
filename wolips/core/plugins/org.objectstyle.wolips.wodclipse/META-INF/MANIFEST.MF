@@ -14,7 +14,8 @@ Require-Bundle: org.eclipse.ui.editors,
  org.objectstyle.wolips.components,
  org.objectstyle.wolips.locate,
  org.objectstyle.wolips.workbenchutilities,
- org.objectstyle.wolips.wodclipse.core
+ org.objectstyle.wolips.wodclipse.core,
+ org.objectstyle.wolips.bindings
 Eclipse-LazyStart: true
 Bundle-ClassPath: .
 Export-Package: org.objectstyle.wolips.wodclipse,

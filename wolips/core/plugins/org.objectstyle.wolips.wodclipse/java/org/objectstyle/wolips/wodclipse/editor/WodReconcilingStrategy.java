@@ -13,7 +13,6 @@ import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
-import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.util.WodModelUtils;
@@ -41,8 +40,8 @@ public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilin
 			IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 				public void run(IProgressMonitor _monitor) throws CoreException {
 					try {
-						WodModelUtils.validateWodDocument(_document, _wodEditor.getComponentsLocateResults(), _cache);
-					} catch (LocateException e) {
+						WodModelUtils.validateWodDocument(_document, _wodEditor.getComponentsLocateResults(), _cache.getTypeCache(), _cache.getHtmlElementCache());
+					} catch (Exception e) {
 						WodclipsePlugin.getDefault().log(e);
 					}
 				}
