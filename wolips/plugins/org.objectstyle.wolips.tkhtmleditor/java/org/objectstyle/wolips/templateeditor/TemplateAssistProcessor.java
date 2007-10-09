@@ -20,15 +20,15 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPathEditorInput;
+import org.objectstyle.wolips.bindings.api.ApiUtils;
+import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
+import org.objectstyle.wolips.bindings.wod.IWodElement;
+import org.objectstyle.wolips.bindings.wod.IWodModel;
+import org.objectstyle.wolips.bindings.wod.TagShortcut;
 import org.objectstyle.wolips.wodclipse.core.completion.WodCompletionProposal;
 import org.objectstyle.wolips.wodclipse.core.completion.WodCompletionUtils;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
-import org.objectstyle.wolips.wodclipse.core.model.IWodElement;
-import org.objectstyle.wolips.wodclipse.core.model.IWodModel;
-import org.objectstyle.wolips.wodclipse.core.preferences.TagShortcut;
-import org.objectstyle.wolips.wodclipse.core.util.WodApiUtils;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
-import org.objectstyle.wolips.wodclipse.core.util.WodReflectionUtils;
 
 import tk.eclipse.plugin.htmleditor.assist.AssistInfo;
 import tk.eclipse.plugin.htmleditor.assist.AttributeInfo;
@@ -113,7 +113,7 @@ public class TemplateAssistProcessor extends HTMLAssistProcessor {
         if (!proposals.isEmpty()) {
           tagInfos = new LinkedList<TagInfo>();
           for (WodCompletionProposal proposal : proposals) {
-            InlineWodTagInfo tagInfo = new InlineWodTagInfo(proposal.getProposal(), _cache);
+            InlineWodTagInfo tagInfo = new InlineWodTagInfo(proposal.getProposal(), _cache.getTypeCache());
             tagInfo.setJavaProject(javaProject);
             tagInfos.add(tagInfo);
           }
@@ -167,7 +167,7 @@ public class TemplateAssistProcessor extends HTMLAssistProcessor {
         }
         IFile wodFile = getFile();
         String componentTypeName = wodFile.getLocation().removeFileExtension().lastSegment();
-        IType componentType = WodReflectionUtils.findElementType(wodTagInfo.getJavaProject(), componentTypeName, true, _cache);
+        IType componentType = BindingReflectionUtils.findElementType(wodTagInfo.getJavaProject(), componentTypeName, true, _cache.getTypeCache());
         Set<WodCompletionProposal> proposals = new HashSet<WodCompletionProposal>();
         int dotIndex = bindingValue.lastIndexOf('.');
         if (dotIndex == -1) {
@@ -176,12 +176,12 @@ public class TemplateAssistProcessor extends HTMLAssistProcessor {
         else {
           dotIndex += 2;
         }
-        boolean checkBindingValue = WodCompletionUtils.fillInBindingValueCompletionProposals(wodTagInfo.getJavaProject(), componentType, bindingValue, 0, bindingValue.length(), proposals, _cache);
+        boolean checkBindingValue = WodCompletionUtils.fillInBindingValueCompletionProposals(wodTagInfo.getJavaProject(), componentType, bindingValue, 0, bindingValue.length(), proposals, _cache.getTypeCache());
         if (checkBindingValue) {
           try {
             String elementTypeName = wodTagInfo.getExpandedElementTypeName();
-            IType elementType = WodReflectionUtils.findElementType(wodTagInfo.getJavaProject(), elementTypeName, false, _cache);
-            String[] validValues = WodApiUtils.getValidValues(wodTagInfo.getJavaProject(), _cache.getComponentType(), elementType, attrInfo.getAttributeName(), _cache);
+            IType elementType = BindingReflectionUtils.findElementType(wodTagInfo.getJavaProject(), elementTypeName, false, _cache.getTypeCache());
+            String[] validValues = ApiUtils.getValidValues(wodTagInfo.getJavaProject(), _cache.getComponentType(), elementType, attrInfo.getAttributeName(), _cache.getTypeCache());
             if (validValues != null) {
               for (String validValue : validValues) {
                 if (validValue.toLowerCase().startsWith(bindingValue)) {
@@ -260,7 +260,7 @@ public class TemplateAssistProcessor extends HTMLAssistProcessor {
   protected TagInfo getTagInfo(String name) {
     if (name.startsWith("wo:")) {
       String elementTypeName = name.substring("wo:".length());
-      InlineWodTagInfo tagInfo = new InlineWodTagInfo(elementTypeName, _cache);
+      InlineWodTagInfo tagInfo = new InlineWodTagInfo(elementTypeName, _cache.getTypeCache());
       tagInfo.setJavaProject(getJavaProject());
       return tagInfo;
     }

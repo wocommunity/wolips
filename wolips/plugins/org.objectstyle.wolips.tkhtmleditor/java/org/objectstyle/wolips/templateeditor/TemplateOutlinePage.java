@@ -36,11 +36,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-import org.objectstyle.wolips.wodclipse.core.Activator;
+import org.objectstyle.wolips.bindings.Activator;
+import org.objectstyle.wolips.bindings.wod.IWodBinding;
+import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
-import org.objectstyle.wolips.wodclipse.core.model.IWodBinding;
-import org.objectstyle.wolips.wodclipse.core.model.IWodElement;
-import org.objectstyle.wolips.wodclipse.core.preferences.PreferenceConstants;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
 import tk.eclipse.plugin.htmleditor.HTMLPlugin;
@@ -94,7 +93,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
   }
 
   protected FuzzyXMLParser createParser() {
-    FuzzyXMLParser parser = new FuzzyXMLParser(isHTML());
+    FuzzyXMLParser parser = new FuzzyXMLParser(Activator.getDefault().isWO54(), isHTML());
     return parser;
   }
 
@@ -105,6 +104,12 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
 
   @Override
   public void setFocus() {
+    // MS: This might be a little bit weird on the interaction side.  We refresh
+    // the view when it gets focus, to prevent you from clicking on something that
+    // is now out of date.
+    if (_editor.isDirty()) {
+      update();
+    }
     _browser.setFocus();
   }
 
@@ -494,7 +499,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
       IWodElement wodElement = null;
       if (woTag) {
         className = className + " wo";
-        boolean wo54 = Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.WO54_KEY);
+        boolean wo54 = Activator.getDefault().isWO54();
         try {
           wodElement = WodHtmlUtils.getOrCreateWodElement(element, wo54, cache);
         }
@@ -611,22 +616,22 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
               }
             }
             // Special case for the compact display of links, buttons, etc
-            else if (wodElement.getBindingNamed("action") != null) { 
+            else if (wodElement.getBindingNamed("action") != null) {
               String action = wodElement.getBindingValue("action");
               summaryName = wodElement.getElementType() + ": " + action;
             }
             // Special case for the compact display of form fields
-            else if (wodElement.getBindingNamed("value") != null) { 
+            else if (wodElement.getBindingNamed("value") != null) {
               String value = wodElement.getBindingValue("value");
               summaryName = wodElement.getElementType() + ": " + value;
             }
             // Special case for the compact display of checkboxes
-            else if (wodElement.getBindingNamed("checked") != null) { 
+            else if (wodElement.getBindingNamed("checked") != null) {
               String checked = wodElement.getBindingValue("checked");
               summaryName = wodElement.getElementType() + ": " + checked;
             }
             // Special case for the compact display of repetitions and popup buttons
-            else if (wodElement.getBindingNamed("list") != null) { 
+            else if (wodElement.getBindingNamed("list") != null) {
               String list = wodElement.getBindingValue("list");
               summaryName = wodElement.getElementType() + ": " + list;
             }
