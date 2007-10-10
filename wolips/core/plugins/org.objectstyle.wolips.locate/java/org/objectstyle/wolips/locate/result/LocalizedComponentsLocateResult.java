@@ -63,10 +63,12 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -83,6 +85,8 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 
 	private IFile dotApi;
 
+	private String[] superclasses = new String[] { "com.webobjects.appserver.WOElement" };
+
 	public LocalizedComponentsLocateResult() {
 		super();
 	}
@@ -95,12 +99,39 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 			IFile file = (IFile) resource;
 			String extension = resource.getFileExtension();
 			if (extension.equals("java")) {
+
 				if (dotJava != null) {
+					IJavaElement javaElement = JavaCore.create(file);
+					try {
+						if (javaElement.isStructureKnown()) {
+							if (!isValidSubclass(javaElement)) {
+								file = null;
+							}
+						}
+					} catch (JavaModelException e) {
+						LocatePlugin.getDefault().log(e);
+					}
+				}
+				if (file != null && dotJava != null) {
+					IJavaElement javaElement = JavaCore.create(dotJava);
+					try {
+						if (javaElement.isStructureKnown()) {
+							if (!isValidSubclass(javaElement)) {
+								dotJava = null;
+							}
+						}
+					} catch (JavaModelException e) {
+						LocatePlugin.getDefault().log(e);
+					}
+				}
+				if (file != null && dotJava != null) {
 					String message = "Duplicate located: " + dotJava + " " + file;
 					alert(message);
 					throw new LocateException(message);
 				}
-				dotJava = file;
+				if (file != null) {
+					dotJava = file;
+				}
 			} else if (extension.equals("api")) {
 				if (dotApi != null) {
 					String message = "Duplicate located: " + dotApi + " " + file;
@@ -127,10 +158,10 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 			public void run() {
 				MessageDialog.openError(null, "", message);
 			}
-			
+
 		});
 	}
-	
+
 	public IFolder[] getComponents() {
 		return components.toArray(new IFolder[components.size()]);
 	}
@@ -218,7 +249,7 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 				valid = false;
 			}
 		}
-    
+
 		if (dotApi == null) {
 			try {
 				IFile guessDotApi = getDotApi(true);
@@ -261,9 +292,30 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 			}
 
 		}
-		if(!mustExist) {
+		if (!mustExist) {
 			return folder.getFile(LocatePlugin.getDefault().fileNameWithoutExtension(folder.getName()) + "." + extension);
 		}
 		return null;
+	}
+
+	private boolean isValidSubclass(IJavaElement javaElement) throws JavaModelException {
+		if (superclasses == null || superclasses.length == 0) {
+			return true;
+		}
+		ICompilationUnit compilationUnit = (ICompilationUnit) javaElement;
+		IType typeToCeck = compilationUnit.findPrimaryType();
+		ITypeHierarchy typeHierarchy = typeToCeck.newSupertypeHierarchy(new NullProgressMonitor());
+		IType[] types = typeHierarchy.getAllClasses();
+		for (int i = 0; i < types.length; i++) {
+			IType type = types[i];
+			for (int j = 0; j < superclasses.length; j++) {
+				String superclass = superclasses[j];
+				if (type.getFullyQualifiedName().equals(superclass)) {
+					return true;
+				}
+
+			}
+		}
+		return false;
 	}
 }
