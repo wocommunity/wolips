@@ -205,6 +205,13 @@
          unpack="false"/>
 
    <plugin
+         id="org.objectstyle.wolips.bindings"
+         download-size="64"
+         install-size="64"
+         version="1.0.6"
+         unpack="false"/>
+
+   <plugin
          id="org.objectstyle.wolips.targetbuilder"
          download-size="4"
          install-size="8"
