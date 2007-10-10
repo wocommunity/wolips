@@ -72,7 +72,11 @@
             extensions="html,xhtml"
             icon="icons/file-html.png"
             id="org.objectstyle.wolips.TemplateEditor"
-            name="Template Editor"/>
+            name="Template Editor">
+				<contentTypeBinding
+               contentTypeId="org.objectstyle.wolips.editors.html"
+            /> 
+      </editor>
       <!--
       <editor
             class="tk.eclipse.plugin.htmleditor.editors.WebBrowser"
