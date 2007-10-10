@@ -21,6 +21,8 @@ import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.internal.corext.util.SuperTypeHierarchyCache;
 import org.objectstyle.wolips.bindings.wod.BindingValueKey;
 import org.objectstyle.wolips.bindings.wod.TypeCache;
+import org.objectstyle.wolips.core.resources.types.SubTypeHierachyCache;
+import org.objectstyle.wolips.core.resources.types.TypeNameCollector;
 
 public class BindingReflectionUtils {
   public static final String[] FIELD_PREFIXES = { "", "_" };
