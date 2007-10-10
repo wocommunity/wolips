@@ -3,25 +3,67 @@ package org.objectstyle.wolips.bindings.wod;
 import org.eclipse.jface.text.Position;
 
 public class SimpleWodElement extends AbstractWodElement {
-  private String _name;
-  private String _type;
+  private String _elementName;
+  private String _elementType;
+  private Position _elementNamePosition;
   private Position _elementTypePosition;
 
+  public SimpleWodElement(IWodElement wodElement) {
+    _elementName = wodElement.getElementName();
+    _elementNamePosition = wodElement.getElementNamePosition();
+    _elementType = wodElement.getElementType();
+    _elementTypePosition = wodElement.getElementTypePosition();
+    setTemporary(wodElement.isTemporary());
+  }
+
   public SimpleWodElement(String name, String type) {
-    _name = name;
-    _type = type;
+    _elementName = name;
+    _elementType = type;
   }
 
   public void setElementName(String name) {
-    _name = name;
+    String oldElementName = _elementName;
+    _elementName = name;
+    if (_elementNamePosition != null && _elementName != null) {
+      setElementNamePosition(new Position(_elementNamePosition.getOffset(), _elementName.length()));
+    }
+    if (!isTemporary() && oldElementName != null) {
+      int oldLength = oldElementName.length();
+      int newLength = name.length();
+      int diff = newLength - oldLength;
+      setElementTypePosition(new Position(_elementTypePosition.getOffset() + diff, _elementTypePosition.getLength()));
+    }
   }
 
   public String getElementName() {
-    return _name;
+    return _elementName;
+  }
+
+  public Position getElementNamePosition() {
+    return _elementNamePosition;
+  }
+
+  public void setElementNamePosition(Position elementNamePosition) {
+    _elementNamePosition = elementNamePosition;
   }
 
   public String getElementType() {
-    return _type;
+    return _elementType;
+  }
+
+  public void setElementType(String elementType) {
+    _elementType = elementType;
+    if (_elementTypePosition != null && _elementType != null) {
+      setElementTypePosition(new Position(_elementTypePosition.getOffset(), _elementType.length()));
+    }
+  }
+
+  public void setElementTypePosition(Position elementTypePosition) {
+    _elementTypePosition = elementTypePosition;
+  }
+
+  public Position getElementTypePosition() {
+    return _elementTypePosition;
   }
 
   public int getEndOffset() {
@@ -30,18 +72,6 @@ public class SimpleWodElement extends AbstractWodElement {
 
   public int getStartOffset() {
     return 0;
-  }
-
-  public Position getElementNamePosition() {
-    return null;
-  }
-
-  public void setElementTypePosition(Position elementTypePosition) {
-    _elementTypePosition = elementTypePosition;
-  }
-  
-  public Position getElementTypePosition() {
-    return _elementTypePosition;
   }
 
   @Override
