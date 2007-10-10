@@ -35,7 +35,8 @@ public class EOModelDocGenerator {
 	public static void generate(EOModelGroup modelGroup, File outputFolder, File templatePath) throws Exception {
 		VelocityEngine velocityEngine = new VelocityEngine();
 		velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, org.apache.velocity.runtime.log.NullLogSystem.class.getName());
-		//velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, ConsoleLogger.class.getName());
+		// velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
+		// ConsoleLogger.class.getName());
 		velocityEngine.setProperty("resource.loader", "file,class");
 		StringBuffer templatePaths = new StringBuffer();
 		templatePaths.append(".");
@@ -75,7 +76,7 @@ public class EOModelDocGenerator {
 				EOModelDocGenerator.writeTemplate(velocityEngine, context, "storedProcedureContent.html.vm", new File(outputFolder, model.getName() + "/storedProcedures/" + storedProcedure.getName() + ".html"));
 			}
 		}
-		
+
 		System.out.println("Done: " + new File(outputFolder, "index.html"));
 	}
 
@@ -106,18 +107,22 @@ public class EOModelDocGenerator {
 		EOModelDocGenerator.generate(modelGroup, outputFolder, null);
 	}
 
-	public static void writeTemplate(VelocityEngine engine, VelocityContext context, String templateName, File outputFile) throws ResourceNotFoundException, ParseErrorException, MethodInvocationException, Exception {
-		Template template = engine.getTemplate(templateName);
-		if (!outputFile.getParentFile().exists()) {
-			if (!outputFile.getParentFile().mkdirs()) {
-				throw new IOException("Unable to create the folder " + outputFile.getParentFile() + ".");
-			}
-		}
-		FileWriter outputWriter = new FileWriter(outputFile);
+	public static void writeTemplate(VelocityEngine engine, VelocityContext context, String templateName, File outputFile) throws Exception {
 		try {
-			template.merge(context, outputWriter);
-		} finally {
-			outputWriter.close();
+			Template template = engine.getTemplate(templateName);
+			if (!outputFile.getParentFile().exists()) {
+				if (!outputFile.getParentFile().mkdirs()) {
+					throw new IOException("Unable to create the folder " + outputFile.getParentFile() + ".");
+				}
+			}
+			FileWriter outputWriter = new FileWriter(outputFile);
+			try {
+				template.merge(context, outputWriter);
+			} finally {
+				outputWriter.close();
+			}
+		} catch (Exception e) {
+			throw new Exception("Failed to generate '" + outputFile + "' with template '" + templateName + "'.", e);
 		}
 	}
 }
