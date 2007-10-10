@@ -97,8 +97,12 @@ public abstract class AbstractJavaLocateScope extends DefaultLocateScope {
 				}
 				try {
 					if (javaElement.isStructureKnown()) {
-						if(!isValidSubclass(javaElement)) {
-							return false;
+						// MS: TEMPORARILY SKIPPING THIS (I NEED TO PUT A BUILD UP ON THE SERVER FOR SOMEONE ELSE).
+						boolean initiateSuperSlowMode = false;
+						if (initiateSuperSlowMode) {
+							if(!isValidSubclass(javaElement)) {
+								return false;
+							}
 						}
 					}
 				} catch (JavaModelException e) {
