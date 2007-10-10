@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
-import org.objectstyle.wolips.bindings.utils.TypeNameCollector;
+import org.objectstyle.wolips.core.resources.types.TypeNameCollector;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 
 public class WOElementSelectionDialog extends ElementListSelectionDialog {
