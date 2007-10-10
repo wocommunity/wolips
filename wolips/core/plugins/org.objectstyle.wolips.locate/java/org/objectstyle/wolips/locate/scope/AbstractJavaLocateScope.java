@@ -57,18 +57,34 @@ package org.objectstyle.wolips.locate.scope;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 
 public abstract class AbstractJavaLocateScope extends DefaultLocateScope {
 
+	private String[] superclasses = null;
+
 	public AbstractJavaLocateScope(IProject project, String[] includedFilesNames, String[] includedFolderNames) {
 		super(project, includedFilesNames, includedFolderNames);
 	}
-	
+
 	public AbstractJavaLocateScope(ILocateScope projectLocateScope, String[] includedFilesNames, String[] includedFolderNames) {
 		super(projectLocateScope, includedFilesNames, includedFolderNames);
+	}
+
+	public AbstractJavaLocateScope(IProject project, String[] includedFilesNames, String[] includedFolderNames, String[] superclasses) {
+		super(project, includedFilesNames, includedFolderNames);
+		this.superclasses = superclasses;
+	}
+
+	public AbstractJavaLocateScope(ILocateScope projectLocateScope, String[] includedFilesNames, String[] includedFolderNames, String[] superclasses) {
+		super(projectLocateScope, includedFilesNames, includedFolderNames);
+		this.superclasses = superclasses;
 	}
 
 	public boolean addToResult(IFile file) {
@@ -76,12 +92,13 @@ public abstract class AbstractJavaLocateScope extends DefaultLocateScope {
 			String extension = file.getFileExtension();
 			if (extension != null && "java".equals(extension)) {
 				IJavaElement javaElement = JavaCore.create(file);
-				if(javaElement == null) {
+				if (javaElement == null) {
 					return false;
 				}
 				try {
-					if(javaElement.isStructureKnown()) {
-						// just to get the exception
+					if (javaElement.isStructureKnown()) {
+						boolean isValidSubclass = isValidSubclass(javaElement);
+						return isValidSubclass;
 					}
 				} catch (JavaModelException e) {
 					return false;
@@ -89,6 +106,27 @@ public abstract class AbstractJavaLocateScope extends DefaultLocateScope {
 			}
 		}
 		return super.addToResult(file);
+	}
+
+	private boolean isValidSubclass(IJavaElement javaElement) throws JavaModelException {
+		if (superclasses == null || superclasses.length == 0) {
+			return true;
+		}
+		ICompilationUnit compilationUnit = (ICompilationUnit)javaElement;
+		IType typeToCeck = compilationUnit.findPrimaryType();
+		ITypeHierarchy typeHierarchy = typeToCeck.newSupertypeHierarchy(new NullProgressMonitor());
+		IType[] types = typeHierarchy.getAllClasses();
+		for (int i = 0; i < types.length; i++) {
+			IType type = types[i];
+			for (int j = 0; j < superclasses.length; j++) {
+				String superclass = superclasses[j];
+				if (type.getFullyQualifiedName().equals(superclass)) {
+					return true;
+				}
+
+			}
+		}
+		return false;
 	}
 
 }
