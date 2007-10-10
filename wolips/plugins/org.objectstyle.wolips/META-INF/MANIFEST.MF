@@ -33,6 +33,4 @@ Export-Package: org.objectstyle.wolips.core,
  org.objectstyle.wolips.core.resources.types.project,
  org.objectstyle.wolips.core.tests,
  org.objectstyle.wolips.core.tobeintregrated
-Bundle-ClassPath: lib/xml-apis.jar,
- lib/xercesImpl.jar,
- .
+Bundle-ClassPath: .
