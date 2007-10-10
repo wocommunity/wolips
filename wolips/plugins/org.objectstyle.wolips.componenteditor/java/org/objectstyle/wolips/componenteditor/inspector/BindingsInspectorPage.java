@@ -6,8 +6,16 @@ import jp.aonir.fuzzyxml.FuzzyXMLDocument;
 import jp.aonir.fuzzyxml.FuzzyXMLElement;
 import jp.aonir.fuzzyxml.FuzzyXMLParser;
 
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.UpdateValueStrategy;
+import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.core.databinding.validation.IValidator;
+import org.eclipse.core.databinding.validation.ValidationStatus;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -58,15 +66,19 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 
 	private BindingsContentProvider _bindingsContentProvider;
 
-	private IWodElement _wodElement;
-
-	private List<WodProblem> _wodProblems;
-
 	private ComponentEditor _templateEditorPart;
 
 	private PartListener _partListener;
 
 	private ComponentLiveSearch _componentLiveSearch;
+
+	private DataBindingContext _dataBindingContext;
+
+	private IWodElement _wodElement;
+
+	private RefactoringElementModel _refactoringElement;
+
+	private List<WodProblem> _wodProblems;
 
 	public BindingsInspectorPage() {
 		_partListener = new PartListener();
@@ -83,9 +95,15 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 
 		if (_componentLiveSearch != null) {
 			_componentLiveSearch.detachFrom(_elementTypeField);
+			_componentLiveSearch = null;
 		}
+		if (_dataBindingContext != null) {
+			_dataBindingContext.dispose();
+		}
+
 		_wodElement = wodElement;
 		_bindingsLabelProvider.setContext(_wodElement, _wodProblems);
+
 		WodParserCache parserCache = null;
 		if (_templateEditorPart != null) {
 			try {
@@ -97,31 +115,80 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 		} else {
 			_bindingsContentProvider.setContext(null, null);
 		}
+
 		if (_bindingsTableViewer != null && !_bindingsTableViewer.getControl().isDisposed()) {
 			_bindingsTableViewer.setInput(_wodElement);
 		} else {
 			_bindingsTableViewer.setInput(new Object[0]);
 		}
+
+		String elementName = "none";
+		boolean elementNameEnabled = false;
+		String elementType = "";
+		boolean elementTypeEnabled = false;
 		if (_wodElement != null) {
 			if (_wodElement.isTemporary()) {
-				_elementNameField.setText("inline");
-				_elementNameField.setEnabled(false);
+				elementName = "inline";
 			} else {
-				_elementNameField.setText(_wodElement.getElementName());
-				_elementNameField.setEnabled(true);
+				elementName = _wodElement.getElementName();
+				elementNameEnabled = true;
 			}
-			_elementTypeField.setText(_wodElement.getElementType());
-			_elementTypeField.setEnabled(true);
-		} else {
-			_elementNameField.setText("none");
-			_elementNameField.setEnabled(false);
-			_elementTypeField.setText("");
-			_elementTypeField.setEnabled(false);
+			elementType = _wodElement.getElementType();
+			elementTypeEnabled = true;
 		}
+		_elementNameField.setText(elementName);
+		_elementNameField.setEnabled(elementNameEnabled);
+		_elementTypeField.setText(elementType);
+		_elementTypeField.setEnabled(elementTypeEnabled);
+
 		if (parserCache != null) {
-			_componentLiveSearch = new ComponentLiveSearch(parserCache.getJavaProject(), new NullProgressMonitor());
-			_componentLiveSearch.attachTo(_elementTypeField);
+			if (elementNameEnabled) {
+				_refactoringElement = new RefactoringElementModel(_wodElement, parserCache);
+				_dataBindingContext = new DataBindingContext();
+
+				final WodParserCache refactoringParserCache = parserCache;
+				UpdateValueStrategy elementNameUpdateStrategy = new UpdateValueStrategy(UpdateValueStrategy.POLICY_UPDATE);
+				elementNameUpdateStrategy.setBeforeSetValidator(new IValidator() {
+					public IStatus validate(Object value) {
+						String newName = (String) value;
+						IStatus status = Status.OK_STATUS;
+						try {
+							if (refactoringParserCache.getWodModel().getElementNamed(newName) != null) {
+								status = ValidationStatus.error("There is already an element named '" + newName + "'.");
+							} else if (newName.contains(" ")) {
+								status = ValidationStatus.error("Element names do not allow spaces.");
+							}
+						} catch (Exception e) {
+							status = ValidationStatus.error("Failed to change element name.", e);
+						}
+
+						// reset the value back on failure
+						if (!status.isOK()) {
+							getElementNameField().setText(getRefactoringElement().getElementName());
+						}
+						return status;
+					}
+				});
+				_dataBindingContext.bindValue(SWTObservables.observeText(_elementNameField, SWT.FocusOut), BeansObservables.observeValue(_refactoringElement, RefactoringElementModel.ELEMENT_NAME), elementNameUpdateStrategy, null);
+			}
+
+			if (elementTypeEnabled) {
+				_componentLiveSearch = new ComponentLiveSearch(parserCache.getJavaProject(), new NullProgressMonitor());
+				_componentLiveSearch.attachTo(_elementTypeField);
+			}
 		}
+	}
+
+	public RefactoringElementModel getRefactoringElement() {
+		return _refactoringElement;
+	}
+
+	public Text getElementNameField() {
+		return _elementNameField;
+	}
+
+	public Combo getElementTypeField() {
+		return _elementTypeField;
 	}
 
 	public IWodElement getWodElement() {
@@ -148,7 +215,6 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 		GridData bindingsTableContainerData = new GridData(GridData.FILL_BOTH);
 		bindingsTableContainerData.horizontalSpan = 2;
 		bindingsTableContainer.setLayoutData(bindingsTableContainerData);
-		// bindingsTableContainer.setLayout(new GridLayout());
 
 		_bindingsTableViewer = new TableViewer(bindingsTableContainer, SWT.BORDER | SWT.V_SCROLL | SWT.FULL_SELECTION);
 		_bindingsLabelProvider = new BindingsLabelProvider();
@@ -162,18 +228,13 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 		Table bindingsTable = _bindingsTableViewer.getTable();
 		bindingsTable.setHeaderVisible(true);
 		bindingsTable.setLinesVisible(true);
-		// GridData bindingsTableData = new GridData(GridData.FILL_BOTH);
-		// //bindingsTableData.horizontalSpan = 2;
-		// bindingsTable.setLayoutData(bindingsTableData);
 
 		TableColumn nameColumn = new TableColumn(bindingsTable, SWT.LEFT);
 		nameColumn.setText("Attribute");
 		bindingsTableLayout.setColumnData(nameColumn, new ColumnWeightData(50, true));
-		// nameColumn.setWidth(100);
 
 		TableColumn valueColumn = new TableColumn(bindingsTable, SWT.LEFT);
 		valueColumn.setText("Binding");
-		// valueColumn.setWidth(150);
 		bindingsTableLayout.setColumnData(valueColumn, new ColumnWeightData(50, true));
 
 		setWodElement(null);
@@ -181,10 +242,14 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 
 	@Override
 	public void dispose() {
-		super.dispose();
 		if (_templateEditorPart != null) {
 			_templateEditorPart.getSite().getPage().removePartListener(_partListener);
 		}
+		if (_dataBindingContext != null) {
+			_dataBindingContext.dispose();
+			_dataBindingContext = null;
+		}
+		super.dispose();
 	}
 
 	@Override
@@ -215,7 +280,6 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 		if (_bindingsTableViewer == null) {
 			return;
 		}
-		// calling setInput on the viewer will cause the model to refresh
 		_bindingsTableViewer.setInput(_bindingsTableViewer.getInput());
 	}
 
