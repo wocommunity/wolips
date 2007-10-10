@@ -6,9 +6,9 @@ import java.util.Map;
 import org.eclipse.jdt.core.IType;
 import org.objectstyle.wolips.bindings.Activator;
 import org.objectstyle.wolips.bindings.preferences.PreferenceConstants;
-import org.objectstyle.wolips.bindings.utils.LimitedLRUCache;
 import org.objectstyle.wolips.bindings.wod.BindingValidationRule;
 import org.objectstyle.wolips.bindings.wod.TagShortcut;
+import org.objectstyle.wolips.core.resources.types.LimitedLRUCache;
 
 public class ApiCache {
   private Map<String, String> _elementNameToTypeCache;
