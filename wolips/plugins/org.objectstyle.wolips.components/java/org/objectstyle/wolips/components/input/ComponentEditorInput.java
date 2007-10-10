@@ -182,7 +182,9 @@ public class ComponentEditorInput extends MultiEditorInput implements IPersistab
 	 */
 	public static ComponentEditorInput createWithDotApi(IFile file) throws CoreException {
 		ComponentEditorInput input = create(file);
-		input.displayApiPartOnReveal = true;
+		if (input != null) {
+			input.displayApiPartOnReveal = true;
+		}
 		return input;
 	}
 
