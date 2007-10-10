@@ -79,5 +79,4 @@ public class RenameElementsRefactoring implements IRunnableWithProgress {
   public static void run(final List<ElementRename> renames, final WodParserCache cache, IProgressMonitor progressMonitor) throws InvocationTargetException, InterruptedException, CoreException {
     TemplateRefactoring.processHtmlAndWod(new RenameElementsRefactoring(renames, cache), cache, progressMonitor);
   }
-
 }
