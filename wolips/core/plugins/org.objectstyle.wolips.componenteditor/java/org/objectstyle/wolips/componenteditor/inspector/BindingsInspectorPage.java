@@ -1,5 +1,7 @@
 package org.objectstyle.wolips.componenteditor.inspector;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import jp.aonir.fuzzyxml.FuzzyXMLDocument;
@@ -142,21 +144,23 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 		_elementTypeField.setEnabled(elementTypeEnabled);
 
 		if (parserCache != null) {
-			if (elementNameEnabled) {
-				_refactoringElement = new RefactoringElementModel(_wodElement, parserCache);
-				_dataBindingContext = new DataBindingContext();
+			final WodParserCache refactoringParserCache = parserCache;
+			_dataBindingContext = new DataBindingContext();
+			_refactoringElement = new RefactoringElementModel(_wodElement, parserCache);
 
-				final WodParserCache refactoringParserCache = parserCache;
+			if (elementNameEnabled) {
 				UpdateValueStrategy elementNameUpdateStrategy = new UpdateValueStrategy(UpdateValueStrategy.POLICY_UPDATE);
 				elementNameUpdateStrategy.setBeforeSetValidator(new IValidator() {
 					public IStatus validate(Object value) {
 						String newName = (String) value;
 						IStatus status = Status.OK_STATUS;
 						try {
-							if (refactoringParserCache.getWodModel().getElementNamed(newName) != null) {
-								status = ValidationStatus.error("There is already an element named '" + newName + "'.");
+							if (newName == null || newName.length() == 0) {
+								status = ValidationStatus.error("Element names cannot be blank.");
 							} else if (newName.contains(" ")) {
 								status = ValidationStatus.error("Element names do not allow spaces.");
+							} else if (refactoringParserCache.getWodModel().getElementNamed(newName) != null) {
+								status = ValidationStatus.error("There is already an element named '" + newName + "'.");
 							}
 						} catch (Exception e) {
 							status = ValidationStatus.error("Failed to change element name.", e);
@@ -175,8 +179,55 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 			if (elementTypeEnabled) {
 				_componentLiveSearch = new ComponentLiveSearch(parserCache.getJavaProject(), new NullProgressMonitor());
 				_componentLiveSearch.attachTo(_elementTypeField);
+
+				UpdateValueStrategy elementTypeUpdateStrategy = new UpdateValueStrategy(UpdateValueStrategy.POLICY_UPDATE);
+				elementTypeUpdateStrategy.setBeforeSetValidator(new IValidator() {
+					public IStatus validate(Object value) {
+						String newName = (String) value;
+						IStatus status = Status.OK_STATUS;
+						try {
+							if (newName == null || newName.length() == 0) {
+								status = ValidationStatus.error("Element types cannot be blank.");
+							} else if (newName.contains(" ")) {
+								status = ValidationStatus.error("Element types do not allow spaces.");
+							}
+						} catch (Exception e) {
+							status = ValidationStatus.error("Failed to change element type.", e);
+						}
+
+						// reset the value back on failure
+						if (!status.isOK()) {
+							getElementTypeField().setText(getRefactoringElement().getElementType());
+						}
+						return status;
+					}
+				});
+				_dataBindingContext.bindValue(SWTObservables.observeText(_elementTypeField), BeansObservables.observeValue(_refactoringElement, RefactoringElementModel.ELEMENT_TYPE), elementTypeUpdateStrategy, null);
+				
+				_refactoringElement.addPropertyChangeListener(RefactoringElementModel.ELEMENT_TYPE, new PropertyChangeListener() {
+					public void propertyChange(PropertyChangeEvent evt) {
+						typeChanged();
+					}
+				});
 			}
 		}
+	}
+	
+	protected void typeChanged() {
+		_wodElement = getRefactoringElement().getWodElement();
+		_wodProblems = null;
+		try {
+			_wodProblems = WodModelUtils.getProblems(_wodElement, _templateEditorPart.getTemplateEditor().getSourceEditor().getParserCache());
+			if (getBindingsTableViewer() != null && !getBindingsTableViewer().getTable().isDisposed()) {
+				getBindingsTableViewer().setInput(_wodElement);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public TableViewer getBindingsTableViewer() {
+		return _bindingsTableViewer;
 	}
 
 	public RefactoringElementModel getRefactoringElement() {
@@ -296,10 +347,20 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 			_templateEditorPart = null;
 		}
 
-		IWodElement wodElement = null;
 		if (part instanceof ComponentEditor) {
 			_templateEditorPart = (ComponentEditor) part;
+		}
 
+		refreshWodElement();
+
+		if (_templateEditorPart != null) {
+			_templateEditorPart.getSite().getPage().addPartListener(_partListener);
+		}
+	}
+
+	protected void refreshWodElement() {
+		IWodElement wodElement = null;
+		if (_templateEditorPart != null) {
 			IEditorPart activeEditor = _templateEditorPart.getActiveEditor();
 			if (activeEditor instanceof TemplateEditor) {
 				try {
@@ -336,10 +397,6 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 		}
 
 		setWodElement(wodElement);
-
-		if (_templateEditorPart != null) {
-			_templateEditorPart.getSite().getPage().addPartListener(_partListener);
-		}
 	}
 
 	/**
