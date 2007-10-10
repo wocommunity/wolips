@@ -78,7 +78,9 @@ public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtml
   @Override
   public void doSave(IProgressMonitor monitor) {
     super.doSave(monitor);
-    _editorInteraction.fireWebObjectChanged();
+    if (_editorInteraction != null) {
+      _editorInteraction.fireWebObjectChanged();
+    }
   }
   
   public void webObjectChanged() {
