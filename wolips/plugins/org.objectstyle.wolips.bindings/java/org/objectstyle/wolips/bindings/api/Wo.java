@@ -60,10 +60,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -210,29 +211,37 @@ public class Wo extends AbstractApiModelElement {
     String preview = null;
     NodeList previewNodes = this.element.getElementsByTagName("preview");
     if (previewNodes.getLength() == 1) {
-      StringWriter sw = new StringWriter();
-      TransformerFactory xformerFactory = TransformerFactory.newInstance();
-      xformerFactory.setAttribute("indent-number", new Integer(4));
-      OutputFormat outputFormat = new OutputFormat("XML", "UTF-8", true);
-      outputFormat.setIndent(1);
-      outputFormat.setIndenting(true);
-      outputFormat.setOmitXMLDeclaration(true);
-      XMLSerializer serializer = new XMLSerializer(sw, outputFormat);
       try {
-        serializer.asDOMSerializer();
+        StringWriter sw = new StringWriter();
+
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        transformerFactory.setAttribute("indent-number", new Integer(4));
+        StreamResult output = new StreamResult(sw);
+        Transformer transformer = transformerFactory.newTransformer();
+
+//      TransformerFactory xformerFactory = TransformerFactory.newInstance();
+//      xformerFactory.setAttribute("indent-number", new Integer(4));
+//      OutputFormat outputFormat = new OutputFormat("XML", "UTF-8", true);
+//      outputFormat.setIndent(1);
+//      outputFormat.setIndenting(true);
+//      outputFormat.setOmitXMLDeclaration(true);
+//      XMLSerializer serializer = new XMLSerializer(sw, outputFormat);
+//        serializer.asDOMSerializer();
         for (int nodeNum = 0; nodeNum < previewNodes.getLength(); nodeNum++) {
           Element previewElement = (Element) previewNodes.item(nodeNum);
           NodeList previewChildren = previewElement.getChildNodes();
           for (int childNum = 0; childNum < previewChildren.getLength(); childNum++) {
             Node childElement = previewChildren.item(childNum);
             if (childElement instanceof Element) {
-              serializer.serialize((Element) childElement);
+              transformer.transform(new DOMSource(childElement), output);
+//              serializer.serialize((Element) childElement);
             }
             else if (childElement instanceof Text) {
               sw.append(((Text) childElement).getTextContent());
             }
           }
         }
+        
         preview = sw.toString();
       }
       catch (Exception e) {
