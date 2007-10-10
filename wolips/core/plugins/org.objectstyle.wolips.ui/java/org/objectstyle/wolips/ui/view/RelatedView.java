@@ -94,6 +94,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.OpenWithMenu;
+import org.eclipse.ui.part.IContributedContentsView;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.navigator.ShowInNavigatorAction;
 import org.objectstyle.wolips.datasets.project.WOLipsCore;
@@ -302,8 +303,21 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 	}
 
 	public void partActivated(IWorkbenchPart part) {
+		IWorkbenchPart contributingPart;
 		if (part instanceof IEditorPart) {
-			IEditorInput input = ((IEditorPart) part).getEditorInput();
+			contributingPart = part;
+		}
+		else {
+			IContributedContentsView contentsView = (IContributedContentsView)part.getAdapter(IContributedContentsView.class);
+			if (contentsView != null) {
+				contributingPart = contentsView.getContributingPart();
+			}
+			else {
+				contributingPart = part;
+			}
+		}
+		if (contributingPart instanceof IEditorPart) {
+			IEditorInput input = ((IEditorPart) contributingPart).getEditorInput();
 			if (input instanceof IFileEditorInput) {
 				_viewer.setInput(((IFileEditorInput)input).getFile());
 			}
@@ -315,8 +329,21 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 	}
 
 	public void partOpened(IWorkbenchPart part) {
+		IWorkbenchPart contributingPart;
 		if (part instanceof IEditorPart) {
-			IEditorInput input = ((IEditorPart) part).getEditorInput();
+			contributingPart = part;
+		}
+		else {
+			IContributedContentsView contentsView = (IContributedContentsView)part.getAdapter(IContributedContentsView.class);
+			if (contentsView != null) {
+				contributingPart = contentsView.getContributingPart();
+			}
+			else {
+				contributingPart = part;
+			}
+		}
+		if (contributingPart instanceof IEditorPart) {
+			IEditorInput input = ((IEditorPart) contributingPart).getEditorInput();
 			if (input instanceof IFileEditorInput) {
 				_viewer.setInput(((IFileEditorInput)input).getFile());
 			}
