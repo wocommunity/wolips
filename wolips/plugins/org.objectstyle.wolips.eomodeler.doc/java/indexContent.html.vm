@@ -1,10 +1,35 @@
 <html>
 <head>
-	<title>...</title>
+	<title>Models Overview</title>
 	<link href = "eomodeldoc.css" rel = "stylesheet" type = "text/css">
 	<script src = "prototype.js"/>
 </head>
 <body>
 <h1>EOModelDoc</h1>
+
+<h2>Models</h1>
+<table class = "summary">
+	#foreach($model in $modelGroup.sortedModels)
+	<tr>
+		<th><a href = "$model.name/content.html">$model.name</a></th>
+		<td>
+		<div>
+		#if ($model.documentation)
+		$model.documentation
+		#else
+		No documentation available for ${model.name}.
+		#end
+		</div>
+		
+		<div class = "entities">
+		#foreach($entity in $model.sortedEntities)
+		<a href = "$model.name/entities/${entity.name}.html">$entity.name</a>,
+		#end 
+		</div>
+		</td>
+	</tr>
+	#end
+</table>
+
 </body>
 </html>

@@ -3,6 +3,35 @@ body {
 	font-size: 1em;
 }
 
+table.summary {
+	border: 2px solid black;
+	border-collapse: collapse;
+	border-spacing: 0px;
+	width: 100%;
+}
+
+table.summary tr {
+	vertical-align: top;
+	border-right: 2px solid black;
+}
+
+table.summary th {
+  background-color: rgb(220, 220, 255);
+	text-align: left;
+	border: 1px solid black;
+	padding: 5px;
+	width: 25%;
+}
+
+table.summary td {
+	border: 1px solid black;
+	padding: 5px;
+}
+
+table.summary td div.entities {
+	margin-top: 10px;
+}
+
 a {
   color: rgb(100, 100, 155);
 	text-decoration: none;

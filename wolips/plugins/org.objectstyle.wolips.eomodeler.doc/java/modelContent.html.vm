@@ -7,23 +7,40 @@
 <body>
 
 <h1>$model.name</h1>
+<h3><a href = "../content.html">All Models</a></h3>
 
 #if (!$model.sortedEntities.empty)
 <h2>Entities</h2>
-<ul>
+<table class = "summary">
 	#foreach($entity in $model.sortedEntities)
-	<li><a href = "entities/${entity.name}.html" target = "content">$entity.name</a></li>
+	<tr>
+		<th><a href = "entities/${entity.name}.html">$entity.name</a></th>
+		<td>
+		#if ($entity.documentation)
+		$entity.documentation
+		#else
+		No documentation available for ${entity.name}.
+		#end
+		</td>
+	</tr>
 	#end
-</ul>
+</table>
 #end
 
 #if (!$model.sortedStoredProcedures.empty)
 <h2>Stored Procedures</h2>
-<ul>
+<table class = "summary">
 	#foreach($storedProcedure in $model.sortedStoredProcedures)
-	<li><a href = "storedProcedures/${storedProcedure.name}.html" target = "content">$storedProcedure.name</a></li>
+	<tr>
+		<th><a href = "storedProcedures/${storedProcedure.name}.html">$storedProcedure.name</a></th>
+		<td>
+		#if ($storedProcedure.documentation)
+		$storedProcedure.documentation
+		#end
+		</td>
+	</tr>
 	#end
-</ul>
+</table>
 #end
 
 </body>
