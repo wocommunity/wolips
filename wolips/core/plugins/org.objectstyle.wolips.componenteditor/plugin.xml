@@ -13,6 +13,9 @@
             matchingStrategy="org.objectstyle.wolips.componenteditor.launcher.ComponentEditorMatchingStrategy"
             name="WOComponent Editor">
 			<contentTypeBinding
+               contentTypeId="org.objectstyle.wolips.editors.html"
+            />
+			<contentTypeBinding
                contentTypeId="org.objectstyle.wolips.editors.api"
             />
 			<contentTypeBinding
