@@ -68,6 +68,8 @@ import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -82,204 +84,227 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
 public class ApiModel {
-	private Document _document;
+  private Document _document;
 
-	private URL _url;
+  private URL _url;
 
-	private Reader _reader;
+  private Reader _reader;
 
-	private IFile _eclipseFile;
+  private IFile _eclipseFile;
 
-	private File _file;
+  private File _file;
 
-	private boolean _isDirty;
+  private boolean _isDirty;
 
-	private long _lastModified;
+  private long _lastModified;
 
-	public ApiModel(File file) throws ApiModelException {
-		_file = file;
-		if (!file.exists()) {
-			String javaFileName = LocatePlugin.getDefault().fileNameWithoutExtension(file);
-			try {
-				FileWriter writer = new FileWriter(file);
-				try {
-					writer.write(ApiModel.blankContent(javaFileName));
-				} finally {
-					writer.close();
-				}
-			} catch (IOException e) {
-				throw new ApiModelException("Failed to create blank API file.", e);
-			}
-		}
-		parse();
-	}
+  public ApiModel(File file) throws ApiModelException {
+    _file = file;
+    if (!file.exists()) {
+      String javaFileName = LocatePlugin.getDefault().fileNameWithoutExtension(file);
+      try {
+        FileWriter writer = new FileWriter(file);
+        try {
+          writer.write(ApiModel.blankContent(javaFileName));
+        }
+        finally {
+          writer.close();
+        }
+      }
+      catch (IOException e) {
+        throw new ApiModelException("Failed to create blank API file.", e);
+      }
+    }
+    parse();
+  }
 
-	public ApiModel(IFile file) throws ApiModelException {
-		_eclipseFile = file;
-		_file = file.getLocation().toFile();
-		if (!file.exists()) {
-			String javaFileName = LocatePlugin.getDefault().fileNameWithoutExtension(file);
-			try {
-				file.create(new ByteArrayInputStream(ApiModel.blankContent(javaFileName).getBytes()), true, new NullProgressMonitor());
-			} catch (CoreException e) {
-				throw new ApiModelException("Failed to create blank API file.", e);
-			}
-		}
-		_lastModified = _eclipseFile.getModificationStamp();
-		parse();
-	}
+  public ApiModel(IFile file) throws ApiModelException {
+    _eclipseFile = file;
+    _file = file.getLocation().toFile();
+    if (!file.exists()) {
+      String javaFileName = LocatePlugin.getDefault().fileNameWithoutExtension(file);
+      try {
+        _document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(blankContent(javaFileName))));
+        saveChanges();
+      }
+      catch (Exception e) {
+        throw new ApiModelException("Failed to create blank API file.", e);
+      }
+    }
+    _lastModified = _eclipseFile.getModificationStamp();
+    parse();
+  }
 
-	public ApiModel(URL url) throws ApiModelException {
-		_url = url;
-		parse();
-	}
+  public ApiModel(URL url) throws ApiModelException {
+    _url = url;
+    parse();
+  }
 
-	public ApiModel(Reader reader) throws ApiModelException {
-		_reader = reader;
-		parse();
-	}
+  public ApiModel(Reader reader) throws ApiModelException {
+    _reader = reader;
+    parse();
+  }
 
-	public static String blankContent(String name) {
-		StringBuffer sb = new StringBuffer();
-		sb.append("<?xml version = \"1.0\" encoding = \"UTF-8\" standalone = \"yes\"?>\n");
-		sb.append("<wodefinitions>\n");
-		sb.append("  <wo wocomponentcontent = \"false\" class = \"" + name + "\">");
-		sb.append("  </wo>\n");
-		sb.append("</wodefinitions>\n");
-		return sb.toString();
-	}
+  public static String blankContent(String name) {
+    StringBuffer sb = new StringBuffer();
+    sb.append("<?xml version = \"1.0\" encoding = \"UTF-8\" standalone = \"yes\"?>\n");
+    sb.append("<wodefinitions>\n");
+    sb.append("    <wo wocomponentcontent = \"false\" class = \"" + name + "\">");
+    sb.append("    </wo>\n");
+    sb.append("</wodefinitions>\n");
+    return sb.toString();
+  }
 
-	public IFile getEclipseFile() {
-		return _eclipseFile;
-	}
+  public IFile getEclipseFile() {
+    return _eclipseFile;
+  }
 
-	public String getLocation() {
-		String location;
-		if (_url != null) {
-			location = _url.toExternalForm();
-		} else if (_file != null) {
-			location = _file.getAbsolutePath();
-		} else {
-			location = null;
-		}
-		return location;
-	}
+  public String getLocation() {
+    String location;
+    if (_url != null) {
+      location = _url.toExternalForm();
+    }
+    else if (_file != null) {
+      location = _file.getAbsolutePath();
+    }
+    else {
+      location = null;
+    }
+    return location;
+  }
 
-	public boolean parseIfNecessary() throws ApiModelException {
-		boolean parsed = false;
-		if (_eclipseFile != null) {
-			if (_eclipseFile.getModificationStamp() != _lastModified) {
-				parse();
-				parsed = true;
-			}
-		} else if (_file != null) {
-			if (_file.lastModified() != _lastModified) {
-				parse();
-				parsed = true;
-			}
-		}
-		return parsed;
-	}
+  public boolean parseIfNecessary() throws ApiModelException {
+    boolean parsed = false;
+    if (_eclipseFile != null) {
+      if (_eclipseFile.getModificationStamp() != _lastModified) {
+        parse();
+        parsed = true;
+      }
+    }
+    else if (_file != null) {
+      if (_file.lastModified() != _lastModified) {
+        parse();
+        parsed = true;
+      }
+    }
+    return parsed;
+  }
 
-	private void parse() throws ApiModelException {
-		try {
-			DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			if (_url != null) {
-				_document = documentBuilder.parse(_url.toExternalForm());
-			} else if (_file != null) {
-				// MS: This is really silly, but I guess WOBuilder (or something
-				// else back in the day) produced
-				// API files that claim to be encoding 'macintosh'. Well, there
-				// is no such encoding, at
-				// least as far as Java is concerned. So we proprocess the api
-				// file and switch out the
-				// encoding for UTF-8 instead. Super lame. I know.
-				StringBuffer apiBuffer = new StringBuffer();
-				FileReader apiReader = new FileReader(_file);
-				try {
-					BufferedReader bufferedApiReader = new BufferedReader(apiReader);
-					String line = bufferedApiReader.readLine();
-					if (line != null && line.startsWith("<?")) {
-						apiBuffer.append(line.replaceAll("encoding=\"macintosh\"", "encoding=\"UTF-8\""));
-					}
-					while ((line = bufferedApiReader.readLine()) != null) {
-						apiBuffer.append(line);
-					}
-				} finally {
-					apiReader.close();
-				}
-				StringReader apiBufferReader = new StringReader(apiBuffer.toString());
-				_document = documentBuilder.parse(new InputSource(apiBufferReader));
-			} else if (_reader != null) {
-				_document = documentBuilder.parse(new InputSource(_reader));
-			} else {
-				throw new ApiModelException("There was no file, URL, or reader specified as the location for this API file.");
-			}
-			if (_eclipseFile != null) {
-				_lastModified = _eclipseFile.getModificationStamp();
-			} else if (_file != null) {
-				_lastModified = _file.lastModified();
-			}
-		} catch (Throwable e) {
-			throw new ApiModelException("Failed to parse API file '" + getLocation() + "'.", e);
-		}
-	}
+  private void parse() throws ApiModelException {
+    try {
+      DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      if (_url != null) {
+        _document = documentBuilder.parse(_url.toExternalForm());
+      }
+      else if (_file != null) {
+        // MS: This is really silly, but I guess WOBuilder (or something
+        // else back in the day) produced
+        // API files that claim to be encoding 'macintosh'. Well, there
+        // is no such encoding, at
+        // least as far as Java is concerned. So we proprocess the api
+        // file and switch out the
+        // encoding for UTF-8 instead. Super lame. I know.
+        StringBuffer apiBuffer = new StringBuffer();
+        FileReader apiReader = new FileReader(_file);
+        try {
+          BufferedReader bufferedApiReader = new BufferedReader(apiReader);
+          String line = bufferedApiReader.readLine();
+          if (line != null && line.startsWith("<?")) {
+            apiBuffer.append(line.replaceAll("encoding=\"macintosh\"", "encoding=\"UTF-8\""));
+            apiBuffer.append("\n");
+          }
+          while ((line = bufferedApiReader.readLine()) != null) {
+            apiBuffer.append(line);
+            apiBuffer.append("\n");
+          }
+        }
+        finally {
+          apiReader.close();
+        }
+        StringReader apiBufferReader = new StringReader(apiBuffer.toString());
+        _document = documentBuilder.parse(new InputSource(apiBufferReader));
+      }
+      else if (_reader != null) {
+        _document = documentBuilder.parse(new InputSource(_reader));
+      }
+      else {
+        throw new ApiModelException("There was no file, URL, or reader specified as the location for this API file.");
+      }
+      _document.normalize();
+      if (_eclipseFile != null) {
+        _lastModified = _eclipseFile.getModificationStamp();
+      }
+      else if (_file != null) {
+        _lastModified = _file.lastModified();
+      }
+    }
+    catch (Throwable e) {
+      throw new ApiModelException("Failed to parse API file '" + getLocation() + "'.", e);
+    }
+  }
 
-	public Wodefinitions getWODefinitions() throws ApiModelException {
-		parseIfNecessary();
-		Element element = _document.getDocumentElement();
-		return new Wodefinitions(element, this);
-	}
+  public Wodefinitions getWODefinitions() throws ApiModelException {
+    parseIfNecessary();
+    Element element = _document.getDocumentElement();
+    return new Wodefinitions(element, this);
+  }
 
-	public Wo getWo() throws ApiModelException {
-		Wodefinitions wodefinitions = getWODefinitions();
-		if (wodefinitions == null) {
-			return null;
-		}
-		return wodefinitions.getWo();
-	}
+  public Wo getWo() throws ApiModelException {
+    Wodefinitions wodefinitions = getWODefinitions();
+    if (wodefinitions == null) {
+      return null;
+    }
+    return wodefinitions.getWo();
+  }
 
-	public void saveChanges() throws ApiModelException {
-		if (_file == null) {
-			throw new ApiModelException("You can not saveChanges to an ApiModel that is not backed by a file.");
-		}
-		try {
-			FileWriter writer = new FileWriter(_file);
-			try {
-				saveChanges(writer);
-			} finally {
-				writer.close();
-			}
-			if (_eclipseFile != null) {
-				try {
-					_eclipseFile.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
-				} catch (CoreException e) {
-					// ignore
-				}
-			}
-		} catch (IOException ioe) {
-			throw new ApiModelException("Failed to save changes to API file.", ioe);
-		}
-	}
+  public void saveChanges() throws ApiModelException {
+    if (_file == null) {
+      throw new ApiModelException("You can not saveChanges to an ApiModel that is not backed by a file.");
+    }
+    try {
+      FileWriter writer = new FileWriter(_file);
+      try {
+        saveChanges(writer);
+      }
+      finally {
+        writer.close();
+      }
+      if (_eclipseFile != null) {
+        try {
+          _eclipseFile.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
+        }
+        catch (CoreException e) {
+          // ignore
+        }
+      }
+    }
+    catch (IOException ioe) {
+      throw new ApiModelException("Failed to save changes to API file.", ioe);
+    }
+  }
 
-	public void saveChanges(Writer writer) throws ApiModelException {
-		try {
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			transformerFactory.setAttribute("indent-number", new Integer(4));
-			DOMSource domsource = new DOMSource(_document);
-			StreamResult output = new StreamResult(writer);
-			transformerFactory.newTransformer().transform(domsource, output);
-			_isDirty = false;
-		} catch (Throwable t) {
-			throw new ApiModelException("Failed to save API file " + getLocation() + ".", t);
-		}
-	}
+  public void saveChanges(Writer writer) throws ApiModelException {
+    try {
+      TransformerFactory transformerFactory = TransformerFactory.newInstance();
+      transformerFactory.setAttribute("indent-number", new Integer(4));
+      Transformer transformer = transformerFactory.newTransformer();
+      transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+      transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+      DOMSource domsource = new DOMSource(_document);
+      StreamResult output = new StreamResult(writer);
+      transformer.transform(domsource, output);
+      _isDirty = false;
+    }
+    catch (Throwable t) {
+      throw new ApiModelException("Failed to save API file " + getLocation() + ".", t);
+    }
+  }
 
-	public boolean isDirty() {
-		return _isDirty;
-	}
+  public boolean isDirty() {
+    return _isDirty;
+  }
 
-	public void markAsDirty() {
-		_isDirty = true;
-	}
+  public void markAsDirty() {
+    _isDirty = true;
+  }
 }

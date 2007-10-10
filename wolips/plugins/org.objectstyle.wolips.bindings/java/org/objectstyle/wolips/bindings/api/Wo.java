@@ -60,6 +60,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -218,6 +219,9 @@ public class Wo extends AbstractApiModelElement {
         transformerFactory.setAttribute("indent-number", new Integer(4));
         StreamResult output = new StreamResult(sw);
         Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF8");
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 
 //      TransformerFactory xformerFactory = TransformerFactory.newInstance();
 //      xformerFactory.setAttribute("indent-number", new Integer(4));
