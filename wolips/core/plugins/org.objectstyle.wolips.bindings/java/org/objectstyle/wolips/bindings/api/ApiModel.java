@@ -69,9 +69,9 @@ import java.net.URL;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -264,14 +264,11 @@ public class ApiModel {
 
 	public void saveChanges(Writer writer) throws ApiModelException {
 		try {
-			TransformerFactory xformerFactory = TransformerFactory.newInstance();
-			xformerFactory.setAttribute("indent-number", new Integer(4));
-			OutputFormat outputFormat = new OutputFormat("XML", "UTF-8", true);
-			outputFormat.setIndent(1);
-			outputFormat.setIndenting(true);
-			XMLSerializer serializer = new XMLSerializer(writer, outputFormat);
-			serializer.asDOMSerializer();
-			serializer.serialize(_document);
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			transformerFactory.setAttribute("indent-number", new Integer(4));
+			DOMSource domsource = new DOMSource(_document);
+			StreamResult output = new StreamResult(writer);
+			transformerFactory.newTransformer().transform(domsource, output);
 			_isDirty = false;
 		} catch (Throwable t) {
 			throw new ApiModelException("Failed to save API file " + getLocation() + ".", t);
