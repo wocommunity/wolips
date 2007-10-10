@@ -13,11 +13,11 @@ import org.objectstyle.wolips.bindings.api.ApiUtils;
 import org.objectstyle.wolips.bindings.api.Binding;
 import org.objectstyle.wolips.bindings.api.Wo;
 import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
-import org.objectstyle.wolips.bindings.utils.TypeNameCollector;
 import org.objectstyle.wolips.bindings.wod.BindingValueKey;
 import org.objectstyle.wolips.bindings.wod.BindingValueKeyPath;
 import org.objectstyle.wolips.bindings.wod.HtmlElementCache;
 import org.objectstyle.wolips.bindings.wod.TypeCache;
+import org.objectstyle.wolips.core.resources.types.TypeNameCollector;
 
 public class WodCompletionUtils {
   protected static boolean shouldSmartInsert() {
