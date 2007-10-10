@@ -176,6 +176,7 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 		this.addPage(htmlPreviewTab);
 		this.setPageText(tabIndex, "Preview");
 		tabIndex++;
+		
 		// api tab
 		IFileEditorInput apiInput = (IFileEditorInput) componentEditorInput.getApiEditor();
 		apiTab = new ApiTab(this, tabIndex, apiInput);
@@ -196,14 +197,14 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 			}
 
 		});
-		if (componentEditorInput.isDisplayHtmlPartOnReveal()) {
-			this.switchToHtml();
-		} else if (componentEditorInput.isDisplayWodPartOnReveal()) {
+		if (componentEditorInput.isDisplayWodPartOnReveal()) {
 			this.switchToWod();
 		} else if (componentEditorInput.isDisplayWooPartOnReveal()) {
-			this.switchToWod();
+			this.switchToWoo();
 		} else if (componentEditorInput.isDisplayApiPartOnReveal()) {
 			this.switchToApi();
+		} else if (componentEditorInput.isDisplayHtmlPartOnReveal()) {
+      this.switchToHtml();
 		}
 		return;
 	}
@@ -280,20 +281,24 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 	
 	public void switchToHtml() {
 		this.htmlWodTab().setHtmlActive();
-		switchToPage(IEditorTarget.TARGET_HTML);
+		switchToPage(ComponentEditorPart.HTML_TAB);
 	}
 
 	public void switchToWod() {
 		this.htmlWodTab().setWodActive();
-		switchToPage(IEditorTarget.TARGET_HTML);
+		switchToPage(ComponentEditorPart.WOD_TAB);
 	}
 
+  public void switchToWoo() {
+    switchToPage(ComponentEditorPart.WOO_TAB);
+  }
+
 	public void switchToPreview() {
-		switchToPage(htmlWodTabs.length);
+		switchToPage(ComponentEditorPart.PREVIEW_TAB);
 	}
 
 	public void switchToApi() {
-		switchToPage(htmlWodTabs.length + 1);
+		switchToPage(ComponentEditorPart.API_TAB);
 	}
 
 	public void switchToPage(int page) {
