@@ -99,7 +99,7 @@ public class CSSEditor extends TextEditor {
 
   @Override
   protected ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
-    ISourceViewer viewer = new ProjectionViewer(parent, ruler, fOverviewRuler, true, styles);
+    ISourceViewer viewer = new ProjectionViewer(parent, ruler, getOverviewRuler(), true, styles);
     getSourceViewerDecorationSupport(viewer);
     viewer.getTextWidget().addVerifyListener(softTabListener);
     return viewer;
