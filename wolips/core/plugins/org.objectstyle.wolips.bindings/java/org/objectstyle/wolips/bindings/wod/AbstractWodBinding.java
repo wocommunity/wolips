@@ -45,8 +45,10 @@ package org.objectstyle.wolips.bindings.wod;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
@@ -60,6 +62,30 @@ import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
  * @author mschrag
  */
 public abstract class AbstractWodBinding implements IWodBinding {
+  private static Set<String> VALID_OGNL_VALUES = new HashSet<String>();
+  static {
+    AbstractWodBinding.VALID_OGNL_VALUES.add("and");
+    AbstractWodBinding.VALID_OGNL_VALUES.add("band");
+    AbstractWodBinding.VALID_OGNL_VALUES.add("bor");
+    AbstractWodBinding.VALID_OGNL_VALUES.add("eq");
+    AbstractWodBinding.VALID_OGNL_VALUES.add("gt");
+    AbstractWodBinding.VALID_OGNL_VALUES.add("gte");
+    AbstractWodBinding.VALID_OGNL_VALUES.add("in");
+    AbstractWodBinding.VALID_OGNL_VALUES.add("instanceof");
+    AbstractWodBinding.VALID_OGNL_VALUES.add("lt");
+    AbstractWodBinding.VALID_OGNL_VALUES.add("lte");
+    AbstractWodBinding.VALID_OGNL_VALUES.add("neq");
+    AbstractWodBinding.VALID_OGNL_VALUES.add("not");
+    AbstractWodBinding.VALID_OGNL_VALUES.add("null");
+    AbstractWodBinding.VALID_OGNL_VALUES.add("neq");
+    AbstractWodBinding.VALID_OGNL_VALUES.add("new");
+    AbstractWodBinding.VALID_OGNL_VALUES.add("or");
+    AbstractWodBinding.VALID_OGNL_VALUES.add("shl");
+    AbstractWodBinding.VALID_OGNL_VALUES.add("shr");
+    AbstractWodBinding.VALID_OGNL_VALUES.add("this");
+    AbstractWodBinding.VALID_OGNL_VALUES.add("ushr");
+    AbstractWodBinding.VALID_OGNL_VALUES.add("xor");
+  }
   private boolean _validate;
 
   public AbstractWodBinding() {
@@ -251,7 +277,7 @@ public abstract class AbstractWodBinding implements IWodBinding {
             else if (!Character.isJavaIdentifierPart(ch) && ch != '.' && ch != '@' && ch != '#') {
               String ognlBindingValue = ognl.substring(identifierStartChar, i);
               // null
-              if (!ognlBindingValue.startsWith("@") && !ognlBindingValue.startsWith("#") && !ognlBindingValue.equalsIgnoreCase("null") && !ognlBindingValue.equalsIgnoreCase("this") && !ognlBindingValue.equalsIgnoreCase("new")) {
+              if (!ognlBindingValue.startsWith("@") && !ognlBindingValue.startsWith("#") && !AbstractWodBinding.VALID_OGNL_VALUES.contains(ognlBindingValue.toLowerCase())) {
                 // function call
                 String nextStr = ognl.substring(i).trim();
                 if (!nextStr.startsWith("(")) {
