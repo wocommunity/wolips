@@ -59,6 +59,7 @@ package org.objectstyle.wolips.ui.actions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.IAction;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
@@ -72,6 +73,8 @@ public class OpenWOAction extends AbstractActionOnIResource {
 	private static final String woExtension = ".wo";
 
 	private static final String wodExtension = ".wod";
+
+	private static final String htmlExtension = ".html";
 
 	public void run(IAction action) {
 		openResourceIfPossible(getActionResource());
@@ -87,10 +90,17 @@ public class OpenWOAction extends AbstractActionOnIResource {
 			fileName = fileName.substring(0, fileName.length() - OpenWOAction.woExtension.length());
 
 			List<IResource> list = new ArrayList<IResource>();
-			WorkbenchUtilitiesPlugin.findFilesInResourceByName(list, actionResource, fileName + OpenWOAction.wodExtension);
+			WorkbenchUtilitiesPlugin.findFilesInResourceByName(list, actionResource, fileName + OpenWOAction.htmlExtension);
 			if (list.size() > 0) {
-				WorkbenchUtilitiesPlugin.open(list);
+				WorkbenchUtilitiesPlugin.open((IFile)list.get(0), "org.objectstyle.wolips.componenteditor.ComponentEditor");
 				opened = true;
+			}
+			else {
+				WorkbenchUtilitiesPlugin.findFilesInResourceByName(list, actionResource, fileName + OpenWOAction.wodExtension);
+				if (list.size() > 0) {
+					WorkbenchUtilitiesPlugin.open(list);
+					opened = true;
+				}				
 			}
 		}
 		return opened;
