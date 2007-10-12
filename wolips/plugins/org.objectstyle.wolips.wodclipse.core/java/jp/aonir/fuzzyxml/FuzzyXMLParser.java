@@ -30,12 +30,13 @@ public class FuzzyXMLParser {
 
   private Stack<FuzzyXMLNode> _stack = new Stack<FuzzyXMLNode>();
   private String _originalSource;
-  private List<FuzzyXMLElementImpl> _roots;
+  private List<FuzzyXMLNode> _roots;
   private FuzzyXMLDocType _docType;
 
   private List<FuzzyXMLErrorListener> _listeners = new ArrayList<FuzzyXMLErrorListener>();
   private List<FuzzyXMLElement> _nonCloseElements = new ArrayList<FuzzyXMLElement>();
   private List<String> _looseNamespaces = new ArrayList<String>();
+  private List<String> _autocloseTags = new ArrayList<String>();
   private List<String> _looseTags = new ArrayList<String>();
 
   private boolean _wo54 = false;
@@ -57,27 +58,39 @@ public class FuzzyXMLParser {
   public FuzzyXMLParser(boolean wo54, boolean isHTML) {
     super();
     _wo54 = wo54;
-    _roots = new LinkedList<FuzzyXMLElementImpl>();
+    _roots = new LinkedList<FuzzyXMLNode>();
     _isHTML = isHTML;
     // MS: Hardcoded that "wo" is a loose namespace
     addLooseNamespace("wo");
     addLooseNamespace("webobject");
     addLooseNamespace("webobjects");
     if (!_wo54) {
-      addLooseTag("img");
-      addLooseTag("br");
+      addAutocloseTag("img");
+      addAutocloseTag("br");
+      addAutocloseTag("hr");
+      addAutocloseTag("meta");
+      addAutocloseTag("link");
+      addAutocloseTag("input");
+      addAutocloseTag("spacer");
       addLooseTag("p");
-      addLooseTag("hr");
       addLooseTag("li");
-      addLooseTag("meta");
-      addLooseTag("link");
-      addLooseTag("input");
-      addLooseTag("spacer");
     }
   }
   
   /**
-   * A "loose" tag is like br or p where you allow close tags to not exist.
+   * An autoclose tag is like br or link where it commonly does not have a closing tag
+   * but it also never has contents.
+   * 
+   * @param autocloseTag the name of the tag to make loose
+   */
+  public void addAutocloseTag(String autocloseTag) {
+    _autocloseTags.add(autocloseTag);
+    addLooseTag(autocloseTag);
+  }
+  
+  /**
+   * A "loose" tag is like li or p where people lazily often do not close them properly,
+   * but they may have content.
    * 
    * @param looseTag the name of the tag to make loose
    */
@@ -153,7 +166,10 @@ public class FuzzyXMLParser {
     while (matcher.find()) {
       int start = matcher.start() + initialOffset;
       int end = matcher.end() + initialOffset;
-      if (lastIndex != (initialOffset - 1) && lastIndex < start) {
+      if (lastIndex == -1 && lastIndex < start) {
+        handleText(0, start, true);
+      }
+      else if (lastIndex != (initialOffset - 1) && lastIndex < start) {
         handleText(lastIndex, start, true);
       }
       String text = matcher.group(1).trim();
@@ -235,10 +251,10 @@ public class FuzzyXMLParser {
       //docElement.appendChild(root);
     }
     else {
-      FuzzyXMLElementImpl firstRoot = _roots.get(0);
-      FuzzyXMLElementImpl lastRoot = _roots.get(_roots.size() - 1);
+      FuzzyXMLNode firstRoot = _roots.get(0);
+      FuzzyXMLNode lastRoot = _roots.get(_roots.size() - 1);
       docElement = new FuzzyXMLElementImpl(null, "document", firstRoot.getOffset(), lastRoot.getOffset() + lastRoot.getLength() - firstRoot.getOffset(), 0);
-      for (FuzzyXMLElementImpl root : _roots) {
+      for (FuzzyXMLNode root : _roots) {
         ((FuzzyXMLElementImpl) docElement).appendChildWithNoCheck(root);
       }
     }
@@ -267,11 +283,14 @@ public class FuzzyXMLParser {
   /** テキストノードを処理します。 */
   private void handleText(int offset, int end, boolean escape) {
     String text = _originalSource.substring(offset, end);
+    FuzzyXMLTextImpl textNode = new FuzzyXMLTextImpl(getParent(), text, offset, end - offset);
+    textNode.setEscape(escape);
     if (getParent() != null) {
       //FuzzyXMLUtil.decode(text, _isHTML)
-      FuzzyXMLTextImpl textNode = new FuzzyXMLTextImpl(getParent(), text, offset, end - offset);
-      textNode.setEscape(escape);
       ((FuzzyXMLElement) getParent()).appendChild(textNode);
+    }
+    else {
+      _roots.add(textNode);
     }
   }
 
