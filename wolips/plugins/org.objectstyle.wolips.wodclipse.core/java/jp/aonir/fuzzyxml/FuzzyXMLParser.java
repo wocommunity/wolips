@@ -265,24 +265,32 @@ public class FuzzyXMLParser {
 
   /** CDATAノードを処理します。 */
   private void handleCDATA(int offset, int end, String text) {
+    closeAutocloseTags();
+    text = text.replaceFirst("<!\\[CDATA\\[", "");
+    text = text.replaceFirst("\\]\\]>", "");
+    FuzzyXMLCDATAImpl cdata = new FuzzyXMLCDATAImpl(getParent(), text, offset, end - offset);
     if (getParent() != null) {
-      text = text.replaceFirst("<!\\[CDATA\\[", "");
-      text = text.replaceFirst("\\]\\]>", "");
-      FuzzyXMLCDATAImpl cdata = new FuzzyXMLCDATAImpl(getParent(), text, offset, end - offset);
       ((FuzzyXMLElement) getParent()).appendChild(cdata);
+    }
+    else {
+      _roots.add(cdata);
+    }
 
-      _stack.push(cdata);
-      _parse(text, offset + "<![CDATA[".length(), true);
-      FuzzyXMLNode poppedNode = _stack.pop();
-      if (poppedNode != cdata) {
-        _stack.push(poppedNode);
-      }
+    _stack.push(cdata);
+    _parse(text, offset + "<![CDATA[".length(), true);
+    FuzzyXMLNode poppedNode = _stack.pop();
+    if (poppedNode != cdata) {
+      _stack.push(poppedNode);
     }
   }
 
   /** テキストノードを処理します。 */
   private void handleText(int offset, int end, boolean escape) {
     String text = _originalSource.substring(offset, end);
+    //System.out.println("FuzzyXMLParser.handleText: '" + text + "'");
+    if (text != null && text.trim().length() > 0) {
+      closeAutocloseTags();
+    }
     FuzzyXMLTextImpl textNode = new FuzzyXMLTextImpl(getParent(), text, offset, end - offset);
     textNode.setEscape(escape);
     if (getParent() != null) {
@@ -296,24 +304,29 @@ public class FuzzyXMLParser {
 
   /** XML宣言（処理命令）を処理します。 */
   private void handleDeclaration(int offset, int end) {
+    closeAutocloseTags();
+    String text = _originalSource.substring(offset, end);
+    text = text.replaceFirst("^<\\?", "");
+    text = text.replaceFirst("\\?>$", "");
+    text = text.trim();
+
+    String[] dim = text.split("[ \r\n\t]+");
+    String name = dim[0];
+    String data = text.substring(name.length()).trim();
+
+    FuzzyXMLProcessingInstructionImpl pi = new FuzzyXMLProcessingInstructionImpl(null, name, data, offset, end - offset);
     if (getParent() != null) {
       // 余計な部分を削る
-      String text = _originalSource.substring(offset, end);
-      text = text.replaceFirst("^<\\?", "");
-      text = text.replaceFirst("\\?>$", "");
-      text = text.trim();
-
-      String[] dim = text.split("[ \r\n\t]+");
-      String name = dim[0];
-      String data = text.substring(name.length()).trim();
-
-      FuzzyXMLProcessingInstructionImpl pi = new FuzzyXMLProcessingInstructionImpl(null, name, data, offset, end - offset);
       ((FuzzyXMLElement) getParent()).appendChild(pi);
+    }
+    else {
+      _roots.add(pi);
     }
   }
 
   /** DOCTYPE宣言を処理します。 */
   private void handleDoctype(int offset, int end, String text) {
+    closeAutocloseTags();
     if (_docType == null) {
       String name = "";
       String publicId = "";
@@ -344,6 +357,17 @@ public class FuzzyXMLParser {
     }
   }
 
+  private void closeAutocloseTags() {
+    if (_stack.size() > 0) {
+      FuzzyXMLElementImpl lastOpenElement = (FuzzyXMLElementImpl)_stack.peek();
+      String name = lastOpenElement.getName().toLowerCase();
+      if (_autocloseTags.contains(name)) {
+        int openTagEndOffset = lastOpenElement.getOffset() + lastOpenElement.getOpenTagLength();
+        handleCloseTag(openTagEndOffset, openTagEndOffset, "/" + name, false);
+      }
+    }
+  }
+  
   /** 閉じタグを処理します。 */
   private void handleCloseTag(int offset, int end, String text) {
     handleCloseTag(offset, end, text, true);
@@ -371,6 +395,8 @@ public class FuzzyXMLParser {
     boolean closeTagMatches = lowercaseLastOpenElementName.equals(lowercaseCloseTagName);
     //System.out.println("FuzzyXMLParser.handleCloseTag: lastOpen = " + lowercaseLastOpenElementName + ", close = " + lowercaseCloseTagName);
     if (!closeTagMatches) {
+      closeAutocloseTags();
+
       // Allow </wo> to close </wo:if>
       boolean looseNamespace = false;
       int colonIndex = lowercaseLastOpenElementName.indexOf(':');
@@ -480,7 +506,9 @@ public class FuzzyXMLParser {
     if (lastOpenElement != null) {
       // 空タグの場合は空のテキストノードを追加しておく
       if (lastOpenElement.getChildren().length == 0) {
-        lastOpenElement.appendChild(new FuzzyXMLTextImpl(getParent(), "", offset, 0));
+        // MS: Hopefully this doesn't break things ... Sure wish I could read
+        // Japanese to know what the original author said about this :)
+        //lastOpenElement.appendChild(new FuzzyXMLTextImpl(getParent(), "", offset, 0));
       }
       lastOpenElement.setLength(end - lastOpenElement.getOffset());
       if (closeTagMatches) {
@@ -565,7 +593,9 @@ public class FuzzyXMLParser {
 
   /** 開始タグを処理します。 */
   private void handleStartTag(int offset, int end) {
+    closeAutocloseTags();
     TagInfo info = parseTagContents(_originalSource.substring(offset + 1, end - 1));
+    //System.out.println("FuzzyXMLParser.handleStartTag: open " + info.name);
     FuzzyXMLElementImpl element = new FuzzyXMLElementImpl(getParent(), info.name, offset, end - offset, info.nameOffset);
     // 属性を追加
     AttrInfo[] attrs = info.getAttrs();
