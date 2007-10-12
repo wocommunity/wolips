@@ -52,7 +52,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   }
 
   public boolean hasCloseTag() {
-    return _closeTagOffset != -1;
+    return _closeTagOffset != -1 && _closeTagLength > 0;
   }
 
   public void setCloseTagOffset(int closeTagOffset) {
