@@ -341,129 +341,129 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
    * @param renderBuffer the render buffer
    */
   protected void renderHeader(StringBuffer renderBuffer) {
-    renderBuffer.append("<html>");
+    renderBuffer.append("<html>\n");
     if (_compactView) {
-      renderBuffer.append("<body id = \"outline\" class = \"compact\">");
+      renderBuffer.append("<body id = \"outline\" class = \"compact\">\n");
     }
     else {
-      renderBuffer.append("<body id = \"outline\" class = \"verbose\">");
+      renderBuffer.append("<body id = \"outline\" class = \"verbose\">\n");
     }
-    renderBuffer.append("<style>");
-    renderBuffer.append("body { font-family: Helvetica; font-size: 8pt; margin: 5px; margin-top: 2px; }");
+    renderBuffer.append("<style>\n");
+    renderBuffer.append("body { font-family: Helvetica; font-size: 8pt; margin: 5px; margin-top: 2px; }\n");
 
-    renderBuffer.append("a { text-decoration: none; }");
+    renderBuffer.append("a { text-decoration: none; }\n");
 
-    renderBuffer.append("div.viewControls { right: 8px; margin: 0px; margin-bottom: 2px; text-align: right; }");
-    renderBuffer.append("div.viewControls a { color: rgb(0, 0, 200); }");
-    renderBuffer.append("div.elements { margin-top: 0px; }");
+    renderBuffer.append("div.viewControls { right: 8px; margin: 0px; margin-bottom: 2px; text-align: right; }\n");
+    renderBuffer.append("div.viewControls a { color: rgb(0, 0, 200); }\n");
+    renderBuffer.append("div.elements { margin-top: 0px; }\n");
 
-    renderBuffer.append("div.element { overflow: hidden; margin-top: 5px; margin-bottom: 5px; margin-right: 0px; padding: 0px; border: 1px solid rgb(230, 230, 230); border-right: none; }");
-    renderBuffer.append("div.element div.summary { cursor: pointer; white-space: nowrap; background-color: rgb(240, 240, 240); padding: 3px; }");
-    renderBuffer.append("div.element div.summary:hover { background-color: rgb(220, 220, 220); border-color: rgb(210, 210, 210); }");
-    renderBuffer.append("div.element div.expandcollapse { cursor: pointer; float: right; background-color: rgb(255, 255, 255); width: 10px; border: 1px solid rgb(230, 230, 230); border-top: none; padding-left: 3px; padding-right: 3px; text-align: center; }");
-    renderBuffer.append("div.element div.expandcollapse:hover { font-weight: bold; border-width: 2px; border-right-width: 1px; background-color: rgb(245, 245, 245); }");
-    renderBuffer.append("div.element div.expandcollapse:active { font-weight: bold; border-width: 2px; border-right-width: 1px; background-color: rgb(230, 230, 230); }");
-    renderBuffer.append("div.element div.contents { background-color: rgb(255, 255, 255); padding-left: 10px; padding-right: 0px; padding-top: 5px; padding-bottom: 5px; border-top: 1px solid rgb(230, 230, 230); }");
+    renderBuffer.append("div.element { overflow: hidden; margin-top: 5px; margin-bottom: 5px; margin-right: 0px; padding: 0px; border: 1px solid rgb(230, 230, 230); border-right: none; }\n");
+    renderBuffer.append("div.element div.summary { cursor: pointer; white-space: nowrap; background-color: rgb(240, 240, 240); padding: 3px; }\n");
+    renderBuffer.append("div.element div.summary:hover { background-color: rgb(220, 220, 220); border-color: rgb(210, 210, 210); }\n");
+    renderBuffer.append("div.element div.expandcollapse { cursor: pointer; float: right; background-color: rgb(255, 255, 255); width: 10px; border: 1px solid rgb(230, 230, 230); border-top: none; padding-left: 3px; padding-right: 3px; text-align: center; }\n");
+    renderBuffer.append("div.element div.expandcollapse:hover { font-weight: bold; border-width: 2px; border-right-width: 1px; background-color: rgb(245, 245, 245); }\n");
+    renderBuffer.append("div.element div.expandcollapse:active { font-weight: bold; border-width: 2px; border-right-width: 1px; background-color: rgb(230, 230, 230); }\n");
+    renderBuffer.append("div.element div.contents { background-color: rgb(255, 255, 255); padding-left: 10px; padding-right: 0px; padding-top: 5px; padding-bottom: 5px; border-top: 1px solid rgb(230, 230, 230); }\n");
 
-    renderBuffer.append("div.element.wo { border-color: rgb(200, 200, 255); }");
-    renderBuffer.append("div.element.wo div.summary { background-color: rgb(240, 240, 255); }");
-    renderBuffer.append("div.element.wo div.summary:hover { background-color: rgb(210, 210, 255); border-color: rgb(210, 210, 255); }");
-    renderBuffer.append("div.element.wo div.summary div.title span.type { font-weight: normal; font-size: 0.80em; color: rgb(150, 150, 150); }");
-    renderBuffer.append("div.element.wo > div.expandcollapse { border-color: rgb(200, 200, 255); }");
-    renderBuffer.append("div.element.wo > div.expandcollapse:hover { background-color: rgb(245, 245, 255); }");
-    renderBuffer.append("div.element.wo > div.expandcollapse:active { background-color: rgb(200, 200, 255); }");
-    renderBuffer.append("div.element.wo div.contents { background-color: rgb(250, 250, 255); border-color: rgb(200, 200, 255); }");
+    renderBuffer.append("div.element.wo { border-color: rgb(200, 200, 255); }\n");
+    renderBuffer.append("div.element.wo div.summary { background-color: rgb(240, 240, 255); }\n");
+    renderBuffer.append("div.element.wo div.summary:hover { background-color: rgb(210, 210, 255); border-color: rgb(210, 210, 255); }\n");
+    renderBuffer.append("div.element.wo div.summary div.title span.type { font-weight: normal; font-size: 0.80em; color: rgb(150, 150, 150); }\n");
+    renderBuffer.append("div.element.wo > div.expandcollapse { border-color: rgb(200, 200, 255); }\n");
+    renderBuffer.append("div.element.wo > div.expandcollapse:hover { background-color: rgb(245, 245, 255); }\n");
+    renderBuffer.append("div.element.wo > div.expandcollapse:active { background-color: rgb(200, 200, 255); }\n");
+    renderBuffer.append("div.element.wo div.contents { background-color: rgb(250, 250, 255); border-color: rgb(200, 200, 255); }\n");
 
-    renderBuffer.append("div.element div.summary div.title { font-weight: bold; }");
-    renderBuffer.append("div.element div.summary div.title.nonwo { color: rgb(180, 180, 180); }");
-    renderBuffer.append("div.element div.summary div.title.missing { font-style: italic; }");
-    renderBuffer.append("div.element div.summary div.title.nonwo span.idName { font-weight: bold; color: rgb(180, 180, 180); padding-left: 10px; }");
-    renderBuffer.append("div.element div.summary div.title.nonwo span.className { font-weight: bold; color: rgb(180, 180, 180); padding-left: 10px; }");
+    renderBuffer.append("div.element div.summary div.title { font-weight: bold; }\n");
+    renderBuffer.append("div.element div.summary div.title.nonwo { color: rgb(180, 180, 180); }\n");
+    renderBuffer.append("div.element div.summary div.title.missing { font-style: italic; }\n");
+    renderBuffer.append("div.element div.summary div.title.nonwo span.idName { font-weight: bold; color: rgb(180, 180, 180); padding-left: 10px; }\n");
+    renderBuffer.append("div.element div.summary div.title.nonwo span.className { font-weight: bold; color: rgb(180, 180, 180); padding-left: 10px; }\n");
 
-    renderBuffer.append("div.element div.summary table.bindings { font-family: Helvetica; font-size: 8pt; margin: 0px; padding: 0px; }");
-    renderBuffer.append("div.element div.summary table.bindings th { text-align: right; font-weight: normal; color: rgb(220, 0, 0); padding-right: 3px; }");
-    renderBuffer.append("div.element div.summary table.bindings td.literal { color: rgb(0, 0, 200); }");
-    renderBuffer.append("div.element div.summary table.bindings td.ognl { color: rgb(180, 0, 0); }");
-    renderBuffer.append("div.element div.summary table.bindings td.keypath { color: rgb(180, 0, 0); }");
+    renderBuffer.append("div.element div.summary table.bindings { font-family: Helvetica; font-size: 8pt; margin: 0px; padding: 0px; }\n");
+    renderBuffer.append("div.element div.summary table.bindings th { text-align: right; font-weight: normal; color: rgb(220, 0, 0); padding-right: 3px; }\n");
+    renderBuffer.append("div.element div.summary table.bindings td.literal { color: rgb(0, 0, 200); }\n");
+    renderBuffer.append("div.element div.summary table.bindings td.ognl { color: rgb(180, 0, 0); }\n");
+    renderBuffer.append("div.element div.summary table.bindings td.keypath { color: rgb(180, 0, 0); }\n");
 
-    renderBuffer.append("div.text { display: inline; }");
+    renderBuffer.append("div.text { display: inline; }\n");
 
-    renderBuffer.append("span.negate { font-weight: bold; }");
+    renderBuffer.append("span.negate { font-weight: bold; }\n");
 
-    renderBuffer.append("div.element.wo.WOString.simple { display: inline; border: none; }");
-    renderBuffer.append("div.element.wo.WOString.simple div.summary { display: inline; border: 1px solid rgb(200, 200, 255); border: none; background-color: transparent; padding: 0px; }");
-    renderBuffer.append("div.element.wo.WOString.simple div.summary div.title { display: inline; }");
-    renderBuffer.append("div.element.wo.WOString.simple div.text.literal { color: rgb(0, 0, 200); }");
-    renderBuffer.append("div.element.wo.WOString.simple div.text.ognl { color: rgb(180, 0, 0); }");
-    renderBuffer.append("div.element.wo.WOString.simple div.text.keypath { color: rgb(180, 0, 0); }");
+    renderBuffer.append("div.element.wo.WOString.simple { display: inline; border: none; }\n");
+    renderBuffer.append("div.element.wo.WOString.simple div.summary { display: inline; border: 1px solid rgb(200, 200, 255); border: none; background-color: transparent; padding: 0px; }\n");
+    renderBuffer.append("div.element.wo.WOString.simple div.summary div.title { display: inline; }\n");
+    renderBuffer.append("div.element.wo.WOString.simple div.text.literal { color: rgb(0, 0, 200); }\n");
+    renderBuffer.append("div.element.wo.WOString.simple div.text.ognl { color: rgb(180, 0, 0); }\n");
+    renderBuffer.append("div.element.wo.WOString.simple div.text.keypath { color: rgb(180, 0, 0); }\n");
 
-//    renderBuffer.append("div.element.wo.WOString div.summary { background-color: rgb(240, 240, 255); }");
-//    renderBuffer.append("div.element.wo.WOString div.summary:hover { background-color: rgb(240, 240, 255); border-color: rgb(170, 225, 170); }");
-//    renderBuffer.append("div.element.wo.WOString div.contents { background-color: rgb(250, 255, 250); border-color: rgb(200, 255, 200); }");
-//    renderBuffer.append("div.element.wo.WOString:hover div.contents { display: block; }");
+//    renderBuffer.append("div.element.wo.WOString div.summary { background-color: rgb(240, 240, 255); }\n");
+//    renderBuffer.append("div.element.wo.WOString div.summary:hover { background-color: rgb(240, 240, 255); border-color: rgb(170, 225, 170); }\n");
+//    renderBuffer.append("div.element.wo.WOString div.contents { background-color: rgb(250, 255, 250); border-color: rgb(200, 255, 200); }\n");
+//    renderBuffer.append("div.element.wo.WOString:hover div.contents { display: block; }\n");
 
-    renderBuffer.append("div.element.wo.WOConditional { border-color: rgb(190, 250, 190); }");
-    renderBuffer.append("div.element.wo.WOConditional div.summary { background-color: rgb(230, 250, 230); }");
-    renderBuffer.append("div.element.wo.WOConditional div.summary:hover { background-color: rgb(200, 250, 200); border-color: rgb(200, 255, 200); }");
-    renderBuffer.append("div.element.wo.WOConditional div.expandcollapse { border-color: rgb(200, 255, 200); }");
-    renderBuffer.append("div.element.wo.WOConditional div.expandcollapse:hover { background-color: rgb(245, 255, 245); }");
-    renderBuffer.append("div.element.wo.WOConditional div.expandcollapse:active { background-color: rgb(200, 255, 200); }");
-    renderBuffer.append("div.element.wo.WOConditional div.contents { background-color: rgb(250, 255, 250); border-color: rgb(190, 250, 190); }");
-    renderBuffer.append("div.element.wo.WOConditional div.summary div.title span.type { display: none; }");
-    renderBuffer.append("div.element.wo.WOConditional div.summary table.bindings th { text-align: right; font-weight: normal; color: rgb(220, 0, 0); padding-right: 3px; }");
-    renderBuffer.append("div.element.wo.WOConditional div.summary table.bindings td.literal { color: rgb(0, 0, 200); }");
-    renderBuffer.append("div.element.wo.WOConditional div.summary table.bindings td.ognl { color: rgb(180, 0, 0); }");
-    renderBuffer.append("div.element.wo.WOConditional div.summary table.bindings td.keypath { color: rgb(180, 0, 0); }");
+    renderBuffer.append("div.element.wo.WOConditional { border-color: rgb(190, 250, 190); }\n");
+    renderBuffer.append("div.element.wo.WOConditional div.summary { background-color: rgb(230, 250, 230); }\n");
+    renderBuffer.append("div.element.wo.WOConditional div.summary:hover { background-color: rgb(200, 250, 200); border-color: rgb(200, 255, 200); }\n");
+    renderBuffer.append("div.element.wo.WOConditional div.expandcollapse { border-color: rgb(200, 255, 200); }\n");
+    renderBuffer.append("div.element.wo.WOConditional div.expandcollapse:hover { background-color: rgb(245, 255, 245); }\n");
+    renderBuffer.append("div.element.wo.WOConditional div.expandcollapse:active { background-color: rgb(200, 255, 200); }\n");
+    renderBuffer.append("div.element.wo.WOConditional div.contents { background-color: rgb(250, 255, 250); border-color: rgb(190, 250, 190); }\n");
+    renderBuffer.append("div.element.wo.WOConditional div.summary div.title span.type { display: none; }\n");
+    renderBuffer.append("div.element.wo.WOConditional div.summary table.bindings th { text-align: right; font-weight: normal; color: rgb(220, 0, 0); padding-right: 3px; }\n");
+    renderBuffer.append("div.element.wo.WOConditional div.summary table.bindings td.literal { color: rgb(0, 0, 200); }\n");
+    renderBuffer.append("div.element.wo.WOConditional div.summary table.bindings td.ognl { color: rgb(180, 0, 0); }\n");
+    renderBuffer.append("div.element.wo.WOConditional div.summary table.bindings td.keypath { color: rgb(180, 0, 0); }\n");
 
-//    renderBuffer.append("div.element.wo.WORepetition { border-color: rgb(255, 200, 200); }");
-//    renderBuffer.append("div.element.wo.WORepetition div.summary { background-color: rgb(255, 230, 230); }");
-//    renderBuffer.append("div.element.wo.WORepetition div.summary:hover { background-color: rgb(255, 210, 210); border-color: rgb(255, 200, 200); }");
-//    renderBuffer.append("div.element.wo.WORepetition div.expandcollapse { border-color: rgb(255, 200, 200); }");
-//    renderBuffer.append("div.element.wo.WORepetition div.expandcollapse:hover { background-color: rgb(255, 250, 250); }");
-//    renderBuffer.append("div.element.wo.WORepetition div.expandcollapse:active { background-color: rgb(255, 200, 200); }");
-//    renderBuffer.append("div.element.wo.WORepetition div.contents { background-color: rgb(255, 250, 250); border-color: rgb(255, 200, 200); }");
-//    renderBuffer.append("div.element.wo.WORepetition div.summary div.title span.type { display: none; }");
-//    renderBuffer.append("div.element.wo.WORepetition div.summary table.bindings th { color: rgb(220, 0, 0); }");
-//    renderBuffer.append("div.element.wo.WORepetition div.summary table.bindings td { color: rgb(150, 0, 0); }");
+//    renderBuffer.append("div.element.wo.WORepetition { border-color: rgb(255, 200, 200); }\n");
+//    renderBuffer.append("div.element.wo.WORepetition div.summary { background-color: rgb(255, 230, 230); }\n");
+//    renderBuffer.append("div.element.wo.WORepetition div.summary:hover { background-color: rgb(255, 210, 210); border-color: rgb(255, 200, 200); }\n");
+//    renderBuffer.append("div.element.wo.WORepetition div.expandcollapse { border-color: rgb(255, 200, 200); }\n");
+//    renderBuffer.append("div.element.wo.WORepetition div.expandcollapse:hover { background-color: rgb(255, 250, 250); }\n");
+//    renderBuffer.append("div.element.wo.WORepetition div.expandcollapse:active { background-color: rgb(255, 200, 200); }\n");
+//    renderBuffer.append("div.element.wo.WORepetition div.contents { background-color: rgb(255, 250, 250); border-color: rgb(255, 200, 200); }\n");
+//    renderBuffer.append("div.element.wo.WORepetition div.summary div.title span.type { display: none; }\n");
+//    renderBuffer.append("div.element.wo.WORepetition div.summary table.bindings th { color: rgb(220, 0, 0); }\n");
+//    renderBuffer.append("div.element.wo.WORepetition div.summary table.bindings td { color: rgb(150, 0, 0); }\n");
 
-    renderBuffer.append("body.verbose div.element div.summary div.title span.nodeName.verbose { display: block; }");
-    renderBuffer.append("body.verbose div.element div.summary div.title span.nodeName.compact { display: none; }");
+    renderBuffer.append("body.verbose div.element div.summary div.title span.nodeName.verbose { display: block; }\n");
+    renderBuffer.append("body.verbose div.element div.summary div.title span.nodeName.compact { display: none; }\n");
 
-    renderBuffer.append("body.compact { font-size: 7.5pt; }");
-    renderBuffer.append("body.compact div.element { margin-top: 2px; margin-bottom: 3px; }");
-    renderBuffer.append("body.compact div.element div.expandcollapse { width: 5px; padding-left: 4px; padding-right: 4px; padding-top: 1px; padding-bottom: 1px; }");
-    renderBuffer.append("body.compact div.element div.expandcollapse:hover { border-width: 1px; }");
-    renderBuffer.append("body.compact div.element div.summary { padding: 1px; padding-left: 2px; }");
-    renderBuffer.append("body.compact div.element div.summary table.bindings { display: none; }");
-    renderBuffer.append("body.compact div.element div.summary div.title { font-weight: normal; }");
-    renderBuffer.append("body.compact div.element div.summary div.title span.nodeName.verbose { display: none; }");
-    renderBuffer.append("body.compact div.element div.summary div.title span.nodeName.compact { display: block; }");
-    renderBuffer.append("body.compact div.element div.summary div.title span.type { display: none; }");
-    renderBuffer.append("body.compact div.element div.contents { padding-left: 8px; padding-top: 2px; padding-bottom: 2px; }");
+    renderBuffer.append("body.compact { font-size: 7.5pt; }\n");
+    renderBuffer.append("body.compact div.element { margin-top: 2px; margin-bottom: 3px; }\n");
+    renderBuffer.append("body.compact div.element div.expandcollapse { width: 5px; padding-left: 4px; padding-right: 4px; padding-top: 1px; padding-bottom: 1px; }\n");
+    renderBuffer.append("body.compact div.element div.expandcollapse:hover { border-width: 1px; }\n");
+    renderBuffer.append("body.compact div.element div.summary { padding: 1px; padding-left: 2px; }\n");
+    renderBuffer.append("body.compact div.element div.summary table.bindings { display: none; }\n");
+    renderBuffer.append("body.compact div.element div.summary div.title { font-weight: normal; }\n");
+    renderBuffer.append("body.compact div.element div.summary div.title span.nodeName.verbose { display: none; }\n");
+    renderBuffer.append("body.compact div.element div.summary div.title span.nodeName.compact { display: block; }\n");
+    renderBuffer.append("body.compact div.element div.summary div.title span.type { display: none; }\n");
+    renderBuffer.append("body.compact div.element div.contents { padding-left: 8px; padding-top: 2px; padding-bottom: 2px; }\n");
 
-    renderBuffer.append("body.compact div.element.wo.WOString { display: inline; border: none; }");
-    renderBuffer.append("body.compact div.element.wo.WOString div.summary { display: inline; border: 1px solid rgb(200, 200, 255); }");
-    renderBuffer.append("body.compact div.element.wo.WOString div.summary div.title { display: inline; }");
-    renderBuffer.append("body.compact div.element.wo.WOString.simple { border: none; }");
-    renderBuffer.append("body.compact div.element.wo.WOString.simple div.summary { border: none; background-color: transparent; padding: 0px; }");
-    renderBuffer.append("body.compact div.element.wo.WOString.simple div.summary div.title { display: inline; }");
+    renderBuffer.append("body.compact div.element.wo.WOString { display: inline; border: none; }\n");
+    renderBuffer.append("body.compact div.element.wo.WOString div.summary { display: inline; border: 1px solid rgb(200, 200, 255); }\n");
+    renderBuffer.append("body.compact div.element.wo.WOString div.summary div.title { display: inline; }\n");
+    renderBuffer.append("body.compact div.element.wo.WOString.simple { border: none; }\n");
+    renderBuffer.append("body.compact div.element.wo.WOString.simple div.summary { border: none; background-color: transparent; padding: 0px; }\n");
+    renderBuffer.append("body.compact div.element.wo.WOString.simple div.summary div.title { display: inline; }\n");
 
-    renderBuffer.append("body div.element.document { margin: 0px; padding: 0px; border: none; }");
-    renderBuffer.append("body div.element.document div.summary { margin: 0px; padding: 0px; border: none; display: none; }");
-    renderBuffer.append("body div.element.document > div.expandcollapse { display: none; }");
-    renderBuffer.append("body div.element.document div.contents { margin: 0px; padding: 0px; border: none; }");
+    renderBuffer.append("body div.element.document { margin: 0px; padding: 0px; border: none; }\n");
+    renderBuffer.append("body div.element.document div.summary { margin: 0px; padding: 0px; border: none; display: none; }\n");
+    renderBuffer.append("body div.element.document > div.expandcollapse { display: none; }\n");
+    renderBuffer.append("body div.element.document div.contents { margin: 0px; padding: 0px; border: none; }\n");
 
-    renderBuffer.append("</style>");
-    renderBuffer.append("<script>");
-    renderBuffer.append("function expandCollapse(id) { if ('none' == document.getElementById(id + '_contents').style.display) { expand(id); } else { collapse(id); } }");
-    renderBuffer.append("function expand(id) { document.getElementById(id + '_contents').style.display = 'block'; document.getElementById(id + '_toggle').innerHTML = '" + TemplateOutlinePage.COLLAPSE_STRING + "'; window.status = 'expand:' + id; }");
-    renderBuffer.append("function collapse(id) { document.getElementById(id + '_contents').style.display = 'none'; document.getElementById(id + '_toggle').innerHTML = '" + TemplateOutlinePage.EXPAND_STRING + "'; window.status = 'collapse:' + id; }");
-    renderBuffer.append("function toggleCompact() { if ('compact' == document.getElementById('outline').className) { document.getElementById('outline').className = 'verbose'; } else { document.getElementById('outline').className = 'compact'; } window.status = 'toggleCompact:'; }");
-    renderBuffer.append("function updatePageYOffset() { window.status = 'pageYOffset:' + window.pageYOffset; }");
-    renderBuffer.append("</script>");
+    renderBuffer.append("</style>\n");
+    renderBuffer.append("<script>\n");
+    renderBuffer.append("function expandCollapse(id) { if ('none' == document.getElementById(id + '_contents').style.display) { expand(id); } else { collapse(id); } }\n");
+    renderBuffer.append("function expand(id) { document.getElementById(id + '_contents').style.display = 'block'; document.getElementById(id + '_toggle').innerHTML = '" + TemplateOutlinePage.COLLAPSE_STRING + "'; window.status = 'expand:' + id; }\n");
+    renderBuffer.append("function collapse(id) { document.getElementById(id + '_contents').style.display = 'none'; document.getElementById(id + '_toggle').innerHTML = '" + TemplateOutlinePage.EXPAND_STRING + "'; window.status = 'collapse:' + id; }\n");
+    renderBuffer.append("function toggleCompact() { if ('compact' == document.getElementById('outline').className) { document.getElementById('outline').className = 'verbose'; } else { document.getElementById('outline').className = 'compact'; } window.status = 'toggleCompact:'; }\n");
+    renderBuffer.append("function updatePageYOffset() { window.status = 'pageYOffset:' + window.pageYOffset; }\n");
+    renderBuffer.append("</script>\n");
 
-    renderBuffer.append("<div class = \"viewControls\"><a href = \"#\" onclick = \"toggleCompact()\">toggle compact view</a></div>");
-    renderBuffer.append("<div class = \"elements\">");
+    renderBuffer.append("<div class = \"viewControls\"><a href = \"#\" onclick = \"toggleCompact()\">toggle compact view</a></div>\n");
+    renderBuffer.append("<div class = \"elements\">\n");
   }
 
   /**
