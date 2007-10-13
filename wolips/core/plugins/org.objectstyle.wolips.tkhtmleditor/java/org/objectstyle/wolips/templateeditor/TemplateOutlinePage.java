@@ -251,7 +251,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
             else {
               _browser.execute("expand('" + nodeID + "');");
             }
-            _browser.execute("scroll(window.pageXOffset, window.pageYOffset)");
+            _browser.execute("window.scrollTo(getPageXOffset(), getPageYOffset());");
           }
         }
       }
@@ -321,7 +321,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
 
       _browser.execute("updatePageYOffset()");
       if (_lastPageOffset > 0) {
-        documentContentsBuffer.append("<script>scroll(100, " + _lastPageOffset + ");</script>");
+        documentContentsBuffer.append("<script>window.scrollTo(100, " + _lastPageOffset + ");</script>");
       }
 
       String documentContents = documentContentsBuffer.toString();
@@ -459,7 +459,9 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
     renderBuffer.append("function expand(id) { document.getElementById(id + '_contents').style.display = 'block'; document.getElementById(id + '_toggle').innerHTML = '" + TemplateOutlinePage.COLLAPSE_STRING + "'; window.status = 'expand:' + id; }\n");
     renderBuffer.append("function collapse(id) { document.getElementById(id + '_contents').style.display = 'none'; document.getElementById(id + '_toggle').innerHTML = '" + TemplateOutlinePage.EXPAND_STRING + "'; window.status = 'collapse:' + id; }\n");
     renderBuffer.append("function toggleCompact() { if ('compact' == document.getElementById('outline').className) { document.getElementById('outline').className = 'verbose'; } else { document.getElementById('outline').className = 'compact'; } window.status = 'toggleCompact:'; }\n");
-    renderBuffer.append("function updatePageYOffset() { window.status = 'pageYOffset:' + window.pageYOffset; }\n");
+    renderBuffer.append("function getPageYOffset() { var scrollY; if (document.all) { if (!document.documentElement.scrollTop) { scrollY = document.body.scrollTop; } else { scrollY = document.documentElement.scrollTop; } } else { scrollY = window.pageYOffset; } return scrollY; }\n");
+    renderBuffer.append("function getPageXOffset() { var scrollX; if (document.all) { if (!document.documentElement.scrollLeft) { scrollX = document.body.scrollLeft; } else { scrollX = document.documentElement.scrollLeft; } } else { scrollX = window.pageXOffset; } return scrollX; }\n");
+    renderBuffer.append("function updatePageYOffset() { window.status = 'pageYOffset:' + getPageYOffset(); }\n");
     renderBuffer.append("</script>\n");
 
     renderBuffer.append("<div class = \"viewControls\"><a href = \"#\" onclick = \"toggleCompact()\">toggle compact view</a></div>\n");
