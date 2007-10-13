@@ -65,6 +65,8 @@ import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 
 public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements ISortableEOModelObject {
+	public static final String CURRENT_VERSION = "1.0";
+	
 	public static final String DIRTY = "dirty";
 
 	public static final String ENTITY = "entity";
@@ -975,7 +977,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		myModelURL = modelFolder.toURL();
 		File indexFile = new File(modelFolder, "index.eomodeld");
 		EOModelMap modelMap = toMap();
-		PropertyListSerialization.propertyListToFile(indexFile, modelMap);
+		PropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, indexFile, modelMap);
 
 		if (myDeletedEntityNames != null) {
 			for (String entityName : myDeletedEntityNames) {

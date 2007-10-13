@@ -312,7 +312,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject<EOModel> implem
 
 	public void saveToFile(File _storedProcedureFile) {
 		EOModelMap storedProcedureMap = toMap();
-		PropertyListSerialization.propertyListToFile(_storedProcedureFile, storedProcedureMap);
+		PropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, _storedProcedureFile, storedProcedureMap);
 	}
 
 	public void resolve(Set<EOModelVerificationFailure> _failures) {

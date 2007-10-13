@@ -139,9 +139,12 @@ public class PropertyListSerialization {
 	/**
 	 * Saves property list to file.
 	 */
-	public static void propertyListToFile(File f, Object plist) {
+	public static void propertyListToFile(String header, File f, Object plist) {
 		try {
 			BufferedWriter out = new BufferedWriter(new EscapingWriter(new OutputStreamWriter(new FileOutputStream(f), Charset.forName("UTF-8"))));
+			if(header != null && header.length() > 0) {
+				out.append("// " + header);
+			}
 			try {
 				writeObject("", out, plist);
 			} finally {

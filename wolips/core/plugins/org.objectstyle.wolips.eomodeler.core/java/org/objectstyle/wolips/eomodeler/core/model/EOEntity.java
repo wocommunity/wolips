@@ -1851,7 +1851,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	public void saveToFile(File _entityFile) {
 		EOModelMap entityMap = toEntityMap();
-		PropertyListSerialization.propertyListToFile(_entityFile, entityMap);
+		PropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, _entityFile, entityMap);
 	}
 
 	public void saveFetchSpecsToFile(File _fetchSpecFile) {
@@ -1859,7 +1859,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			_fetchSpecFile.delete();
 		} else {
 			EOModelMap fetchSpecMap = toFetchSpecsMap();
-			PropertyListSerialization.propertyListToFile(_fetchSpecFile, fetchSpecMap);
+			PropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, _fetchSpecFile, fetchSpecMap);
 		}
 	}
 
