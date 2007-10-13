@@ -130,6 +130,8 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 	private List<EOSortOrdering> mySortOrderings;
 
 	private Expression myQualifier;
+	
+	private String myQualifierString;
 
 	private EOModelMap myFetchSpecMap;
 
@@ -320,9 +322,16 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 	}
 
 	public void setQualifier(Expression _qualifier) {
+		setQualifier(_qualifier, true);
+	}
+	
+	public void setQualifier(Expression _qualifier, boolean updateQualifierString) {
 		Expression oldQualifier = myQualifier;
 		myQualifier = _qualifier;
 		firePropertyChange(EOFetchSpecification.QUALIFIER, oldQualifier, myQualifier);
+		if (updateQualifierString) {
+			setQualifierString(EOQualifierFactory.toString(myQualifier), false);
+		}
 	}
 
 	public Expression getQualifier() {
@@ -330,25 +339,21 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 	}
 
 	public void setQualifierString(String _qualifierString) {
-		String oldQualifierString = getQualifierString();
-		Expression exp;
-		if (_qualifierString == null || _qualifierString.trim().length() == 0) {
-			exp = null;
-		} else {
-			exp = EOQualifierFactory.fromString(_qualifierString);
+		setQualifierString(_qualifierString, true);
+	}
+	
+	public void setQualifierString(String _qualifierString, boolean updateQualifier) {
+		String oldQualifierString = myQualifierString;
+		myQualifierString = _qualifierString;
+		if (updateQualifier) {
+			Expression exp = EOQualifierFactory.fromString(_qualifierString);
+			setQualifier(exp, false);
 		}
-		setQualifier(exp);
 		firePropertyChange(EOFetchSpecification.QUALIFIER_STRING, oldQualifierString, getQualifierString());
 	}
 
 	public String getQualifierString() {
-		String qualifierString;
-		if (myQualifier == null) {
-			qualifierString = null;
-		} else {
-			qualifierString = EOQualifierFactory.toString(myQualifier);
-		}
-		return qualifierString;
+		return myQualifierString;
 	}
 
 	public void setEntity(EOEntity _entity) {
@@ -570,6 +575,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 		Map qualifierMap = _map.getMap("qualifier");
 		if (qualifierMap != null) {
 			myQualifier = EOQualifierFactory.createExpressionFromQualifierMap(new EOModelMap(qualifierMap));
+			myQualifierString = EOQualifierFactory.toString(myQualifier);
 		}
 		myRawRowKeyPaths = _map.getSet("rawRowKeyPaths", true);
 		myRefreshesRefetchedObjects = _map.getBoolean("refreshesRefetchedObjects");
@@ -652,6 +658,10 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 		// if (myQualifier != null) {
 		// myQualifier.verify(_failures);
 		// }
+		if (myQualifierString != null && myQualifierString.length() > 0 && myQualifier == null) {
+			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " specifies an invalid qualifier, and cannot be saved.", false));
+		}
+		
 		for (EOSortOrdering sortOrdering : mySortOrderings) {
 			sortOrdering.verify(_failures);
 		}

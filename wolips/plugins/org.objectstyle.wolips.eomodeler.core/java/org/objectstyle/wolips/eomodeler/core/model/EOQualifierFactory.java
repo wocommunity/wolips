@@ -82,13 +82,25 @@ import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
 
 public class EOQualifierFactory {
 	public static Expression fromString(String _str) {
-		return Expression.fromString(_str);
+		Expression exp;
+		if (_str == null || _str.trim().length() == 0) {
+			exp = null;
+		} else {
+			exp = Expression.fromString(_str);
+		}
+		return exp;
 	}
 
 	public static String toString(Expression _exp) {
-		StringWriter sw = new StringWriter();
-		_exp.encodeAsString(new PrintWriter(sw));
-		return sw.getBuffer().toString();
+		String qualifierString;
+		if (_exp == null) {
+			qualifierString = null;
+		} else {
+			StringWriter sw = new StringWriter();
+			_exp.encodeAsString(new PrintWriter(sw));
+			qualifierString = sw.getBuffer().toString();
+		}
+		return qualifierString;
 	}
 
 	public static Expression createExpressionFromQualifierMap(EOModelMap _qualifierMap) {
@@ -235,20 +247,32 @@ public class EOQualifierFactory {
 	}
 
 	private static EOModelMap createQualifierMapFromConditionNode(ConditionNode _node, String _selectorName) {
-		ASTPath path = (ASTPath) _node.getOperand(0);
+		Object leftValue = _node.getOperand(0);
+		Object rightValue = _node.getOperand(1);
 		EOModelMap map = new EOModelMap();
-		Object valueObj = _node.getOperand(1);
-		if (valueObj instanceof ASTPath) {
+		if (leftValue instanceof ASTPath && rightValue instanceof ASTPath) {
 			map.setString("class", "EOKeyComparisonQualifier", false);
-			map.setString("leftKey", (String) path.getOperand(0), false);
-			map.setString("rightKey", (String) ((ASTPath) valueObj).getOperand(0), false);
+			map.setString("leftKey", (String) ((ASTPath) leftValue).getOperand(0), false);
+			map.setString("rightKey", (String) ((ASTPath) rightValue).getOperand(0), false);
 			map.setString("selectorName", _selectorName, false);
 		} else {
+			String key;
+			Object value;
+			if (leftValue instanceof ASTPath) {
+				key = (String) ((ASTPath) leftValue).getOperand(0);
+				value = rightValue;
+			} else if (rightValue instanceof ASTPath) {
+				key = (String) ((ASTPath) rightValue).getOperand(0);
+				value = leftValue;
+			} else {
+				throw new IllegalArgumentException("There is no known qualifier that can compare " + leftValue + " and " + rightValue + ".");
+			}
+			
 			map.setString("class", "EOKeyValueQualifier", false);
-			Object value = createQualifierValue(valueObj);
-			map.setString("key", (String) path.getOperand(0), false);
+			Object processedValue = createQualifierValue(value);
+			map.setString("key", key, false);
 			map.setString("selectorName", _selectorName, false);
-			map.put("value", value);
+			map.put("value", processedValue);
 		}
 		return map;
 	}
@@ -306,9 +330,8 @@ public class EOQualifierFactory {
 	public static Set<String> getQualifierKeysFromExpression(Expression expression) {
 		Set<String> keys = new HashSet<String>();
 		try {
-		EOQualifierFactory.fillInQualifierKeysFromExpression(expression, keys);
-		}
-		catch (Throwable t) {
+			EOQualifierFactory.fillInQualifierKeysFromExpression(expression, keys);
+		} catch (Throwable t) {
 			t.printStackTrace();
 		}
 		return keys;
