@@ -349,7 +349,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 			Expression exp = EOQualifierFactory.fromString(_qualifierString);
 			setQualifier(exp, false);
 		}
-		firePropertyChange(EOFetchSpecification.QUALIFIER_STRING, oldQualifierString, getQualifierString());
+		firePropertyChange(EOFetchSpecification.QUALIFIER_STRING, oldQualifierString, myQualifierString);
 	}
 
 	public String getQualifierString() {
