@@ -50,7 +50,14 @@
 package org.objectstyle.wolips.eomodeler.core.utils;
 
 public class BooleanUtils {
-
+	public static Boolean isTrue(String strValue) {
+		return "y".equalsIgnoreCase(strValue) || "yes".equalsIgnoreCase(strValue) || "true".equalsIgnoreCase(strValue);
+	}
+	
+	public static Boolean isFalse(String strValue) {
+		return "n".equalsIgnoreCase(strValue) || "no".equalsIgnoreCase(strValue) || "false".equalsIgnoreCase(strValue);
+	}
+	
 	public static Boolean negate(Boolean _value) {
 		Boolean negatedValue;
 		if (_value == null) {

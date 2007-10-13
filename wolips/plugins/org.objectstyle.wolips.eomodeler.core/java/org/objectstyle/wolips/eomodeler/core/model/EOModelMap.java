@@ -55,6 +55,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
+
 public class EOModelMap implements Map {
 	public static final int YESNO = 1;
 
@@ -104,7 +106,7 @@ public class EOModelMap implements Map {
 		} else if (value instanceof String) {
 			String strValue = getString(_key, true);
 			if (strValue != null) {
-				boolValue = Boolean.valueOf("y".equalsIgnoreCase(strValue) || "yes".equalsIgnoreCase(strValue) || "true".equalsIgnoreCase(strValue) || "on".equalsIgnoreCase(strValue)); //$NON-NLS-4$
+				boolValue = Boolean.valueOf(BooleanUtils.isTrue(strValue)); //$NON-NLS-4$
 			} else {
 				boolValue = null;
 			}
