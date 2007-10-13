@@ -78,6 +78,7 @@ import org.objectstyle.cayenne.exp.parser.ASTPath;
 import org.objectstyle.cayenne.exp.parser.AggregateConditionNode;
 import org.objectstyle.cayenne.exp.parser.ConditionNode;
 import org.objectstyle.cayenne.exp.parser.Node;
+import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
 
 public class EOQualifierFactory {
@@ -216,6 +217,11 @@ public class EOQualifierFactory {
 			map.setString("class", "NSNumber", false);
 			map.put("value", _value);
 			value = map;
+		} else if (_value instanceof Boolean) {
+			EOModelMap map = new EOModelMap();
+			map.setString("class", "NSNumber", false);
+			map.put("value", _value);
+			value = map;
 		} else if (_value instanceof ExpressionParameter) {
 			EOModelMap map = new EOModelMap();
 			String name = ((ExpressionParameter) _value).getName();
@@ -249,13 +255,39 @@ public class EOQualifierFactory {
 	private static EOModelMap createQualifierMapFromConditionNode(ConditionNode _node, String _selectorName) {
 		Object leftValue = _node.getOperand(0);
 		Object rightValue = _node.getOperand(1);
+		
+		boolean keyValueQualifier = false;
 		EOModelMap map = new EOModelMap();
 		if (leftValue instanceof ASTPath && rightValue instanceof ASTPath) {
-			map.setString("class", "EOKeyComparisonQualifier", false);
-			map.setString("leftKey", (String) ((ASTPath) leftValue).getOperand(0), false);
-			map.setString("rightKey", (String) ((ASTPath) rightValue).getOperand(0), false);
-			map.setString("selectorName", _selectorName, false);
-		} else {
+			String leftKey = (String) ((ASTPath) leftValue).getOperand(0);
+			String rightKey = (String) ((ASTPath) rightValue).getOperand(0);
+			
+			if (BooleanUtils.isTrue(leftKey)) {
+				leftValue = Integer.valueOf(1);
+				keyValueQualifier = true;
+			}
+			else if (BooleanUtils.isFalse(leftKey)) {
+				leftValue = Integer.valueOf(0);
+				keyValueQualifier = true;
+			}
+			else if (BooleanUtils.isTrue(rightKey)) {
+				rightValue = Integer.valueOf(1);
+				keyValueQualifier = true;
+			}
+			else if (BooleanUtils.isFalse(rightKey)) {
+				rightValue = Integer.valueOf(0);
+				keyValueQualifier = true;
+			}
+
+			if (!keyValueQualifier) {
+				map.setString("class", "EOKeyComparisonQualifier", false);
+				map.setString("leftKey", leftKey, false);
+				map.setString("rightKey", rightKey, false);
+				map.setString("selectorName", _selectorName, false);
+			}
+		}
+		
+		if (keyValueQualifier) {
 			String key;
 			Object value;
 			if (leftValue instanceof ASTPath) {
