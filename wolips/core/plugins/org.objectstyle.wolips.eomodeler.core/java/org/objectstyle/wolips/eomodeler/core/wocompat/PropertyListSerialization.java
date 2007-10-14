@@ -55,14 +55,23 @@
  */
 package org.objectstyle.wolips.eomodeler.core.wocompat;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FilterWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.objectstyle.cayenne.CayenneRuntimeException;
 import org.objectstyle.wolips.eomodeler.core.wocompat.parser.Parser;
 import org.objectstyle.wolips.eomodeler.core.wocompat.parser.ParserDataStructureFactory;
 
@@ -151,7 +160,7 @@ public class PropertyListSerialization {
 				out.close();
 			}
 		} catch (IOException ioex) {
-			throw new CayenneRuntimeException("Error saving plist.", ioex);
+			throw new RuntimeException("Error saving plist.", ioex);
 		}
 	}
 	
@@ -203,7 +212,7 @@ public class PropertyListSerialization {
 				out.close();
 			}
 		} catch (IOException ioex) {
-			throw new CayenneRuntimeException("Error saving plist.", ioex);
+			throw new RuntimeException("Error saving plist.", ioex);
 		}
 	}
 
@@ -289,7 +298,7 @@ public class PropertyListSerialization {
 		} else if (plist instanceof Number) {
       out.write(quoteString(plist.toString()));
 		} else {
-			throw new CayenneRuntimeException("Unsupported class for property list serialization: " + plist.getClass().getName());
+			throw new RuntimeException("Unsupported class for property list serialization: " + plist.getClass().getName());
 		}
 	}
 
