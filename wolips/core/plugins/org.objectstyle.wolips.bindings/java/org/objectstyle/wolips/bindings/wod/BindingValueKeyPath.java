@@ -10,7 +10,6 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
-import org.objectstyle.wolips.bindings.wod.TypeCache;
 
 public class BindingValueKeyPath {
   private IJavaProject _javaProject;
@@ -40,6 +39,10 @@ public class BindingValueKeyPath {
   private String _helperFunction;
 
   private TypeCache _cache;
+
+  public BindingValueKeyPath(String keyPath, IType contextType) throws JavaModelException {
+    this(keyPath, contextType, contextType.getJavaProject(), new TypeCache());
+  }
 
   public BindingValueKeyPath(String keyPath, IType contextType, IJavaProject javaProject, TypeCache cache) throws JavaModelException {
     _cache = cache;
