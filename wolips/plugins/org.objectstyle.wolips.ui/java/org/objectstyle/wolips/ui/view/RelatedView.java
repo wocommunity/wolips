@@ -128,7 +128,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 
 		RelatedLabelProvider relatedLabelProvider = new RelatedLabelProvider();
 		_viewer.setLabelProvider(relatedLabelProvider);
-		relatedContentProvider.labelProvider = relatedLabelProvider;
+		relatedContentProvider.setLabelProvider(relatedLabelProvider);
 
 		_viewer.setSorter(new ViewerSorter());
 
