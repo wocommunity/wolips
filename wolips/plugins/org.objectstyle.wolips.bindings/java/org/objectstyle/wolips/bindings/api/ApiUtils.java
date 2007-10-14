@@ -23,6 +23,8 @@ import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.osgi.framework.Bundle;
 
 public class ApiUtils {
+  private static ApiModel _globalApiModel;
+  
 	public static int getSelectedDefaults(IApiBinding binding) {
 		String defaults = binding.getDefaults();
 		if (defaults == null) {
@@ -56,40 +58,49 @@ public class ApiUtils {
 				Boolean apiMissing = cache.apiMissingForElementType(elementType);
 				if (apiMissing == null || !apiMissing.booleanValue()) {
 					ApiModel apiModel = null;
-					IOpenable typeContainer = elementType.getOpenable();
-					if (typeContainer instanceof IClassFile) {
-						IClassFile classFile = (IClassFile) typeContainer;
-						IJavaElement parent = classFile.getParent();
-						if (parent instanceof IPackageFragment) {
-							IPackageFragment parentPackage = (IPackageFragment) parent;
-							IPath packagePath = parentPackage.getPath();
-							IPath apiPath = packagePath.removeLastSegments(2).append(elementType.getElementName()).addFileExtension("api");
-							File apiFile = apiPath.toFile();
-							boolean fileExists = apiFile.exists();
-							if (!fileExists && parentPackage.getElementName().startsWith("com.webobjects")) {
-								Bundle bundle = Activator.getDefault().getBundle();
-								URL woDefinitionsURL = bundle.getEntry("/WebObjectDefinitions.xml");
-								if (woDefinitionsURL != null) {
-									apiModel = new ApiModel(woDefinitionsURL);
-								}
-							} else if (fileExists) {
-								apiModel = new ApiModel(apiFile);
-							}
-						}
-					} else if (typeContainer instanceof ICompilationUnit) {
-						// ICompilationUnit cu = (ICompilationUnit)
-						// typeContainer;
-						// IResource resource = cu.getCorrespondingResource();
-						// String name = resource.getName();
-						try {
-							LocalizedComponentsLocateResult componentsLocateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(elementType.getJavaProject().getProject(), elementType.getElementName());
-							IFile apiFile = componentsLocateResults.getDotApi();
-							if (apiFile != null && apiFile.exists()) {
-								apiModel = new ApiModel(apiFile);
-							}
-						} catch (Exception e) {
-							throw new ApiModelException("Failed to locate API file for " + elementType.getElementName() + ".");
-						}
+					if (elementType.getFullyQualifiedName().startsWith("com.webobjects.appserver._private.")) {
+            if (_globalApiModel == null) {
+              Bundle bundle = Activator.getDefault().getBundle();
+              URL woDefinitionsURL = bundle.getEntry("/WebObjectDefinitions.xml");
+              if (woDefinitionsURL != null) {
+                apiModel = new ApiModel(woDefinitionsURL);
+              }
+              _globalApiModel = apiModel;
+            }
+            else {
+              apiModel = _globalApiModel;
+            }
+					}
+					else {
+  					IOpenable typeContainer = elementType.getOpenable();
+  					if (typeContainer instanceof IClassFile) {
+  						IClassFile classFile = (IClassFile) typeContainer;
+  						IJavaElement parent = classFile.getParent();
+  						if (parent instanceof IPackageFragment) {
+  							IPackageFragment parentPackage = (IPackageFragment) parent;
+  							IPath packagePath = parentPackage.getPath();
+  							IPath apiPath = packagePath.removeLastSegments(2).append(elementType.getElementName()).addFileExtension("api");
+  							File apiFile = apiPath.toFile();
+  							boolean fileExists = apiFile.exists();
+  							if (fileExists) {
+  								apiModel = new ApiModel(apiFile);
+  							}
+  						}
+  					} else if (typeContainer instanceof ICompilationUnit) {
+  						// ICompilationUnit cu = (ICompilationUnit)
+  						// typeContainer;
+  						// IResource resource = cu.getCorrespondingResource();
+  						// String name = resource.getName();
+  						try {
+  							LocalizedComponentsLocateResult componentsLocateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(elementType.getJavaProject().getProject(), elementType.getElementName());
+  							IFile apiFile = componentsLocateResults.getDotApi();
+  							if (apiFile != null && apiFile.exists()) {
+  								apiModel = new ApiModel(apiFile);
+  							}
+  						} catch (Exception e) {
+  							throw new ApiModelException("Failed to locate API file for " + elementType.getElementName() + ".");
+  						}
+  					}
 					}
 
 					if (apiModel != null) {
