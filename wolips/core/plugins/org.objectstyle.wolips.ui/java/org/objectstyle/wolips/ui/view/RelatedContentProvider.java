@@ -21,7 +21,9 @@ import org.objectstyle.wolips.datasets.resources.IWOLipsResource;
 import org.objectstyle.wolips.ui.UIPlugin;
 
 public class RelatedContentProvider implements ITreeContentProvider {
-	RelatedLabelProvider labelProvider;
+	private RelatedLabelProvider _labelProvider;
+	private Object _lastResource;
+	private Object[] _lastResultList;
 
 	public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 		// DO NOTHING
@@ -29,6 +31,10 @@ public class RelatedContentProvider implements ITreeContentProvider {
 
 	public void dispose() {
 		return;
+	}
+	
+	public void setLabelProvider(RelatedLabelProvider labelProvider) {
+		_labelProvider = labelProvider;
 	}
 
 	public Object[] getElements(Object parent) {
@@ -68,47 +74,54 @@ public class RelatedContentProvider implements ITreeContentProvider {
 		} else if (actualParent instanceof ICompilationUnit) {
 			wolipsResource = WOLipsCore.getWOLipsModel().getWOLipsCompilationUnit((ICompilationUnit) actualParent);
 		}
-		List<IResource> result = new LinkedList<IResource>();
-		if (wolipsResource != null) {
-			try {
-				List<IResource> list = wolipsResource.getRelatedResources();
-				result.addAll(list);
-
-			} catch (Exception e) {
-				UIPlugin.getDefault().log(e);
-			}
-		} else if (actualParent != null && actualParent instanceof IResource) {
-			try {
-				final IResource resource = (IResource) actualParent;
-				final List<IResource> list = new ArrayList<IResource>();
-				IContainer lproj = resource.getParent();
-				if (lproj != null && "lprog".equals(lproj.getFileExtension())) {
-					IContainer p = lproj.getParent();
-					p.accept(new IResourceProxyVisitor() {
-
-						public boolean visit(IResourceProxy proxy) throws CoreException {
-							if (proxy.getName().endsWith(".lproj")) {
-								IContainer f = (IContainer) proxy.requestResource();
-								IResource m = f.findMember(resource.getName());
-								if (m != null) {
-									list.add(m);
-								}
-							}
-							return true;
-						}
-
-					}, IResource.DEPTH_ONE);
-					result.addAll(list);
-				}
-
-			} catch (Exception e) {
-				UIPlugin.getDefault().log(e);
-			}
+		
+		Object[] resultList;
+		if (_lastResource != null && wolipsResource != null && _lastResource.equals(wolipsResource)) {
+			resultList = _lastResultList;
 		}
-		Object[] resultList = result.toArray();
-		// labelProvider needs the element list to check for duplicate
-		// filenames
-		labelProvider.setResultList(resultList);
+		else {
+			List<IResource> result = new LinkedList<IResource>();
+			if (wolipsResource != null) {
+				try {
+					List<IResource> list = wolipsResource.getRelatedResources();
+					result.addAll(list);
+	
+				} catch (Exception e) {
+					UIPlugin.getDefault().log(e);
+				}
+			} else if (actualParent != null && actualParent instanceof IResource) {
+				try {
+					final IResource resource = (IResource) actualParent;
+					final List<IResource> list = new ArrayList<IResource>();
+					IContainer lproj = resource.getParent();
+					if (lproj != null && "lprog".equals(lproj.getFileExtension())) {
+						IContainer p = lproj.getParent();
+						p.accept(new IResourceProxyVisitor() {
+	
+							public boolean visit(IResourceProxy proxy) throws CoreException {
+								if (proxy.getName().endsWith(".lproj")) {
+									IContainer f = (IContainer) proxy.requestResource();
+									IResource m = f.findMember(resource.getName());
+									if (m != null) {
+										list.add(m);
+									}
+								}
+								return true;
+							}
+	
+						}, IResource.DEPTH_ONE);
+						result.addAll(list);
+					}
+	
+				} catch (Exception e) {
+					UIPlugin.getDefault().log(e);
+				}
+			}
+			resultList = result.toArray();
+		}
+		_lastResource = wolipsResource;
+		_lastResultList = resultList;
+		_labelProvider.setResultList(resultList);
 		return resultList;
 	}
 
