@@ -159,6 +159,11 @@ public abstract class AbstractWodBinding implements IWodBinding {
 
   public abstract int getLineNumber();
 
+  public static List<WodProblem> getBindingProblems(String keypath, IType javaFileType) throws JavaModelException {
+    SimpleWodBinding binding = new SimpleWodBinding("_temp", keypath);
+    return binding.getBindingProblems(javaFileType);
+  }
+  
   public void fillInBindingProblems(IJavaProject javaProject, IType javaFileType, List<WodProblem> problems, TypeCache cache) throws JavaModelException {
     boolean warnOnMissingCollectionKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.WARN_ON_MISSING_COLLECTION_KEY);
     boolean errorOnMissingNSKVCKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.ERROR_ON_MISSING_NSKVC_KEY);
@@ -326,5 +331,11 @@ public abstract class AbstractWodBinding implements IWodBinding {
   @Override
   public String toString() {
     return "[" + getClass().getName() + ": name = " + getName() + "; value = " + getValue() + "]";
+  }
+  
+  public List<WodProblem> getBindingProblems(IType javaFileType) throws JavaModelException {
+    List<WodProblem> problems = new LinkedList<WodProblem>();
+    fillInBindingProblems(javaFileType.getJavaProject(), javaFileType, problems, new TypeCache());
+    return problems;
   }
 }
