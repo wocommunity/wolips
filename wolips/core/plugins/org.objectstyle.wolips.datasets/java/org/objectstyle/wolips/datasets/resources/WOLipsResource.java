@@ -91,6 +91,20 @@ public abstract class WOLipsResource implements IWOLipsResource {
 	public List getRelatedResources() {
 		return getRelatedWOComponentResources(this.getCorrespondingResource());
 	}
+	
+	@Override
+	public int hashCode() {
+		return resource == null ? 0 : resource.hashCode();
+	}
+	
+	public boolean equals(Object obj) {
+		return resource != null && obj instanceof WOLipsResource && resource.equals(((WOLipsResource)obj).resource);
+	}
+	
+	@Override
+	public String toString() {
+		return "[" + getClass().getSimpleName() + ": " + resource + "]";
+	}
 
 	/** static help method to find all related resources for WO component files */
 	public static List getRelatedWOComponentResources(IResource resource) {
