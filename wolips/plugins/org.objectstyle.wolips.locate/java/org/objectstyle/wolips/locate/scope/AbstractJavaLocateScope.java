@@ -59,7 +59,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
 
 public abstract class AbstractJavaLocateScope extends DefaultLocateScope {
 
@@ -79,6 +78,11 @@ public abstract class AbstractJavaLocateScope extends DefaultLocateScope {
 				if (javaElement == null) {
 					return false;
 				}
+				/*
+				// MS: It appears that we take a huge performance hit for this ... What it ends up doing
+				// is it ends up loading and processing every java file that is found.  I'm going to
+				// comment this out for now and let it fail further down the line when something actually
+				// needs to use the type 
 				try {
 					if (javaElement.isStructureKnown()) {
 						//do nothing
@@ -86,6 +90,7 @@ public abstract class AbstractJavaLocateScope extends DefaultLocateScope {
 				} catch (JavaModelException e) {
 					return false;
 				}
+				*/
 			}
 		}
 		return super.addToResult(file);
