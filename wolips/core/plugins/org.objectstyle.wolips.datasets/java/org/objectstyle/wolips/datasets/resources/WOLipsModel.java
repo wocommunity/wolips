@@ -57,11 +57,10 @@ package org.objectstyle.wolips.datasets.resources;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IRegion;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.ITypeHierarchy;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.internal.corext.util.SuperTypeHierarchyCache;
 import org.objectstyle.wolips.datasets.DataSetsPlugin;
 
 /**
@@ -236,19 +235,10 @@ public final class WOLipsModel implements IWOLipsModel {
 		IType[] types = null;
 		int compilationUnitType = WOLipsModel.UNKNOWN_COMPILATION_UNIT_TYPE;
 		try {
-			// types = compilationUnit.getAllTypes();
-			String resourceName = compilationUnit.getCorrespondingResource().getName();
-			String typeName = resourceName.substring(0, resourceName.length() - IWOLipsModel.EXT_JAVA.length() - 1);
-			IType type = compilationUnit.getType(typeName);
-			IRegion region = JavaCore.newRegion();
-			region.add(compilationUnit);
-			ITypeHierarchy typeHierarchy = compilationUnit.getJavaProject().newTypeHierarchy(type, region, null);
-			types = typeHierarchy.getAllSuperclasses(type);
+			IType type = compilationUnit.findPrimaryType();
+			ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(type);
+			types = typeHierarchy.getAllSupertypes(type);
 			compilationUnitType = this.getWOLipsCompilationUnitType(types);
-			if (compilationUnitType == WOLipsModel.UNKNOWN_COMPILATION_UNIT_TYPE) {
-				types = typeHierarchy.getAllSuperInterfaces(type);
-				compilationUnitType = this.getWOLipsCompilationUnitType(types);
-			}
 		} catch (JavaModelException e) {
 			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		}
