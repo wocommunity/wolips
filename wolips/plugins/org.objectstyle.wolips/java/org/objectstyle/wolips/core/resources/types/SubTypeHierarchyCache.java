@@ -13,7 +13,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.corext.util.LRUMap;
 import org.eclipse.jdt.internal.corext.util.MethodOverrideTester;
 
-public class SubTypeHierachyCache {
+public class SubTypeHierarchyCache {
 
   private static class HierarchyCacheEntry implements ITypeHierarchyChangedListener {
 
@@ -57,7 +57,7 @@ public class SubTypeHierachyCache {
 
   }
 
-  private static final int CACHE_SIZE = 8;
+  private static final int CACHE_SIZE = 24;
 
   private static List<HierarchyCacheEntry> fgHierarchyCache = new ArrayList<HierarchyCacheEntry>(CACHE_SIZE);
   
