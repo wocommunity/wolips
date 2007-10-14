@@ -12,16 +12,13 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.search.IJavaSearchConstants;
 import org.eclipse.jdt.core.search.IJavaSearchScope;
 import org.eclipse.jdt.core.search.SearchEngine;
 import org.eclipse.jdt.core.search.SearchPattern;
-import org.eclipse.jdt.internal.corext.util.SuperTypeHierarchyCache;
 import org.objectstyle.wolips.bindings.wod.BindingValueKey;
 import org.objectstyle.wolips.bindings.wod.TypeCache;
-import org.objectstyle.wolips.core.resources.types.SubTypeHierachyCache;
 import org.objectstyle.wolips.core.resources.types.TypeNameCollector;
 
 public class BindingReflectionUtils {
@@ -94,18 +91,18 @@ public class BindingReflectionUtils {
     searchEngine.searchAllTypeNames(packageName, SearchPattern.R_EXACT_MATCH, typeName, _matchType, IJavaSearchConstants.CLASS, searchScope, _typeNameCollector, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, progressMonitor);
   }
 
-  public static boolean isNSKeyValueCoding(IType type) throws JavaModelException {
-    return BindingReflectionUtils.isType(type, new String[] { "com.webobjects.foundation.NSKeyValueCoding" });
+  public static boolean isNSKeyValueCoding(IType type, TypeCache cache) throws JavaModelException {
+    return BindingReflectionUtils.isType(type, new String[] { "com.webobjects.foundation.NSKeyValueCoding" }, cache);
   }
 
-  public static boolean isNSCollection(IType type) throws JavaModelException {
-    return BindingReflectionUtils.isType(type, new String[] { "com.webobjects.foundation.NSDictionary", "com.webobjects.foundation.NSArray", "com.webobjects.foundation.NSSet", "er.extensions.ERXLocalizer" });
+  public static boolean isNSCollection(IType type, TypeCache cache) throws JavaModelException {
+    return BindingReflectionUtils.isType(type, new String[] { "com.webobjects.foundation.NSDictionary", "com.webobjects.foundation.NSArray", "com.webobjects.foundation.NSSet", "er.extensions.ERXLocalizer" }, cache);
   }
 
-  public static boolean isType(IType type, String[] possibleTypes) throws JavaModelException {
+  public static boolean isType(IType type, String[] possibleTypes, TypeCache cache) throws JavaModelException {
     boolean isType = false;
-    ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(type);
-    IType[] types = typeHierarchy.getAllTypes();
+    //ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(type);
+    IType[] types = cache.getSupertypesOf(type);
     for (int typeNum = 0; !isType && typeNum < types.length; typeNum++) {
       String name = types[typeNum].getFullyQualifiedName();
       for (int possibleTypeNum = 0; !isType && possibleTypeNum < possibleTypes.length; possibleTypeNum++) {
@@ -131,20 +128,19 @@ public class BindingReflectionUtils {
   }
   
   public static List<BindingValueKey> getBindingKeys(IJavaProject _javaProject, IType _type, String _nameStartingWith, boolean _requireExactNameMatch, int _accessorsOrMutators, TypeCache cache) throws JavaModelException {
+    long a = System.currentTimeMillis();
     List<BindingValueKey> bindingKeys = new LinkedList<BindingValueKey>();
 
     String nameStartingWith = _nameStartingWith;
     if (_type != null) {
       String lowercaseNameStartingWith = nameStartingWith.toLowerCase();
 
-      ITypeHierarchy typeHierarchy;
-
       Set<String> additionalProposals = new HashSet<String>();
 
       // We want to show fields from your WOApplication, WOSession, and
       // WODirectAction subclasses ...
-      typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(_type);
-      IType[] types = typeHierarchy.getAllTypes();
+      //ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(_type);
+      IType[] types = cache.getSupertypesOf(_type);
       if (types != null) {
         IType nextType = null;
         boolean isUsuallySubclassed = false;
@@ -172,8 +168,8 @@ public class BindingReflectionUtils {
 
         if (isUsuallySubclassed) {
           //typeHierarchy = _type.newTypeHierarchy(_javaProject, null);
-          typeHierarchy = SubTypeHierachyCache.getTypeHierarchy(_type);
-          types = typeHierarchy.getAllTypes();
+          //typeHierarchy = SubTypeHierachyCache.getTypeHierarchy(_type);
+          types = cache.getSubtypesOf(_type);
         }
       }
 

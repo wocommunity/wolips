@@ -109,9 +109,9 @@ public class BindingValueKeyPath {
           currentType = bindingKey.getNextType();
         }
         else {
-          if (BindingReflectionUtils.isNSKeyValueCoding(currentType) || "java.lang.Object".equals(currentType.getFullyQualifiedName())) {
+          if (BindingReflectionUtils.isNSKeyValueCoding(currentType, cache) || "java.lang.Object".equals(currentType.getFullyQualifiedName())) {
             _nsKVC = true;
-            if (BindingReflectionUtils.isNSCollection(currentType)) {
+            if (BindingReflectionUtils.isNSCollection(currentType, cache)) {
               _nsCollection = true;
               _ambiguous = true;
               invalidKeyNum = keyNum;
