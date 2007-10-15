@@ -61,22 +61,30 @@ import org.w3c.dom.NodeList;
 public class Wodefinitions extends AbstractApiModelElement {
 
 	private static final String WO = "wo";
+	private Wo[] _wos;
 
 	protected Wodefinitions(Element element, ApiModel apiModel) {
 		super(element, apiModel);
 	}
 
 	public Wo[] getWos() {
-		NodeList nodeList = element.getElementsByTagName(WO);
-		Wo[] wos = new Wo[nodeList.getLength()];
-		for (int i = 0; i < wos.length; i++) {
-			wos[i] = new Wo((Element) nodeList.item(i), apiModel);
-		}
-		return wos;
+	  if (_wos == null) {
+  		NodeList nodeList = element.getElementsByTagName(WO);
+  		Wo[] wos = new Wo[nodeList.getLength()];
+  		for (int i = 0; i < wos.length; i++) {
+  			wos[i] = new Wo((Element) nodeList.item(i), apiModel);
+  		}
+  		_wos = wos;
+	  }
+		return _wos;
 	}
 
 	public Wo getWo() {
-		NodeList nodeList = element.getElementsByTagName(WO);
-		return new Wo((Element) nodeList.item(0), apiModel);
+	  Wo wo = null;
+	  Wo[] wos = getWos();
+	  if (wos.length > 0) {
+	    wo = wos[0];
+	  }
+		return wo;
 	}
 }
