@@ -66,7 +66,7 @@ public class SuperTypeHierarchyCache {
 	}
 	
 
-	private static final int CACHE_SIZE= 24;
+	private static final int CACHE_SIZE= 100;
 
 	private static ArrayList fgHierarchyCache= new ArrayList(CACHE_SIZE);
 	private static Map fgMethodOverrideTesterCache= new LRUMap(CACHE_SIZE);
