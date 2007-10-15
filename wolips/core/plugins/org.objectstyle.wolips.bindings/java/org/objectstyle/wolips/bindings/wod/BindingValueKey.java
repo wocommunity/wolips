@@ -114,6 +114,10 @@ public class BindingValueKey {
       type = nextTypeCache.get(typeName);
       if (type == null) {
         //long t = System.currentTimeMillis();
+        // MS: This call right here is the DEVIL.  This is BY FAR where the
+        // majority of time is spent during component validation.  It's also
+        // unfortunately completely necessary, but caching should focus on 
+        // this in the future.
         String resolvedNextTypeName = JavaModelUtil.getResolvedTypeName(typeName, declaringType);
         if (resolvedNextTypeName == null) {
           Activator.getDefault().log("Failed to resolve type name " + typeName + " in component " + declaringType.getElementName());
