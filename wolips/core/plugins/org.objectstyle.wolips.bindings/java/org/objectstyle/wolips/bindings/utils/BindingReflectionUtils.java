@@ -128,9 +128,12 @@ public class BindingReflectionUtils {
   }
   
   public static List<BindingValueKey> getBindingKeys(IJavaProject _javaProject, IType _type, String _nameStartingWith, boolean _requireExactNameMatch, int _accessorsOrMutators, TypeCache cache) throws JavaModelException {
-    long a = System.currentTimeMillis();
     List<BindingValueKey> bindingKeys = new LinkedList<BindingValueKey>();
+//    if (_requireExactNameMatch && BindingReflectionUtils.isBooleanValue(_nameStartingWith)) {
+//      return bindingKeys;
+//    }
 
+    //System.out.println("BindingReflectionUtils.getBindingKeys: " + _type.getElementName() + ", " + _nameStartingWith + ", " + _requireExactNameMatch + ", " + _accessorsOrMutators);
     String nameStartingWith = _nameStartingWith;
     if (_type != null) {
       String lowercaseNameStartingWith = nameStartingWith.toLowerCase();
@@ -205,15 +208,23 @@ public class BindingReflectionUtils {
     return bindingKeys;
   }
 
+  public static boolean isDefaultPackage(IMember member) {
+    IType declaringType = member.getDeclaringType();
+    String declaringTypePackageName = declaringType.getPackageFragment().getElementName();
+    return declaringTypePackageName == null || declaringTypePackageName.length() == 0;
+  }
+  
   public static BindingValueKey getBindingKeyIfMatches(IJavaProject javaProject, IMember member, String nameStartingWith, boolean requireExactNameMatch, int accessorsOrMutators, TypeCache cache) throws JavaModelException {
     BindingValueKey bindingKey = null;
 
     int flags = member.getFlags();
-    IType declaringType = member.getDeclaringType();
-    String declaringTypePackageName = declaringType.getPackageFragment().getElementName();
     boolean visible = false;
+    // Private is never an option
+    if (Flags.isPrivate(flags)) {
+      visible = false;
+    }
     // Don't show static methods and fields
-    if (Flags.isStatic(flags)) {
+    else if (Flags.isStatic(flags)) {
       visible = false;
     }
     // Public bindings are always visible
@@ -221,7 +232,7 @@ public class BindingReflectionUtils {
       visible = true;
     }
     // Components that are not in a package can have bindings to protected fields
-    else if (!Flags.isPrivate(flags) && (declaringTypePackageName == null || declaringTypePackageName.length() == 0)) {
+    else if ((Flags.isProtected(flags) || Flags.isPackageDefault(flags)) && BindingReflectionUtils.isDefaultPackage(member)) {
       visible = true;
     }
     if (visible) {
@@ -365,5 +376,9 @@ public class BindingReflectionUtils {
       }
     }
     return isSystemBinding;
+  }
+  
+  public static boolean isBooleanValue(String keyPath) {
+    return "true".equalsIgnoreCase(keyPath) || "false".equalsIgnoreCase(keyPath) || "yes".equalsIgnoreCase(keyPath) || "no".equalsIgnoreCase(keyPath);
   }
 }
