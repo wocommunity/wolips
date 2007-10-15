@@ -78,8 +78,6 @@ import org.objectstyle.cayenne.exp.parser.ASTPath;
 import org.objectstyle.cayenne.exp.parser.AggregateConditionNode;
 import org.objectstyle.cayenne.exp.parser.ConditionNode;
 import org.objectstyle.cayenne.exp.parser.Node;
-import org.objectstyle.wolips.eomodeler.core.model.qualifier.EOQualifierParser;
-import org.objectstyle.wolips.eomodeler.core.model.qualifier.ParseException;
 import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
 
