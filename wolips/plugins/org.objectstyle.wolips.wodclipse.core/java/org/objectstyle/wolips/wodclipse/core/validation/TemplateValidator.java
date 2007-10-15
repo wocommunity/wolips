@@ -58,7 +58,7 @@ public class TemplateValidator {
           String woElementName = woElement.getAttributeValue("name");
           int startOffset = woElement.getOffset();
           int endOffset = woElement.getOffset() + woElement.getLength();
-          HtmlElementName elementName = new HtmlElementName(_cache.getHtmlFile(), woElementName, WodHtmlUtils.getLineAtOffset(_cache.getHtmlContents(), startOffset), startOffset, endOffset);
+          HtmlElementName elementName = new HtmlElementName(_cache.getHtmlFile(), woElementName, startOffset, endOffset);
           _cache.addHtmlElement(elementName);
 
           if (wodModel != null) {
