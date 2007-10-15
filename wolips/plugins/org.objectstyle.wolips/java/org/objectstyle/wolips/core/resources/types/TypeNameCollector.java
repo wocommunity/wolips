@@ -58,99 +58,96 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.search.TypeNameRequestor;
-import org.eclipse.jdt.internal.corext.util.SuperTypeHierarchyCache;
 
 /**
  * @author mike
  */
 public class TypeNameCollector extends TypeNameRequestor {
-  private IJavaProject _project;
+	private IJavaProject _project;
 
-  private Set<String> _typeNames;
+	private Set<String> _typeNames;
 
-  private Map<String, String> _typeNameToPath;
+	private Map<String, String> _typeNameToPath;
 
-  private Map<String, IType> _typeNameToType;
+	private Map<String, IType> _typeNameToType;
 
-  private IType _woElementType;
+	private IType _woElementType;
 
-  private boolean _requireTypeInProject;
+	private boolean _requireTypeInProject;
 
-  public TypeNameCollector(IJavaProject project, boolean requireTypeInProject) throws JavaModelException {
-    this(project, requireTypeInProject, new TreeSet<String>());
-  }
+	public TypeNameCollector(IJavaProject project, boolean requireTypeInProject) throws JavaModelException {
+		this(project, requireTypeInProject, new TreeSet<String>());
+	}
 
-  public TypeNameCollector(IJavaProject project, boolean requireTypeInProject, Set<String> typeNames) throws JavaModelException {
-    _project = project;
-    _typeNames = typeNames;
-    _typeNameToPath = new HashMap<String, String>();
-    _typeNameToType = new HashMap<String, IType>();
-    _requireTypeInProject = requireTypeInProject;
-    _woElementType = _project.findType("com.webobjects.appserver.WOElement");
-  }
+	public TypeNameCollector(IJavaProject project, boolean requireTypeInProject, Set<String> typeNames) throws JavaModelException {
+		_project = project;
+		_typeNames = typeNames;
+		_typeNameToPath = new HashMap<String, String>();
+		_typeNameToType = new HashMap<String, IType>();
+		_requireTypeInProject = requireTypeInProject;
+		_woElementType = _project.findType("com.webobjects.appserver.WOElement");
+	}
 
-  public Set<String> getTypeNames() {
-    return _typeNames;
-  }
-  
-  public boolean isExactMatch() {
-    return _typeNames.size() == 1;
-  }
+	public Set<String> getTypeNames() {
+		return _typeNames;
+	}
 
-  public boolean isEmpty() {
-    return _typeNames.isEmpty();
-  }
+	public boolean isExactMatch() {
+		return _typeNames.size() == 1;
+	}
 
-  public String firstTypeName() {
-    return _typeNames.iterator().next();
-  }
+	public boolean isEmpty() {
+		return _typeNames.isEmpty();
+	}
 
-  public Iterator<String> typeNames() {
-    return _typeNames.iterator();
-  }
+	public String firstTypeName() {
+		return _typeNames.iterator().next();
+	}
 
-  public String getPathForClassName(String _className) {
-    return _typeNameToPath.get(_className);
-  }
+	public Iterator<String> typeNames() {
+		return _typeNames.iterator();
+	}
 
-  public IType getTypeForClassName(String _className) {
-    return _typeNameToType.get(_className);
-  }
+	public String getPathForClassName(String _className) {
+		return _typeNameToPath.get(_className);
+	}
 
-  @Override
-  public void acceptType(int _modifiers, char[] _packageName, char[] _simpleTypeName, char[][] _enclosingTypeNames, String _path) {
-    String className;
-    String simpleClassName = new String(_simpleTypeName);
-    if (_packageName == null || _packageName.length == 0) {
-      className = simpleClassName;
-    }
-    else {
-      String packageName = new String(_packageName);
-      className = packageName + "." + simpleClassName;
-    }
-    try {
-      IType type = _project.findType(className);
-      if (type != null) {
-        boolean typeMatches = true;
-        if (_requireTypeInProject) {
-          IResource correspondingResource = type.getResource();
-          if (correspondingResource == null) {
-            typeMatches = false;
-          }
-        }
-        if (typeMatches) {
-          ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(type);
-          if (_woElementType != null && typeHierarchy.contains(_woElementType)) {
-            _typeNames.add(className);
-            _typeNameToPath.put(className, _path);
-            _typeNameToType.put(className, type);
-          }
-        }
-      }
-    }
-    catch (Throwable t) {
-      // ignore
-      t.printStackTrace();
-    }
-  }
+	public IType getTypeForClassName(String _className) {
+		return _typeNameToType.get(_className);
+	}
+
+	@Override
+	public void acceptType(int _modifiers, char[] _packageName, char[] _simpleTypeName, char[][] _enclosingTypeNames, String _path) {
+		String className;
+		String simpleClassName = new String(_simpleTypeName);
+		if (_packageName == null || _packageName.length == 0) {
+			className = simpleClassName;
+		} else {
+			String packageName = new String(_packageName);
+			className = packageName + "." + simpleClassName;
+		}
+		try {
+			IType type = _project.findType(className);
+			if (type != null) {
+				boolean typeMatches = true;
+				if (_requireTypeInProject) {
+					IResource correspondingResource = type.getResource();
+					if (correspondingResource == null) {
+						typeMatches = false;
+					}
+				}
+				if (typeMatches) {
+					ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(type);
+					if (_woElementType != null && typeHierarchy.contains(_woElementType)) {
+						_typeNames.add(className);
+						_typeNameToPath.put(className, _path);
+						_typeNameToType.put(className, type);
+					}
+				}
+			}
+		} catch (Throwable t) {
+			// ignore
+			t.printStackTrace();
+		}
+	}
 }
