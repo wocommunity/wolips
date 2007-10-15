@@ -60,7 +60,9 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.objectstyle.cayenne.exp.Expression;
+import org.objectstyle.cayenne.exp.ExpressionFactory;
 import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
+import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
 
 public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> implements IEOEntityRelative, ISortableEOModelObject, PropertyChangeListener {
 	public static final String NAME = "name";
@@ -346,8 +348,13 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 		String oldQualifierString = myQualifierString;
 		myQualifierString = _qualifierString;
 		if (updateQualifier) {
-			Expression exp = EOQualifierFactory.fromString(_qualifierString);
-			setQualifier(exp, false);
+			try {
+				Expression exp = EOQualifierFactory.fromString(_qualifierString);
+				setQualifier(exp, false);
+			}
+			catch (RuntimeException e) {
+				setQualifier(null, false);
+			}
 		}
 		firePropertyChange(EOFetchSpecification.QUALIFIER_STRING, oldQualifierString, myQualifierString);
 	}
@@ -659,7 +666,15 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 		// myQualifier.verify(_failures);
 		// }
 		if (myQualifierString != null && myQualifierString.length() > 0 && myQualifier == null) {
-			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " specifies an invalid qualifier, and cannot be saved.", false));
+			String reason;
+			try {
+				Expression.fromString(myQualifierString);
+				reason = "Unknown failure.";
+			}
+			catch (Throwable t) {
+				reason = StringUtils.getErrorMessage(t);
+			}
+			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " specifies an invalid qualifier, and cannot be saved: " + reason, false));
 		}
 		
 		for (EOSortOrdering sortOrdering : mySortOrderings) {
