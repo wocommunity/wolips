@@ -34,10 +34,6 @@ public class BindingValueKey {
     _cache = cache;
   }
 
-  public void setNextType(IType nextType) {
-    _nextType = nextType;
-  }
-
   public IType getDeclaringType() {
     return (_bindingMember == null) ? null : _bindingMember.getDeclaringType();
   }
