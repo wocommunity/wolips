@@ -4,15 +4,13 @@ import org.eclipse.core.resources.IFile;
 
 public class HtmlElementName {
   private IFile _htmlFile;
-  private int _lineNumber;
   private int _startOffset;
   private int _endOffset;
   private String _name;
 
-  public HtmlElementName(IFile htmlFile, String name, int lineNumber, int startOffset, int endOffset) {
+  public HtmlElementName(IFile htmlFile, String name, int startOffset, int endOffset) {
     _htmlFile = htmlFile;
     _name = name;
-    _lineNumber = lineNumber;
     _startOffset = startOffset;
     _endOffset = endOffset;
   }
@@ -33,10 +31,6 @@ public class HtmlElementName {
 
   public String getName() {
     return _name;
-  }
-
-  public int getLineNumber() {
-    return _lineNumber;
   }
 
   public int getStartOffset() {
