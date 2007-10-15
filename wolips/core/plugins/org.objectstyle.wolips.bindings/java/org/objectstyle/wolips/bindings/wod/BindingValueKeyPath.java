@@ -96,63 +96,65 @@ public class BindingValueKeyPath {
         _bindingKeyNames = bindingKeyNames;
       }
 
-      int invalidKeyNum = -1;
-      IType currentType = _contextType;
-      List<BindingValueKey> bindingKeysList = new LinkedList<BindingValueKey>();
-      for (int keyNum = 0; currentType != null && keyNum < _bindingKeyNames.length; keyNum++) {
-        // we can't verify helper functions or @arrayOps
-        List<BindingValueKey> bindingKeys = BindingReflectionUtils.getBindingKeys(_javaProject, currentType, _bindingKeyNames[keyNum], true, BindingReflectionUtils.ACCESSORS_OR_VOID, cache);
-        if (!bindingKeys.isEmpty()) {
-          // NTS: Deal with multiple matches ...
-          BindingValueKey bindingKey = bindingKeys.get(0);
-          bindingKeysList.add(bindingKey);
-          currentType = bindingKey.getNextType();
-        }
-        else {
-          if (BindingReflectionUtils.isNSKeyValueCoding(currentType, cache) || "java.lang.Object".equals(currentType.getFullyQualifiedName())) {
-            _nsKVC = true;
-            if (BindingReflectionUtils.isNSCollection(currentType, cache)) {
-              _nsCollection = true;
-              _ambiguous = true;
-              invalidKeyNum = keyNum;
-              currentType = null;
-            }
-            else {
-              _ambiguous = true;
-              invalidKeyNum = keyNum;
-              currentType = null;
-            }
-          }
-          else {
-            _valid = false;
-            invalidKeyNum = keyNum;
-            currentType = null;
-          }
-        }
-      }
-
-      // Build the part of the keypath that is valid and the key that is invalid for error reporting ...
-      if (invalidKeyNum != -1) {
-        StringBuffer validKeyPathBuffer = new StringBuffer();
-        if (invalidKeyNum > 0) {
-          for (int keyNum = 0; keyNum < invalidKeyNum; keyNum++) {
-            validKeyPathBuffer.append(_bindingKeyNames[keyNum]);
-            validKeyPathBuffer.append(".");
-          }
-          validKeyPathBuffer.setLength(validKeyPathBuffer.length() - 1);
-        }
-        _validKeyPath = validKeyPathBuffer.toString();
-        _invalidKey = _bindingKeyNames[invalidKeyNum];
-      }
-
-      _bindingKeys = bindingKeysList.toArray(new BindingValueKey[bindingKeysList.size()]);
-
       if ("true".equalsIgnoreCase(keyPath) || "false".equalsIgnoreCase(keyPath) || "yes".equalsIgnoreCase(keyPath) || "no".equalsIgnoreCase(keyPath)) {
         _ambiguous = false;
         _valid = true;
         _nsKVC = false;
         _nsCollection = false;
       }
+      else {
+        int invalidKeyNum = -1;
+        IType currentType = _contextType;
+        List<BindingValueKey> bindingKeysList = new LinkedList<BindingValueKey>();
+        for (int keyNum = 0; currentType != null && keyNum < _bindingKeyNames.length; keyNum++) {
+          // we can't verify helper functions or @arrayOps
+          List<BindingValueKey> bindingKeys = cache.getBindingValueAccessorKeys(javaProject, currentType, _bindingKeyNames[keyNum]);
+          if (!bindingKeys.isEmpty()) {
+            // NTS: Deal with multiple matches ...
+            BindingValueKey bindingKey = bindingKeys.get(0);
+            bindingKeysList.add(bindingKey);
+            currentType = bindingKey.getNextType();
+          }
+          else {
+            if (BindingReflectionUtils.isNSKeyValueCoding(currentType, cache) || "java.lang.Object".equals(currentType.getFullyQualifiedName())) {
+              _nsKVC = true;
+              if (BindingReflectionUtils.isNSCollection(currentType, cache)) {
+                _nsCollection = true;
+                _ambiguous = true;
+                invalidKeyNum = keyNum;
+                currentType = null;
+              }
+              else {
+                _ambiguous = true;
+                invalidKeyNum = keyNum;
+                currentType = null;
+              }
+            }
+            else {
+              _valid = false;
+              invalidKeyNum = keyNum;
+              currentType = null;
+            }
+          }
+        }
+  
+        // Build the part of the keypath that is valid and the key that is invalid for error reporting ...
+        if (invalidKeyNum != -1) {
+          StringBuffer validKeyPathBuffer = new StringBuffer();
+          if (invalidKeyNum > 0) {
+            for (int keyNum = 0; keyNum < invalidKeyNum; keyNum++) {
+              validKeyPathBuffer.append(_bindingKeyNames[keyNum]);
+              validKeyPathBuffer.append(".");
+            }
+            validKeyPathBuffer.setLength(validKeyPathBuffer.length() - 1);
+          }
+          _validKeyPath = validKeyPathBuffer.toString();
+          _invalidKey = _bindingKeyNames[invalidKeyNum];
+        }
+
+        _bindingKeys = bindingKeysList.toArray(new BindingValueKey[bindingKeysList.size()]);
+      }
+
       // ... I have no idea why this was here.  I wish I had commented it originally
       //if (!_valid) {
       //_valid = _bindingKeyNames.length == 1;
