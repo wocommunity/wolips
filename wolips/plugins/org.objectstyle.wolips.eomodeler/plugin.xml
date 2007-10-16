@@ -712,6 +712,7 @@
          point="org.eclipse.ui.views">
       <view
             allowMultiple="false"
+            category="org.objectstyle.wolips.ui"
             class="org.objectstyle.wolips.eomodeler.outline.EOModelOutline"
             icon="icons/eoModel.png"
             id="org.objectstyle.wolips.eomodeler.outline.EOModelOutline"
