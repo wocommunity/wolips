@@ -172,7 +172,7 @@ public class BindingReflectionUtils {
         if (isUsuallySubclassed) {
           //typeHierarchy = _type.newTypeHierarchy(_javaProject, null);
           //typeHierarchy = SubTypeHierachyCache.getTypeHierarchy(_type);
-          types = cache.getSubtypesOf(_type);
+          types = cache.getSubtypesOfInProject(_type, _javaProject);
         }
       }
 

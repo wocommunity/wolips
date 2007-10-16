@@ -75,9 +75,9 @@ public class TypeCache {
     return types;
   }
 
-  public IType[] getSubtypesOf(IType type) throws JavaModelException {
+  public IType[] getSubtypesOfInProject(IType type, IJavaProject project) throws JavaModelException {
     //System.out.println("TypeCache.getSubtypesOf: " + type.getFullyQualifiedName() + " (hits=" + SubTypeHierarchyCache.getCacheHits() + ",misses=" + SubTypeHierarchyCache.getCacheMisses() + ")");
-    ITypeHierarchy typeHierarchy = SubTypeHierarchyCache.getTypeHierarchy(type);
+    ITypeHierarchy typeHierarchy = SubTypeHierarchyCache.getTypeHierarchyInProject(type, project);
     IType[] types = typeHierarchy.getAllTypes();
     return types;
   }
