@@ -38,6 +38,18 @@ public interface IEOModelGroupFactory {
 	public void loadModelGroup(Object modelGroupResource, EOModelGroup modelGroup, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws EOModelException;
 
 	public class Utility {
+		public static EOModelGroup loadModelGroup(Object modelGroupResource, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws EOModelException {
+			EOModelGroup modelGroup = new EOModelGroup();
+			IEOModelGroupFactory.Utility.loadModelGroup(modelGroupResource, modelGroup, failures, skipOnDuplicates, null, progressMonitor);
+			return modelGroup;
+		}
+		
+		public static EOModelGroup loadModelGroup(Object modelGroupResource, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, URL editingModelURL, IProgressMonitor progressMonitor) throws EOModelException {
+			EOModelGroup modelGroup = new EOModelGroup();
+			IEOModelGroupFactory.Utility.loadModelGroup(modelGroupResource, modelGroup, failures, skipOnDuplicates, editingModelURL, progressMonitor);
+			return modelGroup;
+		}
+		
 		public static void loadModelGroup(Object modelGroupResource, EOModelGroup modelGroup, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, URL editingModelURL, IProgressMonitor progressMonitor) throws EOModelException {
 			modelGroup.setEditingModelURL(editingModelURL);
 			List<IEOModelGroupFactory> modelGroupFactories = IEOModelGroupFactory.Utility.modelGroupFactories();
