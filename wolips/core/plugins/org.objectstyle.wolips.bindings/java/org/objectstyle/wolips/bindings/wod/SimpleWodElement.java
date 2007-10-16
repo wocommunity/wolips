@@ -9,11 +9,16 @@ public class SimpleWodElement extends AbstractWodElement {
   private Position _elementTypePosition;
 
   public SimpleWodElement(IWodElement wodElement) {
-    _elementName = wodElement.getElementName();
-    _elementNamePosition = wodElement.getElementNamePosition();
-    _elementType = wodElement.getElementType();
-    _elementTypePosition = wodElement.getElementTypePosition();
-    setTemporary(wodElement.isTemporary());
+    if (wodElement != null) {
+      _elementName = wodElement.getElementName();
+      _elementNamePosition = wodElement.getElementNamePosition();
+      _elementType = wodElement.getElementType();
+      _elementTypePosition = wodElement.getElementTypePosition();
+      setTemporary(wodElement.isTemporary());
+    }
+    else {
+      setTemporary(true);
+    }
   }
 
   public SimpleWodElement(String name, String type) {
