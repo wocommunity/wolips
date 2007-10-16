@@ -72,6 +72,13 @@ public class FuzzyXMLParser {
       addAutocloseTag("link");
       addAutocloseTag("input");
       addAutocloseTag("spacer");
+      addAutocloseTag("frame");
+      addAutocloseTag("basefont");
+      addAutocloseTag("base");
+      addAutocloseTag("area");
+      addAutocloseTag("col");
+      addAutocloseTag("isindex");
+      addAutocloseTag("param");
       addLooseTag("p");
       addLooseTag("li");
     }
