@@ -90,7 +90,7 @@ public class EOGenerateWorkspaceJob extends WorkspaceJob {
 			StringBuffer output = new StringBuffer();
 			for (IFile eogenFile : _eogenFiles) {
 				boolean fileSucceeded = true;
-				setName("EOGenerating " + eogenFile + " ...");
+				setName("EOGenerating " + eogenFile.getName() + " ...");
 				try {
 					EOGeneratorModel eogenModel = EOGeneratorModel.createModelFromFile(eogenFile);
 					eogenModel.setVerbose(eogenModel.isVerbose());
@@ -137,7 +137,7 @@ public class EOGenerateWorkspaceJob extends WorkspaceJob {
 				} catch (Throwable t) {
 					fileSucceeded = false;
 					output.append(t.getMessage());
-					Activator.getDefault().log("Failed to generate " + eogenFile + ".", t);
+					Activator.getDefault().log("Failed to generate " + eogenFile.getName() + ".", t);
 				}
 
 				String outputStr = output.toString();
