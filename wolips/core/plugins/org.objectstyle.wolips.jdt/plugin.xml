@@ -173,6 +173,13 @@
             description="Hide all WOComponents"
             class="org.objectstyle.wolips.jdt.javaelementfilters.ComponentFilter">
       </filter>
+      <filter
+            description="Hide all EOGenerator underscore files"
+            enabled="false"
+            id="org.objectstyle.wolips.ui.javaelementfilters.eogeneratedFiles"
+            name="EOGenerator _Files"
+            pattern="_*.java">
+      </filter>
    </extension>
 <!-- =========================================================================== -->
 <!-- Decorators                                                                  -->
