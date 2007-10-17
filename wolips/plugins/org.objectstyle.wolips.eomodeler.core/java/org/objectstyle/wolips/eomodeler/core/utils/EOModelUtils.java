@@ -96,7 +96,9 @@ public class EOModelUtils {
 	}
 
 	public static IUndoContext getUndoContext(Object obj) {
-		return new ObjectUndoContext(EOModelUtils.getRelatedModel(obj));
+		EOModel model = EOModelUtils.getRelatedModel(obj);
+		String label = model == null ? "No Model" : model.getName();
+		return new ObjectUndoContext(model, label);
 	}
 
 	public static EOModelObject getRelated(Class<? extends EOModelObject> type, EOModelObject obj) {
