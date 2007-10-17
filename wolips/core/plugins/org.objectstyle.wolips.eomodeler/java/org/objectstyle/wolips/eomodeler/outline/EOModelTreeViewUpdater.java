@@ -147,7 +147,7 @@ public class EOModelTreeViewUpdater {
 	public void dispose() {
 		removePropertyChangeListeners();
 	}
-	
+
 	protected TreeViewer getTreeViewer() {
 		return _treeViewer;
 	}
@@ -155,18 +155,21 @@ public class EOModelTreeViewUpdater {
 	protected void removePropertyChangeListeners() {
 		if (_model != null) {
 			_model.removePropertyChangeListener(_modelListener);
-			if (_entities != null) {
-				Iterator oldEntitiesIter = _entities.iterator();
-				while (oldEntitiesIter.hasNext()) {
-					EOEntity entity = (EOEntity) oldEntitiesIter.next();
-					entity.removePropertyChangeListener(_entityListener);
+			for (EOModel model : _model.getModelGroup().getModels()) {
+				model.removePropertyChangeListener(_modelListener);
+				if (_entities != null) {
+					Iterator oldEntitiesIter = _entities.iterator();
+					while (oldEntitiesIter.hasNext()) {
+						EOEntity entity = (EOEntity) oldEntitiesIter.next();
+						entity.removePropertyChangeListener(_entityListener);
+					}
 				}
-			}
-			if (_storedProcedures != null) {
-				Iterator oldStoredProceduresIter = _storedProcedures.iterator();
-				while (oldStoredProceduresIter.hasNext()) {
-					EOStoredProcedure storedProcedure = (EOStoredProcedure) oldStoredProceduresIter.next();
-					storedProcedure.removePropertyChangeListener(_storedProcedureListener);
+				if (_storedProcedures != null) {
+					Iterator oldStoredProceduresIter = _storedProcedures.iterator();
+					while (oldStoredProceduresIter.hasNext()) {
+						EOStoredProcedure storedProcedure = (EOStoredProcedure) oldStoredProceduresIter.next();
+						storedProcedure.removePropertyChangeListener(_storedProcedureListener);
+					}
 				}
 			}
 		}
@@ -174,23 +177,25 @@ public class EOModelTreeViewUpdater {
 
 	protected void addPropertyChangeListeners() {
 		if (_model != null) {
-			_entities = new LinkedList<EOEntity>(_model.getEntities());
-			_storedProcedures = new LinkedList<EOStoredProcedure>(_model.getStoredProcedures());
+			for (EOModel model : _model.getModelGroup().getModels()) {
+				_entities = new LinkedList<EOEntity>(model.getEntities());
+				_storedProcedures = new LinkedList<EOStoredProcedure>(model.getStoredProcedures());
 
-			if (_storedProcedures != null) {
-				Iterator oldStoredProceduresIter = _storedProcedures.iterator();
-				while (oldStoredProceduresIter.hasNext()) {
-					EOStoredProcedure storedProcedure = (EOStoredProcedure) oldStoredProceduresIter.next();
-					storedProcedure.addPropertyChangeListener(_storedProcedureListener);
+				if (_storedProcedures != null) {
+					Iterator oldStoredProceduresIter = _storedProcedures.iterator();
+					while (oldStoredProceduresIter.hasNext()) {
+						EOStoredProcedure storedProcedure = (EOStoredProcedure) oldStoredProceduresIter.next();
+						storedProcedure.addPropertyChangeListener(_storedProcedureListener);
+					}
 				}
-			}
 
-			Iterator newEntitiesIter = _entities.iterator();
-			while (newEntitiesIter.hasNext()) {
-				EOEntity entity = (EOEntity) newEntitiesIter.next();
-				entity.addPropertyChangeListener(_entityListener);
+				Iterator newEntitiesIter = _entities.iterator();
+				while (newEntitiesIter.hasNext()) {
+					EOEntity entity = (EOEntity) newEntitiesIter.next();
+					entity.addPropertyChangeListener(_entityListener);
+				}
+				model.addPropertyChangeListener(_modelListener);
 			}
-			_model.addPropertyChangeListener(_modelListener);
 		}
 	}
 
