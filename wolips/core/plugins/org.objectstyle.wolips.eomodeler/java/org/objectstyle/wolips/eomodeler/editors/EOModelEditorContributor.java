@@ -90,7 +90,7 @@ public class EOModelEditorContributor extends MultiPageEditorActionBarContributo
 		EOModelEditor modelEditor = (EOModelEditor) _activeEditor;
 		IActionBars actionBars = getActionBars();
 		_clipboardHandler.attach(actionBars, modelEditor);
-		UndoRedoActionGroup undoRedoGroup = new UndoRedoActionGroup(editor.getSite(), PlatformUI.getWorkbench().getOperationSupport().getUndoContext(), false);
+		UndoRedoActionGroup undoRedoGroup = new UndoRedoActionGroup(editor.getSite(), modelEditor.getUndoContext(), false);
 		undoRedoGroup.fillActionBars(actionBars);
 	}
 }
