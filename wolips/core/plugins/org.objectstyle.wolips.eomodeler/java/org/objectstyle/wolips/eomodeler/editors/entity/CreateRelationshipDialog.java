@@ -50,11 +50,15 @@
 package org.objectstyle.wolips.eomodeler.editors.entity;
 
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -68,6 +72,7 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOJoin;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
@@ -75,69 +80,106 @@ import org.objectstyle.wolips.eomodeler.editors.relationship.JoinsTableEditor;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class CreateRelationshipDialog extends Dialog implements SelectionListener {
-	private EOEntity myEntity1;
+	private EOModelGroup _modelGroup;
 
-	private EOEntity myEntity2;
+	private EOEntity _sourceEntity;
 
-	private EORelationship myRelationship;
+	private EOEntity _destinationEntity;
 
-	private EORelationship myInverseRelationship;
+	private EORelationship _relationship;
 
-	private JoinsTableEditor myJoinsTableEditor;
+	private EORelationship _inverseRelationship;
 
-	private String myOriginalName;
+	private Composite _relationshipFields;
+	
+	private Label _sourceLabel;
 
-	private Text myNameText;
+	private Label _destinationLabel;
 
-	private Button myToManyButton;
+	private JoinsTableEditor _joinsTableEditor;
 
-	private Button myCreateButton;
+	private String _originalName;
 
-	private Button myCreateFKButton;
+	private Text _nameText;
 
-	private Text myFKNameText;
+	private Button _toManyButton;
 
-	private String myOriginalInverseName;
+	private Button _createButton;
 
-	private Text myInverseNameText;
+	private Button _createFKButton;
 
-	private Button myInverseToManyButton;
+	private Text _fkNameText;
 
-	private Button myCreateInverseButton;
+	private String _originalInverseName;
 
-	private Button myCreateInverseFKButton;
+	private Text _inverseNameText;
 
-	private Text myInverseFKNameText;
+	private Button _inverseToManyButton;
 
-	private Button myFlattenButton;
+	private Button _createInverseButton;
 
-	private Label myJoinEntityNameLabel;
+	private Button _createInverseFKButton;
 
-	private Text myJoinEntityNameText;
+	private Text _inverseFKNameText;
 
-	private Font myTitleFont;
+	private Button _flattenButton;
 
-	private boolean myManyToMany;
+	private Label _joinEntityNameLabel;
 
-	private boolean myCreateFK;
+	private Text _joinEntityNameText;
 
-	private boolean myCreateInverseFK;
+	private Font _titleFont;
 
-	public CreateRelationshipDialog(Shell _shell, EOEntity _entity1, EOEntity _entity2) {
-		super(_shell);
-		myEntity1 = _entity1;
-		myEntity2 = _entity2;
-		myRelationship = _entity1.createRelationshipTo(_entity2, false);
+	private boolean _manyToMany;
+
+	private boolean _createFK;
+
+	private boolean _createInverseFK;
+
+	public CreateRelationshipDialog(Shell shell, EOModelGroup modelGroup, EOEntity sourceEntity, EOEntity destinationEntity) {
+		super(shell);
+		_modelGroup = modelGroup;
+		_sourceEntity = sourceEntity;
+		_destinationEntity = destinationEntity;
 	}
 
-	protected void configureShell(Shell _newShell) {
-		super.configureShell(_newShell);
-		_newShell.setText(Messages.getString("CreateRelationshipDialog.title"));
+	public void setSourceEntity(EOEntity sourceEntity) {
+		_sourceEntity = sourceEntity;
+		_inverseFKNameText.setText("");
+		entitiesChanged();
 	}
 
-	protected Control createDialogArea(Composite _parent) {
-		Composite relationshipDialogArea = new Composite(_parent, SWT.NONE);
-		GridLayout gridLayout = new GridLayout(2, false);
+	public EOEntity getSourceEntity() {
+		return _sourceEntity;
+	}
+
+	public void setDestinationEntity(EOEntity destinationEntity) {
+		_destinationEntity = destinationEntity;
+		_fkNameText.setText("");
+		entitiesChanged();
+	}
+
+	public EOEntity getDestinationEntity() {
+		return _destinationEntity;
+	}
+
+	protected void configureShell(Shell newShell) {
+		super.configureShell(newShell);
+		newShell.setText(Messages.getString("CreateRelationshipDialog.title"));
+	}
+	
+	@Override
+	protected Rectangle getConstrainedShellBounds(Rectangle preferredSize) {
+		Rectangle bounds = super.getConstrainedShellBounds(preferredSize);
+		if (_sourceEntity == null || _destinationEntity == null) {
+			bounds.y -= 75;
+		}
+		return bounds;
+	}
+
+	protected Control createDialogArea(Composite parent) {
+		Composite relationshipDialogArea = new Composite(parent, SWT.NONE);
+		GridLayout gridLayout = new GridLayout(1, true);
 		gridLayout.marginBottom = 0;
 		gridLayout.marginTop = 15;
 		gridLayout.marginLeft = 15;
@@ -145,158 +187,237 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		gridLayout.horizontalSpacing = 15;
 		relationshipDialogArea.setLayout(gridLayout);
 
-		Label sourceLabel = new Label(relationshipDialogArea, SWT.NONE);
-		Font originalFont = sourceLabel.getFont();
+		boolean showEntityPickers = _sourceEntity == null || _destinationEntity == null;
+		if (showEntityPickers) {
+			Label hintLabel = new Label(relationshipDialogArea, SWT.NONE);
+			hintLabel.setText("Select the entities that this relationship will join together.");
+			GridData hintLabelData = new GridData(GridData.FILL_HORIZONTAL);
+			//destinationEntityPickerData.horizontalSpan = 2;
+			hintLabel.setLayoutData(hintLabelData);
+			hintLabel.setFont(parent.getFont());
+
+			// Label sourceEntityLabel = new Label(entityPickers, SWT.NONE);
+			// sourceEntityLabel.setText("Entity #1");
+			EntityPicker sourceEntityPicker = new EntityPicker(relationshipDialogArea, SWT.NONE);
+			sourceEntityPicker.setModelGroup(_modelGroup);
+			sourceEntityPicker.setEntity(_sourceEntity);
+			GridData sourceEntityPickerData = new GridData(GridData.FILL_HORIZONTAL);
+			//sourceEntityPickerData.horizontalSpan = 2;
+			sourceEntityPickerData.verticalIndent = 15;
+			sourceEntityPicker.setLayoutData(sourceEntityPickerData);
+			sourceEntityPicker.addSelectionChangedListener(new ISelectionChangedListener() {
+				public void selectionChanged(SelectionChangedEvent event) {
+					EOEntity entity = (EOEntity) ((IStructuredSelection) event.getSelection()).getFirstElement();
+					setSourceEntity(entity);
+				}
+			});
+			
+			EntityPicker destinationEntityPicker = new EntityPicker(relationshipDialogArea, SWT.NONE);
+			destinationEntityPicker.setModelGroup(_modelGroup);
+			destinationEntityPicker.setEntity(_destinationEntity);
+			GridData destinationEntityPickerData = new GridData(GridData.FILL_HORIZONTAL);
+			//destinationEntityPickerData.horizontalSpan = 2;
+			destinationEntityPicker.setLayoutData(destinationEntityPickerData);
+			destinationEntityPicker.addSelectionChangedListener(new ISelectionChangedListener() {
+				public void selectionChanged(SelectionChangedEvent event) {
+					EOEntity entity = (EOEntity) ((IStructuredSelection) event.getSelection()).getFirstElement();
+					setDestinationEntity(entity);
+				}
+			});
+		}
+
+		_relationshipFields = new Composite(relationshipDialogArea, SWT.NONE);
+		GridLayout relationshipFieldsLayout = new GridLayout(2, false);
+		relationshipFieldsLayout.horizontalSpacing = 15;
+		_relationshipFields.setLayout(relationshipFieldsLayout);
+		_relationshipFields.setLayoutData(new GridData(GridData.FILL_BOTH));
+		
+		_sourceLabel = new Label(_relationshipFields, SWT.NONE);
+		Font originalFont = _sourceLabel.getFont();
 		FontData[] fontData = originalFont.getFontData();
-		myTitleFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD);
-		sourceLabel.setText("From " + myRelationship.getEntity().getName() + " ...");
-		sourceLabel.setFont(myTitleFont);
+		_titleFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD);
+		_sourceLabel.setFont(_titleFont);
 		GridData sourceLabelData = new GridData(GridData.FILL_HORIZONTAL);
 		sourceLabelData.horizontalSpan = 2;
-		sourceLabel.setLayoutData(sourceLabelData);
+		if (showEntityPickers) {
+			sourceLabelData.verticalIndent = 15;
+		}
+		_sourceLabel.setLayoutData(sourceLabelData);
 
-		myCreateButton = new Button(relationshipDialogArea, SWT.CHECK);
-		myCreateButton.setSelection(true);
-		myCreateButton.setLayoutData(new GridData());
-		myCreateButton.addSelectionListener(this);
-		myCreateButton.setText(Messages.getString("CreateRelationshipDialog.nameLabel", new Object[] { myRelationship.getDestination().getName() }));
+		_createButton = new Button(_relationshipFields, SWT.CHECK);
+		_createButton.setSelection(true);
+		_createButton.setLayoutData(new GridData());
+		_createButton.addSelectionListener(this);
 
-		myNameText = new Text(relationshipDialogArea, SWT.BORDER);
+		_nameText = new Text(_relationshipFields, SWT.BORDER);
 		GridData nameData = new GridData(GridData.FILL_HORIZONTAL);
 		nameData.widthHint = 200;
-		myNameText.setLayoutData(nameData);
+		_nameText.setLayoutData(nameData);
 
-		myToManyButton = new Button(relationshipDialogArea, SWT.CHECK);
-		myToManyButton.addSelectionListener(this);
-		myToManyButton.setText(Messages.getString("CreateRelationshipDialog.toManyLabel"));
+		_toManyButton = new Button(_relationshipFields, SWT.CHECK);
+		_toManyButton.addSelectionListener(this);
+		_toManyButton.setText(Messages.getString("CreateRelationshipDialog.toManyLabel"));
 		GridData toManyData = new GridData(GridData.FILL_HORIZONTAL);
 		toManyData.horizontalSpan = 2;
-		myToManyButton.setLayoutData(toManyData);
+		_toManyButton.setLayoutData(toManyData);
 
-		myCreateFKButton = new Button(relationshipDialogArea, SWT.CHECK);
-		myCreateFKButton.setSelection(false);
-		myCreateFKButton.setLayoutData(new GridData());
-		myCreateFKButton.addSelectionListener(this);
-		myCreateFKButton.setText(Messages.getString("CreateRelationshipDialog.fkNameLabel", new Object[] { myRelationship.getDestination().getName() }));
+		_createFKButton = new Button(_relationshipFields, SWT.CHECK);
+		_createFKButton.setSelection(true);
+		_createFKButton.setLayoutData(new GridData());
+		_createFKButton.addSelectionListener(this);
 
-		myFKNameText = new Text(relationshipDialogArea, SWT.BORDER);
-		myFKNameText.setEnabled(false);
+		_fkNameText = new Text(_relationshipFields, SWT.BORDER);
+		_fkNameText.setEnabled(false);
 		GridData fkNameData = new GridData(GridData.FILL_HORIZONTAL);
 		fkNameData.widthHint = 200;
-		myFKNameText.setLayoutData(fkNameData);
+		_fkNameText.setLayoutData(fkNameData);
 
-		Label destinationLabel = new Label(relationshipDialogArea, SWT.NONE);
-		destinationLabel.setText("From " + myRelationship.getDestination().getName() + " ...");
-		destinationLabel.setFont(myTitleFont);
+		_destinationLabel = new Label(_relationshipFields, SWT.NONE);
+		_destinationLabel.setFont(_titleFont);
 		GridData destinationLabelData = new GridData(GridData.FILL_HORIZONTAL);
 		destinationLabelData.horizontalSpan = 2;
 		destinationLabelData.verticalIndent = 15;
-		destinationLabel.setLayoutData(destinationLabelData);
+		_destinationLabel.setLayoutData(destinationLabelData);
 
-		myCreateInverseButton = new Button(relationshipDialogArea, SWT.CHECK);
-		myCreateInverseButton.setSelection(true);
-		myCreateInverseButton.setLayoutData(new GridData());
-		myCreateInverseButton.addSelectionListener(this);
-		myCreateInverseButton.setText(Messages.getString("CreateRelationshipDialog.inverseNameLabel", new Object[] { myRelationship.getEntity().getName() }));
+		_createInverseButton = new Button(_relationshipFields, SWT.CHECK);
+		_createInverseButton.setSelection(true);
+		_createInverseButton.setLayoutData(new GridData());
+		_createInverseButton.addSelectionListener(this);
 
-		myInverseNameText = new Text(relationshipDialogArea, SWT.BORDER);
+		_inverseNameText = new Text(_relationshipFields, SWT.BORDER);
 		GridData inverseNameData = new GridData(GridData.FILL_HORIZONTAL);
 		inverseNameData.widthHint = 200;
-		myInverseNameText.setLayoutData(inverseNameData);
+		_inverseNameText.setLayoutData(inverseNameData);
 
-		myInverseToManyButton = new Button(relationshipDialogArea, SWT.CHECK);
-		myInverseToManyButton.addSelectionListener(this);
-		myInverseToManyButton.setText(Messages.getString("CreateRelationshipDialog.inverseToManyLabel"));
+		_inverseToManyButton = new Button(_relationshipFields, SWT.CHECK);
+		_inverseToManyButton.addSelectionListener(this);
+		_inverseToManyButton.setText(Messages.getString("CreateRelationshipDialog.inverseToManyLabel"));
 		GridData inverseToManyData = new GridData(GridData.FILL_HORIZONTAL);
 		inverseToManyData.horizontalSpan = 2;
-		myInverseToManyButton.setLayoutData(inverseToManyData);
+		_inverseToManyButton.setLayoutData(inverseToManyData);
 
-		myCreateInverseFKButton = new Button(relationshipDialogArea, SWT.CHECK);
-		myCreateInverseFKButton.setSelection(false);
-		myCreateInverseFKButton.setLayoutData(new GridData());
-		myCreateInverseFKButton.addSelectionListener(this);
-		myCreateInverseFKButton.setText(Messages.getString("CreateRelationshipDialog.inverseFKNameLabel", new Object[] { myRelationship.getEntity().getName() }));
+		_createInverseFKButton = new Button(_relationshipFields, SWT.CHECK);
+		_createInverseFKButton.setSelection(false);
+		_createInverseFKButton.setLayoutData(new GridData());
+		_createInverseFKButton.addSelectionListener(this);
 
-		myInverseFKNameText = new Text(relationshipDialogArea, SWT.BORDER);
-		myInverseFKNameText.setEnabled(false);
+		_inverseFKNameText = new Text(_relationshipFields, SWT.BORDER);
+		_inverseFKNameText.setEnabled(false);
 		GridData inverseFKNameData = new GridData(GridData.FILL_HORIZONTAL);
 		inverseFKNameData.widthHint = 200;
-		myInverseFKNameText.setLayoutData(inverseFKNameData);
+		_inverseFKNameText.setLayoutData(inverseFKNameData);
 
-		myJoinEntityNameLabel = new Label(relationshipDialogArea, SWT.NONE);
-		myJoinEntityNameLabel.setText(Messages.getString("CreateRelationshipDialog.joinEntityNameLabel"));
+		
+		
+		_joinEntityNameLabel = new Label(_relationshipFields, SWT.NONE);
+		_joinEntityNameLabel.setText(Messages.getString("CreateRelationshipDialog.joinEntityNameLabel"));
 		GridData joinEntityNameLabelData = new GridData();
 		joinEntityNameLabelData.verticalIndent = 15;
-		myJoinEntityNameLabel.setLayoutData(joinEntityNameLabelData);
+		_joinEntityNameLabel.setLayoutData(joinEntityNameLabelData);
 
-		myJoinEntityNameText = new Text(relationshipDialogArea, SWT.BORDER);
+		_joinEntityNameText = new Text(_relationshipFields, SWT.BORDER);
 		GridData joinEntityNameData = new GridData(GridData.FILL_HORIZONTAL);
 		joinEntityNameData.verticalIndent = 15;
 		joinEntityNameData.widthHint = 200;
-		myJoinEntityNameText.setLayoutData(joinEntityNameData);
-		myJoinEntityNameText.setText(myRelationship.getEntity().getName() + myRelationship.getDestination().getName());
+		_joinEntityNameText.setLayoutData(joinEntityNameData);
 
-		myFlattenButton = new Button(relationshipDialogArea, SWT.CHECK);
-		myFlattenButton.addSelectionListener(this);
-		myFlattenButton.setText(Messages.getString("CreateRelationshipDialog.flattenLabel"));
-		myFlattenButton.setSelection(false);
+		_flattenButton = new Button(_relationshipFields, SWT.CHECK);
+		_flattenButton.addSelectionListener(this);
+		_flattenButton.setText(Messages.getString("CreateRelationshipDialog.flattenLabel"));
+		_flattenButton.setSelection(false);
 		GridData flattenData = new GridData(GridData.FILL_HORIZONTAL);
 		flattenData.horizontalSpan = 2;
-		myFlattenButton.setLayoutData(flattenData);
+		_flattenButton.setLayoutData(flattenData);
 
-		myJoinsTableEditor = new JoinsTableEditor(relationshipDialogArea, SWT.BORDER);
+		_joinsTableEditor = new JoinsTableEditor(_relationshipFields, SWT.BORDER);
 		GridData joinsGridData = new GridData(GridData.FILL_HORIZONTAL);
 		joinsGridData.horizontalSpan = 2;
-		joinsGridData.verticalIndent = 15;
-		myJoinsTableEditor.setLayoutData(joinsGridData);
-		myJoinsTableEditor.setRelationship(myRelationship);
+		//joinsGridData.verticalIndent = 15;
+		_joinsTableEditor.setLayoutData(joinsGridData);
+
+		entitiesChanged();
+
+		return _relationshipFields;
+	}
+
+	protected void entitiesChanged() {
+		boolean relationshipFieldsVisible = _sourceEntity != null && _destinationEntity != null;
+		_relationshipFields.setVisible(relationshipFieldsVisible);
+		if (relationshipFieldsVisible) {
+			((GridData) _relationshipFields.getLayoutData()).heightHint = -1;
+		}
+		else {
+			((GridData) _relationshipFields.getLayoutData()).heightHint = 0;
+		}
+		
+		if (_sourceEntity != null) {
+			_sourceLabel.setText("From " + _sourceEntity.getName() + " ...");
+			_createInverseButton.setText(Messages.getString("CreateRelationshipDialog.inverseNameLabel", new Object[] { _sourceEntity.getName() }));
+			_createInverseFKButton.setText(Messages.getString("CreateRelationshipDialog.inverseFKNameLabel", new Object[] { _sourceEntity.getName() }));
+		}
+
+		if (_destinationEntity != null) {
+			_createButton.setText(Messages.getString("CreateRelationshipDialog.nameLabel", new Object[] { _destinationEntity.getName() }));
+			_createFKButton.setText(Messages.getString("CreateRelationshipDialog.fkNameLabel", new Object[] { _destinationEntity.getName() }));
+			_destinationLabel.setText("From " + _destinationEntity.getName() + " ...");
+			_joinEntityNameText.setText(_sourceEntity.getName() + _destinationEntity.getName());
+		}
+
+		if (_sourceEntity != null && _destinationEntity != null) {
+			_relationship = _sourceEntity.createRelationshipTo(_destinationEntity, false);
+			_joinsTableEditor.setRelationship(_relationship);
+		} else {
+			_relationship = null;
+			_joinsTableEditor.setRelationship(null);
+		}
 
 		toManyChanged();
 
-		return relationshipDialogArea;
+		// getButton(IDialogConstants.OK_ID).setEnabled(_sourceEntity != null &&
+		// _destinationEntity != null);
 	}
 
 	protected void okPressed() {
 		buttonBar.forceFocus();
 		try {
-			String name = myNameText.getText();
-			String inverseName = myInverseNameText.getText();
-			if (myManyToMany) {
-				String joinEntityName = myJoinEntityNameText.getText();
-				boolean flatten = myFlattenButton.getSelection();
-				myEntity1.joinInManyToManyWith(myEntity2, name, inverseName, joinEntityName, flatten);
+			String name = _nameText.getText();
+			String inverseName = _inverseNameText.getText();
+			if (_manyToMany) {
+				String joinEntityName = _joinEntityNameText.getText();
+				boolean flatten = _flattenButton.getSelection();
+				_sourceEntity.joinInManyToManyWith(_destinationEntity, name, inverseName, joinEntityName, flatten);
 			} else {
 				EOJoin newJoin = null;
-				if (myCreateButton.getSelection() && myCreateFK) {
-					String fkName = myFKNameText.getText();
-					EOAttribute foreignKey = myRelationship.getEntity().createForeignKeyTo(myRelationship.getDestination(), fkName, fkName, false);
+				if (_createButton.getSelection() && _createFK) {
+					String fkName = _fkNameText.getText();
+					EOAttribute foreignKey = _sourceEntity.createForeignKeyTo(_destinationEntity, fkName, fkName, false);
 					newJoin = new EOJoin();
 					newJoin.setSourceAttribute(foreignKey);
-					newJoin.setDestinationAttribute(myRelationship.getDestination().getSinglePrimaryKeyAttribute());
+					newJoin.setDestinationAttribute(_destinationEntity.getSinglePrimaryKeyAttribute());
 				}
-				if (myCreateInverseButton.getSelection() && myCreateInverseFK) {
-					String inverseFKName = myInverseFKNameText.getText();
-					EOAttribute foreignKey = myRelationship.getDestination().createForeignKeyTo(myRelationship.getEntity(), inverseFKName, inverseFKName, false);
+				if (_createInverseButton.getSelection() && _createInverseFK) {
+					String inverseFKName = _inverseFKNameText.getText();
+					EOAttribute foreignKey = _destinationEntity.createForeignKeyTo(_sourceEntity, inverseFKName, inverseFKName, false);
 					newJoin = new EOJoin();
-					newJoin.setSourceAttribute(myRelationship.getEntity().getSinglePrimaryKeyAttribute());
+					newJoin.setSourceAttribute(_sourceEntity.getSinglePrimaryKeyAttribute());
 					newJoin.setDestinationAttribute(foreignKey);
 				}
 
 				if (newJoin != null) {
-					myRelationship.removeAllJoins();
-					myRelationship.addJoin(newJoin);
+					_relationship.removeAllJoins();
+					_relationship.addJoin(newJoin);
 				}
 
-				if (myCreateButton.getSelection()) {
-					myRelationship.setName(name);
-					myRelationship.setToMany(Boolean.valueOf(myToManyButton.getSelection()));
-					myRelationship.setMandatoryIfNecessary();
-					myRelationship.getEntity().addRelationship(myRelationship);
+				if (_createButton.getSelection()) {
+					_relationship.setName(name);
+					_relationship.setToMany(Boolean.valueOf(_toManyButton.getSelection()));
+					_relationship.setMandatoryIfNecessary();
+					_sourceEntity.addRelationship(_relationship);
 				}
-				if (myCreateInverseButton.getSelection()) {
-					myInverseRelationship = myRelationship.createInverseRelationshipNamed(inverseName, myInverseToManyButton.getSelection());
-					myInverseRelationship.setMandatoryIfNecessary();
-					myInverseRelationship.getEntity().addRelationship(myInverseRelationship);
+				if (_createInverseButton.getSelection()) {
+					_inverseRelationship = _relationship.createInverseRelationshipNamed(inverseName, _inverseToManyButton.getSelection());
+					_inverseRelationship.setMandatoryIfNecessary();
+					_inverseRelationship.getEntity().addRelationship(_inverseRelationship);
 				}
 			}
 			super.okPressed();
@@ -306,112 +427,112 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 	}
 
 	public void toManyChanged() {
-		String name = myNameText.getText();
-		if (myOriginalName == null || ComparisonUtils.equals(name, myOriginalName)) {
-			String newName = myRelationship.getEntity()._findUnusedRelationshipName(myRelationship.getDestination().getName(), myToManyButton.getSelection());
-			myNameText.setText(newName);
-			myOriginalName = newName;
+		String name = _nameText.getText();
+		if ((_sourceEntity != null && _destinationEntity != null) && (_originalName == null || ComparisonUtils.equals(name, _originalName))) {
+			String newName = _sourceEntity._findUnusedRelationshipName(_destinationEntity.getName(), _toManyButton.getSelection());
+			_nameText.setText(newName);
+			_originalName = newName;
 		}
-		if (!myToManyButton.getSelection()) {
-			myInverseToManyButton.setSelection(true);
+		if (!_toManyButton.getSelection()) {
+			_inverseToManyButton.setSelection(true);
 		}
-		String inverseName = myInverseNameText.getText();
-		if (myOriginalInverseName == null || ComparisonUtils.equals(inverseName, myOriginalInverseName)) {
-			String newName = myRelationship.getDestination()._findUnusedRelationshipName(myRelationship.getEntity().getName(), myInverseToManyButton.getSelection());
-			myInverseNameText.setText(newName);
-			myOriginalInverseName = newName;
+		String inverseName = _inverseNameText.getText();
+		if ((_sourceEntity != null && _destinationEntity != null) && (_originalInverseName == null || ComparisonUtils.equals(inverseName, _originalInverseName))) {
+			String newName = _destinationEntity._findUnusedRelationshipName(_sourceEntity.getName(), _inverseToManyButton.getSelection());
+			_inverseNameText.setText(newName);
+			_originalInverseName = newName;
 		}
-		if (!myInverseToManyButton.getSelection()) {
-			myToManyButton.setSelection(true);
+		if (!_inverseToManyButton.getSelection()) {
+			_toManyButton.setSelection(true);
 		}
 		_checkManyToMany();
 	}
 
 	protected void _checkManyToMany() {
-		myNameText.setEnabled(myCreateButton.getSelection());
-		myInverseNameText.setEnabled(myCreateInverseButton.getSelection());
-		myManyToMany = (myCreateButton.getSelection() && myCreateInverseButton.getSelection() && myToManyButton.getSelection() && myInverseToManyButton.getSelection());
-		myToManyButton.setEnabled(myCreateButton.getSelection());
-		myInverseToManyButton.setEnabled(myCreateInverseButton.getSelection());
-		myJoinsTableEditor.setEnabled(!myManyToMany);
-		myJoinEntityNameText.setEnabled(myManyToMany);
-		myFlattenButton.setEnabled(myManyToMany);
+		_nameText.setEnabled(_createButton.getSelection());
+		_inverseNameText.setEnabled(_createInverseButton.getSelection());
+		_manyToMany = (_createButton.getSelection() && _createInverseButton.getSelection() && _toManyButton.getSelection() && _inverseToManyButton.getSelection());
+		_toManyButton.setEnabled(_createButton.getSelection());
+		_inverseToManyButton.setEnabled(_createInverseButton.getSelection());
+		_joinsTableEditor.setEnabled(!_manyToMany);
+		_joinEntityNameText.setEnabled(_manyToMany);
+		_flattenButton.setEnabled(_manyToMany);
 
-		boolean canCreateFK = myCreateButton.getSelection() && !myToManyButton.getSelection();
-		myCreateFK = canCreateFK && myCreateFKButton.getSelection();
-		myCreateFKButton.setEnabled(canCreateFK);
-		myFKNameText.setEnabled(myCreateFK);
+		boolean canCreateFK = _createButton.getSelection() && !_toManyButton.getSelection();
+		_createFK = canCreateFK && _createFKButton.getSelection();
+		_createFKButton.setEnabled(canCreateFK);
+		_fkNameText.setEnabled(_createFK);
 
-		boolean canCreateInverseFK = myCreateInverseButton.getSelection() && !myInverseToManyButton.getSelection();
-		myCreateInverseFK = canCreateInverseFK && myCreateInverseFKButton.getSelection();
-		myCreateInverseFKButton.setEnabled(canCreateInverseFK);
-		myInverseFKNameText.setEnabled(myCreateInverseFK);
+		boolean canCreateInverseFK = _createInverseButton.getSelection() && !_inverseToManyButton.getSelection();
+		_createInverseFK = canCreateInverseFK && _createInverseFKButton.getSelection();
+		_createInverseFKButton.setEnabled(canCreateInverseFK);
+		_inverseFKNameText.setEnabled(_createInverseFK);
 
-		boolean joinsTableVisible = !myManyToMany && !myCreateFK && !myCreateInverseFK;
-		myJoinsTableEditor.setVisible(joinsTableVisible);
+		boolean joinsTableVisible = !_manyToMany && !_createFK && !_createInverseFK;
+		_joinsTableEditor.setVisible(joinsTableVisible);
 		if (!joinsTableVisible) {
-			((GridData)myJoinsTableEditor.getLayoutData()).heightHint = 0;
-		}
-		else {
-			((GridData)myJoinsTableEditor.getLayoutData()).heightHint = -1;
-		}
-
-		String fkName = myFKNameText.getText();
-		if (fkName == null || fkName.length() == 0) {
-			String newName = myRelationship.getEntity().findUnusedAttributeName(StringUtils.toLowercaseFirstLetter(myRelationship.getDestination().getName()) + "ID");
-			myFKNameText.setText(newName);
+			((GridData) _joinsTableEditor.getLayoutData()).heightHint = 0;
+		} else {
+			((GridData) _joinsTableEditor.getLayoutData()).heightHint = -1;
 		}
 
-		String inverseFKName = myInverseFKNameText.getText();
-		if (inverseFKName == null || inverseFKName.length() == 0) {
-			String newName = myRelationship.getDestination().findUnusedAttributeName(StringUtils.toLowercaseFirstLetter(myRelationship.getEntity().getName()) + "ID");
-			myInverseFKNameText.setText(newName);
+		if (_sourceEntity != null && _destinationEntity != null) {
+			String fkName = _fkNameText.getText();
+			if (fkName == null || fkName.length() == 0) {
+				String newName = _sourceEntity.findUnusedAttributeName(StringUtils.toLowercaseFirstLetter(_destinationEntity.getName()) + "ID");
+				_fkNameText.setText(newName);
+			}
+
+			String inverseFKName = _inverseFKNameText.getText();
+			if (inverseFKName == null || inverseFKName.length() == 0) {
+				String newName = _destinationEntity.findUnusedAttributeName(StringUtils.toLowercaseFirstLetter(_sourceEntity.getName()) + "ID");
+				_inverseFKNameText.setText(newName);
+			}
 		}
 
-		myJoinEntityNameLabel.setVisible(myManyToMany);
-		myJoinEntityNameText.setVisible(myManyToMany);
-		myFlattenButton.setVisible(myManyToMany);
-		if (!myManyToMany) {
-			((GridData) myJoinEntityNameLabel.getLayoutData()).heightHint = 0;
-			((GridData) myJoinEntityNameText.getLayoutData()).heightHint = 0;
-			((GridData) myFlattenButton.getLayoutData()).heightHint = 0;
+		_joinEntityNameLabel.setVisible(_manyToMany);
+		_joinEntityNameText.setVisible(_manyToMany);
+		_flattenButton.setVisible(_manyToMany);
+		if (!_manyToMany) {
+			((GridData) _joinEntityNameLabel.getLayoutData()).heightHint = 0;
+			((GridData) _joinEntityNameText.getLayoutData()).heightHint = 0;
+			((GridData) _flattenButton.getLayoutData()).heightHint = 0;
+		} else {
+			((GridData) _joinEntityNameLabel.getLayoutData()).heightHint = -1;
+			((GridData) _joinEntityNameText.getLayoutData()).heightHint = -1;
+			((GridData) _flattenButton.getLayoutData()).heightHint = -1;
 		}
-		else {
-			((GridData) myJoinEntityNameLabel.getLayoutData()).heightHint = -1;
-			((GridData) myJoinEntityNameText.getLayoutData()).heightHint = -1;
-			((GridData) myFlattenButton.getLayoutData()).heightHint = -1;
-		}
-		
+
 		if (getShell().isVisible()) {
 			getShell().pack();
 		}
 	}
 
-	public void widgetDefaultSelected(SelectionEvent _e) {
-		widgetSelected(_e);
+	public void widgetDefaultSelected(SelectionEvent event) {
+		widgetSelected(event);
 	}
 
-	public void widgetSelected(SelectionEvent _e) {
-		Object source = _e.getSource();
-		if (source == myToManyButton) {
+	public void widgetSelected(SelectionEvent event) {
+		Object source = event.getSource();
+		if (source == _toManyButton) {
 			toManyChanged();
-		} else if (source == myInverseToManyButton) {
+		} else if (source == _inverseToManyButton) {
 			toManyChanged();
-		} else if (source == myCreateFKButton) {
+		} else if (source == _createFKButton) {
 			_checkManyToMany();
-		} else if (source == myCreateInverseFKButton) {
+		} else if (source == _createInverseFKButton) {
 			_checkManyToMany();
-		} else if (source == myCreateButton) {
+		} else if (source == _createButton) {
 			_checkManyToMany();
-		} else if (source == myCreateInverseButton) {
+		} else if (source == _createInverseButton) {
 			_checkManyToMany();
 		}
 	}
 
 	public boolean close() {
 		boolean results = super.close();
-		if (myTitleFont != null) {
-			myTitleFont.dispose();
+		if (_titleFont != null) {
+			_titleFont.dispose();
 		}
 		return results;
 	}
