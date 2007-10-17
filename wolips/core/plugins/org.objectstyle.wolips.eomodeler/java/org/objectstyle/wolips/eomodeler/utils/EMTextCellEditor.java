@@ -40,9 +40,19 @@ public class EMTextCellEditor extends TextCellEditor {
 							Point location = resizedText.getLocation();
 							Composite controlParent = resizedText.getParent();
 							if (controlParent instanceof Tree) {
-								resizedText.setLocation(location.x - 3, location.y - 6);
+								if (System.getProperty("org.eclipse.swt.internal.carbon.smallFonts") != null) {
+									resizedText.setLocation(location.x - 3, location.y - 5);
+								}
+								else {
+									resizedText.setLocation(location.x - 3, location.y - 6);
+								}
 							} else {
-								resizedText.setLocation(location.x - 7, location.y - 7);
+								if (System.getProperty("org.eclipse.swt.internal.carbon.smallFonts") != null) {
+									resizedText.setLocation(location.x - 7, location.y - 6);
+								}
+								else {
+									resizedText.setLocation(location.x - 7, location.y - 7);
+								}
 							}
 						} finally {
 							_moving = false;
