@@ -60,9 +60,15 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.ColumnViewerEditor;
+import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
+import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.TreeViewerColumn;
+import org.eclipse.jface.viewers.TreeViewerEditor;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
@@ -109,33 +115,25 @@ public class EOModelContentOutlinePage extends ContentOutlinePage implements Pro
 		super.createControl(parent);
 
 		TreeViewer treeViewer = getTreeViewer();
+		
+		
+		//TreeColumnLayout outlineTreeLayout = new TreeColumnLayout();
+		//_treeComposite.setLayout(outlineTreeLayout);
 
-		// TreeViewerFocusCellManager focusCellManager = new
-		// TreeViewerFocusCellManager(treeViewer, new
-		// FocusCellOwnerDrawHighlighter(treeViewer));
-		// ColumnViewerEditorActivationStrategy actSupport2 = new
-		// ColumnViewerEditorActivationStrategy(treeViewer) {
-		// protected boolean
-		// isEditorActivationEvent(ColumnViewerEditorActivationEvent event) {
-		// return event.eventType ==
-		// ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION;
-		// }
-		// };
-		// ColumnViewerEditorActivationStrategy actSupport = new
-		// ColumnViewerEditorActivationStrategy(treeViewer);
-		//		
-		// TreeViewerEditor.create(treeViewer, focusCellManager, actSupport,
-		// ColumnViewerEditor.TABBING_HORIZONTAL |
-		// ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR |
-		// ColumnViewerEditor.TABBING_VERTICAL |
-		// ColumnViewerEditor.KEYBOARD_ACTIVATION);
-		//
-		// TreeViewerColumn column = new TreeViewerColumn(treeViewer, SWT.NONE);
-		// column.setLabelProvider(new
-		// EOModelOutlineColumnLabelProvider(treeViewer));
-		// column.setEditingSupport(new
-		// EOModelOutlineEditingSupport(treeViewer));
-		// column.getColumn().setWidth(200);
+		TreeViewerColumn column = new TreeViewerColumn(treeViewer, SWT.NONE);
+		column.setLabelProvider(new EOModelOutlineColumnLabelProvider(treeViewer));
+		column.setEditingSupport(new EOModelOutlineEditingSupport(treeViewer));
+		column.getColumn().setWidth(300);
+		//outlineTreeLayout.setColumnData(column.getColumn(), new ColumnWeightData(100, true));
+
+		ColumnViewerEditorActivationStrategy strategy = new ColumnViewerEditorActivationStrategy(treeViewer) {
+			@Override
+			protected boolean isEditorActivationEvent(ColumnViewerEditorActivationEvent event) {
+				return event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION;
+			}
+		};
+		TreeViewerEditor.create(treeViewer, null, strategy, ColumnViewerEditor.DEFAULT);
+
 
 		if (_updater != null) {
 			_updater.dispose();
@@ -171,23 +169,27 @@ public class EOModelContentOutlinePage extends ContentOutlinePage implements Pro
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void propertyChange(PropertyChangeEvent evt) {
-		Set<EOModel> oldModels = (Set<EOModel>)evt.getOldValue();
-	    Set<EOModel> newModels = new HashSet<EOModel>((Set<EOModel>)evt.getNewValue());
-	    newModels.removeAll(oldModels);
-	    if (newModels.size() == 1) {
-	    	EOModel newModel = newModels.iterator().next();
-	    	Object input = getTreeViewer().getInput();
-	    	if (input instanceof EOModelLoading) {
-	    		((EOModelLoading)input).setModel(newModel);
-	    	}
-	    	Display.getDefault().asyncExec(new Runnable() {
-	    		public void run() {
-	    	        getTreeViewer().refresh(getTreeViewer().getInput());
-	    	        getTreeViewer().expandAll();
-	    		}
-	    	});
-	    }
+		TreeViewer treeViewer = getTreeViewer();
+		if (treeViewer != null) {
+			Set<EOModel> oldModels = (Set<EOModel>) evt.getOldValue();
+			Set<EOModel> newModels = new HashSet<EOModel>((Set<EOModel>) evt.getNewValue());
+			newModels.removeAll(oldModels);
+			if (newModels.size() == 1) {
+				EOModel newModel = newModels.iterator().next();
+				Object input = treeViewer.getInput();
+				if (input instanceof EOModelLoading) {
+					((EOModelLoading) input).setModel(newModel);
+				}
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						getTreeViewer().refresh(getTreeViewer().getInput());
+						getTreeViewer().expandAll();
+					}
+				});
+			}
+		}
 	}
 
 	@Override
@@ -210,7 +212,7 @@ public class EOModelContentOutlinePage extends ContentOutlinePage implements Pro
 	public boolean isSelectedWithOutline() {
 		return _selectedWithOutline;
 	}
-	
+
 	public void selectionChanged(SelectionChangedEvent event) {
 		super.selectionChanged(event);
 		_clipboardHandler.selectionChanged(event);
