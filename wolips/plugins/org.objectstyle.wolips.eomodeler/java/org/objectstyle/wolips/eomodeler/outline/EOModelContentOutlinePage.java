@@ -49,6 +49,11 @@
  */
 package org.objectstyle.wolips.eomodeler.outline;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -59,6 +64,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
@@ -66,10 +72,11 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 import org.objectstyle.wolips.eomodeler.Activator;
+import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.editors.EOModelClipboardHandler;
 import org.objectstyle.wolips.eomodeler.editors.EOModelEditor;
 
-public class EOModelContentOutlinePage extends ContentOutlinePage {
+public class EOModelContentOutlinePage extends ContentOutlinePage implements PropertyChangeListener {
 	private EOModelTreeViewUpdater _updater;
 
 	private EOModelEditor _editor;
@@ -100,6 +107,7 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
 
 	public void createControl(Composite parent) {
 		super.createControl(parent);
+
 		TreeViewer treeViewer = getTreeViewer();
 
 		// TreeViewerFocusCellManager focusCellManager = new
@@ -129,6 +137,9 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
 		// EOModelOutlineEditingSupport(treeViewer));
 		// column.getColumn().setWidth(200);
 
+		if (_updater != null) {
+			_updater.dispose();
+		}
 		_updater = new EOModelTreeViewUpdater(treeViewer, new EOModelOutlineContentProvider(true, true, true, true, true, true, true, true));
 		_updater.setModel(_editor.getModel());
 		updateClipboardHandler();
@@ -154,8 +165,29 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
 		tree.setMenu(_contextMenu);
 		getSite().registerContextMenu("org.objectstyle.wolips.eomodeler.outline", menuManager, treeViewer);
 
-		treeViewer.setInput(EOModelOutlineContentProvider.MODEL_LOADING_OBJ);
-		treeViewer.expandAll();
+		if (_editor.getModel() == null) {
+			treeViewer.setInput(new EOModelLoading(null));
+			treeViewer.expandAll();
+		}
+	}
+	
+	public void propertyChange(PropertyChangeEvent evt) {
+		Set<EOModel> oldModels = (Set<EOModel>)evt.getOldValue();
+	    Set<EOModel> newModels = new HashSet<EOModel>((Set<EOModel>)evt.getNewValue());
+	    newModels.removeAll(oldModels);
+	    if (newModels.size() == 1) {
+	    	EOModel newModel = newModels.iterator().next();
+	    	Object input = getTreeViewer().getInput();
+	    	if (input instanceof EOModelLoading) {
+	    		((EOModelLoading)input).setModel(newModel);
+	    	}
+	    	Display.getDefault().asyncExec(new Runnable() {
+	    		public void run() {
+	    	        getTreeViewer().refresh(getTreeViewer().getInput());
+	    	        getTreeViewer().expandAll();
+	    		}
+	    	});
+	    }
 	}
 
 	@Override
@@ -163,6 +195,9 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
 		if (_contextMenu != null && !_contextMenu.isDisposed()) {
 			_contextMenu.dispose();
 			_contextMenu = null;
+		}
+		if (_updater != null) {
+			_updater.dispose();
 		}
 		super.dispose();
 	}

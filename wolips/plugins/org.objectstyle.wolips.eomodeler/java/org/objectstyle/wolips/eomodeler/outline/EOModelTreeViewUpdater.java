@@ -144,6 +144,10 @@ public class EOModelTreeViewUpdater {
 		return _model;
 	}
 
+	public void dispose() {
+		removePropertyChangeListeners();
+	}
+	
 	protected TreeViewer getTreeViewer() {
 		return _treeViewer;
 	}
