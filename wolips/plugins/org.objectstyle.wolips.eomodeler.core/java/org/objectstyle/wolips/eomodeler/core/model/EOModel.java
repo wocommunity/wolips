@@ -963,7 +963,6 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		}
 		File indexFile = URLUtils.cheatAndTurnIntoFile(indexURL);
 		File modelFolder = indexFile.getParentFile();
-		System.out.println("EOModel.save: " + myName + " to " + modelFolder);
 		return saveToFolder(modelFolder.getParentFile());
 	}
 
