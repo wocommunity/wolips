@@ -179,6 +179,7 @@ public class EOModelGroup extends EOModelObject<Object> {
 	}
 
 	public void addModel(EOModel _model, Set<EOModelVerificationFailure> _failures) throws DuplicateEntityNameException, DuplicateModelNameException {
+		Set<EOModel> oldModels = new HashSet<EOModel>(_models);
 		_model._setModelGroup(this);
 		_checkForDuplicateModelName(_model, _model.getName());
 		for (EOEntity entity : _model.getEntities()) {
@@ -186,13 +187,14 @@ public class EOModelGroup extends EOModelObject<Object> {
 		}
 		_models.add(_model);
 		clearCachedPrototypes(_failures);
-		firePropertyChange(EOModelGroup.MODELS, null, null);
+		firePropertyChange(EOModelGroup.MODELS, oldModels, _models);
 	}
 
 	public void removeModel(EOModel _model, Set<EOModelVerificationFailure> _failures) {
+		Set<EOModel> oldModels = new HashSet<EOModel>(_models);
 		_models.remove(_model);
 		clearCachedPrototypes(_failures);
-		firePropertyChange(EOModelGroup.MODELS, null, null);
+		firePropertyChange(EOModelGroup.MODELS, oldModels, _models);
 		_model._setModelGroup(null);
 	}
 
