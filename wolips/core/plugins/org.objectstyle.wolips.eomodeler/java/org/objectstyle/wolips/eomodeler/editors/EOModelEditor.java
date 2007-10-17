@@ -520,7 +520,13 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			myLoadFailures = new LinkedHashSet<EOModelVerificationFailure>();
 
 			EOModelGroup modelGroup = new EOModelGroup();
-			IEOModelGroupFactory.Utility.loadModelGroup(indexURL, modelGroup, myLoadFailures, true, indexURL.toURL(), progressMonitor);
+			modelGroup.addPropertyChangeListener(EOModelGroup.MODELS, getContentOutlinePage());
+			try {
+				IEOModelGroupFactory.Utility.loadModelGroup(indexURL, modelGroup, myLoadFailures, true, indexURL.toURL(), progressMonitor);
+			} finally {
+				modelGroup.removePropertyChangeListener(EOModelGroup.MODELS, getContentOutlinePage());
+			}
+
 			EOModel model = modelGroup.getEditingModel();
 			if (model == null) {
 				// super.init(_site, fileEditorInput);
@@ -591,22 +597,6 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 			LoadEOModelWorkspaceJob loadModelJob = new LoadEOModelWorkspaceJob(this, editorInput);
 			loadModelJob.schedule();
-
-//			final Shell shell = Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
-//			Display.getDefault().asyncExec(new Runnable() {
-//				public void run() {
-//					ProgressMonitorDialog progressMonitor = new ProgressMonitorDialog(shell);
-//					try {
-//						progressMonitor.run(true, true, new IRunnableWithProgress() {
-//							public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-//								_loadInBackground(monitor);
-//							}
-//						});
-//					} catch (Throwable e) {
-//						e.printStackTrace();
-//					}
-//				}
-//			});
 		} catch (WorkbenchException e) {
 			e.printStackTrace();
 		}
@@ -888,8 +878,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			setSelection(selection, false);
 			if (myContentOutlinePage.isSelectedWithOutline()) {
 				EOModelEditor.this.doubleClickedObjectInOutline(selectedObject);
-			}
-			else {
+			} else {
 				if (mySelectedObject == null) {
 					mySelectedObject = selectedObject;
 				} else if (mySelectedObject == selectedObject) {
