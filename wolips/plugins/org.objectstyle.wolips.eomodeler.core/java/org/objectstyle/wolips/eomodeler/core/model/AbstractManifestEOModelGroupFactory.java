@@ -31,11 +31,13 @@ public abstract class AbstractManifestEOModelGroupFactory implements IEOModelGro
 
 			List<ManifestSearchFolder> searchFolders = getSearchFolders(modelGroupFile);
 			if (searchFolders != null) {
+				System.out.println("AbstractManifestEOModelGroupFactory.loadModelGroup: Searching " + searchFolders + " ...");
 				for (ManifestSearchFolder searchFolder : searchFolders) {
 					modelGroup.loadModelsFromURL(searchFolder.getFolder().toURL(), searchFolder.getDepth(), failures, skipOnDuplicates, progressMonitor);
 				}
 			}
 			if (modelGroupFile != null && modelGroupFile.getName().endsWith(".eomodeld")) {
+				System.out.println("AbstractManifestEOModelGroupFactory.loadModelGroup: Searching " + modelGroupFile + " ...");
 				modelGroup.loadModelsFromURL(modelGroupFile.toURL(), 1, failures, skipOnDuplicates, progressMonitor);
 			}
 		} catch (IOException e) {
