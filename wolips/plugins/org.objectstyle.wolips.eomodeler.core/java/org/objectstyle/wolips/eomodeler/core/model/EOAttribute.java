@@ -933,7 +933,9 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	}
 
 	public void _removeFromModelParent(Set<EOModelVerificationFailure> failures) {
-		getEntity().removeAttribute(this, true);
+		if (getEntity() != null) {
+			getEntity().removeAttribute(this, true);
+		}
 	}
 
 	public void _addToModelParent(EOEntity modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) throws EOModelException {

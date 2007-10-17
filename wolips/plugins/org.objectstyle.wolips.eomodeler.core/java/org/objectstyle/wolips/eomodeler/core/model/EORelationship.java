@@ -867,7 +867,9 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 	}
 
 	public void _removeFromModelParent(Set<EOModelVerificationFailure> failures) {
-		getEntity().removeRelationship(this, true);
+		if (getEntity() != null) {
+			getEntity().removeRelationship(this, true);
+		}
 	}
 
 	public void _addToModelParent(EOEntity modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) throws EOModelException {
