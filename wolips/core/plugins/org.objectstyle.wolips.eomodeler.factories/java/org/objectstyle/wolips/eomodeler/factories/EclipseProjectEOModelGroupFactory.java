@@ -1,6 +1,8 @@
 package org.objectstyle.wolips.eomodeler.factories;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -26,14 +28,17 @@ public class EclipseProjectEOModelGroupFactory extends AbstractManifestEOModelGr
 	@Override
 	public List<ManifestSearchFolder> getSearchFolders(File selectedModelFolder) throws IOException {
 		List<ManifestSearchFolder> searchFolders = null;
-		File eclipseProjectFolder = findEclipseProjectFolder(selectedModelFolder);
-		if (eclipseProjectFolder != null) {
+		List<File> eclipseProjectFolders = new LinkedList<File>();
+		findEclipseProjectFolders(selectedModelFolder, eclipseProjectFolders);
+		if (!eclipseProjectFolders.isEmpty()) {
 			searchFolders = new LinkedList<ManifestSearchFolder>();
-			Set<File> visitedProjectFolders = new HashSet<File>();
-			try {
-				processEclipseProject(eclipseProjectFolder, searchFolders, visitedProjectFolders, new WOEnvironment());
-			} catch (Exception e) {
-				e.printStackTrace();
+			for (File eclipseProjectFolder : eclipseProjectFolders) {
+				Set<File> visitedProjectFolders = new HashSet<File>();
+				try {
+					processEclipseProject(eclipseProjectFolder, searchFolders, visitedProjectFolders, new WOEnvironment());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		return searchFolders;
@@ -106,21 +111,46 @@ public class EclipseProjectEOModelGroupFactory extends AbstractManifestEOModelGr
 		}
 	}
 
-	protected File findEclipseProjectFolder(File folder) throws IOException {
-		File eclipseProjectFolder = null;
+	protected void findEclipseProjectFolders(File folder, List<File> eclipseProjectFolders) throws IOException {
 		if (folder != null) {
+			boolean foundProjectFolders = false;
 			if (folder.isDirectory()) {
-				File possibleEclipseProjectFile = new File(folder, ".classpath");
-				if (possibleEclipseProjectFile.exists()) {
-					eclipseProjectFolder = folder.getCanonicalFile();
+				File projectLocator = new File(folder, ".EntityModeler.eclipse");
+				if (projectLocator.exists()) {
+					BufferedReader projectLocatorReader = new BufferedReader(new FileReader(projectLocator));
+					try {
+						String projectFileStr;
+						while ((projectFileStr = projectLocatorReader.readLine()) != null) {
+							File projectFolder = new File(projectFileStr);
+							if (!projectFolder.exists()) {
+								projectFolder = new File(folder, projectFileStr);
+							}
+							if (projectFolder.exists()) {
+								projectFolder = projectFolder.getCanonicalFile();
+								if (isEclipseProjectFolder(projectFolder)) {
+									eclipseProjectFolders.add(projectFolder);
+									foundProjectFolders = true;
+								}
+							}
+						}
+					} finally {
+						projectLocatorReader.close();
+					}
+				} else if (isEclipseProjectFolder(folder)) {
+					File eclipseProjectFolder = folder.getCanonicalFile();
+					eclipseProjectFolders.add(eclipseProjectFolder);
+					foundProjectFolders = true;
 				}
 			}
-			if (eclipseProjectFolder == null) {
+			if (!foundProjectFolders) {
 				File parentFolder = folder.getParentFile();
-				eclipseProjectFolder = findEclipseProjectFolder(parentFolder);
+				findEclipseProjectFolders(parentFolder, eclipseProjectFolders);
 			}
 		}
-		return eclipseProjectFolder;
+	}
+
+	public boolean isEclipseProjectFolder(File folder) {
+		return new File(folder, ".project").exists() && new File(folder, ".classpath").exists();
 	}
 
 }

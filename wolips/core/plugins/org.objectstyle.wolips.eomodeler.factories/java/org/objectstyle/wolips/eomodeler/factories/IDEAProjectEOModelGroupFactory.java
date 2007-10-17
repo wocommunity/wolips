@@ -1,6 +1,8 @@
 package org.objectstyle.wolips.eomodeler.factories;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,46 +29,50 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 	@Override
 	public List<ManifestSearchFolder> getSearchFolders(File selectedModelFolder) throws IOException {
 		List<ManifestSearchFolder> searchFolders = null;
-		File ideaProjectFile = findIdeaProjectFileInFolder(selectedModelFolder);
-		if (ideaProjectFile != null) {
+		List<File> ideaProjectFiles = new LinkedList<File>();
+		findIdeaProjectFilesInFolder(selectedModelFolder, ideaProjectFiles);
+		if (!ideaProjectFiles.isEmpty()) {
 			searchFolders = new LinkedList<ManifestSearchFolder>();
-			Map<String, File> ideaLibraries = new HashMap<String, File>();
-			String ideaProjectPath = ideaProjectFile.getParentFile().getAbsolutePath();
-			Set<File> visitedModulePaths = new HashSet<File>();
-			try {
-				XPathExpression ideaLibrariesExpression = XPathFactory.newInstance().newXPath().compile("//project/component[@name='libraryTable']/library");
-				XPathExpression ideaModulesExpression = XPathFactory.newInstance().newXPath().compile("//project/component[@name='ProjectModuleManager']/modules/module");
-				XPathExpression ideaClassesRootExpression = XPathFactory.newInstance().newXPath().compile("//CLASSES/root");
+			for (File ideaProjectFile : ideaProjectFiles) {
+				System.out.println("IDEAProjectEOModelGroupFactory.getSearchFolders: " + ideaProjectFile);
+				Map<String, File> ideaLibraries = new HashMap<String, File>();
+				String ideaProjectPath = ideaProjectFile.getParentFile().getAbsolutePath();
+				Set<File> visitedModulePaths = new HashSet<File>();
+				try {
+					XPathExpression ideaLibrariesExpression = XPathFactory.newInstance().newXPath().compile("//project/component[@name='libraryTable']/library");
+					XPathExpression ideaModulesExpression = XPathFactory.newInstance().newXPath().compile("//project/component[@name='ProjectModuleManager']/modules/module");
+					XPathExpression ideaClassesRootExpression = XPathFactory.newInstance().newXPath().compile("//CLASSES/root");
 
-				Document ideaProjectDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(ideaProjectFile);
-				NodeList ideaLibraryNodes = (NodeList) ideaLibrariesExpression.evaluate(ideaProjectDocument, XPathConstants.NODESET);
-				for (int ideaLibraryNum = 0; ideaLibraryNum < ideaLibraryNodes.getLength(); ideaLibraryNum++) {
-					Element ideaLibraryElement = (Element) ideaLibraryNodes.item(ideaLibraryNum);
-					String libraryName = ideaLibraryElement.getAttribute("name");
-					NodeList rootNodes = (NodeList) ideaClassesRootExpression.evaluate(ideaLibraryElement, XPathConstants.NODESET);
-					for (int rootNodeNum = 0; rootNodeNum < rootNodes.getLength(); rootNodeNum++) {
-						Element rootNodeElement = (Element) rootNodes.item(rootNodeNum);
-						String rootPath = rootNodeElement.getAttribute("url");
-						if (rootPath.contains(".framework/Resources")) {
-							rootPath = rootPath.replaceAll("^[^:]+://", "");
-							rootPath = rootPath.replaceAll("\\$PROJECT_DIR\\$", ideaProjectPath);
-							rootPath = rootPath.replaceAll("(.*\\.framework/Resources).*", "$1");
-							ideaLibraries.put(libraryName, new File(rootPath).getCanonicalFile());
-							break;
+					Document ideaProjectDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(ideaProjectFile);
+					NodeList ideaLibraryNodes = (NodeList) ideaLibrariesExpression.evaluate(ideaProjectDocument, XPathConstants.NODESET);
+					for (int ideaLibraryNum = 0; ideaLibraryNum < ideaLibraryNodes.getLength(); ideaLibraryNum++) {
+						Element ideaLibraryElement = (Element) ideaLibraryNodes.item(ideaLibraryNum);
+						String libraryName = ideaLibraryElement.getAttribute("name");
+						NodeList rootNodes = (NodeList) ideaClassesRootExpression.evaluate(ideaLibraryElement, XPathConstants.NODESET);
+						for (int rootNodeNum = 0; rootNodeNum < rootNodes.getLength(); rootNodeNum++) {
+							Element rootNodeElement = (Element) rootNodes.item(rootNodeNum);
+							String rootPath = rootNodeElement.getAttribute("url");
+							if (rootPath.contains(".framework/Resources")) {
+								rootPath = rootPath.replaceAll("^[^:]+://", "");
+								rootPath = rootPath.replaceAll("\\$PROJECT_DIR\\$", ideaProjectPath);
+								rootPath = rootPath.replaceAll("(.*\\.framework/Resources).*", "$1");
+								ideaLibraries.put(libraryName, new File(rootPath).getCanonicalFile());
+								break;
+							}
 						}
 					}
-				}
 
-				NodeList ideaModuleNodes = (NodeList) ideaModulesExpression.evaluate(ideaProjectDocument, XPathConstants.NODESET);
-				for (int ideaModuleNum = 0; ideaModuleNum < ideaModuleNodes.getLength(); ideaModuleNum++) {
-					Element ideaModuleElement = (Element) ideaModuleNodes.item(ideaModuleNum);
-					String ideaModulePath = ideaModuleElement.getAttribute("filepath");
-					ideaModulePath = ideaModulePath.replaceAll("\\$PROJECT_DIR\\$", ideaProjectPath);
-					File ideaModuleFile = new File(ideaModulePath).getCanonicalFile();
-					processIdeaModuleFile(ideaModuleFile, searchFolders, ideaLibraries, visitedModulePaths);
+					NodeList ideaModuleNodes = (NodeList) ideaModulesExpression.evaluate(ideaProjectDocument, XPathConstants.NODESET);
+					for (int ideaModuleNum = 0; ideaModuleNum < ideaModuleNodes.getLength(); ideaModuleNum++) {
+						Element ideaModuleElement = (Element) ideaModuleNodes.item(ideaModuleNum);
+						String ideaModulePath = ideaModuleElement.getAttribute("filepath");
+						ideaModulePath = ideaModulePath.replaceAll("\\$PROJECT_DIR\\$", ideaProjectPath);
+						File ideaModuleFile = new File(ideaModulePath).getCanonicalFile();
+						processIdeaModuleFile(ideaModuleFile, searchFolders, ideaLibraries, visitedModulePaths);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
 		return searchFolders;
@@ -112,26 +118,52 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 		}
 	}
 
-	protected File findIdeaProjectFileInFolder(File folder) {
-		File ideaProjectFile = null;
+	protected void findIdeaProjectFilesInFolder(File folder, List<File> ideaProjectFiles) throws IOException {
 		if (folder != null) {
+			boolean foundProjectFiles = false;
 			if (folder.isDirectory()) {
-				File[] files = folder.listFiles();
-				if (files != null) {
-					for (File file : files) {
-						if (file.getName().endsWith(".ipr")) {
-							ideaProjectFile = file;
-							break;
+				File projectLocator = new File(folder, ".EntityModeler.idea");
+				if (projectLocator.exists()) {
+					BufferedReader projectLocatorReader = new BufferedReader(new FileReader(projectLocator));
+					try {
+						String projectFileStr;
+						while ((projectFileStr = projectLocatorReader.readLine()) != null) {
+							File projectFile = new File(projectFileStr);
+							if (!projectFile.exists()) {
+								projectFile = new File(folder, projectFileStr);
+							}
+							if (projectFile.exists()) {
+								projectFile = projectFile.getCanonicalFile();
+								if (isIdeaProjectFile(projectFile)) {
+									ideaProjectFiles.add(projectFile.getCanonicalFile());
+									foundProjectFiles = true;
+								}
+							}
+						}
+					} finally {
+						projectLocatorReader.close();
+					}
+				} else {
+					File[] files = folder.listFiles();
+					if (files != null) {
+						for (File file : files) {
+							if (isIdeaProjectFile(file)) {
+								ideaProjectFiles.add(file.getCanonicalFile());
+								foundProjectFiles = true;
+							}
 						}
 					}
 				}
 			}
-			if (ideaProjectFile == null) {
+			if (!foundProjectFiles) {
 				File parentFolder = folder.getParentFile();
-				ideaProjectFile = findIdeaProjectFileInFolder(parentFolder);
+				findIdeaProjectFilesInFolder(parentFolder, ideaProjectFiles);
 			}
 		}
-		return ideaProjectFile;
+	}
+
+	protected boolean isIdeaProjectFile(File file) {
+		return file.getName().endsWith(".ipr");
 	}
 
 }
