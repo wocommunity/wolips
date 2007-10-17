@@ -53,6 +53,7 @@ public class EOModelDocGenerator {
 
 		context.put("modelGroup", modelGroup);
 		EOModelDocGenerator.writeTemplate(velocityEngine, context, "eomodeldoc.css.vm", new File(outputFolder, "eomodeldoc.css"));
+		EOModelDocGenerator.writeTemplate(velocityEngine, context, "eomodeldoc.js.vm", new File(outputFolder, "eomodeldoc.js"));
 		EOModelDocGenerator.writeTemplate(velocityEngine, context, "prototype.js.vm", new File(outputFolder, "prototype.js"));
 		EOModelDocGenerator.writeTemplate(velocityEngine, context, "index.html.vm", new File(outputFolder, "index.html"));
 		EOModelDocGenerator.writeTemplate(velocityEngine, context, "indexContent.html.vm", new File(outputFolder, "content.html"));

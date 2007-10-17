@@ -1,6 +1,10 @@
 body {
 	font-family: Helvetica;
-	font-size: 1em;
+	font-size: 11pt;
+}
+
+table {
+	font-size: 11pt;
 }
 
 table.summary {
