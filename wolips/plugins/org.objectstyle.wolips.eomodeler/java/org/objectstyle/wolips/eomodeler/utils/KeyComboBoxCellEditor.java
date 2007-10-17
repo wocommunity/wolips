@@ -177,6 +177,7 @@ public class KeyComboBoxCellEditor extends CellEditor {
 		return comboBox;
 	}
 	
+	private boolean _moving;
 	private boolean _resizing;
 	/*
 	 * (non-Javadoc) Method declared on CellEditor.
@@ -186,22 +187,37 @@ public class KeyComboBoxCellEditor extends CellEditor {
 		comboBox = new IHateCCombo(parent, getStyle());
 		comboBox.setFont(parent.getFont());
 
-		comboBox.addControlListener(new ControlListener() {
-			public void controlMoved(ControlEvent e) {
-				if (!_resizing) {
-					_resizing = true;
-					Point location = comboBox.getLocation();
-					location.x -= 3;
-					location.y -= 1;
-					comboBox.setLocation(location);
-					_resizing = false;
+		if ("carbon".equals(SWT.getPlatform())) {
+			comboBox.addControlListener(new ControlListener() {
+				public void controlMoved(ControlEvent e) {
+					if (!_moving) {
+						_moving = true;
+						Point location = comboBox.getLocation();
+						if (System.getProperty("org.eclipse.swt.internal.carbon.smallFonts") != null) {
+							comboBox.setLocation(location.x - 1, location.y);
+						}
+						else {
+							comboBox.setLocation(location.x - 1, location.y - 1);
+						}
+						_moving = false;
+					}
 				}
-			}
-			
-			public void controlResized(ControlEvent e) {
-				// DO NOTHING
-			}
-		});
+				
+				public void controlResized(ControlEvent e) {
+					if (!_resizing) {
+						_resizing = true;
+						Point size = comboBox.getSize();
+						if (System.getProperty("org.eclipse.swt.internal.carbon.smallFonts") != null) {
+							comboBox.setSize(size.x - 4, size.y);
+						}
+						else {
+							comboBox.setSize(size.x - 4, size.y);
+						}
+						_resizing = false;
+					}
+				}
+			});
+		}
 		
 		comboBox.addKeyListener(new KeyAdapter() {
 			// hook key pressed - see PR 14201
