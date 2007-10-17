@@ -154,7 +154,6 @@
          point="org.eclipse.ui.actionSetPartAssociations">
       <actionSetPartAssociation targetID="org.objectstyle.wolips.eomodeler.actionSet">
          <part id="org.objectstyle.wolips.eomodeler.editors.EOModelEditor"/>
-         <part id="org.objectstyle.wolips.eomodeler.outline.EOModelOutline"/>
          <part id="org.eclipse.ui.views.PropertySheet"/>
       </actionSetPartAssociation>
    </extension>
