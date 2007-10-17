@@ -73,6 +73,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
+import org.objectstyle.wolips.locate.Locate;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.locate.LocatePlugin;
 
@@ -195,13 +196,18 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 		// if (dotJavaType == null) {
 		IFile javaFile = getDotJava();
 		if (javaFile != null) {
-			IJavaElement javaElement = JavaCore.create(javaFile);
-			if (javaElement instanceof ICompilationUnit) {
-				IType[] types = ((ICompilationUnit) javaElement).getTypes();
-				// NTS: What do we do about multiple types in a file??
-				if (types.length > 0) {
-					dotJavaType = types[0];
+			try {
+				IJavaElement javaElement = JavaCore.create(javaFile);
+				if (javaElement instanceof ICompilationUnit) {
+					IType[] types = ((ICompilationUnit) javaElement).getTypes();
+					// NTS: What do we do about multiple types in a file??
+					if (types.length > 0) {
+						dotJavaType = types[0];
+					}
 				}
+			}
+			catch (JavaModelException e) {
+				LocatePlugin.getDefault().log(e);
 			}
 		}
 		// }
