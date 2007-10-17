@@ -8,6 +8,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Tree;
 
 public class EMTextCellEditor extends TextCellEditor {
 	public EMTextCellEditor() {
@@ -15,11 +16,11 @@ public class EMTextCellEditor extends TextCellEditor {
 	}
 
 	public EMTextCellEditor(Composite parent) {
-		super(parent);
+		super(parent, "carbon".equals(SWT.getPlatform()) ? SWT.BORDER | SWT.SINGLE : SWT.SINGLE);
 	}
 
 	public EMTextCellEditor(Composite parent, int style) {
-		super(parent, style);
+		super(parent, "carbon".equals(SWT.getPlatform()) ? SWT.BORDER | SWT.SINGLE : style);
 	}
 
 	@Override
@@ -37,7 +38,12 @@ public class EMTextCellEditor extends TextCellEditor {
 						try {
 							Text resizedText = (Text) e.widget;
 							Point location = resizedText.getLocation();
-							resizedText.setLocation(location.x - 1, location.y - 1);
+							Composite controlParent = resizedText.getParent();
+							if (controlParent instanceof Tree) {
+								resizedText.setLocation(location.x - 3, location.y - 6);
+							} else {
+								resizedText.setLocation(location.x - 7, location.y - 7);
+							}
 						} finally {
 							_moving = false;
 						}
@@ -50,7 +56,12 @@ public class EMTextCellEditor extends TextCellEditor {
 						try {
 							Text resizedText = (Text) e.widget;
 							Point size = resizedText.getSize();
-							resizedText.setSize(size.x - 4, size.y + 1);
+							Composite controlParent = resizedText.getParent();
+							if (controlParent instanceof Tree) {
+								resizedText.setSize(size.x + 8, size.y + 10);
+							} else {
+								resizedText.setSize(size.x + 8, size.y + 12);
+							}
 						} finally {
 							_resizing = false;
 						}
