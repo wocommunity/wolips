@@ -78,11 +78,13 @@ public abstract class AbstractWodModel implements IWodModel {
 
   public IWodElement getElementNamed(String name) {
     IWodElement matchingElement = null;
-    Iterator<IWodElement> wodElementsIter = _elements.iterator();
-    while (matchingElement == null && wodElementsIter.hasNext()) {
-      IWodElement wodElement = wodElementsIter.next();
-      if (name.equals(wodElement.getElementName())) {
-        matchingElement = wodElement;
+    if (name != null) {
+      Iterator<IWodElement> wodElementsIter = _elements.iterator();
+      while (matchingElement == null && wodElementsIter.hasNext()) {
+        IWodElement wodElement = wodElementsIter.next();
+        if (name.equals(wodElement.getElementName())) {
+          matchingElement = wodElement;
+        }
       }
     }
     return matchingElement;
