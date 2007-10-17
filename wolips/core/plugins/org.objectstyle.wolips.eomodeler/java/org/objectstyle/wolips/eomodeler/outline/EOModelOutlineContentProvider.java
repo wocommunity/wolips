@@ -72,8 +72,6 @@ import org.objectstyle.wolips.eomodeler.core.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
 
 public class EOModelOutlineContentProvider implements ITreeContentProvider {
-	public static final Object MODEL_LOADING_OBJ = new Object();
-
 	private Object _modelContainer;
 
 	private boolean _showEntities;
@@ -113,8 +111,14 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
 
 	public Object[] getChildren(Object _parentElement) {
 		Object[] children;
-		if (_parentElement == MODEL_LOADING_OBJ) {
-			children = new Object[] { "Please Wait ..." };
+		if (_parentElement instanceof EOModelLoading) {
+		  EOModelLoading loading = (EOModelLoading)_parentElement;
+		  if (loading.getModel() == null) {
+			  children = new Object[] { "Please Wait ..." };
+		  }
+		  else {
+        children = new Object[] { "Loading " + loading.getModel().getName() + " ..." };
+		  }
 		} else if (_parentElement instanceof EOModelContainer) {
 			EOModelContainer modelContainer = (EOModelContainer) _parentElement;
 			EOModel model = modelContainer.getModel();
@@ -235,7 +239,7 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
 
 	public boolean hasChildren(Object _element) {
 		boolean hasChildren = true;
-		if (_element == EOModelOutlineContentProvider.MODEL_LOADING_OBJ) {
+		if (_element instanceof EOModelLoading) {
 			hasChildren = false;
 		} else if (_element instanceof EOFetchSpecification) {
 			hasChildren = false;
