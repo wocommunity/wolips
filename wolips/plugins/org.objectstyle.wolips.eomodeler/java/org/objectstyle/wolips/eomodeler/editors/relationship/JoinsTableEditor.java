@@ -143,8 +143,8 @@ public class JoinsTableEditor extends Composite {
 	}
 
 	protected void updateButtons() {
-		boolean joinsEnabled = !myRelationship.isFlattened();
-		boolean buttonsEnabled = isEnabled() && myRelationship.getDestination() != null && joinsEnabled;
+		boolean joinsEnabled = myRelationship != null && !myRelationship.isFlattened();
+		boolean buttonsEnabled = isEnabled() && myRelationship != null && myRelationship.getDestination() != null && joinsEnabled;
 		boolean removeEnabled = buttonsEnabled && !myJoinsTableViewer.getSelection().isEmpty() && joinsEnabled;
 		boolean addEnabled = buttonsEnabled;
 		myAddRemoveButtonGroup.setRemoveEnabled(removeEnabled);
