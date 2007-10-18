@@ -55,25 +55,15 @@
  */
 package org.objectstyle.wolips.eomodeler.core.wocompat;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilterWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-
-import org.objectstyle.wolips.eomodeler.core.wocompat.parser.Parser;
-import org.objectstyle.wolips.eomodeler.core.wocompat.parser.ParserDataStructureFactory;
 
 /**
  * A <b>PropertyListSerialization</b> is a utility class that reads and stores
@@ -89,12 +79,8 @@ public class PropertyListSerialization {
 	 * normally a java.util.List or a java.util.Map, but can also be a String or
 	 * a Number.
 	 */
-	public static Object propertyListFromFile(File f) throws FileNotFoundException {
-		if (!f.isFile()) {
-			throw new FileNotFoundException("No such file: " + f);
-		}
-
-		return new Parser(f).propertyList();
+	public static Object propertyListFromFile(File f) throws IOException {
+		return EMPropertyListSerialization.propertyListWithPathURL(f.toURL(), new SimpleParserDataStructureFactory());
 	}
 
 	/**
@@ -102,12 +88,9 @@ public class PropertyListSerialization {
 	 * normally a java.util.List or a java.util.Map, but can also be a String or
 	 * a Number.
 	 */
-	public static Object propertyListFromFile(File f, ParserDataStructureFactory factory) throws FileNotFoundException {
-		if (!f.isFile()) {
-			throw new FileNotFoundException("No such file: " + f);
-		}
+	public static Object propertyListFromFile(File f, ParserDataStructureFactory factory) throws IOException {
+		return EMPropertyListSerialization.propertyListWithPathURL(f.toURL(), factory);
 
-		return new Parser(f).propertyList(factory);
 	}
 
 	/**
@@ -117,32 +100,27 @@ public class PropertyListSerialization {
 	 * @throws IOException 
 	 */
 	public static Object propertyListFromURL(URL u, ParserDataStructureFactory factory) throws IOException {
-		InputStream is = u.openStream();
-		BufferedInputStream bi = new BufferedInputStream(is);
-		try {
-			return new Parser(bi/*, "UTF-8"*/).propertyList(factory);
-		}
-		finally {
-			bi.close();
-		}
+		return EMPropertyListSerialization.propertyListWithPathURL(u, factory);
 	}
 
 	/**
 	 * Reads a property list data from InputStream. Returns a property list o
 	 * bject, that is normally a java.util.List or a java.util.Map, but can also
 	 * be a String or a Number.
+	 * @throws IOException 
 	 */
-	public static Object propertyListFromStream(InputStream in) {
-		return new Parser(in/*, "UTF-8"*/).propertyList();
+	public static Object propertyListFromStream(InputStream in) throws IOException {
+		return EMPropertyListSerialization.propertyListWithContentsOfInputStream(in, new SimpleParserDataStructureFactory());
 	}
 
 	/**
 	 * Reads a property list data from InputStream. Returns a property list o
 	 * bject, that is normally a java.util.List or a java.util.Map, but can also
 	 * be a String or a Number.
+	 * @throws IOException 
 	 */
-	public static Object propertyListFromStream(InputStream in, ParserDataStructureFactory factory) {
-		return new Parser(in/*, "UTF-8"*/).propertyList(factory);
+	public static Object propertyListFromStream(InputStream in, ParserDataStructureFactory factory) throws IOException {
+		return EMPropertyListSerialization.propertyListWithContentsOfInputStream(in, factory);
 	}
 
 	/**
@@ -150,54 +128,23 @@ public class PropertyListSerialization {
 	 */
 	public static void propertyListToFile(String header, File f, Object plist) {
 		try {
-			BufferedWriter out = new BufferedWriter(new EscapingWriter(new OutputStreamWriter(new FileOutputStream(f), Charset.forName("UTF-8"))));
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), Charset.forName("UTF-8")));
 			if(header != null && header.length() > 0) {
 				out.append("// " + header);
+				out.append("\n");
 			}
 			try {
-				writeObject("", out, plist);
+				String str = EMPropertyListSerialization.stringFromPropertyList(plist);
+				if (str != null) {
+					out.write(str);
+				}
+				//writeObject("", out, plist);
 			} finally {
 				out.close();
 			}
 		} catch (IOException ioex) {
 			throw new RuntimeException("Error saving plist.", ioex);
 		}
-	}
-	
-	public static class EscapingWriter extends FilterWriter {
-
-		protected EscapingWriter(Writer arg0) {
-			super(arg0);
-		}
-		
-		@Override
-		public void write(int c) throws IOException {
-			if ((c & ~127) > 0) {
-				super.write("\\");
-				super.write("U");
-				String hex = Integer.toHexString(c);
-				int len = hex.length();
-				while(len++<4) {
-					super.write('0');
-				}
-				super.write(hex);
-			} else {
-				super.write(c);
-			}
-		}
-		
-		@Override
-		public void write(char[] cbuf, int off, int len) throws IOException {
-			for (int i=0; i < len; i++) {
-				write(cbuf[i+off]);
-			}
-		}
-		
-		@Override
-		public void write(String str, int off, int len) throws IOException {
-			write(str.toCharArray(), off, len);
-		}
-		
 	}
 
 	/**
@@ -207,157 +154,15 @@ public class PropertyListSerialization {
 		try {
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(os/*, Charset.forName("UTF-8")*/));
 			try {
-				writeObject("", out, plist);
+				String str = EMPropertyListSerialization.stringFromPropertyList(plist);
+				if (str != null) {
+					out.write(str);
+				}
 			} finally {
 				out.close();
 			}
 		} catch (IOException ioex) {
 			throw new RuntimeException("Error saving plist.", ioex);
 		}
-	}
-
-	/**
-	 * Internal method to recursively write a property list object.
-	 */
-	protected static void writeObject(String offset, Writer out, Object plist) throws IOException {
-		if (plist == null) {
-			return;
-		}
-
-		if (plist instanceof Collection) {
-			Collection list = (Collection) plist;
-
-			out.write('\n');
-			out.write(offset);
-
-			if (list.size() == 0) {
-				out.write("()");
-				return;
-			}
-
-			out.write("(\n");
-
-			String childOffset = offset + "   ";
-			Iterator it = list.iterator();
-			boolean appended = false;
-			while (it.hasNext()) {
-				// Java collections can contain nulls, skip them
-				Object obj = it.next();
-				if (obj != null) {
-					if (appended) {
-						out.write(", \n");
-					}
-
-					out.write(childOffset);
-					writeObject(childOffset, out, obj);
-					appended = true;
-				}
-			}
-
-			out.write('\n');
-			out.write(offset);
-			out.write(')');
-		} else if (plist instanceof Map) {
-			Map map = (Map) plist;
-			out.write('\n');
-			out.write(offset);
-
-			if (map.size() == 0) {
-				out.write("{}");
-				return;
-			}
-
-			out.write("{");
-
-			String childOffset = offset + "    ";
-
-			Iterator it = map.keySet().iterator();
-			while (it.hasNext()) {
-				// Java collections can contain nulls, skip them
-				Object key = it.next();
-				if (key == null) {
-					continue;
-				}
-				Object obj = map.get(key);
-				if (obj == null) {
-					continue;
-				}
-				out.write('\n');
-				out.write(childOffset);
-				out.write(quoteString(key.toString()));
-				out.write(" = ");
-				writeObject(childOffset, out, obj);
-				out.write(';');
-			}
-
-			out.write('\n');
-			out.write(offset);
-			out.write('}');
-		} else if (plist instanceof String) {
-			out.write(quoteString(plist.toString()));
-		} else if (plist instanceof Number) {
-      out.write(quoteString(plist.toString()));
-		} else {
-			throw new RuntimeException("Unsupported class for property list serialization: " + plist.getClass().getName());
-		}
-	}
-
-	/**
-	 * Escapes all doublequotes and backslashes.
-	 */
-	protected static String escapeString(String str) {
-		char[] chars = str.toCharArray();
-		int len = chars.length;
-		StringBuffer buf = new StringBuffer(len + 3);
-
-		for (int i = 0; i < len; i++) {
-			if (chars[i] == '\"' || chars[i] == '\\') {
-				buf.append('\\');
-			}
-			buf.append(chars[i]);
-		}
-
-		return buf.toString();
-	}
-
-	/**
-	 * Returns a quoted String, with all the escapes preprocessed. May return an
-	 * unquoted String if it contains no special characters. The rule for a
-	 * non-special character is the following:
-	 * 
-	 * <pre>
-	 *       c &gt;= 'a' &amp;&amp; c &lt;= 'z'
-	 *       c &gt;= 'A' &amp;&amp; c &lt;= 'Z'
-	 *       c &gt;= '0' &amp;&amp; c &lt;= '9'
-	 *       c == '_'
-	 *       c == '$'
-	 *       c == ':'
-	 *       c == '.'
-	 *       c == '/'
-	 * </pre>
-	 */
-	protected static String quoteString(String str) {
-		boolean shouldQuote = false;
-
-		// scan string for special chars,
-		// if we have them, string must be quoted
-
-		String noQuoteExtras = "_$:./";
-		char[] chars = str.toCharArray();
-		int len = chars.length;
-		if (len == 0) {
-			shouldQuote = true;
-		}
-		for (int i = 0; !shouldQuote && i < len; i++) {
-			char c = chars[i];
-
-			if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || noQuoteExtras.indexOf(c) >= 0) {
-				continue;
-			}
-			shouldQuote = true;
-		}
-
-		String escapedStr = escapeString(str);
-		return (shouldQuote) ? '\"' + escapedStr + '\"' : escapedStr;
 	}
 }

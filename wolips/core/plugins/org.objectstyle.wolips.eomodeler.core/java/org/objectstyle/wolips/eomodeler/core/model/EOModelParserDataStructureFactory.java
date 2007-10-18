@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
 
-import org.objectstyle.wolips.eomodeler.core.wocompat.parser.ParserDataStructureFactory;
+import org.objectstyle.wolips.eomodeler.core.wocompat.ParserDataStructureFactory;
 
 public class EOModelParserDataStructureFactory implements ParserDataStructureFactory {
 
