@@ -54,7 +54,7 @@ import java.util.Set;
 
 public class EOEntityParentReferenceFailure extends EOModelReferenceFailure<EOEntity, EOEntity> {
 	public EOEntityParentReferenceFailure(EOEntity child, EOEntity parent) {
-		super(child, parent, child.getName() + " is a child of " + parent.getFullyQualifiedName(), false);
+		super(child, parent, child.getName() + " is a child of " + parent.getName(), false);
 	}
 	
 	public Set<EOModelObject> getRecommendedDeletions() {

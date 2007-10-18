@@ -54,7 +54,7 @@ import java.util.Set;
 
 public class EORelationshipAttributeReferenceFailure extends EOModelReferenceFailure<EORelationship, EOAttribute> {
 	public EORelationshipAttributeReferenceFailure(EORelationship relationship, EOAttribute attribute) {
-		super(relationship, attribute, attribute.getName() + " is referenced by the relationship " + relationship.getFullyQualifiedName() + ".", false);
+		super(relationship, attribute, attribute.getName() + " is referenced by the relationship " + relationship.getName() + ".", false);
 	}
 	
 	public Set<EOModelObject> getRecommendedDeletions() {

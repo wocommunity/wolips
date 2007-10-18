@@ -54,7 +54,7 @@ import java.util.Set;
 
 public class EOEntityRelationshipReferenceFailure extends EOModelReferenceFailure<EORelationship, EOEntity> {
 	public EOEntityRelationshipReferenceFailure(EORelationship relationship, EOEntity entity) {
-		super(relationship, entity, entity.getName() + " is the destination of the relationship " + relationship.getFullyQualifiedName() + ".", false);
+		super(relationship, entity, entity.getName() + " is the destination of the relationship " + relationship.getName() + ".", false);
 	}
 	
 	public Set<EOModelObject> getRecommendedDeletions() {

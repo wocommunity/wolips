@@ -54,7 +54,7 @@ import java.util.Set;
 
 public class EOFlattenedRelationshipRelationshipReferenceFailure extends EOModelReferenceFailure<EORelationship, EORelationship> {
 	public EOFlattenedRelationshipRelationshipReferenceFailure(EORelationship flattenedRelationship, EORelationship relationship) {
-		super(flattenedRelationship, relationship, relationship.getName() + " is referenced by the flattened relationship " + flattenedRelationship.getFullyQualifiedName() + ".", false);
+		super(flattenedRelationship, relationship, relationship.getName() + " is referenced by the flattened relationship " + flattenedRelationship.getName() + ".", false);
 	}
 	
 	public Set<EOModelObject> getRecommendedDeletions() {

@@ -652,7 +652,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 			if (storedProcedureName != null) {
 				myStoredProcedure = myEntity.getModel().getStoredProcedureNamed(storedProcedureName);
 				if (myStoredProcedure == null) {
-					_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, getFullyQualifiedName() + " specifies a stored procedure name '" + myStoredProcedure + "' which does not exist.", false));
+					_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The fetch specification " + getName() + " specifies a stored procedure name '" + myStoredProcedure + "' which does not exist.", false));
 				}
 			}
 		}
@@ -673,7 +673,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 			catch (Throwable t) {
 				reason = StringUtils.getErrorMessage(t);
 			}
-			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, getFullyQualifiedName() + " specifies an invalid qualifier, and cannot be saved: " + reason, false));
+			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The fetch specification " + getName() + " specifies an invalid qualifier, and cannot be saved: " + reason, false));
 		}
 		
 		for (EOSortOrdering sortOrdering : mySortOrderings) {
@@ -681,10 +681,10 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 		}
 
 		if (myCustomQueryExpression != null && myCustomQueryExpression.trim().length() == 0) {
-			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, getFullyQualifiedName() + " has an empty custom SQL expression.", false));
+			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The fetch specification " + getName() + " has an empty custom SQL expression.", false));
 		}
 		if (myCustomQueryExpression != null && myStoredProcedure != null) {
-			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, getFullyQualifiedName() + " specifies a custom SQL expression AND a stored procedure name, which is invalid.", false));
+			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The fetch specification " + getName() + " specifies a custom SQL expression AND a stored procedure name, which is invalid.", false));
 		}
 	}
 
