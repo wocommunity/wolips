@@ -245,7 +245,7 @@ public class BindingReflectionUtils {
           memberSignatureMatches = false;
         }
         else {
-          int parameterCount = method.getParameterNames().length;
+          int parameterCount = method.getParameterTypes().length;
           String returnType = method.getReturnType();
           if (accessorsOrMutators == BindingReflectionUtils.ACCESSORS_ONLY) {
             memberSignatureMatches = (parameterCount == 0 && !"V".equals(returnType));
