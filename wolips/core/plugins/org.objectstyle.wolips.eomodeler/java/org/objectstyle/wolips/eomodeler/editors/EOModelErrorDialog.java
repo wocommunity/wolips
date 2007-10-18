@@ -99,6 +99,15 @@ public class EOModelErrorDialog extends Dialog {
 		failuresComposite.setLayout(layout);
 
 		Iterator<? extends EOModelVerificationFailure> failuresIter = _failures.iterator();
+		if (!failuresIter.hasNext()) {
+			Label failedObjectLabel = new Label(failuresComposite, SWT.NONE);
+			failedObjectLabel.setBackground(failuresComposite.getBackground());
+			failedObjectLabel.setText("There are no verification failures with this model group.");
+			failedObjectLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DIALOG_FONT));
+			failedObjectLabel.setAlignment(SWT.CENTER);
+			failedObjectLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		}
+		
 		while (failuresIter.hasNext()) {
 			EOModelVerificationFailure failure = failuresIter.next();
 			Label iconLabel = new Label(failuresComposite, SWT.NONE);
