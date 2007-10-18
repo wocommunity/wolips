@@ -73,10 +73,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.objectstyle.wolips.core.resources.types.folder.IBuildAdapter;
-import org.objectstyle.wolips.core.resources.types.folder.IProductAdapter;
-import org.objectstyle.wolips.core.resources.types.folder.IResourcesAdapter;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel;
 import org.objectstyle.wolips.eogenerator.core.model.EOModelReference;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
@@ -109,11 +105,6 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 		}
 	}
 
-	// public boolean canLoadModelFrom(Object modelResource) {
-	// return modelResource instanceof IResource || modelResource instanceof URL
-	// || modelResource instanceof URI;
-	// }
-
 	protected IResource getEclipseResourceForModelResource(Object modelResource) {
 		IResource resource = null;
 		if (modelResource instanceof IResource) {
@@ -127,46 +118,6 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 		}
 		return resource;
 	}
-
-	// public EOModel loadModel(Object modelResource,
-	// Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates,
-	// IProgressMonitor progressMonitor) throws EOModelException {
-	// IResource resource = getEclipseResourceForModelResource(modelResource);
-	// EOModel model;
-	// try {
-	// model = createModel(resource, failures, skipOnDuplicates,
-	// progressMonitor);
-	// return model;
-	// } catch (EOModelException e) {
-	// throw e;
-	// } catch (Exception e) {
-	// throw new EOModelException("Failed to load EOModel from '" +
-	// modelResource + "'.", e);
-	// }
-	// }
-
-	// public EOModel loadModel(IResource modelResource, EOModelGroup
-	// modelGroup, Set<EOModelVerificationFailure> failures, boolean
-	// skipOnDuplicates, IProgressMonitor progressMonitor) throws CoreException,
-	// IOException, EOModelException, ParseException {
-	// IProject project = modelResource.getProject();
-	// EOModel model = null;
-	// if ("eomodelgroup".equals(modelResource.getFileExtension())) {
-	// } else {
-	// IContainer modelContainer;
-	// if (modelResource.getType() == IResource.FILE) {
-	// modelContainer = modelResource.getParent();
-	// } else {
-	// modelContainer = (IContainer) modelResource;
-	// }
-	// String modelName =
-	// EOModelGroup.getModelNameForFile(modelContainer.getLocation().toFile());
-	// modelGroup = loadModelGroup(project, failures, skipOnDuplicates,
-	// modelContainer.getLocation().toFile().toURL(), progressMonitor);
-	// model = modelGroup.getModelNamed(modelName);
-	// }
-	// return model;
-	// }
 
 	protected void addModelsFromProject(EOModelGroup modelGroup, IProject project, Set<File> searchedFolders, Set<IProject> searchedProjects, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor, int depth) throws IOException, EOModelException, CoreException {
 		if (!searchedProjects.contains(project)) {
@@ -211,7 +162,7 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 						addModelsFromProject(modelGroup, dependsOnProject, searchedFolders, searchedProjects, failures, skipOnDuplicates, progressMonitor, depth + 1);
 					} else if (entryKind == IClasspathEntry.CPE_SOURCE) {
 						visitedProject = true;
-						getResourcesContainer(project).accept(new ModelVisitor(modelGroup, searchedFolders, failures, skipOnDuplicates, progressMonitor), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
+						project.accept(new ModelVisitor(modelGroup, searchedFolders, failures, skipOnDuplicates, progressMonitor), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
 					}
 					if (showProgress) {
 						progressMonitor.worked(1);
@@ -219,35 +170,13 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 				}
 
 				if (!visitedProject) {
-					getResourcesContainer(project);
-					getResourcesContainer(project).accept(new ModelVisitor(modelGroup, searchedFolders, failures, skipOnDuplicates, progressMonitor), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
+					project.accept(new ModelVisitor(modelGroup, searchedFolders, failures, skipOnDuplicates, progressMonitor), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
 					if (showProgress) {
 						progressMonitor.worked(1);
 					}
 				}
 			}
 		}
-	}
-	
-	protected IContainer getResourcesContainer(IProject project) {
-		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
-		IContainer container = null;
-		if (projectAdapter != null) {
-			IBuildAdapter buildAdaptor = projectAdapter.getBuildAdapter();
-			if (buildAdaptor != null) {
-				IProductAdapter productAdaptor = buildAdaptor.getProductAdapter();
-				if (productAdaptor != null) {
-					IResourcesAdapter resourcesAdaptor = productAdaptor.getResourcesAdapter();
-					if (resourcesAdaptor != null) {
-						container = resourcesAdaptor.getUnderlyingFolder();
-					}
-				}
-			}
-		}
-		if (container == null || !container.exists()) {
-			container = project;
-		}
-		return container;
 	}
 
 	protected void addModelsFromEOModelGroupFile(IFile eoModelGroupFile, EOModelGroup modelGroup, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws ParseException, CoreException, IOException, EOModelException {
