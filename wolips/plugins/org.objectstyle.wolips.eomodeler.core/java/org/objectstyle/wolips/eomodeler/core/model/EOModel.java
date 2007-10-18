@@ -65,7 +65,7 @@ import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 
 public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements ISortableEOModelObject {
-	public static final String CURRENT_VERSION = "1.0";
+	public static final String CURRENT_VERSION = "1.0.0";
 	
 	public static final String DIRTY = "dirty";
 
@@ -381,7 +381,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		_createReferencingRelationshipsCache(cache);
 		return cache;
 	}
-
+	
 	public void _createReferencingRelationshipsCache(Map<EOAttribute, Set<EORelationship>> cache) {
 		for (EOEntity entity : getEntities()) {
 			for (EORelationship relationship : entity.getRelationships()) {
@@ -398,6 +398,26 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		}
 	}
 
+	public Map<EOEntity, Set<EOEntity>> _createInheritanceCache() {
+		Map<EOEntity, Set<EOEntity>> cache = new HashMap<EOEntity, Set<EOEntity>>();
+		_createInheritanceCache(cache);
+		return cache;
+	}
+	
+	public void _createInheritanceCache(Map<EOEntity, Set<EOEntity>> cache) {
+		for (EOEntity entity : getEntities()) {
+			EOEntity parentEntity = entity.getParent();
+			if (parentEntity != null) {
+				Set<EOEntity> childrenEntities = cache.get(parentEntity);
+				if (childrenEntities == null) {
+					childrenEntities = new HashSet<EOEntity>();
+					cache.put(parentEntity, childrenEntities);
+				}
+				childrenEntities.add(entity);
+			}
+		}
+	}
+	
 	public Set<EODatabaseConfig> getDatabaseConfigs() {
 		return myDatabaseConfigs;
 	}
@@ -731,11 +751,11 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 						entity.loadFetchSpecsFromURL(fspecURL, _failures);
 					}
 					if (entity.getName() == null) {
-						_failures.add(new EOModelVerificationFailure(this, "The entity file " + entityURL + " defines an entity with no name.", false));
+						_failures.add(new EOModelVerificationFailure(this, this, "The entity file " + entityURL + " defines an entity with no name.", false));
 					}
 					addEntity(entity, true, false, _failures);
 				} else {
-					_failures.add(new EOModelVerificationFailure(this, "The entity file " + entityURL + " was missing.", false));
+					_failures.add(new EOModelVerificationFailure(this, this, "The entity file " + entityURL + " was missing.", false));
 				}
 			}
 		}
@@ -749,7 +769,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 					storedProcedure.loadFromURL(storedProcedureURL, _failures);
 					addStoredProcedure(storedProcedure, false, _failures);
 				} else {
-					_failures.add(new EOModelVerificationFailure(this, "The stored procedure file " + storedProcedureURL + " was missing.", false));
+					_failures.add(new EOModelVerificationFailure(this, this, "The stored procedure file " + storedProcedureURL + " was missing.", false));
 				}
 			}
 		}
@@ -797,7 +817,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 				connectionDictionaryDatabaseConfig = tempConnectionDictionaryDatabaseConfig;
 				addDatabaseConfig(connectionDictionaryDatabaseConfig, false, _failures);
 				if (canSave() && createMissingDatabaseConfig && isEditing()) {
-					_failures.add(new EOModelVerificationFailure(this, "Creating default database config for model '" + getName() + "'.", true, null));
+					_failures.add(new EOModelVerificationFailure(this, this, "Creating default database config for model '" + getName() + "'.", true, null));
 				}
 			}
 			// if the identified active database config isn't the connection
@@ -1036,9 +1056,9 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		VerificationContext verificationContext;
 		EOModelGroup modelGroup = getModelGroup();
 		if (modelGroup == null) {
-			verificationContext = new VerificationContext(_createReferencingRelationshipsCache());
+			verificationContext = new VerificationContext(this);
 		} else {
-			verificationContext = new VerificationContext(modelGroup._createReferencingRelationshipsCache());
+			verificationContext = new VerificationContext(modelGroup);
 		}
 		verify(_failures, verificationContext);
 	}

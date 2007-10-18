@@ -63,6 +63,11 @@ public abstract class EOModelReferenceFailure<T extends EOModelObject, U extends
 		_referencedObject = referencedObject;
 		_referencingObject = referencingObject;
 	}
+	
+	@Override
+	public EOModelObject getFailedObject() {
+		return _referencingObject;
+	}
 
 	public T getReferencingObject() {
 		return _referencingObject;

@@ -63,6 +63,11 @@ public class DuplicateDatabaseConfigFailure extends EOModelVerificationFailure {
 		myDatabaseConfigName = _databaseConfigName;
 		myNewDatabaseConfigName = _newDatabaseConfigName;
 	}
+	
+	@Override
+	public EOModelObject getFailedObject() {
+		return getModel().getDatabaseConfigNamed(myDatabaseConfigName);
+	}
 
 	public String getDatabaseConfigName() {
 		return myDatabaseConfigName;

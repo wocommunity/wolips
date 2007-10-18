@@ -52,43 +52,58 @@ package org.objectstyle.wolips.eomodeler.core.model;
 import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
 
 public class EOModelVerificationFailure implements Comparable<EOModelVerificationFailure> {
-	private EOModel myModel;
+	private EOModel _model;
 
-	private String myMessage;
+	private EOModelObject _failedObject;
 
-	private Throwable myRootCause;
+	private String _message;
 
-	private boolean myWarning;
+	private Throwable _rootCause;
 
-	public EOModelVerificationFailure(EOModel _model, String _message, boolean _warning) {
-		this(_model, _message, _warning, null);
+	private boolean _warning;
+
+	public EOModelVerificationFailure(EOModel model, String message, boolean warning) {
+		this(model, model, message, warning, null);
 	}
 
-	public EOModelVerificationFailure(EOModel _model, String _message, boolean _warning, Throwable _rootCause) {
-		myModel = _model;
-		myMessage = _message;
-		myRootCause = _rootCause;
-		myWarning = _warning;
+	public EOModelVerificationFailure(EOModel model, String message, boolean warning, Throwable rootCause) {
+		this(model, model, message, warning, rootCause);
 	}
-	
+
+	public EOModelVerificationFailure(EOModel model, EOModelObject failedObject, String message, boolean warning) {
+		this(model, failedObject, message, warning, null);
+	}
+
+	public EOModelVerificationFailure(EOModel model, EOModelObject failedObject, String message, boolean warning, Throwable rootCause) {
+		_model = model;
+		_failedObject = failedObject;
+		_message = message;
+		_rootCause = rootCause;
+		_warning = warning;
+	}
+
+	public EOModelObject getFailedObject() {
+		return _failedObject;
+	}
+
 	public EOModel getModel() {
-		return myModel;
+		return _model;
 	}
 
 	public boolean isWarning() {
-		return myWarning;
+		return _warning;
 	}
 
 	public int hashCode() {
-		int hashCode = myMessage.hashCode();
-		if (myRootCause != null) {
-			hashCode *= myRootCause.hashCode();
+		int hashCode = _message.hashCode();
+		if (_rootCause != null) {
+			hashCode *= _rootCause.hashCode();
 		}
 		return hashCode;
 	}
 
-	public boolean equals(Object _obj) {
-		return (_obj instanceof EOModelVerificationFailure && (_obj == this || (((EOModelVerificationFailure) _obj).myMessage.equals(myMessage)) && myRootCause == null && ((EOModelVerificationFailure) _obj).myRootCause == null));
+	public boolean equals(Object obj) {
+		return (obj instanceof EOModelVerificationFailure && (obj == this || (((EOModelVerificationFailure) obj)._message.equals(_message)) && _rootCause == null && ((EOModelVerificationFailure) obj)._rootCause == null));
 	}
 
 	public int compareTo(EOModelVerificationFailure obj) {
@@ -96,14 +111,14 @@ public class EOModelVerificationFailure implements Comparable<EOModelVerificatio
 	}
 
 	public String getMessage() {
-		return StringUtils.getErrorMessage(myMessage, myRootCause);
+		return StringUtils.getErrorMessage(_message, _rootCause);
 	}
 
 	public Throwable getRootCause() {
-		return myRootCause;
+		return _rootCause;
 	}
 
 	public String toString() {
-		return "[EOModelVerificationFailure: " + myMessage + "]";
+		return "[EOModelVerificationFailure: " + _message + "]";
 	}
 }

@@ -66,6 +66,11 @@ public class DuplicateAttributeFailure extends EOModelVerificationFailure {
 		myAttributeName = _attributeName;
 		myNewAttributeName = _newAttributeName;
 	}
+	
+	@Override
+	public EOModelObject getFailedObject() {
+		return myEntity.getAttributeNamed(myAttributeName);
+	}
 
 	public EOEntity getEntity() {
 		return myEntity;

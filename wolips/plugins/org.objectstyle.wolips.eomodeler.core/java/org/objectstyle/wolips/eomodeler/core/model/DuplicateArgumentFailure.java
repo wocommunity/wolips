@@ -66,6 +66,11 @@ public class DuplicateArgumentFailure extends EOModelVerificationFailure {
 		myArgumentName = _argumentName;
 		myNewArgumentName = _newArgumentName;
 	}
+	
+	@Override
+	public EOModelObject getFailedObject() {
+		return myStoredProcedure.getArgumentNamed(myArgumentName);
+	}
 
 	public EOStoredProcedure getStoredProcedure() {
 		return myStoredProcedure;

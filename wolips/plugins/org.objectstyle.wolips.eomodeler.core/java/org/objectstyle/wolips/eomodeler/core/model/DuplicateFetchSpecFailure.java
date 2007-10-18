@@ -66,6 +66,11 @@ public class DuplicateFetchSpecFailure extends EOModelVerificationFailure {
 		myFetchSpecName = _fetchSpecName;
 		myNewFetchSpecName = _newFetchSpecName;
 	}
+	
+	@Override
+	public EOModelObject getFailedObject() {
+		return myEntity.getFetchSpecNamed(myFetchSpecName);
+	}
 
 	public EOEntity getEntity() {
 		return myEntity;

@@ -63,6 +63,11 @@ public class DuplicateStoredProcedureFailure extends EOModelVerificationFailure 
 		myStoredProcedureName = _storedProcedureName;
 		myNewStoredProcedureName = _newStoredProcedureName;
 	}
+	
+	@Override
+	public EOModelObject getFailedObject() {
+		return getModel().getStoredProcedureNamed(myStoredProcedureName);
+	}
 
 	public String getStoredProcedureName() {
 		return myStoredProcedureName;

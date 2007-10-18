@@ -66,6 +66,11 @@ public class DuplicateRelationshipFailure extends EOModelVerificationFailure {
 		myRelationshipName = _relationshipName;
 		myNewRelationshipName = _newRelationshipName;
 	}
+	
+	@Override
+	public EOModelObject getFailedObject() {
+		return myEntity.getRelationshipNamed(myRelationshipName);
+	}
 
 	public EOEntity getEntity() {
 		return myEntity;

@@ -66,6 +66,11 @@ public class DuplicateEntityIndexFailure extends EOModelVerificationFailure {
 		myEntityIndexName = _entityIndexName;
 		myNewEntityIndexName = _newEntityIndexName;
 	}
+	
+	@Override
+	public EOModelObject getFailedObject() {
+		return myEntity.getEntityIndexNamed(myEntityIndexName);
+	}
 
 	public EOEntity getEntity() {
 		return myEntity;
