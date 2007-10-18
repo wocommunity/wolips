@@ -58,4 +58,6 @@ package org.objectstyle.wolips.core.resources.types.folder;
 public interface IProductAdapter extends IFolderAdapter {
 
 	public abstract IContentsAdapter getContentsAdapter();
+
+	public abstract IResourcesAdapter getResourcesAdapter();
 }
