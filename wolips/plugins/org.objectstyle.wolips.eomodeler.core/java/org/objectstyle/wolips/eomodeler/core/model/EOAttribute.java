@@ -430,13 +430,12 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 
 		Boolean mandatory = BooleanUtils.negate(allowsNull);
 		EOEntity entity = getEntity();
-		if (entity != null) {
+		if (entity != null && !entity.isSingleTableInheritance()) {
 			EOModel model = entity.getModel();
 			if (model != null) {
 				EOModelGroup modelGroup = model.getModelGroup();
 				if (modelGroup != null) {
-					Map<EOAttribute, Set<EORelationship>> referencingRelationshipsCache = modelGroup._createReferencingRelationshipsCache();
-					Set<EORelationship> referencingRelationships = getReferencingRelationships(true, referencingRelationshipsCache);
+					Set<EORelationship> referencingRelationships = getReferencingRelationships(true, new VerificationContext(modelGroup));
 					for (EORelationship referencingRelationship : referencingRelationships) {
 						if (BooleanUtils.isTrue(referencingRelationship.isToOne())) {
 							referencingRelationship._setMandatory(mandatory);
@@ -736,9 +735,8 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	}
 
 	public Set<EOModelReferenceFailure> getReferenceFailures() {
-		Map<EOAttribute, Set<EORelationship>> referencingRelationshipsCache = getEntity().getModel().getModelGroup()._createReferencingRelationshipsCache();
 		Set<EOModelReferenceFailure> referenceFailures = new HashSet<EOModelReferenceFailure>();
-		for (EORelationship referencingRelationship : getReferencingRelationships(true, referencingRelationshipsCache)) {
+		for (EORelationship referencingRelationship : getReferencingRelationships(true, new VerificationContext(getEntity().getModel().getModelGroup()))) {
 			referenceFailures.add(new EORelationshipAttributeReferenceFailure(referencingRelationship, this));
 		}
 		for (EOAttribute referencingAttributes : getReferencingFlattenedAttributes()) {
@@ -766,22 +764,23 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		return referencingFlattenedAttributes;
 	}
 
-	public Set<EORelationship> getReferencingRelationships(boolean includeInheritedAttributes, Map<EOAttribute, Set<EORelationship>> referencingRelationshipsCache) {
+	public Set<EORelationship> getReferencingRelationships(boolean includeInheritedAttributes, VerificationContext verificationContext) {
 		Set<EORelationship> referencingRelationships = new HashSet<EORelationship>();
 		if (myEntity != null) {
-			Set<EORelationship> directReferencingRelationships = referencingRelationshipsCache.get(this);
+			Set<EORelationship> directReferencingRelationships = verificationContext.getReferencingRelationshipsCache().get(this);
 			if (directReferencingRelationships != null) {
 				referencingRelationships.addAll(directReferencingRelationships);
 			}
 
 			if (includeInheritedAttributes && myEntity != null) {
 				String name = getName();
-				Iterator childrenEntitiesIter = myEntity.getChildrenEntities().iterator();
-				while (childrenEntitiesIter.hasNext()) {
-					EOEntity childEntity = (EOEntity) childrenEntitiesIter.next();
-					EOAttribute childAttribute = childEntity.getAttributeNamed(name);
-					if (childAttribute != null) {
-						referencingRelationships.addAll(childAttribute.getReferencingRelationships(includeInheritedAttributes, referencingRelationshipsCache));
+				Set<EOEntity> childrenEntities = verificationContext.getInheritanceCache().get(myEntity);
+				if (childrenEntities != null) {
+					for (EOEntity childEntity : childrenEntities) {
+						EOAttribute childAttribute = childEntity.getAttributeNamed(name);
+						if (childAttribute != null) {
+							referencingRelationships.addAll(childAttribute.getReferencingRelationships(includeInheritedAttributes, verificationContext));
+						}
 					}
 				}
 			}
@@ -878,7 +877,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 
 				Boolean classProperty = isClassProperty();
 				if (classProperty != null && classProperty.booleanValue()) {
-					Set<EORelationship> referencingRelationships = getReferencingRelationships(true, verificationContext.getReferencingRelationshipsCache());
+					Set<EORelationship> referencingRelationships = getReferencingRelationships(true, verificationContext);
 					for (EORelationship relationship : referencingRelationships) {
 						boolean foreignKey = false;
 						if (relationship.isToOne() != null && relationship.isToOne().booleanValue()) {

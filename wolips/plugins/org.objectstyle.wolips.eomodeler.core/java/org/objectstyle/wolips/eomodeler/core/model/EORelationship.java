@@ -516,12 +516,15 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 	public void setMandatory(Boolean _mandatory) {
 		_setMandatory(_mandatory);
 		if (BooleanUtils.isTrue(isToOne())) {
-			Iterator<EOJoin> joinsIter = getJoins().iterator();
-			while (joinsIter.hasNext()) {
-				EOJoin join = joinsIter.next();
-				EOAttribute sourceAttribute = join.getSourceAttribute();
-				if (sourceAttribute != null) {
-					sourceAttribute._setAllowsNull(BooleanUtils.negate(_mandatory), true);
+			EOEntity entity = getEntity();
+			if (entity != null && !entity.isSingleTableInheritance()) {
+				Iterator<EOJoin> joinsIter = getJoins().iterator();
+				while (joinsIter.hasNext()) {
+					EOJoin join = joinsIter.next();
+					EOAttribute sourceAttribute = join.getSourceAttribute();
+					if (sourceAttribute != null) {
+						sourceAttribute._setAllowsNull(BooleanUtils.negate(_mandatory), true);
+					}
 				}
 			}
 		}
