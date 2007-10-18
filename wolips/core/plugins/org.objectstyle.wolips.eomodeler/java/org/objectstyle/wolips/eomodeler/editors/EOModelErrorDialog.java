@@ -10,6 +10,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -17,31 +18,48 @@ import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 
 public class EOModelErrorDialog extends Dialog {
 	public static final int DELETE_ANYWAY_ID = 100;
+
+	private EOModelEditor _editor;
 
 	private boolean _showDeleteAnywayButton;
 
 	private Set<? extends EOModelVerificationFailure> _failures;
 
 	public EOModelErrorDialog(Shell parentShell, Set<? extends EOModelVerificationFailure> failures) {
-		this(parentShell, failures, false);
+		this(parentShell, failures, false, null);
+	}
+
+	public EOModelErrorDialog(Shell parentShell, Set<? extends EOModelVerificationFailure> failures, EOModelEditor editor) {
+		this(parentShell, failures, false, editor);
 	}
 
 	public EOModelErrorDialog(Shell parentShell, Set<? extends EOModelVerificationFailure> failures, boolean showDeleteAnywayButton) {
+		this(parentShell, failures, showDeleteAnywayButton, null);
+	}
+
+	public EOModelErrorDialog(Shell parentShell, Set<? extends EOModelVerificationFailure> failures, boolean showDeleteAnywayButton, EOModelEditor editor) {
 		super(parentShell);
 		_failures = failures;
 		_showDeleteAnywayButton = showDeleteAnywayButton;
+		_editor = editor;
 	}
 
 	protected void configureShell(Shell _newShell) {
@@ -57,6 +75,13 @@ public class EOModelErrorDialog extends Dialog {
 	protected Control createDialogArea(Composite parent) {
 		Composite composite = (Composite) super.createDialogArea(parent);
 
+		if (_editor == null) {
+			IEditorPart editorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+			if (editorPart instanceof EOModelEditor) {
+				_editor = (EOModelEditor) editorPart;
+			}
+		}
+
 		final ScrolledComposite scrollComposite = new ScrolledComposite(composite, SWT.V_SCROLL | SWT.BORDER);
 		scrollComposite.setBackground(composite.getDisplay().getSystemColor(SWT.COLOR_WHITE));
 		GridData failuresGridData = new GridData(GridData.FILL_BOTH);
@@ -66,7 +91,9 @@ public class EOModelErrorDialog extends Dialog {
 
 		final Composite failuresComposite = new Composite(scrollComposite, SWT.NONE);
 		failuresComposite.setBackground(scrollComposite.getBackground());
-		GridLayout layout = new GridLayout(2, false);
+
+		int columns = (_editor == null) ? 2 : 3;
+		GridLayout layout = new GridLayout(columns, false);
 		failuresComposite.setLayout(layout);
 
 		Iterator<? extends EOModelVerificationFailure> failuresIter = _failures.iterator();
@@ -97,6 +124,28 @@ public class EOModelErrorDialog extends Dialog {
 			failureLabelData.horizontalIndent = 3;
 			failureLabel.setLayoutData(failureLabelData);
 
+			Button showButton = new Button(failuresComposite, SWT.PUSH);
+			showButton.setText("Show");
+			GridData showButtonData = new GridData();
+			showButtonData.verticalIndent = 3;
+			showButtonData.verticalAlignment = SWT.CENTER;
+			showButtonData.horizontalIndent = 3;
+			showButton.setLayoutData(showButtonData);
+			showButton.setData(failure);
+			showButton.addSelectionListener(new SelectionListener() {
+				public void widgetDefaultSelected(SelectionEvent e) {
+					widgetSelected(e);
+				}
+
+				public void widgetSelected(SelectionEvent e) {
+					EOModelVerificationFailure selectedFailure = (EOModelVerificationFailure) ((Widget) e.getSource()).getData();
+					if (selectedFailure != null && _editor != null) {
+						_editor.setSelection(new StructuredSelection(selectedFailure.getFailedObject()));
+						EOModelErrorDialog.this.close();
+					}
+				}
+			});
+
 			Matcher matcher = Pattern.compile("(\\S+: \\S+)").matcher(failureMessage);
 			while (matcher.find()) {
 				int start = matcher.start(1);
@@ -115,7 +164,7 @@ public class EOModelErrorDialog extends Dialog {
 				GridData separatorData = new GridData(GridData.FILL_HORIZONTAL);
 				separatorData.heightHint = 1;
 				separatorData.verticalIndent = 3;
-				separatorData.horizontalSpan = 2;
+				separatorData.horizontalSpan = columns;
 				separator.setLayoutData(separatorData);
 			}
 		}
