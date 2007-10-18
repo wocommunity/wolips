@@ -111,12 +111,25 @@
 package org.objectstyle.wolips.core.resources.internal.types.folder;
 
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
+import org.objectstyle.wolips.core.resources.types.folder.IContentsAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IDotFrameworkAdapter;
+import org.objectstyle.wolips.core.resources.types.folder.IResourcesAdapter;
 
 public class DotFrameworkAdapter extends ProductAdapter implements IDotFrameworkAdapter {
 
 	public DotFrameworkAdapter(IFolder folder) {
 		super(folder);
+	}
+	
+	@Override
+	public IContentsAdapter getContentsAdapter() {
+		return null;
+	}
+
+	public IResourcesAdapter getResourcesAdapter() {
+		IResource resource = this.getUnderlyingFolder().getFolder(IResourcesAdapter.FILE_NAME);
+		return (IResourcesAdapter) resource.getAdapter(IResourcesAdapter.class);
 	}
 
 }
