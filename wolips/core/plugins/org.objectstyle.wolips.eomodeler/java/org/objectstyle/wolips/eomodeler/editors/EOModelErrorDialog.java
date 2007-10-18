@@ -7,6 +7,8 @@ import java.util.regex.Pattern;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.resource.FontRegistry;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -112,22 +114,37 @@ public class EOModelErrorDialog extends Dialog {
 			iconLabelData.horizontalIndent = 3;
 			iconLabel.setLayoutData(iconLabelData);
 
-			StyledText failureLabel = new StyledText(failuresComposite, SWT.WRAP);
+			Composite groupFailureComposite = new Composite(failuresComposite, SWT.NONE);
+			groupFailureComposite.setBackground(failuresComposite.getBackground());
+			groupFailureComposite.setLayout(new GridLayout(1, true));
+			GridData groupFailureLabelData = new GridData(GridData.FILL_HORIZONTAL);
+			//groupFailureLabelData.verticalIndent = 3;
+			// failureLabelData.verticalAlignment = SWT.BEGINNING;
+			groupFailureLabelData.horizontalIndent = 3;
+			groupFailureComposite.setLayoutData(groupFailureLabelData);
+			
+			Label failedObjectLabel = new Label(groupFailureComposite, SWT.NONE);
+			failedObjectLabel.setBackground(failuresComposite.getBackground());
+			failedObjectLabel.setText(failure.getFailedObject().getFullyQualifiedName());
+			failedObjectLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DIALOG_FONT));
+			failedObjectLabel.setForeground(failuresComposite.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+			failedObjectLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			
+			StyledText failureLabel = new StyledText(groupFailureComposite, SWT.WRAP);
 			failureLabel.setEditable(false);
 			failureLabel.setWordWrap(true);
 			failureLabel.setEnabled(false);
 			String failureMessage = failure.getMessage();
 			failureLabel.setText(failureMessage);
 			GridData failureLabelData = new GridData(GridData.FILL_HORIZONTAL);
-			failureLabelData.verticalIndent = 3;
+			//failureLabelData.verticalIndent = 3;
 			// failureLabelData.verticalAlignment = SWT.BEGINNING;
-			failureLabelData.horizontalIndent = 3;
+			//failureLabelData.horizontalIndent = 3;
 			failureLabel.setLayoutData(failureLabelData);
 
 			Button showButton = new Button(failuresComposite, SWT.PUSH);
 			showButton.setText("Show");
 			GridData showButtonData = new GridData();
-			showButtonData.verticalIndent = 3;
 			showButtonData.verticalAlignment = SWT.CENTER;
 			showButtonData.horizontalIndent = 3;
 			showButton.setLayoutData(showButtonData);
