@@ -21,7 +21,7 @@ public class D2WApplicationConfigurationPage extends WizardNewLinkPage {
 	protected Image _d2wwolimage;
 	protected Image _d2wclassicimage;
 	protected Image _d2wwonderimage;
-	
+
 	//buttons
 	Button basicButton = null;
 	Button wolButton =null;
@@ -35,14 +35,14 @@ public class D2WApplicationConfigurationPage extends WizardNewLinkPage {
 	public static final String WOL_BUTTON_STRING = Messages.getString("D2WApplicationConfigurationPage.lnf.wol.message");
 	public static final String CLASSIC_BUTTON_STRING = Messages.getString("D2WApplicationConfigurationPage.lnf.classic.message");
 	public static final String PROJECT_WONDER_STRING = Messages.getString("D2WApplicationConfigurationPage.lnf.wonder.message");
-	
+
 	protected static D2WSelectionListener _d2wListener;
-	
+
 	//Types
 	public enum D2WLook {BASIC, WEBOBJECTS, NEUTRAL, CLASSIC, WONDER }
-	
+
 	private D2WLook _currentLook;
-	
+
 	public D2WApplicationConfigurationPage(String pageName, int type) {
 		super(pageName, type);
 
@@ -51,7 +51,7 @@ public class D2WApplicationConfigurationPage extends WizardNewLinkPage {
 		_d2wwolimage = WizardsPlugin.D2W_WOL_ICON().createImage();
 		_d2wclassicimage = WizardsPlugin.D2W_CLASSIC_ICON().createImage();
 		_d2wwonderimage = WizardsPlugin.D2W_WONDER_ICON().createImage();
-		
+
 		_d2wListener = new D2WSelectionListener();
 	}
 
@@ -81,33 +81,37 @@ public class D2WApplicationConfigurationPage extends WizardNewLinkPage {
                 | GridData.GRAB_HORIZONTAL));
         d2wButtonGroup.setText("Look And Feel");
         d2wButtonGroup.setFont(topLevel.getFont());
-        
+
 		basicButton = new Button(d2wButtonGroup, SWT.RADIO);
 		basicButton.setText(BASIC_BUTTON_STRING);
 		basicButton.setImage(_d2wbasicimage);
 		basicButton.setSelection(true);
 		basicButton.addSelectionListener(_d2wListener);
-		
+
 		wolButton = new Button(d2wButtonGroup, SWT.RADIO);
 		wolButton.setText(WOL_BUTTON_STRING);
 		wolButton.setImage(_d2wwolimage);
+		wolButton.setSelection(false);
 		wolButton.addSelectionListener(_d2wListener);
-		
+
 		neuButton = new Button(d2wButtonGroup, SWT.RADIO);
 		neuButton.setText(NEU_BUTTON_STRING);
 		neuButton.setImage(_d2wneuimage);
+		neuButton.setSelection(false);
 		neuButton.addSelectionListener(_d2wListener);
-		
+
 		classicButton = new Button(d2wButtonGroup, SWT.RADIO);
 		classicButton.setText(CLASSIC_BUTTON_STRING);
 		classicButton.setImage(_d2wclassicimage);
+		classicButton.setSelection(false);
 		classicButton.addSelectionListener(_d2wListener);
-		
+
 		wonderButton = new Button(d2wButtonGroup, SWT.RADIO);
 		wonderButton.setText(PROJECT_WONDER_STRING);
 		wonderButton.setImage(_d2wwonderimage);
+		wonderButton.setSelection(false);
 		wonderButton.addSelectionListener(_d2wListener);
-		
+
 		setErrorMessage(null);
 		setMessage(null);
 		setControl(topLevel);

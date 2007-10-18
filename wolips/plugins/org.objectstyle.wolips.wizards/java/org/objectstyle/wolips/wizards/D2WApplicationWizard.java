@@ -74,7 +74,7 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 		super();
 	}
 
-	protected WizardType wizardType(){
+	protected WizardType getWizardType(){
 		return WizardType.D2W_APPLICATION_WIZARD;
 	}
 
@@ -160,9 +160,6 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 		createWebServicesSupport(project, templateEngine);
 
 		templateEngine.run(progressMonitor);
-
-		createEOModelSupport(project);
-
 
 	}
 }

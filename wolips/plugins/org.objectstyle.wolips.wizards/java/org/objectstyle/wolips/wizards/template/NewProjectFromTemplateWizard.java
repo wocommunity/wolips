@@ -42,7 +42,7 @@ public class NewProjectFromTemplateWizard extends NewWOProjectWizard {
 	}
 
 	@Override
-	protected WizardType wizardType() {
+	protected WizardType getWizardType() {
 		return WizardType.NEWPROJ_TEMPLATE_WIZARD;
 	}
 

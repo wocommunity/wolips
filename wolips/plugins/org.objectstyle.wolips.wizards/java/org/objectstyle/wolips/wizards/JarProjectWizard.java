@@ -73,7 +73,7 @@ public class JarProjectWizard extends AbstractProjectWizard {
 	}
 	
 	@Override
-	protected WizardType wizardType(){
+	protected WizardType getWizardType(){
 		return WizardType.JARPROJECT_WIZARD;
 	}
 	

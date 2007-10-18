@@ -6,6 +6,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -24,6 +25,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -32,7 +36,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IPerspectiveRegistry;
@@ -59,10 +62,11 @@ import org.eclipse.ui.internal.registry.PerspectiveDescriptor;
 import org.eclipse.ui.internal.util.PrefUtil;
 import org.eclipse.ui.internal.wizards.newresource.ResourceMessages;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
+import org.objectstyle.wolips.jdt.classpath.WOClasspathContainer;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
 import org.objectstyle.wolips.wizards.D2WApplicationConfigurationPage.D2WLook;
-import org.objectstyle.wolips.wizards.actions.EOModelImportSupport;
+import org.objectstyle.wolips.wizards.actions.EOModelImportWorkspaceJob;
 
 /**
  * Standard workbench wizard that creates a new project resource in the
@@ -130,6 +134,8 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 
 	protected WOWebServicesWizardPage  _webservicesSupportPage;
 
+	protected WOFrameworkSupportPage  _frameworkSupportPage;
+
 	private IProject _newProject;
 
 	/**
@@ -154,19 +160,19 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	 * WO_APPLICATION_WIZARD, D2W_APPLICATION_WIZARD, JARPROJECT_WIZARD, WO_FRAMEWORK_WIZARD, WONDER_APPLICATION_WIZARD, WONDER_D2W_APPLICATION_WIZARD, WONDER_FRAMEWORK_WIZARD = 7;
 	 * @return wizard type
 	 */
-	protected abstract WizardType wizardType();
+	protected abstract WizardType getWizardType();
 
 	/*
 	 * (non-Javadoc) Method declared on IWizard.
 	 */
 	public void addPages() {
 		super.addPages();
-		WizardType wizardType = wizardType();
+		WizardType wizardType = getWizardType();
 		_mainPage = createMainPage();
 		addPage(_mainPage);
 
 
-		if (wizardType == WizardType.D2W_APPLICATION_WIZARD || wizardType == WizardType.WO_APPLICATION_WIZARD || wizardType == WizardType.D2WS_APPLICATION_WIZARD) {
+		if (wizardType == WizardType.D2W_APPLICATION_WIZARD || wizardType == WizardType.WO_APPLICATION_WIZARD || wizardType == WizardType.D2WS_APPLICATION_WIZARD || wizardType == WizardType.WO_FRAMEWORK_WIZARD) {
 			_packagePage = createPackageSpecifierWizardPage();
 			if (_packagePage != null) {
 				addPage(_packagePage);
@@ -191,6 +197,13 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 			}
 		}
 
+		if (wizardType == WizardType.D2W_APPLICATION_WIZARD || wizardType == WizardType.WO_APPLICATION_WIZARD || wizardType == WizardType.D2WS_APPLICATION_WIZARD || wizardType == WizardType.WO_FRAMEWORK_WIZARD) {
+			_frameworkSupportPage = createFrameworkSupportPage();
+			if (_frameworkSupportPage != null) {
+				addPage(_frameworkSupportPage);
+			}
+		}
+
 		if (wizardType == WizardType.WO_APPLICATION_WIZARD || wizardType == WizardType.D2W_APPLICATION_WIZARD || wizardType == WizardType.WO_FRAMEWORK_WIZARD) {
 			_webservicesSupportPage = createWebServicesSupportPage();
 			if (_webservicesSupportPage != null) {
@@ -201,7 +214,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 
 	protected String getPageDescription() {
 		String description = ResourceMessages.NewProject_description;
-		if (wizardType() == WizardType.D2W_APPLICATION_WIZARD ) {
+		if (getWizardType() == WizardType.D2W_APPLICATION_WIZARD ) {
 			description = Messages.getString("D2WApplicationWizard.description");
 		}
 
@@ -258,6 +271,17 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 		return webservicesPage;
 	}
 
+	protected WOFrameworkSupportPage createFrameworkSupportPage() {
+		WOFrameworkSupportPage frameworkPage = null;
+		if (ResourcesPlugin.getWorkspace().getRoot().getProjects().length > 0) {
+			frameworkPage = new WOFrameworkSupportPage("basicReferenceProjectPage", IMessageProvider.NONE);//$NON-NLS-1$
+			frameworkPage.setTitle(Messages.getString("WOFrameworkSupportPage.title"));
+			frameworkPage.setDescription(Messages.getString("WOFrameworkSupportPage.description"));
+		}
+		return frameworkPage;
+	}
+
+
 
 	/**
 	 * Creates a new project resource with the selected name.
@@ -305,6 +329,8 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 		WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
 			protected void execute(IProgressMonitor monitor) throws CoreException {
 				createProject(description, newProjectHandle, monitor);
+				createEOModelSupport(newProjectHandle);
+				createFrameworksSupport(newProjectHandle);
 			}
 		};
 
@@ -371,6 +397,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 				projectHandle.refreshLocal(IResource.DEPTH_INFINITE, new SubProgressMonitor(monitor, 1000));
 				projectHandle.close(new SubProgressMonitor(monitor, 1000));
 				projectHandle.open(new SubProgressMonitor(monitor, 1000));
+
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new RuntimeException("Failed to create project.", e);
@@ -383,6 +410,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	protected abstract void _createProject(IProject project, IProgressMonitor progressMonitor) throws Exception;
 
 	/**
+	 *
 	 * Returns the newly created project.
 	 *
 	 * @return the created project, or <code>null</code> if project not
@@ -552,7 +580,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 		// gather the preferred perspectives
 		// always consider the final perspective (and those derived from it)
 		// to be preferred
-		ArrayList preferredPerspIds = new ArrayList();
+		ArrayList<String> preferredPerspIds = new ArrayList<String>();
 		addPerspectiveAndDescendants(preferredPerspIds, finalPerspId);
 		String preferred = configElement.getAttribute(PREFERRED_PERSPECTIVES);
 		if (preferred != null) {
@@ -603,7 +631,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	 *            the id to query.
 	 * @since 3.0
 	 */
-	private static void addPerspectiveAndDescendants(List perspectiveIds, String id) {
+	private static void addPerspectiveAndDescendants(List<String> perspectiveIds, String id) {
 		IPerspectiveRegistry registry = PlatformUI.getWorkbench().getPerspectiveRegistry();
 		IPerspectiveDescriptor[] perspectives = registry.getPerspectives();
 		for (int i = 0; i < perspectives.length; i++) {
@@ -718,7 +746,8 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	public void createEOModelSupport(IProject project) {
 		//Move any specified models over
 		HashMap <String, String> paths = getEOModelPaths();
-		EOModelImportSupport.importEOModelsToProject(paths, project);
+		EOModelImportWorkspaceJob job = new EOModelImportWorkspaceJob("eomodel import", paths, project);
+		job.schedule();
 	}
 
 	/*
@@ -751,6 +780,38 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 				engine.addTemplate(new TemplateDefinition("wowebservices"+"/server.wsdd.vm", path, "server.wsdd", "server.wsdd"));
 			}
 		}
+
+		addWebServiceFrameworks(project);
+	}
+
+	/*
+	 * Should be invoked after createProject() is called and the IProject is open
+	 * @param project
+	 */
+	public void addWebServiceFrameworks(IProject project) {
+		if (project.isOpen()) {
+			ArrayList<String> frameworkPaths = new ArrayList<String>();
+
+			if (_webservicesSupportPage != null) {
+				if (_webservicesSupportPage.getClientSupport()) {
+					frameworkPaths.add("JavaWebServicesClient");
+				}
+
+				if (_webservicesSupportPage.getServerSupport()) {
+					frameworkPaths.add("JavaWebServicesGeneration");
+				}
+
+				if (_webservicesSupportPage.getServerSupport() || _webservicesSupportPage.getClientSupport()) {
+					frameworkPaths.add("JavaWebServicesSupport");
+				}
+			}
+
+			//Classpath surgery
+			addFrameworksToClasspath(project, frameworkPaths);
+
+		} else {
+			System.err.println("Warning: project is not open and cannot be fully configured");
+		}
 	}
 
 	/*
@@ -763,5 +824,66 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 		}
 		File pFile = new File(fullPath);
 		pFile.mkdirs();
+	}
+
+	/**
+	 * Classpath Support
+	 */
+	public void addFrameworksToClasspath(IProject project, ArrayList<String> frameworks) {
+		StringBuilder frameworkPaths = new StringBuilder();
+		Iterator<String> it = frameworks.iterator();
+		while (it.hasNext()) {
+			frameworkPaths.append("/").append(it.next());
+		}
+
+		//Classpath surgery
+		try {
+			IJavaProject javaProject = (IJavaProject)project.getNature(JavaCore.NATURE_ID);
+			IClasspathEntry [] entries = javaProject.readRawClasspath();
+			ArrayList <IClasspathEntry> newEntries = new ArrayList<IClasspathEntry>(entries.length);
+			for (IClasspathEntry anEntry: entries) {
+				if (anEntry.getPath().toString().startsWith(WOClasspathContainer.WOLIPS_CLASSPATH_CONTAINER_IDENTITY)) {
+					IClasspathEntry entry = JavaCore.newContainerEntry(anEntry.getPath().append(frameworkPaths.toString()));
+					newEntries.add(entry);
+				} else {
+					newEntries.add(anEntry);
+				}
+			}
+			javaProject.setRawClasspath(newEntries.toArray(new IClasspathEntry[] {}), javaProject.getOutputLocation(), null);
+
+		} catch (CoreException e) {
+			ErrorDialog.openError(getShell(),
+					Messages.getString("NewWOProjectWizard.errorMessage.classpath.title"),
+					e.toString(),
+					new Status(IStatus.WARNING, "org.objectstyle.wolips.wizards" , e.toString()));
+		}
+	}
+
+	/*
+	 * Frameworks Support
+	 */
+	public void createFrameworksSupport(IProject project) {
+		if (project.isOpen()) {
+			ArrayList<String> frameworkPaths = new ArrayList<String>();
+
+			if (_frameworkSupportPage != null) {
+				if (_frameworkSupportPage.getJNDISupport()) {
+					frameworkPaths.add("JavaJNDIAdaptor");
+				}
+
+				if (_frameworkSupportPage.getJ2EESupport()) {
+					frameworkPaths.add("JavaWOJSPServlet");
+				}
+			}
+
+			//Classpath surgery
+			addFrameworksToClasspath(project, frameworkPaths);
+
+		} else {
+			ErrorDialog.openError(getShell(),
+					Messages.getString("NewWOProjectWizard.errorMessage.classpath.title"),
+					Messages.getString("NewWOProjectWizard.errorMessage.classpath.message"),
+					new Status(IStatus.WARNING, "org.objectstyle.wolips.wizards" , Messages.getString("NewWOProjectWizard.errorMessage.classpath.message")));
+		}
 	}
 }

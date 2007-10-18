@@ -16,33 +16,33 @@ public class WOWebServicesWizardPage extends WizardNewLinkPage {
 	public static final String SERVER_WEBSERVICES_STRING = Messages.getString("WOWebServicesWizardPage.checkbox.server.label");
 	public static final String CLIENT_OPTIONS_STRING = Messages.getString("WOWebServicesWizardPage.options.client.text");
 	public static final String SERVER_OPTIONS_STRING = Messages.getString("WOWebServicesWizardPage.options.server.text");
-	
+
 	Button clientWebServiceCheckBox;
 	Button serverWebServiceCheckBox;
-	
+
 	static boolean clientEnabled = false;
 	static boolean serverEnabled = false;
-	
+
 	static CheckBoxListener  checkboxListener;
-	
-	
+
+
 	public WOWebServicesWizardPage(String pageName, int type) {
 		super(pageName, type);
 		checkboxListener = new CheckBoxListener();
 	}
-	
+
 	public boolean getClientSupport () {
 		return clientEnabled;
 	}
-	
+
 	public boolean getServerSupport() {
-		return clientEnabled;
+		return serverEnabled;
 	}
-	
+
 	public void createControl(Composite parent) {
 		Font font = parent.getFont();
 		initializeDialogUnits(parent);
-		
+
 		// top level group
 		Composite topLevel = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
@@ -58,12 +58,13 @@ public class WOWebServicesWizardPage extends WizardNewLinkPage {
                 | GridData.GRAB_HORIZONTAL));
         clientGroup.setText(CLIENT_OPTIONS_STRING);
         clientGroup.setFont(topLevel.getFont());
-        
+
 		clientWebServiceCheckBox = new Button(clientGroup, SWT.CHECK);
 		clientWebServiceCheckBox.setText(CLIENT_WEBSERVICES_STRING);
+		clientWebServiceCheckBox.setSelection(false);
 		clientWebServiceCheckBox.addSelectionListener(checkboxListener);
 
-		
+
         Group serverGroup = new Group(topLevel, SWT.SHADOW_IN);
         GridLayout serverlayout = new GridLayout();
         serverGroup.setLayout(serverlayout);
@@ -71,11 +72,12 @@ public class WOWebServicesWizardPage extends WizardNewLinkPage {
                 | GridData.GRAB_HORIZONTAL));
         serverGroup.setText(SERVER_OPTIONS_STRING);
         serverGroup.setFont(topLevel.getFont());
-        
+
 		serverWebServiceCheckBox = new Button(serverGroup, SWT.CHECK);
 		serverWebServiceCheckBox.setText(SERVER_WEBSERVICES_STRING);
+		serverWebServiceCheckBox.setSelection(false);
 		serverWebServiceCheckBox.addSelectionListener(checkboxListener);
-		
+
 		setErrorMessage(null);
 		setMessage(null);
 		setControl(topLevel);
@@ -87,8 +89,8 @@ public class WOWebServicesWizardPage extends WizardNewLinkPage {
 			clientEnabled = s.getSelection();
 		} else if (s.equals(serverWebServiceCheckBox)){
 			serverEnabled = s.getSelection();
-		} 
-		
+		}
+
 		return true;
 	}
 
@@ -101,5 +103,5 @@ public class WOWebServicesWizardPage extends WizardNewLinkPage {
 			handleUpdatedSelection(e);
 		}
 	}
-	
+
 }

@@ -3,6 +3,7 @@ package org.objectstyle.wolips.wizards.actions;
 import java.util.HashMap;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -29,6 +30,9 @@ public class EOModelImportWorkspaceJob extends WorkspaceJob {
 			 if (!copied) {
 				 MessageDialog.openError(new Shell(), "EOModel import failed", "Did not import to: "+_modelPaths.values());
 			 }
+
+			 _project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
+
 		} catch (Throwable t) {
 			t.printStackTrace();
 			MessageDialog.openError(new Shell(), "EOModel import failed", t.getMessage());
