@@ -1,14 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
+sspath>
 	<classpathentry kind="src" path="src/java"/>
 	<classpathentry excluding="**/*.java" kind="src" path="src/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JavaFoundation"/>
-	<classpathentry kind="lib" path="/Users/Shared/5.4/wolipsExtras/apache-ant-1.7.0/lib/ant.jar" sourcepath="/Users/Shared/5.4/wolipsExtras/apache-ant-src-1.7.0/src/main"/>
-	<classpathentry kind="lib" path="/Users/Shared/5.4/wolipsExtras/apache-ant-1.7.0/lib/ant-junit.jar"/>
-	<classpathentry kind="lib" path="/Users/Shared/5.4/woproject/wolips/3rdparty/plugins/org.objectstyle.wolips.thirdparty.velocity/lib/velocity-dep-1.4.jar"/>
-	<classpathentry kind="lib" path="/Users/Shared/5.4/woproject/wolips/3rdparty/plugins/org.objectstyle.wolips.thirdparty.cayenne/lib/cayenne-1.2M12.jar"/>
-	<classpathentry kind="lib" path="/Users/Shared/5.4/woproject/wolips/3rdparty/plugins/org.objectstyle.wolips.thirdparty.log4j/lib/log4j.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/woenvironment"/>
+	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
