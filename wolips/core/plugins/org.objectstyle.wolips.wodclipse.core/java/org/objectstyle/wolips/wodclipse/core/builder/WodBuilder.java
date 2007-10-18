@@ -43,23 +43,25 @@
  */
 package org.objectstyle.wolips.wodclipse.core.builder;
 
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.ITypeHierarchy;
+import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.wolips.bindings.Activator;
 import org.objectstyle.wolips.bindings.preferences.PreferenceConstants;
-import org.objectstyle.wolips.bindings.wod.WodProblem;
 import org.objectstyle.wolips.core.resources.builder.AbstractFullAndIncrementalBuilder;
+import org.objectstyle.wolips.core.resources.types.SuperTypeHierarchyCache;
 import org.objectstyle.wolips.locate.LocateException;
+import org.objectstyle.wolips.locate.LocatePlugin;
+import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.util.WodModelUtils;
 
@@ -92,10 +94,26 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
   public void handleSource(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
     if (_validateTemplates) {
       try {
-        touchRelatedResources(_resource, _progressMonitor, _buildCache);
+        if (_buildKind == IncrementalProjectBuilder.INCREMENTAL_BUILD || _buildKind == IncrementalProjectBuilder.AUTO_BUILD) {
+          ICompilationUnit compilationUnit = JavaCore.createCompilationUnitFrom((IFile)_resource);
+          if (compilationUnit != null) {
+            IType type = compilationUnit.findPrimaryType();
+            ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(type, _progressMonitor);
+            IType woElementType = type.getJavaProject().findType("com.webobjects.appserver.WOElement", _progressMonitor);
+            if (typeHierarchy.contains(woElementType)) {
+              LocalizedComponentsLocateResult results = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(_resource);
+              IFile wodFile = results.getFirstWodFile();
+              if (wodFile != null) {
+                wodFile.touch(_progressMonitor);
+                validateWodFile(wodFile, _progressMonitor);
+              }
+            }
+          }
+        }
+        //touchRelatedResources(_resource, _progressMonitor, _buildCache);
       }
-      catch (CoreException e) {
-        Activator.getDefault().log(e);
+      catch (Throwable t) {
+        Activator.getDefault().log(t);
       }
     }
   }
@@ -130,13 +148,6 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
             // we change the api?
             // shoulnd't we validate all files using the api?
             validate = false;
-
-            try {
-              touchRelatedResources(_resource, _monitor, _buildCache);
-            }
-            catch (CoreException e) {
-              Activator.getDefault().log(e);
-            }
           }
 
           if (validate) {
@@ -167,37 +178,6 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
   @SuppressWarnings("unchecked")
   public void handleWoappResources(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
     // DO NOTHING
-  }
-
-  @SuppressWarnings("unchecked")
-  protected void touchRelatedResources(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) throws CoreException {
-    if (_progressMonitor != null) {
-      _progressMonitor.subTask("Touching files related to " + _resource.getName() + " ...");
-    }
-
-    IMarker[] markers = _resource.getProject().findMarkers(org.objectstyle.wolips.wodclipse.core.Activator.TEMPLATE_PROBLEM_MARKER, true, IResource.DEPTH_INFINITE);
-    Set<IResource> relatedResources = new HashSet<IResource>();
-    String name = _resource.getName();
-    for (int markerNum = 0; markerNum < markers.length; markerNum++) {
-      // System.out.println("WodBuilder.touchRelatedResources: Checking "
-      // + markers[markerNum]);
-      String relatedToFileNames = (String) markers[markerNum].getAttribute(WodProblem.RELATED_TO_FILE_NAMES);
-      // System.out.println("WodBuilder.touchRelatedResources: problem in
-      // " + markers[markerNum].getResource().getName() + " is related to
-      // " + relatedToFileNames);
-      if (relatedToFileNames != null && relatedToFileNames.indexOf(name) != -1) {
-        // System.out.println("WodBuilder.touchRelatedResources: ...
-        // which is this: " + _resource);
-        relatedResources.add(markers[markerNum].getResource());
-      }
-    }
-
-    Iterator<IResource> relatedResourcesIter = relatedResources.iterator();
-    while (relatedResourcesIter.hasNext()) {
-      IResource relatedResource = relatedResourcesIter.next();
-      handleWoappResources(relatedResource, _progressMonitor, _buildCache);
-      // relatedResource.touch(_progressMonitor);
-    }
   }
 
   protected void validateWodFile(IFile file, IProgressMonitor _progressMonitor) throws CoreException, LocateException {

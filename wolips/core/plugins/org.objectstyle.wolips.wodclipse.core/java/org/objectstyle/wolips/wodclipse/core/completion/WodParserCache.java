@@ -454,7 +454,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
     int offset = event.getOffset();
     int length = event.getLength();
     String message = event.getMessage();
-    HtmlProblem problem = new HtmlProblem(_htmlFile, message, new Position(offset, length), WodHtmlUtils.getLineAtOffset(_htmlContents, offset), false, null);
+    HtmlProblem problem = new HtmlProblem(_htmlFile, message, new Position(offset, length), WodHtmlUtils.getLineAtOffset(_htmlContents, offset), false);
     _htmlParserProblems.add(problem);
   }
 
