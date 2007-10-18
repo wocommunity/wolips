@@ -4,26 +4,18 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.Position;
 
 public class WodProblem {
-  public static final String RELATED_TO_FILE_NAMES = "org.objectstyle.wolips.wodclipse.wod.RelatedToFileNames";
-
   private IWodModel _model;
   private String _message;
   private Position _position;
   private int _lineNumber;
   private boolean _warning;
-  private String[] _relatedToFileNames;
   private IFile _forceFile;
 
-  public WodProblem(String message, Position position, int lineNumber, boolean warning, String relatedToFileNames) {
-    this(message, position, lineNumber, warning, new String[] { relatedToFileNames });
-  }
-
-  public WodProblem(String message, Position position, int lineNumber, boolean warning, String[] relatedToFileNames) {
+  public WodProblem(String message, Position position, int lineNumber, boolean warning) {
     _message = message;
     _position = position;
     _lineNumber = lineNumber;
     _warning = warning;
-    _relatedToFileNames = relatedToFileNames;
   }
   
   public void setModel(IWodModel model) {
@@ -56,10 +48,6 @@ public class WodProblem {
 
   public boolean isWarning() {
     return _warning;
-  }
-
-  public String[] getRelatedToFileNames() {
-    return _relatedToFileNames;
   }
 
   @Override
