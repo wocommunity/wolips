@@ -7,7 +7,7 @@
   	<target name="compileAndBuild" depends="setProps,init.build,compile,build.woframework" />
 
 	<target name="install" depends="setProps,init.install,build.woframework"/>
-	    
+
 	<target name="clean" depends="setProps">
 	  	<delete dir="dist"/>
 	</target>
@@ -34,47 +34,54 @@
 		 <tstamp/>
 		<property name="dest.dir" value="${install.dir}"/>
 	</target>
-	
+
 	<target name="init.build">
 		 <tstamp/>
 		<property name="dest.dir" value="dist"/>
 	</target>
 
 	<!-- woproject tasks -->
-	<target name="build.woframework">	
-		
+	<target name="build.woframework">
+
 	    <taskdef name="woframework" classname="org.objectstyle.woproject.ant.WOFramework">
     	</taskdef>
 
-		<woframework name="${framework.name}" destDir="${dest.dir}" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}" eoAdaptorClassName="${eoAdaptorClassName}">
+		<woframework name="${framework.name}" destDir="${dest.dir}"
+					customInfoPListContent="${customInfoPListContent}"
+					principalClass="${principalClass}"
+					eoAdaptorClassName="${eoAdaptorClassName}"
+					javaVersion="${javaVersion}"
+					cfbundleversion="${cfBundleVersion}"
+		    		cfbundleshortversion="${cfBundleShortVersion}"
+		    		cfbundleID="${cfBundleID}">
    			<classes dir="${classes.dir}">
       			<patternset>
-  					<includesfile name="${WOLipsContext.getAntFolderName()}/classes.include.patternset"/> 
-					<excludesfile name="${WOLipsContext.getAntFolderName()}/classes.exclude.patternset"/> 
+  					<includesfile name="${WOLipsContext.getAntFolderName()}/classes.include.patternset"/>
+					<excludesfile name="${WOLipsContext.getAntFolderName()}/classes.exclude.patternset"/>
 				</patternset>
    			</classes>
    			<wsresources dir="WebServerResources">
       			<patternset>
-  					<include name="**/*"/> 
-					<exclude name="CVS"/> 
-					<exclude name=".svn"/> 
-					<excludesfile name="woproject/wsresources.exclude.patternset"/> 
+  					<include name="**/*"/>
+					<exclude name="CVS"/>
+					<exclude name=".svn"/>
+					<excludesfile name="woproject/wsresources.exclude.patternset"/>
 				</patternset>
 			</wsresources>
    			<resources dir="Resources">
       			<patternset>
-  					<include name="**/*"/> 
-					<exclude name="CVS"/> 
-					<exclude name=".svn"/> 
-					<excludesfile name="woproject/resources.exclude.patternset"/> 
+  					<include name="**/*"/>
+					<exclude name="CVS"/>
+					<exclude name=".svn"/>
+					<excludesfile name="woproject/resources.exclude.patternset"/>
 				</patternset>
        		</resources>
    			<resources dir="Components">
       			<patternset>
-  					<include name="**/*"/> 
-					<exclude name="CVS"/> 
-					<exclude name=".svn"/> 
-					<excludesfile name="woproject/resources.exclude.patternset"/> 
+  					<include name="**/*"/>
+					<exclude name="CVS"/>
+					<exclude name=".svn"/>
+					<excludesfile name="woproject/resources.exclude.patternset"/>
 				</patternset>
        		</resources>
 			<lib dir="Libraries">

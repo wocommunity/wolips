@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.objectstyle.wolips.WO_CLASSPATH/JavaWebObjects/JavaFoundation/JavaXML/JavaWOExtensions/JavaEOAccess/JavaEOControl/JavaDTWGeneration/JavaDirectToWeb/JavaEOProject/JavaJDBCAdaptor"/>
+	<classpathentry kind="con" path="org.objectstyle.wolips.WO_CLASSPATH/JavaWebObjects/JavaFoundation/JavaXML/JavaWOExtensions/JavaEOAccess/JavaEOControl/JavaDTWGeneration/JavaDirectToWeb/JavaEOProject/JavaJDBCAdaptor/JavaWebServicesSupport/JavaWebServicesClient/JavaWebServicesGeneration"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
