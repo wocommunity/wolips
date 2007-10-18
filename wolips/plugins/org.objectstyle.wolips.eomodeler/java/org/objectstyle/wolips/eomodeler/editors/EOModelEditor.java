@@ -177,6 +177,8 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 	private Object myCreatePagesLock = new Object();
 
+	private int _failuresHashCode;
+
 	public EOModelEditor() {
 		mySelectionChangedListeners = new ListenerList();
 		myDirtyModelListener = new DirtyModelListener();
@@ -602,7 +604,15 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		}
 	}
 
-	protected void handleModelErrors(final Set<EOModelVerificationFailure> _failures, boolean forceOpen) {
+	protected int computeFailuresHashCode(Set<EOModelVerificationFailure> failures) {
+		StringBuffer sb = new StringBuffer();
+		for (EOModelVerificationFailure failure : failures) {
+			sb.append(failure.getMessage());
+		}
+		return sb.toString().hashCode();
+	}
+	
+	protected void handleModelErrors(final Set<EOModelVerificationFailure> failures, boolean forceOpen) {
 		if (myModel != null) {
 			try {
 				if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.SHOW_ERRORS_IN_PROBLEMS_VIEW_KEY)) {
@@ -631,7 +641,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 								}
 							}
 
-							for (EOModelVerificationFailure failure : _failures) {
+							for (EOModelVerificationFailure failure : failures) {
 								EOModel model = failure.getModel();
 								IFile indexFile;
 								try {
@@ -664,7 +674,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 		boolean warnings = false;
 		boolean errors = false;
-		for (EOModelVerificationFailure failure : _failures) {
+		for (EOModelVerificationFailure failure : failures) {
 			if (failure.isWarning()) {
 				warnings = true;
 			} else {
@@ -683,11 +693,18 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				openWindow = true;
 			}
 		}
+
+		int newFailuresHashCode = computeFailuresHashCode(failures);
+		if (openWindow && _failuresHashCode != 0 && newFailuresHashCode == _failuresHashCode) {
+			openWindow = false;
+		}
+		_failuresHashCode = newFailuresHashCode;
+		
 		if (openWindow) {
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
-					if (!_failures.isEmpty()) {
-						EOModelErrorDialog dialog = new EOModelErrorDialog(Display.getCurrent().getActiveShell(), _failures);
+					if (!failures.isEmpty()) {
+						EOModelErrorDialog dialog = new EOModelErrorDialog(Display.getCurrent().getActiveShell(), failures);
 						dialog.setBlockOnOpen(true);
 						dialog.open();
 					}
