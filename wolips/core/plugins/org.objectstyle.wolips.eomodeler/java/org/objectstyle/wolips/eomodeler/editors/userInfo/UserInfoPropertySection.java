@@ -53,6 +53,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ISelection;
@@ -254,8 +256,13 @@ public class UserInfoPropertySection extends AbstractPropertySection {
 			Object valueObj = myUserInfoable.getUserInfo().get(mySelectedKey);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			PropertyListSerialization.propertyListToStream(baos, valueObj);
-			String valueStr = new String(baos.toByteArray());
-			myValueText.setText(valueStr);
+			String valueStr;
+			try {
+				valueStr = new String(baos.toByteArray(), "UTF-8");
+				myValueText.setText(valueStr);
+			} catch (UnsupportedEncodingException e) {
+				throw new RuntimeException(e);
+			}
 			myValueText.setEnabled(true);
 		} else {
 			myValueText.setText("");
@@ -266,9 +273,16 @@ public class UserInfoPropertySection extends AbstractPropertySection {
 
 	protected void updateUserInfoFromText() {
 		if (mySelectedKey != null && myValueTextDirty) {
-			String valueStr = myValueText.getText();
-			Object valueObj = PropertyListSerialization.propertyListFromStream(new ByteArrayInputStream(valueStr.getBytes()), new EOModelParserDataStructureFactory());
-			myUserInfoable.getUserInfo().put(mySelectedKey, valueObj);
+			try {
+				String valueStr = myValueText.getText().trim();
+				if (!valueStr.startsWith("(") && !valueStr.startsWith("{") && !valueStr.startsWith("\"")) {
+					valueStr = "\"" + valueStr + "\"";
+				}
+				Object valueObj = PropertyListSerialization.propertyListFromStream(new ByteArrayInputStream(valueStr.getBytes("UTF-8")), new EOModelParserDataStructureFactory());
+				myUserInfoable.getUserInfo().put(mySelectedKey, valueObj);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 		}
 		myValueTextDirty = false;
 	}
