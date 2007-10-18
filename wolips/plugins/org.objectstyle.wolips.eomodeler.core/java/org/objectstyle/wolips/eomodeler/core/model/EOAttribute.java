@@ -875,6 +875,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 					_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The attribute " + getName() + " does not have a value class name.", true));
 				}
 
+				/*
 				Boolean classProperty = isClassProperty();
 				if (classProperty != null && classProperty.booleanValue()) {
 					Set<EORelationship> referencingRelationships = getReferencingRelationships(true, verificationContext);
@@ -892,6 +893,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 						}
 					}
 				}
+				*/
 			}
 		}
 	}
