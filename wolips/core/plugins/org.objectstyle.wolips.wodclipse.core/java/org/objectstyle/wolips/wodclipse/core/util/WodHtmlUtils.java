@@ -154,7 +154,7 @@ public class WodHtmlUtils {
       String name = attribute.getName();
       String originalValue = attribute.getValue();
       String value = WodHtmlUtils.toBindingValue(originalValue, wo54);
-      SimpleWodBinding wodBinding = new SimpleWodBinding(name, value);
+      SimpleWodBinding wodBinding = new SimpleWodBinding(name, value, new Position(element.getOffset() + attribute.getNameOffset() + 1, attribute.getNameLength()),  new Position(element.getOffset() + attribute.getValueDataOffset() + 1, attribute.getValueDataLength()), -1);
       wodElement.addBinding(wodBinding);
     }
     return wodElement;

@@ -18,15 +18,13 @@ import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
-public class WodHyperlink implements IHyperlink {
+public class WodElementTypeHyperlink implements IHyperlink {
   private IJavaProject _javaProject;
   private TypeCache _cache;
-
   private IRegion _region;
-
   private String _elementType;
 
-  public WodHyperlink(IRegion region, String elementType, IJavaProject javaProject, TypeCache cache) {
+  public WodElementTypeHyperlink(IRegion region, String elementType, IJavaProject javaProject, TypeCache cache) {
     _region = region;
     _elementType = elementType;
     _javaProject = javaProject;
@@ -65,12 +63,12 @@ public class WodHyperlink implements IHyperlink {
     }
   }
 
-  public static WodHyperlink toWodHyperlink(IWodElement wodElement, WodParserCache cache) {
-    WodHyperlink hyperlink = null;
+  public static WodElementTypeHyperlink toElementTypeHyperlink(IWodElement wodElement, WodParserCache cache) {
+    WodElementTypeHyperlink hyperlink = null;
     Position typePosition = wodElement.getElementTypePosition();
     if (typePosition != null) {
       Region elementRegion = new Region(typePosition.getOffset(), typePosition.getLength());
-      hyperlink = new WodHyperlink(elementRegion, wodElement.getElementType(), cache.getJavaProject(), cache.getTypeCache());
+      hyperlink = new WodElementTypeHyperlink(elementRegion, wodElement.getElementType(), cache.getJavaProject(), cache.getTypeCache());
     }
     return hyperlink;
   }
