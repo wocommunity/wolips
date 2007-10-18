@@ -94,25 +94,27 @@ public class PasteAction extends Action implements IWorkbenchWindowActionDelegat
 				selectedObject = (EOModelObject) ((IStructuredSelection) _sSelection).getFirstElement();
 			}
 			ISelection pastedSelection = LocalSelectionTransfer.getTransfer().getSelection();
-			Object[] clipboardObjects = ((IStructuredSelection) pastedSelection).toArray();
-			Arrays.sort(clipboardObjects, new PasteOrderComparator());
-
-			SimpleCompositeOperation pasteOperation = new SimpleCompositeOperation(EOModelUtils.getOperationLabel("Paste", Arrays.asList(clipboardObjects)));
-			for (Object clipboardObject : clipboardObjects) {
-				if (clipboardObject instanceof EOModelObject) {
-					EOModelObject eoModelObject = (EOModelObject) clipboardObject;
-					Class<EOModelObject> modelParentClass = eoModelObject._getModelParentType();
-					EOModelObject pasteIntoObject = EOModelUtils.getRelated(modelParentClass, selectedObject);
-					if (pasteIntoObject != null) {
-						EOModelObject clonedPasteObject = eoModelObject._cloneModelObject();
-						pasteOperation.add(new AddOperation(pasteIntoObject, clonedPasteObject));
+			if (pastedSelection != null) {
+				Object[] clipboardObjects = ((IStructuredSelection) pastedSelection).toArray();
+				Arrays.sort(clipboardObjects, new PasteOrderComparator());
+	
+				SimpleCompositeOperation pasteOperation = new SimpleCompositeOperation(EOModelUtils.getOperationLabel("Paste", Arrays.asList(clipboardObjects)));
+				for (Object clipboardObject : clipboardObjects) {
+					if (clipboardObject instanceof EOModelObject) {
+						EOModelObject eoModelObject = (EOModelObject) clipboardObject;
+						Class<EOModelObject> modelParentClass = eoModelObject._getModelParentType();
+						EOModelObject pasteIntoObject = EOModelUtils.getRelated(modelParentClass, selectedObject);
+						if (pasteIntoObject != null) {
+							EOModelObject clonedPasteObject = eoModelObject._cloneModelObject();
+							pasteOperation.add(new AddOperation(pasteIntoObject, clonedPasteObject));
+						}
 					}
 				}
+	
+				pasteOperation.addContext(EOModelUtils.getUndoContext(selectedObject));
+				IOperationHistory operationHistory = PlatformUI.getWorkbench().getOperationSupport().getOperationHistory();
+				operationHistory.execute(pasteOperation, null, null);
 			}
-
-			pasteOperation.addContext(EOModelUtils.getUndoContext(selectedObject));
-			IOperationHistory operationHistory = PlatformUI.getWorkbench().getOperationSupport().getOperationHistory();
-			operationHistory.execute(pasteOperation, null, null);
 		} catch (Throwable t) {
 			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), t);
 		}
