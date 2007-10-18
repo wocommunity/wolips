@@ -10,7 +10,7 @@ import org.apache.tools.ant.types.FileSet;
 
 /**
  * @author mnolte
- * 
+ *
  */
 public class OtherClasspathSet extends FileSet {
 
@@ -47,7 +47,7 @@ public class OtherClasspathSet extends FileSet {
 		return finalFiles;
 	}
 
-	public void collectClassPaths(Project aProject, HashSet pathSet) throws BuildException {
+	public void collectClassPaths(Project aProject, HashSet<File> pathSet) throws BuildException {
 
 		DirectoryScanner ds = getDirectoryScanner(aProject);
 		String[] directories = ds.getIncludedDirectories();
@@ -100,13 +100,14 @@ public class OtherClasspathSet extends FileSet {
 
 	/**
 	 * Returns the packagesOnly.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean isPackagesOnly() {
 		return packagesOnly;
 	}
 
+	@Override
 	public void setDir(File dir) throws BuildException {
 		aDirectory = dir;
 		super.setDir(this.aDirectory);
@@ -119,7 +120,7 @@ public class OtherClasspathSet extends FileSet {
 
 	/**
 	 * Sets the packagesOnly.
-	 * 
+	 *
 	 * @param packagesOnly
 	 *            The packagesOnly to set
 	 */
@@ -129,7 +130,7 @@ public class OtherClasspathSet extends FileSet {
 
 	/**
 	 * Sets the embed.
-	 * 
+	 *
 	 * @param embed
 	 */
 	public void setEmbed(boolean embed) {

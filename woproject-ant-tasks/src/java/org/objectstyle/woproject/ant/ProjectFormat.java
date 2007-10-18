@@ -74,7 +74,7 @@ import org.apache.tools.ant.types.FilterSetCollection;
  * Abstract helper class that defines the algorithm for autogeneration of
  * standard project files needed for deployment of the applications and
  * frameworks. In a way it "formats" deployed project.
- * 
+ *
  * @author Andrei Adamchik
  */
 public abstract class ProjectFormat {
@@ -96,10 +96,40 @@ public abstract class ProjectFormat {
 	}
 
 	/**
-	 * Returns a vesion of WebObjects project being built.
+	 * Returns a version of WebObjects project being built.
 	 */
 	public String getVersion() {
 		return task.getVersion();
+	}
+
+	/**
+	 * Returns a CFBundleVersion string of WebObjects project being built.
+	 */
+	public String getCFBundleVersion() {
+		return task.getCFBundleVersion();
+	}
+
+	/**
+	 * Returns a CFBundleShortVersion string of WebObjects project being built.
+	 */
+	public String getCFBundleShortVersion() {
+		return task.getCFBundleShortVersion();
+	}
+
+	/**
+	 * Returns a CFBundleIdentifier string of WebObjects project being built.
+	 */
+	public String getCFBundleID() {
+		return task.getCFBundleID();
+	}
+
+	/**
+	 * JVM selector string in Info.plist<br>
+	 * As specified by <a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaDictionaryInfo.plistKeys.html">Apple Documentation</a>
+	 * @return
+	 */
+	public String getJavaVersion() {
+		return task.getJavaVersion();
 	}
 
 	/**
@@ -162,13 +192,13 @@ public abstract class ProjectFormat {
 	/**
 	 * Convienence method to copy a file from a source to a destination
 	 * specifying if token filtering must be used.
-	 * 
+	 *
 	 * <p>
 	 * <i>This method is copied from Ant FileUtils with some changes and
 	 * simplifications. FileUtils can't be used directly, since its API doesn't
 	 * allow InputStreams for the source file. </i>
 	 * </p>
-	 * 
+	 *
 	 * @throws IOException
 	 *             Returns true when a .sh file is copied.
 	 */
@@ -290,10 +320,14 @@ public abstract class ProjectFormat {
 		filter.addFilter("PRINCIPAL_CLASS", principalClassString());
 		filter.addFilter("NAME", getName());
 		filter.addFilter("VERSION", getVersion());
+		filter.addFilter("JAVA_VERSION", getJavaVersion());
 		filter.addFilter("JAR_NAME", getJarName());
 		filter.addFilter("JAR_ARRAY", libString(extLibs));
 		filter.addFilter("CUSTOM_CONTENT", getCustomInfoPListContent());
 		filter.addFilter("HAS_COMPONENTS", "<" + hasComponents() + "/>");
+		filter.addFilter("CFBUNDLE_VERSION", getCFBundleVersion());
+		filter.addFilter("CFBUNDLE_SHORTVERSION", getCFBundleShortVersion());
+		filter.addFilter("CFBUNDLE_IDENTIFIER", getCFBundleID());
 
 		return new FilterSetCollection(filter);
 	}

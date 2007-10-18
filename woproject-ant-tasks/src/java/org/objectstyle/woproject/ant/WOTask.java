@@ -56,7 +56,6 @@
 package org.objectstyle.woproject.ant;
 
 import java.io.File;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -73,13 +72,13 @@ import org.apache.tools.ant.types.FileSet;
 /**
  * A <b>WOTask</b> is a common superclass of WOApplication and WOFramework that
  * implements common build functionality.
- * 
+ *
  * @author Emily Bache
  * @author Andrei Adamchik
  */
 public abstract class WOTask extends Task {
 
-	protected Vector classes = new Vector();
+	protected Vector<WOFileSet> classes = new Vector<WOFileSet>();
 
 	protected String name;
 
@@ -95,20 +94,28 @@ public abstract class WOTask extends Task {
 
 	protected String customInfoPListContent;
 
-	protected Vector sources = new Vector();
+	protected Vector<WOFileSet> sources = new Vector<WOFileSet>();
 
-	protected Vector resources = new Vector();
+	protected Vector<WOFileSet> resources = new Vector<WOFileSet>();
 
-	protected Vector wsresources = new Vector();
+	protected Vector<WOFileSet> wsresources = new Vector<WOFileSet>();
 
-	protected Vector flattenfiles = new Vector();
+	protected Vector<FileSet> flattenfiles = new Vector<FileSet>();
 
-	protected Vector lib = new Vector();
+	protected Vector<FileSet> lib = new Vector<FileSet>();
 
 	protected boolean hasComponents = true;
-	
+
 	protected String version;
-	
+
+	protected String cfbundleversion;
+
+	protected String cfbundleshortversion;
+
+	protected String cfbundleID;
+
+	protected String javaVersion;
+
 	private SubtaskFactory subtaskFactory;
 
 	// this leaks
@@ -120,7 +127,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method setName.
-	 * 
+	 *
 	 * @param name
 	 */
 	public void setName(String name) {
@@ -129,7 +136,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method getName.
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getName() {
@@ -139,14 +146,81 @@ public abstract class WOTask extends Task {
 	public String getVersion() {
 		return version == null ? "" : version;
 	}
-	
+
 	public void setVersion(String value) {
 		version = value;
 	}
-	
+
+	/**
+	 * CFBundleVersion for Info.plist
+	 * @return
+	 */
+	public String getCFBundleVersion() {
+		return (cfbundleversion == null || cfbundleversion.equals("${cfBundleVersion}")) ? "" : cfbundleversion;
+	}
+
+	/**
+	 * CFBundleVersion for Info.plist
+	 * @param value
+	 */
+	public void setCFBundleVersion(String value) {
+		cfbundleversion = value;
+	}
+
+	/**
+	 * CFBundleShortVersionString
+	 * @return
+	 */
+	public String getCFBundleShortVersion() {
+		return (cfbundleshortversion == null || cfbundleshortversion.equals("${cfBundleShortVersion}")) ? "" : cfbundleshortversion;
+	}
+
+	/**
+	 * CFBundleShortVersionString
+	 * @param value
+	 */
+	public void setCFBundleShortVersion(String value) {
+		cfbundleshortversion = value;
+	}
+
+	/**
+	 * CFBundleIdentifier
+	 * @return
+	 */
+	public String getCFBundleID() {
+		return (cfbundleID == null || cfbundleID.equals("${cfBundleID}")) ? "com.apple.myapp" : cfbundleID;
+	}
+
+	/**
+	 * CFBundleIdentifier
+	 * @param value
+	 */
+	public void setCFBundleID(String value) {
+		cfbundleID = value;
+	}
+
+	/**
+	 * JVM selector string in Info.plist<br>
+	 * As specified by <a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaDictionaryInfo.plistKeys.html">Apple Documentation</a>
+	 * <br>default value is 1.5+
+	 * @return
+	 */
+	public String getJavaVersion() {
+		return (javaVersion == null ||  javaVersion.equals("${javaVersion}")) ? "1.5+" : javaVersion;
+	}
+
+	/**
+	 * JVM selector string in Info.plist<br>
+	 * As specified by <a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaDictionaryInfo.plistKeys.html">Apple Documentation</a>
+	 * @param value
+	 */
+	public void setJavaVersion(String value) {
+		javaVersion = value;
+	}
+
 	/**
 	 * Method setJarName.
-	 * 
+	 *
 	 * @param jarName
 	 */
 	public void setJarName(String jarName) {
@@ -155,7 +229,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method getJarName.
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getJarName() {
@@ -166,16 +240,19 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method setPrincipalClass.
-	 * 
+	 *
 	 * @param principalClass
 	 */
 	public void setPrincipalClass(String principalClass) {
+		if (principalClass.equals("${principalClass}")) {
+			principalClass = "Application";
+		}
 		this.principalClass = principalClass;
 	}
 
 	/**
 	 * Method setManifest.
-	 * 
+	 *
 	 * @param manifest
 	 */
 	public void setManifest(String manifest) {
@@ -188,7 +265,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method getPrincipalClass.
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getPrincipalClass() {
@@ -197,7 +274,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method getManifest.
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getManifest() {
@@ -220,7 +297,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method setDestDir.
-	 * 
+	 *
 	 * @param destDir
 	 */
 	public void setDestDir(String destDir) {
@@ -229,7 +306,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method addClasses.
-	 * 
+	 *
 	 * @param set
 	 */
 	public void addClasses(WOFileSet set) {
@@ -238,7 +315,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method addSources.
-	 * 
+	 *
 	 * @param set
 	 */
 	public void addSources(WOFileSet set) {
@@ -247,7 +324,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method addResources.
-	 * 
+	 *
 	 * @param set
 	 */
 	public void addResources(WOFileSet set) {
@@ -256,7 +333,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method addLib.
-	 * 
+	 *
 	 * @param set
 	 */
 	public void addLib(FileSet set) {
@@ -265,7 +342,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method addWsresources.
-	 * 
+	 *
 	 * @param set
 	 */
 	public void addWsresources(WOFileSet set) {
@@ -274,7 +351,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method addFlattenfiles.
-	 * 
+	 *
 	 * @param set
 	 */
 	public void addFlattenfiles(FileSet set) {
@@ -316,7 +393,7 @@ public abstract class WOTask extends Task {
 	/**
 	 * Ensure we have a consistent and legal set of attributes, and set any
 	 * internal flags necessary based on different combinations of attributes.
-	 * 
+	 *
 	 * @throws BuildException
 	 *             if task attributes are inconsistent or missing.
 	 */
@@ -332,7 +409,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method createDirectories.
-	 * 
+	 *
 	 * @throws BuildException
 	 */
 	protected void createDirectories() throws BuildException {
@@ -358,7 +435,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method hasWs.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean hasWs() {
@@ -367,7 +444,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method hasFlattenfiles.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean hasFlattenfiles() {
@@ -384,7 +461,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method hasResources.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean hasResources() {
@@ -393,7 +470,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method hasSources.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean hasSources() {
@@ -402,7 +479,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method hasClasses.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean hasClasses() {
@@ -411,7 +488,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method hasManifest.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean hasManifest() {
@@ -420,7 +497,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method getManifestFile.
-	 * 
+	 *
 	 * @return File
 	 */
 	public File getManifestFile() {
@@ -429,7 +506,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method jarSources
-	 * 
+	 *
 	 * @throws BuildException
 	 */
 	protected void jarSources() throws BuildException {
@@ -441,7 +518,7 @@ public abstract class WOTask extends Task {
 		jar.setDestFile(taskJar);
                 boolean hasFileSets = false;
 		if (hasSources()) {
-			Enumeration en = sources.elements();
+			Enumeration<WOFileSet> en = sources.elements();
 			while (en.hasMoreElements()) {
                             WOFileSet wofs = (WOFileSet) en.nextElement();
                             if( wofs.testIfCondition() ){
@@ -458,7 +535,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method jarClasses.
-	 * 
+	 *
 	 * @throws BuildException
 	 */
 	protected void jarClasses() throws BuildException {
@@ -469,12 +546,12 @@ public abstract class WOTask extends Task {
 		// + getJarName() + ".jar"));
 		jar.setDestFile(taskJar);
 		if (hasClasses()) {
-			Enumeration en = classes.elements();
+			Enumeration<WOFileSet> en = classes.elements();
 			while (en.hasMoreElements()) {
-                                WOFileSet wofs = (WOFileSet) en.nextElement();
-                                if( wofs.testIfCondition() ){
-                                    jar.addFileset( (FileSet) wofs );
-                                }
+				WOFileSet wofs = (WOFileSet) en.nextElement();
+				if( wofs.testIfCondition() ){
+					jar.addFileset( (FileSet) wofs );
+				}
 			}
 		}
 
@@ -487,7 +564,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method copyResources.
-	 * 
+	 *
 	 * @throws BuildException
 	 */
 	protected void copyResources() throws BuildException {
@@ -495,7 +572,7 @@ public abstract class WOTask extends Task {
 
 		cp.setTodir(resourcesDir());
 		int count = 0;
-		Enumeration en = resources.elements();
+		Enumeration<WOFileSet> en = resources.elements();
 		while (en.hasMoreElements()) {
 			WOFileSet wofs = (WOFileSet) en.nextElement();
 			if (wofs.testIfCondition()) {
@@ -513,7 +590,7 @@ public abstract class WOTask extends Task {
 	/**
 	 * Copies WebServerResources to the target location. Performs split install
 	 * if requested.
-	 * 
+	 *
 	 * @throws BuildException
 	 */
 	protected void copyWsresources() throws BuildException {
@@ -521,7 +598,7 @@ public abstract class WOTask extends Task {
 		cp.setTodir(wsresourcesDir());
 
 		int count = 0;
-		Enumeration en = wsresources.elements();
+		Enumeration<WOFileSet> en = wsresources.elements();
 		while (en.hasMoreElements()) {
 			WOFileSet wofs = (WOFileSet) en.nextElement();
 			if (wofs.testIfCondition()) {
@@ -545,7 +622,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method copyLibs.
-	 * 
+	 *
 	 * @throws BuildException
 	 */
 	protected void copyLibs() throws BuildException {
@@ -553,7 +630,7 @@ public abstract class WOTask extends Task {
 		cp.setTodir(new File(resourcesDir(), "Java"));
 		cp.setFlatten(true);
 
-		Enumeration en = lib.elements();
+		Enumeration<FileSet> en = lib.elements();
 		while (en.hasMoreElements()) {
 			cp.addFileset((FileSet) en.nextElement());
 		}
@@ -562,7 +639,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method hasLib.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	protected boolean hasLib() {
@@ -571,7 +648,7 @@ public abstract class WOTask extends Task {
 
 	/**
 	 * Method hasJava.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	protected boolean hasJava() {
@@ -582,9 +659,9 @@ public abstract class WOTask extends Task {
 	 * Returns an Iterator over the file names of the library files included in
 	 * the lib nested element.
 	 */
-	public Iterator getLibNames() {
-		ArrayList libNames = new ArrayList();
-		Enumeration en = lib.elements();
+	public Iterator<String> getLibNames() {
+		ArrayList<String> libNames = new ArrayList<String>();
+		Enumeration<FileSet> en = lib.elements();
 		while (en.hasMoreElements()) {
 			FileSet fs = (FileSet) en.nextElement();
 			DirectoryScanner scanner = fs.getDirectoryScanner(getProject());
@@ -604,7 +681,7 @@ public abstract class WOTask extends Task {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public void release() {
 		subtaskFactory.release();
@@ -615,9 +692,9 @@ public abstract class WOTask extends Task {
 	 * @return Returns an Iterator over the file names of the mapper files
 	 *         included in the mapperfiles nested element.
 	 */
-	public Iterator getFlattenfileNames() {
-		ArrayList flattenfilesNames = new ArrayList();
-		Enumeration en = flattenfiles.elements();
+	public Iterator<String> getFlattenfileNames() {
+		ArrayList<String> flattenfilesNames = new ArrayList<String>();
+		Enumeration<FileSet> en = flattenfiles.elements();
 		while (en.hasMoreElements()) {
 			FileSet fs = (FileSet) en.nextElement();
 			DirectoryScanner scanner = fs.getDirectoryScanner(getProject());

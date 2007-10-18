@@ -64,17 +64,19 @@ import org.apache.tools.ant.types.FileSet;
 /**
  * Ant task to build WebObjects framework. For detailed instructions go to the
  * <a href="../../../../../ant/woframework.html">manual page</a> .
- * 
+ *
  * @ant.task category="packaging"
  */
 public class WOFramework extends WOTask {
 
 	protected String eoAdaptorClassName;
 
+	@Override
 	public void addLib(FileSet set) {
 		lib.addElement(set);
 	}
 
+	@Override
 	public void execute() throws BuildException {
 		validateAttributes();
 
@@ -108,18 +110,22 @@ public class WOFramework extends WOTask {
 	 * location where WOTask is being built up: ie the .woa dir or the
 	 * .framework dir. In this case, the .framework dir.
 	 */
+	@Override
 	protected File taskDir() {
 		return getProject().resolveFile(destDir + File.separator + name + ".framework");
 	}
 
+	@Override
 	protected File resourcesDir() {
 		return new File(taskDir(), "Resources");
 	}
 
+	@Override
 	protected File wsresourcesDir() {
 		return new File(taskDir(), "WebServerResources");
 	}
 
+	@Override
 	protected File wsresourcesDestDir() {
 		File woLocation = new File(webServerDir(), "WebObjects");
 		File frameworksLocation = new File(woLocation, "Frameworks");

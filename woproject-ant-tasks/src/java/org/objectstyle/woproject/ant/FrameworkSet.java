@@ -77,7 +77,7 @@ import org.objectstyle.woenvironment.env.WOVariables;
 
 /**
  * A subclass of FileSet that with special support for matching WOFrameworks.
- * 
+ *
  * @author Andrei Adamchik
  */
 public class FrameworkSet extends FileSet {
@@ -89,7 +89,7 @@ public class FrameworkSet extends FileSet {
 	protected File deploymentDir;
 
 	protected String ifCondition = "";
-	
+
 	/**
 	 * Creates new FrameworkSet.
 	 */
@@ -103,13 +103,13 @@ public class FrameworkSet extends FileSet {
 	 * compile time path via <code>dir=/some_binary_release_path/</code>, but
 	 * still end up with <code>LOCALROOT/Library/Frameworks/Bar.framework</code>
 	 * as the prefix.
-	 * 
+	 *
 	 * @param root
 	 */
 	public void setDeploymentDir(File root) {
 		this.deploymentDir = root;
 	}
-	
+
 	public void setBundles(String value) {
 		String bundles[] = value.split("/");
 		PatternSet ps =  createPatternSet();
@@ -122,7 +122,7 @@ public class FrameworkSet extends FileSet {
 			}
 		}
 	}
-	
+
 	public File getDeployedFile(File file) {
 		File result = file;
 		if (this.deploymentDir != null && !getEmbed()) {
@@ -142,7 +142,7 @@ public class FrameworkSet extends FileSet {
 	 * Sets root directory of this FileSet based on a symbolic name, that can be
 	 * "wo.homeroot", "wo.woroot", "wo.localroot". Throws BuildException if an
 	 * invalid root is specified.
-	 * 
+	 *
 	 * @deprecated since WOProject 1.1, use {@link #setDir(File)}.
 	 */
 	public void setRoot(File root) throws BuildException {
@@ -272,9 +272,10 @@ public class FrameworkSet extends FileSet {
 	 * Overrides the super method in order to return the right DirectoryScanner
 	 * that doesn't sort directories. See svn revision detail:
 	 * http://svn.apache.org/viewcvs.cgi?rev=274976&view=rev
-	 * 
+	 *
 	 * Instead sort by the order defined in the include list.
 	 */
+	@Override
 	public DirectoryScanner getDirectoryScanner(Project p) {
 		DirectoryScanner ds = super.getDirectoryScanner(p);
 		if (isReference()) {
@@ -295,6 +296,7 @@ public class FrameworkSet extends FileSet {
 
 		List includeNonPatternList;
 
+		@Override
 		public synchronized String[] getIncludedDirectories() {
 
 			if (dirsIncluded == null) {
@@ -311,13 +313,14 @@ public class FrameworkSet extends FileSet {
 		}
 
 
-        public synchronized String[] getIncludedFiles()
+        @Override
+		public synchronized String[] getIncludedFiles()
         {
-            // The results of calling jarsPaths() on the FrameworkSet is a 
+            // The results of calling jarsPaths() on the FrameworkSet is a
             // fully qualified path.  This creates a problem as FileSet qualifies
             // these file paths with the directory.  To accomodate this, we
             // trim off the root dir.  This will be added back after getIncludedFiles()
-            // is called.  This (hack) was done instead of making a parallel 
+            // is called.  This (hack) was done instead of making a parallel
             // implementation of jarsPath() that returns a partial path.
             String [] frameworkJars = jarsPath().list();
             int dirLength = getDir(getProject()).toString().length();
@@ -335,7 +338,7 @@ public class FrameworkSet extends FileSet {
 
             return all;
         }
-        
+
 		public int compare(Object o1, Object o2) {
 			String frameworkDir1 = (String) o1;
 			String frameworkDir2 = (String) o2;
@@ -345,7 +348,7 @@ public class FrameworkSet extends FileSet {
 		}
 
 		private String[] fillNonPatternList(List list, String patterns[]) {
-			ArrayList al = new ArrayList(patterns.length);
+			ArrayList<String> al = new ArrayList<String>(patterns.length);
 			for (int i = 0; i < patterns.length; i++)
 				if (!SelectorUtils.hasWildcards(patterns[i]))
 					list.add(isCaseSensitive() ? ((Object) (patterns[i])) : ((Object) (patterns[i].toUpperCase())));

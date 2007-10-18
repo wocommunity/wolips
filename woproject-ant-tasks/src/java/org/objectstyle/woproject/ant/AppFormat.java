@@ -75,13 +75,13 @@ import org.objectstyle.woenvironment.util.FileStringScanner;
 /**
  * Subclass of ProjectFormat that defines file copying strategy for
  * WOApplications.
- * 
+ *
  * @author Andrei Adamchik
  */
 public class AppFormat extends ProjectFormat {
-	protected HashMap templateMap = new HashMap();
+	protected HashMap<String, String> templateMap = new HashMap<String, String>();
 
-	protected HashMap filterMap = new HashMap();
+	protected HashMap<String, FilterSetCollection> filterMap = new HashMap<String, FilterSetCollection>();
 
 	protected String appPaths;
 
@@ -150,7 +150,7 @@ public class AppFormat extends ProjectFormat {
 	}
 
 	/**
-	 * Returns a String that consists of paths to the aplication jar. File
+	 * Returns a String that consists of paths to the application jar. File
 	 * separator used is platform dependent and may need to be changed when
 	 * creating files for multiple platforms.
 	 */
@@ -178,7 +178,7 @@ public class AppFormat extends ProjectFormat {
 					.append("Resources").append(File.separatorChar).append(
 							"Java").append(File.separatorChar).append("\r\n");
 			for (int k = 0; k < 2; k++) {
-				
+
 				for (int i = 0; i < files.length; i++) {
 
 					if(k== 0 && files[i].toString().indexOf("webobjects") >= 0) {
@@ -221,17 +221,17 @@ public class AppFormat extends ProjectFormat {
 
 	/**
 	 * Method buildOtherClassPaths.
-	 * 
+	 *
 	 * @return String
 	 */
 	protected String buildOtherClassPaths() {
 		StringBuffer buf = new StringBuffer();
 
-		List classpathSets = getApplicatonTask().getOtherClasspath();
+		List<?> classpathSets = getApplicatonTask().getOtherClasspath();
 		Project project = task.getProject();
 
 		// track included paths to avoid double entries
-		HashSet pathSet = new HashSet();
+		HashSet<File> pathSet = new HashSet<File>();
 
 		int size = classpathSets.size();
 		try {
@@ -245,7 +245,7 @@ public class AppFormat extends ProjectFormat {
 			log(be.getMessage(), Project.MSG_WARN);
 		}
 		if (pathSet.size() > 0) {
-			Object someFiles[] = pathSet.toArray();
+			File someFiles[] = pathSet.toArray(new File[]{});
 			size = someFiles.length;
 			for (int i = 0; i < size; i++) {
 				// log(": Framework JAR " + (File) someFiles[i],
@@ -355,7 +355,7 @@ public class AppFormat extends ProjectFormat {
 
 	/**
 	 * Method getAppClass.
-	 * 
+	 *
 	 * @return String
 	 */
 	private String getAppClass() {
@@ -364,7 +364,7 @@ public class AppFormat extends ProjectFormat {
 
 	/**
 	 * Method createMappings.
-	 * 
+	 *
 	 * @param fileName
 	 * @param template
 	 * @param filter
@@ -386,7 +386,7 @@ public class AppFormat extends ProjectFormat {
 
 	/**
 	 * Method createMappings.
-	 * 
+	 *
 	 * @param fileName
 	 * @param template
 	 */
@@ -396,7 +396,7 @@ public class AppFormat extends ProjectFormat {
 
 	/**
 	 * Method createMappings.
-	 * 
+	 *
 	 * @param fileName
 	 * @param template
 	 * @param filter
@@ -409,7 +409,7 @@ public class AppFormat extends ProjectFormat {
 
 	/**
 	 * Method getApplicatonTask.
-	 * 
+	 *
 	 * @return WOApplication
 	 */
 	private WOApplication getApplicatonTask() {
@@ -419,13 +419,15 @@ public class AppFormat extends ProjectFormat {
 	/**
 	 * @see org.objectstyle.woproject.ant.ProjectFormat#fileIterator()
 	 */
-	public Iterator fileIterator() {
+	@Override
+	public Iterator<String> fileIterator() {
 		return templateMap.keySet().iterator();
 	}
 
 	/**
 	 * @see org.objectstyle.woproject.ant.ProjectFormat#templateForTarget(java.lang.String)
 	 */
+	@Override
 	public String templateForTarget(String targetName) throws BuildException {
 		String template = (String) templateMap.get(targetName);
 		if (template == null) {
@@ -438,6 +440,7 @@ public class AppFormat extends ProjectFormat {
 	/**
 	 * @see org.objectstyle.woproject.ant.ProjectFormat#filtersForTarget(java.lang.String)
 	 */
+	@Override
 	public FilterSetCollection filtersForTarget(String targetName)
 			throws BuildException {
 
@@ -449,7 +452,7 @@ public class AppFormat extends ProjectFormat {
 
 	/**
 	 * Method woappPlusVersion returns the template name.
-	 * 
+	 *
 	 * @return String
 	 */
 	public String woappPlusVersion() {
@@ -458,11 +461,24 @@ public class AppFormat extends ProjectFormat {
 		return "woapp_52";
 	}
 
+	/**
+	 * Launch scripts configuration
+	 * @return FilterSet
+	 */
 	private FilterSet additionalBuildSettingsFilter() {
 		String jvmOptions = getApplicatonTask().getJvmOptions();
+		String jvm = getApplicatonTask().getJVM();
+		String jdb = getApplicatonTask().getJDB();
+		String jdbOptions = getApplicatonTask().getJDBOptions();
+		String javaVersion = getApplicatonTask().getJavaVersion();
+
 		if (jvmOptions != null) {
 			FilterSet filter = new FilterSet();
 			filter.addFilter("JVM_OPTIONS", jvmOptions);
+			filter.addFilter("JVM", jvm);
+			filter.addFilter("JDB", jdb);
+			filter.addFilter("JDB_OPTIONS", jdbOptions);
+			filter.addFilter("JAVA_VERSION", javaVersion);
 			return filter;
 		}
 
@@ -470,8 +486,9 @@ public class AppFormat extends ProjectFormat {
 	}
 
 	/**
-	 * 
+	 *
 	 */
+	@Override
 	public void release() {
 		super.release();
 	}

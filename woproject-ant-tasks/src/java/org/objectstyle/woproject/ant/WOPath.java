@@ -55,17 +55,14 @@
  */
 package org.objectstyle.woproject.ant;
 
-import java.util.Hashtable;
-
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
-import org.apache.tools.ant.PropertyHelper;
 import org.apache.tools.ant.types.Path;
 
 
 /**
  * A subclass of Path with support for frameworks.
- * 
+ *
  * @author Chuck Hill
  */
 public class WOPath extends Path
@@ -89,15 +86,15 @@ public class WOPath extends Path
     public WOPath(Project aProject) {
         super(aProject);
     }
-    
+
 
     /**
      * Adds a nested <code>&lt;framework&gt;</code> element.
      * @param framework FrameworkSet to add as a FileSet
-     * @throws BuildException 
+     * @throws BuildException
      */
     public void addFrameworks(FrameworkSet framework) throws BuildException {
         addFileset(framework);
     }
-    
+
 }

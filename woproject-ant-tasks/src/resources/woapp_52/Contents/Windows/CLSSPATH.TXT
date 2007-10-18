@@ -1,7 +1,7 @@
 # JVM              == java
 # JVMOptions       == @JVM_OPTIONS@
 # JDB              == jdb
-# JDBOptions       == 
+# JDBOptions       == @JDB_OPTIONS@
 # ApplicationClass == @APP_CLASS@
 @OTHER_PATHS@
 @APP_JAR@

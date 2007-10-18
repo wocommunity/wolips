@@ -1,8 +1,8 @@
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2006 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -74,7 +74,7 @@ import org.apache.tools.ant.util.IdentityMapper;
 /**
  * Mapper that handles WebObjects resource copying. It handles issues like
  * localization, flattening of WOComponents paths, etc.
- * 
+ *
  * @author Andrei Adamchik
  */
 public class WOMapper extends Mapper {
@@ -100,6 +100,7 @@ public class WOMapper extends Mapper {
 		}
 	}
 
+	@Override
 	public FileNameMapper getImplementation() throws BuildException {
 		return new WOFileNameMapper();
 	}
@@ -110,6 +111,7 @@ public class WOMapper extends Mapper {
 		 * Returns an one-element array containing the source file name with a
 		 * path rewritten using localization rules.
 		 */
+		@Override
 		public String[] mapFileName(String sourceFileName) {
 			// check for default exclusions
 			if (NON_LOCALIZED.equals(sourceFileName)) {
@@ -306,8 +308,8 @@ public class WOMapper extends Mapper {
 		 */
 		private String[] pattern() {
 			if (wotask != null) {
-				ArrayList arrayList = new ArrayList();
-				Iterator iterator = wotask.getFlattenfileNames();
+				ArrayList<String> arrayList = new ArrayList<String>();
+				Iterator<String> iterator = wotask.getFlattenfileNames();
 				while (iterator.hasNext()) {
 					String fileName = (String) iterator.next();
 					addPattern(fileName, arrayList);
@@ -317,7 +319,7 @@ public class WOMapper extends Mapper {
 			return pattern;
 		}
 
-		private void addPattern(String fileName, ArrayList arrayList) {
+		private void addPattern(String fileName, ArrayList<String> arrayList) {
 			BufferedReader patternReader = null;
 			try {
 				patternReader = new BufferedReader(new FileReader(new File(fileName)));

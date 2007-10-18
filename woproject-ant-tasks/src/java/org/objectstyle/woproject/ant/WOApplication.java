@@ -72,10 +72,10 @@ import org.objectstyle.woenvironment.env.WOEnvironment;
 /**
  * Ant task to build WebObjects application. For detailed instructions go to the
  * <a href="../../../../../ant/woapplication.html">manual page </a>.
- * 
- * 
+ *
+ *
  * @ant.task category="packaging"
- * 
+ *
  * @author Emily Bache
  * @author Andrei Adamchik
  */
@@ -83,9 +83,9 @@ public class WOApplication extends WOTask {
 
 	private final String[] stdFrameworkNames = new String[] { "JavaWebObjects", "JavaWOExtensions", "JavaEOAccess", "JavaEOControl", "JavaFoundation", "JavaJDBCAdaptor", "JavaXML" };
 
-	protected List frameworkSets = new ArrayList();
+	protected List<FrameworkSet> frameworkSets = new ArrayList<FrameworkSet>();
 
-	protected List otherClasspathSets = new ArrayList();
+	protected List<OtherClasspathSet> otherClasspathSets = new ArrayList<OtherClasspathSet>();
 
 	protected boolean stdFrameworks = true;
 
@@ -97,6 +97,12 @@ public class WOApplication extends WOTask {
 	protected String chmod = "750";
 
 	protected String jvmOptions = "";
+
+	protected String jvm = "java";
+
+	protected String jdb = "jdb";
+
+	protected String jdbOptions = "";
 
 	// web.xml stuff
 	protected boolean webXML = false;
@@ -112,11 +118,12 @@ public class WOApplication extends WOTask {
 	protected String webXML_WOtaglib = null;
 
 	protected String webXML_CustomContent = null;
-	
+
 	protected String startupScriptName = null;
-	
+
 	protected String frameworksBaseURL = null;
 
+	@Override
 	public void release() {
 		super.release();
 		frameworkSets = null;
@@ -124,6 +131,7 @@ public class WOApplication extends WOTask {
 		woEnvironment = null;
 	}
 
+	@Override
 	public String getPrincipalClass() {
 		String aPrincipalClass = super.getPrincipalClass();
 		if (aPrincipalClass == null || aPrincipalClass.length() == 0) {
@@ -136,6 +144,7 @@ public class WOApplication extends WOTask {
 	 * Runs WOApplication task. Main worker method that would validate all task
 	 * settings and create a WOApplication.
 	 */
+	@Override
 	public void execute() throws BuildException {
 		super.execute();
 		validateAttributes();
@@ -171,8 +180,8 @@ public class WOApplication extends WOTask {
 			chmodScripts();
 		}
 		appFormat.release();
-		frameworkSets = new ArrayList();
-		otherClasspathSets = new ArrayList();
+		frameworkSets = new ArrayList<FrameworkSet>();
+		otherClasspathSets = new ArrayList<OtherClasspathSet>();
 		woEnvironment = null;
 		this.release();
 	}
@@ -214,7 +223,7 @@ public class WOApplication extends WOTask {
 
 	/**
 	 * Method copyEmbeddedFrameworks.
-	 * 
+	 *
 	 * @throws BuildException
 	 */
 	protected void copyEmbeddedFrameworks() throws BuildException {
@@ -231,11 +240,11 @@ public class WOApplication extends WOTask {
 		// WOApplication directory. If we didn't do this, we'd
 		// have to append '/' or '/**' to the end of the includes
 		// in the <frameworks> tag.
-		List theFrameworkSets = getFrameworkSets();
+		List<FrameworkSet> theFrameworkSets = getFrameworkSets();
 		int size = theFrameworkSets.size();
 		boolean hasSet = false;
 		for (int i = 0; i < size; i++) {
-			FrameworkSet fs = (FrameworkSet) theFrameworkSets.get(i);
+			FrameworkSet fs = theFrameworkSets.get(i);
 
 			if (fs.getEmbed() == false) {
 				continue;
@@ -271,7 +280,7 @@ public class WOApplication extends WOTask {
 
 	/**
 	 * Method copyEmbeddedFrameworks.
-	 * 
+	 *
 	 * @throws BuildException
 	 */
 	protected void copyEmbeddedOtherClasspaths() throws BuildException {
@@ -283,7 +292,7 @@ public class WOApplication extends WOTask {
 
 		cp.setTodir(contentsDir());
 
-		List theOtherClasspathSets = getOtherClasspath();
+		List<OtherClasspathSet> theOtherClasspathSets = getOtherClasspath();
 		int size = theOtherClasspathSets.size();
 		boolean hasSet = false;
 		for (int i = 0; i < size; i++) {
@@ -366,6 +375,7 @@ public class WOApplication extends WOTask {
 	 * Returns location where WOApplication is being built up. For WebObjects
 	 * applications this is a <code>.woa</code> directory.
 	 */
+	@Override
 	protected File taskDir() {
 		return getProject().resolveFile(destDir + File.separator + name + ".woa");
 	}
@@ -378,14 +388,17 @@ public class WOApplication extends WOTask {
 		return new File(contentsDir(), "");
 	}
 
+	@Override
 	protected File resourcesDir() {
 		return new File(contentsDir(), "Resources");
 	}
 
+	@Override
 	protected File wsresourcesDir() {
 		return new File(contentsDir(), "WebServerResources");
 	}
 
+	@Override
 	protected File wsresourcesDestDir() {
 		File woLocation = new File(webServerDir(), "WebObjects");
 		File appLocation = new File(woLocation, name + ".woa");
@@ -478,12 +491,13 @@ public class WOApplication extends WOTask {
 		webXML = value;
 	}
 
+	@Override
 	protected boolean hasLib() {
 		return lib.size() > 0;
 	}
 
 	protected boolean hasEmbeddedFrameworks() {
-		List theFrameworkSets = getFrameworkSets();
+		List<FrameworkSet> theFrameworkSets = getFrameworkSets();
 		int size = theFrameworkSets.size();
 
 		for (int i = 0; i < size; i++) {
@@ -506,9 +520,9 @@ public class WOApplication extends WOTask {
 		return frameSet;
 	}
 
-	public List getFrameworkSets() {
+	public List<FrameworkSet> getFrameworkSets() {
 		if (stdFrameworks) {
-			ArrayList fullList = new ArrayList(frameworkSets.size() + 1);
+			ArrayList<FrameworkSet> fullList = new ArrayList<FrameworkSet>(frameworkSets.size() + 1);
 			fullList.add(standardSet());
 			fullList.addAll(frameworkSets);
 			return fullList;
@@ -519,15 +533,15 @@ public class WOApplication extends WOTask {
 	/**
 	 * Return true if any of the otherclasspath elements have the 'embed'
 	 * attribute set to true.
-	 * 
+	 *
 	 * @return true if an otherclasspath element is embedded
 	 */
 	protected boolean hasEmbeddedOtherClasspaths() {
-		List theClasspathSets = getOtherClasspath();
+		List<OtherClasspathSet> theClasspathSets = getOtherClasspath();
 		int size = theClasspathSets.size();
 
 		for (int i = 0; i < size; i++) {
-			OtherClasspathSet cs = (OtherClasspathSet) theClasspathSets.get(i);
+			OtherClasspathSet cs = theClasspathSets.get(i);
 
 			if (cs.getEmbed()) {
 				return true;
@@ -549,7 +563,7 @@ public class WOApplication extends WOTask {
 	/**
 	 * @return List
 	 */
-	public List getOtherClasspath() {
+	public List<OtherClasspathSet> getOtherClasspath() {
 		return otherClasspathSets;
 	}
 
@@ -580,20 +594,83 @@ public class WOApplication extends WOTask {
 	}
 
 	/**
+	 * Method setJDB. Path to JDB executable
+	 *
+	 * @param jdbPath
+	 */
+	public void setJDB(String jdbPath) {
+		if (jdbPath == null || jdbPath.equals("${jdb}")) {
+			jdbPath = "jdb";
+		}
+		this.jdb = jdbPath;
+	}
+
+	/**
+	 * Method getJDB returns path to jdb executable
+	 *
+	 * @return String
+	 */
+	public String getJDB() {
+		return jdb;
+	}
+
+	/**
+	 * Method setJVM.  Path to JVM executable.
+	 *
+	 * @param jvmPath
+	 */
+	public void setJVM(String jvmPath) {
+		if (jvmPath == null || jvm.equals("${jvm}")) {
+			this.jvm = "java";
+		}
+		this.jvm = jvmPath;
+	}
+
+	/**
+	 * Method getJVM return path to java executable
+	 *
+	 * @return String
+	 */
+	public String getJVM() {
+		return jvm;
+	}
+
+	/**
+	 * Method setJDBOptions.
+	 *
+	 * @param jdbOptions
+	 */
+	public void setJDBOptions(String jdbOptions) {
+		if (jdbOptions == null || jdbOptions.equals("${jdbOptions}")) {
+			jdbOptions = "";
+		}
+		this.jdbOptions = jdbOptions;
+	}
+
+	/**
+	 * Method getJDBOptions.
+	 *
+	 * @return String
+	 */
+	public String getJDBOptions() {
+		return jdbOptions;
+	}
+
+	/**
 	 * Method setJvmOptions.
-	 * 
+	 *
 	 * @param jvmOptions
 	 */
 	public void setJvmOptions(String jvmOptions) {
-		if (jvmOptions == null) {
-			this.jvmOptions = "";
+		if (jvmOptions == null || jvmOptions.equals("${jvmOptions}")) {
+			jvmOptions = "";
 		}
 		this.jvmOptions = jvmOptions;
 	}
 
 	/**
 	 * Method getJvmOptions.
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getJvmOptions() {
@@ -603,10 +680,11 @@ public class WOApplication extends WOTask {
 	/**
 	 * Ensure we have a consistent and legal set of attributes, and set any
 	 * internal flags necessary based on different combinations of attributes.
-	 * 
+	 *
 	 * @throws BuildException
 	 *             if task attributes are inconsistent or missing.
 	 */
+	@Override
 	protected void validateAttributes() throws BuildException {
 		log(" this.getName().validateAttributes(): " + this.getName() + " webXML: " + webXML + " webXML_WOROOT: " + webXML_WOROOT, Project.MSG_VERBOSE);
 		if (webXML) {

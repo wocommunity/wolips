@@ -66,7 +66,7 @@ import org.apache.tools.ant.types.FilterSetCollection;
 /**
  * Subclass of ProjectFormat that defines file copying strategy for
  * WOFrameworks.
- * 
+ *
  * @author Andrei Adamchik
  */
 public class FrameworkFormat extends ProjectFormat {
@@ -84,11 +84,13 @@ public class FrameworkFormat extends ProjectFormat {
 		return (WOFramework) task;
 	}
 
+	@Override
 	public Iterator fileIterator() {
 		String infoFile = new File(task.resourcesDir(), "Info.plist").getPath();
 		return stringIterator(infoFile);
 	}
 
+	@Override
 	public String templateForTarget(String targetName) throws BuildException {
 		if (targetName.endsWith("Info.plist")) {
 			return INFO_TEMPLATE;
@@ -96,6 +98,7 @@ public class FrameworkFormat extends ProjectFormat {
 		throw new BuildException("Invalid target: " + targetName);
 	}
 
+	@Override
 	public FilterSetCollection filtersForTarget(String targetName) throws BuildException {
 
 		if (targetName.endsWith("Info.plist")) {
@@ -107,6 +110,7 @@ public class FrameworkFormat extends ProjectFormat {
 	/**
 	 * Returns a FilterSet that can be used to build Info.plist file.
 	 */
+	@Override
 	public FilterSetCollection infoFilter(Iterator extLibs) {
 		FilterSetCollection filterSetCollection = super.infoFilter(extLibs);
 		FilterSet filter = new FilterSet();
@@ -120,8 +124,8 @@ public class FrameworkFormat extends ProjectFormat {
 	/**
 	 * Returns an iterator with a single String element.
 	 */
-	private Iterator stringIterator(String str) {
-		ArrayList list = new ArrayList(1);
+	private Iterator<String> stringIterator(String str) {
+		ArrayList<String> list = new ArrayList<String>(1);
 		list.add(str);
 		return list.iterator();
 	}

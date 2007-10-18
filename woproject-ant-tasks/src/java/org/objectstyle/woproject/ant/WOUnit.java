@@ -5,7 +5,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTask;
 
 public class WOUnit extends JUnitTask {
-	private ArrayList frameworkSets = new ArrayList();
+	private ArrayList<FrameworkSet> frameworkSets = new ArrayList<FrameworkSet>();
 
 	public WOUnit() throws Exception {
 		super();
@@ -15,6 +15,7 @@ public class WOUnit extends JUnitTask {
 		frameworkSets.add(frameworks);
 	}
 
+	@Override
 	public void execute() throws BuildException {
 		getCommandline().createClasspath(getProject()).createPath().add(FrameworkSet.jarsPathForFrameworkSets(getProject(), frameworkSets));
 		super.execute();

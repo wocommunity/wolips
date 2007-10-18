@@ -1,8 +1,8 @@
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2005 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2002 - 2005 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -79,15 +79,15 @@ public class PBIndex extends Task {
 
 	protected boolean framework;
 
-	protected Vector src = new Vector();
+	protected Vector<FileSet> src = new Vector<FileSet>();
 
-	protected Vector wocomponents = new Vector();
+	protected Vector<FileSet> wocomponents = new Vector<FileSet>();
 
-	protected Vector resources = new Vector();
+	protected Vector<FileSet> resources = new Vector<FileSet>();
 
-	protected Vector wsresources = new Vector();
+	protected Vector<FileSet> wsresources = new Vector<FileSet>();
 
-	protected Vector frameworkSets = new Vector();
+	protected Vector<FrameworkSet> frameworkSets = new Vector<FrameworkSet>();
 
 	protected SubtaskFactory subtaskFactory = new SubtaskFactory(this);
 
@@ -113,7 +113,7 @@ public class PBIndex extends Task {
 
 	/**
 	 * Sets the name.
-	 * 
+	 *
 	 * @param name
 	 *            The name to set
 	 */
@@ -123,7 +123,7 @@ public class PBIndex extends Task {
 
 	/**
 	 * Returns the name.
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getName() {
@@ -132,7 +132,7 @@ public class PBIndex extends Task {
 
 	/**
 	 * Returns the projectFile.
-	 * 
+	 *
 	 * @return String
 	 */
 	public File getProjectFile() {
@@ -141,7 +141,7 @@ public class PBIndex extends Task {
 
 	/**
 	 * Sets the projectFile.
-	 * 
+	 *
 	 * @param projectFile
 	 *            The projectFile to set
 	 */
@@ -151,7 +151,7 @@ public class PBIndex extends Task {
 
 	/**
 	 * Returns the framework.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean isFramework() {
@@ -160,7 +160,7 @@ public class PBIndex extends Task {
 
 	/**
 	 * Sets the framework.
-	 * 
+	 *
 	 * @param framework
 	 *            The framework to set
 	 */
@@ -171,6 +171,7 @@ public class PBIndex extends Task {
 	/**
 	 * @see org.apache.tools.ant.Task#execute()
 	 */
+	@Override
 	public void execute() throws BuildException {
 		validateAttributes();
 		PBProject proj = null;
@@ -199,7 +200,7 @@ public class PBIndex extends Task {
 	/**
 	 * Ensure we have a consistent and legal set of attributes, and set any
 	 * internal flags necessary based on different combinations of attributes.
-	 * 
+	 *
 	 * @throws BuildException
 	 *             if task attributes are inconsistent or missing.
 	 */
@@ -213,10 +214,10 @@ public class PBIndex extends Task {
 	 * Takes a vector of FileSet objects, returns an array of Strings
 	 * corresponding to files.
 	 */
-	protected List extractWOComponents(Vector filesets) {
-		ArrayList files = new ArrayList();
+	protected List<String> extractWOComponents(Vector<FileSet> filesets) {
+		ArrayList<String> files = new ArrayList<String>();
 
-		Iterator it = filesets.iterator();
+		Iterator<FileSet> it = filesets.iterator();
 		while (it.hasNext()) {
 			FileSet fs = (FileSet) it.next();
 			DirectoryScanner ds = fs.getDirectoryScanner(getProject());
@@ -235,10 +236,10 @@ public class PBIndex extends Task {
 	 * Takes a vector of FileSet objects, returns an array of Strings
 	 * corresponding to files.
 	 */
-	protected List extractJavaFiles(Vector filesets) {
-		ArrayList files = new ArrayList();
+	protected List<String> extractJavaFiles(Vector<FileSet> filesets) {
+		ArrayList<String> files = new ArrayList<String>();
 
-		Iterator it = filesets.iterator();
+		Iterator<FileSet> it = filesets.iterator();
 		while (it.hasNext()) {
 			FileSet fs = (FileSet) it.next();
 
@@ -262,11 +263,11 @@ public class PBIndex extends Task {
 	 * Takes a vector of FileSet objects, returns an array of Strings
 	 * corresponding to matching files and directories.
 	 */
-	protected List extractResources(Vector filesets, String extraExcludes) {
-		ArrayList files = new ArrayList();
+	protected List<String> extractResources(Vector<FileSet> filesets, String extraExcludes) {
+		ArrayList<String> files = new ArrayList<String>();
 
 		if (filesets.size() > 0) {
-			Iterator it = filesets.iterator();
+			Iterator<FileSet> it = filesets.iterator();
 			while (it.hasNext()) {
 				FileSet fs = (FileSet) it.next();
 
@@ -297,9 +298,9 @@ public class PBIndex extends Task {
 	 * paths.
 	 */
 	protected void extractFrameworks(PBProject proj) {
-		List projectFrameworkPaths = proj.getFrameworks();
+		List<String> projectFrameworkPaths = proj.getFrameworks();
 
-		Iterator it = frameworkSets.iterator();
+		Iterator<FrameworkSet> it = frameworkSets.iterator();
 		while (it.hasNext()) {
 			FrameworkSet fs = (FrameworkSet) it.next();
 			File baseDir = fs.getDir(fs.getProject());
