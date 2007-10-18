@@ -51,9 +51,17 @@ public class WodBindingNameHyperlink implements IHyperlink {
         BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(_bindingName, elementType);
         if (bindingValueKeyPath.isValid()) {
           BindingValueKey lastKey = bindingValueKeyPath.getLastBindingKey();
-          IMember member = lastKey.getBindingMember();
-          if (member != null) {
-            JavaUI.openInEditor(member, true, true);
+          if (lastKey != null) {
+            IMember member = lastKey.getBindingMember();
+            if (member != null) {
+              JavaUI.openInEditor(member, true, true);
+            }
+            else {
+              JavaUI.openInEditor(elementType, true, true);
+            }
+          }
+          else {
+            JavaUI.openInEditor(elementType, true, true);
           }
         }
       }
