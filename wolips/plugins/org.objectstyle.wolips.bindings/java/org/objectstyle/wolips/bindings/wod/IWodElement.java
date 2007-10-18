@@ -88,6 +88,8 @@ public interface IWodElement extends IWodUnit {
   public void writeWodFormat(Writer writer, boolean alphabetize) throws IOException;
   
   public boolean isWithin(IRegion region);
+  
+  public boolean isTypeWithin(IRegion region);
 
   public Wo getApi(IJavaProject javaProject, TypeCache cache) throws JavaModelException, ApiModelException;
 }

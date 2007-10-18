@@ -277,8 +277,12 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
   }
 
   public boolean isWithin(IRegion region) {
+    return getStartOffset() <= region.getOffset() && getEndOffset() > region.getOffset();
+  }
+
+  public boolean isTypeWithin(IRegion region) {
     Position typePosition = getElementTypePosition();
-    return typePosition != null && typePosition.getOffset() < region.getOffset() && typePosition.getOffset() + typePosition.getLength() > region.getOffset();
+    return typePosition != null && typePosition.getOffset() <= region.getOffset() && typePosition.getOffset() + typePosition.getLength() > region.getOffset();
   }
 
   @Override

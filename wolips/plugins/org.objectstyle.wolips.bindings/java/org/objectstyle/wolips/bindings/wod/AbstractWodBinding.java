@@ -53,6 +53,8 @@ import java.util.Set;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.Position;
 import org.objectstyle.wolips.bindings.Activator;
 import org.objectstyle.wolips.bindings.api.ApiUtils;
 import org.objectstyle.wolips.bindings.preferences.PreferenceConstants;
@@ -163,7 +165,7 @@ public abstract class AbstractWodBinding implements IWodBinding {
     SimpleWodBinding binding = new SimpleWodBinding("_temp", keypath);
     return binding.getBindingProblems(javaFileType);
   }
-  
+
   public void fillInBindingProblems(IJavaProject javaProject, IType javaFileType, List<WodProblem> problems, TypeCache cache) throws JavaModelException {
     boolean warnOnMissingCollectionKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.WARN_ON_MISSING_COLLECTION_KEY);
     boolean errorOnMissingNSKVCKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.ERROR_ON_MISSING_NSKVC_KEY);
@@ -328,11 +330,21 @@ public abstract class AbstractWodBinding implements IWodBinding {
     return false;
   }
 
+  public boolean isValueWithin(IRegion region) {
+    Position valuePosition = getValuePosition();
+    return valuePosition != null && valuePosition.getOffset() <= region.getOffset() && valuePosition.getOffset() + valuePosition.getLength() > region.getOffset();
+  }
+
+  public boolean isNameWithin(IRegion region) {
+    Position namePosition = getNamePosition();
+    return namePosition != null && namePosition.getOffset() <= region.getOffset() && namePosition.getOffset() + namePosition.getLength() > region.getOffset();
+  }
+
   @Override
   public String toString() {
     return "[" + getClass().getName() + ": name = " + getName() + "; value = " + getValue() + "]";
   }
-  
+
   public List<WodProblem> getBindingProblems(IType javaFileType) throws JavaModelException {
     List<WodProblem> problems = new LinkedList<WodProblem>();
     fillInBindingProblems(javaFileType.getJavaProject(), javaFileType, problems, new TypeCache());

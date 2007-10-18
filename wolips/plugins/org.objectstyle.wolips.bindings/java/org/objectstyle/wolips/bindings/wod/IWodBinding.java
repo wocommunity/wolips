@@ -50,6 +50,7 @@ import java.util.List;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Position;
 import org.objectstyle.wolips.bindings.api.IApiBinding;
 
@@ -82,4 +83,8 @@ public interface IWodBinding extends IWodUnit, IApiBinding {
   public void writeInlineFormat(Writer writer, String prefix, String suffix) throws IOException;
 
   public void writeWodFormat(Writer writer) throws IOException;
+  
+  public boolean isValueWithin(IRegion region);
+  
+  public boolean isNameWithin(IRegion region);
 }
