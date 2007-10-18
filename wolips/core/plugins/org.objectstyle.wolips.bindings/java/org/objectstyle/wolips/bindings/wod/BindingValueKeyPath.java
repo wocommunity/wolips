@@ -1,11 +1,8 @@
 package org.objectstyle.wolips.bindings.wod;
 
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
@@ -292,21 +289,6 @@ public class BindingValueKeyPath {
       }
     }
     return bindingKeysList;
-  }
-
-  public String[] getRelatedToFileNames() {
-    Set<String> relatedToFileNamesSet = new HashSet<String>();
-    relatedToFileNamesSet.add(_contextType.getResource().getName());
-    for (int i = 0; i < _bindingKeys.length; i++) {
-      IResource resource = _bindingKeys[i].getDeclaringType().getResource();
-      if (resource != null) {
-        relatedToFileNamesSet.add(resource.getName());
-      }
-    }
-    // System.out.println("BindingValueKeyPath.getRelatedToFileNames: " +
-    // relatedToFileNamesSet);
-    String[] relatedToFileNames = relatedToFileNamesSet.toArray(new String[relatedToFileNamesSet.size()]);
-    return relatedToFileNames;
   }
 
   public int getLength() {

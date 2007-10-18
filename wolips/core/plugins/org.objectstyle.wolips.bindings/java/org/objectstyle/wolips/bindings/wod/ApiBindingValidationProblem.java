@@ -6,13 +6,8 @@ import org.objectstyle.wolips.bindings.api.Binding;
 public class ApiBindingValidationProblem extends WodBindingProblem {
   private Binding _binding;
 
-  public ApiBindingValidationProblem(Binding binding, Position position, int lineNumber, boolean warning, String relatedToFileNames) {
-    super(binding.getName(), "Binding '" + binding.getName() + "' is required for " + binding.getElement().getClassName() + ".", position, lineNumber, warning, relatedToFileNames);
-    _binding = binding;
-  }
-
-  public ApiBindingValidationProblem(Binding binding, Position position, int lineNumber, boolean warning, String[] relatedToFileNames) {
-    super(binding.getName(), "Binding '" + binding.getName() + "' is required for " + binding.getElement().getClassName() + ".", position, lineNumber, warning, relatedToFileNames);
+  public ApiBindingValidationProblem(Binding binding, Position position, int lineNumber, boolean warning) {
+    super(binding.getName(), "Binding '" + binding.getName() + "' is required for " + binding.getElement().getClassName() + ".", position, lineNumber, warning);
     _binding = binding;
   }
 

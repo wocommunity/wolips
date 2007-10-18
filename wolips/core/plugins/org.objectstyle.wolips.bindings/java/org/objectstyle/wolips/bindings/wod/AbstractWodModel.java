@@ -129,7 +129,7 @@ public abstract class AbstractWodModel implements IWodModel {
       IWodElement element = elementsIter.next();
       String elementName = element.getElementName();
       if (wodElementNames.contains(elementName)) {
-        problems.add(new WodElementProblem("Duplicate definition of '" + elementName + "'", element.getElementNamePosition(), element.getLineNumber(), false, (String) null));
+        problems.add(new WodElementProblem("Duplicate definition of '" + elementName + "'", element.getElementNamePosition(), element.getLineNumber(), false));
       }
       else {
         wodElementNames.add(elementName);
