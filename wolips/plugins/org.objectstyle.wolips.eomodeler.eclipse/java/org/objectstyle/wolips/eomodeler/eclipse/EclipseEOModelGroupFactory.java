@@ -73,6 +73,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.objectstyle.wolips.core.resources.types.folder.IBuildAdapter;
+import org.objectstyle.wolips.core.resources.types.folder.IProductAdapter;
+import org.objectstyle.wolips.core.resources.types.folder.IResourcesAdapter;
+import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel;
 import org.objectstyle.wolips.eogenerator.core.model.EOModelReference;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
@@ -207,7 +211,7 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 						addModelsFromProject(modelGroup, dependsOnProject, searchedFolders, searchedProjects, failures, skipOnDuplicates, progressMonitor, depth + 1);
 					} else if (entryKind == IClasspathEntry.CPE_SOURCE) {
 						visitedProject = true;
-						project.accept(new ModelVisitor(modelGroup, searchedFolders, failures, skipOnDuplicates, progressMonitor), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
+						getResourcesContainer(project).accept(new ModelVisitor(modelGroup, searchedFolders, failures, skipOnDuplicates, progressMonitor), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
 					}
 					if (showProgress) {
 						progressMonitor.worked(1);
@@ -215,13 +219,35 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 				}
 
 				if (!visitedProject) {
-					project.accept(new ModelVisitor(modelGroup, searchedFolders, failures, skipOnDuplicates, progressMonitor), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
+					getResourcesContainer(project);
+					getResourcesContainer(project).accept(new ModelVisitor(modelGroup, searchedFolders, failures, skipOnDuplicates, progressMonitor), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
 					if (showProgress) {
 						progressMonitor.worked(1);
 					}
 				}
 			}
 		}
+	}
+	
+	protected IContainer getResourcesContainer(IProject project) {
+		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
+		IContainer container = null;
+		if (projectAdapter != null) {
+			IBuildAdapter buildAdaptor = projectAdapter.getBuildAdapter();
+			if (buildAdaptor != null) {
+				IProductAdapter productAdaptor = buildAdaptor.getProductAdapter();
+				if (productAdaptor != null) {
+					IResourcesAdapter resourcesAdaptor = productAdaptor.getResourcesAdapter();
+					if (resourcesAdaptor != null) {
+						container = resourcesAdaptor.getUnderlyingFolder();
+					}
+				}
+			}
+		}
+		if (container == null || !container.exists()) {
+			container = project;
+		}
+		return container;
 	}
 
 	protected void addModelsFromEOModelGroupFile(IFile eoModelGroupFile, EOModelGroup modelGroup, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws ParseException, CoreException, IOException, EOModelException {
