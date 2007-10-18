@@ -767,6 +767,9 @@ public class FuzzyXMLParser {
       attr.quote = quote;
       info.addAttr(attr);
     }
+    if (state == 4 && quote != 0) {
+      //System.out.println("FuzzyXMLParser.parseAttributeContents: " + info.name);
+    }
     //		Matcher matcher = attr.matcher(text);
     //		while(matcher.find()){
     //			AttrInfo attr = new AttrInfo();
