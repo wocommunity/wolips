@@ -51,6 +51,7 @@ package org.objectstyle.wolips.eomodeler.editors;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -514,9 +515,14 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			URI indexURL = editorInput.getURI();
 
 			String openingEntityName = null;
-			if ("plist".equalsIgnoreCase(URLUtils.getExtension(indexURL))) {
+			String extension = URLUtils.getExtension(indexURL);
+			if ("plist".equalsIgnoreCase(extension)) {
 				String name = URLUtils.getName(indexURL);
 				openingEntityName = name.substring(0, name.indexOf('.'));
+				indexURL = new File(URLUtils.cheatAndTurnIntoFile(indexURL).getParentFile(), "index.eomodeld").toURI();
+			}
+			else if ("fspec".equalsIgnoreCase(extension)) {
+				indexURL = new File(URLUtils.cheatAndTurnIntoFile(indexURL).getParentFile(), "index.eomodeld").toURI();
 			}
 
 			myLoadFailures = new LinkedHashSet<EOModelVerificationFailure>();
@@ -704,7 +710,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
 					if (!failures.isEmpty()) {
-						EOModelErrorDialog dialog = new EOModelErrorDialog(Display.getCurrent().getActiveShell(), failures);
+						EOModelErrorDialog dialog = new EOModelErrorDialog(Display.getCurrent().getActiveShell(), failures, EOModelEditor.this);
 						dialog.setBlockOnOpen(true);
 						dialog.open();
 					}
