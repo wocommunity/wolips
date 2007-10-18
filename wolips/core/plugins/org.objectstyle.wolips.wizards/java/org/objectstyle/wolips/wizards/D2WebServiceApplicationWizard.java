@@ -149,11 +149,11 @@ public class D2WebServiceApplicationWizard extends AbstractProjectWizard {
 
 		templateEngine.run(progressMonitor);
 
-		createEOModelSupport(project);
 	}
 
 	@Override
-	protected WizardType wizardType() {
+	protected WizardType getWizardType() {
 		return WizardType.D2WS_APPLICATION_WIZARD;
 	}
+
 }

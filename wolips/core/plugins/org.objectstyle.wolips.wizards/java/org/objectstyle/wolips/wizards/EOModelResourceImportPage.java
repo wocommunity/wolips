@@ -124,12 +124,10 @@ public class EOModelResourceImportPage extends WizardDataTransferPage {
     }
 
 	protected ITreeContentProvider getFileProvider() {
-		// TODO Auto-generated method stub
 		return new WorkbenchContentProvider();
 	}
 
 	protected ITreeContentProvider getFolderProvider() {
-		// TODO Auto-generated method stub
 		return new WorkbenchContentProvider();
 	}
 
@@ -150,6 +148,7 @@ public class EOModelResourceImportPage extends WizardDataTransferPage {
 		@SuppressWarnings("synthetic-access")
 		public void widgetSelected(SelectionEvent e) {
 			FileDialog ddialog = new FileDialog(getShell(), SWT.OPEN | SWT.MULTI);
+//			DirectoryDialog ddialog = new DirectoryDialog(getShell(), SWT.OPEN | SWT.MULTI);
 			ddialog.setFileName("myModel.eomodeld");
 			ddialog.setFilterExtensions(new String[]{"*.eomodeld"});
 			ddialog.open();
@@ -191,13 +190,11 @@ public class EOModelResourceImportPage extends WizardDataTransferPage {
 
 	@Override
 	protected boolean allowNewContainerName() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	public void handleEvent(Event arg0) {
-		// TODO Auto-generated method stub
-
+		//handle our own events
 	}
 
 }

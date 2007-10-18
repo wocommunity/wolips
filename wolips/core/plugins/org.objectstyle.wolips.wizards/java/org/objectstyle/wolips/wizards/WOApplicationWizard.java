@@ -74,7 +74,7 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 	}
 
 	@Override
-	protected WizardType wizardType(){
+	protected WizardType getWizardType(){
 		return WizardType.WO_APPLICATION_WIZARD;
 	}
 
@@ -156,9 +156,5 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 
 		templateEngine.run(progressMonitor);
 
-		createEOModelSupport(project);
-
 	}
-
-
 }

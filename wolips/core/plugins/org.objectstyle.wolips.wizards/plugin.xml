@@ -274,15 +274,15 @@
    <extension
          point="org.eclipse.ui.importWizards">
       <category
-            id="org.objectstyle.wolips.wizards.wolipsimport"
+            id="org.objectstyle.wolips.wizards.actions.importEOModelCategory"
             name="WOLips">
       </category>
       <wizard
-            category="WOLips"
+            category="org.objectstyle.wolips.wizards.actions.importEOModelCategory"
             class="org.objectstyle.wolips.wizards.actions.NewEOModelImportWizard"
             icon="icons/woproject/eomodel_wiz.gif"
-            id="org.objectstyle.wolips.wizards.eomodelimportwizard"
-            name="Import EOModel">
+            id="org.objectstyle.wolips.wizards.actions.NewEOModelImportWizard"
+            name="Import EOModels">
       </wizard>
    </extension>
 </plugin>
