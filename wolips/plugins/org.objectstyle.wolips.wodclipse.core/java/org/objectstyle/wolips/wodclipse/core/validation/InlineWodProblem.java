@@ -28,7 +28,7 @@ public class InlineWodProblem {
     int offset = element.getOffset() + 1;
     int length = element.getName().length();
     int lineNumber = WodHtmlUtils.getLineAtOffset(_cache.getHtmlContents(), offset);
-    WodProblem problem = new WodProblem(message, new Position(offset, length), lineNumber, warning, new String[0]);
+    WodProblem problem = new WodProblem(message, new Position(offset, length), lineNumber, warning);
     _wodProblems = new LinkedList<WodProblem>();
     _wodProblems.add(problem);
   }

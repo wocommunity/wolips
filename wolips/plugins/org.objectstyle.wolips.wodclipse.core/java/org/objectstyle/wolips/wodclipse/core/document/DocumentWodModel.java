@@ -93,7 +93,7 @@ public class DocumentWodModel extends AbstractWodModel {
     Position position = rulePosition.getPosition();
     try {
       int lineNumber = _document.getLineOfOffset(position.getOffset());
-      WodProblem problem = new WodProblem(message, position, lineNumber, warning, (String) null);
+      WodProblem problem = new WodProblem(message, position, lineNumber, warning);
       addParseProblem(problem);
     }
     catch (BadLocationException e) {

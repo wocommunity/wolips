@@ -4,7 +4,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.Position;
-import org.objectstyle.wolips.bindings.wod.WodProblem;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 
 public class HtmlProblem {
@@ -18,15 +17,12 @@ public class HtmlProblem {
 
   private boolean _warning;
 
-  private String[] _relatedToFileNames;
-
-  public HtmlProblem(IFile htmlFile, String message, Position position, int lineNumber, boolean warning, String[] relatedToFileNames) {
+  public HtmlProblem(IFile htmlFile, String message, Position position, int lineNumber, boolean warning) {
     _htmlFile = htmlFile;
     _message = message;
     _position = position;
     _lineNumber = lineNumber;
     _warning = warning;
-    _relatedToFileNames = relatedToFileNames;
   }
 
   public IFile getHtmlFile() {
@@ -43,10 +39,6 @@ public class HtmlProblem {
 
   public boolean isWarning() {
     return _warning;
-  }
-
-  public String[] getRelatedToFileNames() {
-    return _relatedToFileNames;
   }
 
   @Override
@@ -71,15 +63,6 @@ public class HtmlProblem {
       marker.setAttribute(IMarker.CHAR_START, _position.getOffset());
       marker.setAttribute(IMarker.CHAR_END, _position.getOffset() + _position.getLength());
       marker.setAttribute(IMarker.TRANSIENT, false);
-      String[] relatedToFileNames = getRelatedToFileNames();
-      if (relatedToFileNames != null) {
-        StringBuffer relatedToFileNamesBuffer = new StringBuffer();
-        for (int i = 0; i < relatedToFileNames.length; i++) {
-          relatedToFileNamesBuffer.append(relatedToFileNames[i]);
-          relatedToFileNamesBuffer.append(", ");
-        }
-        marker.setAttribute(WodProblem.RELATED_TO_FILE_NAMES, relatedToFileNamesBuffer.toString());
-      }
     }
     catch (CoreException e) {
       Activator.getDefault().log(e);
