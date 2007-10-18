@@ -1,8 +1,8 @@
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2004 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2004 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -71,7 +71,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.baseforplugins.logging.PluginLogger;
-import org.objectstyle.wolips.datasets.DataSetsPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 
@@ -161,7 +160,7 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 
 	/**
 	 * Returns the workspace instance.
-	 * 
+	 *
 	 * @return
 	 */
 	public static IWorkspace getWorkspace() {
@@ -171,7 +170,7 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 	/**
 	 * Returns the string from the plugin's resource bundle, or 'key' if not
 	 * found.
-	 * 
+	 *
 	 * @param key
 	 * @return
 	 */
@@ -186,7 +185,7 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 
 	/**
 	 * Returns the plugin's resource bundle,
-	 * 
+	 *
 	 * @return
 	 */
 	public ResourceBundle getResourceBundle() {
@@ -195,7 +194,7 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 
 	/**
 	 * Method baseURL.
-	 * 
+	 *
 	 * @return URL
 	 */
 	public static URL baseURL() {
@@ -241,7 +240,7 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 	}
 
 	private static TemplateFolder[] getTemplateFolder(TemplateFolderRoot templateFolderRoot) {
-		ArrayList templateFolderList = new ArrayList();
+		ArrayList<TemplateFolder> templateFolderList = new ArrayList<TemplateFolder>();
 		IPath root = templateFolderRoot.getPath();
 		File file = new File(root.toOSString());
 		if (file.exists() && file.isDirectory()) {
@@ -264,7 +263,7 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 	 * @return The of templates folder array for the given type.
 	 */
 	protected static TemplateFolder[] getTemplateFolder(TemplateFolderRoot[] templateFolderRoots, String type) {
-		ArrayList templateFolderList = new ArrayList();
+		ArrayList<TemplateFolder> templateFolderList = new ArrayList<TemplateFolder>();
 		for (int i = 0; i < templateFolderRoots.length; i++) {
 			TemplateFolderRoot templateFolderRoot = templateFolderRoots[i];
 			TemplateFolder[] templateFolders = TemplateEnginePlugin.getTemplateFolder(templateFolderRoot);
@@ -294,7 +293,7 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
@@ -304,7 +303,7 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {

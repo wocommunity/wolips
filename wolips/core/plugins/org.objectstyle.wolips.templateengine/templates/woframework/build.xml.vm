@@ -8,7 +8,7 @@
   	<target name="compileAndBuild" depends="setProps,init.build,compile,build.woframework" />
 
 	<target name="install" depends="setProps,init.install,build.woframework"/>
-	    
+
 	<target name="clean" depends="setProps">
 	  	<delete dir="${framework.name}.framework"/>
 	</target>
@@ -35,41 +35,48 @@
 		 <tstamp/>
 		<property name="dest.dir" value="${install.dir}"/>
 	</target>
-	
+
 	<target name="init.build">
 		 <tstamp/>
 		<property name="dest.dir" value="."/>
 	</target>
 
 	<!-- woproject tasks -->
-	<target name="build.woframework">	
-		
+	<target name="build.woframework">
+
 	    <taskdef name="woframework" classname="org.objectstyle.woproject.ant.WOFramework">
     	</taskdef>
 
-		<woframework name="${framework.name}" destDir="${dest.dir}" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}" eoAdaptorClassName="${eoAdaptorClassName}">
+		<woframework name="${framework.name}" destDir="${dest.dir}"
+							customInfoPListContent="${customInfoPListContent}"
+							principalClass="${principalClass}"
+							eoAdaptorClassName="${eoAdaptorClassName}"
+							javaVersion="${javaVersion}"
+							cfbundleversion="${cfBundleVersion}"
+		    				cfbundleshortversion="${cfBundleShortVersion}"
+		    				cfbundleID="${cfBundleID}">
    			<classes dir="${classes.dir}">
       			<patternset>
-  					<includesfile name="${WOLipsContext.getAntFolderName()}/classes.include.patternset"/> 
-					<excludesfile name="${WOLipsContext.getAntFolderName()}/classes.exclude.patternset"/> 
+  					<includesfile name="${WOLipsContext.getAntFolderName()}/classes.include.patternset"/>
+					<excludesfile name="${WOLipsContext.getAntFolderName()}/classes.exclude.patternset"/>
 				</patternset>
    			</classes>
    			<wsresources dir=".">
       			<patternset>
-					<includesfile name="${WOLipsContext.getAntFolderName()}/wsresources.include.patternset"/> 
-					<excludesfile name="${WOLipsContext.getAntFolderName()}/wsresources.exclude.patternset"/> 
+					<includesfile name="${WOLipsContext.getAntFolderName()}/wsresources.include.patternset"/>
+					<excludesfile name="${WOLipsContext.getAntFolderName()}/wsresources.exclude.patternset"/>
 				</patternset>
 			</wsresources>
    			<resources dir=".">
       			<patternset>
-					<includesfile name="${WOLipsContext.getAntFolderName()}/resources.include.patternset"/> 
-					<excludesfile name="${WOLipsContext.getAntFolderName()}/resources.exclude.patternset"/> 
+					<includesfile name="${WOLipsContext.getAntFolderName()}/resources.include.patternset"/>
+					<excludesfile name="${WOLipsContext.getAntFolderName()}/resources.exclude.patternset"/>
 				</patternset>
        		</resources>
    			<resources dir=".">
       			<patternset>
-					<includesfile name="${WOLipsContext.getAntFolderName()}/resources.include.patternset"/> 
-					<excludesfile name="${WOLipsContext.getAntFolderName()}/resources.exclude.patternset"/> 
+					<includesfile name="${WOLipsContext.getAntFolderName()}/resources.include.patternset"/>
+					<excludesfile name="${WOLipsContext.getAntFolderName()}/resources.exclude.patternset"/>
 				</patternset>
        		</resources>
 			<lib dir=".">
@@ -78,9 +85,9 @@
 			</lib>
    		</woframework>
 	</target>
-		
+
 	<!-- optional targets -->
-	<!-- copy strings files -->	
+	<!-- copy strings files -->
 	<target name="copy.strings">
    		 <copy todir="${dest.dir}/${framework.name}.framework/Resources">
        		<fileset dir="." casesensitive="yes">
