@@ -7,7 +7,7 @@ public class EOStoredProcedureEntityReferenceFailure extends EOModelReferenceFai
 	private String propertyName;
 
 	public EOStoredProcedureEntityReferenceFailure(EOEntity entity, EOStoredProcedure storedProcedure, String propertyName) {
-		super(entity, storedProcedure, entity.getFullyQualifiedName() + " references " + storedProcedure.getFullyQualifiedName() + " in its " + propertyName + " property.", false);
+		super(entity, storedProcedure, entity.getName() + " references " + storedProcedure.getName() + " in its " + propertyName + " property.", false);
 	}
 
 	public String getPropertyName() {

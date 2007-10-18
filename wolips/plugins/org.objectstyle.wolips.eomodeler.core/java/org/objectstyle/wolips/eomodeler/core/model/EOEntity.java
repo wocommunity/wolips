@@ -505,7 +505,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		for (EOAttribute attribute : _entity.getAttributes()) {
 			if (!_skipExistingNames || getAttributeNamed(attribute.getName()) == null) {
 				if (failures != null) {
-					failures.add(new EOModelVerificationFailure(getModel(), this, getFullyQualifiedName() + " was missing the inherited attribute " + attribute.getName() + ".", true));
+					failures.add(new EOModelVerificationFailure(getModel(), this, "The entity " + getName() + " was missing the inherited attribute " + attribute.getName() + ".", true));
 				}
 				if (!warnOnly) {
 					EOAttribute clonedAttribute = attribute._cloneModelObject();
@@ -518,7 +518,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		for (EORelationship relationship : _entity.getRelationships()) {
 			if (!_skipExistingNames || getRelationshipNamed(relationship.getName()) == null) {
 				if (failures != null) {
-					failures.add(new EOModelVerificationFailure(getModel(), this, getFullyQualifiedName() + " was missing the inherited relationship " + relationship.getName() + ".", true));
+					failures.add(new EOModelVerificationFailure(getModel(), this, "The entity " + getName() + " was missing the inherited relationship " + relationship.getName() + ".", true));
 				}
 				if (!warnOnly) {
 					EORelationship clonedRelationship = relationship._cloneModelObject();
@@ -1944,35 +1944,35 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			if (deleteProcedureName != null) {
 				myDeleteProcedure = myModel.getStoredProcedureNamed(deleteProcedureName);
 				if (myDeleteProcedure == null) {
-					_failures.add(new EOModelVerificationFailure(myModel, this, getFullyQualifiedName() + "'s delete procedure '" + deleteProcedureName + "' is missing.", false));
+					_failures.add(new EOModelVerificationFailure(myModel, this, "The entity " + getName() + "'s delete procedure '" + deleteProcedureName + "' is missing.", false));
 				}
 			}
 			String fetchAllProcedureName = storedProcedureNames.get(EOEntity.EOFETCH_ALL_PROCEDURE);
 			if (fetchAllProcedureName != null) {
 				myFetchAllProcedure = myModel.getStoredProcedureNamed(fetchAllProcedureName);
 				if (myFetchAllProcedure == null) {
-					_failures.add(new EOModelVerificationFailure(myModel, this, getFullyQualifiedName() + "'s fetch all procedure '" + fetchAllProcedureName + "' is missing.", false));
+					_failures.add(new EOModelVerificationFailure(myModel, this, "The entity " + getName() + "'s fetch all procedure '" + fetchAllProcedureName + "' is missing.", false));
 				}
 			}
 			String fetchWithPrimaryKeyProcedureName = storedProcedureNames.get(EOEntity.EOFETCH_WITH_PRIMARY_KEY_PROCEDURE);
 			if (fetchWithPrimaryKeyProcedureName != null) {
 				myFetchWithPrimaryKeyProcedure = myModel.getStoredProcedureNamed(fetchWithPrimaryKeyProcedureName);
 				if (myFetchWithPrimaryKeyProcedure == null) {
-					_failures.add(new EOModelVerificationFailure(myModel, this, getFullyQualifiedName() + "'s fetch with primary key procedure '" + fetchWithPrimaryKeyProcedureName + "' is missing.", false));
+					_failures.add(new EOModelVerificationFailure(myModel, this, "The entity " + getName() + "'s fetch with primary key procedure '" + fetchWithPrimaryKeyProcedureName + "' is missing.", false));
 				}
 			}
 			String insertProcedureName = storedProcedureNames.get(EOEntity.EOINSERT_PROCEDURE);
 			if (insertProcedureName != null) {
 				myInsertProcedure = myModel.getStoredProcedureNamed(insertProcedureName);
 				if (myInsertProcedure == null) {
-					_failures.add(new EOModelVerificationFailure(myModel, this, getFullyQualifiedName() + "'s insert procedure '" + insertProcedureName + "' is missing.", false));
+					_failures.add(new EOModelVerificationFailure(myModel, this, "The entity " + getName() + "'s insert procedure '" + insertProcedureName + "' is missing.", false));
 				}
 			}
 			String nextPrimaryKeyProcedureName = storedProcedureNames.get(EOEntity.EONEXT_PRIMARY_KEY_PROCEDURE);
 			if (nextPrimaryKeyProcedureName != null) {
 				myNextPrimaryKeyProcedure = myModel.getStoredProcedureNamed(nextPrimaryKeyProcedureName);
 				if (myNextPrimaryKeyProcedure == null) {
-					_failures.add(new EOModelVerificationFailure(myModel, this, getFullyQualifiedName() + "'s next primary key procedure '" + nextPrimaryKeyProcedureName + "' is missing.", false));
+					_failures.add(new EOModelVerificationFailure(myModel, this, "The entity " + getName() + "'s next primary key procedure '" + nextPrimaryKeyProcedureName + "' is missing.", false));
 				}
 			}
 		}
@@ -1981,13 +1981,13 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	public void verify(Set<EOModelVerificationFailure> failures, VerificationContext verificationContext) {
 		String name = getName();
 		if (name == null || name.trim().length() == 0) {
-			failures.add(new EOModelVerificationFailure(myModel, this, getFullyQualifiedName() + " has an empty name.", false));
+			failures.add(new EOModelVerificationFailure(myModel, this, "The entity " + getName() + " has an empty name.", false));
 		} else {
 			if (name.indexOf(' ') != -1) {
-				failures.add(new EOModelVerificationFailure(myModel, this, getFullyQualifiedName() + "'s name has a space in it.", false));
+				failures.add(new EOModelVerificationFailure(myModel, this, "The entity " + getName() + "'s name has a space in it.", false));
 			}
 			if (!StringUtils.isUppercaseFirstLetter(myName)) {
-				failures.add(new EOModelVerificationFailure(myModel, this, "Entity names should be capitalized, but " + getFullyQualifiedName() + " is not.", true));
+				failures.add(new EOModelVerificationFailure(myModel, this, "Entity names should be capitalized, but " + getName() + " is not.", true));
 			}
 		}
 
@@ -2011,26 +2011,26 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			String externalName = getExternalName();
 			if (externalName == null || externalName.trim().length() == 0) {
 				if (!BooleanUtils.isTrue(isAbstractEntity())) {
-					failures.add(new EOModelVerificationFailure(myModel, this, getFullyQualifiedName() + " has an empty table name.", false));
+					failures.add(new EOModelVerificationFailure(myModel, this, "The entity " + getName() + " has an empty table name.", false));
 				}
 			} else if (externalName.indexOf(' ') != -1) {
-				failures.add(new EOModelVerificationFailure(myModel, this, getFullyQualifiedName() + "'s table name '" + externalName + "' has a space in it.", false));
+				failures.add(new EOModelVerificationFailure(myModel, this, "The entity " + getName() + "'s table name '" + externalName + "' has a space in it.", false));
 			}
 		}
 
 		EOEntity parent = getParent();
 		if (parent != null && !BooleanUtils.isTrue(parent.isAbstractEntity()) && getRestrictingQualifier() == null && ComparisonUtils.equals(parent.getExternalName(), getExternalName())) {
-			failures.add(new EOModelVerificationFailure(myModel, this, getFullyQualifiedName() + " is a subclass of " + getParent().getName() + " but does not have a restricting qualifier.", false));
+			failures.add(new EOModelVerificationFailure(myModel, this, "The entity " + getName() + " is a subclass of " + getParent().getName() + " but does not have a restricting qualifier.", false));
 		}
 		try {
 			inheritParentAttributesAndRelationships(failures, false);
 		} catch (DuplicateNameException e) {
-			failures.add(new EOModelVerificationFailure(myModel, "Failed to fix inherited attributes and relationships for " + getFullyQualifiedName() + ".", true));
+			failures.add(new EOModelVerificationFailure(myModel, "Failed to fix inherited attributes and relationships for " + getName() + ".", true));
 		}
 
 		Set<EOAttribute> primaryKeyAttributes = getPrimaryKeyAttributes();
 		if (primaryKeyAttributes.isEmpty()) {
-			failures.add(new EOModelVerificationFailure(myModel, this, getFullyQualifiedName() + " does not have a primary key.", false));
+			failures.add(new EOModelVerificationFailure(myModel, this, "The entity " + getName() + " does not have a primary key.", false));
 		}
 	}
 
