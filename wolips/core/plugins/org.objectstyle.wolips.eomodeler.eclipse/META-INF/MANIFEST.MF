@@ -12,7 +12,8 @@ Require-Bundle: org.eclipse.jdt.core,
  org.eclipse.jdt.ui,
  org.objectstyle.wolips.ui,
  org.objectstyle.wolips.eomodeler,
- org.objectstyle.wolips.workbenchutilities
+ org.objectstyle.wolips.workbenchutilities,
+ org.objectstyle.wolips
 Eclipse-LazyStart: true
 Bundle-Vendor: objectstyle.org
 Export-Package: org.objectstyle.wolips.eomodeler.eclipse
