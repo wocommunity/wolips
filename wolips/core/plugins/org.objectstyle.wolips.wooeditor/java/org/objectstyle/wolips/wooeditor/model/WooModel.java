@@ -154,7 +154,7 @@ public class WooModel implements IPropertyChangeSource {
 		}
 	}
 
-	public void loadModelFromStream(final InputStream input) {
+	public void loadModelFromStream(final InputStream input) throws IOException {
 		myModelMap = new EOModelMap((Map<?, ?>) PropertyListSerialization
 				.propertyListFromStream(input,
 						new EOModelParserDataStructureFactory()));
