@@ -276,10 +276,10 @@ public class EOJoin extends EOModelObject<EORelationship> implements ISortableEO
 
 	public void verify(Set<EOModelVerificationFailure> _failures) {
 		if (mySourceAttribute == null) {
-			_failures.add(new EOModelVerificationFailure(getRelationship().getEntity().getModel(), getRelationship().getEntity().getName() + "'s " + getRelationship().getName() + "'s has a join with a missing source attribute.", false));
+			_failures.add(new EOModelVerificationFailure(getRelationship().getEntity().getModel(), getRelationship().getFullyQualifiedName() + " has a join with a missing source attribute.", false));
 		}
 		if (myDestinationAttribute == null) {
-			_failures.add(new EOModelVerificationFailure(getRelationship().getEntity().getModel(), getRelationship().getEntity().getName() + "'s " + getRelationship().getName() + "'s has a join with a missing destination attribute.", false));
+			_failures.add(new EOModelVerificationFailure(getRelationship().getEntity().getModel(), getRelationship().getFullyQualifiedName() + " has a join with a missing destination attribute.", false));
 		}
 	}
 
