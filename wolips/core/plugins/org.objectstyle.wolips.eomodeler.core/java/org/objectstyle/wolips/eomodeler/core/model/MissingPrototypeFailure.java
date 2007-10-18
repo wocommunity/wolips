@@ -63,6 +63,11 @@ public class MissingPrototypeFailure extends EOModelVerificationFailure {
 		myPrototypeName = _prototypeName;
 		myReferencingAttribute = _referencingAttribute;
 	}
+	
+	@Override
+	public EOModelObject getFailedObject() {
+		return getModel();
+	}
 
 	public String getPrototypeName() {
 		return myPrototypeName;

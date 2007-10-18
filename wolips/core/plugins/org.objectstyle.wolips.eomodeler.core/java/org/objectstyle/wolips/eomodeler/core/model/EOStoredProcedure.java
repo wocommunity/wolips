@@ -324,21 +324,21 @@ public class EOStoredProcedure extends UserInfoableEOModelObject<EOModel> implem
 	public void verify(Set<EOModelVerificationFailure> _failures) {
 		String name = getName();
 		if (name == null || name.trim().length() == 0) {
-			_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + " has an empty name.", false));
+			_failures.add(new EOModelVerificationFailure(myModel, this, getFullyQualifiedName() + " has an empty name.", false));
 		} else {
 			if (name.indexOf(' ') != -1) {
-				_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + "'s name has a space in it.", false));
+				_failures.add(new EOModelVerificationFailure(myModel, this, getFullyQualifiedName() + "'s name has a space in it.", false));
 			}
 			if (!StringUtils.isUppercaseFirstLetter(myName)) {
-				_failures.add(new EOModelVerificationFailure(myModel, "Entity names should be capitalized, but " + getFullyQualifiedName() + " is not.", true));
+				_failures.add(new EOModelVerificationFailure(myModel, this, "Entity names should be capitalized, but " + getFullyQualifiedName() + " is not.", true));
 			}
 		}
 
 		String externalName = getExternalName();
 		if (externalName == null || externalName.trim().length() == 0) {
-			_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + " has an empty table name.", false));
+			_failures.add(new EOModelVerificationFailure(myModel, this, getFullyQualifiedName() + " has an empty table name.", false));
 		} else if (externalName.indexOf(' ') != -1) {
-			_failures.add(new EOModelVerificationFailure(myModel, getFullyQualifiedName() + "'s table name '" + externalName + "' has a space in it.", false));
+			_failures.add(new EOModelVerificationFailure(myModel, this, getFullyQualifiedName() + "'s table name '" + externalName + "' has a space in it.", false));
 		}
 
 		for (EOArgument argument : myArguments) {

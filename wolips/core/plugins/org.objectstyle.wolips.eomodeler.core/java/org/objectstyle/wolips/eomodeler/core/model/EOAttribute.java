@@ -838,41 +838,41 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	public void verify(Set<EOModelVerificationFailure> _failures, VerificationContext verificationContext) {
 		String name = getName();
 		if (name == null || name.trim().length() == 0) {
-			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " has an empty name.", false));
+			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, getFullyQualifiedName() + " has an empty name.", false));
 		} else {
 			if (name.indexOf(' ') != -1) {
-				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + "'s name has a space in it.", false));
+				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, getFullyQualifiedName() + "'s name has a space in it.", false));
 			}
 			if (!getEntity().isPrototype() && !StringUtils.isLowercaseFirstLetter(name)) {
-				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), "Attribute names should not be capitalized, but " + getFullyQualifiedName() + " is.", true));
+				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "Attribute names should not be capitalized, but " + getFullyQualifiedName() + " is.", true));
 			}
 			if (name.equals("entityName")) {
-				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), "Attribute " + getFullyQualifiedName() + " is named 'entityName', which is a method in EOEnterpriseObject.", true));
+				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "Attribute " + getFullyQualifiedName() + " is named 'entityName', which is a method in EOEnterpriseObject.", true));
 			}
 		}
 		if (myPrototypeName != null && myPrototypeName.length() > 0 && getPrototype() == null) {
-			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " references the prototype '" + myPrototypeName + "' which no longer appears to exist.", true));
+			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, getFullyQualifiedName() + " references the prototype '" + myPrototypeName + "' which no longer appears to exist.", true));
 		}
 		if (!myEntity.isPrototype()) {
 			if (!isFlattened()) {
 				String columnName = getColumnName();
 				if (columnName == null || columnName.trim().length() == 0) {
 					if (getDefinition() == null) {
-						_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " does not have a column name set.", true));
+						_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, getFullyQualifiedName() + " does not have a column name set.", true));
 					}
 				} else if (columnName.indexOf(' ') != -1) {
-					_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + "'s column name '" + columnName + "' has a space in it.", false));
+					_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, getFullyQualifiedName() + "'s column name '" + columnName + "' has a space in it.", false));
 				} else {
 					for (EOAttribute attribute : myEntity.getAttributes()) {
 						if (attribute != this && columnName.equals(attribute.getColumnName())) {
-							_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + "'s column name is the same as " + attribute.getFullyQualifiedName() + "'s.", true));
+							_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, getFullyQualifiedName() + "'s column name is the same as " + attribute.getFullyQualifiedName() + "'s.", true));
 						}
 					}
 				}
 
 				String valueClassName = getValueClassName();
 				if (valueClassName == null) {
-					_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " does not have a value class name.", true));
+					_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, getFullyQualifiedName() + " does not have a value class name.", true));
 				}
 
 				Boolean classProperty = isClassProperty();
@@ -888,7 +888,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 							}
 						}
 						if (foreignKey) {
-							_failures.add(new EOModelVerificationFailure(myEntity.getModel(), getFullyQualifiedName() + " is a class property, but is used as a foreign key in the relationship " + relationship.getFullyQualifiedName() + ".", true));
+							_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, getFullyQualifiedName() + " is a class property, but is used as a foreign key in the relationship " + relationship.getFullyQualifiedName() + ".", true));
 						}
 					}
 				}

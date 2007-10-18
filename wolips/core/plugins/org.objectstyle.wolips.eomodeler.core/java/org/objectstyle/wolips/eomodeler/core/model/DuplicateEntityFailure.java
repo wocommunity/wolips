@@ -63,6 +63,11 @@ public class DuplicateEntityFailure extends EOModelVerificationFailure {
 		myEntityName = _entityName;
 		myNewEntityName = _newEntityName;
 	}
+	
+	@Override
+	public EOModelObject getFailedObject() {
+		return getModel().getEntityNamed(myEntityName);
+	}
 
 	public String getEntityName() {
 		return myEntityName;

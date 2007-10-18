@@ -63,6 +63,11 @@ public class MissingAttributeFailure extends EOModelVerificationFailure {
 		myEntity = _entity;
 		myAttributeName = _attributeName;
 	}
+	
+	@Override
+	public EOModelObject getFailedObject() {
+		return myEntity;
+	}
 
 	public EOEntity getEntity() {
 		return myEntity;

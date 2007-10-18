@@ -356,7 +356,7 @@ public class EODatabaseConfig extends EOModelObject<EOModel> {
 
 	public void verify(Set<EOModelVerificationFailure> _failures) {
 		if (myPrototypeName != null && myPrototypeName.length() > 0 && getPrototype() == null) {
-			_failures.add(new EOModelVerificationFailure(getModel(), getFullyQualifiedName() + " references the prototype entity '" + myPrototypeName + "' which no longer appears to exist.", true));
+			_failures.add(new EOModelVerificationFailure(getModel(), this, getFullyQualifiedName() + " references the prototype entity '" + myPrototypeName + "' which no longer appears to exist.", true));
 		}
 	}
 	

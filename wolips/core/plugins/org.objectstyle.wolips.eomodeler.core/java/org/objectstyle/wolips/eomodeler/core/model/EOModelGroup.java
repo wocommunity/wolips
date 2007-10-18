@@ -50,6 +50,7 @@
 package org.objectstyle.wolips.eomodeler.core.model;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -62,6 +63,7 @@ import java.util.TreeSet;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.objectstyle.wolips.baseforplugins.util.URLUtils;
+import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 
 public class EOModelGroup extends EOModelObject<Object> {
 	public static final String MODELS = "models";
@@ -224,6 +226,14 @@ public class EOModelGroup extends EOModelObject<Object> {
 		return cache;
 	}
 
+	public Map<EOEntity, Set<EOEntity>> _createInheritanceCache() {
+		Map<EOEntity, Set<EOEntity>> cache = new HashMap<EOEntity, Set<EOEntity>>();
+		for (EOModel model : getModels()) {
+			model._createInheritanceCache(cache);
+		}
+		return cache;
+	}
+
 	public EOModel getModelNamed(String _name) {
 		EOModel matchingModel = null;
 		Iterator<EOModel> modelsIter = _models.iterator();
@@ -363,7 +373,7 @@ public class EOModelGroup extends EOModelObject<Object> {
 				// model.getIndexURL() + " and " + _folder + ". Skipping " +
 				// _folder + ".", true));
 			} else {
-				failures.add(new EOModelVerificationFailure(model, "The model named '" + modelName + "' exists in " + model.getIndexURL() + " and " + modelURL + ".", true));
+				failures.add(new EOModelVerificationFailure(model, model, "The model named '" + modelName + "' exists in " + model.getIndexURL() + " and " + modelURL + ".", true));
 			}
 		}
 		if (!skipOnDuplicates || model == null) {
@@ -374,7 +384,7 @@ public class EOModelGroup extends EOModelObject<Object> {
 				URL indexURL = model.getIndexURL();
 				if (!URLUtils.exists(indexURL)) {
 					reloadModel = false;
-					failures.add(new EOModelVerificationFailure(model, "Skipping model because " + indexURL + " does not exist.", true));
+					failures.add(new EOModelVerificationFailure(model, model, "Skipping model because " + indexURL + " does not exist.", true));
 				} else {
 					model._setModelGroup(this);
 					try {
@@ -388,7 +398,7 @@ public class EOModelGroup extends EOModelObject<Object> {
 						}
 						EOEntity existingEntity = e.getExistingEntity();
 						EOModel existingEntityModel = existingEntity.getModel();
-						failures.add(new EOModelVerificationFailure(model, existingEntityModel.getName() + " and " + model.getName() + " both declare an entity named " + existingEntity.getName() + ", so " + existingEntityModel.getName() + " is being removed. You can create an EOModelGroup file to resolve this.", true, e));
+						failures.add(new EOModelVerificationFailure(model, model, existingEntityModel.getName() + " and " + model.getName() + " both declare an entity named " + existingEntity.getName() + ", so " + existingEntityModel.getName() + " is being removed. You can create an EOModelGroup file to resolve this.", true, e));
 						removeModel(existingEntityModel, failures);
 					}
 				}
@@ -398,7 +408,7 @@ public class EOModelGroup extends EOModelObject<Object> {
 	}
 
 	public void verify(Set<EOModelVerificationFailure> _failures) {
-		VerificationContext verificationContext = new VerificationContext(_createReferencingRelationshipsCache());
+		VerificationContext verificationContext = new VerificationContext(this);
 		for (EOModel model : _models) {
 			model.verify(_failures, verificationContext);
 		}
@@ -449,5 +459,13 @@ public class EOModelGroup extends EOModelObject<Object> {
 	@Override
 	public void _removeFromModelParent(Set<EOModelVerificationFailure> failures) {
 		// DO NOTHING
+	}
+	
+	public static void main(String[] args) throws IOException {
+		long a = System.currentTimeMillis();
+		for (int i = 0; i < 1000; i ++) {
+			PropertyListSerialization.propertyListFromFile(new File("/Users/mschrag/Documents/workspace/MDTask/Resources/MDTask.eomodeld/index.eomodeld"));
+		}
+		System.out.println("EOModelGroup.main: " + (System.currentTimeMillis() - a));
 	}
 }

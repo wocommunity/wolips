@@ -60,6 +60,11 @@ public class MissingEntityFailure extends EOModelVerificationFailure {
 		super(_model, "Missing entity named '" + _entityName + "'.", false, _throwable);
 		myEntityName = _entityName;
 	}
+	
+	@Override
+	public EOModelObject getFailedObject() {
+		return getModel();
+	}
 
 	public String getEntityName() {
 		return myEntityName;
