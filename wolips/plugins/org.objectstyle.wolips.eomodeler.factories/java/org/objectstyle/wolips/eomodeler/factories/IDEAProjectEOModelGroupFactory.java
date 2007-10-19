@@ -40,9 +40,9 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 				String ideaProjectPath = ideaProjectFile.getParentFile().getAbsolutePath();
 				Set<File> visitedModulePaths = new HashSet<File>();
 				try {
-					XPathExpression ideaLibrariesExpression = XPathFactory.newInstance().newXPath().compile("//project/component[@name='libraryTable']/library");
-					XPathExpression ideaModulesExpression = XPathFactory.newInstance().newXPath().compile("//project/component[@name='ProjectModuleManager']/modules/module");
-					XPathExpression ideaClassesRootExpression = XPathFactory.newInstance().newXPath().compile("//CLASSES/root");
+					XPathExpression ideaLibrariesExpression = XPathFactory.newInstance().newXPath().compile("project/component[@name='libraryTable']/library");
+					XPathExpression ideaModulesExpression = XPathFactory.newInstance().newXPath().compile("project/component[@name='ProjectModuleManager']/modules/module");
+					XPathExpression ideaClassesRootExpression = XPathFactory.newInstance().newXPath().compile("CLASSES/root");
 
 					Document ideaProjectDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(ideaProjectFile);
 					NodeList ideaLibraryNodes = (NodeList) ideaLibrariesExpression.evaluate(ideaProjectDocument, XPathConstants.NODESET);
