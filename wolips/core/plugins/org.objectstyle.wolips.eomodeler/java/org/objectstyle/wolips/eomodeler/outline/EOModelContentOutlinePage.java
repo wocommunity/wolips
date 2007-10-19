@@ -135,8 +135,8 @@ public class EOModelContentOutlinePage extends ContentOutlinePage implements Pro
 				return event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION;
 			}
 		};
-		/*
 		TreeViewerEditor.create(treeViewer, null, strategy, ColumnViewerEditor.DEFAULT);
+		/*
 		parent.addControlListener(new ControlAdapter() {
 			@Override
 			public void controlResized(ControlEvent e) {
