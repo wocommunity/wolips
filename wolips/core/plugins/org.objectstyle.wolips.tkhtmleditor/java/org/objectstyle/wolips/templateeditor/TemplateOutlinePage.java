@@ -396,11 +396,17 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
     renderBuffer.append("div.element.wo.WOString.simple div.text.literal { color: rgb(0, 0, 200); }\n");
     renderBuffer.append("div.element.wo.WOString.simple div.text.ognl { color: rgb(180, 0, 0); }\n");
     renderBuffer.append("div.element.wo.WOString.simple div.text.keypath { color: rgb(180, 0, 0); }\n");
-
 //    renderBuffer.append("div.element.wo.WOString div.summary { background-color: rgb(240, 240, 255); }\n");
 //    renderBuffer.append("div.element.wo.WOString div.summary:hover { background-color: rgb(240, 240, 255); border-color: rgb(170, 225, 170); }\n");
 //    renderBuffer.append("div.element.wo.WOString div.contents { background-color: rgb(250, 255, 250); border-color: rgb(200, 255, 200); }\n");
 //    renderBuffer.append("div.element.wo.WOString:hover div.contents { display: block; }\n");
+
+    renderBuffer.append("div.element.wo.ERXLocalizedString.simple { display: inline; border: none; }\n");
+    renderBuffer.append("div.element.wo.ERXLocalizedString.simple div.summary { display: inline; border: 1px solid rgb(200, 200, 255); border: none; background-color: transparent; padding: 0px; }\n");
+    renderBuffer.append("div.element.wo.ERXLocalizedString.simple div.summary div.title { display: inline; }\n");
+    renderBuffer.append("div.element.wo.ERXLocalizedString.simple div.text.literal { color: rgb(0, 0, 200); }\n");
+    renderBuffer.append("div.element.wo.ERXLocalizedString.simple div.text.ognl { color: rgb(180, 0, 0); }\n");
+    renderBuffer.append("div.element.wo.ERXLocalizedString.simple div.text.keypath { color: rgb(180, 0, 0); }\n");
 
     renderBuffer.append("div.element.wo.WOConditional { border-color: rgb(190, 250, 190); }\n");
     renderBuffer.append("div.element.wo.WOConditional div.summary { background-color: rgb(230, 250, 230); }\n");
@@ -414,6 +420,19 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
     renderBuffer.append("div.element.wo.WOConditional div.summary table.bindings td.literal { color: rgb(0, 0, 200); }\n");
     renderBuffer.append("div.element.wo.WOConditional div.summary table.bindings td.ognl { color: rgb(180, 0, 0); }\n");
     renderBuffer.append("div.element.wo.WOConditional div.summary table.bindings td.keypath { color: rgb(180, 0, 0); }\n");
+
+    renderBuffer.append("div.element.wo.ERXElse { border-color: rgb(190, 250, 190); }\n");
+    renderBuffer.append("div.element.wo.ERXElse div.summary { background-color: rgb(230, 250, 230); }\n");
+    renderBuffer.append("div.element.wo.ERXElse div.summary:hover { background-color: rgb(200, 250, 200); border-color: rgb(200, 255, 200); }\n");
+    renderBuffer.append("div.element.wo.ERXElse div.expandcollapse { border-color: rgb(200, 255, 200); }\n");
+    renderBuffer.append("div.element.wo.ERXElse div.expandcollapse:hover { background-color: rgb(245, 255, 245); }\n");
+    renderBuffer.append("div.element.wo.ERXElse div.expandcollapse:active { background-color: rgb(200, 255, 200); }\n");
+    renderBuffer.append("div.element.wo.ERXElse div.contents { background-color: rgb(250, 255, 250); border-color: rgb(190, 250, 190); }\n");
+    renderBuffer.append("div.element.wo.ERXElse div.summary div.title span.type { display: none; }\n");
+    renderBuffer.append("div.element.wo.ERXElse div.summary table.bindings th { text-align: right; font-weight: normal; color: rgb(220, 0, 0); padding-right: 3px; }\n");
+    renderBuffer.append("div.element.wo.ERXElse div.summary table.bindings td.literal { color: rgb(0, 0, 200); }\n");
+    renderBuffer.append("div.element.wo.ERXElse div.summary table.bindings td.ognl { color: rgb(180, 0, 0); }\n");
+    renderBuffer.append("div.element.wo.ERXElse div.summary table.bindings td.keypath { color: rgb(180, 0, 0); }\n");
 
 //    renderBuffer.append("div.element.wo.WORepetition { border-color: rgb(255, 200, 200); }\n");
 //    renderBuffer.append("div.element.wo.WORepetition div.summary { background-color: rgb(255, 230, 230); }\n");
@@ -447,6 +466,13 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
     renderBuffer.append("body.compact div.element.wo.WOString.simple { border: none; }\n");
     renderBuffer.append("body.compact div.element.wo.WOString.simple div.summary { border: none; background-color: transparent; padding: 0px; }\n");
     renderBuffer.append("body.compact div.element.wo.WOString.simple div.summary div.title { display: inline; }\n");
+
+    renderBuffer.append("body.compact div.element.wo.ERXLocalizedString { display: inline; border: none; }\n");
+    renderBuffer.append("body.compact div.element.wo.ERXLocalizedString div.summary { display: inline; border: 1px solid rgb(200, 200, 255); }\n");
+    renderBuffer.append("body.compact div.element.wo.ERXLocalizedString div.summary div.title { display: inline; }\n");
+    renderBuffer.append("body.compact div.element.wo.ERXLocalizedString.simple { border: none; }\n");
+    renderBuffer.append("body.compact div.element.wo.ERXLocalizedString.simple div.summary { border: none; background-color: transparent; padding: 0px; }\n");
+    renderBuffer.append("body.compact div.element.wo.ERXLocalizedString.simple div.summary div.title { display: inline; }\n");
 
     renderBuffer.append("body div.element.document { margin: 0px; padding: 0px; border: none; }\n");
     renderBuffer.append("body div.element.document div.summary { margin: 0px; padding: 0px; border: none; display: none; }\n");
@@ -512,7 +538,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
         if (wodElement != null) {
           className = className + " " + wodElement.getElementType();
 
-          if ("WOString".equals(wodElement.getElementType())) {
+          if ("WOString".equals(wodElement.getElementType()) || "ERXLocalizedString".equals(wodElement.getElementType())) {
             if (wodElement.getBindingNamed("value") != null) {
               if (wodElement.getBindingNamed("escapeHTML") != null && wodElement.getBindings().size() == 2) {
                 woSimpleString = true;
@@ -615,6 +641,13 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
               String value = wodElement.getBindingValue("value");
               if (value != null) {
                 summaryName = "WOString: " + value;
+              }
+            }
+            // Special case for the compact display of a localized string
+            else if ("ERXLocalizedString".equals(summaryName)) {
+              String value = wodElement.getBindingValue("value");
+              if (value != null) {
+                summaryName = "ERXLocalizedString: " + value;
               }
             }
             // Special case for the compact display of links, buttons, etc
