@@ -27,12 +27,14 @@ import org.xml.sax.SAXException;
 public class EclipseProjectEOModelGroupFactory extends AbstractManifestEOModelGroupFactory {
 	@Override
 	public List<ManifestSearchFolder> getSearchFolders(File selectedModelFolder) throws IOException {
+		System.out.println("EclipseProjectEOModelGroupFactory.getSearchFolders: Looking for Eclipse projects ...");
 		List<ManifestSearchFolder> searchFolders = null;
 		List<File> eclipseProjectFolders = new LinkedList<File>();
 		findEclipseProjectFolders(selectedModelFolder, eclipseProjectFolders);
 		if (!eclipseProjectFolders.isEmpty()) {
 			searchFolders = new LinkedList<ManifestSearchFolder>();
 			for (File eclipseProjectFolder : eclipseProjectFolders) {
+				System.out.println("EclipseProjectEOModelGroupFactory.getSearchFolders: Project = " + eclipseProjectFolder);
 				Set<File> visitedProjectFolders = new HashSet<File>();
 				try {
 					processEclipseProject(eclipseProjectFolder, searchFolders, visitedProjectFolders, new WOEnvironment());
@@ -41,6 +43,7 @@ public class EclipseProjectEOModelGroupFactory extends AbstractManifestEOModelGr
 				}
 			}
 		}
+		System.out.println("EclipseProjectEOModelGroupFactory.getSearchFolders: " + searchFolders);
 		return searchFolders;
 	}
 
@@ -48,6 +51,7 @@ public class EclipseProjectEOModelGroupFactory extends AbstractManifestEOModelGr
 		if (eclipseProjectFolder == null || !eclipseProjectFolder.exists() || visitedProjects.contains(eclipseProjectFolder)) {
 			return;
 		}
+		System.out.println("EclipseProjectEOModelGroupFactory.processEclipseProject: Project folder '" + eclipseProjectFolder + "' ...");
 
 		File buildFolder = new File(eclipseProjectFolder, "build");
 		if (buildFolder.exists()) {
@@ -115,8 +119,10 @@ public class EclipseProjectEOModelGroupFactory extends AbstractManifestEOModelGr
 		if (folder != null) {
 			boolean foundProjectFolders = false;
 			if (folder.isDirectory()) {
+				System.out.println("EclipseProjectEOModelGroupFactory.findEclipseProjectFolders: Looking for '" + folder + "' ...");
 				File projectLocator = new File(folder, ".EntityModeler.eclipse");
 				if (projectLocator.exists()) {
+					System.out.println("EclipseProjectEOModelGroupFactory.findEclipseProjectFolders:   Found project locator '" + projectLocator + "' ...");
 					BufferedReader projectLocatorReader = new BufferedReader(new FileReader(projectLocator));
 					try {
 						String projectFileStr;
@@ -128,6 +134,7 @@ public class EclipseProjectEOModelGroupFactory extends AbstractManifestEOModelGr
 							if (projectFolder.exists()) {
 								projectFolder = projectFolder.getCanonicalFile();
 								if (isEclipseProjectFolder(projectFolder)) {
+									System.out.println("EclipseProjectEOModelGroupFactory.findEclipseProjectFolders:     Found project '" + projectFolder + "'");
 									eclipseProjectFolders.add(projectFolder);
 									foundProjectFolders = true;
 								}
@@ -137,6 +144,7 @@ public class EclipseProjectEOModelGroupFactory extends AbstractManifestEOModelGr
 						projectLocatorReader.close();
 					}
 				} else if (isEclipseProjectFolder(folder)) {
+					System.out.println("EclipseProjectEOModelGroupFactory.findEclipseProjectFolders:   Found project '" + folder + "'");
 					File eclipseProjectFolder = folder.getCanonicalFile();
 					eclipseProjectFolders.add(eclipseProjectFolder);
 					foundProjectFolders = true;
