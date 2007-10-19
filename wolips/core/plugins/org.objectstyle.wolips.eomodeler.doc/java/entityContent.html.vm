@@ -101,6 +101,22 @@
 					#end
 				</tr>
 				#end
+				<tr>
+					<th>Allows Null?</th>
+					#if ($attribute.allowsNull)
+					<td>Yes</td>
+					#else
+					<td>No</td>
+					#end
+				</tr>
+				<tr>
+					<th>Used For Locking?</th>
+					#if ($attribute.usedForLocking)
+					<td>Yes</td>
+					#else
+					<td>No</td>
+					#end
+				</tr>
 				#if ($attribute.definition)
 				<tr>
 					<th>Definition</th>
