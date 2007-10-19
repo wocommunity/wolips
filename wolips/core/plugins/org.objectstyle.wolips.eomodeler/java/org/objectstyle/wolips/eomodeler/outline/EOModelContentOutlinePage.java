@@ -69,10 +69,13 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.TreeViewerEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.part.IPageSite;
@@ -120,10 +123,10 @@ public class EOModelContentOutlinePage extends ContentOutlinePage implements Pro
 		//TreeColumnLayout outlineTreeLayout = new TreeColumnLayout();
 		//_treeComposite.setLayout(outlineTreeLayout);
 
-		TreeViewerColumn column = new TreeViewerColumn(treeViewer, SWT.NONE);
+		final TreeViewerColumn column = new TreeViewerColumn(treeViewer, SWT.NONE);
 		column.setLabelProvider(new EOModelOutlineColumnLabelProvider(treeViewer));
 		column.setEditingSupport(new EOModelOutlineEditingSupport(treeViewer));
-		column.getColumn().setWidth(300);
+		column.getColumn().setWidth(400);
 		//outlineTreeLayout.setColumnData(column.getColumn(), new ColumnWeightData(100, true));
 
 		ColumnViewerEditorActivationStrategy strategy = new ColumnViewerEditorActivationStrategy(treeViewer) {
@@ -132,7 +135,18 @@ public class EOModelContentOutlinePage extends ContentOutlinePage implements Pro
 				return event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION;
 			}
 		};
+		/*
 		TreeViewerEditor.create(treeViewer, null, strategy, ColumnViewerEditor.DEFAULT);
+		parent.addControlListener(new ControlAdapter() {
+			@Override
+			public void controlResized(ControlEvent e) {
+				super.controlResized(e);
+				Composite widget = (Composite)e.getSource();
+				column.getColumn().setWidth(widget.getSize().x);
+				System.out.println(".controlResized: " + widget.getSize());
+			}
+		});
+		*/
 
 
 		if (_updater != null) {
