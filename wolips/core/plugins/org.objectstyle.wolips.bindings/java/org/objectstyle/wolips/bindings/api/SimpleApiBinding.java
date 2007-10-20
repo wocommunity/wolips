@@ -51,7 +51,7 @@ public class SimpleApiBinding implements IApiBinding {
 		_willSet = willSet;
 	}
 
-	public String[] getValidValues(IJavaProject javaProject, IType componentType, TypeCache typeCache) throws JavaModelException {
-		return ApiUtils.getValidValues(this, javaProject, componentType, typeCache);
+	public String[] getValidValues(String partialValue, IJavaProject javaProject, IType componentType, TypeCache typeCache) throws JavaModelException {
+		return ApiUtils.getValidValues(this, partialValue, javaProject, componentType, typeCache);
 	}
 }

@@ -177,8 +177,8 @@ public class Binding extends AbstractApiModelElement implements IApiBinding {
 		apiModel.markAsDirty();
 	}
 
-	public String[] getValidValues(IJavaProject javaProject, IType componentType, TypeCache typeCache) throws JavaModelException {
-		return ApiUtils.getValidValues(this, javaProject, componentType, typeCache);
+	public String[] getValidValues(String partialValue, IJavaProject javaProject, IType componentType, TypeCache typeCache) throws JavaModelException {
+		return ApiUtils.getValidValues(this, partialValue, javaProject, componentType, typeCache);
 	}
 
 	public interface BindingNameChangedListener {

@@ -259,7 +259,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 							int spaceIndex = WodCompletionProcessor.scanBackFor(document, noSpaceIndex, new char[] { ' ', '\t', '\n', '\r' }, false);
 							String bindingName = document.get(spaceIndex + 1, noSpaceIndex - spaceIndex);
 							elementType = findNearestElementType(javaProject, document, scanner, offset, typeCache);
-							String[] validValues = ApiUtils.getValidValues(javaProject, _editor.getComponentsLocateResults().getDotJavaType(), elementType, bindingName, typeCache);
+							String[] validValues = ApiUtils.getValidValues(token, javaProject, _editor.getComponentsLocateResults().getDotJavaType(), elementType, bindingName, typeCache);
 							if (validValues != null) {
 								String partialToken = WodCompletionUtils.partialToken(token, tokenOffset, offset);
 								String lowercasePartialToken = partialToken.toLowerCase();

@@ -181,10 +181,12 @@ public class TemplateAssistProcessor extends HTMLAssistProcessor {
           try {
             String elementTypeName = wodTagInfo.getExpandedElementTypeName();
             IType elementType = BindingReflectionUtils.findElementType(wodTagInfo.getJavaProject(), elementTypeName, false, _cache.getTypeCache());
-            String[] validValues = ApiUtils.getValidValues(wodTagInfo.getJavaProject(), _cache.getComponentType(), elementType, attrInfo.getAttributeName(), _cache.getTypeCache());
+            String[] validValues = ApiUtils.getValidValues(value, wodTagInfo.getJavaProject(), _cache.getComponentType(), elementType, attrInfo.getAttributeName(), _cache.getTypeCache());
             if (validValues != null) {
+              String lowercaseBindingValue = bindingValue.toLowerCase();
               for (String validValue : validValues) {
-                if (validValue.toLowerCase().startsWith(bindingValue)) {
+                String lowercaseValidValue = validValue.toLowerCase();
+                if (lowercaseValidValue.toLowerCase().startsWith(lowercaseBindingValue) || (lowercaseValidValue.startsWith("\"") && lowercaseValidValue.substring(1).toLowerCase().startsWith(lowercaseBindingValue))) {
                   proposals.add(new WodCompletionProposal(bindingValue, 0, bindingValue.length(), validValue));
                 }
               }
