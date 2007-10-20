@@ -203,19 +203,25 @@ public class ApiUtils {
       // do nothing for now
     }
     else if ("Direct Action Classes".equals(defaultsName)) {
-      // do nothing for now
+      TypeNameCollector typeNameCollector = new TypeNameCollector("com.webobjects.appserver.WODirectAction", javaProject, false);
+      BindingReflectionUtils.findMatchingElementClassNames(partialValue, SearchPattern.R_PREFIX_MATCH, typeNameCollector, new NullProgressMonitor());
+      for (String typeName : typeNameCollector.getTypeNames()) {
+        int dotIndex = typeName.lastIndexOf('.');
+        if (dotIndex != -1) {
+          typeName = typeName.substring(dotIndex + 1);
+        }
+        validValues.add("\"" + typeName + "\"");
+      }
     }
     else if ("Page Names".equals(defaultsName)) {
-      if (partialValue != null && partialValue.length() > 2) {
-        TypeNameCollector typeNameCollector = new TypeNameCollector(javaProject, false);
-        BindingReflectionUtils.findMatchingElementClassNames(partialValue, SearchPattern.R_PREFIX_MATCH, typeNameCollector, new NullProgressMonitor());
-        for (String typeName : typeNameCollector.getTypeNames()) {
-          int dotIndex = typeName.lastIndexOf('.');
-          if (dotIndex != -1) {
-            typeName = typeName.substring(dotIndex + 1);
-          }
-          validValues.add("\"" + typeName + "\"");
+      TypeNameCollector typeNameCollector = new TypeNameCollector(javaProject, false);
+      BindingReflectionUtils.findMatchingElementClassNames(partialValue, SearchPattern.R_PREFIX_MATCH, typeNameCollector, new NullProgressMonitor());
+      for (String typeName : typeNameCollector.getTypeNames()) {
+        int dotIndex = typeName.lastIndexOf('.');
+        if (dotIndex != -1) {
+          typeName = typeName.substring(dotIndex + 1);
         }
+        validValues.add("\"" + typeName + "\"");
       }
     }
     else if ("Frameworks".equals(defaultsName)) {

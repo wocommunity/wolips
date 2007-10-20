@@ -17,9 +17,11 @@ import org.eclipse.jdt.core.search.IJavaSearchConstants;
 import org.eclipse.jdt.core.search.IJavaSearchScope;
 import org.eclipse.jdt.core.search.SearchEngine;
 import org.eclipse.jdt.core.search.SearchPattern;
+import org.eclipse.jdt.internal.core.DefaultWorkingCopyOwner;
 import org.objectstyle.wolips.bindings.wod.BindingValueKey;
 import org.objectstyle.wolips.bindings.wod.TypeCache;
 import org.objectstyle.wolips.core.resources.types.TypeNameCollector;
+import org.objectstyle.wolips.core.resources.types.WOHierarchyScope;
 
 public class BindingReflectionUtils {
   public static final String[] FIELD_PREFIXES = { "", "_" };
@@ -76,7 +78,7 @@ public class BindingReflectionUtils {
 
   public static void findMatchingElementClassNames(String _elementTypeName, int _matchType, TypeNameCollector _typeNameCollector, IProgressMonitor progressMonitor) throws JavaModelException {
     SearchEngine searchEngine = new SearchEngine();
-    IJavaSearchScope searchScope = SearchEngine.createWorkspaceScope();
+    IJavaSearchScope searchScope = new WOHierarchyScope(_typeNameCollector.getSuperclassType(), _typeNameCollector.getProject(), DefaultWorkingCopyOwner.PRIMARY);
     int lastDotIndex = _elementTypeName.lastIndexOf('.');
     char[] packageName;
     char[] typeName;
