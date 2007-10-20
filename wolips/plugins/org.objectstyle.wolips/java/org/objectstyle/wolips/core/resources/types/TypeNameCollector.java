@@ -55,7 +55,6 @@ import java.util.TreeSet;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.search.TypeNameRequestor;
 
@@ -70,24 +69,40 @@ public class TypeNameCollector extends TypeNameRequestor {
 	private Map<String, String> _typeNameToPath;
 
 	private Map<String, IType> _typeNameToType;
-
-	private IType _woElementType;
+	
+	private IType _superclassType;
 
 	private boolean _requireTypeInProject;
 
 	public TypeNameCollector(IJavaProject project, boolean requireTypeInProject) throws JavaModelException {
-		this(project, requireTypeInProject, new TreeSet<String>());
+		this("com.webobjects.appserver.WOElement", project, requireTypeInProject, new TreeSet<String>());
 	}
 
 	public TypeNameCollector(IJavaProject project, boolean requireTypeInProject, Set<String> typeNames) throws JavaModelException {
+		this("com.webobjects.appserver.WOElement", project, requireTypeInProject, typeNames);
+	}
+	
+	public TypeNameCollector(String superclassTypeName, IJavaProject project, boolean requireTypeInProject) throws JavaModelException {
+		this(superclassTypeName, project, requireTypeInProject, new TreeSet<String>());
+	}
+
+	public TypeNameCollector(String superclassTypeName, IJavaProject project, boolean requireTypeInProject, Set<String> typeNames) throws JavaModelException {
 		_project = project;
 		_typeNames = typeNames;
 		_typeNameToPath = new HashMap<String, String>();
 		_typeNameToType = new HashMap<String, IType>();
 		_requireTypeInProject = requireTypeInProject;
-		_woElementType = _project.findType("com.webobjects.appserver.WOElement");
+		_superclassType = _project.findType(superclassTypeName);
 	}
 
+	public IJavaProject getProject() {
+		return _project;
+	}
+	
+	public IType getSuperclassType() {
+		return _superclassType;
+	}
+	
 	public Set<String> getTypeNames() {
 		return _typeNames;
 	}
@@ -137,12 +152,12 @@ public class TypeNameCollector extends TypeNameRequestor {
 					}
 				}
 				if (typeMatches) {
-					ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(type);
-					if (_woElementType != null && typeHierarchy.contains(_woElementType)) {
+//					ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(type);
+//					if (_superclassType != null && typeHierarchy.contains(_superclassType)) {
 						_typeNames.add(className);
 						_typeNameToPath.put(className, _path);
 						_typeNameToType.put(className, type);
-					}
+//					}
 				}
 			}
 		} catch (Throwable t) {
