@@ -71,6 +71,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.eomodeler.actions.OpenEntityModelerAction;
 import org.objectstyle.wolips.ui.actions.OpenWOAction;
+import org.objectstyle.wolips.ui.view.PerspectiveFactory;
 
 /**
  * Eclipse does not understand how to open a bundle folder. This handler sneaks
@@ -165,10 +166,13 @@ public class PackageExplorerDoubleClickHandler implements IPageListener, IPartLi
 	protected void findAndAttachToPackageExplorerInPage(IWorkbenchPage page) {
 		IWorkbenchPartReference packageExplorerPartRef = page.findViewReference(JavaUI.ID_PACKAGES);
 		attachToPartIfNecessary(packageExplorerPartRef);
+
+		IWorkbenchPartReference wopackageExplorerPartRef = page.findViewReference(PerspectiveFactory.ID_WO_PACKAGES);
+		attachToPartIfNecessary(wopackageExplorerPartRef);
 	}
 
 	protected synchronized void attachToPartIfNecessary(IWorkbenchPartReference partReference) {
-		if (partReference != null && JavaUI.ID_PACKAGES.equals(partReference.getId())) {
+		if (partReference != null && (JavaUI.ID_PACKAGES.equals(partReference.getId()) || PerspectiveFactory.ID_WO_PACKAGES.equals(partReference.getId()))) {
 			IWorkbenchPart part = partReference.getPart(false);
 			if (part instanceof PackageExplorerPart) {
 				PackageExplorerPart packageExplorerPart = (PackageExplorerPart) part;
@@ -185,6 +189,7 @@ public class PackageExplorerDoubleClickHandler implements IPageListener, IPartLi
 
 	public void doubleClick(DoubleClickEvent _event) {
 		ISelection selection = _event.getSelection();
+		System.out.println("PackageExplorerDoubleClickHandler.doubleClick: " + selection);
 		if (selection instanceof IStructuredSelection) {
 			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 			Iterator selectedObjectsIter = structuredSelection.iterator();
