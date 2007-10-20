@@ -80,7 +80,12 @@ public class SubTypeHierarchyCache {
     ITypeHierarchy hierarchy = findTypeHierarchyInProjectInCache(type, project);
     if (hierarchy == null) {
       fgCacheMisses++;
-      hierarchy = type.newTypeHierarchy(project, progressMonitor);
+      if (project != null) {
+    	  hierarchy = type.newTypeHierarchy(project, progressMonitor);
+      }
+      else {
+    	  hierarchy = type.newTypeHierarchy(progressMonitor);
+      }
       addTypeHierarchyInProjectToCache(hierarchy, project);
     }
     else {
@@ -140,7 +145,7 @@ public class SubTypeHierarchyCache {
           removeHierarchyEntryFromCache(curr);
         }
         else {
-          if (project.equals(curr.getProject()) && hierarchy.contains(type)) {
+          if (((project == null && curr.getProject() == null) || (project != null && project.equals(curr.getProject()))) && hierarchy.contains(type)) {
             curr.markAsAccessed();
             return hierarchy;
           }
