@@ -8,7 +8,7 @@
             class="org.objectstyle.wolips.componenteditor.part.ComponentEditor"
             contributorClass="org.objectstyle.wolips.componenteditor.contributor.ComponentEditorContributor"
             default="true"
-            icon="icons/file-wod.png"
+            icon="icons/ComponentEditor.png"
             id="org.objectstyle.wolips.componenteditor.ComponentEditor"
             matchingStrategy="org.objectstyle.wolips.componenteditor.launcher.ComponentEditorMatchingStrategy"
             name="WOComponent Editor">
