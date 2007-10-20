@@ -71,13 +71,15 @@ import org.eclipse.ui.progress.IProgressConstants;
 public class PerspectiveFactory implements IPerspectiveFactory {
 	private static final String ID_WIZARDS_ACTION_SET = "org.objectstyle.wolips.wizards.ElementCreationActionSet";
 
-	private static final String ID_RELATED = "org.objectstyle.wolips.ui.view.RelatedView";
+	public static final String ID_RELATED = "org.objectstyle.wolips.ui.view.RelatedView";
+
+	public static final String ID_WO_PACKAGES = "org.objectstyle.wolips.jdt.ui.WOPackageExplorer";
 
 	public void createInitialLayout(IPageLayout layout) {
 		String editorArea = layout.getEditorArea();
 
 		IFolderLayout folder = layout.createFolder("left", IPageLayout.LEFT, (float) 0.25, editorArea); //$NON-NLS-1$
-		folder.addView(JavaUI.ID_PACKAGES);
+		folder.addView(PerspectiveFactory.ID_WO_PACKAGES);
 		folder.addView(JavaUI.ID_TYPE_HIERARCHY);
 		folder.addPlaceholder(IPageLayout.ID_RES_NAV);
 		folder = layout.createFolder("left_bottom", IPageLayout.BOTTOM, (float) 0.75, "left");
