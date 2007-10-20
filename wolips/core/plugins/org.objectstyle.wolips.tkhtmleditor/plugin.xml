@@ -70,7 +70,7 @@
             contributorClass="org.objectstyle.wolips.templateeditor.TemplateEditorContributor"
             default="true"
             extensions="html,xhtml"
-            icon="icons/file-html.png"
+            icon="icons/ComponentHTML.png"
             id="org.objectstyle.wolips.TemplateEditor"
             name="Template Editor">
 				<contentTypeBinding
