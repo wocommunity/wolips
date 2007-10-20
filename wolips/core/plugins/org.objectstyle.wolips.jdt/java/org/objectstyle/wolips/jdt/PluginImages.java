@@ -112,7 +112,7 @@ public class PluginImages {
 	 * @param path
 	 * @return
 	 */
-	private static ImageDescriptor createImageDescriptor(String path) {
+	public static ImageDescriptor createImageDescriptor(String path) {
 		URL url = FileLocator.find(JdtPlugin.getDefault().getBundle(), new Path(path), null);
 		if (url != null) {
 			return ImageDescriptor.createFromURL(url);
