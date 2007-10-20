@@ -3,6 +3,8 @@ package org.objectstyle.wolips.componenteditor.actions;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
@@ -10,6 +12,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -59,8 +62,11 @@ public class OpenComponentAction extends Action implements IWorkbenchWindowActio
 			}
 		}
 
-		if (javaProject != null) {
-			Shell parent = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+		Shell parent = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+		if (javaProject == null) {
+			ErrorDialog.openError(parent, "Select a Project", "You must have selected an object within a project before using Open Component.", Status.OK_STATUS);
+		}
+		else {
 			SelectionDialog dialog = new WOElementSelectionDialog(parent, javaProject, PlatformUI.getWorkbench().getProgressService());
 			dialog.setTitle("Open Component");
 			dialog.setMessage("Select a Component to Open");
