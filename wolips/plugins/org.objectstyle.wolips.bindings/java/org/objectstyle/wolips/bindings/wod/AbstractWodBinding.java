@@ -318,7 +318,7 @@ public abstract class AbstractWodBinding implements IWodBinding {
     return ApiUtils.getSelectedDefaults(this);
   }
 
-  public String[] getValidValues(IJavaProject javaProject, IType componentType, TypeCache typeCache) {
+  public String[] getValidValues(String partialValue, IJavaProject javaProject, IType componentType, TypeCache typeCache) {
     return new String[0];
   }
 

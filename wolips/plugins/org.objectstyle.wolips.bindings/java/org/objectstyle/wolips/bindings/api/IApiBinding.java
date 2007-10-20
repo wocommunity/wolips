@@ -18,5 +18,5 @@ public interface IApiBinding {
 
 	public boolean isWillSet();
 
-	public String[] getValidValues(IJavaProject javaProject, IType componentType, TypeCache typeCache) throws JavaModelException;
+	public String[] getValidValues(String partialValue, IJavaProject javaProject, IType componentType, TypeCache typeCache) throws JavaModelException;
 }
