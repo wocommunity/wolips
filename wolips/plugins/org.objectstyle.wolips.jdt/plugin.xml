@@ -201,5 +201,46 @@
 				</objectClass>
 			</enablement>
 		</decorator>
+      <decorator
+            class="org.objectstyle.wolips.jdt.decorator.EOModelDecorator"
+            id="org.objectstyle.wolips.jdt.decorator.EOModelDecorator"
+            label="EOModel Decorator"
+            lightweight="false"
+            state="true">
+         <enablement>
+            <and>
+               <objectClass name="org.eclipse.core.resources.IFolder"/>
+               <objectState
+                     name="extension"
+                     value="eomodeld"/>
+            </and>
+         </enablement>
+      </decorator>
+      <decorator
+            class="org.objectstyle.wolips.jdt.decorator.WOComponentDecorator"
+            id="org.objectstyle.wolips.jdt.decorator.WOComponentDecorator"
+            label="WOComponent Decorator"
+            lightweight="false"
+            state="true">
+         <enablement>
+            <and>
+               <objectClass name="org.eclipse.core.resources.IFolder"/>
+               <objectState
+                     name="extension"
+                     value="wo"/>
+            </and>
+         </enablement>
+      </decorator>
    </extension>
+ <extension
+       point="org.eclipse.ui.views">
+    <view
+          allowMultiple="false"
+          category="org.objectstyle.wolips.ui"
+          class="org.objectstyle.wolips.jdt.ui.WOPackageExplorerPart"
+          icon="icons/WOLips16-16.png"
+          id="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
+          name="WO Package Explorer">
+    </view>
+ </extension>
 </plugin>
