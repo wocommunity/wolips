@@ -417,48 +417,6 @@
       <decorator
             lightweight="true"
             adaptable="true"
-            label="WOComponent folder"
-            icon="icons/ovr16/comp_co.gif"
-            state="true"
-            location="TOP_RIGHT"
-            id="org.objectstyle.wolips.ui.labeldecorator.WOComponentFolderLabelDecorator">
-         <description>
-            WOComponent folder
-         </description>
-		<enablement>
-			<and>
-				<objectClass name="org.eclipse.core.resources.IFolder">
-				</objectClass>
-				<objectState name="extension"
-					value="wo">
-				</objectState>
-            </and>
-         </enablement>
-      </decorator>
-      <decorator
-            lightweight="true"
-            adaptable="true"
-            label="EOModel folder"
-            icon="icons/ovr16/eomodel_co.gif"
-            state="true"
-            location="TOP_RIGHT"
-            id="org.objectstyle.wolips.ui.labeldecorator.EOModelFolderLabelDecorator">
-         <description>
-            EOModel folder
-         </description>
-		<enablement>
-			<and>
-				<objectClass name="org.eclipse.core.resources.IFolder">
-				</objectClass>
-				<objectState name="extension"
-					value="eomodeld">
-				</objectState>
-            </and>
-         </enablement>
-      </decorator>
-      <decorator
-            lightweight="true"
-            adaptable="true"
             label="Subproject folder"
             icon="icons/ovr16/subproj_co.gif"
             state="true"
