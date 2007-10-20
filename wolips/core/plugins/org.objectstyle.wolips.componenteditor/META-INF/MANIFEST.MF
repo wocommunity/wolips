@@ -24,7 +24,8 @@ Require-Bundle: org.objectstyle.wolips.workbenchutilities,
  org.eclipse.core.databinding,
  org.eclipse.core.databinding.beans,
  org.eclipse.jface.databinding,
- org.objectstyle.wolips
+ org.objectstyle.wolips,
+ org.eclipse.jdt.ui
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.componenteditor,
  org.objectstyle.wolips.componenteditor.contributor,

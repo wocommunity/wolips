@@ -90,6 +90,11 @@
               description="Insert Component"
               id="org.objectstyle.wolips.componenteditor.editors.command.InsertAnyComponentAction"
               name="Insert Component"/>
+        <command
+              categoryId="org.eclipse.ui.category.navigate"
+              id="org.objectstyle.wolips.componenteditor.openComponent"
+              name="Open Component">
+        </command>
     </extension>
     <extension point="org.eclipse.ui.bindings">
 		<key
@@ -142,6 +147,17 @@
 	        contextId="org.objectstyle.wolips.componenteditor.componentEditorScope"
 	        schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
 	        sequence="M1+M2+F"/>
+   <key
+         commandId="org.objectstyle.wolips.componenteditor.openComponent"
+         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+         sequence="M1+M2+C">
+   </key>
+   <key
+         commandId="org.objectstyle.wolips.componenteditor.openComponent"
+         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+         contextId="org.eclipse.jdt.ui.javaEditorScope"
+         sequence="M1+M2+C">
+   </key>
 	</extension>
 	
 	<extension point = "org.eclipse.ui.editorActions">
@@ -448,5 +464,21 @@
             id="org.objectstyle.wolips.componenteditor.inspector.BindingsInspector">
       </view>
    	 </extension>
+     <extension
+           point="org.eclipse.ui.actionSets">
+        <actionSet
+              id="org.objectstyle.wolips.componenteditor.actionSet"
+              label="Component Action Sets"
+              visible="true">
+           <action
+                 class="org.objectstyle.wolips.componenteditor.actions.OpenComponentAction"
+                 definitionId="org.objectstyle.wolips.componenteditor.openComponent"
+                 id="org.objectstyle.wolips.componenteditor.openComponent"
+                 label="Open Component"
+                 menubarPath="navigate/open.ext2"
+                 toolbarPath="org.eclipse.search.searchActionSet/Search">
+           </action>
+        </actionSet>
+     </extension>
 
 </plugin>
