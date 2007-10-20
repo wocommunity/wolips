@@ -134,7 +134,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 
 	protected WOWebServicesWizardPage  _webservicesSupportPage;
 
-	protected WOFrameworkSupportPage  _frameworkSupportPage;
+//	protected WOFrameworkSupportPage  _frameworkSupportPage;
 
 	private IProject _newProject;
 
@@ -198,10 +198,10 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 		}
 
 		if (wizardType == WizardType.D2W_APPLICATION_WIZARD || wizardType == WizardType.WO_APPLICATION_WIZARD || wizardType == WizardType.D2WS_APPLICATION_WIZARD || wizardType == WizardType.WO_FRAMEWORK_WIZARD) {
-			_frameworkSupportPage = createFrameworkSupportPage();
-			if (_frameworkSupportPage != null) {
-				addPage(_frameworkSupportPage);
-			}
+//			_frameworkSupportPage = createFrameworkSupportPage();
+//			if (_frameworkSupportPage != null) {
+//				addPage(_frameworkSupportPage);
+//			}
 		}
 
 		if (wizardType == WizardType.WO_APPLICATION_WIZARD || wizardType == WizardType.D2W_APPLICATION_WIZARD || wizardType == WizardType.WO_FRAMEWORK_WIZARD) {
@@ -271,15 +271,15 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 		return webservicesPage;
 	}
 
-	protected WOFrameworkSupportPage createFrameworkSupportPage() {
-		WOFrameworkSupportPage frameworkPage = null;
-		if (ResourcesPlugin.getWorkspace().getRoot().getProjects().length > 0) {
-			frameworkPage = new WOFrameworkSupportPage("basicReferenceProjectPage", IMessageProvider.NONE);//$NON-NLS-1$
-			frameworkPage.setTitle(Messages.getString("WOFrameworkSupportPage.title"));
-			frameworkPage.setDescription(Messages.getString("WOFrameworkSupportPage.description"));
-		}
-		return frameworkPage;
-	}
+//	protected WOFrameworkSupportPage createFrameworkSupportPage() {
+//		WOFrameworkSupportPage frameworkPage = null;
+//		if (ResourcesPlugin.getWorkspace().getRoot().getProjects().length > 0) {
+//			frameworkPage = new WOFrameworkSupportPage("basicReferenceProjectPage", IMessageProvider.NONE);//$NON-NLS-1$
+//			frameworkPage.setTitle(Messages.getString("WOFrameworkSupportPage.title"));
+//			frameworkPage.setDescription(Messages.getString("WOFrameworkSupportPage.description"));
+//		}
+//		return frameworkPage;
+//	}
 
 
 
@@ -866,15 +866,15 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 		if (project.isOpen()) {
 			ArrayList<String> frameworkPaths = new ArrayList<String>();
 
-			if (_frameworkSupportPage != null) {
-				if (_frameworkSupportPage.getJNDISupport()) {
-					frameworkPaths.add("JavaJNDIAdaptor");
-				}
-
-				if (_frameworkSupportPage.getJ2EESupport()) {
-					frameworkPaths.add("JavaWOJSPServlet");
-				}
-			}
+//			if (_frameworkSupportPage != null) {
+//				if (_frameworkSupportPage.getJNDISupport()) {
+//					frameworkPaths.add("JavaJNDIAdaptor");
+//				}
+//
+//				if (_frameworkSupportPage.getJ2EESupport()) {
+//					frameworkPaths.add("JavaWOJSPServlet");
+//				}
+//			}
 
 			//Classpath surgery
 			addFrameworksToClasspath(project, frameworkPaths);
