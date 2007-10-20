@@ -44,22 +44,6 @@
          </enablement>
       </decorator>
       <decorator
-            class="org.objectstyle.wolips.eomodeler.decorators.EOModelDecorator"
-            icon="icons/eoModel.png"
-            id="org.objectstyle.wolips.eomodeler.decorators.EOModelDecorator"
-            label="EOModel Decorator"
-            lightweight="false"
-            state="true">
-         <enablement>
-            <and>
-               <objectClass name="org.eclipse.core.resources.IResource"/>
-               <objectState
-                     name="extension"
-                     value="eomodeld"/>
-            </and>
-         </enablement>
-      </decorator>
-      <decorator
             icon="icons/eoFetchSpecification.png"
             id="org.objectstyle.wolips.eomodeler.decorators.EOFetchSpecDecorator"
             label="EOFetchSpecification Decorator"
