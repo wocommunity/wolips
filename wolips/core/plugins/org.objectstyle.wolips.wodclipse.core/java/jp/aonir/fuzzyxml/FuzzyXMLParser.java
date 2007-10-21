@@ -329,6 +329,11 @@ public class FuzzyXMLParser {
     else {
       _roots.add(pi);
     }
+    
+    // XML should not have autoclosing tags 
+    if (name.startsWith("xml")) {
+      _autocloseTags.clear();
+    }
   }
 
   /** DOCTYPEéŒ¾‚ğˆ—‚µ‚Ü‚·B */
