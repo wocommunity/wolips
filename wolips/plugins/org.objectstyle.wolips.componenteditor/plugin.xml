@@ -475,8 +475,7 @@
                  definitionId="org.objectstyle.wolips.componenteditor.openComponent"
                  id="org.objectstyle.wolips.componenteditor.openComponent"
                  label="Open Component..."
-                 menubarPath="navigate/open.ext2"
-                 toolbarPath="org.eclipse.search.searchActionSet/Search">
+                 menubarPath="navigate/open.ext2">
            </action>
         </actionSet>
      </extension>
