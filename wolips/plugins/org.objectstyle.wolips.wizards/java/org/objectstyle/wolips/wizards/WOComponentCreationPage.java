@@ -353,7 +353,7 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 		this.getDialogSettings().put(NSSTRING_ENCODING_KEY, encodingCombo.getText());
 		this.getDialogSettings().put(API_CHECKBOX_KEY, apiCheckbox.getSelection());
 
-		logPreferences();
+//		logPreferences();
 
 		IRunnableWithProgress op = new WorkspaceModifyDelegatingOperation(componentCreator);
 		return createResourceOperation(op);
@@ -568,7 +568,6 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 	}
 
 	protected void handleSelectionEvent(SelectionEvent event) {
-		System.out.println("ButtonSelectionEvent: event:"+event);
 		Widget w = event.widget;
 		if (w instanceof Button) {
 			refreshButtonSettings((Button)w);
