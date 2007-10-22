@@ -233,12 +233,15 @@ public class EMPropertyListSerialization {
 			int count = array.size();
 			if (count > 0) {
 				for (int i = 0; i < count; i++) {
-					if (i > 0) {
-						buffer.append(',');
+					Object obj = array.get(i);
+					if (obj != null) {
+						if (i > 0) {
+							buffer.append(',');
+						}
+						buffer.append('\n');
+						_appendIndentationToStringBuffer(buffer, indentionLevel + 1);
+						_appendObjectToStringBuffer(obj, buffer, indentionLevel + 1);
 					}
-					buffer.append('\n');
-					_appendIndentationToStringBuffer(buffer, indentionLevel + 1);
-					_appendObjectToStringBuffer(array.get(i), buffer, indentionLevel + 1);
 				}
 				buffer.append('\n');
 				_appendIndentationToStringBuffer(buffer, indentionLevel);
@@ -252,13 +255,15 @@ public class EMPropertyListSerialization {
 			if (count > 0) {
 				int i = 0;
 				for (Object o : set) {
-					if (i > 0) {
-						buffer.append(',');
+					if (o != null) {
+						if (i > 0) {
+							buffer.append(',');
+						}
+						buffer.append('\n');
+						_appendIndentationToStringBuffer(buffer, indentionLevel + 1);
+						_appendObjectToStringBuffer(o, buffer, indentionLevel + 1);
+						i++;
 					}
-					buffer.append('\n');
-					_appendIndentationToStringBuffer(buffer, indentionLevel + 1);
-					_appendObjectToStringBuffer(o, buffer, indentionLevel + 1);
-					i++;
 				}
 				buffer.append('\n');
 				_appendIndentationToStringBuffer(buffer, indentionLevel);
@@ -275,11 +280,14 @@ public class EMPropertyListSerialization {
 					if (!(key instanceof String)) {
 						throw new IllegalArgumentException("Property list generation failed while attempting to write hashtable. Non-String key found in Hashtable. Property list dictionaries must have String's as keys.");
 					}
-					buffer.append('\n');
-					_appendIndentationToStringBuffer(buffer, indentionLevel + 1);
-					_appendStringToStringBuffer((String) key, buffer, indentionLevel + 1);
-					buffer.append(" = ");
-					_appendObjectToStringBuffer(dictionary.get(key), buffer, indentionLevel + 1);
+					Object value = dictionary.get(key);
+					if (value != null) {
+						buffer.append('\n');
+						_appendIndentationToStringBuffer(buffer, indentionLevel + 1);
+						_appendStringToStringBuffer((String) key, buffer, indentionLevel + 1);
+						buffer.append(" = ");
+						_appendObjectToStringBuffer(value, buffer, indentionLevel + 1);
+					}
 				}
 				buffer.append('\n');
 				_appendIndentationToStringBuffer(buffer, indentionLevel);
