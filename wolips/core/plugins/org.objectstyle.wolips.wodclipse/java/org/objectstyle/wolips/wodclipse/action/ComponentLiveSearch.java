@@ -86,25 +86,27 @@ public class ComponentLiveSearch implements ModifyListener, SelectionListener {
 							if (!_progressMonitor.isCanceled()) {
 								Display.getDefault().asyncExec(new Runnable() {
 									public void run() {
-										componentNameCombo.remove(0, componentNameCombo.getItemCount() - 1);
-										boolean exactMatch = false;
-										for (WodCompletionProposal elementName : proposals) {
-											String displayString = elementName.getDisplayString();
-											if (displayString != null && displayString.equals(_lastSearch)) {
-												exactMatch = true;
+										if (!componentNameCombo.isDisposed()) {
+											componentNameCombo.remove(0, componentNameCombo.getItemCount() - 1);
+											boolean exactMatch = false;
+											for (WodCompletionProposal elementName : proposals) {
+												String displayString = elementName.getDisplayString();
+												if (displayString != null && displayString.equals(_lastSearch)) {
+													exactMatch = true;
+												}
+												componentNameCombo.add(displayString);
 											}
-											componentNameCombo.add(displayString);
-										}
-										try {
-											Method setListVisible = componentNameCombo.getClass().getDeclaredMethod("setListVisible", boolean.class);
-											setListVisible.setAccessible(true);
-											if (!(exactMatch && componentNameCombo.getItemCount() == 1)) {
-												setListVisible.invoke(componentNameCombo, true);
-											} else {
-												setListVisible.invoke(componentNameCombo, false);
+											try {
+												Method setListVisible = componentNameCombo.getClass().getDeclaredMethod("setListVisible", boolean.class);
+												setListVisible.setAccessible(true);
+												if (!(exactMatch && componentNameCombo.getItemCount() == 1)) {
+													setListVisible.invoke(componentNameCombo, true);
+												} else {
+													setListVisible.invoke(componentNameCombo, false);
+												}
+											} catch (Throwable ex) {
+												ex.printStackTrace();
 											}
-										} catch (Throwable ex) {
-											ex.printStackTrace();
 										}
 									}
 								});
