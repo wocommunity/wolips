@@ -2,6 +2,8 @@
 <!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSExecutable</key>
+	<string>@NAME@</string>
     <key>CFBundleName</key>
     <string>@NAME@</string>
     <key>CFBundleVersion</key>

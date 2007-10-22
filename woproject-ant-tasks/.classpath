@@ -1,4 +1,4 @@
-sspath>
+<classpath>
 	<classpathentry kind="src" path="src/java"/>
 	<classpathentry excluding="**/*.java" kind="src" path="src/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>

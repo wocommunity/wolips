@@ -599,7 +599,7 @@ public class WOApplication extends WOTask {
 	 * @param jdbPath
 	 */
 	public void setJDB(String jdbPath) {
-		if (jdbPath == null || jdbPath.equals("${jdb}")) {
+		if (jdbPath == null || jdbPath.equals("${jdb}") || jdbPath.trim().length() <= 0) {
 			jdbPath = "jdb";
 		}
 		this.jdb = jdbPath;
@@ -620,7 +620,7 @@ public class WOApplication extends WOTask {
 	 * @param jvmPath
 	 */
 	public void setJVM(String jvmPath) {
-		if (jvmPath == null || jvm.equals("${jvm}")) {
+		if (jvmPath == null || jvmPath.equals("${jvm}") || jvmPath.trim().length() <= 0) {
 			this.jvm = "java";
 		}
 		this.jvm = jvmPath;
@@ -641,7 +641,7 @@ public class WOApplication extends WOTask {
 	 * @param jdbOptions
 	 */
 	public void setJDBOptions(String jdbOptions) {
-		if (jdbOptions == null || jdbOptions.equals("${jdbOptions}")) {
+		if (jdbOptions == null || jdbOptions.equals("${jdbOptions}") || jdbOptions.trim().length() <= 0){
 			jdbOptions = "";
 		}
 		this.jdbOptions = jdbOptions;
@@ -662,7 +662,7 @@ public class WOApplication extends WOTask {
 	 * @param jvmOptions
 	 */
 	public void setJvmOptions(String jvmOptions) {
-		if (jvmOptions == null || jvmOptions.equals("${jvmOptions}")) {
+		if (jvmOptions == null || jvmOptions.equals("${jvmOptions}") || jvmOptions.trim().length() <= 0) {
 			jvmOptions = "";
 		}
 		this.jvmOptions = jvmOptions;
