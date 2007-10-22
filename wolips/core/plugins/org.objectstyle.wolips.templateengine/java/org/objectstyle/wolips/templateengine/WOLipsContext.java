@@ -78,6 +78,10 @@ public class WOLipsContext {
 
 	private String antFolderName;
 
+	private String wooEncoding;
+
+	private int htmlBodyType;
+
 	protected WOLipsContext() {
 		super();
 	}
@@ -182,4 +186,29 @@ public class WOLipsContext {
 	public void setAntFolderName(String antFolderName) {
 		this.antFolderName = antFolderName;
 	}
+
+	/**
+	 * Return woo file encoding
+	 * @return
+	 */
+	public String getWOOEncoding() {
+		return wooEncoding;
+	}
+
+	/**
+	 * Set the .woo file encoding
+	 * @param encoding
+	 */
+	public void setWOOEncoding(String encoding) {
+		this.wooEncoding = encoding;
+	}
+
+	public int getHTMLBodyType () {
+		return this.htmlBodyType;
+	}
+
+	public void setHTMLBodyType(int type) {
+		this.htmlBodyType = type;
+	}
+
 }

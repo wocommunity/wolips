@@ -1,8 +1,8 @@
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2004 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2004 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -85,6 +85,11 @@ public class ComponentEngine extends AbstractEngine {
 	private boolean createWooFile = false;
 
 	private boolean createApiFile = false;
+
+	private String wooEncoding;
+
+	private int htmlBodyType;
+
 
 	/**
 	 * @return Returns the apiPath.
@@ -173,6 +178,22 @@ public class ComponentEngine extends AbstractEngine {
 		return this.packageName;
 	}
 
+	public String getWOOEncoding() {
+		return this.wooEncoding;
+	}
+
+	public void setWOOEncoding(String stringEncoding) {
+		this.wooEncoding = stringEncoding;
+	}
+
+	public int getHTMLBodyType () {
+		return this.htmlBodyType;
+	}
+
+	public void setHTMLBodyType(int type) {
+		this.htmlBodyType = type;
+	}
+
 	/**
 	 * inits the engine
 	 */
@@ -216,14 +237,21 @@ public class ComponentEngine extends AbstractEngine {
 			}
 		}
 	}
-	
+
 	public TemplateFolder getSelectedTemplateFolder() {
 		return selectedTemplateFolder;
 	}
 
 	public void run(IProgressMonitor monitor) throws InvocationTargetException {
-		if (this.getCreateBodyTag())
+		if (this.getCreateBodyTag()) {
 			this.setPropertyForKey(this.getCreateBodyTag() + "", "CreateBodyTag");
+			this.setPropertyForKey(this.getHTMLBodyType(), "HTMLBodyType");
+		}
+
+		if (this.getWOOEncoding() != null) {
+			this.setPropertyForKey(this.getWOOEncoding(), "WOOEncoding");
+		}
+
 		setDateInContext();
 		this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.html.vm", this.getComponentPath().toOSString(), this.componentName + "." + IWOLipsModel.EXT_HTML, IWOLipsModel.EXT_HTML));
 		this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.wod.vm", this.getComponentPath().toOSString(), this.componentName + "." + IWOLipsModel.EXT_WOD, IWOLipsModel.EXT_WOD));
