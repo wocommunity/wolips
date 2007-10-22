@@ -511,10 +511,12 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		if (myDeletedEntityNamesInObjectStore == null) {
 			myDeletedEntityNamesInObjectStore = new PropertyListSet<String>();
 		}
-		myDeletedEntityNamesInObjectStore.add(_originalName);
-		// myDeletedEntityNamesInObjectStore.remove(_newName);
-		myDeletedEntityNames.add(_originalName);
-		// myDeletedEntityNames.remove(_newName);
+		if (_originalName != null && _originalName.length() > 0) {
+			myDeletedEntityNamesInObjectStore.add(_originalName);
+			// myDeletedEntityNamesInObjectStore.remove(_newName);
+			myDeletedEntityNames.add(_originalName);
+			// myDeletedEntityNames.remove(_newName);
+		}
 	}
 
 	public boolean containsEntityNamed(String _entityName) {
