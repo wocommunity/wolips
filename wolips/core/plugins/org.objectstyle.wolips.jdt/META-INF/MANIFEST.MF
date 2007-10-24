@@ -4,6 +4,7 @@ Bundle-Name: WOLips JDT Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.jdt; singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.jdt.JdtPlugin
+Bundle-Localization: plugin
 Bundle-Vendor: objectstyle.org
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources,
