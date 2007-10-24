@@ -68,20 +68,24 @@ public class UserInfoLabelProvider extends TablePropertyLabelProvider {
 
 	public String getColumnText(Object _element, String _property) {
 		String text = null;
-		Object key = _element;
-		if (UserInfoPropertySection.KEY.equals(_property)) {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			PropertyListSerialization.propertyListToStream(baos, key);
-			text = new String(baos.toByteArray());
-		} else if (UserInfoPropertySection.VALUE.equals(_property)) {
-			if (myUserInfo != null) {
-				Object valueObj = myUserInfo.get(key);
+		try {
+			Object key = _element;
+			if (UserInfoPropertySection.KEY.equals(_property)) {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				PropertyListSerialization.propertyListToStream(baos, valueObj);
+				PropertyListSerialization.propertyListToStream(baos, key);
 				text = new String(baos.toByteArray());
+			} else if (UserInfoPropertySection.VALUE.equals(_property)) {
+				if (myUserInfo != null) {
+					Object valueObj = myUserInfo.get(key);
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					PropertyListSerialization.propertyListToStream(baos, valueObj);
+					text = new String(baos.toByteArray());
+				}
+			} else {
+				text = super.getColumnText(_element, _property);
 			}
-		} else {
-			text = super.getColumnText(_element, _property);
+		} catch (Throwable t) {
+			text = "<Error>";
 		}
 		return text;
 	}

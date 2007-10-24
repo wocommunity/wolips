@@ -88,6 +88,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.model.IEOModelGroupFactory;
+import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
 import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
 
 /**
@@ -125,11 +126,7 @@ public class EOModelCreator implements IRunnableWithProgress {
 	public void run(IProgressMonitor monitor) throws InvocationTargetException {
 		try {
 			createEOModel(monitor);
-		} catch (CoreException e) {
-			throw new InvocationTargetException(e);
-		} catch (IOException e) {
-			throw new InvocationTargetException(e);
-		} catch (EOModelException e) {
+		} catch (Exception e) {
 			throw new InvocationTargetException(e);
 		}
 	}
@@ -147,8 +144,9 @@ public class EOModelCreator implements IRunnableWithProgress {
 	 * @throws IOException
 	 * @throws CoreException
 	 * @throws InvocationTargetException
+	 * @throws PropertyListParserException 
 	 */
-	public void createEOModel(IProgressMonitor monitor) throws CoreException, IOException, EOModelException, InvocationTargetException {
+	public void createEOModel(IProgressMonitor monitor) throws CoreException, IOException, EOModelException, InvocationTargetException, PropertyListParserException {
 		Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
 		IContainer parentContainer = (IContainer) _parentResource;
 		IFolder existingModelFolder = parentContainer.getFolder(new Path(_modelName + ".eomodeld"));

@@ -39,7 +39,7 @@ public class EMPropertyListSerialization {
 			return "line number: " + _savedLineNumber + ", column: " + (_savedIndex - _savedStartOfLineCharIndex);
 		}
 
-		public static String stringFromPropertyList(Object plist) {
+		public static String stringFromPropertyList(Object plist) throws PropertyListParserException {
 			if (plist == null) {
 				return null;
 			}
@@ -48,16 +48,16 @@ public class EMPropertyListSerialization {
 			return buffer.toString();
 		}
 
-		public static Object propertyListWithContentsOfFile(String path, ParserDataStructureFactory factory) throws IOException {
+		public static Object propertyListWithContentsOfFile(String path, ParserDataStructureFactory factory) throws IOException, PropertyListParserException {
 			String string = EMPropertyListSerialization.stringFromFile(new File(path));
 			return propertyListFromString(string, factory);
 		}
 
-		public static Object propertyListFromString(String string, ParserDataStructureFactory factory) {
+		public static Object propertyListFromString(String string, ParserDataStructureFactory factory) throws PropertyListParserException {
 			return (new _Utilities())._propertyListFromString(string, factory);
 		}
 
-		private Object _propertyListFromString(String string, ParserDataStructureFactory factory) {
+		private Object _propertyListFromString(String string, ParserDataStructureFactory factory) throws PropertyListParserException {
 			_lineNumber = _startOfLineCharIndex = 0;
 			if (string == null) {
 				return null;
@@ -71,12 +71,12 @@ public class EMPropertyListSerialization {
 			index = _readObjectIntoObjectReference(characters, index, objects, EMPropertyListSerialization._Utilities.ROOT, factory);
 			index = _skipWhitespaceAndComments(characters, index);
 			if (index != -1) {
-				throw new IllegalArgumentException("propertyListFromString parsed an object, but there's still more text in the string. A plist should contain only one top-level object. Line number: " + _lineNumber + ", column: " + (index - _startOfLineCharIndex) + ".");
+				throw new PropertyListParserException("The property list contained an object, but it appears to be truncated (line number: " + _lineNumber + ", column: " + (index - _startOfLineCharIndex) + ").");
 			}
 			return objects[0];
 		}
 
-		private static void _appendObjectToStringBuffer(Object object, StringBuffer buffer, int indentionLevel) {
+		private static void _appendObjectToStringBuffer(Object object, StringBuffer buffer, int indentionLevel) throws PropertyListParserException {
 			if (object instanceof String) {
 				_appendStringToStringBuffer((String) object, buffer, indentionLevel);
 			} else if (object instanceof StringBuffer) {
@@ -228,7 +228,7 @@ public class EMPropertyListSerialization {
 			buffer.append('>');
 		}
 
-		private static void _appendArrayToStringBuffer(List array, StringBuffer buffer, int indentionLevel) {
+		private static void _appendArrayToStringBuffer(List array, StringBuffer buffer, int indentionLevel) throws PropertyListParserException {
 			buffer.append('(');
 			int count = array.size();
 			if (count > 0) {
@@ -249,7 +249,7 @@ public class EMPropertyListSerialization {
 			buffer.append(')');
 		}
 
-		private static void _appendSetToStringBuffer(Set set, StringBuffer buffer, int indentionLevel) {
+		private static void _appendSetToStringBuffer(Set set, StringBuffer buffer, int indentionLevel) throws PropertyListParserException {
 			buffer.append('(');
 			int count = set.size();
 			if (count > 0) {
@@ -271,14 +271,14 @@ public class EMPropertyListSerialization {
 			buffer.append(')');
 		}
 
-		private static void _appendDictionaryToStringBuffer(Map dictionary, StringBuffer buffer, int indentionLevel) {
+		private static void _appendDictionaryToStringBuffer(Map dictionary, StringBuffer buffer, int indentionLevel) throws PropertyListParserException {
 			buffer.append('{');
 			int count = dictionary.size();
 			if (count > 0) {
 				for (Iterator keyEnumerator = dictionary.keySet().iterator(); keyEnumerator.hasNext(); buffer.append(';')) {
 					Object key = keyEnumerator.next();
 					if (!(key instanceof String)) {
-						throw new IllegalArgumentException("Property list generation failed while attempting to write hashtable. Non-String key found in Hashtable. Property list dictionaries must have String's as keys.");
+						throw new PropertyListParserException("Property list generation failed while attempting to write hashtable. Non-String key found in Hashtable. Property list dictionaries must have String's as keys.");
 					}
 					Object value = dictionary.get(key);
 					if (value != null) {
@@ -663,25 +663,25 @@ public class EMPropertyListSerialization {
 		throw new IllegalStateException("Can't instantiate an instance of class " + getClass().getName());
 	}
 
-	public static String stringFromPropertyList(Object plist) {
+	public static String stringFromPropertyList(Object plist) throws PropertyListParserException {
 		return _Utilities.stringFromPropertyList(plist);
 	}
 
-	public static Object propertyListFromString(String string, ParserDataStructureFactory factory) {
+	public static Object propertyListFromString(String string, ParserDataStructureFactory factory) throws PropertyListParserException {
 		return _Utilities.propertyListFromString(string, factory);
 	}
 
-	public static Object propertyListWithPathURL(URL url, ParserDataStructureFactory factory) throws IOException {
+	public static Object propertyListWithPathURL(URL url, ParserDataStructureFactory factory) throws IOException, PropertyListParserException {
 		String string = EMPropertyListSerialization.stringFromURL(url);
 		return propertyListFromString(string, factory);
 	}
 
-	public static Object propertyListWithContentsOfInputStream(InputStream inputStream, ParserDataStructureFactory factory) throws IOException {
+	public static Object propertyListWithContentsOfInputStream(InputStream inputStream, ParserDataStructureFactory factory) throws IOException, PropertyListParserException {
 		String string = EMPropertyListSerialization.stringFromInputStream(inputStream);
 		return propertyListFromString(string, factory);
 	}
 
-	public static Object propertyListWithContentsOfFile(String path, ParserDataStructureFactory factory) throws IOException {
+	public static Object propertyListWithContentsOfFile(String path, ParserDataStructureFactory factory) throws IOException, PropertyListParserException {
 		return _Utilities.propertyListWithContentsOfFile(path, factory);
 	}
 
@@ -713,7 +713,7 @@ public class EMPropertyListSerialization {
 
 	public static byte[] bytesFromInputStream(InputStream in) throws IOException {
 		if (in == null)
-			throw new IllegalArgumentException("null input stream");
+			throw new IOException("null input stream");
 
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
 		int read = -1;

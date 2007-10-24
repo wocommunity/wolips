@@ -536,11 +536,17 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			}
 
 			EOModel model = modelGroup.getEditingModel();
+			boolean showModelGroup = true; 
 			if (model == null) {
-				// super.init(_site, fileEditorInput);
 				handleModelErrors(myLoadFailures, true);
-				// throw new EOModelException("Failed to load the requested
-				// model.");
+				Set<EOModel> models = modelGroup.getModels();
+				if (models.size() > 0) {
+					model = models.iterator().next();
+					showModelGroup = true;
+				}
+			}
+			if (model == null) {
+				// DO NOTHING
 			} else {
 				editorInput = EclipseFileUtils.getEditorInput(model);
 				if (openingEntityName != null) {
@@ -573,6 +579,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				synchronized (myCreatePagesLock) {
 					myModel = model;
 					if (myEntitiesTableEditor != null) {
+						final boolean finalShowModelGroup = showModelGroup;
 						Display.getDefault().asyncExec(new Runnable() {
 							public void run() {
 								if (myEntitiesTableEditor != null) {
@@ -580,6 +587,9 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 								}
 								if (getContentOutlinePage() != null && getContentOutlinePage().getUpdater() != null) {
 									getContentOutlinePage().getUpdater().setModel(myModel);
+									if (finalShowModelGroup) {
+										getContentOutlinePage().showModelGroup();
+									}
 								}
 							}
 						});

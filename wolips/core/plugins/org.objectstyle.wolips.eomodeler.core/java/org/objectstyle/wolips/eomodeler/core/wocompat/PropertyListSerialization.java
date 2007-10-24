@@ -78,8 +78,10 @@ public class PropertyListSerialization {
 	 * Reads a property list file. Returns a property list object, that is
 	 * normally a java.util.List or a java.util.Map, but can also be a String or
 	 * a Number.
+	 * 
+	 * @throws PropertyListParserException
 	 */
-	public static Object propertyListFromFile(File f) throws IOException {
+	public static Object propertyListFromFile(File f) throws IOException, PropertyListParserException {
 		return EMPropertyListSerialization.propertyListWithPathURL(f.toURL(), new SimpleParserDataStructureFactory());
 	}
 
@@ -87,8 +89,10 @@ public class PropertyListSerialization {
 	 * Reads a property list file. Returns a property list object, that is
 	 * normally a java.util.List or a java.util.Map, but can also be a String or
 	 * a Number.
+	 * 
+	 * @throws PropertyListParserException
 	 */
-	public static Object propertyListFromFile(File f, ParserDataStructureFactory factory) throws IOException {
+	public static Object propertyListFromFile(File f, ParserDataStructureFactory factory) throws IOException, PropertyListParserException {
 		return EMPropertyListSerialization.propertyListWithPathURL(f.toURL(), factory);
 
 	}
@@ -97,9 +101,11 @@ public class PropertyListSerialization {
 	 * Reads a property list file. Returns a property list object, that is
 	 * normally a java.util.List or a java.util.Map, but can also be a String or
 	 * a Number.
-	 * @throws IOException 
+	 * 
+	 * @throws IOException
+	 * @throws PropertyListParserException
 	 */
-	public static Object propertyListFromURL(URL u, ParserDataStructureFactory factory) throws IOException {
+	public static Object propertyListFromURL(URL u, ParserDataStructureFactory factory) throws IOException, PropertyListParserException {
 		return EMPropertyListSerialization.propertyListWithPathURL(u, factory);
 	}
 
@@ -107,9 +113,11 @@ public class PropertyListSerialization {
 	 * Reads a property list data from InputStream. Returns a property list o
 	 * bject, that is normally a java.util.List or a java.util.Map, but can also
 	 * be a String or a Number.
-	 * @throws IOException 
+	 * 
+	 * @throws IOException
+	 * @throws PropertyListParserException
 	 */
-	public static Object propertyListFromStream(InputStream in) throws IOException {
+	public static Object propertyListFromStream(InputStream in) throws IOException, PropertyListParserException {
 		return EMPropertyListSerialization.propertyListWithContentsOfInputStream(in, new SimpleParserDataStructureFactory());
 	}
 
@@ -117,52 +125,55 @@ public class PropertyListSerialization {
 	 * Reads a property list data from InputStream. Returns a property list o
 	 * bject, that is normally a java.util.List or a java.util.Map, but can also
 	 * be a String or a Number.
-	 * @throws IOException 
+	 * 
+	 * @throws IOException
+	 * @throws PropertyListParserException
 	 */
-	public static Object propertyListFromStream(InputStream in, ParserDataStructureFactory factory) throws IOException {
+	public static Object propertyListFromStream(InputStream in, ParserDataStructureFactory factory) throws IOException, PropertyListParserException {
 		return EMPropertyListSerialization.propertyListWithContentsOfInputStream(in, factory);
 	}
 
 	/**
 	 * Saves property list to file.
+	 * 
+	 * @throws PropertyListParserException
+	 * @throws IOException
 	 */
-	public static void propertyListToFile(String header, File f, Object plist) {
+	public static void propertyListToFile(String header, File f, Object plist) throws PropertyListParserException, IOException {
+		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), Charset.forName("UTF-8")));
+		if (header != null && header.length() > 0) {
+			out.append("// " + header);
+			out.append("\n");
+		}
 		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), Charset.forName("UTF-8")));
-			if(header != null && header.length() > 0) {
-				out.append("// " + header);
-				out.append("\n");
+			String str = EMPropertyListSerialization.stringFromPropertyList(plist);
+			if (str != null) {
+				out.write(str);
 			}
-			try {
-				String str = EMPropertyListSerialization.stringFromPropertyList(plist);
-				if (str != null) {
-					out.write(str);
-				}
-				//writeObject("", out, plist);
-			} finally {
-				out.close();
-			}
-		} catch (IOException ioex) {
-			throw new RuntimeException("Error saving plist.", ioex);
+			// writeObject("", out, plist);
+		} finally {
+			out.close();
 		}
 	}
 
 	/**
 	 * Saves property list to file.
+	 * 
+	 * @throws PropertyListParserException
+	 * @throws IOException
 	 */
-	public static void propertyListToStream(OutputStream os, Object plist) {
+	public static void propertyListToStream(OutputStream os, Object plist) throws PropertyListParserException, IOException {
+		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(os/*
+																			 * ,
+																			 * Charset.forName("UTF-8")
+																			 */));
 		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(os/*, Charset.forName("UTF-8")*/));
-			try {
-				String str = EMPropertyListSerialization.stringFromPropertyList(plist);
-				if (str != null) {
-					out.write(str);
-				}
-			} finally {
-				out.close();
+			String str = EMPropertyListSerialization.stringFromPropertyList(plist);
+			if (str != null) {
+				out.write(str);
 			}
-		} catch (IOException ioex) {
-			throw new RuntimeException("Error saving plist.", ioex);
+		} finally {
+			out.close();
 		}
 	}
 }

@@ -62,6 +62,7 @@ import java.util.TreeSet;
 
 import org.objectstyle.wolips.baseforplugins.util.URLUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
+import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 
 public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements ISortableEOModelObject {
@@ -129,7 +130,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		myModelMap = new EOModelMap();
 	}
 
-	public EOModel(URL modelURL) throws EOModelException, IOException {
+	public EOModel(URL modelURL) throws EOModelException, IOException, PropertyListParserException {
 		this(EOModelGroup.getModelNameForURL(modelURL));
 		Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
 		loadFromURL(modelURL, failures);
@@ -138,7 +139,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		}
 	}
 
-	public EOModel(URL modelURL, Set<EOModelVerificationFailure> failures) throws EOModelException, IOException {
+	public EOModel(URL modelURL, Set<EOModelVerificationFailure> failures) throws EOModelException, IOException, PropertyListParserException {
 		this(EOModelGroup.getModelNameForURL(modelURL));
 		loadFromURL(modelURL, failures);
 	}
@@ -523,7 +524,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		return getEntityNamed(_entityName) != null;
 	}
 
-	public Set importEntitiesFromModel(URL sourceModelURL, Set<EOModelVerificationFailure> failures) throws EOModelException, IOException {
+	public Set importEntitiesFromModel(URL sourceModelURL, Set<EOModelVerificationFailure> failures) throws EOModelException, IOException, PropertyListParserException {
 		EOModelGroup sourceModelGroup = new EOModelGroup();
 		EOModel sourceModel = new EOModel("Temp");
 		sourceModelGroup.addModel(sourceModel);
@@ -713,20 +714,25 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		return indexURL;
 	}
 
-	public void loadFromURL(URL modelURL, Set<EOModelVerificationFailure> failures) throws EOModelException, IOException {
+	public void loadFromURL(URL modelURL, Set<EOModelVerificationFailure> failures) throws EOModelException, IOException, PropertyListParserException {
 		loadFromURL(modelURL, true, failures);
 	}
 
-	public void loadFromURL(URL _modelFolder, boolean createMissingDatabaseConfig, Set<EOModelVerificationFailure> _failures) throws EOModelException, IOException {
+	public void loadFromURL(URL _modelFolder, boolean createMissingDatabaseConfig, Set<EOModelVerificationFailure> _failures) throws EOModelException, MalformedURLException {
 		System.out.println("EOModel.loadFromURL: " + _modelFolder);
 		URL indexURL = new URL(_modelFolder, "index.eomodeld");
 		// if (!indexURL.exists()) {
 		// throw new EOModelException(indexURL + " does not exist.");
 		// }
 		myModelURL = _modelFolder;
-		Map rawModelMap = (Map) PropertyListSerialization.propertyListFromURL(indexURL, new EOModelParserDataStructureFactory());
+		Map rawModelMap;
+		try {
+			rawModelMap = (Map) PropertyListSerialization.propertyListFromURL(indexURL, new EOModelParserDataStructureFactory());
+		} catch (Exception e) {
+			throw new EOModelException("index.eomodeld is corrupted.", e);
+		}
 		if (rawModelMap == null) {
-			throw new EOModelException(indexURL + " is corrupted.");
+			throw new EOModelException("index.eomodeld is corrupted.");
 		}
 		EOModelMap modelMap = new EOModelMap(rawModelMap);
 		myModelMap = modelMap;
@@ -978,8 +984,9 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	 * 
 	 * @return the .eomodeld folder
 	 * @throws IOException if the model could not be saved
+	 * @throws PropertyListParserException 
 	 */
-	public File save() throws IOException {
+	public File save() throws IOException, PropertyListParserException {
 		URL indexURL = getIndexURL();
 		if (indexURL == null) {
 			throw new IOException("This model has no index file URL.");
@@ -989,7 +996,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		return saveToFolder(modelFolder.getParentFile());
 	}
 
-	public File saveToFolder(File parentFolder) throws IOException {
+	public File saveToFolder(File parentFolder) throws IOException, PropertyListParserException {
 		File modelFolder = _eomodeldFolderForFolder(parentFolder);
 		if (!modelFolder.exists()) {
 			if (!modelFolder.mkdirs()) {

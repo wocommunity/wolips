@@ -82,6 +82,7 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelParserDataStructureFactory;
 import org.objectstyle.wolips.eomodeler.core.model.IUserInfoable;
 import org.objectstyle.wolips.eomodeler.core.utils.NotificationMap;
+import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.utils.AddRemoveButtonGroup;
 import org.objectstyle.wolips.eomodeler.utils.EMTextCellEditor;
@@ -253,17 +254,21 @@ public class UserInfoPropertySection extends AbstractPropertySection {
 
 	protected void updateTextFromUserInfo() {
 		if (myUserInfoable != null && mySelectedKey != null) {
-			Object valueObj = myUserInfoable.getUserInfo().get(mySelectedKey);
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			PropertyListSerialization.propertyListToStream(baos, valueObj);
-			String valueStr;
 			try {
-				valueStr = new String(baos.toByteArray(), "UTF-8");
-				myValueText.setText(valueStr);
-			} catch (UnsupportedEncodingException e) {
-				throw new RuntimeException(e);
+				Object valueObj = myUserInfoable.getUserInfo().get(mySelectedKey);
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				PropertyListSerialization.propertyListToStream(baos, valueObj);
+				String valueStr;
+				try {
+					valueStr = new String(baos.toByteArray(), "UTF-8");
+					myValueText.setText(valueStr);
+				} catch (UnsupportedEncodingException e) {
+					throw new RuntimeException(e);
+				}
+				myValueText.setEnabled(true);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			myValueText.setEnabled(true);
 		} else {
 			myValueText.setText("");
 			myValueText.setEnabled(false);
@@ -280,7 +285,7 @@ public class UserInfoPropertySection extends AbstractPropertySection {
 				}
 				Object valueObj = PropertyListSerialization.propertyListFromStream(new ByteArrayInputStream(valueStr.getBytes("UTF-8")), new EOModelParserDataStructureFactory());
 				myUserInfoable.getUserInfo().put(mySelectedKey, valueObj);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		}

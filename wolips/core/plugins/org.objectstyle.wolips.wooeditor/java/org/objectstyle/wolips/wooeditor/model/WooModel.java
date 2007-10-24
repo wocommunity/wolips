@@ -30,6 +30,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.model.IEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.core.model.PropertyListMap;
 import org.objectstyle.wolips.eomodeler.core.utils.IPropertyChangeSource;
+import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.eclipse.EclipseEOModelGroupFactory;
 import org.objectstyle.wolips.locate.LocatePlugin;
@@ -154,7 +155,7 @@ public class WooModel implements IPropertyChangeSource {
 		}
 	}
 
-	public void loadModelFromStream(final InputStream input) throws IOException {
+	public void loadModelFromStream(final InputStream input) throws IOException, PropertyListParserException {
 		myModelMap = new EOModelMap((Map<?, ?>) PropertyListSerialization
 				.propertyListFromStream(input,
 						new EOModelParserDataStructureFactory()));
@@ -226,13 +227,13 @@ public class WooModel implements IPropertyChangeSource {
 					e.printStackTrace();
 				}
 			}
-		} catch (IOException ioe) {
+		} catch (Exception ioe) {
 			throw new WooModelException("Failed to save changes to WOO file.",
 					ioe);
 		}
 	}
 
-	public void doSave(final OutputStream writer) throws WooModelException {
+	public void doSave(final OutputStream writer) throws WooModelException, PropertyListParserException, IOException {
 		// XXX Need to validate model before saving
 		EOModelMap modelMap = toModelMap();
 		PropertyListSerialization.propertyListToStream(writer, modelMap);
@@ -303,7 +304,7 @@ public class WooModel implements IPropertyChangeSource {
 		OutputStream modelStream = new ByteArrayOutputStream();
 		try {
 			this.doSave(modelStream);
-		} catch (WooModelException e) {
+		} catch (Exception e) {
 			return null;
 		}
 		return modelStream.toString();

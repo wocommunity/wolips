@@ -50,6 +50,7 @@
 package org.objectstyle.wolips.eomodeler.core.model;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -64,6 +65,7 @@ import org.objectstyle.wolips.eomodeler.core.kvc.KeyPath;
 import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
+import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 
 public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOEntityRelative, ISortableEOModelObject {
@@ -1836,7 +1838,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			EOModelMap entityMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromURL(entityURL, new EOModelParserDataStructureFactory()));
 			loadFromMap(entityMap, failures);
 		} catch (Throwable e) {
-			throw new EOModelException("Failed to load entity from '" + entityURL + "'.", e);
+			throw new EOModelException("Failed to load entity from '" + entityURL.getFile() + "'.", e);
 		}
 	}
 
@@ -1845,16 +1847,16 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			EOModelMap fspecMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromURL(fetchSpecURL, new EOModelParserDataStructureFactory()));
 			loadFetchSpecsFromMap(fspecMap, failures);
 		} catch (Throwable e) {
-			throw new EOModelException("Failed to load fetch specifications from '" + fetchSpecURL + "'.", e);
+			throw new EOModelException("Failed to load fetch specifications from '" + fetchSpecURL.getFile() + "'.", e);
 		}
 	}
 
-	public void saveToFile(File _entityFile) {
+	public void saveToFile(File _entityFile) throws PropertyListParserException, IOException {
 		EOModelMap entityMap = toEntityMap();
 		PropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, _entityFile, entityMap);
 	}
 
-	public void saveFetchSpecsToFile(File _fetchSpecFile) {
+	public void saveFetchSpecsToFile(File _fetchSpecFile) throws PropertyListParserException, IOException {
 		if (myFetchSpecs.size() == 0) {
 			_fetchSpecFile.delete();
 		} else {
