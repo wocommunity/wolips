@@ -63,6 +63,7 @@ import java.util.TreeSet;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.objectstyle.wolips.baseforplugins.util.URLUtils;
+import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 
 public class EOModelGroup extends EOModelObject<Object> {
@@ -400,6 +401,9 @@ public class EOModelGroup extends EOModelObject<Object> {
 						EOModel existingEntityModel = existingEntity.getModel();
 						failures.add(new EOModelVerificationFailure(model, model, existingEntityModel.getName() + " and " + model.getName() + " both declare an entity named " + existingEntity.getName() + ", so " + existingEntityModel.getName() + " is being removed. You can create an EOModelGroup file to resolve this.", true, e));
 						removeModel(existingEntityModel, failures);
+					} catch (Exception e) {
+						failures.add(new EOModelVerificationFailure(model, model, model.getName() + " failed to load.", true, e));
+						reloadModel = false;
 					}
 				}
 			}
@@ -461,7 +465,7 @@ public class EOModelGroup extends EOModelObject<Object> {
 		// DO NOTHING
 	}
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, PropertyListParserException {
 		long a = System.currentTimeMillis();
 		for (int i = 0; i < 1000; i ++) {
 			PropertyListSerialization.propertyListFromFile(new File("/Users/mschrag/Documents/workspace/MDTask/Resources/MDTask.eomodeld/index.eomodeld"));

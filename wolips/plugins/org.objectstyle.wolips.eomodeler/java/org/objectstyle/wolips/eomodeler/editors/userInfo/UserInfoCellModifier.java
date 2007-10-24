@@ -81,7 +81,11 @@ public class UserInfoCellModifier extends TablePropertyCellModifier {
 			valueObj = super.getValue(_element, _property);
 		}
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		PropertyListSerialization.propertyListToStream(baos, valueObj);
+		try {
+			PropertyListSerialization.propertyListToStream(baos, valueObj);
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to get value.", e);
+		}
 		String valueStr = new String(baos.toByteArray());
 		return valueStr;
 	}

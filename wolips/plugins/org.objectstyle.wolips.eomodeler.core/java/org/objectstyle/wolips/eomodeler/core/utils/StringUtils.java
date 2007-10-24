@@ -214,6 +214,9 @@ public class StringUtils {
 				if (!message.endsWith(".")) { //$NON-NLS-1$
 					messageBuffer.append(". "); //$NON-NLS-1$
 				}
+				else if (!message.endsWith(" ")) {
+					messageBuffer.append(" ");
+				}
 			}
 
 			Throwable cause = _t.getCause();

@@ -50,6 +50,7 @@
 package org.objectstyle.wolips.eomodeler.core.model;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -60,6 +61,7 @@ import java.util.Set;
 
 import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
+import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 
 public class EOStoredProcedure extends UserInfoableEOModelObject<EOModel> implements ISortableEOModelObject {
@@ -310,7 +312,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject<EOModel> implem
 		}
 	}
 
-	public void saveToFile(File _storedProcedureFile) {
+	public void saveToFile(File _storedProcedureFile) throws PropertyListParserException, IOException {
 		EOModelMap storedProcedureMap = toMap();
 		PropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, _storedProcedureFile, storedProcedureMap);
 	}

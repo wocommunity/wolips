@@ -245,6 +245,14 @@ public class EOModelContentOutlinePage extends ContentOutlinePage implements Pro
 		return _updater;
 	}
 
+	public void showModelGroup() {
+		_toggleModelGroupAction.showModelGroup();
+	}
+
+	public void showModel() {
+		_toggleModelGroupAction.showModel();
+	}
+	
 	public class ToggleModelGroupAction extends Action {
 		private boolean _showModelGroup;
 
@@ -259,6 +267,16 @@ public class EOModelContentOutlinePage extends ContentOutlinePage implements Pro
 			refreshUI();
 		}
 
+		public void showModelGroup() {
+			_showModelGroup = true;
+			refreshUI();
+		}
+
+		public void showModel() {
+			_showModelGroup = false;
+			refreshUI();
+		}
+		
 		public void refreshUI() {
 			if (_showModelGroup) {
 				getUpdater().showModel();
