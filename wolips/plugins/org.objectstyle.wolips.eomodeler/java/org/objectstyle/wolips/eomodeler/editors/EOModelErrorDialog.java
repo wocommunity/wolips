@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 
 public class EOModelErrorDialog extends Dialog {
@@ -134,7 +135,13 @@ public class EOModelErrorDialog extends Dialog {
 			
 			Label failedObjectLabel = new Label(groupFailureComposite, SWT.NONE);
 			failedObjectLabel.setBackground(failuresComposite.getBackground());
-			failedObjectLabel.setText(failure.getFailedObject().getFullyQualifiedName());
+			EOModelObject failedObject = failure.getFailedObject();
+			if (failedObject != null) {
+				failedObjectLabel.setText(failedObject.getFullyQualifiedName());
+			}
+			else {
+				failedObjectLabel.setText("General Failure");
+			}
 			failedObjectLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DIALOG_FONT));
 			failedObjectLabel.setForeground(failuresComposite.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
 			failedObjectLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
