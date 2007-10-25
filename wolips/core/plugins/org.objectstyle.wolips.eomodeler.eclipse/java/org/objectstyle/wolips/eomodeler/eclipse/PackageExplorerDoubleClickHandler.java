@@ -189,7 +189,6 @@ public class PackageExplorerDoubleClickHandler implements IPageListener, IPartLi
 
 	public void doubleClick(DoubleClickEvent _event) {
 		ISelection selection = _event.getSelection();
-		System.out.println("PackageExplorerDoubleClickHandler.doubleClick: " + selection);
 		if (selection instanceof IStructuredSelection) {
 			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 			Iterator selectedObjectsIter = structuredSelection.iterator();
