@@ -1,8 +1,6 @@
 package org.objectstyle.wolips.eomodeler.factories;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,6 +18,10 @@ import javax.xml.xpath.XPathFactory;
 
 import org.objectstyle.wolips.eomodeler.core.model.AbstractManifestEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.core.model.ManifestSearchFolder;
+import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
+import org.objectstyle.wolips.eomodeler.core.wocompat.EMPropertyListSerialization;
+import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
+import org.objectstyle.wolips.eomodeler.core.wocompat.SimpleParserDataStructureFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -31,7 +33,12 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 		System.out.println("IDEAProjectEOModelGroupFactory.getSearchFolders: Looking for IDEA projects ...");
 		List<ManifestSearchFolder> searchFolders = null;
 		List<File> ideaProjectFiles = new LinkedList<File>();
-		findIdeaProjectFilesInFolder(selectedModelFolder, ideaProjectFiles);
+		try {
+			findIdeaProjectFilesInFolder(selectedModelFolder, ideaProjectFiles);
+		} catch (PropertyListParserException e) {
+			e.printStackTrace();
+			throw new IOException("Failed to parse '.EntityModeler.plist'. " + StringUtils.getErrorMessage(e));
+		}
 		if (!ideaProjectFiles.isEmpty()) {
 			searchFolders = new LinkedList<ManifestSearchFolder>();
 			for (File ideaProjectFile : ideaProjectFiles) {
@@ -122,33 +129,35 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 		}
 	}
 
-	protected void findIdeaProjectFilesInFolder(File folder, List<File> ideaProjectFiles) throws IOException {
+	@SuppressWarnings("unchecked")
+	protected void findIdeaProjectFilesInFolder(File folder, List<File> ideaProjectFiles) throws IOException, PropertyListParserException {
 		if (folder != null) {
 			boolean foundProjectFiles = false;
 			if (folder.isDirectory()) {
 				System.out.println("IDEAProjectEOModelGroupFactory.findIdeaProjectFilesInFolder: Looking in " + folder + " ...");
-				File projectLocator = new File(folder, ".EntityModeler.idea");
+				File projectLocator = new File(folder, ".EntityModeler.plist");
 				if (projectLocator.exists()) {
 					System.out.println("IDEAProjectEOModelGroupFactory.findIdeaProjectFilesInFolder:   Found project locator '" + projectLocator + '.');
-					BufferedReader projectLocatorReader = new BufferedReader(new FileReader(projectLocator));
-					try {
-						String projectFileStr;
-						while ((projectFileStr = projectLocatorReader.readLine()) != null) {
-							File projectFile = new File(projectFileStr);
-							if (!projectFile.exists()) {
-								projectFile = new File(folder, projectFileStr);
-							}
-							if (projectFile.exists()) {
-								projectFile = projectFile.getCanonicalFile();
-								if (isIdeaProjectFile(projectFile)) {
-									System.out.println("IDEAProjectEOModelGroupFactory.findIdeaProjectFilesInFolder:     Found project '" + projectFile + "'.");
-									ideaProjectFiles.add(projectFile.getCanonicalFile());
-									foundProjectFiles = true;
+					Map<String, Object> projectProperties = (Map<String, Object>) EMPropertyListSerialization.propertyListWithContentsOfFile(projectLocator.getCanonicalPath(), new SimpleParserDataStructureFactory());
+					Map<String, List<String>> dependencies = (Map<String, List<String>>) projectProperties.get("Dependencies");
+					if (dependencies != null) {
+						List<String> projectFilePaths = dependencies.get("IDEA");
+						if (projectFilePaths != null) {
+							for (String projectFilePath : projectFilePaths) {
+								File projectFile = new File(projectFilePath);
+								if (!projectFile.exists()) {
+									projectFile = new File(folder, projectFilePath);
+								}
+								if (projectFile.exists()) {
+									projectFile = projectFile.getCanonicalFile();
+									if (isIdeaProjectFile(projectFile)) {
+										System.out.println("IDEAProjectEOModelGroupFactory.findIdeaProjectFilesInFolder:     Found project '" + projectFile + "'.");
+										ideaProjectFiles.add(projectFile.getCanonicalFile());
+										foundProjectFiles = true;
+									}
 								}
 							}
 						}
-					} finally {
-						projectLocatorReader.close();
 					}
 				} else {
 					File[] files = folder.listFiles();

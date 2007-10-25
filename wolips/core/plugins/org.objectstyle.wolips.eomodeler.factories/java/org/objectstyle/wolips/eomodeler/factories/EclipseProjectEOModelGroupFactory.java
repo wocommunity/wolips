@@ -1,12 +1,11 @@
 package org.objectstyle.wolips.eomodeler.factories;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -19,6 +18,10 @@ import javax.xml.xpath.XPathFactory;
 import org.objectstyle.woenvironment.env.WOEnvironment;
 import org.objectstyle.wolips.eomodeler.core.model.AbstractManifestEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.core.model.ManifestSearchFolder;
+import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
+import org.objectstyle.wolips.eomodeler.core.wocompat.EMPropertyListSerialization;
+import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
+import org.objectstyle.wolips.eomodeler.core.wocompat.SimpleParserDataStructureFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -30,7 +33,12 @@ public class EclipseProjectEOModelGroupFactory extends AbstractManifestEOModelGr
 		System.out.println("EclipseProjectEOModelGroupFactory.getSearchFolders: Looking for Eclipse projects ...");
 		List<ManifestSearchFolder> searchFolders = null;
 		List<File> eclipseProjectFolders = new LinkedList<File>();
-		findEclipseProjectFolders(selectedModelFolder, eclipseProjectFolders);
+		try {
+			findEclipseProjectFolders(selectedModelFolder, eclipseProjectFolders);
+		} catch (PropertyListParserException e) {
+			e.printStackTrace();
+			throw new IOException("Failed to parse '.EntityModeler.plist'. " + StringUtils.getErrorMessage(e));
+		}
 		if (!eclipseProjectFolders.isEmpty()) {
 			searchFolders = new LinkedList<ManifestSearchFolder>();
 			for (File eclipseProjectFolder : eclipseProjectFolders) {
@@ -115,33 +123,35 @@ public class EclipseProjectEOModelGroupFactory extends AbstractManifestEOModelGr
 		}
 	}
 
-	protected void findEclipseProjectFolders(File folder, List<File> eclipseProjectFolders) throws IOException {
+	@SuppressWarnings("unchecked")
+	protected void findEclipseProjectFolders(File folder, List<File> eclipseProjectFolders) throws IOException, PropertyListParserException {
 		if (folder != null) {
 			boolean foundProjectFolders = false;
 			if (folder.isDirectory()) {
 				System.out.println("EclipseProjectEOModelGroupFactory.findEclipseProjectFolders: Looking for '" + folder + "' ...");
-				File projectLocator = new File(folder, ".EntityModeler.eclipse");
+				File projectLocator = new File(folder, ".EntityModeler.plist");
 				if (projectLocator.exists()) {
 					System.out.println("EclipseProjectEOModelGroupFactory.findEclipseProjectFolders:   Found project locator '" + projectLocator + "' ...");
-					BufferedReader projectLocatorReader = new BufferedReader(new FileReader(projectLocator));
-					try {
-						String projectFileStr;
-						while ((projectFileStr = projectLocatorReader.readLine()) != null) {
-							File projectFolder = new File(projectFileStr);
-							if (!projectFolder.exists()) {
-								projectFolder = new File(folder, projectFileStr);
-							}
-							if (projectFolder.exists()) {
-								projectFolder = projectFolder.getCanonicalFile();
-								if (isEclipseProjectFolder(projectFolder)) {
-									System.out.println("EclipseProjectEOModelGroupFactory.findEclipseProjectFolders:     Found project '" + projectFolder + "'");
-									eclipseProjectFolders.add(projectFolder);
-									foundProjectFolders = true;
+					Map<String, Object> projectProperties = (Map<String, Object>) EMPropertyListSerialization.propertyListWithContentsOfFile(projectLocator.getCanonicalPath(), new SimpleParserDataStructureFactory());
+					Map<String, List<String>> dependencies = (Map<String, List<String>>) projectProperties.get("Dependencies");
+					if (dependencies != null) {
+						List<String> projectFilePaths = dependencies.get("Eclipse");
+						if (projectFilePaths != null) {
+							for (String projectFilePath : projectFilePaths) {
+								File projectFolder = new File(projectFilePath);
+								if (!projectFolder.exists()) {
+									projectFolder = new File(folder, projectFilePath);
+								}
+								if (projectFolder.exists()) {
+									projectFolder = projectFolder.getCanonicalFile();
+									if (isEclipseProjectFolder(projectFolder)) {
+										System.out.println("EclipseProjectEOModelGroupFactory.findEclipseProjectFolders:     Found project '" + projectFolder + "'");
+										eclipseProjectFolders.add(projectFolder);
+										foundProjectFolders = true;
+									}
 								}
 							}
 						}
-					} finally {
-						projectLocatorReader.close();
 					}
 				} else if (isEclipseProjectFolder(folder)) {
 					System.out.println("EclipseProjectEOModelGroupFactory.findEclipseProjectFolders:   Found project '" + folder + "'");
