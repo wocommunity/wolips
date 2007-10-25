@@ -98,14 +98,18 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
           ICompilationUnit compilationUnit = JavaCore.createCompilationUnitFrom((IFile)_resource);
           if (compilationUnit != null) {
             IType type = compilationUnit.findPrimaryType();
-            ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(type, _progressMonitor);
-            IType woElementType = type.getJavaProject().findType("com.webobjects.appserver.WOElement", _progressMonitor);
-            if (typeHierarchy.contains(woElementType)) {
-              LocalizedComponentsLocateResult results = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(_resource);
-              IFile wodFile = results.getFirstWodFile();
-              if (wodFile != null) {
-                wodFile.touch(_progressMonitor);
-                validateWodFile(wodFile, _progressMonitor);
+            if (type != null) {
+              IType woElementType = type.getJavaProject().findType("com.webobjects.appserver.WOElement", _progressMonitor);
+              if (woElementType != null) {
+                ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(type, _progressMonitor);
+                if (typeHierarchy != null && typeHierarchy.contains(woElementType)) {
+                  LocalizedComponentsLocateResult results = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(_resource);
+                  IFile wodFile = results.getFirstWodFile();
+                  if (wodFile != null && wodFile.exists()) {
+                    wodFile.touch(_progressMonitor);
+                    validateWodFile(wodFile, _progressMonitor);
+                  }
+                }
               }
             }
           }
