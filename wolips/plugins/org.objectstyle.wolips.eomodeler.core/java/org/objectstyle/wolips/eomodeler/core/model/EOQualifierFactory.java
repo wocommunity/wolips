@@ -180,6 +180,18 @@ public class EOQualifierFactory {
 				value = new ASTNamedParameter(variableKey);
 			} else if ("NSNumber".equals(valueClass)) {
 				value = valueMap.get("value");
+				if (value instanceof String) {
+					String valueStr = (String)value;
+					if (valueStr.indexOf('.') == -1) {
+						value = Integer.parseInt(valueStr);
+						if (!String.valueOf(value).equals(valueStr)) {
+							value = Long.parseLong(valueStr);
+						}
+					}
+					else {
+						value = Float.parseFloat(valueStr);
+					}
+				}
 			} else {
 				throw new IllegalArgumentException("Unknown EOKeyValueQualifier value class " + valueClass);
 			}
