@@ -155,46 +155,50 @@ public class WOHierarchyScope extends AbstractSearchScope implements SuffixConst
 	 */
 	private IPath[] computeProjectsAndJars(IType type) throws JavaModelException {
 		HashSet set = new HashSet();
-		IPackageFragmentRoot root = (IPackageFragmentRoot) type.getPackageFragment().getParent();
-		if (root.isArchive()) {
-			// add the root
-			set.add(root.getPath());
-			// add all projects that reference this archive and their dependents
-			IPath rootPath = root.getPath();
-			IJavaModel model = JavaModelManager.getJavaModelManager().getJavaModel();
-			IJavaProject[] projects = model.getJavaProjects();
-			HashSet visited = new HashSet();
-			for (int i = 0; i < projects.length; i++) {
-				JavaProject project = (JavaProject) projects[i];
-				IClasspathEntry entry = project.getClasspathEntryFor(rootPath);
-				if (entry != null) {
-					// add the project and its binary pkg fragment roots
+		if (type != null) {
+			IPackageFragmentRoot root = (IPackageFragmentRoot) type.getPackageFragment().getParent();
+			if (root != null) {
+				if (root.isArchive()) {
+					// add the root
+					set.add(root.getPath());
+					// add all projects that reference this archive and their dependents
+					IPath rootPath = root.getPath();
+					IJavaModel model = JavaModelManager.getJavaModelManager().getJavaModel();
+					IJavaProject[] projects = model.getJavaProjects();
+					HashSet visited = new HashSet();
+					for (int i = 0; i < projects.length; i++) {
+						JavaProject project = (JavaProject) projects[i];
+						IClasspathEntry entry = project.getClasspathEntryFor(rootPath);
+						if (entry != null) {
+							// add the project and its binary pkg fragment roots
+							IPackageFragmentRoot[] roots = project.getAllPackageFragmentRoots();
+							set.add(project.getPath());
+							for (int k = 0; k < roots.length; k++) {
+								IPackageFragmentRoot pkgFragmentRoot = roots[k];
+								if (pkgFragmentRoot.getKind() == IPackageFragmentRoot.K_BINARY) {
+									set.add(pkgFragmentRoot.getPath());
+								}
+							}
+							// add the dependent projects
+							computeDependents(project, set, visited);
+						}
+					}
+				} else {
+					// add all the project's pkg fragment roots
+					IJavaProject project = (IJavaProject) root.getParent();
 					IPackageFragmentRoot[] roots = project.getAllPackageFragmentRoots();
-					set.add(project.getPath());
-					for (int k = 0; k < roots.length; k++) {
-						IPackageFragmentRoot pkgFragmentRoot = roots[k];
+					for (int i = 0; i < roots.length; i++) {
+						IPackageFragmentRoot pkgFragmentRoot = roots[i];
 						if (pkgFragmentRoot.getKind() == IPackageFragmentRoot.K_BINARY) {
 							set.add(pkgFragmentRoot.getPath());
+						} else {
+							set.add(pkgFragmentRoot.getParent().getPath());
 						}
 					}
 					// add the dependent projects
-					computeDependents(project, set, visited);
+					computeDependents(project, set, new HashSet());
 				}
 			}
-		} else {
-			// add all the project's pkg fragment roots
-			IJavaProject project = (IJavaProject) root.getParent();
-			IPackageFragmentRoot[] roots = project.getAllPackageFragmentRoots();
-			for (int i = 0; i < roots.length; i++) {
-				IPackageFragmentRoot pkgFragmentRoot = roots[i];
-				if (pkgFragmentRoot.getKind() == IPackageFragmentRoot.K_BINARY) {
-					set.add(pkgFragmentRoot.getPath());
-				} else {
-					set.add(pkgFragmentRoot.getParent().getPath());
-				}
-			}
-			// add the dependent projects
-			computeDependents(project, set, new HashSet());
 		}
 		IPath[] result = new IPath[set.size()];
 		set.toArray(result);
