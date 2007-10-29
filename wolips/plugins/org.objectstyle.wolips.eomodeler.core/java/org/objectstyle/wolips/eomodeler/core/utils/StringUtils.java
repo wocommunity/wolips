@@ -151,10 +151,15 @@ public class StringUtils {
      */
     public static String camelCaseToUnderscore(String camelString) {
     	StringBuffer underscore = new StringBuffer();
+    	boolean lastCharacterWasWordBreak = true;
     	for (int i = 0; i < camelString.length(); i ++) {
     		char ch = camelString.charAt(i);
-    		if (Character.isUpperCase(ch) && i > 0) {
+    		if (Character.isUpperCase(ch) && !lastCharacterWasWordBreak) {
     			underscore.append("_");
+    			lastCharacterWasWordBreak = true;
+    		}
+    		else {
+    			lastCharacterWasWordBreak = false;
     		}
     		underscore.append(Character.toLowerCase(ch));
     	}
