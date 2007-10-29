@@ -193,6 +193,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 //				System.out.println("EOGenerator.writeTemplate: " + i + ": " + (char) newFileContents[i]);
 //			}
 
+			/*
 			MessageDigest md5 = MessageDigest.getInstance("MD5");
 			byte[] newFileDigest = md5.digest(newFileContents);
 
@@ -216,8 +217,9 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 				System.out.println("EOGenerator.writeTemplate: " + i + "=" + newFileDigest[i] + "," + existingFileDigest[i]);
 				templateChanged = (newFileDigest[i] != existingFileDigest[i]);
 			}
+			*/
+			boolean templateChanged = true;
 			if (templateChanged) {
-				System.out.println("EOGenerator.writeTemplate: changed! " + outputFile);
 				FileOutputStream newFileStream = new FileOutputStream(outputFile);
 				BufferedOutputStream newFileBufferedStream = new BufferedOutputStream(newFileStream);
 				try {
