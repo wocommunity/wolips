@@ -49,15 +49,10 @@
  */
 package org.objectstyle.wolips.eogenerator.core.model;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -65,6 +60,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.objectstyle.wolips.eogenerator.core.Activator;
+import org.objectstyle.wolips.eogenerator.core.runner.ExternalEOGeneratorRunner;
+import org.objectstyle.wolips.eogenerator.core.runner.VelocityEOGeneratorRunner;
 import org.objectstyle.wolips.preferences.Preferences;
 
 public class EOGenerateWorkspaceJob extends WorkspaceJob {
@@ -94,46 +91,19 @@ public class EOGenerateWorkspaceJob extends WorkspaceJob {
 				try {
 					EOGeneratorModel eogenModel = EOGeneratorModel.createModelFromFile(eogenFile);
 					eogenModel.setVerbose(eogenModel.isVerbose());
-					String eogenFileContents = eogenModel.writeToString(Preferences.getEOGeneratorPath(), Preferences.getEOGeneratorTemplateDir(), Preferences.getEOGeneratorJavaTemplate(), Preferences.getEOGeneratorSubclassJavaTemplate());
-					List<String> commandsList = new LinkedList<String>();
-					CommandLineTokenizer tokenizer = new CommandLineTokenizer(eogenFileContents);
-					while (tokenizer.hasMoreTokens()) {
-						commandsList.add(tokenizer.nextToken());
+
+					IEOGeneratorRunner runner;
+					String eogeneratorPath = Preferences.getEOGeneratorPath();
+					if (eogeneratorPath == null || eogeneratorPath.length() == 0) {
+						runner = new VelocityEOGeneratorRunner();
 					}
-					String[] tokens = commandsList.toArray(new String[commandsList.size()]);
-					if (!new File(eogenModel.getEOGeneratorPath(Preferences.getEOGeneratorPath())).exists()) {
-						output.append("You have either not set the path to your EOGenerator executable, or the current path is incorrect.");
-						fileSucceeded = false;
+					else {
+						runner = new ExternalEOGeneratorRunner();
 					}
-					if (fileSucceeded) {
-						IProject project = eogenFile.getProject();
-						Process process = Runtime.getRuntime().exec(tokens, null, project.getLocation().toFile());
+					runner.generate(eogenModel, output);
 
-						InputStream inputstream = process.getInputStream();
-						InputStreamReader inputstreamreader = new InputStreamReader(inputstream);
-						BufferedReader bufferedreader = new BufferedReader(inputstreamreader);
-
-						int outputLines = 0;
-						String line;
-						while ((line = bufferedreader.readLine()) != null) {
-							output.append(line);
-							output.append('\n');
-							outputLines++;
-						}
-
-						try {
-							if (process.waitFor() != 0) {
-								fileSucceeded = false;
-							}
-						} catch (InterruptedException e) {
-							fileSucceeded = false;
-							output.append("Interrupted");
-							System.err.println(e);
-						}
-
-						project.getFolder(new Path(eogenModel.getDestination())).refreshLocal(IResource.DEPTH_INFINITE, monitor);
-						project.getFolder(new Path(eogenModel.getSubclassDestination())).refreshLocal(IResource.DEPTH_INFINITE, monitor);
-					}
+					eogenModel.getProject().getFolder(new Path(eogenModel.getDestination())).refreshLocal(IResource.DEPTH_INFINITE, monitor);
+					eogenModel.getProject().getFolder(new Path(eogenModel.getSubclassDestination())).refreshLocal(IResource.DEPTH_INFINITE, monitor);
 				} catch (Throwable t) {
 					fileSucceeded = false;
 					output.append(t.getMessage());
