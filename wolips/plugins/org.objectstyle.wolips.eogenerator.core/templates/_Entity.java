@@ -197,7 +197,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 #end
 #end
 #end
-#foreach ($relationship in $entity.sortedToOneRelationships)
+#foreach ($relationship in $entity.sortedClassToOneRelationships)
 #if ($relationship.mandatory && !($relationship.ownsDestination && $relationship.propagatesPrimaryKey))
     eo.set${relationship.capitalizedName}Relationship(${relationship.name});
 #end
