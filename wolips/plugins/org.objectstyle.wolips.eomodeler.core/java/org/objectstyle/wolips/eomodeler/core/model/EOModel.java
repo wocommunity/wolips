@@ -61,6 +61,9 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.objectstyle.wolips.baseforplugins.util.URLUtils;
+import org.objectstyle.wolips.eomodeler.core.model.history.EOEntityAddedEvent;
+import org.objectstyle.wolips.eomodeler.core.model.history.EOEntityDeletedEvent;
+import org.objectstyle.wolips.eomodeler.core.model.history.ModelEvents;
 import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
@@ -117,6 +120,8 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	private URL myModelURL;
 
 	private Set<EOAttribute> myPrototypeAttributeCache;
+	
+	private ModelEvents _modelEvents;
 
 	public EOModel(String _name) {
 		myName = _name;
@@ -128,9 +133,10 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		myDatabaseConfigs = new PropertyListSet<EODatabaseConfig>();
 		myVersion = "2.1";
 		myModelMap = new EOModelMap();
+		_modelEvents = new ModelEvents();
 	}
 
-	public EOModel(URL modelURL) throws EOModelException, IOException, PropertyListParserException {
+	public EOModel(URL modelURL) throws EOModelException, IOException {
 		this(EOModelGroup.getModelNameForURL(modelURL));
 		Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
 		loadFromURL(modelURL, failures);
@@ -139,7 +145,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		}
 	}
 
-	public EOModel(URL modelURL, Set<EOModelVerificationFailure> failures) throws EOModelException, IOException, PropertyListParserException {
+	public EOModel(URL modelURL, Set<EOModelVerificationFailure> failures) throws EOModelException, IOException {
 		this(EOModelGroup.getModelNameForURL(modelURL));
 		loadFromURL(modelURL, failures);
 	}
@@ -524,7 +530,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		return getEntityNamed(_entityName) != null;
 	}
 
-	public Set importEntitiesFromModel(URL sourceModelURL, Set<EOModelVerificationFailure> failures) throws EOModelException, IOException, PropertyListParserException {
+	public Set importEntitiesFromModel(URL sourceModelURL, Set<EOModelVerificationFailure> failures) throws EOModelException, IOException {
 		EOModelGroup sourceModelGroup = new EOModelGroup();
 		EOModel sourceModel = new EOModel("Temp");
 		sourceModelGroup.addModel(sourceModel);
@@ -598,6 +604,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			newEntities.addAll(myEntities);
 			newEntities.add(entity);
 			myEntities = newEntities;
+			_modelEvents.addEvent(new EOEntityAddedEvent(entity));
 			firePropertyChange(EOModel.ENTITIES, oldEntities, myEntities);
 		} else {
 			myEntities.add(entity);
@@ -611,6 +618,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		newEntities.addAll(myEntities);
 		newEntities.remove(_entity);
 		myEntities = newEntities;
+		_modelEvents.addEvent(new EOEntityDeletedEvent(_entity));
 		firePropertyChange(EOModel.ENTITIES, oldEntities, myEntities);
 		_entity._setModel(null);
 	}
@@ -714,7 +722,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		return indexURL;
 	}
 
-	public void loadFromURL(URL modelURL, Set<EOModelVerificationFailure> failures) throws EOModelException, IOException, PropertyListParserException {
+	public void loadFromURL(URL modelURL, Set<EOModelVerificationFailure> failures) throws EOModelException, IOException {
 		loadFromURL(modelURL, true, failures);
 	}
 
@@ -1111,6 +1119,10 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	@Override
 	public void _removeFromModelParent(Set<EOModelVerificationFailure> failures) {
 		getModelGroup().removeModel(this, failures);
+	}
+	
+	public ModelEvents getModelEvents() {
+		return _modelEvents;
 	}
 
 	public String toString() {

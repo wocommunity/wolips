@@ -62,6 +62,9 @@ import java.util.Set;
 
 import org.objectstyle.wolips.eomodeler.core.Messages;
 import org.objectstyle.wolips.eomodeler.core.kvc.KeyPath;
+import org.objectstyle.wolips.eomodeler.core.model.history.EOAttributeAddedEvent;
+import org.objectstyle.wolips.eomodeler.core.model.history.EOAttributeDeletedEvent;
+import org.objectstyle.wolips.eomodeler.core.model.history.EOEntityRenamedEvent;
 import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
@@ -761,6 +764,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		if (myModel != null) {
 			myModel._checkForDuplicateEntityName(this, _name, null);
 			myModel._entityNameChanged(myOriginalName, oldName, _name);
+			myModel.getModelEvents().addEvent(new EOEntityRenamedEvent(this));
 		}
 		myName = _name;
 		if (_fireEvents) {
@@ -1258,6 +1262,9 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			newAttributes.addAll(myAttributes);
 			newAttributes.add(_attribute);
 			myAttributes = newAttributes;
+			if (myModel != null) {
+				myModel.getModelEvents().addEvent(new EOAttributeAddedEvent(_attribute));
+			}
 			firePropertyChange(EOEntity.ATTRIBUTES, oldAttributes, myAttributes);
 		} else {
 			myAttributes.add(_attribute);
@@ -1271,6 +1278,9 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		newAttributes.addAll(myAttributes);
 		newAttributes.remove(_attribute);
 		myAttributes = newAttributes;
+		if (myModel != null) {
+			myModel.getModelEvents().addEvent(new EOAttributeDeletedEvent(_attribute));
+		}
 		firePropertyChange(EOEntity.ATTRIBUTES, oldAttributes, newAttributes);
 		if (_removeFromSubclasses) {
 			for (EOEntity childEntity : getChildrenEntities()) {
