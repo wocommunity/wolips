@@ -622,6 +622,8 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 			className = "String";
 		} else if ("NSCalendarDate".equals(className)) {
 			className = "NSTimestamp";
+		} else if ("NSDecimalNumber".equals(className)) {
+		  className = "BigDecimal";
 		}
 		return className;
 	}
