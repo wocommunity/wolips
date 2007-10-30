@@ -56,10 +56,15 @@ public abstract class AbstractEOClassLoader implements IEOClassLoaderFactory {
 			classLoader = (ClassLoader) classLoaderReference.get();
 		}
 		if (classLoader == null) {
-			URL[] classpathUrls = classpathUrlSet.toArray(new URL[classpathUrlSet.size()]);
-			//classLoader = URLClassLoader.newInstance(classpathUrls, AbstractEOClassLoader.class.getClassLoader());
-			classLoader = URLClassLoader.newInstance(classpathUrls);
-			AbstractEOClassLoader.CLASSLOADER_CACHE.put(classpathUrlSet, new SoftReference<ClassLoader>(classLoader));
+			if (classpathUrlSet.size() == 1) {
+				classLoader = null;
+			}
+			else {
+				URL[] classpathUrls = classpathUrlSet.toArray(new URL[classpathUrlSet.size()]);
+				//classLoader = URLClassLoader.newInstance(classpathUrls, AbstractEOClassLoader.class.getClassLoader());
+				classLoader = URLClassLoader.newInstance(classpathUrls);
+				AbstractEOClassLoader.CLASSLOADER_CACHE.put(classpathUrlSet, new SoftReference<ClassLoader>(classLoader));
+			}
 		}
 		return classLoader;
 	}
