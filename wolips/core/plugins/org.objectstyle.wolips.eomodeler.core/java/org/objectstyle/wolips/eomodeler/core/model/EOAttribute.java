@@ -60,6 +60,7 @@ import java.util.Set;
 import org.objectstyle.wolips.eomodeler.core.Messages;
 import org.objectstyle.wolips.eomodeler.core.kvc.IKey;
 import org.objectstyle.wolips.eomodeler.core.kvc.ResolvedKey;
+import org.objectstyle.wolips.eomodeler.core.model.history.EOAttributeRenamedEvent;
 import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
@@ -360,6 +361,10 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		}
 		if (myEntity != null) {
 			myEntity._checkForDuplicateAttributeName(this, name, null);
+			EOModel model = myEntity.getModel();
+			if (model != null) {
+				model.getModelEvents().addEvent(new EOAttributeRenamedEvent(this));
+			}
 		}
 		super.setName((String) _nullIfPrototyped(AbstractEOArgument.NAME, name), _fireEvents);
 	}
@@ -835,7 +840,8 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		clearCachedPrototype(prototypeName, _failures, false, true);
 	}
 
-	public void verify(Set<EOModelVerificationFailure> _failures, VerificationContext verificationContext) {
+	public void verify(Set<EOModelVerificationFailure> _failures, @SuppressWarnings("unused")
+	VerificationContext verificationContext) {
 		String name = getName();
 		if (name == null || name.trim().length() == 0) {
 			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The attribute " + getName() + " has an empty name.", false));

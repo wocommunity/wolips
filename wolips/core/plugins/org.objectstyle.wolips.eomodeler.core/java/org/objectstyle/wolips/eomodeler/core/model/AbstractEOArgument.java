@@ -49,10 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.core.model;
 
-import java.util.Iterator;
 import java.util.Set;
 
-import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
 

@@ -50,7 +50,6 @@
 package org.objectstyle.wolips.eomodeler.core.model;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -91,6 +90,9 @@ public class EOModelGroup extends EOModelObject<Object> {
 	}
 
 	public String getPrefix() {
+		if (_prefix == null) {
+			_prefix = "_";
+		}
 		return _prefix;
 	}
 
