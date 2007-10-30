@@ -69,7 +69,7 @@ import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserExceptio
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 
 public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements ISortableEOModelObject {
-	public static final String CURRENT_VERSION = "1.0.0";
+	public static final String CURRENT_VERSION = "1.0.1";
 	
 	public static final String DIRTY = "dirty";
 
