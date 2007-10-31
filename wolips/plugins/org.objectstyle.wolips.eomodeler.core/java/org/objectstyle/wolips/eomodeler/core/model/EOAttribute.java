@@ -617,6 +617,8 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 				className = "Long";
 			} else if ("s".equals(valueType)) {
 				className = "Short";
+			} else if ("c".equals(valueType)) {
+				className = "Boolean";
 			}
 		} else if ("NSString".equals(className)) {
 			className = "String";
