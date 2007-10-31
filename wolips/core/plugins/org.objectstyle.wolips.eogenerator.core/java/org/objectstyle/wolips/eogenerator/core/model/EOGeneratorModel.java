@@ -238,7 +238,7 @@ public class EOGeneratorModel {
 		CommandLineTokenizer tokenizer = new CommandLineTokenizer(_str);
 		while (tokenizer.hasMoreTokens()) {
 			String token = tokenizer.nextToken();
-			if (_eogeneratorPath == null) {
+			if (_eogeneratorPath == null && !token.startsWith("-")) {
 				_eogeneratorPath = token;
 			} else if (token.startsWith("-")) {
 				if ("-destination".equalsIgnoreCase(token)) {
