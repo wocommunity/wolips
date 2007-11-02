@@ -61,11 +61,11 @@ import org.objectstyle.wolips.locate.LocatePlugin;
 
 public class ComponentLocateScope extends AbstractJavaLocateScope {
 	public ComponentLocateScope(IProject project, String name) {
-		super(project, new String[] { name + ".java", name + ".api" }, new String[] { name + ".wo" });
+		super(project, new String[] { name + ".java", name + ".groovy", name + ".api" }, new String[] { name + ".wo" });
 	}
 	
 	public ComponentLocateScope(IProject project, String name, boolean includeProjectsThatThisDependsOn) {
-		super(new ProjectReferencesLocateScope(project, false, includeProjectsThatThisDependsOn, true), new String[] { name + ".java", name + ".api" }, new String[] { name + ".wo" });
+		super(new ProjectReferencesLocateScope(project, false, includeProjectsThatThisDependsOn, true), new String[] { name + ".java", name + ".groovy", name + ".api" }, new String[] { name + ".wo" });
 	}
 
 	public static ComponentLocateScope createLocateScope(IResource resource) {
