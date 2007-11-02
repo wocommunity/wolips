@@ -43,6 +43,8 @@
  */
 package org.objectstyle.wolips.componenteditor.part;
 
+import java.util.ArrayList;
+
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -136,8 +138,8 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 			return;
 		}
 		IEditorInput[] editorInput = componentEditorInput.getComponentEditors();
-		componentEditorTabs = new ComponentEditorTab[editorInput.length / 3 * 2 + 2];
-		htmlWodTabs = new HtmlWodTab[editorInput.length / 3];
+		ArrayList<ComponentEditorTab> componentEditorTabsList = new ArrayList<ComponentEditorTab>();
+		ArrayList<HtmlWodTab> htmlWodTabsList = new ArrayList<HtmlWodTab>();
 		// htmlwod tabs
 		IFileEditorInput htmlInput = null;
 		IFileEditorInput wodInput = null;
@@ -152,8 +154,8 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 			wooInput = (IFileEditorInput) editorInput[j];
 			j++;
 			HtmlWodTab htmlWodTab = new HtmlWodTab(this, tabIndex, htmlInput, wodInput);
-			componentEditorTabs[tabIndex] = htmlWodTab;
-			htmlWodTabs[tabIndex] = htmlWodTab;
+			componentEditorTabsList.add(htmlWodTab);
+			htmlWodTabsList.add(htmlWodTab);
 			htmlWodTab.createTab();
 			this.addPage(htmlWodTab);
 			this.setPageText(tabIndex, "Component");
@@ -162,7 +164,7 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 			
 
 			WooTab wooTab = new WooTab(this, tabIndex, wooInput);
-			componentEditorTabs[tabIndex] = wooTab;
+			componentEditorTabsList.add(wooTab);
 			wooTab.createTab();
 			this.addPage(wooTab);
 			this.setPageText(tabIndex, "DisplayGroups");
@@ -171,7 +173,7 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 
 		// html preview tab
 		htmlPreviewTab = new HtmlPreviewTab(this, tabIndex, htmlInput);
-		componentEditorTabs[tabIndex] = htmlPreviewTab;
+		componentEditorTabsList.add(htmlPreviewTab);
 		htmlPreviewTab.createTab();
 		this.addPage(htmlPreviewTab);
 		this.setPageText(tabIndex, "Preview");
@@ -180,11 +182,14 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 		// api tab
 		IFileEditorInput apiInput = (IFileEditorInput) componentEditorInput.getApiEditor();
 		apiTab = new ApiTab(this, tabIndex, apiInput);
-		componentEditorTabs[tabIndex] = apiTab;
+		componentEditorTabsList.add(apiTab);
 		apiTab.createTab();
 		this.addPage(apiTab);
 		this.setPageText(tabIndex, "Api");
 
+		componentEditorTabs = componentEditorTabsList.toArray(new ComponentEditorTab[componentEditorTabsList.size()]);
+		htmlWodTabs = htmlWodTabsList.toArray(new HtmlWodTab[htmlWodTabsList.size()]);
+		
 		CTabFolder tabFolder = (CTabFolder) this.getContainer();
 		tabFolder.addSelectionListener(new SelectionListener() {
 
