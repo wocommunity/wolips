@@ -471,6 +471,13 @@
         <bound name="copyData"/>
       </and>
     </validation>
+
+    <validation message="'filePath' must be bound when 'data' is bound">
+      <and>
+        <unbound name="filePath"/>
+        <bound name="data"/>
+      </and>
+    </validation>
   </wo>
 
   <wo class="WOGenericContainer" wocomponentcontent = "true">
