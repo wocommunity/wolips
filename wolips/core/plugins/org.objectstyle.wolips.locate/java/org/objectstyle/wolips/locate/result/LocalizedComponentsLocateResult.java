@@ -73,7 +73,6 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
-import org.objectstyle.wolips.locate.Locate;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.locate.LocatePlugin;
 
@@ -81,6 +80,8 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 	private List<IFolder> components = new ArrayList<IFolder>();
 
 	private IFile dotJava;
+
+	private IFile dotGroovy;
 
 	// private IType dotJavaType;
 
@@ -133,6 +134,13 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 				if (file != null) {
 					dotJava = file;
 				}
+			} else if (extension.equals("groovy")) {
+				if (dotGroovy != null) {
+					String message = "Duplicate located: " + dotGroovy + " " + file;
+					alert(message);
+					throw new LocateException(message);
+				}
+				dotGroovy = file;
 			} else if (extension.equals("api")) {
 				if (dotApi != null) {
 					String message = "Duplicate located: " + dotApi + " " + file;
@@ -190,7 +198,7 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 		return dotJava;
 	}
 
-	public IType getDotJavaType() throws JavaModelException {
+	public IType getDotJavaType() {
 		IType dotJavaType = null;
 		// MS: Don't hold onto java types
 		// if (dotJavaType == null) {
@@ -205,13 +213,16 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 						dotJavaType = types[0];
 					}
 				}
-			}
-			catch (JavaModelException e) {
+			} catch (JavaModelException e) {
 				LocatePlugin.getDefault().log(e);
 			}
 		}
 		// }
 		return dotJavaType;
+	}
+
+	public IFile getDotGroovy() {
+		return dotGroovy;
 	}
 
 	public IFile getFirstHtmlFile() throws CoreException {
