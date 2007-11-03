@@ -150,13 +150,13 @@
    <key
          commandId="org.objectstyle.wolips.componenteditor.openComponent"
          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-         sequence="M1+M2+C">
+         sequence="M1+M2+X">
    </key>
    <key
          commandId="org.objectstyle.wolips.componenteditor.openComponent"
          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
          contextId="org.eclipse.jdt.ui.javaEditorScope"
-         sequence="M1+M2+C">
+         sequence="M1+M2+X">
    </key>
 	</extension>
 	
