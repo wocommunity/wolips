@@ -79,11 +79,11 @@ import org.objectstyle.wolips.wodclipse.editor.WodEditor;
  * @author uli
  */
 public class ComponentEditorPart extends MultiPageEditorPart implements IEditorTarget, IResourceChangeListener, IComponentEditor {
-	public static final int HTML_TAB = 0;
-	public static final int WOD_TAB = 0;
-	public static final int WOO_TAB = 1;
-	public static final int PREVIEW_TAB = 2;
-	public static final int API_TAB = 3;
+	private int htmlPageId;
+	private int wodPageId;
+	private int wooPageId;
+	private int previewPageId;
+	private int apiPageId;
 	
 	ComponentEditorInput componentEditorInput;
 
@@ -157,7 +157,8 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 			componentEditorTabsList.add(htmlWodTab);
 			htmlWodTabsList.add(htmlWodTab);
 			htmlWodTab.createTab();
-			this.addPage(htmlWodTab);
+			htmlPageId = this.addPage(htmlWodTab);
+			wodPageId = htmlPageId;
 			this.setPageText(tabIndex, "Component");
 			tabIndex++;
 			
@@ -166,7 +167,7 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 			WooTab wooTab = new WooTab(this, tabIndex, wooInput);
 			componentEditorTabsList.add(wooTab);
 			wooTab.createTab();
-			this.addPage(wooTab);
+			wooPageId = this.addPage(wooTab);
 			this.setPageText(tabIndex, "DisplayGroups");
 			tabIndex++;
 		}
@@ -175,7 +176,7 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 		htmlPreviewTab = new HtmlPreviewTab(this, tabIndex, htmlInput);
 		componentEditorTabsList.add(htmlPreviewTab);
 		htmlPreviewTab.createTab();
-		this.addPage(htmlPreviewTab);
+		previewPageId = this.addPage(htmlPreviewTab);
 		this.setPageText(tabIndex, "Preview");
 		tabIndex++;
 		
@@ -184,7 +185,7 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 		apiTab = new ApiTab(this, tabIndex, apiInput);
 		componentEditorTabsList.add(apiTab);
 		apiTab.createTab();
-		this.addPage(apiTab);
+		apiPageId = this.addPage(apiTab);
 		this.setPageText(tabIndex, "Api");
 
 		componentEditorTabs = componentEditorTabsList.toArray(new ComponentEditorTab[componentEditorTabsList.size()]);
@@ -282,28 +283,30 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 		return editorPart;
 	}
 
-	public HtmlWodTab htmlWodTab() { return htmlWodTabs[ComponentEditorPart.HTML_TAB]; }
+	public HtmlWodTab htmlWodTab() {
+		return htmlWodTabs[0];
+	}
 	
 	public void switchToHtml() {
 		this.htmlWodTab().setHtmlActive();
-		switchToPage(ComponentEditorPart.HTML_TAB);
+		switchToPage(htmlPageId);
 	}
 
 	public void switchToWod() {
 		this.htmlWodTab().setWodActive();
-		switchToPage(ComponentEditorPart.WOD_TAB);
+		switchToPage(wodPageId);
 	}
 
   public void switchToWoo() {
-    switchToPage(ComponentEditorPart.WOO_TAB);
+    switchToPage(wooPageId);
   }
 
 	public void switchToPreview() {
-		switchToPage(ComponentEditorPart.PREVIEW_TAB);
+		switchToPage(previewPageId);
 	}
 
 	public void switchToApi() {
-		switchToPage(ComponentEditorPart.API_TAB);
+		switchToPage(apiPageId);
 	}
 
 	public void switchToPage(int page) {
