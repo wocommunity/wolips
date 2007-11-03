@@ -59,6 +59,7 @@ import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
@@ -72,39 +73,60 @@ public class DocumentationPropertySection extends AbstractPropertySection {
 	private DataBindingContext _bindingContext;
 
 	private UserInfoableEOModelObject _userInfoable;
-	
+
 	private Browser _browser;
 
-	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
-		super.createControls(_parent, _tabbedPropertySheetPage);
-		Composite composite = getWidgetFactory().createFlatFormComposite(_parent);
+	public void createControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
+		super.createControls(parent, tabbedPropertySheetPage);
+		Composite composite = getWidgetFactory().createFlatFormComposite(parent);
+
+		Label documentationLabel = new Label(composite, SWT.NONE);
+		documentationLabel.setBackground(composite.getBackground());
+		documentationLabel.setText("Documentation");
+		FormData documentationLabelFormData = new FormData();
+		documentationLabelFormData.left = new FormAttachment(0, 8);
+		documentationLabelFormData.right = new FormAttachment(100, -6);
+		documentationLabelFormData.top = new FormAttachment(0, 5);
+		documentationLabel.setLayoutData(documentationLabelFormData);
 
 		_documentationText = getWidgetFactory().createText(composite, "", SWT.BORDER | SWT.WRAP | SWT.MULTI | SWT.V_SCROLL);
 		FormData textFormData = new FormData();
 		textFormData.left = new FormAttachment(0, 5);
-		textFormData.right = new FormAttachment(100, -5);
-		textFormData.top = new FormAttachment(0, 5);
+		textFormData.right = new FormAttachment(100, -3);
+		textFormData.top = new FormAttachment(documentationLabel, -3);
 		textFormData.bottom = new FormAttachment(50, 0);
+		textFormData.width = 100;
+		textFormData.height = 50;
 		_documentationText.setLayoutData(textFormData);
-		
+
+		Label previewLabel = new Label(composite, SWT.NONE);
+		previewLabel.setBackground(composite.getBackground());
+		previewLabel.setText("HTML Preview");
+		FormData labelFormData = new FormData();
+		labelFormData.left = new FormAttachment(0, 8);
+		labelFormData.right = new FormAttachment(100, -6);
+		labelFormData.top = new FormAttachment(_documentationText, 5);
+		previewLabel.setLayoutData(labelFormData);
+
 		_browser = new Browser(composite, SWT.NONE);
 		FormData browserFormData = new FormData();
-		browserFormData.left = new FormAttachment(0, 5);
-		browserFormData.right = new FormAttachment(100, -5);
-		browserFormData.top = new FormAttachment(_documentationText, 5);
-		browserFormData.bottom = new FormAttachment(100);
+		browserFormData.left = new FormAttachment(0, 8);
+		browserFormData.right = new FormAttachment(100, -6);
+		browserFormData.top = new FormAttachment(previewLabel, -3);
+		browserFormData.bottom = new FormAttachment(100, -5);
+		browserFormData.width = 100;
 		_browser.setLayoutData(browserFormData);
 	}
 
-	public void setInput(IWorkbenchPart _part, ISelection _selection) {
-		super.setInput(_part, _selection);
+	public void setInput(IWorkbenchPart part, ISelection selection) {
+		super.setInput(part, selection);
 		removeListeners();
-		if (_selection instanceof IStructuredSelection) {
-			_userInfoable = (UserInfoableEOModelObject) ((IStructuredSelection) _selection).getFirstElement();
+		if (selection instanceof IStructuredSelection) {
+			_userInfoable = (UserInfoableEOModelObject) ((IStructuredSelection) selection).getFirstElement();
 
 			_bindingContext = new DataBindingContext();
 			_bindingContext.bindValue(SWTObservables.observeText(_documentationText, SWT.Modify), BeansObservables.observeValue(_userInfoable, UserInfoableEOModelObject.DOCUMENTATION_KEY), null, null);
-			_bindingContext.bindValue(new BrowserTextObservableValue(_browser), BeansObservables.observeValue(_userInfoable, UserInfoableEOModelObject.DOCUMENTATION_KEY), null, null);
+			_bindingContext.bindValue(new BrowserTextObservableValue(_browser, "body { margin: 0px; margin-right: 10px; font-size: 0.8em; }"), BeansObservables.observeValue(_userInfoable, UserInfoableEOModelObject.DOCUMENTATION_KEY), null, null);
 		} else {
 			_userInfoable = null;
 		}
