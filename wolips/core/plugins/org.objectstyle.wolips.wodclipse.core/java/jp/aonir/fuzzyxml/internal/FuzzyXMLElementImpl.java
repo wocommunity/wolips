@@ -492,8 +492,10 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
           attrs[i].toXMLString(renderContext, xmlBuffer);
         }
       }
+      
+      boolean forbiddenSelfClosing = ("a".equalsIgnoreCase(tagName) || "div".equalsIgnoreCase(tagName));
       FuzzyXMLNode[] children = getChildren();
-      if (children.length == 0) {
+      if (children.length == 0 && !forbiddenSelfClosing) {
         if (renderSurroundingTags) {
           if (renderContext.isSpaceInEmptyTags()) {
             xmlBuffer.append(" ");
