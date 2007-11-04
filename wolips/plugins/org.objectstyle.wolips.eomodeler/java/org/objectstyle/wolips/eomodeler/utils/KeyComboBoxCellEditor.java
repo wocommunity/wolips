@@ -396,8 +396,11 @@ public class KeyComboBoxCellEditor extends CellEditor {
 			}
 			if (matchingIndex != -1) {
 				comboBox.select(matchingIndex);
+				selection = matchingIndex;
 			} else {
 				comboBox.clearSelection();
+				selection = 0;
+				comboBox.select(-1);
 			}
 		}
 	}

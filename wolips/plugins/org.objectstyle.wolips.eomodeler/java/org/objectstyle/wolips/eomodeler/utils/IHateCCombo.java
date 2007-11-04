@@ -936,7 +936,7 @@ public boolean isFocusControl () {
 	return super.isFocusControl ();
 }
 void internalLayout (boolean changed) {
-	if (isDropped ()) dropDown (false);
+	//if (isDropped ()) dropDown (false);
 	Rectangle rect = getClientArea ();
 	int width = rect.width;
 	int height = rect.height;
