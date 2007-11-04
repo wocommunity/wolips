@@ -49,7 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.core.model;
 
-import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 
 public class EOAttributePath extends AbstractEOAttributePath {
 	public EOAttributePath(EORelationshipPath _parentRelationshipPath, EOAttribute _childAttribute) {

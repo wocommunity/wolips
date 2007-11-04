@@ -49,8 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.core.model;
 
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.Messages;
-import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
 
 public class EOFactoryMethodArgumentType {
 	public static final EOFactoryMethodArgumentType STRING = new EOFactoryMethodArgumentType("EOFactoryMethodArgumentIsNSString", Messages.getString("EOFactoryMethodArgumentType.string"));

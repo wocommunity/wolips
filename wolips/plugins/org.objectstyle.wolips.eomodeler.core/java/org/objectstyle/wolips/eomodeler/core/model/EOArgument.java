@@ -3,8 +3,8 @@ package org.objectstyle.wolips.eomodeler.core.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.Messages;
-import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
 
 public class EOArgument extends AbstractEOArgument<EOStoredProcedure> {
 	public static final String DIRECTION = "direction";

@@ -52,7 +52,7 @@ package org.objectstyle.wolips.eomodeler.core.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 
 public class EOEntityIndex extends UserInfoableEOModelObject<EOEntity> implements IEOEntityRelative, ISortableEOModelObject {
 	public static enum Constraint {

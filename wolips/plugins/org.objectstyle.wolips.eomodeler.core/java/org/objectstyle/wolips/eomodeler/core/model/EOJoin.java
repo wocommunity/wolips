@@ -52,7 +52,7 @@ package org.objectstyle.wolips.eomodeler.core.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 
 public class EOJoin extends EOModelObject<EORelationship> implements ISortableEOModelObject {
 	public static final String DESTINATION_ATTRIBUTE = "destinationAttribute";
