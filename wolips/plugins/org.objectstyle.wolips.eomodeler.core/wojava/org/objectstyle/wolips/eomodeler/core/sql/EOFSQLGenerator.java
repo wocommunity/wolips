@@ -154,7 +154,9 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 			while (entityNamesIter.hasNext()) {
 				String entityName = (String) entityNamesIter.next();
 				EOEntity entity = _model.entityNamed(entityName);
-				_entities.addObject(entity);
+				if (entity != null) {
+					_entities.addObject(entity);
+				}
 			}
 		}
 
@@ -456,7 +458,6 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 	}
 
 	public void executeSQL(String sql) throws SQLException {
-		System.out.println("EOFSQLGenerator.executeSQL: " + _model.connectionDictionary());
 		EODatabaseContext databaseContext = new EODatabaseContext(new EODatabase(_model));
 		EODatabaseChannel databaseChannel = databaseContext.availableChannel();
 		EOAdaptorChannel adaptorChannel = databaseChannel.adaptorChannel();
