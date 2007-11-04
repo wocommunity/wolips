@@ -12,7 +12,9 @@ Require-Bundle: org.eclipse.ui,
  org.objectstyle.wolips.datasets,
  org.objectstyle.wolips.variables,
  org.eclipse.jdt.ui,
- org.objectstyle.wolips.baseforplugins
+ org.objectstyle.wolips.baseforplugins,
+ org.eclipse.jdt,
+ org.eclipse.jdt.apt.core
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.jdt,
  org.objectstyle.wolips.jdt.ant,

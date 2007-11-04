@@ -391,6 +391,21 @@
             </and>
          </enablement>
       </decorator>
+      <decorator
+            class="org.objectstyle.wolips.jdt.decorator.APIDecorator"
+            id="org.objectstyle.wolips.jdt.decorator.APIDecorator"
+            label="API Decorator"
+            lightweight="false"
+            state="true">
+         <enablement>
+            <and>
+               <objectClass name="org.eclipse.core.resources.IFile"/>
+               <objectState
+                     name="extension"
+                     value="api"/>
+            </and>
+         </enablement>
+      </decorator>
    </extension>
  <extension
        point="org.eclipse.ui.views">
