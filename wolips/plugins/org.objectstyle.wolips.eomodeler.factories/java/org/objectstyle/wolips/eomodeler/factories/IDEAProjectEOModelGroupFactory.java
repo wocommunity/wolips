@@ -34,7 +34,7 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 		List<ManifestSearchFolder> searchFolders = null;
 		List<File> ideaProjectFiles = new LinkedList<File>();
 		try {
-			findIdeaProjectFilesInFolder(selectedModelFolder, ideaProjectFiles);
+			IDEAProjectEOModelGroupFactory.findIdeaProjectFilesInFolder(selectedModelFolder, ideaProjectFiles);
 		} catch (PropertyListParserException e) {
 			e.printStackTrace();
 			throw new IOException("Failed to parse '.EntityModeler.plist'. " + StringUtils.getErrorMessage(e));
@@ -130,7 +130,7 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 	}
 
 	@SuppressWarnings("unchecked")
-	protected void findIdeaProjectFilesInFolder(File folder, List<File> ideaProjectFiles) throws IOException, PropertyListParserException {
+	public static void findIdeaProjectFilesInFolder(File folder, List<File> ideaProjectFiles) throws IOException, PropertyListParserException {
 		if (folder != null) {
 			boolean foundProjectFiles = false;
 			if (folder.isDirectory()) {
@@ -150,7 +150,7 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 								}
 								if (projectFile.exists()) {
 									projectFile = projectFile.getCanonicalFile();
-									if (isIdeaProjectFile(projectFile)) {
+									if (IDEAProjectEOModelGroupFactory.isIdeaProjectFile(projectFile)) {
 										System.out.println("IDEAProjectEOModelGroupFactory.findIdeaProjectFilesInFolder:     Found project '" + projectFile + "'.");
 										ideaProjectFiles.add(projectFile.getCanonicalFile());
 										foundProjectFiles = true;
@@ -163,7 +163,7 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 					File[] files = folder.listFiles();
 					if (files != null) {
 						for (File file : files) {
-							if (isIdeaProjectFile(file)) {
+							if (IDEAProjectEOModelGroupFactory.isIdeaProjectFile(file)) {
 								System.out.println("IDEAProjectEOModelGroupFactory.findIdeaProjectFilesInFolder:   Found project '" + file + "'.");
 								ideaProjectFiles.add(file.getCanonicalFile());
 								foundProjectFiles = true;
@@ -179,7 +179,7 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 		}
 	}
 
-	protected boolean isIdeaProjectFile(File file) {
+	public static boolean isIdeaProjectFile(File file) {
 		return file.getName().endsWith(".ipr");
 	}
 
