@@ -29,21 +29,6 @@
    <extension
          point="org.eclipse.ui.decorators">
       <decorator
-            class="org.objectstyle.wolips.eomodeler.decorators.EOEntityDecorator"
-            id="org.objectstyle.wolips.eomodeler.decorators.EOEntityDecorator"
-            label="EOEntity Decorator"
-            lightweight="false"
-            state="true">
-         <enablement>
-            <and>
-               <objectState
-                     name="extension"
-                     value="plist"/>
-               <objectClass name="org.eclipse.core.resources.IFile"/>
-            </and>
-         </enablement>
-      </decorator>
-      <decorator
             icon="icons/eoFetchSpecification.png"
             id="org.objectstyle.wolips.eomodeler.decorators.EOFetchSpecDecorator"
             label="EOFetchSpecification Decorator"
