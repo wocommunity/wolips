@@ -44,7 +44,9 @@
 package org.objectstyle.wolips.wodclipse.core.builder;
 
 import java.util.Map;
+import java.util.Set;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -74,40 +76,41 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
   }
 
   @SuppressWarnings("unchecked")
-  public boolean buildStarted(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
-    _buildKind = _kind;
+  public boolean buildStarted(int kind, Map args, IProgressMonitor monitor, IProject project, Map buildCache) {
+    _buildKind = kind;
     _validateTemplates = Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.VALIDATE_TEMPLATES_KEY);
     return false;
   }
 
   @SuppressWarnings("unchecked")
-  public boolean buildPreparationDone(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
+  public boolean buildPreparationDone(int kind, Map args, IProgressMonitor monitor, IProject project, Map buildCache) {
     return false;
   }
 
   @SuppressWarnings("unchecked")
-  public void handleClasses(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
+  public void handleClasses(IResource resource, IProgressMonitor monitor, Map buildCache) {
     // DO NOTHING
   }
 
   @SuppressWarnings("unchecked")
-  public void handleSource(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
+  public void handleSource(IResource resource, IProgressMonitor progressMonitor, Map buildCache) {
     if (_validateTemplates) {
       try {
         if (_buildKind == IncrementalProjectBuilder.INCREMENTAL_BUILD || _buildKind == IncrementalProjectBuilder.AUTO_BUILD) {
-          ICompilationUnit compilationUnit = JavaCore.createCompilationUnitFrom((IFile)_resource);
+          System.out.println("WodBuilder.handleSource: " + resource);
+          ICompilationUnit compilationUnit = JavaCore.createCompilationUnitFrom((IFile) resource);
           if (compilationUnit != null) {
             IType type = compilationUnit.findPrimaryType();
             if (type != null) {
-              IType woElementType = type.getJavaProject().findType("com.webobjects.appserver.WOElement", _progressMonitor);
+              IType woElementType = type.getJavaProject().findType("com.webobjects.appserver.WOElement", progressMonitor);
               if (woElementType != null) {
-                ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(type, _progressMonitor);
+                ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(type, progressMonitor);
                 if (typeHierarchy != null && typeHierarchy.contains(woElementType)) {
-                  LocalizedComponentsLocateResult results = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(_resource);
+                  LocalizedComponentsLocateResult results = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(resource);
                   IFile wodFile = results.getFirstWodFile();
                   if (wodFile != null && wodFile.exists()) {
-                    wodFile.touch(_progressMonitor);
-                    validateWodFile(wodFile, _progressMonitor);
+                    wodFile.touch(progressMonitor);
+                    validateWodFile(wodFile, progressMonitor);
                   }
                 }
               }
@@ -123,29 +126,48 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
   }
 
   @SuppressWarnings("unchecked")
-  public void handleClasspath(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
+  public void handleClasspath(IResource resource, IProgressMonitor monitor, Map buildCache) {
     // DO NOTHING
   }
 
   @SuppressWarnings("unchecked")
-  public void handleOther(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
+  protected Set<IContainer> componentBuildCache(Map buildCache) {
+    Set<IContainer> builtComponents = (Set<IContainer>) buildCache.get("builtComponents");
+    if (builtComponents == null) {
+      buildCache.put("builtComponents", builtComponents);
+    }
+    return builtComponents;
+  }
+
+  @SuppressWarnings("unchecked")
+  public void handleOther(IResource resource, IProgressMonitor monitor, Map buildCache) {
     if (_validateTemplates) {
       try {
         boolean validate = false;
-        if (_resource instanceof IFile) {
-          IFile file = (IFile) _resource;
+        if (resource instanceof IFile) {
+          IFile file = (IFile) resource;
           String fileExtension = file.getFileExtension();
           if ("wod".equals(fileExtension)) {
-            if (_buildKind == IncrementalProjectBuilder.FULL_BUILD) {
-              file.touch(_monitor);
+            Set<IContainer> builtComponents = componentBuildCache(buildCache);
+            IContainer woFolder = resource.getParent();
+            if (!builtComponents.contains(woFolder)) {
+              if (_buildKind == IncrementalProjectBuilder.FULL_BUILD) {
+                file.touch(monitor);
+              }
+              validate = true;
+              builtComponents.add(woFolder);
             }
-            validate = true;
           }
-          else if ("html".equals(fileExtension) && _resource.getParent().getName().endsWith(".wo")) {
-            if (_buildKind == IncrementalProjectBuilder.FULL_BUILD) {
-              file.touch(_monitor);
+          else if ("html".equals(fileExtension) && resource.getParent().getName().endsWith(".wo")) {
+            Set<IContainer> builtComponents = componentBuildCache(buildCache);
+            IContainer woFolder = resource.getParent();
+            if (!builtComponents.contains(woFolder)) {
+              if (_buildKind == IncrementalProjectBuilder.FULL_BUILD) {
+                file.touch(monitor);
+              }
+              validate = true;
+              builtComponents.add(woFolder);
             }
-            validate = true;
           }
           else if ("api".equals(fileExtension)) {
             // should we really do something with the component when
@@ -155,7 +177,7 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
           }
 
           if (validate) {
-            validateWodFile(file, _monitor);
+            validateWodFile(file, monitor);
           }
         }
       }
@@ -164,10 +186,13 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
       }
     }
     else {
-      if (_resource instanceof IFile) {
-        IFile file = (IFile) _resource;
+      if (resource instanceof IFile) {
+        IFile file = (IFile) resource;
         String fileExtension = file.getFileExtension();
         if ("wod".equals(fileExtension)) {
+          WodModelUtils.deleteWodProblems(file);
+        }
+        else if ("html".equals(fileExtension)) {
           WodModelUtils.deleteWodProblems(file);
         }
       }
@@ -175,23 +200,23 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
   }
 
   @SuppressWarnings("unchecked")
-  public void handleWebServerResources(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
+  public void handleWebServerResources(IResource resource, IProgressMonitor monitor, Map buildCache) {
     // DO NOTHING
   }
 
   @SuppressWarnings("unchecked")
-  public void handleWoappResources(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
+  public void handleWoappResources(IResource resource, IProgressMonitor monitor, Map buildCache) {
     // DO NOTHING
   }
 
-  protected void validateWodFile(IFile file, IProgressMonitor _progressMonitor) throws CoreException, LocateException {
+  protected void validateWodFile(IFile file, IProgressMonitor progressMonitor) throws CoreException, LocateException {
     String _resourceName = file.getName();
-    if (_progressMonitor != null) {
-      _progressMonitor.subTask("Locating components for " + _resourceName + " ...");
+    if (progressMonitor != null) {
+      progressMonitor.subTask("Locating components for " + _resourceName + " ...");
     }
     WodParserCache cache = WodParserCache.parser(file);
-    if (_progressMonitor != null) {
-      _progressMonitor.subTask("Building WO " + cache.getWodFile() + " ...");
+    if (progressMonitor != null) {
+      progressMonitor.subTask("Building WO " + cache.getWodFile().getName() + " ...");
     }
     try {
       cache.parseHtmlAndWodIfNecessary();
