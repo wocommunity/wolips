@@ -76,6 +76,8 @@ public class ComponentEngine extends AbstractEngine {
 
 	private String packageName;
 
+	private String superclassName;
+
 	private boolean createBodyTag = false;
 
 	private boolean createWooFile = false;
@@ -171,6 +173,14 @@ public class ComponentEngine extends AbstractEngine {
 
 	public String getPackageName() {
 		return this.packageName;
+	}
+	
+	public void setSuperclassName(String superclassName) {
+		this.superclassName = superclassName;
+	}
+	
+	public String getSuperclassName() {
+		return superclassName;
 	}
 
 	public String getWOOEncoding() {

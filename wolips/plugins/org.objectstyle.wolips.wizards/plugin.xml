@@ -14,7 +14,7 @@
       </category>
       <wizard
             name="WOComponent"
-            icon="icons/wobuilder/wocomponent_wiz.gif"
+            icon="icons/wobuilder/WOComponentBundle.png"
             category="org.objectstyle.wolips.wizards"
             id="org.objectstyle.wolips.wizards.new.wo.5.1.component">
             <class class="org.objectstyle.wolips.wizards.WOComponentCreationWizard">
@@ -156,7 +156,7 @@
       </wizard>
       <wizard
             name="EOModel"
-            icon="icons/woproject/eomodel_wiz.gif"
+            icon="icons/woproject/EOModelBundle.png"
             category="org.objectstyle.wolips.wizards"
             id="org.objectstyle.wolips.wizards.new.wo.5.1.eomodel">
             <class class="org.objectstyle.wolips.wizards.EOModelCreationWizard">
