@@ -60,11 +60,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.baseforplugins.util.URLUtils;
 import org.objectstyle.wolips.eomodeler.core.model.history.EOEntityAddedEvent;
 import org.objectstyle.wolips.eomodeler.core.model.history.EOEntityDeletedEvent;
 import org.objectstyle.wolips.eomodeler.core.model.history.ModelEvents;
-import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 

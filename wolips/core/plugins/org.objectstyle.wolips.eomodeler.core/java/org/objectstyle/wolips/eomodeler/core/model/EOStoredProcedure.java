@@ -59,7 +59,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;

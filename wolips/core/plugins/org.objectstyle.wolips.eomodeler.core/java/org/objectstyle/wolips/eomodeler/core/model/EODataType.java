@@ -49,8 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.core.model;
 
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.Messages;
-import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
 
 public class EODataType {
 	public static final EODataType STRING = new EODataType("NSString", "String", new String[] { null, "" }, Messages.getString("EODataType.string"));

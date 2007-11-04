@@ -1,6 +1,6 @@
 package org.objectstyle.wolips.eomodeler.core.model;
 
-import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 
 public class ProxyChange {
 	private Object _source;

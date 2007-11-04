@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.Messages;
-import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.NotificationMap;
 
 public class EODatabaseConfig extends EOModelObject<EOModel> {

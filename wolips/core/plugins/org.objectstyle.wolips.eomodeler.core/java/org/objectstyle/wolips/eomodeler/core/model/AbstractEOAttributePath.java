@@ -51,8 +51,8 @@ package org.objectstyle.wolips.eomodeler.core.model;
 
 import java.util.Map;
 
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
-import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.NotificationMap;
 
 public abstract class AbstractEOAttributePath implements IUserInfoable, IEOEntityRelative {

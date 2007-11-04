@@ -51,7 +51,7 @@ package org.objectstyle.wolips.eomodeler.core.model;
 
 import java.util.Set;
 
-import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
 
 public abstract class AbstractEOArgument<T extends EOModelObject> extends UserInfoableEOModelObject<T> implements ISortableEOModelObject {

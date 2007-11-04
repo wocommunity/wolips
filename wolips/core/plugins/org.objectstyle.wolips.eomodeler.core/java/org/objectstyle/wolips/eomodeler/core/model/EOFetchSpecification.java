@@ -60,7 +60,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.objectstyle.cayenne.exp.Expression;
-import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
 
 public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> implements IEOEntityRelative, ISortableEOModelObject, PropertyChangeListener {
