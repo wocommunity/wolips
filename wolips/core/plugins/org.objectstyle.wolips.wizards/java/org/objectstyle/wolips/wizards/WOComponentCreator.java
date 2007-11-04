@@ -83,6 +83,8 @@ public class WOComponentCreator implements IRunnableWithProgress {
 
 	private String packageName;
 
+	private String superclassName;
+
 	private boolean createBodyTag;
 
 	private boolean createApiFile;
@@ -107,10 +109,11 @@ public class WOComponentCreator implements IRunnableWithProgress {
 	 * @param createApiFile
 	 * @param createWooFile
 	 */
-	public WOComponentCreator(IResource parentResource, String componentName, String packageName, boolean createBodyTag, boolean createApiFile, boolean createWooFile, WOComponentCreationPage page) {
+	public WOComponentCreator(IResource parentResource, String componentName, String packageName, String superclassName, boolean createBodyTag, boolean createApiFile, boolean createWooFile, WOComponentCreationPage page) {
 		this.parentResource = parentResource;
 		this.componentName = componentName;
 		this.packageName = packageName;
+		this.superclassName = superclassName;
 		this.createBodyTag = createBodyTag;
 		this.createApiFile = createApiFile;
 		this.createWooFile = createWooFile;
@@ -184,6 +187,7 @@ public class WOComponentCreator implements IRunnableWithProgress {
 		componentEngine.setCreateBodyTag(this.createBodyTag);
 		componentEngine.setComponentName(this.componentName);
 		componentEngine.setPackageName(this.packageName);
+		componentEngine.setSuperclassName(this.superclassName);
 		componentEngine.setComponentPath(path);
 		componentEngine.setApiPath(apiPath);
 		componentEngine.setJavaPath(componentJavaPath);
