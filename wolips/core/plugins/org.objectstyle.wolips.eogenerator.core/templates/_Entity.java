@@ -9,7 +9,7 @@ import java.util.*;
 import org.apache.log4j.Logger;
 
 @SuppressWarnings("all")
-public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($entity.parentSet)${entity.parent.classNameWithDefault}#else${EOGenericRecord}#end {
+public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($entity.parentSet)${entity.parent.classNameWithDefault}#elseif ($EOGenericRecord)${EOGenericRecord}#else EOGenericRecord#end {
 	public static final String ENTITY_NAME = "$entity.name";
 
 	// Attributes
