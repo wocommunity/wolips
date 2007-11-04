@@ -2,7 +2,6 @@ package org.objectstyle.wolips.wizards.actions;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -20,86 +19,78 @@ import org.eclipse.swt.widgets.Shell;
 public class EOModelImportSupport {
 
 	/**
-	 * Import EOModels to a specified IProject.  The paths dictionary is keyed with the model name including extension and
-	 * the values contain the full path to the source .eomodel file.
+	 * Import EOModels to a specified IProject. The paths dictionary is keyed
+	 * with the model name including extension and the values contain the full
+	 * path to the source .eomodel file.
+	 * 
 	 * @param paths
 	 * @param project
 	 * @return
+	 * @throws IOException
 	 */
-	public static boolean importEOModelsToProject(HashMap <String, String> paths, IProject project) {
-		//Move any specified models over
-		String path = project.getLocation().toOSString();
+	public static void importEOModelsToProject(HashMap<String, String> paths, IProject project) throws IOException {
+		// Move any specified models over
+		File path = project.getLocation().toFile();
+		File resourcesPath = new File(path, "Resources");
+		if (resourcesPath.exists()) {
+			path = resourcesPath;
+		}
 		File aFile, destFile = null;
 
 		for (String aFileName : paths.keySet()) {
 			aFile = new File(paths.get(aFileName.trim()));
-			destFile = new File(path+File.separator+aFileName);
+			destFile = new File(path, aFileName);
 			IFolder existingModelFolder = project.getFolder(new Path(destFile.getAbsolutePath()));
 
-			//don't overwrite existing eomodel
+			// don't overwrite existing eomodel
 			if (existingModelFolder.exists()) {
-				ErrorDialog.openError(new Shell(),
-						"EOModel Exists",
-						existingModelFolder.getFullPath().toOSString()+" already exists.",
-						new Status(IStatus.ERROR, "org.objectstyle.wolips.wizards" , existingModelFolder.getFullPath().toOSString()+" already exists."));
-				return false;
-			}
-
-			if (aFile.exists()) {
+				ErrorDialog.openError(new Shell(), "EOModel Exists", existingModelFolder.getFullPath().toOSString() + " already exists.", new Status(IStatus.ERROR, "org.objectstyle.wolips.wizards", existingModelFolder.getFullPath().toOSString() + " already exists."));
+			} else if (aFile.exists()) {
 				destFile.mkdirs();
-				//Use CopyFilesAndFoldersOperation.copyFiles() instead??
-				if (!copyDirectoryFilesToDirectory(aFile, destFile, project)) {
-					return false;
-				}
+				// Use CopyFilesAndFoldersOperation.copyFiles() instead??
+				EOModelImportSupport.copyDirectoryFilesToDirectory(aFile, destFile, project);
 			}
 		}
-
-		return true;
 	}
 
-	public static boolean copyFile(String src, String dst, IProject project) {
+	public static void copyFile(File src, File dst, IProject project) throws IOException {
 		FileChannel in = null, out = null;
 		ByteBuffer buffer = null;
 		try {
 			in = new FileInputStream(src).getChannel();
-			out = new FileOutputStream(dst).getChannel();
-			buffer = ByteBuffer.allocate(1024);
-			while (in.read(buffer) != -1) {
-				buffer.flip(); // Prepare for writing
-				out.write(buffer);
-				buffer.clear(); // Prepare for reading
-			}
-		} catch (FileNotFoundException e) {
-			return false;
-		} catch (IOException e) {
-			return false;
-		} finally {
 			try {
+				out = new FileOutputStream(dst).getChannel();
+				buffer = ByteBuffer.allocate(1024);
+				while (in.read(buffer) != -1) {
+					buffer.flip(); // Prepare for writing
+					out.write(buffer);
+					buffer.clear(); // Prepare for reading
+				}
+			} finally {
 				if (in != null) {
 					in.close();
 				}
+			}
+		} finally {
+			try {
 				if (out != null) {
 					out.close();
 				}
 			} catch (IOException e) {
-				// swallow
+				e.printStackTrace();
 			}
-			project.getFile(dst);
+			project.getFile(dst.getCanonicalPath());
 		}
-		return true;
 	}
 
-	//copy files in a root directory to a destination directory
-	public static boolean copyDirectoryFilesToDirectory(File srcRootFile, File dstRootFile, IProject project) {
-		String[] list = srcRootFile.list();
-		for (String aFileName : list) {
-			boolean result = copyFile(srcRootFile.getAbsolutePath()+File.separator+aFileName, dstRootFile.getAbsolutePath()+File.separator+aFileName, project);
-			if (!result) {
-				return false;
+	// copy files in a root directory to a destination directory
+	public static void copyDirectoryFilesToDirectory(File srcRootFile, File dstRootFile, IProject project) throws IOException {
+		File[] children = srcRootFile.listFiles();
+		for (File child : children) {
+			if (child.isFile()) {
+				EOModelImportSupport.copyFile(child, new File(dstRootFile, child.getName()), project);
+				project.getFolder(new File(dstRootFile, child.getName()).getCanonicalPath());
 			}
-			project.getFolder(dstRootFile.getAbsolutePath()+File.separator+aFileName);
-
 		}
-		return true;
 	}
 }

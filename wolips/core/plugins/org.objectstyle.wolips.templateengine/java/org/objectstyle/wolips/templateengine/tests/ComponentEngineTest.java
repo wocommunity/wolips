@@ -1,8 +1,8 @@
 /* ====================================================================
+ * 
+ * The ObjectStyle Group Software License, Version 1.0 
  *
- * The ObjectStyle Group Software License, Version 1.0
- *
- * Copyright (c) 2004 The ObjectStyle Group,
+ * Copyright (c) 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:
- *       "This product includes software developed by the
+ *    any, must include the following acknowlegement:  
+ *       "This product includes software developed by the 
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne"
+ * 4. The names "ObjectStyle Group" and "Cayenne" 
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written
+ *    from this software without prior written permission. For written 
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -53,36 +53,74 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.templateengine;
 
-import junit.framework.Test;
+package org.objectstyle.wolips.templateengine.tests;
+
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
+
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.objectstyle.wolips.templateengine.ComponentEngine;
 
 /**
- * Run all compiler regression tests
+ * @author ulrich
+ * 
+ * To change the template for this generated type comment go to
+ * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class TemplatesTestSuite extends TestCase {
+public class ComponentEngineTest extends TestCase {
 
 	/**
-	 * @param testName
+	 * 
 	 */
-	public TemplatesTestSuite(String testName) {
-		super(testName);
+	public void testComponentPath() {
+		ComponentEngine componentEngine = new ComponentEngine();
+		IPath path = new Path("foo");
+		componentEngine.setComponentPath(path);
+		assertEquals(path, componentEngine.getComponentPath());
 	}
 
 	/**
-	 * @return
-	 * @throws Exception
+	 * 
 	 */
-	public static Test suite() throws Exception {
-		TestSuite suite = new TestSuite();
-		suite.addTestSuite(TemplateEnginePluginTest.class);
-		suite.addTestSuite(ComponentEngineTest.class);
-		// suite.addTestSuite(TemplateFolderRootTest.class);
-		// suite.addTestSuite(TemplateFolderTest.class);
-		// suite.addTestSuite(TemplatesDocumentTest.class);
-		// suite.addTestSuite(TemplateDefinitionTest.class);
-		return suite;
+	public void testApiPath() {
+		ComponentEngine componentEngine = new ComponentEngine();
+		IPath path = new Path("foo");
+		componentEngine.setApiPath(path);
+		assertEquals(path, componentEngine.getApiPath());
+	}
+
+	/**
+	 * 
+	 */
+	public void testJavaPath() {
+		ComponentEngine componentEngine = new ComponentEngine();
+		IPath path = new Path("foo");
+		componentEngine.setJavaPath(path);
+		assertEquals(path, componentEngine.getJavaPath());
+	}
+
+	/**
+	 * 
+	 */
+	public void testInit() {
+		ComponentEngine componentEngine = new ComponentEngine();
+		try {
+			componentEngine.init();
+		} catch (Exception e) {
+			assertNull(e);
+		}
+	}
+
+	/**
+	 * 
+	 */
+	public void testSelection() {
+		ComponentEngine componentEngine = new ComponentEngine();
+		try {
+			componentEngine.init();
+		} catch (Exception e) {
+			assertNull(e);
+		}
 	}
 }

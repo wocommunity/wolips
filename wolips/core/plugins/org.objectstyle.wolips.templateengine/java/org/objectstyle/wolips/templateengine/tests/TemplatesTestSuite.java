@@ -53,17 +53,35 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.templateengine;
+package org.objectstyle.wolips.templateengine.tests;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
- * @author ulrich
- * 
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * Run all compiler regression tests
  */
-public class TemplateFolderRootTest extends TestCase {
+public class TemplatesTestSuite extends TestCase {
 
-	// TOD::-)
+	/**
+	 * @param testName
+	 */
+	public TemplatesTestSuite(String testName) {
+		super(testName);
+	}
+
+	/**
+	 * @return
+	 * @throws Exception
+	 */
+	public static Test suite() throws Exception {
+		TestSuite suite = new TestSuite();
+		suite.addTestSuite(ComponentEngineTest.class);
+		// suite.addTestSuite(TemplateFolderRootTest.class);
+		// suite.addTestSuite(TemplateFolderTest.class);
+		// suite.addTestSuite(TemplatesDocumentTest.class);
+		// suite.addTestSuite(TemplateDefinitionTest.class);
+		return suite;
+	}
 }

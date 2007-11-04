@@ -3,6 +3,7 @@ package org.objectstyle.wolips.wizards.template;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
+import org.objectstyle.wolips.templateengine.ProjectTemplate;
 
 public class TemplateLabelProvider implements ILabelProvider {
 	public void addListener(ILabelProviderListener listener) {
