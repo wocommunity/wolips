@@ -210,7 +210,7 @@
             enabled="true"
             description="%HideInnerClassFiles.description"
             class="org.eclipse.jdt.internal.ui.filters.InnerClassFilesFilter"
-            id="org.eclipse.jdt.internal.ui.PackageExplorer.HideInnerClassFilesFilter">
+            id="org.objectstyle.wolips.jdt.ui.WOPackageExplorer.HideInnerClassFilesFilter">
       </filter>
       <filter
             targetId="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
@@ -218,7 +218,7 @@
             enabled="true"
             description="%HideEmptyPackages.description"
             class="org.eclipse.jdt.internal.ui.filters.EmptyPackageFilter"
-            id="org.eclipse.jdt.internal.ui.PackageExplorer.EmptyPackageFilter">
+            id="org.objectstyle.wolips.jdt.ui.WOPackageExplorer.EmptyPackageFilter">
       </filter>
       <filter
             targetId="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
@@ -226,7 +226,7 @@
             enabled="true"
             description="%HideEmptyInnerPackages.description"
             class="org.eclipse.jdt.internal.ui.filters.EmptyInnerPackageFilter"
-            id="org.eclipse.jdt.internal.ui.PackageExplorer.EmptyInnerPackageFilter">
+            id="org.objectstyle.wolips.jdt.ui.WOPackageExplorer.EmptyInnerPackageFilter">
       </filter>
       <filter
             targetId="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
