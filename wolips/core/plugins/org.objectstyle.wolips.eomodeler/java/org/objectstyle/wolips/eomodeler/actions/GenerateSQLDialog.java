@@ -36,6 +36,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.IEOClassLoaderFactory;
 import org.objectstyle.wolips.eomodeler.core.sql.IEOSQLGenerator;
 import org.objectstyle.wolips.eomodeler.core.sql.IEOSQLGeneratorFactory;
+import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
 import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class GenerateSQLDialog extends Dialog {
@@ -340,8 +341,7 @@ public class GenerateSQLDialog extends Dialog {
 					} catch (final Throwable t) {
 						Display.getDefault().syncExec(new Runnable() {
 							public void run() {
-								ErrorUtils.openErrorDialog(getShell(), t);
-								MessageDialog dialog = new MessageDialog(getShell(), "Error", null, "There was an error, do you want to cancel the rest of the script?", MessageDialog.QUESTION, new String[] { "Cancel", "Continue" }, 0);
+								MessageDialog dialog = new MessageDialog(getShell(), "Error", null, StringUtils.getErrorMessage(t) + "\n\nThere was an error, do you want to cancel the rest of the script?", MessageDialog.QUESTION, new String[] { "Cancel", "Continue" }, 0);
 								int results = dialog.open();
 								boolean cancel = (results == 0);
 								setCancel(cancel);

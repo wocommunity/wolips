@@ -217,14 +217,14 @@ public class StringUtils {
 				message = message.trim();
 				messageBuffer.append(message);
 				if (!message.endsWith(".")) { //$NON-NLS-1$
-					messageBuffer.append(". "); //$NON-NLS-1$
+					messageBuffer.append(".  "); //$NON-NLS-1$
 				}
-				else if (!message.endsWith(" ")) {
-					messageBuffer.append(" ");
+				else if (!message.endsWith("  ")) {
+					messageBuffer.append("  ");
 				}
 			}
 
-			Throwable cause = _t.getCause();
+			Throwable cause = t.getCause();
 			if (t == cause) {
 				t = null;
 			} else {
