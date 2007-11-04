@@ -20,12 +20,16 @@
    </extension>
    <extension
          id="entityModeler.eoclassLoaderFactory"
-         name="Entity Modeler EOClassLoader Factory"
+         name="Entity Modeler EOClassLoader Factories"
          point="org.objectstyle.wolips.eomodeler.eoclassLoaderFactory">
       <eoclassLoaderFactory
             class="org.objectstyle.wolips.eomodeler.factories.SimpleManifestEOClassLoaderFactory"
             id="entitymodeler.SimpleManifestEOClassLoaderFactory"
             name="Simple Manifest EOClassLoader Factory"/>
+      <eoclassLoaderFactory
+            class="org.objectstyle.wolips.eomodeler.factories.IDEAProjectEOClassLoaderFactory"
+            id="entitymodeler.IDEAProjectEOClassLoaderFactory"
+            name="IDEA Project EOClassLoader Factory"/>
    </extension>
    <extension
          id="org.objectstyle.wolips.eomodeler.sqlGeneratorFactory.eclipse"
