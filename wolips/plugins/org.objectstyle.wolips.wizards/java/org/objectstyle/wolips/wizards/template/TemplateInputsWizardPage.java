@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -16,6 +15,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
+import org.objectstyle.wolips.templateengine.ProjectInput;
+import org.objectstyle.wolips.templateengine.ProjectTemplate;
 
 public class TemplateInputsWizardPage extends WizardPage {
 	private List<ProjectInput> _inputs;
@@ -28,7 +29,7 @@ public class TemplateInputsWizardPage extends WizardPage {
 
 	private boolean _projectTemplateChanged;
 
-	protected TemplateInputsWizardPage() {
+	public TemplateInputsWizardPage() {
 		super("Template Variables");
 		setTitle("Template Variables");
 		_questionLabels = new HashMap<ProjectInput, Label>();

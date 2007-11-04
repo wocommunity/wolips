@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,12 +54,13 @@
  *
  */
 
-package org.objectstyle.wolips.templateengine;
+package org.objectstyle.wolips.templateengine.tests;
+
+import java.io.File;
+
+import org.objectstyle.wolips.templateengine.TemplateDefinition;
 
 import junit.framework.TestCase;
-
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 
 /**
  * @author ulrich
@@ -67,64 +68,21 @@ import org.eclipse.core.runtime.Path;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class ComponentEngineTest extends TestCase {
+public class TemplateDefinitionTest extends TestCase {
 
 	/**
 	 * 
 	 */
-	public void testComponentPath() {
-		ComponentEngine componentEngine = new ComponentEngine();
-		IPath path = new Path("foo");
-		componentEngine.setComponentPath(path);
-		assertEquals(path, componentEngine.getComponentPath());
+	public void testConstructor() {
+		TemplateDefinition templateDefinition = new TemplateDefinition("foo", "foo1", "foo2", "foo3");
+		assertNotNull(templateDefinition);
 	}
 
 	/**
 	 * 
 	 */
-	public void testApiPath() {
-		ComponentEngine componentEngine = new ComponentEngine();
-		IPath path = new Path("foo");
-		componentEngine.setApiPath(path);
-		assertEquals(path, componentEngine.getApiPath());
-	}
-
-	/**
-	 * 
-	 */
-	public void testJavaPath() {
-		ComponentEngine componentEngine = new ComponentEngine();
-		IPath path = new Path("foo");
-		componentEngine.setJavaPath(path);
-		assertEquals(path, componentEngine.getJavaPath());
-	}
-
-	/**
-	 * 
-	 */
-	public void testInit() {
-		ComponentEngine componentEngine = new ComponentEngine();
-		assertEquals(0, componentEngine.templateFolderCount());
-		assertEquals(0, componentEngine.names().length);
-		try {
-			componentEngine.init();
-		} catch (Exception e) {
-			assertNull(e);
-		}
-		assertEquals(1, componentEngine.templateFolderCount());
-		assertEquals(1, componentEngine.names().length);
-	}
-
-	/**
-	 * 
-	 */
-	public void testSelection() {
-		ComponentEngine componentEngine = new ComponentEngine();
-		try {
-			componentEngine.init();
-		} catch (Exception e) {
-			assertNull(e);
-		}
-		componentEngine.setSelectedTemplateName(componentEngine.names()[0]);
+	public void testGetDestinationPath() {
+		TemplateDefinition templateDefinition = new TemplateDefinition("foo", "foo1", "foo2", "foo2");
+		assertEquals("foo1" + File.separator + "foo2", templateDefinition);
 	}
 }

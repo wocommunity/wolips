@@ -63,10 +63,12 @@ import org.eclipse.ui.internal.util.PrefUtil;
 import org.eclipse.ui.internal.wizards.newresource.ResourceMessages;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 import org.objectstyle.wolips.jdt.classpath.WOClasspathContainer;
+import org.objectstyle.wolips.templateengine.ProjectTemplate;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
 import org.objectstyle.wolips.wizards.D2WApplicationConfigurationPage.D2WLook;
 import org.objectstyle.wolips.wizards.actions.EOModelImportWorkspaceJob;
+import org.objectstyle.wolips.wizards.template.TemplateInputsWizardPage;
 
 /**
  * Standard workbench wizard that creates a new project resource in the
@@ -135,7 +137,10 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	protected WOWebServicesWizardPage  _webservicesSupportPage;
 
 	protected WOFrameworkSupportPage  _frameworkSupportPage;
+	
+	protected TemplateInputsWizardPage _templateInputsWizardPage;
 
+	private ProjectTemplate _projectTemplate;
 	private IProject _newProject;
 
 	/**
@@ -153,6 +158,13 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 			section = workbenchSettings.addNewSection("BasicNewProjectResourceWizard");//$NON-NLS-1$
 		}
 		setDialogSettings(section);
+	}
+	
+	public NewWOProjectWizard(String projectTemplateName) {
+		this();
+		_projectTemplate = ProjectTemplate.loadProjectTemplateNamed(projectTemplateName);
+		_templateInputsWizardPage = new TemplateInputsWizardPage();
+		_templateInputsWizardPage.setProjectTemplate(_projectTemplate);
 	}
 
 	/**
@@ -177,6 +189,10 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 			if (_packagePage != null) {
 				addPage(_packagePage);
 			}
+		}
+		
+		if (_templateInputsWizardPage != null && _projectTemplate.getInputs().size() > 0) {
+			addPage(_templateInputsWizardPage);
 		}
 
 		_referencePage = createReferencePage();
@@ -318,11 +334,12 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 		description.setLocationURI(location);
 
 		// update the referenced project if provided
+		final IProject[] refProjects;
 		if (_referencePage != null) {
-			IProject[] refProjects = _referencePage.getReferencedProjects();
-			if (refProjects.length > 0) {
-				description.setReferencedProjects(refProjects);
-			}
+			refProjects = _referencePage.getReferencedProjects();
+		}
+		else {
+			refProjects = null;
 		}
 
 		// create the new project operation
@@ -331,6 +348,18 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 				createProject(description, newProjectHandle, monitor);
 				createEOModelSupport(newProjectHandle);
 				createFrameworksSupport(newProjectHandle);
+
+				if (refProjects != null && refProjects.length > 0) {
+					IJavaProject javaProject = JavaCore.create(newProjectHandle);
+					Set<IClasspathEntry> classpathEntries = new HashSet<IClasspathEntry>();
+					for (IClasspathEntry classpathEntry : javaProject.getRawClasspath()) {
+						classpathEntries.add(classpathEntry);
+					}
+					for (IProject referencedProject : refProjects) {
+						classpathEntries.add(JavaCore.newProjectEntry(referencedProject.getFullPath()));
+					}
+					javaProject.setRawClasspath(classpathEntries.toArray(new IClasspathEntry[classpathEntries.size()]), monitor);
+				}
 			}
 		};
 
@@ -391,6 +420,9 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 			}
 
 			try {
+				if (_projectTemplate != null) {
+					_projectTemplate.createProjectContents(projectHandle, new SubProgressMonitor(monitor, 1000));
+				}
 				_createProject(projectHandle, new SubProgressMonitor(monitor, 1000));
 
 				projectHandle.open(new SubProgressMonitor(monitor, 1000));
@@ -526,6 +558,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	 * @see IPreferenceConstants#OPM_ACTIVE_PAGE
 	 * @see IWorkbenchPreferenceConstants#NO_NEW_PERSPECTIVE
 	 */
+	@SuppressWarnings("unchecked")
 	public static void updatePerspective(IConfigurationElement configElement) {
 		// Do not change perspective if the configuration element is
 		// not specified.

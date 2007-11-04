@@ -1,6 +1,5 @@
 package org.objectstyle.wolips.wizards.template;
 
-import java.io.File;
 import java.util.List;
 
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -15,21 +14,19 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.objectstyle.wolips.templateengine.ProjectTemplate;
 
 public class SelectTemplateWizardPage extends WizardPage implements ISelectionChangedListener, IDoubleClickListener {
-	private List<File> _templateBaseFolders;
-	
 	private List<ProjectTemplate> _templates;
 
 	private ListViewer _templateViewer;
 
 	private ProjectTemplate _selectedProjectTemplate;
 
-	protected SelectTemplateWizardPage(List<File> templateBaseFolders) {
+	protected SelectTemplateWizardPage() {
 		super("Select Template");
 		setPageComplete(false);
-		_templateBaseFolders = templateBaseFolders;
-		_templates = ProjectTemplate.loadProjectTemplates(templateBaseFolders);
+		_templates = ProjectTemplate.loadProjectTemplates();
 	}
 
 	public List<ProjectTemplate> getProjectTemplates() {
@@ -51,7 +48,7 @@ public class SelectTemplateWizardPage extends WizardPage implements ISelectionCh
 		if (_templates.size() == 0) {
 			setTitle("No Templates Found");
 			Label noTemplatesLabel = new Label(composite, SWT.NONE);
-			noTemplatesLabel.setText("There are no templates in folders " + _templateBaseFolders);
+			noTemplatesLabel.setText("There are no templates available.");
 		} else {
 			setTitle("Select a Template");
 			_templateViewer = new ListViewer(composite, SWT.SINGLE | SWT.V_SCROLL | SWT.BORDER);

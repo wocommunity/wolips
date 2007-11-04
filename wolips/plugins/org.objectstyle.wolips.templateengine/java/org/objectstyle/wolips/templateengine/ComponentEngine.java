@@ -72,10 +72,6 @@ public class ComponentEngine extends AbstractEngine {
 
 	private IPath javaPath;
 
-	private TemplateFolder[] templateFolder;
-
-	private TemplateFolder selectedTemplateFolder;
-
 	private String componentName;
 
 	private String packageName;
@@ -89,7 +85,6 @@ public class ComponentEngine extends AbstractEngine {
 	private String wooEncoding;
 
 	private int htmlBodyType;
-
 
 	/**
 	 * @return Returns the apiPath.
@@ -186,7 +181,7 @@ public class ComponentEngine extends AbstractEngine {
 		this.wooEncoding = stringEncoding;
 	}
 
-	public int getHTMLBodyType () {
+	public int getHTMLBodyType() {
 		return this.htmlBodyType;
 	}
 
@@ -198,48 +193,7 @@ public class ComponentEngine extends AbstractEngine {
 	 * inits the engine
 	 */
 	public void init() throws Exception {
-		this.templateFolder = TemplateEnginePlugin.getTemplateFolder(TemplateEnginePlugin.WOComponent);
 		super.init();
-	}
-
-	/**
-	 * @return the template folder count.
-	 */
-	public int templateFolderCount() {
-		if (this.templateFolder == null) {
-			return 0;
-		}
-		return this.templateFolder.length;
-	}
-
-	/**
-	 * @return the names.
-	 */
-	public String[] names() {
-		if (this.templateFolder == null) {
-			return new String[0];
-		}
-		String[] names = new String[this.templateFolder.length];
-		for (int i = 0; i < names.length; i++) {
-			names[i] = this.templateFolder[i].getTemplatesDocument().getName();
-		}
-		return names;
-	}
-
-	/**
-	 * @param templateName
-	 */
-	public void setSelectedTemplateName(String templateName) {
-		String[] names = this.names();
-		for (int i = 0; i < names.length; i++) {
-			if (names[i].equals(this.templateFolder[i].getTemplatesDocument().getName())) {
-				this.selectedTemplateFolder = this.templateFolder[i];
-			}
-		}
-	}
-
-	public TemplateFolder getSelectedTemplateFolder() {
-		return selectedTemplateFolder;
 	}
 
 	public void run(IProgressMonitor monitor) throws InvocationTargetException {

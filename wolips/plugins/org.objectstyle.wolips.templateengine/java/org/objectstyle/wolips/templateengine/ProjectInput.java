@@ -1,9 +1,9 @@
-package org.objectstyle.wolips.wizards.template;
+package org.objectstyle.wolips.templateengine;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import org.objectstyle.wolips.eomodeler.core.utils.ComparisonUtils;
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 
 /**
  * ProjectInput represents a single input variable for a template definition.

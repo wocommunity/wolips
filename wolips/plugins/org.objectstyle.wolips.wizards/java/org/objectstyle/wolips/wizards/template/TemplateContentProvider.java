@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.objectstyle.wolips.templateengine.ProjectTemplate;
 
 public class TemplateContentProvider implements IStructuredContentProvider {
 	@SuppressWarnings("unchecked")
