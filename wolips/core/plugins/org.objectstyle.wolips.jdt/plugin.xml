@@ -62,6 +62,7 @@
          point="org.eclipse.jdt.ui.javaElementFilters">
 <!-- Package Explorer -->
       <filter
+            targetId="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
             id="org.objectstyle.wolips.ui.javaelementfilters.makefiles"
             name="PB makefiles (WOLips)"
             enabled="true"
@@ -69,6 +70,7 @@
             pattern="Makefil*">
       </filter>
       <filter
+            targetId="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
             id="org.objectstyle.wolips.ui.javaelementfilters.antclasspaths"
             name="ant classpath files (WOLips)"
             enabled="true"
@@ -76,6 +78,7 @@
             pattern="ant.classpaths.*">
       </filter>
       <filter
+            targetId="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
             id="org.objectstyle.wolips.ui.javaelementfilters.antframeworks"
             name="ant framework files (WOLips)"
             enabled="true"
@@ -83,6 +86,7 @@
             pattern="ant.frameworks.*">
       </filter>
       <filter
+            targetId="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
             id="org.objectstyle.wolips.ui.javaelementfilters.pbdorproject"
             name="PB.project (WOLips)"
             enabled="true"
@@ -90,6 +94,7 @@
             pattern="PB.project">
       </filter>
       <filter
+            targetId="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
             id="org.objectstyle.wolips.ui.javaelementfilters.dotapi"
             name="WOComponent api (WOLips)"
             enabled="false"
@@ -97,6 +102,7 @@
             pattern="*.api">
       </filter>
       <filter
+            targetId="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
             id="org.objectstyle.wolips.ui.javaelementfilters.dotwoo"
             name="woo (WOLips)"
             enabled="false"
@@ -104,6 +110,7 @@
             pattern="*.woo">
       </filter>
       <filter
+            targetId="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
             id="org.objectstyle.wolips.ui.javaelementfilters.woaicon"
             name="WOA Icon (WOLips)"
             enabled="true"
@@ -111,6 +118,7 @@
             pattern="WOAfile.icns">
       </filter>
       <filter
+            targetId="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
             id="org.objectstyle.wolips.ui.javaelementfilters.custominfo.plist"
             name="CustomInfo.plist (WOLips)"
             enabled="true"
@@ -118,13 +126,15 @@
             pattern="CustomInfo.Plist">
       </filter>
       <filter
+            targetId="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
             id="org.objectstyle.wolips.ui.javaelementfilters.properties"
             name="Properties (WOLips)"
-            enabled="true"
+            enabled="false"
             description="Hides files named Properties"
             pattern="Properties">
       </filter>
       <filter
+            targetId="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
             id="org.objectstyle.wolips.ui.javaelementfilters.builddotproperties"
             name="build.properties (WOLips)"
             enabled="true"
@@ -132,13 +142,15 @@
             pattern="build.properties">
       </filter>
       <filter
+            targetId="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
             id="org.objectstyle.wolips.ui.javaelementfilters.builddotxml"
             name="build.xml (WOLips)"
-            enabled="true"
+            enabled="false"
             description="Hide all build.xml files"
             pattern="build.xml">
       </filter>
       <filter
+            targetId="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
             id="org.objectstyle.wolips.ui.javaelementfilters.dotxcode"
             name="Xcode (WOLips)"
             enabled="true"
@@ -146,6 +158,7 @@
             pattern="*.xcode*">
       </filter>
       <filter
+            targetId="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
             id="org.objectstyle.wolips.ui.javaelementfilters.dist"
             name="dist (WOLips)"
             enabled="false"
@@ -153,20 +166,23 @@
             pattern="dist">
       </filter>
       <filter
+            targetId="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
             id="org.objectstyle.wolips.ui.javaelementfilters.build"
             name="build (WOLips)"
-            enabled="false"
+            enabled="true"
             description="Hide all build files"
             pattern="build">
       </filter>
       <filter
+            targetId="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
             id="org.objectstyle.wolips.ui.javaelementfilters.woproject"
             name="woproject (WOLips)"
-            enabled="true"
+            enabled="false"
             description="Hide all woproject files"
             class="org.objectstyle.wolips.jdt.javaelementfilters.WoprojectFilter">
       </filter>
       <filter
+            targetId="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
       	   id="org.objectstyle.wolips.ui.javaelementfilters.wocomponent"
             name="WOComponent (WOLips)"
             enabled="false"
@@ -174,8 +190,9 @@
             class="org.objectstyle.wolips.jdt.javaelementfilters.ComponentFilter">
       </filter>
       <filter
+            targetId="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
             description="Hide all EOGenerator underscore files"
-            enabled="false"
+            enabled="true"
             id="org.objectstyle.wolips.ui.javaelementfilters.eogeneratedFiles"
             name="EOGenerator _Files"
             pattern="_*.java">
@@ -198,7 +215,7 @@
       <filter
             targetId="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
             name="%HideEmptyPackages.label"
-            enabled="false"
+            enabled="true"
             description="%HideEmptyPackages.description"
             class="org.eclipse.jdt.internal.ui.filters.EmptyPackageFilter"
             id="org.eclipse.jdt.internal.ui.PackageExplorer.EmptyPackageFilter">
