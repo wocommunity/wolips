@@ -1,0 +1,130 @@
+AppleLogo: WOImage {
+	alt = "Apple lives";
+	border = "0";
+	filename = "Apple-bw.gif";
+	framework = "JavaDirectToWeb";
+	height = "37";
+	name = "Apple lives";
+	width = "111";
+}
+
+AssistantActiveConditional: WOConditional {
+	condition = isWebAssistantEnabled;
+}
+
+CustomizeButton: WOImage {
+	alt = "Activates the WebAssistant";
+	border = "0";
+	filename = "custmz-btn.gif";
+	framework = "JavaDirectToWeb";
+	height = "27";
+	name = "Activates the WebAssistant";
+	width = "100";
+}
+
+CustomizeLink: WOHyperlink {
+	action = showWebAssistant;
+}
+
+D2WLink: WOHyperlink {
+	href = "http://www.apple.com/WebObjects/";
+}
+
+D2WLink2: WOHyperlink {
+	href = "http://www.apple.com/WebObjects/";
+}
+
+D2WLogo: WOImage {
+	alt = "Direct to Web - WebObjects 5.0";
+	border = "0";
+	filename = "powrdbyWO-ban.gif";
+	framework = "JavaDirectToWeb";
+	height = "37";
+	name = "Direct to Web - WebObjects 5.0";
+	width = "137";
+}
+
+D2WLogo2: WOImage {
+	alt = "Direct to Web - WebObjects 5.0";
+	border = "0";
+	filename = "powrdbyWO-ban.gif";
+	framework = "JavaDirectToWeb";
+	height = "37";
+	name = "Direct to Web - WebObjects 5.0";
+	width = "137";
+}
+
+EntitiesForm: WOForm {
+}
+
+EntitiesPopup: WOPopUpButton {
+	displayString = entityNameInList;
+	item = entityNameInList;
+	list = visibleEntityNames;
+	selection = manipulatedEntityName;
+}
+
+FindButton: WOImageButton {
+	action = findEntityAction;
+	alt = "Builds a Query Component for the selected Entity";
+	filename = "search-btn.gif";
+	framework = "JavaDirectToWeb";
+	name = "Builds a Query Component for the selected Entity";
+}
+
+HasValidSession: WOConditional {
+	condition = context.hasSession;
+}
+
+HomeButton: WOImage {
+	alt = "Exit to Top/Home";
+	border = "0";
+	filename = "home-btn.gif";
+	framework = "JavaDirectToWeb";
+	height = "27";
+	name = "Exit to Top/Home";
+	width = "100";
+}
+
+HomeLink: WOHyperlink {
+	action = homeAction;
+}
+
+LAEnabledConditional: WOConditional {
+	condition = isWebAssistantEnabled;
+}
+
+LoginButton: WOImage {
+	alt = "Logout";
+	border = "0";
+	filename = "logout-btn.gif";
+	framework = "JavaDirectToWeb";
+	height = "27";
+	name = "Logout";
+	width = "100";
+}
+
+LoginLink: WOHyperlink {
+	action = logout;
+	target = "_top";
+}
+
+NewButton: WOImageButton {
+	action = newObjectAction;
+	alt = "Creates a new Object of the selected Entity";
+	border = "0";
+	filename = "new-btn.gif";
+	framework = "JavaDirectToWeb";
+	height = "27";
+	name = "Creates a new Object of the selected Entity";
+	width = "100";
+}
+
+NoValidSession: WOConditional {
+	condition = context.hasSession;
+	negate = true;
+}
+
+RemoteControl: D2WRemoteControl {
+}
+

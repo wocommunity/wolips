@@ -1,0 +1,1131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+   <webobject name="Head"></webobject>
+   <webobject name="BodyContainer">
+   
+<script type="text/javascript">
+//The following, up until another commented notification that further script is not included in this statement, does not belong in
+//this file; it belongs in an external file I called "movefaderunrequest.js" that was in the Webserver Resources bucket with the images. I never got
+//the script to be linked in an external file with "<script src=...>" because WOJavaScript pastes the entire script in instead of
+//linking to it. There aren't really any bad consequences to having the script in here instead of being externally linked, but it would
+//be good and elegant to get it referenced, because it would save about 20 kilobytes of down-the-wire communication the server wouldn't
+//have to send, because browsers cache JS files. The server just doesn't need to bother sending this along every time the PageWrapper is
+//requested.
+
+
+
+
+
+
+	
+//Parameters
+var speedAdjust = 1;
+
+//Fading framework
+var objectsToFade = new Array();
+var targetOpacities = new Array();
+var actualOpacities = new Array();
+var fadeSlotOccupations = new Array();
+var fadeSpeeds = new Array();
+var eventsForFadeCompletion = new Array();
+
+//Moving framework
+var objectsToMove = new Array();
+var originalYs = new Array();
+var originalXs = new Array();
+var targetYs = new Array();
+var targetXs = new Array();
+var actualYs = new Array();
+var actualXs = new Array();
+var accelDirs = new Array();
+var moveSlotOccupations = new Array();
+var xSpeeds = new Array();
+var ySpeeds = new Array();
+var eventsForMoveCompletion = new Array();
+var extensionsForMoves = new Array();
+var xOrients = new Array();
+var yOrients = new Array();
+
+//SetToRun framework, setTimeout replacement...
+var eventsToRun = new Array();
+var timesToRunEvents = new Array();
+var eventSlotOccupations = new Array();
+
+//XMLHttpRequest framework, XMLHttpRequest simplifier and concurrent-ifier
+var requesters = new Array();
+var requestSlotOccupations = new Array();
+
+//Browser Globals
+var isIE;
+var isSafari;
+var isGecko;
+var isMac;
+var isFirefox;
+var isCamino;
+var isOpera;
+var isNetscape;
+
+//Time Tracking for doNextFrame()
+var lastFrameDate = -9999999;
+var timeElapsed=0;
+
+function initializeMoveFadeRunRequestFrameworks() {
+  if (navigator.appName.toLowerCase().indexOf("explorer")!=-1)
+    isIE = true;
+  else isIE = false;
+
+  if (navigator.userAgent.toLowerCase().indexOf("safari")!=-1)
+    isSafari = true;
+  else isSafari = false;
+
+  if (navigator.userAgent.toLowerCase().indexOf("gecko")!=-1 && !isSafari)
+    isGecko = true;
+  else isGecko = false;
+
+  if (navigator.userAgent.toLowerCase().indexOf("mac")!=-1)
+    isMac = true;
+  else isMac = false;
+  
+  if (navigator.userAgent.toLowerCase().indexOf("firefox")!=-1 &&!isSafari)
+    isFirefox = true;
+  else isFirefox = false;
+  
+  if (navigator.userAgent.toLowerCase().indexOf("camino")!=-1)
+    isCamino = true;
+  else isCamino = false;
+
+  if (navigator.userAgent.toLowerCase().indexOf("opera")!=-1)
+	isOpera = true;
+  else isOpera = false;
+
+  if (navigator.userAgent.toLowerCase().indexOf("netscape")!=-1)
+	isNetscape = true;
+  else isNetscape = false;
+
+  var i=0;
+  for (i=0; isLessThan(i,20); i++) {
+    fadeSlotOccupations[i]=false;
+    objectsToFade[i]=null;
+    actualOpacities[i]=-1.0;
+    targetOpacities[i]=-1.0;
+    fadeSpeeds[i]=-1.0;
+    eventsForFadeCompletion[i]="alert('This has a bug. An event scheduled to run at the end of a non-existent fade has been run.');";
+  }
+
+  for (i=0; isLessThan(i,20); i++) {
+    objectsToMove[i] = null;
+    originalXs[i] = -2147483647;
+    targetXs[i] = -2147483647;
+    actualXs[i] = -2147483647;
+    originalYs[i] = -2147483647;
+    targetYs[i] = -2147483647;
+    actualYs[i] = -2147483647;
+    xOrients[i] = 0;
+    yOrients[i] = 0;
+    xSpeeds[i] = 0;
+    ySpeeds[i] = 0;
+    accelDirs[i] = 0;
+    moveSlotOccupations[i]=false;
+    //eval(eventsForMoveCompletion[i]);
+    eventsForMoveCompletion[i]="alert('This has a bug. An event scheduled to run at the end of a non-existent move (slot "+i+") has been run.');";
+    extensionsForMoves[i]="alert('This has a bug. An extension for a non-existent move (slot "+i+") has been run.');";
+  }
+
+  for (i=0; isLessThan(i,20); i++) {
+    eventsToRun[i] = "alert('This has a bug. An event scheduled to run with setToRun was not initialized.');";
+    eventSlotOccupations[i] = false;
+    timesToRunEvents[i] = -2147483647;
+  }
+
+  for (i=0; isLessThan(i,100); i++) {
+    requestSlotOccupations[i] = false;
+    requesters[i] = "Unused";
+  }
+
+  setTimeout("doNextFrame()",200);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function doNextFrame() {
+  var currentDate = new Date();
+  currentDate = Math.floor(currentDate);
+  timeElapsed = currentDate - lastFrameDate;
+  if(isGreaterThan(timeElapsed,100))
+    timeElapsed = 33;
+  lastFrameDate = currentDate;
+
+  timeElapsed*=speedAdjust;
+
+ // try {
+ //  doEveryFrame();
+ // }
+ // catch(err) {}
+
+  var i=0;
+  for(i=0; isLessThan(i,20); i++) {
+    if(eventSlotOccupations[i] && currTime()>=timesToRunEvents[i]) {
+      timesToRunEvents[i]=-2147483647;
+      var runThis = eventsToRun[i];
+      eventsToRun[i]="alert('This has a bug. An extension for a non-existent move (slot "+i+") has been run.');";
+      eventSlotOccupations[i] = false;
+      try{eval(runThis);}catch(e){alert(e+"\nAttempted to execute:\n\n"+runThis)}
+    }
+  }
+  
+  if(stuffFading()) {
+    for (i=0; isLessThan(i,20); i++) {
+      if (fadeSlotOccupations[i]) {
+        var doneWithThisOne=false;
+        var actualWasGreater = isLessThan(targetOpacities[i],actualOpacities[i]);
+        if(actualWasGreater)
+          actualOpacities[i] -= 0.001*timeElapsed*fadeSpeeds[i];
+        if(!actualWasGreater)
+          actualOpacities[i] += 0.001*timeElapsed*fadeSpeeds[i];
+        if((actualWasGreater && !(targetOpacities[i]<actualOpacities[i])) || (!actualWasGreater && (targetOpacities[i]<actualOpacities[i]))) {
+          actualOpacities[i] = targetOpacities[i];
+          doneWithThisOne=true;
+        }
+        var j=0;
+        for(j=0; isLessThan(j,objectsToFade[i].length); j++) {
+          var maxopacity=objectsToFade[i][j].getAttribute("maxopacity");
+          if(maxopacity!=null) maxopacity = 0.01*parseInt(maxopacity);
+          else maxopacity = 1;
+          setOpacity(objectsToFade[i][j],actualOpacities[i]*maxopacity);
+        }
+        if (doneWithThisOne) {
+          objectsToFade[i] = null;
+          targetOpacities[i] = -1.0;
+          actualOpacities[i] = -1.0;
+          fadeSpeeds[i] = -1.0;
+          fadeSlotOccupations[i]=false;
+          eval(eventsForFadeCompletion[i]);
+          eventsForFadeCompletion[i]="alert('This has a bug. An event scheduled to run at the end of a non-existent fade has been run.');";
+        }
+      }
+    }
+  }
+
+
+  if(stuffMoving()) {
+    for (i=0; isLessThan(i,20); i++) {
+      if (moveSlotOccupations[i]) {
+        if (actualXs[i]==originalXs[i] && actualYs[i]==originalYs[i])
+          timeElapsed = 33;
+        var doneWithThisOneInX=(targetXs[i]==actualXs[i]);
+        var justFinishedWithX = false;
+        if(!doneWithThisOneInX) {
+          var actualXWasGreater = isLessThan(targetXs[i],actualXs[i]);
+          if (accelDirs[i]==-1) {
+            actualXs[i] += (targetXs[i] - actualXs[i])*timeElapsed*.0001*xSpeeds[i];
+            if (actualXWasGreater) actualXs[i] -= .2;
+            else actualXs[i] += .2;
+          }
+          else if (accelDirs[i]==1) {
+            actualXs[i] -= (originalXs[i] - actualXs[i])*timeElapsed*.0001*xSpeeds[i];
+            if (actualXWasGreater) actualXs[i] -= .2;
+            else actualXs[i] += .2;
+          }
+          else {
+            if(actualXWasGreater) actualXs[i]-=xSpeeds[i]*timeElapsed*.06;
+            else actualXs[i]+=xSpeeds[i]*timeElapsed*.06;
+          }
+          if((actualXWasGreater && !isLessThan(targetXs[i],actualXs[i])) || (!actualXWasGreater && isLessThan(targetXs[i],actualXs[i]))) {
+            actualXs[i] = targetXs[i];
+            justFinishedWithX=true;
+          }
+        }
+
+        var doneWithThisOneInY=(targetYs[i]==actualYs[i]);
+        var justFinishedWithY = false;
+        if(!doneWithThisOneInY) {
+          var actualYWasGreater = isLessThan(targetYs[i],actualYs[i]);
+          if (accelDirs[i]==-1) {
+            actualYs[i] += (targetYs[i] - actualYs[i])*timeElapsed*.0001*ySpeeds[i];
+            if (actualYWasGreater) actualYs[i] -= .2;
+            else actualYs[i] += .2;
+          }
+          else if (accelDirs[i]==1) {
+            actualYs[i] -= (originalYs[i] - actualYs[i])*timeElapsed*.0001*ySpeeds[i];
+            if (actualYWasGreater) actualYs[i] -= .2;
+            else actualYs[i] += .2;
+          }
+          else {
+            if(actualYWasGreater) actualYs[i]-=ySpeeds[i]*timeElapsed*.06;
+            else actualYs[i]+=ySpeeds[i]*timeElapsed*.06;
+          }
+          if((actualYWasGreater && !isLessThan(targetYs[i],actualYs[i])) || (!actualYWasGreater && isLessThan(targetYs[i],actualYs[i]))) {
+            actualYs[i] = targetYs[i];
+            justFinishedWithY=true;
+          }
+        }
+
+        var justFinishedBoth = ((justFinishedWithX||doneWithThisOneInX) && (justFinishedWithY||doneWithThisOneInY));
+
+        if (!doneWithThisOneInX) {
+          if(xOrients[i]==-1) {
+            objectsToMove[i].style.left=""+Math.floor(actualXs[i])+"px";
+            objectsToMove[i].style.right=null;
+          }
+          if(xOrients[i]==1) {
+            objectsToMove[i].style.right=""+Math.floor(actualXs[i])+"px";
+            objectsToMove[i].style.left=null;
+          }
+          if(xOrients[i]==0)
+            alert("serious bug; xOrients wasn't defined properly somewhere");
+        }
+
+        if (!doneWithThisOneInY) {
+          if(yOrients[i]==-1) {
+            objectsToMove[i].style.bottom=""+Math.floor(actualYs[i])+"px";
+            objectsToMove[i].style.top=null;
+          }
+          if(yOrients[i]==1) {
+            objectsToMove[i].style.top=""+Math.floor(actualYs[i])+"px";
+            objectsToMove[i].style.bottom=null;
+          }
+          if(yOrients[i]==0)
+            alert("serious bug; yOrients wasn't defined properly somewhere");
+        }
+        eval(extensionsForMoves[i]);
+
+        if (justFinishedBoth) {
+          objectsToMove[i] = null;
+          originalXs[i] = -2147483647;
+          targetXs[i] = -2147483647;
+          actualXs[i] = -2147483647;
+          originalYs[i] = -2147483647;
+          targetYs[i] = -2147483647;
+          actualYs[i] = -2147483647;
+          xOrients[i] = 0;
+          yOrients[i] = 0;
+          xSpeeds[i] = 0;
+          ySpeeds[i] = 0;
+          accelDirs[i] = 0;
+          moveSlotOccupations[i]=false;
+          extensionsForMoves[i]="alert('This has a bug. An extension for a non-existent move (slot "+i+") has been run.');";
+          eval(eventsForMoveCompletion[i]);
+        }
+      }
+    }
+  }
+  setTimeout("doNextFrame()",20);
+}
+
+
+function stuffFading() {
+  var i=0;
+  var stuffFading=false;
+  while(!stuffFading && i<20) {
+    stuffFading = fadeSlotOccupations[i];
+    i++;
+  }
+  return stuffFading;
+}
+
+function stuffMoving() {
+  var i=0;
+  var stuffMoving=false;
+  while(!stuffMoving && i<20) {
+    stuffMoving = moveSlotOccupations[i];
+    i++;
+  }
+  return stuffMoving;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function getStylePosition(obj,direction) {
+  if (!obj) {
+    alert("You just tried to get the direction of an object... too bad, that object doesn't exist!");
+    return;
+  }
+  eval("var s = obj.style."+direction);
+  if (!s) {
+    var s=("You just tried to get the "+direction.toUpperCase()+" position of an object with ID \""+obj.getAttribute("id")+"\" that didn't have a position in "+direction.toUpperCase()+". Returning -10000 as the position.\n")
+	s+=("obj.style.left = "+obj.style.left+"\n");
+	s+=("obj.style.right = "+obj.style.right+"\n");
+	s+=("obj.style.bottom = "+obj.style.bottom+"\n");
+	alert(s+"obj.style.top = "+obj.style.top);
+    return -10000;
+  }
+  var i = s.indexOf("px");
+  if (i!=-1)
+    return parseInt(s.substring(0,i));
+  return parseInt(s);
+}
+
+function horzArrangement(obj) {
+  var leftNull = (obj.style.left==null || obj.style.left=="");
+  var rightNull = (obj.style.right==null || obj.style.right=="");
+  if(leftNull && rightNull)
+    return "no horz layout";
+  if(leftNull)
+    return "right";
+  else if(rightNull)
+    return "left";
+  else {
+    alert("Ooops, This has a bug, he just tried to get the horizontal positioning orientation for an object that had both LEFT AND RIGHT defined\nleft is "+obj.style.left+" and right is "+obj.style.right);
+    return("big bug, both defined");
+  }
+}
+
+function vertArrangement(obj) {
+  var topNull = (obj.style.top==null || obj.style.top=="");
+//	var s = "";
+//	for(var i in document.getElementById("top-center").style)
+//		s+="\n"+(obj.getAttribute("id")+" has top of  "+obj.style.top + "\n\n and "+i+" is "+eval("obj.style."+i));
+//	alert(s);
+  var bottomNull = (obj.style.bottom==null || obj.style.bottom=="");
+  if(topNull && bottomNull)
+    return "no vert layout";
+  if(topNull)
+    return "bottom";
+  else if(bottomNull)
+    return "top";
+  else {
+    alert("Ooops, This has a bug, he just tried to get the vertical positioning orientation for an object that had both TOP AND BOTTOM defined\nbottom is "+obj.style.bottom+" and top is "+obj.style.top);
+    return("big bug, both defined");
+  }
+}
+
+
+
+
+function windowWidth() {
+	return f_filterResults (
+		window.innerWidth ? window.innerWidth : 0,
+		document.documentElement ? document.documentElement.clientWidth : 0,
+		document.body ? document.body.clientWidth : 0
+	);
+}
+function windowHeight() {
+	if(isGecko) return window.innerHeight;
+	return f_filterResults (
+		window.innerHeight ? window.innerHeight : 0,
+		document.documentElement ? document.documentElement.clientHeight : 0,
+		document.body ? document.body.clientHeight : 0
+	);
+}
+function leftScrollPosition() {
+	return f_filterResults (
+		window.pageXOffset ? window.pageXOffset : 0,
+		document.documentElement ? document.documentElement.scrollLeft : 0,
+		document.body ? document.body.scrollLeft : 0
+	);
+}
+function topScrollPosition() {
+	return f_filterResults (
+		window.pageYOffset ? window.pageYOffset : 0,
+		document.documentElement ? document.documentElement.scrollTop : 0,
+		document.body ? document.body.scrollTop : 0
+	);
+}
+function f_filterResults(n_win, n_docel, n_body) {
+	var n_result = n_win ? n_win : 0;
+	if (n_docel && (!n_result || (n_result > n_docel)))
+		n_result = n_docel;
+	return n_body && (!n_result || (n_result > n_body)) ? n_body : n_result;
+}
+
+function currTime() {
+  return Math.floor(new Date());
+}
+
+function isGreaterThan(x,y) {
+  return (x>y);
+}
+
+function isEqualToOrGreaterThan(x,y) {
+  return (x>=y);
+}
+
+function isLessThan(x,y) {
+  return (y>x);
+}
+
+function isEqualToOrLessThan(x,y) {
+  return (y>=x);
+}
+
+function min(x,y) {
+  if(isGreaterThan(x,y))
+    return y;
+  return x;
+}
+
+function max(x,y) {
+  if(isGreaterThan(x,y))
+    return x;
+  return y;
+}
+
+function arraysEqual(array1, array2) {
+  if(array1==null || array2==null)
+    return false;
+  if(array1.length!=array2.length)
+    return false;
+  var i;
+  for (i=0; i<array1.length; i++) {
+    if (array1[i]!=array2[i])
+      return false;
+  }
+  return true;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function moveSlotNumber(obj) {
+  var i=0;
+  while(objectsToMove[i]!=obj && isLessThan(i,20)) {
+    i++;
+  }
+  if(isLessThan(i,20))
+    return i;
+  return -1;
+}
+
+function objectMoving(obj) {
+  return (moveSlotNumber(obj)!=-1);
+}
+
+function moveX(obj, tX, xO, xSpeed, aD) {
+  moveXWithEvent(obj, tX, xO, xSpeed, aD, "");
+}
+
+function moveY(obj, tY, yO, ySpeed, aD) {
+  moveYWithEvent(obj, tY, yO, ySpeed, aD, "");
+}
+
+function moveXWithEvent(obj, tX, xO, xSpeed, aD, event) {
+  moveXWithEventAndExtension(obj, tX, xO, xSpeed, aD, event, "");
+}
+
+function moveXWithEventAndExtension(obj, tX, xO, xSpeed, aD, event, extension) {
+  var i = moveSlotNumber(obj);
+  var tY;
+  var ySpeed;
+  if (i==-1) {
+    ySpeed = 1;
+    tY = getStylePosition(obj,vertArrangement(obj));
+  }
+  else {
+    tY = targetYs[i];
+    ySpeed = ySpeeds[i];
+  }
+  moveWithEventAndExtension(obj, tX, tY, xO, vertArrangement(obj), xSpeed, ySpeed, aD, event, extension);
+}
+
+function moveYWithEvent(obj, tY, yO, ySpeed, aD, event) {
+  moveYWithEventAndExtension(obj, tY, yO, ySpeed, aD, event, "");
+}
+
+function moveYWithEventAndExtension(obj, tY, yO, ySpeed, aD, event, extension) {
+  var i = moveSlotNumber(obj);
+  var tX;
+  var xSpeed;
+  if (i==-1) {
+    xSpeed = 1;
+    tX = getStylePosition(obj,horzArrangement(obj));
+  }
+  else {
+    xSpeed = xSpeeds[i];
+    tX = targetXs[i];
+  }
+  moveWithEventAndExtension(obj, tX, tY, horzArrangement(obj), yO, xSpeed, ySpeed, aD, event, extension);
+}
+
+function move(obj, tX, tY, xO, yO, xSpeed, ySpeed, aD) {
+  moveWithEvent(obj, tX, tY, xO, yO, xSpeed, ySpeed, aD, "");
+}
+
+function moveWithEvent(obj, targetX, targetY, xO, yO, xSpeed, ySpeed, aD, event) {
+  moveWithEventAndExtension(obj, targetX, targetY, xO, yO, xSpeed, ySpeed, aD, event, "")
+}
+
+function moveWithEventAndExtension(obj, targetX, targetY, xO, yO, xSpeed, ySpeed, aD, event, extension) {
+  var i=0;
+  while(objectsToMove[i]!=obj && isLessThan(i,20)) {
+    i++;
+  }
+  if (i==20) {
+    i=0;
+    while(moveSlotOccupations[i]==true) {
+      i++;
+    }
+  }
+  if (i==20) {
+    alert("This needs an increase in the number of available global slots for MOVING stuff. The current 20 are full.");
+    return;
+  }
+
+  objectsToMove[i] = obj;
+  targetXs[i] = targetX;
+  actualXs[i] = getStylePosition(obj,xO);
+  targetYs[i] = targetY;
+  actualYs[i] = getStylePosition(obj,yO);
+  accelDirs[i] = aD;
+  if (isLessThan(aD,-1))
+    accelDirs[i] = -1;
+  if (isLessThan(0,aD))
+    accelDirs[i] = 1;
+  if (!moveSlotOccupations[i]) {
+    originalXs[i] = actualXs[i];
+    originalYs[i] = actualYs[i];
+    if (isLessThan(1,aD)) {
+      if(isGreaterThan(targetXs[i],originalXs[i]))
+        originalXs[i]-=aD;
+      else if(isLessThan(targetXs[i],originalXs[i]))
+        originalXs[i]+=aD;
+      if(isGreaterThan(targetYs[i],originalYs[i]))
+        originalYs[i]-=aD;
+      else if(isLessThan(targetYs[i],originalYs[i]))
+        originalYs[i]+=aD;
+    }
+  }
+  if(xO=="left")
+    xOrients[i] = -1;
+  else if(xO=="right")
+    xOrients[i] = 1;
+  else
+    alert("Somewhere, you called moveWithEvent and you didn't give a left or right xOrientation!");
+  if(yO=="bottom")
+    yOrients[i] = -1;
+  else if(yO=="top")
+    yOrients[i] = 1;
+  else
+    alert("Somewhere, you called moveWithEvent and you didn't give a top or bottom yOrientation!");
+  xSpeeds[i] = xSpeed;
+  ySpeeds[i] = ySpeed;
+  moveSlotOccupations[i]=true;
+  eventsForMoveCompletion[i]=event;
+  extensionsForMoves[i]=extension;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function eventSlotNumber(command) {
+  var i=0;
+  while(eventsToRun[i]!=command && isLessThan(i,20)) {
+    i++;
+  }
+  if(isLessThan(i,20))
+    return i;
+  return -1;
+}
+
+function clearEventSlotNumber(i) {
+  eventsToRun[i] = "alert('This has a bug. An event scheduled to run with setToRun was not initialized.');";
+  eventSlotOccupations[i] = false;
+  timesToRunEvents[i] = -2147483647;
+}
+
+function abortEventToRun(command) {
+  var i = eventSlotNumber(command);
+  if (i!=-1)
+    clearEventSlotNumber(i);
+}
+
+function setToRun(command, delay) {
+  var i=0;
+  while(eventsToRun[i]!=command && isLessThan(i,20)) {
+    i++;
+  }
+  if (i==20) {
+    i=0;
+    while(eventSlotOccupations[i]==true) {
+      i++;
+    }
+  }
+  if (i==20) {
+    alert("This needs an increase in the number of available global slots for RUNNING stuff. The current 20 are full.");
+    return;
+  }
+
+  eventsToRun[i] = command;
+  timesToRunEvents[i] = currTime() + delay;
+  eventSlotOccupations[i] = true;
+ // alert("EventsToRun is: "+eventsToRun + "\n\nOccupations Are: " + eventSlotOccupations + "\n\ntimesToRun are: " + timesToRunEvents);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function makeRequest(url,loadedTask) {
+  var i=0;
+  while(requestSlotOccupations[i]==true) {
+     i++; 
+  }
+  if (i==100) {
+    alert("This needs an increase in the number of available global slots for MAKING REQUESTS. The current 100 are full.");
+    return;
+  }
+  requestSlotOccupations[i]=true;
+  if(!isIE) requesters[i] = new XMLHttpRequest();
+  if(isIE) requesters[i] = new ActiveXObject("Microsoft.XMLHTTP");
+  requesters[i].open("get",url,true);
+  requesters[i].onreadystatechange = function() {
+	if (requesters[i].readyState!=4)
+	  return;
+	if (requesters[i].status != 200)
+	  alert("An asynchronous request loaded, but was met with HTTP Error "+requesters[i].status);
+	var response = requesters[i].responseText;
+	eval(loadedTask);
+	requesters[i]="Unused";
+	requestSlotOccupations=false;
+  };
+  requesters[i].send(null);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function fadeSlotNumber(obj) {
+  var i=0;
+  while(objectsToFade[i]!=obj && i<20) {
+    i++;
+  }
+  if(isLessThan(i,20))
+    return i;
+  return -1;
+}
+
+function objectFading(obj) {
+  return (fadeSlotNumber(obj)!=-1);
+}
+
+function fade(obj, target, speed) {
+  fadeWithEvent(obj, target, speed, "");
+}
+
+function fadeWithEvent(obj, target, speed, event) {
+  var array = new Array(1);
+  array[0] = obj;
+  fadeArrayWithEvent(array, target, speed, event);
+}
+
+function fadeArray(array, target, speed) {
+  fadeArrayWithEvent(array, target, speed, "");
+}
+
+function fadeArrayWithEvent(array, target, speed, event) {
+  target = target+0.0;
+
+  var i=0;
+  while(!arraysEqual(objectsToFade[i],array) && isLessThan(i,20)) {
+    i++;
+  }
+  if (i==20) {
+    i=0;
+    while(fadeSlotOccupations[i]==true) {
+      i++;
+    }
+  }
+  if (i==20) {
+    alert("This needs an increase in the number of available global slots for FADING stuff. The current 20 are full.");
+    return;
+  }
+
+  fadeSlotOccupations[i]=true;
+  objectsToFade[i] = array;
+  targetOpacities[i] = target;
+  actualOpacities[i] = getOpacity(array[0]);
+  fadeSpeeds[i] = speed;
+  eventsForFadeCompletion[i]=event;
+}
+
+
+function getOpacity(obj) {
+  if (!(obj.getAttribute("theopacity"))) {
+    return 1.0;
+  }
+  return parseInt(obj.getAttribute("theopacity"))/100.0;
+}
+
+function setOpacity(obj, value) {
+  if (value==1.0) {
+    removeOpacity(obj);
+    return;
+  }
+  obj.style.filter = "alpha(opacity="+Math.round(value*100)+")";
+  obj.style.MozOpacity = ""+(Math.round(value*100)/100.0)+"";
+  obj.style.opacity = ""+(Math.round(value*100)/100.0)+"";
+  obj.setAttribute("theopacity",""+(Math.round(value*100))+"");
+}
+
+
+
+
+
+
+
+
+
+
+
+function getPosition(elementToGet, left1Top2)  {
+  if (left1Top2 == 1)
+    this.position = elementToGet.offsetLeft;
+  if (left1Top2 == 2)
+    this.position = elementToGet.offsetTop;
+  this.tempVar = elementToGet.offsetParent;
+  while(this.tempVar!=null) {
+    if (left1Top2 == 1)
+      this.position += this.tempVar.offsetLeft;
+    if (left1Top2 == 2)
+      this.position += this.tempVar.offsetTop;
+    this.tempVar = this.tempVar.offsetParent;
+  }
+  return this.position;
+}
+
+
+
+
+
+
+
+function removeOpacity(obj) {
+  obj.style.filter=null;
+  obj.style.MozOpacity=null;
+  obj.style.opacity=null;
+  obj.setAttribute("theopacity","100");
+}
+
+
+//################################################################################
+//THIS IS THE END OF WHAT SHOULD BE REFERENCED IN THE EXTERNAL JAVASCRIPT FILE.###
+//################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//This (fixStuff) is called by the firing of the body's onload event; it:
+//1. Sets up the move-fade-run-request framework that should be externally linked, which
+//	  A. sets up a number of browser booleans for browser checking
+//	  B. starts doNextFrame() running, so that move- and fade-calls will function.
+//2. Removes the MenuHeader from its attachment in the DOM, replaces it with a similarly sized invisible DIV to keep everything else
+//   more or less in the same position, and then re-attaches it with a fixed position as a direct child of the body. This keeps it 
+//   in position when the user scrolls around. This doesn't happen in anything else other than Safari and Gecko-based browsers.
+//3. Takes the "background" attribute that WOBody component created for the body tag, removes it, and assigns it as CSS, where it can 
+//   be specified to repeat only horizontally.
+//4. Tries to run a bunch of functions, only some of which will actually be existent. Whether they are or not depends on which component
+//   is loaded. They include swapping the images created by the WOBatchNavigationBar in the list view, changing some colors generated by a
+//   rule in the rule file that I didn't want to break, and making (if Safari or in some cases IE) the sort-buttons and collapsable triangles
+//   and page-change buttons in the list view become ajax-like.
+//You may note that this does not call such a function as "fixIEPNGs," like the basic look's PageWrapper does. There are no PNG images here
+//that need to be fixed.
+function fixStuff() {
+  initializeMoveFadeRunRequestFrameworks();
+ 
+  if(isSafari || isGecko) {
+    var t = document.getElementById("theHeaderTable");
+    var p = t.parentNode;
+    t.style.position="fixed";
+    t.style.left="12px";
+    t.style.top="12px";
+	var s = p.innerHTML;
+	p.removeChild(t);
+	document.body.appendChild(t);
+	p.innerHTML = "<div style=\"width:200px; height:200px; background:blue; visibility:hidden;\"><\/div>";
+	if(!isNetscape)setOpacity(t,0.5);
+	if(!isNetscape)t.setAttribute("onmouseover","fadeMenuHeader(1,2);");
+	if(!isNetscape)t.setAttribute("onmouseout","fadeMenuHeader(0.5,.4);");
+	
+  }
+ 
+  //This makes the body's background into CSS so repeat-x and fixed is possible. "bgproperties=fixed" doesn't work in Gecko-based browsers, and CSS's repeat-x is impossible to get with HTML alone.
+  var bg = document.body.getAttribute('background');
+  document.body.setAttribute('background',null);
+  document.body.style.background='url('+bg+') repeat-x black';
+  document.body.style.backgroundAttachment='fixed';
+
+  //If any of the following functions are present, they'll be executed.
+  try{fixTheWOLListPage();}catch(e){}
+  try{fixWOLInspectPage();}catch(e){}
+  try{fixWOLErrorPage();}catch(e){}
+}
+
+
+
+
+function fadeMenuHeader(target,speed) {
+	fade(document.getElementById("theHeaderTable"),target,speed);
+}
+
+//This little function, canAjaxReplace, is just a quick way for me to change which browsers have the AJAX-like content reloading enabled. I was
+//able to make it work consistently in Safari and IE6, but I couldn't test 5.5 or 7, so I left it enabled for only IE6. I'm assuming it works in IE7,
+//but I want to play it safe.
+function canAjaxReplace() {
+  return (isSafari || (isIE && parseFloat((navigator.appVersion.split("MSIE"))[1])<5.9 && 6.1<parseFloat((navigator.appVersion.split("MSIE"))[1])));
+}
+
+//ajaxReplace! This takes the URL that was passed to it, loads it up in an XMLHttpRequest, and then parses out the PageWrapper's contents from the 
+//response and just places them in the current PageWrapper. It knows which HTML to take because of the comments "<!--BEGIN PAGEWRAPPED CONTENTS-->" and 
+//"<!--END PAGEWRAPPED CONTENTS-->" and it knows where to put the HTML it took because the TD that contains this PageWrapper's contents has the ID
+//as "tdHoldingContents". The function sucks what it knows belongs in the pagewrapper out of the response, and dumps it into what it knows is this current
+//pagewrapper, thus making it AJAXily load whatever the user was looking for. It makes the Back button in the browser not remember the swap, and it also makes
+//the experience much faster and neater for the user, due to no page reload. It's ideal for the collapsable triangles and page-by-page browsing of list views. 
+function ajaxReplace(url) {
+	var l = document.getElementById("loadingDiv");
+	if(l==null) {
+		l = document.createElement("div");
+		l.style.cssText = "position:fixed; left:10px; top:10px; opacity:0; z-index:50000;";
+		if(isIE) l.style.position="absolute";
+		l.setAttribute("id","loadingDiv");
+		l.innerHTML = "<table cellpadding=\"5\" cellspacing=\"0\" border=\"0\" width=\"80\" height=\"30\" border=\"0\" bgcolor=\"#888888"><tr><Td align=\"center\" valign=\"center\"><table cellpadding=\"5\" cellspacing=\"0\" border=\"0\" width=\"100%\" height=\"100%\" border=\"0\" bgcolor=\"black\"><tr><Td align=\"center\" valign=\"center\"><small>Loading...<\/small><\/td><\/tr><\/table><\/td><\/tr><\/table>";
+		document.body.appendChild(l);
+	}
+	fade(l,1,4);										//Now we're sure the loading-div exists... pump it into the list of doNextFrame's things to fade already!
+	var req;
+	if(!isIE)
+		req = new XMLHttpRequest();
+	else
+		req = new ActiveXObject("Microsoft.XMLHTTP");
+	req.open("GET",url);
+	req.onreadystatechange = function() {
+		if(req.readyState==4) {
+			putNewContentsInPageWrapper(req.responseText);
+		}
+	}
+	req.send(null);
+}
+
+function putNewContentsInPageWrapper(response) {				//This is the piece of ajaxReplace that goes and dumps the new page contents into the current page; notice that at the end, it tries to fix everything just like the body's onload event does.
+
+	var theContents = response.substring(response.lastIndexOf("BEGIN PAGEWRAPPED CONTENTS")+29, response.lastIndexOf("END PAGEWRAPPED CONTENTS")-4);
+	document.getElementById("tdHoldingContents").innerHTML = theContents;
+	var l = document.getElementById("loadingDiv");
+	fadeWithEvent(l,0,1,"document.body.removeChild(document.getElementById('loadingDiv'))");
+	try{fixTheWOLListPage();}catch(e){}
+	try{fixWOLInspectPage();}catch(e){}
+	try{fixWOLErrorPage();}catch(e){}
+}
+</script>
+
+
+      <table border="0" cellpadding="4" cellspacing="0" width="99%">
+         <tr>
+            <td valign="top" align="left" width="150">
+
+
+
+
+
+
+<webobject name="DarwinShadow1">
+<table cellspacing="0" cellpadding="10" border="0" bgcolor="#181818">
+	<tr>
+		<td>
+			<table cellspacing="20" cellpadding="0" border="0" bgcolor="#000000">
+				<tr>
+					<td>
+						<webobject name="Header"></webobject>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+</webobject>
+
+
+
+
+
+
+
+</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td align="center" valign="top">
+
+<Br>
+
+
+
+
+
+
+
+<webobject name="DarwinShadow2">
+<table cellspacing="0" cellpadding="10" border="0" bgcolor="#181818">
+	<tr>
+		<td>
+			<table cellspacing="20" cellpadding="0" border="0" bgcolor="#000000">
+				<tr>
+					<td id="tdHoldingContents">
+
+                  <!--BEGIN PAGEWRAPPED CONTENTS--><webobject name="Body"></webobject><!--END PAGEWRAPPED CONTENTS-->
+
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+</webobject>
+
+
+
+
+
+
+
+
+            </td>
+         </tr>
+         <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+         </tr>
+      </table>
+   </webobject>
+</html>

@@ -1,0 +1,45 @@
+<WEBOBJECT NAME=EntitiesForm>
+   <CENTER>
+      <TABLE BORDER=1 BGCOLOR=D0D0D0 CELLPADDING=4 CELLSPACING=0>
+         <TR>
+            <WEBOBJECT NAME=HasValidSession>
+               <TD>
+                  <TABLE BORDER=0 BGCOLOR=D0D0D0 CELLPADDING=3 CELLSPACING=0>
+                     <TR VALIGN=middle>
+                        <TD ALIGN=left VALIGN=middle> <B>Entities:</B><BR>
+                           <WEBOBJECT NAME=EntitiesPopup></WEBOBJECT>
+                        </TD>
+                        <TD ALIGN=left>
+                           <WEBOBJECT NAME=FindButton></WEBOBJECT>
+                        </TD><TD ALIGN=left><WEBOBJECT NAME=NewButton></WEBOBJECT></TD>
+                     </TR>
+                  </TABLE>
+               </TD>
+               <TD>
+                  <TABLE BORDER=0 BGCOLOR=D0D0D0 CELLPADDING=3 CELLSPACING=0>
+                     <TR VALIGN=middle>
+                        <TD ALIGN=center VALIGN=middle><WEBOBJECT NAME=HomeLink><WEBOBJECT NAME=HomeButton></WEBOBJECT></WEBOBJECT></TD>
+                        <TD ALIGN=center VALIGN=middle><WEBOBJECT NAME=LoginLink><WEBOBJECT NAME=LoginButton></WEBOBJECT></WEBOBJECT></TD>
+                        <WEBOBJECT NAME=AssistantActiveConditional>
+                           <TD ALIGN=center>
+                              <WEBOBJECT NAME=ShowAssistantLink><WEBOBJECT NAME=ShowAssistantButton></WEBOBJECT></WEBOBJECT></TD>
+                        </WEBOBJECT>
+                        <TD ALIGN=right VALIGN=middle><WEBOBJECT NAME=D2WLink2><WEBOBJECT NAME=D2WLogo2></WEBOBJECT></WEBOBJECT></TD>
+                     </TR>
+                  </TABLE>
+               </TD>
+            </WEBOBJECT>
+            <WEBOBJECT NAME=NoValidSession>
+               <TD>
+                  <TABLE BORDER=0 BGCOLOR=D0D0D0 CELLPADDING=3 CELLSPACING=0>
+                     <TR VALIGN=middle>
+                        <TD ALIGN=right VALIGN=middle><WEBOBJECT NAME=D2WLink><WEBOBJECT NAME=D2WLogo></WEBOBJECT></WEBOBJECT></TD>
+                     </TR>
+                  </TABLE>
+               </TD>
+            </WEBOBJECT>
+         </TR>
+      </TABLE>
+   </CENTER>
+</WEBOBJECT>
+<WEBOBJECT NAME=RemoteControl></WEBOBJECT>

@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+   <head>
+      <title>Direct to Web</title>
+   </head>
+   <webobject name="BodyContainer">
+      <webobject name="LoginForm">
+         <div align="center">
+            <br>
+            <br>
+            <br>
+            <table border="0" cellpadding="4" cellspacing="2">
+               <tr valign="middle">
+                  <td align="right"><webobject name="DirectToWebPlaque"></webobject></td>
+               </tr>
+               <tr>
+                  <td>
+                     <table border="0" cellpadding="2" cellspacing="0">
+                        <tr>
+                           <th align="right">Username:</th>
+                           <td align="right">
+                              <webobject name="UsernameField"></webobject>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th align="right">Password: </th>
+                           <td align="right">
+                              <webobject name="PasswordField"></webobject>
+                           </td>
+                        </tr>
+                        <webobject name="AssistantConditional"><tr>
+                           <th align="right">Assistant: </th>
+                           <td align="left">
+                              <webobject name="LACheckbox"></webobject>
+                           </td>
+                        </tr></webobject>
+                        <tr>
+                           <td colspan="2" align="right"> <br>
+                              <webobject name="LoginButton"></webobject>
+                           </td>
+                        </tr>
+                     </table>
+                  </td>
+               </tr>
+            </table>
+            <br>
+         </div>
+      </webobject>
+   </webobject>
+</html>
