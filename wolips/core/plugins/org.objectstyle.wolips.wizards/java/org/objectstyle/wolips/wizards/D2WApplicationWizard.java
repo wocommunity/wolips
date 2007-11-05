@@ -65,11 +65,15 @@ import org.objectstyle.wolips.templateengine.TemplateEngine;
 import org.objectstyle.wolips.wizards.D2WApplicationConfigurationPage.D2WLook;
 
 /**
+ * Configures velocity engine to create D2W project as specified in D2WApplicationConfigurationPage
  * @author mnolte
  * @author uli
  */
 public class D2WApplicationWizard extends AbstractProjectWizard {
 
+	/**
+	 * Default constructor
+	 */
 	public D2WApplicationWizard() {
 		super();
 	}
@@ -82,21 +86,30 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 		return Messages.getString("D2WApplicationWizard.title");
 	}
 
+	/**
+	 * Return relative path to template for a given D2W Look
+	 * @param look
+	 * @return
+	 */
 	public String pathForTemplateLook(D2WLook look) {
 
-		if (look == D2WLook.BASIC) {
-			return "d2w_bas_application";
-		} else if (look == D2WLook.NEUTRAL) {
-			return "d2w_neu_application";
-		} else if (look == D2WLook.WEBOBJECTS) {
-			return "d2w_wol_application";
-		} else if (look == D2WLook.CLASSIC) {
-			return "d2w_application";
+		if (look == D2WLook.BASIC54) {
+			return D2WLook.BASIC54.getTemplatePath();
+		} else if (look == D2WLook.NEUTRAL54) {
+			return D2WLook.NEUTRAL54.getTemplatePath();
+		} else if (look == D2WLook.WEBOBJECTS54) {
+			return D2WLook.WEBOBJECTS54.getTemplatePath();
+		} else if (look == D2WLook.BASIC52) {
+			return D2WLook.BASIC52.getTemplatePath();
+		} else if (look == D2WLook.NEUTRAL52) {
+			return D2WLook.NEUTRAL52.getTemplatePath();
+		} else if (look == D2WLook.WEBOBJECTS52) {
+			return D2WLook.WEBOBJECTS52.getTemplatePath();
 		} else if (look == D2WLook.WONDER) {
-			return "wonderd2wapplication";
+			return D2WLook.WONDER.getTemplatePath();
 		}
 
-		return "d2w_bas_application";
+		return D2WLook.BASIC54.getTemplatePath();
 	}
 
 	@Override

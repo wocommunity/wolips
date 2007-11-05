@@ -137,10 +137,11 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	protected WOWebServicesWizardPage  _webservicesSupportPage;
 
 	protected WOFrameworkSupportPage  _frameworkSupportPage;
-	
+
 	protected TemplateInputsWizardPage _templateInputsWizardPage;
 
 	private ProjectTemplate _projectTemplate;
+
 	private IProject _newProject;
 
 	/**
@@ -159,7 +160,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 		}
 		setDialogSettings(section);
 	}
-	
+
 	public NewWOProjectWizard(String projectTemplateName) {
 		this();
 		_projectTemplate = ProjectTemplate.loadProjectTemplateNamed(projectTemplateName);
@@ -190,7 +191,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 				addPage(_packagePage);
 			}
 		}
-		
+
 		if (_templateInputsWizardPage != null && _projectTemplate.getInputs().size() > 0) {
 			addPage(_templateInputsWizardPage);
 		}
@@ -348,6 +349,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 				createProject(description, newProjectHandle, monitor);
 				createEOModelSupport(newProjectHandle);
 				createFrameworksSupport(newProjectHandle);
+				addWebServiceFrameworks(newProjectHandle);
 
 				if (refProjects != null && refProjects.length > 0) {
 					IJavaProject javaProject = JavaCore.create(newProjectHandle);
@@ -786,9 +788,12 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	/*
 	 * D2W Support
 	 */
+	/**
+	 * @return
+	 */
 	protected D2WLook currentD2WLook() {
 		if (_d2wConfigurationPage == null) {
-			return D2WLook.BASIC;
+			return D2WLook.BASIC54;
 		}
 		return _d2wConfigurationPage.currentLook();
 	}
@@ -813,8 +818,6 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 				engine.addTemplate(new TemplateDefinition("wowebservices"+"/server.wsdd.vm", path, "server.wsdd", "server.wsdd"));
 			}
 		}
-
-		addWebServiceFrameworks(project);
 	}
 
 	/*

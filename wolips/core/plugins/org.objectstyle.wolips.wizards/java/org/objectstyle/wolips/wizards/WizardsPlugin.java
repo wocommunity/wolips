@@ -1,8 +1,8 @@
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 -2006 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2002 -2006 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -77,17 +77,47 @@ public class WizardsPlugin extends AbstractBaseUIActivator {
 	private static ImageDescriptor WOPROJECT_WIZARD_BANNER;
 
 	private static ImageDescriptor EOMODEL_ICON;
-	
+
 	private static ImageDescriptor D2W_BASIC_ICON;
-	
+
 	private static ImageDescriptor D2W_NEU_ICON;
-	
+
 	private static ImageDescriptor D2W_WOL_ICON;
-	
+
 	private static ImageDescriptor D2W_CLASSIC_ICON;
-	
+
 	private static ImageDescriptor D2W_WONDER_ICON;
-	
+
+
+	/**
+	 * Wrap bindings of WebObjects version to a display string
+	 */
+	enum WO_VERSION {
+		/**
+		 * 5.4.x
+		 */
+		WO_54("5.4"),
+		/**
+		 * 5.3.x
+		 */
+		WO_53 ("5.3"),
+		/**
+		 * 5.2.x
+		 */
+		WO_52("5.2");
+
+
+		private String _displayString;
+
+		WO_VERSION(String displayString) {
+			_displayString = displayString;
+		}
+
+		String getDisplayString() {
+			return _displayString;
+		}
+	}
+
 	/**
 	 * The constructor.
 	 */
@@ -118,7 +148,7 @@ public class WizardsPlugin extends AbstractBaseUIActivator {
 	/**
 	 * Returns an image descriptor for the image file at the given plug-in
 	 * relative path.
-	 * 
+	 *
 	 * @param path
 	 *            the path
 	 * @return the image descriptor
@@ -144,7 +174,7 @@ public class WizardsPlugin extends AbstractBaseUIActivator {
 			WOPROJECT_WIZARD_BANNER = getImageDescriptor("icons/wizban/webobjects_wiz.gif");
 		return WOPROJECT_WIZARD_BANNER;
 	}
-	
+
 	public static final ImageDescriptor EOMODEL_ICON() {
 		if (EOMODEL_ICON == null)
 			EOMODEL_ICON = getImageDescriptor("icons/woproject/eoModel.png");
@@ -156,31 +186,31 @@ public class WizardsPlugin extends AbstractBaseUIActivator {
 			D2W_BASIC_ICON = getImageDescriptor("icons/woproject/d2w_basic.gif");
 		return D2W_BASIC_ICON;
 	}
-	
+
 	public static final ImageDescriptor D2W_WOL_ICON() {
 		if (D2W_WOL_ICON == null)
 			D2W_WOL_ICON = getImageDescriptor("icons/woproject/d2w_wol.gif");
 		return D2W_WOL_ICON;
 	}
-	
+
 	public static final ImageDescriptor D2W_NEU_ICON() {
 		if (D2W_NEU_ICON == null)
 			D2W_NEU_ICON = getImageDescriptor("icons/woproject/d2w_neu.gif");
 		return D2W_NEU_ICON;
 	}
-	
+
 	public static final ImageDescriptor D2W_CLASSIC_ICON() {
 		if (D2W_CLASSIC_ICON == null)
 			D2W_CLASSIC_ICON = getImageDescriptor("icons/woproject/d2w_classic.gif");
 		return D2W_CLASSIC_ICON;
 	}
-	
+
 	public static final ImageDescriptor D2W_WONDER_ICON() {
 		if (D2W_WONDER_ICON == null)
 			D2W_WONDER_ICON = getImageDescriptor("icons/woproject/d2w_wonder.png");
 		return D2W_WONDER_ICON;
 	}
-	
+
 	public static void selectAndReveal(IResource[] resources) {
 		if (resources != null) {
 			for (int i = 0; i < resources.length; i++) {
