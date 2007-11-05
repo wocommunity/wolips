@@ -98,7 +98,6 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
     if (_validateTemplates) {
       try {
         if (_buildKind == IncrementalProjectBuilder.INCREMENTAL_BUILD || _buildKind == IncrementalProjectBuilder.AUTO_BUILD) {
-          System.out.println("WodBuilder.handleSource: " + resource);
           ICompilationUnit compilationUnit = JavaCore.createCompilationUnitFrom((IFile) resource);
           if (compilationUnit != null) {
             IType type = compilationUnit.findPrimaryType();
