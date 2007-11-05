@@ -1,0 +1,47 @@
+AssistantConditional: WOConditional {
+	condition = isAssistantCheckboxVisible;
+}
+
+BodyContainer: WOBody {
+	filename = "fuzzyGreyStripe.gif";
+	framework = "JavaDirectToWeb";
+}
+
+DirectToWebPlaque: WOImage {
+	alt = "Welcome to Direct To Web";
+	filename = "login-ban.gif";
+	framework = "JavaDirectToWeb";
+	height = "57";
+	name = "Welcome to Direct To Web";
+	width = "240";
+}
+
+LACheckbox: WOCheckBox {
+	checked = wantsWebAssistant;
+}
+
+LoginButton: WOActiveImage {
+	action = defaultPage;
+	alt = "Login";
+	border = "0";
+	filename = "login-btn.gif";
+	framework = "JavaDirectToWeb";
+	height = "27";
+	name = "Login";
+	width = "100";
+}
+
+LoginForm: WOForm {
+	multipleSubmit = YES;
+}
+
+PasswordField: WOPasswordField {
+	value = password;
+	width = "16";
+}
+
+UsernameField: WOTextField {
+	value = username;
+	width = "16";
+}
+
