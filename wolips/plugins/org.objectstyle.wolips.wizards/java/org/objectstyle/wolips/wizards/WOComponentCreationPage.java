@@ -60,6 +60,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -71,6 +72,7 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.internal.core.JavaModelManager;
@@ -83,6 +85,7 @@ import org.eclipse.jdt.internal.ui.wizards.dialogfields.StringButtonStatusDialog
 import org.eclipse.jdt.ui.JavaElementLabelProvider;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -118,6 +121,8 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 
 	private static final String NSSTRING_ENCODING_KEY = "WOComponentCreationWizardSection.encoding";
 
+	private static final String SUPERCLASS_KEY = "WOComponentCreationWizardSection.superclass";
+
 	private Button _bodyCheckbox;
 
 	private Combo _htmlCombo;
@@ -134,8 +139,10 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 
 	private StringButtonStatusDialogField _superclassDialogField;
 
+	private Object _currentSelection;
+
 	enum HTML {
-		STRICT_401("HTML 4.0.1 Strict", "4.0.1 strict doctype", 0), TRANSITIONAL_401("HTML 4.0.1 Transitional", "4.0.1 transitional doctype", 1), STRICT_XHTML10("XHTML 1.0 Strict", "XHTML 1.0 strict doctype", 2), TRANSITIONAL_XHTML10("XHTML 1.0 Transitional", "XHTML 1.0 transitional doctype", 3), FRAMESET_XHTML10("XHTML 1.0 Frameset", "XHTML 1.0 frameset doctype", 4), XHTML11("XHTML 1.1", "XHTML 1.1 doctype", 5);
+		STRICT_401("HTML 4.0.1 Strict", "4.0.1 strict doctype", 0), TRANSITIONAL_401("HTML 4.0.1 Transitional", "4.0.1 transitional doctype", 1), STRICT_XHTML10("XHTML 1.0 Strict", "XHTML 1.0 strict doctype", 2), TRANSITIONAL_XHTML10("XHTML 1.0 Transitional", "XHTML 1.0 transitional doctype", 3), FRAMESET_XHTML10("XHTML 1.0 Frameset", "XHTML 1.0 frameset doctype", 4), XHTML11("XHTML 1.1", "XHTML 1.1 doctype", 5), LAZY_OLD("Lazy Old HTML", "Lazy Old HTML", 6);
 
 		private final String _displayString;
 
@@ -194,9 +201,51 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 	 *            the current selection
 	 */
 	public WOComponentCreationPage(IStructuredSelection selection) {
-		super("createWOComponentPage1", selection);
+		super("createWOComponentPage1", WOComponentCreationPage.processSelection(selection));
 		this.setTitle(Messages.getString("WOComponentCreationPage.title"));
 		this.setDescription(Messages.getString("WOComponentCreationPage.description"));
+
+		if (selection != null) {
+			Object selectedObject = selection.getFirstElement();
+			if (selectedObject instanceof IFolder) {
+				IJavaElement parentJavaElement = JavaCore.create((IFolder) selectedObject);
+				if (parentJavaElement instanceof IPackageFragment) {
+					_currentSelection = parentJavaElement;
+				}
+			}
+		}
+
+	}
+
+	public static IStructuredSelection processSelection(IStructuredSelection selection) {
+		IStructuredSelection processedSelection = null;
+		if (selection != null) {
+			Object selectedObject = selection.getFirstElement();
+			if (selectedObject instanceof IFile) {
+				selectedObject = ((IFile)selectedObject).getParent();
+				processedSelection = null;
+			}
+			if (selectedObject instanceof IFolder) {
+				IFolder currentFolder = (IFolder) selectedObject;
+				IJavaElement parentJavaElement = JavaCore.create(currentFolder);
+				if (parentJavaElement instanceof IPackageFragment) {
+					// Don't let you put WO's in a package
+					processedSelection = new StructuredSelection(currentFolder.getProject());
+				} else if (parentJavaElement instanceof IPackageFragmentRoot) {
+					// Don't let you put WO's in a source folder
+					processedSelection = new StructuredSelection(currentFolder.getProject());
+				} else if (currentFolder.getName().endsWith(".wo")) {
+					// Don't let you put WO's inside of WO's by accident
+					processedSelection = new StructuredSelection(currentFolder.getParent());
+				}
+			}
+		}
+		return processedSelection;
+	}
+
+	@Override
+	protected void initialPopulateContainerNameField() {
+		super.initialPopulateContainerNameField();
 	}
 
 	@Override
@@ -221,7 +270,7 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 		// IReadmeConstants.CREATION_WIZARD_PAGE_CONTEXT);
 		this.setFileName(Messages.getString("WOComponentCreationPage.newComponent.defaultName"));
 
-		//new Label(composite, SWT.NONE); // vertical spacer
+		// new Label(composite, SWT.NONE); // vertical spacer
 
 		Group javaGroup = new Group(composite, SWT.NONE);
 		javaGroup.setText(Messages.getString("WOComponentCreationPage.creationOptions.javaFile.group"));
@@ -245,6 +294,10 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 		// ControlContentAssistHelper.createTextContentAssistant(text,
 		// packageCompletionProcessor);
 
+		if (_currentSelection instanceof IPackageFragment) {
+			_packageDialogField.setText(((IPackageFragment) _currentSelection).getElementName());
+		}
+
 		SuperclassButtonAdapter superclassButtonAdapter = new SuperclassButtonAdapter();
 		_superclassDialogField = new StringButtonStatusDialogField(superclassButtonAdapter);
 		_superclassDialogField.setDialogFieldListener(superclassButtonAdapter);
@@ -252,7 +305,13 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 		_superclassDialogField.setButtonLabel(NewWizardMessages.NewTypeWizardPage_superclass_button);
 		_superclassDialogField.setStatusWidthHint(NewWizardMessages.NewTypeWizardPage_default);
 		_superclassDialogField.doFillIntoGrid(javaGroup, 4);
-		_superclassDialogField.setText("com.webobjects.appserver.WOComponent");
+		String superclass = this.getDialogSettings().get(WOComponentCreationPage.SUPERCLASS_KEY);
+		if (superclass == null || superclass.length() == 0) {
+			_superclassDialogField.setText("com.webobjects.appserver.WOComponent");
+		}
+		else {
+			_superclassDialogField.setText(superclass);
+		}
 		Text superclassText = _superclassDialogField.getTextControl(null);
 		LayoutUtil.setWidthHint(superclassText, convertWidthInCharsToPixels(40));
 		LayoutUtil.setHorizontalGrabbing(superclassText);
@@ -339,11 +398,12 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 			componentCreator = new WOComponentCreator(subprojectFolder, componentName, packageName, superclassName, _bodyCheckbox.getSelection(), _apiCheckbox.getSelection(), _wooCheckbox.getSelection(), this);
 			break;
 		}
-		this.getDialogSettings().put(BODY_CHECKBOX_KEY, _bodyCheckbox.getSelection());
-		this.getDialogSettings().put(HTML_DOCTYPE_KEY, _htmlCombo.getText());
-		this.getDialogSettings().put(WOO_CHECKBOX_KEY, _wooCheckbox.getSelection());
-		this.getDialogSettings().put(NSSTRING_ENCODING_KEY, _encodingCombo.getText());
-		this.getDialogSettings().put(API_CHECKBOX_KEY, _apiCheckbox.getSelection());
+		this.getDialogSettings().put(WOComponentCreationPage.SUPERCLASS_KEY, _superclassDialogField.getText());
+		this.getDialogSettings().put(WOComponentCreationPage.BODY_CHECKBOX_KEY, _bodyCheckbox.getSelection());
+		this.getDialogSettings().put(WOComponentCreationPage.HTML_DOCTYPE_KEY, _htmlCombo.getText());
+		this.getDialogSettings().put(WOComponentCreationPage.WOO_CHECKBOX_KEY, _wooCheckbox.getSelection());
+		this.getDialogSettings().put(WOComponentCreationPage.NSSTRING_ENCODING_KEY, _encodingCombo.getText());
+		this.getDialogSettings().put(WOComponentCreationPage.API_CHECKBOX_KEY, _apiCheckbox.getSelection());
 
 		// logPreferences();
 
@@ -360,6 +420,7 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 		System.out.println("WOO_CHECKBOX_KEY: " + this.getDialogSettings().get(WOO_CHECKBOX_KEY));
 		System.out.println("NSSTRING_ENCODING_KEY: " + this.getDialogSettings().get(NSSTRING_ENCODING_KEY));
 		System.out.println("API_CHECKBOX_KEY: " + this.getDialogSettings().get(API_CHECKBOX_KEY));
+		System.out.println("SUPERCLASS_KEY: " + this.getDialogSettings().get(WOComponentCreationPage.SUPERCLASS_KEY));
 	}
 
 	/**
@@ -554,11 +615,11 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 			TypeNameCollector typeNameCollector = new TypeNameCollector(javaProject, false);
 			BindingReflectionUtils.findMatchingElementClassNames("", SearchPattern.R_PREFIX_MATCH, typeNameCollector, new NullProgressMonitor());
 			for (String typeName : typeNameCollector.getTypeNames()) {
-//				int dotIndex = typeName.lastIndexOf('.');
-//				if (dotIndex != -1) {
-//					typeName = typeName.substring(dotIndex + 1);
-//				}
-//				validValues.add("\"" + typeName + "\"");
+				// int dotIndex = typeName.lastIndexOf('.');
+				// if (dotIndex != -1) {
+				// typeName = typeName.substring(dotIndex + 1);
+				// }
+				// validValues.add("\"" + typeName + "\"");
 				superclasses.add(typeName);
 			}
 		} catch (JavaModelException e) {
@@ -589,9 +650,9 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 		}
 
 		if (button.equals(_apiCheckbox)) {
-			if (_apiCheckbox.getSelection()) {
-				setPageComplete(false);
-			}
+			// if (_apiCheckbox.getSelection()) {
+			// setPageComplete(false);
+			// }
 		}
 
 		if (button.equals(_wooCheckbox)) {
