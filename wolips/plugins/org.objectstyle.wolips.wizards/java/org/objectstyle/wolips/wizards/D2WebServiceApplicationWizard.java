@@ -70,6 +70,9 @@ import org.objectstyle.wolips.templateengine.TemplateEngine;
  */
 public class D2WebServiceApplicationWizard extends AbstractProjectWizard {
 
+	/**
+	 *
+	 */
 	public D2WebServiceApplicationWizard() {
 		super();
 	}
@@ -78,6 +81,9 @@ public class D2WebServiceApplicationWizard extends AbstractProjectWizard {
 		return Messages.getString("D2WebServiceApplicationWizard.title");
 	}
 
+	/**
+	 * @return
+	 */
 	protected String getTemplateFolder() {
 		return "d2webservice_application";
 	}
@@ -101,13 +107,9 @@ public class D2WebServiceApplicationWizard extends AbstractProjectWizard {
 		}
 		createJavaPackageSupport(project, packagePath);
 
-
-		File xcode = new File(path + File.separator + projectName + ".xcode");
-		xcode.mkdirs();
 		File bin = new File(path + File.separator + "bin");
 		bin.mkdirs();
-		File ant = new File(path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME);
-		ant.mkdirs();
+
 		TemplateEngine templateEngine = new TemplateEngine();
 		templateEngine.init();
 
@@ -125,22 +127,13 @@ public class D2WebServiceApplicationWizard extends AbstractProjectWizard {
 
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/.classpath.vm", path, ".classpath", ".classpath"));
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/.project.vm", path, ".project", ".project"));
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/ant.classpaths.user.home.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.classpaths.user.home", "ant.classpaths.user.home"));
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/ant.classpaths.wo.wolocalroot.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.classpaths.wo.wolocalroot", "ant.classpaths.wo.wolocalroot"));
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/ant.classpaths.wo.wosystemroot.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.classpaths.wo.wosystemroot", "ant.classpaths.wo.wosystemroot"));
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/ant.frameworks.user.home.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.frameworks.user.home", "ant.frameworks.user.home"));
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/ant.frameworks.wo.wolocalroot.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.frameworks.wo.wolocalroot", "ant.frameworks.wo.wolocalroot"));
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/ant.frameworks.wo.wosystemroot.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.frameworks.wo.wosystemroot", "ant.frameworks.wo.wosystemroot"));
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/build.xml.vm", path, "build.xml", "build.xml"));
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/build.properties.vm", path, "build.properties", "build.properties"));
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/CustomInfo.plist.vm", path, "CustomInfo.plist", "CustomInfo.plist"));
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/Main.api.vm", path, "Main.api", "Main.api"));
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/Makefile.vm", path, "Makefile", "Makefile"));
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/Makefile.postamble.vm", path, "Makefile.postamble", "Makefile.postamble"));
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/Makefile.preamble.vm", path, "Makefile.preamble", "Makefile.preamble"));
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/PB.project.vm", path, "PB.project", "PB.project"));
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/Properties.vm", path, "Properties", "Properties"));
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/project.pbxproj.vm", path + File.separator + projectName + ".xcode", "project.pbxproj", "project.pbxproj"));
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/user.d2wmodel.vm", path, "user.d2wmodel", "user.d2wmodel"));
 
 		//FIXME: these are auto-copied from templates but don't have to.  See comments in createWebServicesSupport()

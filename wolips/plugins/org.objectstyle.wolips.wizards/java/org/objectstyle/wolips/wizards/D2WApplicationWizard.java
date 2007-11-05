@@ -59,7 +59,6 @@ import java.io.File;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.objectstyle.wolips.core.resources.internal.types.project.ProjectPatternsets;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
 import org.objectstyle.wolips.wizards.D2WApplicationConfigurationPage.D2WLook;
@@ -118,8 +117,6 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 		String pathRoot = pathForTemplateLook(currentD2WLook());
 		String projectName = project.getName();
 		String path = project.getLocation().toOSString();
-		File xcodeproj = new File (path + File.separator + projectName + ".xcode");
-		xcodeproj.mkdirs();
 
 		//Java Package support
 		String packagePath = "";
@@ -135,12 +132,10 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 
 		File bin = new File(path + File.separator + "bin");
 		bin.mkdirs();
-		File ant = new File(path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME);
-		ant.mkdirs();
+
 		TemplateEngine templateEngine = new TemplateEngine();
 		templateEngine.init();
 		templateEngine.getWolipsContext().setProjectName(projectName);
-		templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
 		templateEngine.getWolipsContext().setPackageName(packageName);
 
 		addComponentDefinition(pathRoot, templateEngine, path, "Main", packagePath);
@@ -153,21 +148,9 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 
 		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/.classpath.vm", path, ".classpath", ".classpath"));
 		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/.project.vm", path, ".project", ".project"));
-		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/ant.classpaths.user.home.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.classpaths.user.home", "ant.classpaths.user.home"));
-		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/ant.classpaths.wo.wolocalroot.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.classpaths.wo.wolocalroot", "ant.classpaths.wo.wolocalroot"));
-		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/ant.classpaths.wo.wosystemroot.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.classpaths.wo.wosystemroot", "ant.classpaths.wo.wosystemroot"));
-		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/ant.frameworks.user.home.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.frameworks.user.home", "ant.frameworks.user.home"));
-		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/ant.frameworks.wo.wolocalroot.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.frameworks.wo.wolocalroot", "ant.frameworks.wo.wolocalroot"));
-		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/ant.frameworks.wo.wosystemroot.vm", path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME, "ant.frameworks.wo.wosystemroot", "ant.frameworks.wo.wosystemroot"));
 		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/build.xml.vm", path, "build.xml", "build.xml"));
 		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/build.properties.vm", path, "build.properties", "build.properties"));
-		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/CustomInfo.plist.vm", path, "CustomInfo.plist", "CustomInfo.plist"));
-		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/Makefile.vm", path, "Makefile", "Makefile"));
-		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/Makefile.postamble.vm", path, "Makefile.postamble", "Makefile.postamble"));
-		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/Makefile.preamble.vm", path, "Makefile.preamble", "Makefile.preamble"));
-		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/PB.project.vm", path, "PB.project", "PB.project"));
 		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/Properties.vm", path, "Properties", "Properties"));
-		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/project.pbxproj.vm", path + File.separator + projectName + ".xcode", "project.pbxproj", "project.pbxproj"));
 		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/user.d2wmodel.vm", path, "user.d2wmodel", "user.d2wmodel"));
 
 		createWebServicesSupport(project, templateEngine);
