@@ -43,6 +43,7 @@
  */
 package org.objectstyle.wolips.wodclipse.core.builder;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -134,6 +135,7 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
   protected Set<IContainer> componentBuildCache(Map buildCache) {
     Set<IContainer> builtComponents = (Set<IContainer>) buildCache.get("builtComponents");
     if (builtComponents == null) {
+      builtComponents = new HashSet<IContainer>();
       buildCache.put("builtComponents", builtComponents);
     }
     return builtComponents;
