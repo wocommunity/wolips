@@ -410,4 +410,27 @@
           name="WO Package Explorer">
     </view>
  </extension>
+ 
+ 
+
+
+<!-- =================================================================================== -->
+<!-- Extension: Popup menus                                                              -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.objectstyle.wolips.jdt.ui.tags.actions">
+         <action
+               label="Tag Components"
+               class="org.objectstyle.wolips.jdt.ui.tags.actions.TagResourcesAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group4"
+               enablesFor="1"
+               id="org.objectstyle.wolips.jdt.ui.tags.actions.TagResourcesAction">
+         </action>
+      </objectContribution>
+
+   </extension>
 </plugin>

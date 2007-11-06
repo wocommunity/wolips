@@ -15,7 +15,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide,
  org.objectstyle.wolips,
  org.eclipse.jdt,
- org.eclipse.jdt.apt.core
+ org.eclipse.jdt.apt.core,
+ org.objectstyle.wolips.workbenchutilities
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.jdt,
  org.objectstyle.wolips.jdt.ant,
@@ -24,4 +25,6 @@ Export-Package: org.objectstyle.wolips.jdt,
  org.objectstyle.wolips.jdt.decorator,
  org.objectstyle.wolips.jdt.javaelementfilters,
  org.objectstyle.wolips.jdt.listener,
- org.objectstyle.wolips.jdt.ui
+ org.objectstyle.wolips.jdt.ui,
+ org.objectstyle.wolips.jdt.ui.tags,
+ org.objectstyle.wolips.jdt.ui.tags.actions
