@@ -57,7 +57,7 @@ package org.objectstyle.wolips.jdt.ant;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
-import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 import org.objectstyle.wolips.variables.VariablesPlugin;
 
 /**
@@ -74,7 +74,7 @@ public abstract class UpdateIncludeFiles {
 
 	private IProject iProject;
 
-	private Project project;
+	private IProjectAdapter projectAdapter;
 
 	/**
 	 * 
@@ -112,13 +112,13 @@ public abstract class UpdateIncludeFiles {
 	 */
 	public void setIProject(IProject iProject) {
 		this.iProject = iProject;
-		this.project = (Project) iProject.getAdapter(Project.class);
+		this.projectAdapter = (IProjectAdapter) iProject.getAdapter(IProjectAdapter.class);
 	}
 
 	/**
 	 * @return Returns the project.
 	 */
-	protected Project getProject() {
-		return this.project;
+	protected IProjectAdapter getProjectAdapter() {
+		return this.projectAdapter;
 	}
 }

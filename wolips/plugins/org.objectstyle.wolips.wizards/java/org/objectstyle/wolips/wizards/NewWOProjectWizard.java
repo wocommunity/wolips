@@ -6,7 +6,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -20,6 +19,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -62,7 +62,10 @@ import org.eclipse.ui.internal.registry.PerspectiveDescriptor;
 import org.eclipse.ui.internal.util.PrefUtil;
 import org.eclipse.ui.internal.wizards.newresource.ResourceMessages;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
-import org.objectstyle.wolips.jdt.classpath.WOClasspathContainer;
+import org.objectstyle.wolips.jdt.classpath.Container;
+import org.objectstyle.wolips.jdt.classpath.ContainerEntries;
+import org.objectstyle.wolips.jdt.classpath.ContainerEntry;
+import org.objectstyle.wolips.jdt.classpath.PathCoderException;
 import org.objectstyle.wolips.templateengine.ProjectTemplate;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
@@ -115,14 +118,18 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	 * Extension attribute name for preferred perspectives.
 	 */
 	private static final String PREFERRED_PERSPECTIVES = "preferredPerspectives"; //$NON-NLS-1$
+
 	/**
 	 * New Project from Template wizard
 	 */
 	protected static final int NEWPROJECT_TEMPLATE_WIZARD = 0;
+
 	/**
 	 * Valid project wizard types: WO_APPLICATION_WIZARD, D2W_APPLICATION_WIZARD, D2WS_APPLICATION_WIZARD, JARPROJECT_WIZARD, WO_FRAMEWORK_WIZARD, WONDER_APPLICATION_WIZARD, WONDER_D2W_APPLICATION_WIZARD, WONDER_FRAMEWORK_WIZARD, NEWPROJECT_TEMPLATE_WIZARD
 	 */
-	public enum WizardType {WO_APPLICATION_WIZARD, D2W_APPLICATION_WIZARD, D2WS_APPLICATION_WIZARD, JARPROJECT_WIZARD, WO_FRAMEWORK_WIZARD, WONDER_APPLICATION_WIZARD, WONDER_D2W_APPLICATION_WIZARD, WONDER_FRAMEWORK_WIZARD, NEWPROJ_TEMPLATE_WIZARD }
+	public enum WizardType {
+		WO_APPLICATION_WIZARD, D2W_APPLICATION_WIZARD, D2WS_APPLICATION_WIZARD, JARPROJECT_WIZARD, WO_FRAMEWORK_WIZARD, WONDER_APPLICATION_WIZARD, WONDER_D2W_APPLICATION_WIZARD, WONDER_FRAMEWORK_WIZARD, NEWPROJ_TEMPLATE_WIZARD
+	}
 
 	private WizardNewProjectCreationPage _mainPage;
 
@@ -134,9 +141,9 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 
 	protected PackageSpecifierWizardPage _packagePage;
 
-	protected WOWebServicesWizardPage  _webservicesSupportPage;
+	protected WOWebServicesWizardPage _webservicesSupportPage;
 
-	protected WOFrameworkSupportPage  _frameworkSupportPage;
+	protected WOFrameworkSupportPage _frameworkSupportPage;
 
 	protected TemplateInputsWizardPage _templateInputsWizardPage;
 
@@ -184,7 +191,6 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 		_mainPage = createMainPage();
 		addPage(_mainPage);
 
-
 		if (wizardType == WizardType.D2W_APPLICATION_WIZARD || wizardType == WizardType.WO_APPLICATION_WIZARD || wizardType == WizardType.D2WS_APPLICATION_WIZARD || wizardType == WizardType.WO_FRAMEWORK_WIZARD) {
 			_packagePage = createPackageSpecifierWizardPage();
 			if (_packagePage != null) {
@@ -231,7 +237,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 
 	protected String getPageDescription() {
 		String description = ResourceMessages.NewProject_description;
-		if (getWizardType() == WizardType.D2W_APPLICATION_WIZARD ) {
+		if (getWizardType() == WizardType.D2W_APPLICATION_WIZARD) {
 			description = Messages.getString("D2WApplicationWizard.description");
 		}
 
@@ -297,8 +303,6 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 		}
 		return frameworkPage;
 	}
-
-
 
 	/**
 	 * Creates a new project resource with the selected name.
@@ -734,7 +738,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	 * Create a component in the default java package
 	 */
 	protected void addComponentDefinition(String templateFolder, TemplateEngine engine, String path, String name) {
-		addComponentDefinition (templateFolder, engine, path, name, "");
+		addComponentDefinition(templateFolder, engine, path, name, "");
 	}
 
 	/**
@@ -747,12 +751,12 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	 */
 	protected void addComponentDefinition(String templateFolder, TemplateEngine engine, String rootPath, String name, String packagePath) {
 		//create component dir
-		String componentPath = rootPath + File.separator  + name + ".wo";
+		String componentPath = rootPath + File.separator + name + ".wo";
 		File wo = new File(componentPath);
 		wo.mkdirs();
 
 		//create src dirs
-		String fullPackagePath = (packagePath != null && packagePath.length() > 0) ? rootPath + File.separator + "src"+File.separator+packagePath : rootPath + File.separator + "src";
+		String fullPackagePath = (packagePath != null && packagePath.length() > 0) ? rootPath + File.separator + "src" + File.separator + packagePath : rootPath + File.separator + "src";
 		File srcPath = new File(fullPackagePath);
 		srcPath.mkdirs();
 
@@ -767,9 +771,9 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	 * EOModel Support
 	 */
 	//key = file name, value = full path to file including file name
-	protected HashMap <String,String> getEOModelPaths() {
+	protected HashMap<String, String> getEOModelPaths() {
 		if (_eomodelImportPage == null) {
-			return new HashMap<String,String>();
+			return new HashMap<String, String>();
 		}
 		return _eomodelImportPage.getModelPaths();
 	}
@@ -780,7 +784,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	 */
 	public void createEOModelSupport(IProject project) {
 		//Move any specified models over
-		HashMap <String, String> paths = getEOModelPaths();
+		HashMap<String, String> paths = getEOModelPaths();
 		EOModelImportWorkspaceJob job = new EOModelImportWorkspaceJob("eomodel import", paths, project);
 		job.schedule();
 	}
@@ -811,11 +815,11 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 
 		if (_webservicesSupportPage != null) {
 			if (_webservicesSupportPage.getClientSupport()) {
-				engine.addTemplate(new TemplateDefinition("wowebservices"+"/client.wsdd.vm", path, "client.wsdd", "client.wsdd"));
+				engine.addTemplate(new TemplateDefinition("wowebservices" + "/client.wsdd.vm", path, "client.wsdd", "client.wsdd"));
 			}
 
 			if (_webservicesSupportPage.getServerSupport()) {
-				engine.addTemplate(new TemplateDefinition("wowebservices"+"/server.wsdd.vm", path, "server.wsdd", "server.wsdd"));
+				engine.addTemplate(new TemplateDefinition("wowebservices" + "/server.wsdd.vm", path, "server.wsdd", "server.wsdd"));
 			}
 		}
 	}
@@ -826,24 +830,27 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	 */
 	public void addWebServiceFrameworks(IProject project) {
 		if (project.isOpen()) {
-			ArrayList<String> frameworkPaths = new ArrayList<String>();
+			ArrayList<ContainerEntry> containerEntries = new ArrayList<ContainerEntry>();
 
 			if (_webservicesSupportPage != null) {
 				if (_webservicesSupportPage.getClientSupport()) {
-					frameworkPaths.add("JavaWebServicesClient");
+					ContainerEntry containerEntry = new ContainerEntry("JavaWebServicesClient");
+					containerEntries.add(containerEntry);
 				}
 
 				if (_webservicesSupportPage.getServerSupport()) {
-					frameworkPaths.add("JavaWebServicesGeneration");
+					ContainerEntry containerEntry = new ContainerEntry("JavaWebServicesGeneration");
+					containerEntries.add(containerEntry);
 				}
 
 				if (_webservicesSupportPage.getServerSupport() || _webservicesSupportPage.getClientSupport()) {
-					frameworkPaths.add("JavaWebServicesSupport");
+					ContainerEntry containerEntry = new ContainerEntry("JavaWebServicesSupport");
+					containerEntries.add(containerEntry);
 				}
 			}
 
 			//Classpath surgery
-			addFrameworksToClasspath(project, frameworkPaths);
+			addFrameworksToClasspath(project, containerEntries);
 
 		} else {
 			System.err.println("Warning: project is not open and cannot be fully configured");
@@ -853,10 +860,10 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	/*
 	 * Java Package Support
 	 */
-	public void createJavaPackageSupport (IProject project, String packagePath) {
-		String fullPath = project.getLocation().toOSString()+File.separator+"src";
+	public void createJavaPackageSupport(IProject project, String packagePath) {
+		String fullPath = project.getLocation().toOSString() + File.separator + "src";
 		if (packagePath.length() > 0) {
-			fullPath = fullPath+File.separator+packagePath;
+			fullPath = fullPath + File.separator + packagePath;
 		}
 		File pFile = new File(fullPath);
 		pFile.mkdirs();
@@ -865,21 +872,20 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	/**
 	 * Classpath Support
 	 */
-	public void addFrameworksToClasspath(IProject project, ArrayList<String> frameworks) {
-		StringBuilder frameworkPaths = new StringBuilder();
-		Iterator<String> it = frameworks.iterator();
-		while (it.hasNext()) {
-			frameworkPaths.append("/").append(it.next());
-		}
-
+	public void addFrameworksToClasspath(IProject project, ArrayList<ContainerEntry> containerEntries) {
 		//Classpath surgery
 		try {
-			IJavaProject javaProject = (IJavaProject)project.getNature(JavaCore.NATURE_ID);
-			IClasspathEntry [] entries = javaProject.readRawClasspath();
-			ArrayList <IClasspathEntry> newEntries = new ArrayList<IClasspathEntry>(entries.length);
-			for (IClasspathEntry anEntry: entries) {
-				if (anEntry.getPath().toString().startsWith(WOClasspathContainer.WOLIPS_CLASSPATH_CONTAINER_IDENTITY)) {
-					IClasspathEntry entry = JavaCore.newContainerEntry(anEntry.getPath().append(frameworkPaths.toString()));
+			IJavaProject javaProject = (IJavaProject) project.getNature(JavaCore.NATURE_ID);
+			IClasspathEntry[] entries = javaProject.readRawClasspath();
+			ArrayList<IClasspathEntry> newEntries = new ArrayList<IClasspathEntry>(entries.length);
+			for (IClasspathEntry anEntry : entries) {
+				IPath containerPath = anEntry.getPath();
+				if (containerPath.segment(0).equals(Container.CONTAINER_IDENTITY)) {
+					ContainerEntries newContainerEntries = ContainerEntries.initWithPath(containerPath.removeFirstSegments(1));
+					newContainerEntries.add(containerEntries);
+					Container container = new Container(newContainerEntries);
+					IPath newPath = container.getPath();
+					IClasspathEntry entry = JavaCore.newContainerEntry(newPath);
 					newEntries.add(entry);
 				} else {
 					newEntries.add(anEntry);
@@ -888,10 +894,9 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 			javaProject.setRawClasspath(newEntries.toArray(new IClasspathEntry[] {}), javaProject.getOutputLocation(), null);
 
 		} catch (CoreException e) {
-			ErrorDialog.openError(getShell(),
-					Messages.getString("NewWOProjectWizard.errorMessage.classpath.title"),
-					e.toString(),
-					new Status(IStatus.WARNING, "org.objectstyle.wolips.wizards" , e.toString()));
+			ErrorDialog.openError(getShell(), Messages.getString("NewWOProjectWizard.errorMessage.classpath.title"), e.toString(), new Status(IStatus.WARNING, "org.objectstyle.wolips.wizards", e.toString()));
+		} catch (PathCoderException e) {
+			ErrorDialog.openError(getShell(), Messages.getString("NewWOProjectWizard.errorMessage.classpath.title"), e.toString(), new Status(IStatus.WARNING, "org.objectstyle.wolips.wizards", e.toString()));
 		}
 	}
 
@@ -900,26 +905,23 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	 */
 	public void createFrameworksSupport(IProject project) {
 		if (project.isOpen()) {
-			ArrayList<String> frameworkPaths = new ArrayList<String>();
+			ArrayList<ContainerEntry> containerEntries = new ArrayList<ContainerEntry>();
 
 			if (_frameworkSupportPage != null) {
 				if (_frameworkSupportPage.getJNDISupport()) {
-					frameworkPaths.add("JavaJNDIAdaptor");
+					ContainerEntry containerEntry = new ContainerEntry("JavaJNDIAdaptor");
+					containerEntries.add(containerEntry);
 				}
 
 				if (_frameworkSupportPage.getJ2EESupport()) {
-					frameworkPaths.add("JavaWOJSPServlet");
+					ContainerEntry containerEntry = new ContainerEntry("JavaWOJSPServlet");
+					containerEntries.add(containerEntry);
 				}
 			}
-
-			//Classpath surgery
-			addFrameworksToClasspath(project, frameworkPaths);
-
+			//			 Classpath surgery
+			addFrameworksToClasspath(project, containerEntries);
 		} else {
-			ErrorDialog.openError(getShell(),
-					Messages.getString("NewWOProjectWizard.errorMessage.classpath.title"),
-					Messages.getString("NewWOProjectWizard.errorMessage.classpath.message"),
-					new Status(IStatus.WARNING, "org.objectstyle.wolips.wizards" , Messages.getString("NewWOProjectWizard.errorMessage.classpath.message")));
+			ErrorDialog.openError(getShell(), Messages.getString("NewWOProjectWizard.errorMessage.classpath.title"), Messages.getString("NewWOProjectWizard.errorMessage.classpath.message"), new Status(IStatus.WARNING, "org.objectstyle.wolips.wizards", Messages.getString("NewWOProjectWizard.errorMessage.classpath.message")));
 		}
 	}
 }

@@ -25,7 +25,7 @@
    <extension
          point="org.eclipse.jdt.core.classpathContainerInitializer">
       <classpathContainerInitializer
-            class="org.objectstyle.wolips.jdt.classpath.WOClasspathContainerInitializer"
+            class="org.objectstyle.wolips.jdt.classpath.ContainerInitializer"
             id="org.objectstyle.wolips.WO_CLASSPATH">
       </classpathContainerInitializer>
    </extension>
@@ -39,14 +39,6 @@
 <!-- =================================================================================== -->
 <!-- Extension: Classpath container page                                                 -->
 <!-- =================================================================================== -->
-   <extension
-         point="org.eclipse.jdt.ui.classpathContainerPage">
-      <classpathContainerPage
-            name="WebObjects Frameworks old"
-            class="org.objectstyle.wolips.jdt.ui.WOClassPathContainerPage"
-            id="org.objectstyle.wolips.WO_CLASSPATH">
-      </classpathContainerPage>
-   </extension>
    <extension
          point="org.eclipse.jdt.ui.classpathContainerPage">
       <classpathContainerPage

@@ -50,23 +50,19 @@
 package org.objectstyle.wolips.jdt.listener;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
-import org.objectstyle.wolips.datasets.DataSetsPlugin;
-import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 import org.objectstyle.wolips.jdt.JdtPlugin;
 
 /**
  * Tracking changes in resources and synchronizes webobjects project file
  */
 public class ResourceChangeListener implements IResourceChangeListener, IResourceDeltaVisitor {
-
-	private Project project;
 
 	/**
 	 * Constructor for ResourceChangeListener.
@@ -94,7 +90,7 @@ public class ResourceChangeListener implements IResourceChangeListener, IResourc
 		try {
 			return examineResource(resource, delta.getKind());
 		} catch (CoreException e) {
-			DataSetsPlugin.getDefault().getPluginLogger().log(e);
+			JdtPlugin.getDefault().getPluginLogger().log(e);
 			return false;
 		}
 	}
@@ -119,12 +115,11 @@ public class ResourceChangeListener implements IResourceChangeListener, IResourc
 			// further investigation of resource delta needed
 			return true;
 		case IResource.PROJECT:
-			this.project = null;
-			this.project = (Project) ((IProject) resource).getAdapter(Project.class);
-			if (this.project == null) {
+			IProjectAdapter project = (IProjectAdapter) resource.getAdapter(IProjectAdapter.class);
+			if (project == null) {
 				return false;
 			}
-			if (this.project.isWOLipsProject()) {
+			if (project.isApplication() || project.isFramework()) {
 				return true;
 			} // no webobjects project
 			return false;
@@ -132,22 +127,9 @@ public class ResourceChangeListener implements IResourceChangeListener, IResourc
 			return false;
 		case IResource.FILE:
 			if (resource.getName().equals(".classpath")) {
-				UpdateIncludeFilesJob updateIncludeFilesJob = new UpdateIncludeFilesJob(this.project.getIProject());
-				updateIncludeFilesJob.setRule(this.project.getIProject());
+				UpdateIncludeFilesJob updateIncludeFilesJob = new UpdateIncludeFilesJob(resource.getProject());
+				updateIncludeFilesJob.setRule(resource.getProject());
 				updateIncludeFilesJob.schedule();
-				// IJavaProject iJavaProject = JavaCore.create(this.project
-				// .getIProject());
-				// JavaProject javaProject = (JavaProject) iJavaProject
-				// .getAdapter(JavaProject.class);
-				// List frameworkNames = javaProject.getFrameworkNames();
-				//
-				// if (frameworkNames != null) {
-				// UpdateFrameworkNamesJob updateFrameworkNamesJob = new
-				// UpdateFrameworkNamesJob(
-				// frameworkNames, this.project.getIProject());
-				// updateFrameworkNamesJob.setRule(this.project.getIProject());
-				// updateFrameworkNamesJob.schedule();
-				// }
 			}
 		}
 		return false;

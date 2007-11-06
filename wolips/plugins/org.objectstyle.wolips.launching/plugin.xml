@@ -61,18 +61,7 @@
             id="org.objectstyle.wolips.launching.WORuntimeClasspathProvider">
       </classpathProvider>
    </extension>
-<!-- =================================================================================== -->
-<!-- Extension: runtime classpath entry resolvers                                        -->
-<!-- =================================================================================== -->
-   <extension
-         point="org.eclipse.jdt.launching.runtimeClasspathEntryResolvers">
-      <runtimeClasspathEntryResolver
-            class="org.objectstyle.wolips.launching.classpath.WORuntimeClasspathResolver"
-            container="org.objectstyle.wolips.WO_CLASSPATH"
-            id="org.objectstyle.wolips.launching.classpath.WORuntimeClasspathResolver"
-            runtimeClasspathEntryId="org.objectstyle.wolips.launching.WORuntimeClasspathProvider">
-      </runtimeClasspathEntryResolver>
-   </extension>   
+ 
 <!-- =================================================================================== -->
 <!-- Extension: Launch shortcuts                                                         -->
 <!-- =================================================================================== -->

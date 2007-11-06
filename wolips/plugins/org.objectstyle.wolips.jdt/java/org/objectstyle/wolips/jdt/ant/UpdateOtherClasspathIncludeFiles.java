@@ -62,11 +62,11 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.jdt.JdtPlugin;
 
 /**
@@ -110,7 +110,7 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 
 		for (int i = 0; i < getPaths().length; i++) {
 
-			currentClasspathListFile = this.getProject().getAntFolder().getFile(this.INCLUDES_FILE_PREFIX + "." + this.rootPaths[i]);
+			currentClasspathListFile = this.getProjectAdapter().getWoprojectAdapter().getUnderlyingFolder().getFile(this.INCLUDES_FILE_PREFIX + "." + this.rootPaths[i]);
 			// System.out.println("currentClasspathListFile: " +
 			// currentClasspathListFile.toString());
 			if (currentClasspathListFile.exists()) {
@@ -149,8 +149,7 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 					currentClasspathListFile.setContents(new ByteArrayInputStream(newClasspathEntries.toString().getBytes()), true, true, null);
 				} else {
 					// create list file if any entries found
-					Project project = (Project) this.getIProject().getAdapter(Project.class);
-					project.createAntFolder();
+					this.getProjectAdapter().getWoprojectAdapter().getUnderlyingFolder().create(false, true, new NullProgressMonitor());
 					currentClasspathListFile.create(new ByteArrayInputStream(newClasspathEntries.toString().getBytes()), true, null);
 				}
 			} catch (CoreException e) {
