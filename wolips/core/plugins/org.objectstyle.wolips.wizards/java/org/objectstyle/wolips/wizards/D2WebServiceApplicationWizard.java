@@ -118,8 +118,6 @@ public class D2WebServiceApplicationWizard extends AbstractProjectWizard {
 		templateEngine.getWolipsContext().setPackageName(packageName);
 
 		addComponentDefinition(rootTemplate, templateEngine, path, "Main", packagePath);
-		addComponentDefinition(rootTemplate, templateEngine, path, "MenuHeader", packagePath);
-		addComponentDefinition(rootTemplate, templateEngine, path, "PageWrapper", packagePath);
 
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/Application.java.vm", fullSrcPath, "Application.java", "Application.java"));
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/DirectAction.java.vm", fullSrcPath, "DirectAction.java", "DirectAction.java"));
@@ -129,10 +127,6 @@ public class D2WebServiceApplicationWizard extends AbstractProjectWizard {
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/.project.vm", path, ".project", ".project"));
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/build.xml.vm", path, "build.xml", "build.xml"));
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/build.properties.vm", path, "build.properties", "build.properties"));
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/Main.api.vm", path, "Main.api", "Main.api"));
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/Makefile.vm", path, "Makefile", "Makefile"));
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/Makefile.postamble.vm", path, "Makefile.postamble", "Makefile.postamble"));
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/Makefile.preamble.vm", path, "Makefile.preamble", "Makefile.preamble"));
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/Properties.vm", path, "Properties", "Properties"));
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/user.d2wmodel.vm", path, "user.d2wmodel", "user.d2wmodel"));
 
