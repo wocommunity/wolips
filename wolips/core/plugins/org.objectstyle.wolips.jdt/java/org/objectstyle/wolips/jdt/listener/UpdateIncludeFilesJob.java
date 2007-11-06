@@ -61,7 +61,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.objectstyle.wolips.datasets.DataSetsPlugin;
+import org.objectstyle.wolips.jdt.JdtPlugin;
 import org.objectstyle.wolips.jdt.ant.UpdateFrameworkIncludeFiles;
 import org.objectstyle.wolips.jdt.ant.UpdateOtherClasspathIncludeFiles;
 
@@ -91,6 +91,6 @@ public class UpdateIncludeFilesJob extends WorkspaceJob {
 		UpdateFrameworkIncludeFiles updateFrameworkIncludeFiles = new UpdateFrameworkIncludeFiles();
 		updateFrameworkIncludeFiles.setIProject(iProject);
 		updateFrameworkIncludeFiles.execute();
-		return new Status(IStatus.OK, DataSetsPlugin.getPluginId(), IStatus.OK, "Done", null);
+		return new Status(IStatus.OK, JdtPlugin.getPluginId(), IStatus.OK, "Done", null);
 	}
 }

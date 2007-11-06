@@ -9,10 +9,11 @@ Bundle-Vendor: objectstyle.org
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources,
  org.eclipse.jdt.core,
- org.objectstyle.wolips.datasets,
  org.objectstyle.wolips.variables,
  org.eclipse.jdt.ui,
  org.objectstyle.wolips.baseforplugins,
+ org.eclipse.ui.ide,
+ org.objectstyle.wolips,
  org.eclipse.jdt,
  org.eclipse.jdt.apt.core
 Eclipse-LazyStart: true

@@ -181,8 +181,12 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 	private boolean isAppleProvided(IRuntimeClasspathEntry runtimeClasspathEntry) {
 		String location = runtimeClasspathEntry.getLocation();
 		if (location != null) {
-			// check maven path
+			// check maven path (first french version)
 			if (location.indexOf("webobjects" + File.separator + "apple") > 0) {
+				return true;
+			}
+			// check maven path
+			if (location.indexOf("apple" + File.separator + "webobjects") > 0) {
 				return true;
 			}
 			// check mac path

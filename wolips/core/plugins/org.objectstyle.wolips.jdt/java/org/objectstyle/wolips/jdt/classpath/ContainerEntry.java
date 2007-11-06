@@ -123,6 +123,12 @@ public class ContainerEntry implements Comparable {
 	}
 
 	/**
+	 * @param name
+	 */
+	public ContainerEntry(String name) {
+		this(name, null, null, null, null);
+	}
+	/**
 	 * @param path
 	 * @return
 	 * @throws PathCoderException

@@ -51,13 +51,13 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.objectstyle.wolips.datasets.adaptable.Project;
-import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
+import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 import org.objectstyle.wolips.jdt.JdtPlugin;
 import org.objectstyle.wolips.variables.VariablesPlugin;
 
@@ -108,7 +108,7 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 		for (int i = 0; i < this.getPaths().length; i++) {
 
 			String thisPath = getPaths()[i].toOSString();
-			currentFrameworkListFile = this.getProject().getAntFolder().getFile(this.INCLUDES_FILE_PREFIX + "." + this.rootPaths[i]);
+			currentFrameworkListFile = this.getProjectAdapter().getWoprojectAdapter().getUnderlyingFolder().getFile(this.INCLUDES_FILE_PREFIX + "." + this.rootPaths[i]);
 
 			// if (currentFrameworkListFile.exists()) {
 			// delete old include file
@@ -155,17 +155,13 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 				if (referencedProjects != null) {
 					for (int j = 0; j < referencedProjects.length; j++) {
 						if (referencedProjects[j].isAccessible() && referencedProjects[j].isOpen()) {
-							try {
-								Project referencedWOLipsProject = (Project) (referencedProjects[j]).getAdapter(Project.class);
-								if (referencedWOLipsProject != null && referencedWOLipsProject.hasWOLipsNature() && referencedWOLipsProject.isFramework()) {
-									newFrameworkEntries.append("Library/Frameworks/");
-									newFrameworkEntries.append(referencedWOLipsProject.getIProject().getName());
-									newFrameworkEntries.append(".");
-									newFrameworkEntries.append(IWOLipsModel.EXT_FRAMEWORK);
-									newFrameworkEntries.append("\n");
-								}
-							} catch (CoreException e1) {
-								JdtPlugin.getDefault().getPluginLogger().log(e1);
+							IProjectAdapter referencedWOLipsProject = (IProjectAdapter) (referencedProjects[j]).getAdapter(IProjectAdapter.class);
+							if (referencedWOLipsProject != null && referencedWOLipsProject.isFramework()) {
+								newFrameworkEntries.append("Library/Frameworks/");
+								newFrameworkEntries.append(referencedWOLipsProject.getUnderlyingProject().getName());
+								newFrameworkEntries.append(".");
+								newFrameworkEntries.append("framework");
+								newFrameworkEntries.append("\n");
 							}
 						}
 					}
@@ -182,8 +178,7 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 					currentFrameworkListFile.setContents(new ByteArrayInputStream(newFrameworkEntries.toString().getBytes()), true, true, null);
 				} else {
 					// create list file if any entries found
-					Project project = (Project) this.getIProject().getAdapter(Project.class);
-					project.createAntFolder();
+					this.getProjectAdapter().getWoprojectAdapter().getUnderlyingFolder().create(false, true, new NullProgressMonitor());
 					currentFrameworkListFile.create(new ByteArrayInputStream(newFrameworkEntries.toString().getBytes()), true, null);
 				}
 			} catch (CoreException e) {

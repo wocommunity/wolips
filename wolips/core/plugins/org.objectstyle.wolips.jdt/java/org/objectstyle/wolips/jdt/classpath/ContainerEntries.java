@@ -158,4 +158,17 @@ public class ContainerEntries {
 			this.entries.add(containerEntries[i]);
 		}
 	}
+
+	/**
+	 * @param containerEntries
+	 */
+	public void add(ArrayList<ContainerEntry> containerEntries) {
+		if(containerEntries == null) {
+			return;
+		}
+		for (int i = 0; i < containerEntries.size(); i++) {
+			ContainerEntry containerEntry = containerEntries.get(i);
+			this.add(containerEntry);
+		}
+	}
 }
