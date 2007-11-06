@@ -70,6 +70,8 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -292,20 +294,16 @@ public class ContainerPage extends WizardPage implements IClasspathContainerPage
 			row = new Composite(thisPage, SWT.NONE);
 			row.setLayout(new RowLayout());
 			exportedButton = new Button(row, SWT.CHECK);
-			exportedButton.addMouseListener(new MouseListener() {
+			exportedButton.addSelectionListener(new SelectionListener() {
 
-				public void mouseDoubleClick(MouseEvent e) {
-					return;
+				public void widgetDefaultSelected(SelectionEvent e) {
+					// do nothing
 				}
 
-				public void mouseDown(MouseEvent e) {
+				public void widgetSelected(SelectionEvent e) {
 					framework.setExported(exportedButton.getSelection());
 				}
-
-				public void mouseUp(MouseEvent e) {
-					return;
-				}
-
+				
 			});
 			lbl = new Label(row, SWT.SINGLE);
 			lbl.setText("Exported");

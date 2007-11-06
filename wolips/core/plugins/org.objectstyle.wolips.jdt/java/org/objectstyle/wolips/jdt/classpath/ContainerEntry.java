@@ -206,7 +206,7 @@ public class ContainerEntry implements Comparable {
 		this.exported = framework.isExported();
 		IPath[] libraryPaths = framework.getLibraryPaths();
 		for (int j = 0; j < libraryPaths.length; j++) {
-			IClasspathEntry entry = JavaCore.newLibraryEntry(libraryPaths[j], framework.getSrcPath(), this.javaDocPath, this.exported);
+			IClasspathEntry entry = JavaCore.newLibraryEntry(libraryPaths[j], this.srcPath, this.javaDocPath, this.exported);
 			this.entries.add(entry);
 		}
 		if (this.order == null) {
