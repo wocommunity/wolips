@@ -427,7 +427,6 @@
                label="Tag Components"
                class="org.objectstyle.wolips.jdt.ui.tags.actions.TagResourcesAction"
                menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group4"
-               enablesFor="1"
                id="org.objectstyle.wolips.jdt.ui.tags.actions.TagResourcesAction">
          </action>
       </objectContribution>

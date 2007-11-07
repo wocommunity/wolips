@@ -68,10 +68,13 @@ import java.util.StringTokenizer;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 
 public class TagLib {
 
-	private static final String FILENAME = ".wotaglib";
+	public static final String FILENAME = ".wotaglib";
 
 	private static final String TAG = "tag";
 
@@ -165,11 +168,15 @@ public class TagLib {
 		try {
 			fileOutputStream = new FileOutputStream(file);
 			properties.store(fileOutputStream, "wotaglib");
+			iFile.refreshLocal(IResource.DEPTH_ONE, new NullProgressMonitor());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (CoreException e) {
+			e.printStackTrace();
 		}
+
 	}
 
 	public Tag[] getTags() {
