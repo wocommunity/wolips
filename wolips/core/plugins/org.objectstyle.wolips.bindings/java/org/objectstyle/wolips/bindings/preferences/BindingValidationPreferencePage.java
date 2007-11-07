@@ -68,6 +68,8 @@ public class BindingValidationPreferencePage extends FieldEditorPreferencePage i
     addField(new BooleanFieldEditor(PreferenceConstants.VALIDATE_TEMPLATES_KEY, "Validate WOD / Inline Bindings", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.VALIDATE_BINDING_VALUES, "Validate Binding Values", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.WARN_ON_MISSING_COLLECTION_KEY, "... Warn if Missing Key on NSDictionary/NSArray", getFieldEditorParent()));
+    addField(new BooleanFieldEditor(PreferenceConstants.ERROR_ON_MISSING_COMPONENT_KEY, "... Error if Missing Key on 'extends WOComponent'", getFieldEditorParent()));
+    addField(new BooleanFieldEditor(PreferenceConstants.WARN_ON_MISSING_COMPONENT_KEY, "... Warn if Missing Key on 'extends WOComponent'", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.ERROR_ON_MISSING_NSKVC_KEY, "... Error if Missing Key on 'implements NSKeyValueCoding'", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.WARN_ON_MISSING_NSKVC_KEY, "... Warn if Missing Key on 'implements NSKeyValueCoding'", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.WARN_ON_AMBIGUOUS_KEY, "... Warn on Ambiguous Key Paths", getFieldEditorParent()));

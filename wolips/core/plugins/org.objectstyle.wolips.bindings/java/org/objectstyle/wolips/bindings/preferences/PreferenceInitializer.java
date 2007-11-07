@@ -95,6 +95,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     prefs.setDefault(PreferenceConstants.VALIDATE_OGNL_KEY, true);
     prefs.setDefault(PreferenceConstants.AUTO_INSERT_ON_COMPLETION, true);
     prefs.setDefault(PreferenceConstants.WARN_ON_MISSING_COLLECTION_KEY, true);
+    prefs.setDefault(PreferenceConstants.ERROR_ON_MISSING_COMPONENT_KEY, true);
+    prefs.setDefault(PreferenceConstants.WARN_ON_MISSING_COMPONENT_KEY, false);
     prefs.setDefault(PreferenceConstants.ERROR_ON_MISSING_NSKVC_KEY, true);
     prefs.setDefault(PreferenceConstants.WARN_ON_MISSING_NSKVC_KEY, false);
     prefs.setDefault(PreferenceConstants.WARN_ON_AMBIGUOUS_KEY, true);

@@ -29,6 +29,8 @@ public class BindingValueKeyPath {
 
   private boolean _nsCollection;
 
+  private boolean _woComponent;
+
   private boolean _nsKVC;
 
   private boolean _ambiguous;
@@ -97,6 +99,7 @@ public class BindingValueKeyPath {
         _ambiguous = false;
         _valid = true;
         _nsKVC = false;
+        _woComponent = false;
         _nsCollection = false;
       }
       else {
@@ -117,6 +120,12 @@ public class BindingValueKeyPath {
               _nsKVC = true;
               if (BindingReflectionUtils.isNSCollection(currentType, cache)) {
                 _nsCollection = true;
+                _ambiguous = true;
+                invalidKeyNum = keyNum;
+                currentType = null;
+              }
+              else if (BindingReflectionUtils.isWOComponent(currentType, cache)) {
+                _woComponent = true;
                 _ambiguous = true;
                 invalidKeyNum = keyNum;
                 currentType = null;
@@ -165,6 +174,10 @@ public class BindingValueKeyPath {
 
   public String getOperator() {
     return _operator;
+  }
+
+  public boolean isWOComponent() {
+    return _woComponent;
   }
 
   public boolean isNSKeyValueCoding() {
