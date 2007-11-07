@@ -168,6 +168,8 @@ public abstract class AbstractWodBinding implements IWodBinding {
 
   public void fillInBindingProblems(IJavaProject javaProject, IType javaFileType, List<WodProblem> problems, TypeCache cache) throws JavaModelException {
     boolean warnOnMissingCollectionKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.WARN_ON_MISSING_COLLECTION_KEY);
+    boolean errorOnMissingComponentKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.ERROR_ON_MISSING_COMPONENT_KEY);
+    boolean warnOnMissingComponentKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.WARN_ON_MISSING_COMPONENT_KEY);
     boolean errorOnMissingNSKVCKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.ERROR_ON_MISSING_NSKVC_KEY);
     boolean warnOnMissingNSKVCKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.WARN_ON_MISSING_NSKVC_KEY);
     boolean warnOnAmbiguousKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.WARN_ON_AMBIGUOUS_KEY);
@@ -195,7 +197,7 @@ public abstract class AbstractWodBinding implements IWodBinding {
           BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(bindingValue, javaFileType, javaProject, cache);
           // NTS: Technically these need to be related to
           // every java file name in the key path
-          if (!bindingValueKeyPath.isValid() || (bindingValueKeyPath.isNSKeyValueCoding() && errorOnMissingNSKVCKey && !bindingValueKeyPath.isNSCollection())) {
+          if (!bindingValueKeyPath.isValid() || (bindingValueKeyPath.isWOComponent() && errorOnMissingComponentKey) || (bindingValueKeyPath.isNSKeyValueCoding() && errorOnMissingNSKVCKey && !bindingValueKeyPath.isNSCollection())) {
             String validKeyPath = bindingValueKeyPath.getValidKeyPath();
             if (validKeyPath.length() == 0) {
               problems.add(new WodBindingValueProblem(bindingName, "There is no key '" + bindingValueKeyPath.getInvalidKey() + "' in " + javaFileType.getElementName(), getValuePosition(), lineNumber, false));
@@ -212,6 +214,17 @@ public abstract class AbstractWodBinding implements IWodBinding {
               }
               else {
                 problems.add(new WodBindingValueProblem(bindingName, "Unable to verify key '" + bindingValueKeyPath.getInvalidKey() + "' because the keypath '" + validKeyPath + "' in " + javaFileType.getElementName() + " is a collection", getValuePosition(), lineNumber, true));
+              }
+            }
+          }
+          else if (bindingValueKeyPath.isWOComponent()) {
+            if (warnOnMissingComponentKey) {
+              String validKeyPath = bindingValueKeyPath.getValidKeyPath();
+              if (validKeyPath.length() == 0) {
+                problems.add(new WodBindingValueProblem(bindingName, "Unable to verify the key '" + bindingValueKeyPath.getInvalidKey() + "' because " + javaFileType.getElementName() + " is a component.", getValuePosition(), lineNumber, true));
+              }
+              else {
+                problems.add(new WodBindingValueProblem(bindingName, "Unable to verify the key '" + bindingValueKeyPath.getInvalidKey() + "' because the keypath '" + validKeyPath + "' in " + javaFileType.getElementName() + " is a component.", getValuePosition(), lineNumber, true));
               }
             }
           }

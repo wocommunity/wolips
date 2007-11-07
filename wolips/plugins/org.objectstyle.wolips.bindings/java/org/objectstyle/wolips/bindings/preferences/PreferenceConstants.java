@@ -52,6 +52,10 @@ public class PreferenceConstants {
 
 	public static final String WARN_ON_MISSING_COLLECTION_KEY = "WarnOnMissingCollectionKey";
 
+  public static final String WARN_ON_MISSING_COMPONENT_KEY = "WarnOnMissingComponentKey";
+
+  public static final String ERROR_ON_MISSING_COMPONENT_KEY = "ErrorOnMissingComponentKey";
+
 	public static final String ERROR_ON_MISSING_NSKVC_KEY = "ErrorOnMissingNSKVCKey";
 
 	public static final String WARN_ON_MISSING_NSKVC_KEY = "WarnOnMissingNSKVCKey";

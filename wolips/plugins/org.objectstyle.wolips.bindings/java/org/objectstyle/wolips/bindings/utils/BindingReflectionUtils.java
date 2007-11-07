@@ -93,6 +93,10 @@ public class BindingReflectionUtils {
     searchEngine.searchAllTypeNames(packageName, SearchPattern.R_EXACT_MATCH, typeName, _matchType, IJavaSearchConstants.CLASS, searchScope, _typeNameCollector, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, progressMonitor);
   }
 
+  public static boolean isWOComponent(IType type, TypeCache cache) throws JavaModelException {
+    return BindingReflectionUtils.isType(type, new String[] { "com.webobjects.appserver.WOComponent" }, cache);
+  }
+
   public static boolean isNSKeyValueCoding(IType type, TypeCache cache) throws JavaModelException {
     return BindingReflectionUtils.isType(type, new String[] { "com.webobjects.foundation.NSKeyValueCoding" }, cache);
   }
