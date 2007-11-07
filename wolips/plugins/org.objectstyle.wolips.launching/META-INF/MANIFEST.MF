@@ -13,12 +13,12 @@ Require-Bundle: org.eclipse.debug.ui,
  org.eclipse.ui.browser,
  org.eclipse.jdt.debug.ui,
  org.objectstyle.wolips.variables,
- org.objectstyle.wolips.jdt,
  org.eclipse.core.variables,
  org.objectstyle.wolips.ant,
- org.objectstyle.wolips.datasets,
  org.objectstyle.wolips.baseforuiplugins,
- org.objectstyle.wolips.locate
+ org.objectstyle.wolips.locate,
+ org.objectstyle.wolips,
+ org.objectstyle.wolips.datasets
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.launching,
  org.objectstyle.wolips.launching.actions,
