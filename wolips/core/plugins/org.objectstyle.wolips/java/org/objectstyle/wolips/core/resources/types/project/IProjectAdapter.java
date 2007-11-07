@@ -110,4 +110,5 @@ public interface IProjectAdapter extends IResourceType, IPBDotProjectOwner {
 	
 	public abstract String getPrincipalClass(boolean convertNullValueToEmptyString);
 	public abstract void setPrincipalClass(String principalClass);
+	public abstract IPath getWOJavaArchive() throws CoreException;
 }

@@ -97,6 +97,7 @@ import org.objectstyle.wolips.core.resources.types.folder.IDotFrameworkAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IProductAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IWoprojectAdapter;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.variables.VariablesPlugin;
 
 public class ProjectAdapter extends AbstractResourceAdapter implements IProjectAdapter {
 
@@ -505,18 +506,18 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 	private void removeBuilder(String aBuilder) throws CoreException {
 		IProjectDescription desc = null;
 		ICommand[] coms = null;
-		ArrayList comList = null;
-		List tmp = null;
+		ArrayList<ICommand> comList = null;
+		List<ICommand> tmp = null;
 		ICommand[] newCom = null;
 		try {
 			desc = this.getUnderlyingProject().getDescription();
 			coms = desc.getBuildSpec();
-			comList = new ArrayList();
+			comList = new ArrayList<ICommand>();
 			tmp = Arrays.asList(coms);
 			comList.addAll(tmp);
 			boolean foundJBuilder = false;
 			for (int i = 0; i < comList.size(); i++) {
-				if (((ICommand) comList.get(i)).getBuilderName().equals(aBuilder)) {
+				if ((comList.get(i)).getBuilderName().equals(aBuilder)) {
 					comList.remove(i);
 					foundJBuilder = true;
 				}
@@ -524,7 +525,7 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 			if (foundJBuilder) {
 				newCom = new ICommand[comList.size()];
 				for (int i = 0; i < comList.size(); i++) {
-					newCom[i] = (ICommand) comList.get(i);
+					newCom[i] = comList.get(i);
 				}
 				desc.setBuildSpec(newCom);
 				this.getUnderlyingProject().setDescription(desc, null);
@@ -923,5 +924,82 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 			CorePlugin.getDefault().log(e);
 		}
 
+	}
+
+	/**
+	 * @return
+	 * @throws CoreException
+	 */
+	public IPath getWOJavaArchive() throws CoreException {
+		IResource resource = null;
+		IPath path = null;
+		String projectName = this.getUnderlyingProject().getName();
+		// String projectNameLC = projectName.toLowerCase();
+		// I'd rather use the knowledge from the IncrementalNature, but
+		// that fragment is not
+		// visible here (so I can't use the class, I think) [hn3000]
+		if (this.isFramework()) {
+			if (this.isAntBuilderInstalled()) {
+				resource = getJar("dist/", ".framework/");
+				if (!resource.exists())
+					resource = getJar("", ".framework/");
+			} else if (this.isIncrementalBuilderInstalled()) {
+				resource = this.getUnderlyingProject().getFolder("build/" + projectName + ".framework/Resources/Java");
+			}
+			if (resource != null && resource.exists()) {
+				path = resource.getLocation();
+			} else {
+				IPath externalBuildRoot = VariablesPlugin.getDefault().getExternalBuildRoot();
+				if (externalBuildRoot != null) {
+					path = externalBuildRoot.append(projectName + ".framework/Resources/Java/" + projectName + ".jar");
+				}
+			}
+		} else if (this.isApplication()) { // must be application
+			IFolder wdFolder = null;
+			if (this.isAntBuilderInstalled()) {
+				wdFolder = this.getUnderlyingProject().getFolder("dist");
+			} else {
+				wdFolder = this.getUnderlyingProject().getFolder("build");
+			}
+			if (wdFolder != null && wdFolder.exists()) {
+				IResource[] members = wdFolder.members();
+				for (int i = 0; i < members.length; i++) {
+					IResource member = members[i];
+					if (member.getType() == IResource.FOLDER && member.getName().endsWith(".woa")) {
+						wdFolder = (IFolder) member;
+						break;
+					}
+				}
+			}
+			if (wdFolder != null && wdFolder.exists()) {
+				IFolder javaFolder = wdFolder.getFolder("Contents/Resources/Java");
+				if (this.isAntBuilderInstalled()) {
+					resource = javaFolder.findMember(wdFolder.getName().substring(0, wdFolder.getName().length() - 4).toLowerCase() + ".jar");
+					if (!resource.exists())
+						resource = getJar("", ".woa/Contents/");
+				} else if (this.isIncrementalBuilderInstalled()) {
+					resource = javaFolder;
+				}
+			}
+			if (resource != null && (resource.exists())) {
+				path = resource.getLocation();
+			} else {
+				IPath externalBuildRoot = VariablesPlugin.getDefault().getExternalBuildRoot();
+				if (externalBuildRoot != null) {
+					path = externalBuildRoot.append(projectName + ".woa/Contents/Resources/Java/" + projectName + ".jar");
+				}
+			}
+		}
+		return path;
+	}
+
+	private IResource getJar(String prefix, String postfix) {
+		IResource result = null;
+		String projectName = this.getUnderlyingProject().getName();
+		result = this.getUnderlyingProject().getFile(prefix + projectName + postfix + "Resources/Java/" + projectName + ".jar");
+		if (result == null || !result.exists()) {
+			result = this.getUnderlyingProject().getFile(prefix + projectName + postfix + "Resources/Java/" + projectName.toLowerCase() + ".jar");
+		}
+		return result;
 	}
 }
