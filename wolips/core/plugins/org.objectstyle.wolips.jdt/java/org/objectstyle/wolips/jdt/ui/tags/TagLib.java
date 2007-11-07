@@ -187,14 +187,18 @@ public class TagLib {
 		ArrayList<TaggedComponent> filteredTaggedComponentsList = new ArrayList<TaggedComponent>();
 		for (Iterator iterator = taggedComponentsList.iterator(); iterator.hasNext();) {
 			TaggedComponent taggedComponent = (TaggedComponent) iterator.next();
+			int found = 0;
 			for (int i = 0; i < taggedComponent.ids.length; i++) {
 				int id = taggedComponent.ids[i];
 				for (int j = 0; j < tags.length; j++) {
 					Tag tag = tags[j];
 					if (id == tag.id) {
-						filteredTaggedComponentsList.add(taggedComponent);
+						found = found + 1;
 					}
 				}
+			}
+			if (found == tags.length) {
+				filteredTaggedComponentsList.add(taggedComponent);
 			}
 		}
 		return filteredTaggedComponentsList.toArray(new TaggedComponent[filteredTaggedComponentsList.size()]);
