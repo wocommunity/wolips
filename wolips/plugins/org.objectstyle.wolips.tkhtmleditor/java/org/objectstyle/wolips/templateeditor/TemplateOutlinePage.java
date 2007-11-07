@@ -126,6 +126,10 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
   public void changed(StatusTextEvent event) {
     String text = event.text;
     int colonIndex = text.indexOf(':');
+    if(colonIndex == -1) {
+    	HTMLPlugin.logError("Is this a problem only on windows? " + text + " colonIndex: " + colonIndex);
+    	return;
+    }
     String command = text.substring(0, colonIndex);
     String target = text.substring(colonIndex + 1);
     if ("select".equals(command)) {
