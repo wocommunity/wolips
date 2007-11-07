@@ -66,13 +66,17 @@ public class TaggedComponentsContentProvider implements ITaggedComponentsContent
 
 	public TagLib tagLib;
 	private FirstLevelTagContentProvider[] firstLevelTagContentProviders;
-
+	private IProject project;
+	
 	public TaggedComponentsContentProvider(IProject project) {
 		super();
-		this.tagLib = new TagLib(project);
+		this.project = project;
 	}
 
 	public Object[] getChildren() {
+		if(tagLib == null) {
+			this.tagLib = new TagLib(project);
+		}
 		if(firstLevelTagContentProviders == null) {
 			firstLevelTagContentProviders = new FirstLevelTagContentProvider[tagLib.getTags().length];
 			for (int i = 0; i < tagLib.getTags().length; i++) {
@@ -85,6 +89,9 @@ public class TaggedComponentsContentProvider implements ITaggedComponentsContent
 	}
 
 	public boolean hasChildren() {
+		if(tagLib == null) {
+			this.tagLib = new TagLib(project);
+		}
 		return tagLib.getTags().length > 0;
 	}
 
@@ -106,6 +113,11 @@ public class TaggedComponentsContentProvider implements ITaggedComponentsContent
 
 	public Object getAdapter(Class adapter) {
 		return null;
+	}
+	
+	public void forgetTagLib() {
+		this.tagLib = null;
+		this.firstLevelTagContentProviders = null;
 	}
 
 }

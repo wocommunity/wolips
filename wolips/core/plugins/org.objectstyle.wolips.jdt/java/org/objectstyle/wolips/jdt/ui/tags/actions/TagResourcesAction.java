@@ -56,6 +56,10 @@
 package org.objectstyle.wolips.jdt.ui.tags.actions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -65,33 +69,53 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.window.Window;
 import org.objectstyle.wolips.jdt.ui.tags.TagLib;
-import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResource;
+import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResources;
 
 /**
  * @author ulrich
  */
-public class TagResourcesAction extends AbstractActionOnIResource {
+public class TagResourcesAction extends AbstractActionOnIResources {
 
 	public void run(IAction action) {
-		InputDialog inputDialog = new InputDialog(this.part.getSite().getShell(),"Tag", "Enter a Tag", null, null);
+		InputDialog inputDialog = new InputDialog(this.part.getSite().getShell(), "Tag", "Enter a Tag", null, null);
 		int status = inputDialog.open();
-		if(status != InputDialog.OK) {
+		if (status != Window.OK) {
 			return;
 		}
 		String tagName = inputDialog.getValue();
-		if(tagName == null || tagName.length() == 0) {
+		if (tagName == null || tagName.length() == 0) {
 			return;
 		}
-		String[] componentNames = this.find(new NullProgressMonitor());
-		TagLib tagLib = new TagLib(this.getIProject());
-		tagLib.tagComponents(componentNames, tagName);
+		Map<IProject, List<IResource>> projectFilesMap = new HashMap<IProject, List<IResource>>();
+		IResource[] resources = this.getActionResources();
+		for (int i = 0; i < resources.length; i++) {
+			IResource resource = resources[i];
+			List<IResource> resourcesList = projectFilesMap.get(resource.getProject());
+			if (resourcesList == null) {
+				resourcesList = new ArrayList<IResource>();
+				projectFilesMap.put(resource.getProject(), resourcesList);
+			}
+			resourcesList.add(resource);
+		}
+		for (Iterator iterator = projectFilesMap.keySet().iterator(); iterator.hasNext();) {
+			IProject project = (IProject) iterator.next();
+			TagLib tagLib = new TagLib(project);
+			List<IResource> resourcesList = projectFilesMap.get(project);
+			String[] componentNames = this.find(new NullProgressMonitor(), resourcesList);
+			tagLib.tagComponents(componentNames, tagName);
+		}
 	}
 
-	protected String[] find(IProgressMonitor monitor) {
+	protected String[] find(IProgressMonitor monitor, List<IResource> resourcesList) {
 		ArrayList<String> components = new ArrayList<String>();
 		try {
-			this.find(this.getActionResource(), components, monitor);
+			for (Iterator iterator = resourcesList.iterator(); iterator.hasNext();) {
+				IResource resource = (IResource) iterator.next();
+				this.find(resource, components, monitor);
+			}
+
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
