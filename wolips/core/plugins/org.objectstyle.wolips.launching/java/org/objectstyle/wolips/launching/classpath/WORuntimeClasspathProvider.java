@@ -56,20 +56,17 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.StandardClasspathProvider;
-import org.objectstyle.wolips.datasets.adaptable.JavaProject;
+import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 
 /**
  * @author hn3000
  * @author uli
  */
 public class WORuntimeClasspathProvider extends StandardClasspathProvider {
-	/**
-	 * Comment for <code>ID</code>
-	 */
+
 	public final static String ID = "org.objectstyle.wolips.launching.WORuntimeClasspathProvider";
 
 	public final static String OLD_ID = "org.objectstyle.wolips.launching.classpath.WORuntimeClasspathProvider";
@@ -93,12 +90,12 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 	 */
 	public IRuntimeClasspathEntry[] resolveClasspath(IRuntimeClasspathEntry[] entries, ILaunchConfiguration configuration) throws CoreException {
 
-		List others = new ArrayList();
-		List resolved = new ArrayList();
-		List projects = new ArrayList();
+		List<IRuntimeClasspathEntry> others = new ArrayList<IRuntimeClasspathEntry>();
+		List<IRuntimeClasspathEntry> resolved = new ArrayList<IRuntimeClasspathEntry>();
+		List<IProject> projects = new ArrayList<IProject>();
 
 		// used for duplicate removal
-		Set allEntries = new HashSet();
+		Set<String> allProjectArchiveEntries = new HashSet<String>();
 
 		// looks like we need to let super do it's thing before
 		// we start tinkering with things ourselves
@@ -116,21 +113,23 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 			if (projectArchive != null) {
 				// I think this line here breaks things: (hn3000)
 				// resolved.add(entry);
-				if (!allEntries.contains(projectArchive.toString())) {
+				if (!allProjectArchiveEntries.contains(projectArchive.toString())) {
 					IRuntimeClasspathEntry resolvedEntry = JavaRuntime.newArchiveRuntimeClasspathEntry(projectArchive);
 					resolved.add(resolvedEntry);
-					allEntries.add(projectArchive.toString());
+					allProjectArchiveEntries.add(projectArchive.toString());
 				}
-				allEntries.add(entry.toString());
+				allProjectArchiveEntries.add(entry.toString());
 			} else {
 				others.add(entry);
 			}
 		}
 
+		// used for duplicate removal
+		Set<IPath> allOtherEntries = new HashSet<IPath>();
 		// ... let super do the rest but remove duplicates from the resulting
 		// classpath ...
 		if (others.size() != 0) {
-			IRuntimeClasspathEntry oe[] = (IRuntimeClasspathEntry[]) others.toArray(new IRuntimeClasspathEntry[others.size()]);
+			IRuntimeClasspathEntry oe[] = others.toArray(new IRuntimeClasspathEntry[others.size()]);
 
 			for (int i = 0; i < oe.length; ++i) {
 				IRuntimeClasspathEntry entry = oe[i];
@@ -139,21 +138,21 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 				if (null == loc) {
 					resolved.add(entry);
 				} else {
-					if (!allEntries.contains(loc)) {
+					if (!allOtherEntries.contains(loc)) {
 						String lastSegment = loc.lastSegment();
 						if (lastSegment != null && !isProjectJar(lastSegment, projects)) {
 							resolved.add(entry);
-							allEntries.add(loc);
+							allOtherEntries.add(loc);
 						}
 					}
 				}
 			}
 		}
-		result = (IRuntimeClasspathEntry[]) resolved.toArray(new IRuntimeClasspathEntry[resolved.size()]);
+		result = resolved.toArray(new IRuntimeClasspathEntry[resolved.size()]);
 		// sort classpath
-		ArrayList sortedEntries = new ArrayList();
-		ArrayList jars = new ArrayList();
-		ArrayList appleJars = new ArrayList();
+		ArrayList<IRuntimeClasspathEntry> sortedEntries = new ArrayList<IRuntimeClasspathEntry>();
+		ArrayList<IRuntimeClasspathEntry> jars = new ArrayList<IRuntimeClasspathEntry>();
+		ArrayList<IRuntimeClasspathEntry> appleJars = new ArrayList<IRuntimeClasspathEntry>();
 		IRuntimeClasspathEntry woa = null;
 		for (int i = 0; i < result.length; i++) {
 			IRuntimeClasspathEntry runtimeClasspathEntry = result[i];
@@ -174,7 +173,7 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 		if (woa != null) {
 			sortedEntries.add(woa);
 		}
-		result = (IRuntimeClasspathEntry[]) sortedEntries.toArray(new IRuntimeClasspathEntry[sortedEntries.size()]);
+		result = sortedEntries.toArray(new IRuntimeClasspathEntry[sortedEntries.size()]);
 		return result;
 	}
 
@@ -213,7 +212,7 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 	}
 
 	private boolean isProjectJar(String lastSegment, List projects) {
-        String lower = lastSegment.toLowerCase();
+		String lower = lastSegment.toLowerCase();
 		for (int i = 0; i < projects.size(); i++) {
 			IProject project = (IProject) projects.get(i);
 			if (lower.startsWith((project.getName() + ".jar").toLowerCase())) {
@@ -226,8 +225,8 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 	IPath getWOJavaArchive(IRuntimeClasspathEntry entry) throws CoreException {
 		if (IRuntimeClasspathEntry.PROJECT == entry.getType()) {
 			IProject project = (IProject) entry.getResource();
-			JavaProject javaProject = (JavaProject) JavaCore.create(project).getAdapter(JavaProject.class);
-			return javaProject.getWOJavaArchive();
+			IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
+			return projectAdapter.getWOJavaArchive();
 		}
 		return null;
 	}
