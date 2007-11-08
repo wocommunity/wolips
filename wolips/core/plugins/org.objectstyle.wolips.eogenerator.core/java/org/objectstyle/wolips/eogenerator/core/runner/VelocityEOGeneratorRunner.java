@@ -144,7 +144,8 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 							throw new IOException("Unable to make superclass folder '" + superclassFolder + "'.");
 						}
 					}
-					VelocityEOGeneratorRunner.writeTemplate(velocityEngine, context, "_Entity.java", superclassFile);
+					String superclassTemplateName = eogeneratorModel.getJavaTemplate("_Entity.java");
+					VelocityEOGeneratorRunner.writeTemplate(velocityEngine, context, superclassTemplateName, superclassFile);
 
 					File subclassFolder = subclassFile.getParentFile();
 					if (!subclassFolder.exists()) {
@@ -153,7 +154,8 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 						}
 					}
 					if (!subclassFile.exists()) {
-						VelocityEOGeneratorRunner.writeTemplate(velocityEngine, context, "Entity.java", subclassFile);
+						String subclassTemplateName = eogeneratorModel.getSubclassJavaTemplate("Entity.java");
+						VelocityEOGeneratorRunner.writeTemplate(velocityEngine, context, subclassTemplateName, subclassFile);
 					}
 				}
 			}
