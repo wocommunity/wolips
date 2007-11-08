@@ -1,14 +1,17 @@
 package org.objectstyle.wolips.eogenerator.core.runner;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.security.MessageDigest;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -171,8 +174,8 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			}
 		}
 
+		boolean templateChanged = true;
 		if (!outputFile.exists()) {
-			System.out.println("EOGenerator.writeTemplate: writing the first time ...");
 			FileWriter newFileWriter = new FileWriter(outputFile);
 			BufferedWriter newFileBufferedWriter = new BufferedWriter(newFileWriter);
 			try {
@@ -188,37 +191,43 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			} finally {
 				newFileContentsWriter.close();
 			}
+			
 			byte[] newFileContents = newFileContentsStream.toByteArray();
-//			for (int i = 0; i < newFileContents.length; i++) {
-//				System.out.println("EOGenerator.writeTemplate: " + i + ": " + (char) newFileContents[i]);
-//			}
+			if (outputFile.exists()) {
+				FileInputStream fis = new FileInputStream(outputFile);
+				int bytesRemaining = (int) outputFile.length();
+				if (bytesRemaining == newFileContents.length) {
+					byte[] oldFileContents;
+					try {
+						ByteArrayOutputStream bos = new ByteArrayOutputStream((int) outputFile.length());
+						byte[] buf = new byte[4096];
+						while (bytesRemaining > 0) {
+							int bytesRead = fis.read(buf, 0, Math.min(buf.length, bytesRemaining));
+							bos.write(buf, 0, bytesRead);
+							bytesRemaining -= bytesRead;
+						}
+						oldFileContents = bos.toByteArray();
+					} finally {
+						fis.close();
+					}
+					
+					MessageDigest md5 = MessageDigest.getInstance("MD5");
+					byte[] oldMD5 = md5.digest(oldFileContents);
+					md5.reset();
+					byte[] newMD5 = md5.digest(newFileContents);
+					md5.reset();
 
-			/*
-			MessageDigest md5 = MessageDigest.getInstance("MD5");
-			byte[] newFileDigest = md5.digest(newFileContents);
-
-			md5.reset();
-			FileInputStream existingFileStream = new FileInputStream(outputFile);
-			try {
-				System.out.println("EOGenerator.writeTemplate: existing = " + outputFile.length());
-				byte[] buffer = new byte[2048];
-				while (existingFileStream.available() > 0) {
-					int bytesRead = existingFileStream.read(buffer);
-					md5.digest(buffer, 0, bytesRead);
-					//System.out.println("EOGenerator.writeTemplate: " + bytesRead);
+					if (oldMD5.length == newMD5.length) {
+						templateChanged = false;
+						for (int i = 0; !templateChanged && i < oldMD5.length; i++) {
+							if (oldMD5[i] != newMD5[i]) {
+								templateChanged = true;
+							}
+						}
+					}
 				}
-			} finally {
-				existingFileStream.close();
 			}
-			byte[] existingFileDigest = md5.digest();
 
-			boolean templateChanged = false;
-			for (int i = 0; !templateChanged && i < existingFileDigest.length; i++) {
-				System.out.println("EOGenerator.writeTemplate: " + i + "=" + newFileDigest[i] + "," + existingFileDigest[i]);
-				templateChanged = (newFileDigest[i] != existingFileDigest[i]);
-			}
-			*/
-			boolean templateChanged = true;
 			if (templateChanged) {
 				FileOutputStream newFileStream = new FileOutputStream(outputFile);
 				BufferedOutputStream newFileBufferedStream = new BufferedOutputStream(newFileStream);
