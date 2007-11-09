@@ -1,6 +1,5 @@
 package org.objectstyle.wolips.eogenerator.core.runner;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -26,6 +25,7 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.RuntimeServices;
 import org.apache.velocity.runtime.log.LogSystem;
+import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
 import org.objectstyle.wolips.eogenerator.core.Activator;
 import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel;
 import org.objectstyle.wolips.eogenerator.core.model.EOModelReference;
@@ -61,7 +61,8 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			templatePaths.append(new File(templatePath).getAbsolutePath());
 		}
 		velocityEngine.setProperty("resource.loader", "file,wolips");
-		velocityEngine.setProperty("file.resource.loader", templatePaths.toString());
+		velocityEngine.setProperty("file.resource.loader.class", FileResourceLoader.class.getName());
+		velocityEngine.setProperty("file.resource.loader.path", templatePaths.toString());
 		velocityEngine.setProperty("wolips.resource.loader.class", ResourceLoader.class.getName());
 		velocityEngine.setProperty("wolips.resource.loader.bundle", Activator.getDefault().getBundle());
 		// velocityEngine.setProperty("class.resource.loader.class",
@@ -166,7 +167,6 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 	}
 
 	public static void writeTemplate(VelocityEngine engine, VelocityContext context, String templateName, File outputFile) throws ResourceNotFoundException, ParseErrorException, MethodInvocationException, Exception {
-		System.out.println("VelocityEOGeneratorRunner.writeTemplate: " + outputFile.getCanonicalFile());
 		Template template = engine.getTemplate(templateName);
 		if (!outputFile.getParentFile().exists()) {
 			if (!outputFile.getParentFile().mkdirs()) {
