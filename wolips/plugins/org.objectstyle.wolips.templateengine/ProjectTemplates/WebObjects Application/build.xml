@@ -219,20 +219,35 @@
 
    </target> 
 
-  <target name = "compile" depends = "setProps,init.build" >
-    <mkdir dir = "bin"/>
-    <javac srcdir = "Sources" destdir = "bin">
-      <classpath>
-        <fileset dir="${wo.dir.user.home.library.frameworks}" includesfile = "woproject/ant.frameworks.user.home">
-          <include name = "**/*.jar"/>
-        </fileset>
-        <fileset dir="${wo.wolocalroot}" includesfile = "woproject/ant.frameworks.wo.wolocalroot">
-          <include name = "**/*.jar"/>
-        </fileset>
-        <fileset dir="${wo.wosystemroot}" includesfile = "woproject/ant.frameworks.wo.wosystemroot">
-          <include name = "**/*.jar"/>
-        </fileset>
-      </classpath>
-    </javac>
-  </target>
+	<target name = "compile" depends = "setProps,init.build" >
+		<taskdef name="wocompile" classname="org.objectstyle.woproject.ant.WOCompile"/>
+		<mkdir dir = "bin"/>
+		<wocompile srcdir = "Sources" destdir = "bin">
+			<frameworks root="${wo.dir.user.home.library.frameworks}">
+				<patternset>
+					<includesfile name="woproject/ant.frameworks.user.home"/>
+				</patternset>
+			</frameworks>
+			<frameworks root="${wo.wolocalroot}">
+				<patternset>
+					<includesfile name="woproject/ant.frameworks.wo.wolocalroot"/>
+				</patternset>
+			</frameworks>
+			<frameworks root="${wo.wosystemroot}">
+				<patternset>
+					<includesfile name="woproject/ant.frameworks.wo.wosystemroot"/>
+				</patternset>
+			</frameworks>
+			<classpath>
+				<fileset dir="${wo.wolocalroot}">
+					<patternset>
+						<includesfile name="woproject/ant.frameworks.wo.wolocalroot"/>
+					</patternset>
+				</fileset>
+				<fileset dir="Libraries">
+					<filename name="**/*.jar" />
+				</fileset>
+			</classpath>
+		</wocompile>
+	</target>
 </project>
