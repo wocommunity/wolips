@@ -1,6 +1,8 @@
-// DO NOT EDIT TEST.  Make changes to ${entity.classNameWithoutPackage}.java instead.
-package ${entity.packageName};
+// DO NOT EDIT.  Make changes to ${entity.classNameWithoutPackage}.java instead.
+#if ($entity.packageName)
+package $entity.packageName;
 
+#end
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
