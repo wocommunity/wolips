@@ -15,6 +15,7 @@ import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.RuntimeServices;
 import org.apache.velocity.runtime.log.LogSystem;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
@@ -37,7 +38,6 @@ public class EOModelDocGenerator {
 		velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, org.apache.velocity.runtime.log.NullLogSystem.class.getName());
 		// velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
 		// ConsoleLogger.class.getName());
-		velocityEngine.setProperty("resource.loader", "file,class");
 		StringBuffer templatePaths = new StringBuffer();
 		templatePaths.append(".");
 		if (templatePath != null) {
@@ -45,7 +45,8 @@ public class EOModelDocGenerator {
 			templatePaths.append(templatePath.getAbsolutePath());
 		}
 		velocityEngine.setProperty("resource.loader", "file,class");
-		velocityEngine.setProperty("file.resource.loader", templatePaths.toString());
+		velocityEngine.setProperty("file.resource.loader.class", FileResourceLoader.class.getName());
+		velocityEngine.setProperty("file.resource.loader.path", templatePaths.toString());
 		velocityEngine.setProperty("class.resource.loader.class", ClasspathResourceLoader.class.getName());
 
 		velocityEngine.init();
