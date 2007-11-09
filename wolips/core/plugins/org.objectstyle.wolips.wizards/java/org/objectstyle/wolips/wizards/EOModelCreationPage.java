@@ -67,6 +67,8 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -110,6 +112,16 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 		this.setDescription(Messages.getString("EOModelCreationPage.description"));
 	}
 
+	@Override
+	protected void createAdvancedControls(Composite parent) {
+		// super.createAdvancedControls(parent);
+	}
+
+	@Override
+	protected IStatus validateLinkedResource() {
+		return Status.OK_STATUS;
+	}
+
 	/**
 	 * (non-Javadoc) Method declared on IDialogPage.
 	 */
@@ -121,19 +133,23 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 		// IReadmeConstants.CREATION_WIZARD_PAGE_CONTEXT);
 		// GridData data = (GridData) composite.getLayoutData();
 		this.setFileName(Messages.getString("EOModelCreationPage.newEOModel.defaultName"));
+
+		Group modelConfigurationGroup = new Group(composite, SWT.NONE);
+		modelConfigurationGroup.setLayout(new GridLayout());
+		modelConfigurationGroup.setText(Messages.getString("EOModelCreationPage.creationOptions.title"));
+		modelConfigurationGroup.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
+
+		createAvailableAdaptorButtons(modelConfigurationGroup);
+		
 		new Label(composite, SWT.NONE); // vertical spacer
-		// section generation group
 
-		Group group = new Group(composite, SWT.NONE);
-		group.setLayout(new GridLayout());
-		group.setText(Messages.getString("EOModelCreationPage.creationOptions.title"));
-		group.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
+		Group supportingFilesGroup = new Group(composite, SWT.NONE);
+		supportingFilesGroup.setLayout(new GridLayout());
+		supportingFilesGroup.setText("Supporting Files");
+		supportingFilesGroup.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
 
-		createAvailableAdaptorButtons(group);
-		new Label(composite, SWT.NONE); // vertical spacer
-
-		_createEOGeneratorFileButton = new Button(composite, SWT.CHECK);
-		_createEOGeneratorFileButton.setText("Create EOGenerator File?");
+		_createEOGeneratorFileButton = new Button(supportingFilesGroup, SWT.CHECK);
+		_createEOGeneratorFileButton.setText("Use EOGenerator");
 		_createEOGeneratorFileButton.setSelection(true);
 
 		setPageComplete(validatePage());
