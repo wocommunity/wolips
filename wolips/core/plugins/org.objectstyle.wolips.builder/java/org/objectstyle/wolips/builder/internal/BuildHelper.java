@@ -233,31 +233,21 @@ public abstract class BuildHelper extends ResourceUtilities implements IResource
 				throw new OperationCanceledException("(deleting a null path wipes the workspace)");
 			}
 			IResource res = getWorkspaceRoot().findMember(_path);
-			if (null != res) {
+			if (res != null) {
 				res.refreshLocal(IResource.DEPTH_ONE, m);
 			}
 			IFile theFile = getWorkspaceRoot().getFile(_path);
 			IContainer theFolder = getWorkspaceRoot().getFolder(_path);
-			if (null != theFile) {
-				_getLogger().debug(_msgPrefix + " delete " + _path);
-				m.subTask("delete " + _path);
-				theFile.delete(true, true, null);
-			} else if ((null != theFolder) && (theFolder instanceof IFolder)) {
+			if (theFolder instanceof IFolder && theFolder.exists()) {
 				_getLogger().debug(_msgPrefix + " delete " + _path);
 				m.subTask("delete " + _path);
 				((IFolder) theFolder).delete(true, true, null);
 			}
-			/*
-			 * if (theFile.exists()) { if (theFile.isFile()) {
-			 * //_getLogger().debug (_msgPrefix+" delete "+_path);
-			 * theFile.delete(); } else if (theFile.isDirectory()) {
-			 * //_getLogger().debug ("*** not deleting folder: "+theFile); } }
-			 */
-			/*
-			 * if ((null != res) && res.exists()) { //_getLogger().debug
-			 * (_msgPrefix+" delete "+_path); res.delete (true, m); } else {
-			 * //_getLogger().debug (_msgPrefix+" delete (not) "+_path); }
-			 */
+			else if (theFile != null && theFile.exists()) {
+				_getLogger().debug(_msgPrefix + " delete " + _path);
+				m.subTask("delete " + _path);
+				theFile.delete(true, true, null);
+			}
 		}
 
 		IPath _path;
