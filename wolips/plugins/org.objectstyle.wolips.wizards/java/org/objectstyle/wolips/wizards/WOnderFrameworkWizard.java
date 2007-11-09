@@ -55,26 +55,21 @@
  */
 package org.objectstyle.wolips.wizards;
 
-import java.io.File;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.objectstyle.wolips.core.resources.internal.types.project.ProjectPatternsets;
-import org.objectstyle.wolips.templateengine.TemplateDefinition;
-import org.objectstyle.wolips.templateengine.TemplateEngine;
-import org.objectstyle.wolips.variables.VariablesPlugin;
+
 
 /**
  * @author ak
+ * @author mschrag
  */
-public class WOnderFrameworkWizard extends AbstractWonderProjectWizard {
-
+public class WOnderFrameworkWizard extends NewWOProjectWizard {
 	public WOnderFrameworkWizard() {
-		super();
+		super("Wonder Framework");
 	}
 
 	@Override
-	protected WizardType getWizardType(){
+	protected WizardType getWizardType() {
 		return WizardType.WONDER_FRAMEWORK_WIZARD;
 	}
 
@@ -84,24 +79,6 @@ public class WOnderFrameworkWizard extends AbstractWonderProjectWizard {
 
 	@Override
 	protected void _createProject(IProject project, IProgressMonitor progressMonitor) throws Exception {
-		String projectName = project.getName();
-		String path = project.getLocation().toOSString();
-		prepare(path);
-		TemplateEngine templateEngine = new TemplateEngine();
-		templateEngine.init();
-		String cptype = "";
-		if ("true".equals(VariablesPlugin.getDefault().getProperty("wonder.useprojects"))) {
-			cptype = ".usingprojects";
-		}
-		templateEngine.getWolipsContext().setProjectName(projectName);
-		templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
-		templateEngine.addTemplate(new TemplateDefinition("wonderframework/.classpath" + cptype + ".vm", path, ".classpath", ".classpath"));
-		templateEngine.addTemplate(new TemplateDefinition("wonderframework/.project.vm", path, ".project", ".project"));
-		templateEngine.addTemplate(new TemplateDefinition("wonderframework/build.xml.vm", path, "build.xml", "build.xml"));
-		templateEngine.addTemplate(new TemplateDefinition("wonderframework/build.properties.vm", path, "build.properties", "build.properties"));
-		templateEngine.addTemplate(new TemplateDefinition("wonderframework/CustomInfo.plist.vm", path, "CustomInfo.plist", "CustomInfo.plist"));
-		templateEngine.addTemplate(new TemplateDefinition("wonderframework/Properties.vm", path + File.separator + "Resources", "Properties", "Properties"));
-		templateEngine.run(progressMonitor);
-
+		// DO NOTHING
 	}
 }

@@ -55,26 +55,21 @@
  */
 package org.objectstyle.wolips.wizards;
 
-import java.io.File;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.objectstyle.wolips.core.resources.internal.types.project.ProjectPatternsets;
-import org.objectstyle.wolips.templateengine.TemplateDefinition;
-import org.objectstyle.wolips.templateengine.TemplateEngine;
 
 /**
  * @author mnolte
  * @author uli
+ * @author mschrag
  */
-public class WOFrameworkWizard extends AbstractProjectWizard {
-
+public class WOFrameworkWizard extends NewWOProjectWizard {
 	public WOFrameworkWizard() {
-		super();
+		super("WebObjects Framework");
 	}
 
 	@Override
-	protected WizardType getWizardType(){
+	protected WizardType getWizardType() {
 		return WizardType.WO_FRAMEWORK_WIZARD;
 	}
 
@@ -84,44 +79,6 @@ public class WOFrameworkWizard extends AbstractProjectWizard {
 
 	@Override
 	protected void _createProject(IProject project, IProgressMonitor progressMonitor) throws Exception {
-		String projectName = project.getName();
-		String path = project.getLocation().toOSString();
-		File src = new File(path + File.separator + "src");
-		src.mkdirs();
-		File bin = new File(path + File.separator + "bin");
-		bin.mkdirs();
-		// File xcode = new File(path + File.separator + projectName
-		// + ".xcode");
-		// xcode.mkdirs();
-		// File xcodeproj = new File(path + File.separator + projectName
-		// + ".xcodeproj");
-		// xcodeproj.mkdirs();
-		File ant = new File(path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME);
-		ant.mkdirs();
-		// project.close(nullProgressMonitor);
-		TemplateEngine templateEngine = new TemplateEngine();
-		templateEngine.init();
-		templateEngine.getWolipsContext().setProjectName(projectName);
-		templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
-		templateEngine.addTemplate(new TemplateDefinition("woframework/.classpath.vm", path, ".classpath", ".classpath"));
-		templateEngine.addTemplate(new TemplateDefinition("woframework/.project.vm", path, ".project", ".project"));
-		templateEngine.addTemplate(new TemplateDefinition("woframework/build.xml.vm", path, "build.xml", "build.xml"));
-		templateEngine.addTemplate(new TemplateDefinition("woframework/build.properties.vm", path, "build.properties", "build.properties"));
-		templateEngine.addTemplate(new TemplateDefinition("woframework/CustomInfo.plist.vm", path, "CustomInfo.plist", "CustomInfo.plist"));
-		templateEngine.addTemplate(new TemplateDefinition("woframework/Makefile.vm", path, "Makefile", "Makefile"));
-		templateEngine.addTemplate(new TemplateDefinition("woframework/Makefile.postamble.vm", path, "Makefile.postamble", "Makefile.postamble"));
-		templateEngine.addTemplate(new TemplateDefinition("woframework/Makefile.preamble.vm", path, "Makefile.preamble", "Makefile.preamble"));
-		templateEngine.addTemplate(new TemplateDefinition("woframework/PB.project.vm", path, "PB.project", "PB.project"));
-		templateEngine.addTemplate(new TemplateDefinition("woframework/Properties.vm", path, "Properties", "Properties"));
-		// templateEngine.addTemplate(new TemplateDefinition(
-		// "woframework/project.pbxproj.vm", path + File.separator
-		// + projectName + ".xcode", "project.pbxproj",
-		// "project.pbxproj"));
-
-		createWebServicesSupport(project, templateEngine);
-
-		templateEngine.run(progressMonitor);
-
+		// DO NOTHING
 	}
-
 }

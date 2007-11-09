@@ -70,7 +70,7 @@ public class WOApplicationWizard extends NewWOProjectWizard {
 
 	@Override
 	protected WizardType getWizardType() {
-		return WizardType.WONDER_APPLICATION_WIZARD;
+		return WizardType.WO_APPLICATION_WIZARD;
 	}
 
 	public String getWindowTitle() {
