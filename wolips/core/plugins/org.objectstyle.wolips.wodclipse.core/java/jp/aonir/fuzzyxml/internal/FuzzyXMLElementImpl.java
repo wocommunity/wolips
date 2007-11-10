@@ -493,7 +493,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
         }
       }
       
-      boolean forbiddenSelfClosing = ("a".equalsIgnoreCase(tagName) || "div".equalsIgnoreCase(tagName));
+      boolean forbiddenSelfClosing = ("a".equalsIgnoreCase(tagName) || "div".equalsIgnoreCase(tagName) || "script".equalsIgnoreCase(tagName));
       FuzzyXMLNode[] children = getChildren();
       if (children.length == 0 && !forbiddenSelfClosing) {
         if (renderSurroundingTags) {
