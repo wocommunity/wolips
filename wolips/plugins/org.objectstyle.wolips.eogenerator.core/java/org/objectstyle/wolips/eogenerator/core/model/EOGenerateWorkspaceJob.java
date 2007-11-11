@@ -94,7 +94,7 @@ public class EOGenerateWorkspaceJob extends WorkspaceJob {
 
 					IEOGeneratorRunner runner;
 					String eogeneratorPath = Preferences.getEOGeneratorPath();
-					if (eogeneratorPath == null || eogeneratorPath.length() == 0) {
+					if (eogeneratorPath == null || eogeneratorPath.length() == 0 || "velocity".equalsIgnoreCase(eogeneratorPath)) {
 						runner = new VelocityEOGeneratorRunner();
 					}
 					else {
