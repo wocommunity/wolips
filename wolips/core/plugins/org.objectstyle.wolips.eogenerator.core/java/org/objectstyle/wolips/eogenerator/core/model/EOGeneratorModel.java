@@ -53,6 +53,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -177,7 +178,7 @@ public class EOGeneratorModel {
 	}
 
 	public void writeToFile(IFile file, IProgressMonitor monitor) throws CoreException, IOException {
-		String eogenFileContents = writeToString(Preferences.getEOGeneratorPath(), Preferences.getEOGeneratorTemplateDir(), Preferences.getEOGeneratorJavaTemplate(), Preferences.getEOGeneratorSubclassJavaTemplate());
+		String eogenFileContents = writeToString(null, Preferences.getEOGeneratorPath(), Preferences.getEOGeneratorTemplateDir(), Preferences.getEOGeneratorJavaTemplate(), Preferences.getEOGeneratorSubclassJavaTemplate());
 		InputStream stream = new ByteArrayInputStream(eogenFileContents.getBytes("UTF-8"));
 		if (file.exists()) {
 			file.setContents(stream, true, true, monitor);
@@ -188,21 +189,39 @@ public class EOGeneratorModel {
 		setDirty(false);
 	}
 
-	public String writeToString(String _defaultEOGeneratorPath, String _defaultTemplateDir, String _defaultJavaTemplate, String _defaultSubclassJavaTemplate) {
+	protected static String toFullPath(File workingDirectory, String path) {
+		String fullPath;
+		if (path == null) {
+			fullPath = null;
+		} else if (workingDirectory == null) {
+			fullPath = path;
+		} else {
+			File f = new File(path);
+			if (f.isAbsolute()) {
+				fullPath = path;
+			} else {
+				f = new File(workingDirectory, path);
+				fullPath = f.getAbsolutePath();
+			}
+		}
+		return fullPath;
+	}
+
+	public String writeToString(File workingDirectory, String defaultEOGeneratorPath, String defaultTemplateDir, String defaultJavaTemplate, String defaultSubclassJavaTemplate) {
 		StringBuffer sb = new StringBuffer();
 
-		sb.append(escape(getEOGeneratorPath(_defaultEOGeneratorPath), false));
+		sb.append(escape(getEOGeneratorPath(defaultEOGeneratorPath), false));
 
-		append(sb, "-destination", _destination);
+		append(sb, "-destination", EOGeneratorModel.toFullPath(workingDirectory, _destination));
 		append(sb, "-filenameTemplate", _filenameTemplate);
 		append(sb, "-java", _java);
 		append(sb, "-javaclient", _javaClient);
-		append(sb, "-javaTemplate", getJavaTemplate(_defaultJavaTemplate));
+		append(sb, "-javaTemplate", getJavaTemplate(defaultJavaTemplate));
 
 		Iterator modelsIter = _models.iterator();
 		while (modelsIter.hasNext()) {
 			EOModelReference model = (EOModelReference) modelsIter.next();
-			append(sb, "-model", model.getPath(_project));
+			append(sb, "-model", EOGeneratorModel.toFullPath(workingDirectory, model.getPath(_project)));
 		}
 
 		append(sb, "-packagedirs", _packageDirs);
@@ -211,12 +230,12 @@ public class EOGeneratorModel {
 		Iterator refModelsIter = _refModels.iterator();
 		while (refModelsIter.hasNext()) {
 			EOModelReference refModel = (EOModelReference) refModelsIter.next();
-			append(sb, "-refmodel", refModel.getPath(_project));
+			append(sb, "-refmodel", EOGeneratorModel.toFullPath(workingDirectory, refModel.getPath(_project)));
 		}
 
-		append(sb, "-subclassDestination", _subclassDestination);
-		append(sb, "-subclassJavaTemplate", getSubclassJavaTemplate(_defaultSubclassJavaTemplate));
-		append(sb, "-templatedir", getTemplateDir(_defaultTemplateDir));
+		append(sb, "-subclassDestination", EOGeneratorModel.toFullPath(workingDirectory, _subclassDestination));
+		append(sb, "-subclassJavaTemplate", getSubclassJavaTemplate(defaultSubclassJavaTemplate));
+		append(sb, "-templatedir", EOGeneratorModel.toFullPath(workingDirectory, getTemplateDir(defaultTemplateDir)));
 		append(sb, "-verbose", _verbose);
 
 		Iterator definesIter = _defines.iterator();
@@ -230,12 +249,12 @@ public class EOGeneratorModel {
 		return sb.toString();
 	}
 
-	public void readFromString(String _str) throws ParseException {
+	public void readFromString(String str) throws ParseException {
 		_models.clear();
 		_refModels.clear();
 		_defines.clear();
 		_customSettings.clear();
-		CommandLineTokenizer tokenizer = new CommandLineTokenizer(_str);
+		CommandLineTokenizer tokenizer = new CommandLineTokenizer(str);
 		while (tokenizer.hasMoreTokens()) {
 			String token = tokenizer.nextToken();
 			if (_eogeneratorPath == null && !token.startsWith("-")) {
@@ -300,29 +319,29 @@ public class EOGeneratorModel {
 		}
 	}
 
-	protected String escape(String _value, boolean _quotes) {
-		String value;
-		if (_value == null) {
-			value = null;
-		} else if (_value.indexOf(' ') == -1 && _value.trim().length() > 0) {
-			value = _value;
-		} else if (_quotes) {
+	protected String escape(String value, boolean quotes) {
+		String escapedValue;
+		if (value == null) {
+			escapedValue = null;
+		} else if (value.indexOf(' ') == -1 && value.trim().length() > 0) {
+			escapedValue = value;
+		} else if (quotes) {
 			StringBuffer valueBuffer = new StringBuffer();
 			valueBuffer.append("\"");
-			valueBuffer.append(_value);
+			valueBuffer.append(value);
 			valueBuffer.append("\"");
-			value = valueBuffer.toString();
+			escapedValue = valueBuffer.toString();
 		} else {
-			value = _value.replaceAll(" ", "\\ ");
+			escapedValue = value.replaceAll(" ", "\\ ");
 		}
-		return value;
+		return escapedValue;
 	}
 
-	protected String nextTokenValue(String _token, CommandLineTokenizer _tokenizer) throws ParseException {
-		if (!_tokenizer.hasMoreTokens()) {
-			throw new ParseException(_token + " must be followed by a value.", -1);
+	protected String nextTokenValue(String previousToken, CommandLineTokenizer tokenizer) throws ParseException {
+		if (!tokenizer.hasMoreTokens()) {
+			throw new ParseException(previousToken + " must be followed by a value.", -1);
 		}
-		String token = _tokenizer.nextToken();
+		String token = tokenizer.nextToken();
 		return token;
 	}
 
@@ -456,11 +475,11 @@ public class EOGeneratorModel {
 		}
 	}
 
-	protected boolean isNew(String _oldValue, String _newValue) {
+	protected boolean isNew(String oldValue, String newValue) {
 		boolean isNew;
-		if (_oldValue == null && _newValue != null && _newValue.trim().length() > 0) {
+		if (oldValue == null && newValue != null && newValue.trim().length() > 0) {
 			isNew = true;
-		} else if (_oldValue != null && !_oldValue.equals(_newValue)) {
+		} else if (oldValue != null && !oldValue.equals(newValue)) {
 			isNew = true;
 		} else {
 			isNew = false;

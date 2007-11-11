@@ -18,7 +18,7 @@ import org.objectstyle.wolips.preferences.Preferences;
 
 public class ExternalEOGeneratorRunner implements IEOGeneratorRunner {
 	public void generate(EOGeneratorModel eogenModel, StringBuffer results) throws ParseException, IOException, InterruptedException {
-		String eogenFileContents = eogenModel.writeToString(Preferences.getEOGeneratorPath(), Preferences.getEOGeneratorTemplateDir(), Preferences.getEOGeneratorJavaTemplate(), Preferences.getEOGeneratorSubclassJavaTemplate());
+		String eogenFileContents = eogenModel.writeToString(eogenModel.getProject().getLocation().toFile(), Preferences.getEOGeneratorPath(), Preferences.getEOGeneratorTemplateDir(), Preferences.getEOGeneratorJavaTemplate(), Preferences.getEOGeneratorSubclassJavaTemplate());
 		List<String> commandsList = new LinkedList<String>();
 		CommandLineTokenizer tokenizer = new CommandLineTokenizer(eogenFileContents);
 		while (tokenizer.hasMoreTokens()) {
@@ -38,6 +38,7 @@ public class ExternalEOGeneratorRunner implements IEOGeneratorRunner {
 		int outputLines = 0;
 		String line;
 		while ((line = bufferedreader.readLine()) != null) {
+			System.out.println("ExternalEOGeneratorRunner.generate: " + line);
 			results.append(line);
 			results.append('\n');
 			outputLines++;
