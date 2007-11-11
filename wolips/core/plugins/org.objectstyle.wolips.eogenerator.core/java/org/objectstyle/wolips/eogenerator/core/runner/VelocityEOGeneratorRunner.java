@@ -58,7 +58,11 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 		String templatePath = eogeneratorModel.getTemplateDir();
 		if (templatePath != null) {
 			templatePaths.append(",");
-			templatePaths.append(new File(templatePath).getAbsolutePath());
+			File templateFolder = new File(templatePath);
+			if (!templateFolder.isAbsolute()) {
+				templateFolder = new File(eogeneratorModel.getProject().getLocation().toFile(), templatePath);
+			}
+			templatePaths.append(templateFolder.getAbsolutePath());
 		}
 		velocityEngine.setProperty("resource.loader", "file,wolips");
 		velocityEngine.setProperty("file.resource.loader.class", FileResourceLoader.class.getName());
