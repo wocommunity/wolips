@@ -132,7 +132,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 				context.put("entity", entity);
 
 				String classNameWithPackage = entity.getClassName();
-				if (classNameWithPackage != null) {
+				if (classNameWithPackage != null && !"EOGenericRecord".equals(classNameWithPackage) && !"com.webobjects.control.EOGenericRecord".equals(classNameWithPackage)) {
 					String prefixClassNameWithPackage = entity.getPrefixClassName();
 
 					String subclassFilePath = classNameWithPackage.replace('.', '/') + ".java";
