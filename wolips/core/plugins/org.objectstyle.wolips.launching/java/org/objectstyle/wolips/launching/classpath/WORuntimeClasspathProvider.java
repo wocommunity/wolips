@@ -239,8 +239,8 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 	private boolean isFrameworkJar(IRuntimeClasspathEntry runtimeClasspathEntry) {
 		String location = runtimeClasspathEntry.getLocation();
 		if (location != null) {
-			String pattern = ".*?(\\w+)\\.framework" +File.separator + "Resources" +File.separator + "Java" +File.separator + "\\1.jar";
-			if (location.toLowerCase().matches(pattern.toLowerCase())) {
+			String pattern = "(?i).*?/(\\w+)\\.framework/Resources/Java/\\1.jar";
+			if (location.replace('\\', '/').matches(pattern)) {
 				return true;
 			}
 		}
