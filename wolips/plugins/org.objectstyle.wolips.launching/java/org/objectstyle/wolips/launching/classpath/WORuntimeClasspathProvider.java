@@ -60,6 +60,8 @@ import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.StandardClasspathProvider;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.datasets.project.WOLipsCore;
+import org.objectstyle.wolips.variables.VariablesPlugin;
 
 /**
  * @author hn3000
@@ -99,7 +101,7 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 
 		// looks like we need to let super do it's thing before
 		// we start tinkering with things ourselves
-
+		
 		IRuntimeClasspathEntry[] result = super.resolveClasspath(entries, configuration);
 		// resolve WO framework/application projects ourselves, let super do the
 		// rest
@@ -126,8 +128,7 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 
 		// used for duplicate removal
 		Set<IPath> allOtherEntries = new HashSet<IPath>();
-		// ... let super do the rest but remove duplicates from the resulting
-		// classpath ...
+		// remove duplicates from the resulting classpath
 		if (others.size() != 0) {
 			IRuntimeClasspathEntry oe[] = others.toArray(new IRuntimeClasspathEntry[others.size()]);
 
@@ -149,29 +150,40 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 			}
 		}
 		result = resolved.toArray(new IRuntimeClasspathEntry[resolved.size()]);
-		// sort classpath
-		ArrayList<IRuntimeClasspathEntry> sortedEntries = new ArrayList<IRuntimeClasspathEntry>();
-		ArrayList<IRuntimeClasspathEntry> jars = new ArrayList<IRuntimeClasspathEntry>();
+		
+		// sort classpath: project in front, then frameworks, then apple frameworks, then the rest
+		ArrayList<IRuntimeClasspathEntry> otherJars = new ArrayList<IRuntimeClasspathEntry>();
+		ArrayList<IRuntimeClasspathEntry> noAppleJars = new ArrayList<IRuntimeClasspathEntry>();
 		ArrayList<IRuntimeClasspathEntry> appleJars = new ArrayList<IRuntimeClasspathEntry>();
 		IRuntimeClasspathEntry woa = null;
 		for (int i = 0; i < result.length; i++) {
 			IRuntimeClasspathEntry runtimeClasspathEntry = result[i];
+
 			if (isAppleProvided(runtimeClasspathEntry)) {
 				appleJars.add(runtimeClasspathEntry);
+			} else if (isFrameworkJar(runtimeClasspathEntry)) {
+				noAppleJars.add(runtimeClasspathEntry);
+			} else if (isBuildProject(runtimeClasspathEntry)) {
+				noAppleJars.add(runtimeClasspathEntry);
 			} else if (isWoa(runtimeClasspathEntry)) {
 				woa = runtimeClasspathEntry;
 			} else {
-				jars.add(runtimeClasspathEntry);
+				otherJars.add(runtimeClasspathEntry);
 			}
 		}
-		if (jars.size() > 0) {
-			sortedEntries.addAll(jars);
+		
+		ArrayList<IRuntimeClasspathEntry> sortedEntries = new ArrayList<IRuntimeClasspathEntry>();
+		if (woa != null) {
+			sortedEntries.add(woa);
+		}
+		if (noAppleJars.size() > 0) {
+			sortedEntries.addAll(noAppleJars);
 		}
 		if (appleJars.size() > 0) {
 			sortedEntries.addAll(appleJars);
 		}
-		if (woa != null) {
-			sortedEntries.add(woa);
+		if (otherJars.size() > 0) {
+			sortedEntries.addAll(otherJars);
 		}
 		result = sortedEntries.toArray(new IRuntimeClasspathEntry[sortedEntries.size()]);
 		return result;
@@ -180,6 +192,11 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 	private boolean isAppleProvided(IRuntimeClasspathEntry runtimeClasspathEntry) {
 		String location = runtimeClasspathEntry.getLocation();
 		if (location != null) {
+			// check user settings (from wobuild.properties)
+			IPath rootPath = VariablesPlugin.getDefault().getSystemRoot();
+			if(rootPath != null && location.startsWith(rootPath.toString())) {
+				return location.indexOf("JavaVM") < 0;
+			}
 			// check maven path (first french version)
 			if (location.indexOf("webobjects" + File.separator + "apple") > 0) {
 				return true;
@@ -188,9 +205,8 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 			if (location.indexOf("apple" + File.separator + "webobjects") > 0) {
 				return true;
 			}
-			// check mac path
 			if (location.indexOf("System" + File.separator + "Library") > 0) {
-				return true;
+				return location.indexOf("JavaVM") < 0;
 			}
 			// check win path
 			if (location.indexOf("Apple" + File.separator + "Library") > 0) {
@@ -203,8 +219,28 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 	private boolean isWoa(IRuntimeClasspathEntry runtimeClasspathEntry) {
 		String location = runtimeClasspathEntry.getLocation();
 		if (location != null) {
-			// check maven path
 			if (location.indexOf(".woa") > 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isBuildProject(IRuntimeClasspathEntry runtimeClasspathEntry) {
+		String location = runtimeClasspathEntry.getLocation();
+		if (location != null) {
+			if (location.indexOf(File.separator + "build" + File.separator) > 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isFrameworkJar(IRuntimeClasspathEntry runtimeClasspathEntry) {
+		String location = runtimeClasspathEntry.getLocation();
+		if (location != null) {
+			String pattern = ".*?(\\w+)\\.framework" +File.separator + "Resources" +File.separator + "Java" +File.separator + "\\1.jar";
+			if (location.toLowerCase().matches(pattern.toLowerCase())) {
 				return true;
 			}
 		}
