@@ -82,7 +82,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   
 #end
 #end
-#foreach ($relationship in $entity.sortedToManyRelationships)
+#foreach ($relationship in $entity.sortedClassToManyRelationships)
 #if (!$relationship.inherited) 
   public NSArray<${relationship.destination.classNameWithDefault}> ${relationship.name}() {
     return (NSArray<${relationship.destination.classNameWithDefault}>)storedValueForKey("${relationship.name}");
