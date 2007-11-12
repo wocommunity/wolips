@@ -208,6 +208,12 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 	protected void _createProjectFolder(TemplateEngine templateEngine, File baseFolder, File projectFolder, File templateFolder, List<String> templateKeys, IProgressMonitor progressMonitor) throws CoreException {
 		for (File templateChild : templateFolder.listFiles()) {
 			String templateChildName = templateChild.getName();
+			// Skip over files named "__placeholder".  These exist only so
+			// empty folders make it into the plugin.
+			if ("__placeholder".equals(templateChildName)) {
+				continue;
+			}
+			
 			for (String key : templateKeys) {
 				Object value = templateEngine.getPropertyForKey(key);
 				if (value instanceof String) {
