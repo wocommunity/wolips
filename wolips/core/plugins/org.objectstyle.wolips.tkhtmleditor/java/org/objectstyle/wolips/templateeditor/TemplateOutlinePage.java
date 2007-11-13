@@ -127,7 +127,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
     String text = event.text;
     int colonIndex = text.indexOf(':');
     if(colonIndex == -1) {
-    	HTMLPlugin.logError("Is this a problem only on windows? " + text + " colonIndex: " + colonIndex);
+    	//wodeditor active + hit command+s
     	return;
     }
     String command = text.substring(0, colonIndex);
