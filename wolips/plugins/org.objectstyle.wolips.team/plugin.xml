@@ -112,6 +112,10 @@
             type="text"
             extension="wolips">
       </fileTypes>
+      <fileTypes
+            type="text"
+            extension="wotaglib">
+      </fileTypes>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Ignored team file types                                                          -->
