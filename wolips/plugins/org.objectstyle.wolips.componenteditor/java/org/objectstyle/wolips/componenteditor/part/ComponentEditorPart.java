@@ -336,7 +336,11 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 	}
 
 	public IEditorPart getActiveEditor() {
-		return componentEditorTabs[this.getActivePage()].getActiveEmbeddedEditor();
+		int activePage = this.getActivePage();
+		if(activePage == -1) {
+			return null;
+		}
+		return componentEditorTabs[activePage].getActiveEmbeddedEditor();
 	}
 
 	private static class ComponentEditorPartSelectionProvider extends MultiPageSelectionProvider {
