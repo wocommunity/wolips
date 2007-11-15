@@ -259,15 +259,17 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 	}
 
 	IPath getWOJavaArchive(IRuntimeClasspathEntry entry) throws CoreException {
+		IPath woJavaArchivePath = null;
 		if (IRuntimeClasspathEntry.PROJECT == entry.getType()) {
 			IProject project = (IProject) entry.getResource();
-			System.out.println("WORuntimeClasspathProvider.getWOJavaArchive: Project for " + entry + " => " + project);
 			IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
-			System.out.println("WORuntimeClasspathProvider.getWOJavaArchive:   projectAdaptor for " + project + " => " + projectAdapter);
-			IPath woJavaArchivePath = projectAdapter.getWOJavaArchive();
-			System.out.println("WORuntimeClasspathProvider.getWOJavaArchive:   woJavaArchivePath = " + woJavaArchivePath);
-			return woJavaArchivePath;
+			if (projectAdapter != null) {
+				woJavaArchivePath = projectAdapter.getWOJavaArchive();
+			}
+			else {
+				woJavaArchivePath = null;
+			}
 		}
-		return null;
+		return woJavaArchivePath;
 	}
 }
