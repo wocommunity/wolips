@@ -62,10 +62,10 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.objectstyle.wolips.baseforuiplugins.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
-import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class GenerateSQLAction implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
 	private IWorkbenchWindow _window;

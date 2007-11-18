@@ -64,11 +64,11 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.objectstyle.wolips.baseforuiplugins.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
-import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public abstract class AbstractNewObjectAction<T extends EOModelObject, U extends EOModelObject> extends AbstractObjectAction {
 	private Class<T> _parentType;

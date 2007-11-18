@@ -96,6 +96,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributo
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.baseforplugins.util.URLUtils;
+import org.objectstyle.wolips.baseforuiplugins.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.EOModelerPerspectiveFactory;
 import org.objectstyle.wolips.eomodeler.Messages;
@@ -121,7 +122,6 @@ import org.objectstyle.wolips.eomodeler.outline.EOModelContentOutlinePage;
 import org.objectstyle.wolips.eomodeler.preferences.PreferenceConstants;
 import org.objectstyle.wolips.eomodeler.utils.AbstractAddRemoveChangeRefresher;
 import org.objectstyle.wolips.eomodeler.utils.EclipseFileUtils;
-import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class EOModelEditor extends MultiPageEditorPart implements IResourceChangeListener, ITabbedPropertySheetPageContributor, ISelectionProvider, IEOModelEditor {
 	public static final String EOMODEL_EDITOR_ID = "org.objectstyle.wolips.eomodeler.editors.EOModelEditor";

@@ -69,15 +69,15 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
+import org.objectstyle.wolips.baseforplugins.util.StringUtils;
+import org.objectstyle.wolips.baseforuiplugins.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOJoin;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
-import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
 import org.objectstyle.wolips.eomodeler.editors.relationship.JoinsTableEditor;
-import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class CreateRelationshipDialog extends Dialog implements SelectionListener {
 	private EOModelGroup _modelGroup;

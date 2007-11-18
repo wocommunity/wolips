@@ -61,6 +61,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
+import org.objectstyle.wolips.baseforuiplugins.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
@@ -68,7 +69,6 @@ import org.objectstyle.wolips.eomodeler.core.model.IEOEntityRelative;
 import org.objectstyle.wolips.eomodeler.core.model.InheritanceType;
 import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.editors.entity.SubclassEntityDialog;
-import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class SubclassEntityAction implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
 	private EOEntity _entity;

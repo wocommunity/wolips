@@ -67,6 +67,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
+import org.objectstyle.wolips.baseforuiplugins.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
@@ -74,7 +75,6 @@ import org.objectstyle.wolips.eomodeler.core.model.IEOClassLoaderFactory;
 import org.objectstyle.wolips.eomodeler.core.sql.IEOSQLReverseEngineer;
 import org.objectstyle.wolips.eomodeler.core.sql.IEOSQLReverseEngineerFactory;
 import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
-import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringLabelProvider;
 
 public class ReverseEngineerAction implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {

@@ -31,13 +31,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.objectstyle.wolips.baseforplugins.util.StringUtils;
+import org.objectstyle.wolips.baseforuiplugins.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.IEOClassLoaderFactory;
 import org.objectstyle.wolips.eomodeler.core.sql.IEOSQLGenerator;
 import org.objectstyle.wolips.eomodeler.core.sql.IEOSQLGeneratorFactory;
-import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
-import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class GenerateSQLDialog extends Dialog {
 	private Button myDropDatabaseButton;
