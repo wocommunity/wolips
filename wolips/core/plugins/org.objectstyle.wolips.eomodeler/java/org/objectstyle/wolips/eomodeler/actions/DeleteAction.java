@@ -65,12 +65,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
+import org.objectstyle.wolips.baseforuiplugins.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelReferenceFailure;
 import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
-import org.objectstyle.wolips.eomodeler.utils.ErrorUtils;
 
 public class DeleteAction extends Action implements IObjectActionDelegate {
 	private ISelection mySelection;

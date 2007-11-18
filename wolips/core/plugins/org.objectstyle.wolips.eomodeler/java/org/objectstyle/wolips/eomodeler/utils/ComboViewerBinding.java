@@ -62,6 +62,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
+import org.objectstyle.wolips.baseforuiplugins.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.core.kvc.CachingKeyPath;
 import org.objectstyle.wolips.eomodeler.core.kvc.IKey;
 import org.objectstyle.wolips.eomodeler.core.utils.IPropertyChangeSource;

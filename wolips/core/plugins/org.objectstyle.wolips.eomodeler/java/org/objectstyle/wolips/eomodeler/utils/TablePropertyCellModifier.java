@@ -60,6 +60,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TableItem;
+import org.objectstyle.wolips.baseforuiplugins.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.core.kvc.CachingKeyPath;
 import org.objectstyle.wolips.eomodeler.core.kvc.Key;
 import org.objectstyle.wolips.eomodeler.core.kvc.KeyPath;
