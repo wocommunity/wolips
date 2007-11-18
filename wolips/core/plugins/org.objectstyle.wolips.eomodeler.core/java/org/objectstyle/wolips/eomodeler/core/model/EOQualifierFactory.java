@@ -78,8 +78,8 @@ import org.objectstyle.cayenne.exp.parser.ASTPath;
 import org.objectstyle.cayenne.exp.parser.AggregateConditionNode;
 import org.objectstyle.cayenne.exp.parser.ConditionNode;
 import org.objectstyle.cayenne.exp.parser.Node;
+import org.objectstyle.wolips.baseforplugins.util.StringUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
-import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
 
 public class EOQualifierFactory {
 	public static Expression fromString(String _str) {

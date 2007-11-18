@@ -52,7 +52,7 @@ package org.objectstyle.wolips.eomodeler.core.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
+import org.objectstyle.wolips.baseforplugins.util.StringUtils;
 
 public class EOSortOrdering extends EOModelObject<EOFetchSpecification> {
 	public static final String SELECTOR_ASCENDING = "compareAscending";
