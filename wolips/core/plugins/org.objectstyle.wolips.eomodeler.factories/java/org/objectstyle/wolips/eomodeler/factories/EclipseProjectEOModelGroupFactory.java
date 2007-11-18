@@ -16,9 +16,9 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.objectstyle.woenvironment.env.WOEnvironment;
+import org.objectstyle.wolips.baseforplugins.util.StringUtils;
 import org.objectstyle.wolips.eomodeler.core.model.AbstractManifestEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.core.model.ManifestSearchFolder;
-import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
 import org.objectstyle.wolips.eomodeler.core.wocompat.EMPropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
 import org.objectstyle.wolips.eomodeler.core.wocompat.SimpleParserDataStructureFactory;
