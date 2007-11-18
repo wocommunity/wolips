@@ -61,7 +61,7 @@ import java.util.TreeSet;
 
 import org.objectstyle.cayenne.exp.Expression;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
-import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
+import org.objectstyle.wolips.baseforplugins.util.StringUtils;
 
 public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> implements IEOEntityRelative, ISortableEOModelObject, PropertyChangeListener {
 	public static final String NAME = "name";

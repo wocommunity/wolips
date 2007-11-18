@@ -49,7 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.core.model;
 
-import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
+import org.objectstyle.wolips.baseforplugins.util.StringUtils;
 
 public class EOModelVerificationFailure implements Comparable<EOModelVerificationFailure> {
 	private EOModel _model;

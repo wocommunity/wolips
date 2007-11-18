@@ -57,9 +57,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
+import org.objectstyle.wolips.baseforplugins.util.StringUtils;
 import org.objectstyle.wolips.eomodeler.core.Messages;
 import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
-import org.objectstyle.wolips.eomodeler.core.utils.StringUtils;
 
 public class EORelationship extends UserInfoableEOModelObject<EOEntity> implements IEOAttribute, ISortableEOModelObject {
 	public static final String TO_MANY = "toMany";
