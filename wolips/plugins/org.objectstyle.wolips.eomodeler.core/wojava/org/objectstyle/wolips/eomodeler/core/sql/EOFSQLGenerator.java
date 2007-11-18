@@ -61,6 +61,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import com.webobjects.eoaccess.EOAdaptorChannel;
 import com.webobjects.eoaccess.EOAdaptorContext;
@@ -390,6 +391,9 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 		callModelProcessorMethodIfExists("processSQL", new Object[] { sqlBuffer, _model, _entities, flags });
 
 		String sqlBufferStr = sqlBuffer.toString();
+		if (sqlBufferStr != null) {
+			sqlBufferStr = Pattern.compile("(\\w)(NOT NULL)", Pattern.CASE_INSENSITIVE).matcher(sqlBufferStr).replaceAll("$1 $2");
+		}
 		return sqlBufferStr;
 	}
 
