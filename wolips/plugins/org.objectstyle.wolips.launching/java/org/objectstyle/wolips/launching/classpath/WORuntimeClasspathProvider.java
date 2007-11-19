@@ -47,20 +47,21 @@ package org.objectstyle.wolips.launching.classpath;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.StandardClasspathProvider;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
-import org.objectstyle.wolips.datasets.project.WOLipsCore;
 import org.objectstyle.wolips.variables.VariablesPlugin;
 
 /**
@@ -91,90 +92,88 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 	 *      org.eclipse.debug.core.ILaunchConfiguration)
 	 */
 	public IRuntimeClasspathEntry[] resolveClasspath(IRuntimeClasspathEntry[] entries, ILaunchConfiguration configuration) throws CoreException {
-
-		List<IRuntimeClasspathEntry> others = new ArrayList<IRuntimeClasspathEntry>();
-		List<IRuntimeClasspathEntry> resolved = new ArrayList<IRuntimeClasspathEntry>();
-		List<IProject> projects = new ArrayList<IProject>();
-
-		// used for duplicate removal
-		Set<String> allProjectArchiveEntries = new HashSet<String>();
-
-		// looks like we need to let super do it's thing before
-		// we start tinkering with things ourselves
+		Set<IPath> allProjectArchiveEntries = new HashSet<IPath>();
 		
-		IRuntimeClasspathEntry[] result = super.resolveClasspath(entries, configuration);
-		// resolve WO framework/application projects ourselves, let super do the
-		// rest
-		for (int i = 0; i < result.length; ++i) {
-			IRuntimeClasspathEntry entry = result[i];
-			if (IRuntimeClasspathEntry.PROJECT == entry.getType()) {
-				IProject project = (IProject) entry.getResource();
-				projects.add(project);
-			}
-			IPath projectArchive = getWOJavaArchive(entry);
-			if (projectArchive != null) {
-				// I think this line here breaks things: (hn3000)
-				// resolved.add(entry);
-				if (!allProjectArchiveEntries.contains(projectArchive.toString())) {
-					IRuntimeClasspathEntry resolvedEntry = JavaRuntime.newArchiveRuntimeClasspathEntry(projectArchive);
-					resolved.add(resolvedEntry);
-					allProjectArchiveEntries.add(projectArchive.toString());
+		Map<String, IPath> addedFramework = new HashMap<String, IPath>();
+		List<IRuntimeClasspathEntry> pendingResult = new LinkedList<IRuntimeClasspathEntry>();
+		IRuntimeClasspathEntry[] originalResult = super.resolveClasspath(entries, configuration);
+		for (IRuntimeClasspathEntry entry : originalResult) {
+			IPath entryPath = entry.getPath();
+			int frameworkSegment = frameworkSegmentForPath(entryPath);
+			boolean addEntry = false;
+			if (frameworkSegment == -1) {
+				// MS: If ".framework" isn't in the path and we have a project, then
+				// put a "fake" entry in the framework list corresponding to the project.  This
+				// prevents /Library/Framework versions of the framework from loading later on 
+				// in the classpath.
+				if (IRuntimeClasspathEntry.PROJECT == entry.getType()) {
+					IProject project = (IProject) entry.getResource();
+					String projectFrameworkName = frameworkNameForProject(project);
+					addedFramework.put(projectFrameworkName, entryPath);
 				}
-				allProjectArchiveEntries.add(entry.toString());
-			} else {
-				others.add(entry);
+				addEntry = true;
 			}
-		}
-
-		// used for duplicate removal
-		Set<IPath> allOtherEntries = new HashSet<IPath>();
-		// remove duplicates from the resulting classpath
-		if (others.size() != 0) {
-			IRuntimeClasspathEntry oe[] = others.toArray(new IRuntimeClasspathEntry[others.size()]);
-
-			for (int i = 0; i < oe.length; ++i) {
-				IRuntimeClasspathEntry entry = oe[i];
-				String ls = entry.getLocation();
-				IPath loc = (null == ls) ? null : new Path(ls);
-				if (null == loc) {
-					resolved.add(entry);
-				} else {
-					if (!allOtherEntries.contains(loc)) {
-						String lastSegment = loc.lastSegment();
-						if (lastSegment != null && !isProjectJar(lastSegment, projects)) {
-							resolved.add(entry);
-							allOtherEntries.add(loc);
-						}
+			else {
+				// MS: Otherwise, we have a regular framework path.  In this case, we
+				// want to skip any jar that is coming from a different path for the 
+				// framework than we have previously loaded.
+				String frameworkName = entryPath.segment(frameworkSegment);
+				IPath frameworkPath = entryPath.removeLastSegments(entryPath.segmentCount() - frameworkSegment - 1);
+				IPath previousFrameworkPath = addedFramework.get(frameworkName);
+				if (previousFrameworkPath == null) {
+					addEntry = true;
+					addedFramework.put(frameworkName, frameworkPath);
+				}
+				else if (previousFrameworkPath.equals(frameworkPath)) {
+					addEntry = true;
+				}
+			}
+			
+			// MS: ... all the stars have aligned, and this is a valid entry.  Lets add it.
+			if (addEntry) {
+				IPath projectArchive = getWOJavaArchive(entry);
+				// MS: We need to get the build/BuiltFramework.framework folder from
+				// a project and add that instead of the bin folder ...
+				if (projectArchive != null) {
+					if (!allProjectArchiveEntries.contains(projectArchive)) {
+						IRuntimeClasspathEntry resolvedEntry = JavaRuntime.newArchiveRuntimeClasspathEntry(projectArchive);
+						pendingResult.add(resolvedEntry);
+						allProjectArchiveEntries.add(projectArchive);
 					}
+				} else {
+					pendingResult.add(entry);
 				}
 			}
 		}
-		result = resolved.toArray(new IRuntimeClasspathEntry[resolved.size()]);
-		
-		// sort classpath: project in front, then frameworks, then apple frameworks, then the rest
-		ArrayList<IRuntimeClasspathEntry> otherJars = new ArrayList<IRuntimeClasspathEntry>();
-		ArrayList<IRuntimeClasspathEntry> noAppleJars = new ArrayList<IRuntimeClasspathEntry>();
-		ArrayList<IRuntimeClasspathEntry> appleJars = new ArrayList<IRuntimeClasspathEntry>();
-		IRuntimeClasspathEntry woa = null;
-		for (int i = 0; i < result.length; i++) {
-			IRuntimeClasspathEntry runtimeClasspathEntry = result[i];
 
-			if (isAppleProvided(runtimeClasspathEntry)) {
-				appleJars.add(runtimeClasspathEntry);
-			} else if (isFrameworkJar(runtimeClasspathEntry)) {
-				noAppleJars.add(runtimeClasspathEntry);
-			} else if (isBuildProject(runtimeClasspathEntry)) {
-				noAppleJars.add(runtimeClasspathEntry);
-			} else if (isWoa(runtimeClasspathEntry)) {
-				woa = runtimeClasspathEntry;
+		// sort classpath: project in front, then frameworks, then apple frameworks, then the rest
+		List<IRuntimeClasspathEntry> otherJars = new ArrayList<IRuntimeClasspathEntry>();
+		List<IRuntimeClasspathEntry> noAppleJars = new ArrayList<IRuntimeClasspathEntry>();
+		List<IRuntimeClasspathEntry> appleJars = new ArrayList<IRuntimeClasspathEntry>();
+		List<IRuntimeClasspathEntry> projects = new ArrayList<IRuntimeClasspathEntry>();
+		List<IRuntimeClasspathEntry> woa = new ArrayList<IRuntimeClasspathEntry>();
+		for (IRuntimeClasspathEntry entry : pendingResult) {
+			if (IRuntimeClasspathEntry.PROJECT == entry.getType()) {
+				projects.add(entry);
+			} else if (isAppleProvided(entry)) {
+				appleJars.add(entry);
+			} else if (isFrameworkJar(entry)) {
+				noAppleJars.add(entry);
+			} else if (isBuildProject(entry)) {
+				noAppleJars.add(entry);
+			} else if (isWoa(entry)) {
+				woa.add(entry);
 			} else {
-				otherJars.add(runtimeClasspathEntry);
+				otherJars.add(entry);
 			}
 		}
 		
 		ArrayList<IRuntimeClasspathEntry> sortedEntries = new ArrayList<IRuntimeClasspathEntry>();
-		if (woa != null) {
-			sortedEntries.add(woa);
+		if (woa.size() > 0) {
+			sortedEntries.addAll(woa);
+		}
+		if (projects.size() > 0) {
+			sortedEntries.addAll(projects);
 		}
 		if (noAppleJars.size() > 0) {
 			sortedEntries.addAll(noAppleJars);
@@ -185,8 +184,28 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 		if (otherJars.size() > 0) {
 			sortedEntries.addAll(otherJars);
 		}
-		result = sortedEntries.toArray(new IRuntimeClasspathEntry[sortedEntries.size()]);
-		return result;
+//		for (IRuntimeClasspathEntry entry : sortedEntries) {
+//			System.out.println("WORuntimeClasspathProvider.resolveClasspath: final = " + entry);
+//		}
+		return sortedEntries.toArray(new IRuntimeClasspathEntry[sortedEntries.size()]);
+	}
+	
+	// MS: This is a total hack ... It should use
+	// the WOLips API to framework name.  For most, I think it works
+	// out, and in particular, for Wonder it does. 
+	protected String frameworkNameForProject(IProject project) {
+		return project.getName() + ".framework";
+	}
+	
+	protected int frameworkSegmentForPath(IPath path) {
+		int frameworkSegment = -1;
+		for (int segmentNum = 0; frameworkSegment == -1 && segmentNum < path.segmentCount(); segmentNum ++) {
+			String segment = path.segment(segmentNum);
+			if (segment.endsWith(".framework")) {
+				frameworkSegment = segmentNum;
+			}
+		}
+		return frameworkSegment;
 	}
 
 	private boolean isAppleProvided(IRuntimeClasspathEntry runtimeClasspathEntry) {
