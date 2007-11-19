@@ -203,6 +203,18 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 		return myName;
 	}
 
+	public String getUppercaseUnderscoreName() {
+		return StringUtils.camelCaseToUnderscore(getName()).toUpperCase();
+	}
+
+	public String getCapitalizedName() {
+		String name = getName();
+		if (name != null) {
+			name = StringUtils.toUppercaseFirstLetter(name);
+		}
+		return name;
+	}
+
 	public void addSortOrdering(EOSortOrdering _sortOrdering, boolean _fireEvents) {
 		if (_fireEvents) {
 			List<EOSortOrdering> oldSortOrderings = mySortOrderings;

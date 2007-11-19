@@ -748,6 +748,14 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		return StringUtils.toPlural(myName);
 	}
 	
+	public String getInitialLowercaseName() {
+		return StringUtils.toLowercaseFirstLetter(getName());
+	}
+	
+	public String getPluralInitialLowercaseName() {
+		return StringUtils.toLowercaseFirstLetter(StringUtils.toPlural(getName()));
+	}
+	
 	public String getName() {
 		return myName;
 	}
@@ -802,6 +810,14 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			}
 		}
 		return packageName;
+	}
+
+	public String getInitialLowercaseClassNameWithoutPackage() {
+		return StringUtils.toLowercaseFirstLetter(getClassNameWithoutPackage());
+	}
+
+	public String getPluralInitialLowercaseClassNameWithoutPackage() {
+		return StringUtils.toLowercaseFirstLetter(StringUtils.toPlural(getClassNameWithoutPackage()));
 	}
 
 	public String getClassNameWithoutPackage() {
