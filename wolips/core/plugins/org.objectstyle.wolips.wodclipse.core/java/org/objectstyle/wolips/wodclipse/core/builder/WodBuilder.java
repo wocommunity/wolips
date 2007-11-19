@@ -152,9 +152,6 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
             Set<IContainer> builtComponents = componentBuildCache(buildCache);
             IContainer woFolder = resource.getParent();
             if (!builtComponents.contains(woFolder)) {
-              if (_buildKind == IncrementalProjectBuilder.FULL_BUILD) {
-                file.touch(monitor);
-              }
               validate = true;
               builtComponents.add(woFolder);
             }
@@ -163,9 +160,6 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
             Set<IContainer> builtComponents = componentBuildCache(buildCache);
             IContainer woFolder = resource.getParent();
             if (!builtComponents.contains(woFolder)) {
-              if (_buildKind == IncrementalProjectBuilder.FULL_BUILD) {
-                file.touch(monitor);
-              }
               validate = true;
               builtComponents.add(woFolder);
             }
@@ -211,15 +205,16 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
   }
 
   protected void validateWodFile(IFile file, IProgressMonitor progressMonitor) throws CoreException, LocateException {
-    String _resourceName = file.getName();
+    String resourceName = file.getName();
     if (progressMonitor != null) {
-      progressMonitor.subTask("Locating components for " + _resourceName + " ...");
+      progressMonitor.subTask("Locating components for " + resourceName + " ...");
     }
     WodParserCache cache = WodParserCache.parser(file);
     if (progressMonitor != null) {
       progressMonitor.subTask("Building WO " + cache.getWodFile().getName() + " ...");
     }
     try {
+      cache.clearValidationCache();
       cache.parseHtmlAndWodIfNecessary();
       cache.validate();
     }
