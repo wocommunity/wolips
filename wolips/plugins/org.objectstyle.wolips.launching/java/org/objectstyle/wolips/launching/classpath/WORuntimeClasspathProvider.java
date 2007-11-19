@@ -136,6 +136,7 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 				// a project and add that instead of the bin folder ...
 				if (projectArchive != null) {
 					if (!allProjectArchiveEntries.contains(projectArchive)) {
+						pendingResult.add(entry);
 						IRuntimeClasspathEntry resolvedEntry = JavaRuntime.newArchiveRuntimeClasspathEntry(projectArchive);
 						pendingResult.add(resolvedEntry);
 						allProjectArchiveEntries.add(projectArchive);
