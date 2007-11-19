@@ -215,6 +215,14 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 		return name;
 	}
 
+	public String getInitialLowercaseName() {
+		String name = getName();
+		if (name != null) {
+			name = StringUtils.toLowercaseFirstLetter(name);
+		}
+		return name;
+	}
+
 	public void addSortOrdering(EOSortOrdering _sortOrdering, boolean _fireEvents) {
 		if (_fireEvents) {
 			List<EOSortOrdering> oldSortOrderings = mySortOrderings;
