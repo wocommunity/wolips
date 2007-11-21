@@ -1,4 +1,4 @@
-<project>
+<project name="maven-wolifecycle-ant-tasks" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
 	<target name="initTaskDefs">
 
@@ -10,12 +10,13 @@
 	</target>
 
 	<target name="test-pom" depends="initTaskDefs">
-		<xmlproperty file="pom.xml" prefix="pom.xml" keepRoot="true" />
+		
+		<artifact:pom file="pom.xml" id="pom.xml.project" />
+		<!--xmlproperty file="pom.xml" prefix="pom.xml" keepRoot="true" / -->
 			
 		<echo>Artifact ID = ${pom.xml.project.artifactId}</echo>
 		<echo>Artifact version = ${pom.xml.project.version}</echo>
-
-		<echo>Parent Artifact ID = ${pom.xml.project.parent.artifactId}</echo>
+		
 	</target>
 
 	<!-- ================================================================== -->
