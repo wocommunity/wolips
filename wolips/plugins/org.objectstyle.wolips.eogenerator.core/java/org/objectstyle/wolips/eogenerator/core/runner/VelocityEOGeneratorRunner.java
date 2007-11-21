@@ -48,7 +48,8 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 		}
 	}
 
-	public void generate(EOGeneratorModel eogeneratorModel, StringBuffer results) throws Exception {
+	public boolean generate(EOGeneratorModel eogeneratorModel, StringBuffer results) throws Exception {
+		boolean showResults = false;
 		VelocityEngine velocityEngine = new VelocityEngine();
 		velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, org.apache.velocity.runtime.log.NullLogSystem.class.getName());
 		// velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
@@ -56,13 +57,21 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 		StringBuffer templatePaths = new StringBuffer();
 		templatePaths.append(".");
 		String templatePath = eogeneratorModel.getTemplateDir();
-		if (templatePath != null) {
+		String superclassTemplateName;
+		String subclassTemplateName;
+		if (templatePath != null && templatePath.length() > 0) {
 			templatePaths.append(",");
 			File templateFolder = new File(templatePath);
 			if (!templateFolder.isAbsolute()) {
 				templateFolder = new File(eogeneratorModel.getProject().getLocation().toFile(), templatePath);
 			}
 			templatePaths.append(templateFolder.getAbsolutePath());
+			superclassTemplateName = eogeneratorModel.getJavaTemplate("_Entity.java");
+			subclassTemplateName = eogeneratorModel.getSubclassJavaTemplate("Entity.java");
+		}
+		else {
+			superclassTemplateName = "_Entity.java";
+			subclassTemplateName = "Entity.java";
 		}
 		velocityEngine.setProperty("resource.loader", "file,wolips");
 		velocityEngine.setProperty("file.resource.loader.class", FileResourceLoader.class.getName());
@@ -103,6 +112,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 		for (EOModelVerificationFailure failure : failures) {
 			if (!failure.isWarning()) {
 				results.append("Error: " + failure.getMessage() + "\n");
+				showResults = true;
 			}
 		}
 
@@ -158,7 +168,6 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 							throw new IOException("Unable to make superclass folder '" + superclassFolder + "'.");
 						}
 					}
-					String superclassTemplateName = eogeneratorModel.getJavaTemplate("_Entity.java");
 					VelocityEOGeneratorRunner.writeTemplate(velocityEngine, context, superclassTemplateName, superclassFile);
 
 					File subclassFolder = subclassFile.getParentFile();
@@ -168,16 +177,22 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 						}
 					}
 					if (!subclassFile.exists()) {
-						String subclassTemplateName = eogeneratorModel.getSubclassJavaTemplate("Entity.java");
 						VelocityEOGeneratorRunner.writeTemplate(velocityEngine, context, subclassTemplateName, subclassFile);
 					}
 				}
 			}
 		}
+		return showResults;
 	}
 
 	public static void writeTemplate(VelocityEngine engine, VelocityContext context, String templateName, File outputFile) throws ResourceNotFoundException, ParseErrorException, MethodInvocationException, Exception {
-		Template template = engine.getTemplate(templateName);
+		Template template;
+		try {
+			template = engine.getTemplate(templateName);
+		}
+		catch (ResourceNotFoundException e) {
+			throw new Exception("Failed to load the template '" + templateName + "'.  Check your model's eogen file to make sure that it specifies the correct template folder and template names.");
+		}
 		if (!outputFile.getParentFile().exists()) {
 			if (!outputFile.getParentFile().mkdirs()) {
 				throw new IOException("Unable to create the folder " + outputFile.getParentFile() + ".");

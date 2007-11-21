@@ -17,7 +17,7 @@ import org.objectstyle.wolips.eogenerator.core.model.IEOGeneratorRunner;
 import org.objectstyle.wolips.preferences.Preferences;
 
 public class ExternalEOGeneratorRunner implements IEOGeneratorRunner {
-	public void generate(EOGeneratorModel eogenModel, StringBuffer results) throws ParseException, IOException, InterruptedException {
+	public boolean generate(EOGeneratorModel eogenModel, StringBuffer results) throws ParseException, IOException, InterruptedException {
 		String eogenFileContents = eogenModel.writeToString(eogenModel.getProject().getLocation().toFile(), Preferences.getEOGeneratorPath(), Preferences.getEOGeneratorTemplateDir(), Preferences.getEOGeneratorJavaTemplate(), Preferences.getEOGeneratorSubclassJavaTemplate());
 		List<String> commandsList = new LinkedList<String>();
 		CommandLineTokenizer tokenizer = new CommandLineTokenizer(eogenFileContents);
@@ -48,5 +48,6 @@ public class ExternalEOGeneratorRunner implements IEOGeneratorRunner {
 		if (errorCode != 0) {
 			throw new RuntimeException("EOGenerator failed with code #" + errorCode + ".");
 		}
+		return false;
 	}
 }

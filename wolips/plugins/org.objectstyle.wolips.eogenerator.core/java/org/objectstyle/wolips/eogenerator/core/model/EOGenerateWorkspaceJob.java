@@ -100,7 +100,10 @@ public class EOGenerateWorkspaceJob extends WorkspaceJob {
 					else {
 						runner = new ExternalEOGeneratorRunner();
 					}
-					runner.generate(eogenModel, output);
+					boolean showResults = runner.generate(eogenModel, output);
+					if (showResults) {
+						fileSucceeded = false;
+					}
 
 					eogenModel.getProject().getFolder(new Path(eogenModel.getDestination())).refreshLocal(IResource.DEPTH_INFINITE, monitor);
 					eogenModel.getProject().getFolder(new Path(eogenModel.getSubclassDestination())).refreshLocal(IResource.DEPTH_INFINITE, monitor);
