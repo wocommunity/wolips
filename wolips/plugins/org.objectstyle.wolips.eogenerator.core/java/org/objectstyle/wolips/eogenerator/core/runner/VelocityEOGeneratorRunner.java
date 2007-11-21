@@ -99,6 +99,12 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 		Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
 		modelGroup.resolve(failures);
 		modelGroup.verify(failures);
+		
+		for (EOModelVerificationFailure failure : failures) {
+			if (!failure.isWarning()) {
+				results.append("Error: " + failure.getMessage() + "\n");
+			}
+		}
 
 		File destination = new File(eogeneratorModel.getDestination());
 		if (!destination.isAbsolute()) {
