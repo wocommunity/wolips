@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
- 
+
 <!-- ======================================================== -->
 <!--              Main WOProject Ant build file               -->
 <!-- Serves as a facade for different helper build files.     -->
@@ -31,12 +31,12 @@
 	<!-- ========================================== -->
 	<target name="copy.resources">
 		<mkdir dir="../${build.output.build.dir}/woproject_${build.version}"/>
-	
+
 		<mkdir dir="../${build.output.build.dir}/woproject_${build.version}/examples"/>
 		<copy todir="../${build.output.build.dir}/woproject_${build.version}/examples">
 			<fileset dir="tests/wo"/>
 		</copy>
-	
+
 		<mkdir dir="../${build.output.build.dir}/woproject_${build.version}/doc"/>
 		<copy todir="../${build.output.homepage.dir}/">
 			<fileset dir="../${build.output.homepage.dir}/"/>
@@ -62,9 +62,10 @@
 		<patternset id="param.classes.patternset.refid">
 			<include name="**/org/objectstyle/woenvironment/**"/>
 			<include name="**/org/objectstyle/woproject/**"/>
+			<include name="**/org/objectstyle/cayenne/**"/>
 			<exclude name="**/*Test.class"/>
 		</patternset>
-				
+
 		<ant dir="." antfile="../${project.buildscripts.dir}/ant-style-project.xml" target="jar.with.resources">
 			<property name="param.classes.dir" value="../${build.output.java.dir}"/>
 			<property name="param.resources.dir" value="src/resources"/>
@@ -92,24 +93,24 @@
 	<!-- ========================================== -->
 	<target name="all" depends="copy.resources,java,jar,lib">
 	</target>
-	
+
 	<!-- ============================================= -->
 	<!-- Run tests.                                    -->
 	<!-- ============================================= -->
 	<target name="test">
 		<property environment="env"/>
-		
+
 		<path id="classpath-tests-run">
 			<fileset dir="../${build.output.build.dir}/woproject_${build.version}/lib">
 				<include name="*.jar"/>
 			</fileset>
-			
+
 			<!-- This is important, since java.home can point to  -->
 			<!-- JRE that has no compiler.                        -->
 			<fileset dir="${env.JAVA_HOME}/lib">
-				<include name="*.jar" /> 
+				<include name="*.jar" />
 			</fileset>
-		
+
 			<fileset dir="${wo.woroot}/Library/Frameworks">
 				<include name="JavaFoundation.framework/Resources/Java/*.jar"/>
 			</fileset>
@@ -137,7 +138,7 @@
 	<!-- ========================================== -->
 	<target name="dist">
 		<mkdir dir="../${build.output.dist.targz.dir}"/>
-		
+
 		<tar tarfile="../${build.output.dist.targz.dir}/woproject_${build.version}.tar">
 			<tarfileset dir="../${build.output.build.dir}/woproject_${build.version}">
 				<exclude name="**/examples/**"/>
@@ -145,9 +146,9 @@
 				<exclude name="**/lib/${lib.junit}"/>
 			</tarfileset>
 		 </tar>
-		 
+
 		 <gzip src="../${build.output.dist.targz.dir}/woproject_${build.version}.tar"
 			  zipfile="../${build.output.dist.targz.dir}/woproject_${build.version}.tar.gz"/>
-		 <delete file="../${build.output.dist.targz.dir}/woproject_${build.version}.tar"/>    
+		 <delete file="../${build.output.dist.targz.dir}/woproject_${build.version}.tar"/>
 	</target>
 </project>
