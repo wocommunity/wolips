@@ -181,10 +181,10 @@ public class Preferences {
 			store.setDefault(Preferences.PREF_EOGENERATOR_TEMPLATE_DIR, "");
 		}
 		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_EOGENERATOR_JAVA_TEMPLATE)) {
-			store.setDefault(Preferences.PREF_EOGENERATOR_JAVA_TEMPLATE, "JavaSourceEOF52.eotemplate");
+			store.setDefault(Preferences.PREF_EOGENERATOR_JAVA_TEMPLATE, "");
 		}
 		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE)) {
-			store.setDefault(Preferences.PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE, "JavaSubclassSourceEOF5.eotemplate");
+			store.setDefault(Preferences.PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE, "");
 		}
 		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_WRITE_XCODE_ON_BUILD)) {
 			store.setDefault(Preferences.PREF_WRITE_XCODE_ON_BUILD, Preferences.falseString);
