@@ -60,7 +60,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 
 #end
 #end
-#foreach ($relationship in $entity.sortedToOneRelationships)
+#foreach ($relationship in $entity.sortedClassToOneRelationships)
 #if (!$relationship.inherited) 
   public $relationship.destination.classNameWithDefault ${relationship.name}() {
     return ($relationship.destination.classNameWithDefault)storedValueForKey("$relationship.name");
