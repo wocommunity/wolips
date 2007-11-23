@@ -348,6 +348,15 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 	public String _getDefinition() {
 		return myDefinition;
 	}
+	
+	public void updateDefinitionBecauseRelationshipNameChanged(EORelationship relationship) {
+		if (isFlattened()) {
+			EORelationshipPath definitionPath = getDefinitionPath();
+			if (definitionPath != null && definitionPath.isRelatedTo(relationship)) {
+				setDefinition(definitionPath.toKeyPath());
+			}
+		}
+	}
 
 	protected void updateDefinitionPath() {
 		if (isFlattened()) {
@@ -437,6 +446,17 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 			myEntity._checkForDuplicateRelationshipName(this, _name, null);
 		}
 		myName = _name;
+		if (myEntity != null) {
+			EOModelGroup modelGroup = myEntity.getModel().getModelGroup();
+			for (EOEntity entity : modelGroup.getEntities()) {
+				for (EOAttribute attribute : entity.getAttributes()) {
+					attribute.updateDefinitionBecauseRelationshipNameChanged(this);
+				}
+				for (EORelationship relationship : entity.getRelationships()) {
+					relationship.updateDefinitionBecauseRelationshipNameChanged(this);
+				}
+			}
+		}
 		if (_fireEvents) {
 			firePropertyChange(EORelationship.NAME, oldName, myName);
 		}
