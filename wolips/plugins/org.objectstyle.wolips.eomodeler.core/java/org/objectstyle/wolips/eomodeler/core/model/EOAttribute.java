@@ -367,6 +367,14 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 			}
 		}
 		super.setName((String) _nullIfPrototyped(AbstractEOArgument.NAME, name), _fireEvents);
+		if (myEntity != null) {
+			EOModelGroup modelGroup = myEntity.getModel().getModelGroup();
+			for (EOEntity entity : modelGroup.getEntities()) {
+				for (EOAttribute attribute : entity.getAttributes()) {
+					attribute.updateDefinitionBecauseAttributeNameChanged(this);
+				}
+			}
+		}
 	}
 
 	public String getName() {
@@ -678,6 +686,24 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 
 	public String _getDefinition() {
 		return (String) _prototypeValueIfNull(AbstractEOArgument.DEFINITION, super._getDefinition());
+	}
+	
+	public void updateDefinitionBecauseRelationshipNameChanged(EORelationship relationship) {
+		if (isFlattened()) {
+			EOAttributePath definitionPath = getDefinitionPath();
+			if (definitionPath != null && definitionPath.isRelatedTo(relationship)) {
+				setDefinition(definitionPath.toKeyPath());
+			}
+		}
+	}
+	
+	public void updateDefinitionBecauseAttributeNameChanged(EOAttribute attribute) {
+		if (isFlattened()) {
+			EOAttributePath definitionPath = getDefinitionPath();
+			if (definitionPath != null && definitionPath.isRelatedTo(attribute)) {
+				setDefinition(definitionPath.toKeyPath());
+			}
+		}
 	}
 
 	protected void updateDefinitionPath() {
