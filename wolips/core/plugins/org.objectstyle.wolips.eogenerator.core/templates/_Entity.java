@@ -88,7 +88,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
     return (NSArray<${relationship.destination.classNameWithDefault}>)storedValueForKey("${relationship.name}");
   }
 
-#if (!$relationship.inverseRelationship)
+#if (!$relationship.inverseRelationship || !$relationship.inverseRelationship.classProperty)
   public NSArray<${relationship.destination.classNameWithDefault}> ${relationship.name}(EOQualifier qualifier) {
     return ${relationship.name}(qualifier, null);
   }
@@ -102,9 +102,9 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   }
 #end
 
-  public NSArray<${relationship.destination.classNameWithDefault}> ${relationship.name}(EOQualifier qualifier, NSArray<EOSortOrdering> sortOrderings#if ($relationship.inverseRelationship), boolean fetch#end) {
+  public NSArray<${relationship.destination.classNameWithDefault}> ${relationship.name}(EOQualifier qualifier, NSArray<EOSortOrdering> sortOrderings#if ($relationship.inverseRelationship && $relationship.inverseRelationship.classProperty), boolean fetch#end) {
     NSArray<${relationship.destination.classNameWithDefault}> results;
-#if ($relationship.inverseRelationship && !$relationship.flattened)
+#if ($relationship.inverseRelationship && !$relationship.flattened && $relationship.inverseRelationship.classProperty)
     if (fetch) {
       EOQualifier fullQualifier;
       EOQualifier inverseQualifier = new EOKeyValueQualifier(${relationship.destination.classNameWithDefault}.${relationship.inverseRelationship.uppercaseUnderscoreName}_KEY, EOQualifier.QualifierOperatorEqual, this);
@@ -128,7 +128,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
       if (sortOrderings != null) {
         results = (NSArray<${relationship.destination.classNameWithDefault}>)EOSortOrdering.sortedArrayUsingKeyOrderArray(results, sortOrderings);
       }
-#if ($relationship.inverseRelationship && !$relationship.flattened)
+#if ($relationship.inverseRelationship && !$relationship.flattened && $relationship.inverseRelationship.classProperty)
     }
 #end
     return results;
