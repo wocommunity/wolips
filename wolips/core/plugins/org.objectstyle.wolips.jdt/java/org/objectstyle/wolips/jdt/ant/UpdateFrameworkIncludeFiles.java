@@ -57,6 +57,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.objectstyle.wolips.core.resources.types.folder.IWoprojectAdapter;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 import org.objectstyle.wolips.jdt.JdtPlugin;
 import org.objectstyle.wolips.variables.VariablesPlugin;
@@ -93,97 +94,103 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 		Set<String> generatedEntries = new HashSet<String>();
 
 		// add wo classpath entries
-		IJavaProject myJavaProject = JavaCore.create(this.getIProject());
-		IClasspathEntry[] classPaths;
-		try {
-			classPaths = myJavaProject.getResolvedClasspath(true);
-		} catch (JavaModelException e) {
-			JdtPlugin.getDefault().getPluginLogger().log(e);
-			return;
-		}
-
-		IFile currentFrameworkListFile;
-		// use sorted root paths to ensure correct replacement of
-		// classpath entries with framework entries
-		for (int i = 0; i < this.getPaths().length; i++) {
-
-			String thisPath = getPaths()[i].toOSString();
-			currentFrameworkListFile = this.getProjectAdapter().getWoprojectAdapter().getUnderlyingFolder().getFile(this.INCLUDES_FILE_PREFIX + "." + this.rootPaths[i]);
-
-			// if (currentFrameworkListFile.exists()) {
-			// delete old include file
-			// try {
-			// if (false)
-			// currentFrameworkListFile.delete(true, null);
-			//	
-			// } catch (CoreException e) {
-			// WOLipsLog.log(e.getMessage());
-			// return;
-			// }
-
-			StringBuffer newFrameworkEntries = new StringBuffer();
-			String resolvedEntry;
-			for (int j = 0; j < classPaths.length; j++) {
-				IClasspathEntry thisEntry = classPaths[j];
-				if (thisEntry.getEntryKind() == IClasspathEntry.CPE_LIBRARY || thisEntry.getEntryKind() == IClasspathEntry.CPE_VARIABLE) {
-
-					if (!resolvedEntries.contains(thisEntry)) {
-						// convert classpath entries to woproject
-						// acceptable paths
-						resolvedEntry = classpathEntryToFrameworkEntry(thisEntry, thisPath);
-
-						// Uk was sorted
-						if (resolvedEntry != null) {
-							if (!generatedEntries.contains(resolvedEntry)) {
-								generatedEntries.add(resolvedEntry);
-								newFrameworkEntries.append(resolvedEntry);
-								newFrameworkEntries.append("\n");
-							}
-							resolvedEntries.add(thisEntry);
-						}
-					}
-				}
-			}
-			if (thisPath.equals(VariablesPlugin.getDefault().getLocalRoot().toOSString())) {
-				IProject[] referencedProjects;
-				try {
-					referencedProjects = getIProject().getReferencedProjects();
-				} catch (CoreException e1) {
-					JdtPlugin.getDefault().getPluginLogger().log(e1);
-					referencedProjects = null;
-				}
-				if (referencedProjects != null) {
-					for (int j = 0; j < referencedProjects.length; j++) {
-						if (referencedProjects[j].isAccessible() && referencedProjects[j].isOpen()) {
-							IProjectAdapter referencedWOLipsProject = (IProjectAdapter) (referencedProjects[j]).getAdapter(IProjectAdapter.class);
-							if (referencedWOLipsProject != null && referencedWOLipsProject.isFramework()) {
-								newFrameworkEntries.append("Library/Frameworks/");
-								newFrameworkEntries.append(referencedWOLipsProject.getUnderlyingProject().getName());
-								newFrameworkEntries.append(".");
-								newFrameworkEntries.append("framework");
-								newFrameworkEntries.append("\n");
-							}
-						}
-					}
-				}
-			}
-			if (newFrameworkEntries.length() == 0) {
-				newFrameworkEntries.append("An empty file result in a full filesystem scan");
-				newFrameworkEntries.append("\n");
-			}
+		IJavaProject javaProject = JavaCore.create(this.getIProject());
+		if (javaProject != null) {
+			IClasspathEntry[] classPaths;
 			try {
-				if (currentFrameworkListFile.exists()) {
-					// file may be created by WOBuilder in the meantime
-					// no update needed
-					currentFrameworkListFile.setContents(new ByteArrayInputStream(newFrameworkEntries.toString().getBytes()), true, true, null);
-				} else {
-					// create list file if any entries found
-					this.getProjectAdapter().getWoprojectAdapter().getUnderlyingFolder().create(false, true, new NullProgressMonitor());
-					currentFrameworkListFile.create(new ByteArrayInputStream(newFrameworkEntries.toString().getBytes()), true, null);
-				}
-			} catch (CoreException e) {
-				JdtPlugin.getDefault().getPluginLogger().log(e.getMessage());
+				classPaths = javaProject.getResolvedClasspath(true);
+			} catch (JavaModelException e) {
+				JdtPlugin.getDefault().getPluginLogger().log(e);
 				return;
+			}
+			IProjectAdapter projectAdaptor = this.getProjectAdapter();
+			if (projectAdaptor != null) {
+				IWoprojectAdapter woProjectAdaptor = projectAdaptor.getWoprojectAdapter();
+				if (woProjectAdaptor != null) {
+					IFile currentFrameworkListFile;
+					// use sorted root paths to ensure correct replacement of
+					// classpath entries with framework entries
+					for (int i = 0; i < this.getPaths().length; i++) {
+						String thisPath = getPaths()[i].toOSString();
+						currentFrameworkListFile = woProjectAdaptor.getUnderlyingFolder().getFile(this.INCLUDES_FILE_PREFIX + "." + this.rootPaths[i]);
+	
+						// if (currentFrameworkListFile.exists()) {
+						// delete old include file
+						// try {
+						// if (false)
+						// currentFrameworkListFile.delete(true, null);
+						//	
+						// } catch (CoreException e) {
+						// WOLipsLog.log(e.getMessage());
+						// return;
+						// }
+			
+						StringBuffer newFrameworkEntries = new StringBuffer();
+						String resolvedEntry;
+						for (int j = 0; j < classPaths.length; j++) {
+							IClasspathEntry thisEntry = classPaths[j];
+							if (thisEntry.getEntryKind() == IClasspathEntry.CPE_LIBRARY || thisEntry.getEntryKind() == IClasspathEntry.CPE_VARIABLE) {
+			
+								if (!resolvedEntries.contains(thisEntry)) {
+									// convert classpath entries to woproject
+									// acceptable paths
+									resolvedEntry = classpathEntryToFrameworkEntry(thisEntry, thisPath);
+			
+									// Uk was sorted
+									if (resolvedEntry != null) {
+										if (!generatedEntries.contains(resolvedEntry)) {
+											generatedEntries.add(resolvedEntry);
+											newFrameworkEntries.append(resolvedEntry);
+											newFrameworkEntries.append("\n");
+										}
+										resolvedEntries.add(thisEntry);
+									}
+								}
+							}
+						}
+						if (thisPath.equals(VariablesPlugin.getDefault().getLocalRoot().toOSString())) {
+							IProject[] referencedProjects;
+							try {
+								referencedProjects = getIProject().getReferencedProjects();
+							} catch (CoreException e1) {
+								JdtPlugin.getDefault().getPluginLogger().log(e1);
+								referencedProjects = null;
+							}
+							if (referencedProjects != null) {
+								for (int j = 0; j < referencedProjects.length; j++) {
+									if (referencedProjects[j].isAccessible() && referencedProjects[j].isOpen()) {
+										IProjectAdapter referencedWOLipsProject = (IProjectAdapter) (referencedProjects[j]).getAdapter(IProjectAdapter.class);
+										if (referencedWOLipsProject != null && referencedWOLipsProject.isFramework()) {
+											newFrameworkEntries.append("Library/Frameworks/");
+											newFrameworkEntries.append(referencedWOLipsProject.getUnderlyingProject().getName());
+											newFrameworkEntries.append(".");
+											newFrameworkEntries.append("framework");
+											newFrameworkEntries.append("\n");
+										}
+									}
+								}
+							}
+						}
+						if (newFrameworkEntries.length() == 0) {
+							newFrameworkEntries.append("An empty file result in a full filesystem scan");
+							newFrameworkEntries.append("\n");
+						}
+						try {
+							if (currentFrameworkListFile.exists()) {
+								// file may be created by WOBuilder in the meantime
+								// no update needed
+								currentFrameworkListFile.setContents(new ByteArrayInputStream(newFrameworkEntries.toString().getBytes()), true, true, null);
+							} else {
+								// create list file if any entries found
+								this.getProjectAdapter().getWoprojectAdapter().getUnderlyingFolder().create(false, true, new NullProgressMonitor());
+								currentFrameworkListFile.create(new ByteArrayInputStream(newFrameworkEntries.toString().getBytes()), true, null);
+							}
+						} catch (CoreException e) {
+							JdtPlugin.getDefault().getPluginLogger().log(e.getMessage());
+							return;
+						}
+					}
+				}
 			}
 		}
 	}
