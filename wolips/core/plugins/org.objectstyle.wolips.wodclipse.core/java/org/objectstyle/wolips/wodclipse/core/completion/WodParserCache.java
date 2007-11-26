@@ -148,8 +148,8 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   }
 
   public WodParserCache() throws CoreException, LocateException {
-	_typeCache = new TypeCache(_apiCache);
-	_htmlElementCache = new HtmlElementCache();
+    _typeCache = new TypeCache(_apiCache);
+    _htmlElementCache = new HtmlElementCache();
     _undoManager = new TextViewerUndoManager(25);
     clearCache();
   }
@@ -258,7 +258,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   public TypeCache getTypeCache() {
     return _typeCache;
   }
-  
+
   public IWodModel getWodModel() throws CoreException, IOException {
     if (_wodModel == null) {
       parseHtmlAndWodIfNecessary();
@@ -428,13 +428,13 @@ public class WodParserCache implements FuzzyXMLErrorListener {
                 }
                 new TemplateValidator(WodParserCache.this).validate(_htmlXmlDocument);
               }
-            }
 
-            if (_wodModel != null) {
-              List<WodProblem> wodProblems = _wodModel.getProblems(_javaProject, _componentType, WodParserCache.this._typeCache, WodParserCache.this._htmlElementCache);
-              if (_wodFile.exists()) {
-                for (WodProblem wodProblem : wodProblems) {
-                  WodModelUtils.createMarker(_wodFile, wodProblem);
+              if (_wodModel != null) {
+                List<WodProblem> wodProblems = _wodModel.getProblems(_javaProject, _componentType, WodParserCache.this._typeCache, WodParserCache.this._htmlElementCache);
+                if (_wodFile.exists()) {
+                  for (WodProblem wodProblem : wodProblems) {
+                    WodModelUtils.createMarker(_wodFile, wodProblem);
+                  }
                 }
               }
             }
