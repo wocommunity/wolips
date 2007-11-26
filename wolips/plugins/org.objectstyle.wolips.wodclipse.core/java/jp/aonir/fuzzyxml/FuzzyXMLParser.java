@@ -49,7 +49,7 @@ public class FuzzyXMLParser {
   private Pattern _docTypePublic = Pattern.compile("PUBLIC[ \r\n\t]+\"([^\"]*)\"[ \r\n\t]*\"*([^\"]*)\"*");
   private Pattern _docTypeSystem = Pattern.compile("SYSTEM[ \r\n\t]+\"([^\"]*)\"");
   private Pattern _docTypeSubset = Pattern.compile("\\[([^\\]]*)\\]>");
-  private Pattern _invalidStringPattern = Pattern.compile("([<>&'])");
+  private Pattern _invalidStringPattern = Pattern.compile("([<>&])");
 
   public FuzzyXMLParser(boolean wo54) {
     this(wo54, false);
