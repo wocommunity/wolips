@@ -275,7 +275,7 @@ public class EMPropertyListSerialization {
 			buffer.append('{');
 			int count = dictionary.size();
 			if (count > 0) {
-				for (Iterator keyEnumerator = dictionary.keySet().iterator(); keyEnumerator.hasNext(); buffer.append(';')) {
+				for (Iterator keyEnumerator = dictionary.keySet().iterator(); keyEnumerator.hasNext();) {
 					Object key = keyEnumerator.next();
 					if (!(key instanceof String)) {
 						throw new PropertyListParserException("Property list generation failed while attempting to write hashtable. Non-String key found in Hashtable. Property list dictionaries must have String's as keys.");
@@ -287,6 +287,7 @@ public class EMPropertyListSerialization {
 						_appendStringToStringBuffer((String) key, buffer, indentionLevel + 1);
 						buffer.append(" = ");
 						_appendObjectToStringBuffer(value, buffer, indentionLevel + 1);
+						buffer.append(';');
 					}
 				}
 				buffer.append('\n');
