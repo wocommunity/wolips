@@ -52,6 +52,7 @@ package org.objectstyle.wolips.eomodeler.editors.entity;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -61,6 +62,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
@@ -68,6 +70,8 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.core.model.EOModel;
+import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 
 public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 	private EOEntity myEntity;
@@ -81,6 +85,10 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 	private Text myExternalQueryText;
 
 	private Text myClientClassNameText;
+
+	private ComboViewer myPartialEntityComboViewer;
+
+	private ComboViewerBinding myPartialEntityBinding;
 
 	private DataBindingContext myBindingContext;
 
@@ -125,6 +133,14 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 		myClientClassNameText = new Text(topForm, SWT.BORDER);
 		GridData clientClassNameLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		myClientClassNameText.setLayoutData(clientClassNameLayoutData);
+
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.PARTIAL_ENTITY), SWT.NONE);
+		Combo partialEntityCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
+		myPartialEntityComboViewer = new ComboViewer(partialEntityCombo);
+		myPartialEntityComboViewer.setLabelProvider(new EOEntityLabelProvider());
+		myPartialEntityComboViewer.setContentProvider(new EOEntityListContentProvider(true, false));
+		GridData entityComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		partialEntityCombo.setLayoutData(entityComboLayoutData);
 	}
 
 	public void setInput(IWorkbenchPart _part, ISelection _selection) {
@@ -142,6 +158,9 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 			myBindingContext.bindValue(SWTObservables.observeSelection(myReadOnlyButton), BeansObservables.observeValue(myEntity, EOEntity.READ_ONLY), null, null);
 			myBindingContext.bindValue(SWTObservables.observeText(myExternalQueryText, SWT.Modify), BeansObservables.observeValue(myEntity, EOEntity.EXTERNAL_QUERY), null, null);
 			myBindingContext.bindValue(SWTObservables.observeText(myClientClassNameText, SWT.Modify), BeansObservables.observeValue(myEntity, EOEntity.CLIENT_CLASS_NAME), null, null);
+
+			myPartialEntityComboViewer.setInput(myEntity);
+			myPartialEntityBinding = new ComboViewerBinding(myPartialEntityComboViewer, myEntity, EOEntity.PARTIAL_ENTITY, myEntity.getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY);
 		}
 	}
 
