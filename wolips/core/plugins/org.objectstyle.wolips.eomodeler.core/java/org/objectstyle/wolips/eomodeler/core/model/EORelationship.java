@@ -488,6 +488,14 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 		firePropertyChange(EORelationship.DELETE_RULE, oldDeleteRule, myDeleteRule);
 	}
 
+	public EOEntity getActualDestination() {
+		EOEntity destination = getDestination();
+		if (destination.isPartialEntitySet()) {
+			destination = destination.getPartialEntity();
+		}
+		return destination;
+	}
+
 	public EOEntity getDestination() {
 		EOEntity destination;
 		if (isFlattened()) {
