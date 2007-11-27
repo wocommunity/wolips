@@ -11,8 +11,12 @@ import java.util.*;
 import org.apache.log4j.Logger;
 
 @SuppressWarnings("all")
-public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($entity.parentSet)${entity.parent.classNameWithDefault}#elseif ($EOGenericRecord)${EOGenericRecord}#else EOGenericRecord#end {
+public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($entity.partialEntitySet)er.extensions.partials.ERXPartial<${entity.partialEntity.className}>#elseif ($entity.parentSet)${entity.parent.classNameWithDefault}#elseif ($EOGenericRecord)${EOGenericRecord}#else EOGenericRecord#end {
+#if ($entity.partialEntitySet)
+	public static final String ENTITY_NAME = "$entity.partialEntity.name";
+#else
 	public static final String ENTITY_NAME = "$entity.name";
+#end
 
 	// Attributes
 #foreach ($attribute in $entity.sortedClassAttributes)
@@ -26,6 +30,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 
   private static Logger LOG = Logger.getLogger(${entity.prefixClassNameWithoutPackage}.class);
 
+#if (!$entity.partialEntitySet)
   public $entity.classNameWithoutPackage localInstanceOf${entity.name}(EOEditingContext editingContext) {
     $entity.classNameWithoutPackage localInstance = ($entity.classNameWithoutPackage)EOUtilities.localInstanceOfObject(editingContext, this);
     if (localInstance == null) {
@@ -34,6 +39,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
     return localInstance;
   }
 
+#end
 #foreach ($attribute in $entity.sortedClassAttributes)
 #if (!$attribute.inherited)
 #if ($attribute.userInfo.ERXConstantClassName)
@@ -62,16 +68,16 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 #end
 #foreach ($relationship in $entity.sortedClassToOneRelationships)
 #if (!$relationship.inherited) 
-  public $relationship.destination.classNameWithDefault ${relationship.name}() {
-    return ($relationship.destination.classNameWithDefault)storedValueForKey("$relationship.name");
+  public $relationship.actualDestination.classNameWithDefault ${relationship.name}() {
+    return ($relationship.actualDestination.classNameWithDefault)storedValueForKey("$relationship.name");
   }
 
-  public void set${relationship.capitalizedName}Relationship($relationship.destination.classNameWithDefault value) {
+  public void set${relationship.capitalizedName}Relationship($relationship.actualDestination.classNameWithDefault value) {
     if (${entity.prefixClassNameWithoutPackage}.LOG.isDebugEnabled()) {
       ${entity.prefixClassNameWithoutPackage}.LOG.debug("updating $relationship.name from " + ${relationship.name}() + " to " + value);
     }
     if (value == null) {
-    	$relationship.destination.classNameWithDefault oldValue = ${relationship.name}();
+    	$relationship.actualDestination.classNameWithDefault oldValue = ${relationship.name}();
     	if (oldValue != null) {
     		removeObjectFromBothSidesOfRelationshipWithKey(oldValue, "$relationship.name");
       }
@@ -84,26 +90,26 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 #end
 #foreach ($relationship in $entity.sortedClassToManyRelationships)
 #if (!$relationship.inherited) 
-  public NSArray<${relationship.destination.classNameWithDefault}> ${relationship.name}() {
-    return (NSArray<${relationship.destination.classNameWithDefault}>)storedValueForKey("${relationship.name}");
+  public NSArray<${relationship.actualDestination.classNameWithDefault}> ${relationship.name}() {
+    return (NSArray<${relationship.actualDestination.classNameWithDefault}>)storedValueForKey("${relationship.name}");
   }
 
 #if (!$relationship.inverseRelationship || !$relationship.inverseRelationship.classProperty)
-  public NSArray<${relationship.destination.classNameWithDefault}> ${relationship.name}(EOQualifier qualifier) {
+  public NSArray<${relationship.actualDestination.classNameWithDefault}> ${relationship.name}(EOQualifier qualifier) {
     return ${relationship.name}(qualifier, null);
   }
 #else
-  public NSArray<${relationship.destination.classNameWithDefault}> ${relationship.name}(EOQualifier qualifier) {
+  public NSArray<${relationship.actualDestination.classNameWithDefault}> ${relationship.name}(EOQualifier qualifier) {
     return ${relationship.name}(qualifier, null, false);
   }
 
-  public NSArray<${relationship.destination.classNameWithDefault}> ${relationship.name}(EOQualifier qualifier, boolean fetch) {
+  public NSArray<${relationship.actualDestination.classNameWithDefault}> ${relationship.name}(EOQualifier qualifier, boolean fetch) {
     return ${relationship.name}(qualifier, null, fetch);
   }
 #end
 
-  public NSArray<${relationship.destination.classNameWithDefault}> ${relationship.name}(EOQualifier qualifier, NSArray<EOSortOrdering> sortOrderings#if ($relationship.inverseRelationship && $relationship.inverseRelationship.classProperty), boolean fetch#end) {
-    NSArray<${relationship.destination.classNameWithDefault}> results;
+  public NSArray<${relationship.actualDestination.classNameWithDefault}> ${relationship.name}(EOQualifier qualifier, NSArray<EOSortOrdering> sortOrderings#if ($relationship.inverseRelationship && $relationship.inverseRelationship.classProperty), boolean fetch#end) {
+    NSArray<${relationship.actualDestination.classNameWithDefault}> results;
 #if ($relationship.inverseRelationship && !$relationship.flattened && $relationship.inverseRelationship.classProperty)
     if (fetch) {
       EOQualifier fullQualifier;
@@ -117,16 +123,16 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
         qualifiers.addObject(inverseQualifier);
         fullQualifier = new EOAndQualifier(qualifiers);
       }
-      results = ${relationship.destination.classNameWithDefault}.fetch${relationship.destination.pluralName}(editingContext(), fullQualifier, sortOrderings);
+      results = ${relationship.actualDestination.classNameWithDefault}.fetch${relationship.actualDestination.pluralName}(editingContext(), fullQualifier, sortOrderings);
     }
     else {
 #end
       results = ${relationship.name}();
       if (qualifier != null) {
-        results = (NSArray<${relationship.destination.classNameWithDefault}>)EOQualifier.filteredArrayWithQualifier(results, qualifier);
+        results = (NSArray<${relationship.actualDestination.classNameWithDefault}>)EOQualifier.filteredArrayWithQualifier(results, qualifier);
       }
       if (sortOrderings != null) {
-        results = (NSArray<${relationship.destination.classNameWithDefault}>)EOSortOrdering.sortedArrayUsingKeyOrderArray(results, sortOrderings);
+        results = (NSArray<${relationship.actualDestination.classNameWithDefault}>)EOSortOrdering.sortedArrayUsingKeyOrderArray(results, sortOrderings);
       }
 #if ($relationship.inverseRelationship && !$relationship.flattened && $relationship.inverseRelationship.classProperty)
     }
@@ -134,29 +140,29 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
     return results;
   }
   
-  public void addTo${relationship.capitalizedName}Relationship($relationship.destination.classNameWithDefault object) {
+  public void addTo${relationship.capitalizedName}Relationship($relationship.actualDestination.classNameWithDefault object) {
     if (${entity.prefixClassNameWithoutPackage}.LOG.isDebugEnabled()) {
       ${entity.prefixClassNameWithoutPackage}.LOG.debug("adding " + object + " to ${relationship.name} relationship");
     }
     addObjectToBothSidesOfRelationshipWithKey(object, "${relationship.name}");
   }
 
-  public void removeFrom${relationship.capitalizedName}Relationship($relationship.destination.classNameWithDefault object) {
+  public void removeFrom${relationship.capitalizedName}Relationship($relationship.actualDestination.classNameWithDefault object) {
     if (${entity.prefixClassNameWithoutPackage}.LOG.isDebugEnabled()) {
       ${entity.prefixClassNameWithoutPackage}.LOG.debug("removing " + object + " from ${relationship.name} relationship");
     }
     removeObjectFromBothSidesOfRelationshipWithKey(object, "${relationship.name}");
   }
 
-  public $relationship.destination.classNameWithDefault create${relationship.capitalizedName}Relationship() {
-    EOClassDescription eoClassDesc = EOClassDescription.classDescriptionForEntityName("${relationship.destination.name}");
+  public $relationship.actualDestination.classNameWithDefault create${relationship.capitalizedName}Relationship() {
+    EOClassDescription eoClassDesc = EOClassDescription.classDescriptionForEntityName("${relationship.actualDestination.name}");
     EOEnterpriseObject eo = eoClassDesc.createInstanceWithEditingContext(editingContext(), null);
     editingContext().insertObject(eo);
     addObjectToBothSidesOfRelationshipWithKey(eo, "${relationship.name}");
-    return ($relationship.destination.classNameWithDefault) eo;
+    return ($relationship.actualDestination.classNameWithDefault) eo;
   }
 
-  public void delete${relationship.capitalizedName}Relationship($relationship.destination.classNameWithDefault object) {
+  public void delete${relationship.capitalizedName}Relationship($relationship.actualDestination.classNameWithDefault object) {
     removeObjectFromBothSidesOfRelationshipWithKey(object, "${relationship.name}");
 #if (!$relationship.ownsDestination)
     editingContext().deleteObject(object);
@@ -166,12 +172,13 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   public void deleteAll${relationship.capitalizedName}Relationships() {
     Enumeration objects = ${relationship.name}().immutableClone().objectEnumerator();
     while (objects.hasMoreElements()) {
-      delete${relationship.capitalizedName}Relationship(($relationship.destination.classNameWithDefault)objects.nextElement());
+      delete${relationship.capitalizedName}Relationship(($relationship.actualDestination.classNameWithDefault)objects.nextElement());
     }
   }
 
 #end
 #end
+#if (!$entity.partialEntitySet)
   public static ${entity.classNameWithoutPackage} create${entity.name}(EOEditingContext editingContext#foreach ($attribute in $entity.sortedClassAttributes)
 #if (!$attribute.allowsNull)
 #set ($restrictingQualifierKey = 'false')
@@ -182,7 +189,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 #end
 #end
 #foreach ($relationship in $entity.sortedClassToOneRelationships)
-#if ($relationship.mandatory && !($relationship.ownsDestination && $relationship.propagatesPrimaryKey)), ${relationship.destination.classNameWithDefault} ${relationship.name}#end
+#if ($relationship.mandatory && !($relationship.ownsDestination && $relationship.propagatesPrimaryKey)), ${relationship.actualDestination.classNameWithDefault} ${relationship.name}#end
 #end
 ) {
     ${entity.classNameWithoutPackage} eo = (${entity.classNameWithoutPackage})EOUtilities.createAndInsertInstance(editingContext, ${entity.prefixClassNameWithoutPackage}.ENTITY_NAME);
@@ -261,4 +268,5 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
     }
     return localInstance;
   }
+#end
 }
