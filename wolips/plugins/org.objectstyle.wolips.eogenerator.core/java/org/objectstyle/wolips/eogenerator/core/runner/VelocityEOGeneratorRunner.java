@@ -26,6 +26,7 @@ import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.RuntimeServices;
 import org.apache.velocity.runtime.log.LogSystem;
 import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
+import org.apache.velocity.tools.generic.ListTool;
 import org.objectstyle.wolips.eogenerator.core.Activator;
 import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel;
 import org.objectstyle.wolips.eogenerator.core.model.EOModelReference;
@@ -139,8 +140,9 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 		for (Define define : eogeneratorModel.getDefines()) {
 			context.put(define.getName(), define.getValue());
 		}
+		context.put("list", new ListTool());
 		for (EOModel model : models) {
-			System.out.println("Generating " + model.getName() + " ...");
+			//System.out.println("Generating " + model.getName() + " ...");
 			context.put("model", model);
 
 			for (EOEntity entity : model.getEntities()) {
