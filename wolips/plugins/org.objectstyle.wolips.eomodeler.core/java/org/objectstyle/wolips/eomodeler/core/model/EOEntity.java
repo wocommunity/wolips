@@ -100,6 +100,8 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	public static final String PARENT = "parent";
 
+	public static final String PARTIAL_ENTITY = "partialEntity";
+
 	public static final String EXTERNAL_QUERY = "externalQuery";
 
 	public static final String MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH = "maxNumberOfInstancesToBatchFetch";
@@ -135,6 +137,8 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	private EOModel myModel;
 
 	private EOEntity myParent;
+
+	private EOEntity myPartialEntity;
 
 	private String myOriginalName;
 
@@ -747,15 +751,15 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	public String getPluralName() {
 		return StringUtils.toPlural(myName);
 	}
-	
+
 	public String getInitialLowercaseName() {
 		return StringUtils.toLowercaseFirstLetter(getName());
 	}
-	
+
 	public String getPluralInitialLowercaseName() {
 		return StringUtils.toLowercaseFirstLetter(StringUtils.toPlural(getName()));
 	}
-	
+
 	public String getName() {
 		return myName;
 	}
@@ -960,6 +964,31 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		firePropertyChange(EOEntity.PARENT, oldParent, myParent);
 	}
 
+	public boolean isPartialBase() {
+		for (EOModel model : getModel().getModelGroup().getModels()) {
+			for (EOEntity entity : model.getEntities()) {
+				if (entity.getPartialEntity() == this) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean isPartialEntitySet() {
+		return myPartialEntity != null;
+	}
+
+	public EOEntity getPartialEntity() {
+		return myPartialEntity;
+	}
+
+	public void setPartialEntity(EOEntity partialEntity) {
+		EOEntity oldPartialEntity = myPartialEntity;
+		myPartialEntity = partialEntity;
+		firePropertyChange(EOEntity.PARTIAL_ENTITY, oldPartialEntity, myPartialEntity);
+	}
+
 	public void inheritParentAttributesAndRelationships(Set<EOModelVerificationFailure> failures, boolean warnOnly) throws DuplicateNameException {
 		EOEntity parent = getParent();
 		if (parent != null) {
@@ -1041,8 +1070,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		Set<String> restrictingQualifierKeys;
 		if (myRestrictingQualifier == null) {
 			restrictingQualifierKeys = new HashSet<String>();
-		}
-		else {
+		} else {
 			restrictingQualifierKeys = EOQualifierFactory.getQualifierKeysFromQualifierString(myRestrictingQualifier);
 		}
 		return restrictingQualifierKeys;
@@ -1844,6 +1872,18 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			storedProcedureNames.put(EOEntity.EONEXT_PRIMARY_KEY_PROCEDURE, myNextPrimaryKeyProcedure.getName());
 		}
 
+		EOModelMap entityModelerMap = new EOModelMap((Map) getUserInfo().get(UserInfoableEOModelObject.ENTITY_MODELER_KEY));
+		if (myPartialEntity == null) {
+			entityModelerMap.remove("partialEntity");
+		} else {
+			entityModelerMap.put("partialEntity", myPartialEntity.getName());
+		}
+		if (entityModelerMap.isEmpty()) {
+			getUserInfo().remove(UserInfoableEOModelObject.ENTITY_MODELER_KEY);
+		} else {
+			getUserInfo().put(UserInfoableEOModelObject.ENTITY_MODELER_KEY, entityModelerMap);
+		}
+
 		writeUserInfo(entityMap);
 
 		return entityMap;
@@ -1913,6 +1953,17 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			}
 			if (myParent == null) {
 				_failures.add(new MissingEntityFailure(myModel, parentName));
+			}
+		}
+
+		EOModelMap entityModelerMap = new EOModelMap((Map) getUserInfo().get(UserInfoableEOModelObject.ENTITY_MODELER_KEY));
+		String partialEntityName = entityModelerMap.getString("partialEntity", true);
+		if (partialEntityName != null) {
+			if (myModel != null) {
+				myPartialEntity = myModel.getModelGroup().getEntityNamed(partialEntityName);
+			}
+			if (myPartialEntity == null) {
+				_failures.add(new MissingEntityFailure(myModel, partialEntityName));
 			}
 		}
 
@@ -2057,8 +2108,12 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		}
 
 		Set<EOAttribute> primaryKeyAttributes = getPrimaryKeyAttributes();
-		if (primaryKeyAttributes.isEmpty()) {
+		if (primaryKeyAttributes.isEmpty() && !isPartialEntitySet()) {
 			failures.add(new EOModelVerificationFailure(myModel, this, "The entity " + getName() + " does not have a primary key.", false));
+		}
+		
+		if (isPartialEntitySet() && getPartialEntity().isPartialEntitySet()) {
+			failures.add(new EOModelVerificationFailure(myModel, this, "The entity " + getName() + " is a partial of an entity that is itself a partial. This is not currently allowed.", false));
 		}
 	}
 
@@ -2069,6 +2124,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	protected EOEntity _cloneJustEntity() {
 		EOEntity entity = new EOEntity(myName);
 		entity.myParent = myParent;
+		entity.myPartialEntity = myPartialEntity;
 		entity.myExternalName = myExternalName;
 		entity.myClassName = myClassName;
 		entity.myClientClassName = myClientClassName;
