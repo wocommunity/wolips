@@ -36,6 +36,7 @@
     <!-- ========================================== -->
     <target name="jar">
 	    <patternset id="param.classes.patternset.refid">
+        				<include name="**/org/apache/velocity/tools/generic/**"/>
                 <include name="**/org/objectstyle/wolips/thirdparty/velocity/**"/>
         </patternset>
 
