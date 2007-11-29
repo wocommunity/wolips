@@ -49,20 +49,25 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.databaseConfig;
 
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.widgets.Composite;
 import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
 
-public class AdaptorNameContentProvider implements IStructuredContentProvider {
-	public Object[] getElements(Object inputElement) {
-		return new String[] { EODatabaseConfig.JDBC_ADAPTOR_NAME, EODatabaseConfig.JNDI_ADAPTOR_NAME, EODatabaseConfig.MEMORY_ADAPTOR_NAME };
+public class BlankConnectionDictionarySection extends Composite implements IConnectionDictionarySection {
+	public BlankConnectionDictionarySection(Composite parent, int style) {
+		super(parent, style);
+		setBackground(parent.getBackground());
+	}
+
+	public void setInput(EODatabaseConfig databaseContext) {
+		disposeBindings();
+	}
+
+	public void disposeBindings() {
+		// DO NOTHING
 	}
 
 	public void dispose() {
-		// DO NOTHING
-	}
-
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		// DO NOTHING
+		disposeBindings();
+		super.dispose();
 	}
 }

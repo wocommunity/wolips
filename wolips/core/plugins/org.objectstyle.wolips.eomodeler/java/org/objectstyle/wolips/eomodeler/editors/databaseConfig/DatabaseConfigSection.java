@@ -136,7 +136,7 @@ public class DatabaseConfigSection extends AbstractPropertySection {
 	protected void adaptorNameChanged() {
 		if (_databaseConfig != null) {
 			String adaptorName = _databaseConfig.getAdaptorName();
-			if (!adaptorName.equals(_lastAdaptorName)) {
+			if (adaptorName == null || !adaptorName.equals(_lastAdaptorName)) {
 				if (_connectionDictionarySection != null) {
 					_connectionDictionarySection.dispose();
 					_connectionDictionarySection = null;
@@ -155,7 +155,11 @@ public class DatabaseConfigSection extends AbstractPropertySection {
 					connectionDictionarySection.setLayoutData(connectionDictionaryData);
 					_connectionDictionarySection = connectionDictionarySection;
 				} else {
-					throw new IllegalArgumentException(adaptorName);
+					BlankConnectionDictionarySection connectionDictionarySection = new BlankConnectionDictionarySection(_connectionDictionaryContainer, SWT.NONE);
+					GridData connectionDictionaryData = new GridData(GridData.FILL_HORIZONTAL);
+					connectionDictionaryData.grabExcessHorizontalSpace = true;
+					connectionDictionarySection.setLayoutData(connectionDictionaryData);
+					_connectionDictionarySection = connectionDictionarySection;
 				}
 			}
 			_lastAdaptorName = adaptorName;
@@ -169,6 +173,7 @@ public class DatabaseConfigSection extends AbstractPropertySection {
 			}
 			_lastAdaptorName = null;
 		}
+		
 		_form.layout();
 	}
 
@@ -192,6 +197,7 @@ public class DatabaseConfigSection extends AbstractPropertySection {
 			_prototypeBinding.dispose();
 		}
 		if (_adaptorNameBinding != null) {
+			//_adaptorNameComboViewer.getCombo().removeModifyListener(_adaptorNameBinding);
 			_adaptorNameBinding.dispose();
 		}
 		EODatabaseConfig databaseConfig = getDatabaseConfig();
@@ -210,6 +216,8 @@ public class DatabaseConfigSection extends AbstractPropertySection {
 		_prototypeBinding = new ComboViewerBinding(_prototypeComboViewer, getDatabaseConfig(), EODatabaseConfig.PROTOTYPE, null, null, EOPrototypeEntityListContentProvider.BLANK_ENTITY);
 		_adaptorNameComboViewer.setInput(getDatabaseConfig());
 		_adaptorNameBinding = new ComboViewerBinding(_adaptorNameComboViewer, getDatabaseConfig(), EODatabaseConfig.ADAPTOR_NAME, null, null, null);
+		//_adaptorNameComboViewer.getCombo().addModifyListener(_adaptorNameBinding);
+
 		EODatabaseConfig databaseConfig = getDatabaseConfig();
 		if (databaseConfig != null) {
 			EOModel model = databaseConfig.getModel();
