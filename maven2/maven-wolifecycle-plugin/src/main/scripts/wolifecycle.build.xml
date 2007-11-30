@@ -49,6 +49,16 @@
 
 	<target name="build-woapplication" depends="woapplicationproperties">
 		<echo>classpath.localRepository.baseDir ${classpath.localRepository.baseDir}</echo>
+		
+		 <delete>
+		    <fileset dir="target/${pom.xml.project.artifactId}-${pom.xml.project.version}.woa" includes="**/*.jar">
+				<patternset>
+					<excludesfile name="target/classpath.txt" />
+				</patternset>
+		    </fileset>
+		  </delete>
+		
+		
 		<woapplication name="${pom.xml.project.artifactId}-${pom.xml.project.version}"
 			frameworksBaseURL="/WebObjects/${pom.xml.project.artifactId}-${pom.xml.project.version}.woa/Contents/Frameworks"
 			startupScriptName="${pom.xml.project.artifactId}"
