@@ -31,7 +31,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   private static Logger LOG = Logger.getLogger(${entity.prefixClassNameWithoutPackage}.class);
 
 #if (!$entity.partialEntitySet)
-  public $entity.classNameWithoutPackage localInstanceOf${entity.name}(EOEditingContext editingContext) {
+  public $entity.classNameWithoutPackage localInstanceIn(EOEditingContext editingContext) {
     $entity.classNameWithoutPackage localInstance = ($entity.classNameWithoutPackage)EOUtilities.localInstanceOfObject(editingContext, this);
     if (localInstance == null) {
       throw new IllegalStateException("You attempted to localInstance " + this + ", which has not yet committed.");
@@ -261,7 +261,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
     return eoObject;
   }
 
-  public static ${entity.classNameWithoutPackage} localInstanceOf${entity.classNameWithoutPackage}(EOEditingContext editingContext, ${entity.classNameWithoutPackage} eo) {
+  public static ${entity.classNameWithoutPackage} localInstanceIn(EOEditingContext editingContext, ${entity.classNameWithoutPackage} eo) {
     ${entity.classNameWithoutPackage} localInstance = (eo == null) ? null : (${entity.classNameWithoutPackage})EOUtilities.localInstanceOfObject(editingContext, eo);
     if (localInstance == null && eo != null) {
       throw new IllegalStateException("You attempted to localInstance " + eo + ", which has not yet committed.");
