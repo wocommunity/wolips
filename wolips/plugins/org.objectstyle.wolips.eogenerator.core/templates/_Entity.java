@@ -178,8 +178,8 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 
 #end
 #end
-#if (!$entity.partialEntitySet)
-  public static ${entity.classNameWithoutPackage} create${entity.name}(EOEditingContext editingContext#foreach ($attribute in $entity.sortedClassAttributes)
+
+  public #if (!$entity.partialEntitySet)static #end${entity.classNameWithoutPackage}#if (!$entity.partialEntitySet) create#else init#end${entity.name}(EOEditingContext editingContext#foreach ($attribute in $entity.sortedClassAttributes)
 #if (!$attribute.allowsNull)
 #set ($restrictingQualifierKey = 'false')
 #foreach ($qualifierKey in $entity.restrictingQualifierKeys)#if ($attribute.name == $qualifierKey)#set ($restrictingQualifierKey = 'true')#end#end
@@ -213,6 +213,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 #end
     return eo;
   }
+#if (!$entity.partialEntitySet)
 
   public static NSArray<${entity.classNameWithoutPackage}> fetchAll${entity.pluralName}(EOEditingContext editingContext) {
     return ${entity.prefixClassNameWithoutPackage}.fetchAll${entity.pluralName}(editingContext, null);
