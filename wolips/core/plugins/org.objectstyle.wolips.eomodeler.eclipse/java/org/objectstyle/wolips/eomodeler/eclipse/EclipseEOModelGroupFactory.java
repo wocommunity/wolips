@@ -129,8 +129,14 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 				failures.add(new EOModelVerificationFailure(null, "The dependent project '" + project.getName() + "' exists but is not open.", false));
 			} else {
 				boolean visitedProject = false;
-				IJavaProject javaProject = JavaCore.create(project);
-				IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
+				 boolean isJavaProject = project.getNature(JavaCore.NATURE_ID) != null;
+				 IClasspathEntry[] classpathEntries = null;
+				if (isJavaProject) {
+					IJavaProject javaProject = JavaCore.create(project);
+					classpathEntries = javaProject.getResolvedClasspath(true);
+				} else {
+					classpathEntries = new IClasspathEntry[0];
+				}
 				boolean showProgress = (depth == 0); 
 				if (showProgress) {
 					progressMonitor.beginTask("Scanning " + project.getName() + " classpath ...", classpathEntries.length + 1);
