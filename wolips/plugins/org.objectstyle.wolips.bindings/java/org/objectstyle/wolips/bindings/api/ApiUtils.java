@@ -106,7 +106,7 @@ public class ApiUtils {
                 }
               }
               catch (Exception e) {
-                throw new ApiModelException("Failed to locate API file for " + elementType.getElementName() + ".");
+                throw new ApiModelException("Failed to locate API file for " + elementType.getElementName() + ".", e);
               }
             }
           }
