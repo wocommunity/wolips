@@ -192,7 +192,8 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 #if ($relationship.mandatory && !($relationship.ownsDestination && $relationship.propagatesPrimaryKey)), ${relationship.actualDestination.classNameWithDefault} ${relationship.name}#end
 #end
 ) {
-    ${entity.classNameWithoutPackage} eo = (${entity.classNameWithoutPackage})EOUtilities.createAndInsertInstance(editingContext, ${entity.prefixClassNameWithoutPackage}.ENTITY_NAME);
+    ${entity.classNameWithoutPackage} eo = (${entity.classNameWithoutPackage})#if ($entity.partialEntitySet)this;#else EOUtilities.createAndInsertInstance(editingContext, ${entity.prefixClassNameWithoutPackage}.ENTITY_NAME);#end
+    
 #foreach ($attribute in $entity.sortedClassAttributes)
 #if (!$attribute.allowsNull)
 #set ($restrictingQualifierKey = 'false')
