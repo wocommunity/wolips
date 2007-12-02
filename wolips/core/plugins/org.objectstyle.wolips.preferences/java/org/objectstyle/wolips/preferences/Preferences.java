@@ -118,6 +118,8 @@ public class Preferences {
 	 */
 	public static final String PREF_LAUNCH_GLOBAL = "org.objectstyle.wolips.Preference.Launch_Global";
 
+	public static final String PREF_EOGENERATOR_JAVA_14 = "org.objectstyle.wolips.Preference.EOGeneratorJava14";
+
 	public static final String PREF_EOGENERATOR_PATH = "org.objectstyle.wolips.Preference.EOGeneratorPath";
 
 	public static final String PREF_EOGENERATOR_TEMPLATE_DIR = "org.objectstyle.wolips.Preference.EOGeneratorTemplateDir";
@@ -185,6 +187,9 @@ public class Preferences {
 		}
 		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE)) {
 			store.setDefault(Preferences.PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE, "");
+		}
+		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_EOGENERATOR_JAVA_14)) {
+			store.setDefault(Preferences.PREF_EOGENERATOR_JAVA_14, Preferences.falseString);
 		}
 		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_WRITE_XCODE_ON_BUILD)) {
 			store.setDefault(Preferences.PREF_WRITE_XCODE_ON_BUILD, Preferences.falseString);
@@ -412,6 +417,14 @@ public class Preferences {
 		return Preferences.getBoolean(Preferences.PREF_AUTOEOGENERATE_ON_BUILD);
 	}
 
+	public static boolean isEOGeneratorJava14() {
+		return Preferences.getBoolean(Preferences.PREF_EOGENERATOR_JAVA_14);
+	}
+	
+	public static void setEOGeneratorJava14(boolean eogeneratorJava14) {
+		Preferences.setBoolean(Preferences.PREF_EOGENERATOR_JAVA_14, eogeneratorJava14);
+	}
+	
 	public static String getEOGeneratorPath() {
 		return Preferences.getString(Preferences.PREF_EOGENERATOR_PATH);
 	}
