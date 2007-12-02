@@ -6,7 +6,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -20,6 +19,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -62,8 +62,10 @@ import org.eclipse.ui.internal.registry.PerspectiveDescriptor;
 import org.eclipse.ui.internal.util.PrefUtil;
 import org.eclipse.ui.internal.wizards.newresource.ResourceMessages;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
-import org.objectstyle.wolips.jdt.JdtPlugin;
-import org.objectstyle.wolips.jdt.classpath.model.IEclipseFramework;
+import org.objectstyle.wolips.jdt.classpath.Container;
+import org.objectstyle.wolips.jdt.classpath.ContainerEntries;
+import org.objectstyle.wolips.jdt.classpath.ContainerEntry;
+import org.objectstyle.wolips.jdt.classpath.PathCoderException;
 import org.objectstyle.wolips.templateengine.ProjectTemplate;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
@@ -75,25 +77,24 @@ import org.objectstyle.wolips.wizards.template.TemplateInputsWizardPage;
  * Standard workbench wizard that creates a new project resource in the
  * workspace.
  * <p>
- * This class may be instantiated and used without further configuration. WOLips
- * wizards extensively subclass this for project creation.
+ * This class may be instantiated and used without further configuration.  WOLips wizards
+ * extensively subclass this for project creation.
  * </p>
  * <p>
  * Example:
- * 
+ *
  * <pre>
  * IWorkbenchWizard wizard = new BasicNewProjectResourceWizard();
  * wizard.init(workbench, selection);
  * WizardDialog dialog = new WizardDialog(shell, wizard);
  * dialog.open();
  * </pre>
- * 
+ *
  * During the call to <code>open</code>, the wizard dialog is presented to
  * the user. When the user hits Finish, a project resource with the
  * user-specified name is created, the dialog closes, and the call to
  * <code>open</code> returns.
  * </p>
- * 
  * @see D2WApplicationWizard
  * @see WOApplicationWizard
  * @see WOFrameworkWizard
@@ -124,11 +125,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	protected static final int NEWPROJECT_TEMPLATE_WIZARD = 0;
 
 	/**
-	 * Valid project wizard types: WO_APPLICATION_WIZARD,
-	 * D2W_APPLICATION_WIZARD, D2WS_APPLICATION_WIZARD, JARPROJECT_WIZARD,
-	 * WO_FRAMEWORK_WIZARD, WONDER_APPLICATION_WIZARD,
-	 * WONDER_D2W_APPLICATION_WIZARD, WONDER_FRAMEWORK_WIZARD,
-	 * NEWPROJECT_TEMPLATE_WIZARD
+	 * Valid project wizard types: WO_APPLICATION_WIZARD, D2W_APPLICATION_WIZARD, D2WS_APPLICATION_WIZARD, JARPROJECT_WIZARD, WO_FRAMEWORK_WIZARD, WONDER_APPLICATION_WIZARD, WONDER_D2W_APPLICATION_WIZARD, WONDER_FRAMEWORK_WIZARD, NEWPROJECT_TEMPLATE_WIZARD
 	 */
 	public enum WizardType {
 		WO_APPLICATION_WIZARD, D2W_APPLICATION_WIZARD, D2WS_APPLICATION_WIZARD, JARPROJECT_WIZARD, WO_FRAMEWORK_WIZARD, WONDER_APPLICATION_WIZARD, WONDER_D2W_APPLICATION_WIZARD, WONDER_FRAMEWORK_WIZARD, NEWPROJ_TEMPLATE_WIZARD
@@ -179,11 +176,8 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	}
 
 	/**
-	 * For simple wizard type identification. A sub-classer must implement.
-	 * Valid types are WO_APPLICATION_WIZARD, D2W_APPLICATION_WIZARD,
-	 * JARPROJECT_WIZARD, WO_FRAMEWORK_WIZARD, WONDER_APPLICATION_WIZARD,
-	 * WONDER_D2W_APPLICATION_WIZARD, WONDER_FRAMEWORK_WIZARD = 7;
-	 * 
+	 * For simple wizard type identification.  A sub-classer must implement.  Valid types are
+	 * WO_APPLICATION_WIZARD, D2W_APPLICATION_WIZARD, JARPROJECT_WIZARD, WO_FRAMEWORK_WIZARD, WONDER_APPLICATION_WIZARD, WONDER_D2W_APPLICATION_WIZARD, WONDER_FRAMEWORK_WIZARD = 7;
 	 * @return wizard type
 	 */
 	protected abstract WizardType getWizardType();
@@ -314,15 +308,15 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	 * Creates a new project resource with the selected name.
 	 * <p>
 	 * In normal usage, this method is invoked after the user has pressed Finish
-	 * on the wizard; enabling of the Finish button implies that all controls on
-	 * the pages currently contain valid values.
+	 * on the wizard; enabling of the Finish button implies that all
+	 * controls on the pages currently contain valid values.
 	 * </p>
 	 * <p>
 	 * Note that this wizard caches the new project once it has been
 	 * successfully created; subsequent invocations of this method will answer
 	 * the same project resource without attempting to create it again.
 	 * </p>
-	 * 
+	 *
 	 * @return the created project resource, or <code>null</code> if the
 	 *         project was not created
 	 */
@@ -348,7 +342,8 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 		final IProject[] refProjects;
 		if (_referencePage != null) {
 			refProjects = _referencePage.getReferencedProjects();
-		} else {
+		}
+		else {
 			refProjects = null;
 		}
 
@@ -407,14 +402,14 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 
 	/**
 	 * Creates a project resource given the project handle and description.
-	 * 
+	 *
 	 * @param description
 	 *            the project description to create a project resource for
 	 * @param projectHandle
 	 *            the project handle to create a project resource for
 	 * @param monitor
 	 *            the progress monitor to show visual progress with
-	 * 
+	 *
 	 * @exception CoreException
 	 *                if the operation fails
 	 * @exception OperationCanceledException
@@ -453,9 +448,9 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	protected abstract void _createProject(IProject project, IProgressMonitor progressMonitor) throws Exception;
 
 	/**
-	 * 
+	 *
 	 * Returns the newly created project.
-	 * 
+	 *
 	 * @return the created project, or <code>null</code> if project not
 	 *         created
 	 */
@@ -552,7 +547,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	/**
 	 * Updates the perspective based on the current settings in the
 	 * Workbench/Perspectives preference page.
-	 * 
+	 *
 	 * Use the setting for the new perspective opening if we are set to open in
 	 * a new perspective.
 	 * <p>
@@ -561,10 +556,10 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	 * wizard's <code>IConfigurationElement</code>. That is the configuration
 	 * element to pass into this method.
 	 * </p>
-	 * 
+	 *
 	 * @param configElement -
 	 *            the element we are updating with
-	 * 
+	 *
 	 * @see IPreferenceConstants#OPM_NEW_WINDOW
 	 * @see IPreferenceConstants#OPM_ACTIVE_PAGE
 	 * @see IWorkbenchPreferenceConstants#NO_NEW_PERSPECTIVE
@@ -668,7 +663,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	/**
 	 * Adds to the list all perspective IDs in the Workbench who's original ID
 	 * matches the given ID.
-	 * 
+	 *
 	 * @param perspectiveIds
 	 *            the list of perspective IDs to supplement.
 	 * @param id
@@ -690,13 +685,13 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 
 	/**
 	 * Prompts the user for whether to switch perspectives.
-	 * 
+	 *
 	 * @param window
 	 *            The workbench window in which to switch perspectives; must not
 	 *            be <code>null</code>
 	 * @param finalPersp
 	 *            The perspective to switch to; must not be <code>null</code>.
-	 * 
+	 *
 	 * @return <code>true</code> if it's OK to switch, <code>false</code>
 	 *         otherwise
 	 */
@@ -748,7 +743,6 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 
 	/**
 	 * Create a component within a specific package
-	 * 
 	 * @param templateFolder
 	 * @param engine
 	 * @param rootPath
@@ -756,12 +750,12 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	 * @param packagePath
 	 */
 	protected void addComponentDefinition(String templateFolder, TemplateEngine engine, String rootPath, String name, String packagePath) {
-		// create component dir
+		//create component dir
 		String componentPath = rootPath + File.separator + name + ".wo";
 		File wo = new File(componentPath);
 		wo.mkdirs();
 
-		// create src dirs
+		//create src dirs
 		String fullPackagePath = (packagePath != null && packagePath.length() > 0) ? rootPath + File.separator + "src" + File.separator + packagePath : rootPath + File.separator + "src";
 		File srcPath = new File(fullPackagePath);
 		srcPath.mkdirs();
@@ -776,7 +770,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	/*
 	 * EOModel Support
 	 */
-	// key = file name, value = full path to file including file name
+	//key = file name, value = full path to file including file name
 	protected HashMap<String, String> getEOModelPaths() {
 		if (_eomodelImportPage == null) {
 			return new HashMap<String, String>();
@@ -785,14 +779,11 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	}
 
 	/**
-	 * Called by subclassers that want EOModel support. Doesn't use the template
-	 * engine.
-	 * 
-	 * @param project
-	 *            to add support
+	 * Called by subclassers that want EOModel support.  Doesn't use the template engine.
+	 * @param project to add support
 	 */
 	public void createEOModelSupport(IProject project) {
-		// Move any specified models over
+		//Move any specified models over
 		HashMap<String, String> paths = getEOModelPaths();
 		EOModelImportWorkspaceJob job = new EOModelImportWorkspaceJob("eomodel import", paths, project);
 		job.schedule();
@@ -813,16 +804,11 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 
 	/**
 	 * Create WebServices support
-	 * 
-	 * @param project
-	 *            to add support
+	 * @param project to add support
 	 */
 	/*
-	 * FIXME: technically the templates for these files are stored in
-	 * JavaWebObjects.framework/Resources/template_server.wsdd and
-	 * JavaWebServicesClient.framework/Resources/template_client.wsdd and could
-	 * be copied from there instead if we are able to cleanly detect their
-	 * install location (mainly non OSX platforms).
+	 * FIXME: technically the templates for these files are stored in JavaWebObjects.framework/Resources/template_server.wsdd and JavaWebServicesClient.framework/Resources/template_client.wsdd
+	 * and could be copied from there instead if we are able to cleanly detect their install location (mainly non OSX platforms).
 	 */
 	public void createWebServicesSupport(IProject project, TemplateEngine engine) {
 		String path = project.getLocation().toOSString();
@@ -839,31 +825,35 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	}
 
 	/*
-	 * Should be invoked after createProject() is called and the IProject is
-	 * open @param project
+	 * Should be invoked after createProject() is called and the IProject is open
+	 * @param project
 	 */
 	public void addWebServiceFrameworks(IProject project) {
-		try {
-			List<IEclipseFramework> newFrameworks = new LinkedList<IEclipseFramework>();
+		if (project.isOpen()) {
+			ArrayList<ContainerEntry> containerEntries = new ArrayList<ContainerEntry>();
 
 			if (_webservicesSupportPage != null) {
 				if (_webservicesSupportPage.getClientSupport()) {
-					newFrameworks.add(JdtPlugin.getDefault().getFrameworkModel().getFrameworkWithName("JavaWebServicesClient"));
+					ContainerEntry containerEntry = new ContainerEntry("JavaWebServicesClient");
+					containerEntries.add(containerEntry);
 				}
 
 				if (_webservicesSupportPage.getServerSupport()) {
-					newFrameworks.add(JdtPlugin.getDefault().getFrameworkModel().getFrameworkWithName("JavaWebServicesGeneration"));
+					ContainerEntry containerEntry = new ContainerEntry("JavaWebServicesGeneration");
+					containerEntries.add(containerEntry);
 				}
 
 				if (_webservicesSupportPage.getServerSupport() || _webservicesSupportPage.getClientSupport()) {
-					newFrameworks.add(JdtPlugin.getDefault().getFrameworkModel().getFrameworkWithName("JavaWebServicesSupport"));
+					ContainerEntry containerEntry = new ContainerEntry("JavaWebServicesSupport");
+					containerEntries.add(containerEntry);
 				}
 			}
 
-			IEclipseFramework.Utility.addFrameworksToProject(JavaCore.create(project), newFrameworks, true);
-		} catch (Exception e) {
-			WizardsPlugin.getDefault().log(e);
-			ErrorDialog.openError(getShell(), Messages.getString("NewWOProjectWizard.errorMessage.classpath.title"), Messages.getString("NewWOProjectWizard.errorMessage.classpath.message"), new Status(IStatus.WARNING, "org.objectstyle.wolips.wizards", Messages.getString("NewWOProjectWizard.errorMessage.classpath.message")));
+			//Classpath surgery
+			addFrameworksToClasspath(project, containerEntries);
+
+		} else {
+			System.err.println("Warning: project is not open and cannot be fully configured");
 		}
 	}
 
@@ -879,27 +869,58 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 		pFile.mkdirs();
 	}
 
+	/**
+	 * Classpath Support
+	 */
+	public void addFrameworksToClasspath(IProject project, ArrayList<ContainerEntry> containerEntries) {
+		//Classpath surgery
+		try {
+			IJavaProject javaProject = (IJavaProject) project.getNature(JavaCore.NATURE_ID);
+			IClasspathEntry[] entries = javaProject.readRawClasspath();
+			ArrayList<IClasspathEntry> newEntries = new ArrayList<IClasspathEntry>(entries.length);
+			for (IClasspathEntry anEntry : entries) {
+				IPath containerPath = anEntry.getPath();
+				if (containerPath.segment(0).equals(Container.CONTAINER_IDENTITY)) {
+					ContainerEntries newContainerEntries = ContainerEntries.initWithPath(containerPath.removeFirstSegments(1));
+					newContainerEntries.add(containerEntries);
+					Container container = new Container(newContainerEntries);
+					IPath newPath = container.getPath();
+					IClasspathEntry entry = JavaCore.newContainerEntry(newPath);
+					newEntries.add(entry);
+				} else {
+					newEntries.add(anEntry);
+				}
+			}
+			javaProject.setRawClasspath(newEntries.toArray(new IClasspathEntry[] {}), javaProject.getOutputLocation(), null);
+
+		} catch (CoreException e) {
+			ErrorDialog.openError(getShell(), Messages.getString("NewWOProjectWizard.errorMessage.classpath.title"), e.toString(), new Status(IStatus.WARNING, "org.objectstyle.wolips.wizards", e.toString()));
+		} catch (PathCoderException e) {
+			ErrorDialog.openError(getShell(), Messages.getString("NewWOProjectWizard.errorMessage.classpath.title"), e.toString(), new Status(IStatus.WARNING, "org.objectstyle.wolips.wizards", e.toString()));
+		}
+	}
+
 	/*
 	 * Frameworks Support
 	 */
 	public void createFrameworksSupport(IProject project) {
-		try {
-			List<IEclipseFramework> newFrameworks = new LinkedList<IEclipseFramework>();
+		if (project.isOpen()) {
+			ArrayList<ContainerEntry> containerEntries = new ArrayList<ContainerEntry>();
 
 			if (_frameworkSupportPage != null) {
 				if (_frameworkSupportPage.getJNDISupport()) {
-					newFrameworks.add(JdtPlugin.getDefault().getFrameworkModel().getFrameworkWithName("JavaJNDIAdaptor"));
+					ContainerEntry containerEntry = new ContainerEntry("JavaJNDIAdaptor");
+					containerEntries.add(containerEntry);
 				}
 
 				if (_frameworkSupportPage.getJ2EESupport()) {
-					newFrameworks.add(JdtPlugin.getDefault().getFrameworkModel().getFrameworkWithName("JavaWOJSPServlet"));
+					ContainerEntry containerEntry = new ContainerEntry("JavaWOJSPServlet");
+					containerEntries.add(containerEntry);
 				}
 			}
-
-			// Classpath surgery
-			IEclipseFramework.Utility.addFrameworksToProject(JavaCore.create(project), newFrameworks, true);
-		} catch (Exception e) {
-			WizardsPlugin.getDefault().log(e);
+			//			 Classpath surgery
+			addFrameworksToClasspath(project, containerEntries);
+		} else {
 			ErrorDialog.openError(getShell(), Messages.getString("NewWOProjectWizard.errorMessage.classpath.title"), Messages.getString("NewWOProjectWizard.errorMessage.classpath.message"), new Status(IStatus.WARNING, "org.objectstyle.wolips.wizards", Messages.getString("NewWOProjectWizard.errorMessage.classpath.message")));
 		}
 	}
