@@ -25,6 +25,7 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.RuntimeServices;
 import org.apache.velocity.runtime.log.LogSystem;
+import org.apache.velocity.runtime.parser.node.ASTprocess;
 import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
 import org.apache.velocity.tools.generic.ListTool;
 import org.objectstyle.wolips.eogenerator.core.Activator;
@@ -150,7 +151,8 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 				context.put("entity", entity);
 
 				String classNameWithPackage = entity.getClassName();
-				if (classNameWithPackage != null && !"EOGenericRecord".equals(classNameWithPackage) && !"com.webobjects.control.EOGenericRecord".equals(classNameWithPackage)) {
+				boolean eogenericRecord = classNameWithPackage == null || classNameWithPackage.endsWith("GenericRecord");
+				if (entity.isGenerateSource() && !eogenericRecord) {
 					String prefixClassNameWithPackage = entity.getPrefixClassName();
 
 					String subclassFilePath = classNameWithPackage.replace('.', '/') + ".java";
@@ -200,25 +202,39 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 				throw new IOException("Unable to create the folder " + outputFile.getParentFile() + ".");
 			}
 		}
+		
+		Object data = template.getData();
+		if (data != null) {
+			System.out.println("VelocityEOGeneratorRunner.writeTemplate: " + data);
+		}
 
+		ByteArrayOutputStream newFileContentsStream = new ByteArrayOutputStream();
+		Writer newFileContentsWriter = new OutputStreamWriter(newFileContentsStream);
+		try {
+			template.merge(context, newFileContentsWriter);
+		} finally {
+			newFileContentsWriter.close();
+		}
+		String newFileContentsStr = newFileContentsStream.toString();
+		if (newFileContentsStr != null) {
+			if (newFileContentsStr.contains("<%")) {
+				throw new IOException("You are attempting to use an old EOGenerator template with Velocity EOGenerator.");
+			}
+			else if (newFileContentsStr.contains("<wo:")) {
+				throw new IOException("You are attempting to use a JavaEOGenerator template with Velocity EOGenerator.");
+			}
+		}
+		
 		boolean templateChanged = true;
 		if (!outputFile.exists()) {
 			FileWriter newFileWriter = new FileWriter(outputFile);
 			BufferedWriter newFileBufferedWriter = new BufferedWriter(newFileWriter);
 			try {
-				template.merge(context, newFileBufferedWriter);
+				newFileBufferedWriter.write(newFileContentsStr);
 			} finally {
 				newFileBufferedWriter.close();
 			}
 		} else {
-			ByteArrayOutputStream newFileContentsStream = new ByteArrayOutputStream();
-			Writer newFileContentsWriter = new OutputStreamWriter(newFileContentsStream);
-			try {
-				template.merge(context, newFileContentsWriter);
-			} finally {
-				newFileContentsWriter.close();
-			}
-			
 			byte[] newFileContents = newFileContentsStream.toByteArray();
 			if (outputFile.exists()) {
 				FileInputStream fis = new FileInputStream(outputFile);
