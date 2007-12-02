@@ -3,6 +3,8 @@ package org.objectstyle.wolips.eomodeler.core.model;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.HashSet;
+import org.apache.commons.collections.set.ListOrderedSet;
 
 import org.objectstyle.wolips.eomodeler.core.wocompat.ParserDataStructureFactory;
 
@@ -47,7 +49,8 @@ public class EOModelParserDataStructureFactory implements ParserDataStructureFac
 		}
 		Collection<Object> collection;
 		if (createSortedSet) {
-			collection = new PropertyListSet<Object>();
+			//collection = new PropertyListSet<Object>();
+			collection = ListOrderedSet.decorate(new HashSet<Object>());
 		} else {
 			collection = new LinkedList<Object>();
 		}

@@ -139,20 +139,36 @@ public class PropertyListSerialization {
 	 * @throws PropertyListParserException
 	 * @throws IOException
 	 */
-	public static void propertyListToFile(String header, File f, Object plist) throws PropertyListParserException, IOException {
-		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), Charset.forName("UTF-8")));
-		if (header != null && header.length() > 0) {
-			out.append("// " + header);
-			out.append("\n");
-		}
+	public static void propertyListToFile(@SuppressWarnings("unused") String header, File f, Object plist) throws PropertyListParserException, IOException {
+		BufferedWriter out = null;
 		try {
 			String str = EMPropertyListSerialization.stringFromPropertyList(plist);
 			if (str != null) {
+				try {
+					Object existingPlistContent = propertyListFromFile(f);
+					Object newPlistContent = EMPropertyListSerialization.propertyListFromString(str, new SimpleParserDataStructureFactory());
+					if (existingPlistContent.equals(newPlistContent)) {
+						return;
+					}
+				} catch (Exception e) {
+					// in this case, just proceed to write it out
+				}
+
+				out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), Charset.forName("UTF-8")));
+				/*
+				 * if (header != null && header.length() > 0) { out.append("// " +
+				 * header); out.append("\n"); }
+				 */
 				out.write(str);
+				if (str.length() > 0 && str.charAt(str.length() - 1) != '\n') {
+					out.write('\n');
+				}
 			}
 			// writeObject("", out, plist);
 		} finally {
-			out.close();
+			if (out != null) {
+				out.close();
+			}
 		}
 	}
 

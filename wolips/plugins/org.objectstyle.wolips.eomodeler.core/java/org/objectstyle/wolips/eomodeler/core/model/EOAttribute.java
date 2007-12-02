@@ -855,8 +855,8 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		} else {
 			attributeMap.remove("prototypeName");
 		}
-		attributeMap.setBoolean("isReadOnly", myReadOnly, EOModelMap.YN);
-		attributeMap.setBoolean("isIndexed", myIndexed, EOModelMap.YN);
+		attributeMap.setBoolean("isReadOnly", myReadOnly, EOModelMap.YNOptional);
+		attributeMap.setBoolean("isIndexed", myIndexed, EOModelMap.YNOptional);
 		attributeMap.setString("readFormat", myReadFormat, true);
 		attributeMap.remove("selectFormat");
 		attributeMap.setString("writeFormat", myWriteFormat, true);

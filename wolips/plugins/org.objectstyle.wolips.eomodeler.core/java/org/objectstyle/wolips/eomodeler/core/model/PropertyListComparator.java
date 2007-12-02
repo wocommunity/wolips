@@ -50,7 +50,9 @@
 package org.objectstyle.wolips.eomodeler.core.model;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -59,11 +61,62 @@ public class PropertyListComparator implements Comparator<Object> {
 
 	public static final PropertyListComparator AscendingPropertyListComparator = new PropertyListComparator();
 
+	protected Map guideMap;
+
+	public static PropertyListComparator propertyListComparatorWithGuideArray(Object[] guideArray) {
+		if (guideArray != null && guideArray.length > 0) {
+			Object[] sortedArray = guideArray.clone();
+			Arrays.sort(sortedArray, AscendingPropertyListComparator);
+
+			if (!Arrays.equals(guideArray, sortedArray)) { // if it was already
+															// sorted, don't use
+															// it
+				PropertyListComparator result = new PropertyListComparator();
+				int size = guideArray.length;
+				if (size > 0) {
+					result.guideMap = new HashMap(size);
+
+					for (int i = 0; i < size; ++i) {
+						Object origEntry = guideArray[i];
+						Object oneEntry = origEntry;
+						if (origEntry instanceof Map) {
+							Object name = ((Map) origEntry).get("name");
+							if (name == null) {
+								name = ((Map) origEntry).get("prototypeName");
+							}
+							if (name != null) {
+								oneEntry = name;
+							}
+						}
+						if (oneEntry != null) {
+							result.guideMap.put(oneEntry, new Integer(i));
+						}
+					}
+				}
+
+				return result;
+			}
+		}
+
+		return AscendingPropertyListComparator;
+	}
+
 	public int compare(Object arg0, Object arg1) {
 		if (arg0 == null) {
 			return (arg1 == null) ? 0 : -1;
 		} else if (arg1 == null) {
 			return 1;
+		} else if (guideMap != null && (guideMap.get(arg0) != null || guideMap.get(arg1) != null)) {
+			Integer guide0 = (Integer) guideMap.get(arg0);
+			Integer guide1 = (Integer) guideMap.get(arg1);
+
+			if (guide0 == null) { // guide1 not null, by check above
+				return 1;
+			} else if (guide1 == null) {
+				return -1;
+			} else {
+				return guide0.compareTo(guide1);
+			}
 		} else if (arg0 instanceof String && arg1 instanceof String) {
 			return ((String) arg0).compareTo((String) arg1);
 		} else if (arg0 instanceof Number && arg1 instanceof Number) {

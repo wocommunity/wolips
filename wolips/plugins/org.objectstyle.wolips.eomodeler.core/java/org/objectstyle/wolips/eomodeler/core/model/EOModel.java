@@ -832,8 +832,8 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			// connection dictionary
 			if (connectionDictionaryDatabaseConfig == null) {
 				connectionDictionaryDatabaseConfig = tempConnectionDictionaryDatabaseConfig;
-				addDatabaseConfig(connectionDictionaryDatabaseConfig, false, _failures);
 				if (canSave() && createMissingDatabaseConfig && isEditing()) {
+					addDatabaseConfig(connectionDictionaryDatabaseConfig, false, _failures);
 					_failures.add(new EOModelVerificationFailure(this, this, "Creating default database config for model '" + getName() + "'.", true, null));
 				}
 			}
@@ -869,8 +869,8 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		modelMap.put("connectionDictionary", connectionDictionary);
 		modelMap.setString("adaptorName", adaptorName, true);
 
-		Set<Map> entities = new PropertyListSet<Map>();
-		Set<String> entitiesWithSharedObjects = new PropertyListSet<String>();
+		Set<Map> entities = new PropertyListSet<Map>( EOModelMap.asArray(myModelMap.get("entities")) );
+		Set<String> entitiesWithSharedObjects = new PropertyListSet<String>( EOModelMap.asArray(myModelMap.get("entitiesWithSharedObjects")) );
 		for (EOEntity entity : myEntities) {
 			EOModelMap entityMap = new EOModelMap();
 			entityMap.setString("className", entity.getClassName(), true);
@@ -898,23 +898,25 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		}
 		modelMap.setMap("internalInfo", internalInfoMap, true);
 
-		Set<String> storedProcedures = new PropertyListSet<String>();
+		Set<String> storedProcedures = new PropertyListSet<String>( EOModelMap.asArray(myModelMap.get("storedProcedures")) );
 		for (EOStoredProcedure storedProcedure : myStoredProcedures) {
 			storedProcedures.add(storedProcedure.getName());
 		}
 		modelMap.setSet("storedProcedures", storedProcedures, true);
 
 		EOModelMap entityModelerMap = new EOModelMap((Map) getUserInfo().get(UserInfoableEOModelObject.ENTITY_MODELER_KEY));
-		if (myActiveDatabaseConfig == null) {
-			entityModelerMap.remove("activeDatabaseConfigName");
-		} else {
-			entityModelerMap.put("activeDatabaseConfigName", myActiveDatabaseConfig.getName());
-		}
 		Map<String, Map> databaseConfigs = new PropertyListMap<String, Map>();
 		for (EODatabaseConfig databaseConfig : myDatabaseConfigs) {
 			databaseConfigs.put(databaseConfig.getName(), databaseConfig.toMap());
 		}
 		entityModelerMap.setMap("databaseConfigs", databaseConfigs, true);
+		
+		if (myActiveDatabaseConfig == null || databaseConfigs.get(myActiveDatabaseConfig.getName()) == null) {
+			entityModelerMap.remove("activeDatabaseConfigName");
+		} else {
+			entityModelerMap.put("activeDatabaseConfigName", myActiveDatabaseConfig.getName());
+		}
+
 		if (entityModelerMap.isEmpty()) {
 			getUserInfo().remove(UserInfoableEOModelObject.ENTITY_MODELER_KEY);
 		} else {

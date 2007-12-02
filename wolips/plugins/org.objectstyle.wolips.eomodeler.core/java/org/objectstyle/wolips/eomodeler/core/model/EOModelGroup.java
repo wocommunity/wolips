@@ -80,7 +80,8 @@ public class EOModelGroup extends EOModelObject<Object> {
 
 	public EOModelGroup() {
 		_models = new HashSet<EOModel>();
-		_createDefaultDatabaseConfig = true;
+		//_createDefaultDatabaseConfig = true;
+		_createDefaultDatabaseConfig = false;
 		_prefix = "_";
 		_eogenericRecordClassName = "com.webobjects.eocontrol.EOGenericRecord";
 	}
