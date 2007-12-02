@@ -82,6 +82,8 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 
 	private Button myReadOnlyButton;
 
+	private Button myGenerateSourceButton;
+
 	private Text myExternalQueryText;
 
 	private Text myClientClassNameText;
@@ -134,6 +136,9 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 		GridData clientClassNameLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		myClientClassNameText.setLayoutData(clientClassNameLayoutData);
 
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.GENERATE_SOURCE), SWT.NONE);
+		myGenerateSourceButton = new Button(topForm, SWT.CHECK);
+
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.PARTIAL_ENTITY), SWT.NONE);
 		Combo partialEntityCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
 		myPartialEntityComboViewer = new ComboViewer(partialEntityCombo);
@@ -156,6 +161,7 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 			// "^[0-9]+$", "Please enter a number"), null));
 			myBindingContext.bindValue(SWTObservables.observeSelection(myCacheInMemoryButton), BeansObservables.observeValue(myEntity, EOEntity.CACHES_OBJECTS), null, null);
 			myBindingContext.bindValue(SWTObservables.observeSelection(myReadOnlyButton), BeansObservables.observeValue(myEntity, EOEntity.READ_ONLY), null, null);
+			myBindingContext.bindValue(SWTObservables.observeSelection(myGenerateSourceButton), BeansObservables.observeValue(myEntity, EOEntity.GENERATE_SOURCE), null, null);
 			myBindingContext.bindValue(SWTObservables.observeText(myExternalQueryText, SWT.Modify), BeansObservables.observeValue(myEntity, EOEntity.EXTERNAL_QUERY), null, null);
 			myBindingContext.bindValue(SWTObservables.observeText(myClientClassNameText, SWT.Modify), BeansObservables.observeValue(myEntity, EOEntity.CLIENT_CLASS_NAME), null, null);
 
