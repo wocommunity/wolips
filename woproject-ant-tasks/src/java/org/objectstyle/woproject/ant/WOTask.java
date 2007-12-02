@@ -87,6 +87,8 @@ public abstract class WOTask extends Task {
 	protected String wsDestDir;
 
 	protected String principalClass;
+	
+	protected String servletAdaptor = "com.webobjects.jspservlet.WOServletAdaptor";
 
 	protected String manifest;
 
@@ -270,6 +272,24 @@ public abstract class WOTask extends Task {
 	 */
 	public String getPrincipalClass() {
 		return principalClass;
+	}
+	
+	/**
+	 * Sets the WO servlet adaptor for this application.
+	 *  
+	 * @param servletAdaptor the WO servlet adaptor for this application
+	 */
+	public void setServletAdaptor(String servletAdaptor) {
+	  this.servletAdaptor = servletAdaptor;
+	}
+	
+	/**
+	 * Returns the WO servlet adaptor for this application.
+	 * 
+	 * @return the WO servlet adaptor for this application
+	 */
+	public String getServletAdaptor() {
+	  return servletAdaptor;
 	}
 
 	/**

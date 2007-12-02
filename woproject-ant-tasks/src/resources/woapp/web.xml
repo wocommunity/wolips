@@ -86,7 +86,7 @@
        world and the WebObjects world. -->
   <servlet>
     <servlet-name>WOServletAdaptor</servlet-name>
-    <servlet-class>com.webobjects.jspservlet.WOServletAdaptor</servlet-class>
+    <servlet-class>@WOServletAdaptor@</servlet-class>
     <load-on-startup>5</load-on-startup>
   </servlet>
 

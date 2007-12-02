@@ -361,6 +361,15 @@ public class AppFormat extends ProjectFormat {
 	private String getAppClass() {
 		return task.getPrincipalClass();
 	}
+	
+	/**
+	 * Returns the WO servlet adaptor for this application.
+	 * 
+	 * @return the WO servlet adaptor for this application
+	 */
+	private String getServletAdaptor() {
+	  return task.getServletAdaptor();
+	}
 
 	/**
 	 * Method createMappings.
@@ -558,6 +567,7 @@ public class AppFormat extends ProjectFormat {
 		filter.addFilter("WOAppMode", woappTask.getWebXML_WOAppMode());
 		filter.addFilter("WOClasspath", paths);
 		filter.addFilter("WOApplicationClass", this.getAppClass());
+		filter.addFilter("WOServletAdaptor", this.getServletAdaptor());
 		filter.addFilter("WOTagLib", woappTask.getWebXML_WOtaglib());
 		String customContent = woappTask.getWebXML_CustomContent();
 		if (customContent == null) {
