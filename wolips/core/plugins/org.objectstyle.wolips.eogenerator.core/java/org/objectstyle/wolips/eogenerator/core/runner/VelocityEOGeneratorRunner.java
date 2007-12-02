@@ -25,7 +25,6 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.RuntimeServices;
 import org.apache.velocity.runtime.log.LogSystem;
-import org.apache.velocity.runtime.parser.node.ASTprocess;
 import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
 import org.apache.velocity.tools.generic.ListTool;
 import org.objectstyle.wolips.eogenerator.core.Activator;
