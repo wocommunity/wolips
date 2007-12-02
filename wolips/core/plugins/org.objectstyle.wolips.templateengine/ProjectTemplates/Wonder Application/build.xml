@@ -47,7 +47,7 @@
 		</taskdef>
 
 		<!-- add webXML="true" to generate a web.xml file -->
-		<woapplication name="${project.name}" stdFrameworks="false" destDir="${dest.dir}" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}" webXML="${webXML}" webXML_CustomContent="${webXML_CustomContent}">
+		<woapplication name="${project.name}" stdFrameworks="false" destDir="${dest.dir}" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}" webXML="${webXML}" webXML_CustomContent="${webXML_CustomContent}" servletAdaptor = "er.extensions.jspservlet.ERXServletAdaptor">
 			<classes dir="${classes.dir}">
 				<patternset>
 					<includesfile name="${WOLipsContext.getAntFolderName()}/classes.include.patternset" />
@@ -108,22 +108,12 @@
 	<!-- optional targets -->
 
 	<!-- war target-->
-	<!-- To use this target remove the if="${never}" statement and create the LICENSE in your project  
-         and create the web.xml file with the woapplication task.-->
-	<target name="war" if="${never}">
-		<war destfile="${dest.dir}/${project.name}.war" webxml="${dest.dir}/${project.name}.woa/Contents/web.xml">
-			<fileset dir="${dest.dir}">
-				<include name="${project.name}.woa/**" />
+	<!-- To use this target remove the if="${never}" statement and follow the instructions for the ssdd target -->
+	<target name="war" if="${never}" depends="ssdd">
+		<war destfile="${dest.dir}/${project.name}.war" webxml="${dest.dir}/${project.name}/WEB-INF/web.xml">
+			<fileset dir="${dest.dir}/${project.name}">
+				<include name="**" />
 			</fileset>
-			<fileset dir="..">
-				<include name="LICENSE" />
-			</fileset>
-			<lib dir="${wo.wosystemroot}/Library/Frameworks/JavaWOJSPServlet.framework/WebServerResources/Java/">
-				<include name="JavaWOJSPServlet_client.jar" />
-			</lib>
-			<zipfileset dir="${wo.wosystemroot}/Library/Frameworks/JavaWOJSPServlet.framework/Resources/" prefix="tlds">
-				<include name="WOtaglib_1_0.tld" />
-			</zipfileset>
 		</war>
 	</target>
 
