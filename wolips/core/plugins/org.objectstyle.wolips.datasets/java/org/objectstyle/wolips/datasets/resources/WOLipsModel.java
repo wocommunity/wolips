@@ -236,9 +236,11 @@ public final class WOLipsModel implements IWOLipsModel {
 		int compilationUnitType = WOLipsModel.UNKNOWN_COMPILATION_UNIT_TYPE;
 		try {
 			IType type = compilationUnit.findPrimaryType();
-			ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(type);
-			types = typeHierarchy.getAllSupertypes(type);
-			compilationUnitType = this.getWOLipsCompilationUnitType(types);
+			if (type != null) {
+				ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(type);
+				types = typeHierarchy.getAllSupertypes(type);
+				compilationUnitType = this.getWOLipsCompilationUnitType(types);
+			}
 		} catch (JavaModelException e) {
 			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		}
