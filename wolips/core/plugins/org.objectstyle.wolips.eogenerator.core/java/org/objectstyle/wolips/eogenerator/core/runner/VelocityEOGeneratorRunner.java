@@ -36,6 +36,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
+import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.thirdparty.velocity.resourceloader.ResourceLoader;
 
 public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
@@ -71,8 +72,15 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			subclassTemplateName = eogeneratorModel.getSubclassJavaTemplate("Entity.java");
 		}
 		else {
-			superclassTemplateName = "_Entity.java";
-			subclassTemplateName = "Entity.java";
+			boolean eogeneratorJava14 = Preferences.isEOGeneratorJava14();
+			if (eogeneratorJava14) {
+				superclassTemplateName = "_Entity14.java";
+				subclassTemplateName = "Entity14.java";
+			}
+			else {
+				superclassTemplateName = "_Entity.java";
+				subclassTemplateName = "Entity.java";
+			}
 		}
 		velocityEngine.setProperty("resource.loader", "file,wolips");
 		velocityEngine.setProperty("file.resource.loader.class", FileResourceLoader.class.getName());
@@ -202,11 +210,6 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			}
 		}
 		
-		Object data = template.getData();
-		if (data != null) {
-			System.out.println("VelocityEOGeneratorRunner.writeTemplate: " + data);
-		}
-
 		ByteArrayOutputStream newFileContentsStream = new ByteArrayOutputStream();
 		Writer newFileContentsWriter = new OutputStreamWriter(newFileContentsStream);
 		try {
