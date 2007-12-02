@@ -8,6 +8,10 @@ public class PropertyListSet<T> extends TreeSet<T> {
 		super(PropertyListComparator.AscendingPropertyListComparator);
 	}
 
+	public PropertyListSet(Object[] guideArray) {
+		super(PropertyListComparator.propertyListComparatorWithGuideArray(guideArray));
+	}
+
 	public PropertyListSet(Set<T> _set) {
 		this();
 		addAll(_set);

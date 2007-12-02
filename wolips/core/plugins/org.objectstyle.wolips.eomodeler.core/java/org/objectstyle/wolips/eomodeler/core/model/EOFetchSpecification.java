@@ -632,14 +632,22 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 		fetchSpecMap.setInteger("fetchLimit", myFetchLimit);
 		fetchSpecMap.setBoolean("isDeep", myDeep, EOModelMap.YESNO);
 		fetchSpecMap.setBoolean("locksObjects", myLocksObjects, EOModelMap.YESNO);
-		fetchSpecMap.setSet("prefetchingRelationshipKeyPaths", myPrefetchingRelationshipKeyPaths, false);
+		
+		if( myPrefetchingRelationshipKeyPaths == null || !myPrefetchingRelationshipKeyPaths.equals(fetchSpecMap.get("prefetchingRelationshipKeyPaths")) ) {
+			fetchSpecMap.setSet("prefetchingRelationshipKeyPaths", myPrefetchingRelationshipKeyPaths, false);
+		}
+
 		fetchSpecMap.setBoolean("prompsAfterFetchLimit", myPromptsAfterFetchLimit, EOModelMap.YESNO);
 		if (myQualifier == null) {
 			fetchSpecMap.setMap("qualifier", null, true);
 		} else {
 			fetchSpecMap.setMap("qualifier", EOQualifierFactory.createQualifierMapFromExpression(myQualifier), true);
 		}
-		fetchSpecMap.setSet("rawRowKeyPaths", myRawRowKeyPaths, false);
+		if( myRawRowKeyPaths != null && myRawRowKeyPaths.equals(myFetchSpecMap.get("rawRowKeyPaths")) ) {
+			fetchSpecMap.setSet("rawRowKeyPaths", (Set)myFetchSpecMap.get("rawRowKeyPaths"), false);
+		} else {
+			fetchSpecMap.setSet("rawRowKeyPaths", myRawRowKeyPaths, false);
+		}
 		fetchSpecMap.setBoolean("refreshesRefetchedObjects", myRefreshesRefetchedObjects, EOModelMap.YESNO);
 		fetchSpecMap.setBoolean("requiresAllQualifierBindingVariables", myRequiresAllQualifierBindingVariables, EOModelMap.YESNO);
 		fetchSpecMap.setBoolean("usesDistinct", myUsesDistinct, EOModelMap.YESNO);

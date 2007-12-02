@@ -348,7 +348,7 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 	public String _getDefinition() {
 		return myDefinition;
 	}
-	
+
 	public void updateDefinitionBecauseRelationshipNameChanged(EORelationship relationship) {
 		if (isFlattened()) {
 			EORelationshipPath definitionPath = getDefinitionPath();
@@ -465,7 +465,7 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 	public String getName() {
 		return myName;
 	}
-	
+
 	public String getUppercaseUnderscoreName() {
 		return StringUtils.camelCaseToUnderscore(getName()).toUpperCase();
 	}
@@ -477,7 +477,7 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 		}
 		return name;
 	}
-	
+
 	public EODeleteRule getDeleteRule() {
 		return myDeleteRule;
 	}
@@ -770,10 +770,12 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 		}
 		relationshipMap.setString("definition", getDefinition(), true);
 		relationshipMap.remove("dataPath");
-		relationshipMap.setBoolean("isMandatory", myMandatory, EOModelMap.YN);
+		relationshipMap.setBoolean("isMandatory", myMandatory, EOModelMap.YNOptional);
 		relationshipMap.setBoolean("isToMany", myToMany, EOModelMap.YN);
 		if (!isFlattened() && myJoinSemantic != null) {
 			relationshipMap.setString("joinSemantic", myJoinSemantic.getID(), true);
+		} else if (isFlattened() && myRelationshipMap.get("joinSemantic") != null) {
+			relationshipMap.setString("joinSemantic", (String) myRelationshipMap.get("joinSemantic"), true);
 		} else {
 			relationshipMap.remove("joinSemantic");
 		}
@@ -783,8 +785,8 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 		} else {
 			relationshipMap.remove("deleteRule");
 		}
-		relationshipMap.setBoolean("ownsDestination", myOwnsDestination, EOModelMap.YN);
-		relationshipMap.setBoolean("propagatesPrimaryKey", myPropagatesPrimaryKey, EOModelMap.YN);
+		relationshipMap.setBoolean("ownsDestination", myOwnsDestination, EOModelMap.YNOptional);
+		relationshipMap.setBoolean("propagatesPrimaryKey", myPropagatesPrimaryKey, EOModelMap.YNOptional);
 		relationshipMap.setInteger("numberOfToManyFaultsToBatchFetch", myNumberOfToManyFaultsToBatchFetch);
 		Set<Map> joins = new PropertyListSet<Map>();
 		for (EOJoin join : myJoins) {
@@ -793,6 +795,13 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 		}
 		relationshipMap.setSet("joins", joins, true);
 		writeUserInfo(relationshipMap);
+		// remove join semantic for flattened if anything else is changing
+//		if (!EOEntity.deepEquals(relationshipMap, myRelationshipMap)) {
+//			if (isFlattened()) {
+//				relationshipMap.remove("joinSemantic");
+//			}
+//		}
+
 		return relationshipMap;
 	}
 

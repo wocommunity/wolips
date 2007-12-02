@@ -6,7 +6,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -84,9 +86,9 @@ public class EMPropertyListSerialization {
 			} else if (object instanceof EMMutableData) {
 				_appendDataToStringBuffer((EMMutableData) object, buffer, indentionLevel);
 			} else if (object instanceof List) {
-				_appendArrayToStringBuffer((List) object, buffer, indentionLevel);
+				_appendCollectionToStringBuffer((List) object, buffer, indentionLevel);
 			} else if (object instanceof Set) {
-				_appendSetToStringBuffer((Set) object, buffer, indentionLevel);
+				_appendCollectionToStringBuffer((Set) object, buffer, indentionLevel);
 			} else if (object instanceof Map) {
 				_appendDictionaryToStringBuffer((Map) object, buffer, indentionLevel);
 			} else if (object instanceof Boolean) {
@@ -96,7 +98,6 @@ public class EMPropertyListSerialization {
 				_appendStringToStringBuffer(object.toString(), buffer, indentionLevel);
 			}
 		}
-
 
 		/**
 		 * Escapes all doublequotes and backslashes.
@@ -167,9 +168,9 @@ public class EMPropertyListSerialization {
 		}
 
 		/**
-		 * Returns a quoted String, with all the escapes preprocessed. May return an
-		 * unquoted String if it contains no special characters. The rule for a
-		 * non-special character is the following:
+		 * Returns a quoted String, with all the escapes preprocessed. May
+		 * return an unquoted String if it contains no special characters. The
+		 * rule for a non-special character is the following:
 		 * 
 		 * <pre>
 		 *       c &gt;= 'a' &amp;&amp; c &lt;= 'z'
@@ -188,7 +189,7 @@ public class EMPropertyListSerialization {
 			// scan string for special chars,
 			// if we have them, string must be quoted
 
-			String noQuoteExtras = "_$:./";
+			// String noQuoteExtras = "_$:./";
 			char[] chars = string.toCharArray();
 			int len = chars.length;
 			if (len == 0) {
@@ -197,7 +198,9 @@ public class EMPropertyListSerialization {
 			for (int i = 0; !shouldQuote && i < len; i++) {
 				char c = chars[i];
 
-				if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || noQuoteExtras.indexOf(c) >= 0) {
+				// if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >=
+				// '0' && c <= '9') || noQuoteExtras.indexOf(c) >= 0) {
+				if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')) {
 					continue;
 				}
 				shouldQuote = true;
@@ -208,8 +211,7 @@ public class EMPropertyListSerialization {
 				buffer.append('\"');
 				buffer.append(escapedStr);
 				buffer.append('\"');
-			}
-			else {
+			} else {
 				buffer.append(escapedStr);
 			}
 		}
@@ -228,54 +230,62 @@ public class EMPropertyListSerialization {
 			buffer.append('>');
 		}
 
-		private static void _appendArrayToStringBuffer(List array, StringBuffer buffer, int indentionLevel) throws PropertyListParserException {
+		private static void _appendCollectionToStringBuffer(Collection collection, StringBuffer buffer, int indentionLevel) throws PropertyListParserException {
 			buffer.append('(');
-			int count = array.size();
-			if (count > 0) {
-				for (int i = 0; i < count; i++) {
-					Object obj = array.get(i);
+			if (!collection.isEmpty()) {
+				int originalLength = buffer.length();
+				StringBuffer oneLineBuffer = new StringBuffer(78);
+				Iterator iter = collection.iterator();
+				for (int i = 0; iter.hasNext(); i++) {
+					Object obj = iter.next();
 					if (obj != null) {
 						if (i > 0) {
-							buffer.append(',');
+							buffer.append(", ");
 						}
 						buffer.append('\n');
 						_appendIndentationToStringBuffer(buffer, indentionLevel + 1);
+						int itemStart = buffer.length();
 						_appendObjectToStringBuffer(obj, buffer, indentionLevel + 1);
-					}
-				}
-				buffer.append('\n');
-				_appendIndentationToStringBuffer(buffer, indentionLevel);
-			}
-			buffer.append(')');
-		}
+						int itemEnd = buffer.length();
 
-		private static void _appendSetToStringBuffer(Set set, StringBuffer buffer, int indentionLevel) throws PropertyListParserException {
-			buffer.append('(');
-			int count = set.size();
-			if (count > 0) {
-				int i = 0;
-				for (Object o : set) {
-					if (o != null) {
-						if (i > 0) {
-							buffer.append(',');
+						if (oneLineBuffer != null && (oneLineBuffer.length() + (itemEnd - itemStart) < 79)) {
+							if (i > 0) {
+								oneLineBuffer.append(", ");
+							}
+							oneLineBuffer.append(buffer.substring(itemStart, itemEnd));
+						} else {
+							oneLineBuffer = null;
 						}
-						buffer.append('\n');
-						_appendIndentationToStringBuffer(buffer, indentionLevel + 1);
-						_appendObjectToStringBuffer(o, buffer, indentionLevel + 1);
-						i++;
+
 					}
 				}
-				buffer.append('\n');
-				_appendIndentationToStringBuffer(buffer, indentionLevel);
+
+				if (oneLineBuffer != null && oneLineBuffer.length() < 78) {
+					buffer.setLength(originalLength);
+					buffer.append(oneLineBuffer);
+				} else {
+					buffer.append('\n');
+					_appendIndentationToStringBuffer(buffer, indentionLevel);
+				}
 			}
 			buffer.append(')');
 		}
 
 		private static void _appendDictionaryToStringBuffer(Map dictionary, StringBuffer buffer, int indentionLevel) throws PropertyListParserException {
 			buffer.append('{');
-			int count = dictionary.size();
-			if (count > 0) {
-				for (Iterator keyEnumerator = dictionary.keySet().iterator(); keyEnumerator.hasNext();) {
+			if (!dictionary.isEmpty()) {
+				int originalLength = buffer.length();
+				StringBuffer oneLineBuffer = new StringBuffer(78);
+				Iterator keyEnumerator;
+				Set keySet = dictionary.keySet();
+				ArrayList arrayList = new ArrayList(keySet);
+				try {
+					Collections.sort(arrayList);
+					keyEnumerator = arrayList.iterator();
+				} catch (Exception e) {
+					keyEnumerator = keySet.iterator();
+				}
+				while (keyEnumerator.hasNext()) {
 					Object key = keyEnumerator.next();
 					if (!(key instanceof String)) {
 						throw new PropertyListParserException("Property list generation failed while attempting to write hashtable. Non-String key found in Hashtable. Property list dictionaries must have String's as keys.");
@@ -284,21 +294,40 @@ public class EMPropertyListSerialization {
 					if (value != null) {
 						buffer.append('\n');
 						_appendIndentationToStringBuffer(buffer, indentionLevel + 1);
+						int keyStart = buffer.length();
 						_appendStringToStringBuffer((String) key, buffer, indentionLevel + 1);
+						int keyEnd = buffer.length();
 						buffer.append(" = ");
+						int valueStart = buffer.length();
 						_appendObjectToStringBuffer(value, buffer, indentionLevel + 1);
-						buffer.append(';');
+						int valueEnd = buffer.length();
+						buffer.append("; ");
+
+						if (oneLineBuffer != null && (oneLineBuffer.length() + (keyEnd - keyStart) + (valueEnd - valueStart) < 79)) {
+							oneLineBuffer.append(buffer.substring(keyStart, keyEnd));
+							oneLineBuffer.append(" = ");
+							oneLineBuffer.append(buffer.substring(valueStart, valueEnd));
+							oneLineBuffer.append("; ");
+						} else {
+							oneLineBuffer = null;
+						}
 					}
 				}
-				buffer.append('\n');
-				_appendIndentationToStringBuffer(buffer, indentionLevel);
+
+				if (oneLineBuffer != null && oneLineBuffer.length() < 78) {
+					buffer.setLength(originalLength);
+					buffer.append(oneLineBuffer);
+				} else {
+					buffer.append('\n');
+					_appendIndentationToStringBuffer(buffer, indentionLevel);
+				}
 			}
 			buffer.append('}');
 		}
 
 		private static void _appendIndentationToStringBuffer(StringBuffer buffer, int indentionLevel) {
 			for (int i = 0; i < indentionLevel; i++) {
-				buffer.append('\t');
+				buffer.append("    ");
 			}
 		}
 

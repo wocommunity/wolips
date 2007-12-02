@@ -62,6 +62,8 @@ public class EOModelMap implements Map {
 
 	public static final int YN = 2;
 
+	public static final int YNOptional = 3;
+
 	private Map myBackingMap;
 
 	public EOModelMap() {
@@ -82,6 +84,18 @@ public class EOModelMap implements Map {
 		return new EOModelMap(sortedMap);
 	}
 
+	//utility method--there is probably a better place for this
+	public static Object[] asArray(Object o) {
+		if( o instanceof Collection ) {
+			Collection c = (Collection)o;
+			if( c.size() > 0 ) {
+				return c.toArray();
+			}
+		}
+
+		return null;
+	}
+
 	public Map getBackingMap() {
 		return myBackingMap;
 	}
@@ -91,6 +105,12 @@ public class EOModelMap implements Map {
 			myBackingMap.remove(_key);
 		} else if (_booleanStyle == EOModelMap.YESNO) {
 			myBackingMap.put(_key, _value.booleanValue() ? "YES" : "NO");
+		} else if (_booleanStyle == EOModelMap.YNOptional) {
+			if (_value.booleanValue()) {
+				myBackingMap.put(_key, "Y");
+			} else if(!"N".equals(myBackingMap.get(_key))) { //leave "N" if it's already there
+				myBackingMap.remove(_key);
+			}
 		} else {
 			myBackingMap.put(_key, _value.booleanValue() ? "Y" : "N");
 		}

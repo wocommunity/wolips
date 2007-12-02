@@ -102,6 +102,8 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	public static final String PARTIAL_ENTITY = "partialEntity";
 
+	public static final String GENERATE_SOURCE = "generateSource";
+
 	public static final String EXTERNAL_QUERY = "externalQuery";
 
 	public static final String MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH = "maxNumberOfInstancesToBatchFetch";
@@ -139,6 +141,8 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	private EOEntity myParent;
 
 	private EOEntity myPartialEntity;
+	
+	private boolean myGenerateSource;
 
 	private String myOriginalName;
 
@@ -191,6 +195,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		myEntityIndexes = new HashSet<EOEntityIndex>();
 		myEntityMap = new EOModelMap();
 		myFetchSpecsMap = new EOModelMap();
+		myGenerateSource = true;
 	}
 
 	public EOEntity(String _name) {
@@ -988,6 +993,16 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		myPartialEntity = partialEntity;
 		firePropertyChange(EOEntity.PARTIAL_ENTITY, oldPartialEntity, myPartialEntity);
 	}
+	
+	public boolean isGenerateSource() {
+		return myGenerateSource;
+	}
+
+	public void setGenerateSource(boolean generateSource) {
+		boolean oldGenerateSource = myGenerateSource;
+		myGenerateSource = generateSource;
+		firePropertyChange(EOEntity.GENERATE_SOURCE, oldGenerateSource, myGenerateSource);
+	}
 
 	public void inheritParentAttributesAndRelationships(Set<EOModelVerificationFailure> failures, boolean warnOnly) throws DuplicateNameException {
 		EOEntity parent = getParent();
@@ -1760,22 +1775,28 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		} else {
 			entityMap.remove("parent");
 		}
-		entityMap.setBoolean("cachesObjects", myCachesObjects, EOModelMap.YN);
-		entityMap.setBoolean("isAbstractEntity", myAbstractEntity, EOModelMap.YN);
+		entityMap.setBoolean("cachesObjects", myCachesObjects, EOModelMap.YNOptional);
+		entityMap.setBoolean("isAbstractEntity", myAbstractEntity, EOModelMap.YNOptional);
 		entityMap.remove("isFetchable");
-		entityMap.setBoolean("isReadOnly", myReadOnly, EOModelMap.YN);
+		entityMap.setBoolean("isReadOnly", myReadOnly, EOModelMap.YNOptional);
 		entityMap.setString("restrictingQualifier", myRestrictingQualifier, true);
 		entityMap.remove("mappingQualifier");
 		entityMap.setString("externalQuery", myExternalQuery, true);
 		entityMap.setInteger("maxNumberOfInstancesToBatchFetch", myMaxNumberOfInstancesToBatchFetch);
 
-		entityMap.remove("fetchSpecificationDictionary");
+		if( myFetchSpecs == null || myFetchSpecs.size() == 0 ) {
+			entityMap.put("fetchSpecificationDictionary", new HashMap()); //prevents EOF from hitting the filesystem to find out there are no fetch specs
+		} else {
+			entityMap.remove("fetchSpecificationDictionary");
+		}
 
-		Set<String> classProperties = new PropertyListSet<String>();
-		Set<String> primaryKeyAttributes = new PropertyListSet<String>();
-		Set<String> attributesUsedForLocking = new PropertyListSet<String>();
-		Set<String> clientClassProperties = new PropertyListSet<String>();
-		Set<Map> attributes = new PropertyListSet<Map>();
+		Set<String> classProperties = new PropertyListSet<String>( EOModelMap.asArray(myEntityMap.get("classProperties")) );
+		Set<String> primaryKeyAttributes = new PropertyListSet<String>( EOModelMap.asArray(myEntityMap.get("primaryKeyAttributes")) );
+		Set<String> attributesUsedForLocking = new PropertyListSet<String>( EOModelMap.asArray(myEntityMap.get("attributesUsedForLocking")) );
+		
+		Map<Object, Object> oldInternalInfo = myEntityMap.getMap("internalInfo");		
+		Set<String> clientClassProperties = new PropertyListSet<String>( oldInternalInfo != null ? EOModelMap.asArray(oldInternalInfo.get("_clientClassPropertyNames")) : null );
+		Set<Map> attributes = new PropertyListSet<Map>( EOModelMap.asArray(myEntityMap.get("attributes")) );
 		for (EOAttribute attribute : myAttributes) {
 			EOModelMap attributeMap = attribute.toMap();
 			attributes.add(attributeMap);
@@ -1794,7 +1815,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		}
 		entityMap.setSet("attributes", attributes, true);
 
-		Set<Map> relationships = new PropertyListSet<Map>();
+		Set<Map> relationships = new PropertyListSet<Map>( EOModelMap.asArray(myEntityMap.get("relationships")) );
 		for (EORelationship relationship : myRelationships) {
 			EOModelMap relationshipMap = relationship.toMap();
 			relationships.add(relationshipMap);
@@ -1807,7 +1828,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		}
 		entityMap.setSet("relationships", relationships, true);
 
-		Set<Map> entityIndexes = new PropertyListSet<Map>();
+		Set<Map> entityIndexes = new PropertyListSet<Map>( EOModelMap.asArray(myEntityMap.get("entityIndexes")) );
 		for (EOEntityIndex entityIndex : myEntityIndexes) {
 			EOModelMap entityIndexMap = entityIndex.toMap();
 			entityIndexes.add(entityIndexMap);
@@ -1818,7 +1839,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		entityMap.setSet("classProperties", classProperties, true);
 		entityMap.setSet("primaryKeyAttributes", primaryKeyAttributes, true);
 
-		Set<String> sharedObjectFetchSpecificationNames = new PropertyListSet<String>();
+		Set<String> sharedObjectFetchSpecificationNames = new PropertyListSet<String>( EOModelMap.asArray(myEntityMap.get("sharedObjectFetchSpecificationNames")) );
 		for (EOFetchSpecification fetchSpec : myFetchSpecs) {
 			if (BooleanUtils.isTrue(fetchSpec.isSharesObjects())) {
 				sharedObjectFetchSpecificationNames.add(fetchSpec.getName());
@@ -1840,8 +1861,13 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		} else {
 			internalInfoMap.remove("_javaClientClassName");
 		}
-		entityMap.setMap("internalInfo", internalInfoMap, false);
 
+		if( !internalInfoMap.isEmpty() ) {
+			entityMap.setMap("internalInfo", internalInfoMap, false);
+		} else {
+			entityMap.remove("internalInfo");
+		}
+		
 		Map<String, String> storedProcedureNames = myEntityMap.getMap("storedProcedureNames");
 		if (storedProcedureNames == null) {
 			storedProcedureNames = new HashMap<String, String>();
@@ -1874,9 +1900,15 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 		EOModelMap entityModelerMap = new EOModelMap((Map) getUserInfo().get(UserInfoableEOModelObject.ENTITY_MODELER_KEY));
 		if (myPartialEntity == null) {
-			entityModelerMap.remove("partialEntity");
+			entityModelerMap.remove(EOEntity.PARTIAL_ENTITY);
 		} else {
-			entityModelerMap.put("partialEntity", myPartialEntity.getName());
+			entityModelerMap.put(EOEntity.PARTIAL_ENTITY, myPartialEntity.getName());
+		}
+		if (myGenerateSource) {
+			entityModelerMap.remove(EOEntity.GENERATE_SOURCE);
+		}
+		else {
+			entityModelerMap.setBoolean(EOEntity.GENERATE_SOURCE, Boolean.FALSE, EOModelMap.YESNO);
 		}
 		if (entityModelerMap.isEmpty()) {
 			getUserInfo().remove(UserInfoableEOModelObject.ENTITY_MODELER_KEY);
@@ -1957,7 +1989,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		}
 
 		EOModelMap entityModelerMap = new EOModelMap((Map) getUserInfo().get(UserInfoableEOModelObject.ENTITY_MODELER_KEY));
-		String partialEntityName = entityModelerMap.getString("partialEntity", true);
+		String partialEntityName = entityModelerMap.getString(EOEntity.PARTIAL_ENTITY, true);
 		if (partialEntityName != null) {
 			if (myModel != null) {
 				myPartialEntity = myModel.getModelGroup().getEntityNamed(partialEntityName);
@@ -1965,6 +1997,13 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			if (myPartialEntity == null) {
 				_failures.add(new MissingEntityFailure(myModel, partialEntityName));
 			}
+		}
+		Boolean generateSource = entityModelerMap.getBoolean(EOEntity.GENERATE_SOURCE);
+		if (generateSource == null) {
+			myGenerateSource = true;
+		}
+		else {
+			myGenerateSource = generateSource.booleanValue();
 		}
 
 		for (EOAttribute attribute : myAttributes) {
