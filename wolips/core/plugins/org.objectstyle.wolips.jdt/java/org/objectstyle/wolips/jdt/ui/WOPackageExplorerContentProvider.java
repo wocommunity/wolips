@@ -66,6 +66,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.internal.ui.packageview.PackageExplorerContentProvider;
+import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 import org.objectstyle.wolips.jdt.ui.tags.ITaggedComponentsContentProvider;
 import org.objectstyle.wolips.jdt.ui.tags.TaggedComponentsContentProvider;
 import org.objectstyle.wolips.jdt.ui.tags.WOTagLibResourceChangeListener;
@@ -108,12 +109,21 @@ public class WOPackageExplorerContentProvider extends PackageExplorerContentProv
 				Object[] newChildren = new Object[children.length + 1];
 				IJavaProject javaProject = (IJavaProject) parentElement;
 				IProject project = javaProject.getProject();
-				TaggedComponentsContentProvider taggedComponentsContentProvider = new TaggedComponentsContentProvider(project);
-				taggedComponentsContentProviders.put(project, taggedComponentsContentProvider);
-				newChildren[children.length] = taggedComponentsContentProvider;
-				for (int i = 0; i < children.length; i++) {
-					Object object = children[i];
-					newChildren[i] = object;
+				TaggedComponentsContentProvider taggedComponentsContentProvider = taggedComponentsContentProviders.get(project);
+				if (taggedComponentsContentProvider == null) {
+					taggedComponentsContentProvider = new TaggedComponentsContentProvider(project);
+					taggedComponentsContentProviders.put(project, taggedComponentsContentProvider);
+				}
+				Object[] tags = taggedComponentsContentProvider.getChildren();
+				if (tags != null && tags.length > 0) {
+					newChildren[children.length] = taggedComponentsContentProvider;
+					for (int i = 0; i < children.length; i++) {
+						Object object = children[i];
+						newChildren[i] = object;
+					}
+				}
+				else {
+					newChildren = children;
 				}
 				return newChildren;
 			}
