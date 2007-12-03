@@ -735,24 +735,26 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 	}
 
 	public boolean isServletDeployment() {
-		String returnValue = null;
+		boolean returnValue = false;
 		try {
-			returnValue = (String) this.getBuildProperties().get("servletDeployment");
+			returnValue = this.getBuildProperties().get("servletDeployment") != null;
 		} catch (CoreException e) {
 			CorePlugin.getDefault().log(e);
 		} catch (IOException e) {
 			CorePlugin.getDefault().log(e);
 		}
-		if (returnValue == null || !"true".equalsIgnoreCase(returnValue)) {
-			return false;
-		}
-		return true;
+		return returnValue;
 	}
 
 	public void setServletDeployment(boolean servletDeployment) {
 		try {
 			Properties properties = this.getBuildProperties();
-			properties.put("servletDeployment", String.valueOf(servletDeployment));
+			if (servletDeployment) {
+				properties.put("servletDeployment", "true");
+			}
+			else {
+				properties.remove("servletDeployment");
+			}
 			this.setBuildProperties(properties);
 		} catch (CoreException e) {
 			CorePlugin.getDefault().log(e);
