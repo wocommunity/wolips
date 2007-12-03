@@ -725,11 +725,34 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 	public void setWebXML(boolean webXML) {
 		try {
 			Properties properties = this.getBuildProperties();
-			if (!webXML) {
-				properties.put("webXML", "false");
-			} else {
-				properties.put("webXML", "true");
-			}
+			properties.put("webXML", String.valueOf(webXML));
+			this.setBuildProperties(properties);
+		} catch (CoreException e) {
+			CorePlugin.getDefault().log(e);
+		} catch (IOException e) {
+			CorePlugin.getDefault().log(e);
+		}
+	}
+
+	public boolean isServletDeployment() {
+		String returnValue = null;
+		try {
+			returnValue = (String) this.getBuildProperties().get("servletDeployment");
+		} catch (CoreException e) {
+			CorePlugin.getDefault().log(e);
+		} catch (IOException e) {
+			CorePlugin.getDefault().log(e);
+		}
+		if (returnValue == null || !"true".equalsIgnoreCase(returnValue)) {
+			return false;
+		}
+		return true;
+	}
+
+	public void setServletDeployment(boolean servletDeployment) {
+		try {
+			Properties properties = this.getBuildProperties();
+			properties.put("servletDeployment", String.valueOf(servletDeployment));
 			this.setBuildProperties(properties);
 		} catch (CoreException e) {
 			CorePlugin.getDefault().log(e);
