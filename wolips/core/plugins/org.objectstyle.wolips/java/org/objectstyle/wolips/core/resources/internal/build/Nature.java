@@ -65,17 +65,17 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.objectstyle.wolips.core.CorePlugin;
 
 public abstract class Nature implements IProjectNature {
+	public final static String INCREMENTAL_FRAMEWORK_ID = "org.objectstyle.wolips.incrementalframeworknature";
 
-	private final static String INCREMENTAL_FRAMEWORK_ID = "org.objectstyle.wolips.incrementalframeworknature";
+	public final static String INCREMENTAL_APPLICATION_ID = "org.objectstyle.wolips.incrementalapplicationnature";
 
-	private final static String INCREMENTAL_APPLICATION_ID = "org.objectstyle.wolips.incrementalapplicationnature";
+	public final static String ANT_FRAMEWORK_ID = "org.objectstyle.wolips.antframeworknature";
 
-	private final static String ANT_FRAMEWORK_ID = "org.objectstyle.wolips.antframeworknature";
+	public final static String ANT_APPLICATION_ID = "org.objectstyle.wolips.antapplicationnature";
 
-	private final static String ANT_APPLICATION_ID = "org.objectstyle.wolips.antapplicationnature";
+	private final static String TARGET_BUILDER_ID = "org.objectstyle.wolips.targetbuilder.targetbuildernature";
 
 	private final static String[] NATURES = new String[] { INCREMENTAL_FRAMEWORK_ID, INCREMENTAL_APPLICATION_ID, ANT_FRAMEWORK_ID, ANT_APPLICATION_ID };
 
@@ -203,7 +203,7 @@ public abstract class Nature implements IProjectNature {
 		}
 		return false;
 	}
-
+	
 	/**
 	 * @param project
 	 * @param monitor
@@ -244,20 +244,49 @@ public abstract class Nature implements IProjectNature {
 		return addNatureToProject(Nature.ANT_APPLICATION_ID, project, monitor);
 	}
 
-	private static boolean addNatureToProject(String id, IProject project, IProgressMonitor monitor) throws CoreException {
+	public static boolean addNatureToProject(String id, IProject project, IProgressMonitor monitor) throws CoreException {
 		IProjectNature nature = project.getNature(id);
 		if (nature == null) {
 			IProjectDescription description = project.getDescription();
-			{
-				List<String> naturesList = new ArrayList<String>(Arrays.asList(description.getNatureIds()));
-				naturesList.add(id);
-				description.setNatureIds(naturesList.toArray(new String[naturesList.size()]));
-				project.setDescription(description, monitor);
-			}
-		} else {
-			CorePlugin.getDefault().debug("Attemp to install nature twice. Nature: " + id + " Project: " + project);
+			List<String> naturesList = new ArrayList<String>(Arrays.asList(description.getNatureIds()));
+			naturesList.add(id);
+			description.setNatureIds(naturesList.toArray(new String[naturesList.size()]));
+			project.setDescription(description, monitor);
 		}
 		return project.isNatureEnabled(id);
+	}
+
+	public static void removeNaturesFromProject(IProject project, IProgressMonitor monitor) throws CoreException {
+		setNatureForProject(null, false, project, monitor);
+	}
+	
+	public static void setNatureForProject(String id, boolean useTargetBuilder, IProject project, IProgressMonitor monitor) throws CoreException {
+		IProjectDescription description = project.getDescription();
+		List<String> naturesList = new ArrayList<String>(Arrays.asList(description.getNatureIds()));
+		naturesList.remove(Nature.ANT_APPLICATION_ID);
+		naturesList.remove(Nature.ANT_FRAMEWORK_ID);
+		naturesList.remove(Nature.INCREMENTAL_APPLICATION_ID);
+		naturesList.remove(Nature.INCREMENTAL_FRAMEWORK_ID);
+		naturesList.remove(Nature.TARGET_BUILDER_ID);
+		if (id != null) {
+			naturesList.add(id);
+		}
+		if (useTargetBuilder) {
+			naturesList.add(Nature.TARGET_BUILDER_ID);
+		}
+		description.setNatureIds(naturesList.toArray(new String[naturesList.size()]));
+		project.setDescription(description, monitor);
+	}
+	
+	public static void removeNatureFromProject(String id, IProject project, IProgressMonitor monitor) throws CoreException {
+		IProjectNature nature = project.getNature(id);
+		if (nature != null) {
+			IProjectDescription description = project.getDescription();
+			List<String> naturesList = new ArrayList<String>(Arrays.asList(description.getNatureIds()));
+			naturesList.remove(id);
+			description.setNatureIds(naturesList.toArray(new String[naturesList.size()]));
+			project.setDescription(description, monitor);
+		}
 	}
 
 	/**
