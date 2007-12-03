@@ -49,17 +49,15 @@
  */
 package org.objectstyle.wolips.ui.propertypages;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -76,27 +74,21 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.objectstyle.wolips.builder.BuilderPlugin;
-import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.objectstyle.wolips.core.resources.internal.build.Nature;
+import org.objectstyle.wolips.core.resources.internal.types.project.ProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 import org.objectstyle.wolips.ui.UIPlugin;
 
 /**
  * @author ulrich
- * 
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * @author mschrag
  */
 public class ProjectNaturePage extends PropertyPage implements IAdaptable {
-	private static final String BUILD_STYLE_TITLE = " Build style";
+	private static final String BUILD_STYLE_TITLE = "Build Style";
 
-	private static final String BUILD_PARAMS_TITLE = " Build parameters";
+	private static final String PROJECT_KIND_TITLE = "Bundle Settings";
 
-	private static final String PROJECT_KIND_TITLE = " Project kind";
-
-	private static final String PROJECT_KIND_NOTE_TITLE = "Note: ";
-
-	private static final String PROJECT_KIND_NOTE = "Setting will only affect the incremental build style.";
-
-	private static final String WO_NATURE_TITLE = "Is a WebObjects Project (options below apply only if this is checked)";
+	private static final String WO_NATURE_TITLE = "WebObjects Project";
 
 	private static final String WO_IS_FRAMEWORK_TITLE = "Framework";
 
@@ -104,9 +96,33 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 
 	private static final String WO_USE_INCREMENTAL_TITLE = "Incremental";
 
-	private static final String WO_USE_ANT_TITLE = "Use Ant (build.xml)";
+	private static final String WO_USE_ANT_TITLE = "Ant (build.xml)";
 
-	private static final String WO_USE_TARGET_BUILDET_TITLE = "Use TargetBuilder";
+	private static final String WO_USE_TARGET_BUILDER_TITLE = "Use Target Builder for JavaClient";
+
+	private Button _servletDeploymentCheck;
+
+	private Button _generateWebXMLCheck;
+
+	private Button _useTargetBuilderCheck;
+
+	private Button _webObjectsProjectCheck;
+
+	private Button _buildStyleAntButton;
+
+	private Button _buildStyleIncrementalButton;
+
+	private Button _bundleTypeFrameworkButton;
+
+	private Button _bundleTypeApplicationButton;
+
+	private Text _principalClassText;
+
+	private Text _customInfoPListText;
+
+	private Text _customWebXMLText;
+
+	private Text _eoAdaptorClassText;
 
 	/**
 	 * Constructor for WOLipsProjectNaturePage.
@@ -115,84 +131,125 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 		super();
 	}
 
-	/**
-	 * @param parent
-	 * @param project
-	 * @throws CoreException
-	 */
-	private void _addFirstSection(Composite parent, Project project) throws CoreException {
+	private void _addWOProjectSection(Composite parent, boolean isWOProject) {
 		Composite group = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
-		layout.numColumns = 3;
 		group.setLayout(layout);
 		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		this._woNatureCheck = new Button(group, SWT.CHECK | SWT.LEFT);
-		this._woNatureCheck.setText(WO_NATURE_TITLE);
-		this._woNatureCheck.setEnabled(true);
-		this._woNatureCheck.setSelection(project.hasWOLipsNature());
+		_webObjectsProjectCheck = new Button(group, SWT.CHECK | SWT.LEFT);
+		_webObjectsProjectCheck.setText(WO_NATURE_TITLE);
+		_webObjectsProjectCheck.setEnabled(true);
+		_webObjectsProjectCheck.setSelection(isWOProject);
+
+		_webObjectsProjectCheck.addSelectionListener(new SelectionListener() {
+			public void widgetSelected(SelectionEvent e) {
+				ProjectNaturePage.this.enableWidgets();
+			}
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+				widgetSelected(e);
+			}
+		});
 	}
 
-	/**
-	 * @param parent
-	 * @param project
-	 * @throws CoreException
-	 */
-	private void _addBuildStyleSection(Composite parent, Project project) throws CoreException {
-		Composite group = _createLabelledComposite(parent, BUILD_STYLE_TITLE);
+	private void _addBuildStyleSection(Composite parent, ProjectAdapter project) {
+		Composite buildStyleGroup = _createGroupWithLabel(parent, BUILD_STYLE_TITLE);
+
 		// project kind field (is framework?)
-		this._woIsIncrementalButton = new Button(group, SWT.RADIO | SWT.LEFT);
-		this._woIsIncrementalButton.setText(WO_USE_INCREMENTAL_TITLE);
-		this._woIsIncrementalButton.setEnabled(true);
-		FormData fd = new FormData();
-		fd.left = new FormAttachment(0, 0);
-		this._woIsIncrementalButton.setLayoutData(fd);
-		Button antButton = new Button(group, SWT.RADIO | SWT.LEFT);
-		antButton.setText(WO_USE_ANT_TITLE);
-		antButton.setEnabled(true);
-		fd = new FormData();
-		fd.left = new FormAttachment(this._woIsIncrementalButton, 0);
-		antButton.setLayoutData(fd);
-		boolean isIncremental = project.isIncremental();
-		this._woIsIncrementalButton.setSelection(isIncremental);
-		antButton.setSelection(!isIncremental);
+		_buildStyleIncrementalButton = new Button(buildStyleGroup, SWT.RADIO | SWT.LEFT);
+		_buildStyleIncrementalButton.setText(WO_USE_INCREMENTAL_TITLE);
+		_buildStyleIncrementalButton.setEnabled(true);
+		FormData incrementalLayoutData = new FormData();
+		incrementalLayoutData.left = new FormAttachment(0, 0);
+		_buildStyleIncrementalButton.setLayoutData(incrementalLayoutData);
+		_buildStyleIncrementalButton.addSelectionListener(new SelectionListener() {
+			public void widgetSelected(SelectionEvent e) {
+				ProjectNaturePage.this.enableWidgets();
+			}
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+				widgetSelected(e);
+			}
+		});
+
+		_buildStyleAntButton = new Button(buildStyleGroup, SWT.RADIO | SWT.LEFT);
+		_buildStyleAntButton.setText(WO_USE_ANT_TITLE);
+		_buildStyleAntButton.setEnabled(true);
+		FormData antLayoutData = new FormData();
+		antLayoutData.top = new FormAttachment(_buildStyleIncrementalButton, 5);
+		_buildStyleAntButton.setLayoutData(antLayoutData);
+
+		boolean isIncremental = (project == null || project.isIncrementalBuilderInstalled());
+		if (isIncremental) {
+			_buildStyleIncrementalButton.setSelection(true);
+		} else {
+			_buildStyleAntButton.setSelection(true);
+		}
+
+		_useTargetBuilderCheck = new Button(buildStyleGroup, SWT.CHECK | SWT.LEFT);
+		_useTargetBuilderCheck.setText(WO_USE_TARGET_BUILDER_TITLE);
+		_useTargetBuilderCheck.setEnabled(true);
+		_useTargetBuilderCheck.setSelection(project != null && project.isTargetBuilderInstalled());
+		FormData targetBuilderData = new FormData();
+		targetBuilderData.top = new FormAttachment(_buildStyleAntButton, 15);
+		_useTargetBuilderCheck.setLayoutData(targetBuilderData);
 	}
 
-	/**
-	 * @param parent
-	 * @param project
-	 * @throws CoreException
-	 */
-	private void _addProjectKindSection(Composite parent, Project project) throws CoreException {
-		Composite group = _createLabelledComposite(parent, PROJECT_KIND_TITLE);
-		// project kind field (is framework?)
-		this._woIsApplicationButton = new Button(group, SWT.RADIO | SWT.LEFT);
-		this._woIsApplicationButton.setText(WO_IS_APP_TITLE);
-		this._woIsApplicationButton.setEnabled(true);
-		FormData fd = new FormData();
-		fd.left = new FormAttachment(0, 0);
-		this._woIsApplicationButton.setLayoutData(fd);
-		this._woIsFrameworkButton = new Button(group, SWT.RADIO | SWT.LEFT);
-		this._woIsFrameworkButton.setText(WO_IS_FRAMEWORK_TITLE);
-		this._woIsFrameworkButton.setEnabled(true);
-		fd = new FormData();
-		fd.left = new FormAttachment(this._woIsApplicationButton, 0);
-		this._woIsFrameworkButton.setLayoutData(fd);
-		boolean isFramework = project.isFramework();
-		this._woIsFrameworkButton.setSelection(isFramework);
-		this._woIsApplicationButton.setSelection(!isFramework);
-		Label noteTitle = new Label(group, SWT.BOLD);
-		noteTitle.setText(PROJECT_KIND_NOTE_TITLE);
-		noteTitle.setFont(JFaceResources.getBannerFont());
-		fd = new FormData();
-		fd.left = new FormAttachment(0, 0);
-		fd.top = new FormAttachment(this._woIsApplicationButton, 5);
-		noteTitle.setLayoutData(fd);
-		Label note = new Label(group, SWT.NULL);
-		note.setText(PROJECT_KIND_NOTE);
-		fd = new FormData();
-		fd.left = new FormAttachment(noteTitle, 0);
-		fd.top = new FormAttachment(this._woIsApplicationButton, 5);
-		note.setLayoutData(fd);
+	private void _addBundleSettingsSection(Composite parent, ProjectAdapter project) {
+		Composite bundleTypeGroup = _createGroupWithLabel(parent, PROJECT_KIND_TITLE);
+
+		_bundleTypeApplicationButton = new Button(bundleTypeGroup, SWT.RADIO | SWT.LEFT);
+		_bundleTypeApplicationButton.setText(WO_IS_APP_TITLE);
+		_bundleTypeApplicationButton.setEnabled(true);
+		FormData applicationLayoutData = new FormData();
+		applicationLayoutData.left = new FormAttachment(0, 0);
+		_bundleTypeApplicationButton.setLayoutData(applicationLayoutData);
+		_bundleTypeApplicationButton.addSelectionListener(new SelectionListener() {
+			public void widgetSelected(SelectionEvent e) {
+				ProjectNaturePage.this.enableWidgets();
+			}
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+				widgetSelected(e);
+			}
+		});
+
+		_bundleTypeFrameworkButton = new Button(bundleTypeGroup, SWT.RADIO | SWT.LEFT);
+		_bundleTypeFrameworkButton.setText(WO_IS_FRAMEWORK_TITLE);
+		_bundleTypeFrameworkButton.setEnabled(true);
+		FormData frameworkLayoutData = new FormData();
+		frameworkLayoutData.top = new FormAttachment(_bundleTypeApplicationButton, 5);
+		_bundleTypeFrameworkButton.setLayoutData(frameworkLayoutData);
+
+		boolean isFramework = project == null || project.isFramework();
+		if (isFramework) {
+			_bundleTypeFrameworkButton.setSelection(true);
+		} else {
+			_bundleTypeApplicationButton.setSelection(true);
+		}
+
+		Composite textSettingsGroup = new Composite(bundleTypeGroup, SWT.NONE);
+		GridLayout textSettingsLayout = new GridLayout(2, false);
+		textSettingsGroup.setLayout(textSettingsLayout);
+		FormData textSettingsLayoutData = new FormData();
+		textSettingsLayoutData.top = new FormAttachment(_bundleTypeFrameworkButton, 10);
+		textSettingsLayoutData.left = new FormAttachment(0, 0);
+		textSettingsLayoutData.right = new FormAttachment(100, 0);
+		textSettingsGroup.setLayoutData(textSettingsLayoutData);
+		_principalClassText = _addTextField(textSettingsGroup, "Principal Class");
+		if (project != null) {
+			_principalClassText.setText(project.getPrincipalClass(true));
+		}
+
+		_eoAdaptorClassText = _addTextField(textSettingsGroup, "EOAdaptor Class");
+		if (project != null) {
+			_eoAdaptorClassText.setText(project.getEOAdaptorClassName(true));
+		}
+
+		_customInfoPListText = _addTextArea(textSettingsGroup, "Custom Info.plist");
+		if (project != null) {
+			_customInfoPListText.setText(project.getCustomInfoPListContent(true));
+		}
 	}
 
 	private Text _addTextField(Composite parent, String label) {
@@ -209,19 +266,26 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 	}
 
 	private Text _addTextArea(Composite parent, String label) {
-		GridData gd = new GridData();
 		Label textLabel = new Label(parent, SWT.NONE);
 		textLabel.setText(label);
-		textLabel.setLayoutData(gd);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.grabExcessHorizontalSpace = true;
-		gd.grabExcessVerticalSpace = true;
-		gd.heightHint = 70;
+		GridData labelData = new GridData();
+		labelData.horizontalSpan = 2;
+		labelData.verticalAlignment = SWT.BEGINNING;
+		labelData.verticalIndent = 7;
+		textLabel.setLayoutData(labelData);
+
+		GridData textData = new GridData();
+		textData = new GridData(GridData.FILL_HORIZONTAL);
+		textData.horizontalSpan = 2;
+		textData.horizontalIndent = 0;
+		textData.grabExcessHorizontalSpace = true;
+		textData.grabExcessVerticalSpace = true;
+		textData.heightHint = 70;
 		// Owner text field
 		// Scrollable scrollable = new Scrollable(parent, SWT.H_SCROLL |
 		// SWT.V_SCROLL);
 		Text text = new Text(parent, SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		text.setLayoutData(gd);
+		text.setLayoutData(textData);
 		return (text);
 	}
 
@@ -232,109 +296,94 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 		} catch (Exception up) {
 			// hmm, how did that get there?
 		}
-		if (null == result)
+		if (null == result) {
 			result = defVal;
+		}
 		return result;
 	}
 
-	/**
-	 * @param parent
-	 * @param project
-	 */
-	private void _addPatternSection(Composite parent, Project project) {
-		Composite group = _createLabelledComposite(parent, BUILD_PARAMS_TITLE);
+	private void addServletDeploymentSection(Composite parent, ProjectAdapter project) {
+		Composite group = _createGroupWithLabel(parent, "Servlet Deployment");
 		group.setLayout(new GridLayout(2, false));
-		this.principalClass = _addTextField(group, "Principal Class");
-		this.principalClass.setText(project.getPrincipalClass(true));
-		this.eoAdaptorClassName = _addTextField(group, "EOAdaptorClassName");
-		this.eoAdaptorClassName.setText(project.getEOAdaptorClassName(true));
-		this.customInfoPListContent = _addTextArea(group, "Custom Info.plist content");
-		this.customInfoPListContent.setText(project.getCustomInfoPListContent(true));
+
+		_servletDeploymentCheck = new Button(group, SWT.CHECK | SWT.LEFT);
+		GridData servletDeploymentData = new GridData();
+		servletDeploymentData.horizontalSpan = 2;
+		_servletDeploymentCheck.setLayoutData(servletDeploymentData);
+		_servletDeploymentCheck.setText("Servlet Deployment");
+		_servletDeploymentCheck.setEnabled(true);
+		_servletDeploymentCheck.setSelection(project != null && project.isServletDeployment());
+		_servletDeploymentCheck.addSelectionListener(new SelectionListener() {
+			public void widgetSelected(SelectionEvent e) {
+				ProjectNaturePage.this.enableWidgets();
+			}
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+				widgetSelected(e);
+			}
+		});
+
+		_generateWebXMLCheck = new Button(group, SWT.CHECK | SWT.LEFT);
+		GridData generateWebXmlData = new GridData();
+		generateWebXmlData.horizontalSpan = 2;
+		_generateWebXMLCheck.setLayoutData(generateWebXmlData);
+		_generateWebXMLCheck.setText("Autogenerate web.xml");
+		_generateWebXMLCheck.setEnabled(true);
+		_generateWebXMLCheck.setSelection(project != null && project.getWebXML());
+		_generateWebXMLCheck.addSelectionListener(new SelectionListener() {
+			public void widgetSelected(SelectionEvent e) {
+				ProjectNaturePage.this.enableWidgets();
+			}
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+				widgetSelected(e);
+			}
+		});
+
+		_customWebXMLText = _addTextArea(group, "Custom web.xml");
+		if (project != null) {
+			_customWebXMLText.setText(project.getWebXML_CustomContent(true));
+		}
 	}
 
-	/**
-	 * @param parent
-	 * @param project
-	 */
-	private void _addTargetBuilderSection(Composite parent, Project project) {
-		Composite group = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 3;
-		group.setLayout(layout);
-		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		this._woTargetBuilderCheck = new Button(group, SWT.CHECK | SWT.LEFT);
-		this._woTargetBuilderCheck.setText(WO_USE_TARGET_BUILDET_TITLE);
-		this._woTargetBuilderCheck.setEnabled(true);
-		this._woTargetBuilderCheck.setSelection(project.isTargetBuilderInstalled());
+	protected void enableWidgets() {
+		_useTargetBuilderCheck.setEnabled(_buildStyleIncrementalButton.getSelection());
+		
+		_principalClassText.setEnabled(true);
+		_eoAdaptorClassText.setEnabled(!_bundleTypeApplicationButton.getSelection());
+		_customInfoPListText.setEnabled(true);
+		
+		_servletDeploymentCheck.setEnabled(_bundleTypeApplicationButton.getSelection());
+		_generateWebXMLCheck.setEnabled(_bundleTypeApplicationButton.getSelection() && _servletDeploymentCheck.getSelection());
+		_customWebXMLText.setEnabled(_bundleTypeApplicationButton.getSelection() && _servletDeploymentCheck.getSelection() && !_generateWebXMLCheck.getSelection());
 	}
 
-	/**
-	 * @param parent
-	 * @param project
-	 */
-	private void addWebXMLSection(Composite parent, Project project) {
-		Composite group = _createLabelledComposite(parent, "web.xml");
-		group.setLayout(new GridLayout(2, false));
-		this._woWebXMLCheck = new Button(group, SWT.CHECK | SWT.LEFT);
-		this._woWebXMLCheck.setText("Generate web.xml");
-		this._woWebXMLCheck.setEnabled(true);
-		this._woWebXMLCheck.setSelection(project.getWebXML());
-		Label textLabel = new Label(group, SWT.NONE);
-		textLabel.setText("");
-		this.webXMLCustomContent = _addTextArea(group, "Custom web.xml content");
-		this.webXMLCustomContent.setText(project.getWebXML_CustomContent(true));
-	}
-
-	void enableWidgets(boolean enabled) {
-		this._woWebXMLCheck.setEnabled(enabled);
-		this._woTargetBuilderCheck.setEnabled(enabled);
-		this._woIsFrameworkButton.setEnabled(enabled);
-		this._woIsApplicationButton.setEnabled(enabled);
-		this.principalClass.setEnabled(true);
-		this.customInfoPListContent.setEnabled(true);
-		this.eoAdaptorClassName.setEnabled(true);
-		this.webXMLCustomContent.setEnabled(true);
-	}
-
-	/**
-	 * @see PreferencePage#createContents(Composite)
-	 */
 	protected Control createContents(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
+		layout.marginLeft = 0;
+		layout.marginRight = 0;
 		composite.setLayout(layout);
 		GridData data = new GridData(GridData.FILL);
 		data.grabExcessHorizontalSpace = true;
 		composite.setLayoutData(data);
-		try {
-			Project project = this.getProject();
-			_addFirstSection(composite, project);
-			// --
-			_addBuildStyleSection(composite, project);
-			// --
-			_addProjectKindSection(composite, project);
-			// --
-			_addPatternSection(composite, project);
-			_addTargetBuilderSection(composite, project);
-			this._woIsIncrementalButton.addSelectionListener(new SelectionListener() {
-				public void widgetSelected(SelectionEvent e) {
-					enableWidgets(ProjectNaturePage.this._woIsIncrementalButton.getSelection());
-				}
 
-				public void widgetDefaultSelected(SelectionEvent e) {
-					enableWidgets(ProjectNaturePage.this._woIsIncrementalButton.getSelection());
-				}
-			});
-			addWebXMLSection(composite, project);
-			// setDefaults(project);
-			enableWidgets(this._woIsIncrementalButton.getSelection());
-		} catch (CoreException exception) {
-			UIPlugin.getDefault().log(exception);
+		ProjectAdapter project = getProjectAdaptor();
+		boolean isWOProject = (project != null);
+		if (!isWOProject) {
+			project = new ProjectAdapter(getProject(), false);
 		}
+		_addWOProjectSection(composite, isWOProject);
+		_addBuildStyleSection(composite, project);
+		_addBundleSettingsSection(composite, project);
+		addServletDeploymentSection(composite, project);
+
+		enableWidgets();
+
 		return composite;
 	}
 
-	private Composite _createLabelledComposite(Composite parent, String label) {
+	protected Composite _createGroupWithLabel(Composite parent, String label) {
 		Group composite = new Group(parent, SWT.NULL);
 		FormLayout layout = new FormLayout();
 		// layout.numColumns = 2;
@@ -351,129 +400,83 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 		return composite;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
-	 */
 	protected void performDefaults() {
-		setDefaults(getProject());
+		setDefaults(getProjectAdaptor());
 	}
 
-	/**
-	 * @param project
-	 * 
-	 */
-	private void setDefaults(Project project) {
+	private void setDefaults(ProjectAdapter project) {
 		Map args = project.getBuilderArgs();
 		String string = _getArg(args, BuilderPlugin.NS_PRINCIPAL_CLASS, "");
 		if (string == null || string.length() == 0) {
 			string = project.getPrincipalClass(true);
 		}
 		if (string != null) {
-			this.principalClass.setText(string);
+			_principalClassText.setText(string);
 		}
 
 		string = project.getCustomInfoPListContent(true);
 		if (string != null) {
-			this.customInfoPListContent.setText(string);
+			_customInfoPListText.setText(string);
 		}
 
 		string = project.getEOAdaptorClassName(true);
 		if (string != null) {
-			this.eoAdaptorClassName.setText(string);
+			_eoAdaptorClassText.setText(string);
 		}
 
-		this.webXMLCustomContent.setText("");
-		this._woWebXMLCheck.setSelection(false);
+		_customWebXMLText.setText("");
+		_servletDeploymentCheck.setSelection(false);
+		_generateWebXMLCheck.setSelection(false);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.preference.IPreferencePage#performOk()
-	 */
 	public boolean performOk() {
 		// store the value in the owner text field
-		Project project;
 		try {
-			project = this.getProject();
-			if (this._woNatureCheck.getSelection()) {
-				project.setPrincipalClass(this.principalClass.getText());
-				project.setCustomInfoPListContent(this.customInfoPListContent.getText());
-				project.setWebXML_CustomContent(this.webXMLCustomContent.getText());
-				project.setWebXML(this._woWebXMLCheck.getSelection());
-				project.setEOAdaptorClassName(this.eoAdaptorClassName.getText());
-				if (this._woIsIncrementalButton.getSelection()) {
-					Map args = new HashMap();
-					project.setIncrementalNature(this._woIsFrameworkButton.getSelection(), args);
-				} else {
-					project.setAntNature(this._woIsFrameworkButton.getSelection());
+			boolean useTargetBuilder = _useTargetBuilderCheck.getSelection();
+			if (_webObjectsProjectCheck.getSelection()) {
+				if (_bundleTypeFrameworkButton.getSelection()) {
+					if (_buildStyleIncrementalButton.getSelection()) {
+						Nature.setNatureForProject(Nature.INCREMENTAL_FRAMEWORK_ID, useTargetBuilder, getProject(), new NullProgressMonitor());
+					} else if (_buildStyleAntButton.getSelection()) {
+						Nature.setNatureForProject(Nature.ANT_FRAMEWORK_ID, useTargetBuilder, getProject(), new NullProgressMonitor());
+					}
+				} else if (_bundleTypeApplicationButton.getSelection()) {
+					if (_buildStyleIncrementalButton.getSelection()) {
+						Nature.setNatureForProject(Nature.INCREMENTAL_APPLICATION_ID, useTargetBuilder, getProject(), new NullProgressMonitor());
+					} else if (_buildStyleAntButton.getSelection()) {
+						Nature.setNatureForProject(Nature.ANT_APPLICATION_ID, useTargetBuilder, getProject(), new NullProgressMonitor());
+					}
 				}
+				ProjectAdapter project = getProjectAdaptor();
+				project.setPrincipalClass(_principalClassText.getText());
+				project.setCustomInfoPListContent(_customInfoPListText.getText());
+				project.setServletDeployment(_servletDeploymentCheck.getSelection());
+				project.setWebXML(_generateWebXMLCheck.getSelection());
+				project.setWebXML_CustomContent(_customWebXMLText.getText());
+				project.setEOAdaptorClassName(_eoAdaptorClassText.getText());
 			} else {
-				project.removeWOLipsNatures();
+				Nature.removeNaturesFromProject(getProject(), new NullProgressMonitor());
 			}
-			boolean selection = this._woTargetBuilderCheck.getSelection();
-			project.useTargetBuilder(selection);
 		} catch (CoreException up) {
 			UIPlugin.getDefault().log(up);
 			return false;
-		} finally {
-			project = null;
 		}
 		return true;
 	}
 
-	/**
-	 * @return IJavaProject
-	 * @throws CoreException
-	 */
-	public IJavaProject _getJavaProject() throws CoreException {
-		IProject project = (IProject) (this.getElement().getAdapter(IProject.class));
-		return (IJavaProject) (project.getNature(JavaCore.NATURE_ID));
+	public IJavaProject getJavaProject() {
+		return JavaCore.create((IProject) getElement().getAdapter(IProject.class));
 	}
 
-	/**
-	 * @return IProject
-	 */
-	public IProject _getProject() {
-		IProject project = (IProject) (this.getElement().getAdapter(IProject.class));
-		return (project);
+	public IProject getProject() {
+		return (IProject) getElement().getAdapter(IProject.class);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
+	public ProjectAdapter getProjectAdaptor() {
+		return (ProjectAdapter) getProject().getAdapter(IProjectAdapter.class);
+	}
+
 	public Object getAdapter(Class theClass) {
-		return (Platform.getAdapterManager().getAdapter(this, theClass));
+		return Platform.getAdapterManager().getAdapter(this, theClass);
 	}
-
-	/**
-	 * @return Project
-	 */
-	public Project getProject() {
-		return (Project) (this._getProject()).getAdapter(Project.class);
-	}
-
-	private Button _woWebXMLCheck;
-
-	private Button _woTargetBuilderCheck;
-
-	private Button _woNatureCheck;
-
-	Button _woIsIncrementalButton;
-
-	private Button _woIsFrameworkButton;
-
-	private Button _woIsApplicationButton;
-
-	private Text principalClass;
-
-	private Text customInfoPListContent;
-
-	private Text webXMLCustomContent;
-
-	private Text eoAdaptorClassName;
 }
