@@ -109,7 +109,7 @@
 
 	<!-- war target-->
 	<!-- To use this target remove the if="${never}" statement and follow the instructions for the ssdd target -->
-	<target name="war" if="${servletDeployment}" depends="ssdd">
+	<target name="war" if="servletDeployment" depends="ssdd">
 		<war destfile="${dest.dir}/${project.name}.war" webxml="${dest.dir}/${project.name}/WEB-INF/web.xml">
 			<fileset dir="${dest.dir}/${project.name}">
 				<include name="**" />
@@ -126,7 +126,7 @@
     	5)  Edit the build.properties file
     	6)     set webXML = true
     -->
-	<target name="ssdd" if="${servletDeployment}" depends="build.woapp">
+	<target name="ssdd" if="servletDeployment" depends="build.woapp">
 		<mkdir dir="${dest.dir}/${project.name}/WEB-INF/classes" />
 		<mkdir dir="${dest.dir}/${project.name}/WEB-INF/tlds" />
 		<copy todir="${dest.dir}/${project.name}/WEB-INF/">
