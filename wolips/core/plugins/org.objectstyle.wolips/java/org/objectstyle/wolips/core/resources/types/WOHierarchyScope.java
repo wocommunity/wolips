@@ -17,6 +17,7 @@ import org.eclipse.jdt.core.IJavaElementDelta;
 import org.eclipse.jdt.core.IJavaModel;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMember;
+import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.ITypeHierarchy;
@@ -78,24 +79,35 @@ public class WOHierarchyScope extends AbstractSearchScope implements SuffixConst
 
 		_enclosingProjectsAndJars = computeProjectsAndJars(type);
 
-		// resource path
-		IPackageFragmentRoot root = (IPackageFragmentRoot) type.getPackageFragment().getParent();
-		if (root.isArchive()) {
-			IPath jarPath = root.getPath();
-			Object target = JavaModel.getTarget(ResourcesPlugin.getWorkspace().getRoot(), jarPath, true);
-			String zipFileName;
-			if (target instanceof IFile) {
-				// internal jar
-				zipFileName = jarPath.toString();
-			} else if (target instanceof File) {
-				// external jar
-				zipFileName = ((File) target).getPath();
-			} else {
-				return; // unknown target
+		if (type != null) { 
+			// resource path
+			IPackageFragment packageFragment = type.getPackageFragment();
+			if (packageFragment != null) {
+				IPackageFragmentRoot root = (IPackageFragmentRoot) packageFragment.getParent();
+				if (root.isArchive()) {
+					IPath jarPath = root.getPath();
+					Object target = JavaModel.getTarget(ResourcesPlugin.getWorkspace().getRoot(), jarPath, true);
+					String zipFileName;
+					if (target instanceof IFile) {
+						// internal jar
+						zipFileName = jarPath.toString();
+					} else if (target instanceof File) {
+						// external jar
+						zipFileName = ((File) target).getPath();
+					} else {
+						return; // unknown target
+					}
+					_focusPath = zipFileName + JAR_FILE_ENTRY_SEPARATOR + type.getFullyQualifiedName().replace('.', '/') + SUFFIX_STRING_class;
+				} else {
+					_focusPath = type.getPath().toString();
+				}
 			}
-			_focusPath = zipFileName + JAR_FILE_ENTRY_SEPARATOR + type.getFullyQualifiedName().replace('.', '/') + SUFFIX_STRING_class;
-		} else {
-			_focusPath = type.getPath().toString();
+			else {
+				_focusPath = "";
+			}
+		}
+		else {
+			_focusPath = "";
 		}
 
 		_needsRefresh = true;
