@@ -66,7 +66,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.internal.ui.packageview.PackageExplorerContentProvider;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 import org.objectstyle.wolips.jdt.ui.tags.ITaggedComponentsContentProvider;
 import org.objectstyle.wolips.jdt.ui.tags.TaggedComponentsContentProvider;
 import org.objectstyle.wolips.jdt.ui.tags.WOTagLibResourceChangeListener;
