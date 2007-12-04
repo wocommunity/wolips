@@ -78,6 +78,8 @@ public class EOModelGroup extends EOModelObject<Object> {
 
 	private String _prefix;
 
+	private String _superclassPackage;
+
 	public EOModelGroup() {
 		_models = new HashSet<EOModel>();
 		//_createDefaultDatabaseConfig = true;
@@ -86,6 +88,14 @@ public class EOModelGroup extends EOModelObject<Object> {
 		_eogenericRecordClassName = "com.webobjects.eocontrol.EOGenericRecord";
 	}
 
+	public void setSuperclassPackage(String superclassPackage) {
+		_superclassPackage = superclassPackage;
+	}
+	
+	public String getSuperclassPackage() {
+		return _superclassPackage;
+	}
+	
 	public void setPrefix(String prefix) {
 		_prefix = prefix;
 	}

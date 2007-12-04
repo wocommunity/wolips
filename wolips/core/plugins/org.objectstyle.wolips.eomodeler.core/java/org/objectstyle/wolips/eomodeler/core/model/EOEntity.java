@@ -821,12 +821,41 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		return packageName;
 	}
 
+	public String getSuperclassPackageName() {
+		String packageName = getPackageName();
+		String superclassPackage = getModel().getModelGroup().getSuperclassPackage();
+		String superclassPackageName;
+		if (superclassPackage != null) {
+			if (packageName != null) {
+				superclassPackageName = packageName + "." + superclassPackage;
+			}
+			else {
+				superclassPackageName = superclassPackage;
+			}
+		}
+		else {
+			superclassPackageName = packageName;
+		}
+		return superclassPackageName;
+	}
+
 	public String getInitialLowercaseClassNameWithoutPackage() {
 		return StringUtils.toLowercaseFirstLetter(getClassNameWithoutPackage());
 	}
 
 	public String getPluralInitialLowercaseClassNameWithoutPackage() {
 		return StringUtils.toLowercaseFirstLetter(StringUtils.toPlural(getClassNameWithoutPackage()));
+	}
+
+	public String getClassNameWithOptionalPackage() {
+		String className;
+		if (getModel().getModelGroup().getSuperclassPackage() != null) {
+			className = getClassName();
+		}
+		else {
+			className = getClassNameWithoutPackage();
+		}
+		return className;
 	}
 
 	public String getClassNameWithoutPackage() {
@@ -845,6 +874,17 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		return classNameWithoutPackage;
 	}
 
+	public String getPrefixClassNameWithOptionalPackage() {
+		String prefixClassName;
+		if (getModel().getModelGroup().getSuperclassPackage() != null) {
+			prefixClassName = getPrefixClassName();
+		}
+		else {
+			prefixClassName = getPrefixClassNameWithoutPackage();
+		}
+		return prefixClassName;
+	}
+
 	public String getPrefixClassNameWithoutPackage() {
 		String prefixClassNameWithoutPackage = getClassNameWithoutPackage();
 		if (prefixClassNameWithoutPackage != null) {
@@ -860,12 +900,19 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		if (className == null) {
 			prefixClassName = null;
 		} else {
+			String superclassPackage = getModel().getModelGroup().getSuperclassPackage();
+			if (superclassPackage != null && superclassPackage.trim().length() > 0) {
+				superclassPackage = superclassPackage + ".";
+			}
+			else {
+				superclassPackage = "";
+			}
 			String prefix = getModel().getModelGroup().getPrefix();
 			int lastDotIndex = className.lastIndexOf('.');
 			if (lastDotIndex == -1) {
-				prefixClassName = prefix + className;
+				prefixClassName = superclassPackage + prefix + className;
 			} else {
-				prefixClassName = className.substring(0, lastDotIndex + 1) + prefix + className.substring(lastDotIndex + 1);
+				prefixClassName = className.substring(0, lastDotIndex + 1) + superclassPackage + prefix + className.substring(lastDotIndex + 1);
 			}
 		}
 		return prefixClassName;
