@@ -23,10 +23,10 @@ public class EOGeneratorResultsDialog extends MessageDialog {
 	}
 
 	protected Control createCustomArea(Composite _parent) {
-		StyledText resultsText = new StyledText(_parent, SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		StyledText resultsText = new StyledText(_parent, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.WRAP);
 		resultsText.setText(myResults);
 		resultsText.setEditable(false);
-		resultsText.setWordWrap(false);
+		resultsText.setWordWrap(true);
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.heightHint = 500;
 		gd.widthHint = 700;

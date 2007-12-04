@@ -9,17 +9,24 @@ import org.objectstyle.wolips.eogenerator.ui.dialogs.EOGeneratorResultsDialog;
 public class DialogEOGeneratorListener implements IEOGeneratorListener {
 	private StringBuffer _output;
 	private Shell _shell;
+	private boolean _succeeded;
 
 	public DialogEOGeneratorListener(Shell shell) {
 		_shell = shell;
 	}
 	
+	public Shell getShell() {
+		return _shell;
+	}
+	
 	public void eogeneratorStarted() {
 		_output = new StringBuffer();
+		_succeeded = true;
 	}
 
 	public void eogeneratorFailed(IFile eogenFile, String results) {
 		appendLines(eogenFile, results);
+		_succeeded = false;
 	}
 
 	public void eogeneratorSucceeded(IFile eogenFile, String results) {
@@ -27,11 +34,11 @@ public class DialogEOGeneratorListener implements IEOGeneratorListener {
 	}
 
 	public void eogeneratorFinished() {
-		if (_output.length() > 0) {
+		if (_output.length() > 0 && !_succeeded) {
 			final String output = _output.toString();
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
-					EOGeneratorResultsDialog resultsDialog = new EOGeneratorResultsDialog(_shell, output.toString());
+					EOGeneratorResultsDialog resultsDialog = new EOGeneratorResultsDialog(DialogEOGeneratorListener.this.getShell(), output.toString());
 					resultsDialog.open();
 				}
 			});
