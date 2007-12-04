@@ -2,6 +2,5 @@
 package $entity.packageName;
 
 #end
-
-public class ${entity.classNameWithoutPackage} extends ${entity.prefixClassNameWithoutPackage} {
+public class ${entity.classNameWithoutPackage} extends ${entity.prefixClassNameWithOptionalPackage} {
 }

@@ -1,6 +1,6 @@
-// DO NOT EDIT.  Make changes to ${entity.classNameWithoutPackage}.java instead.
-#if ($entity.packageName)
-package $entity.packageName;
+// DO NOT EDIT.  Make changes to ${entity.classNameWithOptionalPackage}.java instead.
+#if ($entity.superclassPackageName)
+package $entity.superclassPackageName;
 
 #end
 import com.webobjects.eoaccess.*;
@@ -31,8 +31,8 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   private static Logger LOG = Logger.getLogger(${entity.prefixClassNameWithoutPackage}.class);
 
 #if (!$entity.partialEntitySet)
-  public $entity.classNameWithoutPackage localInstanceIn(EOEditingContext editingContext) {
-    $entity.classNameWithoutPackage localInstance = ($entity.classNameWithoutPackage)EOUtilities.localInstanceOfObject(editingContext, this);
+  public $entity.classNameWithOptionalPackage localInstanceIn(EOEditingContext editingContext) {
+    $entity.classNameWithOptionalPackage localInstance = ($entity.classNameWithOptionalPackage)EOUtilities.localInstanceOfObject(editingContext, this);
     if (localInstance == null) {
       throw new IllegalStateException("You attempted to localInstance " + this + ", which has not yet committed.");
     }
@@ -179,7 +179,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 #end
 #end
 
-  public #if (!$entity.partialEntitySet)static #end${entity.classNameWithoutPackage}#if (!$entity.partialEntitySet) create#else init#end${entity.name}(EOEditingContext editingContext#foreach ($attribute in $entity.sortedClassAttributes)
+  public #if (!$entity.partialEntitySet)static #end${entity.classNameWithOptionalPackage}#if (!$entity.partialEntitySet) create#else init#end${entity.name}(EOEditingContext editingContext#foreach ($attribute in $entity.sortedClassAttributes)
 #if (!$attribute.allowsNull)
 #set ($restrictingQualifierKey = 'false')
 #foreach ($qualifierKey in $entity.restrictingQualifierKeys)#if ($attribute.name == $qualifierKey)#set ($restrictingQualifierKey = 'true')#end#end
@@ -192,7 +192,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 #if ($relationship.mandatory && !($relationship.ownsDestination && $relationship.propagatesPrimaryKey)), ${relationship.actualDestination.classNameWithDefault} ${relationship.name}#end
 #end
 ) {
-    ${entity.classNameWithoutPackage} eo = (${entity.classNameWithoutPackage})#if ($entity.partialEntitySet)this;#else EOUtilities.createAndInsertInstance(editingContext, ${entity.prefixClassNameWithoutPackage}.ENTITY_NAME);#end
+    ${entity.classNameWithOptionalPackage} eo = (${entity.classNameWithOptionalPackage})#if ($entity.partialEntitySet)this;#else EOUtilities.createAndInsertInstance(editingContext, ${entity.prefixClassNameWithoutPackage}.ENTITY_NAME);#end
     
 #foreach ($attribute in $entity.sortedClassAttributes)
 #if (!$attribute.allowsNull)
@@ -216,34 +216,34 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   }
 #if (!$entity.partialEntitySet)
 
-  public static NSArray<${entity.classNameWithoutPackage}> fetchAll${entity.pluralName}(EOEditingContext editingContext) {
+  public static NSArray<${entity.classNameWithOptionalPackage}> fetchAll${entity.pluralName}(EOEditingContext editingContext) {
     return ${entity.prefixClassNameWithoutPackage}.fetchAll${entity.pluralName}(editingContext, null);
   }
 
-  public static NSArray<${entity.classNameWithoutPackage}> fetchAll${entity.pluralName}(EOEditingContext editingContext, NSArray<EOSortOrdering> sortOrderings) {
+  public static NSArray<${entity.classNameWithOptionalPackage}> fetchAll${entity.pluralName}(EOEditingContext editingContext, NSArray<EOSortOrdering> sortOrderings) {
     return ${entity.prefixClassNameWithoutPackage}.fetch${entity.pluralName}(editingContext, null, sortOrderings);
   }
 
-  public static NSArray<${entity.classNameWithoutPackage}> fetch${entity.pluralName}(EOEditingContext editingContext, EOQualifier qualifier, NSArray<EOSortOrdering> sortOrderings) {
+  public static NSArray<${entity.classNameWithOptionalPackage}> fetch${entity.pluralName}(EOEditingContext editingContext, EOQualifier qualifier, NSArray<EOSortOrdering> sortOrderings) {
     EOFetchSpecification fetchSpec = new EOFetchSpecification(${entity.prefixClassNameWithoutPackage}.ENTITY_NAME, qualifier, sortOrderings);
     fetchSpec.setIsDeep(true);
-    NSArray<${entity.classNameWithoutPackage}> eoObjects = (NSArray<${entity.classNameWithoutPackage}>)editingContext.objectsWithFetchSpecification(fetchSpec);
+    NSArray<${entity.classNameWithOptionalPackage}> eoObjects = (NSArray<${entity.classNameWithOptionalPackage}>)editingContext.objectsWithFetchSpecification(fetchSpec);
     return eoObjects;
   }
 
-  public static ${entity.classNameWithoutPackage} fetch${entity.name}(EOEditingContext editingContext, String keyName, Object value) {
+  public static ${entity.classNameWithOptionalPackage} fetch${entity.name}(EOEditingContext editingContext, String keyName, Object value) {
     return ${entity.prefixClassNameWithoutPackage}.fetch${entity.name}(editingContext, new EOKeyValueQualifier(keyName, EOQualifier.QualifierOperatorEqual, value));
   }
 
-  public static ${entity.classNameWithoutPackage} fetch${entity.name}(EOEditingContext editingContext, EOQualifier qualifier) {
-    NSArray<${entity.classNameWithoutPackage}> eoObjects = ${entity.prefixClassNameWithoutPackage}.fetch${entity.pluralName}(editingContext, qualifier, null);
-    ${entity.classNameWithoutPackage} eoObject;
+  public static ${entity.classNameWithOptionalPackage} fetch${entity.name}(EOEditingContext editingContext, EOQualifier qualifier) {
+    NSArray<${entity.classNameWithOptionalPackage}> eoObjects = ${entity.prefixClassNameWithoutPackage}.fetch${entity.pluralName}(editingContext, qualifier, null);
+    ${entity.classNameWithOptionalPackage} eoObject;
     int count = eoObjects.count();
     if (count == 0) {
       eoObject = null;
     }
     else if (count == 1) {
-      eoObject = (${entity.classNameWithoutPackage})eoObjects.objectAtIndex(0);
+      eoObject = (${entity.classNameWithOptionalPackage})eoObjects.objectAtIndex(0);
     }
     else {
       throw new IllegalStateException("There was more than one ${entity.name} that matched the qualifier '" + qualifier + "'.");
@@ -251,20 +251,20 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
     return eoObject;
   }
 
-  public static ${entity.classNameWithoutPackage} fetchRequired${entity.name}(EOEditingContext editingContext, String keyName, Object value) {
+  public static ${entity.classNameWithOptionalPackage} fetchRequired${entity.name}(EOEditingContext editingContext, String keyName, Object value) {
     return ${entity.prefixClassNameWithoutPackage}.fetchRequired${entity.name}(editingContext, new EOKeyValueQualifier(keyName, EOQualifier.QualifierOperatorEqual, value));
   }
 
-  public static ${entity.classNameWithoutPackage} fetchRequired${entity.name}(EOEditingContext editingContext, EOQualifier qualifier) {
-    ${entity.classNameWithoutPackage} eoObject = ${entity.prefixClassNameWithoutPackage}.fetch${entity.name}(editingContext, qualifier);
+  public static ${entity.classNameWithOptionalPackage} fetchRequired${entity.name}(EOEditingContext editingContext, EOQualifier qualifier) {
+    ${entity.classNameWithOptionalPackage} eoObject = ${entity.prefixClassNameWithoutPackage}.fetch${entity.name}(editingContext, qualifier);
     if (eoObject == null) {
       throw new NoSuchElementException("There was no ${entity.name} that matched the qualifier '" + qualifier + "'.");
     }
     return eoObject;
   }
 
-  public static ${entity.classNameWithoutPackage} localInstanceIn(EOEditingContext editingContext, ${entity.classNameWithoutPackage} eo) {
-    ${entity.classNameWithoutPackage} localInstance = (eo == null) ? null : (${entity.classNameWithoutPackage})EOUtilities.localInstanceOfObject(editingContext, eo);
+  public static ${entity.classNameWithOptionalPackage} localInstanceIn(EOEditingContext editingContext, ${entity.classNameWithOptionalPackage} eo) {
+    ${entity.classNameWithOptionalPackage} localInstance = (eo == null) ? null : (${entity.classNameWithOptionalPackage})EOUtilities.localInstanceOfObject(editingContext, eo);
     if (localInstance == null && eo != null) {
       throw new IllegalStateException("You attempted to localInstance " + eo + ", which has not yet committed.");
     }

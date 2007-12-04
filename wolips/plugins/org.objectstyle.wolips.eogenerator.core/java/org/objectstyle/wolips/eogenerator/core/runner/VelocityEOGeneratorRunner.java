@@ -54,13 +54,10 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 		boolean showResults = false;
 		VelocityEngine velocityEngine = new VelocityEngine();
 		velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, org.apache.velocity.runtime.log.NullLogSystem.class.getName());
-		// velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
-		// ConsoleLogger.class.getName());
+		
 		StringBuffer templatePaths = new StringBuffer();
 		templatePaths.append(".");
 		String templatePath = eogeneratorModel.getTemplateDir();
-		String superclassTemplateName;
-		String subclassTemplateName;
 		if (templatePath != null && templatePath.length() > 0) {
 			templatePaths.append(",");
 			File templateFolder = new File(templatePath);
@@ -68,27 +65,45 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 				templateFolder = new File(eogeneratorModel.getProject().getLocation().toFile(), templatePath);
 			}
 			templatePaths.append(templateFolder.getAbsolutePath());
-			superclassTemplateName = eogeneratorModel.getJavaTemplate("_Entity.java");
-			subclassTemplateName = eogeneratorModel.getSubclassJavaTemplate("Entity.java");
 		}
-		else {
-			boolean eogeneratorJava14 = Preferences.isEOGeneratorJava14();
-			if (eogeneratorJava14) {
+
+		String superclassTemplateName = eogeneratorModel.getJavaTemplate(null);
+		String subclassTemplateName = eogeneratorModel.getSubclassJavaTemplate(null);
+		
+		boolean eogeneratorJava14 = Preferences.isEOGeneratorJava14();
+		if (eogeneratorJava14) {
+			if (superclassTemplateName == null) {
 				superclassTemplateName = "_Entity14.java";
+			}
+			if (subclassTemplateName == null) {
 				subclassTemplateName = "Entity14.java";
 			}
-			else {
+		}
+		else {
+			if (superclassTemplateName == null) {
 				superclassTemplateName = "_Entity.java";
+			}
+			if (subclassTemplateName == null) {
 				subclassTemplateName = "Entity.java";
 			}
 		}
+		
+		System.out.println("VelocityEOGeneratorRunner.generate: " + superclassTemplateName + ", " + subclassTemplateName);
+
+		templatePaths.append(",");
+		templatePaths.append(new File("/Library/Application Support/WOLips/EOGenerator").getAbsolutePath());
+		templatePaths.append(",");
+		templatePaths.append(new File(System.getProperty("user.home"), "Documents and Settings/Application Data/WOLips/EOGenerator").getAbsolutePath());
+		templatePaths.append(",");
+		templatePaths.append(new File(System.getProperty("user.home"), "Documents and Settings/AppData/Local/WOLips/EOGenerator").getAbsolutePath());
+		templatePaths.append(",");
+		templatePaths.append(new File(System.getProperty("user.home"), "Library/Application Support/WOLips/EOGenerator").getAbsolutePath());
+
 		velocityEngine.setProperty("resource.loader", "file,wolips");
 		velocityEngine.setProperty("file.resource.loader.class", FileResourceLoader.class.getName());
 		velocityEngine.setProperty("file.resource.loader.path", templatePaths.toString());
 		velocityEngine.setProperty("wolips.resource.loader.class", ResourceLoader.class.getName());
 		velocityEngine.setProperty("wolips.resource.loader.bundle", Activator.getDefault().getBundle());
-		// velocityEngine.setProperty("class.resource.loader.class",
-		// EOGeneratorResourceLoader.class.getName());
 
 		velocityEngine.init();
 		VelocityContext context = new VelocityContext();
@@ -96,6 +111,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 		List<EOModel> models = new LinkedList<EOModel>();
 		EOModelGroup modelGroup = new EOModelGroup();
 		modelGroup.setPrefix(eogeneratorModel.getPrefix());
+		modelGroup.setSuperclassPackage(eogeneratorModel.getSuperclassPackage());
 		modelGroup.setEOGenericRecordClassName(eogeneratorModel.getDefineValueNamed("EOGenericRecord"));
 		for (EOModelReference modelRef : eogeneratorModel.getModels()) {
 			String modelPath = modelRef.getPath(null);
@@ -125,15 +141,16 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			}
 		}
 
-		File destination = new File(eogeneratorModel.getDestination());
-		if (!destination.isAbsolute()) {
-			destination = new File(eogeneratorModel.getProject().getLocation().toFile(), eogeneratorModel.getDestination());
+		File superclassDestination = new File(eogeneratorModel.getDestination());
+		if (!superclassDestination.isAbsolute()) {
+			superclassDestination = new File(eogeneratorModel.getProject().getLocation().toFile(), eogeneratorModel.getDestination());
 		}
-		if (!destination.exists()) {
-			if (!destination.mkdirs()) {
-				throw new IOException("Failed to create destination '" + destination + "'.");
+		if (!superclassDestination.exists()) {
+			if (!superclassDestination.mkdirs()) {
+				throw new IOException("Failed to create destination '" + superclassDestination + "'.");
 			}
 		}
+		
 		File subclassDestination = new File(eogeneratorModel.getSubclassDestination());
 		if (!subclassDestination.isAbsolute()) {
 			subclassDestination = new File(eogeneratorModel.getProject().getLocation().toFile(), eogeneratorModel.getSubclassDestination());
@@ -144,6 +161,10 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			}
 		}
 
+//		String filePathTemplate = eogeneratorModel.getFilenameTemplate();
+//		if (filePathTemplate == null || filePathTemplate.trim().length() == 0) {
+//		}
+		
 		context.put("eogeneratorModel", eogeneratorModel);
 		for (Define define : eogeneratorModel.getDefines()) {
 			context.put(define.getName(), define.getValue());
@@ -154,25 +175,25 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			context.put("model", model);
 
 			for (EOEntity entity : model.getEntities()) {
-				System.out.println("Generating " + model.getName() + "." + entity.getName() + " ...");
+				//System.out.println("Generating " + model.getName() + "." + entity.getName() + " ...");
 				context.put("entity", entity);
 
 				String classNameWithPackage = entity.getClassName();
 				boolean eogenericRecord = classNameWithPackage == null || classNameWithPackage.endsWith("GenericRecord");
 				if (entity.isGenerateSource() && !eogenericRecord) {
 					String prefixClassNameWithPackage = entity.getPrefixClassName();
-
-					String subclassFilePath = classNameWithPackage.replace('.', '/') + ".java";
-					File subclassFile = new File(subclassDestination, subclassFilePath);
-
-					String superclassFilePath = prefixClassNameWithPackage.replace('.', '/') + ".java";
-					File superclassFile = new File(destination, superclassFilePath);
-
 					context.put("className", classNameWithPackage);
 					context.put("prefixClassName", prefixClassNameWithPackage);
 					context.put("packageName", entity.getPackageName());
 					context.put("classNameWithoutPackage", entity.getClassNameWithoutPackage());
 					context.put("prefixClassNameWithoutPackage", entity.getPrefixClassNameWithoutPackage());
+					
+					String superclassFileTemplate = prefixClassNameWithPackage;
+//					StringWriter superclassFilePathWriter = new StringWriter();
+//					velocityEngine.evaluate(context, superclassFilePathWriter, "LOG", superclassFileTemplate);
+
+					String superclassFilePath = superclassFileTemplate.toString().replace('.', '/') + ".java";
+					File superclassFile = new File(superclassDestination, superclassFilePath);
 					File superclassFolder = superclassFile.getParentFile();
 					if (!superclassFolder.exists()) {
 						if (!superclassFolder.mkdirs()) {
@@ -180,7 +201,13 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 						}
 					}
 					VelocityEOGeneratorRunner.writeTemplate(velocityEngine, context, superclassTemplateName, superclassFile);
-
+					
+					String subclassFileTemplate = classNameWithPackage;
+//					StringWriter subclassFilePathWriter = new StringWriter();
+//					velocityEngine.evaluate(context, subclassFilePathWriter, "LOG", subclassFileTemplate);
+					
+					String subclassFilePath = subclassFileTemplate.toString().replace('.', '/') + ".java";
+					File subclassFile = new File(subclassDestination, subclassFilePath);
 					File subclassFolder = subclassFile.getParentFile();
 					if (!subclassFolder.exists()) {
 						if (!subclassFolder.mkdirs()) {
@@ -282,7 +309,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 					newFileBufferedStream.close();
 				}
 			} else {
-				System.out.println("EOGenerator.writeTemplate: skipping " + outputFile);
+				// System.out.println("EOGenerator.writeTemplate: skipping " + outputFile);
 			}
 		}
 	}
