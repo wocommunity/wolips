@@ -727,7 +727,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	}
 
 	public void loadFromURL(URL _modelFolder, boolean createMissingDatabaseConfig, Set<EOModelVerificationFailure> _failures) throws EOModelException, MalformedURLException {
-		System.out.println("EOModel.loadFromURL: " + _modelFolder);
+		//System.out.println("EOModel.loadFromURL: " + _modelFolder);
 		URL indexURL = new URL(_modelFolder, "index.eomodeld");
 		// if (!indexURL.exists()) {
 		// throw new EOModelException(indexURL + " does not exist.");
