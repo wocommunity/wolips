@@ -185,7 +185,8 @@ public class EOGeneratorFormPage extends FormPage {
 
 		updateViewsFromModel();
 
-		form.reflow(true);
+		form.pack();
+		//form.reflow(true);
 	}
 
 	private TableViewer createModelsSection(String title, String description, FormToolkit toolkit, Composite parent, IStructuredContentProvider contentProvider, ITableLabelProvider labelProvider, SelectionListener addListener, SelectionListener removeListener) {
@@ -261,6 +262,13 @@ public class EOGeneratorFormPage extends FormPage {
 		packageDirsButtonGridData.horizontalSpan = 2;
 		packageDirsButton.setLayoutData(packageDirsButtonGridData);
 		_bindingContext.bindValue(SWTObservables.observeSelection(packageDirsButton), BeansObservables.observeValue(_model, EOGeneratorModel.PACKAGE_DIRS), null, null);
+
+		Label superclassPackageLabel = toolkit.createLabel(pathsSection, "Superclass Package (e.g. \"base\"):");
+		superclassPackageLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+		final Text superclassPackage = toolkit.createText(pathsSection, null);
+		superclassPackage.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		_bindingContext.bindValue(SWTObservables.observeText(superclassPackage, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.SUPERCLASS_PACKAGE), null, null);
+		toolkit.createLabel(pathsSection, "");
 
 		Label destinationLabel = toolkit.createLabel(pathsSection, "Destination:");
 		destinationLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
