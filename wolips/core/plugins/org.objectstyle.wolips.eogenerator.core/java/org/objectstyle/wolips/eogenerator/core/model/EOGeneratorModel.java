@@ -105,6 +105,8 @@ public class EOGeneratorModel {
 
 	public static final String DIRTY = "dirty";
 
+	public static final String SUPERCLASS_PACKAGE = "superclassPackage";
+
 	private PropertyChangeSupport _propertyChangeSupport;
 
 	private IProject _project;
@@ -138,6 +140,8 @@ public class EOGeneratorModel {
 	private String _prefix;
 
 	private String _filenameTemplate;
+
+	private String _superclassPackage;
 
 	private List<String> _customSettings;
 
@@ -238,6 +242,8 @@ public class EOGeneratorModel {
 		append(sb, "-templatedir", EOGeneratorModel.toFullPath(workingDirectory, getTemplateDir(defaultTemplateDir)));
 		append(sb, "-verbose", _verbose);
 
+		append(sb, "-superclassPackage", _superclassPackage);
+
 		Iterator definesIter = _defines.iterator();
 		while (definesIter.hasNext()) {
 			Define define = (Define) definesIter.next();
@@ -288,6 +294,8 @@ public class EOGeneratorModel {
 					_templateDir = nextTokenValue(token, tokenizer);
 				} else if ("-verbose".equalsIgnoreCase(token)) {
 					_verbose = Boolean.TRUE;
+				} else if ("-superclassPackage".equalsIgnoreCase(token)) {
+					_superclassPackage = nextTokenValue(token, tokenizer);
 				} else if (token.startsWith("-define-")) {
 					String name = token.substring("-define-".length());
 					String value = nextTokenValue(token, tokenizer);
@@ -620,6 +628,19 @@ public class EOGeneratorModel {
 
 	public String getFilenameTemplate() {
 		return _filenameTemplate;
+	}
+
+	public void setSuperclassPackage(String superclassPackage) {
+		if (isNew(_superclassPackage, superclassPackage)) {
+			String oldSuperclassPackage = _superclassPackage;
+			_superclassPackage = superclassPackage;
+			_propertyChangeSupport.firePropertyChange(EOGeneratorModel.SUPERCLASS_PACKAGE, oldSuperclassPackage, _superclassPackage);
+			setDirty(true);
+		}
+	}
+
+	public String getSuperclassPackage() {
+		return _superclassPackage;
 	}
 
 	public Boolean getVerbose() {
