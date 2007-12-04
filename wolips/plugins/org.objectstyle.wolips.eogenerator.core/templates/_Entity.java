@@ -255,8 +255,8 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
     return ${entity.prefixClassNameWithoutPackage}.fetchRequired${entity.name}(editingContext, new EOKeyValueQualifier(keyName, EOQualifier.QualifierOperatorEqual, value));
   }
 
-  public static ${entity.classNameWithoutPackage} fetchRequired${entity.classNameWithoutPackage}(EOEditingContext editingContext, EOQualifier qualifier) {
-    ${entity.classNameWithoutPackage} eoObject = ${entity.prefixClassNameWithoutPackage}.fetch${entity.classNameWithoutPackage}(editingContext, qualifier);
+  public static ${entity.classNameWithoutPackage} fetchRequired${entity.name}(EOEditingContext editingContext, EOQualifier qualifier) {
+    ${entity.classNameWithoutPackage} eoObject = ${entity.prefixClassNameWithoutPackage}.fetch${entity.name}(editingContext, qualifier);
     if (eoObject == null) {
       throw new NoSuchElementException("There was no ${entity.name} that matched the qualifier '" + qualifier + "'.");
     }
