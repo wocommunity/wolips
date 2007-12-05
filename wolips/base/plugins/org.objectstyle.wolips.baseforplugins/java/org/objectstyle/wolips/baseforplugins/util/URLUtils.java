@@ -143,7 +143,9 @@ public class URLUtils {
 			} else if ("bundleresource".equals(protocol)) {
 				try {
 					BundleURLConnection conn = (BundleURLConnection) url.openConnection();
-					f = new File(conn.getFileURL().toURI());
+					String externalForm = conn.getFileURL().toExternalForm();
+					externalForm = externalForm.replaceAll(" ", "%20");
+					f = new File(new URI(externalForm));
 				} catch (IOException e) {
 					throw new IllegalArgumentException(url + " cannot be turned into a File.", e);
 				} catch (URISyntaxException e) {
