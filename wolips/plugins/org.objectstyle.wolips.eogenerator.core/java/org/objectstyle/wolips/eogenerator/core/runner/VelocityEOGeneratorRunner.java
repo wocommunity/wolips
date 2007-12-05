@@ -88,8 +88,6 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			}
 		}
 		
-		System.out.println("VelocityEOGeneratorRunner.generate: " + superclassTemplateName + ", " + subclassTemplateName);
-
 		templatePaths.append(",");
 		templatePaths.append(new File("/Library/Application Support/WOLips/EOGenerator").getAbsolutePath());
 		templatePaths.append(",");
