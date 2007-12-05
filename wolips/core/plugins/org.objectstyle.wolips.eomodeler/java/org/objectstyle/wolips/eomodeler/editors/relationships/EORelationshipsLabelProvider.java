@@ -57,6 +57,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
@@ -160,15 +161,12 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
 	}
 
 	public Color getForeground(Object element, int columnIndex) {
+    EORelationship relationship = (EORelationship) element;
 		Color color = null;
-		// EORelationship relationships = (EORelationship) element;
-		// if (relationships.isInherited()) {
-		// color =
-		// myTableViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY);
-		// }
-		// if (attribute.isPrototyped()) {
-		// color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED);
-		// }
+    boolean isClassProperty = relationship.isClassProperty() != null && relationship.isClassProperty().booleanValue();
+    if (!isClassProperty) {
+      color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GRAY);
+    }
 		return color;
 	}
 
