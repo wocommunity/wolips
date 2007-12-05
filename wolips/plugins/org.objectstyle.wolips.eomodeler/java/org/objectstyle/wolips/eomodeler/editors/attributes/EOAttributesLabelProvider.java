@@ -187,13 +187,14 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
 		Color color = null;
 		EOAttribute attribute = (EOAttribute) _element;
 		if (attribute != null) {
-			// if (attribute.isInherited()) {
-			// color =
-			// myTableViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY);
-			// }
 			String property = getColumnProperty(_columnIndex);
-			if (attribute.isPrototyped(property)) {
-				color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED);
+			boolean isAttributePrototyped = attribute.isPrototyped(property);
+			boolean isClassProperty = attribute.isClassProperty() != null && attribute.isClassProperty().booleanValue();
+			if (isAttributePrototyped) {
+			  color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED);
+			}
+			else if (!isClassProperty) {
+        color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GRAY);
 			}
 		}
 		return color;
