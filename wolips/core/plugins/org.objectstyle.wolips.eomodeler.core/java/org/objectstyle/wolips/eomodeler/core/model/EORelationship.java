@@ -490,7 +490,7 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 
 	public EOEntity getActualDestination() {
 		EOEntity destination = getDestination();
-		if (destination.isPartialEntitySet()) {
+		if (destination != null && destination.isPartialEntitySet()) {
 			destination = destination.getPartialEntity();
 		}
 		return destination;
