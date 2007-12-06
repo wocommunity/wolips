@@ -84,11 +84,11 @@ public class EOModelMap implements Map {
 		return new EOModelMap(sortedMap);
 	}
 
-	//utility method--there is probably a better place for this
+	// utility method--there is probably a better place for this
 	public static Object[] asArray(Object o) {
-		if( o instanceof Collection ) {
-			Collection c = (Collection)o;
-			if( c.size() > 0 ) {
+		if (o instanceof Collection) {
+			Collection c = (Collection) o;
+			if (c.size() > 0) {
 				return c.toArray();
 			}
 		}
@@ -108,7 +108,9 @@ public class EOModelMap implements Map {
 		} else if (_booleanStyle == EOModelMap.YNOptional) {
 			if (_value.booleanValue()) {
 				myBackingMap.put(_key, "Y");
-			} else if(!"N".equals(myBackingMap.get(_key))) { //leave "N" if it's already there
+			} else if (!"N".equals(myBackingMap.get(_key))) { // leave "N" if
+																// it's already
+																// there
 				myBackingMap.remove(_key);
 			}
 		} else {
@@ -227,7 +229,7 @@ public class EOModelMap implements Map {
 			strValue = objValue.toString();
 		} else {
 			strValue = (String) objValue; // MS: Force a class cast in this
-											// case
+			// case
 		}
 		if (_emptyIsNull && strValue != null && strValue.trim().length() == 0) {
 			strValue = null;
