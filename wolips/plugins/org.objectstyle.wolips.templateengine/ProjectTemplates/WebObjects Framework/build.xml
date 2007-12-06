@@ -46,7 +46,7 @@
 		<taskdef name="woframework" classname="org.objectstyle.woproject.ant.WOFramework">
 		</taskdef>
 
-		<woframework name="${framework.name}" destDir="${dest.dir}" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}" eoAdaptorClassName="${eoAdaptorClassName}" javaVersion="${javaVersion}" cfbundleversion="${cfBundleVersion}" cfbundleshortversion="${cfBundleShortVersion}" cfbundleID="${cfBundleID}">
+		<woframework name="${project.name}" destDir="${dest.dir}" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}" eoAdaptorClassName="${eoAdaptorClassName}" javaVersion="${javaVersion}" cfbundleversion="${cfBundleVersion}" cfbundleshortversion="${cfBundleShortVersion}" cfbundleID="${cfBundleID}">
 			<classes dir="${classes.dir}">
 				<patternset>
 					<includesfile name="${WOLipsContext.getAntFolderName()}/classes.include.patternset" />
