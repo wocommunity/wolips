@@ -796,11 +796,11 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 		relationshipMap.setSet("joins", joins, true);
 		writeUserInfo(relationshipMap);
 		// remove join semantic for flattened if anything else is changing
-//		if (!EOEntity.deepEquals(relationshipMap, myRelationshipMap)) {
-//			if (isFlattened()) {
-//				relationshipMap.remove("joinSemantic");
-//			}
-//		}
+		if (isFlattened()) {
+			if (!ComparisonUtils.deepEquals(relationshipMap, myRelationshipMap)) {
+				relationshipMap.remove("joinSemantic");
+			}
+		}
 
 		return relationshipMap;
 	}
