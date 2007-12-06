@@ -68,7 +68,7 @@ public class PathUtils {
 		String modelPathStr;
 		if (projectPath != null && path.isAbsolute()) {
 			if (projectPath.isPrefixOf(path)) {
-				modelPathStr = path.removeFirstSegments(projectPath.segmentCount()).toPortableString();
+				modelPathStr = path.removeFirstSegments(projectPath.segmentCount()).setDevice(null).toPortableString();
 			} else {
 				int matchingSegmentCount = projectPath.matchingFirstSegments(path);
 				if (matchingSegmentCount == 0) {
