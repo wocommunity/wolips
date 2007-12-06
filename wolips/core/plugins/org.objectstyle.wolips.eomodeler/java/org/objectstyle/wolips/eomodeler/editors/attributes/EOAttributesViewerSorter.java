@@ -58,16 +58,28 @@ public class EOAttributesViewerSorter extends TablePropertyViewerSorter {
 		super(tableName);
 	}
 
-	public Object getComparisonValue(Object _obj, String _property) {
-		EOAttribute attribute = (EOAttribute) _obj;
+	public Object getComparisonValue(Object obj, String property) {
+		EOAttribute attribute = (EOAttribute) obj;
 		Object value = null;
-		if (EOAttribute.PROTOTYPE.equals(_property)) {
+		if (EOAttribute.PROTOTYPE.equals(property)) {
 			EOAttribute prototype = attribute.getPrototype();
 			if (prototype != null) {
 				value = prototype.getName();
 			}
+		/*
+		} else if (AbstractEOArgument.NAME.equals(property)) {
+		  String sortPrefix;
+		  Boolean primaryKey = attribute.isPrimaryKey();
+		  if (primaryKey != null && primaryKey.booleanValue()) {
+		    sortPrefix = "A"; 
+		  }
+		  else {
+		    sortPrefix = "B";
+		  }
+		  value = sortPrefix + super.getComparisonValue(obj, property);
+		*/
 		} else {
-			value = super.getComparisonValue(_obj, _property);
+			value = super.getComparisonValue(obj, property);
 		}
 		return value;
 	}
