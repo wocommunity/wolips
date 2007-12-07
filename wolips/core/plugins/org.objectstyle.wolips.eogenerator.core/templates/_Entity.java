@@ -94,7 +94,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
     return (NSArray<${relationship.actualDestination.classNameWithDefault}>)storedValueForKey("${relationship.name}");
   }
 
-#if (!$relationship.inverseRelationship || !$relationship.inverseRelationship.classProperty)
+#if (!$relationship.inverseRelationship || $relationship.flattened || !$relationship.inverseRelationship.classProperty)
   public NSArray<${relationship.actualDestination.classNameWithDefault}> ${relationship.name}(EOQualifier qualifier) {
     return ${relationship.name}(qualifier, null);
   }
@@ -108,12 +108,17 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   }
 #end
 
-  public NSArray<${relationship.actualDestination.classNameWithDefault}> ${relationship.name}(EOQualifier qualifier, NSArray<EOSortOrdering> sortOrderings#if ($relationship.inverseRelationship && $relationship.inverseRelationship.classProperty), boolean fetch#end) {
+  public NSArray<${relationship.actualDestination.classNameWithDefault}> ${relationship.name}(EOQualifier qualifier, NSArray<EOSortOrdering> sortOrderings#if ($relationship.inverseRelationship && !$relationship.flattened && $relationship.inverseRelationship.classProperty), boolean fetch#end) {
     NSArray<${relationship.actualDestination.classNameWithDefault}> results;
 #if ($relationship.inverseRelationship && !$relationship.flattened && $relationship.inverseRelationship.classProperty)
     if (fetch) {
       EOQualifier fullQualifier;
-      EOQualifier inverseQualifier = new EOKeyValueQualifier(${relationship.destination.classNameWithDefault}.${relationship.inverseRelationship.uppercaseUnderscoreName}_KEY, EOQualifier.QualifierOperatorEqual, this);
+#if (${relationship.actualDestination.genericRecord})
+      EOQualifier inverseQualifier = new EOKeyValueQualifier("${relationship.inverseRelationship.name}", EOQualifier.QualifierOperatorEqual, this);
+#else
+      EOQualifier inverseQualifier = new EOKeyValueQualifier(${relationship.actualDestination.classNameWithDefault}.${relationship.inverseRelationship.uppercaseUnderscoreName}_KEY, EOQualifier.QualifierOperatorEqual, this);
+#end
+    	
       if (qualifier == null) {
         fullQualifier = inverseQualifier;
       }
@@ -123,7 +128,14 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
         qualifiers.addObject(inverseQualifier);
         fullQualifier = new EOAndQualifier(qualifiers);
       }
+
+#if (${relationship.actualDestination.genericRecord})
+      EOFetchSpecification fetchSpec = new EOFetchSpecification("${relationship.actualDestination.name}", qualifier, sortOrderings);
+      fetchSpec.setIsDeep(true);
+      results = (NSArray<${relationship.actualDestination.classNameWithDefault}>)editingContext().objectsWithFetchSpecification(fetchSpec);
+#else
       results = ${relationship.actualDestination.classNameWithDefault}.fetch${relationship.actualDestination.pluralName}(editingContext(), fullQualifier, sortOrderings);
+#end
     }
     else {
 #end
