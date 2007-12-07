@@ -173,7 +173,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			context.put("model", model);
 
 			for (EOEntity entity : model.getEntities()) {
-				//System.out.println("Generating " + model.getName() + "." + entity.getName() + " ...");
+				//System.out.println("Generating   " + model.getName() + "." + entity.getName() + " ...");
 				context.put("entity", entity);
 
 				String classNameWithPackage = entity.getClassName();
