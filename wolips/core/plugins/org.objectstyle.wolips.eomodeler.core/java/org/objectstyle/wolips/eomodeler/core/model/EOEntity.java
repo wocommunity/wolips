@@ -797,6 +797,11 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		return myOriginalName;
 	}
 
+	public boolean isGenericRecord() {
+		boolean isGenericRecord = myClassName == null || myClassName.length() == 0 || myClassName.endsWith("GenericRecord");
+		return isGenericRecord;
+	}
+	
 	public String getClassNameWithDefault() {
 		String className = myClassName;
 		if (className == null) {
