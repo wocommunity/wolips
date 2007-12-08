@@ -61,9 +61,9 @@ public class SwitchToJavaEditorActionDelegate extends AbstractSwitchToActionDele
 		if (localizedComponentsLocateResult.getDotJava() != null) {
 			WorkbenchUtilitiesPlugin.open(localizedComponentsLocateResult.getDotJava());
 		}
-		if (localizedComponentsLocateResult.getDotGroovy() != null) {
-			WorkbenchUtilitiesPlugin.open(localizedComponentsLocateResult.getDotGroovy());
-		}
+//		if (localizedComponentsLocateResult.getDotGroovy() != null) {
+//			WorkbenchUtilitiesPlugin.open(localizedComponentsLocateResult.getDotGroovy());
+//		}
 		
 	}
 }
