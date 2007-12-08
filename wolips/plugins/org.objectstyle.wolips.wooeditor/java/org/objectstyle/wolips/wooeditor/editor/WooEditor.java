@@ -58,12 +58,22 @@ package org.objectstyle.wolips.wooeditor.editor;
 
 import java.io.ByteArrayInputStream;
 
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.forms.editor.FormEditor;
@@ -72,7 +82,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.wolips.wooeditor.WooeditorPlugin;
 import org.objectstyle.wolips.wooeditor.model.WooModel;
 import org.objectstyle.wolips.wooeditor.model.WooModelException;
-import org.objectstyle.wolips.wooeditor.plisteditor.PlistEditor;
+import org.objectstyle.wolips.wooeditor.utils.WooUtils;
 
 public class WooEditor extends FormEditor {
 
@@ -81,6 +91,8 @@ public class WooEditor extends FormEditor {
 	private TextEditor myTextEditor;
 
 	private DisplayGroupPage myDisplayGroupPage;
+	
+	private IResourceChangeListener resourceChangeListener;
 
 	public WooEditor() {
 		super();
@@ -95,8 +107,22 @@ public class WooEditor extends FormEditor {
 	protected void addPages() {
 		try {
 			addPage(myDisplayGroupPage);
-			myTextEditor = new PlistEditor();
-			int index = addPage(myTextEditor, this.getEditorInput());
+			myTextEditor = new TextEditor();
+			
+			IEditorInput input = this.getEditorInput();
+			IFile file = ((FileEditorInput) input).getFile();
+			if (!file.exists()) {
+				try {
+					FileEditorInput fileInput = (FileEditorInput)input;
+					IFileStore fileStore = EFS.getStore(fileInput.getURI());
+					input = new NonExistingFileEditorInput(fileStore, input.getName());
+				} catch (CoreException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			int index = addPage(myTextEditor, input);
+			myTextEditor.doRevertToSaved();
 			setPageText(index, "Source");
 		} catch (PartInitException e) {
 			// TODO Auto-generated catch block
@@ -108,17 +134,30 @@ public class WooEditor extends FormEditor {
 		try {
 			if (myTextEditor.isDirty()
 					&& (getActivePage() == 1 || !model.isDirty())) {
+				IFile file = ((FileEditorInput)getEditorInput()).getFile();
+				if (!file.exists()) {
+					IEditorInput input = this.getEditorInput();
+					((FileEditorInput)input).getFile().create(
+							new ByteArrayInputStream(model.toString().getBytes()),
+							true, null);
+					myTextEditor.setInput(input);
+				}
+				
+				// XXX : Should validate model before save
 				myTextEditor.doSave(monitor);
-				model.doRevertToSaved();
+				try {
+					model.doRevertToSaved();
+				} catch (Throwable e) {
+				}
 				myDisplayGroupPage.refresh();
 			} else {
 				model.doSave();
 				myTextEditor.doRevertToSaved();
 			}
 			this.editorDirtyStateChanged();
-		} catch (WooModelException e) {
-			// TODO Auto-generated catch block
+		} catch (Throwable e) {
 			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -133,25 +172,67 @@ public class WooEditor extends FormEditor {
 	public void init(final IEditorSite site, final IEditorInput input)
 			throws PartInitException {
 		super.init(site, input);
+		
 		this.getSite().getSelectionProvider().setSelection(new ISelection() {
 			public boolean isEmpty() {
 				return true;
 			}
 		});
+		
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		resourceChangeListener = new IResourceChangeListener() {
+			public void resourceChanged(IResourceChangeEvent event) {
+				if (event.getDelta() == null) return;
+				IResourceDelta woComponentDelta = event.getDelta().findMember(
+						((FileEditorInput)input).getFile().getFullPath()
+						.removeLastSegments(1).removeTrailingSeparator());
+				if (woComponentDelta == null) 
+					return;
+				
+				if (woComponentDelta.getKind() != IResourceDelta.CHANGED
+						|| (woComponentDelta.getFlags() & IResourceDelta.ENCODING) == 0) {
+					return;
+				}
+				
+				final IFolder folder = (IFolder) woComponentDelta.getResource();
+
+				// Encoding of component changed. Update model
+				if (model != null) {
+					try {
+						model.setEncoding(folder.getDefaultCharset());
+					} catch (CoreException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+		workspace.addResourceChangeListener(resourceChangeListener);
 	}
 
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		super.dispose();
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		workspace.removeResourceChangeListener(resourceChangeListener);
+	}
+	
 	public WooModel getModel() {
 		if (model == null) {
 			IFile file = ((FileEditorInput) this.getEditorInput()).getFile();
-			if (((FileEditorInput) this.getEditorInput()).getFile().exists()) {
+			if (file.exists()) {
+				model = new WooModel(file);
+				model.parseModel();
+			} else {
 				try {
-					model = new WooModel(file);
+					model = new WooModel(this.getEditorInput());
+					model.parseModel();
+					model.setEncoding(getComponentCharset());
 				} catch (WooModelException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			} else {
-				model = new WooModel(this.getEditorInput());
 			}
 		}
 		return model;
@@ -175,6 +256,7 @@ public class WooEditor extends FormEditor {
 				if (editorText != null && !editorText.equals(model.toString())) {
 					getModel().loadModelFromStream(
 							new ByteArrayInputStream(editorText.getBytes()));
+					getModel().parseModel();
 					myDisplayGroupPage.refresh();
 				}
 			} catch (Throwable e) {
@@ -184,12 +266,29 @@ public class WooEditor extends FormEditor {
 			String modelText = model.toString();
 			if (modelText != null) {
 				myTextEditor.getDocumentProvider().getDocument(
-						myTextEditor.getEditorInput()).set(model.toString());
+						myTextEditor.getEditorInput()).set(modelText);
 			}
 		}
 	}
 
 	public void setModel(WooModel model) {
 		this.model = model;
+	}
+	
+	private String getComponentCharset() {
+		String encoding = "UTF-8";
+		IEditorInput input = this.getEditorInput();
+		if (input == null || !(input instanceof IFileEditorInput)) {
+			return encoding;
+		}
+		IFile file = ((IFileEditorInput)input).getFile();
+		try {
+			encoding = file.getParent().getDefaultCharset();
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		encoding = WooUtils.encodingNameFromObjectiveC(encoding);
+		return encoding;
 	}
 }

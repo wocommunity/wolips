@@ -12,7 +12,8 @@ Require-Bundle: org.objectstyle.wolips,
  org.objectstyle.wolips.locate,
  org.objectstyle.wolips.workbenchutilities,
  org.eclipse.ui.editors,
- org.objectstyle.wolips.bindings
+ org.objectstyle.wolips.bindings,
+ org.objectstyle.wolips.wooeditor
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,
  lib/commons-jxpath-1.2.jar

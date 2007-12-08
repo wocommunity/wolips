@@ -210,7 +210,7 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 		} else if (componentEditorInput.isDisplayApiPartOnReveal()) {
 			this.switchToApi();
 		} else if (componentEditorInput.isDisplayHtmlPartOnReveal()) {
-      this.switchToHtml();
+			this.switchToHtml();
 		}
 		return;
 	}
@@ -275,6 +275,9 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 		case IEditorTarget.TARGET_WOD:
 			this.switchToWod();
 			break;
+		case IEditorTarget.TARGET_WOO:
+			this.switchToWoo();
+			break;
 
 		default:
 			break;
@@ -297,9 +300,9 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 		switchToPage(wodPageId);
 	}
 
-  public void switchToWoo() {
-    switchToPage(wooPageId);
-  }
+	public void switchToWoo() {
+		switchToPage(wooPageId);
+	}
 
 	public void switchToPreview() {
 		switchToPage(previewPageId);

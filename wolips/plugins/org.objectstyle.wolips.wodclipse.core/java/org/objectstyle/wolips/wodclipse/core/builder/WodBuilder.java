@@ -170,7 +170,14 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
             // shoulnd't we validate all files using the api?
             validate = false;
           }
-
+          else if ("woo".equals(fileExtension) && resource.getParent().getName().endsWith(".wo")) {
+            Set<IContainer> builtComponents = componentBuildCache(buildCache);
+            IContainer woFolder = resource.getParent();
+            if (!builtComponents.contains(woFolder)) {
+              validate = true;
+              builtComponents.add(woFolder);
+            }
+          }
           if (validate) {
             validateWodFile(file, monitor);
           }
@@ -188,6 +195,9 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
           WodModelUtils.deleteWodProblems(file);
         }
         else if ("html".equals(fileExtension)) {
+          WodModelUtils.deleteWodProblems(file);
+        }
+        else if ("woo".equals(fileExtension)) {
           WodModelUtils.deleteWodProblems(file);
         }
       }

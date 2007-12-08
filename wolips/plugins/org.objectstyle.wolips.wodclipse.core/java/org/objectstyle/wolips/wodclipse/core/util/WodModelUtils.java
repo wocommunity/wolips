@@ -61,11 +61,16 @@ import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.bindings.wod.IWodModel;
 import org.objectstyle.wolips.bindings.wod.TypeCache;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
+import org.objectstyle.wolips.bindings.woo.IEOModelGroupCache;
+import org.objectstyle.wolips.bindings.woo.IWooModel;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.document.DocumentWodModel;
 import org.objectstyle.wolips.wodclipse.core.document.WodFileDocumentProvider;
+import org.objectstyle.wolips.wooeditor.model.EOModelGroupCache;
+import org.objectstyle.wolips.wooeditor.model.WooModel;
+import org.objectstyle.wolips.wooeditor.model.WooModelException;
 
 /**
  * @author mschrag
@@ -75,6 +80,14 @@ public class WodModelUtils {
     return new DocumentWodModel(wodFile, wodDocument);
   }
 
+  public static IWooModel createWooModel(IDocument wooDocument) throws WooModelException {
+	return (IWooModel) new WooModel(wooDocument.get());
+  }
+  
+  public static IWooModel createWooModel(IFile wooFile) {
+	return (IWooModel) new WooModel(wooFile);
+  }
+  
   public static void deleteWodProblems(IFile wodFile) {
     try {
       wodFile.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
@@ -202,5 +215,9 @@ public class WodModelUtils {
 //      Activator.getDefault().log(e);
 //    }
     return marker;
+  }
+
+  public static IEOModelGroupCache createModelGroupCache() {
+	  return (IEOModelGroupCache) new EOModelGroupCache();
   }
 }

@@ -58,6 +58,7 @@ package org.objectstyle.wolips.wooeditor;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -74,6 +75,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
+import org.objectstyle.wolips.wooeditor.model.WooModel;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -169,13 +171,25 @@ public class WooeditorPlugin extends AbstractBaseUIActivator implements
 					for (IResource resource : changed) {
 						IFolder folder = (IFolder) resource;
 						try {
-							// XXX Do something useful here
 							String charset = folder.getDefaultCharset();
-							String wooFile = resource.getFullPath().toString()
-									+ IPath.SEPARATOR + resource.getName()
-									+ "o";
-							System.out.println("Would set " + wooFile
-									+ " charset to " + charset);
+							IPath wooPath = folder.getLocation()
+									.addTrailingSeparator().append(folder.getName() + "o");
+							IFile wooFile = workspace.getRoot().getFileForLocation(wooPath);
+							WooModel.updateEncoding(wooFile, charset);
+							wooFile.refreshLocal(IResource.DEPTH_ZERO, null);
+
+							// Change the eclipse encoding type of the Component template
+
+							for(IResource element : folder.members()) {
+								if (element.getType() == IResource.FILE) {
+									IFile file = (IFile) element;
+									if (file.getFileExtension().matches("(xml|html|xhtml|wod)")
+										 && !file.getCharset().equals(charset)) {
+											file.setCharset(charset, null);
+									}
+								}
+							}
+							
 						} catch (CoreException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();

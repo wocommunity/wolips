@@ -128,6 +128,9 @@ public class ComponentEditorMatchingStrategy implements IEditorMatchingStrategy 
 					componentEditor.switchToWod();
 					break;
 				case 2:
+					componentEditor.switchToWoo();
+					break;
+				case 3:
 					componentEditor.switchToApi();
 					break;
 
