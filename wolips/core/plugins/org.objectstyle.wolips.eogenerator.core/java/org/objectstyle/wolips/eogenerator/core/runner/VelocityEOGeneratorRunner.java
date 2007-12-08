@@ -36,6 +36,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
+import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.thirdparty.velocity.resourceloader.ResourceLoader;
 
@@ -110,7 +111,10 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 		EOModelGroup modelGroup = new EOModelGroup();
 		modelGroup.setPrefix(eogeneratorModel.getPrefix());
 		modelGroup.setSuperclassPackage(eogeneratorModel.getSuperclassPackage());
-		modelGroup.setEOGenericRecordClassName(eogeneratorModel.getDefineValueNamed("EOGenericRecord"));
+		String eogenericRecordClassName = eogeneratorModel.getDefineValueNamed("EOGenericRecord");
+		if (eogenericRecordClassName != null) {
+			modelGroup.setEOGenericRecordClassName(eogenericRecordClassName);
+		}
 		for (EOModelReference modelRef : eogeneratorModel.getModels()) {
 			String modelPath = modelRef.getPath(null);
 			File modelFile = new File(modelPath);
