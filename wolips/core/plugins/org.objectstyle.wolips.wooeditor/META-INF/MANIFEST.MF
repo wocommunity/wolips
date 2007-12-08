@@ -5,25 +5,19 @@ Bundle-SymbolicName: org.objectstyle.wolips.wooeditor;singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.wooeditor.WooeditorPlugin
 Bundle-Vendor: objectstyle.org
-Bundle-Localization: plugin
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ui.ide,
- org.eclipse.ui,
- org.eclipse.ui.forms,
- org.objectstyle.wolips,
- org.objectstyle.wolips.locate,
- org.objectstyle.wolips.baseforuiplugins,
- org.eclipse.core.resources,
+Require-Bundle: org.eclipse.core.filesystem,
  org.eclipse.jface.databinding,
- org.objectstyle.wolips.eomodeler.core,
- org.objectstyle.wolips.eomodeler,
  org.eclipse.core.databinding,
  org.eclipse.core.databinding.beans,
- org.objectstyle.wolips.editors,
- org.objectstyle.wolips.eomodeler.eclipse,
- org.eclipse.jdt.core,
+ org.eclipse.ui.forms,
  org.eclipse.ui.editors,
- org.eclipse.jdt.ui
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.ui,
+ org.objectstyle.wolips.baseforuiplugins,
+ org.objectstyle.wolips.bindings,
+ org.objectstyle.wolips.eomodeler.core
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.wooeditor,
- org.objectstyle.wolips.wooeditor.editor
+ org.objectstyle.wolips.wooeditor.editor,
+ org.objectstyle.wolips.wooeditor.model
+ 

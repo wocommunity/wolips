@@ -99,8 +99,18 @@ public class DisplayGroupPageBlock extends MasterDetailsBlock {
 		public void widgetSelected(final SelectionEvent e) {
 			try {
 				WooEditor wooEditor = (WooEditor) page.getEditor();
-				//XXX Need to use valid name instead of Foo
-				wooEditor.getModel().createDisplayGroup("Foo");
+				int nextId = 1;
+				for (DisplayGroup dg : wooEditor.getModel().getDisplayGroups()) {
+					if (dg.getName().matches("^displayGroup[0-9]*$")) {
+						String index = dg.getName().replaceAll("^displayGroup([0-9]*)$", "$1");
+						int j = new Integer(index);
+						if (nextId <= j) {
+							nextId = j + 1;
+						}
+					}
+				}
+
+				wooEditor.getModel().createDisplayGroup("displayGroup" + nextId);
 				viewer.refresh();
 				int count = viewer.getTable().getItemCount();
 				Object element = viewer.getElementAt(count - 1);
@@ -125,10 +135,9 @@ public class DisplayGroupPageBlock extends MasterDetailsBlock {
 							.getDisplayGroups();
 					return displayGroups;
 				}
-				return new Object[0];
-			} catch (Throwable t) {
-				throw new RuntimeException("Failed to open .woo file.", t);
-			}
+			} catch (Throwable t) { }
+			return new Object[0];
+			
 		}
 
 		public void inputChanged(final Viewer inViewer, final Object oldInput,
@@ -177,9 +186,11 @@ public class DisplayGroupPageBlock extends MasterDetailsBlock {
 					selectionIndex = count - 1;
 				}
 				Object element = viewer.getElementAt(selectionIndex);
-				viewer.editElement(element, selectionIndex);
+				if (element != null)
+					viewer.editElement(element, selectionIndex);
 				myManagedForm.dirtyStateChanged();
 			} catch (Throwable tx) {
+				tx.printStackTrace();
 				throw new RuntimeException("Failed to open .woo file.", tx);
 			}
 		}

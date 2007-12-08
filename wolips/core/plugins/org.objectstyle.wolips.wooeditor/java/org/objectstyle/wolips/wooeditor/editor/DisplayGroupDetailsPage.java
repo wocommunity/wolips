@@ -108,6 +108,8 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 	private Spinner myEntriesPerBatchSpinner;
 
 	private Combo myEntityCombo;
+	
+	private Text myEditingContextText;
 
 	private Combo myMasterEntityCombo;
 
@@ -123,6 +125,8 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 
 	private Button myFetchOnLoadButton;
 
+	private Button mySelectsFirstObjectButton;
+	
 	private RadioGroup mySortRadioGroup;
 
 	private DataBindingContext myBindingContext;
@@ -204,12 +208,21 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 				SWTObservables.observeEnabled(myEntityCombo), BeansObservables
 						.observeValue(myDisplayGroup,
 								DisplayGroup.HAS_MASTER_DETAIL),
-				new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER),
+				new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER), 
 				booleanInverse);
 		myBindingContext.bindValue(CustomSWTObservables
 				.observeText(myEntityCombo), BeansObservables.observeValue(
 				myDisplayGroup, DisplayGroup.ENTITY_NAME), null, null);
 
+		myBindingContext.bindValue(
+				SWTObservables.observeEnabled(myEditingContextText), BeansObservables
+						.observeValue(myDisplayGroup,
+								DisplayGroup.HAS_MASTER_DETAIL),
+				new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER), booleanInverse);
+		myBindingContext.bindValue(SWTObservables
+				.observeText(myEditingContextText, SWT.Modify), BeansObservables.observeValue(
+				myDisplayGroup, DisplayGroup.EDITING_CONTEXT), null, null);
+		
 		myBindingContext.bindValue(SWTObservables
 				.observeSelection(myHasDetailButton), BeansObservables
 				.observeValue(myDisplayGroup, DisplayGroup.HAS_MASTER_DETAIL),
@@ -238,6 +251,11 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 				.observeValue(myDisplayGroup, DisplayGroup.ENTRIES_PER_BATCH),
 				null, null);
 
+		myBindingContext.bindValue(SWTObservables
+				.observeSelection(mySelectsFirstObjectButton), BeansObservables
+				.observeValue(myDisplayGroup, DisplayGroup.SELECTS_FIRST_OBJECT),
+				null, null);
+		
 		myBindingContext.bindList(SWTObservables
 				.observeItems(myQualificationCombo), BeansObservables
 				.observeList(Realm.getDefault(), myDisplayGroup,
@@ -388,8 +406,14 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 		GridData entityFieldLayoutData = new GridData(SWT.FILL, SWT.FILL, true,
 				false);
 		myEntityCombo.setLayoutData(entityFieldLayoutData);
-		// XXX For debugging
-		myEntityCombo.setData("myEntityCombo");
+		
+		// Editing Context
+		form.createLabel(displayGroupComposite, "Editing Context:");
+		myEditingContextText = form.createText(displayGroupComposite, "", SWT.SINGLE);
+		GridData editingContextFieldLayoutData = new GridData(SWT.FILL, SWT.FILL, true,
+				false);
+		myEditingContextText.setLayoutData(editingContextFieldLayoutData);
+
 
 		// HasDetail
 		createSpacer(form, displayGroupComposite, 1);
@@ -448,13 +472,15 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 		GridData entriesPerBatchLayoutData = new GridData(SWT.FILL, SWT.FILL,
 				false, false);
 		myEntriesPerBatchSpinner.setLayoutData(entriesPerBatchLayoutData);
-
-		// Qualification type
-		form.createLabel(displayGroupComposite, "Qualification:");
-		myQualificationCombo = new Combo(displayGroupComposite, SWT.POP_UP);
-		GridData qualificationFieldLayoutData = new GridData(SWT.FILL,
-				SWT.FILL, true, false);
-		myQualificationCombo.setLayoutData(qualificationFieldLayoutData);
+		
+		// Selects first object
+		createSpacer(form, displayGroupComposite, 1);
+		mySelectsFirstObjectButton = form.createButton(displayGroupComposite,
+				"Selects first object on load", SWT.CHECK);
+		GridData selectsFirstObjectLayoutData = new GridData(SWT.FILL, SWT.FILL, 
+				true, false);
+		selectsFirstObjectLayoutData.horizontalIndent = 5;
+		mySelectsFirstObjectButton.setLayoutData(selectsFirstObjectLayoutData);
 
 		// Fetches on load
 		createSpacer(form, displayGroupComposite, 1);
@@ -464,6 +490,13 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 				false);
 		fetchOnLoadLayoutData.horizontalIndent = 5;
 		myFetchOnLoadButton.setLayoutData(fetchOnLoadLayoutData);
+
+		// Qualification type
+		form.createLabel(displayGroupComposite, "Qualification:");
+		myQualificationCombo = new Combo(displayGroupComposite, SWT.POP_UP);
+		GridData qualificationFieldLayoutData = new GridData(SWT.FILL,
+				SWT.FILL, true, false);
+		myQualificationCombo.setLayoutData(qualificationFieldLayoutData);
 
 		// Sorting attribute
 		form.createLabel(displayGroupComposite, "Sorting:");

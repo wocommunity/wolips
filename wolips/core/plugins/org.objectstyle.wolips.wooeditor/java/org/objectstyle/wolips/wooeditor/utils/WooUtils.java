@@ -8,25 +8,25 @@ public class WooUtils {
 	public static String encodingNameFromObjectiveC(
 			String objectiveCEncodingName) {
 		if (objectiveCEncodingName.equals("NSISOLatin1StringEncoding"))
-			return "ISO8859_1";
+			return "ISO-8859-1";
 		if (objectiveCEncodingName.equals("NSMacOSRomanStringEncoding"))
 			return "MacRoman";
 		if (objectiveCEncodingName.equals("NSASCIIStringEncoding"))
-			return "ASCII";
+			return "US-ASCII";
 		if (objectiveCEncodingName.equals("NSNEXTSTEPStringEncoding"))
-			return "ISO8859_1";
+			return "ISO-8859-1";
 		if (objectiveCEncodingName.equals("NSJapaneseEUCStringEncoding"))
 			return "EUC_JP";
 		if (objectiveCEncodingName.equals("NSUTF8StringEncoding"))
-			return "UTF8";
+			return "UTF-8";
 		if (objectiveCEncodingName.equals("NSSymbolStringEncoding"))
 			return "MacSymbol";
 		if (objectiveCEncodingName.equals("NSNonLossyASCIIStringEncoding"))
-			return "ASCII";
+			return "US-ASCII";
 		if (objectiveCEncodingName.equals("NSShiftJISStringEncoding"))
 			return "SJIS";
 		if (objectiveCEncodingName.equals("NSISOLatin2StringEncoding"))
-			return "ISO8859_2";
+			return "ISO-8859-2";
 		if (objectiveCEncodingName.equals("NSUnicodeStringEncoding"))
 			return "Unicode";
 		if (objectiveCEncodingName.equals("NSWindowsCP1251StringEncoding"))

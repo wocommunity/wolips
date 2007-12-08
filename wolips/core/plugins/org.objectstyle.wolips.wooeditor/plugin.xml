@@ -16,5 +16,13 @@
             />
       </editor>
    </extension>
+  <extension
+        point="org.eclipse.ui.editors.documentProviders">
+     <provider
+           class="org.eclipse.ui.editors.text.TextFileDocumentProvider"
+           id="org.objectstyle.wolips.wooeditor.editor.NullDocumentProvider"
+           inputTypes="org.objectstyle.wolips.wooeditor.editor.NonExistingFileEditorInput">
+     </provider>
+  </extension>
 
 </plugin>

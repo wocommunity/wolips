@@ -9,12 +9,15 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 
 public class EODatabaseDataSource extends EODataSource {
 
+	private final static String DEFAULT_EDITING_CONTEXT = "session.defaultEditingContext";
+	
 	private String myEditingContext;
 
 	private EOFetchSpecification myFetchSpecification;
 
 	public EODatabaseDataSource(final EOModelGroup modelGroup) {
 		super(modelGroup);
+		myEditingContext = DEFAULT_EDITING_CONTEXT;
 	}
 
 	@Override
@@ -34,6 +37,11 @@ public class EODatabaseDataSource extends EODataSource {
 		}
 
 		myEditingContext = map.getString("editingContext", true);
+		
+		// Fix missing editing context
+		if (myEditingContext == null) {
+			myEditingContext = DEFAULT_EDITING_CONTEXT;
+		}
 	}
 
 	public String getEditingContext() {

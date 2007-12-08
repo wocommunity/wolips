@@ -112,6 +112,10 @@ public class DisplayGroup implements IPropertyChangeSource {
 	public static final String ENTRIES_PER_BATCH = "entriesPerBatch";
 
 	public static final String FETCHES_ON_LOAD = "fetchesOnLoad";
+	
+	public static final String SELECTS_FIRST_OBJECT = "selectsFirstObject";
+	
+	public static final String EDITING_CONTEXT = "editingContext";
 
 	public static final String ASCENDING = "Ascending";
 
@@ -151,8 +155,7 @@ public class DisplayGroup implements IPropertyChangeSource {
 	private String myQualifierFormat;
 	private int myEntriesPerBatch;
 	private List<String> myLocalKeys;
-
-	private Boolean mySelectsFirstObject;
+	private boolean mySelectsFirstObject;
 
 	private PropertyChangeSupport myChangeSupport;
 
@@ -176,6 +179,7 @@ public class DisplayGroup implements IPropertyChangeSource {
 		myHasMasterDetail = false;
 		myChangeSupport = new PropertyChangeSupport(this);
 		mySortOrder = new EODisplayGroupSortOrdering();
+		mySelectsFirstObject = false;
 	}
 
 	public void addPropertyChangeListener(final PropertyChangeListener listener) {
@@ -194,8 +198,6 @@ public class DisplayGroup implements IPropertyChangeSource {
 				|| (oldValue != null && !oldValue.equals(newValue))
 				|| (newValue != null && !newValue.equals(oldValue))) {
 			myWooModel.markAsDirty();
-			System.out.println("firing(" + propertyName + "," + oldValue + ","
-					+ newValue + ")");
 			myChangeSupport
 					.firePropertyChange(propertyName, oldValue, newValue);
 		}
@@ -222,6 +224,10 @@ public class DisplayGroup implements IPropertyChangeSource {
 
 	public String getDetailKeyName() {
 		return myDetailKeyName;
+	}
+	
+	public String getEditingContext() {
+		return myDatabaseDataSource.getEditingContext();
 	}
 
 	public EOEntity getEntity() {
@@ -298,6 +304,10 @@ public class DisplayGroup implements IPropertyChangeSource {
 
 	public String[] getQualificationList() {
 		return QUALIFICATION_LABELS.clone();
+	}
+	
+	public boolean getSelectsFirstObject() {
+		return mySelectsFirstObject;
 	}
 
 	public List<String> getSortList() {
@@ -437,6 +447,13 @@ public class DisplayGroup implements IPropertyChangeSource {
 
 		myDetailDataSource.setDetailKey(myDetailKeyName);
 		firePropertyChange(DETAIL_KEY_NAME, oldDetailKeyName, myDetailKeyName);
+	}
+	
+	public void setEditingContext(final String ec) {
+		String oldEditingContext = myDatabaseDataSource.getEditingContext();
+		myDatabaseDataSource.setEditingContext(ec);
+		firePropertyChange(EDITING_CONTEXT, oldEditingContext, 
+				myDatabaseDataSource.getEditingContext());
 	}
 
 	private void setEntity(final EOEntity entity) {
@@ -585,6 +602,13 @@ public class DisplayGroup implements IPropertyChangeSource {
 		myQualifierFormat = QUALIFICATION_FORMATS[myQualificationIndex];
 		firePropertyChange(QUALIFICATION_INDEX, oldQualificationIndex,
 				myQualificationIndex);
+	}
+	
+	public void setSelectsFirstObject(final boolean value) {
+		boolean oldSelectsFirstObject = mySelectsFirstObject;
+		mySelectsFirstObject = value;
+		firePropertyChange(SELECTS_FIRST_OBJECT, oldSelectsFirstObject, 
+				mySelectsFirstObject);
 	}
 
 	public void setSortOrder(final String order) {
