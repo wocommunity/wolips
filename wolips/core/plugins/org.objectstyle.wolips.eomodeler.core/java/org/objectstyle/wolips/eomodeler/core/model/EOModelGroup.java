@@ -109,6 +109,9 @@ public class EOModelGroup extends EOModelObject<Object> {
 
 	public void setEOGenericRecordClassName(String eogenericRecordClassName) {
 		_eogenericRecordClassName = eogenericRecordClassName;
+		if (_eogenericRecordClassName == null) {
+			_eogenericRecordClassName = "com.webobjects.eocontrol.EOGenericRecord";
+		}
 	}
 
 	public String getEOGenericRecordClassName() {
