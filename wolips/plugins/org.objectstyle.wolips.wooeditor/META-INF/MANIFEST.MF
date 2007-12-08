@@ -20,4 +20,3 @@ Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.wooeditor,
  org.objectstyle.wolips.wooeditor.editor,
  org.objectstyle.wolips.wooeditor.model
- 
