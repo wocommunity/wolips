@@ -1,4 +1,4 @@
-// $Revision$ DO NOT EDIT.  Make changes to ${entity.classNameWithOptionalPackage}.java instead.
+// $LastChangedRevision$ DO NOT EDIT.  Make changes to ${entity.classNameWithOptionalPackage}.java instead.
 #if ($entity.superclassPackageName)
 package $entity.superclassPackageName;
 
