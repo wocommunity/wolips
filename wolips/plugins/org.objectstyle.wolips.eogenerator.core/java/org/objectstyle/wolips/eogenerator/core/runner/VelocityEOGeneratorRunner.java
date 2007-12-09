@@ -36,7 +36,6 @@ import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
-import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.thirdparty.velocity.resourceloader.ResourceLoader;
 
