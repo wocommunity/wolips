@@ -385,11 +385,24 @@ public class WooModel implements IWooModel {
 		try {
 			String componentCharset = myFile.getParent().getDefaultCharset();
 			String encoding = WooUtils.encodingNameFromObjectiveC(this.getEncoding());
-			if (myModelMap != null && !(encoding.equals(componentCharset))) {
+			if (!(encoding.equals(componentCharset))) {
 				problems.add(new WodProblem("WOO Encoding type " +
-						getEncoding() + " doesn't match component " +
+						encoding + " doesn't match component " +
 						componentCharset, null, 0, true));
 			}
+			
+			for(IResource element : myFile.getParent().members()) {
+				if (element.getType() == IResource.FILE) {
+					IFile file = (IFile) element;
+					if (file.getFileExtension().matches("(xml|html|xhtml|wod)")
+						 && !file.getCharset().equals(encoding)) {
+						problems.add(new WodProblem("WOO Encoding type " +
+								encoding + " doesn't match " + file.getName() 
+								+ " of "+ file.getCharset(), null, 0, true));
+					}
+				}
+			}
+			
 		} catch (CoreException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -444,7 +457,6 @@ public class WooModel implements IWooModel {
 				try {
 					FileOutputStream writer = new FileOutputStream(_file);
 					PropertyListSerialization.propertyListToStream(writer, model.myModelMap);
-					file.refreshLocal(IResource.DEPTH_ZERO, null);
 				} catch (PropertyListParserException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

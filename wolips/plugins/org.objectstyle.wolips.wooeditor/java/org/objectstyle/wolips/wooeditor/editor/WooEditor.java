@@ -62,7 +62,6 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
@@ -183,7 +182,7 @@ public class WooEditor extends FormEditor {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		resourceChangeListener = new IResourceChangeListener() {
 			public void resourceChanged(IResourceChangeEvent event) {
-				if (event.getDelta() == null) return;
+				if (event.getDelta() == null || model == null) return;
 				IResourceDelta woComponentDelta = event.getDelta().findMember(
 						((FileEditorInput)input).getFile().getFullPath()
 						.removeLastSegments(1).removeTrailingSeparator());
@@ -195,31 +194,14 @@ public class WooEditor extends FormEditor {
 					return;
 				}
 				
-				IResource resource = woComponentDelta.getResource();
-				
-				if (resource.getProjectRelativePath().toString().equals(
-				"build")) {
-					return;
-				}
-
-				// only interested in folders with the "wo" extension
-				if ( ! ( resource.getType() == IResource.FOLDER
-						&& "wo".equalsIgnoreCase(resource
-								.getFileExtension()) ) ) {
-					return;
-				}
-
 				final IFolder folder = (IFolder) woComponentDelta.getResource();
 
-				// Encoding of component changed. Update model
-				if (model != null && folder.exists()) {
-					try {
-						model.setEncoding(folder.getDefaultCharset());
-					} catch (CoreException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
+				try {
+					model.setEncoding(folder.getDefaultCharset());
+				} catch (CoreException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}			
 			}
 		};
 		workspace.addResourceChangeListener(resourceChangeListener);
