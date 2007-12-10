@@ -176,7 +176,6 @@ public class WooeditorPlugin extends AbstractBaseUIActivator implements
 									.addTrailingSeparator().append(folder.getName() + "o");
 							IFile wooFile = workspace.getRoot().getFileForLocation(wooPath);
 							WooModel.updateEncoding(wooFile, charset);
-							wooFile.refreshLocal(IResource.DEPTH_ZERO, null);
 
 							// Change the eclipse encoding type of the Component template
 
@@ -185,7 +184,7 @@ public class WooeditorPlugin extends AbstractBaseUIActivator implements
 									IFile file = (IFile) element;
 									if (file.getFileExtension().matches("(xml|html|xhtml|wod)")
 										 && !file.getCharset().equals(charset)) {
-											file.setCharset(charset, null);
+										file.setCharset(charset, null);
 									}
 								}
 							}
