@@ -251,6 +251,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   }
 
   public void clearValidationCache() {
+    //System.out.println("WodParserCache.clearValidationCache: " + _woFolder);
     _validated = false;
   }
 
@@ -405,6 +406,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
         _lastHtmlParseTime = -1;
         _htmlDocumentChanged = false;
       }
+      System.out.println("WodParserCache.parseHtmlAndWodIfNecessary: " + _woFolder);
       _validated = false;
     }
 
@@ -439,6 +441,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
         _lastWodParseTime = -1;
         _wodDocumentChanged = false;
       }
+      // System.out.println("WodParserCache.parseHtmlAndWodIfNecessary: 1 " + _woFolder);
       _validated = false;
     }
 
@@ -449,14 +452,15 @@ public class WodParserCache implements FuzzyXMLErrorListener {
     	}
     	else if (_wooFile != null && _wooFile.exists()) {
     		_wooModel = WodModelUtils.createWooModel(_wooFile);
-			_lastWodParseTime = _wooFile.getModificationStamp();
-			_wooDocumentChanged = false;
+    		_lastWooParseTime = _wooFile.getModificationStamp();
+    		_wooDocumentChanged = false;
     	}
     	else {
     		_wooModel = null;
     		_lastWooParseTime = -1;
     		_wooDocumentChanged = false;
     	}
+    	// System.out.println("WodParserCache.parseHtmlAndWodIfNecessary: 2 " + _woFolder);
     	_validated = false;
     }
   }
@@ -466,7 +470,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
       IWorkspaceRunnable body = new IWorkspaceRunnable() {
         public void run(IProgressMonitor monitor) {
           try {
-            //System.out.println("WodParserCache.validate: Validate " + _woFolder);
+            // System.out.println("WodParserCache.validate: Validate " + _woFolder);
             _validated = true;
             if (_wodFile != null && _wodFile.exists()) {
               WodModelUtils.deleteWodProblems(_wodFile);
