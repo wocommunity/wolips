@@ -52,6 +52,7 @@ package org.objectstyle.wolips.ui.propertypages;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -465,11 +466,19 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 	}
 
 	public IJavaProject getJavaProject() {
-		return JavaCore.create((IProject) getElement().getAdapter(IProject.class));
+		return JavaCore.create(getProject());
 	}
 
 	public IProject getProject() {
-		return (IProject) getElement().getAdapter(IProject.class);
+		IProject project;
+		IAdaptable element = getElement();
+		if (element instanceof IResource) {
+			project = ((IResource)element).getProject();
+		}
+		else {
+			project = (IProject) getElement().getAdapter(IProject.class);
+		}
+		return project;
 	}
 
 	public ProjectAdapter getProjectAdaptor() {
