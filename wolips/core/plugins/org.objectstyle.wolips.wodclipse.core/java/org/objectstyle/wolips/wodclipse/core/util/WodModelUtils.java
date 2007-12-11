@@ -90,7 +90,9 @@ public class WodModelUtils {
   
   public static void deleteWodProblems(IFile wodFile) {
     try {
-      wodFile.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+      if (wodFile.exists()) {
+        wodFile.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+      }
     }
     catch (CoreException e) {
       Activator.getDefault().debug(e);
