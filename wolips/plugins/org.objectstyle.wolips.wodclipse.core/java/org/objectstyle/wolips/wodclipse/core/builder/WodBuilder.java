@@ -54,6 +54,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.ITypeHierarchy;
@@ -146,41 +147,36 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
       try {
         boolean validate = false;
         if (resource instanceof IFile) {
-          IFile file = (IFile) resource;
-          String fileExtension = file.getFileExtension();
-          if ("wod".equals(fileExtension)) {
-            Set<IContainer> builtComponents = componentBuildCache(buildCache);
-            IContainer woFolder = resource.getParent();
-            if (!builtComponents.contains(woFolder)) {
-              validate = true;
-              builtComponents.add(woFolder);
+          if (resource.getParent().getName().endsWith(".wo")) {
+            IFile file = (IFile) resource;
+            String fileExtension = file.getFileExtension();
+            if ("wod".equals(fileExtension)) {
+              validate = shouldValidate(file, buildCache);
+            }
+            else if ("html".equals(fileExtension)) {
+              validate = shouldValidate(file, buildCache);
+            }
+            else if ("api".equals(fileExtension)) {
+              // should we really do something with the component when
+              // we change the api?
+              // shoulnd't we validate all files using the api?
+              validate = false;
+            }
+            else if ("woo".equals(fileExtension)) {
+              validate = shouldValidate(file, buildCache);
             }
           }
-          else if ("html".equals(fileExtension) && resource.getParent().getName().endsWith(".wo")) {
-            Set<IContainer> builtComponents = componentBuildCache(buildCache);
-            IContainer woFolder = resource.getParent();
-            if (!builtComponents.contains(woFolder)) {
-              validate = true;
-              builtComponents.add(woFolder);
-            }
+        }
+        else if (resource instanceof IContainer) {
+          IContainer folder = (IContainer) resource;
+          String fileExtension = folder.getFileExtension();
+          if ("wo".equals(fileExtension)) {
+            validate = shouldValidate(folder, buildCache);
           }
-          else if ("api".equals(fileExtension)) {
-            // should we really do something with the component when
-            // we change the api?
-            // shoulnd't we validate all files using the api?
-            validate = false;
-          }
-          else if ("woo".equals(fileExtension) && resource.getParent().getName().endsWith(".wo")) {
-            Set<IContainer> builtComponents = componentBuildCache(buildCache);
-            IContainer woFolder = resource.getParent();
-            if (!builtComponents.contains(woFolder)) {
-              validate = true;
-              builtComponents.add(woFolder);
-            }
-          }
-          if (validate) {
-            validateWodFile(file, monitor);
-          }
+        }
+
+        if (validate) {
+          validateWodFile(resource, monitor);
         }
       }
       catch (Throwable e) {
@@ -201,7 +197,37 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
           WodModelUtils.deleteWodProblems(file);
         }
       }
+      else if (resource instanceof IContainer) {
+        IContainer folder = (IContainer) resource;
+        String fileExtension = folder.getFileExtension();
+        if ("wo".equals(fileExtension)) {
+          String componentName = folder.getName().substring(0, folder.getName().lastIndexOf('.'));
+          WodModelUtils.deleteWodProblems(folder.getFile(new Path(componentName + ".html")));
+          WodModelUtils.deleteWodProblems(folder.getFile(new Path(componentName + ".wod")));
+          WodModelUtils.deleteWodProblems(folder.getFile(new Path(componentName + ".woo")));
+        }
+      }
     }
+  }
+
+  protected boolean shouldValidate(IResource resource, Map buildCache) {
+    boolean validate = false;
+    Set<IContainer> builtComponents = componentBuildCache(buildCache);
+    IContainer woFolder;
+    if (resource instanceof IFile) {
+      woFolder = resource.getParent();
+    }
+    else if (resource instanceof IContainer) {
+      woFolder = (IContainer) resource;
+    }
+    else {
+      woFolder = null;
+    }
+    if (woFolder != null && !builtComponents.contains(woFolder)) {
+      validate = true;
+      builtComponents.add(woFolder);
+    }
+    return validate;
   }
 
   @SuppressWarnings("unchecked")
@@ -214,12 +240,13 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
     // DO NOTHING
   }
 
-  protected void validateWodFile(IFile file, IProgressMonitor progressMonitor) throws CoreException, LocateException {
-    String resourceName = file.getName();
+  protected void validateWodFile(IResource resource, IProgressMonitor progressMonitor) throws CoreException, LocateException {
+    //System.out.println("WodBuilder.validateWodFile: " + resource);
+    String resourceName = resource.getName();
     if (progressMonitor != null) {
       progressMonitor.subTask("Locating components for " + resourceName + " ...");
     }
-    WodParserCache cache = WodParserCache.parser(file);
+    WodParserCache cache = WodParserCache.parser(resource);
     if (progressMonitor != null) {
       progressMonitor.subTask("Building WO " + cache.getWodFile().getName() + " ...");
     }
