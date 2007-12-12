@@ -15,7 +15,8 @@ Require-Bundle: org.eclipse.search,
  org.objectstyle.wolips.datasets,
  org.objectstyle.wolips,
  org.objectstyle.wolips.builder,
- org.objectstyle.wolips.baseforuiplugins
+ org.objectstyle.wolips.baseforuiplugins,
+ org.objectstyle.wolips.targetbuilder
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.ui,
  org.objectstyle.wolips.ui.actions,
