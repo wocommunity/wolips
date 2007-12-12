@@ -127,6 +127,7 @@
       <import plugin="org.objectstyle.wolips.htmlpreview"/>
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.objectstyle.wolips.tkhtmleditor"/>
+      <import plugin="org.objectstyle.wolips.womodeler"/>
       <import plugin="org.eclipse.ui.views.properties.tabbed"/>
       <import plugin="org.eclipse.core.databinding"/>
       <import plugin="org.eclipse.core.databinding.beans"/>
@@ -269,6 +270,13 @@
 
    <plugin
          id="org.objectstyle.wolips.wodclipse"
+         download-size="100"
+         install-size="100"
+         version="1.0.6"
+         unpack="false"/>
+
+   <plugin
+         id="org.objectstyle.wolips.womodeler"
          download-size="100"
          install-size="100"
          version="1.0.6"
