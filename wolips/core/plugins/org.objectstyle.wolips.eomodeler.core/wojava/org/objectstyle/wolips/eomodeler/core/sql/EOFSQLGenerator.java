@@ -49,13 +49,11 @@
  */
 package org.objectstyle.wolips.eomodeler.core.sql;
 
-import java.io.File;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -75,7 +73,6 @@ import com.webobjects.eoaccess.EOModelGroup;
 import com.webobjects.eoaccess.EOSchemaGeneration;
 import com.webobjects.eoaccess.EOSynchronizationFactory;
 import com.webobjects.foundation.NSArray;
-import com.webobjects.foundation.NSBundle;
 import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
@@ -392,7 +389,7 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 
 		String sqlBufferStr = sqlBuffer.toString();
 		if (sqlBufferStr != null) {
-			sqlBufferStr = Pattern.compile("(\\w)(NOT NULL)", Pattern.CASE_INSENSITIVE).matcher(sqlBufferStr).replaceAll("$1 $2");
+			sqlBufferStr = Pattern.compile("([\\w\\)])(NOT NULL)", Pattern.CASE_INSENSITIVE).matcher(sqlBufferStr).replaceAll("$1 $2");
 		}
 		return sqlBufferStr;
 	}
@@ -488,34 +485,5 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 		EOAdaptorContext ac = dbc.adaptorContext();
 		NSDictionary jdbc2Info = ((JDBCAdaptor) ac.adaptor()).plugIn().jdbcInfo();
 		return (Map) EOFSQLUtils.toJavaCollections(jdbc2Info);
-	}
-
-	public static void main(String[] argv) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-		Map flags = new HashMap();
-		flags.put(EOSchemaGeneration.DropTablesKey, "YES");
-		flags.put(EOSchemaGeneration.DropPrimaryKeySupportKey, "YES");
-		flags.put(EOSchemaGeneration.CreateTablesKey, "YES");
-		flags.put(EOSchemaGeneration.CreatePrimaryKeySupportKey, "YES");
-		flags.put(EOSchemaGeneration.PrimaryKeyConstraintsKey, "YES");
-		flags.put(EOSchemaGeneration.ForeignKeyConstraintsKey, "YES");
-		flags.put(EOSchemaGeneration.CreateDatabaseKey, "NO");
-		flags.put(EOSchemaGeneration.DropDatabaseKey, "NO");
-
-		File[] paths = new File[] { new File("/Library/Frameworks/JavaBusinessLogic.framework/Resources/Movies.eomodeld"), new File("/Library/Frameworks/JavaBusinessLogic.framework/Resources/Rentals.eomodeld") };
-		// probably should have an option to change the connection dict to use a
-		// specific plugin or url
-		// all entities in one model
-		EOFSQLGenerator generator1 = new EOFSQLGenerator("Movies", Arrays.asList(paths), null, null);
-		System.out.println("EOFSQLGenerator.main: " + NSBundle.mainBundle());
-		System.out.println(generator1.generateSchemaCreationScript(null));
-		//
-		// System.out.println("***********************************");
-		//
-		// // only movie entity
-		//
-		// EOFSQLGenerator generator2 = new EOFSQLGenerator("Movies",
-		// Arrays.asList(paths), Arrays.asList(new String[] { "Movie" }),
-		// optionsCreate);
-		// System.out.println(generator2.getSchemaCreationScript());
 	}
 }
