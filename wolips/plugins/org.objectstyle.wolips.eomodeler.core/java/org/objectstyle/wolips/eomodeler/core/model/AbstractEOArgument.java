@@ -469,7 +469,7 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 			argumentMap.remove("factoryMethodArgumentType");
 		}
 		argumentMap.setString("adaptorValueConversionMethodName", myAdaptorValueConversionMethodName, true);
-		argumentMap.setBoolean("allowsNull", myAllowsNull, EOModelMap.YNOptional);
+		argumentMap.setBoolean("allowsNull", myAllowsNull, EOModelMap.YN);
 		argumentMap.setString("definition", myDefinition, true);
 		writeUserInfo(argumentMap);
 		return argumentMap;
