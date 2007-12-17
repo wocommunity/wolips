@@ -114,7 +114,6 @@ public class EOModelMap implements Map {
 				myBackingMap.remove(_key);
 			}
 		} else if (_booleanStyle == EOModelMap.YNOptionalDefaultYes) {
-			System.out.println("EOModelMap.setBoolean: " + _key + "=>" + _value);
 			if (!_value.booleanValue()) {
 				myBackingMap.put(_key, "N");
 			} else if (!"Y".equals(myBackingMap.get(_key))) { // leave "Y" if it's already there
