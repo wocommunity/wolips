@@ -62,7 +62,9 @@ public class EOModelMap implements Map {
 
 	public static final int YN = 2;
 
-	public static final int YNOptional = 3;
+	public static final int YNOptionalDefaultNo = 3;
+	
+	public static final int YNOptionalDefaultYes = 4;
 
 	private Map myBackingMap;
 
@@ -105,12 +107,17 @@ public class EOModelMap implements Map {
 			myBackingMap.remove(_key);
 		} else if (_booleanStyle == EOModelMap.YESNO) {
 			myBackingMap.put(_key, _value.booleanValue() ? "YES" : "NO");
-		} else if (_booleanStyle == EOModelMap.YNOptional) {
+		} else if (_booleanStyle == EOModelMap.YNOptionalDefaultNo) {
 			if (_value.booleanValue()) {
 				myBackingMap.put(_key, "Y");
-			} else if (!"N".equals(myBackingMap.get(_key))) { // leave "N" if
-																// it's already
-																// there
+			} else if (!"N".equals(myBackingMap.get(_key))) { // leave "N" if it's already there
+				myBackingMap.remove(_key);
+			}
+		} else if (_booleanStyle == EOModelMap.YNOptionalDefaultYes) {
+			System.out.println("EOModelMap.setBoolean: " + _key + "=>" + _value);
+			if (!_value.booleanValue()) {
+				myBackingMap.put(_key, "N");
+			} else if (!"Y".equals(myBackingMap.get(_key))) { // leave "Y" if it's already there
 				myBackingMap.remove(_key);
 			}
 		} else {

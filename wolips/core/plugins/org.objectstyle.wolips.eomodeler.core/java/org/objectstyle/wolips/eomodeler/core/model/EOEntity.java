@@ -1827,10 +1827,10 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		} else {
 			entityMap.remove("parent");
 		}
-		entityMap.setBoolean("cachesObjects", myCachesObjects, EOModelMap.YNOptional);
-		entityMap.setBoolean("isAbstractEntity", myAbstractEntity, EOModelMap.YNOptional);
+		entityMap.setBoolean("cachesObjects", myCachesObjects, EOModelMap.YNOptionalDefaultNo);
+		entityMap.setBoolean("isAbstractEntity", myAbstractEntity, EOModelMap.YNOptionalDefaultNo);
 		entityMap.remove("isFetchable");
-		entityMap.setBoolean("isReadOnly", myReadOnly, EOModelMap.YNOptional);
+		entityMap.setBoolean("isReadOnly", myReadOnly, EOModelMap.YNOptionalDefaultNo);
 		entityMap.setString("restrictingQualifier", myRestrictingQualifier, true);
 		entityMap.remove("mappingQualifier");
 		entityMap.setString("externalQuery", myExternalQuery, true);

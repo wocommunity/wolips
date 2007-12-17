@@ -770,7 +770,7 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 		}
 		relationshipMap.setString("definition", getDefinition(), true);
 		relationshipMap.remove("dataPath");
-		relationshipMap.setBoolean("isMandatory", myMandatory, EOModelMap.YNOptional);
+		relationshipMap.setBoolean("isMandatory", myMandatory, EOModelMap.YNOptionalDefaultNo);
 		relationshipMap.setBoolean("isToMany", myToMany, EOModelMap.YN);
 		if (!isFlattened() && myJoinSemantic != null) {
 			relationshipMap.setString("joinSemantic", myJoinSemantic.getID(), true);
@@ -785,8 +785,8 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 		} else {
 			relationshipMap.remove("deleteRule");
 		}
-		relationshipMap.setBoolean("ownsDestination", myOwnsDestination, EOModelMap.YNOptional);
-		relationshipMap.setBoolean("propagatesPrimaryKey", myPropagatesPrimaryKey, EOModelMap.YNOptional);
+		relationshipMap.setBoolean("ownsDestination", myOwnsDestination, EOModelMap.YNOptionalDefaultNo);
+		relationshipMap.setBoolean("propagatesPrimaryKey", myPropagatesPrimaryKey, EOModelMap.YNOptionalDefaultNo);
 		relationshipMap.setInteger("numberOfToManyFaultsToBatchFetch", myNumberOfToManyFaultsToBatchFetch);
 		Set<Map> joins = new PropertyListSet<Map>();
 		for (EOJoin join : myJoins) {
