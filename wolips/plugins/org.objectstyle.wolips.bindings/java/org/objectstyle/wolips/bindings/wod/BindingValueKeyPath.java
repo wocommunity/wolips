@@ -82,6 +82,14 @@ public class BindingValueKeyPath {
         partialKeyPath = partialKeyPath.substring(0, atIndex);
       }
       bindingKeyNames = partialKeyPath.split("\\.");
+      
+      boolean forceValid = false;
+      if (bindingKeyNames.length > 0) {
+        if (bindingKeyNames[bindingKeyNames.length - 1].endsWith("VALID")) {
+          bindingKeyNames[bindingKeyNames.length - 1] = bindingKeyNames[bindingKeyNames.length - 1].replaceFirst("\\s*//\\s*VALID", "");
+          forceValid = true;
+        }
+      }
 
       // Split tosses empty tokens, so we check to see if we're on the last
       // "." and fake an empty token in the list
@@ -143,9 +151,12 @@ public class BindingValueKeyPath {
             }
           }
         }
-  
+        
+        if (forceValid) {
+          _valid = true;
+        }
         // Build the part of the keypath that is valid and the key that is invalid for error reporting ...
-        if (invalidKeyNum != -1) {
+        else if (invalidKeyNum != -1) {
           StringBuffer validKeyPathBuffer = new StringBuffer();
           if (invalidKeyNum > 0) {
             for (int keyNum = 0; keyNum < invalidKeyNum; keyNum++) {
