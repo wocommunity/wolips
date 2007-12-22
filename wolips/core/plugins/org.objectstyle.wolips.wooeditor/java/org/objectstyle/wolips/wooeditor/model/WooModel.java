@@ -370,7 +370,6 @@ public class WooModel implements IWooModel {
 	public List<WodProblem> getProblems(IJavaProject javaProject, IType type,
 			TypeCache typeCache, IEOModelGroupCache modelCache) {
 		final List<WodProblem> problems = new ArrayList<WodProblem>();
-		System.out.println("WooModel.getProblems:" + myFile.getName());
 		EOModelGroupCache _modelCache = (EOModelGroupCache)modelCache;
 		EOModelGroup modelGroup = _modelCache.getModelGroup(javaProject);
 		if (modelGroup != null ) {
@@ -424,14 +423,10 @@ public class WooModel implements IWooModel {
 		
 		for (DisplayGroup displayGroup : getDisplayGroups()) {
 			try {
-				System.out.println("Checking displaygroup " + displayGroup.getName());
-				System.out.println(type);
 				if (type != null) {
 					
 					// Validate WODisplayGroup variable is declared. 
 					BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(displayGroup.getName(), type);
-					System.out.println(bindingValueKeyPath.isAmbiguous());
-
 					if (!(bindingValueKeyPath.isValid() && !bindingValueKeyPath.isAmbiguous())) {
 						//XXX Walk type hierarchy and check that is a WODisplayGroup
 						problems.add(new WodProblem("WODisplayGroup " + displayGroup.getName() 
