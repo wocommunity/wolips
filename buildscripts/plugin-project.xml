@@ -22,7 +22,7 @@
 			</fileset>
 		</path>
 
-		<javac srcdir="${param.plugin.dir}/java" destdir="${param.java.dest.dir}" compiler="${wolips.build.compiler}" source="${wolips.compile.source}" target="${wolips.compile.target}">
+		<javac srcdir="${param.plugin.dir}/java" destdir="${param.java.dest.dir}" compiler="${wolips.build.compiler}" source="${wolips.compile.source}" target="${wolips.compile.target}" debug="true">
 			<classpath refid="full.classpath" />
 		</javac>
 	</target>
@@ -44,7 +44,7 @@
 			</fileset>
 		</path>
 
-		<javac srcdir="${param.plugin.dir}/fakejava" destdir="${param.java.dest.dir}" compiler="${wolips.build.compiler}" source="${wolips.compile.source}" target="${wolips.compile.target}">
+		<javac srcdir="${param.plugin.dir}/fakejava" destdir="${param.java.dest.dir}" compiler="${wolips.build.compiler}" source="${wolips.compile.source}" target="${wolips.compile.target}" debug="true">
 			<classpath refid="full.classpath" />
 		</javac>
 	</target>

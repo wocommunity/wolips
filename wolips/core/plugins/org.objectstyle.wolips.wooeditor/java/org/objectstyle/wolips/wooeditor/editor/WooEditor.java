@@ -122,7 +122,6 @@ public class WooEditor extends FormEditor {
 				}
 			}
 			int index = addPage(myTextEditor, input);
-			myTextEditor.doRevertToSaved();
 			setPageText(index, "Source");
 		} catch (PartInitException e) {
 			// TODO Auto-generated catch block
