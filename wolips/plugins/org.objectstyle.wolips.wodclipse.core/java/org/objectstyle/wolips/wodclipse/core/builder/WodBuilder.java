@@ -247,7 +247,7 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
       progressMonitor.subTask("Locating components for " + resourceName + " ...");
     }
     WodParserCache cache = WodParserCache.parser(resource);
-    if (progressMonitor != null) {
+    if (progressMonitor != null && cache.getWodFile() != null) {
       progressMonitor.subTask("Building WO " + cache.getWodFile().getName() + " ...");
     }
     try {

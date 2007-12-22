@@ -123,20 +123,19 @@ public class WooModel implements IWooModel {
 	
 	private void init() throws IOException, PropertyListParserException {
 		if (myFile == null || !myFile.exists()) {
-			loadModelFromStream(new ByteArrayInputStream(WooModel
-					.blankContent().getBytes()));
+			loadModelFromStream(new ByteArrayInputStream(blankContent().getBytes()));
 
 		} else {
 			loadModelFromFile(myFile.getLocation().toFile());
 		}
 	}
 
-	public static String blankContent() {
+	public String blankContent() {
 		// XXX Should use components default encoding charset
 		StringBuffer sb = new StringBuffer();
 		sb.append("{\n");
 		sb.append("    \"WebObjects Release\" = \"WebObjects 5.0\";\n");
-		sb.append("     encoding = \"UTF-8\";\n");
+		sb.append("     encoding = \"" + getEncoding() + "\";\n");
 		sb.append("}\n");
 		return sb.toString();
 	}
@@ -170,10 +169,13 @@ public class WooModel implements IWooModel {
 		if (myEncoding == null) {
 			if (myModelMap != null && myModelMap.containsKey("encoding")) {
 				myEncoding = myModelMap.getString("encoding", true);
-			} else {
-				return DEFAULT_ENCODING;
+			} else if (myFile != null && myFile.getParent().exists()) {
+				try {
+					myEncoding = myFile.getParent().getDefaultCharset();
+				} catch (CoreException e) { }
 			}
 		}
+		if (myEncoding == null) return DEFAULT_ENCODING;
 		return myEncoding;
 	}
 	
@@ -260,7 +262,7 @@ public class WooModel implements IWooModel {
 	public void doSave() throws IOException {
 		if (myFile == null) {
 			throw new IOException(
-					"You can not saveChanges to a WooModel that is not "
+					"You can not save changes to a WooModel that is not "
 							+ "backed by a file.");
 		}
 		File file = myFile.getLocation().toFile();
@@ -368,6 +370,7 @@ public class WooModel implements IWooModel {
 	public List<WodProblem> getProblems(IJavaProject javaProject, IType type,
 			TypeCache typeCache, IEOModelGroupCache modelCache) {
 		final List<WodProblem> problems = new ArrayList<WodProblem>();
+		System.out.println("WooModel.getProblems:" + myFile.getName());
 		EOModelGroupCache _modelCache = (EOModelGroupCache)modelCache;
 		EOModelGroup modelGroup = _modelCache.getModelGroup(javaProject);
 		if (modelGroup != null ) {
@@ -391,14 +394,16 @@ public class WooModel implements IWooModel {
 						componentCharset, null, 0, true));
 			}
 			
-			for(IResource element : myFile.getParent().members()) {
-				if (element.getType() == IResource.FILE) {
-					IFile file = (IFile) element;
-					if (file.getFileExtension().matches("(xml|html|xhtml|wod)")
-						 && !file.getCharset().equals(encoding)) {
-						problems.add(new WodProblem("WOO Encoding type " +
-								encoding + " doesn't match " + file.getName() 
-								+ " of "+ file.getCharset(), null, 0, true));
+			if (myFile.getParent().exists()) {
+				for(IResource element : myFile.getParent().members()) {
+					if (element.getType() == IResource.FILE) {
+						IFile file = (IFile) element;
+						if (file.getFileExtension().matches("(xml|html|xhtml|wod)")
+								&& !file.getCharset().equals(encoding)) {
+							problems.add(new WodProblem("WOO Encoding type " +
+									encoding + " doesn't match " + file.getName() 
+									+ " of "+ file.getCharset(), null, 0, true));
+						}
 					}
 				}
 			}
@@ -408,14 +413,25 @@ public class WooModel implements IWooModel {
 			e1.printStackTrace();
 		}
 		
+		if (type == null) {
+			if (getDisplayGroups().length != 0) {
+				problems.add(new WodProblem("Display groups are defined for component " 
+						+ myFile.getParent().getName()
+						+ " but class was not found", null, 0, false));
+			}
+			return problems;
+		}
+		
 		for (DisplayGroup displayGroup : getDisplayGroups()) {
 			try {
-				IType elementType = BindingReflectionUtils
-					.findElementType(javaProject, type.getElementName(), false, typeCache);
-				if (elementType != null) {
+				System.out.println("Checking displaygroup " + displayGroup.getName());
+				System.out.println(type);
+				if (type != null) {
 					
 					// Validate WODisplayGroup variable is declared. 
-					BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(displayGroup.getName(), elementType);
+					BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(displayGroup.getName(), type);
+					System.out.println(bindingValueKeyPath.isAmbiguous());
+
 					if (!(bindingValueKeyPath.isValid() && !bindingValueKeyPath.isAmbiguous())) {
 						//XXX Walk type hierarchy and check that is a WODisplayGroup
 						problems.add(new WodProblem("WODisplayGroup " + displayGroup.getName() 
@@ -423,7 +439,7 @@ public class WooModel implements IWooModel {
 					}
 					
 					// Validate editing context
-					bindingValueKeyPath = new BindingValueKeyPath(displayGroup.getEditingContext(), elementType);
+					bindingValueKeyPath = new BindingValueKeyPath(displayGroup.getEditingContext(), type);
 					if (!(bindingValueKeyPath.isValid() && !bindingValueKeyPath.isAmbiguous())) {
 						problems.add(new WodProblem("Editing context for display group " 
 								+ displayGroup.getName() + " not found", null, 0, false));

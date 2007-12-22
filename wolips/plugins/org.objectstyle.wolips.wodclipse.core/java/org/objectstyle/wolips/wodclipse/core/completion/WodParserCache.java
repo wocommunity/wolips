@@ -497,7 +497,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
 
               if (_wodModel != null) {
                 List<WodProblem> wodProblems = _wodModel.getProblems(_javaProject, _componentType, WodParserCache.this._typeCache, WodParserCache.this._htmlElementCache);
-                if (_wodFile.exists()) {
+                if (_wodFile != null && _wodFile.exists()) {
                   for (WodProblem wodProblem : wodProblems) {
                     WodModelUtils.createMarker(_wodFile, wodProblem);
                   }
@@ -505,7 +505,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
               }
               if (_wooModel != null) {
                   List<WodProblem> wodProblems = _wooModel.getProblems(_javaProject, _componentType, WodParserCache.this._typeCache, WodParserCache.this._modelGroupCache);
-                  if (_wooFile.exists()) {
+                  if (_wooFile != null && _wooFile.exists()) {
                     for (WodProblem wodProblem : wodProblems) {
                       WodModelUtils.createMarker(_wooFile, wodProblem);
                     }
