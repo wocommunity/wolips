@@ -173,6 +173,7 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 	protected void disposeBindings() {
 		if (myBindingContext != null) {
 			myBindingContext.dispose();
+			myPartialEntityBinding.dispose();
 		}
 	}
 
