@@ -274,11 +274,16 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		joiningEntitiesSet.add(this);
 		joiningEntitiesSet.add(_entity2);
 		String packageName = getModel().guessPackageName(joiningEntitiesSet);
-		String className = manyToManyEntity.getName();
-		if (packageName != null && packageName.length() > 0) {
-			className = packageName + "." + className;
+		if (_flatten) {
+			manyToManyEntity.setClassName("EOGenericRecord");
 		}
-		manyToManyEntity.setClassName(className);
+		else {
+			String className = manyToManyEntity.getName();
+			if (packageName != null && packageName.length() > 0) {
+				className = packageName + "." + className;
+			}
+			manyToManyEntity.setClassName(className);
+		}
 
 		EORelationship entity1Relationship = manyToManyEntity.addBlankRelationship(StringUtils.toLowercaseFirstLetter(getName()));
 		entity1Relationship.setToMany(Boolean.FALSE);
