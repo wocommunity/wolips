@@ -324,7 +324,7 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		_flattenButton = new Button(_relationshipFields, SWT.CHECK);
 		_flattenButton.addSelectionListener(this);
 		_flattenButton.setText(Messages.getString("CreateRelationshipDialog.flattenLabel"));
-		_flattenButton.setSelection(false);
+		_flattenButton.setSelection(true);
 		GridData flattenData = new GridData(GridData.FILL_HORIZONTAL);
 		flattenData.horizontalSpan = 2;
 		_flattenButton.setLayoutData(flattenData);
