@@ -98,7 +98,7 @@ public class JNDIConnectionDictionarySection extends Composite implements IConne
 		_usernameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.PASSWORD), SWT.NONE);
-		_passwordText = new Text(this, SWT.BORDER);
+		_passwordText = new Text(this, SWT.BORDER | SWT.PASSWORD);
 		_passwordText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.AUTHENTICATION_METHOD), SWT.NONE);
