@@ -67,8 +67,8 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			templatePaths.append(templateFolder.getAbsolutePath());
 		}
 
-		String superclassTemplateName = eogeneratorModel.getJavaTemplate(null);
-		String subclassTemplateName = eogeneratorModel.getSubclassJavaTemplate(null);
+		String superclassTemplateName = eogeneratorModel.getJavaTemplate(Preferences.getEOGeneratorJavaTemplate());
+		String subclassTemplateName = eogeneratorModel.getSubclassJavaTemplate(Preferences.getEOGeneratorSubclassJavaTemplate());
 		
 		boolean eogeneratorJava14 = Preferences.isEOGeneratorJava14();
 		if (eogeneratorJava14) {
