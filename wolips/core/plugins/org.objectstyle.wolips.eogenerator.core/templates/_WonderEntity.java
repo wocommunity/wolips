@@ -10,7 +10,7 @@ import java.math.*;
 import java.util.*;
 import org.apache.log4j.Logger;
 import er.extensions.ERXGenericRecord;
-import er.extensions.qualifiers.ERXKey;
+import er.extensions.ERXKey;
 
 @SuppressWarnings("all")
 public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($entity.partialEntitySet)er.extensions.partials.ERXPartial<${entity.partialEntity.className}>#elseif ($entity.parentSet)${entity.parent.classNameWithDefault}#elseif ($EOGenericRecord)${EOGenericRecord}#else ERXGenericRecord#end {
