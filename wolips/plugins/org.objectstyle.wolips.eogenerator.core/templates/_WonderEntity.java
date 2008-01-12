@@ -23,13 +23,13 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 	// Attributes
 #foreach ($attribute in $entity.sortedClassAttributes)
 	public static final String ${attribute.uppercaseUnderscoreName}_KEY = "$attribute.name";
-	public static final ERXKey ${attribute.name} = new ERXKey(${attribute.uppercaseUnderscoreName}_KEY);
+	public static final ERXKey ${attribute.uppercaseUnderscoreName} = new ERXKey(${attribute.uppercaseUnderscoreName}_KEY);
 #end
 
 	// Relationships
 #foreach ($relationship in $entity.sortedClassRelationships)
 	public static final String ${relationship.uppercaseUnderscoreName}_KEY = "$relationship.name";
-	public static final ERXKey ${relationship.name} = new ERXKey(${relationship.uppercaseUnderscoreName}_KEY);
+	public static final ERXKey ${relationship.uppercaseUnderscoreName} = new ERXKey(${relationship.uppercaseUnderscoreName}_KEY);
 #end
 
   private static Logger LOG = Logger.getLogger(${entity.prefixClassNameWithoutPackage}.class);
