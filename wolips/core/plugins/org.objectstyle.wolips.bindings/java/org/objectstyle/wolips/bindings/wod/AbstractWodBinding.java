@@ -199,11 +199,13 @@ public abstract class AbstractWodBinding implements IWodBinding {
           // every java file name in the key path
           if (!bindingValueKeyPath.isValid() || (bindingValueKeyPath.isWOComponent() && errorOnMissingComponentKey) || (bindingValueKeyPath.isNSKeyValueCoding() && errorOnMissingNSKVCKey && !bindingValueKeyPath.isNSCollection())) {
             String validKeyPath = bindingValueKeyPath.getValidKeyPath();
-            if (validKeyPath.length() == 0) {
-              problems.add(new WodBindingValueProblem(bindingName, "There is no key '" + bindingValueKeyPath.getInvalidKey() + "' in " + javaFileType.getElementName(), getValuePosition(), lineNumber, false));
-            }
-            else {
-              problems.add(new WodBindingValueProblem(bindingName, "There is no key '" + bindingValueKeyPath.getInvalidKey() + "' for the keypath '" + validKeyPath + "' in " + javaFileType.getElementName(), getValuePosition(), lineNumber, false));
+            if (validKeyPath != null) {
+              if (validKeyPath.length() == 0) {
+                problems.add(new WodBindingValueProblem(bindingName, "There is no key '" + bindingValueKeyPath.getInvalidKey() + "' in " + javaFileType.getElementName(), getValuePosition(), lineNumber, false));
+              }
+              else {
+                problems.add(new WodBindingValueProblem(bindingName, "There is no key '" + bindingValueKeyPath.getInvalidKey() + "' for the keypath '" + validKeyPath + "' in " + javaFileType.getElementName(), getValuePosition(), lineNumber, false));
+              }
             }
           }
           else if (bindingValueKeyPath.isNSCollection()) {
