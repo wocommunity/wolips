@@ -73,11 +73,15 @@ public class FirstLevelTagContentProvider implements ITaggedComponentsContentPro
 	public Object[] getChildren() {
 		if (secondLevelTagContentProviders == null) {
 			Tag[] tags = tag.tagLib.getTags(tag);
-			secondLevelTagContentProviders = new SecondLevelTagContentProvider[tags.length];
+			secondLevelTagContentProviders = new SecondLevelTagContentProvider[tags.length + 1];
+			
+			SecondLevelTagContentProvider sameTagSecondLevelTagContentProvider = new SecondLevelTagContentProvider(tag, tag);
+			secondLevelTagContentProviders[0] = sameTagSecondLevelTagContentProvider;
+			
 			for (int i = 0; i < tags.length; i++) {
 				Tag secondLevelTag = tags[i];
 				SecondLevelTagContentProvider secondLevelTagContentProvider = new SecondLevelTagContentProvider(secondLevelTag, tag);
-				secondLevelTagContentProviders[i] = secondLevelTagContentProvider;
+				secondLevelTagContentProviders[i + 1] = secondLevelTagContentProvider;
 			}
 		}
 		return secondLevelTagContentProviders;

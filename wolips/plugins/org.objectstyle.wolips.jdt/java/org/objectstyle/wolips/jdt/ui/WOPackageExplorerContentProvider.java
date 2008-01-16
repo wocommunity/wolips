@@ -115,10 +115,10 @@ public class WOPackageExplorerContentProvider extends PackageExplorerContentProv
 				}
 				Object[] tags = taggedComponentsContentProvider.getChildren();
 				if (tags != null && tags.length > 0) {
-					newChildren[children.length] = taggedComponentsContentProvider;
+					newChildren[0] = taggedComponentsContentProvider;
 					for (int i = 0; i < children.length; i++) {
 						Object object = children[i];
-						newChildren[i] = object;
+						newChildren[i + 1] = object;
 					}
 				}
 				else {
