@@ -56,8 +56,13 @@
 package org.objectstyle.wolips.jdt.ui;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.internal.corext.util.JavaModelUtil;
+import org.eclipse.jdt.internal.ui.packageview.PackageFragmentRootContainer;
 import org.eclipse.jdt.ui.JavaElementComparator;
 import org.eclipse.jface.viewers.Viewer;
+import org.objectstyle.wolips.jdt.ui.tags.TaggedComponentsContentProvider;
 
 public class WOJavaElementComparator extends JavaElementComparator {
 	@Override
@@ -72,9 +77,39 @@ public class WOJavaElementComparator extends JavaElementComparator {
 				useNormalComparison = false;
 			}
 		}
+		if (e1 instanceof TaggedComponentsContentProvider || e2 instanceof TaggedComponentsContentProvider) {
+			IPackageFragmentRoot root1 = getPackageFragmentRoot(e1);
+			IPackageFragmentRoot root2 = getPackageFragmentRoot(e2);
+			if (root1 == null && root2 == null) {
+				if (e1 instanceof TaggedComponentsContentProvider) {
+					return -1;
+				}
+				return 1;
+			}
+			if (root1 != null) {
+				return -1;
+			}
+			return 1;
+		}
 		if (useNormalComparison) {
 			comparison = super.compare(viewer, e1, e2);
 		}
 		return comparison;
+	}
+
+	private IPackageFragmentRoot getPackageFragmentRoot(Object element) {
+		if (element instanceof PackageFragmentRootContainer) {
+			// return first package fragment root from the container
+			PackageFragmentRootContainer cp = (PackageFragmentRootContainer) element;
+			Object[] roots = cp.getPackageFragmentRoots();
+			if (roots.length > 0)
+				return (IPackageFragmentRoot) roots[0];
+			// non resolvable - return null
+			return null;
+		}
+		if(!(element instanceof IJavaElement)) {
+			return null;
+		}
+		return JavaModelUtil.getPackageFragmentRoot((IJavaElement) element);
 	}
 }
