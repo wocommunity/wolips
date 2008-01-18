@@ -92,7 +92,12 @@ public class BindingValueKey {
         IType declaringType = getDeclaringType();
         String[] typeArguments = Signature.getTypeArguments(nextTypeName);
         if (typeArguments.length == 1) {
-          _nextTypeArgument = getTypeForNameInType(typeArguments[0], declaringType);
+          if (typeArguments[0].length() == "QK;".length()) {
+            // don't even bother with pure parameterized type like NSArray<K> for now ..
+          }
+          else {
+            _nextTypeArgument = getTypeForNameInType(typeArguments[0], declaringType);
+          }
         }
         _nextType = getTypeForNameInType(nextTypeName, declaringType);
       }
