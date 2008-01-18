@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.jdt.ui.tags;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -63,6 +64,7 @@ import org.eclipse.core.runtime.IPath;
 public class FirstLevelTagContentProvider implements ITaggedComponentsContentProvider {
 
 	public Tag tag;
+
 	private SecondLevelTagContentProvider[] secondLevelTagContentProviders;
 
 	public FirstLevelTagContentProvider(Tag tag) {
@@ -73,16 +75,18 @@ public class FirstLevelTagContentProvider implements ITaggedComponentsContentPro
 	public Object[] getChildren() {
 		if (secondLevelTagContentProviders == null) {
 			Tag[] tags = tag.tagLib.getTags(tag);
-			secondLevelTagContentProviders = new SecondLevelTagContentProvider[tags.length + 1];
-			
+			ArrayList<SecondLevelTagContentProvider> secondLevelTagContentProvidersList = new ArrayList<SecondLevelTagContentProvider>();
 			SecondLevelTagContentProvider sameTagSecondLevelTagContentProvider = new SecondLevelTagContentProvider(tag, tag);
-			secondLevelTagContentProviders[0] = sameTagSecondLevelTagContentProvider;
-			
+			secondLevelTagContentProvidersList.add(sameTagSecondLevelTagContentProvider);
+
 			for (int i = 0; i < tags.length; i++) {
 				Tag secondLevelTag = tags[i];
 				SecondLevelTagContentProvider secondLevelTagContentProvider = new SecondLevelTagContentProvider(secondLevelTag, tag);
-				secondLevelTagContentProviders[i + 1] = secondLevelTagContentProvider;
+				if (secondLevelTagContentProvider.hasChildren()) {
+					secondLevelTagContentProvidersList.add(secondLevelTagContentProvider);
+				}
 			}
+			secondLevelTagContentProviders = secondLevelTagContentProvidersList.toArray(new SecondLevelTagContentProvider[secondLevelTagContentProvidersList.size()]);
 		}
 		return secondLevelTagContentProviders;
 	}
