@@ -68,8 +68,21 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
+import org.objectstyle.wolips.jdt.ui.tags.Tag;
 import org.objectstyle.wolips.jdt.ui.tags.TagLib;
 import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResources;
 
@@ -79,15 +92,6 @@ import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResour
 public class TagResourcesAction extends AbstractActionOnIResources {
 
 	public void run(IAction action) {
-		InputDialog inputDialog = new InputDialog(this.part.getSite().getShell(), "Tag", "Enter a Tag", null, null);
-		int status = inputDialog.open();
-		if (status != Window.OK) {
-			return;
-		}
-		String tagName = inputDialog.getValue();
-		if (tagName == null || tagName.length() == 0) {
-			return;
-		}
 		Map<IProject, List<IResource>> projectFilesMap = new HashMap<IProject, List<IResource>>();
 		IResource[] resources = this.getActionResources();
 		for (int i = 0; i < resources.length; i++) {
@@ -102,6 +106,15 @@ public class TagResourcesAction extends AbstractActionOnIResources {
 		for (Iterator iterator = projectFilesMap.keySet().iterator(); iterator.hasNext();) {
 			IProject project = (IProject) iterator.next();
 			TagLib tagLib = new TagLib(project);
+			TagDialog tagDialog = new TagDialog(this.part.getSite().getShell(), tagLib);
+			int status = tagDialog.open();
+			if (status != Window.OK) {
+				return;
+			}
+			String tagName = tagDialog.tag;
+			if (tagName == null || tagName.length() == 0) {
+				return;
+			}
 			List<IResource> resourcesList = projectFilesMap.get(project);
 			String[] componentNames = this.find(new NullProgressMonitor(), resourcesList);
 			tagLib.tagComponents(componentNames, tagName);
@@ -140,6 +153,75 @@ public class TagResourcesAction extends AbstractActionOnIResources {
 			for (int i = 0; i < members.length; i++) {
 				this.find(members[i], components, monitor);
 			}
+		}
+	}
+
+	private class TagDialog extends Dialog {
+
+		Text textTag;
+
+		Combo comboTags;
+
+		private TagLib tagLib;
+		
+		String tag;
+
+		public TagDialog(Shell parentShell, TagLib tagLib) {
+			super(parentShell);
+			setShellStyle(getShellStyle() | SWT.RESIZE);
+			TagDialog.this.tagLib = tagLib;
+		}
+
+		protected Point getInitialSize() {
+			Point size = super.getInitialSize();
+			size.x = 300;
+			return size;
+		}
+
+		protected Control createDialogArea(Composite parent) {
+			getShell().setText("Add Tag");
+
+			Composite composite = new Composite(parent, SWT.NULL);
+			composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+			composite.setLayout(new GridLayout(2, false));
+
+			Label label = new Label(composite, SWT.NULL);
+			label.setText("Existing Tags");
+
+			comboTags = new Combo(composite, SWT.READ_ONLY);
+			comboTags.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			Tag[] tags = tagLib.getTags();
+			for (int i = 0; i < tags.length; i++) {
+				comboTags.add(tags[i].name);
+			}
+			label = new Label(composite, SWT.NULL);
+			label.setText("Tag");
+
+			textTag = new Text(composite, SWT.BORDER);
+			textTag.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			
+			comboTags.addSelectionListener(new SelectionListener() {
+
+				public void widgetDefaultSelected(SelectionEvent e) {
+					//do nothing
+				}
+
+				public void widgetSelected(SelectionEvent e) {
+					int selected = comboTags.getSelectionIndex();
+					if(selected >= 0) {
+						textTag.setText(comboTags.getItem(selected));
+					}
+				}
+				
+			});
+
+			return composite;
+		}
+
+		@Override
+		protected void okPressed() {
+			tag = textTag.getText();
+			super.okPressed();
 		}
 	}
 }
