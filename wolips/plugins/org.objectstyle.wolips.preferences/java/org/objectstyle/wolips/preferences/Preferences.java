@@ -174,7 +174,7 @@ public class Preferences {
 			store.setDefault(Preferences.PREF_CAPTURE_ANT_OUTPUT, Preferences.falseString);
 		}
 		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_WRITE_PB_DOT_PROJECT_ON_BUILD)) {
-			store.setDefault(Preferences.PREF_WRITE_PB_DOT_PROJECT_ON_BUILD, Preferences.trueString);
+			store.setDefault(Preferences.PREF_WRITE_PB_DOT_PROJECT_ON_BUILD, Preferences.falseString);
 		}
 		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_EOGENERATOR_PATH)) {
 			store.setDefault(Preferences.PREF_EOGENERATOR_PATH, "");
@@ -195,7 +195,7 @@ public class Preferences {
 			store.setDefault(Preferences.PREF_WRITE_XCODE_ON_BUILD, Preferences.falseString);
 		}
 		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_WRITE_XCODE21_ON_BUILD)) {
-			store.setDefault(Preferences.PREF_WRITE_XCODE21_ON_BUILD, Preferences.trueString);
+			store.setDefault(Preferences.PREF_WRITE_XCODE21_ON_BUILD, Preferences.falseString);
 		}
 		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_AUTOEOGENERATE_ON_BUILD)) {
 			store.setDefault(Preferences.PREF_AUTOEOGENERATE_ON_BUILD, Preferences.falseString);
