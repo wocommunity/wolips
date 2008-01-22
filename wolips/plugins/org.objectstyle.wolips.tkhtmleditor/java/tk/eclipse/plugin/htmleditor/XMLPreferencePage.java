@@ -17,6 +17,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.objectstyle.wolips.wodclipse.core.Activator;
+import org.objectstyle.wolips.wodclipse.core.preferences.PreferenceConstants;
 
 /**
  * The preference page for the <code>XMLEditor</code>.
@@ -28,6 +30,7 @@ public class XMLPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	
 	private IWorkbench _workbench;
 	private Button _enableClassName;
+	private Button spacesAroundEquals;
 	private List _classNameAttrs;
 	private Button _addClassName;
 	private Button _removeClassName;
@@ -50,6 +53,23 @@ public class XMLPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 		composite.setLayout(new GridLayout(2, false));
 		
+		// checkbox to toggle spaces around equals
+	      boolean spacesAroundEqualsValue =Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.SPACES_AROUND_EQUALS);
+		spacesAroundEquals = new Button(composite, SWT.CHECK);
+		spacesAroundEquals.setText(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.SpacesAroundEquals"));
+		spacesAroundEquals.setSelection(spacesAroundEqualsValue);
+		spacesAroundEquals.addSelectionListener(new SelectionAdapter(){
+			@Override
+     	public void widgetSelected(SelectionEvent e){
+				Activator.getDefault().getPreferenceStore().setValue(PreferenceConstants.SPACES_AROUND_EQUALS, spacesAroundEquals.getSelection());
+			}
+		});
+		GridData gd = new GridData();
+		gd = new GridData();
+		gd.horizontalSpan = 2;
+		spacesAroundEquals.setLayoutData(gd);
+		
+		
 		// checkbox to toggle the classname support
 		_enableClassName = new Button(composite, SWT.CHECK);
 		_enableClassName.setText(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.EnableClassName"));
@@ -59,9 +79,10 @@ public class XMLPreferencePage extends PreferencePage implements IWorkbenchPrefe
 				updateControls();
 			}
 		});
-		GridData gd = new GridData();
 		gd.horizontalSpan = 2;
+		
 		_enableClassName.setLayoutData(gd);
+		
 		
 		// listbox
 		_classNameAttrs = new List(composite, SWT.BORDER|SWT.MULTI|SWT.V_SCROLL);
@@ -81,7 +102,7 @@ public class XMLPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
 		
 		_addClassName = new Button(buttons, SWT.PUSH);
-		_addClassName.setText(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.AddAttribute"));
+		_addClassName.setText(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.SpacesAroundEquals"));
 		_addClassName.setLayoutData(createButtonGridData());
 		_addClassName.addSelectionListener(new SelectionAdapter(){
 			@Override
