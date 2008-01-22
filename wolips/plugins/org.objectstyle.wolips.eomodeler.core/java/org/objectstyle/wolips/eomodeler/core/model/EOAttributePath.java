@@ -63,4 +63,8 @@ public class EOAttributePath extends AbstractEOAttributePath {
 	public boolean isRelatedTo(EOAttribute attribute) {
 		return ComparisonUtils.equals(getChildAttribute(), attribute);
 	}
+	
+	public String toString() {
+		return "[EOAttributePath: " + toKeyPath() + "]";
+	}
 }
