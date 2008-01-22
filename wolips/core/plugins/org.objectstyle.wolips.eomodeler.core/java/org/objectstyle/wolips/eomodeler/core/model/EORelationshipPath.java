@@ -84,4 +84,8 @@ public class EORelationshipPath extends AbstractEOAttributePath {
 		}
 		return children;
 	}
+	
+	public String toString() {
+		return "[EORelationshipPath: " + toKeyPath() + "]";
+	}
 }
