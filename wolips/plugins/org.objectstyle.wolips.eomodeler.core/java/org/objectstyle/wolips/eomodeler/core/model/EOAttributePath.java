@@ -60,6 +60,16 @@ public class EOAttributePath extends AbstractEOAttributePath {
 		return (EOAttribute) getChildIEOAttribute();
 	}
 	
+	@Override
+	public String getChildClassName() {
+		String className = null;
+		EOAttribute attribute = getChildAttribute();
+		if (attribute != null) {
+			className = attribute.getJavaClassName();
+		}
+		return className;
+	}
+	
 	public boolean isRelatedTo(EOAttribute attribute) {
 		return ComparisonUtils.equals(getChildAttribute(), attribute);
 	}

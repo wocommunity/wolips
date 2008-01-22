@@ -60,6 +60,19 @@ public class EORelationshipPath extends AbstractEOAttributePath {
 	public EORelationship getChildRelationship() {
 		return (EORelationship) getChildIEOAttribute();
 	}
+	
+	@Override
+	public String getChildClassName() {
+		String className = null;
+		EORelationship relationship = getChildRelationship();
+		if (relationship != null) {
+			EOEntity destination = relationship.getActualDestination();
+			if (destination != null) {
+				className = destination.getClassNameWithDefault();
+			}
+		}
+		return className;
+	}
 
 	public AbstractEOAttributePath[] getChildren() {
 		AbstractEOAttributePath[] children;
