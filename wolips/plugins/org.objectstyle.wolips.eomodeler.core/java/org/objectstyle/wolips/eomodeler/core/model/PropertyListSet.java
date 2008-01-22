@@ -1,6 +1,6 @@
 package org.objectstyle.wolips.eomodeler.core.model;
 
-import java.util.Set;
+import java.util.Collection;
 import java.util.TreeSet;
 
 public class PropertyListSet<T> extends TreeSet<T> {
@@ -12,7 +12,7 @@ public class PropertyListSet<T> extends TreeSet<T> {
 		super(PropertyListComparator.propertyListComparatorWithGuideArray(guideArray));
 	}
 
-	public PropertyListSet(Set<T> _set) {
+	public PropertyListSet(Collection<T> _set) {
 		this();
 		addAll(_set);
 	}
