@@ -79,6 +79,7 @@ import org.objectstyle.cayenne.exp.parser.AggregateConditionNode;
 import org.objectstyle.cayenne.exp.parser.ConditionNode;
 import org.objectstyle.cayenne.exp.parser.Node;
 import org.objectstyle.wolips.baseforplugins.util.StringUtils;
+import org.objectstyle.wolips.eomodeler.core.model.qualifier.EOQualifierBinding;
 import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
 
 public class EOQualifierFactory {
@@ -181,14 +182,13 @@ public class EOQualifierFactory {
 			} else if ("NSNumber".equals(valueClass)) {
 				value = valueMap.get("value");
 				if (value instanceof String) {
-					String valueStr = (String)value;
+					String valueStr = (String) value;
 					if (valueStr.indexOf('.') == -1) {
 						value = Integer.parseInt(valueStr);
 						if (!String.valueOf(value).equals(valueStr)) {
 							value = Long.parseLong(valueStr);
 						}
-					}
-					else {
+					} else {
 						value = Float.parseFloat(valueStr);
 					}
 				}
@@ -383,6 +383,11 @@ public class EOQualifierFactory {
 	public static void fillInQualifierKeysFromExpression(Expression expression, Set<String> keys) {
 		if (expression instanceof ConditionNode) {
 			String key = (String) ((ASTPath) expression.getOperand(0)).getOperand(0);
+			Object value = expression.getOperand(1);
+			System.out.println("EOQualifierFactory.fillInQualifierKeysFromExpression: " + value);
+
+			// String name = ((ExpressionParameter) ((ASTNamedParameter)
+			// _value).getValue()).getName();
 			keys.add(key);
 		} else if (expression instanceof AggregateConditionNode) {
 			int operandCount = expression.getOperandCount();
@@ -391,6 +396,42 @@ public class EOQualifierFactory {
 			}
 		} else if (expression instanceof ASTNot) {
 			EOQualifierFactory.fillInQualifierKeysFromExpression((Expression) ((ASTNot) expression).getOperand(0), keys);
+		} else {
+			throw new IllegalArgumentException("Unknown expression " + expression + ".");
+		}
+	}
+
+	public static List<EOQualifierBinding> getQualifierBindingsFromQualifierString(EOEntity entity, String qualifierString) {
+		Expression expression = EOQualifierFactory.fromString(qualifierString);
+		return EOQualifierFactory.getQualifierBindingsFromExpression(entity, expression);
+	}
+
+	public static List<EOQualifierBinding> getQualifierBindingsFromExpression(EOEntity entity, Expression expression) {
+		List<EOQualifierBinding> bindings = new LinkedList<EOQualifierBinding>();
+		try {
+			EOQualifierFactory.fillInQualifierBindingsFromExpression(entity, expression, bindings);
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+		return bindings;
+	}
+
+	public static void fillInQualifierBindingsFromExpression(EOEntity entity, Expression expression, List<EOQualifierBinding> bindings) {
+		if (expression instanceof ConditionNode) {
+			String key = (String) ((ASTPath) expression.getOperand(0)).getOperand(0);
+			Object value = expression.getOperand(1);
+			if (value instanceof ExpressionParameter) {
+				String bindingName = ((ExpressionParameter) value).getName();
+				EOQualifierBinding binding = new EOQualifierBinding(entity, bindingName, key);
+				bindings.add(binding);
+			}
+		} else if (expression instanceof AggregateConditionNode) {
+			int operandCount = expression.getOperandCount();
+			for (int operand = 0; operand < operandCount; operand++) {
+				EOQualifierFactory.fillInQualifierBindingsFromExpression(entity, (Expression) expression.getOperand(operand), bindings);
+			}
+		} else if (expression instanceof ASTNot) {
+			EOQualifierFactory.fillInQualifierBindingsFromExpression(entity, (Expression) ((ASTNot) expression).getOperand(0), bindings);
 		} else {
 			throw new IllegalArgumentException("Unknown expression " + expression + ".");
 		}
