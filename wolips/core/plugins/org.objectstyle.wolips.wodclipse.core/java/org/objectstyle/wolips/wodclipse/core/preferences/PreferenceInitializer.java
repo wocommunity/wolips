@@ -63,5 +63,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     prefs.setDefault(PreferenceConstants.OPERATOR, "0,0,0");
     prefs.setDefault(PreferenceConstants.COMMENT, "63,127,95");
     prefs.setDefault(PreferenceConstants.UNKNOWN, "0,0,0");
+    prefs.setDefault(PreferenceConstants.SPACES_AROUND_EQUALS, false);
   }
 }
