@@ -12,7 +12,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.text.IDocument;
+import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
+import org.objectstyle.wolips.wodclipse.core.preferences.PreferenceConstants;
 
 public class FormatRefactoring implements IRunnableWithProgress {
   private WodParserCache _cache;
@@ -36,7 +38,8 @@ public class FormatRefactoring implements IRunnableWithProgress {
       renderContext.setTrim(true);
       renderContext.setLowercaseAttributes(true);
       renderContext.setLowercaseTags(true);
-      renderContext.setSpacesAroundEquals(true);
+      boolean spacesAroundEquals =Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.SPACES_AROUND_EQUALS);
+      renderContext.setSpacesAroundEquals(spacesAroundEquals);
       renderContext.setSpaceInEmptyTags(true);
       renderContext.setAddMissingQuotes(true);
       

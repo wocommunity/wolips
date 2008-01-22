@@ -66,4 +66,8 @@ public class PreferenceConstants {
   public static final String COMMENT = "Comment";
 
   public static final String UNKNOWN = "Unknown";
+
+  public static final String SPACES_AROUND_EQUALS = "SpacesAroundEquals";
+  
+  
 }
