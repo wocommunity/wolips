@@ -73,14 +73,14 @@ public class FuzzyXMLAttributeImpl extends AbstractFuzzyXMLNode implements Fuzzy
     if (this._value == null) {
       this._value = "";
     }
-
+    
     int length = this._value.length();
-    this._value = value;
+    this._value = (value == null) ? "" : value;
 
     // 更新イベントを発火
     fireModifyEvent(toXMLString(new RenderContext(getDocument().isHTML())), getOffset(), getLength());
     // 位置情報を更新
-    appendOffset((FuzzyXMLElement) getParentNode(), getOffset(), value.length() - length);
+    appendOffset((FuzzyXMLElement) getParentNode(), getOffset(), this._value.length() - length);
   }
 
   public String getValue() {
