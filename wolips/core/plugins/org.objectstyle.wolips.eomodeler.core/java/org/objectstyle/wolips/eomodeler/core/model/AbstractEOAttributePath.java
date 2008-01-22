@@ -72,6 +72,8 @@ public abstract class AbstractEOAttributePath implements IUserInfoable, IEOEntit
 	public IEOAttribute getChildIEOAttribute() {
 		return myChildAttribute;
 	}
+	
+	public abstract String getChildClassName();
 
 	public NotificationMap<Object, Object> getUserInfo() {
 		return myChildAttribute.getUserInfo();
