@@ -24,6 +24,8 @@ public class EOQualifierParser {
 
 	private static final int IN_VARIABLE = 7;
 
+	private static final int IN_BINDING_KEY = 8;
+
 	private static Set<String> OPERATORS;
 
 	private static Set<String> SELECTORS;
@@ -106,7 +108,7 @@ public class EOQualifierParser {
 			if (operator instanceof OperatorToken || operator instanceof KeywordToken) {
 				EOQualifier.Comparison selector = new EOQualifier.Comparison(operator.getValue());
 				Token rvalue = popToken();
-				if (rvalue instanceof VariableToken) {
+				if (rvalue instanceof VariableToken || rvalue instanceof NamedVariableToken) {
 					lqualifier = new EOKeyValueQualifier(lvalue.getValue(), selector, new EOQualifierVariable(rvalue.getValue()));
 				} else if (rvalue instanceof NumberToken) {
 					lqualifier = new EOKeyValueQualifier(lvalue.getValue(), selector, ((NumberToken) rvalue).toNumber());
@@ -231,6 +233,10 @@ public class EOQualifierParser {
 					endPendingToken(state);
 					_tokenStartOffset = _offset;
 					state = EOQualifierParser.IN_VARIABLE;
+				} else if (ch == '$') {
+					endPendingToken(state);
+					_tokenStartOffset = _offset;
+					state = EOQualifierParser.IN_BINDING_KEY;
 				} else if (ch == '(') {
 					endPendingToken(state);
 					_tokens.add(new OpenParenToken(_offset - 1));
@@ -259,6 +265,8 @@ public class EOQualifierParser {
 						throw new ParseException("Unexpected character " + ch + " at offset " + (_offset - 1) + ".", (_offset - 1));
 					} else if (state == EOQualifierParser.IN_KEYWORD) {
 						// IGNORE
+					} else if (state == EOQualifierParser.IN_BINDING_KEY) {
+						// IGNORE
 					} else if (state == EOQualifierParser.IN_OPERATOR) {
 						endPendingToken(state);
 						state = EOQualifierParser.IN_KEYWORD;
@@ -269,12 +277,14 @@ public class EOQualifierParser {
 					} else {
 						throw new ParseException("Unexpected character " + ch + " at offset " + (_offset - 1) + ".", (_offset - 1));
 					}
-				} else if ((Character.isJavaIdentifierPart(ch) || ch == '.') && state == EOQualifierParser.IN_KEYWORD) {
+				} else if ((Character.isJavaIdentifierPart(ch) || ch == '.') && (state == EOQualifierParser.IN_KEYWORD || state == EOQualifierParser.IN_BINDING_KEY)) {
 					// OK
 				} else if (Character.isDigit(ch) || ch == '.' || ch == '-') {
 					if (state == EOQualifierParser.IN_NUMBER) {
 						// IGNORE
 					} else if (state == EOQualifierParser.IN_KEYWORD) {
+						// IGNORE
+					} else if (state == EOQualifierParser.IN_BINDING_KEY) {
 						// IGNORE
 					} else if (state == EOQualifierParser.IN_OPERATOR) {
 						endPendingToken(state);
@@ -327,6 +337,8 @@ public class EOQualifierParser {
 				}
 			} else if (state == EOQualifierParser.IN_NUMBER) {
 				token = new NumberToken(startOffset, value);
+			} else if (state == EOQualifierParser.IN_BINDING_KEY) {
+				token = new NamedVariableToken(startOffset, value);
 			} else if (state == EOQualifierParser.IN_KEYWORD) {
 				String operator = caseCorrectedOperatorName(value);
 				String selector = caseCorrectedSelectorName(value);
@@ -519,6 +531,17 @@ public class EOQualifierParser {
 		@Override
 		public String toString() {
 			return "[Variable: " + getValue() + "]";
+		}
+	}
+
+	protected static class NamedVariableToken extends Token {
+		public NamedVariableToken(int offset, String value) {
+			super(offset, value);
+		}
+
+		@Override
+		public String toString() {
+			return "[NamedVariable: " + getValue() + "]";
 		}
 	}
 
