@@ -420,6 +420,10 @@ public class EOQualifierFactory {
 		if (expression instanceof ConditionNode) {
 			String key = (String) ((ASTPath) expression.getOperand(0)).getOperand(0);
 			Object value = expression.getOperand(1);
+			if (value instanceof ASTNamedParameter) {
+				value = ((ASTNamedParameter) value).getValue();
+			}
+
 			if (value instanceof ExpressionParameter) {
 				String bindingName = ((ExpressionParameter) value).getName();
 				EOQualifierBinding binding = new EOQualifierBinding(entity, bindingName, key);
