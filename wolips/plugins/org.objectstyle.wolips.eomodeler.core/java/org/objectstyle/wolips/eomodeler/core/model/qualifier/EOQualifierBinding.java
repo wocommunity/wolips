@@ -42,6 +42,10 @@ public class EOQualifierBinding implements ISortableEOModelObject {
 	public AbstractEOAttributePath getAttributePath() {
 		return _entity.resolveKeyPath(_keyPath);
 	}
+	
+	public String getJavaClassName() {
+		return getAttributePath().getChildClassName();
+	}
 
 	public String toString() {
 		return "[EOQualifierBinding: " + _keyPath + " = $" + _name + "]";
