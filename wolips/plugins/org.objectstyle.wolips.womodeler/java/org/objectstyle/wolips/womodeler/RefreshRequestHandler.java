@@ -1,6 +1,6 @@
 package org.objectstyle.wolips.womodeler;
 
-import java.util.Properties;
+import java.util.Map;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -16,8 +16,8 @@ public class RefreshRequestHandler implements IRequestHandler {
   }
 
   public void handle(Request request) throws Exception {
-    Properties params = request.getQueryParameters();
-    String pathStr = params.getProperty("path");
+    Map<String, String> params = request.getQueryParameters();
+    String pathStr = params.get("path");
     Path path = new Path(pathStr);
     if (path.isAbsolute()) {
       IResource[] resources = ResourcesPlugin.getWorkspace().getRoot().findContainersForLocation(path);
@@ -34,5 +34,6 @@ public class RefreshRequestHandler implements IRequestHandler {
         resource.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
       }
     }
+    request.getWriter().println("<script>history.go(-1);</script>");
   }
 }

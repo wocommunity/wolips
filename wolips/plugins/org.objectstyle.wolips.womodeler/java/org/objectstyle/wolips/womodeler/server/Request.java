@@ -12,7 +12,8 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.URLDecoder;
-import java.util.Properties;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.objectstyle.wolips.preferences.PreferencesPlugin;
 import org.objectstyle.wolips.womodeler.preferences.PreferenceConstants;
@@ -31,8 +32,9 @@ public class Request implements Runnable {
   private String _path;
   private String _queryString;
   private String _content;
-  private Properties _queryParameters;
-  private Properties _requestHeaders;
+  private Map<String, String> _queryParameters;
+  private Map<String, String> _requestHeaders;
+  private Map<String, String> _responseHeaders;
   private int _responseCode;
   private ByteArrayOutputStream _responseStream;
 
@@ -46,6 +48,7 @@ public class Request implements Runnable {
   public void run() {
     //System.out.println("Request.run: request " + hashCode() + " begin");
     try {
+      _responseHeaders = new HashMap<String, String>();
       InputStream is = _socket.getInputStream();
       _outputStream = _socket.getOutputStream();
 
@@ -65,11 +68,11 @@ public class Request implements Runnable {
           int colonIndex = line.indexOf(':');
           if (colonIndex != -1) {
             if (_requestHeaders == null) {
-              _requestHeaders = new Properties();
+              _requestHeaders = new HashMap<String, String>();
             }
             String key = line.substring(0, colonIndex).trim().toLowerCase();
             String value = line.substring(colonIndex + 1).trim().toLowerCase();
-            _requestHeaders.setProperty(key, value);
+            _requestHeaders.put(key, value);
           }
         }
       }
@@ -79,9 +82,9 @@ public class Request implements Runnable {
       if (Request.METHOD_GET.equalsIgnoreCase(_method)) {
         _pathAndQueryString = (requestElements[1].startsWith("/") ? "" : "/") + requestElements[1];
         parsePathAndQuery();
-
+        
         String womodelerPassword = PreferencesPlugin.getDefault().getPreferenceStore().getString(PreferenceConstants.WOMODELER_SERVER_PASSWORD);
-        if (womodelerPassword != null && womodelerPassword.equals(_queryParameters.getProperty("pw"))) {
+        if (_queryParameters != null && womodelerPassword != null && womodelerPassword.equals(_queryParameters.get("pw"))) {
           IRequestHandler handler = _server.getHandler(this);
           if (handler != null) {
             handler.handle(this);
@@ -96,7 +99,7 @@ public class Request implements Runnable {
       }
       else if (Request.METHOD_POST.equalsIgnoreCase(_method)) {
         StringBuffer contentBuffer = new StringBuffer();
-        String contentLengthStr = _requestHeaders.getProperty(Request.CONTENT_LENGTH);
+        String contentLengthStr = _requestHeaders.get(Request.CONTENT_LENGTH);
         if (contentLengthStr == null) {
           throw new IOException("Missing Content-Length header.");
         }
@@ -148,6 +151,9 @@ public class Request implements Runnable {
         pw.println("Unknown");
       }
       pw.println("Connection: close");
+      for (Map.Entry<String, String> responseHeader : _responseHeaders.entrySet()) {
+        pw.println(responseHeader.getKey() + ": " + responseHeader.getValue());
+      }
       pw.println();
       pw.flush();
 
@@ -207,19 +213,23 @@ public class Request implements Runnable {
   }
 
   public String getQueryParameter(String name) {
-    return (_queryParameters == null) ? null : _queryParameters.getProperty(name);
+    return (_queryParameters == null) ? null : _queryParameters.get(name);
   }
 
-  public Properties getQueryParameters() {
+  public Map<String, String> getResponseHeaders() {
+    return _responseHeaders;
+  }
+
+  public Map<String, String> getQueryParameters() {
     return _queryParameters;
   }
 
-  public Properties getRequestHeaders() {
+  public Map<String, String> getRequestHeaders() {
     return _requestHeaders;
   }
 
   public String getRequestHeader(String name) {
-    return (_requestHeaders == null) ? null : _requestHeaders.getProperty(name);
+    return (_requestHeaders == null) ? null : _requestHeaders.get(name);
   }
 
   public OutputStream getOutputStream() {
@@ -237,17 +247,17 @@ public class Request implements Runnable {
   protected void parsePathAndQuery() throws UnsupportedEncodingException {
     int queryStringIndex = _pathAndQueryString.indexOf("?");
     if (queryStringIndex != -1) {
-      _queryParameters = new Properties();
+      _queryParameters = new HashMap<String, String>();
       _path = _pathAndQueryString.substring(0, queryStringIndex);
       _queryString = _pathAndQueryString.substring(queryStringIndex + 1);
       String[] nvPairs = _queryString.split("&");
       for (int i = 0; i < nvPairs.length; i++) {
         int equalsIndex = nvPairs[i].indexOf('=');
         if (equalsIndex == -1) {
-          _queryParameters.setProperty(URLDecoder.decode(nvPairs[i], "UTF-8"), "");
+          _queryParameters.put(URLDecoder.decode(nvPairs[i], "UTF-8"), "");
         }
         else {
-          _queryParameters.setProperty(URLDecoder.decode(nvPairs[i].substring(0, equalsIndex), "UTF-8"), URLDecoder.decode(nvPairs[i].substring(equalsIndex + 1), "UTF-8"));
+          _queryParameters.put(URLDecoder.decode(nvPairs[i].substring(0, equalsIndex), "UTF-8"), URLDecoder.decode(nvPairs[i].substring(equalsIndex + 1), "UTF-8"));
         }
       }
     }
