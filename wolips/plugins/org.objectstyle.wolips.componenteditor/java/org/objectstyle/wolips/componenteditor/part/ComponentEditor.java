@@ -67,6 +67,7 @@ import org.objectstyle.wolips.components.input.ComponentEditorInput;
  * @author uli
  */
 public class ComponentEditor extends ComponentEditorPart implements IGotoMarker, ITextEditor {
+	public static final String ID = "org.objectstyle.wolips.componenteditor.ComponentEditor";
 
 	public ComponentEditor() {
 		super();

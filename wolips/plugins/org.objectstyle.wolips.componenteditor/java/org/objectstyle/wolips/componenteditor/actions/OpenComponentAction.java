@@ -26,6 +26,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SelectionDialog;
+import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
 import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
@@ -85,7 +86,7 @@ public class OpenComponentAction extends Action implements IWorkbenchWindowActio
 						LocalizedComponentsLocateResult componentsLocateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(type.getUnderlyingResource());
 						IFile wodFile = componentsLocateResults.getFirstWodFile();
 						if (wodFile != null) {
-							WorkbenchUtilitiesPlugin.open(wodFile, "org.objectstyle.wolips.componenteditor.ComponentEditor");
+							WorkbenchUtilitiesPlugin.open(wodFile, ComponentEditor.ID);
 						}
 					} catch (Throwable e1) {
 						e1.printStackTrace();
