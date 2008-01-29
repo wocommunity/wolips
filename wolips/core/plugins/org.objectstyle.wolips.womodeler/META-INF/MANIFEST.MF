@@ -14,7 +14,12 @@ Require-Bundle: org.eclipse.ui.views.properties.tabbed,
  org.eclipse.jdt.ui,
  org.objectstyle.wolips.jdt,
  org.objectstyle.wolips.bindings,
- org.objectstyle.wolips.preferences
+ org.objectstyle.wolips.preferences,
+ org.objectstyle.wolips.locate,
+ org.objectstyle.wolips.datasets,
+ org.objectstyle.wolips.componenteditor,
+ org.objectstyle.wolips.workbenchutilities,
+ org.objectstyle.wolips
 Eclipse-LazyStart: true
 Bundle-Vendor: objectstyle.org
 Export-Package: org.objectstyle.wolips.womodeler

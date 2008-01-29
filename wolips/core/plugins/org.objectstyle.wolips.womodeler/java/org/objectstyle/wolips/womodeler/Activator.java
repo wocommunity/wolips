@@ -32,6 +32,7 @@ public class Activator extends AbstractBaseUIActivator implements IStartup {
     _server = new Webserver(store.getInt(PreferenceConstants.WOMODELER_SERVER_PORT));
     _server.addRequestHandler("/womodeler", new WOModelerRequestHandler());
     _server.addRequestHandler("/refresh", new RefreshRequestHandler());
+    _server.addRequestHandler("/openComponent", new OpenComponentRequestHandler());
   }
 
   public void earlyStartup() {
