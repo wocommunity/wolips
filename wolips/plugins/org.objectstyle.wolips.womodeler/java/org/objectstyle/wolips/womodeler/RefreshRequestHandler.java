@@ -34,6 +34,6 @@ public class RefreshRequestHandler implements IRequestHandler {
         resource.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
       }
     }
-    request.getWriter().println("<script>history.go(-1);</script>");
+    request.getWriter().println("ok");
   }
 }

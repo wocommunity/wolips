@@ -43,6 +43,6 @@ public class OpenComponentRequestHandler implements IRequestHandler {
         }
       }
     }
-    request.getWriter().println("<script>history.go(-1);</script>");
+    request.getWriter().println("ok");
   }
 }
