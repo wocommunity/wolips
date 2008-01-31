@@ -28,8 +28,10 @@ Require-Bundle: org.objectstyle.wolips.workbenchutilities,
  org.eclipse.jdt.ui
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.componenteditor,
+ org.objectstyle.wolips.componenteditor.actions,
  org.objectstyle.wolips.componenteditor.contributor,
  org.objectstyle.wolips.componenteditor.editormenu,
+ org.objectstyle.wolips.componenteditor.inspector,
  org.objectstyle.wolips.componenteditor.launcher,
  org.objectstyle.wolips.componenteditor.outline,
  org.objectstyle.wolips.componenteditor.part

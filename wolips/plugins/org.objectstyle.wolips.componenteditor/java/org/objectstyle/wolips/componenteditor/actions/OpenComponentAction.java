@@ -3,7 +3,6 @@ package org.objectstyle.wolips.componenteditor.actions;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
@@ -80,17 +79,7 @@ public class OpenComponentAction extends Action implements IWorkbenchWindowActio
 			if (typeNames != null && typeNames.length > 0) {
 				for (int i = 0; i < typeNames.length; i++) {
 					String typeName = (String) typeNames[i];
-					try {
-						IType type = javaProject.findType(typeName);
-						JavaUI.openInEditor(type, true, true);
-						LocalizedComponentsLocateResult componentsLocateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(type.getUnderlyingResource());
-						IFile wodFile = componentsLocateResults.getFirstWodFile();
-						if (wodFile != null) {
-							WorkbenchUtilitiesPlugin.open(wodFile, ComponentEditor.ID);
-						}
-					} catch (Throwable e1) {
-						e1.printStackTrace();
-					}
+					OpenComponentAction.openComponentWithTypeNamed(javaProject, typeName);
 				}
 			}
 		}
@@ -120,5 +109,21 @@ public class OpenComponentAction extends Action implements IWorkbenchWindowActio
 
 	public void init(IAction action) {
 		// DO NOTHING
+	}
+	
+	public static void openComponentWithTypeNamed(IJavaProject javaProject, String typeName) {
+		try {
+			IType type = javaProject.findType(typeName);
+			if (type != null) {
+				JavaUI.openInEditor(type, true, true);
+				LocalizedComponentsLocateResult componentsLocateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(type.getUnderlyingResource());
+				IFile wodFile = componentsLocateResults.getFirstWodFile();
+				if (wodFile != null) {
+					WorkbenchUtilitiesPlugin.open(wodFile, ComponentEditor.ID);
+				}
+			}
+		} catch (Throwable e1) {
+			e1.printStackTrace();
+		}
 	}
 }
