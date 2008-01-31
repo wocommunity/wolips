@@ -40,7 +40,7 @@ public class Webserver implements Runnable {
   public synchronized void start(boolean daemon) {
     if (!_running) {
       _running = true;
-      Thread serverThread = new Thread(this);
+      Thread serverThread = new Thread(this, "WOLips Server");
       serverThread.setDaemon(daemon);
       serverThread.start();
     }
@@ -71,7 +71,7 @@ public class Webserver implements Runnable {
         Socket requestSock = _serverSocket.accept();
         Request req = new Request(this, requestSock);
         //				req.run();
-        Thread requestThread = new Thread(req, "WOLips Server Thread");
+        Thread requestThread = new Thread(req, "WOLips Server Request");
         requestThread.start();
       }
     }
