@@ -71,7 +71,7 @@ public class Webserver implements Runnable {
         Socket requestSock = _serverSocket.accept();
         Request req = new Request(this, requestSock);
         //				req.run();
-        Thread requestThread = new Thread(req);
+        Thread requestThread = new Thread(req, "WOLips Server Thread");
         requestThread.start();
       }
     }
