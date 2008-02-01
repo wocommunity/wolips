@@ -128,6 +128,7 @@ public class Preferences {
 
 	public static final String PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE = "org.objectstyle.wolips.Preference.EOGeneratorSubclassTemplate";
 
+	public static final String PREF_SHOW_CONSOLE_EXCEPTION_DIALOGS = "org.objectstyle.wolips.Preference.ConsoleExceptionDialogs"; 
 	/**
 	 * Comment for <code>FLAG_INCLUDE_EXCLUDE_RULES_CHANGED</code>
 	 */
@@ -211,6 +212,9 @@ public class Preferences {
 		}
 		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_WOLIPS_VERSION_EARLY_STARTUP)) {
 			store.setDefault(Preferences.PREF_WOLIPS_VERSION_EARLY_STARTUP, "0.0.0");
+		}
+		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_SHOW_CONSOLE_EXCEPTION_DIALOGS)) {
+			store.setDefault(Preferences.PREF_SHOW_CONSOLE_EXCEPTION_DIALOGS, PreferencesMessages.getString(Preferences.trueString));
 		}
 		store.setDefault(Preferences.PREF_LAUNCH_GLOBAL, PreferencesMessages.getString(Preferences.PREF_LAUNCH_GLOBAL));
 		Preferences.SET_DEFAULTS_STRING = null;
@@ -499,5 +503,13 @@ public class Preferences {
 
 	public static void setWOLipsVersionEarlyStartup(String string) {
 		Preferences.setString(Preferences.PREF_WOLIPS_VERSION_EARLY_STARTUP, string);
+	}
+	
+	public static void setShowConsoleExceptionDialogs(boolean value) {
+		Preferences.setBoolean(Preferences.PREF_SHOW_CONSOLE_EXCEPTION_DIALOGS, value);
+	}
+	
+	public static boolean isShowConsoleExceptionDialogs() {
+		return Preferences.getBoolean(Preferences.PREF_SHOW_CONSOLE_EXCEPTION_DIALOGS);
 	}
 }
