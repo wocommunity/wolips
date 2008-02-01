@@ -325,6 +325,12 @@
             id="org.objectstyle.wolips.preferences.LaunchPreferencesPage">
       </page>
       <page
+            name="Debug"
+            category="org.objectstyle.wolips.preferences.PreferencesPage"
+            class="org.objectstyle.wolips.ui.preferences.DebugPreferencesPage"
+            id="org.objectstyle.wolips.preferences.DebugPreferencesPage">
+      </page>
+      <page
             name="EOGenerator"
             category="org.objectstyle.wolips.preferences.PreferencesPage"
             class="org.objectstyle.wolips.ui.preferences.EOGeneratorPreferencesPage"
