@@ -108,7 +108,6 @@ public class LaunchPreferencesPage extends PreferencePage implements IWorkbenchP
 	}
 
 	protected Control createContents(Composite ancestor) {
-
 		Composite parent = new Composite(ancestor, SWT.NULL);
 		GridLayout layout = new GridLayout();
 		layout.marginWidth = 0;
