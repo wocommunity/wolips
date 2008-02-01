@@ -63,6 +63,7 @@ import org.eclipse.jface.text.IRegion;
 import org.objectstyle.wolips.launching.LaunchingPlugin;
 import org.objectstyle.wolips.launching.exceptionhandler.IExceptionHandler;
 import org.objectstyle.wolips.launching.exceptionhandler.internal.ExceptionHandlerWrapper;
+import org.objectstyle.wolips.preferences.Preferences;
 
 public class ErrorConsoleLineTracker implements IConsoleLineTracker {
 
@@ -71,6 +72,8 @@ public class ErrorConsoleLineTracker implements IConsoleLineTracker {
 	private ExceptionHandlerWrapper[] exceptionHandlerWrappers;
 
 	private int[] linesToSkip;
+	
+	private boolean enabled;
 
 	public ErrorConsoleLineTracker() {
 		super();
@@ -80,6 +83,7 @@ public class ErrorConsoleLineTracker implements IConsoleLineTracker {
 		this.currentConsole = console;
 		this.exceptionHandlerWrappers = LaunchingPlugin.getDefault().getExceptionHandlerWrapper();
 		this.linesToSkip = new int[this.exceptionHandlerWrappers.length];
+		this.enabled = Preferences.isShowConsoleExceptionDialogs();
 	}
 
 	public void lineAppended(IRegion line) {
@@ -107,11 +111,13 @@ public class ErrorConsoleLineTracker implements IConsoleLineTracker {
 	}
 
 	private void forwardLineAppended(String line) {
-		for (int i = 0; i < exceptionHandlerWrappers.length; i++) {
-			ExceptionHandlerWrapper exceptionHandlerWrapper = exceptionHandlerWrappers[i];
-			IExceptionHandler exceptionHandler = exceptionHandlerWrapper.getExceptionHandler();
-			if (linesToSkip[i] <= 0) {
-				linesToSkip[i] = exceptionHandler.lineAppendedToConsole(line, currentConsole);
+		if (this.enabled) {
+			for (int i = 0; i < exceptionHandlerWrappers.length; i++) {
+				ExceptionHandlerWrapper exceptionHandlerWrapper = exceptionHandlerWrappers[i];
+				IExceptionHandler exceptionHandler = exceptionHandlerWrapper.getExceptionHandler();
+				if (linesToSkip[i] <= 0) {
+					linesToSkip[i] = exceptionHandler.lineAppendedToConsole(line, currentConsole);
+				}
 			}
 		}
 	}
