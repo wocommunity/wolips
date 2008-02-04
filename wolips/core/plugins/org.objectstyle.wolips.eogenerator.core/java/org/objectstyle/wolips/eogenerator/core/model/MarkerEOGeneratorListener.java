@@ -14,6 +14,7 @@ public class MarkerEOGeneratorListener implements IEOGeneratorListener {
 			error.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 			error.setAttribute(IMarker.MESSAGE, "EOGenerator Failed (Run manually for details)");
 		} catch (CoreException e) {
+      e.printStackTrace();
 			Activator.getDefault().log(e);
 		}
 	}
@@ -30,6 +31,7 @@ public class MarkerEOGeneratorListener implements IEOGeneratorListener {
 		try {
 			eogenFile.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
 		} catch (CoreException e) {
+		  e.printStackTrace();
 			Activator.getDefault().log(e);
 		}
 	}
