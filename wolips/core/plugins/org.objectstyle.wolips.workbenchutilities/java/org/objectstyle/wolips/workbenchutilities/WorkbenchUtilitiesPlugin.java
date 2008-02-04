@@ -414,6 +414,12 @@ public class WorkbenchUtilitiesPlugin extends AbstractBaseUIActivator {
 	 */
 	public final static void open(IFile file, String editor) {
 		IWorkbenchWindow workbenchWindow = WorkbenchUtilitiesPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
+		if (workbenchWindow == null) {
+			IWorkbenchWindow[] workbenchWindows = WorkbenchUtilitiesPlugin.getDefault().getWorkbench().getWorkbenchWindows();
+			if (workbenchWindows != null && workbenchWindows.length > 0) {
+				workbenchWindow = workbenchWindows[0];
+			}
+		}
 		if (workbenchWindow != null) {
 			IWorkbenchPage workbenchPage = workbenchWindow.getActivePage();
 			if (workbenchPage != null) {
