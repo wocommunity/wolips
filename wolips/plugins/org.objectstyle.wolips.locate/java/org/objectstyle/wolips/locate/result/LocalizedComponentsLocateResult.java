@@ -205,16 +205,16 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 		IFile javaFile = getDotJava();
 		if (javaFile != null) {
 			try {
-				IJavaElement javaElement = JavaCore.create(javaFile);
-				if (javaElement instanceof ICompilationUnit) {
-					IType[] types = ((ICompilationUnit) javaElement).getTypes();
-					// NTS: What do we do about multiple types in a file??
-					if (types.length > 0) {
-						dotJavaType = types[0];
+					IJavaElement javaElement = JavaCore.create(javaFile);
+					if (javaElement instanceof ICompilationUnit) {
+						IType[] types = ((ICompilationUnit) javaElement).getTypes();
+						// NTS: What do we do about multiple types in a file??
+						if (types.length > 0) {
+							dotJavaType = types[0];
+						}
 					}
-				}
 			} catch (JavaModelException e) {
-				LocatePlugin.getDefault().log(e);
+				LocatePlugin.getDefault().log(new RuntimeException(javaFile.getLocation() + " had a problem.", e));
 			}
 		}
 		// }
