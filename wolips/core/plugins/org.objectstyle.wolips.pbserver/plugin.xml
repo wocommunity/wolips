@@ -10,6 +10,6 @@
             class="org.objectstyle.wolips.pbserver.preferences.PBServerPreferencePage"
             category="org.objectstyle.wolips.preferences.PreferencesPage"
             id="org.objectstyle.wolips.pbserver.preferences.PBServerPreferencePage"
-            name="PB Server Preferences"/>
+            name="ProjectBuilder Server"/>
    </extension>
 </plugin>
