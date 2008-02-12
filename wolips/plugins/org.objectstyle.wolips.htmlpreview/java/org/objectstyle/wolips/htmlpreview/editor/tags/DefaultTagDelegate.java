@@ -14,7 +14,7 @@ public class DefaultTagDelegate extends TagDelegate {
 
 	@Override
 	public void renderNode(IWodElement wodElement, FuzzyXMLElement xmlElement, RenderContext renderContext, StringBuffer htmlBuffer, StringBuffer cssBuffer, Stack<WodParserCache> caches, Stack<FuzzyXMLNode> nodes) {
-		System.out.println("DefaultTagDelegate.renderNode: " + wodElement.getElementType());
+		//System.out.println("DefaultTagDelegate.renderNode: " + wodElement.getElementType());
 		xmlElement.toXMLString(renderContext, htmlBuffer);
 	}
 
