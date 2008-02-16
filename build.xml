@@ -21,7 +21,11 @@
 		</filterchain>
 	</loadproperties>
 	<property file="${project.lib.dir}/lib.properties" />
+    <property name="wo.dir.library.frameworks" value="${wo.wosystemroot}/Library/Frameworks" />
 	<property name="build.version.to.replace" value="1.0.6" />
+	<!-- ak: dirty trick so we don't have to create a directory -->
+	<property name="eclipse.deps.home" value="${eclipse.deps.home}/features" />
+
 	<!-- ========================================== -->
 	<!-- Print help.                                -->
 	<!-- ========================================== -->
@@ -65,12 +69,15 @@
         * build.output.homepage.dir = ${build.output.homepage.dir}
         * deploy.dir = ${deploy.dir} (set by the buildserver)
         * eclipse.home = ${eclipse.home}
+        * eclipse.deps.home = ${eclipse.deps.home}
         * no.clean = ${no.clean}
         * no.docs = ${no.docs}
         * compile options
         * compile.deprecation= ${compile.deprecation}
         * compile.debug= ${compile.debug}
         * compile.optimize= ${compile.optimize}
+        * compile.source= ${compile.source}
+        * compile.target= ${compile.target}
         * feature.updateSiteName= ${feature.updateSiteName}
         * feature.updateSite= ${feature.updateSite}
         ****************************************
@@ -110,6 +117,12 @@
 	<!-- Build all.                                 -->
 	<!-- ========================================== -->
 	<target name="all" depends="print.environment,verify.clean,set.clean,call.clean,prepare,woenvironment,woproject,wolips">
+	</target>
+
+	<!-- ========================================== -->
+	<!-- Build all.                                 -->
+	<!-- ========================================== -->
+	<target name="woproject.all" depends="print.environment,verify.clean,set.clean,call.clean,prepare,woenvironment,woproject">
 	</target>
 
 	<!-- ========================================== -->
