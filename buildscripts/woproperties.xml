@@ -7,17 +7,18 @@
 	<property file="${user.home}${file.separator}Library${file.separator}wobuild.properties"/>
 	
 	<target name="check" depends="check_file,set_other,correct_win,check_env,set_mac">
-	    <fail message="Could not find ${user.home}${file.separator}Library${file.separator}wobuild.properties. There should now be a generated one. Just launch ant again" if="wo.properties.ckeck.failed"/>
+	    <fail message="Could not find ${user.home}${file.separator}Library${file.separator}wobuild.properties. There should now be a generated one. Just launch ant again" if="wo.properties.check.failed"/>
 	</target>
 
 	<target name="check_file">
-	    <condition property="wo.properties.ckeck.failed">
+	    <condition property="wo.properties.check.failed">
 	        <not>
                     <and>
     		        <isset property="wo.woroot"/>
       		        <isset property="wo.wolocalroot"/>
       		        <isset property="wo.wosystemroot"/>
-      		        <isset property="wo.dir.root"/>
+          		    <isset property="wo.dir.reference.api"/>
+      		        <!--isset property="wo.dir.root"/>
       		        <isset property="wo.dir.system"/>
       		        <isset property="wo.dir.library"/>
       		        <isset property="wo.dir.library.frameworks"/>
@@ -25,8 +26,7 @@
       		        <isset property="wo.dir.local.library"/>
       		        <isset property="wo.dir.local.library.frameworks"/>
       		        <isset property="wo.dir.user.home.library"/>
-          		    <isset property="wo.dir.user.home.library.frameworks"/>
-          		    <isset property="wo.dir.reference.api"/>
+          		    <isset property="wo.dir.user.home.library.frameworks"/-->
       	            </and>
     		</not>
   	    </condition>
@@ -39,7 +39,7 @@
 				
 	</target>
 
-	<target name="set_other" if="wo.properties.ckeck.failed">
+	<target name="set_other" if="wo.properties.check.failed">
 	
 		<property environment="env"/>
 		
@@ -49,7 +49,8 @@
   			<entry  key="wo.woroot" value="${env.NEXT_ROOT}"/>
  			<entry  key="wo.wolocalroot" value="${env.NEXT_ROOT}/Local"/>
  			<entry  key="wo.wosystemroot" value="${env.NEXT_ROOT}"/>
- 			<entry  key="wo.dir.root" value="${env.NEXT_ROOT}"/>
+ 			<entry  key="wo.dir.reference.api" value="${env.NEXT_ROOT}/Developer/Documentation/WebObjects/Reference/API/"/>
+ 			<!--entry  key="wo.dir.root" value="${env.NEXT_ROOT}"/>
  			<entry  key="wo.dir.system" value="${env.NEXT_ROOT}"/>
  			<entry  key="wo.dir.library" value="${env.NEXT_ROOT}/Library"/>
  			<entry  key="wo.dir.library.frameworks" value="${env.NEXT_ROOT}/Library/Frameworks"/>
@@ -57,20 +58,19 @@
  			<entry  key="wo.dir.local.library" value="${env.NEXT_ROOT}/Local/Library"/>
  			<entry  key="wo.dir.local.library.frameworks" value="${env.NEXT_ROOT}/Local/Library/Frameworks"/>
  			<entry  key="wo.dir.user.home.library" value="${user.home}/Local/Library"/>
- 			<entry  key="wo.dir.user.home.library.frameworks" value="${user.home}/Local/Library/Frameworks"/>
- 			<entry  key="wo.dir.reference.api" value="${env.NEXT_ROOT}/Developer/Documentation/WebObjects/Reference/API/"/>
+ 			<entry  key="wo.dir.user.home.library.frameworks" value="${user.home}/Local/Library/Frameworks"/-->
 		</propertyfile>
 		
 		<condition property="correct.win">
 			<and>
 				<os family="windows"/>
-				<istrue  value="${wo.properties.ckeck.failed}"/>
+				<istrue  value="${wo.properties.check.failed}"/>
 			</and>
 		</condition> 
 		
 	</target>
 	
-	<target name="set_mac" if="env.ckeck.failed">
+	<target name="set_mac" if="env.check.failed">
 	
 		<mkdir dir="${user.home}${file.separator}Library"/>
 	
@@ -78,7 +78,8 @@
   			<entry  key="wo.woroot" value="/"/>
  			<entry  key="wo.wolocalroot" value="/"/>
  			<entry  key="wo.wosystemroot" value="/System"/>
- 			<entry  key="wo.dir.root" value="/"/>
+ 			<entry  key="wo.dir.reference.api" value="/Developer/Documentation/DocSets/com.apple.ADC_Reference_Library.WebObjectsReference.docset/Contents/Resources/Documents/documentation/MacOSXServer/Reference/WO54_Reference"/>
+ 			<!--entry  key="wo.dir.root" value="/"/>
  			<entry  key="wo.dir.system" value="/System"/>
  			<entry  key="wo.dir.library" value="/System/Library"/>
  			<entry  key="wo.dir.library.frameworks" value="/System/Library/Frameworks"/>
@@ -86,14 +87,13 @@
  			<entry  key="wo.dir.local.library" value="/Library"/>
  			<entry  key="wo.dir.local.library.frameworks" value="/Library/Frameworks"/>
  			<entry  key="wo.dir.user.home.library" value="${user.home}/Library"/>
- 			<entry  key="wo.dir.user.home.library.frameworks" value="${user.home}/Library/Frameworks"/>
- 			<entry  key="wo.dir.reference.api" value="/Developer/ADC%20Reference%20Library/documentation/WebObjects/Reference/API/"/>
+ 			<entry  key="wo.dir.user.home.library.frameworks" value="${user.home}/Library/Frameworks"/-->
  		</propertyfile>
 	</target>
 		
-	<target name="check_env" if="wo.properties.ckeck.failed">
+	<target name="check_env" if="wo.properties.check.failed">
 		<property environment="env"/>
-		 <condition property="env.ckeck.failed">
+		 <condition property="env.check.failed">
 		 	<not>
     			<isset property="env.NEXT_ROOT"/>
     		</not>
