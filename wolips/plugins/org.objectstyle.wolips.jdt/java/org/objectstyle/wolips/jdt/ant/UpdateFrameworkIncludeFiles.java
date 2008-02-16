@@ -48,6 +48,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -182,7 +183,10 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 								currentFrameworkListFile.setContents(new ByteArrayInputStream(newFrameworkEntries.toString().getBytes()), true, true, null);
 							} else {
 								// create list file if any entries found
-								this.getProjectAdapter().getWoprojectAdapter().getUnderlyingFolder().create(false, true, new NullProgressMonitor());
+								IFolder woprojectFolder = this.getProjectAdapter().getWoprojectAdapter().getUnderlyingFolder();
+								if (!woprojectFolder.exists()) {
+									woprojectFolder.create(false, true, new NullProgressMonitor());
+								}
 								currentFrameworkListFile.create(new ByteArrayInputStream(newFrameworkEntries.toString().getBytes()), true, null);
 							}
 						} catch (CoreException e) {
