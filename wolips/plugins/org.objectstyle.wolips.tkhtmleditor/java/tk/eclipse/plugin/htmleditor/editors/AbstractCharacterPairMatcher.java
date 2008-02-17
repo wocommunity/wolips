@@ -65,7 +65,11 @@ public abstract class AbstractCharacterPairMatcher implements ICharacterPairMatc
 		String text = getSource(document);
 		
 		try {
-			if(offset < document.getLength()){
+		  // MS: Not sure who's bug this is, but if you have a document with
+		  // one character in it, text.charAt(0) throws an ArrayIndexOutOfBounds.  This
+		  // seems like an Eclipse bug, actually, but we'll check it anyway just in
+		  // case.
+			if(document.getLength() > 1 && offset < document.getLength()){
 				char c = text.charAt(offset);
 				if(isEndBlock(c)){
 					int place = getPrevPlace(text, c, offset-1);
