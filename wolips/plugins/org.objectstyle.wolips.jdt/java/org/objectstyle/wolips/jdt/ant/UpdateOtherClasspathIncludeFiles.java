@@ -60,6 +60,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -149,7 +150,10 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 					currentClasspathListFile.setContents(new ByteArrayInputStream(newClasspathEntries.toString().getBytes()), true, true, null);
 				} else {
 					// create list file if any entries found
-					this.getProjectAdapter().getWoprojectAdapter().getUnderlyingFolder().create(false, true, new NullProgressMonitor());
+					IFolder woprojectFolder = this.getProjectAdapter().getWoprojectAdapter().getUnderlyingFolder();
+					if (!woprojectFolder.exists()) {
+						woprojectFolder.create(false, true, new NullProgressMonitor());
+					}
 					currentClasspathListFile.create(new ByteArrayInputStream(newClasspathEntries.toString().getBytes()), true, null);
 				}
 			} catch (CoreException e) {
