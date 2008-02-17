@@ -355,18 +355,19 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	}
 
 	public void setName(String _name, boolean _fireEvents) throws DuplicateNameException {
-		String name = (String) _prototypeValueIfNull(AbstractEOArgument.NAME, _name);
-		if (name == null) {
+		String oldName = getName();
+		String newName = (String) _prototypeValueIfNull(AbstractEOArgument.NAME, _name);
+		if (newName == null) {
 			throw new NullPointerException(Messages.getString("EOAttribute.noBlankAttributeNames"));
 		}
 		if (myEntity != null) {
-			myEntity._checkForDuplicateAttributeName(this, name, null);
+			myEntity._checkForDuplicateAttributeName(this, newName, null);
 			EOModel model = myEntity.getModel();
 			if (model != null) {
 				model.getModelEvents().addEvent(new EOAttributeRenamedEvent(this));
 			}
 		}
-		super.setName((String) _nullIfPrototyped(AbstractEOArgument.NAME, name), _fireEvents);
+		super.setName((String) _nullIfPrototyped(AbstractEOArgument.NAME, newName), _fireEvents);
 		if (myEntity != null) {
 			EOModelGroup modelGroup = myEntity.getModel().getModelGroup();
 			for (EOEntity entity : modelGroup.getEntities()) {
@@ -374,6 +375,9 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 					attribute.updateDefinitionBecauseAttributeNameChanged(this);
 				}
 			}
+		}
+		if (_fireEvents) {
+			synchronizeNameChange(oldName, newName);
 		}
 	}
 
@@ -975,9 +979,18 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		}
 	}
 
+	public void synchronizeNameChange(String oldName, String newName) {
+		if (ComparisonUtils.equals(oldName, getColumnName(), true)) {
+			setColumnName(newName);
+		}
+	}
+
 	public void _addToModelParent(EOEntity modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) throws EOModelException {
 		if (findUniqueName) {
-			setName(modelParent.findUnusedAttributeName(getName()));
+			String oldName = getName();
+			String newName = modelParent.findUnusedAttributeName(oldName);
+			setName(newName);
+			synchronizeNameChange(oldName, newName);
 		}
 		modelParent.addAttribute(this);
 	}
