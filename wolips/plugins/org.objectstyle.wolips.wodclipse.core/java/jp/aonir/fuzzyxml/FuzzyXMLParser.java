@@ -252,6 +252,11 @@ public class FuzzyXMLParser {
       }
     }
 
+    // MS: Capture trailing text that isn't inside of a tag at all
+    if (lastIndex != source.length()) {
+      handleText(Math.max(0, lastIndex), source.length(), true);
+    }
+
     FuzzyXMLElement docElement = null;
     if (_roots.size() == 0) {
       docElement = new FuzzyXMLElementImpl(null, "document", 0, _originalSource.length(), 0);
