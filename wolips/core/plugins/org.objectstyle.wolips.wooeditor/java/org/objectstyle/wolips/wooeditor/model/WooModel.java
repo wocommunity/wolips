@@ -370,13 +370,18 @@ public class WooModel implements IWooModel {
 	public List<WodProblem> getProblems(IJavaProject javaProject, IType type,
 			TypeCache typeCache, IEOModelGroupCache modelCache) {
 		final List<WodProblem> problems = new ArrayList<WodProblem>();
-		EOModelGroupCache _modelCache = (EOModelGroupCache)modelCache;
-		EOModelGroup modelGroup = _modelCache.getModelGroup(javaProject);
-		if (modelGroup != null ) {
-			this.setModelGroup(modelGroup);
-		} else {
-			_modelCache.setModelGroup(javaProject, getModelGroup());
-		}
+
+		// This was causing models to load when opening any component
+		// even if your woo file is empty, and it doesn't APPEAR to actually
+		// use this during this process.
+		
+//		EOModelGroupCache _modelCache = (EOModelGroupCache)modelCache;
+//		EOModelGroup modelGroup = _modelCache.getModelGroup(javaProject);
+//		if (modelGroup != null ) {
+//			this.setModelGroup(modelGroup);
+//		} else {
+//			_modelCache.setModelGroup(javaProject, getModelGroup());
+//		}
 				
 		try {
 			this.parseModel();
