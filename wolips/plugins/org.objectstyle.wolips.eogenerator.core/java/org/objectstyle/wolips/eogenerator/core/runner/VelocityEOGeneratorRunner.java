@@ -72,18 +72,18 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 		
 		boolean eogeneratorJava14 = Preferences.isEOGeneratorJava14();
 		if (eogeneratorJava14) {
-			if (superclassTemplateName == null) {
+			if (superclassTemplateName == null || superclassTemplateName.length() == 0) {
 				superclassTemplateName = "_Entity14.java";
 			}
-			if (subclassTemplateName == null) {
+			if (subclassTemplateName == null || subclassTemplateName.length() == 0) {
 				subclassTemplateName = "Entity14.java";
 			}
 		}
 		else {
-			if (superclassTemplateName == null) {
+			if (superclassTemplateName == null || superclassTemplateName.length() == 0) {
 				superclassTemplateName = "_Entity.java";
 			}
-			if (subclassTemplateName == null) {
+			if (subclassTemplateName == null || subclassTemplateName.length() == 0) {
 				subclassTemplateName = "Entity.java";
 			}
 		}
