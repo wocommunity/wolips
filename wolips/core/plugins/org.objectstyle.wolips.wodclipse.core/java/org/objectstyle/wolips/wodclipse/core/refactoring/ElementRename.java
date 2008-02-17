@@ -42,8 +42,8 @@ public class ElementRename {
       boolean forceAppendNumber = false;
 
       if ("WOConditional".equals(typeName)) {
-        String conditionValue = (String) wodElement.getBindingsMap().get("condition");
-        String negateValue = (String) wodElement.getBindingsMap().get("negate");
+        String conditionValue = wodElement.getBindingsMap().get("condition");
+        String negateValue = wodElement.getBindingsMap().get("negate");
         String prefix = null;
         if (negateValue != null && (negateValue.equalsIgnoreCase("true") || negateValue.equalsIgnoreCase("yes"))) {
           prefix = "Not";
@@ -51,15 +51,15 @@ public class ElementRename {
         newName = newNameFromBindingValue(prefix, conditionValue, null);
       }
       else if ("WOString".equals(typeName)) {
-        String value = (String) wodElement.getBindingsMap().get("value");
+        String value = wodElement.getBindingsMap().get("value");
         newName = newNameFromBindingValue(null, value, null);
       }
       else if ("ERXLocalizedString".equals(typeName)) {
-        String value = (String) wodElement.getBindingsMap().get("value");
+        String value = wodElement.getBindingsMap().get("value");
         newName = newNameFromBindingValue(null, value, null);
       }
       else if ("WOSubmitButton".equals(typeName)) {
-        String action = (String) wodElement.getBindingsMap().get("action");
+        String action = wodElement.getBindingsMap().get("action");
         if (action != null) {
           newName = newNameFromBindingValue(null, action + "Button", null);
         }
@@ -68,7 +68,7 @@ public class ElementRename {
         }
       }
       else if ("WOHyperlink".equals(typeName)) {
-        String action = (String) wodElement.getBindingsMap().get("action");
+        String action = wodElement.getBindingsMap().get("action");
         if (action != null) {
           newName = newNameFromBindingValue(null, action + "Link", null);
         }
@@ -77,11 +77,11 @@ public class ElementRename {
         }
       }
       else if ("WORepetition".equals(typeName)) {
-        String list = (String) wodElement.getBindingsMap().get("list");
+        String list = wodElement.getBindingsMap().get("list");
         newName = newNameFromBindingValue(null, list, null);
       }
       else if ("WOGenericContainer".equals(typeName) || "WOGenericElement".equals(typeName)) {
-        String genericElementName = (String) wodElement.getBindingsMap().get("elementName");
+        String genericElementName = wodElement.getBindingsMap().get("elementName");
         newName = newNameFromBindingValue(null, genericElementName, null);
         forceAppendNumber = true;
       }
