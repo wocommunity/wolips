@@ -94,11 +94,27 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 	public IRuntimeClasspathEntry[] resolveClasspath(IRuntimeClasspathEntry[] entries, ILaunchConfiguration configuration) throws CoreException {
 		Set<IPath> allProjectArchiveEntries = new HashSet<IPath>();
 		
+		// We need to track with frameworks were projects, because they "win" when competing
+		// with the same named framework from a /Frameworks folder
+		Set<String> projectFrameworkNames = new HashSet<String>();
+		
+		// We need to track the name of the framework that contained each entry so we can
+		// look it back up when we're building the final classpath
+		Map<IRuntimeClasspathEntry, String> entryFramework = new HashMap<IRuntimeClasspathEntry, String>();
+		
+		// We also need to keep track of the location of the framework, so we only load
+		// jars from the first framework we come across 
 		Map<String, IPath> addedFramework = new HashMap<String, IPath>();
+		
+		// Pending results contains all of the classpath entries, filtered such that we only
+		// load the first of a framework from a /Frameworks folder, but we may end up with
+		// dupes that are in a project AND a /Frameworks folder -- we'll clean that up later.
 		List<IRuntimeClasspathEntry> pendingResult = new LinkedList<IRuntimeClasspathEntry>();
+		
 		IRuntimeClasspathEntry[] originalResult = super.resolveClasspath(entries, configuration);
 		for (IRuntimeClasspathEntry entry : originalResult) {
 			IPath entryPath = entry.getPath();
+			String frameworkName = null;
 			int frameworkSegment = frameworkSegmentForPath(entryPath);
 			boolean addEntry = false;
 			if (frameworkSegment == -1) {
@@ -108,8 +124,9 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 				// in the classpath.
 				if (IRuntimeClasspathEntry.PROJECT == entry.getType()) {
 					IProject project = (IProject) entry.getResource();
-					String projectFrameworkName = frameworkNameForProject(project);
-					addedFramework.put(projectFrameworkName, entryPath);
+					frameworkName = frameworkNameForProject(project);
+					addedFramework.put(frameworkName, entryPath);
+					projectFrameworkNames.add(frameworkName);
 				}
 				addEntry = true;
 			}
@@ -117,7 +134,7 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 				// MS: Otherwise, we have a regular framework path.  In this case, we
 				// want to skip any jar that is coming from a different path for the 
 				// framework than we have previously loaded.
-				String frameworkName = entryPath.segment(frameworkSegment);
+				frameworkName = entryPath.segment(frameworkSegment);
 				IPath frameworkPath = entryPath.removeLastSegments(entryPath.segmentCount() - frameworkSegment - 1);
 				IPath previousFrameworkPath = addedFramework.get(frameworkName);
 				if (previousFrameworkPath == null) {
@@ -131,6 +148,9 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 			
 			// MS: ... all the stars have aligned, and this is a valid entry.  Lets add it.
 			if (addEntry) {
+				if (frameworkName != null) {
+					entryFramework.put(entry, frameworkName);
+				}
 				IPath projectArchive = getWOJavaArchive(entry);
 				// MS: We need to get the build/BuiltFramework.framework folder from
 				// a project and add that instead of the bin folder ...
@@ -154,19 +174,30 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 		List<IRuntimeClasspathEntry> projects = new ArrayList<IRuntimeClasspathEntry>();
 		List<IRuntimeClasspathEntry> woa = new ArrayList<IRuntimeClasspathEntry>();
 		for (IRuntimeClasspathEntry entry : pendingResult) {
+			String frameworkName = entryFramework.get(entry);
 			if (IRuntimeClasspathEntry.PROJECT == entry.getType()) {
 				projects.add(entry);
-			} else if (isAppleProvided(entry)) {
-				appleJars.add(entry);
-			} else if (isFrameworkJar(entry)) {
-				noAppleJars.add(entry);
-			} else if (isBuildProject(entry)) {
-				noAppleJars.add(entry);
-			} else if (isWoa(entry)) {
-				woa.add(entry);
-			} else {
-				otherJars.add(entry);
 			}
+			// If the framework was added as a project, don't add it as a /Frameworks
+			// folder framework.  This is cleaning up from the case where we got, for
+			// instance /Library/Frameworks/WOOgnl.framework AND WOOgnl project.  We
+			// want the project to win.
+			else if (!projectFrameworkNames.contains(frameworkName)) {
+				if (isAppleProvided(entry)) {
+					appleJars.add(entry);
+				} else if (isFrameworkJar(entry)) {
+					noAppleJars.add(entry);
+				} else if (isBuildProject(entry)) {
+					noAppleJars.add(entry);
+				} else if (isWoa(entry)) {
+					woa.add(entry);
+				} else {
+					otherJars.add(entry);
+				}
+			}
+//			else {
+//				System.out.println("WORuntimeClasspathProvider.resolveClasspath: skipping " + frameworkName + ": " + entry);
+//			}
 		}
 		
 		ArrayList<IRuntimeClasspathEntry> sortedEntries = new ArrayList<IRuntimeClasspathEntry>();
@@ -188,6 +219,7 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 //		for (IRuntimeClasspathEntry entry : sortedEntries) {
 //			System.out.println("WORuntimeClasspathProvider.resolveClasspath: final = " + entry);
 //		}
+		
 		return sortedEntries.toArray(new IRuntimeClasspathEntry[sortedEntries.size()]);
 	}
 	
