@@ -51,6 +51,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
+import org.objectstyle.wolips.bindings.api.ApiModelException;
 
 /**
  * @author mschrag
@@ -66,7 +67,7 @@ public interface IWodModel extends IWodUnit {
   
   public void writeWodFormat(Writer writer, boolean alphabetize) throws IOException;
 
-  public List<WodProblem> getProblems(IJavaProject javaProject, IType javaFileType, TypeCache typeCache, HtmlElementCache htmlCache) throws JavaModelException, CoreException, IOException;
+  public List<WodProblem> getProblems(IJavaProject javaProject, IType javaFileType, TypeCache typeCache, HtmlElementCache htmlCache) throws JavaModelException, CoreException, IOException, ApiModelException;
 
-  public void fillInProblems(IJavaProject javaProject, IType javaFileType, boolean checkBindingValues, List<WodProblem> problems, TypeCache typeCache, HtmlElementCache htmlCache) throws JavaModelException, CoreException, IOException;
+  public void fillInProblems(IJavaProject javaProject, IType javaFileType, boolean checkBindingValues, List<WodProblem> problems, TypeCache typeCache, HtmlElementCache htmlCache) throws JavaModelException, CoreException, IOException, ApiModelException;
 }

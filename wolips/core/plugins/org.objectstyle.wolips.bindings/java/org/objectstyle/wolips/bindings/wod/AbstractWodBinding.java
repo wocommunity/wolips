@@ -56,7 +56,10 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Position;
 import org.objectstyle.wolips.bindings.Activator;
+import org.objectstyle.wolips.bindings.api.ApiModelException;
 import org.objectstyle.wolips.bindings.api.ApiUtils;
+import org.objectstyle.wolips.bindings.api.IApiBinding;
+import org.objectstyle.wolips.bindings.api.Wo;
 import org.objectstyle.wolips.bindings.preferences.PreferenceConstants;
 import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
 
@@ -161,12 +164,12 @@ public abstract class AbstractWodBinding implements IWodBinding {
 
   public abstract int getLineNumber();
 
-  public static List<WodProblem> getBindingProblems(String keypath, IType javaFileType) throws JavaModelException {
+  public static List<WodProblem> getBindingProblems(String elementType, String keypath, IType javaFileType, TypeCache typeCache) throws JavaModelException, ApiModelException {
     SimpleWodBinding binding = new SimpleWodBinding("_temp", keypath);
-    return binding.getBindingProblems(javaFileType);
+    return binding.getBindingProblems(elementType, javaFileType, typeCache);
   }
 
-  public void fillInBindingProblems(IJavaProject javaProject, IType javaFileType, List<WodProblem> problems, TypeCache cache) throws JavaModelException {
+  public void fillInBindingProblems(IApiBinding apiBinding, IJavaProject javaProject, IType javaFileType, List<WodProblem> problems, TypeCache cache) throws JavaModelException {
     boolean warnOnMissingCollectionKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.WARN_ON_MISSING_COLLECTION_KEY);
     boolean errorOnMissingComponentKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.ERROR_ON_MISSING_COMPONENT_KEY);
     boolean warnOnMissingComponentKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.WARN_ON_MISSING_COMPONENT_KEY);
@@ -192,8 +195,8 @@ public abstract class AbstractWodBinding implements IWodBinding {
       }
 
       if (!explicitlyValid) {
+        int lineNumber = getLineNumber();
         if (isKeyPath()) {
-          int lineNumber = getLineNumber();
           BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(bindingValue, javaFileType, javaProject, cache);
           // NTS: Technically these need to be related to
           // every java file name in the key path
@@ -268,11 +271,23 @@ public abstract class AbstractWodBinding implements IWodBinding {
           // problems.add(new WodProblem(wodModel, "The .api file for " + wodJavaType.getElementName() + " declares '" + bindingValue + "' to be an invalid value.", getValuePosition(), false));
           // }
           // }
+          
+          if (apiBinding != null) {
+            if (apiBinding.isWillSet()) {
+              if (!bindingValueKeyPath.isSettable()) {
+                problems.add(new WodBindingValueProblem(bindingName, "The key '" + getName() + "' must have a 'set' method.", getValuePosition(),  lineNumber, false));
+              }
+            }
+          }
+        }
+        else if (apiBinding != null) {
+          if (apiBinding.isWillSet()) {
+            problems.add(new WodBindingValueProblem(bindingName, "The key '" + getName() + "' cannot be a constant value.", getValuePosition(),  lineNumber, false));
+          }
         }
 
         boolean validateOGNL = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.VALIDATE_OGNL_KEY);
         if (validateOGNL && isOGNL()) {
-          int lineNumber = getLineNumber();
           boolean inQuotes = bindingValue.startsWith("\"");
           if (inQuotes) {
             bindingValue = bindingValue.substring(1, bindingValue.length() - 1);
@@ -306,7 +321,7 @@ public abstract class AbstractWodBinding implements IWodBinding {
                   SimpleWodBinding ognlBinding = new SimpleWodBinding(bindingName, ognlBindingValue, getNamePosition(), getValuePosition(), getLineNumber());
                   try {
                     List<WodProblem> ognlProblems = new LinkedList<WodProblem>();
-                    ognlBinding.fillInBindingProblems(javaProject, javaFileType, ognlProblems, cache);
+                    ognlBinding.fillInBindingProblems(apiBinding, javaProject, javaFileType, ognlProblems, cache);
                     for (WodProblem ognlProblem : ognlProblems) {
                       problems.add(new WodBindingValueProblem(bindingName, ognlProblem.getMessage(), getValuePosition(), lineNumber, ognlProblem.isWarning()));
                     }
@@ -360,9 +375,17 @@ public abstract class AbstractWodBinding implements IWodBinding {
     return "[" + getClass().getName() + ": name = " + getName() + "; value = " + getValue() + "]";
   }
 
-  public List<WodProblem> getBindingProblems(IType javaFileType) throws JavaModelException {
+  public List<WodProblem> getBindingProblems(String elementType, IType javaFileType, TypeCache typeCache) throws JavaModelException, ApiModelException {
     List<WodProblem> problems = new LinkedList<WodProblem>();
-    fillInBindingProblems(javaFileType.getJavaProject(), javaFileType, problems, new TypeCache());
+    IApiBinding apiBinding = null;
+    if (elementType != null) {
+      SimpleWodElement element = new SimpleWodElement("_temp", elementType);
+      Wo wo = element.getApi(javaFileType.getJavaProject(), typeCache);
+      if (wo != null) {
+        apiBinding = wo.getBinding(getName());
+      }
+    }
+    fillInBindingProblems(apiBinding, javaFileType.getJavaProject(), javaFileType, problems, new TypeCache());
     return problems;
   }
 }

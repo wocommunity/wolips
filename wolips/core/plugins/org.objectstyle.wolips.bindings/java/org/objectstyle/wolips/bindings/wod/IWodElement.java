@@ -81,7 +81,7 @@ public interface IWodElement extends IWodUnit {
 
   public Position getElementTypePosition();
 
-  public void fillInProblems(IJavaProject javaProject, IType javaFileType, boolean checkBindingValues, List<WodProblem> problems, TypeCache typeCache, HtmlElementCache htmlCache) throws CoreException, IOException;
+  public void fillInProblems(IJavaProject javaProject, IType javaFileType, boolean checkBindingValues, List<WodProblem> problems, TypeCache typeCache, HtmlElementCache htmlCache) throws CoreException, IOException, ApiModelException;
 
   public void writeInlineFormat(Writer writer, String contents, boolean alphabetize, String bindingPrefix, String bindingSuffix) throws IOException;
 

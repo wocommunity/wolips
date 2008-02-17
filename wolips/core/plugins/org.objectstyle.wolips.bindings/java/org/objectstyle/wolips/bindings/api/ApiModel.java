@@ -56,7 +56,6 @@
 package org.objectstyle.wolips.bindings.api;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;

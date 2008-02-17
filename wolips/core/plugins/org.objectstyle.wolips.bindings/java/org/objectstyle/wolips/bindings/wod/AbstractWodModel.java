@@ -56,6 +56,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.objectstyle.wolips.bindings.Activator;
+import org.objectstyle.wolips.bindings.api.ApiModelException;
 import org.objectstyle.wolips.bindings.preferences.PreferenceConstants;
 
 /**
@@ -110,7 +111,7 @@ public abstract class AbstractWodModel implements IWodModel {
     }
   }
 
-  public List<WodProblem> getProblems(IJavaProject javaProject, IType javaFileType, TypeCache typeCache, HtmlElementCache htmlCache) throws CoreException, IOException {
+  public List<WodProblem> getProblems(IJavaProject javaProject, IType javaFileType, TypeCache typeCache, HtmlElementCache htmlCache) throws CoreException, IOException, ApiModelException {
     List<WodProblem> problems = new LinkedList<WodProblem>();
     boolean checkBindingValues = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.VALIDATE_BINDING_VALUES);
     fillInProblems(javaProject, javaFileType, checkBindingValues, problems, typeCache, htmlCache);
@@ -121,7 +122,7 @@ public abstract class AbstractWodModel implements IWodModel {
     _parseProblems.add(problem);
   }
 
-  public void fillInProblems(IJavaProject javaProject, IType javaFileType, boolean checkBindingValues, List<WodProblem> problems, TypeCache typeCache, HtmlElementCache htmlCache) throws CoreException, IOException {
+  public void fillInProblems(IJavaProject javaProject, IType javaFileType, boolean checkBindingValues, List<WodProblem> problems, TypeCache typeCache, HtmlElementCache htmlCache) throws CoreException, IOException, ApiModelException {
     problems.addAll(_parseProblems);
     Set<String> wodElementNames = new HashSet<String>();
     Iterator<IWodElement> elementsIter = getElements().iterator();
