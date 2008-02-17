@@ -103,7 +103,7 @@ public class BindingValueKeyPath {
         _bindingKeyNames = bindingKeyNames;
       }
 
-      if ("true".equalsIgnoreCase(keyPath) || "false".equalsIgnoreCase(keyPath) || "yes".equalsIgnoreCase(keyPath) || "no".equalsIgnoreCase(keyPath)) {
+      if (BindingReflectionUtils.isBooleanValue(keyPath) || "null".equalsIgnoreCase(keyPath) || "nil".equalsIgnoreCase(keyPath)) {
         _ambiguous = false;
         _valid = true;
         _nsKVC = false;
