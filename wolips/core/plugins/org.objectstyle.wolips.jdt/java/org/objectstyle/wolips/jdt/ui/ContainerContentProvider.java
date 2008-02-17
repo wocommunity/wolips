@@ -56,7 +56,9 @@
 package org.objectstyle.wolips.jdt.ui;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -138,13 +140,17 @@ public class ContainerContentProvider implements ITreeContentProvider, ILabelPro
 	private void setCheckedElements() {
 		List<Framework> checked = new ArrayList<Framework>();
 		Root[] roots = JdtPlugin.getDefault().getClasspathModel().getRoots();
+		Set<String> checkedFrameworkNames = new HashSet<String>();
 		for (int i = 0; i < roots.length; i++) {
 			Framework[] frameworks = roots[i].getEntries();
-			if (frameworks != null)
+			if (frameworks != null) {
 				for (int j = 0; j < frameworks.length; j++) {
-					if (this.container.contains(frameworks[j]))
+					if (!checkedFrameworkNames.contains(frameworks[j].getName()) && this.container.contains(frameworks[j])) {
 						checked.add(frameworks[j]);
+						checkedFrameworkNames.add(frameworks[j].getName());
+					}
 				}
+			}
 		}
 		this.checkboxTreeViewer.setCheckedElements(checked.toArray());
 
