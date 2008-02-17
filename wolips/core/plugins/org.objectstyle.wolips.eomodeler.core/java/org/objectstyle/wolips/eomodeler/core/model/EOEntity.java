@@ -790,6 +790,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		}
 		myName = _name;
 		if (_fireEvents) {
+			synchronizeNameChange(oldName, myName);
 			firePropertyChange(EOEntity.NAME, oldName, myName);
 		}
 	}
@@ -2260,6 +2261,19 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		getModel().removeEntity(this);
 	}
 
+	public void synchronizeNameChange(String oldName, String newName) {
+		if (ComparisonUtils.equals(oldName, getExternalName(), true)) {
+			setExternalName(newName);
+		}
+		String className = getClassName();
+		if (ComparisonUtils.equals(oldName, className, true)) {
+			setClassName(newName);
+		} else if (className != null && className.endsWith("." + oldName)) {
+			String oldPackage = className.substring(0, className.lastIndexOf('.') + 1);
+			setClassName(oldPackage + newName);
+		}
+	}
+	
 	public void _addToModelParent(EOModel modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) throws EOModelException {
 		if (findUniqueName) {
 			setName(modelParent.findUnusedEntityName(getName()));
