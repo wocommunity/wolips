@@ -62,25 +62,22 @@ package org.objectstyle.wolips.jdt.classpath;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
-import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.ClasspathContainerInitializer;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.internal.ui.actions.WorkbenchRunnableAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.WorkspaceModifyOperation;
-import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
-import org.eclipse.ui.progress.IProgressService;
 import org.objectstyle.wolips.jdt.JdtPlugin;
 import org.objectstyle.wolips.jdt.classpath.model.Framework;
 
@@ -88,6 +85,7 @@ import org.objectstyle.wolips.jdt.classpath.model.Framework;
  * @author ulrich
  */
 public class ContainerInitializer extends ClasspathContainerInitializer {
+	public static final String OLD_WOLIPS_CLASSPATH_CONTAINER_IDENTITY = "org.objectstyle.wolips.WO_CLASSPATH";
 
 	/**
 	 * The default Constructor
@@ -147,10 +145,10 @@ public class ContainerInitializer extends ClasspathContainerInitializer {
 		int size = containerPath.segmentCount();
 		if (size > 0) {
 			String firstSegment = containerPath.segment(0);
+			// current classpath container
 			if (firstSegment.startsWith(Container.CONTAINER_IDENTITY)) {
 				ContainerEntries containerEntries = null;
 				try {
-
 					containerEntries = ContainerEntries.initWithPath(containerPath.removeFirstSegments(1));
 				} catch (PathCoderException e) {
 					JdtPlugin.getDefault().getPluginLogger().log(e);
@@ -160,76 +158,58 @@ public class ContainerInitializer extends ClasspathContainerInitializer {
 					JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { project }, new IClasspathContainer[] { classpathContainer }, null);
 				}
 			}
-			//convert old container
-			final String OLD_WOLIPS_CLASSPATH_CONTAINER_IDENTITY = "org.objectstyle.wolips.WO_CLASSPATH";
-			if (firstSegment.startsWith(OLD_WOLIPS_CLASSPATH_CONTAINER_IDENTITY)) {
-				final WorkspaceModifyOperation op = new WorkspaceModifyOperation(project.getProject()) {
-
-					public void execute(IProgressMonitor monitor) throws CoreException {
-						IClasspathEntry[] classpathEntries = project.getRawClasspath();
-						IClasspathEntry[] newClasspathEntries = new IClasspathEntry[classpathEntries.length];
-						for (int i = 0; i < classpathEntries.length; i++) {
-							IClasspathEntry classpathEntry = classpathEntries[i];
-							String firstSegementOfEntry = classpathEntry.getPath().segment(0);
-							if (firstSegementOfEntry != null && firstSegementOfEntry.startsWith(OLD_WOLIPS_CLASSPATH_CONTAINER_IDENTITY)) {
-								Container container = new Container(null);
-								ArrayList<Framework> frameworks = new ArrayList<Framework>();
-								for (int j = 1; j < containerPath.segmentCount(); j++) {
-									String segment = containerPath.segment(j);
-									Framework framework = JdtPlugin.getDefault().getClasspathModel().getFrameworkWithName(segment);
-									if (framework != null) {
-										frameworks.add(framework);
-									}
-								}
-								container.setContent(frameworks.toArray(new Framework[frameworks.size()]));
-								IPath newContainerPath = container.getPath();
-								IClasspathEntry newClasspathEntry = JavaCore.newContainerEntry(newContainerPath);
-								newClasspathEntries[i] = newClasspathEntry;
-							} else {
-								newClasspathEntries[i] = classpathEntry;
-							}
-						}
-						project.setRawClasspath(newClasspathEntries, monitor);
-					}
-
-				};
-
-				Display.getDefault().asyncExec(new Runnable() {
-
-					public void run() {
-						IProgressService service = PlatformUI.getWorkbench().getProgressService();
-
-						// run the classpath update operation
-						try {
-							service.run(true, true, op);
-						} catch (InterruptedException e) {
-							return;
-						} catch (final InvocationTargetException e) {
-
-							// ie.- one of the steps resulted in a core
-							// exception
-							Throwable t = e.getTargetException();
-							if (t instanceof CoreException) {
-								if (((CoreException) t).getStatus().getCode() == IResourceStatus.CASE_VARIANT_EXISTS) {
-									MessageDialog.openError(null, "WebObjects Frameworks Error while updating classpath", project.getProject().getName());
-								} else {
-									ErrorDialog.openError(null, "WebObjects Frameworks", null, // no
-											// special
-											// message
-											((CoreException) t).getStatus());
-								}
-							} else {
-								// CoreExceptions are handled above, but
-								// unexpected
-								// runtime
-								// exceptions and errors may still occur.
-								IDEWorkbenchPlugin.getDefault().getLog().log(new Status(IStatus.ERROR, IDEWorkbenchPlugin.IDE_WORKBENCH, 0, t.toString(), t));
-								MessageDialog.openError(null, "WebObjects Frameworks Error while updating classpath", t.getMessage());
-							}
-						}
-					}
-				});
+			// convert old container
+			else if (firstSegment.startsWith(ContainerInitializer.OLD_WOLIPS_CLASSPATH_CONTAINER_IDENTITY)) {
+				convertOldClasspathContainer(project, containerPath);
 			}
 		}
+	}
+
+	protected void convertOldClasspathContainer(IJavaProject javaProject, IPath containerPath) throws JavaModelException {
+		System.out.println("ContainerInitializer.convertOldClasspathContainer: UPGRADING " + javaProject);
+		IClasspathEntry[] classpathEntries = javaProject.getRawClasspath();
+		List<IClasspathEntry> newClasspathEntries = new LinkedList<IClasspathEntry>();
+		for (int i = 0; i < classpathEntries.length; i++) {
+			IClasspathEntry classpathEntry = classpathEntries[i];
+			String firstSegementOfEntry = classpathEntry.getPath().segment(0);
+			if (firstSegementOfEntry != null && firstSegementOfEntry.startsWith(OLD_WOLIPS_CLASSPATH_CONTAINER_IDENTITY)) {
+				Container container = new Container(null);
+				ArrayList<Framework> frameworks = new ArrayList<Framework>();
+				for (int j = 1; j < containerPath.segmentCount(); j++) {
+					String segment = containerPath.segment(j);
+					Framework framework = JdtPlugin.getDefault().getClasspathModel().getFrameworkWithName(segment);
+					if (framework != null) {
+						frameworks.add(framework);
+					}
+				}
+				container.setContent(frameworks.toArray(new Framework[frameworks.size()]));
+				IPath newContainerPath = container.getPath();
+				IClasspathEntry newClasspathEntry = JavaCore.newContainerEntry(newContainerPath);
+				newClasspathEntries.add(newClasspathEntry);
+			} else {
+				newClasspathEntries.add(classpathEntry);
+			}
+		}
+
+		updateRawClasspath(javaProject, newClasspathEntries);
+	}
+
+	protected void updateRawClasspath(final IJavaProject javaProject, final List<IClasspathEntry> newClasspathEntries) {
+		final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+			public void run(IProgressMonitor monitor) throws CoreException {
+				javaProject.setRawClasspath(newClasspathEntries.toArray(new IClasspathEntry[newClasspathEntries.size()]), monitor);
+			}
+		};
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				try {
+					PlatformUI.getWorkbench().getProgressService().run(true, true, new WorkbenchRunnableAdapter(runnable));
+				} catch (InvocationTargetException e) {
+					JdtPlugin.getDefault().getPluginLogger().log(e);
+				} catch (InterruptedException e) {
+					JdtPlugin.getDefault().getPluginLogger().log(e);
+				}
+			}
+		});
 	}
 }
