@@ -56,6 +56,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
 import org.eclipse.ui.part.FileEditorInput;
+import org.objectstyle.wolips.bindings.api.ApiModelException;
 import org.objectstyle.wolips.bindings.wod.HtmlElementCache;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.bindings.wod.IWodModel;
@@ -81,11 +82,11 @@ public class WodModelUtils {
   }
 
   public static IWooModel createWooModel(IDocument wooDocument) throws WooModelException {
-	return (IWooModel) new WooModel(wooDocument.get());
+	return new WooModel(wooDocument.get());
   }
   
   public static IWooModel createWooModel(IFile wooFile) {
-	return (IWooModel) new WooModel(wooFile);
+	return new WooModel(wooFile);
   }
   
   public static void deleteWodProblems(IFile wodFile) {
@@ -99,11 +100,11 @@ public class WodModelUtils {
     }
   }
 
-  public static List<WodProblem> getProblems(IWodElement wodElement, WodParserCache cache) throws CoreException, IOException {
+  public static List<WodProblem> getProblems(IWodElement wodElement, WodParserCache cache) throws CoreException, IOException, ApiModelException {
     return WodModelUtils.getProblems(wodElement, cache.getComponentsLocateResults(), cache.getTypeCache(), cache.getHtmlElementCache());
   }
   
-  public static List<WodProblem> getProblems(IWodElement wodElement, LocalizedComponentsLocateResult locateResult, TypeCache typeCache, HtmlElementCache htmlCache) throws CoreException, IOException {
+  public static List<WodProblem> getProblems(IWodElement wodElement, LocalizedComponentsLocateResult locateResult, TypeCache typeCache, HtmlElementCache htmlCache) throws CoreException, IOException, ApiModelException {
     List<WodProblem> problems = new LinkedList<WodProblem>();
     if (wodElement != null) {
       IFile wodFile = locateResult.getFirstWodFile();
@@ -115,11 +116,11 @@ public class WodModelUtils {
     return problems;
   }
 
-  public static List<WodProblem> getProblems(IWodModel wodModel, WodParserCache cache) throws CoreException, IOException {
+  public static List<WodProblem> getProblems(IWodModel wodModel, WodParserCache cache) throws CoreException, IOException, ApiModelException {
     return WodModelUtils.getProblems(wodModel, cache.getComponentsLocateResults(), cache.getTypeCache(), cache.getHtmlElementCache());
   }
   
-  public static List<WodProblem> getProblems(IWodModel wodModel, LocalizedComponentsLocateResult locateResult, TypeCache typeCache, HtmlElementCache htmlCache) throws CoreException, IOException {
+  public static List<WodProblem> getProblems(IWodModel wodModel, LocalizedComponentsLocateResult locateResult, TypeCache typeCache, HtmlElementCache htmlCache) throws CoreException, IOException, ApiModelException {
     List<WodProblem> problems = new LinkedList<WodProblem>();
     if (wodModel != null) {
       IFile wodFile = locateResult.getFirstWodFile();
@@ -220,6 +221,6 @@ public class WodModelUtils {
   }
 
   public static IEOModelGroupCache createModelGroupCache() {
-	  return (IEOModelGroupCache) new EOModelGroupCache();
+	  return new EOModelGroupCache();
   }
 }
