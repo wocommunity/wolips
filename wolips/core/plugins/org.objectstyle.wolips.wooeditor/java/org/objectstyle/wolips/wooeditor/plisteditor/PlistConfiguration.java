@@ -20,13 +20,15 @@ public class PlistConfiguration extends SourceViewerConfiguration {
 	public PlistConfiguration(IColorManager colorManager2) {
 		this.colorManager = colorManager2;
 	}
-	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
+	@Override
+  public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
 		return new String[] {
 			IDocument.DEFAULT_CONTENT_TYPE,
 			PlistPartitionScanner.PROPERTY,
 			PlistPartitionScanner.VALUE };
 	}
-	public ITextDoubleClickStrategy getDoubleClickStrategy(
+	@Override
+  public ITextDoubleClickStrategy getDoubleClickStrategy(
 		ISourceViewer sourceViewer,
 		String contentType) {
 		if (doubleClickStrategy == null)
@@ -55,7 +57,8 @@ public class PlistConfiguration extends SourceViewerConfiguration {
 		return tokenScanner;
 	}
 
-	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
+	@Override
+  public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
 		PresentationReconciler reconciler = new PresentationReconciler();
 
 		DefaultDamagerRepairer dr =

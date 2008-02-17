@@ -62,7 +62,8 @@ public class ComboObservableValue extends AbstractSWTObservableValue {
 			throw new IllegalArgumentException();
 	}
 
-	public void doSetValue(final Object value) {
+	@Override
+  public void doSetValue(final Object value) {
 		String oldValue = combo.getText();
 		try {
 			updating = true;
@@ -92,7 +93,8 @@ public class ComboObservableValue extends AbstractSWTObservableValue {
 		fireValueChange(Diffs.createValueDiff(oldValue, combo.getText()));
 	}
 
-	public Object doGetValue() {
+	@Override
+  public Object doGetValue() {
 		if (attribute.equals(SWTProperties.TEXT))
 			return combo.getText();
 
@@ -101,7 +103,8 @@ public class ComboObservableValue extends AbstractSWTObservableValue {
 		return combo.getText();
 	}
 
-	public Object getValueType() {
+	@Override
+  public Object getValueType() {
 		return String.class;
 	}
 
@@ -117,7 +120,8 @@ public class ComboObservableValue extends AbstractSWTObservableValue {
 	 * 
 	 * @see org.eclipse.core.databinding.observable.value.AbstractObservableValue#dispose()
 	 */
-	public synchronized void dispose() {
+	@Override
+  public synchronized void dispose() {
 		super.dispose();
 
 		if (modifyListener != null && !combo.isDisposed()) {

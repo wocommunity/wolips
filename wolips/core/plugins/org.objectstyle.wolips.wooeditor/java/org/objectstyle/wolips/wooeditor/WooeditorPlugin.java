@@ -136,14 +136,14 @@ public class WooeditorPlugin extends AbstractBaseUIActivator implements
 			final IResourceDelta delta = event.getDelta();
 			final ArrayList<IResource> changed = new ArrayList<IResource>();
 			IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
-				public boolean visit(final IResourceDelta delta) {
+				public boolean visit(final IResourceDelta visitingDelta) {
 					// only interested in changed encoding
-					if (delta.getKind() != IResourceDelta.CHANGED
-							|| (delta.getFlags() & IResourceDelta.ENCODING) == 0) {
+					if (visitingDelta.getKind() != IResourceDelta.CHANGED
+							|| (visitingDelta.getFlags() & IResourceDelta.ENCODING) == 0) {
 						return true;
 					}
 
-					IResource resource = delta.getResource();
+					IResource resource = visitingDelta.getResource();
 
 					if (resource.getProjectRelativePath().toString().equals(
 							"build")) {

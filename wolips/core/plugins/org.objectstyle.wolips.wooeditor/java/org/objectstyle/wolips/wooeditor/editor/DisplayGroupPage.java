@@ -70,7 +70,8 @@ public class DisplayGroupPage extends WooFormPage {
 		block = new DisplayGroupPageBlock(this);
 	}
 
-	protected void createFormContent(final IManagedForm managedForm) {
+	@Override
+  protected void createFormContent(final IManagedForm managedForm) {
 		final ScrolledForm form = managedForm.getForm();
 		form.setText("Display Groups");
 		block.createContent(managedForm);

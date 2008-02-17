@@ -69,7 +69,8 @@ public abstract class WooFormPage extends FormPage {
 		super(wooEditor, id, title);
 	}
 
-	protected void createFormContent(final IManagedForm managedForm) {
+	@Override
+  protected void createFormContent(final IManagedForm managedForm) {
 		// nothing to do
 	}
 
