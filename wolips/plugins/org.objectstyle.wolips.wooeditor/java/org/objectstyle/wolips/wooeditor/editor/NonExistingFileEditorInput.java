@@ -103,7 +103,8 @@ public class NonExistingFileEditorInput implements IEditorInput, ILocationProvid
 	/*
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
-	public boolean equals(Object o) {
+	@Override
+  public boolean equals(Object o) {
 		if (o == this)
 			return true;
 
@@ -118,7 +119,8 @@ public class NonExistingFileEditorInput implements IEditorInput, ILocationProvid
 	/*
 	 * @see java.lang.Object#hashCode()
 	 */
-	public int hashCode() {
+	@Override
+  public int hashCode() {
 		return fFileStore.hashCode();
 	}
 }

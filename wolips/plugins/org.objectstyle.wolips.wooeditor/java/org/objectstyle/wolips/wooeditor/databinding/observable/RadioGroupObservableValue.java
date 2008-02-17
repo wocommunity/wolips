@@ -18,11 +18,13 @@ public class RadioGroupObservableValue extends AbstractObservableValue {
 		public void widgetSelected(final SelectionEvent e) {
 			final Object newSelection = myGroup.getSelection();
 			fireValueChange(new ValueDiff() {
-				public Object getNewValue() {
+				@Override
+        public Object getNewValue() {
 					return newSelection;
 				}
 
-				public Object getOldValue() {
+				@Override
+        public Object getOldValue() {
 					return mySelection;
 				}
 			});
@@ -36,16 +38,19 @@ public class RadioGroupObservableValue extends AbstractObservableValue {
 		group.addSelectionListener(selectionListener);
 	}
 
-	public synchronized void dispose() {
+	@Override
+  public synchronized void dispose() {
 		myGroup.removeSelectionListener(selectionListener);
 	}
 
-	protected void doSetValue(final Object value) {
+	@Override
+  protected void doSetValue(final Object value) {
 		myGroup.setSelection(value);
 		mySelection = value;
 	}
 
-	protected Object doGetValue() {
+	@Override
+  protected Object doGetValue() {
 		return myGroup.getSelection();
 	}
 

@@ -15,7 +15,8 @@ public class PlistEditor extends TextEditor {
         setDocumentProvider(new PlistDocumentProvider());
 	}
 
-	public void dispose() {
+	@Override
+  public void dispose() {
         colorManager.dispose();
 		super.dispose();
 	}

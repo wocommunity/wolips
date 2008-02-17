@@ -81,7 +81,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.wolips.wooeditor.WooeditorPlugin;
 import org.objectstyle.wolips.wooeditor.model.WooModel;
-import org.objectstyle.wolips.wooeditor.model.WooModelException;
 import org.objectstyle.wolips.wooeditor.utils.WooUtils;
 
 public class WooEditor extends FormEditor {
@@ -99,12 +98,14 @@ public class WooEditor extends FormEditor {
 		myDisplayGroupPage = new DisplayGroupPage(this, "Display Groups");
 	}
 
-	protected FormToolkit createToolkit(final Display display) {
+	@Override
+  protected FormToolkit createToolkit(final Display display) {
 		return new FormToolkit(WooeditorPlugin.getDefault().getFormColors(
 				display));
 	}
 
-	protected void addPages() {
+	@Override
+  protected void addPages() {
 		try {
 			addPage(myDisplayGroupPage);
 			myTextEditor = new TextEditor();
@@ -129,7 +130,8 @@ public class WooEditor extends FormEditor {
 		}
 	}
 
-	public void doSave(final IProgressMonitor monitor) {
+	@Override
+  public void doSave(final IProgressMonitor monitor) {
 		try {
 			if (myTextEditor.isDirty()
 					&& (getActivePage() == 1 || !model.isDirty())) {
@@ -160,15 +162,18 @@ public class WooEditor extends FormEditor {
 		}
 	}
 
-	public void doSaveAs() {
+	@Override
+  public void doSaveAs() {
 		throw new UnsupportedOperationException("doSaveAs");
 	}
 
-	public boolean isSaveAsAllowed() {
+	@Override
+  public boolean isSaveAsAllowed() {
 		return false;
 	}
 
-	public void init(final IEditorSite site, final IEditorInput input)
+	@Override
+  public void init(final IEditorSite site, final IEditorInput input)
 			throws PartInitException {
 		super.init(site, input);
 		
@@ -221,14 +226,9 @@ public class WooEditor extends FormEditor {
 				model = new WooModel(file);
 				model.parseModel();
 			} else {
-				try {
-					model = new WooModel(this.getEditorInput());
-					model.parseModel();
-					model.setEncoding(getComponentCharset());
-				} catch (WooModelException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				model = new WooModel(this.getEditorInput());
+				model.parseModel();
+				model.setEncoding(getComponentCharset());
 			}
 		}
 		return model;

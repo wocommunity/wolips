@@ -26,7 +26,6 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
-import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
 import org.objectstyle.wolips.bindings.wod.BindingValueKeyPath;
 import org.objectstyle.wolips.bindings.wod.TypeCache;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
@@ -112,7 +111,7 @@ public class WooModel implements IWooModel {
 	}
 
 	
-	public WooModel(IEditorInput editorInput) throws WooModelException {
+	public WooModel(IEditorInput editorInput) {
 		if (editorInput instanceof IFileEditorInput) {
 			myFile = ((IFileEditorInput)editorInput).getFile();
 		}
@@ -357,7 +356,8 @@ public class WooModel implements IWooModel {
 		markAsDirty();
 	}
 
-	public String toString() {
+	@Override
+  public String toString() {
 		OutputStream modelStream = new ByteArrayOutputStream();
 		try {
 			this.doSave(modelStream);
