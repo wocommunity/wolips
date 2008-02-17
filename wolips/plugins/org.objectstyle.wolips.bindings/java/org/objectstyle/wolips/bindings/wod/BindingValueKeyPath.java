@@ -3,7 +3,10 @@ package org.objectstyle.wolips.bindings.wod;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IMember;
+import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
@@ -219,6 +222,25 @@ public class BindingValueKeyPath {
     return _valid;
   }
 
+  public boolean isSettable() throws JavaModelException {
+    boolean settable = false;
+    BindingValueKey lastBindingKey = getLastBindingKey();
+    if (lastBindingKey != null) {
+      IMember bindingMember = lastBindingKey.getBindingMember();
+      if (bindingMember instanceof IField) {
+        settable = true;
+      }
+      else if (bindingMember instanceof IMethod) {
+        IType declaringType = bindingMember.getDeclaringType();
+        List<BindingValueKey> bindingKeys = _cache.getBindingValueMutatorKeys(_javaProject, declaringType, lastBindingKey.getBindingName());
+        if (!bindingKeys.isEmpty()) {
+          settable = true;
+        }
+      }
+    }
+    return settable;
+  }
+  
   public String getLastBindingKeyName() {
     String lastBindingKeyName;
     if (_bindingKeyNames != null && _bindingKeyNames.length > 0) {

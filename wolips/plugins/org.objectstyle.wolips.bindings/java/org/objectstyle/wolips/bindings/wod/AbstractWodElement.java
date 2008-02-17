@@ -64,6 +64,7 @@ import org.objectstyle.wolips.bindings.Activator;
 import org.objectstyle.wolips.bindings.api.ApiModelException;
 import org.objectstyle.wolips.bindings.api.ApiUtils;
 import org.objectstyle.wolips.bindings.api.Binding;
+import org.objectstyle.wolips.bindings.api.IApiBinding;
 import org.objectstyle.wolips.bindings.api.Validation;
 import org.objectstyle.wolips.bindings.api.Wo;
 import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
@@ -221,12 +222,12 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
       problems.add(new WodElementProblem("There is no element named '" + elementName + "' in your component HTML file", getElementNamePosition(), lineNumber, true));
     }
 
+    Wo wo = null;
     IType elementType = BindingReflectionUtils.findElementType(javaProject, elementTypeName, false, typeCache);
     if (elementType == null) {
       problems.add(new WodElementProblem("The class for '" + elementTypeName + "' is either missing or does not extend WOElement.", getElementTypePosition(), lineNumber, false));
     }
     else {
-      Wo wo;
       try {
         wo = ApiUtils.findApiModelWo(elementType, typeCache.getApiCache());
         if (wo != null) {
@@ -267,7 +268,11 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
       while (bindingsIter.hasNext()) {
         IWodBinding binding = bindingsIter.next();
         try {
-          binding.fillInBindingProblems(javaProject, javaFileType, problems, typeCache);
+          IApiBinding apiBinding = null;
+          if (wo != null) {
+            apiBinding = wo.getBinding(binding.getName());
+          }
+          binding.fillInBindingProblems(apiBinding, javaProject, javaFileType, problems, typeCache);
         }
         catch (Throwable t) {
           Activator.getDefault().log("Failed to check wod binding values.", t);

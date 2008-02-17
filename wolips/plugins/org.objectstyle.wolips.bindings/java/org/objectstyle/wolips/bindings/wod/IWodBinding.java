@@ -78,7 +78,7 @@ public interface IWodBinding extends IWodUnit, IApiBinding {
 
   public Position getValuePosition();
 
-  public void fillInBindingProblems(IJavaProject javaProject, IType javaFileType, List<WodProblem> problems, TypeCache cache) throws JavaModelException;
+  public void fillInBindingProblems(IApiBinding apiBinding, IJavaProject javaProject, IType javaFileType, List<WodProblem> problems, TypeCache cache) throws JavaModelException;
 
   public void writeInlineFormat(Writer writer, String prefix, String suffix) throws IOException;
 

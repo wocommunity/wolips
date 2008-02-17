@@ -19,6 +19,8 @@ public class TypeCache {
   private Map<IType, Map<String, IType>> _typeContextCache;
   
   private Map<IType, Map<String, List<BindingValueKey>>> _bindingValueAccessorKeys;
+  
+  private Map<IType, Map<String, List<BindingValueKey>>> _bindingValueMutatorKeys;
 
   public TypeCache() {
     this(null);
@@ -27,6 +29,7 @@ public class TypeCache {
   public TypeCache(ApiCache apiCache) {
     _typeContextCache = new HashMap<IType, Map<String, IType>>();
     _bindingValueAccessorKeys = new HashMap<IType, Map<String,List<BindingValueKey>>>();
+    _bindingValueMutatorKeys = new HashMap<IType, Map<String,List<BindingValueKey>>>();
     _apiCache = apiCache;
     if (_apiCache == null) {
       _apiCache = new ApiCache();
@@ -54,6 +57,29 @@ public class TypeCache {
       //System.out.println("TypeCache.getBindingValueAccessorKeys: HIT  " + type.getElementName() + ": " + name);
     }
     return bindingValueAccessorKeys;
+  }
+
+  public List<BindingValueKey> getBindingValueMutatorKeys(IJavaProject javaProject, IType type, String name) throws JavaModelException {
+    List<BindingValueKey> bindingValueMutatorKeys = null;
+    Map<String, List<BindingValueKey>> bindingValueMutatorKeysForName = _bindingValueMutatorKeys.get(type);
+    if (bindingValueMutatorKeysForName == null) {
+      bindingValueMutatorKeysForName = new HashMap<String, List<BindingValueKey>>();
+      _bindingValueMutatorKeys.put(type, bindingValueMutatorKeysForName);
+    }
+    else {
+      bindingValueMutatorKeys = bindingValueMutatorKeysForName.get(name);
+    }
+    if (bindingValueMutatorKeys == null) {
+      //System.out.println("TypeCache.getBindingValueMutatorKeys: MISS " + type.getElementName() + ": " + name);
+      bindingValueMutatorKeys = BindingReflectionUtils.getBindingKeys(javaProject, type, name, true, BindingReflectionUtils.MUTATORS_ONLY, this);
+      // MS: Don't cache this for now -- I don't know how many end up in here and how long they
+      // hang around, but I think the answer is "a lot" and "for a long time".  However, it's a huge performance win.
+      // bindingValueMutatorKeysForName.put(name, bindingValueMutatorKeys);
+    }
+    else {
+      //System.out.println("TypeCache.getBindingValueMutatorKeys: HIT  " + type.getElementName() + ": " + name);
+    }
+    return bindingValueMutatorKeys;
   }
   
   public ApiCache getApiCache() {

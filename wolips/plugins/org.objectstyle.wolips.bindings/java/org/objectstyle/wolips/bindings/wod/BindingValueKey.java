@@ -12,7 +12,6 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.Signature;
 import org.eclipse.jdt.internal.corext.util.JavaModelUtil;
 import org.objectstyle.wolips.bindings.Activator;
-import org.objectstyle.wolips.bindings.wod.TypeCache;
 
 public class BindingValueKey {
   private String _bindingName;

@@ -142,11 +142,19 @@ public class Binding extends AbstractApiModelElement implements IApiBinding {
 		return required;
 	}
 
-	public void setIsRequired(boolean isResquired) {
-		if (this.isRequired() == isResquired) {
+	public void setIsRequired(boolean isRequired) {
+		if (this.isRequired() == isRequired) {
 			return;
 		}
-		if (isResquired) {
+		if (element.hasAttribute("required")) {
+		  if (isRequired) {
+		    element.setAttribute("required", "YES");
+		  }
+		  else {
+        element.setAttribute("required", "NO");
+		  }
+		}
+		else if (isRequired) {
 			Unbound.addToWoWithBinding(parent, this);
 		} else {
 			Unbound.removeFromWoWithBinding(parent, this);
@@ -154,22 +162,38 @@ public class Binding extends AbstractApiModelElement implements IApiBinding {
 		apiModel.markAsDirty();
 	}
 
+  public boolean isExplicitlySettable() {
+    return "YES".equalsIgnoreCase(element.getAttribute("settable"));
+  }
+
 	public boolean isWillSet() {
-		List<Validation> validations = parent.getValidations();
-		for (Validation validation : validations) {
-			List<Unsettable> unsettables = validation.getUnsettables();
-			if (unsettables.size() == 1 && unsettables.get(0).isAffectedByBindingNamed(this.getName())) {
-				return true;
-			}
-		}
-		return false;
+	  boolean settable = isExplicitlySettable();
+	  if (!settable) {
+  		List<Validation> validations = parent.getValidations();
+  		for (Validation validation : validations) {
+  			List<Unsettable> unsettables = validation.getUnsettables();
+  			if (unsettables.size() == 1 && unsettables.get(0).isAffectedByBindingNamed(this.getName())) {
+  				settable = true;
+  				break;
+  			}
+  		}
+	  }
+		return settable;
 	}
 
 	public void setIsWillSet(boolean isWillSet) {
 		if (this.isWillSet() == isWillSet) {
 			return;
 		}
-		if (isWillSet) {
+    if (element.hasAttribute("settable")) {
+      if (isWillSet) {
+        element.setAttribute("settable", "YES");
+      }
+      else {
+        element.setAttribute("settable", "NO");
+      }
+    }
+    else if (isWillSet) {
 			Unsettable.addToWoWithBinding(parent, this);
 		} else {
 			Unsettable.removeFromWoWithBinding(parent, this);
