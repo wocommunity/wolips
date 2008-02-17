@@ -93,12 +93,6 @@ public class EOEntityBasicEditorSection extends AbstractPropertySection {
 
 	private ComboViewerBinding myParentEntityBinding;
 
-	private EntityNameSyncer myNameSyncer;
-
-	public EOEntityBasicEditorSection() {
-		myNameSyncer = new EntityNameSyncer();
-	}
-
 	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
 		super.createControls(_parent, _tabbedPropertySheetPage);
 		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
@@ -166,7 +160,6 @@ public class EOEntityBasicEditorSection extends AbstractPropertySection {
 
 				myParentEntityComboViewer.setInput(myEntity);
 				myParentEntityBinding = new ComboViewerBinding(myParentEntityComboViewer, myEntity, EOEntity.PARENT, myEntity.getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY);
-				myEntity.addPropertyChangeListener(EOEntity.NAME, myNameSyncer);
 			}
 		}
 	}
@@ -177,9 +170,6 @@ public class EOEntityBasicEditorSection extends AbstractPropertySection {
 		}
 		if (myParentEntityBinding != null) {
 			myParentEntityBinding.dispose();
-		}
-		if (myEntity != null) {
-			myEntity.removePropertyChangeListener(EOEntity.NAME, myNameSyncer);
 		}
 	}
 
