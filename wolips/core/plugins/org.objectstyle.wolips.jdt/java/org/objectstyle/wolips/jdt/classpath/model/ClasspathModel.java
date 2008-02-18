@@ -71,7 +71,7 @@ public class ClasspathModel {
 	/**
 	 * @return Returns the roots.
 	 */
-	public Root[] getRoots() {
+	public synchronized Root[] getRoots() {
 		if (this.roots == null) {
 			String[] rootsNames = VariablesPlugin.getDefault().getFrameworkRootsNames();
 			IPath[] rootsPaths = VariablesPlugin.getDefault().getFrameworkRoots();
@@ -89,9 +89,12 @@ public class ClasspathModel {
 	 */
 	public Framework getFrameworkWithName(String string) {
 		for (int i = 0; i < this.getRoots().length; i++) {
-			Framework framework = this.getRoots()[i].getFrameworkWithName(string);
-			if (framework != null) {
-				return framework;
+			Root root = this.getRoots()[i];
+			if (root != null) {
+				Framework framework = root.getFrameworkWithName(string);
+				if (framework != null) {
+					return framework;
+				}
 			}
 		}
 		return null;
