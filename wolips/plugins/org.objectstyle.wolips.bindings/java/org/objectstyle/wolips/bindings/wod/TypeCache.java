@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
@@ -59,20 +60,37 @@ public class TypeCache {
     return getTypeCacheEntry(type).getBindingValueMutatorKeys(javaProject, name);
   }
 
-  public synchronized void clearCacheForResource(IResource resource) {
-    List<IType> typesToClear = new LinkedList<IType>();
-    for (Map.Entry<IType, TypeCacheEntry> entry : _typeCacheEntries.entrySet()) {
-      if (resource != null && resource.equals(entry.getValue().getResource())) {
-        typesToClear.add(entry.getKey());
+  public synchronized void clearCacheForProject(IProject project) {
+    if (project != null) {
+      List<IType> typesToClear = new LinkedList<IType>();
+      for (Map.Entry<IType, TypeCacheEntry> entry : _typeCacheEntries.entrySet()) {
+        IResource resource = entry.getValue().getResource();
+        if (resource != null && project.equals(resource.getProject())) {
+          typesToClear.add(entry.getKey());
+        }
+      }
+      for (IType typeToClear : typesToClear) {
+        clearCacheForType(typeToClear);
       }
     }
-    for (IType typeToClear : typesToClear) {
-      clearCacheForType(typeToClear);
+  }
+
+  public synchronized void clearCacheForResource(IResource resource) {
+    if (resource != null) {
+      List<IType> typesToClear = new LinkedList<IType>();
+      for (Map.Entry<IType, TypeCacheEntry> entry : _typeCacheEntries.entrySet()) {
+        if (resource.equals(entry.getValue().getResource())) {
+          typesToClear.add(entry.getKey());
+        }
+      }
+      for (IType typeToClear : typesToClear) {
+        clearCacheForType(typeToClear);
+      }
     }
   }
 
   public synchronized void clearCacheForType(IType declaringType) {
-    //System.out.println("TypeCache.clearCacheForType: clearing cache for " + declaringType.getFullyQualifiedName());
+    System.out.println("TypeCache.clearCacheForType: clearing cache for " + declaringType.getFullyQualifiedName());
     _typeCacheEntries.remove(declaringType);
   }
 

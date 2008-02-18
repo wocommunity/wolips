@@ -289,14 +289,14 @@ public abstract class AbstractWodBinding implements IWodBinding {
           if (apiBinding != null) {
             if (apiBinding.isWillSet()) {
               if (!bindingValueKeyPath.isSettable()) {
-                problems.add(new WodBindingValueProblem(bindingName, "The key '" + getName() + "' must have a 'set' method.", getValuePosition(), lineNumber, false));
+                // problems.add(new WodBindingValueProblem(bindingName, "The key '" + getName() + "' must have a 'set' method.", getValuePosition(), lineNumber, false));
               }
             }
           }
         }
         else if (apiBinding != null) {
           if (apiBinding.isWillSet() && !isCaret()) {
-            problems.add(new WodBindingValueProblem(bindingName, "The key '" + getName() + "' cannot be a constant value.", getValuePosition(), lineNumber, false));
+            // problems.add(new WodBindingValueProblem(bindingName, "The key '" + getName() + "' cannot be a constant value.", getValuePosition(), lineNumber, false));
           }
         }
 
