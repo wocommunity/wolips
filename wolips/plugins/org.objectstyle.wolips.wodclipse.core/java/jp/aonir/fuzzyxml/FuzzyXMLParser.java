@@ -46,7 +46,7 @@ public class FuzzyXMLParser {
   private Pattern _tag = Pattern.compile("<((|/)([^<>]*))([^<]|>)");
   //	private Pattern attr = Pattern.compile("([\\w:]+?)\\s*=(\"|')([^\"]*?)\\2");
   private Pattern _docTypeName = Pattern.compile("^<!DOCTYPE[ \r\n\t]+([\\w\\-_]*)");
-  private Pattern _docTypePublic = Pattern.compile("PUBLIC[ \r\n\t]+\"([^\"]*)\"[ \r\n\t]*\"*([^\"]*)\"*");
+  private Pattern _docTypePublic = Pattern.compile("PUBLIC[ \r\n\t]+\"([^\"]*)\"[ \r\n\t]*\"*([^\">]*)\"*");
   private Pattern _docTypeSystem = Pattern.compile("SYSTEM[ \r\n\t]+\"([^\"]*)\"");
   private Pattern _docTypeSubset = Pattern.compile("\\[([^\\]]*)\\]>");
   private Pattern _invalidStringPattern = Pattern.compile("([<>&])");
