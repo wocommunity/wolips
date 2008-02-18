@@ -1,5 +1,6 @@
 package org.objectstyle.wolips.bindings.wod;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -102,11 +103,10 @@ public class TypeCache {
     _typeCacheEntries.clear();
   }
 
-  public IType[] getSupertypesOf(IType type) throws JavaModelException {
+  public List<IType> getSupertypesOf(IType type) throws JavaModelException {
     //System.out.println("TypeCache.getSupertypesOf: " + type.getFullyQualifiedName() + " (hits=" + SuperTypeHierarchyCache.getCacheHits() + ",misses=" + SuperTypeHierarchyCache.getCacheMisses() + ")");
     try {
-      IType[] types = getTypeCacheEntry(type).getSupertypes();
-      return types;
+      return getTypeCacheEntry(type).getSupertypes();
     }
     catch (JavaModelException e) {
       clearCacheForType(type);
@@ -114,10 +114,9 @@ public class TypeCache {
     }
   }
 
-  public IType[] getSubtypesOfInProject(IType type, IJavaProject project) throws JavaModelException {
+  public List<IType> getSubtypesOfInProject(IType type, IJavaProject project) throws JavaModelException {
     try {
-      IType[] types = getTypeCacheEntry(type).getSubtypesInProject(project);
-      return types;
+      return getTypeCacheEntry(type).getSubtypesInProject(project);
     }
     catch (JavaModelException e) {
       clearCacheForType(type);
@@ -214,17 +213,21 @@ public class TypeCache {
       return type;
     }
 
-    public IType[] getSupertypes() throws JavaModelException {
+    public List<IType> getSupertypes() throws JavaModelException {
       ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(_type);
-      IType[] types = typeHierarchy.getAllTypes();
+      List<IType> types = new LinkedList<IType>();
+      types.add(_type);
+      for (IType type : typeHierarchy.getAllSupertypes(_type)) {
+        types.add(type);
+      }
       return types;
     }
 
-    public IType[] getSubtypesInProject(IJavaProject project) throws JavaModelException {
+    public List<IType> getSubtypesInProject(IJavaProject project) throws JavaModelException {
       //System.out.println("TypeCache.getSubtypesOf: " + type.getFullyQualifiedName() + " (hits=" + SubTypeHierarchyCache.getCacheHits() + ",misses=" + SubTypeHierarchyCache.getCacheMisses() + ")");
       ITypeHierarchy typeHierarchy = SubTypeHierarchyCache.getTypeHierarchyInProject(_type, project);
-      IType[] types = typeHierarchy.getAllTypes();
-      return types;
+      IType[] types = typeHierarchy.getAllSubtypes(_type);
+      return Arrays.asList(types);
     }
   }
 }
