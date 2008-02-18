@@ -262,6 +262,8 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
         bindingNames.add(bindingName);
       }
     }
+    
+    JavaModelException javaModelException = null;
 
     if (checkBindingValues && javaFileType != null) {
       Iterator<IWodBinding> bindingsIter = getBindings().iterator();
@@ -274,10 +276,18 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
           }
           binding.fillInBindingProblems(apiBinding, javaProject, javaFileType, problems, typeCache);
         }
+        catch (JavaModelException t) {
+          javaModelException = t;
+          Activator.getDefault().log("Failed to check wod binding values.", t);
+        }
         catch (Throwable t) {
           Activator.getDefault().log("Failed to check wod binding values.", t);
         }
       }
+    }
+    
+    if (javaModelException != null) {
+      throw javaModelException;
     }
   }
 
