@@ -76,7 +76,7 @@ public class WodCompletionUtils {
 
     // API files:
     try {
-      Wo wo = ApiUtils.findApiModelWo(elementType, cache.getApiCache());
+      Wo wo = ApiUtils.findApiModelWo(elementType, cache.getApiCache(project));
       if (wo != null) {
         String lowercasePartialToken = partialToken.toLowerCase();
         List<Binding> bindings = wo.getBindings();
