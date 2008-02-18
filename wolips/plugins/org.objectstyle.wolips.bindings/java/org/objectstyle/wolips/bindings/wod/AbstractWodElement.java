@@ -207,7 +207,7 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
   public Wo getApi(IJavaProject javaProject, TypeCache cache) throws JavaModelException, ApiModelException {
     String elementTypeName = getElementType();
     IType elementType = BindingReflectionUtils.findElementType(javaProject, elementTypeName, false, cache);
-    Wo wo = ApiUtils.findApiModelWo(elementType, cache.getApiCache());
+    Wo wo = ApiUtils.findApiModelWo(elementType, cache.getApiCache(javaProject));
     return wo;
   }
 
@@ -229,7 +229,7 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
     }
     else {
       try {
-        wo = ApiUtils.findApiModelWo(elementType, typeCache.getApiCache());
+        wo = ApiUtils.findApiModelWo(elementType, typeCache.getApiCache(javaProject));
         if (wo != null) {
           Map<String, String> bindingsMap = getBindingsMap();
           List<Binding> bindings = wo.getBindings();

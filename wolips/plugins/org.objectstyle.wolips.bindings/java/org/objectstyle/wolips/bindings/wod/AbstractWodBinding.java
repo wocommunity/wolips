@@ -56,6 +56,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Position;
 import org.objectstyle.wolips.bindings.Activator;
+import org.objectstyle.wolips.bindings.api.ApiCache;
 import org.objectstyle.wolips.bindings.api.ApiModelException;
 import org.objectstyle.wolips.bindings.api.ApiUtils;
 import org.objectstyle.wolips.bindings.api.IApiBinding;
@@ -185,7 +186,7 @@ public abstract class AbstractWodBinding implements IWodBinding {
       boolean explicitlyValid = false;
       String javaFileTypeName = javaFileType.getElementName();
       if (javaFileTypeName != null) {
-        List<BindingValidationRule> bindingValidationRules = cache.getApiCache().getBindingValidationRules();
+        List<BindingValidationRule> bindingValidationRules = ApiCache.getBindingValidationRules();
         for (int i = 0; !explicitlyValid && i < bindingValidationRules.size(); i++) {
           BindingValidationRule bindingValidationRule = bindingValidationRules.get(i);
           if (javaFileTypeName.matches(bindingValidationRule.getTypeRegex())) {

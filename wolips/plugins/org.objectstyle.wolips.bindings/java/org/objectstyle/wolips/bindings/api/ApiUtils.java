@@ -143,7 +143,7 @@ public class ApiUtils {
 
   public static String[] getValidValues(String partialValue, IJavaProject javaProject, IType componentType, IType apiType, String bindingName, TypeCache typeCache) throws JavaModelException, ApiModelException {
     String[] validValues = null;
-    Wo wo = ApiUtils.findApiModelWo(apiType, typeCache.getApiCache());
+    Wo wo = ApiUtils.findApiModelWo(apiType, typeCache.getApiCache(javaProject));
     if (wo != null) {
       Binding matchingBinding = wo.getBinding(bindingName);
       if (matchingBinding != null) {

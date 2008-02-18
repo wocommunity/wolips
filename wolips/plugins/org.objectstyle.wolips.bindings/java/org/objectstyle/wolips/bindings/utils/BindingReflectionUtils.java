@@ -50,16 +50,16 @@ public class BindingReflectionUtils {
     return shortClassName;
   }
 
-  public static IType findElementType(IJavaProject _javaProject, String _elementTypeName, boolean _requireTypeInProject, TypeCache cache) throws JavaModelException {
+  public static IType findElementType(IJavaProject javaProject, String elementTypeName, boolean requireTypeInProject, TypeCache cache) throws JavaModelException {
     // Search the current project for the given element type name
-    String typeName = cache.getApiCache().getElementTypeNamed(_elementTypeName);
+    String typeName = cache.getApiCache(javaProject).getElementTypeNamed(elementTypeName);
     IType type = null;
     if (typeName != null) {
-      type = _javaProject.findType(typeName);
+      type = javaProject.findType(typeName);
     }
     else if (typeName == null) {
-      TypeNameCollector typeNameCollector = new TypeNameCollector(_javaProject, _requireTypeInProject);
-      BindingReflectionUtils.findMatchingElementClassNames(_elementTypeName, SearchPattern.R_EXACT_MATCH, typeNameCollector, null);
+      TypeNameCollector typeNameCollector = new TypeNameCollector(javaProject, requireTypeInProject);
+      BindingReflectionUtils.findMatchingElementClassNames(elementTypeName, SearchPattern.R_EXACT_MATCH, typeNameCollector, null);
       if (typeNameCollector.isExactMatch()) {
         String matchingElementClassName = typeNameCollector.firstTypeName();
         type = typeNameCollector.getTypeForClassName(matchingElementClassName);
@@ -70,7 +70,7 @@ public class BindingReflectionUtils {
         type = typeNameCollector.getTypeForClassName(matchingElementClassName);
       }
       if (type != null) {
-        cache.getApiCache().setElementTypeForName(type, _elementTypeName);
+        cache.getApiCache(javaProject).setElementTypeForName(type, elementTypeName);
       }
     }
     return type;
