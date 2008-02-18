@@ -6,6 +6,7 @@ import java.util.Set;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
+import org.objectstyle.wolips.bindings.api.ApiCache;
 import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
 import org.objectstyle.wolips.bindings.wod.TagShortcut;
 import org.objectstyle.wolips.bindings.wod.TypeCache;
@@ -27,7 +28,7 @@ public class InlineWodTagInfo extends TagInfo {
     setRequiresAttributes(true);
     _cache = cache;
     _elementTypeName = elementTypeName;
-    _tagShortcut = cache.getApiCache().getTagShortcutNamed(elementTypeName);
+    _tagShortcut = ApiCache.getTagShortcutNamed(elementTypeName);
   }
 
   public void setJavaProject(IJavaProject javaProject) {
