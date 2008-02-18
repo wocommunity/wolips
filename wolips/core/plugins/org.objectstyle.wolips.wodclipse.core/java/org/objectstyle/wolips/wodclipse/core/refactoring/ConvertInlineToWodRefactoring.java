@@ -47,7 +47,7 @@ public class ConvertInlineToWodRefactoring implements IRunnableWithProgress {
         IWodModel wodModel = _cache.getWodModel();
         String tagName = element.getName();
         if (WodHtmlUtils.isInline(tagName)) {
-          SimpleWodElement wodElement = WodHtmlUtils.toWodElement(element, _wo54, WodParserCache.getApiCache(_cache.getJavaProject()));
+          SimpleWodElement wodElement = WodHtmlUtils.toWodElement(element, _wo54, _cache.getApiCache());
           ElementRename elementRename = ElementRename.newUniqueName(wodModel, wodElement, true);
           wodElement.setElementName(elementRename.getNewName());
 

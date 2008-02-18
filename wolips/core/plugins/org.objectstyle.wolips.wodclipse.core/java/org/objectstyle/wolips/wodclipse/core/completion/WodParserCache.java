@@ -286,8 +286,8 @@ public class WodParserCache implements FuzzyXMLErrorListener {
     return _htmlElementCache;
   }
 
-  public static ApiCache getApiCache(IJavaProject javaProject) {
-    return _typeCache.getApiCache(javaProject);
+  public ApiCache getApiCache() {
+    return _typeCache.getApiCache(_javaProject);
   }
 
   public static TypeCache getTypeCache() {
