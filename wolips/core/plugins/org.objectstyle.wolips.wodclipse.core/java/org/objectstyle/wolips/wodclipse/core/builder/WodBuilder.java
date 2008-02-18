@@ -81,6 +81,10 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
   public boolean buildStarted(int kind, Map args, IProgressMonitor monitor, IProject project, Map buildCache) {
     _buildKind = kind;
     _validateTemplates = Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.VALIDATE_TEMPLATES_KEY);
+    if (kind == IncrementalProjectBuilder.FULL_BUILD) {
+      System.out.println("WodBuilder.buildStarted: clear project cache " + project);
+      WodParserCache.getTypeCache().clearCacheForProject(project);
+    }
     return false;
   }
 
