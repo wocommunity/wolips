@@ -11,18 +11,19 @@ import org.objectstyle.wolips.bindings.wod.TagShortcut;
 import org.objectstyle.wolips.core.resources.types.LimitedLRUCache;
 
 public class ApiCache {
+  private static String _tagShortcutsStr;
+  private static String _bindingValidationRulesStr;
+  private static List<TagShortcut> _tagShortcuts;
+  private static List<BindingValidationRule> _bindingValidationRules;
+
   private Map<String, String> _elementNameToTypeCache;
   private Map<String, Wo> _elementTypeToApiCache;
   private Map<String, Boolean> _elementTypeToApiMissingCache;
-  private String _tagShortcutsStr;
-  private String _bindingValidationRulesStr;
-  private List<TagShortcut> _tagShortcuts;
-  private List<BindingValidationRule> _bindingValidationRules;
 
   public ApiCache() {
     clearCache();
   }
-
+  
   public synchronized void clearCache() {
     _elementNameToTypeCache = new LimitedLRUCache<String, String>(100);
     _elementTypeToApiCache = new LimitedLRUCache<String, Wo>(100);
@@ -32,7 +33,7 @@ public class ApiCache {
   public synchronized void clearCacheForElementNamed(String elementName) {
     String elementTypeName = _elementNameToTypeCache.remove(elementName);
     if (elementTypeName != null) {
-      clearCacheForElementTypeNamed(elementTypeName);
+      clearApiForElementTypeName(elementTypeName);
     }
   }
 
@@ -44,23 +45,18 @@ public class ApiCache {
     }
   }
   
-  public synchronized void clearCacheForElementTypeNamed(String elementTypeName) {
-    clearApiForElementTypeName(elementTypeName);
-    _elementNameToTypeCache.remove(elementTypeName);
-  }
-  
   public void clearApiForElementType(IType type) {
-    _elementTypeToApiMissingCache.remove(type);
-    _elementTypeToApiCache.remove(type);
+    _elementTypeToApiMissingCache.remove(type.getFullyQualifiedName());
+    _elementTypeToApiCache.remove(type.getFullyQualifiedName());
   }
   
-  public void clearApiForElementTypeName(String elementTypeName) {
+  private void clearApiForElementTypeName(String elementTypeName) {
     _elementTypeToApiMissingCache.remove(elementTypeName);
     _elementTypeToApiCache.remove(elementTypeName);
   }
 
   public Boolean apiMissingForElementType(IType type) {
-    Boolean missing = _elementTypeToApiMissingCache.get(type);
+    Boolean missing = _elementTypeToApiMissingCache.get(type.getFullyQualifiedName());
     return missing;
   }
 
@@ -74,7 +70,7 @@ public class ApiCache {
   }
 
   public Wo getApiForType(IType type) {
-    Wo wo = _elementTypeToApiCache.get(type);
+    Wo wo = _elementTypeToApiCache.get(type.getFullyQualifiedName());
     return wo;
   }
 
@@ -91,7 +87,7 @@ public class ApiCache {
     _elementNameToTypeCache.put(elementName, elementType.getFullyQualifiedName());
   }
 
-  public TagShortcut getTagShortcutNamed(String shortcut) {
+  public static TagShortcut getTagShortcutNamed(String shortcut) {
     TagShortcut matchingTagShortcut = null;
     for (TagShortcut tagShortcut : getTagShortcuts()) {
       if (matchingTagShortcut == null && tagShortcut.getShortcut().equalsIgnoreCase(shortcut)) {
@@ -101,7 +97,7 @@ public class ApiCache {
     return matchingTagShortcut;
   }
 
-  public synchronized List<TagShortcut> getTagShortcuts() {
+  public static synchronized List<TagShortcut> getTagShortcuts() {
     String tagShortcutsStr = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.TAG_SHORTCUTS_KEY);
     if ((tagShortcutsStr == null && _tagShortcutsStr != null) || (tagShortcutsStr != null && !tagShortcutsStr.equals(_tagShortcutsStr))) {
       _tagShortcutsStr = tagShortcutsStr;
@@ -110,7 +106,7 @@ public class ApiCache {
     return _tagShortcuts;
   }
 
-  public synchronized List<BindingValidationRule> getBindingValidationRules() {
+  public static synchronized List<BindingValidationRule> getBindingValidationRules() {
     String bindingValidationRulesStr = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.BINDING_VALIDATION_RULES_KEY);
     if ((bindingValidationRulesStr == null && _bindingValidationRulesStr != null) || (bindingValidationRulesStr != null && !bindingValidationRulesStr.equals(_bindingValidationRulesStr))) {
       _bindingValidationRulesStr = bindingValidationRulesStr;

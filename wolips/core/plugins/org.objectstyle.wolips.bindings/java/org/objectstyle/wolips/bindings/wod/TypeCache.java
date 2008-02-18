@@ -18,20 +18,13 @@ import org.objectstyle.wolips.core.resources.types.SubTypeHierarchyCache;
 import org.objectstyle.wolips.core.resources.types.SuperTypeHierarchyCache;
 
 public class TypeCache {
-  private ApiCache _apiCache;
+  private Map<IJavaProject, ApiCache> _apiCache;
 
   private LimitedLRUCache<IType, TypeCacheEntry> _typeCacheEntries;
 
   public TypeCache() {
-    this(null);
-  }
-
-  public TypeCache(ApiCache apiCache) {
     _typeCacheEntries = new LimitedLRUCache<IType, TypeCacheEntry>(1000);
-    _apiCache = apiCache;
-    if (_apiCache == null) {
-      _apiCache = new ApiCache();
-    }
+    _apiCache = new HashMap<IJavaProject, ApiCache>();
   }
 
   public synchronized TypeCacheEntry getTypeCacheEntry(IType type) throws JavaModelException {
@@ -43,8 +36,19 @@ public class TypeCache {
     return entry;
   }
 
-  public ApiCache getApiCache() {
-    return _apiCache;
+  public ApiCache getApiCache(IJavaProject javaProject) {
+    ApiCache apiCache;
+    if (javaProject == null) {
+      apiCache = new ApiCache();
+    }
+    else {
+      apiCache = _apiCache.get(javaProject);
+      if (apiCache == null) {
+        apiCache = new ApiCache();
+        _apiCache.put(javaProject, apiCache);
+      }
+    }
+    return apiCache;
   }
 
   public List<BindingValueKey> getBindingValueAccessorKeys(IJavaProject javaProject, IType type, String name) throws JavaModelException {
