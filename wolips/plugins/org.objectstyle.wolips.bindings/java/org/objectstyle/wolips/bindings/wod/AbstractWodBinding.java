@@ -140,10 +140,15 @@ public abstract class AbstractWodBinding implements IWodBinding {
     return "true".equalsIgnoreCase(bindingValue) || "yes".equalsIgnoreCase(bindingValue);
   }
 
+  public boolean isCaret() {
+    String bindingValue = getValue();
+    return bindingValue != null && bindingValue.startsWith("^");   
+  }
+  
   public boolean isKeyPath() {
     String bindingValue = getValue();
     boolean isBindingValueKeyPath;
-    if (bindingValue.length() > 0) {
+    if (bindingValue != null && bindingValue.length() > 0) {
       char ch = bindingValue.charAt(0);
       isBindingValueKeyPath = Character.isJavaIdentifierStart(ch);
     }
@@ -290,7 +295,7 @@ public abstract class AbstractWodBinding implements IWodBinding {
           }
         }
         else if (apiBinding != null) {
-          if (apiBinding.isWillSet()) {
+          if (apiBinding.isWillSet() && !isCaret()) {
             problems.add(new WodBindingValueProblem(bindingName, "The key '" + getName() + "' cannot be a constant value.", getValuePosition(), lineNumber, false));
           }
         }
