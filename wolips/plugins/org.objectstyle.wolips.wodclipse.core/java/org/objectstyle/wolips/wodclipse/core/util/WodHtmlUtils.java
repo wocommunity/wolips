@@ -108,7 +108,7 @@ public class WodHtmlUtils {
     IWodElement wodElement;
     if (WodHtmlUtils.isWOTag(element.getName())) {
       if (WodHtmlUtils.isInline(element.getName())) {
-        wodElement = WodHtmlUtils.toWodElement(element, false, cache.getApiCache());
+        wodElement = WodHtmlUtils.toWodElement(element, false, WodParserCache.getApiCache(cache.getJavaProject()));
       }
       else {
         String elementName = element.getAttributeValue("name");

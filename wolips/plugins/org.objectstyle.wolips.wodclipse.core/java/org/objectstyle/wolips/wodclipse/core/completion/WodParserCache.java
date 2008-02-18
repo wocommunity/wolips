@@ -63,7 +63,6 @@ import org.objectstyle.wolips.wodclipse.core.validation.HtmlProblem;
 import org.objectstyle.wolips.wodclipse.core.validation.TemplateValidator;
 
 public class WodParserCache implements FuzzyXMLErrorListener {
-  private static ApiCache _apiCache;
   private static TypeCache _typeCache;
   private IEOModelGroupCache _modelGroupCache;
 
@@ -108,8 +107,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   public static synchronized WodParserCache parser(IResource resource, boolean createIfMissing) throws CoreException, LocateException {
     if (_parsers == null) {
       _parsers = new LimitedLRUCache<String, WodParserCache>(10);
-      _apiCache = new ApiCache();
-      _typeCache = new TypeCache(_apiCache);
+      _typeCache = new TypeCache();
       ResourcesPlugin.getWorkspace().addResourceChangeListener(new WodHtmlResourceChangeListener());
     }
     IContainer woFolder;
@@ -288,8 +286,8 @@ public class WodParserCache implements FuzzyXMLErrorListener {
     return _htmlElementCache;
   }
 
-  public static ApiCache getApiCache() {
-    return _apiCache;
+  public static ApiCache getApiCache(IJavaProject javaProject) {
+    return _typeCache.getApiCache(javaProject);
   }
 
   public static TypeCache getTypeCache() {
@@ -318,7 +316,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   }
 
   public Wo getWo(IType type) throws ApiModelException {
-    return ApiUtils.findApiModelWo(type, _apiCache);
+    return ApiUtils.findApiModelWo(type, _typeCache.getApiCache(type.getJavaProject()));
   }
 
   public IWooModel getWooModel() throws CoreException, IOException {
@@ -591,14 +589,14 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   }
 
   public TagShortcut getTagShortcutNamed(String shortcut) {
-    return _apiCache.getTagShortcutNamed(shortcut);
+    return ApiCache.getTagShortcutNamed(shortcut);
   }
 
   public List<TagShortcut> getTagShortcuts() {
-    return _apiCache.getTagShortcuts();
+    return ApiCache.getTagShortcuts();
   }
 
   public List<BindingValidationRule> getBindingValidationRules() {
-    return _apiCache.getBindingValidationRules();
+    return ApiCache.getBindingValidationRules();
   }
 }
