@@ -107,7 +107,6 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   public static synchronized WodParserCache parser(IResource resource, boolean createIfMissing) throws CoreException, LocateException {
     if (_parsers == null) {
       _parsers = new LimitedLRUCache<String, WodParserCache>(10);
-      _typeCache = new TypeCache();
       ResourcesPlugin.getWorkspace().addResourceChangeListener(new WodHtmlResourceChangeListener());
     }
     IContainer woFolder;
@@ -143,7 +142,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
       IResource resource = delta.getResource();
       if (!resource.isDerived() && resource instanceof IFile) {
         if (delta.getKind() == IResourceDelta.REMOVED) {
-          WodParserCache._typeCache.clearCacheForResource(resource);
+          WodParserCache.getTypeCache().clearCacheForResource(resource);
         }
         else if (delta.getKind() == IResourceDelta.CHANGED) {
           IJavaElement javaElement = JavaCore.create((IFile) resource);
@@ -151,7 +150,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
             try {
               IType[] types = ((ICompilationUnit) javaElement).getAllTypes();
               for (IType type : types) {
-                WodParserCache._typeCache.clearCacheForType(type);
+                WodParserCache.getTypeCache().clearCacheForType(type);
               }
             }
             catch (JavaModelException e) {
@@ -287,10 +286,13 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   }
 
   public ApiCache getApiCache() {
-    return _typeCache.getApiCache(_javaProject);
+    return WodParserCache.getTypeCache().getApiCache(_javaProject);
   }
 
-  public static TypeCache getTypeCache() {
+  public static synchronized TypeCache getTypeCache() {
+    if (WodParserCache._typeCache ==null) {
+      _typeCache = new TypeCache();
+    }
     return _typeCache;
   }
 
@@ -312,11 +314,11 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   }
 
   public IType getElementType(String elementName) throws JavaModelException {
-    return BindingReflectionUtils.findElementType(_javaProject, elementName, false, WodParserCache._typeCache);
+    return BindingReflectionUtils.findElementType(_javaProject, elementName, false, WodParserCache.getTypeCache());
   }
 
   public Wo getWo(IType type) throws ApiModelException {
-    return ApiUtils.findApiModelWo(type, _typeCache.getApiCache(type.getJavaProject()));
+    return ApiUtils.findApiModelWo(type, getApiCache());
   }
 
   public IWooModel getWooModel() throws CoreException, IOException {
@@ -509,7 +511,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
               }
 
               if (_wodModel != null) {
-                List<WodProblem> wodProblems = _wodModel.getProblems(_javaProject, _componentType, WodParserCache._typeCache, WodParserCache.this._htmlElementCache);
+                List<WodProblem> wodProblems = _wodModel.getProblems(_javaProject, _componentType, WodParserCache.getTypeCache(), WodParserCache.this._htmlElementCache);
                 if (_wodFile != null && _wodFile.exists()) {
                   for (WodProblem wodProblem : wodProblems) {
                     WodModelUtils.createMarker(_wodFile, wodProblem);
@@ -517,7 +519,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
                 }
               }
               if (_wooModel != null) {
-                List<WodProblem> wodProblems = _wooModel.getProblems(_javaProject, _componentType, WodParserCache._typeCache, WodParserCache.this._modelGroupCache);
+                List<WodProblem> wodProblems = _wooModel.getProblems(_javaProject, _componentType, WodParserCache.getTypeCache(), WodParserCache.this._modelGroupCache);
                 if (_wooFile != null && _wooFile.exists()) {
                   for (WodProblem wodProblem : wodProblems) {
                     WodModelUtils.createMarker(_wooFile, wodProblem);
