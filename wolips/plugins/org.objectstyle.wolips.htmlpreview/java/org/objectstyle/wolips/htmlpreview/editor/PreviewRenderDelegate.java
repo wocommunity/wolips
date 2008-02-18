@@ -99,7 +99,7 @@ public class PreviewRenderDelegate implements RenderDelegate {
 					WodParserCache cache = _caches.peek();
 					IWodElement wodElement;
 					if (WodHtmlUtils.isInline(tagName)) {
-						wodElement = WodHtmlUtils.toWodElement(element, false, cache.getApiCache());
+						wodElement = WodHtmlUtils.toWodElement(element, false, WodParserCache.getApiCache(cache.getJavaProject()));
 					} else {
 						String elementName = element.getAttributeValue("name");
 						wodElement = cache.getWodModel().getElementNamed(elementName);
@@ -110,13 +110,13 @@ public class PreviewRenderDelegate implements RenderDelegate {
 					}
 					
 					String elementTypeName = wodElement.getElementType();
-					IType type = BindingReflectionUtils.findElementType(cache.getJavaProject(), elementTypeName, false, cache.getTypeCache());
+					IType type = BindingReflectionUtils.findElementType(cache.getJavaProject(), elementTypeName, false, WodParserCache.getTypeCache());
 					LocalizedComponentsLocateResult componentsLocateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(type.getJavaProject().getProject(), wodElement.getElementType());
 					IFile htmlFile = componentsLocateResults.getFirstHtmlFile();
 					if (htmlFile != null) {
 						WodParserCache nestedCache = WodParserCache.parser(htmlFile);
 						if (nestedCache != null) {
-							Wo apiModel = ApiUtils.findApiModelWo(type, nestedCache.getTypeCache().getApiCache());
+							Wo apiModel = ApiUtils.findApiModelWo(type, WodParserCache.getTypeCache().getApiCache(cache.getJavaProject()));
 							if (apiModel != null) {
 								String preview = apiModel.getPreview();
 								if (preview != null) {
