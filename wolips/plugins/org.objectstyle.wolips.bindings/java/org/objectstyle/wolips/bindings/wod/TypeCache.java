@@ -72,7 +72,7 @@ public class TypeCache {
   }
 
   public synchronized void clearCacheForType(IType declaringType) {
-    System.out.println("TypeCache.clearCacheForType: clearing cache for " + declaringType.getFullyQualifiedName());
+    //System.out.println("TypeCache.clearCacheForType: clearing cache for " + declaringType.getFullyQualifiedName());
     _typeCacheEntries.remove(declaringType);
   }
 
@@ -137,7 +137,7 @@ public class TypeCache {
         bindingValueAccessorKeys = BindingReflectionUtils.getBindingKeys(javaProject, _type, name, true, BindingReflectionUtils.ACCESSORS_OR_VOID, TypeCache.this);
         // MS: Don't cache this for now -- I don't know how many end up in here and how long they
         // hang around, but I think the answer is "a lot" and "for a long time".  However, it's a huge performance win.
-        // bindingValueAccessorKeysForName.put(name, bindingValueAccessorKeys);
+        _bindingValueAccessorKeys.put(name, bindingValueAccessorKeys);
       }
       else {
         //System.out.println("TypeCache.getBindingValueAccessorKeys: HIT  " + type.getElementName() + ": " + name);
@@ -152,7 +152,7 @@ public class TypeCache {
         bindingValueMutatorKeys = BindingReflectionUtils.getBindingKeys(javaProject, _type, name, true, BindingReflectionUtils.MUTATORS_ONLY, TypeCache.this);
         // MS: Don't cache this for now -- I don't know how many end up in here and how long they
         // hang around, but I think the answer is "a lot" and "for a long time".  However, it's a huge performance win.
-        // bindingValueMutatorKeysForName.put(name, bindingValueMutatorKeys);
+        _bindingValueMutatorKeys.put(name, bindingValueMutatorKeys);
       }
       else {
         //System.out.println("TypeCache.getBindingValueMutatorKeys: HIT  " + type.getElementName() + ": " + name);
