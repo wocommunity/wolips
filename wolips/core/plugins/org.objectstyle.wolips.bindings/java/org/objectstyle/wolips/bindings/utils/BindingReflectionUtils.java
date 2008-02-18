@@ -183,28 +183,43 @@ public class BindingReflectionUtils {
       }
 
       if (types != null) {
-        for (int typeNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && typeNum < types.length; typeNum++) {
-          IField[] fields = types[typeNum].getFields();
-          for (int fieldNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && fieldNum < fields.length; fieldNum++) {
-            BindingValueKey bindingKey = BindingReflectionUtils.getBindingKeyIfMatches(_javaProject, fields[fieldNum], lowercaseNameStartingWith, _requireExactNameMatch, _accessorsOrMutators, cache);
-            if (bindingKey != null) {
-              bindingKeys.add(bindingKey);
-            }
-            // System.out.println("WODCompletionProcessor.nextType:
-            // field " + fields[fieldNum].getElementName() + "=>" +
-            // bindingKey);
-          }
-
-          if (!_requireExactNameMatch || bindingKeys.size() == 0) {
-            IMethod[] methods = types[typeNum].getMethods();
-            for (int methodNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && methodNum < methods.length; methodNum++) {
-              BindingValueKey bindingKey = BindingReflectionUtils.getBindingKeyIfMatches(_javaProject, methods[methodNum], lowercaseNameStartingWith, _requireExactNameMatch, _accessorsOrMutators, cache);
+        for (int typeNum = types.length - 1; (!_requireExactNameMatch || bindingKeys.size() == 0) && typeNum >= 0; typeNum --) {
+          IType type = types[typeNum];
+          
+          IField[] fields = type.getFields();
+          for (String prefix : BindingReflectionUtils.FIELD_PREFIXES) {
+            for (int fieldNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && fieldNum < fields.length; fieldNum++) {
+              BindingValueKey bindingKey = BindingReflectionUtils.getBindingKeyIfMatches(_javaProject, fields[fieldNum], prefix + lowercaseNameStartingWith, prefix, _requireExactNameMatch, _accessorsOrMutators, cache);
               if (bindingKey != null) {
                 bindingKeys.add(bindingKey);
               }
-              // System.out.println("WODCompletionProcessor.nextType:
-              // method " + methods[methodNum].getElementName() + "=>"
-              // + bindingKey);
+            }
+          }
+
+          if (!_requireExactNameMatch || bindingKeys.size() == 0) {
+            IMethod[] methods = type.getMethods();
+            String[] prefixes;
+            if (_accessorsOrMutators == BindingReflectionUtils.ACCESSORS_ONLY) {
+              prefixes = BindingReflectionUtils.GET_METHOD_PREFIXES;
+            }
+            else if (_accessorsOrMutators == BindingReflectionUtils.ACCESSORS_OR_VOID) {
+              prefixes = BindingReflectionUtils.GET_METHOD_PREFIXES;
+            }
+            else if (_accessorsOrMutators == BindingReflectionUtils.MUTATORS_ONLY) {
+              prefixes = BindingReflectionUtils.SET_METHOD_PREFIXES;
+            }
+            else {
+              prefixes = new String[0];
+            }
+
+            for (String prefix : prefixes) {
+              for (int methodNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && methodNum < methods.length; methodNum++) {
+                //System.out.println("BindingReflectionUtils.getBindingKeys: checking for " + prefix + methods[methodNum].getElementName());
+                BindingValueKey bindingKey = BindingReflectionUtils.getBindingKeyIfMatches(_javaProject, methods[methodNum], prefix + lowercaseNameStartingWith, prefix, _requireExactNameMatch, _accessorsOrMutators, cache);
+                if (bindingKey != null) {
+                  bindingKeys.add(bindingKey);
+                }
+              }
             }
           }
         }
@@ -220,7 +235,7 @@ public class BindingReflectionUtils {
     return declaringTypePackageName == null || declaringTypePackageName.length() == 0;
   }
   
-  public static BindingValueKey getBindingKeyIfMatches(IJavaProject javaProject, IMember member, String nameStartingWith, boolean requireExactNameMatch, int accessorsOrMutators, TypeCache cache) throws JavaModelException {
+  public static BindingValueKey getBindingKeyIfMatches(IJavaProject javaProject, IMember member, String nameStartingWith, String prefix, boolean requireExactNameMatch, int accessorsOrMutators, TypeCache cache) throws JavaModelException {
     BindingValueKey bindingKey = null;
 
     int flags = member.getFlags();
@@ -242,12 +257,10 @@ public class BindingReflectionUtils {
       visible = true;
     }
     if (visible) {
-      String[] possiblePrefixes;
       boolean memberSignatureMatches;
       if (member instanceof IMethod) {
         IMethod method = (IMethod) member;
         if (method.isConstructor()) {
-          possiblePrefixes = BindingReflectionUtils.GET_METHOD_PREFIXES;
           memberSignatureMatches = false;
         }
         else {
@@ -255,51 +268,34 @@ public class BindingReflectionUtils {
           String returnType = method.getReturnType();
           if (accessorsOrMutators == BindingReflectionUtils.ACCESSORS_ONLY) {
             memberSignatureMatches = (parameterCount == 0 && !"V".equals(returnType));
-            possiblePrefixes = BindingReflectionUtils.GET_METHOD_PREFIXES;
           }
           else if (accessorsOrMutators == BindingReflectionUtils.ACCESSORS_OR_VOID) {
             memberSignatureMatches = (parameterCount == 0);
-            possiblePrefixes = BindingReflectionUtils.GET_METHOD_PREFIXES;
           }
           else if (accessorsOrMutators == BindingReflectionUtils.VOID_ONLY) {
             memberSignatureMatches = (parameterCount == 0 && "V".equals(returnType));
-            possiblePrefixes = BindingReflectionUtils.GET_METHOD_PREFIXES;
           }
           else {
             memberSignatureMatches = (parameterCount == 1 && "V".equals(returnType));
-            possiblePrefixes = BindingReflectionUtils.SET_METHOD_PREFIXES;
           }
         }
       }
       else {
         memberSignatureMatches = true;
-        possiblePrefixes = BindingReflectionUtils.FIELD_PREFIXES;
       }
 
       if (memberSignatureMatches) {
         String memberName = member.getElementName();
         String lowercaseMemberName = memberName.toLowerCase();
 
-        // Run through our list of valid prefixes and look for a match
-        // (i.e. whatever, _whatever, _getWhatever, etc).
-        // If we find a match, then turn it into wod-style naming --
-        // lowercase first letter, dropping the prefix
-        for (int prefixNum = 0; bindingKey == null && prefixNum < possiblePrefixes.length; prefixNum++) {
-          if (lowercaseMemberName.startsWith(possiblePrefixes[prefixNum])) {
-            int prefixLength = possiblePrefixes[prefixNum].length();
-            String lowercaseMemberNameWithoutPrefix = lowercaseMemberName.substring(prefixLength);
-            if ((requireExactNameMatch && lowercaseMemberNameWithoutPrefix.equals(nameStartingWith)) || (!requireExactNameMatch && lowercaseMemberNameWithoutPrefix.startsWith(nameStartingWith))) {
-              String bindingName = BindingReflectionUtils.toLowercaseFirstLetter(memberName.substring(prefixLength));
-              if (nameStartingWith.length() > 0 || !bindingName.startsWith("_")) {
-                bindingKey = new BindingValueKey(bindingName, member, javaProject, cache);
-              }
-            }
+        int prefixLength = prefix.length();
+        if ((requireExactNameMatch && lowercaseMemberName.equals(nameStartingWith)) || (!requireExactNameMatch && lowercaseMemberName.startsWith(nameStartingWith))) {
+          String bindingName = BindingReflectionUtils.toLowercaseFirstLetter(memberName.substring(prefixLength));
+          //System.out.println("BindingReflectionUtils.getBindingKeyIfMatches:   bindingName = " + bindingName);
+          if (nameStartingWith.length() > 0 || !bindingName.startsWith("_")) {
+            bindingKey = new BindingValueKey(bindingName, member, javaProject, cache);
           }
         }
-
-        // System.out.println("WodBindingUtils.getBindingKeyIfMatches:
-        // " + _nameStartingWith + ", " + lowercaseMemberName + ", " +
-        // bindingKey);
       }
     }
 
