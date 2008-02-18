@@ -25,7 +25,7 @@ public class InlineWodElementHyperlinkProvider implements IHyperlinkProvider {
         if (attrName == null) {
           boolean wo54 = Activator.getDefault().isWO54();
           WodParserCache cache = WodParserCache.parser(file);
-          SimpleWodElement wodElement = WodHtmlUtils.toWodElement(element, wo54, cache.getApiCache());
+          SimpleWodElement wodElement = WodHtmlUtils.toWodElement(element, wo54, WodParserCache.getApiCache(cache.getJavaProject()));
           if (wodElement.isTypeWithin(new Region(offset, 0))) {
             hyperlinkInfo = new HTMLHyperlinkInfo();
             hyperlinkInfo.setOffset(wodElement.getElementTypePosition().getOffset());
@@ -37,7 +37,7 @@ public class InlineWodElementHyperlinkProvider implements IHyperlinkProvider {
           boolean wo54 = Activator.getDefault().isWO54();
           WodParserCache cache;
           cache = WodParserCache.parser(file);
-          SimpleWodElement wodElement = WodHtmlUtils.toWodElement(element, wo54, cache.getApiCache());
+          SimpleWodElement wodElement = WodHtmlUtils.toWodElement(element, wo54, WodParserCache.getApiCache(cache.getJavaProject()));
           IWodBinding wodBinding = wodElement.getBindingNamed(attrName);
           if (wodBinding != null) {
             Position valuePosition = wodBinding.getValuePosition();
