@@ -12,6 +12,7 @@ import jp.aonir.fuzzyxml.FuzzyXMLNode;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.bindings.Activator;
 import org.objectstyle.wolips.bindings.preferences.PreferenceConstants;
 import org.objectstyle.wolips.bindings.wod.HtmlElementName;
@@ -19,6 +20,7 @@ import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.bindings.wod.IWodModel;
 import org.objectstyle.wolips.bindings.wod.WodBindingValueProblem;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
+import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
@@ -85,17 +87,25 @@ public class TemplateValidator {
     String elementName = element.getName();
     if (WodHtmlUtils.isInline(elementName)) {
       if (validate) {
-        IWodElement wodElement = WodHtmlUtils.toWodElement(element, _wo54, _cache.getApiCache());
+        IWodElement wodElement = WodHtmlUtils.toWodElement(element, _wo54, WodParserCache.getApiCache());
         if (wodElement != null) {
           boolean validateBindingValues = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.VALIDATE_BINDING_VALUES);
           boolean validateOGNL = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.VALIDATE_OGNL_KEY);
           List<WodProblem> wodProblems = new LinkedList<WodProblem>();
           try {
-            wodElement.fillInProblems(_cache.getJavaProject(), _cache.getComponentType(), validateBindingValues, wodProblems, _cache.getTypeCache(), _cache.getHtmlElementCache());
+            wodElement.fillInProblems(_cache.getJavaProject(), _cache.getComponentType(), validateBindingValues, wodProblems, WodParserCache.getTypeCache(), _cache.getHtmlElementCache());
             inlineProblems.add(new InlineWodProblem(element, wodProblems, _cache));
           }
-          catch (Exception e) {
-            Activator.getDefault().log(e);
+          catch (JavaModelException e) {
+            try {
+              WodParserCache.getTypeCache().clearCacheForType(_cache.getComponentType());
+            }
+            catch (LocateException e1) {
+              e1.printStackTrace();
+            }
+          }
+          catch (Throwable t) {
+            Activator.getDefault().log(t);
           }
         }
       }
