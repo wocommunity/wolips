@@ -1,6 +1,5 @@
 package org.objectstyle.wolips.bindings.wod;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -149,6 +148,7 @@ public class TypeCache {
 
     public synchronized List<BindingValueKey> getBindingValueAccessorKeys(IJavaProject javaProject, String name) throws JavaModelException {
       List<BindingValueKey> bindingValueAccessorKeys = _bindingValueAccessorKeys.get(name);
+      //System.out.println("TypeCacheEntry.getBindingValueAccessorKeys: " + name + ": " + bindingValueAccessorKeys);
       if (bindingValueAccessorKeys == null) {
         //System.out.println("TypeCache.getBindingValueAccessorKeys: MISS " + type.getElementName() + ": " + name);
         bindingValueAccessorKeys = BindingReflectionUtils.getBindingKeys(javaProject, _type, name, true, BindingReflectionUtils.ACCESSORS_OR_VOID, TypeCache.this);
@@ -226,8 +226,13 @@ public class TypeCache {
     public List<IType> getSubtypesInProject(IJavaProject project) throws JavaModelException {
       //System.out.println("TypeCache.getSubtypesOf: " + type.getFullyQualifiedName() + " (hits=" + SubTypeHierarchyCache.getCacheHits() + ",misses=" + SubTypeHierarchyCache.getCacheMisses() + ")");
       ITypeHierarchy typeHierarchy = SubTypeHierarchyCache.getTypeHierarchyInProject(_type, project);
-      IType[] types = typeHierarchy.getAllSubtypes(_type);
-      return Arrays.asList(types);
+      List<IType> types = new LinkedList<IType>();
+      IType[] subtypes = typeHierarchy.getAllSubtypes(_type);
+      for (int subtypeNum = subtypes.length - 1; subtypeNum >= 0; subtypeNum --) {
+        types.add(subtypes[subtypeNum]);
+      }
+      types.add(_type);
+      return types;
     }
   }
 }

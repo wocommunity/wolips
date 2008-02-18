@@ -151,12 +151,12 @@ public class BindingReflectionUtils {
       //ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(_type);
       List<IType> types = cache.getSupertypesOf(_type);
       if (types != null) {
+        IType usuallySubclassedSupertype = null;
         IType nextType = null;
-        boolean isUsuallySubclassed = false;
-        for (int typeNum = 0; !isUsuallySubclassed && typeNum < types.size(); typeNum++) {
+        for (int typeNum = 0; usuallySubclassedSupertype == null && typeNum < types.size(); typeNum++) {
           String typeName = types.get(typeNum).getElementName();
           if ("WOApplication".equals(typeName) || "WOSession".equals(typeName) || "WODirectAction".equals(typeName)) {
-            isUsuallySubclassed = true;
+            usuallySubclassedSupertype = types.get(typeNum);
           }
           else if ("NSArray".equals(typeName)) {
             for (String operator : BindingReflectionUtils.getArrayOperators()) {
@@ -175,10 +175,10 @@ public class BindingReflectionUtils {
           }
         }
 
-        if (isUsuallySubclassed) {
+        if (usuallySubclassedSupertype != null) {
           //typeHierarchy = _type.newTypeHierarchy(_javaProject, null);
           //typeHierarchy = SubTypeHierachyCache.getTypeHierarchy(_type);
-          types = cache.getSubtypesOfInProject(_type, _javaProject);
+          types = cache.getSubtypesOfInProject(usuallySubclassedSupertype, _javaProject);
         }
       }
 
@@ -242,6 +242,7 @@ public class BindingReflectionUtils {
   }
   
   public static BindingValueKey getBindingKeyIfMatches(IJavaProject javaProject, IMember member, String nameStartingWith, String prefix, boolean requireExactNameMatch, int accessorsOrMutators, TypeCache cache) throws JavaModelException {
+    //System.out.println("BindingReflectionUtils.getBindingKeyIfMatches: " + member.getElementName() + " starts with " + nameStartingWith);
     BindingValueKey bindingKey = null;
 
     int flags = member.getFlags();
