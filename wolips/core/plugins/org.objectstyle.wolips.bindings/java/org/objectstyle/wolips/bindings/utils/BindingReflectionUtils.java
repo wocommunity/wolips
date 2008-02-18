@@ -108,9 +108,9 @@ public class BindingReflectionUtils {
   public static boolean isType(IType type, String[] possibleTypes, TypeCache cache) throws JavaModelException {
     boolean isType = false;
     //ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(type);
-    IType[] types = cache.getSupertypesOf(type);
-    for (int typeNum = 0; !isType && typeNum < types.length; typeNum++) {
-      String name = types[typeNum].getFullyQualifiedName();
+    List<IType> types = cache.getSupertypesOf(type);
+    for (int typeNum = 0; !isType && typeNum < types.size(); typeNum++) {
+      String name = types.get(typeNum).getFullyQualifiedName();
       for (int possibleTypeNum = 0; !isType && possibleTypeNum < possibleTypes.length; possibleTypeNum++) {
         if (possibleTypes[possibleTypeNum].equals(name)) {
           isType = true;
@@ -149,12 +149,12 @@ public class BindingReflectionUtils {
       // We want to show fields from your WOApplication, WOSession, and
       // WODirectAction subclasses ...
       //ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(_type);
-      IType[] types = cache.getSupertypesOf(_type);
+      List<IType> types = cache.getSupertypesOf(_type);
       if (types != null) {
         IType nextType = null;
         boolean isUsuallySubclassed = false;
-        for (int typeNum = 0; !isUsuallySubclassed && typeNum < types.length; typeNum++) {
-          String typeName = types[typeNum].getElementName();
+        for (int typeNum = 0; !isUsuallySubclassed && typeNum < types.size(); typeNum++) {
+          String typeName = types.get(typeNum).getElementName();
           if ("WOApplication".equals(typeName) || "WOSession".equals(typeName) || "WODirectAction".equals(typeName)) {
             isUsuallySubclassed = true;
           }
@@ -162,7 +162,7 @@ public class BindingReflectionUtils {
             for (String operator : BindingReflectionUtils.getArrayOperators()) {
               additionalProposals.add("@" + operator);
             }
-            nextType = types[typeNum];
+            nextType = types.get(typeNum);
           }
         }
 
@@ -183,45 +183,10 @@ public class BindingReflectionUtils {
       }
 
       if (types != null) {
-        for (int typeNum = types.length - 1; (!_requireExactNameMatch || bindingKeys.size() == 0) && typeNum >= 0; typeNum --) {
-          IType type = types[typeNum];
-          
-          IField[] fields = type.getFields();
-          for (String prefix : BindingReflectionUtils.FIELD_PREFIXES) {
-            for (int fieldNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && fieldNum < fields.length; fieldNum++) {
-              BindingValueKey bindingKey = BindingReflectionUtils.getBindingKeyIfMatches(_javaProject, fields[fieldNum], prefix + lowercaseNameStartingWith, prefix, _requireExactNameMatch, _accessorsOrMutators, cache);
-              if (bindingKey != null) {
-                bindingKeys.add(bindingKey);
-              }
-            }
-          }
-
-          if (!_requireExactNameMatch || bindingKeys.size() == 0) {
-            IMethod[] methods = type.getMethods();
-            String[] prefixes;
-            if (_accessorsOrMutators == BindingReflectionUtils.ACCESSORS_ONLY) {
-              prefixes = BindingReflectionUtils.GET_METHOD_PREFIXES;
-            }
-            else if (_accessorsOrMutators == BindingReflectionUtils.ACCESSORS_OR_VOID) {
-              prefixes = BindingReflectionUtils.GET_METHOD_PREFIXES;
-            }
-            else if (_accessorsOrMutators == BindingReflectionUtils.MUTATORS_ONLY) {
-              prefixes = BindingReflectionUtils.SET_METHOD_PREFIXES;
-            }
-            else {
-              prefixes = new String[0];
-            }
-
-            for (String prefix : prefixes) {
-              for (int methodNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && methodNum < methods.length; methodNum++) {
-                //System.out.println("BindingReflectionUtils.getBindingKeys: checking for " + prefix + methods[methodNum].getElementName());
-                BindingValueKey bindingKey = BindingReflectionUtils.getBindingKeyIfMatches(_javaProject, methods[methodNum], prefix + lowercaseNameStartingWith, prefix, _requireExactNameMatch, _accessorsOrMutators, cache);
-                if (bindingKey != null) {
-                  bindingKeys.add(bindingKey);
-                }
-              }
-            }
-          }
+        for (int typeNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && typeNum < types.size(); typeNum ++) {
+        //for (int typeNum = types.length - 1; (!_requireExactNameMatch || bindingKeys.size() == 0) && typeNum >= 0; typeNum --) {
+          IType type = types.get(typeNum);
+          BindingReflectionUtils.fillInBindingKeys(type, lowercaseNameStartingWith, _requireExactNameMatch, _accessorsOrMutators, _javaProject, bindingKeys, cache);
         }
       }
     }
@@ -229,6 +194,47 @@ public class BindingReflectionUtils {
     return bindingKeys;
   }
 
+  protected static void fillInBindingKeys(IType type, String lowercaseNameStartingWith, boolean requireExactNameMatch, int accessorsOrMutators, IJavaProject javaProject, List<BindingValueKey> bindingKeys, TypeCache cache) throws JavaModelException {
+    //System.out.println("BindingReflectionUtils.getBindingKeys: a " + type.getFullyQualifiedName());
+    
+    IField[] fields = type.getFields();
+    for (String prefix : BindingReflectionUtils.FIELD_PREFIXES) {
+      for (int fieldNum = 0; (!requireExactNameMatch || bindingKeys.size() == 0) && fieldNum < fields.length; fieldNum++) {
+        BindingValueKey bindingKey = BindingReflectionUtils.getBindingKeyIfMatches(javaProject, fields[fieldNum], prefix + lowercaseNameStartingWith, prefix, requireExactNameMatch, accessorsOrMutators, cache);
+        if (bindingKey != null) {
+          bindingKeys.add(bindingKey);
+        }
+      }
+    }
+
+    if (!requireExactNameMatch || bindingKeys.size() == 0) {
+      IMethod[] methods = type.getMethods();
+      String[] prefixes;
+      if (accessorsOrMutators == BindingReflectionUtils.ACCESSORS_ONLY) {
+        prefixes = BindingReflectionUtils.GET_METHOD_PREFIXES;
+      }
+      else if (accessorsOrMutators == BindingReflectionUtils.ACCESSORS_OR_VOID) {
+        prefixes = BindingReflectionUtils.GET_METHOD_PREFIXES;
+      }
+      else if (accessorsOrMutators == BindingReflectionUtils.MUTATORS_ONLY) {
+        prefixes = BindingReflectionUtils.SET_METHOD_PREFIXES;
+      }
+      else {
+        prefixes = new String[0];
+      }
+
+      for (String prefix : prefixes) {
+        for (int methodNum = 0; (!requireExactNameMatch || bindingKeys.size() == 0) && methodNum < methods.length; methodNum++) {
+          //System.out.println("BindingReflectionUtils.getBindingKeys: checking for " + prefix + methods[methodNum].getElementName());
+          BindingValueKey bindingKey = BindingReflectionUtils.getBindingKeyIfMatches(javaProject, methods[methodNum], prefix + lowercaseNameStartingWith, prefix, requireExactNameMatch, accessorsOrMutators, cache);
+          if (bindingKey != null) {
+            bindingKeys.add(bindingKey);
+          }
+        }
+      }
+    }
+  }
+  
   public static boolean isDefaultPackage(IMember member) {
     IType declaringType = member.getDeclaringType();
     String declaringTypePackageName = declaringType.getPackageFragment().getElementName();
