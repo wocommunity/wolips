@@ -4,10 +4,12 @@
 
  	<extension
          point="org.eclipse.ui.editors">
+         
       <editor
             class="org.objectstyle.wolips.componenteditor.part.ComponentEditor"
             contributorClass="org.objectstyle.wolips.componenteditor.contributor.ComponentEditorContributor"
             default="true"
+            extensions="wod,html,api,woo"
             icon="icons/ComponentEditor.png"
             id="org.objectstyle.wolips.componenteditor.ComponentEditor"
             matchingStrategy="org.objectstyle.wolips.componenteditor.launcher.ComponentEditorMatchingStrategy"
