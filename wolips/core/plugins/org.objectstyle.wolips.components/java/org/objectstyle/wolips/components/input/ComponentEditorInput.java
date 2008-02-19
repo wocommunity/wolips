@@ -45,9 +45,11 @@ package org.objectstyle.wolips.components.input;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.part.MultiEditorInput;
@@ -197,6 +199,52 @@ public class ComponentEditorInput extends MultiEditorInput implements IPersistab
 			input.displayWooPartOnReveal = true;
 		}
 		return input;
+	}
+	
+	/**
+	 * Returns the language name for the given component file editor input 
+	 * or null if it's not in an lproj folder.
+	 * 
+	 * @param editorInput the editor input to lookup the language for
+	 * @return the language name (or null)
+	 */
+	public static String getLanguageName(IFileEditorInput editorInput) {
+		String language = null;
+		if (editorInput != null) {
+			IFile file = editorInput.getFile();
+			language = ComponentEditorInput.getLanguageName(file);
+		}
+		return language;
+		
+	}
+
+	/**
+	 * Returns the language name for the given component file  
+	 * or null if it's not in an lproj folder.
+	 * 
+	 * @param file the file to lookup the language for
+	 * @return the language name (or null)
+	 */
+	public static String getLanguageName(IFile file) {
+		String language = null;
+		if (file != null && file.exists()) {
+			IResource resource = file;
+			boolean done = false;
+			do {
+				resource = resource.getParent();
+				if (resource == null) {
+					done = true;
+				}
+				else {
+					String name = resource.getName();
+					if (name.endsWith(".lproj")) {
+						language = name.substring(0, name.lastIndexOf('.'));
+						done = true;
+					}
+				}
+			} while (!done);
+		}
+		return language;
 	}
 
 	public LocalizedComponentsLocateResult getLocalizedComponentsLocateResult() {

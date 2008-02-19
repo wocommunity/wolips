@@ -144,22 +144,42 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 		IFileEditorInput htmlInput = null;
 		IFileEditorInput wodInput = null;
 		IFileEditorInput wooInput = null;
-		int j = 0;
+		int inputsPerComponent = 3;
 		int tabIndex = 0;
-		for (int i = 0; i < editorInput.length / 3; i++) {
-			htmlInput = (IFileEditorInput) editorInput[j];
-			j++;
-			wodInput = (IFileEditorInput) editorInput[j];
-			j++;
-			wooInput = (IFileEditorInput) editorInput[j];
-			j++;
+		boolean hasMultipleComponents = editorInput.length > inputsPerComponent;
+		for (int componentNum = 0; componentNum < editorInput.length; componentNum += inputsPerComponent) {
+			htmlInput = (IFileEditorInput) editorInput[componentNum + 0];
+			wodInput = (IFileEditorInput) editorInput[componentNum + 1];
+			wooInput = (IFileEditorInput) editorInput[componentNum + 2];
+
+			String language = null;
+			if (hasMultipleComponents) {
+				language = ComponentEditorInput.getLanguageName(htmlInput);
+				if (language == null) {
+					language = ComponentEditorInput.getLanguageName(wodInput);
+					if (language == null) {
+						language = ComponentEditorInput.getLanguageName(wooInput);
+					}
+				}
+				if (language == null) {
+					language = "";
+				}
+				else {
+					language = language + " ";
+				}
+			}
+			else {
+				language = "";
+			}
+			
+			
 			HtmlWodTab htmlWodTab = new HtmlWodTab(this, tabIndex, htmlInput, wodInput);
 			componentEditorTabsList.add(htmlWodTab);
 			htmlWodTabsList.add(htmlWodTab);
 			htmlWodTab.createTab();
 			htmlPageId = this.addPage(htmlWodTab);
 			wodPageId = htmlPageId;
-			this.setPageText(tabIndex, "Component");
+			this.setPageText(tabIndex, language + "Component");
 			tabIndex++;
 			
 			
@@ -168,7 +188,7 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 			componentEditorTabsList.add(wooTab);
 			wooTab.createTab();
 			wooPageId = this.addPage(wooTab);
-			this.setPageText(tabIndex, "DisplayGroups");
+			this.setPageText(tabIndex, language + "DisplayGroups");
 			tabIndex++;
 		}
 
