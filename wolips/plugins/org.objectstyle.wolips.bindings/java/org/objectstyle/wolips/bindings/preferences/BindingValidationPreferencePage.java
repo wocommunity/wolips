@@ -77,6 +77,7 @@ public class BindingValidationPreferencePage extends FieldEditorPreferencePage i
     addField(new BooleanFieldEditor(PreferenceConstants.WARN_ON_HELPER_FUNCTION_KEY, "... Warn on Helper Functions", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.VALIDATE_OGNL_KEY, "... Validate OGNL", getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.WO54_KEY, "WO 5.4", getFieldEditorParent()));
+    addField(new BooleanFieldEditor(PreferenceConstants.THREADED_VALIDATION_KEY, "Threaded Validation (experimental)", getFieldEditorParent()));
   }
 
   public void init(IWorkbench workbench) {
