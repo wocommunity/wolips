@@ -103,5 +103,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     prefs.setDefault(PreferenceConstants.ERROR_ON_HTML_ERRORS_KEY, true);
     prefs.setDefault(PreferenceConstants.WARN_ON_OPERATOR_KEY, true);
     prefs.setDefault(PreferenceConstants.WARN_ON_HELPER_FUNCTION_KEY, true);
+
+    prefs.setDefault(PreferenceConstants.THREADED_VALIDATION_KEY, false);
   }
 }

@@ -28,13 +28,15 @@ public class TypeCache {
     _apiCache = new HashMap<IJavaProject, ApiCache>();
   }
 
-  public synchronized TypeCacheEntry getTypeCacheEntry(IType type) throws JavaModelException {
-    TypeCacheEntry entry = _typeCacheEntries.get(type);
-    if (entry == null) {
-      entry = new TypeCacheEntry(type);
-      _typeCacheEntries.put(type, entry);
+  public TypeCacheEntry getTypeCacheEntry(IType type) throws JavaModelException {
+    synchronized (_typeCacheEntries) {
+      TypeCacheEntry entry = _typeCacheEntries.get(type);
+      if (entry == null) {
+        entry = new TypeCacheEntry(type);
+        _typeCacheEntries.put(type, entry);
+      }
+      return entry;
     }
-    return entry;
   }
 
   public ApiCache getApiCache(IJavaProject javaProject) {
@@ -43,13 +45,16 @@ public class TypeCache {
       apiCache = new ApiCache();
     }
     else {
-      apiCache = _apiCache.get(javaProject);
-      if (apiCache == null) {
-        apiCache = new ApiCache();
-        _apiCache.put(javaProject, apiCache);
+      synchronized (_apiCache) {
+        apiCache = _apiCache.get(javaProject);
+        if (apiCache == null) {
+          apiCache = new ApiCache();
+          _apiCache.put(javaProject, apiCache);
+        }
       }
     }
     return apiCache;
+
   }
 
   public List<BindingValueKey> getBindingValueAccessorKeys(IJavaProject javaProject, IType type, String name) throws JavaModelException {
@@ -60,46 +65,55 @@ public class TypeCache {
     return getTypeCacheEntry(type).getBindingValueMutatorKeys(javaProject, name);
   }
 
-  public synchronized void clearCacheForProject(IProject project) {
+  public void clearCacheForProject(IProject project) {
     if (project != null) {
+      System.out.println("TypeCache.clearCacheForProject: CLEARING " + project);
       List<IType> typesToClear = new LinkedList<IType>();
-      for (Map.Entry<IType, TypeCacheEntry> entry : _typeCacheEntries.entrySet()) {
-        IResource resource = entry.getValue().getResource();
-        if (resource != null && project.equals(resource.getProject())) {
-          typesToClear.add(entry.getKey());
+      synchronized (_typeCacheEntries) {
+        for (Map.Entry<IType, TypeCacheEntry> entry : _typeCacheEntries.entrySet()) {
+          IResource resource = entry.getValue().getResource();
+          if (resource != null && project.equals(resource.getProject())) {
+            typesToClear.add(entry.getKey());
+          }
         }
-      }
-      for (IType typeToClear : typesToClear) {
-        clearCacheForType(typeToClear);
+        for (IType typeToClear : typesToClear) {
+          clearCacheForType(typeToClear);
+        }
       }
     }
   }
 
-  public synchronized void clearCacheForResource(IResource resource) {
+  public void clearCacheForResource(IResource resource) {
     if (resource != null) {
       List<IType> typesToClear = new LinkedList<IType>();
-      for (Map.Entry<IType, TypeCacheEntry> entry : _typeCacheEntries.entrySet()) {
-        if (resource.equals(entry.getValue().getResource())) {
-          typesToClear.add(entry.getKey());
+      synchronized (_typeCacheEntries) {
+        for (Map.Entry<IType, TypeCacheEntry> entry : _typeCacheEntries.entrySet()) {
+          if (resource.equals(entry.getValue().getResource())) {
+            typesToClear.add(entry.getKey());
+          }
         }
-      }
-      for (IType typeToClear : typesToClear) {
-        clearCacheForType(typeToClear);
+        for (IType typeToClear : typesToClear) {
+          clearCacheForType(typeToClear);
+        }
       }
     }
   }
 
-  public synchronized void clearCacheForType(IType declaringType) {
-    System.out.println("TypeCache.clearCacheForType: clearing cache for " + declaringType.getFullyQualifiedName());
-    _typeCacheEntries.remove(declaringType);
+  public void clearCacheForType(IType declaringType) {
+    synchronized (_typeCacheEntries) {
+      System.out.println("TypeCache.clearCacheForType: clearing cache for " + declaringType.getFullyQualifiedName());
+      _typeCacheEntries.remove(declaringType);
+    }
   }
 
-  public synchronized IType getTypeForNameInType(String typeName, IType declaringType) throws JavaModelException {
+  public IType getTypeForNameInType(String typeName, IType declaringType) throws JavaModelException {
     return getTypeCacheEntry(declaringType).getTypeForName(typeName);
   }
 
-  public synchronized void clearCache() {
-    _typeCacheEntries.clear();
+  public void clearCache() {
+    synchronized (_typeCacheEntries) {
+      _typeCacheEntries.clear();
+    }
   }
 
   public List<IType> getSupertypesOf(IType type) throws JavaModelException {
@@ -146,45 +160,51 @@ public class TypeCache {
       return _resource;
     }
 
-    public synchronized List<BindingValueKey> getBindingValueAccessorKeys(IJavaProject javaProject, String name) throws JavaModelException {
-      List<BindingValueKey> bindingValueAccessorKeys = _bindingValueAccessorKeys.get(name);
-      //System.out.println("TypeCacheEntry.getBindingValueAccessorKeys: " + name + ": " + bindingValueAccessorKeys);
-      if (bindingValueAccessorKeys == null) {
-        //System.out.println("TypeCache.getBindingValueAccessorKeys: MISS " + type.getElementName() + ": " + name);
-        bindingValueAccessorKeys = BindingReflectionUtils.getBindingKeys(javaProject, _type, name, true, BindingReflectionUtils.ACCESSORS_OR_VOID, TypeCache.this);
-        // MS: Don't cache this for now -- I don't know how many end up in here and how long they
-        // hang around, but I think the answer is "a lot" and "for a long time".  However, it's a huge performance win.
-        _bindingValueAccessorKeys.put(name, bindingValueAccessorKeys);
+    public List<BindingValueKey> getBindingValueAccessorKeys(IJavaProject javaProject, String name) throws JavaModelException {
+      synchronized (_bindingValueAccessorKeys) {
+        List<BindingValueKey> bindingValueAccessorKeys = _bindingValueAccessorKeys.get(name);
+        //System.out.println("TypeCacheEntry.getBindingValueAccessorKeys: " + name + ": " + bindingValueAccessorKeys);
+        if (bindingValueAccessorKeys == null) {
+          //System.out.println("TypeCache.getBindingValueAccessorKeys: MISS " + type.getElementName() + ": " + name);
+          bindingValueAccessorKeys = BindingReflectionUtils.getBindingKeys(javaProject, _type, name, true, BindingReflectionUtils.ACCESSORS_OR_VOID, TypeCache.this);
+          // MS: Don't cache this for now -- I don't know how many end up in here and how long they
+          // hang around, but I think the answer is "a lot" and "for a long time".  However, it's a huge performance win.
+          _bindingValueAccessorKeys.put(name, bindingValueAccessorKeys);
+        }
+        else {
+          //System.out.println("TypeCache.getBindingValueAccessorKeys: HIT  " + type.getElementName() + ": " + name);
+        }
+        return bindingValueAccessorKeys;
       }
-      else {
-        //System.out.println("TypeCache.getBindingValueAccessorKeys: HIT  " + type.getElementName() + ": " + name);
-      }
-      return bindingValueAccessorKeys;
     }
 
-    public synchronized List<BindingValueKey> getBindingValueMutatorKeys(IJavaProject javaProject, String name) throws JavaModelException {
-      List<BindingValueKey> bindingValueMutatorKeys = _bindingValueMutatorKeys.get(name);
-      if (bindingValueMutatorKeys == null) {
-        //System.out.println("TypeCache.getBindingValueMutatorKeys: MISS " + type.getElementName() + ": " + name);
-        bindingValueMutatorKeys = BindingReflectionUtils.getBindingKeys(javaProject, _type, name, true, BindingReflectionUtils.MUTATORS_ONLY, TypeCache.this);
-        // MS: Don't cache this for now -- I don't know how many end up in here and how long they
-        // hang around, but I think the answer is "a lot" and "for a long time".  However, it's a huge performance win.
-        _bindingValueMutatorKeys.put(name, bindingValueMutatorKeys);
+    public List<BindingValueKey> getBindingValueMutatorKeys(IJavaProject javaProject, String name) throws JavaModelException {
+      synchronized (_bindingValueMutatorKeys) {
+        List<BindingValueKey> bindingValueMutatorKeys = _bindingValueMutatorKeys.get(name);
+        if (bindingValueMutatorKeys == null) {
+          //System.out.println("TypeCache.getBindingValueMutatorKeys: MISS " + type.getElementName() + ": " + name);
+          bindingValueMutatorKeys = BindingReflectionUtils.getBindingKeys(javaProject, _type, name, true, BindingReflectionUtils.MUTATORS_ONLY, TypeCache.this);
+          // MS: Don't cache this for now -- I don't know how many end up in here and how long they
+          // hang around, but I think the answer is "a lot" and "for a long time".  However, it's a huge performance win.
+          _bindingValueMutatorKeys.put(name, bindingValueMutatorKeys);
+        }
+        else {
+          //System.out.println("TypeCache.getBindingValueMutatorKeys: HIT  " + type.getElementName() + ": " + name);
+        }
+        return bindingValueMutatorKeys;
       }
-      else {
-        //System.out.println("TypeCache.getBindingValueMutatorKeys: HIT  " + type.getElementName() + ": " + name);
-      }
-      return bindingValueMutatorKeys;
     }
 
-    public synchronized IType getTypeForName(String typeName) throws JavaModelException {
+    public IType getTypeForName(String typeName) throws JavaModelException {
       IType type;
       if ("void".equals(typeName) || (typeName != null && typeName.length() == 1)) {
         // ignore primitives
         type = null;
       }
       else {
-        type = _nextTypeCache.get(typeName);
+        synchronized (_nextTypeCache) {
+          type = _nextTypeCache.get(typeName);
+        }
         if (type == null) {
           //long t = System.currentTimeMillis();
           // MS: This call right here is the DEVIL.  This is BY FAR where the
@@ -201,7 +221,9 @@ public class TypeCache {
           else {
             type = JavaModelUtil.findType(_type.getJavaProject(), resolvedNextTypeName);
             if (type != null) {
-              _nextTypeCache.put(typeName, type);
+              synchronized (_nextTypeCache) {
+                _nextTypeCache.put(typeName, type);
+              }
             }
             else {
               System.out.println("TypeCacheEntry.getTypeForName: couldn't resolve " + resolvedNextTypeName);
@@ -228,7 +250,7 @@ public class TypeCache {
       ITypeHierarchy typeHierarchy = SubTypeHierarchyCache.getTypeHierarchyInProject(_type, project);
       List<IType> types = new LinkedList<IType>();
       IType[] subtypes = typeHierarchy.getAllSubtypes(_type);
-      for (int subtypeNum = subtypes.length - 1; subtypeNum >= 0; subtypeNum --) {
+      for (int subtypeNum = subtypes.length - 1; subtypeNum >= 0; subtypeNum--) {
         types.add(subtypes[subtypeNum]);
       }
       types.add(_type);

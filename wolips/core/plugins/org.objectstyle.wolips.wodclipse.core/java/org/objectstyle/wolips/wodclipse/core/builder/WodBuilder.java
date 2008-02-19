@@ -46,13 +46,14 @@ package org.objectstyle.wolips.wodclipse.core.builder;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -63,7 +64,6 @@ import org.objectstyle.wolips.bindings.Activator;
 import org.objectstyle.wolips.bindings.preferences.PreferenceConstants;
 import org.objectstyle.wolips.core.resources.builder.AbstractFullAndIncrementalBuilder;
 import org.objectstyle.wolips.core.resources.types.SuperTypeHierarchyCache;
-import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
@@ -72,17 +72,20 @@ import org.objectstyle.wolips.wodclipse.core.util.WodModelUtils;
 public class WodBuilder extends AbstractFullAndIncrementalBuilder {
   private boolean _validateTemplates;
   private int _buildKind;
+  private ExecutorService _threadPool;
+  private boolean _threadedBuild;
 
   public WodBuilder() {
     super();
+    _threadPool = Executors.newFixedThreadPool(4);
   }
 
   @SuppressWarnings("unchecked")
   public boolean buildStarted(int kind, Map args, IProgressMonitor monitor, IProject project, Map buildCache) {
     _buildKind = kind;
     _validateTemplates = Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.VALIDATE_TEMPLATES_KEY);
+    _threadedBuild = Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.THREADED_VALIDATION_KEY);
     if (kind == IncrementalProjectBuilder.FULL_BUILD) {
-      System.out.println("WodBuilder.buildStarted: clear project cache " + project);
       WodParserCache.getTypeCache().clearCacheForProject(project);
     }
     return false;
@@ -244,23 +247,56 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
     // DO NOTHING
   }
 
-  protected void validateWodFile(IResource resource, IProgressMonitor progressMonitor) throws CoreException, LocateException {
-    //System.out.println("WodBuilder.validateWodFile: " + resource);
+  protected void validateWodFile(IResource resource, IProgressMonitor progressMonitor) {
+    if (_threadedBuild) {
+      _threadPool.execute(new BuildingComponent(resource, progressMonitor));
+    }
+    else {
+      WodBuilder._validateWodFile(resource, progressMonitor, true);
+    }
+  }
+
+  public static void _validateWodFile(IResource resource, IProgressMonitor progressMonitor, boolean showProgress) {
+    System.out.println("BuildingComponent.run: " + resource);
     String resourceName = resource.getName();
     if (progressMonitor != null) {
-      progressMonitor.subTask("Locating components for " + resourceName + " ...");
-    }
-    WodParserCache cache = WodParserCache.parser(resource);
-    if (progressMonitor != null && cache.getWodFile() != null) {
-      progressMonitor.subTask("Building WO " + cache.getWodFile().getName() + " ...");
+      if (showProgress) {
+        progressMonitor.subTask("Locating components for " + resourceName + " ...");
+      }
     }
     try {
+      WodParserCache cache = WodParserCache.parser(resource);
+      if (progressMonitor != null && cache.getWodFile() != null) {
+        if (showProgress) {
+          progressMonitor.subTask("Building WO " + cache.getWodFile().getName() + " ...");
+        }
+      }
       cache.clearValidationCache();
       cache.parseHtmlAndWodIfNecessary();
       cache.validate();
     }
     catch (Throwable t) {
       t.printStackTrace();
+    }
+    System.out.println("BuildingComponent.run: done with " + resource);
+  }
+
+  public static class BuildingComponent implements Runnable {
+    private IResource _resource;
+    private IProgressMonitor _monitor;
+
+    public BuildingComponent(IResource resource, IProgressMonitor monitor) {
+      _resource = resource;
+      _monitor = monitor;
+    }
+
+    public void run() {
+      if (!_monitor.isCanceled()) {
+        WodBuilder._validateWodFile(_resource, _monitor, false);
+      }
+      else {
+        System.out.println("BuildingComponent.run: cancelled " + _resource);
+      }
     }
   }
 }

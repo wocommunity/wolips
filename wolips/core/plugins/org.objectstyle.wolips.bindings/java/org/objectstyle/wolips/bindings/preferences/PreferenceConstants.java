@@ -77,4 +77,6 @@ public class PreferenceConstants {
 	public static final String BINDING_VALIDATION_RULES_KEY = "BindingValidationRules";
 
 	public static final String WO54_KEY = "WO 5.4";
+
+  public static final String THREADED_VALIDATION_KEY = "ThreadedValidation";
 }
