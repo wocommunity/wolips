@@ -110,7 +110,7 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 		if (_templateEditorPart != null) {
 			try {
 				parserCache = _templateEditorPart.getTemplateEditor().getSourceEditor().getParserCache();
-				_bindingsContentProvider.setContext(parserCache.getJavaProject(), parserCache.getTypeCache());
+				_bindingsContentProvider.setContext(parserCache.getJavaProject(), WodParserCache.getTypeCache());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
