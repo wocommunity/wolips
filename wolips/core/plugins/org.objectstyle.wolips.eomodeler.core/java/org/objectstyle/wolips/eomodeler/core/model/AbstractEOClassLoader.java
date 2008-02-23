@@ -23,6 +23,7 @@ public abstract class AbstractEOClassLoader implements IEOClassLoaderFactory {
 
 	public ClassLoader createClassLoaderForModel(EOModel model) throws EOModelException {
 		try {
+		  System.out.println("AbstractEOClassLoader.createClassLoaderForModel: " + model.getName() + " ...");
 			Set<URL> classpathSet = new LinkedHashSet<URL>();
 			fillInModelClasspath(model, classpathSet);
 			fillInDevelopmentClasspath(classpathSet);
@@ -32,9 +33,9 @@ public abstract class AbstractEOClassLoader implements IEOClassLoaderFactory {
 				classpathSet.add(sqlJarUrl);
 			}
 			StringBuffer webobjectsClasspath = new StringBuffer();
-			Iterator classpathIter = classpathSet.iterator();
+			Iterator<URL> classpathIter = classpathSet.iterator();
 			while (classpathIter.hasNext()) {
-				URL classpathUrl = (URL) classpathIter.next();
+				URL classpathUrl = classpathIter.next();
 				webobjectsClasspath.append(File.pathSeparator);
 				webobjectsClasspath.append(classpathUrl.getPath());
 				// System.out.println("ClasspathUtils.createEOModelClassLoader:
