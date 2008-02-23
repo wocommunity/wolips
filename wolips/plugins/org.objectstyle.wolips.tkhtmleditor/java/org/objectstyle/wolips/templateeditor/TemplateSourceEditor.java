@@ -1,13 +1,23 @@
 package org.objectstyle.wolips.templateeditor;
 
+import java.io.IOException;
+
+import jp.aonir.fuzzyxml.FuzzyXMLDocument;
+import jp.aonir.fuzzyxml.FuzzyXMLElement;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
@@ -46,9 +56,9 @@ public class TemplateSourceEditor extends HTMLSourceEditor {
       e.printStackTrace();
     }
     super.dispose();
-    
+
   }
-  
+
   @Override
   public void update() {
     try {
@@ -60,7 +70,7 @@ public class TemplateSourceEditor extends HTMLSourceEditor {
     }
     super.update();
   }
-  
+
   @Override
   protected void doValidate() {
     //    if(!isFileEditorInput()){
@@ -148,4 +158,48 @@ public class TemplateSourceEditor extends HTMLSourceEditor {
   protected void updateAssist() {
     super.updateAssist();
   }
+
+  public int widgetOffset2ModelOffset(int widgetOffset) {
+    return AbstractTextEditor.widgetOffset2ModelOffset(getSourceViewer(), widgetOffset);
+  }
+
+  public Point getTagSelectionAtOffset(int modelOffset) throws BadLocationException, CoreException, LocateException, IOException {
+    Point selection = null;
+
+    WodParserCache cache = getParserCache();
+    FuzzyXMLDocument xmlDocument = cache.getHtmlXmlDocument();
+    if (xmlDocument != null) {
+      FuzzyXMLElement selectedElement = xmlDocument.getElementByOffset(modelOffset);
+      if (selectedElement != null) {
+        IDocument doc = cache.getHtmlDocument();
+
+        int openTagOffset = selectedElement.getOffset();
+        int openTagLength = selectedElement.getOpenTagLength() + 2;
+        int openTagEndOffset = openTagOffset + openTagLength;
+        if (selectedElement.hasCloseTag()) {
+          int closeTagOffset = selectedElement.getCloseTagOffset();
+          int closeTagEndOffset = closeTagOffset + selectedElement.getCloseTagLength();
+          //if (modelOffset > openTagEndOffset && modelOffset < selectedElement.getCloseTagOffset()) {
+          if ((modelOffset >= openTagOffset && modelOffset < openTagEndOffset) || (modelOffset >= closeTagOffset && modelOffset < closeTagEndOffset)) {
+            IRegion lineRegion = doc.getLineInformationOfOffset(openTagEndOffset);
+            int lineEndOffset = lineRegion.getOffset() + lineRegion.getLength();
+            if (openTagEndOffset == lineEndOffset) {
+              openTagEndOffset++;
+              openTagLength++;
+            }
+            selection = new Point(openTagOffset, selectedElement.getLength());
+          }
+          else {
+            selection = new Point(modelOffset, 0);
+          }
+        }
+        else {
+          selection = new Point(selectedElement.getOffset(), selectedElement.getLength());
+        }
+      }
+    }
+
+    return selection;
+  }
+
 }

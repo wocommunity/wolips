@@ -50,24 +50,34 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.dnd.IDragAndDropService;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.components.input.ComponentEditorInput;
+import org.objectstyle.wolips.templateeditor.TemplateEditor;
+import org.objectstyle.wolips.templateeditor.TemplateSourceEditor;
 
 /**
  * @author uli
  */
 public class ComponentEditor extends ComponentEditorPart implements IGotoMarker, ITextEditor {
 	public static final String ID = "org.objectstyle.wolips.componenteditor.ComponentEditor";
+
+	private boolean _dragAndDropInitialized;
 
 	public ComponentEditor() {
 		super();
@@ -111,6 +121,27 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 			}
 		}
 		super.init(site, input);
+	}
+
+	@Override
+	protected void createPages() {
+		super.createPages();
+
+		if (!_dragAndDropInitialized) {
+			TemplateEditor templateEditor = getTemplateEditor();
+			TemplateSourceEditor templateSourceEditor = templateEditor.getSourceEditor();
+			initializeDragAndDrop(templateSourceEditor.getViewer());
+			_dragAndDropInitialized = true;
+		}
+	}
+
+	protected void initializeDragAndDrop(final ISourceViewer viewer) {
+		IDragAndDropService dndService = (IDragAndDropService) getSite().getService(IDragAndDropService.class);
+		if (dndService != null) {
+			final StyledText st = viewer.getTextWidget();
+			ComponentDropTargetAdaptor dropTarget = new ComponentDropTargetAdaptor(this);
+			dndService.addMergedDropTarget(st, DND.DROP_MOVE | DND.DROP_COPY, new Transfer[] { LocalSelectionTransfer.getInstance() }, dropTarget);
+		}
 	}
 
 	public IDocumentProvider getDocumentProvider() {

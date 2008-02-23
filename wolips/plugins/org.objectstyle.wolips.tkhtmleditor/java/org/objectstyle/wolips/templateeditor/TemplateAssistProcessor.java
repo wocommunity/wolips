@@ -113,7 +113,7 @@ public class TemplateAssistProcessor extends HTMLAssistProcessor {
         if (!proposals.isEmpty()) {
           tagInfos = new LinkedList<TagInfo>();
           for (WodCompletionProposal proposal : proposals) {
-            InlineWodTagInfo tagInfo = new InlineWodTagInfo(proposal.getProposal(), _cache.getTypeCache());
+            InlineWodTagInfo tagInfo = new InlineWodTagInfo(proposal.getProposal(), WodParserCache.getTypeCache());
             tagInfo.setJavaProject(javaProject);
             tagInfos.add(tagInfo);
           }
@@ -167,7 +167,7 @@ public class TemplateAssistProcessor extends HTMLAssistProcessor {
         }
         IFile wodFile = getFile();
         String componentTypeName = wodFile.getLocation().removeFileExtension().lastSegment();
-        IType componentType = BindingReflectionUtils.findElementType(wodTagInfo.getJavaProject(), componentTypeName, true, _cache.getTypeCache());
+        IType componentType = BindingReflectionUtils.findElementType(wodTagInfo.getJavaProject(), componentTypeName, true, WodParserCache.getTypeCache());
         Set<WodCompletionProposal> proposals = new HashSet<WodCompletionProposal>();
         int dotIndex = bindingValue.lastIndexOf('.');
         if (dotIndex == -1) {
@@ -176,12 +176,12 @@ public class TemplateAssistProcessor extends HTMLAssistProcessor {
         else {
           dotIndex += 2;
         }
-        boolean checkBindingValue = WodCompletionUtils.fillInBindingValueCompletionProposals(wodTagInfo.getJavaProject(), componentType, bindingValue, 0, bindingValue.length(), proposals, _cache.getTypeCache());
+        boolean checkBindingValue = WodCompletionUtils.fillInBindingValueCompletionProposals(wodTagInfo.getJavaProject(), componentType, bindingValue, 0, bindingValue.length(), proposals, WodParserCache.getTypeCache());
         if (checkBindingValue) {
           try {
             String elementTypeName = wodTagInfo.getExpandedElementTypeName();
-            IType elementType = BindingReflectionUtils.findElementType(wodTagInfo.getJavaProject(), elementTypeName, false, _cache.getTypeCache());
-            String[] validValues = ApiUtils.getValidValues(value, wodTagInfo.getJavaProject(), _cache.getComponentType(), elementType, attrInfo.getAttributeName(), _cache.getTypeCache());
+            IType elementType = BindingReflectionUtils.findElementType(wodTagInfo.getJavaProject(), elementTypeName, false, WodParserCache.getTypeCache());
+            String[] validValues = ApiUtils.getValidValues(value, wodTagInfo.getJavaProject(), _cache.getComponentType(), elementType, attrInfo.getAttributeName(), WodParserCache.getTypeCache());
             if (validValues != null) {
               String lowercaseBindingValue = bindingValue.toLowerCase();
               for (String validValue : validValues) {
@@ -262,7 +262,7 @@ public class TemplateAssistProcessor extends HTMLAssistProcessor {
   protected TagInfo getTagInfo(String name) {
     if (name.startsWith("wo:")) {
       String elementTypeName = name.substring("wo:".length());
-      InlineWodTagInfo tagInfo = new InlineWodTagInfo(elementTypeName, _cache.getTypeCache());
+      InlineWodTagInfo tagInfo = new InlineWodTagInfo(elementTypeName, WodParserCache.getTypeCache());
       tagInfo.setJavaProject(getJavaProject());
       return tagInfo;
     }

@@ -32,9 +32,19 @@ public class InsertComponentSpecification {
 	private Map<String, String> _attributes;
 
 	private boolean _inline;
+	
+	private boolean _componentContent;
 
 	public InsertComponentSpecification(String componentName) {
 		_componentName = componentName;
+	}
+	
+	public void setComponentContent(boolean componentContent) {
+		_componentContent = componentContent;
+	}
+	
+	public boolean isComponentContent() {
+		return _componentContent;
 	}
 
 	public void setAttributes(Map<String, String> attributes) {

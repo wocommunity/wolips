@@ -11,6 +11,7 @@ import jp.aonir.fuzzyxml.internal.RenderContext;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
@@ -26,23 +27,23 @@ public class FormatRefactoring implements IRunnableWithProgress {
   public void run(IProgressMonitor monitor) throws InvocationTargetException {
     try {
       _cache.clearCache();
-      
+
       FuzzyXMLDocument htmlModel = _cache.getHtmlXmlDocument();
       FuzzyXMLElement documentElement = htmlModel.getDocumentElement();
       IDocument htmlDocument = _cache.getHtmlDocument();
-      
+
+      IPreferenceStore prefs = Activator.getDefault().getPreferenceStore();
       RenderContext renderContext = new RenderContext(true);
       renderContext.setShowNewlines(true);
-      renderContext.setIndentSize(2);
-      renderContext.setIndentTabs(false);
+      renderContext.setIndentSize(prefs.getInt(PreferenceConstants.INDENT_SIZE));
+      renderContext.setIndentTabs(prefs.getBoolean(PreferenceConstants.INDENT_TABS));
       renderContext.setTrim(true);
-      renderContext.setLowercaseAttributes(true);
-      renderContext.setLowercaseTags(true);
-      boolean spacesAroundEquals =Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.SPACES_AROUND_EQUALS);
-      renderContext.setSpacesAroundEquals(spacesAroundEquals);
+      renderContext.setLowercaseAttributes(prefs.getBoolean(PreferenceConstants.LOWERCASE_ATTRIBUTES));
+      renderContext.setLowercaseTags(prefs.getBoolean(PreferenceConstants.LOWERCASE_TAGS));
+      renderContext.setSpacesAroundEquals(prefs.getBoolean(PreferenceConstants.SPACES_AROUND_EQUALS));
       renderContext.setSpaceInEmptyTags(true);
       renderContext.setAddMissingQuotes(true);
-      
+
       StringBuffer htmlBuffer = new StringBuffer();
       FuzzyXMLDocType docType = htmlModel.getDocumentType();
       if (docType != null) {

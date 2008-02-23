@@ -261,14 +261,14 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   public boolean hasChildren() {
     return _children.size() > 0;
   }
-  
+
   public boolean isEmpty() {
     boolean empty = !hasChildren();
     if (!empty) {
       empty = true;
       for (FuzzyXMLNode child : _children) {
         if (child instanceof FuzzyXMLText) {
-          FuzzyXMLText text = (FuzzyXMLText)child;
+          FuzzyXMLText text = (FuzzyXMLText) child;
           String textValue = text.getValue();
           if (textValue != null && textValue.trim().length() > 0) {
             empty = false;
@@ -479,20 +479,24 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
       renderSurroundingTags = delegate.beforeOpenTag(this, renderContext, xmlBuffer);
     }
     try {
+      boolean shouldFormat = renderContext.shouldFormat();
+
       String tagName = FuzzyXMLUtil.escape(getName(), isHTML);
       if (renderContext.isLowercaseTags() && FuzzyXMLUtil.isAllUppercase(tagName)) {
         tagName = tagName.toLowerCase();
       }
-      
+
       if (renderSurroundingTags) {
-        renderContext.appendIndent(xmlBuffer);
+        if (shouldFormat) {
+          renderContext.appendIndent(xmlBuffer);
+        }
         xmlBuffer.append("<").append(tagName);
         FuzzyXMLAttribute[] attrs = getAttributes();
         for (int i = 0; i < attrs.length; i++) {
           attrs[i].toXMLString(renderContext, xmlBuffer);
         }
       }
-      
+
       boolean forbiddenSelfClosing = ("a".equalsIgnoreCase(tagName) || "div".equalsIgnoreCase(tagName) || "script".equalsIgnoreCase(tagName));
       FuzzyXMLNode[] children = getChildren();
       if (children.length == 0 && !forbiddenSelfClosing) {
@@ -509,39 +513,45 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
         }
 
         boolean isScript = "script".equalsIgnoreCase(getName());
+        if (isScript) {
+          shouldFormat = false;
+          renderContext.setShouldFormat(false);
+        }
         Set<FuzzyXMLText> hiddenTextNodes = new HashSet<FuzzyXMLText>();
         int textBlocks = 0;
         boolean newlines = false;
-        if (renderContext.isShowNewlines()) {
-          for (int i = 0; i < children.length; i++) {
-            if (children[i] instanceof FuzzyXMLElement) {
-              newlines = true;
-            }
-            else if (children[i] instanceof FuzzyXMLText) {
-              FuzzyXMLText text = (FuzzyXMLText) children[i];
-              if (renderContext.isTrim()) {
-                String value = text.getValue().trim();
-                if (value.length() == 0) {
-                  hiddenTextNodes.add(text);
-                }
-                else {
-                  textBlocks++;
-                  if (value.indexOf('\n') >= 0) {
+        if (shouldFormat) {
+          if (renderContext.isShowNewlines()) {
+            for (int i = 0; i < children.length; i++) {
+              if (children[i] instanceof FuzzyXMLElement) {
+                newlines = true;
+              }
+              else if (children[i] instanceof FuzzyXMLText) {
+                FuzzyXMLText text = (FuzzyXMLText) children[i];
+                if (renderContext.isTrim()) {
+                  String value = text.getValue().trim();
+                  if (value.length() == 0) {
+                    hiddenTextNodes.add(text);
+                  }
+                  else {
                     textBlocks++;
+                    if (value.indexOf('\n') >= 0) {
+                      textBlocks++;
+                    }
                   }
                 }
               }
             }
+            if (textBlocks > 1) {
+              newlines = true;
+            }
           }
-          if (textBlocks > 1) {
-            newlines = true;
-          }
-        }
 
-        if (renderContext.isShowNewlines() && newlines) {
-          xmlBuffer.append("\n");
+          if (renderContext.isShowNewlines() && newlines) {
+            xmlBuffer.append("\n");
+          }
+          renderContext.indent();
         }
-        renderContext.indent();
 
         if (delegate != null) {
           delegate.afterOpenTag(this, renderContext, xmlBuffer);
@@ -549,14 +559,14 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
 
         boolean lastNodeWasText = false;
         for (int i = 0; i < children.length; i++) {
-          if (renderContext.isShowNewlines() && lastNodeWasText && children[i] instanceof FuzzyXMLElement) {
+          if (shouldFormat && renderContext.isShowNewlines() && lastNodeWasText && children[i] instanceof FuzzyXMLElement) {
             xmlBuffer.append("\n");
           }
 
           boolean isText = children[i] instanceof FuzzyXMLText;
           boolean wasTextEscaped = false;
           boolean oldTrim = renderContext.isTrim();
-          if (isText) {
+          if (shouldFormat && isText) {
             FuzzyXMLText text = (FuzzyXMLText) children[i];
             wasTextEscaped = text.isEscape();
             if (!hiddenTextNodes.contains(children[i])) {
@@ -585,7 +595,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
           }
         }
 
-        if (renderContext.isShowNewlines() && lastNodeWasText && textBlocks > 1) {
+        if (shouldFormat && renderContext.isShowNewlines() && lastNodeWasText && textBlocks > 1) {
           xmlBuffer.append("\n");
         }
 
@@ -593,17 +603,26 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
           delegate.beforeCloseTag(this, renderContext, xmlBuffer);
         }
 
-        renderContext.outdent();
+        if (shouldFormat) {
+          renderContext.outdent();
+        }
         if (renderSurroundingTags) {
-          if (newlines || (lastNodeWasText && textBlocks > 1)) {
-            renderContext.appendIndent(xmlBuffer);
+          if (shouldFormat) {
+            if (newlines || (lastNodeWasText && textBlocks > 1)) {
+              renderContext.appendIndent(xmlBuffer);
+            }
           }
-  
+
           xmlBuffer.append("</").append(tagName).append(">");
+        }
+
+        if (isScript) {
+          shouldFormat = true;
+          renderContext.setShouldFormat(true);
         }
       }
 
-      if (renderContext.isShowNewlines()) {
+      if (shouldFormat && renderContext.isShowNewlines()) {
         xmlBuffer.append("\n");
       }
     }
