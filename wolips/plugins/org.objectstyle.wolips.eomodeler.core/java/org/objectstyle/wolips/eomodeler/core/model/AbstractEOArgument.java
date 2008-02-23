@@ -469,10 +469,21 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 			argumentMap.remove("factoryMethodArgumentType");
 		}
 		argumentMap.setString("adaptorValueConversionMethodName", myAdaptorValueConversionMethodName, true);
-		argumentMap.setBoolean("allowsNull", myAllowsNull, EOModelMap.YN);
+		
+		if (isPrototyped()) {
+			argumentMap.setBoolean("allowsNull", myAllowsNull, EOModelMap.YN);
+		}
+		else {
+			argumentMap.setBoolean("allowsNull", myAllowsNull, EOModelMap.YNOptionalDefaultNo);
+		}
+				
 		argumentMap.setString("definition", myDefinition, true);
 		writeUserInfo(argumentMap);
 		return argumentMap;
+	}
+	
+	protected boolean isPrototyped() {
+		return false;
 	}
 
 	public EOModelMap getArgumentMap() {
