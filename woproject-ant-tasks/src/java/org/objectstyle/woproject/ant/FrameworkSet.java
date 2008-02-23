@@ -326,7 +326,7 @@ public class FrameworkSet extends FileSet {
             int dirLength = getDir(getProject()).toString().length();
             for (int i = 0; i < frameworkJars.length; i++)
             {
-                frameworkJars[i] = frameworkJars[i].substring(dirLength);
+              frameworkJars[i] = frameworkJars[i].substring(dirLength + 1);  // Exclude leading /
             }
 
             // The included files are both the normally included files as well as
