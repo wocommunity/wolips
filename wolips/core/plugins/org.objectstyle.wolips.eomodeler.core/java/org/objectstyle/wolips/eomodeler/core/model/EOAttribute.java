@@ -233,6 +233,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		return prototyped;
 	}
 
+	@Override
 	public boolean isPrototyped() {
 		boolean prototyped = false;
 		EOAttribute prototype = getPrototype();
@@ -868,7 +869,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		attributeMap.remove("insertFormat");
 		return attributeMap;
 	}
-
+	
 	public void resolve(Set<EOModelVerificationFailure> _failures) {
 		String prototypeName = getArgumentMap().getString("prototypeName", true);
 		clearCachedPrototype(prototypeName, _failures, false, true);
