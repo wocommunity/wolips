@@ -6,7 +6,7 @@
 	<key>CFBundleExecutable</key>
 		<string>Entity Modeler</string>
 	<key>CFBundleGetInfoString</key>
-		<string>Entity Modeler, Copyright (c) 2007 The ObjectStyle Group, and individual authors of the software.</string>
+		<string>Entity Modeler, Copyright (c) 2008 The ObjectStyle Group, and individual authors of the software.</string>
 	<key>CFBundleIconFile</key>
 		<string>EntityModeler.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -22,7 +22,7 @@
 	<key>CFBundleSignature</key>
 		<string>eomd</string>
 	<key>CFBundleVersion</key>
-		<string>1.0.1</string>
+		<string>1.0.3</string>
 
   <key>CFBundleDocumentTypes</key>
 	  <array>
@@ -49,9 +49,9 @@
 		<array>
 			<string>-vm</string><string>/System/Library/Frameworks/JavaVM.framework/Versions/1.5/Commands/java</string>
 			<string>--launcher.library</string>
-			<string>$APP_PACKAGE/Contents/Resources/plugins/org.eclipse.equinox.launcher.carbon.macosx_1.0.1.R33x_v20070724/eclipse_1019.so</string>
+			<string>$APP_PACKAGE/Contents/Resources/plugins/org.eclipse.equinox.launcher.carbon.macosx_1.0.3.R33x_v20080118/eclipse_1023.so</string>
 			<string>-startup</string>
-			<string>$APP_PACKAGE/Contents/Resources/plugins/org.eclipse.equinox.launcher_1.0.1.R33x_v20070803.jar</string>
+			<string>$APP_PACKAGE/Contents/Resources/plugins/org.eclipse.equinox.launcher_1.0.1.R33x_v20080118.jar</string>
 			<string>-keyring</string><string>~/.eclipse_keyring</string>
 			<string>-consoleLog</string>
 			<string>-showlocation</string>
