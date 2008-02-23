@@ -157,6 +157,14 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 				}
 			}
 		}
+		
+		// MS: Remove jdbc2Info prior to SQL generation
+		NSDictionary connectionDictionary = _model.connectionDictionary();
+		if (connectionDictionary != null) {
+			NSMutableDictionary mutableConnectionDictionary = connectionDictionary.mutableClone();
+			mutableConnectionDictionary.removeObjectForKey("jdbc2Info");
+			_model.setConnectionDictionary(mutableConnectionDictionary);
+		}
 
 		ensureSingleTableInheritanceParentEntitiesAreIncluded();
 		ensureSingleTableInheritanceChildEntitiesAreIncluded();
