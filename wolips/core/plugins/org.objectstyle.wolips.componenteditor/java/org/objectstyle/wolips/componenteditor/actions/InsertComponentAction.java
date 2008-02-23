@@ -34,6 +34,16 @@ import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
  */
 
 public abstract class InsertComponentAction extends InsertHtmlAndWodAction {
+	private Wo _wo;
+	
+	public Wo getWo() {
+		String componentName = getComponentName();
+		if (_wo == null) {
+			_wo = getWo(componentName);
+		}
+		return _wo;
+	}
+	
 	/**
 	 * <P>
 	 * This method will return the Wo file from which parsed information can be
@@ -44,7 +54,6 @@ public abstract class InsertComponentAction extends InsertHtmlAndWodAction {
 		Wo wo = null;
 		if (componentName != null) {
 			TemplateEditor te = getTemplateEditor();
-
 			if (null != te) {
 				IFileEditorInput input = (IFileEditorInput) te.getEditorInput();
 				IFile file = input.getFile();
@@ -63,7 +72,7 @@ public abstract class InsertComponentAction extends InsertHtmlAndWodAction {
 		}
 		return wo;
 	}
-	
+
 	protected IJavaProject getJavaProject() {
 		IJavaProject javaProject = null;
 		TemplateEditor te = getTemplateEditor();
@@ -86,15 +95,6 @@ public abstract class InsertComponentAction extends InsertHtmlAndWodAction {
 		return requiredBindings;
 	}
 
-	protected boolean canHaveComponentContent(String componentName) {
-		boolean componentContent = false;
-		Wo wo = getWo(componentName);
-		if (wo != null) {
-			componentContent = wo.isComponentContent();
-		}
-		return componentContent;
-	}
-
 	/**
 	 * <P>
 	 * This is a standard suffix for the component names. For example, you might
@@ -114,12 +114,20 @@ public abstract class InsertComponentAction extends InsertHtmlAndWodAction {
 	public abstract String getComponentName();
 
 	protected InsertComponentSpecification getComponentSpecification() {
-		InsertComponentSpecification ics = new InsertComponentSpecification(getComponentName());
-		ics.setComponentInstanceNameSuffix(getComponentInstanceNameSuffix());
+		InsertComponentSpecification ics = _componentSpecification;
 
-		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		InsertComponentDialogue dialog = new InsertComponentDialogue(window.getShell(), getJavaProject(), ics);
-		int results = dialog.open();
+		int results;
+		if (ics == null) {
+			ics = new InsertComponentSpecification(getComponentName());
+			ics.setComponentInstanceNameSuffix(getComponentInstanceNameSuffix());
+
+			IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+			InsertComponentDialogue dialog = new InsertComponentDialogue(window.getShell(), getJavaProject(), ics);
+			results = dialog.open();
+		} else {
+			results = Window.OK;
+		}
+
 		if (results == Window.OK) {
 			ics.setRequiredBindings(getRequiredBindings(ics.getComponentName()));
 
@@ -128,6 +136,11 @@ public abstract class InsertComponentAction extends InsertHtmlAndWodAction {
 				Map<String, String> attributes = new HashMap<String, String>();
 				attributes.put("name", ics.getComponentInstanceName());
 				ics.setAttributes(attributes);
+			}
+
+			Wo wo = getWo(ics.getComponentName());
+			if (wo != null) {
+				ics.setComponentContent(wo.isComponentContent());
 			}
 		} else {
 			ics = null;

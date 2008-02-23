@@ -68,6 +68,12 @@ public class PreferenceConstants {
   public static final String UNKNOWN = "Unknown";
 
   public static final String SPACES_AROUND_EQUALS = "SpacesAroundEquals";
-  
-  
+
+  public static final String INDENT_SIZE = "IndentSize";
+
+  public static final String INDENT_TABS = "IndentTabs";
+
+  public static final String LOWERCASE_ATTRIBUTES = "LowercaseAttributes";
+
+  public static final String LOWERCASE_TAGS = "LowercaseTags";
 }

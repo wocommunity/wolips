@@ -18,17 +18,29 @@ import org.objectstyle.wolips.wodclipse.editor.WodEditor;
 public abstract class AbstractTemplateAction extends ActionDelegate implements IEditorActionDelegate {
 	private IEditorPart _activeEditor;
 
+	private TemplateEditor _templateEditor;
+
+	private WodEditor _wodEditor;
+
 	protected ComponentEditorPart getComponentEditorPart() {
-		return (ComponentEditorPart)_activeEditor;
+		return (ComponentEditorPart) _activeEditor;
 	}
-	
+
+	public void setComponentEditorPart(ComponentEditorPart editor) {
+		_activeEditor = editor;
+	}
+
+	public void setTemplateEditor(TemplateEditor templateEditor) {
+		_templateEditor = templateEditor;
+	}
+
 	/**
 	 * This method will return the current template editor or null if there is
 	 * not a current template editor.
 	 */
 	protected TemplateEditor getTemplateEditor() {
-		TemplateEditor templateEditor = null;
-		if (_activeEditor != null) {
+		TemplateEditor templateEditor = _templateEditor;
+		if (_templateEditor == null && _activeEditor != null) {
 			ComponentEditorPart cep = (ComponentEditorPart) _activeEditor;
 			HtmlWodTab hwt = cep.htmlWodTab();
 			if (hwt != null) {
@@ -38,13 +50,17 @@ public abstract class AbstractTemplateAction extends ActionDelegate implements I
 		return templateEditor;
 	}
 
+	public void setWodEditor(WodEditor wodEditor) {
+		_wodEditor = wodEditor;
+	}
+
 	/**
 	 * This method will return the current WOD editor or null if there is not a
 	 * current WOD editor.
 	 */
 	protected WodEditor getWodEditor() {
-		WodEditor wodEditor = null;
-		if (_activeEditor != null) {
+		WodEditor wodEditor = _wodEditor;
+		if (_wodEditor == null && _activeEditor != null) {
 			ComponentEditorPart cep = (ComponentEditorPart) _activeEditor;
 			HtmlWodTab hwt = cep.htmlWodTab();
 			if (hwt != null) {

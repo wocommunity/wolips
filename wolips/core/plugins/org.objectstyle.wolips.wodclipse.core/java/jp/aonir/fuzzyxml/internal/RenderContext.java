@@ -17,13 +17,23 @@ public class RenderContext {
   private boolean _lowercaseAttributes;
   private RenderDelegate _delegate;
   private Map<String, Object> _attributes;
+  private boolean _shouldFormat;
 
   public RenderContext(boolean html) {
     _indentSize = 0;
     _showNewlines = false;
     _indentTabs = false;
     _html = html;
+    _shouldFormat = true;
     _attributes = new HashMap<String, Object>();
+  }
+  
+  public void setShouldFormat(boolean shouldFormat) {
+    _shouldFormat = shouldFormat;
+  }
+  
+  public boolean shouldFormat() {
+    return _shouldFormat;
   }
   
   public void setAttribute(String key, Object value) {
