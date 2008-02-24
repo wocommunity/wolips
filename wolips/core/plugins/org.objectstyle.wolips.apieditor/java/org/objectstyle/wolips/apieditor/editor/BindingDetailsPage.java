@@ -79,6 +79,7 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.objectstyle.wolips.bindings.api.ApiModel;
 import org.objectstyle.wolips.bindings.api.Binding;
+import org.objectstyle.wolips.bindings.api.IApiBinding;
 
 /**
  * @author uli
@@ -197,9 +198,9 @@ public class BindingDetailsPage implements IDetailsPage {
 		createSpacer(toolkit, client, 2);
 
 		toolkit.createLabel(client, "Value Set:");
-		defaults = new Button[Binding.ALL_DEFAULTS.length];
-		for (int i = 0; i < Binding.ALL_DEFAULTS.length; i++) {
-			defaults[i] = toolkit.createButton(client, Binding.ALL_DEFAULTS[i], SWT.RADIO);
+		defaults = new Button[IApiBinding.ALL_DEFAULTS.length];
+		for (int i = 0; i < IApiBinding.ALL_DEFAULTS.length; i++) {
+			defaults[i] = toolkit.createButton(client, IApiBinding.ALL_DEFAULTS[i], SWT.RADIO);
 			defaults[i].setData(new Integer(i));
 			defaults[i].addSelectionListener(choiceListener);
 			gd = new GridData();
