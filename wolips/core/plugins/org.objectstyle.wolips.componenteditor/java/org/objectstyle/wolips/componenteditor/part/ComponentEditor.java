@@ -366,10 +366,10 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 				if (gotoMarker == null) {
 					return;
 				}
-				if (htmlWodTab().htmlActive) {
+				if (htmlWodTab().isHtmlActive()) {
 					this.switchToHtml();
 				}
-				if (!htmlWodTab().htmlActive) {
+				if (!htmlWodTab().isHtmlActive()) {
 					this.switchToWod();
 				}
 				gotoMarker.gotoMarker(marker);
