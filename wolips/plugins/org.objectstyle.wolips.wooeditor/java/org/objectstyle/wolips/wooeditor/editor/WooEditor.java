@@ -79,9 +79,9 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.FileEditorInput;
+import org.objectstyle.wolips.wodclipse.core.woo.WooModel;
+import org.objectstyle.wolips.wodclipse.core.woo.WooUtils;
 import org.objectstyle.wolips.wooeditor.WooeditorPlugin;
-import org.objectstyle.wolips.wooeditor.model.WooModel;
-import org.objectstyle.wolips.wooeditor.utils.WooUtils;
 
 public class WooEditor extends FormEditor {
 

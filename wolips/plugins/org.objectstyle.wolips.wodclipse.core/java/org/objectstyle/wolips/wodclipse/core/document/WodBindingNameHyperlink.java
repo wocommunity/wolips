@@ -80,7 +80,7 @@ public class WodBindingNameHyperlink implements IHyperlink {
         Region elementRegion = new Region(namePosition.getOffset(), namePosition.getLength());
         String elementTypeName = wodElement.getElementType();
         if (elementTypeName != null) {
-          hyperlink = new WodBindingNameHyperlink(elementRegion, bindingName, cache.getJavaProject(), elementTypeName, cache.getTypeCache());
+          hyperlink = new WodBindingNameHyperlink(elementRegion, bindingName, cache.getJavaProject(), elementTypeName, WodParserCache.getTypeCache());
         }
       }
     }

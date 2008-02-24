@@ -4,6 +4,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
 
+import jp.aonir.fuzzyxml.FuzzyXMLDocument;
+import jp.aonir.fuzzyxml.FuzzyXMLElement;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -33,6 +36,13 @@ public class ChangeElementTypeRefactoring implements IRunnableWithProgress {
         IDocument htmlDocument = _cache.getHtmlDocument();
         if (htmlDocument != null) {
           List<TextEdit> htmlEdits = new LinkedList<TextEdit>();
+          FuzzyXMLDocument xmlDocument = _cache.getHtmlXmlDocument();
+          if (xmlDocument != null) {
+            FuzzyXMLElement xmlElement = xmlDocument.getElementByOffset(typePosition.getOffset());
+            if (xmlElement != null && xmlElement.hasCloseTag()) {
+              htmlEdits.add(new ReplaceEdit(xmlElement.getCloseTagOffset() + xmlElement.getCloseNameOffset() + 1, xmlElement.getCloseNameLength(), "wo:" + _newType));
+            }
+          }
           htmlEdits.add(new ReplaceEdit(typePosition.getOffset(), typePosition.getLength(), _newType));
           WodDocumentUtils.applyEdits(htmlDocument, htmlEdits);
         }
@@ -43,7 +53,7 @@ public class ChangeElementTypeRefactoring implements IRunnableWithProgress {
           List<TextEdit> wodEdits = new LinkedList<TextEdit>();
           wodEdits.add(new ReplaceEdit(typePosition.getOffset(), typePosition.getLength(), _newType));
           WodDocumentUtils.applyEdits(wodDocument, wodEdits);
-        }        
+        }
       }
     }
     catch (Exception e) {

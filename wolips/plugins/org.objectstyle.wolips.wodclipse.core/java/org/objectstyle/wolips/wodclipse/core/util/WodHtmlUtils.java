@@ -108,7 +108,7 @@ public class WodHtmlUtils {
     IWodElement wodElement;
     if (WodHtmlUtils.isWOTag(element.getName())) {
       if (WodHtmlUtils.isInline(element.getName())) {
-        wodElement = WodHtmlUtils.toWodElement(element, false, cache.getApiCache());
+        wodElement = WodHtmlUtils.toWodElement(element, false);
       }
       else {
         String elementName = element.getAttributeValue("name");
@@ -121,14 +121,14 @@ public class WodHtmlUtils {
     return wodElement;
   }
 
-  public static SimpleWodElement toWodElement(FuzzyXMLElement element, boolean wo54, ApiCache cache) {
+  public static SimpleWodElement toWodElement(FuzzyXMLElement element, boolean wo54) {
     String elementName = element.getName();
     String namespaceElementName = elementName.substring("wo:".length()).trim();
     int elementTypePosition = element.getOffset() + element.getNameOffset() + "wo:".length() + 1;
     int elementTypeLength = namespaceElementName.length();
 
     TagShortcut matchingTagShortcut = null;
-    for (TagShortcut tagShortcut : cache.getTagShortcuts()) {
+    for (TagShortcut tagShortcut : ApiCache.getTagShortcuts()) {
       if (namespaceElementName.equalsIgnoreCase(tagShortcut.getShortcut())) {
         matchingTagShortcut = tagShortcut;
       }
@@ -154,7 +154,7 @@ public class WodHtmlUtils {
       String name = attribute.getName();
       String originalValue = attribute.getValue();
       String value = WodHtmlUtils.toBindingValue(originalValue, wo54);
-      SimpleWodBinding wodBinding = new SimpleWodBinding(name, value, new Position(element.getOffset() + attribute.getNameOffset() + 1, attribute.getNameLength()),  new Position(element.getOffset() + attribute.getValueDataOffset() + 1, attribute.getValueDataLength()), -1);
+      SimpleWodBinding wodBinding = new SimpleWodBinding(name, value, new Position(element.getOffset() + attribute.getNameOffset() + 1, attribute.getNameLength()), new Position(element.getOffset() + attribute.getValueDataOffset() + 1, attribute.getValueDataLength()), -1);
       wodElement.addBinding(wodBinding);
     }
     return wodElement;

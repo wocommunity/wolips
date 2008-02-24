@@ -118,8 +118,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 		Set<WodCompletionProposal> completionProposalsSet = new TreeSet<WodCompletionProposal>();
 		try {
 			int offset = _offset;
-			WodParserCache wodParserCache = WodParserCache.parser(((FileEditorInput) _editor.getEditorInput()).getFile());
-			TypeCache typeCache = wodParserCache.getTypeCache();
+			TypeCache typeCache = WodParserCache.getTypeCache();
 			IDocument document = viewer.getDocument();
 			IEditorInput input = _editor.getEditorInput();
 			if (input instanceof IPathEditorInput) {
@@ -236,6 +235,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 					// been mapped, we
 					// reparse the wod file. Lame.
 					Set<String> alreadyUsedElementNames = WodScanner.getTextForRulesOfType(document, ElementNameRule.class);
+					WodParserCache wodParserCache = WodParserCache.parser(((FileEditorInput) _editor.getEditorInput()).getFile());
 					WodCompletionUtils.fillInElementNameCompletionProposals(alreadyUsedElementNames, token, tokenOffset, offset, completionProposalsSet, guessed, wodParserCache.getHtmlElementCache());
 				} else if (tokenType == PreferenceConstants.ELEMENT_TYPE) {
 					WodCompletionUtils.fillInElementTypeCompletionProposals(javaProject, token, tokenOffset, offset, completionProposalsSet, guessed, null);

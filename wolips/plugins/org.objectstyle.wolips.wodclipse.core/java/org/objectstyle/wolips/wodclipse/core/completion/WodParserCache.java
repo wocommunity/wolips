@@ -16,17 +16,11 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
@@ -50,21 +44,21 @@ import org.objectstyle.wolips.bindings.wod.IWodModel;
 import org.objectstyle.wolips.bindings.wod.TagShortcut;
 import org.objectstyle.wolips.bindings.wod.TypeCache;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
-import org.objectstyle.wolips.bindings.woo.IEOModelGroupCache;
-import org.objectstyle.wolips.bindings.woo.IWooModel;
 import org.objectstyle.wolips.core.resources.types.LimitedLRUCache;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.wodclipse.core.document.WodFileDocumentProvider;
+import org.objectstyle.wolips.wodclipse.core.util.EOModelGroupCache;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 import org.objectstyle.wolips.wodclipse.core.util.WodModelUtils;
 import org.objectstyle.wolips.wodclipse.core.validation.HtmlProblem;
 import org.objectstyle.wolips.wodclipse.core.validation.TemplateValidator;
+import org.objectstyle.wolips.wodclipse.core.woo.WooModel;
 
 public class WodParserCache implements FuzzyXMLErrorListener {
   private static TypeCache _typeCache;
-  private IEOModelGroupCache _modelGroupCache;
+  private static EOModelGroupCache _modelGroupCache;
 
   private HtmlElementCache _htmlElementCache;
   private FuzzyXMLDocument _htmlXmlDocument;
@@ -77,7 +71,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   private boolean _wodDocumentChanged;
   private IUndoManager _undoManager;
 
-  private IWooModel _wooModel;
+  private WooModel _wooModel;
   private IDocument _wooDocument;
   private boolean _wooDocumentChanged;
 
@@ -107,7 +101,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   public static synchronized WodParserCache parser(IResource resource, boolean createIfMissing) throws CoreException, LocateException {
     if (_parsers == null) {
       _parsers = new LimitedLRUCache<String, WodParserCache>(10);
-      ResourcesPlugin.getWorkspace().addResourceChangeListener(new WodHtmlResourceChangeListener());
+      ResourcesPlugin.getWorkspace().addResourceChangeListener(new WodParserCacheInvalidator());
     }
     IContainer woFolder;
     if (resource instanceof IFolder) {
@@ -125,48 +119,8 @@ public class WodParserCache implements FuzzyXMLErrorListener {
     return cache;
   }
 
-  protected static class WodHtmlResourceChangeListener implements IResourceChangeListener, IResourceDeltaVisitor {
-    public void resourceChanged(IResourceChangeEvent event) {
-      IResourceDelta delta = event.getDelta();
-      if (delta != null) {
-        try {
-          delta.accept(this);
-        }
-        catch (CoreException e) {
-          Activator.getDefault().log(e);
-        }
-      }
-    }
-
-    public boolean visit(IResourceDelta delta) {
-      IResource resource = delta.getResource();
-      if (!resource.isDerived() && resource instanceof IFile) {
-        if (delta.getKind() == IResourceDelta.REMOVED) {
-          WodParserCache.getTypeCache().clearCacheForResource(resource);
-        }
-        else if (delta.getKind() == IResourceDelta.CHANGED) {
-          IJavaElement javaElement = JavaCore.create((IFile) resource);
-          if (javaElement instanceof ICompilationUnit) {
-            try {
-              IType[] types = ((ICompilationUnit) javaElement).getAllTypes();
-              for (IType type : types) {
-                WodParserCache.getTypeCache().clearCacheForType(type);
-              }
-            }
-            catch (JavaModelException e) {
-              e.printStackTrace(System.out);
-              Activator.getDefault().log("Failed to clear caches for " + resource + ".", e);
-            }
-          }
-        }
-      }
-      return true;
-    }
-  }
-
   protected WodParserCache(IContainer woFolder) throws CoreException, LocateException {
     _htmlElementCache = new HtmlElementCache();
-    _modelGroupCache = WodModelUtils.createModelGroupCache();
     _woFolder = woFolder;
     _undoManager = new TextViewerUndoManager(25);
     clearCache();
@@ -174,7 +128,6 @@ public class WodParserCache implements FuzzyXMLErrorListener {
 
   public WodParserCache() throws CoreException, LocateException {
     _htmlElementCache = new HtmlElementCache();
-    _modelGroupCache = WodModelUtils.createModelGroupCache();
     _undoManager = new TextViewerUndoManager(25);
     clearCache();
   }
@@ -229,7 +182,6 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   public void _clearWooCache() {
     _wooModel = null;
     _lastWooParseTime = -1;
-    _modelGroupCache.clearCache();
   }
 
   protected void checkLocateResults() throws CoreException, LocateException {
@@ -290,13 +242,16 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   }
 
   public static synchronized TypeCache getTypeCache() {
-    if (WodParserCache._typeCache ==null) {
+    if (WodParserCache._typeCache == null) {
       _typeCache = new TypeCache();
     }
     return _typeCache;
   }
 
-  public IEOModelGroupCache getModelGroupCache() {
+  public static synchronized EOModelGroupCache getModelGroupCache() {
+    if (_modelGroupCache == null) {
+      _modelGroupCache = new EOModelGroupCache();
+    }
     return _modelGroupCache;
   }
 
@@ -321,7 +276,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
     return ApiUtils.findApiModelWo(type, getApiCache());
   }
 
-  public IWooModel getWooModel() throws CoreException, IOException {
+  public WooModel getWooModel() throws CoreException, IOException {
     if (_wooModel == null) {
       parseHtmlAndWodIfNecessary();
       validate();
@@ -485,54 +440,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
       IWorkspaceRunnable body = new IWorkspaceRunnable() {
         public void run(IProgressMonitor monitor) {
           try {
-            // System.out.println("WodParserCache.validate: Validate " + _woFolder);
-            _validated = true;
-            if (_wodFile != null && _wodFile.exists()) {
-              WodModelUtils.deleteWodProblems(_wodFile);
-            }
-            if (_htmlFile != null && _htmlFile.exists()) {
-              WodModelUtils.deleteWodProblems(_htmlFile);
-            }
-            if (_wooFile != null && _wooFile.exists()) {
-              WodModelUtils.deleteWodProblems(_wooFile);
-            }
-
-            if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.VALIDATE_TEMPLATES_KEY)) {
-              if (_htmlXmlDocument != null && (_htmlFile == null || _htmlFile.exists())) {
-                boolean errorOnHtmlErrorsKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.ERROR_ON_HTML_ERRORS_KEY);
-                if (errorOnHtmlErrorsKey) {
-                  if (_htmlFile != null && _htmlFile.exists()) {
-                    for (HtmlProblem problem : _htmlParserProblems) {
-                      problem.createMarker(_htmlFile);
-                    }
-                  }
-                }
-                new TemplateValidator(WodParserCache.this).validate(_htmlXmlDocument);
-              }
-
-              if (_wodModel != null) {
-                List<WodProblem> wodProblems = _wodModel.getProblems(_javaProject, _componentType, WodParserCache.getTypeCache(), WodParserCache.this._htmlElementCache);
-                if (_wodFile != null && _wodFile.exists()) {
-                  for (WodProblem wodProblem : wodProblems) {
-                    WodModelUtils.createMarker(_wodFile, wodProblem);
-                  }
-                }
-              }
-              if (_wooModel != null) {
-                List<WodProblem> wodProblems = _wooModel.getProblems(_javaProject, _componentType, WodParserCache.getTypeCache(), WodParserCache.this._modelGroupCache);
-                if (_wooFile != null && _wooFile.exists()) {
-                  for (WodProblem wodProblem : wodProblems) {
-                    WodModelUtils.createMarker(_wooFile, wodProblem);
-                  }
-                  try {
-                    _wooModel.loadModelFromStream(_wooFile.getContents());
-                  }
-                  catch (Throwable e) {
-                    WodModelUtils.createMarker(_wooFile, new WodProblem(e.getMessage(), null, 0, false));
-                  }
-                }
-              }
-            }
+            WodParserCache.this._validate();
           }
           catch (Exception e) {
             e.printStackTrace();
@@ -542,6 +450,57 @@ public class WodParserCache implements FuzzyXMLErrorListener {
       };
       IWorkspace workspace = ResourcesPlugin.getWorkspace();
       workspace.run(body, null, IWorkspace.AVOID_UPDATE, null);
+    }
+  }
+
+  public void _validate() throws CoreException, IOException, ApiModelException {
+    // System.out.println("WodParserCache.validate: Validate " + _woFolder);
+    _validated = true;
+    if (_wodFile != null && _wodFile.exists()) {
+      WodModelUtils.deleteWodProblems(_wodFile);
+    }
+    if (_htmlFile != null && _htmlFile.exists()) {
+      WodModelUtils.deleteWodProblems(_htmlFile);
+    }
+    if (_wooFile != null && _wooFile.exists()) {
+      WodModelUtils.deleteWodProblems(_wooFile);
+    }
+
+    if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.VALIDATE_TEMPLATES_KEY)) {
+      if (_htmlXmlDocument != null && (_htmlFile == null || _htmlFile.exists())) {
+        boolean errorOnHtmlErrorsKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.ERROR_ON_HTML_ERRORS_KEY);
+        if (errorOnHtmlErrorsKey) {
+          if (_htmlFile != null && _htmlFile.exists()) {
+            for (HtmlProblem problem : _htmlParserProblems) {
+              problem.createMarker(_htmlFile);
+            }
+          }
+        }
+        new TemplateValidator(WodParserCache.this).validate(_htmlXmlDocument);
+      }
+
+      if (_wodModel != null) {
+        List<WodProblem> wodProblems = _wodModel.getProblems(_javaProject, _componentType, WodParserCache.getTypeCache(), WodParserCache.this._htmlElementCache);
+        if (_wodFile != null && _wodFile.exists()) {
+          for (WodProblem wodProblem : wodProblems) {
+            WodModelUtils.createMarker(_wodFile, wodProblem);
+          }
+        }
+      }
+      if (_wooModel != null) {
+        List<WodProblem> wodProblems = _wooModel.getProblems(_javaProject, _componentType, WodParserCache.getTypeCache(), WodParserCache.getModelGroupCache());
+        if (_wooFile != null && _wooFile.exists()) {
+          for (WodProblem wodProblem : wodProblems) {
+            WodModelUtils.createMarker(_wooFile, wodProblem);
+          }
+          try {
+            _wooModel.loadModelFromStream(_wooFile.getContents());
+          }
+          catch (Throwable e) {
+            WodModelUtils.createMarker(_wooFile, new WodProblem(e.getMessage(), null, 0, false));
+          }
+        }
+      }
     }
   }
 

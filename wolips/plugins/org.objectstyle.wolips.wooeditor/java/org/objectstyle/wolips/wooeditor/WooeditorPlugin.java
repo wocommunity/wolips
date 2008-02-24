@@ -75,156 +75,151 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
-import org.objectstyle.wolips.wooeditor.model.WooModel;
+import org.objectstyle.wolips.wodclipse.core.woo.WooModel;
 import org.osgi.framework.BundleContext;
 
 /**
  * The main plug-in class to be used in the desktop.
  */
-public class WooeditorPlugin extends AbstractBaseUIActivator implements
-		IResourceChangeListener {
-	// The shared instance.
-	private static WooeditorPlugin plugin;
+public class WooeditorPlugin extends AbstractBaseUIActivator implements IResourceChangeListener {
+  // The shared instance.
+  private static WooeditorPlugin plugin;
 
-	/**
-	 * Returns the shared instance.
-	 */
-	public static WooeditorPlugin getDefault() {
-		return plugin;
-	}
+  /**
+   * Returns the shared instance.
+   */
+  public static WooeditorPlugin getDefault() {
+    return plugin;
+  }
 
-	/**
-	 * Returns an image descriptor for the image file at the given plug-in
-	 * relative path.
-	 *
-	 * @param path
-	 *            the path
-	 * @return the image descriptor
-	 */
-	public static ImageDescriptor getImageDescriptor(final String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin(
-				"org.objectstyle.wolips.wooeditor", path);
-	}
+  /**
+   * Returns an image descriptor for the image file at the given plug-in
+   * relative path.
+   *
+   * @param path
+   *            the path
+   * @return the image descriptor
+   */
+  public static ImageDescriptor getImageDescriptor(final String path) {
+    return AbstractUIPlugin.imageDescriptorFromPlugin("org.objectstyle.wolips.wooeditor", path);
+  }
 
-	private FormColors formColors;
+  private FormColors formColors;
 
-	private IWorkspace workspace;
+  private IWorkspace workspace;
 
-	/**
-	 * The constructor.
-	 */
-	public WooeditorPlugin() {
-		super();
-		plugin = this;
-		workspace = ResourcesPlugin.getWorkspace();
-	}
+  /**
+   * The constructor.
+   */
+  public WooeditorPlugin() {
+    super();
+    plugin = this;
+    workspace = ResourcesPlugin.getWorkspace();
+  }
 
-	public FormColors getFormColors(final Display display) {
-		if (formColors == null) {
-			formColors = new FormColors(display);
-			formColors.markShared();
-		}
-		return formColors;
-	}
+  public FormColors getFormColors(final Display display) {
+    if (formColors == null) {
+      formColors = new FormColors(display);
+      formColors.markShared();
+    }
+    return formColors;
+  }
 
-	public Image getImage(final String key) {
-		return getImageRegistry().get(key);
-	}
+  public Image getImage(final String key) {
+    return getImageRegistry().get(key);
+  }
 
-	public void resourceChanged(final IResourceChangeEvent event) {
-		if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
-			final IResourceDelta delta = event.getDelta();
-			final ArrayList<IResource> changed = new ArrayList<IResource>();
-			IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
-				public boolean visit(final IResourceDelta visitingDelta) {
-					// only interested in changed encoding
-					if (visitingDelta.getKind() != IResourceDelta.CHANGED
-							|| (visitingDelta.getFlags() & IResourceDelta.ENCODING) == 0) {
-						return true;
-					}
+  public void resourceChanged(final IResourceChangeEvent event) {
+    if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
+      final IResourceDelta delta = event.getDelta();
+      final ArrayList<IResource> changed = new ArrayList<IResource>();
+      IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
+        public boolean visit(final IResourceDelta visitingDelta) {
+          // only interested in changed encoding
+          if (visitingDelta.getKind() != IResourceDelta.CHANGED || (visitingDelta.getFlags() & IResourceDelta.ENCODING) == 0) {
+            return true;
+          }
 
-					IResource resource = visitingDelta.getResource();
+          IResource resource = visitingDelta.getResource();
 
-					if (resource.getProjectRelativePath().toString().equals(
-							"build")) {
-						return false;
-					}
+          if (resource.getProjectRelativePath().toString().equals("build")) {
+            return false;
+          }
 
-					// only interested in folders with the "wo" extension
-					if (resource.getType() == IResource.FOLDER
-							&& "wo".equalsIgnoreCase(resource
-									.getFileExtension())) {
-						changed.add(resource);
-					}
-					return true;
-				}
-			};
-			try {
-				delta.accept(visitor);
-			} catch (CoreException e) {
-				// XXX open error dialog with syncExec or print to log file
-				e.printStackTrace();
-			}
+          // only interested in folders with the "wo" extension
+          if (resource.getType() == IResource.FOLDER && "wo".equalsIgnoreCase(resource.getFileExtension())) {
+            changed.add(resource);
+          }
+          return true;
+        }
+      };
+      try {
+        delta.accept(visitor);
+      }
+      catch (CoreException e) {
+        // XXX open error dialog with syncExec or print to log file
+        e.printStackTrace();
+      }
 
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					for (IResource resource : changed) {
-						IFolder folder = (IFolder) resource;
-						try {
-							String charset = folder.getDefaultCharset();
-							IPath wooPath = folder.getLocation()
-									.addTrailingSeparator().append(folder.getName() + "o");
-							IFile wooFile = workspace.getRoot().getFileForLocation(wooPath);
-							WooModel.updateEncoding(wooFile, charset);
+      Display.getDefault().asyncExec(new Runnable() {
+        public void run() {
+          for (IResource resource : changed) {
+            IFolder folder = (IFolder) resource;
+            try {
+              String charset = folder.getDefaultCharset();
+              IPath wooPath = folder.getLocation().addTrailingSeparator().append(folder.getName() + "o");
+              IFile wooFile = workspace.getRoot().getFileForLocation(wooPath);
+              WooModel.updateEncoding(wooFile, charset);
 
-							// Change the eclipse encoding type of the Component template
+              // Change the eclipse encoding type of the Component template
 
-							for(IResource element : folder.members()) {
-								if (element.getType() == IResource.FILE) {
-									IFile file = (IFile) element;
-									if (file.getFileExtension().matches("(xml|html|xhtml|wod)")
-										 && !file.getCharset().equals(charset)) {
-										file.setCharset(charset, null);
-									}
-								}
-							}
-							
-						} catch (CoreException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				}
-			});
-		}
-	}
+              for (IResource element : folder.members()) {
+                if (element.getType() == IResource.FILE) {
+                  IFile file = (IFile) element;
+                  if (file.getFileExtension().matches("(xml|html|xhtml|wod)") && !file.getCharset().equals(charset)) {
+                    file.setCharset(charset, null);
+                  }
+                }
+              }
 
-	/**
-	 * This method is called upon plug-in activation
-	 */
-	@Override
-	public void start(final BundleContext context) throws Exception {
-		super.start(context);
+            }
+            catch (CoreException e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            }
+          }
+        }
+      });
+    }
+  }
 
-		workspace.addResourceChangeListener(this);
-	}
+  /**
+   * This method is called upon plug-in activation
+   */
+  @Override
+  public void start(final BundleContext context) throws Exception {
+    super.start(context);
 
-	/**
-	 * This method is called when the plug-in is stopped
-	 */
-	@Override
-	public void stop(final BundleContext context) throws Exception {
-		try {
-			if (formColors != null) {
-				formColors.dispose();
-				formColors = null;
-			}
-		} finally {
-			super.stop(context);
-		}
-		workspace.removeResourceChangeListener(this);
+    workspace.addResourceChangeListener(this);
+  }
 
-		plugin = null;
-	}
+  /**
+   * This method is called when the plug-in is stopped
+   */
+  @Override
+  public void stop(final BundleContext context) throws Exception {
+    try {
+      if (formColors != null) {
+        formColors.dispose();
+        formColors = null;
+      }
+    }
+    finally {
+      super.stop(context);
+    }
+    workspace.removeResourceChangeListener(this);
+
+    plugin = null;
+  }
 
 }

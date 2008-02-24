@@ -53,6 +53,9 @@ public class WodBindingValueHyperlink implements IHyperlink {
           JavaUI.openInEditor(member, true, true);
         }
       }
+      else {
+        System.out.println("WodBindingValueHyperlink.open: invalid: " + bindingValueKeyPath);
+      }
     }
     catch (Exception ex) {
       Activator.getDefault().log(ex);
@@ -68,7 +71,7 @@ public class WodBindingValueHyperlink implements IHyperlink {
         Region elementRegion = new Region(valuePosition.getOffset(), valuePosition.getLength());
         IType componentType = cache.getComponentType();
         if (componentType != null) {
-          hyperlink = new WodBindingValueHyperlink(elementRegion, wodBinding.getValue(), componentType, cache.getTypeCache());
+          hyperlink = new WodBindingValueHyperlink(elementRegion, wodBinding.getValue(), componentType, WodParserCache.getTypeCache());
         }
       }
     }

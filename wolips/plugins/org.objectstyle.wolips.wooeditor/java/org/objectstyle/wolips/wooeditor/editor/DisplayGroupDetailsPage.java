@@ -91,8 +91,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
+import org.objectstyle.wolips.wodclipse.core.woo.DisplayGroup;
 import org.objectstyle.wolips.wooeditor.databinding.observable.CustomSWTObservables;
-import org.objectstyle.wolips.wooeditor.model.DisplayGroup;
 import org.objectstyle.wolips.wooeditor.widgets.RadioGroup;
 
 public class DisplayGroupDetailsPage implements IDetailsPage {
@@ -425,7 +425,8 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 		myHasDetailButton.setLayoutData(hasDetailLayoutData);
 
 		// Master/Detail Group
-		myMasterDetailGroup = new Group(displayGroupComposite, SWT.NULL);
+		myMasterDetailGroup = new Group(displayGroupComposite, SWT.NONE);
+    myMasterDetailGroup.setBackground(displayGroupComposite.getBackground());
 		myMasterDetailGroup.setText("Master / Detail");
 		GridLayout masterDetailLayout = new GridLayout();
 		masterDetailLayout.numColumns = 2;
@@ -455,8 +456,8 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 		myDetailKeyCombo.setLayoutData(detailKeyFieldLayoutData);
 
 		// Entries per batch group (fixes layout of label and control)
-		Composite batchGroupComposite = new Composite(displayGroupComposite,
-				SWT.NO_BACKGROUND);
+		Composite batchGroupComposite = new Composite(displayGroupComposite, SWT.NONE);
+		batchGroupComposite.setBackground(displayGroupComposite.getBackground());
 		GridLayout batchLayout = new GridLayout();
 		batchLayout.numColumns = 2;
 		batchGroupComposite.setLayout(batchLayout);

@@ -1,4 +1,4 @@
-package org.objectstyle.wolips.wooeditor.eomodel;
+package org.objectstyle.wolips.wodclipse.core.woo;
 
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelMap;

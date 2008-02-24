@@ -87,8 +87,8 @@ import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.objectstyle.wolips.wooeditor.model.DisplayGroup;
-import org.objectstyle.wolips.wooeditor.model.WooModel;
+import org.objectstyle.wolips.wodclipse.core.woo.DisplayGroup;
+import org.objectstyle.wolips.wodclipse.core.woo.WooModel;
 
 public class DisplayGroupPageBlock extends MasterDetailsBlock {
 	private class AddButtonListener implements SelectionListener {
