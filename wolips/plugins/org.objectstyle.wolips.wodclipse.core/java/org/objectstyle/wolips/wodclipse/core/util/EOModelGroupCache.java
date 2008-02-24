@@ -26,7 +26,6 @@ public class EOModelGroupCache {
     else {
       modelGroup = _modelGroupCache.get(project);
       if (modelGroup == null) {
-        System.out.println("EOModelGroupCache.getModelGroup: loading " + project);
         modelGroup = new EOModelGroup();
 
         Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
@@ -38,15 +37,11 @@ public class EOModelGroupCache {
           e.printStackTrace();
         }
       }
-      else {
-        System.out.println("EOModelGroupCache.getModelGroup: loaded " + project + " from cache!");
-      }
     }
     return modelGroup;
   }
 
   public synchronized void clearCacheForProject(IProject project) {
-    System.out.println("EOModelGroupCache.clearCacheForProject: clearing " + project);
     _modelGroupCache.remove(project);
     for (IProject referencingProject : project.getReferencingProjects()) {
       clearCacheForProject(referencingProject);
