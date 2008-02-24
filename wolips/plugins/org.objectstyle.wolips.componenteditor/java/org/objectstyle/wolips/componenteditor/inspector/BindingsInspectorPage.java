@@ -1,7 +1,5 @@
 package org.objectstyle.wolips.componenteditor.inspector;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import jp.aonir.fuzzyxml.FuzzyXMLDocument;
@@ -25,6 +23,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -40,6 +40,7 @@ import org.eclipse.ui.ISaveablePart;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.Page;
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.bindings.Activator;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
@@ -178,12 +179,13 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 
 			if (elementTypeEnabled) {
 				_componentLiveSearch = new ComponentLiveSearch(parserCache.getJavaProject(), new NullProgressMonitor());
-				_componentLiveSearch.attachTo(_elementTypeField);
+				//_componentLiveSearch.attachTo(_elementTypeField);
 
 				UpdateValueStrategy elementTypeUpdateStrategy = new UpdateValueStrategy(UpdateValueStrategy.POLICY_UPDATE);
 				elementTypeUpdateStrategy.setBeforeSetValidator(new IValidator() {
 					public IStatus validate(Object value) {
 						String newName = (String) value;
+						System.out.println(".validate: " + newName);
 						IStatus status = Status.OK_STATUS;
 						try {
 							if (newName == null || newName.length() == 0) {
@@ -202,13 +204,34 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 						return status;
 					}
 				});
-				_dataBindingContext.bindValue(SWTObservables.observeText(_elementTypeField), BeansObservables.observeValue(_refactoringElement, RefactoringElementModel.ELEMENT_TYPE), elementTypeUpdateStrategy, null);
-				
-				_refactoringElement.addPropertyChangeListener(RefactoringElementModel.ELEMENT_TYPE, new PropertyChangeListener() {
-					public void propertyChange(PropertyChangeEvent evt) {
-						typeChanged();
+				//_dataBindingContext.bindValue(SWTObservables.observeText(_elementTypeField), BeansObservables.observeValue(_refactoringElement, RefactoringElementModel.ELEMENT_TYPE), elementTypeUpdateStrategy, null);
+				System.out.println("BindingsInspectorPage.setWodElement: a");
+				_elementTypeField.addFocusListener(new FocusListener() {
+					public void focusGained(FocusEvent e) {
+						// DO NOTHING
+					}
+					
+					public void focusLost(FocusEvent e) {
+						try {
+							String elementTypeFieldText = getElementTypeField().getText();
+							String elementTypeModelText = getRefactoringElement().getElementType();
+							if (!ComparisonUtils.equals(elementTypeModelText, elementTypeFieldText, true)) {
+								getRefactoringElement().setElementType(elementTypeFieldText);
+							}
+						} catch (Throwable t) {
+							t.printStackTrace();
+						}
 					}
 				});
+				
+				
+				//_dataBindingContext.bindValue(SWTObservables.observeText(_elementTypeField), BeansObservables.observeValue(_refactoringElement, RefactoringElementModel.ELEMENT_TYPE), elementTypeUpdateStrategy, null);
+
+//				_refactoringElement.addPropertyChangeListener(RefactoringElementModel.ELEMENT_TYPE, new PropertyChangeListener() {
+//					public void propertyChange(PropertyChangeEvent evt) {
+//						typeChanged();
+//					}
+//				});
 			}
 		}
 	}
