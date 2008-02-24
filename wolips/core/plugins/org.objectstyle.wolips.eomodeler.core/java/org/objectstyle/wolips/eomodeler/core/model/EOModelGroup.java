@@ -146,6 +146,24 @@ public class EOModelGroup extends EOModelObject<Object> {
 		return new PropertyListSet<EOModel>(_models);
 	}
 
+	/**
+	 * Returns the list of names of entities that
+	 * are not prototypes.
+	 * 
+	 * @return list of entity names
+	 */
+  public Set<String> getNonPrototypeEntityNames() {
+    Set<String> entityNames = new TreeSet<String>();
+    for (EOModel model : _models) {
+      for (EOEntity entity : model.getEntities()) {
+        if (!entity.isPrototype()) {
+        	entityNames.add(entity.getName());
+        }
+      }
+    }
+    return entityNames;
+  }
+  
 	public Set<String> getEntityNames() {
 		Set<String> entityNames = new TreeSet<String>();
 		for (EOModel model : _models) {
