@@ -133,6 +133,13 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 		super.doSetInput(input);
 		_cache = null;
 	}
+	
+	@Override
+	public void createPartControl(Composite parent) {
+		super.createPartControl(parent);
+
+	    getSourceViewer().getTextWidget().getParent().setBackground(parent.getBackground());
+	}
 
 	@Override
 	protected void performRevert() {
