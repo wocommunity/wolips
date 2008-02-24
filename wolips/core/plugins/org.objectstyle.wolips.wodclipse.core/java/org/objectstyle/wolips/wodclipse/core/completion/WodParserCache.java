@@ -436,7 +436,6 @@ public class WodParserCache implements FuzzyXMLErrorListener {
 
   public void validate() throws CoreException {
     if (!_validated) {
-      System.out.println("WodParserCache.validate: Validating " + _woFolder + " ...");
       IWorkspaceRunnable body = new IWorkspaceRunnable() {
         public void run(IProgressMonitor monitor) {
           try {
@@ -454,7 +453,7 @@ public class WodParserCache implements FuzzyXMLErrorListener {
   }
 
   public void _validate() throws CoreException, IOException, ApiModelException {
-    // System.out.println("WodParserCache.validate: Validate " + _woFolder);
+    System.out.println("WodParserCache.validate: Validate " + _woFolder + " ...");
     _validated = true;
     if (_wodFile != null && _wodFile.exists()) {
       WodModelUtils.deleteWodProblems(_wodFile);
