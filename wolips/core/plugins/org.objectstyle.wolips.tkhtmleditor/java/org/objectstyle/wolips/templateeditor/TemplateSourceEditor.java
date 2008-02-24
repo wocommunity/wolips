@@ -152,7 +152,9 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
       WodParserCache cache = TemplateSourceEditor.this.getParserCache();
       cache.parseHtmlAndWodIfNecessary();
       cache.validate();
-      _breadcrumb.updateBreadcrumb();
+      if (_breadcrumb != null) {
+        _breadcrumb.updateBreadcrumb();
+      }
     }
     catch (Exception ex) {
       Activator.getDefault().log(ex);
