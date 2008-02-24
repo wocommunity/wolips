@@ -86,8 +86,8 @@ public class ApiEditor extends FormEditor {
 				addPage(new CreatePage(this, "Create"));
 			} else {
 				addPage(new BindingsPage(this, "Bindings"));
-				addPage(new ValidationPage(this, "Validation"));
-				addPage(new DisplayPage(this, "Display"));
+				//addPage(new ValidationPage(this, "Validation"));
+				//addPage(new DisplayPage(this, "Display"));
 				addPage(new DeletePage(this, "Delete"));
 			}
 		} catch (PartInitException e) {
