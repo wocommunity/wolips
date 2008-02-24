@@ -138,6 +138,7 @@ public class HTMLSourceEditor extends TextEditor {
     return viewer;
   }
 
+  @Override
   public IOverviewRuler getOverviewRuler() {
     return super.getOverviewRuler();
   }
