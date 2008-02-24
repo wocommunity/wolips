@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import jp.aonir.fuzzyxml.FuzzyXMLDocument;
 import jp.aonir.fuzzyxml.FuzzyXMLElement;
+import jp.aonir.fuzzyxml.FuzzyXMLParser;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -14,21 +15,36 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
+import org.objectstyle.wolips.bindings.preferences.PreferenceConstants;
+import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
+import org.objectstyle.wolips.wodclipse.core.document.IWOEditor;
+import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
 import tk.eclipse.plugin.htmleditor.HTMLPlugin;
 import tk.eclipse.plugin.htmleditor.editors.HTMLConfiguration;
 import tk.eclipse.plugin.htmleditor.editors.HTMLSourceEditor;
 import tk.eclipse.plugin.htmleditor.editors.IHTMLOutlinePage;
 
-public class TemplateSourceEditor extends HTMLSourceEditor {
+public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor {
   private TemplateOutlinePage _templateOutlinePage;
+  private WodParserCache _cache;
 
   public TemplateSourceEditor(HTMLConfiguration config) {
     super(config);
@@ -42,8 +58,48 @@ public class TemplateSourceEditor extends HTMLSourceEditor {
   }
 
   @Override
+  protected void doSetInput(IEditorInput input) throws CoreException {
+    super.doSetInput(input);
+    _cache = null;
+  }
+
+  @Override
   public void createPartControl(Composite parent) {
-    super.createPartControl(parent);
+    Composite templateParent = new Composite(parent, SWT.NONE);
+    GridLayout templateLayout = new GridLayout();
+    templateParent.setLayout(templateLayout);
+
+    Composite editorParent = new Composite(templateParent, SWT.NONE);
+    editorParent.setLayoutData(new GridData(GridData.FILL_BOTH));
+    editorParent.setLayout(new FillLayout());
+    super.createPartControl(editorParent);
+
+    /*
+    Composite breadcrumb = new Composite(templateParent, SWT.NONE);
+    breadcrumb.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_GREEN));
+    breadcrumb.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    RowLayout breadcrumbLayout = new RowLayout();
+    breadcrumbLayout.wrap = false;
+    breadcrumbLayout.pack = false;
+    breadcrumbLayout.justify = false;
+    breadcrumbLayout.type = SWT.HORIZONTAL;
+    breadcrumbLayout.marginLeft = 5;
+    breadcrumbLayout.marginTop = 5;
+    breadcrumbLayout.marginRight = 5;
+    breadcrumbLayout.marginBottom = 5;
+    breadcrumbLayout.spacing = 0;
+    breadcrumb.setLayout(breadcrumbLayout);
+
+    Label b1 = new Label(breadcrumb, SWT.NONE);
+    b1.setText("Breadcrumb 1");
+    Label bw = new Label(breadcrumb, SWT.NONE);
+    bw.setText("Breadcrumb 2");
+    */
+  }
+
+  @Override
+  protected void handleCursorPositionChanged() {
+    super.handleCursorPositionChanged();
   }
 
   @Override
@@ -104,10 +160,43 @@ public class TemplateSourceEditor extends HTMLSourceEditor {
   }
 
   public WodParserCache getParserCache() throws CoreException, LocateException {
-    IFileEditorInput input = (IFileEditorInput) getEditorInput();
-    IFile inputFile = input.getFile();
-    WodParserCache cache = WodParserCache.parser(inputFile);
-    return cache;
+    if (_cache == null) {
+      IFileEditorInput input = (IFileEditorInput) getEditorInput();
+      IFile inputFile = input.getFile();
+      _cache = WodParserCache.parser(inputFile);
+    }
+    return _cache;
+  }
+
+  public IWodElement getSelectedElement() throws CoreException, LocateException, IOException {
+    IWodElement wodElement = null;
+    WodParserCache cache = getParserCache();
+    ISelection realSelection = getSelectionProvider().getSelection();
+    if (realSelection instanceof ITextSelection) {
+      ITextSelection textSelection = (ITextSelection) realSelection;
+      FuzzyXMLDocument doc;
+      if (isDirty()) {
+        boolean wo54 = Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.WO54_KEY);
+        FuzzyXMLParser parser = new FuzzyXMLParser(wo54, true);
+        doc = parser.parse(getHTMLSource());
+      }
+      else {
+        doc = cache.getHtmlXmlDocument();
+      }
+      FuzzyXMLElement element = doc.getElementByOffset(textSelection.getOffset());
+      if (element != null) {
+        wodElement = WodHtmlUtils.getWodElement(element, false, cache);
+      }
+    }
+    else if (realSelection instanceof IStructuredSelection) {
+      IStructuredSelection structuredSelection = (IStructuredSelection) realSelection;
+      Object obj = structuredSelection.getFirstElement();
+      if (obj instanceof FuzzyXMLElement) {
+        FuzzyXMLElement element = (FuzzyXMLElement) obj;
+        wodElement = WodHtmlUtils.getWodElement(element, false, cache);
+      }
+    }
+    return wodElement;
   }
 
   public TemplateOutlinePage getTemplateOutlinePage() {

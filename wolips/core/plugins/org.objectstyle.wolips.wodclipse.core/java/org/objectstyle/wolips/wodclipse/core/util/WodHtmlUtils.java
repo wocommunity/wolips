@@ -1,22 +1,15 @@
 package org.objectstyle.wolips.wodclipse.core.util;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.regex.Pattern;
 
-import jp.aonir.fuzzyxml.FuzzyXMLAttribute;
 import jp.aonir.fuzzyxml.FuzzyXMLElement;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.text.Position;
-import org.objectstyle.wolips.bindings.api.ApiCache;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
-import org.objectstyle.wolips.bindings.wod.SimpleWodBinding;
-import org.objectstyle.wolips.bindings.wod.SimpleWodElement;
-import org.objectstyle.wolips.bindings.wod.TagShortcut;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 
 public class WodHtmlUtils {
@@ -94,7 +87,7 @@ public class WodHtmlUtils {
   }
 
   /**
-   * If the element is inline bindings, create a SimpleWodElement.  If the element is no inline, then
+   * If the element is inline bindings, create a SimpleWodElement.  If the element is not inline, then
    * return the corresponding WOD element entry.
    * 
    * @param element the XML element to process
@@ -104,11 +97,11 @@ public class WodHtmlUtils {
    * @throws CoreException if the wod element cannot be processed 
    * @throws IOException if the wod element cannot be processed
    */
-  public static IWodElement getOrCreateWodElement(FuzzyXMLElement element, boolean wo54, WodParserCache cache) throws CoreException, IOException {
+  public static IWodElement getWodElement(FuzzyXMLElement element, boolean wo54, WodParserCache cache) throws CoreException, IOException {
     IWodElement wodElement;
     if (WodHtmlUtils.isWOTag(element.getName())) {
       if (WodHtmlUtils.isInline(element.getName())) {
-        wodElement = WodHtmlUtils.toWodElement(element, false);
+        wodElement = new FuzzyXMLWodElement(element, wo54);
       }
       else {
         String elementName = element.getAttributeValue("name");
@@ -120,44 +113,4 @@ public class WodHtmlUtils {
     }
     return wodElement;
   }
-
-  public static SimpleWodElement toWodElement(FuzzyXMLElement element, boolean wo54) {
-    String elementName = element.getName();
-    String namespaceElementName = elementName.substring("wo:".length()).trim();
-    int elementTypePosition = element.getOffset() + element.getNameOffset() + "wo:".length() + 1;
-    int elementTypeLength = namespaceElementName.length();
-
-    TagShortcut matchingTagShortcut = null;
-    for (TagShortcut tagShortcut : ApiCache.getTagShortcuts()) {
-      if (namespaceElementName.equalsIgnoreCase(tagShortcut.getShortcut())) {
-        matchingTagShortcut = tagShortcut;
-      }
-    }
-    if (matchingTagShortcut != null) {
-      namespaceElementName = matchingTagShortcut.getActual();
-    }
-
-    SimpleWodElement wodElement = new SimpleWodElement("_temp", namespaceElementName);
-    wodElement.setElementTypePosition(new Position(elementTypePosition, elementTypeLength));
-    wodElement.setTemporary(true);
-
-    if (matchingTagShortcut != null) {
-      for (Map.Entry<String, String> shortcutAttribute : matchingTagShortcut.getAttributes().entrySet()) {
-        String value = WodHtmlUtils.toBindingValue(shortcutAttribute.getValue(), wo54);
-        SimpleWodBinding wodBinding = new SimpleWodBinding(shortcutAttribute.getKey(), value);
-        wodElement.addBinding(wodBinding);
-      }
-    }
-
-    FuzzyXMLAttribute[] attributes = element.getAttributes();
-    for (FuzzyXMLAttribute attribute : attributes) {
-      String name = attribute.getName();
-      String originalValue = attribute.getValue();
-      String value = WodHtmlUtils.toBindingValue(originalValue, wo54);
-      SimpleWodBinding wodBinding = new SimpleWodBinding(name, value, new Position(element.getOffset() + attribute.getNameOffset() + 1, attribute.getNameLength()), new Position(element.getOffset() + attribute.getValueDataOffset() + 1, attribute.getValueDataLength()), -1);
-      wodElement.addBinding(wodBinding);
-    }
-    return wodElement;
-  }
-
 }

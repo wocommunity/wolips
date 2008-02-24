@@ -77,20 +77,22 @@ public class BindingReflectionUtils {
   }
 
   public static void findMatchingElementClassNames(String _elementTypeName, int _matchType, TypeNameCollector _typeNameCollector, IProgressMonitor progressMonitor) throws JavaModelException {
-    SearchEngine searchEngine = new SearchEngine();
-    IJavaSearchScope searchScope = new WOHierarchyScope(_typeNameCollector.getSuperclassType(), _typeNameCollector.getProject(), DefaultWorkingCopyOwner.PRIMARY);
-    int lastDotIndex = _elementTypeName.lastIndexOf('.');
-    char[] packageName;
-    char[] typeName;
-    if (lastDotIndex == -1) {
-      packageName = null;
-      typeName = _elementTypeName.toCharArray();
+    if (_elementTypeName != null) {
+      SearchEngine searchEngine = new SearchEngine();
+      IJavaSearchScope searchScope = new WOHierarchyScope(_typeNameCollector.getSuperclassType(), _typeNameCollector.getProject(), DefaultWorkingCopyOwner.PRIMARY);
+      int lastDotIndex = _elementTypeName.lastIndexOf('.');
+      char[] packageName;
+      char[] typeName;
+      if (lastDotIndex == -1) {
+        packageName = null;
+        typeName = _elementTypeName.toCharArray();
+      }
+      else {
+        packageName = _elementTypeName.substring(0, lastDotIndex).toCharArray();
+        typeName = _elementTypeName.substring(lastDotIndex + 1).toCharArray();
+      }
+      searchEngine.searchAllTypeNames(packageName, SearchPattern.R_EXACT_MATCH, typeName, _matchType, IJavaSearchConstants.CLASS, searchScope, _typeNameCollector, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, progressMonitor);
     }
-    else {
-      packageName = _elementTypeName.substring(0, lastDotIndex).toCharArray();
-      typeName = _elementTypeName.substring(lastDotIndex + 1).toCharArray();
-    }
-    searchEngine.searchAllTypeNames(packageName, SearchPattern.R_EXACT_MATCH, typeName, _matchType, IJavaSearchConstants.CLASS, searchScope, _typeNameCollector, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, progressMonitor);
   }
 
   public static boolean isWOComponent(IType type, TypeCache cache) throws JavaModelException {

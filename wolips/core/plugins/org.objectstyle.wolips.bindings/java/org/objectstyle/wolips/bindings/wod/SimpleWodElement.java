@@ -26,6 +26,18 @@ public class SimpleWodElement extends AbstractWodElement {
     _elementType = type;
   }
 
+  protected SimpleWodElement() {
+    // DO NOTHING
+  }
+  
+  protected void _setElementName(String name) {
+    _elementName = name;
+  }
+  
+  protected void _setElementType(String type) {
+    _elementType = type;
+  }
+
   public void setElementName(String name) {
     String oldElementName = _elementName;
     _elementName = name;

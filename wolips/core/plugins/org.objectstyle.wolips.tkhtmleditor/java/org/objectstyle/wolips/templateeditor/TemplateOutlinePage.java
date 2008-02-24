@@ -533,7 +533,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
         className = className + " wo";
         boolean wo54 = Activator.getDefault().isWO54();
         try {
-          wodElement = WodHtmlUtils.getOrCreateWodElement(element, wo54, cache);
+          wodElement = WodHtmlUtils.getWodElement(element, wo54, cache);
         }
         catch (Throwable t) {
           // IGNORE

@@ -27,7 +27,7 @@ public class QuickRenameElementAction extends AbstractTemplateAction {
 					} else if (activeEditorPart == wodEditor) {
 						ITextSelection wodSelection = (ITextSelection) wodEditor.getSelectionProvider().getSelection();
 						int offset = wodSelection.getOffset();
-						WodParserCache cache = wodEditor.getWodParserCache();
+						WodParserCache cache = wodEditor.getParserCache();
 						QuickRenameRefactoring.renameWodSelection(offset, templateEditor.getSourceEditor().getViewer(), wodEditor.getViewer(), cache);
 					} else {
 						System.out.println("QuickRenameElementAction.run: " + activeEditorPart);

@@ -22,6 +22,7 @@ import org.objectstyle.wolips.bindings.wod.WodBindingValueProblem;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
+import org.objectstyle.wolips.wodclipse.core.util.FuzzyXMLWodElement;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
 public class TemplateValidator {
@@ -87,7 +88,7 @@ public class TemplateValidator {
     String elementName = element.getName();
     if (WodHtmlUtils.isInline(elementName)) {
       if (validate) {
-        IWodElement wodElement = WodHtmlUtils.toWodElement(element, _wo54);
+        IWodElement wodElement = new FuzzyXMLWodElement(element, _wo54);
         if (wodElement != null) {
           boolean validateBindingValues = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.VALIDATE_BINDING_VALUES);
           boolean validateOGNL = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.VALIDATE_OGNL_KEY);
