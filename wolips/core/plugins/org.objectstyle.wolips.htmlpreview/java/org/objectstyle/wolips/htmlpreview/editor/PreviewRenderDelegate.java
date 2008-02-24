@@ -97,14 +97,7 @@ public class PreviewRenderDelegate implements RenderDelegate {
 			if (WodHtmlUtils.isWOTag(tagName)) {
 				try {
 					WodParserCache cache = _caches.peek();
-					IWodElement wodElement;
-					if (WodHtmlUtils.isInline(tagName)) {
-						wodElement = WodHtmlUtils.toWodElement(element, false);
-					} else {
-						String elementName = element.getAttributeValue("name");
-						wodElement = cache.getWodModel().getElementNamed(elementName);
-					}
-
+					IWodElement wodElement = WodHtmlUtils.getWodElement(element, false, cache);
 					if (wodElement == null) {
 						return true;
 					}
