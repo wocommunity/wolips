@@ -43,6 +43,8 @@
  */
 package org.objectstyle.wolips.componenteditor.part;
 
+import java.io.IOException;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -66,21 +68,43 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
+import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.components.input.ComponentEditorInput;
+import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.templateeditor.TemplateEditor;
 import org.objectstyle.wolips.templateeditor.TemplateSourceEditor;
+import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
+import org.objectstyle.wolips.wodclipse.core.document.IWOEditor;
 
 /**
  * @author uli
  */
-public class ComponentEditor extends ComponentEditorPart implements IGotoMarker, ITextEditor {
+public class ComponentEditor extends ComponentEditorPart implements IGotoMarker, ITextEditor, IWOEditor {
 	public static final String ID = "org.objectstyle.wolips.componenteditor.ComponentEditor";
 
 	private boolean _dragAndDropInitialized;
 
 	public ComponentEditor() {
 		super();
+	}
+
+	public WodParserCache getParserCache() throws CoreException, LocateException {
+		IEditorPart editorPart = getActiveEditor();
+		WodParserCache parserCache = null;
+		if (editorPart instanceof IWOEditor) {
+			parserCache = ((IWOEditor)editorPart).getParserCache();
+		}
+		return parserCache;
+	}
+
+	public IWodElement getSelectedElement() throws CoreException, LocateException, IOException {
+		IEditorPart editorPart = getActiveEditor();
+		IWodElement selectedELement = null;
+		if (editorPart instanceof IWOEditor) {
+			selectedELement = ((IWOEditor)editorPart).getSelectedElement();
+		}
+		return selectedELement;
 	}
 
 	public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {

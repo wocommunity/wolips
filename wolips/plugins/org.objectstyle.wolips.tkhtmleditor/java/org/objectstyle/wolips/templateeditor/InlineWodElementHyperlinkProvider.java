@@ -12,6 +12,7 @@ import org.objectstyle.wolips.bindings.wod.SimpleWodElement;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.document.WodBindingValueHyperlink;
 import org.objectstyle.wolips.wodclipse.core.document.WodElementTypeHyperlink;
+import org.objectstyle.wolips.wodclipse.core.util.FuzzyXMLWodElement;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
 import tk.eclipse.plugin.htmleditor.IHyperlinkProvider;
@@ -25,7 +26,7 @@ public class InlineWodElementHyperlinkProvider implements IHyperlinkProvider {
         if (attrName == null) {
           boolean wo54 = Activator.getDefault().isWO54();
           WodParserCache cache = WodParserCache.parser(file);
-          SimpleWodElement wodElement = WodHtmlUtils.toWodElement(element, wo54);
+          SimpleWodElement wodElement = new FuzzyXMLWodElement(element, wo54);
           if (wodElement.isTypeWithin(new Region(offset, 0))) {
             hyperlinkInfo = new HTMLHyperlinkInfo();
             hyperlinkInfo.setOffset(wodElement.getElementTypePosition().getOffset());
@@ -37,7 +38,7 @@ public class InlineWodElementHyperlinkProvider implements IHyperlinkProvider {
           boolean wo54 = Activator.getDefault().isWO54();
           WodParserCache cache;
           cache = WodParserCache.parser(file);
-          SimpleWodElement wodElement = WodHtmlUtils.toWodElement(element, wo54);
+          SimpleWodElement wodElement = new FuzzyXMLWodElement(element, wo54);
           IWodBinding wodBinding = wodElement.getBindingNamed(attrName);
           if (wodBinding != null) {
             Position valuePosition = wodBinding.getValuePosition();

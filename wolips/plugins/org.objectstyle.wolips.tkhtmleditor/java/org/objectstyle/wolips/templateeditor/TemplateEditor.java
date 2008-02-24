@@ -1,5 +1,8 @@
 package org.objectstyle.wolips.templateeditor;
 
+import java.io.IOException;
+
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.content.IContentDescriber;
 import org.eclipse.jface.action.IAction;
@@ -25,11 +28,15 @@ import org.eclipse.ui.texteditor.ITextEditorExtension;
 import org.eclipse.ui.texteditor.ITextEditorExtension2;
 import org.eclipse.ui.texteditor.ITextEditorExtension3;
 import org.eclipse.ui.texteditor.ITextEditorExtension4;
+import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.components.editor.ComponentEditorInteraction;
 import org.objectstyle.wolips.components.editor.IEmbeddedEditor;
 import org.objectstyle.wolips.components.editor.IHtmlDocumentProvider;
 import org.objectstyle.wolips.components.editor.IWebobjectTagListener;
 import org.objectstyle.wolips.editors.contentdescriber.ContentDescriberWO;
+import org.objectstyle.wolips.locate.LocateException;
+import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
+import org.objectstyle.wolips.wodclipse.core.document.IWOEditor;
 
 import tk.eclipse.plugin.htmleditor.HTMLPlugin;
 import tk.eclipse.plugin.htmleditor.editors.HTMLConfiguration;
@@ -37,13 +44,21 @@ import tk.eclipse.plugin.htmleditor.editors.HTMLEditor;
 import tk.eclipse.plugin.htmleditor.editors.HTMLEditorPart;
 import tk.eclipse.plugin.htmleditor.editors.HTMLSourceEditor;
 
-public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtmlDocumentProvider, IWebobjectTagListener, ITextEditor, IReusableEditor, ITextEditorExtension, ITextEditorExtension2, ITextEditorExtension3, ITextEditorExtension4, INavigationLocationProvider, ISaveablesSource, IPersistableEditor {
+public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtmlDocumentProvider, IWebobjectTagListener, ITextEditor, IReusableEditor, ITextEditorExtension, ITextEditorExtension2, ITextEditorExtension3, ITextEditorExtension4, INavigationLocationProvider, ISaveablesSource, IPersistableEditor, IWOEditor {
   private TemplateConfiguration _configuration;
   private ComponentEditorInteraction _editorInteraction;
 
   public TemplateEditor() {
     super();
     ContentDescriberWO.ANSWER = IContentDescriber.VALID;
+  }
+
+  public WodParserCache getParserCache() throws CoreException, LocateException {
+    return getSourceEditor().getParserCache();
+  }
+
+  public IWodElement getSelectedElement() throws CoreException, LocateException, IOException {
+    return getSourceEditor().getSelectedElement();
   }
 
   @Override
@@ -53,7 +68,7 @@ public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtml
     getSourceEditor().getViewer().getTextWidget().addMouseListener(tripleClickAdapter);
     getSourceEditor().getViewer().getTextWidget().addMouseMoveListener(tripleClickAdapter);
   }
-  
+
   @Override
   public void setInput(IEditorInput input) {
     super.setInput(input);

@@ -54,6 +54,8 @@ import org.eclipse.ui.texteditor.ContentAssistAction;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.objectstyle.wolips.wodclipse.core.util.CursorPositionSupport;
+import org.objectstyle.wolips.wodclipse.core.util.ICursorPositionListener;
 
 import tk.eclipse.plugin.csseditor.editors.ChooseColorAction;
 import tk.eclipse.plugin.htmleditor.ColorProvider;
@@ -68,11 +70,12 @@ import tk.eclipse.plugin.htmleditor.assist.InnerJavaScriptAssistProcessor;
  * HTML source editor.
  */
 public class HTMLSourceEditor extends TextEditor {
-
-  private ColorProvider colorProvider;
-  private IHTMLOutlinePage outlinePage;
-  private HTMLCharacterPairMatcher pairMatcher;
-  private SoftTabVerifyListener softTabListener;
+  private CursorPositionSupport _cursorPositionSupport;
+  
+  private ColorProvider _colorProvider;
+  private IHTMLOutlinePage _outlinePage;
+  private HTMLCharacterPairMatcher _pairMatcher;
+  private SoftTabVerifyListener _softTabListener;
 
   public static final String GROUP_HTML = "_html";
   public static final String ACTION_ESCAPE_HTML = "_escape_html";
@@ -88,7 +91,7 @@ public class HTMLSourceEditor extends TextEditor {
   public HTMLSourceEditor(HTMLConfiguration config) {
     super();
     config.setEditorPart(this);
-    colorProvider = HTMLPlugin.getDefault().getColorProvider();
+    _colorProvider = HTMLPlugin.getDefault().getColorProvider();
     setSourceViewerConfiguration(config);
     setPreferenceStore(new ChainedPreferenceStore(new IPreferenceStore[] { getPreferenceStore(), HTMLPlugin.getDefault().getPreferenceStore() }));
 
@@ -98,15 +101,17 @@ public class HTMLSourceEditor extends TextEditor {
     setAction(ACTION_CHOOSE_COLOR, new ChooseColorAction(this));
 
     IPreferenceStore store = HTMLPlugin.getDefault().getPreferenceStore();
-    softTabListener = new SoftTabVerifyListener();
-    softTabListener.setUseSoftTab(store.getBoolean(HTMLPlugin.PREF_USE_SOFTTAB));
-    softTabListener.setSoftTabWidth(store.getInt(HTMLPlugin.PREF_SOFTTAB_WIDTH));
+    _softTabListener = new SoftTabVerifyListener();
+    _softTabListener.setUseSoftTab(store.getBoolean(HTMLPlugin.PREF_USE_SOFTTAB));
+    _softTabListener.setSoftTabWidth(store.getInt(HTMLPlugin.PREF_SOFTTAB_WIDTH));
 
-    outlinePage = createOutlinePage();
+    _outlinePage = createOutlinePage();
+    
+    _cursorPositionSupport = new CursorPositionSupport(this);
   }
 
   protected HTMLCharacterPairMatcher getPairMatcher() {
-    return this.pairMatcher;
+    return this._pairMatcher;
   }
 
   public void setValidation(boolean validation) {
@@ -134,7 +139,7 @@ public class HTMLSourceEditor extends TextEditor {
   protected ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
     ISourceViewer viewer = new ProjectionViewer(parent, ruler, getOverviewRuler(), true, styles);
     getSourceViewerDecorationSupport(viewer);
-    viewer.getTextWidget().addVerifyListener(softTabListener);
+    viewer.getTextWidget().addVerifyListener(_softTabListener);
     return viewer;
   }
 
@@ -145,6 +150,20 @@ public class HTMLSourceEditor extends TextEditor {
 
   public ISourceViewer getViewer() {
     return this.getSourceViewer();
+  }
+  
+  public synchronized void addCursorPositionListener(ICursorPositionListener listener) {
+    _cursorPositionSupport.addCursorPositionListener(listener);
+  }
+
+  public synchronized void removeCursorPositionListener(ICursorPositionListener listener) {
+    _cursorPositionSupport.removeCursorPositionListener(listener);
+  }
+
+  @Override
+  protected void handleCursorPositionChanged() {
+    super.handleCursorPositionChanged();
+    _cursorPositionSupport.cursorPositionChanged(getViewer().getSelectedRange());
   }
 
   @Override
@@ -163,9 +182,9 @@ public class HTMLSourceEditor extends TextEditor {
     //		}, SWT.CTRL);
 
     ITextViewerExtension2 extension = (ITextViewerExtension2) getSourceViewer();
-    pairMatcher = new HTMLCharacterPairMatcher();
-    pairMatcher.setEnable(getPreferenceStore().getBoolean(HTMLPlugin.PREF_PAIR_CHAR));
-    MatchingCharacterPainter painter = new MatchingCharacterPainter(getSourceViewer(), pairMatcher);
+    _pairMatcher = new HTMLCharacterPairMatcher();
+    _pairMatcher.setEnable(getPreferenceStore().getBoolean(HTMLPlugin.PREF_PAIR_CHAR));
+    MatchingCharacterPainter painter = new MatchingCharacterPainter(getSourceViewer(), _pairMatcher);
     painter.setColor(Display.getDefault().getSystemColor(SWT.COLOR_GRAY));
     extension.addPainter(painter);
 
@@ -183,15 +202,15 @@ public class HTMLSourceEditor extends TextEditor {
   /** This method is called when configuration is changed. */
   @Override
   protected boolean affectsTextPresentation(PropertyChangeEvent event) {
-    return super.affectsTextPresentation(event) || colorProvider.affectsTextPresentation(event);
+    return super.affectsTextPresentation(event) || _colorProvider.affectsTextPresentation(event);
   }
 
   /** This method is called when configuration is changed. */
   @Override
   protected void handlePreferenceStoreChanged(PropertyChangeEvent event) {
-    colorProvider.handlePreferenceStoreChanged(event);
+    _colorProvider.handlePreferenceStoreChanged(event);
     updateAssistProperties(event);
-    softTabListener.preferenceChanged(event);
+    _softTabListener.preferenceChanged(event);
 
     String key = event.getProperty();
     if (key.equals(HTMLPlugin.PREF_PAIR_CHAR)) {
@@ -204,7 +223,7 @@ public class HTMLSourceEditor extends TextEditor {
       else if (value instanceof Boolean) {
         enable = ((Boolean) value).booleanValue();
       }
-      pairMatcher.setEnable(enable);
+      _pairMatcher.setEnable(enable);
     }
 
     super.handlePreferenceStoreChanged(event);
@@ -339,7 +358,7 @@ public class HTMLSourceEditor extends TextEditor {
   public void update() {
     updateFolding();
     updateAssist();
-    outlinePage.update();
+    _outlinePage.update();
 
     if (validation && isFileEditorInput()) {
       doValidate();
@@ -406,7 +425,7 @@ public class HTMLSourceEditor extends TextEditor {
     }
 
     fProjectionSupport.dispose();
-    pairMatcher.dispose();
+    _pairMatcher.dispose();
     super.dispose();
   }
   
@@ -442,7 +461,7 @@ public class HTMLSourceEditor extends TextEditor {
   @Override
   public Object getAdapter(Class adapter) {
     if (IContentOutlinePage.class.equals(adapter)) {
-      return outlinePage;
+      return _outlinePage;
     }
     if (ProjectionAnnotationModel.class.equals(adapter) && fProjectionSupport != null) {
       Object obj = fProjectionSupport.getAdapter(getSourceViewer(), adapter);

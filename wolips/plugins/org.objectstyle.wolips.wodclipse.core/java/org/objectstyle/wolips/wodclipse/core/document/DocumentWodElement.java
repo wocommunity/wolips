@@ -59,6 +59,8 @@ public class DocumentWodElement extends AbstractWodElement {
   private RulePosition _elementName;
 
   private RulePosition _elementType;
+  
+  private int _endOffset;
 
   private int _lineNumber;
 
@@ -89,13 +91,21 @@ public class DocumentWodElement extends AbstractWodElement {
   }
 
   public int getEndOffset() {
-    int endOffset = _elementType.getTokenEndOffset();
-    Iterator<IWodBinding> bindingsIter = getBindings().iterator();
-    while (bindingsIter.hasNext()) {
-      IWodBinding binding = bindingsIter.next();
-      endOffset = Math.max(endOffset, binding.getEndOffset());
+    int endOffset = _endOffset;
+    if (endOffset == -1) {
+      endOffset = _elementType.getTokenEndOffset();
+      Iterator<IWodBinding> bindingsIter = getBindings().iterator();
+      while (bindingsIter.hasNext()) {
+        IWodBinding binding = bindingsIter.next();
+        endOffset = Math.max(endOffset, binding.getEndOffset());
+      }
+      endOffset += 2;
     }
     return endOffset;
+  }
+  
+  public void setEndOffset(int endOffset) {
+    _endOffset = endOffset;
   }
 
   @Override

@@ -243,9 +243,9 @@ public class WodParserCache implements FuzzyXMLErrorListener {
 
   public static synchronized TypeCache getTypeCache() {
     if (WodParserCache._typeCache == null) {
-      _typeCache = new TypeCache();
+      WodParserCache._typeCache = new TypeCache();
     }
-    return _typeCache;
+    return WodParserCache._typeCache;
   }
 
   public static synchronized EOModelGroupCache getModelGroupCache() {

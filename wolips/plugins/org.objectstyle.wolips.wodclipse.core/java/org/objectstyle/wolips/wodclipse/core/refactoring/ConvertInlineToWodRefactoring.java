@@ -22,6 +22,7 @@ import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.bindings.wod.IWodModel;
 import org.objectstyle.wolips.bindings.wod.SimpleWodElement;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
+import org.objectstyle.wolips.wodclipse.core.util.FuzzyXMLWodElement;
 import org.objectstyle.wolips.wodclipse.core.util.WodDocumentUtils;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
@@ -47,7 +48,7 @@ public class ConvertInlineToWodRefactoring implements IRunnableWithProgress {
         IWodModel wodModel = _cache.getWodModel();
         String tagName = element.getName();
         if (WodHtmlUtils.isInline(tagName)) {
-          SimpleWodElement wodElement = WodHtmlUtils.toWodElement(element, _wo54);
+          SimpleWodElement wodElement = new FuzzyXMLWodElement(element, _wo54);
           ElementRename elementRename = ElementRename.newUniqueName(wodModel, wodElement, true);
           wodElement.setElementName(elementRename.getNewName());
 

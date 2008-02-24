@@ -1,21 +1,22 @@
 package org.objectstyle.wolips.componenteditor.inspector;
 
-import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISaveablePart;
-import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.IPage;
 import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.part.PageBookView;
 import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
+import org.objectstyle.wolips.templateeditor.TemplateEditor;
+import org.objectstyle.wolips.wodclipse.core.util.ICursorPositionListener;
+import org.objectstyle.wolips.wodclipse.editor.WodEditor;
 
-public class BindingsInspector extends PageBookView implements ISelectionListener {
-	private ISelection bootstrapSelection;
-
+public class BindingsInspector extends PageBookView implements ICursorPositionListener {
 	public BindingsInspector() {
 		super();
 	}
@@ -35,7 +36,7 @@ public class BindingsInspector extends PageBookView implements ISelectionListene
 
 	public void dispose() {
 		super.dispose();
-		getSite().getPage().removeSelectionListener(this);
+		// getSite().getPage().removeSelectionListener(this);
 	}
 
 	protected PageRec doCreatePage(IWorkbenchPart part) {
@@ -54,44 +55,59 @@ public class BindingsInspector extends PageBookView implements ISelectionListene
 	protected IWorkbenchPart getBootstrapPart() {
 		IWorkbenchPage page = getSite().getPage();
 		if (page != null) {
-			bootstrapSelection = page.getSelection();
+			// bootstrapSelection = page.getSelection();
 			return page.getActivePart();
 		}
 		return null;
 	}
 
 	public void init(IViewSite site) throws PartInitException {
-		site.getPage().addSelectionListener(this);
+		// site.getPage().addSelectionListener(this);
 		super.init(site);
 	}
 
 	protected boolean isImportant(IWorkbenchPart part) {
 		return part instanceof ComponentEditor;
 	}
-
-	public void partActivated(IWorkbenchPart part) {
-		super.partActivated(part);
-
-		// When the view is first opened, pass the selection to the page
-		if (bootstrapSelection != null) {
-			BindingsInspectorPage page = (BindingsInspectorPage) getCurrentPage();
-			if (page != null) {
-				page.selectionChanged(part, bootstrapSelection);
-			}
-			bootstrapSelection = null;
+	
+	@Override
+	public void partDeactivated(IWorkbenchPart part) {
+		super.partDeactivated(part);
+		if (part instanceof ComponentEditor) {
+			ComponentEditor componentEditor = (ComponentEditor)part;
+			TemplateEditor templateEditor = componentEditor.getTemplateEditor();
+			templateEditor.getSourceEditor().removeCursorPositionListener(this);
+			WodEditor wodEditor = componentEditor.getWodEditor();
+			wodEditor.removeCursorPositionListener(this);
 		}
 	}
 
-	public void selectionChanged(IWorkbenchPart part, ISelection sel) {
-		// we ignore our own selection or null selection
-		if (part == this) {
-			return;
+	public void partActivated(IWorkbenchPart part) {
+		super.partActivated(part);
+		if (part instanceof ComponentEditor) {
+			ComponentEditor componentEditor = (ComponentEditor)part;
+			TemplateEditor templateEditor = componentEditor.getTemplateEditor();
+			templateEditor.getSourceEditor().addCursorPositionListener(this);
+			WodEditor wodEditor = componentEditor.getWodEditor();
+			wodEditor.addCursorPositionListener(this);
 		}
 
+		// When the view is first opened, pass the selection to the page
+		// if (bootstrapSelection != null) {
+		// BindingsInspectorPage page = (BindingsInspectorPage)
+		// getCurrentPage();
+		// if (page != null) {
+		// page.selectionChanged(part, bootstrapSelection);
+		// }
+		// bootstrapSelection = null;
+		// }
+	}
+
+	public void cursorPositionChanged(TextEditor editor, Point selectionRange) {
 		// pass the selection to the page
 		BindingsInspectorPage page = (BindingsInspectorPage) getCurrentPage();
 		if (page != null) {
-			page.selectionChanged(part, sel);
+			page.cursorPositionChanged(editor, selectionRange);
 		}
 	}
 

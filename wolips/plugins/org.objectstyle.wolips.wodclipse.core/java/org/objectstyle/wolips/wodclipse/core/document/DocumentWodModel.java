@@ -218,6 +218,9 @@ public class DocumentWodModel extends AbstractWodModel {
         }
       }
       else if (RulePosition.isOperatorOfType(rulePosition, CloseDefinitionWordDetector.class)) {
+        if (element != null) {
+          element.setEndOffset(rulePosition.getTokenOffset());
+        }
         if (!RulePosition.isOperatorOfType(lastRulePosition, OpenDefinitionWordDetector.class) && !RulePosition.isOperatorOfType(lastRulePosition, EndAssignmentWordDetector.class)) {
           addParseProblem("A '}' can only appear after a ';' or a '{'", rulePosition, false);
         }
@@ -274,27 +277,39 @@ public class DocumentWodModel extends AbstractWodModel {
     return _document.getLength();
   }
 
-  public IWodUnit getWodUnitAtIndex(int _index) {
-    IWodUnit wodUnit = null;
+  public IWodElement getWodElementAtIndex(int index) {
+    IWodElement elementAtIndex = null;
     Iterator<IWodElement> elementsIter = getElements().iterator();
-    while (wodUnit == null && elementsIter.hasNext()) {
+    while (elementAtIndex == null && elementsIter.hasNext()) {
       IWodElement element = elementsIter.next();
-      if (isIndexContainedByWodUnit(_index, element)) {
-        Iterator<IWodBinding> bindingsIter = element.getBindings().iterator();
-        while (wodUnit == null && bindingsIter.hasNext()) {
-          IWodBinding binding = bindingsIter.next();
-          if (isIndexContainedByWodUnit(_index, binding)) {
-            wodUnit = binding;
-          }
-        }
-        if (wodUnit == null) {
-          wodUnit = element;
-        }
+      if (isIndexContainedByWodUnit(index, element)) {
+        elementAtIndex = element;
       }
     }
+    return elementAtIndex;
+  }
+
+  public IWodUnit getWodUnitAtIndex(int index) {
+    IWodUnit wodUnit = null;
+
+    IWodElement elementAtIndex = getWodElementAtIndex(index);
+    if (elementAtIndex != null) {
+      Iterator<IWodBinding> bindingsIter = elementAtIndex.getBindings().iterator();
+      while (wodUnit == null && bindingsIter.hasNext()) {
+        IWodBinding binding = bindingsIter.next();
+        if (isIndexContainedByWodUnit(index, binding)) {
+          wodUnit = binding;
+        }
+      }
+      if (wodUnit == null) {
+        wodUnit = elementAtIndex;
+      }
+    }
+    
     if (wodUnit == null) {
       wodUnit = this;
     }
+    
     return wodUnit;
   }
 

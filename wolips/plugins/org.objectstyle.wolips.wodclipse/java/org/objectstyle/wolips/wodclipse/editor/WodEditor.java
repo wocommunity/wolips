@@ -43,6 +43,7 @@
  */
 package org.objectstyle.wolips.wodclipse.editor;
 
+import java.io.IOException;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.resources.IFile;
@@ -56,8 +57,10 @@ import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -70,6 +73,8 @@ import org.eclipse.ui.texteditor.ContentAssistAction;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.objectstyle.wolips.baseforplugins.util.Throttle;
+import org.objectstyle.wolips.bindings.wod.IWodElement;
+import org.objectstyle.wolips.bindings.wod.IWodModel;
 import org.objectstyle.wolips.components.editor.ComponentEditorInteraction;
 import org.objectstyle.wolips.components.editor.IEmbeddedEditor;
 import org.objectstyle.wolips.components.editor.IWebobjectTagListener;
@@ -80,15 +85,23 @@ import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
+import org.objectstyle.wolips.wodclipse.core.document.IWOEditor;
 import org.objectstyle.wolips.wodclipse.core.parser.ElementNameRule;
 import org.objectstyle.wolips.wodclipse.core.parser.RulePosition;
 import org.objectstyle.wolips.wodclipse.core.parser.WodScanner;
+import org.objectstyle.wolips.wodclipse.core.util.CursorPositionSupport;
+import org.objectstyle.wolips.wodclipse.core.util.ICursorPositionListener;
+import org.objectstyle.wolips.wodclipse.core.util.WodModelUtils;
 
 /**
  * @author mike
  * @author uli
  */
-public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobjectTagListener, IWodDocumentProvider {
+public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobjectTagListener, IWodDocumentProvider, IWOEditor {
+	private WodParserCache _cache;
+
+	private CursorPositionSupport _cursorPositionSupport;
+
 	private WodContentOutlinePage _contentOutlinePage;
 
 	private IEditorInput _input;
@@ -101,6 +114,7 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 
 	public WodEditor() {
 		_wodOutlineUpdateThrottle = new Throttle("WodOutline", 1000, new WodOutlineUpdater());
+		_cursorPositionSupport = new CursorPositionSupport(this);
 		setSourceViewerConfiguration(new WodSourceViewerConfiguration(this));
 	}
 
@@ -115,40 +129,49 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 	}
 
 	@Override
+	protected void doSetInput(IEditorInput input) throws CoreException {
+		super.doSetInput(input);
+		_cache = null;
+	}
+
+	@Override
 	protected void performRevert() {
 		super.performRevert();
 		updateValidation();
-	    _editorInteraction.fireWebObjectChanged();
+		_editorInteraction.fireWebObjectChanged();
 	}
 
 	@Override
 	protected void performSaveAs(IProgressMonitor progressMonitor) {
 		super.performSaveAs(progressMonitor);
 		updateValidation();
-	    _editorInteraction.fireWebObjectChanged();
+		_editorInteraction.fireWebObjectChanged();
 	}
 
 	@Override
 	protected void performSave(boolean overwrite, IProgressMonitor progressMonitor) {
 		super.performSave(overwrite, progressMonitor);
 		updateValidation();
-	    _editorInteraction.fireWebObjectChanged();
+		_editorInteraction.fireWebObjectChanged();
 	}
 
-	public WodParserCache getWodParserCache() throws CoreException, LocateException {
-		IFileEditorInput input = (IFileEditorInput) getEditorInput();
-		IFile inputFile = input.getFile();
-		WodParserCache cache = WodParserCache.parser(inputFile);
-		return cache;
+	public WodParserCache getParserCache() throws CoreException, LocateException {
+		if (_cache == null) {
+			IFileEditorInput input = (IFileEditorInput) getEditorInput();
+			IFile inputFile = input.getFile();
+			_cache = WodParserCache.parser(inputFile);
+		}
+		return _cache;
 	}
 
 	protected void updateValidation() {
 		try {
-			//resource.getWorkspace().run(r, null,IWorkspace.AVOID_UPDATE, null);
+			// resource.getWorkspace().run(r, null,IWorkspace.AVOID_UPDATE,
+			// null);
 			ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) {
 					try {
-						WodParserCache cache = getWodParserCache();
+						WodParserCache cache = getParserCache();
 						cache.parseHtmlAndWodIfNecessary();
 						cache.validate();
 					} catch (Exception ex) {
@@ -159,6 +182,20 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 		} catch (CoreException e) {
 			Activator.getDefault().log(e);
 		}
+	}
+
+	public synchronized void addCursorPositionListener(ICursorPositionListener listener) {
+		_cursorPositionSupport.addCursorPositionListener(listener);
+	}
+
+	public synchronized void removeCursorPositionListener(ICursorPositionListener listener) {
+		_cursorPositionSupport.removeCursorPositionListener(listener);
+	}
+
+	@Override
+	protected void handleCursorPositionChanged() {
+		super.handleCursorPositionChanged();
+		_cursorPositionSupport.cursorPositionChanged(getViewer().getSelectedRange());
 	}
 
 	public ISourceViewer getViewer() {
@@ -234,7 +271,7 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 		});
 
 		try {
-			getWodParserCache().setWodDocument(document);
+			getParserCache().setWodDocument(document);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -244,7 +281,7 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 
 	public void dispose() {
 		try {
-			getWodParserCache().setWodDocument(null);
+			getParserCache().setWodDocument(null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -282,7 +319,7 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 	public void webObjectChanged() {
 		// DO NOTHING
 	}
-	
+
 	public void webObjectTagSelected(String name) {
 		try {
 			IDocument document = getDocumentProvider().getDocument(getEditorInput());
@@ -306,4 +343,21 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 		return _editorInteraction;
 	}
 
+	public IWodElement getSelectedElement() throws CoreException, LocateException, IOException {
+		IWodElement element = null;
+		WodParserCache cache = getParserCache();
+		IWodModel model;
+	      if (isDirty()) {
+	    	model = WodModelUtils.createWodModel(cache.getWodFile(), cache.getWodDocument());
+		} else {
+			model = cache.getWodModel();
+		}
+	
+		ISelection selection = getSelectionProvider().getSelection();
+		if (selection instanceof ITextSelection) {
+			int offset = ((ITextSelection) selection).getOffset();
+			element = model.getWodElementAtIndex(offset);
+		}
+		return element;
+	}
 }

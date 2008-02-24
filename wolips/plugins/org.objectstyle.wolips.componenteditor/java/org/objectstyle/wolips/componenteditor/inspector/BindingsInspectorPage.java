@@ -2,10 +2,6 @@ package org.objectstyle.wolips.componenteditor.inspector;
 
 import java.util.List;
 
-import jp.aonir.fuzzyxml.FuzzyXMLDocument;
-import jp.aonir.fuzzyxml.FuzzyXMLElement;
-import jp.aonir.fuzzyxml.FuzzyXMLParser;
-
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.BeansObservables;
@@ -17,14 +13,12 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.layout.TableColumnLayout;
-import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -34,25 +28,21 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.ISaveablePart;
-import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.Page;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
-import org.objectstyle.wolips.bindings.Activator;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
 import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
-import org.objectstyle.wolips.templateeditor.TemplateEditor;
-import org.objectstyle.wolips.templateeditor.TemplateSourceEditor;
 import org.objectstyle.wolips.wodclipse.action.ComponentLiveSearch;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
-import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
+import org.objectstyle.wolips.wodclipse.core.document.IWOEditor;
+import org.objectstyle.wolips.wodclipse.core.util.ICursorPositionListener;
 import org.objectstyle.wolips.wodclipse.core.util.WodModelUtils;
 
-public class BindingsInspectorPage extends Page implements IAdaptable, ISelectionListener {
+public class BindingsInspectorPage extends Page implements IAdaptable, ICursorPositionListener {
 	private Composite _control;
 
 	private Label _elementTypeLabel;
@@ -71,8 +61,6 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 
 	private ComponentEditor _templateEditorPart;
 
-	private PartListener _partListener;
-
 	private ComponentLiveSearch _componentLiveSearch;
 
 	private DataBindingContext _dataBindingContext;
@@ -84,14 +72,14 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 	private List<WodProblem> _wodProblems;
 
 	public BindingsInspectorPage() {
-		_partListener = new PartListener();
+		// DO NOTHING
 	}
 
 	public IWorkbenchPart getTemplateEditorPart() {
 		return _templateEditorPart;
 	}
 
-	public void setWodElement(IWodElement wodElement) {
+	public void setWodElement(IWodElement wodElement, WodParserCache cache) {
 		if (_elementNameField.isDisposed() || _elementTypeField.isDisposed() || _bindingsTableViewer.getTable().isDisposed()) {
 			return;
 		}
@@ -105,13 +93,19 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 		}
 
 		_wodElement = wodElement;
+		_wodProblems = null;
+		if (wodElement != null && cache != null) {
+			try {
+				_wodProblems = WodModelUtils.getProblems(wodElement, cache);
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}
+		}
 		_bindingsLabelProvider.setContext(_wodElement, _wodProblems);
 
-		WodParserCache parserCache = null;
-		if (_templateEditorPart != null) {
+		if (cache != null) {
 			try {
-				parserCache = _templateEditorPart.getTemplateEditor().getSourceEditor().getParserCache();
-				_bindingsContentProvider.setContext(parserCache.getJavaProject(), WodParserCache.getTypeCache());
+				_bindingsContentProvider.setContext(cache.getJavaProject(), WodParserCache.getTypeCache());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -137,6 +131,9 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 				elementNameEnabled = true;
 			}
 			elementType = _wodElement.getElementType();
+			if (elementType == null) {
+				elementType = "<unknown>";
+			}
 			elementTypeEnabled = true;
 		}
 		_elementNameField.setText(elementName);
@@ -144,10 +141,10 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 		_elementTypeField.setText(elementType);
 		_elementTypeField.setEnabled(elementTypeEnabled);
 
-		if (parserCache != null) {
-			final WodParserCache refactoringParserCache = parserCache;
+		if (cache != null) {
+			final WodParserCache refactoringParserCache = cache;
 			_dataBindingContext = new DataBindingContext();
-			_refactoringElement = new RefactoringElementModel(_wodElement, parserCache);
+			_refactoringElement = new RefactoringElementModel(_wodElement, refactoringParserCache);
 
 			if (elementNameEnabled) {
 				UpdateValueStrategy elementNameUpdateStrategy = new UpdateValueStrategy(UpdateValueStrategy.POLICY_UPDATE);
@@ -178,8 +175,8 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 			}
 
 			if (elementTypeEnabled) {
-				_componentLiveSearch = new ComponentLiveSearch(parserCache.getJavaProject(), new NullProgressMonitor());
-				//_componentLiveSearch.attachTo(_elementTypeField);
+				_componentLiveSearch = new ComponentLiveSearch(cache.getJavaProject(), new NullProgressMonitor());
+				// _componentLiveSearch.attachTo(_elementTypeField);
 
 				UpdateValueStrategy elementTypeUpdateStrategy = new UpdateValueStrategy(UpdateValueStrategy.POLICY_UPDATE);
 				elementTypeUpdateStrategy.setBeforeSetValidator(new IValidator() {
@@ -204,13 +201,15 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 						return status;
 					}
 				});
-				//_dataBindingContext.bindValue(SWTObservables.observeText(_elementTypeField), BeansObservables.observeValue(_refactoringElement, RefactoringElementModel.ELEMENT_TYPE), elementTypeUpdateStrategy, null);
-				System.out.println("BindingsInspectorPage.setWodElement: a");
+				// _dataBindingContext.bindValue(SWTObservables.observeText(_elementTypeField),
+				// BeansObservables.observeValue(_refactoringElement,
+				// RefactoringElementModel.ELEMENT_TYPE),
+				// elementTypeUpdateStrategy, null);
 				_elementTypeField.addFocusListener(new FocusListener() {
 					public void focusGained(FocusEvent e) {
 						// DO NOTHING
 					}
-					
+
 					public void focusLost(FocusEvent e) {
 						try {
 							String elementTypeFieldText = getElementTypeField().getText();
@@ -223,19 +222,22 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 						}
 					}
 				});
-				
-				
-				//_dataBindingContext.bindValue(SWTObservables.observeText(_elementTypeField), BeansObservables.observeValue(_refactoringElement, RefactoringElementModel.ELEMENT_TYPE), elementTypeUpdateStrategy, null);
 
-//				_refactoringElement.addPropertyChangeListener(RefactoringElementModel.ELEMENT_TYPE, new PropertyChangeListener() {
-//					public void propertyChange(PropertyChangeEvent evt) {
-//						typeChanged();
-//					}
-//				});
+				// _dataBindingContext.bindValue(SWTObservables.observeText(_elementTypeField),
+				// BeansObservables.observeValue(_refactoringElement,
+				// RefactoringElementModel.ELEMENT_TYPE),
+				// elementTypeUpdateStrategy, null);
+
+				// _refactoringElement.addPropertyChangeListener(RefactoringElementModel.ELEMENT_TYPE,
+				// new PropertyChangeListener() {
+				// public void propertyChange(PropertyChangeEvent evt) {
+				// typeChanged();
+				// }
+				// });
 			}
 		}
 	}
-	
+
 	protected void typeChanged() {
 		_wodElement = getRefactoringElement().getWodElement();
 		_wodProblems = null;
@@ -311,14 +313,11 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 		valueColumn.setText("Binding");
 		bindingsTableLayout.setColumnData(valueColumn, new ColumnWeightData(50, true));
 
-		setWodElement(null);
+		setWodElement(null, null);
 	}
 
 	@Override
 	public void dispose() {
-		if (_templateEditorPart != null) {
-			_templateEditorPart.getSite().getPage().removePartListener(_partListener);
-		}
 		if (_dataBindingContext != null) {
 			_dataBindingContext.dispose();
 			_dataBindingContext = null;
@@ -357,98 +356,19 @@ public class BindingsInspectorPage extends Page implements IAdaptable, ISelectio
 		_bindingsTableViewer.setInput(_bindingsTableViewer.getInput());
 	}
 
-	/*
-	 * (non-Javadoc) Method declared on ISelectionListener.
-	 */
-	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		if (_bindingsTableViewer == null) {
-			return;
-		}
-
-		if (_templateEditorPart != null) {
-			_templateEditorPart.getSite().getPage().removePartListener(_partListener);
-			_templateEditorPart = null;
-		}
-
-		if (part instanceof ComponentEditor) {
-			_templateEditorPart = (ComponentEditor) part;
-		}
-
-		refreshWodElement();
-
-		if (_templateEditorPart != null) {
-			_templateEditorPart.getSite().getPage().addPartListener(_partListener);
-		}
-	}
-
-	protected void refreshWodElement() {
+	public void cursorPositionChanged(TextEditor editor, Point selectionRange) {
+		WodParserCache cache = null;
 		IWodElement wodElement = null;
-		if (_templateEditorPart != null) {
-			IEditorPart activeEditor = _templateEditorPart.getActiveEditor();
-			if (activeEditor instanceof TemplateEditor) {
-				try {
-					TemplateSourceEditor templateSourceEditor = ((TemplateEditor) activeEditor).getSourceEditor();
-					WodParserCache cache = templateSourceEditor.getParserCache();
-					ISelection realSelection = templateSourceEditor.getSelectionProvider().getSelection();
-					if (realSelection instanceof ITextSelection) {
-						ITextSelection textSelection = (ITextSelection) realSelection;
-						FuzzyXMLDocument doc;
-						if (templateSourceEditor.isDirty()) {
-							FuzzyXMLParser parser = new FuzzyXMLParser(Activator.getDefault().isWO54(), true);
-							doc = parser.parse(templateSourceEditor.getHTMLSource());
-						} else {
-							doc = cache.getHtmlXmlDocument();
-						}
-						FuzzyXMLElement element = doc.getElementByOffset(textSelection.getOffset());
-						if (element != null) {
-							wodElement = WodHtmlUtils.getOrCreateWodElement(element, false, cache);
-						}
-					} else if (realSelection instanceof IStructuredSelection) {
-						IStructuredSelection structuredSelection = (IStructuredSelection) realSelection;
-						Object obj = structuredSelection.getFirstElement();
-						if (obj instanceof FuzzyXMLElement) {
-							FuzzyXMLElement element = (FuzzyXMLElement) obj;
-							wodElement = WodHtmlUtils.getOrCreateWodElement(element, false, cache);
-						}
-					}
-					_wodProblems = null;
-					_wodProblems = WodModelUtils.getProblems(wodElement, cache);
-				} catch (Throwable t) {
-					t.printStackTrace();
-				}
+		if (editor instanceof IWOEditor) {
+			try {
+				IWOEditor woEditor = (IWOEditor) editor;
+				cache = woEditor.getParserCache();
+				wodElement = woEditor.getSelectedElement();
+			} catch (Throwable t) {
+				t.printStackTrace();
 			}
 		}
 
-		setWodElement(wodElement);
-	}
-
-	/**
-	 * Part listener which cleans up this page when the template editor part is
-	 * closed. This is hooked only when there is a template editor part.
-	 */
-	protected class PartListener implements IPartListener {
-		public void partActivated(IWorkbenchPart part) {
-			// DO NOTHING
-		}
-
-		public void partBroughtToTop(IWorkbenchPart part) {
-			// DO NOTHING
-		}
-
-		public void partClosed(IWorkbenchPart part) {
-			IWorkbenchPart templateEditorPart = getTemplateEditorPart();
-			if (templateEditorPart == part) {
-				templateEditorPart = null;
-				setWodElement(null);
-			}
-		}
-
-		public void partDeactivated(IWorkbenchPart part) {
-			// DO NOTHING
-		}
-
-		public void partOpened(IWorkbenchPart part) {
-			// DO NOTHING
-		}
+		setWodElement(wodElement, cache);
 	}
 }

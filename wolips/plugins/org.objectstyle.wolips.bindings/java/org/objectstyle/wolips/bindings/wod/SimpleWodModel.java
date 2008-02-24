@@ -11,6 +11,10 @@ public class SimpleWodModel extends AbstractWodModel {
 	public String getName() {
 		return _name;
 	}
+	
+	public IWodElement getWodElementAtIndex(int index) {
+	  return null;
+	}
 
 	public IWodUnit getWodUnitAtIndex(int _index) {
 		return null;
