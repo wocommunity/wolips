@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.editors.text.TextEditor;
+import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.document.WodElementTypeHyperlink;
 import org.objectstyle.wolips.wodclipse.core.util.FuzzyXMLWodElement;
@@ -79,13 +80,22 @@ public class TemplateBreadcrumb extends Composite implements ICursorPositionList
           FuzzyXMLNode stackNode = elementStack.get(i);
           if (stackNode instanceof FuzzyXMLElement) {
             FuzzyXMLElement stackElement = (FuzzyXMLElement) stackNode;
+
             String tagName = stackElement.getName();
-            String displayName = tagName;
-            if (tagName == null) {
-              displayName = "<unknown>";
+            boolean isWOTag = WodHtmlUtils.isWOTag(tagName);
+            String displayName = null;
+            if (isWOTag) {
+              IWodElement wodElement = WodHtmlUtils.getWodElement(stackElement, false, cache);
+              if (wodElement != null) {
+                displayName = wodElement.getElementType();
+              }
             }
-            else if (tagName.startsWith("wo:")) {
-              displayName = tagName.substring("wo:".length());
+            else {
+              displayName = tagName;
+            }
+
+            if (displayName == null) {
+              displayName = "<unknown>";
             }
 
             Label nodeButton = new Label(this, SWT.NONE);
@@ -94,7 +104,7 @@ public class TemplateBreadcrumb extends Composite implements ICursorPositionList
             nodeButton.setText(displayName);
             nodeButton.addMouseListener(this);
 
-            if (!WodHtmlUtils.isWOTag(tagName)) {
+            if (!isWOTag) {
               nodeButton.setForeground(getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
             }
           }
