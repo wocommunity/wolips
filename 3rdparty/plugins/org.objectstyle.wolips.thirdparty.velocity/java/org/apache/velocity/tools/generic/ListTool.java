@@ -63,8 +63,8 @@ public class ListTool
     /**
      * Default constructor.
      */
-    public ListTool()
-    {
+    public ListTool() {
+    	// DO NOTHING
     }
 
     /**
@@ -133,7 +133,8 @@ public class ListTool
      * @param value the element to set.
      * @return blank if set, null if not set.
      */
-    public Object set(Object list, int index, Object value)
+    @SuppressWarnings("unchecked")
+	public Object set(Object list, int index, Object value)
     {
         if (isArray(list))
         {
