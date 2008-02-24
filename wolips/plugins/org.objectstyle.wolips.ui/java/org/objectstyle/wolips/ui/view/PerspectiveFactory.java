@@ -73,25 +73,31 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 
 	public static final String ID_RELATED = "org.objectstyle.wolips.ui.view.RelatedView";
 
+	public static final String ID_BINDINGS = "org.objectstyle.wolips.componenteditor.inspector.BindingsInspector";
+
 	public static final String ID_WO_PACKAGES = "org.objectstyle.wolips.jdt.ui.WOPackageExplorer";
 
 	public void createInitialLayout(IPageLayout layout) {
 		String editorArea = layout.getEditorArea();
 
-		IFolderLayout folder = layout.createFolder("left", IPageLayout.LEFT, (float) 0.25, editorArea); //$NON-NLS-1$
-		folder.addView(PerspectiveFactory.ID_WO_PACKAGES);
-		folder.addView(JavaUI.ID_TYPE_HIERARCHY);
-		folder.addPlaceholder(IPageLayout.ID_RES_NAV);
-		folder = layout.createFolder("left_bottom", IPageLayout.BOTTOM, (float) 0.75, "left");
-		folder.addView(PerspectiveFactory.ID_RELATED);
-		IFolderLayout outputfolder = layout.createFolder("bottom", IPageLayout.BOTTOM, (float) 0.75, editorArea); //$NON-NLS-1$
-		outputfolder.addView(IPageLayout.ID_PROBLEM_VIEW);
-		outputfolder.addView(JavaUI.ID_JAVADOC_VIEW);
-		outputfolder.addView(JavaUI.ID_SOURCE_VIEW);
-		outputfolder.addPlaceholder(NewSearchUI.SEARCH_VIEW_ID);
-		outputfolder.addPlaceholder(IConsoleConstants.ID_CONSOLE_VIEW);
-		outputfolder.addPlaceholder(IPageLayout.ID_BOOKMARKS);
-		outputfolder.addPlaceholder(IProgressConstants.PROGRESS_VIEW_ID);
+		IFolderLayout leftFolder = layout.createFolder("left", IPageLayout.LEFT, (float) 0.25, editorArea); //$NON-NLS-1$
+		leftFolder.addView(PerspectiveFactory.ID_WO_PACKAGES);
+		leftFolder.addView(JavaUI.ID_TYPE_HIERARCHY);
+		leftFolder.addPlaceholder(IPageLayout.ID_RES_NAV);
+		
+		IFolderLayout leftBottomFolder = layout.createFolder("left_bottom", IPageLayout.BOTTOM, (float) 0.65, "left");
+		leftBottomFolder.addView(PerspectiveFactory.ID_RELATED);
+		leftBottomFolder.addView(PerspectiveFactory.ID_BINDINGS);
+		
+		IFolderLayout bottomFolder = layout.createFolder("bottom", IPageLayout.BOTTOM, (float) 0.75, editorArea); //$NON-NLS-1$
+		bottomFolder.addView(IPageLayout.ID_PROBLEM_VIEW);
+		bottomFolder.addView(IConsoleConstants.ID_CONSOLE_VIEW);
+		bottomFolder.addView(JavaUI.ID_JAVADOC_VIEW);
+		bottomFolder.addView(JavaUI.ID_SOURCE_VIEW);
+		bottomFolder.addPlaceholder(NewSearchUI.SEARCH_VIEW_ID);
+		bottomFolder.addPlaceholder(IConsoleConstants.ID_CONSOLE_VIEW);
+		bottomFolder.addPlaceholder(IPageLayout.ID_BOOKMARKS);
+		bottomFolder.addPlaceholder(IProgressConstants.PROGRESS_VIEW_ID);
 
 		layout.addView(IPageLayout.ID_OUTLINE, IPageLayout.RIGHT, (float) 0.75, editorArea);
 
