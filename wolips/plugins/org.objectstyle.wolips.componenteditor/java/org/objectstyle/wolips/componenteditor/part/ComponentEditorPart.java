@@ -191,14 +191,6 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 			this.setPageText(tabIndex, language + "DisplayGroups");
 			tabIndex++;
 		}
-
-		// html preview tab
-		htmlPreviewTab = new HtmlPreviewTab(this, tabIndex, htmlInput);
-		componentEditorTabsList.add(htmlPreviewTab);
-		htmlPreviewTab.createTab();
-		previewPageId = this.addPage(htmlPreviewTab);
-		this.setPageText(tabIndex, "Preview");
-		tabIndex++;
 		
 		// api tab
 		IFileEditorInput apiInput = (IFileEditorInput) componentEditorInput.getApiEditor();
@@ -207,6 +199,15 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 		apiTab.createTab();
 		apiPageId = this.addPage(apiTab);
 		this.setPageText(tabIndex, "Api");
+		tabIndex++;
+
+		// html preview tab
+		htmlPreviewTab = new HtmlPreviewTab(this, tabIndex, htmlInput);
+		componentEditorTabsList.add(htmlPreviewTab);
+		htmlPreviewTab.createTab();
+		previewPageId = this.addPage(htmlPreviewTab);
+		this.setPageText(tabIndex, "Preview (Experimental)");
+		tabIndex++;
 
 		componentEditorTabs = componentEditorTabsList.toArray(new ComponentEditorTab[componentEditorTabsList.size()]);
 		htmlWodTabs = htmlWodTabsList.toArray(new HtmlWodTab[htmlWodTabsList.size()]);
@@ -442,9 +443,11 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 
 	public void dispose() {
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
-		for (int i = 0; i < componentEditorTabs.length; i++) {
-			if (componentEditorTabs[i] != null) {
-				componentEditorTabs[i].dispose();
+		if (componentEditorTabs != null) {
+			for (int i = 0; i < componentEditorTabs.length; i++) {
+				if (componentEditorTabs[i] != null) {
+					componentEditorTabs[i].dispose();
+				}
 			}
 		}
 		super.dispose();

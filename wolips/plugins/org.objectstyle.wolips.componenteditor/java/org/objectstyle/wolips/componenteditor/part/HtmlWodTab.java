@@ -48,6 +48,9 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IEditorInput;
@@ -58,18 +61,28 @@ import org.eclipse.ui.PartInitException;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.templateeditor.TemplateEditor;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
+import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.editor.WodEditor;
 
 public class HtmlWodTab extends ComponentEditorTab {
+	private static final String SASH_WEIGHTS_KEY = "org.objectstyle.wolips.componenteditor.sashWeights";
+
+	
 	private TemplateEditor templateEditor;
 
 	private WodEditor wodEditor;
 
-	boolean htmlActive;
+	private boolean htmlActive;
 
 	private IEditorInput htmlInput;
 
 	private IEditorInput wodInput;
+	
+	private SashForm htmlSashForm;
+
+	private SashForm wodSashForm;
+	
+	private Composite wodContainer;
 
 	public HtmlWodTab(ComponentEditorPart componentEditorPart, int tabIndex, IEditorInput htmlInput, IEditorInput wodInput) {
 		super(componentEditorPart, tabIndex);
@@ -85,8 +98,9 @@ public class HtmlWodTab extends ComponentEditorTab {
 	}
 
 	public void createTab() {
-		SashForm htmlSashform = new SashForm(this.getParentSashForm(), SWT.VERTICAL);
-		SashForm wodSashform = new SashForm(this.getParentSashForm(), SWT.VERTICAL);
+		this.htmlSashForm = new SashForm(this.getParentSashForm(), SWT.VERTICAL);
+		this.wodSashForm = new SashForm(this.getParentSashForm(), SWT.VERTICAL);
+		this.wodSashForm.setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
 
 		templateEditor = new TemplateEditor();
 		IEditorSite htmlSite = this.getComponentEditorPart().publicCreateSite(templateEditor);
@@ -95,7 +109,7 @@ public class HtmlWodTab extends ComponentEditorTab {
 		} catch (PartInitException e) {
 			ComponenteditorPlugin.getDefault().log(e);
 		}
-		createInnerPartControl(htmlSashform, templateEditor);
+		createInnerPartControl(htmlSashForm, templateEditor);
 		templateEditor.addPropertyListener(new IPropertyListener() {
 			public void propertyChanged(Object source, int propertyId) {
 				HtmlWodTab.this.getComponentEditorPart().publicHandlePropertyChange(propertyId);
@@ -108,7 +122,7 @@ public class HtmlWodTab extends ComponentEditorTab {
 		} catch (PartInitException e) {
 			ComponenteditorPlugin.getDefault().log(e);
 		}
-		createInnerPartControl(wodSashform, wodEditor);
+		this.wodContainer = createInnerPartControl(wodSashForm, wodEditor);
 		wodEditor.addPropertyListener(new IPropertyListener() {
 			public void propertyChanged(Object source, int propertyId) {
 				HtmlWodTab.this.getComponentEditorPart().publicHandlePropertyChange(propertyId);
@@ -120,25 +134,88 @@ public class HtmlWodTab extends ComponentEditorTab {
 			}
 		});
 		WodclipsePlugin.getDefault().updateWebObjectsTagNames(wodEditor);
-		htmlSashform.addListener(SWT.Activate, new Listener() {
+		htmlSashForm.addListener(SWT.Activate, new Listener() {
 			public void handleEvent(Event event) {
-				htmlActive = true;
+				setHtmlActive(true);
 				HtmlWodTab.this.getComponentEditorPart().pageChange(HtmlWodTab.this.getTabIndex());
 				HtmlWodTab.this.getComponentEditorPart().updateOutline();
 			}
 		});
-		wodSashform.addListener(SWT.Activate, new Listener() {
+		wodSashForm.addListener(SWT.Activate, new Listener() {
 			public void handleEvent(Event event) {
-				htmlActive = false;
+				setHtmlActive(false);
 				HtmlWodTab.this.getComponentEditorPart().pageChange(HtmlWodTab.this.getTabIndex());
 				HtmlWodTab.this.getComponentEditorPart().updateOutline();
+			}
+		});
+		
+		restoreSashWeights();
+		hideWodIfNecessary();
+		
+		htmlSashForm.addControlListener(new ControlListener() {
+			public void controlMoved(ControlEvent e) {
+				// DO NOTHING
+			}
+
+			public void controlResized(ControlEvent e) {
+				HtmlWodTab.this.saveSashWeights();
+				HtmlWodTab.this.hideWodIfNecessary();
 			}
 		});
 
 		templateEditor.initEditorInteraction(this.getComponentEditorPart().getEditorInteraction());
 		wodEditor.initEditorInteraction(this.getComponentEditorPart().getEditorInteraction());
-
+		
 		this.addWebObjectsTagNamesListener();
+	}
+	
+	public boolean isHtmlActive() {
+		return this.htmlActive;
+	}
+	
+	protected void setHtmlActive(boolean htmlActive) {
+		this.htmlActive = htmlActive;
+	}
+	
+	protected void hideWodIfNecessary() {
+		int[] weights = getParentSashForm().getWeights();
+		if (weights.length >= 2 && weights[1] < 132) {
+			//getParentSashForm().setBackground(getParentSashForm().getParent().getBackground());
+			this.wodContainer.setVisible(false);
+			//getParentSashForm().setWeights(new int[] { 100, 0});
+		}
+		else {
+			//getParentSashForm().setBackground(getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+			this.wodContainer.setVisible(true);
+			//getParentSashForm().setWeights(new int[] { 80, 20});
+		}
+	}
+	
+	protected void restoreSashWeights() {
+		String sashWeightsStr = Activator.getDefault().getPluginPreferences().getString(HtmlWodTab.SASH_WEIGHTS_KEY);
+		if (sashWeightsStr != null && sashWeightsStr.length() > 0) {
+			String[] sashWeightStrs = sashWeightsStr.split(",");
+			int[] sashWeights = new int[sashWeightStrs.length];
+			for (int sashWeightNum = 0; sashWeightNum < sashWeightStrs.length; sashWeightNum++) {
+				sashWeights[sashWeightNum] = Integer.parseInt(sashWeightStrs[sashWeightNum]);
+			}
+			if (sashWeights.length == getParentSashForm().getWeights().length) {
+				getParentSashForm().setWeights(sashWeights);
+			}
+		}
+	}
+
+	protected void saveSashWeights() {
+		int[] weights = getParentSashForm().getWeights();
+		StringBuffer weightsBuffer = new StringBuffer();
+		for (int weight : weights) {
+			weightsBuffer.append(weight);
+			weightsBuffer.append(",");
+		}
+		if (weightsBuffer.length() > 0) {
+			weightsBuffer.setLength(weightsBuffer.length() - 1);
+		}
+		Activator.getDefault().getPluginPreferences().setValue(HtmlWodTab.SASH_WEIGHTS_KEY, weightsBuffer.toString());
 	}
 
 	/**
