@@ -64,6 +64,8 @@ public abstract class ComponentEditorTab extends Composite {
 		super(componentEditorPart.publicGetContainer(), SWT.NONE);
 		this.componentEditorPart = componentEditorPart;
 		parentSashForm = new SashForm(this, SWT.VERTICAL | SWT.SMOOTH);
+		parentSashForm.setBackground(getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+
 		this.setLayout(new FillLayout());
 		this.tabIndex = tabIndex;
 	}
