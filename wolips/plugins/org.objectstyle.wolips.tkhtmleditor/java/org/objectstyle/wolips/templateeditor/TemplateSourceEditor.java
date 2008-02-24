@@ -43,6 +43,7 @@ import tk.eclipse.plugin.htmleditor.editors.IHTMLOutlinePage;
 public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor {
   private TemplateOutlinePage _templateOutlinePage;
   private WodParserCache _cache;
+  private TemplateBreadcrumb _breadcrumb;
 
   public TemplateSourceEditor(HTMLConfiguration config) {
     super(config);
@@ -65,34 +66,26 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
   public void createPartControl(Composite parent) {
     Composite templateParent = new Composite(parent, SWT.NONE);
     GridLayout templateLayout = new GridLayout();
+    templateLayout.marginTop = 0;
+    templateLayout.marginLeft = 0;
+    templateLayout.marginBottom = 0;
+    templateLayout.marginRight = 0;
+    templateLayout.marginHeight = 0;
+    templateLayout.marginWidth = 0;
+    templateLayout.verticalSpacing = 0;
+    templateLayout.horizontalSpacing = 0;
     templateParent.setLayout(templateLayout);
 
     Composite editorParent = new Composite(templateParent, SWT.NONE);
     editorParent.setLayoutData(new GridData(GridData.FILL_BOTH));
-    editorParent.setLayout(new FillLayout());
+    FillLayout editorLayout = new FillLayout();
+    editorLayout.marginHeight = 0;
+    editorLayout.marginWidth = 0;
+    editorParent.setLayout(editorLayout);
     super.createPartControl(editorParent);
 
-    /*
-    Composite breadcrumb = new Composite(templateParent, SWT.NONE);
-    breadcrumb.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_GREEN));
-    breadcrumb.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    RowLayout breadcrumbLayout = new RowLayout();
-    breadcrumbLayout.wrap = false;
-    breadcrumbLayout.pack = false;
-    breadcrumbLayout.justify = false;
-    breadcrumbLayout.type = SWT.HORIZONTAL;
-    breadcrumbLayout.marginLeft = 5;
-    breadcrumbLayout.marginTop = 5;
-    breadcrumbLayout.marginRight = 5;
-    breadcrumbLayout.marginBottom = 5;
-    breadcrumbLayout.spacing = 0;
-    breadcrumb.setLayout(breadcrumbLayout);
-
-    Label b1 = new Label(breadcrumb, SWT.NONE);
-    b1.setText("Breadcrumb 1");
-    Label bw = new Label(breadcrumb, SWT.NONE);
-    bw.setText("Breadcrumb 2");
-    */
+    _breadcrumb = new TemplateBreadcrumb(this, templateParent, SWT.NONE);
+    _breadcrumb.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
   }
 
   @Override
@@ -100,10 +93,14 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
     super.handleCursorPositionChanged();
   }
 
+  public Point getSelectedRange() {
+    return getSourceViewer().getSelectedRange();
+  }
+
   @Override
   public void dispose() {
     try {
-      WodParserCache cache = TemplateSourceEditor.this.getParserCache();
+      WodParserCache cache = getParserCache();
       cache.setHtmlDocument(null);
     }
     catch (Exception e) {
@@ -141,19 +138,24 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
 
       ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
         public void run(IProgressMonitor monitor) {
-          try {
-            WodParserCache cache = TemplateSourceEditor.this.getParserCache();
-            cache.parseHtmlAndWodIfNecessary();
-            cache.validate();
-          }
-          catch (Exception ex) {
-            Activator.getDefault().log(ex);
-          }
+          _validate();
         }
       }, null);
     }
     catch (Exception ex) {
       HTMLPlugin.logException(ex);
+    }
+  }
+
+  protected void _validate() {
+    try {
+      WodParserCache cache = TemplateSourceEditor.this.getParserCache();
+      cache.parseHtmlAndWodIfNecessary();
+      cache.validate();
+      _breadcrumb.updateBreadcrumb();
+    }
+    catch (Exception ex) {
+      Activator.getDefault().log(ex);
     }
   }
 
