@@ -188,6 +188,8 @@ public class HTMLSourceEditor extends TextEditor {
     painter.setColor(Display.getDefault().getSystemColor(SWT.COLOR_GRAY));
     extension.addPainter(painter);
 
+    getSourceViewer().getTextWidget().getParent().setBackground(parent.getBackground());
+
     update();
   }
 
