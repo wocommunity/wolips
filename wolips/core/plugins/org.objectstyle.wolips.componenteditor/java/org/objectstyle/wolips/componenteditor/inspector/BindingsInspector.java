@@ -17,6 +17,10 @@ import org.objectstyle.wolips.wodclipse.core.util.ICursorPositionListener;
 import org.objectstyle.wolips.wodclipse.editor.WodEditor;
 
 public class BindingsInspector extends PageBookView implements ICursorPositionListener {
+	private TextEditor _lastEditor;
+
+	private Point _lastSelectionRange;
+
 	public BindingsInspector() {
 		super();
 	}
@@ -69,12 +73,17 @@ public class BindingsInspector extends PageBookView implements ICursorPositionLi
 	protected boolean isImportant(IWorkbenchPart part) {
 		return part instanceof ComponentEditor;
 	}
-	
+
+	@Override
+	public void partBroughtToTop(IWorkbenchPart part) {
+		super.partBroughtToTop(part);
+	}
+
 	@Override
 	public void partDeactivated(IWorkbenchPart part) {
 		super.partDeactivated(part);
 		if (part instanceof ComponentEditor) {
-			ComponentEditor componentEditor = (ComponentEditor)part;
+			ComponentEditor componentEditor = (ComponentEditor) part;
 			TemplateEditor templateEditor = componentEditor.getTemplateEditor();
 			templateEditor.getSourceEditor().removeCursorPositionListener(this);
 			WodEditor wodEditor = componentEditor.getWodEditor();
@@ -85,30 +94,28 @@ public class BindingsInspector extends PageBookView implements ICursorPositionLi
 	public void partActivated(IWorkbenchPart part) {
 		super.partActivated(part);
 		if (part instanceof ComponentEditor) {
-			ComponentEditor componentEditor = (ComponentEditor)part;
+			ComponentEditor componentEditor = (ComponentEditor) part;
 			TemplateEditor templateEditor = componentEditor.getTemplateEditor();
 			templateEditor.getSourceEditor().addCursorPositionListener(this);
 			WodEditor wodEditor = componentEditor.getWodEditor();
 			wodEditor.addCursorPositionListener(this);
+		} else if (part instanceof BindingsInspector) {
+			if (_lastEditor != null && _lastSelectionRange != null) {
+				cursorPositionChanged(_lastEditor, _lastSelectionRange);
+			}
 		}
-
-		// When the view is first opened, pass the selection to the page
-		// if (bootstrapSelection != null) {
-		// BindingsInspectorPage page = (BindingsInspectorPage)
-		// getCurrentPage();
-		// if (page != null) {
-		// page.selectionChanged(part, bootstrapSelection);
-		// }
-		// bootstrapSelection = null;
-		// }
 	}
 
 	public void cursorPositionChanged(TextEditor editor, Point selectionRange) {
-		// pass the selection to the page
-		BindingsInspectorPage page = (BindingsInspectorPage) getCurrentPage();
-		if (page != null) {
-			page.cursorPositionChanged(editor, selectionRange);
+		if (getViewSite().getPage().isPartVisible(this)) {
+			// pass the selection to the page
+			BindingsInspectorPage page = (BindingsInspectorPage) getCurrentPage();
+			if (page != null) {
+				page.cursorPositionChanged(editor, selectionRange);
+			}
 		}
+		_lastEditor = editor;
+		_lastSelectionRange = selectionRange;
 	}
 
 	protected Object getViewAdapter(Class key) {

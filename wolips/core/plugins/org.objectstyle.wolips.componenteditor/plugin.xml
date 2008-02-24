@@ -460,7 +460,7 @@
      <extension
          point="org.eclipse.ui.views">
       <view
-            name="Bindings Inspector"
+            name="Bindings (Experimental)"
             category="org.objectstyle.wolips.ui"
             class="org.objectstyle.wolips.componenteditor.inspector.BindingsInspector"
             id="org.objectstyle.wolips.componenteditor.inspector.BindingsInspector">
