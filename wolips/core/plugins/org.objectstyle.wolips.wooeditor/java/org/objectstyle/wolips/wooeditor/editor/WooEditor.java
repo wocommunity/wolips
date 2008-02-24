@@ -97,6 +97,11 @@ public class WooEditor extends FormEditor {
 		super();
 		myDisplayGroupPage = new DisplayGroupPage(this, "Display Groups");
 	}
+	
+	@Override
+	public boolean isDirty() {
+	  return (model != null && model.isDirty()) || super.isDirty();
+	}
 
 	@Override
   protected FormToolkit createToolkit(final Display display) {
