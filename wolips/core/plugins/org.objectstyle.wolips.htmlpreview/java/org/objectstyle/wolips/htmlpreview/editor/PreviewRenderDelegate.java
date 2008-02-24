@@ -43,13 +43,13 @@ public class PreviewRenderDelegate implements RenderDelegate {
 	private static final String DEFAULT = "__default";
 
 	private Map<String, TagDelegate> _tagDelegates;
-	
+
 	private Stack<WodParserCache> _caches;
 
 	private Stack<FuzzyXMLNode> _nodes;
-	
+
 	private StringBuffer _cssBuffer;
-	
+
 	private boolean _previewStyleRendered;
 
 	public PreviewRenderDelegate(WodParserCache cache) {
@@ -83,13 +83,13 @@ public class PreviewRenderDelegate implements RenderDelegate {
 		_previewStyleRendered = false;
 		_cssBuffer = new StringBuffer();
 	}
-	
+
 	public void afterRender(RenderContext renderContext, StringBuffer xmlBuffer) {
 		if (!_previewStyleRendered) {
 			renderPreviewStyle(xmlBuffer);
 		}
 	}
-	
+
 	public boolean renderNode(FuzzyXMLNode node, RenderContext renderContext, StringBuffer xmlBuffer) {
 		if (node instanceof FuzzyXMLElement) {
 			FuzzyXMLElement element = (FuzzyXMLElement) node;
@@ -99,7 +99,7 @@ public class PreviewRenderDelegate implements RenderDelegate {
 					WodParserCache cache = _caches.peek();
 					IWodElement wodElement;
 					if (WodHtmlUtils.isInline(tagName)) {
-						wodElement = WodHtmlUtils.toWodElement(element, false, cache.getApiCache());
+						wodElement = WodHtmlUtils.toWodElement(element, false);
 					} else {
 						String elementName = element.getAttributeValue("name");
 						wodElement = cache.getWodModel().getElementNamed(elementName);
@@ -108,7 +108,7 @@ public class PreviewRenderDelegate implements RenderDelegate {
 					if (wodElement == null) {
 						return true;
 					}
-					
+
 					String elementTypeName = wodElement.getElementType();
 					IType type = BindingReflectionUtils.findElementType(cache.getJavaProject(), elementTypeName, false, WodParserCache.getTypeCache());
 					LocalizedComponentsLocateResult componentsLocateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(type.getJavaProject().getProject(), wodElement.getElementType());
@@ -128,13 +128,12 @@ public class PreviewRenderDelegate implements RenderDelegate {
 										IWodBinding binding = wodElement.getBindingNamed(bindingName);
 										if (binding == null) {
 											matcher.appendReplacement(previewBuffer, "");
-										}
-										else {
+										} else {
 											matcher.appendReplacement(previewBuffer, binding.getValue());
 										}
 									}
 									matcher.appendTail(previewBuffer);
-									
+
 									nestedCache = nestedCache.cloneCache();
 									nestedCache.setHtmlContents("<span>" + previewBuffer.toString() + "</span>");
 								}
@@ -193,7 +192,7 @@ public class PreviewRenderDelegate implements RenderDelegate {
 	public void afterCloseTag(FuzzyXMLNode node, RenderContext renderContext, StringBuffer xmlBuffer) {
 		// DO NOTHING
 	}
-	
+
 	protected void renderPreviewStyle(StringBuffer xmlBuffer) {
 		xmlBuffer.append("<style>");
 		xmlBuffer.append("span.wodclipse_block {");

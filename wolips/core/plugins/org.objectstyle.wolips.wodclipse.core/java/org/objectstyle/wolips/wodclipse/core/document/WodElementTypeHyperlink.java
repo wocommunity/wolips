@@ -68,7 +68,7 @@ public class WodElementTypeHyperlink implements IHyperlink {
     Position typePosition = wodElement.getElementTypePosition();
     if (typePosition != null) {
       Region elementRegion = new Region(typePosition.getOffset(), typePosition.getLength());
-      hyperlink = new WodElementTypeHyperlink(elementRegion, wodElement.getElementType(), cache.getJavaProject(), cache.getTypeCache());
+      hyperlink = new WodElementTypeHyperlink(elementRegion, wodElement.getElementType(), cache.getJavaProject(), WodParserCache.getTypeCache());
     }
     return hyperlink;
   }

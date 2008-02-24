@@ -87,7 +87,7 @@ public class TemplateValidator {
     String elementName = element.getName();
     if (WodHtmlUtils.isInline(elementName)) {
       if (validate) {
-        IWodElement wodElement = WodHtmlUtils.toWodElement(element, _wo54, _cache.getApiCache());
+        IWodElement wodElement = WodHtmlUtils.toWodElement(element, _wo54);
         if (wodElement != null) {
           boolean validateBindingValues = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.VALIDATE_BINDING_VALUES);
           boolean validateOGNL = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.VALIDATE_OGNL_KEY);

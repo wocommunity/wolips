@@ -86,6 +86,7 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
     _validateTemplates = Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.VALIDATE_TEMPLATES_KEY);
     _threadedBuild = Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.THREADED_VALIDATION_KEY);
     if (kind == IncrementalProjectBuilder.FULL_BUILD) {
+      WodParserCache.getModelGroupCache().clearCacheForProject(project);
       WodParserCache.getTypeCache().clearCacheForProject(project);
     }
     return false;

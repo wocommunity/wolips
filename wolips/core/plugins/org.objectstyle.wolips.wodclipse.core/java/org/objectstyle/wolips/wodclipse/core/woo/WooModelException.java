@@ -54,7 +54,7 @@
  *
  */
 
-package org.objectstyle.wolips.wooeditor.model;
+package org.objectstyle.wolips.wodclipse.core.woo;
 
 public class WooModelException extends Exception {
 	public WooModelException(final String message) {

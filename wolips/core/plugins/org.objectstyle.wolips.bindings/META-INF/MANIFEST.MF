@@ -18,5 +18,5 @@ Export-Package: org.objectstyle.wolips.bindings,
  org.objectstyle.wolips.bindings.api,
  org.objectstyle.wolips.bindings.preferences,
  org.objectstyle.wolips.bindings.utils,
- org.objectstyle.wolips.bindings.wod,
- org.objectstyle.wolips.bindings.woo
+ org.objectstyle.wolips.bindings.wod
+

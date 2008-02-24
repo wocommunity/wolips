@@ -91,7 +91,7 @@ public class GenerateAPIAction implements IObjectActionDelegate {
 				for (int i = 0; i < selectedObjects.length; i++) {
 					IResource resource = (IResource) selectedObjects[i];
 					WodParserCache cache = WodParserCache.parser(resource);
-					List<BindingValueKey> bindingKeys = BindingReflectionUtils.getBindingKeys(cache.getJavaProject(), cache.getComponentType(), "", false, BindingReflectionUtils.MUTATORS_ONLY, cache.getTypeCache());
+					List<BindingValueKey> bindingKeys = BindingReflectionUtils.getBindingKeys(cache.getJavaProject(), cache.getComponentType(), "", false, BindingReflectionUtils.MUTATORS_ONLY, WodParserCache.getTypeCache());
 					IFile apiFile = cache.getApiFile();
 					ApiModel apiModel = new ApiModel(apiFile);
 					Wo wo = apiModel.getWo();

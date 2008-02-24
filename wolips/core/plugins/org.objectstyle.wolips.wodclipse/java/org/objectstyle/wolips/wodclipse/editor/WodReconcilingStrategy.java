@@ -40,7 +40,7 @@ public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilin
 			IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 				public void run(IProgressMonitor _monitor) throws CoreException {
 					try {
-						WodModelUtils.validateWodDocument(_document, _wodEditor.getComponentsLocateResults(), _cache.getTypeCache(), _cache.getHtmlElementCache());
+						WodModelUtils.validateWodDocument(_document, _wodEditor.getComponentsLocateResults(), WodParserCache.getTypeCache(), _cache.getHtmlElementCache());
 					} catch (Exception e) {
 						WodclipsePlugin.getDefault().log(e);
 					}
