@@ -243,6 +243,20 @@
                label="Convert Inline to WOD"
                menubarPath="edit/org.objectstyle.wolips.componenteditor.refactorMenuContribution/group1"
                />
+         <action
+               class="org.objectstyle.wolips.componenteditor.bindings.AddKeyAction"
+               definitionId="org.objectstyle.wolips.componenteditor.editors.command.addKey"
+               id="org.objectstyle.wolips.componenteditor.editors.action.addKey"
+               label="Add Key..."
+               menubarPath="edit/org.objectstyle.wolips.componenteditor.refactorMenuContribution/group1"
+               />
+         <action
+               class="org.objectstyle.wolips.componenteditor.bindings.AddActionAction"
+               definitionId="org.objectstyle.wolips.componenteditor.editors.command.addAction"
+               id="org.objectstyle.wolips.componenteditor.editors.action.addAction"
+               label="Add Action..."
+               menubarPath="edit/org.objectstyle.wolips.componenteditor.refactorMenuContribution/group1"
+               />
 		</editorContribution>
       <editorContribution 
          id="org.objectstyle.wolips.javaeditor.editorActionsContribution" 
