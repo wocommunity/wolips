@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaProject;
@@ -13,11 +14,13 @@ import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.Signature;
 import org.eclipse.jdt.core.search.IJavaSearchConstants;
 import org.eclipse.jdt.core.search.IJavaSearchScope;
 import org.eclipse.jdt.core.search.SearchEngine;
 import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.internal.core.DefaultWorkingCopyOwner;
+import org.eclipse.jdt.internal.ui.search.JavaSearchScopeFactory;
 import org.objectstyle.wolips.bindings.wod.BindingValueKey;
 import org.objectstyle.wolips.bindings.wod.TypeCache;
 import org.objectstyle.wolips.core.resources.types.TypeNameCollector;
@@ -38,6 +41,46 @@ public class BindingReflectionUtils {
 
   public static final int VOID_ONLY = 3;
 
+  public static boolean isBoolean(String typeName) {
+    return "boolean".equals(typeName) || "Boolean".equals(typeName) || "java.lang.Boolean".equals(typeName);
+  }
+  
+  public static boolean isImportRequired(String typeName) {
+    return typeName != null && !isPrimitive(typeName) && !typeName.equals("java.lang." + Signature.getSimpleName(typeName));
+  }
+  
+  public static boolean isPrimitive(String typeName) {
+    return ("boolean".equals(typeName) || "byte".equals(typeName) || "char".equals(typeName) || "int".equals(typeName) || "short".equals(typeName) || "float".equals(typeName) || "double".equals(typeName));
+  }
+  
+  public static String getFullClassName(IJavaProject javaProject, String shortClassName) throws JavaModelException {
+    String expandedClassName = shortClassName;
+    if (expandedClassName != null && expandedClassName.indexOf('.') == -1) {
+      if ("String".equals(shortClassName)) {
+        expandedClassName = "java.lang.String";
+      } else if ("Object".equals(shortClassName)) {
+        expandedClassName = "java.lang.Object";
+      } else if (isPrimitive(expandedClassName)) {
+        // ignore primitives
+      } else {
+        SearchEngine searchEngine = new SearchEngine();
+        IJavaSearchScope searchScope = JavaSearchScopeFactory.getInstance().createJavaProjectSearchScope(javaProject, JavaSearchScopeFactory.ALL);
+        TypeNameCollector typeNameCollector = new TypeNameCollector(javaProject, false);
+        searchEngine.searchAllTypeNames(null, SearchPattern.R_EXACT_MATCH, shortClassName.toCharArray(), IJavaSearchConstants.TYPE, IJavaSearchConstants.TYPE, searchScope, typeNameCollector, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, new NullProgressMonitor());
+        Set<String> typeNames = typeNameCollector.getTypeNames();
+        if (typeNames.size() == 1) {
+          expandedClassName = typeNames.iterator().next();
+        }
+        else if (typeNames.size() == 0) {
+          System.out.println("BindingReflectionUtils.getFullClassName: Unknown type name " + shortClassName);
+        }
+        else {
+          System.out.println("BindingReflectionUtils.getFullClassName: Ambiguous type name " + shortClassName + " (" + typeNames + ")");
+        }
+      }
+    }
+    return expandedClassName;
+  }
   public static String getShortClassName(String _fullClassName) {
     String shortClassName;
     int lastDotIndex = _fullClassName.lastIndexOf('.');
