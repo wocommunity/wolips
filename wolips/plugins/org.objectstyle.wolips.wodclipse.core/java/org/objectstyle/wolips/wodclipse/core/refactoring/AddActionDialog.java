@@ -107,7 +107,7 @@ public class AddActionDialog extends Dialog {
   @Override
   protected void configureShell(Shell newShell) {
     super.configureShell(newShell);
-    newShell.setText("Add Key");
+    newShell.setText("Add Action");
   }
 
   public static void open(AddActionInfo info, Shell shell) throws CoreException {
