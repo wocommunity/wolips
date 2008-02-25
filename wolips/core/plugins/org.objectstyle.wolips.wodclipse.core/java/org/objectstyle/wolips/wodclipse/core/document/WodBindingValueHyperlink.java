@@ -9,6 +9,8 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
+import org.eclipse.ui.PlatformUI;
+import org.objectstyle.wolips.bindings.api.IApiBinding;
 import org.objectstyle.wolips.bindings.wod.BindingValueKey;
 import org.objectstyle.wolips.bindings.wod.BindingValueKeyPath;
 import org.objectstyle.wolips.bindings.wod.IWodBinding;
@@ -17,14 +19,22 @@ import org.objectstyle.wolips.bindings.wod.TypeCache;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
+import org.objectstyle.wolips.wodclipse.core.refactoring.AddActionDialog;
+import org.objectstyle.wolips.wodclipse.core.refactoring.AddActionInfo;
+import org.objectstyle.wolips.wodclipse.core.refactoring.AddKeyDialog;
+import org.objectstyle.wolips.wodclipse.core.refactoring.AddKeyInfo;
 
 public class WodBindingValueHyperlink implements IHyperlink {
+  private IWodElement _element;
+  private IWodBinding _binding;
   private TypeCache _cache;
   private IRegion _region;
   private String _bindingValue;
   private IType _componentType;
 
-  public WodBindingValueHyperlink(IRegion region, String bindingValue, IType componentType, TypeCache cache) {
+  public WodBindingValueHyperlink(IWodElement element, IWodBinding binding, IRegion region, String bindingValue, IType componentType, TypeCache cache) {
+    _element = element;
+    _binding = binding;
     _region = region;
     _bindingValue = bindingValue;
     _componentType = componentType;
@@ -48,13 +58,33 @@ public class WodBindingValueHyperlink implements IHyperlink {
       BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(_bindingValue, _componentType);
       if (bindingValueKeyPath.isValid()) {
         BindingValueKey lastKey = bindingValueKeyPath.getLastBindingKey();
-        IMember member = lastKey.getBindingMember();
-        if (member != null) {
-          JavaUI.openInEditor(member, true, true);
+        if (lastKey != null) {
+          IMember member = lastKey.getBindingMember();
+          if (member != null) {
+            JavaUI.openInEditor(member, true, true);
+          }
         }
-      }
-      else {
-        System.out.println("WodBindingValueHyperlink.open: invalid: " + bindingValueKeyPath);
+        else if (bindingValueKeyPath.getLength() == 1) {
+          String defaults = _binding.getDefaults();
+          boolean isActionBinding = false;
+          if (IApiBinding.ACTIONS_DEFAULT.equals(defaults)) {
+            isActionBinding = true;
+          }
+          else if (defaults == null) {
+            String bindingName = _binding.getName();
+            isActionBinding = "action".equals(bindingName);
+          }
+          if (isActionBinding) {
+            AddActionInfo info = new AddActionInfo(_componentType);
+            info.setName(bindingValueKeyPath.getOriginalKeyPath());
+            AddActionDialog.open(info, PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+          }
+          else {
+            AddKeyInfo info = new AddKeyInfo(_componentType);
+            info.setName(bindingValueKeyPath.getOriginalKeyPath());
+            AddKeyDialog.open(info, PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+          }
+        }
       }
     }
     catch (Exception ex) {
@@ -71,7 +101,7 @@ public class WodBindingValueHyperlink implements IHyperlink {
         Region elementRegion = new Region(valuePosition.getOffset(), valuePosition.getLength());
         IType componentType = cache.getComponentType();
         if (componentType != null) {
-          hyperlink = new WodBindingValueHyperlink(elementRegion, wodBinding.getValue(), componentType, WodParserCache.getTypeCache());
+          hyperlink = new WodBindingValueHyperlink(wodElement, wodBinding, elementRegion, wodBinding.getValue(), componentType, WodParserCache.getTypeCache());
         }
       }
     }
