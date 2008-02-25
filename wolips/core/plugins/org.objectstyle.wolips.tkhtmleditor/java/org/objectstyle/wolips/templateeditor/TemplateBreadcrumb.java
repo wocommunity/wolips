@@ -130,7 +130,6 @@ public class TemplateBreadcrumb extends Composite implements ICursorPositionList
   public void mouseDoubleClick(MouseEvent event) {
     Label label = (Label) event.getSource();
     FuzzyXMLElementWithWodElement data = (FuzzyXMLElementWithWodElement) label.getData();
-    System.out.println("TemplateBreadcrumb.mouseDoubleClick: " + data.getWodElement());
     if (data != null && data.getWodElement() != null) {
       try {
         WodElementTypeHyperlink.toElementTypeHyperlink(data.getWodElement(), _editor.getParserCache()).open();
