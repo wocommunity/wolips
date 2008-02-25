@@ -105,7 +105,6 @@ public class WOPackageExplorerContentProvider extends PackageExplorerContentProv
 		Object[] children = super.getChildren(parentElement);
 		if (parentElement instanceof IJavaProject) {
 			if (children.length > 2) {
-				Object[] newChildren = new Object[children.length + 1];
 				IJavaProject javaProject = (IJavaProject) parentElement;
 				IProject project = javaProject.getProject();
 				TaggedComponentsContentProvider taggedComponentsContentProvider = taggedComponentsContentProviders.get(project);
@@ -115,16 +114,14 @@ public class WOPackageExplorerContentProvider extends PackageExplorerContentProv
 				}
 				Object[] tags = taggedComponentsContentProvider.getChildren();
 				if (tags != null && tags.length > 0) {
-					newChildren[0] = taggedComponentsContentProvider;
+					Object[] newChildren = new Object[children.length + 1];
+					newChildren[newChildren.length - 1] = taggedComponentsContentProvider;
 					for (int i = 0; i < children.length; i++) {
 						Object object = children[i];
-						newChildren[i + 1] = object;
+						newChildren[i] = object;
 					}
+					return newChildren;
 				}
-				else {
-					newChildren = children;
-				}
-				return newChildren;
 			}
 		}
 		return children;
