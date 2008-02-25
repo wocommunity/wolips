@@ -92,7 +92,9 @@ public class TypeNameCollector extends TypeNameRequestor {
 		_typeNameToPath = new HashMap<String, String>();
 		_typeNameToType = new HashMap<String, IType>();
 		_requireTypeInProject = requireTypeInProject;
-		_superclassType = _project.findType(superclassTypeName);
+		if (superclassTypeName != null) {
+			_superclassType = _project.findType(superclassTypeName);
+		}
 	}
 
 	public IJavaProject getProject() {
