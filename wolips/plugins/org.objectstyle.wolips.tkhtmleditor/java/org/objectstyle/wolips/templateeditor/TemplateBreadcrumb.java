@@ -19,7 +19,6 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.document.WodElementTypeHyperlink;
-import org.objectstyle.wolips.wodclipse.core.util.FuzzyXMLWodElement;
 import org.objectstyle.wolips.wodclipse.core.util.ICursorPositionListener;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
@@ -81,6 +80,7 @@ public class TemplateBreadcrumb extends Composite implements ICursorPositionList
           if (stackNode instanceof FuzzyXMLElement) {
             FuzzyXMLElement stackElement = (FuzzyXMLElement) stackNode;
 
+            FuzzyXMLElementWithWodElement data;
             String tagName = stackElement.getName();
             boolean isWOTag = WodHtmlUtils.isWOTag(tagName);
             String displayName = null;
@@ -89,9 +89,11 @@ public class TemplateBreadcrumb extends Composite implements ICursorPositionList
               if (wodElement != null) {
                 displayName = wodElement.getElementType();
               }
+              data = new FuzzyXMLElementWithWodElement(stackElement, wodElement);
             }
             else {
               displayName = tagName;
+              data = new FuzzyXMLElementWithWodElement(stackElement, null);
             }
 
             if (displayName == null) {
@@ -99,7 +101,7 @@ public class TemplateBreadcrumb extends Composite implements ICursorPositionList
             }
 
             Label nodeButton = new Label(this, SWT.NONE);
-            nodeButton.setData(stackElement);
+            nodeButton.setData(data);
             nodeButton.setBackground(getBackground());
             nodeButton.setText(displayName);
             nodeButton.addMouseListener(this);
@@ -127,10 +129,11 @@ public class TemplateBreadcrumb extends Composite implements ICursorPositionList
 
   public void mouseDoubleClick(MouseEvent event) {
     Label label = (Label) event.getSource();
-    FuzzyXMLElement element = (FuzzyXMLElement) label.getData();
-    if (element != null && WodHtmlUtils.isWOTag(element.getName())) {
+    FuzzyXMLElementWithWodElement data = (FuzzyXMLElementWithWodElement) label.getData();
+    System.out.println("TemplateBreadcrumb.mouseDoubleClick: " + data.getWodElement());
+    if (data != null && data.getWodElement() != null) {
       try {
-        WodElementTypeHyperlink.toElementTypeHyperlink(new FuzzyXMLWodElement(element, false), _editor.getParserCache()).open();
+        WodElementTypeHyperlink.toElementTypeHyperlink(data.getWodElement(), _editor.getParserCache()).open();
       }
       catch (Exception e) {
         e.printStackTrace();
@@ -140,8 +143,9 @@ public class TemplateBreadcrumb extends Composite implements ICursorPositionList
 
   public void mouseDown(MouseEvent event) {
     Label label = (Label) event.getSource();
-    FuzzyXMLElement element = (FuzzyXMLElement) label.getData();
-    if (element != null) {
+    FuzzyXMLElementWithWodElement data = (FuzzyXMLElementWithWodElement) label.getData();
+    if (data != null && data.getElement() != null) {
+      FuzzyXMLElement element = data.getElement();
       int offset = element.getOffset();
       int length = element.getLength();
       _editor.selectAndReveal(offset, length);
@@ -150,5 +154,23 @@ public class TemplateBreadcrumb extends Composite implements ICursorPositionList
 
   public void mouseUp(MouseEvent event) {
     // DO NOTHING
+  }
+
+  public static class FuzzyXMLElementWithWodElement {
+    private FuzzyXMLElement _element;
+    private IWodElement _wodElement;
+
+    public FuzzyXMLElementWithWodElement(FuzzyXMLElement element, IWodElement wodElement) {
+      _element = element;
+      _wodElement = wodElement;
+    }
+
+    public FuzzyXMLElement getElement() {
+      return _element;
+    }
+
+    public IWodElement getWodElement() {
+      return _wodElement;
+    }
   }
 }
