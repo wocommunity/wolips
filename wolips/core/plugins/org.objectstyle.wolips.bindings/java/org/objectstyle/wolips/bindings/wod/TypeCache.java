@@ -215,7 +215,7 @@ public class TypeCache {
           if (resolvedNextTypeName == null) {
             System.out.println("TypeCacheEntry.getTypeForName: Failed to resolve type name " + typeName + " in component " + _type.getElementName());
           }
-          else if ("boolean".equals(resolvedNextTypeName) || "byte".equals(resolvedNextTypeName) || "char".equals(resolvedNextTypeName) || "int".equals(resolvedNextTypeName) || "short".equals(resolvedNextTypeName) || "float".equals(resolvedNextTypeName) || "double".equals(resolvedNextTypeName)) {
+          else if (BindingReflectionUtils.isPrimitive(resolvedNextTypeName)) {
             // ignore primitives if we get this far
           }
           else {
