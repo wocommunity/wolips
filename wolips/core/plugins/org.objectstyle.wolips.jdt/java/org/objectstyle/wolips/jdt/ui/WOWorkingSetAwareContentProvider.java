@@ -110,24 +110,27 @@ public class WOWorkingSetAwareContentProvider extends WorkingSetAwareContentProv
 
 	@Override
 	public Object[] getChildren(Object parentElement) {
-		if(parentElement instanceof ITaggedComponentsContentProvider) {
-			ITaggedComponentsContentProvider  taggedComponentsContentProvider = (ITaggedComponentsContentProvider)parentElement;
+		if (parentElement instanceof ITaggedComponentsContentProvider) {
+			ITaggedComponentsContentProvider taggedComponentsContentProvider = (ITaggedComponentsContentProvider) parentElement;
 			return taggedComponentsContentProvider.getChildren();
 		}
 		Object[] children = super.getChildren(parentElement);
-		if(parentElement instanceof IJavaProject) {
-			if(children.length > 2) {
-				Object[] newChildren = new Object[children.length + 1];
-				IJavaProject javaProject = (IJavaProject)parentElement;
+		if (parentElement instanceof IJavaProject) {
+			if (children.length > 2) {
+				IJavaProject javaProject = (IJavaProject) parentElement;
 				IProject project = javaProject.getProject();
 				TaggedComponentsContentProvider taggedComponentsContentProvider = new TaggedComponentsContentProvider(project);
 				taggedComponentsContentProviders.put(project, taggedComponentsContentProvider);
-				newChildren[children.length] = taggedComponentsContentProvider;
-				for (int i = 0; i < children.length; i++) {
-					Object object = children[i];
-					newChildren[i] = object;
+				Object[] tags = taggedComponentsContentProvider.getChildren();
+				if (tags != null && tags.length > 0) {
+					Object[] newChildren = new Object[children.length + 1];
+					newChildren[children.length] = taggedComponentsContentProvider;
+					for (int i = 0; i < children.length; i++) {
+						Object object = children[i];
+						newChildren[i] = object;
+					}
+					return newChildren;
 				}
-				return newChildren;
 			}
 		}
 		return children;
@@ -135,8 +138,8 @@ public class WOWorkingSetAwareContentProvider extends WorkingSetAwareContentProv
 
 	@Override
 	public boolean hasChildren(Object element) {
-		if(element instanceof ITaggedComponentsContentProvider) {
-			ITaggedComponentsContentProvider taggedComponentsContentProvider = (ITaggedComponentsContentProvider)element;
+		if (element instanceof ITaggedComponentsContentProvider) {
+			ITaggedComponentsContentProvider taggedComponentsContentProvider = (ITaggedComponentsContentProvider) element;
 			return taggedComponentsContentProvider.hasChildren();
 		}
 		return super.hasChildren(element);
