@@ -3,12 +3,10 @@ package org.objectstyle.wolips.preferences;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -19,6 +17,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.objectstyle.wolips.baseforuiplugins.utils.ListContentProvider;
 
 
 public abstract class TableViewerSupport {
@@ -156,32 +155,6 @@ public abstract class TableViewerSupport {
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.widthHint = 100;
 		return gd;
-	}
-	
-	public static class ListContentProvider implements IStructuredContentProvider {
-		List fContents;	
-
-		public Object[] getElements(Object input) {
-			if (fContents != null && fContents == input)
-				return fContents.toArray();
-			return new Object[0];
-		}
-
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			if (newInput instanceof List) 
-				fContents= (List)newInput;
-			else
-				fContents= null;
-			// we use a fixed set.
-		}
-
-		public void dispose() {
-			// DO NOTHING
-		}
-		
-		public boolean isDeleted(Object o) {
-			return fContents != null && !fContents.contains(o);
-		}
 	}
 	
 }
