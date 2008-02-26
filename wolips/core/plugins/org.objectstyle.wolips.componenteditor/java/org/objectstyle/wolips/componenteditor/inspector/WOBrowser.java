@@ -171,6 +171,10 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 	}
 
 	public void setSelection(ISelection selection) {
+		//just  a quick hack to get rid of some out of bounce exceptions
+		if(_columns.size() == 0) {
+			return;
+		}
 		String selectedKeyPath = (String) ((IStructuredSelection) selection).getFirstElement();
 		if (selectedKeyPath == null) {
 			WOBrowserColumn column = _columns.get(0);
