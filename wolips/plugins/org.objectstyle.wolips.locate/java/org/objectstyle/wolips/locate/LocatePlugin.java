@@ -107,7 +107,14 @@ public class LocatePlugin extends AbstractBaseActivator {
 	}
 
 	public LocalizedComponentsLocateResult getLocalizedComponentsLocateResult(IResource resource) throws CoreException, LocateException {
-		return getLocalizedComponentsLocateResult(resource.getProject(), LocatePlugin.getDefault().fileNameWithoutExtension(resource));
+		LocalizedComponentsLocateResult result;
+		if (resource == null) {
+			result = null;
+		}
+		else {
+			result = getLocalizedComponentsLocateResult(resource.getProject(), LocatePlugin.getDefault().fileNameWithoutExtension(resource));
+		}
+		return result;
 	}
 
 	public LocalizedComponentsLocateResult getLocalizedComponentsLocateResult(IProject project, String filenameWithoutExtension) throws CoreException, LocateException {
