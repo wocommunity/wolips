@@ -52,6 +52,7 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -83,6 +84,8 @@ public class HtmlWodTab extends ComponentEditorTab {
 	private SashForm wodSashForm;
 	
 	private Composite wodContainer;
+	
+	private Label nonEmptyWodWarning;
 
 	public HtmlWodTab(ComponentEditorPart componentEditorPart, int tabIndex, IEditorInput htmlInput, IEditorInput wodInput) {
 		super(componentEditorPart, tabIndex);
@@ -180,14 +183,23 @@ public class HtmlWodTab extends ComponentEditorTab {
 	protected void hideWodIfNecessary() {
 		int[] weights = getParentSashForm().getWeights();
 		if (weights.length >= 2 && weights[1] < 132) {
-			//getParentSashForm().setBackground(getParentSashForm().getParent().getBackground());
 			this.wodContainer.setVisible(false);
-			//getParentSashForm().setWeights(new int[] { 100, 0});
+			if (this.nonEmptyWodWarning == null) {
+				String wodContents = this.wodEditor.getWodEditDocument().get();
+				if (wodContents != null && wodContents.trim().length() > 0) {
+					this.nonEmptyWodWarning = new Label(this.wodSashForm, SWT.CENTER);
+					this.nonEmptyWodWarning.setBackground(this.wodSashForm.getBackground());
+					this.nonEmptyWodWarning.setForeground(this.wodSashForm.getDisplay().getSystemColor(SWT.COLOR_GRAY));
+					this.nonEmptyWodWarning.setText("wod file is not empty");
+				}
+			}
 		}
 		else {
-			//getParentSashForm().setBackground(getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
 			this.wodContainer.setVisible(true);
-			//getParentSashForm().setWeights(new int[] { 80, 20});
+			if (this.nonEmptyWodWarning != null) {
+				this.nonEmptyWodWarning.dispose();
+				this.nonEmptyWodWarning = null;
+			}
 		}
 	}
 	
