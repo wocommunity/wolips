@@ -67,6 +67,7 @@ public class TemplateBreadcrumb extends Composite implements ICursorPositionList
         children[i].dispose();
       }
 
+      boolean emptyBreadcrumb = true;
       if (element != null) {
         List<FuzzyXMLNode> elementStack = new LinkedList<FuzzyXMLNode>();
         FuzzyXMLNode currentNode = element;
@@ -78,6 +79,7 @@ public class TemplateBreadcrumb extends Composite implements ICursorPositionList
         for (int i = elementStack.size() - 2; i >= 0; i--) {
           FuzzyXMLNode stackNode = elementStack.get(i);
           if (stackNode instanceof FuzzyXMLElement) {
+            emptyBreadcrumb = false;
             FuzzyXMLElement stackElement = (FuzzyXMLElement) stackNode;
 
             FuzzyXMLElementWithWodElement data;
@@ -119,6 +121,14 @@ public class TemplateBreadcrumb extends Composite implements ICursorPositionList
             arrowLabel.setText(">");
           }
         }
+        
+        if (emptyBreadcrumb) {
+          Label emptyLabel = new Label(this, SWT.NONE);
+          emptyLabel.setBackground(getBackground());
+          emptyLabel.setForeground(getDisplay().getSystemColor(SWT.COLOR_GRAY));
+          emptyLabel.setText("...");
+        }
+        
         layout();
         getParent().layout();
       }
