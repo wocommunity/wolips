@@ -60,7 +60,7 @@ public class CSSAssistProcessor {
     FuzzyXMLDocument doc;
     if ("html".equalsIgnoreCase(file.getFileExtension())) {
       try {
-        doc = WodParserCache.parser(file).getHtmlXmlDocument();
+        doc = WodParserCache.parser(file).getHtmlEntry().getModel();
       }
       catch (Exception e) {
         e.printStackTrace();

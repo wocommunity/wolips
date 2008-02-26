@@ -1,7 +1,6 @@
 package org.objectstyle.wolips.templateeditor;
 
-import java.io.IOException;
-
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.content.IContentDescriber;
@@ -57,7 +56,7 @@ public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtml
     return getSourceEditor().getParserCache();
   }
 
-  public IWodElement getSelectedElement() throws CoreException, LocateException, IOException {
+  public IWodElement getSelectedElement() throws Exception {
     return getSourceEditor().getSelectedElement();
   }
 
@@ -119,7 +118,8 @@ public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtml
   @Override
   public void doSave(IProgressMonitor monitor) {
     super.doSave(monitor);
-    if (_editorInteraction != null) {
+    boolean autoBuild = ResourcesPlugin.getPlugin().getPluginPreferences().getDefaultBoolean(ResourcesPlugin.PREF_AUTO_BUILDING);
+    if (!autoBuild && _editorInteraction != null) {
       _editorInteraction.fireWebObjectChanged();
     }
   }

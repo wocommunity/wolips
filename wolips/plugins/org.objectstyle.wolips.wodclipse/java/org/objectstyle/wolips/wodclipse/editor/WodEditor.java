@@ -43,7 +43,6 @@
  */
 package org.objectstyle.wolips.wodclipse.editor;
 
-import java.io.IOException;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.resources.IFile;
@@ -133,12 +132,12 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 		super.doSetInput(input);
 		_cache = null;
 	}
-	
+
 	@Override
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
 
-	    getSourceViewer().getTextWidget().getParent().setBackground(parent.getBackground());
+		getSourceViewer().getTextWidget().getParent().setBackground(parent.getBackground());
 	}
 
 	@Override
@@ -179,7 +178,7 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 				public void run(IProgressMonitor monitor) {
 					try {
 						WodParserCache cache = getParserCache();
-						cache.parseHtmlAndWodIfNecessary();
+						cache.parse();
 						cache.validate();
 					} catch (Exception ex) {
 						Activator.getDefault().log(ex);
@@ -278,7 +277,7 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 		});
 
 		try {
-			getParserCache().setWodDocument(document);
+			getParserCache().getWodEntry().setDocument(document);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -288,7 +287,7 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 
 	public void dispose() {
 		try {
-			getParserCache().setWodDocument(null);
+			getParserCache().getWodEntry().setDocument(null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -350,16 +349,16 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 		return _editorInteraction;
 	}
 
-	public IWodElement getSelectedElement() throws CoreException, LocateException, IOException {
+	public IWodElement getSelectedElement() throws Exception {
 		IWodElement element = null;
 		WodParserCache cache = getParserCache();
 		IWodModel model;
-	      if (isDirty()) {
-	    	model = WodModelUtils.createWodModel(cache.getWodFile(), cache.getWodDocument());
+		if (isDirty()) {
+			model = WodModelUtils.createWodModel(cache.getWodEntry().getFile(), cache.getWodEntry().getDocument());
 		} else {
-			model = cache.getWodModel();
+			model = cache.getWodEntry().getModel();
 		}
-	
+
 		ISelection selection = getSelectionProvider().getSelection();
 		if (selection instanceof ITextSelection) {
 			int offset = ((ITextSelection) selection).getOffset();

@@ -69,21 +69,25 @@ public class Ungettable extends AbstractUn {
   }
 
   public static void addToWoWithBinding(Wo wo, Binding binding) {
-    Element newValidationElement = wo.element.getOwnerDocument().createElement(Validation.VALIDATION);
-    wo.element.appendChild(newValidationElement);
-    newValidationElement.setAttribute(Validation.MESSAGE, "'" + binding.getName() + "' must be bound to a gettable value");
-    Element newUngettableElement = wo.element.getOwnerDocument().createElement(UNGETTABLE);
-    newValidationElement.appendChild(newUngettableElement);
-    newUngettableElement.setAttribute(NAME, binding.getName());
+    synchronized (wo.apiModel) {
+      Element newValidationElement = wo.element.getOwnerDocument().createElement(Validation.VALIDATION);
+      wo.element.appendChild(newValidationElement);
+      newValidationElement.setAttribute(Validation.MESSAGE, "'" + binding.getName() + "' must be bound to a gettable value");
+      Element newUngettableElement = wo.element.getOwnerDocument().createElement(UNGETTABLE);
+      newValidationElement.appendChild(newUngettableElement);
+      newUngettableElement.setAttribute(NAME, binding.getName());
+    }
   }
 
   public static void removeFromWoWithBinding(Wo wo, Binding binding) {
-    List<Validation> validations = wo.getValidations();
-    for (int i = validations.size() - 1; i > 0; i--) {
-      Validation validation = validations.get(i);
-      List<Ungettable> ungettables = validation.getUngettables();
-      if (ungettables.size() == 1 && ungettables.get(0).isAffectedByBindingNamed(binding.getName())) {
-        validation.element.removeChild(ungettables.get(0).element);
+    synchronized (wo.apiModel) {
+      List<Validation> validations = wo.getValidations();
+      for (int i = validations.size() - 1; i > 0; i--) {
+        Validation validation = validations.get(i);
+        List<Ungettable> ungettables = validation.getUngettables();
+        if (ungettables.size() == 1 && ungettables.get(0).isAffectedByBindingNamed(binding.getName())) {
+          validation.element.removeChild(ungettables.get(0).element);
+        }
       }
     }
   }

@@ -1,13 +1,11 @@
 package org.objectstyle.wolips.wodclipse.core.util;
 
-import java.io.IOException;
 import java.util.regex.Pattern;
 
 import jp.aonir.fuzzyxml.FuzzyXMLElement;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
@@ -94,10 +92,9 @@ public class WodHtmlUtils {
    * @param wo54 whether or not the node should be processed in WO 5.4 mode
    * @param cache the WodParserCache
    * @return an IWodElement corresponding to the node
-   * @throws CoreException if the wod element cannot be processed 
-   * @throws IOException if the wod element cannot be processed
+   * @throws Exception 
    */
-  public static IWodElement getWodElement(FuzzyXMLElement element, boolean wo54, WodParserCache cache) throws CoreException, IOException {
+  public static IWodElement getWodElement(FuzzyXMLElement element, boolean wo54, WodParserCache cache) throws Exception {
     IWodElement wodElement;
     if (WodHtmlUtils.isWOTag(element.getName())) {
       if (WodHtmlUtils.isInline(element.getName())) {
@@ -105,7 +102,7 @@ public class WodHtmlUtils {
       }
       else {
         String elementName = element.getAttributeValue("name");
-        wodElement = cache.getWodModel().getElementNamed(elementName);
+        wodElement = cache.getWodEntry().getModel().getElementNamed(elementName);
       }
     }
     else {

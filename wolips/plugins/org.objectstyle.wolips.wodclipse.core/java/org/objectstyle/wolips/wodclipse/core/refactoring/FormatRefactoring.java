@@ -28,9 +28,9 @@ public class FormatRefactoring implements IRunnableWithProgress {
     try {
       _cache.clearCache();
 
-      FuzzyXMLDocument htmlModel = _cache.getHtmlXmlDocument();
+      FuzzyXMLDocument htmlModel = _cache.getHtmlEntry().getModel();
       FuzzyXMLElement documentElement = htmlModel.getDocumentElement();
-      IDocument htmlDocument = _cache.getHtmlDocument();
+      IDocument htmlDocument = _cache.getHtmlEntry().getDocument();
 
       IPreferenceStore prefs = Activator.getDefault().getPreferenceStore();
       RenderContext renderContext = new RenderContext(true);

@@ -60,156 +60,189 @@ import java.util.List;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.bindings.wod.TypeCache;
 import org.w3c.dom.Element;
 
 public class Binding extends AbstractApiModelElement implements IApiBinding {
 
-	private BindingNameChangedListener bindingNameChangedListener;
+  private BindingNameChangedListener bindingNameChangedListener;
 
-	public final static String BINDING = "binding";
+  public final static String BINDING = "binding";
 
-	public final static String NAME = "name";
+  public final static String NAME = "name";
 
-	private final static String DEFAULTS = "defaults";
+  private final static String DEFAULTS = "defaults";
 
-	private Wo parent;
+  private Wo parent;
 
-	protected Binding(Element element, ApiModel apiModel, Wo parent) {
-		super(element, apiModel);
-		this.parent = parent;
-	}
-
-	public Wo getElement() {
-	  return parent;
-	}
-	
-	public String getName() {
-		return element.getAttribute(NAME);
-	}
-
-	public void setName(String className) {
-		element.setAttribute(NAME, className);
-		apiModel.markAsDirty();
-		if (bindingNameChangedListener != null) {
-			bindingNameChangedListener.namedChanged(this);
-		}
-	}
-
-	public String getDefaults() {
-		return element.getAttribute(DEFAULTS);
-	}
-
-	public int getSelectedDefaults() {
-		return ApiUtils.getSelectedDefaults(this);
-	}
-
-	public void setDefaults(String defaults) {
-		element.setAttribute(DEFAULTS, defaults);
-	}
-
-	public void setDefaults(int defaults) {
-		if (defaults == 0) {
-			if (getDefaults() == null) {
-				return;
-			}
-			element.removeAttribute(DEFAULTS);
-		} else {
-			if (getDefaults() != null && getDefaults().equals(ALL_DEFAULTS[defaults])) {
-				return;
-			}
-			this.setDefaults(ALL_DEFAULTS[defaults]);
-		}
-		apiModel.markAsDirty();
-	}
-
-	public boolean isExplicitlyRequired() {
-		return "YES".equalsIgnoreCase(element.getAttribute("required"));
-	}
-
-	public boolean isRequired() {
-		boolean required = isExplicitlyRequired();
-		if (!required) {
-			List<Validation> validations = parent.getValidations();
-			for (int i = 0; !required && i < validations.size(); i++) {
-				Validation validation = validations.get(i);
-				List<Unbound> unbounds = validation.getUnbounds();
-				if (unbounds.size() == 1 && unbounds.get(0).isAffectedByBindingNamed(this.getName())) {
-					required = true;
-				}
-			}
-		}
-		return required;
-	}
-
-	public void setIsRequired(boolean isRequired) {
-		if (this.isRequired() == isRequired) {
-			return;
-		}
-		if (element.hasAttribute("required")) {
-		  if (isRequired) {
-		    element.setAttribute("required", "YES");
-		  }
-		  else {
-        element.setAttribute("required", "NO");
-		  }
-		}
-		else if (isRequired) {
-			Unbound.addToWoWithBinding(parent, this);
-		} else {
-			Unbound.removeFromWoWithBinding(parent, this);
-		}
-		apiModel.markAsDirty();
-	}
-
-  public boolean isExplicitlySettable() {
-    return "YES".equalsIgnoreCase(element.getAttribute("settable"));
+  protected Binding(Element element, ApiModel apiModel, Wo parent) {
+    super(element, apiModel);
+    this.parent = parent;
   }
 
-	public boolean isWillSet() {
-	  boolean settable = isExplicitlySettable();
-	  if (!settable) {
-  		List<Validation> validations = parent.getValidations();
-  		for (Validation validation : validations) {
-  			List<Unsettable> unsettables = validation.getUnsettables();
-  			if (unsettables.size() == 1 && unsettables.get(0).isAffectedByBindingNamed(this.getName())) {
-  				settable = true;
-  				break;
-  			}
-  		}
-	  }
-		return settable;
-	}
+  @Override
+  public boolean equals(Object o) {
+    return o instanceof Binding && ComparisonUtils.equals(((Binding) o).getName(), getName());
+  }
 
-	public void setIsWillSet(boolean isWillSet) {
-		if (this.isWillSet() == isWillSet) {
-			return;
-		}
-    if (element.hasAttribute("settable")) {
-      if (isWillSet) {
-        element.setAttribute("settable", "YES");
-      }
-      else {
-        element.setAttribute("settable", "NO");
+  @Override
+  public int hashCode() {
+    String name = getName();
+    return name == null ? 0 : name.hashCode();
+  }
+
+  public Wo getElement() {
+    return parent;
+  }
+
+  public String getName() {
+    synchronized (this.apiModel) {
+      return element.getAttribute(NAME);
+    }
+  }
+
+  public void setName(String className) {
+    synchronized (this.apiModel) {
+      element.setAttribute(NAME, className);
+      apiModel.markAsDirty();
+      if (bindingNameChangedListener != null) {
+        bindingNameChangedListener.namedChanged(this);
       }
     }
-    else if (isWillSet) {
-			Unsettable.addToWoWithBinding(parent, this);
-		} else {
-			Unsettable.removeFromWoWithBinding(parent, this);
-		}
-		apiModel.markAsDirty();
-	}
+  }
 
-	public String[] getValidValues(String partialValue, IJavaProject javaProject, IType componentType, TypeCache typeCache) throws JavaModelException {
-		return ApiUtils.getValidValues(this, partialValue, javaProject, componentType, typeCache);
-	}
+  public String getDefaults() {
+    synchronized (this.apiModel) {
+      return element.getAttribute(DEFAULTS);
+    }
+  }
 
-	public interface BindingNameChangedListener {
-		public abstract void namedChanged(Binding binding);
-	}
+  public int getSelectedDefaults() {
+    return ApiUtils.getSelectedDefaults(this);
+  }
 
-	public void setBindingNameChangedListener(BindingNameChangedListener bindingNameChangedListener) {
-		this.bindingNameChangedListener = bindingNameChangedListener;
-	}
+  public void setDefaults(String defaults) {
+    synchronized (this.apiModel) {
+      element.setAttribute(DEFAULTS, defaults);
+    }
+  }
+
+  public void setDefaults(int defaults) {
+    synchronized (this.apiModel) {
+      if (defaults == 0) {
+        if (getDefaults() == null) {
+          return;
+        }
+        element.removeAttribute(DEFAULTS);
+      }
+      else {
+        if (getDefaults() != null && getDefaults().equals(ALL_DEFAULTS[defaults])) {
+          return;
+        }
+        this.setDefaults(ALL_DEFAULTS[defaults]);
+      }
+      apiModel.markAsDirty();
+    }
+  }
+
+  public boolean isExplicitlyRequired() {
+    synchronized (this.apiModel) {
+      return "YES".equalsIgnoreCase(element.getAttribute("required"));
+    }
+  }
+
+  public boolean isRequired() {
+    boolean required = isExplicitlyRequired();
+    if (!required) {
+      List<Validation> validations = parent.getValidations();
+      for (int i = 0; !required && i < validations.size(); i++) {
+        Validation validation = validations.get(i);
+        List<Unbound> unbounds = validation.getUnbounds();
+        if (unbounds.size() == 1 && unbounds.get(0).isAffectedByBindingNamed(this.getName())) {
+          required = true;
+        }
+      }
+    }
+    return required;
+  }
+
+  public void setIsRequired(boolean isRequired) {
+    synchronized (this.apiModel) {
+      if (this.isRequired() == isRequired) {
+        return;
+      }
+      if (element.hasAttribute("required")) {
+        if (isRequired) {
+          element.setAttribute("required", "YES");
+        }
+        else {
+          element.setAttribute("required", "NO");
+        }
+      }
+      else if (isRequired) {
+        Unbound.addToWoWithBinding(parent, this);
+      }
+      else {
+        Unbound.removeFromWoWithBinding(parent, this);
+      }
+      apiModel.markAsDirty();
+    }
+  }
+
+  public boolean isExplicitlySettable() {
+    synchronized (this.apiModel) {
+      return "YES".equalsIgnoreCase(element.getAttribute("settable"));
+    }
+  }
+
+  public boolean isWillSet() {
+    boolean settable = isExplicitlySettable();
+    if (!settable) {
+      List<Validation> validations = parent.getValidations();
+      for (Validation validation : validations) {
+        List<Unsettable> unsettables = validation.getUnsettables();
+        if (unsettables.size() == 1 && unsettables.get(0).isAffectedByBindingNamed(this.getName())) {
+          settable = true;
+          break;
+        }
+      }
+    }
+    return settable;
+  }
+
+  public void setIsWillSet(boolean isWillSet) {
+    synchronized (this.apiModel) {
+      if (this.isWillSet() == isWillSet) {
+        return;
+      }
+      if (element.hasAttribute("settable")) {
+        if (isWillSet) {
+          element.setAttribute("settable", "YES");
+        }
+        else {
+          element.setAttribute("settable", "NO");
+        }
+      }
+      else if (isWillSet) {
+        Unsettable.addToWoWithBinding(parent, this);
+      }
+      else {
+        Unsettable.removeFromWoWithBinding(parent, this);
+      }
+      apiModel.markAsDirty();
+    }
+  }
+
+  public String[] getValidValues(String partialValue, IJavaProject javaProject, IType componentType, TypeCache typeCache) throws JavaModelException {
+    return ApiUtils.getValidValues(this, partialValue, javaProject, componentType, typeCache);
+  }
+
+  public interface BindingNameChangedListener {
+    public abstract void namedChanged(Binding binding);
+  }
+
+  public void setBindingNameChangedListener(BindingNameChangedListener bindingNameChangedListener) {
+    this.bindingNameChangedListener = bindingNameChangedListener;
+  }
 }

@@ -412,14 +412,14 @@ public class WooModel {
         if (type != null) {
 
           // Validate WODisplayGroup variable is declared. 
-          BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(displayGroup.getName(), type);
+          BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(displayGroup.getName(), type, type.getJavaProject(), WodParserCache.getTypeCache());
           if (!(bindingValueKeyPath.isValid() && !bindingValueKeyPath.isAmbiguous())) {
             //XXX Walk type hierarchy and check that is a WODisplayGroup
             problems.add(new WodProblem("WODisplayGroup " + displayGroup.getName() + " is configured but not declared in class", null, 0, false));
           }
 
           // Validate editing context
-          bindingValueKeyPath = new BindingValueKeyPath(displayGroup.getEditingContext(), type);
+          bindingValueKeyPath = new BindingValueKeyPath(displayGroup.getEditingContext(), type, type.getJavaProject(), WodParserCache.getTypeCache());
           if (!(bindingValueKeyPath.isValid() && !bindingValueKeyPath.isAmbiguous())) {
             problems.add(new WodProblem("Editing context for display group " + displayGroup.getName() + " not found", null, 0, false));
           }

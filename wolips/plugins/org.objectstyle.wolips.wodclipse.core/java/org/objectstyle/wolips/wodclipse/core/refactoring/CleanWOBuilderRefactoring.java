@@ -28,7 +28,7 @@ public class CleanWOBuilderRefactoring implements IRunnableWithProgress {
       
       List<ElementRename> elementRenames = new LinkedList<ElementRename>();
       Set<String> elementNames = new HashSet<String>();
-      IWodModel wodModel = _cache.getWodModel();
+      IWodModel wodModel = _cache.getWodEntry().getModel();
       for (IWodElement wodElement : wodModel.getElements()) {
         ElementRename elementRename = ElementRename.newUniqueName(wodModel, wodElement, elementNames, _forceRename);
         if (elementRename != null) {

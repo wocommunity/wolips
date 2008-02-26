@@ -128,13 +128,13 @@ public class PreviewRenderDelegate implements RenderDelegate {
 									matcher.appendTail(previewBuffer);
 
 									nestedCache = nestedCache.cloneCache();
-									nestedCache.setHtmlContents("<span>" + previewBuffer.toString() + "</span>");
+									nestedCache.getHtmlEntry().setContents("<span>" + previewBuffer.toString() + "</span>");
 								}
 							}
 							_caches.push(nestedCache);
 							_nodes.push(node);
 							try {
-								FuzzyXMLDocument nestedDocument = nestedCache.getHtmlXmlDocument();
+								FuzzyXMLDocument nestedDocument = nestedCache.getHtmlEntry().getModel();
 								if (nestedDocument != null) {
 									nestedDocument.getDocumentElement().toXMLString(renderContext, xmlBuffer);
 								}

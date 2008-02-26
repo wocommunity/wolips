@@ -1,6 +1,5 @@
 package org.objectstyle.wolips.wodclipse.core.validation;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,6 +20,8 @@ import org.objectstyle.wolips.bindings.wod.IWodModel;
 import org.objectstyle.wolips.bindings.wod.WodBindingValueProblem;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
 import org.objectstyle.wolips.locate.LocateException;
+import org.objectstyle.wolips.wodclipse.core.completion.HtmlCacheEntry;
+import org.objectstyle.wolips.wodclipse.core.completion.WodCacheEntry;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.util.FuzzyXMLWodElement;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
@@ -37,14 +38,13 @@ public class TemplateValidator {
 
   /**
    * Validates the HTML document.
-   * @throws CoreException 
-   * @throws IOException 
+   * @throws Exception 
    */
-  public void validate(FuzzyXMLDocument doc) throws CoreException, IOException {
+  public void validate(FuzzyXMLDocument doc) throws Exception {
     visitDocument(doc, true);
   }
 
-  public void visitDocument(FuzzyXMLDocument doc, boolean validate) throws CoreException, IOException {
+  public void visitDocument(FuzzyXMLDocument doc, boolean validate) throws Exception {
     if (doc != null) {
       _woElements = new HashSet<FuzzyXMLElement>();
 
@@ -55,14 +55,16 @@ public class TemplateValidator {
       visitElement(rootElement, inlineProblems, validate);
 
       if (validate) {
-        IFile wodFile = _cache.getWodFile();
-        IWodModel wodModel = _cache.getWodModel();
+        HtmlCacheEntry htmlCacheEntry = _cache.getHtmlEntry();
+        WodCacheEntry wodCacheEntry = _cache.getWodEntry();
+        IFile wodFile = wodCacheEntry.getFile();
+        IWodModel wodModel = wodCacheEntry.getModel();
         for (FuzzyXMLElement woElement : _woElements) {
           String woElementName = woElement.getAttributeValue("name");
           int startOffset = woElement.getOffset();
           int endOffset = woElement.getOffset() + woElement.getLength();
-          HtmlElementName elementName = new HtmlElementName(_cache.getHtmlFile(), woElementName, startOffset, endOffset);
-          _cache.addHtmlElement(elementName);
+          HtmlElementName elementName = new HtmlElementName(htmlCacheEntry.getFile(), woElementName, startOffset, endOffset);
+          htmlCacheEntry.getHtmlElementCache().addHtmlElement(elementName);
 
           if (wodModel != null) {
             IWodElement wodElement = wodModel.getElementNamed(woElementName);
@@ -94,7 +96,7 @@ public class TemplateValidator {
           boolean validateOGNL = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.VALIDATE_OGNL_KEY);
           List<WodProblem> wodProblems = new LinkedList<WodProblem>();
           try {
-            wodElement.fillInProblems(_cache.getJavaProject(), _cache.getComponentType(), validateBindingValues, wodProblems, WodParserCache.getTypeCache(), _cache.getHtmlElementCache());
+            wodElement.fillInProblems(_cache.getJavaProject(), _cache.getComponentType(), validateBindingValues, wodProblems, WodParserCache.getTypeCache(), _cache.getHtmlEntry().getHtmlElementCache());
             inlineProblems.add(new InlineWodProblem(element, wodProblems, _cache));
           }
           catch (JavaModelException e) {

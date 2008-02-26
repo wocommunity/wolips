@@ -94,7 +94,7 @@ public class WodCompletionUtils {
             completionProposalsSet.add(completionProposal);
           }
         }
-        
+
         if (bindings != null && bindings.size() > 0) {
           showReflectionBindings = false;
         }
@@ -106,7 +106,7 @@ public class WodCompletionUtils {
     }
 
     if (showReflectionBindings) {
-      List<BindingValueKey> bindingKeys = BindingReflectionUtils.getBindingKeys(project, elementType, partialToken, false, BindingReflectionUtils.MUTATORS_ONLY, cache);
+      List<BindingValueKey> bindingKeys = BindingReflectionUtils.getBindingKeys(project, elementType, partialToken, false, BindingReflectionUtils.MUTATORS_ONLY, false, cache);
       WodCompletionUtils._fillInCompletionProposals(bindingKeys, token, tokenOffset, offset, completionProposalsSet, false);
     }
   }
@@ -115,7 +115,7 @@ public class WodCompletionUtils {
     boolean checkBindingType = false;
     String partialToken = partialToken(token, tokenOffset, offset);
     BindingValueKeyPath bindingKeyPath = new BindingValueKeyPath(partialToken, elementType, project, cache);
-    List<BindingValueKey> possibleBindingKeyMatchesList = bindingKeyPath.getPartialMatchesForLastBindingKey();
+    List<BindingValueKey> possibleBindingKeyMatchesList = bindingKeyPath.getPartialMatchesForLastBindingKey(false);
     if (possibleBindingKeyMatchesList != null) {
       String bindingKeyName;
       if (bindingKeyPath.getOperator() != null) {
@@ -147,13 +147,11 @@ public class WodCompletionUtils {
   }
 
   protected static void _fillInCompletionProposals(List<BindingValueKey> bindingKeys, String token, int tokenOffset, int offset, Set<WodCompletionProposal> completionProposalsSet, boolean showUsefulSystemBindings) {
-    Iterator<BindingValueKey> bindingKeysIter = bindingKeys.iterator();
+    Iterator<BindingValueKey> bindingKeysIter = BindingReflectionUtils.filterSystemBindingValueKeys(bindingKeys, showUsefulSystemBindings).iterator();
     while (bindingKeysIter.hasNext()) {
       BindingValueKey bindingKey = bindingKeysIter.next();
-      if (!BindingReflectionUtils.isSystemBindingValueKey(bindingKey, showUsefulSystemBindings)) {
-        WodCompletionProposal completionProposal = new WodCompletionProposal(token, tokenOffset, offset, bindingKey.getBindingName());
-        completionProposalsSet.add(completionProposal);
-      }
+      WodCompletionProposal completionProposal = new WodCompletionProposal(token, tokenOffset, offset, bindingKey.getBindingName());
+      completionProposalsSet.add(completionProposal);
     }
   }
 

@@ -75,16 +75,18 @@ public abstract class AbstractApiModelElement {
 	}
 
 	public List<Element> getChildrenElementsByTagName(String _tagName) {
-		List<Element> elementsList = new LinkedList<Element>();
-		NodeList nodeList = element.getChildNodes();
-		int length = nodeList.getLength();
-		for (int i = 0; i < length; i++) {
-			Node childNode = nodeList.item(i);
-			if (childNode instanceof Element && _tagName.equals(childNode.getNodeName())) {
-				elementsList.add((Element) childNode);
-			}
+    synchronized (this.apiModel) {
+      List<Element> elementsList = new LinkedList<Element>();
+  		NodeList nodeList = element.getChildNodes();
+  		int length = nodeList.getLength();
+  		for (int i = 0; i < length; i++) {
+  			Node childNode = nodeList.item(i);
+  			if (childNode instanceof Element && _tagName.equals(childNode.getNodeName())) {
+  				elementsList.add((Element) childNode);
+  			}
+  		}
+  		return elementsList;
 		}
-		return elementsList;
 	}
 
 }

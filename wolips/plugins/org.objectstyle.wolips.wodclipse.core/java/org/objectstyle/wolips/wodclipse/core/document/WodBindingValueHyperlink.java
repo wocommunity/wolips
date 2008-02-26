@@ -55,7 +55,7 @@ public class WodBindingValueHyperlink implements IHyperlink {
 
   public void open() {
     try {
-      BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(_bindingValue, _componentType);
+      BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(_bindingValue, _componentType, _componentType.getJavaProject(), WodParserCache.getTypeCache());
       if (bindingValueKeyPath.isValid()) {
         BindingValueKey lastKey = bindingValueKeyPath.getLastBindingKey();
         if (lastKey != null) {

@@ -69,21 +69,25 @@ public class Unbound extends AbstractUn {
   }
 
   public static void addToWoWithBinding(Wo wo, Binding binding) {
-    Element newValidationElement = wo.element.getOwnerDocument().createElement(Validation.VALIDATION);
-    wo.element.appendChild(newValidationElement);
-    newValidationElement.setAttribute(Validation.MESSAGE, "'" + binding.getName() + "' is a required binding");
-    Element newUnboundElement = wo.element.getOwnerDocument().createElement(UNBOUND);
-    newValidationElement.appendChild(newUnboundElement);
-    newUnboundElement.setAttribute(NAME, binding.getName());
+    synchronized (wo.apiModel) {
+      Element newValidationElement = wo.element.getOwnerDocument().createElement(Validation.VALIDATION);
+      wo.element.appendChild(newValidationElement);
+      newValidationElement.setAttribute(Validation.MESSAGE, "'" + binding.getName() + "' is a required binding");
+      Element newUnboundElement = wo.element.getOwnerDocument().createElement(UNBOUND);
+      newValidationElement.appendChild(newUnboundElement);
+      newUnboundElement.setAttribute(NAME, binding.getName());
+    }
   }
 
   public static void removeFromWoWithBinding(Wo wo, Binding binding) {
-    List<Validation> validations = wo.getValidations();
-    for (int i = validations.size() - 1; i > 0; i--) {
-      Validation validation = validations.get(i);
-      List<Unbound> unbounds = validation.getUnbounds();
-      if (unbounds.size() == 1 && unbounds.get(0).isAffectedByBindingNamed(binding.getName())) {
-        validation.element.removeChild(unbounds.get(0).element);
+    synchronized (wo.apiModel) {
+      List<Validation> validations = wo.getValidations();
+      for (int i = validations.size() - 1; i > 0; i--) {
+        Validation validation = validations.get(i);
+        List<Unbound> unbounds = validation.getUnbounds();
+        if (unbounds.size() == 1 && unbounds.get(0).isAffectedByBindingNamed(binding.getName())) {
+          validation.element.removeChild(unbounds.get(0).element);
+        }
       }
     }
   }

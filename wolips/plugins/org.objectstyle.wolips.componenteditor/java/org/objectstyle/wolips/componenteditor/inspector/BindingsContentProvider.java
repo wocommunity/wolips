@@ -18,13 +18,20 @@ public class BindingsContentProvider implements IStructuredContentProvider {
 
 	private TypeCache _cache;
 
+	private Wo _api;
+	
 	public void setContext(IJavaProject javaProject, TypeCache cache) {
 		_javaProject = javaProject;
 		_cache = cache;
 	}
+	
+	public Wo getApi() {
+		return _api;
+	}
 
 	public Object[] getElements(Object inputElement) {
 		Object[] wodBindings = null;
+		_api = null;
 		if (inputElement instanceof IWodElement) {
 			IWodElement wodElement = (IWodElement) inputElement;
 			if (wodElement == null) {
@@ -33,11 +40,11 @@ public class BindingsContentProvider implements IStructuredContentProvider {
 				boolean apiFound = false;
 				if (_cache != null) {
 					try {
-						Wo api = wodElement.getApi(_javaProject, _cache);
-						if (api != null) {
+						_api = wodElement.getApi(_javaProject, _cache);
+						if (_api != null) {
 							apiFound = true;
 							List<IApiBinding> visibleBindings = new LinkedList<IApiBinding>();
-							List<Binding> apiBindings = api.getBindings();
+							List<Binding> apiBindings = _api.getBindings();
 							visibleBindings.addAll(apiBindings);
 							for (IWodBinding wodBinding : wodElement.getBindings()) {
 								String bindingName = wodBinding.getName();

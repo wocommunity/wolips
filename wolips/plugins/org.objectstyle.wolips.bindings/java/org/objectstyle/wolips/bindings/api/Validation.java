@@ -71,11 +71,15 @@ public class Validation extends AbstractValidationChild {
   }
 
   public String getMessage() {
-    return element.getAttribute(MESSAGE);
+    synchronized (this.apiModel) {
+      return element.getAttribute(MESSAGE);
+    }
   }
 
   public void setMessage(String className) {
-    element.setAttribute(MESSAGE, className);
+    synchronized (this.apiModel) {
+      element.setAttribute(MESSAGE, className);
+    }
   }
 
   @Override

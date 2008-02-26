@@ -42,10 +42,10 @@ public class ConvertInlineToWodRefactoring implements IRunnableWithProgress {
 
   public void run(IProgressMonitor monitor) throws InvocationTargetException {
     try {
-      FuzzyXMLDocument htmlModel = _cache.getHtmlXmlDocument();
+      FuzzyXMLDocument htmlModel = _cache.getHtmlEntry().getModel();
       FuzzyXMLElement element = htmlModel.getElementByOffset(_offset);
       if (element != null) {
-        IWodModel wodModel = _cache.getWodModel();
+        IWodModel wodModel = _cache.getWodEntry().getModel();
         String tagName = element.getName();
         if (WodHtmlUtils.isInline(tagName)) {
           SimpleWodElement wodElement = new FuzzyXMLWodElement(element, _wo54);
@@ -57,7 +57,7 @@ public class ConvertInlineToWodRefactoring implements IRunnableWithProgress {
 
           ConvertInlineToWodRefactoring.appendWodElement(_cache, wodElement);
 
-          IDocument htmlDocument = _cache.getHtmlDocument();
+          IDocument htmlDocument = _cache.getHtmlEntry().getDocument();
           List<TextEdit> edits = new LinkedList<TextEdit>();
           int openTagLength = element.getOpenTagLength();
           if (element.hasCloseTag()) {
@@ -81,7 +81,7 @@ public class ConvertInlineToWodRefactoring implements IRunnableWithProgress {
   }
 
   public static void insertWodElement(WodParserCache cache, IWodElement wodElement, int offset) throws IOException, MalformedTreeException, BadLocationException {
-    IDocument wodDocument = cache.getWodDocument();
+    IDocument wodDocument = cache.getWodEntry().getDocument();
     if (wodDocument != null) {
       int insertOffset = offset;
       if (insertOffset == -1) {

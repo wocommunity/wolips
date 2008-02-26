@@ -236,7 +236,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 					// reparse the wod file. Lame.
 					Set<String> alreadyUsedElementNames = WodScanner.getTextForRulesOfType(document, ElementNameRule.class);
 					WodParserCache wodParserCache = WodParserCache.parser(((FileEditorInput) _editor.getEditorInput()).getFile());
-					WodCompletionUtils.fillInElementNameCompletionProposals(alreadyUsedElementNames, token, tokenOffset, offset, completionProposalsSet, guessed, wodParserCache.getHtmlElementCache());
+					WodCompletionUtils.fillInElementNameCompletionProposals(alreadyUsedElementNames, token, tokenOffset, offset, completionProposalsSet, guessed, wodParserCache.getHtmlEntry().getHtmlElementCache());
 				} else if (tokenType == PreferenceConstants.ELEMENT_TYPE) {
 					WodCompletionUtils.fillInElementTypeCompletionProposals(javaProject, token, tokenOffset, offset, completionProposalsSet, guessed, null);
 				} else if (tokenType == PreferenceConstants.BINDING_NAME) {

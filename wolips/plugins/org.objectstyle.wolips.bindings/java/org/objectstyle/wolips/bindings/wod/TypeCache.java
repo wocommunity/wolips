@@ -166,7 +166,7 @@ public class TypeCache {
         //System.out.println("TypeCacheEntry.getBindingValueAccessorKeys: " + name + ": " + bindingValueAccessorKeys);
         if (bindingValueAccessorKeys == null) {
           //System.out.println("TypeCache.getBindingValueAccessorKeys: MISS " + type.getElementName() + ": " + name);
-          bindingValueAccessorKeys = BindingReflectionUtils.getBindingKeys(javaProject, _type, name, true, BindingReflectionUtils.ACCESSORS_OR_VOID, TypeCache.this);
+          bindingValueAccessorKeys = BindingReflectionUtils.getBindingKeys(javaProject, _type, name, true, BindingReflectionUtils.ACCESSORS_OR_VOID, false, TypeCache.this);
           // MS: Don't cache this for now -- I don't know how many end up in here and how long they
           // hang around, but I think the answer is "a lot" and "for a long time".  However, it's a huge performance win.
           _bindingValueAccessorKeys.put(name, bindingValueAccessorKeys);
@@ -183,7 +183,7 @@ public class TypeCache {
         List<BindingValueKey> bindingValueMutatorKeys = _bindingValueMutatorKeys.get(name);
         if (bindingValueMutatorKeys == null) {
           //System.out.println("TypeCache.getBindingValueMutatorKeys: MISS " + type.getElementName() + ": " + name);
-          bindingValueMutatorKeys = BindingReflectionUtils.getBindingKeys(javaProject, _type, name, true, BindingReflectionUtils.MUTATORS_ONLY, TypeCache.this);
+          bindingValueMutatorKeys = BindingReflectionUtils.getBindingKeys(javaProject, _type, name, true, BindingReflectionUtils.MUTATORS_ONLY, false, TypeCache.this);
           // MS: Don't cache this for now -- I don't know how many end up in here and how long they
           // hang around, but I think the answer is "a lot" and "for a long time".  However, it's a huge performance win.
           _bindingValueMutatorKeys.put(name, bindingValueMutatorKeys);

@@ -62,25 +62,29 @@ import org.w3c.dom.Element;
 
 public abstract class AbstractUn extends AbstractApiModelElement implements IValidation {
 
-	public final static String NAME = "name";
+  public final static String NAME = "name";
 
-	protected AbstractUn(Element element, ApiModel apiModel) {
-		super(element, apiModel);
-	}
+  protected AbstractUn(Element element, ApiModel apiModel) {
+    super(element, apiModel);
+  }
 
-	public String getName() {
-		return element.getAttribute(NAME);
-	}
+  public String getName() {
+    synchronized (this) {
+      return element.getAttribute(NAME);
+    }
+  }
 
-	public void setName(String className) {
-		element.setAttribute(NAME, className);
-	}
+  public void setName(String className) {
+    synchronized (this) {
+      element.setAttribute(NAME, className);
+    }
+  }
 
-	public List<IValidation> getValidationChildren() {
-		return new LinkedList<IValidation>();
-	}
+  public List<IValidation> getValidationChildren() {
+    return new LinkedList<IValidation>();
+  }
 
-	public boolean isAffectedByBindingNamed(String bindingName) {
-		return bindingName.equals(this.getName());
-	}
+  public boolean isAffectedByBindingNamed(String bindingName) {
+    return bindingName.equals(this.getName());
+  }
 }

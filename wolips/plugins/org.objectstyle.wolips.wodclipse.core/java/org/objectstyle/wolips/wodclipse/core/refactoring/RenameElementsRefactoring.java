@@ -33,11 +33,11 @@ public class RenameElementsRefactoring implements IRunnableWithProgress {
 
   public void run(IProgressMonitor monitor) throws InvocationTargetException {
     try {
-      IDocument htmlDocument = _cache.getHtmlDocument();
+      IDocument htmlDocument = _cache.getHtmlEntry().getDocument();
       if (htmlDocument != null) {
         List<TextEdit> htmlEdits = new LinkedList<TextEdit>();
         for (ElementRename rename : _renames) {
-          FuzzyXMLDocument htmlModel = _cache.getHtmlXmlDocument();
+          FuzzyXMLDocument htmlModel = _cache.getHtmlEntry().getModel();
           FuzzyXMLNode[] woTags = NodeSelectUtil.getNodeByFilter(htmlModel.getDocumentElement(), new NamedWebobjectTagFilter(rename.getOldName()));
 
           for (FuzzyXMLNode woTag : woTags) {
@@ -53,9 +53,9 @@ public class RenameElementsRefactoring implements IRunnableWithProgress {
         WodDocumentUtils.applyEdits(htmlDocument, htmlEdits);
       }
 
-      IDocument wodDocument = _cache.getWodDocument();
+      IDocument wodDocument = _cache.getWodEntry().getDocument();
       if (wodDocument != null) {
-        IWodModel wodModel = _cache.getWodModel();
+        IWodModel wodModel = _cache.getWodEntry().getModel();
         List<TextEdit> wodEdits = new LinkedList<TextEdit>();
         MultiTextEdit multiEdit = new MultiTextEdit();
         for (ElementRename rename : _renames) {

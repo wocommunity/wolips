@@ -265,6 +265,10 @@ public class BindingValueKeyPath {
     return nextToLastBindingKeyName;
   }
 
+  public BindingValueKey[] getBindingKeys() {
+    return _bindingKeys;
+  }
+  
   public BindingValueKey getLastBindingKey() {
     BindingValueKey lastBindingKey;
     if (_bindingKeys != null && _bindingKeys.length > 0) {
@@ -299,16 +303,16 @@ public class BindingValueKeyPath {
     return lastType;
   }
 
-  public List<BindingValueKey> getPartialMatchesForLastBindingKey() throws JavaModelException {
+  public List<BindingValueKey> getPartialMatchesForLastBindingKey(boolean allowInheritanceDuplicates) throws JavaModelException {
     List<BindingValueKey> bindingKeysList = null;
     if (_helperFunction != null) {
       // if there's a helper function, we can't do completion
     }
     else if (_operator != null) {
-      bindingKeysList = BindingReflectionUtils.getBindingKeys(_javaProject, getLastType(), "@" + _operator, false, BindingReflectionUtils.ACCESSORS_ONLY, _cache);
+      bindingKeysList = BindingReflectionUtils.getBindingKeys(_javaProject, getLastType(), "@" + _operator, false, BindingReflectionUtils.ACCESSORS_ONLY, allowInheritanceDuplicates, _cache);
     }
     else if (_bindingKeys == null) {
-      bindingKeysList = BindingReflectionUtils.getBindingKeys(_javaProject, getLastType(), _originalKeyPath, false, BindingReflectionUtils.ACCESSORS_ONLY, _cache);
+      bindingKeysList = BindingReflectionUtils.getBindingKeys(_javaProject, getLastType(), _originalKeyPath, false, BindingReflectionUtils.ACCESSORS_ONLY, allowInheritanceDuplicates, _cache);
     }
     else {
       String partialBindingKeyName;
@@ -333,7 +337,7 @@ public class BindingValueKeyPath {
       if (lastType != null) {
         // Jump forward to the last '.' and look for valid "get" method
         // completion proposals based on the partial token
-        bindingKeysList = BindingReflectionUtils.getBindingKeys(_javaProject, lastType, partialBindingKeyName, false, BindingReflectionUtils.ACCESSORS_ONLY, _cache);
+        bindingKeysList = BindingReflectionUtils.getBindingKeys(_javaProject, lastType, partialBindingKeyName, false, BindingReflectionUtils.ACCESSORS_ONLY, allowInheritanceDuplicates, _cache);
       }
     }
     return bindingKeysList;

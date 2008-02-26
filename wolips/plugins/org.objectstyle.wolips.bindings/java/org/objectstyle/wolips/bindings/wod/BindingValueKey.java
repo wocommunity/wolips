@@ -7,7 +7,7 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 
-public class BindingValueKey {
+public class BindingValueKey implements Comparable<BindingValueKey> {
   private String _bindingName;
 
   private IMember _bindingMember;
@@ -25,6 +25,20 @@ public class BindingValueKey {
     _bindingMember = bindingMember;
     _javaProject = javaProject;
     _cache = cache;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    return o instanceof BindingValueKey && compareTo((BindingValueKey) o) == 0;
+  }
+
+  @Override
+  public int hashCode() {
+    return (_bindingName == null) ? 0 : _bindingName.hashCode();
+  }
+
+  public int compareTo(BindingValueKey o) {
+    return (o == null) ? -1 : (_bindingName == null) ? ((o._bindingName == null) ? 0 : 1) : _bindingName.compareTo(o._bindingName);
   }
 
   public IType getDeclaringType() {
@@ -69,6 +83,21 @@ public class BindingValueKey {
   public IType getNextType() throws JavaModelException {
     ensureNextTypeInfoLoaded();
     return _nextType;
+  }
+
+  public boolean isLeaf() throws JavaModelException {
+    boolean isLeaf = false;
+    IType nextType = getNextType();
+    if (nextType != null) {
+      String name = nextType.getFullyQualifiedName();
+      if ("java.lang.String".equals(name) || "java.lang.Object".equals(name)) {
+        isLeaf = true;
+      }
+    }
+    else {
+      isLeaf = true;
+    }
+    return isLeaf;
   }
 
   protected void ensureNextTypeInfoLoaded() throws JavaModelException {

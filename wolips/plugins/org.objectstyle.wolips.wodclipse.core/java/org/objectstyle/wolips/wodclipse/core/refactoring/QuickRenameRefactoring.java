@@ -26,8 +26,8 @@ import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
 public class QuickRenameRefactoring {
-  public static void renameWodSelection(int offset, ITextViewer htmlViewer, ITextViewer wodViewer, WodParserCache cache) throws BadLocationException, CoreException, IOException {
-    IWodModel wodModel = cache.getWodModel();
+  public static void renameWodSelection(int offset, ITextViewer htmlViewer, ITextViewer wodViewer, WodParserCache cache) throws Exception {
+    IWodModel wodModel = cache.getWodEntry().getModel();
     if (wodModel != null) {
       IWodUnit wodUnit = wodModel.getWodUnitAtIndex(offset);
       if (wodUnit != null && wodUnit instanceof IWodElement) {
@@ -43,8 +43,8 @@ public class QuickRenameRefactoring {
     }
   }
 
-  public static void renameHtmlSelection(int offset, ITextViewer htmlViewer, ITextViewer wodViewer, WodParserCache cache) throws BadLocationException, CoreException, IOException {
-    FuzzyXMLDocument htmlModel = cache.getHtmlXmlDocument();
+  public static void renameHtmlSelection(int offset, ITextViewer htmlViewer, ITextViewer wodViewer, WodParserCache cache) throws Exception {
+    FuzzyXMLDocument htmlModel = cache.getHtmlEntry().getModel();
     FuzzyXMLElement element = htmlModel.getElementByOffset(offset);
     if (element != null) {
       String tagName = element.getName();
@@ -74,8 +74,8 @@ public class QuickRenameRefactoring {
     QuickRenameRefactoring.enterLinkedMode(linkedGroup, cache, htmlViewer);
   }
 
-  protected static int linkHtml(String woElementName, IDocument htmlDocument, LinkedPositionGroup linkedGroup, WodParserCache cache, int sequence) throws BadLocationException, CoreException, IOException {
-    FuzzyXMLDocument htmlModel = cache.getHtmlXmlDocument();
+  protected static int linkHtml(String woElementName, IDocument htmlDocument, LinkedPositionGroup linkedGroup, WodParserCache cache, int sequence) throws Exception {
+    FuzzyXMLDocument htmlModel = cache.getHtmlEntry().getModel();
     FuzzyXMLNode[] woTags = NodeSelectUtil.getNodeByFilter(htmlModel.getDocumentElement(), new NamedWebobjectTagFilter(woElementName));
     LinkedModeModel.closeAllModels(htmlDocument);
     for (FuzzyXMLNode woTag : woTags) {
@@ -90,9 +90,9 @@ public class QuickRenameRefactoring {
     return sequence;
   }
 
-  protected static int linkWod(String woElementName, IDocument wodDocument, LinkedPositionGroup linkedGroup, WodParserCache cache, int sequence) throws BadLocationException, CoreException, IOException {
+  protected static int linkWod(String woElementName, IDocument wodDocument, LinkedPositionGroup linkedGroup, WodParserCache cache, int sequence) throws Exception {
     LinkedModeModel.closeAllModels(wodDocument);
-    IWodModel wodModel = cache.getWodModel();
+    IWodModel wodModel = cache.getWodEntry().getModel();
     IWodElement wodElement = wodModel.getElementNamed(woElementName);
     if (wodElement != null) {
       Position namePosition = wodElement.getElementNamePosition();
@@ -103,7 +103,7 @@ public class QuickRenameRefactoring {
     return sequence;
   }
 
-  public static void renameElement(String woElementName, ITextViewer htmlViewer, ITextViewer wodViewer, final WodParserCache cache, boolean highlightHtml) throws BadLocationException, CoreException, IOException {
+  public static void renameElement(String woElementName, ITextViewer htmlViewer, ITextViewer wodViewer, final WodParserCache cache, boolean highlightHtml) throws Exception {
     int sequence = 0;
     LinkedPositionGroup linkedGroup = new LinkedPositionGroup();
     IDocument htmlDocument = htmlViewer.getDocument();

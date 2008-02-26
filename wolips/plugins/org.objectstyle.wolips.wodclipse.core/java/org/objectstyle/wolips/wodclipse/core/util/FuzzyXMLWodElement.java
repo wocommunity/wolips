@@ -51,6 +51,8 @@ public class FuzzyXMLWodElement extends SimpleWodElement {
       SimpleWodBinding wodBinding = new SimpleWodBinding(name, value, new Position(element.getOffset() + attribute.getNameOffset() + 1, attribute.getNameLength()), new Position(element.getOffset() + attribute.getValueDataOffset() + 1, attribute.getValueDataLength()), -1);
       addBinding(wodBinding);
     }
+    
+    setEndOffset(element.getOffset() + element.getOpenTagLength());
   }
 
   public FuzzyXMLElement getXmlElement() {

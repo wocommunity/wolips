@@ -196,13 +196,13 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
         IFile file = (IFile) resource;
         String fileExtension = file.getFileExtension();
         if ("wod".equals(fileExtension)) {
-          WodModelUtils.deleteWodProblems(file);
+          WodModelUtils.deleteProblems(file);
         }
         else if ("html".equals(fileExtension)) {
-          WodModelUtils.deleteWodProblems(file);
+          WodModelUtils.deleteProblems(file);
         }
         else if ("woo".equals(fileExtension)) {
-          WodModelUtils.deleteWodProblems(file);
+          WodModelUtils.deleteProblems(file);
         }
       }
       else if (resource instanceof IContainer) {
@@ -210,9 +210,9 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
         String fileExtension = folder.getFileExtension();
         if ("wo".equals(fileExtension)) {
           String componentName = folder.getName().substring(0, folder.getName().lastIndexOf('.'));
-          WodModelUtils.deleteWodProblems(folder.getFile(new Path(componentName + ".html")));
-          WodModelUtils.deleteWodProblems(folder.getFile(new Path(componentName + ".wod")));
-          WodModelUtils.deleteWodProblems(folder.getFile(new Path(componentName + ".woo")));
+          WodModelUtils.deleteProblems(folder.getFile(new Path(componentName + ".html")));
+          WodModelUtils.deleteProblems(folder.getFile(new Path(componentName + ".wod")));
+          WodModelUtils.deleteProblems(folder.getFile(new Path(componentName + ".woo")));
         }
       }
     }
@@ -267,13 +267,13 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
     }
     try {
       WodParserCache cache = WodParserCache.parser(resource);
-      if (progressMonitor != null && cache.getWodFile() != null) {
+      if (progressMonitor != null && cache.getWodEntry().getFile() != null) {
         if (showProgress) {
-          progressMonitor.subTask("Building WO " + cache.getWodFile().getName() + " ...");
+          progressMonitor.subTask("Building WO " + cache.getWodEntry().getFile().getName() + " ...");
         }
       }
       cache.clearValidationCache();
-      cache.parseHtmlAndWodIfNecessary();
+      cache.parse();
       cache.validate();
     }
     catch (Throwable t) {

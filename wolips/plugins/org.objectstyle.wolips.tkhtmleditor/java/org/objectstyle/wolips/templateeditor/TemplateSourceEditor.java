@@ -1,7 +1,5 @@
 package org.objectstyle.wolips.templateeditor;
 
-import java.io.IOException;
-
 import jp.aonir.fuzzyxml.FuzzyXMLDocument;
 import jp.aonir.fuzzyxml.FuzzyXMLElement;
 import jp.aonir.fuzzyxml.FuzzyXMLParser;
@@ -12,7 +10,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextSelection;
@@ -101,7 +98,7 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
   public void dispose() {
     try {
       WodParserCache cache = getParserCache();
-      cache.setHtmlDocument(null);
+      cache.getHtmlEntry().setDocument(null);
     }
     catch (Exception e) {
       e.printStackTrace();
@@ -114,7 +111,7 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
   public void update() {
     try {
       WodParserCache cache = TemplateSourceEditor.this.getParserCache();
-      cache.setHtmlDocument(getDocumentProvider().getDocument(getEditorInput()));
+      cache.getHtmlEntry().setDocument(getDocumentProvider().getDocument(getEditorInput()));
     }
     catch (Exception e) {
       e.printStackTrace();
@@ -135,12 +132,15 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
           return;
         }
       }
-
-      ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
-        public void run(IProgressMonitor monitor) {
-          _validate();
-        }
-      }, null);
+      
+      boolean autoBuild = ResourcesPlugin.getPlugin().getPluginPreferences().getDefaultBoolean(ResourcesPlugin.PREF_AUTO_BUILDING);
+      if (!autoBuild) {
+        ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
+          public void run(IProgressMonitor monitor) {
+            _validate();
+          }
+        }, null);
+      }
     }
     catch (Exception ex) {
       HTMLPlugin.logException(ex);
@@ -150,7 +150,7 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
   protected void _validate() {
     try {
       WodParserCache cache = TemplateSourceEditor.this.getParserCache();
-      cache.parseHtmlAndWodIfNecessary();
+      cache.parse();
       cache.validate();
       if (_breadcrumb != null) {
         _breadcrumb.updateBreadcrumb();
@@ -170,32 +170,44 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
     return _cache;
   }
 
-  public IWodElement getSelectedElement() throws CoreException, LocateException, IOException {
+  @Override
+  protected void handleElementContentReplaced() {
+    super.handleElementContentReplaced();
+    System.out.println("TemplateSourceEditor.handleElementContentReplaced: test");
+  }
+
+  public FuzzyXMLDocument getHtmlXmlDocument() throws Exception {
+    FuzzyXMLDocument doc;
+    if (isDirty()) {
+      boolean wo54 = Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.WO54_KEY);
+      FuzzyXMLParser parser = new FuzzyXMLParser(wo54, true);
+      doc = parser.parse(getHTMLSource());
+    }
+    else {
+      doc = getParserCache().getHtmlEntry().getModel();
+    }
+    return doc;
+  }
+
+  public IWodElement getSelectedElement() throws Exception {
     IWodElement wodElement = null;
     WodParserCache cache = getParserCache();
-    ISelection realSelection = getSelectionProvider().getSelection();
-    if (realSelection instanceof ITextSelection) {
-      ITextSelection textSelection = (ITextSelection) realSelection;
-      FuzzyXMLDocument doc;
-      if (isDirty()) {
-        boolean wo54 = Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.WO54_KEY);
-        FuzzyXMLParser parser = new FuzzyXMLParser(wo54, true);
-        doc = parser.parse(getHTMLSource());
+    if (getSelectionProvider() != null) {
+      ISelection realSelection = getSelectionProvider().getSelection();
+      if (realSelection instanceof ITextSelection) {
+        ITextSelection textSelection = (ITextSelection) realSelection;
+        FuzzyXMLElement element = getHtmlXmlDocument().getElementByOffset(textSelection.getOffset());
+        if (element != null) {
+          wodElement = WodHtmlUtils.getWodElement(element, false, cache);
+        }
       }
-      else {
-        doc = cache.getHtmlXmlDocument();
-      }
-      FuzzyXMLElement element = doc.getElementByOffset(textSelection.getOffset());
-      if (element != null) {
-        wodElement = WodHtmlUtils.getWodElement(element, false, cache);
-      }
-    }
-    else if (realSelection instanceof IStructuredSelection) {
-      IStructuredSelection structuredSelection = (IStructuredSelection) realSelection;
-      Object obj = structuredSelection.getFirstElement();
-      if (obj instanceof FuzzyXMLElement) {
-        FuzzyXMLElement element = (FuzzyXMLElement) obj;
-        wodElement = WodHtmlUtils.getWodElement(element, false, cache);
+      else if (realSelection instanceof IStructuredSelection) {
+        IStructuredSelection structuredSelection = (IStructuredSelection) realSelection;
+        Object obj = structuredSelection.getFirstElement();
+        if (obj instanceof FuzzyXMLElement) {
+          FuzzyXMLElement element = (FuzzyXMLElement) obj;
+          wodElement = WodHtmlUtils.getWodElement(element, false, cache);
+        }
       }
     }
     return wodElement;
@@ -254,15 +266,15 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
     return AbstractTextEditor.widgetOffset2ModelOffset(getSourceViewer(), widgetOffset);
   }
 
-  public Point getTagSelectionAtOffset(int modelOffset) throws BadLocationException, CoreException, LocateException, IOException {
+  public Point getTagSelectionAtOffset(int modelOffset) throws Exception {
     Point selection = null;
 
     WodParserCache cache = getParserCache();
-    FuzzyXMLDocument xmlDocument = cache.getHtmlXmlDocument();
+    FuzzyXMLDocument xmlDocument = cache.getHtmlEntry().getModel();
     if (xmlDocument != null) {
       FuzzyXMLElement selectedElement = xmlDocument.getElementByOffset(modelOffset);
       if (selectedElement != null) {
-        IDocument doc = cache.getHtmlDocument();
+        IDocument doc = cache.getHtmlEntry().getDocument();
 
         int openTagOffset = selectedElement.getOffset();
         int openTagLength = selectedElement.getOpenTagLength() + 2;
