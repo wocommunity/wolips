@@ -19,7 +19,6 @@ import org.objectstyle.wolips.bindings.wod.ApiElementValidationProblem;
 import org.objectstyle.wolips.bindings.wod.IWodBinding;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.bindings.wod.WodBindingProblem;
-import org.objectstyle.wolips.bindings.wod.WodBindingValueProblem;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
 
 public class BindingsLabelProvider implements ITableLabelProvider, ITableColorProvider, ITableFontProvider {

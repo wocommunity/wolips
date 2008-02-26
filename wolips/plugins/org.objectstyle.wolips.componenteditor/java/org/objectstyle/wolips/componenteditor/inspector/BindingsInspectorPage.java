@@ -76,7 +76,7 @@ public class BindingsInspectorPage extends Page implements ICursorPositionListen
 					String keyPath = (String) ((IStructuredSelection) event.getSelection()).getFirstElement();
 					IApiBinding apiBinding = (IApiBinding) ((IStructuredSelection) _inspector.getBindingsTableViewer().getSelection()).getFirstElement();
 					if (apiBinding != null) {
-						RefactoringElementModel element = _inspector.getRefactoringElement();
+						RefactoringWodElement element = _inspector.getRefactoringElement();
 						if (element != null) {
 							try {
 								element.setValueForBinding(keyPath, apiBinding.getName());

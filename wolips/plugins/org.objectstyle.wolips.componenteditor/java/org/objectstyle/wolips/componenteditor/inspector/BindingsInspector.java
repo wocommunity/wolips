@@ -69,7 +69,7 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 
 	private IWodElement _wodElement;
 
-	private RefactoringElementModel _refactoringElement;
+	private RefactoringWodElement _refactoringElement;
 
 	private List<WodProblem> _wodProblems;
 
@@ -199,7 +199,7 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 		if (cache != null) {
 			final WodParserCache refactoringParserCache = cache;
 			_dataBindingContext = new DataBindingContext();
-			_refactoringElement = new RefactoringElementModel(_wodElement, refactoringParserCache);
+			_refactoringElement = new RefactoringWodElement(_wodElement, refactoringParserCache);
 
 			if (elementNameEnabled) {
 				UpdateValueStrategy elementNameUpdateStrategy = new UpdateValueStrategy(UpdateValueStrategy.POLICY_UPDATE);
@@ -226,7 +226,7 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 						return status;
 					}
 				});
-				_dataBindingContext.bindValue(SWTObservables.observeText(_elementNameField, SWT.FocusOut), BeansObservables.observeValue(_refactoringElement, RefactoringElementModel.ELEMENT_NAME), elementNameUpdateStrategy, null);
+				_dataBindingContext.bindValue(SWTObservables.observeText(_elementNameField, SWT.FocusOut), BeansObservables.observeValue(_refactoringElement, RefactoringWodElement.ELEMENT_NAME), elementNameUpdateStrategy, null);
 			}
 
 			if (elementTypeEnabled) {
@@ -336,7 +336,7 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 		_listeners.remove(listener);
 	}
 
-	public RefactoringElementModel getRefactoringElement() {
+	public RefactoringWodElement getRefactoringElement() {
 		return _refactoringElement;
 	}
 

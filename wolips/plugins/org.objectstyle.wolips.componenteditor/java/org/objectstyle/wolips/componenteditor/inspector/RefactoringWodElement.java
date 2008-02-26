@@ -14,7 +14,7 @@ import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.refactoring.ChangeElementTypeRefactoring;
 import org.objectstyle.wolips.wodclipse.core.refactoring.RenameElementsRefactoring;
 
-public class RefactoringElementModel {
+public class RefactoringWodElement {
 	public static final String ELEMENT_NAME = "elementName";
 
 	public static final String ELEMENT_TYPE = "elementType";
@@ -25,7 +25,7 @@ public class RefactoringElementModel {
 
 	private WodParserCache _cache;
 
-	public RefactoringElementModel(IWodElement element, WodParserCache cache) {
+	public RefactoringWodElement(IWodElement element, WodParserCache cache) {
 		_cache = cache;
 		_wodElement = new SimpleWodElement(element);
 		_propertyChange = new PropertyChangeSupport(this);
@@ -69,7 +69,7 @@ public class RefactoringElementModel {
 			RenameElementsRefactoring.run(oldElementName, elementName, _cache, new NullProgressMonitor());
 		}
 		_wodElement.setElementName(elementName);
-		_propertyChange.firePropertyChange(RefactoringElementModel.ELEMENT_NAME, oldElementName, elementName);
+		_propertyChange.firePropertyChange(RefactoringWodElement.ELEMENT_NAME, oldElementName, elementName);
 	}
 
 	public String getElementName() {
@@ -80,7 +80,7 @@ public class RefactoringElementModel {
 		String oldElementType = _wodElement.getElementType();
 		ChangeElementTypeRefactoring.run(elementType, _wodElement, _cache, new NullProgressMonitor());
 		_wodElement.setElementType(elementType);
-		_propertyChange.firePropertyChange(RefactoringElementModel.ELEMENT_TYPE, oldElementType, elementType);
+		_propertyChange.firePropertyChange(RefactoringWodElement.ELEMENT_TYPE, oldElementType, elementType);
 	}
 
 	public String getElementType() {
