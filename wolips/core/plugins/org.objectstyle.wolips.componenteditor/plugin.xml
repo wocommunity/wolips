@@ -476,8 +476,8 @@
       <view
             name="Bindings (Experimental)"
             category="org.objectstyle.wolips.ui"
-            class="org.objectstyle.wolips.componenteditor.inspector.BindingsInspector"
-            id="org.objectstyle.wolips.componenteditor.inspector.BindingsInspector">
+            class="org.objectstyle.wolips.componenteditor.inspector.BindingsInspectorPageBookView"
+            id="org.objectstyle.wolips.componenteditor.inspector.BindingsInspectorPageBookView">
       </view>
    	 </extension>
      <extension

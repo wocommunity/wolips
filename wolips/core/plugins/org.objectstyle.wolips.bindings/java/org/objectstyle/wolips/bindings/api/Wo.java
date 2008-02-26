@@ -86,27 +86,35 @@ public class Wo extends AbstractApiModelElement {
   }
 
   public String getClassName() {
-    return element.getAttribute(CLASS);
+    synchronized (this.apiModel) {
+      return element.getAttribute(CLASS);
+    }
   }
 
   public void setClassName(String className) {
-    element.setAttribute(CLASS, className);
+    synchronized (this.apiModel) {
+      element.setAttribute(CLASS, className);
+    }
   }
 
   public boolean isComponentContent() {
-    String value = element.getAttribute(WOCOMPONENTCONTENT);
-    if (value == null) {
-      return false;
+    synchronized (this.apiModel) {
+      String value = element.getAttribute(WOCOMPONENTCONTENT);
+      if (value == null) {
+        return false;
+      }
+      return value.equals("true");
     }
-    return value.equals("true");
   }
 
   public void setComponentContent(boolean isComponentContent) {
-    if (isComponentContent) {
-      element.setAttribute(WOCOMPONENTCONTENT, "true");
-    }
-    else {
-      element.setAttribute(WOCOMPONENTCONTENT, "false");
+    synchronized (this.apiModel) {
+      if (isComponentContent) {
+        element.setAttribute(WOCOMPONENTCONTENT, "true");
+      }
+      else {
+        element.setAttribute(WOCOMPONENTCONTENT, "false");
+      }
     }
   }
 
@@ -121,25 +129,29 @@ public class Wo extends AbstractApiModelElement {
   }
 
   public List<Binding> getBindings() {
-    NodeList bindingElements = element.getElementsByTagName(Binding.BINDING);
-    List<Binding> bindings = new LinkedList<Binding>();
-    for (int i = 0; i < bindingElements.getLength(); i++) {
-      Element bindingElement = (Element) bindingElements.item(i);
-      Binding binding = new Binding(bindingElement, apiModel, this);
-      bindings.add(binding);
+    synchronized (this.apiModel) {
+      NodeList bindingElements = element.getElementsByTagName(Binding.BINDING);
+      List<Binding> bindings = new LinkedList<Binding>();
+      for (int i = 0; i < bindingElements.getLength(); i++) {
+        Element bindingElement = (Element) bindingElements.item(i);
+        Binding binding = new Binding(bindingElement, apiModel, this);
+        bindings.add(binding);
+      }
+      return bindings;
     }
-    return bindings;
   }
 
   public List<Validation> getValidations() {
-    NodeList validationElements = element.getElementsByTagName(Validation.VALIDATION);
-    List<Validation> validations = new LinkedList<Validation>();
-    for (int i = 0; i < validationElements.getLength(); i++) {
-      Element validationElement = (Element) validationElements.item(i);
-      Validation validation = new Validation(validationElement, apiModel);
-      validations.add(validation);
+    synchronized (this.apiModel) {
+      NodeList validationElements = element.getElementsByTagName(Validation.VALIDATION);
+      List<Validation> validations = new LinkedList<Validation>();
+      for (int i = 0; i < validationElements.getLength(); i++) {
+        Element validationElement = (Element) validationElements.item(i);
+        Validation validation = new Validation(validationElement, apiModel);
+        validations.add(validation);
+      }
+      return validations;
     }
-    return validations;
   }
 
   public List<Validation> getAffectedValidations(String bindingName) {
@@ -181,15 +193,17 @@ public class Wo extends AbstractApiModelElement {
   }
 
   public Binding createBinding(String name) {
-    Binding binding = getBinding(name);
-    if (binding == null) {
-      Element newBindingElement = this.element.getOwnerDocument().createElement(Binding.BINDING);
-      newBindingElement.setAttribute(Binding.NAME, name);
-      this.element.appendChild(newBindingElement);
-      this.apiModel.markAsDirty();
-      binding = getBinding(name);
+    synchronized (this.apiModel) {
+      Binding binding = getBinding(name);
+      if (binding == null) {
+        Element newBindingElement = this.element.getOwnerDocument().createElement(Binding.BINDING);
+        newBindingElement.setAttribute(Binding.NAME, name);
+        this.element.appendChild(newBindingElement);
+        this.apiModel.markAsDirty();
+        binding = getBinding(name);
+      }
+      return binding;
     }
-    return binding;
   }
 
   public void removeBinding(String name) {
@@ -200,57 +214,61 @@ public class Wo extends AbstractApiModelElement {
   }
 
   public void removeBinding(Binding binding) {
-    List<Validation> affectedValidations = getAffectedValidations(binding.getName());
-    for (Validation affectedValidation : affectedValidations) {
-      this.element.removeChild(affectedValidation.element);
+    synchronized (this.apiModel) {
+      List<Validation> affectedValidations = getAffectedValidations(binding.getName());
+      for (Validation affectedValidation : affectedValidations) {
+        this.element.removeChild(affectedValidation.element);
+      }
+      this.element.removeChild(binding.element);
+      this.apiModel.markAsDirty();
     }
-    this.element.removeChild(binding.element);
-    this.apiModel.markAsDirty();
   }
 
   public String getPreview() {
     String preview = null;
-    NodeList previewNodes = this.element.getElementsByTagName("preview");
-    if (previewNodes.getLength() == 1) {
-      try {
-        StringWriter sw = new StringWriter();
+    synchronized (this.apiModel) {
+      NodeList previewNodes = this.element.getElementsByTagName("preview");
+      if (previewNodes.getLength() == 1) {
+        try {
+          StringWriter sw = new StringWriter();
 
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        transformerFactory.setAttribute("indent-number", new Integer(4));
-        StreamResult output = new StreamResult(sw);
-        Transformer transformer = transformerFactory.newTransformer();
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF8");
-        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+          TransformerFactory transformerFactory = TransformerFactory.newInstance();
+          transformerFactory.setAttribute("indent-number", new Integer(4));
+          StreamResult output = new StreamResult(sw);
+          Transformer transformer = transformerFactory.newTransformer();
+          transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+          transformer.setOutputProperty(OutputKeys.ENCODING, "UTF8");
+          transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 
-//      TransformerFactory xformerFactory = TransformerFactory.newInstance();
-//      xformerFactory.setAttribute("indent-number", new Integer(4));
-//      OutputFormat outputFormat = new OutputFormat("XML", "UTF-8", true);
-//      outputFormat.setIndent(1);
-//      outputFormat.setIndenting(true);
-//      outputFormat.setOmitXMLDeclaration(true);
-//      XMLSerializer serializer = new XMLSerializer(sw, outputFormat);
-//        serializer.asDOMSerializer();
-        for (int nodeNum = 0; nodeNum < previewNodes.getLength(); nodeNum++) {
-          Element previewElement = (Element) previewNodes.item(nodeNum);
-          NodeList previewChildren = previewElement.getChildNodes();
-          for (int childNum = 0; childNum < previewChildren.getLength(); childNum++) {
-            Node childElement = previewChildren.item(childNum);
-            if (childElement instanceof Element) {
-              transformer.transform(new DOMSource(childElement), output);
-//              serializer.serialize((Element) childElement);
-            }
-            else if (childElement instanceof Text) {
-              sw.append(((Text) childElement).getTextContent());
+          //      TransformerFactory xformerFactory = TransformerFactory.newInstance();
+          //      xformerFactory.setAttribute("indent-number", new Integer(4));
+          //      OutputFormat outputFormat = new OutputFormat("XML", "UTF-8", true);
+          //      outputFormat.setIndent(1);
+          //      outputFormat.setIndenting(true);
+          //      outputFormat.setOmitXMLDeclaration(true);
+          //      XMLSerializer serializer = new XMLSerializer(sw, outputFormat);
+          //        serializer.asDOMSerializer();
+          for (int nodeNum = 0; nodeNum < previewNodes.getLength(); nodeNum++) {
+            Element previewElement = (Element) previewNodes.item(nodeNum);
+            NodeList previewChildren = previewElement.getChildNodes();
+            for (int childNum = 0; childNum < previewChildren.getLength(); childNum++) {
+              Node childElement = previewChildren.item(childNum);
+              if (childElement instanceof Element) {
+                transformer.transform(new DOMSource(childElement), output);
+                //              serializer.serialize((Element) childElement);
+              }
+              else if (childElement instanceof Text) {
+                sw.append(((Text) childElement).getTextContent());
+              }
             }
           }
+
+          preview = sw.toString();
         }
-        
-        preview = sw.toString();
-      }
-      catch (Exception e) {
-        e.printStackTrace();
-        preview = null;
+        catch (Exception e) {
+          e.printStackTrace();
+          preview = null;
+        }
       }
     }
     return preview;

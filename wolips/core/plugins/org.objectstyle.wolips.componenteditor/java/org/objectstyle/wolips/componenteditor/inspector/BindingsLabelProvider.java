@@ -12,11 +12,14 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.bindings.api.IApiBinding;
 import org.objectstyle.wolips.bindings.wod.ApiBindingValidationProblem;
 import org.objectstyle.wolips.bindings.wod.ApiElementValidationProblem;
 import org.objectstyle.wolips.bindings.wod.IWodBinding;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
+import org.objectstyle.wolips.bindings.wod.WodBindingProblem;
+import org.objectstyle.wolips.bindings.wod.WodBindingValueProblem;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
 
 public class BindingsLabelProvider implements ITableLabelProvider, ITableColorProvider, ITableFontProvider {
@@ -80,6 +83,9 @@ public class BindingsLabelProvider implements ITableLabelProvider, ITableColorPr
 				} else if (problem instanceof ApiElementValidationProblem) {
 					ApiElementValidationProblem validationProblem = (ApiElementValidationProblem) problem;
 					hasValidationProblem = validationProblem.getValidation().isAffectedByBindingNamed(bindingName);
+				} else if (problem instanceof WodBindingProblem) {
+					WodBindingProblem validationProblem = (WodBindingProblem) problem;
+					hasValidationProblem = ComparisonUtils.equals(bindingName, validationProblem.getBindingName());
 				}
 				if (hasValidationProblem) {
 					break;

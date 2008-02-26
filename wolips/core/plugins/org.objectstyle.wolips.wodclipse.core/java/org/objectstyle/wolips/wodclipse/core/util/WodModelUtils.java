@@ -86,7 +86,7 @@ public class WodModelUtils {
     return new WooModel(wooFile);
   }
 
-  public static void deleteWodProblems(IFile wodFile) {
+  public static void deleteProblems(IFile wodFile) {
     try {
       if (wodFile.exists()) {
         wodFile.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
@@ -97,8 +97,8 @@ public class WodModelUtils {
     }
   }
 
-  public static List<WodProblem> getProblems(IWodElement wodElement, WodParserCache cache) throws CoreException, IOException, ApiModelException {
-    return WodModelUtils.getProblems(wodElement, cache.getComponentsLocateResults(), WodParserCache.getTypeCache(), cache.getHtmlElementCache());
+  public static List<WodProblem> getProblems(IWodElement wodElement, WodParserCache cache) throws Exception {
+    return WodModelUtils.getProblems(wodElement, cache.getComponentsLocateResults(), WodParserCache.getTypeCache(), cache.getHtmlEntry().getHtmlElementCache());
   }
 
   public static List<WodProblem> getProblems(IWodElement wodElement, LocalizedComponentsLocateResult locateResult, TypeCache typeCache, HtmlElementCache htmlCache) throws CoreException, IOException, ApiModelException {
@@ -113,8 +113,8 @@ public class WodModelUtils {
     return problems;
   }
 
-  public static List<WodProblem> getProblems(IWodModel wodModel, WodParserCache cache) throws CoreException, IOException, ApiModelException {
-    return WodModelUtils.getProblems(wodModel, cache.getComponentsLocateResults(), WodParserCache.getTypeCache(), cache.getHtmlElementCache());
+  public static List<WodProblem> getProblems(IWodModel wodModel, WodParserCache cache) throws Exception {
+    return WodModelUtils.getProblems(wodModel, cache.getComponentsLocateResults(), WodParserCache.getTypeCache(), cache.getHtmlEntry().getHtmlElementCache());
   }
 
   public static List<WodProblem> getProblems(IWodModel wodModel, LocalizedComponentsLocateResult locateResult, TypeCache typeCache, HtmlElementCache htmlCache) throws CoreException, IOException, ApiModelException {
@@ -133,7 +133,7 @@ public class WodModelUtils {
     try {
       IFile wodFile = locateResult.getFirstWodFile();
       if (wodFile != null) {
-        WodModelUtils.deleteWodProblems(wodFile);
+        WodModelUtils.deleteProblems(wodFile);
 
         IJavaProject javaProject = JavaCore.create(wodFile.getProject());
         IWodModel wodModel = WodModelUtils.createWodModel(wodFile, wodDocument);

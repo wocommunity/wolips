@@ -38,7 +38,7 @@ public class TemplateTripleClickAdapter extends MouseAdapter implements MouseMov
       try {
         WodParserCache cache = WodParserCache.parser(input.getFile());
         int offset = textWidget.getOffsetAtLocation(_tripleClickPoint);
-        FuzzyXMLElement element = cache.getHtmlXmlDocument().getElementByOffset(offset);
+        FuzzyXMLElement element = cache.getHtmlEntry().getModel().getElementByOffset(offset);
         if (element != null) {
           textWidget.setSelectionRange(element.getOffset(), element.getLength());
           //textWidget.showSelection();

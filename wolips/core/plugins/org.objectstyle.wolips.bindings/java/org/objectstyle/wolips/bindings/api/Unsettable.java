@@ -69,21 +69,25 @@ public class Unsettable extends AbstractUn {
   }
 
   public static void addToWoWithBinding(Wo wo, Binding binding) {
-    Element newValidationElement = wo.element.getOwnerDocument().createElement(Validation.VALIDATION);
-    wo.element.appendChild(newValidationElement);
-    newValidationElement.setAttribute(Validation.MESSAGE, "'" + binding.getName() + "' must be bound to a settable value");
-    Element newUnsettableElement = wo.element.getOwnerDocument().createElement(UNSETTABLE);
-    newValidationElement.appendChild(newUnsettableElement);
-    newUnsettableElement.setAttribute(NAME, binding.getName());
+    synchronized (wo.apiModel) {
+      Element newValidationElement = wo.element.getOwnerDocument().createElement(Validation.VALIDATION);
+      wo.element.appendChild(newValidationElement);
+      newValidationElement.setAttribute(Validation.MESSAGE, "'" + binding.getName() + "' must be bound to a settable value");
+      Element newUnsettableElement = wo.element.getOwnerDocument().createElement(UNSETTABLE);
+      newValidationElement.appendChild(newUnsettableElement);
+      newUnsettableElement.setAttribute(NAME, binding.getName());
+    }
   }
 
   public static void removeFromWoWithBinding(Wo wo, Binding binding) {
-    List<Validation> validations = wo.getValidations();
-    for (int i = validations.size() - 1; i > 0; i--) {
-      Validation validation = validations.get(i);
-      List<Unsettable> unsettables = validation.getUnsettables();
-      if (unsettables.size() == 1 && unsettables.get(0).isAffectedByBindingNamed(binding.getName())) {
-        validation.element.removeChild(unsettables.get(0).element);
+    synchronized (wo.apiModel) {
+      List<Validation> validations = wo.getValidations();
+      for (int i = validations.size() - 1; i > 0; i--) {
+        Validation validation = validations.get(i);
+        List<Unsettable> unsettables = validation.getUnsettables();
+        if (unsettables.size() == 1 && unsettables.get(0).isAffectedByBindingNamed(binding.getName())) {
+          validation.element.removeChild(unsettables.get(0).element);
+        }
       }
     }
   }

@@ -44,25 +44,28 @@ public class BindingReflectionUtils {
   public static boolean isBoolean(String typeName) {
     return "boolean".equals(typeName) || "Boolean".equals(typeName) || "java.lang.Boolean".equals(typeName);
   }
-  
+
   public static boolean isImportRequired(String typeName) {
     return typeName != null && !isPrimitive(typeName) && !typeName.equals("java.lang." + Signature.getSimpleName(typeName));
   }
-  
+
   public static boolean isPrimitive(String typeName) {
     return ("boolean".equals(typeName) || "byte".equals(typeName) || "char".equals(typeName) || "int".equals(typeName) || "short".equals(typeName) || "float".equals(typeName) || "double".equals(typeName));
   }
-  
+
   public static String getFullClassName(IJavaProject javaProject, String shortClassName) throws JavaModelException {
     String expandedClassName = shortClassName;
     if (expandedClassName != null && expandedClassName.indexOf('.') == -1) {
       if ("String".equals(shortClassName)) {
         expandedClassName = "java.lang.String";
-      } else if ("Object".equals(shortClassName)) {
+      }
+      else if ("Object".equals(shortClassName)) {
         expandedClassName = "java.lang.Object";
-      } else if (isPrimitive(expandedClassName)) {
+      }
+      else if (isPrimitive(expandedClassName)) {
         // ignore primitives
-      } else {
+      }
+      else {
         SearchEngine searchEngine = new SearchEngine();
         IJavaSearchScope searchScope = JavaSearchScopeFactory.getInstance().createJavaProjectSearchScope(javaProject, JavaSearchScopeFactory.ALL);
         TypeNameCollector typeNameCollector = new TypeNameCollector(javaProject, false);
@@ -81,6 +84,7 @@ public class BindingReflectionUtils {
     }
     return expandedClassName;
   }
+
   public static String getShortClassName(String _fullClassName) {
     String shortClassName;
     int lastDotIndex = _fullClassName.lastIndexOf('.');
@@ -177,16 +181,15 @@ public class BindingReflectionUtils {
     operators.add("sortDesc");
     return operators;
   }
-  
-  public static List<BindingValueKey> getBindingKeys(IJavaProject _javaProject, IType _type, String _nameStartingWith, boolean _requireExactNameMatch, int _accessorsOrMutators, TypeCache cache) throws JavaModelException {
+
+  public static List<BindingValueKey> getBindingKeys(IJavaProject javaProject, IType type, String nameStartingWith, boolean requireExactNameMatch, int accessorsOrMutators, boolean allowInheritanceDuplicates, TypeCache cache) throws JavaModelException {
     List<BindingValueKey> bindingKeys = new LinkedList<BindingValueKey>();
 //    if (_requireExactNameMatch && BindingReflectionUtils.isBooleanValue(_nameStartingWith)) {
 //      return bindingKeys;
 //    }
 
     //System.out.println("BindingReflectionUtils.getBindingKeys: " + _type.getElementName() + ", " + _nameStartingWith + ", " + _requireExactNameMatch + ", " + _accessorsOrMutators);
-    String nameStartingWith = _nameStartingWith;
-    if (_type != null) {
+    if (type != null) {
       String lowercaseNameStartingWith = nameStartingWith.toLowerCase();
 
       Set<String> additionalProposals = new HashSet<String>();
@@ -194,7 +197,7 @@ public class BindingReflectionUtils {
       // We want to show fields from your WOApplication, WOSession, and
       // WODirectAction subclasses ...
       //ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(_type);
-      List<IType> types = cache.getSupertypesOf(_type);
+      List<IType> types = cache.getSupertypesOf(type);
       if (types != null) {
         IType usuallySubclassedSupertype = null;
         IType nextType = null;
@@ -212,8 +215,8 @@ public class BindingReflectionUtils {
         }
 
         for (String additionalProposal : additionalProposals) {
-          if (additionalProposal.startsWith(_nameStartingWith)) {
-            BindingValueKey additionalKey = new BindingValueKey(additionalProposal, null, _javaProject, cache);
+          if (additionalProposal.startsWith(nameStartingWith)) {
+            BindingValueKey additionalKey = new BindingValueKey(additionalProposal, null, javaProject, cache);
             // MS: this is a hack to prevent NPE's because we don't know the next type right now ...
             //additionalKey.setNextType(nextType);
             bindingKeys.add(additionalKey);
@@ -223,15 +226,14 @@ public class BindingReflectionUtils {
         if (usuallySubclassedSupertype != null) {
           //typeHierarchy = _type.newTypeHierarchy(_javaProject, null);
           //typeHierarchy = SubTypeHierachyCache.getTypeHierarchy(_type);
-          types = cache.getSubtypesOfInProject(usuallySubclassedSupertype, _javaProject);
+          types = cache.getSubtypesOfInProject(usuallySubclassedSupertype, javaProject);
         }
       }
 
       if (types != null) {
-        for (int typeNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && typeNum < types.size(); typeNum ++) {
-        //for (int typeNum = types.length - 1; (!_requireExactNameMatch || bindingKeys.size() == 0) && typeNum >= 0; typeNum --) {
-          IType type = types.get(typeNum);
-          BindingReflectionUtils.fillInBindingKeys(type, lowercaseNameStartingWith, _requireExactNameMatch, _accessorsOrMutators, _javaProject, bindingKeys, cache);
+        for (int typeNum = 0; (!requireExactNameMatch || bindingKeys.size() == 0) && typeNum < types.size(); typeNum++) {
+          //for (int typeNum = types.length - 1; (!_requireExactNameMatch || bindingKeys.size() == 0) && typeNum >= 0; typeNum --) {
+          BindingReflectionUtils.fillInBindingKeys(types.get(typeNum), lowercaseNameStartingWith, requireExactNameMatch, accessorsOrMutators, allowInheritanceDuplicates, javaProject, bindingKeys, cache);
         }
       }
     }
@@ -239,9 +241,9 @@ public class BindingReflectionUtils {
     return bindingKeys;
   }
 
-  protected static void fillInBindingKeys(IType type, String lowercaseNameStartingWith, boolean requireExactNameMatch, int accessorsOrMutators, IJavaProject javaProject, List<BindingValueKey> bindingKeys, TypeCache cache) throws JavaModelException {
+  protected static void fillInBindingKeys(IType type, String lowercaseNameStartingWith, boolean requireExactNameMatch, int accessorsOrMutators, boolean allowInheritanceDuplicates, IJavaProject javaProject, List<BindingValueKey> bindingKeys, TypeCache cache) throws JavaModelException {
     //System.out.println("BindingReflectionUtils.getBindingKeys: a " + type.getFullyQualifiedName());
-    
+
     IField[] fields = type.getFields();
     for (String prefix : BindingReflectionUtils.FIELD_PREFIXES) {
       for (int fieldNum = 0; (!requireExactNameMatch || bindingKeys.size() == 0) && fieldNum < fields.length; fieldNum++) {
@@ -272,20 +274,20 @@ public class BindingReflectionUtils {
         for (int methodNum = 0; (!requireExactNameMatch || bindingKeys.size() == 0) && methodNum < methods.length; methodNum++) {
           //System.out.println("BindingReflectionUtils.getBindingKeys: checking for " + prefix + methods[methodNum].getElementName());
           BindingValueKey bindingKey = BindingReflectionUtils.getBindingKeyIfMatches(javaProject, methods[methodNum], prefix + lowercaseNameStartingWith, prefix, requireExactNameMatch, accessorsOrMutators, cache);
-          if (bindingKey != null) {
+          if (bindingKey != null && (allowInheritanceDuplicates || !bindingKeys.contains(bindingKey))) {
             bindingKeys.add(bindingKey);
           }
         }
       }
     }
   }
-  
+
   public static boolean isDefaultPackage(IMember member) {
     IType declaringType = member.getDeclaringType();
     String declaringTypePackageName = declaringType.getPackageFragment().getElementName();
     return declaringTypePackageName == null || declaringTypePackageName.length() == 0;
   }
-  
+
   public static BindingValueKey getBindingKeyIfMatches(IJavaProject javaProject, IMember member, String nameStartingWith, String prefix, boolean requireExactNameMatch, int accessorsOrMutators, TypeCache cache) throws JavaModelException {
     //System.out.println("BindingReflectionUtils.getBindingKeyIfMatches: " + member.getElementName() + " starts with " + nameStartingWith);
     BindingValueKey bindingKey = null;
@@ -380,12 +382,13 @@ public class BindingReflectionUtils {
     _systemTypeNames.add("WOElement");
     _systemTypeNames.add("WOActionResults");
     _systemTypeNames.add("WOComponent");
-    
+
     _uselessSystemBindings = new HashSet<String>();
     _uselessSystemBindings.add("baseURL");
     _uselessSystemBindings.add("bindingKeys");
     _uselessSystemBindings.add("cachingEnabled");
     _uselessSystemBindings.add("childTemplate");
+    _uselessSystemBindings.add("getClass");
     _uselessSystemBindings.add("class");
     _uselessSystemBindings.add("clone");
     _uselessSystemBindings.add("componentDefinition");
@@ -394,9 +397,11 @@ public class BindingReflectionUtils {
     _uselessSystemBindings.add("generateResponse");
     _uselessSystemBindings.add("hashCode");
     _uselessSystemBindings.add("isCachingEnabled");
+    _uselessSystemBindings.add("eventLoggingEnabled");
     _uselessSystemBindings.add("isEventLoggingEnabled");
     _uselessSystemBindings.add("isPage");
     _uselessSystemBindings.add("isStateless");
+    _uselessSystemBindings.add("stateless");
     _uselessSystemBindings.add("keyAssociations");
     _uselessSystemBindings.add("name");
     _uselessSystemBindings.add("page");
@@ -407,7 +412,7 @@ public class BindingReflectionUtils {
     _uselessSystemBindings.add("template");
     _uselessSystemBindings.add("toString");
     _uselessSystemBindings.add("unroll");
-    
+
     _usefulSystemBindings = new HashSet<String>();
     _usefulSystemBindings.add("application");
     _usefulSystemBindings.add("context");
@@ -431,8 +436,36 @@ public class BindingReflectionUtils {
     }
     return isSystemBinding;
   }
-  
+
   public static boolean isBooleanValue(String keyPath) {
     return "true".equalsIgnoreCase(keyPath) || "false".equalsIgnoreCase(keyPath) || "yes".equalsIgnoreCase(keyPath) || "no".equalsIgnoreCase(keyPath);
+  }
+
+  public static List<BindingValueKey> filterSystemBindingValueKeys(List<BindingValueKey> bindingKeys, boolean showUsefulSystemBindings) {
+    Set<BindingValueKey> systemBindingValueKeys = new HashSet<BindingValueKey>();
+    for (BindingValueKey bindingKey : bindingKeys) {
+      if (BindingReflectionUtils.isSystemBindingValueKey(bindingKey, showUsefulSystemBindings)) {
+        systemBindingValueKeys.add(bindingKey);
+      }
+    }
+
+    List<BindingValueKey> filteredBindingValueKeys;
+    if (systemBindingValueKeys.isEmpty()) {
+      filteredBindingValueKeys = bindingKeys;
+    }
+    else {
+      filteredBindingValueKeys = new LinkedList<BindingValueKey>();
+      for (BindingValueKey bindingKey : bindingKeys) {
+//        System.out.println("BindingReflectionUtils.filterSystemBindingValueKeys: FILTERING? " + bindingKey.getBindingName());
+        if (!systemBindingValueKeys.contains(bindingKey)) {
+          filteredBindingValueKeys.add(bindingKey);
+        }
+//        else {
+//          System.out.println("BindingReflectionUtils.filterSystemBindingValueKeys:   SKIPPED");
+//        }
+      }
+    }
+
+    return filteredBindingValueKeys;
   }
 }

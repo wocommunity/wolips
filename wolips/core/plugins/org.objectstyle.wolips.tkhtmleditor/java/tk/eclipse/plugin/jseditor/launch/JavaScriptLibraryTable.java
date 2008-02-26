@@ -28,7 +28,7 @@ import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
-import org.objectstyle.wolips.preferences.TableViewerSupport;
+import org.objectstyle.wolips.baseforuiplugins.utils.ListContentProvider;
 
 import tk.eclipse.plugin.htmleditor.HTMLPlugin;
 
@@ -72,7 +72,7 @@ public class JavaScriptLibraryTable {
 				updateButtons();
 			}
 		});
-		_tableViewer.setContentProvider(new TableViewerSupport.ListContentProvider());
+		_tableViewer.setContentProvider(new ListContentProvider());
 		_tableViewer.setLabelProvider(new ITableLabelProvider(){
 			public Image getColumnImage(Object element, int columnIndex) {
 				if(element instanceof File){

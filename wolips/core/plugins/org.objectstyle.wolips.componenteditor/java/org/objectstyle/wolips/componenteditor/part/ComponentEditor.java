@@ -43,8 +43,6 @@
  */
 package org.objectstyle.wolips.componenteditor.part;
 
-import java.io.IOException;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -71,7 +69,6 @@ import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.components.input.ComponentEditorInput;
-import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.templateeditor.TemplateEditor;
 import org.objectstyle.wolips.templateeditor.TemplateSourceEditor;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
@@ -89,7 +86,7 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 		super();
 	}
 
-	public WodParserCache getParserCache() throws CoreException, LocateException {
+	public WodParserCache getParserCache() throws Exception {
 		IEditorPart editorPart = getActiveEditor();
 		WodParserCache parserCache = null;
 		if (editorPart instanceof IWOEditor) {
@@ -98,7 +95,7 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 		return parserCache;
 	}
 
-	public IWodElement getSelectedElement() throws CoreException, LocateException, IOException {
+	public IWodElement getSelectedElement() throws Exception {
 		IEditorPart editorPart = getActiveEditor();
 		IWodElement selectedELement = null;
 		if (editorPart instanceof IWOEditor) {

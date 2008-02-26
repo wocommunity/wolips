@@ -173,79 +173,85 @@ public class ApiModel {
   }
 
   public boolean parseIfNecessary() throws ApiModelException {
-    boolean parsed = false;
-    if (_eclipseFile != null) {
-      if (_eclipseFile.getModificationStamp() != _lastModified) {
-        parse();
-        parsed = true;
+    synchronized (this) {
+      boolean parsed = false;
+      if (_eclipseFile != null) {
+        if (_eclipseFile.getModificationStamp() != _lastModified) {
+          parse();
+          parsed = true;
+        }
       }
-    }
-    else if (_file != null) {
-      if (_file.lastModified() != _lastModified) {
-        parse();
-        parsed = true;
+      else if (_file != null) {
+        if (_file.lastModified() != _lastModified) {
+          parse();
+          parsed = true;
+        }
       }
+      return parsed;
     }
-    return parsed;
   }
 
   private void parse() throws ApiModelException {
-    try {
-      DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      if (_url != null) {
-        _document = documentBuilder.parse(_url.toExternalForm());
-      }
-      else if (_file != null) {
-        // MS: This is really silly, but I guess WOBuilder (or something
-        // else back in the day) produced
-        // API files that claim to be encoding 'macintosh'. Well, there
-        // is no such encoding, at
-        // least as far as Java is concerned. So we proprocess the api
-        // file and switch out the
-        // encoding for UTF-8 instead. Super lame. I know.
-        StringBuffer apiBuffer = new StringBuffer();
-        FileReader apiReader = new FileReader(_file);
-        try {
-          BufferedReader bufferedApiReader = new BufferedReader(apiReader);
-          String line = bufferedApiReader.readLine();
-          if (line != null && line.startsWith("<?")) {
-            apiBuffer.append(line.replaceAll("encoding=\"macintosh\"", "encoding=\"UTF-8\""));
-            apiBuffer.append("\n");
-          }
-          while ((line = bufferedApiReader.readLine()) != null) {
-            apiBuffer.append(line);
-            apiBuffer.append("\n");
-          }
+    synchronized (this) {
+      try {
+        DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        if (_url != null) {
+          _document = documentBuilder.parse(_url.toExternalForm());
         }
-        finally {
-          apiReader.close();
+        else if (_file != null) {
+          // MS: This is really silly, but I guess WOBuilder (or something
+          // else back in the day) produced
+          // API files that claim to be encoding 'macintosh'. Well, there
+          // is no such encoding, at
+          // least as far as Java is concerned. So we proprocess the api
+          // file and switch out the
+          // encoding for UTF-8 instead. Super lame. I know.
+          StringBuffer apiBuffer = new StringBuffer();
+          FileReader apiReader = new FileReader(_file);
+          try {
+            BufferedReader bufferedApiReader = new BufferedReader(apiReader);
+            String line = bufferedApiReader.readLine();
+            if (line != null && line.startsWith("<?")) {
+              apiBuffer.append(line.replaceAll("encoding=\"macintosh\"", "encoding=\"UTF-8\""));
+              apiBuffer.append("\n");
+            }
+            while ((line = bufferedApiReader.readLine()) != null) {
+              apiBuffer.append(line);
+              apiBuffer.append("\n");
+            }
+          }
+          finally {
+            apiReader.close();
+          }
+          StringReader apiBufferReader = new StringReader(apiBuffer.toString());
+          _document = documentBuilder.parse(new InputSource(apiBufferReader));
         }
-        StringReader apiBufferReader = new StringReader(apiBuffer.toString());
-        _document = documentBuilder.parse(new InputSource(apiBufferReader));
+        else if (_reader != null) {
+          _document = documentBuilder.parse(new InputSource(_reader));
+        }
+        else {
+          throw new ApiModelException("There was no file, URL, or reader specified as the location for this API file.");
+        }
+        _document.normalize();
+        if (_eclipseFile != null) {
+          _lastModified = _eclipseFile.getModificationStamp();
+        }
+        else if (_file != null) {
+          _lastModified = _file.lastModified();
+        }
       }
-      else if (_reader != null) {
-        _document = documentBuilder.parse(new InputSource(_reader));
+      catch (Throwable e) {
+        throw new ApiModelException("Failed to parse API file '" + getLocation() + "'.", e);
       }
-      else {
-        throw new ApiModelException("There was no file, URL, or reader specified as the location for this API file.");
-      }
-      _document.normalize();
-      if (_eclipseFile != null) {
-        _lastModified = _eclipseFile.getModificationStamp();
-      }
-      else if (_file != null) {
-        _lastModified = _file.lastModified();
-      }
-    }
-    catch (Throwable e) {
-      throw new ApiModelException("Failed to parse API file '" + getLocation() + "'.", e);
     }
   }
 
   public Wodefinitions getWODefinitions() throws ApiModelException {
-    parseIfNecessary();
-    Element element = _document.getDocumentElement();
-    return new Wodefinitions(element, this);
+    synchronized (this) {
+      parseIfNecessary();
+      Element element = _document.getDocumentElement();
+      return new Wodefinitions(element, this);
+    }
   }
 
   public Wo getWo() throws ApiModelException {

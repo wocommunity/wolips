@@ -16,31 +16,31 @@ import org.objectstyle.wolips.wodclipse.core.document.WodFileDocumentProvider;
 
 public class TemplateRefactoring {
   public static void processHtmlAndWod(IRunnableWithProgress runnable, WodParserCache cache, IProgressMonitor progressMonitor) throws InvocationTargetException, InterruptedException, CoreException {
-    IDocument htmlDocument = cache.getHtmlDocument();
+    IDocument htmlDocument = cache.getHtmlEntry().getDocument();
     FileEditorInput htmlInput = null;
     IDocumentProvider htmlProvider = null;
     if (htmlDocument == null) {
-      IFile htmlFile = cache.getHtmlFile();
+      IFile htmlFile = cache.getHtmlEntry().getFile();
       if (htmlFile != null) {
-        htmlInput = new FileEditorInput(cache.getHtmlFile());
+        htmlInput = new FileEditorInput(cache.getHtmlEntry().getFile());
         htmlProvider = new TextFileDocumentProvider();
         htmlProvider.connect(htmlInput);
         htmlDocument = htmlProvider.getDocument(htmlInput);
-        cache.setHtmlDocument(htmlDocument);
+        cache.getHtmlEntry().setDocument(htmlDocument);
       }
     }
     try {
-      IDocument wodDocument = cache.getWodDocument();
+      IDocument wodDocument = cache.getWodEntry().getDocument();
       IDocumentProvider wodProvider = null;
       FileEditorInput wodInput = null;
       if (wodDocument == null) {
-        IFile wodFile = cache.getWodFile();
+        IFile wodFile = cache.getWodEntry().getFile();
         if (wodFile != null) {
-          wodInput = new FileEditorInput(cache.getWodFile());
+          wodInput = new FileEditorInput(cache.getWodEntry().getFile());
           wodProvider = new WodFileDocumentProvider();
           wodProvider.connect(wodInput);
           wodDocument = wodProvider.getDocument(wodInput);
-          cache.setWodDocument(wodDocument);
+          cache.getWodEntry().setDocument(wodDocument);
         }
       }
       try {
@@ -50,7 +50,7 @@ public class TemplateRefactoring {
         if (wodProvider != null) {
           wodProvider.saveDocument(progressMonitor, wodInput, wodDocument, true);
           wodProvider.disconnect(wodInput);
-          cache.setWodDocument(null);
+          cache.getWodEntry().setDocument(null);
         }
       }
     }
@@ -58,10 +58,10 @@ public class TemplateRefactoring {
       if (htmlProvider != null) {
         htmlProvider.saveDocument(progressMonitor, htmlInput, htmlDocument, true);
         htmlProvider.disconnect(htmlInput);
-        cache.setHtmlDocument(null);
+        cache.getHtmlEntry().setDocument(null);
       }
     }
-    
+
     try {
       cache.clearCache();
     }

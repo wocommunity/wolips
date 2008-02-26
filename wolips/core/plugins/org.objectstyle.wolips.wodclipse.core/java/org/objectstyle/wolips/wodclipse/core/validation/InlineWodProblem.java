@@ -27,7 +27,7 @@ public class InlineWodProblem {
     _element = element;
     int offset = element.getOffset() + 1;
     int length = element.getName().length();
-    int lineNumber = WodHtmlUtils.getLineAtOffset(_cache.getHtmlContents(), offset);
+    int lineNumber = WodHtmlUtils.getLineAtOffset(_cache.getHtmlEntry().getContents(), offset);
     WodProblem problem = new WodProblem(message, new Position(offset, length), lineNumber, warning);
     _wodProblems = new LinkedList<WodProblem>();
     _wodProblems.add(problem);
@@ -52,7 +52,7 @@ public class InlineWodProblem {
 
   public void createProblemMarkers() {
     for (WodProblem wodProblem : _wodProblems) {
-      IMarker marker = WodModelUtils.createMarker(_cache.getHtmlFile(), wodProblem);
+      IMarker marker = WodModelUtils.createMarker(_cache.getHtmlEntry().getFile(), wodProblem);
       try {
         if (marker != null) {
           boolean elementError = true;
@@ -62,7 +62,7 @@ public class InlineWodProblem {
             if (attribute != null) {
               elementError = false;
               int offset = attribute.getOffset() + 1;
-              marker.setAttribute(IMarker.LINE_NUMBER, WodHtmlUtils.getLineAtOffset(_cache.getHtmlContents(), offset));
+              marker.setAttribute(IMarker.LINE_NUMBER, WodHtmlUtils.getLineAtOffset(_cache.getHtmlEntry().getContents(), offset));
               marker.setAttribute(IMarker.CHAR_START, offset);
               marker.setAttribute(IMarker.CHAR_END, offset + attribute.getName().length());
             }
@@ -73,7 +73,7 @@ public class InlineWodProblem {
             if (attribute != null) {
               elementError = false;
               int offset = attribute.getOffset() + 1;
-              marker.setAttribute(IMarker.LINE_NUMBER, WodHtmlUtils.getLineAtOffset(_cache.getHtmlContents(), offset));
+              marker.setAttribute(IMarker.LINE_NUMBER, WodHtmlUtils.getLineAtOffset(_cache.getHtmlEntry().getContents(), offset));
               marker.setAttribute(IMarker.CHAR_START, _element.getOffset() + attribute.getValueDataOffset() + 1);
               marker.setAttribute(IMarker.CHAR_END, _element.getOffset() + attribute.getValueDataOffset() + 1 + attribute.getValueDataLength());
             }
@@ -81,7 +81,7 @@ public class InlineWodProblem {
 
           if (elementError) {
             int offset = _element.getOffset() + 1;
-            marker.setAttribute(IMarker.LINE_NUMBER, WodHtmlUtils.getLineAtOffset(_cache.getHtmlContents(), offset));
+            marker.setAttribute(IMarker.LINE_NUMBER, WodHtmlUtils.getLineAtOffset(_cache.getHtmlEntry().getContents(), offset));
             marker.setAttribute(IMarker.CHAR_START, offset);
             marker.setAttribute(IMarker.CHAR_END, offset + _element.getName().length());
           }

@@ -94,7 +94,7 @@ public class HtmlPreviewEditor implements IEmbeddedEditor, IEmbeddedEditorSelect
 
 		try {
 			WodParserCache cache = ((TemplateEditor) _editorInteraction.getHtmlDocumentProvider()).getSourceEditor().getParserCache();
-			FuzzyXMLDocument htmlDocument = cache.getHtmlXmlDocument();
+			FuzzyXMLDocument htmlDocument = cache.getHtmlEntry().getModel();
 			RenderContext renderContext = new RenderContext(true);
 			renderContext.setDelegate(new PreviewRenderDelegate(cache));
 			FuzzyXMLElement documentElement = htmlDocument.getDocumentElement();

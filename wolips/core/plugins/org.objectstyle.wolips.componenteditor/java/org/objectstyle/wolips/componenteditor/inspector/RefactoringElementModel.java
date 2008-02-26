@@ -6,7 +6,9 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.objectstyle.wolips.bindings.wod.IWodBinding;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
+import org.objectstyle.wolips.bindings.wod.SimpleWodBinding;
 import org.objectstyle.wolips.bindings.wod.SimpleWodElement;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.refactoring.ChangeElementTypeRefactoring;
@@ -28,9 +30,37 @@ public class RefactoringElementModel {
 		_wodElement = new SimpleWodElement(element);
 		_propertyChange = new PropertyChangeSupport(this);
 	}
-	
+
 	public SimpleWodElement getWodElement() {
 		return _wodElement;
+	}
+
+	public RefactoringWodBinding setValueForBinding(String value, String name) throws CoreException, InvocationTargetException, InterruptedException {
+		RefactoringWodBinding wodBinding = getBindingNamed(name);
+		if (wodBinding != null) {
+			wodBinding.setValue(value);
+		}
+		else {
+			wodBinding = addBindingValueNamed(value, name);
+		}
+		return wodBinding;
+	}
+	
+	public RefactoringWodBinding addBindingValueNamed(String value, String name) throws CoreException, InvocationTargetException, InterruptedException {
+		SimpleWodBinding binding = new SimpleWodBinding(name, value);
+		_wodElement.addBinding(binding);
+		RefactoringWodBinding refactoringBinding = new RefactoringWodBinding(_wodElement, binding, _cache);
+		refactoringBinding._setValue(value);
+		return refactoringBinding;
+	}
+	
+	public RefactoringWodBinding getBindingNamed(String name) {
+		IWodBinding binding = _wodElement.getBindingNamed(name);
+		RefactoringWodBinding refactoringBinding = null;
+		if (binding != null) {
+			refactoringBinding = new RefactoringWodBinding(_wodElement, binding, _cache);
+		}
+		return refactoringBinding;
 	}
 
 	public void setElementName(String elementName) throws CoreException, InvocationTargetException, InterruptedException {
@@ -52,7 +82,7 @@ public class RefactoringElementModel {
 		_wodElement.setElementType(elementType);
 		_propertyChange.firePropertyChange(RefactoringElementModel.ELEMENT_TYPE, oldElementType, elementType);
 	}
-	
+
 	public String getElementType() {
 		return _wodElement.getElementType();
 	}

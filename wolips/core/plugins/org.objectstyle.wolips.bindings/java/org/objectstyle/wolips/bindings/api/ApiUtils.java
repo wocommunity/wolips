@@ -231,7 +231,7 @@ public class ApiUtils {
       // do nothing for now
     }
     else if ("Actions".equals(defaultsName)) {
-      List<BindingValueKey> bindingKeysList = BindingReflectionUtils.getBindingKeys(javaProject, componentType, "", false, BindingReflectionUtils.VOID_ONLY, typeCache);
+      List<BindingValueKey> bindingKeysList = BindingReflectionUtils.getBindingKeys(javaProject, componentType, "", false, BindingReflectionUtils.VOID_ONLY, false, typeCache);
       for (BindingValueKey key : bindingKeysList) {
         validValues.add(key.getBindingName());
       }

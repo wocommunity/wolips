@@ -219,7 +219,7 @@ public class TemplateAssistProcessor extends HTMLAssistProcessor {
     else if ("name".equals(attrInfo.getAttributeName()) && WodHtmlUtils.isWOTag(tagName)) {
       List<AssistInfo> attributeValuesList = new LinkedList<AssistInfo>();
       try {
-        IWodModel wodModel = _cache.getWodModel();
+        IWodModel wodModel = _cache.getWodEntry().getModel();
         if (wodModel != null) {
           for (IWodElement wodElement : wodModel.getElements()) {
             String wodElementName = wodElement.getElementName();

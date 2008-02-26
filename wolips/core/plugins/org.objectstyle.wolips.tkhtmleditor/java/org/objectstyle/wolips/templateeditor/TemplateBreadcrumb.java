@@ -57,7 +57,7 @@ public class TemplateBreadcrumb extends Composite implements ICursorPositionList
       Point selectionRange = _editor.getSelectedRange();
 
       FuzzyXMLElement element = null;
-      FuzzyXMLDocument document = cache.getHtmlXmlDocument();
+      FuzzyXMLDocument document = cache.getHtmlEntry().getModel();
       if (document != null) {
         element = document.getElementByOffset(selectionRange.x);
       }
@@ -105,6 +105,7 @@ public class TemplateBreadcrumb extends Composite implements ICursorPositionList
             nodeButton.setBackground(getBackground());
             nodeButton.setText(displayName);
             nodeButton.addMouseListener(this);
+            nodeButton.setCursor(getDisplay().getSystemCursor(SWT.CURSOR_HAND));
 
             if (!isWOTag) {
               nodeButton.setForeground(getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));

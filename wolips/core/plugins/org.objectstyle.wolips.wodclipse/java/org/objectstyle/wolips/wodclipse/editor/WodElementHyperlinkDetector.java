@@ -32,7 +32,7 @@ public class WodElementHyperlinkDetector implements IHyperlinkDetector {
 			if (input != null) {
 				IFile file = input.getFile();
 				WodParserCache cache = WodParserCache.parser(file);
-				IWodModel model = cache.getWodModel();
+				IWodModel model = cache.getWodEntry().getModel();
 				if (model != null) {
 					List<IWodElement> wodElements = model.getElements();
 					if (wodElements != null) {

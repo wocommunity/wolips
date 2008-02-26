@@ -34,7 +34,7 @@ public class ComponentDropTargetAdaptor extends DropTargetAdapter {
 	@Override
 	public void dragEnter(DropTargetEvent event) {
 		try {
-			getTemplateEditor().getSourceEditor().getParserCache()._clearHtmlCache();
+			getTemplateEditor().getSourceEditor().getParserCache().getHtmlEntry().clear();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
