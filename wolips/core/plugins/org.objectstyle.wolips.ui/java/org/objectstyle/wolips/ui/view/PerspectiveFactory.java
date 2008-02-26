@@ -73,7 +73,7 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 
 	public static final String ID_RELATED = "org.objectstyle.wolips.ui.view.RelatedView";
 
-	public static final String ID_BINDINGS = "org.objectstyle.wolips.componenteditor.inspector.BindingsInspector";
+	public static final String ID_BINDINGS = "org.objectstyle.wolips.componenteditor.inspector.BindingsInspectorPageBookView";
 
 	public static final String ID_WO_PACKAGES = "org.objectstyle.wolips.jdt.ui.WOPackageExplorer";
 
@@ -87,10 +87,10 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		
 		IFolderLayout leftBottomFolder = layout.createFolder("left_bottom", IPageLayout.BOTTOM, (float) 0.65, "left");
 		leftBottomFolder.addView(PerspectiveFactory.ID_RELATED);
-		leftBottomFolder.addView(PerspectiveFactory.ID_BINDINGS);
 		
 		IFolderLayout bottomFolder = layout.createFolder("bottom", IPageLayout.BOTTOM, (float) 0.75, editorArea); //$NON-NLS-1$
 		bottomFolder.addView(IPageLayout.ID_PROBLEM_VIEW);
+		bottomFolder.addView(PerspectiveFactory.ID_BINDINGS);
 		bottomFolder.addView(IConsoleConstants.ID_CONSOLE_VIEW);
 		bottomFolder.addView(JavaUI.ID_JAVADOC_VIEW);
 		bottomFolder.addView(JavaUI.ID_SOURCE_VIEW);
