@@ -196,9 +196,12 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
       ISelection realSelection = getSelectionProvider().getSelection();
       if (realSelection instanceof ITextSelection) {
         ITextSelection textSelection = (ITextSelection) realSelection;
-        FuzzyXMLElement element = getHtmlXmlDocument().getElementByOffset(textSelection.getOffset());
-        if (element != null) {
-          wodElement = WodHtmlUtils.getWodElement(element, false, cache);
+        FuzzyXMLDocument document = getHtmlXmlDocument();
+        if (document != null) {
+          FuzzyXMLElement element = document.getElementByOffset(textSelection.getOffset());
+          if (element != null) {
+            wodElement = WodHtmlUtils.getWodElement(element, false, cache);
+          }
         }
       }
       else if (realSelection instanceof IStructuredSelection) {
