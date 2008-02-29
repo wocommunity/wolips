@@ -136,6 +136,8 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 
 	private boolean _createInverseFK;
 
+	private String _guessedJoinEntityName;
+
 	public CreateRelationshipDialog(Shell shell, EOModelGroup modelGroup, EOEntity sourceEntity, EOEntity destinationEntity) {
 		super(shell);
 		_modelGroup = modelGroup;
@@ -360,7 +362,8 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 			_createButton.setText(Messages.getString("CreateRelationshipDialog.nameLabel", new Object[] { _destinationEntity.getName() }));
 			_createFKButton.setText(Messages.getString("CreateRelationshipDialog.fkNameLabel", new Object[] { _destinationEntity.getName() }));
 			_destinationLabel.setText("From " + _destinationEntity.getName() + " ...");
-			_joinEntityNameText.setText(_sourceEntity.getName() + _destinationEntity.getName());
+			_guessedJoinEntityName = _sourceEntity.getName() + _destinationEntity.getName();
+			_flattenedChanged();
 		}
 
 		if (_sourceEntity != null && _destinationEntity != null) {
@@ -455,8 +458,8 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		_toManyButton.setEnabled(_createButton.getSelection());
 		_inverseToManyButton.setEnabled(_createInverseButton.getSelection());
 		_joinsTableEditor.setEnabled(!_manyToMany);
-		_joinEntityNameText.setEnabled(_manyToMany);
 		_flattenButton.setEnabled(_manyToMany);
+    _joinEntityNameText.setEnabled(_manyToMany);
 
 		boolean canCreateFK = _createButton.getSelection() && !_toManyButton.getSelection();
 		_createFK = canCreateFK && _createFKButton.getSelection();
@@ -507,6 +510,15 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 			getShell().pack();
 		}
 	}
+	
+	protected void _flattenedChanged() {
+	  if (_flattenButton.getSelection()) {
+	    _joinEntityNameText.setText("EOGenericRecord");
+	  }
+	  else {
+	    _joinEntityNameText.setText(_guessedJoinEntityName);
+	  }
+	}
 
 	public void widgetDefaultSelected(SelectionEvent event) {
 		widgetSelected(event);
@@ -526,6 +538,8 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 			_checkManyToMany();
 		} else if (source == _createInverseButton) {
 			_checkManyToMany();
+		} else if (source == _flattenButton) {
+		  _flattenedChanged();
 		}
 	}
 
