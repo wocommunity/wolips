@@ -35,7 +35,7 @@ public abstract class AbstractCacheEntry<T> {
   public abstract void validate() throws Exception;
 
   public void _setModel(T model) {
-    //System.out.println("WodParserCacheEntry._setModel: set model = " + model);
+    // System.out.println("AbstractCacheEntry._setModel: " + this + " => " + model);
     _model = model;
   }
 
@@ -52,6 +52,7 @@ public abstract class AbstractCacheEntry<T> {
     if (model == null) {
       getCache().parse();
       getCache().validate();
+      model = _getModel();
     }
     return model;
   }
@@ -62,8 +63,7 @@ public abstract class AbstractCacheEntry<T> {
 
   public synchronized void setContents(String contents) {
     _setContents(contents);
-    //System.out.println("WodParserCacheEntry.parse: set model (contents) = null");
-    _model = null;
+    _setModel(null);
     _file = null;
     _document = null;
     _documentChanged = true;
@@ -115,7 +115,7 @@ public abstract class AbstractCacheEntry<T> {
 
     if (updateCache) {
       //System.out.println("WodParserCacheEntry._parse: set model (String) = " + model);
-      _model = model;
+      _setModel(model);
       _documentChanged = false;
       _validated = false;
       getCache()._setValidated(false);
@@ -129,7 +129,7 @@ public abstract class AbstractCacheEntry<T> {
 
     if (updateCache) {
       //System.out.println("WodParserCacheEntry.parse: set model = " + model);
-      _model = model;
+      _setModel(model);
       _documentChanged = false;
       _lastParseTime = System.currentTimeMillis();
       _validated = false;
@@ -149,7 +149,7 @@ public abstract class AbstractCacheEntry<T> {
 
     if (updateCache) {
       //System.out.println("WodParserCacheEntry.parse: set model (doc) = " + model);
-      _model = model;
+      _setModel(model);
       _documentChanged = false;
       if (_file != null && _file.exists()) {
         _lastParseTime = _file.getModificationStamp();
@@ -191,7 +191,7 @@ public abstract class AbstractCacheEntry<T> {
     if (updateCache) {
       _file = file;
       //System.out.println("WodParserCacheEntry.parse: set model (file) = " + model);
-      _model = model;
+      _setModel(model);
       if (file != null && file.exists()) {
         _lastParseTime = file.getModificationStamp();
       }
@@ -202,11 +202,11 @@ public abstract class AbstractCacheEntry<T> {
   }
 
   public synchronized void clear() {
-//    System.out.println("WodParserCacheEntry.parse: clear " + this);
+    // System.out.println("AbstractCacheEntry.clear: " + this);
 //    Exception e= new Exception();
 //    e.fillInStackTrace();
 //    e.printStackTrace(System.out);
-    _model = null;
+    _setModel(null);
     _lastParseTime = -1;
   }
 
@@ -227,9 +227,9 @@ public abstract class AbstractCacheEntry<T> {
       model = parse(_contents, true);
     }
     else {
-      //System.out.println("WodParserCacheEntry.parse: set model (null) = " + model);
+      // System.out.println("AbstractCacheEntry.parse: " + this + " => null");
       model = null;
-      _model = null;
+      _setModel(null);
       _contents = null;
       _lastParseTime = -1;
       _documentChanged = false;

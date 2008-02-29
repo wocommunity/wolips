@@ -205,14 +205,17 @@ public class WodParserCache {
 
   public void parse() throws Exception {
     if (_htmlEntry.shouldParse()) {
+      // System.out.println("WodParserCache.parse: html");
       _htmlEntry.parse();
     }
 
     if (_wodEntry.shouldParse()) {
+      // System.out.println("WodParserCache.parse: wod");
       _wodEntry.parse();
     }
 
     if (_wooEntry.shouldParse()) {
+      // System.out.println("WodParserCache.parse: woo");
       _wooEntry.parse();
     }
   }
