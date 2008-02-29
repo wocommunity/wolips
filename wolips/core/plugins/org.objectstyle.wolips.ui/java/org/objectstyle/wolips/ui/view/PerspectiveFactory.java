@@ -90,7 +90,7 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		
 		IFolderLayout bottomFolder = layout.createFolder("bottom", IPageLayout.BOTTOM, (float) 0.75, editorArea); //$NON-NLS-1$
 		bottomFolder.addView(IPageLayout.ID_PROBLEM_VIEW);
-		bottomFolder.addView(PerspectiveFactory.ID_BINDINGS);
+		//bottomFolder.addView(PerspectiveFactory.ID_BINDINGS);
 		bottomFolder.addView(IConsoleConstants.ID_CONSOLE_VIEW);
 		bottomFolder.addView(JavaUI.ID_JAVADOC_VIEW);
 		bottomFolder.addView(JavaUI.ID_SOURCE_VIEW);
