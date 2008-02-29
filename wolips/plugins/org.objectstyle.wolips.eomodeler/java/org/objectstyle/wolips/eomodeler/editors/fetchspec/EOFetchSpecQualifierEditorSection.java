@@ -136,7 +136,7 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
 
 		GridData qualifierLayoutData = new GridData(GridData.FILL_BOTH);
 		qualifierLayoutData.horizontalSpan = 2;
-		//qualifierLayoutData.heightHint = 150;
+		qualifierLayoutData.widthHint = 150;
 		_qualifierText.setLayoutData(qualifierLayoutData);
 	}
 
