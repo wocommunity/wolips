@@ -60,6 +60,7 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -359,10 +360,13 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 			model = cache.getWodEntry().getModel();
 		}
 
-		ISelection selection = getSelectionProvider().getSelection();
-		if (selection instanceof ITextSelection) {
-			int offset = ((ITextSelection) selection).getOffset();
-			element = model.getWodElementAtIndex(offset);
+		ISelectionProvider selectionProvider = getSelectionProvider();
+		if (selectionProvider != null) {
+			ISelection selection = selectionProvider.getSelection();
+			if (selection instanceof ITextSelection) {
+				int offset = ((ITextSelection) selection).getOffset();
+				element = model.getWodElementAtIndex(offset);
+			}
 		}
 		return element;
 	}
