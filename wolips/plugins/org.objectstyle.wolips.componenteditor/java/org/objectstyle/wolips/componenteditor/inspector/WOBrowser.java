@@ -9,6 +9,7 @@ import java.util.TreeSet;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -22,6 +23,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
@@ -57,7 +60,7 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 
 		GridLayout browserLayout = new GridLayout(1, false);
 		browserLayout.horizontalSpacing = 0;
-		browserLayout.marginWidth = 3;
+		browserLayout.marginWidth = 0;
 		browserLayout.marginHeight = 3;
 		browserLayout.horizontalSpacing = 5;
 		_browser.setLayout(browserLayout);
@@ -112,7 +115,7 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 		}
 
 		if (selectedKey == null) {
-			//System.out.println("WOBrowserPage.selectionChanged: none");
+			// System.out.println("WOBrowserPage.selectionChanged: none");
 		} else {
 			try {
 				if (!selectedKey.isLeaf()) {
@@ -136,7 +139,7 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 		BindingValueKey selectedKey = (BindingValueKey) selection.getFirstElement();
 
 		selectKeyInColumn(selectedKey, selectedColumn);
-		
+
 		SelectionChangedEvent wrappedEvent = new SelectionChangedEvent(this, getSelection());
 		for (Iterator listeners = _listeners.iterator(); listeners.hasNext();) {
 			ISelectionChangedListener listener = (ISelectionChangedListener) listeners.next();
@@ -171,10 +174,6 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 	}
 
 	public void setSelection(ISelection selection) {
-		//just  a quick hack to get rid of some out of bounce exceptions
-		if(_columns.size() == 0) {
-			return;
-		}
 		String selectedKeyPath = (String) ((IStructuredSelection) selection).getFirstElement();
 		if (selectedKeyPath == null) {
 			WOBrowserColumn column = _columns.get(0);
@@ -188,7 +187,7 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 					for (BindingValueKey bindingValueKey : bindingValueKeyPath.getBindingKeys()) {
 						WOBrowserColumn column = _columns.get(_columns.size() - 1);
 						column.setSelection(new StructuredSelection(bindingValueKey));
-						
+
 						WOBrowserColumn newColumn = selectKeyInColumn(bindingValueKey, column);
 						if (newColumn == null) {
 							break;
@@ -210,6 +209,8 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 
 		private Font _typeNameFont;
 
+		private LineDragHandler _lineDragHandler;
+
 		public WOBrowserColumn(IType type, Composite parent, int style) throws JavaModelException {
 			super(parent, style);
 			setBackground(parent.getBackground());
@@ -223,6 +224,7 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 			_type = type;
 
 			Label typeName = new Label(this, SWT.NONE);
+			typeName.setBackground(getBackground());
 			Font originalFont = typeName.getFont();
 			FontData[] fontData = originalFont.getFontData();
 			_typeNameFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD);
@@ -262,11 +264,19 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 
 			_keysViewer.setInput(sortedBindingValueKeys);
 			tableContainer.pack();
+
+			_lineDragHandler = new LineDragHandler(this);
+			_lineDragHandler.register();
+			_keysViewer.addDragSupport(DND.DROP_COPY, new Transfer[] { LocalSelectionTransfer.getTransfer() }, _lineDragHandler);
 		}
 
 		@Override
 		public void dispose() {
 			_typeNameFont.dispose();
+			if (_lineDragHandler != null) {
+				_lineDragHandler.dispose();
+				_lineDragHandler = null;
+			}
 			super.dispose();
 		}
 
