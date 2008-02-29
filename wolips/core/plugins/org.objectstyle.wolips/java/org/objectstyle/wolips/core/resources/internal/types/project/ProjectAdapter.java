@@ -88,6 +88,9 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.core.CorePlugin;
+import org.objectstyle.wolips.core.resources.internal.build.AntApplicationNature;
+import org.objectstyle.wolips.core.resources.internal.build.AntFrameworkNature;
+import org.objectstyle.wolips.core.resources.internal.build.Nature;
 import org.objectstyle.wolips.core.resources.internal.types.AbstractResourceAdapter;
 import org.objectstyle.wolips.core.resources.types.IPBDotProjectOwner;
 import org.objectstyle.wolips.core.resources.types.file.IPBDotProjectAdapter;
@@ -958,13 +961,14 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 	public IPath getWOJavaArchive() throws CoreException {
 		IResource resource = null;
 		IPath path = null;
-		String projectName = this.getUnderlyingProject().getName();
+		IProject project = this.getUnderlyingProject();
+		String projectName = project.getName();
 		// String projectNameLC = projectName.toLowerCase();
 		// I'd rather use the knowledge from the IncrementalNature, but
 		// that fragment is not
 		// visible here (so I can't use the class, I think) [hn3000]
 		if (this.isFramework()) {
-			if (this.isAntBuilderInstalled()) {
+			if (this.isAntBuilderInstalled() || (Nature.getNature(project) instanceof AntFrameworkNature)) {
 				resource = getJar("dist/", ".framework/");
 				if (!resource.exists())
 					resource = getJar("", ".framework/");
@@ -981,7 +985,7 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 			}
 		} else if (this.isApplication()) { // must be application
 			IFolder wdFolder = null;
-			if (this.isAntBuilderInstalled()) {
+			if (this.isAntBuilderInstalled() || (Nature.getNature(project) instanceof AntApplicationNature)) {
 				wdFolder = this.getUnderlyingProject().getFolder("dist");
 			} else {
 				wdFolder = this.getUnderlyingProject().getFolder("build");
