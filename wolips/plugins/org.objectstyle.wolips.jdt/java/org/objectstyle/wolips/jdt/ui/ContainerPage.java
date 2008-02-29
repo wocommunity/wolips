@@ -132,7 +132,7 @@ public class ContainerPage extends WizardPage implements IClasspathContainerPage
 		this.checkboxTreeViewer = new CheckboxTreeViewer(thisPage, SWT.MULTI);
 		// _uiList = new CheckboxTreeViewer(thisPage, SWT.MULTI | SWT.BORDER |
 		// SWT.V_SCROLL | SWT.H_SCROLL);
-		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.FILL_HORIZONTAL);
+		GridData gd = new GridData(GridData.FILL_BOTH);
 		// |GridData.VERTICAL_ALIGN_FILL
 		Rectangle trim = this.checkboxTreeViewer.getTree().computeTrim(0, 0, 0, 12 * this.checkboxTreeViewer.getTree().getItemHeight());
 		gd.heightHint = trim.height;
