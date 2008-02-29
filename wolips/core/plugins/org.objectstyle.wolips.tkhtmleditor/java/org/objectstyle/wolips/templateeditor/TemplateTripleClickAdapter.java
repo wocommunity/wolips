@@ -36,12 +36,14 @@ public class TemplateTripleClickAdapter extends MouseAdapter implements MouseMov
       StyledText textWidget = _editor.getSourceEditor().getViewer().getTextWidget();
       FileEditorInput input = (FileEditorInput) _editor.getEditorInput();
       try {
-        WodParserCache cache = WodParserCache.parser(input.getFile());
-        int offset = textWidget.getOffsetAtLocation(_tripleClickPoint);
-        FuzzyXMLElement element = cache.getHtmlEntry().getModel().getElementByOffset(offset);
-        if (element != null) {
-          textWidget.setSelectionRange(element.getOffset(), element.getLength());
-          //textWidget.showSelection();
+        if (_tripleClickPoint != null) {
+          WodParserCache cache = WodParserCache.parser(input.getFile());
+          int offset = textWidget.getOffsetAtLocation(_tripleClickPoint);
+          FuzzyXMLElement element = cache.getHtmlEntry().getModel().getElementByOffset(offset);
+          if (element != null) {
+            textWidget.setSelectionRange(element.getOffset(), element.getLength());
+            //textWidget.showSelection();
+          }
         }
       }
       catch (Throwable e) {
