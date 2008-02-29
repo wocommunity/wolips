@@ -109,6 +109,11 @@ public class EOFetchSpecSQLEditorSection extends AbstractPropertySection impleme
 	public EOFetchSpecSQLEditorSection() {
 		_storedProcedureChangedHandler = new StoredProcedureChangedHandler();
 	}
+	
+	@Override
+	public boolean shouldUseExtraSpace() {
+		return true;
+	}
 
 	public void createControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
 		super.createControls(parent, tabbedPropertySheetPage);
@@ -121,6 +126,7 @@ public class EOFetchSpecSQLEditorSection extends AbstractPropertySection impleme
 		topFormData.top = new FormAttachment(0, 5);
 		topFormData.left = new FormAttachment(0, 5);
 		topFormData.right = new FormAttachment(100, -5);
+		topFormData.bottom = new FormAttachment(100, -5);
 		topForm.setLayoutData(topFormData);
 
 		GridLayout topFormLayout = new GridLayout();
@@ -139,7 +145,7 @@ public class EOFetchSpecSQLEditorSection extends AbstractPropertySection impleme
 		_useStoredProcedureButton.setText(Messages.getString("EOFetchSpecSQLEditorSection.useStoredProcedure")); //$NON-NLS-1$
 
 		_storedProcedureTableViewer = TableUtils.createTableViewer(topForm, "EOStoredProcedure", EOStoredProceduresConstants.COLUMNS, new EOStoredProceduresContentProvider(), new TablePropertyLabelProvider(EOStoredProceduresConstants.COLUMNS), new TablePropertyViewerSorter(EOStoredProceduresConstants.COLUMNS));
-		GridData rawRowKeyPathsTableLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		GridData rawRowKeyPathsTableLayoutData = new GridData(GridData.FILL_BOTH);
 		rawRowKeyPathsTableLayoutData.heightHint = 100;
 		_storedProcedureTableViewer.getTable().setLayoutData(rawRowKeyPathsTableLayoutData);
 		_storedProcedureTableViewer.addSelectionChangedListener(this);

@@ -94,32 +94,40 @@ public class EOFetchSpecPrefetchingEditorSection extends AbstractPropertySection
 	public EOFetchSpecPrefetchingEditorSection() {
 		// DO NOTHING
 	}
+	
+	@Override
+	public boolean shouldUseExtraSpace() {
+		return true;
+	}
 
 	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
 		super.createControls(_parent, _tabbedPropertySheetPage);
 		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
-		FormLayout formLayout = new FormLayout();
-		form.setLayout(formLayout);
+		((FormLayout)form.getLayout()).marginWidth = 10;
+		((FormLayout)form.getLayout()).marginHeight = 10;
 
 		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
 		FormData topFormData = new FormData();
-		topFormData.top = new FormAttachment(0, 5);
-		topFormData.left = new FormAttachment(0, 5);
-		topFormData.right = new FormAttachment(100, -5);
+		topFormData.top = new FormAttachment(0);
+		topFormData.left = new FormAttachment(0);
+		topFormData.right = new FormAttachment(100);
+		topFormData.bottom = new FormAttachment(100);
 		topForm.setLayoutData(topFormData);
 
 		GridLayout topFormLayout = new GridLayout();
+		topFormLayout.marginWidth = 0;
+		topFormLayout.marginHeight = 0;
 		topForm.setLayout(topFormLayout);
 
 		myModelTreeViewer = new TreeViewer(topForm);
-		GridData modelTreeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		GridData modelTreeLayoutData = new GridData(GridData.FILL_BOTH);
 		modelTreeLayoutData.heightHint = 100;
 		myModelTreeViewer.getTree().setLayoutData(modelTreeLayoutData);
 		myEntityTreeViewUpdater = new EOEntityTreeViewUpdater(myModelTreeViewer, new EOModelOutlineContentProvider(true, false, true, false, false, false, false, true));
 		myModelTreeViewer.addSelectionChangedListener(this);
 
 		myPrefetchKeyPathsTableViewer = TableUtils.createTableViewer(topForm, "EOFetchSpecification", EOPrefetchingKeyPathsConstants.COLUMNS, new PrefetchingKeyPathsContentProvider(), new PrefetchingKeyPathsLabelProvider(EOPrefetchingKeyPathsConstants.COLUMNS), new PrefetchingKeyPathsViewerSorter(EOPrefetchingKeyPathsConstants.COLUMNS));
-		GridData prefetchKeyPathsTableLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		GridData prefetchKeyPathsTableLayoutData = new GridData(GridData.FILL_BOTH);
 		prefetchKeyPathsTableLayoutData.heightHint = 100;
 		myPrefetchKeyPathsTableViewer.getTable().setLayoutData(prefetchKeyPathsTableLayoutData);
 		myPrefetchKeyPathsTableViewer.addSelectionChangedListener(this);

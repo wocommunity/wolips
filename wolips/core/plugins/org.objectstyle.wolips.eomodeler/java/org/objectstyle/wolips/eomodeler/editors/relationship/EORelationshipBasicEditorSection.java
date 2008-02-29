@@ -127,22 +127,30 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 	public EORelationshipBasicEditorSection() {
 		_joinsListener = new JoinsListener();
 	}
+	
+	@Override
+	public boolean shouldUseExtraSpace() {
+		return true;
+	}
 
 	public void createControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
 		super.createControls(parent, tabbedPropertySheetPage);
 		Composite form = getWidgetFactory().createFlatFormComposite(parent);
-		FormLayout formLayout = new FormLayout();
-		form.setLayout(formLayout);
+		((FormLayout)form.getLayout()).marginWidth = 10;
+		((FormLayout)form.getLayout()).marginHeight = 10;
 
 		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
 		FormData topFormData = new FormData();
-		topFormData.top = new FormAttachment(0, 5);
-		topFormData.left = new FormAttachment(0, 5);
-		topFormData.right = new FormAttachment(100, -5);
+		topFormData.top = new FormAttachment(0);
+		topFormData.left = new FormAttachment(0);
+		topFormData.right = new FormAttachment(100);
+		topFormData.bottom = new FormAttachment(100);
 		topForm.setLayoutData(topFormData);
 
 		GridLayout topFormLayout = new GridLayout();
 		topFormLayout.numColumns = 2;
+		topFormLayout.marginWidth = 0;
+		topFormLayout.marginHeight = 0;
 		topForm.setLayout(topFormLayout);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.NAME), SWT.NONE);
@@ -227,7 +235,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 		joinSemanticCombo.setLayoutData(joinSemanticLayoutData);
 
 		_joinsTableEditor = new JoinsTableEditor(topForm, SWT.NONE);
-		GridData joinsTableLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		GridData joinsTableLayoutData = new GridData(GridData.FILL_BOTH);
 		_joinsTableEditor.setLayoutData(joinsTableLayoutData);
 	}
 

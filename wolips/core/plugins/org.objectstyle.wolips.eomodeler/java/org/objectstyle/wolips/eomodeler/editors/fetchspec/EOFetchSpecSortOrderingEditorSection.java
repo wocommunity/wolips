@@ -62,9 +62,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -105,26 +102,25 @@ public class EOFetchSpecSortOrderingEditorSection extends AbstractPropertySectio
 	public EOFetchSpecSortOrderingEditorSection() {
 		// DO NOTHING
 	}
+	
+	@Override
+	public boolean shouldUseExtraSpace() {
+		return true;
+	}
 
 	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
 		super.createControls(_parent, _tabbedPropertySheetPage);
-		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
-		FormLayout formLayout = new FormLayout();
-		form.setLayout(formLayout);
 
-		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-		FormData topFormData = new FormData();
-		topFormData.top = new FormAttachment(0, 5);
-		topFormData.left = new FormAttachment(0, 5);
-		topFormData.right = new FormAttachment(100, -5);
-		topForm.setLayoutData(topFormData);
+		Composite topForm = getWidgetFactory().createPlainComposite(_parent, SWT.NONE);
 
 		GridLayout topFormLayout = new GridLayout();
+		topFormLayout.marginWidth = 10;
+		topFormLayout.marginHeight = 10;
 		topForm.setLayout(topFormLayout);
 
 		myModelTreeViewer = new TreeViewer(topForm);
-		GridData modelTreeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-		modelTreeLayoutData.heightHint = 100;
+		GridData modelTreeLayoutData = new GridData(GridData.FILL_BOTH);
+		//modelTreeLayoutData.heightHint = 100;
 		myModelTreeViewer.getTree().setLayoutData(modelTreeLayoutData);
 		myEntityTreeViewUpdater = new EOEntityTreeViewUpdater(myModelTreeViewer, new EOModelOutlineContentProvider(true, true, true, false, false, false, false, true));
 		myModelTreeViewer.addSelectionChangedListener(this);
@@ -142,9 +138,8 @@ public class EOFetchSpecSortOrderingEditorSection extends AbstractPropertySectio
 			caseInsensitiveColumn.setText("i/s");
 		}
 
-		GridData sortOrderingsTableLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-		sortOrderingsTableLayoutData.heightHint = 100;
-		mySortOrderingsTableViewer.getTable().setLayoutData(sortOrderingsTableLayoutData);
+		GridData sortOrderingsTableLayoutData = new GridData(GridData.FILL_BOTH);
+		//sortOrderingsTableLayoutData.heightHint = 100;
 		mySortOrderingsTableViewer.addSelectionChangedListener(this);
 		mySortOrderingsChangedRefresher = new TableRefreshPropertyListener("SortOrderingsChanged", mySortOrderingsTableViewer);
 		myTableRowRefresher = new TableRowRefreshPropertyListener(mySortOrderingsTableViewer);
@@ -155,6 +150,7 @@ public class EOFetchSpecSortOrderingEditorSection extends AbstractPropertySectio
 		TableUtils.setCellEditor(EOSortOrdering.class.getName(), EOSortOrdering.CASE_INSENSITIVE, new CheckboxCellEditor(mySortOrderingsTableViewer.getTable()), cellEditors);
 		mySortOrderingsTableViewer.setCellEditors(cellEditors);
 		mySortOrderingsTableViewer.setCellModifier(new TablePropertyCellModifier(mySortOrderingsTableViewer));
+		mySortOrderingsTableViewer.getTable().setLayoutData(sortOrderingsTableLayoutData);
 
 		new StayEditingCellEditorListener(mySortOrderingsTableViewer, EOSortOrdering.class.getName(), EOSortOrdering.KEY);
 

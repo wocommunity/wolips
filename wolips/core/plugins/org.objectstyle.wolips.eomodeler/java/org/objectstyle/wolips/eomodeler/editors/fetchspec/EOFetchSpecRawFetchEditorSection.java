@@ -102,21 +102,29 @@ public class EOFetchSpecRawFetchEditorSection extends AbstractPropertySection im
 	public EOFetchSpecRawFetchEditorSection() {
 		// DO NOTHING
 	}
+	
+	@Override
+	public boolean shouldUseExtraSpace() {
+		return true;
+	}
 
 	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
 		super.createControls(_parent, _tabbedPropertySheetPage);
 		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
-		FormLayout formLayout = new FormLayout();
-		form.setLayout(formLayout);
+		((FormLayout)form.getLayout()).marginWidth = 10;
+		((FormLayout)form.getLayout()).marginHeight = 10;
 
 		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
 		FormData topFormData = new FormData();
-		topFormData.top = new FormAttachment(0, 5);
-		topFormData.left = new FormAttachment(0, 5);
-		topFormData.right = new FormAttachment(100, -5);
+		topFormData.top = new FormAttachment(0);
+		topFormData.left = new FormAttachment(0);
+		topFormData.right = new FormAttachment(100);
+		topFormData.bottom = new FormAttachment(100);
 		topForm.setLayoutData(topFormData);
 
 		GridLayout topFormLayout = new GridLayout();
+		topFormLayout.marginWidth = 0;
+		topFormLayout.marginHeight = 0;
 		topForm.setLayout(topFormLayout);
 
 		Composite fetchStyleComposite = getWidgetFactory().createPlainComposite(topForm, SWT.NONE);
@@ -137,7 +145,7 @@ public class EOFetchSpecRawFetchEditorSection extends AbstractPropertySection im
 		myModelTreeViewer.addSelectionChangedListener(this);
 
 		myRawRowKeyPathsTableViewer = TableUtils.createTableViewer(topForm, "EOFetchSpecification", EORawRowKeyPathsConstants.COLUMNS, new RawRowKeyPathsContentProvider(), new RawRowKeyPathsLabelProvider(EORawRowKeyPathsConstants.COLUMNS), new RawRowKeyPathsViewerSorter(EORawRowKeyPathsConstants.COLUMNS));
-		GridData rawRowKeyPathsTableLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		GridData rawRowKeyPathsTableLayoutData = new GridData(GridData.FILL_BOTH);
 		rawRowKeyPathsTableLayoutData.heightHint = 100;
 		myRawRowKeyPathsTableViewer.getTable().setLayoutData(rawRowKeyPathsTableLayoutData);
 		myRawRowKeyPathsTableViewer.addSelectionChangedListener(this);

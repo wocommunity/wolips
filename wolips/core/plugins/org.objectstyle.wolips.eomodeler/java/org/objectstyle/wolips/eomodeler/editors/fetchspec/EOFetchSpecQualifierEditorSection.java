@@ -92,22 +92,30 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
 	public EOFetchSpecQualifierEditorSection() {
 		// DO NOTHING
 	}
+	
+	@Override
+	public boolean shouldUseExtraSpace() {
+		return true;
+	}
 
 	public void createControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
 		super.createControls(parent, tabbedPropertySheetPage);
 		Composite form = getWidgetFactory().createFlatFormComposite(parent);
-		FormLayout formLayout = new FormLayout();
-		form.setLayout(formLayout);
+		((FormLayout)form.getLayout()).marginWidth = 10;
+		((FormLayout)form.getLayout()).marginHeight = 10;
 
 		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
 		FormData topFormData = new FormData();
-		topFormData.top = new FormAttachment(0, 5);
-		topFormData.left = new FormAttachment(0, 5);
-		topFormData.right = new FormAttachment(100, -5);
+		topFormData.top = new FormAttachment(0);
+		topFormData.left = new FormAttachment(0);
+		topFormData.right = new FormAttachment(100);
+		topFormData.bottom = new FormAttachment(100);
 		topForm.setLayoutData(topFormData);
 
 		GridLayout topFormLayout = new GridLayout();
 		topFormLayout.numColumns = 2;
+		topFormLayout.marginWidth = 0;
+		topFormLayout.marginHeight = 0;
 		topForm.setLayout(topFormLayout);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.NAME), SWT.NONE);
@@ -116,9 +124,9 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
 		_nameText.setLayoutData(nameLayoutData);
 
 		_modelTreeViewer = new TreeViewer(topForm);
-		GridData modelTreeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		GridData modelTreeLayoutData = new GridData(GridData.FILL_BOTH);
 		modelTreeLayoutData.horizontalSpan = 2;
-		modelTreeLayoutData.heightHint = 100;
+		//modelTreeLayoutData.heightHint = 100;
 		_modelTreeViewer.getTree().setLayoutData(modelTreeLayoutData);
 		_entityTreeViewUpdater = new EOEntityTreeViewUpdater(_modelTreeViewer, new EOModelOutlineContentProvider(true, true, true, false, false, false, false, true));
 		_modelTreeViewer.addSelectionChangedListener(this);
@@ -128,7 +136,7 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
 
 		GridData qualifierLayoutData = new GridData(GridData.FILL_BOTH);
 		qualifierLayoutData.horizontalSpan = 2;
-		qualifierLayoutData.heightHint = 150;
+		//qualifierLayoutData.heightHint = 150;
 		_qualifierText.setLayoutData(qualifierLayoutData);
 	}
 

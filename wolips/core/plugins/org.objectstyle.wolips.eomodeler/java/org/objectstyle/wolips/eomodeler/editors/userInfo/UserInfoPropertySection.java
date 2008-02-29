@@ -53,7 +53,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 import org.eclipse.jface.viewers.CellEditor;
@@ -73,6 +72,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
@@ -82,7 +83,6 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelParserDataStructureFactory;
 import org.objectstyle.wolips.eomodeler.core.model.IUserInfoable;
 import org.objectstyle.wolips.eomodeler.core.utils.NotificationMap;
-import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.utils.AddRemoveButtonGroup;
 import org.objectstyle.wolips.eomodeler.utils.EMTextCellEditor;
@@ -113,12 +113,12 @@ public class UserInfoPropertySection extends AbstractPropertySection {
 	public UserInfoPropertySection() {
 		myUserInfoListener = new UserInfoListener();
 	}
-
+	
 	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
 		super.createControls(_parent, _tabbedPropertySheetPage);
-		Composite composite = getWidgetFactory().createFlatFormComposite(_parent);
+		Composite userInfoForm = getWidgetFactory().createFlatFormComposite(_parent);
 
-		myUserInfoTableViewer = TableUtils.createTableViewer(composite, SWT.BORDER | SWT.FLAT | SWT.FULL_SELECTION | SWT.SINGLE, "UserInfo", UserInfoPropertySection.COLUMNS, new UserInfoContentProvider(), new UserInfoLabelProvider(UserInfoPropertySection.COLUMNS), new ViewerSorter());
+		myUserInfoTableViewer = TableUtils.createTableViewer(userInfoForm, SWT.BORDER | SWT.FLAT | SWT.FULL_SELECTION | SWT.SINGLE, "UserInfo", UserInfoPropertySection.COLUMNS, new UserInfoContentProvider(), new UserInfoLabelProvider(UserInfoPropertySection.COLUMNS), new ViewerSorter());
 
 		CellEditor[] cellEditors = new CellEditor[UserInfoPropertySection.COLUMNS.length];
 		cellEditors[TableUtils._getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.KEY)] = new EMTextCellEditor(myUserInfoTableViewer.getTable());
@@ -136,27 +136,31 @@ public class UserInfoPropertySection extends AbstractPropertySection {
 		tableFormData.bottom = new FormAttachment(50, 0);
 		myUserInfoTableViewer.getTable().setLayoutData(tableFormData);
 
-		myValueText = getWidgetFactory().createText(composite, "", SWT.BORDER | SWT.WRAP | SWT.MULTI | SWT.V_SCROLL);
-		FormData textFormData = new FormData();
-		textFormData.left = new FormAttachment(0, 5);
-		textFormData.right = new FormAttachment(100, -5);
-		textFormData.top = new FormAttachment(myUserInfoTableViewer.getTable(), 5);
-		textFormData.bottom = new FormAttachment(70);
-		myValueText.setLayoutData(textFormData);
+		Composite valueComposite = getWidgetFactory().createPlainComposite(userInfoForm, SWT.NONE);
+		
+		FormData valueFormData = new FormData();
+		valueFormData.left = new FormAttachment(0, 5);
+		valueFormData.right = new FormAttachment(100, -5);
+		valueFormData.top = new FormAttachment(myUserInfoTableViewer.getTable(), 5);
+		valueFormData.bottom = new FormAttachment(100, -5);
+		valueComposite.setLayoutData(valueFormData);
+		GridLayout valueCompositeLayout = new GridLayout();
+		valueCompositeLayout.marginWidth = 0;
+		valueCompositeLayout.marginHeight = 0;
+		valueComposite.setLayout(valueCompositeLayout);
+
+		myValueText = getWidgetFactory().createText(valueComposite, "", SWT.BORDER | SWT.WRAP | SWT.MULTI | SWT.V_SCROLL);
 		ValueTextListener valueTextListener = new ValueTextListener();
 		myValueText.addModifyListener(valueTextListener);
 		myValueText.addFocusListener(valueTextListener);
+		myValueText.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		myAddRemoveButtonGroup = new AddRemoveButtonGroup(composite, new AddEntryHandler(), new RemoveEntriesHandler());
-		FormData buttonGroupFormData = new FormData();
-		buttonGroupFormData.top = new FormAttachment(myValueText, 5);
-		buttonGroupFormData.left = new FormAttachment(0, 5);
-		buttonGroupFormData.right = new FormAttachment(100, -5);
-		myAddRemoveButtonGroup.setLayoutData(buttonGroupFormData);
+		myAddRemoveButtonGroup = new AddRemoveButtonGroup(valueComposite, new AddEntryHandler(), new RemoveEntriesHandler());
 
 		// updateValueText(null);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void setInput(IWorkbenchPart _part, ISelection _selection) {
 		super.setInput(_part, _selection);
 		removeListeners();
