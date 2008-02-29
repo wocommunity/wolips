@@ -63,7 +63,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -101,18 +100,22 @@ public class EOEntitySharedObjectsEditorSection extends AbstractPropertySection 
 	public EOEntitySharedObjectsEditorSection() {
 		myFetchSpecListener = new FetchSpecChangeListener();
 	}
+	
+	@Override
+	public boolean shouldUseExtraSpace() {
+		return true;
+	}
 
 	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
 		super.createControls(_parent, _tabbedPropertySheetPage);
 		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
-		FormLayout formLayout = new FormLayout();
-		form.setLayout(formLayout);
 
 		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
 		FormData topFormData = new FormData();
 		topFormData.top = new FormAttachment(0, 5);
 		topFormData.left = new FormAttachment(0, 5);
 		topFormData.right = new FormAttachment(100, -5);
+		topFormData.bottom = new FormAttachment(100, -5);
 		topForm.setLayoutData(topFormData);
 
 		GridLayout topFormLayout = new GridLayout();
@@ -143,7 +146,7 @@ public class EOEntitySharedObjectsEditorSection extends AbstractPropertySection 
 		myFetchSpecsViewer.setCellModifier(new TablePropertyCellModifier(myFetchSpecsViewer));
 		myFetchSpecsViewer.setCellEditors(cellEditors);
 		GridData fetchSpecsLayoutData = new GridData(GridData.FILL_BOTH);
-		fetchSpecsLayoutData.heightHint = 100;
+		//fetchSpecsLayoutData.heightHint = 100;
 		myFetchSpecsViewer.getTable().setLayoutData(fetchSpecsLayoutData);
 	}
 

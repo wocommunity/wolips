@@ -120,7 +120,7 @@ public class EOEntityIndexAttributesEditor extends Composite implements IPropert
 		_entityIndexListViewer.setContentProvider(new EOEntityIndexAttributesContentProvider());
 		_entityIndexListViewer.setLabelProvider(new EOAttributesLabelProvider(new String[] { AbstractEOArgument.NAME }));
 
-		GridData attributeListLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		GridData attributeListLayoutData = new GridData(GridData.FILL_BOTH);
 		attributeListLayoutData.heightHint = 100;
 		_entityIndexListViewer.getList().setLayoutData(attributeListLayoutData);
 		_entityIndexListViewer.addSelectionChangedListener(_buttonUpdateListener);

@@ -109,7 +109,7 @@ public class JoinsTableEditor extends Composite {
 		myJoinsTableViewer.setCellModifier(new EOJoinsCellModifier(myJoinsTableViewer));
 		myJoinsTableViewer.setCellEditors(cellEditors);
 
-		GridData joinsTableLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		GridData joinsTableLayoutData = new GridData(GridData.FILL_BOTH);
 		joinsTableLayoutData.heightHint = 100;
 		myJoinsTableViewer.getTable().setLayoutData(joinsTableLayoutData);
 		myJoinsTableViewer.addSelectionChangedListener(myButtonUpdateListener);

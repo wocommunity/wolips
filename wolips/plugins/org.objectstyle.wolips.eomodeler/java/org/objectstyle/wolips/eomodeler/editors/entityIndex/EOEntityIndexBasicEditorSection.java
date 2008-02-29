@@ -98,22 +98,30 @@ public class EOEntityIndexBasicEditorSection extends AbstractPropertySection imp
 	public EOEntityIndexBasicEditorSection() {
 		// DO NOTHING
 	}
+	
+	@Override
+	public boolean shouldUseExtraSpace() {
+		return true;
+	}
 
 	public void createControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
 		super.createControls(parent, tabbedPropertySheetPage);
 		Composite form = getWidgetFactory().createFlatFormComposite(parent);
-		FormLayout formLayout = new FormLayout();
-		form.setLayout(formLayout);
+		((FormLayout)form.getLayout()).marginWidth = 10;
+		((FormLayout)form.getLayout()).marginHeight = 10;
 
 		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
 		FormData topFormData = new FormData();
-		topFormData.top = new FormAttachment(0, 5);
-		topFormData.left = new FormAttachment(0, 5);
-		topFormData.right = new FormAttachment(100, -5);
+		topFormData.top = new FormAttachment(0);
+		topFormData.left = new FormAttachment(0);
+		topFormData.right = new FormAttachment(100);
+		topFormData.bottom = new FormAttachment(100);
 		topForm.setLayoutData(topFormData);
 
 		GridLayout topFormLayout = new GridLayout();
 		topFormLayout.numColumns = 2;
+		topFormLayout.marginWidth = 0;
+		topFormLayout.marginHeight = 0;
 		topForm.setLayout(topFormLayout);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntityIndex." + EOEntityIndex.NAME), SWT.NONE);
@@ -148,7 +156,7 @@ public class EOEntityIndexBasicEditorSection extends AbstractPropertySection imp
 		CLabel attributesLabel = getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntityIndex." + EOEntityIndex.ATTRIBUTES), SWT.NONE);
 		attributesLabel.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
 		_attributesEditor = new EOEntityIndexAttributesEditor(topForm, SWT.NONE);
-		GridData attributesLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		GridData attributesLayoutData = new GridData(GridData.FILL_BOTH);
 		_attributesEditor.setLayoutData(attributesLayoutData);
 	}
 
