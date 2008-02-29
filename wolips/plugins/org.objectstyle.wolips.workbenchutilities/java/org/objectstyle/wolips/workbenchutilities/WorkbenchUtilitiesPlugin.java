@@ -75,8 +75,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
@@ -406,13 +408,15 @@ public class WorkbenchUtilitiesPlugin extends AbstractBaseUIActivator {
 	}
 
 	/**
-	 * Method open.
+	 * Opens an editor for the given file.
 	 * 
 	 * @param file
 	 *            The file to open.
-	 * @param editor
+	 * @param editorID the ID of the editor to use (or null for the default)
+	 * @return the editor part
 	 */
-	public final static void open(IFile file, String editor) {
+	public final static IEditorPart open(IFile file, String editorID) {
+		IEditorPart editorPart = null;
 		IWorkbenchWindow workbenchWindow = WorkbenchUtilitiesPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
 		if (workbenchWindow == null) {
 			IWorkbenchWindow[] workbenchWindows = WorkbenchUtilitiesPlugin.getDefault().getWorkbench().getWorkbenchWindows();
@@ -425,7 +429,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractBaseUIActivator {
 			if (workbenchPage != null) {
 				try {
 					String id = null;
-					if (editor == null) {
+					if (editorID == null) {
 						IEditorDescriptor editorDescriptor = IDE.getDefaultEditor(file);
 						if (editorDescriptor == null) {
 							editorDescriptor = IDE.getEditorDescriptor(file);
@@ -434,14 +438,53 @@ public class WorkbenchUtilitiesPlugin extends AbstractBaseUIActivator {
 							id = editorDescriptor.getId();
 						}
 					} else {
-						id = editor;
+						id = editorID;
 					}
-					workbenchPage.openEditor(new FileEditorInput(file), id);
+					editorPart = workbenchPage.openEditor(new FileEditorInput(file), id);
 				} catch (Exception anException) {
 					WorkbenchUtilitiesPlugin.getDefault().log(anException);
 				}
 			}
 		}
+		return editorPart;
+	}
+
+	/**
+	 * Finds an editor for the given file.
+	 * 
+	 * @param file
+	 *            The file to find
+	 * @param editorID the ID of the editor to look for (or null for the default)
+	 * @return the editor reference (or null if there isn't one)
+	 */
+	public final static IEditorReference findEditor(IFile file, String editorID) {
+		IEditorReference editorReference = null;
+		for (IWorkbenchWindow workbenchWindow : PlatformUI.getWorkbench().getWorkbenchWindows()) {
+			for (IWorkbenchPage workbenchPage : workbenchWindow.getPages()) {
+				try {
+					String id = null;
+					if (editorID == null) {
+						IEditorDescriptor editorDescriptor = IDE.getDefaultEditor(file);
+						if (editorDescriptor == null) {
+							editorDescriptor = IDE.getEditorDescriptor(file);
+						}
+						if (editorDescriptor != null) {
+							id = editorDescriptor.getId();
+						}
+					} else {
+						id = editorID;
+					}
+					IEditorReference[] editorReferences = workbenchPage.findEditors(new FileEditorInput(file), id, IWorkbenchPage.MATCH_ID | IWorkbenchPage.MATCH_INPUT);
+					if (editorReferences != null && editorReferences.length > 0) {
+						editorReference = editorReferences[0];
+						break;
+					}
+				} catch (Exception anException) {
+					WorkbenchUtilitiesPlugin.getDefault().log(anException);
+				}
+			}
+		}
+		return editorReference;
 	}
 
 	/**
