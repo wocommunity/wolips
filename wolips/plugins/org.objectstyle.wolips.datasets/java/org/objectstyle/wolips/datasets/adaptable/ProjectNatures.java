@@ -69,7 +69,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -77,7 +76,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.objectstyle.wolips.datasets.DataSetsPlugin;
 
 /**
  * @author ulrich
@@ -383,20 +381,5 @@ public class ProjectNatures extends ProjectBuilder {
 	 */
 	public IProjectNature getTargetbuilderNature() throws CoreException {
 		return this.getIProject().getNature(this.TargetBuilderNatureID);
-	}
-
-	/**
-	 * @return null if the project is not an application othewise invokes the
-	 *         same method on ProjectBuilder
-	 */
-	public IPath getWorkingDir() {
-		try {
-			if (this.isApplication()) {
-				return super.getWorkingDir();
-			}
-		} catch (CoreException coreException) {
-			DataSetsPlugin.getDefault().getPluginLogger().log(coreException);
-		}
-		return null;
 	}
 }
