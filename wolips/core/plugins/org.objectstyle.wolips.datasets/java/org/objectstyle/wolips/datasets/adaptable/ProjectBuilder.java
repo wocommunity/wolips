@@ -438,21 +438,6 @@ public class ProjectBuilder extends ProjectFiles {
 		this.getIProject().setDescription(desc, null);
 	}
 
-	/**
-	 * @return null if the project is not an application othewise invokes the
-	 *         same method on ProjectBuilder
-	 */
-	public IPath getWorkingDir() {
-		IPath path = null;
-		if (this.isAntBuilderInstalled()) {
-			path = this.getIProject().getFolder("dist").getLocation();
-		} else {
-			path = this.getIProject().getFolder("build").getLocation();
-		}
-		path = path.append(this.getIProject().getName() + ".woa");
-		return path;
-	}
-
 	private Properties getBuildProperties() throws CoreException, IOException {
 		Properties properties = new Properties();
 		IFile file = this.getIProject().getFile("build.properties");

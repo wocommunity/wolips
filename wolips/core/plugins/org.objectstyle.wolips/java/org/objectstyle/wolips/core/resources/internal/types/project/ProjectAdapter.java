@@ -671,15 +671,47 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 	 * @return null if the project is not an application othewise invokes the
 	 *         same method on ProjectAdapter
 	 */
-	public IPath getWorkingDir() {
+	public IPath getWorkingDir() throws CoreException {
 		IPath path = null;
-		if (this.isAntBuilderInstalled()) {
-			path = this.getUnderlyingProject().getFolder("dist").getLocation();
-		} else {
-			path = this.getUnderlyingProject().getFolder("build").getLocation();
+		IFolder workingDirFolder = getWorkingDirFolder();
+		if (workingDirFolder != null && workingDirFolder.exists()) {
+			path = workingDirFolder.getLocation();
 		}
-		path = path.append(this.getUnderlyingProject().getName() + ".woa");
 		return path;
+	}
+
+	/**
+	 * @return null if the project is not an application othewise invokes the
+	 *         same method on ProjectAdapter
+	 */
+	public IFolder getWorkingDirFolder() throws CoreException {
+		IFolder workingDirFolder;
+		IProject project = this.getUnderlyingProject();
+		if (this.isAntBuilderInstalled() || (Nature.getNature(project) instanceof AntApplicationNature)) {
+			workingDirFolder = this.getUnderlyingProject().getFolder("dist");
+		} else {
+			workingDirFolder = this.getUnderlyingProject().getFolder("build");
+		}
+		if (workingDirFolder != null && workingDirFolder.exists()) {
+			IFolder woaFolder = null;
+			IResource[] members = workingDirFolder.members();
+			for (int i = 0; woaFolder == null && i < members.length; i++) {
+				IResource member = members[i];
+				if (member.getType() == IResource.FOLDER && member.getName().endsWith(".woa")) {
+					woaFolder = (IFolder) member;
+				}
+			}
+			if (woaFolder != null && woaFolder.exists()) {
+				workingDirFolder = woaFolder;
+			}
+			else {
+				workingDirFolder = null;
+			}
+		}
+		else {
+			workingDirFolder = null;
+		}
+		return workingDirFolder;
 	}
 
 	private Properties getBuildProperties() throws CoreException, IOException {
@@ -754,8 +786,7 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 			Properties properties = this.getBuildProperties();
 			if (servletDeployment) {
 				properties.put("servletDeployment", "true");
-			}
-			else {
+			} else {
 				properties.remove("servletDeployment");
 			}
 			this.setBuildProperties(properties);
@@ -984,22 +1015,7 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 				}
 			}
 		} else if (this.isApplication()) { // must be application
-			IFolder wdFolder = null;
-			if (this.isAntBuilderInstalled() || (Nature.getNature(project) instanceof AntApplicationNature)) {
-				wdFolder = this.getUnderlyingProject().getFolder("dist");
-			} else {
-				wdFolder = this.getUnderlyingProject().getFolder("build");
-			}
-			if (wdFolder != null && wdFolder.exists()) {
-				IResource[] members = wdFolder.members();
-				for (int i = 0; i < members.length; i++) {
-					IResource member = members[i];
-					if (member.getType() == IResource.FOLDER && member.getName().endsWith(".woa")) {
-						wdFolder = (IFolder) member;
-						break;
-					}
-				}
-			}
+			IFolder wdFolder = getWorkingDirFolder();
 			if (wdFolder != null && wdFolder.exists()) {
 				IFolder javaFolder = wdFolder.getFolder("Contents/Resources/Java");
 				if (this.isAntBuilderInstalled()) {

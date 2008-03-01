@@ -64,7 +64,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.variables.IDynamicVariable;
 import org.eclipse.core.variables.IDynamicVariableResolver;
-import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.objectstyle.wolips.core.resources.internal.types.project.ProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 import org.objectstyle.wolips.launching.LaunchingPlugin;
 
 /**
@@ -86,8 +87,11 @@ public class WorkingDirResolver implements IDynamicVariableResolver {
 		if (iProject == null || !iProject.exists() || !iProject.isAccessible()) {
 			throw new CoreException(new Status(IStatus.ERROR, LaunchingPlugin.PLUGIN_ID, IStatus.ERROR, "Could not find or open project: " + argument, null)); //$NON-NLS-1$
 		}
-		Project project = (Project) iProject.getAdapter(Project.class);
-		IPath workingDir = project.getWorkingDir();
+		ProjectAdapter project = (ProjectAdapter) iProject.getAdapter(IProjectAdapter.class);
+		IPath workingDir = null;
+		if (project != null) {
+			workingDir = project.getWorkingDir();
+		}
 		if (workingDir == null) {
 			throw new CoreException(new Status(IStatus.ERROR, LaunchingPlugin.PLUGIN_ID, IStatus.ERROR, "Could not find working dir for project: " + argument, null)); //$NON-NLS-1$
 		}
