@@ -51,6 +51,7 @@ package org.objectstyle.wolips.eomodeler.core.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -62,6 +63,7 @@ import java.util.TreeSet;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.objectstyle.wolips.baseforplugins.util.URLUtils;
+import org.objectstyle.wolips.eomodeler.core.Activator;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 
@@ -79,6 +81,8 @@ public class EOModelGroup extends EOModelObject<Object> {
 	private String _prefix;
 
 	private String _superclassPackage;
+	
+	private boolean _dirty;
 
 	public EOModelGroup() {
 		_models = new HashSet<EOModel>();
@@ -133,8 +137,39 @@ public class EOModelGroup extends EOModelObject<Object> {
 	public Set<EOModelReferenceFailure> getReferenceFailures() {
 		return new HashSet<EOModelReferenceFailure>();
 	}
+	
+	public void setDirty(boolean dirty) {
+		_dirty = dirty;
+	}
+	
+	public boolean isDirty() {
+		boolean dirty = false;
+		for (EOModel model : getModels()) {
+			try {
+				if (model.isDirty() && model.canSave()) {
+					dirty = true;
+					break;
+				}
+			}
+			catch (MalformedURLException e) {
+				Activator.getDefault().log("Unable to determine if the model " + model.getName() + " was dirty, so we skipped it.", e);
+			}
+		}
+		return dirty;
+	}
 
-	protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
+	@SuppressWarnings("unused")
+	protected void _modelChanged(@SuppressWarnings("unused") EOModel model, String propertyName, Object oldValue, Object newValue) {
+		if (EOModel.DIRTY.equals(propertyName)) {
+			boolean oldDirty = _dirty;
+			boolean dirty = isDirty();
+			firePropertyChange(propertyName, Boolean.valueOf(oldDirty), Boolean.valueOf(dirty));
+			_dirty = dirty;
+		}
+	}
+	
+	@Override
+	protected void _propertyChanged(String name, Object value, Object value2) {
 		// DO NOTHING
 	}
 
