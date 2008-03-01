@@ -1,5 +1,6 @@
 package org.objectstyle.wolips.templateeditor;
 
+import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -329,6 +330,16 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
       }
 
       String documentContents = documentContentsBuffer.toString();
+      boolean debug = true;
+      if (debug) {
+        FileWriter fw = new FileWriter("/tmp/TemplateOutlinePage-" + System.currentTimeMillis() + ".html");
+        try {
+          fw.write(documentContents);
+        }
+        finally {
+          fw.close();
+        }
+      }
       boolean rendered = _browser.setText(documentContents);
       if (!rendered) {
         HTMLPlugin.logError("Can't create preview of component HTML.");
@@ -346,12 +357,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
    */
   protected void renderHeader(StringBuffer renderBuffer) {
     renderBuffer.append("<html>\n");
-    if (_compactView) {
-      renderBuffer.append("<body id = \"outline\" class = \"compact\">\n");
-    }
-    else {
-      renderBuffer.append("<body id = \"outline\" class = \"verbose\">\n");
-    }
+    renderBuffer.append("<head>\n");
     renderBuffer.append("<style>\n");
     renderBuffer.append("body { font-family: Helvetica; font-size: 8pt; margin: 5px; margin-top: 2px; }\n");
 
@@ -479,9 +485,9 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
     renderBuffer.append("body.compact div.element.wo.ERXLocalizedString.simple div.summary div.title { display: inline; }\n");
 
     renderBuffer.append("body div.element.document { margin: 0px; padding: 0px; border: none; }\n");
-    renderBuffer.append("body div.element.document div.summary { margin: 0px; padding: 0px; border: none; display: none; }\n");
+    renderBuffer.append("body div.element.document > div.summary { margin: 0px; padding: 0px; border: none; display: none; }\n");
     renderBuffer.append("body div.element.document > div.expandcollapse { display: none; }\n");
-    renderBuffer.append("body div.element.document div.contents { margin: 0px; padding: 0px; border: none; }\n");
+    renderBuffer.append("body div.element.document > div.contents { margin: 0px; padding: 0px; border: none; }\n");
 
     renderBuffer.append("</style>\n");
     renderBuffer.append("<script>\n");
@@ -493,6 +499,14 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
     renderBuffer.append("function getPageXOffset() { var scrollX; if (document.all) { if (!document.documentElement.scrollLeft) { scrollX = document.body.scrollLeft; } else { scrollX = document.documentElement.scrollLeft; } } else { scrollX = window.pageXOffset; } return scrollX; }\n");
     renderBuffer.append("function updatePageYOffset() { window.status = 'pageYOffset:' + getPageYOffset(); }\n");
     renderBuffer.append("</script>\n");
+    renderBuffer.append("</head>\n");
+    if (_compactView) {
+      renderBuffer.append("<body id = \"outline\" class = \"compact\">\n");
+    }
+    else {
+      renderBuffer.append("<body id = \"outline\" class = \"verbose\">\n");
+    }
+
 
     renderBuffer.append("<div class = \"viewControls\"><a href = \"#\" onclick = \"toggleCompact()\">toggle compact view</a></div>\n");
     renderBuffer.append("<div class = \"elements\">\n");
