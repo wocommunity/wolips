@@ -477,7 +477,16 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	}
 
 	public boolean isDirty() {
-		return myModel != null && myModel.isDirty();
+		boolean dirty = false;
+		if (myModel != null) {
+			if (myModel.isDirty()) {
+				dirty = true;
+			}
+			else if (myModel.getModelGroup() != null) {
+				dirty = myModel.getModelGroup().isDirty();
+			}
+		}
+		return dirty;
 	}
 
 	public void doSaveAs() {
@@ -499,6 +508,9 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		try {
 			IURIEditorInput editorInput = (IURIEditorInput) getEditorInput();
 			if (myModel != null) {
+				if (myModel.getModelGroup() != null) {
+					myModel.getModelGroup().removePropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
+				}
 				myModel.removePropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
 				myEntitiesChangeListener.stop();
 				myModel.removePropertyChangeListener(EOModel.ENTITIES, myEntitiesChangeListener);
@@ -520,8 +532,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				String name = URLUtils.getName(indexURL);
 				openingEntityName = name.substring(0, name.indexOf('.'));
 				indexURL = new File(URLUtils.cheatAndTurnIntoFile(indexURL).getParentFile(), "index.eomodeld").toURI();
-			}
-			else if ("fspec".equalsIgnoreCase(extension)) {
+			} else if ("fspec".equalsIgnoreCase(extension)) {
 				indexURL = new File(URLUtils.cheatAndTurnIntoFile(indexURL).getParentFile(), "index.eomodeld").toURI();
 			}
 
@@ -536,7 +547,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			}
 
 			EOModel model = modelGroup.getEditingModel();
-			boolean showModelGroup = true; 
+			boolean showModelGroup = true;
 			if (model == null) {
 				handleModelErrors(myLoadFailures, true);
 				Set<EOModel> models = modelGroup.getModels();
@@ -554,6 +565,9 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				}
 				handleModelErrors(myLoadFailures, false);
 
+				if (model.getModelGroup() != null) {
+					model.getModelGroup().addPropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
+				}
 				model.addPropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
 				myEntitiesChangeListener.start();
 				model.addPropertyChangeListener(EOModel.ENTITIES, myEntitiesChangeListener);
@@ -627,7 +641,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		}
 		return sb.toString().hashCode();
 	}
-	
+
 	protected void handleModelErrors(final Set<EOModelVerificationFailure> failures, boolean forceOpen) {
 		if (myModel != null) {
 			try {
@@ -715,7 +729,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			openWindow = false;
 		}
 		_failuresHashCode = newFailuresHashCode;
-		
+
 		if (openWindow) {
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
