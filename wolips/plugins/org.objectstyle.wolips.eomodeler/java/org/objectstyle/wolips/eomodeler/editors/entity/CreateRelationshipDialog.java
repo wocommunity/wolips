@@ -65,6 +65,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -92,9 +93,13 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 
 	private Composite _relationshipFields;
 
+	private Composite _joinsFields;
+
 	private Label _sourceLabel;
 
 	private Label _destinationLabel;
+
+	private Label _joinsLabel;
 
 	private JoinsTableEditor _joinsTableEditor;
 
@@ -140,6 +145,7 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 
 	public CreateRelationshipDialog(Shell shell, EOModelGroup modelGroup, EOEntity sourceEntity, EOEntity destinationEntity) {
 		super(shell);
+
 		_modelGroup = modelGroup;
 		_sourceEntity = sourceEntity;
 		_destinationEntity = destinationEntity;
@@ -228,8 +234,9 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 			});
 		}
 
+
 		_relationshipFields = new Composite(relationshipDialogArea, SWT.NONE);
-		GridLayout relationshipFieldsLayout = new GridLayout(2, false);
+		GridLayout relationshipFieldsLayout = new GridLayout(1, false);
 		relationshipFieldsLayout.horizontalSpacing = 15;
 		_relationshipFields.setLayout(relationshipFieldsLayout);
 		_relationshipFields.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -240,40 +247,49 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		_titleFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD);
 		_sourceLabel.setFont(_titleFont);
 		GridData sourceLabelData = new GridData(GridData.FILL_HORIZONTAL);
-		sourceLabelData.horizontalSpan = 2;
+		//sourceLabelData.horizontalSpan = 2;
 		if (showEntityPickers) {
 			sourceLabelData.verticalIndent = 15;
 		}
 		_sourceLabel.setLayoutData(sourceLabelData);
 
-		_createButton = new Button(_relationshipFields, SWT.CHECK);
+		Group sourceFields = new Group(_relationshipFields, SWT.NONE);
+		GridLayout sourceFieldsLayout = new GridLayout(2, false);
+		sourceFieldsLayout.horizontalSpacing = 15;
+		sourceFields.setLayout(sourceFieldsLayout);
+		sourceFields.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+		_createButton = new Button(sourceFields, SWT.CHECK);
 		_createButton.setSelection(true);
 		_createButton.setLayoutData(new GridData());
 		_createButton.addSelectionListener(this);
 
-		_nameText = new Text(_relationshipFields, SWT.BORDER);
+		_nameText = new Text(sourceFields, SWT.BORDER);
 		GridData nameData = new GridData(GridData.FILL_HORIZONTAL);
 		nameData.widthHint = 200;
 		_nameText.setLayoutData(nameData);
 
-		_toManyButton = new Button(_relationshipFields, SWT.CHECK);
+		_toManyButton = new Button(sourceFields, SWT.CHECK);
 		_toManyButton.addSelectionListener(this);
 		_toManyButton.setText(Messages.getString("CreateRelationshipDialog.toManyLabel"));
 		GridData toManyData = new GridData(GridData.FILL_HORIZONTAL);
 		toManyData.horizontalSpan = 2;
 		_toManyButton.setLayoutData(toManyData);
 
-		_createFKButton = new Button(_relationshipFields, SWT.CHECK);
+		_createFKButton = new Button(sourceFields, SWT.CHECK);
 		_createFKButton.setSelection(true);
 		_createFKButton.setLayoutData(new GridData());
 		_createFKButton.addSelectionListener(this);
 
-		_fkNameText = new Text(_relationshipFields, SWT.BORDER);
+		_fkNameText = new Text(sourceFields, SWT.BORDER);
 		_fkNameText.setEnabled(false);
 		GridData fkNameData = new GridData(GridData.FILL_HORIZONTAL);
 		fkNameData.widthHint = 200;
 		_fkNameText.setLayoutData(fkNameData);
 
+		
+		
+		
 		_destinationLabel = new Label(_relationshipFields, SWT.NONE);
 		_destinationLabel.setFont(_titleFont);
 		GridData destinationLabelData = new GridData(GridData.FILL_HORIZONTAL);
@@ -281,47 +297,70 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		destinationLabelData.verticalIndent = 15;
 		_destinationLabel.setLayoutData(destinationLabelData);
 
-		_createInverseButton = new Button(_relationshipFields, SWT.CHECK);
+		Group destinationFields = new Group(_relationshipFields, SWT.NONE);
+		GridLayout destinationFieldsLayout = new GridLayout(2, false);
+		destinationFieldsLayout.horizontalSpacing = 15;
+		destinationFields.setLayout(destinationFieldsLayout);
+		destinationFields.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+		_createInverseButton = new Button(destinationFields, SWT.CHECK);
 		_createInverseButton.setSelection(true);
 		_createInverseButton.setLayoutData(new GridData());
 		_createInverseButton.addSelectionListener(this);
 
-		_inverseNameText = new Text(_relationshipFields, SWT.BORDER);
+		_inverseNameText = new Text(destinationFields, SWT.BORDER);
 		GridData inverseNameData = new GridData(GridData.FILL_HORIZONTAL);
 		inverseNameData.widthHint = 200;
 		_inverseNameText.setLayoutData(inverseNameData);
 
-		_inverseToManyButton = new Button(_relationshipFields, SWT.CHECK);
+		_inverseToManyButton = new Button(destinationFields, SWT.CHECK);
 		_inverseToManyButton.addSelectionListener(this);
 		_inverseToManyButton.setText(Messages.getString("CreateRelationshipDialog.inverseToManyLabel"));
 		GridData inverseToManyData = new GridData(GridData.FILL_HORIZONTAL);
 		inverseToManyData.horizontalSpan = 2;
 		_inverseToManyButton.setLayoutData(inverseToManyData);
 
-		_createInverseFKButton = new Button(_relationshipFields, SWT.CHECK);
+		_createInverseFKButton = new Button(destinationFields, SWT.CHECK);
 		_createInverseFKButton.setSelection(true);
 		_createInverseFKButton.setLayoutData(new GridData());
 		_createInverseFKButton.addSelectionListener(this);
 
-		_inverseFKNameText = new Text(_relationshipFields, SWT.BORDER);
+		_inverseFKNameText = new Text(destinationFields, SWT.BORDER);
 		_inverseFKNameText.setEnabled(false);
 		GridData inverseFKNameData = new GridData(GridData.FILL_HORIZONTAL);
 		inverseFKNameData.widthHint = 200;
 		_inverseFKNameText.setLayoutData(inverseFKNameData);
 
-		_joinEntityNameLabel = new Label(_relationshipFields, SWT.NONE);
+		
+
+		_joinsLabel = new Label(_relationshipFields, SWT.NONE);
+		_joinsLabel.setFont(_titleFont);
+		_joinsLabel.setText("Joins");
+		GridData joinsLabelData = new GridData(GridData.FILL_HORIZONTAL);
+		joinsLabelData.horizontalSpan = 2;
+		joinsLabelData.verticalIndent = 15;
+		_joinsLabel.setLayoutData(joinsLabelData);
+
+		_joinsFields = new Group(_relationshipFields, SWT.NONE);
+		GridLayout joinEntityFieldsLayout = new GridLayout(2, false);
+		joinEntityFieldsLayout.horizontalSpacing = 15;
+		_joinsFields.setLayout(joinEntityFieldsLayout);
+		GridData joinEntityFieldsLayoutData = new GridData(GridData.FILL_BOTH);
+		_joinsFields.setLayoutData(joinEntityFieldsLayoutData);
+
+		_joinEntityNameLabel = new Label(_joinsFields, SWT.NONE);
 		_joinEntityNameLabel.setText(Messages.getString("CreateRelationshipDialog.joinEntityNameLabel"));
 		GridData joinEntityNameLabelData = new GridData();
-		joinEntityNameLabelData.verticalIndent = 15;
+		//joinEntityNameLabelData.verticalIndent = 15;
 		_joinEntityNameLabel.setLayoutData(joinEntityNameLabelData);
 
-		_joinEntityNameText = new Text(_relationshipFields, SWT.BORDER);
+		_joinEntityNameText = new Text(_joinsFields, SWT.BORDER);
 		GridData joinEntityNameData = new GridData(GridData.FILL_HORIZONTAL);
-		joinEntityNameData.verticalIndent = 15;
+		//joinEntityNameData.verticalIndent = 15;
 		joinEntityNameData.widthHint = 200;
 		_joinEntityNameText.setLayoutData(joinEntityNameData);
 
-		_flattenButton = new Button(_relationshipFields, SWT.CHECK);
+		_flattenButton = new Button(_joinsFields, SWT.CHECK);
 		_flattenButton.addSelectionListener(this);
 		_flattenButton.setText(Messages.getString("CreateRelationshipDialog.flattenLabel"));
 		_flattenButton.setSelection(true);
@@ -329,7 +368,7 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		flattenData.horizontalSpan = 2;
 		_flattenButton.setLayoutData(flattenData);
 
-		_joinsTableEditor = new JoinsTableEditor(_relationshipFields, SWT.BORDER);
+		_joinsTableEditor = new JoinsTableEditor(_joinsFields, SWT.NONE);
 		GridData joinsGridData = new GridData(GridData.FILL_HORIZONTAL);
 		joinsGridData.horizontalSpan = 2;
 		// joinsGridData.verticalIndent = 15;
@@ -337,7 +376,7 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 
 		entitiesChanged();
 		
-		return _relationshipFields;
+		return _joinsFields;
 	}
 
 	protected void entitiesChanged() {
@@ -430,6 +469,16 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 	}
 
 	public void toManyChanged(Button selectedButton) {
+		if (!_toManyButton.getSelection() && !_inverseToManyButton.getSelection()) {
+			if (selectedButton == _inverseToManyButton) {
+				_toManyButton.setSelection(true);
+			} else {
+				_inverseToManyButton.setSelection(true);
+			}
+		}
+
+		_checkManyToMany(selectedButton);
+
 		String name = _nameText.getText();
 		if ((_sourceEntity != null && _destinationEntity != null) && (_originalName == null || ComparisonUtils.equals(name, _originalName))) {
 			String newName = _sourceEntity._findUnusedRelationshipName(_destinationEntity.getName(), _toManyButton.getSelection());
@@ -442,42 +491,32 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 			_inverseNameText.setText(newName);
 			_originalInverseName = newName;
 		}
-
-		if (!_toManyButton.getSelection() && !_inverseToManyButton.getSelection()) {
-			if (selectedButton == _inverseToManyButton) {
-				_toManyButton.setSelection(true);
-			} else {
-				_inverseToManyButton.setSelection(true);
-			}
-		}
-
-		_checkManyToMany(selectedButton);
 	}
 
 	protected void _checkManyToMany(Button selectedButton) {
-    if (!_createButton.getSelection() && !_createInverseButton.getSelection()) {
-      if (selectedButton == _createInverseButton) {
-        _createButton.setSelection(true);
-      } else {
-        _createInverseButton.setSelection(true);
-      }
-    }
-    if (selectedButton == _createButton) {
-      if (!_createButton.getSelection()) {
-        _createFKButton.setSelection(false);
-      }
-      else {
-        _createFKButton.setSelection(true);
-      }
-    }
-    else if (selectedButton == _createInverseButton) {
-      if (!_createInverseButton.getSelection()) {
-    	  _createInverseFKButton.setSelection(false);
-      }
-      else {
-        _createInverseFKButton.setSelection(true);
-      }
-    }
+	    if (!_createButton.getSelection() && !_createInverseButton.getSelection()) {
+	      if (selectedButton == _createInverseButton) {
+	        _createButton.setSelection(true);
+	      } else {
+	        _createInverseButton.setSelection(true);
+	      }
+	    }
+	    if (selectedButton == _createButton) {
+	      if (!_createButton.getSelection()) {
+	        _createFKButton.setSelection(false);
+	      }
+	      else {
+	        _createFKButton.setSelection(true);
+	      }
+	    }
+	    else if (selectedButton == _createInverseButton) {
+	      if (!_createInverseButton.getSelection()) {
+	    	  _createInverseFKButton.setSelection(false);
+	      }
+	      else {
+	        _createInverseFKButton.setSelection(true);
+	      }
+	    }
 
 		_nameText.setEnabled(_createButton.getSelection());
 		_inverseNameText.setEnabled(_createInverseButton.getSelection());
@@ -498,14 +537,6 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		_createInverseFKButton.setEnabled(canCreateInverseFK);
 		_inverseFKNameText.setEnabled(_createInverseFK);
 
-		boolean joinsTableVisible = !_manyToMany && !_createFK && !_createInverseFK;
-		_joinsTableEditor.setVisible(joinsTableVisible);
-		if (!joinsTableVisible) {
-			((GridData) _joinsTableEditor.getLayoutData()).heightHint = 0;
-		} else {
-			((GridData) _joinsTableEditor.getLayoutData()).heightHint = -1;
-		}
-
 		if (_sourceEntity != null && _destinationEntity != null) {
 			String fkName = _fkNameText.getText();
 			if (fkName == null || fkName.length() == 0) {
@@ -520,9 +551,22 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 			}
 		}
 
+		boolean joinsTableVisible = !_manyToMany && !_createFK && !_createInverseFK;
+		_joinsTableEditor.setVisible(joinsTableVisible);
+
+		boolean joinsVisible = _manyToMany || joinsTableVisible;
+		_joinsLabel.setVisible(joinsVisible);
+		_joinsFields.setVisible(joinsVisible);
 		_joinEntityNameLabel.setVisible(_manyToMany);
 		_joinEntityNameText.setVisible(_manyToMany);
 		_flattenButton.setVisible(_manyToMany);
+
+		if (!joinsTableVisible) {
+			((GridData) _joinsTableEditor.getLayoutData()).heightHint = 0;
+		} else {
+			((GridData) _joinsTableEditor.getLayoutData()).heightHint = -1;
+		}
+
 		if (!_manyToMany) {
 			((GridData) _joinEntityNameLabel.getLayoutData()).heightHint = 0;
 			((GridData) _joinEntityNameText.getLayoutData()).heightHint = 0;
@@ -532,7 +576,16 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 			((GridData) _joinEntityNameText.getLayoutData()).heightHint = -1;
 			((GridData) _flattenButton.getLayoutData()).heightHint = -1;
 		}
-
+		
+		if (!joinsVisible) {
+			((GridData) _joinsLabel.getLayoutData()).heightHint = 0;
+			((GridData) _joinsFields.getLayoutData()).heightHint = 0;
+		}
+		else {
+			((GridData) _joinsLabel.getLayoutData()).heightHint = -1;
+			((GridData) _joinsFields.getLayoutData()).heightHint = -1;
+		}
+		
 		if (getShell().isVisible()) {
 			getShell().pack();
 		}
