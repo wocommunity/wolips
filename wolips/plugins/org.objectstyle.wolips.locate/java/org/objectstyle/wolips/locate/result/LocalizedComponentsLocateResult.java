@@ -101,7 +101,6 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 			IFile file = (IFile) resource;
 			String extension = resource.getFileExtension();
 			if (extension.equals("java")) {
-
 				if (dotJava != null) {
 					IJavaElement javaElement = JavaCore.create(file);
 					try {
@@ -111,6 +110,7 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 							}
 						}
 					} catch (JavaModelException e) {
+						file = null;
 						LocatePlugin.getDefault().log(e);
 					}
 				}
@@ -123,6 +123,7 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 							}
 						}
 					} catch (JavaModelException e) {
+						dotJava = null;
 						LocatePlugin.getDefault().log(e);
 					}
 				}
