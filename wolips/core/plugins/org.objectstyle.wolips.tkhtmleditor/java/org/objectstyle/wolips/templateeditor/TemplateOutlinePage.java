@@ -280,7 +280,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
   }
 
   public void setSelection(ISelection selection) {
-    System.out.println("TemplateOutlinePage.setSelection: " + selection);
+    // System.out.println("TemplateOutlinePage.setSelection: " + selection);
   }
 
   @Override
@@ -330,7 +330,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
       }
 
       String documentContents = documentContentsBuffer.toString();
-      boolean debug = true;
+      boolean debug = false;
       if (debug) {
         FileWriter fw = new FileWriter("/tmp/TemplateOutlinePage-" + System.currentTimeMillis() + ".html");
         try {
@@ -368,15 +368,17 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
     renderBuffer.append("div.elements { margin-top: 0px; }\n");
 
     renderBuffer.append("div.element { overflow: hidden; margin-top: 5px; margin-bottom: 5px; margin-right: 0px; padding: 0px; border: 1px solid rgb(230, 230, 230); border-right: none; }\n");
-    renderBuffer.append("div.element div.summary { cursor: pointer; white-space: nowrap; background-color: rgb(240, 240, 240); padding: 3px; }\n");
+    renderBuffer.append("div.element div.summary { cursor: pointer; white-space: nowrap; background-color: rgb(240, 240, 240); padding: 3px; border-bottom: 1px solid rgb(230, 230, 230); }\n");
+    renderBuffer.append("div.element.empty div.summary { border-bottom: none; }\n");
     renderBuffer.append("div.element div.summary:hover { background-color: rgb(220, 220, 220); border-color: rgb(210, 210, 210); }\n");
     renderBuffer.append("div.element div.expandcollapse { cursor: pointer; float: right; background-color: rgb(255, 255, 255); width: 10px; border: 1px solid rgb(230, 230, 230); border-top: none; padding-left: 3px; padding-right: 3px; text-align: center; }\n");
     renderBuffer.append("div.element div.expandcollapse:hover { font-weight: bold; border-width: 2px; border-right-width: 1px; background-color: rgb(245, 245, 245); }\n");
     renderBuffer.append("div.element div.expandcollapse:active { font-weight: bold; border-width: 2px; border-right-width: 1px; background-color: rgb(230, 230, 230); }\n");
-    renderBuffer.append("div.element div.contents { background-color: rgb(255, 255, 255); padding-left: 10px; padding-right: 0px; padding-top: 5px; padding-bottom: 5px; border-top: 1px solid rgb(230, 230, 230); }\n");
+    renderBuffer.append("div.element div.contents { background-color: rgb(255, 255, 255); padding-left: 10px; padding-right: 0px; padding-top: 5px; padding-bottom: 5px; }\n");
 
     renderBuffer.append("div.element.wo { border-color: rgb(200, 200, 255); }\n");
-    renderBuffer.append("div.element.wo div.summary { background-color: rgb(240, 240, 255); }\n");
+    renderBuffer.append("div.element.wo div.summary { background-color: rgb(240, 240, 255); border-bottom: 1px solid rgb(200, 200, 255); }\n");
+    renderBuffer.append("div.element.wo.empty div.summary { border-bottom: none; }\n");
     renderBuffer.append("div.element.wo div.summary:hover { background-color: rgb(210, 210, 255); border-color: rgb(210, 210, 255); }\n");
     renderBuffer.append("div.element.wo div.summary div.title span.type { font-weight: normal; font-size: 0.80em; color: rgb(150, 150, 150); }\n");
     renderBuffer.append("div.element.wo > div.expandcollapse { border-color: rgb(200, 200, 255); }\n");
@@ -587,6 +589,10 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
       else if ("style".equalsIgnoreCase(nodeName)) {
         // don't show style
         showExpandCollapse = false;
+      }
+      
+      if (!showExpandCollapse) {
+        className += " empty";
       }
 
       //renderBuffer.append("<div id = \"" + nodeID + "\" class = \"" + className + "\" onmouseover = \"window.status = 'over:" + nodeID + "';\" onmouseout = \"window.status = 'out:" + nodeID + "';\" >");
