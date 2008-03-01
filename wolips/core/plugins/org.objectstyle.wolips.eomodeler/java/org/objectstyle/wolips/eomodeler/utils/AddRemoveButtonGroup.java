@@ -16,7 +16,8 @@ public class AddRemoveButtonGroup extends Composite {
 
 	public AddRemoveButtonGroup(Composite _parent, SelectionListener _addListener, SelectionListener _removeListener) {
 		super(_parent, SWT.NONE);
-		setBackground(_parent.getBackground());
+		setBackgroundMode(SWT.INHERIT_FORCE);
+		//setBackground(_parent.getBackground());
 		FormLayout layout = new FormLayout();
 		setLayout(layout);
 
