@@ -91,7 +91,7 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 	private EORelationship _inverseRelationship;
 
 	private Composite _relationshipFields;
-	
+
 	private Label _sourceLabel;
 
 	private Label _destinationLabel;
@@ -169,7 +169,7 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		super.configureShell(newShell);
 		newShell.setText(Messages.getString("CreateRelationshipDialog.title"));
 	}
-	
+
 	@Override
 	protected Rectangle getConstrainedShellBounds(Rectangle preferredSize) {
 		Rectangle bounds = super.getConstrainedShellBounds(preferredSize);
@@ -194,7 +194,7 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 			Label hintLabel = new Label(relationshipDialogArea, SWT.NONE);
 			hintLabel.setText("Select the entities that this relationship will join together.");
 			GridData hintLabelData = new GridData(GridData.FILL_HORIZONTAL);
-			//destinationEntityPickerData.horizontalSpan = 2;
+			// destinationEntityPickerData.horizontalSpan = 2;
 			hintLabel.setLayoutData(hintLabelData);
 			hintLabel.setFont(parent.getFont());
 
@@ -204,7 +204,7 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 			sourceEntityPicker.setModelGroup(_modelGroup);
 			sourceEntityPicker.setEntity(_sourceEntity);
 			GridData sourceEntityPickerData = new GridData(GridData.FILL_HORIZONTAL);
-			//sourceEntityPickerData.horizontalSpan = 2;
+			// sourceEntityPickerData.horizontalSpan = 2;
 			sourceEntityPickerData.verticalIndent = 15;
 			sourceEntityPicker.setLayoutData(sourceEntityPickerData);
 			sourceEntityPicker.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -213,12 +213,12 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 					setSourceEntity(entity);
 				}
 			});
-			
+
 			EntityPicker destinationEntityPicker = new EntityPicker(relationshipDialogArea, SWT.NONE);
 			destinationEntityPicker.setModelGroup(_modelGroup);
 			destinationEntityPicker.setEntity(_destinationEntity);
 			GridData destinationEntityPickerData = new GridData(GridData.FILL_HORIZONTAL);
-			//destinationEntityPickerData.horizontalSpan = 2;
+			// destinationEntityPickerData.horizontalSpan = 2;
 			destinationEntityPicker.setLayoutData(destinationEntityPickerData);
 			destinationEntityPicker.addSelectionChangedListener(new ISelectionChangedListener() {
 				public void selectionChanged(SelectionChangedEvent event) {
@@ -233,7 +233,7 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		relationshipFieldsLayout.horizontalSpacing = 15;
 		_relationshipFields.setLayout(relationshipFieldsLayout);
 		_relationshipFields.setLayoutData(new GridData(GridData.FILL_BOTH));
-		
+
 		_sourceLabel = new Label(_relationshipFields, SWT.NONE);
 		Font originalFont = _sourceLabel.getFont();
 		FontData[] fontData = originalFont.getFontData();
@@ -299,7 +299,7 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		_inverseToManyButton.setLayoutData(inverseToManyData);
 
 		_createInverseFKButton = new Button(_relationshipFields, SWT.CHECK);
-		_createInverseFKButton.setSelection(false);
+		_createInverseFKButton.setSelection(true);
 		_createInverseFKButton.setLayoutData(new GridData());
 		_createInverseFKButton.addSelectionListener(this);
 
@@ -309,8 +309,6 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		inverseFKNameData.widthHint = 200;
 		_inverseFKNameText.setLayoutData(inverseFKNameData);
 
-		
-		
 		_joinEntityNameLabel = new Label(_relationshipFields, SWT.NONE);
 		_joinEntityNameLabel.setText(Messages.getString("CreateRelationshipDialog.joinEntityNameLabel"));
 		GridData joinEntityNameLabelData = new GridData();
@@ -334,11 +332,11 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		_joinsTableEditor = new JoinsTableEditor(_relationshipFields, SWT.BORDER);
 		GridData joinsGridData = new GridData(GridData.FILL_HORIZONTAL);
 		joinsGridData.horizontalSpan = 2;
-		//joinsGridData.verticalIndent = 15;
+		// joinsGridData.verticalIndent = 15;
 		_joinsTableEditor.setLayoutData(joinsGridData);
 
 		entitiesChanged();
-
+		
 		return _relationshipFields;
 	}
 
@@ -347,11 +345,10 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		_relationshipFields.setVisible(relationshipFieldsVisible);
 		if (relationshipFieldsVisible) {
 			((GridData) _relationshipFields.getLayoutData()).heightHint = -1;
-		}
-		else {
+		} else {
 			((GridData) _relationshipFields.getLayoutData()).heightHint = 0;
 		}
-		
+
 		if (_sourceEntity != null) {
 			_sourceLabel.setText("From " + _sourceEntity.getName() + " ...");
 			_createInverseButton.setText(Messages.getString("CreateRelationshipDialog.inverseNameLabel", new Object[] { _sourceEntity.getName() }));
@@ -363,6 +360,7 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 			_createFKButton.setText(Messages.getString("CreateRelationshipDialog.fkNameLabel", new Object[] { _destinationEntity.getName() }));
 			_destinationLabel.setText("From " + _destinationEntity.getName() + " ...");
 			_guessedJoinEntityName = _sourceEntity.getName() + _destinationEntity.getName();
+			_joinEntityNameText.setText(_guessedJoinEntityName);
 			_flattenedChanged();
 		}
 
@@ -374,7 +372,7 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 			_joinsTableEditor.setRelationship(null);
 		}
 
-		toManyChanged();
+		toManyChanged(null);
 
 		// getButton(IDialogConstants.OK_ID).setEnabled(_sourceEntity != null &&
 		// _destinationEntity != null);
@@ -388,17 +386,19 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 			if (_manyToMany) {
 				String joinEntityName = _joinEntityNameText.getText();
 				boolean flatten = _flattenButton.getSelection();
-				_sourceEntity.joinInManyToManyWith(_destinationEntity, name, inverseName, joinEntityName, flatten);
+				boolean createRelationship = _createButton.getSelection();
+				boolean createInverseRelationship = _createInverseButton.getSelection();
+				_sourceEntity.joinInManyToManyWith(_destinationEntity, createRelationship, name, createInverseRelationship, inverseName, joinEntityName, flatten);
 			} else {
 				EOJoin newJoin = null;
-				if (_createButton.getSelection() && _createFK) {
+				if (_createFK) {
 					String fkName = _fkNameText.getText();
 					EOAttribute foreignKey = _sourceEntity.createForeignKeyTo(_destinationEntity, fkName, fkName, false);
 					newJoin = new EOJoin();
 					newJoin.setSourceAttribute(foreignKey);
 					newJoin.setDestinationAttribute(_destinationEntity.getSinglePrimaryKeyAttribute());
 				}
-				if (_createInverseButton.getSelection() && _createInverseFK) {
+				if (_createInverseFK) {
 					String inverseFKName = _inverseFKNameText.getText();
 					EOAttribute foreignKey = _destinationEntity.createForeignKeyTo(_sourceEntity, inverseFKName, inverseFKName, false);
 					newJoin = new EOJoin();
@@ -429,15 +429,12 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		}
 	}
 
-	public void toManyChanged() {
+	public void toManyChanged(Button selectedButton) {
 		String name = _nameText.getText();
 		if ((_sourceEntity != null && _destinationEntity != null) && (_originalName == null || ComparisonUtils.equals(name, _originalName))) {
 			String newName = _sourceEntity._findUnusedRelationshipName(_destinationEntity.getName(), _toManyButton.getSelection());
 			_nameText.setText(newName);
 			_originalName = newName;
-		}
-		if (!_toManyButton.getSelection()) {
-			_inverseToManyButton.setSelection(true);
 		}
 		String inverseName = _inverseNameText.getText();
 		if ((_sourceEntity != null && _destinationEntity != null) && (_originalInverseName == null || ComparisonUtils.equals(inverseName, _originalInverseName))) {
@@ -445,28 +442,58 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 			_inverseNameText.setText(newName);
 			_originalInverseName = newName;
 		}
-		if (!_inverseToManyButton.getSelection()) {
-			_toManyButton.setSelection(true);
+
+		if (!_toManyButton.getSelection() && !_inverseToManyButton.getSelection()) {
+			if (selectedButton == _inverseToManyButton) {
+				_toManyButton.setSelection(true);
+			} else {
+				_inverseToManyButton.setSelection(true);
+			}
 		}
-		_checkManyToMany();
+
+		_checkManyToMany(selectedButton);
 	}
 
-	protected void _checkManyToMany() {
+	protected void _checkManyToMany(Button selectedButton) {
+    if (!_createButton.getSelection() && !_createInverseButton.getSelection()) {
+      if (selectedButton == _createInverseButton) {
+        _createButton.setSelection(true);
+      } else {
+        _createInverseButton.setSelection(true);
+      }
+    }
+    if (selectedButton == _createButton) {
+      if (!_createButton.getSelection()) {
+        _createFKButton.setSelection(false);
+      }
+      else {
+        _createFKButton.setSelection(true);
+      }
+    }
+    else if (selectedButton == _createInverseButton) {
+      if (!_createInverseButton.getSelection()) {
+    	  _createInverseFKButton.setSelection(false);
+      }
+      else {
+        _createInverseFKButton.setSelection(true);
+      }
+    }
+
 		_nameText.setEnabled(_createButton.getSelection());
 		_inverseNameText.setEnabled(_createInverseButton.getSelection());
-		_manyToMany = (_createButton.getSelection() && _createInverseButton.getSelection() && _toManyButton.getSelection() && _inverseToManyButton.getSelection());
-		_toManyButton.setEnabled(_createButton.getSelection());
-		_inverseToManyButton.setEnabled(_createInverseButton.getSelection());
+		_manyToMany = (_toManyButton.getSelection() && _inverseToManyButton.getSelection());
+		// _toManyButton.setEnabled(_createButton.getSelection());
+		// _inverseToManyButton.setEnabled(_createInverseButton.getSelection());
 		_joinsTableEditor.setEnabled(!_manyToMany);
 		_flattenButton.setEnabled(_manyToMany);
-    _joinEntityNameText.setEnabled(_manyToMany);
+		_joinEntityNameText.setEnabled(_manyToMany);
 
-		boolean canCreateFK = _createButton.getSelection() && !_toManyButton.getSelection();
+		boolean canCreateFK = !_toManyButton.getSelection();
 		_createFK = canCreateFK && _createFKButton.getSelection();
 		_createFKButton.setEnabled(canCreateFK);
 		_fkNameText.setEnabled(_createFK);
 
-		boolean canCreateInverseFK = _createInverseButton.getSelection() && !_inverseToManyButton.getSelection();
+		boolean canCreateInverseFK = !_inverseToManyButton.getSelection();
 		_createInverseFK = canCreateInverseFK && _createInverseFKButton.getSelection();
 		_createInverseFKButton.setEnabled(canCreateInverseFK);
 		_inverseFKNameText.setEnabled(_createInverseFK);
@@ -510,14 +537,9 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 			getShell().pack();
 		}
 	}
-	
+
 	protected void _flattenedChanged() {
-	  if (_flattenButton.getSelection()) {
-	    _joinEntityNameText.setText("EOGenericRecord");
-	  }
-	  else {
-	    _joinEntityNameText.setText(_guessedJoinEntityName);
-	  }
+	  // DO NOTHING
 	}
 
 	public void widgetDefaultSelected(SelectionEvent event) {
@@ -527,19 +549,19 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 	public void widgetSelected(SelectionEvent event) {
 		Object source = event.getSource();
 		if (source == _toManyButton) {
-			toManyChanged();
+			toManyChanged(_toManyButton);
 		} else if (source == _inverseToManyButton) {
-			toManyChanged();
+			toManyChanged(_inverseToManyButton);
 		} else if (source == _createFKButton) {
-			_checkManyToMany();
+			_checkManyToMany(_createFKButton);
 		} else if (source == _createInverseFKButton) {
-			_checkManyToMany();
+			_checkManyToMany(_createInverseFKButton);
 		} else if (source == _createButton) {
-			_checkManyToMany();
+			_checkManyToMany(_createButton);
 		} else if (source == _createInverseButton) {
-			_checkManyToMany();
+			_checkManyToMany(_createInverseButton);
 		} else if (source == _flattenButton) {
-		  _flattenedChanged();
+			_flattenedChanged();
 		}
 	}
 
