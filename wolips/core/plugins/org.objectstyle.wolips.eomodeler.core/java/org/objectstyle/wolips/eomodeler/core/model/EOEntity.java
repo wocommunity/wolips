@@ -264,10 +264,10 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		String relationshipName = findUnusedRelationshipName(StringUtils.toPlural(StringUtils.toLowercaseFirstLetter(_entity2.getName())));
 		String inverseRelationshipName = _entity2.findUnusedRelationshipName(StringUtils.toPlural(StringUtils.toLowercaseFirstLetter(getName())));
 		String joinEntityName = getModel().findUnusedEntityName(getName() + _entity2.getName());
-		return joinInManyToManyWith(_entity2, relationshipName, inverseRelationshipName, joinEntityName, true);
+		return joinInManyToManyWith(_entity2, true, relationshipName, true, inverseRelationshipName, joinEntityName, true);
 	}
 
-	public EOEntity joinInManyToManyWith(EOEntity _entity2, String _relationshipName, String _inverseRelationshipName, String _joinEntityName, boolean _flatten) throws DuplicateNameException {
+	public EOEntity joinInManyToManyWith(EOEntity _entity2, boolean createRelationship, String _relationshipName, boolean createInverseRelationship, String _inverseRelationshipName, String _joinEntityName, boolean _flatten) throws DuplicateNameException {
 		EOEntity manyToManyEntity = new EOEntity(_joinEntityName);
 		manyToManyEntity.setExternalName(manyToManyEntity.getName());
 		Set<EOEntity> joiningEntitiesSet = new HashSet<EOEntity>();
@@ -329,40 +329,45 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		}
 		manyToManyEntity.addRelationship(entity2Relationship);
 
-		String entity1ToManyName;
-		if (_flatten) {
-			entity1ToManyName = StringUtils.toPlural(StringUtils.toLowercaseFirstLetter(manyToManyEntity.getName()));
-		} else {
-			entity1ToManyName = _relationshipName;
+		if (createRelationship) {
+			String entity1ToManyName;
+			if (_flatten) {
+				entity1ToManyName = StringUtils.toPlural(StringUtils.toLowercaseFirstLetter(manyToManyEntity.getName()));
+			} else {
+				entity1ToManyName = _relationshipName;
+			}
+		
+			EORelationship entity1ToManyRelationship = entity1Relationship.createInverseRelationshipNamed(entity1ToManyName, true);
+			entity1ToManyRelationship.setClassProperty(Boolean.valueOf(!_flatten));
+			entity1ToManyRelationship.setPropagatesPrimaryKey(Boolean.TRUE);
+			entity1ToManyRelationship.setDeleteRule(EODeleteRule.CASCADE);
+			addRelationship(entity1ToManyRelationship);
+	
+			if (_flatten) {
+				EORelationship entity1ToManyFlattenedRelationship = new EORelationship(_relationshipName, new KeyPath(new String[] { entity1ToManyRelationship.getName(), entity2Relationship.getName() }).toKeyPath());
+				entity1ToManyFlattenedRelationship.setClassProperty(Boolean.TRUE);
+				addRelationship(entity1ToManyFlattenedRelationship);
+			}
 		}
-		EORelationship entity1ToManyRelationship = entity1Relationship.createInverseRelationshipNamed(entity1ToManyName, true);
-		entity1ToManyRelationship.setClassProperty(Boolean.valueOf(!_flatten));
-		entity1ToManyRelationship.setPropagatesPrimaryKey(Boolean.TRUE);
-		entity1ToManyRelationship.setDeleteRule(EODeleteRule.CASCADE);
-		addRelationship(entity1ToManyRelationship);
 
-		if (_flatten) {
-			EORelationship entity1ToManyFlattenedRelationship = new EORelationship(_relationshipName, new KeyPath(new String[] { entity1ToManyRelationship.getName(), entity2Relationship.getName() }).toKeyPath());
-			entity1ToManyFlattenedRelationship.setClassProperty(Boolean.TRUE);
-			addRelationship(entity1ToManyFlattenedRelationship);
-		}
-
-		String entity2ToManyName;
-		if (_flatten) {
-			entity2ToManyName = StringUtils.toPlural(StringUtils.toLowercaseFirstLetter(manyToManyEntity.getName()));
-		} else {
-			entity2ToManyName = _inverseRelationshipName;
-		}
-		EORelationship entity2ToManyRelationship = entity2Relationship.createInverseRelationshipNamed(entity2ToManyName, true);
-		entity2ToManyRelationship.setClassProperty(Boolean.valueOf(!_flatten));
-		entity2ToManyRelationship.setPropagatesPrimaryKey(Boolean.TRUE);
-		entity2ToManyRelationship.setDeleteRule(EODeleteRule.CASCADE);
-		_entity2.addRelationship(entity2ToManyRelationship);
-
-		if (_flatten) {
-			EORelationship entity2ToManyFlattenedRelationship = new EORelationship(_inverseRelationshipName, new KeyPath(new String[] { entity2ToManyRelationship.getName(), entity1Relationship.getName() }).toKeyPath());
-			entity2ToManyFlattenedRelationship.setClassProperty(Boolean.TRUE);
-			_entity2.addRelationship(entity2ToManyFlattenedRelationship);
+		if (createInverseRelationship) {
+			String entity2ToManyName;
+			if (_flatten) {
+				entity2ToManyName = StringUtils.toPlural(StringUtils.toLowercaseFirstLetter(manyToManyEntity.getName()));
+			} else {
+				entity2ToManyName = _inverseRelationshipName;
+			}
+			EORelationship entity2ToManyRelationship = entity2Relationship.createInverseRelationshipNamed(entity2ToManyName, true);
+			entity2ToManyRelationship.setClassProperty(Boolean.valueOf(!_flatten));
+			entity2ToManyRelationship.setPropagatesPrimaryKey(Boolean.TRUE);
+			entity2ToManyRelationship.setDeleteRule(EODeleteRule.CASCADE);
+			_entity2.addRelationship(entity2ToManyRelationship);
+	
+			if (_flatten) {
+				EORelationship entity2ToManyFlattenedRelationship = new EORelationship(_inverseRelationshipName, new KeyPath(new String[] { entity2ToManyRelationship.getName(), entity1Relationship.getName() }).toKeyPath());
+				entity2ToManyFlattenedRelationship.setClassProperty(Boolean.TRUE);
+				_entity2.addRelationship(entity2ToManyFlattenedRelationship);
+			}
 		}
 
 		getModel().addEntity(manyToManyEntity);
