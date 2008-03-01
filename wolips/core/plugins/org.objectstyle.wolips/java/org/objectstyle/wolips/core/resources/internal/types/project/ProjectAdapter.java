@@ -1018,7 +1018,7 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 			IFolder wdFolder = getWorkingDirFolder();
 			if (wdFolder != null && wdFolder.exists()) {
 				IFolder javaFolder = wdFolder.getFolder("Contents/Resources/Java");
-				if (this.isAntBuilderInstalled()) {
+				if (this.isAntBuilderInstalled() || (Nature.getNature(project) instanceof AntApplicationNature)) {
 					resource = javaFolder.findMember(wdFolder.getName().substring(0, wdFolder.getName().length() - 4).toLowerCase() + ".jar");
 					if (!resource.exists())
 						resource = getJar("", ".woa/Contents/");
