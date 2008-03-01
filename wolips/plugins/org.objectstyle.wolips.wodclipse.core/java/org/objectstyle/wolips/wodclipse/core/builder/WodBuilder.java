@@ -258,7 +258,7 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
   }
 
   public static void _validateWodFile(IResource resource, IProgressMonitor progressMonitor, boolean showProgress) {
-    System.out.println("BuildingComponent.run: " + resource);
+    //System.out.println("BuildingComponent.run: " + resource);
     String resourceName = resource.getName();
     if (progressMonitor != null) {
       if (showProgress) {
@@ -279,7 +279,7 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
     catch (Throwable t) {
       t.printStackTrace();
     }
-    System.out.println("BuildingComponent.run: done with " + resource);
+    //System.out.println("BuildingComponent.run: done with " + resource);
   }
 
   public static class BuildingComponent implements Runnable {
@@ -296,7 +296,7 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
         WodBuilder._validateWodFile(_resource, _monitor, false);
       }
       else {
-        System.out.println("BuildingComponent.run: cancelled " + _resource);
+        //System.out.println("BuildingComponent.run: cancelled " + _resource);
       }
     }
   }
