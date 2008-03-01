@@ -264,6 +264,9 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		if (!myDirty && !EOModel.DIRTY.equals(_propertyName)) {
 			setDirty(true);
 		}
+		if (myModelGroup != null) {
+			myModelGroup._modelChanged(this, _propertyName, _oldValue, _newValue);
+		}
 	}
 
 	protected void _entityChanged(EOEntity _entity, String _propertyName, Object _oldValue, Object _newValue) {
