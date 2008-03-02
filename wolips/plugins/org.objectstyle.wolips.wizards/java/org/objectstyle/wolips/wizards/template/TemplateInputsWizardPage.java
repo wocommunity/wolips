@@ -6,6 +6,10 @@ import java.util.Map;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -18,7 +22,7 @@ import org.eclipse.swt.widgets.Text;
 import org.objectstyle.wolips.templateengine.ProjectInput;
 import org.objectstyle.wolips.templateengine.ProjectTemplate;
 
-public class TemplateInputsWizardPage extends WizardPage {
+public class TemplateInputsWizardPage extends WizardPage implements SelectionListener, ModifyListener {
 	private List<ProjectInput> _inputs;
 
 	private Map<ProjectInput, Label> _questionLabels;
@@ -65,110 +69,136 @@ public class TemplateInputsWizardPage extends WizardPage {
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
+
 		Composite composite = (Composite) getControl();
+		if (visible && _projectTemplateChanged) {
+			createTemplateInputFields(composite);
+		}
+		composite.layout(true, true);
+	}
 
-		if (visible) {
-			if (_projectTemplateChanged) {
-				if (_inputs != null) {
-					for (ProjectInput input : _inputs) {
-						Label label = _questionLabels.get(input);
-						Control control = _questionControls.get(input);
-						if (label != null) {
-							label.dispose();
-						}
-						if (control != null) {
-							control.dispose();
-						}
-					}
-					_questionLabels.clear();
-					_questionControls.clear();
+	protected void createTemplateInputFields(Composite parent) {
+		if (_inputs != null) {
+			for (ProjectInput input : _inputs) {
+				Label label = _questionLabels.get(input);
+				Control control = _questionControls.get(input);
+				if (label != null) {
+					label.dispose();
 				}
-
-				if (_projectTemplate != null) {
-					_inputs = _projectTemplate.getInputs();
-				} else {
-					_inputs = null;
-				}
-
-				_projectTemplateChanged = false;
-
-				if (_inputs != null) {
-					for (ProjectInput input : _inputs) {
-						input.setValue(null);
-
-						Label label = new Label(composite, SWT.NONE);
-						label.setText(input.getQuestion());
-						_questionLabels.put(input, label);
-
-						Object value = input.getValue();
-
-						Control control;
-						ProjectInput.Type type = input.getType();
-						if (input.hasOptions()) {
-							Combo combo = new Combo(composite, SWT.READ_ONLY);
-							for (ProjectInput.Option option : input.getOptions()) {
-								combo.add(option.getName());
-							}
-							ProjectInput.Option selectedOption = input.getSelectedOption();
-							if (selectedOption != null) {
-								combo.select(input.getOptions().indexOf(selectedOption));
-							}
-							control = combo;
-						} else {
-							if (type == ProjectInput.Type.String) {
-								control = new Text(composite, SWT.BORDER | SWT.SINGLE);
-								((Text) control).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-								((Text) control).setText((String) value);
-							} else if (type == ProjectInput.Type.Package) {
-								control = new Text(composite, SWT.BORDER | SWT.SINGLE);
-								((Text) control).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-								((Text) control).setText((String) value);
-							} else if (type == ProjectInput.Type.Integer) {
-								control = new Spinner(composite, SWT.NONE);
-								if (value != null) {
-									((Spinner) control).setSelection(((Integer) value).intValue());
-									control.setLayoutData(new GridData());
-								}
-							} else if (type == ProjectInput.Type.Boolean) {
-								control = new Button(composite, SWT.CHECK);
-								if (value != null) {
-									((Button) control).setSelection(((Boolean) value).booleanValue());
-									control.setLayoutData(new GridData());
-								}
-							} else {
-								throw new IllegalArgumentException("Unknown type " + type + ".");
-							}
-						}
-						_questionControls.put(input, control);
-					}
+				if (control != null) {
+					control.dispose();
 				}
 			}
+			_questionLabels.clear();
+			_questionControls.clear();
+		}
+
+		if (_projectTemplate != null) {
+			_inputs = _projectTemplate.getInputs();
 		} else {
-			if (_inputs != null) {
-				for (ProjectInput input : _inputs) {
-					Control control = _questionControls.get(input);
-					if (input.hasOptions()) {
-						int selectedOptionIndex = ((Combo) control).getSelectionIndex();
-						ProjectInput.Option selectedOption = input.getOptions().get(selectedOptionIndex);
-						input.setSelectedOption(selectedOption);
+			_inputs = null;
+		}
+
+		_projectTemplateChanged = false;
+
+		if (_inputs != null) {
+			for (ProjectInput input : _inputs) {
+				input.setValue(null);
+
+				Label label = new Label(parent, SWT.NONE);
+				label.setText(input.getQuestion());
+				_questionLabels.put(input, label);
+
+				Control control = createControlForInput(input, parent);
+				_questionControls.put(input, control);
+			}
+		}
+	}
+
+	protected Control createControlForInput(ProjectInput input, Composite parent) {
+		Object value = input.getValue();
+
+		Control control;
+		ProjectInput.Type type = input.getType();
+		if (input.hasOptions()) {
+			Combo combo = new Combo(parent, SWT.READ_ONLY);
+			for (ProjectInput.Option option : input.getOptions()) {
+				combo.add(option.getName());
+			}
+			ProjectInput.Option selectedOption = input.getSelectedOption();
+			if (selectedOption != null) {
+				combo.select(input.getOptions().indexOf(selectedOption));
+			}
+			combo.addModifyListener(this);
+			control = combo;
+		} else {
+			if (type == ProjectInput.Type.String) {
+				control = new Text(parent, SWT.BORDER | SWT.SINGLE);
+				((Text) control).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+				((Text) control).setText((String) value);
+				((Text) control).addModifyListener(this);
+			} else if (type == ProjectInput.Type.Package) {
+				control = new Text(parent, SWT.BORDER | SWT.SINGLE);
+				((Text) control).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+				((Text) control).setText((String) value);
+				((Text) control).addModifyListener(this);
+			} else if (type == ProjectInput.Type.Integer) {
+				control = new Spinner(parent, SWT.NONE);
+				if (value != null) {
+					((Spinner) control).setSelection(((Integer) value).intValue());
+					control.setLayoutData(new GridData());
+				}
+				((Spinner) control).addModifyListener(this);
+			} else if (type == ProjectInput.Type.Boolean) {
+				control = new Button(parent, SWT.CHECK);
+				if (value != null) {
+					((Button) control).setSelection(((Boolean) value).booleanValue());
+					control.setLayoutData(new GridData());
+				}
+				((Button) control).addSelectionListener(this);
+			} else {
+				throw new IllegalArgumentException("Unknown type " + type + ".");
+			}
+		}
+
+		return control;
+	}
+
+	public void updateModel() {
+		if (_inputs != null) {
+			for (ProjectInput input : _inputs) {
+				Control control = _questionControls.get(input);
+				if (input.hasOptions()) {
+					int selectedOptionIndex = ((Combo) control).getSelectionIndex();
+					ProjectInput.Option selectedOption = input.getOptions().get(selectedOptionIndex);
+					input.setSelectedOption(selectedOption);
+				} else {
+					ProjectInput.Type type = input.getType();
+					if (type == ProjectInput.Type.String) {
+						input.setValue(((Text) control).getText());
+					} else if (type == ProjectInput.Type.Package) {
+						input.setValue(((Text) control).getText());
+					} else if (type == ProjectInput.Type.Integer) {
+						input.setValue(Integer.valueOf(((Spinner) control).getSelection()));
+					} else if (type == ProjectInput.Type.Boolean) {
+						input.setValue(Boolean.valueOf(((Button) control).getSelection()));
 					} else {
-						ProjectInput.Type type = input.getType();
-						if (type == ProjectInput.Type.String) {
-							input.setValue(((Text) control).getText());
-						} else if (type == ProjectInput.Type.Package) {
-							input.setValue(((Text) control).getText());
-						} else if (type == ProjectInput.Type.Integer) {
-							input.setValue(Integer.valueOf(((Spinner) control).getSelection()));
-						} else if (type == ProjectInput.Type.Boolean) {
-							input.setValue(Boolean.valueOf(((Button) control).getSelection()));
-						} else {
-							throw new IllegalArgumentException("Unknown type " + type + ".");
-						}
+						throw new IllegalArgumentException("Unknown type " + type + ".");
 					}
 				}
 			}
 		}
+	}
 
-		composite.layout(true, true);
+	public void widgetDefaultSelected(SelectionEvent e) {
+		widgetSelected(e);
+	}
+
+	public void widgetSelected(SelectionEvent e) {
+		updateModel();
+	}
+
+	public void modifyText(ModifyEvent e) {
+		updateModel();
 	}
 }
