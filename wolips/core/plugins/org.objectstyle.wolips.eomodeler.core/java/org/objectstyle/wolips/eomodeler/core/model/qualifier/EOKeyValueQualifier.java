@@ -33,7 +33,7 @@ public class EOKeyValueQualifier extends EOQualifier {
 		return _value;
 	}
 
-	public String toString() {
+	public String toString(int depth) {
 		StringBuffer sb = new StringBuffer();
 		sb.append(_key);
 		sb.append(" ");

@@ -60,9 +60,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.objectstyle.cayenne.exp.Expression;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.baseforplugins.util.StringUtils;
+import org.objectstyle.wolips.eomodeler.core.model.qualifier.EOQualifier;
 import org.objectstyle.wolips.eomodeler.core.model.qualifier.EOQualifierBinding;
 
 public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> implements IEOEntityRelative, ISortableEOModelObject, PropertyChangeListener {
@@ -132,7 +132,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 
 	private List<EOSortOrdering> mySortOrderings;
 
-	private Expression myQualifier;
+	private EOQualifier myQualifier;
 
 	private String myQualifierString;
 
@@ -153,12 +153,12 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 	}
 
 	public List<EOQualifierBinding> getAllBindings() {
-		return EOQualifierFactory.getQualifierBindingsFromExpression(getEntity(), getQualifier());
+		return EOQualifierFactory.getQualifierBindingsFromQualifier(getEntity(), getQualifier());
 	}
 
 	public Set<EOQualifierBinding> getDistinctBindings() {
 		Map<String, EOQualifierBinding> bindings = new HashMap<String, EOQualifierBinding>();
-		for (EOQualifierBinding binding : EOQualifierFactory.getQualifierBindingsFromExpression(getEntity(), getQualifier())) {
+		for (EOQualifierBinding binding : EOQualifierFactory.getQualifierBindingsFromQualifier(getEntity(), getQualifier())) {
 			if (!bindings.containsKey(binding.getName())) {
 				bindings.put(binding.getName(), binding);
 			}
@@ -358,12 +358,12 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 		return myStoredProcedure;
 	}
 
-	public void setQualifier(Expression _qualifier) {
+	public void setQualifier(EOQualifier _qualifier) {
 		setQualifier(_qualifier, true);
 	}
 
-	public void setQualifier(Expression _qualifier, boolean updateQualifierString) {
-		Expression oldQualifier = myQualifier;
+	public void setQualifier(EOQualifier _qualifier, boolean updateQualifierString) {
+		EOQualifier oldQualifier = myQualifier;
 		myQualifier = _qualifier;
 		firePropertyChange(EOFetchSpecification.QUALIFIER, oldQualifier, myQualifier);
 		if (updateQualifierString) {
@@ -371,7 +371,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 		}
 	}
 
-	public Expression getQualifier() {
+	public EOQualifier getQualifier() {
 		return myQualifier;
 	}
 
@@ -384,8 +384,8 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 		myQualifierString = _qualifierString;
 		if (updateQualifier) {
 			try {
-				Expression exp = EOQualifierFactory.fromString(_qualifierString);
-				setQualifier(exp, false);
+				EOQualifier qualifier = EOQualifierFactory.fromString(_qualifierString);
+				setQualifier(qualifier, false);
 			} catch (RuntimeException e) {
 				e.printStackTrace();
 				setQualifier(null, false);
@@ -616,7 +616,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 
 		Map qualifierMap = _map.getMap("qualifier");
 		if (qualifierMap != null) {
-			myQualifier = EOQualifierFactory.createExpressionFromQualifierMap(new EOModelMap(qualifierMap));
+			myQualifier = EOQualifierFactory.createQualifierFromQualifierMap(new EOModelMap(qualifierMap));
 			myQualifierString = EOQualifierFactory.toString(myQualifier);
 		}
 		myRawRowKeyPaths = _map.getSet("rawRowKeyPaths", true);
@@ -657,7 +657,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 		if (myQualifier == null) {
 			fetchSpecMap.setMap("qualifier", null, true);
 		} else {
-			fetchSpecMap.setMap("qualifier", EOQualifierFactory.createQualifierMapFromExpression(myQualifier), true);
+			fetchSpecMap.setMap("qualifier", EOQualifierFactory.createQualifierMapFromQualifier(myQualifier), true);
 		}
 		if (myRawRowKeyPaths != null && myRawRowKeyPaths.equals(myFetchSpecMap.get("rawRowKeyPaths"))) {
 			fetchSpecMap.setSet("rawRowKeyPaths", (Set) myFetchSpecMap.get("rawRowKeyPaths"), false);
@@ -711,7 +711,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 		if (myQualifierString != null && myQualifierString.length() > 0 && myQualifier == null) {
 			String reason;
 			try {
-				Expression.fromString(myQualifierString);
+				EOQualifierFactory.fromString(myQualifierString);
 				reason = "Unknown failure.";
 			} catch (Throwable t) {
 				reason = StringUtils.getErrorMessage(t);
@@ -756,7 +756,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 		fetchSpec.myUsesDistinct = myUsesDistinct;
 		fetchSpec.mySortOrderings.addAll(mySortOrderings);
 		if (myQualifier != null) {
-			fetchSpec.myQualifier = EOQualifierFactory.createExpressionFromQualifierMap(EOQualifierFactory.createQualifierMapFromExpression(myQualifier));
+			fetchSpec.myQualifier = EOQualifierFactory.createQualifierFromQualifierMap(EOQualifierFactory.createQualifierMapFromQualifier(myQualifier));
 		}
 		fetchSpec.mySharesObjects = mySharesObjects;
 		_cloneUserInfoInto(fetchSpec);

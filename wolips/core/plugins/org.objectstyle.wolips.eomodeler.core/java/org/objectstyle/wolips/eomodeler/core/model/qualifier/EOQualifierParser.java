@@ -279,7 +279,7 @@ public class EOQualifierParser {
 					}
 				} else if ((Character.isJavaIdentifierPart(ch) || ch == '.') && (state == EOQualifierParser.IN_KEYWORD || state == EOQualifierParser.IN_BINDING_KEY)) {
 					// OK
-				} else if (Character.isDigit(ch) || ch == '.' || ch == '-') {
+				} else if (Character.isDigit(ch) || ch == '.' || ch == '-' || ch == ':') {
 					if (state == EOQualifierParser.IN_NUMBER) {
 						// IGNORE
 					} else if (state == EOQualifierParser.IN_KEYWORD) {
@@ -551,7 +551,7 @@ public class EOQualifierParser {
 			// EOQualifier q = parser.parseQualifier("this is \"mike'\"");
 			// EOQualifier q = parser.parseQualifier("name = %@ and
 			// person.firstName == \"mi\\ke\" and age = 5");
-			EOQualifier q = parser.parseQualifier("not name = %@ or person.firstName == \"mi'ke\" and (lastName caseinsensitiveLike 'schrag' or (age = 5)) or(age>10) and (name<0.10)");
+			EOQualifier q = parser.parseQualifier("not name = %@ or (age like 'Test*') and (age like 'T?est') and person.firstName == \"mi'ke\" and (lastName caseinsensitiveLike 'schrag' or (age = 5)) or(age>10) and (name<0.10) or (somevar isAnagramOf: 'test')");
 			System.out.println("EOQualifierParser.main: " + q);
 		} catch (Throwable t) {
 			t.printStackTrace(System.out);

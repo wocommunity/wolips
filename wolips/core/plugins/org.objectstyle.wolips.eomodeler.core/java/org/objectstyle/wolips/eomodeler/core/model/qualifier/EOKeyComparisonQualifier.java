@@ -29,7 +29,7 @@ public class EOKeyComparisonQualifier extends EOQualifier {
 		return _rightKey;
 	}
 
-	public String toString() {
+	public String toString(int depth) {
 		return _leftKey + " " + _comparison + " " + _rightKey;
 	}
 }
