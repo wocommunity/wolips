@@ -45,6 +45,8 @@ public class WOBrowserColumn extends Composite implements ISelectionProvider, IS
 	private BindingsDragHandler _lineDragHandler;
 
 	private IWOBrowserDelegate _delegate;
+	
+	private List<BindingValueKey> _bindingValueKeys;
 
 	public WOBrowserColumn(IType type, Composite parent, int style) throws JavaModelException {
 		super(parent, style);
@@ -99,13 +101,18 @@ public class WOBrowserColumn extends Composite implements ISelectionProvider, IS
 		List<BindingValueKey> filteredBindingValueKeys = BindingReflectionUtils.filterSystemBindingValueKeys(bindingValueKeys, true);
 		Set<BindingValueKey> uniqueBingingValueKeys = new TreeSet<BindingValueKey>(filteredBindingValueKeys);
 		List<BindingValueKey> sortedBindingValueKeys = new LinkedList<BindingValueKey>(uniqueBingingValueKeys);
+		_bindingValueKeys = sortedBindingValueKeys;
 
-		_keysViewer.setInput(sortedBindingValueKeys);
+		_keysViewer.setInput(_bindingValueKeys);
 		tableContainer.pack();
 
 		_lineDragHandler = new BindingsDragHandler(this);
 		_lineDragHandler.register();
 		_keysViewer.addDragSupport(DND.DROP_COPY, new Transfer[] { LocalSelectionTransfer.getTransfer() }, _lineDragHandler);
+	}
+	
+	public List<BindingValueKey> getBindingValueKeys() {
+		return _bindingValueKeys;
 	}
 
 	public void setDelegate(IWOBrowserDelegate delegate) {

@@ -24,15 +24,20 @@ import org.objectstyle.wolips.bindings.wod.BindingValueKeyPath;
 
 public class WOBrowser extends ScrolledComposite implements ISelectionChangedListener, ISelectionProvider, KeyListener {
 	private Composite _browser;
-	
+
 	private List<WOBrowserColumn> _columns;
 
 	private List<ISelectionChangedListener> _listeners = new LinkedList<ISelectionChangedListener>();
-	
+
 	private IWOBrowserDelegate _browserDelegate;
+
+	private StringBuffer _keypathBuffer;
+
+	private long _lastKeyTime;
 
 	public WOBrowser(Composite parent, int style) {
 		super(parent, SWT.H_SCROLL | style);
+		_keypathBuffer = new StringBuffer();
 		_columns = new LinkedList<WOBrowserColumn>();
 
 		_browser = new Composite(this, SWT.NONE);
@@ -49,14 +54,14 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 		browserLayout.horizontalSpacing = 5;
 		_browser.setLayout(browserLayout);
 	}
-	
+
 	public void setBrowserDelegate(IWOBrowserDelegate browserDelegate) {
 		_browserDelegate = browserDelegate;
 		for (WOBrowserColumn column : _columns) {
 			column.setDelegate(browserDelegate);
 		}
 	}
-	
+
 	public IWOBrowserDelegate getBrowserDelegate() {
 		return _browserDelegate;
 	}
@@ -96,6 +101,13 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 		return newColumn;
 	}
 
+	public void disposeToColumn(WOBrowserColumn column) {
+		int columnIndex = _columns.indexOf(column);
+		if (columnIndex != -1) {
+			disposeToColumn(columnIndex);
+		}
+	}
+
 	public void disposeToColumn(int columnIndex) {
 		for (int columnNum = _columns.size() - 1; columnNum > columnIndex; columnNum--) {
 			WOBrowserColumn column = _columns.get(columnNum);
@@ -112,10 +124,7 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 	public WOBrowserColumn selectKeyInColumn(BindingValueKey selectedKey, WOBrowserColumn column) {
 		WOBrowserColumn addedColumn = null;
 
-		int columnIndex = _columns.indexOf(column);
-		if (columnIndex != -1) {
-			disposeToColumn(columnIndex);
-		}
+		disposeToColumn(column);
 
 		if (selectedKey == null) {
 			// System.out.println("WOBrowserPage.selectionChanged: none");
@@ -150,6 +159,16 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 		}
 	}
 
+	public WOBrowserColumn getFocusedColumn() {
+		WOBrowserColumn focusedColumn = null;
+		for (WOBrowserColumn column : _columns) {
+			if (column.getViewer().getTable().isFocusControl()) {
+				focusedColumn = column;
+			}
+		}
+		return focusedColumn;
+	}
+
 	public WOBrowserColumn getSelectedColumn() {
 		WOBrowserColumn selectedColumn = null;
 		for (WOBrowserColumn column : _columns) {
@@ -159,7 +178,7 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 		}
 		return selectedColumn;
 	}
-	
+
 	public String getSelectedKeyPath() {
 		StringBuffer keyPath = new StringBuffer();
 		for (WOBrowserColumn column : _columns) {
@@ -187,63 +206,132 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 	}
 
 	public void setSelection(ISelection selection) {
-		String selectedKeyPath = (String) ((IStructuredSelection) selection).getFirstElement();
-		if (selectedKeyPath == null) {
-			WOBrowserColumn column = _columns.get(0);
-			selectKeyInColumn(null, column);
-			column.setSelection(new StructuredSelection());
-		} else {
-			try {
-				BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(selectedKeyPath, _columns.get(0).getType());
-				disposeToColumn(0);
-				if (bindingValueKeyPath.isValid()) {
-					for (BindingValueKey bindingValueKey : bindingValueKeyPath.getBindingKeys()) {
-						WOBrowserColumn column = _columns.get(_columns.size() - 1);
-						column.setSelection(new StructuredSelection(bindingValueKey));
+		Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
+		if (selectedObject instanceof String) {
+			String selectedKeyPath = (String) selectedObject;
+			if (selectedKeyPath == null) {
+				WOBrowserColumn column = _columns.get(0);
+				selectKeyInColumn(null, column);
+				column.setSelection(new StructuredSelection());
+			} else {
+				try {
+					BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(selectedKeyPath, _columns.get(0).getType());
+					disposeToColumn(0);
+					if (bindingValueKeyPath.isValid()) {
+						for (BindingValueKey bindingValueKey : bindingValueKeyPath.getBindingKeys()) {
+							WOBrowserColumn column = _columns.get(_columns.size() - 1);
+							column.setSelection(new StructuredSelection(bindingValueKey));
 
-						WOBrowserColumn newColumn = selectKeyInColumn(bindingValueKey, column);
-						if (newColumn == null) {
-							break;
+							WOBrowserColumn newColumn = selectKeyInColumn(bindingValueKey, column);
+							if (newColumn == null) {
+								break;
+							}
 						}
 					}
+				} catch (JavaModelException e) {
+					e.printStackTrace();
 				}
-			} catch (JavaModelException e) {
-				e.printStackTrace();
 			}
 		}
 	}
-	
-	public void keyPressed(KeyEvent e) {
-		if (e.keyCode == SWT.ARROW_LEFT) {
-			String selectedKey = getSelectedKeyPath();
-			if (selectedKey.length() > 0) {
-				int dotIndex = selectedKey.lastIndexOf('.');
-				if (dotIndex != -1) {
-					String previousKey = selectedKey.substring(0, dotIndex);
-					setSelection(new StructuredSelection(previousKey));
-					WOBrowserColumn previousColumn = getSelectedColumn();
-					if (previousColumn != null) {
-						previousColumn.setFocus();
+
+	protected String getPreviousSelectedKeyPath() {
+		String previousSelectedKeyPath = null;
+		String selectedKey = getSelectedKeyPath();
+		if (selectedKey.length() > 0) {
+			int dotIndex = selectedKey.lastIndexOf('.');
+			if (dotIndex != -1) {
+				previousSelectedKeyPath = selectedKey.substring(0, dotIndex);
+			}
+		}
+		return previousSelectedKeyPath;
+	}
+
+	public void selectPreviousColumn() {
+		String previousSelectedKeyPath = getPreviousSelectedKeyPath();
+		if (previousSelectedKeyPath != null) {
+			setSelection(new StructuredSelection(previousSelectedKeyPath));
+			WOBrowserColumn previousColumn = getSelectedColumn();
+			if (previousColumn != null) {
+				previousColumn.setFocus();
+			}
+		}
+		clearKeyBuffer();
+	}
+
+	public void selectNextColumn() {
+		WOBrowserColumn column = getSelectedColumn();
+		if (column != null) {
+			int columnIndex = _columns.indexOf(column);
+			if (columnIndex < _columns.size() - 1) {
+				WOBrowserColumn nextColumn = _columns.get(_columns.size() - 1);
+				Object firstElement = nextColumn.getViewer().getElementAt(0);
+				nextColumn.setSelection(new StructuredSelection(firstElement));
+				nextColumn.setFocus();
+			}
+		}
+		clearKeyBuffer();
+	}
+
+	protected void clearKeyBuffer() {
+		_keypathBuffer.setLength(0);
+	}
+
+	protected void selectFromKeyBuffer() {
+		if (_keypathBuffer.length() > 0) {
+			WOBrowserColumn focusedColumn = getFocusedColumn();
+			if (focusedColumn != null) {
+				BindingValueKey matchingKey = null;
+				for (BindingValueKey key : focusedColumn.getBindingValueKeys()) {
+					if (key.getBindingName().startsWith(_keypathBuffer.toString())) {
+						matchingKey = key;
+						break;
 					}
 				}
-			}
-		}
-		else if (e.keyCode == SWT.ARROW_RIGHT) {
-			WOBrowserColumn column = getSelectedColumn();
-			if (column != null) {
-				int columnIndex = _columns.indexOf(column);
-				if (columnIndex < _columns.size() - 1) {
-					WOBrowserColumn nextColumn = _columns.get(_columns.size() - 1);
-					Object firstElement = nextColumn.getViewer().getElementAt(0);
-					nextColumn.setSelection(new StructuredSelection(firstElement));
-					nextColumn.setFocus();
+				disposeToColumn(focusedColumn);
+				if (matchingKey != null) {
+					focusedColumn.setSelection(new StructuredSelection(matchingKey));
 				}
 			}
 		}
-		//System.out.println("WOBrowser.keyPressed: " + e);
-		// TODO
 	}
-	
+
+	protected void deleteFromKeyBuffer() {
+		if (_keypathBuffer.length() > 0) {
+			_keypathBuffer.setLength(_keypathBuffer.length() - 1);
+		}
+		selectFromKeyBuffer();
+		_lastKeyTime = System.currentTimeMillis();
+	}
+
+	protected void appendToKeyBuffer(char ch) {
+		long keyTime = System.currentTimeMillis();
+		if ((keyTime - _lastKeyTime) > 1000 || _keypathBuffer.length() == 0) {
+			_keypathBuffer.setLength(0);
+		}
+		_keypathBuffer.append(ch);
+
+		selectFromKeyBuffer();
+
+		_lastKeyTime = keyTime;
+	}
+
+	public void keyPressed(KeyEvent e) {
+		if (e.keyCode == SWT.ARROW_LEFT) {
+			selectPreviousColumn();
+		} else if (e.keyCode == SWT.ARROW_RIGHT) {
+			selectNextColumn();
+		} else if (e.keyCode == SWT.ESC) {
+			clearKeyBuffer();
+		} else if (e.character == '.') {
+			selectNextColumn();
+		} else if (e.keyCode == SWT.BS || e.keyCode == SWT.DEL) {
+			deleteFromKeyBuffer();
+		} else if (e.character != 0) {
+			appendToKeyBuffer(e.character);
+		}
+	}
+
 	public void keyReleased(KeyEvent e) {
 		// TODO
 	}

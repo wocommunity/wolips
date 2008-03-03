@@ -95,7 +95,7 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 		bindingsTableContainerData.horizontalSpan = 2;
 		bindingsTableContainer.setLayoutData(bindingsTableContainerData);
 
-		_bindingsTableViewer = new TableViewer(bindingsTableContainer, SWT.BORDER | SWT.V_SCROLL | SWT.FULL_SELECTION);
+		_bindingsTableViewer = new TableViewer(bindingsTableContainer, SWT.MULTI |  SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.FULL_SELECTION);
 		_bindingsLabelProvider = new BindingsLabelProvider();
 		_bindingsContentProvider = new BindingsContentProvider();
 		_bindingsTableViewer.setContentProvider(_bindingsContentProvider);

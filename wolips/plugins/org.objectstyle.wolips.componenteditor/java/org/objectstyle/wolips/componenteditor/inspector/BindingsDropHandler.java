@@ -179,6 +179,7 @@ public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener {
 			TemplateEditor templateEditor = _componentEditor.getTemplateEditor();
 			TemplateSourceEditor templateSourceEditor = templateEditor.getSourceEditor();
 			FuzzyXMLElement selectedElement = templateSourceEditor.getElementAtPoint(dropPoint);
+			
 			// System.out.println("BindingsInspectorPage.bindingDragged: " +
 			// selectedElement);
 		} catch (Exception e) {
