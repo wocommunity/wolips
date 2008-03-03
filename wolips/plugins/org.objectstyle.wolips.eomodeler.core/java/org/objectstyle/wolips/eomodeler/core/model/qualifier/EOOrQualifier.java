@@ -37,17 +37,20 @@ public class EOOrQualifier extends EOAggregateQualifier {
 		return _qualifiers;
 	}
 
-	@Override
-	public String toString() {
+	public String toString(int depth) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("(");
+		if (depth > 0) {
+			sb.append("(");
+		}
 		for (int i = 0; i < _qualifiers.size(); i ++) {
 			if (i > 0) {
 				sb.append(" or ");
 			}
-			sb.append(_qualifiers.get(i));
+			sb.append(_qualifiers.get(i).toString(depth + 1));
 		}
-		sb.append(")");
+		if (depth > 0) {
+			sb.append(")");
+		}
 		return sb.toString();
 	}
 }

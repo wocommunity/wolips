@@ -14,12 +14,11 @@ public class EONotQualifier extends EOQualifier {
 	public EOQualifier getQualifier() {
 		return _qualifier;
 	}
-
 	@Override
-	public String toString() {
+	public String toString(int depth) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("not (");
-		sb.append(_qualifier);
+		sb.append(_qualifier.toString(depth + 1));
 		sb.append(")");
 		return sb.toString();
 	}

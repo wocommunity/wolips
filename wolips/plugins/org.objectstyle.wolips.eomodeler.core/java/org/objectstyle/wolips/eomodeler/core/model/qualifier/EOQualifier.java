@@ -17,4 +17,10 @@ public abstract class EOQualifier {
 			return _name;
 		}
 	}
+	
+	public String toString() {
+		return toString(0);
+	}
+	
+	public abstract String toString(int depth);
 }
