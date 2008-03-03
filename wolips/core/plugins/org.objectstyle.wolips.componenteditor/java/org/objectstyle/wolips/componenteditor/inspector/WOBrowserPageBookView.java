@@ -9,13 +9,14 @@ import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 
 public class WOBrowserPageBookView extends PageBookView {
+	private ComponentEditor _componentEditor;
+
 	public WOBrowserPageBookView() {
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected IPage createDefaultPage(PageBook book) {
-		System.out.println("WOBrowserPageBookView.createDefaultPage: " + book);
 		WOBrowserPage page = new WOBrowserPage(null);
 		initPage(page);
 		page.createControl(book);
@@ -24,12 +25,11 @@ public class WOBrowserPageBookView extends PageBookView {
 
 	@Override
 	protected PageRec doCreatePage(IWorkbenchPart part) {
-		System.out.println("WOBrowserPageBookView.doCreatePage: " + part);
 		PageRec pageRec = null;
 		if (part instanceof ComponentEditor) {
-			ComponentEditor editor = (ComponentEditor) part;
+			_componentEditor = (ComponentEditor) part;
 			try {
-				WodParserCache cache = editor.getParserCache();
+				WodParserCache cache = _componentEditor.getParserCache();
 				IType componentType = cache.getComponentType();
 				WOBrowserPage page = new WOBrowserPage(componentType);
 				initPage(page);
@@ -40,11 +40,12 @@ public class WOBrowserPageBookView extends PageBookView {
 				pageRec = null;
 			}
 		} else {
+			_componentEditor = null;
 			pageRec = null;
 		}
 		return pageRec;
 	}
-
+	
 	@Override
 	protected void doDestroyPage(IWorkbenchPart part, PageRec pageRecord) {
 		System.out.println("WOBrowserPageBookView.doDestroyPage: " + part);

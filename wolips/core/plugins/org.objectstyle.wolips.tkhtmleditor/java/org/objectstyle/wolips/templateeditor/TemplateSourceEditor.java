@@ -16,6 +16,7 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -132,7 +133,7 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
           return;
         }
       }
-      
+
       boolean autoBuild = ResourcesPlugin.getPlugin().getPluginPreferences().getDefaultBoolean(ResourcesPlugin.PREF_AUTO_BUILDING);
       if (!autoBuild) {
         ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
@@ -265,47 +266,56 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
     super.updateAssist();
   }
 
-  public int widgetOffset2ModelOffset(int widgetOffset) {
-    return AbstractTextEditor.widgetOffset2ModelOffset(getSourceViewer(), widgetOffset);
-  }
-
-  public Point getTagSelectionAtOffset(int modelOffset) throws Exception {
-    Point selection = null;
-
-    WodParserCache cache = getParserCache();
-    FuzzyXMLDocument xmlDocument = cache.getHtmlEntry().getModel();
-    if (xmlDocument != null) {
-      FuzzyXMLElement selectedElement = xmlDocument.getElementByOffset(modelOffset);
-      if (selectedElement != null) {
-        IDocument doc = cache.getHtmlEntry().getDocument();
-
-        int openTagOffset = selectedElement.getOffset();
-        int openTagLength = selectedElement.getOpenTagLength() + 2;
-        int openTagEndOffset = openTagOffset + openTagLength;
-        if (selectedElement.hasCloseTag()) {
-          int closeTagOffset = selectedElement.getCloseTagOffset();
-          int closeTagEndOffset = closeTagOffset + selectedElement.getCloseTagLength();
-          //if (modelOffset > openTagEndOffset && modelOffset < selectedElement.getCloseTagOffset()) {
-          if ((modelOffset >= openTagOffset && modelOffset < openTagEndOffset) || (modelOffset >= closeTagOffset && modelOffset < closeTagEndOffset)) {
-            IRegion lineRegion = doc.getLineInformationOfOffset(openTagEndOffset);
-            int lineEndOffset = lineRegion.getOffset() + lineRegion.getLength();
-            if (openTagEndOffset == lineEndOffset) {
-              openTagEndOffset++;
-              openTagLength++;
-            }
-            selection = new Point(openTagOffset, selectedElement.getLength());
-          }
-          else {
-            selection = new Point(modelOffset, 0);
-          }
-        }
-        else {
-          selection = new Point(selectedElement.getOffset(), selectedElement.getLength());
-        }
+  public int getOffsetAtPoint(Point point) {
+    StyledText st = getViewer().getTextWidget();
+    int modelOffset;
+    Point relativePosition = st.toControl(point);
+    if (!st.getBounds().contains(relativePosition)) {
+      modelOffset = -1;
+    }
+    else {
+      try {
+        int offset = st.getOffsetAtLocation(relativePosition);
+        modelOffset = AbstractTextEditor.widgetOffset2ModelOffset(getSourceViewer(), offset);
+      }
+      catch (IllegalArgumentException e) {
+        modelOffset = -1;
       }
     }
+    return modelOffset;
+  }
 
-    return selection;
+  public FuzzyXMLElement getElementAtPoint(Point point) throws Exception {
+    int offset = getOffsetAtPoint(point);
+    FuzzyXMLElement element = getElementAtOffset(offset);
+    return element;
+  }
+
+  public FuzzyXMLElement getElementAtOffset(int offset) throws Exception {
+    FuzzyXMLElement element = null;
+    if (offset >= 0) {
+      WodParserCache cache = getParserCache();
+      FuzzyXMLDocument xmlDocument = cache.getHtmlEntry().getModel();
+      if (xmlDocument != null) {
+        element = xmlDocument.getElementByOffset(offset);
+      }
+    }
+    return element;
+  }
+
+  public IRegion getSelectionRegionAtPoint(Point point) throws Exception {
+    int offset = getOffsetAtPoint(point);
+    return getSelectionRegionAtOffset(offset);
+  }
+
+  public IRegion getSelectionRegionAtOffset(int offset) throws Exception {
+    IRegion region = null;
+    FuzzyXMLElement element = getElementAtOffset(offset);
+    if (element != null) {
+      IDocument doc = getParserCache().getHtmlEntry().getDocument();
+      region = element.getRegionAtOffset(offset, doc);
+    }
+    return region;
   }
 
 }

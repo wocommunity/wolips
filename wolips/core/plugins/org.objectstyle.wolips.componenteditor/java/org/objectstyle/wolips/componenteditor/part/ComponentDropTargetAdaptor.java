@@ -2,7 +2,9 @@ package org.objectstyle.wolips.componenteditor.part;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.IRewriteTarget;
+import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.custom.StyledText;
@@ -17,7 +19,7 @@ import org.objectstyle.wolips.templateeditor.TemplateEditor;
 public class ComponentDropTargetAdaptor extends DropTargetAdapter {
 	private ComponentEditor _componentEditor;
 
-	private Point _selection;
+	private IRegion _selection;
 
 	public ComponentDropTargetAdaptor(ComponentEditor componentEditor) {
 		_componentEditor = componentEditor;
@@ -38,7 +40,12 @@ public class ComponentDropTargetAdaptor extends DropTargetAdapter {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		_selection = getStyledText().getSelectionRange();
+		Point selectionRange = getStyledText().getSelectionRange();
+		if (selectionRange == null) {
+			_selection = null;
+		} else {
+			_selection = new Region(selectionRange.x, selectionRange.y);
+		}
 
 		if (event.detail == DND.DROP_DEFAULT) {
 			event.detail = DND.DROP_MOVE;
@@ -57,14 +64,9 @@ public class ComponentDropTargetAdaptor extends DropTargetAdapter {
 		try {
 			event.feedback |= DND.FEEDBACK_SCROLL;
 
-			StyledText st = getStyledText();
-			Point relativePosition = st.toControl(new Point(event.x, event.y));
-			int offset = st.getOffsetAtLocation(relativePosition);
-			int modelOffset = getTemplateEditor().getSourceEditor().widgetOffset2ModelOffset(offset);
-
-			_selection = getTemplateEditor().getSourceEditor().getTagSelectionAtOffset(modelOffset);
+			_selection = getTemplateEditor().getSourceEditor().getSelectionRegionAtPoint(new Point(event.x, event.y));
 			if (_selection != null) {
-				st.setSelectionRange(_selection.x, _selection.y);
+				getTemplateEditor().getSourceEditor().getViewer().setSelectedRange(_selection.getOffset(), _selection.getLength());
 			}
 		} catch (Exception e) {
 			// e.printStackTrace();
@@ -110,9 +112,9 @@ public class ComponentDropTargetAdaptor extends DropTargetAdapter {
 		}
 
 		if (selectRange) {
-			getTemplateEditor().getSelectionProvider().setSelection(new TextSelection(_selection.x, _selection.y));
+			getTemplateEditor().getSelectionProvider().setSelection(new TextSelection(_selection.getOffset(), _selection.getLength()));
 		} else {
-			getTemplateEditor().getSelectionProvider().setSelection(new TextSelection(_selection.x, 0));
+			getTemplateEditor().getSelectionProvider().setSelection(new TextSelection(_selection.getOffset(), 0));
 		}
 
 		inserter.insert();

@@ -1,5 +1,9 @@
 package jp.aonir.fuzzyxml;
 
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
+
 
 public interface FuzzyXMLElement extends FuzzyXMLNode {
 	
@@ -57,5 +61,6 @@ public interface FuzzyXMLElement extends FuzzyXMLNode {
 	public String getValue();
 	
 	public void removeAllChildren();
-	
+
+	public IRegion getRegionAtOffset(int offset, IDocument doc) throws BadLocationException;
 }
