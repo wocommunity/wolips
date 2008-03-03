@@ -3,49 +3,33 @@ package org.objectstyle.wolips.componenteditor.inspector;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jface.layout.TableColumnLayout;
-import org.eclipse.jface.util.LocalSelectionTransfer;
-import org.eclipse.jface.viewers.BaseLabelProvider;
-import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.TableColumn;
-import org.objectstyle.wolips.baseforuiplugins.utils.ListContentProvider;
-import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
 import org.objectstyle.wolips.bindings.wod.BindingValueKey;
 import org.objectstyle.wolips.bindings.wod.BindingValueKeyPath;
-import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
-import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 
-public class WOBrowser extends ScrolledComposite implements ISelectionChangedListener, ISelectionProvider {
+public class WOBrowser extends ScrolledComposite implements ISelectionChangedListener, ISelectionProvider, KeyListener {
 	private Composite _browser;
-
+	
 	private List<WOBrowserColumn> _columns;
 
 	private List<ISelectionChangedListener> _listeners = new LinkedList<ISelectionChangedListener>();
+	
+	private IWOBrowserDelegate _browserDelegate;
 
 	public WOBrowser(Composite parent, int style) {
 		super(parent, SWT.H_SCROLL | style);
@@ -60,10 +44,21 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 
 		GridLayout browserLayout = new GridLayout(1, false);
 		browserLayout.horizontalSpacing = 0;
-		browserLayout.marginWidth = 0;
-		browserLayout.marginHeight = 3;
+		browserLayout.marginWidth = 5;
+		browserLayout.marginHeight = 5;
 		browserLayout.horizontalSpacing = 5;
 		_browser.setLayout(browserLayout);
+	}
+	
+	public void setBrowserDelegate(IWOBrowserDelegate browserDelegate) {
+		_browserDelegate = browserDelegate;
+		for (WOBrowserColumn column : _columns) {
+			column.setDelegate(browserDelegate);
+		}
+	}
+	
+	public IWOBrowserDelegate getBrowserDelegate() {
+		return _browserDelegate;
 	}
 
 	public WOBrowserColumn setRootType(IType type) throws JavaModelException {
@@ -75,10 +70,15 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 		WOBrowserColumn newColumn = null;
 		if (type != null) {
 			newColumn = new WOBrowserColumn(type, _browser, SWT.NONE);
+			newColumn.getViewer().getTable().addKeyListener(this);
+			newColumn.setDelegate(_browserDelegate);
 			newColumn.addSelectionChangedListener(this);
 			GridData columnLayoutData = new GridData(GridData.FILL_BOTH);
 			newColumn.setLayoutData(columnLayoutData);
 			_columns.add(newColumn);
+			if (_browserDelegate != null) {
+				_browserDelegate.browserColumnAdded(newColumn);
+			}
 			((GridLayout) _browser.getLayout()).numColumns = _columns.size();
 
 			_browser.pack();
@@ -99,6 +99,9 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 	public void disposeToColumn(int columnIndex) {
 		for (int columnNum = _columns.size() - 1; columnNum > columnIndex; columnNum--) {
 			WOBrowserColumn column = _columns.get(columnNum);
+			if (_browserDelegate != null) {
+				_browserDelegate.browserColumnRemoved(column);
+			}
 			column.dispose();
 			_columns.remove(columnNum);
 		}
@@ -147,6 +150,16 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 		}
 	}
 
+	public WOBrowserColumn getSelectedColumn() {
+		WOBrowserColumn selectedColumn = null;
+		for (WOBrowserColumn column : _columns) {
+			if (column.getSelectedKey() != null) {
+				selectedColumn = column;
+			}
+		}
+		return selectedColumn;
+	}
+	
 	public String getSelectedKeyPath() {
 		StringBuffer keyPath = new StringBuffer();
 		for (WOBrowserColumn column : _columns) {
@@ -199,183 +212,40 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 			}
 		}
 	}
-
-	public static class WOBrowserColumn extends Composite implements ISelectionProvider, ISelectionChangedListener {
-		private List<ISelectionChangedListener> _listeners = new LinkedList<ISelectionChangedListener>();
-
-		private IType _type;
-
-		private TableViewer _keysViewer;
-
-		private Font _typeNameFont;
-
-		private LineDragHandler _lineDragHandler;
-
-		public WOBrowserColumn(IType type, Composite parent, int style) throws JavaModelException {
-			super(parent, style);
-			setBackground(parent.getBackground());
-
-			GridLayout layout = new GridLayout(1, false);
-			layout.marginWidth = 0;
-			layout.marginHeight = 0;
-			layout.marginTop = 0;
-			setLayout(layout);
-
-			_type = type;
-
-			Label typeName = new Label(this, SWT.NONE);
-			typeName.setBackground(getBackground());
-			Font originalFont = typeName.getFont();
-			FontData[] fontData = originalFont.getFontData();
-			_typeNameFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD);
-			typeName.setFont(_typeNameFont);
-
-			// typeName.setFont(typeName.getFont().)
-			typeName.setText(type.getElementName());
-
-			Composite tableContainer = new Composite(this, SWT.NONE);
-			tableContainer.setBackground(parent.getBackground());
-			tableContainer.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-			_keysViewer = new TableViewer(tableContainer, SWT.FULL_SELECTION | SWT.SINGLE | SWT.V_SCROLL | SWT.BORDER);
-			_keysViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
-			_keysViewer.addSelectionChangedListener(this);
-			_keysViewer.setContentProvider(new ListContentProvider());
-			_keysViewer.setLabelProvider(new WOBrowserColumnLabelProvider());
-
-			TableColumnLayout keysLayout = new TableColumnLayout();
-			tableContainer.setLayout(keysLayout);
-
-			TableColumn nameColumn = new TableColumn(_keysViewer.getTable(), SWT.NONE);
-			nameColumn.setText("Column 1");
-			// nameColumn.setMoveable(true);
-			keysLayout.setColumnData(nameColumn, new ColumnWeightData(0, 200));
-
-			TableColumn iconColumn = new TableColumn(_keysViewer.getTable(), SWT.NONE);
-			iconColumn.setText("Column 2");
-			// iconColumn.setMoveable(true);
-			keysLayout.setColumnData(iconColumn, new ColumnWeightData(0, 20));
-
-			BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath("", type, type.getJavaProject(), WodParserCache.getTypeCache());
-			List<BindingValueKey> bindingValueKeys = bindingValueKeyPath.getPartialMatchesForLastBindingKey(true);
-			List<BindingValueKey> filteredBindingValueKeys = BindingReflectionUtils.filterSystemBindingValueKeys(bindingValueKeys, true);
-			Set<BindingValueKey> uniqueBingingValueKeys = new TreeSet<BindingValueKey>(filteredBindingValueKeys);
-			List<BindingValueKey> sortedBindingValueKeys = new LinkedList<BindingValueKey>(uniqueBingingValueKeys);
-
-			_keysViewer.setInput(sortedBindingValueKeys);
-			tableContainer.pack();
-
-			_lineDragHandler = new LineDragHandler(this);
-			_lineDragHandler.register();
-			_keysViewer.addDragSupport(DND.DROP_COPY, new Transfer[] { LocalSelectionTransfer.getTransfer() }, _lineDragHandler);
-		}
-
-		@Override
-		public void dispose() {
-			_typeNameFont.dispose();
-			if (_lineDragHandler != null) {
-				_lineDragHandler.dispose();
-				_lineDragHandler = null;
-			}
-			super.dispose();
-		}
-
-		@Override
-		public boolean setFocus() {
-			return _keysViewer.getControl().setFocus();
-		}
-
-		public IType getType() {
-			return _type;
-		}
-
-		public TableViewer getViewer() {
-			return _keysViewer;
-		}
-
-		public void addSelectionChangedListener(ISelectionChangedListener listener) {
-			_listeners.add(listener);
-		}
-
-		public ISelection getSelection() {
-			return _keysViewer.getSelection();
-		}
-
-		public void removeSelectionChangedListener(ISelectionChangedListener listener) {
-			_listeners.remove(listener);
-		}
-
-		public void setSelection(ISelection selection) {
-			_keysViewer.setSelection(selection, true);
-		}
-
-		public void selectionChanged(SelectionChangedEvent event) {
-			SelectionChangedEvent wrappedEvent = new SelectionChangedEvent(this, event.getSelection());
-			for (Iterator listeners = _listeners.iterator(); listeners.hasNext();) {
-				ISelectionChangedListener listener = (ISelectionChangedListener) listeners.next();
-				listener.selectionChanged(wrappedEvent);
+	
+	public void keyPressed(KeyEvent e) {
+		if (e.keyCode == SWT.ARROW_LEFT) {
+			String selectedKey = getSelectedKeyPath();
+			if (selectedKey.length() > 0) {
+				int dotIndex = selectedKey.lastIndexOf('.');
+				if (dotIndex != -1) {
+					String previousKey = selectedKey.substring(0, dotIndex);
+					setSelection(new StructuredSelection(previousKey));
+					WOBrowserColumn previousColumn = getSelectedColumn();
+					if (previousColumn != null) {
+						previousColumn.setFocus();
+					}
+				}
 			}
 		}
-
-		public BindingValueKey getSelectedKey() {
-			BindingValueKey selectedKey = null;
-			IStructuredSelection selection = (IStructuredSelection) getSelection();
-			if (selection != null) {
-				selectedKey = (BindingValueKey) selection.getFirstElement();
+		else if (e.keyCode == SWT.ARROW_RIGHT) {
+			WOBrowserColumn column = getSelectedColumn();
+			if (column != null) {
+				int columnIndex = _columns.indexOf(column);
+				if (columnIndex < _columns.size() - 1) {
+					WOBrowserColumn nextColumn = _columns.get(_columns.size() - 1);
+					Object firstElement = nextColumn.getViewer().getElementAt(0);
+					nextColumn.setSelection(new StructuredSelection(firstElement));
+					nextColumn.setFocus();
+				}
 			}
-			return selectedKey;
 		}
+		//System.out.println("WOBrowser.keyPressed: " + e);
+		// TODO
 	}
-
-	public static class WOBrowserColumnLabelProvider extends BaseLabelProvider implements ILabelProvider, ITableLabelProvider {
-		public Image getImage(Object element) {
-			return getColumnImage(element, 0);
-		}
-
-		public String getText(Object element) {
-			return getColumnText(element, 0);
-		}
-
-		public Image getColumnImage(Object element, int columnIndex) {
-			Image image = null;
-			if (columnIndex == 1) {
-				BindingValueKey bindingValueKey = (BindingValueKey) element;
-				if (bindingValueKey != null) {
-					try {
-						if (!bindingValueKey.isLeaf()) {
-							image = ComponenteditorPlugin.getDefault().getImage(ComponenteditorPlugin.TO_ONE_ICON);
-						}
-					} catch (JavaModelException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-			return image;
-		}
-
-		public String getColumnText(Object element, int columnIndex) {
-			String text = null;
-			if (columnIndex == 0) {
-				BindingValueKey bindingValueKey = (BindingValueKey) element;
-				if (bindingValueKey != null) {
-					text = bindingValueKey.getBindingName();
-					int minWidth = 40;
-					if (text != null && text.length() < minWidth) {
-						StringBuffer textBuffer = new StringBuffer(text);
-						for (int i = text.length(); i < minWidth; i++) {
-							textBuffer.append(' ');
-						}
-						text = textBuffer.toString();
-					}
-				}
-				if (text == null) {
-					text = "<unknown>";
-				}
-			} else if (columnIndex == 1) {
-				text = null;
-			}
-			return text;
-		}
+	
+	public void keyReleased(KeyEvent e) {
+		// TODO
 	}
 
 }

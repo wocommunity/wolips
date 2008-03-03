@@ -32,6 +32,10 @@ public class WodHtmlUtils {
     return isWOTag;
   }
 
+  public static boolean isWOTag(FuzzyXMLElement element) {
+    return element != null && WodHtmlUtils.isWOTag(element.getName());
+  }
+  
   public static boolean isWOTag(String tagName) {
     boolean isWOTag = false;
     if (tagName != null) {

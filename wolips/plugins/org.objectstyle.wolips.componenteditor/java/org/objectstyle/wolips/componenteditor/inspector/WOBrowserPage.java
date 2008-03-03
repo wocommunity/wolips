@@ -27,6 +27,14 @@ public class WOBrowserPage extends Page {
 			e.printStackTrace();
 		}
 	}
+	
+	public WOBrowser getBrowser() {
+		return _browser;
+	}
+	
+	public void setBrowserDelegate(IWOBrowserDelegate delegate) {
+		_browser.setBrowserDelegate(delegate);
+	}
 
 	@Override
 	public Control getControl() {

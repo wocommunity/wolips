@@ -10,6 +10,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.Page;
 import org.objectstyle.wolips.bindings.api.IApiBinding;
@@ -31,31 +32,61 @@ public class BindingsInspectorPage extends Page implements ICursorPositionListen
 
 	private boolean _selectionChanging;
 
+	private BindingsDropHandler _browserDelegate;
+
 	public BindingsInspectorPage(ComponentEditor componentEditor) {
 		_componentEditor = componentEditor;
 		if (componentEditor != null) {
 			_componentEditor.getEditorInteraction().addWebObjectTagListener(this);
+
+			_browserDelegate = new BindingsDropHandler(_componentEditor);
 		}
+	}
+
+	@Override
+	public void dispose() {
+		if (_browserDelegate != null) {
+			_browserDelegate.dispose();
+		}
+		super.dispose();
 	}
 
 	@Override
 	public void createControl(Composite parent) {
 		_container = new Composite(parent, SWT.NONE);
-		_container.setLayout(new GridLayout(2, false));
+		GridLayout layout = new GridLayout(2, false);
+		layout.marginHeight = 5;
+		layout.marginWidth = 5;
+		layout.horizontalSpacing = 10;
+		_container.setLayout(layout);
 		_container.setBackground(parent.getBackground());
 
-		_inspector = new BindingsInspector(_container, SWT.NONE);
+		Group inspectorGroup = new Group(_container, SWT.NONE);
+		GridLayout inspectorGroupLayout = new GridLayout(2, false);
+		inspectorGroupLayout.marginHeight = 0;
+		inspectorGroupLayout.marginWidth = 0;
+		inspectorGroup.setLayout(inspectorGroupLayout);
+		inspectorGroup.setLayoutData(new GridData(GridData.FILL_VERTICAL));
+
+		_inspector = new BindingsInspector(inspectorGroup, SWT.NONE);
 		_inspector.setBackground(_container.getBackground());
 		_inspector.addSelectionChangedListener(this);
 		GridData inspectorLayoutData = new GridData(GridData.FILL_VERTICAL);
 		inspectorLayoutData.widthHint = 350;
 		_inspector.setLayoutData(inspectorLayoutData);
 
-		_browser = new WOBrowser(_container, SWT.NONE);
+		Group browserGroup = new Group(_container, SWT.NONE);
+		GridLayout browserGroupLayout = new GridLayout(2, false);
+		browserGroupLayout.marginHeight = 0;
+		browserGroupLayout.marginWidth = 0;
+		browserGroup.setLayout(browserGroupLayout);
+		browserGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+		_browser = new WOBrowser(browserGroup, SWT.NONE);
+		_browser.setBrowserDelegate(_browserDelegate);
 		_browser.setBackground(_container.getBackground());
 		_browser.addSelectionChangedListener(this);
-		GridData browserLayoutData = new GridData(GridData.FILL_BOTH);
-		_browser.setLayoutData(browserLayoutData);
+		_browser.setLayoutData(new GridData(GridData.FILL_BOTH));
 		if (_componentEditor != null) {
 			try {
 				WodParserCache cache = _componentEditor.getParserCache();

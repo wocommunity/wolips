@@ -12,6 +12,11 @@ import jp.aonir.fuzzyxml.FuzzyXMLNode;
 import jp.aonir.fuzzyxml.FuzzyXMLParser;
 import jp.aonir.fuzzyxml.FuzzyXMLText;
 
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.Region;
+
 public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXMLElement {
 
   private List<FuzzyXMLNode> _children = new ArrayList<FuzzyXMLNode>();
@@ -704,5 +709,35 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     for (int i = 0; i < children.length; i++) {
       removeChild(children[i]);
     }
+  }
+
+  public Region getRegionAtOffset(int offset, IDocument doc) throws BadLocationException {
+    Region region;
+    int openTagOffset = getOffset();
+    int openTagLength = getOpenTagLength() + 2;
+    int openTagEndOffset = openTagOffset + openTagLength;
+    if (hasCloseTag()) {
+      int closeTagOffset = getCloseTagOffset();
+      int closeTagEndOffset = closeTagOffset + getCloseTagLength();
+      //if (modelOffset > openTagEndOffset && modelOffset < getCloseTagOffset()) {
+      if ((offset >= openTagOffset && offset < openTagEndOffset) || (offset >= closeTagOffset && offset < closeTagEndOffset)) {
+        if (doc != null) {
+          IRegion lineRegion = doc.getLineInformationOfOffset(openTagEndOffset);
+          int lineEndOffset = lineRegion.getOffset() + lineRegion.getLength();
+          if (openTagEndOffset == lineEndOffset) {
+            openTagEndOffset++;
+            openTagLength++;
+          }
+        }
+        region = new Region(openTagOffset, getLength());
+      }
+      else {
+        region = new Region(offset, 0);
+      }
+    }
+    else {
+      region = new Region(getOffset(), getLength());
+    }
+    return region;
   }
 }

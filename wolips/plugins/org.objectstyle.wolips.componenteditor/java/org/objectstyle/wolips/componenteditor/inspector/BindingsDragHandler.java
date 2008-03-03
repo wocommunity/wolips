@@ -19,16 +19,13 @@ import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.ui.internal.dnd.DragUtil;
 import org.eclipse.ui.internal.dnd.IDropTarget2;
-import org.objectstyle.wolips.componenteditor.inspector.WOBrowser.WOBrowserColumn;
 
-public class LineDragHandler implements DragSourceListener, IDropTarget2, PaintListener, DropTargetListener {
-	private WOBrowserColumn _browser;
+public class BindingsDragHandler implements DragSourceListener, IDropTarget2, PaintListener, DropTargetListener {
+	private WOBrowserColumn _browserColumn;
 
 	private Point _startingPoint;
 
@@ -36,12 +33,12 @@ public class LineDragHandler implements DragSourceListener, IDropTarget2, PaintL
 
 	private Canvas _lineCanvas;
 
-	public LineDragHandler(WOBrowserColumn browser) {
-		_browser = browser;
+	public BindingsDragHandler(WOBrowserColumn browserColumn) {
+		_browserColumn = browserColumn;
 	}
 
 	public Shell getShell() {
-		return _browser.getShell();
+		return _browserColumn.getShell();
 	}
 
 	public void createCanvas() {
@@ -97,7 +94,7 @@ public class LineDragHandler implements DragSourceListener, IDropTarget2, PaintL
 	}
 
 	public void register() {
-		DropTarget dropTarget = new DropTarget(_browser, DND.DROP_NONE | DND.DROP_COPY | DND.DROP_MOVE | DND.DROP_LINK);
+		DropTarget dropTarget = new DropTarget(_browserColumn, DND.DROP_NONE | DND.DROP_COPY | DND.DROP_MOVE | DND.DROP_LINK);
 		LocalSelectionTransfer transfer = LocalSelectionTransfer.getTransfer();
 		transfer.setSelection(new StructuredSelection("Test"));
 		dropTarget.setTransfer(new Transfer[] { transfer });
@@ -115,7 +112,7 @@ public class LineDragHandler implements DragSourceListener, IDropTarget2, PaintL
 	}
 
 	public void dragEnter(DropTargetEvent event) {
-		System.out.println("LineDragHandler.dragEnter: " + event);
+		// System.out.println("LineDragHandler.dragEnter: " + event);
 		// event.feedback = DND.FEEDBACK_SELECT;
 		event.detail = DND.DROP_COPY;
 	}
@@ -130,18 +127,35 @@ public class LineDragHandler implements DragSourceListener, IDropTarget2, PaintL
 	}
 
 	public void dragOver(DropTargetEvent event) {
-		// DropTarget source = (DropTarget) event.getSource();
+		Point lastPoint = _currentPoint;
 		_currentPoint = new Point(event.x, event.y);
-		_lineCanvas.redraw();
+		int redrawX1 = Math.min(_startingPoint.x, _currentPoint.x);
+		int redrawY1 = Math.min(_startingPoint.y, _currentPoint.y);
+		int redrawX2 = Math.max(_startingPoint.x, _currentPoint.x);
+		int redrawY2 = Math.max(_startingPoint.y, _currentPoint.y);
+		if (lastPoint != null) {
+			redrawX1 = Math.min(redrawX1, lastPoint.x);
+			redrawY1 = Math.min(redrawY1, lastPoint.y);
+			redrawX2 = Math.max(redrawX2, lastPoint.x);
+			redrawY2 = Math.max(redrawY2, lastPoint.y);
+		}
+		redrawX1 -= 50;
+		redrawY1 -= 50;
+		redrawX2 += 50;
+		redrawX2 += 50;
+		_lineCanvas.redraw(redrawX1, redrawY1, redrawX2 - redrawX1, redrawY2 - redrawY1, true);
 
-		Control control = LineDragHandler.findControl(getShell(), _currentPoint, _lineCanvas);
-		System.out.println("LineDragHandler.dragOver: " + control);
 		event.detail = DND.DROP_COPY;
+
+		if (_browserColumn.getDelegate() != null) {
+			_browserColumn.getDelegate().bindingDragging(_browserColumn, _currentPoint);
+		}
 	}
 
 	public void drop(DropTargetEvent event) {
-		System.out.println("LineDragHandler.drop: drop");
-		disposeCanvas();
+		// System.out.println("LineDragHandler.drop(DropTargetEvent): drop");
+		// disposeCanvas();
+		_currentPoint = new Point(event.x, event.y);
 	}
 
 	public void dropAccept(DropTargetEvent event) {
@@ -149,12 +163,11 @@ public class LineDragHandler implements DragSourceListener, IDropTarget2, PaintL
 	}
 
 	public void dragFinished(boolean dropPerformed) {
-		System.out.println("LineDragHandler.dragFinished: " + dropPerformed);
 		disposeCanvas();
 	}
 
 	public void drop() {
-		System.out.println("LineDragHandler.drop: " + _currentPoint);
+		// System.out.println("LineDragHandler.drop: " + _currentPoint);
 	}
 
 	public Cursor getCursor() {
@@ -166,12 +179,25 @@ public class LineDragHandler implements DragSourceListener, IDropTarget2, PaintL
 	}
 
 	public void dragFinished(DragSourceEvent event) {
-		System.out.println("LineDragHandler.dragFinished: ");
 		disposeCanvas();
+
+		if (_browserColumn.getDelegate() != null) {
+			_browserColumn.getDelegate().bindingDragged(_browserColumn, _currentPoint);
+		}
+
+		// System.out.println("LineDragHandler.dragFinished: " +
+		// getShell().getDisplay().getCursorControl());
+		// Control control = SwtUtil.findControl(getShell(), _currentPoint);
+		// System.out.println("LineDragHandler.dragFinished: control = " +
+		// control);
+		// IDropTarget dropTarget = DragUtil.getDropTarget(control, "Test",
+		// _currentPoint, control.getBounds());
+		// System.out.println("LineDragHandler.dragFinished: dropTarget = " +
+		// dropTarget);
 	}
 
 	public void dragSetData(DragSourceEvent event) {
-		event.data = _browser.getSelection();
+		event.data = _browserColumn.getSelection();
 	}
 
 	public void dragStart(DragSourceEvent event) {
@@ -185,49 +211,16 @@ public class LineDragHandler implements DragSourceListener, IDropTarget2, PaintL
 
 		event.doit = false;
 
-		ISelection selection = _browser.getSelection();
+		ISelection selection = _browserColumn.getSelection();
 		if (selection instanceof IStructuredSelection) {
 			Object obj = ((IStructuredSelection) selection).getFirstElement();
-			Control listControl = _browser.getViewer().getControl();
+			Control listControl = _browserColumn.getViewer().getControl();
 			Rectangle listBounds = listControl.getBounds();
-			TableItem itemControl = (TableItem) _browser.getViewer().testFindItem(obj);
+			TableItem itemControl = (TableItem) _browserColumn.getViewer().testFindItem(obj);
 			Rectangle itemBounds = itemControl.getBounds();
 			int magicRightMarginOnMac = 27;
 			_startingPoint = control.toDisplay(new Point(listBounds.x + listBounds.width - magicRightMarginOnMac, itemBounds.y + itemBounds.height / 2));
 			event.doit = true;
 		}
-	}
-
-	public static Control findControl(Control[] toSearch, Point locationToFind, Control ignoreControl) {
-		for (int idx = toSearch.length - 1; idx >= 0; idx--) {
-			Control next = toSearch[idx];
-			if (next != ignoreControl && !next.isDisposed() && next.isVisible()) {
-				Rectangle bounds = DragUtil.getDisplayBounds(next);
-				if (bounds.contains(locationToFind)) {
-					if (next instanceof Composite) {
-						Control result = LineDragHandler.findControl((Composite) next, locationToFind, ignoreControl);
-						if (result != null) {
-							return result;
-						}
-					}
-					return next;
-				}
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * Finds the control in the given location
-	 * 
-	 * @param toSearch
-	 * @param locationToFind
-	 *            location (in display coordinates)
-	 * @return
-	 */
-	public static Control findControl(Composite toSearch, Point locationToFind, Control ignoreControl) {
-		Control[] children = toSearch.getChildren();
-		return LineDragHandler.findControl(children, locationToFind, ignoreControl);
 	}
 }
