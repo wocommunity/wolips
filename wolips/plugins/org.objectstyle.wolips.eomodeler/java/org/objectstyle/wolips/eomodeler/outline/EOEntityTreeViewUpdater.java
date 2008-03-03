@@ -49,6 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.outline;
 
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 
@@ -72,8 +73,11 @@ public class EOEntityTreeViewUpdater extends EOModelTreeViewUpdater {
 		return myEntity;
 	}
 
-	protected void setInput(TreeViewer _treeViewer) {
-		_treeViewer.setInput(myEntity);
-		_treeViewer.expandToLevel(1);
+	protected void setInput() {
+		if (myEntity != null) {
+			getTreeViewer().setInput(myEntity);
+			getTreeViewer().expandToLevel(1);
+			getTreeViewer().setSelection(new StructuredSelection(myEntity));
+		}
 	}
 }
