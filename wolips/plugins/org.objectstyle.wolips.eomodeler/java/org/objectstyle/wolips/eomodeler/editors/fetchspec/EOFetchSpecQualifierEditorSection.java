@@ -181,7 +181,7 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
 			if (qualifierString != null) {
 				int caretPosition = _qualifierText.getCaretPosition();
 				int startPosition = caretPosition;
-				for (startPosition = caretPosition - 1; startPosition > 0; startPosition--) {
+				for (startPosition = caretPosition - 1; startPosition >= 0; startPosition--) {
 					char ch = qualifierString.charAt(startPosition);
 					if (!Character.isLetterOrDigit(ch) && ch != '.') {
 						startPosition++;
