@@ -38,8 +38,6 @@ public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener {
 
 	private Color _selectionBackgroundColor;
 
-	private boolean _disposed;
-
 	private boolean _shouldThrob;
 
 	public BindingsDropHandler(ComponentEditor componentEditor) {
@@ -95,10 +93,6 @@ public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener {
 		return _shouldThrob;
 	}
 
-	public boolean isDisposed() {
-		return _disposed;
-	}
-
 	public IRegion getPreviousRegion() {
 		return _selectionRegion;
 	}
@@ -108,7 +102,6 @@ public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener {
 	}
 
 	public void dispose() {
-		_disposed = true;
 		_selectionBackgroundColor.dispose();
 		_componentEditor.getTemplateEditor().getSourceEditor().getViewer().getTextWidget().removePaintListener(this);
 	}
