@@ -83,9 +83,13 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
 
   @Override
   public void createControl(Composite parent) {
-    _browser = new Browser(parent, SWT.NONE);
-    _browser.addStatusTextListener(this);
-
+    try {
+      _browser = new Browser(parent, SWT.NONE);
+      _browser.addStatusTextListener(this);
+    }
+    catch (Throwable t) {
+      HTMLPlugin.logException(t);
+    }
     update();
   }
 
@@ -111,7 +115,9 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
     if (_editor.isDirty()) {
       update();
     }
-    _browser.setFocus();
+    if (_browser != null) {
+      _browser.setFocus();
+    }
   }
 
   /**
@@ -127,9 +133,9 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
   public void changed(StatusTextEvent event) {
     String text = event.text;
     int colonIndex = text.indexOf(':');
-    if(colonIndex == -1) {
-    	//wodeditor active + hit command+s
-    	return;
+    if (colonIndex == -1) {
+      //wodeditor active + hit command+s
+      return;
     }
     String command = text.substring(0, colonIndex);
     String target = text.substring(colonIndex + 1);
@@ -240,23 +246,25 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
    * @param event the event
    */
   public void modelChanged(AnnotationModelEvent event) {
-    IAnnotationModel model = event.getAnnotationModel();
-    Annotation[] annotations = event.getChangedAnnotations();
-    if (annotations != null) {
-      for (Annotation annotation : annotations) {
-        if (annotation instanceof ProjectionAnnotation) {
-          ProjectionAnnotation projectionAnnotation = (ProjectionAnnotation) annotation;
-          Position annotationPosition = model.getPosition(annotation);
-          FuzzyXMLNode node = _doc.getElementByOffset(annotationPosition.getOffset());
-          String nodeID = _nodeToIDMap.get(node);
-          if (nodeID != null) {
-            if (projectionAnnotation.isCollapsed()) {
-              _browser.execute("collapse('" + nodeID + "');");
+    if (_browser != null) {
+      IAnnotationModel model = event.getAnnotationModel();
+      Annotation[] annotations = event.getChangedAnnotations();
+      if (annotations != null) {
+        for (Annotation annotation : annotations) {
+          if (annotation instanceof ProjectionAnnotation) {
+            ProjectionAnnotation projectionAnnotation = (ProjectionAnnotation) annotation;
+            Position annotationPosition = model.getPosition(annotation);
+            FuzzyXMLNode node = _doc.getElementByOffset(annotationPosition.getOffset());
+            String nodeID = _nodeToIDMap.get(node);
+            if (nodeID != null) {
+              if (projectionAnnotation.isCollapsed()) {
+                _browser.execute("collapse('" + nodeID + "');");
+              }
+              else {
+                _browser.execute("expand('" + nodeID + "');");
+              }
+              _browser.execute("window.scrollTo(getPageXOffset(), getPageYOffset());");
             }
-            else {
-              _browser.execute("expand('" + nodeID + "');");
-            }
-            _browser.execute("window.scrollTo(getPageXOffset(), getPageYOffset());");
           }
         }
       }
@@ -324,7 +332,9 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
       renderElement(documentElement, renderContext, documentContentsBuffer, cache);
       renderFooter(documentContentsBuffer);
 
-      _browser.execute("updatePageYOffset()");
+      if (_browser != null) {
+        _browser.execute("updatePageYOffset()");
+      }
       if (_lastPageOffset > 0) {
         documentContentsBuffer.append("<script>window.scrollTo(100, " + _lastPageOffset + ");</script>");
       }
@@ -340,9 +350,11 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
           fw.close();
         }
       }
-      boolean rendered = _browser.setText(documentContents);
-      if (!rendered) {
-        HTMLPlugin.logError("Can't create preview of component HTML.");
+      if (_browser != null) {
+        boolean rendered = _browser.setText(documentContents);
+        if (!rendered) {
+          HTMLPlugin.logError("Can't create preview of component HTML.");
+        }
       }
     }
     catch (Exception e) {
@@ -509,7 +521,6 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
       renderBuffer.append("<body id = \"outline\" class = \"verbose\">\n");
     }
 
-
     renderBuffer.append("<div class = \"viewControls\"><a href = \"#\" onclick = \"toggleCompact()\">toggle compact view</a></div>\n");
     renderBuffer.append("<div class = \"elements\">\n");
   }
@@ -590,7 +601,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
         // don't show style
         showExpandCollapse = false;
       }
-      
+
       if (!showExpandCollapse) {
         className += " empty";
       }
