@@ -23,9 +23,18 @@ public class FuzzyXMLCommentImpl extends AbstractFuzzyXMLNode implements FuzzyXM
 
   public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer) {
     boolean isHTML = renderContext.isHtml();
-    xmlBuffer.append("<!-- ");
-    xmlBuffer.append(FuzzyXMLUtil.escape(getValue(), isHTML));
-    xmlBuffer.append(" -->");
+    xmlBuffer.append("<!--");
+    String commentString = FuzzyXMLUtil.escape(getValue(), isHTML);
+    if (commentString != null) {
+      if (!commentString.startsWith(" ")) {
+        xmlBuffer.append(" ");
+      }
+      xmlBuffer.append(commentString);
+      if (!commentString.endsWith(" ")) {
+        xmlBuffer.append(" ");
+      }
+    }
+    xmlBuffer.append("-->");
     if (renderContext.isShowNewlines()) {
       xmlBuffer.append("\n");
     }
