@@ -4,6 +4,7 @@
 package org.objectstyle.wolips.wodclipse.core.completion;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -16,6 +17,7 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.bindings.Activator;
+import org.objectstyle.wolips.core.resources.internal.build.Nature;
 
 public class WodParserCacheInvalidator implements IResourceChangeListener, IResourceDeltaVisitor {
   public void resourceChanged(IResourceChangeEvent event) {
@@ -46,9 +48,11 @@ public class WodParserCacheInvalidator implements IResourceChangeListener, IReso
           IJavaElement javaElement = JavaCore.create(file);
           if (javaElement instanceof ICompilationUnit) {
             try {
-              IType[] types = ((ICompilationUnit) javaElement).getAllTypes();
-              for (IType type : types) {
-                WodParserCache.getTypeCache().clearCacheForType(type);
+              if (javaElement.isStructureKnown()) {
+                IType[] types = ((ICompilationUnit) javaElement).getAllTypes();
+                for (IType type : types) {
+                  WodParserCache.getTypeCache().clearCacheForType(type);
+                }
               }
             }
             catch (JavaModelException e) {
