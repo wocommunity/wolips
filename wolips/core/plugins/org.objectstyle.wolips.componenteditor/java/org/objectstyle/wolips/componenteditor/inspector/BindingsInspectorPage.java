@@ -104,19 +104,19 @@ public class BindingsInspectorPage extends Page implements ICursorPositionListen
 			_selectionChanging = true;
 			try {
 				if (event.getSource() == _browser) {
-					String keyPath = (String) ((IStructuredSelection) event.getSelection()).getFirstElement();
-					IApiBinding apiBinding = (IApiBinding) ((IStructuredSelection) _inspector.getBindingsTableViewer().getSelection()).getFirstElement();
-					if (apiBinding != null) {
-						RefactoringWodElement element = _inspector.getRefactoringElement();
-						if (element != null) {
-							try {
-								element.setValueForBinding(keyPath, apiBinding.getName());
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}
-					}
-					_inspector.refresh();
+//					String keyPath = (String) ((IStructuredSelection) event.getSelection()).getFirstElement();
+//					IApiBinding apiBinding = (IApiBinding) ((IStructuredSelection) _inspector.getBindingsTableViewer().getSelection()).getFirstElement();
+//					if (apiBinding != null) {
+//						RefactoringWodElement element = _inspector.getRefactoringElement();
+//						if (element != null) {
+//							try {
+//								element.setValueForBinding(keyPath, apiBinding.getName());
+//							} catch (Exception e) {
+//								e.printStackTrace();
+//							}
+//						}
+//					}
+//					_inspector.refresh();
 				} else {
 					IApiBinding apiBinding = (IApiBinding) ((IStructuredSelection) event.getSelection()).getFirstElement();
 					boolean keyPathSelected = false;
