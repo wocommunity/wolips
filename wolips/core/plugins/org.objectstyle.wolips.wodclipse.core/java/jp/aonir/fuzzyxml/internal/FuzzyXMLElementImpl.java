@@ -711,7 +711,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     }
   }
 
-  public Region getRegionAtOffset(int offset, IDocument doc) throws BadLocationException {
+  public Region getRegionAtOffset(int offset, IDocument doc, boolean regionForInsert) throws BadLocationException {
     Region region;
     int openTagOffset = getOffset();
     int openTagLength = getOpenTagLength() + 2;
@@ -720,7 +720,10 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
       int closeTagOffset = getCloseTagOffset();
       int closeTagEndOffset = closeTagOffset + getCloseTagLength();
       //if (modelOffset > openTagEndOffset && modelOffset < getCloseTagOffset()) {
-      if ((offset >= openTagOffset && offset < openTagEndOffset) || (offset >= closeTagOffset && offset < closeTagEndOffset)) {
+      if (!regionForInsert) {
+        region = new Region(openTagOffset, closeTagOffset - openTagOffset + getCloseTagLength() + 2);
+      }
+      else if ((offset >= openTagOffset && offset < openTagEndOffset) || (offset >= closeTagOffset && offset < closeTagEndOffset)) {
         if (doc != null) {
           IRegion lineRegion = doc.getLineInformationOfOffset(openTagEndOffset);
           int lineEndOffset = lineRegion.getOffset() + lineRegion.getLength();
@@ -729,7 +732,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
             openTagLength++;
           }
         }
-        region = new Region(openTagOffset, getLength());
+        region = new Region(openTagOffset, openTagLength);
       }
       else {
         region = new Region(offset, 0);

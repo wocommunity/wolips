@@ -25,6 +25,8 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.internal.dnd.IDropTarget2;
 
 public class BindingsDragHandler implements DragSourceListener, IDropTarget2, PaintListener, DropTargetListener {
+	private static final int endpointSize = 3;
+	
 	private WOBrowserColumn _browserColumn;
 
 	private Point _startingPoint;
@@ -76,20 +78,23 @@ public class BindingsDragHandler implements DragSourceListener, IDropTarget2, Pa
 
 	public void paintControl(PaintEvent e) {
 		if (_startingPoint != null && _currentPoint != null) {
-			e.gc.setForeground(e.widget.getDisplay().getSystemColor(SWT.COLOR_BLACK));
-			e.gc.setBackground(e.widget.getDisplay().getSystemColor(SWT.COLOR_BLACK));
 			Point startingPoint = getShell().toControl(_startingPoint);
 			Point currentPoint = getShell().toControl(_currentPoint);
+
+			e.gc.setForeground(e.widget.getDisplay().getSystemColor(SWT.COLOR_BLACK));
+			e.gc.setBackground(e.widget.getDisplay().getSystemColor(SWT.COLOR_BLACK));
+			
 			// e.gc.setAlpha(150);
 			e.gc.setLineWidth(2);
-			// e.gc.setLineCap(SWT.CAP_ROUND);
 			e.gc.setLineJoin(SWT.JOIN_ROUND);
+
+			e.gc.drawOval(currentPoint.x - endpointSize, currentPoint.y - endpointSize, endpointSize * 2, endpointSize * 2);
+			
 			e.gc.drawLine(startingPoint.x, startingPoint.y, currentPoint.x, startingPoint.y);
 			e.gc.drawLine(currentPoint.x, startingPoint.y, currentPoint.x, currentPoint.y);
 
-			int box = 3;
 			// e.gc.setAlpha(255);
-			e.gc.fillRectangle(startingPoint.x - box, startingPoint.y - box, box * 2, box * 2);
+			e.gc.fillRectangle(startingPoint.x - endpointSize, startingPoint.y - endpointSize, endpointSize * 2, endpointSize * 2);
 		}
 	}
 
@@ -129,20 +134,26 @@ public class BindingsDragHandler implements DragSourceListener, IDropTarget2, Pa
 	public void dragOver(DropTargetEvent event) {
 		Point lastPoint = _currentPoint;
 		_currentPoint = new Point(event.x, event.y);
-		int redrawX1 = Math.min(_startingPoint.x, _currentPoint.x);
-		int redrawY1 = Math.min(_startingPoint.y, _currentPoint.y);
-		int redrawX2 = Math.max(_startingPoint.x, _currentPoint.x);
-		int redrawY2 = Math.max(_startingPoint.y, _currentPoint.y);
+
+		Point startingPoint = getShell().toControl(_startingPoint);
+		Point currentPoint = getShell().toControl(_currentPoint);
+
+		int redrawX1 = Math.min(startingPoint.x, currentPoint.x);
+		int redrawY1 = Math.min(startingPoint.y, currentPoint.y);
+		int redrawX2 = Math.max(startingPoint.x, currentPoint.x);
+		int redrawY2 = Math.max(startingPoint.y, currentPoint.y);
 		if (lastPoint != null) {
+			lastPoint = getShell().toControl(lastPoint);
 			redrawX1 = Math.min(redrawX1, lastPoint.x);
 			redrawY1 = Math.min(redrawY1, lastPoint.y);
 			redrawX2 = Math.max(redrawX2, lastPoint.x);
 			redrawY2 = Math.max(redrawY2, lastPoint.y);
 		}
-		redrawX1 -= 50;
-		redrawY1 -= 50;
-		redrawX2 += 50;
-		redrawX2 += 50;
+		int slop = 5 + endpointSize;
+		redrawX1 -= slop;
+		redrawY1 -= slop;
+		redrawX2 += slop;
+		redrawY2 += slop;
 		_lineCanvas.redraw(redrawX1, redrawY1, redrawX2 - redrawX1, redrawY2 - redrawY1, true);
 
 		event.detail = DND.DROP_COPY;

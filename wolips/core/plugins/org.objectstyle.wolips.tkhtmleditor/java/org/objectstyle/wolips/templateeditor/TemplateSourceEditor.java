@@ -303,17 +303,17 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
     return element;
   }
 
-  public IRegion getSelectionRegionAtPoint(Point point) throws Exception {
+  public IRegion getSelectionRegionAtPoint(Point point, boolean regionForInsert) throws Exception {
     int offset = getOffsetAtPoint(point);
-    return getSelectionRegionAtOffset(offset);
+    return getSelectionRegionAtOffset(offset, regionForInsert);
   }
 
-  public IRegion getSelectionRegionAtOffset(int offset) throws Exception {
+  public IRegion getSelectionRegionAtOffset(int offset, boolean regionForInsert) throws Exception {
     IRegion region = null;
     FuzzyXMLElement element = getElementAtOffset(offset);
     if (element != null) {
       IDocument doc = getParserCache().getHtmlEntry().getDocument();
-      region = element.getRegionAtOffset(offset, doc);
+      region = element.getRegionAtOffset(offset, doc, regionForInsert);
     }
     return region;
   }

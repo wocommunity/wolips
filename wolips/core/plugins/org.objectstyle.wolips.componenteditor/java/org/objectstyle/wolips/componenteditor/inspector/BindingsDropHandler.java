@@ -78,9 +78,13 @@ public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener {
 						e.gc.drawRoundRectangle(selectionRect.x + shadowMargin, selectionRect.y + selectionRect.height, selectionRect.width - 2 * shadowMargin, shadowHeight, radius, radius);
 					}
 
-					e.gc.setAlpha(255);
 					e.gc.setForeground(_selectionBackgroundColor);
 					e.gc.setBackground(_selectionBackgroundColor);
+
+					e.gc.setAlpha(50);
+					e.gc.fillRoundRectangle(selectionRect.x, selectionRect.y, selectionRect.width, selectionRect.height, radius, radius);
+
+					e.gc.setAlpha(255);
 					e.gc.drawRoundRectangle(selectionRect.x, selectionRect.y, selectionRect.width, selectionRect.height, radius, radius);
 				}
 			}
@@ -137,14 +141,14 @@ public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener {
 			FuzzyXMLElement element = templateSourceEditor.getElementAtPoint(dragPoint);
 			if (WodHtmlUtils.isWOTag(element)) {
 				StyledText st = templateSourceEditor.getViewer().getTextWidget();
-				IRegion selectionRegion = templateSourceEditor.getSelectionRegionAtPoint(dragPoint);
+				IRegion selectionRegion = templateSourceEditor.getSelectionRegionAtPoint(dragPoint, false);
 				if (selectionRegion == null) {
 					undoDragStyle();
 				} else if (previousRegion == null || previousRegion.getOffset() != selectionRegion.getOffset()) {
 					undoDragStyle();
 
 					_selectionRegion = selectionRegion;
-					_selectionRect = st.getTextBounds(selectionRegion.getOffset(), selectionRegion.getOffset() + selectionRegion.getLength());
+					_selectionRect = st.getTextBounds(selectionRegion.getOffset(), selectionRegion.getOffset() + selectionRegion.getLength() - 1);
 					_previousStyleRanges = st.getStyleRanges(selectionRegion.getOffset(), selectionRegion.getLength());
 
 					StyleRange[] styleRanges = new StyleRange[_previousStyleRanges.length];
