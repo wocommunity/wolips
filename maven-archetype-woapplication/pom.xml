@@ -2,14 +2,14 @@
 	<parent>
 		<artifactId>maven2</artifactId>
 		<groupId>org.objectstyle.woproject.maven2</groupId>
-		<version>2.0.12-SNAPSHOT</version>
+		<version>2.0.12</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.objectstyle.woproject.maven2</groupId>
 	<artifactId>maven-archetype-woapplication</artifactId>
-	<version>2.0.12-SNAPSHOT</version>
+	<version>2.0.12</version>
 	<packaging>maven-plugin</packaging>
 	<name>Maven WebObjects Application Archetype</name>
 </project>
