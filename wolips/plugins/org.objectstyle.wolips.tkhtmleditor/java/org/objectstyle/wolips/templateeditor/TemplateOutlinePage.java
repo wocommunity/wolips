@@ -340,7 +340,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
       }
 
       String documentContents = documentContentsBuffer.toString();
-      boolean debug = true;
+      boolean debug = false;
       if (debug) {
         FileWriter fw = new FileWriter("/tmp/TemplateOutlinePage-" + System.currentTimeMillis() + ".html");
         try {
