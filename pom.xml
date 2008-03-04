@@ -6,13 +6,13 @@
 	<parent>
 		<artifactId>woproject-all-parent</artifactId>
 		<groupId>org.objectstyle.woproject</groupId>
-		<version>2.0.13-SNAPSHOT</version>
+		<version>2.0.13</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<groupId>org.objectstyle.woproject.maven2</groupId>
 	<artifactId>maven2</artifactId>
-	<version>2.0.13-SNAPSHOT</version>
+	<version>2.0.13</version>
 	<packaging>pom</packaging>
 	<name>Maven2 All</name>
 
