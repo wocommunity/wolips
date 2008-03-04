@@ -61,6 +61,7 @@ import org.objectstyle.wolips.eomodeler.core.model.qualifier.EOAggregateQualifie
 import org.objectstyle.wolips.eomodeler.core.model.qualifier.EOAndQualifier;
 import org.objectstyle.wolips.eomodeler.core.model.qualifier.EOKeyComparisonQualifier;
 import org.objectstyle.wolips.eomodeler.core.model.qualifier.EOKeyValueQualifier;
+import org.objectstyle.wolips.eomodeler.core.model.qualifier.EONamedQualifierVariable;
 import org.objectstyle.wolips.eomodeler.core.model.qualifier.EONotQualifier;
 import org.objectstyle.wolips.eomodeler.core.model.qualifier.EOOrQualifier;
 import org.objectstyle.wolips.eomodeler.core.model.qualifier.EOQualifier;
@@ -92,14 +93,23 @@ public class EOQualifierFactory {
 
 	static {
 		_selectorMaps = new LinkedList<SelectorMap>();
+		_selectorMaps.add(new SelectorMap("isEqualTo", "="));
 		_selectorMaps.add(new SelectorMap("isEqualTo:", "="));
+		_selectorMaps.add(new SelectorMap("isNotEqualTo", "<>"));
 		_selectorMaps.add(new SelectorMap("isNotEqualTo:", "<>"));
+		_selectorMaps.add(new SelectorMap("isLessThan", "<"));
 		_selectorMaps.add(new SelectorMap("isLessThan:", "<"));
+		_selectorMaps.add(new SelectorMap("isGreaterThan", ">"));
 		_selectorMaps.add(new SelectorMap("isGreaterThan:", ">"));
+		_selectorMaps.add(new SelectorMap("isLessThanOrEqualTo", "<="));
 		_selectorMaps.add(new SelectorMap("isLessThanOrEqualTo:", "<="));
+		_selectorMaps.add(new SelectorMap("isGreaterThanOrEqualTo", ">="));
 		_selectorMaps.add(new SelectorMap("isGreaterThanOrEqualTo:", ">="));
+		_selectorMaps.add(new SelectorMap("doesContain", "contains"));
 		_selectorMaps.add(new SelectorMap("doesContain:", "contains"));
+		_selectorMaps.add(new SelectorMap("isLike", "like"));
 		_selectorMaps.add(new SelectorMap("isLike:", "like"));
+		_selectorMaps.add(new SelectorMap("isCaseInsensitiveLike", "caseInsensitiveLike"));
 		_selectorMaps.add(new SelectorMap("isCaseInsensitiveLike:", "caseInsensitiveLike"));
 
 		// To correct the previous Cayenne syntax ... Just in case you had
@@ -191,7 +201,7 @@ public class EOQualifierFactory {
 				value = null;
 			} else if ("EOQualifierVariable".equals(valueClass) || "com.webobjects.eocontrol.EOQualifierVariable".equals(valueClass)) {
 				String variableKey = valueMap.getString("_key", true);
-				value = new EOQualifierVariable(variableKey);
+				value = new EONamedQualifierVariable(variableKey);
 			} else if ("NSNumber".equals(valueClass)) {
 				value = valueMap.get("value");
 				if (value instanceof String) {
@@ -230,6 +240,12 @@ public class EOQualifierFactory {
 		if (value == null) {
 			EOModelMap map = new EOModelMap();
 			map.setString("class", "EONull", false);
+			qualifierValue = map;
+		} else if (value instanceof EONamedQualifierVariable) {
+			EOModelMap map = new EOModelMap();
+			String name = ((EONamedQualifierVariable) value).getName();
+			map.setString("_key", name, true);
+			map.setString("class", "EOQualifierVariable", false);
 			qualifierValue = map;
 		} else if (value instanceof EOQualifierVariable) {
 			EOModelMap map = new EOModelMap();
@@ -350,32 +366,6 @@ public class EOQualifierFactory {
 		}
 	}
 
-	// public static void fillInQualifierKeysFromExpression(Expression
-	// expression, Set<String> keys) {
-	// if (expression instanceof ConditionNode) {
-	// String key = (String) ((ASTPath) expression.getOperand(0)).getOperand(0);
-	// Object value = expression.getOperand(1);
-	// System.out.println("EOQualifierFactory.fillInQualifierKeysFromExpression:
-	// " + value);
-	//
-	// // String name = ((ExpressionParameter) ((ASTNamedParameter)
-	// // _value).getValue()).getName();
-	// keys.add(key);
-	// } else if (expression instanceof AggregateConditionNode) {
-	// int operandCount = expression.getOperandCount();
-	// for (int operand = 0; operand < operandCount; operand++) {
-	// EOQualifierFactory.fillInQualifierKeysFromExpression((Expression)
-	// expression.getOperand(operand), keys);
-	// }
-	// } else if (expression instanceof ASTNot) {
-	// EOQualifierFactory.fillInQualifierKeysFromExpression((Expression)
-	// ((ASTNot) expression).getOperand(0), keys);
-	// } else {
-	// throw new IllegalArgumentException("Unknown expression " + expression +
-	// ".");
-	// }
-	// }
-
 	public static List<EOQualifierBinding> getQualifierBindingsFromQualifierString(EOEntity entity, String qualifierString) {
 		EOQualifier qualifier = EOQualifierFactory.fromString(qualifierString);
 		return EOQualifierFactory.getQualifierBindingsFromQualifier(entity, qualifier);
@@ -384,7 +374,9 @@ public class EOQualifierFactory {
 	public static List<EOQualifierBinding> getQualifierBindingsFromQualifier(EOEntity entity, EOQualifier qualifier) {
 		List<EOQualifierBinding> bindings = new LinkedList<EOQualifierBinding>();
 		try {
-			EOQualifierFactory.fillInQualifierBindingsFromQualifier(entity, qualifier, bindings);
+			if (qualifier != null) {
+				EOQualifierFactory.fillInQualifierBindingsFromQualifier(entity, qualifier, bindings);
+			}
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
@@ -395,11 +387,13 @@ public class EOQualifierFactory {
 		if (qualifier instanceof EOKeyValueQualifier) {
 			String key = ((EOKeyValueQualifier) qualifier).getKey();
 			Object value = ((EOKeyValueQualifier) qualifier).getValue();
-			if (value instanceof EOQualifierVariable) {
-				String bindingName = ((EOQualifierVariable) value).getName();
+			if (value instanceof EONamedQualifierVariable) {
+				String bindingName = ((EONamedQualifierVariable) value).getName();
 				EOQualifierBinding binding = new EOQualifierBinding(entity, bindingName, key);
 				bindings.add(binding);
 			}
+		} else if (qualifier instanceof EOKeyComparisonQualifier) {
+			// DO NOTHING
 		} else if (qualifier instanceof EOAggregateQualifier) {
 			for (EOQualifier aggregatedQualifier : ((EOAggregateQualifier) qualifier).getQualifiers()) {
 				EOQualifierFactory.fillInQualifierBindingsFromQualifier(entity, aggregatedQualifier, bindings);
@@ -407,7 +401,7 @@ public class EOQualifierFactory {
 		} else if (qualifier instanceof EONotQualifier) {
 			EOQualifierFactory.fillInQualifierBindingsFromQualifier(entity, ((EONotQualifier) qualifier).getQualifier(), bindings);
 		} else {
-			throw new IllegalArgumentException("Unknown expression " + qualifier + ".");
+			throw new IllegalArgumentException("Unknown qualifier '" + qualifier + "'.");
 		}
 	}
 

@@ -6,7 +6,7 @@ public class EOQualifierVariable {
 	public EOQualifierVariable(String name) {
 		_name = name;
 	}
-
+	
 	public String getName() {
 		return _name;
 	}

@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.objectstyle.wolips.eomodeler.core.model.EOQualifierFactory;
+
 public class EOQualifierParser {
 	private static final int NONE = 0;
 
@@ -108,7 +110,9 @@ public class EOQualifierParser {
 			if (operator instanceof OperatorToken || operator instanceof KeywordToken) {
 				EOQualifier.Comparison selector = new EOQualifier.Comparison(operator.getValue());
 				Token rvalue = popToken();
-				if (rvalue instanceof VariableToken || rvalue instanceof NamedVariableToken) {
+				if (rvalue instanceof NamedVariableToken) {
+					lqualifier = new EOKeyValueQualifier(lvalue.getValue(), selector, new EONamedQualifierVariable(rvalue.getValue()));
+				} else if (rvalue instanceof VariableToken || rvalue instanceof NamedVariableToken) {
 					lqualifier = new EOKeyValueQualifier(lvalue.getValue(), selector, new EOQualifierVariable(rvalue.getValue()));
 				} else if (rvalue instanceof NumberToken) {
 					lqualifier = new EOKeyValueQualifier(lvalue.getValue(), selector, ((NumberToken) rvalue).toNumber());
@@ -341,7 +345,7 @@ public class EOQualifierParser {
 				if (value == null || value.length() == 0) {
 					throw new ParseException("A variable has no name at offset " + (_tokenStartOffset - 1) + ".", _tokenStartOffset - 1);
 				}
-				token = new NamedVariableToken(startOffset, value);
+				token = new NamedVariableToken(startOffset, value.substring(1));
 			} else if (state == EOQualifierParser.IN_KEYWORD) {
 				String operator = caseCorrectedOperatorName(value);
 				String selector = caseCorrectedSelectorName(value);
@@ -554,10 +558,14 @@ public class EOQualifierParser {
 			// EOQualifier q = parser.parseQualifier("this is \"mike'\"");
 			// EOQualifier q = parser.parseQualifier("name = %@ and
 			// person.firstName == \"mi\\ke\" and age = 5");
-			//EOQualifier q = parser.parseQualifier("not name = %@ or (age like 'Test*') and (age like 'T?est') and person.firstName == \"mi'ke\" and (lastName caseinsensitiveLike 'schrag' or (age = 5)) or(age>10) and (name<0.10) or (somevar isAnagramOf: 'test')");
-			//System.out.println("EOQualifierParser.main: " + q);
-			EOQualifier q = parser.parseQualifier("test = \"test\"");
+			// EOQualifier q = parser.parseQualifier("not name = %@ or (age like
+			// 'Test*') and (age like 'T?est') and person.firstName == \"mi'ke\"
+			// and (lastName caseinsensitiveLike 'schrag' or (age = 5))
+			// or(age>10) and (name<0.10) or (somevar isAnagramOf: 'test')");
+			// System.out.println("EOQualifierParser.main: " + q);
+			EOKeyValueQualifier q = (EOKeyValueQualifier) parser.parseQualifier("name equals: $name");
 			System.out.println("EOQualifierParser.main: " + q);
+			System.out.println("EOQualifierParser.main: " + EOQualifierFactory.createQualifierMapFromQualifier(q));
 		} catch (Throwable t) {
 			t.printStackTrace(System.out);
 		}
