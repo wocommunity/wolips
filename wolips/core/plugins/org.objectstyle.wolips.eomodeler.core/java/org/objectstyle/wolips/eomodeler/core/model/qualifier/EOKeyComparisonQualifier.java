@@ -11,6 +11,10 @@ public class EOKeyComparisonQualifier extends EOQualifier {
 		// DO NOTHING
 	}
 
+	public EOKeyComparisonQualifier(String leftKey, String comparison, String rightKey) {
+		this(leftKey, new EOQualifier.Comparison(comparison), rightKey);
+	}
+
 	public EOKeyComparisonQualifier(String leftKey, EOQualifier.Comparison comparison, String rightKey) {
 		_leftKey = leftKey;
 		_comparison = comparison;
