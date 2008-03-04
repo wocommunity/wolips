@@ -724,6 +724,16 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 			}
 			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The fetch specification " + getName() + " specifies an invalid qualifier, and cannot be saved: " + reason, false));
 		}
+		else if (myQualifier != null) {
+			EOEntity entity = getEntity();
+			Set<String> qualifierKeys = EOQualifierFactory.getQualifierKeysFromQualifier(myQualifier);
+			for (String qualifierKey : qualifierKeys) {
+				AbstractEOAttributePath definitionPath = entity.resolveKeyPath(qualifierKey);
+				if (!definitionPath.isValid()) {
+					_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The fetch specification " + getName() + " has a qualifier that refers to an invalid key '" + qualifierKey + "'.", false));
+				}
+			}
+		}
 
 		for (EOSortOrdering sortOrdering : mySortOrderings) {
 			sortOrdering.verify(_failures);
