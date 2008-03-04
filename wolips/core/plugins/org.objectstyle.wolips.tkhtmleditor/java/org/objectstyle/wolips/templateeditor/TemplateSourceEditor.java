@@ -269,13 +269,12 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
   public int getOffsetAtPoint(Point point) {
     StyledText st = getViewer().getTextWidget();
     int modelOffset;
-    Point relativePosition = st.toControl(point);
-    if (!st.getBounds().contains(relativePosition)) {
+    if (!st.getBounds().contains(point)) {
       modelOffset = -1;
     }
     else {
       try {
-        int offset = st.getOffsetAtLocation(relativePosition);
+        int offset = st.getOffsetAtLocation(point);
         modelOffset = AbstractTextEditor.widgetOffset2ModelOffset(getSourceViewer(), offset);
       }
       catch (IllegalArgumentException e) {

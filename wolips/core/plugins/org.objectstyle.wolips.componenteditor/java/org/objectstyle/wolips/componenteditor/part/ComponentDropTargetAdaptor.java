@@ -64,7 +64,8 @@ public class ComponentDropTargetAdaptor extends DropTargetAdapter {
 		try {
 			event.feedback |= DND.FEEDBACK_SCROLL;
 
-			_selection = getTemplateEditor().getSourceEditor().getSelectionRegionAtPoint(new Point(event.x, event.y), true);
+			Point controlPoint = getTemplateEditor().getSourceEditor().getViewer().getTextWidget().toControl(event.x, event.y);
+			_selection = getTemplateEditor().getSourceEditor().getSelectionRegionAtPoint(controlPoint, true);
 			if (_selection != null) {
 				getTemplateEditor().getSourceEditor().getViewer().setSelectedRange(_selection.getOffset(), _selection.getLength());
 			}
