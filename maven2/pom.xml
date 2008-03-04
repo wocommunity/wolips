@@ -25,7 +25,6 @@
 		<module>maven-japplication-plugin</module>
 		<module>maven-archetype-woapplication</module>
 		<module>maven-wolifecycle-plugin</module>
-		<module>maven-woexamples-plugin</module>
 	</modules>
 	
 </project>
