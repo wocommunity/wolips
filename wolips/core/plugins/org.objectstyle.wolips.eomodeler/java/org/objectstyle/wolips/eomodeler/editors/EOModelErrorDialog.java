@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
@@ -79,9 +80,12 @@ public class EOModelErrorDialog extends Dialog {
 		Composite composite = (Composite) super.createDialogArea(parent);
 
 		if (_editor == null) {
-			IEditorPart editorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-			if (editorPart instanceof EOModelEditor) {
-				_editor = (EOModelEditor) editorPart;
+			IWorkbenchWindow activeWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+			if (activeWindow != null) {
+				IEditorPart editorPart = activeWindow.getActivePage().getActiveEditor();
+				if (editorPart instanceof EOModelEditor) {
+					_editor = (EOModelEditor) editorPart;
+				}
 			}
 		}
 
@@ -158,26 +162,28 @@ public class EOModelErrorDialog extends Dialog {
 			//failureLabelData.horizontalIndent = 3;
 			failureLabel.setLayoutData(failureLabelData);
 
-			Button showButton = new Button(failuresComposite, SWT.PUSH);
-			showButton.setText("Show");
-			GridData showButtonData = new GridData();
-			showButtonData.verticalAlignment = SWT.CENTER;
-			showButtonData.horizontalIndent = 3;
-			showButton.setLayoutData(showButtonData);
-			showButton.setData(failure);
-			showButton.addSelectionListener(new SelectionListener() {
-				public void widgetDefaultSelected(SelectionEvent e) {
-					widgetSelected(e);
-				}
-
-				public void widgetSelected(SelectionEvent e) {
-					EOModelVerificationFailure selectedFailure = (EOModelVerificationFailure) ((Widget) e.getSource()).getData();
-					if (selectedFailure != null && _editor != null) {
-						_editor.setSelection(new StructuredSelection(selectedFailure.getFailedObject()));
-						EOModelErrorDialog.this.close();
+			if (_editor != null) {
+				Button showButton = new Button(failuresComposite, SWT.PUSH);
+				showButton.setText("Show");
+				GridData showButtonData = new GridData();
+				showButtonData.verticalAlignment = SWT.CENTER;
+				showButtonData.horizontalIndent = 3;
+				showButton.setLayoutData(showButtonData);
+				showButton.setData(failure);
+				showButton.addSelectionListener(new SelectionListener() {
+					public void widgetDefaultSelected(SelectionEvent e) {
+						widgetSelected(e);
 					}
-				}
-			});
+	
+					public void widgetSelected(SelectionEvent e) {
+						EOModelVerificationFailure selectedFailure = (EOModelVerificationFailure) ((Widget) e.getSource()).getData();
+						if (selectedFailure != null && _editor != null) {
+							_editor.setSelection(new StructuredSelection(selectedFailure.getFailedObject()));
+							EOModelErrorDialog.this.close();
+						}
+					}
+				});
+			}
 
 			Matcher matcher = Pattern.compile("(\\S+: \\S+)").matcher(failureMessage);
 			while (matcher.find()) {
