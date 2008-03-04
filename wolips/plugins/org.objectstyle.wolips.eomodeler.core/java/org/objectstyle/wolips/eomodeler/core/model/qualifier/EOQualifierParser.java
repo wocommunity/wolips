@@ -314,7 +314,7 @@ public class EOQualifierParser {
 			throw new ParseException("Missing closing paren starting at offset " + groupStartOffset + ".", groupStartOffset);
 		}
 
-		if (state == EOQualifierParser.IN_KEYWORD || state == EOQualifierParser.IN_NUMBER) {
+		if (state == EOQualifierParser.IN_KEYWORD || state == EOQualifierParser.IN_NUMBER || state == EOQualifierParser.IN_BINDING_KEY) {
 			_offset++;
 		}
 
@@ -338,6 +338,9 @@ public class EOQualifierParser {
 			} else if (state == EOQualifierParser.IN_NUMBER) {
 				token = new NumberToken(startOffset, value);
 			} else if (state == EOQualifierParser.IN_BINDING_KEY) {
+				if (value == null || value.length() == 0) {
+					throw new ParseException("A variable has no name at offset " + (_tokenStartOffset - 1) + ".", _tokenStartOffset - 1);
+				}
 				token = new NamedVariableToken(startOffset, value);
 			} else if (state == EOQualifierParser.IN_KEYWORD) {
 				String operator = caseCorrectedOperatorName(value);
@@ -551,7 +554,9 @@ public class EOQualifierParser {
 			// EOQualifier q = parser.parseQualifier("this is \"mike'\"");
 			// EOQualifier q = parser.parseQualifier("name = %@ and
 			// person.firstName == \"mi\\ke\" and age = 5");
-			EOQualifier q = parser.parseQualifier("not name = %@ or (age like 'Test*') and (age like 'T?est') and person.firstName == \"mi'ke\" and (lastName caseinsensitiveLike 'schrag' or (age = 5)) or(age>10) and (name<0.10) or (somevar isAnagramOf: 'test')");
+			//EOQualifier q = parser.parseQualifier("not name = %@ or (age like 'Test*') and (age like 'T?est') and person.firstName == \"mi'ke\" and (lastName caseinsensitiveLike 'schrag' or (age = 5)) or(age>10) and (name<0.10) or (somevar isAnagramOf: 'test')");
+			//System.out.println("EOQualifierParser.main: " + q);
+			EOQualifier q = parser.parseQualifier("test = \"test\"");
 			System.out.println("EOQualifierParser.main: " + q);
 		} catch (Throwable t) {
 			t.printStackTrace(System.out);
