@@ -49,6 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.fetchspec;
 
+import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.jface.databinding.swt.SWTObservables;
@@ -58,6 +59,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -89,10 +91,12 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
 
 	private DataBindingContext _bindingContext;
 
+	private CLabel _errorLabel;
+
 	public EOFetchSpecQualifierEditorSection() {
 		// DO NOTHING
 	}
-	
+
 	@Override
 	public boolean shouldUseExtraSpace() {
 		return true;
@@ -101,8 +105,8 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
 	public void createControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
 		super.createControls(parent, tabbedPropertySheetPage);
 		Composite form = getWidgetFactory().createFlatFormComposite(parent);
-		((FormLayout)form.getLayout()).marginWidth = 10;
-		((FormLayout)form.getLayout()).marginHeight = 10;
+		((FormLayout) form.getLayout()).marginWidth = 10;
+		((FormLayout) form.getLayout()).marginHeight = 10;
 
 		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
 		FormData topFormData = new FormData();
@@ -126,7 +130,7 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
 		_modelTreeViewer = new TreeViewer(topForm);
 		GridData modelTreeLayoutData = new GridData(GridData.FILL_BOTH);
 		modelTreeLayoutData.horizontalSpan = 2;
-		//modelTreeLayoutData.heightHint = 100;
+		// modelTreeLayoutData.heightHint = 100;
 		_modelTreeViewer.getTree().setLayoutData(modelTreeLayoutData);
 		_entityTreeViewUpdater = new EOEntityTreeViewUpdater(_modelTreeViewer, new EOModelOutlineContentProvider(true, true, true, false, false, false, false, true));
 		_modelTreeViewer.addSelectionChangedListener(this);
@@ -138,6 +142,12 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
 		qualifierLayoutData.horizontalSpan = 2;
 		qualifierLayoutData.widthHint = 150;
 		_qualifierText.setLayoutData(qualifierLayoutData);
+
+		_errorLabel = getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
+		_errorLabel.setForeground(topForm.getDisplay().getSystemColor(SWT.COLOR_RED));
+		GridData qualifierErrorData = new GridData(GridData.FILL_HORIZONTAL);
+		qualifierErrorData.horizontalSpan = 2;
+		_errorLabel.setLayoutData(qualifierErrorData);
 	}
 
 	public void setInput(IWorkbenchPart part, ISelection selection) {
@@ -149,7 +159,8 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
 		if (_fetchSpecification != null) {
 			_bindingContext = new DataBindingContext();
 			_bindingContext.bindValue(SWTObservables.observeText(_nameText, SWT.Modify), BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.NAME), null, null);
-			_bindingContext.bindValue(SWTObservables.observeText(_qualifierText, SWT.Modify), BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.QUALIFIER_STRING), null, null);
+			Binding qualifierBinding = _bindingContext.bindValue(SWTObservables.observeText(_qualifierText, SWT.Modify), BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.QUALIFIER_STRING), null, null);
+			_bindingContext.bindValue(SWTObservables.observeText(_errorLabel), qualifierBinding.getValidationStatus(), null, null);
 			_entityTreeViewUpdater.setEntity(_fetchSpecification.getEntity());
 		}
 	}
