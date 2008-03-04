@@ -23,7 +23,7 @@ import org.objectstyle.wolips.bindings.wod.BindingValueKey;
 import org.objectstyle.wolips.bindings.wod.BindingValueKeyPath;
 
 public class WOBrowser extends ScrolledComposite implements ISelectionChangedListener, ISelectionProvider, KeyListener {
-	private Composite _browser;
+	private Composite _browserComposite;
 
 	private List<WOBrowserColumn> _columns;
 
@@ -40,11 +40,11 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 		_keypathBuffer = new StringBuffer();
 		_columns = new LinkedList<WOBrowserColumn>();
 
-		_browser = new Composite(this, SWT.NONE);
-		_browser.setBackground(parent.getBackground());
+		_browserComposite = new Composite(this, SWT.NONE);
+		_browserComposite.setBackground(parent.getBackground());
 		// _browser.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		setContent(_browser);
+		setContent(_browserComposite);
 		setExpandVertical(true);
 
 		GridLayout browserLayout = new GridLayout(1, false);
@@ -52,7 +52,7 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 		browserLayout.marginWidth = 5;
 		browserLayout.marginHeight = 5;
 		browserLayout.horizontalSpacing = 5;
-		_browser.setLayout(browserLayout);
+		_browserComposite.setLayout(browserLayout);
 	}
 
 	public void setBrowserDelegate(IWOBrowserDelegate browserDelegate) {
@@ -74,7 +74,7 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 	public WOBrowserColumn addType(IType type) throws JavaModelException {
 		WOBrowserColumn newColumn = null;
 		if (type != null) {
-			newColumn = new WOBrowserColumn(type, _browser, SWT.NONE);
+			newColumn = new WOBrowserColumn(this, type, _browserComposite, SWT.NONE);
 			newColumn.getViewer().getTable().addKeyListener(this);
 			newColumn.setDelegate(_browserDelegate);
 			newColumn.addSelectionChangedListener(this);
@@ -84,9 +84,9 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 			if (_browserDelegate != null) {
 				_browserDelegate.browserColumnAdded(newColumn);
 			}
-			((GridLayout) _browser.getLayout()).numColumns = _columns.size();
+			((GridLayout) _browserComposite.getLayout()).numColumns = _columns.size();
 
-			_browser.pack();
+			_browserComposite.pack();
 
 			for (WOBrowserColumn column : _columns) {
 				Object selectedElement = ((IStructuredSelection) column.getSelection()).getFirstElement();
@@ -118,7 +118,7 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 			_columns.remove(columnNum);
 		}
 
-		_browser.pack();
+		_browserComposite.pack();
 	}
 
 	public WOBrowserColumn selectKeyInColumn(BindingValueKey selectedKey, WOBrowserColumn column) {
@@ -180,6 +180,10 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 	}
 
 	public String getSelectedKeyPath() {
+		return getSelectedKeyPath(null);
+	}
+
+	public String getSelectedKeyPath(WOBrowserColumn throughColumn) {
 		StringBuffer keyPath = new StringBuffer();
 		for (WOBrowserColumn column : _columns) {
 			BindingValueKey key = column.getSelectedKey();
@@ -188,6 +192,9 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 					keyPath.append('.');
 				}
 				keyPath.append(key.getBindingName());
+				if (throughColumn == column) {
+					break;
+				}
 			}
 		}
 		return keyPath.toString();
