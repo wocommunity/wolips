@@ -1,6 +1,0 @@
-ExampleFrontendComponent: ExampleFrontendComponent {
-}
-
-ExampleLogicResult: WOString {
-	value = logicResult;
-}
