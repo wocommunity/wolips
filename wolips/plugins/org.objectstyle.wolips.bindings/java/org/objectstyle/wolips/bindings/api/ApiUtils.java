@@ -30,6 +30,19 @@ import org.osgi.framework.Bundle;
 public class ApiUtils {
   private static ApiModel _globalApiModel;
 
+  public static boolean isActionBinding(IApiBinding binding) {
+	  String defaults = binding.getDefaults();
+      boolean isActionBinding = false;
+      if (IApiBinding.ACTIONS_DEFAULT.equals(defaults)) {
+        isActionBinding = true;
+      }
+      else if (defaults == null) {
+        String bindingName = binding.getName();
+        isActionBinding = "action".equals(bindingName);
+      }
+      return isActionBinding;
+  }
+  
   public static int getSelectedDefaults(IApiBinding binding) {
     String defaults = binding.getDefaults();
     if (defaults == null) {

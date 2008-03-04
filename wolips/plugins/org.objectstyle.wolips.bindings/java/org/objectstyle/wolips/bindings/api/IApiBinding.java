@@ -9,6 +9,8 @@ public interface IApiBinding {
   public static final String ACTIONS_DEFAULT = "Actions";
   public static final String[] ALL_DEFAULTS = new String[] { "Undefined", IApiBinding.ACTIONS_DEFAULT, "Boolean", "YES/NO", "Date Format Strings", "Number Format Strings", "MIME Types", "Direct Actions", "Direct Action Classes", "Page Names", "Frameworks", "Resources" };
 
+  public boolean isAction();
+  
   public String getName();
 
   public int getSelectedDefaults();

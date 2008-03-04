@@ -211,6 +211,41 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
     return wo;
   }
 
+  public IApiBinding[] getApiBindings(Wo api) {
+    IApiBinding[] wodBindings = null;
+    boolean apiFound = false;
+    try {
+      if (api != null) {
+        apiFound = true;
+        List<IApiBinding> visibleBindings = new LinkedList<IApiBinding>();
+        List<Binding> apiBindings = api.getBindings();
+        visibleBindings.addAll(apiBindings);
+        for (IWodBinding wodBinding : getBindings()) {
+          String bindingName = wodBinding.getName();
+          boolean wodBindingDefinedInApi = false;
+          for (IApiBinding apiBinding : apiBindings) {
+            if (apiBinding.getName().equals(bindingName)) {
+              wodBindingDefinedInApi = true;
+              break;
+            }
+          }
+          if (!wodBindingDefinedInApi) {
+            visibleBindings.add(wodBinding);
+          }
+        }
+        wodBindings = visibleBindings.toArray(new IApiBinding[visibleBindings.size()]);
+      }
+    }
+    catch (Throwable t) {
+      Activator.getDefault().log("Failed to retrieve bindings for " + this + ".", t);
+    }
+    if (!apiFound) {
+      List<IWodBinding> currentBindings = getBindings();
+      wodBindings = currentBindings.toArray(new IApiBinding[currentBindings.size()]);
+    }
+    return wodBindings;
+  }
+
   public abstract int getLineNumber();
 
   public void fillInProblems(IJavaProject javaProject, IType javaFileType, boolean checkBindingValues, List<WodProblem> problems, TypeCache typeCache, HtmlElementCache htmlCache) throws CoreException {
@@ -262,7 +297,7 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
         bindingNames.add(bindingName);
       }
     }
-    
+
     JavaModelException javaModelException = null;
 
     if (checkBindingValues && javaFileType != null) {
@@ -285,7 +320,7 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
         }
       }
     }
-    
+
     if (javaModelException != null) {
       throw javaModelException;
     }

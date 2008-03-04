@@ -55,6 +55,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Position;
 import org.objectstyle.wolips.bindings.api.ApiModelException;
+import org.objectstyle.wolips.bindings.api.IApiBinding;
 import org.objectstyle.wolips.bindings.api.Wo;
 
 /**
@@ -68,7 +69,7 @@ public interface IWodElement extends IWodUnit {
   public int getLineNumber();
 
   public boolean isTemporary();
-  
+
   public List<IWodBinding> getBindings();
 
   public IWodBinding getBindingNamed(String name);
@@ -86,10 +87,12 @@ public interface IWodElement extends IWodUnit {
   public void writeInlineFormat(Writer writer, String contents, boolean alphabetize, String bindingPrefix, String bindingSuffix) throws IOException;
 
   public void writeWodFormat(Writer writer, boolean alphabetize) throws IOException;
-  
+
   public boolean isWithin(IRegion region);
-  
+
   public boolean isTypeWithin(IRegion region);
 
   public Wo getApi(IJavaProject javaProject, TypeCache cache) throws JavaModelException, ApiModelException;
+
+  public IApiBinding[] getApiBindings(Wo api);
 }

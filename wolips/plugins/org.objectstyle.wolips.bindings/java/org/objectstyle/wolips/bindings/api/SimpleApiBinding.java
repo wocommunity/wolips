@@ -15,6 +15,10 @@ public class SimpleApiBinding implements IApiBinding {
 		_name = name;
 	}
 	
+	public boolean isAction() {
+	  return ApiUtils.isActionBinding(this);
+	}
+	
 	public void setDefaults(String defaults) {
 		_defaults = defaults;
 	}

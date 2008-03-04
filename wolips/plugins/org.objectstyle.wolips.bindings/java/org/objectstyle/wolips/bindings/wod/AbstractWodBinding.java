@@ -97,6 +97,10 @@ public abstract class AbstractWodBinding implements IWodBinding {
   public AbstractWodBinding() {
     _validate = true;
   }
+  
+  public boolean isAction() {
+    return ApiUtils.isActionBinding(this);
+  }
 
   public void setValidate(boolean validate) {
     _validate = validate;
