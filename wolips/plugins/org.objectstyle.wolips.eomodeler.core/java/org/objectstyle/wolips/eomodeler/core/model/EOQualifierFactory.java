@@ -164,7 +164,7 @@ public class EOQualifierFactory {
 				String leftKey = qualifierMap.getString("leftKey", true);
 				String rightKey = qualifierMap.getString("rightKey", true);
 				String selectorName = EOQualifierFactory.operatorNameForMethodNamed(qualifierMap.getString("selectorName", true));
-				qualifier = EOQualifierFactory.createKeyValueExpression(leftKey, selectorName, rightKey);
+				qualifier = EOQualifierFactory.createKeyComparisonExpression(leftKey, selectorName, rightKey);
 			} else {
 				throw new IllegalArgumentException("Unknown qualifier className '" + className + "'.");
 			}
@@ -172,8 +172,13 @@ public class EOQualifierFactory {
 		return qualifier;
 	}
 
-	private static EOQualifier createKeyValueExpression(String key, String _selectorName, Object value) {
-		EOQualifier qualifier = new EOKeyValueQualifier(key, _selectorName, value);
+	private static EOQualifier createKeyValueExpression(String key, String selectorName, Object value) {
+		EOQualifier qualifier = new EOKeyValueQualifier(key, selectorName, value);
+		return qualifier;
+	}
+
+	private static EOQualifier createKeyComparisonExpression(String leftKey, String selectorName, String rightKey) {
+		EOQualifier qualifier = new EOKeyComparisonQualifier(leftKey, selectorName, rightKey);
 		return qualifier;
 	}
 
