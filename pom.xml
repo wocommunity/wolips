@@ -38,7 +38,7 @@
 		<dependency>
 			<groupId>com.apple.webobjects</groupId>
 			<artifactId>JavaFoundation</artifactId>
-			<version>[5.2,)</version>
+			<version>[5.2,),[5.3,),[5.4,)</version>
 		</dependency>
 
 	</dependencies>
