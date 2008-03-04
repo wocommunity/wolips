@@ -71,24 +71,25 @@ import org.objectstyle.wolips.eomodeler.core.model.qualifier.EOQualifierVariable
 public class EOQualifierFactory {
 	private static class SelectorMap {
 		private String _methodName;
+
 		private String _operatorName;
-		
+
 		public SelectorMap(String methodName, String operatorName) {
 			_methodName = methodName;
 			_operatorName = operatorName;
 		}
-		
+
 		public String getMethodName() {
 			return _methodName;
 		}
-		
+
 		public String getOperatorName() {
 			return _operatorName;
 		}
 	}
-	
+
 	private static List<SelectorMap> _selectorMaps;
-	
+
 	static {
 		_selectorMaps = new LinkedList<SelectorMap>();
 		_selectorMaps.add(new SelectorMap("isEqualTo:", "="));
@@ -100,8 +101,13 @@ public class EOQualifierFactory {
 		_selectorMaps.add(new SelectorMap("doesContain:", "contains"));
 		_selectorMaps.add(new SelectorMap("isLike:", "like"));
 		_selectorMaps.add(new SelectorMap("isCaseInsensitiveLike:", "caseInsensitiveLike"));
+
+		// To correct the previous Cayenne syntax ... Just in case you had
+		// either one in your fetch specs.
+		_selectorMaps.add(new SelectorMap("likeIgnoreCase", "caseInsensitiveLike"));
+		_selectorMaps.add(new SelectorMap("likeIgnoreCase:", "caseInsensitiveLike"));
 	}
-	
+
 	public static EOQualifier fromString(String qualifierString) {
 		try {
 			EOQualifier qualifier = new EOQualifierParser().parseQualifier(qualifierString);
@@ -236,35 +242,8 @@ public class EOQualifierFactory {
 			map.setString("class", "NSNumber", false);
 			map.put("value", value);
 			qualifierValue = map;
-			// } else if (value instanceof ExpressionParameter) {
-			// EOModelMap map = new EOModelMap();
-			// String name = ((ExpressionParameter) value).getName();
-			// map.setString("_key", name, true);
-			// map.setString("class", "EOQualifierVariable", false);
-			// qualifierValue = map;
 		} else if (value instanceof String) {
 			qualifierValue = value;
-			// } else if (value instanceof EONotQualifier) {
-			// Object operand = ((EONotQualifier) value).getOperand(0);
-			// EOModelMap map = new EOModelMap();
-			// map.setString("class", "NSNumber", false);
-			// if (operand instanceof Integer) {
-			// map.put("value", new Integer(((Integer) operand).intValue() *
-			// -1));
-			// } else if (operand instanceof Float) {
-			// map.put("value", new Float(((Float) operand).floatValue() *
-			// -1.0f));
-			// } else if (operand instanceof Double) {
-			// map.put("value", new Double(((Double) operand).doubleValue() *
-			// -1.0));
-			// } else if (operand instanceof Long) {
-			// map.put("value", new Long(((Long) operand).longValue() * -1L));
-			// } else {
-			// throw new IllegalArgumentException("Unknown qualifier value type:
-			// negate " + operand + " (type = " + operand.getClass().getName() +
-			// ")");
-			// }
-			// qualifierValue = map;
 		} else {
 			throw new IllegalArgumentException("Unknown qualifier value type: " + value + " (type = " + value.getClass().getName() + ")");
 		}
