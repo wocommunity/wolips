@@ -201,6 +201,10 @@ public class EOQualifierFactory {
 				value = null;
 			} else if ("EOQualifierVariable".equals(valueClass) || "com.webobjects.eocontrol.EOQualifierVariable".equals(valueClass)) {
 				String variableKey = valueMap.getString("_key", true);
+				// Fix up previously broken _key's
+				if (variableKey.startsWith("$")) {
+					variableKey = variableKey.substring(1);
+				}
 				value = new EONamedQualifierVariable(variableKey);
 			} else if ("NSNumber".equals(valueClass)) {
 				value = valueMap.get("value");
