@@ -35,12 +35,6 @@
 			<version>2.2.1</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.apple.webobjects</groupId>
-			<artifactId>JavaFoundation</artifactId>
-			<version>[5.2,),[5.3,),[5.4,)</version>
-		</dependency>
-
 	</dependencies>
 	
 	<build>
