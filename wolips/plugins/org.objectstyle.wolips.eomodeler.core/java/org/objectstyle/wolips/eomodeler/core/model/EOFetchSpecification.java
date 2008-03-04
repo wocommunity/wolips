@@ -389,9 +389,15 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 			} catch (RuntimeException e) {
 				e.printStackTrace();
 				setQualifier(null, false);
+				throw e;
+			}
+			finally {
+				firePropertyChange(EOFetchSpecification.QUALIFIER_STRING, oldQualifierString, myQualifierString);
 			}
 		}
-		firePropertyChange(EOFetchSpecification.QUALIFIER_STRING, oldQualifierString, myQualifierString);
+		else {
+			firePropertyChange(EOFetchSpecification.QUALIFIER_STRING, oldQualifierString, myQualifierString);
+		}
 	}
 
 	public String getQualifierString() {
