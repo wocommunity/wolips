@@ -287,4 +287,28 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
     return localInstance;
   }
 #end
+#foreach ($fetchSpecification in $entity.sortedFetchSpecs)
+#if (true || $fetchSpecification.distinctBindings.size() > 0)
+  public static NSArray<${entity.className}> fetch${fetchSpecification.capitalizedName}(EOEditingContext editingContext, NSDictionary<String, Object> bindings) {
+    EOFetchSpecification fetchSpec = EOFetchSpecification.fetchSpecificationNamed("${fetchSpecification.name}", "${entity.name}");
+    fetchSpec = fetchSpec.fetchSpecificationWithQualifierBindings(bindings);
+    return editingContext.objectsWithFetchSpecification(fetchSpec);
+  }
+  
+#end
+  public static NSArray<${entity.className}> fetch${fetchSpecification.capitalizedName}(EOEditingContext editingContext#foreach ($binding in $fetchSpecification.distinctBindings),
+	${binding.attributePath.childClassName} ${binding.name}Binding#end)
+  {
+    EOFetchSpecification fetchSpec = EOFetchSpecification.fetchSpecificationNamed("${fetchSpecification.name}", "${entity.name}");
+#if ($fetchSpecification.distinctBindings.size() > 0)
+    NSMutableDictionary<String, Object> bindings = new NSMutableDictionary<String, Object>();
+#foreach ($binding in $fetchSpecification.distinctBindings)
+    bindings.takeValueForKey(${binding.name}Binding, "${binding.name}");
+#end
+	fetchSpec = fetchSpec.fetchSpecificationWithQualifierBindings(bindings);
+#end
+    return editingContext.objectsWithFetchSpecification(fetchSpec);
+  }
+  
+#end
 }
