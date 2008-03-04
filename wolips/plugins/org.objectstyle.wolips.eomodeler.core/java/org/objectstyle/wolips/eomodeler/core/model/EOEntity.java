@@ -809,14 +809,15 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public boolean isGenericRecord() {
-		boolean isGenericRecord = myClassName == null || myClassName.length() == 0 || myClassName.endsWith("GenericRecord");
+		String className = EOModelRenderContext.getInstance().getClassNameForEntity(this);
+		boolean isGenericRecord = className == null || className.length() == 0 || className.endsWith("GenericRecord");
 		return isGenericRecord;
 	}
 	
 	public String getClassNameWithDefault() {
-		String className = myClassName;
+		String className = EOModelRenderContext.getInstance().getClassNameForEntity(this);
 		if (className == null) {
-			className = getModel().getModelGroup().getEOGenericRecordClassName();
+			className = EOModelRenderContext.getInstance().getEOGenericRecordClassName();
 		}
 		return className;
 	}
@@ -839,7 +840,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	public String getSuperclassPackageName() {
 		String packageName = getPackageName();
-		String superclassPackage = getModel().getModelGroup().getSuperclassPackage();
+		String superclassPackage = EOModelRenderContext.getInstance().getSuperclassPackage();
 		String superclassPackageName;
 		if (superclassPackage != null) {
 			if (packageName != null) {
@@ -865,8 +866,8 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	public String getClassNameWithOptionalPackage() {
 		String className;
-		if (getModel().getModelGroup().getSuperclassPackage() != null) {
-			className = getClassName();
+		if (EOModelRenderContext.getInstance().getSuperclassPackage() != null) {
+			className = EOModelRenderContext.getInstance().getClassNameForEntity(this);
 		}
 		else {
 			className = getClassNameWithoutPackage();
@@ -892,7 +893,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	public String getPrefixClassNameWithOptionalPackage() {
 		String prefixClassName;
-		if (getModel().getModelGroup().getSuperclassPackage() != null) {
+		if (EOModelRenderContext.getInstance().getSuperclassPackage() != null) {
 			prefixClassName = getPrefixClassName();
 		}
 		else {
@@ -904,7 +905,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	public String getPrefixClassNameWithoutPackage() {
 		String prefixClassNameWithoutPackage = getClassNameWithoutPackage();
 		if (prefixClassNameWithoutPackage != null) {
-			String prefix = getModel().getModelGroup().getPrefix();
+			String prefix = EOModelRenderContext.getInstance().getPrefix();
 			prefixClassNameWithoutPackage = prefix + prefixClassNameWithoutPackage;
 		}
 		return prefixClassNameWithoutPackage;
@@ -916,14 +917,14 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		if (className == null) {
 			prefixClassName = null;
 		} else {
-			String superclassPackage = getModel().getModelGroup().getSuperclassPackage();
+			String superclassPackage = EOModelRenderContext.getInstance().getSuperclassPackage();
 			if (superclassPackage != null && superclassPackage.trim().length() > 0) {
 				superclassPackage = superclassPackage + ".";
 			}
 			else {
 				superclassPackage = "";
 			}
-			String prefix = getModel().getModelGroup().getPrefix();
+			String prefix = EOModelRenderContext.getInstance().getPrefix();
 			int lastDotIndex = className.lastIndexOf('.');
 			if (lastDotIndex == -1) {
 				prefixClassName = superclassPackage + prefix + className;
@@ -935,7 +936,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public boolean isClassNameSet() {
-		return myClassName != null;
+		return EOModelRenderContext.getInstance().getClassNameForEntity(this) != null;
 	}
 
 	public String getClassName() {

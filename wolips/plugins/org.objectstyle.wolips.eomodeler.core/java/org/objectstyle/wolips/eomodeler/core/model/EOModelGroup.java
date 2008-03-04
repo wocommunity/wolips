@@ -75,12 +75,6 @@ public class EOModelGroup extends EOModelObject<Object> {
 	private boolean _createDefaultDatabaseConfig;
 
 	private String _editingModelName;
-
-	private String _eogenericRecordClassName;
-
-	private String _prefix;
-
-	private String _superclassPackage;
 	
 	private boolean _dirty;
 
@@ -88,38 +82,6 @@ public class EOModelGroup extends EOModelObject<Object> {
 		_models = new HashSet<EOModel>();
 		//_createDefaultDatabaseConfig = true;
 		_createDefaultDatabaseConfig = false;
-		_prefix = "_";
-		_eogenericRecordClassName = "com.webobjects.eocontrol.EOGenericRecord";
-	}
-
-	public void setSuperclassPackage(String superclassPackage) {
-		_superclassPackage = superclassPackage;
-	}
-	
-	public String getSuperclassPackage() {
-		return _superclassPackage;
-	}
-	
-	public void setPrefix(String prefix) {
-		_prefix = prefix;
-	}
-
-	public String getPrefix() {
-		if (_prefix == null) {
-			_prefix = "_";
-		}
-		return _prefix;
-	}
-
-	public void setEOGenericRecordClassName(String eogenericRecordClassName) {
-		_eogenericRecordClassName = eogenericRecordClassName;
-		if (_eogenericRecordClassName == null) {
-			_eogenericRecordClassName = "com.webobjects.eocontrol.EOGenericRecord";
-		}
-	}
-
-	public String getEOGenericRecordClassName() {
-		return _eogenericRecordClassName;
 	}
 
 	public void setCreateDefaultDatabaseConfig(boolean createDefaultDatabaseConfig) {
