@@ -26,7 +26,7 @@ import org.eclipse.ui.internal.dnd.IDropTarget2;
 
 public class BindingsDragHandler implements DragSourceListener, IDropTarget2, PaintListener, DropTargetListener {
 	private static final int endpointSize = 3;
-	
+
 	private WOBrowserColumn _browserColumn;
 
 	private Point _startingPoint;
@@ -164,6 +164,7 @@ public class BindingsDragHandler implements DragSourceListener, IDropTarget2, Pa
 	}
 
 	public void drop(DropTargetEvent event) {
+		System.out.println("BindingsDragHandler.drop: drop 2");
 		// System.out.println("LineDragHandler.drop(DropTargetEvent): drop");
 		// disposeCanvas();
 		_currentPoint = new Point(event.x, event.y);
@@ -178,6 +179,7 @@ public class BindingsDragHandler implements DragSourceListener, IDropTarget2, Pa
 	}
 
 	public void drop() {
+		System.out.println("BindingsDragHandler.drop: drop 1");
 		// System.out.println("LineDragHandler.drop: " + _currentPoint);
 	}
 
@@ -191,9 +193,10 @@ public class BindingsDragHandler implements DragSourceListener, IDropTarget2, Pa
 
 	public void dragFinished(DragSourceEvent event) {
 		disposeCanvas();
-
+		
+		System.out.println("BindingsDragHandler.dragFinished: " + event.doit);
 		if (_browserColumn.getDelegate() != null) {
-			_browserColumn.getDelegate().bindingDragged(_browserColumn, _currentPoint);
+			_browserColumn.getDelegate().bindingDropped(_browserColumn, _currentPoint);
 		}
 
 		// System.out.println("LineDragHandler.dragFinished: " +

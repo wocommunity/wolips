@@ -1,20 +1,39 @@
 package org.objectstyle.wolips.componenteditor.inspector;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import jp.aonir.fuzzyxml.FuzzyXMLElement;
 
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.MenuEvent;
+import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.objectstyle.wolips.bindings.Activator;
+import org.objectstyle.wolips.bindings.api.ApiModelException;
+import org.objectstyle.wolips.bindings.api.IApiBinding;
+import org.objectstyle.wolips.bindings.api.Wo;
+import org.objectstyle.wolips.bindings.wod.IWodElement;
+import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
 import org.objectstyle.wolips.templateeditor.TemplateEditor;
 import org.objectstyle.wolips.templateeditor.TemplateSourceEditor;
+import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
+import org.objectstyle.wolips.wodclipse.core.util.FuzzyXMLWodElement;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
 public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener {
@@ -54,12 +73,27 @@ public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener {
 
 	private long _lastScrollTime;
 
+	private Menu _bindingsMenu;
+
 	public BindingsDropHandler(ComponentEditor componentEditor) {
 		_componentEditor = componentEditor;
 		_selectionBackgroundColor = new Color(Display.getCurrent(), 240, 220, 0);
 		_componentEditor.getTemplateEditor().getSourceEditor().getViewer().getTextWidget().addPaintListener(this);
 		_scrollStarted = false;
 		_lastScrollTime = -1;
+
+		Shell shell = new Shell(_componentEditor.getSite().getShell());
+		_bindingsMenu = new Menu(shell, SWT.POP_UP);
+		_bindingsMenu.addMenuListener(new MenuListener() {
+			public void menuHidden(MenuEvent e) {
+				clearHighlightedTextStyle();
+			}
+
+			public void menuShown(MenuEvent e) {
+				// DO NOTHING
+			}
+		});
+
 	}
 
 	public void paintControl(PaintEvent e) {
@@ -144,6 +178,9 @@ public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener {
 	}
 
 	public void dispose() {
+		if (_bindingsMenu != null) {
+			_bindingsMenu.dispose();
+		}
 		_selectionBackgroundColor.dispose();
 		_componentEditor.getTemplateEditor().getSourceEditor().getViewer().getTextWidget().removePaintListener(this);
 	}
@@ -271,7 +308,7 @@ public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener {
 			} else if ((controlBounds.height - controlDragPoint.y) < scrollBottomRightMargin) {
 				st.setTopIndex(oldTopIndex + 1);
 			}
-			
+
 			if (controlDragPoint.x < scrollTopLeftMargin) {
 				st.setHorizontalIndex(oldHorizontalIndex - 1);
 			} else if ((controlBounds.width - controlDragPoint.x) < scrollBottomRightMargin) {
@@ -289,29 +326,108 @@ public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener {
 		}
 	}
 
-	public void bindingDragged(WOBrowserColumn column, Point dropPoint) {
+	public void bindingDropped(WOBrowserColumn column, Point dropPoint) {
 		try {
 			_lastScrollTime = -1;
 			_scrollStarted = false;
 
-			clearHighlightedTextStyle();
-
 			TemplateEditor templateEditor = _componentEditor.getTemplateEditor();
 			TemplateSourceEditor templateSourceEditor = templateEditor.getSourceEditor();
-			FuzzyXMLElement selectedElement = templateSourceEditor.getElementAtPoint(dropPoint);
-
-			// System.out.println("BindingsInspectorPage.bindingDragged: " +
-			// selectedElement);
+			StyledText st = templateSourceEditor.getViewer().getTextWidget();
+			Point controlDropPoint = st.toControl(dropPoint);
+			FuzzyXMLElement selectedElement = templateSourceEditor.getElementAtPoint(controlDropPoint);
+			if (selectedElement == null || !WodHtmlUtils.isWOTag(selectedElement)) {
+				clearHighlightedTextStyle();
+			} else {
+				FuzzyXMLWodElement wodElement = new FuzzyXMLWodElement(selectedElement, Activator.getDefault().isWO54());
+				String droppedKeyPath = column.getSelectedKeyPath();
+				showBindingMenuAtPoint(wodElement, droppedKeyPath, dropPoint);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+	protected void showBindingMenuAtPoint(IWodElement wodElement, String droppedKeyPath, Point point) throws JavaModelException, ApiModelException, Exception {
+		WodParserCache cache = _componentEditor.getParserCache();
+		Wo api = wodElement.getApi(cache.getJavaProject(), WodParserCache.getTypeCache());
+		if (api != null) {
+			IApiBinding[] apiBindings = wodElement.getApiBindings(api);
+			if (apiBindings != null && apiBindings.length > 0) {
+
+				List<IApiBinding> keyBindings = new LinkedList<IApiBinding>();
+				List<IApiBinding> actionBindings = new LinkedList<IApiBinding>();
+				for (IApiBinding binding : apiBindings) {
+					if (binding.isAction()) {
+						actionBindings.add(binding);
+					} else {
+						keyBindings.add(binding);
+					}
+				}
+
+				for (MenuItem item : _bindingsMenu.getItems()) {
+					item.dispose();
+				}
+
+				BindingSelectionListener selectionListener = new BindingSelectionListener(wodElement, droppedKeyPath, cache);
+				for (IApiBinding keyBinding : keyBindings) {
+					MenuItem mi = new MenuItem(_bindingsMenu, SWT.NONE);
+					mi.setData(keyBinding);
+					mi.setText(keyBinding.getName());
+					mi.addSelectionListener(selectionListener);
+				}
+				if (!keyBindings.isEmpty() && !actionBindings.isEmpty()) {
+					new MenuItem(_bindingsMenu, SWT.SEPARATOR);
+				}
+				for (IApiBinding actionBinding : actionBindings) {
+					MenuItem mi = new MenuItem(_bindingsMenu, SWT.NONE);
+					mi.setData(actionBinding);
+					mi.setText(actionBinding.getName());
+					mi.addSelectionListener(selectionListener);
+				}
+				_bindingsMenu.setLocation(point.x, point.y);
+				_bindingsMenu.setVisible(true);
+			}
+		}
+	}
+
 	public void browserColumnAdded(WOBrowserColumn column) {
-		System.out.println("WOBrowserPageBookView.browserColumnAdded: " + column);
+		// System.out.println("WOBrowserPageBookView.browserColumnAdded: " +
+		// column);
 	}
 
 	public void browserColumnRemoved(WOBrowserColumn column) {
-		System.out.println("BindingsInspectorPage.browserColumnRemoved: " + column);
+		// System.out.println("BindingsInspectorPage.browserColumnRemoved: " +
+		// column);
+	}
+
+	protected static class BindingSelectionListener implements SelectionListener {
+		private IWodElement _wodElement;
+
+		private String _droppedKeyPath;
+
+		private WodParserCache _cache;
+
+		public BindingSelectionListener(IWodElement wodElement, String droppedKeyPath, WodParserCache cache) {
+			_wodElement = wodElement;
+			_droppedKeyPath = droppedKeyPath;
+			_cache = cache;
+		}
+
+		public void widgetDefaultSelected(SelectionEvent event) {
+			widgetSelected(event);
+		}
+
+		public void widgetSelected(SelectionEvent event) {
+			MenuItem item = (MenuItem) event.widget;
+			IApiBinding apiBinding = (IApiBinding) item.getData();
+			RefactoringWodElement refactoringWodElement = new RefactoringWodElement(_wodElement, _cache);
+			try {
+				refactoringWodElement.setValueForBinding(_droppedKeyPath, apiBinding.getName());
+			} catch (Exception e) {
+				e.printStackTrace();
+				ComponenteditorPlugin.getDefault().log("Failed to add binding.", e);
+			}
+		}
 	}
 }

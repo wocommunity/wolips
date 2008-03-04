@@ -34,6 +34,8 @@ import org.objectstyle.wolips.bindings.wod.BindingValueKeyPath;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 
 public class WOBrowserColumn extends Composite implements ISelectionProvider, ISelectionChangedListener {
+	private WOBrowser _browser;
+	
 	private List<ISelectionChangedListener> _listeners = new LinkedList<ISelectionChangedListener>();
 
 	private IType _type;
@@ -48,7 +50,7 @@ public class WOBrowserColumn extends Composite implements ISelectionProvider, IS
 	
 	private List<BindingValueKey> _bindingValueKeys;
 
-	public WOBrowserColumn(IType type, Composite parent, int style) throws JavaModelException {
+	public WOBrowserColumn(WOBrowser browser, IType type, Composite parent, int style) throws JavaModelException {
 		super(parent, style);
 		setBackground(parent.getBackground());
 
@@ -58,6 +60,7 @@ public class WOBrowserColumn extends Composite implements ISelectionProvider, IS
 		layout.marginTop = 0;
 		setLayout(layout);
 
+		_browser = browser;
 		_type = type;
 
 		Label typeName = new Label(this, SWT.NONE);
@@ -109,6 +112,10 @@ public class WOBrowserColumn extends Composite implements ISelectionProvider, IS
 		_lineDragHandler = new BindingsDragHandler(this);
 		_lineDragHandler.register();
 		_keysViewer.addDragSupport(DND.DROP_COPY, new Transfer[] { LocalSelectionTransfer.getTransfer() }, _lineDragHandler);
+	}
+	
+	public WOBrowser getBrowser() {
+		return _browser;
 	}
 	
 	public List<BindingValueKey> getBindingValueKeys() {
@@ -170,6 +177,23 @@ public class WOBrowserColumn extends Composite implements ISelectionProvider, IS
 		}
 	}
 
+	public String getSelectedKeyPath() {
+		String keyPath;
+		if (_browser == null) {
+			BindingValueKey bindingValueKey = getSelectedKey();
+			if (bindingValueKey == null) {
+				keyPath = null;
+			}
+			else {
+				keyPath = bindingValueKey.getBindingName();
+			}
+		}
+		else {
+			keyPath = _browser.getSelectedKeyPath();
+		}
+		return keyPath;
+	}
+	
 	public BindingValueKey getSelectedKey() {
 		BindingValueKey selectedKey = null;
 		IStructuredSelection selection = (IStructuredSelection) getSelection();
