@@ -35,6 +35,7 @@ import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel.Define;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelRenderContext;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.thirdparty.velocity.resourceloader.ResourceLoader;
@@ -54,7 +55,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 		boolean showResults = false;
 		VelocityEngine velocityEngine = new VelocityEngine();
 		velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, org.apache.velocity.runtime.log.NullLogSystem.class.getName());
-		
+
 		StringBuffer templatePaths = new StringBuffer();
 		templatePaths.append(".");
 		String templatePath = eogeneratorModel.getTemplateDir();
@@ -69,7 +70,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 
 		String superclassTemplateName = eogeneratorModel.getJavaTemplate(Preferences.getEOGeneratorJavaTemplate());
 		String subclassTemplateName = eogeneratorModel.getSubclassJavaTemplate(Preferences.getEOGeneratorSubclassJavaTemplate());
-		
+
 		boolean eogeneratorJava14 = Preferences.isEOGeneratorJava14();
 		if (eogeneratorJava14) {
 			if (superclassTemplateName == null || superclassTemplateName.length() == 0) {
@@ -78,8 +79,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			if (subclassTemplateName == null || subclassTemplateName.length() == 0) {
 				subclassTemplateName = "Entity14.java";
 			}
-		}
-		else {
+		} else {
 			if (superclassTemplateName == null || superclassTemplateName.length() == 0) {
 				superclassTemplateName = "_Entity.java";
 			}
@@ -87,7 +87,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 				subclassTemplateName = "Entity.java";
 			}
 		}
-		
+
 		templatePaths.append(",");
 		templatePaths.append(new File("/Library/Application Support/WOLips/EOGenerator").getAbsolutePath());
 		templatePaths.append(",");
@@ -108,118 +108,136 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 
 		List<EOModel> models = new LinkedList<EOModel>();
 		EOModelGroup modelGroup = new EOModelGroup();
-		modelGroup.setPrefix(eogeneratorModel.getPrefix());
-		modelGroup.setSuperclassPackage(eogeneratorModel.getSuperclassPackage());
-		String eogenericRecordClassName = eogeneratorModel.getDefineValueNamed("EOGenericRecord");
-		if (eogenericRecordClassName != null) {
-			modelGroup.setEOGenericRecordClassName(eogenericRecordClassName);
-		}
-		for (EOModelReference modelRef : eogeneratorModel.getModels()) {
-			String modelPath = modelRef.getPath(null);
-			File modelFile = new File(modelPath);
-			if (!modelFile.isAbsolute()) {
-				modelFile = new File(eogeneratorModel.getProject().getLocation().toFile(), modelPath);
+		EOModelRenderContext renderContext = new EOModelRenderContext();
+		try {
+			String prefix = eogeneratorModel.getPrefix();
+			if (prefix != null) {
+				renderContext.setPrefix(prefix);
 			}
-			EOModel model = modelGroup.loadModelFromURL(modelFile.toURL());
-			models.add(model);
-		}
-		for (EOModelReference modelRef : eogeneratorModel.getRefModels()) {
-			String modelPath = modelRef.getPath(null);
-			File modelFile = new File(modelPath);
-			if (!modelFile.isAbsolute()) {
-				modelFile = new File(eogeneratorModel.getProject().getLocation().toFile(), modelPath);
+			renderContext.setSuperclassPackage(eogeneratorModel.getSuperclassPackage());
+			String eogenericRecordClassName = eogeneratorModel.getDefineValueNamed("EOGenericRecord");
+			if (eogenericRecordClassName != null) {
+				renderContext.setEOGenericRecordClassName(eogenericRecordClassName);
 			}
-			modelGroup.loadModelFromURL(modelFile.toURL());
-		}
-		Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
-		modelGroup.resolve(failures);
-		modelGroup.verify(failures);
-		
-		for (EOModelVerificationFailure failure : failures) {
-			if (!failure.isWarning()) {
-				results.append("Error: " + failure.getMessage() + "\n");
-				showResults = true;
+			renderContext.setJavaClient(eogeneratorModel.isJavaClient() != null && eogeneratorModel.isJavaClient().booleanValue());
+			EOModelRenderContext.setRenderContext(renderContext);
+
+			for (EOModelReference modelRef : eogeneratorModel.getModels()) {
+				String modelPath = modelRef.getPath(null);
+				File modelFile = new File(modelPath);
+				if (!modelFile.isAbsolute()) {
+					modelFile = new File(eogeneratorModel.getProject().getLocation().toFile(), modelPath);
+				}
+				EOModel model = modelGroup.loadModelFromURL(modelFile.toURL());
+				models.add(model);
 			}
-		}
-
-		File superclassDestination = new File(eogeneratorModel.getDestination());
-		if (!superclassDestination.isAbsolute()) {
-			superclassDestination = new File(eogeneratorModel.getProject().getLocation().toFile(), eogeneratorModel.getDestination());
-		}
-		if (!superclassDestination.exists()) {
-			if (!superclassDestination.mkdirs()) {
-				throw new IOException("Failed to create destination '" + superclassDestination + "'.");
+			for (EOModelReference modelRef : eogeneratorModel.getRefModels()) {
+				String modelPath = modelRef.getPath(null);
+				File modelFile = new File(modelPath);
+				if (!modelFile.isAbsolute()) {
+					modelFile = new File(eogeneratorModel.getProject().getLocation().toFile(), modelPath);
+				}
+				modelGroup.loadModelFromURL(modelFile.toURL());
 			}
-		}
-		
-		File subclassDestination = new File(eogeneratorModel.getSubclassDestination());
-		if (!subclassDestination.isAbsolute()) {
-			subclassDestination = new File(eogeneratorModel.getProject().getLocation().toFile(), eogeneratorModel.getSubclassDestination());
-		}
-		if (!subclassDestination.exists()) {
-			if (!subclassDestination.mkdirs()) {
-				throw new IOException("Failed to create subclass destination '" + subclassDestination + "'.");
+			Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
+			modelGroup.resolve(failures);
+			modelGroup.verify(failures);
+
+			for (EOModelVerificationFailure failure : failures) {
+				if (!failure.isWarning()) {
+					results.append("Error: " + failure.getMessage() + "\n");
+					showResults = true;
+				}
 			}
-		}
 
-//		String filePathTemplate = eogeneratorModel.getFilenameTemplate();
-//		if (filePathTemplate == null || filePathTemplate.trim().length() == 0) {
-//		}
-		
-		context.put("eogeneratorModel", eogeneratorModel);
-		for (Define define : eogeneratorModel.getDefines()) {
-			context.put(define.getName(), define.getValue());
-		}
-		context.put("list", new ListTool());
-		for (EOModel model : models) {
-			//System.out.println("Generating " + model.getName() + " ...");
-			context.put("model", model);
+			File superclassDestination = new File(eogeneratorModel.getDestination());
+			if (!superclassDestination.isAbsolute()) {
+				superclassDestination = new File(eogeneratorModel.getProject().getLocation().toFile(), eogeneratorModel.getDestination());
+			}
+			if (!superclassDestination.exists()) {
+				if (!superclassDestination.mkdirs()) {
+					throw new IOException("Failed to create destination '" + superclassDestination + "'.");
+				}
+			}
 
-			for (EOEntity entity : model.getEntities()) {
-				//System.out.println("Generating   " + model.getName() + "." + entity.getName() + " ...");
-				context.put("entity", entity);
+			File subclassDestination = new File(eogeneratorModel.getSubclassDestination());
+			if (!subclassDestination.isAbsolute()) {
+				subclassDestination = new File(eogeneratorModel.getProject().getLocation().toFile(), eogeneratorModel.getSubclassDestination());
+			}
+			if (!subclassDestination.exists()) {
+				if (!subclassDestination.mkdirs()) {
+					throw new IOException("Failed to create subclass destination '" + subclassDestination + "'.");
+				}
+			}
 
-				String classNameWithPackage = entity.getClassName();
-				boolean eogenericRecord = classNameWithPackage == null || classNameWithPackage.endsWith("GenericRecord");
-				if (entity.isGenerateSource() && !eogenericRecord) {
-					String prefixClassNameWithPackage = entity.getPrefixClassName();
-					context.put("className", classNameWithPackage);
-					context.put("prefixClassName", prefixClassNameWithPackage);
-					context.put("packageName", entity.getPackageName());
-					context.put("classNameWithoutPackage", entity.getClassNameWithoutPackage());
-					context.put("prefixClassNameWithoutPackage", entity.getPrefixClassNameWithoutPackage());
-					
-					String superclassFileTemplate = prefixClassNameWithPackage;
-//					StringWriter superclassFilePathWriter = new StringWriter();
-//					velocityEngine.evaluate(context, superclassFilePathWriter, "LOG", superclassFileTemplate);
+			// String filePathTemplate = eogeneratorModel.getFilenameTemplate();
+			// if (filePathTemplate == null || filePathTemplate.trim().length()
+			// == 0) {
+			// }
 
-					String superclassFilePath = superclassFileTemplate.toString().replace('.', '/') + ".java";
-					File superclassFile = new File(superclassDestination, superclassFilePath);
-					File superclassFolder = superclassFile.getParentFile();
-					if (!superclassFolder.exists()) {
-						if (!superclassFolder.mkdirs()) {
-							throw new IOException("Unable to make superclass folder '" + superclassFolder + "'.");
+			context.put("eogeneratorModel", eogeneratorModel);
+			for (Define define : eogeneratorModel.getDefines()) {
+				context.put(define.getName(), define.getValue());
+			}
+			context.put("list", new ListTool());
+			for (EOModel model : models) {
+				// System.out.println("Generating " + model.getName() + " ...");
+				context.put("model", model);
+
+				for (EOEntity entity : model.getEntities()) {
+					// System.out.println("Generating " + model.getName() + "."
+					// + entity.getName() + " ...");
+					context.put("entity", entity);
+
+					String classNameWithPackage = renderContext.getClassNameForEntity(entity);
+					boolean eogenericRecord = classNameWithPackage == null || classNameWithPackage.endsWith("GenericRecord");
+					if (entity.isGenerateSource() && !eogenericRecord) {
+						String prefixClassNameWithPackage = entity.getPrefixClassName();
+						context.put("className", classNameWithPackage);
+						context.put("prefixClassName", prefixClassNameWithPackage);
+						context.put("packageName", entity.getPackageName());
+						context.put("classNameWithoutPackage", entity.getClassNameWithoutPackage());
+						context.put("prefixClassNameWithoutPackage", entity.getPrefixClassNameWithoutPackage());
+
+						String superclassFileTemplate = prefixClassNameWithPackage;
+						// StringWriter superclassFilePathWriter = new
+						// StringWriter();
+						// velocityEngine.evaluate(context,
+						// superclassFilePathWriter, "LOG",
+						// superclassFileTemplate);
+
+						String superclassFilePath = superclassFileTemplate.toString().replace('.', '/') + ".java";
+						File superclassFile = new File(superclassDestination, superclassFilePath);
+						File superclassFolder = superclassFile.getParentFile();
+						if (!superclassFolder.exists()) {
+							if (!superclassFolder.mkdirs()) {
+								throw new IOException("Unable to make superclass folder '" + superclassFolder + "'.");
+							}
 						}
-					}
-					VelocityEOGeneratorRunner.writeTemplate(velocityEngine, context, superclassTemplateName, superclassFile);
-					
-					String subclassFileTemplate = classNameWithPackage;
-//					StringWriter subclassFilePathWriter = new StringWriter();
-//					velocityEngine.evaluate(context, subclassFilePathWriter, "LOG", subclassFileTemplate);
-					
-					String subclassFilePath = subclassFileTemplate.toString().replace('.', '/') + ".java";
-					File subclassFile = new File(subclassDestination, subclassFilePath);
-					File subclassFolder = subclassFile.getParentFile();
-					if (!subclassFolder.exists()) {
-						if (!subclassFolder.mkdirs()) {
-							throw new IOException("Unable to make subclass folder '" + superclassFolder + "'.");
+						VelocityEOGeneratorRunner.writeTemplate(velocityEngine, context, superclassTemplateName, superclassFile);
+
+						String subclassFileTemplate = classNameWithPackage;
+						// StringWriter subclassFilePathWriter = new
+						// StringWriter();
+						// velocityEngine.evaluate(context,
+						// subclassFilePathWriter, "LOG", subclassFileTemplate);
+
+						String subclassFilePath = subclassFileTemplate.toString().replace('.', '/') + ".java";
+						File subclassFile = new File(subclassDestination, subclassFilePath);
+						File subclassFolder = subclassFile.getParentFile();
+						if (!subclassFolder.exists()) {
+							if (!subclassFolder.mkdirs()) {
+								throw new IOException("Unable to make subclass folder '" + superclassFolder + "'.");
+							}
 						}
-					}
-					if (!subclassFile.exists()) {
-						VelocityEOGeneratorRunner.writeTemplate(velocityEngine, context, subclassTemplateName, subclassFile);
+						if (!subclassFile.exists()) {
+							VelocityEOGeneratorRunner.writeTemplate(velocityEngine, context, subclassTemplateName, subclassFile);
+						}
 					}
 				}
 			}
+		} finally {
+			EOModelRenderContext.clearRenderContext();
 		}
 		return showResults;
 	}
@@ -228,8 +246,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 		Template template;
 		try {
 			template = engine.getTemplate(templateName);
-		}
-		catch (ResourceNotFoundException e) {
+		} catch (ResourceNotFoundException e) {
 			throw new Exception("Failed to load the template '" + templateName + "'.  Check your model's eogen file to make sure that it specifies the correct template folder and template names.");
 		}
 		if (!outputFile.getParentFile().exists()) {
@@ -237,7 +254,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 				throw new IOException("Unable to create the folder " + outputFile.getParentFile() + ".");
 			}
 		}
-		
+
 		ByteArrayOutputStream newFileContentsStream = new ByteArrayOutputStream();
 		Writer newFileContentsWriter = new OutputStreamWriter(newFileContentsStream);
 		try {
@@ -249,12 +266,11 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 		if (newFileContentsStr != null) {
 			if (newFileContentsStr.contains("<%")) {
 				throw new IOException("You are attempting to use an old EOGenerator template with Velocity EOGenerator.");
-			}
-			else if (newFileContentsStr.contains("<wo:")) {
+			} else if (newFileContentsStr.contains("<wo:")) {
 				throw new IOException("You are attempting to use a JavaEOGenerator template with Velocity EOGenerator.");
 			}
 		}
-		
+
 		boolean templateChanged = true;
 		if (!outputFile.exists()) {
 			FileWriter newFileWriter = new FileWriter(outputFile);
@@ -283,7 +299,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 					} finally {
 						fis.close();
 					}
-					
+
 					MessageDigest md5 = MessageDigest.getInstance("MD5");
 					byte[] oldMD5 = md5.digest(oldFileContents);
 					md5.reset();
@@ -310,7 +326,8 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 					newFileBufferedStream.close();
 				}
 			} else {
-				// System.out.println("EOGenerator.writeTemplate: skipping " + outputFile);
+				// System.out.println("EOGenerator.writeTemplate: skipping " +
+				// outputFile);
 			}
 		}
 	}
