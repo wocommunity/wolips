@@ -80,6 +80,10 @@ public class Binding extends AbstractApiModelElement implements IApiBinding {
     super(element, apiModel);
     this.parent = parent;
   }
+  
+  public boolean isAction() {
+    return ApiUtils.isActionBinding(this);
+  }
 
   @Override
   public boolean equals(Object o) {
