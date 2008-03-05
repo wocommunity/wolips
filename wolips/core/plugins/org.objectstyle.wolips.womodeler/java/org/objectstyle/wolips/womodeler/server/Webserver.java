@@ -68,16 +68,22 @@ public class Webserver implements Runnable {
 
       _serverSocket = new ServerSocket(_port);
       while (_running) {
-        Socket requestSock = _serverSocket.accept();
-        Request req = new Request(this, requestSock);
-        //				req.run();
-        Thread requestThread = new Thread(req, "WOLips Server Request");
-        requestThread.start();
+        try {
+          Socket requestSock = _serverSocket.accept();
+          Request req = new Request(this, requestSock);
+          //				req.run();
+          Thread requestThread = new Thread(req, "WOLips Server Request");
+          requestThread.start();
+        }
+        catch (Throwable t) {
+          t.printStackTrace();
+        }
       }
     }
     catch (Throwable t) {
       t.printStackTrace();
     }
+
   }
 
   public IRequestHandler getHandler(Request request) {
