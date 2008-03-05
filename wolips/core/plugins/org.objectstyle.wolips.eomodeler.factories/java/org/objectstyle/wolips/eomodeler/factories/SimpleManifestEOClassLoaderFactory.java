@@ -34,6 +34,7 @@ public class SimpleManifestEOClassLoaderFactory extends AbstractEOClassLoader {
 
 	protected void fillInClasspathURLs(File manifestFile, Set<URL> classpathUrls) throws IOException {
 		if (manifestFile.exists()) {
+			System.out.println("SimpleManifestEOClassLoaderFactory.fillInClasspathURLs: Manifest = " + manifestFile + " ...");
 			BufferedReader manifestReader = new BufferedReader(new FileReader(manifestFile));
 			try {
 				String searchFolderPath;
@@ -47,6 +48,7 @@ public class SimpleManifestEOClassLoaderFactory extends AbstractEOClassLoader {
 								File[] jarFiles = javaFolder.listFiles();
 								for (File jarFile : jarFiles) {
 									if (jarFile.getName().toLowerCase().endsWith(".jar")) {
+										System.out.println("SimpleManifestEOClassLoaderFactory.fillInClasspathURLs:   jar = " + jarFile);
 										classpathUrls.add(jarFile.toURL());
 									}
 								}
