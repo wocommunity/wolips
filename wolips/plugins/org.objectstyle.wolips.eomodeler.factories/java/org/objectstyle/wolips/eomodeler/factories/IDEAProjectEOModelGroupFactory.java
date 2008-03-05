@@ -65,7 +65,7 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 								rootPath = rootPath.replaceAll("\\$PROJECT_DIR\\$", ideaProjectPath);
 								rootPath = rootPath.replaceAll("(.*\\.framework/Resources).*", "$1");
 								ideaLibraries.put(libraryName, new File(rootPath).getCanonicalFile());
-								System.out.println("IDEAProjectEOModelGroupFactory.getSearchFolders: Library " + libraryName + "=" + ideaLibraries.get(libraryName));
+								System.out.println("IDEAProjectEOModelGroupFactory.getSearchFolders:   Library " + libraryName + "=" + ideaLibraries.get(libraryName));
 								break;
 							}
 						}
@@ -107,6 +107,7 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 			contentPath = contentPath.replaceAll("^file://", "");
 			contentPath = contentPath.replaceAll("\\$MODULE_DIR\\$", ideaProjectPath);
 			File contentFolder = new File(contentPath).getCanonicalFile();
+			System.out.println("IDEAProjectEOModelGroupFactory.processIdeaModuleFile:   content folder = " + contentFolder);
 			searchFolders.add(new ManifestSearchFolder(contentFolder));
 		}
 
@@ -123,6 +124,7 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 				String ideaLibraryName = ideaModuleElement.getAttribute("name");
 				File ideaLibraryFolder = ideaLibraries.get(ideaLibraryName);
 				if (ideaLibraryFolder != null) {
+					System.out.println("IDEAProjectEOModelGroupFactory.processIdeaModuleFile:   library folder = " + ideaLibraryFolder);
 					searchFolders.add(new ManifestSearchFolder(ideaLibraryFolder));
 				}
 			}

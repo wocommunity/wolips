@@ -63,7 +63,7 @@ public class IDEAProjectEOClassLoaderFactory extends AbstractEOClassLoader {
 							else {
 								rootUrl = new URL(rootUrlStr);
 							}
-							System.out.println("IDEAProjectEOClassLoaderFactory.fillInModelClasspath: " + rootUrl);
+							System.out.println("IDEAProjectEOClassLoaderFactory.fillInModelClasspath:   " + rootUrl);
 							classpathUrls.add(rootUrl);
 						}
 					}
