@@ -109,6 +109,8 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 
 	private Button _toManyButton;
 
+	private Button _toOneButton;
+
 	private Button _createButton;
 
 	private Button _createFKButton;
@@ -120,6 +122,8 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 	private Text _inverseNameText;
 
 	private Button _inverseToManyButton;
+
+	private Button _inverseToOneButton;
 
 	private Button _createInverseButton;
 
@@ -184,6 +188,12 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		}
 		return bounds;
 	}
+	
+	@Override
+	protected Control createContents(Composite parent) {
+		Control contents = super.createContents(parent);
+		return contents;
+	}
 
 	protected Control createDialogArea(Composite parent) {
 		Composite relationshipDialogArea = new Composite(parent, SWT.NONE);
@@ -247,7 +257,7 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		_titleFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD);
 		_sourceLabel.setFont(_titleFont);
 		GridData sourceLabelData = new GridData(GridData.FILL_HORIZONTAL);
-		//sourceLabelData.horizontalSpan = 2;
+		sourceLabelData.horizontalSpan = 2;
 		if (showEntityPickers) {
 			sourceLabelData.verticalIndent = 15;
 		}
@@ -256,8 +266,22 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		Group sourceFields = new Group(_relationshipFields, SWT.NONE);
 		GridLayout sourceFieldsLayout = new GridLayout(2, false);
 		sourceFieldsLayout.horizontalSpacing = 15;
+		sourceFieldsLayout.verticalSpacing = 6;
 		sourceFields.setLayout(sourceFieldsLayout);
 		sourceFields.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+		_toOneButton = new Button(sourceFields, SWT.RADIO);
+		_toOneButton.setSelection(true);
+		_toOneButton.addSelectionListener(this);
+		GridData toOneData = new GridData(GridData.FILL_HORIZONTAL);
+		toOneData.horizontalSpan = 2;
+		_toOneButton.setLayoutData(toOneData);
+
+		_toManyButton = new Button(sourceFields, SWT.RADIO);
+		_toManyButton.addSelectionListener(this);
+		GridData toManyData = new GridData(GridData.FILL_HORIZONTAL);
+		toManyData.horizontalSpan = 2;
+		_toManyButton.setLayoutData(toManyData);
 
 		_createButton = new Button(sourceFields, SWT.CHECK);
 		_createButton.setSelection(true);
@@ -268,13 +292,6 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		GridData nameData = new GridData(GridData.FILL_HORIZONTAL);
 		nameData.widthHint = 200;
 		_nameText.setLayoutData(nameData);
-
-		_toManyButton = new Button(sourceFields, SWT.CHECK);
-		_toManyButton.addSelectionListener(this);
-		_toManyButton.setText(Messages.getString("CreateRelationshipDialog.toManyLabel"));
-		GridData toManyData = new GridData(GridData.FILL_HORIZONTAL);
-		toManyData.horizontalSpan = 2;
-		_toManyButton.setLayoutData(toManyData);
 
 		_createFKButton = new Button(sourceFields, SWT.CHECK);
 		_createFKButton.setSelection(true);
@@ -300,8 +317,21 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		Group destinationFields = new Group(_relationshipFields, SWT.NONE);
 		GridLayout destinationFieldsLayout = new GridLayout(2, false);
 		destinationFieldsLayout.horizontalSpacing = 15;
+		destinationFieldsLayout.verticalSpacing = 6;
 		destinationFields.setLayout(destinationFieldsLayout);
 		destinationFields.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+		_inverseToOneButton = new Button(destinationFields, SWT.RADIO);
+		_inverseToOneButton.addSelectionListener(this);
+		GridData inverseToOneData = new GridData(GridData.FILL_HORIZONTAL);
+		inverseToOneData.horizontalSpan = 2;
+		_inverseToOneButton.setLayoutData(inverseToOneData);
+
+		_inverseToManyButton = new Button(destinationFields, SWT.RADIO);
+		_inverseToManyButton.addSelectionListener(this);
+		GridData inverseToManyData = new GridData(GridData.FILL_HORIZONTAL);
+		inverseToManyData.horizontalSpan = 2;
+		_inverseToManyButton.setLayoutData(inverseToManyData);
 
 		_createInverseButton = new Button(destinationFields, SWT.CHECK);
 		_createInverseButton.setSelection(true);
@@ -312,13 +342,6 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		GridData inverseNameData = new GridData(GridData.FILL_HORIZONTAL);
 		inverseNameData.widthHint = 200;
 		_inverseNameText.setLayoutData(inverseNameData);
-
-		_inverseToManyButton = new Button(destinationFields, SWT.CHECK);
-		_inverseToManyButton.addSelectionListener(this);
-		_inverseToManyButton.setText(Messages.getString("CreateRelationshipDialog.inverseToManyLabel"));
-		GridData inverseToManyData = new GridData(GridData.FILL_HORIZONTAL);
-		inverseToManyData.horizontalSpan = 2;
-		_inverseToManyButton.setLayoutData(inverseToManyData);
 
 		_createInverseFKButton = new Button(destinationFields, SWT.CHECK);
 		_createInverseFKButton.setSelection(true);
@@ -392,11 +415,15 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 			_sourceLabel.setText("From " + _sourceEntity.getName() + " ...");
 			_createInverseButton.setText(Messages.getString("CreateRelationshipDialog.inverseNameLabel", new Object[] { _sourceEntity.getName() }));
 			_createInverseFKButton.setText(Messages.getString("CreateRelationshipDialog.inverseFKNameLabel", new Object[] { _sourceEntity.getName() }));
+			_inverseToOneButton.setText(Messages.getString("CreateRelationshipDialog.inverseToOneLabel", new Object[] { _sourceEntity.getName() }));
+			_inverseToManyButton.setText(Messages.getString("CreateRelationshipDialog.inverseToManyLabel", new Object[] { StringUtils.toPlural(_sourceEntity.getName()) }));
 		}
 
 		if (_destinationEntity != null) {
 			_createButton.setText(Messages.getString("CreateRelationshipDialog.nameLabel", new Object[] { _destinationEntity.getName() }));
 			_createFKButton.setText(Messages.getString("CreateRelationshipDialog.fkNameLabel", new Object[] { _destinationEntity.getName() }));
+			_toOneButton.setText(Messages.getString("CreateRelationshipDialog.toOneLabel", new Object[] { _destinationEntity.getName() }));
+			_toManyButton.setText(Messages.getString("CreateRelationshipDialog.toManyLabel", new Object[] { StringUtils.toPlural(_destinationEntity.getName()) }));
 			_destinationLabel.setText("From " + _destinationEntity.getName() + " ...");
 			_guessedJoinEntityName = _sourceEntity.getName() + _destinationEntity.getName();
 			_joinEntityNameText.setText(_guessedJoinEntityName);
@@ -412,7 +439,7 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		}
 
 		toManyChanged(null);
-
+		
 		// getButton(IDialogConstants.OK_ID).setEnabled(_sourceEntity != null &&
 		// _destinationEntity != null);
 	}
@@ -471,8 +498,10 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 	public void toManyChanged(Button selectedButton) {
 		if (!_toManyButton.getSelection() && !_inverseToManyButton.getSelection()) {
 			if (selectedButton == _inverseToManyButton) {
+				_toOneButton.setSelection(false);
 				_toManyButton.setSelection(true);
 			} else {
+				_inverseToOneButton.setSelection(false);
 				_inverseToManyButton.setSelection(true);
 			}
 		}
