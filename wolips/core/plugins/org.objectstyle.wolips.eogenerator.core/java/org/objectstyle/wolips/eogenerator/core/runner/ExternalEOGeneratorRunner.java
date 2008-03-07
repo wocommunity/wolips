@@ -10,26 +10,25 @@ import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
 import org.objectstyle.wolips.eogenerator.core.model.CommandLineTokenizer;
 import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel;
 import org.objectstyle.wolips.eogenerator.core.model.IEOGeneratorRunner;
-import org.objectstyle.wolips.preferences.Preferences;
 
 public class ExternalEOGeneratorRunner implements IEOGeneratorRunner {
 	public boolean generate(EOGeneratorModel eogenModel, StringBuffer results) throws ParseException, IOException, InterruptedException {
-		String eogenFileContents = eogenModel.writeToString(eogenModel.getProject().getLocation().toFile(), Preferences.getEOGeneratorPath(), Preferences.getEOGeneratorTemplateDir(), Preferences.getEOGeneratorJavaTemplate(), Preferences.getEOGeneratorSubclassJavaTemplate());
+		String eogenFileContents = eogenModel.writeToString(eogenModel.getProjectPath().toFile());
 		List<String> commandsList = new LinkedList<String>();
 		CommandLineTokenizer tokenizer = new CommandLineTokenizer(eogenFileContents);
 		while (tokenizer.hasMoreTokens()) {
 			commandsList.add(tokenizer.nextToken());
 		}
 		String[] tokens = commandsList.toArray(new String[commandsList.size()]);
-		if (!new File(eogenModel.getEOGeneratorPath(Preferences.getEOGeneratorPath())).exists()) {
+		if (!new File(eogenModel.getEOGeneratorPath()).exists()) {
 			throw new FileNotFoundException("You have either not set the path to your EOGenerator executable, or the current path is incorrect.");
 		}
-		IProject project = eogenModel.getProject();
-		Process process = Runtime.getRuntime().exec(tokens, null, project.getLocation().toFile());
+		IPath projectPath = eogenModel.getProjectPath();
+		Process process = Runtime.getRuntime().exec(tokens, null, projectPath.toFile());
 
 		InputStream inputstream = process.getInputStream();
 		InputStreamReader inputstreamreader = new InputStreamReader(inputstream);

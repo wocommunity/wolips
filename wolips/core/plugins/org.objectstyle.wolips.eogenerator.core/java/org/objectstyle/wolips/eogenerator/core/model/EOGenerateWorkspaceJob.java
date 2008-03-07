@@ -105,8 +105,8 @@ public class EOGenerateWorkspaceJob extends WorkspaceJob {
 						fileSucceeded = false;
 					}
 
-					eogenModel.getProject().getFolder(new Path(eogenModel.getDestination())).refreshLocal(IResource.DEPTH_INFINITE, monitor);
-					eogenModel.getProject().getFolder(new Path(eogenModel.getSubclassDestination())).refreshLocal(IResource.DEPTH_INFINITE, monitor);
+					eogenFile.getProject().getFolder(new Path(eogenModel.getDestination())).refreshLocal(IResource.DEPTH_INFINITE, monitor);
+					eogenFile.getProject().getFolder(new Path(eogenModel.getSubclassDestination())).refreshLocal(IResource.DEPTH_INFINITE, monitor);
 				} catch (Throwable t) {
 					fileSucceeded = false;
 					output.append(t.getMessage());
