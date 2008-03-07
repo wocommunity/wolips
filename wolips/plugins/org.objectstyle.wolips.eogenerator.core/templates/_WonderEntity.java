@@ -9,6 +9,7 @@ import com.webobjects.foundation.*;
 import java.math.*;
 import java.util.*;
 import org.apache.log4j.Logger;
+
 import er.extensions.ERXGenericRecord;
 import er.extensions.ERXKey;
 
@@ -23,13 +24,13 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 	// Attributes
 #foreach ($attribute in $entity.sortedClassAttributes)
 	public static final String ${attribute.uppercaseUnderscoreName}_KEY = "$attribute.name";
-	public static final ERXKey ${attribute.uppercaseUnderscoreName} = new ERXKey(${attribute.uppercaseUnderscoreName}_KEY);
+	public static final ERXKey<$attribute.javaClassName> ${attribute.uppercaseUnderscoreName} = new ERXKey<$attribute.javaClassName>(${attribute.uppercaseUnderscoreName}_KEY);
 #end
 
 	// Relationships
 #foreach ($relationship in $entity.sortedClassRelationships)
 	public static final String ${relationship.uppercaseUnderscoreName}_KEY = "$relationship.name";
-	public static final ERXKey ${relationship.uppercaseUnderscoreName} = new ERXKey(${relationship.uppercaseUnderscoreName}_KEY);
+	public static final ERXKey<$relationship.actualDestination.classNameWithDefault> ${relationship.uppercaseUnderscoreName} = new ERXKey<$relationship.actualDestination.classNameWithDefault>(${relationship.uppercaseUnderscoreName}_KEY);
 #end
 
   private static Logger LOG = Logger.getLogger(${entity.prefixClassNameWithoutPackage}.class);
@@ -75,12 +76,19 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   public $relationship.actualDestination.classNameWithDefault ${relationship.name}() {
     return ($relationship.actualDestination.classNameWithDefault)storedValueForKey("$relationship.name");
   }
+  
+  public void set${relationship.capitalizedName}($relationship.actualDestination.classNameWithDefault value) {
+    takeStoredValueForKey(value, "$relationship.name");
+  }
 
   public void set${relationship.capitalizedName}Relationship($relationship.actualDestination.classNameWithDefault value) {
     if (${entity.prefixClassNameWithoutPackage}.LOG.isDebugEnabled()) {
       ${entity.prefixClassNameWithoutPackage}.LOG.debug("updating $relationship.name from " + ${relationship.name}() + " to " + value);
     }
-    if (value == null) {
+    if (er.extensions.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
+    	set${relationship.capitalizedName}(value);
+    }
+    else if (value == null) {
     	$relationship.actualDestination.classNameWithDefault oldValue = ${relationship.name}();
     	if (oldValue != null) {
     		removeObjectFromBothSidesOfRelationshipWithKey(oldValue, "$relationship.name");
@@ -156,18 +164,36 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
     return results;
   }
   
+  public void addTo${relationship.capitalizedName}($relationship.actualDestination.classNameWithDefault object) {
+    includeObjectIntoPropertyWithKey(object, "${relationship.name}");
+  }
+
+  public void removeFrom${relationship.capitalizedName}($relationship.actualDestination.classNameWithDefault object) {
+    excludeObjectFromPropertyWithKey(object, "${relationship.name}");
+  }
+
   public void addTo${relationship.capitalizedName}Relationship($relationship.actualDestination.classNameWithDefault object) {
     if (${entity.prefixClassNameWithoutPackage}.LOG.isDebugEnabled()) {
       ${entity.prefixClassNameWithoutPackage}.LOG.debug("adding " + object + " to ${relationship.name} relationship");
     }
-    addObjectToBothSidesOfRelationshipWithKey(object, "${relationship.name}");
+    if (er.extensions.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
+    	addTo${relationship.capitalizedName}(object);
+    }
+    else {
+    	addObjectToBothSidesOfRelationshipWithKey(object, "${relationship.name}");
+    }
   }
 
   public void removeFrom${relationship.capitalizedName}Relationship($relationship.actualDestination.classNameWithDefault object) {
     if (${entity.prefixClassNameWithoutPackage}.LOG.isDebugEnabled()) {
       ${entity.prefixClassNameWithoutPackage}.LOG.debug("removing " + object + " from ${relationship.name} relationship");
     }
-    removeObjectFromBothSidesOfRelationshipWithKey(object, "${relationship.name}");
+    if (er.extensions.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
+    	removeFrom${relationship.capitalizedName}(object);
+    }
+    else {
+    	removeObjectFromBothSidesOfRelationshipWithKey(object, "${relationship.name}");
+    }
   }
 
   public $relationship.actualDestination.classNameWithDefault create${relationship.capitalizedName}Relationship() {
