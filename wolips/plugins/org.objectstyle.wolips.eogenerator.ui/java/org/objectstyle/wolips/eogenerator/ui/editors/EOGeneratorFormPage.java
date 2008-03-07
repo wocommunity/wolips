@@ -775,7 +775,7 @@ public class EOGeneratorFormPage extends FormPage {
 
 		public String getColumnText(Object element, int columnIndex) {
 			EOModelReference model = (EOModelReference) element;
-			String name = model.getPath(EOGeneratorFormPage.this.getModel().getProject());
+			String name = model.getPath(EOGeneratorFormPage.this.getModel().getProjectPath());
 			return name;
 		}
 

@@ -49,12 +49,12 @@
  */
 package org.objectstyle.wolips.eogenerator.core.model;
 
-import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
 public class PathUtils {
-	public static String getRelativePath(IProject projectContext, IPath path) {
+	public static String getRelativePath(IResource projectContext, IPath path) {
 		IPath projectPath;
 		if (projectContext == null) {
 			projectPath = null;

@@ -27,6 +27,7 @@ import org.apache.velocity.runtime.RuntimeServices;
 import org.apache.velocity.runtime.log.LogSystem;
 import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
 import org.apache.velocity.tools.generic.ListTool;
+import org.eclipse.core.runtime.IPath;
 import org.objectstyle.wolips.eogenerator.core.Activator;
 import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel;
 import org.objectstyle.wolips.eogenerator.core.model.EOModelReference;
@@ -63,7 +64,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			templatePaths.append(",");
 			File templateFolder = new File(templatePath);
 			if (!templateFolder.isAbsolute()) {
-				templateFolder = new File(eogeneratorModel.getProject().getLocation().toFile(), templatePath);
+				templateFolder = new File(eogeneratorModel.getProjectPath().toFile(), templatePath);
 			}
 			templatePaths.append(templateFolder.getAbsolutePath());
 		}
@@ -123,19 +124,19 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			EOModelRenderContext.setRenderContext(renderContext);
 
 			for (EOModelReference modelRef : eogeneratorModel.getModels()) {
-				String modelPath = modelRef.getPath(null);
+				String modelPath = modelRef.getPath((IPath) null);
 				File modelFile = new File(modelPath);
 				if (!modelFile.isAbsolute()) {
-					modelFile = new File(eogeneratorModel.getProject().getLocation().toFile(), modelPath);
+					modelFile = new File(eogeneratorModel.getProjectPath().toFile(), modelPath);
 				}
 				EOModel model = modelGroup.loadModelFromURL(modelFile.toURL());
 				models.add(model);
 			}
 			for (EOModelReference modelRef : eogeneratorModel.getRefModels()) {
-				String modelPath = modelRef.getPath(null);
+				String modelPath = modelRef.getPath((IPath) null);
 				File modelFile = new File(modelPath);
 				if (!modelFile.isAbsolute()) {
-					modelFile = new File(eogeneratorModel.getProject().getLocation().toFile(), modelPath);
+					modelFile = new File(eogeneratorModel.getProjectPath().toFile(), modelPath);
 				}
 				modelGroup.loadModelFromURL(modelFile.toURL());
 			}
@@ -152,7 +153,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 
 			File superclassDestination = new File(eogeneratorModel.getDestination());
 			if (!superclassDestination.isAbsolute()) {
-				superclassDestination = new File(eogeneratorModel.getProject().getLocation().toFile(), eogeneratorModel.getDestination());
+				superclassDestination = new File(eogeneratorModel.getProjectPath().toFile(), eogeneratorModel.getDestination());
 			}
 			if (!superclassDestination.exists()) {
 				if (!superclassDestination.mkdirs()) {
@@ -162,7 +163,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 
 			File subclassDestination = new File(eogeneratorModel.getSubclassDestination());
 			if (!subclassDestination.isAbsolute()) {
-				subclassDestination = new File(eogeneratorModel.getProject().getLocation().toFile(), eogeneratorModel.getSubclassDestination());
+				subclassDestination = new File(eogeneratorModel.getProjectPath().toFile(), eogeneratorModel.getSubclassDestination());
 			}
 			if (!subclassDestination.exists()) {
 				if (!subclassDestination.mkdirs()) {

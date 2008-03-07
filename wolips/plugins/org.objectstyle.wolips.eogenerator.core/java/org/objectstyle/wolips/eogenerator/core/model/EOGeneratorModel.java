@@ -66,6 +66,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.objectstyle.wolips.preferences.Preferences;
@@ -109,7 +110,7 @@ public class EOGeneratorModel {
 
 	private PropertyChangeSupport _propertyChangeSupport;
 
-	private IProject _project;
+	private IPath _projectPath;
 
 	private String _eogeneratorPath;
 
@@ -147,14 +148,26 @@ public class EOGeneratorModel {
 
 	private boolean _dirty;
 
+	private String _defaultEOGeneratorPath;
+	
+	private String _defaultTemplateDir;
+	
+	private String _defaultJavaTemplate;
+
+	private String _defaultSubclassJavaTemplate;
+
 	public EOGeneratorModel(IProject project, String lineInfo) throws ParseException {
 		this(project);
 		readFromString(lineInfo);
 	}
 
 	public EOGeneratorModel(IProject project) {
+		this(project.getLocation());
+	}
+
+	public EOGeneratorModel(IPath projectPath) {
 		this();
-		_project = project;
+		_projectPath = projectPath;
 	}
 
 	public EOGeneratorModel() {
@@ -163,6 +176,43 @@ public class EOGeneratorModel {
 		_refModels = new LinkedList<EOModelReference>();
 		_defines = new LinkedList<Define>();
 		_customSettings = new LinkedList<String>();
+		
+		_defaultEOGeneratorPath = Preferences.getEOGeneratorPath();
+		_defaultTemplateDir = Preferences.getEOGeneratorTemplateDir();
+		_defaultJavaTemplate = Preferences.getEOGeneratorJavaTemplate();
+		_defaultSubclassJavaTemplate = Preferences.getEOGeneratorSubclassJavaTemplate();
+	}
+
+	public void setDefaultEOGeneratorPath(String defaultEOGeneratorPath) {
+		_defaultEOGeneratorPath = defaultEOGeneratorPath;
+	}
+	
+	public String getDefaultEOGeneratorPath() {
+		return _defaultEOGeneratorPath;
+	}
+	
+	public void setDefaultTemplateDir(String defaultTemplateDir) {
+		_defaultTemplateDir = defaultTemplateDir;
+	}
+	
+	public String getDefaultTemplateDir() {
+		return _defaultTemplateDir;
+	}
+	
+	public String getDefaultJavaTemplate() {
+		return _defaultJavaTemplate;
+	}
+
+	public void setDefaultJavaTemplate(String defaultJavaTemplate) {
+		_defaultJavaTemplate = defaultJavaTemplate;
+	}
+
+	public String getDefaultSubclassJavaTemplate() {
+		return _defaultSubclassJavaTemplate;
+	}
+
+	public void setDefaultSubclassJavaTemplate(String defaultSubclassJavaTemplate) {
+		_defaultSubclassJavaTemplate = defaultSubclassJavaTemplate;
 	}
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -182,7 +232,7 @@ public class EOGeneratorModel {
 	}
 
 	public void writeToFile(IFile file, IProgressMonitor monitor) throws CoreException, IOException {
-		String eogenFileContents = writeToString(null, Preferences.getEOGeneratorPath(), Preferences.getEOGeneratorTemplateDir(), Preferences.getEOGeneratorJavaTemplate(), Preferences.getEOGeneratorSubclassJavaTemplate());
+		String eogenFileContents = writeToString(null);
 		InputStream stream = new ByteArrayInputStream(eogenFileContents.getBytes("UTF-8"));
 		if (file.exists()) {
 			file.setContents(stream, true, true, monitor);
@@ -211,21 +261,21 @@ public class EOGeneratorModel {
 		return fullPath;
 	}
 
-	public String writeToString(File workingDirectory, String defaultEOGeneratorPath, String defaultTemplateDir, String defaultJavaTemplate, String defaultSubclassJavaTemplate) {
+	public String writeToString(File workingDirectory) {
 		StringBuffer sb = new StringBuffer();
 
-		sb.append(escape(getEOGeneratorPath(defaultEOGeneratorPath), false));
+		sb.append(escape(getEOGeneratorPath(), false));
 
 		append(sb, "-destination", EOGeneratorModel.toFullPath(workingDirectory, _destination));
 		append(sb, "-filenameTemplate", _filenameTemplate);
 		append(sb, "-java", _java);
 		append(sb, "-javaclient", _javaClient);
-		append(sb, "-javaTemplate", getJavaTemplate(defaultJavaTemplate));
+		append(sb, "-javaTemplate", getJavaTemplate());
 
 		Iterator modelsIter = _models.iterator();
 		while (modelsIter.hasNext()) {
 			EOModelReference model = (EOModelReference) modelsIter.next();
-			append(sb, "-model", EOGeneratorModel.toFullPath(workingDirectory, model.getPath(_project)));
+			append(sb, "-model", EOGeneratorModel.toFullPath(workingDirectory, model.getPath(_projectPath)));
 		}
 
 		append(sb, "-packagedirs", _packageDirs);
@@ -234,12 +284,12 @@ public class EOGeneratorModel {
 		Iterator refModelsIter = _refModels.iterator();
 		while (refModelsIter.hasNext()) {
 			EOModelReference refModel = (EOModelReference) refModelsIter.next();
-			append(sb, "-refmodel", EOGeneratorModel.toFullPath(workingDirectory, refModel.getPath(_project)));
+			append(sb, "-refmodel", EOGeneratorModel.toFullPath(workingDirectory, refModel.getPath(_projectPath)));
 		}
 
 		append(sb, "-subclassDestination", EOGeneratorModel.toFullPath(workingDirectory, _subclassDestination));
-		append(sb, "-subclassJavaTemplate", getSubclassJavaTemplate(defaultSubclassJavaTemplate));
-		append(sb, "-templatedir", EOGeneratorModel.toFullPath(workingDirectory, getTemplateDir(defaultTemplateDir)));
+		append(sb, "-subclassJavaTemplate", getSubclassJavaTemplate());
+		append(sb, "-templatedir", EOGeneratorModel.toFullPath(workingDirectory, getTemplateDir()));
 		append(sb, "-verbose", _verbose);
 
 		append(sb, "-superclassPackage", _superclassPackage);
@@ -353,8 +403,8 @@ public class EOGeneratorModel {
 		return token;
 	}
 
-	public IProject getProject() {
-		return _project;
+	public IPath getProjectPath() {
+		return _projectPath;
 	}
 
 	public void addDefine(Define define) {
@@ -411,10 +461,10 @@ public class EOGeneratorModel {
 		}
 	}
 
-	public String getEOGeneratorPath(String defaultEOGeneratorPath) {
+	public String getEOGeneratorPath() {
 		String eoGeneratorPath = _eogeneratorPath;
 		if (_eogeneratorPath == null || _eogeneratorPath.trim().length() == 0) {
-			eoGeneratorPath = defaultEOGeneratorPath;
+			eoGeneratorPath = _defaultEOGeneratorPath;
 		}
 		return eoGeneratorPath;
 	}
@@ -590,7 +640,7 @@ public class EOGeneratorModel {
 			templateDir = defaultTemplateDir;
 		}
 		if (templateDir != null) {
-			templateDir = PathUtils.getRelativePath(_project, new Path(templateDir));
+			templateDir = PathUtils.getRelativePath(_projectPath, new Path(templateDir));
 		}
 		return templateDir;
 	}

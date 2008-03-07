@@ -49,7 +49,7 @@
  */
 package org.objectstyle.wolips.eogenerator.core.model;
 
-import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 
 public class EOModelReference {
@@ -59,8 +59,12 @@ public class EOModelReference {
 		_modelPath = modelPath;
 	}
 
-	public String getPath(IProject projectContext) {
+	public String getPath(IResource projectContext) {
 		return PathUtils.getRelativePath(projectContext, _modelPath);
+	}
+
+	public String getPath(IPath projectPath) {
+		return PathUtils.getRelativePath(projectPath, _modelPath);
 	}
 
 	public String getName() {
