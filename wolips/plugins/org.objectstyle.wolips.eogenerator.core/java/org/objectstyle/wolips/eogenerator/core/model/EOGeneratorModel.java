@@ -155,6 +155,8 @@ public class EOGeneratorModel {
 	private String _defaultJavaTemplate;
 
 	private String _defaultSubclassJavaTemplate;
+	
+	private boolean _java14;
 
 	public EOGeneratorModel(IProject project, String lineInfo) throws ParseException {
 		this(project);
@@ -177,10 +179,24 @@ public class EOGeneratorModel {
 		_defines = new LinkedList<Define>();
 		_customSettings = new LinkedList<String>();
 		
-		_defaultEOGeneratorPath = Preferences.getEOGeneratorPath();
-		_defaultTemplateDir = Preferences.getEOGeneratorTemplateDir();
-		_defaultJavaTemplate = Preferences.getEOGeneratorJavaTemplate();
-		_defaultSubclassJavaTemplate = Preferences.getEOGeneratorSubclassJavaTemplate();
+		try {
+			_defaultEOGeneratorPath = Preferences.getEOGeneratorPath();
+			_defaultTemplateDir = Preferences.getEOGeneratorTemplateDir();
+			_defaultJavaTemplate = Preferences.getEOGeneratorJavaTemplate();
+			_defaultSubclassJavaTemplate = Preferences.getEOGeneratorSubclassJavaTemplate();
+			_java14 = Preferences.isEOGeneratorJava14();
+		}
+		catch (NoClassDefFoundError e) {
+			// IGNORE THIS -- We're not running in Eclipse
+		}
+	}
+	
+	public void setJava14(boolean java14) {
+		_java14 = java14;
+	}
+	
+	public boolean isJava14() {
+		return _java14;
 	}
 
 	public void setDefaultEOGeneratorPath(String defaultEOGeneratorPath) {
@@ -513,13 +529,9 @@ public class EOGeneratorModel {
 	}
 
 	public String getJavaTemplate() {
-		return getJavaTemplate(null);
-	}
-
-	public String getJavaTemplate(String defaultJavaTemplate) {
 		String javaTemplate = _javaTemplate;
 		if (_javaTemplate == null || _javaTemplate.trim().length() == 0) {
-			javaTemplate = defaultJavaTemplate;
+			javaTemplate = _defaultJavaTemplate;
 		}
 		return javaTemplate;
 	}
@@ -610,13 +622,9 @@ public class EOGeneratorModel {
 	}
 
 	public String getSubclassJavaTemplate() {
-		return getSubclassJavaTemplate(null);
-	}
-
-	public String getSubclassJavaTemplate(String defaultSubclassJavaTemplate) {
 		String subclassJavaTemplate = _subclassJavaTemplate;
 		if (_subclassJavaTemplate == null || _subclassJavaTemplate.trim().length() == 0) {
-			subclassJavaTemplate = defaultSubclassJavaTemplate;
+			subclassJavaTemplate = _defaultSubclassJavaTemplate;
 		}
 		return subclassJavaTemplate;
 	}
@@ -631,13 +639,9 @@ public class EOGeneratorModel {
 	}
 
 	public String getTemplateDir() {
-		return getTemplateDir(null);
-	}
-
-	public String getTemplateDir(String defaultTemplateDir) {
 		String templateDir = _templateDir;
 		if (_templateDir == null || _templateDir.trim().length() == 0) {
-			templateDir = defaultTemplateDir;
+			templateDir = _defaultTemplateDir;
 		}
 		if (templateDir != null) {
 			templateDir = PathUtils.getRelativePath(_projectPath, new Path(templateDir));
