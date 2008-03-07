@@ -30,6 +30,7 @@ import org.apache.velocity.tools.generic.ListTool;
 import org.eclipse.core.runtime.IPath;
 import org.objectstyle.wolips.eogenerator.core.Activator;
 import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel;
+import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorResourceLoader;
 import org.objectstyle.wolips.eogenerator.core.model.EOModelReference;
 import org.objectstyle.wolips.eogenerator.core.model.IEOGeneratorRunner;
 import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel.Define;
@@ -38,7 +39,6 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelRenderContext;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
-import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.thirdparty.velocity.resourceloader.ResourceLoader;
 
 public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
@@ -52,7 +52,21 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 		}
 	}
 
+	private boolean _insideEclipse;
+	
+	public VelocityEOGeneratorRunner() {
+		this(true);
+	}
+	
+	public VelocityEOGeneratorRunner(boolean insideEclipse) {
+		_insideEclipse = insideEclipse;
+	}
+	
 	public boolean generate(EOGeneratorModel eogeneratorModel, StringBuffer results) throws Exception {
+		return generate(eogeneratorModel, results, null);
+	}
+	
+	public boolean generate(EOGeneratorModel eogeneratorModel, StringBuffer results, EOModelGroup preloadedModelGroup) throws Exception {
 		boolean showResults = false;
 		VelocityEngine velocityEngine = new VelocityEngine();
 		velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, org.apache.velocity.runtime.log.NullLogSystem.class.getName());
@@ -69,10 +83,10 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			templatePaths.append(templateFolder.getAbsolutePath());
 		}
 
-		String superclassTemplateName = eogeneratorModel.getJavaTemplate(Preferences.getEOGeneratorJavaTemplate());
-		String subclassTemplateName = eogeneratorModel.getSubclassJavaTemplate(Preferences.getEOGeneratorSubclassJavaTemplate());
+		String superclassTemplateName = eogeneratorModel.getJavaTemplate();
+		String subclassTemplateName = eogeneratorModel.getSubclassJavaTemplate();
 
-		boolean eogeneratorJava14 = Preferences.isEOGeneratorJava14();
+		boolean eogeneratorJava14 = eogeneratorModel.isJava14();
 		if (eogeneratorJava14) {
 			if (superclassTemplateName == null || superclassTemplateName.length() == 0) {
 				superclassTemplateName = "_Entity14.java";
@@ -101,14 +115,18 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 		velocityEngine.setProperty("resource.loader", "file,wolips");
 		velocityEngine.setProperty("file.resource.loader.class", FileResourceLoader.class.getName());
 		velocityEngine.setProperty("file.resource.loader.path", templatePaths.toString());
-		velocityEngine.setProperty("wolips.resource.loader.class", ResourceLoader.class.getName());
-		velocityEngine.setProperty("wolips.resource.loader.bundle", Activator.getDefault().getBundle());
+		if (_insideEclipse) {
+			velocityEngine.setProperty("wolips.resource.loader.class", ResourceLoader.class.getName());
+			velocityEngine.setProperty("wolips.resource.loader.bundle", Activator.getDefault().getBundle());
+		}
+		else {
+			velocityEngine.setProperty("wolips.resource.loader.class", EOGeneratorResourceLoader.class.getName());
+		}
 
 		velocityEngine.init();
 		VelocityContext context = new VelocityContext();
 
 		List<EOModel> models = new LinkedList<EOModel>();
-		EOModelGroup modelGroup = new EOModelGroup();
 		EOModelRenderContext renderContext = new EOModelRenderContext();
 		try {
 			String prefix = eogeneratorModel.getPrefix();
@@ -123,31 +141,46 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			renderContext.setJavaClient(eogeneratorModel.isJavaClient() != null && eogeneratorModel.isJavaClient().booleanValue());
 			EOModelRenderContext.setRenderContext(renderContext);
 
-			for (EOModelReference modelRef : eogeneratorModel.getModels()) {
-				String modelPath = modelRef.getPath((IPath) null);
-				File modelFile = new File(modelPath);
-				if (!modelFile.isAbsolute()) {
-					modelFile = new File(eogeneratorModel.getProjectPath().toFile(), modelPath);
+			EOModelGroup modelGroup;
+			if (preloadedModelGroup == null) {
+				modelGroup = new EOModelGroup();
+				for (EOModelReference modelRef : eogeneratorModel.getModels()) {
+					String modelPath = modelRef.getPath((IPath) null);
+					File modelFile = new File(modelPath);
+					if (!modelFile.isAbsolute()) {
+						modelFile = new File(eogeneratorModel.getProjectPath().toFile(), modelPath);
+					}
+					EOModel model = modelGroup.loadModelFromURL(modelFile.toURL());
+					models.add(model);
 				}
-				EOModel model = modelGroup.loadModelFromURL(modelFile.toURL());
-				models.add(model);
-			}
-			for (EOModelReference modelRef : eogeneratorModel.getRefModels()) {
-				String modelPath = modelRef.getPath((IPath) null);
-				File modelFile = new File(modelPath);
-				if (!modelFile.isAbsolute()) {
-					modelFile = new File(eogeneratorModel.getProjectPath().toFile(), modelPath);
+				for (EOModelReference modelRef : eogeneratorModel.getRefModels()) {
+					String modelPath = modelRef.getPath((IPath) null);
+					File modelFile = new File(modelPath);
+					if (!modelFile.isAbsolute()) {
+						modelFile = new File(eogeneratorModel.getProjectPath().toFile(), modelPath);
+					}
+					modelGroup.loadModelFromURL(modelFile.toURL());
 				}
-				modelGroup.loadModelFromURL(modelFile.toURL());
-			}
-			Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
-			modelGroup.resolve(failures);
-			modelGroup.verify(failures);
+				Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
+				modelGroup.resolve(failures);
+				modelGroup.verify(failures);
 
-			for (EOModelVerificationFailure failure : failures) {
-				if (!failure.isWarning()) {
-					results.append("Error: " + failure.getMessage() + "\n");
-					showResults = true;
+				for (EOModelVerificationFailure failure : failures) {
+					if (!failure.isWarning()) {
+						results.append("Error: " + failure.getMessage() + "\n");
+						showResults = true;
+					}
+				}
+			}
+			else {
+				modelGroup = preloadedModelGroup;
+				for (EOModelReference modelRef : eogeneratorModel.getModels()) {
+					String modelName = modelRef.getName();
+					EOModel model = modelGroup.getModelNamed(modelName);
+					if (model == null) {
+						throw new RuntimeException("There was no model named '" + modelName + "' in this model group.");
+					}
+					models.add(model);
 				}
 			}
 
