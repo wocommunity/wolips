@@ -1,14 +1,11 @@
 package org.objectstyle.wolips.wodclipse.core.refactoring;
 
-import java.io.IOException;
-
 import jp.aonir.fuzzyxml.FuzzyXMLAttribute;
 import jp.aonir.fuzzyxml.FuzzyXMLDocument;
 import jp.aonir.fuzzyxml.FuzzyXMLElement;
 import jp.aonir.fuzzyxml.FuzzyXMLNode;
 import jp.aonir.fuzzyxml.util.NodeSelectUtil;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
