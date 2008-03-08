@@ -52,13 +52,20 @@ public class FuzzyXMLWodElement extends SimpleWodElement {
       addBinding(wodBinding);
     }
     
-    setEndOffset(element.getOffset() + element.getOpenTagLength());
+    setStartOffset(element.getOffset());
+    setEndOffset(element.getOffset() + element.getOpenTagLength() + 2);
+    if (element.hasCloseTag()) {
+      setFullEndOffset(element.getCloseTagOffset() + element.getCloseTagLength() + 2);
+    }
+    else {
+      setFullEndOffset(getEndOffset());
+    }
     if (attributes.length > 0) {
       int endOffset = attributes[attributes.length - 1].getOffset() + attributes[attributes.length - 1].getLength();
       setNewBindingOffset(endOffset);
     }
     else {
-      setNewBindingOffset(element.getOffset() + element.getNameOffset() + element.getNameLength());
+      setNewBindingOffset(element.getOffset() + element.getNameOffset() + element.getNameLength() + 1);
     }
   }
 

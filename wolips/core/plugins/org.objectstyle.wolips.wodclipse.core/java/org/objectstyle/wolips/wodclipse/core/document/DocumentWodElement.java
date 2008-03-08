@@ -70,6 +70,7 @@ public class DocumentWodElement extends AbstractWodElement {
     _elementName = elementName;
     _elementType = elementType;
     _lineNumber = -1;
+    _endOffset = -1;
   }
 
   public String getElementName() {
@@ -87,8 +88,12 @@ public class DocumentWodElement extends AbstractWodElement {
   public Position getElementTypePosition() {
     return _elementType.getPosition();
   }
-  
-  @Override
+
+  public int getNewBindingOffset() {
+    int newBindingOffset = getEndOffset() - 1;
+    return newBindingOffset;
+  }
+
   public int getNewBindingIndent() {
     int indent = 2;
     List<IWodBinding> bindings = getBindings();
@@ -105,6 +110,7 @@ public class DocumentWodElement extends AbstractWodElement {
           e.printStackTrace();
         }
       }
+      
     }
     return indent;
   }
@@ -122,9 +128,12 @@ public class DocumentWodElement extends AbstractWodElement {
         IWodBinding binding = bindingsIter.next();
         endOffset = Math.max(endOffset, binding.getEndOffset());
       }
-      endOffset += 2;
     }
     return endOffset;
+  }
+  
+  public int getFullEndOffset() {
+    return getEndOffset();
   }
   
   public void setEndOffset(int endOffset) {

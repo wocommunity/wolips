@@ -9,6 +9,9 @@ public class SimpleWodElement extends AbstractWodElement {
   private Position _elementTypePosition;
   private int _startOffset;
   private int _endOffset;
+  private int _fullEndOffset;
+  private int _newBindingOffset;
+  private int _newBindingIndent;
 
   public SimpleWodElement(IWodElement wodElement) {
     if (wodElement != null) {
@@ -22,6 +25,8 @@ public class SimpleWodElement extends AbstractWodElement {
       }
       _startOffset = wodElement.getStartOffset();
       _endOffset = wodElement.getEndOffset();
+      _fullEndOffset = wodElement.getFullEndOffset();
+      setNewBindingIndent(wodElement.getNewBindingIndent());
       setNewBindingOffset(wodElement.getNewBindingOffset());
     }
     else {
@@ -99,6 +104,14 @@ public class SimpleWodElement extends AbstractWodElement {
     return _endOffset;
   }
 
+  public int getFullEndOffset() {
+    return _fullEndOffset;
+  }
+
+  public void setFullEndOffset(int fullEndOffset) {
+    _fullEndOffset = fullEndOffset;
+  }
+
   public void setStartOffset(int startOffset) {
     _startOffset = startOffset;
   }
@@ -110,5 +123,25 @@ public class SimpleWodElement extends AbstractWodElement {
   @Override
   public int getLineNumber() {
     return -1;
+  }
+
+  public void setNewBindingOffset(int newBindingOffset) {
+    _newBindingOffset = newBindingOffset;
+  }
+
+  public int getNewBindingOffset() {
+    int newBindingOffset = _newBindingOffset;
+    if (newBindingOffset == -1) {
+      newBindingOffset = getEndOffset() - 1;
+    }
+    return newBindingOffset;
+  }
+
+  public void setNewBindingIndent(int newBindingIndent) {
+    _newBindingIndent = newBindingIndent;
+  }
+
+  public int getNewBindingIndent() {
+    return _newBindingIndent;
   }
 }
