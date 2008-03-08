@@ -47,6 +47,10 @@ public abstract class AbstractCacheEntry<T> {
     _validated = validated;
   }
 
+  public void setModel(T model) {
+    _model = model;
+  }
+  
   public synchronized T getModel() throws Exception {
     T model = _getModel();
     if (model == null) {

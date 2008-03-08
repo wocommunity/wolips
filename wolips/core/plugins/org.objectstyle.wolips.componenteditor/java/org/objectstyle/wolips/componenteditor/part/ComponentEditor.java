@@ -95,11 +95,11 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 		return parserCache;
 	}
 
-	public IWodElement getSelectedElement() throws Exception {
+	public IWodElement getSelectedElement(boolean refreshModel) throws Exception {
 		IEditorPart editorPart = getActiveEditor();
 		IWodElement selectedELement = null;
 		if (editorPart instanceof IWOEditor) {
-			selectedELement = ((IWOEditor)editorPart).getSelectedElement();
+			selectedELement = ((IWOEditor)editorPart).getSelectedElement(refreshModel);
 		}
 		return selectedELement;
 	}

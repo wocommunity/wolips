@@ -58,8 +58,8 @@ public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtml
     return getSourceEditor().getParserCache();
   }
 
-  public IWodElement getSelectedElement() throws Exception {
-    return getSourceEditor().getSelectedElement();
+  public IWodElement getSelectedElement(boolean refreshModel) throws Exception {
+    return getSourceEditor().getSelectedElement(refreshModel);
   }
 
   @Override
