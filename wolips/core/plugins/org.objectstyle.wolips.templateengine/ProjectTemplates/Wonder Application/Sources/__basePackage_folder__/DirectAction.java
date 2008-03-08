@@ -13,6 +13,7 @@ public class DirectAction extends ERXDirectAction {
 		super(request);
 	}
 
+	@Override
 	public WOActionResults defaultAction() {
 		return pageWithName(Main.class.getName());
 	}
