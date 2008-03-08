@@ -55,6 +55,8 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -90,18 +92,36 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 		IEditorPart editorPart = getActiveEditor();
 		WodParserCache parserCache = null;
 		if (editorPart instanceof IWOEditor) {
-			parserCache = ((IWOEditor)editorPart).getParserCache();
+			parserCache = ((IWOEditor) editorPart).getParserCache();
 		}
 		return parserCache;
+	}
+	
+	public Control getWOEditorControl() {
+		IEditorPart editorPart = getActiveEditor();
+		Control editorControl = null;
+		if (editorPart instanceof IWOEditor) {
+			editorControl = ((IWOEditor) editorPart).getWOEditorControl();
+		}
+		return editorControl;
 	}
 
 	public IWodElement getSelectedElement(boolean refreshModel) throws Exception {
 		IEditorPart editorPart = getActiveEditor();
-		IWodElement selectedELement = null;
+		IWodElement selectedElement = null;
 		if (editorPart instanceof IWOEditor) {
-			selectedELement = ((IWOEditor)editorPart).getSelectedElement(refreshModel);
+			selectedElement = ((IWOEditor) editorPart).getSelectedElement(refreshModel);
 		}
-		return selectedELement;
+		return selectedElement;
+	}
+
+	public IWodElement getWodElementAtPoint(Point point, boolean refreshModel) throws Exception {
+		IEditorPart editorPart = getActiveEditor();
+		IWodElement wodElement = null;
+		if (editorPart instanceof IWOEditor) {
+			wodElement = ((IWOEditor) editorPart).getWodElementAtPoint(point, refreshModel);
+		}
+		return wodElement;
 	}
 
 	public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {

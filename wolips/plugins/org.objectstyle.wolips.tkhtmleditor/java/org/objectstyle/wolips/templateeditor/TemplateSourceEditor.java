@@ -36,7 +36,8 @@ import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
-import org.objectstyle.wolips.wodclipse.core.document.IWOEditor;
+import org.objectstyle.wolips.wodclipse.core.document.ITextWOEditor;
+import org.objectstyle.wolips.wodclipse.core.util.FuzzyXMLWodElement;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
 import tk.eclipse.plugin.htmleditor.HTMLPlugin;
@@ -44,7 +45,7 @@ import tk.eclipse.plugin.htmleditor.editors.HTMLConfiguration;
 import tk.eclipse.plugin.htmleditor.editors.HTMLSourceEditor;
 import tk.eclipse.plugin.htmleditor.editors.IHTMLOutlinePage;
 
-public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor {
+public class TemplateSourceEditor extends HTMLSourceEditor implements ITextWOEditor {
   private TemplateOutlinePage _templateOutlinePage;
   private WodParserCache _cache;
   private TemplateBreadcrumb _breadcrumb;
@@ -66,12 +67,12 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
     super.doSetInput(input);
     _cache = null;
   }
-  
+
   @Override
   public MarkerAnnotationPreferences getAnnotationPreferences() {
     return super.getAnnotationPreferences();
   }
-  
+
   @Override
   public AnnotationPreferenceLookup getAnnotationPreferenceLookup() {
     return super.getAnnotationPreferenceLookup();
@@ -101,17 +102,15 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
 
     _breadcrumb = new TemplateBreadcrumb(this, templateParent, SWT.NONE);
     _breadcrumb.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    
-    
+
     getViewer().addTextListener(new ITextListener() {
       public void textChanged(TextEvent event) {
         setCacheOutOfSync(true);
       }
     });
 
-
   }
-  
+
   protected void setCacheOutOfSync(boolean cacheOutOfSync) {
     _cacheOutOfSync = cacheOutOfSync;
   }
@@ -313,6 +312,23 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
       }
     }
     return modelOffset;
+  }
+
+  public ISourceViewer getWOSourceViewer() {
+    return getViewer();
+  }
+
+  public StyledText getWOEditorControl() {
+    return getViewer().getTextWidget();
+  }
+
+  public IWodElement getWodElementAtPoint(Point point, boolean refreshModel) throws Exception {
+    IWodElement wodElement = null;
+    FuzzyXMLElement selectedElement = getElementAtPoint(point, refreshModel);
+    if (WodHtmlUtils.isWOTag(selectedElement)) {
+      wodElement = new FuzzyXMLWodElement(selectedElement, org.objectstyle.wolips.bindings.Activator.getDefault().isWO54());
+    }
+    return wodElement;
   }
 
   public FuzzyXMLElement getElementAtPoint(Point point, boolean refreshModel) throws Exception {

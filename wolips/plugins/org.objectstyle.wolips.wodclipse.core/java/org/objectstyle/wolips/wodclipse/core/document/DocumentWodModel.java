@@ -219,7 +219,7 @@ public class DocumentWodModel extends AbstractWodModel {
       }
       else if (RulePosition.isOperatorOfType(rulePosition, CloseDefinitionWordDetector.class)) {
         if (element != null) {
-          element.setEndOffset(rulePosition.getTokenOffset());
+          element.setEndOffset(rulePosition.getTokenOffset() + 1);
         }
         if (!RulePosition.isOperatorOfType(lastRulePosition, OpenDefinitionWordDetector.class) && !RulePosition.isOperatorOfType(lastRulePosition, EndAssignmentWordDetector.class)) {
           addParseProblem("A '}' can only appear after a ';' or a '{'", rulePosition, false);

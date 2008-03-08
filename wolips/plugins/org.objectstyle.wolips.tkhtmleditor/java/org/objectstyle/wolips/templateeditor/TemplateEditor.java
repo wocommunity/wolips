@@ -10,7 +10,10 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.revisions.RevisionInformation;
 import org.eclipse.jface.text.source.Annotation;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IMemento;
@@ -35,7 +38,7 @@ import org.objectstyle.wolips.components.editor.IWebobjectTagListener;
 import org.objectstyle.wolips.editors.contentdescriber.ContentDescriberWO;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
-import org.objectstyle.wolips.wodclipse.core.document.IWOEditor;
+import org.objectstyle.wolips.wodclipse.core.document.ITextWOEditor;
 
 import tk.eclipse.plugin.htmleditor.HTMLPlugin;
 import tk.eclipse.plugin.htmleditor.editors.HTMLConfiguration;
@@ -43,9 +46,9 @@ import tk.eclipse.plugin.htmleditor.editors.HTMLEditor;
 import tk.eclipse.plugin.htmleditor.editors.HTMLEditorPart;
 import tk.eclipse.plugin.htmleditor.editors.HTMLSourceEditor;
 
-public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtmlDocumentProvider, IWebobjectTagListener, ITextEditor, IReusableEditor, ITextEditorExtension, ITextEditorExtension2, ITextEditorExtension3, ITextEditorExtension4, INavigationLocationProvider, ISaveablesSource, IPersistableEditor, IWOEditor {
+public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtmlDocumentProvider, IWebobjectTagListener, ITextEditor, IReusableEditor, ITextEditorExtension, ITextEditorExtension2, ITextEditorExtension3, ITextEditorExtension4, INavigationLocationProvider, ISaveablesSource, IPersistableEditor, ITextWOEditor {
   public static final String BINDING_HOVER_ANNOTATION = "org.objectstyle.wolips.tkhtmleditor.bindingHover";
-  
+
   private TemplateConfiguration _configuration;
   private ComponentEditorInteraction _editorInteraction;
 
@@ -60,6 +63,18 @@ public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtml
 
   public IWodElement getSelectedElement(boolean refreshModel) throws Exception {
     return getSourceEditor().getSelectedElement(refreshModel);
+  }
+
+  public IWodElement getWodElementAtPoint(Point point, boolean refreshModel) throws Exception {
+    return getSourceEditor().getWodElementAtPoint(point, refreshModel);
+  }
+
+  public ISourceViewer getWOSourceViewer() {
+    return getSourceEditor().getViewer();
+  }
+
+  public StyledText getWOEditorControl() {
+    return getSourceEditor().getWOEditorControl();
   }
 
   @Override

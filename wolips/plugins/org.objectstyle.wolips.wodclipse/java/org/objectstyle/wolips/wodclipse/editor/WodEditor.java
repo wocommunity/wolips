@@ -61,6 +61,8 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -69,6 +71,7 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ContentAssistAction;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -85,7 +88,7 @@ import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
-import org.objectstyle.wolips.wodclipse.core.document.IWOEditor;
+import org.objectstyle.wolips.wodclipse.core.document.ITextWOEditor;
 import org.objectstyle.wolips.wodclipse.core.parser.ElementNameRule;
 import org.objectstyle.wolips.wodclipse.core.parser.RulePosition;
 import org.objectstyle.wolips.wodclipse.core.parser.WodScanner;
@@ -97,7 +100,7 @@ import org.objectstyle.wolips.wodclipse.core.util.WodModelUtils;
  * @author mike
  * @author uli
  */
-public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobjectTagListener, IWodDocumentProvider, IWOEditor {
+public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobjectTagListener, IWodDocumentProvider, ITextWOEditor {
 	private WodParserCache _cache;
 
 	private CursorPositionSupport _cursorPositionSupport;
@@ -349,9 +352,32 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 	public ComponentEditorInteraction getEditorInteraction() {
 		return _editorInteraction;
 	}
+	
+	public ISourceViewer getWOSourceViewer() {
+		return getViewer();
+	}
 
-	public IWodElement getSelectedElement(boolean refreshModel) throws Exception {
-		IWodElement element = null;
+	public StyledText getWOEditorControl() {
+		return getViewer().getTextWidget();
+	}
+
+	public int getOffsetAtPoint(Point point) {
+		StyledText st = getViewer().getTextWidget();
+		int modelOffset;
+		if (!st.getBounds().contains(point)) {
+			modelOffset = -1;
+		} else {
+			try {
+				int offset = st.getOffsetAtLocation(point);
+				modelOffset = AbstractTextEditor.widgetOffset2ModelOffset(getSourceViewer(), offset);
+			} catch (IllegalArgumentException e) {
+				modelOffset = -1;
+			}
+		}
+		return modelOffset;
+	}
+
+	public IWodModel getWodModel(boolean refreshModel) throws Exception {
 		WodParserCache cache = getParserCache();
 		IWodModel model;
 		if (refreshModel || isDirty()) {
@@ -360,13 +386,23 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 		} else {
 			model = cache.getWodEntry().getModel();
 		}
+		return model;
+	}
 
+	public IWodElement getWodElementAtPoint(Point point, boolean refreshModel) throws Exception {
+		int offset = getOffsetAtPoint(point);
+		IWodElement element = getWodModel(refreshModel).getWodElementAtIndex(offset);
+		return element;
+	}
+
+	public IWodElement getSelectedElement(boolean refreshModel) throws Exception {
+		IWodElement element = null;
 		ISelectionProvider selectionProvider = getSelectionProvider();
 		if (selectionProvider != null) {
 			ISelection selection = selectionProvider.getSelection();
 			if (selection instanceof ITextSelection) {
 				int offset = ((ITextSelection) selection).getOffset();
-				element = model.getWodElementAtIndex(offset);
+				element = getWodModel(refreshModel).getWodElementAtIndex(offset);
 			}
 		}
 		return element;

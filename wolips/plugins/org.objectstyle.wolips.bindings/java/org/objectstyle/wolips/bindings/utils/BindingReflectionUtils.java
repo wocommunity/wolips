@@ -424,14 +424,17 @@ public class BindingReflectionUtils {
     boolean isSystemBinding = false;
     if (bindingValueKey != null && bindingValueKey.getDeclaringType() != null) {
       String declaringTypeName = bindingValueKey.getDeclaringType().getElementName();
+      String bindingName = bindingValueKey.getBindingName();
       if (BindingReflectionUtils._systemTypeNames.contains(declaringTypeName)) {
-        String bindingName = bindingValueKey.getBindingName();
         if (!showUsefulSystemBindings && BindingReflectionUtils._usefulSystemBindings.contains(bindingName)) {
           isSystemBinding = true;
         }
         else if (BindingReflectionUtils._uselessSystemBindings.contains(bindingName)) {
           isSystemBinding = true;
         }
+      }
+      else if (bindingName.startsWith("_")) {
+        isSystemBinding = true;
       }
     }
     return isSystemBinding;

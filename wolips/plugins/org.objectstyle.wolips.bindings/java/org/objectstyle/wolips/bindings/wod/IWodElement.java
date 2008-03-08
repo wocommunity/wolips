@@ -71,6 +71,8 @@ public interface IWodElement extends IWodUnit {
   public int getNewBindingIndent();
   
   public int getNewBindingOffset();
+  
+  public int getFullEndOffset();
 
   public boolean isInline();
 
