@@ -32,7 +32,7 @@ public class Veogen {
       else if ("-modelgroup".equals(arg)) {
         modelGroupFolder = new File(args[++argNum]);
       }
-      else if ("-templates".equals(arg)) {
+      else if ("-templateDir".equals(arg)) {
         eogeneratorModel.setTemplateDir(args[++argNum]);
       }
       else if ("-superclassTemplate".equals(arg)) {
@@ -72,7 +72,35 @@ public class Veogen {
     }
     
     if (eogeneratorModel.getDestination() == null || eogeneratorModel.getModels().size() == 0) {
-      System.out.println("veogen -destination /path/to/output/folder [-model /path/to/model.eomodeld]* [-modelgroup /path/to/working/dir] [-templates /path/to/templates]");
+      System.out.println("veogen");
+      System.out.println("  -model /path/to/model.eomodeld");
+      System.out.println("    the path to a model to add to this model group (multiples allowed)");
+      System.out.println("  -modelgroup /path/to/modelgroup/folder");
+      System.out.println("    the path that can be traversed to find models (finds dependencies)");
+      System.out.println("  -templateDir /path/containing/templates");
+      System.out.println("    the path to the folder that contains templates");
+      System.out.println("  -superclassTemplate nameOfTemplate.java");
+      System.out.println("    the name of the superclass template file (_File.java)");
+      System.out.println("  -subclassTemplate nameOfTemplate.java");
+      System.out.println("    the name of the subclass template file (File.java)");
+      System.out.println("  -java");
+      System.out.println("    generate regular java output (default)");
+      System.out.println("  -javaClient");
+      System.out.println("    generate java client output");
+      System.out.println("  -destination /path/for/output");
+      System.out.println("    the path to the folder to write generated superclass output input");
+      System.out.println("  -subclassDestination /path/for/subclass/output");
+      System.out.println("    the path to the folder to write generated subclass output input");
+      System.out.println("  -prefix thePrefix");
+      System.out.println("    the prefix to prepend to superclass names (default: _)");
+      System.out.println("  -superclassPackage packageName");
+      System.out.println("    the package name to append to superclass package name (default: none)");
+      System.out.println("  -verbose");
+      System.out.println("    generate verbose output");
+      System.out.println("  -java14");
+      System.out.println("    switch to Java 1.4 templates");
+      System.out.println("  -generate modelName");
+      System.out.println("    generate source files for the model with the given name (multiples allowed)");
       System.exit(0);
     }
 
