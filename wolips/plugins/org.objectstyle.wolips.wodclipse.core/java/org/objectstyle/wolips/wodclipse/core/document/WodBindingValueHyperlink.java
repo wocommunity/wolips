@@ -10,7 +10,6 @@ import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.ui.PlatformUI;
-import org.objectstyle.wolips.bindings.api.IApiBinding;
 import org.objectstyle.wolips.bindings.wod.BindingValueKey;
 import org.objectstyle.wolips.bindings.wod.BindingValueKeyPath;
 import org.objectstyle.wolips.bindings.wod.IWodBinding;
@@ -65,16 +64,7 @@ public class WodBindingValueHyperlink implements IHyperlink {
           }
         }
         else if (bindingValueKeyPath.getLength() == 1) {
-          String defaults = _binding.getDefaults();
-          boolean isActionBinding = false;
-          if (IApiBinding.ACTIONS_DEFAULT.equals(defaults)) {
-            isActionBinding = true;
-          }
-          else if (defaults == null) {
-            String bindingName = _binding.getName();
-            isActionBinding = "action".equals(bindingName);
-          }
-          if (isActionBinding) {
+          if (_binding.isAction()) {
             AddActionInfo info = new AddActionInfo(_componentType);
             info.setName(bindingValueKeyPath.getOriginalKeyPath());
             AddActionDialog.open(info, PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());

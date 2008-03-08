@@ -9,5 +9,7 @@ public interface IWOBrowserDelegate {
 	
 	public void bindingDragging(WOBrowserColumn column, Point dragPoint);
 	
+	public void bindingDragCanceled(WOBrowserColumn column);
+	
 	public void bindingDropped(WOBrowserColumn column, Point dropPoint);
 }

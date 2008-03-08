@@ -65,7 +65,7 @@ public class RefactoringWodElement {
 
 	public void setElementName(String elementName) throws CoreException, InvocationTargetException, InterruptedException {
 		String oldElementName = _wodElement.getElementName();
-		if (!_wodElement.isTemporary()) {
+		if (!_wodElement.isInline()) {
 			RenameElementsRefactoring.run(oldElementName, elementName, _cache, new NullProgressMonitor());
 		}
 		_wodElement.setElementName(elementName);

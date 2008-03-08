@@ -44,8 +44,10 @@
 package org.objectstyle.wolips.wodclipse.core.document;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Position;
 import org.objectstyle.wolips.bindings.wod.AbstractWodElement;
 import org.objectstyle.wolips.bindings.wod.IWodBinding;
@@ -84,6 +86,27 @@ public class DocumentWodElement extends AbstractWodElement {
 
   public Position getElementTypePosition() {
     return _elementType.getPosition();
+  }
+  
+  @Override
+  public int getNewBindingIndent() {
+    int indent = 2;
+    List<IWodBinding> bindings = getBindings();
+    if (bindings.size() > 0) {
+      DocumentWodBinding lastBinding = (DocumentWodBinding)bindings.get(bindings.size() - 1);
+      RulePosition nameRulePosition = lastBinding.getNameRulePosition();
+      if (nameRulePosition != null) {
+        int startOffset = lastBinding.getStartOffset();
+        try {
+          IRegion lineInformation = nameRulePosition.getDocument().getLineInformationOfOffset(startOffset);
+          indent = startOffset - lineInformation.getOffset();
+        }
+        catch (BadLocationException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+    return indent;
   }
 
   public int getStartOffset() {

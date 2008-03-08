@@ -44,6 +44,8 @@ import tk.eclipse.plugin.htmleditor.editors.HTMLEditorPart;
 import tk.eclipse.plugin.htmleditor.editors.HTMLSourceEditor;
 
 public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtmlDocumentProvider, IWebobjectTagListener, ITextEditor, IReusableEditor, ITextEditorExtension, ITextEditorExtension2, ITextEditorExtension3, ITextEditorExtension4, INavigationLocationProvider, ISaveablesSource, IPersistableEditor, IWOEditor {
+  public static final String BINDING_HOVER_ANNOTATION = "org.objectstyle.wolips.tkhtmleditor.bindingHover";
+  
   private TemplateConfiguration _configuration;
   private ComponentEditorInteraction _editorInteraction;
 

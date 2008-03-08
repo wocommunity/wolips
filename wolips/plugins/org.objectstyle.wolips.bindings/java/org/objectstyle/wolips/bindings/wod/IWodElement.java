@@ -67,8 +67,12 @@ public interface IWodElement extends IWodUnit {
   public String getElementType();
 
   public int getLineNumber();
+  
+  public int getNewBindingIndent();
+  
+  public int getNewBindingOffset();
 
-  public boolean isTemporary();
+  public boolean isInline();
 
   public List<IWodBinding> getBindings();
 

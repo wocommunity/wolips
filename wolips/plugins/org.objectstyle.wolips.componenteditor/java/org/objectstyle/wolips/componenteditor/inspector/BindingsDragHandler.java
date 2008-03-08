@@ -37,6 +37,7 @@ public class BindingsDragHandler implements DragSourceListener, IDropTarget2, Pa
 
 	public BindingsDragHandler(WOBrowserColumn browserColumn) {
 		_browserColumn = browserColumn;
+		_browserColumn.getViewer().addDragSupport(DND.DROP_COPY, new Transfer[] { LocalSelectionTransfer.getTransfer() }, this);
 	}
 
 	public Shell getShell() {
@@ -45,8 +46,6 @@ public class BindingsDragHandler implements DragSourceListener, IDropTarget2, Pa
 
 	public void createCanvas() {
 		Shell shell = getShell();
-		// shell.addPaintListener(this);
-		// _parent.addPaintListener(this);
 		if (_lineCanvas == null) {
 			_lineCanvas = new Canvas(shell, SWT.NO_BACKGROUND);
 			_lineCanvas.setLocation(0, 0);
@@ -65,8 +64,6 @@ public class BindingsDragHandler implements DragSourceListener, IDropTarget2, Pa
 	}
 
 	public void disposeCanvas() {
-		// getShell().removePaintListener(this);
-		// _parent.removePaintListener(this);
 		if (_lineCanvas != null) {
 			if (!_lineCanvas.isDisposed()) {
 				_lineCanvas.removePaintListener(this);
@@ -83,13 +80,13 @@ public class BindingsDragHandler implements DragSourceListener, IDropTarget2, Pa
 
 			e.gc.setForeground(e.widget.getDisplay().getSystemColor(SWT.COLOR_BLACK));
 			e.gc.setBackground(e.widget.getDisplay().getSystemColor(SWT.COLOR_BLACK));
-			
+
 			// e.gc.setAlpha(150);
 			e.gc.setLineWidth(2);
 			e.gc.setLineJoin(SWT.JOIN_ROUND);
 
 			e.gc.drawOval(currentPoint.x - endpointSize, currentPoint.y - endpointSize, endpointSize * 2, endpointSize * 2);
-			
+
 			e.gc.drawLine(startingPoint.x, startingPoint.y, currentPoint.x, startingPoint.y);
 			e.gc.drawLine(currentPoint.x, startingPoint.y, currentPoint.x, currentPoint.y);
 
@@ -98,27 +95,11 @@ public class BindingsDragHandler implements DragSourceListener, IDropTarget2, Pa
 		}
 	}
 
-	public void register() {
-		DropTarget dropTarget = new DropTarget(_browserColumn, DND.DROP_NONE | DND.DROP_COPY | DND.DROP_MOVE | DND.DROP_LINK);
-		LocalSelectionTransfer transfer = LocalSelectionTransfer.getTransfer();
-		transfer.setSelection(new StructuredSelection("Test"));
-		dropTarget.setTransfer(new Transfer[] { transfer });
-		dropTarget.addDropListener(this);
-
-		// DragUtil.addDragTarget(_parent, this);
-		// DragUtil.addDragTarget(getShell(), this);
-		// DragUtil.addDragTarget(null, this);
-	}
-
 	public void dispose() {
-		// DragUtil.removeDragTarget(_shell, this);
-		// DragUtil.removeDragTarget(null, this);
 		disposeCanvas();
 	}
 
 	public void dragEnter(DropTargetEvent event) {
-		// System.out.println("LineDragHandler.dragEnter: " + event);
-		// event.feedback = DND.FEEDBACK_SELECT;
 		event.detail = DND.DROP_COPY;
 	}
 
@@ -164,9 +145,6 @@ public class BindingsDragHandler implements DragSourceListener, IDropTarget2, Pa
 	}
 
 	public void drop(DropTargetEvent event) {
-		System.out.println("BindingsDragHandler.drop: drop 2");
-		// System.out.println("LineDragHandler.drop(DropTargetEvent): drop");
-		// disposeCanvas();
 		_currentPoint = new Point(event.x, event.y);
 	}
 
@@ -179,8 +157,7 @@ public class BindingsDragHandler implements DragSourceListener, IDropTarget2, Pa
 	}
 
 	public void drop() {
-		System.out.println("BindingsDragHandler.drop: drop 1");
-		// System.out.println("LineDragHandler.drop: " + _currentPoint);
+		// DO NOTHING
 	}
 
 	public Cursor getCursor() {
@@ -193,21 +170,15 @@ public class BindingsDragHandler implements DragSourceListener, IDropTarget2, Pa
 
 	public void dragFinished(DragSourceEvent event) {
 		disposeCanvas();
-		
-		System.out.println("BindingsDragHandler.dragFinished: " + event.doit);
-		if (_browserColumn.getDelegate() != null) {
-			_browserColumn.getDelegate().bindingDropped(_browserColumn, _currentPoint);
-		}
 
-		// System.out.println("LineDragHandler.dragFinished: " +
-		// getShell().getDisplay().getCursorControl());
-		// Control control = SwtUtil.findControl(getShell(), _currentPoint);
-		// System.out.println("LineDragHandler.dragFinished: control = " +
-		// control);
-		// IDropTarget dropTarget = DragUtil.getDropTarget(control, "Test",
-		// _currentPoint, control.getBounds());
-		// System.out.println("LineDragHandler.dragFinished: dropTarget = " +
-		// dropTarget);
+		if (_browserColumn.getDelegate() != null) {
+			if (event.doit) {
+				_browserColumn.getDelegate().bindingDropped(_browserColumn, _currentPoint);
+			}
+			else {
+				_browserColumn.getDelegate().bindingDragCanceled(_browserColumn);
+			}
+		}
 	}
 
 	public void dragSetData(DragSourceEvent event) {

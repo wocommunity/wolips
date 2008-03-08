@@ -179,7 +179,7 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 		String elementType = "";
 		boolean elementTypeEnabled = false;
 		if (_wodElement != null) {
-			if (_wodElement.isTemporary()) {
+			if (_wodElement.isInline()) {
 				elementName = "inline";
 			} else {
 				elementName = _wodElement.getElementName();

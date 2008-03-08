@@ -9,7 +9,6 @@ import java.util.TreeSet;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.layout.TableColumnLayout;
-import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -18,8 +17,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
@@ -110,8 +107,6 @@ public class WOBrowserColumn extends Composite implements ISelectionProvider, IS
 		tableContainer.pack();
 
 		_lineDragHandler = new BindingsDragHandler(this);
-		_lineDragHandler.register();
-		_keysViewer.addDragSupport(DND.DROP_COPY, new Transfer[] { LocalSelectionTransfer.getTransfer() }, _lineDragHandler);
 	}
 	
 	public WOBrowser getBrowser() {

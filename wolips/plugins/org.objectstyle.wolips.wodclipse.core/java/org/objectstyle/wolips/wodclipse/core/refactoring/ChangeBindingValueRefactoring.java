@@ -36,25 +36,43 @@ public class ChangeBindingValueRefactoring implements IRunnableWithProgress {
 
       Position valuePosition = _binding.getValuePosition();
       if (valuePosition == null) {
-        if (_element.isTemporary()) {
+        int newBindingOffset = _element.getNewBindingOffset(); 
+        StringBuffer buffer = new StringBuffer();
+        int indent = _element.getNewBindingIndent();
+        for (int i = 0; i < indent; i ++) {
+          buffer.append(" ");
+        }
+        buffer.append(_binding.getName());
+        
+        if (_element.isInline()) {
+          buffer.append("=");
+          buffer.append("\"");
+          buffer.append(_newValue);
+          buffer.append("\"");
+
           IDocument htmlDocument = _cache.getHtmlEntry().getDocument();
           if (htmlDocument != null) {
             List<TextEdit> htmlEdits = new LinkedList<TextEdit>();
-            htmlEdits.add(new InsertEdit(_element.getEndOffset() + 1, " " + _binding.getName() + "=\"" + _newValue + "\""));
+            htmlEdits.add(new InsertEdit(newBindingOffset, buffer.toString()));
             WodDocumentUtils.applyEdits(htmlDocument, htmlEdits);
           }
         }
         else {
+          buffer.append(" = ");
+          buffer.append(_newValue);
+          buffer.append(";");
+          buffer.append("\n");
+
           IDocument wodDocument = _cache.getWodEntry().getDocument();
           if (wodDocument != null) {
             List<TextEdit> wodEdits = new LinkedList<TextEdit>();
-            wodEdits.add(new InsertEdit(_element.getEndOffset(), "  " + _binding.getName() + " = " + _newValue +";\n"));
+            wodEdits.add(new InsertEdit(newBindingOffset, buffer.toString()));
             WodDocumentUtils.applyEdits(wodDocument, wodEdits);
           }
         }
       }
       else {
-        if (_element.isTemporary()) {
+        if (_element.isInline()) {
           IDocument htmlDocument = _cache.getHtmlEntry().getDocument();
           if (htmlDocument != null) {
             List<TextEdit> htmlEdits = new LinkedList<TextEdit>();

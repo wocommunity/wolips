@@ -64,7 +64,11 @@ public class DocumentWodBinding extends AbstractWodBinding {
 		_value = value;
     _lineNumber = -1;
 	}
-
+	
+	public RulePosition getNameRulePosition() {
+	  return _name;
+	}
+	
 	public String getName() {
 		return _name._getTextWithoutException();
 	}

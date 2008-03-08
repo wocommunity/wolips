@@ -75,20 +75,35 @@ import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
 public abstract class AbstractWodElement implements IWodElement, Comparable<IWodElement> {
   private List<IWodBinding> _bindings;
 
-  private boolean _isTemporary;
+  private boolean _inline;
 
   private String _tagName;
-
+  
+  private int _newBindingOffset;
+  
   public AbstractWodElement() {
     _bindings = new LinkedList<IWodBinding>();
+    _newBindingOffset = -1;
   }
 
-  public boolean isTemporary() {
-    return _isTemporary;
+  public void setNewBindingOffset(int newBindingOffset) {
+    _newBindingOffset = newBindingOffset;
+  }
+  
+  public int getNewBindingOffset() {
+    int newBindingOffset = _newBindingOffset;
+    if (newBindingOffset == -1) {
+      newBindingOffset = getEndOffset() - 1;
+    }
+    return newBindingOffset;
   }
 
-  public void setTemporary(boolean isTemporary) {
-    _isTemporary = isTemporary;
+  public boolean isInline() {
+    return _inline;
+  }
+
+  public void setInline(boolean inline) {
+    _inline = inline;
   }
 
   public void addBinding(IWodBinding _binding) {
@@ -253,7 +268,7 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
 
     String elementName = getElementName();
     int lineNumber = getLineNumber();
-    if (!_isTemporary && !htmlCache.containsElementNamed(elementName)) {
+    if (!_inline && !htmlCache.containsElementNamed(elementName)) {
       problems.add(new WodElementProblem("There is no element named '" + elementName + "' in your component HTML file", getElementNamePosition(), lineNumber, true));
     }
 
@@ -333,6 +348,10 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
   public boolean isTypeWithin(IRegion region) {
     Position typePosition = getElementTypePosition();
     return typePosition != null && typePosition.getOffset() <= region.getOffset() && typePosition.getOffset() + typePosition.getLength() > region.getOffset();
+  }
+  
+  public int getNewBindingIndent() {
+    return 1;
   }
 
   @Override

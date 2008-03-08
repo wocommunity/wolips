@@ -377,6 +377,33 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="CTRL+SHIFT+F"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            name="org.objectstyle.wolips.tkhtmleditor.bindingHover">
+      </type>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors.markerAnnotationSpecification">
+      <specification
+            annotationType="org.objectstyle.wolips.tkhtmleditor.bindingHover"
+            colorPreferenceKey="bindingHoverColor"
+            colorPreferenceValue="240,220,0"
+            highlightPreferenceKey="bindingHoverHighlight"
+            highlightPreferenceValue="true"
+            includeOnPreferencePage="true"
+            label="Binding Hover"
+            overviewRulerPreferenceKey="bindingHoverOverviewRuler"
+            overviewRulerPreferenceValue="false"
+            presentationLayer="6"
+            textPreferenceKey="bindingHoverIndication"
+            textPreferenceValue="false"
+            textStylePreferenceKey="bindingHoverTextStyle"
+            textStylePreferenceValue="BOX"
+            verticalRulerPreferenceKey="bindingHoverVerticalRuler"
+            verticalRulerPreferenceValue="false">
+      </specification>
+   </extension>
    
    
 </plugin>
