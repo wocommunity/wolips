@@ -350,12 +350,13 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 		return _editorInteraction;
 	}
 
-	public IWodElement getSelectedElement() throws Exception {
+	public IWodElement getSelectedElement(boolean refreshModel) throws Exception {
 		IWodElement element = null;
 		WodParserCache cache = getParserCache();
 		IWodModel model;
-		if (isDirty()) {
+		if (refreshModel || isDirty()) {
 			model = WodModelUtils.createWodModel(cache.getWodEntry().getFile(), cache.getWodEntry().getDocument());
+			cache.getWodEntry().setModel(model);
 		} else {
 			model = cache.getWodEntry().getModel();
 		}

@@ -12,7 +12,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.ITextListener;
 import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.text.TextEvent;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -46,6 +48,7 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
   private TemplateOutlinePage _templateOutlinePage;
   private WodParserCache _cache;
   private TemplateBreadcrumb _breadcrumb;
+  private boolean _cacheOutOfSync;
 
   public TemplateSourceEditor(HTMLConfiguration config) {
     super(config);
@@ -98,6 +101,19 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
 
     _breadcrumb = new TemplateBreadcrumb(this, templateParent, SWT.NONE);
     _breadcrumb.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    
+    
+    getViewer().addTextListener(new ITextListener() {
+      public void textChanged(TextEvent event) {
+        setCacheOutOfSync(true);
+      }
+    });
+
+
+  }
+  
+  protected void setCacheOutOfSync(boolean cacheOutOfSync) {
+    _cacheOutOfSync = cacheOutOfSync;
   }
 
   @Override
@@ -188,15 +204,16 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
   @Override
   protected void handleElementContentReplaced() {
     super.handleElementContentReplaced();
-    System.out.println("TemplateSourceEditor.handleElementContentReplaced: test");
   }
 
-  public FuzzyXMLDocument getHtmlXmlDocument() throws Exception {
+  public FuzzyXMLDocument getHtmlXmlDocument(boolean refreshModel) throws Exception {
     FuzzyXMLDocument doc;
-    if (isDirty()) {
+    if (refreshModel || isDirty()) {
       boolean wo54 = Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.WO54_KEY);
       FuzzyXMLParser parser = new FuzzyXMLParser(wo54, true);
       doc = parser.parse(getHTMLSource());
+      getParserCache().getHtmlEntry().setModel(doc);
+      setCacheOutOfSync(false);
     }
     else {
       doc = getParserCache().getHtmlEntry().getModel();
@@ -204,14 +221,14 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
     return doc;
   }
 
-  public IWodElement getSelectedElement() throws Exception {
+  public IWodElement getSelectedElement(boolean refreshModel) throws Exception {
     IWodElement wodElement = null;
     WodParserCache cache = getParserCache();
     if (getSelectionProvider() != null) {
       ISelection realSelection = getSelectionProvider().getSelection();
       if (realSelection instanceof ITextSelection) {
         ITextSelection textSelection = (ITextSelection) realSelection;
-        FuzzyXMLDocument document = getHtmlXmlDocument();
+        FuzzyXMLDocument document = getHtmlXmlDocument(refreshModel);
         if (document != null) {
           FuzzyXMLElement element = document.getElementByOffset(textSelection.getOffset());
           if (element != null) {
@@ -298,17 +315,16 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
     return modelOffset;
   }
 
-  public FuzzyXMLElement getElementAtPoint(Point point) throws Exception {
+  public FuzzyXMLElement getElementAtPoint(Point point, boolean refreshModel) throws Exception {
     int offset = getOffsetAtPoint(point);
-    FuzzyXMLElement element = getElementAtOffset(offset);
+    FuzzyXMLElement element = getElementAtOffset(offset, refreshModel);
     return element;
   }
 
-  public FuzzyXMLElement getElementAtOffset(int offset) throws Exception {
+  public FuzzyXMLElement getElementAtOffset(int offset, boolean refreshModel) throws Exception {
     FuzzyXMLElement element = null;
     if (offset >= 0) {
-      WodParserCache cache = getParserCache();
-      FuzzyXMLDocument xmlDocument = cache.getHtmlEntry().getModel();
+      FuzzyXMLDocument xmlDocument = getHtmlXmlDocument(refreshModel);
       if (xmlDocument != null) {
         element = xmlDocument.getElementByOffset(offset);
       }
@@ -316,14 +332,24 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
     return element;
   }
 
-  public IRegion getSelectionRegionAtPoint(Point point, boolean regionForInsert) throws Exception {
+  public IRegion getSelectionRegionAtPoint(Point point, boolean regionForInsert, boolean refreshModel) throws Exception {
     int offset = getOffsetAtPoint(point);
-    return getSelectionRegionAtOffset(offset, regionForInsert);
+    return getSelectionRegionAtOffset(offset, regionForInsert, refreshModel);
   }
 
-  public IRegion getSelectionRegionAtOffset(int offset, boolean regionForInsert) throws Exception {
+  public IRegion getSelectionRegionForElementAtPoint(FuzzyXMLElement element, Point point, boolean regionForInsert) throws Exception {
+    int offset = getOffsetAtPoint(point);
+    return getSelectionRegionForElementAtOffset(element, offset, regionForInsert);
+  }
+
+  public IRegion getSelectionRegionAtOffset(int offset, boolean regionForInsert, boolean refreshModel) throws Exception {
+    FuzzyXMLElement element = getElementAtOffset(offset, refreshModel);
+    IRegion region = getSelectionRegionForElementAtOffset(element, offset, regionForInsert);
+    return region;
+  }
+
+  public IRegion getSelectionRegionForElementAtOffset(FuzzyXMLElement element, int offset, boolean regionForInsert) throws Exception {
     IRegion region = null;
-    FuzzyXMLElement element = getElementAtOffset(offset);
     if (element != null) {
       IDocument doc = getParserCache().getHtmlEntry().getDocument();
       region = element.getRegionAtOffset(offset, doc, regionForInsert);

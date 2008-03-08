@@ -249,10 +249,10 @@ public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener, A
 			// Don't bother doing anything if we're outside of the Template
 			// Editor's bounds
 			if (controlBounds.contains(controlDragPoint)) {
-				FuzzyXMLElement element = templateSourceEditor.getElementAtPoint(controlDragPoint);
+				FuzzyXMLElement element = templateSourceEditor.getElementAtPoint(controlDragPoint, true);
 				// We only want to throb WO tags ...
 				if (WodHtmlUtils.isWOTag(element)) {
-					IRegion selectionRegion = templateSourceEditor.getSelectionRegionAtPoint(controlDragPoint, false);
+					IRegion selectionRegion = templateSourceEditor.getSelectionRegionForElementAtPoint(element, controlDragPoint, false);
 					// If there's no current selection, clear a previous
 					// selection
 					if (selectionRegion == null) {
@@ -317,7 +317,7 @@ public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener, A
 				TemplateSourceEditor templateSourceEditor = templateEditor.getSourceEditor();
 				StyledText st = templateSourceEditor.getViewer().getTextWidget();
 				Point controlDropPoint = st.toControl(dropPoint);
-				FuzzyXMLElement selectedElement = templateSourceEditor.getElementAtPoint(controlDropPoint);
+				FuzzyXMLElement selectedElement = templateSourceEditor.getElementAtPoint(controlDropPoint, true);
 				if (selectedElement == null || !WodHtmlUtils.isWOTag(selectedElement)) {
 					removeHoverAnnotation();
 				} else {

@@ -6,5 +6,5 @@ import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 public interface IWOEditor {
   public WodParserCache getParserCache() throws Exception;
 
-  public IWodElement getSelectedElement() throws Exception;
+  public IWodElement getSelectedElement(boolean refreshModel) throws Exception;
 }
