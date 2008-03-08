@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.security.MessageDigest;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -210,6 +212,8 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			// }
 
 			context.put("eogeneratorModel", eogeneratorModel);
+			context.put("date", new Date());
+			context.put("calendar", Calendar.getInstance());
 			for (Define define : eogeneratorModel.getDefines()) {
 				context.put(define.getName(), define.getValue());
 			}
