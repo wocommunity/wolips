@@ -1,42 +1,33 @@
 package org.objectstyle.wolips.componenteditor.inspector;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import jp.aonir.fuzzyxml.FuzzyXMLElement;
 
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.Position;
+import org.eclipse.jface.text.source.Annotation;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.objectstyle.wolips.bindings.Activator;
-import org.objectstyle.wolips.bindings.api.ApiModelException;
-import org.objectstyle.wolips.bindings.api.IApiBinding;
-import org.objectstyle.wolips.bindings.api.Wo;
-import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
 import org.objectstyle.wolips.templateeditor.TemplateEditor;
 import org.objectstyle.wolips.templateeditor.TemplateSourceEditor;
-import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.util.FuzzyXMLWodElement;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
-public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener {
+public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener, Autoscroller.Delegate, MenuListener {
 	private static final int minBorderWidth = 2;
 
 	private static final int maxBorderWidth = 6;
@@ -47,21 +38,11 @@ public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener {
 
 	private static final int borderRedrawSize = maxBorderWidth * 2;
 
-	private static final int scrollTopLeftMargin = 20;
-
-	private static final int scrollBottomRightMargin = 20;
-
-	private static final int initialScrollFrequency = 500;
-
-	private static final int continuousScrollFrequency = 50;
-
 	private ComponentEditor _componentEditor;
 
 	private IRegion _selectionRegion;
 
 	private Rectangle _selectionRect;
-
-	private StyleRange[] _previousStyleRanges;
 
 	private long _selectionTime;
 
@@ -69,46 +50,77 @@ public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener {
 
 	private boolean _shouldThrob;
 
-	private boolean _scrollStarted;
+	private BindingsPopUpMenu _bindingsMenu;
 
-	private long _lastScrollTime;
+	private Annotation _bindingsAnnotation;
 
-	private Menu _bindingsMenu;
+	private Autoscroller _autoscroller;
 
 	public BindingsDropHandler(ComponentEditor componentEditor) {
 		_componentEditor = componentEditor;
-		_selectionBackgroundColor = new Color(Display.getCurrent(), 240, 220, 0);
-		_componentEditor.getTemplateEditor().getSourceEditor().getViewer().getTextWidget().addPaintListener(this);
-		_scrollStarted = false;
-		_lastScrollTime = -1;
+		TemplateSourceEditor templateSourceEditor = _componentEditor.getTemplateEditor().getSourceEditor();
+		AnnotationPreference bindingHoverPreference = templateSourceEditor.getAnnotationPreferenceLookup().getAnnotationPreference(TemplateEditor.BINDING_HOVER_ANNOTATION);
+		RGB bindingHoverColorPreference = null;
+		if (bindingHoverPreference != null) {
+			bindingHoverColorPreference = bindingHoverPreference.getColorPreferenceValue();
+		}
+		if (bindingHoverColorPreference == null) {
+			bindingHoverColorPreference = new RGB(240, 220, 0);
+		}
+		_selectionBackgroundColor = new Color(Display.getCurrent(), bindingHoverColorPreference);
+
+		StyledText st = templateSourceEditor.getViewer().getTextWidget();
+		st.addPaintListener(this);
+		_autoscroller = new Autoscroller(st);
+		_autoscroller.setDelegate(this);
 
 		Shell shell = new Shell(_componentEditor.getSite().getShell());
-		_bindingsMenu = new Menu(shell, SWT.POP_UP);
-		_bindingsMenu.addMenuListener(new MenuListener() {
-			public void menuHidden(MenuEvent e) {
-				clearHighlightedTextStyle();
-			}
+		try {
+			_bindingsMenu = new BindingsPopUpMenu(shell, _componentEditor.getParserCache());
+			_bindingsMenu.getMenu().addMenuListener(this);
+		} catch (Exception e) {
+			ComponenteditorPlugin.getDefault().log(e);
+		}
+	}
 
-			public void menuShown(MenuEvent e) {
-				// DO NOTHING
-			}
-		});
+	public void menuHidden(MenuEvent event) {
+		removeHoverAnnotation();
+	}
 
+	public void menuShown(MenuEvent event) {
+		// DO NOTHING
+	}
+
+	public void autoscrollOccurred(Autoscroller scroller) {
+		removeHoverAnnotation();
 	}
 
 	public void paintControl(PaintEvent e) {
 		try {
-			// Determine whether or not the animation should still be running
-			double animationTime = System.currentTimeMillis() - _selectionTime;
-			if (_shouldThrob && animationTime > 2 * animationDuration) {
-				_shouldThrob = false;
+			boolean shouldThrob;
+			IRegion selectionRegion;
+			double animationTime;
+			Rectangle selectionRect;
+			synchronized (this) {
+				// Determine whether or not the animation should still be
+				// running
+				animationTime = System.currentTimeMillis() - _selectionTime;
+				if (_shouldThrob && animationTime > 2 * animationDuration) {
+					_shouldThrob = false;
+				}
+				selectionRegion = _selectionRegion;
+				if (_selectionRect != null) {
+					selectionRect = new Rectangle(_selectionRect.x, _selectionRect.y, _selectionRect.width, _selectionRect.height);
+				} else {
+					selectionRect = null;
+				}
+				shouldThrob = _shouldThrob;
 			}
 
-			IRegion selectionRegion = _selectionRegion;
 			if (selectionRegion != null) {
 				// Set the line width based on the animation curve
 				int lineWidth = minBorderWidth;
-				if (_shouldThrob) {
+				if (shouldThrob) {
 					lineWidth += (int) ((maxBorderWidth - minBorderWidth) * Math.sin(0.5 * Math.PI * animationTime / animationDuration));
 				}
 
@@ -118,7 +130,6 @@ public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener {
 
 					// Set the rectangle size according to the current animation
 					// position
-					Rectangle selectionRect = new Rectangle(_selectionRect.x, _selectionRect.y, _selectionRect.width, _selectionRect.height);
 					selectionRect.x -= margin;
 					selectionRect.y -= margin;
 					selectionRect.width += 2 * margin;
@@ -169,10 +180,6 @@ public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener {
 		return _shouldThrob;
 	}
 
-	public IRegion getPreviousRegion() {
-		return _selectionRegion;
-	}
-
 	public ComponentEditor getComponentEditor() {
 		return _componentEditor;
 	}
@@ -185,18 +192,36 @@ public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener {
 		_componentEditor.getTemplateEditor().getSourceEditor().getViewer().getTextWidget().removePaintListener(this);
 	}
 
-	protected void clearHighlightedTextStyle() {
+	public synchronized Annotation getBindingsAnnotation() {
+		return _bindingsAnnotation;
+	}
+
+	protected synchronized void addHoverAnnotation() {
+		TemplateEditor templateEditor = _componentEditor.getTemplateEditor();
+		TemplateSourceEditor templateSourceEditor = templateEditor.getSourceEditor();
+		ISourceViewer templateViewer = templateSourceEditor.getViewer();
+
+		_bindingsAnnotation = new Annotation(TemplateEditor.BINDING_HOVER_ANNOTATION, false, null);
+		templateViewer.getAnnotationModel().addAnnotation(_bindingsAnnotation, new Position(_selectionRegion.getOffset(), _selectionRegion.getLength()));
+
+		// And initiate a throb ...
+		_shouldThrob = true;
+		_selectionTime = System.currentTimeMillis();
+		repaintSelectionRect(templateViewer.getTextWidget(), _selectionRect);
+	}
+
+	protected synchronized void removeHoverAnnotation() {
 		_shouldThrob = false;
-		if (_previousStyleRanges != null) {
+		if (_bindingsAnnotation != null) {
 			Rectangle selectionRect = _selectionRect;
 			TemplateEditor templateEditor = _componentEditor.getTemplateEditor();
 			TemplateSourceEditor templateSourceEditor = templateEditor.getSourceEditor();
-			StyledText st = templateSourceEditor.getViewer().getTextWidget();
-			st.replaceStyleRanges(_selectionRegion.getOffset(), _selectionRegion.getLength(), _previousStyleRanges);
+			ISourceViewer templateViewer = templateSourceEditor.getViewer();
+			templateViewer.getAnnotationModel().removeAnnotation(_bindingsAnnotation);
+			_bindingsAnnotation = null;
 			_selectionRect = null;
 			_selectionRegion = null;
-			_previousStyleRanges = null;
-			repaintSelectionRect(st, selectionRect);
+			repaintSelectionRect(templateViewer.getTextWidget(), selectionRect);
 		}
 	}
 
@@ -212,8 +237,11 @@ public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener {
 
 			TemplateEditor templateEditor = _componentEditor.getTemplateEditor();
 			TemplateSourceEditor templateSourceEditor = templateEditor.getSourceEditor();
-			StyledText st = templateSourceEditor.getViewer().getTextWidget();
+			ISourceViewer templateViewer = templateSourceEditor.getViewer();
+			StyledText st = templateViewer.getTextWidget();
 			Point controlDragPoint = st.toControl(dragPoint);
+
+			_autoscroller.autoscroll(controlDragPoint);
 
 			Rectangle controlBounds = st.getBounds();
 			controlBounds.x = 0;
@@ -221,8 +249,6 @@ public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener {
 			// Don't bother doing anything if we're outside of the Template
 			// Editor's bounds
 			if (controlBounds.contains(controlDragPoint)) {
-				autoscroll(st, controlDragPoint, controlBounds);
-
 				FuzzyXMLElement element = templateSourceEditor.getElementAtPoint(controlDragPoint);
 				// We only want to throb WO tags ...
 				if (WodHtmlUtils.isWOTag(element)) {
@@ -230,44 +256,30 @@ public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener {
 					// If there's no current selection, clear a previous
 					// selection
 					if (selectionRegion == null) {
-						clearHighlightedTextStyle();
+						removeHoverAnnotation();
 
 						// If there is a current selection and it differs from
 						// the previous
 						// selection, calculate new offsets and throb it ...
 					} else if (previousRegion == null || previousRegion.getOffset() != selectionRegion.getOffset()) {
-						clearHighlightedTextStyle();
+						removeHoverAnnotation();
 
 						// If we're scrolling, don't do tag highlighting, or
 						// we'll mess
 						// up the metrics
-						if (_scrollStarted) {
-							_selectionRegion = null;
-							_selectionRect = null;
-							_previousStyleRanges = null;
+						if (_autoscroller.isScrollStarted()) {
+							// IGNORE
 						} else {
-							// We need to save the previous text styles because
-							// we're going
-							// to replace them with our colored highlight
-							_selectionRegion = selectionRegion;
-							_selectionRect = st.getTextBounds(selectionRegion.getOffset(), selectionRegion.getOffset() + selectionRegion.getLength() - 1);
-							_previousStyleRanges = st.getStyleRanges(selectionRegion.getOffset(), selectionRegion.getLength());
+							// Add the annotation
+							try {
+								_selectionRegion = selectionRegion;
+								_selectionRect = st.getTextBounds(selectionRegion.getOffset(), selectionRegion.getOffset() + selectionRegion.getLength() - 1);
 
-							StyleRange[] styleRanges = new StyleRange[_previousStyleRanges.length];
-							for (int i = 0; i < _previousStyleRanges.length; i++) {
-								styleRanges[i] = (StyleRange) _previousStyleRanges[i].clone();
-								styleRanges[i].background = _selectionBackgroundColor;
-								styleRanges[i].fontStyle = SWT.BOLD;
+								addHoverAnnotation();
+							} catch (Throwable t) {
+								_selectionRegion = null;
+								_selectionRect = null;
 							}
-
-							// And now apply our custom styling
-							StyleRange styleRange = new StyleRange(selectionRegion.getOffset(), selectionRegion.getLength(), null, _selectionBackgroundColor);
-							st.setStyleRange(styleRange);
-
-							// And initiate a throb ...
-							_shouldThrob = true;
-							_selectionTime = System.currentTimeMillis();
-							repaintSelectionRect(st, _selectionRect);
 						}
 
 						// Otherwise we're on the same selection, so repaint it
@@ -279,11 +291,8 @@ public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener {
 					// It's not a WO tag, so just clear any current selection
 					// ...
 				} else {
-					clearHighlightedTextStyle();
+					removeHoverAnnotation();
 				}
-			} else {
-				_lastScrollTime = -1;
-				_scrollStarted = false;
 			}
 
 		} catch (Exception e) {
@@ -291,103 +300,41 @@ public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener {
 		}
 	}
 
-	protected void autoscroll(StyledText st, Point controlDragPoint, Rectangle controlBounds) {
-		if (_lastScrollTime <= 0) {
-			_lastScrollTime = System.currentTimeMillis();
-		}
-
-		int scrollFrequency = (_scrollStarted) ? continuousScrollFrequency : initialScrollFrequency;
-
-		long scrollTime = System.currentTimeMillis();
-		if ((scrollTime - _lastScrollTime) > scrollFrequency) {
-			int oldTopIndex = st.getTopIndex();
-			int oldHorizontalIndex = st.getHorizontalIndex();
-
-			if (controlDragPoint.y < scrollTopLeftMargin) {
-				st.setTopIndex(oldTopIndex - 1);
-			} else if ((controlBounds.height - controlDragPoint.y) < scrollBottomRightMargin) {
-				st.setTopIndex(oldTopIndex + 1);
-			}
-
-			if (controlDragPoint.x < scrollTopLeftMargin) {
-				st.setHorizontalIndex(oldHorizontalIndex - 1);
-			} else if ((controlBounds.width - controlDragPoint.x) < scrollBottomRightMargin) {
-				st.setHorizontalIndex(oldHorizontalIndex + 1);
-			}
-
-			if (st.getTopIndex() != oldTopIndex || st.getHorizontalIndex() != oldHorizontalIndex) {
-				clearHighlightedTextStyle();
-				st.redraw();
-				_lastScrollTime = scrollTime;
-				_scrollStarted = true;
-			} else {
-				_scrollStarted = false;
-			}
-		}
+	public void bindingDragCanceled(WOBrowserColumn column) {
+		bindingDragFinished(column, null, false);
 	}
 
 	public void bindingDropped(WOBrowserColumn column, Point dropPoint) {
-		try {
-			_lastScrollTime = -1;
-			_scrollStarted = false;
+		bindingDragFinished(column, dropPoint, true);
+	}
 
-			TemplateEditor templateEditor = _componentEditor.getTemplateEditor();
-			TemplateSourceEditor templateSourceEditor = templateEditor.getSourceEditor();
-			StyledText st = templateSourceEditor.getViewer().getTextWidget();
-			Point controlDropPoint = st.toControl(dropPoint);
-			FuzzyXMLElement selectedElement = templateSourceEditor.getElementAtPoint(controlDropPoint);
-			if (selectedElement == null || !WodHtmlUtils.isWOTag(selectedElement)) {
-				clearHighlightedTextStyle();
+	public void bindingDragFinished(WOBrowserColumn column, Point dropPoint, boolean dropped) {
+		try {
+			_autoscroller.stopScroll();
+
+			if (dropped) {
+				TemplateEditor templateEditor = _componentEditor.getTemplateEditor();
+				TemplateSourceEditor templateSourceEditor = templateEditor.getSourceEditor();
+				StyledText st = templateSourceEditor.getViewer().getTextWidget();
+				Point controlDropPoint = st.toControl(dropPoint);
+				FuzzyXMLElement selectedElement = templateSourceEditor.getElementAtPoint(controlDropPoint);
+				if (selectedElement == null || !WodHtmlUtils.isWOTag(selectedElement)) {
+					removeHoverAnnotation();
+				} else {
+					FuzzyXMLWodElement wodElement = new FuzzyXMLWodElement(selectedElement, Activator.getDefault().isWO54());
+					String droppedKeyPath = column.getSelectedKeyPath();
+					if (_bindingsMenu != null) {
+						boolean menuShown = _bindingsMenu.showMenuAtLocation(wodElement, droppedKeyPath, dropPoint);
+						if (!menuShown) {
+							removeHoverAnnotation();
+						}
+					}
+				}
 			} else {
-				FuzzyXMLWodElement wodElement = new FuzzyXMLWodElement(selectedElement, Activator.getDefault().isWO54());
-				String droppedKeyPath = column.getSelectedKeyPath();
-				showBindingMenuAtPoint(wodElement, droppedKeyPath, dropPoint);
+				removeHoverAnnotation();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-	}
-
-	protected void showBindingMenuAtPoint(IWodElement wodElement, String droppedKeyPath, Point point) throws JavaModelException, ApiModelException, Exception {
-		WodParserCache cache = _componentEditor.getParserCache();
-		Wo api = wodElement.getApi(cache.getJavaProject(), WodParserCache.getTypeCache());
-		if (api != null) {
-			IApiBinding[] apiBindings = wodElement.getApiBindings(api);
-			if (apiBindings != null && apiBindings.length > 0) {
-
-				List<IApiBinding> keyBindings = new LinkedList<IApiBinding>();
-				List<IApiBinding> actionBindings = new LinkedList<IApiBinding>();
-				for (IApiBinding binding : apiBindings) {
-					if (binding.isAction()) {
-						actionBindings.add(binding);
-					} else {
-						keyBindings.add(binding);
-					}
-				}
-
-				for (MenuItem item : _bindingsMenu.getItems()) {
-					item.dispose();
-				}
-
-				BindingSelectionListener selectionListener = new BindingSelectionListener(wodElement, droppedKeyPath, cache);
-				for (IApiBinding keyBinding : keyBindings) {
-					MenuItem mi = new MenuItem(_bindingsMenu, SWT.NONE);
-					mi.setData(keyBinding);
-					mi.setText(keyBinding.getName());
-					mi.addSelectionListener(selectionListener);
-				}
-				if (!keyBindings.isEmpty() && !actionBindings.isEmpty()) {
-					new MenuItem(_bindingsMenu, SWT.SEPARATOR);
-				}
-				for (IApiBinding actionBinding : actionBindings) {
-					MenuItem mi = new MenuItem(_bindingsMenu, SWT.NONE);
-					mi.setData(actionBinding);
-					mi.setText(actionBinding.getName());
-					mi.addSelectionListener(selectionListener);
-				}
-				_bindingsMenu.setLocation(point.x, point.y);
-				_bindingsMenu.setVisible(true);
-			}
 		}
 	}
 
@@ -399,35 +346,5 @@ public class BindingsDropHandler implements IWOBrowserDelegate, PaintListener {
 	public void browserColumnRemoved(WOBrowserColumn column) {
 		// System.out.println("BindingsInspectorPage.browserColumnRemoved: " +
 		// column);
-	}
-
-	protected static class BindingSelectionListener implements SelectionListener {
-		private IWodElement _wodElement;
-
-		private String _droppedKeyPath;
-
-		private WodParserCache _cache;
-
-		public BindingSelectionListener(IWodElement wodElement, String droppedKeyPath, WodParserCache cache) {
-			_wodElement = wodElement;
-			_droppedKeyPath = droppedKeyPath;
-			_cache = cache;
-		}
-
-		public void widgetDefaultSelected(SelectionEvent event) {
-			widgetSelected(event);
-		}
-
-		public void widgetSelected(SelectionEvent event) {
-			MenuItem item = (MenuItem) event.widget;
-			IApiBinding apiBinding = (IApiBinding) item.getData();
-			RefactoringWodElement refactoringWodElement = new RefactoringWodElement(_wodElement, _cache);
-			try {
-				refactoringWodElement.setValueForBinding(_droppedKeyPath, apiBinding.getName());
-			} catch (Exception e) {
-				e.printStackTrace();
-				ComponenteditorPlugin.getDefault().log("Failed to add binding.", e);
-			}
-		}
 	}
 }

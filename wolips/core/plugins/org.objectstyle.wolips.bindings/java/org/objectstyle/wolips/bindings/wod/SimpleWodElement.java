@@ -7,6 +7,7 @@ public class SimpleWodElement extends AbstractWodElement {
   private String _elementType;
   private Position _elementNamePosition;
   private Position _elementTypePosition;
+  private int _startOffset;
   private int _endOffset;
 
   public SimpleWodElement(IWodElement wodElement) {
@@ -15,14 +16,16 @@ public class SimpleWodElement extends AbstractWodElement {
       _elementNamePosition = wodElement.getElementNamePosition();
       _elementType = wodElement.getElementType();
       _elementTypePosition = wodElement.getElementTypePosition();
-      setTemporary(wodElement.isTemporary());
+      setInline(wodElement.isInline());
       for (IWodBinding binding : wodElement.getBindings()) {
         addBinding(new SimpleWodBinding(binding));
       }
+      _startOffset = wodElement.getStartOffset();
       _endOffset = wodElement.getEndOffset();
+      setNewBindingOffset(wodElement.getNewBindingOffset());
     }
     else {
-      setTemporary(true);
+      setInline(true);
     }
   }
 
@@ -49,7 +52,7 @@ public class SimpleWodElement extends AbstractWodElement {
     if (_elementNamePosition != null && _elementName != null) {
       setElementNamePosition(new Position(_elementNamePosition.getOffset(), _elementName.length()));
     }
-    if (!isTemporary() && oldElementName != null) {
+    if (!isInline() && oldElementName != null) {
       int oldLength = oldElementName.length();
       int newLength = name.length();
       int diff = newLength - oldLength;
@@ -91,13 +94,17 @@ public class SimpleWodElement extends AbstractWodElement {
   public void setEndOffset(int endOffset) {
     _endOffset = endOffset;
   }
-  
+
   public int getEndOffset() {
     return _endOffset;
   }
 
+  public void setStartOffset(int startOffset) {
+    _startOffset = startOffset;
+  }
+
   public int getStartOffset() {
-    return 0;
+    return _startOffset;
   }
 
   @Override

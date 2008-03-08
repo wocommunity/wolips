@@ -32,7 +32,7 @@ public class ChangeElementTypeRefactoring implements IRunnableWithProgress {
   public void run(IProgressMonitor monitor) throws InvocationTargetException {
     try {
       Position typePosition = _element.getElementTypePosition();
-      if (_element.isTemporary()) {
+      if (_element.isInline()) {
         IDocument htmlDocument = _cache.getHtmlEntry().getDocument();
         if (htmlDocument != null) {
           List<TextEdit> htmlEdits = new LinkedList<TextEdit>();

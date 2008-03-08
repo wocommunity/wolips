@@ -33,7 +33,7 @@ public class FuzzyXMLWodElement extends SimpleWodElement {
     _setElementName("_temp");
     _setElementType(namespaceElementName);
     setElementTypePosition(new Position(elementTypePosition, elementTypeLength));
-    setTemporary(true);
+    setInline(true);
 
     if (matchingTagShortcut != null) {
       for (Map.Entry<String, String> shortcutAttribute : matchingTagShortcut.getAttributes().entrySet()) {
@@ -53,6 +53,13 @@ public class FuzzyXMLWodElement extends SimpleWodElement {
     }
     
     setEndOffset(element.getOffset() + element.getOpenTagLength());
+    if (attributes.length > 0) {
+      int endOffset = attributes[attributes.length - 1].getOffset() + attributes[attributes.length - 1].getLength();
+      setNewBindingOffset(endOffset);
+    }
+    else {
+      setNewBindingOffset(element.getOffset() + element.getNameOffset() + element.getNameLength());
+    }
   }
 
   public FuzzyXMLElement getXmlElement() {

@@ -45,7 +45,7 @@ public class RefactoringWodBinding {
 
 	public String _setValue(String value) throws CoreException, InvocationTargetException, InterruptedException {
 		String newValue = value;
-		if (_wodElement.isTemporary()) {
+		if (_wodElement.isInline()) {
 			if (newValue.startsWith("\"")) {
 				newValue = newValue.substring(1, newValue.length() - 1);
 			} else {

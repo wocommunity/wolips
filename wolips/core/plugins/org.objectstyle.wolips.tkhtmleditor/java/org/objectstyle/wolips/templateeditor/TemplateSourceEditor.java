@@ -13,6 +13,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -25,6 +26,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
+import org.eclipse.ui.texteditor.AnnotationPreferenceLookup;
+import org.eclipse.ui.texteditor.MarkerAnnotationPreferences;
+import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.objectstyle.wolips.bindings.preferences.PreferenceConstants;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.locate.LocateException;
@@ -58,6 +62,16 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
   protected void doSetInput(IEditorInput input) throws CoreException {
     super.doSetInput(input);
     _cache = null;
+  }
+  
+  @Override
+  public MarkerAnnotationPreferences getAnnotationPreferences() {
+    return super.getAnnotationPreferences();
+  }
+  
+  @Override
+  public AnnotationPreferenceLookup getAnnotationPreferenceLookup() {
+    return super.getAnnotationPreferenceLookup();
   }
 
   @Override
@@ -315,6 +329,15 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements IWOEditor 
       region = element.getRegionAtOffset(offset, doc, regionForInsert);
     }
     return region;
+  }
+
+  @Override
+  protected SourceViewerDecorationSupport getSourceViewerDecorationSupport(ISourceViewer viewer) {
+    if (fSourceViewerDecorationSupport == null) {
+      fSourceViewerDecorationSupport = new TemplateSourceViewerDecorationSupport(viewer, getOverviewRuler(), getAnnotationAccess(), getSharedColors());
+      configureSourceViewerDecorationSupport(fSourceViewerDecorationSupport);
+    }
+    return fSourceViewerDecorationSupport;
   }
 
 }
