@@ -13,7 +13,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -21,6 +23,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -35,8 +39,10 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
+import org.objectstyle.wolips.baseforuiplugins.utils.WOTextCellEditor;
 import org.objectstyle.wolips.bindings.api.IApiBinding;
 import org.objectstyle.wolips.bindings.api.Wo;
+import org.objectstyle.wolips.bindings.wod.IWodBinding;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
@@ -106,9 +112,12 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 		nameColumn.setText("Attribute");
 		bindingsTableLayout.setColumnData(nameColumn, new ColumnWeightData(50, true));
 
-		TableColumn valueColumn = new TableColumn(bindingsTable, SWT.LEFT);
+		TableViewerColumn valueViewerColumn = new TableViewerColumn(_bindingsTableViewer, SWT.LEAD);
+		TableColumn valueColumn = valueViewerColumn.getColumn();
 		valueColumn.setText("Binding");
 		bindingsTableLayout.setColumnData(valueColumn, new ColumnWeightData(50, true));
+		valueViewerColumn.setEditingSupport(new BindingEditingSupport(_bindingsTableViewer));
+		valueViewerColumn.setLabelProvider(_bindingsLabelProvider);
 
 		_bindingsTableViewer.addSelectionChangedListener(this);
 
@@ -223,7 +232,7 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 				return status;
 			}
 		});
-		
+
 		// _dataBindingContext.bindValue(SWTObservables.observeText(_elementTypeField),
 		// BeansObservables.observeValue(_refactoringElement,
 		// RefactoringElementModel.ELEMENT_TYPE),
@@ -354,5 +363,60 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 		}
 
 		setWodElement(wodElement, cache);
+	}
+
+	public class BindingEditingSupport extends EditingSupport {
+		private TextCellEditor _bindingEditor;
+
+		public BindingEditingSupport(TableViewer viewer) {
+			super(viewer);
+			_bindingEditor = new WOTextCellEditor(viewer.getTable());
+		}
+
+		@Override
+		protected boolean canEdit(Object element) {
+			return true;
+		}
+
+		@Override
+		protected CellEditor getCellEditor(Object element) {
+			return _bindingEditor;
+		}
+
+		@Override
+		protected Object getValue(Object element) {
+			String value = null;
+			IApiBinding binding = (IApiBinding) element;
+			if (binding != null) {
+				IWodElement wodElement = getWodElement();
+				if (wodElement != null) {
+					IWodBinding wodBinding = wodElement.getBindingNamed(binding.getName());
+					if (wodBinding != null) {
+						value = wodBinding.getValue();
+					}
+				}
+			}
+			if (value == null) {
+				value = "";
+			}
+			return value;
+		}
+
+		@Override
+		protected void setValue(Object element, Object value) {
+			IApiBinding binding = (IApiBinding) element;
+			if (binding != null) {
+				IWodElement wodElement = getWodElement();
+				if (wodElement != null) {
+					try {
+						getRefactoringElement().setValueForBinding((String) value, binding.getName());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					BindingsInspector.this.refresh();
+				}
+			}
+		}
+
 	}
 }

@@ -1,20 +1,20 @@
-package org.objectstyle.wolips.eomodeler.utils;
+package org.objectstyle.wolips.baseforuiplugins.utils;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 
-public class EMTableViewer extends TableViewer {
+public class WOTableViewer extends TableViewer {
 
-	public EMTableViewer(Composite parent) {
+	public WOTableViewer(Composite parent) {
 		super(parent);
 	}
 
-	public EMTableViewer(Table table) {
+	public WOTableViewer(Table table) {
 		super(table);
 	}
 
-	public EMTableViewer(Composite parent, int style) {
+	public WOTableViewer(Composite parent, int style) {
 		super(parent, style);
 	}
 

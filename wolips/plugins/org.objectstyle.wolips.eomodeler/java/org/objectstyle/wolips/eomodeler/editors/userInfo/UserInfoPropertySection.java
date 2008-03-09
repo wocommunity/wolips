@@ -79,13 +79,13 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.objectstyle.wolips.baseforuiplugins.utils.WOTextCellEditor;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelParserDataStructureFactory;
 import org.objectstyle.wolips.eomodeler.core.model.IUserInfoable;
 import org.objectstyle.wolips.eomodeler.core.utils.NotificationMap;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.utils.AddRemoveButtonGroup;
-import org.objectstyle.wolips.eomodeler.utils.EMTextCellEditor;
 import org.objectstyle.wolips.eomodeler.utils.StayEditingCellEditorListener;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
@@ -121,8 +121,8 @@ public class UserInfoPropertySection extends AbstractPropertySection {
 		myUserInfoTableViewer = TableUtils.createTableViewer(userInfoForm, SWT.BORDER | SWT.FLAT | SWT.FULL_SELECTION | SWT.SINGLE, "UserInfo", UserInfoPropertySection.COLUMNS, new UserInfoContentProvider(), new UserInfoLabelProvider(UserInfoPropertySection.COLUMNS), new ViewerSorter());
 
 		CellEditor[] cellEditors = new CellEditor[UserInfoPropertySection.COLUMNS.length];
-		cellEditors[TableUtils._getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.KEY)] = new EMTextCellEditor(myUserInfoTableViewer.getTable());
-		cellEditors[TableUtils._getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.VALUE)] = new EMTextCellEditor(myUserInfoTableViewer.getTable());
+		cellEditors[TableUtils._getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.KEY)] = new WOTextCellEditor(myUserInfoTableViewer.getTable());
+		cellEditors[TableUtils._getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.VALUE)] = new WOTextCellEditor(myUserInfoTableViewer.getTable());
 		myUserInfoTableViewer.setCellModifier(new UserInfoCellModifier(myUserInfoTableViewer));
 		myUserInfoTableViewer.setCellEditors(cellEditors);
 		

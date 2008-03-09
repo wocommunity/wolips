@@ -58,6 +58,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.objectstyle.wolips.baseforuiplugins.utils.WOTableViewer;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.Messages;
 
@@ -66,7 +67,7 @@ public class TableUtils {
 		return TableUtils.createTableViewer(parent, SWT.FULL_SELECTION, messagePrefix, tableName, contentProvider, labelProvider, sorter);
 	}
 
-	public static EMTableViewer createTableViewer(Composite parent, int style, String messagePrefix, String tableName, IStructuredContentProvider contentProvider, ITableLabelProvider labelProvider, ViewerSorter sorter) {
+	public static WOTableViewer createTableViewer(Composite parent, int style, String messagePrefix, String tableName, IStructuredContentProvider contentProvider, ITableLabelProvider labelProvider, ViewerSorter sorter) {
 		return TableUtils.createTableViewer(parent, style, messagePrefix, TableUtils.getColumnsForTableNamed(tableName), contentProvider, labelProvider, sorter);
 	}
 
@@ -74,8 +75,8 @@ public class TableUtils {
 		return TableUtils.createTableViewer(parent, SWT.FULL_SELECTION, messagePrefix, columns, contentProvider, labelProvider, sorter);
 	}
 
-	public static EMTableViewer createTableViewer(Composite parent, int style, String messagePrefix, String[] columns, IStructuredContentProvider contentProvider, ITableLabelProvider labelProvider, ViewerSorter sorter) {
-		EMTableViewer tableViewer = new EMTableViewer(parent, style);
+	public static WOTableViewer createTableViewer(Composite parent, int style, String messagePrefix, String[] columns, IStructuredContentProvider contentProvider, ITableLabelProvider labelProvider, ViewerSorter sorter) {
+		WOTableViewer tableViewer = new WOTableViewer(parent, style);
 		tableViewer.setColumnProperties(columns);
 		if (contentProvider != null) {
 			tableViewer.setContentProvider(contentProvider);

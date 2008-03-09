@@ -61,13 +61,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.objectstyle.wolips.baseforuiplugins.utils.ErrorUtils;
+import org.objectstyle.wolips.baseforuiplugins.utils.KeyComboBoxCellEditor;
+import org.objectstyle.wolips.baseforuiplugins.utils.WOTextCellEditor;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.AbstractEOArgument;
 import org.objectstyle.wolips.eomodeler.core.model.EOArgument;
 import org.objectstyle.wolips.eomodeler.core.model.EOArgumentDirection;
 import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
-import org.objectstyle.wolips.eomodeler.utils.EMTextCellEditor;
-import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
 import org.objectstyle.wolips.eomodeler.utils.StayEditingCellEditorListener;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
 import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
@@ -103,8 +103,8 @@ public class EOArgumentsTableViewer extends Composite implements ISelectionProvi
 		TableUtils.sort(myArgumentsTableViewer, AbstractEOArgument.NAME);
 
 		CellEditor[] cellEditors = new CellEditor[TableUtils.getColumnsForTableNamed(EOArgument.class.getName()).length];
-		TableUtils.setCellEditor(EOArgument.class.getName(), AbstractEOArgument.NAME, new EMTextCellEditor(argumentsTable), cellEditors);
-		TableUtils.setCellEditor(EOArgument.class.getName(), AbstractEOArgument.COLUMN_NAME, new EMTextCellEditor(argumentsTable), cellEditors);
+		TableUtils.setCellEditor(EOArgument.class.getName(), AbstractEOArgument.NAME, new WOTextCellEditor(argumentsTable), cellEditors);
+		TableUtils.setCellEditor(EOArgument.class.getName(), AbstractEOArgument.COLUMN_NAME, new WOTextCellEditor(argumentsTable), cellEditors);
 		String[] argumentDirectionNames = new String[EOArgumentDirection.ARGUMENT_DIRECTIONS.length];
 		for (int argumentDirectionNum = 0; argumentDirectionNum < argumentDirectionNames.length; argumentDirectionNum++) {
 			argumentDirectionNames[argumentDirectionNum] = EOArgumentDirection.ARGUMENT_DIRECTIONS[argumentDirectionNum].getName();

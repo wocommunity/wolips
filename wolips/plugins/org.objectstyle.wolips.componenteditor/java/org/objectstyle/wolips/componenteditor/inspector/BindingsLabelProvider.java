@@ -3,6 +3,7 @@ package org.objectstyle.wolips.componenteditor.inspector;
 import java.util.List;
 
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableFontProvider;
@@ -21,7 +22,7 @@ import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.bindings.wod.WodBindingProblem;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
 
-public class BindingsLabelProvider implements ITableLabelProvider, ITableColorProvider, ITableFontProvider {
+public class BindingsLabelProvider extends ColumnLabelProvider implements ITableLabelProvider, ITableColorProvider, ITableFontProvider {
 	private IWodElement _wodElement;
 
 	private List<WodProblem> _problems;
@@ -33,6 +34,11 @@ public class BindingsLabelProvider implements ITableLabelProvider, ITableColorPr
 
 	public Image getColumnImage(Object element, int columnIndex) {
 		return null;
+	}
+
+	@Override
+	public String getText(Object element) {
+		return getColumnText(element, 1);
 	}
 
 	public String getColumnText(Object element, int columnIndex) {
@@ -69,6 +75,11 @@ public class BindingsLabelProvider implements ITableLabelProvider, ITableColorPr
 		return null;
 	}
 
+	@Override
+	public Color getForeground(Object element) {
+		return getForeground(element, 1);
+	}
+
 	public Color getForeground(Object element, int columnIndex) {
 		Color color = null;
 		IApiBinding apiBinding = (IApiBinding) element;
@@ -95,6 +106,11 @@ public class BindingsLabelProvider implements ITableLabelProvider, ITableColorPr
 			}
 		}
 		return color;
+	}
+
+	@Override
+	public Font getFont(Object element) {
+		return getFont(element, 1);
 	}
 
 	public Font getFont(Object element, int columnIndex) {

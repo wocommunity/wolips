@@ -12,6 +12,7 @@ import org.objectstyle.wolips.bindings.wod.SimpleWodBinding;
 import org.objectstyle.wolips.bindings.wod.SimpleWodElement;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.refactoring.ChangeElementTypeRefactoring;
+import org.objectstyle.wolips.wodclipse.core.refactoring.RemoveBindingRefactoring;
 import org.objectstyle.wolips.wodclipse.core.refactoring.RenameElementsRefactoring;
 
 public class RefactoringWodElement {
@@ -36,16 +37,30 @@ public class RefactoringWodElement {
 	}
 
 	public RefactoringWodBinding setValueForBinding(String value, String name) throws CoreException, InvocationTargetException, InterruptedException {
-		RefactoringWodBinding wodBinding = getBindingNamed(name);
-		if (wodBinding != null) {
-			wodBinding.setValue(value);
-		}
-		else {
-			wodBinding = addBindingValueNamed(value, name);
+		RefactoringWodBinding wodBinding = null;
+		if (value == null || value.trim().length() == 0) {
+			removeBindingNamed(name);
+		} else {
+			wodBinding = getBindingNamed(name);
+			if (wodBinding != null) {
+				wodBinding.setValue(value);
+			} else {
+				wodBinding = addBindingValueNamed(value, name);
+			}
 		}
 		return wodBinding;
 	}
-	
+
+	public void removeBindingNamed(String name) throws CoreException, InvocationTargetException, InterruptedException {
+		IWodBinding existingBinding = _wodElement.getBindingNamed(name);
+		if (existingBinding == null) {
+			// IGNORE
+		} else {
+			RemoveBindingRefactoring.run(_wodElement, existingBinding, _cache, new NullProgressMonitor());
+			_wodElement.removeBinding(existingBinding);
+		}
+	}
+
 	public RefactoringWodBinding addBindingValueNamed(String value, String name) throws CoreException, InvocationTargetException, InterruptedException {
 		SimpleWodBinding binding = new SimpleWodBinding(name, value);
 		_wodElement.addBinding(binding);
@@ -53,7 +68,7 @@ public class RefactoringWodElement {
 		refactoringBinding._setValue(value);
 		return refactoringBinding;
 	}
-	
+
 	public RefactoringWodBinding getBindingNamed(String name) {
 		IWodBinding binding = _wodElement.getBindingNamed(name);
 		RefactoringWodBinding refactoringBinding = null;

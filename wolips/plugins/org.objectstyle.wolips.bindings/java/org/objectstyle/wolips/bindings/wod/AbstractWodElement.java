@@ -91,8 +91,12 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
     _inline = inline;
   }
 
-  public void addBinding(IWodBinding _binding) {
-    _bindings.add(_binding);
+  public void addBinding(IWodBinding binding) {
+    _bindings.add(binding);
+  }
+  
+  public void removeBinding(IWodBinding binding) {
+    _bindings.remove(binding);
   }
 
   public List<IWodBinding> getBindings() {
