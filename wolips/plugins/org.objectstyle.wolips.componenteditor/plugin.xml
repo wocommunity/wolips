@@ -311,134 +311,14 @@
 				<separator name="group2"/>
 			</menu>
 			<action
-				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOStringAction"
-				icon="icons/string.png"
-				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOString"
-				label="Insert WOString Component"
+				class="org.objectstyle.wolips.componenteditor.actions.InsertHtmlTagAction"
+				icon="icons/anybasictag.png"
+				id="org.objectstyle.wolips.componenteditor.actions.InsertHtmlTagAction"
+				label="Insert Tag"
 				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
 				style="push"
 				toolbarPath="/Normal/additions"
-				tooltip="Insert WOString Component">
-			</action>
-			<action
-				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOConditionalAction"
-				icon="icons/conditional.png"
-				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOConditional"
-				label="Insert WOConditional Component"
-				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
-				style="push"
-				toolbarPath="/Normal/additions"
-				tooltip="Insert WOConditional Component">
-			</action>
-			<action
-				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWORepetitionAction"
-				icon="icons/repetition.png"
-				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWORepetition"
-				label="Insert WORepetition Component"
-				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
-				style="push"
-				toolbarPath="/Normal/additions"
-				tooltip="Insert WORepetition Component">
-			</action>
-			<action
-				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOHyperlinkAction"
-				icon="icons/hyperlink.png"
-				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOHyperlink"
-				label="Insert WOHyperlink Component"
-				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
-				style="push"
-				toolbarPath="/Normal/additions"
-				tooltip="Insert WOHyperlink Component">
-			</action>
-			<action
-				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOTextFieldAction"
-				icon="icons/textfield.png"
-				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOTextField"
-				label="Insert WOTextField Component"
-				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
-				style="push"
-				toolbarPath="/Normal/additions"
-				tooltip="Insert WOTextField Component">
-			</action>
-			<action
-				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOImageAction"
-				icon="icons/image.png"
-				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOImage"
-				label="Insert WOImage Component"
-				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
-				style="push"
-				toolbarPath="/Normal/additions"
-				tooltip="Insert WOImage Component">
-			</action>
-			<action
-				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOSubmitButtonAction"
-				icon="icons/submit.png"
-				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOSubmitButton"
-				label="Insert WOSubmitButton Component"
-				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
-				style="push"
-				toolbarPath="/Normal/additions"
-				tooltip="Insert WOSubmitButton Component">
-			</action>
-			<action
-				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWORadioButtonAction"
-				icon="icons/radio.png"
-				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWORadioButton"
-				label="Insert WORadioButton Component"
-				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
-				style="push"
-				toolbarPath="/Normal/additions"
-				tooltip="Insert WORadioButton Component">
-			</action>
-			<action
-				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOCheckBoxAction"
-				icon="icons/checkbox.png"
-				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOCheckBox"
-				label="Insert WOCheckBox Component"
-				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
-				style="push"
-				toolbarPath="/Normal/additions"
-				tooltip="Insert WOCheckBox Component">
-			</action>
-			<action
-				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOTextAction"
-				icon="icons/textarea.png"
-				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOText"
-				label="Insert WOText Component"
-				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
-				style="push"
-				toolbarPath="/Normal/additions"
-				tooltip="Insert WOText Component">
-			</action>
-			<action
-				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOPopUpButtonAction"
-				icon="icons/popup.png"
-				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOPopUpButton"
-				label="Insert WOPopUpButton Component"
-				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
-				style="push"
-				toolbarPath="/Normal/additions"
-				tooltip="Insert WOPopUpButton Component">
-			</action>
-			<action
-				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOBrowserAction"
-				icon="icons/browser.png"
-				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOBrowser"
-				label="Insert WOBrowser Component"
-				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
-				style="push"
-				toolbarPath="/Normal/additions"
-				tooltip="Insert WOBrowser Component">
-			</action>
-			<action
-				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOFormAction"
-				icon="icons/form.png"
-				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOForm"
-				label="Insert WOForm Component"
-				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
-				style="push"
-				toolbarPath="/Normal/additions"
-				tooltip="Insert WOForm Component">
+				tooltip="Insert Tag">
 			</action>
 			<action
 				class="org.objectstyle.wolips.componenteditor.actions.InsertAnyComponentAction"
@@ -452,14 +332,134 @@
 				tooltip="Insert Component">
 			</action>
 			<action
-				class="org.objectstyle.wolips.componenteditor.actions.InsertHtmlTagAction"
-				icon="icons/anybasictag.png"
-				id="org.objectstyle.wolips.componenteditor.actions.InsertHtmlTagAction"
-				label="Insert Tag"
+				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOFormAction"
+				icon="icons/form.png"
+				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOForm"
+				label="Insert WOForm Component"
 				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
 				style="push"
 				toolbarPath="/Normal/additions"
-				tooltip="Insert Tag">
+				tooltip="Insert WOForm Component">
+			</action>
+			<action
+				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOBrowserAction"
+				icon="icons/browser.png"
+				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOBrowser"
+				label="Insert WOBrowser Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
+				style="push"
+				toolbarPath="/Normal/additions"
+				tooltip="Insert WOBrowser Component">
+			</action>
+			<action
+				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOPopUpButtonAction"
+				icon="icons/popup.png"
+				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOPopUpButton"
+				label="Insert WOPopUpButton Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
+				style="push"
+				toolbarPath="/Normal/additions"
+				tooltip="Insert WOPopUpButton Component">
+			</action>
+			<action
+				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOTextAction"
+				icon="icons/textarea.png"
+				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOText"
+				label="Insert WOText Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
+				style="push"
+				toolbarPath="/Normal/additions"
+				tooltip="Insert WOText Component">
+			</action>
+			<action
+				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOCheckBoxAction"
+				icon="icons/checkbox.png"
+				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOCheckBox"
+				label="Insert WOCheckBox Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
+				style="push"
+				toolbarPath="/Normal/additions"
+				tooltip="Insert WOCheckBox Component">
+			</action>
+			<action
+				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWORadioButtonAction"
+				icon="icons/radio.png"
+				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWORadioButton"
+				label="Insert WORadioButton Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
+				style="push"
+				toolbarPath="/Normal/additions"
+				tooltip="Insert WORadioButton Component">
+			</action>
+			<action
+				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOSubmitButtonAction"
+				icon="icons/submit.png"
+				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOSubmitButton"
+				label="Insert WOSubmitButton Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
+				style="push"
+				toolbarPath="/Normal/additions"
+				tooltip="Insert WOSubmitButton Component">
+			</action>
+			<action
+				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOImageAction"
+				icon="icons/image.png"
+				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOImage"
+				label="Insert WOImage Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
+				style="push"
+				toolbarPath="/Normal/additions"
+				tooltip="Insert WOImage Component">
+			</action>
+			<action
+				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOTextFieldAction"
+				icon="icons/textfield.png"
+				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOTextField"
+				label="Insert WOTextField Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
+				style="push"
+				toolbarPath="/Normal/additions"
+				tooltip="Insert WOTextField Component">
+			</action>
+			<action
+				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOHyperlinkAction"
+				icon="icons/hyperlink.png"
+				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOHyperlink"
+				label="Insert WOHyperlink Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
+				style="push"
+				toolbarPath="/Normal/additions"
+				tooltip="Insert WOHyperlink Component">
+			</action>
+			<action
+				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWORepetitionAction"
+				icon="icons/repetition.png"
+				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWORepetition"
+				label="Insert WORepetition Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
+				style="push"
+				toolbarPath="/Normal/additions"
+				tooltip="Insert WORepetition Component">
+			</action>
+			<action
+				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOConditionalAction"
+				icon="icons/conditional.png"
+				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOConditional"
+				label="Insert WOConditional Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
+				style="push"
+				toolbarPath="/Normal/additions"
+				tooltip="Insert WOConditional Component">
+			</action>
+			<action
+				class="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOStringAction"
+				icon="icons/string.png"
+				id="org.objectstyle.wolips.componenteditor.actions.InsertComponentWOString"
+				label="Insert WOString Component"
+				menubarPath="edit/org.objectstyle.wolips.componenteditor.insertMenuContribution/group1"
+				style="push"
+				toolbarPath="/Normal/additions"
+				tooltip="Insert WOString Component">
 			</action>
 		</editorContribution>
 </extension>
