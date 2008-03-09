@@ -82,7 +82,7 @@ public class WodCompletionProposal implements Comparable<ICompletionProposal>, I
   }
 
   public WodCompletionProposal(String token, int replacementOffset, int offset, String replacementString, String displayString, int cursorPosition) {
-    this(token, replacementOffset, token.length(), offset, replacementString, displayString, cursorPosition, null);
+    this(token, replacementOffset, (token == null) ? 0 : token.length(), offset, replacementString, displayString, cursorPosition, null);
   }
 
   public WodCompletionProposal(String token, int replacementOffset, int replacementLength, int offset, String replacementString, String displayString, int cursorPosition, Image image) {
