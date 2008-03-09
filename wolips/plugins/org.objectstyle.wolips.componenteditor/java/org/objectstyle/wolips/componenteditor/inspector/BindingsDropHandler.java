@@ -103,14 +103,6 @@ public class BindingsDropHandler implements IWOBrowserDelegate, Autoscroller.Del
 			}
 
 			IRegion previousRegion = _selectionRegion;
-
-			// TemplateEditor templateEditor =
-			// _componentEditor.getTemplateEditor();
-			// TemplateSourceEditor templateSourceEditor =
-			// templateEditor.getSourceEditor();
-			// ISourceViewer templateViewer = templateSourceEditor.getViewer();
-			// StyledText st = templateViewer.getTextWidget();
-
 			Point controlDragPoint = _woEditorControl.toControl(dragPoint);
 			_autoscroller.autoscroll(controlDragPoint);
 
@@ -169,6 +161,9 @@ public class BindingsDropHandler implements IWOBrowserDelegate, Autoscroller.Del
 				} else if (_bindingsAnnotation != null) {
 					removeHoverAnnotation();
 				}
+			}
+			else if (_bindingsAnnotation != null) {
+				removeHoverAnnotation();
 			}
 
 		} catch (Exception e) {
