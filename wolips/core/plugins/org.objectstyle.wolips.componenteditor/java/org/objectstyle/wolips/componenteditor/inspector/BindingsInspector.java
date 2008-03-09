@@ -10,7 +10,6 @@ import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.validation.IValidator;
 import org.eclipse.core.databinding.validation.ValidationStatus;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -40,7 +39,6 @@ import org.objectstyle.wolips.bindings.api.IApiBinding;
 import org.objectstyle.wolips.bindings.api.Wo;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
-import org.objectstyle.wolips.wodclipse.action.ComponentLiveSearch;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.document.IWOEditor;
 import org.objectstyle.wolips.wodclipse.core.util.ICursorPositionListener;
@@ -60,10 +58,6 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 	private BindingsLabelProvider _bindingsLabelProvider;
 
 	private BindingsContentProvider _bindingsContentProvider;
-
-	// private ComponentEditor _componentEditor;
-
-	private ComponentLiveSearch _componentLiveSearch;
 
 	private DataBindingContext _dataBindingContext;
 
@@ -95,7 +89,7 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 		bindingsTableContainerData.horizontalSpan = 2;
 		bindingsTableContainer.setLayoutData(bindingsTableContainerData);
 
-		_bindingsTableViewer = new TableViewer(bindingsTableContainer, SWT.MULTI |  SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.FULL_SELECTION);
+		_bindingsTableViewer = new TableViewer(bindingsTableContainer, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.FULL_SELECTION);
 		_bindingsLabelProvider = new BindingsLabelProvider();
 		_bindingsContentProvider = new BindingsContentProvider();
 		_bindingsTableViewer.setContentProvider(_bindingsContentProvider);
@@ -126,15 +120,9 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 			return;
 		}
 
-		if (_componentLiveSearch != null) {
-			_componentLiveSearch.detachFrom(_elementTypeField);
-			_componentLiveSearch = null;
-		}
 		if (_dataBindingContext != null) {
 			_dataBindingContext.dispose();
 		}
-
-		IApiBinding selectedBinding = (IApiBinding) ((IStructuredSelection) _bindingsTableViewer.getSelection()).getFirstElement();
 
 		_wodElement = wodElement;
 		_wodProblems = null;
@@ -162,7 +150,8 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 		} else {
 			_bindingsTableViewer.setInput(new Object[0]);
 		}
-		
+
+		IApiBinding selectedBinding = (IApiBinding) ((IStructuredSelection) _bindingsTableViewer.getSelection()).getFirstElement();
 		if (_wodElement != null && selectedBinding != null) {
 			String selectedBindingName = selectedBinding.getName();
 			Wo api = _bindingsContentProvider.getApi();
@@ -197,116 +186,94 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 		_elementTypeField.setEnabled(elementTypeEnabled);
 
 		if (cache != null) {
-			final WodParserCache refactoringParserCache = cache;
 			_dataBindingContext = new DataBindingContext();
-			_refactoringElement = new RefactoringWodElement(_wodElement, refactoringParserCache);
+			_refactoringElement = new RefactoringWodElement(_wodElement, cache);
 
 			if (elementNameEnabled) {
-				UpdateValueStrategy elementNameUpdateStrategy = new UpdateValueStrategy(UpdateValueStrategy.POLICY_UPDATE);
-				elementNameUpdateStrategy.setBeforeSetValidator(new IValidator() {
-					public IStatus validate(Object value) {
-						String newName = (String) value;
-						IStatus status = Status.OK_STATUS;
-						try {
-							if (newName == null || newName.length() == 0) {
-								status = ValidationStatus.error("Element names cannot be blank.");
-							} else if (newName.contains(" ")) {
-								status = ValidationStatus.error("Element names do not allow spaces.");
-							} else if (refactoringParserCache.getWodEntry().getModel().getElementNamed(newName) != null) {
-								status = ValidationStatus.error("There is already an element named '" + newName + "'.");
-							}
-						} catch (Exception e) {
-							status = ValidationStatus.error("Failed to change element name.", e);
-						}
-
-						// reset the value back on failure
-						if (!status.isOK()) {
-							getElementNameField().setText(getRefactoringElement().getElementName());
-						}
-						return status;
-					}
-				});
-				_dataBindingContext.bindValue(SWTObservables.observeText(_elementNameField, SWT.FocusOut), BeansObservables.observeValue(_refactoringElement, RefactoringWodElement.ELEMENT_NAME), elementNameUpdateStrategy, null);
+				bindElementName(cache);
 			}
 
 			if (elementTypeEnabled) {
-				_componentLiveSearch = new ComponentLiveSearch(cache.getJavaProject(), new NullProgressMonitor());
-				// _componentLiveSearch.attachTo(_elementTypeField);
-
-				UpdateValueStrategy elementTypeUpdateStrategy = new UpdateValueStrategy(UpdateValueStrategy.POLICY_UPDATE);
-				elementTypeUpdateStrategy.setBeforeSetValidator(new IValidator() {
-					public IStatus validate(Object value) {
-						String newName = (String) value;
-						System.out.println(".validate: " + newName);
-						IStatus status = Status.OK_STATUS;
-						try {
-							if (newName == null || newName.length() == 0) {
-								status = ValidationStatus.error("Element types cannot be blank.");
-							} else if (newName.contains(" ")) {
-								status = ValidationStatus.error("Element types do not allow spaces.");
-							}
-						} catch (Exception e) {
-							status = ValidationStatus.error("Failed to change element type.", e);
-						}
-
-						// reset the value back on failure
-						if (!status.isOK()) {
-							getElementTypeField().setText(getRefactoringElement().getElementType());
-						}
-						return status;
-					}
-				});
-				// _dataBindingContext.bindValue(SWTObservables.observeText(_elementTypeField),
-				// BeansObservables.observeValue(_refactoringElement,
-				// RefactoringElementModel.ELEMENT_TYPE),
-				// elementTypeUpdateStrategy, null);
-				_elementTypeField.addFocusListener(new FocusListener() {
-					public void focusGained(FocusEvent e) {
-						// DO NOTHING
-					}
-
-					public void focusLost(FocusEvent e) {
-						try {
-							String elementTypeFieldText = getElementTypeField().getText();
-							String elementTypeModelText = getRefactoringElement().getElementType();
-							if (!ComparisonUtils.equals(elementTypeModelText, elementTypeFieldText, true)) {
-								getRefactoringElement().setElementType(elementTypeFieldText);
-							}
-						} catch (Throwable t) {
-							t.printStackTrace();
-						}
-					}
-				});
-
-				// _dataBindingContext.bindValue(SWTObservables.observeText(_elementTypeField),
-				// BeansObservables.observeValue(_refactoringElement,
-				// RefactoringElementModel.ELEMENT_TYPE),
-				// elementTypeUpdateStrategy, null);
-
-				// _refactoringElement.addPropertyChangeListener(RefactoringElementModel.ELEMENT_TYPE,
-				// new PropertyChangeListener() {
-				// public void propertyChange(PropertyChangeEvent evt) {
-				// typeChanged();
-				// }
-				// });
+				bindElementType();
 			}
 		}
 	}
 
-	// protected void typeChanged() {
-	// _wodElement = getRefactoringElement().getWodElement();
-	// _wodProblems = null;
-	// try {
-	// _wodProblems = WodModelUtils.getProblems(_wodElement,
-	// _componentEditor.getTemplateEditor().getSourceEditor().getParserCache());
-	// if (getBindingsTableViewer() != null &&
-	// !getBindingsTableViewer().getTable().isDisposed()) {
-	// getBindingsTableViewer().setInput(_wodElement);
-	// }
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-	// }
+	protected void bindElementType() {
+		UpdateValueStrategy elementTypeUpdateStrategy = new UpdateValueStrategy(UpdateValueStrategy.POLICY_UPDATE);
+		elementTypeUpdateStrategy.setBeforeSetValidator(new IValidator() {
+			public IStatus validate(Object value) {
+				String newName = (String) value;
+				System.out.println(".validate: " + newName);
+				IStatus status = Status.OK_STATUS;
+				try {
+					if (newName == null || newName.length() == 0) {
+						status = ValidationStatus.error("Element types cannot be blank.");
+					} else if (newName.contains(" ")) {
+						status = ValidationStatus.error("Element types do not allow spaces.");
+					}
+				} catch (Exception e) {
+					status = ValidationStatus.error("Failed to change element type.", e);
+				}
+
+				// reset the value back on failure
+				if (!status.isOK()) {
+					getElementTypeField().setText(getRefactoringElement().getElementType());
+				}
+				return status;
+			}
+		});
+		
+		// _dataBindingContext.bindValue(SWTObservables.observeText(_elementTypeField),
+		// BeansObservables.observeValue(_refactoringElement,
+		// RefactoringElementModel.ELEMENT_TYPE),
+		// elementTypeUpdateStrategy, null);
+		_elementTypeField.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+				// DO NOTHING
+			}
+
+			public void focusLost(FocusEvent e) {
+				try {
+					String elementTypeFieldText = getElementTypeField().getText();
+					String elementTypeModelText = getRefactoringElement().getElementType();
+					if (!ComparisonUtils.equals(elementTypeModelText, elementTypeFieldText, true)) {
+						getRefactoringElement().setElementType(elementTypeFieldText);
+					}
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
+			}
+		});
+	}
+
+	protected void bindElementName(final WodParserCache refactoringParserCache) {
+		UpdateValueStrategy elementNameUpdateStrategy = new UpdateValueStrategy(UpdateValueStrategy.POLICY_UPDATE);
+		elementNameUpdateStrategy.setBeforeSetValidator(new IValidator() {
+			public IStatus validate(Object value) {
+				String newName = (String) value;
+				IStatus status = Status.OK_STATUS;
+				try {
+					if (newName == null || newName.length() == 0) {
+						status = ValidationStatus.error("Element names cannot be blank.");
+					} else if (newName.contains(" ")) {
+						status = ValidationStatus.error("Element names do not allow spaces.");
+					} else if (refactoringParserCache.getWodEntry().getModel().getElementNamed(newName) != null) {
+						status = ValidationStatus.error("There is already an element named '" + newName + "'.");
+					}
+				} catch (Exception e) {
+					status = ValidationStatus.error("Failed to change element name.", e);
+				}
+
+				// reset the value back on failure
+				if (!status.isOK()) {
+					getElementNameField().setText(getRefactoringElement().getElementName());
+				}
+				return status;
+			}
+		});
+		_dataBindingContext.bindValue(SWTObservables.observeText(_elementNameField, SWT.FocusOut), BeansObservables.observeValue(_refactoringElement, RefactoringWodElement.ELEMENT_NAME), elementNameUpdateStrategy, null);
+	}
 
 	public TableViewer getBindingsTableViewer() {
 		return _bindingsTableViewer;
@@ -368,7 +335,6 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 		if (_lastEditor != null && _lastPosition != null) {
 			cursorPositionChanged(_lastEditor, _lastPosition);
 		}
-		// _bindingsTableViewer.setInput(_bindingsTableViewer.getInput());
 	}
 
 	public void cursorPositionChanged(TextEditor editor, Point selectionRange) {
