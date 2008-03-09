@@ -94,14 +94,15 @@ public class WodHtmlUtils {
    * 
    * @param element the XML element to process
    * @param wo54 whether or not the node should be processed in WO 5.4 mode
+   * @param resolveWodElement if true, webobject tags will resolve to their DocumentWodElement
    * @param cache the WodParserCache
    * @return an IWodElement corresponding to the node
    * @throws Exception 
    */
-  public static IWodElement getWodElement(FuzzyXMLElement element, boolean wo54, WodParserCache cache) throws Exception {
+  public static IWodElement getWodElement(FuzzyXMLElement element, boolean wo54, boolean resolveWodElement, WodParserCache cache) throws Exception {
     IWodElement wodElement;
-    if (WodHtmlUtils.isWOTag(element.getName())) {
-      if (WodHtmlUtils.isInline(element.getName())) {
+    if (WodHtmlUtils.isWOTag(element)) {
+      if (WodHtmlUtils.isInline(element.getName()) || !resolveWodElement) {
         wodElement = new FuzzyXMLWodElement(element, wo54);
       }
       else {

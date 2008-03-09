@@ -389,13 +389,13 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 		return model;
 	}
 
-	public IWodElement getWodElementAtPoint(Point point, boolean refreshModel) throws Exception {
+	public IWodElement getWodElementAtPoint(Point point, boolean resolveWodElement, boolean refreshModel) throws Exception {
 		int offset = getOffsetAtPoint(point);
 		IWodElement element = getWodModel(refreshModel).getWodElementAtIndex(offset);
 		return element;
 	}
 
-	public IWodElement getSelectedElement(boolean refreshModel) throws Exception {
+	public IWodElement getSelectedElement(boolean resolveWodElement, boolean refreshModel) throws Exception {
 		IWodElement element = null;
 		ISelectionProvider selectionProvider = getSelectionProvider();
 		if (selectionProvider != null) {

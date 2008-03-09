@@ -106,20 +106,20 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 		return editorControl;
 	}
 
-	public IWodElement getSelectedElement(boolean refreshModel) throws Exception {
+	public IWodElement getSelectedElement(boolean resolveWodElement, boolean refreshModel) throws Exception {
 		IEditorPart editorPart = getActiveEditor();
 		IWodElement selectedElement = null;
 		if (editorPart instanceof IWOEditor) {
-			selectedElement = ((IWOEditor) editorPart).getSelectedElement(refreshModel);
+			selectedElement = ((IWOEditor) editorPart).getSelectedElement(resolveWodElement, refreshModel);
 		}
 		return selectedElement;
 	}
 
-	public IWodElement getWodElementAtPoint(Point point, boolean refreshModel) throws Exception {
+	public IWodElement getWodElementAtPoint(Point point, boolean resolveWodElement, boolean refreshModel) throws Exception {
 		IEditorPart editorPart = getActiveEditor();
 		IWodElement wodElement = null;
 		if (editorPart instanceof IWOEditor) {
-			wodElement = ((IWOEditor) editorPart).getWodElementAtPoint(point, refreshModel);
+			wodElement = ((IWOEditor) editorPart).getWodElementAtPoint(point, resolveWodElement, refreshModel);
 		}
 		return wodElement;
 	}

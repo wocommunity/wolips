@@ -61,12 +61,12 @@ public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtml
     return getSourceEditor().getParserCache();
   }
 
-  public IWodElement getSelectedElement(boolean refreshModel) throws Exception {
-    return getSourceEditor().getSelectedElement(refreshModel);
+  public IWodElement getSelectedElement(boolean resolveWodElement, boolean refreshModel) throws Exception {
+    return getSourceEditor().getSelectedElement(resolveWodElement, refreshModel);
   }
 
-  public IWodElement getWodElementAtPoint(Point point, boolean refreshModel) throws Exception {
-    return getSourceEditor().getWodElementAtPoint(point, refreshModel);
+  public IWodElement getWodElementAtPoint(Point point, boolean resolveWodElement, boolean refreshModel) throws Exception {
+    return getSourceEditor().getWodElementAtPoint(point, resolveWodElement, refreshModel);
   }
 
   public ISourceViewer getWOSourceViewer() {

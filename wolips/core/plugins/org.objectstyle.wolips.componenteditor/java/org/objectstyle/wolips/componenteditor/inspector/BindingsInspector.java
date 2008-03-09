@@ -347,7 +347,7 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 			try {
 				IWOEditor woEditor = (IWOEditor) editor;
 				cache = woEditor.getParserCache();
-				wodElement = woEditor.getSelectedElement(true);
+				wodElement = woEditor.getSelectedElement(true, true);
 			} catch (Throwable t) {
 				t.printStackTrace();
 			}
