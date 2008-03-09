@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.internal.dnd.IDropTarget2;
+import org.objectstyle.wolips.bindings.wod.BindingValueKey;
 
 public class BindingsDragHandler implements DragSourceListener, IDropTarget2, PaintListener, DropTargetListener {
 	private static final int endpointSize = 3;
@@ -174,8 +175,7 @@ public class BindingsDragHandler implements DragSourceListener, IDropTarget2, Pa
 		if (_browserColumn.getDelegate() != null) {
 			if (event.doit) {
 				_browserColumn.getDelegate().bindingDropped(_browserColumn, _currentPoint);
-			}
-			else {
+			} else {
 				_browserColumn.getDelegate().bindingDragCanceled(_browserColumn);
 			}
 		}
@@ -186,7 +186,6 @@ public class BindingsDragHandler implements DragSourceListener, IDropTarget2, Pa
 	}
 
 	public void dragStart(DragSourceEvent event) {
-		createCanvas();
 		DragSource dragSource = (DragSource) event.getSource();
 		Control control = dragSource.getControl();
 		_startingPoint = null;
@@ -199,13 +198,19 @@ public class BindingsDragHandler implements DragSourceListener, IDropTarget2, Pa
 		ISelection selection = _browserColumn.getSelection();
 		if (selection instanceof IStructuredSelection) {
 			Object obj = ((IStructuredSelection) selection).getFirstElement();
-			Control listControl = _browserColumn.getViewer().getControl();
-			Rectangle listBounds = listControl.getBounds();
-			TableItem itemControl = (TableItem) _browserColumn.getViewer().testFindItem(obj);
-			Rectangle itemBounds = itemControl.getBounds();
-			int magicRightMarginOnMac = 27;
-			_startingPoint = control.toDisplay(new Point(listBounds.x + listBounds.width - magicRightMarginOnMac, itemBounds.y + itemBounds.height / 2));
-			event.doit = true;
+			if (obj instanceof BindingValueKey) {
+				Control listControl = _browserColumn.getViewer().getControl();
+				Rectangle listBounds = listControl.getBounds();
+				TableItem itemControl = (TableItem) _browserColumn.getViewer().testFindItem(obj);
+				Rectangle itemBounds = itemControl.getBounds();
+				int magicRightMarginOnMac = 27;
+				_startingPoint = control.toDisplay(new Point(listBounds.x + listBounds.width - magicRightMarginOnMac, itemBounds.y + itemBounds.height / 2));
+				event.doit = true;
+			}
+		}
+		
+		if (event.doit) {
+			createCanvas();
 		}
 	}
 }

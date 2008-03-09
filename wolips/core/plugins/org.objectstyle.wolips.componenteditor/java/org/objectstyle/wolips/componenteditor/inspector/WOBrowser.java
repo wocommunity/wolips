@@ -148,9 +148,14 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 		WOBrowserColumn selectedColumn = (WOBrowserColumn) event.getSource();
 
 		IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-		BindingValueKey selectedKey = (BindingValueKey) selection.getFirstElement();
-
-		selectKeyInColumn(selectedKey, selectedColumn);
+		Object selectedObject = selection.getFirstElement();
+		if (selectedObject instanceof BindingValueKey) {
+			BindingValueKey selectedKey = (BindingValueKey) selectedObject;
+			selectKeyInColumn(selectedKey, selectedColumn);
+		}
+		else {
+			selectKeyInColumn(null, selectedColumn);
+		}
 
 		SelectionChangedEvent wrappedEvent = new SelectionChangedEvent(this, getSelection());
 		for (Iterator listeners = _listeners.iterator(); listeners.hasNext();) {
@@ -289,10 +294,13 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 			WOBrowserColumn focusedColumn = getFocusedColumn();
 			if (focusedColumn != null) {
 				BindingValueKey matchingKey = null;
-				for (BindingValueKey key : focusedColumn.getBindingValueKeys()) {
-					if (key.getBindingName().startsWith(_keypathBuffer.toString())) {
-						matchingKey = key;
-						break;
+				for (Object keyObj : focusedColumn.getBindingValueKeys()) {
+					if (keyObj instanceof BindingValueKey) {
+						BindingValueKey key = (BindingValueKey)keyObj;
+						if (key.getBindingName().startsWith(_keypathBuffer.toString())) {
+							matchingKey = key;
+							break;
+						}
 					}
 				}
 				disposeToColumn(focusedColumn);

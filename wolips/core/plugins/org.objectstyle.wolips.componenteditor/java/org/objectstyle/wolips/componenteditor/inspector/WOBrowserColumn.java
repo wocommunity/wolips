@@ -1,9 +1,12 @@
 package org.objectstyle.wolips.componenteditor.inspector;
 
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.eclipse.jdt.core.IType;
@@ -32,7 +35,7 @@ import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 
 public class WOBrowserColumn extends Composite implements ISelectionProvider, ISelectionChangedListener {
 	private WOBrowser _browser;
-	
+
 	private List<ISelectionChangedListener> _listeners = new LinkedList<ISelectionChangedListener>();
 
 	private IType _type;
@@ -44,8 +47,8 @@ public class WOBrowserColumn extends Composite implements ISelectionProvider, IS
 	private BindingsDragHandler _lineDragHandler;
 
 	private IWOBrowserDelegate _delegate;
-	
-	private List<BindingValueKey> _bindingValueKeys;
+
+	private List<Object> _bindingValueKeys;
 
 	public WOBrowserColumn(WOBrowser browser, IType type, Composite parent, int style) throws JavaModelException {
 		super(parent, style);
@@ -81,7 +84,7 @@ public class WOBrowserColumn extends Composite implements ISelectionProvider, IS
 		_keysViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
 		_keysViewer.addSelectionChangedListener(this);
 		_keysViewer.setContentProvider(new ListContentProvider());
-		_keysViewer.setLabelProvider(new WOBrowserColumnLabelProvider());
+		_keysViewer.setLabelProvider(new WOBrowserColumnLabelProvider(_type, _keysViewer.getTable()));
 
 		TableColumnLayout keysLayout = new TableColumnLayout();
 		tableContainer.setLayout(keysLayout);
@@ -100,7 +103,30 @@ public class WOBrowserColumn extends Composite implements ISelectionProvider, IS
 		List<BindingValueKey> bindingValueKeys = bindingValueKeyPath.getPartialMatchesForLastBindingKey(true);
 		List<BindingValueKey> filteredBindingValueKeys = BindingReflectionUtils.filterSystemBindingValueKeys(bindingValueKeys, true);
 		Set<BindingValueKey> uniqueBingingValueKeys = new TreeSet<BindingValueKey>(filteredBindingValueKeys);
-		List<BindingValueKey> sortedBindingValueKeys = new LinkedList<BindingValueKey>(uniqueBingingValueKeys);
+		// List<BindingValueKey> sortedBindingValueKeys = new
+		// LinkedList<BindingValueKey>(uniqueBingingValueKeys);
+
+		Map<IType, Set<BindingValueKey>> typeKeys = new TreeMap<IType, Set<BindingValueKey>>(new TypeDepthComparator());
+		for (BindingValueKey key : uniqueBingingValueKeys) {
+			IType declaringType = key.getDeclaringType();
+			Set<BindingValueKey> typeKeysSet = typeKeys.get(declaringType);
+			if (typeKeysSet == null) {
+				typeKeysSet = new TreeSet<BindingValueKey>();
+				typeKeys.put(declaringType, typeKeysSet);
+			}
+			typeKeysSet.add(key);
+		}
+
+		List<Object> sortedBindingValueKeys = new LinkedList<Object>();
+		for (Map.Entry<IType, Set<BindingValueKey>> typeKeysEntry : typeKeys.entrySet()) {
+			if (!_type.equals(typeKeysEntry.getKey())) {
+				IType groupType = typeKeysEntry.getKey();
+				if (groupType != null) {
+					sortedBindingValueKeys.add(groupType.getElementName());
+				}
+			}
+			sortedBindingValueKeys.addAll(typeKeysEntry.getValue());
+		}
 		_bindingValueKeys = sortedBindingValueKeys;
 
 		_keysViewer.setInput(_bindingValueKeys);
@@ -108,12 +134,45 @@ public class WOBrowserColumn extends Composite implements ISelectionProvider, IS
 
 		_lineDragHandler = new BindingsDragHandler(this);
 	}
-	
+
+	protected static class TypeDepthComparator implements Comparator<IType> {
+		public int compare(IType o1, IType o2) {
+			int comparison = 0;
+			try {
+				if (o1 == null) {
+					if (o2 == null) {
+						comparison = 0;
+					}
+					else {
+						comparison = -1;
+					}
+				}
+				else if (o2 == null) {
+					comparison = 1;
+				}
+				else {
+					List<IType> o1Types = WodParserCache.getTypeCache().getSupertypesOf(o1);
+					List<IType> o2Types = WodParserCache.getTypeCache().getSupertypesOf(o2);
+					if (o1Types.size() == o2Types.size()) {
+						comparison = 0;
+					} else if (o1Types.size() < o2Types.size()) {
+						comparison = 1;
+					} else {
+						comparison = -1;
+					}
+				}
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}
+			return comparison;
+		}
+	}
+
 	public WOBrowser getBrowser() {
 		return _browser;
 	}
-	
-	public List<BindingValueKey> getBindingValueKeys() {
+
+	public List<Object> getBindingValueKeys() {
 		return _bindingValueKeys;
 	}
 
@@ -178,22 +237,23 @@ public class WOBrowserColumn extends Composite implements ISelectionProvider, IS
 			BindingValueKey bindingValueKey = getSelectedKey();
 			if (bindingValueKey == null) {
 				keyPath = null;
-			}
-			else {
+			} else {
 				keyPath = bindingValueKey.getBindingName();
 			}
-		}
-		else {
+		} else {
 			keyPath = _browser.getSelectedKeyPath();
 		}
 		return keyPath;
 	}
-	
+
 	public BindingValueKey getSelectedKey() {
 		BindingValueKey selectedKey = null;
 		IStructuredSelection selection = (IStructuredSelection) getSelection();
 		if (selection != null) {
-			selectedKey = (BindingValueKey) selection.getFirstElement();
+			Object selectedObject = selection.getFirstElement();
+			if (selectedObject instanceof BindingValueKey) {
+				selectedKey = (BindingValueKey) selectedObject;
+			}
 		}
 		return selectedKey;
 	}
