@@ -137,7 +137,7 @@ public class WOBrowserColumn extends Composite implements ISelectionProvider, IS
 	}
 
 	public void reload() throws JavaModelException {
-		System.out.println("WOBrowserColumn.reload: Reloading " + _type.getElementName() + " browser column.");
+		//System.out.println("WOBrowserColumn.reload: Reloading " + _type.getElementName() + " browser column.");
 		BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath("", _type, _type.getJavaProject(), WodParserCache.getTypeCache());
 		List<BindingValueKey> bindingValueKeys = bindingValueKeyPath.getPartialMatchesForLastBindingKey(true);
 		List<BindingValueKey> filteredBindingValueKeys = BindingReflectionUtils.filterSystemBindingValueKeys(bindingValueKeys, true);
