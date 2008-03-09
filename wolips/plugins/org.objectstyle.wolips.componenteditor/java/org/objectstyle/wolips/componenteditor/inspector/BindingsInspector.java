@@ -49,6 +49,7 @@ import org.objectstyle.wolips.bindings.wod.WodProblem;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.document.IWOEditor;
 import org.objectstyle.wolips.wodclipse.core.document.WodBindingValueHyperlink;
+import org.objectstyle.wolips.wodclipse.core.refactoring.RefactoringWodElement;
 import org.objectstyle.wolips.wodclipse.core.util.ICursorPositionListener;
 import org.objectstyle.wolips.wodclipse.core.util.WodModelUtils;
 

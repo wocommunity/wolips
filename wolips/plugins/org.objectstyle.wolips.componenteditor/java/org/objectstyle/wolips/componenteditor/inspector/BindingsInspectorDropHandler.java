@@ -6,6 +6,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.objectstyle.wolips.bindings.api.IApiBinding;
+import org.objectstyle.wolips.wodclipse.core.refactoring.RefactoringWodElement;
 
 public class BindingsInspectorDropHandler extends AbstractBindingsDropHandler<BindingsInspector, TableItem, Object, Table> {
 	private BindingsInspector _inspector;
