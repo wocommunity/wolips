@@ -1,4 +1,4 @@
-package org.objectstyle.wolips.componenteditor.inspector;
+package org.objectstyle.wolips.wodclipse.core.refactoring;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -11,9 +11,6 @@ import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.bindings.wod.SimpleWodBinding;
 import org.objectstyle.wolips.bindings.wod.SimpleWodElement;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
-import org.objectstyle.wolips.wodclipse.core.refactoring.ChangeElementTypeRefactoring;
-import org.objectstyle.wolips.wodclipse.core.refactoring.RemoveBindingRefactoring;
-import org.objectstyle.wolips.wodclipse.core.refactoring.RenameElementsRefactoring;
 
 public class RefactoringWodElement {
 	public static final String ELEMENT_NAME = "elementName";

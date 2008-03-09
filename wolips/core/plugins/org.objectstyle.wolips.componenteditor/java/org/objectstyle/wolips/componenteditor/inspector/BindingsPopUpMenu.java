@@ -17,6 +17,7 @@ import org.objectstyle.wolips.bindings.api.Wo;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
+import org.objectstyle.wolips.wodclipse.core.refactoring.RefactoringWodElement;
 
 public class BindingsPopUpMenu {
 	private Menu _menu;
