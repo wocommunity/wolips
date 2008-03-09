@@ -6,8 +6,8 @@ import org.objectstyle.wolips.bindings.api.Validation;
 public class ApiElementValidationProblem extends WodElementProblem {
   private Validation _validation;
   
-  public ApiElementValidationProblem(Validation validation, Position position, int lineNumber, boolean warning) {
-    super(validation.getMessage(), position, lineNumber, warning);
+  public ApiElementValidationProblem(IWodElement element, Validation validation, Position position, int lineNumber, boolean warning) {
+    super(element, validation.getMessage(), position, lineNumber, warning);
     _validation = validation;
   }
 

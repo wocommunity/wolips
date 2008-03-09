@@ -258,13 +258,13 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
     String elementName = getElementName();
     int lineNumber = getLineNumber();
     if (!_inline && !htmlCache.containsElementNamed(elementName)) {
-      problems.add(new WodElementProblem("There is no element named '" + elementName + "' in your component HTML file", getElementNamePosition(), lineNumber, true));
+      problems.add(new WodElementProblem(this, "There is no element named '" + elementName + "' in your component HTML file", getElementNamePosition(), lineNumber, true));
     }
 
     Wo wo = null;
     IType elementType = BindingReflectionUtils.findElementType(javaProject, elementTypeName, false, typeCache);
     if (elementType == null) {
-      problems.add(new WodElementProblem("The class for '" + elementTypeName + "' is either missing or does not extend WOElement.", getElementTypePosition(), lineNumber, false));
+      problems.add(new WodElementProblem(this, "The class for '" + elementTypeName + "' is either missing or does not extend WOElement.", getElementTypePosition(), lineNumber, false));
     }
     else {
       try {
@@ -275,12 +275,12 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
           for (Binding binding : bindings) {
             String bindingName = binding.getName();
             if (binding.isExplicitlyRequired() && !bindingsMap.containsKey(bindingName)) {
-              problems.add(new ApiBindingValidationProblem(binding, getElementNamePosition(), lineNumber, false));
+              problems.add(new ApiBindingValidationProblem(this, binding, getElementNamePosition(), lineNumber, false));
             }
           }
           List<Validation> failedValidations = wo.getFailedValidations(bindingsMap);
           for (Validation failedValidation : failedValidations) {
-            problems.add(new ApiElementValidationProblem(failedValidation, getElementNamePosition(), lineNumber, false));
+            problems.add(new ApiElementValidationProblem(this, failedValidation, getElementNamePosition(), lineNumber, false));
           }
         }
       }
@@ -295,7 +295,7 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
       IWodBinding binding = checkForDuplicateBindingsIter.next();
       String bindingName = binding.getName();
       if (bindingNames.contains(bindingName)) {
-        problems.add(new WodBindingNameProblem(bindingName, "Duplicate binding named '" + bindingName + "'", binding.getNamePosition(), binding.getLineNumber(), false));
+        problems.add(new WodBindingNameProblem(this, binding, bindingName, "Duplicate binding named '" + bindingName + "'", binding.getNamePosition(), binding.getLineNumber(), false));
       }
       else {
         bindingNames.add(bindingName);
@@ -313,7 +313,7 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
           if (wo != null) {
             apiBinding = wo.getBinding(binding.getName());
           }
-          binding.fillInBindingProblems(apiBinding, javaProject, javaFileType, problems, typeCache);
+          binding.fillInBindingProblems(this, apiBinding, javaProject, javaFileType, problems, typeCache);
         }
         catch (JavaModelException t) {
           javaModelException = t;
