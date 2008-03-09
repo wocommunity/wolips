@@ -84,6 +84,10 @@ public class Binding extends AbstractApiModelElement implements IApiBinding {
   public boolean isAction() {
     return ApiUtils.isActionBinding(this);
   }
+  
+  public int compareTo(IApiBinding o) {
+    return (o == null) ? -1 : getName() == null ? -1 : getName().compareTo(o.getName());
+  }
 
   @Override
   public boolean equals(Object o) {

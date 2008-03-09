@@ -55,6 +55,7 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Position;
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.bindings.Activator;
 import org.objectstyle.wolips.bindings.api.ApiCache;
 import org.objectstyle.wolips.bindings.api.ApiModelException;
@@ -97,7 +98,22 @@ public abstract class AbstractWodBinding implements IWodBinding {
   public AbstractWodBinding() {
     _validate = true;
   }
-  
+
+  public int compareTo(IApiBinding o) {
+    return (o == null) ? -1 : getName() == null ? -1 : getName().compareTo(o.getName());
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    return o instanceof AbstractWodBinding && ComparisonUtils.equals(((AbstractWodBinding) o).getName(), getName());
+  }
+
+  @Override
+  public int hashCode() {
+    String name = getName();
+    return name == null ? 0 : name.hashCode();
+  }
+
   public boolean isAction() {
     return ApiUtils.isActionBinding(this);
   }
@@ -146,9 +162,9 @@ public abstract class AbstractWodBinding implements IWodBinding {
 
   public boolean isCaret() {
     String bindingValue = getValue();
-    return bindingValue != null && bindingValue.startsWith("^");   
+    return bindingValue != null && bindingValue.startsWith("^");
   }
-  
+
   public boolean isKeyPath() {
     String bindingValue = getValue();
     boolean isBindingValueKeyPath;
