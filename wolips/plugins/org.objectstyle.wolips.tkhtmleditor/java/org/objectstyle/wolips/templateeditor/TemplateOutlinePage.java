@@ -558,9 +558,9 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
       IWodElement wodElement = null;
       if (woTag) {
         className = className + " wo";
-        boolean wo54 = Activator.getDefault().isWO54();
         try {
-          wodElement = WodHtmlUtils.getWodElement(element, wo54, cache);
+          boolean wo54 = Activator.getDefault().isWO54();
+          wodElement = WodHtmlUtils.getWodElement(element, wo54, true, cache);
         }
         catch (Throwable t) {
           // IGNORE

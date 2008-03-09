@@ -112,7 +112,7 @@ public class BindingsDropHandler implements IWOBrowserDelegate, Autoscroller.Del
 			// Don't bother doing anything if we're outside of the Template
 			// Editor's bounds
 			if (controlBounds.contains(controlDragPoint)) {
-				IWodElement wodElement = _woEditor.getWodElementAtPoint(controlDragPoint, true);
+				IWodElement wodElement = _woEditor.getWodElementAtPoint(controlDragPoint, false, true);
 				// FuzzyXMLElement element =
 				// templateSourceEditor.getElementAtPoint(controlDragPoint,
 				// true);
@@ -185,7 +185,7 @@ public class BindingsDropHandler implements IWOBrowserDelegate, Autoscroller.Del
 
 			if (isEditorActive() && dropped) {
 				Point controlDropPoint = _woEditorControl.toControl(dropPoint);
-				IWodElement wodElement = _woEditor.getWodElementAtPoint(controlDropPoint, true);
+				IWodElement wodElement = _woEditor.getWodElementAtPoint(controlDropPoint, true, true);
 				if (wodElement == null) {
 					removeHoverAnnotation();
 				} else {

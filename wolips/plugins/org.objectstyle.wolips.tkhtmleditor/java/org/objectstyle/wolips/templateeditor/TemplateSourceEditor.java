@@ -31,13 +31,11 @@ import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.AnnotationPreferenceLookup;
 import org.eclipse.ui.texteditor.MarkerAnnotationPreferences;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
-import org.objectstyle.wolips.bindings.preferences.PreferenceConstants;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.document.ITextWOEditor;
-import org.objectstyle.wolips.wodclipse.core.util.FuzzyXMLWodElement;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
 import tk.eclipse.plugin.htmleditor.HTMLPlugin;
@@ -208,7 +206,7 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements ITextWOEdi
   public FuzzyXMLDocument getHtmlXmlDocument(boolean refreshModel) throws Exception {
     FuzzyXMLDocument doc;
     if (refreshModel || isDirty()) {
-      boolean wo54 = Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.WO54_KEY);
+      boolean wo54 = org.objectstyle.wolips.bindings.Activator.getDefault().isWO54();
       FuzzyXMLParser parser = new FuzzyXMLParser(wo54, true);
       doc = parser.parse(getHTMLSource());
       getParserCache().getHtmlEntry().setModel(doc);
@@ -220,19 +218,18 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements ITextWOEdi
     return doc;
   }
 
-  public IWodElement getSelectedElement(boolean refreshModel) throws Exception {
+  public IWodElement getSelectedElement(boolean resolveWodElement, boolean refreshModel) throws Exception {
     IWodElement wodElement = null;
     WodParserCache cache = getParserCache();
     if (getSelectionProvider() != null) {
+      boolean wo54 = org.objectstyle.wolips.bindings.Activator.getDefault().isWO54();
       ISelection realSelection = getSelectionProvider().getSelection();
       if (realSelection instanceof ITextSelection) {
         ITextSelection textSelection = (ITextSelection) realSelection;
         FuzzyXMLDocument document = getHtmlXmlDocument(refreshModel);
         if (document != null) {
           FuzzyXMLElement element = document.getElementByOffset(textSelection.getOffset());
-          if (element != null) {
-            wodElement = WodHtmlUtils.getWodElement(element, false, cache);
-          }
+          wodElement = WodHtmlUtils.getWodElement(element, wo54, resolveWodElement, cache);
         }
       }
       else if (realSelection instanceof IStructuredSelection) {
@@ -240,7 +237,7 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements ITextWOEdi
         Object obj = structuredSelection.getFirstElement();
         if (obj instanceof FuzzyXMLElement) {
           FuzzyXMLElement element = (FuzzyXMLElement) obj;
-          wodElement = WodHtmlUtils.getWodElement(element, false, cache);
+          wodElement = WodHtmlUtils.getWodElement(element, wo54, resolveWodElement, cache);
         }
       }
     }
@@ -322,11 +319,13 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements ITextWOEdi
     return getViewer().getTextWidget();
   }
 
-  public IWodElement getWodElementAtPoint(Point point, boolean refreshModel) throws Exception {
+  public IWodElement getWodElementAtPoint(Point point, boolean resolveWodElement, boolean refreshModel) throws Exception {
     IWodElement wodElement = null;
-    FuzzyXMLElement selectedElement = getElementAtPoint(point, refreshModel);
-    if (WodHtmlUtils.isWOTag(selectedElement)) {
-      wodElement = new FuzzyXMLWodElement(selectedElement, org.objectstyle.wolips.bindings.Activator.getDefault().isWO54());
+    FuzzyXMLElement element = getElementAtPoint(point, refreshModel);
+    if (WodHtmlUtils.isWOTag(element)) {
+      WodParserCache cache = getParserCache();
+      boolean wo54 = org.objectstyle.wolips.bindings.Activator.getDefault().isWO54();
+      wodElement = WodHtmlUtils.getWodElement(element, wo54, resolveWodElement, cache);
     }
     return wodElement;
   }

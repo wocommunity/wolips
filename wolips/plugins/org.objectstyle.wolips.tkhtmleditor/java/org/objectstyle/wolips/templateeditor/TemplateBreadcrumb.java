@@ -87,7 +87,8 @@ public class TemplateBreadcrumb extends Composite implements ICursorPositionList
             boolean isWOTag = WodHtmlUtils.isWOTag(tagName);
             String displayName = null;
             if (isWOTag) {
-              IWodElement wodElement = WodHtmlUtils.getWodElement(stackElement, false, cache);
+              boolean wo54 = org.objectstyle.wolips.bindings.Activator.getDefault().isWO54();
+              IWodElement wodElement = WodHtmlUtils.getWodElement(stackElement, wo54, true, cache);
               if (wodElement != null) {
                 displayName = wodElement.getElementType();
               }
