@@ -49,6 +49,7 @@ import org.objectstyle.wolips.bindings.wod.WodProblem;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.document.IWOEditor;
 import org.objectstyle.wolips.wodclipse.core.document.WodBindingValueHyperlink;
+import org.objectstyle.wolips.wodclipse.core.refactoring.RefactoringWodBinding;
 import org.objectstyle.wolips.wodclipse.core.refactoring.RefactoringWodElement;
 import org.objectstyle.wolips.wodclipse.core.util.ICursorPositionListener;
 import org.objectstyle.wolips.wodclipse.core.util.WodModelUtils;
@@ -64,7 +65,9 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 
 	private TableViewer _bindingsTableViewer;
 
-	private BindingsLabelProvider _bindingsLabelProvider;
+	private BindingsLabelProvider _nameLabelProvider;
+	
+	private BindingsLabelProvider _valueLabelProvider;
 
 	private BindingsContentProvider _bindingsContentProvider;
 
@@ -99,10 +102,9 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 		bindingsTableContainer.setLayoutData(bindingsTableContainerData);
 
 		_bindingsTableViewer = new TableViewer(bindingsTableContainer, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.FULL_SELECTION);
-		_bindingsLabelProvider = new BindingsLabelProvider();
 		_bindingsContentProvider = new BindingsContentProvider();
 		_bindingsTableViewer.setContentProvider(_bindingsContentProvider);
-		_bindingsTableViewer.setLabelProvider(_bindingsLabelProvider);
+		//_bindingsTableViewer.setLabelProvider(_bindingsLabelProvider);
 
 		TableColumnLayout bindingsTableLayout = new TableColumnLayout();
 		bindingsTableContainer.setLayout(bindingsTableLayout);
@@ -111,16 +113,21 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 		bindingsTable.setHeaderVisible(true);
 		bindingsTable.setLinesVisible(true);
 
-		TableColumn nameColumn = new TableColumn(bindingsTable, SWT.LEFT);
+		TableViewerColumn nameViewerColumn = new TableViewerColumn(_bindingsTableViewer, SWT.LEAD);
+		TableColumn nameColumn = nameViewerColumn.getColumn();
 		nameColumn.setText("Attribute");
 		bindingsTableLayout.setColumnData(nameColumn, new ColumnWeightData(50, true));
+		nameViewerColumn.setEditingSupport(new BindingNameEditingSupport(_bindingsTableViewer));
+		_nameLabelProvider = new BindingsLabelProvider(0);
+		nameViewerColumn.setLabelProvider(_nameLabelProvider);
 
 		TableViewerColumn valueViewerColumn = new TableViewerColumn(_bindingsTableViewer, SWT.LEAD);
 		TableColumn valueColumn = valueViewerColumn.getColumn();
 		valueColumn.setText("Binding");
 		bindingsTableLayout.setColumnData(valueColumn, new ColumnWeightData(50, true));
-		valueViewerColumn.setEditingSupport(new BindingEditingSupport(_bindingsTableViewer));
-		valueViewerColumn.setLabelProvider(_bindingsLabelProvider);
+		valueViewerColumn.setEditingSupport(new BindingValueEditingSupport(_bindingsTableViewer));
+		_valueLabelProvider = new BindingsLabelProvider(1);
+		valueViewerColumn.setLabelProvider(_valueLabelProvider);
 
 		_bindingsTableViewer.addSelectionChangedListener(this);
 		new DoubleClickBindingHandler(_bindingsTableViewer).attach();
@@ -146,7 +153,8 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 				t.printStackTrace();
 			}
 		}
-		_bindingsLabelProvider.setContext(_wodElement, _wodProblems);
+		_nameLabelProvider.setContext(_wodElement, _wodProblems);
+		_valueLabelProvider.setContext(_wodElement, _wodProblems);
 
 		if (cache != null) {
 			try {
@@ -331,11 +339,11 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 	public IWodElement getWodElement() {
 		return _wodElement;
 	}
-	
+
 	public List<WodProblem> getWodProblems() {
 		return _wodProblems;
 	}
-	
+
 	public TextEditor getLastEditor() {
 		return _lastEditor;
 	}
@@ -377,12 +385,12 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 		setWodElement(wodElement, cache);
 	}
 
-	public class BindingEditingSupport extends EditingSupport {
-		private TextCellEditor _bindingEditor;
+	public class BindingNameEditingSupport extends EditingSupport {
+		private TextCellEditor _nameEditor;
 
-		public BindingEditingSupport(TableViewer viewer) {
+		public BindingNameEditingSupport(TableViewer viewer) {
 			super(viewer);
-			_bindingEditor = new WOTextCellEditor(viewer.getTable());
+			_nameEditor = new WOTextCellEditor(viewer.getTable());
 		}
 
 		@Override
@@ -392,7 +400,59 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 
 		@Override
 		protected CellEditor getCellEditor(Object element) {
-			return _bindingEditor;
+			return _nameEditor;
+		}
+
+		@Override
+		protected Object getValue(Object element) {
+			String value = null;
+			IApiBinding binding = (IApiBinding) element;
+			if (binding != null) {
+				value = binding.getName();
+			}
+			if (value == null) {
+				value = "<none>";
+			}
+			return value;
+		}
+
+		@Override
+		protected void setValue(Object element, Object value) {
+			IApiBinding binding = (IApiBinding) element;
+			if (binding != null) {
+				IWodElement wodElement = getWodElement();
+				if (wodElement != null) {
+					try {
+						RefactoringWodBinding wodBinding = getRefactoringElement().getBindingNamed(binding.getName());
+						if (wodBinding != null) {
+							wodBinding.setName((String) value);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					BindingsInspector.this.refresh();
+				}
+			}
+		}
+
+	}
+
+	public class BindingValueEditingSupport extends EditingSupport {
+		private TextCellEditor _valueEditor;
+
+		public BindingValueEditingSupport(TableViewer viewer) {
+			super(viewer);
+			_valueEditor = new WOTextCellEditor(viewer.getTable());
+		}
+
+		@Override
+		protected boolean canEdit(Object element) {
+			return true;
+		}
+
+		@Override
+		protected CellEditor getCellEditor(Object element) {
+			return _valueEditor;
 		}
 
 		@Override
@@ -455,7 +515,7 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 			if (binding != null && lastEditor instanceof IWOEditor) {
 				String value = getWodElement().getBindingValue(binding.getName());
 				try {
-					WodBindingValueHyperlink.open(value, binding, ((IWOEditor)lastEditor).getParserCache().getComponentType(), true);
+					WodBindingValueHyperlink.open(value, binding, ((IWOEditor) lastEditor).getParserCache().getComponentType(), true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

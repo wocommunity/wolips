@@ -20,10 +20,16 @@ import org.objectstyle.wolips.bindings.wod.WodProblem;
 import org.objectstyle.wolips.wodclipse.core.util.WodModelUtils;
 
 public class BindingsLabelProvider extends ColumnLabelProvider implements ITableLabelProvider, ITableColorProvider, ITableFontProvider {
+	private int _column;
+	
 	private IWodElement _wodElement;
 
 	private List<WodProblem> _problems;
 
+	public BindingsLabelProvider(int column) {
+		_column = column;
+	}
+	
 	public void setContext(IWodElement wodElement, List<WodProblem> problems) {
 		_wodElement = wodElement;
 		_problems = problems;
@@ -35,7 +41,7 @@ public class BindingsLabelProvider extends ColumnLabelProvider implements ITable
 
 	@Override
 	public String getText(Object element) {
-		return getColumnText(element, 1);
+		return getColumnText(element, _column);
 	}
 
 	public String getColumnText(Object element, int columnIndex) {
@@ -74,7 +80,7 @@ public class BindingsLabelProvider extends ColumnLabelProvider implements ITable
 
 	@Override
 	public Color getForeground(Object element) {
-		return getForeground(element, 1);
+		return getForeground(element, _column);
 	}
 
 	public Color getForeground(Object element, int columnIndex) {
@@ -88,7 +94,7 @@ public class BindingsLabelProvider extends ColumnLabelProvider implements ITable
 
 	@Override
 	public Font getFont(Object element) {
-		return getFont(element, 1);
+		return getFont(element, _column);
 	}
 
 	public Font getFont(Object element, int columnIndex) {
