@@ -67,6 +67,8 @@ public class FuzzyXMLWodElement extends SimpleWodElement {
     else {
       setNewBindingOffset(element.getOffset() + element.getNameOffset() + element.getNameLength() + 1);
     }
+    
+    setNewBindingIndent(1);
   }
 
   public FuzzyXMLElement getXmlElement() {
