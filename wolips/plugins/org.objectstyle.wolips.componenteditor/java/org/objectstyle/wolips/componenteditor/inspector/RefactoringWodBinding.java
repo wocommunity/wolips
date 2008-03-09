@@ -58,8 +58,8 @@ public class RefactoringWodBinding {
 				newValue = newValue + "\"";
 			}
 			
-			// Make non-string literals with spaces of %'s into literals
-			if (!newValue.startsWith("\"") && newValue.matches(".*[ %].*")) {
+			// Make non-string literals with spaces of %'s into literals (as long as there isn't a helper)
+			if (newValue.startsWith("\"") && newValue.indexOf('|') == -1 && newValue.matches(".*[ %].*")) {
 				newValue = "\"" + newValue + "\"";
 			}
 			
