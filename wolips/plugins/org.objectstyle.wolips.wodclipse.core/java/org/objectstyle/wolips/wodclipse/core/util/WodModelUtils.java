@@ -56,11 +56,16 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
 import org.eclipse.ui.part.FileEditorInput;
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.bindings.api.ApiModelException;
+import org.objectstyle.wolips.bindings.api.IApiBinding;
+import org.objectstyle.wolips.bindings.wod.ApiBindingValidationProblem;
+import org.objectstyle.wolips.bindings.wod.ApiElementValidationProblem;
 import org.objectstyle.wolips.bindings.wod.HtmlElementCache;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.bindings.wod.IWodModel;
 import org.objectstyle.wolips.bindings.wod.TypeCache;
+import org.objectstyle.wolips.bindings.wod.WodBindingProblem;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.wodclipse.core.Activator;
@@ -215,5 +220,31 @@ public class WodModelUtils {
 //      Activator.getDefault().log(e);
 //    }
     return marker;
+  }
+  
+  public static boolean hasValidationProblem(IApiBinding binding, List<WodProblem> problems) {
+    return WodModelUtils.hasValidationProblem(binding.getName(), problems);
+  }
+  
+  public static boolean hasValidationProblem(String bindingName, List<WodProblem> problems) {
+    boolean hasValidationProblem = false;
+    if (problems != null) {
+      for (WodProblem problem : problems) {
+        if (problem instanceof ApiBindingValidationProblem) {
+          ApiBindingValidationProblem validationProblem = (ApiBindingValidationProblem) problem;
+          hasValidationProblem = validationProblem.getBindingName().equals(bindingName);
+        } else if (problem instanceof ApiElementValidationProblem) {
+          ApiElementValidationProblem validationProblem = (ApiElementValidationProblem) problem;
+          hasValidationProblem = validationProblem.getValidation().isAffectedByBindingNamed(bindingName);
+        } else if (problem instanceof WodBindingProblem) {
+          WodBindingProblem validationProblem = (WodBindingProblem) problem;
+          hasValidationProblem = ComparisonUtils.equals(bindingName, validationProblem.getBindingName());
+        }
+        if (hasValidationProblem) {
+          break;
+        }
+      }
+    }
+    return hasValidationProblem;
   }
 }

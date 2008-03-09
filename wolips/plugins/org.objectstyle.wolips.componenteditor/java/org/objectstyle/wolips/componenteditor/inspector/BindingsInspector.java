@@ -39,6 +39,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
+import org.objectstyle.wolips.baseforuiplugins.utils.TableRowDoubleClickHandler;
 import org.objectstyle.wolips.baseforuiplugins.utils.WOTextCellEditor;
 import org.objectstyle.wolips.bindings.api.IApiBinding;
 import org.objectstyle.wolips.bindings.api.Wo;
@@ -47,6 +48,7 @@ import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.document.IWOEditor;
+import org.objectstyle.wolips.wodclipse.core.document.WodBindingValueHyperlink;
 import org.objectstyle.wolips.wodclipse.core.util.ICursorPositionListener;
 import org.objectstyle.wolips.wodclipse.core.util.WodModelUtils;
 
@@ -120,6 +122,7 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 		valueViewerColumn.setLabelProvider(_bindingsLabelProvider);
 
 		_bindingsTableViewer.addSelectionChangedListener(this);
+		new DoubleClickBindingHandler(_bindingsTableViewer).attach();
 
 		setWodElement(null, null);
 	}
@@ -327,6 +330,14 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 	public IWodElement getWodElement() {
 		return _wodElement;
 	}
+	
+	public List<WodProblem> getWodProblems() {
+		return _wodProblems;
+	}
+	
+	public TextEditor getLastEditor() {
+		return _lastEditor;
+	}
 
 	@Override
 	public void dispose() {
@@ -418,5 +429,36 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 			}
 		}
 
+	}
+
+	protected class DoubleClickBindingHandler extends TableRowDoubleClickHandler {
+		public DoubleClickBindingHandler(TableViewer viewer) {
+			super(viewer);
+		}
+
+		protected void emptyDoubleSelectionOccurred() {
+			// DO NOTHING
+			RefactoringWodElement element = getRefactoringElement();
+			if (element != null) {
+				try {
+					element.addBindingValueNamed("\"\"", "newBinding");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		protected void doubleSelectionOccurred(ISelection selection) {
+			IApiBinding binding = (IApiBinding) ((IStructuredSelection) selection).getFirstElement();
+			TextEditor lastEditor = getLastEditor();
+			if (binding != null && lastEditor instanceof IWOEditor) {
+				String value = getWodElement().getBindingValue(binding.getName());
+				try {
+					WodBindingValueHyperlink.open(value, binding, ((IWOEditor)lastEditor).getParserCache().getComponentType(), true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }
