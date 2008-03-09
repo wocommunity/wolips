@@ -21,6 +21,10 @@ public class WodHtmlUtils {
     WodHtmlUtils.WEBOBJECTS_PATTERN = Pattern.compile(patterns.toString(), Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
   }
 
+  public static boolean isInline(FuzzyXMLElement element) {
+    return element != null && WodHtmlUtils.isInline(element.getName());
+  }
+
   public static boolean isInline(String tagName) {
     boolean isWOTag = false;
     if (tagName != null) {

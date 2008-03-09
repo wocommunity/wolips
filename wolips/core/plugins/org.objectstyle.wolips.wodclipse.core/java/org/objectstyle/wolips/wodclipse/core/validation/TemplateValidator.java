@@ -57,6 +57,7 @@ public class TemplateValidator {
 
       if (validate) {
         HtmlCacheEntry htmlCacheEntry = _cache.getHtmlEntry();
+        htmlCacheEntry.getHtmlElementCache().clearCache();
         WodCacheEntry wodCacheEntry = _cache.getWodEntry();
         IFile wodFile = wodCacheEntry.getFile();
         IWodModel wodModel = wodCacheEntry.getModel();

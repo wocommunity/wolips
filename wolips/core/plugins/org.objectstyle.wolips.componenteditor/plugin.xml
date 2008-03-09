@@ -180,6 +180,13 @@
             <separator name="group2"/>
          </menu>
          <action
+               class="org.objectstyle.wolips.componenteditor.actions.DeleteTagAction"
+               definitionId="org.objectstyle.wolips.componenteditor.editors.command.deleteTag"
+               id="org.objectstyle.wolips.componenteditor.editors.action.deleteTag"
+               label="Delete Tag"
+               menubarPath="edit/org.objectstyle.wolips.componenteditor.refactorMenuContribution/group1"
+               />
+         <action
                class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToWOBuilderActionDelegate"
                definitionId="org.objectstyle.wolips.componenteditor.editors.towobuilder"
                id="org.objectstyle.wolips.componenteditor.editors.switchtowobuilder"
@@ -233,7 +240,7 @@
                class="org.objectstyle.wolips.componenteditor.actions.CleanWOBuilderElementNamesAction"
                definitionId="org.objectstyle.wolips.componenteditor.editors.command.cleanWOBuilderElementNames"
                id="org.objectstyle.wolips.componenteditor.editors.action.cleanWOBuilderElementNames"
-               label="Clean WOBuilder Names..."
+               label="Clean WOBuilder Names"
                menubarPath="edit/org.objectstyle.wolips.componenteditor.refactorMenuContribution/group1"
                />
          <action

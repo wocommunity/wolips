@@ -1,25 +1,33 @@
 package org.objectstyle.wolips.bindings.wod;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class HtmlElementCache {
-  private Map<String, HtmlElementName> _htmlElementCache;
+  private Map<String, List<HtmlElementName>> _htmlElementCache;
 
   public HtmlElementCache() {
-    _htmlElementCache = new HashMap<String, HtmlElementName>();
+    _htmlElementCache = new HashMap<String, List<HtmlElementName>>();
   }
 
   public void addHtmlElement(HtmlElementName htmlElement) {
-    _htmlElementCache.put(htmlElement.getName(), htmlElement);
+    List<HtmlElementName> htmlElementNames = _htmlElementCache.get(htmlElement.getName());
+    if (htmlElementNames == null) {
+      htmlElementNames = new LinkedList<HtmlElementName>();
+      _htmlElementCache.put(htmlElement.getName(), htmlElementNames);
+    }
+    htmlElementNames.add(htmlElement);
   }
 
   public boolean containsElementNamed(String name) {
-    return _htmlElementCache.containsKey(name);
+    List<HtmlElementName> htmlElementNames = _htmlElementCache.get(name);
+    return htmlElementNames != null && htmlElementNames.size() > 0;
   }
 
-  public HtmlElementName getHtmlElementNamed(String name) {
+  public List<HtmlElementName> getHtmlElementNames(String name) {
     return _htmlElementCache.get(name);
   }
 
