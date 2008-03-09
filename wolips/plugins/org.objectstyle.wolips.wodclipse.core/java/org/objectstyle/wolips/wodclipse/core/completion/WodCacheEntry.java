@@ -46,11 +46,13 @@ public class WodCacheEntry extends AbstractCacheEntry<IWodModel> {
           if (createHtmlMarkers && wodProblem instanceof IWodElementProblem) {
             IWodElement element = ((IWodElementProblem) wodProblem).getElement();
             if (element != null) {
-              HtmlElementName htmlElementName = htmlElementCache.getHtmlElementNamed(element.getElementName());
-              if (htmlElementName != null) {
-                int lineNumber = WodHtmlUtils.getLineAtOffset(cache.getHtmlEntry().getContents(), htmlElementName.getStartOffset());
-                WodElementProblem htmlProblem = new WodElementProblem(element, "In the WOD, " + wodProblem.getMessage(), new Position(htmlElementName.getStartOffset(), htmlElementName.getEndOffset() - htmlElementName.getStartOffset() + 1), lineNumber, wodProblem.isWarning());
-                WodModelUtils.createMarker(htmlFile, htmlProblem);
+              List<HtmlElementName> htmlElementNames = htmlElementCache.getHtmlElementNames(element.getElementName());
+              if (htmlElementNames != null) {
+                for (HtmlElementName htmlElementName : htmlElementNames) {
+                  int lineNumber = WodHtmlUtils.getLineAtOffset(cache.getHtmlEntry().getContents(), htmlElementName.getStartOffset());
+                  WodElementProblem htmlProblem = new WodElementProblem(element, "In the WOD, " + wodProblem.getMessage(), new Position(htmlElementName.getStartOffset(), htmlElementName.getEndOffset() - htmlElementName.getStartOffset() + 1), lineNumber, wodProblem.isWarning());
+                  WodModelUtils.createMarker(htmlFile, htmlProblem);
+                }
               }
             }
           }
