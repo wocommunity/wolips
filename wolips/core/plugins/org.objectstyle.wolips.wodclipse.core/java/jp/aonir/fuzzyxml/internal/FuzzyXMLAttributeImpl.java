@@ -35,7 +35,7 @@ public class FuzzyXMLAttributeImpl extends AbstractFuzzyXMLNode implements Fuzzy
   }
   
   public int getNameOffset() {
-    return getOffset();
+    return getOffset() + 1;
   }
   
   public int getNameLength() {
