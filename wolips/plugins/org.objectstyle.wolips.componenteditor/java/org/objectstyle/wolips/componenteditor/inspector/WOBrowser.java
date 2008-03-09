@@ -221,7 +221,7 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 
 	public void setSelection(ISelection selection) {
 		Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
-		if (selectedObject instanceof String) {
+		if (selectedObject == null || selectedObject instanceof String) {
 			String selectedKeyPath = (String) selectedObject;
 			if (selectedKeyPath == null) {
 				WOBrowserColumn column = _columns.get(0);
