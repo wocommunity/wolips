@@ -31,6 +31,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TableColumn;
 import org.objectstyle.wolips.baseforuiplugins.utils.ListContentProvider;
@@ -120,11 +121,15 @@ public class WOBrowserColumn extends Composite implements ISelectionProvider, IS
 				if (element != null) {
 					IJavaProject project = element.getJavaProject();
 					if (project != null && project.equals(_type.getJavaProject())) {
-						try {
-							reload();
-						} catch (JavaModelException e) {
-							e.printStackTrace();
-						}
+						Display.getDefault().asyncExec(new Runnable() {
+							public void run() {
+								try {
+									reload();
+								} catch (JavaModelException e) {
+									e.printStackTrace();
+								}
+							}
+						});
 					}
 				}
 			}
@@ -132,6 +137,7 @@ public class WOBrowserColumn extends Composite implements ISelectionProvider, IS
 	}
 
 	public void reload() throws JavaModelException {
+		System.out.println("WOBrowserColumn.reload: Reloading " + _type.getElementName() + " browser column.");
 		BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath("", _type, _type.getJavaProject(), WodParserCache.getTypeCache());
 		List<BindingValueKey> bindingValueKeys = bindingValueKeyPath.getPartialMatchesForLastBindingKey(true);
 		List<BindingValueKey> filteredBindingValueKeys = BindingReflectionUtils.filterSystemBindingValueKeys(bindingValueKeys, true);
