@@ -51,6 +51,19 @@ public class RefactoringWodBinding {
 	public String _changeValue(String oldValue, String value) throws CoreException, InvocationTargetException, InterruptedException {
 		String newValue = value;
 		if (!ComparisonUtils.equals(oldValue, newValue, true)) {
+			newValue = newValue.trim();
+			
+			// Close missing quotes
+			if (newValue.startsWith("\"") && !newValue.endsWith("\"")) {
+				newValue = newValue + "\"";
+			}
+			
+			// Make non-string literals with spaces of %'s into literals
+			if (!newValue.startsWith("\"") && newValue.matches(".*[ %].*")) {
+				newValue = "\"" + newValue + "\"";
+			}
+			
+			// Process values for inline bindings
 			if (_wodElement.isInline()) {
 				if (newValue.startsWith("\"")) {
 					newValue = newValue.substring(1, newValue.length() - 1);
@@ -58,6 +71,7 @@ public class RefactoringWodBinding {
 					newValue = "$" + value;
 				}
 			}
+			
 			ChangeBindingValueRefactoring.run(newValue, _wodElement, _wodBinding, _cache, new NullProgressMonitor());
 			_wodBinding.setValue(newValue);
 		}
