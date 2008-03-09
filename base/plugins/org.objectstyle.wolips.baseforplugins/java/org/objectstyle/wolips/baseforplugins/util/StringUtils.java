@@ -50,6 +50,7 @@
 package org.objectstyle.wolips.baseforplugins.util;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class StringUtils {
 	public static String toShortPrettyClassName(String name) {
@@ -233,4 +234,36 @@ public class StringUtils {
 		}
 		return messageBuffer.toString();
 	}
+	
+	public static String findUnusedName(String newName, Object obj, String getMethodName) {
+		try {
+			String safeNewName = newName;
+			if (safeNewName == null) {
+				safeNewName = "MISSING";
+			}
+			Method getMethod = obj.getClass().getMethod(getMethodName, String.class);
+			boolean unusedNameFound = (getMethod.invoke(obj, safeNewName) == null);
+			String unusedName = safeNewName;
+			if (!unusedNameFound) {
+				int cutoffLength;
+				for (cutoffLength = safeNewName.length(); cutoffLength > 0; cutoffLength --) {
+					if (!Character.isDigit(safeNewName.charAt(cutoffLength - 1))) {
+						break;
+					}
+				}
+				String newWithoutTrailingNumber = safeNewName.substring(0, cutoffLength);
+				unusedNameFound = (getMethod.invoke(obj, newWithoutTrailingNumber) == null);
+				unusedName = newWithoutTrailingNumber;
+				for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
+					unusedName = newWithoutTrailingNumber + dupeNameNum;
+					Object existingObject = getMethod.invoke(obj, unusedName);
+					unusedNameFound = (existingObject == null);
+				}
+			}
+			return unusedName;
+		} catch (Throwable t) {
+			throw new RuntimeException("Failed to find unused name for '" + newName + "' with method '" + getMethodName + "'.", t);
+		}
+	}
+
 }

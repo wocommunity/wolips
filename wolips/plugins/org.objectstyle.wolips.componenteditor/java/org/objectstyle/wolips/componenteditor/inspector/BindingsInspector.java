@@ -14,6 +14,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ColumnViewerEditor;
+import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
+import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ISelection;
@@ -24,13 +27,18 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -39,22 +47,24 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
-import org.objectstyle.wolips.baseforuiplugins.utils.TableRowDoubleClickHandler;
 import org.objectstyle.wolips.baseforuiplugins.utils.WOTextCellEditor;
 import org.objectstyle.wolips.bindings.api.IApiBinding;
 import org.objectstyle.wolips.bindings.api.Wo;
+import org.objectstyle.wolips.bindings.wod.BindingValueKeyPath;
 import org.objectstyle.wolips.bindings.wod.IWodBinding;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
+import org.objectstyle.wolips.wodclipse.core.completion.WodCompletionUtils;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.document.IWOEditor;
-import org.objectstyle.wolips.wodclipse.core.document.WodBindingValueHyperlink;
 import org.objectstyle.wolips.wodclipse.core.refactoring.RefactoringWodBinding;
 import org.objectstyle.wolips.wodclipse.core.refactoring.RefactoringWodElement;
 import org.objectstyle.wolips.wodclipse.core.util.ICursorPositionListener;
 import org.objectstyle.wolips.wodclipse.core.util.WodModelUtils;
 
 public class BindingsInspector extends Composite implements ISelectionProvider, ISelectionChangedListener, ICursorPositionListener {
+	private WodParserCache _cache;
+
 	private TextEditor _lastEditor;
 
 	private Point _lastPosition;
@@ -65,8 +75,14 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 
 	private TableViewer _bindingsTableViewer;
 
+	private Button _addBindingButton;
+
+	private Button _removeBindingButton;
+
+	private Button _addKeyActionButton;
+
 	private BindingsLabelProvider _nameLabelProvider;
-	
+
 	private BindingsLabelProvider _valueLabelProvider;
 
 	private BindingsContentProvider _bindingsContentProvider;
@@ -104,7 +120,7 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 		_bindingsTableViewer = new TableViewer(bindingsTableContainer, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.FULL_SELECTION);
 		_bindingsContentProvider = new BindingsContentProvider();
 		_bindingsTableViewer.setContentProvider(_bindingsContentProvider);
-		//_bindingsTableViewer.setLabelProvider(_bindingsLabelProvider);
+		// _bindingsTableViewer.setLabelProvider(_bindingsLabelProvider);
 
 		TableColumnLayout bindingsTableLayout = new TableColumnLayout();
 		bindingsTableContainer.setLayout(bindingsTableLayout);
@@ -112,6 +128,14 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 		Table bindingsTable = _bindingsTableViewer.getTable();
 		bindingsTable.setHeaderVisible(true);
 		bindingsTable.setLinesVisible(true);
+
+		ColumnViewerEditorActivationStrategy columnActivationStrategy = new ColumnViewerEditorActivationStrategy(_bindingsTableViewer) {
+			protected boolean isEditorActivationEvent(ColumnViewerEditorActivationEvent event) {
+				return event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL || event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION || event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC;
+			}
+		};
+
+		TableViewerEditor.create(_bindingsTableViewer, columnActivationStrategy, ColumnViewerEditor.TABBING_HORIZONTAL | ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR | ColumnViewerEditor.TABBING_VERTICAL | ColumnViewerEditor.KEYBOARD_ACTIVATION);
 
 		TableViewerColumn nameViewerColumn = new TableViewerColumn(_bindingsTableViewer, SWT.LEAD);
 		TableColumn nameColumn = nameViewerColumn.getColumn();
@@ -130,7 +154,61 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 		valueViewerColumn.setLabelProvider(_valueLabelProvider);
 
 		_bindingsTableViewer.addSelectionChangedListener(this);
-		new DoubleClickBindingHandler(_bindingsTableViewer).attach();
+
+		Composite buttonContainer = new Composite(this, SWT.NONE);
+		GridData buttonContainerData = new GridData(GridData.FILL_HORIZONTAL);
+		buttonContainerData.horizontalSpan = 2;
+		buttonContainer.setLayoutData(buttonContainerData);
+		RowLayout buttonLayout = new RowLayout(SWT.HORIZONTAL);
+		buttonLayout.marginHeight = 0;
+		buttonLayout.marginWidth = 0;
+		buttonLayout.marginTop = 0;
+		buttonLayout.marginLeft = 0;
+		buttonLayout.marginBottom = 0;
+		buttonLayout.marginRight = 0;
+		buttonLayout.justify = true;
+		buttonLayout.fill = true;
+		buttonLayout.pack = true;
+		buttonContainer.setLayout(buttonLayout);
+
+		_addBindingButton = new Button(buttonContainer, SWT.PUSH);
+		_addBindingButton.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent e) {
+				widgetSelected(e);
+			}
+
+			public void widgetSelected(SelectionEvent e) {
+				BindingsInspector.this.addNewBinding();
+			}
+
+		});
+		_addBindingButton.setText("New Binding");
+
+		_removeBindingButton = new Button(buttonContainer, SWT.PUSH);
+		_removeBindingButton.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent e) {
+				widgetSelected(e);
+			}
+
+			public void widgetSelected(SelectionEvent e) {
+				BindingsInspector.this.removeBinding();
+			}
+
+		});
+		_removeBindingButton.setText("Remove Binding");
+
+		_addKeyActionButton = new Button(buttonContainer, SWT.PUSH);
+		_addKeyActionButton.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent e) {
+				widgetSelected(e);
+			}
+
+			public void widgetSelected(SelectionEvent e) {
+				BindingsInspector.this.addKey();
+			}
+
+		});
+		_addKeyActionButton.setText("Add Key");
 
 		setWodElement(null, null);
 	}
@@ -144,6 +222,7 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 			_dataBindingContext.dispose();
 		}
 
+		_cache = cache;
 		_wodElement = wodElement;
 		_wodProblems = null;
 		if (wodElement != null && cache != null) {
@@ -218,6 +297,80 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 				bindElementType();
 			}
 		}
+
+		enableButtons();
+	}
+
+	protected void addNewBinding() {
+		RefactoringWodElement element = getRefactoringElement();
+		if (element != null) {
+			try {
+				String newBindingName = RefactoringWodElement.findUnusedBindingName(element.getWodElement(), "newBinding");
+				element.addBindingValueNamed("\"\"", newBindingName);
+				BindingsInspector.this.refresh();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	protected void removeBinding() {
+		IApiBinding binding = (IApiBinding) ((IStructuredSelection) _bindingsTableViewer.getSelection()).getFirstElement();
+		if (binding != null) {
+			RefactoringWodElement element = getRefactoringElement();
+			if (element != null) {
+				try {
+					element.removeBindingNamed(binding.getName());
+					BindingsInspector.this.refresh();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	protected void addKey() {
+		IApiBinding binding = (IApiBinding) ((IStructuredSelection) _bindingsTableViewer.getSelection()).getFirstElement();
+		if (binding != null && _cache != null) {
+			try {
+				BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(_wodElement.getBindingValue(binding.getName()), _cache);
+				if (bindingValueKeyPath.canAddKey()) {
+					String name = WodCompletionUtils.addKeyOrAction(bindingValueKeyPath, binding, _cache.getComponentType());
+					getRefactoringElement().setValueForBinding(name, binding.getName());
+					BindingsInspector.this.refresh();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	protected void enableButtons() {
+		if (_wodElement == null) {
+			_addBindingButton.setEnabled(false);
+			_removeBindingButton.setEnabled(false);
+			_addKeyActionButton.setEnabled(false);
+		} else {
+			_addBindingButton.setEnabled(true);
+			IApiBinding binding = (IApiBinding) ((IStructuredSelection) _bindingsTableViewer.getSelection()).getFirstElement();
+			if (binding == null || _cache == null) {
+				_removeBindingButton.setEnabled(false);
+				_addKeyActionButton.setEnabled(false);
+			} else {
+				_removeBindingButton.setEnabled(true);
+				try {
+					BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(_wodElement.getBindingValue(binding.getName()), _cache);
+					if (bindingValueKeyPath.canAddKey()) {
+						_addKeyActionButton.setEnabled(true);
+					} else {
+						_addKeyActionButton.setEnabled(false);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					_addKeyActionButton.setEnabled(false);
+				}
+			}
+		}
 	}
 
 	protected void bindElementType() {
@@ -260,6 +413,7 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 					String elementTypeModelText = getRefactoringElement().getElementType();
 					if (!ComparisonUtils.equals(elementTypeModelText, elementTypeFieldText, true)) {
 						getRefactoringElement().setElementType(elementTypeFieldText);
+						BindingsInspector.this.refresh();
 					}
 				} catch (Throwable t) {
 					t.printStackTrace();
@@ -301,6 +455,8 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 	}
 
 	public void selectionChanged(SelectionChangedEvent event) {
+		enableButtons();
+
 		SelectionChangedEvent wrappedEvent = new SelectionChangedEvent(this, getSelection());
 		for (Iterator listeners = _listeners.iterator(); listeners.hasNext();) {
 			ISelectionChangedListener listener = (ISelectionChangedListener) listeners.next();
@@ -490,36 +646,5 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 			}
 		}
 
-	}
-
-	protected class DoubleClickBindingHandler extends TableRowDoubleClickHandler {
-		public DoubleClickBindingHandler(TableViewer viewer) {
-			super(viewer);
-		}
-
-		protected void emptyDoubleSelectionOccurred() {
-			// DO NOTHING
-			RefactoringWodElement element = getRefactoringElement();
-			if (element != null) {
-				try {
-					element.addBindingValueNamed("\"\"", "newBinding");
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-
-		protected void doubleSelectionOccurred(ISelection selection) {
-			IApiBinding binding = (IApiBinding) ((IStructuredSelection) selection).getFirstElement();
-			TextEditor lastEditor = getLastEditor();
-			if (binding != null && lastEditor instanceof IWOEditor) {
-				String value = getWodElement().getBindingValue(binding.getName());
-				try {
-					WodBindingValueHyperlink.open(value, binding, ((IWOEditor) lastEditor).getParserCache().getComponentType(), true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
 	}
 }

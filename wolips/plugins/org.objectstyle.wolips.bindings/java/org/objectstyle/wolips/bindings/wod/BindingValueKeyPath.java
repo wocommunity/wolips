@@ -3,6 +3,7 @@ package org.objectstyle.wolips.bindings.wod;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMember;
@@ -10,6 +11,7 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
+import org.objectstyle.wolips.locate.LocateException;
 
 public class BindingValueKeyPath {
   private IJavaProject _javaProject;
@@ -46,6 +48,14 @@ public class BindingValueKeyPath {
     this(keyPath, contextType, contextType.getJavaProject(), new TypeCache());
   }
 
+  public BindingValueKeyPath(String keyPath, ITypeOwner typeOwner) throws CoreException, LocateException {
+    this(keyPath, typeOwner.getType(), typeOwner.getType().getJavaProject(), typeOwner.getCache());
+  }
+
+  public BindingValueKeyPath(String keyPath, IType contextType, TypeCache cache) throws JavaModelException {
+    this(keyPath, contextType, contextType.getJavaProject(), cache);
+  }
+
   public BindingValueKeyPath(String keyPath, IType contextType, IJavaProject javaProject, TypeCache cache) throws JavaModelException {
     _cache = cache;
     _javaProject = javaProject;
@@ -55,7 +65,7 @@ public class BindingValueKeyPath {
 
     boolean isKeyPath = true;
     // short-circuit for booleans
-    if (keyPath.length() > 0) {
+    if (keyPath != null && keyPath.length() > 0) {
       char ch = keyPath.charAt(0);
       // short-circuit for quoted strings
       if (ch == '\"' || ch == '\'') {
@@ -65,6 +75,9 @@ public class BindingValueKeyPath {
       else if (Character.isDigit(ch)) {
         isKeyPath = false;
       }
+    }
+    else {
+      isKeyPath = false;
     }
 
     if (isKeyPath) {
@@ -267,6 +280,18 @@ public class BindingValueKeyPath {
 
   public BindingValueKey[] getBindingKeys() {
     return _bindingKeys;
+  }
+  
+  public boolean exists() {
+    return getLastBindingKey() != null;
+  }
+  
+  public boolean isSingleKey() {
+    return getLength() == 1;
+  }
+  
+  public boolean canAddKey() {
+    return isValid() && !exists() && isSingleKey();
   }
   
   public BindingValueKey getLastBindingKey() {

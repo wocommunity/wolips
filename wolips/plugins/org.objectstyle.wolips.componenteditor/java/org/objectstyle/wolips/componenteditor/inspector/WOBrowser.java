@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.bindings.wod.BindingValueKey;
 import org.objectstyle.wolips.bindings.wod.BindingValueKeyPath;
+import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 
 public class WOBrowser extends ScrolledComposite implements ISelectionChangedListener, ISelectionProvider, KeyListener {
 	private Composite _browserComposite;
@@ -229,7 +230,7 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 			} else {
 				try {
 					if (!ComparisonUtils.equals(selectedKeyPath, getSelectedKeyPath())) {
-						BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(selectedKeyPath, _columns.get(0).getType());
+						BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(selectedKeyPath, _columns.get(0).getType(), WodParserCache.getTypeCache());
 						disposeToColumn(0);
 						if (bindingValueKeyPath != null && bindingValueKeyPath.isValid()) {
 							BindingValueKey[] bindingKeys = bindingValueKeyPath.getBindingKeys();

@@ -52,11 +52,11 @@ package org.objectstyle.wolips.eomodeler.core.model;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.objectstyle.wolips.baseforplugins.util.StringUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.IPropertyChangeSource;
 import org.objectstyle.wolips.eomodeler.core.utils.NotificationMap;
 
@@ -101,34 +101,7 @@ public abstract class EOModelObject<T> implements IAdaptable, IPropertyChangeSou
 	public abstract String getFullyQualifiedName();
 
 	public String _findUnusedName(String newName, String getMethodName) {
-		try {
-			String safeNewName = newName;
-			if (safeNewName == null) {
-				safeNewName = "MISSING";
-			}
-			Method getMethod = getClass().getMethod(getMethodName, String.class);
-			boolean unusedNameFound = (getMethod.invoke(this, safeNewName) == null);
-			String unusedName = safeNewName;
-			if (!unusedNameFound) {
-				int cutoffLength;
-				for (cutoffLength = safeNewName.length(); cutoffLength > 0; cutoffLength --) {
-					if (!Character.isDigit(safeNewName.charAt(cutoffLength - 1))) {
-						break;
-					}
-				}
-				String newWithoutTrailingNumber = safeNewName.substring(0, cutoffLength);
-				unusedNameFound = (getMethod.invoke(this, newWithoutTrailingNumber) == null);
-				unusedName = newWithoutTrailingNumber;
-				for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
-					unusedName = newWithoutTrailingNumber + dupeNameNum;
-					Object existingObject = getMethod.invoke(this, unusedName);
-					unusedNameFound = (existingObject == null);
-				}
-			}
-			return unusedName;
-		} catch (Throwable t) {
-			throw new RuntimeException("Failed to find unused name for '" + newName + "' with method '" + getMethodName + "'.", t);
-		}
+		return StringUtils.findUnusedName(newName, this, getMethodName);
 	}
 
 	public abstract String getName();

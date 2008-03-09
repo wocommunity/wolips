@@ -57,7 +57,7 @@ public class RefactoringWodBinding {
 			}
 			
 			// Make non-string literals with spaces of %'s into literals (as long as there isn't a helper)
-			if (newValue.startsWith("\"") && newValue.indexOf('|') == -1 && newValue.matches(".*[ %].*")) {
+			if (!newValue.startsWith("\"") && newValue.indexOf('|') == -1 && newValue.matches(".*[ %].*")) {
 				newValue = "\"" + newValue + "\"";
 			}
 			
@@ -86,6 +86,9 @@ public class RefactoringWodBinding {
 
 	public void setName(String name) throws CoreException, InvocationTargetException, InterruptedException {
 		String oldName = _wodBinding.getName();
+		if (name == null || name.length() == 0) {
+		  name = RefactoringWodElement.findUnusedBindingName(_wodElement, name);
+		}
 		if (!ComparisonUtils.equals(name, oldName)) {
   		ChangeBindingNameRefactoring.run(name, _wodElement, _wodBinding, _cache, new NullProgressMonitor());
   		_wodBinding.setName(name);

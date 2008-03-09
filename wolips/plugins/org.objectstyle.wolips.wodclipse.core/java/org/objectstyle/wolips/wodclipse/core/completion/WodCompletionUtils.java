@@ -4,13 +4,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.search.SearchPattern;
+import org.eclipse.jdt.ui.JavaUI;
+import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.bindings.api.ApiUtils;
 import org.objectstyle.wolips.bindings.api.Binding;
+import org.objectstyle.wolips.bindings.api.IApiBinding;
 import org.objectstyle.wolips.bindings.api.Wo;
 import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
 import org.objectstyle.wolips.bindings.wod.BindingValueKey;
@@ -18,8 +23,46 @@ import org.objectstyle.wolips.bindings.wod.BindingValueKeyPath;
 import org.objectstyle.wolips.bindings.wod.HtmlElementCache;
 import org.objectstyle.wolips.bindings.wod.TypeCache;
 import org.objectstyle.wolips.core.resources.types.TypeNameCollector;
+import org.objectstyle.wolips.wodclipse.core.refactoring.AddActionDialog;
+import org.objectstyle.wolips.wodclipse.core.refactoring.AddActionInfo;
+import org.objectstyle.wolips.wodclipse.core.refactoring.AddKeyDialog;
+import org.objectstyle.wolips.wodclipse.core.refactoring.AddKeyInfo;
 
 public class WodCompletionUtils {
+  public static void openBinding(String bindingValue, IApiBinding binding, IType componentType, boolean onlyIfMissing) throws CoreException {
+    BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(bindingValue, componentType, componentType.getJavaProject(), WodParserCache.getTypeCache());
+    if (bindingValueKeyPath.isValid()) {
+      if (bindingValueKeyPath.exists()) {
+        if (!onlyIfMissing) {
+          IMember member = bindingValueKeyPath.getLastBindingKey().getBindingMember();
+          if (member != null) {
+            JavaUI.openInEditor(member, true, true);
+          }
+        }
+      }
+      else if (bindingValueKeyPath.canAddKey()) {
+        WodCompletionUtils.addKeyOrAction(bindingValueKeyPath, binding, componentType);
+      }
+    }
+  }
+
+  public static String addKeyOrAction(BindingValueKeyPath bindingValueKeyPath, IApiBinding binding, IType componentType) throws CoreException {
+    String name = null;
+    if (binding.isAction()) {
+      AddActionInfo info = new AddActionInfo(componentType);
+      info.setName(bindingValueKeyPath.getOriginalKeyPath());
+      AddActionDialog.open(info, PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+      name = info.getName();
+    }
+    else {
+      AddKeyInfo info = new AddKeyInfo(componentType);
+      info.setName(bindingValueKeyPath.getOriginalKeyPath());
+      AddKeyDialog.open(info, PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+      name = info.getName();
+    }
+    return name;
+  }
+  
   protected static boolean shouldSmartInsert() {
     return true;
   }

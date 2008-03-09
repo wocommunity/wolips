@@ -39,7 +39,7 @@ public class RemoveBindingRefactoring implements IRunnableWithProgress {
           IDocument htmlDocument = _cache.getHtmlEntry().getDocument();
           if (htmlDocument != null) {
             List<TextEdit> htmlEdits = new LinkedList<TextEdit>();
-            htmlEdits.add(new DeleteEdit(startOffset, endOffset - startOffset + 1));
+            htmlEdits.add(new DeleteEdit(startOffset - 1, endOffset - startOffset + 2));
             WodDocumentUtils.applyEdits(htmlDocument, htmlEdits);
           }
         }
