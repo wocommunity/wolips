@@ -76,21 +76,23 @@ public class BindingValueKeyPath {
         isKeyPath = false;
       }
     }
-    else {
-      isKeyPath = false;
-    }
 
     if (isKeyPath) {
       String partialKeyPath;
-      int pipeIndex = keyPath.indexOf('|');
-      if (pipeIndex == -1) {
-        partialKeyPath = keyPath;
+      if (keyPath != null) {
+        int pipeIndex = keyPath.indexOf('|');
+        if (pipeIndex == -1) {
+          partialKeyPath = keyPath;
+        }
+        else {
+          partialKeyPath = keyPath.substring(0, pipeIndex);
+          _helperFunction = keyPath.substring(pipeIndex + 1);
+        }
       }
       else {
-        partialKeyPath = keyPath.substring(0, pipeIndex);
-        _helperFunction = keyPath.substring(pipeIndex + 1);
+        partialKeyPath = "";
       }
-
+  
       String[] bindingKeyNames;
       int atIndex = partialKeyPath.indexOf('@');
       if (atIndex != -1) {
@@ -109,7 +111,7 @@ public class BindingValueKeyPath {
 
       // Split tosses empty tokens, so we check to see if we're on the last
       // "." and fake an empty token in the list
-      if (keyPath.length() > 0 && keyPath.charAt(keyPath.length() - 1) == '.' && _operator == null && _helperFunction == null) {
+      if (keyPath != null && keyPath.length() > 0 && keyPath.charAt(keyPath.length() - 1) == '.' && _operator == null && _helperFunction == null) {
         String[] bindingKeyNamesWithFinalBlank = new String[bindingKeyNames.length + 1];
         System.arraycopy(bindingKeyNames, 0, bindingKeyNamesWithFinalBlank, 0, bindingKeyNames.length);
         bindingKeyNamesWithFinalBlank[bindingKeyNamesWithFinalBlank.length - 1] = "";
