@@ -19,6 +19,7 @@ import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.bindings.wod.BindingValueKey;
 import org.objectstyle.wolips.bindings.wod.BindingValueKeyPath;
 
@@ -227,18 +228,20 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 				column.setSelection(new StructuredSelection());
 			} else {
 				try {
-					BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(selectedKeyPath, _columns.get(0).getType());
-					disposeToColumn(0);
-					if (bindingValueKeyPath != null && bindingValueKeyPath.isValid()) {
-						BindingValueKey[] bindingKeys = bindingValueKeyPath.getBindingKeys();
-						if (bindingKeys != null) {
-							for (BindingValueKey bindingValueKey : bindingKeys) {
-								WOBrowserColumn column = _columns.get(_columns.size() - 1);
-								column.setSelection(new StructuredSelection(bindingValueKey));
-	
-								WOBrowserColumn newColumn = selectKeyInColumn(bindingValueKey, column);
-								if (newColumn == null) {
-									break;
+					if (!ComparisonUtils.equals(selectedKeyPath, getSelectedKeyPath())) {
+						BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(selectedKeyPath, _columns.get(0).getType());
+						disposeToColumn(0);
+						if (bindingValueKeyPath != null && bindingValueKeyPath.isValid()) {
+							BindingValueKey[] bindingKeys = bindingValueKeyPath.getBindingKeys();
+							if (bindingKeys != null) {
+								for (BindingValueKey bindingValueKey : bindingKeys) {
+									WOBrowserColumn column = _columns.get(_columns.size() - 1);
+									column.setSelection(new StructuredSelection(bindingValueKey));
+		
+									WOBrowserColumn newColumn = selectKeyInColumn(bindingValueKey, column);
+									if (newColumn == null) {
+										break;
+									}
 								}
 							}
 						}
