@@ -9,6 +9,8 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -36,6 +38,7 @@ import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.document.ITextWOEditor;
+import org.objectstyle.wolips.wodclipse.core.refactoring.DeleteTagRefactoring;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
 import tk.eclipse.plugin.htmleditor.HTMLPlugin;
@@ -44,6 +47,9 @@ import tk.eclipse.plugin.htmleditor.editors.HTMLSourceEditor;
 import tk.eclipse.plugin.htmleditor.editors.IHTMLOutlinePage;
 
 public class TemplateSourceEditor extends HTMLSourceEditor implements ITextWOEditor {
+  public static final String ACTION_DELETE_TAG = "_template_deleteTag";
+  public static final String ACTION_UNWRAP_TAG = "_template_unwrapTag";
+  
   private TemplateOutlinePage _templateOutlinePage;
   private WodParserCache _cache;
   private TemplateBreadcrumb _breadcrumb;
@@ -51,8 +57,8 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements ITextWOEdi
 
   public TemplateSourceEditor(HTMLConfiguration config) {
     super(config);
-    //    setAction(ACTION_JSP_COMMENT, new JSPCommentAction());
-    //    setAction(ACTION_TOGGLE_BREAKPOINT, new ToggleBreakPointAction());
+    setAction(TemplateSourceEditor.ACTION_DELETE_TAG, new DeleteTagAction());
+    setAction(TemplateSourceEditor.ACTION_UNWRAP_TAG, new UnwrapTagAction());
   }
 
   @Override
@@ -266,12 +272,14 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements ITextWOEdi
   @Override
   protected void addContextMenuActions(IMenuManager menu) {
     super.addContextMenuActions(menu);
-    //addAction(menu, GROUP_HTML, ACTION_JSP_COMMENT);
+    addAction(menu, TemplateSourceEditor.GROUP_HTML, TemplateSourceEditor.ACTION_DELETE_TAG);
+    addAction(menu, TemplateSourceEditor.GROUP_HTML, TemplateSourceEditor.ACTION_UNWRAP_TAG);
   }
 
   @Override
   protected void updateSelectionDependentActions() {
     super.updateSelectionDependentActions();
+    //    ITextSelection sel = (ITextSelection) getSelectionProvider().getSelection();
     //    if (sel.getText().equals("")) {
     //      getAction(ACTION_JSP_COMMENT).setEnabled(false);
     //    }
@@ -381,4 +389,49 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements ITextWOEdi
     return fSourceViewerDecorationSupport;
   }
 
+  public class DeleteTagAction extends Action {
+    public DeleteTagAction() {
+      super("Delete Tag");
+    }
+    
+    @Override
+    public void run() {
+      try {
+        ITextSelection templateSelection = (ITextSelection) getSelectionProvider().getSelection();
+        if (templateSelection != null) {
+          int offset = templateSelection.getOffset();
+          FuzzyXMLElement element = getElementAtOffset(offset, true);
+          if (element != null) {
+            DeleteTagRefactoring.run(element, false, org.objectstyle.wolips.bindings.Activator.getDefault().isWO54(), getParserCache(), new NullProgressMonitor());
+          }
+        }
+      }
+      catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  public class UnwrapTagAction extends Action {
+    public UnwrapTagAction() {
+      super("Unwrap Tag");
+    }
+    
+    @Override
+    public void run() {
+      try {
+        ITextSelection templateSelection = (ITextSelection) getSelectionProvider().getSelection();
+        if (templateSelection != null) {
+          int offset = templateSelection.getOffset();
+          FuzzyXMLElement element = getElementAtOffset(offset, true);
+          if (element != null) {
+            DeleteTagRefactoring.run(element, true, org.objectstyle.wolips.bindings.Activator.getDefault().isWO54(), getParserCache(), new NullProgressMonitor());
+          }
+        }
+      }
+      catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+  }
 }

@@ -6,7 +6,7 @@ import org.objectstyle.wolips.componenteditor.part.ComponentEditorPart;
 import org.objectstyle.wolips.templateeditor.TemplateEditor;
 import org.objectstyle.wolips.wodclipse.editor.WodEditor;
 
-public class DeleteTagAction extends AbstractTemplateAction {
+public class UnwrapTagAction extends AbstractTemplateAction {
 	@Override
 	public void run(IAction action) {
 		try {
@@ -17,7 +17,7 @@ public class DeleteTagAction extends AbstractTemplateAction {
 				WodEditor wodEditor = getWodEditor();
 				if (templateEditor != null && wodEditor != null) {
 					if (activeEditorPart == templateEditor) {
-						templateEditor.getSourceEditor().new DeleteTagAction().run();
+						templateEditor.getSourceEditor().new UnwrapTagAction().run();
 					}
 				}
 			}

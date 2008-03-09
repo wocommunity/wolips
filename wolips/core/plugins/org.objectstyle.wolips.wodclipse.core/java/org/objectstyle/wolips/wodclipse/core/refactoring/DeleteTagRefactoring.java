@@ -22,10 +22,12 @@ public class DeleteTagRefactoring implements IRunnableWithProgress {
   private boolean _wo54;
   private FuzzyXMLElement _element;
   private WodParserCache _cache;
+  private boolean _unwrap;
 
-  public DeleteTagRefactoring(FuzzyXMLElement element, boolean wo54, WodParserCache cache) {
-    _wo54 = wo54;
+  public DeleteTagRefactoring(FuzzyXMLElement element, boolean unwrap, boolean wo54, WodParserCache cache) {
     _element = element;
+    _unwrap = unwrap;
+    _wo54 = wo54;
     _cache = cache;
   }
 
@@ -54,7 +56,13 @@ public class DeleteTagRefactoring implements IRunnableWithProgress {
       IDocument htmlDocument = _cache.getHtmlEntry().getDocument();
       if (htmlDocument != null) {
         List<TextEdit> htmlEdits = new LinkedList<TextEdit>();
-        htmlEdits.add(new DeleteEdit(_element.getOffset(), _element.getLength()));
+        if (_unwrap && _element.hasCloseTag()) {
+          htmlEdits.add(new DeleteEdit(_element.getCloseTagOffset(), _element.getCloseTagLength() + 2));
+          htmlEdits.add(new DeleteEdit(_element.getOffset(), _element.getOpenTagLength() + 2));
+        }
+        else {
+          htmlEdits.add(new DeleteEdit(_element.getOffset(), _element.getLength()));
+        }
         WodDocumentUtils.applyEdits(htmlDocument, htmlEdits);
       }
     }
@@ -63,7 +71,7 @@ public class DeleteTagRefactoring implements IRunnableWithProgress {
     }
   }
 
-  public static void run(FuzzyXMLElement element, boolean wo54, WodParserCache cache, IProgressMonitor progressMonitor) throws CoreException, InvocationTargetException, InterruptedException {
-    TemplateRefactoring.processHtmlAndWod(new DeleteTagRefactoring(element, wo54, cache), cache, progressMonitor);
+  public static void run(FuzzyXMLElement element, boolean unwrap, boolean wo54, WodParserCache cache, IProgressMonitor progressMonitor) throws CoreException, InvocationTargetException, InterruptedException {
+    TemplateRefactoring.processHtmlAndWod(new DeleteTagRefactoring(element, unwrap, wo54, cache), cache, progressMonitor);
   }
 }
