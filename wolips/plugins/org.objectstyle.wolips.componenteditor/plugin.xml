@@ -180,6 +180,13 @@
             <separator name="group2"/>
          </menu>
          <action
+               class="org.objectstyle.wolips.componenteditor.actions.UnwrapTagAction"
+               definitionId="org.objectstyle.wolips.componenteditor.editors.command.unwrapTag"
+               id="org.objectstyle.wolips.componenteditor.editors.action.unwrapTag"
+               label="Unwrap Tag"
+               menubarPath="edit/org.objectstyle.wolips.componenteditor.refactorMenuContribution/group1"
+               />
+         <action
                class="org.objectstyle.wolips.componenteditor.actions.DeleteTagAction"
                definitionId="org.objectstyle.wolips.componenteditor.editors.command.deleteTag"
                id="org.objectstyle.wolips.componenteditor.editors.action.deleteTag"
