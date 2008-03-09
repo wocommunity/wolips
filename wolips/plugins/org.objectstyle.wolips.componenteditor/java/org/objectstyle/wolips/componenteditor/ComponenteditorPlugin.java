@@ -59,6 +59,8 @@ public class ComponenteditorPlugin extends AbstractBaseUIActivator {
 	
 	public static final String COMPONENT_WOCONDITIONAL_ICON = "conditional";
 	
+	public static final String COMPONENT_ICON = "component";
+	
 	public static final String TO_ONE_ICON = "toOne";
 	
 	public static final String TO_MANY_ICON = "toMany";
@@ -78,6 +80,7 @@ public class ComponenteditorPlugin extends AbstractBaseUIActivator {
 	
 	protected void initializeImageRegistry(ImageRegistry _reg) {
 		super.initializeImageRegistry(_reg);
+		_reg.put(ComponenteditorPlugin.COMPONENT_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(ComponenteditorPlugin.PLUGIN_ID, "/icons/component.png"));
 		_reg.put(ComponenteditorPlugin.COMPONENT_WOCONDITIONAL_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(ComponenteditorPlugin.PLUGIN_ID, "/icons/conditional.png"));
 		_reg.put(ComponenteditorPlugin.TO_ONE_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(ComponenteditorPlugin.PLUGIN_ID, "/icons/toOne.png"));
 		_reg.put(ComponenteditorPlugin.TO_MANY_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(ComponenteditorPlugin.PLUGIN_ID, "/icons/toMany.png"));
