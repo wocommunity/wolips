@@ -1,7 +1,7 @@
 package org.objectstyle.wolips.componenteditor.inspector;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.swt.SWT;
@@ -43,8 +43,8 @@ public class BindingsPopUpMenu {
 			IApiBinding[] apiBindings = wodElement.getApiBindings(api);
 			if (apiBindings != null && apiBindings.length > 0) {
 
-				List<IApiBinding> keyBindings = new LinkedList<IApiBinding>();
-				List<IApiBinding> actionBindings = new LinkedList<IApiBinding>();
+				Set<IApiBinding> keyBindings = new TreeSet<IApiBinding>();
+				Set<IApiBinding> actionBindings = new TreeSet<IApiBinding>();
 				for (IApiBinding binding : apiBindings) {
 					if (binding.isAction()) {
 						actionBindings.add(binding);
