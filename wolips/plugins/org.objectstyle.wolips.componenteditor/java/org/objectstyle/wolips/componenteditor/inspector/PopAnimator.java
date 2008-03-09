@@ -36,7 +36,7 @@ public class PopAnimator implements PaintListener {
 	}
 
 	public void setControl(Control control) {
-		if (_control != null && !control.isDisposed()) {
+		if (_control != null && !_control.isDisposed()) {
 			_control.removePaintListener(this);
 		}
 		_control = control;
