@@ -229,14 +229,17 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 				try {
 					BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(selectedKeyPath, _columns.get(0).getType());
 					disposeToColumn(0);
-					if (bindingValueKeyPath.isValid()) {
-						for (BindingValueKey bindingValueKey : bindingValueKeyPath.getBindingKeys()) {
-							WOBrowserColumn column = _columns.get(_columns.size() - 1);
-							column.setSelection(new StructuredSelection(bindingValueKey));
-
-							WOBrowserColumn newColumn = selectKeyInColumn(bindingValueKey, column);
-							if (newColumn == null) {
-								break;
+					if (bindingValueKeyPath != null && bindingValueKeyPath.isValid()) {
+						BindingValueKey[] bindingKeys = bindingValueKeyPath.getBindingKeys();
+						if (bindingKeys != null) {
+							for (BindingValueKey bindingValueKey : bindingKeys) {
+								WOBrowserColumn column = _columns.get(_columns.size() - 1);
+								column.setSelection(new StructuredSelection(bindingValueKey));
+	
+								WOBrowserColumn newColumn = selectKeyInColumn(bindingValueKey, column);
+								if (newColumn == null) {
+									break;
+								}
 							}
 						}
 					}
