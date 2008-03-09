@@ -6,16 +6,16 @@ import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Display;
+import org.objectstyle.wolips.baseforuiplugins.utils.WOTextCellEditor;
 import org.objectstyle.wolips.eomodeler.core.model.DuplicateNameException;
 import org.objectstyle.wolips.eomodeler.core.model.ISortableEOModelObject;
-import org.objectstyle.wolips.eomodeler.utils.EMTextCellEditor;
 
 public class EOModelOutlineEditingSupport extends EditingSupport {
 	private TextCellEditor _nameEditor;
 
 	public EOModelOutlineEditingSupport(TreeViewer viewer) {
 		super(viewer);
-		_nameEditor = new EMTextCellEditor(viewer.getTree());
+		_nameEditor = new WOTextCellEditor(viewer.getTree());
 	}
 
 	@Override

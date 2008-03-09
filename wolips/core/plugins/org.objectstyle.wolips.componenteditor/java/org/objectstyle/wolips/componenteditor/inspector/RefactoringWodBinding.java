@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.bindings.wod.IWodBinding;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.bindings.wod.SimpleWodBinding;
@@ -39,21 +40,27 @@ public class RefactoringWodBinding {
 
 	public void setValue(String value) throws CoreException, InvocationTargetException, InterruptedException {
 		String oldValue = _wodBinding.getValue();
-		String newValue = _setValue(value);
+		String newValue = _changeValue(oldValue, value);
 		_propertyChange.firePropertyChange(RefactoringWodBinding.BINDING_VALUE, oldValue, newValue);
 	}
 
 	public String _setValue(String value) throws CoreException, InvocationTargetException, InterruptedException {
+		return _changeValue(null, value);
+	}
+
+	public String _changeValue(String oldValue, String value) throws CoreException, InvocationTargetException, InterruptedException {
 		String newValue = value;
-		if (_wodElement.isInline()) {
-			if (newValue.startsWith("\"")) {
-				newValue = newValue.substring(1, newValue.length() - 1);
-			} else {
-				newValue = "$" + value;
+		if (!ComparisonUtils.equals(oldValue, newValue, true)) {
+			if (_wodElement.isInline()) {
+				if (newValue.startsWith("\"")) {
+					newValue = newValue.substring(1, newValue.length() - 1);
+				} else if (!newValue.startsWith("$")) {
+					newValue = "$" + value;
+				}
 			}
+			ChangeBindingValueRefactoring.run(newValue, _wodElement, _wodBinding, _cache, new NullProgressMonitor());
+			_wodBinding.setValue(newValue);
 		}
-		ChangeBindingValueRefactoring.run(newValue, _wodElement, _wodBinding, _cache, new NullProgressMonitor());
-		_wodBinding.setValue(newValue);
 		return newValue;
 	}
 

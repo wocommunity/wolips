@@ -69,6 +69,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.objectstyle.wolips.baseforuiplugins.utils.WOTextCellEditor;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttributePath;
@@ -77,7 +78,6 @@ import org.objectstyle.wolips.eomodeler.core.model.EOSortOrdering;
 import org.objectstyle.wolips.eomodeler.outline.EOEntityTreeViewUpdater;
 import org.objectstyle.wolips.eomodeler.outline.EOModelOutlineContentProvider;
 import org.objectstyle.wolips.eomodeler.utils.AddRemoveButtonGroup;
-import org.objectstyle.wolips.eomodeler.utils.EMTextCellEditor;
 import org.objectstyle.wolips.eomodeler.utils.StayEditingCellEditorListener;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyCellModifier;
 import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
@@ -145,7 +145,7 @@ public class EOFetchSpecSortOrderingEditorSection extends AbstractPropertySectio
 		myTableRowRefresher = new TableRowRefreshPropertyListener(mySortOrderingsTableViewer);
 
 		CellEditor[] cellEditors = new CellEditor[TableUtils.getColumnsForTableNamed(EOSortOrdering.class.getName()).length];
-		TableUtils.setCellEditor(EOSortOrdering.class.getName(), EOSortOrdering.KEY, new EMTextCellEditor(mySortOrderingsTableViewer.getTable()), cellEditors);
+		TableUtils.setCellEditor(EOSortOrdering.class.getName(), EOSortOrdering.KEY, new WOTextCellEditor(mySortOrderingsTableViewer.getTable()), cellEditors);
 		TableUtils.setCellEditor(EOSortOrdering.class.getName(), EOSortOrdering.ASCENDING, new CheckboxCellEditor(mySortOrderingsTableViewer.getTable()), cellEditors);
 		TableUtils.setCellEditor(EOSortOrdering.class.getName(), EOSortOrdering.CASE_INSENSITIVE, new CheckboxCellEditor(mySortOrderingsTableViewer.getTable()), cellEditors);
 		mySortOrderingsTableViewer.setCellEditors(cellEditors);

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.objectstyle.wolips.eomodeler.utils;
+package org.objectstyle.wolips.baseforuiplugins.utils;
 
 
 import org.eclipse.swt.SWT;

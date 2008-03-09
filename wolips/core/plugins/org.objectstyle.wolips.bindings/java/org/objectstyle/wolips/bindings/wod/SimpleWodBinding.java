@@ -12,6 +12,9 @@ public class SimpleWodBinding extends AbstractWodBinding {
   private Position _valuePosition;
   private int _lineNumber;
 
+  private int _startOffset;
+  private int _endOffset;
+
   public SimpleWodBinding(String name, String value) {
     this(name, value, null, null, -1);
   }
@@ -26,6 +29,8 @@ public class SimpleWodBinding extends AbstractWodBinding {
     _namePosition = namePosition;
     _valuePosition = valuePosition;
     _lineNumber = lineNumber;
+    _startOffset = -1;
+    _endOffset = -1;
   }
 
   public SimpleWodBinding(IWodBinding wodBinding) {
@@ -62,12 +67,40 @@ public class SimpleWodBinding extends AbstractWodBinding {
     }
   }
 
+  public void setEndOffset(int endOffset) {
+    _endOffset = endOffset;
+  }
+
   public int getEndOffset() {
-    return (_namePosition == null) ? 0 : (_namePosition.getOffset() + _namePosition.getLength());
+    int endOffset;
+    if (_endOffset != -1) {
+      endOffset = _endOffset;
+    }
+    else if (_valuePosition != null) {
+      endOffset = _valuePosition.getOffset() + _valuePosition.getLength();
+    }
+    else {
+      endOffset = getStartOffset();
+    }
+    return endOffset;
+  }
+
+  public void setStartOffset(int startOffset) {
+    _startOffset = startOffset;
   }
 
   public int getStartOffset() {
-    return (_namePosition == null) ? 0 : _namePosition.getOffset();
+    int startOffset;
+    if (_startOffset != -1) {
+      startOffset = _startOffset;
+    }
+    else if (_namePosition != null) {
+      startOffset = _namePosition.getOffset();
+    }
+    else {
+      startOffset = 0;
+    }
+    return startOffset;
   }
 
   public void setNamePosition(Position namePosition) {

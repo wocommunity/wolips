@@ -9,6 +9,8 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.widgets.Display;
+import org.objectstyle.wolips.baseforuiplugins.utils.KeyComboBoxCellEditor;
+import org.objectstyle.wolips.baseforuiplugins.utils.WOTextCellEditor;
 
 public class StayEditingCellEditorListener implements ICellEditorListener, SelectionListener, TraverseListener {
 	private TableViewer _tableViewer;
@@ -24,9 +26,9 @@ public class StayEditingCellEditorListener implements ICellEditorListener, Selec
 		_column = column;
 		if (_column != -1) {
 			CellEditor cellEditor = _tableViewer.getCellEditors()[_column];
-			if (cellEditor instanceof EMTextCellEditor) {
-				((EMTextCellEditor) cellEditor).getText().addSelectionListener(this);
-				((EMTextCellEditor) cellEditor).getText().addTraverseListener(this);
+			if (cellEditor instanceof WOTextCellEditor) {
+				((WOTextCellEditor) cellEditor).getText().addSelectionListener(this);
+				((WOTextCellEditor) cellEditor).getText().addTraverseListener(this);
 			} else if (cellEditor instanceof KeyComboBoxCellEditor) {
 				((KeyComboBoxCellEditor) cellEditor).getComboBox().addSelectionListener(this);
 				((KeyComboBoxCellEditor) cellEditor).getComboBox().addTraverseListener(this);

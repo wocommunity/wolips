@@ -63,14 +63,14 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.objectstyle.wolips.baseforuiplugins.utils.ErrorUtils;
+import org.objectstyle.wolips.baseforuiplugins.utils.KeyComboBoxCellEditor;
+import org.objectstyle.wolips.baseforuiplugins.utils.WOTableViewer;
+import org.objectstyle.wolips.baseforuiplugins.utils.WOTextCellEditor;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.actions.NewAttributeAction;
 import org.objectstyle.wolips.eomodeler.core.model.AbstractEOArgument;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.utils.EMTableViewer;
-import org.objectstyle.wolips.eomodeler.utils.EMTextCellEditor;
-import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
 import org.objectstyle.wolips.eomodeler.utils.StayEditingCellEditorListener;
 import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
 import org.objectstyle.wolips.eomodeler.utils.TableRowDoubleClickHandler;
@@ -79,7 +79,7 @@ import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 import org.objectstyle.wolips.eomodeler.utils.TriStateCellEditor;
 
 public class EOAttributesTableViewer extends Composite implements ISelectionProvider {
-	private EMTableViewer myAttributesTableViewer;
+	private WOTableViewer myAttributesTableViewer;
 
 	private EOEntity myEntity;
 
@@ -133,8 +133,8 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
 
 		CellEditor[] cellEditors = new CellEditor[TableUtils.getColumnsForTableNamed(EOAttribute.class.getName()).length];
 		TableUtils.setCellEditor(EOAttribute.class.getName(), EOAttribute.PROTOTYPE, new KeyComboBoxCellEditor(attributesTable, new String[0], SWT.READ_ONLY), cellEditors);
-		TableUtils.setCellEditor(EOAttribute.class.getName(), AbstractEOArgument.NAME, new EMTextCellEditor(attributesTable), cellEditors);
-		TableUtils.setCellEditor(EOAttribute.class.getName(), AbstractEOArgument.COLUMN_NAME, new EMTextCellEditor(attributesTable), cellEditors);
+		TableUtils.setCellEditor(EOAttribute.class.getName(), AbstractEOArgument.NAME, new WOTextCellEditor(attributesTable), cellEditors);
+		TableUtils.setCellEditor(EOAttribute.class.getName(), AbstractEOArgument.COLUMN_NAME, new WOTextCellEditor(attributesTable), cellEditors);
 		updateCellEditors(cellEditors);
 		myAttributesTableViewer.setCellModifier(new EOAttributesCellModifier(myAttributesTableViewer, cellEditors));
 		myAttributesTableViewer.setCellEditors(cellEditors);
@@ -179,7 +179,7 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
 		return myEntity;
 	}
 
-	public EMTableViewer getTableViewer() {
+	public WOTableViewer getTableViewer() {
 		return myAttributesTableViewer;
 	}
 

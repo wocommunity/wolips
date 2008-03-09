@@ -1,4 +1,4 @@
-package org.objectstyle.wolips.eomodeler.utils;
+package org.objectstyle.wolips.baseforuiplugins.utils;
 
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
@@ -10,16 +10,16 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 
-public class EMTextCellEditor extends TextCellEditor {
-	public EMTextCellEditor() {
+public class WOTextCellEditor extends TextCellEditor {
+	public WOTextCellEditor() {
 		// DO NOTHING
 	}
 
-	public EMTextCellEditor(Composite parent) {
+	public WOTextCellEditor(Composite parent) {
 		super(parent, "carbon".equals(SWT.getPlatform()) ? SWT.BORDER | SWT.SINGLE : SWT.SINGLE);
 	}
 
-	public EMTextCellEditor(Composite parent, int style) {
+	public WOTextCellEditor(Composite parent, int style) {
 		super(parent, "carbon".equals(SWT.getPlatform()) ? SWT.BORDER | SWT.SINGLE : style);
 	}
 
