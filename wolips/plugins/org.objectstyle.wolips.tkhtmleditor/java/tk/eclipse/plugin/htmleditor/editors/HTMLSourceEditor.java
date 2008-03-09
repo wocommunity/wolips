@@ -57,7 +57,6 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.objectstyle.wolips.wodclipse.core.util.CursorPositionSupport;
 import org.objectstyle.wolips.wodclipse.core.util.ICursorPositionListener;
 
-import tk.eclipse.plugin.csseditor.editors.ChooseColorAction;
 import tk.eclipse.plugin.htmleditor.ColorProvider;
 import tk.eclipse.plugin.htmleditor.HTMLHyperlinkDetector;
 import tk.eclipse.plugin.htmleditor.HTMLPlugin;
@@ -97,8 +96,8 @@ public class HTMLSourceEditor extends TextEditor {
 
     setAction(ACTION_ESCAPE_HTML, new EscapeHTMLAction());
     setAction(ACTION_COMMENT, new CommentAction());
-    setAction(ACTION_OPEN_PALETTE, new OpenPaletteAction());
-    setAction(ACTION_CHOOSE_COLOR, new ChooseColorAction(this));
+    //setAction(ACTION_OPEN_PALETTE, new OpenPaletteAction());
+    //setAction(ACTION_CHOOSE_COLOR, new ChooseColorAction(this));
 
     IPreferenceStore store = HTMLPlugin.getDefault().getPreferenceStore();
     _softTabListener = new SoftTabVerifyListener();
@@ -276,8 +275,8 @@ public class HTMLSourceEditor extends TextEditor {
    */
   protected void addContextMenuActions(IMenuManager menu) {
     menu.add(new Separator(GROUP_HTML));
-    addAction(menu, GROUP_HTML, ACTION_CHOOSE_COLOR);
-    addAction(menu, GROUP_HTML, ACTION_OPEN_PALETTE);
+    //addAction(menu, GROUP_HTML, ACTION_CHOOSE_COLOR);
+    //addAction(menu, GROUP_HTML, ACTION_OPEN_PALETTE);
     addAction(menu, GROUP_HTML, ACTION_ESCAPE_HTML);
     addAction(menu, GROUP_HTML, ACTION_COMMENT);
   }
