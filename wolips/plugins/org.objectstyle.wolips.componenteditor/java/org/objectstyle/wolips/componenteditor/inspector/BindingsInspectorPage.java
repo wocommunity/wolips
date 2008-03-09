@@ -32,17 +32,19 @@ public class BindingsInspectorPage extends Page implements ICursorPositionListen
 
 	private boolean _selectionChanging;
 
-	private BindingsDropHandler _templateDropHandler;
+	private BindingsTextDropHandler _templateDropHandler;
 
-	private BindingsDropHandler _wodDropHandler;
+	private BindingsTextDropHandler _wodDropHandler;
+
+	private BindingsInspectorDropHandler _inspectorDropHandler;
 
 	public BindingsInspectorPage(ComponentEditor componentEditor) {
 		_componentEditor = componentEditor;
 		if (componentEditor != null) {
 			_componentEditor.getEditorInteraction().addWebObjectTagListener(this);
 
-			_templateDropHandler = new BindingsDropHandler(_componentEditor.getTemplateEditor());
-			_wodDropHandler = new BindingsDropHandler(_componentEditor.getWodEditor());
+			_templateDropHandler = new BindingsTextDropHandler(_componentEditor.getTemplateEditor());
+			_wodDropHandler = new BindingsTextDropHandler(_componentEditor.getWodEditor());
 		}
 	}
 
@@ -53,6 +55,9 @@ public class BindingsInspectorPage extends Page implements ICursorPositionListen
 		if (_wodDropHandler != null) {
 			_wodDropHandler.bindingDragCanceled(column);
 		}
+		if (_inspectorDropHandler != null) {
+			_inspectorDropHandler.bindingDragCanceled(column);
+		}
 	}
 
 	public void bindingDragging(WOBrowserColumn column, Point dragPoint) {
@@ -61,6 +66,9 @@ public class BindingsInspectorPage extends Page implements ICursorPositionListen
 		}
 		if (_wodDropHandler != null) {
 			_wodDropHandler.bindingDragging(column, dragPoint);
+		}
+		if (_inspectorDropHandler != null) {
+			_inspectorDropHandler.bindingDragging(column, dragPoint);
 		}
 	}
 
@@ -71,6 +79,10 @@ public class BindingsInspectorPage extends Page implements ICursorPositionListen
 		if (_wodDropHandler != null) {
 			_wodDropHandler.bindingDropped(column, dropPoint);
 		}
+		if (_inspectorDropHandler != null) {
+			_inspectorDropHandler.bindingDropped(column, dropPoint);
+		}
+		_inspector.refresh();
 	}
 
 	public void browserColumnAdded(WOBrowserColumn column) {
@@ -79,6 +91,9 @@ public class BindingsInspectorPage extends Page implements ICursorPositionListen
 		}
 		if (_wodDropHandler != null) {
 			_wodDropHandler.browserColumnAdded(column);
+		}
+		if (_inspectorDropHandler != null) {
+			_inspectorDropHandler.browserColumnAdded(column);
 		}
 	}
 
@@ -89,6 +104,9 @@ public class BindingsInspectorPage extends Page implements ICursorPositionListen
 		if (_wodDropHandler != null) {
 			_wodDropHandler.browserColumnRemoved(column);
 		}
+		if (_inspectorDropHandler != null) {
+			_inspectorDropHandler.browserColumnRemoved(column);
+		}
 	}
 
 	@Override
@@ -98,6 +116,9 @@ public class BindingsInspectorPage extends Page implements ICursorPositionListen
 		}
 		if (_wodDropHandler != null) {
 			_wodDropHandler.dispose();
+		}
+		if (_inspectorDropHandler != null) {
+			_inspectorDropHandler.dispose();
 		}
 		super.dispose();
 	}
@@ -125,6 +146,7 @@ public class BindingsInspectorPage extends Page implements ICursorPositionListen
 		GridData inspectorLayoutData = new GridData(GridData.FILL_VERTICAL);
 		inspectorLayoutData.widthHint = 350;
 		_inspector.setLayoutData(inspectorLayoutData);
+		_inspectorDropHandler = new BindingsInspectorDropHandler(_inspector);
 
 		Group browserGroup = new Group(_container, SWT.NONE);
 		GridLayout browserGroupLayout = new GridLayout(2, false);

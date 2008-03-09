@@ -1,10 +1,10 @@
 package org.objectstyle.wolips.componenteditor.inspector;
 
-import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Control;
 
-public class Autoscroller {
+public abstract class AbstractAutoscroller<T extends Control> implements IAutoscroller {
 	private static final int scrollTopLeftMargin = 20;
 
 	private static final int scrollBottomRightMargin = 20;
@@ -17,17 +17,17 @@ public class Autoscroller {
 
 	private long _lastScrollTime;
 
-	private StyledText _st;
+	private T _control;
 
-	private Autoscroller.Delegate _delegate;
+	private IAutoscroller.Delegate _delegate;
 
-	public Autoscroller(StyledText st) {
-		_st = st;
+	public AbstractAutoscroller(T control) {
+		_control = control;
 		_scrollStarted = false;
 		_lastScrollTime = -1;
 	}
 
-	public void setDelegate(Autoscroller.Delegate delegate) {
+	public void setDelegate(IAutoscroller.Delegate delegate) {
 		_delegate = delegate;
 	}
 
@@ -40,8 +40,16 @@ public class Autoscroller {
 		_scrollStarted = false;
 	}
 
+	public T getControl() {
+		return _control;
+	}
+
 	public void autoscroll(Point scrollPoint) {
-		Rectangle controlBounds = _st.getBounds();
+		if (_control == null) {
+			return;
+		}
+		
+		Rectangle controlBounds = _control.getBounds();
 		controlBounds.x = 0;
 		controlBounds.y = 0;
 		if (!controlBounds.contains(scrollPoint)) {
@@ -55,26 +63,26 @@ public class Autoscroller {
 
 			long scrollTime = System.currentTimeMillis();
 			if ((scrollTime - _lastScrollTime) > scrollFrequency) {
-				int oldTopIndex = _st.getTopIndex();
-				int oldHorizontalIndex = _st.getHorizontalIndex();
+				int oldVerticalPosition = getVerticalPosition();
+				int oldHorizontalPosition = getHorizontalPosition();
 
 				if (scrollPoint.y < scrollTopLeftMargin) {
-					_st.setTopIndex(oldTopIndex - 1);
+					scrollUp(scrollPoint.y);
 				} else if ((controlBounds.height - scrollPoint.y) < scrollBottomRightMargin) {
-					_st.setTopIndex(oldTopIndex + 1);
+					scrollDown(controlBounds.height - scrollPoint.y);
 				}
 
 				if (scrollPoint.x < scrollTopLeftMargin) {
-					_st.setHorizontalIndex(oldHorizontalIndex - 1);
+					scrollLeft(scrollPoint.x);
 				} else if ((controlBounds.width - scrollPoint.x) < scrollBottomRightMargin) {
-					_st.setHorizontalIndex(oldHorizontalIndex + 1);
+					scrollRight(controlBounds.width - scrollPoint.x);
 				}
 
-				if (_st.getTopIndex() != oldTopIndex || _st.getHorizontalIndex() != oldHorizontalIndex) {
+				if (getVerticalPosition() != oldVerticalPosition || getHorizontalPosition() != oldHorizontalPosition) {
 					if (_delegate != null) {
 						_delegate.autoscrollOccurred(this);
 					}
-					_st.redraw();
+					_control.redraw();
 					_lastScrollTime = scrollTime;
 					_scrollStarted = true;
 				} else {
@@ -84,7 +92,15 @@ public class Autoscroller {
 		}
 	}
 
-	public static interface Delegate {
-		public void autoscrollOccurred(Autoscroller scroller);
-	}
+	protected abstract void scrollUp(int speed);
+
+	protected abstract void scrollDown(int speed);
+
+	protected abstract void scrollLeft(int speed);
+
+	protected abstract void scrollRight(int speed);
+
+	protected abstract int getVerticalPosition();
+
+	protected abstract int getHorizontalPosition();
 }
