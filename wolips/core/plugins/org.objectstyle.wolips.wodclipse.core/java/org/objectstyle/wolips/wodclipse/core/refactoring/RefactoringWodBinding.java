@@ -86,9 +86,11 @@ public class RefactoringWodBinding {
 
 	public void setName(String name) throws CoreException, InvocationTargetException, InterruptedException {
 		String oldName = _wodBinding.getName();
-		ChangeBindingNameRefactoring.run(name, _wodElement, _wodBinding, _cache, new NullProgressMonitor());
-		_wodBinding.setName(name);
-		_propertyChange.firePropertyChange(RefactoringWodBinding.BINDING_NAME, oldName, name);
+		if (!ComparisonUtils.equals(name, oldName)) {
+  		ChangeBindingNameRefactoring.run(name, _wodElement, _wodBinding, _cache, new NullProgressMonitor());
+  		_wodBinding.setName(name);
+  		_propertyChange.firePropertyChange(RefactoringWodBinding.BINDING_NAME, oldName, name);
+		}
 	}
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
