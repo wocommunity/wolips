@@ -17,6 +17,7 @@ import org.objectstyle.wolips.bindings.preferences.PreferenceConstants;
 import org.objectstyle.wolips.bindings.wod.HtmlElementName;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.bindings.wod.IWodModel;
+import org.objectstyle.wolips.bindings.wod.SimpleWodBinding;
 import org.objectstyle.wolips.bindings.wod.WodBindingValueProblem;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
 import org.objectstyle.wolips.locate.LocateException;
@@ -69,7 +70,7 @@ public class TemplateValidator {
           if (wodModel != null) {
             IWodElement wodElement = wodModel.getElementNamed(woElementName);
             if (wodElement == null) {
-              WodProblem undefinedElement = new WodBindingValueProblem("name", "The element '" + woElementName + "' is not defined in " + wodFile.getName(), null, -1, false);
+              WodProblem undefinedElement = new WodBindingValueProblem(wodElement, new SimpleWodBinding("name", null), "name", "The element '" + woElementName + "' is not defined in " + wodFile.getName(), null, -1, false);
               inlineProblems.add(new InlineWodProblem(woElement, undefinedElement, _cache));
             }
           }

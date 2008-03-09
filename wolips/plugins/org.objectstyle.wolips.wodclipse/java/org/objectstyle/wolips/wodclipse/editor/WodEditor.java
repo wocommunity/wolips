@@ -124,6 +124,8 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 	@Override
 	public void doSave(IProgressMonitor progressMonitor) {
 		super.doSave(progressMonitor);
+    	updateValidation();
+		_editorInteraction.fireWebObjectChanged();
 	}
 
 	@Override
@@ -161,8 +163,6 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 	@Override
 	protected void performSave(boolean overwrite, IProgressMonitor progressMonitor) {
 		super.performSave(overwrite, progressMonitor);
-		updateValidation();
-		_editorInteraction.fireWebObjectChanged();
 	}
 
 	public WodParserCache getParserCache() throws CoreException, LocateException {

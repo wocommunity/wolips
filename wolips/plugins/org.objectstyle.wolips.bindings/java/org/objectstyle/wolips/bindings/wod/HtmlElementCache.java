@@ -5,25 +5,29 @@ import java.util.Map;
 import java.util.Set;
 
 public class HtmlElementCache {
-	private Map<String, HtmlElementName> _htmlElementCache;
+  private Map<String, HtmlElementName> _htmlElementCache;
 
-	public HtmlElementCache() {
-		_htmlElementCache = new HashMap<String, HtmlElementName>();
-	}
+  public HtmlElementCache() {
+    _htmlElementCache = new HashMap<String, HtmlElementName>();
+  }
 
-	public void addHtmlElement(HtmlElementName htmlElement) {
-		_htmlElementCache.put(htmlElement.getName(), htmlElement);
-	}
-	
-	public boolean containsElementNamed(String name) {
-		return _htmlElementCache.containsKey(name);
-	}
-	
-	public Set<String> elementNames() {
-	  return _htmlElementCache.keySet();
-	}
-	
-	public void clearCache() {
-		_htmlElementCache.clear();
-	}
+  public void addHtmlElement(HtmlElementName htmlElement) {
+    _htmlElementCache.put(htmlElement.getName(), htmlElement);
+  }
+
+  public boolean containsElementNamed(String name) {
+    return _htmlElementCache.containsKey(name);
+  }
+
+  public HtmlElementName getHtmlElementNamed(String name) {
+    return _htmlElementCache.get(name);
+  }
+
+  public Set<String> elementNames() {
+    return _htmlElementCache.keySet();
+  }
+
+  public void clearCache() {
+    _htmlElementCache.clear();
+  }
 }

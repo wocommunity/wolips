@@ -54,6 +54,7 @@ import org.objectstyle.wolips.bindings.wod.AbstractWodModel;
 import org.objectstyle.wolips.bindings.wod.IWodBinding;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.bindings.wod.IWodUnit;
+import org.objectstyle.wolips.bindings.wod.WodElementProblem;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.parser.AssignmentOperatorWordDetector;
@@ -89,11 +90,17 @@ public class DocumentWodModel extends AbstractWodModel {
     return _document;
   }
 
-  public void addParseProblem(String message, RulePosition rulePosition, boolean warning) {
+  public void addParseProblem(IWodElement element, String message, RulePosition rulePosition, boolean warning) {
     Position position = rulePosition.getPosition();
     try {
       int lineNumber = _document.getLineOfOffset(position.getOffset());
-      WodProblem problem = new WodProblem(message, position, lineNumber, warning);
+      WodProblem problem;
+      if (element != null) {
+        problem = new WodElementProblem(element, message, position, lineNumber, warning);
+      }
+      else {
+        problem = new WodProblem(message, position, lineNumber, warning);
+      }
       addParseProblem(problem);
     }
     catch (BadLocationException e) {
@@ -136,19 +143,19 @@ public class DocumentWodModel extends AbstractWodModel {
       }
       else if (RulePosition.isRulePositionOfType(rulePosition, ElementNameRule.class)) {
         if (lastRulePosition != null && !RulePosition.isOperatorOfType(lastRulePosition, CloseDefinitionWordDetector.class)) {
-          addParseProblem("The element name '" + rulePosition._getTextWithoutException() + "' can only appear at the beginning of the document or after a '}'", rulePosition, false);
+          addParseProblem(element, "The element name '" + rulePosition._getTextWithoutException() + "' can only appear at the beginning of the document or after a '}'", rulePosition, false);
         }
         savedRulePosition = rulePosition;
         element = null;
       }
       else if (RulePosition.isOperatorOfType(rulePosition, ElementTypeOperatorWordDetector.class)) {
         if (!RulePosition.isRulePositionOfType(lastRulePosition, ElementNameRule.class)) {
-          addParseProblem("A ':' can only appear after an element name", rulePosition, false);
+          addParseProblem(element, "A ':' can only appear after an element name", rulePosition, false);
         }
       }
       else if (RulePosition.isRulePositionOfType(rulePosition, ElementTypeRule.class)) {
         if (!RulePosition.isOperatorOfType(lastRulePosition, ElementTypeOperatorWordDetector.class)) {
-          addParseProblem("The element type '" + rulePosition._getTextWithoutException() + "' can only appear after a ':'", rulePosition, false);
+          addParseProblem(element, "The element type '" + rulePosition._getTextWithoutException() + "' can only appear after a ':'", rulePosition, false);
         }
         else {
           element = new DocumentWodElement(savedRulePosition, rulePosition);
@@ -158,14 +165,14 @@ public class DocumentWodModel extends AbstractWodModel {
       }
       else if (RulePosition.isOperatorOfType(rulePosition, OpenDefinitionWordDetector.class)) {
         if (!RulePosition.isRulePositionOfType(lastRulePosition, ElementTypeRule.class)) {
-          addParseProblem("A '{' can only appear after an element type", rulePosition, false);
+          addParseProblem(element, "A '{' can only appear after an element type", rulePosition, false);
         }
       }
       else if (RulePosition.isRulePositionOfType(rulePosition, WOOGNLRule.class)) {
         boolean ognlIsValue = RulePosition.isOperatorOfType(lastRulePosition, AssignmentOperatorWordDetector.class);
         boolean ognlIsName = !ognlIsValue && (RulePosition.isOperatorOfType(lastRulePosition, EndAssignmentWordDetector.class) || RulePosition.isOperatorOfType(lastRulePosition, OpenDefinitionWordDetector.class));
         if (!ognlIsValue && !ognlIsName) {
-          addParseProblem("The OGNL value " + rulePosition._getTextWithoutException() + " can only appear after a '{', '=', or ';'.", rulePosition, false);
+          addParseProblem(element, "The OGNL value " + rulePosition._getTextWithoutException() + " can only appear after a '{', '=', or ';'.", rulePosition, false);
           savedRulePosition = null;
         }
         else if (ognlIsName) {
@@ -180,7 +187,7 @@ public class DocumentWodModel extends AbstractWodModel {
         boolean literalIsValue = RulePosition.isOperatorOfType(lastRulePosition, AssignmentOperatorWordDetector.class);
         boolean literalIsName = !literalIsValue && (RulePosition.isOperatorOfType(lastRulePosition, EndAssignmentWordDetector.class) || RulePosition.isOperatorOfType(lastRulePosition, OpenDefinitionWordDetector.class));
         if (!literalIsValue && !literalIsName) {
-          addParseProblem("The string literal '" + rulePosition._getTextWithoutException() + "' can only appear after a '{', '=', or ';'.", rulePosition, false);
+          addParseProblem(element, "The string literal '" + rulePosition._getTextWithoutException() + "' can only appear after a '{', '=', or ';'.", rulePosition, false);
           savedRulePosition = null;
         }
         else if (literalIsName) {
@@ -193,19 +200,19 @@ public class DocumentWodModel extends AbstractWodModel {
       }
       else if (RulePosition.isRulePositionOfType(rulePosition, BindingNameRule.class)) {
         if (!RulePosition.isOperatorOfType(lastRulePosition, OpenDefinitionWordDetector.class) && !RulePosition.isOperatorOfType(lastRulePosition, EndAssignmentWordDetector.class)) {
-          addParseProblem("The binding name '" + rulePosition._getTextWithoutException() + "' can only appear after a '{' or a ';'", rulePosition, false);
+          addParseProblem(element, "The binding name '" + rulePosition._getTextWithoutException() + "' can only appear after a '{' or a ';'", rulePosition, false);
         }
         savedRulePosition = rulePosition;
         lastBinding = null;
       }
       else if (RulePosition.isOperatorOfType(rulePosition, AssignmentOperatorWordDetector.class)) {
         if (!RulePosition.isRulePositionOfType(lastRulePosition, BindingNameRule.class) && !RulePosition.isRulePositionOfType(lastRulePosition, StringLiteralRule.class)) {
-          addParseProblem("An '=' can only appear after a binding name", rulePosition, false);
+          addParseProblem(element, "An '=' can only appear after a binding name", rulePosition, false);
         }
       }
       else if (RulePosition.isRulePositionOfType(rulePosition, BindingValueRule.class)) {
         if (!RulePosition.isOperatorOfType(lastRulePosition, AssignmentOperatorWordDetector.class)) {
-          addParseProblem("The binding value '" + rulePosition._getTextWithoutException() + "' can only appear after an '='", rulePosition, false);
+          addParseProblem(element, "The binding value '" + rulePosition._getTextWithoutException() + "' can only appear after an '='", rulePosition, false);
         }
         else {
           lastBinding = addBinding(element, savedRulePosition, rulePosition);
@@ -214,7 +221,7 @@ public class DocumentWodModel extends AbstractWodModel {
       }
       else if (RulePosition.isOperatorOfType(rulePosition, EndAssignmentWordDetector.class)) {
         if (!RulePosition.isRulePositionOfType(lastRulePosition, BindingValueRule.class) && !RulePosition.isRulePositionOfType(lastRulePosition, StringLiteralRule.class) && !RulePosition.isRulePositionOfType(lastRulePosition, WOOGNLRule.class)) {
-          addParseProblem("A ';' can only appear after a binding value", rulePosition, false);
+          addParseProblem(element, "A ';' can only appear after a binding value", rulePosition, false);
         }
       }
       else if (RulePosition.isOperatorOfType(rulePosition, CloseDefinitionWordDetector.class)) {
@@ -222,7 +229,7 @@ public class DocumentWodModel extends AbstractWodModel {
           element.setEndOffset(rulePosition.getTokenOffset() + 1);
         }
         if (!RulePosition.isOperatorOfType(lastRulePosition, OpenDefinitionWordDetector.class) && !RulePosition.isOperatorOfType(lastRulePosition, EndAssignmentWordDetector.class)) {
-          addParseProblem("A '}' can only appear after a ';' or a '{'", rulePosition, false);
+          addParseProblem(element, "A '}' can only appear after a ';' or a '{'", rulePosition, false);
         }
         else {
           element = null;
@@ -230,7 +237,7 @@ public class DocumentWodModel extends AbstractWodModel {
         lastBinding = null;
       }
       else {
-        addParseProblem("'" + rulePosition._getTextWithoutException() + "' is an unknown keyword", rulePosition, false);
+        addParseProblem(element, "'" + rulePosition._getTextWithoutException() + "' is an unknown keyword", rulePosition, false);
       }
 
       if (!whitespace && !comment) {
@@ -239,20 +246,20 @@ public class DocumentWodModel extends AbstractWodModel {
     }
 
     if (lastRulePosition != null && !RulePosition.isOperatorOfType(lastRulePosition, CloseDefinitionWordDetector.class)) {
-      addParseProblem("The last entry in a WOD file must be a '}'.", lastRulePosition, false);
+      addParseProblem(element, "The last entry in a WOD file must be a '}'.", lastRulePosition, false);
     }
   }
 
   protected DocumentWodBinding addBinding(DocumentWodElement _element, RulePosition _nameRulePosition, RulePosition _valueRulePosition) {
     DocumentWodBinding binding = null;
     if (_element == null) {
-      addParseProblem("A binding must appear in a declaration", _valueRulePosition, false);
+      addParseProblem(_element, "A binding must appear in a declaration", _valueRulePosition, false);
     }
     else if (_nameRulePosition == null) {
-      addParseProblem("A binding must have a name", _valueRulePosition, false);
+      addParseProblem(_element, "A binding must have a name", _valueRulePosition, false);
     }
     else if (_valueRulePosition == null) {
-      addParseProblem("A binding must have a value", _valueRulePosition, false);
+      addParseProblem(_element, "A binding must have a value", _valueRulePosition, false);
     }
     else {
       binding = new DocumentWodBinding(_nameRulePosition, _valueRulePosition);
@@ -305,11 +312,11 @@ public class DocumentWodModel extends AbstractWodModel {
         wodUnit = elementAtIndex;
       }
     }
-    
+
     if (wodUnit == null) {
       wodUnit = this;
     }
-    
+
     return wodUnit;
   }
 
