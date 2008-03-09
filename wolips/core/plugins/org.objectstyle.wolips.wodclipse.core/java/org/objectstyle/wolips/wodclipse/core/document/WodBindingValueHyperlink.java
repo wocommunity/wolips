@@ -10,6 +10,7 @@ import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.ui.PlatformUI;
+import org.objectstyle.wolips.bindings.api.IApiBinding;
 import org.objectstyle.wolips.bindings.wod.BindingValueKey;
 import org.objectstyle.wolips.bindings.wod.BindingValueKeyPath;
 import org.objectstyle.wolips.bindings.wod.IWodBinding;
@@ -54,31 +55,37 @@ public class WodBindingValueHyperlink implements IHyperlink {
 
   public void open() {
     try {
-      BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(_bindingValue, _componentType, _componentType.getJavaProject(), WodParserCache.getTypeCache());
-      if (bindingValueKeyPath.isValid()) {
-        BindingValueKey lastKey = bindingValueKeyPath.getLastBindingKey();
-        if (lastKey != null) {
+      WodBindingValueHyperlink.open(_bindingValue, _binding, _componentType, false);
+    }
+    catch (Exception ex) {
+      Activator.getDefault().log(ex);
+    }
+  }
+  
+  public static void open(String bindingValue, IApiBinding binding, IType componentType, boolean onlyIfMissing) throws CoreException {
+    BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(bindingValue, componentType, componentType.getJavaProject(), WodParserCache.getTypeCache());
+    if (bindingValueKeyPath.isValid()) {
+      BindingValueKey lastKey = bindingValueKeyPath.getLastBindingKey();
+      if (lastKey != null) {
+        if (!onlyIfMissing) {
           IMember member = lastKey.getBindingMember();
           if (member != null) {
             JavaUI.openInEditor(member, true, true);
           }
         }
-        else if (bindingValueKeyPath.getLength() == 1) {
-          if (_binding.isAction()) {
-            AddActionInfo info = new AddActionInfo(_componentType);
-            info.setName(bindingValueKeyPath.getOriginalKeyPath());
-            AddActionDialog.open(info, PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
-          }
-          else {
-            AddKeyInfo info = new AddKeyInfo(_componentType);
-            info.setName(bindingValueKeyPath.getOriginalKeyPath());
-            AddKeyDialog.open(info, PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
-          }
+      }
+      else if (bindingValueKeyPath.getLength() == 1) {
+        if (binding.isAction()) {
+          AddActionInfo info = new AddActionInfo(componentType);
+          info.setName(bindingValueKeyPath.getOriginalKeyPath());
+          AddActionDialog.open(info, PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+        }
+        else {
+          AddKeyInfo info = new AddKeyInfo(componentType);
+          info.setName(bindingValueKeyPath.getOriginalKeyPath());
+          AddKeyDialog.open(info, PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
         }
       }
-    }
-    catch (Exception ex) {
-      Activator.getDefault().log(ex);
     }
   }
 

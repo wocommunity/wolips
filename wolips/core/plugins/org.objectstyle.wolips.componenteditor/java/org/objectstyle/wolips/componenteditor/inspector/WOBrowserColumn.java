@@ -9,7 +9,13 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.eclipse.jdt.core.ElementChangedEvent;
+import org.eclipse.jdt.core.IElementChangedListener;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaElementDelta;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -33,7 +39,7 @@ import org.objectstyle.wolips.bindings.wod.BindingValueKey;
 import org.objectstyle.wolips.bindings.wod.BindingValueKeyPath;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 
-public class WOBrowserColumn extends Composite implements ISelectionProvider, ISelectionChangedListener {
+public class WOBrowserColumn extends Composite implements ISelectionProvider, ISelectionChangedListener, IElementChangedListener {
 	private WOBrowser _browser;
 
 	private List<ISelectionChangedListener> _listeners = new LinkedList<ISelectionChangedListener>();
@@ -99,7 +105,34 @@ public class WOBrowserColumn extends Composite implements ISelectionProvider, IS
 		// iconColumn.setMoveable(true);
 		keysLayout.setColumnData(iconColumn, new ColumnWeightData(0, 20));
 
-		BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath("", type, type.getJavaProject(), WodParserCache.getTypeCache());
+		reload();
+		tableContainer.pack();
+
+		_lineDragHandler = new BindingsDragHandler(this);
+
+		JavaCore.addElementChangedListener(this, ElementChangedEvent.POST_CHANGE);
+	}
+
+	public void elementChanged(ElementChangedEvent event) {
+		for (IJavaElementDelta delta : event.getDelta().getAffectedChildren()) {
+			if ((delta.getFlags() & IJavaElementDelta.F_CHILDREN) != 0) {
+				IJavaElement element = delta.getElement();
+				if (element != null) {
+					IJavaProject project = element.getJavaProject();
+					if (project != null && project.equals(_type.getJavaProject())) {
+						try {
+							reload();
+						} catch (JavaModelException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public void reload() throws JavaModelException {
+		BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath("", _type, _type.getJavaProject(), WodParserCache.getTypeCache());
 		List<BindingValueKey> bindingValueKeys = bindingValueKeyPath.getPartialMatchesForLastBindingKey(true);
 		List<BindingValueKey> filteredBindingValueKeys = BindingReflectionUtils.filterSystemBindingValueKeys(bindingValueKeys, true);
 		Set<BindingValueKey> uniqueBingingValueKeys = new TreeSet<BindingValueKey>(filteredBindingValueKeys);
@@ -130,9 +163,6 @@ public class WOBrowserColumn extends Composite implements ISelectionProvider, IS
 		_bindingValueKeys = sortedBindingValueKeys;
 
 		_keysViewer.setInput(_bindingValueKeys);
-		tableContainer.pack();
-
-		_lineDragHandler = new BindingsDragHandler(this);
 	}
 
 	protected static class TypeDepthComparator implements Comparator<IType> {
@@ -142,15 +172,12 @@ public class WOBrowserColumn extends Composite implements ISelectionProvider, IS
 				if (o1 == null) {
 					if (o2 == null) {
 						comparison = 0;
-					}
-					else {
+					} else {
 						comparison = -1;
 					}
-				}
-				else if (o2 == null) {
+				} else if (o2 == null) {
 					comparison = 1;
-				}
-				else {
+				} else {
 					List<IType> o1Types = WodParserCache.getTypeCache().getSupertypesOf(o1);
 					List<IType> o2Types = WodParserCache.getTypeCache().getSupertypesOf(o2);
 					if (o1Types.size() == o2Types.size()) {
@@ -186,6 +213,7 @@ public class WOBrowserColumn extends Composite implements ISelectionProvider, IS
 
 	@Override
 	public void dispose() {
+		JavaCore.removeElementChangedListener(this);
 		_typeNameFont.dispose();
 		if (_lineDragHandler != null) {
 			_lineDragHandler.dispose();

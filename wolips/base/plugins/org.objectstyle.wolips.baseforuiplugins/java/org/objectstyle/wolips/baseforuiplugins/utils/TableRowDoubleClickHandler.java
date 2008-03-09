@@ -47,7 +47,7 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.utils;
+package org.objectstyle.wolips.baseforuiplugins.utils;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TableViewer;
