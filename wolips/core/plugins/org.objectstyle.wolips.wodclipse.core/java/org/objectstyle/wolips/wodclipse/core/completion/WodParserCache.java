@@ -25,6 +25,7 @@ import org.objectstyle.wolips.bindings.api.Wo;
 import org.objectstyle.wolips.bindings.preferences.PreferenceConstants;
 import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
 import org.objectstyle.wolips.bindings.wod.BindingValidationRule;
+import org.objectstyle.wolips.bindings.wod.ITypeOwner;
 import org.objectstyle.wolips.bindings.wod.TagShortcut;
 import org.objectstyle.wolips.bindings.wod.TypeCache;
 import org.objectstyle.wolips.core.resources.types.LimitedLRUCache;
@@ -33,7 +34,7 @@ import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.wodclipse.core.util.EOModelGroupCache;
 
-public class WodParserCache {
+public class WodParserCache implements ITypeOwner {
   private static TypeCache _typeCache;
   private static EOModelGroupCache _modelGroupCache;
 
@@ -188,6 +189,14 @@ public class WodParserCache {
       _modelGroupCache = new EOModelGroupCache();
     }
     return _modelGroupCache;
+  }
+  
+  public IType getType() throws CoreException, LocateException {
+    return getComponentType();
+  }
+  
+  public TypeCache getCache() {
+    return WodParserCache.getTypeCache();
   }
 
   public Wo getWo(String elementName) throws ApiModelException, JavaModelException {

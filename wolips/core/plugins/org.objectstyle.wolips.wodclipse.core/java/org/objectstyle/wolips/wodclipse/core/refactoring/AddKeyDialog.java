@@ -133,7 +133,11 @@ public class AddKeyDialog extends Dialog {
     _setMethodButton.setText("A method setting the value");
     //
 
-    _nameField.setText(_addKeyInfo.getName());
+    String name = _addKeyInfo.getName();
+    if (name == null) {
+      name = "newKey";
+    }
+    _nameField.setText(name);
 
     _typeCombo.setItems(_addKeyInfo.getEntityNames());
 

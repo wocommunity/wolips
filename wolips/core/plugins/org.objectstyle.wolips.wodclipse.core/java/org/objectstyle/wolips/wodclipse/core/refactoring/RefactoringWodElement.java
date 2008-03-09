@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.objectstyle.wolips.baseforplugins.util.StringUtils;
 import org.objectstyle.wolips.bindings.wod.IWodBinding;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.bindings.wod.SimpleWodBinding;
@@ -113,5 +114,9 @@ public class RefactoringWodElement {
 
 	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
 		_propertyChange.removePropertyChangeListener(propertyName, listener);
+	}
+	
+	public static String findUnusedBindingName(IWodElement element, String baseName) {
+	  return StringUtils.findUnusedName("newBinding", element, "getBindingNamed");
 	}
 }
