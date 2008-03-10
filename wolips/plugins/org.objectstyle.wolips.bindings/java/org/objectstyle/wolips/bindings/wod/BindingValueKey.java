@@ -110,7 +110,7 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
       else if (nextTypeName != null && nextTypeName.length() == 0) {
         _nextType = null;
       }
-      else if (nextTypeName != null && nextTypeName.matches("^[{0,1}Q.;$")) {
+      else if (nextTypeName != null && nextTypeName.matches("^[*Q.;$")) {
         _nextType = null;
       }
       else {
