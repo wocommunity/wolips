@@ -71,6 +71,8 @@ import org.objectstyle.woenvironment.util.FileStringScanner;
  */
 public class WOVariables {
 	private static final String WO_ROOT = "wo.woroot";
+	
+	private static final String WO_BOOTSTRAP_JAR = "wo.bootstrapjar";
 
 	// private final String LOCAL_ROOT = "wo.localroot";
 	private static final String WO_WO_SYSTEM_ROOT = "wo.wosystemroot";
@@ -316,6 +318,16 @@ public class WOVariables {
 	 */
 	public String foundationJarPath() {
 		return "file:///" + systemRoot() + "/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar";
+	}
+	
+	/**
+	 * Returns the value of wo.bootstrapjar from properties (or null if there isn't one).
+	 * 
+	 * @return the bootstrap jar that is defined in the wobuild.properties, or null if there isn't one.
+	 */
+	public String bootstrapJar() {
+	   String bootstrapJar = this.wobuildProperties.getProperty(WOVariables.WO_BOOTSTRAP_JAR);
+	   return bootstrapJar;
 	}
 
 	/**
