@@ -149,7 +149,9 @@ public class WOBrowserColumn extends Composite implements ISelectionProvider, IS
 		}
 		_bindingValueKeys = sortedBindingValueKeys;
 
-		_keysViewer.setInput(_bindingValueKeys);
+		if (_keysViewer.getContentProvider() != null) {
+			_keysViewer.setInput(_bindingValueKeys);
+		}
 	}
 	
 	public BindingValueKey getBindingValueKeyStartingWith(String partialKeyPath) {
