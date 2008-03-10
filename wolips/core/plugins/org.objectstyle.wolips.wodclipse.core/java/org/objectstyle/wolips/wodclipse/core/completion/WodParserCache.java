@@ -238,7 +238,10 @@ public class WodParserCache implements ITypeOwner {
           }
           catch (Exception e) {
             e.printStackTrace();
-            Activator.getDefault().log(e);
+            Activator activator = Activator.getDefault();
+            if (activator != null) {
+              activator.log(e);
+            }
           }
         }
       };
