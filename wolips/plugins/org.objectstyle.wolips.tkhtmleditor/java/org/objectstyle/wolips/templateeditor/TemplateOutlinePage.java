@@ -521,7 +521,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
       renderBuffer.append("<body id = \"outline\" class = \"verbose\">\n");
     }
 
-    renderBuffer.append("<div class = \"viewControls\"><a href = \"#\" onclick = \"toggleCompact()\">toggle compact view</a></div>\n");
+    renderBuffer.append("<div class = \"viewControls\"><a href = \"javascript:void(0)\" onclick = \"toggleCompact()\">toggle compact view</a></div>\n");
     renderBuffer.append("<div class = \"elements\">\n");
   }
 
