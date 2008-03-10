@@ -150,7 +150,11 @@ public abstract class AbstractBindingsDropHandler<T, U, V, W extends Control> im
 		try {
 			_autoscroller.stopScroll();
 
-			if (isEditorActive() && dropped) {
+			Point controlDragPoint = _editorControl.toControl(dropPoint);
+			Rectangle controlBounds = _editorControl.getBounds();
+			controlBounds.x = 0;
+			controlBounds.y = 0;
+			if (isEditorActive() && dropped && controlBounds.contains(controlDragPoint)) {
 				dropFromColumnAtPoint(column, dropPoint);
 			} else {
 				removeHoverAnnotation();
