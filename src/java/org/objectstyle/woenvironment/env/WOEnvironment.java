@@ -117,6 +117,13 @@ public final class WOEnvironment extends Environment {
 	 */
 	public File bootstrap() {
 		File aFile = null;
+		String propertiesBootstrapJar = this.getWOVariables().bootstrapJar();
+		if (propertiesBootstrapJar != null) {
+		  aFile = new File(propertiesBootstrapJar);
+		  if (aFile != null && aFile.exists()) {
+		    return aFile;
+		  }
+		}
 		aFile = this.macBootstrap();
 		if ((aFile != null) && (aFile.exists()))
 			return aFile;
@@ -138,7 +145,7 @@ public final class WOEnvironment extends Environment {
 	private File macBootstrap() {
 		File aFile = null;
 		try {
-			aFile = new File("/System/Library/WebObjects/JavaApplications/wotaskd.woa/WOBootstrap.jar");
+			aFile = new File(this.getWOVariables().systemRoot() + "/Library/WebObjects/JavaApplications/wotaskd.woa/WOBootstrap.jar");
 			if (aFile.exists())
 				return aFile;
 		} catch (Exception anException) {
