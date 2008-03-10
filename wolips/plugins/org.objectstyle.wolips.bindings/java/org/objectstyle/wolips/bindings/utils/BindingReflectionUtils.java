@@ -3,7 +3,10 @@ package org.objectstyle.wolips.bindings.utils;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -22,6 +25,7 @@ import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.internal.core.DefaultWorkingCopyOwner;
 import org.eclipse.jdt.internal.ui.search.JavaSearchScopeFactory;
 import org.objectstyle.wolips.bindings.wod.BindingValueKey;
+import org.objectstyle.wolips.bindings.wod.BindingValueKeyPath;
 import org.objectstyle.wolips.bindings.wod.TypeCache;
 import org.objectstyle.wolips.core.resources.types.TypeNameCollector;
 import org.objectstyle.wolips.core.resources.types.WOHierarchyScope;
@@ -470,5 +474,35 @@ public class BindingReflectionUtils {
     }
 
     return filteredBindingValueKeys;
+  }
+
+  /**
+   * Returns the BindingValueKeys for the given type grouped by which class the
+   * keys were contributed from.
+   * 
+   * @param startingWith a partial keypath or "" for all
+   * @param type the starting type
+   * @param cache the TypeCache
+   * @return a map of supertypes to keys
+   * @throws JavaModelException if the type information cannot be loaded
+   */
+  public static Map<IType, Set<BindingValueKey>> getGroupedBindingValueKeys(String startingWith, IType type, TypeCache cache) throws JavaModelException {
+    BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(startingWith, type, type.getJavaProject(), cache);
+    List<BindingValueKey> bindingValueKeys = bindingValueKeyPath.getPartialMatchesForLastBindingKey(true);
+    List<BindingValueKey> filteredBindingValueKeys = BindingReflectionUtils.filterSystemBindingValueKeys(bindingValueKeys, true);
+    Set<BindingValueKey> uniqueBingingValueKeys = new TreeSet<BindingValueKey>(filteredBindingValueKeys);
+
+    Map<IType, Set<BindingValueKey>> typeKeys = new TreeMap<IType, Set<BindingValueKey>>(new TypeDepthComparator(cache));
+    for (BindingValueKey key : uniqueBingingValueKeys) {
+      IType declaringType = key.getDeclaringType();
+      Set<BindingValueKey> typeKeysSet = typeKeys.get(declaringType);
+      if (typeKeysSet == null) {
+        typeKeysSet = new TreeSet<BindingValueKey>();
+        typeKeys.put(declaringType, typeKeysSet);
+      }
+      typeKeysSet.add(key);
+    }
+
+    return typeKeys;
   }
 }
