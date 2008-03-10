@@ -62,18 +62,14 @@ public class BindingsPopUpMenu {
 
 				BindingSelectionListener selectionListener = new BindingSelectionListener(wodElement, droppedKeyPath, _cache);
 				for (IApiBinding keyBinding : keyBindings) {
-					MenuItem mi = new MenuItem(_menu, SWT.NONE);
-					mi.setData(keyBinding);
-					mi.setText(keyBinding.getName());
+					MenuItem mi = createMenuItem(wodElement, keyBinding);
 					mi.addSelectionListener(selectionListener);
 				}
 				if (!keyBindings.isEmpty() && !actionBindings.isEmpty()) {
 					new MenuItem(_menu, SWT.SEPARATOR);
 				}
 				for (IApiBinding actionBinding : actionBindings) {
-					MenuItem mi = new MenuItem(_menu, SWT.NONE);
-					mi.setData(actionBinding);
-					mi.setText(actionBinding.getName());
+					MenuItem mi = createMenuItem(wodElement, actionBinding);
 					mi.addSelectionListener(selectionListener);
 				}
 				
@@ -88,6 +84,19 @@ public class BindingsPopUpMenu {
 		}
 		
 		return showMenu;
+	}
+	
+	protected MenuItem createMenuItem(IWodElement element, IApiBinding binding) {
+		MenuItem menuItem = new MenuItem(_menu, SWT.NONE);
+		menuItem.setData(binding);
+		menuItem.setText(binding.getName());
+		if (element.getBindingNamed(binding.getName()) != null) {
+			menuItem.setImage(ComponenteditorPlugin.getDefault().getImage(ComponenteditorPlugin.CONNECTED_ICON));
+		}
+		else {
+			menuItem.setImage(ComponenteditorPlugin.getDefault().getImage(ComponenteditorPlugin.UNCONNECTED_ICON));
+		}
+		return menuItem;
 	}
 
 	protected static class BindingSelectionListener implements SelectionListener {
@@ -109,6 +118,7 @@ public class BindingsPopUpMenu {
 
 		public void widgetSelected(SelectionEvent event) {
 			MenuItem item = (MenuItem) event.widget;
+			item.setImage(ComponenteditorPlugin.getDefault().getImage(ComponenteditorPlugin.CONNECTED_ICON));
 			IApiBinding apiBinding = (IApiBinding) item.getData();
 			RefactoringWodElement refactoringWodElement = new RefactoringWodElement(_wodElement, _cache);
 			try {
