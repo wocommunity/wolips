@@ -1,9 +1,9 @@
 package org.objectstyle.wolips.componenteditor.inspector;
 
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -11,13 +11,14 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Decorations;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.objectstyle.wolips.bindings.api.ApiModelException;
 import org.objectstyle.wolips.bindings.api.IApiBinding;
 import org.objectstyle.wolips.bindings.api.Wo;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
+import org.objectstyle.wolips.bindings.wod.WodProblem;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.refactoring.RefactoringWodElement;
+import org.objectstyle.wolips.wodclipse.core.util.WodModelUtils;
 
 public class BindingsPopUpMenu {
 	private Menu _menu;
@@ -37,13 +38,12 @@ public class BindingsPopUpMenu {
 		_menu.dispose();
 	}
 
-	public boolean showMenuAtLocation(IWodElement wodElement, String droppedKeyPath, Point location) throws JavaModelException, ApiModelException {
+	public boolean showMenuAtLocation(IWodElement wodElement, String droppedKeyPath, Point location) throws Exception {
 		boolean showMenu = false;
 		Wo api = wodElement.getApi(_cache.getJavaProject(), WodParserCache.getTypeCache());
 		if (api != null) {
 			IApiBinding[] apiBindings = wodElement.getApiBindings(api);
 			if (apiBindings != null && apiBindings.length > 0) {
-
 				Set<IApiBinding> keyBindings = new TreeSet<IApiBinding>();
 				Set<IApiBinding> actionBindings = new TreeSet<IApiBinding>();
 				for (IApiBinding binding : apiBindings) {
@@ -60,16 +60,18 @@ public class BindingsPopUpMenu {
 					item.dispose();
 				}
 
+				List<WodProblem> wodProblems = WodModelUtils.getProblems(wodElement, _cache);
+
 				BindingSelectionListener selectionListener = new BindingSelectionListener(wodElement, droppedKeyPath, _cache);
 				for (IApiBinding keyBinding : keyBindings) {
-					MenuItem mi = createMenuItem(wodElement, keyBinding);
+					MenuItem mi = createMenuItem(wodElement, keyBinding, wodProblems);
 					mi.addSelectionListener(selectionListener);
 				}
 				if (!keyBindings.isEmpty() && !actionBindings.isEmpty()) {
 					new MenuItem(_menu, SWT.SEPARATOR);
 				}
 				for (IApiBinding actionBinding : actionBindings) {
-					MenuItem mi = createMenuItem(wodElement, actionBinding);
+					MenuItem mi = createMenuItem(wodElement, actionBinding, wodProblems);
 					mi.addSelectionListener(selectionListener);
 				}
 				
@@ -86,12 +88,15 @@ public class BindingsPopUpMenu {
 		return showMenu;
 	}
 	
-	protected MenuItem createMenuItem(IWodElement element, IApiBinding binding) {
+	protected MenuItem createMenuItem(IWodElement element, IApiBinding binding, List<WodProblem> wodProblems) {
 		MenuItem menuItem = new MenuItem(_menu, SWT.NONE);
 		menuItem.setData(binding);
 		menuItem.setText(binding.getName());
 		if (element.getBindingNamed(binding.getName()) != null) {
 			menuItem.setImage(ComponenteditorPlugin.getDefault().getImage(ComponenteditorPlugin.CONNECTED_ICON));
+		}
+		else if (WodModelUtils.hasValidationProblem(binding, wodProblems)) {
+			menuItem.setImage(ComponenteditorPlugin.getDefault().getImage(ComponenteditorPlugin.UNCONNECTED_PROBLEM_ICON));
 		}
 		else {
 			menuItem.setImage(ComponenteditorPlugin.getDefault().getImage(ComponenteditorPlugin.UNCONNECTED_ICON));

@@ -68,6 +68,8 @@ public class ComponenteditorPlugin extends AbstractBaseUIActivator {
 	public static final String CONNECTED_ICON = "connected";
 	
 	public static final String UNCONNECTED_ICON = "unconnected";
+	
+	public static final String UNCONNECTED_PROBLEM_ICON = "unconnectedProblem";
 
 	public static final String PLUGIN_ID = "org.objectstyle.wolips.componenteditor";
 	
@@ -85,6 +87,7 @@ public class ComponenteditorPlugin extends AbstractBaseUIActivator {
 	protected void initializeImageRegistry(ImageRegistry _reg) {
 		super.initializeImageRegistry(_reg);
 		_reg.put(ComponenteditorPlugin.UNCONNECTED_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(ComponenteditorPlugin.PLUGIN_ID, "/icons/unconnected.png"));
+		_reg.put(ComponenteditorPlugin.UNCONNECTED_PROBLEM_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(ComponenteditorPlugin.PLUGIN_ID, "/icons/unconnectedProblem.png"));
 		_reg.put(ComponenteditorPlugin.CONNECTED_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(ComponenteditorPlugin.PLUGIN_ID, "/icons/connected.png"));
 		_reg.put(ComponenteditorPlugin.COMPONENT_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(ComponenteditorPlugin.PLUGIN_ID, "/icons/component.png"));
 		_reg.put(ComponenteditorPlugin.COMPONENT_WOCONDITIONAL_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(ComponenteditorPlugin.PLUGIN_ID, "/icons/conditional.png"));
