@@ -110,7 +110,10 @@ public class TemplateValidator {
             }
           }
           catch (Throwable t) {
-            Activator.getDefault().log(t);
+            Activator activator = Activator.getDefault();
+            if (activator != null) {
+              activator.log(t);
+            }
           }
         }
       }
