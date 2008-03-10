@@ -470,22 +470,29 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 		EODatabaseContext databaseContext = new EODatabaseContext(new EODatabase(_model));
 		EODatabaseChannel databaseChannel = databaseContext.availableChannel();
 		EOAdaptorChannel adaptorChannel = databaseChannel.adaptorChannel();
-		if (!adaptorChannel.isOpen()) {
+		boolean channelOpen = adaptorChannel.isOpen();
+		if (!channelOpen) {
 			adaptorChannel.openChannel();
 		}
-		JDBCContext jdbccontext = (JDBCContext) adaptorChannel.adaptorContext();
 		try {
-			jdbccontext.beginTransaction();
-			Connection conn = jdbccontext.connection();
-			Statement stmt = conn.createStatement();
-			stmt.executeUpdate(sql);
-			conn.commit();
-		} catch (SQLException sqlexception) {
-			sqlexception.printStackTrace(System.out);
-			jdbccontext.rollbackTransaction();
-			throw sqlexception;
+			JDBCContext jdbccontext = (JDBCContext) adaptorChannel.adaptorContext();
+			try {
+				jdbccontext.beginTransaction();
+				Connection conn = jdbccontext.connection();
+				Statement stmt = conn.createStatement();
+				stmt.executeUpdate(sql);
+				conn.commit();
+			} catch (SQLException sqlexception) {
+				sqlexception.printStackTrace(System.out);
+				jdbccontext.rollbackTransaction();
+				throw sqlexception;
+			}
 		}
-		adaptorChannel.closeChannel();
+		finally {
+			if (!channelOpen) {
+				adaptorChannel.closeChannel();
+			}
+		}
 	}
 
 	public Map externalTypes() {
