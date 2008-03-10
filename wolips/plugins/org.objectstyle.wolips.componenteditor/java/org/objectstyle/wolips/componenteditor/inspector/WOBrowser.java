@@ -300,16 +300,7 @@ public class WOBrowser extends ScrolledComposite implements ISelectionChangedLis
 		if (_keypathBuffer.length() > 0) {
 			WOBrowserColumn focusedColumn = getFocusedColumn();
 			if (focusedColumn != null) {
-				BindingValueKey matchingKey = null;
-				for (Object keyObj : focusedColumn.getBindingValueKeys()) {
-					if (keyObj instanceof BindingValueKey) {
-						BindingValueKey key = (BindingValueKey)keyObj;
-						if (key.getBindingName().startsWith(_keypathBuffer.toString())) {
-							matchingKey = key;
-							break;
-						}
-					}
-				}
+				BindingValueKey matchingKey = focusedColumn.getBindingValueKeyStartingWith(_keypathBuffer.toString());
 				disposeToColumn(focusedColumn);
 				if (matchingKey != null) {
 					focusedColumn.setSelection(new StructuredSelection(matchingKey));
