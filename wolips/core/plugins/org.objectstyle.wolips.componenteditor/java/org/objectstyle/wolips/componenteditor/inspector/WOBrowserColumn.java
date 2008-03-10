@@ -1,13 +1,10 @@
 package org.objectstyle.wolips.componenteditor.inspector;
 
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
 import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.IElementChangedListener;
@@ -37,7 +34,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.objectstyle.wolips.baseforuiplugins.utils.ListContentProvider;
 import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
 import org.objectstyle.wolips.bindings.wod.BindingValueKey;
-import org.objectstyle.wolips.bindings.wod.BindingValueKeyPath;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 
 public class WOBrowserColumn extends Composite implements ISelectionProvider, ISelectionChangedListener, IElementChangedListener {
@@ -137,25 +133,10 @@ public class WOBrowserColumn extends Composite implements ISelectionProvider, IS
 	}
 
 	public void reload() throws JavaModelException {
-		//System.out.println("WOBrowserColumn.reload: Reloading " + _type.getElementName() + " browser column.");
-		BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath("", _type, _type.getJavaProject(), WodParserCache.getTypeCache());
-		List<BindingValueKey> bindingValueKeys = bindingValueKeyPath.getPartialMatchesForLastBindingKey(true);
-		List<BindingValueKey> filteredBindingValueKeys = BindingReflectionUtils.filterSystemBindingValueKeys(bindingValueKeys, true);
-		Set<BindingValueKey> uniqueBingingValueKeys = new TreeSet<BindingValueKey>(filteredBindingValueKeys);
-		// List<BindingValueKey> sortedBindingValueKeys = new
-		// LinkedList<BindingValueKey>(uniqueBingingValueKeys);
+		// System.out.println("WOBrowserColumn.reload: Reloading " +
+		// _type.getElementName() + " browser column.");
 
-		Map<IType, Set<BindingValueKey>> typeKeys = new TreeMap<IType, Set<BindingValueKey>>(new TypeDepthComparator());
-		for (BindingValueKey key : uniqueBingingValueKeys) {
-			IType declaringType = key.getDeclaringType();
-			Set<BindingValueKey> typeKeysSet = typeKeys.get(declaringType);
-			if (typeKeysSet == null) {
-				typeKeysSet = new TreeSet<BindingValueKey>();
-				typeKeys.put(declaringType, typeKeysSet);
-			}
-			typeKeysSet.add(key);
-		}
-
+		Map<IType, Set<BindingValueKey>> typeKeys = BindingReflectionUtils.getGroupedBindingValueKeys("", _type, WodParserCache.getTypeCache());
 		List<Object> sortedBindingValueKeys = new LinkedList<Object>();
 		for (Map.Entry<IType, Set<BindingValueKey>> typeKeysEntry : typeKeys.entrySet()) {
 			if (!_type.equals(typeKeysEntry.getKey())) {
@@ -170,43 +151,23 @@ public class WOBrowserColumn extends Composite implements ISelectionProvider, IS
 
 		_keysViewer.setInput(_bindingValueKeys);
 	}
-
-	protected static class TypeDepthComparator implements Comparator<IType> {
-		public int compare(IType o1, IType o2) {
-			int comparison = 0;
-			try {
-				if (o1 == null) {
-					if (o2 == null) {
-						comparison = 0;
-					} else {
-						comparison = -1;
-					}
-				} else if (o2 == null) {
-					comparison = 1;
-				} else {
-					List<IType> o1Types = WodParserCache.getTypeCache().getSupertypesOf(o1);
-					List<IType> o2Types = WodParserCache.getTypeCache().getSupertypesOf(o2);
-					if (o1Types.size() == o2Types.size()) {
-						comparison = 0;
-					} else if (o1Types.size() < o2Types.size()) {
-						comparison = 1;
-					} else {
-						comparison = -1;
-					}
+	
+	public BindingValueKey getBindingValueKeyStartingWith(String partialKeyPath) {
+		BindingValueKey matchingKey = null;
+		for (Object keyObj : _bindingValueKeys) {
+			if (keyObj instanceof BindingValueKey) {
+				BindingValueKey key = (BindingValueKey)keyObj;
+				if (key.getBindingName().startsWith(partialKeyPath)) {
+					matchingKey = key;
+					break;
 				}
-			} catch (Throwable t) {
-				t.printStackTrace();
 			}
-			return comparison;
 		}
+		return matchingKey;
 	}
 
 	public WOBrowser getBrowser() {
 		return _browser;
-	}
-
-	public List<Object> getBindingValueKeys() {
-		return _bindingValueKeys;
 	}
 
 	public void setDelegate(IWOBrowserDelegate delegate) {
