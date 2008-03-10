@@ -249,11 +249,12 @@ public class BindingReflectionUtils {
     //System.out.println("BindingReflectionUtils.getBindingKeys: a " + type.getFullyQualifiedName());
 
     IField[] fields = type.getFields();
-    for (String prefix : BindingReflectionUtils.FIELD_PREFIXES) {
-      for (int fieldNum = 0; (!requireExactNameMatch || bindingKeys.size() == 0) && fieldNum < fields.length; fieldNum++) {
+    for (int fieldNum = 0; (!requireExactNameMatch || bindingKeys.size() == 0) && fieldNum < fields.length; fieldNum++) {
+      for (String prefix : BindingReflectionUtils.FIELD_PREFIXES) {
         BindingValueKey bindingKey = BindingReflectionUtils.getBindingKeyIfMatches(javaProject, fields[fieldNum], prefix + lowercaseNameStartingWith, prefix, requireExactNameMatch, accessorsOrMutators, cache);
         if (bindingKey != null) {
           bindingKeys.add(bindingKey);
+          break;
         }
       }
     }
@@ -274,12 +275,15 @@ public class BindingReflectionUtils {
         prefixes = new String[0];
       }
 
-      for (String prefix : prefixes) {
-        for (int methodNum = 0; (!requireExactNameMatch || bindingKeys.size() == 0) && methodNum < methods.length; methodNum++) {
+      for (int methodNum = 0; (!requireExactNameMatch || bindingKeys.size() == 0) && methodNum < methods.length; methodNum++) {
+        for (String prefix : prefixes) {
           //System.out.println("BindingReflectionUtils.getBindingKeys: checking for " + prefix + methods[methodNum].getElementName());
           BindingValueKey bindingKey = BindingReflectionUtils.getBindingKeyIfMatches(javaProject, methods[methodNum], prefix + lowercaseNameStartingWith, prefix, requireExactNameMatch, accessorsOrMutators, cache);
-          if (bindingKey != null && (allowInheritanceDuplicates || !bindingKeys.contains(bindingKey))) {
-            bindingKeys.add(bindingKey);
+          if (bindingKey != null) {
+            if (allowInheritanceDuplicates || !bindingKeys.contains(bindingKey)) {
+              bindingKeys.add(bindingKey);
+            }
+            break;
           }
         }
       }
