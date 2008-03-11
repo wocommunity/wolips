@@ -165,6 +165,21 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 			mutableConnectionDictionary.removeObjectForKey("jdbc2Info");
 			_model.setConnectionDictionary(mutableConnectionDictionary);
 		}
+		
+		// MS: Add the "inEntityModeler" flag so that plugins can adjust their behavior
+		// if they need to. 
+		NSMutableDictionary modelUserInfo = _model.userInfo().mutableClone();
+		NSDictionary entityModelerDict = (NSDictionary) modelUserInfo.objectForKey("_EntityModeler");
+		NSMutableDictionary mutableEntityModelerDict;
+		if (entityModelerDict == null) {
+			mutableEntityModelerDict = new NSMutableDictionary();
+		}
+		else {
+			mutableEntityModelerDict = entityModelerDict.mutableClone();
+		}
+		mutableEntityModelerDict.setObjectForKey(Boolean.TRUE, "inEntityModeler");
+		modelUserInfo.setObjectForKey(mutableEntityModelerDict, "_EntityModeler");
+		_model.setUserInfo(modelUserInfo);
 
 		ensureSingleTableInheritanceParentEntitiesAreIncluded();
 		ensureSingleTableInheritanceChildEntitiesAreIncluded();
