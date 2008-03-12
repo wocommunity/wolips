@@ -194,6 +194,13 @@ public class ApiModel {
   private void parse() throws ApiModelException {
     synchronized (this) {
       try {
+        if (_eclipseFile != null) {
+          _lastModified = _eclipseFile.getModificationStamp();
+        }
+        else if (_file != null) {
+          _lastModified = _file.lastModified();
+        }
+
         DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         if (_url != null) {
           _document = documentBuilder.parse(_url.toExternalForm());
@@ -233,12 +240,6 @@ public class ApiModel {
           throw new ApiModelException("There was no file, URL, or reader specified as the location for this API file.");
         }
         _document.normalize();
-        if (_eclipseFile != null) {
-          _lastModified = _eclipseFile.getModificationStamp();
-        }
-        else if (_file != null) {
-          _lastModified = _file.lastModified();
-        }
       }
       catch (Throwable e) {
         throw new ApiModelException("Failed to parse API file '" + getLocation() + "'.", e);
