@@ -638,10 +638,10 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 				if (wodElement != null) {
 					try {
 						getRefactoringElement().setValueForBinding((String) value, binding.getName());
+						BindingsInspector.this.refresh();
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					BindingsInspector.this.refresh();
 				}
 			}
 		}
