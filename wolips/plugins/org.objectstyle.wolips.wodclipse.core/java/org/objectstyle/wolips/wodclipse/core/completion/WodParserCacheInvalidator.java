@@ -12,6 +12,7 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
@@ -58,6 +59,13 @@ public class WodParserCacheInvalidator implements IResourceChangeListener, IReso
               Activator.getDefault().log("Failed to clear caches for " + resource + ".", e);
             }
           }
+        }
+      }
+      else if (name.endsWith(".api")) {
+        IJavaProject javaProject = JavaCore.create(file.getProject());
+        if (javaProject != null) {
+          String elementName = file.getName().substring(0, file.getName().lastIndexOf('.'));
+          WodParserCache.getTypeCache().getApiCache(javaProject).clearCacheForElementNamed(elementName);
         }
       }
       else if (file.getParent() != null && file.getParent().getName().endsWith(".eomodeld")) {
