@@ -369,17 +369,20 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 		data.grabExcessHorizontalSpace = true;
 		composite.setLayoutData(data);
 
-		ProjectAdapter project = getProjectAdaptor();
-		boolean isWOProject = (project != null);
-		if (!isWOProject) {
-			project = new ProjectAdapter(getProject(), false);
-		}
-		_addWOProjectSection(composite, isWOProject);
-		_addBuildStyleSection(composite, project);
-		_addBundleSettingsSection(composite, project);
-		addServletDeploymentSection(composite, project);
+		IProject project = getProject();
+		if (project != null) {
+			ProjectAdapter projectAdapter = getProjectAdapter();
+			boolean isWOProject = (projectAdapter != null);
+			if (!isWOProject) {
+				projectAdapter = new ProjectAdapter(getProject(), false);
+			}
+			_addWOProjectSection(composite, isWOProject);
+			_addBuildStyleSection(composite, projectAdapter);
+			_addBundleSettingsSection(composite, projectAdapter);
+			addServletDeploymentSection(composite, projectAdapter);
 
-		enableWidgets();
+			enableWidgets();
+		}
 
 		return composite;
 	}
@@ -402,7 +405,10 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 	}
 
 	protected void performDefaults() {
-		setDefaults(getProjectAdaptor());
+		ProjectAdapter projectAdapter = getProjectAdapter();
+		if (projectAdapter != null) {
+			setDefaults(projectAdapter);
+		}
 	}
 
 	private void setDefaults(ProjectAdapter project) {
@@ -448,13 +454,15 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 						Nature.setNatureForProject(Nature.ANT_APPLICATION_ID, useTargetBuilder, getProject(), new NullProgressMonitor());
 					}
 				}
-				ProjectAdapter project = getProjectAdaptor();
-				project.setPrincipalClass(_principalClassText.getText());
-				project.setCustomInfoPListContent(_customInfoPListText.getText());
-				project.setServletDeployment(_servletDeploymentCheck.getSelection());
-				project.setWebXML(_generateWebXMLCheck.getSelection());
-				project.setWebXML_CustomContent(_customWebXMLText.getText());
-				project.setEOAdaptorClassName(_eoAdaptorClassText.getText());
+				ProjectAdapter project = getProjectAdapter();
+				if (project != null) {
+					project.setPrincipalClass(_principalClassText.getText());
+					project.setCustomInfoPListContent(_customInfoPListText.getText());
+					project.setServletDeployment(_servletDeploymentCheck.getSelection());
+					project.setWebXML(_generateWebXMLCheck.getSelection());
+					project.setWebXML_CustomContent(_customWebXMLText.getText());
+					project.setEOAdaptorClassName(_eoAdaptorClassText.getText());
+				}
 			} else {
 				Nature.removeNaturesFromProject(getProject(), new NullProgressMonitor());
 			}
@@ -481,8 +489,13 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 		return project;
 	}
 
-	public ProjectAdapter getProjectAdaptor() {
-		return (ProjectAdapter) getProject().getAdapter(IProjectAdapter.class);
+	public ProjectAdapter getProjectAdapter() {
+		IProject project = getProject();
+		ProjectAdapter projectAdapter = null;
+		if (project != null) {
+			projectAdapter = (ProjectAdapter) project.getAdapter(IProjectAdapter.class);
+		}
+		return projectAdapter;
 	}
 
 	public Object getAdapter(Class theClass) {
