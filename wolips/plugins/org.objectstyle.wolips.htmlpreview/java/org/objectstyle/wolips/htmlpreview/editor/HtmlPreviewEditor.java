@@ -103,9 +103,11 @@ public class HtmlPreviewEditor implements IEmbeddedEditor, IEmbeddedEditorSelect
 			e.printStackTrace();
 		}
 
-		boolean rendered = _browser.setText(documentContents);
-		if (!rendered) {
-			HtmlPreviewPlugin.getDefault().log("Can't create preview of component HTML.");
+		if (_browser != null) {
+			boolean rendered = _browser.setText(documentContents);
+			if (!rendered) {
+				HtmlPreviewPlugin.getDefault().log("Can't create preview of component HTML.");
+			}
 		}
 	}
 
@@ -131,8 +133,12 @@ public class HtmlPreviewEditor implements IEmbeddedEditor, IEmbeddedEditorSelect
 	}
 
 	public void createPartControl(Composite parent) {
-		_browser = new Browser(parent, SWT.READ_ONLY);
-
+		try {
+			_browser = new Browser(parent, SWT.READ_ONLY);
+		}
+		catch (Exception e) {
+			HtmlPreviewPlugin.getDefault().log("Failed to create Browser component.", e);
+		}
 	}
 
 	public IWorkbenchPartSite getSite() {
@@ -180,11 +186,15 @@ public class HtmlPreviewEditor implements IEmbeddedEditor, IEmbeddedEditorSelect
 	}
 
 	public void dispose() {
-		_browser.dispose();
+		if (_browser != null) {
+			_browser.dispose();
+		}
 	}
 
 	public void setFocus() {
-		_browser.setFocus();
+		if (_browser != null) {
+			_browser.setFocus();
+		}
 	}
 
 	public void editorSelected() {
