@@ -62,6 +62,7 @@ import org.eclipse.ui.PartInitException;
 import org.objectstyle.wolips.components.editor.ComponentEditorInteraction;
 import org.objectstyle.wolips.components.editor.IEmbeddedEditor;
 import org.objectstyle.wolips.components.editor.IEmbeddedEditorSelected;
+import org.objectstyle.wolips.components.editor.IHtmlDocumentProvider;
 import org.objectstyle.wolips.htmlpreview.HtmlPreviewPlugin;
 import org.objectstyle.wolips.templateeditor.TemplateEditor;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
@@ -89,7 +90,12 @@ public class HtmlPreviewEditor implements IEmbeddedEditor, IEmbeddedEditorSelect
 			return;
 		}
 
-		IDocument editDocument = _editorInteraction.getHtmlDocumentProvider().getHtmlEditDocument();
+		IHtmlDocumentProvider documentProvider = _editorInteraction.getHtmlDocumentProvider();
+		if (documentProvider == null) {
+			return;
+		}
+		
+		IDocument editDocument = documentProvider.getHtmlEditDocument();
 		String documentContents = editDocument.get();
 
 		try {
