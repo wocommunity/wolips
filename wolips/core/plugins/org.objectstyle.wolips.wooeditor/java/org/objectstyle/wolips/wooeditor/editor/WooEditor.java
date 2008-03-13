@@ -70,6 +70,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -133,6 +135,13 @@ public class WooEditor extends FormEditor {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+    
+    CTabFolder ctf = (CTabFolder)getContainer();
+    ctf.setBorderVisible(false);
+    ctf.setTabPosition(SWT.TOP);
+    if (getPageCount() <= 1) {
+      ctf.setTabHeight(0);
+    }
 	}
 
 	@Override
