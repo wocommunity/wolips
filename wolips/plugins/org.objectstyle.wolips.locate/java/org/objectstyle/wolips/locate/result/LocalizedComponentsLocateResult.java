@@ -92,6 +92,33 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 	public LocalizedComponentsLocateResult() {
 		super();
 	}
+	
+	public String getName() {
+		String name = null;
+		IFile javaFile = getDotJava();
+		if (javaFile != null) {
+			name = LocatePlugin.getDefault().fileNameWithoutExtension(javaFile);
+		}
+		else {
+			IFolder[] componentFolders = getComponents();
+			if (componentFolders != null) {
+				for (IFolder componentFolder : componentFolders) {
+					name = LocatePlugin.getDefault().fileNameWithoutExtension(componentFolder);
+					break;
+				}
+			}
+			if (name == null) {
+				IFile apiFile = getDotApi();
+				if (apiFile != null) {
+					name = LocatePlugin.getDefault().fileNameWithoutExtension(javaFile);
+				}
+			}
+		}
+		if (name == null) {
+			name = "Unknown Component";
+		}
+		return name;
+	}
 
 	public void add(IResource resource) throws LocateException {
 		super.add(resource);
