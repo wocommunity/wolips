@@ -52,6 +52,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
@@ -175,6 +176,12 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 				initializeDragAndDrop(templateSourceEditor.getViewer());
 			}
 			_dragAndDropInitialized = true;
+		}
+		
+		CTabFolder ctf = (CTabFolder)getContainer();
+		ctf.setBorderVisible(false);
+		if (ctf.getTabList().length <= 1) {
+			ctf.setTabHeight(0);
 		}
 	}
 
