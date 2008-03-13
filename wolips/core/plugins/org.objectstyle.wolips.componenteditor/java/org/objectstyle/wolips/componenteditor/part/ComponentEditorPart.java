@@ -205,13 +205,15 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 		this.setPageText(tabIndex, "Api");
 		tabIndex++;
 
-		// html preview tab
-		htmlPreviewTab = new HtmlPreviewTab(this, tabIndex, htmlInput);
-		componentEditorTabsList.add(htmlPreviewTab);
-		htmlPreviewTab.createTab();
-		previewPageId = this.addPage(htmlPreviewTab);
-		this.setPageText(tabIndex, "Preview (Experimental)");
-		tabIndex++;
+		if (editorInput.length > 0) {
+			// html preview tab
+			htmlPreviewTab = new HtmlPreviewTab(this, tabIndex, htmlInput);
+			componentEditorTabsList.add(htmlPreviewTab);
+			htmlPreviewTab.createTab();
+			previewPageId = this.addPage(htmlPreviewTab);
+			this.setPageText(tabIndex, "Preview (Experimental)");
+			tabIndex++;
+		}
 
 		componentEditorTabs = componentEditorTabsList.toArray(new ComponentEditorTab[componentEditorTabsList.size()]);
 		htmlWodTabs = htmlWodTabsList.toArray(new HtmlWodTab[htmlWodTabsList.size()]);
