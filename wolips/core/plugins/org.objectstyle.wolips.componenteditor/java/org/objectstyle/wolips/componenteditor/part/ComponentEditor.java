@@ -170,8 +170,10 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 
 		if (!_dragAndDropInitialized) {
 			TemplateEditor templateEditor = getTemplateEditor();
-			TemplateSourceEditor templateSourceEditor = templateEditor.getSourceEditor();
-			initializeDragAndDrop(templateSourceEditor.getViewer());
+			if (templateEditor != null) {
+				TemplateSourceEditor templateSourceEditor = templateEditor.getSourceEditor();
+				initializeDragAndDrop(templateSourceEditor.getViewer());
+			}
 			_dragAndDropInitialized = true;
 		}
 	}
