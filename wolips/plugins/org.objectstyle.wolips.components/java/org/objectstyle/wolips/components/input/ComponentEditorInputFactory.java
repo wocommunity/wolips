@@ -51,6 +51,7 @@ import org.eclipse.ui.IElementFactory;
 import org.eclipse.ui.IMemento;
 
 public class ComponentEditorInputFactory implements IElementFactory {
+	private static final String NAME = "name";
 
 	private static final String TAG_COUNT = "count";
 
@@ -84,14 +85,16 @@ public class ComponentEditorInputFactory implements IElementFactory {
 		for (int i = 0; i < count; i++) {
 			editors[i] = memento.getString(TAG_EDITOR + i);
 			String fileName = memento.getString(TAG_INPUT + i);
-			IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(fileName));
-			allInputs[i] = new ComponentEditorFileEditorInput(file);
-			if (i < (count - 1)) {
-				allComponentInputs[i] = allInputs[i];
+			if (fileName != null) {
+				IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(fileName));
+				allInputs[i] = new ComponentEditorFileEditorInput(file);
+				if (i < (count - 1)) {
+					allComponentInputs[i] = allInputs[i];
+				}
 			}
 		}
 
-		ComponentEditorInput componentEditorInput = new ComponentEditorInput(editors, allInputs, allComponentInputs, allInputs[allInputs.length - 1]);
+		ComponentEditorInput componentEditorInput = new ComponentEditorInput(memento.getString(NAME), editors, allInputs, allComponentInputs, allInputs[allInputs.length - 1]);
 		for (int i = 0; i < allInputs.length; i++) {
 			allInputs[i].setComponentEditorInput(componentEditorInput);
 		}
@@ -111,11 +114,17 @@ public class ComponentEditorInputFactory implements IElementFactory {
 
 	public static void saveState(IMemento memento, ComponentEditorInput input) {
 		String count = input.getEditors().length + "";
+		memento.putString(NAME, input.getName());
 		memento.putString(TAG_COUNT, count);
 		for (int i = 0; i < input.getEditors().length; i++) {
 			memento.putString(TAG_EDITOR + i, input.getEditors()[i]);
-			IFile file = ((ComponentEditorFileEditorInput) input.getInput()[i]).getFile();
-			memento.putString(TAG_INPUT + i, file.getFullPath().toString());
+			ComponentEditorFileEditorInput fileEditorInput = (ComponentEditorFileEditorInput) input.getInput()[i];
+			if (fileEditorInput != null) {
+				IFile file = fileEditorInput.getFile();
+				if (file != null) {
+					memento.putString(TAG_INPUT + i, file.getFullPath().toString());
+				}
+			}
 		}
 		if (input.isDisplayApiPartOnReveal()) {
 			memento.putString(TAG_DISPLAY_API_PART_ON_REVEAL, "true");

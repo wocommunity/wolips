@@ -74,9 +74,12 @@ public class ComponentEditorInput extends MultiEditorInput implements IPersistab
 	private IEditorInput[] componentEditors;
 
 	private IEditorInput apiEditor;
+	
+	private String name;
 
-	public ComponentEditorInput(String[] allEditorIDs, IEditorInput[] allInnerEditors, IEditorInput[] componentEditors, IEditorInput apiEditor) {
+	public ComponentEditorInput(String name, String[] allEditorIDs, IEditorInput[] allInnerEditors, IEditorInput[] componentEditors, IEditorInput apiEditor) {
 		super(allEditorIDs, allInnerEditors);
+		this.name = name;
 		this.componentEditors = componentEditors;
 		this.apiEditor = apiEditor;
 	}
@@ -91,7 +94,7 @@ public class ComponentEditorInput extends MultiEditorInput implements IPersistab
 		allIds = new String[folderCountTimesThree + 1];
 		allInput = new ComponentEditorFileEditorInput[folderCountTimesThree + 1];
 		allComponentInput = new ComponentEditorFileEditorInput[folderCountTimesThree];
-		int j = 0;
+		int inputNum = 0;
 		IFile htmlFile = null;
 		IFile wodFile = null;
 		IFile wooFile = null;
@@ -100,32 +103,39 @@ public class ComponentEditorInput extends MultiEditorInput implements IPersistab
 			htmlFile = LocalizedComponentsLocateResult.getHtml(currentFolder);
 			wodFile = LocalizedComponentsLocateResult.getWod(currentFolder);
 			wooFile = LocalizedComponentsLocateResult.getWoo(currentFolder);
-			allIds[j] = EditorsPlugin.HTMLEditorID;
-			allInput[j] = new ComponentEditorFileEditorInput(htmlFile);
-			allComponentInput[j] = allInput[j];
-			j++;
-			allIds[j] = EditorsPlugin.WodEditorID;
-			allInput[j] = new ComponentEditorFileEditorInput(wodFile);
-			allComponentInput[j] = allInput[j];
-			j++;
-			allIds[j] = EditorsPlugin.WooEditorID;
-			allInput[j] = new ComponentEditorFileEditorInput(wooFile);
-			allComponentInput[j] = allInput[j];
-			j++;
+			allIds[inputNum] = EditorsPlugin.HTMLEditorID;
+			allInput[inputNum] = new ComponentEditorFileEditorInput(htmlFile);
+			allComponentInput[inputNum] = allInput[inputNum];
+			inputNum++;
+			allIds[inputNum] = EditorsPlugin.WodEditorID;
+			allInput[inputNum] = new ComponentEditorFileEditorInput(wodFile);
+			allComponentInput[inputNum] = allInput[inputNum];
+			inputNum++;
+			allIds[inputNum] = EditorsPlugin.WooEditorID;
+			allInput[inputNum] = new ComponentEditorFileEditorInput(wooFile);
+			allComponentInput[inputNum] = allInput[inputNum];
+			inputNum++;
 		}
-		if (wodFile != null) {
-			if (localizedComponentsLocateResult.getDotApi() != null) {
-				allIds[j] = EditorsPlugin.ApiEditorID;
-				allInput[j] = new ComponentEditorFileEditorInput(localizedComponentsLocateResult.getDotApi());
-			} else {
-				allIds[j] = EditorsPlugin.ApiEditorID;
-				String apiFileName = LocatePlugin.getDefault().fileNameWithoutExtension(wodFile);
-				IFile api = wodFile.getParent().getParent().getFile(new Path(apiFileName + ".api"));
-				allInput[j] = new ComponentEditorFileEditorInput(api);
+		
+		String name = localizedComponentsLocateResult.getName();
+		if (localizedComponentsLocateResult.getDotApi() != null) {
+			allIds[inputNum] = EditorsPlugin.ApiEditorID;
+			allInput[inputNum] = new ComponentEditorFileEditorInput(localizedComponentsLocateResult.getDotApi());
+			apiInput = allInput[inputNum];
+		} else {
+			allIds[inputNum] = EditorsPlugin.ApiEditorID;
+			IFile referenceFile = wodFile;
+			if (referenceFile == null) {
+				referenceFile = htmlFile;
 			}
-			apiInput = allInput[j];
+			if (referenceFile != null) {
+				IFile api = wodFile.getParent().getParent().getFile(new Path(name + ".api"));
+				allInput[inputNum] = new ComponentEditorFileEditorInput(api);
+				apiInput = allInput[inputNum];
+			}
 		}
-		ComponentEditorInput input = new ComponentEditorInput(allIds, allInput, allComponentInput, apiInput);
+		
+		ComponentEditorInput input = new ComponentEditorInput(name, allIds, allInput, allComponentInput, apiInput);
 		input.localizedComponentsLocateResult = localizedComponentsLocateResult;
 		for (int i = 0; i < allInput.length; i++) {
 			ComponentEditorFileEditorInput componentEditorFileEditorInput = allInput[i];
@@ -135,6 +145,14 @@ public class ComponentEditorInput extends MultiEditorInput implements IPersistab
 		}
 		return input;
 	}
+	
+    public String getName() {
+    	String inputName = this.name;
+    	if (inputName == null) {
+    		inputName = "Unknown Component";
+    	}
+    	return inputName;
+    }
 
 	/*
 	 * may return null
@@ -150,9 +168,9 @@ public class ComponentEditorInput extends MultiEditorInput implements IPersistab
 			ComponentsPlugin.getDefault().log(e);
 			return null;
 		}
-		if (localizedComponentsLocateResult.getComponents() == null || localizedComponentsLocateResult.getComponents().length == 0) {
-			return null;
-		}
+//		if (localizedComponentsLocateResult.getComponents() == null || localizedComponentsLocateResult.getComponents().length == 0) {
+//			return null;
+//		}
 		ComponentEditorInput input = create(localizedComponentsLocateResult);
 		return input;
 	}
@@ -302,4 +320,24 @@ public class ComponentEditorInput extends MultiEditorInput implements IPersistab
 	public IEditorInput[] getComponentEditors() {
 		return componentEditors;
 	}
+    
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        int hash = 0;
+        String[] editors = getEditors();
+        for (int i = 0; i < editors.length; i++) {
+        	if (editors[i] != null) {
+        		hash = hash * 37 + editors[i].hashCode();
+        	}
+        }
+        IEditorInput[] input = getInput();
+        for (int i = 0; i < input.length; i++) {
+        	if (input[i] != null) {
+        		hash = hash * 37 + input[i].hashCode();
+        	}
+        }
+        return hash;
+    }
 }

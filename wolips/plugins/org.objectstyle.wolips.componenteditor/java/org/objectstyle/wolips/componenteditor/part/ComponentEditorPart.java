@@ -103,6 +103,11 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 		super();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 	}
+	
+	@Override
+	public void addPage(int index, IEditorPart editor, IEditorInput input) throws PartInitException {
+		super.addPage(index, editor, input);
+	}
 
 	private ComponentEditorOutline getComponentEditorOutline() {
 		if (componentEditorOutline == null) {
@@ -123,8 +128,7 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 		componentEditorInput = (ComponentEditorInput) input;
 		if (input != null) {
 			String inputName = input.getName();
-			String partName = inputName.substring(0, inputName.indexOf("."));
-			setPartName(partName);
+			setPartName(inputName);
 		}
 		site.setSelectionProvider(new ComponentEditorPartSelectionProvider(this));
 	}
@@ -308,7 +312,7 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 	}
 
 	public HtmlWodTab htmlWodTab() {
-		return htmlWodTabs[0];
+		return (htmlWodTabs.length > 0) ? htmlWodTabs[0] : null;
 	}
 	
 	public void switchToHtml() {
@@ -348,11 +352,11 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 	}
 	
 	public TemplateEditor getTemplateEditor() {
-		return htmlWodTab().templateEditor();
+		return (htmlWodTab() == null) ? null : htmlWodTab().templateEditor();
 	}
 	
 	public WodEditor getWodEditor() {
-		return htmlWodTab().wodEditor();
+		return (htmlWodTab() == null) ? null : htmlWodTab().wodEditor();
 	}
 
 	public IEditorPart getEditor(int pageIndex) {
