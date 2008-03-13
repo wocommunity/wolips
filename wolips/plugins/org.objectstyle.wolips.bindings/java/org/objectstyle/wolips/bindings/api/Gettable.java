@@ -59,7 +59,7 @@ import java.util.Map;
 
 import org.w3c.dom.Element;
 
-public class Gettable extends AbstractUn {
+public class Gettable extends AbstractNamedValidation {
 	protected final static String GETTABLE = "gettable";
 
 	protected Gettable(Element element, ApiModel apiModel) {

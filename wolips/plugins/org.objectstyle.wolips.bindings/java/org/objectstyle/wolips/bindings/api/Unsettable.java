@@ -60,7 +60,7 @@ import java.util.Map;
 
 import org.w3c.dom.Element;
 
-public class Unsettable extends AbstractUn {
+public class Unsettable extends AbstractNamedValidation {
 
   protected final static String UNSETTABLE = "unsettable";
 

@@ -60,7 +60,7 @@ import java.util.Map;
 
 import org.w3c.dom.Element;
 
-public class And extends AbstractValidationChild {
+public class And extends AbstractValidationContainer {
 
 	protected final static String AND = "and";
 

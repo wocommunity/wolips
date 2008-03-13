@@ -59,7 +59,7 @@ import java.util.Map;
 
 import org.w3c.dom.Element;
 
-public class Settable extends AbstractUn {
+public class Settable extends AbstractNamedValidation {
 	protected final static String SETTABLE = "settable";
 
 	protected Settable(Element element, ApiModel apiModel) {

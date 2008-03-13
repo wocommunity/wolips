@@ -67,12 +67,14 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IDetailsPage;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
@@ -97,7 +99,7 @@ public class BindingDetailsPage implements IDetailsPage {
 
 	Button willSetFlag;
 
-	Button[] defaults;
+	Combo valueSetCombo;
 
 	ApiModel apiModel;
 
@@ -128,14 +130,14 @@ public class BindingDetailsPage implements IDetailsPage {
 		parent.setLayout(layout);
 
 		FormToolkit toolkit = managedForm.getToolkit();
-		Section s1 = toolkit.createSection(parent, Section.DESCRIPTION);
+		Section s1 = toolkit.createSection(parent, ExpandableComposite.TITLE_BAR);
 		s1.marginWidth = 10;
 		s1.setText("Binding Details");
 		s1.setDescription("Set the properties of the selected binding.");
 		TableWrapData td = new TableWrapData(TableWrapData.FILL, TableWrapData.TOP);
 		td.grabHorizontal = true;
 		s1.setLayoutData(td);
-		toolkit.createCompositeSeparator(s1);
+		//toolkit.createCompositeSeparator(s1);
 		Composite client = toolkit.createComposite(s1);
 		GridLayout glayout = new GridLayout();
 		glayout.marginWidth = glayout.marginHeight = 0;
@@ -144,9 +146,9 @@ public class BindingDetailsPage implements IDetailsPage {
 
 		SelectionListener choiceListener = new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				Integer value = (Integer) e.widget.getData();
 				if (binding != null) {
-					binding.setDefaults(value.intValue());
+					int selectedIndex = ((Combo)e.widget).getSelectionIndex();
+					binding.setDefaults(selectedIndex);
 					managedForm.dirtyStateChanged();
 				}
 			}
@@ -166,6 +168,14 @@ public class BindingDetailsPage implements IDetailsPage {
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.widthHint = 10;
 		name.setLayoutData(gd);
+
+		toolkit.createLabel(client, "Value Set:");
+		this.valueSetCombo = new Combo(client, SWT.READ_ONLY);
+		valueSetCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		for (int i = 0; i < IApiBinding.ALL_DEFAULTS.length; i++) {
+			valueSetCombo.add(IApiBinding.ALL_DEFAULTS[i]);
+		}
+		valueSetCombo.addSelectionListener(choiceListener);
 
 		createSpacer(toolkit, client, 2);
 		requiredFlag = toolkit.createButton(client, "Required", SWT.CHECK);
@@ -197,17 +207,6 @@ public class BindingDetailsPage implements IDetailsPage {
 
 		createSpacer(toolkit, client, 2);
 
-		toolkit.createLabel(client, "Value Set:");
-		defaults = new Button[IApiBinding.ALL_DEFAULTS.length];
-		for (int i = 0; i < IApiBinding.ALL_DEFAULTS.length; i++) {
-			defaults[i] = toolkit.createButton(client, IApiBinding.ALL_DEFAULTS[i], SWT.RADIO);
-			defaults[i].setData(new Integer(i));
-			defaults[i].addSelectionListener(choiceListener);
-			gd = new GridData();
-			gd.horizontalSpan = 2;
-			defaults[i].setLayoutData(gd);
-		}
-
 		toolkit.paintBordersFor(s1);
 		s1.setClient(client);
 	}
@@ -221,13 +220,8 @@ public class BindingDetailsPage implements IDetailsPage {
 
 	private void update() {
 		int selectedDefaults = binding.getSelectedDefaults();
-		for (int i = 0; i < defaults.length; i++) {
-			if (i == selectedDefaults) {
-				defaults[i].setSelection(true);
-			} else {
-				defaults[i].setSelection(false);
-			}
-		}
+		this.valueSetCombo.select(selectedDefaults);
+		
 		requiredFlag.setSelection(binding != null && binding.isRequired());
 		willSetFlag.setSelection(binding != null && binding.isWillSet());
 		name.setText(binding != null && binding.getName() != null ? binding.getName() : "");
