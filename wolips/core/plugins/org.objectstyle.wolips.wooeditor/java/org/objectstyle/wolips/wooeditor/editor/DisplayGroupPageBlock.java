@@ -74,6 +74,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
@@ -239,30 +240,43 @@ public class DisplayGroupPageBlock extends MasterDetailsBlock {
 		section.marginHeight = 5;
 		//toolkit.createCompositeSeparator(section);
 
-		Composite client = toolkit.createComposite(section, SWT.WRAP);
+		Composite displayGroupsClient = toolkit.createComposite(section, SWT.WRAP);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 		layout.marginWidth = 2;
 		layout.marginHeight = 2;
-		client.setLayout(layout);
+		displayGroupsClient.setLayout(layout);
 
-		Table t = toolkit.createTable(client, SWT.NULL);
+		Table t = toolkit.createTable(displayGroupsClient, SWT.NULL);
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
 		gd.heightHint = 20;
 		gd.widthHint = 80;
-		gd.horizontalSpan = 2;
+		gd.horizontalSpan = 1;
 		t.setLayoutData(gd);
-		toolkit.paintBordersFor(client);
+		toolkit.paintBordersFor(displayGroupsClient);
 
-		gd = new GridData(SWT.NONE, SWT.END, false, false);
-		Button addButton = toolkit.createButton(client, "Add", SWT.PUSH);
-		addButton.setLayoutData(gd);
+    Composite buttonsGroup = new Composite(displayGroupsClient, SWT.NONE);
+    GridData buttonsLayoutData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+    buttonsGroup.setLayoutData(buttonsLayoutData);
+    buttonsGroup.setBackground(displayGroupsClient.getBackground());
+    RowLayout buttonsLayout = new RowLayout(SWT.VERTICAL);
+    buttonsLayout.fill = true;
+    buttonsLayout.justify = true;
+    buttonsLayout.marginTop = 0;
+    buttonsLayout.marginRight = 0;
+    buttonsLayout.marginBottom = 0;
+    buttonsLayout.marginLeft = 0;
+    buttonsGroup.setLayout(buttonsLayout);
+
+		//gd = new GridData(SWT.NONE, SWT.END, false, false);
+		Button addButton = toolkit.createButton(buttonsGroup, "Add", SWT.PUSH);
+		//addButton.setLayoutData(gd);
 		addButton.addSelectionListener(new AddButtonListener());
-		Button removeButton = toolkit.createButton(client, "Remove", SWT.PUSH);
-		removeButton.setLayoutData(gd);
+		Button removeButton = toolkit.createButton(buttonsGroup, "Remove", SWT.PUSH);
+		//removeButton.setLayoutData(gd);
 		removeButton.addSelectionListener(new RemoveButtonListener());
 
-		section.setClient(client);
+		section.setClient(displayGroupsClient);
 		final SectionPart spart = new SectionPart(section);
 		managedForm.addPart(spart);
 
