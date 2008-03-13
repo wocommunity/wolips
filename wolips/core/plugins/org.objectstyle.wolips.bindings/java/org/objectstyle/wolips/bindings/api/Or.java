@@ -60,7 +60,7 @@ import java.util.Map;
 
 import org.w3c.dom.Element;
 
-public class Or extends AbstractValidationChild {
+public class Or extends AbstractValidationContainer {
 	protected final static String OR = "or";
 
 	protected Or(Element element, ApiModel apiModel) {

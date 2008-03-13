@@ -60,7 +60,7 @@ import java.util.Map;
 
 import org.w3c.dom.Element;
 
-public class Validation extends AbstractValidationChild {
+public class Validation extends AbstractValidationContainer {
 
   public final static String MESSAGE = "message";
 

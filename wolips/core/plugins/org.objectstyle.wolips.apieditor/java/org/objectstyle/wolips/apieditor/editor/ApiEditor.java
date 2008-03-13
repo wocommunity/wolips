@@ -56,8 +56,13 @@
 package org.objectstyle.wolips.apieditor.editor;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -89,12 +94,18 @@ public class ApiEditor extends FormEditor {
 				addPage(new BindingsPage(this, "Bindings"));
 				// addPage(new ValidationPage(this, "Validation"));
 				// addPage(new DisplayPage(this, "Display"));
-				addPage(new DeletePage(this, "Delete"));
+				//addPage(new DeletePage(this, "Delete"));
 			}
 		} catch (PartInitException e) {
 			ApieditorPlugin.getDefault().debug(e);
 		} catch (ApiModelException e) {
 			ApieditorPlugin.getDefault().debug(e);
+		}
+		CTabFolder ctf = (CTabFolder)getContainer();
+	    ctf.setTabPosition(SWT.TOP);
+		ctf.setBorderVisible(false);
+		if (getPageCount() <= 1) {
+			ctf.setTabHeight(0);
 		}
 	}
 
@@ -102,6 +113,19 @@ public class ApiEditor extends FormEditor {
 		try {
 			this.getModel().saveChanges();
 			editorDirtyStateChanged();
+			IFile file = this.getModel().getEclipseFile();
+			if (file != null && file.exists()) {
+				file.refreshLocal(IResource.DEPTH_INFINITE, null);
+			}
+			else {
+				String location = this.getModel().getLocation();
+				if (location != null) {
+					file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(location));
+					if (file != null) {
+						file.refreshLocal(IResource.DEPTH_INFINITE, null);
+					}
+				}
+			}
 		} catch (Throwable t) {
 			throw new RuntimeException("Failed to save .api file.", t);
 		}

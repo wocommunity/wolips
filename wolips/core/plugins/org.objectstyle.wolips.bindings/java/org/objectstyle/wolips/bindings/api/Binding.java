@@ -66,7 +66,7 @@ import org.w3c.dom.Element;
 
 public class Binding extends AbstractApiModelElement implements IApiBinding {
 
-  private BindingNameChangedListener bindingNameChangedListener;
+  private BindingChangedListener bindingChangedListener;
 
   public final static String BINDING = "binding";
 
@@ -112,10 +112,23 @@ public class Binding extends AbstractApiModelElement implements IApiBinding {
 
   public void setName(String className) {
     synchronized (this.apiModel) {
-      element.setAttribute(NAME, className);
-      apiModel.markAsDirty();
-      if (bindingNameChangedListener != null) {
-        bindingNameChangedListener.namedChanged(this);
+      String oldName = getName();
+      if (!ComparisonUtils.equals(className, oldName)) {
+        if (className == null || className.length() == 0) {
+          throw new IllegalArgumentException("Binding names cannot be blank.");
+        }
+        
+        if (parent.getBinding(className) != null) {
+          throw new IllegalArgumentException("Binding names must be unique.");
+        }
+
+        element.setAttribute(NAME, className);
+        for (IValidation validation : parent.getDeepAffectedValidations(oldName)) {
+          if (validation instanceof AbstractNamedValidation) {
+            ((AbstractNamedValidation)validation).setName(className);
+          }
+        }
+        markAsDirty();
       }
     }
   }
@@ -133,6 +146,7 @@ public class Binding extends AbstractApiModelElement implements IApiBinding {
   public void setDefaults(String defaults) {
     synchronized (this.apiModel) {
       element.setAttribute(DEFAULTS, defaults);
+      markAsDirty();
     }
   }
 
@@ -150,7 +164,7 @@ public class Binding extends AbstractApiModelElement implements IApiBinding {
         }
         this.setDefaults(ALL_DEFAULTS[defaults]);
       }
-      apiModel.markAsDirty();
+      markAsDirty();
     }
   }
 
@@ -194,7 +208,7 @@ public class Binding extends AbstractApiModelElement implements IApiBinding {
       else {
         Unbound.removeFromWoWithBinding(parent, this);
       }
-      apiModel.markAsDirty();
+      markAsDirty();
     }
   }
 
@@ -238,7 +252,7 @@ public class Binding extends AbstractApiModelElement implements IApiBinding {
       else {
         Unsettable.removeFromWoWithBinding(parent, this);
       }
-      apiModel.markAsDirty();
+      markAsDirty();
     }
   }
 
@@ -246,11 +260,18 @@ public class Binding extends AbstractApiModelElement implements IApiBinding {
     return ApiUtils.getValidValues(this, partialValue, javaProject, componentType, typeCache);
   }
 
-  public interface BindingNameChangedListener {
-    public abstract void namedChanged(Binding binding);
+  public interface BindingChangedListener {
+    public abstract void bindingChanged(Binding binding);
   }
 
-  public void setBindingNameChangedListener(BindingNameChangedListener bindingNameChangedListener) {
-    this.bindingNameChangedListener = bindingNameChangedListener;
+  public void setBindingChangedListener(BindingChangedListener bindingChangedListener) {
+    this.bindingChangedListener = bindingChangedListener;
+  }
+  
+  public void markAsDirty() {
+    apiModel.markAsDirty();
+    if (bindingChangedListener != null) {
+      bindingChangedListener.bindingChanged(this);
+    }
   }
 }

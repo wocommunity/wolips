@@ -61,9 +61,9 @@ import java.util.Map;
 
 import org.w3c.dom.Element;
 
-public abstract class AbstractValidationChild extends AbstractApiModelElement implements IValidation {
+public abstract class AbstractValidationContainer extends AbstractApiModelElement implements IValidation {
 
-	public AbstractValidationChild(Element element, ApiModel apiModel) {
+	public AbstractValidationContainer(Element element, ApiModel apiModel) {
 		super(element, apiModel);
 	}
 
@@ -197,6 +197,13 @@ public abstract class AbstractValidationChild extends AbstractApiModelElement im
 		  allValidationChildren.addAll(validationChildren);
 		}
 	}
+
+  public void fillInValidationsAffectedByBindingNamed(String bindingName, List<IValidation> validations) {
+    List<IValidation> validationChildren = getValidationChildren();
+    for (int i = 0; i < validationChildren.size(); i++) {
+      validationChildren.get(i).fillInValidationsAffectedByBindingNamed(bindingName, validations);
+    }
+  }
 
 	public boolean isAffectedByBindingNamed(String bindingName) {
 		boolean isAffectedByBindingName = false;

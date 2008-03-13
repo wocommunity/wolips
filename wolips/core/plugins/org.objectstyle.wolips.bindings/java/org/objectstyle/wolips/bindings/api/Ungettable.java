@@ -60,7 +60,7 @@ import java.util.Map;
 
 import org.w3c.dom.Element;
 
-public class Ungettable extends AbstractUn {
+public class Ungettable extends AbstractNamedValidation {
 
   protected final static String UNGETTABLE = "ungettable";
 

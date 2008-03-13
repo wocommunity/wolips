@@ -6,7 +6,7 @@ import java.util.Map;
 import org.objectstyle.wolips.bindings.Activator;
 import org.w3c.dom.Element;
 
-public class Count extends AbstractValidationChild {
+public class Count extends AbstractValidationContainer {
   protected final static String COUNT = "count";
 
   public final static String TEST = "test";

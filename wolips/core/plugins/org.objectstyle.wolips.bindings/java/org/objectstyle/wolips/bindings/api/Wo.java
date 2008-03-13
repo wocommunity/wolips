@@ -103,7 +103,7 @@ public class Wo extends AbstractApiModelElement {
       if (value == null) {
         return false;
       }
-      return value.equals("true");
+      return value.equalsIgnoreCase("true") || value.equalsIgnoreCase("yes");
     }
   }
 
@@ -115,6 +115,7 @@ public class Wo extends AbstractApiModelElement {
       else {
         element.setAttribute(WOCOMPONENTCONTENT, "false");
       }
+      apiModel.markAsDirty();
     }
   }
 
@@ -161,6 +162,15 @@ public class Wo extends AbstractApiModelElement {
       if (validation.isAffectedByBindingNamed(bindingName)) {
         affectedValidations.add(validation);
       }
+    }
+    return affectedValidations;
+  }
+
+  public List<IValidation> getDeepAffectedValidations(String bindingName) {
+    List<Validation> validations = getValidations();
+    List<IValidation> affectedValidations = new LinkedList<IValidation>();
+    for (Validation validation : validations) {
+      validation.fillInValidationsAffectedByBindingNamed(bindingName, affectedValidations);
     }
     return affectedValidations;
   }

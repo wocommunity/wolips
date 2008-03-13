@@ -60,11 +60,11 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
-public abstract class AbstractUn extends AbstractApiModelElement implements IValidation {
+public abstract class AbstractNamedValidation extends AbstractApiModelElement implements IValidation {
 
   public final static String NAME = "name";
 
-  protected AbstractUn(Element element, ApiModel apiModel) {
+  protected AbstractNamedValidation(Element element, ApiModel apiModel) {
     super(element, apiModel);
   }
 
@@ -84,6 +84,12 @@ public abstract class AbstractUn extends AbstractApiModelElement implements IVal
     return new LinkedList<IValidation>();
   }
 
+  public void fillInValidationsAffectedByBindingNamed(String bindingName, List<IValidation> validations) {
+    if (isAffectedByBindingNamed(bindingName)) {
+      validations.add(this);
+    }
+  }
+  
   public boolean isAffectedByBindingNamed(String bindingName) {
     return bindingName.equals(this.getName());
   }

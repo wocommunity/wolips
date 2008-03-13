@@ -56,7 +56,6 @@
 package org.objectstyle.wolips.apieditor.editor;
 
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 public class BindingsPage extends ApiFormPage {
 
@@ -70,8 +69,8 @@ public class BindingsPage extends ApiFormPage {
 	}
 
 	protected void createFormContent(final IManagedForm managedForm) {
-		final ScrolledForm form = managedForm.getForm();
-		form.setText("Bindings");
+		//final ScrolledForm form = managedForm.getForm();
+		//form.setText("Bindings");
 		block.createContent(managedForm);
 	}
 }
