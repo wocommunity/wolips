@@ -57,7 +57,6 @@
 package org.objectstyle.wolips.wooeditor.editor;
 
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 public class DisplayGroupPage extends WooFormPage {
 	public static final String PAGE_ID =
@@ -72,8 +71,8 @@ public class DisplayGroupPage extends WooFormPage {
 
 	@Override
   protected void createFormContent(final IManagedForm managedForm) {
-		final ScrolledForm form = managedForm.getForm();
-		form.setText("Display Groups");
+		//final ScrolledForm form = managedForm.getForm();
+		//form.setText("Display Groups");
 		block.createContent(managedForm);
 	}
 
