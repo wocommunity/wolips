@@ -192,7 +192,7 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 			componentEditorTabsList.add(wooTab);
 			wooTab.createTab();
 			wooPageId = this.addPage(wooTab);
-			this.setPageText(tabIndex, language + "DisplayGroups");
+			this.setPageText(tabIndex, language + "Display Groups");
 			tabIndex++;
 		}
 		
