@@ -55,6 +55,11 @@
  */
 package org.objectstyle.wolips.jdt.ui;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
@@ -65,19 +70,49 @@ import org.eclipse.jface.viewers.Viewer;
 import org.objectstyle.wolips.jdt.ui.tags.TaggedComponentsContentProvider;
 
 public class WOJavaElementComparator extends JavaElementComparator {
+	private Set<String> _bundleExtensions;
+
+	public WOJavaElementComparator() {
+		_bundleExtensions = new HashSet<String>();
+		_bundleExtensions.add("wo");
+		_bundleExtensions.add("eomodeld");
+	}
+
 	@Override
 	public int compare(Viewer viewer, Object e1, Object e2) {
-		boolean useNormalComparison = true;
-		int comparison = 0;
 		if (e1 instanceof IResource && e2 instanceof IResource) {
 			String name1 = ((IResource) e1).getName();
+			String extension1 = null;
+			int dot1 = name1.lastIndexOf('.');
+			if (dot1 != -1) {
+				extension1 = name1.substring(dot1 + 1);
+			}
+			
 			String name2 = ((IResource) e2).getName();
-			if ((name1.endsWith(".wo") || name1.endsWith(".api")) && (name2.endsWith(".wo") || name2.endsWith(".api"))) {
-				comparison = name1.compareTo(name2);
-				useNormalComparison = false;
+			String extension2 = null;
+			int dot2 = name2.lastIndexOf('.');
+			if (dot2 != -1) {
+				extension2 = name2.substring(dot2 + 1);
+			}
+			
+			if (_bundleExtensions.contains(extension1)) {
+				if (e2 instanceof IFile || _bundleExtensions.contains(extension2)) {
+					return name1.compareTo(name2);
+				}
+				else if (e2 instanceof IContainer) {
+					return 1;
+				}
+			}
+			else if (_bundleExtensions.contains(extension2)) {
+				if (e1 instanceof IFile) {
+					return name1.compareTo(name2);
+				}
+				else if (e1 instanceof IContainer) {
+					return -1;
+				}
 			}
 		}
-		if (e1 instanceof TaggedComponentsContentProvider || e2 instanceof TaggedComponentsContentProvider) {
+		else if (e1 instanceof TaggedComponentsContentProvider || e2 instanceof TaggedComponentsContentProvider) {
 			IPackageFragmentRoot root1 = getPackageFragmentRoot(e1);
 			IPackageFragmentRoot root2 = getPackageFragmentRoot(e2);
 			if (root1 == null && root2 == null) {
@@ -91,10 +126,8 @@ public class WOJavaElementComparator extends JavaElementComparator {
 			}
 			return 1;
 		}
-		if (useNormalComparison) {
-			comparison = super.compare(viewer, e1, e2);
-		}
-		return comparison;
+		
+		return super.compare(viewer, e1, e2);
 	}
 
 	private IPackageFragmentRoot getPackageFragmentRoot(Object element) {
@@ -107,7 +140,7 @@ public class WOJavaElementComparator extends JavaElementComparator {
 			// non resolvable - return null
 			return null;
 		}
-		if(!(element instanceof IJavaElement)) {
+		if (!(element instanceof IJavaElement)) {
 			return null;
 		}
 		return JavaModelUtil.getPackageFragmentRoot((IJavaElement) element);
