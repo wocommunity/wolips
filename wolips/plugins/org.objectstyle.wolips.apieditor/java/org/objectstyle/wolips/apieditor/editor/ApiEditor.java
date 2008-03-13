@@ -55,6 +55,7 @@
  */
 package org.objectstyle.wolips.apieditor.editor;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
@@ -86,8 +87,8 @@ public class ApiEditor extends FormEditor {
 				addPage(new CreatePage(this, "Create"));
 			} else {
 				addPage(new BindingsPage(this, "Bindings"));
-				//addPage(new ValidationPage(this, "Validation"));
-				//addPage(new DisplayPage(this, "Display"));
+				// addPage(new ValidationPage(this, "Validation"));
+				// addPage(new DisplayPage(this, "Display"));
 				addPage(new DeletePage(this, "Delete"));
 			}
 		} catch (PartInitException e) {
@@ -127,8 +128,12 @@ public class ApiEditor extends FormEditor {
 
 	public ApiModel getModel() throws ApiModelException {
 		if (model == null) {
-			if (((FileEditorInput) this.getEditorInput()).getFile().exists()) {
-				model = new ApiModel(((FileEditorInput) this.getEditorInput()).getFile().getLocation().toFile());
+			FileEditorInput editorInput = ((FileEditorInput) this.getEditorInput());
+			if (editorInput != null) {
+				IFile apiFile = editorInput.getFile();
+				if (apiFile != null && apiFile.exists()) {
+					model = new ApiModel(((FileEditorInput) this.getEditorInput()).getFile().getLocation().toFile());
+				}
 			}
 		}
 		return model;
