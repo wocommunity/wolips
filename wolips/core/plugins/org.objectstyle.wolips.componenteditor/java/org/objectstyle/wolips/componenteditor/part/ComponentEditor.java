@@ -180,7 +180,7 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 		
 		CTabFolder ctf = (CTabFolder)getContainer();
 		ctf.setBorderVisible(false);
-		if (ctf.getTabList().length <= 1) {
+		if (getPageCount() <= 1) {
 			ctf.setTabHeight(0);
 		}
 	}
