@@ -649,7 +649,9 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 
 	public EOModelMap toMap() {
 		EOModelMap fetchSpecMap = myFetchSpecMap.cloneModelMap();
-		fetchSpecMap.setString("entityName", myEntity.getName(), true);
+		if (myEntity != null) {
+			fetchSpecMap.setString("entityName", myEntity.getName(), true);
+		}
 		fetchSpecMap.setString("class", myClass, true);
 		fetchSpecMap.setInteger("fetchLimit", myFetchLimit);
 		fetchSpecMap.setBoolean("isDeep", myDeep, EOModelMap.YESNO);
