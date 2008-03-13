@@ -372,7 +372,7 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 		// Create form for layout
 		FormToolkit form = myManagedForm.getToolkit();
 		Section displayGroupSection = form.createSection(parent,
-				Section.DESCRIPTION);
+				Section.TITLE_BAR);
 		displayGroupSection.marginWidth = 10;
 		displayGroupSection.setText("Display Group Details");
 		displayGroupSection.setDescription("Set the properties of the "
@@ -383,7 +383,7 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 		tableWrapData.grabHorizontal = true;
 		displayGroupSection.setLayoutData(tableWrapData);
 
-		form.createCompositeSeparator(displayGroupSection);
+		//form.createCompositeSeparator(displayGroupSection);
 		Composite displayGroupComposite = form
 				.createComposite(displayGroupSection);
 

@@ -230,14 +230,14 @@ public class DisplayGroupPageBlock extends MasterDetailsBlock {
 			final Composite parent) {
 		myManagedForm = managedForm;
 		FormToolkit toolkit = managedForm.getToolkit();
-		Section section = toolkit.createSection(parent, Section.DESCRIPTION);
+		Section section = toolkit.createSection(parent, Section.TITLE_BAR);
 
 		section.setText("Display Groups");
 		section.setDescription("The list contains display groups from the "
 				+ "component whose details are editable on the right");
 		section.marginWidth = 10;
 		section.marginHeight = 5;
-		toolkit.createCompositeSeparator(section);
+		//toolkit.createCompositeSeparator(section);
 
 		Composite client = toolkit.createComposite(section, SWT.WRAP);
 		GridLayout layout = new GridLayout();
