@@ -11,5 +11,5 @@ public interface IWOBrowserDelegate {
 	
 	public void bindingDragCanceled(WOBrowserColumn column);
 	
-	public void bindingDropped(WOBrowserColumn column, Point dropPoint);
+	public boolean bindingDropped(WOBrowserColumn column, Point dropPoint, BindingsDragHandler dragHandler);
 }

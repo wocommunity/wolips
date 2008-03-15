@@ -139,14 +139,15 @@ public abstract class AbstractBindingsDropHandler<T, U, V, W extends Control> im
 	}
 
 	public void bindingDragCanceled(WOBrowserColumn column) {
-		bindingDragFinished(column, null, false);
+		bindingDragFinished(column, null, false, null);
 	}
 
-	public void bindingDropped(WOBrowserColumn column, Point dropPoint) {
-		bindingDragFinished(column, dropPoint, true);
+	public boolean bindingDropped(WOBrowserColumn column, Point dropPoint, BindingsDragHandler dragHandler) {
+		return bindingDragFinished(column, dropPoint, true, dragHandler);
 	}
 
-	public void bindingDragFinished(WOBrowserColumn column, Point dropPoint, boolean dropped) {
+	public boolean bindingDragFinished(WOBrowserColumn column, Point dropPoint, boolean dropped, BindingsDragHandler dragHandler) {
+		boolean dropFinished = true;
 		try {
 			_autoscroller.stopScroll();
 
@@ -155,13 +156,14 @@ public abstract class AbstractBindingsDropHandler<T, U, V, W extends Control> im
 			controlBounds.x = 0;
 			controlBounds.y = 0;
 			if (isEditorActive() && dropped && controlBounds.contains(controlDragPoint)) {
-				dropFromColumnAtPoint(column, dropPoint);
+				dropFinished = dropFromColumnAtPoint(column, dropPoint, dragHandler);
 			} else {
 				removeHoverAnnotation();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return dropFinished;
 	}
 
 	public void browserColumnAdded(WOBrowserColumn column) {
@@ -188,5 +190,5 @@ public abstract class AbstractBindingsDropHandler<T, U, V, W extends Control> im
 
 	protected abstract Rectangle getSelectionRectangle(U item);
 
-	protected abstract void dropFromColumnAtPoint(WOBrowserColumn column, Point dropPoint) throws Exception;
+	protected abstract boolean dropFromColumnAtPoint(WOBrowserColumn column, Point dropPoint, BindingsDragHandler dragHandler) throws Exception;
 }

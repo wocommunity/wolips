@@ -5,6 +5,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MenuEvent;
+import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
@@ -20,14 +22,27 @@ import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.refactoring.RefactoringWodElement;
 import org.objectstyle.wolips.wodclipse.core.util.WodModelUtils;
 
-public class BindingsPopUpMenu {
+public class BindingsPopUpMenu implements MenuListener {
 	private Menu _menu;
 
 	private WodParserCache _cache;
 
 	public BindingsPopUpMenu(Decorations parent, WodParserCache cache) {
 		_menu = new Menu(parent, SWT.POP_UP);
+		_menu.addMenuListener(this);
 		_cache = cache;
+	}
+
+	public void menuHidden(MenuEvent e) {
+		Menu menu = (Menu) e.widget;
+		BindingsDragHandler dragHandler = (BindingsDragHandler) menu.getData();
+		if (dragHandler != null) {
+			dragHandler.bindingDropFinished();
+		}
+	}
+
+	public void menuShown(MenuEvent e) {
+		// DO NOTHING
 	}
 
 	public Menu getMenu() {
@@ -38,7 +53,7 @@ public class BindingsPopUpMenu {
 		_menu.dispose();
 	}
 
-	public boolean showMenuAtLocation(IWodElement wodElement, String droppedKeyPath, Point location) throws Exception {
+	public boolean showMenuAtLocation(IWodElement wodElement, String droppedKeyPath, Point location, BindingsDragHandler dragHandler) throws Exception {
 		boolean showMenu = false;
 		Wo api = wodElement.getApi(_cache.getJavaProject(), WodParserCache.getTypeCache());
 		if (api != null) {
@@ -74,31 +89,29 @@ public class BindingsPopUpMenu {
 					MenuItem mi = createMenuItem(wodElement, actionBinding, wodProblems);
 					mi.addSelectionListener(selectionListener);
 				}
-				
+
 				if (showMenu) {
+					_menu.setData(dragHandler);
 					_menu.setLocation(location.x, location.y);
 					_menu.setVisible(true);
 				}
-			}
-			else {
+			} else {
 				showMenu = false;
 			}
 		}
-		
+
 		return showMenu;
 	}
-	
+
 	protected MenuItem createMenuItem(IWodElement element, IApiBinding binding, List<WodProblem> wodProblems) {
 		MenuItem menuItem = new MenuItem(_menu, SWT.NONE);
 		menuItem.setData(binding);
 		menuItem.setText(binding.getName());
 		if (element.getBindingNamed(binding.getName()) != null) {
 			menuItem.setImage(ComponenteditorPlugin.getDefault().getImage(ComponenteditorPlugin.CONNECTED_ICON));
-		}
-		else if (WodModelUtils.hasValidationProblem(binding, wodProblems)) {
+		} else if (WodModelUtils.hasValidationProblem(binding, wodProblems)) {
 			menuItem.setImage(ComponenteditorPlugin.getDefault().getImage(ComponenteditorPlugin.UNCONNECTED_PROBLEM_ICON));
-		}
-		else {
+		} else {
 			menuItem.setImage(ComponenteditorPlugin.getDefault().getImage(ComponenteditorPlugin.UNCONNECTED_ICON));
 		}
 		return menuItem;

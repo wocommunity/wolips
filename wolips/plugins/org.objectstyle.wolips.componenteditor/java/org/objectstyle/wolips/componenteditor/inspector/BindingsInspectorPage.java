@@ -72,17 +72,19 @@ public class BindingsInspectorPage extends Page implements ICursorPositionListen
 		}
 	}
 
-	public void bindingDropped(WOBrowserColumn column, Point dropPoint) {
+	public boolean bindingDropped(WOBrowserColumn column, Point dropPoint, BindingsDragHandler dragHandler) {
+		boolean dropFinished = true;
 		if (_templateDropHandler != null) {
-			_templateDropHandler.bindingDropped(column, dropPoint);
+			dropFinished &= _templateDropHandler.bindingDropped(column, dropPoint, dragHandler);
 		}
 		if (_wodDropHandler != null) {
-			_wodDropHandler.bindingDropped(column, dropPoint);
+			dropFinished &= _wodDropHandler.bindingDropped(column, dropPoint, dragHandler);
 		}
 		if (_inspectorDropHandler != null) {
-			_inspectorDropHandler.bindingDropped(column, dropPoint);
+			dropFinished &= _inspectorDropHandler.bindingDropped(column, dropPoint, dragHandler);
 		}
 		_inspector.refresh();
+		return dropFinished;
 	}
 
 	public void browserColumnAdded(WOBrowserColumn column) {

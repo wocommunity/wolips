@@ -32,7 +32,8 @@ public class BindingsInspectorDropHandler extends AbstractBindingsDropHandler<Bi
 	}
 
 	@Override
-	protected void dropFromColumnAtPoint(WOBrowserColumn column, Point dropPoint) throws Exception {
+	protected boolean dropFromColumnAtPoint(WOBrowserColumn column, Point dropPoint, BindingsDragHandler dragHandler) throws Exception {
+		boolean dropFinished = true;
 		try {
 			Point controlDropPoint = getEditorControl().toControl(dropPoint);
 			TableItem selectedItem = getSelectedItemAtPoint(_inspector, controlDropPoint);
@@ -53,6 +54,7 @@ public class BindingsInspectorDropHandler extends AbstractBindingsDropHandler<Bi
 		} finally {
 			removeHoverAnnotation();
 		}
+		return dropFinished;
 	}
 
 	@Override
