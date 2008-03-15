@@ -20,6 +20,7 @@ import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
 import org.objectstyle.wolips.bindings.wod.IWodBinding;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.htmlpreview.editor.tags.DefaultTagDelegate;
+import org.objectstyle.wolips.htmlpreview.editor.tags.ERXStyleSheetTagDelegate;
 import org.objectstyle.wolips.htmlpreview.editor.tags.WOBrowserTagDelegate;
 import org.objectstyle.wolips.htmlpreview.editor.tags.WOCheckBoxTagDelegate;
 import org.objectstyle.wolips.htmlpreview.editor.tags.WOComponentContentTagDelegate;
@@ -76,6 +77,7 @@ public class PreviewRenderDelegate implements RenderDelegate {
 		_tagDelegates.put("WOHyperlink", new WOHyperlinkTagDelegate());
 		_tagDelegates.put("WOImage", new WOImageTagDelegate());
 		_tagDelegates.put("WOBrowser", new WOBrowserTagDelegate());
+		_tagDelegates.put("ERXStyleSheet", new ERXStyleSheetTagDelegate());
 		_tagDelegates.put(PreviewRenderDelegate.DEFAULT, new DefaultTagDelegate());
 	}
 
@@ -104,52 +106,56 @@ public class PreviewRenderDelegate implements RenderDelegate {
 					}
 
 					String elementTypeName = wodElement.getElementType();
-					IType type = BindingReflectionUtils.findElementType(cache.getJavaProject(), elementTypeName, false, WodParserCache.getTypeCache());
-					LocalizedComponentsLocateResult componentsLocateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(type.getJavaProject().getProject(), wodElement.getElementType());
-					IFile htmlFile = componentsLocateResults.getFirstHtmlFile();
-					if (htmlFile != null) {
-						WodParserCache nestedCache = WodParserCache.parser(htmlFile);
-						if (nestedCache != null) {
-							Wo apiModel = ApiUtils.findApiModelWo(type, WodParserCache.getTypeCache().getApiCache(cache.getJavaProject()));
-							if (apiModel != null) {
-								String preview = apiModel.getPreview();
-								if (preview != null) {
-									StringBuffer previewBuffer = new StringBuffer();
-									Pattern bindingPattern = Pattern.compile("\\$([a-zA-Z0-9_]+)");
-									Matcher matcher = bindingPattern.matcher(preview);
-									while (matcher.find()) {
-										String bindingName = matcher.group(1);
-										IWodBinding binding = wodElement.getBindingNamed(bindingName);
-										if (binding == null) {
-											matcher.appendReplacement(previewBuffer, "");
-										} else {
-											matcher.appendReplacement(previewBuffer, binding.getValue());
-										}
-									}
-									matcher.appendTail(previewBuffer);
-
-									nestedCache = nestedCache.cloneCache();
-									nestedCache.getHtmlEntry().setContents("<span>" + previewBuffer.toString() + "</span>");
-								}
-							}
-							_caches.push(nestedCache);
-							_nodes.push(node);
-							try {
-								FuzzyXMLDocument nestedDocument = nestedCache.getHtmlEntry().getModel();
-								if (nestedDocument != null) {
-									nestedDocument.getDocumentElement().toXMLString(renderContext, xmlBuffer);
-								}
-							} finally {
-								_nodes.pop();
-								_caches.pop();
-							}
-						}
-					} else {
-						TagDelegate tagDelegate = _tagDelegates.get(elementTypeName);
-						if (tagDelegate == null) {
-							tagDelegate = _tagDelegates.get(PreviewRenderDelegate.DEFAULT);
-						}
+					
+					TagDelegate tagDelegate = _tagDelegates.get(elementTypeName);
+					if (tagDelegate != null) {
 						tagDelegate.renderNode(wodElement, element, renderContext, xmlBuffer, _cssBuffer, _caches, _nodes);
+					}
+					else {
+						IType type = BindingReflectionUtils.findElementType(cache.getJavaProject(), elementTypeName, false, WodParserCache.getTypeCache());
+						LocalizedComponentsLocateResult componentsLocateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(type.getJavaProject().getProject(), wodElement.getElementType());
+						IFile htmlFile = componentsLocateResults.getFirstHtmlFile();
+						if (htmlFile != null) {
+							WodParserCache nestedCache = WodParserCache.parser(htmlFile);
+							if (nestedCache != null) {
+								Wo apiModel = ApiUtils.findApiModelWo(type, WodParserCache.getTypeCache().getApiCache(cache.getJavaProject()));
+								if (apiModel != null) {
+									String preview = apiModel.getPreview();
+									if (preview != null) {
+										StringBuffer previewBuffer = new StringBuffer();
+										Pattern bindingPattern = Pattern.compile("\\$([a-zA-Z0-9_]+)");
+										Matcher matcher = bindingPattern.matcher(preview);
+										while (matcher.find()) {
+											String bindingName = matcher.group(1);
+											IWodBinding binding = wodElement.getBindingNamed(bindingName);
+											if (binding == null) {
+												matcher.appendReplacement(previewBuffer, "");
+											} else {
+												matcher.appendReplacement(previewBuffer, binding.getValue());
+											}
+										}
+										matcher.appendTail(previewBuffer);
+	
+										nestedCache = nestedCache.cloneCache();
+										nestedCache.getHtmlEntry().setContents("<span>" + previewBuffer.toString() + "</span>");
+									}
+								}
+								_caches.push(nestedCache);
+								_nodes.push(node);
+								try {
+									FuzzyXMLDocument nestedDocument = nestedCache.getHtmlEntry().getModel();
+									if (nestedDocument != null) {
+										nestedDocument.getDocumentElement().toXMLString(renderContext, xmlBuffer);
+									}
+								} finally {
+									_nodes.pop();
+									_caches.pop();
+								}
+							}
+						} else {
+							tagDelegate = _tagDelegates.get(PreviewRenderDelegate.DEFAULT);
+							tagDelegate.renderNode(wodElement, element, renderContext, xmlBuffer, _cssBuffer, _caches, _nodes);
+						}
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -169,6 +175,9 @@ public class PreviewRenderDelegate implements RenderDelegate {
 			FuzzyXMLElement element = (FuzzyXMLElement) node;
 			String tagName = element.getName();
 			if (WodHtmlUtils.isWOTag(tagName)) {
+				renderSurroundingTags = false;
+			}
+			else if ("document".equals(tagName)) {
 				renderSurroundingTags = false;
 			}
 		}
