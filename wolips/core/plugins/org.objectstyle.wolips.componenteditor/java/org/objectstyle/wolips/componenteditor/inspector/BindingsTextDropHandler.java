@@ -92,7 +92,8 @@ public class BindingsTextDropHandler extends AbstractBindingsDropHandler<IWodEle
 	}
 
 	@Override
-	protected void dropFromColumnAtPoint(WOBrowserColumn column, Point dropPoint) throws Exception {
+	protected boolean dropFromColumnAtPoint(WOBrowserColumn column, Point dropPoint, BindingsDragHandler dragHandler) throws Exception {
+		boolean dropFinished = true;
 		Point controlDropPoint = getEditorControl().toControl(dropPoint);
 		IWodElement wodElement = _woEditor.getWodElementAtPoint(controlDropPoint, true, true);
 		if (wodElement == null) {
@@ -100,11 +101,15 @@ public class BindingsTextDropHandler extends AbstractBindingsDropHandler<IWodEle
 		} else {
 			String droppedKeyPath = column.getSelectedKeyPath();
 			if (_bindingsMenu != null) {
-				boolean menuShown = _bindingsMenu.showMenuAtLocation(wodElement, droppedKeyPath, dropPoint);
+				boolean menuShown = _bindingsMenu.showMenuAtLocation(wodElement, droppedKeyPath, dropPoint, dragHandler);
 				if (!menuShown) {
 					removeHoverAnnotation();
 				}
+				else {
+					dropFinished = false;
+				}
 			}
 		}
+		return dropFinished;
 	}
 }

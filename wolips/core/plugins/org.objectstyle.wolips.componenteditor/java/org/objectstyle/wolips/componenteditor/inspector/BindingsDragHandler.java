@@ -169,15 +169,23 @@ public class BindingsDragHandler implements DragSourceListener, IDropTarget2, Pa
 		return null;
 	}
 
-	public void dragFinished(DragSourceEvent event) {
+	public void bindingDropFinished() {
 		disposeCanvas();
-
+	}
+	
+	public void dragFinished(DragSourceEvent event) {
 		if (_browserColumn.getDelegate() != null) {
 			if (event.doit) {
-				_browserColumn.getDelegate().bindingDropped(_browserColumn, _currentPoint);
+				boolean dropFinished = _browserColumn.getDelegate().bindingDropped(_browserColumn, _currentPoint, this);
+				if (dropFinished) {
+					disposeCanvas();
+				}
 			} else {
+				disposeCanvas();
 				_browserColumn.getDelegate().bindingDragCanceled(_browserColumn);
 			}
+		} else {
+			disposeCanvas();
 		}
 	}
 
@@ -208,7 +216,7 @@ public class BindingsDragHandler implements DragSourceListener, IDropTarget2, Pa
 				event.doit = true;
 			}
 		}
-		
+
 		if (event.doit) {
 			createCanvas();
 		}
