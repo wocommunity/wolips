@@ -219,8 +219,8 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 		return this.getDotApplicationAdapter();
 	}
 
-	public List getFrameworkPaths() {
-		ArrayList list = new ArrayList();
+	public List<IPath> getFrameworkPaths() {
+		ArrayList<IPath> list = new ArrayList<IPath>();
 		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		for (int i = 0; i < projects.length; i++) {
 			if (isFrameworkReference(projects[i])) {
@@ -236,8 +236,8 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 		return list;
 	}
 
-	public List getFrameworkNames() {
-		Set frameworkNamesSet = new TreeSet();
+	public List<String> getFrameworkNames() {
+		Set<String> frameworkNamesSet = new TreeSet<String>();
 		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		for (int i = 0; i < projects.length; i++) {
 			if (isFrameworkReference(projects[i])) {
@@ -250,7 +250,7 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 		} catch (JavaModelException e) {
 			CorePlugin.getDefault().log(e);
 		}
-		return new LinkedList(frameworkNamesSet);
+		return new LinkedList<String>(frameworkNamesSet);
 	}
 
 	public String getFrameworkName(IPath frameworkPath) {
@@ -263,8 +263,8 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 		return frameworkName;
 	}
 
-	private List toFrameworkPaths(IClasspathEntry[] classpathEntries) {
-		ArrayList arrayList = new ArrayList();
+	private List<IPath> toFrameworkPaths(IClasspathEntry[] classpathEntries) {
+		ArrayList<IPath> arrayList = new ArrayList<IPath>();
 		for (int i = 0; i < classpathEntries.length; i++) {
 			IPath path = classpathEntries[i].getPath();
 			IPath choppedFrameworkPath = null;
@@ -282,9 +282,9 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 		return arrayList;
 	}
 
-	private List toFrameworkNames(IClasspathEntry[] classpathEntries) {
-		List pathsList = toFrameworkPaths(classpathEntries);
-		ArrayList namesList = new ArrayList(pathsList.size());
+	private List<String> toFrameworkNames(IClasspathEntry[] classpathEntries) {
+		List<IPath> pathsList = toFrameworkPaths(classpathEntries);
+		ArrayList<String> namesList = new ArrayList<String>(pathsList.size());
 		Iterator pathsIter = pathsList.iterator();
 		while (pathsIter.hasNext()) {
 			IPath path = (IPath) pathsIter.next();
