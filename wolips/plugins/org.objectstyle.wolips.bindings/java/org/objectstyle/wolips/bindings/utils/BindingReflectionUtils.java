@@ -89,14 +89,14 @@ public class BindingReflectionUtils {
     return expandedClassName;
   }
 
-  public static String getShortClassName(String _fullClassName) {
+  public static String getShortClassName(String fullClassName) {
     String shortClassName;
-    int lastDotIndex = _fullClassName.lastIndexOf('.');
+    int lastDotIndex = fullClassName.lastIndexOf('.');
     if (lastDotIndex == -1) {
-      shortClassName = _fullClassName;
+      shortClassName = fullClassName;
     }
     else {
-      shortClassName = _fullClassName.substring(lastDotIndex + 1);
+      shortClassName = fullClassName.substring(lastDotIndex + 1);
     }
     return shortClassName;
   }
@@ -127,22 +127,22 @@ public class BindingReflectionUtils {
     return type;
   }
 
-  public static void findMatchingElementClassNames(String _elementTypeName, int _matchType, TypeNameCollector _typeNameCollector, IProgressMonitor progressMonitor) throws JavaModelException {
-    if (_elementTypeName != null) {
+  public static void findMatchingElementClassNames(String elementTypeName, int matchType, TypeNameCollector typeNameCollector, IProgressMonitor progressMonitor) throws JavaModelException {
+    if (elementTypeName != null) {
       SearchEngine searchEngine = new SearchEngine();
-      IJavaSearchScope searchScope = new WOHierarchyScope(_typeNameCollector.getSuperclassType(), _typeNameCollector.getProject(), DefaultWorkingCopyOwner.PRIMARY);
-      int lastDotIndex = _elementTypeName.lastIndexOf('.');
+      IJavaSearchScope searchScope = new WOHierarchyScope(typeNameCollector.getSuperclassType(), typeNameCollector.getProject(), DefaultWorkingCopyOwner.PRIMARY);
+      int lastDotIndex = elementTypeName.lastIndexOf('.');
       char[] packageName;
       char[] typeName;
       if (lastDotIndex == -1) {
         packageName = null;
-        typeName = _elementTypeName.toCharArray();
+        typeName = elementTypeName.toCharArray();
       }
       else {
-        packageName = _elementTypeName.substring(0, lastDotIndex).toCharArray();
-        typeName = _elementTypeName.substring(lastDotIndex + 1).toCharArray();
+        packageName = elementTypeName.substring(0, lastDotIndex).toCharArray();
+        typeName = elementTypeName.substring(lastDotIndex + 1).toCharArray();
       }
-      searchEngine.searchAllTypeNames(packageName, SearchPattern.R_EXACT_MATCH, typeName, _matchType, IJavaSearchConstants.CLASS, searchScope, _typeNameCollector, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, progressMonitor);
+      searchEngine.searchAllTypeNames(packageName, SearchPattern.R_EXACT_MATCH, typeName, matchType, IJavaSearchConstants.CLASS, searchScope, typeNameCollector, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, progressMonitor);
     }
   }
 
