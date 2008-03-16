@@ -46,6 +46,7 @@
  */
 package org.objectstyle.wolips.core.resources.types;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -121,6 +122,10 @@ public class TypeNameCollector extends TypeNameRequestor {
 		return _typeNames.iterator().next();
 	}
 
+	public Collection<IType> types() {
+		return _typeNameToType.values();
+	}
+	
 	public Iterator<String> typeNames() {
 		return _typeNames.iterator();
 	}
