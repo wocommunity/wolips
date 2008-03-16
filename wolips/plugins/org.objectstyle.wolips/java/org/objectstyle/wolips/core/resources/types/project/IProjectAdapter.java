@@ -86,9 +86,9 @@ public interface IProjectAdapter extends IResourceType, IPBDotProjectOwner {
 
 	public abstract IWoprojectAdapter getWoprojectAdapter();
 
-	public abstract List getFrameworkNames();
+	public abstract List<String> getFrameworkNames();
 
-	public abstract List getFrameworkPaths();
+	public abstract List<IPath> getFrameworkPaths();
 
 	public abstract String getFrameworkName(IPath _path);
 
