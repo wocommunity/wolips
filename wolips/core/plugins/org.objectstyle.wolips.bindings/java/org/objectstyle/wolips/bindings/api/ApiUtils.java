@@ -7,12 +7,16 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IClassFile;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IOpenable;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IType;
@@ -22,7 +26,9 @@ import org.objectstyle.wolips.bindings.Activator;
 import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
 import org.objectstyle.wolips.bindings.wod.BindingValueKey;
 import org.objectstyle.wolips.bindings.wod.TypeCache;
+import org.objectstyle.wolips.core.resources.internal.types.project.ProjectAdapter;
 import org.objectstyle.wolips.core.resources.types.TypeNameCollector;
+import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.osgi.framework.Bundle;
@@ -31,18 +37,18 @@ public class ApiUtils {
   private static ApiModel _globalApiModel;
 
   public static boolean isActionBinding(IApiBinding binding) {
-	  String defaults = binding.getDefaults();
-      boolean isActionBinding = false;
-      if (IApiBinding.ACTIONS_DEFAULT.equals(defaults)) {
-        isActionBinding = true;
-      }
-      else if (defaults == null) {
-        String bindingName = binding.getName();
-        isActionBinding = "action".equals(bindingName);
-      }
-      return isActionBinding;
+    String defaults = binding.getDefaults();
+    boolean isActionBinding = false;
+    if (IApiBinding.ACTIONS_DEFAULT.equals(defaults)) {
+      isActionBinding = true;
+    }
+    else if (defaults == null) {
+      String bindingName = binding.getName();
+      isActionBinding = "action".equals(bindingName);
+    }
+    return isActionBinding;
   }
-  
+
   public static int getSelectedDefaults(IApiBinding binding) {
     String defaults = binding.getDefaults();
     if (defaults == null) {
@@ -119,7 +125,6 @@ public class ApiUtils {
                 }
               }
             }
-            
 
             if (apiModel != null) {
               Wo[] wos = apiModel.getWODefinitions().getWos();
@@ -215,7 +220,17 @@ public class ApiUtils {
       validValues.add("\"image/png\"");
     }
     else if ("Direct Actions".equals(defaultsName)) {
-      // do nothing for now
+      TypeNameCollector typeNameCollector = new TypeNameCollector("com.webobjects.appserver.WODirectAction", javaProject, false);
+      BindingReflectionUtils.findMatchingElementClassNames("", SearchPattern.R_PREFIX_MATCH, typeNameCollector, new NullProgressMonitor());
+      for (IType type : typeNameCollector.types()) {
+        IMethod[] methods = type.getMethods();
+        for (IMethod method : methods) {
+          String name = method.getElementName();
+          if (name.endsWith("Action") && method.getParameterNames().length == 0) {
+            validValues.add("\"" + name.substring(0, name.length() - "Action".length()) + "\"");
+          }
+        }
+      }
     }
     else if ("Direct Action Classes".equals(defaultsName)) {
       TypeNameCollector typeNameCollector = new TypeNameCollector("com.webobjects.appserver.WODirectAction", javaProject, false);
@@ -240,10 +255,27 @@ public class ApiUtils {
       }
     }
     else if ("Frameworks".equals(defaultsName)) {
-      // do nothing for now
+      validValues.add("\"app\"");
+      ProjectAdapter projectAdapter = (ProjectAdapter) javaProject.getProject().getAdapter(IProjectAdapter.class);
+      if (projectAdapter != null) {
+        for (String frameworkName : projectAdapter.getFrameworkNames()) {
+          if (frameworkName.endsWith(".framework")) {
+            validValues.add("\"" + frameworkName.substring(0, frameworkName.length() - ".framework".length()) + "\"");
+          }
+        }
+      }
     }
     else if ("Resources".equals(defaultsName)) {
-      // do nothing for now
+      ProjectAdapter projectAdapter = (ProjectAdapter) javaProject.getProject().getAdapter(IProjectAdapter.class);
+      if (projectAdapter != null) {
+        IFolder folder = projectAdapter.getBuildAdapter().getProductAdapter().getContentsAdapter().getWebServerResourcesAdapter().getUnderlyingFolder();
+        try {
+          ApiUtils.acceptResources(folder, "", validValues);
+        }
+        catch (CoreException e) {
+          e.printStackTrace();
+        }
+      }
     }
     else if ("Actions".equals(defaultsName)) {
       List<BindingValueKey> bindingKeysList = BindingReflectionUtils.getBindingKeys(javaProject, componentType, "", false, BindingReflectionUtils.VOID_ONLY, false, typeCache);
@@ -253,5 +285,22 @@ public class ApiUtils {
     }
     String[] validValueStrings = validValues.toArray(new String[validValues.size()]);
     return validValueStrings;
+  }
+
+  protected static void acceptResources(IResource resource, String basePath, Set<String> paths) throws CoreException {
+    if (resource instanceof IFolder) {
+      IResource[] members = ((IFolder) resource).members();
+      for (IResource childResource : members) {
+        if (childResource instanceof IFolder) {
+          ApiUtils.acceptResources(childResource, basePath + "/" + childResource.getName() + "/", paths);
+        }
+        else {
+          ApiUtils.acceptResources(childResource, basePath, paths);
+        }
+      }
+    }
+    else if (resource instanceof IFile) {
+      paths.add("\"" + basePath + resource.getName() + "\"");
+    }
   }
 }
