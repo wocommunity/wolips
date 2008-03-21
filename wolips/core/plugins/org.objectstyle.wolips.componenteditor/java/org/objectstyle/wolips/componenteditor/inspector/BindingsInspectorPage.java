@@ -43,8 +43,12 @@ public class BindingsInspectorPage extends Page implements ICursorPositionListen
 		if (componentEditor != null) {
 			_componentEditor.getEditorInteraction().addWebObjectTagListener(this);
 
-			_templateDropHandler = new BindingsTextDropHandler(_componentEditor.getTemplateEditor());
-			_wodDropHandler = new BindingsTextDropHandler(_componentEditor.getWodEditor());
+			if (_componentEditor.getTemplateEditor() != null) {
+				_templateDropHandler = new BindingsTextDropHandler(_componentEditor.getTemplateEditor());
+			}
+			if (_componentEditor.getWodEditor() != null) {
+				_wodDropHandler = new BindingsTextDropHandler(_componentEditor.getWodEditor());
+			}
 		}
 	}
 

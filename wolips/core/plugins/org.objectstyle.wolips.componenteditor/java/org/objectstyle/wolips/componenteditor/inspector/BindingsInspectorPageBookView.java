@@ -89,9 +89,13 @@ public class BindingsInspectorPageBookView extends PageBookView implements ICurs
 		if (part instanceof ComponentEditor) {
 			ComponentEditor componentEditor = (ComponentEditor) part;
 			TemplateEditor templateEditor = componentEditor.getTemplateEditor();
-			templateEditor.getSourceEditor().removeCursorPositionListener(this);
+			if (templateEditor != null) {
+				templateEditor.getSourceEditor().removeCursorPositionListener(this);
+			}
 			WodEditor wodEditor = componentEditor.getWodEditor();
-			wodEditor.removeCursorPositionListener(this);
+			if (wodEditor != null) {
+				wodEditor.removeCursorPositionListener(this);
+			}
 		}
 	}
 
@@ -100,9 +104,13 @@ public class BindingsInspectorPageBookView extends PageBookView implements ICurs
 		if (part instanceof ComponentEditor) {
 			ComponentEditor componentEditor = (ComponentEditor) part;
 			TemplateEditor templateEditor = componentEditor.getTemplateEditor();
-			templateEditor.getSourceEditor().addCursorPositionListener(this);
+			if (templateEditor != null) {
+				templateEditor.getSourceEditor().addCursorPositionListener(this);
+			}
 			WodEditor wodEditor = componentEditor.getWodEditor();
-			wodEditor.addCursorPositionListener(this);
+			if (wodEditor != null) {
+				wodEditor.addCursorPositionListener(this);
+			}
 		} else if (part instanceof BindingsInspectorPageBookView) {
 			if (_lastEditor != null && _lastSelectionRange != null) {
 				cursorPositionChanged(_lastEditor, _lastSelectionRange);
