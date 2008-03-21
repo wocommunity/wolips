@@ -75,16 +75,19 @@ public class ComponentEditorInput extends MultiEditorInput implements IPersistab
 
 	private IEditorInput apiEditor;
 	
+	private IEditorInput standaloneHtmlEditor;
+	
 	private String name;
 
-	public ComponentEditorInput(String name, String[] allEditorIDs, IEditorInput[] allInnerEditors, IEditorInput[] componentEditors, IEditorInput apiEditor) {
+	public ComponentEditorInput(String name, String[] allEditorIDs, IEditorInput[] allInnerEditors, IEditorInput[] componentEditors, IEditorInput apiEditor, IEditorInput standaloneHtmlEditor) {
 		super(allEditorIDs, allInnerEditors);
 		this.name = name;
 		this.componentEditors = componentEditors;
 		this.apiEditor = apiEditor;
+		this.standaloneHtmlEditor = standaloneHtmlEditor;
 	}
 
-	private static ComponentEditorInput create(LocalizedComponentsLocateResult localizedComponentsLocateResult) throws CoreException {
+	private static ComponentEditorInput create(IFile originalFile, LocalizedComponentsLocateResult localizedComponentsLocateResult) throws CoreException {
 		IFolder[] folder = localizedComponentsLocateResult.getComponents();
 		int folderCountTimesThree = folder.length * 3;
 		String allIds[] = null;
@@ -135,7 +138,12 @@ public class ComponentEditorInput extends MultiEditorInput implements IPersistab
 			}
 		}
 		
-		ComponentEditorInput input = new ComponentEditorInput(name, allIds, allInput, allComponentInput, apiInput);
+		IEditorInput standaloneHtmlInput = null;
+		if (allComponentInput.length == 0 && apiInput == null && originalFile.getName().toLowerCase().endsWith(".html")) {
+			standaloneHtmlInput = new ComponentEditorFileEditorInput(originalFile);
+		}
+		
+		ComponentEditorInput input = new ComponentEditorInput(name, allIds, allInput, allComponentInput, apiInput, standaloneHtmlInput);
 		input.localizedComponentsLocateResult = localizedComponentsLocateResult;
 		for (int i = 0; i < allInput.length; i++) {
 			ComponentEditorFileEditorInput componentEditorFileEditorInput = allInput[i];
@@ -171,7 +179,7 @@ public class ComponentEditorInput extends MultiEditorInput implements IPersistab
 //		if (localizedComponentsLocateResult.getComponents() == null || localizedComponentsLocateResult.getComponents().length == 0) {
 //			return null;
 //		}
-		ComponentEditorInput input = create(localizedComponentsLocateResult);
+		ComponentEditorInput input = create(file, localizedComponentsLocateResult);
 		return input;
 	}
 
@@ -315,6 +323,10 @@ public class ComponentEditorInput extends MultiEditorInput implements IPersistab
 
 	public IEditorInput getApiEditor() {
 		return apiEditor;
+	}
+	
+	public IEditorInput getStandaloneHtmlEditor() {
+		return standaloneHtmlEditor;
 	}
 
 	public IEditorInput[] getComponentEditors() {

@@ -94,7 +94,7 @@ public class ComponentEditorInputFactory implements IElementFactory {
 			}
 		}
 
-		ComponentEditorInput componentEditorInput = new ComponentEditorInput(memento.getString(NAME), editors, allInputs, allComponentInputs, allInputs[allInputs.length - 1]);
+		ComponentEditorInput componentEditorInput = new ComponentEditorInput(memento.getString(NAME), editors, allInputs, allComponentInputs, allInputs[allInputs.length - 1], null);
 		for (int i = 0; i < allInputs.length; i++) {
 			allInputs[i].setComponentEditorInput(componentEditorInput);
 		}

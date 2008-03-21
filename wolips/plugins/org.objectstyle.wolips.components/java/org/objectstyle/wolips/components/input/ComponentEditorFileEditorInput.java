@@ -30,6 +30,6 @@ public class ComponentEditorFileEditorInput extends FileEditorInput implements I
 	}
 
 	public IPersistableElement getPersistable() {
-		return this.componentEditorInput.getPersistable();
+		return this.componentEditorInput == null ? null : this.componentEditorInput.getPersistable();
 	}
 }

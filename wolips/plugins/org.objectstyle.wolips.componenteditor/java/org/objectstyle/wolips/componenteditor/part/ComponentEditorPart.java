@@ -195,16 +195,30 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 			this.setPageText(tabIndex, language + "Display Groups");
 			tabIndex++;
 		}
-		
-		// api tab
-		IFileEditorInput apiInput = (IFileEditorInput) componentEditorInput.getApiEditor();
-		apiTab = new ApiTab(this, tabIndex, apiInput);
-		componentEditorTabsList.add(apiTab);
-		apiTab.createTab();
-		apiPageId = this.addPage(apiTab);
-		this.setPageText(tabIndex, "Api");
-		tabIndex++;
 
+		if (componentEditorInput.getStandaloneHtmlEditor() != null) {
+			IFileEditorInput standaloneHtmlInput = (IFileEditorInput) componentEditorInput.getStandaloneHtmlEditor();
+			HtmlWodTab htmlWodTab = new HtmlWodTab(this, tabIndex, standaloneHtmlInput, null);
+			componentEditorTabsList.add(htmlWodTab);
+			htmlWodTabsList.add(htmlWodTab);
+			htmlWodTab.createTab();
+			htmlPageId = this.addPage(htmlWodTab);
+			wodPageId = htmlPageId;
+			this.setPageText(tabIndex, "HTML");
+			tabIndex++;
+		}
+		
+		if (componentEditorInput.getStandaloneHtmlEditor() == null) {
+			// api tab
+			IFileEditorInput apiInput = (IFileEditorInput) componentEditorInput.getApiEditor();
+			apiTab = new ApiTab(this, tabIndex, apiInput);
+			componentEditorTabsList.add(apiTab);
+			apiTab.createTab();
+			apiPageId = this.addPage(apiTab);
+			this.setPageText(tabIndex, "Api");
+			tabIndex++;
+		}
+		
 		if (editorInput.length > 0) {
 			// html preview tab
 			htmlPreviewTab = new HtmlPreviewTab(this, tabIndex, htmlInput);

@@ -68,7 +68,6 @@ import org.objectstyle.wolips.wodclipse.editor.WodEditor;
 public class HtmlWodTab extends ComponentEditorTab {
 	private static final String SASH_WEIGHTS_KEY = "org.objectstyle.wolips.componenteditor.sashWeights";
 
-	
 	private TemplateEditor templateEditor;
 
 	private WodEditor wodEditor;
@@ -78,13 +77,13 @@ public class HtmlWodTab extends ComponentEditorTab {
 	private IEditorInput htmlInput;
 
 	private IEditorInput wodInput;
-	
+
 	private SashForm htmlSashForm;
 
 	private SashForm wodSashForm;
-	
+
 	private Composite wodContainer;
-	
+
 	private Label nonEmptyWodWarning;
 
 	public HtmlWodTab(ComponentEditorPart componentEditorPart, int tabIndex, IEditorInput htmlInput, IEditorInput wodInput) {
@@ -118,43 +117,45 @@ public class HtmlWodTab extends ComponentEditorTab {
 				HtmlWodTab.this.getComponentEditorPart().publicHandlePropertyChange(propertyId);
 			}
 		});
-		wodEditor = new WodEditor();
-		IEditorSite wodSite = this.getComponentEditorPart().publicCreateSite(wodEditor);
-		try {
-			wodEditor.init(wodSite, wodInput);
-		} catch (PartInitException e) {
-			ComponenteditorPlugin.getDefault().log(e);
+		if (wodInput != null) {
+			wodEditor = new WodEditor();
+			IEditorSite wodSite = this.getComponentEditorPart().publicCreateSite(wodEditor);
+			try {
+				wodEditor.init(wodSite, wodInput);
+			} catch (PartInitException e) {
+				ComponenteditorPlugin.getDefault().log(e);
+			}
+			this.wodContainer = createInnerPartControl(wodSashForm, wodEditor);
+			wodEditor.addPropertyListener(new IPropertyListener() {
+				public void propertyChanged(Object source, int propertyId) {
+					HtmlWodTab.this.getComponentEditorPart().publicHandlePropertyChange(propertyId);
+				}
+			});
+			wodEditor.getSelectionProvider().addSelectionChangedListener(new ISelectionChangedListener() {
+				public void selectionChanged(SelectionChangedEvent event) {
+					WodclipsePlugin.getDefault().updateWebObjectsTagNames(null);
+				}
+			});
+			WodclipsePlugin.getDefault().updateWebObjectsTagNames(wodEditor);
+			htmlSashForm.addListener(SWT.Activate, new Listener() {
+				public void handleEvent(Event event) {
+					setHtmlActive(true);
+					HtmlWodTab.this.getComponentEditorPart().pageChange(HtmlWodTab.this.getTabIndex());
+					HtmlWodTab.this.getComponentEditorPart().updateOutline();
+				}
+			});
+			wodSashForm.addListener(SWT.Activate, new Listener() {
+				public void handleEvent(Event event) {
+					setHtmlActive(false);
+					HtmlWodTab.this.getComponentEditorPart().pageChange(HtmlWodTab.this.getTabIndex());
+					HtmlWodTab.this.getComponentEditorPart().updateOutline();
+				}
+			});
 		}
-		this.wodContainer = createInnerPartControl(wodSashForm, wodEditor);
-		wodEditor.addPropertyListener(new IPropertyListener() {
-			public void propertyChanged(Object source, int propertyId) {
-				HtmlWodTab.this.getComponentEditorPart().publicHandlePropertyChange(propertyId);
-			}
-		});
-		wodEditor.getSelectionProvider().addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				WodclipsePlugin.getDefault().updateWebObjectsTagNames(null);
-			}
-		});
-		WodclipsePlugin.getDefault().updateWebObjectsTagNames(wodEditor);
-		htmlSashForm.addListener(SWT.Activate, new Listener() {
-			public void handleEvent(Event event) {
-				setHtmlActive(true);
-				HtmlWodTab.this.getComponentEditorPart().pageChange(HtmlWodTab.this.getTabIndex());
-				HtmlWodTab.this.getComponentEditorPart().updateOutline();
-			}
-		});
-		wodSashForm.addListener(SWT.Activate, new Listener() {
-			public void handleEvent(Event event) {
-				setHtmlActive(false);
-				HtmlWodTab.this.getComponentEditorPart().pageChange(HtmlWodTab.this.getTabIndex());
-				HtmlWodTab.this.getComponentEditorPart().updateOutline();
-			}
-		});
-		
+
 		restoreSashWeights();
 		hideWodIfNecessary();
-		
+
 		htmlSashForm.addControlListener(new ControlListener() {
 			public void controlMoved(ControlEvent e) {
 				// DO NOTHING
@@ -167,20 +168,28 @@ public class HtmlWodTab extends ComponentEditorTab {
 		});
 
 		templateEditor.initEditorInteraction(this.getComponentEditorPart().getEditorInteraction());
-		wodEditor.initEditorInteraction(this.getComponentEditorPart().getEditorInteraction());
-		
+		if (wodEditor != null) {
+			wodEditor.initEditorInteraction(this.getComponentEditorPart().getEditorInteraction());
+		}
+
 		this.addWebObjectsTagNamesListener();
 	}
-	
+
 	public boolean isHtmlActive() {
 		return this.htmlActive;
 	}
-	
+
 	protected void setHtmlActive(boolean htmlActive) {
 		this.htmlActive = htmlActive;
 	}
-	
+
 	protected void hideWodIfNecessary() {
+		if (this.wodContainer == null) {
+			int[] weights = new int[] { 100, 0};
+			getParentSashForm().setWeights(weights);
+			return;
+		}
+		
 		int[] weights = getParentSashForm().getWeights();
 		if (weights.length >= 2 && weights[1] < 132) {
 			this.wodContainer.setVisible(false);
@@ -193,8 +202,7 @@ public class HtmlWodTab extends ComponentEditorTab {
 					this.nonEmptyWodWarning.setText("wod file is not empty");
 				}
 			}
-		}
-		else {
+		} else {
 			this.wodContainer.setVisible(true);
 			if (this.nonEmptyWodWarning != null) {
 				this.nonEmptyWodWarning.dispose();
@@ -202,7 +210,7 @@ public class HtmlWodTab extends ComponentEditorTab {
 			}
 		}
 	}
-	
+
 	protected void restoreSashWeights() {
 		String sashWeightsStr = Activator.getDefault().getPluginPreferences().getString(HtmlWodTab.SASH_WEIGHTS_KEY);
 		if (sashWeightsStr != null && sashWeightsStr.length() > 0) {
@@ -247,7 +255,7 @@ public class HtmlWodTab extends ComponentEditorTab {
 	}
 
 	public void doSave(IProgressMonitor monitor) {
-		if (wodEditor.isDirty()) {
+		if (wodEditor != null && wodEditor.isDirty()) {
 			wodEditor.doSave(monitor);
 		}
 		if (templateEditor.isDirty()) {
@@ -256,17 +264,21 @@ public class HtmlWodTab extends ComponentEditorTab {
 	}
 
 	public void close(boolean save) {
-		wodEditor.close(save);
+		if (wodEditor != null) {
+			wodEditor.close(save);
+		}
 		// templateEditor.close(save);
 	}
 
 	public void dispose() {
-		wodEditor.dispose();
+		if (wodEditor != null) {
+			wodEditor.dispose();
+		}
 		templateEditor.dispose();
 	}
 
 	public boolean isDirty() {
-		return wodEditor.isDirty() || templateEditor.isDirty();
+		return (wodEditor != null && wodEditor.isDirty()) || templateEditor.isDirty();
 	}
 
 	private void addWebObjectsTagNamesListener() {
@@ -276,6 +288,10 @@ public class HtmlWodTab extends ComponentEditorTab {
 		// WodclipsePlugin.getDefault().updateWebObjectsTagNames(null);
 		// }
 		// });
+		if (wodEditor == null) {
+			return;
+		}
+		
 		final WodEditor finalWodEditor = wodEditor;
 		wodEditor.getSelectionProvider().addSelectionChangedListener(new ISelectionChangedListener() {
 
