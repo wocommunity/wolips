@@ -141,6 +141,7 @@ public class ComponentEditorInput extends MultiEditorInput implements IPersistab
 		IEditorInput standaloneHtmlInput = null;
 		if (allComponentInput.length == 0 && apiInput == null && originalFile.getName().toLowerCase().endsWith(".html")) {
 			standaloneHtmlInput = new ComponentEditorFileEditorInput(originalFile);
+			name = originalFile.getName();
 		}
 		
 		ComponentEditorInput input = new ComponentEditorInput(name, allIds, allInput, allComponentInput, apiInput, standaloneHtmlInput);
@@ -157,7 +158,12 @@ public class ComponentEditorInput extends MultiEditorInput implements IPersistab
     public String getName() {
     	String inputName = this.name;
     	if (inputName == null) {
-    		inputName = "Unknown Component";
+    		if (standaloneHtmlEditor != null) {
+    			inputName = standaloneHtmlEditor.getName();
+    		}
+    		else {
+    			inputName = "Unknown Component";
+    		}
     	}
     	return inputName;
     }
