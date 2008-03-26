@@ -33,6 +33,8 @@ public class ComponentLiveSearch implements ModifyListener, SelectionListener {
 
 	private String _lastSearch;
 	private Point _lastSelection;
+	private String _lastValue;
+	private boolean _ignoreModify = false;
 
 	private Object _completionLock = new Object();
 
@@ -70,16 +72,28 @@ public class ComponentLiveSearch implements ModifyListener, SelectionListener {
 	}
 
 	public void modifyText(ModifyEvent e) {
+		if (_ignoreModify)
+			return;
 		final Combo componentNameCombo = (Combo) e.getSource();
 		Point selection = componentNameCombo.getSelection();
 		final String partialName;
+		boolean _deleted = false;
+		
 		if (selection != null && selection.x != selection.y) {
 			partialName = componentNameCombo.getText().substring(0, selection.x);
 		} else {
 			partialName = componentNameCombo.getText();
 			_lastSelection = selection;
 		}
+		
+		if (_lastValue != null) {
+			_deleted = partialName.length() < _lastValue.length();
+		}
+		_lastValue = partialName;
+
 		if (_lastSearch == null || !_lastSearch.equals(partialName)) {
+			
+			final boolean wasDeleted = _deleted;
 			_lastSearch = partialName;
 			_progressMonitor.setCanceled(true);
 
@@ -106,10 +120,23 @@ public class ComponentLiveSearch implements ModifyListener, SelectionListener {
 											try {
 												Method setListVisible = componentNameCombo.getClass().getDeclaredMethod("setListVisible", boolean.class);
 												setListVisible.setAccessible(true);
-												if (!(exactMatch && componentNameCombo.getItemCount() == 1)) {
+												if (!(exactMatch || componentNameCombo.getItemCount() <= 1)) {
 													setListVisible.invoke(componentNameCombo, true);
 												} else {
 													setListVisible.invoke(componentNameCombo, false);
+													if (componentNameCombo.getItemCount() == 1) {
+														Point _selection = componentNameCombo.getSelection();
+														String text = componentNameCombo.getItem(0);
+
+														if (_selection.x == _selection.y && !wasDeleted) {
+															_selection.y = text.length();
+															_ignoreModify = true;
+															componentNameCombo.setText(text);
+															componentNameCombo.setSelection(_selection);
+															_ignoreModify = false;
+															_lastSelection = _selection;
+														}
+													}
 												}
 											} catch (Throwable ex) {
 												ex.printStackTrace();
