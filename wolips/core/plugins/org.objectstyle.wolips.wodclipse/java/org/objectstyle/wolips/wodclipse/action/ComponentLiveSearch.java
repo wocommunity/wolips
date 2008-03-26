@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
@@ -21,6 +22,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.objectstyle.wolips.wodclipse.core.completion.WodCompletionProposal;
 import org.objectstyle.wolips.wodclipse.core.completion.WodCompletionUtils;
 
@@ -30,6 +32,7 @@ public class ComponentLiveSearch implements ModifyListener, SelectionListener {
 	private IProgressMonitor _progressMonitor;
 
 	private String _lastSearch;
+	private Point _lastSelection;
 
 	private Object _completionLock = new Object();
 
@@ -58,8 +61,11 @@ public class ComponentLiveSearch implements ModifyListener, SelectionListener {
 
 	public void widgetSelected(SelectionEvent e) {
 		Combo componentNameCombo = (Combo) e.getSource();
-		if (componentNameCombo.getItemCount() > 0) {
-			componentNameCombo.select(0);
+		Point selection = componentNameCombo.getSelection();
+		if (_lastSelection != null && selection.x == 0) {
+			selection.x = _lastSelection.y;
+			componentNameCombo.setSelection(selection);
+			componentNameCombo.notifyListeners(SWT.Modify, new Event());
 		}
 	}
 
@@ -71,6 +77,7 @@ public class ComponentLiveSearch implements ModifyListener, SelectionListener {
 			partialName = componentNameCombo.getText().substring(0, selection.x);
 		} else {
 			partialName = componentNameCombo.getText();
+			_lastSelection = selection;
 		}
 		if (_lastSearch == null || !_lastSearch.equals(partialName)) {
 			_lastSearch = partialName;
