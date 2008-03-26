@@ -4,8 +4,9 @@
 package org.objectstyle.wolips.wodclipse.action;
 
 import java.lang.reflect.Method;
-import java.util.HashSet;
+import java.util.Comparator;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
@@ -91,7 +92,7 @@ public class ComponentLiveSearch implements ModifyListener, SelectionListener {
 		}
 		_lastValue = partialName;
 
-		if (_lastSearch == null || !_lastSearch.equals(partialName)) {
+		if (_lastSearch == null || !_lastSearch.toLowerCase().equals(partialName.toLowerCase())) {
 			
 			final boolean wasDeleted = _deleted;
 			_lastSearch = partialName;
@@ -101,8 +102,14 @@ public class ComponentLiveSearch implements ModifyListener, SelectionListener {
 				public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
 					synchronized (_completionLock) {
 						_progressMonitor.setCanceled(false);
+						Comparator<WodCompletionProposal> nameOrder = new Comparator<WodCompletionProposal>() {
+							public int compare(WodCompletionProposal p1, WodCompletionProposal p2) {
+								return p1.getDisplayString().compareTo(p2.getDisplayString());
+							}
+						};
+
 						try {
-							final Set<WodCompletionProposal> proposals = new HashSet<WodCompletionProposal>();
+							final Set<WodCompletionProposal> proposals = new TreeSet<WodCompletionProposal>(nameOrder);
 							WodCompletionUtils.fillInElementTypeCompletionProposals(_project, partialName, 0, partialName.length(), proposals, false, _progressMonitor);
 							if (!_progressMonitor.isCanceled()) {
 								Display.getDefault().asyncExec(new Runnable() {
