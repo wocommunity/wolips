@@ -1,19 +1,17 @@
 package org.objectstyle.woproject.maven2.wolifecycle;
 
 //org.apache.maven.plugins:maven-compiler-plugin:compile
-import java.io.File;
+import java.io.*;
 
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.factory.ArtifactFactory;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.project.MavenProject;
+import org.apache.maven.plugin.*;
+import org.apache.maven.project.*;
 
 /**
  * resources goal for WebObjects projects.
  * 
  * @goal package-woframework
  * @author uli
+ * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
  * @since 2.0
  */
 public class PackageWOFrameworkResourcesMojo extends PackageMojo {
@@ -28,38 +26,42 @@ public class PackageWOFrameworkResourcesMojo extends PackageMojo {
 	private MavenProject project;
 
 	/**
-	 * @parameter expression="${component.org.apache.maven.artifact.factory.ArtifactFactory}"
-	 * @required
-	 * @readonly
+	 * @component
 	 */
-	private ArtifactFactory artifactFactory;
+	private MavenProjectHelper projectHelper;
 
 	public PackageWOFrameworkResourcesMojo() {
 		super();
 	}
 
-	public MavenProject getProject() {
-		return project;
+	@Override
+	public void execute() throws MojoExecutionException, MojoFailureException {
+		super.execute();
+
+		getLog().info("Packaging WebObject project: attaching artifact " + this.getWOFrameworkFileName());
+
+		File woFrameworkJar = new File(getWOFrameworkFileName());
+
+		projectHelper.attachArtifact(getProject(), "jar", woFrameworkJar);
 	}
 
-	public String getProductExtension() {
-		return "framework";
-	}
-
+	@Override
 	protected String getArtifactFileName() {
 		return this.getProjectFolder() + "target" + File.separator + this.getProject().getArtifactId() + "-" + this.getProject().getVersion() + ".woframework";
 	}
 
-	protected String getWOFrameworkFileName() {
-		return this.getProjectFolder() + "target" + File.separator + this.getProject().getArtifactId() + "-" + this.getProject().getVersion() + ".jar";
+	@Override
+	public String getProductExtension() {
+		return "framework";
 	}
 
-	public void execute() throws MojoExecutionException, MojoFailureException {
-		super.execute();
-		Artifact artifact = artifactFactory.createBuildArtifact(project.getGroupId(), project.getArtifactId(), project.getVersion(), "jar");
-		artifact.setFile(new File(this.getWOFrameworkFileName()));
-		getLog().info("Attaching artifact: " + this.getWOFrameworkFileName());
-		project.addAttachedArtifact(artifact);
+	@Override
+	public MavenProject getProject() {
+		return project;
+	}
+
+	protected String getWOFrameworkFileName() {
+		return this.getProjectFolder() + "target" + File.separator + this.getProject().getArtifactId() + "-" + this.getProject().getVersion() + ".jar";
 	}
 
 }
