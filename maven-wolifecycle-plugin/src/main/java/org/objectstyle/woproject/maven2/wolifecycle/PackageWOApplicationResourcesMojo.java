@@ -1,13 +1,10 @@
 package org.objectstyle.woproject.maven2.wolifecycle;
 
 //org.apache.maven.plugins:maven-compiler-plugin:compile
-import java.io.File;
+import java.io.*;
 
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.factory.ArtifactFactory;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.project.MavenProject;
+import org.apache.maven.plugin.*;
+import org.apache.maven.project.*;
 
 /**
  * resources goal for WebObjects projects.
@@ -29,26 +26,40 @@ public class PackageWOApplicationResourcesMojo extends PackageMojo {
 	private MavenProject project;
 
 	/**
-	 * @parameter expression="${component.org.apache.maven.artifact.factory.ArtifactFactory}"
-	 * @required
-	 * @readonly
+	 * @component
 	 */
-	private ArtifactFactory artifactFactory;
-	
+	private MavenProjectHelper projectHelper;
+
 	public PackageWOApplicationResourcesMojo() {
 		super();
 	}
 
-	public MavenProject getProject() {
-		return project;
+	@Override
+	public void execute() throws MojoExecutionException, MojoFailureException {
+		super.execute();
+
+		getLog().debug("Attaching artifact: " + this.getWOApplicationFileName());
+
+		projectHelper.attachArtifact(project, "woapplication.tar.gz", new File(this.getWOApplicationFileName()));
+
+		getLog().debug("Attaching artifact: " + this.getWOWebServerResourcesArtifactFileName());
+
+		projectHelper.attachArtifact(project, "wowebserverresources.tar.gz", new File(this.getWOWebServerResourcesArtifactFileName()));
 	}
 
+	@Override
+	protected String getArtifactFileName() {
+		return this.getProjectFolder() + "target" + File.separator + this.getProject().getArtifactId() + "-" + this.getProject().getVersion() + ".woapplication";
+	}
+
+	@Override
 	public String getProductExtension() {
 		return "woa";
 	}
 
-	protected String getArtifactFileName() {
-		return this.getProjectFolder() + "target" + File.separator + this.getProject().getArtifactId() + "-" + this.getProject().getVersion() + ".woapplication";
+	@Override
+	public MavenProject getProject() {
+		return project;
 	}
 
 	protected String getWOApplicationFileName() {
@@ -57,19 +68,5 @@ public class PackageWOApplicationResourcesMojo extends PackageMojo {
 
 	private String getWOWebServerResourcesArtifactFileName() {
 		return this.getProjectFolder() + "target" + File.separator + this.getProject().getArtifactId() + "-" + this.getProject().getVersion() + ".wowebserverresources.tar.gz";
-	}
-
-	public void execute() throws MojoExecutionException, MojoFailureException {
-		super.execute();
-		Artifact artifact = artifactFactory.createBuildArtifact(project.getGroupId(), project.getArtifactId(), project.getVersion(), "woapplication.tar.gz");
-
-		artifact.setFile(new File(this.getWOApplicationFileName()));
-		getLog().debug("Attaching artifact: " + this.getWOApplicationFileName());
-		project.addAttachedArtifact(artifact);
-
-		artifact = artifactFactory.createBuildArtifact(project.getGroupId(), project.getArtifactId(), project.getVersion(), "wowebserverresources.tar.gz");
-		artifact.setFile(new File(this.getWOWebServerResourcesArtifactFileName()));
-		getLog().debug("Attaching artifact: " + this.getWOWebServerResourcesArtifactFileName());
-		project.addAttachedArtifact(artifact);
 	}
 }
