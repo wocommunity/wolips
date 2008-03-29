@@ -1,13 +1,10 @@
 package org.objectstyle.woproject.maven2.wolifecycle;
 
 //org.apache.maven.plugins:maven-compiler-plugin:compile
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
+import org.apache.commons.io.*;
+import org.apache.maven.plugin.*;
 
 public abstract class PackageMojo extends WOMojo {
 
@@ -16,34 +13,34 @@ public abstract class PackageMojo extends WOMojo {
 	}
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		getLog().debug("Package wo");
+		getLog().debug("Starting to package WebObject project...");
 
-		String artifactFileName = this.getArtifactFileName();
+		String artifactFileName = getArtifactFileName();
 
 		BufferedWriter artifactWriter = null;
 
+		getLog().debug("Packaging WebObject project: Writing artifact to " + artifactFileName);
+
 		try {
-			getLog().debug("Package wo ... writing artifact to: " + artifactFileName);
-
 			artifactWriter = new BufferedWriter(new FileWriter(new File(artifactFileName)));
-			artifactWriter.write("\n");
+
+			artifactWriter.write("This is an empty file created beacuse of the Maven extension mechanism.\n");
+
 		} catch (IOException ioe) {
-			new MojoExecutionException("could not write " + artifactFileName, ioe);
+			new MojoExecutionException("Packaging WebObject project: Could not package the WebObjects project. Error writing" + artifactFileName, ioe);
 		} finally {
-			if (null != artifactWriter) {
-				try {
-					artifactWriter.close();
-				} catch (IOException ioe) {
-					// Ignore exception
-				}
-			}
+			IOUtils.closeQuietly(artifactWriter);
 		}
 
-		if (artifactFileName != null) {
-			String fileName = artifactFileName;
-			getLog().debug("Defining artifact filename: " + fileName);
-			this.getProject().getArtifact().setFile(new File(fileName));
+		if (artifactFileName == null) {
+			return;
 		}
+
+		String fileName = artifactFileName;
+
+		getLog().debug("Packaging WebObject project: Defining artifact filename as " + fileName);
+
+		this.getProject().getArtifact().setFile(new File(fileName));
 	}
 
 	protected abstract String getArtifactFileName();
