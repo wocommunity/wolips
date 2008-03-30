@@ -1,19 +1,16 @@
 package org.objectstyle.wolips.wodclipse.core.completion;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jface.text.IDocument;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
 import org.objectstyle.wolips.wodclipse.core.util.WodModelUtils;
 import org.objectstyle.wolips.wodclipse.core.woo.WooModel;
 import org.objectstyle.wolips.wodclipse.core.woo.WooModelException;
 
-public class WooCacheEntry extends AbstractCacheEntry<WooModel> {
+public class WooCacheEntry extends AbstractCacheEntry<WooModel> {	
   public WooCacheEntry(WodParserCache cache) {
     super(cache);
   }
@@ -21,7 +18,7 @@ public class WooCacheEntry extends AbstractCacheEntry<WooModel> {
   @Override
   public void validate() throws Exception {
     setValidated(true);
-    WooModel wooModel = _getModel();
+    WooModel wooModel = getModel();
     if (wooModel != null) {
       WodParserCache cache = getCache();
       IJavaProject javaProject = cache.getJavaProject();
@@ -41,29 +38,12 @@ public class WooCacheEntry extends AbstractCacheEntry<WooModel> {
       }
     }
   }
-
+  
   @Override
-  protected WooModel _parse(String contents) throws WooModelException {
+  public WooModel _parse(String contents) throws WooModelException {
     WooModel model = new WooModel(contents);
+    model.setFile(getFile());
     return model;
   }
 
-  @Override
-  protected WooModel _parse(IDocument document, boolean updateCache) throws WooModelException {
-    WooModel model = WodModelUtils.createWooModel(document);
-    if (updateCache) {
-      _setContents(document.get());
-    }
-    return model;
-  }
-
-  @Override
-  protected WooModel _parse(IFile file, boolean updateCache) throws IOException, CoreException {
-    WooModel model = WodModelUtils.createWooModel(file);
-    if (updateCache) {
-      _setContents(null);
-      _setDocument(null);
-    }
-    return model;
-  }
 }

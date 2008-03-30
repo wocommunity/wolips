@@ -2,6 +2,7 @@ package org.objectstyle.wolips.wodclipse.core.woo;
 
 import java.util.Set;
 
+import org.objectstyle.wolips.eomodeler.core.model.DuplicateFetchSpecNameException;
 import org.objectstyle.wolips.eomodeler.core.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelMap;
@@ -25,15 +26,15 @@ public class EODatabaseDataSource extends EODataSource {
     EOModelMap fspecMap = new EOModelMap(map.getMap("fetchSpecification"));
     String fspecName = map.getString("fetchSpecificationName", true);
     String entityName = fspecMap.getString("entityName", true);
-    if (fspecName == null) {
-      _fetchSpecification = new EOFetchSpecification(null);
-      _fetchSpecification.loadFromMap(fspecMap, failures);
-      _fetchSpecification.setEntity(getModelGroup().getEntityNamed(entityName));
+    if (getModelGroup().getEntityNamed(entityName) != null) {
+    	if (fspecName == null) {
+    		_fetchSpecification = new EOFetchSpecification(null);
+    		_fetchSpecification.loadFromMap(fspecMap, failures);
+    		_fetchSpecification.setEntity(getModelGroup().getEntityNamed(entityName));
+    	} else {
+    		_fetchSpecification = getModelGroup().getEntityNamed(entityName).getFetchSpecNamed(fspecName);
+    	}
     }
-    else {
-      _fetchSpecification = getModelGroup().getEntityNamed(entityName).getFetchSpecNamed(fspecName);
-    }
-
     _editingContext = map.getString("editingContext", true);
 
     // Fix missing editing context

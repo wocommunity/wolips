@@ -376,6 +376,9 @@ public class WooModel {
       problems.add(new WodProblem(e.getMessage(), null, 0, true));
       return problems;
     }
+    if (_file == null) {
+    	return problems;
+    }
     try {
       String componentCharset = _file.getParent().getDefaultCharset();
       String encoding = WooUtils.encodingNameFromObjectiveC(this.getEncoding());
@@ -435,10 +438,6 @@ public class WooModel {
     return problems;
   }
 
-  private void setModelGroup(EOModelGroup modelGroup) {
-    _modelGroup = modelGroup;
-  }
-
   public String getName() {
     return _file.getName();
   }
@@ -462,6 +461,14 @@ public class WooModel {
       catch (Throwable e) {
       }
     }
+  }
+
+  public IFile getFile() {
+	return _file;
+  }
+
+  public void setFile(IFile file) {
+	this._file = file;
   }
 
 }

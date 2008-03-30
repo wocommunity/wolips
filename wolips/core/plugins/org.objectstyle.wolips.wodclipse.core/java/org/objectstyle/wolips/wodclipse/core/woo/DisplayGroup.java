@@ -348,9 +348,13 @@ public class DisplayGroup implements IPropertyChangeSource {
 
     if (map.containsKey("dataSource")) {
       EOModelMap dataSourceMap = new EOModelMap(map.getMap("dataSource"));
-      EODataSource dataSource = EODataSourceFactory.createDataSourceFromMap(dataSourceMap, _wooModel.getModelGroup());
-      dataSource.loadFromMap(dataSourceMap, failures);
-      _dataSource = dataSource;
+      try {
+    	  EODataSource dataSource = EODataSourceFactory.createDataSourceFromMap(dataSourceMap, _wooModel.getModelGroup());
+    	  dataSource.loadFromMap(dataSourceMap, failures);
+    	  _dataSource = dataSource;
+      } catch (Throwable e) {
+    	  e.printStackTrace();
+      }
 
       if (_dataSource instanceof EODetailDataSource) {
         EODetailDataSource ds = (EODetailDataSource) _dataSource;
