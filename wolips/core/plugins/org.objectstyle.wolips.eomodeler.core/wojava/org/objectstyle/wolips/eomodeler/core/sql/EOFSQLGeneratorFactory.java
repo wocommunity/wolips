@@ -13,7 +13,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 
 public class EOFSQLGeneratorFactory implements IEOSQLGeneratorFactory {
-	public IEOSQLGenerator sqlGenerator(EOModel model, List<String> entityNames, EODatabaseConfig databaseConfig, ClassLoader eomodelClassLoader) throws SecurityException, NoSuchMethodException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
+	public IEOSQLGenerator sqlGenerator(EOModel model, List<String> entityNames, EODatabaseConfig databaseConfig, ClassLoader eomodelClassLoader, boolean runInEntityModeler) throws SecurityException, NoSuchMethodException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
 		Class sqlGeneratorClass = Class.forName("org.objectstyle.wolips.eomodeler.core.sql.EOFSQLGenerator", true, eomodelClassLoader);
 
 		List<URL> modelURLs = new LinkedList();
@@ -29,8 +29,8 @@ public class EOFSQLGeneratorFactory implements IEOSQLGeneratorFactory {
 		}
 		modelURLs.add(model.getModelURL());
 
-		Constructor sqlGeneratorConstructor = sqlGeneratorClass.getConstructor(new Class[] { String.class, List.class, List.class, Map.class });
-		Object sqlGeneratorButICantCastItBecauseItCrossesClassLoaders = sqlGeneratorConstructor.newInstance(new Object[] { model.getName(), modelURLs, entityNames, databaseConfig.toMap().getBackingMap() });
+		Constructor sqlGeneratorConstructor = sqlGeneratorClass.getConstructor(new Class[] { String.class, List.class, List.class, Map.class, boolean.class });
+		Object sqlGeneratorButICantCastItBecauseItCrossesClassLoaders = sqlGeneratorConstructor.newInstance(new Object[] { model.getName(), modelURLs, entityNames, databaseConfig.toMap().getBackingMap(), Boolean.valueOf(runInEntityModeler) });
 		IEOSQLGenerator sqlGenerator = new ReflectionSQLGenerator(sqlGeneratorButICantCastItBecauseItCrossesClassLoaders);
 		return sqlGenerator;
 	}
