@@ -40,60 +40,66 @@ import org.objectstyle.wolips.eomodeler.core.sql.IEOSQLGenerator;
 import org.objectstyle.wolips.eomodeler.core.sql.IEOSQLGeneratorFactory;
 
 public class GenerateSQLDialog extends Dialog {
-	private Button myDropDatabaseButton;
+	private Button _dropDatabaseButton;
 
-	private Button myDropTablesButton;
+	private Button _dropTablesButton;
 
-	private Button myDropPrimaryKeySupportButton;
+	private Button _dropPrimaryKeySupportButton;
 
-	private Button myCreateSelectedEntitiesButton;
+	private Button _dropIndexesButton;
 
-	private Button myCreateTablesButton;
+	private Button _createSelectedEntitiesButton;
 
-	private Button myCreatePrimaryKeySupportButton;
+	private Button _createTablesButton;
 
-	private Button myCreatePrimaryKeyConstraintsButton;
+	private Button _createPrimaryKeySupportButton;
 
-	private Button myCreateForeignKeyConstraintsButton;
+	private Button _createPrimaryKeyConstraintsButton;
 
-	private Button myCreateDatabaseButton;
+	private Button _createForeignKeyConstraintsButton;
 
-	private Text mySqlText;
+	private Button _createDatabaseButton;
 
-	private EOModel myModel;
+	private Button _createIndexesButton;
 
-	private List<String> myEntityNames;
+	private Button _runInEntityModelerButton;
 
-	private Set<EODatabaseConfig> myDatabaseConfigs;
+	private Text _sqlText;
 
-	private ComboViewer myDatabaseConfigComboViewer;
+	private EOModel _model;
 
-	private ClassLoader myEOModelClassLoader;
+	private List<String> _entityNames;
 
-	private FlagChangedHandler myFlagChangeHander;
+	private Set<EODatabaseConfig> _databaseConfigs;
 
-	private boolean myCancel;
+	private ComboViewer _databaseConfigComboViewer;
 
-	private Cursor myWaitCursor;
+	private ClassLoader _eoModelClassLoader;
 
-	private Button myExecuteSqlButton;
+	private FlagChangedHandler _flagChangeHander;
 
-	private boolean myCreateOnlySelectedEntities;
+	private boolean _cancel;
 
-	public GenerateSQLDialog(Shell _parentShell, EOModel _model, List<String> _entityNames) {
-		super(_parentShell);
-		myModel = _model;
-		myEntityNames = _entityNames;
-		myFlagChangeHander = new FlagChangedHandler();
+	private Cursor _waitCursor;
+
+	private Button _executeSqlButton;
+
+	private boolean _createOnlySelectedEntities;
+
+	public GenerateSQLDialog(Shell parentShell, EOModel model, List<String> entityNames) {
+		super(parentShell);
+		_model = model;
+		_entityNames = entityNames;
+		_flagChangeHander = new FlagChangedHandler();
 	}
 
-	protected void configureShell(Shell _newShell) {
-		super.configureShell(_newShell);
-		_newShell.setText("SQL Generation");
+	protected void configureShell(Shell newShell) {
+		super.configureShell(newShell);
+		newShell.setText("SQL Generation");
 	}
 
-	protected Control createDialogArea(Composite _parent) {
-		Composite control = (Composite) super.createDialogArea(_parent);
+	protected Control createDialogArea(Composite parent) {
+		Composite control = (Composite) super.createDialogArea(parent);
 		GridLayout layout = new GridLayout(1, true);
 		layout.marginTop = 10;
 		layout.marginLeft = 10;
@@ -101,77 +107,92 @@ public class GenerateSQLDialog extends Dialog {
 		layout.numColumns = 2;
 		control.setLayout(layout);
 
-		myDatabaseConfigs = myModel.getDatabaseConfigs();
-		if (myDatabaseConfigs.size() > 1) {
-			myDatabaseConfigComboViewer = new ComboViewer(control, SWT.READ_ONLY);
+		_databaseConfigs = _model.getDatabaseConfigs();
+		if (_databaseConfigs.size() > 1) {
+			_databaseConfigComboViewer = new ComboViewer(control, SWT.READ_ONLY);
 			GridData extraInfoData = new GridData(GridData.FILL_HORIZONTAL);
 			extraInfoData.horizontalSpan = 2;
-			myDatabaseConfigComboViewer.setContentProvider(new DatabaseConfigContentProvider());
-			myDatabaseConfigComboViewer.setLabelProvider(new DatabaseConfigLabelProvider());
-			myDatabaseConfigComboViewer.setInput(myDatabaseConfigs);
-			myDatabaseConfigComboViewer.getCombo().setLayoutData(extraInfoData);
-			EODatabaseConfig activeDatabaseConfig = myModel.getActiveDatabaseConfig();
+			_databaseConfigComboViewer.setContentProvider(new DatabaseConfigContentProvider());
+			_databaseConfigComboViewer.setLabelProvider(new DatabaseConfigLabelProvider());
+			_databaseConfigComboViewer.setInput(_databaseConfigs);
+			_databaseConfigComboViewer.getCombo().setLayoutData(extraInfoData);
+			EODatabaseConfig activeDatabaseConfig = _model.getActiveDatabaseConfig();
 			if (activeDatabaseConfig != null) {
-				myDatabaseConfigComboViewer.setSelection(new StructuredSelection(activeDatabaseConfig));
+				_databaseConfigComboViewer.setSelection(new StructuredSelection(activeDatabaseConfig));
 			} else {
-				myDatabaseConfigComboViewer.setSelection(new StructuredSelection(myDatabaseConfigs.iterator().next()));
+				_databaseConfigComboViewer.setSelection(new StructuredSelection(_databaseConfigs.iterator().next()));
 			}
-			myDatabaseConfigComboViewer.addSelectionChangedListener(myFlagChangeHander);
+			_databaseConfigComboViewer.addSelectionChangedListener(_flagChangeHander);
 		}
 
-		myDropDatabaseButton = new Button(control, SWT.CHECK);
-		myDropDatabaseButton.setText("Drop Database");
-		myDropDatabaseButton.addSelectionListener(myFlagChangeHander);
-		myCreateDatabaseButton = new Button(control, SWT.CHECK);
-		myCreateDatabaseButton.setText("Create Database");
-		myCreateDatabaseButton.addSelectionListener(myFlagChangeHander);
+		_dropDatabaseButton = new Button(control, SWT.CHECK);
+		_dropDatabaseButton.setText("Drop Database");
+		_dropDatabaseButton.addSelectionListener(_flagChangeHander);
+		_createDatabaseButton = new Button(control, SWT.CHECK);
+		_createDatabaseButton.setText("Create Database");
+		_createDatabaseButton.addSelectionListener(_flagChangeHander);
 
-		myDropTablesButton = new Button(control, SWT.CHECK);
-		myDropTablesButton.setText("Drop Tables");
-		myDropTablesButton.setSelection(true);
-		myDropTablesButton.addSelectionListener(myFlagChangeHander);
-		myCreateTablesButton = new Button(control, SWT.CHECK);
-		myCreateTablesButton.setText("Create Tables");
-		myCreateTablesButton.setSelection(true);
-		myCreateTablesButton.addSelectionListener(myFlagChangeHander);
+		_dropTablesButton = new Button(control, SWT.CHECK);
+		_dropTablesButton.setText("Drop Tables");
+		_dropTablesButton.setSelection(true);
+		_dropTablesButton.addSelectionListener(_flagChangeHander);
+		_createTablesButton = new Button(control, SWT.CHECK);
+		_createTablesButton.setText("Create Tables");
+		_createTablesButton.setSelection(true);
+		_createTablesButton.addSelectionListener(_flagChangeHander);
 
-		myDropPrimaryKeySupportButton = new Button(control, SWT.CHECK);
-		myDropPrimaryKeySupportButton.setText("Drop Primary Keys");
-		myDropPrimaryKeySupportButton.setSelection(true);
-		myDropPrimaryKeySupportButton.addSelectionListener(myFlagChangeHander);
-		myCreatePrimaryKeySupportButton = new Button(control, SWT.CHECK);
-		myCreatePrimaryKeySupportButton.setText("Create Primary Key Support");
-		myCreatePrimaryKeySupportButton.setSelection(true);
-		myCreatePrimaryKeySupportButton.addSelectionListener(myFlagChangeHander);
+		_dropPrimaryKeySupportButton = new Button(control, SWT.CHECK);
+		_dropPrimaryKeySupportButton.setText("Drop Primary Keys");
+		_dropPrimaryKeySupportButton.setSelection(true);
+		_dropPrimaryKeySupportButton.addSelectionListener(_flagChangeHander);
+		_createPrimaryKeySupportButton = new Button(control, SWT.CHECK);
+		_createPrimaryKeySupportButton.setText("Create Primary Key Support");
+		_createPrimaryKeySupportButton.setSelection(true);
+		_createPrimaryKeySupportButton.addSelectionListener(_flagChangeHander);
 
-		int entityCount = (myEntityNames != null) ? myEntityNames.size() : 0;
-		myCreateSelectedEntitiesButton = new Button(control, SWT.CHECK);
-		myCreateSelectedEntitiesButton.setText("Create Only Selected Entities");
-		myCreateSelectedEntitiesButton.setSelection(entityCount > 0);
-		myCreateSelectedEntitiesButton.addSelectionListener(myFlagChangeHander);
-		myCreateSelectedEntitiesButton.setEnabled(entityCount > 0);
-		myCreateOnlySelectedEntities = (entityCount > 0);
-		myCreatePrimaryKeyConstraintsButton = new Button(control, SWT.CHECK);
-		myCreatePrimaryKeyConstraintsButton.setText("Primary Key Constraints");
-		myCreatePrimaryKeyConstraintsButton.setSelection(true);
-		myCreatePrimaryKeyConstraintsButton.addSelectionListener(myFlagChangeHander);
+		_dropIndexesButton = new Button(control, SWT.CHECK);
+		_dropIndexesButton.setText("Drop Indexes");
+		_dropIndexesButton.setSelection(true);
+		_dropIndexesButton.addSelectionListener(_flagChangeHander);
+		_createIndexesButton = new Button(control, SWT.CHECK);
+		_createIndexesButton.setText("Create Indexes");
+		_createIndexesButton.setSelection(true);
+		_createIndexesButton.addSelectionListener(_flagChangeHander);
+
+		int entityCount = (_entityNames != null) ? _entityNames.size() : 0;
+		_createSelectedEntitiesButton = new Button(control, SWT.CHECK);
+		_createSelectedEntitiesButton.setText("Create Only Selected Entities");
+		_createSelectedEntitiesButton.setSelection(entityCount > 0);
+		_createSelectedEntitiesButton.addSelectionListener(_flagChangeHander);
+		_createSelectedEntitiesButton.setEnabled(entityCount > 0);
+		_createOnlySelectedEntities = (entityCount > 0);
+		_createPrimaryKeyConstraintsButton = new Button(control, SWT.CHECK);
+		_createPrimaryKeyConstraintsButton.setText("Primary Key Constraints");
+		_createPrimaryKeyConstraintsButton.setSelection(true);
+		_createPrimaryKeyConstraintsButton.addSelectionListener(_flagChangeHander);
+
+		_runInEntityModelerButton = new Button(control, SWT.CHECK);
+		_runInEntityModelerButton.setText("Single Transaction Compatible");
+		_runInEntityModelerButton.setSelection(true);
+		_runInEntityModelerButton.addSelectionListener(_flagChangeHander);
+
+		_createForeignKeyConstraintsButton = new Button(control, SWT.CHECK);
+		_createForeignKeyConstraintsButton.setText("Foreign Key Constraints");
+		_createForeignKeyConstraintsButton.setSelection(true);
+		_createForeignKeyConstraintsButton.addSelectionListener(_flagChangeHander);
 
 		new Label(control, SWT.NONE);
-		myCreateForeignKeyConstraintsButton = new Button(control, SWT.CHECK);
-		myCreateForeignKeyConstraintsButton.setText("Foreign Key Constraints");
-		myCreateForeignKeyConstraintsButton.setSelection(true);
-		myCreateForeignKeyConstraintsButton.addSelectionListener(myFlagChangeHander);
 
-		mySqlText = new Text(control, SWT.BORDER | SWT.MULTI | SWT.READ_ONLY | SWT.V_SCROLL);
+		_sqlText = new Text(control, SWT.BORDER | SWT.MULTI | SWT.READ_ONLY | SWT.V_SCROLL);
 		GridData sqlTextData = new GridData(GridData.FILL_HORIZONTAL);
 		sqlTextData.heightHint = 300;
 		sqlTextData.widthHint = 500;
 		sqlTextData.verticalIndent = 10;
 		sqlTextData.horizontalSpan = 2;
-		mySqlText.setLayoutData(sqlTextData);
-		mySqlText.setText("Generating SQL. Please Wait ...");
+		_sqlText.setLayoutData(sqlTextData);
+		_sqlText.setText("Generating SQL. Please Wait ...");
 
-		myWaitCursor = new Cursor(getShell().getDisplay(), SWT.CURSOR_WAIT);
+		_waitCursor = new Cursor(getShell().getDisplay(), SWT.CURSOR_WAIT);
 		generateSqlInThread();
 
 		return control;
@@ -179,15 +200,15 @@ public class GenerateSQLDialog extends Dialog {
 
 	public boolean close() {
 		boolean close = super.close();
-		if (myWaitCursor != null) {
-			myWaitCursor.dispose();
-			myWaitCursor = null;
+		if (_waitCursor != null) {
+			_waitCursor.dispose();
+			_waitCursor = null;
 		}
 		return close;
 	}
 
-	protected Control createButtonBar(Composite _parent) {
-		Composite composite = new Composite(_parent, SWT.NONE);
+	protected Control createButtonBar(Composite parent) {
+		Composite composite = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 3;
 		layout.makeColumnsEqualWidth = true;
@@ -198,68 +219,71 @@ public class GenerateSQLDialog extends Dialog {
 		composite.setLayout(layout);
 		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_CENTER);
 		composite.setLayoutData(data);
-		composite.setFont(_parent.getFont());
+		composite.setFont(parent.getFont());
 		Button closeButton = new Button(composite, SWT.PUSH);
 		closeButton.setText("Close");
 		closeButton.addSelectionListener(new CloseHandler());
-		myExecuteSqlButton = new Button(composite, SWT.PUSH);
-		myExecuteSqlButton.setText("Execute SQL");
-		myExecuteSqlButton.addSelectionListener(new ExecuteSqlHandler());
+		_executeSqlButton = new Button(composite, SWT.PUSH);
+		_executeSqlButton.setText("Execute SQL");
+		_executeSqlButton.addSelectionListener(new ExecuteSqlHandler());
 		getShell().setDefaultButton(closeButton);
 		return composite;
 	}
 
-	protected String yesNo(Button _button) {
-		return (_button.getSelection()) ? "YES" : "NO";
+	protected String yesNo(Button button) {
+		return (button.getSelection()) ? "YES" : "NO";
 	}
 
 	protected Text getSqlText() {
-		return mySqlText;
+		return _sqlText;
 	}
 
 	protected EODatabaseConfig getSelectedDatabaseConfig() {
 		EODatabaseConfig selectedDatabaseConfig = null;
-		if (myDatabaseConfigComboViewer != null) {
-			IStructuredSelection selection = (IStructuredSelection) myDatabaseConfigComboViewer.getSelection();
+		if (_databaseConfigComboViewer != null) {
+			IStructuredSelection selection = (IStructuredSelection) _databaseConfigComboViewer.getSelection();
 			selectedDatabaseConfig = (EODatabaseConfig) selection.getFirstElement();
 		} else {
-			selectedDatabaseConfig = myModel.getActiveDatabaseConfig();
+			selectedDatabaseConfig = _model.getActiveDatabaseConfig();
 		}
 		return selectedDatabaseConfig;
 	}
 
 	protected ClassLoader getEOModelClassLoader() throws Exception {
-		if (myEOModelClassLoader == null) {
-			myEOModelClassLoader = IEOClassLoaderFactory.Utility.createClassLoader(myModel);
+		if (_eoModelClassLoader == null) {
+			_eoModelClassLoader = IEOClassLoaderFactory.Utility.createClassLoader(_model);
 		}
-		return myEOModelClassLoader;
+		return _eoModelClassLoader;
 	}
 
 	public void generateSqlInThread() {
-		myCreateOnlySelectedEntities = myCreateSelectedEntitiesButton.getSelection();
+		_createOnlySelectedEntities = _createSelectedEntitiesButton.getSelection();
 		final Map<String, String> flags = new HashMap<String, String>();
-		flags.put("dropTables", yesNo(myDropTablesButton));
-		flags.put("dropPrimaryKeySupport", yesNo(myDropPrimaryKeySupportButton));
-		flags.put("createTables", yesNo(myCreateTablesButton));
-		flags.put("createPrimaryKeySupport", yesNo(myCreatePrimaryKeySupportButton));
-		flags.put("primaryKeyConstraints", yesNo(myCreatePrimaryKeyConstraintsButton));
-		flags.put("foreignKeyConstraints", yesNo(myCreateForeignKeyConstraintsButton));
-		flags.put("createDatabase", yesNo(myCreateDatabaseButton));
-		flags.put("dropDatabase", yesNo(myDropDatabaseButton));
+		flags.put("dropTables", yesNo(_dropTablesButton));
+		flags.put("dropPrimaryKeySupport", yesNo(_dropPrimaryKeySupportButton));
+		flags.put("createTables", yesNo(_createTablesButton));
+		flags.put("createPrimaryKeySupport", yesNo(_createPrimaryKeySupportButton));
+		flags.put("primaryKeyConstraints", yesNo(_createPrimaryKeyConstraintsButton));
+		flags.put("foreignKeyConstraints", yesNo(_createForeignKeyConstraintsButton));
+		flags.put("createDatabase", yesNo(_createDatabaseButton));
+		flags.put("dropDatabase", yesNo(_dropDatabaseButton));
+		flags.put("createIndexes", yesNo(_createIndexesButton));
+		flags.put("dropIndexes", yesNo(_dropIndexesButton));
 		final EODatabaseConfig selectedDatabaseConfig = getSelectedDatabaseConfig();
+		final boolean runInEntityModeler = _runInEntityModelerButton.getSelection();
 		Thread generateSqlThread = new Thread(new Runnable() {
 			public void run() {
-				generateSql(flags, selectedDatabaseConfig);
+				generateSql(flags, selectedDatabaseConfig, runInEntityModeler);
 			}
 		}, "Generate SQL");
 		generateSqlThread.start();
 	}
 
 	protected Button getExecuteSqlButton() {
-		return myExecuteSqlButton;
+		return _executeSqlButton;
 	}
 
-	protected synchronized void generateSql(Map flags, EODatabaseConfig selectedDatabaseConfig) {
+	protected synchronized void generateSql(Map flags, EODatabaseConfig selectedDatabaseConfig, boolean runInEntityModeler) {
 		try {
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
@@ -267,7 +291,7 @@ public class GenerateSQLDialog extends Dialog {
 					getExecuteSqlButton().setEnabled(false);
 				}
 			});
-			IEOSQLGenerator sqlGenerator = IEOSQLGeneratorFactory.Utility.sqlGeneratorFactory().sqlGenerator(myModel, getEntityNames(), selectedDatabaseConfig, getEOModelClassLoader());
+			IEOSQLGenerator sqlGenerator = IEOSQLGeneratorFactory.Utility.sqlGeneratorFactory().sqlGenerator(_model, getEntityNames(), selectedDatabaseConfig, getEOModelClassLoader(), runInEntityModeler);
 			final String sqlScript = sqlGenerator.generateSchemaCreationScript(flags);
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
@@ -292,18 +316,19 @@ public class GenerateSQLDialog extends Dialog {
 	}
 
 	protected String getSqlString() {
-		return mySqlText.getText();
+		return _sqlText.getText();
 	}
 
 	public void executeSqlInThread() {
-		myCreateOnlySelectedEntities = myCreateSelectedEntitiesButton.getSelection();
+		_createOnlySelectedEntities = _createSelectedEntitiesButton.getSelection();
 		boolean confirmed = MessageDialog.openConfirm(getShell(), "Execute SQL", "Are you sure you want to execute this SQL?");
 		if (confirmed) {
 			final String sqlString = getSqlString();
 			final EODatabaseConfig selectedDatabaseConfig = getSelectedDatabaseConfig();
+			final boolean runInEntityModeler = _runInEntityModelerButton.getSelection();
 			Thread executeSqlThread = new Thread(new Runnable() {
 				public void run() {
-					executeSql(sqlString, selectedDatabaseConfig);
+					executeSql(sqlString, selectedDatabaseConfig, runInEntityModeler);
 				}
 			}, "Execute SQL");
 			executeSqlThread.start();
@@ -311,28 +336,28 @@ public class GenerateSQLDialog extends Dialog {
 	}
 
 	protected void setCancel(boolean cancel) {
-		myCancel = cancel;
+		_cancel = cancel;
 	}
 
 	protected Cursor getWaitCursor() {
-		return myWaitCursor;
+		return _waitCursor;
 	}
 
 	protected List<String> getEntityNames() {
-		return (myCreateOnlySelectedEntities) ? myEntityNames : null;
+		return (_createOnlySelectedEntities) ? _entityNames : null;
 	}
 
-	protected synchronized void executeSql(String allSql, EODatabaseConfig selectedDatabaseConfig) {
+	protected synchronized void executeSql(String allSql, EODatabaseConfig selectedDatabaseConfig, boolean runInEntityModeler) {
 		try {
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
 					getShell().setCursor(getWaitCursor());
 				}
 			});
-			IEOSQLGenerator sqlGenerator = IEOSQLGeneratorFactory.Utility.sqlGeneratorFactory().sqlGenerator(myModel, getEntityNames(), selectedDatabaseConfig, getEOModelClassLoader());
+			IEOSQLGenerator sqlGenerator = IEOSQLGeneratorFactory.Utility.sqlGeneratorFactory().sqlGenerator(_model, getEntityNames(), selectedDatabaseConfig, getEOModelClassLoader(), runInEntityModeler);
 			String[] statements = allSql.split("[;/]");
 			setCancel(false);
-			for (int statementsNum = 0; !myCancel && statementsNum < statements.length; statementsNum++) {
+			for (int statementsNum = 0; !_cancel && statementsNum < statements.length; statementsNum++) {
 				String statement = statements[statementsNum];
 				statement = statement.trim().replaceAll("[\n\r]", " ");
 				if (statement.length() > 0) {
@@ -367,11 +392,11 @@ public class GenerateSQLDialog extends Dialog {
 	}
 
 	public class FlagChangedHandler implements SelectionListener, ISelectionChangedListener {
-		public void widgetDefaultSelected(SelectionEvent _e) {
-			widgetSelected(_e);
+		public void widgetDefaultSelected(SelectionEvent event) {
+			widgetSelected(event);
 		}
 
-		public void widgetSelected(SelectionEvent _e) {
+		public void widgetSelected(SelectionEvent event) {
 			GenerateSQLDialog.this.generateSqlInThread();
 		}
 
@@ -381,27 +406,27 @@ public class GenerateSQLDialog extends Dialog {
 	}
 
 	public class ExecuteSqlHandler implements SelectionListener {
-		public void widgetDefaultSelected(SelectionEvent _e) {
-			widgetSelected(_e);
+		public void widgetDefaultSelected(SelectionEvent event) {
+			widgetSelected(event);
 		}
 
-		public void widgetSelected(SelectionEvent _e) {
+		public void widgetSelected(SelectionEvent event) {
 			GenerateSQLDialog.this.executeSqlInThread();
 		}
 	}
 
 	public class CloseHandler implements SelectionListener {
-		public void widgetDefaultSelected(SelectionEvent _e) {
-			widgetSelected(_e);
+		public void widgetDefaultSelected(SelectionEvent event) {
+			widgetSelected(event);
 		}
 
-		public void widgetSelected(SelectionEvent _e) {
+		public void widgetSelected(SelectionEvent event) {
 			GenerateSQLDialog.this.close();
 		}
 	}
 
 	protected class DatabaseConfigLabelProvider implements ILabelProvider {
-		public void addListener(ILabelProviderListener _listener) {
+		public void addListener(ILabelProviderListener listener) {
 			// DO NOTHING
 		}
 
@@ -409,12 +434,12 @@ public class GenerateSQLDialog extends Dialog {
 			// DO NOTHING
 		}
 
-		public Image getImage(Object _element) {
+		public Image getImage(Object element) {
 			return null;
 		}
 
-		public String getText(Object _element) {
-			EODatabaseConfig config = (EODatabaseConfig) _element;
+		public String getText(Object element) {
+			EODatabaseConfig config = (EODatabaseConfig) element;
 			StringBuffer text = new StringBuffer();
 			text.append(config.getName());
 			text.append(" (");
@@ -425,11 +450,11 @@ public class GenerateSQLDialog extends Dialog {
 			return text.toString();
 		}
 
-		public boolean isLabelProperty(Object _element, String _property) {
+		public boolean isLabelProperty(Object element, String property) {
 			return true;
 		}
 
-		public void removeListener(ILabelProviderListener _listener) {
+		public void removeListener(ILabelProviderListener listener) {
 			// DO NOTHING
 		}
 
@@ -440,11 +465,11 @@ public class GenerateSQLDialog extends Dialog {
 			// DO NOTHING
 		}
 
-		public Object[] getElements(Object _inputElement) {
-			return ((Set) _inputElement).toArray();
+		public Object[] getElements(Object inputElement) {
+			return ((Set) inputElement).toArray();
 		}
 
-		public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			// DO NOTHING
 		}
 

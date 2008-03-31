@@ -104,7 +104,7 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 
 	private Object _modelProcessor;
 
-	public EOFSQLGenerator(String modelName, List modelURLs, List entityNames, Map selectedDatabaseConfig) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+	public EOFSQLGenerator(String modelName, List modelURLs, List entityNames, Map selectedDatabaseConfig, boolean runInEntityModeler) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		Map databaseConfig = selectedDatabaseConfig;
 		if (databaseConfig == null) {
 			databaseConfig = new HashMap();
@@ -125,6 +125,7 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 
 		_entities = new NSMutableArray();
 		_model = _modelGroup.modelNamed(modelName);
+		NSDictionary defaultConnectionDictionary;
 		Map overrideConnectionDictionary = (Map) databaseConfig.get("connectionDictionary");
 		if (overrideConnectionDictionary != null) {
 			NSDictionary connectionDictionary = (NSDictionary) EOFSQLUtils.toWOCollections(overrideConnectionDictionary);
@@ -133,7 +134,20 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 			if (eomodelProcessorClassName != null) {
 				findModelProcessor(eomodelProcessorClassName, true);
 			}
+			defaultConnectionDictionary = connectionDictionary;
 		}
+		else {
+			defaultConnectionDictionary = _model.connectionDictionary();
+		}
+		
+		Enumeration modelsEnum = _modelGroup.models().objectEnumerator();
+		while (modelsEnum.hasMoreElements()) {
+			EOModel model = (EOModel)modelsEnum.nextElement();
+			if (model.connectionDictionary() == null) {
+				model.setConnectionDictionary(defaultConnectionDictionary);
+			}
+		}
+
 		if (_modelProcessor == null) {
 			findModelProcessor("org.objectstyle.wolips.eomodeler.EOModelProcessor", false);
 		}
@@ -167,19 +181,21 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 		}
 		
 		// MS: Add the "inEntityModeler" flag so that plugins can adjust their behavior
-		// if they need to. 
-		NSMutableDictionary modelUserInfo = _model.userInfo().mutableClone();
-		NSDictionary entityModelerDict = (NSDictionary) modelUserInfo.objectForKey("_EntityModeler");
-		NSMutableDictionary mutableEntityModelerDict;
-		if (entityModelerDict == null) {
-			mutableEntityModelerDict = new NSMutableDictionary();
+		// if they need to.
+		if (runInEntityModeler) {
+			NSMutableDictionary modelUserInfo = _model.userInfo().mutableClone();
+			NSDictionary entityModelerDict = (NSDictionary) modelUserInfo.objectForKey("_EntityModeler");
+			NSMutableDictionary mutableEntityModelerDict;
+			if (entityModelerDict == null) {
+				mutableEntityModelerDict = new NSMutableDictionary();
+			}
+			else {
+				mutableEntityModelerDict = entityModelerDict.mutableClone();
+			}
+			mutableEntityModelerDict.setObjectForKey(Boolean.TRUE, "inEntityModeler");
+			modelUserInfo.setObjectForKey(mutableEntityModelerDict, "_EntityModeler");
+			_model.setUserInfo(modelUserInfo);
 		}
-		else {
-			mutableEntityModelerDict = entityModelerDict.mutableClone();
-		}
-		mutableEntityModelerDict.setObjectForKey(Boolean.TRUE, "inEntityModeler");
-		modelUserInfo.setObjectForKey(mutableEntityModelerDict, "_EntityModeler");
-		_model.setUserInfo(modelUserInfo);
 
 		ensureSingleTableInheritanceParentEntitiesAreIncluded();
 		ensureSingleTableInheritanceChildEntitiesAreIncluded();

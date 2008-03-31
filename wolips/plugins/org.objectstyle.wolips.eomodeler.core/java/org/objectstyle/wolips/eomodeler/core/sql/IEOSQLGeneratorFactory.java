@@ -15,7 +15,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
 
 public interface IEOSQLGeneratorFactory {
-	public IEOSQLGenerator sqlGenerator(EOModel model, List<String> entityNames, EODatabaseConfig databaseConfig, ClassLoader eomodelClassLoader) throws SecurityException, NoSuchMethodException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException;
+	public IEOSQLGenerator sqlGenerator(EOModel model, List<String> entityNames, EODatabaseConfig databaseConfig, ClassLoader eomodelClassLoader, boolean runInEntityModeler) throws SecurityException, NoSuchMethodException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException;
 	
 	public class Utility {
 		public static IEOSQLGeneratorFactory sqlGeneratorFactory() throws EOModelException {
