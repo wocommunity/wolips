@@ -80,7 +80,10 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			templatePaths.append(",");
 			File templateFolder = new File(templatePath);
 			if (!templateFolder.isAbsolute()) {
-				templateFolder = new File(eogeneratorModel.getProjectPath().toFile(), templatePath);
+				IPath projectPath = eogeneratorModel.getProjectPath();
+				if (projectPath != null) {
+					templateFolder = new File(projectPath.toFile(), templatePath);
+				}
 			}
 			templatePaths.append(templateFolder.getAbsolutePath());
 		}
@@ -150,7 +153,10 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 					String modelPath = modelRef.getPath((IPath) null);
 					File modelFile = new File(modelPath);
 					if (!modelFile.isAbsolute()) {
-						modelFile = new File(eogeneratorModel.getProjectPath().toFile(), modelPath);
+						IPath projectPath = eogeneratorModel.getProjectPath();
+						if (projectPath != null) {
+							modelFile = new File(projectPath.toFile(), modelPath);
+						}
 					}
 					EOModel model = modelGroup.loadModelFromURL(modelFile.toURL());
 					models.add(model);
@@ -159,7 +165,10 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 					String modelPath = modelRef.getPath((IPath) null);
 					File modelFile = new File(modelPath);
 					if (!modelFile.isAbsolute()) {
-						modelFile = new File(eogeneratorModel.getProjectPath().toFile(), modelPath);
+						IPath projectPath = eogeneratorModel.getProjectPath();
+						if (projectPath != null) {
+							modelFile = new File(projectPath.toFile(), modelPath);
+						}
 					}
 					modelGroup.loadModelFromURL(modelFile.toURL());
 				}
@@ -188,7 +197,10 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 
 			File superclassDestination = new File(eogeneratorModel.getDestination());
 			if (!superclassDestination.isAbsolute()) {
-				superclassDestination = new File(eogeneratorModel.getProjectPath().toFile(), eogeneratorModel.getDestination());
+				IPath projectPath = eogeneratorModel.getProjectPath();
+				if (projectPath != null) {
+					superclassDestination = new File(projectPath.toFile(), eogeneratorModel.getDestination());
+				}
 			}
 			if (!superclassDestination.exists()) {
 				if (!superclassDestination.mkdirs()) {
@@ -198,7 +210,10 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 
 			File subclassDestination = new File(eogeneratorModel.getSubclassDestination());
 			if (!subclassDestination.isAbsolute()) {
-				subclassDestination = new File(eogeneratorModel.getProjectPath().toFile(), eogeneratorModel.getSubclassDestination());
+				IPath projectPath = eogeneratorModel.getProjectPath();
+				if (projectPath != null) {
+					subclassDestination = new File(projectPath.toFile(), eogeneratorModel.getSubclassDestination());
+				}
 			}
 			if (!subclassDestination.exists()) {
 				if (!subclassDestination.mkdirs()) {
