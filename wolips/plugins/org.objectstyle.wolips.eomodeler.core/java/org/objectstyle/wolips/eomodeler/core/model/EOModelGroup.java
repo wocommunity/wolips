@@ -172,6 +172,19 @@ public class EOModelGroup extends EOModelObject<Object> {
 		return entityNames;
 	}
 
+	/**
+	 * Returns the list of entities that are not prototypes.
+	 * 
+	 * @return list of non prototype entities
+	 */
+	public Set<EOEntity> getNonPrototypeEntities() {
+		Set<EOEntity> entities = new HashSet<EOEntity>();
+		for (EOModel model : _models) {
+			entities.addAll(model.getNonPrototypeEntities());
+		}
+		return entities;
+	}
+
 	public Set<EOEntity> getEntities() {
 		Set<EOEntity> allEntities = new HashSet<EOEntity>();
 		for (EOModel model : _models) {

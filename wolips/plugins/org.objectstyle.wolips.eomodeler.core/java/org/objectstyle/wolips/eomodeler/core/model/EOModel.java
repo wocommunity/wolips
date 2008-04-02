@@ -472,6 +472,21 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		return myName;
 	}
 
+	/**
+	 * Returns the list of entities that are not prototypes.
+	 * 
+	 * @return list of non prototype entities
+	 */
+	public Set<EOEntity> getNonPrototypeEntities() {
+		Set<EOEntity> entities = new HashSet<EOEntity>();
+		for (EOEntity entity : getEntities()) {
+			if (!entity.isPrototype()) {
+				entities.add(entity);
+			}
+		}
+		return entities;
+	}
+
 	public Set<EOEntity> getEntities() {
 		return myEntities;
 	}
