@@ -343,22 +343,27 @@ public class EOModelGroup extends EOModelObject<Object> {
 	 */
 	public static String getModelNameForURL(URL url) {
 		String modelName;
-		String protocol = url.getProtocol();
-		if ("jar".equals(protocol)) {
-			try {
-				JarURLConnection conn = (JarURLConnection) url.openConnection();
-				JarEntry jarEntry = conn.getJarEntry();
-				if (jarEntry != null) {
-					modelName = EOModelGroup.getModelNameForJarEntry(jarEntry);
-				} else {
-					modelName = null;
+		if (url == null) {
+			modelName = null;
+		}
+		else {
+			String protocol = url.getProtocol();
+			if ("jar".equals(protocol)) {
+				try {
+					JarURLConnection conn = (JarURLConnection) url.openConnection();
+					JarEntry jarEntry = conn.getJarEntry();
+					if (jarEntry != null) {
+						modelName = EOModelGroup.getModelNameForJarEntry(jarEntry);
+					} else {
+						modelName = null;
+					}
+				} catch (IOException ioe) {
+					throw new IllegalStateException("The jar url '" + url.toString() + "' was unable to be used to find out the EO model's name.", ioe);
 				}
-			} catch (IOException ioe) {
-				throw new IllegalStateException("The jar url '" + url.toString() + "' was unable to be used to find out the EO model's name.", ioe);
+			} else {
+				File file = URLUtils.cheatAndTurnIntoFile(url);
+				modelName = EOModelGroup.getModelNameForFile(file);
 			}
-		} else {
-			File file = URLUtils.cheatAndTurnIntoFile(url);
-			modelName = EOModelGroup.getModelNameForFile(file);
 		}
 		return modelName;
 	}
