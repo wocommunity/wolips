@@ -61,16 +61,19 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
+import org.objectstyle.wolips.baseforplugins.util.StringUtils;
 import org.objectstyle.wolips.baseforplugins.util.URLUtils;
 import org.objectstyle.wolips.eomodeler.core.model.history.EOEntityAddedEvent;
 import org.objectstyle.wolips.eomodeler.core.model.history.EOEntityDeletedEvent;
 import org.objectstyle.wolips.eomodeler.core.model.history.ModelEvents;
+import org.objectstyle.wolips.eomodeler.core.utils.NameSyncUtils;
+import org.objectstyle.wolips.eomodeler.core.utils.NameSyncUtils.NamePair;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 
 public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements ISortableEOModelObject {
 	public static final String CURRENT_VERSION = "1.0.1";
-	
+
 	public static final String DIRTY = "dirty";
 
 	public static final String ENTITY = "entity";
@@ -120,7 +123,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	private URL myModelURL;
 
 	private Set<EOAttribute> myPrototypeAttributeCache;
-	
+
 	private ModelEvents _modelEvents;
 
 	public EOModel(String _name) {
@@ -215,16 +218,37 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		return guessPackageName;
 	}
 
-	public EOEntity addBlankEntity(String _name) throws DuplicateNameException {
-		String newEntityName = findUnusedEntityName(_name);
-		EOEntity entity = new EOEntity(newEntityName);
-		entity.setExternalName(newEntityName);
-		String className = newEntityName;
-		String packageName = guessPackageName();
-		if (packageName != null && packageName.length() > 0) {
-			className = packageName + "." + newEntityName;
+	public Set<NamePair> getEntityExternalNamePairs(EOEntity excludeEntity) {
+		Set<NamePair> externalNamePairs = new HashSet<NamePair>();
+		for (EOEntity entity : getEntities()) {
+			if (excludeEntity == null || entity != excludeEntity) {
+				externalNamePairs.add(new NameSyncUtils.NamePair(entity.getName(), entity.getExternalName()));
+			}
 		}
-		entity.setClassName(className);
+		return externalNamePairs;
+	}
+
+	public EOEntity _getTemplateNameEntity() {
+		EOEntity templateNameEntity = null;
+		Set<EOEntity> entities = getEntities();
+		for (EOEntity entity : entities) {
+			String entityName = entity.getName();
+			if (StringUtils.camelCaseToUnderscore(entityName).indexOf('_') != -1) {
+				templateNameEntity = entity;
+				break;
+			}
+		}
+		if (templateNameEntity == null && !entities.isEmpty()) {
+			templateNameEntity = entities.iterator().next();
+		}
+		return templateNameEntity;
+	}
+
+	public EOEntity addBlankEntity(String name) throws DuplicateNameException {
+		String newEntityName = findUnusedEntityName(name);
+		EOEntity entity = new EOEntity(newEntityName);
+		entity.guessExternalNameInModel(this);
+		entity.guessClassNameInModel(this);
 		addEntity(entity);
 
 		if (myModelGroup != null && myModelGroup.hasProjectWonder()) {
@@ -245,7 +269,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		boolean editing = (modelGroup == null || getName().equals(modelGroup.getEditingModelName()));
 		return editing;
 	}
-	
+
 	public boolean isDirty() {
 		return myDirty;
 	}
@@ -391,7 +415,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		_createReferencingRelationshipsCache(cache);
 		return cache;
 	}
-	
+
 	public void _createReferencingRelationshipsCache(Map<EOAttribute, Set<EORelationship>> cache) {
 		for (EOEntity entity : getEntities()) {
 			for (EORelationship relationship : entity.getRelationships()) {
@@ -413,7 +437,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		_createInheritanceCache(cache);
 		return cache;
 	}
-	
+
 	public void _createInheritanceCache(Map<EOEntity, Set<EOEntity>> cache) {
 		for (EOEntity entity : getEntities()) {
 			EOEntity parentEntity = entity.getParent();
@@ -427,7 +451,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			}
 		}
 	}
-	
+
 	public Set<EODatabaseConfig> getDatabaseConfigs() {
 		return myDatabaseConfigs;
 	}
@@ -745,7 +769,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	}
 
 	public void loadFromURL(URL _modelFolder, boolean createMissingDatabaseConfig, Set<EOModelVerificationFailure> _failures) throws EOModelException, MalformedURLException {
-		//System.out.println("EOModel.loadFromURL: " + _modelFolder);
+		// System.out.println("EOModel.loadFromURL: " + _modelFolder);
 		URL indexURL = new URL(_modelFolder, "index.eomodeld");
 		// if (!indexURL.exists()) {
 		// throw new EOModelException(indexURL + " does not exist.");
@@ -887,8 +911,8 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		modelMap.put("connectionDictionary", connectionDictionary);
 		modelMap.setString("adaptorName", adaptorName, true);
 
-		Set<Map> entities = new PropertyListSet<Map>( EOModelMap.asArray(myModelMap.get("entities")) );
-		Set<String> entitiesWithSharedObjects = new PropertyListSet<String>( EOModelMap.asArray(myModelMap.get("entitiesWithSharedObjects")) );
+		Set<Map> entities = new PropertyListSet<Map>(EOModelMap.asArray(myModelMap.get("entities")));
+		Set<String> entitiesWithSharedObjects = new PropertyListSet<String>(EOModelMap.asArray(myModelMap.get("entitiesWithSharedObjects")));
 		for (EOEntity entity : myEntities) {
 			EOModelMap entityMap = new EOModelMap();
 			entityMap.setString("className", entity.getClassName(), true);
@@ -916,7 +940,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		}
 		modelMap.setMap("internalInfo", internalInfoMap, true);
 
-		Set<String> storedProcedures = new PropertyListSet<String>( EOModelMap.asArray(myModelMap.get("storedProcedures")) );
+		Set<String> storedProcedures = new PropertyListSet<String>(EOModelMap.asArray(myModelMap.get("storedProcedures")));
 		for (EOStoredProcedure storedProcedure : myStoredProcedures) {
 			storedProcedures.add(storedProcedure.getName());
 		}
@@ -928,7 +952,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			databaseConfigs.put(databaseConfig.getName(), databaseConfig.toMap());
 		}
 		entityModelerMap.setMap("databaseConfigs", databaseConfigs, true);
-		
+
 		if (myActiveDatabaseConfig == null || databaseConfigs.get(myActiveDatabaseConfig.getName()) == null) {
 			entityModelerMap.remove("activeDatabaseConfigName");
 		} else {
@@ -945,7 +969,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 
 		return modelMap;
 	}
-	
+
 	/**
 	 * Returns the .eomodeld for the given folder. If this is an .eomodeld
 	 * folder, it returns the folder you pass in. Otherwise, it creates a child
@@ -966,25 +990,26 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	}
 
 	/**
-	 * Returns true if you are able to write this model to the folder it was loaded from.
+	 * Returns true if you are able to write this model to the folder it was
+	 * loaded from.
 	 * 
 	 * @return true if you are able to save this model
-	 * @throws MalformedURLException if the index URL is invalid
+	 * @throws MalformedURLException
+	 *             if the index URL is invalid
 	 */
 	public boolean canSave() throws MalformedURLException {
 		boolean canSave;
 		URL indexURL = getIndexURL();
 		if (indexURL == null) {
 			canSave = false;
-		}
-		else {
+		} else {
 			File indexFile = URLUtils.cheatAndTurnIntoFile(indexURL);
 			File modelFolder = indexFile.getParentFile();
 			canSave = canSaveToFolder(modelFolder);
 		}
 		return canSave;
 	}
-	
+
 	/**
 	 * Returns true if you are able to write this model to the given folder.
 	 * 
@@ -1011,8 +1036,9 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	 * Saves this model to the same folder it was loaded from.
 	 * 
 	 * @return the .eomodeld folder
-	 * @throws IOException if the model could not be saved
-	 * @throws PropertyListParserException 
+	 * @throws IOException
+	 *             if the model could not be saved
+	 * @throws PropertyListParserException
 	 */
 	public File save() throws IOException, PropertyListParserException {
 		URL indexURL = getIndexURL();
@@ -1072,7 +1098,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			File storedProcedureFile = new File(modelFolder, storedProcedureName + ".storedProcedure");
 			storedProcedure.saveToFile(storedProcedureFile);
 		}
-		
+
 		setDirty(false);
 
 		return modelFolder;
@@ -1140,7 +1166,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	public void _removeFromModelParent(Set<EOModelVerificationFailure> failures) {
 		getModelGroup().removeModel(this, failures);
 	}
-	
+
 	public ModelEvents getModelEvents() {
 		return _modelEvents;
 	}

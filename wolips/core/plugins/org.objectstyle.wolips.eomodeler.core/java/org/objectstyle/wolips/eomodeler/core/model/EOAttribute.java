@@ -64,6 +64,7 @@ import org.objectstyle.wolips.eomodeler.core.kvc.IKey;
 import org.objectstyle.wolips.eomodeler.core.kvc.ResolvedKey;
 import org.objectstyle.wolips.eomodeler.core.model.history.EOAttributeRenamedEvent;
 import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
+import org.objectstyle.wolips.eomodeler.core.utils.NameSyncUtils;
 
 public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttribute, ISortableEOModelObject {
 	public static final String PRIMARY_KEY = "primaryKey";
@@ -500,6 +501,22 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		return (String) _prototypeValueIfNull(AbstractEOArgument.COLUMN_NAME, super.getColumnName());
 	}
 
+	public void guessColumnNameInEntity(EOEntity entity) {
+		String columnName = getName();
+		if (entity != null) {
+			EOAttribute otherAttribute = entity._getTemplateNameAttribute(true);
+			if (otherAttribute != null) {
+				String otherName = otherAttribute.getName();
+				String otherColumnName = otherAttribute.getColumnName();
+				String guessedColumnName = NameSyncUtils.newDependentName(otherName, getName(), otherColumnName, entity.getAttributeColumnNamePairs(null));
+				if (!ComparisonUtils.equals(guessedColumnName, otherColumnName)) {
+					columnName = guessedColumnName;
+				}
+			}
+		}
+		setColumnName(columnName);
+	}
+
 	public void setColumnName(String _columnName) {
 		super.setColumnName((String) _nullIfPrototyped(AbstractEOArgument.COLUMN_NAME, _columnName));
 	}
@@ -638,7 +655,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		} else if ("NSCalendarDate".equals(className)) {
 			className = "NSTimestamp";
 		} else if ("NSDecimalNumber".equals(className)) {
-		  className = "BigDecimal";
+			className = "BigDecimal";
 		}
 		return className;
 	}
@@ -692,7 +709,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	public String _getDefinition() {
 		return (String) _prototypeValueIfNull(AbstractEOArgument.DEFINITION, super._getDefinition());
 	}
-	
+
 	public void updateDefinitionBecauseRelationshipNameChanged(EORelationship relationship) {
 		if (isFlattened()) {
 			EOAttributePath definitionPath = getDefinitionPath();
@@ -701,7 +718,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 			}
 		}
 	}
-	
+
 	public void updateDefinitionBecauseAttributeNameChanged(EOAttribute attribute) {
 		if (isFlattened()) {
 			EOAttributePath definitionPath = getDefinitionPath();
@@ -869,7 +886,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		attributeMap.remove("insertFormat");
 		return attributeMap;
 	}
-	
+
 	public void resolve(Set<EOModelVerificationFailure> _failures) {
 		String prototypeName = getArgumentMap().getString("prototypeName", true);
 		clearCachedPrototype(prototypeName, _failures, false, true);
@@ -917,24 +934,21 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 				}
 
 				/*
-				Boolean classProperty = isClassProperty();
-				if (classProperty != null && classProperty.booleanValue()) {
-					Set<EORelationship> referencingRelationships = getReferencingRelationships(true, verificationContext);
-					for (EORelationship relationship : referencingRelationships) {
-						boolean foreignKey = false;
-						if (relationship.isToOne() != null && relationship.isToOne().booleanValue()) {
-							for (EOJoin join : relationship.getJoins()) {
-								if (this.equals(join.getSourceAttribute())) {
-									foreignKey = true;
-								}
-							}
-						}
-						if (foreignKey) {
-							_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The attribute " + getName() + " is a class property, but is used as a foreign key in the relationship " + relationship.getName() + ".", true));
-						}
-					}
-				}
-				*/
+				 * Boolean classProperty = isClassProperty(); if (classProperty !=
+				 * null && classProperty.booleanValue()) { Set<EORelationship>
+				 * referencingRelationships = getReferencingRelationships(true,
+				 * verificationContext); for (EORelationship relationship :
+				 * referencingRelationships) { boolean foreignKey = false; if
+				 * (relationship.isToOne() != null &&
+				 * relationship.isToOne().booleanValue()) { for (EOJoin join :
+				 * relationship.getJoins()) { if
+				 * (this.equals(join.getSourceAttribute())) { foreignKey = true; } } }
+				 * if (foreignKey) { _failures.add(new
+				 * EOModelVerificationFailure(myEntity.getModel(), this, "The
+				 * attribute " + getName() + " is a class property, but is used
+				 * as a foreign key in the relationship " +
+				 * relationship.getName() + ".", true)); } } }
+				 */
 			}
 		}
 	}
@@ -981,9 +995,11 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	}
 
 	public void synchronizeNameChange(String oldName, String newName) {
-		if (ComparisonUtils.equals(oldName, getColumnName(), true)) {
-			setColumnName(newName);
+		Set<NameSyncUtils.NamePair> columnNamePairs = null;
+		if (getEntity() != null) {
+			columnNamePairs = getEntity().getAttributeColumnNamePairs(this);
 		}
+		setColumnName(NameSyncUtils.newDependentName(oldName, newName, getColumnName(), columnNamePairs));
 	}
 
 	public void _addToModelParent(EOEntity modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) throws EOModelException {

@@ -68,6 +68,8 @@ import org.objectstyle.wolips.eomodeler.core.model.history.EOAttributeAddedEvent
 import org.objectstyle.wolips.eomodeler.core.model.history.EOAttributeDeletedEvent;
 import org.objectstyle.wolips.eomodeler.core.model.history.EOEntityRenamedEvent;
 import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
+import org.objectstyle.wolips.eomodeler.core.utils.NameSyncUtils;
+import org.objectstyle.wolips.eomodeler.core.utils.NameSyncUtils.NamePair;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 
@@ -141,7 +143,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	private EOEntity myParent;
 
 	private EOEntity myPartialEntity;
-	
+
 	private boolean myGenerateSource;
 
 	private String myOriginalName;
@@ -276,8 +278,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		String packageName = getModel().guessPackageName(joiningEntitiesSet);
 		if (_flatten) {
 			manyToManyEntity.setClassName("EOGenericRecord");
-		}
-		else {
+		} else {
 			String className = manyToManyEntity.getName();
 			if (packageName != null && packageName.length() > 0) {
 				className = packageName + "." + className;
@@ -336,13 +337,13 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			} else {
 				entity1ToManyName = _relationshipName;
 			}
-		
+
 			EORelationship entity1ToManyRelationship = entity1Relationship.createInverseRelationshipNamed(entity1ToManyName, true);
 			entity1ToManyRelationship.setClassProperty(Boolean.valueOf(!_flatten));
 			entity1ToManyRelationship.setPropagatesPrimaryKey(Boolean.TRUE);
 			entity1ToManyRelationship.setDeleteRule(EODeleteRule.CASCADE);
 			addRelationship(entity1ToManyRelationship);
-	
+
 			if (_flatten) {
 				EORelationship entity1ToManyFlattenedRelationship = new EORelationship(_relationshipName, new KeyPath(new String[] { entity1ToManyRelationship.getName(), entity2Relationship.getName() }).toKeyPath());
 				entity1ToManyFlattenedRelationship.setClassProperty(Boolean.TRUE);
@@ -362,7 +363,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			entity2ToManyRelationship.setPropagatesPrimaryKey(Boolean.TRUE);
 			entity2ToManyRelationship.setDeleteRule(EODeleteRule.CASCADE);
 			_entity2.addRelationship(entity2ToManyRelationship);
-	
+
 			if (_flatten) {
 				EORelationship entity2ToManyFlattenedRelationship = new EORelationship(_inverseRelationshipName, new KeyPath(new String[] { entity2ToManyRelationship.getName(), entity1Relationship.getName() }).toKeyPath());
 				entity2ToManyFlattenedRelationship.setClassProperty(Boolean.TRUE);
@@ -623,6 +624,35 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		return relationship;
 	}
 
+	public EOAttribute _getTemplateNameAttribute(boolean checkOtherEntities) {
+		EOAttribute templateNameAttribute = null;
+		Set<EOAttribute> attributes = getAttributes();
+		for (EOAttribute attribute : attributes) {
+			String attributeName = attribute.getName();
+			if (StringUtils.camelCaseToUnderscore(attributeName).indexOf('_') != -1) {
+				templateNameAttribute = attribute;
+				break;
+			}
+		}
+		if (templateNameAttribute == null && checkOtherEntities) {
+			EOModel model = getModel();
+			if (model != null) {
+				for (EOEntity entity : model.getEntities()) {
+					if (entity != this) {
+						templateNameAttribute = entity._getTemplateNameAttribute(false);
+						if (templateNameAttribute != null) {
+							break;
+						}
+					}
+				}
+			}
+			if (templateNameAttribute == null && !attributes.isEmpty()) {
+				templateNameAttribute = attributes.iterator().next();
+			}
+		}
+		return templateNameAttribute;
+	}
+
 	public EOAttribute addBlankAttribute(String _name) throws DuplicateNameException {
 		return addBlankAttribute(_name, null);
 	}
@@ -645,7 +675,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		} else {
 			attribute = new EOAttribute(newAttributeName);
 			attribute.setUsedForLocking(Boolean.TRUE);
-			attribute.setColumnName(newAttributeName);
+			attribute.guessColumnNameInEntity(this);
 			attribute.setClassProperty(Boolean.TRUE);
 			addAttribute(attribute);
 		}
@@ -797,6 +827,14 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		if (_fireEvents) {
 			synchronizeNameChange(oldName, myName);
 			firePropertyChange(EOEntity.NAME, oldName, myName);
+
+			if (myModel != null) {
+				for (EORelationship relationship : getReferencingRelationships()) {
+					if (relationship.getEntity().getModel() != myModel) {
+						relationship.getEntity().getModel().setDirty(true);
+					}
+				}
+			}
 		}
 	}
 
@@ -813,7 +851,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		boolean isGenericRecord = className == null || className.length() == 0 || className.endsWith("GenericRecord");
 		return isGenericRecord;
 	}
-	
+
 	public String getClassNameWithDefault() {
 		String className = EOModelRenderContext.getInstance().getClassNameForEntity(this);
 		if (className == null) {
@@ -845,12 +883,10 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		if (superclassPackage != null) {
 			if (packageName != null) {
 				superclassPackageName = packageName + "." + superclassPackage;
-			}
-			else {
+			} else {
 				superclassPackageName = superclassPackage;
 			}
-		}
-		else {
+		} else {
 			superclassPackageName = packageName;
 		}
 		return superclassPackageName;
@@ -868,8 +904,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		String className;
 		if (EOModelRenderContext.getInstance().getSuperclassPackage() != null) {
 			className = EOModelRenderContext.getInstance().getClassNameForEntity(this);
-		}
-		else {
+		} else {
 			className = getClassNameWithoutPackage();
 		}
 		return className;
@@ -895,8 +930,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		String prefixClassName;
 		if (EOModelRenderContext.getInstance().getSuperclassPackage() != null) {
 			prefixClassName = getPrefixClassName();
-		}
-		else {
+		} else {
 			prefixClassName = getPrefixClassNameWithoutPackage();
 		}
 		return prefixClassName;
@@ -920,8 +954,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			String superclassPackage = EOModelRenderContext.getInstance().getSuperclassPackage();
 			if (superclassPackage != null && superclassPackage.trim().length() > 0) {
 				superclassPackage = superclassPackage + ".";
-			}
-			else {
+			} else {
 				superclassPackage = "";
 			}
 			String prefix = EOModelRenderContext.getInstance().getPrefix();
@@ -943,6 +976,18 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		return myClassName;
 	}
 
+	public void guessClassNameInModel(EOModel model) {
+		String className = getName();
+		String packageName = null;
+		if (model != null) {
+			packageName = model.guessPackageName();
+		}
+		if (packageName != null && packageName.length() > 0) {
+			className = packageName + "." + className;
+		}
+		setClassName(className);
+	}
+
 	public void setClassName(String _className) {
 		String oldClassName = myClassName;
 		myClassName = _className;
@@ -961,6 +1006,22 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	public String getExternalName() {
 		return myExternalName;
+	}
+
+	public void guessExternalNameInModel(EOModel model) {
+		String externalName = getName();
+		if (model != null) {
+			EOEntity otherEntity = model._getTemplateNameEntity();
+			if (otherEntity != null) {
+				String otherName = otherEntity.getName();
+				String otherExternalName = otherEntity.getExternalName();
+				String guessedExternalName = NameSyncUtils.newDependentName(otherName, getName(), otherExternalName, model.getEntityExternalNamePairs(null));
+				if (!ComparisonUtils.equals(guessedExternalName, otherExternalName)) {
+					externalName = guessedExternalName;
+				}
+			}
+		}
+		setExternalName(externalName);
 	}
 
 	public void setExternalName(String _externalName) {
@@ -1057,7 +1118,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		myPartialEntity = partialEntity;
 		firePropertyChange(EOEntity.PARTIAL_ENTITY, oldPartialEntity, myPartialEntity);
 	}
-	
+
 	public boolean isGenerateSource() {
 		return myGenerateSource;
 	}
@@ -1904,19 +1965,32 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		entityMap.setString("externalQuery", myExternalQuery, true);
 		entityMap.setInteger("maxNumberOfInstancesToBatchFetch", myMaxNumberOfInstancesToBatchFetch);
 
-		if( myFetchSpecs == null || myFetchSpecs.size() == 0 ) {
-			entityMap.put("fetchSpecificationDictionary", new HashMap()); //prevents EOF from hitting the filesystem to find out there are no fetch specs
+		if (myFetchSpecs == null || myFetchSpecs.size() == 0) {
+			entityMap.put("fetchSpecificationDictionary", new HashMap()); // prevents
+			// EOF
+			// from
+			// hitting
+			// the
+			// filesystem
+			// to
+			// find
+			// out
+			// there
+			// are
+			// no
+			// fetch
+			// specs
 		} else {
 			entityMap.remove("fetchSpecificationDictionary");
 		}
 
-		Set<String> classProperties = new PropertyListSet<String>( EOModelMap.asArray(myEntityMap.get("classProperties")) );
-		Set<String> primaryKeyAttributes = new PropertyListSet<String>( EOModelMap.asArray(myEntityMap.get("primaryKeyAttributes")) );
-		Set<String> attributesUsedForLocking = new PropertyListSet<String>( EOModelMap.asArray(myEntityMap.get("attributesUsedForLocking")) );
-		
-		Map<Object, Object> oldInternalInfo = myEntityMap.getMap("internalInfo");		
-		Set<String> clientClassProperties = new PropertyListSet<String>( oldInternalInfo != null ? EOModelMap.asArray(oldInternalInfo.get("_clientClassPropertyNames")) : null );
-		Set<Map> attributes = new PropertyListSet<Map>( EOModelMap.asArray(myEntityMap.get("attributes")) );
+		Set<String> classProperties = new PropertyListSet<String>(EOModelMap.asArray(myEntityMap.get("classProperties")));
+		Set<String> primaryKeyAttributes = new PropertyListSet<String>(EOModelMap.asArray(myEntityMap.get("primaryKeyAttributes")));
+		Set<String> attributesUsedForLocking = new PropertyListSet<String>(EOModelMap.asArray(myEntityMap.get("attributesUsedForLocking")));
+
+		Map<Object, Object> oldInternalInfo = myEntityMap.getMap("internalInfo");
+		Set<String> clientClassProperties = new PropertyListSet<String>(oldInternalInfo != null ? EOModelMap.asArray(oldInternalInfo.get("_clientClassPropertyNames")) : null);
+		Set<Map> attributes = new PropertyListSet<Map>(EOModelMap.asArray(myEntityMap.get("attributes")));
 		for (EOAttribute attribute : myAttributes) {
 			EOModelMap attributeMap = attribute.toMap();
 			attributes.add(attributeMap);
@@ -1935,7 +2009,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		}
 		entityMap.setSet("attributes", attributes, true);
 
-		Set<Map> relationships = new PropertyListSet<Map>( EOModelMap.asArray(myEntityMap.get("relationships")) );
+		Set<Map> relationships = new PropertyListSet<Map>(EOModelMap.asArray(myEntityMap.get("relationships")));
 		for (EORelationship relationship : myRelationships) {
 			EOModelMap relationshipMap = relationship.toMap();
 			relationships.add(relationshipMap);
@@ -1948,7 +2022,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		}
 		entityMap.setSet("relationships", relationships, true);
 
-		Set<Map> entityIndexes = new PropertyListSet<Map>( EOModelMap.asArray(myEntityMap.get("entityIndexes")) );
+		Set<Map> entityIndexes = new PropertyListSet<Map>(EOModelMap.asArray(myEntityMap.get("entityIndexes")));
 		for (EOEntityIndex entityIndex : myEntityIndexes) {
 			EOModelMap entityIndexMap = entityIndex.toMap();
 			entityIndexes.add(entityIndexMap);
@@ -1959,7 +2033,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		entityMap.setSet("classProperties", classProperties, true);
 		entityMap.setSet("primaryKeyAttributes", primaryKeyAttributes, true);
 
-		Set<String> sharedObjectFetchSpecificationNames = new PropertyListSet<String>( EOModelMap.asArray(myEntityMap.get("sharedObjectFetchSpecificationNames")) );
+		Set<String> sharedObjectFetchSpecificationNames = new PropertyListSet<String>(EOModelMap.asArray(myEntityMap.get("sharedObjectFetchSpecificationNames")));
 		for (EOFetchSpecification fetchSpec : myFetchSpecs) {
 			if (BooleanUtils.isTrue(fetchSpec.isSharesObjects())) {
 				sharedObjectFetchSpecificationNames.add(fetchSpec.getName());
@@ -1982,12 +2056,12 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			internalInfoMap.remove("_javaClientClassName");
 		}
 
-		if( !internalInfoMap.isEmpty() ) {
+		if (!internalInfoMap.isEmpty()) {
 			entityMap.setMap("internalInfo", internalInfoMap, false);
 		} else {
 			entityMap.remove("internalInfo");
 		}
-		
+
 		Map<String, String> storedProcedureNames = myEntityMap.getMap("storedProcedureNames");
 		if (storedProcedureNames == null) {
 			storedProcedureNames = new HashMap<String, String>();
@@ -2026,8 +2100,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		}
 		if (myGenerateSource) {
 			entityModelerMap.remove(EOEntity.GENERATE_SOURCE);
-		}
-		else {
+		} else {
 			entityModelerMap.setBoolean(EOEntity.GENERATE_SOURCE, Boolean.FALSE, EOModelMap.YESNO);
 		}
 		if (entityModelerMap.isEmpty()) {
@@ -2121,8 +2194,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		Boolean generateSource = entityModelerMap.getBoolean(EOEntity.GENERATE_SOURCE);
 		if (generateSource == null) {
 			myGenerateSource = true;
-		}
-		else {
+		} else {
 			myGenerateSource = generateSource.booleanValue();
 		}
 
@@ -2270,7 +2342,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		if (primaryKeyAttributes.isEmpty() && !isPartialEntitySet()) {
 			failures.add(new EOModelVerificationFailure(myModel, this, "The entity " + getName() + " does not have a primary key.", false));
 		}
-		
+
 		if (isPartialEntitySet() && getPartialEntity().isPartialEntitySet()) {
 			failures.add(new EOModelVerificationFailure(myModel, this, "The entity " + getName() + " is a partial of an entity that is itself a partial. This is not currently allowed.", false));
 		}
@@ -2323,19 +2395,26 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		getModel().removeEntity(this);
 	}
 
-	public void synchronizeNameChange(String oldName, String newName) {
-		if (ComparisonUtils.equals(oldName, getExternalName(), true)) {
-			setExternalName(newName);
+	public Set<NamePair> getAttributeColumnNamePairs(EOAttribute excludeAttribute) {
+		Set<NamePair> columnNamePairs = new HashSet<NamePair>();
+		for (EOAttribute attribute : getAttributes()) {
+			if (excludeAttribute == null || attribute != excludeAttribute) {
+				columnNamePairs.add(new NameSyncUtils.NamePair(attribute.getName(), attribute.getColumnName()));
+			}
 		}
-		String className = getClassName();
-		if (ComparisonUtils.equals(oldName, className, true)) {
-			setClassName(newName);
-		} else if (className != null && className.endsWith("." + oldName)) {
-			String oldPackage = className.substring(0, className.lastIndexOf('.') + 1);
-			setClassName(oldPackage + newName);
-		}
+		return columnNamePairs;
 	}
-	
+
+	public void synchronizeNameChange(String oldName, String newName) {
+		Set<NameSyncUtils.NamePair> externalNamePairs = null;
+		if (getModel() != null) {
+			externalNamePairs = getModel().getEntityExternalNamePairs(this);
+		}
+		setExternalName(NameSyncUtils.newDependentName(oldName, newName, getExternalName(), externalNamePairs));
+		setClassName(NameSyncUtils.newClassName(oldName, newName, getClassName()));
+		setClientClassName(NameSyncUtils.newClassName(oldName, newName, getClientClassName()));
+	}
+
 	public void _addToModelParent(EOModel modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) throws EOModelException {
 		if (findUniqueName) {
 			setName(modelParent.findUnusedEntityName(getName()));
