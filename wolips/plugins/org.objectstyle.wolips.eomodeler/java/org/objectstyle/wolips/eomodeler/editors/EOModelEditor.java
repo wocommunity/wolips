@@ -87,6 +87,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.part.MultiPageEditorPart;
@@ -356,6 +357,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			}
 			myEntitiesTableEditor.setSelectedEntity(_selectedEntity);
 			myEntityEditor.setEntity(_selectedEntity);
+			// Fix a problem where the entity properties view does not refresh
+			// This is a hack, but if we steal focus onto the outline, it DOES
+			// refresh
+			getContentOutlinePage().setFocus();
 			updatePartName();
 		}
 		if (_selectedEntity != null) {
