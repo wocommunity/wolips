@@ -56,29 +56,48 @@ public class URLUtils {
 		return name;
 	}
 	
-	public static boolean isFolder(URL url) {
+	public static boolean isFolder(URL url) throws IOException {
 		boolean isFolder = false;
 		String protocol = url.getProtocol();
 		if ("file".equals(protocol)) {
 			File f = new File(url.getPath());
 			isFolder = f.isDirectory();
+		} else if ("jar".equals(protocol)) {
+			JarURLConnection conn = (JarURLConnection) url.openConnection();
+			isFolder = conn.getJarEntry().isDirectory();
 		} else {
 			throw new IllegalArgumentException(url + " is not a File.");
 		}
 		return isFolder;
 	}
+	
+	/**
+	 * @param url - the url for the file or bundle resource
+	 * @return true when the protocol is either <code>bundleresource</code> or <code>file</code> and the file exists. 
+	 */
+	public static boolean isFileOrBundleResource(URL url) {
+		String protocol = url.getProtocol();
+		if ("bundleresource".equals(protocol) || "file".equals(protocol))
+			return exists(url);
+		return false;
+	}
+	
+	public static boolean isJarURL(URL url) {
+		return "jar".equals(url.getProtocol());
+	}
 
 	public static URL[] getChildrenFolders(URL url) throws IOException {
+		URL parentUrl = url;
 		URL[] children;
-		String protocol = url.getProtocol();
+		String protocol = parentUrl.getProtocol();
 		if ("bundleresource".equals(protocol)) {
-			BundleURLConnection conn = (BundleURLConnection)url.openConnection();
-			url = conn.getFileURL();
-			protocol = url.getProtocol();
+			BundleURLConnection conn = (BundleURLConnection)parentUrl.openConnection();
+			parentUrl = conn.getFileURL();
+			protocol = parentUrl.getProtocol();
 		}
 				
 		if ("file".equals(protocol)) {
-			File f = new File(url.getPath()).getAbsoluteFile();
+			File f = new File(parentUrl.getPath()).getAbsoluteFile();
 			if (!f.exists()) {
 				children = new URL[0];
 			}
@@ -100,22 +119,27 @@ public class URLUtils {
 			}
 		} else if ("jar".equals(protocol)) {
 			List<URL> childEntries = new LinkedList<URL>();
-			JarURLConnection conn = (JarURLConnection) url.openConnection();
-			JarFile jarFile = conn.getJarFile();
-			JarEntry folderJarEntry = conn.getJarEntry();
-			String folderName = folderJarEntry.getName();
-			Enumeration<JarEntry> jarEntriesEnum = jarFile.entries();
-			while (jarEntriesEnum.hasMoreElements()) {
-				JarEntry jarEntry = jarEntriesEnum.nextElement();
-				String name = jarEntry.getName();
-				if (name.startsWith(folderName)) {
-					URL childURL = new URL(url, name);
-					childEntries.add(childURL);
+			JarURLConnection conn = (JarURLConnection) parentUrl.openConnection();
+			JarFile jarFile = null;
+			try {
+				jarFile = conn.getJarFile();
+				JarEntry folderJarEntry = conn.getJarEntry();
+				String folderName = folderJarEntry.getName();
+				Enumeration<JarEntry> jarEntriesEnum = jarFile.entries();
+				while (jarEntriesEnum.hasMoreElements()) {
+					JarEntry jarEntry = jarEntriesEnum.nextElement();
+					String name = jarEntry.getName();
+					if (name.startsWith(folderName)) {
+						URL childURL = new URL(parentUrl, name);
+						childEntries.add(childURL);
+					}
 				}
+				children = childEntries.toArray(new URL[childEntries.size()]);
+			} catch (Exception e) {
+				children = new URL[0];
 			}
-			children = childEntries.toArray(new URL[childEntries.size()]);
 		} else {
-			throw new IllegalArgumentException(url + " is not a format that can have its children retrieved.");
+			throw new IllegalArgumentException(parentUrl + " is not a format that can have its children retrieved.");
 		}
 		return children;
 	}
@@ -126,6 +150,8 @@ public class URLUtils {
 		if ("file".equals(scheme)) {
 			f = new File(uri.getPath());
 		} else {
+			System.err.println("cheatAndTurnIntoFile(URI)");
+			new Exception().printStackTrace(System.err);
 			throw new IllegalArgumentException(uri + " is not a File.");
 		}
 		return f;
@@ -152,6 +178,8 @@ public class URLUtils {
 					throw new IllegalArgumentException(url + " cannot be turned into a File.", e);
 				}
 			} else {
+				System.err.println("cheatAndTurnIntoFile(URL)");
+				new Exception().printStackTrace(System.err);
 				throw new IllegalArgumentException(url + " is not a File.");
 			}
 		}
@@ -159,12 +187,23 @@ public class URLUtils {
 	}
 
 	public static boolean exists(URL url) {
-		boolean exists = true;
+		boolean exists = false;
 		String protocol = url.getProtocol();
-		if ("file".equals(protocol)) {
-			File f = new File(url.getPath());
-			exists = f.exists();
+		if ("jar".equals(protocol)) {
+			try {
+				JarURLConnection conn = (JarURLConnection) url.openConnection();
+				conn.getJarEntry();
+				exists = true;
+			} catch (IOException e) {
+				//throw new IllegalArgumentException(url + " is not a File.");
+			}
+		} else if ("file".equals(protocol) || "bundleresource".equals(protocol)) {
+			File file = cheatAndTurnIntoFile(url);
+			if (file != null)
+				exists = file.exists();
 		} else {
+			System.err.println("exists");
+			new Exception().printStackTrace(System.err);
 			throw new IllegalArgumentException(url + " is not a File.");
 		}
 		return exists;

@@ -42,18 +42,22 @@ public class EclipseFileUtils {
 	}
 	
 	public static IFile getEclipseFile(URL url) {
+		// fails when using: ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(url.toString()));
 		return EclipseFileUtils.getEclipseFile(URLUtils.cheatAndTurnIntoFile(url));
 	}
 	
 	public static IFile getEclipseFile(URI uri) {
+		// fails when using: return ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(uri.toString()));
 		return EclipseFileUtils.getEclipseFile(URLUtils.cheatAndTurnIntoFile(uri));
 	}
 
 	public static IFile getEclipseFile(File externalFile) {
 		return ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(externalFile.getAbsolutePath()));
+		//return EclipseFileUtils.getEclipseFile(externalFile.toURI());
 	}
 
 	public static IFile getEclipseIndexFile(EOModel model) throws MalformedURLException, EOModelException {
+		//return ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(model.getIndexURL().toString()));
 		return EclipseFileUtils.getEclipseFile(EclipseFileUtils.getExternalIndexFile(model));
 	}
 }
