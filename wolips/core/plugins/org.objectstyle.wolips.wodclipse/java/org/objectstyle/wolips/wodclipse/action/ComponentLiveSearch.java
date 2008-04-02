@@ -28,6 +28,7 @@ import org.objectstyle.wolips.wodclipse.core.completion.WodCompletionProposal;
 import org.objectstyle.wolips.wodclipse.core.completion.WodCompletionUtils;
 
 public class ComponentLiveSearch implements ModifyListener, SelectionListener {
+	private static final boolean isWindows = System.getProperty("os.name").startsWith("Windows");
 	private IJavaProject _project;
 
 	private IProgressMonitor _progressMonitor;
@@ -35,7 +36,7 @@ public class ComponentLiveSearch implements ModifyListener, SelectionListener {
 	private String _lastSearch;
 	private Point _lastSelection;
 	private String _lastValue;
-	private boolean _ignoreModify = false;
+	private Boolean _ignoreModify = false;
 
 	private Object _completionLock = new Object();
 
@@ -67,8 +68,13 @@ public class ComponentLiveSearch implements ModifyListener, SelectionListener {
 		Point selection = componentNameCombo.getSelection();
 		if (_lastSelection != null && selection.x == 0) {
 			selection.x = _lastSelection.y;
-			componentNameCombo.setSelection(selection);
+			synchronized (_ignoreModify) {				
+				_ignoreModify = true;
+				componentNameCombo.setSelection(selection);
+				_ignoreModify = false;
+			}
 			componentNameCombo.notifyListeners(SWT.Modify, new Event());
+
 		}
 	}
 
@@ -77,9 +83,35 @@ public class ComponentLiveSearch implements ModifyListener, SelectionListener {
 			return;
 		final Combo componentNameCombo = (Combo) e.getSource();
 		Point selection = componentNameCombo.getSelection();
+
 		final String partialName;
 		boolean _deleted = false;
+
 		
+		/* Handle deletion of type ahead selection */
+		if (selection.x > 0 && _lastSelection != null 
+				&& selection.x == selection.y 
+				&& selection.x ==  _lastSelection.x 
+				&& _lastSelection.y >= selection.x
+				&& _lastSelection.y >= componentNameCombo.getText().length()) {
+			_deleted = true;
+			String text = componentNameCombo.getText();
+			synchronized (_ignoreModify) {
+				_ignoreModify = true;
+				componentNameCombo.setText(text.substring(0, selection.x-1));
+				selection.x = text.length()-1;
+				selection.y = selection.x;
+				componentNameCombo.setSelection(selection);
+				_ignoreModify = false;
+			}
+		}
+		
+		if (isWindows 
+				&& selection.x == 0
+				&& selection.x != selection.y
+				&& selection.y == componentNameCombo.getText().length())
+			return;
+			
 		if (selection != null && selection.x != selection.y) {
 			partialName = componentNameCombo.getText().substring(0, selection.x);
 		} else {
@@ -87,9 +119,11 @@ public class ComponentLiveSearch implements ModifyListener, SelectionListener {
 			_lastSelection = selection;
 		}
 		
-		if (_lastValue != null) {
-			_deleted = partialName.length() < _lastValue.length();
+		if (_lastValue != null && !_deleted) {
+			_deleted = partialName.length() < _lastValue.length() && selection.x != 0 ;
 		}
+		
+		
 		_lastValue = partialName;
 
 		if (_lastSearch == null || !_lastSearch.toLowerCase().equals(partialName.toLowerCase())) {
@@ -117,30 +151,44 @@ public class ComponentLiveSearch implements ModifyListener, SelectionListener {
 										if (!componentNameCombo.isDisposed()) {
 											componentNameCombo.remove(0, componentNameCombo.getItemCount() - 1);
 											boolean exactMatch = false;
-											for (WodCompletionProposal elementName : proposals) {
+											for (WodCompletionProposal elementName : proposals) {		
 												String displayString = elementName.getDisplayString();
 												if (displayString != null && displayString.equals(_lastSearch)) {
 													exactMatch = true;
 												}
 												componentNameCombo.add(displayString);
 											}
+											
 											try {
 												Method setListVisible = componentNameCombo.getClass().getDeclaredMethod("setListVisible", boolean.class);
 												setListVisible.setAccessible(true);
-												if (!(exactMatch || componentNameCombo.getItemCount() <= 1)) {
-													setListVisible.invoke(componentNameCombo, true);
-												} else {
+												if (!isWindows) {
 													setListVisible.invoke(componentNameCombo, false);
-													if (componentNameCombo.getItemCount() == 1) {
-														Point _selection = componentNameCombo.getSelection();
-														String text = componentNameCombo.getItem(0);
+												}
+												Point _selection = componentNameCombo.getSelection();
+												if (!(componentNameCombo.getItemCount() <= 1)) {
+													String text = componentNameCombo.getItem(0);
+													_selection.y = text.length();
+													synchronized (_ignoreModify) {
+														_ignoreModify = true;
+														setListVisible.invoke(componentNameCombo, true);
+														componentNameCombo.setText(text);
+														componentNameCombo.setSelection(_selection);
+														_ignoreModify = false;
+													}
 
+												} else {
+													if (componentNameCombo.getItemCount() == 1) {
+														setListVisible.invoke(componentNameCombo, false);
+														String text = componentNameCombo.getItem(0);
 														if (_selection.x == _selection.y && !wasDeleted) {
 															_selection.y = text.length();
-															_ignoreModify = true;
-															componentNameCombo.setText(text);
-															componentNameCombo.setSelection(_selection);
-															_ignoreModify = false;
+															synchronized (_ignoreModify) {
+																_ignoreModify = true;
+																componentNameCombo.setText(text);
+																componentNameCombo.setSelection(_selection);
+																_ignoreModify = false;
+															}
 															_lastSelection = _selection;
 														}
 													}
