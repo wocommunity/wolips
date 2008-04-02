@@ -143,7 +143,7 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 		Combo partialEntityCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
 		myPartialEntityComboViewer = new ComboViewer(partialEntityCombo);
 		myPartialEntityComboViewer.setLabelProvider(new EOEntityLabelProvider());
-		myPartialEntityComboViewer.setContentProvider(new EOEntityListContentProvider(true, false));
+		myPartialEntityComboViewer.setContentProvider(new EOEntityListContentProvider(true, false, false));
 		GridData entityComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		partialEntityCombo.setLayoutData(entityComboLayoutData);
 	}

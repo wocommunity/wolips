@@ -216,7 +216,7 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 
 			// Label sourceEntityLabel = new Label(entityPickers, SWT.NONE);
 			// sourceEntityLabel.setText("Entity #1");
-			EntityPicker sourceEntityPicker = new EntityPicker(relationshipDialogArea, SWT.NONE);
+			EntityPicker sourceEntityPicker = new EntityPicker(relationshipDialogArea, SWT.NONE, false);
 			sourceEntityPicker.setModelGroup(_modelGroup);
 			sourceEntityPicker.setEntity(_sourceEntity);
 			GridData sourceEntityPickerData = new GridData(GridData.FILL_HORIZONTAL);
@@ -230,7 +230,7 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 				}
 			});
 
-			EntityPicker destinationEntityPicker = new EntityPicker(relationshipDialogArea, SWT.NONE);
+			EntityPicker destinationEntityPicker = new EntityPicker(relationshipDialogArea, SWT.NONE, false);
 			destinationEntityPicker.setModelGroup(_modelGroup);
 			destinationEntityPicker.setEntity(_destinationEntity);
 			GridData destinationEntityPickerData = new GridData(GridData.FILL_HORIZONTAL);

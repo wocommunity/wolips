@@ -21,7 +21,7 @@ public class EntityPicker extends Composite {
 
 	private ComboViewer _entityComboViewer;
 
-	public EntityPicker(Composite parent, int style) {
+	public EntityPicker(Composite parent, int style, boolean includePrototypes) {
 		super(parent, style);
 
 		GridLayout layout = new GridLayout(2, false);
@@ -48,7 +48,7 @@ public class EntityPicker extends Composite {
 		Combo entityCombo = new Combo(this, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
 		_entityComboViewer = new ComboViewer(entityCombo);
 		_entityComboViewer.setLabelProvider(new EOEntityLabelProvider());
-		_entityComboViewer.setContentProvider(new EOEntityListContentProvider(false, true));
+		_entityComboViewer.setContentProvider(new EOEntityListContentProvider(false, true, includePrototypes));
 		GridData entityComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		entityCombo.setLayoutData(entityComboLayoutData);
 	}

@@ -173,7 +173,7 @@ public class SubclassEntityDialog extends Dialog {
 		Label parentEntityLabel = new Label(subclassDialogArea, SWT.NONE);
 		parentEntityLabel.setText(Messages.getString("SubclassEntityDialog.parentEntityLabel"));
 		_parentEntityViewer = new ComboViewer(subclassDialogArea);
-		_parentEntityViewer.setContentProvider(new EOEntityListContentProvider(false, false));
+		_parentEntityViewer.setContentProvider(new EOEntityListContentProvider(false, false, false));
 		_parentEntityViewer.setLabelProvider(new EOEntityLabelProvider());
 		_parentEntityViewer.setSorter(new ViewerSorter());
 		_parentEntityViewer.setInput(_sourceModel);
