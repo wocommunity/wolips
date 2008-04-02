@@ -118,7 +118,7 @@ public class PropertyListComparator implements Comparator<Object> {
 				return guide0.compareTo(guide1);
 			}
 		} else if (arg0 instanceof String && arg1 instanceof String) {
-			return ((String) arg0).compareTo((String) arg1);
+			return ((String) arg0).compareToIgnoreCase((String) arg1);
 		} else if (arg0 instanceof Number && arg1 instanceof Number) {
 			double d0 = ((Number) arg0).doubleValue();
 			double d1 = ((Number) arg1).doubleValue();
