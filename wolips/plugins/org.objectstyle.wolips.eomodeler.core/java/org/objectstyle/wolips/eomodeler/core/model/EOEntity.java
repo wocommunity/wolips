@@ -834,6 +834,11 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 						relationship.getEntity().getModel().setDirty(true);
 					}
 				}
+				for (EOEntity childEntity : getChildrenEntities()) {
+					if (childEntity.getModel() != myModel) {
+						childEntity.getModel().setDirty(true);
+					}
+				}
 			}
 		}
 	}
