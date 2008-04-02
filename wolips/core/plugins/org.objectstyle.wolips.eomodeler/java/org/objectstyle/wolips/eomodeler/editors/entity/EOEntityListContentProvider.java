@@ -64,35 +64,46 @@ import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 public class EOEntityListContentProvider implements IStructuredContentProvider {
 	public static final Object BLANK_ENTITY = "";
 
-	private boolean myAllowBlank;
+	private boolean _allowBlank;
 
-	private boolean myRestrictToSingleModel;
+	private boolean _restrictToSingleModel;
 
-	private KVCComparator myComparator;
+	private boolean _includePrototypes;
 
-	public EOEntityListContentProvider(boolean _allowBlank, boolean _restrictToSingleModel) {
-		myAllowBlank = _allowBlank;
-		myRestrictToSingleModel = _restrictToSingleModel;
-		myComparator = new KVCComparator(EOEntity.class, EOEntity.NAME);
+	private KVCComparator _comparator;
+
+	public EOEntityListContentProvider(boolean allowBlank, boolean restrictToSingleModel, boolean includePrototypes) {
+		_allowBlank = allowBlank;
+		_restrictToSingleModel = restrictToSingleModel;
+		_includePrototypes = includePrototypes;
+		_comparator = new KVCComparator<EOEntity>(EOEntity.class, EOEntity.NAME);
 	}
 
-	public Object[] getElements(Object _inputElement) {
+	public Object[] getElements(Object inputElement) {
 		Set entitiesList;
-		EOModel model = EOModelUtils.getRelatedModel(_inputElement);
+		EOModel model = EOModelUtils.getRelatedModel(inputElement);
 		if (model != null) {
-			if (myRestrictToSingleModel) {
-				entitiesList = model.getEntities();
-			} else {
+			if (_restrictToSingleModel) {
+				if (_includePrototypes) {
+					entitiesList = model.getEntities();
+				} else {
+					entitiesList = model.getNonPrototypeEntities();
+				}
+			} else if (_includePrototypes) {
 				entitiesList = model.getModelGroup().getEntities();
+			} else {
+				entitiesList = model.getModelGroup().getNonPrototypeEntities();
 			}
 		} else {
-			throw new IllegalArgumentException("Unknown input element: " + _inputElement);
+			throw new IllegalArgumentException("Unknown input element: " + inputElement);
 		}
 
+		// This is not generic because we have a "blank entity" entry in the
+		// list, which is pretty bogus, but it is what it is right now.
 		List entitiesListCopy = new LinkedList();
 		entitiesListCopy.addAll(entitiesList);
-		Collections.sort(entitiesListCopy, myComparator);
-		if (myAllowBlank) {
+		Collections.sort(entitiesListCopy, _comparator);
+		if (_allowBlank) {
 			entitiesListCopy.add(0, EOEntityListContentProvider.BLANK_ENTITY);
 		}
 		Object[] entities = entitiesListCopy.toArray();
