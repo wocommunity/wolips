@@ -72,7 +72,7 @@ public class EOModelListContentProvider implements IStructuredContentProvider {
 		} else {
 			throw new IllegalArgumentException("Unknown input element: " + _inputElement);
 		}
-		Set modelsList = modelGroup.getModels();
+		Set modelsList = modelGroup.getSortedModels();
 		EOModel[] models = (EOModel[]) modelsList.toArray(new EOModel[modelsList.size()]);
 		return models;
 	}
