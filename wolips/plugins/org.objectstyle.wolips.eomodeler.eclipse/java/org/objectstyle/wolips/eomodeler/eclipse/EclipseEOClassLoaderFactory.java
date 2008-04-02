@@ -44,6 +44,7 @@ public class EclipseEOClassLoaderFactory extends AbstractEOClassLoader {
 			URL modelURL = model.getModelURL();
 			if (modelURL != null) {
 				IContainer[] modelContainers = ResourcesPlugin.getWorkspace().getRoot().findContainersForLocation(new Path(URLUtils.cheatAndTurnIntoFile(modelURL).getAbsolutePath()));
+				//IContainer[] modelContainers = ResourcesPlugin.getWorkspace().getRoot().findContainersForLocation(new Path(modelURL.toString()));
 				for (int modelContainerNum = 0; modelContainerNum < modelContainers.length; modelContainerNum++) {
 					IContainer modelContainer = modelContainers[modelContainerNum];
 					IProject modelProject = modelContainer.getProject();

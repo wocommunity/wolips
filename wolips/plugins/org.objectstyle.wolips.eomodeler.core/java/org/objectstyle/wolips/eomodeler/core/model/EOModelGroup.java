@@ -51,6 +51,7 @@ package org.objectstyle.wolips.eomodeler.core.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -59,6 +60,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.jar.JarEntry;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -75,12 +77,12 @@ public class EOModelGroup extends EOModelObject<Object> {
 	private boolean _createDefaultDatabaseConfig;
 
 	private String _editingModelName;
-	
+
 	private boolean _dirty;
 
 	public EOModelGroup() {
 		_models = new HashSet<EOModel>();
-		//_createDefaultDatabaseConfig = true;
+		// _createDefaultDatabaseConfig = true;
 		_createDefaultDatabaseConfig = false;
 	}
 
@@ -99,11 +101,11 @@ public class EOModelGroup extends EOModelObject<Object> {
 	public Set<EOModelReferenceFailure> getReferenceFailures() {
 		return new HashSet<EOModelReferenceFailure>();
 	}
-	
+
 	public void setDirty(boolean dirty) {
 		_dirty = dirty;
 	}
-	
+
 	public boolean isDirty() {
 		boolean dirty = false;
 		for (EOModel model : getModels()) {
@@ -112,8 +114,7 @@ public class EOModelGroup extends EOModelObject<Object> {
 					dirty = true;
 					break;
 				}
-			}
-			catch (MalformedURLException e) {
+			} catch (MalformedURLException e) {
 				Activator.getDefault().log("Unable to determine if the model " + model.getName() + " was dirty, so we skipped it.", e);
 			}
 		}
@@ -121,7 +122,8 @@ public class EOModelGroup extends EOModelObject<Object> {
 	}
 
 	@SuppressWarnings("unused")
-	protected void _modelChanged(@SuppressWarnings("unused") EOModel model, String propertyName, Object oldValue, Object newValue) {
+	protected void _modelChanged(@SuppressWarnings("unused")
+	EOModel model, String propertyName, Object oldValue, Object newValue) {
 		if (EOModel.DIRTY.equals(propertyName)) {
 			boolean oldDirty = _dirty;
 			boolean dirty = isDirty();
@@ -129,7 +131,7 @@ public class EOModelGroup extends EOModelObject<Object> {
 			_dirty = dirty;
 		}
 	}
-	
+
 	@Override
 	protected void _propertyChanged(String name, Object value, Object value2) {
 		// DO NOTHING
@@ -144,23 +146,22 @@ public class EOModelGroup extends EOModelObject<Object> {
 	}
 
 	/**
-	 * Returns the list of names of entities that
-	 * are not prototypes.
+	 * Returns the list of names of entities that are not prototypes.
 	 * 
 	 * @return list of entity names
 	 */
-  public Set<String> getNonPrototypeEntityNames() {
-    Set<String> entityNames = new TreeSet<String>();
-    for (EOModel model : _models) {
-      for (EOEntity entity : model.getEntities()) {
-        if (!entity.isPrototype()) {
-        	entityNames.add(entity.getName());
-        }
-      }
-    }
-    return entityNames;
-  }
-  
+	public Set<String> getNonPrototypeEntityNames() {
+		Set<String> entityNames = new TreeSet<String>();
+		for (EOModel model : _models) {
+			for (EOEntity entity : model.getEntities()) {
+				if (!entity.isPrototype()) {
+					entityNames.add(entity.getName());
+				}
+			}
+		}
+		return entityNames;
+	}
+
 	public Set<String> getEntityNames() {
 		Set<String> entityNames = new TreeSet<String>();
 		for (EOModel model : _models) {
@@ -328,17 +329,77 @@ public class EOModelGroup extends EOModelObject<Object> {
 	 * @return the model name for the given URL
 	 */
 	public static String getModelNameForURL(URL url) {
-		File file = URLUtils.cheatAndTurnIntoFile(url);
-		return EOModelGroup.getModelNameForFile(file);
+		String modelName;
+		String protocol = url.getProtocol();
+		if ("jar".equals(protocol)) {
+			try {
+				JarURLConnection conn = (JarURLConnection) url.openConnection();
+				JarEntry jarEntry = conn.getJarEntry();
+				if (jarEntry != null) {
+					modelName = EOModelGroup.getModelNameForJarEntry(jarEntry);
+				} else {
+					modelName = null;
+				}
+			} catch (IOException ioe) {
+				throw new IllegalStateException("The jar url '" + url.toString() + "' was unable to be used to find out the EO model's name.", ioe);
+			}
+		} else {
+			File file = URLUtils.cheatAndTurnIntoFile(url);
+			modelName = EOModelGroup.getModelNameForFile(file);
+		}
+		return modelName;
 	}
 
 	/**
-	 * Returns the model name for the given URL.
+	 * Returns the model name for the given jar entry. This would be used in the
+	 * situation where a Jar file is being introspected for the models within
+	 * it.
+	 * 
+	 * @param jarEntry
+	 *            the jar entry to lookup (could be index.eomodeld file, or
+	 *            .eomodeld folder)
+	 * @return the model name for the given jar entry
+	 */
+	public static String getModelNameForJarEntry(JarEntry jarEntry) {
+		String modelName = null;
+
+		if (jarEntry != null) {
+			String jarEntryName = jarEntry.getName();
+
+			if (jarEntryName.endsWith("index.eomodeld")) {
+				int lastSlashIndex = jarEntryName.lastIndexOf('/');
+
+				if (lastSlashIndex == -1) {
+					jarEntryName = null;
+				} else {
+					jarEntryName = jarEntryName.substring(0, lastSlashIndex + 1);
+				}
+			}
+
+			if (jarEntryName != null) {
+				if (jarEntryName.endsWith(".eomodeld/")) {
+					int lastDotIndex = jarEntryName.lastIndexOf('.', jarEntryName.length() - 2);
+					int lastSlashIndex = jarEntryName.lastIndexOf('/', jarEntryName.length() - 2);
+
+					modelName = jarEntryName.substring(lastSlashIndex + 1, lastDotIndex);
+
+					if (modelName.length() == 0) {
+						modelName = null;
+					}
+				}
+			}
+		}
+
+		return modelName;
+	}
+
+	/**
+	 * Returns the model name for the given file.
 	 * 
 	 * @param url
-	 *            the URL to lookup (could be index.eomodeld file, or .eomodeld
+	 *            the file to lookup (could be index.eomodeld file, or .eomodeld
 	 *            folder)
-	 * @return the model name for the given URL
+	 * @return the model name for the given file
 	 */
 	public static String getModelNameForFile(File file) {
 		String modelName = null;
@@ -495,10 +556,10 @@ public class EOModelGroup extends EOModelObject<Object> {
 	public void _removeFromModelParent(Set<EOModelVerificationFailure> failures) {
 		// DO NOTHING
 	}
-	
+
 	public static void main(String[] args) throws IOException, PropertyListParserException {
 		long a = System.currentTimeMillis();
-		for (int i = 0; i < 1000; i ++) {
+		for (int i = 0; i < 1000; i++) {
 			PropertyListSerialization.propertyListFromFile(new File("/Users/mschrag/Documents/workspace/MDTask/Resources/MDTask.eomodeld/index.eomodeld"));
 		}
 		System.out.println("EOModelGroup.main: " + (System.currentTimeMillis() - a));
