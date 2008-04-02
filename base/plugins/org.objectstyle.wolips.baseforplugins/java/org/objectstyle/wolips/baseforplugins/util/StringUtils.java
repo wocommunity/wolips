@@ -151,6 +151,16 @@ public class StringUtils {
      * @return the string_with_underscores
      */
     public static String camelCaseToUnderscore(String camelString) {
+    	return StringUtils.camelCaseToUnderscore(camelString, true);
+    }
+    
+    /**
+     * Converts ThisIsATest to this_is_a_test
+     * @param camelString the StringWithCaps
+     * @param lowercase if true, the uppercase characters at the separators are lowercased
+     * @return the string_with_underscores
+     */
+    public static String camelCaseToUnderscore(String camelString, boolean lowercase) {
     	StringBuffer underscore = new StringBuffer();
     	boolean lastCharacterWasWordBreak = true;
     	for (int i = 0; i < camelString.length(); i ++) {
@@ -162,7 +172,12 @@ public class StringUtils {
     		else {
     			lastCharacterWasWordBreak = false;
     		}
-    		underscore.append(Character.toLowerCase(ch));
+    		if (lowercase) {
+    			underscore.append(Character.toLowerCase(ch));
+    		}
+    		else {
+    			underscore.append(ch);
+    		}
     	}
     	return underscore.toString();
     }
