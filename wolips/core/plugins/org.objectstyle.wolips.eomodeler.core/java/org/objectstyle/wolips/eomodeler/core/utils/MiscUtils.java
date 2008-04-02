@@ -56,7 +56,7 @@ public class MiscUtils {
 		String fileName = _resource.getName();
 		String fileExtension = _resource.getFileExtension();
 		if (fileExtension != null) {
-			fileName = fileName.substring(0, fileName.indexOf('.'));
+			fileName = fileName.substring(0, fileName.lastIndexOf('.'));
 		}
 		return fileName;
 	}
