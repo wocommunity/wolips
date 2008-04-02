@@ -1177,6 +1177,20 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		firePropertyChange(EOEntity.ATTRIBUTES, null, null);
 	}
 
+	public Set<EOAttribute> getClientClassAttributes() {
+		Set<EOAttribute> clientClassAttributes = new HashSet<EOAttribute>();
+		for (EOAttribute attribute : getAttributes()) {
+			if (attribute.isClientClassProperty() != null && attribute.isClientClassProperty().booleanValue()) {
+				clientClassAttributes.add(attribute);
+			}
+		}
+		return clientClassAttributes;
+	}
+
+	public Set<EOAttribute> getSortedClientClassAttributes() {
+		return new PropertyListSet<EOAttribute>(getClientClassAttributes());
+	}
+
 	public Set<EOAttribute> getClassAttributes() {
 		Set<EOAttribute> classAttributes = new HashSet<EOAttribute>();
 		for (EOAttribute attribute : getAttributes()) {
@@ -1229,6 +1243,20 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		}
 		Arrays.sort(attributeNames);
 		return attributeNames;
+	}
+
+	public Set<EORelationship> getClientClassRelationships() {
+		Set<EORelationship> clientClassRelationships = new HashSet<EORelationship>();
+		for (EORelationship relationship : getRelationships()) {
+			if (relationship.isClientClassProperty() != null && relationship.isClientClassProperty().booleanValue()) {
+				clientClassRelationships.add(relationship);
+			}
+		}
+		return clientClassRelationships;
+	}
+
+	public Set<EORelationship> getSortedClientClassRelationships() {
+		return new PropertyListSet<EORelationship>(getClientClassRelationships());
 	}
 
 	public Set<EORelationship> getClassRelationships() {
