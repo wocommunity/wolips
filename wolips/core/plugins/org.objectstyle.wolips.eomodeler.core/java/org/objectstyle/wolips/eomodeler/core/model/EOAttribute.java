@@ -502,19 +502,24 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	}
 
 	public void guessColumnNameInEntity(EOEntity entity) {
-		String columnName = getName();
+		String name = EOAttribute.guessColumnNameInEntity(getName(), entity);
+		setColumnName(name);
+	}
+	
+	public static String guessColumnNameInEntity(String attributeName, EOEntity entity) {
+		String columnName = attributeName;
 		if (entity != null) {
 			EOAttribute otherAttribute = entity._getTemplateNameAttribute(true);
 			if (otherAttribute != null) {
 				String otherName = otherAttribute.getName();
 				String otherColumnName = otherAttribute.getColumnName();
-				String guessedColumnName = NameSyncUtils.newDependentName(otherName, getName(), otherColumnName, entity.getAttributeColumnNamePairs(null));
+				String guessedColumnName = NameSyncUtils.newDependentName(otherName, attributeName, otherColumnName, entity.getAttributeColumnNamePairs(null));
 				if (!ComparisonUtils.equals(guessedColumnName, otherColumnName)) {
 					columnName = guessedColumnName;
 				}
 			}
 		}
-		setColumnName(columnName);
+		return columnName;
 	}
 
 	public void setColumnName(String _columnName) {
