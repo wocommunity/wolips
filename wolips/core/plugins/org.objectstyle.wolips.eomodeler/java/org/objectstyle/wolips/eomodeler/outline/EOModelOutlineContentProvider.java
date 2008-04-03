@@ -168,6 +168,9 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
 			if (_showEntityIndexes) {
 				entityChildren.addAll(entity.getEntityIndexes());
 			}
+			if (_showAttributes && _showRelationships) {
+				entityChildren.addAll(entity.getChildrenEntities());
+			}
 			children = entityChildren.toArray();
 		} else if (_parentElement instanceof EORelationship) {
 			EORelationship relationship = (EORelationship) _parentElement;
