@@ -182,6 +182,10 @@ div.section.entity div.childrenEntities {
 	font-size: 0.60em;
 }
 
+div.section.entity div.referencingEntities {
+	font-size: 0.60em;
+}
+
 .entity.abstract {
 	font-style: italic;
 }
