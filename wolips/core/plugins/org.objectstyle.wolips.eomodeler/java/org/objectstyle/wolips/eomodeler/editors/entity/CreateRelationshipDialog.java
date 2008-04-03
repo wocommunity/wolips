@@ -233,6 +233,9 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 			EntityPicker destinationEntityPicker = new EntityPicker(relationshipDialogArea, SWT.NONE, false);
 			destinationEntityPicker.setModelGroup(_modelGroup);
 			destinationEntityPicker.setEntity(_destinationEntity);
+			if (_destinationEntity == null && _sourceEntity != null) {
+				destinationEntityPicker.setModel(_sourceEntity.getModel());
+			}
 			GridData destinationEntityPickerData = new GridData(GridData.FILL_HORIZONTAL);
 			// destinationEntityPickerData.horizontalSpan = 2;
 			destinationEntityPicker.setLayoutData(destinationEntityPickerData);
