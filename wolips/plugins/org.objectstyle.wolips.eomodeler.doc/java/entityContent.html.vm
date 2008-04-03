@@ -74,21 +74,8 @@
 	#if (!$entity.attributes.empty)
 	<ul>
 		#foreach ($attribute in $entity.sortedAttributes)
-		#if ($attribute.classProperty)
-			#if ($attribute.inherited)
-		<li class = "attribute classProperty inheritedProperty">
-			#else
-		<li class = "attribute classProperty nonInheritedProperty">
-			#end
-		#else
-			#if ($attribute.inherited)
-		<li class = "attribute nonClassProperty inheritedProperty">
-			#else
-		<li class = "attribute nonClassProperty nonInheritedProperty">
-			#end
-		#end
-		
-			<div class = "name">$attribute.name</div>
+		<li class = "attribute #if ($attribute.classProperty) classProperty#else nonClassProperty#end #if ($attribute.inherited) inheritedProperty#else nonInheritedProperty#end #if ($attribute.primaryKey) primaryKey#end">
+			<div class = "name">$attribute.name#if ($attribute.primaryKey) [primary key]#end</div>
 			#if ($attribute.columnName)
 				<div class = "mainDetail">
 				$attribute.columnName
@@ -175,20 +162,7 @@
 	#if (!$entity.relationships.empty)
 	<ul class = "relationships">
 		#foreach ($relationship in $entity.sortedRelationships)
-		#if ($relationship.classProperty)
-			#if ($relationship.inherited)
-		<li class = "relationship classProperty inheritedProperty">
-			#else
-		<li class = "relationship classProperty nonInheritedProperty">
-			#end
-		#else
-			#if ($relationship.inherited)
-		<li class = "relationship nonClassProperty inheritedProperty">
-			#else
-		<li class = "relationship nonClassProperty nonInheritedProperty">
-			#end
-		#end
-		
+		<li class = "relationship #if ($relationship.classProperty) classProperty#else nonClassProperty#end #if ($relationship.inherited) inheritedProperty#else nonInheritedProperty#end">
 			<div class = "name">$relationship.name</div>
 			#if ($relationship.destination)
 			<div class = "mainDetail"><a href = "../../$relationship.destination.model.name/entities/${relationship.destination.name}.html">$relationship.destination.name</a></div>

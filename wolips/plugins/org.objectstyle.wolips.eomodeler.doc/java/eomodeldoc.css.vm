@@ -90,6 +90,14 @@ li.nonClassProperty div.documentation {
 	color: rgb(100, 100, 100);
 }
 
+div.section > ul > li.nonClassProperty.primaryKey div.name {
+  background-color: rgb(220, 255, 220);
+}
+
+div.section > ul > li.primaryKey div.name {
+  background-color: rgb(220, 255, 220);
+}
+
 div.section {
 	padding: 0px;
 	margin-top: 15px;
@@ -129,6 +137,7 @@ div.section > ul > li.nonClassProperty {
 }
 
 div.section > ul > li.nonClassProperty div.name {
+  background-color: rgb(230, 230, 230);
 }
 
 div.section > ul > li div.name {
