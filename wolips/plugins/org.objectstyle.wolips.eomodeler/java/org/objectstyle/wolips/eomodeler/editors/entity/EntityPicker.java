@@ -57,6 +57,13 @@ public class EntityPicker extends Composite {
 		_modelComboViewer.setInput(modelGroup);
 	}
 	
+	public void setModel(EOModel model) {
+		if (model != null) {
+			_modelComboViewer.setSelection(new StructuredSelection(model), true);
+			_entityComboViewer.setSelection(new StructuredSelection());
+		}
+	}
+	
 	public void setEntity(EOEntity entity) {
 		if (entity != null) {
 			_modelComboViewer.setSelection(new StructuredSelection(entity.getModel()), true);
