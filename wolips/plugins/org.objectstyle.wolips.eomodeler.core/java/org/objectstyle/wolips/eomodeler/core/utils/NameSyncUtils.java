@@ -55,19 +55,6 @@ public class NameSyncUtils {
 		return Character.isUpperCase(ch) || ch == '_';
 	}
 
-	public static void main(String[] args) {
-		// HashSet<String> values = new HashSet<String>();
-		// values.add("Mike_Schrag");
-		// values.add("Mike_Something");
-		// values.add("Mike_test");
-		// values.add("");
-		// System.out.println("NameSyncUtils.main: " +
-		// NameSyncUtils.commonPrefix(values));
-		System.out.println("NameSyncUtils.prefix: " + NameSyncUtils.getPrefix("MikeSchrag", "Mike_Schrag"));
-		System.out.println("NameSyncUtils.prefix: " + NameSyncUtils.getPrefix("MikeSchrag", "TABLE_MIKE_SCHRAG"));
-		System.out.println("NameSyncUtils.prefix: " + NameSyncUtils.getPrefix("MikeSchrag", "Table_Mike_Schrag"));
-	}
-
 	public static String getPrefix(String name, String dependentName) {
 		String prefix;
 		if (name == null || dependentName == null) {
