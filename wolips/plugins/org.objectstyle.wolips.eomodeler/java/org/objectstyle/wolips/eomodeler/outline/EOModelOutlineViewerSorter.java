@@ -27,7 +27,7 @@ public class EOModelOutlineViewerSorter extends ViewerSorter {
 	public EOModelOutlineViewerSorter() {
 		myOrder = new HashMap<Class, Integer>();
 		myOrder.put(EOModel.class, new Integer(1));
-		myOrder.put(EOEntity.class, new Integer(2));
+		myOrder.put(EOEntity.class, new Integer(10));
 		myOrder.put(EOAttribute.class, new Integer(3));
 		myOrder.put(EOAttributePath.class, new Integer(3));
 		myOrder.put(EOArgument.class, new Integer(4));
@@ -35,8 +35,8 @@ public class EOModelOutlineViewerSorter extends ViewerSorter {
 		myOrder.put(EORelationshipPath.class, new Integer(5));
 		myOrder.put(EOFetchSpecification.class, new Integer(6));
 		myOrder.put(EOStoredProcedure.class, new Integer(7));
-		myOrder.put(EOEntityIndex.class, new Integer(8));
-		myOrder.put(EODatabaseConfig.class, new Integer(9));
+		myOrder.put(EOEntityIndex.class, new Integer(20));
+		myOrder.put(EODatabaseConfig.class, new Integer(30));
 	}
 
 	protected int getOrder(Object _obj) {
@@ -61,8 +61,10 @@ public class EOModelOutlineViewerSorter extends ViewerSorter {
 
 	public int compare(Viewer _viewer, Object _e1, Object _e2) {
 		ILabelProvider labelProvider = (ILabelProvider) ((ContentViewer) _viewer).getLabelProvider();
-		String name1 = getOrder(_e1) + labelProvider.getText(_e1);
-		String name2 = getOrder(_e2) + labelProvider.getText(_e2);
+		int order1 = getOrder(_e1);
+		int order2 = getOrder(_e2);
+		String name1 = String.format("%1$02d%2$s", order1, labelProvider.getText(_e1));
+		String name2 = String.format("%1$02d%2$s", order2, labelProvider.getText(_e2));
 		int comparison = getComparator().compare(name1, name2);
 		return comparison;
 	}
