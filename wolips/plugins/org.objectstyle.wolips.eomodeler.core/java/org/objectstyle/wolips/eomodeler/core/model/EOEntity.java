@@ -1074,6 +1074,14 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		return referenceFailures;
 	}
 
+	public Set<EOEntity> getReferencingEntities() {
+		Set<EOEntity> referencingEntities = new PropertyListSet<EOEntity>();
+		for (EORelationship relationship : getReferencingRelationships()) {
+			referencingEntities.add(relationship.getEntity());
+		}
+		return referencingEntities;
+	}
+	
 	public Set<EORelationship> getReferencingRelationships() {
 		Set<EORelationship> referencingRelationships = new HashSet<EORelationship>();
 		for (EOModel model : getModel().getModelGroup().getModels()) {

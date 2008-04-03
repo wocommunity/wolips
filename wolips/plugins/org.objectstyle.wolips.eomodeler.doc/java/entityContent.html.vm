@@ -25,6 +25,14 @@
 		#end
 	</div>
 	#end
+	#if (!$entity.referencingEntities.empty)
+	<div class = "referencingEntities">
+		referenced by 
+		#foreach ($referencingEntity in $entity.referencingEntities)
+			<a href = "../../$referencingEntity.model.name/entities/${referencingEntity.name}.html">$referencingEntity.name</a>,
+		#end
+	</div>
+	#end
 	</h1>
 	#if ($entity.documentation)
 	<div class = "documentation">$entity.documentation</div>
