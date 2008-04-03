@@ -100,6 +100,8 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	public static final String CLIENT_CLASS_NAME = "clientClassName";
 
+	public static final String PARENT_CLASS_NAME = "parentClassName";
+
 	public static final String PARENT = "parent";
 
 	public static final String PARTIAL_ENTITY = "partialEntity";
@@ -155,6 +157,8 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	private String myClassName;
 
 	private String myClientClassName;
+	
+	private String myParentClassName;
 
 	private String myRestrictingQualifier;
 
@@ -1007,6 +1011,21 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		String oldClientClassName = myClientClassName;
 		myClientClassName = _clientClassName;
 		firePropertyChange(EOEntity.CLIENT_CLASS_NAME, oldClientClassName, myClientClassName);
+	}
+
+	public boolean isParentClassNameSet() {
+		System.out.println("EOEntity.isParentClassNameSet: TEST " + myParentClassName);
+		return myParentClassName != null;
+	}
+
+	public String getParentClassName() {
+		return myParentClassName;
+	}
+
+	public void setParentClassName(String _parentClassName) {
+		String oldParentClassName = myParentClassName;
+		myParentClassName = _parentClassName;
+		firePropertyChange(EOEntity.PARENT_CLASS_NAME, oldParentClassName, myParentClassName);
 	}
 
 	public String getExternalName() {
@@ -1971,20 +1990,8 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		entityMap.setInteger("maxNumberOfInstancesToBatchFetch", myMaxNumberOfInstancesToBatchFetch);
 
 		if (myFetchSpecs == null || myFetchSpecs.size() == 0) {
-			entityMap.put("fetchSpecificationDictionary", new HashMap()); // prevents
-			// EOF
-			// from
-			// hitting
-			// the
-			// filesystem
-			// to
-			// find
-			// out
-			// there
-			// are
-			// no
-			// fetch
-			// specs
+			entityMap.put("fetchSpecificationDictionary", new HashMap());
+			// prevents EOF from hitting the filesystem to find out there are no fetch specs
 		} else {
 			entityMap.remove("fetchSpecificationDictionary");
 		}
@@ -2103,6 +2110,12 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		} else {
 			entityModelerMap.put(EOEntity.PARTIAL_ENTITY, myPartialEntity.getName());
 		}
+		if (myParentClassName == null) {
+			entityModelerMap.remove(EOEntity.PARENT_CLASS_NAME);
+		}
+		else {
+			entityModelerMap.put(EOEntity.PARENT_CLASS_NAME, myParentClassName);
+		}
 		if (myGenerateSource) {
 			entityModelerMap.remove(EOEntity.GENERATE_SOURCE);
 		} else {
@@ -2195,6 +2208,10 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			if (myPartialEntity == null) {
 				_failures.add(new MissingEntityFailure(myModel, partialEntityName));
 			}
+		}
+		String parentClassName = entityModelerMap.getString(EOEntity.PARENT_CLASS_NAME, true);
+		if (parentClassName != null) {
+			myParentClassName = parentClassName;
 		}
 		Boolean generateSource = entityModelerMap.getBoolean(EOEntity.GENERATE_SOURCE);
 		if (generateSource == null) {
