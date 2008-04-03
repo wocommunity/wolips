@@ -74,33 +74,35 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 
 public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
-	private EOEntity myEntity;
+	private EOEntity _entity;
 
-	private Text myMaxNumberOfInstancesToBatchFetchText;
+	private Text _maxNumberOfInstancesToBatchFetchText;
 
-	private Button myCacheInMemoryButton;
+	private Button _cacheInMemoryButton;
 
-	private Button myReadOnlyButton;
+	private Button _readOnlyButton;
 
-	private Button myGenerateSourceButton;
+	private Button _generateSourceButton;
 
-	private Text myExternalQueryText;
+	private Text _externalQueryText;
 
-	private Text myClientClassNameText;
+	private Text _clientClassNameText;
 
-	private ComboViewer myPartialEntityComboViewer;
+	private Text _parentClassNameText;
 
-	private ComboViewerBinding myPartialEntityBinding;
+	private ComboViewer _partialEntityComboViewer;
 
-	private DataBindingContext myBindingContext;
+	private ComboViewerBinding _partialEntityBinding;
+
+	private DataBindingContext _bindingContext;
 
 	public EOEntityAdvancedEditorSection() {
 		// DO NOTHING
 	}
 
-	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
-		super.createControls(_parent, _tabbedPropertySheetPage);
-		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
+	public void createControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
+		super.createControls(parent, tabbedPropertySheetPage);
+		Composite form = getWidgetFactory().createFlatFormComposite(parent);
 		FormLayout formLayout = new FormLayout();
 		form.setLayout(formLayout);
 
@@ -116,64 +118,70 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 		topForm.setLayout(topFormLayout);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH), SWT.NONE);
-		myMaxNumberOfInstancesToBatchFetchText = new Text(topForm, SWT.BORDER);
+		_maxNumberOfInstancesToBatchFetchText = new Text(topForm, SWT.BORDER);
 		GridData maxNumberOfInstancesToBatchFetchFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-		myMaxNumberOfInstancesToBatchFetchText.setLayoutData(maxNumberOfInstancesToBatchFetchFieldLayoutData);
+		_maxNumberOfInstancesToBatchFetchText.setLayoutData(maxNumberOfInstancesToBatchFetchFieldLayoutData);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.CACHES_OBJECTS), SWT.NONE);
-		myCacheInMemoryButton = new Button(topForm, SWT.CHECK);
+		_cacheInMemoryButton = new Button(topForm, SWT.CHECK);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.READ_ONLY), SWT.NONE);
-		myReadOnlyButton = new Button(topForm, SWT.CHECK);
+		_readOnlyButton = new Button(topForm, SWT.CHECK);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.EXTERNAL_QUERY), SWT.NONE);
-		myExternalQueryText = new Text(topForm, SWT.BORDER);
+		_externalQueryText = new Text(topForm, SWT.BORDER);
 		GridData externalQueryFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-		myExternalQueryText.setLayoutData(externalQueryFieldLayoutData);
+		_externalQueryText.setLayoutData(externalQueryFieldLayoutData);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.CLIENT_CLASS_NAME), SWT.NONE);
-		myClientClassNameText = new Text(topForm, SWT.BORDER);
+		_clientClassNameText = new Text(topForm, SWT.BORDER);
 		GridData clientClassNameLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-		myClientClassNameText.setLayoutData(clientClassNameLayoutData);
+		_clientClassNameText.setLayoutData(clientClassNameLayoutData);
+
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.PARENT_CLASS_NAME), SWT.NONE);
+		_parentClassNameText = new Text(topForm, SWT.BORDER);
+		GridData parentClassNameLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		_parentClassNameText.setLayoutData(parentClassNameLayoutData);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.GENERATE_SOURCE), SWT.NONE);
-		myGenerateSourceButton = new Button(topForm, SWT.CHECK);
+		_generateSourceButton = new Button(topForm, SWT.CHECK);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.PARTIAL_ENTITY), SWT.NONE);
 		Combo partialEntityCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
-		myPartialEntityComboViewer = new ComboViewer(partialEntityCombo);
-		myPartialEntityComboViewer.setLabelProvider(new EOEntityLabelProvider());
-		myPartialEntityComboViewer.setContentProvider(new EOEntityListContentProvider(true, false, false));
+		_partialEntityComboViewer = new ComboViewer(partialEntityCombo);
+		_partialEntityComboViewer.setLabelProvider(new EOEntityLabelProvider());
+		_partialEntityComboViewer.setContentProvider(new EOEntityListContentProvider(true, false, false));
 		GridData entityComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		partialEntityCombo.setLayoutData(entityComboLayoutData);
 	}
 
-	public void setInput(IWorkbenchPart _part, ISelection _selection) {
-		super.setInput(_part, _selection);
+	public void setInput(IWorkbenchPart part, ISelection selection) {
+		super.setInput(part, selection);
 		disposeBindings();
 
-		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-		myEntity = (EOEntity) selectedObject;
-		if (myEntity != null) {
-			myBindingContext = new DataBindingContext();
-			myBindingContext.bindValue(SWTObservables.observeText(myMaxNumberOfInstancesToBatchFetchText, SWT.Modify), BeansObservables.observeValue(myEntity, EOEntity.MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH), null, null);
+		Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
+		_entity = (EOEntity) selectedObject;
+		if (_entity != null) {
+			_bindingContext = new DataBindingContext();
+			_bindingContext.bindValue(SWTObservables.observeText(_maxNumberOfInstancesToBatchFetchText, SWT.Modify), BeansObservables.observeValue(_entity, EOEntity.MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH), null, null);
 			// new BindSpec(null, null, new RegexStringValidator("^[0-9]*$",
 			// "^[0-9]+$", "Please enter a number"), null));
-			myBindingContext.bindValue(SWTObservables.observeSelection(myCacheInMemoryButton), BeansObservables.observeValue(myEntity, EOEntity.CACHES_OBJECTS), null, null);
-			myBindingContext.bindValue(SWTObservables.observeSelection(myReadOnlyButton), BeansObservables.observeValue(myEntity, EOEntity.READ_ONLY), null, null);
-			myBindingContext.bindValue(SWTObservables.observeSelection(myGenerateSourceButton), BeansObservables.observeValue(myEntity, EOEntity.GENERATE_SOURCE), null, null);
-			myBindingContext.bindValue(SWTObservables.observeText(myExternalQueryText, SWT.Modify), BeansObservables.observeValue(myEntity, EOEntity.EXTERNAL_QUERY), null, null);
-			myBindingContext.bindValue(SWTObservables.observeText(myClientClassNameText, SWT.Modify), BeansObservables.observeValue(myEntity, EOEntity.CLIENT_CLASS_NAME), null, null);
+			_bindingContext.bindValue(SWTObservables.observeSelection(_cacheInMemoryButton), BeansObservables.observeValue(_entity, EOEntity.CACHES_OBJECTS), null, null);
+			_bindingContext.bindValue(SWTObservables.observeSelection(_readOnlyButton), BeansObservables.observeValue(_entity, EOEntity.READ_ONLY), null, null);
+			_bindingContext.bindValue(SWTObservables.observeSelection(_generateSourceButton), BeansObservables.observeValue(_entity, EOEntity.GENERATE_SOURCE), null, null);
+			_bindingContext.bindValue(SWTObservables.observeText(_externalQueryText, SWT.Modify), BeansObservables.observeValue(_entity, EOEntity.EXTERNAL_QUERY), null, null);
+			_bindingContext.bindValue(SWTObservables.observeText(_clientClassNameText, SWT.Modify), BeansObservables.observeValue(_entity, EOEntity.CLIENT_CLASS_NAME), null, null);
+			_bindingContext.bindValue(SWTObservables.observeText(_parentClassNameText, SWT.Modify), BeansObservables.observeValue(_entity, EOEntity.PARENT_CLASS_NAME), null, null);
 
-			myPartialEntityComboViewer.setInput(myEntity);
-			myPartialEntityBinding = new ComboViewerBinding(myPartialEntityComboViewer, myEntity, EOEntity.PARTIAL_ENTITY, myEntity.getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY);
+			_partialEntityComboViewer.setInput(_entity);
+			_partialEntityBinding = new ComboViewerBinding(_partialEntityComboViewer, _entity, EOEntity.PARTIAL_ENTITY, _entity.getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY);
 		}
 	}
 
 	protected void disposeBindings() {
-		if (myBindingContext != null) {
-			myBindingContext.dispose();
-			myPartialEntityBinding.dispose();
+		if (_bindingContext != null) {
+			_bindingContext.dispose();
+			_partialEntityBinding.dispose();
 		}
 	}
 

@@ -14,7 +14,7 @@ import er.extensions.ERXGenericRecord;
 import er.extensions.ERXKey;
 
 @SuppressWarnings("all")
-public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($entity.partialEntitySet)er.extensions.partials.ERXPartial<${entity.partialEntity.className}>#elseif ($entity.parentSet)${entity.parent.classNameWithDefault}#elseif ($EOGenericRecord)${EOGenericRecord}#else ERXGenericRecord#end {
+public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($entity.parentClassNameSet)${entity.parentClassName}#elseif ($entity.partialEntitySet)er.extensions.partials.ERXPartial<${entity.partialEntity.className}>#elseif ($entity.parentSet)${entity.parent.classNameWithDefault}#elseif ($EOGenericRecord)${EOGenericRecord}#else ERXGenericRecord#end {
 #if ($entity.partialEntitySet)
 	public static final String ENTITY_NAME = "$entity.partialEntity.name";
 #else
@@ -315,14 +315,14 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 #end
 #foreach ($fetchSpecification in $entity.sortedFetchSpecs)
 #if (true || $fetchSpecification.distinctBindings.size() > 0)
-  public static NSArray<${entity.className}> fetch${fetchSpecification.capitalizedName}(EOEditingContext editingContext, NSDictionary<String, Object> bindings) {
+  public static NSArray#if ($fetchSpecification.fetchEnterpriseObjects)<${entity.className}>#else<NSDictionary>#end fetch${fetchSpecification.capitalizedName}(EOEditingContext editingContext, NSDictionary<String, Object> bindings) {
     EOFetchSpecification fetchSpec = EOFetchSpecification.fetchSpecificationNamed("${fetchSpecification.name}", "${entity.name}");
     fetchSpec = fetchSpec.fetchSpecificationWithQualifierBindings(bindings);
     return editingContext.objectsWithFetchSpecification(fetchSpec);
   }
   
 #end
-  public static NSArray<${entity.className}> fetch${fetchSpecification.capitalizedName}(EOEditingContext editingContext#foreach ($binding in $fetchSpecification.distinctBindings),
+  public static NSArray#if ($fetchSpecification.fetchEnterpriseObjects)<${entity.className}>#else<NSDictionary>#end fetch${fetchSpecification.capitalizedName}(EOEditingContext editingContext#foreach ($binding in $fetchSpecification.distinctBindings),
 	${binding.attributePath.childClassName} ${binding.name}Binding#end)
   {
     EOFetchSpecification fetchSpec = EOFetchSpecification.fetchSpecificationNamed("${fetchSpecification.name}", "${entity.name}");
