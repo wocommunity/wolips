@@ -175,29 +175,6 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 								modelGroup.loadModelsFromURL(jarResourcesURL, 1, failures, skipOnDuplicates, progressMonitor);
 							}
 						}
-						
-//						IPath path = entry.getPath();
-//						IPath frameworkPath = null;
-//						while (frameworkPath == null && path.lastSegment() != null) {
-//							String lastSegment = path.lastSegment();
-//							if (lastSegment != null && lastSegment.endsWith(".framework")) {
-//								frameworkPath = path;
-//								File resourcesFolder = frameworkPath.append("Resources").toFile();
-//								if (!searchedResources.contains(resourcesFolder) && resourcesFolder.exists()) {
-//									searchedResources.add(resourcesFolder);
-//									URL urlToLoad = resourcesFolder.toURL();
-//									modelGroup.loadModelsFromURL(urlToLoad, 1, failures, skipOnDuplicates, progressMonitor);
-//								}
-//							} else if (lastSegment != null && lastSegment.endsWith(".jar")) {
-//								frameworkPath = path;
-//								URL urlToLoad = new URL("jar:" + path.toFile().toURL() + "!/Resources");
-//								if (!searchedResources.contains(urlToLoad) && URLUtils.exists(urlToLoad)) {
-//									modelGroup.loadModelsFromURL(urlToLoad, 1, failures, skipOnDuplicates, progressMonitor);
-//								}
-//							} else {
-//								path = path.removeLastSegments(1);
-//							}
-//						}
 					} else if (entryKind == IClasspathEntry.CPE_PROJECT) {
 						IPath path = entry.getPath();
 						IProject dependsOnProject = ResourcesPlugin.getWorkspace().getRoot().getProject(path.lastSegment());
