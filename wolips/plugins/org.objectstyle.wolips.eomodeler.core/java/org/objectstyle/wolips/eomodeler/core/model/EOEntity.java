@@ -1014,7 +1014,6 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public boolean isParentClassNameSet() {
-		System.out.println("EOEntity.isParentClassNameSet: TEST " + myParentClassName);
 		return myParentClassName != null;
 	}
 
