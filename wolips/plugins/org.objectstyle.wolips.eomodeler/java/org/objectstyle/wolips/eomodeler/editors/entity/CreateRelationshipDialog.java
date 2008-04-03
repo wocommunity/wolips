@@ -54,6 +54,8 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
@@ -78,6 +80,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOJoin;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
+import org.objectstyle.wolips.eomodeler.core.utils.NameSyncUtils;
 import org.objectstyle.wolips.eomodeler.editors.relationship.JoinsTableEditor;
 
 public class CreateRelationshipDialog extends Dialog implements SelectionListener {
@@ -90,8 +93,6 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 	private EORelationship _relationship;
 
 	private EORelationship _inverseRelationship;
-
-	private Composite _relationshipFields;
 
 	private Composite _joinsFields;
 
@@ -117,6 +118,8 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 
 	private Text _fkNameText;
 
+	private Text _fkColumnNameText;
+
 	private String _originalInverseName;
 
 	private Text _inverseNameText;
@@ -130,6 +133,8 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 	private Button _createInverseFKButton;
 
 	private Text _inverseFKNameText;
+
+	private Text _inverseFKColumnNameText;
 
 	private Button _flattenButton;
 
@@ -147,6 +152,17 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 
 	private String _guessedJoinEntityName;
 
+	private Label _fkColumnNameLabel;
+
+	private Label _inverseFKColumnNameLabel;
+
+	private Group _destinationFields;
+
+	private Group _sourceFields;
+	
+	private String _oldFKName;
+	private String _oldInverseFKName;
+
 	public CreateRelationshipDialog(Shell shell, EOModelGroup modelGroup, EOEntity sourceEntity, EOEntity destinationEntity) {
 		super(shell);
 
@@ -158,6 +174,7 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 	public void setSourceEntity(EOEntity sourceEntity) {
 		_sourceEntity = sourceEntity;
 		_inverseFKNameText.setText("");
+		_inverseFKColumnNameText.setText("");
 		entitiesChanged();
 	}
 
@@ -168,6 +185,7 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 	public void setDestinationEntity(EOEntity destinationEntity) {
 		_destinationEntity = destinationEntity;
 		_fkNameText.setText("");
+		_fkColumnNameText.setText("");
 		entitiesChanged();
 	}
 
@@ -197,7 +215,7 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 
 	protected Control createDialogArea(Composite parent) {
 		Composite relationshipDialogArea = new Composite(parent, SWT.NONE);
-		GridLayout gridLayout = new GridLayout(1, true);
+		GridLayout gridLayout = new GridLayout(2, true);
 		gridLayout.marginBottom = 0;
 		gridLayout.marginTop = 15;
 		gridLayout.marginLeft = 15;
@@ -210,7 +228,7 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 			Label hintLabel = new Label(relationshipDialogArea, SWT.NONE);
 			hintLabel.setText("Select the entities that this relationship will join together.");
 			GridData hintLabelData = new GridData(GridData.FILL_HORIZONTAL);
-			// destinationEntityPickerData.horizontalSpan = 2;
+			hintLabelData.horizontalSpan = 2;
 			hintLabel.setLayoutData(hintLabelData);
 			hintLabel.setFont(parent.getFont());
 
@@ -238,6 +256,7 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 			}
 			GridData destinationEntityPickerData = new GridData(GridData.FILL_HORIZONTAL);
 			// destinationEntityPickerData.horizontalSpan = 2;
+			destinationEntityPickerData.verticalIndent = 15;
 			destinationEntityPicker.setLayoutData(destinationEntityPickerData);
 			destinationEntityPicker.addSelectionChangedListener(new ISelectionChangedListener() {
 				public void selectionChanged(SelectionChangedEvent event) {
@@ -248,118 +267,143 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		}
 
 
-		_relationshipFields = new Composite(relationshipDialogArea, SWT.NONE);
-		GridLayout relationshipFieldsLayout = new GridLayout(1, false);
-		relationshipFieldsLayout.horizontalSpacing = 15;
-		_relationshipFields.setLayout(relationshipFieldsLayout);
-		_relationshipFields.setLayoutData(new GridData(GridData.FILL_BOTH));
+//		_relationshipFields = new Composite(relationshipDialogArea, SWT.NONE);
+//		GridLayout relationshipFieldsLayout = new GridLayout(1, false);
+//		relationshipFieldsLayout.horizontalSpacing = 15;
+//		_relationshipFields.setLayout(relationshipFieldsLayout);
+//		_relationshipFields.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		_sourceLabel = new Label(_relationshipFields, SWT.NONE);
+		_sourceLabel = new Label(relationshipDialogArea, SWT.NONE);
 		Font originalFont = _sourceLabel.getFont();
 		FontData[] fontData = originalFont.getFontData();
 		_titleFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD);
 		_sourceLabel.setFont(_titleFont);
 		GridData sourceLabelData = new GridData(GridData.FILL_HORIZONTAL);
-		sourceLabelData.horizontalSpan = 2;
+		//sourceLabelData.horizontalSpan = 2;
 		if (showEntityPickers) {
 			sourceLabelData.verticalIndent = 15;
 		}
 		_sourceLabel.setLayoutData(sourceLabelData);
+		
+		_destinationLabel = new Label(relationshipDialogArea, SWT.NONE);
+		_destinationLabel.setFont(_titleFont);
+		GridData destinationLabelData = new GridData(GridData.FILL_HORIZONTAL);
+		//destinationLabelData.horizontalSpan = 2;
+		if (showEntityPickers) {
+			destinationLabelData.verticalIndent = 15;
+		}
+		_destinationLabel.setLayoutData(destinationLabelData);
 
-		Group sourceFields = new Group(_relationshipFields, SWT.NONE);
+		_sourceFields = new Group(relationshipDialogArea, SWT.NONE);
 		GridLayout sourceFieldsLayout = new GridLayout(2, false);
 		sourceFieldsLayout.horizontalSpacing = 15;
 		sourceFieldsLayout.verticalSpacing = 6;
-		sourceFields.setLayout(sourceFieldsLayout);
-		sourceFields.setLayoutData(new GridData(GridData.FILL_BOTH));
+		_sourceFields.setLayout(sourceFieldsLayout);
+		_sourceFields.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		_toOneButton = new Button(sourceFields, SWT.RADIO);
+		_toOneButton = new Button(_sourceFields, SWT.RADIO);
 		_toOneButton.setSelection(true);
 		_toOneButton.addSelectionListener(this);
 		GridData toOneData = new GridData(GridData.FILL_HORIZONTAL);
 		toOneData.horizontalSpan = 2;
 		_toOneButton.setLayoutData(toOneData);
 
-		_toManyButton = new Button(sourceFields, SWT.RADIO);
+		_toManyButton = new Button(_sourceFields, SWT.RADIO);
 		_toManyButton.addSelectionListener(this);
 		GridData toManyData = new GridData(GridData.FILL_HORIZONTAL);
 		toManyData.horizontalSpan = 2;
 		_toManyButton.setLayoutData(toManyData);
 
-		_createButton = new Button(sourceFields, SWT.CHECK);
+		_createButton = new Button(_sourceFields, SWT.CHECK);
 		_createButton.setSelection(true);
 		_createButton.setLayoutData(new GridData());
 		_createButton.addSelectionListener(this);
 
-		_nameText = new Text(sourceFields, SWT.BORDER);
+		_nameText = new Text(_sourceFields, SWT.BORDER);
 		GridData nameData = new GridData(GridData.FILL_HORIZONTAL);
 		nameData.widthHint = 200;
 		_nameText.setLayoutData(nameData);
 
-		_createFKButton = new Button(sourceFields, SWT.CHECK);
+		_createFKButton = new Button(_sourceFields, SWT.CHECK);
 		_createFKButton.setSelection(true);
 		_createFKButton.setLayoutData(new GridData());
 		_createFKButton.addSelectionListener(this);
 
-		_fkNameText = new Text(sourceFields, SWT.BORDER);
+		_fkNameText = new Text(_sourceFields, SWT.BORDER);
 		_fkNameText.setEnabled(false);
 		GridData fkNameData = new GridData(GridData.FILL_HORIZONTAL);
 		fkNameData.widthHint = 200;
 		_fkNameText.setLayoutData(fkNameData);
 
-		
-		
-		
-		_destinationLabel = new Label(_relationshipFields, SWT.NONE);
-		_destinationLabel.setFont(_titleFont);
-		GridData destinationLabelData = new GridData(GridData.FILL_HORIZONTAL);
-		destinationLabelData.horizontalSpan = 2;
-		destinationLabelData.verticalIndent = 15;
-		_destinationLabel.setLayoutData(destinationLabelData);
+		_fkColumnNameLabel = new Label(_sourceFields, SWT.NONE);
+		_fkColumnNameLabel.setText("and a new foreign key column named");
+		GridData columnNameData = new GridData();
+		columnNameData.horizontalIndent = 20;
+		_fkColumnNameLabel.setLayoutData(columnNameData);
 
-		Group destinationFields = new Group(_relationshipFields, SWT.NONE);
+		_fkColumnNameText = new Text(_sourceFields, SWT.BORDER);
+		_fkColumnNameText.setEnabled(false);
+		GridData fkColumnNameData = new GridData(GridData.FILL_HORIZONTAL);
+		fkColumnNameData.widthHint = 200;
+		_fkColumnNameText.setLayoutData(fkColumnNameData);
+		
+		
+
+		_destinationFields = new Group(relationshipDialogArea, SWT.NONE);
 		GridLayout destinationFieldsLayout = new GridLayout(2, false);
 		destinationFieldsLayout.horizontalSpacing = 15;
 		destinationFieldsLayout.verticalSpacing = 6;
-		destinationFields.setLayout(destinationFieldsLayout);
-		destinationFields.setLayoutData(new GridData(GridData.FILL_BOTH));
+		_destinationFields.setLayout(destinationFieldsLayout);
+		_destinationFields.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		_inverseToOneButton = new Button(destinationFields, SWT.RADIO);
+		_inverseToOneButton = new Button(_destinationFields, SWT.RADIO);
 		_inverseToOneButton.addSelectionListener(this);
 		GridData inverseToOneData = new GridData(GridData.FILL_HORIZONTAL);
 		inverseToOneData.horizontalSpan = 2;
 		_inverseToOneButton.setLayoutData(inverseToOneData);
 
-		_inverseToManyButton = new Button(destinationFields, SWT.RADIO);
+		_inverseToManyButton = new Button(_destinationFields, SWT.RADIO);
 		_inverseToManyButton.addSelectionListener(this);
 		GridData inverseToManyData = new GridData(GridData.FILL_HORIZONTAL);
 		inverseToManyData.horizontalSpan = 2;
 		_inverseToManyButton.setLayoutData(inverseToManyData);
 
-		_createInverseButton = new Button(destinationFields, SWT.CHECK);
+		_createInverseButton = new Button(_destinationFields, SWT.CHECK);
 		_createInverseButton.setSelection(true);
 		_createInverseButton.setLayoutData(new GridData());
 		_createInverseButton.addSelectionListener(this);
 
-		_inverseNameText = new Text(destinationFields, SWT.BORDER);
+		_inverseNameText = new Text(_destinationFields, SWT.BORDER);
 		GridData inverseNameData = new GridData(GridData.FILL_HORIZONTAL);
 		inverseNameData.widthHint = 200;
 		_inverseNameText.setLayoutData(inverseNameData);
 
-		_createInverseFKButton = new Button(destinationFields, SWT.CHECK);
+		_createInverseFKButton = new Button(_destinationFields, SWT.CHECK);
 		_createInverseFKButton.setSelection(true);
 		_createInverseFKButton.setLayoutData(new GridData());
 		_createInverseFKButton.addSelectionListener(this);
 
-		_inverseFKNameText = new Text(destinationFields, SWT.BORDER);
+		_inverseFKNameText = new Text(_destinationFields, SWT.BORDER);
 		_inverseFKNameText.setEnabled(false);
 		GridData inverseFKNameData = new GridData(GridData.FILL_HORIZONTAL);
 		inverseFKNameData.widthHint = 200;
 		_inverseFKNameText.setLayoutData(inverseFKNameData);
 
+		_inverseFKColumnNameLabel = new Label(_destinationFields, SWT.NONE);
+		_inverseFKColumnNameLabel.setText("and a new foreign key column named");
+		GridData inverseColumnNameData = new GridData();
+		inverseColumnNameData.horizontalIndent = 20;
+		_inverseFKColumnNameLabel.setLayoutData(inverseColumnNameData);
+
+		_inverseFKColumnNameText = new Text(_destinationFields, SWT.BORDER);
+		_inverseFKColumnNameText.setEnabled(false);
+		GridData inverseFKColumnNameData = new GridData(GridData.FILL_HORIZONTAL);
+		inverseFKColumnNameData.widthHint = 200;
+		_inverseFKColumnNameText.setLayoutData(inverseFKColumnNameData);
+
 		
 
-		_joinsLabel = new Label(_relationshipFields, SWT.NONE);
+		_joinsLabel = new Label(relationshipDialogArea, SWT.NONE);
 		_joinsLabel.setFont(_titleFont);
 		_joinsLabel.setText("Joins");
 		GridData joinsLabelData = new GridData(GridData.FILL_HORIZONTAL);
@@ -367,11 +411,12 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		joinsLabelData.verticalIndent = 15;
 		_joinsLabel.setLayoutData(joinsLabelData);
 
-		_joinsFields = new Group(_relationshipFields, SWT.NONE);
+		_joinsFields = new Group(relationshipDialogArea, SWT.NONE);
 		GridLayout joinEntityFieldsLayout = new GridLayout(2, false);
 		joinEntityFieldsLayout.horizontalSpacing = 15;
 		_joinsFields.setLayout(joinEntityFieldsLayout);
 		GridData joinEntityFieldsLayoutData = new GridData(GridData.FILL_BOTH);
+		joinEntityFieldsLayoutData.horizontalSpan = 2;
 		_joinsFields.setLayoutData(joinEntityFieldsLayoutData);
 
 		_joinEntityNameLabel = new Label(_joinsFields, SWT.NONE);
@@ -401,18 +446,46 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		_joinsTableEditor.setLayoutData(joinsGridData);
 
 		entitiesChanged();
-		
+
+		_inverseFKNameText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				String newInverseFKName = ((Text)e.widget).getText();
+				String newInverseFKColumnName = NameSyncUtils.newDependentName(_oldInverseFKName, newInverseFKName, _inverseFKColumnNameText.getText(), null);
+				_inverseFKColumnNameText.setText(newInverseFKColumnName);
+				_oldInverseFKName = newInverseFKName;
+			}
+		});
+
+		_fkNameText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				String newFKName = ((Text)e.widget).getText();
+				String newFKColumnName = NameSyncUtils.newDependentName(_oldFKName, newFKName, _fkColumnNameText.getText(), null);
+				_fkColumnNameText.setText(newFKColumnName);
+				_oldFKName = newFKName;
+			}
+		});
+
 		return _joinsFields;
 	}
 
+	protected void setVisible(Control control, boolean visible) {
+		control.setVisible(visible);
+		if (visible) {
+			((GridData) control.getLayoutData()).heightHint = -1;
+		} else {
+			((GridData) control.getLayoutData()).heightHint = 0;
+		}
+	}
+	
 	protected void entitiesChanged() {
 		boolean relationshipFieldsVisible = _sourceEntity != null && _destinationEntity != null;
-		_relationshipFields.setVisible(relationshipFieldsVisible);
-		if (relationshipFieldsVisible) {
-			((GridData) _relationshipFields.getLayoutData()).heightHint = -1;
-		} else {
-			((GridData) _relationshipFields.getLayoutData()).heightHint = 0;
-		}
+		
+		setVisible(_sourceLabel, relationshipFieldsVisible);
+		setVisible(_sourceFields, relationshipFieldsVisible);
+		setVisible(_destinationLabel, relationshipFieldsVisible);
+		setVisible(_destinationFields, relationshipFieldsVisible);
+		setVisible(_joinsLabel, relationshipFieldsVisible);
+		setVisible(_joinsFields, relationshipFieldsVisible);
 
 		if (_sourceEntity != null) {
 			_sourceLabel.setText("From " + _sourceEntity.getName() + " ...");
@@ -462,14 +535,16 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 				EOJoin newJoin = null;
 				if (_createFK) {
 					String fkName = _fkNameText.getText();
-					EOAttribute foreignKey = _sourceEntity.createForeignKeyTo(_destinationEntity, fkName, fkName, false);
+					String fkColumnName = _fkColumnNameText.getText();
+					EOAttribute foreignKey = _sourceEntity.createForeignKeyTo(_destinationEntity, fkName, fkColumnName, false);
 					newJoin = new EOJoin();
 					newJoin.setSourceAttribute(foreignKey);
 					newJoin.setDestinationAttribute(_destinationEntity.getSinglePrimaryKeyAttribute());
 				}
 				if (_createInverseFK) {
 					String inverseFKName = _inverseFKNameText.getText();
-					EOAttribute foreignKey = _destinationEntity.createForeignKeyTo(_sourceEntity, inverseFKName, inverseFKName, false);
+					String inverseFKColumnName = _inverseFKColumnNameText.getText();
+					EOAttribute foreignKey = _destinationEntity.createForeignKeyTo(_sourceEntity, inverseFKName, inverseFKColumnName, false);
 					newJoin = new EOJoin();
 					newJoin.setSourceAttribute(_sourceEntity.getSinglePrimaryKeyAttribute());
 					newJoin.setDestinationAttribute(foreignKey);
@@ -563,60 +638,53 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		_createFK = canCreateFK && _createFKButton.getSelection();
 		_createFKButton.setEnabled(canCreateFK);
 		_fkNameText.setEnabled(_createFK);
+		_fkColumnNameText.setEnabled(_createFK);
+		if (_createFK) {
+			_fkColumnNameLabel.setForeground(_fkColumnNameLabel.getDisplay().getSystemColor(SWT.COLOR_BLACK));
+		}
+		else {
+			_fkColumnNameLabel.setForeground(_fkColumnNameLabel.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+		}
 
 		boolean canCreateInverseFK = !_inverseToManyButton.getSelection();
 		_createInverseFK = canCreateInverseFK && _createInverseFKButton.getSelection();
 		_createInverseFKButton.setEnabled(canCreateInverseFK);
 		_inverseFKNameText.setEnabled(_createInverseFK);
+		_inverseFKColumnNameText.setEnabled(_createInverseFK);
+		if (_createInverseFK) {
+			_inverseFKColumnNameLabel.setForeground(_inverseFKColumnNameLabel.getDisplay().getSystemColor(SWT.COLOR_BLACK));
+		}
+		else {
+			_inverseFKColumnNameLabel.setForeground(_inverseFKColumnNameLabel.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+		}
 
 		if (_sourceEntity != null && _destinationEntity != null) {
 			String fkName = _fkNameText.getText();
 			if (fkName == null || fkName.length() == 0) {
 				String newName = _sourceEntity.findUnusedAttributeName(StringUtils.toLowercaseFirstLetter(_destinationEntity.getName()) + "ID");
 				_fkNameText.setText(newName);
+				_oldFKName = newName;
+				_fkColumnNameText.setText(EOAttribute.guessColumnNameInEntity(newName, _sourceEntity));
 			}
 
 			String inverseFKName = _inverseFKNameText.getText();
 			if (inverseFKName == null || inverseFKName.length() == 0) {
 				String newName = _destinationEntity.findUnusedAttributeName(StringUtils.toLowercaseFirstLetter(_sourceEntity.getName()) + "ID");
 				_inverseFKNameText.setText(newName);
+				_oldInverseFKName = newName;
+				_inverseFKColumnNameText.setText(EOAttribute.guessColumnNameInEntity(newName, _destinationEntity));
 			}
 		}
 
 		boolean joinsTableVisible = !_manyToMany && !_createFK && !_createInverseFK;
-		_joinsTableEditor.setVisible(joinsTableVisible);
-
 		boolean joinsVisible = _manyToMany || joinsTableVisible;
-		_joinsLabel.setVisible(joinsVisible);
-		_joinsFields.setVisible(joinsVisible);
-		_joinEntityNameLabel.setVisible(_manyToMany);
-		_joinEntityNameText.setVisible(_manyToMany);
-		_flattenButton.setVisible(_manyToMany);
 
-		if (!joinsTableVisible) {
-			((GridData) _joinsTableEditor.getLayoutData()).heightHint = 0;
-		} else {
-			((GridData) _joinsTableEditor.getLayoutData()).heightHint = -1;
-		}
-
-		if (!_manyToMany) {
-			((GridData) _joinEntityNameLabel.getLayoutData()).heightHint = 0;
-			((GridData) _joinEntityNameText.getLayoutData()).heightHint = 0;
-			((GridData) _flattenButton.getLayoutData()).heightHint = 0;
-		} else {
-			((GridData) _joinEntityNameLabel.getLayoutData()).heightHint = -1;
-			((GridData) _joinEntityNameText.getLayoutData()).heightHint = -1;
-			((GridData) _flattenButton.getLayoutData()).heightHint = -1;
-		}
-		
-		if (!joinsVisible) {
-			((GridData) _joinsLabel.getLayoutData()).heightHint = 0;
-			((GridData) _joinsFields.getLayoutData()).heightHint = 0;
-		}
-		else {
-			((GridData) _joinsLabel.getLayoutData()).heightHint = -1;
-			((GridData) _joinsFields.getLayoutData()).heightHint = -1;
-		}
+		setVisible(_joinsLabel, joinsVisible);
+		setVisible(_joinsFields, joinsVisible);
+		setVisible(_joinsTableEditor, joinsTableVisible);
+		setVisible(_joinEntityNameLabel, _manyToMany);
+		setVisible(_joinEntityNameText, _manyToMany);
+		setVisible(_flattenButton, _manyToMany);
 		
 		if (getShell().isVisible()) {
 			getShell().pack();
