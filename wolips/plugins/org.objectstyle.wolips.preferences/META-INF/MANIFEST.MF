@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Preferences Plug-in
-Bundle-SymbolicName: org.objectstyle.wolips.preferences
+Bundle-SymbolicName: org.objectstyle.wolips.preferences; singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.preferences.PreferencesPlugin
 Bundle-Vendor: objectstyle.org

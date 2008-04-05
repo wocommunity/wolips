@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WOLips WOProject Plug-in
-Bundle-SymbolicName: org.objectstyle.wolips.woproject
+Bundle-SymbolicName: org.objectstyle.wolips.woproject; singleton:=true
 Bundle-Version: 1.0.6
 Bundle-ClassPath: lib/woproject.jar,
  .
