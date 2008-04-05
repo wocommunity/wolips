@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Html Preview Plug-in
-Bundle-SymbolicName: org.objectstyle.wolips.htmlpreview
+Bundle-SymbolicName: org.objectstyle.wolips.htmlpreview;singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.htmlpreview.HtmlPreviewPlugin
 Bundle-Vendor: objectstyle.org
