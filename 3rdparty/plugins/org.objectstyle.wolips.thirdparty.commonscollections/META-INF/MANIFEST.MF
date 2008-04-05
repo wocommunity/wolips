@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Third Party Commons Collections Plug-in
-Bundle-SymbolicName: org.objectstyle.wolips.thirdparty.commonscollections
+Bundle-SymbolicName: org.objectstyle.wolips.thirdparty.commonscollections;singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.thirdparty.commonscollections.Activator
 Bundle-Vendor: objectstyle.org
