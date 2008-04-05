@@ -61,8 +61,6 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
-import org.eclipse.jdt.launching.IVMInstall;
-import org.eclipse.jdt.launching.JavaRuntime;
 import org.objectstyle.wolips.ant.antlaunchers.IAntlauncher;
 
 /**
@@ -124,14 +122,6 @@ public class DefaultAntlauncher implements IAntlauncher {
 		workingCopy.setAttribute(ATTR_LOCATION, VariablesPlugin.getDefault().getStringVariableManager().generateVariableExpression("workspace_loc", file.getFullPath().toString())); //$NON-NLS-1$
 		workingCopy.setAttribute("org.eclipse.jdt.launching.WORKING_DIRECTORY", file.getProject().getLocation().toOSString());
 		workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, "org.eclipse.ant.ui.AntClasspathProvider"); //$NON-NLS-1$
-		IVMInstall defaultInstall = null;
-		defaultInstall = JavaRuntime.getDefaultVMInstall();
-		if (defaultInstall != null) {
-			String vmName = defaultInstall.getName();
-			String vmTypeID = defaultInstall.getVMInstallType().getId();
-			workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_NAME, vmName);
-			workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_TYPE, vmTypeID);
-		}
 		workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, MAIN_TYPE_NAME);
 		workingCopy.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID, REMOTE_ANT_PROCESS_FACTORY_ID);
 		workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, "-Xms256m -Xmx512m");
@@ -148,6 +138,8 @@ public class DefaultAntlauncher implements IAntlauncher {
 		workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, file.getProject().getName());
 		workingCopy.setAttribute(ATTR_ANT_TARGETS, targets);
 		workingCopy.setAttribute(BuildFailedConsoleLineTracker.ATTR_BUILD_FAILED_CONSOLE_LINE_TRACKER_ENABLED, true);
+		workingCopy.setAttribute("org.eclipse.jdt.launching.JRE_CONTAINER", "org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5");
+		workingCopy.setAttribute("org.eclipse.ant.ui.DEFAULT_VM_INSTALL", false);		
 		return workingCopy;
 	}
 
