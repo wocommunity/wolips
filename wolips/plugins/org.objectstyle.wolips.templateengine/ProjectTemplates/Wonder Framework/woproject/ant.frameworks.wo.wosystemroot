@@ -3,7 +3,6 @@ Library/Frameworks/ERJars.framework
 Library/Frameworks/ERPrototypes.framework
 Library/Frameworks/JavaWebObjects.framework
 Library/Frameworks/JavaFoundation.framework
-Library/Frameworks/JavaXML.framework
 Library/Frameworks/JavaWOExtensions.framework
 Library/Frameworks/JavaEOAccess.framework
 Library/Frameworks/JavaEOControl.framework
