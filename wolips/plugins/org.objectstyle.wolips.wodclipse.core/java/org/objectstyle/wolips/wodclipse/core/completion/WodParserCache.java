@@ -64,6 +64,34 @@ public class WodParserCache implements ITypeOwner {
       _parsers = new LimitedLRUCache<String, WodParserCache>(10);
       ResourcesPlugin.getWorkspace().addResourceChangeListener(new WodParserCacheInvalidator());
     }
+    String key = getCacheKey(resource);
+    WodParserCache cache = _parsers.get(key);
+    if (cache == null && createIfMissing) {
+      cache = new WodParserCache(getWoFolder(resource));
+      _parsers.put(key, cache);
+    }
+    return cache;
+  }
+  
+	public static void invalidateResource(IResource resource) {
+		try {
+			Object cacheEntry = parser(resource, false);
+			if (cacheEntry != null) {
+		    String key = getCacheKey(resource);
+				_parsers.remove(key);
+			}
+		} catch (CoreException e) {
+			e.printStackTrace();
+		} catch (LocateException e) {
+			e.printStackTrace();
+		}
+  }
+
+	private static String getCacheKey(IResource resource) {
+    return getWoFolder(resource).getLocation().toPortableString();
+	}
+	
+	private static IContainer getWoFolder(IResource resource) {
     IContainer woFolder;
     if (resource instanceof IFolder) {
       woFolder = (IContainer) resource;
@@ -71,15 +99,9 @@ public class WodParserCache implements ITypeOwner {
     else {
       woFolder = resource.getParent();
     }
-    String key = woFolder.getLocation().toPortableString();
-    WodParserCache cache = _parsers.get(key);
-    if (cache == null && createIfMissing) {
-      cache = new WodParserCache(woFolder);
-      _parsers.put(key, cache);
-    }
-    return cache;
-  }
-
+    return woFolder;
+	}
+	
   protected WodParserCache(IContainer woFolder) throws CoreException, LocateException {
     _woFolder = woFolder;
     init();

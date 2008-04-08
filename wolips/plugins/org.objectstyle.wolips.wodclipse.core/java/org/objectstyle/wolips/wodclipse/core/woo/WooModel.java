@@ -373,6 +373,7 @@ public class WooModel {
       this.parseModel();
     }
     catch (Throwable e) {
+      e.printStackTrace();
       problems.add(new WodProblem(e.getMessage(), null, 0, true));
       return problems;
     }

@@ -79,6 +79,17 @@ public class WodParserCacheInvalidator implements IResourceChangeListener, IReso
           WodParserCache.getModelGroupCache().clearCacheForProject(file.getProject());
         }
       }
+      else if (file.getParent() != null && file.getParent().getName().endsWith(".wo")) {
+        if (delta.getKind() == IResourceDelta.ADDED) {
+        	WodParserCache.invalidateResource(file.getParent());
+        }
+        else if (delta.getKind() == IResourceDelta.REMOVED) {
+        	WodParserCache.invalidateResource(file.getParent());
+        }
+        else if (delta.getKind() == IResourceDelta.CHANGED && ((delta.getFlags() & IResourceDelta.ENCODING) != 0)) {
+        	WodParserCache.invalidateResource(file.getParent());
+        }
+      }
     }
     return true;
   }
