@@ -55,6 +55,8 @@
  */
 package org.objectstyle.wolips.core.resources.internal.pattern;
 
+import java.io.File;
+
 import org.apache.tools.ant.types.selectors.SelectorUtils;
 import org.objectstyle.wolips.core.resources.pattern.IPattern;
 
@@ -83,7 +85,8 @@ public class Pattern implements IPattern {
 	 * @return true if matched eitherwise false
 	 */
 	public boolean matches(String string) {
-		return SelectorUtils.matchPath(this.pattern, string);
+		return SelectorUtils.matchPath(this.pattern.replace("/", File.separator), 
+				string.replace("/", File.separator));
 	}
 
 }
