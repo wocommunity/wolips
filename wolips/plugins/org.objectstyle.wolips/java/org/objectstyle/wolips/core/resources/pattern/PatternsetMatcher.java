@@ -56,6 +56,8 @@
 
 package org.objectstyle.wolips.core.resources.pattern;
 
+import java.io.File;
+
 import org.apache.tools.ant.types.selectors.SelectorUtils;
 import org.eclipse.core.resources.IFile;
 import org.objectstyle.wolips.core.resources.pattern.PatternsetReader;
@@ -89,7 +91,8 @@ public class PatternsetMatcher extends PatternsetReader {
 	public boolean match(String string) {
 		String[] pattern = this.getPattern();
 		for (int i = 0; i < pattern.length; i++) {
-			if (SelectorUtils.matchPath(pattern[i], string))
+			if (SelectorUtils.matchPath(pattern[i].replace("/", File.separator), 
+					string.replace("/", File.separator)))
 				return true;
 		}
 		return false;
