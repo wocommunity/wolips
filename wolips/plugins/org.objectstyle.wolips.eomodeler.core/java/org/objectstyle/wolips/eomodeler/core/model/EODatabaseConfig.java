@@ -16,6 +16,8 @@ public class EODatabaseConfig extends EOModelObject<EOModel> {
 	
 	public static final String MEMORY_ADAPTOR_NAME = "Memory";
 	
+	public static final String REST_ADAPTOR_NAME = "REST";
+	
 	public static final String NONE_AUTHENTICATION_METHOD = "None";
 
 	public static final String SIMPLE_AUTHENTICATION_METHOD = "Simple";

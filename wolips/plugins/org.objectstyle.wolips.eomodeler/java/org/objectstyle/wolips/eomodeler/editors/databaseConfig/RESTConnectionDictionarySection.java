@@ -49,20 +49,67 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.databaseConfig;
 
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
+import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
 
-public class AdaptorNameContentProvider implements IStructuredContentProvider {
-	public Object[] getElements(Object inputElement) {
-		return new String[] { EODatabaseConfig.JDBC_ADAPTOR_NAME, EODatabaseConfig.JNDI_ADAPTOR_NAME, EODatabaseConfig.MEMORY_ADAPTOR_NAME, EODatabaseConfig.REST_ADAPTOR_NAME };
+public class RESTConnectionDictionarySection extends Composite implements IConnectionDictionarySection {
+	private EODatabaseConfig _databaseConfig;
+
+	private Text _usernameText;
+
+	private Text _passwordText;
+
+	private Text _urlText;
+
+	private DataBindingContext _bindingContext;
+
+	public RESTConnectionDictionarySection(Composite parent, int style, TabbedPropertySheetWidgetFactory widgetFactory) {
+		super(parent, style);
+		setLayout(new GridLayout(2, false));
+		setBackground(parent.getBackground());
+		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.USERNAME), SWT.NONE);
+		_usernameText = new Text(this, SWT.BORDER);
+		_usernameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.PASSWORD), SWT.NONE);
+		_passwordText = new Text(this, SWT.BORDER | SWT.PASSWORD);
+		_passwordText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.URL), SWT.NONE);
+		_urlText = new Text(this, SWT.BORDER);
+		_urlText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+	}
+
+	public void setInput(EODatabaseConfig databaseContext) {
+		disposeBindings();
+
+		_databaseConfig = databaseContext;
+
+		if (_databaseConfig != null) {
+			_bindingContext = new DataBindingContext();
+			_bindingContext.bindValue(SWTObservables.observeText(_usernameText, SWT.Modify), BeansObservables.observeValue(_databaseConfig, EODatabaseConfig.USERNAME), null, null);
+			_bindingContext.bindValue(SWTObservables.observeText(_passwordText, SWT.Modify), BeansObservables.observeValue(_databaseConfig, EODatabaseConfig.PASSWORD), null, null);
+			_bindingContext.bindValue(SWTObservables.observeText(_urlText, SWT.Modify), BeansObservables.observeValue(_databaseConfig, EODatabaseConfig.URL), null, null);
+		}
+	}
+
+	public void disposeBindings() {
+		if (_bindingContext != null) {
+			_bindingContext.dispose();
+		}
 	}
 
 	public void dispose() {
-		// DO NOTHING
-	}
-
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		// DO NOTHING
+		disposeBindings();
+		super.dispose();
 	}
 }

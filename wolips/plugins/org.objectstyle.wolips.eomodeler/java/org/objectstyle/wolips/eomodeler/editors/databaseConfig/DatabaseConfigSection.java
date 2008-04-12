@@ -57,7 +57,7 @@ public class DatabaseConfigSection extends AbstractPropertySection {
 	private IConnectionDictionarySection _connectionDictionarySection;
 
 	private String _lastAdaptorName;
-	
+
 	private Composite _form;
 
 	public DatabaseConfigSection() {
@@ -119,7 +119,7 @@ public class DatabaseConfigSection extends AbstractPropertySection {
 
 	public void setInput(IWorkbenchPart part, ISelection selection) {
 		disposeBindings();
-		
+
 		super.setInput(part, selection);
 
 		Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
@@ -142,25 +142,20 @@ public class DatabaseConfigSection extends AbstractPropertySection {
 					_connectionDictionarySection = null;
 				}
 
+				IConnectionDictionarySection connectionDictionarySection;
 				if (EODatabaseConfig.JDBC_ADAPTOR_NAME.equals(adaptorName)) {
-					JDBCConnectionDictionarySection connectionDictionarySection = new JDBCConnectionDictionarySection(_connectionDictionaryContainer, SWT.NONE, getWidgetFactory());
-					GridData connectionDictionaryData = new GridData(GridData.FILL_HORIZONTAL);
-					connectionDictionaryData.grabExcessHorizontalSpace = true;
-					connectionDictionarySection.setLayoutData(connectionDictionaryData);
-					_connectionDictionarySection = connectionDictionarySection;
+					connectionDictionarySection = new JDBCConnectionDictionarySection(_connectionDictionaryContainer, SWT.NONE, getWidgetFactory());
 				} else if (EODatabaseConfig.JNDI_ADAPTOR_NAME.equals(adaptorName)) {
-					JNDIConnectionDictionarySection connectionDictionarySection = new JNDIConnectionDictionarySection(_connectionDictionaryContainer, SWT.NONE, getWidgetFactory());
-					GridData connectionDictionaryData = new GridData(GridData.FILL_HORIZONTAL);
-					connectionDictionaryData.grabExcessHorizontalSpace = true;
-					connectionDictionarySection.setLayoutData(connectionDictionaryData);
-					_connectionDictionarySection = connectionDictionarySection;
+					connectionDictionarySection = new JNDIConnectionDictionarySection(_connectionDictionaryContainer, SWT.NONE, getWidgetFactory());
+				} else if (EODatabaseConfig.REST_ADAPTOR_NAME.equals(adaptorName)) {
+					connectionDictionarySection = new RESTConnectionDictionarySection(_connectionDictionaryContainer, SWT.NONE, getWidgetFactory());
 				} else {
-					BlankConnectionDictionarySection connectionDictionarySection = new BlankConnectionDictionarySection(_connectionDictionaryContainer, SWT.NONE);
-					GridData connectionDictionaryData = new GridData(GridData.FILL_HORIZONTAL);
-					connectionDictionaryData.grabExcessHorizontalSpace = true;
-					connectionDictionarySection.setLayoutData(connectionDictionaryData);
-					_connectionDictionarySection = connectionDictionarySection;
+					connectionDictionarySection = new BlankConnectionDictionarySection(_connectionDictionaryContainer, SWT.NONE);
 				}
+				GridData connectionDictionaryData = new GridData(GridData.FILL_HORIZONTAL);
+				connectionDictionaryData.grabExcessHorizontalSpace = true;
+				((Composite) connectionDictionarySection).setLayoutData(connectionDictionaryData);
+				_connectionDictionarySection = connectionDictionarySection;
 			}
 			_lastAdaptorName = adaptorName;
 			if (_connectionDictionarySection != null) {
@@ -173,7 +168,7 @@ public class DatabaseConfigSection extends AbstractPropertySection {
 			}
 			_lastAdaptorName = null;
 		}
-		
+
 		_form.layout();
 	}
 
@@ -197,7 +192,7 @@ public class DatabaseConfigSection extends AbstractPropertySection {
 			_prototypeBinding.dispose();
 		}
 		if (_adaptorNameBinding != null) {
-			//_adaptorNameComboViewer.getCombo().removeModifyListener(_adaptorNameBinding);
+			// _adaptorNameComboViewer.getCombo().removeModifyListener(_adaptorNameBinding);
 			_adaptorNameBinding.dispose();
 		}
 		EODatabaseConfig databaseConfig = getDatabaseConfig();
@@ -216,7 +211,7 @@ public class DatabaseConfigSection extends AbstractPropertySection {
 		_prototypeBinding = new ComboViewerBinding(_prototypeComboViewer, getDatabaseConfig(), EODatabaseConfig.PROTOTYPE, null, null, EOPrototypeEntityListContentProvider.BLANK_ENTITY);
 		_adaptorNameComboViewer.setInput(getDatabaseConfig());
 		_adaptorNameBinding = new ComboViewerBinding(_adaptorNameComboViewer, getDatabaseConfig(), EODatabaseConfig.ADAPTOR_NAME, null, null, null);
-		//_adaptorNameComboViewer.getCombo().addModifyListener(_adaptorNameBinding);
+		// _adaptorNameComboViewer.getCombo().addModifyListener(_adaptorNameBinding);
 
 		EODatabaseConfig databaseConfig = getDatabaseConfig();
 		if (databaseConfig != null) {
