@@ -1,4 +1,4 @@
 {
 	"WebObjects Release" = "WebObjects 5.0";
-	encoding = ${WOLipsContext.getWOOEncoding()};
+	encoding = "${WOLipsContext.getWOOEncoding()}";
 }

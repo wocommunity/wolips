@@ -81,8 +81,8 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.FileEditorInput;
+import org.objectstyle.wolips.baseforplugins.util.CharSetUtils;
 import org.objectstyle.wolips.wodclipse.core.woo.WooModel;
-import org.objectstyle.wolips.wodclipse.core.woo.WooUtils;
 import org.objectstyle.wolips.wooeditor.WooeditorPlugin;
 
 public class WooEditor extends FormEditor {
@@ -286,7 +286,7 @@ public class WooEditor extends FormEditor {
 	}
 	
 	private String getComponentCharset() {
-		String encoding = "UTF-8";
+		String encoding = WooModel.DEFAULT_ENCODING;
 		IEditorInput input = this.getEditorInput();
 		if (input == null || !(input instanceof IFileEditorInput)) {
 			return encoding;
@@ -298,7 +298,7 @@ public class WooEditor extends FormEditor {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		encoding = WooUtils.encodingNameFromObjectiveC(encoding);
+		encoding = CharSetUtils.encodingNameFromObjectiveC(encoding);
 		return encoding;
 	}
 }

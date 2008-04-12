@@ -69,6 +69,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.objectstyle.wolips.baseforplugins.util.CharSetUtils;
 import org.objectstyle.wolips.datasets.adaptable.JavaProject;
 import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
@@ -89,8 +90,6 @@ public class WOComponentCreator implements IRunnableWithProgress {
 
 	private boolean createApiFile;
 
-	private boolean createWooFile;
-
 	private IResource parentResource;
 
 	private WOComponentCreationPage page;
@@ -107,19 +106,17 @@ public class WOComponentCreator implements IRunnableWithProgress {
 	 * @param packageName
 	 * @param createBodyTag
 	 * @param createApiFile
-	 * @param createWooFile
 	 */
-	public WOComponentCreator(IResource parentResource, String componentName, String packageName, String superclassName, boolean createBodyTag, boolean createApiFile, boolean createWooFile, WOComponentCreationPage page) {
+	public WOComponentCreator(IResource parentResource, String componentName, String packageName, String superclassName, boolean createBodyTag, boolean createApiFile, WOComponentCreationPage page) {
 		this.parentResource = parentResource;
 		this.componentName = componentName;
 		this.packageName = packageName;
 		this.superclassName = superclassName;
 		this.createBodyTag = createBodyTag;
 		this.createApiFile = createApiFile;
-		this.createWooFile = createWooFile;
 		this.page = page;
 		this.htmlBodyType = page.getSelectedHTMLDocType().getTemplateIndex();
-		this.wooEncoding = page.getSelectedEncoding();
+		this.wooEncoding = CharSetUtils.encodingNameFromObjectiveC(page.getSelectedEncoding());
 	}
 
 	public void run(IProgressMonitor monitor) throws InvocationTargetException {
@@ -191,7 +188,6 @@ public class WOComponentCreator implements IRunnableWithProgress {
 		componentEngine.setComponentPath(path);
 		componentEngine.setApiPath(apiPath);
 		componentEngine.setJavaPath(componentJavaPath);
-		componentEngine.setCreateWooFile(this.createWooFile);
 		componentEngine.setCreateApiFile(this.createApiFile);
 		componentEngine.setHTMLBodyType(this.htmlBodyType);
 		componentEngine.setWOOEncoding(this.wooEncoding);

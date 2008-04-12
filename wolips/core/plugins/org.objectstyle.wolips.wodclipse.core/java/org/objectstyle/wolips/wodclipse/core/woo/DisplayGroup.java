@@ -65,6 +65,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.core.model.EODataSource;
+import org.objectstyle.wolips.eomodeler.core.model.EODataSourceFactory;
+import org.objectstyle.wolips.eomodeler.core.model.EODatabaseDataSource;
+import org.objectstyle.wolips.eomodeler.core.model.EODetailDataSource;
+import org.objectstyle.wolips.eomodeler.core.model.EODisplayGroupSortOrdering;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelMap;
