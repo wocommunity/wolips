@@ -56,8 +56,11 @@
 
 package org.objectstyle.wolips.templateengine;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -70,6 +73,12 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -175,21 +184,31 @@ public abstract class AbstractEngine implements IRunnableWithProgress {
 	}
 
 	private void run(TemplateDefinition templateDefinition) {
-		FileWriter writer = null;
+		Writer writer = null;
 		File file = null;
+		String encoding = templateDefinition.getEncoding();
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IWorkspaceRoot root = workspace.getRoot();
 		try {
 			/*
 			 * make a writer, and merge the template 'against' the context
 			 */
 			String templateName = templateDefinition.getTemplateName();
 			Template template = this.velocityEngine.getTemplate(templateName);
-			writer = new FileWriter(templateDefinition.getDestinationPath());
 			file = new File(templateDefinition.getDestinationPath());
 			File parentDir = file.getParentFile();
 			if (!parentDir.exists()) {
 				parentDir.mkdirs();
 			}
-			writer = new FileWriter(file);
+			IContainer folder = root.getContainerForLocation(new Path(parentDir.getPath()));
+			folder.refreshLocal(IResource.DEPTH_ZERO, null);
+			// Keep charset of component folder and HTML template in sync
+			if (folder.getFileExtension().equals("wo") && file.getPath().endsWith("html") 
+					&& !encoding.equals(folder.getDefaultCharset(false))) {
+				folder.setDefaultCharset(encoding, null);
+			}
+			writer = new BufferedWriter(
+						new OutputStreamWriter(new FileOutputStream(file), encoding));
 			template.merge(this.context, writer);
 		} catch (Exception e) {
 			System.out.println("Exception : " + e);
@@ -198,6 +217,12 @@ public abstract class AbstractEngine implements IRunnableWithProgress {
 				try {
 					writer.flush();
 					writer.close();
+					IFile ifile = root.getFileForLocation(new Path(file.getPath()));
+					ifile.refreshLocal(IResource.DEPTH_ZERO, null);
+					if (!encoding.equals(ifile.getCharset(false))) {
+						ifile.setCharset(encoding, null);
+					}
+
 				} catch (Exception ee) {
 					System.out.println("Exception : " + ee);
 				}

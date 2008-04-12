@@ -1,5 +1,7 @@
 package org.objectstyle.wolips.wodclipse.core.woo;
 
+import static org.objectstyle.wolips.baseforplugins.util.CharSetUtils.ENCODING_UTF8;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -26,6 +28,7 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
+import org.objectstyle.wolips.baseforplugins.util.CharSetUtils;
 import org.objectstyle.wolips.bindings.wod.BindingValueKeyPath;
 import org.objectstyle.wolips.bindings.wod.TypeCache;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
@@ -46,7 +49,7 @@ public class WooModel {
 
   public static final String ENCODING = "encoding";
 
-  public static final String DEFAULT_ENCODING = "UTF-8";
+  public static final String DEFAULT_ENCODING = ENCODING_UTF8;
 
   public static final String DEFAULT_WO_RELEASE = "WebObjects 5.0";
 
@@ -172,13 +175,14 @@ public class WooModel {
       if (_modelMap != null && _modelMap.containsKey("encoding")) {
         _encoding = _modelMap.getString("encoding", true);
       }
-      else if (_file != null && _file.getParent().exists()) {
-        try {
-          _encoding = _file.getParent().getDefaultCharset();
-        }
-        catch (CoreException e) {
-        }
-      }
+//      else if (_file != null && _file.getParent().exists()) {
+//        try {
+//          _encoding = _file.getParent().getDefaultCharset();
+//        }
+//        catch (CoreException e) {
+//        	e.printStackTrace();
+//        }
+//      }
     }
     if (_encoding == null)
       return DEFAULT_ENCODING;
@@ -382,7 +386,7 @@ public class WooModel {
     }
     try {
       String componentCharset = _file.getParent().getDefaultCharset();
-      String encoding = WooUtils.encodingNameFromObjectiveC(this.getEncoding());
+      String encoding = CharSetUtils.encodingNameFromObjectiveC(this.getEncoding());
       if (!(encoding.equals(componentCharset))) {
         problems.add(new WodProblem("WOO Encoding type " + encoding + " doesn't match component " + componentCharset, null, 0, true));
       }
@@ -445,22 +449,28 @@ public class WooModel {
 
   public static void updateEncoding(IFile file, String charset) {
     WooModel model = new WooModel(file);
-    String encoding = WooUtils.encodingNameFromObjectiveC(model.getEncoding());
+    String encoding = CharSetUtils.encodingNameFromObjectiveC(model.getEncoding());
+  	System.out.println("WooModel.updateEncoding: Setting encoding of " + file + " to " + encoding + "/" + charset);
     if (!encoding.equals(charset)) {
       try {
         model._modelMap.setString("encoding", charset, true);
         File _file = file.getLocation().toFile();
-        try {
-          FileOutputStream writer = new FileOutputStream(_file);
-          PropertyListSerialization.propertyListToStream(writer, model._modelMap);
+        System.out.println("exists " + _file.exists());
+        if (!_file.exists() && !DEFAULT_ENCODING.equals(encoding)) {
+        	System.out.println("WooModel.updateEncoding: creating file " + _file);
+        	_file.createNewFile();
         }
-        catch (PropertyListParserException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        }
+        FileOutputStream writer = new FileOutputStream(_file);
+        PropertyListSerialization.propertyListToStream(writer, model._modelMap);
+      }
+      catch (PropertyListParserException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
       }
       catch (Throwable e) {
+      	e.printStackTrace();
       }
+
     }
   }
 

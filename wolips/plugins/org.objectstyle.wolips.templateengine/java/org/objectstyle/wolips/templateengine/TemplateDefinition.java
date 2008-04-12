@@ -56,6 +56,8 @@
 
 package org.objectstyle.wolips.templateengine;
 
+import static org.objectstyle.wolips.baseforplugins.util.CharSetUtils.ENCODING_UTF8;
+
 import java.io.File;
 
 /**
@@ -73,6 +75,10 @@ public class TemplateDefinition {
 	private String finalName;
 
 	private String type;
+	
+	private String encoding = DEFAULT_ENCODING;
+	
+	private static final String DEFAULT_ENCODING = ENCODING_UTF8;
 
 	/**
 	 * @param templateName
@@ -81,13 +87,26 @@ public class TemplateDefinition {
 	 * @param type
 	 */
 	public TemplateDefinition(String templateName, String destination, String finalName, String type) {
+		this(templateName, destination, finalName, type, DEFAULT_ENCODING);
+	}
+
+	/**
+	 * @param templateName
+	 * @param destination
+	 * @param finalName
+	 * @param type
+	 * @param encoding
+	 */
+	public TemplateDefinition(String templateName, String destination, String finalName, String type, String encoding) {
 		super();
 		this.templateName = templateName;
 		this.destination = destination;
 		this.finalName = finalName;
 		this.type = type;
+		this.encoding = encoding;
 	}
 
+	
 	/**
 	 * @return
 	 */
@@ -138,5 +157,13 @@ public class TemplateDefinition {
 	 */
 	public void setDestination(String destination) {
 		this.destination = destination;
+	}
+
+	public String getEncoding() {
+		return encoding;
+	}
+
+	public void setEncoding(String encoding) {
+		this.encoding = encoding;
 	}
 }

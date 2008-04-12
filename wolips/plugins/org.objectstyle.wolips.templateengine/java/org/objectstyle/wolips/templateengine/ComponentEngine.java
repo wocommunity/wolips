@@ -56,6 +56,8 @@
 
 package org.objectstyle.wolips.templateengine;
 
+import static org.objectstyle.wolips.baseforplugins.util.CharSetUtils.ENCODING_UTF8;
+
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.IPath;
@@ -80,11 +82,11 @@ public class ComponentEngine extends AbstractEngine {
 
 	private boolean createBodyTag = false;
 
-	private boolean createWooFile = false;
-
 	private boolean createApiFile = false;
 
 	private String wooEncoding;
+	
+	private static final String DEFAULT_WOO_ENCODING = ENCODING_UTF8;
 
 	private int htmlBodyType;
 
@@ -184,6 +186,9 @@ public class ComponentEngine extends AbstractEngine {
 	}
 
 	public String getWOOEncoding() {
+		if (wooEncoding == null) {
+			wooEncoding = DEFAULT_WOO_ENCODING;
+		}
 		return this.wooEncoding;
 	}
 
@@ -191,6 +196,10 @@ public class ComponentEngine extends AbstractEngine {
 		this.wooEncoding = stringEncoding;
 	}
 
+	public String getHTMLCharset() {
+		return getWOOEncoding().toLowerCase();
+	}
+	
 	public int getHTMLBodyType() {
 		return this.htmlBodyType;
 	}
@@ -212,15 +221,14 @@ public class ComponentEngine extends AbstractEngine {
 			this.setPropertyForKey(this.getHTMLBodyType(), "HTMLBodyType");
 		}
 
-		if (this.getWOOEncoding() != null) {
-			this.setPropertyForKey(this.getWOOEncoding(), "WOOEncoding");
-		}
+		String encoding = this.getWOOEncoding();
+		this.setPropertyForKey(encoding, "WOOEncoding");
 
 		setDateInContext();
-		this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.html.vm", this.getComponentPath().toOSString(), this.componentName + "." + IWOLipsModel.EXT_HTML, IWOLipsModel.EXT_HTML));
-		this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.wod.vm", this.getComponentPath().toOSString(), this.componentName + "." + IWOLipsModel.EXT_WOD, IWOLipsModel.EXT_WOD));
-		if (this.createWooFile) {
-			this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.woo.vm", this.getComponentPath().toOSString(), this.componentName + "." + IWOLipsModel.EXT_WOO, IWOLipsModel.EXT_WOO));
+		this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.html.vm", this.getComponentPath().toOSString(), this.componentName + "." + IWOLipsModel.EXT_HTML, IWOLipsModel.EXT_HTML, encoding));
+		this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.wod.vm", this.getComponentPath().toOSString(), this.componentName + "." + IWOLipsModel.EXT_WOD, IWOLipsModel.EXT_WOD, encoding));
+		if (!encoding.toUpperCase().equals(DEFAULT_WOO_ENCODING)) {
+			this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.woo.vm", this.getComponentPath().toOSString(), this.componentName + "." + IWOLipsModel.EXT_WOO, IWOLipsModel.EXT_WOO, ENCODING_UTF8));
 		}
 		this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.java.vm", this.getJavaPath().toOSString(), this.componentName + "." + IWOLipsModel.EXT_JAVA, IWOLipsModel.EXT_JAVA));
 		if (this.createApiFile) {
@@ -248,20 +256,4 @@ public class ComponentEngine extends AbstractEngine {
 	public void setCreateApiFile(boolean createApiFile) {
 		this.createApiFile = createApiFile;
 	}
-
-	/**
-	 * @return Returns the createWooFile.
-	 */
-	public boolean isCreateWooFile() {
-		return this.createWooFile;
-	}
-
-	/**
-	 * @param createWooFile
-	 *            The createWooFile to set.
-	 */
-	public void setCreateWooFile(boolean createWooFile) {
-		this.createWooFile = createWooFile;
-	}
-
 }
