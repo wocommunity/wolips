@@ -203,7 +203,8 @@ public abstract class AbstractEngine implements IRunnableWithProgress {
 			IContainer folder = root.getContainerForLocation(new Path(parentDir.getPath()));
 			folder.refreshLocal(IResource.DEPTH_ZERO, null);
 			// Keep charset of component folder and HTML template in sync
-			if (folder.getFileExtension().equals("wo") && file.getPath().endsWith("html") 
+			System.out.println(folder + "/" + file);
+			if ("wo".equals(folder.getFileExtension()) && file.getPath().endsWith("html") 
 					&& !encoding.equals(folder.getDefaultCharset(false))) {
 				folder.setDefaultCharset(encoding, null);
 			}
@@ -211,7 +212,7 @@ public abstract class AbstractEngine implements IRunnableWithProgress {
 						new OutputStreamWriter(new FileOutputStream(file), encoding));
 			template.merge(this.context, writer);
 		} catch (Exception e) {
-			System.out.println("Exception : " + e);
+			e.printStackTrace();
 		} finally {
 			if (writer != null) {
 				try {
@@ -224,7 +225,7 @@ public abstract class AbstractEngine implements IRunnableWithProgress {
 					}
 
 				} catch (Exception ee) {
-					System.out.println("Exception : " + ee);
+					ee.printStackTrace();
 				}
 			}
 			this.setPropertyForKey(null, WOLipsContext.Key);
