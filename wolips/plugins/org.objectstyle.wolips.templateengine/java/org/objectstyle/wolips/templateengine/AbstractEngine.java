@@ -203,7 +203,6 @@ public abstract class AbstractEngine implements IRunnableWithProgress {
 			IContainer folder = root.getContainerForLocation(new Path(parentDir.getPath()));
 			folder.refreshLocal(IResource.DEPTH_ZERO, null);
 			// Keep charset of component folder and HTML template in sync
-			System.out.println(folder + "/" + file);
 			if ("wo".equals(folder.getFileExtension()) && file.getPath().endsWith("html") 
 					&& !encoding.equals(folder.getDefaultCharset(false))) {
 				folder.setDefaultCharset(encoding, null);
