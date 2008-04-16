@@ -3,8 +3,8 @@
 <plugin>
    <extension point = "org.eclipse.ltk.core.refactoring.renameParticipants">
       <renameParticipant name = "WOComponentRename" 
-      	class = "org.objectstyle.wolips.refactoring.WOComponentRenameParticipant" 
-      	id = "org.objectstyle.wolips.refactoring.WOComponentRenameParticipant">
+      	class = "org.objectstyle.wolips.refactoring.RenameWOComponentParticipant" 
+      	id = "org.objectstyle.wolips.refactoring.RenameWOComponentParticipant">
          <enablement>
             <with variable = "affectedNatures">
                <iterate operator="or">
@@ -50,5 +50,48 @@
          </enablement>
       </moveParticipant>
    </extension>
-
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="org.objectstyle.wolips.refactoring.wocomponent"
+            objectClass="org.eclipse.core.resources.IResource">
+         <menu
+               id="org.eclipse.jdt.ui.refactoring.menu"
+               label=" Refac&amp;tor"
+               path="edit">
+            <separator
+                  name="reorgGroup">
+            </separator>
+         </menu>
+         <action
+               class="org.objectstyle.wolips.refactoring.actions.RenameWOComponentAction"
+               enablesFor="1"
+               id="org.objectstyle.wolips.refactoring.wocomponent.rename"
+               label="Re&amp;name WOComponent..."
+               menubarPath="org.eclipse.jdt.ui.refactoring.menu/reorgGroup">
+         </action>
+         <visibility>
+            <or>
+               <and>
+                  <objectClass
+                        name="org.eclipse.core.resources.IFile">
+                  </objectClass>
+                  <objectState
+                        name="extension"
+                        value="api">
+                  </objectState>
+               </and>
+               <and>
+                  <objectClass
+                        name="org.eclipse.core.resources.IFolder">
+                  </objectClass>
+                  <objectState
+                        name="extension"
+                        value="wo">
+                  </objectState>
+               </and>
+            </or>
+         </visibility>
+      </objectContribution>
+   </extension>
 </plugin>

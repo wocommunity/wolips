@@ -53,76 +53,25 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.jdt.ui;
+package org.objectstyle.wolips.refactoring;
 
-import org.eclipse.jdt.internal.ui.packageview.PackageExplorerContentProvider;
-import org.eclipse.jdt.internal.ui.packageview.PackageExplorerPart;
-import org.eclipse.jdt.internal.ui.workingsets.ViewActionGroup;
-import org.eclipse.jdt.ui.PreferenceConstants;
-import org.eclipse.jdt.ui.actions.JdtActionConstants;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.actions.ActionFactory;
-import org.objectstyle.wolips.jdt.ui.refactoring.actions.RenameWOComponentAction;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.jdt.core.refactoring.descriptors.RenameJavaElementDescriptor;
+import org.eclipse.jdt.internal.corext.refactoring.JDTRefactoringContribution;
+import org.eclipse.jdt.internal.corext.refactoring.rename.JavaRenameRefactoring;
+import org.eclipse.ltk.core.refactoring.Refactoring;
+import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
 
-public class WOPackageExplorerPart extends PackageExplorerPart {
-	
-	private RenameWOComponentAction renameAction;
-	
-	public WOPackageExplorerPart() {
-		super();
-	}
+public final class RenameWOComponentRefactoringContribution extends JDTRefactoringContribution {
 
 	@Override
-	public PackageExplorerContentProvider createContentProvider() {
-		IPreferenceStore store = PreferenceConstants.getPreferenceStore();
-		boolean showCUChildren = store.getBoolean(PreferenceConstants.SHOW_CU_CHILDREN);
-		if (getRootMode() == ViewActionGroup.SHOW_PROJECTS) {
-			return new WOPackageExplorerContentProvider(showCUChildren, this);
-		}
-		return new WOWorkingSetAwareContentProvider(showCUChildren, getWorkingSetModel(), this);
+	public Refactoring createRefactoring(final RefactoringDescriptor descriptor) throws CoreException {
+		return new JavaRenameRefactoring(new RenameWOComponentProcessor(null));
 	}
 	
 	@Override
-	public void createPartControl(Composite parent) {
-		super.createPartControl(parent);
-		switchToWOSorter();
-		makeActions();
-		getViewSite().getActionBars().setGlobalActionHandler(
-				ActionFactory.RENAME.getId(), renameAction);
-		getViewSite().getActionBars().setGlobalActionHandler(
-				JdtActionConstants.RENAME, renameAction);
-		this.getTreeViewer().addSelectionChangedListener(renameAction);
+	public RefactoringDescriptor createDescriptor() {
+		return new RenameJavaElementDescriptor(IJavaRefactorings.RENAME_RESOURCE);
 	}
-
-	@Override
-	public void rootModeChanged(int newMode) {
-		super.rootModeChanged(newMode);
-		switchToWOSorter();
-	}
-
-	@Override
-	public void dispose() {
-		this.getTreeViewer().removeSelectionChangedListener(renameAction);
-		super.dispose();
-	}
-	
-	protected void switchToWOSorter() {
-		TreeViewer viewer = getTreeViewer();
-		boolean showWorkingSets = (getRootMode() == ViewActionGroup.SHOW_WORKING_SETS);
-		if (showWorkingSets) {
-			viewer.setComparator(new WOWorkingSetAwareJavaElementSorter());
-		} else {
-			viewer.setComparator(new WOJavaElementComparator());
-		}
-	}
-	
-	private void makeActions() {
-		renameAction = new RenameWOComponentAction(this.getSite()); 
-		renameAction.setText("Rename WOComponent..."); 
-		renameAction.setToolTipText("Rename WOComponent"); 
-		renameAction.setEnabled(false);
-	}
-	
 }

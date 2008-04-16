@@ -7,9 +7,12 @@ Bundle-Activator: org.objectstyle.wolips.refactoring.RefactoringPlugin
 Bundle-Vendor: objectstyle.org
 Require-Bundle: org.eclipse.jdt.core,
  org.eclipse.ltk.core.refactoring,
+ org.eclipse.ltk.ui.refactoring,
+ org.eclipse.jdt.core.manipulation,
  org.eclipse.jdt.ui,
  org.objectstyle.wolips.locate,
  org.objectstyle.wolips.baseforuiplugins,
  org.objectstyle.wolips
 Eclipse-LazyStart: true
-Export-Package: org.objectstyle.wolips.refactoring
+Export-Package: org.objectstyle.wolips.refactoring,
+ org.objectstyle.wolips.refactoring.actions
