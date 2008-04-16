@@ -161,7 +161,7 @@ public class WodParserCache implements ITypeOwner {
   }
 
   public void clearLocateResultsCache() throws CoreException, LocateException {
-    if (_woFolder != null) {
+    if (_woFolder != null && _woFolder.exists()) {
       _componentsLocateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(_woFolder);
       _project = _woFolder.getProject();
       _javaProject = JavaCore.create(_project);
@@ -170,6 +170,8 @@ public class WodParserCache implements ITypeOwner {
       _apiFile = _componentsLocateResults.getDotApi(true);
       _componentType = _componentsLocateResults.getDotJavaType();
       _wooEntry.setFile(_componentsLocateResults.getFirstWooFile());
+    } else {
+    	_woFolder = null;
     }
   }
 
