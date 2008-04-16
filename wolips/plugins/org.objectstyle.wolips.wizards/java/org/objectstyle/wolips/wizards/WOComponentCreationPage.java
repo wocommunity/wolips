@@ -80,6 +80,7 @@ import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.search.SearchPattern;
+import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.jdt.internal.core.JavaModelManager;
 import org.eclipse.jdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.jdt.internal.ui.wizards.dialogfields.DialogField;
@@ -287,7 +288,10 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 	
 	@Override
 	protected boolean validatePage() {
-		if (!JavaConventions.validateJavaTypeName(this.getFileName()).isOK()) {
+		IStatus status = JavaConventions.validateCompilationUnitName(this.getFileName() + ".java",
+				CompilerOptions.VERSION_1_3, CompilerOptions.VERSION_1_3);
+		if (!status.isOK()) {
+			setErrorMessage(status.getMessage());
 			return false;
 		}
 		return super.validatePage();
@@ -334,8 +338,8 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 		} else {
 			IFolder _path = (IFolder)ResourcesPlugin.getWorkspace().getRoot().findMember(this.getContainerFullPath());
 			String _package = packageNameForComponentFolder(_path);
-			if (_package == null) {
-				_package = packageNameForComponent("Main");
+			if (_package == null && (_package = packageNameForComponent("Main")) == null) {
+				_package = "";
 			}
 			_packageDialogField.setText(_package);
 		}
