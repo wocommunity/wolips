@@ -53,76 +53,71 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.jdt.ui;
+package org.objectstyle.wolips.refactoring.actions;
 
-import org.eclipse.jdt.internal.ui.packageview.PackageExplorerContentProvider;
-import org.eclipse.jdt.internal.ui.packageview.PackageExplorerPart;
-import org.eclipse.jdt.internal.ui.workingsets.ViewActionGroup;
-import org.eclipse.jdt.ui.PreferenceConstants;
-import org.eclipse.jdt.ui.actions.JdtActionConstants;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.actions.ActionFactory;
-import org.objectstyle.wolips.jdt.ui.refactoring.actions.RenameWOComponentAction;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.internal.corext.refactoring.RefactoringAvailabilityTester;
+import org.eclipse.jdt.internal.corext.refactoring.rename.JavaRenameRefactoring;
+import org.eclipse.jdt.internal.ui.refactoring.RefactoringMessages;
+import org.eclipse.jdt.internal.ui.refactoring.RefactoringSaveHelper;
+import org.eclipse.jdt.internal.ui.refactoring.UserInterfaceStarter;
+import org.eclipse.jdt.internal.ui.refactoring.reorg.RenameResourceWizard;
+import org.eclipse.jdt.internal.ui.refactoring.reorg.RenameUserInterfaceStarter;
+import org.eclipse.jdt.internal.ui.util.ExceptionHandler;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IActionDelegate;
+import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchSite;
+import org.objectstyle.wolips.refactoring.RenameWOComponentProcessor;
 
-public class WOPackageExplorerPart extends PackageExplorerPart {
-	
-	private RenameWOComponentAction renameAction;
-	
-	public WOPackageExplorerPart() {
-		super();
+public class RenameWOComponentAction implements IObjectActionDelegate {
+
+	private ISelection _selection;
+	private IWorkbenchSite _site;
+
+	/**
+	 * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
+	 */
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		_site = targetPart.getSite();
 	}
 
-	@Override
-	public PackageExplorerContentProvider createContentProvider() {
-		IPreferenceStore store = PreferenceConstants.getPreferenceStore();
-		boolean showCUChildren = store.getBoolean(PreferenceConstants.SHOW_CU_CHILDREN);
-		if (getRootMode() == ViewActionGroup.SHOW_PROJECTS) {
-			return new WOPackageExplorerContentProvider(showCUChildren, this);
+	/**
+	 * @see IActionDelegate#run(IAction)
+	 */
+	public void run(IAction action) {
+		this.run((IStructuredSelection)_selection);
+	}
+	
+	public void run(IStructuredSelection selection) {
+		if (selection == null || selection.isEmpty()) {
+			return;
 		}
-		return new WOWorkingSetAwareContentProvider(showCUChildren, getWorkingSetModel(), this);
-	}
-	
-	@Override
-	public void createPartControl(Composite parent) {
-		super.createPartControl(parent);
-		switchToWOSorter();
-		makeActions();
-		getViewSite().getActionBars().setGlobalActionHandler(
-				ActionFactory.RENAME.getId(), renameAction);
-		getViewSite().getActionBars().setGlobalActionHandler(
-				JdtActionConstants.RENAME, renameAction);
-		this.getTreeViewer().addSelectionChangedListener(renameAction);
-	}
+		Object first = selection.getFirstElement();
+		IResource resource = (IResource)first;
 
-	@Override
-	public void rootModeChanged(int newMode) {
-		super.rootModeChanged(newMode);
-		switchToWOSorter();
-	}
-
-	@Override
-	public void dispose() {
-		this.getTreeViewer().removeSelectionChangedListener(renameAction);
-		super.dispose();
-	}
-	
-	protected void switchToWOSorter() {
-		TreeViewer viewer = getTreeViewer();
-		boolean showWorkingSets = (getRootMode() == ViewActionGroup.SHOW_WORKING_SETS);
-		if (showWorkingSets) {
-			viewer.setComparator(new WOWorkingSetAwareJavaElementSorter());
-		} else {
-			viewer.setComparator(new WOJavaElementComparator());
+		if (!RefactoringAvailabilityTester.isRenameAvailable(resource)) {
+			return;
+		}
+		try {
+			final JavaRenameRefactoring refactoring = 
+				new JavaRenameRefactoring(new RenameWOComponentProcessor(resource));
+			UserInterfaceStarter starter = new RenameUserInterfaceStarter();
+			starter.initialize(new RenameResourceWizard(refactoring));
+			starter.activate(refactoring, _site.getShell(), RefactoringSaveHelper.SAVE_ALL);
+		} catch (CoreException e) {
+			ExceptionHandler.handle(e, RefactoringMessages.RenameJavaElementAction_name, RefactoringMessages.RenameJavaElementAction_exception);  
 		}
 	}
-	
-	private void makeActions() {
-		renameAction = new RenameWOComponentAction(this.getSite()); 
-		renameAction.setText("Rename WOComponent..."); 
-		renameAction.setToolTipText("Rename WOComponent"); 
-		renameAction.setEnabled(false);
+
+	/**
+	 * @see IActionDelegate#selectionChanged(IAction, ISelection)
+	 */
+	public void selectionChanged(IAction action, ISelection selection) {
+		_selection = selection;
 	}
-	
 }
