@@ -10,12 +10,14 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.swt.widgets.Display;
 import org.objectstyle.wolips.bindings.Activator;
 
 public class WodParserCacheInvalidator implements IResourceChangeListener, IResourceDeltaVisitor {
@@ -81,6 +83,21 @@ public class WodParserCacheInvalidator implements IResourceChangeListener, IReso
       }
       else if (file.getParent() != null && file.getParent().getName().endsWith(".wo")) {
         if (delta.getKind() == IResourceDelta.ADDED) {
+					String newComponent = file.getParent().getFullPath().removeFileExtension().lastSegment();
+					final IFile oldFile = file;
+					final IPath newPath = file.getParent().getFullPath().append(newComponent).addFileExtension(file.getFileExtension());
+					if (file.getFileExtension().matches("(xml|html|xhtml|wod|woo)") && 
+							!file.getFullPath().equals(newPath)) {
+						Display.getDefault().asyncExec(new Runnable() {
+							public void run() {
+								try {
+									oldFile.move(newPath, false, null);
+								} catch (CoreException e) {
+									e.printStackTrace();
+								}
+							}
+						});
+					}
         	WodParserCache.invalidateResource(file.getParent());
         }
         else if (delta.getKind() == IResourceDelta.REMOVED) {
