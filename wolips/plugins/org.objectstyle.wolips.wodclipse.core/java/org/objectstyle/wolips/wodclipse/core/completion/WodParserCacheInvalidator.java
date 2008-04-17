@@ -83,21 +83,21 @@ public class WodParserCacheInvalidator implements IResourceChangeListener, IReso
       }
       else if (file.getParent() != null && file.getParent().getName().endsWith(".wo")) {
         if (delta.getKind() == IResourceDelta.ADDED) {
-					String newComponent = file.getParent().getFullPath().removeFileExtension().lastSegment();
-					final IFile oldFile = file;
-					final IPath newPath = file.getParent().getFullPath().append(newComponent).addFileExtension(file.getFileExtension());
-					if (file.getFileExtension().matches("(xml|html|xhtml|wod|woo)") && 
-							!file.getFullPath().equals(newPath)) {
-						Display.getDefault().asyncExec(new Runnable() {
-							public void run() {
-								try {
-									oldFile.move(newPath, false, null);
-								} catch (CoreException e) {
-									e.printStackTrace();
-								}
-							}
-						});
-					}
+          String newComponent = file.getParent().getFullPath().removeFileExtension().lastSegment();
+          final IFile oldFile = file;
+          final IPath newPath = file.getParent().getFullPath().append(newComponent).addFileExtension(file.getFileExtension());
+          if (file.getFileExtension().matches("(xml|html|xhtml|wod|woo)") && 
+              !file.getFullPath().equals(newPath)) {
+            Display.getDefault().asyncExec(new Runnable() {
+              public void run() {
+                try {
+                  oldFile.move(newPath, false, null);
+                } catch (CoreException e) {
+                  e.printStackTrace();
+                }
+              }
+            });
+          }
         	WodParserCache.invalidateResource(file.getParent());
         }
         else if (delta.getKind() == IResourceDelta.REMOVED) {
