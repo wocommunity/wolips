@@ -93,7 +93,8 @@ public class RenameWOComponentParticipant extends RenameParticipant {
 
 	public Change createChange(final IProgressMonitor _pm) throws CoreException, OperationCanceledException {
 		if (mySourceType != null && mySourceType.getResource() != null) {
-			return new RenameWOComponentChange(null, mySourceType.getResource(), getArguments().getNewName(), "Rename WOComponent " + mySourceType.getElementName(), false);
+			return new RenameWOComponentChange(null, mySourceType.getResource(), 
+					getArguments().getNewName() + ".java", "Rename WOComponent " + mySourceType.getElementName(), false);
 		}
 		return null;
 	}

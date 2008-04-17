@@ -158,15 +158,17 @@ public final class RenameWOComponentChange extends CompositeChange {
 		if (resource == null || !resource.exists()) {
 			return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.RenameResourceChange_does_not_exist, _resourcePath.toString()));
 		}
-		return super.isValid(pm);
+		return new RefactoringStatus();
 	}
 
 	
 	public Change perform(final IProgressMonitor pm) throws CoreException {
 		try {
 			pm.beginTask(RefactoringCoreMessages.RenameResourceChange_rename_resource, 1);
+			IPath newPath = renamedResourcePath(_resourcePath, _newName);
+			String oldName = _resourcePath.lastSegment();
 			super.perform(pm);
-			return new RenameWOComponentChange(null, _resourcePath, getName(), _comment, _renameClass);
+			return new RenameWOComponentChange(null, newPath, oldName, _comment, _renameClass);
 		} finally {
 			pm.done();
 		}
@@ -198,7 +200,7 @@ public final class RenameWOComponentChange extends CompositeChange {
 				}
 				CompositeChange renameWoFolderChange = new CompositeChange("Rename " + oldWoFolder.getName());
 
-				String[] renameExtensions = { ".html", ".wod", ".woo" };
+				String[] renameExtensions = { ".html", ".wod", ".woo", ".xml", ".xhtml" };
 				for (int j = 0; j < renameExtensions.length; j++) {
 					IFile woFile = oldWoFolder.getFile(getOldName() + renameExtensions[j]);
 					if (woFile.exists()) {

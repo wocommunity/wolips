@@ -77,7 +77,6 @@ import org.objectstyle.wolips.locate.LocatePlugin;
 public class RenameWOComponentProcessor extends RenameResourceProcessor {
 
 	private final IResource _resource;
-	private final LocatePlugin locate = LocatePlugin.getDefault();
 	
 	public RenameWOComponentProcessor(IResource resource) {
 		super(resource);
@@ -103,26 +102,17 @@ public class RenameWOComponentProcessor extends RenameResourceProcessor {
 			descriptor.setComment(comment);
 			descriptor.setFlags(flags);
 			descriptor.setResource(_resource);
-			descriptor.setNewName(getNewElementName());
-			return new DynamicValidationStateChange(new RenameWOComponentChange(descriptor, _resource, getNewElementName(), comment));
+			descriptor.setNewName(getNewElementName() + ".wo");
+			return new DynamicValidationStateChange(new RenameWOComponentChange(descriptor, _resource, getNewElementName() + ".wo", comment));
 		} finally {
 			pm.done();
 		}
 	}
-	
+
 	@Override
-	public String getCurrentElementName() {
-		return locate.fileNameWithoutExtension(super.getCurrentElementName());
-	}
-	
-	@Override
-	public String getNewElementName() {
-		return locate.fileNameWithoutExtension(super.getNewElementName());
-	}
-	
-	@Override
-	public void setNewElementName(final String newName) {
-		super.setNewElementName(newName + ".wo");
+	public void setNewElementName(String newName) {
+		String name = LocatePlugin.getDefault().fileNameWithoutExtension(newName);
+		super.setNewElementName(name);
 	}
 	
 	@Override
@@ -136,7 +126,7 @@ public class RenameWOComponentProcessor extends RenameResourceProcessor {
 				sourceLevel, compliance);
 		if (!status.isOK())
 			return RefactoringStatus.create(status);
-		return super.checkNewElementName(newName + ".wo");
+		return super.checkNewElementName(newName);
 	}
 
 }
