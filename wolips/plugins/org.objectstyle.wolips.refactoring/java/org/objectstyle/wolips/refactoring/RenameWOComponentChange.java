@@ -251,8 +251,9 @@ public final class RenameWOComponentChange extends CompositeChange {
 		}
 		try {
 			LocalizedComponentsLocateResult results = locate.getLocalizedComponentsLocateResult(getResource());
-			_groovyFile = results.getDotGroovy();
-
+			if (results != null) {
+				_groovyFile = results.getDotGroovy();
+			}
 		} catch (CoreException e) {
 			e.printStackTrace();
 		} catch (LocateException e) {
