@@ -92,9 +92,8 @@ public class WOComponentDecorator implements ILabelDecorator {
 		String decoratedText;
 		if (element instanceof IFolder) {
 			IFolder componentFolder = (IFolder) element;
-			String fileName = componentFolder.getName();
-			String fileNameWithoutExtension = fileName.substring(0, fileName.indexOf('.'));
-			decoratedText = fileNameWithoutExtension + " WO";
+			String fileExtension = "." + componentFolder.getFileExtension();
+			decoratedText = text.replace(fileExtension, " WO");
 		} else {
 			decoratedText = text;
 		}

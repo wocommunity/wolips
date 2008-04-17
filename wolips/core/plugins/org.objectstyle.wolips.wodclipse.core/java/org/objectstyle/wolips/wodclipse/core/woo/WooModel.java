@@ -455,7 +455,6 @@ public class WooModel {
       try {
         model._modelMap.setString("encoding", charset, true);
         File _file = file.getLocation().toFile();
-        System.out.println("exists " + _file.exists());
         if (!_file.exists() && !DEFAULT_ENCODING.equals(encoding)) {
         	System.out.println("WooModel.updateEncoding: creating file " + _file);
         	_file.createNewFile();

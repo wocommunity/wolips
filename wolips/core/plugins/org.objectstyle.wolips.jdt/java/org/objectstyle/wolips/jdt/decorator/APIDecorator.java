@@ -63,9 +63,8 @@ public class APIDecorator implements ILabelDecorator {
 		String decoratedText;
 		if (element instanceof IFile) {
 			IFile apiFile = (IFile) element;
-			String fileName = apiFile.getName();
-			String fileNameWithoutExtension = fileName.substring(0, fileName.indexOf('.'));
-			decoratedText = fileNameWithoutExtension + " API";
+			String fileExtension = "." + apiFile.getFileExtension();
+			decoratedText = text.replace(fileExtension, " API");
 		} else {
 			decoratedText = text;
 		}

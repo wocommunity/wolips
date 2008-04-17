@@ -100,13 +100,12 @@ public class EOModelDecorator implements ILabelDecorator {
 		} else {
 			modelFolder = (IContainer) modelResource;
 		}
-		String fileName = modelFolder.getName();
-		String fileNameWithoutExtension = fileName.substring(0, fileName.indexOf('.'));
+		String fileExtension = "." + modelFolder.getFileExtension();
 		String decoratedText;
 		if (isModelFile) {
-			decoratedText = fileNameWithoutExtension;
+			decoratedText = text.replace(fileExtension, "");
 		} else {
-			decoratedText = fileNameWithoutExtension + " EOModel";
+			decoratedText = text.replace(fileExtension, " EOModel");
 		}
 		return decoratedText;
 	}
