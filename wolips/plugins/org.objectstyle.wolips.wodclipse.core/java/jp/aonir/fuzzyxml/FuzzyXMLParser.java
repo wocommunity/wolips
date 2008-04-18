@@ -19,6 +19,7 @@ import jp.aonir.fuzzyxml.internal.FuzzyXMLCommentImpl;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLDocTypeImpl;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLDocumentImpl;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLElementImpl;
+import jp.aonir.fuzzyxml.internal.FuzzyXMLPreImpl;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLProcessingInstructionImpl;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLTextImpl;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLUtil;
@@ -194,6 +195,9 @@ public class FuzzyXMLParser {
       else if (!woOnly && text.startsWith("![CDATA[")) {
         handleCDATA(start, end, _originalSource.substring(start, end));
       }
+      else if (!woOnly && (text.startsWith("PRE") || text.startsWith("pre"))) {
+        handlePreTag(start, end, _originalSource.substring(start, end));
+      }
       else if (text.startsWith("/") && (!woOnly || WodHtmlUtils.isWOTag(text.substring(1)))) {
         handleCloseTag(start, end, text);
       }
@@ -294,6 +298,20 @@ public class FuzzyXMLParser {
     if (poppedNode != cdata) {
       _stack.push(poppedNode);
     }
+  }
+  
+  private void handlePreTag(int offset, int end, String text) {
+    closeAutocloseTags();
+    int contentEnd = _originalSource.toLowerCase().indexOf("</pre>", end);
+    String content = _originalSource.substring(end, contentEnd);
+    FuzzyXMLPreImpl preNode = new FuzzyXMLPreImpl(getParent(), content, end, end+content.length());
+    if (getParent() != null) {
+      ((FuzzyXMLElement) getParent()).appendChild(preNode);
+    }
+    else {
+      _roots.add(preNode);
+    }
+    _stack.push(preNode);
   }
 
   /** テキストノードを処理します。 */
