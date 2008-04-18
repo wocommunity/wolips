@@ -303,10 +303,9 @@ public class FuzzyXMLParser {
     if (text != null && text.trim().length() > 0) {
       closeAutocloseTags();
     }
-    FuzzyXMLTextImpl textNode = new FuzzyXMLTextImpl(getParent(), text, offset, end - offset);
+    FuzzyXMLTextImpl textNode = new FuzzyXMLTextImpl(getParent(), FuzzyXMLUtil.decode(text, _isHTML), offset, end - offset);
     textNode.setEscape(escape);
     if (getParent() != null) {
-      //FuzzyXMLUtil.decode(text, _isHTML)
       ((FuzzyXMLElement) getParent()).appendChild(textNode);
     }
     else {
@@ -737,8 +736,8 @@ public class FuzzyXMLParser {
         else if (c == quote || (quote == 0 && FuzzyXMLUtil.isWhitespace(c))) {
           // add an attribute
           AttrInfo attr = new AttrInfo();
-          attr.name = name;
-          attr.value = sb.toString();//FuzzyXMLUtil.decode(sb.toString(), _isHTML);
+          attr.name = FuzzyXMLUtil.decode(name, _isHTML);
+          attr.value = FuzzyXMLUtil.decode(sb.toString(), _isHTML);
           attr.valueOffset = valueOffset;
           attr.offset = start;
           attr.end = i + 1;
@@ -753,24 +752,28 @@ public class FuzzyXMLParser {
         else if (c == '\\') {
           if (escape == true) {
             sb.append(c);
+            escape = false;
           }
           else {
             // MS: I took out escaping .. This is potentially a really sketchy thing to do, but it
             // was breaking attributes like   numberformat = "\$#,##0.00"
-            sb.append(c);
+            // Q: moved append to following 'else' block
             escape = true;
           }
         }
         else {
+          if (escape) {
+            sb.append('\\');
+            escape = false;
+          }
           sb.append(c);
-          escape = false;
         }
       }
     }
     if (state == 4 && quote == 0) {
       AttrInfo attr = new AttrInfo();
-      attr.name = name;
-      attr.value = sb.toString();//FuzzyXMLUtil.decode(sb.toString(), _isHTML);
+      attr.name = FuzzyXMLUtil.decode(name, _isHTML);
+      attr.value = FuzzyXMLUtil.decode(sb.toString(), _isHTML);
       attr.valueOffset = valueOffset;
       attr.offset = start;
       attr.end = text.length();

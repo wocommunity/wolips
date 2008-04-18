@@ -135,7 +135,7 @@ public class FuzzyXMLAttributeImpl extends AbstractFuzzyXMLNode implements Fuzzy
       xmlBuffer.append(quote);
     }
     if (_escape) {
-      xmlBuffer.append(_value);//FuzzyXMLUtil.escape(getValue(), isHTML));
+      xmlBuffer.append(FuzzyXMLUtil.escape(_value, isHTML));
     }
     else {
       String value = getValue();
