@@ -504,7 +504,8 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
 
       boolean forbiddenSelfClosing = ("a".equalsIgnoreCase(tagName) || "div".equalsIgnoreCase(tagName) || "script".equalsIgnoreCase(tagName));
       FuzzyXMLNode[] children = getChildren();
-      if (children.length == 0 && !forbiddenSelfClosing) {
+      if ((children.length == 0 || (children.length == 1 && children[0].getLength() == 0)) 
+          && !forbiddenSelfClosing) {
         if (renderSurroundingTags) {
           if (renderContext.isSpaceInEmptyTags()) {
             xmlBuffer.append(" ");

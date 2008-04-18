@@ -23,6 +23,7 @@ import jp.aonir.fuzzyxml.internal.FuzzyXMLPreImpl;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLProcessingInstructionImpl;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLTextImpl;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLUtil;
+import jp.aonir.fuzzyxml.internal.RenderContext;
 import jp.aonir.fuzzyxml.resources.Messages;
 
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
@@ -600,17 +601,26 @@ public class FuzzyXMLParser {
       element.appendChild(attr);
     }
 
+    FuzzyXMLElement branchNode = new FuzzyXMLElementImpl(element, "", 0, 0, 0) {
+      public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer) {
+      }
+    };
+
+    if (!_wo54 && element.getAttributes().length > 0) {
+      element.appendChild(branchNode);
+    }
+
     for (FuzzyXMLAttribute attr : element.getAttributes()) {
-      _stack.push(element);
       if (!_wo54) {
+        _stack.push(branchNode);
         _parse(attr.getValue(), element.getOffset() + attr.getValueDataOffset() + 1, true);
+        FuzzyXMLNode poppedNode = _stack.pop();
+        if (poppedNode != branchNode) {
+          _stack.push(poppedNode);
+        }
       }
       else {
         checkAttributeValue(attr);
-      }
-      FuzzyXMLNode poppedNode = _stack.pop();
-      if (poppedNode != element) {
-        _stack.push(poppedNode);
       }
     }
   }
@@ -654,17 +664,26 @@ public class FuzzyXMLParser {
     _stack.push(element);
     _nonCloseElements.add(element);
 
+    FuzzyXMLElement branchNode = new FuzzyXMLElementImpl(element, "", 0, 0, 0) {
+      public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer) {
+      }
+    };
+
+    if (!_wo54 && element.getAttributes().length > 0) {
+      element.appendChild(branchNode);
+    }
+
     for (FuzzyXMLAttribute attr : element.getAttributes()) {
-      _stack.push(element);
       if (!_wo54) {
+        _stack.push(branchNode);
         _parse(attr.getValue(), element.getOffset() + attr.getValueDataOffset() + 1, true);
+        FuzzyXMLNode poppedNode = _stack.pop();
+        if (poppedNode != branchNode) {
+          _stack.push(poppedNode);
+        }
       }
       else {
         checkAttributeValue(attr);
-      }
-      FuzzyXMLNode poppedNode = _stack.pop();
-      if (poppedNode != element) {
-        _stack.push(poppedNode);
       }
     }
   }
