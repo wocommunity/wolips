@@ -73,8 +73,10 @@ public class FuzzyXMLUtil {
       if (tag) {
         // MS: I took out escaping .. This is potentially a really sketchy thing to do, but it
         // was breaking attributes like   numberformat = "\$#,##0.00"
-        if (false && (flag == 1 || flag == 2) && c == '\\') {
+        // Q: Added back in but handle escaping differently now
+        if ((flag == 1 || flag == 2) && c == '\\') {
           escape = true;
+          continue;
         }
         else if (flag == 0 && c == '"') {
           flag = 1;
@@ -82,6 +84,8 @@ public class FuzzyXMLUtil {
         else if (flag == 1 && c == '"') {
           if (!escape) {
             flag = 0;
+          } else {
+            sb.append('\\');
           }
           escape = false;
         }
@@ -91,11 +95,17 @@ public class FuzzyXMLUtil {
         else if (flag == 2 && c == '\'') {
           if (!escape) {
             flag = 0;
+          } else {
+            sb.append('\\');
           }
           escape = false;
         }
         else if ((flag == 1 || flag == 2)) {
           sb.append(' ');
+          if (escape) {
+            sb.append(' ');
+            escape = false;
+          }
           continue;
         }
         else if (flag == 0 && c == '>') {
