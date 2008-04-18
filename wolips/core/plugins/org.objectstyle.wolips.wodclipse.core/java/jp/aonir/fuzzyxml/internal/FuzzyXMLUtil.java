@@ -14,6 +14,7 @@ public class FuzzyXMLUtil {
   private static Pattern script = Pattern.compile("(<script.*?>)(.*?)(</script>)", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 
   private static Pattern woTag = Pattern.compile("<(/*)(wo|webobject)(s*[^>]*)>", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+  private static Pattern whiteSpace = Pattern.compile("([\\ \\t\\r\\n])");
 
   /**
    * スクリプト部分（&lt;script ... &gt;～&lt;/script&gt;で囲まれた範囲）の
@@ -430,12 +431,9 @@ public class FuzzyXMLUtil {
   }
 
   public static int getSpaceIndex(String value) {
-    char[] chars = { ' ', '\t', '\r', '\n' };
-    for (int i = 0; i < chars.length; i++) {
-      int index = value.indexOf(chars[i]);
-      if (index >= 0) {
-        return index;
-      }
+    Matcher matcher = whiteSpace.matcher(value);
+    if (matcher.find()) {
+      return matcher.start(1);
     }
     return -1;
   }
