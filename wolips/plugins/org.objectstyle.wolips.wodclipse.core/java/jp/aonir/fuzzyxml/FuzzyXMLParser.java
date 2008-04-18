@@ -627,11 +627,16 @@ public class FuzzyXMLParser {
 
   /** ƒRƒƒ“ƒg‚ğˆ—‚µ‚Ü‚·B */
   private void handleComment(int offset, int end, String text) {
-    if (getParent() != null) {
-      text = text.replaceFirst("<!--", "");
-      text = text.replaceFirst("-->", "");
-      FuzzyXMLCommentImpl comment = new FuzzyXMLCommentImpl(getParent(), text, offset, end - offset);
-      ((FuzzyXMLElement) getParent()).appendChild(comment);
+    FuzzyXMLNode parent = getParent();
+    text = text.replaceFirst("<!--", "");
+    text = text.replaceFirst("-->", "");
+    FuzzyXMLCommentImpl comment = new FuzzyXMLCommentImpl(parent, text, offset, end - offset);
+
+    if (parent == null) {
+      _roots.add(comment);
+    }
+    else {
+      ((FuzzyXMLElement) parent).appendChild(comment);
     }
   }
 
