@@ -170,6 +170,10 @@ public class ComponentLiveSearch implements ModifyListener, SelectionListener {
 													String text = componentNameCombo.getItem(0);
 													_selection.y = text.length();
 													synchronized (_ignoreModify) {
+														String partialText = componentNameCombo.getText();
+														if (!text.toLowerCase().startsWith(partialText.toLowerCase())) {
+															return;
+														}
 														_ignoreModify = true;
 														setListVisible.invoke(componentNameCombo, true);
 														componentNameCombo.setText(text);
