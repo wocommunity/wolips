@@ -263,7 +263,7 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
 
     Wo wo = null;
     IType elementType = BindingReflectionUtils.findElementType(javaProject, elementTypeName, false, typeCache);
-    if (elementType == null) {
+    if (elementType == null || !elementType.getElementName().equals(elementTypeName)) {
       problems.add(new WodElementProblem(this, "The class for '" + elementTypeName + "' is either missing or does not extend WOElement.", getElementTypePosition(), lineNumber, false));
     }
     else {
