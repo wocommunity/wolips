@@ -19,13 +19,13 @@
 		<ant dir="org.objectstyle.wolips.datasets" target="all" />
 		<ant dir="org.objectstyle.wolips.ant" target="all" />
 		<ant dir="org.objectstyle.wolips.documentation" target="all" />
+		<ant dir="org.objectstyle.wolips.refactoring" target="all" />
 		<ant dir="org.objectstyle.wolips.jdt" target="all" />
 		<ant dir="org.objectstyle.wolips.pbserver" target="all" />
 		<ant dir="org.objectstyle.wolips.builder" target="all" />
 		<ant dir="org.objectstyle.wolips.ui" target="all" />
 		<ant dir="org.objectstyle.wolips.deployment.ui" target="all" />
 		<ant dir="org.objectstyle.wolips.launching" target="all" />
-		<ant dir="org.objectstyle.wolips.refactoring" target="all" />
 		<ant dir="org.objectstyle.wolips.targetbuilder" target="all" />
 		<ant dir="org.objectstyle.wolips.team" target="all" />
 		<ant dir="org.objectstyle.wolips.templateengine" target="all" />
