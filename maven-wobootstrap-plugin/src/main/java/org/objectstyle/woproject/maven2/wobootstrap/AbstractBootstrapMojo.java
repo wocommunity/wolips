@@ -57,9 +57,9 @@ import org.apache.maven.project.artifact.ProjectArtifactMetadata;
 import org.objectstyle.woproject.maven2.wobootstrap.locator.MacOsWebObjectsLocator;
 import org.objectstyle.woproject.maven2.wobootstrap.locator.UnixWebObjectsLocator;
 import org.objectstyle.woproject.maven2.wobootstrap.locator.WebObjectsLocator;
-import org.objectstyle.woproject.maven2.wobootstrap.locator.WebObjectsUtils;
 import org.objectstyle.woproject.maven2.wobootstrap.locator.WindowsWebObjectsLocator;
 import org.objectstyle.woproject.maven2.wobootstrap.utils.PomGenerator;
+import org.objectstyle.woproject.maven2.wobootstrap.utils.WebObjectsUtils;
 
 /**
  * <code>AbstractBootstrapMojo</code> is an abstract class that prepares the
