@@ -732,7 +732,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 			for (String qualifierKey : qualifierKeys) {
 				AbstractEOAttributePath definitionPath = entity.resolveKeyPath(qualifierKey);
 				if (definitionPath == null || !definitionPath.isValid()) {
-					_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The fetch specification " + getName() + " has a qualifier that refers to an invalid key '" + qualifierKey + "'.", false));
+					//_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The fetch specification " + getName() + " has a qualifier that refers to an invalid key '" + qualifierKey + "'.", false));
 				}
 			}
 		}
