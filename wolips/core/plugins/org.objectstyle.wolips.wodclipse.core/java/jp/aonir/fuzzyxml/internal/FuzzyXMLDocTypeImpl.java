@@ -34,9 +34,7 @@ public class FuzzyXMLDocTypeImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     return _internalSubset;
   }
 
-  public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer) {
-    boolean isHTML = renderContext.isHtml();
-    
+  public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer) {   
     xmlBuffer.append("<!DOCTYPE ").append(_name);
     if (_publicId != null && !_publicId.equals("")) {
       xmlBuffer.append(" PUBLIC ");

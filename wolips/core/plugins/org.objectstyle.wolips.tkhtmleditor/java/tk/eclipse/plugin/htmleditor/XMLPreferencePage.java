@@ -31,6 +31,7 @@ public class XMLPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	private IWorkbench _workbench;
 	private Button _enableClassName;
 	private Button spacesAroundEquals;
+	private Button _stickyWOTags;
 	private List _classNameAttrs;
 	private Button _addClassName;
 	private Button _removeClassName;
@@ -65,9 +66,24 @@ public class XMLPreferencePage extends PreferencePage implements IWorkbenchPrefe
 			}
 		});
 		GridData gd = new GridData();
-		gd = new GridData();
 		gd.horizontalSpan = 2;
 		spacesAroundEquals.setLayoutData(gd);
+		
+    // checkbox to toggle spaces around equals
+		boolean stickyWoTagsValue = Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.STICKY_WOTAGS);
+		_stickyWOTags = new Button(composite, SWT.CHECK);
+		_stickyWOTags.setText(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.StickyWOTags"));
+		_stickyWOTags.setSelection(stickyWoTagsValue);
+		_stickyWOTags.addSelectionListener(new SelectionAdapter(){
+		  @Override
+		  public void widgetSelected(SelectionEvent e){
+		    Activator.getDefault().getPreferenceStore().setValue(PreferenceConstants.STICKY_WOTAGS, _stickyWOTags.getSelection());
+		  }
+		});
+		gd = new GridData();
+		gd.horizontalSpan = 2;
+		_stickyWOTags.setLayoutData(gd);
+
 		
 		
 		// checkbox to toggle the classname support

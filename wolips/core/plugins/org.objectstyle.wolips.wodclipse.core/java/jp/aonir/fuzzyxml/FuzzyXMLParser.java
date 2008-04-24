@@ -21,6 +21,7 @@ import jp.aonir.fuzzyxml.internal.FuzzyXMLDocumentImpl;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLElementImpl;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLPreImpl;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLProcessingInstructionImpl;
+import jp.aonir.fuzzyxml.internal.FuzzyXMLScriptImpl;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLTextImpl;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLUtil;
 import jp.aonir.fuzzyxml.internal.RenderContext;
@@ -199,6 +200,9 @@ public class FuzzyXMLParser {
       else if (!woOnly && (text.startsWith("PRE") || text.startsWith("pre"))) {
         handlePreTag(start, end, _originalSource.substring(start, end));
       }
+      else if (!woOnly && (text.startsWith("SCRIPT") || text.startsWith("script"))) {
+        handleScriptTag(start, end);
+      }
       else if (text.startsWith("/") && (!woOnly || WodHtmlUtils.isWOTag(text.substring(1)))) {
         handleCloseTag(start, end, text);
       }
@@ -304,8 +308,11 @@ public class FuzzyXMLParser {
   private void handlePreTag(int offset, int end, String text) {
     closeAutocloseTags();
     int contentEnd = _originalSource.toLowerCase().indexOf("</pre>", end);
+    if (contentEnd < 0) {
+      contentEnd = _originalSource.indexOf("<", end);
+    }
     String content = _originalSource.substring(end, contentEnd);
-    FuzzyXMLPreImpl preNode = new FuzzyXMLPreImpl(getParent(), content, end, end+content.length());
+    FuzzyXMLPreImpl preNode = new FuzzyXMLPreImpl(getParent(), content, end, end + content.length());
     if (getParent() != null) {
       ((FuzzyXMLElement) getParent()).appendChild(preNode);
     }
@@ -313,6 +320,13 @@ public class FuzzyXMLParser {
       _roots.add(preNode);
     }
     _stack.push(preNode);
+  }
+
+  private void handleScriptTag(int offset, int end) {
+    closeAutocloseTags();
+    TagInfo info = parseTagContents(_originalSource.substring(offset + 1, end - 1));
+    FuzzyXMLElement scriptNode = new FuzzyXMLScriptImpl(getParent(), info.name, offset, end - offset, info.nameOffset);
+    handleStartTag(scriptNode, info, offset, end);
   }
 
   /** テキストノードを処理します。 */
@@ -352,8 +366,8 @@ public class FuzzyXMLParser {
     else {
       _roots.add(pi);
     }
-    
-    // XML should not have autoclosing tags 
+
+    // XML should not have autoclosing tags
     if (name.startsWith("xml")) {
       _autocloseTags.clear();
     }
@@ -428,7 +442,8 @@ public class FuzzyXMLParser {
     String lowercaseCloseTagName = tagName.toLowerCase();
 
     boolean closeTagMatches = lowercaseLastOpenElementName.equals(lowercaseCloseTagName);
-    //System.out.println("FuzzyXMLParser.handleCloseTag: lastOpen = " + lowercaseLastOpenElementName + ", close = " + lowercaseCloseTagName);
+    // System.out.println("FuzzyXMLParser.handleCloseTag: lastOpen = " +
+    // lowercaseLastOpenElementName + ", close = " + lowercaseCloseTagName);
     if (!closeTagMatches) {
       closeAutocloseTags();
 
@@ -451,9 +466,11 @@ public class FuzzyXMLParser {
         }
 
         if (looseTag) {
-          while (lowercaseLastOpenElementName != null && !lowercaseLastOpenElementName.equals(lowercaseCloseTagName) && _looseTags.contains(lowercaseLastOpenElementName)) {
+          while (lowercaseLastOpenElementName != null && !lowercaseLastOpenElementName.equals(lowercaseCloseTagName)
+              && _looseTags.contains(lowercaseLastOpenElementName)) {
             int lastOpenElementEndOffset = end;
-            //int lastOpenElementEndOffset = lastOpenElement.getOffset() + lastOpenElement.getLength();
+            // int lastOpenElementEndOffset = lastOpenElement.getOffset() +
+            // lastOpenElement.getLength();
             _stack.push(lastOpenElement);
             handleCloseTag(lastOpenElementEndOffset, lastOpenElementEndOffset, "/" + lastOpenElement.getName(), false);
 
@@ -574,7 +591,8 @@ public class FuzzyXMLParser {
       Matcher invalidStringMatcher = _invalidStringPattern.matcher(str);
       while (invalidStringMatcher.find()) {
         String invalidPart = invalidStringMatcher.group();
-        fireErrorEvent(attr.getParentNode().getOffset() + attr.getValueDataOffset() + 1, attr.getValueDataLength(), "The character '" + invalidPart + "' must be escaped.", attr);
+        fireErrorEvent(attr.getParentNode().getOffset() + attr.getValueDataOffset() + 1, attr.getValueDataLength(), "The character '" + invalidPart
+            + "' must be escaped.", attr);
       }
     }
   }
@@ -593,9 +611,11 @@ public class FuzzyXMLParser {
     // 属性を追加
     AttrInfo[] attrs = info.getAttrs();
     for (int i = 0; i < attrs.length; i++) {
-      FuzzyXMLAttributeImpl attr = new FuzzyXMLAttributeImpl(element, attrs[i].name, attrs[i].value, attrs[i].offset + offset, attrs[i].end - attrs[i].offset + 1, attrs[i].valueOffset);
+      FuzzyXMLAttributeImpl attr = new FuzzyXMLAttributeImpl(element, attrs[i].name, attrs[i].value, attrs[i].offset + offset, attrs[i].end
+          - attrs[i].offset + 1, attrs[i].valueOffset);
       attr.setQuoteCharacter(attrs[i].quote);
-      if (attrs[i].value.indexOf('"') >= 0 || attrs[i].value.indexOf('\'') >= 0 || attrs[i].value.indexOf('<') >= 0 || attrs[i].value.indexOf('>') >= 0 || attrs[i].value.indexOf('&') >= 0) {
+      if (attrs[i].value.indexOf('"') >= 0 || attrs[i].value.indexOf('\'') >= 0 || attrs[i].value.indexOf('<') >= 0
+          || attrs[i].value.indexOf('>') >= 0 || attrs[i].value.indexOf('&') >= 0) {
         attr.setEscape(false);
       }
       element.appendChild(attr);
@@ -606,7 +626,7 @@ public class FuzzyXMLParser {
       }
     };
 
-    if (!_wo54 && element.getAttributes().length > 0) {
+    if (!_wo54) {
       element.appendChild(branchNode);
     }
 
@@ -623,6 +643,11 @@ public class FuzzyXMLParser {
         checkAttributeValue(attr);
       }
     }
+
+    if (!_wo54 && !branchNode.hasChildren()) {
+      element.removeChild(branchNode);
+    }
+
   }
 
   /** コメントを処理します。 */
@@ -644,8 +669,13 @@ public class FuzzyXMLParser {
   private void handleStartTag(int offset, int end) {
     closeAutocloseTags();
     TagInfo info = parseTagContents(_originalSource.substring(offset + 1, end - 1));
-    //System.out.println("FuzzyXMLParser.handleStartTag: open " + info.name);
+    // System.out.println("FuzzyXMLParser.handleStartTag: open " + info.name);
     FuzzyXMLElementImpl element = new FuzzyXMLElementImpl(getParent(), info.name, offset, end - offset, info.nameOffset);
+    handleStartTag(element, info, offset, end);
+  }
+
+  /** 開始タグを処理します。 */
+  private void handleStartTag(FuzzyXMLElement element, TagInfo info, int offset, int end) {
     // 属性を追加
     AttrInfo[] attrs = info.getAttrs();
     for (int i = 0; i < attrs.length; i++) {
@@ -661,7 +691,8 @@ public class FuzzyXMLParser {
       //			}
       FuzzyXMLAttributeImpl attr = new FuzzyXMLAttributeImpl(element, attrs[i].name, attrs[i].value, attrs[i].offset + offset, attrs[i].end - attrs[i].offset + 1, attrs[i].valueOffset);
       attr.setQuoteCharacter(attrs[i].quote);
-      if (attrs[i].value.indexOf('"') >= 0 || attrs[i].value.indexOf('\'') >= 0 || attrs[i].value.indexOf('<') >= 0 || attrs[i].value.indexOf('>') >= 0 || attrs[i].value.indexOf('&') >= 0) {
+      if (attrs[i].value.indexOf('"') >= 0 || attrs[i].value.indexOf('\'') >= 0 || attrs[i].value.indexOf('<') >= 0
+          || attrs[i].value.indexOf('>') >= 0 || attrs[i].value.indexOf('&') >= 0) {
         attr.setEscape(false);
       }
       element.appendChild(attr);
@@ -674,7 +705,7 @@ public class FuzzyXMLParser {
       }
     };
 
-    if (!_wo54 && element.getAttributes().length > 0) {
+    if (!_wo54) {
       element.appendChild(branchNode);
     }
 
@@ -690,6 +721,10 @@ public class FuzzyXMLParser {
       else {
         checkAttributeValue(attr);
       }
+    }
+
+    if (!_wo54 && !branchNode.hasChildren()) {
+      element.removeChild(branchNode);
     }
   }
 

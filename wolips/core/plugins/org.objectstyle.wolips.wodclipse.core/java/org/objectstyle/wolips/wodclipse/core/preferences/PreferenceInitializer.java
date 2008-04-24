@@ -69,5 +69,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     prefs.setDefault(PreferenceConstants.INDENT_TABS, false);
     prefs.setDefault(PreferenceConstants.LOWERCASE_ATTRIBUTES, true);
     prefs.setDefault(PreferenceConstants.LOWERCASE_TAGS, true);
+    prefs.setDefault(PreferenceConstants.STICKY_WOTAGS, false);
   }
 }

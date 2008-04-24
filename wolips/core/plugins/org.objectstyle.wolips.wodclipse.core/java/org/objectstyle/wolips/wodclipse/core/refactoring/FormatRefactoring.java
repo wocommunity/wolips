@@ -7,6 +7,7 @@ import jp.aonir.fuzzyxml.FuzzyXMLDocument;
 import jp.aonir.fuzzyxml.FuzzyXMLElement;
 import jp.aonir.fuzzyxml.FuzzyXMLNode;
 import jp.aonir.fuzzyxml.internal.RenderContext;
+import jp.aonir.fuzzyxml.internal.WOHTMLRenderDelegate;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -43,6 +44,7 @@ public class FormatRefactoring implements IRunnableWithProgress {
       renderContext.setSpacesAroundEquals(prefs.getBoolean(PreferenceConstants.SPACES_AROUND_EQUALS));
       renderContext.setSpaceInEmptyTags(true);
       renderContext.setAddMissingQuotes(true);
+      renderContext.setDelegate(new WOHTMLRenderDelegate(prefs.getBoolean(PreferenceConstants.STICKY_WOTAGS)));
 
       StringBuffer htmlBuffer = new StringBuffer();
       FuzzyXMLDocType docType = htmlModel.getDocumentType();

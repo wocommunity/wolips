@@ -22,10 +22,30 @@ public class FuzzyXMLPreImpl extends FuzzyXMLElementImpl {
   
   @Override
   public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer) {
-    renderContext.appendIndent(xmlBuffer);
-    xmlBuffer.append("<pre>").append(getValue()).append("</pre>");
-    if (renderContext.isShowNewlines()) {
-      xmlBuffer.append("\n");
+    boolean renderSurroundingTags = true;
+    
+    RenderDelegate delegate = renderContext.getDelegate();
+    if (delegate != null) {
+      renderSurroundingTags = delegate.beforeOpenTag(this, renderContext, xmlBuffer);
+    }
+    String tagName = getName();
+    if (renderContext.isLowercaseTags() && FuzzyXMLUtil.isAllUppercase(tagName)) {
+      tagName = tagName.toLowerCase();
+    }
+    if (renderSurroundingTags) {
+      xmlBuffer.append("<" + tagName + ">");
+      if (delegate != null)
+        delegate.afterOpenTag(this, renderContext, xmlBuffer);
+    }
+    
+    xmlBuffer.append(getValue());
+    
+    if (renderSurroundingTags) {
+      if (delegate != null)
+        delegate.beforeCloseTag(this, renderContext, xmlBuffer);      
+      xmlBuffer.append("</" + tagName + ">");
+      if (delegate != null)
+        delegate.afterCloseTag(this, renderContext, xmlBuffer);
     }
   }
 

@@ -18,32 +18,30 @@ public class FuzzyXMLTextImpl extends AbstractFuzzyXMLNode implements FuzzyXMLTe
   }
 
   public String getValue() {
-//    if (getDocument() == null) {
-//      return FuzzyXMLUtil.decode(_value, false);
-//    }
-//    return FuzzyXMLUtil.decode(_value, getDocument().isHTML());
-    return _value;
+    if (getDocument() == null) {
+      return FuzzyXMLUtil.decode(_value, false);
+    }
+    return FuzzyXMLUtil.decode(_value, getDocument().isHTML());
   }
 
   public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer) {
     String value = _value;
-    boolean showText = true;
     if (renderContext.isTrim()) {
-      value = value.trim();
-      if (value.length() == 0) {
-        showText = false;
+      if (value.trim().length() == 0) {
+        return;
       }
+      value = value.replaceFirst("[\r\n\t ]+$", " ");
+      String replace = "";
+      if (xmlBuffer.length() >= 1 && !Character.isWhitespace(xmlBuffer.charAt(xmlBuffer.length()-1))) {
+        replace = " ";
+      }
+      value = value.replaceFirst("^[\r\n\t ]+", replace);
     }
-    if (showText) {
-      if (_escape) {
-        boolean isHTML = renderContext.isHtml();
-        //FuzzyXMLUtil.escape(value, isHTML)
-        xmlBuffer.append(value);
-      }
-      else {
-        xmlBuffer.append(value);
-      }
+    if (_escape) {
+      boolean isHTML = renderContext.isHtml();
+      value = FuzzyXMLUtil.escape(value, isHTML);
     }
+    xmlBuffer.append(value);
   }
 
   @Override
@@ -59,4 +57,28 @@ public class FuzzyXMLTextImpl extends AbstractFuzzyXMLNode implements FuzzyXMLTe
     return this._escape;
   }
 
+  @Override
+  public boolean isNonBreaking() {
+    if (isHidden())
+      return false;
+
+    boolean result;
+    String value = getValue().trim();
+    
+    result = FuzzyXMLUtil.isAllWhitescape(value) || FuzzyXMLUtil.getSpaceIndex(value) == -1;
+//    System.out.println(result?"Non breaking " +this:"    Breaking " +this);
+
+    return result;
+  }
+  
+  @Override
+  public boolean isHidden() {
+    boolean result = _value == null || (FuzzyXMLUtil.isAllWhitescape(_value));
+    return result;
+  }
+  
+  @Override
+  public boolean hasLineBreaks() {
+    return _value != null && _value.trim().contains("\n");
+  }
 }

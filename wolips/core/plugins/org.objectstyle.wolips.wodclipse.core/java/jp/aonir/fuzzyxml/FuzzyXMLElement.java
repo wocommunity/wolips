@@ -5,7 +5,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 
 
-public interface FuzzyXMLElement extends FuzzyXMLNode {
+public interface FuzzyXMLElement extends FuzzyXMLNode, FuzzyXMLFormat {
 	
 	public String getName();
 	

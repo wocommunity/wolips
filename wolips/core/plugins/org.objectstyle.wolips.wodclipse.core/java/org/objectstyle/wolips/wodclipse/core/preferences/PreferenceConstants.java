@@ -76,4 +76,6 @@ public class PreferenceConstants {
   public static final String LOWERCASE_ATTRIBUTES = "LowercaseAttributes";
 
   public static final String LOWERCASE_TAGS = "LowercaseTags";
+  
+  public static final String STICKY_WOTAGS = "StickyWOTags";
 }
