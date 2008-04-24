@@ -130,7 +130,7 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
 		_modelTreeViewer = new TreeViewer(topForm);
 		GridData modelTreeLayoutData = new GridData(GridData.FILL_BOTH);
 		modelTreeLayoutData.horizontalSpan = 2;
-		// modelTreeLayoutData.heightHint = 100;
+		modelTreeLayoutData.heightHint = 200;
 		_modelTreeViewer.getTree().setLayoutData(modelTreeLayoutData);
 		_entityTreeViewUpdater = new EOEntityTreeViewUpdater(_modelTreeViewer, new EOModelOutlineContentProvider(true, true, true, false, false, false, false, true));
 		_modelTreeViewer.addSelectionChangedListener(this);
@@ -141,6 +141,7 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
 		GridData qualifierLayoutData = new GridData(GridData.FILL_BOTH);
 		qualifierLayoutData.horizontalSpan = 2;
 		qualifierLayoutData.widthHint = 150;
+		qualifierLayoutData.heightHint = 100;
 		_qualifierText.setLayoutData(qualifierLayoutData);
 
 		_errorLabel = getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
