@@ -446,12 +446,20 @@ public class FuzzyXMLUtil {
   }
 
   public static boolean isAllUppercase(String str) {
-    boolean uppercase = true;
-    for (int i = str.length() - 1; uppercase && i >= 0; i --) {
+    for (int i = str.length() - 1; i >= 0; i --) {
       if (!Character.isUpperCase(str.charAt(i))) {
-        uppercase = false;
+        return false;
       }
     }
-    return uppercase;
+    return true;
+  }
+  
+  public static boolean isAllWhitescape(String str) {
+    for (int i = 0; i < str.length(); i++) {
+      if (!Character.isWhitespace(str.charAt(i))) {
+        return false;
+      }
+    }
+    return true;
   }
 }

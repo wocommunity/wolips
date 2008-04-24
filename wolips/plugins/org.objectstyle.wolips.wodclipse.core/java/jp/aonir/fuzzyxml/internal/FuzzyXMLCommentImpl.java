@@ -22,21 +22,37 @@ public class FuzzyXMLCommentImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   }
 
   public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer) {
-    boolean isHTML = renderContext.isHtml();
-    xmlBuffer.append("<!--");
-    String commentString = FuzzyXMLUtil.escape(getValue(), isHTML);
-    if (commentString != null) {
-      if (!commentString.startsWith(" ")) {
-        xmlBuffer.append(" ");
-      }
-      xmlBuffer.append(commentString);
-      if (!commentString.endsWith(" ")) {
-        xmlBuffer.append(" ");
-      }
+    boolean renderSurroundingTags = true;
+    
+    RenderDelegate delegate = renderContext.getDelegate();
+    if (delegate != null) {
+      renderSurroundingTags = delegate.beforeOpenTag(this, renderContext, xmlBuffer);
     }
-    xmlBuffer.append("-->");
-    if (renderContext.isShowNewlines()) {
-      xmlBuffer.append("\n");
+    
+    if (renderSurroundingTags) {
+      xmlBuffer.append("<!--");
+      
+      String commentString = getValue();//FuzzyXMLUtil.escape(getValue(), isHTML);
+      if (commentString != null) {
+        if (!commentString.startsWith(" ")) {
+          xmlBuffer.append(" ");
+        }
+        if (renderContext.shouldFormat()) {
+          StringBuffer indent = new StringBuffer();
+          renderContext.appendIndent(indent);
+          if (commentString.contains("\n")) {
+            commentString = commentString.replaceAll("\n\\s*", "\n"+indent.toString());
+          }
+        }
+        xmlBuffer.append(commentString);
+        if (!commentString.endsWith(" ")) {
+          xmlBuffer.append(" ");
+        }
+      }
+      xmlBuffer.append("-->");
+      if (delegate != null) {
+        delegate.afterCloseTag(this, renderContext, xmlBuffer);
+      }
     }
   }
 

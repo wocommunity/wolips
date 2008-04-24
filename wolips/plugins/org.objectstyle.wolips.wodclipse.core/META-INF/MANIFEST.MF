@@ -16,8 +16,13 @@ Require-Bundle: org.objectstyle.wolips,
  org.objectstyle.wolips.bindings
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,
- lib/commons-jxpath-1.2.jar
-Export-Package: jp.aonir.fuzzyxml,
+ lib/commons-jxpath-1.2.jar,
+ lib/ss_css2.jar
+Export-Package: com.steadystate.css,
+ com.steadystate.css.dom,
+ com.steadystate.css.parser,
+ com.steadystate.css.parser.selectors,
+ jp.aonir.fuzzyxml,
  jp.aonir.fuzzyxml.event,
  jp.aonir.fuzzyxml.internal,
  jp.aonir.fuzzyxml.resources,
@@ -48,4 +53,10 @@ Export-Package: jp.aonir.fuzzyxml,
  org.objectstyle.wolips.wodclipse.core.refactoring,
  org.objectstyle.wolips.wodclipse.core.util,
  org.objectstyle.wolips.wodclipse.core.validation,
- org.objectstyle.wolips.wodclipse.core.woo
+ org.objectstyle.wolips.wodclipse.core.woo,
+ org.w3c.css.sac,
+ org.w3c.css.sac.helpers,
+ org.w3c.dom,
+ org.w3c.dom.css,
+ org.w3c.dom.stylesheets,
+ org.w3c.dom.views

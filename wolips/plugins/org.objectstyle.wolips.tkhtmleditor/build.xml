@@ -16,6 +16,9 @@
 			<fileset dir="lib">
 				<include name="**/*.jar" />
 			</fileset>
+			<fileset dir="../org.objectstyle.wolips.wodclipse.core/lib">
+				<include name="**/*.jar" />
+			</fileset>
 			<fileset dir="../../lib">
 				<include name="**/*.jar" />
 			</fileset>

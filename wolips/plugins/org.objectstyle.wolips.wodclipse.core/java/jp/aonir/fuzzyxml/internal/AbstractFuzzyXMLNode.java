@@ -118,4 +118,16 @@ public abstract class AbstractFuzzyXMLNode implements FuzzyXMLNode {
     }
     return xmlBuffer.toString();
   }
+
+  public boolean isNonBreaking() {
+    return true;
+  }
+
+  public boolean isHidden() {
+    return false;
+  }
+
+  public boolean hasLineBreaks() {
+    return true;
+  }
 }
