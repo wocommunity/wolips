@@ -43,46 +43,47 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.objectstyle.woproject.maven2.wobootstrap.locator.WebObjectsLocator;
 
-public class MockBootstrapMojo extends AbstractBootstrapMojo
-{
+public class MockBootstrapMojo extends AbstractBootstrapMojo {
 	public int executeGoalCount = 0;
 
 	private final MockLog mockLog = new MockLog();
 
 	public boolean nullFillProperties = false;
 
-	public MockBootstrapMojo() throws MojoExecutionException
-	{
+	public MockBootstrapMojo() throws MojoExecutionException {
 		super();
 	}
 
-	public MockBootstrapMojo( WebObjectsLocator locator ) throws MojoExecutionException
-	{
-		super( locator );
+	public MockBootstrapMojo(String webObjectsLibFolder, String webObjectsVersion) throws MojoExecutionException {
+		super();
+
+		super.webObjectsLibFolder = webObjectsLibFolder;
+		super.webObjectsVersion = webObjectsVersion;
+	}
+
+	public MockBootstrapMojo(WebObjectsLocator locator) throws MojoExecutionException {
+		super(locator);
 	}
 
 	@Override
-	protected void executeGoal( File file, Artifact artifact ) throws MojoExecutionException
-	{
+	protected void executeGoal(File file, Artifact artifact) throws MojoExecutionException {
 		executeGoalCount++;
 
 		// Do nothing
 	}
 
 	@Override
-	protected Properties fillProperties( File jar )
-	{
-		if( nullFillProperties )
-		{
+	protected Properties fillProperties(File jar) {
+		if (nullFillProperties) {
 			return null;
 		}
 
-		return super.fillProperties( jar );
+		return super.fillProperties(jar);
 	}
 
 	@Override
-	public MockLog getLog()
-	{
+	public MockLog getLog() {
 		return mockLog;
 	}
+
 }

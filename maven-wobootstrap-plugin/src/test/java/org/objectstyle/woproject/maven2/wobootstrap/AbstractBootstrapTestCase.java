@@ -42,19 +42,17 @@ import org.apache.commons.io.FileUtils;
 import org.easymock.EasyMock;
 import org.objectstyle.woproject.maven2.wobootstrap.locator.WebObjectsLocator;
 
-public class AbstractBootstrapTestCase
-{
+public class AbstractBootstrapTestCase {
 	protected AbstractBootstrapMojo mojo;
 
-	public WebObjectsLocator getMockLocator()
-	{
-		WebObjectsLocator mockLocator = EasyMock.createMock( WebObjectsLocator.class );
+	public WebObjectsLocator getMockLocator() {
+		WebObjectsLocator mockLocator = EasyMock.createMock(WebObjectsLocator.class);
 
-		File versionFile = FileUtils.toFile( getClass().getResource( "/version.plist" ) );
+		File versionFile = FileUtils.toFile(getClass().getResource("/version.plist"));
 
-		EasyMock.expect( mockLocator.getWebObjectsVersionFile() ).andReturn( versionFile );
+		EasyMock.expect(mockLocator.getWebObjectsVersionFile()).andReturn(versionFile);
 
-		EasyMock.replay( new Object[] { mockLocator } );
+		EasyMock.replay(new Object[] { mockLocator });
 
 		return mockLocator;
 	}

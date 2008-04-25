@@ -57,8 +57,7 @@ import org.objectstyle.woproject.maven2.wobootstrap.locator.WebObjectsLocator;
  * @requiresProject false
  * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
  */
-public class BootstrapDeployMojo extends AbstractBootstrapMojo
-{
+public class BootstrapDeployMojo extends AbstractBootstrapMojo {
 	/**
 	 * The artifact deployer used to deploy the WebObjects artifact.
 	 * 
@@ -107,17 +106,15 @@ public class BootstrapDeployMojo extends AbstractBootstrapMojo
 	/**
 	 * @see AbstractBootstrapMojo#AbstractBootstrapMojo()
 	 */
-	public BootstrapDeployMojo() throws MojoExecutionException
-	{
+	public BootstrapDeployMojo() throws MojoExecutionException {
 		super();
 	}
 
 	/**
 	 * @see AbstractBootstrapMojo#AbstractBootstrapMojo(WebObjectsLocator)
 	 */
-	BootstrapDeployMojo( WebObjectsLocator locator ) throws MojoExecutionException
-	{
-		super( locator );
+	BootstrapDeployMojo(WebObjectsLocator locator) throws MojoExecutionException {
+		super(locator);
 	}
 
 	/**
@@ -127,28 +124,23 @@ public class BootstrapDeployMojo extends AbstractBootstrapMojo
 	 * @see AbstractBootstrapMojo#executeGoal(File, Artifact)
 	 */
 	@Override
-	protected void executeGoal( File file, Artifact artifact ) throws MojoExecutionException
-	{
+	protected void executeGoal(File file, Artifact artifact) throws MojoExecutionException {
 		ArtifactRepositoryLayout layout;
 
-		layout = (ArtifactRepositoryLayout) repositoryLayouts.get( "default" );
+		layout = (ArtifactRepositoryLayout) repositoryLayouts.get("default");
 
-		ArtifactRepository deploymentRepository = repositoryFactory.createDeploymentArtifactRepository( repositoryId, url, layout, false );
+		ArtifactRepository deploymentRepository = repositoryFactory.createDeploymentArtifactRepository(repositoryId, url, layout, false);
 
 		String protocol = deploymentRepository.getProtocol();
 
-		if( protocol == null || "".equals( protocol ) )
-		{
-			throw new MojoExecutionException( "No transfer protocol found." );
+		if (protocol == null || "".equals(protocol)) {
+			throw new MojoExecutionException("No transfer protocol found.");
 		}
 
-		try
-		{
-			deployer.deploy( file, artifact, deploymentRepository, localRepository );
-		}
-		catch( ArtifactDeploymentException exception )
-		{
-			throw new MojoExecutionException( "Error while trying to deploy the artifact.", exception );
+		try {
+			deployer.deploy(file, artifact, deploymentRepository, localRepository);
+		} catch (ArtifactDeploymentException exception) {
+			throw new MojoExecutionException("Error while trying to deploy the artifact.", exception);
 		}
 	}
 }

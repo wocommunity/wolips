@@ -44,8 +44,7 @@ import java.io.File;
  * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
  * @since 2.0
  */
-public interface WebObjectsLocator
-{
+public interface WebObjectsLocator {
 	/**
 	 * Search for the WebObjects lib folder and returns it corresponding
 	 * <code>File</code>.
