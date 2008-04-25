@@ -1,5 +1,6 @@
 /*
- * The ObjectStyle Group Software License, Version 1.0 Copyright (c) 2006 The
+ * ==================================================================== The
+ * ObjectStyle Group Software License, Version 1.0 Copyright (c) 2006 The
  * ObjectStyle Group, and individual authors of the software. All rights
  * reserved. Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -38,33 +39,51 @@ package org.objectstyle.woproject.maven2.wobootstrap.locator;
 import java.io.File;
 
 /**
- * @author <a href="mailto:pallas@free.fr">Josef Vanek</a>
+ * This class allows the customization of the place where WebObjects libraries
+ * will be searched. Useful when you want to install an older version of
+ * WebObjects.
+ * 
+ * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
+ * @since 2.0
  */
-public abstract class AbstractWebObjectsLocator implements WebObjectsLocator {
+public class CustomWebObjectsLocator implements WebObjectsLocator {
+	private final File pathToLibFolder;
 
 	/**
-	 * @see org.objectstyle.woproject.maven2.wobootstrap.utils.WebObjectsLocator#getWebObjectsLibFolder()
+	 * Constructor for this class.
+	 * 
+	 * @param pathToLibFolder
+	 *            The custom path to the WebObjects lib folder
 	 */
-	public File getWebObjectsLibFolder() {
-		File woRootFolder = getWebObjectsRootFolder();
-		if (woRootFolder != null) {
-			File lc_tempFile = new File(woRootFolder, "Library/WebObjects/lib");
-			return lc_tempFile.exists() ? lc_tempFile : null;
-		}
-		return null;
+	public CustomWebObjectsLocator(String pathToLibFolder) {
+		this.pathToLibFolder = new File(pathToLibFolder);
 	}
 
 	/**
-	 * @see org.objectstyle.woproject.maven2.wobootstrap.utils.WebObjectsLocator#getWebObjectsRootFolder()
+	 * Returns the custom path to WebObjects lib folder.
+	 * 
+	 * @see org.objectstyle.woproject.maven2.wobootstrap.locator.WebObjectsLocator#getWebObjectsLibFolder()
 	 */
-	public abstract File getWebObjectsRootFolder();
+	public File getWebObjectsLibFolder() {
+		return pathToLibFolder;
+	}
 
-	/**
-	 * @see org.objectstyle.woproject.maven2.wobootstrap.utils.WebObjectsLocator#getWebObjectsVersionFile()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.objectstyle.woproject.maven2.wobootstrap.locator.WebObjectsLocator#getWebObjectsRootFolder()
+	 */
+	public File getWebObjectsRootFolder() {
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.objectstyle.woproject.maven2.wobootstrap.locator.WebObjectsLocator#getWebObjectsVersionFile()
 	 */
 	public File getWebObjectsVersionFile() {
-		File woRootFolder = getWebObjectsRootFolder();
-		return (woRootFolder != null) ? new File(getWebObjectsRootFolder(), "Library/Frameworks/JavaWebObjects.framework/Resources/version.plist") : null;
+		return null;
 	}
 
 }

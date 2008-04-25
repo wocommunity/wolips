@@ -45,8 +45,7 @@ import java.io.File;
  * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
  * @since 2.0
  */
-public class WindowsWebObjectsLocator extends AbstractWebObjectsLocator
-{
+public class WindowsWebObjectsLocator extends AbstractWebObjectsLocator {
 	/**
 	 * The deafult WebObjects root variable on Windows
 	 * 
@@ -71,11 +70,9 @@ public class WindowsWebObjectsLocator extends AbstractWebObjectsLocator
 	 * Creates a new <code>WindowsWebObjectsLocator</code> using the default
 	 * WebObjects root variable.
 	 */
-	public WindowsWebObjectsLocator()
-	{
-		if( woRootVariable == null )
-		{
-			woRootVariable = System.getenv( DEFAULT_WO_ROOT_VARIABLE );
+	public WindowsWebObjectsLocator() {
+		if (woRootVariable == null) {
+			woRootVariable = System.getenv(DEFAULT_WO_ROOT_VARIABLE);
 		}
 	}
 
@@ -83,10 +80,10 @@ public class WindowsWebObjectsLocator extends AbstractWebObjectsLocator
 	 * Creates a new <code>WindowsWebObjectsLocator</code> using the variable
 	 * passed by parameter.
 	 * 
-	 * @param woRootVariable The WebObjects root variable
+	 * @param woRootVariable
+	 *            The WebObjects root variable
 	 */
-	public WindowsWebObjectsLocator( String woRootVariable )
-	{
+	public WindowsWebObjectsLocator(String woRootVariable) {
 		this.woRootVariable = woRootVariable;
 	}
 
@@ -96,16 +93,14 @@ public class WindowsWebObjectsLocator extends AbstractWebObjectsLocator
 	 * @see org.objectstyle.woproject.maven2.wobootstrap.utils.WebObjectsLocator#webobjectsRootDirectory()
 	 */
 	@Override
-	public File getWebObjectsRootFolder()
-	{
+	public File getWebObjectsRootFolder() {
 		String nextRoot = woRootVariable;
 
-		if( nextRoot == null )
-		{
+		if (nextRoot == null) {
 			return null;
 		}
 
-		return new File( nextRoot );
+		return new File(nextRoot);
 	}
 
 }

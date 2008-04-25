@@ -41,8 +41,7 @@ import java.io.File;
 /**
  * @author <a href="mailto:pallas@free.fr">Josef Vanek</a>
  */
-public class UnixWebObjectsLocator extends AbstractWebObjectsLocator
-{
+public class UnixWebObjectsLocator extends AbstractWebObjectsLocator {
 
 	/**
 	 * The deafult WebObjects root property on Unix
@@ -58,33 +57,30 @@ public class UnixWebObjectsLocator extends AbstractWebObjectsLocator
 	 * Creates a new <code>WindowsWebObjectsLocator</code> using the default
 	 * WebObjects root variable.
 	 */
-	public UnixWebObjectsLocator()
-	{
-		woRoot = System.getProperty( DEFAULT_WO_ROOT_PROPERTY );
+	public UnixWebObjectsLocator() {
+		woRoot = System.getProperty(DEFAULT_WO_ROOT_PROPERTY);
 	}
 
 	/**
 	 * @see org.objectstyle.woproject.maven2.wobootstrap.utils.WebObjectsLocator#getWebObjectsRootFolder()
 	 */
 	@Override
-	public File getWebObjectsRootFolder()
-	{
-		return ( getWoRoot() != null ) ? new File( getWoRoot() ) : null;
+	public File getWebObjectsRootFolder() {
+		return (getWoRoot() != null) ? new File(getWoRoot()) : null;
 	}
 
 	/**
 	 * @return the woRoot
 	 */
-	public String getWoRoot()
-	{
+	public String getWoRoot() {
 		return woRoot;
 	}
 
 	/**
-	 * @param woRoot the woRoot to set
+	 * @param woRoot
+	 *            the woRoot to set
 	 */
-	public void setWoRoot( String woRoot )
-	{
+	public void setWoRoot(String woRoot) {
 		this.woRoot = woRoot;
 	}
 

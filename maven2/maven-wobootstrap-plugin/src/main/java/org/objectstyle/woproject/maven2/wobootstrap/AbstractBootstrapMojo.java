@@ -54,6 +54,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.artifact.ProjectArtifactMetadata;
+import org.objectstyle.woproject.maven2.wobootstrap.locator.CustomWebObjectsLocator;
 import org.objectstyle.woproject.maven2.wobootstrap.locator.MacOsWebObjectsLocator;
 import org.objectstyle.woproject.maven2.wobootstrap.locator.UnixWebObjectsLocator;
 import org.objectstyle.woproject.maven2.wobootstrap.locator.WebObjectsLocator;
@@ -71,8 +72,7 @@ import org.objectstyle.woproject.maven2.wobootstrap.utils.WebObjectsUtils;
  * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
  * @since 2.0
  */
-public abstract class AbstractBootstrapMojo extends AbstractMojo
-{
+public abstract class AbstractBootstrapMojo extends AbstractMojo {
 	/**
 	 * A factory for Maven artifacts
 	 * 
@@ -83,7 +83,7 @@ public abstract class AbstractBootstrapMojo extends AbstractMojo
 	/**
 	 * Properties of the current artifact being used during the Mojo execution
 	 */
-	private Properties artifactProperties;
+	Properties artifactProperties;
 
 	/**
 	 * The Maven local repository.
@@ -109,58 +109,53 @@ public abstract class AbstractBootstrapMojo extends AbstractMojo
 	private final Properties pluginProperties = new Properties();
 
 	/**
+	 * The path to the WebObjects lib folder. Retrieved automatically in
+	 * accordance with the type of operational system.
+	 * 
+	 * @parameter expression="${webObjectsLibFolder}"
+	 */
+	protected String webObjectsLibFolder;
+
+	/**
+	 * The WebObjects version. Retrieved automatically from the version.plist
+	 * file if not provided.
+	 * 
+	 * @parameter expression="${webObjectsVersion}"
+	 */
+	protected String webObjectsVersion;
+
+	/**
 	 * Verify the OS platform and load the properties of this plug-in.
 	 * 
-	 * @throws MojoExecutionException if any problem occurs during bootstrap
-	 *             creation
+	 * @throws MojoExecutionException
+	 *             if any problem occurs during bootstrap creation
 	 */
-	public AbstractBootstrapMojo() throws MojoExecutionException
-	{
+	public AbstractBootstrapMojo() throws MojoExecutionException {
 		super();
-
-		if( SystemUtils.IS_OS_MAC_OSX )
-		{
-			locator = new MacOsWebObjectsLocator();
-		}
-		else if( SystemUtils.IS_OS_WINDOWS )
-		{
-			locator = new WindowsWebObjectsLocator();
-		}
-		else if( SystemUtils.IS_OS_UNIX )
-		{
-			locator = new UnixWebObjectsLocator();
-		}
-		else
-		{
-			throw new MojoExecutionException( "Unsupported OS platform." );
-		}
-
-		initialize();
 	}
 
 	/**
 	 * This constructor is only for testing purpose.
 	 * 
-	 * @param locator A locator for WebObjects resources
-	 * @throws MojoExecutionException if any problem occurs during bootstrap
-	 *             creation
+	 * @param locator
+	 *            A locator for WebObjects resources
+	 * @throws MojoExecutionException
+	 *             if any problem occurs during bootstrap creation
 	 */
-	AbstractBootstrapMojo( WebObjectsLocator locator ) throws MojoExecutionException
-	{
+	AbstractBootstrapMojo(WebObjectsLocator locator) throws MojoExecutionException {
 		this.locator = locator;
 
 		initialize();
 	}
 
-	private Artifact createArtifact( Properties properties )
-	{
-		Artifact artifact = artifactFactory.createArtifactWithClassifier( properties.getProperty( "groupId" ), properties.getProperty( "artifactId" ), properties.getProperty( "version" ), properties.getProperty( "packaging" ), null );
+	private Artifact createArtifact(Properties properties) {
+		Artifact artifact = artifactFactory.createArtifactWithClassifier(properties.getProperty("groupId"), properties.getProperty("artifactId"), properties.getProperty("version"), properties.getProperty("packaging"), null);
 
-		File pomFile = new File( properties.getProperty( "pomFile" ) );
+		File pomFile = new File(properties.getProperty("pomFile"));
 
-		ArtifactMetadata metadata = new ProjectArtifactMetadata( artifact, pomFile );
+		ArtifactMetadata metadata = new ProjectArtifactMetadata(artifact, pomFile);
 
-		artifact.addMetadata( metadata );
+		artifact.addMetadata(metadata);
 
 		return artifact;
 	}
@@ -172,31 +167,30 @@ public abstract class AbstractBootstrapMojo extends AbstractMojo
 	 * 
 	 * @see org.apache.maven.plugin.Mojo#execute()
 	 */
-	public void execute() throws MojoExecutionException, MojoFailureException
-	{
-		File[] jars = WebObjectsUtils.getWebObjectsJars( locator );
+	public void execute() throws MojoExecutionException, MojoFailureException {
+		initializeLocator();
+		initialize();
 
-		if( jars == null )
-		{
-			throw new MojoExecutionException( "WebObjects lib folder is missing. Maybe WebObjects isn't installed." );
+		File[] jars = WebObjectsUtils.getWebObjectsJars(locator);
+
+		if (jars == null) {
+			throw new MojoExecutionException("WebObjects lib folder is missing. Maybe WebObjects isn't installed.");
 		}
 
-		for( int i = 0; i < jars.length; i++ )
-		{
-			Properties properties = fillProperties( jars[i] );
+		for (int i = 0; i < jars.length; i++) {
+			Properties properties = fillProperties(jars[i]);
 
-			if( properties == null )
-			{
-				getLog().warn( "Cannot import the following jar: " + jars[i].getName() );
+			if (properties == null) {
+				getLog().warn("Cannot import the following jar: " + jars[i].getName());
 
 				continue;
 			}
 
-			Artifact artifact = createArtifact( properties );
+			Artifact artifact = createArtifact(properties);
 
-			File file = new File( properties.getProperty( "file" ) );
+			File file = new File(properties.getProperty("file"));
 
-			executeGoal( file, artifact );
+			executeGoal(file, artifact);
 		}
 	}
 
@@ -204,48 +198,46 @@ public abstract class AbstractBootstrapMojo extends AbstractMojo
 	 * Subclass must implement this method and provide a way to install or
 	 * deploy the given <code>Artifact</code>.
 	 * 
-	 * @param file The jar file of the WebObjects library
-	 * @param artifact The Maven Artifact representing the WebObjects library
-	 * @throws MojoExecutionException If an exception occur during the goal
-	 *             execution
+	 * @param file
+	 *            The jar file of the WebObjects library
+	 * @param artifact
+	 *            The Maven Artifact representing the WebObjects library
+	 * @throws MojoExecutionException
+	 *             If an exception occur during the goal execution
 	 */
-	protected abstract void executeGoal( File file, Artifact artifact ) throws MojoExecutionException;
+	protected abstract void executeGoal(File file, Artifact artifact) throws MojoExecutionException;
 
 	/**
 	 * Fill the contents of a properties based on a JAR file. Probably could be
 	 * done directly without a <code>Properties</code>.
 	 * 
-	 * @param jar The JAR file
+	 * @param jar
+	 *            The JAR file
 	 * @return Returns the populated properties or <code>null</code> if cannot
 	 *         map the JAR file
 	 */
-	protected Properties fillProperties( File jar )
-	{
-		String artifactId = getArtifactIdForJar( jar );
+	protected Properties fillProperties(File jar) {
+		String artifactId = getArtifactIdForJar(jar);
 
-		if( artifactId == null )
-		{
+		if (artifactId == null) {
 			return null;
 		}
 
-		artifactProperties.setProperty( "file", jar.getAbsolutePath() );
-		artifactProperties.setProperty( "artifactId", artifactId );
+		artifactProperties.setProperty("file", jar.getAbsolutePath());
+		artifactProperties.setProperty("artifactId", artifactId);
 
-		try
-		{
-			File tempPom = File.createTempFile( "pom-", ".xml" );
+		try {
+			File tempPom = File.createTempFile("pom-", ".xml");
 
 			tempPom.deleteOnExit();
 
-			PomGenerator generator = new PomGenerator( artifactProperties );
+			PomGenerator generator = new PomGenerator(artifactProperties);
 
-			generator.writeModel( tempPom );
+			generator.writeModel(tempPom);
 
-			artifactProperties.setProperty( "pomFile", tempPom.getAbsolutePath() );
-		}
-		catch( IOException exception )
-		{
-			getLog().info( "Cannot create a pom file for " + artifactId );
+			artifactProperties.setProperty("pomFile", tempPom.getAbsolutePath());
+		} catch (IOException exception) {
+			getLog().info("Cannot create a pom file for " + artifactId);
 		}
 
 		return artifactProperties;
@@ -254,64 +246,95 @@ public abstract class AbstractBootstrapMojo extends AbstractMojo
 	/**
 	 * Resolve the artifactId for a specific JAR file.
 	 * 
-	 * @param jar The JAR file
+	 * @param jar
+	 *            The JAR file
 	 * @return Returns the artifatId or <code>null</code> if cannot find a key
 	 *         that match the JAR file
 	 */
-	protected String getArtifactIdForJar( File jar )
-	{
-		if( jar == null )
-		{
+	protected String getArtifactIdForJar(File jar) {
+		if (jar == null) {
 			return null;
 		}
 
 		loadNamesMap();
 
-		String jarName = FilenameUtils.getBaseName( jar.getAbsolutePath() );
+		String jarName = FilenameUtils.getBaseName(jar.getAbsolutePath());
 
-		return namesMap.get( jarName.toLowerCase() );
+		return namesMap.get(jarName.toLowerCase());
 	}
 
-	private void initialize() throws MojoExecutionException
-	{
-		InputStream propertiesInputStream = AbstractBootstrapMojo.class.getResourceAsStream( "/bootstrap.properties" );
-
-		try
-		{
-			pluginProperties.load( propertiesInputStream );
+	private String getWebObjectsVersion() {
+		if (webObjectsVersion != null) {
+			return webObjectsVersion;
 		}
-		catch( IOException exception )
-		{
-			throw new MojoExecutionException( "Cannot load plug-in properties." );
+
+		return WebObjectsUtils.getWebObjectsVersion(locator);
+	}
+
+	private boolean illegalSetOfParameters() {
+		return webObjectsLibFolder != null || webObjectsVersion != null;
+	}
+
+	void initialize() throws MojoExecutionException {
+		InputStream propertiesInputStream = AbstractBootstrapMojo.class.getResourceAsStream("/bootstrap.properties");
+
+		try {
+			pluginProperties.load(propertiesInputStream);
+		} catch (IOException exception) {
+			throw new MojoExecutionException("Cannot load plug-in properties.");
 		}
 
 		artifactProperties = new Properties();
 
-		artifactProperties.setProperty( "groupId", pluginProperties.getProperty( "woproject.convention.group" ) );
-		artifactProperties.setProperty( "version", WebObjectsUtils.getWebObjectsVersion( locator ) );
-		artifactProperties.setProperty( "packaging", "jar" );
+		artifactProperties.setProperty("groupId", pluginProperties.getProperty("woproject.convention.group"));
+
+		String version = getWebObjectsVersion();
+
+		if (version == null) {
+			throw new MojoExecutionException("WebObjects version is missing. Maybe WebObjects isn't installed.");
+		}
+
+		artifactProperties.setProperty("version", version);
+		artifactProperties.setProperty("packaging", "jar");
 	}
 
-	private void loadNamesMap()
-	{
-		if( namesMap != null )
-		{
+	void initializeLocator() throws MojoExecutionException {
+		if (locator != null) {
 			return;
 		}
 
-		String defaultNames = pluginProperties.getProperty( "webobjects.default.names" );
+		if (webObjectsLibFolder != null && webObjectsVersion != null) {
+			locator = new CustomWebObjectsLocator(webObjectsLibFolder);
+		} else if (illegalSetOfParameters()) {
+			throw new MojoExecutionException("You must provide both webObjectsLibFolder and webObjectsVersion to use a custom locator for WebObjects libraries");
+		} else if (SystemUtils.IS_OS_MAC_OSX) {
+			locator = new MacOsWebObjectsLocator();
+		} else if (SystemUtils.IS_OS_WINDOWS) {
+			locator = new WindowsWebObjectsLocator();
+		} else if (SystemUtils.IS_OS_UNIX) {
+			locator = new UnixWebObjectsLocator();
+		} else {
+			throw new MojoExecutionException("Unsupported OS platform.");
+		}
+	}
 
-		String originalNames[] = StringUtils.split( defaultNames, "," );
+	private void loadNamesMap() {
+		if (namesMap != null) {
+			return;
+		}
 
-		String conventionedNames = pluginProperties.getProperty( "woproject.convention.names" );
+		String defaultNames = pluginProperties.getProperty("webobjects.default.names");
 
-		String artifactIds[] = StringUtils.split( conventionedNames, "," );
+		String originalNames[] = StringUtils.split(defaultNames, ",");
+
+		String conventionedNames = pluginProperties.getProperty("woproject.convention.names");
+
+		String artifactIds[] = StringUtils.split(conventionedNames, ",");
 
 		namesMap = new HashMap<String, String>();
 
-		for( int i = 0; i < originalNames.length; i++ )
-		{
-			namesMap.put( originalNames[i].toLowerCase(), artifactIds[i] );
+		for (int i = 0; i < originalNames.length; i++) {
+			namesMap.put(originalNames[i].toLowerCase(), artifactIds[i]);
 		}
 	}
 }

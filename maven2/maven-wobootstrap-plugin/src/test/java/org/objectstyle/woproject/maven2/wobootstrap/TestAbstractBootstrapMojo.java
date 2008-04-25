@@ -56,8 +56,7 @@ import org.objectstyle.woproject.maven2.wobootstrap.locator.WebObjectsLocator;
 /**
  * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
  */
-public class TestAbstractBootstrapMojo extends TestCase
-{
+public class TestAbstractBootstrapMojo extends TestCase {
 	protected String input[];
 
 	protected MockBootstrapMojo mojo;
@@ -70,123 +69,153 @@ public class TestAbstractBootstrapMojo extends TestCase
 	 * @see junit.framework.TestCase#setUp()
 	 */
 	@Override
-	protected void setUp() throws Exception
-	{
+	protected void setUp() throws Exception {
 		super.setUp();
 
 		input = new String[] { "c:/JavaDirectToWeb.jar", "c:/JavaFoundation.jar", "c:/javaeoutil.jar", "c:/JavaXML.jar" };
 
 		output = new String[] { "JavaDirectToWeb", "JavaFoundation", "javaeoutil", "JavaXML" };
 
-		File versionFile = FileUtils.toFile( getClass().getResource( "/version.plist" ) );
+		File versionFile = FileUtils.toFile(getClass().getResource("/version.plist"));
 
-		WebObjectsLocator mockLocator = EasyMock.createMock( WebObjectsLocator.class );
+		WebObjectsLocator mockLocator = EasyMock.createMock(WebObjectsLocator.class);
 
-		EasyMock.expect( mockLocator.getWebObjectsVersionFile() ).andReturn( versionFile );
+		EasyMock.expect(mockLocator.getWebObjectsVersionFile()).andReturn(versionFile);
 
-		EasyMock.replay( new Object[] { mockLocator } );
+		EasyMock.replay(new Object[] { mockLocator });
 
-		mojo = new MockBootstrapMojo( mockLocator );
+		mojo = new MockBootstrapMojo(mockLocator);
 	}
 
-	public void testArtifatIdConvention() throws Exception
-	{
-		for( int i = 0; i < input.length; i++ )
-		{
-			File jar = new File( input[i] );
+	public void testArtifatIdConvention() throws Exception {
+		for (int i = 0; i < input.length; i++) {
+			File jar = new File(input[i]);
 
-			assertEquals( output[i], mojo.getArtifactIdForJar( jar ) );
+			assertEquals(output[i], mojo.getArtifactIdForJar(jar));
 		}
 	}
 
-	public void testCaseInsensitiveNameMapping() throws Exception
-	{
-		for( int i = 0; i < input.length; i++ )
-		{
+	public void testCaseInsensitiveNameMapping() throws Exception {
+		for (int i = 0; i < input.length; i++) {
 			input[i] = input[i].toLowerCase();
 		}
 
-		for( int i = 0; i < input.length; i++ )
-		{
-			File jar = new File( input[i] );
+		for (int i = 0; i < input.length; i++) {
+			File jar = new File(input[i]);
 
-			assertEquals( output[i], mojo.getArtifactIdForJar( jar ) );
+			assertEquals(output[i], mojo.getArtifactIdForJar(jar));
 		}
 	}
 
-	public void testFillValidProperties() throws Exception
-	{
-		File resourcesPath = FileUtils.toFile( getClass().getResource( "/" ) );
+	public void testCustomWebObjectsLocator() throws Exception {
+		final String path = "path_to_webobject";
+		final String version = "5.3.3";
+
+		mojo = new MockBootstrapMojo(path, version);
+
+		mojo.initializeLocator();
+
+		assertEquals(new File(path), mojo.locator.getWebObjectsLibFolder());
+
+		mojo.initialize();
+
+		Properties properties = mojo.artifactProperties;
+
+		assertEquals(version, properties.getProperty("version"));
+	}
+
+	public void testExceptionIfOnlyLibFolderOrOnlyVersionIsProvided() throws Exception {
+		mojo = new MockBootstrapMojo("a path", null);
+
+		try {
+			mojo.initializeLocator();
+
+			fail("Must throw an exception about illegal parameters");
+		} catch (MojoExecutionException exception) {
+			// It is ok
+		}
+
+		mojo = new MockBootstrapMojo(null, "a version");
+
+		try {
+			mojo.initializeLocator();
+
+			fail("Must throw an exception about illegal parameters");
+		} catch (MojoExecutionException exception) {
+			// It is ok
+		}
+
+	}
+
+	public void testFillValidProperties() throws Exception {
+		File resourcesPath = FileUtils.toFile(getClass().getResource("/"));
 
 		String filePath = "JavaWOExtensions.jar";
 
-		File mockJar = new File( resourcesPath, filePath );
+		File mockJar = new File(resourcesPath, filePath);
 
-		Properties properties = mojo.fillProperties( mockJar );
+		Properties properties = mojo.fillProperties(mockJar);
 
-		assertEquals( "com.apple.webobjects", properties.getProperty( "groupId" ) );
-		assertNotNull( properties.getProperty( "version" ) );
-		assertEquals( "jar", properties.getProperty( "packaging" ) );
-		assertEquals( mockJar.getAbsolutePath(), properties.getProperty( "file" ) );
-		assertEquals( "JavaWOExtensions", properties.getProperty( "artifactId" ) );
-		assertNotNull( properties.getProperty( "pomFile" ) );
+		assertEquals("com.apple.webobjects", properties.getProperty("groupId"));
+		assertNotNull(properties.getProperty("version"));
+		assertEquals("jar", properties.getProperty("packaging"));
+		assertEquals(mockJar.getAbsolutePath(), properties.getProperty("file"));
+		assertEquals("JavaWOExtensions", properties.getProperty("artifactId"));
+		assertNotNull(properties.getProperty("pomFile"));
 	}
 
-	public void testNoJarMapping() throws Exception
-	{
+	public void testNoJarMapping() throws Exception {
 		String filePath = "c:\\JavaWOExtensionsXXX.jar";
 
-		File invalidJar = new File( filePath );
+		File invalidJar = new File(filePath);
 
-		Properties properties = mojo.fillProperties( invalidJar );
+		Properties properties = mojo.fillProperties(invalidJar);
 
-		assertNull( properties );
+		assertNull(properties);
 	}
 
-	public void testNullJarFile() throws Exception
-	{
-		assertNull( mojo.getArtifactIdForJar( null ) );
-		assertNull( mojo.fillProperties( null ) );
+	public void testNullJarFile() throws Exception {
+		assertNull(mojo.getArtifactIdForJar(null));
+		assertNull(mojo.fillProperties(null));
 	}
 
-	public void testWarningForNotMappedArtifact() throws Exception
-	{
-		WebObjectsLocator mockLocator = EasyMock.createMock( WebObjectsLocator.class );
+	public void testWarningForNotMappedArtifact() throws Exception {
+		WebObjectsLocator mockLocator = EasyMock.createMock(WebObjectsLocator.class);
 
-		File file = FileUtils.toFile( getClass().getResource( "/mock-jar1.jar" ) ).getParentFile();
+		File versionFile = FileUtils.toFile(getClass().getResource("/version.plist"));
 
-		EasyMock.expect( mockLocator.getWebObjectsLibFolder() ).andReturn( file );
+		EasyMock.expect(mockLocator.getWebObjectsVersionFile()).andReturn(versionFile);
 
-		EasyMock.replay( mockLocator );
+		File file = FileUtils.toFile(getClass().getResource("/mock-jar1.jar")).getParentFile();
+
+		EasyMock.expect(mockLocator.getWebObjectsLibFolder()).andReturn(file);
+
+		EasyMock.replay(mockLocator);
 
 		mojo.locator = mockLocator;
 		mojo.nullFillProperties = true;
 
 		mojo.execute();
 
-		assertThat( mojo.getLog().warningCount, is( 2 ) );
-		assertThat( mojo.executeGoalCount, is( 0 ) );
+		assertThat(mojo.getLog().warningCount, is(2));
+		assertThat(mojo.executeGoalCount, is(0));
 	}
 
-	public void testWebObjectsNotInstalled() throws Exception
-	{
-		WebObjectsLocator mockLocator = EasyMock.createMock( WebObjectsLocator.class );
+	public void testWebObjectsNotInstalled() throws Exception {
+		WebObjectsLocator mockLocator = EasyMock.createMock(WebObjectsLocator.class);
 
-		EasyMock.expect( mockLocator.getWebObjectsLibFolder() ).andReturn( null );
+		EasyMock.expect(mockLocator.getWebObjectsVersionFile()).andReturn(null);
 
 		mojo.locator = mockLocator;
 
-		EasyMock.replay( new Object[] { mockLocator } );
+		EasyMock.replay(new Object[] { mockLocator });
 
-		try
-		{
+		try {
 			mojo.execute();
 
-			fail( "WebOjects not installed, must throws an exception." );
-		}
-		catch( MojoExecutionException exception )
-		{
-			assertEquals( "WebObjects lib folder is missing. Maybe WebObjects isn't installed.", exception.getMessage() );
+			fail("WebOjects not installed, must throws an exception.");
+		} catch (MojoExecutionException exception) {
+			assertEquals("WebObjects version is missing. Maybe WebObjects isn't installed.", exception.getMessage());
 		}
 	}
 }

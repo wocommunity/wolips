@@ -17,8 +17,7 @@ import org.objectstyle.woproject.maven2.wobootstrap.locator.WebObjectsLocator;
  * @requiresProject false
  * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
  */
-public class BootstrapInstallMojo extends AbstractBootstrapMojo
-{
+public class BootstrapInstallMojo extends AbstractBootstrapMojo {
 	/**
 	 * Component used to install an artifact into a local repository.
 	 * 
@@ -29,17 +28,15 @@ public class BootstrapInstallMojo extends AbstractBootstrapMojo
 	/**
 	 * @see AbstractBootstrapMojo#AbstractBootstrapMojo()
 	 */
-	public BootstrapInstallMojo() throws MojoExecutionException
-	{
+	public BootstrapInstallMojo() throws MojoExecutionException {
 		super();
 	}
 
 	/**
 	 * @see AbstractBootstrapMojo#AbstractBootstrapMojo(WebObjectsLocator)
 	 */
-	BootstrapInstallMojo( WebObjectsLocator locator ) throws MojoExecutionException
-	{
-		super( locator );
+	BootstrapInstallMojo(WebObjectsLocator locator) throws MojoExecutionException {
+		super(locator);
 	}
 
 	/**
@@ -48,15 +45,11 @@ public class BootstrapInstallMojo extends AbstractBootstrapMojo
 	 * @see AbstractBootstrapMojo#executeGoal(File, Artifact)
 	 */
 	@Override
-	protected void executeGoal( File file, Artifact artifact ) throws MojoExecutionException
-	{
-		try
-		{
-			installer.install( file, artifact, localRepository );
-		}
-		catch( ArtifactInstallationException exception )
-		{
-			throw new MojoExecutionException( "Error while trying to install the artifact", exception );
+	protected void executeGoal(File file, Artifact artifact) throws MojoExecutionException {
+		try {
+			installer.install(file, artifact, localRepository);
+		} catch (ArtifactInstallationException exception) {
+			throw new MojoExecutionException("Error while trying to install the artifact", exception);
 		}
 	}
 }
