@@ -118,7 +118,7 @@ public class XMLPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
 		
 		_addClassName = new Button(buttons, SWT.PUSH);
-		_addClassName.setText(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.SpacesAroundEquals"));
+		_addClassName.setText(HTMLPlugin.getResourceString("HTMLEditorPreferencePage.AddAttribute"));
 		_addClassName.setLayoutData(createButtonGridData());
 		_addClassName.addSelectionListener(new SelectionAdapter(){
 			@Override
@@ -183,9 +183,7 @@ public class XMLPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 * @return the <code>GridData</code> which is configured for buttons
 	 */
 	private static GridData createButtonGridData(){
-		GridData gd = new GridData();
-		gd.widthHint = 120;
-		return gd;
+		return new GridData(SWT.FILL, SWT.DEFAULT, true, false);
 	}
 
 	/**
