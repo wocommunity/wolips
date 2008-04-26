@@ -60,7 +60,11 @@ public class AddKeyOperation extends JavaModelOperation {
     String fieldName = suggestedFieldNames[0];
 
     if (_info.isCreateField()) {
-      String keyField = "private " + simpleTypeName + " " + fieldName + ";";
+      String accessModifier = "private ";
+      if (!(_info.isCreateAccessorMethod() || _info.isCreateMutatorMethod())) {
+        accessModifier = "public ";
+      }
+      String keyField = accessModifier + simpleTypeName + " " + fieldName + ";";
       new CreateFieldOperation(componentType, keyField, false).runOperation(progressMonitor);
     }
 
