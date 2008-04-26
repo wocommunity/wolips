@@ -336,8 +336,11 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 		if (_currentSelection instanceof IPackageFragment) {
 			_packageDialogField.setText(((IPackageFragment) _currentSelection).getElementName());
 		} else {
-			IFolder _path = (IFolder)ResourcesPlugin.getWorkspace().getRoot().findMember(this.getContainerFullPath());
-			String _package = packageNameForComponentFolder(_path);
+			String _package = null;
+			IResource _resource = ResourcesPlugin.getWorkspace().getRoot().findMember(this.getContainerFullPath());
+			if (_resource instanceof IFolder) {
+				_package = packageNameForComponentFolder((IFolder)_resource);
+			}
 			if (_package == null && (_package = packageNameForComponent("Main")) == null) {
 				_package = "";
 			}
