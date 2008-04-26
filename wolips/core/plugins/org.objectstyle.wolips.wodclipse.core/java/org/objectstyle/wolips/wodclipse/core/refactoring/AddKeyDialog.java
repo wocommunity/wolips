@@ -3,6 +3,7 @@ package org.objectstyle.wolips.wodclipse.core.refactoring;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -14,8 +15,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.objectstyle.wolips.wodclipse.core.Activator;
 
 public class AddKeyDialog extends Dialog {
+  
+  private static final String PREPEND_GET_METHOD = "AddKeyDialog.prependGetMethod";
+
   private Text _nameField;
 
   private Button _typeAsGivenButton;
@@ -35,6 +40,8 @@ public class AddKeyDialog extends Dialog {
   private Button _setMethodButton;
 
   private AddKeyInfo _addKeyInfo;
+  
+  private IDialogSettings _settings = Activator.getDefault().getDialogSettings();
 
   /**
    * Create the dialog
@@ -162,6 +169,8 @@ public class AddKeyDialog extends Dialog {
       _typeAsGivenButton.setSelection(true);
     }
 
+    _addKeyInfo.setPrependGetToAccessorMethod(_settings.getBoolean(PREPEND_GET_METHOD));
+    
     _instanceVariableButton.setSelection(_addKeyInfo.isCreateField());
     _getMethodButton.setSelection(_addKeyInfo.isCreateAccessorMethod());
     _prependGetButton.setSelection(_addKeyInfo.isPrependGetToAccessorMethod());
@@ -212,6 +221,7 @@ public class AddKeyDialog extends Dialog {
     _addKeyInfo.setCreateAccessorMethod(_getMethodButton.getSelection());
     _addKeyInfo.setPrependGetToAccessorMethod(_prependGetButton.getSelection());
     _addKeyInfo.setCreateMutatorMethod(_setMethodButton.getSelection());
+    _settings.put(PREPEND_GET_METHOD, _prependGetButton.getSelection());
     super.buttonPressed(buttonId);
   }
 
