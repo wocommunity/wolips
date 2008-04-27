@@ -185,7 +185,7 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements ITextWOEdi
     try {
       WodParserCache cache = TemplateSourceEditor.this.getParserCache();
       cache.parse();
-      cache.validate();
+      cache.validate(false, true);
       if (_breadcrumb != null) {
         _breadcrumb.updateBreadcrumb();
       }

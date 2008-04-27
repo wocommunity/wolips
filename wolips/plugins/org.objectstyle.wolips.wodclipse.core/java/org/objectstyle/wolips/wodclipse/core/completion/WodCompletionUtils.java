@@ -86,9 +86,9 @@ public class WodCompletionUtils {
   public static void fillInElementTypeCompletionProposals(IJavaProject project, String token, int tokenOffset, int offset, Set<WodCompletionProposal> completionProposalsSet, boolean guessed, IProgressMonitor progressMonitor) throws JavaModelException {
     // Lookup type names that extend WOElement based on the current partial
     // token
-    TypeNameCollector typeNameCollector = new TypeNameCollector(project, false);
     String partialToken = partialToken(token, tokenOffset, offset);
     if (partialToken.length() > 0) {
+      TypeNameCollector typeNameCollector = new TypeNameCollector(project, false);
       BindingReflectionUtils.findMatchingElementClassNames(partialToken, SearchPattern.R_PREFIX_MATCH, typeNameCollector, progressMonitor);
       boolean includePackageName = token.indexOf('.') != -1;
       Iterator<String> matchingElementClassNamesIter = typeNameCollector.typeNames();

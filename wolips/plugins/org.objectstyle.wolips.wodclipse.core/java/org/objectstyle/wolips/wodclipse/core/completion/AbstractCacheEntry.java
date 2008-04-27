@@ -55,7 +55,7 @@ public abstract class AbstractCacheEntry<T> {
     T model = _getModel();
     if (model == null) {
       getCache().parse();
-      getCache().validate();
+      getCache().validate(false, true);
       model = _getModel();
     }
     return model;
@@ -69,6 +69,7 @@ public abstract class AbstractCacheEntry<T> {
     _setContents(contents);
     _setModel(null);
     _file = null;
+    //System.out.println("AbstractCacheEntry.setContents: b " + _file);
     _document = null;
     _documentChanged = true;
   }
@@ -99,6 +100,7 @@ public abstract class AbstractCacheEntry<T> {
   }
 
   public void setFile(IFile file) {
+    // System.out.println("AbstractCacheEntry.setFile: c " + file);
     _file = file;
   }
 
@@ -190,9 +192,11 @@ public abstract class AbstractCacheEntry<T> {
   }
 
   public synchronized T parse(IFile file, boolean updateCache) throws Exception {
+    //System.out.println("AbstractCacheEntry.parse: " + file);
     T model = _parse(file, updateCache);
 
     if (updateCache) {
+      //System.out.println("AbstractCacheEntry.parse: a " + _file);
       _file = file;
       //System.out.println("WodParserCacheEntry.parse: set model (file) = " + model);
       _setModel(model);

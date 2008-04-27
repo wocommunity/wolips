@@ -27,7 +27,7 @@ public class HtmlCacheEntry extends AbstractCacheEntry<FuzzyXMLDocument> impleme
 
   public HtmlElementCache getHtmlElementCache() throws Exception {
     getCache().parse();
-    getCache().validate();
+    getCache().validate(false, true);
     return _htmlElementCache;
   }
 
