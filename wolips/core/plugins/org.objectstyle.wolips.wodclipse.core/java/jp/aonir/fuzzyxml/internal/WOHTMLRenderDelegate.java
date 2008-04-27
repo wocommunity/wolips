@@ -136,7 +136,7 @@ public class WOHTMLRenderDelegate implements RenderDelegate {
           xmlBuffer.append("\n");
         }
         renderContext.appendIndent(xmlBuffer); 
-      } else 
+      } else
       // A text node with a breaking start or following a breaking end
       if ((_node.isText() || _node.isCode()) && _node.parentNode().isBreaking() && 
           (_node.hasBreakingStart() || lastNode == null || lastNode.isHidden() || lastNode.hasBreakingEnd()) ) {
@@ -186,15 +186,28 @@ public class WOHTMLRenderDelegate implements RenderDelegate {
   private void renderCodeBlock(FuzzyXMLText node, RenderContext renderContext,
       StringBuffer xmlBuffer) {
     FuzzyXMLFormatComposite _node = new FuzzyXMLFormatComposite(node);
-    if (_node.getParentNode().getName().equals("style")) {
-      try {
-        CSSStyleSheetFormatter cssFormatter = new CSSStyleSheetFormatter(_node.getValue().toString());
-        cssFormatter.toString(renderContext, xmlBuffer);
-        return;
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
+//    if (_node.getParentNode().getName().equalsIgnoreCase("style")) {
+//      try {
+//        CSSStyleSheetFormatter cssFormatter = new CSSStyleSheetFormatter(_node.getValue().toString());
+//        StringBuffer sb = new StringBuffer();
+//        cssFormatter.toString(renderContext, sb);
+//        xmlBuffer.append(sb);
+//        return;
+//      } catch (Throwable e) {
+//        e.printStackTrace();
+//      }
+//    } 
+//    if (_node.getParentNode().getName().equalsIgnoreCase("script")) {
+//      try {
+//        JavaScriptFormatter jsFormatter = new JavaScriptFormatter(_node.getValue().toString());
+//        StringBuffer sb = new StringBuffer();
+//        jsFormatter.toString(renderContext, sb);
+//        xmlBuffer.append(sb);
+//        return;
+//      } catch (Throwable e) {
+//        e.printStackTrace();
+//      }        
+//    }
 
     if (_node.hasNonBreakingStart()) {
       xmlBuffer.append(_node.getValue().replaceAll("\n[\r\t ]*$", "\n"));
@@ -254,7 +267,7 @@ public class WOHTMLRenderDelegate implements RenderDelegate {
   }
   
   private boolean isPreBlock(FuzzyXMLFormatComposite node) {
-    return "pre".equals(node.getName().toLowerCase());
+    return "pre".equalsIgnoreCase(node.getName());
   }
   
   private boolean lineIsTooLong(StringBuffer xmlBuffer) {
