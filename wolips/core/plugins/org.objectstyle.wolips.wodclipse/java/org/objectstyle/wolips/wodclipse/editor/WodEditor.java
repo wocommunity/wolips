@@ -183,7 +183,7 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 					try {
 						WodParserCache cache = getParserCache();
 						cache.parse();
-						cache.validate();
+						cache.validate(false, true);
 					} catch (Exception ex) {
 						Activator.getDefault().log(ex);
 					}

@@ -7,11 +7,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
@@ -32,6 +29,7 @@ import org.objectstyle.wolips.core.resources.types.LimitedLRUCache;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
+import org.objectstyle.wolips.wodclipse.core.builder.WodBuilder;
 import org.objectstyle.wolips.wodclipse.core.util.EOModelGroupCache;
 
 public class WodParserCache implements ITypeOwner {
@@ -52,6 +50,7 @@ public class WodParserCache implements ITypeOwner {
 
   private long _lastJavaParseTime;
   private boolean _validated;
+  private boolean _validating;
 
   private static LimitedLRUCache<String, WodParserCache> _parsers;
 
@@ -72,26 +71,28 @@ public class WodParserCache implements ITypeOwner {
     }
     return cache;
   }
-  
-	public static void invalidateResource(IResource resource) {
-		try {
-			Object cacheEntry = parser(resource, false);
-			if (cacheEntry != null) {
-		    String key = getCacheKey(resource);
-				_parsers.remove(key);
-			}
-		} catch (CoreException e) {
-			e.printStackTrace();
-		} catch (LocateException e) {
-			e.printStackTrace();
-		}
+
+  public static void invalidateResource(IResource resource) {
+    try {
+      Object cacheEntry = parser(resource, false);
+      if (cacheEntry != null) {
+        String key = getCacheKey(resource);
+        _parsers.remove(key);
+      }
+    }
+    catch (CoreException e) {
+      e.printStackTrace();
+    }
+    catch (LocateException e) {
+      e.printStackTrace();
+    }
   }
 
-	private static String getCacheKey(IResource resource) {
+  private static String getCacheKey(IResource resource) {
     return getWoFolder(resource).getLocation().toPortableString();
-	}
-	
-	private static IContainer getWoFolder(IResource resource) {
+  }
+
+  private static IContainer getWoFolder(IResource resource) {
     IContainer woFolder;
     if (resource instanceof IFolder) {
       woFolder = (IContainer) resource;
@@ -100,8 +101,8 @@ public class WodParserCache implements ITypeOwner {
       woFolder = resource.getParent();
     }
     return woFolder;
-	}
-	
+  }
+
   protected WodParserCache(IContainer woFolder) throws CoreException, LocateException {
     _woFolder = woFolder;
     init();
@@ -118,7 +119,7 @@ public class WodParserCache implements ITypeOwner {
     _wooEntry = new WooCacheEntry(this);
     clearCache();
   }
-  
+
   public IContainer getWoFolder() {
     return _woFolder;
   }
@@ -170,24 +171,27 @@ public class WodParserCache implements ITypeOwner {
       _apiFile = _componentsLocateResults.getDotApi(true);
       _componentType = _componentsLocateResults.getDotJavaType();
       _wooEntry.setFile(_componentsLocateResults.getFirstWooFile());
-    } else {
-    	_woFolder = null;
+    }
+    else {
+      _woFolder = null;
     }
   }
 
   public void clearCache() throws CoreException, LocateException {
     //System.out.println("WodParserCache.WodParserCache: Reloading " + _woFolder);
     clearLocateResultsCache();
-
-    _htmlEntry.clear();
-    _wodEntry.clear();
-    _wooEntry.clear();
+    clearParserCache();
     clearValidationCache();
   }
 
+  public void clearParserCache() throws CoreException, LocateException {
+    _htmlEntry.clear();
+    _wodEntry.clear();
+    _wooEntry.clear();
+  }
+
   public void clearValidationCache() {
-    //System.out.println("WodParserCache.clearValidationCache: " + _woFolder);
-    _validated = false;
+    _setValidated(false);
   }
 
   public LocalizedComponentsLocateResult getComponentsLocateResults() {
@@ -214,11 +218,11 @@ public class WodParserCache implements ITypeOwner {
     }
     return _modelGroupCache;
   }
-  
+
   public IType getType() throws CoreException, LocateException {
     return getComponentType();
   }
-  
+
   public TypeCache getCache() {
     return WodParserCache.getTypeCache();
   }
@@ -253,10 +257,22 @@ public class WodParserCache implements ITypeOwner {
     }
   }
 
-  public void validate() throws CoreException {
-    if (!_validated) {
-      IWorkspaceRunnable body = new IWorkspaceRunnable() {
-        public void run(IProgressMonitor monitor) {
+  public void validate(boolean force, boolean threaded) throws CoreException {
+    boolean validate = false;
+    synchronized (this) {
+      if (force || !_validating) {
+        _validating = true;
+        validate = true;
+      }
+    }
+    
+    if (validate) {
+      //System.out.println("WodParserCache.validate: force = " + force + ", threaded = " + threaded + ", validated = " + _validated + ", validating = " + _validating + ", (" + Thread.currentThread() + ")");
+      if (force || !_validated) {
+        if (threaded) {
+          WodBuilder.validateComponent(_woFolder, true, null);
+        }
+        else {
           try {
             WodParserCache.this._validate();
           }
@@ -268,9 +284,7 @@ public class WodParserCache implements ITypeOwner {
             }
           }
         }
-      };
-      IWorkspace workspace = ResourcesPlugin.getWorkspace();
-      workspace.run(body, null, IWorkspace.AVOID_UPDATE, null);
+      }
     }
   }
 
@@ -287,21 +301,40 @@ public class WodParserCache implements ITypeOwner {
   }
 
   public void _setValidated(boolean validated) {
-    _validated = validated;
-    // System.out.println("WodParserCache._setValidated: " + _validated);
+    // ignore validated = false if we're validating right now ...
+    if (validated || !_validating) {
+      //if (!validated) {
+        //System.out.println("WodParserCache._setValidated: clearing validation cache for " + _woFolder + " (" + Thread.currentThread() + ")");
+        //      Exception ew =  new Exception(");
+        //      ew.fillInStackTrace();
+        //      ew.printStackTrace(System.out);
+      //}
+
+      _validated = validated;
+      // System.out.println("WodParserCache._setValidated: " + _validated);
+    }
   }
 
-  public void _validate() throws Exception {
+  public synchronized void _validate() throws Exception {
     _validated = true;
+    _validating = true;
+    try {
+      //System.out.println("WodParserCache.validate: a " + _woFolder + " (" + Thread.currentThread() + ")");
 
-    _htmlEntry.deleteProblems();
-    _wodEntry.deleteProblems();
-    _wooEntry.deleteProblems();
+      _htmlEntry.deleteProblems();
+      _wodEntry.deleteProblems();
+      _wooEntry.deleteProblems();
 
-    if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.VALIDATE_TEMPLATES_KEY)) {
-      _htmlEntry.validate();
-      _wodEntry.validate();
-      _wooEntry.validate();
+      if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.VALIDATE_TEMPLATES_KEY)) {
+        _htmlEntry.validate();
+        _wodEntry.validate();
+        _wooEntry.validate();
+      }
+      //System.out.println("WodParserCache.validate: b " + _woFolder + " (" + Thread.currentThread() + ")");
+    }
+    finally {
+      _validated = true;
+      _validating = false;
     }
   }
 
