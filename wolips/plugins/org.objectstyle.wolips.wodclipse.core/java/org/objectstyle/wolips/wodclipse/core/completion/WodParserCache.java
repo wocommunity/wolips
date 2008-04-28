@@ -35,6 +35,7 @@ import org.objectstyle.wolips.wodclipse.core.util.EOModelGroupCache;
 public class WodParserCache implements ITypeOwner {
   private static TypeCache _typeCache;
   private static EOModelGroupCache _modelGroupCache;
+  private static LimitedLRUCache<String, WodParserCache> _parsers;
 
   private WodCacheEntry _wodEntry;
   private HtmlCacheEntry _htmlEntry;
@@ -54,22 +55,25 @@ public class WodParserCache implements ITypeOwner {
 
   private Object _validationLock = new Object();
 
-  private static LimitedLRUCache<String, WodParserCache> _parsers;
-
-  public static synchronized WodParserCache parser(IResource resource) throws CoreException, LocateException {
+  static {
+    WodParserCache._typeCache = new TypeCache();
+    WodParserCache._modelGroupCache = new EOModelGroupCache();
+  }
+  
+  public static WodParserCache parser(IResource resource) throws CoreException, LocateException {
     return WodParserCache.parser(resource, true);
   }
 
   public static synchronized WodParserCache parser(IResource resource, boolean createIfMissing) throws CoreException, LocateException {
     if (_parsers == null) {
-      _parsers = new LimitedLRUCache<String, WodParserCache>(10);
+      WodParserCache._parsers = new LimitedLRUCache<String, WodParserCache>(10);
       ResourcesPlugin.getWorkspace().addResourceChangeListener(new WodParserCacheInvalidator());
     }
-    String key = getCacheKey(resource);
-    WodParserCache cache = _parsers.get(key);
+    String key = WodParserCache.getCacheKey(resource);
+    WodParserCache cache = WodParserCache._parsers.get(key);
     if (cache == null && createIfMissing) {
       cache = new WodParserCache(getWoFolder(resource));
-      _parsers.put(key, cache);
+      WodParserCache._parsers.put(key, cache);
     }
     return cache;
   }
@@ -207,18 +211,12 @@ public class WodParserCache implements ITypeOwner {
     return WodParserCache.getTypeCache().getApiCache(_javaProject);
   }
 
-  public static synchronized TypeCache getTypeCache() {
-    if (WodParserCache._typeCache == null) {
-      WodParserCache._typeCache = new TypeCache();
-    }
+  public static TypeCache getTypeCache() {
     return WodParserCache._typeCache;
   }
 
-  public static synchronized EOModelGroupCache getModelGroupCache() {
-    if (_modelGroupCache == null) {
-      _modelGroupCache = new EOModelGroupCache();
-    }
-    return _modelGroupCache;
+  public static EOModelGroupCache getModelGroupCache() {
+    return WodParserCache._modelGroupCache;
   }
 
   public IType getType() throws CoreException, LocateException {
