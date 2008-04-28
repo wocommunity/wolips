@@ -4,7 +4,7 @@
 <!--        Main WOLips feature Ant build file                -->
 <!-- Serves as a facade for different helper build files.     -->
 <!-- ======================================================== -->
-<project name="org.objectstyle.wolips.jprofiler.feature" default="" basedir=".">
+<project name="org.objectstyle.wolips.groovy.feature" default="" basedir=".">
 
     <property file="default.properties"/>
 

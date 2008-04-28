@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editorActions">
+	  <editorContribution 
+         id="org.objectstyle.wolips.groovyeditor.editorActionsContribution" 
+         targetID="org.codehaus.groovy.eclipse.editor.GroovyEditor">        
+           <menu id="org.objectstyle.wolips.groovyeditor.navigateMenuContribution"
+			label="&amp;Component Editor" 
+             path="navigate/additions">
+ 				<separator name="group1"/>
+ 				<separator name="group2"/>
+		  </menu>
+         <action
+               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToWOBuilderActionDelegate"
+               definitionId="org.objectstyle.wolips.componenteditor.editors.towobuilder"
+               id="org.objectstyle.wolips.groovyeditor.editors.switchtowobuilder"
+               label="Switch to WOBuilder"
+               menubarPath="navigate/org.objectstyle.wolips.groovyeditor.navigateMenuContribution/group1"/>
+         <action
+               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToApiEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.componenteditor.editors.toapi"
+               id="org.objectstyle.wolips.groovyeditor.editors.switchtoapi"
+               label="Switch to Api Editor"
+               menubarPath="navigate/org.objectstyle.wolips.groovyeditor.navigateMenuContribution/group1"/>
+         <action
+               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToWodEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.componenteditor.editors.towod"
+               id="org.objectstyle.wolips.groovyeditor.editors.switchtowod"
+               label="Switch to Wod Editor"
+               menubarPath="navigate/org.objectstyle.wolips.groovyeditor.navigateMenuContribution/group1"/>
+         <action
+               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToHtmlEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.componenteditor.editors.tohtml"
+               id="org.objectstyle.wolips.groovyeditor.editors.switchtohtml"
+               label="Switch to Html Editor"
+               menubarPath="navigate/org.objectstyle.wolips.groovyeditor.navigateMenuContribution/group1"/>
+		</editorContribution>
+	 </extension>
+</plugin>

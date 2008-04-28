@@ -136,7 +136,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 		viewerContainer.setLayout(relatedTableLayout);
 
 		TableColumn typeColumn = new TableColumn(_viewer.getTable(), SWT.LEFT);
-		relatedTableLayout.setColumnData(typeColumn, new ColumnPixelData(65));
+		relatedTableLayout.setColumnData(typeColumn, new ColumnPixelData(68));
 		
 		TableColumn nameColumn = new TableColumn(_viewer.getTable(), SWT.LEFT);
 		relatedTableLayout.setColumnData(nameColumn, new ColumnWeightData(90, true));
