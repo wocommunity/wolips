@@ -52,6 +52,8 @@ public class WodParserCache implements ITypeOwner {
   private boolean _validated;
   private boolean _validating;
 
+  private Object _validationLock = new Object();
+
   private static LimitedLRUCache<String, WodParserCache> _parsers;
 
   public static synchronized WodParserCache parser(IResource resource) throws CoreException, LocateException {
@@ -259,13 +261,13 @@ public class WodParserCache implements ITypeOwner {
 
   public void validate(boolean force, boolean threaded) throws CoreException {
     boolean validate = false;
-    synchronized (this) {
+    synchronized (_validationLock) {
       if (force || !_validating) {
         _validating = true;
         validate = true;
       }
     }
-    
+
     if (validate) {
       //System.out.println("WodParserCache.validate: force = " + force + ", threaded = " + threaded + ", validated = " + _validated + ", validating = " + _validating + ", (" + Thread.currentThread() + ")");
       if (force || !_validated) {
@@ -304,10 +306,10 @@ public class WodParserCache implements ITypeOwner {
     // ignore validated = false if we're validating right now ...
     if (validated || !_validating) {
       //if (!validated) {
-        //System.out.println("WodParserCache._setValidated: clearing validation cache for " + _woFolder + " (" + Thread.currentThread() + ")");
-        //      Exception ew =  new Exception(");
-        //      ew.fillInStackTrace();
-        //      ew.printStackTrace(System.out);
+      //System.out.println("WodParserCache._setValidated: clearing validation cache for " + _woFolder + " (" + Thread.currentThread() + ")");
+      //      Exception ew =  new Exception(");
+      //      ew.fillInStackTrace();
+      //      ew.printStackTrace(System.out);
       //}
 
       _validated = validated;
@@ -315,9 +317,12 @@ public class WodParserCache implements ITypeOwner {
     }
   }
 
-  public synchronized void _validate() throws Exception {
-    _validated = true;
-    _validating = true;
+  public void _validate() throws Exception {
+    synchronized (_validationLock) {
+      _validated = true;
+      _validating = true;
+    }
+
     try {
       //System.out.println("WodParserCache.validate: a " + _woFolder + " (" + Thread.currentThread() + ")");
 
@@ -333,8 +338,10 @@ public class WodParserCache implements ITypeOwner {
       //System.out.println("WodParserCache.validate: b " + _woFolder + " (" + Thread.currentThread() + ")");
     }
     finally {
-      _validated = true;
-      _validating = false;
+      synchronized (_validationLock) {
+        _validated = true;
+        _validating = false;
+      }
     }
   }
 
