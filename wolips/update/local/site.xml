@@ -27,6 +27,9 @@
    <feature url="features/org.objectstyle.wolips.jprofiler.feature_1.0.6.jar" id="org.objectstyle.wolips.jprofiler.feature" version="1.0.6">
       <category name="Profiling Support"/>
    </feature>
+   <feature url="features/org.objectstyle.wolips.groovy.feature_1.0.6.jar" id="org.objectstyle.wolips.groovy.feature" version="1.0.6">
+      <category name="Scripting Support"/>
+   </feature>
    <category-def name="Standard Install" label="Standard Install">
       <description>
          WOLips supports the development of WebObjects Applications and Frameworks.
@@ -40,6 +43,11 @@
    <category-def name="Maven Support" label="Maven Support">
       <description>
          maven
+      </description>
+   </category-def>
+   <category-def name="Scripting Support" label="Scripting Support">
+      <description>
+         Scripting language support for WOLips
       </description>
    </category-def>
 </site>

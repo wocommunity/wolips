@@ -50,19 +50,21 @@ public class RelatedLabelProvider extends AppearanceAwareLabelProvider implement
 				if (ext != null) {
 					if ("java".equalsIgnoreCase(ext)) {
 						text = "Java";
-					} else {
-						if (!ext.matches("^wod|wo|woo|html|api$")) {
-							text = ext.toUpperCase();
-							if (resource.getParent() != null && resource.getParent().getFileExtension() != null && resource.getParent().getFileExtension().equals("lproj")) {
-								text = resource.getParent().getName().replaceAll("\\.lproj", "");
-							}
-							else if (text.equals("EOMODELD")) {
-								text = "EOM";
-							}
-						} else {
-							text = ext.toUpperCase();
+					} else
+					if ("groovy".equalsIgnoreCase(ext)) {
+						text = "Groovy";
+					} else
+					if (!ext.matches("^wod|wo|woo|html|api$")) {
+						text = ext.toUpperCase();
+						if (resource.getParent() != null && resource.getParent().getFileExtension() != null && resource.getParent().getFileExtension().equals("lproj")) {
+							text = resource.getParent().getName().replaceAll("\\.lproj", "");
 						}
-					}
+						else if (text.equals("EOMODELD")) {
+							text = "EOM";
+						}
+					} else {
+						text = ext.toUpperCase();
+					}					
 				}
 			} else {
 				text = name;

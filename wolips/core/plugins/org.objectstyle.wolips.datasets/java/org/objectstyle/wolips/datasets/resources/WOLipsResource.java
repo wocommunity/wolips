@@ -116,7 +116,7 @@ public abstract class WOLipsResource implements IWOLipsResource {
 				int length = fileName.length() - extName.length() - 1;
 				if (length > 0) {
 					fileName = fileName.substring(0, length);
-					String[] extensions = new String[] { "java", WOLipsModel.WOCOMPONENT_BUNDLE_EXTENSION, WOLipsModel.WOCOMPONENT_HTML_EXTENSION, WOLipsModel.WOCOMPONENT_WOD_EXTENSION, WOLipsModel.WOCOMPONENT_WOO_EXTENSION, WOLipsModel.WOCOMPONENT_API_EXTENSION };
+					String[] extensions = new String[] { "java", "groovy", WOLipsModel.WOCOMPONENT_BUNDLE_EXTENSION, WOLipsModel.WOCOMPONENT_HTML_EXTENSION, WOLipsModel.WOCOMPONENT_WOD_EXTENSION, WOLipsModel.WOCOMPONENT_WOO_EXTENSION, WOLipsModel.WOCOMPONENT_API_EXTENSION };
 					list = WorkbenchUtilitiesPlugin.findResourcesInProjectByNameAndExtensions(resource.getProject(), fileName, extensions, false);
 				}
 			} catch (Exception e) {
