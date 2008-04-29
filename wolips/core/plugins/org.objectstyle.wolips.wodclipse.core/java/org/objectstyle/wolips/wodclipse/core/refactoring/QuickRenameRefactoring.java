@@ -147,7 +147,7 @@ public class QuickRenameRefactoring {
       });
       LinkedModeUI htmlUI = new EditorLinkedModeUI(linkedModeModel, textViewers);
       //    ui.setInitialOffset(offset);
-      htmlUI.setExitPosition(textViewers[0], 0, 0, LinkedPositionGroup.NO_STOP);
+//      htmlUI.setExitPosition(textViewers[0], 0, 0, LinkedPositionGroup.NO_STOP);
       htmlUI.enter();
     }
   }
