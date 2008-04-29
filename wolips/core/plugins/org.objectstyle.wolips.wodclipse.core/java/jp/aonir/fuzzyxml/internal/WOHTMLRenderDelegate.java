@@ -156,7 +156,7 @@ public class WOHTMLRenderDelegate implements RenderDelegate {
           lastNode = _node;
           return false;
         }
-      } else
+      }
       // A multiline text block that isn't empty
       if (_node.isText() && _node.hasLineBreaks() && !_node.isHidden()) {
         renderTextBlock((FuzzyXMLText)node, renderContext, xmlBuffer);
@@ -164,6 +164,7 @@ public class WOHTMLRenderDelegate implements RenderDelegate {
         return false;
       }
     }
+    System.out.println(node + " " + _node.hasLineBreaks());
     return true;
   }
 
@@ -172,8 +173,12 @@ public class WOHTMLRenderDelegate implements RenderDelegate {
     StringBuffer indent = new StringBuffer();
     renderContext.appendIndent(indent);
     xmlBuffer.append(node.getValue().trim().replaceAll("\n\\s*", "\n" + indent.toString()));
-    if (_node.hasBreakingEnd() & !_node.isMultiLine()) {
-      xmlBuffer.append(" ");
+    if (_node.hasBreakingEnd()) {
+      if (!_node.hasLineBreaks()) {
+        xmlBuffer.append(" ");
+      } else {
+        xmlBuffer.append("\n");
+      }
     }
   }
   
