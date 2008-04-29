@@ -12,10 +12,7 @@ public class FuzzyXMLFormatComposite implements FuzzyXMLNode, FuzzyXMLFormat {
   private final FuzzyXMLNode delegate; 
 
   public FuzzyXMLFormatComposite(FuzzyXMLNode node) {
-    if (node instanceof FuzzyXMLFormatComposite)
-      delegate = ((FuzzyXMLFormatComposite)node).getDelegate();
-    else
-      delegate = node;
+    delegate = unwrap(node);
   }
   
   public boolean isNonBreaking() {
@@ -282,13 +279,13 @@ public class FuzzyXMLFormatComposite implements FuzzyXMLNode, FuzzyXMLFormat {
     return "script".equalsIgnoreCase(getName(node));
   }
 
-  private static FuzzyXMLNode unwrap(FuzzyXMLNode node) {
+  public static FuzzyXMLNode unwrap(FuzzyXMLNode node) {
     if (node instanceof FuzzyXMLFormatComposite)
       return ((FuzzyXMLFormatComposite)node).getDelegate();
     return node;
   }
   
-  private static FuzzyXMLFormatComposite wrap(FuzzyXMLNode node) {
+  public static FuzzyXMLFormatComposite wrap(FuzzyXMLNode node) {
     if (node instanceof FuzzyXMLFormatComposite)
       return (FuzzyXMLFormatComposite)node;
     return new FuzzyXMLFormatComposite(node);

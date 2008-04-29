@@ -1,6 +1,5 @@
 package jp.aonir.fuzzyxml;
 
-import java.awt.PageAttributes.OriginType;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -212,7 +211,7 @@ public class FuzzyXMLParser {
         handleCloseTag(start, end, text);
       }
       else if (!woOnly && text.startsWith("!--")) {
-        end = _originalSource. indexOf("-->", end);
+        end = _originalSource. indexOf("-->", start);
         if (end > 0) {
           end += 3;
         }
