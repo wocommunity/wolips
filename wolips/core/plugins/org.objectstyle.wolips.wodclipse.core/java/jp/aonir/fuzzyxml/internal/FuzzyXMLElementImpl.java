@@ -465,13 +465,25 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   }
 
   public String getValue() {
-    StringBuffer sb = new StringBuffer();
+    RenderContext rc = new RenderContext(false);
+    rc.setIndent(0);
+    rc.setIndentSize(2);
+    rc.setSpaceInEmptyTags(true);
+    return getValue(rc, new StringBuffer());
+  }
+  
+  public String getValue(RenderContext renderContext, StringBuffer xmlBuffer) {
+    StringBuffer sb = new StringBuffer(xmlBuffer);
+    int length = xmlBuffer.length();
     FuzzyXMLNode[] children = getChildren();
+    RenderDelegate delegate = renderContext.getDelegate();
+
     for (int i = 0; i < children.length; i++) {
-      if (children[i] instanceof FuzzyXMLText) {
-        sb.append(((FuzzyXMLText) children[i]).getValue());
+      if (delegate == null || delegate.renderNode(children[i], renderContext, sb)) {
+        children[i].toXMLString(renderContext, sb);
       }
     }
+    sb.delete(0, length);
     return sb.toString();
   }
 
@@ -513,13 +525,8 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
         if (delegate != null) {
           delegate.afterOpenTag(this, renderContext, xmlBuffer);
         }
-                
-        FuzzyXMLNode[] children = getChildren();
-        for (int i = 0; i < children.length; i++) {
-          if (delegate == null || delegate.renderNode(children[i], renderContext, xmlBuffer)) {
-            children[i].toXMLString(renderContext, xmlBuffer);
-          }
-        }
+        
+        xmlBuffer.append(getValue(renderContext, xmlBuffer));
         
         if (delegate != null) {
           delegate.beforeCloseTag(this, renderContext, xmlBuffer);
@@ -529,6 +536,8 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
           xmlBuffer.append("</").append(tagName).append(">");
         }
       }
+    } catch (Exception e) {
+      e.printStackTrace();
     }
     finally {
       if (delegate != null) {

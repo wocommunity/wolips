@@ -139,14 +139,19 @@ public class FuzzyXMLFormatComposite implements FuzzyXMLNode, FuzzyXMLFormat {
     return hasChildren(delegate);
   }
   
+  public boolean isScript() {
+    return isScript(delegate);
+  }
+  
+  public boolean isStyle() {
+    return isStyle(delegate);
+  }
+  
   /** Utility methods **/
   
   public static boolean isNonBreaking(FuzzyXMLNode node) {
-    if (node instanceof FuzzyXMLFormatComposite)
-      return isNonBreaking(((FuzzyXMLFormatComposite)node).getDelegate());
-    if (node instanceof FuzzyXMLFormat)
-      return ((FuzzyXMLFormat)node).isNonBreaking();
-    return false;
+    FuzzyXMLNode _node = unwrap(node); 
+    return (_node instanceof FuzzyXMLFormat && ((FuzzyXMLFormat)_node).isNonBreaking());
   }
   
   public static boolean isBreaking(FuzzyXMLNode node) {
@@ -154,17 +159,14 @@ public class FuzzyXMLFormatComposite implements FuzzyXMLNode, FuzzyXMLFormat {
   }
     
   public static boolean isHidden(FuzzyXMLNode node) {
-    if (node instanceof FuzzyXMLFormatComposite)
-      return isHidden(((FuzzyXMLFormatComposite)node).getDelegate());
-    if (node instanceof FuzzyXMLFormat && ((FuzzyXMLFormat)node).isHidden()) {
-      return true;
-    }
-    return false;
+    FuzzyXMLNode _node = unwrap(node); 
+    return (_node instanceof FuzzyXMLFormat && ((FuzzyXMLFormat)_node).isHidden());
   }
   
   public static boolean hasNonBreakingStart(String value) {
-    char ch = value.charAt(0);
-    return !(Character.isWhitespace(ch));
+    if (value == null || value.equals(""))
+      return true;
+    return !(Character.isWhitespace(value.charAt(0)));
   }
 
   public static boolean hasBreakingStart(String value) {
@@ -174,8 +176,7 @@ public class FuzzyXMLFormatComposite implements FuzzyXMLNode, FuzzyXMLFormat {
   public static boolean hasNonBreakingEnd(String value) {
     if (value == null || value.equals(""))
       return true;
-    char ch = value.charAt(value.length()-1);
-    return !(Character.isWhitespace(ch));
+    return !(Character.isWhitespace(value.charAt(value.length()-1)));
   }
 
   public static boolean hasBreakingEnd(String value) {
@@ -183,11 +184,9 @@ public class FuzzyXMLFormatComposite implements FuzzyXMLNode, FuzzyXMLFormat {
   }
 
   public static boolean hasNonBreakingEnd(FuzzyXMLNode node) {
-    if (node instanceof FuzzyXMLFormatComposite)
-      return hasNonBreakingEnd(((FuzzyXMLFormatComposite)node).getDelegate());
-    if (node instanceof FuzzyXMLText)
-      return hasNonBreakingEnd(((FuzzyXMLText)node).getValue());
-    return true;
+    if (unwrap(node) instanceof FuzzyXMLComment)
+      return true;
+    return hasNonBreakingEnd(getValue(node));
   }
   
   public static boolean hasBreakingEnd(FuzzyXMLNode node) {
@@ -195,116 +194,103 @@ public class FuzzyXMLFormatComposite implements FuzzyXMLNode, FuzzyXMLFormat {
   }
   
   public static boolean hasNonBreakingStart(FuzzyXMLNode node) {
-    if (node instanceof FuzzyXMLFormatComposite)
-      return hasNonBreakingStart(((FuzzyXMLFormatComposite)node).getDelegate());
-    if (node instanceof FuzzyXMLText)
-      return hasNonBreakingStart(((FuzzyXMLText)node).getValue());
-    return true;
+    if (unwrap(node) instanceof FuzzyXMLComment)
+      return true;
+    return hasNonBreakingStart(getValue(node));
   }
 
   public static boolean hasBreakingStart(FuzzyXMLNode node) {
-    if (node instanceof FuzzyXMLFormatComposite)
-      return hasBreakingStart(((FuzzyXMLFormatComposite)node).getDelegate());
     return !hasNonBreakingStart(node);
   }
   
   public static boolean isElement(FuzzyXMLNode node) {
-    if (node instanceof FuzzyXMLFormatComposite)
-      return isElement(((FuzzyXMLFormatComposite)node).getDelegate());
-    return node instanceof FuzzyXMLElement;
+    return unwrap(node) instanceof FuzzyXMLElement;
   }
   
   public static boolean isText(FuzzyXMLNode node) {
-    if (node instanceof FuzzyXMLFormatComposite)
-      return isText(((FuzzyXMLFormatComposite)node).getDelegate());
-    return node instanceof FuzzyXMLText;
+    return unwrap(node) instanceof FuzzyXMLText;
   }
   
   public static boolean hasCloseTag(FuzzyXMLNode node) {
-    if (node instanceof FuzzyXMLFormatComposite)
-      return hasCloseTag(((FuzzyXMLFormatComposite)node).getDelegate());
-    if (node instanceof FuzzyXMLElement)
-      return ((FuzzyXMLElement)node).hasCloseTag();
-    return false;
+    FuzzyXMLNode _node = unwrap(node); 
+    return (_node instanceof FuzzyXMLElement && ((FuzzyXMLElement)_node).hasCloseTag());
   }
   
   public static boolean isMultiLine(FuzzyXMLNode node) {
-    if (node instanceof FuzzyXMLFormatComposite)
-      return isMultiLine(((FuzzyXMLFormatComposite)node).getDelegate());
-    if (node instanceof FuzzyXMLText) {
-      String value = ((FuzzyXMLText)node).getValue();
-      return value.contains("\n");
-    }
-    return false;
+    return getValue(node).contains("\n");
   }
   
   public static boolean hasLineBreaks(FuzzyXMLNode node) {
-    if (node instanceof FuzzyXMLFormatComposite)
-      return hasLineBreaks(((FuzzyXMLFormatComposite)node).getDelegate());
-    if (node instanceof FuzzyXMLText) {
-      return ((FuzzyXMLText)node).hasLineBreaks();
+    FuzzyXMLNode _node = unwrap(node); 
+    if (_node instanceof FuzzyXMLText) {
+      return ((FuzzyXMLText)_node).hasLineBreaks();
     }
-    return false;
+    return getValue(_node).contains("\n");
   }
 
   public static boolean isCode(FuzzyXMLNode node) {
-    if (node instanceof FuzzyXMLFormatComposite)
-      return isCode(((FuzzyXMLFormatComposite)node).getDelegate());
-    FuzzyXMLNode parent = node.getParentNode();
-    if (parent != null && parent instanceof FuzzyXMLElement) {
-      String type = ((FuzzyXMLElement)parent).getName().toLowerCase();
-
-      if (type.equals("style") || type.equals("script"))
-        return true;
-    }
-    return false;
+    return (isScript(node.getParentNode()) || isStyle(node.getParentNode()));
   }
   
   public static boolean isComment(FuzzyXMLNode node) {
-    if (node instanceof FuzzyXMLFormatComposite)
-      return isComment(((FuzzyXMLFormatComposite)node).getDelegate());
-    return node instanceof FuzzyXMLComment;
+    return unwrap(node) instanceof FuzzyXMLComment;
   }
   
   public static String getValue(FuzzyXMLNode node) {
-    if (node instanceof FuzzyXMLFormatComposite)
-      return getValue(((FuzzyXMLFormatComposite)node).getDelegate());
-    if (node instanceof FuzzyXMLText)
-      return ((FuzzyXMLText)node).getValue();
-    if (node instanceof FuzzyXMLComment)
-      return ((FuzzyXMLComment)node).getValue();
-    return null;
+    FuzzyXMLNode _node = unwrap(node);
+    if (_node instanceof FuzzyXMLText)
+      return ((FuzzyXMLText)_node).getValue();
+    if (_node instanceof FuzzyXMLComment)
+      return ((FuzzyXMLComment)_node).getValue();
+    return "";
   }
   
   public static String getName(FuzzyXMLNode node) {
-    if (node instanceof FuzzyXMLFormatComposite)
-      return getName(((FuzzyXMLFormatComposite)node).getDelegate());
-    if (node instanceof FuzzyXMLElement)
-      return ((FuzzyXMLElement)node).getName();
+    FuzzyXMLNode _node = unwrap(node); 
+    if (_node instanceof FuzzyXMLElement)
+      return ((FuzzyXMLElement)_node).getName();
     return "";
   }
   
   public static boolean isWOTag(FuzzyXMLNode node) {
-    if (node instanceof FuzzyXMLFormatComposite)
-      return isWOTag(((FuzzyXMLFormatComposite)node).getDelegate());
-    if (node instanceof FuzzyXMLElement)
-      return WodHtmlUtils.isWOTag(getName(node).toLowerCase());
-    return false;
+    FuzzyXMLNode _node = unwrap(node); 
+    return (_node instanceof FuzzyXMLElement && WodHtmlUtils.isWOTag(getName(_node).toLowerCase()));
   }
   
   public static boolean isDocumentRoot(FuzzyXMLNode node) {
-    if (node instanceof FuzzyXMLFormatComposite)
-      return isDocumentRoot(((FuzzyXMLFormatComposite)node).getDelegate());
-    if (node instanceof FuzzyXMLElement && node.getParentNode() == null)
-      return true;
-    return false;
+    FuzzyXMLNode _node = unwrap(node); 
+    return (_node instanceof FuzzyXMLElement && _node.getParentNode() == null);
   }
   
   public static boolean hasChildren(FuzzyXMLNode node) {
+    FuzzyXMLNode _node = unwrap(node); 
+    return (_node instanceof FuzzyXMLElement && ((FuzzyXMLElement)_node).hasChildren());
+  }
+    
+  public static FuzzyXMLNode[] getChildren(FuzzyXMLNode node) {
+    FuzzyXMLNode _node = unwrap(node); 
+    if (_node instanceof FuzzyXMLElement)
+      return ((FuzzyXMLElement)_node).getChildren();
+    return null;
+  }
+  
+  public static boolean isStyle(FuzzyXMLNode node) {
+    return "style".equalsIgnoreCase(getName(node));
+  }
+
+  public static boolean isScript(FuzzyXMLNode node) {
+    return "script".equalsIgnoreCase(getName(node));
+  }
+
+  private static FuzzyXMLNode unwrap(FuzzyXMLNode node) {
     if (node instanceof FuzzyXMLFormatComposite)
-      return hasChildren(((FuzzyXMLFormatComposite)node).getDelegate());
-    if (node instanceof FuzzyXMLElement)
-      return ((FuzzyXMLElement)node).hasChildren();
-    return false;
+      return ((FuzzyXMLFormatComposite)node).getDelegate();
+    return node;
+  }
+  
+  private static FuzzyXMLFormatComposite wrap(FuzzyXMLNode node) {
+    if (node instanceof FuzzyXMLFormatComposite)
+      return (FuzzyXMLFormatComposite)node;
+    return new FuzzyXMLFormatComposite(node);
   }
 }
