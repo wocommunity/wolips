@@ -79,7 +79,7 @@ public class WOHTMLRenderDelegate implements RenderDelegate {
             ( ((hasWhiteSpaceEnd(xmlBuffer) || hasTagEnd(xmlBuffer)) && 
               (_node.isBreaking() && !isStickyWOTag(_node)) ) || 
               lastNodeWasHiddenText() ) ) {
-          if (_node.isBreaking()) {
+          if (_node.isBreaking() || _node.getParentNode().isBreaking()) {
             if (!hasNewLineEnd(xmlBuffer)) {
               xmlBuffer.append("\n");
             }
