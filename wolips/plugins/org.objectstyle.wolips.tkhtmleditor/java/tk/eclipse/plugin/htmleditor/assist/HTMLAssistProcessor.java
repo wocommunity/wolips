@@ -24,6 +24,8 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
+import org.objectstyle.wolips.wodclipse.core.Activator;
+import org.objectstyle.wolips.wodclipse.core.preferences.PreferenceConstants;
 
 import tk.eclipse.plugin.htmleditor.HTMLPlugin;
 import tk.eclipse.plugin.htmleditor.HTMLUtil;
@@ -240,6 +242,9 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
     String last = dim[2];
     String attr = dim[3];
     boolean inTag = false;
+    boolean spacesAroundEquals = Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.SPACES_AROUND_EQUALS);
+    String equals = spacesAroundEquals?" = ":"=";
+
     try {
       for (int i = documentOffset; i < document.getLength(); i++) {
         char ch = document.getChar(i);
@@ -327,7 +332,7 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
             for (int j = 0; j < requireAttrs.length; j++) {
               assistKeyword = assistKeyword + " " + requireAttrs[j].getAttributeName();
               if (requireAttrs[j].hasValue()) {
-                assistKeyword = assistKeyword + " = \"\"";
+                assistKeyword = assistKeyword + equals + "\"\"";
                 if (j == 0) {
                   position = tagName.length() + requireAttrs[j].getAttributeName().length() + 5;
                 }
@@ -404,7 +409,7 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
             String assistKeyword = null;
             int position = 0;
             if (attrList[j].hasValue()) {
-              assistKeyword = attrList[j].getAttributeName() + " = \"\"";
+              assistKeyword = attrList[j].getAttributeName() + equals + "\"\"";
               position = 4;
             }
             else {
@@ -420,7 +425,7 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
         CustomAttribute attrInfo = _customAttrs.get(i);
         if (attrInfo.getTargetTag().equals("*") || attrInfo.getTargetTag().equals(tagName)) {
           if (tagName.indexOf(":") < 0 || _customElemNames.contains(tagName)) {
-            list.add(new CompletionProposal(attrInfo.getAttributeName() + " = \"\"", documentOffset - word.length(), word.length(), attrInfo.getAttributeName().length() + 2, _attrImage, attrInfo.getAttributeName(), null, null));
+            list.add(new CompletionProposal(attrInfo.getAttributeName() + equals + "\"\"", documentOffset - word.length(), word.length(), attrInfo.getAttributeName().length() + 2, _attrImage, attrInfo.getAttributeName(), null, null));
           }
         }
       }
