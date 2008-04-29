@@ -10,6 +10,7 @@ public abstract class AbstractRenderDelegate implements RenderDelegate {
 
   public void afterOpenTag(FuzzyXMLNode node, RenderContext renderContext,
       StringBuffer xmlBuffer) {
+    renderContext.indent();
   }
 
   public void afterRender(RenderContext renderContext, StringBuffer xmlBuffer) {
@@ -17,6 +18,7 @@ public abstract class AbstractRenderDelegate implements RenderDelegate {
 
   public void beforeCloseTag(FuzzyXMLNode node, RenderContext renderContext,
       StringBuffer xmlBuffer) {
+    renderContext.outdent();
   }
 
   public boolean beforeOpenTag(FuzzyXMLNode node, RenderContext renderContext,

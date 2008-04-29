@@ -161,4 +161,22 @@ public class RenderContext {
     _indentSize = indentSize;
   }
 
+  @Override
+  public RenderContext clone() {
+    RenderContext clone = new RenderContext(isHtml());
+    clone._addMissingQuotes = _addMissingQuotes;
+    clone._attributes = _attributes;
+    clone._delegate = _delegate;
+    clone._indent = _indent;
+    clone._indentSize = _indentSize;
+    clone._indentTabs = _indentTabs;
+    clone._lowercaseAttributes = _lowercaseAttributes;
+    clone._lowercaseTags = _lowercaseTags;
+    clone._shouldFormat = _shouldFormat;
+    clone._showNewlines = _showNewlines;
+    clone._spaceInEmptyTags = _spaceInEmptyTags;
+    clone._spacesAroundEquals = _spacesAroundEquals;
+    clone._trim = _trim;
+    return clone;
+  }
 }

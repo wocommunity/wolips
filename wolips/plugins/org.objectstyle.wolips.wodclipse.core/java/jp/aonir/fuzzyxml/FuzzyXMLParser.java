@@ -1,5 +1,6 @@
 package jp.aonir.fuzzyxml;
 
+import java.awt.PageAttributes.OriginType;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,6 +23,7 @@ import jp.aonir.fuzzyxml.internal.FuzzyXMLElementImpl;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLPreImpl;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLProcessingInstructionImpl;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLScriptImpl;
+import jp.aonir.fuzzyxml.internal.FuzzyXMLStyleImpl;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLTextImpl;
 import jp.aonir.fuzzyxml.internal.FuzzyXMLUtil;
 import jp.aonir.fuzzyxml.internal.RenderContext;
@@ -203,11 +205,19 @@ public class FuzzyXMLParser {
       else if (!woOnly && (text.startsWith("SCRIPT") || text.startsWith("script"))) {
         handleScriptTag(start, end);
       }
+      else if (!woOnly && (text.startsWith("STYLE") || text.startsWith("style"))) {
+        handleStyleTag(start, end);
+      }
       else if (text.startsWith("/") && (!woOnly || WodHtmlUtils.isWOTag(text.substring(1)))) {
         handleCloseTag(start, end, text);
       }
       else if (!woOnly && text.startsWith("!--")) {
+        end = _originalSource. indexOf("-->", end);
+        if (end > 0) {
+          end += 3;
+        }
         handleComment(start, end, _originalSource.substring(start, end));
+        matcher.region(end, source.length());
       }
       else if (text.endsWith("/") && (!woOnly || WodHtmlUtils.isWOTag(text))) {
         handleEmptyTag(start, end);
@@ -326,6 +336,13 @@ public class FuzzyXMLParser {
     closeAutocloseTags();
     TagInfo info = parseTagContents(_originalSource.substring(offset + 1, end - 1));
     FuzzyXMLElement scriptNode = new FuzzyXMLScriptImpl(getParent(), info.name, offset, end - offset, info.nameOffset);
+    handleStartTag(scriptNode, info, offset, end);
+  }
+
+  private void handleStyleTag(int offset, int end) {
+    closeAutocloseTags();
+    TagInfo info = parseTagContents(_originalSource.substring(offset + 1, end - 1));
+    FuzzyXMLElement scriptNode = new FuzzyXMLStyleImpl(getParent(), info.name, offset, end - offset, info.nameOffset);
     handleStartTag(scriptNode, info, offset, end);
   }
 
@@ -653,8 +670,6 @@ public class FuzzyXMLParser {
   /** コメントを処理します。 */
   private void handleComment(int offset, int end, String text) {
     FuzzyXMLNode parent = getParent();
-    text = text.replaceFirst("<!--", "");
-    text = text.replaceFirst("-->", "");
     FuzzyXMLCommentImpl comment = new FuzzyXMLCommentImpl(parent, text, offset, end - offset);
 
     if (parent == null) {
@@ -663,6 +678,14 @@ public class FuzzyXMLParser {
     else {
       ((FuzzyXMLElement) parent).appendChild(comment);
     }
+    
+    _stack.push(comment);
+    _parse(text, offset, true);
+    FuzzyXMLNode poppedNode = _stack.pop();
+    if (poppedNode != comment) {
+      _stack.push(poppedNode);
+    }
+//    _stack.push(comment);
   }
 
   /** 開始タグを処理します。 */

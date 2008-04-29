@@ -462,4 +462,18 @@ public class FuzzyXMLUtil {
     }
     return true;
   }
+  
+  public static String blockIndent(RenderContext renderContext, String text) {
+    StringBuffer indent = new StringBuffer();
+    String value = text;
+    
+    renderContext.appendIndent(indent);
+    Pattern pattern = Pattern.compile("^[^\\s]", Pattern.MULTILINE);
+    while (value.length() > 0 && !pattern.matcher(value).find()) {
+      value = value.replaceAll("^ ", "").replaceAll("\n ", "\n");
+    }
+
+    value = value.replaceAll("(\n)(.+)", "$1" + indent + "$2");
+    return value;
+  }
 }

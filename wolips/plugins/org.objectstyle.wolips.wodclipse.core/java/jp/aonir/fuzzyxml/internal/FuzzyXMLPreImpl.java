@@ -21,6 +21,11 @@ public class FuzzyXMLPreImpl extends FuzzyXMLElementImpl {
   }
   
   @Override
+  public String getValue(RenderContext renderContext, StringBuffer xmlBuffer) {
+    return getValue();
+  }
+  
+  @Override
   public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer) {
     boolean renderSurroundingTags = true;
     
