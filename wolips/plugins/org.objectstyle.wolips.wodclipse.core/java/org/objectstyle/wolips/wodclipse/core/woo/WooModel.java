@@ -184,8 +184,17 @@ public class WooModel {
 //        }
 //      }
     }
-    if (_encoding == null)
-      return DEFAULT_ENCODING;
+    if (_encoding == null) {
+      if (_file != null && _file.exists()) {
+        try {
+          _encoding = _file.getParent().getDefaultCharset();
+          return _encoding;
+        } catch (CoreException e) {
+          e.printStackTrace();
+        }
+      }
+      _encoding = DEFAULT_ENCODING;
+    }
     return _encoding;
   }
 
@@ -455,7 +464,7 @@ public class WooModel {
       try {
         model._modelMap.setString("encoding", charset, true);
         File _file = file.getLocation().toFile();
-        if (!_file.exists() && !DEFAULT_ENCODING.equals(encoding)) {
+        if (!_file.exists()) {
         	System.out.println("WooModel.updateEncoding: creating file " + _file);
         	_file.createNewFile();
         }
