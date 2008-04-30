@@ -269,27 +269,29 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
 
   public static void _validateComponent(IResource resource, IProgressMonitor progressMonitor, boolean showProgress) {
     //System.out.println("BuildingComponent.run: " + resource);
-    String resourceName = resource.getName();
-    if (progressMonitor != null) {
-      if (showProgress) {
-        progressMonitor.subTask("Locating components for " + resourceName + " ...");
-      }
-    }
-    try {
-      WodParserCache cache = WodParserCache.parser(resource);
-      if (progressMonitor != null && cache.getWodEntry().getFile() != null) {
+    if (resource != null) {
+      String resourceName = resource.getName();
+      if (progressMonitor != null) {
         if (showProgress) {
-          progressMonitor.subTask("Building WO " + cache.getWodEntry().getFile().getName() + " ...");
+          progressMonitor.subTask("Locating components for " + resourceName + " ...");
         }
       }
-      cache.clearParserCache();
-      cache.parse();
-      cache.validate(true, false);
+      try {
+        WodParserCache cache = WodParserCache.parser(resource);
+        if (progressMonitor != null && cache.getWodEntry().getFile() != null) {
+          if (showProgress) {
+            progressMonitor.subTask("Building WO " + cache.getWodEntry().getFile().getName() + " ...");
+          }
+        }
+        cache.clearParserCache();
+        cache.parse();
+        cache.validate(true, false);
+      }
+      catch (Throwable t) {
+        t.printStackTrace();
+      }
+      //System.out.println("BuildingComponent.run: done with " + resource);
     }
-    catch (Throwable t) {
-      t.printStackTrace();
-    }
-    //System.out.println("BuildingComponent.run: done with " + resource);
   }
 
   public static class ValidatingComponent implements Runnable {
