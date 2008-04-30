@@ -227,9 +227,7 @@ public class ComponentEngine extends AbstractEngine {
 		setDateInContext();
 		this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.html.vm", this.getComponentPath().toOSString(), this.componentName + "." + IWOLipsModel.EXT_HTML, IWOLipsModel.EXT_HTML, encoding));
 		this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.wod.vm", this.getComponentPath().toOSString(), this.componentName + "." + IWOLipsModel.EXT_WOD, IWOLipsModel.EXT_WOD, encoding));
-		if (!encoding.toUpperCase().equals(DEFAULT_WOO_ENCODING)) {
-			this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.woo.vm", this.getComponentPath().toOSString(), this.componentName + "." + IWOLipsModel.EXT_WOO, IWOLipsModel.EXT_WOO, ENCODING_UTF8));
-		}
+		this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.woo.vm", this.getComponentPath().toOSString(), this.componentName + "." + IWOLipsModel.EXT_WOO, IWOLipsModel.EXT_WOO, ENCODING_UTF8));
 		this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.java.vm", this.getJavaPath().toOSString(), this.componentName + "." + IWOLipsModel.EXT_JAVA, IWOLipsModel.EXT_JAVA));
 		if (this.createApiFile) {
 			this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.api.vm", this.getApiPath().toOSString(), this.componentName + "." + IWOLipsModel.EXT_API, IWOLipsModel.EXT_API));
