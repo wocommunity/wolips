@@ -49,6 +49,11 @@
 			<artifactId>JavaWebObjects</artifactId>
 			<version>${woversion}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.apple.webobjects</groupId>
+			<artifactId>JavaEOAccess</artifactId>
+			<version>${woversion}</version>
+		</dependency>
 		#if( !($WonderSupport == "no") )
 	<dependency>
 			<groupId>wonder.common</groupId>

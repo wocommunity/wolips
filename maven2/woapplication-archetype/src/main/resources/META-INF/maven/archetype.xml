@@ -17,6 +17,8 @@
 		<resource>src/main/webapp/index.jsp</resource>
 		<resource>src/main/webapp/WEB-INF/LICENSE</resource>
 		<resource>src/main/webapp/WEB-INF/web.xml</resource>
+		<resource>.project</resource>
+		<resource>.classpath</resource>
 		<resource>build.properties</resource>
 		<resource>build.xml</resource>
 		<resource>woproject/ant.classpaths.user.home</resource>
