@@ -67,6 +67,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.JavaCore;
@@ -131,10 +132,13 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 				if (dotJava != null) {
 					IJavaElement javaElement = JavaCore.create(file);
 					try {
-						if (javaElement.isStructureKnown()) {
+						IJavaProject javaProject = javaElement.getJavaProject();
+						if (javaProject != null && javaProject.isOnClasspath(javaElement) && javaElement.isStructureKnown()) {
 							if (!isValidSubclass(javaElement)) {
 								file = null;
 							}
+						} else {
+							file = null;
 						}
 					} catch (JavaModelException e) {
 						file = null;
@@ -144,10 +148,13 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 				if (file != null && dotJava != null) {
 					IJavaElement javaElement = JavaCore.create(dotJava);
 					try {
-						if (javaElement.isStructureKnown()) {
+						IJavaProject javaProject = javaElement.getJavaProject();
+						if (javaProject != null && javaProject.isOnClasspath(javaElement) && javaElement.isStructureKnown()) {
 							if (!isValidSubclass(javaElement)) {
 								dotJava = null;
 							}
+						} else {
+							dotJava = null;
 						}
 					} catch (JavaModelException e) {
 						dotJava = null;
