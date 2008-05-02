@@ -341,17 +341,18 @@ public class FuzzyXMLParser {
   private void handleStyleTag(int offset, int end) {
     closeAutocloseTags();
     TagInfo info = parseTagContents(_originalSource.substring(offset + 1, end - 1));
-    FuzzyXMLElement scriptNode = new FuzzyXMLStyleImpl(getParent(), info.name, offset, end - offset, info.nameOffset);
-    handleStartTag(scriptNode, info, offset, end);
+    FuzzyXMLElement styleNode = new FuzzyXMLStyleImpl(getParent(), info.name, offset, end - offset, info.nameOffset);
+    handleStartTag(styleNode, info, offset, end);
   }
 
   /** テキストノードを処理します。 */
   private void handleText(int offset, int end, boolean escape) {
     String text = _originalSource.substring(offset, end);
     //System.out.println("FuzzyXMLParser.handleText: '" + text + "'");
-    if (text != null && text.trim().length() > 0) {
+    // Q: Disabling check because it causes breaking text to disappear into the autoclosing element
+    //if (text != null && text.trim().length() > 0) {
       closeAutocloseTags();
-    }
+    //}
     FuzzyXMLTextImpl textNode = new FuzzyXMLTextImpl(getParent(), FuzzyXMLUtil.decode(text, _isHTML), offset, end - offset);
     textNode.setEscape(escape);
     if (getParent() != null) {
@@ -684,7 +685,6 @@ public class FuzzyXMLParser {
     if (poppedNode != comment) {
       _stack.push(poppedNode);
     }
-//    _stack.push(comment);
   }
 
   /** 開始タグを処理します。 */

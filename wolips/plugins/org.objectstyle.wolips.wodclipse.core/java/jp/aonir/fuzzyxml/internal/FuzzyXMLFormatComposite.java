@@ -144,6 +144,10 @@ public class FuzzyXMLFormatComposite implements FuzzyXMLNode, FuzzyXMLFormat {
     return isStyle(delegate);
   }
   
+  public boolean isSelfClosing() {
+    return isSelfClosing(delegate);
+  }
+  
   /** Utility methods **/
   
   public static boolean isNonBreaking(FuzzyXMLNode node) {
@@ -289,5 +293,12 @@ public class FuzzyXMLFormatComposite implements FuzzyXMLNode, FuzzyXMLFormat {
     if (node instanceof FuzzyXMLFormatComposite)
       return (FuzzyXMLFormatComposite)node;
     return new FuzzyXMLFormatComposite(node);
+  }
+  
+  public static boolean isSelfClosing(FuzzyXMLNode node) {
+    if (unwrap(node) instanceof FuzzyXMLElement) {
+      return FuzzyXMLElementImpl.isSelfClosing((FuzzyXMLElement)unwrap(node));
+    }
+    return false;
   }
 }

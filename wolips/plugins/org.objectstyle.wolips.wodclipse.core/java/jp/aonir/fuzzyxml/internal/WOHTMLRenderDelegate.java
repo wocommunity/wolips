@@ -12,8 +12,9 @@ public class WOHTMLRenderDelegate implements RenderDelegate {
   private FuzzyXMLFormatComposite lastNode = null;
   private final boolean useStickyWOTags;
   // Should this be a user option??
-  private final boolean anyTagIsSticky;
   private static final Set<String> STICKY_TAGS;
+  // TODO: This should be a user option
+  private static final int LINE_WRAP_LENGTH = 120;
   
   private static final String[] SPACE_EFFECTED_TAGS = {
     "a", "img", "u"
@@ -30,8 +31,6 @@ public class WOHTMLRenderDelegate implements RenderDelegate {
   
   public WOHTMLRenderDelegate(boolean _useStickyWOTags) {
     useStickyWOTags = _useStickyWOTags;
-    // Q: Hard code this to true for the moment
-    anyTagIsSticky = true;
   }
   
   public void afterCloseTag(FuzzyXMLNode node, RenderContext renderContext,
@@ -40,6 +39,10 @@ public class WOHTMLRenderDelegate implements RenderDelegate {
     if (_node.isComment() && hasNewLineEnd(xmlBuffer)) {
       renderContext.appendIndent(xmlBuffer);
     }
+    if (_node.getParentNode() == null) {
+      xmlBuffer.append("\n");
+    }
+    
     if (_node.isDocumentRoot() || _node.getParentNode().isDocumentRoot()) {
       lastNode = null;
     } 
@@ -63,30 +66,36 @@ public class WOHTMLRenderDelegate implements RenderDelegate {
   public void beforeCloseTag(FuzzyXMLNode node, RenderContext renderContext,
       StringBuffer xmlBuffer) {
     FuzzyXMLFormatComposite _node = new FuzzyXMLFormatComposite(node);
-//    System.out.println("beforeCloseTag: " + node + " " + lastNodeWasHiddenText());
+//    System.out.println("beforeCloseTag: " + node + " " + isSticky(_node));
 
     if (renderContext.shouldFormat()) {
       renderContext.outdent();
       if (renderContext.isShowNewlines() ) {
-        /* 
-         * Not a <pre> tag block
-         * and
-         * Breaking or non sticky wo tag following element or whitespace
-         * or 
-         * Any tag following preexisting whitespace 
-         */
-        if ( !isPreBlock(_node) && 
-            ( ((hasWhiteSpaceEnd(xmlBuffer) || hasTagEnd(xmlBuffer)) && 
-              (_node.isBreaking() && !isStickyWOTag(_node)) ) || 
-              lastNodeWasHiddenText() ) ) {
-          if (_node.isBreaking() || _node.getParentNode().isBreaking()) {
-            if (!hasNewLineEnd(xmlBuffer)) {
-              xmlBuffer.append("\n");
-            }
-            renderContext.appendIndent(xmlBuffer);
-          } else {
-            xmlBuffer.append(" ");
-          }
+        boolean append_newline = false;
+        boolean append_space = false;
+        boolean bufferHasBreakingEnd = (hasWhiteSpaceEnd(xmlBuffer) || hasTagEnd(xmlBuffer));
+
+        if (isPreBlock(_node)) {
+          // Do nothing
+        } else 
+        if (isSticky(_node)) {
+          // Do nothing
+        } else
+        if (_node.isBreaking() && bufferHasBreakingEnd) {
+          if (_node.getParentNode().isBreaking())
+            append_newline = true;
+        } 
+        if (lastNodeWasHiddenText()) {
+            append_space = true;
+        }
+
+        if (append_newline) {
+          if (!hasNewLineEnd(xmlBuffer))
+            xmlBuffer.append("\n");
+          renderContext.appendIndent(xmlBuffer);
+        } else
+        if (append_space) {
+          xmlBuffer.append(" ");
         }
       }
     }
@@ -94,25 +103,40 @@ public class WOHTMLRenderDelegate implements RenderDelegate {
 
   public boolean beforeOpenTag(FuzzyXMLNode node, RenderContext renderContext, StringBuffer xmlBuffer) {
     FuzzyXMLFormatComposite _node = new FuzzyXMLFormatComposite(node);
-//    System.out.println("beforeOpenTag: " + node + " " + lastNodeWasHiddenText());
+//    System.out.println("beforeOpenTag: " + node + " " + node.getParentNode());
 
     if (renderContext.isShowNewlines() && renderContext.shouldFormat()) {
-      /* 
-       * Element block following element and not a sticky wo tag 
-       * or
-       * Self closing element following newline
-       * or
-       * Self closing element following element with preexisting whitespace
-       * 
-       */
-      if ( (hasTagEnd(xmlBuffer) && _node.hasCloseTag() && !isStickyWOTag(_node) && _node.hasChildren()) || 
-           (hasNewLineEnd(xmlBuffer) && _node.hasCloseTag()) ||
-           (hasTagEnd(xmlBuffer) && !_node.hasCloseTag() && lastNodeWasHiddenText())) {
-        if (!hasNewLineEnd(xmlBuffer)) {
-          xmlBuffer.append("\n");
+      boolean append_newline = false;
+      boolean append_space = false;
+
+      if (isSticky(_node.getParentNode()) && !lastNodeWasHiddenText()) {
+        // Do nothing
+      } else
+      if (hasTagEnd(xmlBuffer)) {
+        if (_node.getParentNode().isBreaking())
+          append_newline = true;
+        if (lastNodeWasHiddenText()) {
+          if (_node.isBreaking())
+            append_newline = true;
+          else
+            append_space = true;
         }
+        if (_node.getParentNode().isDocumentRoot())
+          append_newline = true;
+      }
+      if (isText(lastNode) && !lastNodeWasHiddenText()) {
+        if (_node.getParentNode().isBreaking() && hasWhiteSpaceEnd(xmlBuffer))
+          append_newline = true;
+      }
+      
+      if (append_newline) {
+        if (!hasNewLineEnd(xmlBuffer))
+          xmlBuffer.append("\n");
         renderContext.appendIndent(xmlBuffer);
-      } 
+      } else
+      if (append_space) {
+        xmlBuffer.append(" ");
+      }
     }
     return true;
   }
@@ -123,48 +147,50 @@ public class WOHTMLRenderDelegate implements RenderDelegate {
   public boolean renderNode(FuzzyXMLNode node, RenderContext renderContext,
       StringBuffer xmlBuffer) {
     FuzzyXMLFormatComposite _node = new FuzzyXMLFormatComposite(node);
-//    System.out.println("renderNode: " + _node + _node.isHidden());
+    
+    boolean append_newline = false;
+    boolean append_space = false;
+    boolean bufferHasBreakingEnd = (hasWhiteSpaceEnd(xmlBuffer) || hasTagEnd(xmlBuffer));
+
+//    System.out.println("renderNode: " + node + node.getParentNode());
     if (_node.isHidden()) {
       lastNode = _node;
       return false;
     }
     if (renderContext.shouldFormat() && renderContext.isShowNewlines()) {
-      // Element following element or WO tag element following hidden text
-      if (hasTagEnd(xmlBuffer) && _node.isElement() && !isStickyWOTag(_node) && _node.parentNode().isBreaking()) {
-        if (!hasNewLineEnd(xmlBuffer)) {
-          xmlBuffer.append("\n");
-        }
-        renderContext.appendIndent(xmlBuffer); 
-      } else 
-      // Any breaking node or text node with breaking start or any node following a breaking end
-      if ((_node.isText() && !_node.isCode()) && _node.hasBreakingStart() && (_node.parentNode().isBreaking() || lineIsTooLong(xmlBuffer))) {
-        if (!hasNewLineEnd(xmlBuffer)) {
-          xmlBuffer.append("\n");
-        }
-        renderContext.appendIndent(xmlBuffer); 
+      if (isSticky(lastNode) && _node.isElement()) {
+        // Do Nothing
       } else
-      // A text node with a breaking start or following a breaking end
-      if (_node.isText() && _node.parentNode().isBreaking() && 
-          (_node.hasBreakingStart() || lastNode == null || lastNode.isHidden() || lastNode.hasBreakingEnd()) ) {
-        if (!hasNewLineEnd(xmlBuffer)) {
-          xmlBuffer.append("\n");
+      if (_node.isText()) {
+        if (!_node.hasBreakingStart() && !lastNodeWasHiddenText()) {
+          // Do Nothing
+        } else
+        if (_node.parentNode().isBreaking() || lineIsTooLong(xmlBuffer)) {
+          append_newline = true;
         }
-        renderContext.appendIndent(xmlBuffer);
-
-        if (_node.isText() && _node.hasLineBreaks()) {  
-          renderTextBlock((FuzzyXMLText)node, renderContext, xmlBuffer);
-          lastNode = _node;
-          return false;
+      } else
+      if (bufferHasBreakingEnd && _node.parentNode().isBreaking()) {
+        if (lastNode.isHidden()) {
+          append_newline = true;
         }
       }
-      // A multiline text block that isn't empty
-      if (_node.isText() && _node.hasLineBreaks() && !_node.isHidden()) {
+      if (append_newline) {
+        if (!hasNewLineEnd(xmlBuffer))
+          xmlBuffer.append("\n");
+        renderContext.appendIndent(xmlBuffer);
+      } else
+      if (append_space) {
+        xmlBuffer.append(" ");
+      }
+      
+      if (_node.isText() && _node.hasLineBreaks()) {  
         renderTextBlock((FuzzyXMLText)node, renderContext, xmlBuffer);
         lastNode = _node;
         return false;
       }
     }
-    System.out.println(node + " " + _node.hasLineBreaks());
+    if (!_node.isElement())
+      lastNode = _node;
     return true;
   }
 
@@ -174,10 +200,10 @@ public class WOHTMLRenderDelegate implements RenderDelegate {
     renderContext.appendIndent(indent);
     xmlBuffer.append(node.getValue().trim().replaceAll("\n\\s*", "\n" + indent.toString()));
     if (_node.hasBreakingEnd()) {
-      if (!_node.hasLineBreaks()) {
-        xmlBuffer.append(" ");
-      } else {
+      if (_node.hasLineBreaks()) {
         xmlBuffer.append("\n");
+      } else {
+        xmlBuffer.append(" ");
       }
     }
   }
@@ -204,14 +230,12 @@ public class WOHTMLRenderDelegate implements RenderDelegate {
     return lastNode == null || (lastNode.isText() && lastNode.isHidden());
   }
 
-  private static boolean isStickyTag(FuzzyXMLFormatComposite node) {
-    return STICKY_TAGS.contains(node.getName().toLowerCase()) || node.isWOTag();
+  private boolean _isStickyTag(FuzzyXMLFormatComposite node) {
+    return STICKY_TAGS.contains(node.getName().toLowerCase()) || (useStickyWOTags && node.isWOTag());
   }
   
-  private boolean isStickyWOTag(FuzzyXMLFormatComposite node) {
-    if (anyTagIsSticky)
-      return useStickyWOTags && !lastNodeWasHiddenText() && (isStickyTag(node) || isStickyTag(lastNode));
-    return useStickyWOTags && !lastNodeWasHiddenText() && isStickyTag(node) && isStickyTag(lastNode);
+  private boolean isSticky(FuzzyXMLFormatComposite node) {
+    return !lastNodeWasHiddenText() && _isStickyTag(node);
   }
   
   private static boolean isPreBlock(FuzzyXMLFormatComposite node) {
@@ -220,9 +244,18 @@ public class WOHTMLRenderDelegate implements RenderDelegate {
   
   private static boolean lineIsTooLong(StringBuffer xmlBuffer) {
     int lastLineStart = xmlBuffer.lastIndexOf("\n");
-    String line = xmlBuffer.substring(lastLineStart).trim();
-    if (line.length() > 80)
-      return true;
-    return false;
+    String line;
+    if (lastLineStart == -1)
+      line = xmlBuffer.toString();
+    else
+      line = xmlBuffer.substring(lastLineStart);
+    
+    return (line.length() > LINE_WRAP_LENGTH);
+  }
+
+  private static boolean isText(FuzzyXMLFormatComposite node) {
+    if (node == null)
+      return false;
+    return node.isText();
   }
 }
