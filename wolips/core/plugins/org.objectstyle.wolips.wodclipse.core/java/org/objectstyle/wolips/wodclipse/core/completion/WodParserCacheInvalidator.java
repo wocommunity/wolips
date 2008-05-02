@@ -49,7 +49,8 @@ public class WodParserCacheInvalidator implements IResourceChangeListener, IReso
           IJavaElement javaElement = JavaCore.create(file);
           if (javaElement instanceof ICompilationUnit) {
             try {
-              if (javaElement.isStructureKnown()) {
+              IJavaProject javaProject = javaElement.getJavaProject();
+              if (javaProject != null && javaProject.isOnClasspath(javaElement) && javaElement.isStructureKnown()) {
                 IType[] types = ((ICompilationUnit) javaElement).getAllTypes();
                 for (IType type : types) {
                   WodParserCache.getTypeCache().clearCacheForType(type);
