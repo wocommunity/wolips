@@ -14,6 +14,7 @@ public class FuzzyXMLStyleImpl extends FuzzyXMLElementImpl {
     rc.setTrim(false);
     rc.setDelegate(new AbstractRenderDelegate() {});
     String contents = FuzzyXMLUtil.decode(super.getValue(rc, xmlBuffer), rc.isHtml());
+    contents = contents.replaceAll("\n\\s*$", "\n");
     if (renderContext.shouldFormat()) {
       //TODO: Replace blockIndent with a wotag aware CSS formatter
       contents = FuzzyXMLUtil.blockIndent(renderContext, contents);

@@ -470,7 +470,7 @@ public class FuzzyXMLUtil {
     renderContext.appendIndent(indent);
     Pattern pattern = Pattern.compile("^[^\\s]", Pattern.MULTILINE);
     while (value.length() > 0 && !pattern.matcher(value).find()) {
-      value = value.replaceAll("^ ", "").replaceAll("\n ", "\n");
+      value = value.replaceAll("^[ \t]", "").replaceAll("\n[ \t]", "\n");
     }
 
     value = value.replaceAll("(\n)(.+)", "$1" + indent + "$2");

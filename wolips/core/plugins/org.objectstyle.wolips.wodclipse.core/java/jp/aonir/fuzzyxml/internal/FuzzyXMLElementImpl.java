@@ -1,7 +1,10 @@
 package jp.aonir.fuzzyxml.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import jp.aonir.fuzzyxml.FuzzyXMLAttribute;
 import jp.aonir.fuzzyxml.FuzzyXMLElement;
@@ -17,6 +20,11 @@ import org.eclipse.jface.text.Region;
 
 public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXMLElement {
 
+  private static final Set<String> FORBIDDEN_SELF_CLOSING = new HashSet<String>(
+      Arrays.asList("a", "div", "span", "script", "pre"));
+  private static final Set<String> FORBIDDEN_CLOSE_TAG = new HashSet<String>(
+      Arrays.asList("meta", "link", "base", "basefont", "br", "frame", "hr", 
+          "area", "img", "param", "input", "isindex", "col"));
   private List<FuzzyXMLNode> _children = new ArrayList<FuzzyXMLNode>();
   private List<FuzzyXMLAttribute> _attributes = new ArrayList<FuzzyXMLAttribute>();
   private String _name;
@@ -676,7 +684,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
         if (child instanceof FuzzyXMLElement) {
           FuzzyXMLElement element = (FuzzyXMLElement)child;
           elementcount++;
-          if (!isSelfClosing(element) && !element.isEmpty()) {
+          if (!isSelfClosing(element)) {
             //result &= element.isNonBreaking();
             elementcount++;
           }
@@ -688,6 +696,8 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
       result = true;
     else
       result = false;
+    if (getParentNode() == null)
+      result = false;
     
 //    System.out.println("Elements " + elementcount + " Text blocks " + textblocks);
 //    System.out.println(result?"Non breaking "+this:"    Breaking " +this);
@@ -695,15 +705,16 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     return _isNonBreaking;
   }
   
-  private boolean isSelfClosing() {
+  public boolean isSelfClosing() {
     return isSelfClosing(this);
   }
   
-  private boolean isSelfClosing(FuzzyXMLElement node) {
+  public static boolean isSelfClosing(FuzzyXMLElement node) {
     FuzzyXMLNode[] children = node.getChildren();
     String tagName = node.getName().toLowerCase();
-    boolean forbiddenSelfClosing = ("a".equalsIgnoreCase(tagName) || "div".equalsIgnoreCase(tagName) || "script".equalsIgnoreCase(tagName));
-    return (children.length == 0 || (children.length == 1 && children[0].getLength() == 0) && !forbiddenSelfClosing);
+    boolean forbiddenSelfClosing = FORBIDDEN_SELF_CLOSING.contains(tagName);
+    boolean alwaysEmptyTag = FORBIDDEN_CLOSE_TAG.contains(tagName);
+    return ((alwaysEmptyTag || children.length == 0) && !forbiddenSelfClosing);
   }
   
   @Override
