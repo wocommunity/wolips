@@ -59,6 +59,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.objectstyle.wolips.eomodeler.actions.OpenEntityModelerAction;
 
 /**
  * @author mnolte
@@ -78,7 +79,9 @@ public class EOModelCreationWizard extends Wizard implements INewWizard {
 	public boolean performFinish() {
 		boolean returnValue = _mainPage.createEOModel();
 		if (returnValue) {
-			WizardsPlugin.selectAndReveal(_mainPage.getResourceToReveal());
+			if (!OpenEntityModelerAction.openResourceIfPossible(null, _mainPage.getResourceToReveal())) {
+				WizardsPlugin.selectAndReveal(_mainPage.getResourceToReveal());
+			}
 		}
 		return returnValue;
 	}
