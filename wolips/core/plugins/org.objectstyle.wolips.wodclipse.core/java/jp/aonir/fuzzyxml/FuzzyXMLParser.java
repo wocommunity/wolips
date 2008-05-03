@@ -47,7 +47,7 @@ public class FuzzyXMLParser {
   private boolean _isHTML = false;
 
   // パースに使用する正規表現
-  private Pattern _tag = Pattern.compile("<((|/)([^<>]*))([^<]|>)");
+  private Pattern _tag = Pattern.compile("<((|/)([^<>]*))([^<]?|>)");
   //	private Pattern attr = Pattern.compile("([\\w:]+?)\\s*=(\"|')([^\"]*?)\\2");
   private Pattern _docTypeName = Pattern.compile("^<!DOCTYPE[ \r\n\t]+([\\w\\-_]*)");
   private Pattern _docTypePublic = Pattern.compile("PUBLIC[ \r\n\t]+\"([^\"]*)\"[ \r\n\t]*\"*([^\">]*)\"*");
@@ -211,7 +211,7 @@ public class FuzzyXMLParser {
         handleCloseTag(start, end, text);
       }
       else if (!woOnly && text.startsWith("!--")) {
-        end = _originalSource. indexOf("-->", start);
+        end = _originalSource.indexOf("-->", start);
         if (end > 0) {
           end += 3;
         }
