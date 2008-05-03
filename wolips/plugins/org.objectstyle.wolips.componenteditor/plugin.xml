@@ -483,7 +483,7 @@
           description="Editing Components Context"
           id="org.objectstyle.wolips.componenteditor.componentEditorScope"
           name="Editing Components"
-          parentId="org.eclipse.ui.contexts.window"/>
+          parentId="org.eclipse.ui.textEditorScope"/>
  </extension>
      <extension
          point="org.eclipse.ui.views">
