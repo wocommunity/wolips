@@ -201,14 +201,17 @@ public class FuzzyXMLParser {
       else if (!woOnly && (text.startsWith("PRE") || text.startsWith("pre"))) {
         handlePreTag(start, end, _originalSource.substring(start, end));
       }
+      else if (text.startsWith("/") && (!woOnly || WodHtmlUtils.isWOTag(text.substring(1)))) {
+        handleCloseTag(start, end, text);
+      }
+      else if (text.endsWith("/") && (!woOnly || WodHtmlUtils.isWOTag(text))) {
+        handleEmptyTag(start, end);
+      }
       else if (!woOnly && (text.startsWith("SCRIPT") || text.startsWith("script"))) {
         handleScriptTag(start, end);
       }
       else if (!woOnly && (text.startsWith("STYLE") || text.startsWith("style"))) {
         handleStyleTag(start, end);
-      }
-      else if (text.startsWith("/") && (!woOnly || WodHtmlUtils.isWOTag(text.substring(1)))) {
-        handleCloseTag(start, end, text);
       }
       else if (!woOnly && text.startsWith("!--")) {
         end = _originalSource.indexOf("-->", start);
@@ -217,9 +220,6 @@ public class FuzzyXMLParser {
         }
         handleComment(start, end, _originalSource.substring(start, end));
         matcher.region(end, source.length());
-      }
-      else if (text.endsWith("/") && (!woOnly || WodHtmlUtils.isWOTag(text))) {
-        handleEmptyTag(start, end);
       }
       else if (!woOnly || WodHtmlUtils.isWOTag(text)) {
         handleStartTag(start, end);
@@ -342,6 +342,7 @@ public class FuzzyXMLParser {
     closeAutocloseTags();
     TagInfo info = parseTagContents(_originalSource.substring(offset + 1, end - 1));
     FuzzyXMLElement styleNode = new FuzzyXMLStyleImpl(getParent(), info.name, offset, end - offset, info.nameOffset);
+    String text = _originalSource.substring(offset, end);
     handleStartTag(styleNode, info, offset, end);
   }
 
