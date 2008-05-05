@@ -680,7 +680,7 @@ public class FuzzyXMLParser {
     }
     
     _stack.push(comment);
-    _parse(text, offset, true);
+    _parse(text.replaceFirst("<[^>]+-->$", ""), offset, true);
     FuzzyXMLNode poppedNode = _stack.pop();
     if (poppedNode != comment) {
       _stack.push(poppedNode);
