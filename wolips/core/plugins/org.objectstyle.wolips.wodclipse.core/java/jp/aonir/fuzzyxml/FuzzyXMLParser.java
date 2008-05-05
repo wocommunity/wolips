@@ -342,7 +342,6 @@ public class FuzzyXMLParser {
     closeAutocloseTags();
     TagInfo info = parseTagContents(_originalSource.substring(offset + 1, end - 1));
     FuzzyXMLElement styleNode = new FuzzyXMLStyleImpl(getParent(), info.name, offset, end - offset, info.nameOffset);
-    String text = _originalSource.substring(offset, end);
     handleStartTag(styleNode, info, offset, end);
   }
 
