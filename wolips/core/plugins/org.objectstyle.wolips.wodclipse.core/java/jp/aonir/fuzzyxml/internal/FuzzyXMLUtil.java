@@ -467,6 +467,8 @@ public class FuzzyXMLUtil {
     StringBuffer indent = new StringBuffer();
     String value = text;
     
+    if (value.trim().length() == 0)
+      return value;
     renderContext.appendIndent(indent);
     Pattern pattern = Pattern.compile("^[^\\s]", Pattern.MULTILINE);
     while (value.length() > 0 && !pattern.matcher(value).find()) {
