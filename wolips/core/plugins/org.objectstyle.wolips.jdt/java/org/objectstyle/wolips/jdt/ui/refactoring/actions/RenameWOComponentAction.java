@@ -60,18 +60,18 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.internal.corext.refactoring.RefactoringAvailabilityTester;
-import org.eclipse.jdt.internal.corext.refactoring.rename.JavaRenameRefactoring;
 import org.eclipse.jdt.internal.ui.refactoring.RefactoringMessages;
 import org.eclipse.jdt.internal.ui.refactoring.RefactoringSaveHelper;
 import org.eclipse.jdt.internal.ui.refactoring.UserInterfaceStarter;
-import org.eclipse.jdt.internal.ui.refactoring.reorg.RenameResourceWizard;
 import org.eclipse.jdt.internal.ui.refactoring.reorg.RenameUserInterfaceStarter;
 import org.eclipse.jdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.jdt.ui.actions.RenameAction;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.actions.SelectionListenerAction;
+import org.objectstyle.wolips.jdt.ui.refactoring.RenameWOComponentWizard;
 import org.objectstyle.wolips.refactoring.RenameWOComponentProcessor;
 
 public class RenameWOComponentAction extends SelectionListenerAction {
@@ -96,9 +96,9 @@ public class RenameWOComponentAction extends SelectionListenerAction {
 		if (!RefactoringAvailabilityTester.isRenameAvailable(resource))
 			return;
 		try {
-			final JavaRenameRefactoring refactoring = new JavaRenameRefactoring(new RenameWOComponentProcessor(resource));
+			final RenameRefactoring refactoring = new RenameRefactoring(new RenameWOComponentProcessor(resource));
 			UserInterfaceStarter starter = new RenameUserInterfaceStarter();
-			starter.initialize(new RenameResourceWizard(refactoring));
+			starter.initialize(new RenameWOComponentWizard(refactoring));
 			starter.activate(refactoring, _site.getShell(), RefactoringSaveHelper.SAVE_ALL);
 		} catch (CoreException e) {
 			ExceptionHandler.handle(e, RefactoringMessages.RenameJavaElementAction_name, RefactoringMessages.RenameJavaElementAction_exception);
