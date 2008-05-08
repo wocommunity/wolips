@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -165,6 +167,18 @@ public class TemplateAssistProcessor extends HTMLAssistProcessor {
             suffix = "]";
           }
         }
+        else if (value.startsWith("~")) {
+          Matcher m = Pattern.compile("[a-z0-9.]*$").matcher(value);
+          if (m.find()) {
+            int index = m.start();
+            prefix = value.substring(0, index);
+            bindingValue = value.substring(index);
+          }
+          else {
+            prefix = "~";
+            bindingValue = "";
+          }
+        }
         IFile wodFile = getFile();
         String componentTypeName = wodFile.getLocation().removeFileExtension().lastSegment();
         IType componentType = BindingReflectionUtils.findElementType(wodTagInfo.getJavaProject(), componentTypeName, true, WodParserCache.getTypeCache());
@@ -174,7 +188,7 @@ public class TemplateAssistProcessor extends HTMLAssistProcessor {
           dotIndex = 0;
         }
         else {
-          dotIndex += 2;
+          dotIndex += (prefix.length() + 1);
         }
         boolean checkBindingValue = WodCompletionUtils.fillInBindingValueCompletionProposals(wodTagInfo.getJavaProject(), componentType, bindingValue, 0, bindingValue.length(), proposals, WodParserCache.getTypeCache());
         if (checkBindingValue) {
