@@ -275,6 +275,9 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
       TagInfo tagInfo = getTagInfo(last.toLowerCase());
       if (tagInfo != null) {
         AttributeInfo attrInfo = tagInfo.getAttributeInfo(attr);
+        if (attrInfo == null) {
+          attrInfo = new AttributeInfo(attr, true);
+        }
         if (attrInfo != null) {
           AssistInfo[] keywords = getAttributeValues(last, dim[0].substring(1), tagInfo, attrInfo);
           for (int i = 0; i < keywords.length; i++) {
