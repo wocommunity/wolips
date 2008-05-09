@@ -55,6 +55,10 @@
  */
 package org.objectstyle.wolips.ui.labeldecorator;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.WeakHashMap;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.resource.CompositeImageDescriptor;
@@ -89,7 +93,7 @@ public class ResourcesLabelDecorator implements ILabelDecorator {
 	 * @return Image
 	 */
 	private Image createImagewithName(Image image, String aString) {
-		return UIPlugin.getImageDescriptorRegistry().get(new WOImageDescriptor(image, aString));
+		return UIPlugin.getImageDescriptorRegistry().get(ResourcesLabelDecorator.cachedImageDescriptor(image, aString));
 	}
 
 	/**
@@ -117,6 +121,7 @@ public class ResourcesLabelDecorator implements ILabelDecorator {
 	 *      Object)
 	 */
 	public Image decorateImage(Image image, Object element) {
+		//System.out.println("ResourcesLabelDecorator.decorateImage: " + element);
 		if (element instanceof IResource && !(element instanceof IProject)) {
 			IResource resource = (IResource) element;
 			IProject iProject = resource.getProject();
@@ -140,6 +145,7 @@ public class ResourcesLabelDecorator implements ILabelDecorator {
 	private boolean matchesResourcesPattern(IProjectPatternsets projectPatternsets, IResource resource) {
 		IResource parent = resource;
 		while (parent != null && !(parent instanceof IProject)) {
+			//System.out.println("ResourcesLabelDecorator.matchesResourcesPattern:   checking " + parent);
 			if (projectPatternsets.matchesResourcesPattern(parent)) {
 				return true;
 			}
@@ -151,6 +157,7 @@ public class ResourcesLabelDecorator implements ILabelDecorator {
 	private boolean matchesWOAppResourcesPattern(IProjectPatternsets projectPatternsets, IResource resource) {
 		IResource parent = resource;
 		while (parent != null && !(parent instanceof IProject)) {
+			//System.out.println("ResourcesLabelDecorator.matchesWOAppResourcesPattern:   checking " + parent);
 			if (projectPatternsets.matchesWOAppResourcesPattern(parent)) {
 				return true;
 			}
@@ -196,6 +203,25 @@ public class ResourcesLabelDecorator implements ILabelDecorator {
 	public void removeListener(ILabelProviderListener listener) {
 		return;
 	}
+	
+	protected static Map<String, Map<Image, WOImageDescriptor>> _imageDescriptors;
+	
+	public static WOImageDescriptor cachedImageDescriptor(Image image, String overlayImageFilename) {
+		if (_imageDescriptors == null) {
+			_imageDescriptors = new HashMap<String, Map<Image,WOImageDescriptor>>();
+		}
+		Map<Image, WOImageDescriptor> overlayImageDescriptors = _imageDescriptors.get(overlayImageFilename);
+		if (overlayImageDescriptors == null) {
+			overlayImageDescriptors = new WeakHashMap<Image, WOImageDescriptor>();
+			_imageDescriptors.put(overlayImageFilename, overlayImageDescriptors);
+		}
+		WOImageDescriptor imageDescriptor = overlayImageDescriptors.get(image);
+		if (imageDescriptor == null) {
+			imageDescriptor = new WOImageDescriptor(image, overlayImageFilename);
+			overlayImageDescriptors.put(image, imageDescriptor);
+		}
+		return imageDescriptor;
+	}
 
 	/**
 	 * @author uli
@@ -205,7 +231,7 @@ public class ResourcesLabelDecorator implements ILabelDecorator {
 	 * the creation of type comments go to Window>Preferences>Java>Code
 	 * Generation.
 	 */
-	private class WOImageDescriptor extends CompositeImageDescriptor {
+	private static class WOImageDescriptor extends CompositeImageDescriptor {
 		private Image baseImage;
 		
 		private String overlayImageFilename;
