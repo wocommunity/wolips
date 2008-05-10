@@ -57,7 +57,9 @@ package org.objectstyle.wolips.core.resources.internal.types.project;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -67,7 +69,6 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.objectstyle.wolips.core.CorePlugin;
@@ -96,17 +97,19 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 
 	protected final static String LEGACY_ANT_FOLDER_NAME = "ant";
 
-	private PatternsetMatcher woappResourcesIncludeMatcher = null;
+	private Map<IFile, Long> _modificationStamps;
+	
+	private PatternsetMatcher woappResourcesIncludeMatcher;
 
-	private PatternsetMatcher woappResourcesExcludeMatcher = null;
+	private PatternsetMatcher woappResourcesExcludeMatcher;
 
-	private PatternsetMatcher resourcesIncludeMatcher = null;
+	private PatternsetMatcher resourcesIncludeMatcher;
 
-	private PatternsetMatcher resourcesExcludeMatcher = null;
+	private PatternsetMatcher resourcesExcludeMatcher;
 
-	private PatternsetMatcher classesIncludeMatcher = null;
+	private PatternsetMatcher classesIncludeMatcher;
 
-	private PatternsetMatcher classesExcludeMatcher = null;
+	private PatternsetMatcher classesExcludeMatcher;
 
 	private final static PatternsetMatcher DEFAULT_EXCLUDE_MATCHER = new PatternsetMatcher(new String[] { "**/.svn", "**/.svn/**", "**/CVS", "**/*.eomodeld~", "**/*.eomodeld~/**", "**/CVS/**", "**/build/**", "**/dist/**" });
 
@@ -118,6 +121,18 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 	public ProjectPatternsets(IProject project) {
 		super();
 		this.project = project;
+		_modificationStamps = new HashMap<IFile, Long>();
+	}
+	
+	protected boolean useCachedVersion(IFile file) {
+		Long cachedModificationStamp = _modificationStamps.get(file);
+		long modificationStamp = file.getModificationStamp();
+		boolean useCachedVersion = true;
+		if (cachedModificationStamp == null || modificationStamp > cachedModificationStamp.longValue()) {
+			_modificationStamps.put(file, Long.valueOf(modificationStamp));
+			useCachedVersion = false;
+		}
+		return useCachedVersion;
 	}
 
 	private String[] getStringsFromDefaults(String key, String[] def) {
@@ -129,19 +144,19 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 	}
 
 	private String[] getWSResourcesIncludeStringsDefault() {
-		return getStringsFromDefaults("wsresources.include.patternset", new String[] { "**/*.gif", "**/*.xsl", "**/*.css", "**/*.png", "**/*.jpg", "**/*.js" });
+		return getStringsFromDefaults("wsresources.include.patternset", new String[] { "WebServerResources/*" });
 	}
 
 	private String[] getWSResourcesExcludeStringsDefault() {
-		return getStringsFromDefaults("wsresources.exclude.patternset", new String[] { "**/*.woa/**", "**/*.framework/**", "**/*.eomodeld~/**" });
+		return getStringsFromDefaults("wsresources.exclude.patternset", new String[] {});
 	}
 
 	private String[] getResourcesIncludeStringsDefault() {
-		return getStringsFromDefaults("resources.include.patternset", new String[] { "**/Properties", "**/*.eomodeld/", "**/*.d2wmodel", "**/*.wo/", "**/*.api", "**/*.strings", "**/*.plist" });
+		return getStringsFromDefaults("resources.include.patternset", new String[] { "Components/**/*.wo/**/*", "Components/**/*.api", "Resources/**/*" });
 	}
 
 	private String[] getResourcesExcludeStringsDefault() {
-		return getStringsFromDefaults("resources.exclude.patternset", new String[] { "**/*.eomodeld~/", "**/*.woa/**", "**/*.framework/**" });
+		return getStringsFromDefaults("resources.exclude.patternset", new String[] { "Resources/**/*.eomodeld~/**" });
 	}
 
 	private String[] getClassesIncludeStringsDefault() {
@@ -191,7 +206,7 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 		return folder;
 	}
 
-	class PatternsetWorkspaceRunnable implements Runnable {
+	protected static class PatternsetWorkspaceRunnable implements Runnable {
 		IFile patternset;
 
 		private PatternsetMatcher matcher;
@@ -237,11 +252,11 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 	 * @return Returns the classesExcludeMatcher.
 	 */
 	public PatternsetMatcher getClassesExcludeMatcher() {
-		if (this.classesExcludeMatcher != null) {
+		IFile classesExcludePatternset = this.getAntFolder().getFile("classes.exclude.patternset");
+		if (this.classesExcludeMatcher != null && useCachedVersion(classesExcludePatternset)) {
 			return this.classesExcludeMatcher;
 		}
 		this.createAntFolder();
-		IFile classesExcludePatternset = this.getAntFolder().getFile("classes.exclude.patternset");
 		PatternsetWorkspaceRunnable patternsetWorkspaceRunnable = new PatternsetWorkspaceRunnable(classesExcludePatternset, getClassesExcludeStringsDefault());
 		patternsetWorkspaceRunnable.run();
 		this.classesExcludeMatcher = patternsetWorkspaceRunnable.getMatcher();
@@ -252,11 +267,11 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 	 * @return Returns the classesIncludeMatcher.
 	 */
 	public PatternsetMatcher getClassesIncludeMatcher() {
-		if (this.classesIncludeMatcher != null) {
+		IFile classesIncludePatternset = this.getAntFolder().getFile("classes.include.patternset");
+		if (this.classesIncludeMatcher != null && useCachedVersion(classesIncludePatternset)) {
 			return this.classesIncludeMatcher;
 		}
 		this.createAntFolder();
-		IFile classesIncludePatternset = this.getAntFolder().getFile("classes.include.patternset");
 		PatternsetWorkspaceRunnable patternsetWorkspaceRunnable = new PatternsetWorkspaceRunnable(classesIncludePatternset, getClassesIncludeStringsDefault());
 		patternsetWorkspaceRunnable.run();
 		this.classesIncludeMatcher = patternsetWorkspaceRunnable.getMatcher();
@@ -267,11 +282,11 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 	 * @return Returns the resourcesExcludeMatcher.
 	 */
 	public PatternsetMatcher getResourcesExcludeMatcher() {
-		if (this.resourcesExcludeMatcher != null) {
+		IFile resourcesExcludePatternset = this.getAntFolder().getFile("resources.exclude.patternset");
+		if (this.resourcesExcludeMatcher != null && useCachedVersion(resourcesExcludePatternset)) {
 			return this.resourcesExcludeMatcher;
 		}
 		this.createAntFolder();
-		IFile resourcesExcludePatternset = this.getAntFolder().getFile("resources.exclude.patternset");
 		PatternsetWorkspaceRunnable patternsetWorkspaceRunnable = new PatternsetWorkspaceRunnable(resourcesExcludePatternset, getResourcesExcludeStringsDefault());
 		patternsetWorkspaceRunnable.run();
 		this.resourcesExcludeMatcher = patternsetWorkspaceRunnable.getMatcher();
@@ -282,11 +297,11 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 	 * @return Returns the resourcesIncludeMatcher.
 	 */
 	public PatternsetMatcher getResourcesIncludeMatcher() {
-		if (this.resourcesIncludeMatcher != null) {
+		IFile resourcesIncludePatternset = this.getAntFolder().getFile("resources.include.patternset");
+		if (this.resourcesIncludeMatcher != null && useCachedVersion(resourcesIncludePatternset)) {
 			return this.resourcesIncludeMatcher;
 		}
 		this.createAntFolder();
-		IFile resourcesIncludePatternset = this.getAntFolder().getFile("resources.include.patternset");
 		PatternsetWorkspaceRunnable patternsetWorkspaceRunnable = new PatternsetWorkspaceRunnable(resourcesIncludePatternset, getResourcesIncludeStringsDefault());
 		patternsetWorkspaceRunnable.run();
 		this.resourcesIncludeMatcher = patternsetWorkspaceRunnable.getMatcher();
@@ -297,11 +312,11 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 	 * @return Returns the woappResourcesExcludeMatcher.
 	 */
 	public PatternsetMatcher getWoappResourcesExcludeMatcher() {
-		if (this.woappResourcesExcludeMatcher != null) {
+		IFile wsresourcesExcludePatternset = this.getAntFolder().getFile("wsresources.exclude.patternset");
+		if (this.woappResourcesExcludeMatcher != null && useCachedVersion(wsresourcesExcludePatternset)) {
 			return this.woappResourcesExcludeMatcher;
 		}
 		this.createAntFolder();
-		IFile wsresourcesExcludePatternset = this.getAntFolder().getFile("wsresources.exclude.patternset");
 		PatternsetWorkspaceRunnable patternsetWorkspaceRunnable = new PatternsetWorkspaceRunnable(wsresourcesExcludePatternset, getWSResourcesExcludeStringsDefault());
 		patternsetWorkspaceRunnable.run();
 		this.woappResourcesExcludeMatcher = patternsetWorkspaceRunnable.getMatcher();
@@ -312,41 +327,15 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 	 * @return Returns the woappResourcesIncludeMatcher.
 	 */
 	public PatternsetMatcher getWoappResourcesIncludeMatcher() {
-		if (this.woappResourcesIncludeMatcher != null) {
+		IFile wsresourcesIncludePatternset = this.getAntFolder().getFile("wsresources.include.patternset");
+		if (this.woappResourcesIncludeMatcher != null && useCachedVersion(wsresourcesIncludePatternset)) {
 			return this.woappResourcesIncludeMatcher;
 		}
 		this.createAntFolder();
-		IFile wsresourcesIncludePatternset = this.getAntFolder().getFile("wsresources.include.patternset");
 		PatternsetWorkspaceRunnable patternsetWorkspaceRunnable = new PatternsetWorkspaceRunnable(wsresourcesIncludePatternset, getWSResourcesIncludeStringsDefault());
 		patternsetWorkspaceRunnable.run();
 		this.woappResourcesIncludeMatcher = patternsetWorkspaceRunnable.getMatcher();
 		return this.woappResourcesIncludeMatcher;
-	}
-
-	private String[] toProjectRelativePaths(IResource resource) {
-		String[] returnValue = null;
-		if (resource.getParent().getType() != IResource.ROOT) {
-
-			String string = null;
-			if (resource.getType() != IResource.FOLDER) {
-				returnValue = new String[1];
-			} else {
-				returnValue = new String[2];
-				string = "/" + resource.getName() + "/";
-				returnValue[0] = string;
-			}
-
-		} else {
-			returnValue = new String[1];
-		}
-		IPath path = resource.getProjectRelativePath();
-		String string = path.toString();
-		if (returnValue.length == 2) {
-			returnValue[1] = string;
-		} else {
-			returnValue[0] = string;
-		}
-		return returnValue;
 	}
 
 	/**
@@ -354,12 +343,8 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 	 * @return true if the resource matches the classes pattern
 	 */
 	public boolean matchesClassesPattern(IResource resource) {
-		String[] strings = this.toProjectRelativePaths(resource);
-		if (this.getClassesExcludeMatcher().match(strings))
-			return false;
-		if (DEFAULT_EXCLUDE_MATCHER.match(strings))
-			return false;
-		return this.getClassesIncludeMatcher().match(strings);
+		String relativePath = resource.getProjectRelativePath().toString();
+		return !getClassesExcludeMatcher().match(relativePath) && !DEFAULT_EXCLUDE_MATCHER.match(relativePath) && getClassesIncludeMatcher().match(relativePath);
 	}
 
 	/**
@@ -367,12 +352,8 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 	 * @return true if the resource matches the WOAppResources pattern
 	 */
 	public boolean matchesWOAppResourcesPattern(IResource resource) {
-		String[] strings = this.toProjectRelativePaths(resource);
-		if (this.getWoappResourcesExcludeMatcher().match(strings))
-			return false;
-		if (DEFAULT_EXCLUDE_MATCHER.match(strings))
-			return false;
-		return this.getWoappResourcesIncludeMatcher().match(strings);
+		String relativePath = resource.getProjectRelativePath().toString();
+		return !this.getWoappResourcesExcludeMatcher().match(relativePath) && !DEFAULT_EXCLUDE_MATCHER.match(relativePath) && this.getWoappResourcesIncludeMatcher().match(relativePath);
 	}
 
 	/**
@@ -380,12 +361,9 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 	 * @return true if the resource matches the Resources pattern
 	 */
 	public boolean matchesResourcesPattern(IResource resource) {
-		String[] strings = this.toProjectRelativePaths(resource);
-		if (this.getResourcesExcludeMatcher().match(strings))
-			return false;
-		if (DEFAULT_EXCLUDE_MATCHER.match(strings))
-			return false;
-		return this.getResourcesIncludeMatcher().match(strings);
+		String relativePath = resource.getProjectRelativePath().toString();
+		boolean matches = !this.getResourcesExcludeMatcher().match(relativePath) && !DEFAULT_EXCLUDE_MATCHER.match(relativePath) && this.getResourcesIncludeMatcher().match(relativePath);
+		return matches;
 	}
 
 	/**

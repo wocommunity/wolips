@@ -89,11 +89,15 @@ public class PatternsetMatcher extends PatternsetReader {
 	 * @return true if matched eitherwise false
 	 */
 	public boolean match(String string) {
-		String[] pattern = this.getPattern();
-		for (int i = 0; i < pattern.length; i++) {
-			if (SelectorUtils.matchPath(pattern[i].replace("/", File.separator), 
-					string.replace("/", File.separator)))
+		String path = string;
+		if (!"/".equals(File.separator)) {
+			path = string.replace("/", File.separator);
+		}
+		String[] patterns = this.getPattern();
+		for (int patternNum = 0; patternNum < patterns.length; patternNum++) {
+			if (SelectorUtils.matchPath(patterns[patternNum], path)) {
 				return true;
+			}
 		}
 		return false;
 	}
