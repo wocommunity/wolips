@@ -55,6 +55,9 @@
  */
 package org.objectstyle.wolips.core.resources.internal.types.project;
 
+import java.util.Map;
+import java.util.WeakHashMap;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.objectstyle.wolips.core.CorePlugin;
@@ -69,7 +72,12 @@ import org.objectstyle.wolips.core.resources.types.project.IProjectPatternsets;
  *         Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class ProjectAdapterFactory extends AbstractResourceAdapterFactory {
-
+	private static Map<Object, ProjectPatternsets> _projectPatternSets;
+	
+	static {
+		_projectPatternSets = new WeakHashMap<Object, ProjectPatternsets>();
+	}
+	
 	private Class[] adapterList = new Class[] { IProjectAdapter.class };
 
 	public Class[] getAdapterList() {
@@ -104,7 +112,12 @@ public class ProjectAdapterFactory extends AbstractResourceAdapterFactory {
 			return new ProjectAdapter(project, nature.isFramework());
 		}
 		if (adapterType == IProjectPatternsets.class) {
-			return new ProjectPatternsets(project);
+			ProjectPatternsets projectPatternSets =  _projectPatternSets.get(adaptableObject);
+			if (projectPatternSets == null) {
+				projectPatternSets = new ProjectPatternsets(project);
+				_projectPatternSets.put(adaptableObject, projectPatternSets);
+			}
+			return projectPatternSets;
 		}
 		return null;
 	}

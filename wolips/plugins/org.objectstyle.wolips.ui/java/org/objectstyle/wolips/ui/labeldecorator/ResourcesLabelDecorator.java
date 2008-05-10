@@ -85,55 +85,31 @@ public class ResourcesLabelDecorator implements ILabelDecorator {
 		super();
 	}
 
-	/**
-	 * Method withName.
-	 * 
-	 * @param aString
-	 * @param image
-	 * @return Image
-	 */
-	private Image createImagewithName(Image image, String aString) {
+	private Image createImageWithName(Image image, String aString) {
 		return UIPlugin.getImageDescriptorRegistry().get(ResourcesLabelDecorator.cachedImageDescriptor(image, aString));
 	}
 
-	/**
-	 * Method subprojectImage.
-	 * 
-	 * @param image
-	 * @return Image
-	 */
 	private Image resourcesImage(Image image) {
-		return this.createImagewithName(image, "resources_overlay.gif");
+		return createImageWithName(image, "resources_overlay.gif");
 	}
 
-	/**
-	 * Method componentImage.
-	 * 
-	 * @param image
-	 * @return Image
-	 */
 	private Image webServerResourcesImage(Image image) {
-		return this.createImagewithName(image, "webserverresources_overlay.gif");
+		return createImageWithName(image, "webserverresources_overlay.gif");
 	}
 
-	/**
-	 * @see org.eclipse.jface.viewers.ILabelDecorator#decorateImage(Image,
-	 *      Object)
-	 */
 	public Image decorateImage(Image image, Object element) {
-		//System.out.println("ResourcesLabelDecorator.decorateImage: " + element);
 		if (element instanceof IResource && !(element instanceof IProject)) {
 			IResource resource = (IResource) element;
-			IProject iProject = resource.getProject();
-			IProjectAdapter projectAdapter = (IProjectAdapter) iProject.getAdapter(IProjectAdapter.class);
+			IProject project = resource.getProject();
+			IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
 			// make sure it's a wo project
 			if (projectAdapter != null) {
-				IProjectPatternsets projectPatternsets = (IProjectPatternsets) iProject.getAdapter(IProjectPatternsets.class);
+				IProjectPatternsets projectPatternsets = (IProjectPatternsets) project.getAdapter(IProjectPatternsets.class);
 				if (projectPatternsets != null) {
-					if (this.matchesResourcesPattern(projectPatternsets, resource)) {
+					if (projectPatternsets.matchesResourcesPattern(resource)) {
 						return resourcesImage(image);
 					}
-					if (this.matchesWOAppResourcesPattern(projectPatternsets, resource)) {
+					if (projectPatternsets.matchesWOAppResourcesPattern(resource)) {
 						return webServerResourcesImage(image);
 					}
 				}
@@ -142,73 +118,31 @@ public class ResourcesLabelDecorator implements ILabelDecorator {
 		return image;
 	}
 
-	private boolean matchesResourcesPattern(IProjectPatternsets projectPatternsets, IResource resource) {
-		IResource parent = resource;
-		while (parent != null && !(parent instanceof IProject)) {
-			//System.out.println("ResourcesLabelDecorator.matchesResourcesPattern:   checking " + parent);
-			if (projectPatternsets.matchesResourcesPattern(parent)) {
-				return true;
-			}
-			parent = parent.getParent();
-		}
-		return false;
-	}
-
-	private boolean matchesWOAppResourcesPattern(IProjectPatternsets projectPatternsets, IResource resource) {
-		IResource parent = resource;
-		while (parent != null && !(parent instanceof IProject)) {
-			//System.out.println("ResourcesLabelDecorator.matchesWOAppResourcesPattern:   checking " + parent);
-			if (projectPatternsets.matchesWOAppResourcesPattern(parent)) {
-				return true;
-			}
-			parent = parent.getParent();
-		}
-		return false;
-
-	}
-
-	/**
-	 * @see org.eclipse.jface.viewers.ILabelDecorator#decorateText(String,
-	 *      Object)
-	 */
 	public String decorateText(String text, Object element) {
 		return text;
 	}
 
-	/**
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(ILabelProviderListener)
-	 */
 	public void addListener(ILabelProviderListener listener) {
 		return;
 	}
 
-	/**
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
-	 */
 	public void dispose() {
-		return;
+		// DO NOTHING
 	}
 
-	/**
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(Object,
-	 *      String)
-	 */
 	public boolean isLabelProperty(Object element, String property) {
 		return false;
 	}
 
-	/**
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(ILabelProviderListener)
-	 */
 	public void removeListener(ILabelProviderListener listener) {
-		return;
+		// DO NOTHING
 	}
-	
+
 	protected static Map<String, Map<Image, WOImageDescriptor>> _imageDescriptors;
-	
+
 	public static WOImageDescriptor cachedImageDescriptor(Image image, String overlayImageFilename) {
 		if (_imageDescriptors == null) {
-			_imageDescriptors = new HashMap<String, Map<Image,WOImageDescriptor>>();
+			_imageDescriptors = new HashMap<String, Map<Image, WOImageDescriptor>>();
 		}
 		Map<Image, WOImageDescriptor> overlayImageDescriptors = _imageDescriptors.get(overlayImageFilename);
 		if (overlayImageDescriptors == null) {
@@ -233,9 +167,9 @@ public class ResourcesLabelDecorator implements ILabelDecorator {
 	 */
 	private static class WOImageDescriptor extends CompositeImageDescriptor {
 		private Image baseImage;
-		
+
 		private String overlayImageFilename;
-		
+
 		private ImageData baseImageData;
 
 		private ImageData overlayImageData;
@@ -293,8 +227,7 @@ public class ResourcesLabelDecorator implements ILabelDecorator {
 			boolean equals = true;
 			if (baseImage == null) {
 				equals = (other.baseImage == null);
-			}
-			else {
+			} else {
 				equals = baseImage.equals(other.baseImage);
 			}
 			if (equals) {

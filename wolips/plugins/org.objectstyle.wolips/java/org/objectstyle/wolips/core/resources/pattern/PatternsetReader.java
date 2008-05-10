@@ -102,7 +102,7 @@ public class PatternsetReader {
 				}
 			}
 		}
-		pattern = (String[]) patternList.toArray(new String[patternList.size()]);
+		setPattern((String[]) patternList.toArray(new String[patternList.size()]));
 	}
 
 	/**
@@ -110,7 +110,16 @@ public class PatternsetReader {
 	 */
 	public PatternsetReader(String[] pattern) {
 		super();
+		setPattern(pattern);
+	}
+	
+	public void setPattern(String[] pattern) {
 		this.pattern = pattern;
+		if (this.pattern != null) {
+			for (int patternNum = 0; patternNum < this.pattern.length; patternNum ++) {
+				this.pattern[patternNum] = this.pattern[patternNum].replace("/", File.separator);
+			}
+		}
 	}
 
 	/**
