@@ -82,11 +82,11 @@ public class Ungettable extends AbstractNamedValidation {
   public static void removeFromWoWithBinding(Wo wo, Binding binding) {
     synchronized (wo.apiModel) {
       List<Validation> validations = wo.getValidations();
-      for (int i = validations.size() - 1; i > 0; i--) {
+      for (int i = validations.size() - 1; i >= 0; i--) {
         Validation validation = validations.get(i);
         List<Ungettable> ungettables = validation.getUngettables();
         if (ungettables.size() == 1 && ungettables.get(0).isAffectedByBindingNamed(binding.getName())) {
-          validation.element.removeChild(ungettables.get(0).element);
+          validation.removeChild(ungettables.get(0));
         }
       }
     }

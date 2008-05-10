@@ -87,7 +87,7 @@ public class Unbound extends AbstractNamedValidation {
         List<Unbound> unbounds = validation.getUnbounds();
         for (Unbound unbound : unbounds) {
           if (unbound.isAffectedByBindingNamed(binding.getName())) {
-            validation.element.removeChild(unbound.element);
+            validation.removeChild(unbound);
           }
         }
       }
