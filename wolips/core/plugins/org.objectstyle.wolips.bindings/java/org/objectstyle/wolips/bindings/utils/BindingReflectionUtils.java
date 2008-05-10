@@ -108,7 +108,7 @@ public class BindingReflectionUtils {
     if (typeName != null) {
       type = javaProject.findType(typeName);
     }
-    else if (typeName == null) {
+    else {
       TypeNameCollector typeNameCollector = new TypeNameCollector(javaProject, requireTypeInProject);
       BindingReflectionUtils.findMatchingElementClassNames(elementTypeName, SearchPattern.R_EXACT_MATCH, typeNameCollector, null);
       if (typeNameCollector.isExactMatch()) {
