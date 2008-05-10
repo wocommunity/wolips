@@ -67,7 +67,7 @@ public class TypeCache {
 
   public void clearCacheForProject(IProject project) {
     if (project != null) {
-      System.out.println("TypeCache.clearCacheForProject: CLEARING " + project);
+      //System.out.println("TypeCache.clearCacheForProject: CLEARING " + project);
       List<IType> typesToClear = new LinkedList<IType>();
       synchronized (_typeCacheEntries) {
         for (Map.Entry<IType, TypeCacheEntry> entry : _typeCacheEntries.entrySet()) {
@@ -101,7 +101,7 @@ public class TypeCache {
 
   public void clearCacheForType(IType declaringType) {
     synchronized (_typeCacheEntries) {
-      System.out.println("TypeCache.clearCacheForType: clearing cache for " + declaringType.getFullyQualifiedName());
+      //System.out.println("TypeCache.clearCacheForType: clearing cache for " + declaringType.getFullyQualifiedName());
       _typeCacheEntries.remove(declaringType);
     }
   }
