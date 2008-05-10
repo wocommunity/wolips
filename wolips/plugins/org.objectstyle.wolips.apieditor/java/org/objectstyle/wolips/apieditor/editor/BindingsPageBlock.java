@@ -148,47 +148,48 @@ public class BindingsPageBlock extends MasterDetailsBlock implements BindingChan
 		public String getText(Object element) {
 			return getColumnText(element, 0);
 		}
-		
+
 		@Override
 		public void dispose() {
 			super.dispose();
 		}
-		
+
 		public Font getFont(Object element, int columnIndex) {
 			Font font = null;
 			if (element instanceof Binding) {
-				Binding binding = (Binding)element;
+				Binding binding = (Binding) element;
 				if (binding.isRequired()) {
 					font = JFaceResources.getFontRegistry().getBold(JFaceResources.DIALOG_FONT);
 				}
 			}
 			return font;
 		}
-		
+
 		public String getColumnText(Object obj, int index) {
 			return obj.toString();
 		}
 
 		public Image getColumnImage(Object obj, int index) {
-//			if (obj instanceof Binding) {
-//				return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ELEMENT);
-//			}
+			// if (obj instanceof Binding) {
+			// return
+			// PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ELEMENT);
+			// }
 			return null;
 		}
 	}
-	
+
 	@Override
 	public void createContent(final IManagedForm managedForm) {
 		ScrolledForm form = managedForm.getForm();
 		FormToolkit toolkit = managedForm.getToolkit();
-		
+
 		Section apiSection = toolkit.createSection(form.getBody(), ExpandableComposite.TITLE_BAR);
 		apiSection.setText("Component API");
-		//apiSection.setDescription("Yep");
+		// apiSection.setDescription("Yep");
 		apiSection.marginWidth = 10;
 		apiSection.marginHeight = 10;
-		//toolkit.createCompositeSeparator(apiSection);
-		
+		// toolkit.createCompositeSeparator(apiSection);
+
 		Composite apiClient = toolkit.createComposite(apiSection, SWT.WRAP);
 		GridLayout apiClientLayout = new GridLayout();
 		apiClientLayout.numColumns = 1;
@@ -196,7 +197,7 @@ public class BindingsPageBlock extends MasterDetailsBlock implements BindingChan
 		apiClientLayout.marginHeight = 0;
 		apiClientLayout.marginBottom = 10;
 		apiClient.setLayout(apiClientLayout);
-		
+
 		Button componentContentButton = toolkit.createButton(apiClient, "Component Content", SWT.CHECK);
 		ApiEditor apiEditor = (ApiEditor) page.getEditor();
 		try {
@@ -208,9 +209,9 @@ public class BindingsPageBlock extends MasterDetailsBlock implements BindingChan
 			public void widgetDefaultSelected(SelectionEvent event) {
 				widgetSelected(event);
 			}
-			
+
 			public void widgetSelected(SelectionEvent event) {
-				Button button = (Button)event.widget;
+				Button button = (Button) event.widget;
 				try {
 					@SuppressWarnings("hiding")
 					ApiEditor apiEditor = (ApiEditor) page.getEditor();
@@ -221,14 +222,14 @@ public class BindingsPageBlock extends MasterDetailsBlock implements BindingChan
 				}
 			}
 		});
-		
+
 		toolkit.paintBordersFor(apiClient);
 
 		apiSection.setClient(apiClient);
-		
+
 		super.createContent(managedForm);
 	}
-	
+
 	protected void createMasterPart(final IManagedForm managedForm, Composite parent) {
 		// final ScrolledForm form = managedForm.getForm();
 		FormToolkit toolkit = managedForm.getToolkit();
@@ -238,7 +239,7 @@ public class BindingsPageBlock extends MasterDetailsBlock implements BindingChan
 		bindingsSection.setDescription("The list contains bindings from the component whose details are editable on the right");
 		bindingsSection.marginWidth = 10;
 		bindingsSection.marginHeight = 5;
-		//toolkit.createCompositeSeparator(bindingsSection);
+		// toolkit.createCompositeSeparator(bindingsSection);
 		Composite bindingsClient = toolkit.createComposite(bindingsSection, SWT.WRAP);
 		GridLayout bindingsClientLayout = new GridLayout();
 		bindingsClientLayout.numColumns = 2;
@@ -272,11 +273,9 @@ public class BindingsPageBlock extends MasterDetailsBlock implements BindingChan
 				try {
 					ApiEditor apiEditor = (ApiEditor) page.getEditor();
 					String newBindingName = StringUtils.findUnusedName("newBinding", apiEditor.getModel().getWo(), "getBinding");
-					apiEditor.getModel().getWo().createBinding(newBindingName);
+					Binding newBinding = apiEditor.getModel().getWo().createBinding(newBindingName);
 					viewer.refresh();
-					int count = viewer.getTable().getItemCount();
-					Object element = viewer.getElementAt(count - 1);
-					viewer.editElement(element, count - 1);
+					viewer.editElement(newBinding, 0);
 					managedForm.dirtyStateChanged();
 				} catch (Throwable tx) {
 					throw new RuntimeException("Failed to open .api file.", tx);
@@ -321,7 +320,7 @@ public class BindingsPageBlock extends MasterDetailsBlock implements BindingChan
 			@Override
 			public boolean isDirty() {
 				try {
-					return ((ApiEditor)page.getEditor()).getModel().isDirty();
+					return ((ApiEditor) page.getEditor()).getModel().isDirty();
 				} catch (ApiModelException e) {
 					return false;
 				}
