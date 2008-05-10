@@ -64,7 +64,7 @@ import org.w3c.dom.NodeList;
 
 public abstract class AbstractApiModelElement {
 
-	Element element;
+	protected Element element;
 
 	public ApiModel apiModel;
 
@@ -73,7 +73,7 @@ public abstract class AbstractApiModelElement {
 		this.element = element;
 		this.apiModel = apiModel;
 	}
-
+	
 	public List<Element> getChildrenElementsByTagName(String _tagName) {
     synchronized (this.apiModel) {
       List<Element> elementsList = new LinkedList<Element>();

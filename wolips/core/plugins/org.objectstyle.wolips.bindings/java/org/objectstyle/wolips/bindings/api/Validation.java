@@ -59,6 +59,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 public class Validation extends AbstractValidationContainer {
 
@@ -68,6 +69,13 @@ public class Validation extends AbstractValidationContainer {
 
   protected Validation(Element element, ApiModel apiModel) {
     super(element, apiModel);
+  }
+  
+  public void removeChild(AbstractApiModelElement validation) {
+    Node removedNode = element.removeChild(validation.element);
+    if (element.getChildNodes().getLength() == 0) {
+      element.getParentNode().removeChild(element);
+    }
   }
 
   public String getMessage() {
