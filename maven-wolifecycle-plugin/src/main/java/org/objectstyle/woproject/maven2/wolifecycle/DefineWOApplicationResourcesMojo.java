@@ -239,15 +239,20 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 		for (Artifact artifact : artifacts) {
 
 			if (skipAppleProvidedFrameworks != null && skipAppleProvidedFrameworks.booleanValue() && isWebobjectAppleGroup(artifact.getGroupId())) {
-				getLog().debug("Skipping artifact: " + artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getVersion());
+				getLog().debug("Skipping artifact: " + artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getVersion() + " (Apple provided)");
 
 				continue;
 			}
 
 			FileInputStream fileInputStream;
 			try {
-
 				File jarFile = artifact.getFile();
+
+				if (!isArtifactDeployed(jarFile)) {
+					getLog().debug("Skipping artifact: " + artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getVersion() + " (not deployed)");
+
+					continue;
+				}
 
 				fileInputStream = new FileInputStream(jarFile);
 				JarInputStream jarInputStream = new JarInputStream(fileInputStream);
@@ -352,6 +357,10 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 	@Override
 	public boolean includesVersionInArtifactName() {
 		return true;
+	}
+
+	private boolean isArtifactDeployed(File file) {
+		return file.isFile();
 	}
 
 	@Override
