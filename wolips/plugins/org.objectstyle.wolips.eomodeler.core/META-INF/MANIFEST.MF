@@ -12,6 +12,7 @@ Bundle-Vendor: objectstyle.org
 Export-Package: org.objectstyle.wolips.eomodeler.core,
  org.objectstyle.wolips.eomodeler.core.kvc,
  org.objectstyle.wolips.eomodeler.core.model,
+ org.objectstyle.wolips.eomodeler.core.model.qualifier,
  org.objectstyle.wolips.eomodeler.core.sql,
  org.objectstyle.wolips.eomodeler.core.utils,
  org.objectstyle.wolips.eomodeler.core.wocompat
