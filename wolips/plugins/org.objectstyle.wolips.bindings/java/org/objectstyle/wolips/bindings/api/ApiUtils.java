@@ -44,7 +44,7 @@ public class ApiUtils {
     }
     else if (defaults == null) {
       String bindingName = binding.getName();
-      isActionBinding = "action".equals(bindingName);
+      isActionBinding = "action".equals(bindingName) || bindingName.endsWith("Action");
     }
     return isActionBinding;
   }
