@@ -417,15 +417,35 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 		EOAdaptorContext ac = dbc.adaptorContext();
 		EOSynchronizationFactory sf = ((JDBCAdaptor) ac.adaptor()).plugIn().synchronizationFactory();
 
+		NSMutableArray beforeOpenChannels = new NSMutableArray();
+		Enumeration beforeChannelsEnum = ac.channels().objectEnumerator();
+		while (beforeChannelsEnum.hasMoreElements()) {
+			EOAdaptorChannel channel = (EOAdaptorChannel)beforeChannelsEnum.nextElement();
+			if (channel.isOpen()) {
+				beforeOpenChannels.addObject(channel);
+			}
+		}
+
 		StringBuffer sqlBuffer = new StringBuffer();
 		fixDuplicateSingleTableInheritanceDropStatements(sf, flags, sqlBuffer);
 
-		String sql = sf.schemaCreationScriptForEntities(_entities, flags);
-		sql = sql.replaceAll("CREATE TABLE ([^\\s(]+)\\(", "CREATE TABLE $1 (");
-		sqlBuffer.append(sql);
+		try {
+			String sql = sf.schemaCreationScriptForEntities(_entities, flags);
+			sql = sql.replaceAll("CREATE TABLE ([^\\s(]+)\\(", "CREATE TABLE $1 (");
+			sqlBuffer.append(sql);
 
-		callModelProcessorMethodIfExists("processSQL", new Object[] { sqlBuffer, _model, _entities, flags });
-
+			callModelProcessorMethodIfExists("processSQL", new Object[] { sqlBuffer, _model, _entities, flags });
+		}
+		finally {
+			Enumeration afterChannelsEnum = ac.channels().objectEnumerator();
+			while (afterChannelsEnum.hasMoreElements()) {
+				EOAdaptorChannel channel = (EOAdaptorChannel)afterChannelsEnum.nextElement();
+				if (channel.isOpen() && !beforeOpenChannels.containsObject(channel)) {
+					channel.closeChannel();
+				}
+			}
+		}
+		
 		String sqlBufferStr = sqlBuffer.toString();
 		if (sqlBufferStr != null) {
 			sqlBufferStr = Pattern.compile("([\\w\\)])(NOT NULL)", Pattern.CASE_INSENSITIVE).matcher(sqlBufferStr).replaceAll("$1 $2");
@@ -499,29 +519,50 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 
 	public void executeSQL(String sql) throws SQLException {
 		EODatabaseContext databaseContext = new EODatabaseContext(new EODatabase(_model));
-		EODatabaseChannel databaseChannel = databaseContext.availableChannel();
-		EOAdaptorChannel adaptorChannel = databaseChannel.adaptorChannel();
-		boolean channelOpen = adaptorChannel.isOpen();
-		if (!channelOpen) {
-			adaptorChannel.openChannel();
+		EOAdaptorContext adaptorContext = databaseContext.adaptorContext();
+
+		NSMutableArray beforeOpenChannels = new NSMutableArray();
+		Enumeration beforeChannelsEnum = adaptorContext.channels().objectEnumerator();
+		while (beforeChannelsEnum.hasMoreElements()) {
+			EOAdaptorChannel channel = (EOAdaptorChannel)beforeChannelsEnum.nextElement();
+			if (channel.isOpen()) {
+				beforeOpenChannels.addObject(channel);
+			}
 		}
 		try {
-			JDBCContext jdbccontext = (JDBCContext) adaptorChannel.adaptorContext();
+			EODatabaseChannel databaseChannel = databaseContext.availableChannel();
+			EOAdaptorChannel adaptorChannel = databaseChannel.adaptorChannel();
+			boolean channelOpen = adaptorChannel.isOpen();
+			if (!channelOpen) {
+				adaptorChannel.openChannel();
+			}
 			try {
-				jdbccontext.beginTransaction();
-				Connection conn = jdbccontext.connection();
-				Statement stmt = conn.createStatement();
-				stmt.executeUpdate(sql);
-				conn.commit();
-			} catch (SQLException sqlexception) {
-				sqlexception.printStackTrace(System.out);
-				jdbccontext.rollbackTransaction();
-				throw sqlexception;
+				JDBCContext jdbccontext = (JDBCContext) adaptorChannel.adaptorContext();
+				try {
+					jdbccontext.beginTransaction();
+					Connection conn = jdbccontext.connection();
+					Statement stmt = conn.createStatement();
+					stmt.executeUpdate(sql);
+					conn.commit();
+				} catch (SQLException sqlexception) {
+					sqlexception.printStackTrace(System.out);
+					jdbccontext.rollbackTransaction();
+					throw sqlexception;
+				}
+			}
+			finally {
+				if (!channelOpen) {
+					adaptorChannel.closeChannel();
+				}
 			}
 		}
 		finally {
-			if (!channelOpen) {
-				adaptorChannel.closeChannel();
+			Enumeration afterChannelsEnum = adaptorContext.channels().objectEnumerator();
+			while (afterChannelsEnum.hasMoreElements()) {
+				EOAdaptorChannel channel = (EOAdaptorChannel)afterChannelsEnum.nextElement();
+				if (channel.isOpen() && !beforeOpenChannels.containsObject(channel)) {
+					channel.closeChannel();
+				}
 			}
 		}
 	}
