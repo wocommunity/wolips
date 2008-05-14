@@ -54,6 +54,7 @@ public class FuzzyXMLParser {
   private Pattern _docTypeSystem = Pattern.compile("SYSTEM[ \r\n\t]+\"([^\"]*)\"");
   private Pattern _docTypeSubset = Pattern.compile("\\[([^\\]]*)\\]>");
   private Pattern _invalidStringPattern = Pattern.compile("([<>&])");
+  private Pattern _preCloseTagPattern = Pattern.compile("<\\s*/\\s*PRE\\s*>", Pattern.CASE_INSENSITIVE);
 
   public FuzzyXMLParser(boolean wo54) {
     this(wo54, false);
@@ -198,20 +199,15 @@ public class FuzzyXMLParser {
       else if (!woOnly && text.startsWith("![CDATA[")) {
         handleCDATA(start, end, _originalSource.substring(start, end));
       }
-      else if (!woOnly && (text.startsWith("PRE") || text.startsWith("pre"))) {
-        handlePreTag(start, end, _originalSource.substring(start, end));
+      else if (!woOnly && (text.equalsIgnoreCase("pre") || text.toLowerCase().startsWith("pre "))) {
+        end = handlePreTag(start, end);
+        matcher.region(end, source.length());
       }
       else if (text.startsWith("/") && (!woOnly || WodHtmlUtils.isWOTag(text.substring(1)))) {
         handleCloseTag(start, end, text);
       }
       else if (text.endsWith("/") && (!woOnly || WodHtmlUtils.isWOTag(text))) {
         handleEmptyTag(start, end);
-      }
-      else if (!woOnly && (text.startsWith("SCRIPT") || text.startsWith("script"))) {
-        handleScriptTag(start, end);
-      }
-      else if (!woOnly && (text.startsWith("STYLE") || text.startsWith("style"))) {
-        handleStyleTag(start, end);
       }
       else if (!woOnly && text.startsWith("!--")) {
         end = _originalSource.indexOf("-->", start);
@@ -314,45 +310,22 @@ public class FuzzyXMLParser {
     }
   }
   
-  private void handlePreTag(int offset, int end, String text) {
+  private int handlePreTag(int offset, int end) {
     closeAutocloseTags();
-    int contentEnd = _originalSource.toLowerCase().indexOf("</pre>", end);
-    if (contentEnd < 0) {
-      contentEnd = _originalSource.indexOf("<", end);
-    }
-    String content = _originalSource.substring(end, contentEnd);
-    FuzzyXMLPreImpl preNode = new FuzzyXMLPreImpl(getParent(), content, end, end + content.length());
-    if (getParent() != null) {
-      ((FuzzyXMLElement) getParent()).appendChild(preNode);
-    }
-    else {
-      _roots.add(preNode);
-    }
-    _stack.push(preNode);
-  }
-
-  private void handleScriptTag(int offset, int end) {
-    closeAutocloseTags();
+    String[] content = _preCloseTagPattern.split(_originalSource.substring(end, _originalSource.length()), 2);
+    String text = content[0];
     TagInfo info = parseTagContents(_originalSource.substring(offset + 1, end - 1));
-    FuzzyXMLElement scriptNode = new FuzzyXMLScriptImpl(getParent(), info.name, offset, end - offset, info.nameOffset);
-    handleStartTag(scriptNode, info, offset, end);
-  }
-
-  private void handleStyleTag(int offset, int end) {
-    closeAutocloseTags();
-    TagInfo info = parseTagContents(_originalSource.substring(offset + 1, end - 1));
-    FuzzyXMLElement styleNode = new FuzzyXMLStyleImpl(getParent(), info.name, offset, end - offset, info.nameOffset);
-    handleStartTag(styleNode, info, offset, end);
+    FuzzyXMLPreImpl preNode = new FuzzyXMLPreImpl(getParent(), text, offset, text.length());
+    handleStartTag(preNode, info, offset, end);
+    String preBlock = _originalSource.substring(offset, end + text.length() + 1);
+    return _parse(preBlock, offset, true) - 1;
   }
 
   /** テキストノードを処理します。 */
   private void handleText(int offset, int end, boolean escape) {
     String text = _originalSource.substring(offset, end);
     //System.out.println("FuzzyXMLParser.handleText: '" + text + "'");
-    // Q: Disabling check because it causes breaking text to disappear into the autoclosing element
-    //if (text != null && text.trim().length() > 0) {
-      closeAutocloseTags();
-    //}
+    closeAutocloseTags();
     FuzzyXMLTextImpl textNode = new FuzzyXMLTextImpl(getParent(), FuzzyXMLUtil.decode(text, _isHTML), offset, end - offset);
     textNode.setEscape(escape);
     if (getParent() != null) {
@@ -692,7 +665,16 @@ public class FuzzyXMLParser {
     closeAutocloseTags();
     TagInfo info = parseTagContents(_originalSource.substring(offset + 1, end - 1));
     // System.out.println("FuzzyXMLParser.handleStartTag: open " + info.name);
-    FuzzyXMLElementImpl element = new FuzzyXMLElementImpl(getParent(), info.name, offset, end - offset, info.nameOffset);
+    FuzzyXMLElement element;
+    if (info.name.equals("script")) {
+      element = new FuzzyXMLScriptImpl(getParent(), info.name, offset, end - offset, info.nameOffset);
+    }
+    else if (info.name.equals("style")) {
+      element = new FuzzyXMLStyleImpl(getParent(), info.name, offset, end - offset, info.nameOffset);
+    }
+    else { 
+      element = new FuzzyXMLElementImpl(getParent(), info.name, offset, end - offset, info.nameOffset);
+    }
     handleStartTag(element, info, offset, end);
   }
 
