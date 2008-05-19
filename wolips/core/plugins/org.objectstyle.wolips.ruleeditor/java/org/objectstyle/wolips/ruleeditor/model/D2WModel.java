@@ -49,91 +49,195 @@
  */
 package org.objectstyle.wolips.ruleeditor.model;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.beans.*;
+import java.io.*;
+import java.util.*;
 
-import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
+import org.objectstyle.cayenne.wocompat.*;
 
 /**
+ * This class is the base class to work with d2wmodel files.
+ * 
  * @author uli
+ * @author <a href="mailto:frederico@moleque.com.br">Frederico Lellis</a>
+ * @author <a href="mailto:georg@moleque.com.br">Georg von Bülow</a>
+ * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
  */
-public class D2WModel {
+public class D2WModel implements PropertyChangeListener {
+
+	private static final int NUMBER_OF_RULES_KEY = 1;
 
 	private static final String RULES_LIST_KEY = "rules";
 
-	private String modelPath;
+	boolean hasUnsavedChanges = false;
 
-	private ArrayList rules;
+	private final File modelFile;
 
-	private boolean hasUnsavedChanges = false;
+	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
-	private Map modelMap;
+	private final Collection<Rule> rules;
 
-	public D2WModel() {
-		super();
+	/**
+	 * The D2WModel is created based on a file. An empty file or an existing
+	 * d2wmodel file could be passed as a parameter.
+	 * 
+	 * @param modelFile
+	 *            An empty or existing d2wmodel file
+	 */
+	public D2WModel(File modelFile) {
+		if (modelFile == null) {
+			throw new IllegalArgumentException("The URL for the d2wmodel file cannot be null");
+		}
+
+		this.modelFile = modelFile;
+
+		Map<String, Collection<Map>> modelMap = loadModel();
+
+		rules = modelMapToRules(modelMap);
 	}
 
-	public void init(String path) throws IOException {
-		this.modelPath = path;
-		File projectFile = null;
-		InputStream in = null;
-		try {
-			projectFile = new File(path);
-			in = new FileInputStream(projectFile);
-			modelMap = (Map) PropertyListSerialization.propertyListFromStream(in);
-		} finally {
-			projectFile = null;
-			if (in != null) {
-				in.close();
-			}
-			in = null;
-		}
-		if (path == null) {
-			throw new IOException("Error reading project file: " + path);
-		}
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		propertyChangeSupport.addPropertyChangeListener(listener);
 	}
 
-	public List getRules() {
-		if (rules != null) {
-			return rules;
-		}
-		List list = (List) this.modelMap.get(RULES_LIST_KEY);
-		if (list == null) {
-			return null;
-		}
-		rules = new ArrayList(list.size());
-		for (int i = 0; i < list.size(); i++) {
-			Map map = (Map) list.get(i);
-			Rule rule = new Rule(this, map);
-			rules.add(i, rule);
-		}
+	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+	}
+
+	public void addRule(final Rule newRule) {
+		newRule.addPropertyChangeListener(this);
+
+		getRules().add(newRule);
+
+		setHasUnsavedChanges(true);
+	}
+
+	/**
+	 * Use this method to create new empty rules for this d2wmodel.
+	 * 
+	 * @return The newly created rule
+	 */
+	public Rule createEmptyRule() {
+		Rule rule = new Rule();
+
+		addRule(rule);
+
+		return rule;
+	}
+
+	public String getModelPath() {
+		return modelFile.toString();
+	}
+
+	public Collection<Rule> getRules() {
 		return rules;
+	}
+
+	/**
+	 * Tell if the model has changes not saved.
+	 * 
+	 * @return Returns <code>true</code> if the d2wmodel was changed or
+	 *         <code>false</code> otherwise
+	 */
+	public boolean hasUnsavedChanges() {
+		return hasUnsavedChanges;
+	}
+
+	protected Map<String, Collection<Map>> loadModel() {
+		Map<String, Collection<Map>> modelMap = null;
+
+		try {
+			modelMap = (Map<String, Collection<Map>>) PropertyListSerialization.propertyListFromFile(modelFile);
+		} catch (FileNotFoundException exception) {
+			exception.printStackTrace();
+
+			throw new IllegalArgumentException("The file " + modelFile + " cannot be found");
+		}
+
+		if (modelMap == null) {
+			modelMap = new HashMap<String, Collection<Map>>();
+
+			modelMap.put(RULES_LIST_KEY, new ArrayList<Map>());
+		}
+
+		return modelMap;
+
+	}
+
+	private Collection<Rule> modelMapToRules(Map<String, Collection<Map>> modelMap) {
+		Collection<Map> rulesAsMaps = modelMap.get(RULES_LIST_KEY);
+
+		Collection<Rule> rules = new ArrayList<Rule>(rulesAsMaps.size());
+
+		for (Map ruleAsMap : rulesAsMaps) {
+			Rule rule = new Rule(ruleAsMap);
+
+			rule.addPropertyChangeListener(this);
+
+			rules.add(rule);
+		}
+
+		return rules;
+	}
+
+	public void propertyChange(PropertyChangeEvent event) {
+		setHasUnsavedChanges(true);
+	}
+
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		propertyChangeSupport.removePropertyChangeListener(listener);
+	}
+
+	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+	}
+
+	public void removeRule(final Rule rule) {
+		rule.removePropertyChangeListener(this);
+
+		getRules().remove(rule);
+
+		setHasUnsavedChanges(true);
+	}
+
+	private Map<String, Collection<Map>> rulesToModelMap() {
+		Map<String, Collection<Map>> modelMap = new HashMap<String, Collection<Map>>(NUMBER_OF_RULES_KEY);
+
+		Collection<Map> rulesArray = new ArrayList<Map>();
+
+		for (Rule rule : rules) {
+
+			Map<String, Object> ruleMap = rule.toMap();
+
+			rulesArray.add(ruleMap);
+		}
+
+		modelMap.put(RULES_LIST_KEY, rulesArray);
+
+		return modelMap;
 	}
 
 	/**
 	 * Stores changes made to this object in the underlying d2wmodel file.
 	 */
 	public void saveChanges() {
-		File projectFile = null;
+		Map<String, Collection<Map>> modelMap = rulesToModelMap();
+
 		try {
-			projectFile = new File(modelPath);
-			PropertyListSerialization.propertyListToFile(projectFile, this.modelMap);
-		} finally {
-			projectFile = null;
+			PropertyListSerialization.propertyListToFile(modelFile, modelMap);
+
+			setHasUnsavedChanges(false);
+
+		} catch (Exception exception) {
+			exception.printStackTrace();
 		}
-		this.setHasUnsavedChanges(false);
 	}
 
-	public boolean hasUnsavedChanges() {
-		return hasUnsavedChanges;
-	}
+	private void setHasUnsavedChanges(boolean newValue) {
+		boolean oldValue = hasUnsavedChanges;
 
-	public void setHasUnsavedChanges(boolean hasUnsavedChanges) {
-		this.hasUnsavedChanges = hasUnsavedChanges;
+		hasUnsavedChanges = newValue;
+
+		propertyChangeSupport.firePropertyChange("HAS_UNSAVED_CHANGES", oldValue, hasUnsavedChanges);
 	}
 }

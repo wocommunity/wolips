@@ -49,92 +49,56 @@
  */
 package org.objectstyle.wolips.ruleeditor.editor;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.TableEditor;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.events.ControlAdapter;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
-import org.objectstyle.wolips.ruleeditor.RuleEditorPlugin;
-import org.objectstyle.wolips.ruleeditor.model.D2WModel;
-import org.objectstyle.wolips.ruleeditor.model.Rule;
+import org.eclipse.jface.viewers.*;
+import org.eclipse.swt.*;
+import org.eclipse.swt.custom.*;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.layout.*;
+import org.eclipse.swt.widgets.*;
+import org.objectstyle.wolips.ruleeditor.filter.*;
+import org.objectstyle.wolips.ruleeditor.listener.*;
+import org.objectstyle.wolips.ruleeditor.model.*;
+import org.objectstyle.wolips.ruleeditor.provider.*;
+import org.objectstyle.wolips.ruleeditor.sorter.*;
 
 /**
+ * The UI class for the rule editor.
+ * 
  * @author uli
+ * @author <a href="mailto:frederico@moleque.com.br">Frederico Lellis</a>
+ * @author <a href="mailto:georg@moleque.com.br">Georg von Bülow</a>
  */
 public class RuleEditor {
-	D2WModel model;
+	public static TableSortSelectionListener createTableColumn(final TableViewer viewer, final String text, final String tooltip, final AbstractInvertableTableSorter sorter, final int initialDirection, final boolean keepDirection) {
+		TableColumn column = new TableColumn(viewer.getTable(), SWT.LEFT);
 
-	Table table;
+		column.setText(text);
+		column.setToolTipText(tooltip);
 
-	Text lhstext;
-
-	Text classtext;
-
-	Text rhstext;
-
-	Rule rule;
-
-	Text valuetext;
-
-	Text prioritytext;
-
-	void setLHSKeyPath(String keypath) {
-		// rule.setLeftHandSide(leftHandSide)(EOQualifier.qualifierWithQualifierFormat(keypath,
-		// null));
-		updateRules();
+		return new TableSortSelectionListener(viewer, column, sorter, initialDirection, keepDirection);
 	}
 
-	void setRHSKeyPath(String keypath) {
-		rule.getRightHandSide().setKeyPath(keypath);
-		updateRules();
-	}
+	private Text classtext;
 
-	void setRHSValue(String value) {
-		rule.getRightHandSide().setValue(value);
-		updateRules();
-	}
+	private Rule copyRule;
 
-	void setPriority(String priority) {
-		rule.setPriority(priority);
-		updateRules();
-	}
+	private Text lhstext;
 
-	void setClassName(String classname) {
-		rule.setAssignmentClassName(classname);
-		updateRules();
-	}
+	private D2WModel model;
 
-	void updateBottomDisplay() {
-		if (rule.getLeftHandSide() == null)
-			lhstext.setText("");
-		else
-			lhstext.setText(rule.getLeftHandSide().toString());
-		classtext.setText(rule.getAssignmentClassName());
-		rhstext.setText(rule.getRightHandSide().getKeyPath());
-		if (rule.getRightHandSide().getValue() == null)
-			valuetext.setText("");
-		else
-			valuetext.setText(rule.getRightHandSide().getValue());
-		prioritytext.setText(rule.getPriority().toString());
-	}
+	private Text prioritytext;
+
+	private Text rhstext;
+
+	private Rule rule;
+
+	private Table table;
+
+	private TableViewer tableViewer;
+
+	protected boolean updating;
+
+	private Text valuetext;
 
 	/**
 	 * Creates the main window's contents
@@ -142,9 +106,9 @@ public class RuleEditor {
 	 * @param shell
 	 *            the main window
 	 */
-	public void createContents(Composite parent) {
+	public void createContents(final Composite parent) {
 		Composite container = new Composite(parent, SWT.NONE);
-		// Shell shell = container.getShell();
+
 		GridLayout layout1 = new GridLayout();
 		layout1.numColumns = 2;
 		layout1.makeColumnsEqualWidth = true;
@@ -159,40 +123,39 @@ public class RuleEditor {
 
 		RowLayout buttonlayout = new RowLayout();
 		buttonlayout.fill = true;
-		// buttonayout.justify = false;
+
 		Group buttongroup = new Group(container, SWT.NONE);
 		buttongroup.setLayout(buttonlayout);
 		buttongroup.setLayoutData(buttondata);
 
 		final Button newrulebutton = new Button(buttongroup, SWT.PUSH);
+
 		newrulebutton.setText("New Rule");
 		newrulebutton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				// rule = new ERD2WExtendedRule();
-				// rule.setAuthor(100);
-				// rule.setRhs(new Assignment("", null));
-				// model.addRule(rule);
-				// displaygroup.setObjectArray(model.publicRules());
+			@Override
+			public void widgetSelected(final SelectionEvent event) {
+				rule = model.createEmptyRule();
 
 				updateRules();
-				table.setSelection(table.getItemCount() - 1);
+
+				table.select(table.getItemCount());
+				updating = false;
+
 				updateBottomDisplay();
+
 			}
 		});
 
 		final Button deletebutton = new Button(buttongroup, SWT.PUSH);
 		deletebutton.setText("Delete Rule");
 		deletebutton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				// NSMutableArray publicrules =
-				// model.publicRules().mutableClone();
-				// for (int i = 0; i < table.getSelectionCount(); i++) {
-				// ERD2WExtendedRule deleterule = (ERD2WExtendedRule)
-				// table.getSelection()[i].getData("rule");
-				// publicrules.removeObject(deleterule);
-				// }
-				// model.setPublicRules(publicrules);
-				// displaygroup.setObjectArray(model.publicRules());
+			@Override
+			public void widgetSelected(final SelectionEvent event) {
+				model.removeRule(selectedRule());
+
+				rule = null;
+				tableViewer.refresh();
+
 				updateRules();
 				updateBottomDisplay();
 			}
@@ -201,68 +164,24 @@ public class RuleEditor {
 		final Button copybutton = new Button(buttongroup, SWT.PUSH);
 		copybutton.setText("Copy");
 		copybutton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				// Clipboard cb = new Clipboard(copybutton.getDisplay());
-				// NSMutableArray rules = new NSMutableArray();
-				// for (int i = 0; i < table.getSelectionCount(); i++) {
-				// ERD2WExtendedRule copyrule = (ERD2WExtendedRule) table
-				// .getSelection()[i].getData("rule");
-				// EOKeyValueArchiver rulearchive = new EOKeyValueArchiver();
-				//
-				// copyrule.encodeWithKeyValueArchiver(rulearchive);
-				// rules.addObject(copyrule);
-				// }
-				// EOKeyValueArchiver rulesarchive = new EOKeyValueArchiver();
-				// rulesarchive.encodeObject(rules, "rules");
-				//
-				// cb.setContents(new Object[] { rulesarchive.dictionary()
-				// .toString() }, new Transfer[] { TextTransfer
-				// .getInstance() });
-				// cb.dispose();
+			@Override
+			public void widgetSelected(final SelectionEvent event) {
+				copyRule = (Rule) tableViewer.getElementAt(table.getSelectionIndex());
+
 			}
 		});
 
 		final Button pastebutton = new Button(buttongroup, SWT.PUSH);
 		pastebutton.setText("Paste");
 		pastebutton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				Clipboard cb = new Clipboard(pastebutton.getDisplay());
+			@Override
+			public void widgetSelected(final SelectionEvent event) {
+				Rule newRule = copyRule;
 
-				try {
-					// NSMutableDictionary rulesdictionary =
-					// (NSMutableDictionary) NSPropertyListSerialization
-					// .dictionaryForString((String) cb
-					// .getContents(TextTransfer.getInstance()));
-					// NSArray ruleschange = (NSArray) rulesdictionary
-					// .objectForKey("rules");
-					// Enumeration e = ruleschange.objectEnumerator();
-					// while (e.hasMoreElements()) {
-					// NSMutableDictionary dict = (NSMutableDictionary) e
-					// .nextElement();
-					// if ("com.webobjects.directtoweb.Rule".equals(dict
-					// .objectForKey("class"))) {
-					// dict.setObjectForKey("ERD2WExtendedRule", "class");
-					// }
-					// }
-					//
-					// EOKeyValueUnarchiver rulesunarchiver = new
-					// EOKeyValueUnarchiver(
-					// rulesdictionary);
-					// NSArray rules = (NSArray) rulesunarchiver
-					// .decodeObjectForKey("rules");
-					// for (int i = 0; i < rules.count(); i++) {
-					// // model.addRule((ERD2WExtendedRule)
-					// // rules.objectAtIndex(i));
-					// }
-					//
-					// // displaygroup.setObjectArray(model.publicRules());
-					updateRules();
-					table.setSelection(table.getItemCount() - 1);
-					updateBottomDisplay();
-				} catch (Exception e) {
-					RuleEditorPlugin.getDefault().log(e);
-				}
-				cb.dispose();
+				model.addRule(newRule);
+
+				updateRules();
+				updateBottomDisplay();
 			}
 		});
 		// Search field
@@ -275,20 +194,26 @@ public class RuleEditor {
 		// text.setBounds(100, 50, 70, 20);
 		// text.setSize(50, 50);
 		searchtext.setLayoutData(searchdata);
+		searchtext.setText("Use this field to search any term");
+		searchtext.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(final FocusEvent event) {
+				if (searchtext.getText().equals("Use this field to search any term")) {
+					searchtext.setText("");
+				}
+
+			}
+		});
 		searchtext.addListener(SWT.DefaultSelection, new Listener() {
-			public void handleEvent(Event e) {
-				// displaygroup
-				// .setQualifier(EOQualifier
-				// .qualifierWithQualifierFormat(
-				// "(lhs caseInsensitiveLike '*"
-				// + searchtext.getText()
-				// + "*') or (rhsKeyPath caseInsensitiveLike '*"
-				// + searchtext.getText()
-				// + "*') or (rhs.value caseInsensitiveLike '*"
-				// + searchtext.getText() + "*')",
-				// null));
-				// displaygroup.updateDisplayedObjects();
-				updateRules();
+			public void handleEvent(final Event e) {
+				for (ViewerFilter filter : tableViewer.getFilters()) {
+					tableViewer.removeFilter(filter);
+				}
+				String regex = (searchtext.getText());
+				if (regex != null && !regex.equals("")) {
+					tableViewer.addFilter(new RulesFilter(regex));
+				}
+
 			}
 		});
 
@@ -305,6 +230,15 @@ public class RuleEditor {
 		table.setLinesVisible(true);
 		table.setLayoutData(tabledata);
 
+		// Create the TableViewer to hold content and do update
+
+		tableViewer = new TableViewer(table);
+		tableViewer.setContentProvider(new TableContentProvider());
+		tableViewer.setLabelProvider(new TableLabelProvider());
+		tableViewer.setInput(model);
+
+		searchtext.addModifyListener(new FilterListener(tableViewer));
+
 		// Create an editor object to use for text editing
 		final TableEditor editor = new TableEditor(table);
 		editor.horizontalAlignment = SWT.LEFT;
@@ -314,8 +248,10 @@ public class RuleEditor {
 		// interested
 		// in the selected column as well as row
 		table.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				rule = (Rule) e.item.getData("rule");
+			@Override
+			public void widgetSelected(final SelectionEvent e) {
+				rule = (Rule) tableViewer.getElementAt(table.getSelectionIndex());
+				updating = true;
 				updateBottomDisplay();
 			}
 		});
@@ -360,23 +296,30 @@ public class RuleEditor {
 		 */
 
 		// Create the columns
-		TableColumn c1 = new TableColumn(table, SWT.LEFT, 0);
-		c1.setText("Lhs");
-		c1.pack();
-		TableColumn c2 = new TableColumn(table, SWT.LEFT, 1);
-		c2.setText("Rhs Key");
-		c2.pack();
-		TableColumn c3 = new TableColumn(table, SWT.LEFT, 2);
-		c3.setText("Rhs Value");
-		c3.pack();
-		TableColumn c4 = new TableColumn(table, SWT.RIGHT, 3);
-		c4.setText("Priority");
-		c4.pack();
+		RuleEditor.createTableColumn(tableViewer, "Lhs", "Left Hand Side", new TextSorter(0), SWT.DOWN, true).chooseColumnForSorting();
+		RuleEditor.createTableColumn(tableViewer, "Rhs Key", "Right Hand Side Key", new TextSorter(1), SWT.UP, false);
+		RuleEditor.createTableColumn(tableViewer, "Rhs Value", "Right Hand Side Value", new TextSorter(2), SWT.UP, false);
+		RuleEditor.createTableColumn(tableViewer, "Priority", "Priority", new TextSorter(3), SWT.UP, false);
+
+		// TableColumn c1 = new TableColumn(table, SWT.LEFT, 0);
+		// c1.setText("Lhs");
+		// c1.pack();
+		// TableColumn c2 = new TableColumn(table, SWT.LEFT, 1);
+		// c2.setText("Rhs Key");
+		// c2.pack();
+		// TableColumn c3 = new TableColumn(table, SWT.LEFT, 2);
+		// c3.setText("Rhs Value");
+		// c3.pack();
+		// TableColumn c4 = new TableColumn(table, SWT.RIGHT, 3);
+		// c4.setText("Priority");
+		// c4.pack();
 
 		table.addControlListener(new ControlAdapter() {
-			public void controlResized(ControlEvent e) {
-				if (table.getColumnCount() < 2)
+			@Override
+			public void controlResized(final ControlEvent e) {
+				if (table.getColumnCount() < 2) {
 					return;
+				}
 
 				int tblWidth = table.getBounds().width;
 				int t0w = (int) (tblWidth * 0.4);
@@ -401,11 +344,29 @@ public class RuleEditor {
 		lhsgroup.setLayoutData(lhsdata);
 		lhstext = new Text(lhsgroup, SWT.BORDER | SWT.MULTI | SWT.WRAP);
 		lhstext.addFocusListener(new FocusAdapter() {
-			public void focusLost(FocusEvent event) {
-				setLHSKeyPath(lhstext.getText());
+			@Override
+			public void focusLost(final FocusEvent event) {
+				try {
+					if (lhstext.getText() != "") {
+						setLhsConditions(lhstext.getText());
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		});
+		lhstext.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(final FocusEvent event) {
 
+				if (LeftHandSide.EMPTY_LHS_VALUE.equals(lhstext.getText())) {
+					lhstext.setText("");
+
+				}
+
+			}
+		});
 		// Create RHS segment
 		GridData rhsdata = new GridData();
 		rhsdata.horizontalAlignment = GridData.FILL;
@@ -432,7 +393,8 @@ public class RuleEditor {
 		classtext = new Text(rhsgroup, SWT.BORDER);
 		classtext.setLayoutData(textdata);
 		classtext.addFocusListener(new FocusAdapter() {
-			public void focusLost(FocusEvent event) {
+			@Override
+			public void focusLost(final FocusEvent event) {
 				setClassName(classtext.getText());
 			}
 		});
@@ -441,7 +403,8 @@ public class RuleEditor {
 		keylabel.setText("Key:");
 		rhstext = new Text(rhsgroup, SWT.BORDER);
 		rhstext.addFocusListener(new FocusAdapter() {
-			public void focusLost(FocusEvent event) {
+			@Override
+			public void focusLost(final FocusEvent event) {
 				setRHSKeyPath(rhstext.getText());
 			}
 		});
@@ -461,8 +424,10 @@ public class RuleEditor {
 		prioritydata.horizontalAlignment = GridData.FILL;
 		prioritydata.minimumWidth = 50;
 		prioritytext.setLayoutData(prioritydata);
+		prioritytext.addVerifyListener(new NumberVerifyListener());
 		prioritytext.addFocusListener(new FocusAdapter() {
-			public void focusLost(FocusEvent event) {
+			@Override
+			public void focusLost(final FocusEvent event) {
 				setPriority(prioritytext.getText());
 			}
 		});
@@ -470,16 +435,18 @@ public class RuleEditor {
 		Label valuelabel = new Label(rhsgroup, SWT.NONE);
 		valuelabel.setText("Value:");
 		valuetext = new Text(rhsgroup, SWT.BORDER | SWT.MULTI | SWT.WRAP);
-		GridData valuedata = new GridData();
+		GridData valuedata = new GridData(GridData.FILL_BOTH);
 		valuedata.grabExcessHorizontalSpace = true;
-		valuedata.verticalAlignment = GridData.FILL;
-		valuedata.horizontalAlignment = GridData.FILL;
+		valuedata.grabExcessVerticalSpace = true;
 		// valuedata.minimumWidth = 150;
 		valuedata.minimumHeight = 150;
 		valuedata.horizontalSpan = 3;
+		valuedata.verticalSpan = 3;
+
 		valuetext.setLayoutData(valuedata);
 		valuetext.addFocusListener(new FocusAdapter() {
-			public void focusLost(FocusEvent event) {
+			@Override
+			public void focusLost(final FocusEvent event) {
 				setRHSValue(valuetext.getText());
 			}
 		});
@@ -487,39 +454,86 @@ public class RuleEditor {
 		updateRules();
 	}
 
-	public void setD2WModel(D2WModel model) {
-		this.model = model;
-		// displaygroup = new WODisplayGroup();
-		// displaygroup.setObjectArray(model.publicRules());
-		// displaygroup.setDefaultStringMatchFormat("*%@*");
+	public Rule selectedRule() {
+		return (Rule) tableViewer.getElementAt(table.getSelectionIndex());
+	}
+
+	void setClassName(final String classname) {
+		rule.setAssignmentClassName(classname);
+
 		updateRules();
 	}
 
-	public void updateRules() {
-		if (table == null)
-			return;
+	public void setD2WModel(final D2WModel model) {
+		this.model = model;
 
-		table.removeAll();
-		for (int i = 0; i < model.getRules().size(); i++) {
-			Rule currentRule = (Rule) model.getRules().get(i);
-			TableItem item = new TableItem(table, SWT.NONE);
-
-			item.setData("rule", currentRule);
-			if (currentRule.getLeftHandSide() == null)
-				item.setText(0, "*true*");
-			else
-				item.setText(0, currentRule.getLeftHandSide().getDisplayString());
-
-			item.setText(1, currentRule.getRightHandSide().getKeyPath());
-
-			if (currentRule.getRightHandSide().getValue() != null)
-				item.setText(2, currentRule.getRightHandSide().getValue());
-
-			item.setText(3, currentRule.getPriority().toString());
-		}
+		updateRules();
 	}
 
 	public void setFocus() {
 		// DO NOTHING
 	}
+
+	void setLhsConditions(final String conditions) {
+		rule.getLeftHandSide().setConditions(conditions);
+
+		updateRules();
+	}
+
+	void setPriority(final String priority) {
+		rule.setAuthor(priority);
+
+		updateRules();
+	}
+
+	void setRHSKeyPath(final String keypath) {
+		rule.getRightHandSide().setKeyPath(keypath);
+
+		updateRules();
+	}
+
+	void setRHSValue(final String value) {
+		rule.getRightHandSide().setValue(value);
+
+		updateRules();
+	}
+
+	void updateBottomDisplay() {
+		if (rule != null) {
+			LeftHandSide lhs = rule.getLeftHandSide();
+
+			lhstext.setText(lhs.toString());
+
+			RightHandSide rhs = rule.getRightHandSide();
+
+			classtext.setText(rhs.getAssignmentClassName());
+
+			rhstext.setText(rhs.getKeyPath());
+
+			if (rhs.getValue() == null) {
+				valuetext.setText("");
+			} else {
+				valuetext.setText(rhs.getValue());
+			}
+
+			prioritytext.setText(rule.getAuthor());
+
+		} else {
+			lhstext.setText("");
+			classtext.setText("");
+			rhstext.setText("");
+			prioritytext.setText("");
+			valuetext.setText("");
+		}
+	}
+
+	public void updateRules() {
+		if (table == null) {
+			return;
+		}
+
+		tableViewer.setInput(model);
+		tableViewer.refresh();
+	}
+
 }
