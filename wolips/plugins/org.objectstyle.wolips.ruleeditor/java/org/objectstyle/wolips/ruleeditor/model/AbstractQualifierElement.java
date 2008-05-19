@@ -49,70 +49,152 @@
  */
 package org.objectstyle.wolips.ruleeditor.model;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public abstract class AbstractQualifierElement extends AbstractClassElement {
+/**
+ * This class is an abstraction for qualifier elements.
+ * 
+ * @author uli
+ * @author <a href="mailto:frederico@moleque.com.br">Frederico Lellis</a>
+ * @author <a href="mailto:georg@moleque.com.br">Georg von Bülow</a>
+ * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
+ */
+public abstract class AbstractQualifierElement extends AbstractRuleElement {
 
-	private static final String QUALIFIERS_KEY = "qualifiers";
+	protected static final String KEY_KEY = "key";
 
-	private ArrayList qualifiers;
+	protected static final String QUALIFIERS_KEY = "qualifiers";
 
-	public AbstractQualifierElement(D2WModel model, Map map) {
-		super(model, map);
+	protected static final String SELECTOR_NAME_KEY = "selectorName";
+
+	protected static final String VALUE_KEY = "value";
+
+	private String key;
+
+	private Collection<QualifierElement> qualifiers;
+
+	private String selectorName;
+
+	private String value;
+
+	public AbstractQualifierElement(final Map<String, Object> properties) {
+		super(properties);
+
+		key = (String) properties.get(KEY_KEY);
+		selectorName = (String) properties.get(SELECTOR_NAME_KEY);
+
+		Object value = properties.get(VALUE_KEY);
+
+		if (value != null) {
+			this.value = value.toString();
+		}
+
+		Collection<Map<String, Object>> qualifiersMap = (Collection<Map<String, Object>>) properties.get(QUALIFIERS_KEY);
+
+		if (qualifiersMap == null) {
+			return;
+		}
+
+		qualifiers = new ArrayList<QualifierElement>(qualifiersMap.size());
+
+		for (Object qualifierMap : qualifiersMap) {
+			QualifierElement qualifier;
+
+			if (qualifierMap instanceof Map) {
+				qualifier = new QualifierElement((Map<String, Object>) qualifierMap);
+
+			} else {
+				qualifier = (QualifierElement) qualifierMap;
+			}
+
+			qualifiers.add(qualifier);
+		}
 	}
 
-	public List getQualifiers() {
-		if (qualifiers != null) {
-			return qualifiers;
+	public void appendToDisplayStringBuffer(final StringBuffer buffer) {
+		if (getQualifiers() == null) {
+			return;
 		}
-		List list = (List) this.getMap().get(QUALIFIERS_KEY);
-		if (list == null) {
-			return null;
+
+		buffer.append("(");
+
+		Iterator iterator = qualifiers.iterator();
+
+		while (iterator.hasNext()) {
+			AbstractQualifierElement abstractQualifierElement = (AbstractQualifierElement) iterator.next();
+
+			abstractQualifierElement.appendToDisplayStringBuffer(buffer);
+
+			if (iterator.hasNext()) {
+				buffer.append(" ");
+				buffer.append(Qualifier.forClassName(getAssignmentClassName()).getDisplayName());
+				buffer.append(" ");
+			}
 		}
-		qualifiers = new ArrayList(list.size());
-		for (int i = 0; i < list.size(); i++) {
-			Map map = (Map) list.get(i);
-			Qualifier qualifier = new Qualifier(this.getModel(), map);
-			qualifiers.add(i, qualifier);
-		}
+
+		buffer.append(")");
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public Collection<QualifierElement> getQualifiers() {
 		return qualifiers;
 	}
 
-	public void appendToDisplayStringBuffer(StringBuffer stringBuffer, String concatWith) {
-		if (this.getQualifiers() == null) {
-			return;
-		}
-		stringBuffer.append("(");
-		Iterator iterator = qualifiers.iterator();
-		while (iterator.hasNext()) {
-			AbstractQualifierElement abstractQualifierElement = (AbstractQualifierElement) iterator.next();
-			abstractQualifierElement.appendToDisplayStringBuffer(stringBuffer, this.getConcatWithString());
-			if (iterator.hasNext()) {
-				stringBuffer.append(" ");
-				stringBuffer.append(concatWith);
-				stringBuffer.append(" ");
-			}
-		}
-		stringBuffer.append(")");
+	public String getSelectorName() {
+		return selectorName;
 	}
 
-	public String getConcatWithString() {
-		String assignmentClassName = this.getAssignmentClassName();
-		if (assignmentClassName == null) {
-			return null;
+	public String getValue() {
+		return value;
+	}
+
+	protected void setKey(String key) {
+		this.key = key;
+	}
+
+	protected void setQualifiers(Collection<QualifierElement> qualifiers) {
+		this.qualifiers = qualifiers;
+	}
+
+	protected void setSelectorName(String selectorName) {
+		this.selectorName = selectorName;
+	}
+
+	protected void setValue(String value) {
+		this.value = value;
+	}
+
+	@Override
+	protected Map<String, Object> toMap() {
+		Map<String, Object> qualifierMap = new HashMap<String, Object>();
+
+		qualifierMap.put(CLASS_KEY, getAssignmentClassName());
+
+		if (key != null) {
+			qualifierMap.put(KEY_KEY, key);
 		}
-		if ("com.webobjects.eocontrol.EOAndQualifier".equals(assignmentClassName)) {
-			return "and";
+
+		if (selectorName != null) {
+			qualifierMap.put(SELECTOR_NAME_KEY, selectorName);
 		}
-		if ("com.webobjects.eocontrol.EOOrQualifier".equals(assignmentClassName)) {
-			return "or";
+
+		if (value != null) {
+			qualifierMap.put(VALUE_KEY, value);
 		}
-		if ("com.webobjects.eocontrol.EONotQualifier".equals(assignmentClassName)) {
-			return "not";
+
+		if (qualifiers != null) {
+			Collection<Map<String, Object>> qualifiersArray = new ArrayList<Map<String, Object>>(qualifiers.size());
+
+			for (QualifierElement qualifier : qualifiers) {
+				qualifiersArray.add(qualifier.toMap());
+			}
+
+			qualifierMap.put(QUALIFIERS_KEY, qualifiersArray);
 		}
-		return assignmentClassName;
+
+		return qualifierMap;
 	}
 }

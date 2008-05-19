@@ -49,88 +49,87 @@
  */
 package org.objectstyle.wolips.ruleeditor.editor;
 
-import java.io.IOException;
+import java.io.*;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.part.EditorPart;
-import org.objectstyle.wolips.ruleeditor.RuleEditorPlugin;
-import org.objectstyle.wolips.ruleeditor.model.D2WModel;
+import org.eclipse.core.runtime.*;
+import org.eclipse.swt.widgets.*;
+import org.eclipse.ui.*;
+import org.eclipse.ui.part.*;
+import org.objectstyle.wolips.ruleeditor.listener.*;
+import org.objectstyle.wolips.ruleeditor.model.*;
 
 /**
  * @author omar
  * @author uli
+ * @author <a href="mailto:frederico@moleque.com.br">Frederico Lellis</a>
+ * @author <a href="mailto:georg@moleque.com.br">Georg von Bülow</a>
  */
 public class RuleEditorPart extends EditorPart {
 
 	private IFileEditorInput fileEditorInput;
 
-	private RuleEditor ruleEditor;
-
 	private boolean isDirty;
 
 	private D2WModel model;
+
+	private RuleEditor ruleEditor;
 
 	public RuleEditorPart() {
 		super();
 	}
 
-	public void doSave(IProgressMonitor monitor) {
+	@Override
+	public void createPartControl(final Composite parent) {
+		ruleEditor = new RuleEditor();
+
+		File file = new File(fileEditorInput.getFile().getLocation().toOSString());
+
+		model = new D2WModel(file);
+
+		model.addPropertyChangeListener(new D2WModelChangeListener(this));
+
+		ruleEditor.setD2WModel(model);
+		ruleEditor.createContents(parent);
+	}
+
+	@Override
+	public void doSave(final IProgressMonitor monitor) {
 		model.saveChanges();
 	}
 
+	@Override
 	public void doSaveAs() {
 		throw new IllegalStateException();
 	}
 
-	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+	@Override
+	public void init(final IEditorSite site, final IEditorInput input) throws PartInitException {
 		fileEditorInput = (IFileEditorInput) input;
 		super.setSite(site);
 		super.setInput(input);
 	}
 
+	@Override
 	public boolean isDirty() {
 		return isDirty;
 	}
 
+	@Override
 	public boolean isSaveAsAllowed() {
 		return false;
-	}
-
-	public void createPartControl(Composite parent) {
-		ruleEditor = new RuleEditor();
-		String fileName = fileEditorInput.getFile().getLocation().toOSString();
-		model = new D2WModel() {
-
-			public void setHasUnsavedChanges(boolean hasUnsavedChanges) {
-				super.setHasUnsavedChanges(hasUnsavedChanges);
-				RuleEditorPart.this.setDirty(hasUnsavedChanges);
-			}
-		};
-		try {
-			model.init(fileName);
-		} catch (IOException e) {
-			RuleEditorPlugin.getDefault().log("Error while saving model", e);
-		}
-		ruleEditor.setD2WModel(model);
-		ruleEditor.createContents(parent);
-	}
-
-	public void setFocus() {
-		ruleEditor.setFocus();
 	}
 
 	/**
 	 * @param isDirty
 	 *            The isDirty to set.
 	 */
-	public void setDirty(boolean isDirty) {
+	public void setDirty(final boolean isDirty) {
 		this.isDirty = isDirty;
-		this.firePropertyChange(IEditorPart.PROP_DIRTY);
+		firePropertyChange(IEditorPart.PROP_DIRTY);
+	}
+
+	@Override
+	public void setFocus() {
+		ruleEditor.setFocus();
 	}
 }

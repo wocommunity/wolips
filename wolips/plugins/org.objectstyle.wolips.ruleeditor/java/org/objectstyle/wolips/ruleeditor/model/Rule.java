@@ -49,67 +49,115 @@
  */
 package org.objectstyle.wolips.ruleeditor.model;
 
+import java.beans.PropertyChangeListener;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author uli
  */
-public class Rule extends AbstractClassElement {
-	private static final String RHS_KEY = "rhs";
+public class Rule extends AbstractRuleElement {
 
-	private static final String LHS_KEY = "lhs";
+	protected static final String AUTHOR_KEY = "author";
 
-	private static final String AUTHOR_KEY = "author";
+	protected static final String DEFAULT_ASSIGNMENT_CLASS_NAME = "com.webobjects.directtoweb.Rule";
 
-	private RightHandSide rightHandSide;
+	protected static final String DEFAULT_AUTHOR = "100";
 
-	private LeftHandSide leftHandSide;
+	protected static final String LHS_KEY = "lhs";
 
-	public Rule(D2WModel model, Map map) {
-		super(model, map);
+	protected static final String RHS_KEY = "rhs";
+
+	private String author;
+
+	private final LeftHandSide leftHandSide;
+
+	private final RightHandSide rightHandSide;
+
+	protected Rule() {
+		super(new HashMap<String, Object>());
+
+		setAssignmentClassName(DEFAULT_ASSIGNMENT_CLASS_NAME);
+		setAuthor(DEFAULT_AUTHOR);
+
+		leftHandSide = new LeftHandSide();
+
+		rightHandSide = new RightHandSide();
 	}
 
-	public RightHandSide getRightHandSide() {
-		if (rightHandSide != null) {
-			return rightHandSide;
+	protected Rule(final Map properties) {
+		super(properties);
+
+		Map<String, Object> lhsProperties = (Map<String, Object>) properties.get(LHS_KEY);
+
+		if (lhsProperties == null) {
+			leftHandSide = new LeftHandSide();
+		} else {
+			leftHandSide = new LeftHandSide(lhsProperties);
 		}
-		Map map = (Map) this.getMap().get(RHS_KEY);
-		rightHandSide = new RightHandSide(this.getModel(), map);
-		return rightHandSide;
+
+		properties.remove(LHS_KEY);
+
+		Map<String, Object> rhsProperties = (Map<String, Object>) properties.get(RHS_KEY);
+
+		rightHandSide = new RightHandSide(rhsProperties);
+
+		properties.remove(RHS_KEY);
+
+		setAuthor(properties.get(AUTHOR_KEY).toString());
 	}
 
-	public void setRightHandSide(RightHandSide rightHandSide) {
-		this.getMap().put(RHS_KEY, rightHandSide.getMap());
-		this.getModel().setHasUnsavedChanges(true);
+	@Override
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		super.addPropertyChangeListener(listener);
+
+		leftHandSide.addPropertyChangeListener(listener);
+		rightHandSide.addPropertyChangeListener(listener);
+	}
+
+	public String getAuthor() {
+		return author;
 	}
 
 	public LeftHandSide getLeftHandSide() {
-		if (leftHandSide != null) {
-			return leftHandSide;
-		}
-		Map map = (Map) this.getMap().get(LHS_KEY);
-		if (map == null) {
-			return null;
-		}
-		leftHandSide = new LeftHandSide(this.getModel(), map);
 		return leftHandSide;
 	}
 
-	public void setLeftHandSide(LeftHandSide leftHandSide) {
-		this.getMap().put(LHS_KEY, leftHandSide.getMap());
-		this.getModel().setHasUnsavedChanges(true);
+	public RightHandSide getRightHandSide() {
+		return rightHandSide;
 	}
 
-	public String getPriority() {
-		Object priority = this.getMap().get(AUTHOR_KEY);
-		if (priority == null) {
-			return null;
-		}
-		return priority.toString();
+	@Override
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		super.removePropertyChangeListener(listener);
+
+		leftHandSide.removePropertyChangeListener(listener);
+		rightHandSide.removePropertyChangeListener(listener);
 	}
 
-	public void setPriority(String priority) {
-		this.getMap().put(AUTHOR_KEY, priority);
-		this.getModel().setHasUnsavedChanges(true);
+	public void setAuthor(final String author) {
+		String oldValue = this.author;
+
+		this.author = author;
+
+		firePropertyChange(AUTHOR_KEY, oldValue, this.author);
+	}
+
+	@Override
+	public Map<String, Object> toMap() {
+		Map<String, Object> ruleMap = new HashMap<String, Object>();
+
+		ruleMap.put(CLASS_KEY, getAssignmentClassName());
+		ruleMap.put(AUTHOR_KEY, getAuthor());
+
+		Map<String, Object> lhsMap = leftHandSide.toMap();
+
+		ruleMap.put(Rule.LHS_KEY, lhsMap);
+
+		Map<String, Object> rhsMap = rightHandSide.toMap();
+
+		ruleMap.put(Rule.RHS_KEY, rhsMap);
+
+		return ruleMap;
 	}
 }

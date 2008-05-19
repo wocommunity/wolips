@@ -1,0 +1,59 @@
+
+{
+    rules = 
+    (
+       
+       {
+           lhs = 
+           {
+               qualifiers = 
+               (
+                  
+                  {
+                      key = task;
+                      value = edit;
+                      class = com.webobjects.eocontrol.EOKeyValueQualifier;
+                      selectorName = isEqualTo;
+                  }, 
+                  
+                  {
+                      qualifiers = 
+                      (
+                         
+                         {
+                             key = entity.name;
+                             value = Entity1;
+                             class = com.webobjects.eocontrol.EOKeyValueQualifier;
+                             selectorName = isEqualTo;
+                         }, 
+                         
+                         {
+                             key = entity.name;
+                             value = Entity2;
+                             class = com.webobjects.eocontrol.EOKeyValueQualifier;
+                             selectorName = isEqualTo;
+                         }
+                      );
+                      class = com.webobjects.eocontrol.EOOrQualifier;
+                  }, 
+                  
+                  {
+                      key = propertyKey;
+                      value = property;
+                      class = com.webobjects.eocontrol.EOKeyValueQualifier;
+                      selectorName = isEqualTo;
+                  }
+               );
+               class = com.webobjects.eocontrol.EOAndQualifier;
+           };
+           class = com.webobjects.directtoweb.Rule;
+           rhs = 
+           {
+               value = value;
+               keyPath = key;
+               class = com.webobjects.directtoweb.Assignment;
+           };
+           author = 100;
+       }
+    );
+}

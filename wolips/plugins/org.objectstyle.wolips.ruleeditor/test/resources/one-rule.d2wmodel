@@ -1,0 +1,24 @@
+
+{
+    rules = 
+    (
+       
+       {
+           lhs = 
+           {
+               key = task;
+               value = edit;
+               class = com.webobjects.eocontrol.EOKeyValueQualifier;
+               selectorName = isEqualTo;
+           };
+           class = com.webobjects.directtoweb.Rule;
+           rhs = 
+           {
+               value = value;
+               keyPath = key;
+               class = com.webobjects.directtoweb.Assignment;
+           };
+           author = 100;
+       }
+    );
+}

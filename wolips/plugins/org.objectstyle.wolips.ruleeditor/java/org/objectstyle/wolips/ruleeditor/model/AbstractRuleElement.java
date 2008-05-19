@@ -47,62 +47,75 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.ruleeditor;
+package org.objectstyle.wolips.ruleeditor.model;
 
-import org.eclipse.jface.resource.*;
-import org.eclipse.ui.plugin.*;
-import org.objectstyle.wolips.baseforuiplugins.*;
-import org.osgi.framework.*;
+import java.beans.*;
+import java.util.*;
 
 /**
- * The main plugin class to be used in the desktop.
+ * This class is an abstraction with the basic properties of a rule element.
+ * Every element of a rule should extends this class.
  * 
  * @author uli
+ * @author <a href="mailto:frederico@moleque.com.br">Frederico Lellis</a>
+ * @author <a href="mailto:georg@moleque.com.br">Georg von Bülow</a>
+ * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
  */
-public class RuleEditorPlugin extends AbstractBaseUIActivator {
-	// The shared instance.
-	private static RuleEditorPlugin plugin;
+public abstract class AbstractRuleElement {
+	protected static final String CLASS_KEY = "class";
+
+	private String assignmentClassName;
+
+	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
 	/**
-	 * Returns the shared instance.
-	 */
-	public static RuleEditorPlugin getDefault() {
-		return plugin;
-	}
-
-	/**
-	 * Returns an image descriptor for the image file at the given plug-in
-	 * relative path.
+	 * The constructor is protected because the creation of rule elements should
+	 * be done by a <code>Rule</code> object.
 	 * 
-	 * @param path
-	 *            the path
-	 * @return the image descriptor
+	 * @param properties
+	 *            A map describing this element
 	 */
-	public static ImageDescriptor getImageDescriptor(final String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin("org.objectstyle.wolips.launching", path);
+	protected AbstractRuleElement(final Map<String, Object> properties) {
+		if (properties == null) {
+			throw new IllegalArgumentException("The properties Map of this model element cannot be null");
+		}
+
+		assignmentClassName = (String) properties.get(CLASS_KEY);
+	}
+
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		propertyChangeSupport.addPropertyChangeListener(listener);
+	}
+
+	protected void firePropertyChange(PropertyChangeEvent event) {
+		propertyChangeSupport.firePropertyChange(event);
+	}
+
+	protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+		propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
+	}
+
+	public String getAssignmentClassName() {
+		return assignmentClassName;
+	}
+
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		propertyChangeSupport.removePropertyChangeListener(listener);
+	}
+
+	public void setAssignmentClassName(final String className) {
+		String oldValue = assignmentClassName;
+
+		assignmentClassName = className;
+
+		firePropertyChange(CLASS_KEY, oldValue, assignmentClassName);
 	}
 
 	/**
-	 * The constructor.
+	 * Subclasses of <code>AbstractRuleElement</code> must implement this
+	 * method and return a Map describing it using the key-value pattern.
+	 * 
+	 * @return A <code>Map</code> describing the rule element
 	 */
-	public RuleEditorPlugin() {
-		super();
-
-		plugin = this;
-	}
-
-	@Override
-	public void start(final BundleContext context) throws Exception {
-		super.start(context);
-	}
-
-	/**
-	 * This method is called when the plug-in is stopped
-	 */
-	@Override
-	public void stop(final BundleContext context) throws Exception {
-		super.stop(context);
-
-		plugin = null;
-	}
+	protected abstract Map<String, Object> toMap();
 }

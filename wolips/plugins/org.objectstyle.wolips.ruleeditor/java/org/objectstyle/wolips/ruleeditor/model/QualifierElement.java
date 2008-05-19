@@ -47,62 +47,38 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.ruleeditor;
+package org.objectstyle.wolips.ruleeditor.model;
 
-import org.eclipse.jface.resource.*;
-import org.eclipse.ui.plugin.*;
-import org.objectstyle.wolips.baseforuiplugins.*;
-import org.osgi.framework.*;
+import java.util.Collections;
+import java.util.Map;
 
 /**
- * The main plugin class to be used in the desktop.
- * 
  * @author uli
  */
-public class RuleEditorPlugin extends AbstractBaseUIActivator {
-	// The shared instance.
-	private static RuleEditorPlugin plugin;
-
-	/**
-	 * Returns the shared instance.
-	 */
-	public static RuleEditorPlugin getDefault() {
-		return plugin;
+public class QualifierElement extends AbstractQualifierElement {
+	protected QualifierElement() {
+		super(Collections.EMPTY_MAP);
 	}
 
-	/**
-	 * Returns an image descriptor for the image file at the given plug-in
-	 * relative path.
-	 * 
-	 * @param path
-	 *            the path
-	 * @return the image descriptor
-	 */
-	public static ImageDescriptor getImageDescriptor(final String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin("org.objectstyle.wolips.launching", path);
-	}
-
-	/**
-	 * The constructor.
-	 */
-	public RuleEditorPlugin() {
-		super();
-
-		plugin = this;
+	protected QualifierElement(final Map<String, Object> properties) {
+		super(properties);
 	}
 
 	@Override
-	public void start(final BundleContext context) throws Exception {
-		super.start(context);
+	public void appendToDisplayStringBuffer(final StringBuffer buffer) {
+		if (getQualifiers() == null) {
+			buffer.append(getKey());
+			buffer.append(" ");
+
+			Selector selector = Selector.forName(getSelectorName());
+
+			buffer.append(selector.getOperator());
+			buffer.append(" '");
+			buffer.append(getValue());
+			buffer.append("'");
+		}
+
+		super.appendToDisplayStringBuffer(buffer);
 	}
 
-	/**
-	 * This method is called when the plug-in is stopped
-	 */
-	@Override
-	public void stop(final BundleContext context) throws Exception {
-		super.stop(context);
-
-		plugin = null;
-	}
 }

@@ -49,19 +49,106 @@
  */
 package org.objectstyle.wolips.ruleeditor.model;
 
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author uli
+ * @author <a href="mailto:frederico@moleque.com.br">Frederico Lellis</a>
+ * @author <a href="mailto:georg@moleque.com.br">Georg von Bülow</a>
+ * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
  */
 public class LeftHandSide extends AbstractQualifierElement {
-	public LeftHandSide(D2WModel model, Map map) {
-		super(model, map);
+
+	public static final String EMPTY_LHS_VALUE = "*true*";
+
+	/**
+	 * The constructor is protected because users shouldn't create
+	 * <code>LeftHandSide</code> objects by themselves.
+	 */
+	protected LeftHandSide() {
+		super(new HashMap<String, Object>());
 	}
 
-	public String getDisplayString() {
-		StringBuffer stringBuffer = new StringBuffer();
-		this.appendToDisplayStringBuffer(stringBuffer, this.getConcatWithString());
-		return stringBuffer.toString();
+	/**
+	 * The constructor is protected because users shouldn't create
+	 * <code>LeftHandSide</code> objects by themselves.
+	 * 
+	 * @param lhsProperties
+	 *            A map describing the <code>LeftHandSide</code> object to be
+	 *            created
+	 */
+	protected LeftHandSide(Map<String, Object> lhsProperties) {
+		super(lhsProperties);
+	}
+
+	protected boolean isEmpty() {
+		return getAssignmentClassName() == null && getKey() == null && getValue() == null && getSelectorName() == null && getQualifiers() == null;
+	}
+
+	public void setConditions(final String conditions) {
+		String oldValue = toString();
+		LeftHandSideParser parser = new LeftHandSideParser();
+
+		Map<String, Object> properties = parser.parse(conditions);
+
+		setAssignmentClassName((String) properties.get(CLASS_KEY));
+		setKey((String) properties.get(KEY_KEY));
+		setValue((String) properties.get(VALUE_KEY));
+		setSelectorName((String) properties.get(SELECTOR_NAME_KEY));
+		setQualifiers((Collection<QualifierElement>) properties.get(QUALIFIERS_KEY));
+
+		firePropertyChange("LEFT_HAND_SIDE", oldValue, toString());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.objectstyle.wolips.ruleeditor.model.AbstractQualifierElement#toMap()
+	 */
+	@Override
+	public Map<String, Object> toMap() {
+		if (isEmpty()) {
+			return null;
+		}
+
+		return super.toMap();
+	}
+
+	/**
+	 * Returns the string representation of this <code>LeftHandSide</code>
+	 * object.
+	 * <p>
+	 * If the conditions property is empty, returns the "*true*" string.
+	 * <p>
+	 * If the conditions property contains nested qualifiers, returns the
+	 * qualifiers separated by parenthesis. i.e. (task = 'edit' and (entity.name =
+	 * 'MyEntity' or entity.name = 'MyOtherEntity')).
+	 * 
+	 * @see java.lang.Object#toString()
+	 * @return Returns the <code>String</code> representation of this object
+	 */
+	@Override
+	public String toString() {
+		if (isEmpty()) {
+			return EMPTY_LHS_VALUE;
+		}
+
+		StringBuffer buffer = new StringBuffer();
+
+		if (getQualifiers() == null) {
+			buffer.append(getKey());
+			buffer.append(" ");
+
+			Selector selector = Selector.forName(getSelectorName());
+
+			buffer.append(selector.getOperator());
+			buffer.append(" '");
+			buffer.append(getValue());
+			buffer.append("'");
+		} else {
+			appendToDisplayStringBuffer(buffer);
+		}
+
+		return buffer.toString();
 	}
 }
