@@ -10,6 +10,4 @@ Require-Bundle: org.objectstyle.wolips.baseforuiplugins,
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.ruleeditor,
  org.objectstyle.wolips.ruleeditor.model
-Bundle-ClassPath: lib/commons-io-1.4.jar,
- lib/commons-lang-2.4.jar,
- lib/junit-4.4.jar
+Import-Package: org.apache.commons.lang;version="2.1.0"
