@@ -84,6 +84,8 @@ public class EORelationshipAdvancedEditorSection extends AbstractPropertySection
 
 	private Button _clientClassPropertyButton;
 
+  private Button _commonClassPropertyButton;
+
 	private DataBindingContext _bindingContext;
 
 	private RelationshipPropertyChangeListener _relationshipPropertyChangeListener;
@@ -122,6 +124,9 @@ public class EORelationshipAdvancedEditorSection extends AbstractPropertySection
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.CLIENT_CLASS_PROPERTY), SWT.NONE);
 		_clientClassPropertyButton = new Button(topForm, SWT.CHECK);
+
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.COMMON_CLASS_PROPERTY), SWT.NONE);
+    _commonClassPropertyButton = new Button(topForm, SWT.CHECK);
 	}
 
 	public void setInput(IWorkbenchPart part, ISelection selection) {
@@ -143,6 +148,7 @@ public class EORelationshipAdvancedEditorSection extends AbstractPropertySection
 			_bindingContext.bindValue(SWTObservables.observeSelection(_ownsDestinationButton), BeansObservables.observeValue(_relationship, EORelationship.OWNS_DESTINATION), null, null);
 			_bindingContext.bindValue(SWTObservables.observeSelection(_propagatesPrimaryKeyButton), BeansObservables.observeValue(_relationship, EORelationship.PROPAGATES_PRIMARY_KEY), null, null);
 			_bindingContext.bindValue(SWTObservables.observeSelection(_clientClassPropertyButton), BeansObservables.observeValue(_relationship, EORelationship.CLIENT_CLASS_PROPERTY), null, null);
+      _bindingContext.bindValue(SWTObservables.observeSelection(_commonClassPropertyButton), BeansObservables.observeValue(_relationship, EORelationship.COMMON_CLASS_PROPERTY), null, null);
 			updateCardinalityEnabled();
 		}
 	}
