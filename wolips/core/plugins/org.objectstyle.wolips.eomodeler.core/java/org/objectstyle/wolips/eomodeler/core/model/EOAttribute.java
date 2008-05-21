@@ -81,7 +81,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 
 	public static final String CLIENT_CLASS_PROPERTY = "clientClassProperty";
 
-  public static final String COMMON_CLASS_PROPERTY = "commonClassProperty";
+	public static final String COMMON_CLASS_PROPERTY = "commonClassProperty";
 
 	public static final String INDEXED = "indexed";
 
@@ -638,38 +638,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		super.setServerTimeZone((String) _nullIfPrototyped(AbstractEOArgument.SERVER_TIME_ZONE, _serverTimeZone));
 	}
 
-  public String getMigrationMethod() {
-    String className = getValueClassName();
-    if ("Number".equals(className) || "NSNumber".equals(className)) {
-      String valueType = getValueType();
-      if ("B".equals(valueType)) {
-        className = "BigDecimal";
-      } else if ("b".equals(valueType)) {
-        className = "Byte";
-      } else if ("d".equals(valueType)) {
-        className = "Double";
-      } else if ("f".equals(valueType)) {
-        className = "Float";
-      } else if ("i".equals(valueType)) {
-        className = "Integer";
-      } else if ("l".equals(valueType)) {
-        className = "Long";
-      } else if ("s".equals(valueType)) {
-        className = "Short";
-      } else if ("c".equals(valueType)) {
-        className = "Boolean";
-      }
-    } else if ("NSString".equals(className)) {
-      className = "String";
-    } else if ("NSCalendarDate".equals(className)) {
-      className = "NSTimestamp";
-    } else if ("NSDecimalNumber".equals(className)) {
-      className = "BigDecimal";
-    }
-    return className;
-  }
-
-  public String getJavaClassName() {
+	public String getJavaClassName() {
 		String className = getValueClassName();
 		if ("Number".equals(className) || "NSNumber".equals(className)) {
 			String valueType = getValueType();
