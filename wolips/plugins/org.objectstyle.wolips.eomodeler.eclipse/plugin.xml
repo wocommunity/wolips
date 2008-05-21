@@ -41,6 +41,15 @@
                tooltip="New Database Config">
          </action>
          <action
+               class="org.objectstyle.wolips.eomodeler.actions.GenerateMigrationAction"
+               icon="icons/migration.png"
+               id="org.objectstyle.wolips.eomodeler.actions.generateMigratin"
+               label="Generate Migration"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="Generate Migration">
+         </action>
+         <action
                class="org.objectstyle.wolips.eomodeler.actions.GenerateSQLAction"
                icon="icons/sql.png"
                id="org.objectstyle.wolips.eomodeler.actions.generateSQL"

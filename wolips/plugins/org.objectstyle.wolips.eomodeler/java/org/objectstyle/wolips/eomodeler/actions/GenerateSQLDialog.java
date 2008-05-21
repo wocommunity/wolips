@@ -88,6 +88,7 @@ public class GenerateSQLDialog extends Dialog {
 
 	public GenerateSQLDialog(Shell parentShell, EOModel model, List<String> entityNames) {
 		super(parentShell);
+		setShellStyle(getShellStyle() | SWT.RESIZE);
 		_model = model;
 		_entityNames = entityNames;
 		_flagChangeHander = new FlagChangedHandler();
@@ -184,7 +185,7 @@ public class GenerateSQLDialog extends Dialog {
 		new Label(control, SWT.NONE);
 
 		_sqlText = new Text(control, SWT.BORDER | SWT.MULTI | SWT.READ_ONLY | SWT.V_SCROLL);
-		GridData sqlTextData = new GridData(GridData.FILL_HORIZONTAL);
+		GridData sqlTextData = new GridData(GridData.FILL_BOTH);
 		sqlTextData.heightHint = 300;
 		sqlTextData.widthHint = 500;
 		sqlTextData.verticalIndent = 10;
@@ -425,7 +426,7 @@ public class GenerateSQLDialog extends Dialog {
 		}
 	}
 
-	protected class DatabaseConfigLabelProvider implements ILabelProvider {
+	public static class DatabaseConfigLabelProvider implements ILabelProvider {
 		public void addListener(ILabelProviderListener listener) {
 			// DO NOTHING
 		}
@@ -460,7 +461,7 @@ public class GenerateSQLDialog extends Dialog {
 
 	}
 
-	protected class DatabaseConfigContentProvider implements IStructuredContentProvider {
+	public static class DatabaseConfigContentProvider implements IStructuredContentProvider {
 		public void dispose() {
 			// DO NOTHING
 		}

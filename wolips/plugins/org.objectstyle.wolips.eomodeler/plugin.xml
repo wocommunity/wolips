@@ -550,6 +550,13 @@
                label="Verify Model"
                menubarPath="group2"/>
          <action
+               class="org.objectstyle.wolips.eomodeler.actions.GenerateMigrationAction"
+               enablesFor="1"
+               icon="icons/migration.png"
+               id="org.objectstyle.wolips.eomodeler.outline.popup.generateModelMigration"
+               label="Generate Migration"
+               menubarPath="group2"/>
+         <action
                class="org.objectstyle.wolips.eomodeler.actions.GenerateSQLAction"
                enablesFor="1"
                icon="icons/sql.png"
@@ -595,6 +602,13 @@
                icon="icons/sql.png"
                id="org.objectstyle.wolips.eomodeler.outline.popup.generateEntitySQL"
                label="Generate SQL"
+               menubarPath="group2"/>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.GenerateMigrationAction"
+               enablesFor="*"
+               icon="icons/migration.png"
+               id="org.objectstyle.wolips.eomodeler.outline.popup.generateEntityMigration"
+               label="Generate Migration"
                menubarPath="group2"/>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.SubclassEntityAction"
