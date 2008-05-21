@@ -68,6 +68,14 @@ public interface IEOAttribute extends IEOEntityRelative, IUserInfoable {
 
 	public Boolean getClassProperty();
 
+  public void setCommonClassProperty(Boolean commonClassProperty);
+
+  public void setCommonClassProperty(Boolean commonClassProperty, boolean fireEvents);
+
+  public Boolean isCommonClassProperty();
+
+  public Boolean getCommonClassProperty();
+
 	public void setClientClassProperty(Boolean _clientClassProperty);
 
 	public void setClientClassProperty(Boolean _clientClassProperty, boolean _fireEvents);

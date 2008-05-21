@@ -2275,6 +2275,16 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 					}
 				}
 			}
+
+			Set<String> commonClassPropertyNames = internalInfoModelMap.getSet("_commonClassPropertyNames");
+      if (commonClassPropertyNames != null) {
+        for (String attributeName : commonClassPropertyNames) {
+          IEOAttribute attribute = getAttributeOrRelationshipNamed(attributeName);
+          if (attribute != null) {
+            attribute.setCommonClassProperty(Boolean.TRUE, false);
+          }
+        }
+      }
 		}
 
 		Map<String, String> storedProcedureNames = myEntityMap.getMap("storedProcedureNames");
