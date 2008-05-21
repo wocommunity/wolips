@@ -2,6 +2,7 @@ import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.foundation.NSArray;
 
 import er.extensions.migration.ERXMigrationDatabase;
+import er.extensions.migration.ERXMigrationTable;
 import er.extensions.migration.ERXModelVersion;
 
 public class ${model.name}0 extends ERXMigrationDatabase.Migration {
