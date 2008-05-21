@@ -7,8 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.objectstyle.wolips.eomodeler.core.model.EOQualifierFactory;
-
 public class EOQualifierParser {
 	private static final int NONE = 0;
 
@@ -106,31 +104,35 @@ public class EOQualifierParser {
 		if (lvalue instanceof OpenParenToken) {
 			lqualifier = qualifierForTokens(depth + 1);
 		} else if (lvalue instanceof KeywordToken || lvalue instanceof KeypathToken) {
-			Token operator = popToken();
-			if (operator instanceof OperatorToken || operator instanceof KeywordToken) {
-				EOQualifier.Comparison selector = new EOQualifier.Comparison(operator.getValue());
-				Token rvalue = popToken();
-				if (rvalue instanceof NamedVariableToken) {
-					lqualifier = new EOKeyValueQualifier(lvalue.getValue(), selector, new EONamedQualifierVariable(rvalue.getValue()));
-				} else if (rvalue instanceof VariableToken || rvalue instanceof NamedVariableToken) {
-					lqualifier = new EOKeyValueQualifier(lvalue.getValue(), selector, new EOQualifierVariable(rvalue.getValue()));
-				} else if (rvalue instanceof NumberToken) {
-					lqualifier = new EOKeyValueQualifier(lvalue.getValue(), selector, ((NumberToken) rvalue).toNumber());
-				} else if (rvalue instanceof LiteralToken) {
-					String value = rvalue.getValue();
-					value = value.replaceAll("\\\\(.)", "$1");
-					lqualifier = new EOKeyValueQualifier(lvalue.getValue(), selector, value);
-				} else if (rvalue instanceof KeywordToken || rvalue instanceof KeypathToken) {
-					lqualifier = new EOKeyComparisonQualifier(lvalue.getValue(), selector, rvalue.getValue());
-				} else if (rvalue == null) {
-					throw new ParseException("Expected a qualifier after " + lvalue + " " + operator + " at offset " + lvalue.getOffset() + ".", lvalue.getOffset());
-				} else {
-					throw new ParseException(lvalue + ", " + operator + ", " + rvalue + " is an invalid token sequence at offset " + lvalue.getOffset() + ".", lvalue.getOffset());
-				}
-			} else if (operator == null) {
-				throw new ParseException("Expected an operator after " + lvalue + " at offset " + lvalue.getOffset() + ".", lvalue.getOffset());
+			if ("TRUEPREDICATE".equalsIgnoreCase(lvalue.getValue())) {
+				lqualifier = new EOTruePredicate();
 			} else {
-				throw new ParseException(lvalue + ", " + operator + " is an invalid token sequence at offset " + lvalue.getOffset() + ".", lvalue.getOffset());
+				Token operator = popToken();
+				if (operator instanceof OperatorToken || operator instanceof KeywordToken) {
+					EOQualifier.Comparison selector = new EOQualifier.Comparison(operator.getValue());
+					Token rvalue = popToken();
+					if (rvalue instanceof NamedVariableToken) {
+						lqualifier = new EOKeyValueQualifier(lvalue.getValue(), selector, new EONamedQualifierVariable(rvalue.getValue()));
+					} else if (rvalue instanceof VariableToken || rvalue instanceof NamedVariableToken) {
+						lqualifier = new EOKeyValueQualifier(lvalue.getValue(), selector, new EOQualifierVariable(rvalue.getValue()));
+					} else if (rvalue instanceof NumberToken) {
+						lqualifier = new EOKeyValueQualifier(lvalue.getValue(), selector, ((NumberToken) rvalue).toNumber());
+					} else if (rvalue instanceof LiteralToken) {
+						String value = rvalue.getValue();
+						value = value.replaceAll("\\\\(.)", "$1");
+						lqualifier = new EOKeyValueQualifier(lvalue.getValue(), selector, value);
+					} else if (rvalue instanceof KeywordToken || rvalue instanceof KeypathToken) {
+						lqualifier = new EOKeyComparisonQualifier(lvalue.getValue(), selector, rvalue.getValue());
+					} else if (rvalue == null) {
+						throw new ParseException("Expected a qualifier after " + lvalue + " " + operator + " at offset " + lvalue.getOffset() + ".", lvalue.getOffset());
+					} else {
+						throw new ParseException(lvalue + ", " + operator + ", " + rvalue + " is an invalid token sequence at offset " + lvalue.getOffset() + ".", lvalue.getOffset());
+					}
+				} else if (operator == null) {
+					throw new ParseException("Expected an operator after " + lvalue + " at offset " + lvalue.getOffset() + ".", lvalue.getOffset());
+				} else {
+					throw new ParseException(lvalue + ", " + operator + " is an invalid token sequence at offset " + lvalue.getOffset() + ".", lvalue.getOffset());
+				}
 			}
 		} else if (lvalue instanceof NotToken) {
 			lqualifier = new EONotQualifier(qualifierForTokens(depth));
@@ -563,9 +565,8 @@ public class EOQualifierParser {
 			// and (lastName caseinsensitiveLike 'schrag' or (age = 5))
 			// or(age>10) and (name<0.10) or (somevar isAnagramOf: 'test')");
 			// System.out.println("EOQualifierParser.main: " + q);
-			EOKeyValueQualifier q = (EOKeyValueQualifier) parser.parseQualifier("name equals: $name");
+			EOQualifier q = parser.parseQualifier("truepredicate and a = 5");
 			System.out.println("EOQualifierParser.main: " + q);
-			System.out.println("EOQualifierParser.main: " + EOQualifierFactory.createQualifierMapFromQualifier(q));
 		} catch (Throwable t) {
 			t.printStackTrace(System.out);
 		}
