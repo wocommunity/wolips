@@ -1,16 +1,7 @@
 package org.objectstyle.wolips.eogenerator.core.runner;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.security.MessageDigest;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -18,21 +9,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.exception.MethodInvocationException;
-import org.apache.velocity.exception.ParseErrorException;
-import org.apache.velocity.exception.ResourceNotFoundException;
-import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.RuntimeServices;
 import org.apache.velocity.runtime.log.LogSystem;
-import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
 import org.apache.velocity.tools.generic.ListTool;
 import org.eclipse.core.runtime.IPath;
 import org.objectstyle.wolips.eogenerator.core.Activator;
 import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel;
-import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorResourceLoader;
 import org.objectstyle.wolips.eogenerator.core.model.EOModelReference;
 import org.objectstyle.wolips.eogenerator.core.model.IEOGeneratorRunner;
 import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel.Define;
@@ -41,6 +25,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelRenderContext;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
+import org.objectstyle.wolips.thirdparty.velocity.WOLipsVelocityUtils;
 import org.objectstyle.wolips.thirdparty.velocity.resourceloader.ResourceLoader;
 
 public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
@@ -70,23 +55,6 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 	
 	public boolean generate(EOGeneratorModel eogeneratorModel, StringBuffer results, EOModelGroup preloadedModelGroup) throws Exception {
 		boolean showResults = false;
-		VelocityEngine velocityEngine = new VelocityEngine();
-		velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, org.apache.velocity.runtime.log.NullLogSystem.class.getName());
-
-		StringBuffer templatePaths = new StringBuffer();
-		templatePaths.append(".");
-		String templatePath = eogeneratorModel.getTemplateDir();
-		if (templatePath != null && templatePath.length() > 0) {
-			templatePaths.append(",");
-			File templateFolder = new File(templatePath);
-			if (!templateFolder.isAbsolute()) {
-				IPath projectPath = eogeneratorModel.getProjectPath();
-				if (projectPath != null) {
-					templateFolder = new File(projectPath.toFile(), templatePath);
-				}
-			}
-			templatePaths.append(templateFolder.getAbsolutePath());
-		}
 
 		String superclassTemplateName = eogeneratorModel.getJavaTemplate();
 		String subclassTemplateName = eogeneratorModel.getSubclassJavaTemplate();
@@ -108,27 +76,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			}
 		}
 
-		templatePaths.append(",");
-		templatePaths.append(new File("/Library/Application Support/WOLips/EOGenerator").getAbsolutePath());
-		templatePaths.append(",");
-		templatePaths.append(new File(System.getProperty("user.home"), "Documents and Settings/Application Data/WOLips/EOGenerator").getAbsolutePath());
-		templatePaths.append(",");
-		templatePaths.append(new File(System.getProperty("user.home"), "Documents and Settings/AppData/Local/WOLips/EOGenerator").getAbsolutePath());
-		templatePaths.append(",");
-		templatePaths.append(new File(System.getProperty("user.home"), "Library/Application Support/WOLips/EOGenerator").getAbsolutePath());
-
-		velocityEngine.setProperty("resource.loader", "file,wolips");
-		velocityEngine.setProperty("file.resource.loader.class", FileResourceLoader.class.getName());
-		velocityEngine.setProperty("file.resource.loader.path", templatePaths.toString());
-		if (_insideEclipse) {
-			velocityEngine.setProperty("wolips.resource.loader.class", ResourceLoader.class.getName());
-			velocityEngine.setProperty("wolips.resource.loader.bundle", Activator.getDefault().getBundle());
-		}
-		else {
-			velocityEngine.setProperty("wolips.resource.loader.class", EOGeneratorResourceLoader.class.getName());
-		}
-
-		velocityEngine.init();
+		VelocityEngine velocityEngine = WOLipsVelocityUtils.createVelocityEngine("EOGenerator", Activator.getDefault().getBundle(), eogeneratorModel.getTemplateDir(), eogeneratorModel.getProjectPath(), _insideEclipse, ResourceLoader.class);
 		VelocityContext context = new VelocityContext();
 
 		List<EOModel> models = new LinkedList<EOModel>();
@@ -267,7 +215,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 								throw new IOException("Unable to make superclass folder '" + superclassFolder + "'.");
 							}
 						}
-						VelocityEOGeneratorRunner.writeTemplate(velocityEngine, context, superclassTemplateName, superclassFile);
+						WOLipsVelocityUtils.writeTemplate(velocityEngine, context, superclassTemplateName, superclassFile);
 
 						String subclassFileTemplate = classNameWithPackage;
 						// StringWriter subclassFilePathWriter = new
@@ -284,7 +232,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 							}
 						}
 						if (!subclassFile.exists()) {
-							VelocityEOGeneratorRunner.writeTemplate(velocityEngine, context, subclassTemplateName, subclassFile);
+							WOLipsVelocityUtils.writeTemplate(velocityEngine, context, subclassTemplateName, subclassFile);
 						}
 					}
 				}
@@ -293,95 +241,5 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			EOModelRenderContext.clearRenderContext();
 		}
 		return showResults;
-	}
-
-	public static void writeTemplate(VelocityEngine engine, VelocityContext context, String templateName, File outputFile) throws ResourceNotFoundException, ParseErrorException, MethodInvocationException, Exception {
-		Template template;
-		try {
-			template = engine.getTemplate(templateName);
-		} catch (ResourceNotFoundException e) {
-			throw new Exception("Failed to load the template '" + templateName + "'.  Check your model's eogen file to make sure that it specifies the correct template folder and template names.");
-		}
-		if (!outputFile.getParentFile().exists()) {
-			if (!outputFile.getParentFile().mkdirs()) {
-				throw new IOException("Unable to create the folder " + outputFile.getParentFile() + ".");
-			}
-		}
-
-		ByteArrayOutputStream newFileContentsStream = new ByteArrayOutputStream();
-		Writer newFileContentsWriter = new OutputStreamWriter(newFileContentsStream);
-		try {
-			template.merge(context, newFileContentsWriter);
-		} finally {
-			newFileContentsWriter.close();
-		}
-		String newFileContentsStr = newFileContentsStream.toString();
-		if (newFileContentsStr != null) {
-			if (newFileContentsStr.contains("<%")) {
-				throw new IOException("You are attempting to use an old EOGenerator template with Velocity EOGenerator.");
-			} else if (newFileContentsStr.contains("<wo:")) {
-				throw new IOException("You are attempting to use a JavaEOGenerator template with Velocity EOGenerator.");
-			}
-		}
-
-		boolean templateChanged = true;
-		if (!outputFile.exists()) {
-			FileWriter newFileWriter = new FileWriter(outputFile);
-			BufferedWriter newFileBufferedWriter = new BufferedWriter(newFileWriter);
-			try {
-				newFileBufferedWriter.write(newFileContentsStr);
-			} finally {
-				newFileBufferedWriter.close();
-			}
-		} else {
-			byte[] newFileContents = newFileContentsStream.toByteArray();
-			if (outputFile.exists()) {
-				FileInputStream fis = new FileInputStream(outputFile);
-				int bytesRemaining = (int) outputFile.length();
-				if (bytesRemaining == newFileContents.length) {
-					byte[] oldFileContents;
-					try {
-						ByteArrayOutputStream bos = new ByteArrayOutputStream((int) outputFile.length());
-						byte[] buf = new byte[4096];
-						while (bytesRemaining > 0) {
-							int bytesRead = fis.read(buf, 0, Math.min(buf.length, bytesRemaining));
-							bos.write(buf, 0, bytesRead);
-							bytesRemaining -= bytesRead;
-						}
-						oldFileContents = bos.toByteArray();
-					} finally {
-						fis.close();
-					}
-
-					MessageDigest md5 = MessageDigest.getInstance("MD5");
-					byte[] oldMD5 = md5.digest(oldFileContents);
-					md5.reset();
-					byte[] newMD5 = md5.digest(newFileContents);
-					md5.reset();
-
-					if (oldMD5.length == newMD5.length) {
-						templateChanged = false;
-						for (int i = 0; !templateChanged && i < oldMD5.length; i++) {
-							if (oldMD5[i] != newMD5[i]) {
-								templateChanged = true;
-							}
-						}
-					}
-				}
-			}
-
-			if (templateChanged) {
-				FileOutputStream newFileStream = new FileOutputStream(outputFile);
-				BufferedOutputStream newFileBufferedStream = new BufferedOutputStream(newFileStream);
-				try {
-					newFileBufferedStream.write(newFileContents);
-				} finally {
-					newFileBufferedStream.close();
-				}
-			} else {
-				// System.out.println("EOGenerator.writeTemplate: skipping " +
-				// outputFile);
-			}
-		}
 	}
 }

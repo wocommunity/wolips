@@ -2461,6 +2461,23 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		modelParent.addEntity(this);
 	}
 
+	public boolean getSqlGenerationCreateInheritedProperties() {
+		return isVerticalInheritance();
+	}
+	
+	public String getSqlGenerationPrimaryKeyColumnNames() {
+		StringBuffer sb = new StringBuffer();
+		Iterator<EOAttribute> attributesIter = getPrimaryKeyAttributes().iterator();
+		while (attributesIter.hasNext()) {
+			EOAttribute attribute = attributesIter.next();
+			sb.append("\"" + attribute.getColumnName() + "\"");
+			if (attributesIter.hasNext()) {
+				sb.append(", ");
+			}
+		}
+		return sb.toString();
+	}
+	
 	public String toString() {
 		return "[EOEntity: name = " + myName + "; attributes = " + myAttributes + "; relationships = " + myRelationships + "; fetchSpecs = " + myFetchSpecs + "]"; //$NON-NLS-4$ //$NON-NLS-5$
 	}

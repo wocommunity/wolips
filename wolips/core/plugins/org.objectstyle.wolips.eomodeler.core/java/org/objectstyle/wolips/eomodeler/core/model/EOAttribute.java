@@ -637,9 +637,12 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	public void setServerTimeZone(String _serverTimeZone) {
 		super.setServerTimeZone((String) _nullIfPrototyped(AbstractEOArgument.SERVER_TIME_ZONE, _serverTimeZone));
 	}
-
+	
 	public String getJavaClassName() {
 		String className = getValueClassName();
+		if (className != null && className.startsWith("java.lang.")) {
+			className = className.substring("java.lang.".length());
+		}
 		if ("Number".equals(className) || "NSNumber".equals(className)) {
 			String valueType = getValueType();
 			if ("B".equals(valueType)) {
@@ -1042,6 +1045,14 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		modelParent.addAttribute(this);
 	}
 
+	public boolean getSqlGenerationAllowsNull() {
+		return getEntity().isSingleTableInheritance() || BooleanUtils.isFalse(isAllowsNull());
+	}
+
+	public boolean getSqlGenerationCreateProperty() {
+		return !isInherited() || getEntity().getSqlGenerationCreateInheritedProperties(); 
+	}
+	
 	public String toString() {
 		return "[EOAttribute: " + getName() + "]";
 	}

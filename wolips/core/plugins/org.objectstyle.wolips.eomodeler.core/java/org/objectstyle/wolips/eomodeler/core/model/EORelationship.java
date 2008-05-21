@@ -70,7 +70,7 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 
 	public static final String CLIENT_CLASS_PROPERTY = "clientClassProperty";
 
-  public static final String COMMON_CLASS_PROPERTY = "commonClassProperty";
+	public static final String COMMON_CLASS_PROPERTY = "commonClassProperty";
 
 	public static final String NAME = "name";
 
@@ -118,7 +118,7 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 
 	private Boolean myClientClassProperty;
 
-  private Boolean _commonClassProperty;
+	private Boolean _commonClassProperty;
 
 	private Integer myNumberOfToManyFaultsToBatchFetch;
 
@@ -941,6 +941,10 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 			setName(modelParent.findUnusedRelationshipName(getName()));
 		}
 		modelParent.addRelationship(this);
+	}
+
+	public boolean getSqlGenerationCreateProperty() {
+		return !isInherited() || getEntity().getSqlGenerationCreateInheritedProperties(); 
 	}
 
 	public String toString() {
