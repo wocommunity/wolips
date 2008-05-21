@@ -33,6 +33,10 @@ public class EOOrQualifier extends EOAggregateQualifier {
 		}
 	}
 
+	public void addQualifier(EOQualifier qualifier) {
+		_qualifiers.add(qualifier);
+	}
+
 	public List<EOQualifier> getQualifiers() {
 		return _qualifiers;
 	}
@@ -42,11 +46,17 @@ public class EOOrQualifier extends EOAggregateQualifier {
 		if (depth > 0) {
 			sb.append("(");
 		}
-		for (int i = 0; i < _qualifiers.size(); i ++) {
+		for (int i = 0; i < _qualifiers.size(); i++) {
+			EOQualifier qualifier = _qualifiers.get(i);
 			if (i > 0) {
 				sb.append(" or ");
 			}
-			sb.append(_qualifiers.get(i).toString(depth + 1));
+			if (qualifier != null) {
+				sb.append(qualifier.toString(depth + 1));
+			}
+			else {
+				sb.append("true");
+			}
 		}
 		if (depth > 0) {
 			sb.append(")");
