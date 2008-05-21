@@ -81,6 +81,8 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 
 	public static final String CLIENT_CLASS_PROPERTY = "clientClassProperty";
 
+  public static final String COMMON_CLASS_PROPERTY = "commonClassProperty";
+
 	public static final String INDEXED = "indexed";
 
 	public static final String READ_ONLY = "readOnly";
@@ -115,6 +117,8 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	private Boolean myUsedForLocking;
 
 	private Boolean myClientClassProperty;
+
+  private Boolean _commonClassProperty;
 
 	private Boolean myIndexed;
 
@@ -634,7 +638,38 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		super.setServerTimeZone((String) _nullIfPrototyped(AbstractEOArgument.SERVER_TIME_ZONE, _serverTimeZone));
 	}
 
-	public String getJavaClassName() {
+  public String getMigrationMethod() {
+    String className = getValueClassName();
+    if ("Number".equals(className) || "NSNumber".equals(className)) {
+      String valueType = getValueType();
+      if ("B".equals(valueType)) {
+        className = "BigDecimal";
+      } else if ("b".equals(valueType)) {
+        className = "Byte";
+      } else if ("d".equals(valueType)) {
+        className = "Double";
+      } else if ("f".equals(valueType)) {
+        className = "Float";
+      } else if ("i".equals(valueType)) {
+        className = "Integer";
+      } else if ("l".equals(valueType)) {
+        className = "Long";
+      } else if ("s".equals(valueType)) {
+        className = "Short";
+      } else if ("c".equals(valueType)) {
+        className = "Boolean";
+      }
+    } else if ("NSString".equals(className)) {
+      className = "String";
+    } else if ("NSCalendarDate".equals(className)) {
+      className = "NSTimestamp";
+    } else if ("NSDecimalNumber".equals(className)) {
+      className = "BigDecimal";
+    }
+    return className;
+  }
+
+  public String getJavaClassName() {
 		String className = getValueClassName();
 		if ("Number".equals(className) || "NSNumber".equals(className)) {
 			String valueType = getValueType();
@@ -769,6 +804,26 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		myWriteFormat = (String) _nullIfPrototyped(EOAttribute.WRITE_FORMAT, _writeFormat);
 		firePropertyChange(EOAttribute.WRITE_FORMAT, oldWriteFormat, getWriteFormat());
 	}
+
+  public void setCommonClassProperty(Boolean commonClassProperty) {
+    setCommonClassProperty(commonClassProperty, true);
+  }
+
+  public void setCommonClassProperty(Boolean commonClassProperty, boolean fireEvents) {
+    Boolean oldCommonClassProperty = getCommonClassProperty();
+    _commonClassProperty = commonClassProperty;
+    if (fireEvents) {
+      firePropertyChange(EOAttribute.COMMON_CLASS_PROPERTY, oldCommonClassProperty, getCommonClassProperty());
+    }
+  }
+
+  public Boolean getCommonClassProperty() {
+    return isCommonClassProperty();
+  }
+
+  public Boolean isCommonClassProperty() {
+    return _commonClassProperty;
+  }
 
 	public void setClientClassProperty(Boolean _clientClassProperty) {
 		setClientClassProperty(_clientClassProperty, true);
@@ -978,6 +1033,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		attribute.myPrimaryKey = myPrimaryKey;
 		attribute.myUsedForLocking = myUsedForLocking;
 		attribute.myClientClassProperty = myClientClassProperty;
+    attribute._commonClassProperty = _commonClassProperty;
 		attribute.myIndexed = myIndexed;
 		attribute.myReadOnly = myReadOnly;
 		attribute.myReadFormat = myReadFormat;

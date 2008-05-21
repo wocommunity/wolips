@@ -70,6 +70,8 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 
 	public static final String CLIENT_CLASS_PROPERTY = "clientClassProperty";
 
+  public static final String COMMON_CLASS_PROPERTY = "commonClassProperty";
+
 	public static final String NAME = "name";
 
 	public static final String DESTINATION = "destination";
@@ -115,6 +117,8 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 	private Boolean myClassProperty;
 
 	private Boolean myClientClassProperty;
+
+  private Boolean _commonClassProperty;
 
 	private Integer myNumberOfToManyFaultsToBatchFetch;
 
@@ -390,6 +394,26 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 	public Boolean getClassProperty() {
 		return isClassProperty();
 	}
+
+	public void setCommonClassProperty(Boolean commonClassProperty) {
+    setCommonClassProperty(commonClassProperty, true);
+  }
+
+  public void setCommonClassProperty(Boolean commonClassProperty, boolean fireEvents) {
+    Boolean oldCommonClassProperty = _commonClassProperty;
+    _commonClassProperty = commonClassProperty;
+    if (fireEvents) {
+      firePropertyChange(EORelationship.COMMON_CLASS_PROPERTY, oldCommonClassProperty, _commonClassProperty);
+    }
+  }
+
+  public Boolean isCommonClassProperty() {
+    return _commonClassProperty;
+  }
+
+  public Boolean getCommonClassProperty() {
+    return isCommonClassProperty();
+  }
 
 	public void setClientClassProperty(Boolean _clientClassProperty) {
 		setClientClassProperty(_clientClassProperty, true);
