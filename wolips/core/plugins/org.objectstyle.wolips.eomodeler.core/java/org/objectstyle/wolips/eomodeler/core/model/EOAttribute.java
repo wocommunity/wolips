@@ -1046,7 +1046,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	}
 
 	public boolean getSqlGenerationAllowsNull() {
-		return getEntity().isSingleTableInheritance() || BooleanUtils.isFalse(isAllowsNull());
+		return getEntity().isSingleTableInheritance() || !BooleanUtils.isFalse(isAllowsNull());
 	}
 
 	public boolean getSqlGenerationCreateProperty() {
