@@ -55,10 +55,13 @@
  */
 package org.objectstyle.woproject.maven2.wolifecycle;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-public class TestDefineWOApplicationResourcesMojo extends TestCase {
-	public void testNormalizedFilePath() throws Exception {
+import org.junit.Test;
+
+public class TestDefineWOApplicationResourcesMojo {
+	@Test
+	public void normalizedFilePath() throws Exception {
 		String path = "C:\\Documents and Settings\\User\\.m2\\repository";
 
 		String result = DefineWOApplicationResourcesMojo.normalizedPath(path);
