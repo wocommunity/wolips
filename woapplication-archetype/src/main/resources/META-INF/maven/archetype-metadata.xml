@@ -7,6 +7,9 @@
 		<requiredProperty key="WonderSupport">
 			<defaultValue>no</defaultValue>
 		</requiredProperty>
+		<requiredProperty key="TrueWarSupport">
+			<defaultValue>no</defaultValue>
+		</requiredProperty>
 	</requiredProperties>
 	<fileSets>
 		<fileSet filtered="true" packaged="true" encoding="UTF-8">

@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>${groupId}</groupId>
 	<artifactId>${artifactId}</artifactId>
+	#if( !($TrueWarSupport == "no") )
+	<packaging>war</packaging>
+	#else
 	<packaging>woapplication</packaging>
+	#end
 	<version>${version}</version>
 	<name>${artifactId} WebObjects App</name>
 	<url>http://maven.apache.org</url>
@@ -25,16 +31,26 @@
 			</resource>
 			<resource>
 				<targetPath>WebServerResources</targetPath>
-				<directory>${basedir}/src/main/webserver-resources</directory>
+				<directory>
+					${basedir}/src/main/webserver-resources
+				</directory>
 			</resource>
 		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.objectstyle.woproject.maven2</groupId>
 				<artifactId>maven-wolifecycle-plugin</artifactId>
-				<version>2.0.13</version>
+				<version>2.0.14</version>
 				<extensions>true</extensions>
 			</plugin>
+			#if( !($TrueWarSupport == "no") )
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<archiveClasses>true</archiveClasses>
+				</configuration>
+			</plugin>
+			#end
 		</plugins>
 	</build>
 
@@ -54,12 +70,18 @@
 			<artifactId>JavaEOAccess</artifactId>
 			<version>${woversion}</version>
 		</dependency>
-		#if( !($WonderSupport == "no") )
-	<dependency>
+		#if( !($TrueWarSupport == "no") )
+		<dependency>
+			<groupId>com.apple.webobjects</groupId>
+			<artifactId>JavaWOJSPServlet</artifactId>
+			<version>${woversion}</version>
+		</dependency>
+		#end #if( !($WonderSupport == "no") )
+		<dependency>
 			<groupId>wonder.common</groupId>
 			<artifactId>ERExtensions</artifactId>
 			<version>4.0.0-SNAPSHOT</version>
 		</dependency>
 		#end
-</dependencies>
+	</dependencies>
 </project>
