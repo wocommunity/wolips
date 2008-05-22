@@ -1,10 +1,12 @@
 package org.objectstyle.woproject.maven2.wolifecycle;
 
 //org.apache.maven.plugins:maven-compiler-plugin:compile
-import java.io.*;
+import java.io.File;
 
-import org.apache.maven.plugin.*;
-import org.apache.maven.project.*;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectHelper;
 
 /**
  * resources goal for WebObjects projects.
@@ -12,6 +14,7 @@ import org.apache.maven.project.*;
  * @goal package-woapplication
  * @requiresDependencyResolution compile
  * @author uli
+ * @author hprange
  * @since 2.0
  */
 public class PackageWOApplicationResourcesMojo extends PackageMojo {
