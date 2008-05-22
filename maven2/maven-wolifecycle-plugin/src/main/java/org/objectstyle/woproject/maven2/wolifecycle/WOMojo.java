@@ -9,14 +9,10 @@ import org.apache.maven.project.MavenProject;
 
 public abstract class WOMojo extends AbstractMojo {
 
-	public final static String MAVEN_WEBOBJECTS_GROUP_ID = "webobjects/apple";
+	public final static String MAVEN_WEBOBJECTS_GROUP_ID = "com.apple.webobjects";
 
 	public WOMojo() {
 		super();
-	}
-
-	private boolean containsDot(String text) {
-		return text.indexOf('.') >= 0;
 	}
 
 	public abstract String getProductExtension();
@@ -24,7 +20,7 @@ public abstract class WOMojo extends AbstractMojo {
 	public abstract MavenProject getProject();
 
 	protected String getProjectFolder() {
-		String projectFolder = this.getProject().getFile().getPath().substring(0, this.getProject().getFile().getPath().length() - 7);
+		String projectFolder = getProject().getFile().getPath().substring(0, getProject().getFile().getPath().length() - 7);
 		return projectFolder;
 	}
 
@@ -36,20 +32,16 @@ public abstract class WOMojo extends AbstractMojo {
 		return null;
 	}
 
-	protected boolean isWebobjectAppleGroup(String dependencyGroup) {
+	protected boolean isWebObjectAppleGroup(String dependencyGroup) {
 		if (dependencyGroup == null) {
 			return false;
-		}
-
-		if (containsDot(dependencyGroup)) {
-			throw new IllegalArgumentException("Dependency group cannot contains '.' (dot).");
 		}
 
 		String normalizedGroup = FilenameUtils.separatorsToUnix(dependencyGroup);
 
 		boolean returnValue = MAVEN_WEBOBJECTS_GROUP_ID.equals(normalizedGroup);
 
-		getLog().debug("WOMojo: isWebobjectAppleGroup: " + normalizedGroup + " return value " + returnValue);
+		getLog().info("WOMojo: the group " + normalizedGroup + " is " + (returnValue ? "" : "NOT ") + "an Apple group.");
 
 		return returnValue;
 	}

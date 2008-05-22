@@ -10,19 +10,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.factory.ArtifactFactory;
-import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
@@ -48,16 +49,6 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 		return FilenameUtils.separatorsToUnix(path);
 	}
 
-	/**
-	 * @component
-	 */
-	private ArtifactFactory artifactFactory;
-
-	/**
-	 * @component
-	 */
-	private ArtifactResolver artifactResolver;
-
 	private String[][] dependencyPaths;
 
 	/**
@@ -73,11 +64,6 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 	 * @readonly
 	 */
 	private ArtifactRepository localRepository;
-
-	/**
-	 * @component
-	 */
-	private ArtifactMetadataSource metadataSource;
 
 	/**
 	 * The maven project.
@@ -96,11 +82,6 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 	private Boolean readPatternsets;
 
 	/**
-	 * @parameter expression="${project.remoteArtifactRepositories}"
-	 */
-	private List remoteRepositories;
-
-	/**
 	 * skip webobjects frameworks from apple.
 	 * 
 	 * @parameter expression="skipAppleProvidedFrameworks"
@@ -109,6 +90,10 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 
 	public DefineWOApplicationResourcesMojo() {
 		super();
+	}
+
+	protected String artifactDescription(Artifact artifact) {
+		return artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getVersion();
 	}
 
 	private void copyJarEntryToFile(String jarFileName, File destinationFolder, JarEntry jarEntry) throws IOException, FileNotFoundException {
@@ -160,58 +145,50 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 
 	private void defineClasspath() throws MojoExecutionException {
 		getLog().debug("Defining wo classpath: dependencies from parameter");
-		String[][] classpathEntries = this.getDependencyPaths();
-		StringBuffer classPath = new StringBuffer();
-		for (int k = 0; k < 2; k++) {
-			for (int i = 0; i < classpathEntries[0].length; i++) {
-				getLog().debug("Defining wo classpath: dependencyPath: " + classpathEntries[0][i]);
-				if (k == 0 && this.isWebobjectAppleGroup(classpathEntries[2][i])) {
-					continue;
-				}
-				if (k == 1 && !this.isWebobjectAppleGroup(classpathEntries[2][i])) {
-					continue;
-				}
-				if (skipAppleProvidedFrameworks != null && skipAppleProvidedFrameworks.booleanValue() && this.isWebobjectAppleGroup(classpathEntries[2][i])) {
-					getLog().debug("Defining wo classpath: dependencyPath: " + classpathEntries[0][i] + "is in the apple group skipping");
-					continue;
-				}
-				classPath.append(classpathEntries[0][i] + "\n");
-			}
-		}
-		String classpathTxtFileName = this.getProjectFolder() + "target" + File.separator + "classpath.txt";
-		getLog().debug("Defining wo classpath: writing to file: " + classpathTxtFileName);
-		File classpathTxtFile = new File(classpathTxtFileName);
-		FileWriter classpathTxtFileWriter;
+
+		Collection<String> classpathLines = populateClasspath(false);
+
+		classpathLines.addAll(populateClasspath(true));
+
+		Artifact artifact = project.getArtifact();
+
+		classpathLines.add(artifact.getArtifactId() + "-" + artifact.getVersion() + (artifact.getClassifier() != null ? artifact.getClassifier() : "") + ".jar");
+
+		File classpathTxtFile = new File(project.getBuild().getDirectory(), "classpath.txt");
+
+		getLog().info("Defining wo classpath: writing to file: " + classpathTxtFile.getAbsolutePath());
+
 		try {
-			classpathTxtFileWriter = new FileWriter(classpathTxtFile);
-			classpathTxtFileWriter.write(classPath.toString());
-			classpathTxtFileWriter.flush();
-			classpathTxtFileWriter.close();
-		} catch (IOException e) {
-			throw new MojoExecutionException("Could not write classpath.txt", e);
+			FileUtils.writeLines(classpathTxtFile, classpathLines);
+		} catch (IOException exception) {
+			throw new MojoExecutionException("Could not write classpath.txt", exception);
 		}
-		String classpathPropertiesFileName = this.getProjectFolder() + "target" + File.separator + "classpath.properties";
-		getLog().debug("Defining wo classpath: writing to file: " + classpathPropertiesFileName);
-		File classpathPropertiesFile = new File(classpathPropertiesFileName);
-		FileWriter classpathPropertiesFileWriter;
+
+		File classpathPropertiesFile = new File(project.getBuild().getDirectory(), "classpath.properties");
+
+		getLog().info("Defining wo classpath: writing to file: " + classpathPropertiesFile);
+
 		try {
-			classpathPropertiesFileWriter = new FileWriter(classpathPropertiesFile);
-			classpathPropertiesFileWriter.write("classpath.localRepository.baseDir " + localRepository.getBasedir());
-			classpathPropertiesFileWriter.flush();
-			classpathPropertiesFileWriter.close();
+			FileUtils.writeStringToFile(classpathPropertiesFile, "dependencies.lib = " + normalizedPath(project.getBuild().getDirectory()) + "/lib");
 		} catch (IOException e) {
 			throw new MojoExecutionException("Could not write classpath.properties", e);
 		}
 	}
 
-	private void defineProperties() throws MojoExecutionException {
-		String fileName = this.getProjectFolder() + "target" + File.separator + "wobuild.properties";
+	void defineProperties() throws MojoExecutionException {
+		String fileName = getProjectFolder() + "target" + File.separator + "wobuild.properties";
+
 		getLog().debug("Defining wo properties: writing to file: " + fileName);
+
 		File file = new File(fileName);
+
 		FileWriter fileWriter;
+
 		try {
 			fileWriter = new FileWriter(file);
-			fileWriter.write("maven.localRepository.baseDir = " + normalizedPath(localRepository.getBasedir()));
+
+			fileWriter.write("classpath.localRepository.baseDir = " + normalizedPath(localRepository.getBasedir()));
+
 			fileWriter.flush();
 			fileWriter.close();
 		} catch (IOException e) {
@@ -238,8 +215,8 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 
 		for (Artifact artifact : artifacts) {
 
-			if (skipAppleProvidedFrameworks != null && skipAppleProvidedFrameworks.booleanValue() && isWebobjectAppleGroup(artifact.getGroupId())) {
-				getLog().debug("Skipping artifact: " + artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getVersion() + " (Apple provided)");
+			if (skipAppleProvidedFrameworks != null && skipAppleProvidedFrameworks.booleanValue() && isWebObjectAppleGroup(artifact.getGroupId())) {
+				getLog().info("Skipping artifact: " + artifactDescription(artifact) + " (Apple provided)");
 
 				continue;
 			}
@@ -249,7 +226,7 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 				File jarFile = artifact.getFile();
 
 				if (!isArtifactDeployed(jarFile)) {
-					getLog().debug("Skipping artifact: " + artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getVersion() + " (not deployed)");
+					getLog().info("Skipping artifact: " + artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getVersion() + " (not installed in the local repository)");
 
 					continue;
 				}
@@ -279,66 +256,6 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 		}
 	}
 
-	private String[][] getDependencyPaths() throws MojoExecutionException {
-		if (dependencyPaths == null) {
-			// List dependencies = project.getDependencies();
-			// Set dependencyArtifacts = null;
-			// ArtifactResolutionResult result = null;
-			// try {
-			// dependencyArtifacts =
-			// MavenMetadataSource.createArtifacts(artifactFactory,
-			// dependencies, null, null, null);
-			// result =
-			// artifactResolver.resolveTransitively(dependencyArtifacts,
-			// this.project.getArtifact(), Collections.EMPTY_MAP,
-			// localRepository, remoteRepositories, metadataSource, null,
-			// Collections.EMPTY_LIST);
-			//
-			// } catch (InvalidDependencyVersionException e) {
-			// throw new MojoExecutionException("error while resolving
-			// dependencies", e);
-			// } catch (ArtifactResolutionException e) {
-			// throw new MojoExecutionException("error while resolving
-			// dependencies", e);
-			// } catch (ArtifactNotFoundException e) {
-			// throw new MojoExecutionException("error while resolving
-			// dependencies", e);
-			// }
-			Set artifacts = project.getArtifacts();
-			ArrayList classPathEntriesArray = new ArrayList();
-			ArrayList artfactNameEntriesArray = new ArrayList();
-			ArrayList artfactGroupEntriesArray = new ArrayList();
-			Iterator dependenciesIterator = artifacts.iterator();
-			while (dependenciesIterator.hasNext()) {
-				Artifact artifact = (Artifact) dependenciesIterator.next();
-
-				if (Artifact.SCOPE_PROVIDED.equals(artifact.getScope())) {
-					continue;
-				}
-
-				String depenendencyGroup = artifact.getGroupId();
-				if (depenendencyGroup != null) {
-					depenendencyGroup = depenendencyGroup.replace('.', File.separatorChar);
-				}
-				String depenendencyArtifact = artifact.getArtifactId();
-				String depenendencyVersion = artifact.getVersion();
-				String depenendencyBaseVersion = artifact.getBaseVersion();
-				if (artifact.isSnapshot()) {
-					depenendencyBaseVersion = depenendencyBaseVersion.substring(0, depenendencyBaseVersion.indexOf('-') + 1) + "SNAPSHOT";
-				}
-				String dependencyPath = depenendencyGroup + File.separator + depenendencyArtifact + File.separator + depenendencyBaseVersion + File.separator + depenendencyArtifact + "-" + depenendencyVersion + ".jar";
-				classPathEntriesArray.add(dependencyPath);
-				artfactNameEntriesArray.add(depenendencyArtifact);
-				artfactGroupEntriesArray.add(depenendencyGroup);
-			}
-			dependencyPaths = new String[3][];
-			dependencyPaths[0] = (String[]) classPathEntriesArray.toArray(new String[classPathEntriesArray.size()]);
-			dependencyPaths[1] = (String[]) artfactNameEntriesArray.toArray(new String[artfactNameEntriesArray.size()]);
-			dependencyPaths[2] = (String[]) artfactGroupEntriesArray.toArray(new String[artfactGroupEntriesArray.size()]);
-		}
-		return dependencyPaths;
-	}
-
 	@Override
 	public String getProductExtension() {
 		return "woa";
@@ -361,6 +278,58 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 
 	private boolean isArtifactDeployed(File file) {
 		return file.isFile();
+	}
+
+	private Collection<String> populateClasspath(boolean populateWebObjectsLibraries) throws MojoExecutionException {
+		if (populateWebObjectsLibraries && BooleanUtils.isTrue(skipAppleProvidedFrameworks)) {
+			getLog().info("Defining wo classpath: Skipping WebObjects libraries");
+
+			return Collections.emptyList();
+		}
+
+		Set<Artifact> artifacts = project.getArtifacts();
+
+		Collection<String> classpathLines = new ArrayList<String>();
+
+		ScopeArtifactFilter providedFilter = new ScopeArtifactFilter(Artifact.SCOPE_PROVIDED);
+
+		for (Artifact artifact : artifacts) {
+			if (populateWebObjectsLibraries) {
+				if (!isWebObjectAppleGroup(artifact.getGroupId())) {
+					continue;
+				}
+			} else if (isWebObjectAppleGroup(artifact.getGroupId())) {
+				continue;
+			} else if (providedFilter.include(artifact)) {
+				continue;
+			}
+
+			getLog().info("Defining wo classpath: dependencyPath: " + artifact.getArtifactId());
+
+			String groupPath = StringUtils.replace(artifact.getGroupId(), ".", "/");
+			String artifactPath = artifact.getArtifactId() + "/" + artifact.getVersion();
+			String filename = artifact.getArtifactId() + "-" + artifact.getVersion() + (artifact.getClassifier() != null ? artifact.getClassifier() : "") + ".jar";
+
+			String classpathEntry = groupPath + "/" + artifactPath + "/" + filename;
+
+			classpathLines.add(classpathEntry);
+
+			File sourceFile = artifact.getFile();
+
+			getLog().info("Source file: " + sourceFile.getAbsolutePath());
+
+			File destinationFile = new File(project.getBuild().getDirectory(), "lib/" + classpathEntry);
+
+			getLog().info("Destination file: " + destinationFile.getAbsolutePath());
+
+			try {
+				FileUtils.copyFile(sourceFile, destinationFile);
+			} catch (IOException exception) {
+				throw new MojoExecutionException("Cannot copy the dependency " + artifactDescription(artifact), exception);
+			}
+		}
+
+		return classpathLines;
 	}
 
 	@Override
