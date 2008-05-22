@@ -61,44 +61,27 @@ public class TestWOMojo extends TestCase {
 
 	protected WOMojo mojo;
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 
 		mojo = new MockWOMojo();
 	}
 
-	public void testIsInvalidGroup() throws Exception {
-		String groups[] = { ".invalidgroup", "invalid.group", "invalidgroup." };
-
-		for (int i = 0; i < groups.length; i++) {
-			try {
-				mojo.isWebobjectAppleGroup(groups[i]);
-
-				fail("Invalid group. Should throw an IllegalArgumentException.");
-			} catch (IllegalArgumentException exception) {
-				assertEquals("Dependency group cannot contains '.' (dot).", exception.getMessage());
-			}
-		}
-	}
-
 	public void testIsNotWebObjectsGroup() throws Exception {
-		String group = "another/group";
+		String group = "another.group";
 
-		assertFalse(mojo.isWebobjectAppleGroup(group));
+		assertFalse(mojo.isWebObjectAppleGroup(group));
 	}
 
 	public void testIsNullGroup() throws Exception {
-		assertFalse(mojo.isWebobjectAppleGroup(null));
+		assertFalse(mojo.isWebObjectAppleGroup(null));
 	}
 
 	public void testWebObjectsGroupIsOsIndependent() throws Exception {
-		String group = "webobjects/apple";
+		String group = "com.apple.webobjects";
 
-		assertTrue(mojo.isWebobjectAppleGroup(group));
-
-		group = "webobjects\\apple";
-
-		assertTrue(mojo.isWebobjectAppleGroup(group));
+		assertTrue(mojo.isWebObjectAppleGroup(group));
 	}
 
 }

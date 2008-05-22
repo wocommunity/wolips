@@ -28,7 +28,7 @@
 		
 
 		<property file="target/classpath.properties" />
-		<echo>classpath.localRepository.baseDir ${classpath.localRepository.baseDir}</echo>
+		<echo>dependencies.lib ${dependencies.lib}</echo>
 		<!-- property file="${user.home}${file.separator}Library${file.separator}wobuild.properties" />
 		<condition property="wobuild.properties.check.failed">
 			<not>
@@ -39,16 +39,16 @@
 			</not>
 		</condition>
 		<fail message="Could not find ${user.home}${file.separator}Library${file.separator}wobuild.properties." if="wobuild.properties.check.failed" / -->
-		<condition property="classpath.localRepository.baseDir.check.failed">
+		<condition property="dependencies.lib.check.failed">
 			<not>
-				<isset property="classpath.localRepository.baseDir" />
+				<isset property="dependencies.lib" />
 			</not>
 		</condition>
-		<fail message="classpath.localRepository.baseDir is not set" if="classpath.localRepository.baseDir.check.failed" />
+		<fail message="dependencies.lib is not set" if="dependencies.lib.check.failed" />
 	</target>
 
 	<target name="build-woapplication" depends="woapplicationproperties">
-		<echo>classpath.localRepository.baseDir ${classpath.localRepository.baseDir}</echo>
+		<echo>dependencies.lib ${dependencies.lib}</echo>
 		
 		 <delete>
 		    <fileset dir="target/${pom.xml.project.artifactId}-${pom.xml.project.version}.woa" includes="**/*.jar">
@@ -67,7 +67,7 @@
 			principalClass="${principalClass}">
 			<classes dir="target/classes">
 			</classes>
-			<lib dir="${classpath.localRepository.baseDir}">
+			<lib dir="${dependencies.lib}">
 				<patternset>
 					<includesfile name="target/classpath.txt" />
 				</patternset>
