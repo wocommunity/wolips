@@ -8,6 +8,15 @@ Bundle-Vendor: objectstyle.org
 Require-Bundle: org.objectstyle.wolips.baseforuiplugins,
  org.objectstyle.wolips.thirdparty.cayenne
 Eclipse-LazyStart: true
-Export-Package: org.objectstyle.wolips.ruleeditor,
- org.objectstyle.wolips.ruleeditor.model
-Import-Package: org.apache.commons.lang;version="2.1.0"
+Bundle-ClassPath: .,
+ lib/commons-lang-2.4.jar,
+ lib/commons-io-1.4.jar,
+ lib/junit-4.4.jar
+Export-Package: org.apache.commons.lang,
+ org.apache.commons.lang.builder,
+ org.apache.commons.lang.enums,
+ org.apache.commons.lang.exception,
+ org.apache.commons.lang.math,
+ org.apache.commons.lang.mutable,
+ org.apache.commons.lang.text,
+ org.apache.commons.lang.time
