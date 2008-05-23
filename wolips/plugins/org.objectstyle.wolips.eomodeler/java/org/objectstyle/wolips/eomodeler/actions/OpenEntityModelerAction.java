@@ -63,7 +63,10 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
@@ -117,6 +120,7 @@ public class OpenEntityModelerAction implements IObjectActionDelegate {
 		} else {
 			existingWindow = part.getSite().getWorkbenchWindow();
 		}
+		IWorkbench workbench = existingWindow.getWorkbench();
 
 		boolean opened = false;
 		if (actionResource != null) {
@@ -130,9 +134,27 @@ public class OpenEntityModelerAction implements IObjectActionDelegate {
 				editorFile = (IFile) actionResource;
 			}
 			if (editorFile != null && editorFile.exists()) {
-				if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.OPEN_IN_WINDOW_KEY)) {
+				FileEditorInput input = new FileEditorInput(editorFile);
+				
+				IEditorPart editorPart = null;
+				for (IWorkbenchWindow window : workbench.getWorkbenchWindows()) {
+					for (IWorkbenchPage page : window.getPages()) {
+						if (editorPart == null) {
+							editorPart = page.findEditor(input);
+						}
+					}
+				}
+				
+				if (editorPart != null) {
+					IWorkbenchPage page = editorPart.getEditorSite().getPage();
+					IWorkbenchWindow window = page.getWorkbenchWindow();
+					window.setActivePage(page);
+					window.getShell().setActive();
+					opened = true;
+				}
+				else if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.OPEN_IN_WINDOW_KEY)) {
 					try {
-						IWorkbenchWindow window = existingWindow.getWorkbench().openWorkbenchWindow(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID, null);
+						IWorkbenchWindow window = workbench.openWorkbenchWindow(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID, null);
 						window.getActivePage().openEditor(new FileEditorInput(editorFile), EOModelEditor.EOMODEL_EDITOR_ID);
 						opened = true;
 					} catch (WorkbenchException e) {
