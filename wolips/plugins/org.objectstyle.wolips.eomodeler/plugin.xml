@@ -691,4 +691,15 @@
             id="org.objectstyle.wolips.eomodeler.preferences.EOModelPreferencePage"
             name="Entity Modeler"/>
    </extension>
+   <extension
+         id="org.objectstyle.wolips.entitymodeler.contentTypes"
+         name="Entity Modeler Content Types"
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            file-names="index.eomodeld"
+            id="org.objectstyle.wolips.editors.indexdoteomodeld"
+            name="index.eomodeld"
+            priority="high">
+      </content-type>
+   </extension>
 </plugin>
