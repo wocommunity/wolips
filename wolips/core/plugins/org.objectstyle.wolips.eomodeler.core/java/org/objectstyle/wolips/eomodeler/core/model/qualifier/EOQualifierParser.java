@@ -119,7 +119,9 @@ public class EOQualifierParser {
 						lqualifier = new EOKeyValueQualifier(lvalue.getValue(), selector, ((NumberToken) rvalue).toNumber());
 					} else if (rvalue instanceof LiteralToken) {
 						String value = rvalue.getValue();
-						value = value.replaceAll("\\\\(.)", "$1");
+						if (value != null) {
+							value = value.replaceAll("\\\\(.)", "$1");
+						}
 						lqualifier = new EOKeyValueQualifier(lvalue.getValue(), selector, value);
 					} else if (rvalue instanceof KeywordToken || rvalue instanceof KeypathToken) {
 						lqualifier = new EOKeyComparisonQualifier(lvalue.getValue(), selector, rvalue.getValue());
@@ -363,6 +365,8 @@ public class EOQualifierParser {
 					token = new OrToken(startOffset);
 				} else if (value.equalsIgnoreCase("not")) {
 					token = new NotToken(startOffset);
+				} else if (value.equalsIgnoreCase("null") || value.equalsIgnoreCase("nil")) {
+					token = new LiteralToken(startOffset, null);
 				} else if (value.contains(".")) {
 					token = new KeypathToken(startOffset, value);
 				} else {
@@ -565,7 +569,7 @@ public class EOQualifierParser {
 			// and (lastName caseinsensitiveLike 'schrag' or (age = 5))
 			// or(age>10) and (name<0.10) or (somevar isAnagramOf: 'test')");
 			// System.out.println("EOQualifierParser.main: " + q);
-			EOQualifier q = parser.parseQualifier("truepredicate and a = 5");
+			EOQualifier q = parser.parseQualifier("a = nil");
 			System.out.println("EOQualifierParser.main: " + q);
 		} catch (Throwable t) {
 			t.printStackTrace(System.out);
