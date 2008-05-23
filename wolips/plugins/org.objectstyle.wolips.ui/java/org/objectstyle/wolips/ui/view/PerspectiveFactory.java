@@ -69,6 +69,8 @@ import org.eclipse.ui.progress.IProgressConstants;
  * @author uli
  */
 public class PerspectiveFactory implements IPerspectiveFactory {
+	public static final String WOLIPS_PERSPECTIVE_ID = "org.objectstyle.wolips.ui.Perspective";
+	
 	private static final String ID_WIZARDS_ACTION_SET = "org.objectstyle.wolips.wizards.ElementCreationActionSet";
 
 	public static final String ID_RELATED = "org.objectstyle.wolips.ui.view.RelatedView";
