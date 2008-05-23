@@ -60,8 +60,11 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IPageListener;
 import org.eclipse.ui.IPartListener2;
+import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -69,7 +72,11 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.objectstyle.wolips.eomodeler.Activator;
+import org.objectstyle.wolips.eomodeler.EOModelerPerspectiveFactory;
 import org.objectstyle.wolips.eomodeler.actions.OpenEntityModelerAction;
+import org.objectstyle.wolips.eomodeler.editors.EOModelEditor;
+import org.objectstyle.wolips.eomodeler.preferences.PreferenceConstants;
 import org.objectstyle.wolips.ui.actions.OpenWOAction;
 import org.objectstyle.wolips.ui.view.PerspectiveFactory;
 
@@ -92,7 +99,7 @@ public class PackageExplorerDoubleClickHandler implements IPageListener, IPartLi
 		workbench.addWindowListener(this);
 		IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
 		for (IWorkbenchWindow window : windows) {
-			windowOpened(window);
+			windowOpened(window, true);
 		}
 	}
 
@@ -109,11 +116,49 @@ public class PackageExplorerDoubleClickHandler implements IPageListener, IPartLi
 	}
 
 	public void windowOpened(IWorkbenchWindow window) {
+		windowOpened(window, false);
+	}
+	
+	public void windowOpened(final IWorkbenchWindow window, boolean startup) {
 		window.addPageListener(this);
 		IWorkbenchPage[] pages = window.getPages();
 		for (int i = 0; i < pages.length; i++) {
 			IWorkbenchPage page = pages[i];
 			pageOpened(page);
+		}
+
+		// MS: Eclipse has a bug where it doesn't preserve the selected perspective for all windows,
+		// rather it preserves the most recently selected perspective and applies it to all windows.
+		// So we want to catch when Eclipse starts up and look for any windows that are set to the
+		// Entity Modeler perspective, but that don't have any Entity Modeler editors in them, and
+		// change those perspectives back to the WOLips perspective.  We also only want to do this
+		// on windows at startup, so we don't swap back an "Open Entity Modeler in New Window" window.
+		if (startup && Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CHANGE_PERSPECTIVES_KEY)) {
+			IWorkbenchPage activePage = window.getActivePage();
+			if (activePage != null) {
+				IPerspectiveDescriptor descriptor = activePage.getPerspective();
+				if (descriptor != null && EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID.equals(descriptor.getId())) {
+					IEditorReference[] editorReferences = activePage.getEditorReferences();
+					boolean containsEntityModeler = false;
+					for (IEditorReference editorReference : editorReferences) {
+						if (EOModelEditor.EOMODEL_EDITOR_ID.equals(editorReference.getId())) {
+							containsEntityModeler = true;
+						}
+					}
+					
+					if (!containsEntityModeler) {
+						Display.getDefault().asyncExec(new Runnable() {
+							public void run() {
+								try {
+									window.getWorkbench().showPerspective(PerspectiveFactory.WOLIPS_PERSPECTIVE_ID, window);
+								} catch (Throwable e) {
+									e.printStackTrace();
+								}
+							}
+						});
+					}
+				}
+			}
 		}
 	}
 
