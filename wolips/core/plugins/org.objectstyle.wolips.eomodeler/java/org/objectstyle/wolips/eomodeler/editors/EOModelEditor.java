@@ -87,7 +87,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.part.MultiPageEditorPart;
@@ -405,29 +405,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 		super.dispose();
 
-		if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CHANGE_PERSPECTIVES_KEY)) {
-			try {
-				IWorkbench workbench = Activator.getDefault().getWorkbench();
-				IWorkbenchPage workbenchPage = workbench.getActiveWorkbenchWindow().getActivePage();
-				if (workbenchPage != null && EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID.equals(workbenchPage.getPerspective().getId())) {
-					IEditorReference[] editorReferences = workbenchPage.getEditorReferences();
-					int eomodelerEditorCount = 0;
-					for (int editorReferenceNum = 0; editorReferenceNum < editorReferences.length; editorReferenceNum++) {
-						IEditorReference editorReference = editorReferences[editorReferenceNum];
-						if (EOModelEditor.EOMODEL_EDITOR_ID.equals(editorReference.getId())) {
-							eomodelerEditorCount++;
-						}
-					}
-					if (eomodelerEditorCount == 0) {
-						workbench.showPerspective("org.objectstyle.wolips.ui.Perspective", workbench.getActiveWorkbenchWindow());
-					}
-				}
-			} catch (WorkbenchException e) {
-				// ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(),
-				// e);
-				Activator.getDefault().log(e);
-			}
-		}
+		switchFromEntityModelerPerspective();
 	}
 
 	public void doSave(IProgressMonitor monitor) {
@@ -486,8 +464,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		if (myModel != null) {
 			if (myModel.isDirty()) {
 				dirty = true;
-			}
-			else if (myModel.getModelGroup() != null) {
+			} else if (myModel.getModelGroup() != null) {
 				dirty = myModel.getModelGroup().isDirty();
 			}
 		}
@@ -626,10 +603,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 	public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
 		try {
-			if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CHANGE_PERSPECTIVES_KEY)) {
-				IWorkbench workbench = Activator.getDefault().getWorkbench();
-				workbench.showPerspective(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID, workbench.getActiveWorkbenchWindow());
-			}
+			switchToEntityModelerPerspective();
 			super.init(site, editorInput);
 
 			LoadEOModelWorkspaceJob loadModelJob = new LoadEOModelWorkspaceJob(this, editorInput);
@@ -891,6 +865,77 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		mySelectionChangedListeners.remove(_listener);
 	}
 
+	/**
+	 * Called when Entity Modeler should switch from Entity Modeler Perspective
+	 * back to WOLips perspective.
+	 */
+	public void switchFromEntityModelerPerspective() {
+		// MS: If "Open in New Window" is selected, then we want to watch for the case where
+		// you were in Entity Modeler and then close the editor, which also close the new window,
+		// so we don't leave you sitting in a blank window.
+		boolean closedWindow = false;
+		if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.OPEN_IN_WINDOW_KEY)) {
+			IWorkbench workbench = Activator.getDefault().getWorkbench();
+			if (workbench.getWorkbenchWindows().length > 1) {
+				IWorkbenchPage workbenchPage = workbench.getActiveWorkbenchWindow().getActivePage();
+				if (workbenchPage != null && EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID.equals(workbenchPage.getPerspective().getId())) {
+					IEditorReference[] editorReferences = workbenchPage.getEditorReferences();
+					if (editorReferences.length == 0) {
+						closedWindow = workbench.getActiveWorkbenchWindow().close();
+					}
+				}
+			}
+		}
+
+		// MS: If the window didn't need to close, then we want to switch perspectives on your current
+		// window from Entity Modeler over to the WOLips perspective.
+		if (!closedWindow && Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CHANGE_PERSPECTIVES_KEY)) {
+			try {
+				IWorkbench workbench = Activator.getDefault().getWorkbench();
+				IWorkbenchWindow activeWorkbenchWindow = workbench.getActiveWorkbenchWindow();
+				if (activeWorkbenchWindow != null) {
+					IWorkbenchPage workbenchPage = activeWorkbenchWindow.getActivePage();
+					if (workbenchPage != null && EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID.equals(workbenchPage.getPerspective().getId())) {
+						IEditorReference[] editorReferences = workbenchPage.getEditorReferences();
+						int eomodelerEditorCount = 0;
+						for (int editorReferenceNum = 0; editorReferenceNum < editorReferences.length; editorReferenceNum++) {
+							IEditorReference editorReference = editorReferences[editorReferenceNum];
+							if (EOModelEditor.EOMODEL_EDITOR_ID.equals(editorReference.getId())) {
+								eomodelerEditorCount++;
+							}
+						}
+
+						if (eomodelerEditorCount == 0) {
+							workbench.showPerspective("org.objectstyle.wolips.ui.Perspective", activeWorkbenchWindow);
+						}
+					}
+				}
+			} catch (WorkbenchException e) {
+				// ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(),
+				// e);
+				Activator.getDefault().log(e);
+			}
+		}
+	}
+
+	/**
+	 * Called when Entity Modeler should switch from whatever the current
+	 * perspective is to Entity Modeler perspective.
+	 */
+	public void switchToEntityModelerPerspective() {
+		try {
+			if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CHANGE_PERSPECTIVES_KEY)) {
+				IWorkbench workbench = Activator.getDefault().getWorkbench();
+				IWorkbenchWindow activeWorkbenchWindow = workbench.getActiveWorkbenchWindow();
+				if (activeWorkbenchWindow != null) {
+					workbench.showPerspective(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID, activeWorkbenchWindow);
+				}
+			}
+		} catch (WorkbenchException e) {
+			Activator.getDefault().log(e);
+		}
+	}
+
 	public void setFocus() {
 		super.setFocus();
 		// MS: I'm not sure the right way to do this, but without
@@ -898,6 +943,35 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		// before ever activing the outline would not cause the
 		// property view to update.
 		getSite().setSelectionProvider(this);
+
+		// MS: If an Entity Modeler editor receives focus, and there is
+		// more than one editor in the perspective, we want to switch 
+		// to Entity Modeler perspective.  The "more than one editor"
+		// restriction is in place, because if you only have an 
+		// Entity Modeler editor in the perspective, you won't be
+		// able to ever switch perspectives to temporarily get access
+		// to package explorer, for instance, because it will keep
+		// forcing you back.  This MIGHT actually be the correct 
+		// behavior, but it seemed really aggressive.
+		if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CHANGE_PERSPECTIVES_KEY)) {
+			boolean shouldSwitchToEntityModeler = false;
+			IWorkbench workbench = Activator.getDefault().getWorkbench();
+			IWorkbenchWindow activeWindow = workbench.getActiveWorkbenchWindow();
+			if (activeWindow != null) {
+				if (activeWindow != null) {
+					IWorkbenchPage workbenchPage = activeWindow.getActivePage();
+					if (workbenchPage != null) {
+						IEditorReference[] editorReferences = workbenchPage.getEditorReferences();
+						if (editorReferences.length > 1) {
+							shouldSwitchToEntityModeler = true;
+						}
+					}
+				}
+			}
+			if (shouldSwitchToEntityModeler) {
+				switchToEntityModelerPerspective();
+			}
+		}
 	}
 
 	protected void fireSelectionChanged(ISelection _selection) {
