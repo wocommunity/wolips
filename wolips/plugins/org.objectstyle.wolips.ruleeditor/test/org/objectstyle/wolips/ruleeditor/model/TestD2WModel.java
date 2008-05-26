@@ -19,6 +19,34 @@ public class TestD2WModel {
 	protected File tempFile;
 
 	@Test
+	public void copyNullRuleDoNothing() throws Exception {
+		createTempFile();
+
+		model = new D2WModel(tempFile);
+
+		model.copyRule(null);
+
+		assertThat(model.getRules().size(), is(0));
+	}
+
+	@Test
+	public void copyRule() throws Exception {
+		createTempFile();
+
+		model = new D2WModel(tempFile);
+
+		Rule ruleToCopy = new Rule();
+
+		model.copyRule(ruleToCopy);
+
+		assertThat(model.getRules().size(), is(1));
+
+		for (Rule rule : model.getRules()) {
+			assertThat(rule == ruleToCopy, is(false));
+		}
+	}
+
+	@Test
 	public void createD2WModelWithExistingFile() throws Exception {
 		loadModelWithFile("empty-file.d2wmodel");
 

@@ -4,6 +4,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
+ */
 public enum Selector {
 	EQUAL("isEqualTo", "="), GREATER_THAN("isGreaterThan", ">"), GREATER_THAN_OR_EQUAL("isGreaterThanOrEqualTo", ">="), LESS_THAN("isLessThan", "<"), LESS_THAN_OR_EQUAL("isLessThanOrEqualTo", "<="), LIKE("isLike", "like"), NOT_EQUAL("isNotEqualTo", "!=");
 
@@ -21,6 +24,9 @@ public enum Selector {
 		tempMap.put(GREATER_THAN.getSelectorName(), GREATER_THAN);
 		tempMap.put(GREATER_THAN_OR_EQUAL.getSelectorName(), GREATER_THAN_OR_EQUAL);
 		tempMap.put(LIKE.getSelectorName(), LIKE);
+
+		// Support to isEqual
+		tempMap.put("isEqual", EQUAL);
 
 		SELECTORS_BY_NAME = Collections.unmodifiableMap(tempMap);
 

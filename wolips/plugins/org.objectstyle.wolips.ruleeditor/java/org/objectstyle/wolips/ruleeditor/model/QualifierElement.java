@@ -54,6 +54,7 @@ import java.util.Map;
 
 /**
  * @author uli
+ * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
  */
 public class QualifierElement extends AbstractQualifierElement {
 	protected QualifierElement() {

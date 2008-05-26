@@ -47,4 +47,9 @@ public class TestSelector {
 		assertThat(Selector.forOperator(">="), is(Selector.GREATER_THAN_OR_EQUAL));
 		assertThat(Selector.forOperator("like"), is(Selector.LIKE));
 	}
+
+	@Test
+	public void supportForIsEqual() throws Exception {
+		assertThat(Selector.forName("isEqual"), is(Selector.EQUAL));
+	}
 }

@@ -50,11 +50,13 @@
 package org.objectstyle.wolips.ruleeditor.model;
 
 import java.beans.PropertyChangeListener;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author uli
+ * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
  */
 public class Rule extends AbstractRuleElement {
 
@@ -75,7 +77,7 @@ public class Rule extends AbstractRuleElement {
 	private final RightHandSide rightHandSide;
 
 	protected Rule() {
-		super(new HashMap<String, Object>());
+		super(Collections.EMPTY_MAP);
 
 		setAssignmentClassName(DEFAULT_ASSIGNMENT_CLASS_NAME);
 		setAuthor(DEFAULT_AUTHOR);
@@ -105,6 +107,27 @@ public class Rule extends AbstractRuleElement {
 		properties.remove(RHS_KEY);
 
 		setAuthor(properties.get(AUTHOR_KEY).toString());
+	}
+
+	/**
+	 * Create a new instance of <code>Rule</code> as a copy of the rule taken.
+	 * 
+	 * @param rule
+	 *            A D2W rule
+	 */
+	protected Rule(Rule rule) {
+		super(Collections.EMPTY_MAP);
+
+		Map lhsMap = rule.getLeftHandSide().toMap();
+
+		leftHandSide = new LeftHandSide(lhsMap != null ? lhsMap : Collections.EMPTY_MAP);
+
+		Map rhsMap = rule.getRightHandSide().toMap();
+
+		rightHandSide = new RightHandSide(rhsMap != null ? rhsMap : Collections.EMPTY_MAP);
+
+		setAssignmentClassName(rule.getAssignmentClassName());
+		setAuthor(rule.getAuthor());
 	}
 
 	@Override

@@ -11,10 +11,57 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestLeftHandSide {
 	protected LeftHandSide lhs;
+
+	@Test
+	@Ignore(value = "Must think in a better abstraction first")
+	public void createLhsForMapWithNotQualifier() throws Exception {
+		Map<String, Object> properties = new HashMap<String, Object>();
+
+		properties.put("class", Qualifier.NOT.getClassName());
+
+		Collection<Map<String, Object>> qualifiersArray = new ArrayList<Map<String, Object>>();
+
+		Map<String, Object> qualifierMap = new HashMap<String, Object>();
+
+		qualifierMap.put("class", Qualifier.KEY_VALUE.getClassName());
+		qualifierMap.put("key", "relationship.isToMany");
+		qualifierMap.put("selectorName", Selector.EQUAL.getSelectorName());
+
+		Map<String, Object> numberMap = new HashMap<String, Object>();
+
+		numberMap.put("class", "java.lang.Number");
+		numberMap.put("value", 1);
+
+		qualifierMap.put("value", numberMap);
+
+		qualifiersArray.add(qualifierMap);
+
+		// Note that EONotQualifier have only one qualifier
+		properties.put("qualifier", qualifiersArray);
+
+		lhs = new LeftHandSide(properties);
+
+		assertThat(lhs.getKey(), nullValue());
+		assertThat(lhs.getSelectorName(), nullValue());
+		assertThat(lhs.getValue(), nullValue());
+		assertThat(lhs.getAssignmentClassName(), is(Qualifier.NOT.getClassName()));
+
+		Collection<QualifierElement> qualifiers = lhs.getQualifiers();
+
+		assertThat(qualifiers.size(), is(1));
+
+		for (QualifierElement qualifier : qualifiers) {
+			assertThat(qualifier.getAssignmentClassName(), is(Qualifier.KEY_VALUE.getClassName()));
+			assertThat(qualifier.getKey(), is("relationship.isToMany"));
+			assertThat(qualifier.getSelectorName(), is(Selector.EQUAL.getSelectorName()));
+			assertThat(qualifier.getValue(), is((Object) 1));
+		}
+	}
 
 	private Map<String, Object> createSimpleMap() {
 		Map<String, Object> properties = new HashMap<String, Object>();

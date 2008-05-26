@@ -60,6 +60,9 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * @author uli
+ * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
+ * @author <a href="mailto:frederico@moleque.com.br">Frederico Lellis</a>
+ * @author <a href="mailto:georg@moleque.com.br">Georg von Bülow</a>
  */
 public class RightHandSide extends AbstractRuleElement {
 
@@ -93,47 +96,52 @@ public class RightHandSide extends AbstractRuleElement {
 	}
 
 	public String getValue() {
-		if (value == null) {
-			return null;
-		}
+		return valueForObject(value);
+	}
 
-		if (value instanceof Collection) {
-			Collection arrayOfValues = (Collection) value;
+	private Object parseValueString(String value) {
+		value = StringUtils.remove(value, "\"");
 
-			StringBuffer buffer = new StringBuffer();
-			buffer.append("( ");
-			for (Object object : arrayOfValues) {
-				buffer.append("\"");
-				buffer.append(object);
-				buffer.append("\"");
-				buffer.append(", ");
+		// When its an Array
+		if (value.startsWith("(")) {
+			value = StringUtils.substring(value, 1, value.length() - 1);
+
+			String[] arrayComponents = Pattern.compile(",").split(value);
+
+			ArrayList<Object> array = new ArrayList<Object>();
+
+			for (String expression : arrayComponents) {
+				expression = expression.trim();
+
+				if ("".equals(expression)) {
+					continue;
+				}
+
+				array.add(parseValueString(expression));
 			}
-			buffer.deleteCharAt(buffer.lastIndexOf(", "));
-			buffer.append(")");
-			return buffer.toString();
+
+			return array;
 		}
+		// When its a Dictionary
+		else if (value.startsWith("{")) {
+			Map<String, Object> dictionary = new HashMap<String, Object>();
 
-		if (value instanceof Map) {
-			Map mapOfValues = (Map) value;
-			StringBuffer buffer = new StringBuffer();
-			buffer.append("{ ");
+			value = StringUtils.substring(value, 1, value.lastIndexOf(";"));
 
-			ArrayList list = new ArrayList();
-			list.addAll(mapOfValues.keySet());
-			Collections.sort(list);
+			String[] dictionaryComponents = Pattern.compile(";").split(value);
 
-			for (Object key : list) {
-				buffer.append("\"");
-				buffer.append(key);
-				buffer.append("\" = \"");
-				buffer.append(mapOfValues.get(key));
-				buffer.append("\"; ");
+			for (String expression : dictionaryComponents) {
+				String key = expression.substring(0, expression.indexOf("=")).trim();
+
+				Object dictionaryValue = parseValueString(expression.substring(expression.indexOf("=") + 1, expression.length()).trim());
+
+				dictionary.put(key, dictionaryValue);
 			}
-			buffer.append("}");
-			return buffer.toString();
+			return dictionary;
 		}
 
-		return value.toString();
+		// So its a String
+		return value;
 	}
 
 	public void setKeyPath(final String keyPath) {
@@ -147,44 +155,7 @@ public class RightHandSide extends AbstractRuleElement {
 	public void setValue(final String newValue) {
 		String oldValue = getValue();
 
-		String value = newValue.trim();
-
-		// When its an Array
-		if (value.contains("(")) {
-			if (value.charAt(0) == '(') {
-				value = StringUtils.substring(value, 1, value.length() - 1);
-				String[] arrayComponents = Pattern.compile(",").split(value);
-				ArrayList<String> array = new ArrayList<String>();
-				for (int i = 0; i < arrayComponents.length; i++) {
-					if (arrayComponents[i].contains("\"")) {
-						arrayComponents[i] = StringUtils.remove(arrayComponents[i], "\"");
-					}
-					array.add(arrayComponents[i].trim());
-				}
-				this.value = array;
-			}
-		}
-		// When its a Dictionary
-		else if (value.contains("{")) {
-			Map<String, String> dictionary = new HashMap<String, String>();
-			value = StringUtils.substring(value, 1, value.lastIndexOf(";"));
-			String[] dictionaryComponents = Pattern.compile(";").split(value);
-			for (String string : dictionaryComponents) {
-				if (string.contains("\"")) {
-					string = StringUtils.remove(string, "\"");
-				}
-
-				String key = string.substring(0, string.indexOf("=")).trim();
-
-				String keyValue = string.substring(string.indexOf("=") + 1, string.length()).trim();
-				dictionary.put(key, keyValue);
-			}
-			this.value = dictionary;
-		}
-		// So its a String
-		else {
-			this.value = value;
-		}
+		value = parseValueString(newValue.trim());
 
 		firePropertyChange(VALUE_KEY, oldValue, newValue);
 	}
@@ -198,5 +169,61 @@ public class RightHandSide extends AbstractRuleElement {
 		rhsMap.put(VALUE_KEY, value);
 
 		return rhsMap;
+	}
+
+	private String valueForObject(Object object) {
+		if (object == null) {
+			return null;
+		}
+
+		if (object instanceof Collection) {
+			Collection<Object> arrayOfValues = (Collection<Object>) object;
+
+			if (arrayOfValues.size() == 0) {
+				return "()";
+			}
+
+			StringBuffer buffer = new StringBuffer();
+
+			buffer.append("( ");
+
+			for (Object value : arrayOfValues) {
+				buffer.append(valueForObject(value));
+				buffer.append(", ");
+			}
+
+			buffer.deleteCharAt(buffer.lastIndexOf(", "));
+			buffer.append(")");
+
+			return buffer.toString();
+		}
+
+		if (object instanceof Map) {
+			Map<String, Object> mapOfValues = (Map<String, Object>) object;
+
+			StringBuffer buffer = new StringBuffer();
+
+			buffer.append("{ ");
+
+			ArrayList<String> list = new ArrayList<String>();
+
+			list.addAll(mapOfValues.keySet());
+
+			Collections.sort(list);
+
+			for (Object key : list) {
+				buffer.append("\"");
+				buffer.append(key);
+				buffer.append("\" = ");
+				buffer.append(valueForObject(mapOfValues.get(key)));
+				buffer.append("; ");
+			}
+
+			buffer.append("}");
+
+			return buffer.toString();
+		}
+
+		return "\"" + object.toString() + "\"";
 	}
 }
