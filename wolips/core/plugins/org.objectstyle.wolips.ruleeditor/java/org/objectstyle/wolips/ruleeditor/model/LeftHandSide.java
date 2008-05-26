@@ -49,7 +49,9 @@
  */
 package org.objectstyle.wolips.ruleeditor.model;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * @author uli
@@ -66,7 +68,7 @@ public class LeftHandSide extends AbstractQualifierElement {
 	 * <code>LeftHandSide</code> objects by themselves.
 	 */
 	protected LeftHandSide() {
-		super(new HashMap<String, Object>());
+		super(Collections.EMPTY_MAP);
 	}
 
 	/**

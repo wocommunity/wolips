@@ -49,17 +49,41 @@
  */
 package org.objectstyle.wolips.ruleeditor.editor;
 
-import org.eclipse.jface.viewers.*;
-import org.eclipse.swt.*;
-import org.eclipse.swt.custom.*;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
-import org.objectstyle.wolips.ruleeditor.filter.*;
-import org.objectstyle.wolips.ruleeditor.listener.*;
-import org.objectstyle.wolips.ruleeditor.model.*;
-import org.objectstyle.wolips.ruleeditor.provider.*;
-import org.objectstyle.wolips.ruleeditor.sorter.*;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.TableEditor;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Text;
+import org.objectstyle.wolips.ruleeditor.filter.RulesFilter;
+import org.objectstyle.wolips.ruleeditor.listener.FilterListener;
+import org.objectstyle.wolips.ruleeditor.listener.NumberVerifyListener;
+import org.objectstyle.wolips.ruleeditor.listener.TableSortSelectionListener;
+import org.objectstyle.wolips.ruleeditor.model.D2WModel;
+import org.objectstyle.wolips.ruleeditor.model.LeftHandSide;
+import org.objectstyle.wolips.ruleeditor.model.RightHandSide;
+import org.objectstyle.wolips.ruleeditor.model.Rule;
+import org.objectstyle.wolips.ruleeditor.provider.TableContentProvider;
+import org.objectstyle.wolips.ruleeditor.provider.TableLabelProvider;
+import org.objectstyle.wolips.ruleeditor.sorter.AbstractInvertableTableSorter;
+import org.objectstyle.wolips.ruleeditor.sorter.TextSorter;
 
 /**
  * The UI class for the rule editor.
@@ -79,8 +103,6 @@ public class RuleEditor {
 	}
 
 	private Text classtext;
-
-	private Rule copyRule;
 
 	private Text lhstext;
 
@@ -161,29 +183,20 @@ public class RuleEditor {
 			}
 		});
 
-		final Button copybutton = new Button(buttongroup, SWT.PUSH);
-		copybutton.setText("Copy");
-		copybutton.addSelectionListener(new SelectionAdapter() {
+		final Button duplicateButton = new Button(buttongroup, SWT.PUSH);
+		duplicateButton.setText("Duplicate");
+		duplicateButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent event) {
-				copyRule = (Rule) tableViewer.getElementAt(table.getSelectionIndex());
+				Rule ruleToCopy = (Rule) tableViewer.getElementAt(table.getSelectionIndex());
 
-			}
-		});
-
-		final Button pastebutton = new Button(buttongroup, SWT.PUSH);
-		pastebutton.setText("Paste");
-		pastebutton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(final SelectionEvent event) {
-				Rule newRule = copyRule;
-
-				model.addRule(newRule);
+				model.copyRule(ruleToCopy);
 
 				updateRules();
 				updateBottomDisplay();
 			}
 		});
+
 		// Search field
 		GridData searchdata = new GridData();
 		searchdata.grabExcessHorizontalSpace = true;

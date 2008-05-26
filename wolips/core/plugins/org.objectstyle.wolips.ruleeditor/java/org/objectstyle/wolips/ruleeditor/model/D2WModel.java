@@ -49,11 +49,17 @@
  */
 package org.objectstyle.wolips.ruleeditor.model;
 
-import java.beans.*;
-import java.io.*;
-import java.util.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.objectstyle.cayenne.wocompat.*;
+import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 
 /**
  * This class is the base class to work with d2wmodel files.
@@ -113,6 +119,21 @@ public class D2WModel implements PropertyChangeListener {
 	}
 
 	/**
+	 * Copy the rule received into this D2WModel.
+	 * 
+	 * @param rule
+	 */
+	public void copyRule(Rule rule) {
+		if (rule == null) {
+			return;
+		}
+
+		Rule duplicateRule = new Rule(rule);
+
+		addRule(duplicateRule);
+	}
+
+	/**
 	 * Use this method to create new empty rules for this d2wmodel.
 	 * 
 	 * @return The newly created rule
@@ -149,8 +170,6 @@ public class D2WModel implements PropertyChangeListener {
 		try {
 			modelMap = (Map<String, Collection<Map>>) PropertyListSerialization.propertyListFromFile(modelFile);
 		} catch (FileNotFoundException exception) {
-			exception.printStackTrace();
-
 			throw new IllegalArgumentException("The file " + modelFile + " cannot be found");
 		}
 

@@ -4,6 +4,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
+ */
 public enum Qualifier {
 	AND("and", "com.webobjects.eocontrol.EOAndQualifier"), KEY_VALUE("", "com.webobjects.eocontrol.EOKeyValueQualifier"), NOT("not", "com.webobjects.eocontrol.EONotQualifier"), OR("or", "com.webobjects.eocontrol.EOOrQualifier");
 
