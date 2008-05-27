@@ -1283,6 +1283,20 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		return new PropertyListSet<EOAttribute>(getClientClassAttributes());
 	}
 
+	public Set<EOAttribute> getCommonClassAttributes() {
+		Set<EOAttribute> commonClassAttributes = new HashSet<EOAttribute>();
+		for (EOAttribute attribute : getAttributes()) {
+			if (attribute.isCommonClassProperty() != null && attribute.isCommonClassProperty().booleanValue()) {
+				commonClassAttributes.add(attribute);
+			}
+		}
+		return commonClassAttributes;
+	}
+
+	public Set<EOAttribute> getSortedCommonClassAttributes() {
+		return new PropertyListSet<EOAttribute>(getCommonClassAttributes());
+	}
+
 	public Set<EOAttribute> getClassAttributes() {
 		Set<EOAttribute> classAttributes = new HashSet<EOAttribute>();
 		for (EOAttribute attribute : getAttributes()) {
@@ -1349,6 +1363,20 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	public Set<EORelationship> getSortedClientClassRelationships() {
 		return new PropertyListSet<EORelationship>(getClientClassRelationships());
+	}
+
+	public Set<EORelationship> getCommonClassRelationships() {
+		Set<EORelationship> commonClassRelationships = new HashSet<EORelationship>();
+		for (EORelationship relationship : getRelationships()) {
+			if (relationship.isCommonClassProperty() != null && relationship.isCommonClassProperty().booleanValue()) {
+				commonClassRelationships.add(relationship);
+			}
+		}
+		return commonClassRelationships;
+	}
+
+	public Set<EORelationship> getSortedCommonClassRelationships() {
+		return new PropertyListSet<EORelationship>(getCommonClassRelationships());
 	}
 
 	public Set<EORelationship> getClassRelationships() {
@@ -1427,6 +1455,20 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		return toOneRelationships;
 	}
 
+	public Set<EORelationship> getSortedCommonClassToOneRelationships() {
+		return new PropertyListSet<EORelationship>(getCommonClassToOneRelationships());
+	}
+
+	public Set<EORelationship> getCommonClassToOneRelationships() {
+		Set<EORelationship> toOneRelationships = new HashSet<EORelationship>();
+		for (EORelationship relationship : getRelationships()) {
+			if (relationship.isToOne() != null && relationship.isToOne().booleanValue() && relationship.isCommonClassProperty() != null && relationship.isCommonClassProperty()) {
+				toOneRelationships.add(relationship);
+			}
+		}
+		return toOneRelationships;
+	}
+
 	public Set<EORelationship> getToManyRelationships() {
 		Set<EORelationship> toManyRelationships = new HashSet<EORelationship>();
 		for (EORelationship relationship : getRelationships()) {
@@ -1467,6 +1509,20 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	public Set<EORelationship> getSortedClientClassToManyRelationships() {
 		return new PropertyListSet<EORelationship>(getClientClassToManyRelationships());
+	}
+
+	public Set<EORelationship> getCommonClassToManyRelationships() {
+		Set<EORelationship> toManyRelationships = new HashSet<EORelationship>();
+		for (EORelationship relationship : getRelationships()) {
+			if (relationship.isToMany() != null && relationship.isToMany().booleanValue() && relationship.isCommonClassProperty() != null && relationship.isCommonClassProperty()) {
+				toManyRelationships.add(relationship);
+			}
+		}
+		return toManyRelationships;
+	}
+
+	public Set<EORelationship> getSortedCommonClassToManyRelationships() {
+		return new PropertyListSet<EORelationship>(getCommonClassToManyRelationships());
 	}
 
 	public Set<EORelationship> getRelationships() {
