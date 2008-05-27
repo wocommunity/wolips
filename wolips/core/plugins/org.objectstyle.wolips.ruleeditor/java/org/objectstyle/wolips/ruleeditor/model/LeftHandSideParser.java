@@ -49,10 +49,17 @@
  */
 package org.objectstyle.wolips.ruleeditor.model;
 
-import java.util.*;
-import java.util.regex.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.apache.commons.lang.*;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * @author <a href="mailto:georg@moleque.com.br">Georg von Bülow</a>
@@ -206,16 +213,13 @@ public class LeftHandSideParser {
 
 				notText = notText.substring(3);
 
-				Map<String, Object> qualifiers = parse(notText);
+				Map<String, Object> qualifier = parse(notText);
 
 				Map<String, Object> properties = new HashMap<String, Object>();
 
 				properties.put(AbstractRuleElement.CLASS_KEY, Qualifier.NOT.getClassName());
-				putQualifiersIntoMap(properties, new ArrayList<QualifierElement>());
 
-				QualifierElement qualifier = new QualifierElement(qualifiers);
-
-				getQualifiersFromMap(properties).add(qualifier);
+				properties.put(AbstractQualifierElement.QUALIFIER_KEY, qualifier);
 
 				return properties;
 			}

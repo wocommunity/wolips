@@ -84,7 +84,7 @@ public class LeftHandSide extends AbstractQualifierElement {
 	}
 
 	protected boolean isEmpty() {
-		return getAssignmentClassName() == null && getKey() == null && getValue() == null && getSelectorName() == null && getQualifiers() == null;
+		return getAssignmentClassName() == null && getKey() == null && getValue() == null && getSelectorName() == null && getQualifiers() == null && getQualifier() == null;
 	}
 
 	public void setConditions(final String conditions) {
@@ -137,7 +137,9 @@ public class LeftHandSide extends AbstractQualifierElement {
 
 		StringBuffer buffer = new StringBuffer();
 
-		if (getQualifiers() == null) {
+		if (getQualifiers() != null || getQualifier() != null) {
+			appendToDisplayStringBuffer(buffer);
+		} else {
 			buffer.append(getKey());
 			buffer.append(" ");
 
@@ -147,8 +149,6 @@ public class LeftHandSide extends AbstractQualifierElement {
 			buffer.append(" '");
 			buffer.append(getValue());
 			buffer.append("'");
-		} else {
-			appendToDisplayStringBuffer(buffer);
 		}
 
 		return buffer.toString();

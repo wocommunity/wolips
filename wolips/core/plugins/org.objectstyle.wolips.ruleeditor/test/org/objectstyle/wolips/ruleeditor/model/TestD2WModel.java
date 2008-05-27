@@ -174,6 +174,15 @@ public class TestD2WModel {
 	}
 
 	@Test
+	public void loadNotQualifierRuleFile() throws Exception {
+		loadModelWithFile("rule-with-not-qualifier.d2wmodel");
+
+		Collection<Rule> rules = model.getRules();
+
+		assertThat(rules.size(), is(1));
+	}
+
+	@Test
 	public void loadOneRuleFile() throws Exception {
 		loadModelWithFile("one-rule.d2wmodel");
 

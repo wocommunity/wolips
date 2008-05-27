@@ -11,38 +11,26 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestLeftHandSide {
 	protected LeftHandSide lhs;
 
 	@Test
-	@Ignore(value = "Must think in a better abstraction first")
 	public void createLhsForMapWithNotQualifier() throws Exception {
 		Map<String, Object> properties = new HashMap<String, Object>();
 
 		properties.put("class", Qualifier.NOT.getClassName());
-
-		Collection<Map<String, Object>> qualifiersArray = new ArrayList<Map<String, Object>>();
 
 		Map<String, Object> qualifierMap = new HashMap<String, Object>();
 
 		qualifierMap.put("class", Qualifier.KEY_VALUE.getClassName());
 		qualifierMap.put("key", "relationship.isToMany");
 		qualifierMap.put("selectorName", Selector.EQUAL.getSelectorName());
-
-		Map<String, Object> numberMap = new HashMap<String, Object>();
-
-		numberMap.put("class", "java.lang.Number");
-		numberMap.put("value", 1);
-
-		qualifierMap.put("value", numberMap);
-
-		qualifiersArray.add(qualifierMap);
+		qualifierMap.put("value", "test");
 
 		// Note that EONotQualifier have only one qualifier
-		properties.put("qualifier", qualifiersArray);
+		properties.put("qualifier", qualifierMap);
 
 		lhs = new LeftHandSide(properties);
 
@@ -51,16 +39,47 @@ public class TestLeftHandSide {
 		assertThat(lhs.getValue(), nullValue());
 		assertThat(lhs.getAssignmentClassName(), is(Qualifier.NOT.getClassName()));
 
-		Collection<QualifierElement> qualifiers = lhs.getQualifiers();
+		QualifierElement qualifier = lhs.getQualifier();
 
-		assertThat(qualifiers.size(), is(1));
+		assertThat(qualifier.getAssignmentClassName(), is(Qualifier.KEY_VALUE.getClassName()));
+		assertThat(qualifier.getKey(), is("relationship.isToMany"));
+		assertThat(qualifier.getSelectorName(), is(Selector.EQUAL.getSelectorName()));
+		assertThat(qualifier.getValue(), is("test"));
+	}
 
-		for (QualifierElement qualifier : qualifiers) {
-			assertThat(qualifier.getAssignmentClassName(), is(Qualifier.KEY_VALUE.getClassName()));
-			assertThat(qualifier.getKey(), is("relationship.isToMany"));
-			assertThat(qualifier.getSelectorName(), is(Selector.EQUAL.getSelectorName()));
-			assertThat(qualifier.getValue(), is((Object) 1));
-		}
+	@Test
+	public void createLhsForMapWithNumber() throws Exception {
+		Map<String, Object> properties = new HashMap<String, Object>();
+
+		properties.put("class", Qualifier.KEY_VALUE.getClassName());
+
+		Map<String, Object> numberMap = new HashMap<String, Object>();
+
+		numberMap.put("class", "java.lang.Number");
+		numberMap.put("value", 1);
+
+		properties.put("value", numberMap);
+
+		lhs = new LeftHandSide(properties);
+
+		assertThat(lhs.getValue(), is("1"));
+	}
+
+	private LeftHandSide createLhsWithNotQualifier() {
+		LeftHandSide lhs = new LeftHandSide();
+
+		lhs.setAssignmentClassName(Qualifier.NOT.getClassName());
+
+		QualifierElement qualifier = new QualifierElement();
+
+		qualifier.setAssignmentClassName(Qualifier.KEY_VALUE.getClassName());
+		qualifier.setKey("task");
+		qualifier.setSelectorName(Selector.EQUAL.getSelectorName());
+		qualifier.setValue("edit");
+
+		lhs.setQualifier(qualifier);
+
+		return lhs;
 	}
 
 	private Map<String, Object> createSimpleMap() {
@@ -112,6 +131,49 @@ public class TestLeftHandSide {
 		lhs = new LeftHandSide();
 
 		assertThat(lhs.toString(), is("*true*"));
+	}
+
+	@Test
+	public void displayStringForNotQualifier() throws Exception {
+		lhs = createLhsWithNotQualifier();
+
+		assertThat(lhs.toString(), is("not (task = 'edit')"));
+	}
+
+	@Test
+	public void displayStringForNotQualifierWithAndQualifier() throws Exception {
+		lhs = new LeftHandSide();
+
+		lhs.setAssignmentClassName(Qualifier.AND.getClassName());
+
+		Collection<QualifierElement> qualifiers = new ArrayList<QualifierElement>();
+
+		QualifierElement qualifier = new QualifierElement();
+
+		qualifier.setAssignmentClassName(Qualifier.KEY_VALUE.getClassName());
+		qualifier.setKey("property");
+		qualifier.setSelectorName(Selector.EQUAL.getSelectorName());
+		qualifier.setValue("test");
+
+		qualifiers.add(qualifier);
+
+		qualifier = new QualifierElement();
+
+		qualifier.setAssignmentClassName(Qualifier.KEY_VALUE.getClassName());
+		qualifier.setKey("task");
+		qualifier.setSelectorName(Selector.EQUAL.getSelectorName());
+		qualifier.setValue("edit");
+
+		QualifierElement notQualifier = new QualifierElement();
+
+		notQualifier.setAssignmentClassName(Qualifier.NOT.getClassName());
+		notQualifier.setQualifier(qualifier);
+
+		qualifiers.add(notQualifier);
+
+		lhs.setQualifiers(qualifiers);
+
+		assertThat(lhs.toString(), is("(property = 'test' and not (task = 'edit'))"));
 	}
 
 	@Test
@@ -250,6 +312,41 @@ public class TestLeftHandSide {
 		lhs.setAssignmentClassName("teste");
 
 		assertThat(lhs.isEmpty(), is(false));
+
+		lhs = new LeftHandSide();
+
+		lhs.setQualifier(new QualifierElement());
+
+		assertThat(lhs.isEmpty(), is(false));
+	}
+
+	@Test
+	public void notQualifierToMap() throws Exception {
+		lhs = createLhsWithNotQualifier();
+
+		Map<String, Object> result = lhs.toMap();
+
+		assertThat(result.get(AbstractQualifierElement.QUALIFIERS_KEY), nullValue());
+		assertThat((String) result.get(AbstractRuleElement.CLASS_KEY), is(Qualifier.NOT.getClassName()));
+
+		Map<String, Object> qualifierMap = (Map<String, Object>) result.get(AbstractQualifierElement.QUALIFIER_KEY);
+
+		assertThat((String) qualifierMap.get(AbstractRuleElement.CLASS_KEY), is(Qualifier.KEY_VALUE.getClassName()));
+		assertThat((String) qualifierMap.get(AbstractQualifierElement.KEY_KEY), is("task"));
+		assertThat((String) qualifierMap.get(AbstractQualifierElement.SELECTOR_NAME_KEY), is("isEqualTo"));
+		assertThat((String) qualifierMap.get(AbstractQualifierElement.VALUE_KEY), is("edit"));
+	}
+
+	@Test
+	public void numberToMap() throws Exception {
+		lhs = new LeftHandSide();
+
+		lhs.setValue("1");
+
+		Map<String, String> result = (Map<String, String>) lhs.toMap().get(AbstractQualifierElement.VALUE_KEY);
+
+		assertThat(result.get("class"), is(Number.class.getName()));
+		assertThat(result.get("value"), is("1"));
 	}
 
 	@Test

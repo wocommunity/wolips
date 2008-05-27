@@ -67,7 +67,7 @@ public class QualifierElement extends AbstractQualifierElement {
 
 	@Override
 	public void appendToDisplayStringBuffer(final StringBuffer buffer) {
-		if (getQualifiers() == null) {
+		if (getQualifiers() == null && !Qualifier.NOT.getClassName().equals(getAssignmentClassName())) {
 			buffer.append(getKey());
 			buffer.append(" ");
 
@@ -81,5 +81,4 @@ public class QualifierElement extends AbstractQualifierElement {
 
 		super.appendToDisplayStringBuffer(buffer);
 	}
-
 }
