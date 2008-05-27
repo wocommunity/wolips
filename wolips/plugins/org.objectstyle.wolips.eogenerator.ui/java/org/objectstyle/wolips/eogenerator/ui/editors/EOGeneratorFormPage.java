@@ -186,7 +186,7 @@ public class EOGeneratorFormPage extends FormPage {
 		updateViewsFromModel();
 
 		form.pack();
-		//form.reflow(true);
+		// form.reflow(true);
 	}
 
 	private TableViewer createModelsSection(String title, String description, FormToolkit toolkit, Composite parent, IStructuredContentProvider contentProvider, ITableLabelProvider labelProvider, SelectionListener addListener, SelectionListener removeListener) {
@@ -384,37 +384,41 @@ public class EOGeneratorFormPage extends FormPage {
 			}
 		});
 
-    Composite outputOptionsSection = createSection(toolkit, parent, "Options", "These flags control various output options for generated source.", 1, 3);
-    GridLayout outputOptionsLayout = (GridLayout) outputOptionsSection.getLayout();
-    outputOptionsLayout.horizontalSpacing = 10;
-    outputOptionsLayout.verticalSpacing = 5;
+		Composite outputOptionsSection = createSection(toolkit, parent, "Options", "These flags control various output options for generated source.", 1, 3);
+		GridLayout outputOptionsLayout = (GridLayout) outputOptionsSection.getLayout();
+		outputOptionsLayout.horizontalSpacing = 10;
+		outputOptionsLayout.verticalSpacing = 5;
 
-    //Label packageDirsLabel = toolkit.createLabel(pathsSection, "Create Packages?");
-    //packageDirsLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
-    Button packageDirsButton = toolkit.createButton(outputOptionsSection, "", SWT.CHECK);
-    packageDirsButton.setText("Create Packages");
-    GridData packageDirsButtonGridData = new GridData(GridData.VERTICAL_ALIGN_CENTER);
-    packageDirsButtonGridData.horizontalSpan = 3;
-    packageDirsButton.setLayoutData(packageDirsButtonGridData);
-    _bindingContext.bindValue(SWTObservables.observeSelection(packageDirsButton), BeansObservables.observeValue(_model, EOGeneratorModel.PACKAGE_DIRS), null, null);
+		// Label packageDirsLabel = toolkit.createLabel(pathsSection, "Create
+		// Packages?");
+		// packageDirsLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+		Button packageDirsButton = toolkit.createButton(outputOptionsSection, "", SWT.CHECK);
+		packageDirsButton.setText("Create Packages");
+		GridData packageDirsButtonGridData = new GridData(GridData.VERTICAL_ALIGN_CENTER);
+		packageDirsButtonGridData.horizontalSpan = 3;
+		packageDirsButton.setLayoutData(packageDirsButtonGridData);
+		_bindingContext.bindValue(SWTObservables.observeSelection(packageDirsButton), BeansObservables.observeValue(_model, EOGeneratorModel.PACKAGE_DIRS), null, null);
 
-    //Label javaLabel = toolkit.createLabel(outputOptionsSection, "Java?");
-    //javaLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
-    Button javaButton = toolkit.createButton(outputOptionsSection, "", SWT.CHECK);
-    GridData javaButtonGridData = new GridData(GridData.VERTICAL_ALIGN_CENTER);
-    javaButtonGridData.horizontalSpan = 3;
-    javaButton.setLayoutData(javaButtonGridData);
-    javaButton.setText("Java");
-    _bindingContext.bindValue(SWTObservables.observeSelection(javaButton), BeansObservables.observeValue(_model, EOGeneratorModel.JAVA), null, null);
+		Button javaButton = toolkit.createButton(outputOptionsSection, "", SWT.CHECK);
+		GridData javaButtonGridData = new GridData(GridData.VERTICAL_ALIGN_CENTER);
+		javaButtonGridData.horizontalSpan = 3;
+		javaButton.setLayoutData(javaButtonGridData);
+		javaButton.setText("Java");
+		_bindingContext.bindValue(SWTObservables.observeSelection(javaButton), BeansObservables.observeValue(_model, EOGeneratorModel.JAVA), null, null);
 
-    //Label javaClientLabel = toolkit.createLabel(outputOptionsSection, "Java Client?");
-    //javaClientLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
-    Button javaClientButton = toolkit.createButton(outputOptionsSection, "", SWT.CHECK);
-    javaClientButton.setText("Java Client");
-    GridData javaClientButtonGridData = new GridData(GridData.VERTICAL_ALIGN_CENTER);
-    javaClientButtonGridData.horizontalSpan = 3;
-    javaClientButton.setLayoutData(javaClientButtonGridData);
-    _bindingContext.bindValue(SWTObservables.observeSelection(javaClientButton), BeansObservables.observeValue(_model, EOGeneratorModel.JAVA_CLIENT), null, null);
+		Button javaClientButton = toolkit.createButton(outputOptionsSection, "", SWT.CHECK);
+		javaClientButton.setText("Java Client");
+		GridData javaClientButtonGridData = new GridData(GridData.VERTICAL_ALIGN_CENTER);
+		javaClientButtonGridData.horizontalSpan = 3;
+		javaClientButton.setLayoutData(javaClientButtonGridData);
+		_bindingContext.bindValue(SWTObservables.observeSelection(javaClientButton), BeansObservables.observeValue(_model, EOGeneratorModel.JAVA_CLIENT), null, null);
+
+		Button javaClientCommonButton = toolkit.createButton(outputOptionsSection, "", SWT.CHECK);
+		javaClientCommonButton.setText("Java Client Common");
+		GridData javaClientCommonButtonGridData = new GridData(GridData.VERTICAL_ALIGN_CENTER);
+		javaClientCommonButtonGridData.horizontalSpan = 3;
+		javaClientCommonButton.setLayoutData(javaClientCommonButtonGridData);
+		_bindingContext.bindValue(SWTObservables.observeSelection(javaClientCommonButton), BeansObservables.observeValue(_model, EOGeneratorModel.JAVA_CLIENT_COMMON), null, null);
 	}
 
 	protected String selectTemplate(String text) {
