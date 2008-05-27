@@ -26,6 +26,8 @@ public class EOModelRenderContext {
 	private String _superclassPackage;
 	
 	private boolean _javaClient;
+	
+	private boolean _javaClientCommon;
 
 	public EOModelRenderContext() {
 		_prefix = "_";
@@ -38,6 +40,14 @@ public class EOModelRenderContext {
 	
 	public boolean isJavaClient() {
 		return _javaClient;
+	}
+	
+	public void setJavaClientCommon(boolean javaClientCommon) {
+		_javaClientCommon = javaClientCommon;
+	}
+	
+	public boolean isJavaClientCommon() {
+		return _javaClientCommon;
 	}
 
 	public void setPrefix(String prefix) {
@@ -66,7 +76,10 @@ public class EOModelRenderContext {
 
 	public String getClassNameForEntity(EOEntity entity) {
 	  String className;
-	  if (_javaClient) {
+	  if (_javaClientCommon) {
+		className = entity.getParentClassName();
+	  }
+	  else if (_javaClient) {
 	    className = entity.getClientClassName();
 	  }
 	  else {

@@ -96,6 +96,8 @@ public class EOGeneratorModel {
 
 	public static final String JAVA_CLIENT = "javaClient";
 
+	public static final String JAVA_CLIENT_COMMON = "javaClientCommon";
+
 	public static final String VERBOSE = "verbose";
 
 	public static final String PREFIX = "prefix";
@@ -135,6 +137,8 @@ public class EOGeneratorModel {
 	private Boolean _java;
 
 	private Boolean _javaClient;
+
+	private Boolean _javaClientCommon;
 
 	private Boolean _verbose;
 
@@ -286,6 +290,7 @@ public class EOGeneratorModel {
 		append(sb, "-filenameTemplate", _filenameTemplate);
 		append(sb, "-java", _java);
 		append(sb, "-javaclient", _javaClient);
+		append(sb, "-javaclientcommon", _javaClientCommon);
 		append(sb, "-javaTemplate", getJavaTemplate());
 
 		Iterator modelsIter = _models.iterator();
@@ -340,6 +345,8 @@ public class EOGeneratorModel {
 					_java = Boolean.TRUE;
 				} else if ("-javaclient".equalsIgnoreCase(token)) {
 					_javaClient = Boolean.TRUE;
+				} else if ("-javaclientcommon".equalsIgnoreCase(token)) {
+					_javaClientCommon = Boolean.TRUE;
 				} else if ("-javaTemplate".equalsIgnoreCase(token)) {
 					_javaTemplate = nextTokenValue(token, tokenizer);
 				} else if ("-model".equalsIgnoreCase(token)) {
@@ -496,6 +503,21 @@ public class EOGeneratorModel {
 			_propertyChangeSupport.firePropertyChange(EOGeneratorModel.EOGENERATOR_PATH, oldEOGeneratorPath, _eogeneratorPath);
 			setDirty(markAsDirty);
 		}
+	}
+
+	public Boolean getJavaClientCommon() {
+		return isJavaClientCommon();
+	}
+
+	public Boolean isJavaClientCommon() {
+		return _javaClientCommon;
+	}
+
+	public void setJavaClientCommon(Boolean javaClientCommon) {
+		Boolean oldJavaClientCommon = _javaClient;
+		_javaClientCommon = javaClientCommon;
+		_propertyChangeSupport.firePropertyChange(EOGeneratorModel.JAVA_CLIENT_COMMON, oldJavaClientCommon, _javaClientCommon);
+		setDirty(true);
 	}
 
 	public Boolean getJavaClient() {

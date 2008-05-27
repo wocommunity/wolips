@@ -91,6 +91,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			if (eogenericRecordClassName != null) {
 				renderContext.setEOGenericRecordClassName(eogenericRecordClassName);
 			}
+			renderContext.setJavaClientCommon(eogeneratorModel.isJavaClientCommon() != null && eogeneratorModel.isJavaClientCommon().booleanValue());
 			renderContext.setJavaClient(eogeneratorModel.isJavaClient() != null && eogeneratorModel.isJavaClient().booleanValue());
 			EOModelRenderContext.setRenderContext(renderContext);
 
