@@ -60,10 +60,6 @@ import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 
 public class EOModelMatchingStrategy implements IEditorMatchingStrategy {
-	public EOModelMatchingStrategy() {
-		System.out.println("EOModelMatchingStrategy.EOModelMatchingStrategy: b");
-	}
-	
 	public boolean matches(IEditorReference _editorRef, IEditorInput _input) {
 		boolean matches = false;
 		String editorId = _editorRef.getId();
