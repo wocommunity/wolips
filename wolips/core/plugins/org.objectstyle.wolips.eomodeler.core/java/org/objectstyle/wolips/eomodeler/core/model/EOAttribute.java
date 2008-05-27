@@ -930,7 +930,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		if (name == null || name.trim().length() == 0) {
 			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The attribute " + getName() + " has an empty name.", false));
 		} else {
-			if (name.indexOf(' ') != -1) {
+			if (name.indexOf(' ') != -1 && !name.startsWith("[") && !name.endsWith("]")) {
 				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The attribute " + getName() + "'s name has a space in it.", false));
 			}
 			if (!getEntity().isPrototype() && !StringUtils.isLowercaseFirstLetter(name)) {

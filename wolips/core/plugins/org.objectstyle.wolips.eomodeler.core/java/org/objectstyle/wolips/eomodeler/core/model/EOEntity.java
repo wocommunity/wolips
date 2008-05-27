@@ -2332,7 +2332,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		if (name == null || name.trim().length() == 0) {
 			failures.add(new EOModelVerificationFailure(myModel, this, "The entity " + getName() + " has an empty name.", false));
 		} else {
-			if (name.indexOf(' ') != -1) {
+			if (name.indexOf(' ') != -1 && !name.startsWith("[") && !name.endsWith("]")) {
 				failures.add(new EOModelVerificationFailure(myModel, this, "The entity " + getName() + "'s name has a space in it.", false));
 			}
 			if (!StringUtils.isUppercaseFirstLetter(myName)) {
