@@ -49,7 +49,13 @@
  */
 package org.objectstyle.wolips.ruleeditor.model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.apache.commons.lang.math.NumberUtils;
 
 /**
  * This class is an abstraction for qualifier elements.
@@ -69,9 +75,13 @@ public abstract class AbstractQualifierElement extends AbstractRuleElement {
 
 	protected static final String VALUE_KEY = "value";
 
+	protected static final String QUALIFIER_KEY = "qualifier";
+
 	private String key;
 
 	private Collection<QualifierElement> qualifiers;
+
+	private QualifierElement qualifier;
 
 	private String selectorName;
 
@@ -86,7 +96,19 @@ public abstract class AbstractQualifierElement extends AbstractRuleElement {
 		Object value = properties.get(VALUE_KEY);
 
 		if (value != null) {
+			if (value instanceof Map) {
+				Map valueMap = (Map) value;
+
+				value = valueMap.get("value");
+			}
+
 			this.value = value.toString();
+		}
+
+		Map<String, Object> anotherQualifierMap = (Map<String, Object>) properties.get(QUALIFIER_KEY);
+
+		if (anotherQualifierMap != null) {
+			this.qualifier = new QualifierElement(anotherQualifierMap);
 		}
 
 		Collection<Map<String, Object>> qualifiersMap = (Collection<Map<String, Object>>) properties.get(QUALIFIERS_KEY);
@@ -112,6 +134,14 @@ public abstract class AbstractQualifierElement extends AbstractRuleElement {
 	}
 
 	public void appendToDisplayStringBuffer(final StringBuffer buffer) {
+		if (Qualifier.NOT.getClassName().equals(getAssignmentClassName())) {
+			buffer.append("not (");
+
+			getQualifier().appendToDisplayStringBuffer(buffer);
+
+			buffer.append(")");
+		}
+
 		if (getQualifiers() == null) {
 			return;
 		}
@@ -139,6 +169,10 @@ public abstract class AbstractQualifierElement extends AbstractRuleElement {
 		return key;
 	}
 
+	public QualifierElement getQualifier() {
+		return qualifier;
+	}
+
 	public Collection<QualifierElement> getQualifiers() {
 		return qualifiers;
 	}
@@ -153,6 +187,10 @@ public abstract class AbstractQualifierElement extends AbstractRuleElement {
 
 	protected void setKey(String key) {
 		this.key = key;
+	}
+
+	protected void setQualifier(QualifierElement qualifier) {
+		this.qualifier = qualifier;
 	}
 
 	protected void setQualifiers(Collection<QualifierElement> qualifiers) {
@@ -182,7 +220,21 @@ public abstract class AbstractQualifierElement extends AbstractRuleElement {
 		}
 
 		if (value != null) {
-			qualifierMap.put(VALUE_KEY, value);
+			if (NumberUtils.isNumber(value)) {
+				Map<String, String> numberMap = new HashMap<String, String>();
+
+				numberMap.put("class", Number.class.getName());
+				numberMap.put("value", value);
+
+				qualifierMap.put(VALUE_KEY, numberMap);
+			} else {
+				qualifierMap.put(VALUE_KEY, value);
+			}
+
+		}
+
+		if (qualifier != null) {
+			qualifierMap.put(QUALIFIER_KEY, qualifier.toMap());
 		}
 
 		if (qualifiers != null) {

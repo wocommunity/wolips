@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestLeftHandSideParser {
@@ -26,18 +27,21 @@ public class TestLeftHandSideParser {
 
 	@Test
 	public void parseNotQualifier() {
-		String conditions = "not(task = 'edit')";
+		String conditions = "not (task = 'edit')";
 
 		Map<String, Object> result = parser.parse(conditions);
 
-		assertThat((String) result.get(AbstractRuleElement.CLASS_KEY), is("com.webobjects.eocontrol.EONotQualifier"));
+		assertThat((String) result.get(AbstractRuleElement.CLASS_KEY), is(Qualifier.NOT.getClassName()));
 		assertThat(result.get(AbstractQualifierElement.KEY_KEY), nullValue());
 		assertThat(result.get(AbstractQualifierElement.SELECTOR_NAME_KEY), nullValue());
 		assertThat(result.get(AbstractQualifierElement.VALUE_KEY), nullValue());
 
-		Collection<QualifierElement> qualifiers = (Collection<QualifierElement>) result.get(AbstractQualifierElement.QUALIFIERS_KEY);
+		Map<String, String> qualifier = (Map<String, String>) result.get(AbstractQualifierElement.QUALIFIER_KEY);
 
-		assertThat(qualifiers.size(), is(1));
+		assertThat(qualifier.get(AbstractQualifierElement.CLASS_KEY), is(Qualifier.KEY_VALUE.getClassName()));
+		assertThat(qualifier.get(AbstractQualifierElement.KEY_KEY), is("task"));
+		assertThat(qualifier.get(AbstractQualifierElement.SELECTOR_NAME_KEY), is(Selector.EQUAL.getSelectorName()));
+		assertThat(qualifier.get(AbstractQualifierElement.VALUE_KEY), is("edit"));
 	}
 
 	@Test
@@ -45,6 +49,19 @@ public class TestLeftHandSideParser {
 		Map<String, Object> result = parser.parse(null);
 
 		assertThat(result.isEmpty(), is(true));
+	}
+
+	@Test
+	@Ignore(value = "No differece if return only a Number as String")
+	public void parseNumber() throws Exception {
+		String conditions = "(relationship.isToMany = 1)";
+
+		Map<String, Object> result = parser.parse(conditions);
+
+		Map<String, Object> valueMap = (Map<String, Object>) result.get(AbstractQualifierElement.VALUE_KEY);
+
+		assertThat(valueMap.get("value"), is((Object) 1));
+		assertThat(valueMap.get("class"), is((Object) Number.class.getName()));
 	}
 
 	@Test
