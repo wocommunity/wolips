@@ -199,13 +199,13 @@ public class RightHandSide extends AbstractRuleElement {
 		}
 
 		if (object instanceof Map) {
-			Map<String, Object> mapOfValues = (Map<String, Object>) object;
+			Map<Comparable, ?> mapOfValues = (Map<Comparable, ?>) object;
 
 			StringBuffer buffer = new StringBuffer();
 
 			buffer.append("{ ");
 
-			ArrayList<String> list = new ArrayList<String>();
+			ArrayList<Comparable> list = new ArrayList<Comparable>();
 
 			list.addAll(mapOfValues.keySet());
 
