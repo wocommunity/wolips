@@ -44,7 +44,7 @@ public class TestLeftHandSide {
 		assertThat(qualifier.getAssignmentClassName(), is(Qualifier.KEY_VALUE.getClassName()));
 		assertThat(qualifier.getKey(), is("relationship.isToMany"));
 		assertThat(qualifier.getSelectorName(), is(Selector.EQUAL.getSelectorName()));
-		assertThat(qualifier.getValue(), is("test"));
+		assertThat((String) qualifier.getValue().value, is("test"));
 	}
 
 	@Test
@@ -62,7 +62,7 @@ public class TestLeftHandSide {
 
 		lhs = new LeftHandSide(properties);
 
-		assertThat(lhs.getValue(), is("1"));
+		assertThat((Integer) lhs.getValue().value, is(1));
 	}
 
 	private LeftHandSide createLhsWithNotQualifier() {
@@ -177,6 +177,18 @@ public class TestLeftHandSide {
 	}
 
 	@Test
+	public void displayStringForQualifierWithNumber() throws Exception {
+		lhs = new LeftHandSide();
+
+		lhs.setAssignmentClassName(Qualifier.KEY_VALUE.getClassName());
+		lhs.setKey("relationship.isToMany");
+		lhs.setSelectorName(Selector.EQUAL.getSelectorName());
+		lhs.setValue("1");
+
+		assertThat(lhs.toString(), is("relationship.isToMany = 1"));
+	}
+
+	@Test
 	public void displayStringForSimpleLeftHandSide() throws Exception {
 		Map<String, Object> properties = createSimpleMap();
 
@@ -249,7 +261,7 @@ public class TestLeftHandSide {
 
 		assertThat(lhs.getAssignmentClassName(), is("com.webobjects.eocontrol.EOKeyValueQualifier"));
 		assertThat(lhs.getKey(), is("task"));
-		assertThat(lhs.getValue(), is("edit"));
+		assertThat((String) lhs.getValue().value, is("edit"));
 		assertThat(lhs.getSelectorName(), is("isEqualTo"));
 		assertThat(lhs.getQualifiers(), nullValue());
 	}
@@ -387,7 +399,7 @@ public class TestLeftHandSide {
 
 		assertThat(lhs.getAssignmentClassName(), is("com.webobjects.eocontrol.EOKeyValueQualifier"));
 		assertThat(lhs.getKey(), is("task"));
-		assertThat(lhs.getValue(), is("edit"));
+		assertThat((String) lhs.getValue().value, is("edit"));
 		assertThat(lhs.getSelectorName(), is("isEqualTo"));
 		assertThat(lhs.getQualifiers(), nullValue());
 	}

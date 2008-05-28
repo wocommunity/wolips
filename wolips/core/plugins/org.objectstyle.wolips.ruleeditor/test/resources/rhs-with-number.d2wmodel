@@ -1,0 +1,16 @@
+{
+  rules = (
+    {
+      author = 100; 
+      class = com.webobjects.directtoweb.Rule; 
+      rhs = {
+        class = com.webobjects.directtoweb.Assignment; 
+        keyPath = possibleChoices; 
+        value = {
+          1 = Public; 
+          2 = Private; 
+        }; 
+      }; 
+    }
+  ); 
+}

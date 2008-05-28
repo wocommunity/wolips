@@ -55,8 +55,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.lang.math.NumberUtils;
-
 /**
  * This class is an abstraction for qualifier elements.
  * 
@@ -85,7 +83,7 @@ public abstract class AbstractQualifierElement extends AbstractRuleElement {
 
 	private String selectorName;
 
-	private String value;
+	private LhsValue value;
 
 	public AbstractQualifierElement(final Map<String, Object> properties) {
 		super(properties);
@@ -96,13 +94,7 @@ public abstract class AbstractQualifierElement extends AbstractRuleElement {
 		Object value = properties.get(VALUE_KEY);
 
 		if (value != null) {
-			if (value instanceof Map) {
-				Map valueMap = (Map) value;
-
-				value = valueMap.get("value");
-			}
-
-			this.value = value.toString();
+			this.value = new LhsValue(value);
 		}
 
 		Map<String, Object> anotherQualifierMap = (Map<String, Object>) properties.get(QUALIFIER_KEY);
@@ -181,7 +173,7 @@ public abstract class AbstractQualifierElement extends AbstractRuleElement {
 		return selectorName;
 	}
 
-	public String getValue() {
+	public LhsValue getValue() {
 		return value;
 	}
 
@@ -202,7 +194,13 @@ public abstract class AbstractQualifierElement extends AbstractRuleElement {
 	}
 
 	protected void setValue(String value) {
-		this.value = value;
+		if (value == null) {
+			this.value = null;
+
+			return;
+		}
+
+		this.value = new LhsValue(value);
 	}
 
 	@Override
@@ -220,17 +218,7 @@ public abstract class AbstractQualifierElement extends AbstractRuleElement {
 		}
 
 		if (value != null) {
-			if (NumberUtils.isNumber(value)) {
-				Map<String, String> numberMap = new HashMap<String, String>();
-
-				numberMap.put("class", Number.class.getName());
-				numberMap.put("value", value);
-
-				qualifierMap.put(VALUE_KEY, numberMap);
-			} else {
-				qualifierMap.put(VALUE_KEY, value);
-			}
-
+			qualifierMap.put(VALUE_KEY, value.toMap());
 		}
 
 		if (qualifier != null) {

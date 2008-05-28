@@ -146,9 +146,8 @@ public class LeftHandSide extends AbstractQualifierElement {
 			Selector selector = Selector.forName(getSelectorName());
 
 			buffer.append(selector.getOperator());
-			buffer.append(" '");
+			buffer.append(" ");
 			buffer.append(getValue());
-			buffer.append("'");
 		}
 
 		return buffer.toString();
