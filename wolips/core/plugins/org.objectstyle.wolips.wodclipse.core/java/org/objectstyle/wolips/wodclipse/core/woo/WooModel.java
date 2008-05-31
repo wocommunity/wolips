@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,9 +24,20 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.internal.corext.refactoring.reorg.JavaDeleteProcessor;
+import org.eclipse.jdt.internal.corext.refactoring.reorg.JavaDeleteRefactoring;
+import org.eclipse.jdt.internal.corext.refactoring.reorg.NullReorgQueries;
+import org.eclipse.jdt.internal.ui.refactoring.RefactoringExecutionHelper;
+import org.eclipse.jdt.internal.ui.refactoring.RefactoringSaveHelper;
+import org.eclipse.jdt.ui.refactoring.RenameSupport;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableContext;
+import org.eclipse.ltk.core.refactoring.RefactoringCore;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.objectstyle.wolips.baseforplugins.util.CharSetUtils;
@@ -39,7 +51,10 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.model.PropertyListMap;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
+import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
+import org.objectstyle.wolips.wodclipse.core.refactoring.AddKeyInfo;
+import org.objectstyle.wolips.wodclipse.core.refactoring.AddKeyOperation;
 import org.objectstyle.wolips.wodclipse.core.util.EOModelGroupCache;
 
 public class WooModel {
@@ -69,6 +84,8 @@ public class WooModel {
 
   private List<DisplayGroup> _displayGroups;
 
+  private List<DisplayGroup> _removedDisplayGroups;
+
   private PropertyChangeSupport _changes = new PropertyChangeSupport(this);
 
   private PropertyChangeListener _displayGroupListener = new PropertyChangeListener() {
@@ -87,6 +104,7 @@ public class WooModel {
       init();
     }
     catch (Throwable e) {
+      throw new RuntimeException(e);
     }
   }
 
@@ -150,6 +168,7 @@ public class WooModel {
     _variables = null;
     _modelMap = null;
     _displayGroups = null;
+    _removedDisplayGroups = null;
   }
 
   public String getLocation() {
@@ -260,15 +279,83 @@ public class WooModel {
     _isDirty = false;
   }
 
+  /**
+   * Applies pending refactorings to the component for this WooModel.
+   * 
+   * @param shell the shell to use for errors
+   * @param context the runnable context to execute within
+   */
+  public void refactor(Shell shell, IRunnableContext context) {
+    try {
+      if (_file != null) {
+        IType componentType = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(_file).getDotJavaType();
+        if (componentType != null) {
+          for (DisplayGroup displayGroup : getDisplayGroups()) {
+            String originalName = displayGroup.getOriginalName();
+            String newName = displayGroup.getName();
+            AddKeyInfo info = new AddKeyInfo(componentType);
+            if (originalName == null) {
+              info.setTypeName("WODisplayGroup");
+              info.setName(newName);
+              info.setCreateAccessorMethod(false);
+              info.setCreateMutatorMethod(false);
+
+              IField field = componentType.getField(info.getFieldName());
+              if (!field.exists()) {
+                AddKeyOperation.addKey(info);
+              }
+            }
+            else if (!originalName.equals(newName)) {
+              info.setName(originalName);
+              String originalFieldName = info.getFieldName();
+
+              info.setName(newName);
+              String newFieldName = info.getFieldName();
+              
+              IField field = componentType.getField(originalFieldName);
+              if (field.exists()) {
+                RenameSupport renameSupport = RenameSupport.create(field, newFieldName, RenameSupport.UPDATE_GETTER_METHOD | RenameSupport.UPDATE_SETTER_METHOD | RenameSupport.UPDATE_REFERENCES);
+                renameSupport.perform(shell, context);
+              }
+            }
+          }
+          
+          if (_removedDisplayGroups != null) {
+            for (DisplayGroup displayGroup : _removedDisplayGroups) {
+              String originalName = displayGroup.getOriginalName();
+              if (originalName != null) {
+                AddKeyInfo info = new AddKeyInfo(componentType);
+                info.setName(originalName);
+                IField field = componentType.getField(info.getFieldName());
+                if (field.exists()) {
+                  JavaDeleteProcessor deleteProcessor = new JavaDeleteProcessor(new Object[] { field });
+                  deleteProcessor.setSuggestGetterSetterDeletion(false);
+                  deleteProcessor.setQueries(new NullReorgQueries());
+                  JavaDeleteRefactoring deleteRefactoring = new JavaDeleteRefactoring(deleteProcessor);
+                  new RefactoringExecutionHelper(deleteRefactoring, RefactoringCore.getConditionCheckingFailedSeverity(), RefactoringSaveHelper.SAVE_NOTHING, shell, new ProgressMonitorDialog(shell)).perform(false, false);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    catch (Throwable e) {
+      e.printStackTrace();
+    }
+  }
+  
   public void doSave() throws IOException {
     if (_file == null) {
       throw new IOException("You can not save changes to a WooModel that is not " + "backed by a file.");
     }
+
     File file = _file.getLocation().toFile();
     FileOutputStream writer = new FileOutputStream(file);
     try {
       doSave(writer);
       _isDirty = false;
+      _removedDisplayGroups = null;
       _file.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
     }
     catch (CoreException e) {
@@ -352,6 +439,10 @@ public class WooModel {
   public void removeDisplayGroup(final DisplayGroup selection) {
     selection.removePropertyChangeListener(_displayGroupListener);
     _displayGroups.remove(selection);
+    if (_removedDisplayGroups == null) {
+      _removedDisplayGroups = new LinkedList<DisplayGroup>();
+    }
+    _removedDisplayGroups.add(selection);
     markAsDirty();
   }
 
