@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.internal.corext.codemanipulation.StubUtility;
 import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
@@ -30,7 +31,6 @@ public class AddKeyInfo {
 
   public AddKeyInfo(IType componentType) {
     _componentType = componentType;
-    _modelGroup = WodParserCache.getModelGroupCache().getModelGroup(_componentType.getJavaProject().getProject());
     _name = "newKey";
     _typeName = "java.lang.String";
     _createField = true;
@@ -40,11 +40,14 @@ public class AddKeyInfo {
   }
 
   public EOModelGroup getModelGroup() {
+    if (_modelGroup == null) {
+      _modelGroup = WodParserCache.getModelGroupCache().getModelGroup(_componentType.getJavaProject().getProject());
+    }
     return _modelGroup;
   }
 
   public String[] getEntityNames() {
-    EOModelGroup modelGroup = _modelGroup;
+    EOModelGroup modelGroup = getModelGroup();
     Set<String> entityNames = modelGroup.getNonPrototypeEntityNames();
     return entityNames.toArray(new String[entityNames.size()]);
   }
@@ -52,7 +55,7 @@ public class AddKeyInfo {
   public String getJavaTypeName() throws JavaModelException {
     String javaTypeName = _typeName;
     if (javaTypeName != null) {
-      EOEntity entity = _modelGroup.getEntityNamed(_typeName);
+      EOEntity entity = getModelGroup().getEntityNamed(_typeName);
       if (entity != null) {
         javaTypeName = entity.getClassName();
       }
@@ -64,7 +67,7 @@ public class AddKeyInfo {
   public String getJavaParameterTypeName() throws JavaModelException {
     String javaParameterTypeName = _parameterTypeName;
     if (javaParameterTypeName != null) {
-      EOEntity entity = _modelGroup.getEntityNamed(_parameterTypeName);
+      EOEntity entity = getModelGroup().getEntityNamed(_parameterTypeName);
       if (entity != null) {
         javaParameterTypeName = entity.getClassName();
       }
@@ -131,5 +134,11 @@ public class AddKeyInfo {
 
   public void setCreateMutatorMethod(boolean createMutatorMethod) {
     _createMutatorMethod = createMutatorMethod;
+  }
+
+  public String getFieldName() {
+    String[] suggestedFieldNames = StubUtility.getVariableNameSuggestions(StubUtility.INSTANCE_FIELD, _componentType.getJavaProject(), getName(), 0, null, true);
+    String fieldName = suggestedFieldNames[0];
+    return fieldName;
   }
 }
