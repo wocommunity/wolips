@@ -16,7 +16,6 @@ import org.eclipse.jdt.internal.core.CreateImportOperation;
 import org.eclipse.jdt.internal.core.CreateMethodOperation;
 import org.eclipse.jdt.internal.core.JavaModelOperation;
 import org.eclipse.jdt.internal.corext.codemanipulation.GetterSetterUtil;
-import org.eclipse.jdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.jdt.internal.corext.util.CodeFormatterUtil;
 import org.eclipse.jdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.jdt.ui.JavaUI;
@@ -56,8 +55,7 @@ public class AddKeyOperation extends JavaModelOperation {
       new CreateImportOperation(keyParameterType, componentType.getCompilationUnit(), Flags.AccDefault).runOperation(progressMonitor);
     }
 
-    String[] suggestedFieldNames = StubUtility.getVariableNameSuggestions(StubUtility.INSTANCE_FIELD, componentType.getJavaProject(), _info.getName(), 0, null, true);
-    String fieldName = suggestedFieldNames[0];
+    String fieldName = _info.getFieldName();
 
     if (_info.isCreateField()) {
       String accessModifier = "private ";
