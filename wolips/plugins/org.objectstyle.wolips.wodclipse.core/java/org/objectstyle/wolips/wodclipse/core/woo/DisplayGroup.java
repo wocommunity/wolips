@@ -136,6 +136,7 @@ public class DisplayGroup implements IPropertyChangeSource {
 
   private static final String[] QUALIFICATION_FORMATS = new String[] { QUALIFIER_PREFIX, QUALIFIER_CONTAINS, QUALIFIER_SUFFIX, };
 
+  private String _originalName;
   private String _name = "newDisplayGroup";
   private WooModel _wooModel;
   private int _qualificationIndex;
@@ -161,7 +162,7 @@ public class DisplayGroup implements IPropertyChangeSource {
   private EOSortOrdering _sortOrder;
   private boolean _isSorted;
 
-  protected DisplayGroup(final WooModel model) {
+  public DisplayGroup(WooModel model) {
     _wooModel = model;
     _wooModel.getModelGroup();
     _databaseDataSource = new EODatabaseDataSource(_wooModel.getModelGroup());
@@ -279,6 +280,10 @@ public class DisplayGroup implements IPropertyChangeSource {
   public String getName() {
     return _name;
   }
+  
+  public String getOriginalName() {
+    return _originalName;
+  }
 
   public int getQualificationIndex() {
     return _qualificationIndex;
@@ -335,6 +340,7 @@ public class DisplayGroup implements IPropertyChangeSource {
 
   @SuppressWarnings("unchecked")
   public void loadFromMap(final EOModelMap map, final Set<EOModelVerificationFailure> failures) {
+    _originalName = _name;
     _flass = map.getString("class", true);
     _localKeys = map.getList("localKeys");
     if (map.containsKey("numberOfObjectsPerBatch")) {
@@ -560,7 +566,7 @@ public class DisplayGroup implements IPropertyChangeSource {
       }
     }
   }
-
+  
   public void setName(final String name) {
     String oldName = _name;
     _name = name;
@@ -615,7 +621,7 @@ public class DisplayGroup implements IPropertyChangeSource {
   public EOModelMap toMap() {
     // XXX Need to validate model before saving
     if (_entity == null) {
-      return null;
+      //return null;
     }
     EOModelMap modelMap = new EOModelMap();
     modelMap.setString("class", _flass, true);
@@ -630,6 +636,7 @@ public class DisplayGroup implements IPropertyChangeSource {
       sortOrderingList.add(_sortOrder.toMap());
       modelMap.setList("sortOrdering", sortOrderingList, true);
     }
+    _originalName = _name;
     return modelMap;
   }
 }
