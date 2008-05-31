@@ -166,6 +166,7 @@ public class WooEditor extends FormEditor {
 				}
 				myDisplayGroupPage.refresh();
 			} else {
+			  model.refactor(getSite().getShell(), getSite().getWorkbenchWindow());
 				model.doSave();
 				myTextEditor.doRevertToSaved();
 			}
