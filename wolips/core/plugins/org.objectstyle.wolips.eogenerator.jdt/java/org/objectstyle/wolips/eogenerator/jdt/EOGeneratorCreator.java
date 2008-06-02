@@ -15,6 +15,7 @@ public class EOGeneratorCreator {
 		model.setJava(Boolean.TRUE);
 		model.setPackageDirs(Boolean.TRUE);
 		model.setVerbose(Boolean.TRUE);
+		model.setLoadModelGroup(Boolean.TRUE);
 		// model.setEOGeneratorPath(Preferences.getEOGeneratorPath());
 		// model.setJavaTemplate(Preferences.getEOGeneratorJavaTemplate());
 		// model.setTemplateDir(Preferences.getEOGeneratorTemplateDir());

@@ -92,7 +92,7 @@ public class CreateEOGenFromEOModelWorkspaceJob extends WorkspaceJob {
 			IEOModelGroupFactory.Utility.loadModelGroup(_modelFile, modelGroup, failures, true, _modelFile.getLocationURI().toURL(), new NullProgressMonitor());
 			EOModel model = modelGroup.getEditingModel();
 			if (model != null) {
-				EOGeneratorModel eogenModel = EOGeneratorWizard.createEOGeneratorModel(_modelFile.getParent(), model);
+				EOGeneratorModel eogenModel = EOGeneratorWizard.createEOGeneratorModel(_modelFile.getParent(), model, false);
 				String eogenBasePath = URLUtils.cheatAndTurnIntoFile(model.getModelURL()).getAbsolutePath();
 				int dotIndex = eogenBasePath.lastIndexOf('.');
 				eogenBasePath = eogenBasePath.substring(0, dotIndex);

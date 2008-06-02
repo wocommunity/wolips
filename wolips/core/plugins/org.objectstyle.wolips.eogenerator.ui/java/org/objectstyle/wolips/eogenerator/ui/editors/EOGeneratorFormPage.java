@@ -191,6 +191,17 @@ public class EOGeneratorFormPage extends FormPage {
 
 	private TableViewer createModelsSection(String title, String description, FormToolkit toolkit, Composite parent, IStructuredContentProvider contentProvider, ITableLabelProvider labelProvider, SelectionListener addListener, SelectionListener removeListener) {
 		Composite modelsSection = createSection(toolkit, parent, title, description, 1, 2);
+
+		if (contentProvider instanceof RefModelsTableContentProvider) {
+			Button loadModelGroupButton = toolkit.createButton(modelsSection, "", SWT.CHECK);
+			loadModelGroupButton.setText("Load Model Group");
+			GridData loadModelGroupButtonGridData = new GridData(GridData.VERTICAL_ALIGN_CENTER);
+			loadModelGroupButtonGridData.horizontalSpan = 2;
+			loadModelGroupButtonGridData.verticalIndent = 5;
+			loadModelGroupButton.setLayoutData(loadModelGroupButtonGridData);
+			_bindingContext.bindValue(SWTObservables.observeSelection(loadModelGroupButton), BeansObservables.observeValue(_model, EOGeneratorModel.LOAD_MODEL_GROUP), null, null);
+		}
+
 		Table modelsTable = toolkit.createTable(modelsSection, SWT.FULL_SELECTION | SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
 
 		GridData modelsTableGridData = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);

@@ -2,6 +2,8 @@ package org.objectstyle.wolips.eogenerator.core.runner;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -15,6 +17,7 @@ import org.apache.velocity.runtime.RuntimeServices;
 import org.apache.velocity.runtime.log.LogSystem;
 import org.apache.velocity.tools.generic.ListTool;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.objectstyle.wolips.eogenerator.core.Activator;
 import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel;
 import org.objectstyle.wolips.eogenerator.core.model.EOModelReference;
@@ -22,9 +25,12 @@ import org.objectstyle.wolips.eogenerator.core.model.IEOGeneratorRunner;
 import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel.Define;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelRenderContext;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
+import org.objectstyle.wolips.eomodeler.core.model.IEOModelGroupFactory;
+import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
 import org.objectstyle.wolips.thirdparty.velocity.WOLipsVelocityUtils;
 import org.objectstyle.wolips.thirdparty.velocity.resourceloader.ResourceLoader;
 
@@ -40,19 +46,19 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 	}
 
 	private boolean _insideEclipse;
-	
+
 	public VelocityEOGeneratorRunner() {
 		this(true);
 	}
-	
+
 	public VelocityEOGeneratorRunner(boolean insideEclipse) {
 		_insideEclipse = insideEclipse;
 	}
-	
+
 	public boolean generate(EOGeneratorModel eogeneratorModel, StringBuffer results) throws Exception {
 		return generate(eogeneratorModel, results, null);
 	}
-	
+
 	public boolean generate(EOGeneratorModel eogeneratorModel, StringBuffer results, EOModelGroup preloadedModelGroup) throws Exception {
 		boolean showResults = false;
 
@@ -98,32 +104,31 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			EOModelGroup modelGroup;
 			if (preloadedModelGroup == null) {
 				modelGroup = new EOModelGroup();
-				for (EOModelReference modelRef : eogeneratorModel.getModels()) {
-					String modelPath = modelRef.getPath((IPath) null);
-					File modelFile = new File(modelPath);
-					if (!modelFile.isAbsolute()) {
-						IPath projectPath = eogeneratorModel.getProjectPath();
-						if (projectPath != null) {
-							modelFile = new File(projectPath.toFile(), modelPath);
-						}
-					}
-					EOModel model = modelGroup.loadModelFromURL(modelFile.toURL());
-					models.add(model);
-				}
-				for (EOModelReference modelRef : eogeneratorModel.getRefModels()) {
-					String modelPath = modelRef.getPath((IPath) null);
-					File modelFile = new File(modelPath);
-					if (!modelFile.isAbsolute()) {
-						IPath projectPath = eogeneratorModel.getProjectPath();
-						if (projectPath != null) {
-							modelFile = new File(projectPath.toFile(), modelPath);
-						}
-					}
-					modelGroup.loadModelFromURL(modelFile.toURL());
-				}
+				
 				Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
-				modelGroup.resolve(failures);
-				modelGroup.verify(failures);
+
+				if (BooleanUtils.isTrue(eogeneratorModel.isLoadModelGroup())) {
+					for (EOModelReference eomodelReference : eogeneratorModel.getModels()) {
+						EOModelGroup generatingModelGroup = new EOModelGroup(); 
+						URL modelURL = getModelURL(eogeneratorModel, eomodelReference);
+						IEOModelGroupFactory.Utility.loadModelGroup(modelURL, generatingModelGroup, failures, true, modelURL, new NullProgressMonitor());
+						EOModel generatingModel = generatingModelGroup.getEditingModel();
+						models.add(generatingModel);
+						
+						for (EOModel model : generatingModelGroup.getModels()) {
+							if (!modelGroup.containsModelNamed(model.getName())) {
+								modelGroup.addModel(model);
+							}
+						}
+					}
+				}
+				else {
+					loadModels(eogeneratorModel, modelGroup, eogeneratorModel.getModels(), models);
+					loadModels(eogeneratorModel, modelGroup, eogeneratorModel.getRefModels(), new LinkedList<EOModel>());
+
+					modelGroup.resolve(failures);
+					modelGroup.verify(failures);
+				}
 
 				for (EOModelVerificationFailure failure : failures) {
 					if (!failure.isWarning()) {
@@ -131,8 +136,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 						showResults = true;
 					}
 				}
-			}
-			else {
+			} else {
 				modelGroup = preloadedModelGroup;
 				for (EOModelReference modelRef : eogeneratorModel.getModels()) {
 					String modelName = modelRef.getName();
@@ -242,5 +246,25 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			EOModelRenderContext.clearRenderContext();
 		}
 		return showResults;
+	}
+
+	public URL getModelURL(EOGeneratorModel eogeneratorModel, EOModelReference modelRef) throws MalformedURLException {
+		String modelPath = modelRef.getPath((IPath) null);
+		File modelFile = new File(modelPath);
+		if (!modelFile.isAbsolute()) {
+			IPath projectPath = eogeneratorModel.getProjectPath();
+			if (projectPath != null) {
+				modelFile = new File(projectPath.toFile(), modelPath);
+			}
+		}
+		return modelFile.toURL();
+	}
+
+	public void loadModels(EOGeneratorModel eogeneratorModel, EOModelGroup modelGroup, List<EOModelReference> modelReferences, List<EOModel> loadedModels) throws MalformedURLException, IOException, EOModelException {
+		for (EOModelReference modelRef : modelReferences) {
+			URL modelURL = getModelURL(eogeneratorModel, modelRef);
+			EOModel model = modelGroup.loadModelFromURL(modelURL);
+			loadedModels.add(model);
+		}
 	}
 }

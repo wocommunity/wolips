@@ -69,6 +69,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.objectstyle.wolips.baseforplugins.util.URLUtils;
+import org.objectstyle.wolips.eomodeler.core.model.EOModel;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.preferences.Preferences;
 
 public class EOGeneratorModel {
@@ -110,6 +113,8 @@ public class EOGeneratorModel {
 
 	public static final String SUPERCLASS_PACKAGE = "superclassPackage";
 
+	public static final String LOAD_MODEL_GROUP = "loadModelGroup";
+
 	private PropertyChangeSupport _propertyChangeSupport;
 
 	private IPath _projectPath;
@@ -141,6 +146,8 @@ public class EOGeneratorModel {
 	private Boolean _javaClientCommon;
 
 	private Boolean _verbose;
+	
+	private Boolean _loadModelGroup;
 
 	private String _prefix;
 
@@ -312,6 +319,7 @@ public class EOGeneratorModel {
 		append(sb, "-subclassJavaTemplate", getSubclassJavaTemplate());
 		append(sb, "-templatedir", EOGeneratorModel.toFullPath(workingDirectory, getTemplateDir()));
 		append(sb, "-verbose", _verbose);
+		append(sb, "-loadModelGroup", _loadModelGroup);
 
 		append(sb, "-superclassPackage", _superclassPackage);
 
@@ -367,6 +375,8 @@ public class EOGeneratorModel {
 					_templateDir = nextTokenValue(token, tokenizer);
 				} else if ("-verbose".equalsIgnoreCase(token)) {
 					_verbose = Boolean.TRUE;
+				} else if ("-loadModelGroup".equalsIgnoreCase(token)) {
+					_loadModelGroup = Boolean.TRUE;
 				} else if ("-superclassPackage".equalsIgnoreCase(token)) {
 					_superclassPackage = nextTokenValue(token, tokenizer);
 				} else if (token.startsWith("-define-")) {
@@ -733,6 +743,21 @@ public class EOGeneratorModel {
 		_propertyChangeSupport.firePropertyChange(EOGeneratorModel.VERBOSE, oldVerbose, _verbose);
 		setDirty(true);
 	}
+	
+	public void setLoadModelGroup(Boolean loadModelGroup) {
+		Boolean oldLoadModelGroup = _loadModelGroup;
+		_loadModelGroup = loadModelGroup;
+		_propertyChangeSupport.firePropertyChange(EOGeneratorModel.LOAD_MODEL_GROUP, oldLoadModelGroup, _loadModelGroup);
+		setDirty(true);
+	}
+	
+	public Boolean isLoadModelGroup() {
+		return _loadModelGroup;
+	}
+	
+	public Boolean getLoadModelGroup() {
+		return isLoadModelGroup();
+	}
 
 	public void setDirty(boolean dirty) {
 		boolean oldDirty = _dirty;
@@ -836,4 +861,29 @@ public class EOGeneratorModel {
 	 * model.setSubclassDestination(projectRelativePathStr); } } } } } catch
 	 * (JavaModelException e) { e.printStackTrace(); } return model; }
 	 */
+	
+	/**
+	 * Creates a set of model references for all of the models in a model group
+	 * other than the given models.
+	 * 
+	 * @param modelGroup the model group to load
+	 * @param exceptModels defines the models to skip
+	 * @return a list of model references for all other models in the model group
+	 */
+	public static List<EOModelReference> createModelReferencesForModelGroup(EOModelGroup modelGroup, List<EOModel> exceptModels) {
+		LinkedList<EOModelReference> modelReferences = new LinkedList<EOModelReference>();
+		Iterator<EOModel> modelsIter = modelGroup.getModels().iterator();
+		while (modelsIter.hasNext()) {
+			EOModel modelGroupModel = modelsIter.next();
+			File modelFolder = URLUtils.cheatAndTurnIntoFile(modelGroupModel.getModelURL());
+			if (modelFolder != null) {
+				Path modelPath = new Path(modelFolder.getAbsolutePath());
+				EOModelReference modelReference = new EOModelReference(modelPath);
+				if (!exceptModels.contains(modelGroupModel)) {
+					modelReferences.add(modelReference);
+				}
+			}
+		}
+		return modelReferences;
+	}
 }

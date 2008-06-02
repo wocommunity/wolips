@@ -52,7 +52,8 @@ package org.objectstyle.wolips.wizards;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -196,21 +197,20 @@ public class EOGeneratorWizard extends Wizard implements INewWizard {
 		_selection = selection;
 	}
 
-	public static EOGeneratorModel createEOGeneratorModel(IContainer parentResource, EOModel targetModel) {
+	public static EOGeneratorModel createEOGeneratorModel(IContainer parentResource, EOModel targetModel, boolean includeRefModels) {
 		EOGeneratorModel eogenModel = EOGeneratorCreator.createDefaultModel(parentResource.getProject());
 		EOModelGroup modelGroup = targetModel.getModelGroup();
-		Iterator modelsIter = modelGroup.getModels().iterator();
-		while (modelsIter.hasNext()) {
-			EOModel modelGroupModel = (EOModel) modelsIter.next();
-			File modelFolder = URLUtils.cheatAndTurnIntoFile(modelGroupModel.getModelURL());
-			if (modelFolder != null) {
-				Path modelPath = new Path(modelFolder.getAbsolutePath());
-				EOModelReference modelReference = new EOModelReference(modelPath);
-				if (modelGroupModel == targetModel) {
-					eogenModel.addModel(modelReference);
-				} else {
-					eogenModel.addRefModel(modelReference);
-				}
+		List<EOModel> exceptModels = new LinkedList<EOModel>();
+		exceptModels.add(targetModel);
+		List<EOModelReference> modelReferences = EOGeneratorModel.createModelReferencesForModelGroup(modelGroup, exceptModels);
+		File modelFolder = URLUtils.cheatAndTurnIntoFile(targetModel.getModelURL());
+		if (modelFolder != null) {
+			eogenModel.addModel(new EOModelReference(new Path(modelFolder.getAbsolutePath())));
+		}
+		if (includeRefModels) {
+			eogenModel.setLoadModelGroup(Boolean.FALSE);
+			for (EOModelReference modelReference : modelReferences) {
+				eogenModel.addRefModel(modelReference);
 			}
 		}
 		return eogenModel;
