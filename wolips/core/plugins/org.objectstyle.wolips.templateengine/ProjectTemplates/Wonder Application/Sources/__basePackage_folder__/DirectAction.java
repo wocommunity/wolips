@@ -3,7 +3,7 @@ package $basePackage;
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WORequest;
 
-import er.extensions.ERXDirectAction;
+import er.extensions.appserver.ERXDirectAction;
 
 import ${componentsPackage}.Main;
 
