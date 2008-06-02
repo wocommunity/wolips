@@ -2388,7 +2388,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		if (name == null || name.trim().length() == 0) {
 			failures.add(new EOModelVerificationFailure(myModel, this, "The entity " + getName() + " has an empty name.", false));
 		} else {
-			if (name.indexOf(' ') != -1 && !name.startsWith("[") && !name.endsWith("]")) {
+			if (name.indexOf(' ') != -1) {
 				failures.add(new EOModelVerificationFailure(myModel, this, "The entity " + getName() + "'s name has a space in it.", false));
 			}
 			if (!StringUtils.isUppercaseFirstLetter(myName)) {
@@ -2418,7 +2418,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 				if (!BooleanUtils.isTrue(isAbstractEntity())) {
 					failures.add(new EOModelVerificationFailure(myModel, this, "The entity " + getName() + " has an empty table name.", false));
 				}
-			} else if (externalName.indexOf(' ') != -1) {
+			} else if (externalName.indexOf(' ') != -1 && !externalName.startsWith("[") && !externalName.endsWith("]")) {
 				failures.add(new EOModelVerificationFailure(myModel, this, "The entity " + getName() + "'s table name '" + externalName + "' has a space in it.", false));
 			}
 		}
