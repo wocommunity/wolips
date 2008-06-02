@@ -871,7 +871,10 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 			}
 		}
 		if (BooleanUtils.isTrue(isPropagatesPrimaryKey()) && BooleanUtils.isTrue(isToMany())) {
-			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The relationship " + getName() + " is a to-many but also propagates its primary key.", false));
+			EOEntity destination = getDestination();
+			if (destination != null && destination.getPrimaryKeyAttributes().size() == 1) {
+				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The relationship " + getName() + " is a to-many but also propagates its primary key.", false));
+			}
 		}
 		EOEntity entity = getEntity();
 		boolean singleTableInheritance = entity != null && entity.isSingleTableInheritance();
