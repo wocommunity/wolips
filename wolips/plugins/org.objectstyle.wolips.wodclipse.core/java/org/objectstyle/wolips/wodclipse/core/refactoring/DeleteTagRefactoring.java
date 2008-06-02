@@ -9,8 +9,10 @@ import jp.aonir.fuzzyxml.FuzzyXMLElement;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.text.edits.DeleteEdit;
+import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.objectstyle.wolips.bindings.wod.HtmlElementName;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
@@ -44,12 +46,7 @@ public class DeleteTagRefactoring implements IRunnableWithProgress {
         }
         
         if (referenceCount == 1) {
-          IDocument wodDocument = _cache.getWodEntry().getDocument();
-          if (wodDocument != null) {
-            List<TextEdit> wodEdits = new LinkedList<TextEdit>();
-            wodEdits.add(new DeleteEdit(wodElement.getStartOffset(), wodElement.getEndOffset() - wodElement.getStartOffset() + 1));
-            WodDocumentUtils.applyEdits(wodDocument, wodEdits);
-          }
+          DeleteTagRefactoring.deleteWodElement(_cache, wodElement);
         }
       }
 
@@ -68,6 +65,15 @@ public class DeleteTagRefactoring implements IRunnableWithProgress {
     }
     catch (Exception e) {
       throw new InvocationTargetException(e, "Failed to refactor.");
+    }
+  }
+  
+  public static void deleteWodElement(WodParserCache _cache, IWodElement wodElement) throws MalformedTreeException, BadLocationException {
+    IDocument wodDocument = _cache.getWodEntry().getDocument();
+    if (wodDocument != null) {
+      List<TextEdit> wodEdits = new LinkedList<TextEdit>();
+      wodEdits.add(new DeleteEdit(wodElement.getStartOffset(), wodElement.getEndOffset() - wodElement.getStartOffset() + 1));
+      WodDocumentUtils.applyEdits(wodDocument, wodEdits);
     }
   }
 
