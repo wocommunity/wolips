@@ -10,8 +10,8 @@ import java.math.*;
 import java.util.*;
 import org.apache.log4j.Logger;
 
-import er.extensions.ERXGenericRecord;
-import er.extensions.ERXKey;
+import er.extensions.eof.ERXGenericRecord;
+import er.extensions.eof.ERXKey;
 
 @SuppressWarnings("all")
 public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($entity.parentClassNameSet)${entity.parentClassName}#elseif ($entity.partialEntitySet)er.extensions.partials.ERXPartial<${entity.partialEntity.className}>#elseif ($entity.parentSet)${entity.parent.classNameWithDefault}#elseif ($EOGenericRecord)${EOGenericRecord}#else ERXGenericRecord#end {
@@ -85,7 +85,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
     if (${entity.prefixClassNameWithoutPackage}.LOG.isDebugEnabled()) {
       ${entity.prefixClassNameWithoutPackage}.LOG.debug("updating $relationship.name from " + ${relationship.name}() + " to " + value);
     }
-    if (er.extensions.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
+    if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
     	set${relationship.capitalizedName}(value);
     }
     else if (value == null) {
@@ -176,7 +176,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
     if (${entity.prefixClassNameWithoutPackage}.LOG.isDebugEnabled()) {
       ${entity.prefixClassNameWithoutPackage}.LOG.debug("adding " + object + " to ${relationship.name} relationship");
     }
-    if (er.extensions.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
+    if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
     	addTo${relationship.capitalizedName}(object);
     }
     else {
@@ -188,7 +188,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
     if (${entity.prefixClassNameWithoutPackage}.LOG.isDebugEnabled()) {
       ${entity.prefixClassNameWithoutPackage}.LOG.debug("removing " + object + " from ${relationship.name} relationship");
     }
-    if (er.extensions.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
+    if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
     	removeFrom${relationship.capitalizedName}(object);
     }
     else {
