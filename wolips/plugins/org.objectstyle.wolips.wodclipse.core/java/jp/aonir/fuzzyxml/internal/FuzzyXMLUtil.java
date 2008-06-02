@@ -315,14 +315,18 @@ public class FuzzyXMLUtil {
   /** ストリームから読み込んだ内容をバイト配列として返却します。 */
   public static byte[] readStream(InputStream in) throws IOException {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
-    int len = 0;
-    byte[] buf = new byte[1024 * 8];
-    while ((len = in.read(buf)) != -1) {
-      out.write(buf, 0, len);
+    try {
+      int len = 0;
+      byte[] buf = new byte[1024 * 8];
+      while ((len = in.read(buf)) != -1) {
+        out.write(buf, 0, len);
+      }
+      out.close();
+    }
+    finally {
+      in.close();
     }
     byte[] result = out.toByteArray();
-    in.close();
-    out.close();
     return result;
   }
 
