@@ -663,7 +663,17 @@ public class FuzzyXMLParser {
   /** 開始タグを処理します。 */
   private void handleStartTag(int offset, int end) {
     closeAutocloseTags();
-    TagInfo info = parseTagContents(_originalSource.substring(offset + 1, end - 1));
+    String tagContents = _originalSource.substring(offset, end);
+    // MS: If you're in the middle of typing, offset + 1 to end - 1 can put
+    // you in an invalid state (for instance, if you just type "<" that will
+    // overlap.
+    if (tagContents.startsWith("<")) {
+      tagContents = tagContents.substring(1);
+    }
+    if (tagContents.endsWith(">")) {
+      tagContents = tagContents.substring(0, tagContents.length() - 1);
+    }
+    TagInfo info = parseTagContents(tagContents);
     // System.out.println("FuzzyXMLParser.handleStartTag: open " + info.name);
     FuzzyXMLElement element;
     if (info.name.equals("script")) {
