@@ -1,8 +1,6 @@
 package $basePackage;
 
-import com.webobjects.foundation.NSLog;
-
-import er.extensions.ERXApplication;
+import er.extensions.appserver.ERXApplication;
 
 public class Application extends ERXApplication {
 	public static void main(String[] argv) {
@@ -10,7 +8,7 @@ public class Application extends ERXApplication {
 	}
 
 	public Application() {
-		NSLog.out.appendln("Welcome to " + name() + " !");
+		ERXApplication.log.info("Welcome to " + name() + " !");
 		/* ** put your initialization code in here ** */
 	}
 }
