@@ -182,7 +182,7 @@ public class EOModelCreator implements IRunnableWithProgress {
 		String baseName = model.getName();
 
 		if (_createEOGeneratorFile) {
-			EOGeneratorModel eogenModel = EOGeneratorWizard.createEOGeneratorModel(parentContainer, model);
+			EOGeneratorModel eogenModel = EOGeneratorWizard.createEOGeneratorModel(parentContainer, model, false);
 			IFile eogenFile = parentContainer.getFile(new Path(baseName + ".eogen"));
 			if (eogenFile.exists()) {
 				for (int dupeNum = 1; !eogenFile.exists(); dupeNum++) {
