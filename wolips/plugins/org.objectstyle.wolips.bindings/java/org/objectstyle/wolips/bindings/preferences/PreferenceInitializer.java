@@ -79,6 +79,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     tagShortcuts.add(new TagShortcut("form", "WOForm", new HashMap<String, String>()));
     tagShortcuts.add(new TagShortcut("submit", "WOSubmitButton", new HashMap<String, String>()));
     tagShortcuts.add(new TagShortcut("localized", "ERXLocalizedString", new HashMap<String, String>()));
+    tagShortcuts.add(new TagShortcut("image", "WOImage", new HashMap<String, String>()));
+    tagShortcuts.add(new TagShortcut("img", "WOImage", new HashMap<String, String>()));
     prefs.setDefault(PreferenceConstants.TAG_SHORTCUTS_KEY, TagShortcut.toPreferenceString(tagShortcuts));
 
     List<BindingValidationRule> validationRules = new ArrayList<BindingValidationRule>();
