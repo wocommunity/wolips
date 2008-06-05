@@ -56,14 +56,28 @@
 
 package org.objectstyle.wolips.launching.actions;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.internal.debug.ui.launcher.JavaApplicationLaunchShortcut;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
+import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
+import org.eclipse.jdt.launching.JavaRuntime;
 import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchConfigurationDelegate;
 
 /**
@@ -87,12 +101,53 @@ public class WOJavaApplicationLaunchShortcut extends JavaApplicationLaunchShortc
 			wc = configType.newInstance(null, getLaunchManager().generateUniqueLaunchConfigurationNameFrom(type.getJavaProject().getProject().getName() + ": " + type.getElementName()));
 			wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, type.getFullyQualifiedName());
 			wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, type.getJavaProject().getElementName());
-			wc.setMappedResources(new IResource[] {type.getJavaProject().getProject()});
+			wc.setMappedResources(new IResource[] { type.getJavaProject().getProject() });
 			WOJavaLocalApplicationLaunchConfigurationDelegate.initConfiguration(wc);
 			config = wc.doSave();
 		} catch (CoreException exception) {
-			reportErorr(exception);		
-		} 
+			reportErorr(exception);
+		}
 		return config;
+	}
+
+	/**
+	 * Returns a list of classpath URLs for the given project that should match
+	 * what you'd get at runtime.
+	 * 
+	 * @param javaProject the java project to generate a classpath for
+	 * @return a list of classpath URLs for the given project
+	 */
+	public static List<URL> createClasspathURLsForProject(IJavaProject javaProject) throws CoreException, MalformedURLException {
+		ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
+		ILaunchConfigurationWorkingCopy wc = null;
+		ILaunchConfigurationType launchConfigurationType = launchManager.getLaunchConfigurationType(WOJavaLocalApplicationLaunchConfigurationDelegate.WOJavaLocalApplicationID);
+		wc = launchConfigurationType.newInstance(null, launchManager.generateUniqueLaunchConfigurationNameFrom("Entity Modeler SQL Generation"));
+		// wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,
+		// type.getFullyQualifiedName());
+		wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, javaProject.getElementName());
+		wc.setMappedResources(new IResource[] { javaProject.getProject() });
+		WOJavaLocalApplicationLaunchConfigurationDelegate.initConfiguration(wc);
+
+		IRuntimeClasspathEntry[] runtimeClasspathEntries = JavaRuntime.computeUnresolvedRuntimeClasspath(wc);
+		runtimeClasspathEntries = JavaRuntime.resolveRuntimeClasspath(runtimeClasspathEntries, wc);
+		List<String> userEntries = new ArrayList<String>(runtimeClasspathEntries.length);
+		Set<String> set = new HashSet<String>(runtimeClasspathEntries.length);
+		for (int i = 0; i < runtimeClasspathEntries.length; i++) {
+			if (runtimeClasspathEntries[i].getClasspathProperty() == IRuntimeClasspathEntry.USER_CLASSES) {
+				String location = runtimeClasspathEntries[i].getLocation();
+				if (location != null) {
+					if (!set.contains(location)) {
+						userEntries.add(location);
+						set.add(location);
+					}
+				}
+			}
+		}
+		String[] classpathEntryStrings = userEntries.toArray(new String[userEntries.size()]);
+		List<URL> classpathUrls = new LinkedList<URL>();
+		for (String str : classpathEntryStrings) {
+			classpathUrls.add(new File(str).toURL());
+		}
+		return classpathUrls;
 	}
 }
