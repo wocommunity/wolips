@@ -51,6 +51,7 @@ package org.objectstyle.wolips.eomodeler.core.sql;
 
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -73,6 +74,7 @@ import com.webobjects.eoaccess.EOModelGroup;
 import com.webobjects.eoaccess.EOSchemaGeneration;
 import com.webobjects.eoaccess.EOSynchronizationFactory;
 import com.webobjects.foundation.NSArray;
+import com.webobjects.foundation.NSBundle;
 import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
@@ -105,6 +107,7 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 	private Object _modelProcessor;
 
 	public EOFSQLGenerator(String modelName, List modelURLs, List entityNames, Map selectedDatabaseConfig, boolean runInEntityModeler) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+		fixClassPath();
 		Map databaseConfig = selectedDatabaseConfig;
 		if (databaseConfig == null) {
 			databaseConfig = new HashMap();
@@ -401,7 +404,26 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 		}
 	}
 
+	private String getClassPath() {
+		URL urls[] = ((URLClassLoader)getClass().getClassLoader()).getURLs();
+		String classPath = "";
+		for (int i = 0; i < urls.length; i++) {
+			URL url = urls[i];
+			classPath += url.getFile() + ":";
+		}
+		return classPath;
+	}
+
+	private void fixClassPath() {
+		String classPath = getClassPath();
+		System.setProperty("java.class.path", classPath);
+		System.setProperty("com.webobjects.classpath", classPath);
+		System.err.println(getClass().getClassLoader() + " CL gen: " + classPath);
+		System.err.println(NSBundle.allBundles());
+	}
+	
 	public String generateSchemaCreationScript(Map flagsMap) {
+		fixClassPath();
 		NSMutableDictionary flags = new NSMutableDictionary();
 		if (flagsMap != null) {
 			Iterator entriesIter = flagsMap.entrySet().iterator();
@@ -518,6 +540,7 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 	}
 
 	public void executeSQL(String sql) throws SQLException {
+		fixClassPath();
 		EODatabaseContext databaseContext = new EODatabaseContext(new EODatabase(_model));
 		EOAdaptorContext adaptorContext = databaseContext.adaptorContext();
 
