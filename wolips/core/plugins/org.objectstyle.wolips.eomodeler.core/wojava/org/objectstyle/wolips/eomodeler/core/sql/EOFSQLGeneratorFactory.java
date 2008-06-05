@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
+import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
 
 public class EOFSQLGeneratorFactory implements IEOSQLGeneratorFactory {
 	public IEOSQLGenerator sqlGenerator(EOModel model, List<String> entityNames, EODatabaseConfig databaseConfig, ClassLoader eomodelClassLoader, boolean runInEntityModeler) throws SecurityException, NoSuchMethodException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
@@ -30,6 +31,9 @@ public class EOFSQLGeneratorFactory implements IEOSQLGeneratorFactory {
 		modelURLs.add(model.getModelURL());
 
 		Constructor sqlGeneratorConstructor = sqlGeneratorClass.getConstructor(new Class[] { String.class, List.class, List.class, Map.class, boolean.class });
+		if(databaseConfig == null) {
+			throw new IllegalStateException("Database config is not defined");
+		}
 		Object sqlGeneratorButICantCastItBecauseItCrossesClassLoaders = sqlGeneratorConstructor.newInstance(new Object[] { model.getName(), modelURLs, entityNames, databaseConfig.toMap().getBackingMap(), Boolean.valueOf(runInEntityModeler) });
 		IEOSQLGenerator sqlGenerator = new ReflectionSQLGenerator(sqlGeneratorButICantCastItBecauseItCrossesClassLoaders);
 		return sqlGenerator;
