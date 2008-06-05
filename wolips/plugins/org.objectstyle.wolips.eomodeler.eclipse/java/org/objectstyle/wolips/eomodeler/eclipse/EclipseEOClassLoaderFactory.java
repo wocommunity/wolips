@@ -88,7 +88,21 @@ public class EclipseEOClassLoaderFactory extends AbstractEOClassLoader {
 				outputLocation = project.getOutputLocation();
 			}
 			IPath srcPath = project.getProject().getWorkspace().getRoot().getLocation().append(outputLocation);
-			classpathUrls.add(srcPath.toFile().toURL());
+			URL url = srcPath.toFile().toURL();
+			// AK: hack, i know...
+			if(outputLocation != null && outputLocation.toFile().getName().equals("bin")) {
+				IPath base = project.getProject().getLocation().append("build");
+				if(base.toFile().exists()) {
+					IPath java = base.append(project.getProject().getName() + ".woa").append("Contents").append("Resources").append("Java");
+					if(!java.toFile().exists()) {
+						java = base.append(project.getProject().getName() + ".framework").append("Resources").append("Java");
+					}
+					if(java.toFile().exists()) {
+						url = java.toFile().toURL();
+					}
+				}
+			}
+			classpathUrls.add(url);
 		}
 	}
 }
