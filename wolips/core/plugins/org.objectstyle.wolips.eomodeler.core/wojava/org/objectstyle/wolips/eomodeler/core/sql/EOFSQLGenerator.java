@@ -49,6 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.core.sql;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -74,7 +75,6 @@ import com.webobjects.eoaccess.EOModelGroup;
 import com.webobjects.eoaccess.EOSchemaGeneration;
 import com.webobjects.eoaccess.EOSynchronizationFactory;
 import com.webobjects.foundation.NSArray;
-import com.webobjects.foundation.NSBundle;
 import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
@@ -409,7 +409,7 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 		String classPath = "";
 		for (int i = 0; i < urls.length; i++) {
 			URL url = urls[i];
-			classPath += url.getFile() + ":";
+			classPath += url.getFile() + File.pathSeparator;
 		}
 		return classPath;
 	}
@@ -418,8 +418,6 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 		String classPath = getClassPath();
 		System.setProperty("java.class.path", classPath);
 		System.setProperty("com.webobjects.classpath", classPath);
-		System.err.println(getClass().getClassLoader() + " CL gen: " + classPath);
-		System.err.println(NSBundle.allBundles());
 	}
 	
 	public String generateSchemaCreationScript(Map flagsMap) {
@@ -517,7 +515,7 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 			Class modelProcessorClass = Class.forName(modelProcessorClassName);
 			_modelProcessor = modelProcessorClass.newInstance();
 		} catch (ClassNotFoundException e) {
-			System.out.println("EOFSQLGenerator.getModelProcessor: Missing model processor " + modelProcessorClassName);
+			//System.out.println("EOFSQLGenerator.getModelProcessor: Missing model processor " + modelProcessorClassName);
 			if (throwExceptionIfMissing) {
 				throw e;
 			}
