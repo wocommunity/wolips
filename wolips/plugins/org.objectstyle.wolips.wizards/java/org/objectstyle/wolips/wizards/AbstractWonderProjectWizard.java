@@ -8,6 +8,9 @@ import org.objectstyle.wolips.core.resources.internal.types.project.ProjectPatte
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
 
+/**
+ *
+ */
 public abstract class AbstractWonderProjectWizard extends AbstractProjectWizard {
 
 	protected void addComponentDefinition(String templateFolder, TemplateEngine engine, String path, String name) {
@@ -39,7 +42,7 @@ public abstract class AbstractWonderProjectWizard extends AbstractProjectWizard 
 		writeString("WebServerResources/**/*\n", new File(ant, "wsresources.include.patternset"));
 		writeString("Components/**/*.wo\nComponents/**/*.api\nResources/**/*\n", new File(ant, "resources.include.patternset"));
 	}
-	
+
 	private void writeString(String string, File file) {
 		try {
 			File parentDir = file.getParentFile();

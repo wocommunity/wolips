@@ -1,3 +1,63 @@
+/* ====================================================================
+ *
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group
+ * and individual authors of the software.  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution, if
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
+ *        ObjectStyle Group (http://objectstyle.org/)."
+ *    Alternately, this acknowlegement may appear in the software itself,
+ *    if and wherever such third-party acknowlegements normally appear.
+ *
+ * 4. The names "ObjectStyle Group" and "Cayenne"
+ *    must not be used to endorse or promote products derived
+ *    from this software without prior written permission. For written
+ *    permission, please contact andrus@objectstyle.org.
+ *
+ * 5. Products derived from this software may not be called "ObjectStyle"
+ *    nor may "ObjectStyle" appear in their names without prior written
+ *    permission of the ObjectStyle Group.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE OBJECTSTYLE GROUP OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the ObjectStyle Group.  For more
+ * information on the ObjectStyle Group, please see
+ * <http://objectstyle.org/>.
+ *
+ */
+/*Portions of this code are Copyright Apple Inc. 2008 and licensed under the
+ObjectStyle Group Software License, version 1.0.  This license from Apple
+applies solely to the actual code contributed by Apple and to no other code.
+No other license or rights are granted by Apple, explicitly, by implication,
+by estoppel, or otherwise.  All rights reserved.*/
 package org.objectstyle.wolips.wizards;
 
 import java.io.File;
@@ -98,11 +158,10 @@ import org.objectstyle.wolips.wizards.template.TemplateInputsWizardPage;
  * @see D2WApplicationWizard
  * @see WOApplicationWizard
  * @see WOFrameworkWizard
- * @see D2WebSErviceApplicationWizard
+ * @see D2WebServiceApplicationWizard
  * @see WOnderApplicationWizard
  * @see WOnderFrameworkWizard
  * @see WOSubprojectCreationWizard
- * @see WOJarProjectWizard
  * @see WOWebServicesWizardPage
  */
 public abstract class NewWOProjectWizard extends BasicNewResourceWizard implements IExecutableExtension {
@@ -125,10 +184,10 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	protected static final int NEWPROJECT_TEMPLATE_WIZARD = 0;
 
 	/**
-	 * Valid project wizard types: WO_APPLICATION_WIZARD, D2W_APPLICATION_WIZARD, D2WS_APPLICATION_WIZARD, JARPROJECT_WIZARD, WO_FRAMEWORK_WIZARD, WONDER_APPLICATION_WIZARD, WONDER_D2W_APPLICATION_WIZARD, WONDER_FRAMEWORK_WIZARD, NEWPROJECT_TEMPLATE_WIZARD
+	 * Valid project wizard types: WO_APPLICATION_WIZARD, D2W_APPLICATION_WIZARD, D2WS_APPLICATION_WIZARD, JARPROJECT_WIZARD, WO_FRAMEWORK_WIZARD, WONDER_APPLICATION_WIZARD, WONDER_D2W_APPLICATION_WIZARD, WONDER_FRAMEWORK_WIZARD, NEWPROJECT_TEMPLATE_WIZARD,WOMAVENAPPLICATION
 	 */
 	public enum WizardType {
-		WO_APPLICATION_WIZARD, D2W_APPLICATION_WIZARD, D2WS_APPLICATION_WIZARD, JARPROJECT_WIZARD, WO_FRAMEWORK_WIZARD, WONDER_APPLICATION_WIZARD, WONDER_D2W_APPLICATION_WIZARD, WONDER_FRAMEWORK_WIZARD, NEWPROJ_TEMPLATE_WIZARD
+		WO_APPLICATION_WIZARD, D2W_APPLICATION_WIZARD, D2WS_APPLICATION_WIZARD, JARPROJECT_WIZARD, WO_FRAMEWORK_WIZARD, WONDER_APPLICATION_WIZARD, WONDER_D2W_APPLICATION_WIZARD, WONDER_FRAMEWORK_WIZARD, NEWPROJ_TEMPLATE_WIZARD, WOMAVENPROJECT
 	}
 
 	private WizardNewProjectCreationPage _mainPage;
@@ -168,6 +227,9 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 		setDialogSettings(section);
 	}
 
+	/**
+	 * @param projectTemplateName
+	 */
 	public NewWOProjectWizard(String projectTemplateName) {
 		this();
 		_projectTemplate = ProjectTemplate.loadProjectTemplateNamed(projectTemplateName);
@@ -262,7 +324,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	}
 
 	protected EOModelResourceImportPage createEOModelImportResourcePage() {
-		EOModelResourceImportPage importResourcePage = new EOModelResourceImportPage("basicReferenceProjectPage");
+		EOModelResourceImportPage importResourcePage = new EOModelResourceImportPage("EOModelImportWizpardPage");
 		importResourcePage.setTitle(Messages.getString("EOModelResourceImportPage.title"));
 		importResourcePage.setDescription(Messages.getString("EOModelResourceImportPage.description"));
 		importResourcePage.setMessage(Messages.getString("EOModelResourceImportPage.message"));
@@ -270,14 +332,14 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	}
 
 	protected D2WApplicationConfigurationPage createD2WConfigurationPage() {
-		D2WApplicationConfigurationPage d2wConfigPage = new D2WApplicationConfigurationPage("basicReferenceProjectPage", IMessageProvider.NONE);
+		D2WApplicationConfigurationPage d2wConfigPage = new D2WApplicationConfigurationPage("d2WAppConfigurationWizardPage", IMessageProvider.NONE);
 		d2wConfigPage.setTitle(Messages.getString("D2WApplicationConfigurationPage.title"));
 		d2wConfigPage.setDescription(Messages.getString("D2WApplicationConfigurationPage.description"));
 		return d2wConfigPage;
 	}
 
 	protected PackageSpecifierWizardPage createPackageSpecifierWizardPage() {
-		PackageSpecifierWizardPage packagePage = new PackageSpecifierWizardPage("basicReferenceProjectPage", IMessageProvider.NONE);
+		PackageSpecifierWizardPage packagePage = new PackageSpecifierWizardPage("packageSpecifierWizardPage", IMessageProvider.NONE);
 		packagePage.setTitle("Specify package: ");
 		packagePage.setMessage("Default package for all Java source generated for project");
 		packagePage.setDescription("Default package for all Java source generated for project");
@@ -287,7 +349,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	protected WOWebServicesWizardPage createWebServicesSupportPage() {
 		WOWebServicesWizardPage webservicesPage = null;
 		if (ResourcesPlugin.getWorkspace().getRoot().getProjects().length > 0) {
-			webservicesPage = new WOWebServicesWizardPage("basicReferenceProjectPage", IMessageProvider.NONE);//$NON-NLS-1$
+			webservicesPage = new WOWebServicesWizardPage("webservicesSupportWizardPage", IMessageProvider.NONE);//$NON-NLS-1$
 			webservicesPage.setTitle(Messages.getString("WOWebServicesWizardPage.title"));
 			webservicesPage.setDescription(Messages.getString("WOWebServicesWizardPage.description"));
 		}
@@ -297,11 +359,19 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	protected WOFrameworkSupportPage createFrameworkSupportPage() {
 		WOFrameworkSupportPage frameworkPage = null;
 		if (ResourcesPlugin.getWorkspace().getRoot().getProjects().length > 0) {
-			frameworkPage = new WOFrameworkSupportPage("basicReferenceProjectPage", IMessageProvider.NONE);//$NON-NLS-1$
+			frameworkPage = new WOFrameworkSupportPage("frameworkSupportWizardPage", IMessageProvider.NONE);//$NON-NLS-1$
 			frameworkPage.setTitle(Messages.getString("WOFrameworkSupportPage.title"));
 			frameworkPage.setDescription(Messages.getString("WOFrameworkSupportPage.description"));
 		}
 		return frameworkPage;
+	}
+
+	protected void setMainPage(WizardNewProjectCreationPage mainPage) {
+		_mainPage = mainPage;
+	}
+
+	protected void setReferencePage(WizardNewProjectReferencePage referencePage) {
+		_referencePage = referencePage;
 	}
 
 	/**
@@ -320,7 +390,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	 * @return the created project resource, or <code>null</code> if the
 	 *         project was not created
 	 */
-	private IProject createNewProject() {
+	protected IProject createNewProject() {
 		if (_newProject != null) {
 			return _newProject;
 		}
@@ -532,6 +602,9 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	/**
 	 * Stores the configuration element for the wizard. The config element will
 	 * be used in <code>performFinish</code> to set the result perspective.
+	 * @param cfig
+	 * @param propertyName
+	 * @param data
 	 */
 	public void setInitializationData(IConfigurationElement cfig, String propertyName, Object data) {
 		_configElement = cfig;
@@ -738,7 +811,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	 * Create a component in the default java package
 	 */
 	protected void addComponentDefinition(String templateFolder, TemplateEngine engine, String path, String name) {
-		addComponentDefinition(templateFolder, engine, path, name, "");
+		addMavenComponentDefinition(templateFolder, engine, path, name, "");
 	}
 
 	/**
@@ -749,7 +822,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	 * @param name
 	 * @param packagePath
 	 */
-	protected void addComponentDefinition(String templateFolder, TemplateEngine engine, String rootPath, String name, String packagePath) {
+	protected void addMavenComponentDefinition(String templateFolder, TemplateEngine engine, String rootPath, String name, String packagePath) {
 		//create component dir
 		String componentPath = rootPath + File.separator + name + ".wo";
 		File wo = new File(componentPath);
@@ -783,10 +856,16 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	 * @param project to add support
 	 */
 	public void createEOModelSupport(IProject project) {
-		//Move any specified models over
-		HashMap<String, String> paths = getEOModelPaths();
-		EOModelImportWorkspaceJob job = new EOModelImportWorkspaceJob("eomodel import", paths, project);
-		job.schedule();
+		if (getWizardType() != WizardType.WOMAVENPROJECT) {
+			//Move any specified models over
+			HashMap<String, String> paths = getEOModelPaths();
+			EOModelImportWorkspaceJob job = new EOModelImportWorkspaceJob("eomodel import", paths, project, null);
+			job.schedule();
+		} else {
+			HashMap<String, String> paths = getEOModelPaths();
+			EOModelImportWorkspaceJob job = new EOModelImportWorkspaceJob("eomodel import", paths, project, project.getLocation().append("src/main/resources").toOSString());
+			job.schedule();
+		}
 	}
 
 	/*
@@ -805,13 +884,20 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	/**
 	 * Create WebServices support
 	 * @param project to add support
+	 * @param engine
 	 */
 	/*
 	 * FIXME: technically the templates for these files are stored in JavaWebObjects.framework/Resources/template_server.wsdd and JavaWebServicesClient.framework/Resources/template_client.wsdd
 	 * and could be copied from there instead if we are able to cleanly detect their install location (mainly non OSX platforms).
 	 */
 	public void createWebServicesSupport(IProject project, TemplateEngine engine) {
-		String path = project.getLocation().toOSString();
+		String path = null;
+
+		if (getWizardType() == WizardType.WOMAVENPROJECT) {
+			path = project.getLocation().append("src/main/resources").toOSString();
+		} else {
+			path = project.getLocation().toOSString();
+		}
 
 		if (_webservicesSupportPage != null) {
 			if (_webservicesSupportPage.getClientSupport()) {
@@ -824,41 +910,47 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 		}
 	}
 
-	/*
+	/**
 	 * Should be invoked after createProject() is called and the IProject is open
 	 * @param project
 	 */
 	public void addWebServiceFrameworks(IProject project) {
-		if (project.isOpen()) {
-			ArrayList<ContainerEntry> containerEntries = new ArrayList<ContainerEntry>();
+		if (getWizardType() != WizardType.WOMAVENPROJECT) {
+			if (project != null && project.isOpen()) {
+				ArrayList<ContainerEntry> containerEntries = new ArrayList<ContainerEntry>();
 
-			if (_webservicesSupportPage != null) {
-				if (_webservicesSupportPage.getClientSupport()) {
-					ContainerEntry containerEntry = new ContainerEntry("JavaWebServicesClient");
-					containerEntries.add(containerEntry);
+				if (_webservicesSupportPage != null) {
+					if (_webservicesSupportPage.getClientSupport()) {
+						ContainerEntry containerEntry = new ContainerEntry("JavaWebServicesClient");
+						containerEntries.add(containerEntry);
+					}
+
+					if (_webservicesSupportPage.getServerSupport()) {
+						ContainerEntry containerEntry = new ContainerEntry("JavaWebServicesGeneration");
+						containerEntries.add(containerEntry);
+					}
+
+					if (_webservicesSupportPage.getServerSupport() || _webservicesSupportPage.getClientSupport()) {
+						ContainerEntry containerEntry = new ContainerEntry("JavaWebServicesSupport");
+						containerEntries.add(containerEntry);
+					}
 				}
 
-				if (_webservicesSupportPage.getServerSupport()) {
-					ContainerEntry containerEntry = new ContainerEntry("JavaWebServicesGeneration");
-					containerEntries.add(containerEntry);
-				}
+				//Classpath surgery
+				addFrameworksToClasspath(project, containerEntries);
 
-				if (_webservicesSupportPage.getServerSupport() || _webservicesSupportPage.getClientSupport()) {
-					ContainerEntry containerEntry = new ContainerEntry("JavaWebServicesSupport");
-					containerEntries.add(containerEntry);
-				}
+			} else {
+				System.err.println("Warning: project is not open and cannot be fully configured");
 			}
-
-			//Classpath surgery
-			addFrameworksToClasspath(project, containerEntries);
-
-		} else {
-			System.err.println("Warning: project is not open and cannot be fully configured");
 		}
 	}
 
 	/*
 	 * Java Package Support
+	 */
+	/**
+	 * @param project
+	 * @param packagePath
 	 */
 	public void createJavaPackageSupport(IProject project, String packagePath) {
 		String fullPath = project.getLocation().toOSString() + File.separator + "src";
@@ -871,27 +963,31 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 
 	/**
 	 * Classpath Support
+	 * @param project
+	 * @param containerEntries
 	 */
 	public void addFrameworksToClasspath(IProject project, ArrayList<ContainerEntry> containerEntries) {
 		//Classpath surgery
 		try {
 			IJavaProject javaProject = (IJavaProject) project.getNature(JavaCore.NATURE_ID);
-			IClasspathEntry[] entries = javaProject.readRawClasspath();
-			ArrayList<IClasspathEntry> newEntries = new ArrayList<IClasspathEntry>(entries.length);
-			for (IClasspathEntry anEntry : entries) {
-				IPath containerPath = anEntry.getPath();
-				if (containerPath.segment(0).equals(Container.CONTAINER_IDENTITY)) {
-					ContainerEntries newContainerEntries = ContainerEntries.initWithPath(containerPath.removeFirstSegments(1));
-					newContainerEntries.add(containerEntries);
-					Container container = new Container(newContainerEntries);
-					IPath newPath = container.getPath();
-					IClasspathEntry entry = JavaCore.newContainerEntry(newPath);
-					newEntries.add(entry);
-				} else {
-					newEntries.add(anEntry);
+			if (javaProject != null) {
+				IClasspathEntry[] entries = javaProject.readRawClasspath();
+				ArrayList<IClasspathEntry> newEntries = new ArrayList<IClasspathEntry>(entries.length);
+				for (IClasspathEntry anEntry : entries) {
+					IPath containerPath = anEntry.getPath();
+					if (containerPath.segment(0).equals(Container.CONTAINER_IDENTITY)) {
+						ContainerEntries newContainerEntries = ContainerEntries.initWithPath(containerPath.removeFirstSegments(1));
+						newContainerEntries.add(containerEntries);
+						Container container = new Container(newContainerEntries);
+						IPath newPath = container.getPath();
+						IClasspathEntry entry = JavaCore.newContainerEntry(newPath);
+						newEntries.add(entry);
+					} else {
+						newEntries.add(anEntry);
+					}
 				}
+				javaProject.setRawClasspath(newEntries.toArray(new IClasspathEntry[] {}), javaProject.getOutputLocation(), null);
 			}
-			javaProject.setRawClasspath(newEntries.toArray(new IClasspathEntry[] {}), javaProject.getOutputLocation(), null);
 
 		} catch (CoreException e) {
 			ErrorDialog.openError(getShell(), Messages.getString("NewWOProjectWizard.errorMessage.classpath.title"), e.toString(), new Status(IStatus.WARNING, "org.objectstyle.wolips.wizards", e.toString()));
@@ -903,25 +999,31 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	/*
 	 * Frameworks Support
 	 */
+	/**
+	 * @param project
+	 */
 	public void createFrameworksSupport(IProject project) {
-		if (project.isOpen()) {
-			ArrayList<ContainerEntry> containerEntries = new ArrayList<ContainerEntry>();
+		if (getWizardType() != WizardType.WOMAVENPROJECT) {
+			if (project != null && project.isOpen()) {
+				ArrayList<ContainerEntry> containerEntries = new ArrayList<ContainerEntry>();
 
-			if (_frameworkSupportPage != null) {
-				if (_frameworkSupportPage.getJNDISupport()) {
-					ContainerEntry containerEntry = new ContainerEntry("JavaJNDIAdaptor");
-					containerEntries.add(containerEntry);
-				}
+				if (_frameworkSupportPage != null) {
+					if (_frameworkSupportPage.getJNDISupport()) {
+						ContainerEntry containerEntry = new ContainerEntry("JavaJNDIAdaptor");
+						containerEntries.add(containerEntry);
+					}
 
-				if (_frameworkSupportPage.getJ2EESupport()) {
-					ContainerEntry containerEntry = new ContainerEntry("JavaWOJSPServlet");
-					containerEntries.add(containerEntry);
+					if (_frameworkSupportPage.getJ2EESupport()) {
+						ContainerEntry containerEntry = new ContainerEntry("JavaWOJSPServlet");
+						containerEntries.add(containerEntry);
+					}
 				}
+				//			 Classpath surgery
+				addFrameworksToClasspath(project, containerEntries);
+			} else {
+				ErrorDialog.openError(getShell(), Messages.getString("NewWOProjectWizard.errorMessage.classpath.title"), Messages.getString("NewWOProjectWizard.errorMessage.classpath.message"), new Status(IStatus.WARNING, "org.objectstyle.wolips.wizards", Messages.getString("NewWOProjectWizard.errorMessage.classpath.message")));
 			}
-			//			 Classpath surgery
-			addFrameworksToClasspath(project, containerEntries);
-		} else {
-			ErrorDialog.openError(getShell(), Messages.getString("NewWOProjectWizard.errorMessage.classpath.title"), Messages.getString("NewWOProjectWizard.errorMessage.classpath.message"), new Status(IStatus.WARNING, "org.objectstyle.wolips.wizards", Messages.getString("NewWOProjectWizard.errorMessage.classpath.message")));
 		}
 	}
+
 }

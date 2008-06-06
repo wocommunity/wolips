@@ -53,6 +53,11 @@
  * <http://objectstyle.org/>.
  *
  */
+/*Portions of this code are Copyright Apple Inc. 2008 and licensed under the
+ObjectStyle Group Software License, version 1.0.  This license from Apple
+applies solely to the actual code contributed by Apple and to no other code.
+No other license or rights are granted by Apple, explicitly, by implication,
+by estoppel, or otherwise.  All rights reserved.*/
 package org.objectstyle.wolips.wizards;
 
 import java.io.File;
@@ -123,7 +128,7 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 		String packageName = "";
 		String fullSrcPath = path+File.separator+"src";
 		if (_packagePage != null) {
-			packageName = _packagePage.getTextData();
+			packageName = _packagePage.getPackageName();
 			packagePath = _packagePage.getConvertedPath();
 			fullSrcPath += File.separator+packagePath;
 
@@ -138,9 +143,9 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 		templateEngine.getWolipsContext().setProjectName(projectName);
 		templateEngine.getWolipsContext().setPackageName(packageName);
 
-		addComponentDefinition(pathRoot, templateEngine, path, "Main", packagePath);
-		addComponentDefinition(pathRoot, templateEngine, path, "MenuHeader", packagePath);
-		addComponentDefinition(pathRoot, templateEngine, path, "PageWrapper", packagePath);
+		addMavenComponentDefinition(pathRoot, templateEngine, path, "Main", packagePath);
+		addMavenComponentDefinition(pathRoot, templateEngine, path, "MenuHeader", packagePath);
+		addMavenComponentDefinition(pathRoot, templateEngine, path, "PageWrapper", packagePath);
 
 		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/Application.java.vm", fullSrcPath, "Application.java", "Application.java"));
 		templateEngine.addTemplate(new TemplateDefinition(pathRoot+"/DirectAction.java.vm", fullSrcPath, "DirectAction.java", "DirectAction.java"));
