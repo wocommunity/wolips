@@ -53,6 +53,11 @@
  * <http://objectstyle.org/>.
  *
  */
+/*Portions of this code are Copyright Apple Inc. 2008 and licensed under the
+ObjectStyle Group Software License, version 1.0.  This license from Apple
+applies solely to the actual code contributed by Apple and to no other code.
+No other license or rights are granted by Apple, explicitly, by implication,
+by estoppel, or otherwise.  All rights reserved.*/
 package org.objectstyle.wolips.wizards;
 
 import java.io.File;
@@ -101,7 +106,7 @@ public class D2WebServiceApplicationWizard extends AbstractProjectWizard {
 		String packageName = "";
 		String fullSrcPath = path+File.separator+"src";
 		if (_packagePage != null) {
-			packageName = _packagePage.getTextData();
+			packageName = _packagePage.getPackageName();
 			packagePath = _packagePage.getConvertedPath();
 			fullSrcPath += File.separator+packagePath;
 		}
@@ -117,7 +122,7 @@ public class D2WebServiceApplicationWizard extends AbstractProjectWizard {
 		templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
 		templateEngine.getWolipsContext().setPackageName(packageName);
 
-		addComponentDefinition(rootTemplate, templateEngine, path, "Main", packagePath);
+		addMavenComponentDefinition(rootTemplate, templateEngine, path, "Main", packagePath);
 
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/Application.java.vm", fullSrcPath, "Application.java", "Application.java"));
 		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/DirectAction.java.vm", fullSrcPath, "DirectAction.java", "DirectAction.java"));

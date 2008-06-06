@@ -53,7 +53,11 @@
  * <http://objectstyle.org/>.
  *
  */
-
+/*Portions of this code are Copyright Apple Inc. 2008 and licensed under the
+ObjectStyle Group Software License, version 1.0.  This license from Apple
+applies solely to the actual code contributed by Apple and to no other code.
+No other license or rights are granted by Apple, explicitly, by implication,
+by estoppel, or otherwise.  All rights reserved.*/
 package org.objectstyle.wolips.wizards;
 
 import org.eclipse.core.resources.IFile;
@@ -132,6 +136,8 @@ public class WizardsPlugin extends AbstractBaseUIActivator {
 
 	/**
 	 * This method is called when the plug-in is stopped
+	 * @param context
+	 * @throws Exception
 	 */
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
@@ -140,6 +146,7 @@ public class WizardsPlugin extends AbstractBaseUIActivator {
 
 	/**
 	 * Returns the shared instance.
+	 * @return WizardsPlugin
 	 */
 	public static WizardsPlugin getDefault() {
 		return plugin;
