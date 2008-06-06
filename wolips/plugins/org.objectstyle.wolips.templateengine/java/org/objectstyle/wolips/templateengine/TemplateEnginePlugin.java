@@ -53,7 +53,11 @@
  * <http://objectstyle.org/>.
  *
  */
-
+/*Portions of this code are Copyright Apple Inc. 2008 and licensed under the
+ObjectStyle Group Software License, version 1.0.  This license from Apple
+applies solely to the actual code contributed by Apple and to no other code.
+No other license or rights are granted by Apple, explicitly, by implication,
+by estoppel, or otherwise.  All rights reserved.*/
 package org.objectstyle.wolips.templateengine;
 
 import java.net.URL;
@@ -144,8 +148,8 @@ public class TemplateEnginePlugin extends AbstractBaseUIActivator {
 
 	/**
 	 * Returns the workspace instance.
-	 * 
-	 * @return
+	 *
+	 * @return IWorkspace
 	 */
 	public static IWorkspace getWorkspace() {
 		return ResourcesPlugin.getWorkspace();
@@ -153,7 +157,7 @@ public class TemplateEnginePlugin extends AbstractBaseUIActivator {
 
 	/**
 	 * Method baseURL.
-	 * 
+	 *
 	 * @return URL
 	 */
 	public static URL baseURL() {
@@ -169,7 +173,7 @@ public class TemplateEnginePlugin extends AbstractBaseUIActivator {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
@@ -179,7 +183,7 @@ public class TemplateEnginePlugin extends AbstractBaseUIActivator {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
