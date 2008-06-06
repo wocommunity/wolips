@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+  <id>wodocroot</id>
+  <formats>
+    <format>tar.gz</format>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>src/main/webserver-resources</directory>
+      <outputDirectory>Library/WebServer/Documents/WebObjects/Frameworks/${artifactId}.framework/WebServerResources</outputDirectory>
+      <includes>
+        <include>**/*</include>
+      </includes>
+    </fileSet>
+	<fileSet>
+      <directory>target/${artifactId}.framework</directory>
+      <outputDirectory>Library/Frameworks/${artifactId}.framework</outputDirectory>
+      <includes>
+        <include>**/*</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>target</directory>
+      <outputDirectory>Library/WebObjects/lib</outputDirectory>
+      <includes>
+        <include>**/${artifactId}-${version}.jar</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+</assembly>

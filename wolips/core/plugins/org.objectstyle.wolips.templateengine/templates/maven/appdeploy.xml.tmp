@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+  <id>wodocroot</id>
+  <formats>
+    <format>tar.gz</format>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>src/main/webserver-resources</directory>
+      <outputDirectory>Library/WebServer/Documents/WebObjects/${artifactId}.woa/Contents/WebServerResources</outputDirectory>
+      <includes>
+        <include>**/*</include>
+      </includes>
+    </fileSet>
+	<!-- copy over executable bit files -->
+	<fileSet>
+      <directory>target/${artifactId}.woa</directory>
+      <outputDirectory>Library/WebObjects/Applications/${artifactId}.woa</outputDirectory>
+      <includes>
+        <include>*</include>
+      </includes>
+	  <fileMode>755</fileMode>
+    </fileSet>
+
+	<!-- copy over non-executable bit files -->
+	<fileSet>
+      <directory>target/${artifactId}.woa/Contents</directory>
+      <outputDirectory>Library/WebObjects/Applications/${artifactId}.woa/Contents</outputDirectory>
+      <includes>
+        <include>**/*</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+</assembly>
