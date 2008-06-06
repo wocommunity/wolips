@@ -53,6 +53,11 @@
  * <http://objectstyle.org/>.
  *
  */
+ /*Portions of this code are Copyright Apple Inc. 2008 and licensed under the
+ObjectStyle Group Software License, version 1.0.  This license from Apple
+applies solely to the actual code contributed by Apple and to no other code.
+No other license or rights are granted by Apple, explicitly, by implication,
+by estoppel, or otherwise.  All rights reserved.*/
 package org.objectstyle.wolips.templateengine;
 
 import java.util.GregorianCalendar;
@@ -82,6 +87,12 @@ public class WOLipsContext {
 
 	private int htmlBodyType;
 
+	private String artifactId;
+
+	private String gid;
+
+	private String mavenVersion;
+
 	protected WOLipsContext() {
 		super();
 	}
@@ -102,7 +113,7 @@ public class WOLipsContext {
 	}
 
 	/**
-	 * @return
+	 * @return plugin name
 	 */
 	public String getPluginName() {
 		return TemplateEnginePlugin.getPluginId();
@@ -153,20 +164,29 @@ public class WOLipsContext {
 		this.componentName = componentName;
 	}
 
+	/**
+	 * @return package declaration
+	 */
 	public boolean getCreatePackageDeclaration() {
 		return this.packageName != null && this.packageName.length() > 0;
 	}
 
+	/**
+	 * @param packageName
+	 */
 	public void setPackageName(String packageName) {
 		this.packageName = packageName;
 	}
 
+	/**
+	 * @return package name
+	 */
 	public String getPackageName() {
 		return this.packageName;
 	}
 
 	/**
-	 * @return
+	 * @return date
 	 */
 	public String getDate() {
 		return new GregorianCalendar().toString();
@@ -189,7 +209,7 @@ public class WOLipsContext {
 
 	/**
 	 * Return woo file encoding
-	 * @return
+	 * @return woo encoding
 	 */
 	public String getWOOEncoding() {
 		return wooEncoding;
@@ -203,12 +223,63 @@ public class WOLipsContext {
 		this.wooEncoding = encoding;
 	}
 
+	/**
+	 * @return html doc type
+	 */
 	public int getHTMLBodyType () {
 		return this.htmlBodyType;
 	}
 
+	/**
+	 * @param type
+	 */
 	public void setHTMLBodyType(int type) {
 		this.htmlBodyType = type;
+	}
+
+	/**
+	 * @return maven project artifact id
+	 */
+	public String getArtifactId() {
+		return this.artifactId;
+	}
+
+	/**
+	 * Set  maven project artifact id
+	 * @param artifactID
+	 */
+	public void setArtifactId(String artifactID) {
+		this.artifactId = artifactID;
+	}
+
+	/**
+	 * @return maven project artifact id
+	 */
+	public String getGroupId() {
+		return this.gid;
+	}
+
+	/**
+	 * Set maven project group id
+	 * @param groupId
+	 */
+	public void setGroupId(String groupId) {
+		this.gid = groupId;
+	}
+
+	/**
+	 * @return maven project artifact id
+	 */
+	public String getMavenProjectVersion() {
+		return this.mavenVersion;
+	}
+
+	/**
+	 * Set maven project version
+	 * @param version
+	 */
+	public void setMavenProjectVersion(String version) {
+		this.mavenVersion = version;
 	}
 
 }
