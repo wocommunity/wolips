@@ -1,0 +1,26 @@
+<profiles>
+	<profile>
+	<id>webobjects</id>
+	<activation>
+		<activeByDefault>true</activeByDefault>
+	</activation>
+	<repositories>
+	<repository>
+   		<id>webobjects-snapshots</id>
+   		<url>http://localhost/WebObjects</url>
+   		<releases>
+       		<enabled>false</enabled>
+   		</releases>
+	</repository>
+	</repositories>
+	<pluginRepositories>
+    	<pluginRepository>
+        	<id>webobjects-snapshots</id>
+        	<url>http://localhost/WebObjects</url>
+        	<releases>
+            	<enabled>false</enabled>
+        	</releases>
+    	</pluginRepository>
+	</pluginRepositories>
+	</profile>
+</profiles>
