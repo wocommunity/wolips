@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: MavenAppleIntegration Plug-in
+Bundle-SymbolicName: org.objectstyle.wolips.apple.mavenintegration; singleton:=true
+Bundle-Version: 1.0.6
+Bundle-Activator: org.objectstyle.wolips.apple.mavenintegration.AppleMavenPlugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.objectstyle.wolips.wizards,
+ org.objectstyle.wolips.templateengine,
+ org.maven.ide.eclipse,
+ org.objectstyle.wolips.workbenchutilities,
+ org.objectstyle.wolips,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.launching,
+ org.eclipse.ui.ide,
+ org.objectstyle.wolips.locate
+Eclipse-LazyStart: true
+Import-Package: org.apache.maven.plugin
