@@ -39,7 +39,8 @@
 		<ant dir="maven" target="all" />
 		<ant dir="tptp" target="all" />
 		<ant dir="jprofiler" target="all" />
-		<ant dir="scripting" target="all" />		
+		<ant dir="scripting" target="all" />
+		<ant dir="apple" target="all" />				
 	</target>
 
 	<!-- ========================================== -->
@@ -59,6 +60,7 @@
 		<ant dir="core" target="dist" />
 		<ant dir="goodies" target="dist" />
 		<ant dir="maven" target="dist" />
+		<ant dir="apple" target="dist" />
 		<ant dir="tptp" target="dist" />
 		<ant dir="jprofiler" target="dist" />
 		<ant dir="scripting" target="dist" />
