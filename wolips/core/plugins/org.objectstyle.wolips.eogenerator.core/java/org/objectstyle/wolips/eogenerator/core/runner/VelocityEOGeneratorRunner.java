@@ -186,6 +186,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 				context.put(define.getName(), define.getValue());
 			}
 			context.put("list", new ListTool());
+			String extension = eogeneratorModel.getExtension();
 			for (EOModel model : models) {
 				// System.out.println("Generating " + model.getName() + " ...");
 				context.put("model", model);
@@ -205,14 +206,20 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 						context.put("classNameWithoutPackage", entity.getClassNameWithoutPackage());
 						context.put("prefixClassNameWithoutPackage", entity.getPrefixClassNameWithoutPackage());
 
-						String superclassFileTemplate = prefixClassNameWithPackage;
+						String superclassFileTemplate;
 						// StringWriter superclassFilePathWriter = new
 						// StringWriter();
 						// velocityEngine.evaluate(context,
 						// superclassFilePathWriter, "LOG",
 						// superclassFileTemplate);
+						if (BooleanUtils.isFalse(eogeneratorModel.isPackageDirs())) {
+							superclassFileTemplate = entity.getPrefixClassNameWithoutPackage();
+						}
+						else {
+							superclassFileTemplate = prefixClassNameWithPackage.toString().replace('.', '/');
+						}
 
-						String superclassFilePath = superclassFileTemplate.toString().replace('.', '/') + ".java";
+						String superclassFilePath = superclassFileTemplate + "." + extension;
 						File superclassFile = new File(superclassDestination, superclassFilePath);
 						File superclassFolder = superclassFile.getParentFile();
 						if (!superclassFolder.exists()) {
@@ -222,13 +229,19 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 						}
 						WOLipsVelocityUtils.writeTemplate(velocityEngine, context, superclassTemplateName, superclassFile);
 
-						String subclassFileTemplate = classNameWithPackage;
+						String subclassFileTemplate;
 						// StringWriter subclassFilePathWriter = new
 						// StringWriter();
 						// velocityEngine.evaluate(context,
 						// subclassFilePathWriter, "LOG", subclassFileTemplate);
+						if (BooleanUtils.isFalse(eogeneratorModel.isPackageDirs())) {
+							subclassFileTemplate = entity.getClassNameWithoutPackage();
+						}
+						else {
+							subclassFileTemplate = classNameWithPackage.toString().replace('.', '/');
+						}
 
-						String subclassFilePath = subclassFileTemplate.toString().replace('.', '/') + ".java";
+						String subclassFilePath = subclassFileTemplate + "." + extension;
 						File subclassFile = new File(subclassDestination, subclassFilePath);
 						File subclassFolder = subclassFile.getParentFile();
 						if (!subclassFolder.exists()) {

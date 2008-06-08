@@ -115,6 +115,8 @@ public class EOGeneratorModel {
 
 	public static final String LOAD_MODEL_GROUP = "loadModelGroup";
 
+	public static final String EXTENSION = "extension";
+
 	private PropertyChangeSupport _propertyChangeSupport;
 
 	private IPath _projectPath;
@@ -168,6 +170,8 @@ public class EOGeneratorModel {
 	private String _defaultSubclassJavaTemplate;
 	
 	private boolean _java14;
+	
+	private String _extension;
 
 	public EOGeneratorModel(IProject project, String lineInfo) throws ParseException {
 		this(project);
@@ -196,6 +200,7 @@ public class EOGeneratorModel {
 			_defaultJavaTemplate = Preferences.getEOGeneratorJavaTemplate();
 			_defaultSubclassJavaTemplate = Preferences.getEOGeneratorSubclassJavaTemplate();
 			_java14 = Preferences.isEOGeneratorJava14();
+			_extension = "java";
 		}
 		catch (NoClassDefFoundError e) {
 			// IGNORE THIS -- We're not running in Eclipse
@@ -294,6 +299,7 @@ public class EOGeneratorModel {
 		sb.append(escape(getEOGeneratorPath(), false));
 
 		append(sb, "-destination", EOGeneratorModel.toFullPath(workingDirectory, _destination));
+		append(sb, "-extension", getExtension());
 		append(sb, "-filenameTemplate", _filenameTemplate);
 		append(sb, "-java", _java);
 		append(sb, "-javaclient", _javaClient);
@@ -347,6 +353,8 @@ public class EOGeneratorModel {
 			} else if (token.startsWith("-")) {
 				if ("-destination".equalsIgnoreCase(token)) {
 					_destination = nextTokenValue(token, tokenizer);
+				} else if ("-extension".equalsIgnoreCase(token)) {
+					_extension = nextTokenValue(token, tokenizer);
 				} else if ("-filenameTemplate".equalsIgnoreCase(token)) {
 					_filenameTemplate = nextTokenValue(token, tokenizer);
 				} else if ("-java".equalsIgnoreCase(token)) {
@@ -638,6 +646,19 @@ public class EOGeneratorModel {
 		_refModels.add(modelReference);
 		_propertyChangeSupport.firePropertyChange(EOGeneratorModel.REF_MODELS, oldRefModels, _refModels);
 		setDirty(true);
+	}
+
+	public String getExtension() {
+		return _extension;
+	}
+
+	public void setExtension(String extension) {
+		if (isNew(_extension, extension)) {
+			String oldExtension = _extension;
+			_extension = extension;
+			_propertyChangeSupport.firePropertyChange(EOGeneratorModel.EXTENSION, oldExtension, _extension);
+			setDirty(true);
+		}
 	}
 
 	public String getSubclassDestination() {
