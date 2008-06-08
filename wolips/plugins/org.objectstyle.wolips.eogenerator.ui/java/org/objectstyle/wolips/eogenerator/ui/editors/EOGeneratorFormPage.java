@@ -255,6 +255,12 @@ public class EOGeneratorFormPage extends FormPage {
 		Text prefixEntry = toolkit.createText(namingSection, null);
 		prefixEntry.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		_bindingContext.bindValue(SWTObservables.observeText(prefixEntry, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.PREFIX), null, null);
+
+		Label extensionLabel = toolkit.createLabel(namingSection, "Extension:");
+		extensionLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+		Text extensionEntry = toolkit.createText(namingSection, null);
+		extensionEntry.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		_bindingContext.bindValue(SWTObservables.observeText(extensionEntry, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.EXTENSION), null, null);
 	}
 
 	protected void createPathsSection(FormToolkit toolkit, Composite parent) {
