@@ -20,9 +20,11 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
+            adaptable="true"
             class="org.objectstyle.wolips.apple.mavenintegration.properties.AppleMavenPropertyPage"
             id="org.objectstyle.wolips.apple.mavenintegration.properties.AppleMavenPropertyPage"
-            name="Apple Maven">
+            name="Apple Maven"
+            objectClass="org.eclipse.core.resources.IResource">
       </page>
    </extension>
    <extension
