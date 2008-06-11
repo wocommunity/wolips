@@ -373,7 +373,7 @@ public class AppleMavenPropertyPage extends PropertyPage {
 	 *
 	 */
 	public IPath getWOProfilesFile() {
-		IResource res = (IResource) getElement();
+		IResource res = (IResource) getElement().getAdapter(IResource.class);
 		IPath profileRes = res.getProject().getLocation().append("/"+PROFILES_XML_FILE);
 		return profileRes;
 	}
@@ -382,7 +382,7 @@ public class AppleMavenPropertyPage extends PropertyPage {
 	 * @return base directory for selected project
 	 */
 	public IPath getProjectBaseDir() {
-		IResource res = (IResource) getElement();
+		IResource res = (IResource) getElement().getAdapter(IResource.class);
 		return res.getProject().getLocation();
 	}
 
@@ -432,7 +432,7 @@ public class AppleMavenPropertyPage extends PropertyPage {
 	 * @return pom file reference
 	 */
 	public IPath getPOMFile() {
-		IResource res = (IResource) getElement();
+		IResource res = (IResource) getElement().getAdapter(IResource.class);
 		IPath pomRes = res.getProject().getLocation().append("/"+POM_XML_FILE);
 		return pomRes;
 	}
@@ -488,7 +488,7 @@ public class AppleMavenPropertyPage extends PropertyPage {
 	 * @return current IProject
 	 */
 	public IProject getCurrentProject () {
-		IResource res = (IResource) getElement();
+		IResource res = (IResource) getElement().getAdapter(IResource.class);
 		IProject project = res.getProject();
 		if (project == null) {
 			//last ditch effort
