@@ -1,8 +1,13 @@
 package jp.aonir.fuzzyxml;
 
 public interface FuzzyXMLAttribute extends FuzzyXMLNode {
+	public String getNamespace();
 	
 	public String getName();
+  
+	public int getNamespaceOffset();
+	
+  public int getNamespaceLength();
   
   public int getNameOffset();
   

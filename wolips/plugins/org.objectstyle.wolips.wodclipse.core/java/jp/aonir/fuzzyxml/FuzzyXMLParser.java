@@ -601,17 +601,12 @@ public class FuzzyXMLParser {
     // 属性を追加
     AttrInfo[] attrs = info.getAttrs();
     for (int i = 0; i < attrs.length; i++) {
-      FuzzyXMLAttributeImpl attr = new FuzzyXMLAttributeImpl(element, attrs[i].name, attrs[i].value, attrs[i].offset + offset, attrs[i].end
-          - attrs[i].offset + 1, attrs[i].valueOffset);
-      attr.setQuoteCharacter(attrs[i].quote);
-      if (attrs[i].value.indexOf('"') >= 0 || attrs[i].value.indexOf('\'') >= 0 || attrs[i].value.indexOf('<') >= 0
-          || attrs[i].value.indexOf('>') >= 0 || attrs[i].value.indexOf('&') >= 0) {
-        attr.setEscape(false);
-      }
+      FuzzyXMLAttributeImpl attr = createFuzzyXMLAttribute(element, offset, attrs[i]);
       element.appendChild(attr);
     }
 
     FuzzyXMLElement branchNode = new FuzzyXMLElementImpl(element, "", 0, 0, 0) {
+      @Override
       public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer) {
       }
     };
@@ -688,6 +683,25 @@ public class FuzzyXMLParser {
     handleStartTag(element, info, offset, end);
   }
 
+  protected FuzzyXMLAttributeImpl createFuzzyXMLAttribute(FuzzyXMLElement element, int offset, AttrInfo attrInfo) {
+    String namespace = null;
+    String name = attrInfo.name;
+    if (name != null) {
+      int colonIndex = name.indexOf(':');
+      if (colonIndex != -1) {
+        namespace = name.substring(0, colonIndex);
+        name = name.substring(colonIndex + 1);
+      }
+    }
+    FuzzyXMLAttributeImpl attr = new FuzzyXMLAttributeImpl(element, namespace, name, attrInfo.value, attrInfo.offset + offset, attrInfo.end - attrInfo.offset + 1, attrInfo.valueOffset);
+    attr.setQuoteCharacter(attrInfo.quote);
+    if (attrInfo.value.indexOf('"') >= 0 || attrInfo.value.indexOf('\'') >= 0 || attrInfo.value.indexOf('<') >= 0
+        || attrInfo.value.indexOf('>') >= 0 || attrInfo.value.indexOf('&') >= 0) {
+      attr.setEscape(false);
+    }
+    return attr;
+  }
+  
   /** 開始タグを処理します。 */
   private void handleStartTag(FuzzyXMLElement element, TagInfo info, int offset, int end) {
     // 属性を追加
@@ -703,18 +717,13 @@ public class FuzzyXMLParser {
       //				}
       //				element.addNamespaceURI(prefix,uri);
       //			}
-      FuzzyXMLAttributeImpl attr = new FuzzyXMLAttributeImpl(element, attrs[i].name, attrs[i].value, attrs[i].offset + offset, attrs[i].end - attrs[i].offset + 1, attrs[i].valueOffset);
-      attr.setQuoteCharacter(attrs[i].quote);
-      if (attrs[i].value.indexOf('"') >= 0 || attrs[i].value.indexOf('\'') >= 0 || attrs[i].value.indexOf('<') >= 0
-          || attrs[i].value.indexOf('>') >= 0 || attrs[i].value.indexOf('&') >= 0) {
-        attr.setEscape(false);
-      }
-      element.appendChild(attr);
+      element.appendChild(createFuzzyXMLAttribute(element, offset, attrs[i]));
     }
     _stack.push(element);
     _nonCloseElements.add(element);
 
     FuzzyXMLElement branchNode = new FuzzyXMLElementImpl(element, "", 0, 0, 0) {
+      @Override
       public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer) {
       }
     };

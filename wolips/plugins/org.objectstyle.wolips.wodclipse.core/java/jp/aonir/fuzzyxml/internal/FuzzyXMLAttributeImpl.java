@@ -10,21 +10,23 @@ public class FuzzyXMLAttributeImpl extends AbstractFuzzyXMLNode implements Fuzzy
 
   private char _quote = '"';
   private boolean _escape = true;
+  private String _namespace;
   private String _name;
   private String _value;
   private int _valueOffset;
 
-  public FuzzyXMLAttributeImpl(String name) {
-    this(null, name, null, -1, -1, -1);
+  public FuzzyXMLAttributeImpl(String namespace, String name) {
+    this(null, namespace, name, null, -1, -1, -1);
   }
 
-  public FuzzyXMLAttributeImpl(String name, String value) {
-    this(null, name, null, -1, -1, -1);
+  public FuzzyXMLAttributeImpl(String namespace, String name, String value) {
+    this(null, namespace, name, value, -1, -1, -1);
     setValue(value);
   }
 
-  public FuzzyXMLAttributeImpl(FuzzyXMLNode parent, String name, String value, int offset, int length, int valueOffset) {
+  public FuzzyXMLAttributeImpl(FuzzyXMLNode parent, String namespace, String name, String value, int offset, int length, int valueOffset) {
     super(parent, offset, length);
+    this._namespace = namespace;
     this._name = name;
     this._value = value;
     _valueOffset = valueOffset;
@@ -34,8 +36,27 @@ public class FuzzyXMLAttributeImpl extends AbstractFuzzyXMLNode implements Fuzzy
     return _name;
   }
   
-  public int getNameOffset() {
+  public String getNamespace() {
+    return _namespace;
+  }
+  
+  public int getNamespaceOffset() {
     return getOffset() + 1;
+  }
+  
+  public int getNamespaceLength() {
+    return _namespace != null ? _namespace.length() : 0;
+  }
+  
+  public int getNameOffset() {
+    int nameOffset;
+    if (_namespace == null) {
+      nameOffset = getOffset() + 1;
+    }
+    else {
+      nameOffset = getNamespaceOffset() + getNamespaceLength() + 1;
+    }
+    return nameOffset;
   }
   
   public int getNameLength() {

@@ -8,7 +8,7 @@ public interface FuzzyXMLDocument {
     
 	public FuzzyXMLElement createElement(String name);
 	
-	public FuzzyXMLAttribute createAttribute(String name);
+	public FuzzyXMLAttribute createAttribute(String namespace, String name);
 	
 	public FuzzyXMLText createText(String value);
 	
