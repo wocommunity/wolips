@@ -77,7 +77,9 @@ public class EOAttributeAdvancedEditorSection extends AbstractPropertySection {
 
 	private Button _clientClassPropertyButton;
 
-  private Button _commonClassPropertyButton;
+	private Button _commonClassPropertyButton;
+
+	private Button _generateSourceButton;
 
 	private Text _readFormatText;
 
@@ -112,8 +114,11 @@ public class EOAttributeAdvancedEditorSection extends AbstractPropertySection {
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.CLIENT_CLASS_PROPERTY), SWT.NONE);
 		_clientClassPropertyButton = new Button(topForm, SWT.CHECK);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.COMMON_CLASS_PROPERTY), SWT.NONE);
-    _commonClassPropertyButton = new Button(topForm, SWT.CHECK);
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.COMMON_CLASS_PROPERTY), SWT.NONE);
+		_commonClassPropertyButton = new Button(topForm, SWT.CHECK);
+
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.GENERATE_SOURCE), SWT.NONE);
+		_generateSourceButton = new Button(topForm, SWT.CHECK);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.READ_FORMAT), SWT.NONE);
 		_readFormatText = new Text(topForm, SWT.BORDER);
@@ -141,7 +146,8 @@ public class EOAttributeAdvancedEditorSection extends AbstractPropertySection {
 			_bindingContext = new DataBindingContext();
 			_bindingContext.bindValue(SWTObservables.observeSelection(_readOnlyButton), BeansObservables.observeValue(_attribute, EOAttribute.READ_ONLY), null, null);
 			_bindingContext.bindValue(SWTObservables.observeSelection(_clientClassPropertyButton), BeansObservables.observeValue(_attribute, EOAttribute.CLIENT_CLASS_PROPERTY), null, null);
-      _bindingContext.bindValue(SWTObservables.observeSelection(_commonClassPropertyButton), BeansObservables.observeValue(_attribute, EOAttribute.COMMON_CLASS_PROPERTY), null, null);
+			_bindingContext.bindValue(SWTObservables.observeSelection(_commonClassPropertyButton), BeansObservables.observeValue(_attribute, EOAttribute.COMMON_CLASS_PROPERTY), null, null);
+			_bindingContext.bindValue(SWTObservables.observeSelection(_generateSourceButton), BeansObservables.observeValue(_attribute, EOAttribute.GENERATE_SOURCE), null, null);
 			_bindingContext.bindValue(SWTObservables.observeText(_readFormatText, SWT.Modify), BeansObservables.observeValue(_attribute, EOAttribute.READ_FORMAT), null, null);
 			_bindingContext.bindValue(SWTObservables.observeText(_writeFormatText, SWT.Modify), BeansObservables.observeValue(_attribute, EOAttribute.WRITE_FORMAT), null, null);
 		}

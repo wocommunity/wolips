@@ -59,7 +59,14 @@ public class StringLabelProvider implements ILabelProvider {
 	}
 
 	public String getText(Object element) {
-		return (String) element;
+		String str = null;
+		if (element instanceof String) {
+			str = (String)element;
+		}
+		else if (element != null) {
+			str = element.toString();
+		}
+		return str;
 	}
 
 	public void addListener(ILabelProviderListener listener) {

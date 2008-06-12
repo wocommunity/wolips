@@ -61,13 +61,11 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
-import org.objectstyle.wolips.baseforplugins.util.StringUtils;
 import org.objectstyle.wolips.baseforplugins.util.URLUtils;
 import org.objectstyle.wolips.eomodeler.core.model.history.EOEntityAddedEvent;
 import org.objectstyle.wolips.eomodeler.core.model.history.EOEntityDeletedEvent;
 import org.objectstyle.wolips.eomodeler.core.model.history.ModelEvents;
-import org.objectstyle.wolips.eomodeler.core.utils.NameSyncUtils;
-import org.objectstyle.wolips.eomodeler.core.utils.NameSyncUtils.NamePair;
+import org.objectstyle.wolips.eomodeler.core.utils.NamingConvention;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
 import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 
@@ -95,6 +93,10 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	public static final String DATABASE_CONFIG = "databaseConfig";
 
 	public static final String DATABASE_CONFIGS = "databaseConfigs";
+
+	public static final String ATTRIBUTE_NAMING_CONVENTION = "attributeNamingConvention";
+
+	public static final String ENTITY_NAMING_CONVENTION = "entityNamingConvention";
 
 	private EOModelGroup myModelGroup;
 
@@ -126,6 +128,10 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 
 	private ModelEvents _modelEvents;
 
+	private NamingConvention _entityNamingConvention;
+
+	private NamingConvention _attributeNamingConvention;
+
 	public EOModel(String _name) {
 		myName = _name;
 		myEntities = new PropertyListSet<EOEntity>();
@@ -137,6 +143,8 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		myVersion = "2.1";
 		myModelMap = new EOModelMap();
 		_modelEvents = new ModelEvents();
+		_entityNamingConvention = NamingConvention.DEFAULT;
+		_attributeNamingConvention = NamingConvention.DEFAULT;
 	}
 
 	public EOModel(URL modelURL) throws EOModelException, IOException {
@@ -160,6 +168,26 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 
 	public void _setModelGroup(EOModelGroup _modelGroup) {
 		myModelGroup = _modelGroup;
+	}
+
+	public void setEntityNamingConvention(NamingConvention entityNamingConvention) {
+		NamingConvention oldEntityNamingConvention = _entityNamingConvention;
+		_entityNamingConvention = entityNamingConvention;
+		firePropertyChange(EOModel.ENTITY_NAMING_CONVENTION, oldEntityNamingConvention, _entityNamingConvention);
+	}
+
+	public NamingConvention getEntityNamingConvention() {
+		return _entityNamingConvention;
+	}
+
+	public void setAttributeNamingConvention(NamingConvention attributeNamingConvention) {
+		NamingConvention oldAttributeNamingConvention = _attributeNamingConvention;
+		_attributeNamingConvention = attributeNamingConvention;
+		firePropertyChange(EOModel.ATTRIBUTE_NAMING_CONVENTION, oldAttributeNamingConvention, _attributeNamingConvention);
+	}
+
+	public NamingConvention getAttributeNamingConvention() {
+		return _attributeNamingConvention;
 	}
 
 	public Set<EOModelReferenceFailure> getReferenceFailures() {
@@ -216,32 +244,6 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			}
 		}
 		return guessPackageName;
-	}
-
-	public Set<NamePair> getEntityExternalNamePairs(EOEntity excludeEntity) {
-		Set<NamePair> externalNamePairs = new HashSet<NamePair>();
-		for (EOEntity entity : getEntities()) {
-			if (excludeEntity == null || entity != excludeEntity) {
-				externalNamePairs.add(new NameSyncUtils.NamePair(entity.getName(), entity.getExternalName()));
-			}
-		}
-		return externalNamePairs;
-	}
-
-	public EOEntity _getTemplateNameEntity() {
-		EOEntity templateNameEntity = null;
-		Set<EOEntity> entities = getEntities();
-		for (EOEntity entity : entities) {
-			String entityName = entity.getName();
-			if (StringUtils.camelCaseToUnderscore(entityName).indexOf('_') != -1) {
-				templateNameEntity = entity;
-				break;
-			}
-		}
-		if (templateNameEntity == null && !entities.isEmpty()) {
-			templateNameEntity = entities.iterator().next();
-		}
-		return templateNameEntity;
 	}
 
 	public EOEntity addBlankEntity(String name) throws DuplicateNameException {
@@ -841,7 +843,10 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			}
 		}
 
-		EOModelMap entityModelerMap = new EOModelMap((Map) getUserInfo().get(UserInfoableEOModelObject.ENTITY_MODELER_KEY));
+		EOModelMap entityModelerMap = getEntityModelerMap(false);
+		_entityNamingConvention = NamingConvention.loadFromMap("entityNamingConvention", entityModelerMap);
+		_attributeNamingConvention = NamingConvention.loadFromMap("attributeNamingConvention", entityModelerMap);
+
 		Map<String, Map> databaseConfigs = entityModelerMap.getMap("databaseConfigs");
 		if (databaseConfigs != null) {
 			for (Map.Entry<String, Map> databaseConfigEntry : databaseConfigs.entrySet()) {
@@ -946,23 +951,20 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		}
 		modelMap.setSet("storedProcedures", storedProcedures, true);
 
-		EOModelMap entityModelerMap = new EOModelMap((Map) getUserInfo().get(UserInfoableEOModelObject.ENTITY_MODELER_KEY));
+		EOModelMap entityModelerMap = getEntityModelerMap(true);
 		Map<String, Map> databaseConfigs = new PropertyListMap<String, Map>();
 		for (EODatabaseConfig databaseConfig : myDatabaseConfigs) {
 			databaseConfigs.put(databaseConfig.getName(), databaseConfig.toMap());
 		}
 		entityModelerMap.setMap("databaseConfigs", databaseConfigs, true);
 
+		NamingConvention.toMap(_entityNamingConvention, "entityNamingConvention", entityModelerMap);
+		NamingConvention.toMap(_attributeNamingConvention, "attributeNamingConvention", entityModelerMap);
+
 		if (myActiveDatabaseConfig == null || databaseConfigs.get(myActiveDatabaseConfig.getName()) == null) {
 			entityModelerMap.remove("activeDatabaseConfigName");
 		} else {
 			entityModelerMap.put("activeDatabaseConfigName", myActiveDatabaseConfig.getName());
-		}
-
-		if (entityModelerMap.isEmpty()) {
-			getUserInfo().remove(UserInfoableEOModelObject.ENTITY_MODELER_KEY);
-		} else {
-			getUserInfo().put(UserInfoableEOModelObject.ENTITY_MODELER_KEY, entityModelerMap);
 		}
 
 		writeUserInfo(modelMap);
