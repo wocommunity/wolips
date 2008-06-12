@@ -43,6 +43,10 @@ public class BindingValueKeyPath {
   private String _helperFunction;
 
   private TypeCache _cache;
+  
+  private Boolean _gettable;
+  
+  private Boolean _settable;
 
   public BindingValueKeyPath(String keyPath, IType contextType) throws JavaModelException {
     this(keyPath, contextType, contextType.getJavaProject(), new TypeCache());
@@ -136,14 +140,30 @@ public class BindingValueKeyPath {
         for (int keyNum = 0; currentType != null && keyNum < _bindingKeyNames.length; keyNum++) {
           // we can't verify helper functions or @arrayOps
           //System.out.println("BindingValueKeyPath.BindingValueKeyPath: checking " + currentType.getFullyQualifiedName() + " " + _bindingKeyNames[keyNum]);
-          List<BindingValueKey> bindingKeys = cache.getBindingValueAccessorKeys(javaProject, currentType, _bindingKeyNames[keyNum]);
-          if (!bindingKeys.isEmpty()) {
+          
+          boolean keyAccessible = false;
+          List<BindingValueKey> bindingAccessorKeys = cache.getBindingValueAccessorKeys(javaProject, currentType, _bindingKeyNames[keyNum]);
+          if (bindingAccessorKeys.isEmpty() && keyNum == _bindingKeyNames.length - 1) {
+            _gettable = Boolean.FALSE;
+            List<BindingValueKey> bindingMutatorKeys = cache.getBindingValueMutatorKeys(javaProject, currentType, _bindingKeyNames[keyNum]);
+            if (!bindingMutatorKeys.isEmpty()) {
+              keyAccessible = true;
+              _settable = Boolean.TRUE;
+              BindingValueKey bindingKey = bindingMutatorKeys.get(0);
+              bindingKeysList.add(bindingKey);
+              currentType = null;
+            }
+          }
+          else if (!bindingAccessorKeys.isEmpty()) {
+            keyAccessible = true;
+            _gettable = Boolean.TRUE;
             // NTS: Deal with multiple matches ...
-            BindingValueKey bindingKey = bindingKeys.get(0);
+            BindingValueKey bindingKey = bindingAccessorKeys.get(0);
             bindingKeysList.add(bindingKey);
             currentType = bindingKey.getNextType();
           }
-          else {
+          
+          if (!keyAccessible) {
             if (BindingReflectionUtils.isNSKeyValueCoding(currentType, cache) || "java.lang.Object".equals(currentType.getFullyQualifiedName())) {
               _nsKVC = true;
               if (BindingReflectionUtils.isNSCollection(currentType, cache)) {
@@ -239,19 +259,35 @@ public class BindingValueKeyPath {
     return _valid;
   }
 
+  public boolean isGettable() {
+    boolean gettable = false;
+    if (_gettable != null) {
+      gettable = _gettable.booleanValue();
+    }
+    else {
+      gettable = isValid();
+    }
+    return gettable;
+  }
+  
   public boolean isSettable() throws JavaModelException {
     boolean settable = false;
-    BindingValueKey lastBindingKey = getLastBindingKey();
-    if (lastBindingKey != null) {
-      IMember bindingMember = lastBindingKey.getBindingMember();
-      if (bindingMember instanceof IField) {
-        settable = true;
-      }
-      else if (bindingMember instanceof IMethod) {
-        IType declaringType = bindingMember.getDeclaringType();
-        List<BindingValueKey> bindingKeys = _cache.getBindingValueMutatorKeys(_javaProject, declaringType, lastBindingKey.getBindingName());
-        if (!bindingKeys.isEmpty()) {
+    if (_settable != null) {
+      settable = _settable.booleanValue();
+    }
+    else {
+      BindingValueKey lastBindingKey = getLastBindingKey();
+      if (lastBindingKey != null) {
+        IMember bindingMember = lastBindingKey.getBindingMember();
+        if (bindingMember instanceof IField) {
           settable = true;
+        }
+        else if (bindingMember instanceof IMethod) {
+          IType declaringType = bindingMember.getDeclaringType();
+          List<BindingValueKey> bindingKeys = _cache.getBindingValueMutatorKeys(_javaProject, declaringType, lastBindingKey.getBindingName());
+          if (!bindingKeys.isEmpty()) {
+            settable = true;
+          }
         }
       }
     }

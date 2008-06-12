@@ -3,27 +3,35 @@ package org.objectstyle.wolips.bindings.wod;
 import org.eclipse.jface.text.Position;
 
 public class SimpleWodBinding extends AbstractWodBinding {
+  private String _namespace;
+
   private String _name;
 
   private String _value;
 
+  private Position _namespacePosition;
   private Position _namePosition;
-
   private Position _valuePosition;
+  
   private int _lineNumber;
 
   private int _startOffset;
   private int _endOffset;
 
-  public SimpleWodBinding(String name, String value) {
-    this(name, value, null, null, -1);
+  public SimpleWodBinding(IWodBinding wodBinding) {
+    this(wodBinding.getNamespace(), wodBinding.getName(), wodBinding.getValue(), wodBinding.getNamespacePosition(), wodBinding.getNamePosition(), wodBinding.getValuePosition(), wodBinding.getLineNumber());
   }
 
-  public SimpleWodBinding(String name, String value, boolean literal) {
-    this(name, (literal) ? ("\"" + value + "\"") : value, null, null, -1);
+  public SimpleWodBinding(String namespace, String name, String value) {
+    this(namespace, name, value, null, null, null, -1);
   }
 
-  public SimpleWodBinding(String name, String value, Position namePosition, Position valuePosition, int lineNumber) {
+  public SimpleWodBinding(String namespace, String name, String value, boolean literal) {
+    this(namespace, name, (literal) ? ("\"" + value + "\"") : value, null, null, null, -1);
+  }
+
+  public SimpleWodBinding(String namespace, String name, String value, Position namespacePosition, Position namePosition, Position valuePosition, int lineNumber) {
+    _namespace = namespace;
     _name = name;
     _value = value;
     _namePosition = namePosition;
@@ -32,11 +40,11 @@ public class SimpleWodBinding extends AbstractWodBinding {
     _startOffset = -1;
     _endOffset = -1;
   }
-
-  public SimpleWodBinding(IWodBinding wodBinding) {
-    this(wodBinding.getName(), wodBinding.getValue(), wodBinding.getNamePosition(), wodBinding.getValuePosition(), wodBinding.getLineNumber());
+  
+  public String getNamespace() {
+    return _namespace;
   }
-
+  
   public String getName() {
     return _name;
   }
@@ -52,19 +60,45 @@ public class SimpleWodBinding extends AbstractWodBinding {
       setValuePosition(new Position(_valuePosition.getOffset(), _value.length()));
     }
   }
-
+  
+  public void setNamespace(String namespace) {
+    String oldNamespace = _namespace;
+    _namespace = namespace;
+    if (_namespacePosition != null && _namespace != null) {
+      setNamespacePosition(new Position(_namespacePosition.getOffset(), _namespace.length()));
+    }
+    int oldLength;
+    if (oldNamespace != null) {
+      oldLength = oldNamespace.length();
+    }
+    else {
+      oldLength = 0;
+    }
+    
+    int newLength = namespace.length();
+    int diff = newLength - oldLength;
+    
+    setNamePosition(new Position(_namePosition.getOffset() + diff, _valuePosition.getLength()));
+    setValuePosition(new Position(_valuePosition.getOffset() + diff, _valuePosition.getLength()));
+  }
+  
   public void setName(String name) {
     String oldName = _name;
     _name = name;
     if (_namePosition != null && _name != null) {
       setNamePosition(new Position(_namePosition.getOffset(), _name.length()));
     }
+    int oldLength;
     if (oldName != null) {
-      int oldLength = oldName.length();
-      int newLength = name.length();
-      int diff = newLength - oldLength;
-      setValuePosition(new Position(_valuePosition.getOffset() + diff, _valuePosition.getLength()));
+      oldLength = oldName.length();
     }
+    else {
+      oldLength = 0;
+    }
+    
+    int newLength = name.length();
+    int diff = newLength - oldLength;
+    setValuePosition(new Position(_valuePosition.getOffset() + diff, _valuePosition.getLength()));
   }
 
   public void setEndOffset(int endOffset) {
@@ -94,6 +128,9 @@ public class SimpleWodBinding extends AbstractWodBinding {
     if (_startOffset != -1) {
       startOffset = _startOffset;
     }
+    else if (_namespacePosition != null) {
+      startOffset = _namespacePosition.getOffset();
+    }
     else if (_namePosition != null) {
       startOffset = _namePosition.getOffset();
     }
@@ -101,6 +138,14 @@ public class SimpleWodBinding extends AbstractWodBinding {
       startOffset = 0;
     }
     return startOffset;
+  }
+  
+  public void setNamespacePosition(Position namespacePosition) {
+    _namespacePosition = namespacePosition;
+  }
+  
+  public Position getNamespacePosition() {
+    return _namespacePosition;
   }
 
   public void setNamePosition(Position namePosition) {
