@@ -21,10 +21,12 @@ public class FuzzyXMLCommentImpl extends FuzzyXMLElementImpl implements FuzzyXML
     _value = text;
   }
 
+  @Override
   public String getValue() {
     return _value;
   }
   
+  @Override
   public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer) {
     boolean renderSurroundingTags = true;
     

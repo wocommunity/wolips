@@ -54,7 +54,7 @@ public interface FuzzyXMLElement extends FuzzyXMLNode, FuzzyXMLFormat {
 	
 	public void removeAttributeNode(FuzzyXMLAttribute attr);
 	
-	public void setAttribute(String name, String value);
+	public void setAttribute(String name, String namespace, String value);
 	
 	public void removeAttribute(String name);
 	

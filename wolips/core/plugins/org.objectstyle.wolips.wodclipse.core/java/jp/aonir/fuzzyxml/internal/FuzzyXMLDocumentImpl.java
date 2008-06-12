@@ -67,8 +67,8 @@ public class FuzzyXMLDocumentImpl implements FuzzyXMLDocument {
     return new FuzzyXMLElementImpl(name);
   }
 
-  public FuzzyXMLAttribute createAttribute(String name) {
-    return new FuzzyXMLAttributeImpl(name);
+  public FuzzyXMLAttribute createAttribute(String namespace, String name) {
+    return new FuzzyXMLAttributeImpl(namespace, name, null);
   }
 
   public FuzzyXMLText createText(String value) {

@@ -590,8 +590,8 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     return null;
   }
 
-  public void setAttribute(String name, String value) {
-    FuzzyXMLAttribute attr = new FuzzyXMLAttributeImpl(name, value);
+  public void setAttribute(String namespace, String name, String value) {
+    FuzzyXMLAttribute attr = new FuzzyXMLAttributeImpl(namespace, name, value);
     setAttribute(attr);
   }
 
@@ -671,7 +671,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     int textblocks = 0;
     int elementcount = 0;
     for (int i = 0; i < children.length; i++) {
-      FuzzyXMLNode child = (FuzzyXMLNode)children[i];
+      FuzzyXMLNode child = children[i];
       if (child instanceof FuzzyXMLText) {
         FuzzyXMLText text = (FuzzyXMLText)child;
         if (!text.isHidden()) {
