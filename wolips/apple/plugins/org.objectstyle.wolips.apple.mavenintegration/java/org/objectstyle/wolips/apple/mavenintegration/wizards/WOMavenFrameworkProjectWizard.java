@@ -83,14 +83,14 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.maven.ide.eclipse.Maven2Plugin;
-import org.maven.ide.eclipse.embedder.BuildPathManager;
+import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
+import org.eclipse.ui.dialogs.WizardNewProjectReferencePage;
+import org.maven.ide.eclipse.MavenPlugin;
+import org.maven.ide.eclipse.project.BuildPathManager;
+import org.objectstyle.wolips.core.resources.internal.build.Nature;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
 import org.objectstyle.wolips.wizards.Messages;
-
-import org.eclipse.ui.dialogs.*;
-import org.objectstyle.wolips.core.resources.internal.build.Nature;
 
 /**
  * Main wizard for creating WebObjects applications linking against Apple Maven repository
@@ -122,7 +122,7 @@ public class WOMavenFrameworkProjectWizard extends AbstractMavenProjectWizard {
 	}
 
 	protected MavenDependenciesProjectWizardPage createMavenDependencyPage() {
-		MavenDependenciesProjectWizardPage dependsPage = new MavenDependenciesProjectWizardPage(null);
+		MavenDependenciesProjectWizardPage dependsPage = new MavenDependenciesProjectWizardPage();
 		return dependsPage;
 	}
 
@@ -238,7 +238,7 @@ public class WOMavenFrameworkProjectWizard extends AbstractMavenProjectWizard {
 	private static void createMaven2Project(IProject project, IClasspathEntry[] classpathEntries, IPath outputPath)
 	throws CoreException {
 		IProjectDescription description = project.getDescription();
-		description.setNatureIds(new String[] {JavaCore.NATURE_ID, Maven2Plugin.NATURE_ID});
+		description.setNatureIds(new String[] {JavaCore.NATURE_ID, MavenPlugin.NATURE_ID});
 		project.setDescription(description, null);
 
 		IJavaProject javaProject = JavaCore.create(project);

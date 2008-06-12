@@ -86,7 +86,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.maven.ide.eclipse.Maven2Plugin;
+import org.maven.ide.eclipse.MavenPlugin;
 import org.objectstyle.wolips.apple.mavenintegration.AppleMavenPlugin;
 import org.objectstyle.wolips.wizards.NewWOProjectWizard;
 
@@ -173,7 +173,7 @@ public abstract class AbstractMavenProjectWizard extends NewWOProjectWizard{
 		}
 
 		IContainer container = (IContainer) resource;
-		final IFile file = container.getFile(new Path(Maven2Plugin.POM_FILE_NAME));
+		final IFile file = container.getFile(new Path(MavenPlugin.POM_FILE_NAME));
 		if( file.exists()) {
 			// TODO show warning popup
 			new RuntimeException( "POM already exists");
@@ -182,7 +182,7 @@ public abstract class AbstractMavenProjectWizard extends NewWOProjectWizard{
 		try {
 			StringWriter w = new StringWriter();
 
-			MavenEmbedder mavenEmbedder = Maven2Plugin.getDefault().getMavenEmbedderManager().getWorkspaceEmbedder();
+			MavenEmbedder mavenEmbedder = MavenPlugin.getDefault().getMavenEmbedderManager().getWorkspaceEmbedder();
 			mavenEmbedder.writeModel(w, model, true);
 
 			file.create( new ByteArrayInputStream( w.toString().getBytes( "ASCII" ) ), true, null );
