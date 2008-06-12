@@ -67,101 +67,100 @@ import java.util.List;
 import org.apache.maven.model.Dependency;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.maven.ide.eclipse.embedder.ResolverConfiguration;
-import org.maven.ide.eclipse.wizards.Maven2DependenciesWizardPage;
+import org.maven.ide.eclipse.wizards.MavenDependenciesWizardPage;
 import org.objectstyle.wolips.wizards.Messages;
 
 /**
  * Wizard page to add dependencies to a Maven project
  */
-public class MavenDependenciesProjectWizardPage extends Maven2DependenciesWizardPage {
+public class MavenDependenciesProjectWizardPage extends MavenDependenciesWizardPage {
 
-	/**
-	 * @param resolverConfiguration
-	 */
-	public MavenDependenciesProjectWizardPage(ResolverConfiguration resolverConfiguration) {
-		super(resolverConfiguration);
-		setTitle(Messages.getString("MavenDependenciesProjectWizardPage.title"));
-		setDescription(Messages.getString("MavenDependenciesProjectWizardPage.description"));
-		setPageComplete(true);
-	}
+  /**
+   * @param resolverConfiguration
+   */
+  public MavenDependenciesProjectWizardPage() {
+    setTitle(Messages.getString("MavenDependenciesProjectWizardPage.title"));
+    setDescription(Messages.getString("MavenDependenciesProjectWizardPage.description"));
+    setPageComplete(true);
+    setDependencies(new Dependency[0]);
+  }
 
+  @Override
+  public void createControl(Composite parent) {
+    super.createControl(parent);
+    Control[] controls = parent.getChildren();
+    printAllControls(controls); //Debug
+    setPageComplete(true);
+    ((WOMavenApplicationProjectWizard) this.getWizard()).setCurrentDependencies(this.getCombinedDependencies());
+  }
 
-	@Override
-	public void createControl(Composite parent) {
-		super.createControl(parent);
-		Control[] controls = parent.getChildren();
-		printAllControls(controls); //Debug
-		setPageComplete(true);
-		((WOMavenApplicationProjectWizard)this.getWizard()).setCurrentDependencies(this.getCombinedDependencies());
-	}
+  /**
+   * @return list of dependencies
+   */
+  @SuppressWarnings("unchecked")
+  public List getCombinedDependencies() {
 
-	/**
-	 * @return list of dependencies
-	 */
-	@SuppressWarnings("unchecked")
-	public List getCombinedDependencies() {
+    //TODO: fix default runtime version
+    ArrayList updatedList = new ArrayList(this.defaultDependencies("5.4.2-SNAPSHOT"));
+    updatedList.addAll(new ArrayList(Arrays.asList(this.getDependencies())));
 
-		//TODO: fix default runtime version
-		ArrayList updatedList = new ArrayList(this.defaultDependencies("5.4.2-SNAPSHOT"));
-		updatedList.addAll(new ArrayList(Arrays.asList(this.getDependencies())));
+    return updatedList;
+  }
 
-		return updatedList;
-	}
+  /**
+   * @param version
+   * @return dependency list
+   */
+  public static List<Dependency> defaultDependencies(String version) {
+    ArrayList<Dependency> list = new ArrayList<Dependency>();
+    String aVersion = version;
+    String groupID = "com.webobjects";
+    if (aVersion == null || aVersion.length() < 0) {
+      aVersion = "5.5-SNAPSHOT";
+    }
+    list.add(createDependency("JavaXML", groupID, aVersion));
+    list.add(createDependency("JavaFoundation", groupID, aVersion));
+    list.add(createDependency("JavaWebObjects", groupID, aVersion));
+    list.add(createDependency("JavaWOExtensions", groupID, aVersion));
+    list.add(createDependency("JavaEOControl", groupID, aVersion));
+    list.add(createDependency("JavaEOAccess", groupID, aVersion));
+    list.add(createDependency("JavaJDBCAdaptor", groupID, aVersion));
 
-	/**
-	 * @param version
-	 * @return dependency list
-	 */
-	public static List<Dependency> defaultDependencies(String version) {
-		ArrayList<Dependency> list = new ArrayList<Dependency>();
-		String aVersion = version;
-		String groupID = "com.webobjects";
-		if (aVersion == null || aVersion.length() < 0) {
-			aVersion = "5.5-SNAPSHOT";
-		}
-		list.add(createDependency("JavaXML",groupID, aVersion));
-		list.add(createDependency("JavaFoundation",groupID, aVersion));
-		list.add(createDependency("JavaWebObjects",groupID, aVersion));
-		list.add(createDependency("JavaWOExtensions",groupID, aVersion));
-		list.add(createDependency("JavaEOControl",groupID, aVersion));
-		list.add(createDependency("JavaEOAccess",groupID, aVersion));
-		list.add(createDependency("JavaJDBCAdaptor",groupID, aVersion));
+    return list;
+  }
 
-		return list;
-	}
+  /**
+   * @param artifactID
+   * @param groupID
+   * @param version
+   * @return Dependency
+   */
+  public static Dependency createDependency(String artifactID, String groupID, String version) {
+    Dependency dep = new Dependency();
+    dep.setArtifactId(artifactID);
+    dep.setGroupId(groupID);
+    dep.setVersion(version);
 
-	/**
-	 * @param artifactID
-	 * @param groupID
-	 * @param version
-	 * @return Dependency
-	 */
-	public static Dependency createDependency(String artifactID, String groupID, String version) {
-		Dependency dep = new Dependency();
-		dep.setArtifactId(artifactID);
-		dep.setGroupId(groupID);
-		dep.setVersion(version);
+    return dep;
+  }
 
-		return dep;
-	}
+  static void printAllControls(Control[] controls) {
+    System.out.println("---------------");
+    for (Control c : controls) {
+      if (c instanceof Composite) {
+        printAllControls(((Composite) c).getChildren());
+      }
+      else {
+        System.out.println("Control: " + c.getClass().getName() + " other:" + c.toString());
+      }
+    }
+  }
 
-	static void printAllControls(Control[] controls) {
-		System.out.println("---------------");
-		for (Control c : controls) {
-			if (c instanceof Composite) {
-				printAllControls(((Composite)c).getChildren());
-			} else {
-				System.out.println("Control: "+c.getClass().getName()+" other:"+c.toString());
-			}
-		}
-	}
+  /**
+   *
+   */
+  protected void addDefaultDependencies() {
+    List dependencies = AbstractMavenProjectWizard.defaultDependencies(null);
 
-	/**
-	 *
-	 */
-	protected void addDefaultDependencies() {
-		List dependencies = AbstractMavenProjectWizard.defaultDependencies(null);
-
-	}
+  }
 }
