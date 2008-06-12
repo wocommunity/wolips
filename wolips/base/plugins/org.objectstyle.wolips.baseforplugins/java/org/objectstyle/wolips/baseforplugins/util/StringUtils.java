@@ -169,6 +169,9 @@ public class StringUtils {
     			underscore.append("_");
     			lastCharacterWasWordBreak = true;
     		}
+    		else if (ch == '_') {
+    			lastCharacterWasWordBreak = true;
+    		}
     		else {
     			lastCharacterWasWordBreak = false;
     		}
