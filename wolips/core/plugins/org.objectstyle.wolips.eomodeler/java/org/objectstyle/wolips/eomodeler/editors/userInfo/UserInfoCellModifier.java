@@ -94,6 +94,7 @@ public class UserInfoCellModifier extends TablePropertyCellModifier {
 		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	protected boolean _modify(Object _element, String _property, Object _value) throws Throwable {
 		boolean modified = false;
 		Object key = _element;

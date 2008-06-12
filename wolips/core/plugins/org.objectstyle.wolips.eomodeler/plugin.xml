@@ -81,6 +81,11 @@
          <propertyTab
                afterTab="org.objectstyle.wolips.eomodeler.tabs.connectionDictionary"
                category="eomodel"
+               id="org.objectstyle.wolips.eomodeler.tabs.eomodelAdvanced"
+               label="Advanced"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eomodelAdvanced"
+               category="eomodel"
                id="org.objectstyle.wolips.eomodeler.tabs.eomodelUserInfo"
                label="User Info"/>
          <propertyTab
@@ -248,6 +253,13 @@
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertySections">
       <propertySections contributorId="org.objectstyle.wolips.eomodeler.editors.EOModelEditor">
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.model.EOModelAdvancedEditorSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eomodelAdvanced"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eomodelAdvanced">
+            <input type="org.objectstyle.wolips.eomodeler.core.model.EOModel"/>
+         </propertySection>
          <propertySection
                class="org.objectstyle.wolips.eomodeler.editors.userInfo.UserInfoPropertySection"
                id="org.objectstyle.wolips.eomodeler.sections.eomodelUserInfo"

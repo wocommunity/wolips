@@ -35,6 +35,18 @@ public abstract class UserInfoableEOModelObject<T> extends EOModelObject<T> impl
 		_userInfo = mapChanged(_userInfo, userInfo, _userInfoRepeater, fireEvents);
 	}
 
+	public EOModelMap getEntityModelerMap(boolean readWrite) {  
+		NotificationMap<Object, Object> userInfo = getUserInfo();
+		Map entityModelerMap = (Map) userInfo.get(UserInfoableEOModelObject.ENTITY_MODELER_KEY);
+		if (entityModelerMap == null) {
+			entityModelerMap = new HashMap<Object, Object>();
+			if (readWrite) {
+				userInfo.put(UserInfoableEOModelObject.ENTITY_MODELER_KEY, entityModelerMap);
+			}
+		}
+		return new EOModelMap(entityModelerMap);
+	}
+	
 	/**
 	 * Sets the documentation field on this object.  documentation writes
 	 * into userInfo=>_EntityModeler=>Documentation.
@@ -43,12 +55,7 @@ public abstract class UserInfoableEOModelObject<T> extends EOModelObject<T> impl
 	 */
 	public void setDocumentation(String documentation) {
 		String oldDocumentation = getDocumentation();
-		NotificationMap<Object, Object> userInfo = getUserInfo();
-		Map entityModelerMap = (Map) userInfo.get(UserInfoableEOModelObject.ENTITY_MODELER_KEY);
-		if (entityModelerMap == null) {
-			entityModelerMap = new HashMap<Object, Object>();
-			userInfo.put(UserInfoableEOModelObject.ENTITY_MODELER_KEY, entityModelerMap);
-		}
+		EOModelMap entityModelerMap = getEntityModelerMap(true);
 		if (documentation == null) {
 			entityModelerMap.remove(UserInfoableEOModelObject.DOCUMENTATION_KEY);
 		} else {
@@ -63,18 +70,19 @@ public abstract class UserInfoableEOModelObject<T> extends EOModelObject<T> impl
 	 * @return the documentation for this object
 	 */
 	public String getDocumentation() {
-		String documentation;
-		NotificationMap<Object, Object> userInfo = getUserInfo();
-		Map entityModelerMap = (Map) userInfo.get(UserInfoableEOModelObject.ENTITY_MODELER_KEY);
-		if (entityModelerMap == null) {
-			documentation = null;
-		} else {
-			documentation = (String) entityModelerMap.get(UserInfoableEOModelObject.DOCUMENTATION_KEY);
-		}
+		EOModelMap entityModelerMap = getEntityModelerMap(false);
+		String documentation = (String) entityModelerMap.get(UserInfoableEOModelObject.DOCUMENTATION_KEY);
 		return documentation;
 	}
 
 	protected void writeUserInfo(EOModelMap modelMap) {
+		EOModelMap entityModelerMap = getEntityModelerMap(false);
+		if (entityModelerMap.isEmpty()) {
+			getUserInfo().remove(UserInfoableEOModelObject.ENTITY_MODELER_KEY);
+		} else {
+			getUserInfo().put(UserInfoableEOModelObject.ENTITY_MODELER_KEY, entityModelerMap);
+		}
+
 		modelMap.setMap("userInfo", _userInfo, true);
 		modelMap.remove("userDictionary");
 	}

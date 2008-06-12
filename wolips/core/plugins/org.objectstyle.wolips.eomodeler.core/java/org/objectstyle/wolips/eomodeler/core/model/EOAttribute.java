@@ -64,7 +64,6 @@ import org.objectstyle.wolips.eomodeler.core.kvc.IKey;
 import org.objectstyle.wolips.eomodeler.core.kvc.ResolvedKey;
 import org.objectstyle.wolips.eomodeler.core.model.history.EOAttributeRenamedEvent;
 import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
-import org.objectstyle.wolips.eomodeler.core.utils.NameSyncUtils;
 
 public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttribute, ISortableEOModelObject {
 	public static final String PRIMARY_KEY = "primaryKey";
@@ -86,6 +85,8 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	public static final String INDEXED = "indexed";
 
 	public static final String READ_ONLY = "readOnly";
+
+	public static final String GENERATE_SOURCE = "generateSource";
 
 	private static final String[] PROTOTYPED_PROPERTIES = { AbstractEOArgument.NAME, AbstractEOArgument.COLUMN_NAME, AbstractEOArgument.ALLOWS_NULL, AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, AbstractEOArgument.EXTERNAL_TYPE, AbstractEOArgument.FACTORY_METHOD_ARGUMENT_TYPE, AbstractEOArgument.PRECISION, AbstractEOArgument.SCALE, AbstractEOArgument.VALUE_CLASS_NAME, AbstractEOArgument.VALUE_FACTORY_METHOD_NAME, AbstractEOArgument.VALUE_TYPE, AbstractEOArgument.DEFINITION, AbstractEOArgument.WIDTH, EOAttribute.READ_FORMAT, EOAttribute.WRITE_FORMAT, EOAttribute.INDEXED, EOAttribute.READ_ONLY };
 
@@ -118,7 +119,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 
 	private Boolean myClientClassProperty;
 
-  private Boolean _commonClassProperty;
+	private Boolean _commonClassProperty;
 
 	private Boolean myIndexed;
 
@@ -130,8 +131,10 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 
 	private EOAttributePath myDefinitionPath;
 
+	private boolean _generateSource;
+
 	public EOAttribute() {
-		// DO NOTHING
+		_generateSource = true;
 	}
 
 	public EOAttribute(String _name) {
@@ -262,6 +265,16 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 			}
 		}
 		return inherited;
+	}
+
+	public boolean isGenerateSource() {
+		return _generateSource;
+	}
+
+	public void setGenerateSource(boolean generateSource) {
+		boolean oldGenerateSource = _generateSource;
+		_generateSource = generateSource;
+		firePropertyChange(EOEntity.GENERATE_SOURCE, oldGenerateSource, _generateSource);
 	}
 
 	public EOAttribute getPrototype() {
@@ -505,27 +518,6 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		return (String) _prototypeValueIfNull(AbstractEOArgument.COLUMN_NAME, super.getColumnName());
 	}
 
-	public void guessColumnNameInEntity(EOEntity entity) {
-		String name = EOAttribute.guessColumnNameInEntity(getName(), entity);
-		setColumnName(name);
-	}
-	
-	public static String guessColumnNameInEntity(String attributeName, EOEntity entity) {
-		String columnName = attributeName;
-		if (entity != null) {
-			EOAttribute otherAttribute = entity._getTemplateNameAttribute(true);
-			if (otherAttribute != null) {
-				String otherName = otherAttribute.getName();
-				String otherColumnName = otherAttribute.getColumnName();
-				String guessedColumnName = NameSyncUtils.newDependentName(otherName, attributeName, otherColumnName, entity.getAttributeColumnNamePairs(null));
-				if (!ComparisonUtils.equals(guessedColumnName, otherColumnName)) {
-					columnName = guessedColumnName;
-				}
-			}
-		}
-		return columnName;
-	}
-
 	public void setColumnName(String _columnName) {
 		super.setColumnName((String) _nullIfPrototyped(AbstractEOArgument.COLUMN_NAME, _columnName));
 	}
@@ -637,7 +629,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	public void setServerTimeZone(String _serverTimeZone) {
 		super.setServerTimeZone((String) _nullIfPrototyped(AbstractEOArgument.SERVER_TIME_ZONE, _serverTimeZone));
 	}
-	
+
 	public String getJavaClassName() {
 		String className = getValueClassName();
 		if (className != null && className.startsWith("java.lang.")) {
@@ -777,25 +769,25 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		firePropertyChange(EOAttribute.WRITE_FORMAT, oldWriteFormat, getWriteFormat());
 	}
 
-  public void setCommonClassProperty(Boolean commonClassProperty) {
-    setCommonClassProperty(commonClassProperty, true);
-  }
+	public void setCommonClassProperty(Boolean commonClassProperty) {
+		setCommonClassProperty(commonClassProperty, true);
+	}
 
-  public void setCommonClassProperty(Boolean commonClassProperty, boolean fireEvents) {
-    Boolean oldCommonClassProperty = getCommonClassProperty();
-    _commonClassProperty = commonClassProperty;
-    if (fireEvents) {
-      firePropertyChange(EOAttribute.COMMON_CLASS_PROPERTY, oldCommonClassProperty, getCommonClassProperty());
-    }
-  }
+	public void setCommonClassProperty(Boolean commonClassProperty, boolean fireEvents) {
+		Boolean oldCommonClassProperty = getCommonClassProperty();
+		_commonClassProperty = commonClassProperty;
+		if (fireEvents) {
+			firePropertyChange(EOAttribute.COMMON_CLASS_PROPERTY, oldCommonClassProperty, getCommonClassProperty());
+		}
+	}
 
-  public Boolean getCommonClassProperty() {
-    return isCommonClassProperty();
-  }
+	public Boolean getCommonClassProperty() {
+		return isCommonClassProperty();
+	}
 
-  public Boolean isCommonClassProperty() {
-    return _commonClassProperty;
-  }
+	public Boolean isCommonClassProperty() {
+		return _commonClassProperty;
+	}
 
 	public void setClientClassProperty(Boolean _clientClassProperty) {
 		setClientClassProperty(_clientClassProperty, true);
@@ -893,6 +885,19 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		} else {
 			myWriteFormat = _attributeMap.getString("writeFormat", true);
 		}
+
+		EOModelMap entityModelerMap = getEntityModelerMap(false);
+		Boolean generateSource = entityModelerMap.getBoolean(EOAttribute.GENERATE_SOURCE);
+		if (generateSource == null) {
+			_generateSource = true;
+		} else {
+			_generateSource = generateSource.booleanValue();
+		}
+	}
+
+	@Override
+	protected void writeUserInfo(EOModelMap modelMap) {
+		super.writeUserInfo(modelMap);
 	}
 
 	public EOModelMap toMap() {
@@ -902,6 +907,13 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		// EOAttribute flattenedAttribute = attributePath.getChildAttribute();
 		// flattenedAttribute._cloneIntoArgument(this, true);
 		// }
+
+		EOModelMap entityModelerMap = getEntityModelerMap(true);
+		if (_generateSource) {
+			entityModelerMap.remove(EOAttribute.GENERATE_SOURCE);
+		} else {
+			entityModelerMap.setBoolean(EOAttribute.GENERATE_SOURCE, Boolean.FALSE, EOModelMap.YESNO);
+		}
 
 		EOModelMap attributeMap = super.toMap();
 		if (myPrototypeName != null) {
@@ -916,6 +928,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		attributeMap.setString("writeFormat", myWriteFormat, true);
 		attributeMap.remove("updateFormat");
 		attributeMap.remove("insertFormat");
+
 		return attributeMap;
 	}
 
@@ -1005,7 +1018,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		attribute.myPrimaryKey = myPrimaryKey;
 		attribute.myUsedForLocking = myUsedForLocking;
 		attribute.myClientClassProperty = myClientClassProperty;
-    attribute._commonClassProperty = _commonClassProperty;
+		attribute._commonClassProperty = _commonClassProperty;
 		attribute.myIndexed = myIndexed;
 		attribute.myReadOnly = myReadOnly;
 		attribute.myReadFormat = myReadFormat;
@@ -1028,11 +1041,15 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	}
 
 	public void synchronizeNameChange(String oldName, String newName) {
-		Set<NameSyncUtils.NamePair> columnNamePairs = null;
-		if (getEntity() != null) {
-			columnNamePairs = getEntity().getAttributeColumnNamePairs(this);
+		String columnName = newName;
+		EOEntity entity = getEntity();
+		if (entity != null) {
+			EOModel model = entity.getModel();
+			if (model != null) {
+				columnName = model.getAttributeNamingConvention().format(oldName, newName, getColumnName());
+			}
 		}
-		setColumnName(NameSyncUtils.newDependentName(oldName, newName, getColumnName(), columnNamePairs));
+		setColumnName(columnName);
 	}
 
 	public void _addToModelParent(EOEntity modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) throws EOModelException {
@@ -1050,9 +1067,9 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	}
 
 	public boolean getSqlGenerationCreateProperty() {
-		return !isInherited() || getEntity().getSqlGenerationCreateInheritedProperties(); 
+		return !isInherited() || getEntity().getSqlGenerationCreateInheritedProperties();
 	}
-	
+
 	public String toString() {
 		return "[EOAttribute: " + getName() + "]";
 	}

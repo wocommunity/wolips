@@ -80,7 +80,6 @@ import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOJoin;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
-import org.objectstyle.wolips.eomodeler.core.utils.NameSyncUtils;
 import org.objectstyle.wolips.eomodeler.editors.relationship.JoinsTableEditor;
 
 public class CreateRelationshipDialog extends Dialog implements SelectionListener {
@@ -450,7 +449,8 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		_inverseFKNameText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				String newInverseFKName = ((Text)e.widget).getText();
-				String newInverseFKColumnName = NameSyncUtils.newDependentName(_oldInverseFKName, newInverseFKName, _inverseFKColumnNameText.getText(), null);
+				String newInverseFKColumnName = _destinationEntity.getModel().getAttributeNamingConvention().format(newInverseFKName);
+					//NameSyncUtils.newDependentName(_oldInverseFKName, newInverseFKName, _inverseFKColumnNameText.getText(), null);
 				_inverseFKColumnNameText.setText(newInverseFKColumnName);
 				_oldInverseFKName = newInverseFKName;
 			}
@@ -459,7 +459,8 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		_fkNameText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				String newFKName = ((Text)e.widget).getText();
-				String newFKColumnName = NameSyncUtils.newDependentName(_oldFKName, newFKName, _fkColumnNameText.getText(), null);
+				String newFKColumnName = _sourceEntity.getModel().getAttributeNamingConvention().format(newFKName);
+					//NameSyncUtils.newDependentName(_oldFKName, newFKName, _fkColumnNameText.getText(), null);
 				_fkColumnNameText.setText(newFKColumnName);
 				_oldFKName = newFKName;
 			}
@@ -664,7 +665,8 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 				String newName = _sourceEntity.findUnusedAttributeName(StringUtils.toLowercaseFirstLetter(_destinationEntity.getName()) + "ID");
 				_fkNameText.setText(newName);
 				_oldFKName = newName;
-				_fkColumnNameText.setText(EOAttribute.guessColumnNameInEntity(newName, _sourceEntity));
+				_fkColumnNameText.setText(_sourceEntity.getModel().getAttributeNamingConvention().format(newName));
+						//EOAttribute.guessColumnNameInEntity(newName, _sourceEntity));
 			}
 
 			String inverseFKName = _inverseFKNameText.getText();
@@ -672,7 +674,8 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 				String newName = _destinationEntity.findUnusedAttributeName(StringUtils.toLowercaseFirstLetter(_sourceEntity.getName()) + "ID");
 				_inverseFKNameText.setText(newName);
 				_oldInverseFKName = newName;
-				_inverseFKColumnNameText.setText(EOAttribute.guessColumnNameInEntity(newName, _destinationEntity));
+				_inverseFKColumnNameText.setText(_destinationEntity.getModel().getAttributeNamingConvention().format(newName));
+						//EOAttribute.guessColumnNameInEntity(newName, _destinationEntity));
 			}
 		}
 
