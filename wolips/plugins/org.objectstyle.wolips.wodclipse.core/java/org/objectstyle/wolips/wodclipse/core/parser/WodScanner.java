@@ -68,7 +68,7 @@ import org.objectstyle.wolips.wodclipse.core.preferences.PreferenceConstants;
  * @author mike
  */
 public class WodScanner extends AbstractJavaScanner {
-	private static String[] WOD_TOKENS = { PreferenceConstants.ELEMENT_NAME, PreferenceConstants.ELEMENT_TYPE, PreferenceConstants.BINDING_NAME, PreferenceConstants.BINDING_VALUE, PreferenceConstants.OGNL_BINDING_VALUE, PreferenceConstants.CONSTANT_BINDING_VALUE, PreferenceConstants.OPERATOR, PreferenceConstants.COMMENT, PreferenceConstants.UNKNOWN };
+	private static String[] WOD_TOKENS = { PreferenceConstants.ELEMENT_NAME, PreferenceConstants.ELEMENT_TYPE, PreferenceConstants.BINDING_NAME, PreferenceConstants.BINDING_NAMESPACE, PreferenceConstants.BINDING_VALUE, PreferenceConstants.OGNL_BINDING_VALUE, PreferenceConstants.CONSTANT_BINDING_VALUE, PreferenceConstants.OPERATOR, PreferenceConstants.COMMENT, PreferenceConstants.UNKNOWN };
 
 	public static WodScanner newWODScanner() {
 		IColorManager colorManager = JavaPlugin.getDefault().getJavaTextTools().getColorManager();
@@ -100,7 +100,7 @@ public class WodScanner extends AbstractJavaScanner {
 		rules.add(new StringLiteralRule("'", "'", getToken(PreferenceConstants.CONSTANT_BINDING_VALUE), '\\'));
     rules.add(new SingleLineRule("\"", null, getToken(PreferenceConstants.CONSTANT_BINDING_VALUE), '\\', true, false));
 		rules.add(new WhitespaceRule(new WodWhitespaceDetector()));
-		rules.add(new OperatorRule(new ElementTypeOperatorWordDetector(), getToken(PreferenceConstants.OPERATOR)));
+    rules.add(new OperatorRule(new ElementTypeOperatorWordDetector(), getToken(PreferenceConstants.OPERATOR)));
 		rules.add(new OperatorRule(new OpenDefinitionWordDetector(), getToken(PreferenceConstants.OPERATOR)));
 		rules.add(new OperatorRule(new AssignmentOperatorWordDetector(), getToken(PreferenceConstants.OPERATOR)));
 		rules.add(new OperatorRule(new EndAssignmentWordDetector(), getToken(PreferenceConstants.OPERATOR)));

@@ -50,9 +50,11 @@ public class QuickRenameRefactoring {
       }
       else if (WodHtmlUtils.isWOTag(tagName)) {
         FuzzyXMLAttribute nameAttribute = element.getAttributeNode("name");
-        String woElementName = nameAttribute.getValue();
-        if (woElementName != null && element.getOffset() + nameAttribute.getValueDataOffset() + 1 <= offset && element.getOffset() + nameAttribute.getValueDataOffset() + nameAttribute.getValueDataLength() >= offset) {
-          QuickRenameRefactoring.renameElement(woElementName, htmlViewer, wodViewer, cache, true);
+        if (nameAttribute != null) {
+          String woElementName = nameAttribute.getValue();
+          if (woElementName != null && element.getOffset() + nameAttribute.getValueDataOffset() + 1 <= offset && element.getOffset() + nameAttribute.getValueDataOffset() + nameAttribute.getValueDataLength() >= offset) {
+            QuickRenameRefactoring.renameElement(woElementName, htmlViewer, wodViewer, cache, true);
+          }
         }
       }
     }

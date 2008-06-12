@@ -112,7 +112,7 @@ public abstract class InsertHtmlAndWodAction extends AbstractTemplateAction {
 			List<Binding> bindings = ics.getRequiredBindings();
 			if (bindings != null) {
 				for (Binding binding : bindings) {
-					wodElement.addBinding(new SimpleWodBinding(binding.getName(), "", true));
+					wodElement.addBinding(new SimpleWodBinding(null, binding.getName(), "", true));
 				}
 			}
 
@@ -132,7 +132,7 @@ public abstract class InsertHtmlAndWodAction extends AbstractTemplateAction {
 			Map<String, String> htmlAttributes = ics.getHtmlAttributes();
 			if (htmlAttributes != null) {
 				for (Map.Entry<String, String> htmlAttribute : htmlAttributes.entrySet()) {
-					htmlElement.addBinding(new SimpleWodBinding(htmlAttribute.getKey(), htmlAttribute.getValue(), true));
+					htmlElement.addBinding(new SimpleWodBinding(null, htmlAttribute.getKey(), htmlAttribute.getValue(), true));
 				}
 			}
 

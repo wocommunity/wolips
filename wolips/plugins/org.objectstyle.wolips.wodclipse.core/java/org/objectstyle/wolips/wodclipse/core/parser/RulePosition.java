@@ -26,6 +26,10 @@ public class RulePosition {
 		return myDocument;
 	}
 
+	public void setRule(IRule rule) {
+	  myRule = rule;
+	}
+	
 	public IRule getRule() {
 		return myRule;
 	}

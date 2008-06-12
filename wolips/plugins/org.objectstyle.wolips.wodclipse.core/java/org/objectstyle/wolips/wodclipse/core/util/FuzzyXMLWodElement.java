@@ -38,17 +38,18 @@ public class FuzzyXMLWodElement extends SimpleWodElement {
     if (matchingTagShortcut != null) {
       for (Map.Entry<String, String> shortcutAttribute : matchingTagShortcut.getAttributes().entrySet()) {
         String value = WodHtmlUtils.toBindingValue(shortcutAttribute.getValue(), wo54);
-        SimpleWodBinding wodBinding = new SimpleWodBinding(shortcutAttribute.getKey(), value);
+        SimpleWodBinding wodBinding = new SimpleWodBinding(null, shortcutAttribute.getKey(), value);
         addBinding(wodBinding);
       }
     }
 
     FuzzyXMLAttribute[] attributes = element.getAttributes();
     for (FuzzyXMLAttribute attribute : attributes) {
+      String namespace = attribute.getNamespace();
       String name = attribute.getName();
       String originalValue = attribute.getValue();
       String value = WodHtmlUtils.toBindingValue(originalValue, wo54);
-      SimpleWodBinding wodBinding = new SimpleWodBinding(name, value, new Position(attribute.getNameOffset(), attribute.getNameLength()), new Position(element.getOffset() + attribute.getValueDataOffset() + 1, attribute.getValueDataLength()), -1);
+      SimpleWodBinding wodBinding = new SimpleWodBinding(namespace, name, value, new Position(attribute.getNamespaceOffset(), attribute.getNamespaceLength()), new Position(attribute.getNameOffset(), attribute.getNameLength()), new Position(element.getOffset() + attribute.getValueDataOffset() + 1, attribute.getValueDataLength()), -1);
       wodBinding.setStartOffset(attribute.getOffset());
       wodBinding.setEndOffset(attribute.getOffset() + attribute.getLength());
       addBinding(wodBinding);
