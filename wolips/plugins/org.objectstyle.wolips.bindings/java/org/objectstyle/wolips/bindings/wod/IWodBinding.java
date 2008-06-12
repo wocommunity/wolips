@@ -58,6 +58,8 @@ import org.objectstyle.wolips.bindings.api.IApiBinding;
  * @author mschrag
  */
 public interface IWodBinding extends IWodUnit, IApiBinding {
+  public String getNamespace();
+  
   public String getName();
 
   public String getValue();
@@ -73,6 +75,8 @@ public interface IWodBinding extends IWodUnit, IApiBinding {
   public boolean isOGNL();
 
   public boolean isTrueValue();
+  
+  public Position getNamespacePosition();
   
   public Position getNamePosition();
 

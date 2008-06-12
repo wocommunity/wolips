@@ -128,6 +128,10 @@ public abstract class AbstractWodBinding implements IWodBinding {
 
   public void writeWodFormat(Writer writer) throws IOException {
     writer.write("  ");
+    if (getNamespace() != null) {
+      writer.write(getNamespace());
+      writer.write(":");
+    }
     writer.write(getName());
     writer.write(" = ");
     writer.write(getValue());
@@ -136,6 +140,10 @@ public abstract class AbstractWodBinding implements IWodBinding {
 
   public void writeInlineFormat(Writer writer, String prefix, String suffix) throws IOException {
     writer.write(" ");
+    if (getNamespace() != null) {
+      writer.write(getNamespace());
+      writer.write(":");
+    }
     writer.write(getName());
     writer.write(" = ");
     if (isLiteral()) {
@@ -191,7 +199,7 @@ public abstract class AbstractWodBinding implements IWodBinding {
   public abstract int getLineNumber();
 
   public static List<WodProblem> getBindingProblems(String elementType, String keypath, IType javaFileType, TypeCache typeCache) throws JavaModelException, ApiModelException {
-    SimpleWodBinding binding = new SimpleWodBinding("_temp", keypath);
+    SimpleWodBinding binding = new SimpleWodBinding(null, "_temp", keypath);
     return binding.getBindingProblems(elementType, javaFileType, typeCache);
   }
 
@@ -205,6 +213,7 @@ public abstract class AbstractWodBinding implements IWodBinding {
     boolean warnOnOperator = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.WARN_ON_OPERATOR_KEY);
     boolean warnOnHelperFunction = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.WARN_ON_HELPER_FUNCTION_KEY);
     if (shouldValidate()) {
+      String bindingNamespace = getNamespace();
       String bindingName = getName();
       String bindingValue = getValue();
 
@@ -352,7 +361,7 @@ public abstract class AbstractWodBinding implements IWodBinding {
                 // function call
                 String nextStr = ognl.substring(i).trim();
                 if (!nextStr.startsWith("(")) {
-                  SimpleWodBinding ognlBinding = new SimpleWodBinding(bindingName, ognlBindingValue, getNamePosition(), getValuePosition(), getLineNumber());
+                  SimpleWodBinding ognlBinding = new SimpleWodBinding(bindingNamespace, bindingName, ognlBindingValue, getNamespacePosition(), getNamePosition(), getValuePosition(), getLineNumber());
                   try {
                     List<WodProblem> ognlProblems = new LinkedList<WodProblem>();
                     ognlBinding.fillInBindingProblems(element, apiBinding, javaProject, javaFileType, ognlProblems, cache);
