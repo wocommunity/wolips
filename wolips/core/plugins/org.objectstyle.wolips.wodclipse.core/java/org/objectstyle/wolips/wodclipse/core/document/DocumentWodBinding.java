@@ -53,20 +53,35 @@ import org.objectstyle.wolips.wodclipse.core.parser.RulePosition;
  * @author mschrag
  */
 public class DocumentWodBinding extends AbstractWodBinding {
+  private RulePosition _namespace;
+  
 	private RulePosition _name;
 
 	private RulePosition _value;
   
   private int _lineNumber;
 
-	public DocumentWodBinding(RulePosition name, RulePosition value) {
+	public DocumentWodBinding(RulePosition namespace, RulePosition name, RulePosition value) {
+	  _namespace = namespace;
 		_name = name;
 		_value = value;
     _lineNumber = -1;
 	}
 	
+	public RulePosition getNamespaceRulePosition() {
+	  return _namespace;
+	}
+	
 	public RulePosition getNameRulePosition() {
 	  return _name;
+	}
+	
+	public String getNamespace() {
+	  return (_namespace == null) ? null : _namespace._getTextWithoutException();
+	}
+	
+	public Position getNamespacePosition() {
+	  return (_namespace == null) ? null : _namespace.getPosition();
 	}
 	
 	public String getName() {
@@ -86,7 +101,14 @@ public class DocumentWodBinding extends AbstractWodBinding {
 	}
 
 	public int getStartOffset() {
-		return _name.getTokenOffset();
+	  int startOffset;
+	  if (_namespace == null) {
+	    startOffset = _name.getTokenOffset();
+	  }
+	  else {
+	    startOffset = _namespace.getTokenEndOffset();
+	  }
+		return startOffset;
 	}
 
 	public int getEndOffset() {
@@ -98,7 +120,7 @@ public class DocumentWodBinding extends AbstractWodBinding {
     int lineNumber = _lineNumber;
     if (lineNumber == -1) {
       try {
-        lineNumber = _name.getDocument().getLineOfOffset(_name.getTokenOffset());
+        lineNumber = _name.getDocument().getLineOfOffset(getStartOffset());
       }
       catch (BadLocationException e) {
         Activator.getDefault().log(e);

@@ -43,7 +43,7 @@ public class RefactoringWodElement {
 			if (wodBinding != null) {
 				wodBinding.setValue(value);
 			} else {
-				wodBinding = addBindingValueNamed(value, name);
+				wodBinding = addBindingValueNamed(value, null, name);
 			}
 		}
 		return wodBinding;
@@ -59,8 +59,8 @@ public class RefactoringWodElement {
 		}
 	}
 
-	public RefactoringWodBinding addBindingValueNamed(String value, String name) throws CoreException, InvocationTargetException, InterruptedException {
-		SimpleWodBinding binding = new SimpleWodBinding(name, value);
+	public RefactoringWodBinding addBindingValueNamed(String value, String namespace, String name) throws CoreException, InvocationTargetException, InterruptedException {
+		SimpleWodBinding binding = new SimpleWodBinding(namespace, name, value);
 		_wodElement.addBinding(binding);
 		RefactoringWodBinding refactoringBinding = new RefactoringWodBinding(_wodElement, binding, _cache);
 		refactoringBinding._setValue(value);

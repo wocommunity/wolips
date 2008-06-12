@@ -71,7 +71,7 @@ public class TemplateValidator {
           if (wodModel != null) {
             IWodElement wodElement = wodModel.getElementNamed(woElementName);
             if (wodElement == null) {
-              WodProblem undefinedElement = new WodBindingValueProblem(wodElement, new SimpleWodBinding("name", null), "name", "The element '" + woElementName + "' is not defined in " + wodFile.getName(), null, -1, false);
+              WodProblem undefinedElement = new WodBindingValueProblem(wodElement, new SimpleWodBinding(null, "name", null), "name", "The element '" + woElementName + "' is not defined in " + wodFile.getName(), null, -1, false);
               inlineProblems.add(new InlineWodProblem(woElement, undefinedElement, _cache));
             }
           }

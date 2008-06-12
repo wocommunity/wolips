@@ -306,7 +306,7 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 		if (element != null) {
 			try {
 				String newBindingName = RefactoringWodElement.findUnusedBindingName(element.getWodElement(), "newBinding");
-				element.addBindingValueNamed("\"\"", newBindingName);
+				element.addBindingValueNamed("\"\"", null, newBindingName);
 				BindingsInspector.this.refresh();
 			} catch (Exception e) {
 				e.printStackTrace();

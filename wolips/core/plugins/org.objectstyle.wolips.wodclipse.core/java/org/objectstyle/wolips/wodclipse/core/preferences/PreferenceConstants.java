@@ -53,6 +53,8 @@ public class PreferenceConstants {
 
   public static final String BINDING_NAME = "BindingName";
 
+  public static final String BINDING_NAMESPACE = "BindingNamespace";
+
   public static final String BINDING_VALUE = "BindingValue";
 
   public static final String OGNL_BINDING_VALUE = "OgnlBindingValue";

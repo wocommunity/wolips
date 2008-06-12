@@ -84,7 +84,7 @@ public class SingleWordRule implements IPredicateRule {
 				token = myToken;
 				_scanner.unread();
 				break;
-			} else if (isAcceptableCharacter((char) ch)) {
+			} else if (isAcceptableCharacter((char) ch, unreadCount - whitespaceCount)) {
 				if ((wordCount == 0 || whitespaceCount > 0) && (++wordCount >= 2)) {
 					break;
 				}
@@ -109,7 +109,7 @@ public class SingleWordRule implements IPredicateRule {
 		return token;
 	}
 
-	protected boolean isAcceptableCharacter(char _ch) {
+	protected boolean isAcceptableCharacter(char _ch, int index) {
 		boolean acceptableCharacter = Character.isJavaIdentifierPart(_ch);
 		for (int i = 0; !acceptableCharacter && i < myAcceptableCharacters.length; i++) {
 			acceptableCharacter = (myAcceptableCharacters[i] == _ch);
