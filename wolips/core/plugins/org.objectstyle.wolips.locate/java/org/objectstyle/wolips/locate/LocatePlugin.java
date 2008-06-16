@@ -126,7 +126,9 @@ public class LocatePlugin extends AbstractBaseActivator {
 		localizedComponentsLocateResult = new LocalizedComponentsLocateResult();
 		Locate locate = new Locate(componentLocateScope, localizedComponentsLocateResult);
 		locate.locate();
-		componentsLocateCache.addToCache(project, filenameWithoutExtension, localizedComponentsLocateResult);
+		if (componentsLocateCache != null) {
+			componentsLocateCache.addToCache(project, filenameWithoutExtension, localizedComponentsLocateResult);
+		}
 		return localizedComponentsLocateResult;
 	}
 
