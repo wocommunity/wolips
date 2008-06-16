@@ -7,11 +7,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-JNIEXPORT jint JNICALL Java_org_objectstyle_wolips_goodies_core_mac_MacRefreshMonitor_unmonitor
-  (JNIEnv *, jobject, jint, jstring, jobject);
+JNIEXPORT void JNICALL Java_org_objectstyle_wolips_goodies_core_mac_MacRefreshMonitor_unmonitor
+  (JNIEnv *, jobject, jstring, jobject);
 
-JNIEXPORT jint JNICALL Java_org_objectstyle_wolips_goodies_core_mac_MacRefreshMonitor_monitor
-  (JNIEnv *, jobject, jint, jstring, jobject);
+JNIEXPORT void JNICALL Java_org_objectstyle_wolips_goodies_core_mac_MacRefreshMonitor_monitor
+  (JNIEnv *, jobject, jstring, jobject);
 
 #ifdef __cplusplus
 }
