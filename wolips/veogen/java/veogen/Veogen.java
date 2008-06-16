@@ -41,6 +41,9 @@ public class Veogen {
       else if ("-subclassTemplate".equals(arg)) {
         eogeneratorModel.setSubclassJavaTemplate(args[++argNum]);
       }
+      else if ("-extension".equals(arg)) {
+        eogeneratorModel.setExtension(args[++argNum]);
+      }
       else if ("-java".equals(arg)) {
         eogeneratorModel.setJava(Boolean.TRUE);
       }
@@ -83,6 +86,8 @@ public class Veogen {
       System.out.println("    the name of the superclass template file (_File.java)");
       System.out.println("  -subclassTemplate nameOfTemplate.java");
       System.out.println("    the name of the subclass template file (File.java)");
+      System.out.println("  -extension");
+      System.out.println("    the file extension for generated files (default \".java + \")");
       System.out.println("  -java");
       System.out.println("    generate regular java output (default)");
       System.out.println("  -javaClient");
