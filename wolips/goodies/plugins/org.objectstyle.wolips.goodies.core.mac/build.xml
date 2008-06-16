@@ -50,7 +50,7 @@
       <arg line="-project native/macosx/MacRefreshProvider.xcodeproj"/>
       <arg line="-target JNILib"/>
     </exec>
-    <copy file="native/macosx/build/Release/libMacRefreshProvider.jnilib" toDir="." failonerror="true" verbose="true"/>
+    <copy file="native/macosx/build/Release/libMacRefreshProvider.jnilib" toDir="os/macosx" failonerror="true" verbose="true"/>
   </target>
 
 	<!-- ========================================== -->
