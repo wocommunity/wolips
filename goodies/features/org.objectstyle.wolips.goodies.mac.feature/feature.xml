@@ -87,7 +87,7 @@
          download-size="0"
          install-size="32"
          version="1.0.6"
-         unpack="true"/>
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.goodies.ui.mac"
