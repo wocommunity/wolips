@@ -92,35 +92,48 @@ public class EclipseProjectEOModelGroupFactory extends AbstractManifestEOModelGr
 			if ("src".equals(kind) && path != null && path.startsWith("/")) {
 				File referencedProjectFolder = new File(eclipseProjectFolder.getParentFile(), path).getCanonicalFile();
 				processEclipseProject(referencedProjectFolder, searchFolders, visitedProjects, env);
+			} else if ("con".equals(kind) && path != null && path.startsWith("org.objectstyle.wolips.ContainerInitializer/")) {
+				String[] strs = path.split("/");
+				List<String> frameworkNames = new LinkedList<String>();
+				for (int i = 3; i < strs.length; i += 11) {
+					frameworkNames.add(strs[i]);
+				}
+				loadFrameworks(frameworkNames.toArray(new String[frameworkNames.size()]), searchFolders, visitedProjects, env);
 			} else if ("con".equals(kind) && path != null && path.startsWith("org.objectstyle.wolips.WO_CLASSPATH/")) {
 				String[] frameworkNames = path.split("/");
-				File userFrameworksFolder = new File(env.getWOVariables().userHome(), "Library" + File.separator + "Frameworks");
-				File localFrameworksFolder = new File(env.getWOVariables().localRoot(), "Library" + File.separator + "Frameworks");
-				File systemFrameworksFolder = new File(env.getWOVariables().systemRoot(), "Library" + File.separator + "Frameworks");
-				for (int frameworkNum = 1; frameworkNum < frameworkNames.length; frameworkNum++) {
-					String frameworkFolderName = frameworkNames[frameworkNum] + ".framework";
-					File matchingFrameworkFolder = null;
-					File userFrameworkFolder = new File(userFrameworksFolder, frameworkFolderName);
-					if (userFrameworkFolder.exists()) {
-						matchingFrameworkFolder = userFrameworkFolder.getCanonicalFile();
-					} else {
-						File localFrameworkFolder = new File(localFrameworksFolder, frameworkFolderName);
-						if (localFrameworkFolder.exists()) {
-							matchingFrameworkFolder = localFrameworkFolder.getCanonicalFile();
-						} else {
-							File systemFrameworkFolder = new File(systemFrameworksFolder, frameworkFolderName);
-							if (systemFrameworkFolder.exists()) {
-								matchingFrameworkFolder = systemFrameworkFolder.getCanonicalFile();
-							}
-						}
-					}
-					if (matchingFrameworkFolder != null && !visitedProjects.contains(matchingFrameworkFolder)) {
-						searchFolders.add(new ManifestSearchFolder(new File(matchingFrameworkFolder, "Resources")));
-						visitedProjects.add(matchingFrameworkFolder);
+				loadFrameworks(frameworkNames, searchFolders, visitedProjects, env);
+			}
+		}
+	}
+	
+	protected void loadFrameworks(String[] frameworkNames, List<ManifestSearchFolder> searchFolders, Set<File> visitedProjects, WOEnvironment env) throws IOException {
+		File userFrameworksFolder = new File(env.getWOVariables().userHome(), "Library" + File.separator + "Frameworks");
+		File localFrameworksFolder = new File(env.getWOVariables().localRoot(), "Library" + File.separator + "Frameworks");
+		File systemFrameworksFolder = new File(env.getWOVariables().systemRoot(), "Library" + File.separator + "Frameworks");
+		for (int frameworkNum = 1; frameworkNum < frameworkNames.length; frameworkNum++) {
+			String frameworkFolderName = frameworkNames[frameworkNum] + ".framework";
+			File matchingFrameworkFolder = null;
+			File userFrameworkFolder = new File(userFrameworksFolder, frameworkFolderName);
+			if (userFrameworkFolder.exists()) {
+				matchingFrameworkFolder = userFrameworkFolder.getCanonicalFile();
+			} else {
+				File localFrameworkFolder = new File(localFrameworksFolder, frameworkFolderName);
+				if (localFrameworkFolder.exists()) {
+					matchingFrameworkFolder = localFrameworkFolder.getCanonicalFile();
+				} else {
+					File systemFrameworkFolder = new File(systemFrameworksFolder, frameworkFolderName);
+					if (systemFrameworkFolder.exists()) {
+						matchingFrameworkFolder = systemFrameworkFolder.getCanonicalFile();
 					}
 				}
 			}
+			if (matchingFrameworkFolder != null && !visitedProjects.contains(matchingFrameworkFolder)) {
+				System.out.println("EclipseProjectEOModelGroupFactory.processEclipseProject: framework = " + matchingFrameworkFolder);
+				searchFolders.add(new ManifestSearchFolder(new File(matchingFrameworkFolder, "Resources")));
+				visitedProjects.add(matchingFrameworkFolder);
+			}
 		}
+
 	}
 
 	@SuppressWarnings("unchecked")
