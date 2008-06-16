@@ -10,85 +10,59 @@ void pathsChanged(ConstFSEventStreamRef streamRef, void *clientCallBackInfo, siz
 	JavaVM *vm = VMs[0];
 	JNIEnv *env;
 	(*vm)->AttachCurrentThread(vm, (void **)&env, NULL);
-	jobject refreshMonitorGlobalRef = (jobject)clientCallBackInfo;
+	jobject monitoredResourceGlobalRef = (jobject)clientCallBackInfo;
 	
-	jclass refreshMonitorClass = (*env)->GetObjectClass(env, refreshMonitorGlobalRef);
-	jmethodID pathsChangedMethod = (*env)->GetMethodID(env, refreshMonitorClass, "pathChanged", "(Ljava/lang/String;)V");
+	jclass monitoredResourceClass = (*env)->GetObjectClass(env, monitoredResourceGlobalRef);
+	jmethodID pathChangedMethod = (*env)->GetMethodID(env, monitoredResourceClass, "pathChanged", "(Ljava/lang/String;)V");
 	
     int pathNum;
     char **paths = changedPaths;
     for (pathNum = 0; pathNum < numEvents; pathNum++) {
 		jstring pathStr = (*env)->NewStringUTF(env, paths[pathNum]);
-		(*env)->CallVoidMethod(env, refreshMonitorGlobalRef, pathsChangedMethod, pathStr);
+		(*env)->CallVoidMethod(env, monitoredResourceGlobalRef, pathChangedMethod, pathStr);
 	}
 	
 	(*vm)->DetachCurrentThread(vm);
 }
 
-CFMutableArrayRef ModifyMonitoredPaths(FSEventStreamRef fsEventStreamRef) {
-	CFMutableArrayRef monitorPaths;
-	if (fsEventStreamRef != NULL) {
-		CFArrayRef monitoredPaths = FSEventStreamCopyPathsBeingWatched(fsEventStreamRef);
-		monitorPaths = CFArrayCreateMutableCopy(kCFAllocatorDefault, 0, monitoredPaths);
-		FSEventStreamStop(fsEventStreamRef);
-		FSEventStreamInvalidate(fsEventStreamRef);
-		FSEventStreamRelease(fsEventStreamRef);
-	}
-	else {
-		monitorPaths = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
-	}
-	return monitorPaths;
+JNIEXPORT void JNICALL Java_org_objectstyle_wolips_goodies_core_mac_MacRefreshMonitor_unmonitor(JNIEnv *env, jobject obj, jstring resourcePath, jobject monitoredResource) {
+	jclass monitoredResourceClass = (*env)->GetObjectClass(env, monitoredResource);
+	jfieldID fsEventStreamRefField = (*env)->GetFieldID(env, monitoredResourceClass, "_fsEventStreamRef", "I");
+	FSEventStreamRef stream = (FSEventStreamRef)(*env)->GetIntField(env, monitoredResource, fsEventStreamRefField);
+	(*env)->SetIntField(env, monitoredResource, fsEventStreamRefField, 0);
+
+	FSEventStreamStop(stream);
+	FSEventStreamInvalidate(stream);
+	FSEventStreamRelease(stream);
+
+	jfieldID monitoredResourceGlobalRefField = (*env)->GetFieldID(env, monitoredResourceClass, "_globalRef", "Lorg/objectstyle/wolips/goodies/core/mac/MacRefreshMonitor$MonitoredResource;");
+	jobject monitoredResourceGlobalRef = (*env)->GetObjectField(env, monitoredResource, monitoredResourceGlobalRefField);
+	(*env)->DeleteGlobalRef(env, monitoredResourceGlobalRef);
+	(*env)->SetObjectField(env, monitoredResource, monitoredResourceGlobalRefField, NULL);
 }
 
-FSEventStreamRef MonitorPaths(JNIEnv *env, jobject obj, jobject refreshMonitorGlobalRef, CFMutableArrayRef monitorPaths) {
+JNIEXPORT void JNICALL Java_org_objectstyle_wolips_goodies_core_mac_MacRefreshMonitor_monitor(JNIEnv *env, jobject obj, jstring resourcePath, jobject monitoredResource) {
+	jclass monitoredResourceClass = (*env)->GetObjectClass(env, monitoredResource);
+	jfieldID monitoredResourceGlobalRefField = (*env)->GetFieldID(env, monitoredResourceClass, "_globalRef", "Lorg/objectstyle/wolips/goodies/core/mac/MacRefreshMonitor$MonitoredResource;");
+	jobject monitoredResourceGlobalRef = (jobject) (*env)->NewGlobalRef(env, monitoredResource);
+	(*env)->SetObjectField(env, monitoredResource, monitoredResourceGlobalRefField, monitoredResourceGlobalRef);
+	
 	CFAbsoluteTime latency = 1.0;
-	FSEventStreamContext context = {0, refreshMonitorGlobalRef, NULL, NULL, NULL};
-	FSEventStreamRef stream = FSEventStreamCreate(NULL, (FSEventStreamCallback)&pathsChanged, &context, monitorPaths, kFSEventStreamEventIdSinceNow, latency, kFSEventStreamCreateFlagNone);
-	CFRelease(monitorPaths);
-		
-	FSEventStreamScheduleWithRunLoop(stream, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
-	FSEventStreamStart(stream);	
-	return stream;
-}
+	FSEventStreamContext context = {0, monitoredResourceGlobalRef, NULL, NULL, NULL};
+	CFMutableArrayRef monitorPaths = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
 
-JNIEXPORT jint JNICALL Java_org_objectstyle_wolips_goodies_core_mac_MacRefreshMonitor_unmonitor(JNIEnv *env, jobject obj, jint jfsEventStreamRef, jstring resourcePath, jobject monitoredResource) {
 	const char *monitorPathChar = (*env)->GetStringUTFChars(env, resourcePath, JNI_FALSE);
 	CFStringRef monitorPath = CFStringCreateWithCString(kCFAllocatorDefault, monitorPathChar, kCFStringEncodingUTF8);	
 	(*env)->ReleaseStringUTFChars(env, resourcePath, monitorPathChar);
-	
-	CFMutableArrayRef monitorPaths = ModifyMonitoredPaths((FSEventStreamRef) jfsEventStreamRef);
-	int monitorPathIndex = CFArrayGetFirstIndexOfValue(monitorPaths, CFRangeMake(0, CFArrayGetCount(monitorPaths)), monitorPath);
-	if (monitorPathIndex != -1) {
-		CFArrayRemoveValueAtIndex(monitorPaths, monitorPathIndex);
-	}
-	CFRelease(monitorPath);
-
-	jclass monitoredResourceClass = (*env)->FindClass(env, "org/objectstyle/wolips/goodies/core/mac/MacRefreshMonitor$MonitoredResource");
-	jfieldID globalRefField = (*env)->GetFieldID(env, monitoredResourceClass, "_globalRef", "Ljava/lang/Object;");
-	jobject refreshMonitorGlobalRef = (*env)->GetObjectField(env, obj, globalRefField);
-	(*env)->DeleteGlobalRef(env, refreshMonitorGlobalRef);
-	
-	FSEventStreamRef stream = NULL;
-	if (CFArrayGetCount(monitorPaths) > 0) {
-		stream = MonitorPaths(env, obj, refreshMonitorGlobalRef, monitorPaths);
-	}
-	return (jint)stream;
-}
-
-JNIEXPORT jint JNICALL Java_org_objectstyle_wolips_goodies_core_mac_MacRefreshMonitor_monitor(JNIEnv *env, jobject obj, jint jfsEventStreamRef, jstring resourcePath, jobject monitoredResource) {
-	const char *monitorPathChar = (*env)->GetStringUTFChars(env, resourcePath, JNI_FALSE);
-	CFStringRef monitorPath = CFStringCreateWithCString(kCFAllocatorDefault, monitorPathChar, kCFStringEncodingUTF8);	
-	(*env)->ReleaseStringUTFChars(env, resourcePath, monitorPathChar);
-
-	CFMutableArrayRef monitorPaths = ModifyMonitoredPaths((FSEventStreamRef) jfsEventStreamRef);
 	CFArrayAppendValue(monitorPaths, monitorPath);
 	CFRelease(monitorPath);
 
-	jclass monitoredResourceClass = (*env)->FindClass(env, "org/objectstyle/wolips/goodies/core/mac/MacRefreshMonitor$MonitoredResource");
-	jfieldID globalRefField = (*env)->GetFieldID(env, monitoredResourceClass, "_globalRef", "Ljava/lang/Object;");
-	jobject refreshMonitorGlobalRef = (jobject) (*env)->NewGlobalRef(env, obj);
-	(*env)->SetObjectField(env, obj, globalRefField, refreshMonitorGlobalRef);
-
-	FSEventStreamRef stream = MonitorPaths(env, obj, refreshMonitorGlobalRef, monitorPaths);
-	return (jint)stream;
+	FSEventStreamRef stream = FSEventStreamCreate(NULL, (FSEventStreamCallback)&pathsChanged, &context, monitorPaths, kFSEventStreamEventIdSinceNow, latency, kFSEventStreamCreateFlagNone);
+	CFRelease(monitorPaths);
+	
+	jfieldID fsEventStreamRefField = (*env)->GetFieldID(env, monitoredResourceClass, "_fsEventStreamRef", "I");
+	(*env)->SetIntField(env, monitoredResource, fsEventStreamRefField, (jint)stream);
+	
+	FSEventStreamScheduleWithRunLoop(stream, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
+	FSEventStreamStart(stream);	
 }
