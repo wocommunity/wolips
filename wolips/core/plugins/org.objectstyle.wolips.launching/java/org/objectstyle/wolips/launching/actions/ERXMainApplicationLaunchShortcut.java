@@ -58,12 +58,16 @@ package org.objectstyle.wolips.launching.actions;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.internal.debug.ui.launcher.JavaApplicationLaunchShortcut;
+import org.eclipse.jdt.debug.ui.launchConfigurations.JavaApplicationLaunchShortcut;
+import org.eclipse.jdt.internal.debug.ui.launcher.LauncherMessages;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchConfigurationDelegate;
 
 /**
@@ -73,6 +77,11 @@ import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchCo
  * @author mschrag
  */
 public class ERXMainApplicationLaunchShortcut extends JavaApplicationLaunchShortcut {
+	
+	private ILaunchManager getLaunchManager() {
+		return DebugPlugin.getDefault().getLaunchManager();
+	}
+	
 	/**
 	 * Returns the local wo java launch config type
 	 */
@@ -95,7 +104,7 @@ public class ERXMainApplicationLaunchShortcut extends JavaApplicationLaunchShort
 			wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, "-MainClass " + type.getFullyQualifiedName());
 			config = wc.doSave();
 		} catch (CoreException exception) {
-			reportErorr(exception);
+			MessageDialog.openError(getShell(), LauncherMessages.JavaLaunchShortcut_3, exception.getStatus().getMessage()); 
 		}
 		return config;
 	}

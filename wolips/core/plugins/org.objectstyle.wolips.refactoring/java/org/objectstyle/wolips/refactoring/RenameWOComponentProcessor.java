@@ -63,15 +63,15 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.core.refactoring.descriptors.RenameResourceDescriptor;
 import org.eclipse.jdt.internal.corext.refactoring.JDTRefactoringDescriptorComment;
 import org.eclipse.jdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.jdt.internal.corext.refactoring.changes.DynamicValidationStateChange;
-import org.eclipse.jdt.internal.corext.refactoring.rename.RenameResourceProcessor;
 import org.eclipse.jdt.internal.corext.util.Messages;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.core.refactoring.resource.RenameResourceDescriptor;
+import org.eclipse.ltk.internal.core.refactoring.resource.RenameResourceProcessor;
 import org.objectstyle.wolips.locate.LocatePlugin;
 
 public class RenameWOComponentProcessor extends RenameResourceProcessor {
@@ -92,7 +92,7 @@ public class RenameWOComponentProcessor extends RenameResourceProcessor {
 				project= _resource.getProject().getName();
 			}
 			// TODO Replace Core messages. 
-			final String header= Messages.format(RefactoringCoreMessages.RenameResourceChange_descriptor_description, new String[] { _resource.getFullPath().toString(), getNewElementName()});
+			final String header= Messages.format(RefactoringCoreMessages.RenameResourceChange_descriptor_description, new String[] { _resource.getFullPath().toString(), getNewResourceName()});
 			final String description= Messages.format(RefactoringCoreMessages.RenameResourceChange_descriptor_description_short, _resource.getName());
 			final String comment= new JDTRefactoringDescriptorComment(project, this, header).asString();
 			final int flags= RefactoringDescriptor.STRUCTURAL_CHANGE | RefactoringDescriptor.MULTI_CHANGE | RefactoringDescriptor.BREAKING_CHANGE;
@@ -101,22 +101,22 @@ public class RenameWOComponentProcessor extends RenameResourceProcessor {
 			descriptor.setDescription(description);
 			descriptor.setComment(comment);
 			descriptor.setFlags(flags);
-			descriptor.setResource(_resource);
-			descriptor.setNewName(getNewElementName() + ".wo");
-			return new DynamicValidationStateChange(new RenameWOComponentChange(descriptor, _resource, getNewElementName() + ".wo", comment));
+			descriptor.setResourcePath(_resource.getLocation());
+			descriptor.setNewName(getNewResourceName() + ".wo");
+			return new DynamicValidationStateChange(new RenameWOComponentChange(descriptor, _resource, getNewResourceName() + ".wo", comment));
 		} finally {
 			pm.done();
 		}
 	}
 
 	@Override
-	public void setNewElementName(String newName) {
+	public void setNewResourceName(String newName) {
 		String name = LocatePlugin.getDefault().fileNameWithoutExtension(newName);
-		super.setNewElementName(name);
+		super.setNewResourceName(name);
 	}
 	
 	@Override
-	public RefactoringStatus checkNewElementName(final String newName) throws JavaModelException {
+	public RefactoringStatus validateNewElementName(String newName) {
 		//TODO Return custom error message
 		IProject project = _resource.getProject();
 		IJavaProject jProject = JavaCore.create(project);
@@ -126,7 +126,6 @@ public class RenameWOComponentProcessor extends RenameResourceProcessor {
 				sourceLevel, compliance);
 		if (!status.isOK())
 			return RefactoringStatus.create(status);
-		return super.checkNewElementName(newName);
+		return super.validateNewElementName(newName);
 	}
-
 }

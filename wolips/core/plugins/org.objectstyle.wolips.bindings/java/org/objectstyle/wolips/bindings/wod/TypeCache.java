@@ -219,7 +219,7 @@ public class TypeCache {
             // ignore primitives if we get this far
           }
           else {
-            type = JavaModelUtil.findType(_type.getJavaProject(), resolvedNextTypeName);
+            type = _type.getJavaProject().findType(resolvedNextTypeName);
             if (type != null) {
               synchronized (_nextTypeCache) {
                 _nextTypeCache.put(typeName, type);

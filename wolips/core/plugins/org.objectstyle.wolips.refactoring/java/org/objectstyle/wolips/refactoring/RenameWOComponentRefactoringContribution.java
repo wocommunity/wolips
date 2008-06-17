@@ -55,23 +55,34 @@
  */
 package org.objectstyle.wolips.refactoring;
 
+import java.util.Map;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.refactoring.IJavaRefactorings;
+import org.eclipse.jdt.core.refactoring.descriptors.JavaRefactoringContribution;
+import org.eclipse.jdt.core.refactoring.descriptors.JavaRefactoringDescriptor;
 import org.eclipse.jdt.core.refactoring.descriptors.RenameJavaElementDescriptor;
-import org.eclipse.jdt.internal.corext.refactoring.JDTRefactoringContribution;
-import org.eclipse.jdt.internal.corext.refactoring.rename.JavaRenameRefactoring;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 
-public final class RenameWOComponentRefactoringContribution extends JDTRefactoringContribution {
+public final class RenameWOComponentRefactoringContribution extends JavaRefactoringContribution {
 
-	@Override
-	public Refactoring createRefactoring(final RefactoringDescriptor descriptor) throws CoreException {
-		return new JavaRenameRefactoring(new RenameWOComponentProcessor(null));
-	}
-	
 	@Override
 	public RefactoringDescriptor createDescriptor() {
 		return new RenameJavaElementDescriptor(IJavaRefactorings.RENAME_RESOURCE);
 	}
+
+	@Override
+	public Refactoring createRefactoring(JavaRefactoringDescriptor descriptor, RefactoringStatus status) throws CoreException {
+		return new RenameRefactoring(new RenameWOComponentProcessor(null));
+	}
+
+	@Override
+	public RefactoringDescriptor createDescriptor(String id, String project, String description, String comment, Map arguments, int flags) throws IllegalArgumentException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

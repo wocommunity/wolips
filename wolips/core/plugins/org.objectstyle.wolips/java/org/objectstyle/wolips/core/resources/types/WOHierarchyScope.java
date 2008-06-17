@@ -86,7 +86,7 @@ public class WOHierarchyScope extends AbstractSearchScope implements SuffixConst
 				IPackageFragmentRoot root = (IPackageFragmentRoot) packageFragment.getParent();
 				if (root.isArchive()) {
 					IPath jarPath = root.getPath();
-					Object target = JavaModel.getTarget(ResourcesPlugin.getWorkspace().getRoot(), jarPath, true);
+					Object target = JavaModel.getTarget(jarPath, true);
 					String zipFileName;
 					if (target instanceof IFile) {
 						// internal jar
@@ -133,7 +133,7 @@ public class WOHierarchyScope extends AbstractSearchScope implements SuffixConst
 				// type in a jar
 				JarPackageFragmentRoot jar = (JarPackageFragmentRoot) root;
 				IPath jarPath = jar.getPath();
-				Object target = JavaModel.getTarget(workspaceRoot, jarPath, true);
+				Object target = JavaModel.getTarget(jarPath, true);
 				String zipFileName;
 				if (target instanceof IFile) {
 					// internal jar
@@ -367,12 +367,12 @@ public class WOHierarchyScope extends AbstractSearchScope implements SuffixConst
 	/*
 	 * @see AbstractSearchScope#processDelta(IJavaElementDelta)
 	 */
-	public void processDelta(IJavaElementDelta delta) {
+	public void processDelta(IJavaElementDelta delta, int eventType) {
 		if (_needsRefresh)
 			return;
-		_needsRefresh = _hierarchy == null ? false : ((TypeHierarchy) _hierarchy).isAffected(delta);
+		_needsRefresh = _hierarchy == null ? false : ((TypeHierarchy) _hierarchy).isAffected(delta, eventType);
 	}
-
+	
 	protected void refresh() throws JavaModelException {
 		if (_hierarchy != null) {
 			initialize();

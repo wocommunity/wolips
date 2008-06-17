@@ -54,9 +54,9 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.jdt.internal.corext.refactoring.changes.DeleteFolderChange;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.core.refactoring.resource.DeleteResourceChange;
 
 /**
  * @author mike
@@ -83,7 +83,7 @@ public class CreateFolderChange extends Change {
 
 	public Change perform(IProgressMonitor _pm) throws CoreException {
 		myFolder.create(false, true, _pm);
-		DeleteFolderChange undoChange = new DeleteFolderChange(myFolder, true);
+		DeleteResourceChange undoChange = new DeleteResourceChange(myFolder.getLocation(), true);
 		return undoChange;
 	}
 

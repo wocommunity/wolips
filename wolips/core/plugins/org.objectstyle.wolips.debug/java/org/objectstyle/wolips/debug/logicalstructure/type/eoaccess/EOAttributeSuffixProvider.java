@@ -55,6 +55,7 @@
  */
 package org.objectstyle.wolips.debug.logicalstructure.type.eoaccess;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.jdt.debug.core.IJavaClassType;
@@ -78,6 +79,8 @@ public class EOAttributeSuffixProvider extends SuffixProvider {
 			resolvedValue = entityJavaLogicalStructure.getLogicalStructure(keyValueCodingLogicalStructureType.getParentValue());
 		} catch (DebugException e) {
 			Activator.getDefault().log(e);
+		} catch (CoreException e) {
+			Activator.getDefault().log(e);
 		}
 		EOEntityLogicalStructureType entityLogicalStructureType = new EOEntityLogicalStructureType(resolvedValue);
 		try {
@@ -85,6 +88,8 @@ public class EOAttributeSuffixProvider extends SuffixProvider {
 			JavaLogicalStructure attributeJavaLogicalStructure = new JavaLogicalStructure(classType.getName(), true, "return attributeNamed(\"" + key + "\");", "bla", new String[0][0]);
 			resolvedValue = attributeJavaLogicalStructure.getLogicalStructure(entityLogicalStructureType.getParentValue());
 		} catch (DebugException e) {
+			Activator.getDefault().log(e);
+		} catch (CoreException e) {
 			Activator.getDefault().log(e);
 		}
 		EOAttributeLogicalStructureType attributeLogicalStructureType = new EOAttributeLogicalStructureType(resolvedValue);

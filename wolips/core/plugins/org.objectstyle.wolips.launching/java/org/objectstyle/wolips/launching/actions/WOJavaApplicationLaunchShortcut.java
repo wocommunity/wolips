@@ -74,10 +74,12 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.internal.debug.ui.launcher.JavaApplicationLaunchShortcut;
+import org.eclipse.jdt.debug.ui.launchConfigurations.JavaApplicationLaunchShortcut;
+import org.eclipse.jdt.internal.debug.ui.launcher.LauncherMessages;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.JavaRuntime;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchConfigurationDelegate;
 
 /**
@@ -105,7 +107,7 @@ public class WOJavaApplicationLaunchShortcut extends JavaApplicationLaunchShortc
 			WOJavaLocalApplicationLaunchConfigurationDelegate.initConfiguration(wc);
 			config = wc.doSave();
 		} catch (CoreException exception) {
-			reportErorr(exception);
+			MessageDialog.openError(getShell(), LauncherMessages.JavaLaunchShortcut_3, exception.getStatus().getMessage()); 
 		}
 		return config;
 	}
@@ -149,5 +151,9 @@ public class WOJavaApplicationLaunchShortcut extends JavaApplicationLaunchShortc
 			classpathUrls.add(new File(str).toURL());
 		}
 		return classpathUrls;
+	}
+	
+	private ILaunchManager getLaunchManager() {
+		return DebugPlugin.getDefault().getLaunchManager();
 	}
 }

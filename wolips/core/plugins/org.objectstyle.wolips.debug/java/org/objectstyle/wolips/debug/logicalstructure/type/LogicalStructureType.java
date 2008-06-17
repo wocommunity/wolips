@@ -55,6 +55,7 @@
  */
 package org.objectstyle.wolips.debug.logicalstructure.type;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILogicalStructureType;
 import org.eclipse.debug.core.model.IValue;
@@ -91,6 +92,8 @@ public abstract class LogicalStructureType extends LogicalStructure implements I
 			NSArrayLogicalStructureType arrayLogicalStructureType = new NSArrayLogicalStructureType(attributeKeysResolvedValue);
 			resolvedArrayToKeys = arrayLogicalStructureType.resolveObjects();
 		} catch (DebugException e) {
+			Activator.getDefault().log(e);
+		} catch (CoreException e) {
 			Activator.getDefault().log(e);
 		}
 		return resolvedArrayToKeys;

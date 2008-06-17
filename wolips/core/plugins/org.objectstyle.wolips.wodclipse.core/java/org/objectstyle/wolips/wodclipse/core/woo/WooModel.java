@@ -29,7 +29,6 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.corext.refactoring.reorg.JavaDeleteProcessor;
-import org.eclipse.jdt.internal.corext.refactoring.reorg.JavaDeleteRefactoring;
 import org.eclipse.jdt.internal.corext.refactoring.reorg.NullReorgQueries;
 import org.eclipse.jdt.internal.ui.refactoring.RefactoringExecutionHelper;
 import org.eclipse.jdt.internal.ui.refactoring.RefactoringSaveHelper;
@@ -37,6 +36,7 @@ import org.eclipse.jdt.ui.refactoring.RenameSupport;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.ltk.core.refactoring.RefactoringCore;
+import org.eclipse.ltk.core.refactoring.participants.DeleteRefactoring;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
@@ -331,7 +331,7 @@ public class WooModel {
                   JavaDeleteProcessor deleteProcessor = new JavaDeleteProcessor(new Object[] { field });
                   deleteProcessor.setSuggestGetterSetterDeletion(false);
                   deleteProcessor.setQueries(new NullReorgQueries());
-                  JavaDeleteRefactoring deleteRefactoring = new JavaDeleteRefactoring(deleteProcessor);
+                  DeleteRefactoring deleteRefactoring = new DeleteRefactoring(deleteProcessor);
                   new RefactoringExecutionHelper(deleteRefactoring, RefactoringCore.getConditionCheckingFailedSeverity(), RefactoringSaveHelper.SAVE_NOTHING, shell, new ProgressMonitorDialog(shell)).perform(false, false);
                 }
               }

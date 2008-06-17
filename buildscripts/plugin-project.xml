@@ -20,6 +20,11 @@
 				<exclude name="**/org.objectstyle.*/**" />
 				<exclude name="**/org.eclipse.core.runtime/**" />
 			</fileset>
+			<fileset dir="${eclipse.plugin.home}">
+				<include name="**/plugins/**/*.jar" />
+				<exclude name="**/org.objectstyle.*/**" />
+				<exclude name="**/org.eclipse.core.runtime/**" />
+			</fileset>
 		</path>
 
 		<javac srcdir="${param.plugin.dir}/java" destdir="${param.java.dest.dir}" compiler="${wolips.build.compiler}" source="${wolips.compile.source}" target="${wolips.compile.target}" debug="true">

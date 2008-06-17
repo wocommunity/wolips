@@ -25,6 +25,7 @@
 	<property name="build.version.to.replace" value="1.0.6" />
 	<!-- ak: dirty trick so we don't have to create a directory -->
 	<property name="eclipse.deps.home" value="${eclipse.deps.home}/features" />
+	<property name="eclipse.plugin.home" value="${eclipse.home}" />
 
 	<!-- ========================================== -->
 	<!-- Print help.                                -->

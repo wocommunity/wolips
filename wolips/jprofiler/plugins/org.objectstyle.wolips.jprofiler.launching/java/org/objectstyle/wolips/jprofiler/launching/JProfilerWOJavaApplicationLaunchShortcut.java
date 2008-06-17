@@ -56,7 +56,9 @@
 
 package org.objectstyle.wolips.jprofiler.launching;
 
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfigurationType;
+import org.eclipse.debug.core.ILaunchManager;
 import org.objectstyle.wolips.launching.actions.WOJavaApplicationLaunchShortcut;
 
 /**
@@ -70,5 +72,8 @@ public class JProfilerWOJavaApplicationLaunchShortcut extends WOJavaApplicationL
 	protected ILaunchConfigurationType getConfigurationType() {
 		return getLaunchManager().getLaunchConfigurationType(JProfilerWOJavaLocalApplicationLaunchConfigurationDelegate.JProfilerWOJavaLocalApplicationID);
 	}
-
+	
+	private ILaunchManager getLaunchManager() {
+		return DebugPlugin.getDefault().getLaunchManager();
+	}
 }
