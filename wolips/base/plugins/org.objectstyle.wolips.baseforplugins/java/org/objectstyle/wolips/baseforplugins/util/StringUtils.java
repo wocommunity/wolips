@@ -162,12 +162,21 @@ public class StringUtils {
      */
     public static String camelCaseToUnderscore(String camelString, boolean lowercase) {
     	StringBuffer underscore = new StringBuffer();
-    	boolean lastCharacterWasWordBreak = true;
-    	for (int i = 0; i < camelString.length(); i ++) {
+    	boolean lastCharacterWasWordBreak = false;
+    	boolean lastCharacterWasCapital = false;
+    	int length = camelString.length();
+    	for (int i = 0; i < length; i ++) {
     		char ch = camelString.charAt(i);
-    		if (Character.isUpperCase(ch) && !lastCharacterWasWordBreak) {
-    			underscore.append("_");
-    			lastCharacterWasWordBreak = true;
+    		if (Character.isUpperCase(ch)) {
+    			boolean nextCharacterIsCapital =  (i < length - 1 && Character.isUpperCase(camelString.charAt(i + 1)));
+    			if (i > 0 && ((!lastCharacterWasWordBreak && !lastCharacterWasCapital) || !nextCharacterIsCapital)) {
+    				underscore.append("_");
+    				lastCharacterWasWordBreak = true;
+    			}
+    			else {
+    				lastCharacterWasWordBreak = false;
+    			}
+    			lastCharacterWasCapital = true;
     		}
     		else if (ch == '_') {
     			lastCharacterWasWordBreak = true;
