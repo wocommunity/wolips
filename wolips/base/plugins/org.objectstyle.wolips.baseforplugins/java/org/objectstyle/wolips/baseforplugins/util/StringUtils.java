@@ -168,8 +168,9 @@ public class StringUtils {
     	for (int i = 0; i < length; i ++) {
     		char ch = camelString.charAt(i);
     		if (Character.isUpperCase(ch)) {
-    			boolean nextCharacterIsCapital =  (i < length - 1 && Character.isUpperCase(camelString.charAt(i + 1)));
-    			if (i > 0 && ((!lastCharacterWasWordBreak && !lastCharacterWasCapital) || !nextCharacterIsCapital)) {
+    			boolean isLastCharacter = (i == length - 1); 
+    			boolean nextCharacterIsCapital =  (!isLastCharacter && Character.isUpperCase(camelString.charAt(i + 1)));
+    			if (i > 0 && ((!lastCharacterWasWordBreak && !lastCharacterWasCapital) || (!nextCharacterIsCapital && !isLastCharacter))) {
     				underscore.append("_");
     				lastCharacterWasWordBreak = true;
     			}
@@ -180,9 +181,11 @@ public class StringUtils {
     		}
     		else if (ch == '_') {
     			lastCharacterWasWordBreak = true;
+    			lastCharacterWasCapital = false;
     		}
     		else {
     			lastCharacterWasWordBreak = false;
+    			lastCharacterWasCapital = false;
     		}
     		if (lowercase) {
     			underscore.append(Character.toLowerCase(ch));
@@ -193,7 +196,7 @@ public class StringUtils {
     	}
     	return underscore.toString();
     }
-
+    
 	public static String toPlural(String _str) {
 		String plural;
 		if (_str != null && _str.length() > 0) {
