@@ -180,9 +180,10 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 				if (dotApi != null) {
 					String message = "Duplicate located: " + dotApi + " " + file;
 					alert(message);
-					throw new LocateException(message);
+					//throw new LocateException(message);
+				} else {
+					dotApi = file;
 				}
-				dotApi = file;
 			} else {
 				String message = "unknown extension on " + file;
 				alert(message);

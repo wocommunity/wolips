@@ -56,7 +56,9 @@
 
 package org.objectstyle.wolips.tptp.launching;
 
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfigurationType;
+import org.eclipse.debug.core.ILaunchManager;
 import org.objectstyle.wolips.launching.actions.WOJavaApplicationLaunchShortcut;
 
 /**
@@ -71,5 +73,8 @@ public class TPTPWOJavaApplicationLaunchShortcut extends WOJavaApplicationLaunch
 		String type = TPTPWOJavaLocalApplicationLaunchConfigurationDelegate.TPTPWOJavaLocalApplicationID;
 		return getLaunchManager().getLaunchConfigurationType(type);
 	}
-
+	
+	private ILaunchManager getLaunchManager() {
+		return DebugPlugin.getDefault().getLaunchManager();
+	}
 }

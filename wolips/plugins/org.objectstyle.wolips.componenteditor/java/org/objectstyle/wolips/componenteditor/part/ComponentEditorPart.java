@@ -328,7 +328,7 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 	}
 
 	public HtmlWodTab htmlWodTab() {
-		return (htmlWodTabs.length > 0) ? htmlWodTabs[0] : null;
+		return (htmlWodTabs != null && htmlWodTabs.length > 0) ? htmlWodTabs[0] : null;
 	}
 	
 	public void switchToHtml() {

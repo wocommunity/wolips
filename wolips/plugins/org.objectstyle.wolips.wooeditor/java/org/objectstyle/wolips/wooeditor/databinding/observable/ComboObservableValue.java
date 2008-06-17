@@ -103,7 +103,6 @@ public class ComboObservableValue extends AbstractSWTObservableValue {
 		return combo.getText();
 	}
 
-	@Override
   public Object getValueType() {
 		return String.class;
 	}

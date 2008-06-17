@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.objectstyle.wolips.eomodeler.core"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.equinox.common_3.3.0.v20070426.jar"/>
+	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.equinox.common_3.4.0.v20080421-2006.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.objectstyle.wolips.eomodeler.factories"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.objectstyle.wolips.eogenerator.core"/>
 	<classpathentry kind="output" path="bin"/>

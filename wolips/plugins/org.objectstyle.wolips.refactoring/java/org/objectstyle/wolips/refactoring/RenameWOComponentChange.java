@@ -69,7 +69,6 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.jdt.internal.corext.refactoring.changes.RenameCompilationUnitChange;
-import org.eclipse.jdt.internal.corext.refactoring.changes.RenameResourceChange;
 import org.eclipse.jdt.internal.corext.util.Messages;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.ChangeDescriptor;
@@ -77,6 +76,7 @@ import org.eclipse.ltk.core.refactoring.CompositeChange;
 import org.eclipse.ltk.core.refactoring.RefactoringChangeDescriptor;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.core.refactoring.resource.RenameResourceChange;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
@@ -191,7 +191,7 @@ public final class RenameWOComponentChange extends CompositeChange {
 		if (oldApiFile != null || oldWoFolders.length > 0) {
 			CompositeChange compositeChange = new CompositeChange("Rename WOComponent Files");
 			if (oldApiFile != null) {
-				compositeChange.add(new RenameResourceChange(_descriptor, oldApiFile, getNewName() + ".api", "Rename " + oldApiFile.getName() + "."));
+				compositeChange.add(new RenameResourceChange(oldApiFile.getFullPath(), getNewName() + ".api"));
 			}
 			for (int i = 0; i < oldWoFolders.length; i++) {
 				IFolder oldWoFolder = oldWoFolders[i];
@@ -204,10 +204,10 @@ public final class RenameWOComponentChange extends CompositeChange {
 				for (int j = 0; j < renameExtensions.length; j++) {
 					IFile woFile = oldWoFolder.getFile(getOldName() + renameExtensions[j]);
 					if (woFile.exists()) {
-						renameWoFolderChange.add(new RenameResourceChange(_descriptor, woFile, getNewName() + renameExtensions[j], "Rename " + woFile.getName()));
+						renameWoFolderChange.add(new RenameResourceChange(woFile.getLocation(), getNewName() + renameExtensions[j]));
 					}
 				}
-				renameWoFolderChange.add(new RenameResourceChange(_descriptor, oldWoFolder, getNewName() + ".wo", "Rename " + oldWoFolder.getName()));
+				renameWoFolderChange.add(new RenameResourceChange(oldWoFolder.getLocation(), getNewName() + ".wo"));
 				compositeChange.add(renameWoFolderChange);
 
 			}

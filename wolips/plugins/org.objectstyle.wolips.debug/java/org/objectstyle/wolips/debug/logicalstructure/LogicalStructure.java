@@ -55,6 +55,7 @@
  */
 package org.objectstyle.wolips.debug.logicalstructure;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.jdt.debug.core.IJavaClassType;
@@ -116,6 +117,8 @@ public abstract class LogicalStructure {
 			IValue resolvedValue = countJavaLogicalStructure.getLogicalStructure(value);
 			resolvedString = resolvedValue.getValueString();
 		} catch (DebugException e) {
+			Activator.getDefault().log(e);
+		} catch (CoreException e) {
 			Activator.getDefault().log(e);
 		}
 		return resolvedString;

@@ -57,7 +57,6 @@ package org.objectstyle.wolips.jdt.ui;
 
 import org.eclipse.jdt.internal.ui.packageview.PackageExplorerContentProvider;
 import org.eclipse.jdt.internal.ui.packageview.PackageExplorerPart;
-import org.eclipse.jdt.internal.ui.workingsets.ViewActionGroup;
 import org.eclipse.jdt.ui.PreferenceConstants;
 import org.eclipse.jdt.ui.actions.JdtActionConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -67,6 +66,8 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.objectstyle.wolips.jdt.ui.refactoring.actions.RenameWOComponentAction;
 
 public class WOPackageExplorerPart extends PackageExplorerPart {
+	private static final int SHOW_PROJECTS= PackageExplorerPart.PROJECTS_AS_ROOTS;
+	private static final int SHOW_WORKING_SETS= PackageExplorerPart.WORKING_SETS_AS_ROOTS;
 	
 	private RenameWOComponentAction renameAction;
 	
@@ -78,7 +79,7 @@ public class WOPackageExplorerPart extends PackageExplorerPart {
 	public PackageExplorerContentProvider createContentProvider() {
 		IPreferenceStore store = PreferenceConstants.getPreferenceStore();
 		boolean showCUChildren = store.getBoolean(PreferenceConstants.SHOW_CU_CHILDREN);
-		if (getRootMode() == ViewActionGroup.SHOW_PROJECTS) {
+		if (getRootMode() == SHOW_PROJECTS) {
 			return new WOPackageExplorerContentProvider(showCUChildren, this);
 		}
 		return new WOWorkingSetAwareContentProvider(showCUChildren, getWorkingSetModel(), this);
@@ -110,7 +111,7 @@ public class WOPackageExplorerPart extends PackageExplorerPart {
 	
 	protected void switchToWOSorter() {
 		TreeViewer viewer = getTreeViewer();
-		boolean showWorkingSets = (getRootMode() == ViewActionGroup.SHOW_WORKING_SETS);
+		boolean showWorkingSets = (getRootMode() == SHOW_WORKING_SETS);
 		if (showWorkingSets) {
 			viewer.setComparator(new WOWorkingSetAwareJavaElementSorter());
 		} else {

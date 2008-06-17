@@ -23,9 +23,9 @@ cp -r $WORKSPACE/woproject/wolips/core/plugins/org.objectstyle.wolips.eomodeler.
 cp -r $WORKSPACE/woproject/wolips/3rdparty/plugins/org.objectstyle.wolips.thirdparty.velocity/bin/* .
 
 echo Unjarring plugins ...
-jar xvf $ECLIPSE/plugins/org.eclipse.equinox.common_3.3.0.v20070426.jar > /dev/null
-jar xvf $ECLIPSE/plugins/org.eclipse.core.resources_3.3.1.R33x_v20080205.jar > /dev/null
-jar xvf $ECLIPSE/plugins/org.eclipse.core.jobs_3.3.1.R33x_v20070709.jar > /dev/null
+jar xvf $ECLIPSE/plugins/org.eclipse.equinox.common_3.4.0.v20080421-2006.jar > /dev/null
+jar xvf $ECLIPSE/plugins/org.eclipse.core.resources_3.4.0.v20080604-1400.jar > /dev/null
+jar xvf $ECLIPSE/plugins/org.eclipse.core.jobs_3.4.0.v20080512.jar > /dev/null
 jar xvf $WORKSPACE/woproject/wolips/core/plugins/org.objectstyle.wolips.woproject/lib/woproject.jar > /dev/null
 jar xvf $WORKSPACE/woproject/wolips/3rdparty/plugins/org.objectstyle.wolips.thirdparty.cayenne/lib/cayenne-1.2M12.jar > /dev/null
 jar xvf $WORKSPACE/woproject/wolips/3rdparty/plugins/org.objectstyle.wolips.thirdparty.velocity/lib/velocity-dep-1.4.jar > /dev/null

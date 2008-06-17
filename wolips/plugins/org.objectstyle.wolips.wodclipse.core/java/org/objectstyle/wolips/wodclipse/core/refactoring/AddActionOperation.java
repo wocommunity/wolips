@@ -62,7 +62,7 @@ public class AddActionOperation extends JavaModelOperation {
 
     String source = sourceBuffer.toString();
     String lineDelim = "\n";// TextUtilities.getDefaultLineDelimiter(document);
-    source = CodeFormatterUtil.format(CodeFormatter.K_CLASS_BODY_DECLARATIONS, source, 1, null, lineDelim, componentType.getJavaProject());
+    source = CodeFormatterUtil.format(CodeFormatter.K_CLASS_BODY_DECLARATIONS, source, 1, null, componentType.getJavaProject());
     new CreateMethodOperation(componentType, source, false).runOperation(progressMonitor);
   }
 
