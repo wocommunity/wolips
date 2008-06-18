@@ -58,21 +58,15 @@ package org.objectstyle.wolips.jdt.ui.refactoring.actions;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.internal.corext.refactoring.RefactoringAvailabilityTester;
-import org.eclipse.jdt.internal.ui.refactoring.RefactoringMessages;
 import org.eclipse.jdt.internal.ui.refactoring.RefactoringSaveHelper;
-import org.eclipse.jdt.internal.ui.refactoring.UserInterfaceStarter;
-import org.eclipse.jdt.internal.ui.refactoring.reorg.RenameUserInterfaceStarter;
-import org.eclipse.jdt.internal.ui.util.ExceptionHandler;
+import org.eclipse.jdt.internal.ui.refactoring.actions.RefactoringStarter;
 import org.eclipse.jdt.ui.actions.RenameAction;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.actions.SelectionListenerAction;
-import org.objectstyle.wolips.jdt.ui.refactoring.RenameWOComponentWizard;
-import org.objectstyle.wolips.refactoring.RenameWOComponentProcessor;
+import org.objectstyle.wolips.refactoring.RenameWOComponentWizard;
 
 public class RenameWOComponentAction extends SelectionListenerAction {
 
@@ -93,16 +87,11 @@ public class RenameWOComponentAction extends SelectionListenerAction {
 			return;
 		}
 		IResource resource = getResource(selection);
-		if (!RefactoringAvailabilityTester.isRenameAvailable(resource))
+		if (!RefactoringAvailabilityTester.isRenameAvailable(resource)) {
 			return;
-		try {
-			final RenameRefactoring refactoring = new RenameRefactoring(new RenameWOComponentProcessor(resource));
-			UserInterfaceStarter starter = new RenameUserInterfaceStarter();
-			starter.initialize(new RenameWOComponentWizard(refactoring));
-			starter.activate(refactoring, _site.getShell(), RefactoringSaveHelper.SAVE_ALL);
-		} catch (CoreException e) {
-			ExceptionHandler.handle(e, RefactoringMessages.RenameJavaElementAction_name, RefactoringMessages.RenameJavaElementAction_exception);
 		}
+		RenameWOComponentWizard wizard = new RenameWOComponentWizard(resource);
+		new RefactoringStarter().activate(wizard, _site.getShell(), wizard.getWindowTitle(), RefactoringSaveHelper.SAVE_ALL);
 	}
 
 	private static boolean isWOComponentResource(IStructuredSelection selection) {

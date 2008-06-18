@@ -105,15 +105,15 @@ public class RenameWOComponentWizard extends RefactoringWizard {
 	 */
 	protected void addUserInputPages() {
 		RenameResourceProcessor processor= (RenameResourceProcessor) getRefactoring().getAdapter(RenameResourceProcessor.class);
-		addPage(new RenameResourceRefactoringConfigurationPage(processor));
+		addPage(new RenameWOComponentRefactoringConfigurationPage(processor));
 	}
 
-	private static class RenameResourceRefactoringConfigurationPage extends UserInputWizardPage {
+	private static class RenameWOComponentRefactoringConfigurationPage extends UserInputWizardPage {
 
 		private final RenameResourceProcessor fRefactoringProcessor;
 		private Text fNameField;
 
-		public RenameResourceRefactoringConfigurationPage(RenameResourceProcessor processor) {
+		public RenameWOComponentRefactoringConfigurationPage(RenameResourceProcessor processor) {
 			super("RenameResourceRefactoringInputPage"); //$NON-NLS-1$
 			fRefactoringProcessor= processor;
 		}

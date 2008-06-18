@@ -204,10 +204,10 @@ public final class RenameWOComponentChange extends CompositeChange {
 				for (int j = 0; j < renameExtensions.length; j++) {
 					IFile woFile = oldWoFolder.getFile(getOldName() + renameExtensions[j]);
 					if (woFile.exists()) {
-						renameWoFolderChange.add(new RenameResourceChange(woFile.getLocation(), getNewName() + renameExtensions[j]));
+						renameWoFolderChange.add(new RenameResourceChange(woFile.getFullPath(), getNewName() + renameExtensions[j]));
 					}
 				}
-				renameWoFolderChange.add(new RenameResourceChange(oldWoFolder.getLocation(), getNewName() + ".wo"));
+				renameWoFolderChange.add(new RenameResourceChange(oldWoFolder.getFullPath(), getNewName() + ".wo"));
 				compositeChange.add(renameWoFolderChange);
 
 			}
