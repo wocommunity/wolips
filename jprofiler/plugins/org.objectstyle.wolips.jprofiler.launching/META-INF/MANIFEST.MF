@@ -13,9 +13,9 @@ Require-Bundle: org.eclipse.jdt.debug.ui,
  org.objectstyle.wolips.baseforuiplugins,
  org.eclipse.jdt.launching,
  org.eclipse.jdt.core,
- com.jprofiler.integrations.eclipse;bundle-version="5.0",
  org.eclipse.core.runtime,
- org.eclipse.core.resources
+ org.eclipse.core.resources,
+ com.jprofiler.integrations.eclipse;bundle-version="5.1.2"
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.jprofiler.launching
 
