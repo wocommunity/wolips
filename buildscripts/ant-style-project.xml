@@ -13,8 +13,8 @@
     <!-- classpath the classpath refid     -->
     <!-- ============================================= -->
     <target name="java">
-       <javac srcdir="${param.src.dir}"
-                destdir="${param.dest.dir}">
+       <javac srcdir="${param.src.dir}" destdir="${param.dest.dir}" 
+              source="${compile.source}" target="${compile.target}">
             <classpath refid="classpath"/>
         </javac>
     </target>
@@ -27,8 +27,8 @@
     <!-- classpath-tests the classpath refid           -->
     <!-- ============================================= -->
     <target name="java.tests">
-       <javac srcdir="${param.src.dir}"
-                destdir="${param.dest.dir}">
+       <javac srcdir="${param.src.dir}" destdir="${param.dest.dir}"
+              source="${compile.source}" target="${compile.target}">
             <classpath refid="classpath-tests"/>
         </javac>
     </target>
