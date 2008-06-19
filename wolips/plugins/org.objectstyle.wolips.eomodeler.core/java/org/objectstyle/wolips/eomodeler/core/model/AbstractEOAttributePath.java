@@ -49,6 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.core.model;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
@@ -63,6 +65,16 @@ public abstract class AbstractEOAttributePath implements IUserInfoable, IEOEntit
 	public AbstractEOAttributePath(EORelationshipPath _parentRelationshipPath, IEOAttribute _childAttribute) {
 		myParentRelationshipPath = _parentRelationshipPath;
 		myChildAttribute = _childAttribute;
+	}
+	
+	public List<AbstractEOAttributePath> getPathElements() {
+		List<AbstractEOAttributePath> pathElements = new LinkedList<AbstractEOAttributePath>();
+		AbstractEOAttributePath pathElement = this;
+		while (pathElement != null) {
+			pathElements.add(0, pathElement);
+			pathElement = pathElement.getParentRelationshipPath();
+		}
+		return pathElements;
 	}
 
 	public EORelationshipPath getParentRelationshipPath() {
