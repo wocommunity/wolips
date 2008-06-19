@@ -19,9 +19,9 @@
 	#end
 	#if (!$entity.childrenEntities.empty)
 	<div class = "childrenEntities">
-		parent of 
+		parent of
 		#foreach ($child in $entity.childrenEntities)
-			<a href = "../../$child.model.name/entities/${child.name}.html">$child.name</a>,
+			<a href = "../../$child.model.name/entities/${child.name}.html">$child.name</a>#if ($velocityCount < $entity.childrenEntities.size()),#end
 		#end
 	</div>
 	#end
@@ -29,7 +29,7 @@
 	<div class = "referencingEntities">
 		referenced by 
 		#foreach ($referencingEntity in $entity.referencingEntities)
-			<a href = "../../$referencingEntity.model.name/entities/${referencingEntity.name}.html">$referencingEntity.name</a>,
+			<a href = "../../$referencingEntity.model.name/entities/${referencingEntity.name}.html">$referencingEntity.name</a>#if ($velocityCount < $entity.referencingEntities.size()),#end
 		#end
 	</div>
 	#end
@@ -49,7 +49,11 @@
 		#if ($entity.className)
 		<tr>
 			<th>Class Name</th>
+			#if ($entityURL)
+			<td><a href = "$entityURL">$entity.className</a></td>
+			#else
 			<td>$entity.className</td>
+			#end
 		</tr>
 		#end
 	</table>
@@ -75,7 +79,7 @@
 	<ul>
 		#foreach ($attribute in $entity.sortedAttributes)
 		<li class = "attribute #if ($attribute.classProperty) classProperty#else nonClassProperty#end #if ($attribute.inherited) inheritedProperty#else nonInheritedProperty#end #if ($attribute.primaryKey) primaryKey#end">
-			<div class = "name">$attribute.name#if ($attribute.primaryKey) [primary key]#end</div>
+			<div class = "name#if ($attribute.flattened) flattened#end">$attribute.name#if ($attribute.primaryKey) [primary key]#end</div>
 			#if ($attribute.columnName)
 				<div class = "mainDetail">
 				$attribute.columnName
@@ -163,9 +167,14 @@
 	<ul class = "relationships">
 		#foreach ($relationship in $entity.sortedRelationships)
 		<li class = "relationship #if ($relationship.classProperty) classProperty#else nonClassProperty#end #if ($relationship.inherited) inheritedProperty#else nonInheritedProperty#end">
-			<div class = "name">$relationship.name</div>
+			<div class = "name#if ($relationship.flattened) flattened#end">$relationship.name</div>
 			#if ($relationship.destination)
-			<div class = "mainDetail"><a href = "../../$relationship.destination.model.name/entities/${relationship.destination.name}.html">$relationship.destination.name</a></div>
+			<div class = "mainDetail">
+				<a href = "../../$relationship.destination.model.name/entities/${relationship.destination.name}.html">$relationship.destination.name</a>
+				#if ($relationship.flattened)
+					via $relationship.definition
+				#end
+			</div>
 			#end
 			#if ($relationship.documentation)
 			<div class = "documentation">$relationship.documentation</div>
@@ -173,19 +182,37 @@
 	
 			<table class = "details" style = "display: none">
 				<tr>
-					<th>Cardinality</th>
+					<th>Type</th>
 					<td>
+						#if ($relationship.flattened) Flattened #end
+						#if ($relationship.joinSemantic.ID != "EOInnerJoin") $relationship.joinSemantic.name #end
 						#if ($relationship.toOne)
 							#if ($relationship.mandatory)
-								To-One (Required)
+								Mandatory To-One
 							#else
-								To-One (Optional)
+								Optional To-One
 							#end
 						#else
 						To-Many
 						#end
 					</td>
 				</tr>
+				#if (!$relationship.joins.empty)
+				<tr>
+					<th>Joins</th>
+					<td>
+						<table class = "joins">
+							#foreach ($join in $relationship.joins)
+								<tr>
+									<td>$join.sourceAttribute.name</td>
+									<td class = "direction">&nbsp;&gt;&nbsp;</td>
+									<td>$join.destinationAttribute.name</td>
+								</tr>
+							#end
+						</table>
+					</td>
+				</tr>
+				#end
 			</table>
 		</li>
 		#end

@@ -8,9 +8,6 @@ import java.util.HashSet;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.exception.MethodInvocationException;
-import org.apache.velocity.exception.ParseErrorException;
-import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.RuntimeServices;
 import org.apache.velocity.runtime.log.LogSystem;
@@ -33,7 +30,7 @@ public class EOModelDocGenerator {
 		}
 	}
 
-	public static void generate(EOModelGroup modelGroup, File outputFolder, File templatePath) throws Exception {
+	public static void generate(EOModelGroup modelGroup, File outputFolder, File templatePath, String entityURLTemplate) throws Exception {
 		VelocityEngine velocityEngine = new VelocityEngine();
 		velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, org.apache.velocity.runtime.log.NullLogSystem.class.getName());
 		// velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
@@ -69,6 +66,18 @@ public class EOModelDocGenerator {
 			for (EOEntity entity : model.getEntities()) {
 				System.out.println("Generating " + model.getName() + "." + entity.getName() + " ...");
 				context.put("entity", entity);
+				if (entityURLTemplate != null) {
+					String classNamePath = entity.getClassName();
+					if (classNamePath != null && classNamePath.length() > 0) {
+						classNamePath = classNamePath.replace('.', '/');
+						String entityURL = entityURLTemplate;
+						entityURL = entityURL.replace("$model.name", model.getName());
+						entityURL = entityURL.replace("$entity.name", entity.getName());
+						entityURL = entityURL.replace("$entity.classNamePath", classNamePath);
+						entityURL = entityURL.replace("$entity.className", entity.getClassName());
+						context.put("entityURL", entityURL);
+					}
+				}
 				EOModelDocGenerator.writeTemplate(velocityEngine, context, "entityContent.html.vm", new File(outputFolder, model.getName() + "/entities/" + entity.getName() + ".html"));
 			}
 
@@ -106,7 +115,7 @@ public class EOModelDocGenerator {
 
 		File outputFolder = new File("/tmp/eomodeldoc");
 
-		EOModelDocGenerator.generate(modelGroup, outputFolder, null);
+		EOModelDocGenerator.generate(modelGroup, outputFolder, null, null);
 	}
 
 	public static void writeTemplate(VelocityEngine engine, VelocityContext context, String templateName, File outputFile) throws Exception {
