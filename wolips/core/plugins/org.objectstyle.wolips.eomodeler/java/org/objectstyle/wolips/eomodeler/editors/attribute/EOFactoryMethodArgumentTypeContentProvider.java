@@ -57,7 +57,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOFactoryMethodArgumentType;
 
 public class EOFactoryMethodArgumentTypeContentProvider implements IStructuredContentProvider {
 	public static String BLANK_ARGUMENT_TYPE = "";
-	
+
 	public Object[] getElements(Object _inputElement) {
 		EOFactoryMethodArgumentType[] argumentTypes = (EOFactoryMethodArgumentType[]) _inputElement;
 		LinkedList argumentTypesList = new LinkedList();
@@ -67,7 +67,7 @@ public class EOFactoryMethodArgumentTypeContentProvider implements IStructuredCo
 			argumentTypesList.add(type);
 		}
 		return argumentTypesList.toArray();
-		//return argumentTypes;
+		// return argumentTypes;
 	}
 
 	public void dispose() {

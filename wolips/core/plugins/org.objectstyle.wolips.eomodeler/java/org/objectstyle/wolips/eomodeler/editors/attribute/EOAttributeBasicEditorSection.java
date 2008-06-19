@@ -49,14 +49,18 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.attribute;
 
+import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
+import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.AbstractEOArgument;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
@@ -66,39 +70,64 @@ import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityListContentProvid
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 
 public class EOAttributeBasicEditorSection extends AbstractEOArgumentBasicEditorSection {
-	private ComboViewer myPrototypeComboViewer;
+	private ComboViewer _prototypeComboViewer;
 
-	private ComboViewerBinding myPrototypeBinding;
+	private ComboViewerBinding _prototypeBinding;
 
-	protected void _addComponents(Composite _parent) {
-		getWidgetFactory().createCLabel(_parent, Messages.getString("EOAttribute." + EOAttribute.PROTOTYPE), SWT.NONE);
-		Combo prototypeCombo = new Combo(_parent, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
-		myPrototypeComboViewer = new ComboViewer(prototypeCombo);
-		myPrototypeComboViewer.setLabelProvider(new EOPrototypeListLabelProvider());
-		myPrototypeComboViewer.setContentProvider(new EOPrototypeListContentProvider());
+	private Button _primaryKeyButton;
+
+	private Button _classPropertyButton;
+
+	private Button _lockingButton;
+
+	@Override
+	protected void _addSettings(Composite settings) {
+		_primaryKeyButton = new Button(settings, SWT.TOGGLE);
+		_primaryKeyButton.setToolTipText(Messages.getString("EOAttribute." + EOAttribute.PRIMARY_KEY));
+		_primaryKeyButton.setImage(Activator.getDefault().getImageRegistry().get(Activator.PRIMARY_KEY_ICON));
+
+		_classPropertyButton = new Button(settings, SWT.TOGGLE);
+		_classPropertyButton.setToolTipText(Messages.getString("EOAttribute." + EOAttribute.CLASS_PROPERTY));
+		_classPropertyButton.setImage(Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON));
+
+		_lockingButton = new Button(settings, SWT.TOGGLE);
+		_lockingButton.setToolTipText(Messages.getString("EOAttribute." + EOAttribute.USED_FOR_LOCKING));
+		_lockingButton.setImage(Activator.getDefault().getImageRegistry().get(Activator.LOCKING_ICON));
+	}
+
+	protected void _addComponents(Composite parent) {
+		getWidgetFactory().createCLabel(parent, Messages.getString("EOAttribute." + EOAttribute.PROTOTYPE), SWT.NONE);
+		Combo prototypeCombo = new Combo(parent, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
+		_prototypeComboViewer = new ComboViewer(prototypeCombo);
+		_prototypeComboViewer.setLabelProvider(new EOPrototypeListLabelProvider());
+		_prototypeComboViewer.setContentProvider(new EOPrototypeListContentProvider());
 		GridData prototypeComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		prototypeCombo.setLayoutData(prototypeComboLayoutData);
 	}
 
-	protected void _argumentChanged(AbstractEOArgument _argument) {
-		EOAttribute attribute = (EOAttribute) _argument;
+	protected void _argumentChanged(AbstractEOArgument argument) {
+		EOAttribute attribute = (EOAttribute) argument;
 		if (attribute != null) {
-			myPrototypeComboViewer.setInput(attribute);
-			myPrototypeBinding = new ComboViewerBinding(myPrototypeComboViewer, attribute, EOAttribute.PROTOTYPE, attribute.getEntity().getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY);
+			_prototypeComboViewer.setInput(attribute);
+			_prototypeBinding = new ComboViewerBinding(_prototypeComboViewer, attribute, EOAttribute.PROTOTYPE, attribute.getEntity().getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY);
+
+			getBindingContext().bindValue(SWTObservables.observeSelection(_primaryKeyButton), BeansObservables.observeValue(attribute, EOAttribute.PRIMARY_KEY), null, null);
+			getBindingContext().bindValue(SWTObservables.observeSelection(_classPropertyButton), BeansObservables.observeValue(attribute, EOAttribute.CLASS_PROPERTY), null, null);
+			getBindingContext().bindValue(SWTObservables.observeSelection(_lockingButton), BeansObservables.observeValue(attribute, EOAttribute.USED_FOR_LOCKING), null, null);
 		}
 	}
 
 	protected void disposeBindings() {
-		if (myPrototypeBinding != null) {
-			myPrototypeBinding.dispose();
+		if (_prototypeBinding != null) {
+			_prototypeBinding.dispose();
 		}
 		super.disposeBindings();
 	}
 
-	public void setInput(IWorkbenchPart _part, ISelection _selection) {
-		super.setInput(_part, _selection);
+	public void setInput(IWorkbenchPart part, ISelection selection) {
+		super.setInput(part, selection);
 		EOAttribute attribute = null;
-		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+		Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
 		if (selectedObject instanceof EOAttribute) {
 			attribute = (EOAttribute) selectedObject;
 		} else if (selectedObject instanceof EOAttributePath) {

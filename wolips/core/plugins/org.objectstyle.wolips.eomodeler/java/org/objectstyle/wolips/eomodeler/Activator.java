@@ -150,6 +150,7 @@ public class Activator extends AbstractBaseUIActivator {
 
 	protected void initializeImageRegistry(ImageRegistry _reg) {
 		super.initializeImageRegistry(_reg);
+		_reg.put(Activator.ALLOW_NULL_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "/icons/allowsNull.png"));
 		_reg.put(Activator.PRIMARY_KEY_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "/icons/primaryKey.png"));
 		_reg.put(Activator.LOCKING_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "/icons/locking.png"));
 		_reg.put(Activator.CLASS_PROPERTY_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "/icons/classProperty.png"));

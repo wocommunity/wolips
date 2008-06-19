@@ -86,6 +86,8 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
 			image = yesNoImage(relationship.isToMany(), Activator.getDefault().getImageRegistry().get(Activator.TO_MANY_ICON), Activator.getDefault().getImageRegistry().get(Activator.TO_ONE_ICON), Activator.getDefault().getImageRegistry().get(Activator.TO_ONE_ICON));
 		} else if (EORelationship.CLASS_PROPERTY.equals(property)) {
 			image = yesNoImage(relationship.isClassProperty(), Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON), null, null);
+		} else if (EORelationship.OPTIONAL.equals(property)) {
+			image = yesNoImage(relationship.isOptional(), Activator.getDefault().getImageRegistry().get(Activator.ALLOW_NULL_ICON), null, null);
 		}
 		return image;
 	}
@@ -96,6 +98,8 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
 		if (EORelationship.TO_MANY.equals(property)) {
 			// DO NOTHING
 		} else if (EORelationship.CLASS_PROPERTY.equals(property)) {
+			// DO NOTHING
+		} else if (EORelationship.OPTIONAL.equals(property)) {
 			// DO NOTHING
 		} else if (EORelationship.DESTINATION.equals(property)) {
 			EOEntity destination = relationship.getDestination();

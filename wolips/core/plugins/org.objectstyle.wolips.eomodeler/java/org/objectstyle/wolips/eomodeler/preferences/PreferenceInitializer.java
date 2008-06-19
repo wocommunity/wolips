@@ -77,6 +77,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     TableUtils.setColumnsForTableNamed(EOFetchSpecification.class.getName(), new String[] { EOFetchSpecification.SHARES_OBJECTS, EOFetchSpecification.NAME }, false);
     TableUtils.setColumnsForTableNamed(EOSortOrdering.class.getName(), new String[] { EOSortOrdering.KEY, EOSortOrdering.ASCENDING, EOSortOrdering.CASE_INSENSITIVE }, false);
     TableUtils.setColumnsForTableNamed(EOJoin.class.getName(), new String[] { EOJoin.SOURCE_ATTRIBUTE_NAME, EOJoin.DESTINATION_ATTRIBUTE_NAME }, false);
-    TableUtils.setColumnsForTableNamed(EORelationship.class.getName(), new String[] { EORelationship.TO_MANY, EORelationship.CLASS_PROPERTY, EORelationship.NAME, EORelationship.DESTINATION, EOJoin.SOURCE_ATTRIBUTE, EOJoin.DESTINATION_ATTRIBUTE }, false);
+    TableUtils.setColumnsForTableNamed(EORelationship.class.getName(), new String[] { EORelationship.TO_MANY, EORelationship.CLASS_PROPERTY, EORelationship.OPTIONAL, EORelationship.NAME, EORelationship.DESTINATION, EOJoin.SOURCE_ATTRIBUTE, EOJoin.DESTINATION_ATTRIBUTE }, false);
   }
 }

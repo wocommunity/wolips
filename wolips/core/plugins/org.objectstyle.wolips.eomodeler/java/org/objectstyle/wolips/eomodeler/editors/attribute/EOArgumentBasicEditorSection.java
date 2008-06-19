@@ -68,6 +68,11 @@ public class EOArgumentBasicEditorSection extends AbstractEOArgumentBasicEditorS
 
 	private ComboViewerBinding myDirectionBinding;
 
+	@Override
+	protected void _addSettings(Composite settings) {
+		// DO NOTHING
+	}
+	
 	protected void _addComponents(Composite _parent) {
 		getWidgetFactory().createCLabel(_parent, Messages.getString("EOArgument." + EOArgument.DIRECTION), SWT.NONE);
 		Combo prototypeCombo = new Combo(_parent, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);

@@ -93,7 +93,7 @@ public class JoinsTableEditor extends Composite {
 
 	public JoinsTableEditor(Composite _parent, int _style) {
 		super(_parent, _style);
-
+		setBackground(_parent.getBackground());
 		myRelationshipListener = new RelationshipListener();
 		myButtonUpdateListener = new ButtonUpdateListener();
 

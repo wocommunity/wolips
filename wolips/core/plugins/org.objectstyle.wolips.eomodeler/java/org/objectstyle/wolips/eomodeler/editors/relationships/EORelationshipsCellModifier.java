@@ -78,7 +78,7 @@ public class EORelationshipsCellModifier extends TablePropertyCellModifier {
 		// canModify = false;
 		// }
 		// else {
-		canModify = (EORelationship.CLASS_PROPERTY.equals(_property) || EORelationship.NAME.equals(_property));
+		canModify = (EORelationship.CLASS_PROPERTY.equals(_property) || EORelationship.OPTIONAL.equals(_property) || EORelationship.NAME.equals(_property));
 		// }
 		return canModify;
 	}

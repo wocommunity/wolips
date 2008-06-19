@@ -67,6 +67,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -75,6 +76,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
+import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EODeleteRule;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
@@ -124,6 +126,8 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 
 	private ComboViewerBinding _entityBinding;
 
+	private Button _classPropertyButton;
+
 	public EORelationshipBasicEditorSection() {
 		_joinsListener = new JoinsListener();
 	}
@@ -140,6 +144,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 		((FormLayout)form.getLayout()).marginHeight = 10;
 
 		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
+		topForm.setBackgroundMode(SWT.INHERIT_DEFAULT);
 		FormData topFormData = new FormData();
 		topFormData.top = new FormAttachment(0);
 		topFormData.left = new FormAttachment(0);
@@ -163,39 +168,56 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 		GridData definitionFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_definitionText.setLayoutData(definitionFieldLayoutData);
 
-		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.cardinality"), SWT.NONE);
-		Composite cardinalityComposite = getWidgetFactory().createPlainComposite(topForm, SWT.NONE);
-		GridLayout cardinalityLayout = new GridLayout();
-		cardinalityLayout.numColumns = 2;
-		cardinalityLayout.makeColumnsEqualWidth = true;
-		cardinalityComposite.setLayout(cardinalityLayout);
-		_toOneButton = new Button(cardinalityComposite, SWT.RADIO);
-		_toOneButton.setText(Messages.getString("EORelationship.toOne"));
-		GridData toOneButtonLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-		_toOneButton.setLayoutData(toOneButtonLayoutData);
-		_toManyButton = new Button(cardinalityComposite, SWT.RADIO);
-		_toManyButton.setText(Messages.getString("EORelationship.toMany"));
-		GridData toManyButtonLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-		_toManyButton.setLayoutData(toManyButtonLayoutData);
-		GridData cardinalityCompositeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-		cardinalityComposite.setLayoutData(cardinalityCompositeLayoutData);
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.settings"), SWT.NONE);
+		
+		Composite settingsComposite = new Composite(topForm, SWT.NONE);
+		settingsComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
 
-		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.optionality"), SWT.NONE);
-		Composite optionalityComposite = getWidgetFactory().createPlainComposite(topForm, SWT.NONE);
-		GridLayout optionalityLayout = new GridLayout();
-		optionalityLayout.numColumns = 2;
-		optionalityLayout.makeColumnsEqualWidth = true;
-		optionalityComposite.setLayout(optionalityLayout);
-		_optionalButton = new Button(optionalityComposite, SWT.RADIO);
-		_optionalButton.setText(Messages.getString("EORelationship.optional"));
-		GridData optionalButtonLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-		_optionalButton.setLayoutData(optionalButtonLayoutData);
-		_mandatoryButton = new Button(optionalityComposite, SWT.RADIO);
-		_mandatoryButton.setText(Messages.getString("EORelationship.mandatory"));
-		GridData mandatoryButtonLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-		_mandatoryButton.setLayoutData(mandatoryButtonLayoutData);
-		GridData optioanlityCompositeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-		optionalityComposite.setLayoutData(optioanlityCompositeLayoutData);
+		_toManyButton = new Button(settingsComposite, SWT.TOGGLE);
+		_toManyButton.setToolTipText(Messages.getString("EORelationship." + EORelationship.TO_MANY));
+		_toManyButton.setImage(Activator.getDefault().getImageRegistry().get(Activator.TO_MANY_ICON));
+
+		_classPropertyButton = new Button(settingsComposite, SWT.TOGGLE);
+		_classPropertyButton.setToolTipText(Messages.getString("EORelationship." + EORelationship.CLASS_PROPERTY));
+		_classPropertyButton.setImage(Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON));
+
+		_optionalButton = new Button(settingsComposite, SWT.TOGGLE);
+		_optionalButton.setToolTipText(Messages.getString("EORelationship." + EORelationship.OPTIONAL));
+		_optionalButton.setImage(Activator.getDefault().getImageRegistry().get(Activator.ALLOW_NULL_ICON));
+
+//		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.cardinality"), SWT.NONE);
+//		Composite cardinalityComposite = getWidgetFactory().createPlainComposite(topForm, SWT.NONE);
+//		GridLayout cardinalityLayout = new GridLayout();
+//		cardinalityLayout.numColumns = 2;
+//		cardinalityLayout.makeColumnsEqualWidth = true;
+//		cardinalityComposite.setLayout(cardinalityLayout);
+//		_toOneButton = new Button(cardinalityComposite, SWT.RADIO);
+//		_toOneButton.setText(Messages.getString("EORelationship.toOne"));
+//		GridData toOneButtonLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+//		_toOneButton.setLayoutData(toOneButtonLayoutData);
+//		_toManyButton = new Button(cardinalityComposite, SWT.RADIO);
+//		_toManyButton.setText(Messages.getString("EORelationship.toMany"));
+//		GridData toManyButtonLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+//		_toManyButton.setLayoutData(toManyButtonLayoutData);
+//		GridData cardinalityCompositeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+//		cardinalityComposite.setLayoutData(cardinalityCompositeLayoutData);
+
+//		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.optionality"), SWT.NONE);
+//		Composite optionalityComposite = getWidgetFactory().createPlainComposite(topForm, SWT.NONE);
+//		GridLayout optionalityLayout = new GridLayout();
+//		optionalityLayout.numColumns = 2;
+//		optionalityLayout.makeColumnsEqualWidth = true;
+//		optionalityComposite.setLayout(optionalityLayout);
+//		_optionalButton = new Button(optionalityComposite, SWT.RADIO);
+//		_optionalButton.setText(Messages.getString("EORelationship.optional"));
+//		GridData optionalButtonLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+//		_optionalButton.setLayoutData(optionalButtonLayoutData);
+//		_mandatoryButton = new Button(optionalityComposite, SWT.RADIO);
+//		_mandatoryButton.setText(Messages.getString("EORelationship.mandatory"));
+//		GridData mandatoryButtonLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+//		_mandatoryButton.setLayoutData(mandatoryButtonLayoutData);
+//		GridData optioanlityCompositeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+//		optionalityComposite.setLayoutData(optioanlityCompositeLayoutData);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.DELETE_RULE), SWT.NONE);
 		Combo deleteRuleCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
@@ -268,10 +290,11 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 				_bindingContext = new DataBindingContext();
 				_bindingContext.bindValue(SWTObservables.observeText(_nameText, SWT.Modify), BeansObservables.observeValue(_relationship, EORelationship.NAME), null, null);
 				_bindingContext.bindValue(SWTObservables.observeText(_definitionText, SWT.Modify), BeansObservables.observeValue(_relationship, EORelationship.DEFINITION), null, null);
-				_bindingContext.bindValue(SWTObservables.observeSelection(_toOneButton), BeansObservables.observeValue(_relationship, EORelationship.TO_ONE), null, null);
+				//_bindingContext.bindValue(SWTObservables.observeSelection(_toOneButton), BeansObservables.observeValue(_relationship, EORelationship.TO_ONE), null, null);
 				_bindingContext.bindValue(SWTObservables.observeSelection(_toManyButton), BeansObservables.observeValue(_relationship, EORelationship.TO_MANY), null, null);
 				_bindingContext.bindValue(SWTObservables.observeSelection(_optionalButton), BeansObservables.observeValue(_relationship, EORelationship.OPTIONAL), null, null);
-				_bindingContext.bindValue(SWTObservables.observeSelection(_mandatoryButton), BeansObservables.observeValue(_relationship, EORelationship.MANDATORY), null, null);
+				//_bindingContext.bindValue(SWTObservables.observeSelection(_mandatoryButton), BeansObservables.observeValue(_relationship, EORelationship.MANDATORY), null, null);
+				_bindingContext.bindValue(SWTObservables.observeSelection(_classPropertyButton), BeansObservables.observeValue(_relationship, EORelationship.CLASS_PROPERTY), null, null);
 
 				_deleteRuleBinding = new ComboViewerBinding(_deleteRuleComboViewer, _relationship, EORelationship.DELETE_RULE, null, null, null);
 				_joinSemanticBinding = new ComboViewerBinding(_joinSemanticComboViewer, _relationship, EORelationship.JOIN_SEMANTIC, _relationship.getEntity().getModel().getModelGroup(), EOModelGroup.MODELS, null);

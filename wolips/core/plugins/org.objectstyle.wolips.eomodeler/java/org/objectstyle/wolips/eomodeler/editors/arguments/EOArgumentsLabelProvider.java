@@ -69,7 +69,7 @@ public class EOArgumentsLabelProvider extends TablePropertyLabelProvider impleme
 		EOArgument argument = (EOArgument) _element;
 		Image image = null;
 		if (AbstractEOArgument.ALLOWS_NULL.equals(_property)) {
-			image = yesNoImage(argument.isAllowsNull(), Activator.getDefault().getImageRegistry().get(Activator.CHECK_ICON), null, null);
+			image = yesNoImage(argument.isAllowsNull(), Activator.getDefault().getImageRegistry().get(Activator.ALLOW_NULL_ICON), null, null);
 		}
 		return image;
 	}
