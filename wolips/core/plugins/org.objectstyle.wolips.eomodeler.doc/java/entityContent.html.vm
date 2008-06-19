@@ -172,7 +172,8 @@
 			<div class = "mainDetail">
 				<a href = "../../$relationship.destination.model.name/entities/${relationship.destination.name}.html">$relationship.destination.name</a>
 				#if ($relationship.flattened)
-					via $relationship.definition
+					via
+					#foreach ($pathElement in $relationship.definitionPath.pathElements)<a href = "../../$pathElement.entity.model.name/entities/${pathElement.entity.name}.html">$pathElement.childIEOAttribute.name</a>#if ($velocityCount < $relationship.definitionPath.pathElements.size()).#end#end 
 				#end
 			</div>
 			#end
