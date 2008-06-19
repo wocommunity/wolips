@@ -208,8 +208,8 @@ public class EOModelAdvancedEditorSection extends AbstractPropertySection implem
 	}
 
 	public void dispose() {
-		super.dispose();
 		disposeBindings();
+		super.dispose();
 	}
 
 	public void modifyText(ModifyEvent e) {

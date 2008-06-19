@@ -120,11 +120,19 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
 			classPropertyColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON));
 		}
 
+		TableColumn allowNullColumn = TableUtils.getColumn(myRelationshipsTableViewer, EORelationship.class.getName(), EORelationship.OPTIONAL);
+		if (allowNullColumn != null) {
+			allowNullColumn.setText("");
+			allowNullColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.ALLOW_NULL_ICON));
+			//allowNullColumn.setAlignment(SWT.CENTER);
+		}
+
 		TableUtils.sort(myRelationshipsTableViewer, EORelationship.NAME);
 
 		CellEditor[] cellEditors = new CellEditor[TableUtils.getColumnsForTableNamed(EORelationship.class.getName()).length];
 		TableUtils.setCellEditor(EORelationship.class.getName(), EORelationship.TO_MANY, new CheckboxCellEditor(), cellEditors);
 		TableUtils.setCellEditor(EORelationship.class.getName(), EORelationship.CLASS_PROPERTY, new CheckboxCellEditor(), cellEditors);
+		TableUtils.setCellEditor(EORelationship.class.getName(), EORelationship.OPTIONAL, new CheckboxCellEditor(), cellEditors);
 		TableUtils.setCellEditor(EORelationship.class.getName(), EORelationship.NAME, new WOTextCellEditor(relationshipsTable), cellEditors);
 		myRelationshipsTableViewer.setCellModifier(new EORelationshipsCellModifier(myRelationshipsTableViewer));
 		myRelationshipsTableViewer.setCellEditors(cellEditors);

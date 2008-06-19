@@ -70,6 +70,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -77,6 +78,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
+import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.AbstractEOArgument;
 import org.objectstyle.wolips.eomodeler.core.model.EODataType;
@@ -95,53 +97,58 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 
 	private static String DERIVED = "Derived";
 
-	private AbstractEOArgument myArgument;
+	private AbstractEOArgument _argument;
 
-	private Text myNameText;
+	private Text _nameText;
 
-	private ComboViewer myDerivedComboViewer;
+	private ComboViewer _derivedComboViewer;
 
-	private Text myColumnNameText;
+	private Text _columnNameText;
 
-	private Text myDefinitionText;
+	private Text _definitionText;
 
-	private Text myExternalTypeText;
+	private Text _externalTypeText;
 
-	private Button myAllowNullsButton;
+	private Button _allowNullsButton;
 
-	private ComboViewer myDataTypeComboViewer;
+	private ComboViewer _dataTypeComboViewer;
 
-	private StackLayout myColumnNameDefinitionLayout;
+	private StackLayout _columnNameDefinitionLayout;
 
-	private StackLayout myDataTypeStackLayout;
+	private StackLayout _dataTypeStackLayout;
 
-	private Map<EODataType, Composite> myDataTypeToDataTypePanel;
+	private Map<EODataType, Composite> _dataTypeToDataTypePanel;
 
-	private DataBindingContext myBindingContext;
+	private DataBindingContext _bindingContext;
 
-	private ComboViewerBinding myDataTypeBinding;
+	private ComboViewerBinding _dataTypeBinding;
 
-	private DataTypeChangeListener myDataTypeChangeListener;
+	private DataTypeChangeListener _dataTypeChangeListener;
 
-	private Composite myDataTypePanel;
+	private Composite _dataTypePanel;
 
-	private Composite myColumnNameDefinitionComposite;
+	private Composite _columnNameDefinitionComposite;
 
 	public AbstractEOArgumentBasicEditorSection() {
-		myDataTypeChangeListener = new DataTypeChangeListener();
+		_dataTypeChangeListener = new DataTypeChangeListener();
 	}
 
 	public AbstractEOArgument getArgument() {
-		return myArgument;
+		return _argument;
+	}
+	
+	public DataBindingContext getBindingContext() {
+		return _bindingContext;
 	}
 
-	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
-		super.createControls(_parent, _tabbedPropertySheetPage);
-		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
+	public void createControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
+		super.createControls(parent, tabbedPropertySheetPage);
+		Composite form = getWidgetFactory().createFlatFormComposite(parent);
 		FormLayout formLayout = new FormLayout();
 		form.setLayout(formLayout);
 
 		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
+		topForm.setBackgroundMode(SWT.INHERIT_DEFAULT);
 		FormData topFormData = new FormData();
 		topFormData.top = new FormAttachment(0, 5);
 		topFormData.left = new FormAttachment(0, 5);
@@ -153,116 +160,124 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 		topForm.setLayout(topFormLayout);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("AbstractEOArgument." + AbstractEOArgument.NAME), SWT.NONE);
-		myNameText = new Text(topForm, SWT.BORDER);
+		_nameText = new Text(topForm, SWT.BORDER);
 		GridData nameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-		myNameText.setLayoutData(nameFieldLayoutData);
+		_nameText.setLayoutData(nameFieldLayoutData);
 
 		Combo derivedCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
-		myDerivedComboViewer = new ComboViewer(derivedCombo);
+		_derivedComboViewer = new ComboViewer(derivedCombo);
 		// myDerivedComboViewer.setLabelProvider(new EODerivedLabelProvider());
-		myDerivedComboViewer.setContentProvider(new EODerivedContentProvider());
-		myDerivedComboViewer.setInput(new String[] { AbstractEOArgumentBasicEditorSection.COLUMN, AbstractEOArgumentBasicEditorSection.DERIVED });
-		myDerivedComboViewer.addSelectionChangedListener(new ColumnDerivedChangeListener());
+		_derivedComboViewer.setContentProvider(new EODerivedContentProvider());
+		_derivedComboViewer.setInput(new String[] { AbstractEOArgumentBasicEditorSection.COLUMN, AbstractEOArgumentBasicEditorSection.DERIVED });
+		_derivedComboViewer.addSelectionChangedListener(new ColumnDerivedChangeListener());
 		GridData derivedComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		derivedCombo.setLayoutData(derivedComboLayoutData);
 
-		myColumnNameDefinitionComposite = getWidgetFactory().createPlainComposite(topForm, SWT.NONE);
+		_columnNameDefinitionComposite = getWidgetFactory().createPlainComposite(topForm, SWT.NONE);
 		GridData columnNameDefinitionFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-		myColumnNameDefinitionComposite.setLayoutData(columnNameDefinitionFieldLayoutData);
-		myColumnNameDefinitionLayout = new StackLayout();
-		myColumnNameDefinitionComposite.setLayout(myColumnNameDefinitionLayout);
+		_columnNameDefinitionComposite.setLayoutData(columnNameDefinitionFieldLayoutData);
+		_columnNameDefinitionLayout = new StackLayout();
+		_columnNameDefinitionComposite.setLayout(_columnNameDefinitionLayout);
 
-		getWidgetFactory().createCLabel(myColumnNameDefinitionComposite, Messages.getString("AbstractEOArgument." + AbstractEOArgument.COLUMN_NAME), SWT.NONE);
-		myColumnNameText = new Text(myColumnNameDefinitionComposite, SWT.BORDER);
+		getWidgetFactory().createCLabel(_columnNameDefinitionComposite, Messages.getString("AbstractEOArgument." + AbstractEOArgument.COLUMN_NAME), SWT.NONE);
+		_columnNameText = new Text(_columnNameDefinitionComposite, SWT.BORDER);
 		GridData externalNameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-		myColumnNameText.setLayoutData(externalNameFieldLayoutData);
+		_columnNameText.setLayoutData(externalNameFieldLayoutData);
 
-		getWidgetFactory().createCLabel(myColumnNameDefinitionComposite, Messages.getString("AbstractEOArgument." + AbstractEOArgument.DEFINITION), SWT.NONE);
-		myDefinitionText = new Text(myColumnNameDefinitionComposite, SWT.BORDER);
+		getWidgetFactory().createCLabel(_columnNameDefinitionComposite, Messages.getString("AbstractEOArgument." + AbstractEOArgument.DEFINITION), SWT.NONE);
+		_definitionText = new Text(_columnNameDefinitionComposite, SWT.BORDER);
 		GridData definitionFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-		myDefinitionText.setLayoutData(definitionFieldLayoutData);
-		myColumnNameDefinitionLayout.topControl = myColumnNameText;
+		_definitionText.setLayoutData(definitionFieldLayoutData);
+		_columnNameDefinitionLayout.topControl = _columnNameText;
+
+		getWidgetFactory().createCLabel(topForm, Messages.getString("AbstractEOArgument.settings"), SWT.NONE);
+		
+		Composite settingsComposite = new Composite(topForm, SWT.NONE);
+		settingsComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
+
+		_addSettings(settingsComposite);
+
+		_allowNullsButton = new Button(settingsComposite, SWT.TOGGLE);
+		_allowNullsButton.setToolTipText(Messages.getString("AbstractEOArgument." + AbstractEOArgument.ALLOWS_NULL));
+		_allowNullsButton.setImage(Activator.getDefault().getImageRegistry().get(Activator.ALLOW_NULL_ICON));
 
 		_addComponents(topForm);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("AbstractEOArgument." + AbstractEOArgument.EXTERNAL_TYPE), SWT.NONE);
-		myExternalTypeText = new Text(topForm, SWT.BORDER);
+		_externalTypeText = new Text(topForm, SWT.BORDER);
 		GridData externalTypeFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-		myExternalTypeText.setLayoutData(externalTypeFieldLayoutData);
-
-		getWidgetFactory().createCLabel(topForm, Messages.getString("AbstractEOArgument." + AbstractEOArgument.ALLOWS_NULL), SWT.NONE);
-		myAllowNullsButton = new Button(topForm, SWT.CHECK);
+		_externalTypeText.setLayoutData(externalTypeFieldLayoutData);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("AbstractEOArgument." + AbstractEOArgument.DATA_TYPE), SWT.NONE);
 		Combo dataTypeCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
-		myDataTypeComboViewer = new ComboViewer(dataTypeCombo);
-		myDataTypeComboViewer.setLabelProvider(new EODataTypeLabelProvider());
-		myDataTypeComboViewer.setContentProvider(new EODataTypeContentProvider());
-		myDataTypeComboViewer.setSorter(new ViewerSorter());
-		myDataTypeComboViewer.setInput(EODataType.DATA_TYPES);
+		_dataTypeComboViewer = new ComboViewer(dataTypeCombo);
+		_dataTypeComboViewer.setLabelProvider(new EODataTypeLabelProvider());
+		_dataTypeComboViewer.setContentProvider(new EODataTypeContentProvider());
+		_dataTypeComboViewer.setSorter(new ViewerSorter());
+		_dataTypeComboViewer.setInput(EODataType.DATA_TYPES);
 		GridData dataTypeComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		dataTypeCombo.setLayoutData(dataTypeComboLayoutData);
 
-		myDataTypePanel = getWidgetFactory().createPlainComposite(form, SWT.NONE);
+		_dataTypePanel = getWidgetFactory().createPlainComposite(form, SWT.NONE);
 		FormData dataTypeFormData = new FormData();
-		dataTypeFormData.top = new FormAttachment(topForm, 10);
-		dataTypeFormData.left = new FormAttachment(0, 5);
+		dataTypeFormData.top = new FormAttachment(topForm, 0);
+		dataTypeFormData.left = new FormAttachment(0, 6);
 		dataTypeFormData.right = new FormAttachment(100, -5);
-		myDataTypePanel.setLayoutData(dataTypeFormData);
-		myDataTypeStackLayout = new StackLayout();
-		myDataTypePanel.setLayout(myDataTypeStackLayout);
+		_dataTypePanel.setLayoutData(dataTypeFormData);
+		_dataTypeStackLayout = new StackLayout();
+		_dataTypePanel.setLayout(_dataTypeStackLayout);
 
-		myDataTypeToDataTypePanel = new HashMap<EODataType, Composite>();
-		myDataTypeToDataTypePanel.put(EODataType.BIGDECIMAL, new DecimalNumberDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
-		myDataTypeToDataTypePanel.put(EODataType.BYTE, new StringDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
-		myDataTypeToDataTypePanel.put(EODataType.CUSTOM, new CustomDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
-		myDataTypeToDataTypePanel.put(EODataType.DATA, new DataDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
-		myDataTypeToDataTypePanel.put(EODataType.DATE, new DateDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
-		myDataTypeToDataTypePanel.put(EODataType.DATE_MSSQL, new DateDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
-		myDataTypeToDataTypePanel.put(EODataType.DATE_OBJ, new DateDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
-		myDataTypeToDataTypePanel.put(EODataType.DECIMAL_NUMBER, new DecimalNumberDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
-		myDataTypeToDataTypePanel.put(EODataType.BOOLEAN, new IntegerDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
-		myDataTypeToDataTypePanel.put(EODataType.DOUBLE, new DoubleDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
-		myDataTypeToDataTypePanel.put(EODataType.FLOAT, new DoubleDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
-		myDataTypeToDataTypePanel.put(EODataType.INTEGER, new IntegerDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
-		myDataTypeToDataTypePanel.put(EODataType.LONG, new IntegerDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
-		myDataTypeToDataTypePanel.put(EODataType.SHORT, new IntegerDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
-		myDataTypeToDataTypePanel.put(EODataType.STRING, new StringDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
-		myDataTypeToDataTypePanel.put(EODataType.STRING_CHAR, new StringDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
-		myDataTypeToDataTypePanel.put(EODataType.STRING_RTRIM, new StringDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
-		myDataTypeToDataTypePanel.put(EODataType.STRING_SET, new StringDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
-		myDataTypeToDataTypePanel.put(EODataType.STRING_UTF, new StringDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
-		myDataTypeToDataTypePanel.put(EODataType.TIME, new DateDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
-		myDataTypeToDataTypePanel.put(EODataType.TIMESTAMP, new DateDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
+		_dataTypeToDataTypePanel = new HashMap<EODataType, Composite>();
+		_dataTypeToDataTypePanel.put(EODataType.BIGDECIMAL, new DecimalNumberDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
+		_dataTypeToDataTypePanel.put(EODataType.BYTE, new StringDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
+		_dataTypeToDataTypePanel.put(EODataType.CUSTOM, new CustomDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
+		_dataTypeToDataTypePanel.put(EODataType.DATA, new DataDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
+		_dataTypeToDataTypePanel.put(EODataType.DATE, new DateDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
+		_dataTypeToDataTypePanel.put(EODataType.DATE_MSSQL, new DateDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
+		_dataTypeToDataTypePanel.put(EODataType.DATE_OBJ, new DateDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
+		_dataTypeToDataTypePanel.put(EODataType.DECIMAL_NUMBER, new DecimalNumberDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
+		_dataTypeToDataTypePanel.put(EODataType.BOOLEAN, new IntegerDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
+		_dataTypeToDataTypePanel.put(EODataType.DOUBLE, new DoubleDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
+		_dataTypeToDataTypePanel.put(EODataType.FLOAT, new DoubleDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
+		_dataTypeToDataTypePanel.put(EODataType.INTEGER, new IntegerDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
+		_dataTypeToDataTypePanel.put(EODataType.LONG, new IntegerDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
+		_dataTypeToDataTypePanel.put(EODataType.SHORT, new IntegerDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
+		_dataTypeToDataTypePanel.put(EODataType.STRING, new StringDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
+		_dataTypeToDataTypePanel.put(EODataType.STRING_CHAR, new StringDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
+		_dataTypeToDataTypePanel.put(EODataType.STRING_RTRIM, new StringDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
+		_dataTypeToDataTypePanel.put(EODataType.STRING_SET, new StringDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
+		_dataTypeToDataTypePanel.put(EODataType.STRING_UTF, new StringDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
+		_dataTypeToDataTypePanel.put(EODataType.TIME, new DateDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
+		_dataTypeToDataTypePanel.put(EODataType.TIMESTAMP, new DateDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
 
-		for (Composite dataTypePanel : myDataTypeToDataTypePanel.values()) {
-			dataTypePanel.setBackground(myDataTypePanel.getBackground());
+		for (Composite dataTypePanel : _dataTypeToDataTypePanel.values()) {
+			dataTypePanel.setBackground(_dataTypePanel.getBackground());
 			getWidgetFactory().paintBordersFor(dataTypePanel);
 		}
 	}
 
-	public void setArgument(AbstractEOArgument _argument) {
-		if (!ComparisonUtils.equals(_argument, myArgument)) {
+	public void setArgument(AbstractEOArgument argument) {
+		if (!ComparisonUtils.equals(argument, _argument)) {
 			disposeBindings();
 
-			myArgument = _argument;
+			_argument = argument;
 
-			if (myArgument != null) {
+			if (_argument != null) {
 				// myArgumentTypeComboViewer.setInput(myAttribute);
-				myBindingContext = new DataBindingContext();
-				myBindingContext.bindValue(SWTObservables.observeText(myNameText, SWT.Modify), BeansObservables.observeValue(myArgument, AbstractEOArgument.NAME), null, null);
-				myBindingContext.bindValue(SWTObservables.observeText(myColumnNameText, SWT.Modify), BeansObservables.observeValue(myArgument, AbstractEOArgument.COLUMN_NAME), null, null);
-				myBindingContext.bindValue(SWTObservables.observeText(myDefinitionText, SWT.Modify), BeansObservables.observeValue(myArgument, AbstractEOArgument.DEFINITION), null, null);
-				myBindingContext.bindValue(SWTObservables.observeText(myExternalTypeText, SWT.Modify), BeansObservables.observeValue(myArgument, AbstractEOArgument.EXTERNAL_TYPE), null, null);
-				myBindingContext.bindValue(SWTObservables.observeSelection(myAllowNullsButton), BeansObservables.observeValue(myArgument, AbstractEOArgument.ALLOWS_NULL), null, null);
+				_bindingContext = new DataBindingContext();
+				_bindingContext.bindValue(SWTObservables.observeText(_nameText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.NAME), null, null);
+				_bindingContext.bindValue(SWTObservables.observeText(_columnNameText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.COLUMN_NAME), null, null);
+				_bindingContext.bindValue(SWTObservables.observeText(_definitionText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.DEFINITION), null, null);
+				_bindingContext.bindValue(SWTObservables.observeText(_externalTypeText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.EXTERNAL_TYPE), null, null);
+				_bindingContext.bindValue(SWTObservables.observeSelection(_allowNullsButton), BeansObservables.observeValue(_argument, AbstractEOArgument.ALLOWS_NULL), null, null);
 
-				_argumentChanged(_argument);
+				_argumentChanged(argument);
 
-				myDataTypeBinding = new ComboViewerBinding(myDataTypeComboViewer, myArgument, AbstractEOArgument.DATA_TYPE, null, null, null);
-				if (myArgument.getDefinition() == null) {
-					myDerivedComboViewer.setSelection(new StructuredSelection(AbstractEOArgumentBasicEditorSection.COLUMN));
+				_dataTypeBinding = new ComboViewerBinding(_dataTypeComboViewer, _argument, AbstractEOArgument.DATA_TYPE, null, null, null);
+				if (_argument.getDefinition() == null) {
+					_derivedComboViewer.setSelection(new StructuredSelection(AbstractEOArgumentBasicEditorSection.COLUMN));
 				} else {
-					myDerivedComboViewer.setSelection(new StructuredSelection(AbstractEOArgumentBasicEditorSection.DERIVED));
+					_derivedComboViewer.setSelection(new StructuredSelection(AbstractEOArgumentBasicEditorSection.DERIVED));
 				}
 
 				// Iterator dataTypePanelsIter =
@@ -273,80 +288,83 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 				// dataTypePanel.setArgument(_argument);
 				// }
 				updateAttributePanel(null);
-				if (myArgument != null) {
-					myArgument.addPropertyChangeListener(AbstractEOArgument.DATA_TYPE, myDataTypeChangeListener);
+				if (_argument != null) {
+					_argument.addPropertyChangeListener(AbstractEOArgument.DATA_TYPE, _dataTypeChangeListener);
 				}
 			}
 		}
 	}
 
-	protected abstract void _addComponents(Composite _parent);
+	protected abstract void _addSettings(Composite settings);
+	
+	protected abstract void _addComponents(Composite parent);
 
-	protected abstract void _argumentChanged(AbstractEOArgument _argument);
+	protected abstract void _argumentChanged(AbstractEOArgument argument);
 
 	protected void disposeBindings() {
-		if (myBindingContext != null) {
-			myBindingContext.dispose();
+		if (_bindingContext != null) {
+			_bindingContext.dispose();
 		}
-		if (myArgument != null) {
-			myArgument.removePropertyChangeListener(AbstractEOArgument.DATA_TYPE, myDataTypeChangeListener);
+		if (_argument != null) {
+			_argument.removePropertyChangeListener(AbstractEOArgument.DATA_TYPE, _dataTypeChangeListener);
 		}
-		if (myDataTypeBinding != null) {
-			myDataTypeBinding.dispose();
+		if (_dataTypeBinding != null) {
+			_dataTypeBinding.dispose();
 		}
 	}
 
 	public void dispose() {
 		disposeBindings();
-		for (Composite dataTypePanel : myDataTypeToDataTypePanel.values()) {
+		for (Composite dataTypePanel : _dataTypeToDataTypePanel.values()) {
 			((IDataTypePanel) dataTypePanel).setArgument(null);
 		}
 		super.dispose();
 	}
 
 	protected void updateTextfromDerivedComboViewer() {
-		IStructuredSelection selection = (IStructuredSelection) myDerivedComboViewer.getSelection();
+		IStructuredSelection selection = (IStructuredSelection) _derivedComboViewer.getSelection();
 		if (AbstractEOArgumentBasicEditorSection.COLUMN.equals(selection.getFirstElement())) {
-			myColumnNameDefinitionLayout.topControl = myColumnNameText;
-			if (myArgument.getDefinition() != null) {
-				myArgument.setDefinition(null);
+			_columnNameDefinitionLayout.topControl = _columnNameText;
+			if (_argument.getDefinition() != null) {
+				_argument.setDefinition(null);
 			}
 		} else {
-			myColumnNameDefinitionLayout.topControl = myDefinitionText;
+			_columnNameDefinitionLayout.topControl = _definitionText;
 		}
-		myColumnNameDefinitionComposite.layout();
+		_columnNameDefinitionComposite.layout();
 	}
 
 	@SuppressWarnings("unused")
-	protected void updateAttributePanel(EODataType _oldDataType) {
-		// System.out.println("AbstractEOArgumentBasicEditorSection.updateAttributePanel:
+	protected void updateAttributePanel(EODataType oldDataType) {
+		// System.out.println(
+		// "AbstractEOArgumentBasicEditorSection.updateAttributePanel:
 		// updateAttributePanel");
-		if (myArgument != null) {
-			EODataType dataType = myArgument.getDataType();
-			Composite dataTypePanel = myDataTypeToDataTypePanel.get(dataType);
+		if (_argument != null) {
+			EODataType dataType = _argument.getDataType();
+			Composite dataTypePanel = _dataTypeToDataTypePanel.get(dataType);
 			if (dataTypePanel == null) {
-				dataTypePanel = myDataTypeToDataTypePanel.get(EODataType.CUSTOM);
+				dataTypePanel = _dataTypeToDataTypePanel.get(EODataType.CUSTOM);
 			}
-			if (myDataTypeStackLayout.topControl instanceof IDataTypePanel) {
-				((IDataTypePanel) myDataTypeStackLayout.topControl).setArgument(null);
+			if (_dataTypeStackLayout.topControl instanceof IDataTypePanel) {
+				((IDataTypePanel) _dataTypeStackLayout.topControl).setArgument(null);
 			}
 			if (dataTypePanel instanceof IDataTypePanel) {
-				((IDataTypePanel) dataTypePanel).setArgument(myArgument);
+				((IDataTypePanel) dataTypePanel).setArgument(_argument);
 			}
-			myDataTypeStackLayout.topControl = dataTypePanel;
-			myDataTypePanel.layout();
+			_dataTypeStackLayout.topControl = dataTypePanel;
+			_dataTypePanel.layout();
 		}
 	}
 
 	protected class ColumnDerivedChangeListener implements ISelectionChangedListener {
-		public void selectionChanged(SelectionChangedEvent _event) {
+		public void selectionChanged(SelectionChangedEvent event) {
 			AbstractEOArgumentBasicEditorSection.this.updateTextfromDerivedComboViewer();
 		}
 	}
 
 	protected class DataTypeChangeListener implements PropertyChangeListener {
-		public void propertyChange(PropertyChangeEvent _event) {
-			EODataType oldDataType = (EODataType) _event.getOldValue();
+		public void propertyChange(PropertyChangeEvent event) {
+			EODataType oldDataType = (EODataType) event.getOldValue();
 			// System.out.println("DataTypeChangeListener.propertyChange: " +
 			// _event.getNewValue());
 			AbstractEOArgumentBasicEditorSection.this.updateAttributePanel(oldDataType);

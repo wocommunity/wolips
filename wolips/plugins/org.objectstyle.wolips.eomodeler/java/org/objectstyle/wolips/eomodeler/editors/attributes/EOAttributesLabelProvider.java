@@ -111,7 +111,7 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
 		} else if (EOAttribute.CLASS_PROPERTY.equals(_property)) {
 			image = yesNoImage(attribute.isClassProperty(), Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON), null, null);
 		} else if (AbstractEOArgument.ALLOWS_NULL.equals(_property)) {
-			image = yesNoImage(attribute.isAllowsNull(), Activator.getDefault().getImageRegistry().get(Activator.CHECK_ICON), null, null);
+			image = yesNoImage(attribute.isAllowsNull(), Activator.getDefault().getImageRegistry().get(Activator.ALLOW_NULL_ICON), null, null);
 		}
 		return image;
 	}

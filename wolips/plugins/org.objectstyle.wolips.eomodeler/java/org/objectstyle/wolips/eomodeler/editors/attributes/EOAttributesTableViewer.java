@@ -104,29 +104,29 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
 		TableColumn primaryKeyColumn = TableUtils.getColumn(myAttributesTableViewer, EOAttribute.class.getName(), EOAttribute.PRIMARY_KEY);
 		if (primaryKeyColumn != null) {
 			primaryKeyColumn.setText("");
-			// primaryKeyColumn.setAlignment(SWT.CENTER);
+			//primaryKeyColumn.setAlignment(SWT.CENTER);
 			primaryKeyColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.PRIMARY_KEY_ICON));
 		}
 
 		TableColumn lockingColumn = TableUtils.getColumn(myAttributesTableViewer, EOAttribute.class.getName(), EOAttribute.USED_FOR_LOCKING);
 		if (lockingColumn != null) {
 			lockingColumn.setText("");
-			// lockingColumn.setAlignment(SWT.CENTER);
+			//lockingColumn.setAlignment(SWT.CENTER);
 			lockingColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.LOCKING_ICON));
 		}
 
 		TableColumn classPropertyColumn = TableUtils.getColumn(myAttributesTableViewer, EOAttribute.class.getName(), EOAttribute.CLASS_PROPERTY);
 		if (classPropertyColumn != null) {
 			classPropertyColumn.setText("");
-			// classPropertyColumn.setAlignment(SWT.CENTER);
+			//classPropertyColumn.setAlignment(SWT.CENTER);
 			classPropertyColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON));
 		}
 
 		TableColumn allowNullColumn = TableUtils.getColumn(myAttributesTableViewer, EOAttribute.class.getName(), AbstractEOArgument.ALLOWS_NULL);
 		if (allowNullColumn != null) {
-			allowNullColumn.setText("0");
-			// allowNullColumn.setAlignment(SWT.CENTER);
-			// classPropertyColumn.setImage(Activator.getDefault().getImageRegistry().get(EOAttribute.CLASS_PROPERTY));
+			allowNullColumn.setText("");
+			allowNullColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.ALLOW_NULL_ICON));
+			//allowNullColumn.setAlignment(SWT.CENTER);
 		}
 
 		TableUtils.sort(myAttributesTableViewer, AbstractEOArgument.NAME);
