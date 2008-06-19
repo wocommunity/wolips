@@ -16,9 +16,11 @@ import org.objectstyle.wolips.eomodeler.factories.SimpleManifestEOModelGroupFact
 
 public class EOModelDoc {
   public static void main(String[] args) throws Exception {
+    System.setProperty("javax.xml.xpath.XPathFactory:http://java.sun.com/jaxp/xpath/dom", "com.sun.org.apache.xpath.internal.jaxp.XPathFactoryImpl");
     File modelGroupFolder = new File(".");
     File outputFolder = null;
     File templateFolder = null;
+    String entityURLTemplate = null;
     List<String> modelPaths = new LinkedList<String>();
     for (int argNum = 0; argNum < args.length; argNum++) {
       String arg = args[argNum];
@@ -34,10 +36,13 @@ public class EOModelDoc {
       else if ("-output".equals(arg)) {
         outputFolder = new File(args[++argNum]);
       }
+      else if ("-entityURLTemplate".equals(arg)) {
+        entityURLTemplate = args[++argNum];
+      }
     }
-
+    
     if (outputFolder == null) {
-      System.out.println("eomodeldoc -output /path/to/output/folder [-model /path/to/model.eomodeld]* [-modelgroup /path/to/working/dir] [-templates /path/to/templates]");
+      System.out.println("eomodeldoc -output /path/to/output/folder [-model /path/to/model.eomodeld]* [-modelgroup /path/to/working/dir] [-templates /path/to/templates] [-entityURLTemplate \"http://whatever?${entity.classNamePath}.html");
       System.exit(0);
     }
 
@@ -55,6 +60,6 @@ public class EOModelDoc {
     }
     modelGroup.resolve(failures);
     modelGroup.verify(failures);
-    EOModelDocGenerator.generate(modelGroup, outputFolder, templateFolder);
+    EOModelDocGenerator.generate(modelGroup, outputFolder, templateFolder, entityURLTemplate);
   }
 }

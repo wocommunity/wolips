@@ -37,7 +37,7 @@ table.summary td div.entities {
 }
 
 a {
-  color: rgb(100, 100, 155);
+  color: rgb(120, 120, 175);
 	text-decoration: none;
 }
 
@@ -82,28 +82,16 @@ div.documentation {
 	font-size: 1.0em;
 }
 
-li.nonClassProperty {
-	color: rgb(100, 100, 100);
-}
-
-li.nonClassProperty div.documentation {
-	color: rgb(100, 100, 100);
-}
-
-div.section > ul > li.nonClassProperty.primaryKey div.name {
-  background-color: rgb(220, 255, 220);
-}
-
-div.section > ul > li.primaryKey div.name {
-  background-color: rgb(220, 255, 220);
-}
-
 div.section {
 	padding: 0px;
 	margin-top: 15px;
 }
 
 div.section div.name {
+	font-weight: normal;
+}
+
+div.section div.name.flattened {
 	font-weight: bold;
 }
 
@@ -130,14 +118,8 @@ div.section > ul > li {
   margin: 0px;
   border-bottom: 1px solid rgb(125, 125, 180);
   padding-bottom: 5px;
-}
-
-div.section > ul > li.nonClassProperty {
-  color: rgb(150, 150, 150);
-}
-
-div.section > ul > li.nonClassProperty div.name {
-  background-color: rgb(230, 230, 230);
+  background-color: rgb(245, 245, 255);
+	color: rgb(80, 80, 115);
 }
 
 div.section > ul > li div.name {
@@ -151,11 +133,18 @@ div.section > ul > li div.mainDetail {
   font-size: 0.8em;
 }
 
+div.section > ul > li table.details {
+	color: rgb(80, 80, 115);
+}
+
+div.section > ul > li table.details th {
+	color: rgb(170, 170, 205);
+}
+
 table.details {
 	font-size: 0.8em;
 	padding: 0px;
 	margin: 0px;
-	color: rgb(175, 175, 175);
 }
 
 table.details th {
@@ -168,7 +157,6 @@ table.details th {
 }
 
 table.details td {
-	color: rgb(0, 0, 0);
 	padding: 0px;
 	margin: 0px;
 }
@@ -179,6 +167,49 @@ table.details td a {
 
 div.section > ul > li table.details {
 	margin-left: 2px;
+}
+
+div.section > ul > li.nonClassProperty.primaryKey {
+	color: rgb(80, 115, 80);
+  background-color: rgb(240, 255, 240);
+}
+
+div.section > ul > li.nonClassProperty.primaryKey table.details {
+	color: rgb(80, 115, 80);
+}
+
+div.section > ul > li.nonClassProperty.primaryKey table.details th {
+	color: rgb(170, 205, 170);
+}
+
+div.section > ul > li.nonClassProperty.primaryKey div.name {
+  background-color: rgb(220, 255, 220);
+}
+
+div.section > ul > li.primaryKey {
+	color: rgb(80, 115, 80);
+  background-color: rgb(240, 255, 240);
+}
+
+div.section > ul > li.primaryKey div.name {
+  background-color: rgb(220, 255, 220);
+}
+
+div.section > ul > li.nonClassProperty {
+  color: rgb(100, 100, 100);
+  background-color: rgb(250, 250, 250);
+}
+
+div.section > ul > li.nonClassProperty div.name {
+  background-color: rgb(230, 230, 230);
+}
+
+div.section > ul > li.nonClassProperty table.details {
+  color: rgb(100, 100, 100);
+}
+
+div.section > ul > li.nonClassProperty table.details th {
+  color: rgb(190, 190, 190);
 }
 
 /* Entities */
@@ -231,4 +262,9 @@ ol.sortOrderings li {
 /* Entity Indexes */
 div.section.entityIndexes > ul li.entityIndex {
 	margin-bottom: 10px;
+}
+
+table.joins td.direction {
+	color: rgb(190, 190, 190);
+	text-align: center;
 }
