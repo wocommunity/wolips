@@ -83,6 +83,9 @@
 			#if ($attribute.columnName)
 				<div class = "mainDetail">
 				$attribute.columnName
+				#if ($attribute.flattened)
+					via $attribute.definition
+				#end
 				</div>
 			#end
 			
@@ -173,7 +176,7 @@
 				<a href = "../../$relationship.destination.model.name/entities/${relationship.destination.name}.html">$relationship.destination.name</a>
 				#if ($relationship.flattened)
 					via
-					#foreach ($pathElement in $relationship.definitionPath.pathElements)<a href = "../../$pathElement.entity.model.name/entities/${pathElement.entity.name}.html">$pathElement.childIEOAttribute.name</a>#if ($velocityCount < $relationship.definitionPath.pathElements.size()).#end#end 
+					#foreach ($pathElement in $relationship.definitionPath.pathElements)<a href = "../../$pathElement.childRelationship.destination.model.name/entities/${pathElement.childRelationship.destination.name}.html">$pathElement.childRelationship.name</a>#if ($velocityCount < $relationship.definitionPath.pathElements.size()).#end#end 
 				#end
 			</div>
 			#end
