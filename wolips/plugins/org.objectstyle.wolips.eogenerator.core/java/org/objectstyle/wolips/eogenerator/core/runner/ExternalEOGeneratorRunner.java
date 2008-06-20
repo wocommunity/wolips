@@ -21,7 +21,13 @@ public class ExternalEOGeneratorRunner implements IEOGeneratorRunner {
 		List<String> commandsList = new LinkedList<String>();
 		CommandLineTokenizer tokenizer = new CommandLineTokenizer(eogenFileContents);
 		while (tokenizer.hasMoreTokens()) {
-			commandsList.add(tokenizer.nextToken());
+			String token = tokenizer.nextToken();
+			if ("-extension".equals(token)) {
+				tokenizer.nextToken();
+			}
+			else {
+				commandsList.add(token);
+			}
 		}
 		String[] tokens = commandsList.toArray(new String[commandsList.size()]);
 		if (!new File(eogenModel.getEOGeneratorPath()).exists()) {
