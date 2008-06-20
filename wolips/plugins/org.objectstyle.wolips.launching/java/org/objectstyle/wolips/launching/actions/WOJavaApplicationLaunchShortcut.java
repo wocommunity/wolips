@@ -100,7 +100,7 @@ public class WOJavaApplicationLaunchShortcut extends JavaApplicationLaunchShortc
 		ILaunchConfigurationWorkingCopy wc = null;
 		try {
 			ILaunchConfigurationType configType = getConfigurationType();
-			wc = configType.newInstance(null, getLaunchManager().generateUniqueLaunchConfigurationNameFrom(type.getJavaProject().getProject().getName() + ": " + type.getElementName()));
+			wc = configType.newInstance(null, getLaunchManager().generateUniqueLaunchConfigurationNameFrom(type.getJavaProject().getProject().getName()));
 			wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, type.getFullyQualifiedName());
 			wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, type.getJavaProject().getElementName());
 			wc.setMappedResources(new IResource[] { type.getJavaProject().getProject() });
