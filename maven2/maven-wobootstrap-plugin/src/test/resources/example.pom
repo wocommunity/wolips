@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?><project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.apple.webobjects</groupId>
+  <groupId>com.webobjects</groupId>
   <artifactId>JavaEOAccess</artifactId>
   <version>5.3</version>
   <dependencies>
     <dependency>
-      <groupId>com.apple.webobjects</groupId>
+      <groupId>com.webobjects</groupId>
       <artifactId>JavaFoundation</artifactId>
       <version>5.3</version>
     </dependency>
     <dependency>
-      <groupId>com.apple.webobjects</groupId>
+      <groupId>com.webobjects</groupId>
       <artifactId>JavaEOControl</artifactId>
       <version>5.3</version>
     </dependency>

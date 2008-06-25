@@ -20,7 +20,7 @@ public class TestPomGenerator extends XMLTestCase {
 
 	protected static final String ARTIFACT_ID = "JavaEOAccess";
 
-	protected static final String GROUP_ID = "com.apple.webobjects";
+	protected static final String GROUP_ID = "com.webobjects";
 
 	protected static final String VERSION = "5.3";
 
@@ -29,6 +29,7 @@ public class TestPomGenerator extends XMLTestCase {
 	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 */
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 
