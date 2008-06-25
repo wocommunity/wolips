@@ -263,6 +263,7 @@ public class WooModel {
         if (entry.getValue() instanceof Map) {
           EOModelMap entryMap = new EOModelMap((Map<?, ?>) entry.getValue());
           String className = entryMap.getString("class", true);
+          //XXX This should support subclasses of WODisplayGroup
           if ("WODisplayGroup".equals(className)) {
             DisplayGroup displayGroup = new DisplayGroup(this);
             displayGroup.setName(entry.getKey());

@@ -501,6 +501,7 @@ public class DisplayGroup implements IPropertyChangeSource {
     else {
       EOFetchSpecification newFetchSpec = new EOFetchSpecification(null);
       newFetchSpec.setEntity(_entity);
+      newFetchSpec.setDeep(true);
       _databaseDataSource.setFetchSpecification(newFetchSpec);
     }
 
