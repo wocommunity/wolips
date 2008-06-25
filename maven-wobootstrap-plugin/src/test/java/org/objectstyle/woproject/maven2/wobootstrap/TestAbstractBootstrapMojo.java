@@ -156,7 +156,7 @@ public class TestAbstractBootstrapMojo extends TestCase {
 
 		Properties properties = mojo.fillProperties(mockJar);
 
-		assertEquals("com.apple.webobjects", properties.getProperty("groupId"));
+		assertEquals("com.webobjects", properties.getProperty("groupId"));
 		assertNotNull(properties.getProperty("version"));
 		assertEquals("jar", properties.getProperty("packaging"));
 		assertEquals(mockJar.getAbsolutePath(), properties.getProperty("file"));
