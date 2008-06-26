@@ -89,10 +89,12 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
@@ -109,6 +111,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
+import org.objectstyle.wolips.apple.util.StatusLogger;
 
 /**
  * Property page for configuring parts of the pom.xml and profiles.xml
@@ -220,12 +223,12 @@ public class AppleMavenPropertyPage extends PropertyPage {
 	 */
 	public void refreshWOVersionsForCombo(Combo combo) {
 
-		//FIXME: query resource plugin for valid snapshot versions -dlee
+		//FIXME: query resource plugin for valid snapshot versions or dynamically fetch from remote repository -dlee
 		ArrayList<String> list = new ArrayList<String>();
 
 		list.add("5.4.2-SNAPSHOT");
 		list.add("5.5-SNAPSHOT");
-		list.add("6.0-SNAPSHOT");
+		list.add("5.6-SNAPSHOT");
 
 		if (list.size() > 0) {
 			combo.setText(list.get(1));
@@ -322,7 +325,7 @@ public class AppleMavenPropertyPage extends PropertyPage {
 				urlPath = woRep.getUrl();
 			}
 		} catch (RuntimeException e) {
-			e.printStackTrace();
+			StatusLogger.getLogger().log(e);
 		}
 
 		return urlPath;
@@ -362,7 +365,7 @@ public class AppleMavenPropertyPage extends PropertyPage {
 				urlPath = woRep.getUrl();
 			}
 		} catch (RuntimeException e) {
-			e.printStackTrace();
+			StatusLogger.getLogger().log(e);
 		}
 
 		return urlPath;
@@ -373,8 +376,19 @@ public class AppleMavenPropertyPage extends PropertyPage {
 	 *
 	 */
 	public IPath getWOProfilesFile() {
-		IResource res = (IResource) getElement().getAdapter(IResource.class);
-		IPath profileRes = res.getProject().getLocation().append("/"+PROFILES_XML_FILE);
+		IAdaptable elem = getElement();
+		IResource res = (IResource) elem.getAdapter(IResource.class);
+		IPath profileRes = null;
+		if (res != null) {
+			profileRes = res.getProject().getLocation().append("/"+PROFILES_XML_FILE);
+		} else {
+			IJavaElement je = (IJavaElement) elem.getAdapter(IJavaElement.class);
+			if (je != null) {
+				profileRes = je.getJavaProject().getPath();
+			} else {
+				StatusLogger.getLogger().log(new IllegalStateException("Cannot get find profiles.xml in project with selection "+elem));
+			}
+		}	
 		return profileRes;
 	}
 
@@ -382,8 +396,20 @@ public class AppleMavenPropertyPage extends PropertyPage {
 	 * @return base directory for selected project
 	 */
 	public IPath getProjectBaseDir() {
-		IResource res = (IResource) getElement().getAdapter(IResource.class);
-		return res.getProject().getLocation();
+		IAdaptable elem = getElement();
+		IPath aPath = null;
+		IResource res = (IResource) elem.getAdapter(IResource.class);
+		if (res != null) {
+			aPath = res.getProject().getLocation();
+		} else {
+			IJavaElement je = (IJavaElement) elem.getAdapter(IJavaElement.class);
+			if (je != null) {
+				aPath = je.getJavaProject().getPath();
+			} else {
+				StatusLogger.getLogger().log(new IllegalStateException("Cannot get project base directory with selection "+elem));
+			}
+		}
+		return  aPath;
 	}
 
 	/**
@@ -396,9 +422,9 @@ public class AppleMavenPropertyPage extends PropertyPage {
 		try {
 			pRoot = this.buildProfiles(profileBase);
 		} catch (IOException e) {
-			e.printStackTrace();
+			StatusLogger.getLogger().log(e);
 		} catch (XmlPullParserException e) {
-			e.printStackTrace();
+			StatusLogger.getLogger().log(e);
 		}
 		return pRoot;
 	}
@@ -418,13 +444,20 @@ public class AppleMavenPropertyPage extends PropertyPage {
 	 * @param proj
 	 */
 	public void writeMavenProject(MavenProject proj) {
+		boolean error = false;
 		try {
 			FileWriter fw = new FileWriter(proj.getFile());
 			proj.writeModel(fw);
 		} catch (RuntimeException e) {
-			e.printStackTrace();
+			StatusLogger.getLogger().log(e);
+			error = true;
 		} catch (IOException e) {
-			e.printStackTrace();
+			StatusLogger.getLogger().log(e);
+			error = true;
+		} finally {
+			if (error) {
+				MessageDialog.openError(getShell(), "Project Error", "Cannot write the Maven Project");
+			}
 		}
 	}
 
@@ -432,8 +465,17 @@ public class AppleMavenPropertyPage extends PropertyPage {
 	 * @return pom file reference
 	 */
 	public IPath getPOMFile() {
-		IResource res = (IResource) getElement().getAdapter(IResource.class);
-		IPath pomRes = res.getProject().getLocation().append("/"+POM_XML_FILE);
+		IAdaptable elem = getElement();
+		IPath pomRes = null;
+
+		if (elem != null && elem instanceof IResource) {
+			IResource res = (IResource) elem;
+			try {
+				pomRes= res.getProject().getLocation().append("/"+POM_XML_FILE);
+			} catch (RuntimeException e) {
+				StatusLogger.getLogger().log(e);
+			}
+		}
 		return pomRes;
 	}
 
@@ -451,13 +493,13 @@ public class AppleMavenPropertyPage extends PropertyPage {
 				MavenXpp3Reader reader = new MavenXpp3Reader();
 				model = reader.read(fis, true);
 			} catch (RuntimeException e) {
-				e.printStackTrace();
+				StatusLogger.getLogger().log(e);
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				StatusLogger.getLogger().log(e);
 			} catch (IOException e) {
-				e.printStackTrace();
+				StatusLogger.getLogger().log(e);
 			} catch (XmlPullParserException e) {
-				e.printStackTrace();
+				StatusLogger.getLogger().log(e);
 			} finally {
 				if (fis != null) {
 					try {
@@ -467,6 +509,9 @@ public class AppleMavenPropertyPage extends PropertyPage {
 					}
 				}
 			}
+		} else {
+			MessageDialog.openError(getShell(), "Project Read Error", "Cannot read the Maven Project");
+			StatusLogger.getLogger().log(new IllegalStateException("Cannot read the Maven Project"));
 		}
 		return model;
 	}
@@ -488,11 +533,18 @@ public class AppleMavenPropertyPage extends PropertyPage {
 	 * @return current IProject
 	 */
 	public IProject getCurrentProject () {
-		IResource res = (IResource) getElement().getAdapter(IResource.class);
-		IProject project = res.getProject();
-		if (project == null) {
-			//last ditch effort
-			return ResourcesPlugin.getWorkspace().getRoot().getProject();
+		IAdaptable elem = getElement();
+		IResource res = (IResource) elem.getAdapter(IResource.class);
+		IProject project = null;
+
+		if (res != null) {
+			project = res.getProject();
+			if (project == null) {
+				//last ditch effort
+				return ResourcesPlugin.getWorkspace().getRoot().getProject();
+			}
+		} else {
+			StatusLogger.getLogger().logWarning("Cannot get current project");
 		}
 
 		return project;
@@ -533,15 +585,12 @@ public class AppleMavenPropertyPage extends PropertyPage {
 				Repository woRep = getWOSnapshotRepositoryFromProfile(woProfile);
 				Repository woPluginRep = getWOPluginSnapshotRepositoryFromProfile(woProfile);
 				String currURL = this.snapshotPathTextField.getText();
-				System.out.println("Current Snapshot URL setting: "+currURL);
 				woRep.setUrl(currURL);
-
 				String currPluginURL = this.pluginSnapshotPathTextField.getText();
 				woPluginRep.setUrl(currPluginURL);
-				System.out.println("Current Plugin Snapshot URL setting: "+currURL);
 
 			} catch (RuntimeException e) {
-				e.printStackTrace();
+				StatusLogger.getLogger().log(new IllegalStateException("Failed to update the profiles.xml", e));
 			}
 		}
 	}
@@ -554,7 +603,7 @@ public class AppleMavenPropertyPage extends PropertyPage {
 			String url = getCurrentSnapshotRepositoryURL();
 			this.snapshotPathTextField.setText(url);
 		} catch (RuntimeException e) {
-			e.printStackTrace();
+			StatusLogger.getLogger().log(e);
 			this.snapshotPathTextField.setText("URL to Maven repository");
 		}
 	}
@@ -567,7 +616,7 @@ public class AppleMavenPropertyPage extends PropertyPage {
 			String url = this.getCurrentPluginSnapshotRepositoryURL();
 			this.pluginSnapshotPathTextField.setText(url);
 		} catch (RuntimeException e) {
-			e.printStackTrace();
+			StatusLogger.getLogger().log(e);
 			this.pluginSnapshotPathTextField.setText("URL to Maven Plugin repository");
 		}
 	}
@@ -611,8 +660,6 @@ public class AppleMavenPropertyPage extends PropertyPage {
 		Configuration config;
 		File userSettingsFile = DEFAULT_USER_SETTINGS_FILE;
 		ClassWorld classWorld = new ClassWorld( "plexus.core", Thread.currentThread().getContextClassLoader() );
-
-
 		config = new DefaultConfiguration().setUserSettingsFile( userSettingsFile );
 		config.setGlobalSettingsFile(DEFAULT_GLOBAL_SETTINGS_FILE );
 		config.setClassWorld( classWorld );
@@ -635,9 +682,6 @@ public class AppleMavenPropertyPage extends PropertyPage {
 
 	@Override
 	public boolean performOk() {
-		//			((IResource) getElement()).setPersistentProperty(
-//		new QualifiedName("", USER_PROPERTY),
-//		ownerText.getText());
 		if (isPOMDirty) {
 			writeMavenModel();
 			isPOMDirty = false;
@@ -732,9 +776,9 @@ public class AppleMavenPropertyPage extends PropertyPage {
 				_project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 
 			} catch (IOException e) {
-				e.printStackTrace();
+				StatusLogger.getLogger().log(e);
 			} catch (CoreException e) {
-				e.printStackTrace();
+				StatusLogger.getLogger().log(e);
 			} finally {
 				monitor.done();
 			}
@@ -775,9 +819,9 @@ public class AppleMavenPropertyPage extends PropertyPage {
 				_project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 
 			} catch (IOException e) {
-				e.printStackTrace();
+				StatusLogger.getLogger().log(e);
 			} catch (CoreException e) {
-				e.printStackTrace();
+				StatusLogger.getLogger().log(e);
 			} finally {
 				monitor.done();
 			}

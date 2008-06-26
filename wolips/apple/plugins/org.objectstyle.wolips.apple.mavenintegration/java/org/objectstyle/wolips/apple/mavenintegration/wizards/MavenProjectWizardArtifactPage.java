@@ -75,8 +75,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.maven.model.Build;
@@ -103,6 +101,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
+import org.objectstyle.wolips.apple.util.StatusLogger;
 import org.objectstyle.wolips.wizards.PackageSpecifierWizardPage;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -127,11 +126,11 @@ public class MavenProjectWizardArtifactPage extends WizardPage {
 	public static final String DEFAULT_POM_PACKAGING = "jar";
 
 	/** Supported packaging types*/
-	public static final String[] supportedPackaging = new String[] {DEFAULT_WOAPPLICATION_PACKAGING,"legacy woa", "war", "jar"};
+	public static final String[] supportedPackaging = new String[] {DEFAULT_WOAPPLICATION_PACKAGING,"legacy woa"};
 
 	/***/
 	//FIXME: should be dynamically fetched
-	public static final String[] offlineWebobjectsVersions = new String[] {"5.4.2-SNAPSHOT", "5.5-SNAPSHOT","6.0-SNAPSHOT"};
+	public static final String[] offlineWebobjectsVersions = new String[] {"5.4.2-SNAPSHOT", "5.5-SNAPSHOT","5.6-SNAPSHOT"};
 
 	/***/
 	public static final String GIDKEY = "gid";
@@ -467,10 +466,10 @@ public class MavenProjectWizardArtifactPage extends WizardPage {
 					MessageDialog.openWarning(getShell(), "Pre Release Software Warning", "Warning: PreÐrelease software is Apple confidential information. Your unauthorized distribution of preÐrelease software or disclosure of information relating to preÐrelease software may subject you to both civil and criminal liability and result in immediate termination of your ADC Membership. See the ADC Prototype License and Confidentiality Agreement for details.");
 				}
 			} else {
-				System.out.println("UnKnown event: "+e);
+				StatusLogger.getLogger().logWarning("UnKnown event: "+e);
 			}
 		} else {
-			System.out.println("UnKnown event: "+e);
+			StatusLogger.getLogger().logWarning("UnKnown event: "+e);
 		}
 	}
 
@@ -659,35 +658,31 @@ public class MavenProjectWizardArtifactPage extends WizardPage {
 			String expression = "/versioning/versions";
 
 //			Node versionsNode = (Node) xpath.evaluate(expression, document, XPathConstants.STRING);
-			String versionsNode = (String) xpath.evaluate(expression, document, XPathConstants.STRING);
+//			String versionsNode = (String) xpath.evaluate(expression, document, XPathConstants.STRING);
 
 //			System.out.println("versionsNode="+versionsNode+" "+versionsNode.getNodeValue());
-			System.out.println("versionsNode="+versionsNode);
+//			System.out.println("versionsNode="+versionsNode);
 
 
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			StatusLogger.getLogger().log(e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			StatusLogger.getLogger().log(e);
 		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
+			StatusLogger.getLogger().log(e);
 		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			StatusLogger.getLogger().log(e);
 		} finally {
 			if (is != null) {
 				try {
 					is.close();
 				} catch (IOException e) {
-					//
+					//intentionally throw away
 				}
 			}
 
-			System.out.println("Finished parse");
+			StatusLogger.getLogger().logWarning("Finished parse");
 		}
-
 
 		return (versionList.size() > 0) ? versionList.toArray(new String[] {}) : null;
 	}
