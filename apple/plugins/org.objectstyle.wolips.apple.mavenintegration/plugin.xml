@@ -2,6 +2,7 @@
 <?eclipse version="3.2"?>
 <plugin>
 
+<!--
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
@@ -11,6 +12,7 @@
             name="Apple Maven">
       </page>
    </extension>
+-->
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer

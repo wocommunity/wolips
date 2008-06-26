@@ -88,6 +88,7 @@ import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.eclipse.ui.dialogs.WizardNewProjectReferencePage;
 import org.maven.ide.eclipse.MavenPlugin;
 import org.maven.ide.eclipse.project.BuildPathManager;
+import org.objectstyle.wolips.apple.util.StatusLogger;
 import org.objectstyle.wolips.core.resources.internal.build.Nature;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
@@ -232,7 +233,7 @@ public class WOMavenApplicationProjectWizard extends AbstractMavenProjectWizard 
 			success = Nature.addIncrementalApplicationNatureToProject(project, progressMonitor);
 		} catch (CoreException e) {
 			// FIXME: post appropriate error dialog here -dlee
-			e.printStackTrace();
+			StatusLogger.getLogger().log(new IllegalStateException("Failed to add build natures to project"));
 		}
 
 		return success;
@@ -397,12 +398,12 @@ public class WOMavenApplicationProjectWizard extends AbstractMavenProjectWizard 
 				mProj.writeModel(fw);
 			} catch (RuntimeException e) {
 				// TODO post an error dialog here
-				e.printStackTrace();
+				StatusLogger.getLogger().log(new IllegalStateException("Failed to to finish project creation", e));
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			//TODO error dialog/logging?
+			StatusLogger.getLogger().log(new IllegalStateException("Failed to to finish project creation", e));
+			//TODO error dialog?
 		}
 
 	}
