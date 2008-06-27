@@ -537,7 +537,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 				}
 				if (!warnOnly) {
 					EOAttribute clonedAttribute = attribute._cloneModelObject();
-					clonedAttribute.setName(findUnusedAttributeName(clonedAttribute.getName()));
+					clonedAttribute.setName(findUnusedAttributeName(clonedAttribute.getName()), false);
 					addAttribute(clonedAttribute);
 				}
 			}
@@ -550,7 +550,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 				}
 				if (!warnOnly) {
 					EORelationship clonedRelationship = relationship._cloneModelObject();
-					clonedRelationship.setName(findUnusedRelationshipName(clonedRelationship.getName()));
+					clonedRelationship.setName(findUnusedRelationshipName(clonedRelationship.getName()), false);
 					addRelationship(clonedRelationship, false, null, true);
 				}
 			}
