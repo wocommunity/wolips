@@ -177,23 +177,23 @@ public abstract class AbstractQualifierElement extends AbstractRuleElement {
 		return value;
 	}
 
-	protected void setKey(String key) {
+	protected void setKey(final String key) {
 		this.key = key;
 	}
 
-	protected void setQualifier(QualifierElement qualifier) {
+	protected void setQualifier(final QualifierElement qualifier) {
 		this.qualifier = qualifier;
 	}
 
-	protected void setQualifiers(Collection<QualifierElement> qualifiers) {
+	protected void setQualifiers(final Collection<QualifierElement> qualifiers) {
 		this.qualifiers = qualifiers;
 	}
 
-	protected void setSelectorName(String selectorName) {
+	protected void setSelectorName(final String selectorName) {
 		this.selectorName = selectorName;
 	}
 
-	protected void setValue(String value) {
+	protected void setValue(final Object value) {
 		if (value == null) {
 			this.value = null;
 

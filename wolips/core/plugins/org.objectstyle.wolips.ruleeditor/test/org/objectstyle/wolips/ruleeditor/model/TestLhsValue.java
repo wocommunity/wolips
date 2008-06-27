@@ -3,6 +3,7 @@ package org.objectstyle.wolips.ruleeditor.model;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.HashMap;
@@ -12,6 +13,14 @@ import org.junit.Test;
 
 public class TestLhsValue {
 	protected LhsValue value;
+
+	private Map<String, Object> createMapForNullRepresentation() {
+		Map<String, Object> valueMap = new HashMap<String, Object>();
+
+		valueMap.put("class", "com.webobjects.foundation.NSKeyValueCoding$Null");
+
+		return valueMap;
+	}
 
 	private Map<String, Object> createNumberMap() {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -38,6 +47,14 @@ public class TestLhsValue {
 		valueMap.put(LhsValue.CLASS_PROPERTY, Number.class.getName());
 
 		value = new LhsValue(valueMap);
+	}
+
+	@Test
+	public void createValueForMapWithNullRepresentation() throws Exception {
+
+		value = new LhsValue(createMapForNullRepresentation());
+
+		assertThat(value.value, nullValue());
 	}
 
 	@Test
@@ -87,6 +104,13 @@ public class TestLhsValue {
 	}
 
 	@Test
+	public void getValueForNull() throws Exception {
+		value = new LhsValue(createMapForNullRepresentation());
+
+		assertThat(value.getValue(), is("null"));
+	}
+
+	@Test
 	public void getValueForNumber() throws Exception {
 		value = new LhsValue(createNumberMap());
 
@@ -98,6 +122,20 @@ public class TestLhsValue {
 		value = new LhsValue("test");
 
 		assertThat(value.getValue(), is("test"));
+	}
+
+	@Test
+	public void toMapForNullValue() throws Exception {
+		value = new LhsValue(createMapForNullRepresentation());
+
+		Object result = value.toMap();
+
+		assertThat(result, instanceOf(Map.class));
+
+		Map map = (Map) result;
+
+		assertThat((String) map.get(LhsValue.CLASS_PROPERTY), is(LhsValue.NULL_VALUE_CLASS));
+		assertThat(map.get(LhsValue.VALUE_PROPERTY), nullValue());
 	}
 
 	@Test
@@ -119,6 +157,13 @@ public class TestLhsValue {
 		value = new LhsValue("edit");
 
 		assertThat((String) value.toMap(), is("edit"));
+	}
+
+	@Test
+	public void toStringForNullValue() throws Exception {
+		value = new LhsValue(createMapForNullRepresentation());
+
+		assertThat(value.toString(), is("null"));
 	}
 
 	@Test

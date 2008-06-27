@@ -1,5 +1,6 @@
 package org.objectstyle.wolips.ruleeditor.model;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -13,6 +14,28 @@ import org.junit.Test;
 
 public class TestLeftHandSideParser {
 	protected LeftHandSideParser parser;
+
+	@Test
+	public void parseComposedNullValue() throws Exception {
+		String conditions = "attribute = null";
+
+		Map<String, Object> result = parser.parse(conditions);
+
+		assertThat((String) result.get(AbstractRuleElement.CLASS_KEY), is(Qualifier.KEY_VALUE.getClassName()));
+		assertThat((String) result.get(AbstractQualifierElement.KEY_KEY), is("attribute"));
+		assertThat((String) result.get(AbstractQualifierElement.SELECTOR_NAME_KEY), is(Selector.EQUAL.getSelectorName()));
+		assertThat(result.get(AbstractQualifierElement.QUALIFIERS_KEY), nullValue());
+		assertThat(result.get(AbstractQualifierElement.QUALIFIER_KEY), nullValue());
+
+		Object value = result.get(AbstractQualifierElement.VALUE_KEY);
+
+		assertThat(value, instanceOf(Map.class));
+
+		Map map = (Map) value;
+
+		assertThat((String) map.get("class"), is(LhsValue.NULL_VALUE_CLASS));
+		assertThat(map.get("value"), nullValue());
+	}
 
 	@Test
 	public void parseEmptyQualifier() {
@@ -89,6 +112,24 @@ public class TestLeftHandSideParser {
 		assertThat((String) result.get(AbstractQualifierElement.SELECTOR_NAME_KEY), is("isEqualTo"));
 		assertThat((String) result.get(AbstractQualifierElement.VALUE_KEY), is("edit"));
 		assertThat(result.get(AbstractQualifierElement.QUALIFIERS_KEY), nullValue());
+	}
+
+	@Test
+	@Ignore(value = "Known bug. It's better to rewrite the left hand side parser using a Parser Generator like ANTLR")
+	public void parserNotQualifierFollowedByAndQualifier() throws Exception {
+		// TODO: Make this test pass
+		String conditions = "(not (attribute = null) and attribute.className = 'java.lang.String')";
+
+		Map<String, Object> result = parser.parse(conditions);
+
+		assertThat((String) result.get(AbstractRuleElement.CLASS_KEY), is(Qualifier.AND.getClassName()));
+		assertThat(result.get(AbstractQualifierElement.KEY_KEY), nullValue());
+		assertThat(result.get(AbstractQualifierElement.SELECTOR_NAME_KEY), nullValue());
+		assertThat(result.get(AbstractQualifierElement.VALUE_KEY), nullValue());
+
+		Map<String, Object> qualifiers = (Map<String, Object>) result.get(AbstractQualifierElement.QUALIFIERS_KEY);
+
+		assertThat(qualifiers.size(), is(2));
 	}
 
 	@Test
@@ -170,5 +211,4 @@ public class TestLeftHandSideParser {
 	public void setUp() {
 		parser = new LeftHandSideParser();
 	}
-
 }
