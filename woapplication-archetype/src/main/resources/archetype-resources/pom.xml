@@ -56,23 +56,23 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.apple.webobjects</groupId>
+			<groupId>com.webobjects</groupId>
 			<artifactId>JavaFoundation</artifactId>
 			<version>${woversion}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.apple.webobjects</groupId>
+			<groupId>com.webobjects</groupId>
 			<artifactId>JavaWebObjects</artifactId>
 			<version>${woversion}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.apple.webobjects</groupId>
+			<groupId>com.webobjects</groupId>
 			<artifactId>JavaEOAccess</artifactId>
 			<version>${woversion}</version>
 		</dependency>
 		#if( !($TrueWarSupport == "no") )
 		<dependency>
-			<groupId>com.apple.webobjects</groupId>
+			<groupId>com.webobjects</groupId>
 			<artifactId>JavaWOJSPServlet</artifactId>
 			<version>${woversion}</version>
 		</dependency>
