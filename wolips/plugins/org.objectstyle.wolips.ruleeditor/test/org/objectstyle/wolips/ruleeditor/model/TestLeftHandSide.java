@@ -17,6 +17,41 @@ public class TestLeftHandSide {
 	protected LeftHandSide lhs;
 
 	@Test
+	public void createLhsForComposedNullValue() throws Exception {
+		Map<String, Object> properties = new HashMap<String, Object>();
+
+		properties.put("class", Qualifier.KEY_VALUE.getClassName());
+
+		Map<String, Object> mapForNull = new HashMap<String, Object>();
+
+		mapForNull.put("class", "com.webobjects.foundation.NSKeyValueCoding$Null");
+
+		properties.put("value", mapForNull);
+
+		lhs = new LeftHandSide(properties);
+
+		assertThat(lhs.getValue().value, nullValue());
+	}
+
+	@Test
+	public void createLhsForComposedNumberValue() throws Exception {
+		Map<String, Object> properties = new HashMap<String, Object>();
+
+		properties.put("class", Qualifier.KEY_VALUE.getClassName());
+
+		Map<String, Object> numberMap = new HashMap<String, Object>();
+
+		numberMap.put("class", "java.lang.Number");
+		numberMap.put("value", 1);
+
+		properties.put("value", numberMap);
+
+		lhs = new LeftHandSide(properties);
+
+		assertThat((Integer) lhs.getValue().value, is(1));
+	}
+
+	@Test
 	public void createLhsForMapWithNotQualifier() throws Exception {
 		Map<String, Object> properties = new HashMap<String, Object>();
 
@@ -45,24 +80,6 @@ public class TestLeftHandSide {
 		assertThat(qualifier.getKey(), is("relationship.isToMany"));
 		assertThat(qualifier.getSelectorName(), is(Selector.EQUAL.getSelectorName()));
 		assertThat((String) qualifier.getValue().value, is("test"));
-	}
-
-	@Test
-	public void createLhsForMapWithNumber() throws Exception {
-		Map<String, Object> properties = new HashMap<String, Object>();
-
-		properties.put("class", Qualifier.KEY_VALUE.getClassName());
-
-		Map<String, Object> numberMap = new HashMap<String, Object>();
-
-		numberMap.put("class", "java.lang.Number");
-		numberMap.put("value", 1);
-
-		properties.put("value", numberMap);
-
-		lhs = new LeftHandSide(properties);
-
-		assertThat((Integer) lhs.getValue().value, is(1));
 	}
 
 	private LeftHandSide createLhsWithNotQualifier() {
@@ -124,6 +141,21 @@ public class TestLeftHandSide {
 		lhs = new LeftHandSide(properties);
 
 		assertThat(lhs.toString(), is("(task = 'edit' and entity.name = 'Entity')"));
+	}
+
+	@Test
+	public void displayStringForComposedNullValue() throws Exception {
+		Map<String, Object> properties = createSimpleMap();
+
+		Map<String, Object> valueMap = new HashMap<String, Object>();
+
+		valueMap.put("class", "com.webobjects.foundation.NSKeyValueCoding$Null");
+
+		properties.put("value", valueMap);
+
+		lhs = new LeftHandSide(properties);
+
+		assertThat(lhs.toString(), is("task = null"));
 	}
 
 	@Test
@@ -374,6 +406,20 @@ public class TestLeftHandSide {
 		assertThat((String) result.get(AbstractQualifierElement.KEY_KEY), is("task"));
 		assertThat((String) result.get(AbstractQualifierElement.SELECTOR_NAME_KEY), is("isEqualTo"));
 		assertThat((String) result.get(AbstractQualifierElement.VALUE_KEY), is("edit"));
+	}
+
+	@Test
+	public void setComposedNullValueInConditions() throws Exception {
+		lhs = new LeftHandSide();
+
+		lhs.setConditions("(attribute = null)");
+
+		assertThat(lhs.getAssignmentClassName(), is(Qualifier.KEY_VALUE.getClassName()));
+		assertThat(lhs.getKey(), is("attribute"));
+		assertThat(lhs.getSelectorName(), is(Selector.EQUAL.getSelectorName()));
+		assertThat(lhs.getQualifiers(), nullValue());
+		assertThat(lhs.getQualifier(), nullValue());
+		assertThat(lhs.getValue().value, nullValue());
 	}
 
 	@Test

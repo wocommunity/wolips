@@ -81,7 +81,7 @@ public class LeftHandSideParser {
 
 		private final boolean returnDelims;
 
-		public RegularExpressionTokenizer(CharSequence input, String patternStr, boolean returnDelims) {
+		public RegularExpressionTokenizer(final CharSequence input, final String patternStr, final boolean returnDelims) {
 			this.input = input;
 			this.returnDelims = returnDelims;
 
@@ -139,6 +139,8 @@ public class LeftHandSideParser {
 
 	private static final String OPERATORS_PATTERN = "(=|!=|>|<|>=|<=|like){1}";
 
+	private static final Map<String, String> UNMODIFIABLE_NULL_VALUE_MAP;
+
 	static {
 		StringBuffer buffer = new StringBuffer();
 
@@ -152,17 +154,23 @@ public class LeftHandSideParser {
 
 		// Pattern "^not|(\s+and\s+|\s+or\s+)+"
 		AND_OR_NOT_PATTERN = buffer.toString();
+
+		Map<String, String> tempMap = new HashMap<String, String>();
+
+		tempMap.put("class", LhsValue.NULL_VALUE_CLASS);
+
+		UNMODIFIABLE_NULL_VALUE_MAP = Collections.unmodifiableMap(tempMap);
 	}
 
-	private static String getClassFromMap(Map<String, Object> properties) {
+	private static String getClassFromMap(final Map<String, Object> properties) {
 		return (String) properties.get(AbstractRuleElement.CLASS_KEY);
 	}
 
-	private static Collection<QualifierElement> getQualifiersFromMap(Map<String, Object> map) {
+	private static Collection<QualifierElement> getQualifiersFromMap(final Map<String, Object> map) {
 		return (Collection<QualifierElement>) map.get(AbstractQualifierElement.QUALIFIERS_KEY);
 	}
 
-	private static Map<String, Object> propertiesForOneQualifier(String expression) {
+	private static Map<String, Object> propertiesForOneQualifier(final String expression) {
 		// Handle one qualifier
 		Iterator<String> tokenizer = new RegularExpressionTokenizer(expression, OPERATORS_PATTERN, true);
 
@@ -180,26 +188,34 @@ public class LeftHandSideParser {
 		properties.put(AbstractRuleElement.CLASS_KEY, Qualifier.KEY_VALUE.getClassName());
 		properties.put(AbstractQualifierElement.KEY_KEY, key);
 		properties.put(AbstractQualifierElement.SELECTOR_NAME_KEY, Selector.forOperator(operator).getSelectorName());
-		properties.put(AbstractQualifierElement.VALUE_KEY, value);
+		properties.put(AbstractQualifierElement.VALUE_KEY, valueRepresentation(value));
 
 		return properties;
 	}
 
-	private static void putQualifiersIntoMap(Map<String, Object> map, Collection<QualifierElement> qualifiers) {
+	private static void putQualifiersIntoMap(final Map<String, Object> map, final Collection<QualifierElement> qualifiers) {
 		map.put(AbstractQualifierElement.QUALIFIERS_KEY, qualifiers);
+	}
+
+	private static Object valueRepresentation(final String value) {
+		if ("null".equals(value)) {
+			return UNMODIFIABLE_NULL_VALUE_MAP;
+		}
+
+		return value;
 	}
 
 	private int count = 0;
 
 	private final Map<String, String> qualifierSubstitutionMap = new HashMap<String, String>();
 
-	private Map<String, String> createParseMap(String expression) {
+	private Map<String, String> createParseMap(final String expression) {
 		Map<String, String> expressionAsMap = new TreeMap<String, String>();
 
 		return null;
 	}
 
-	private Map<String, Object> handleNotQualifier(String conditionsToParse) {
+	private Map<String, Object> handleNotQualifier(final String conditionsToParse) {
 		if (hasNotQualifier(conditionsToParse)) {
 			String notPattern = "not\\s*\\(.*\\)";
 
@@ -253,14 +269,14 @@ public class LeftHandSideParser {
 		return result;
 	}
 
-	private boolean hasMoreThanOneQualifier(String expression) {
+	private boolean hasMoreThanOneQualifier(final String expression) {
 		Pattern pattern = Pattern.compile(AND_OR_NOT_PATTERN);
 		Matcher matcher = pattern.matcher(expression);
 
 		return matcher.find();
 	}
 
-	private boolean hasNotQualifier(String expression) {
+	private boolean hasNotQualifier(final String expression) {
 		int indexOfNot = expression.indexOf(Qualifier.NOT.getDisplayName());
 		int indexOfOr = expression.indexOf(Qualifier.OR.getDisplayName());
 		int indexOfAnd = expression.indexOf(Qualifier.AND.getDisplayName());
@@ -269,24 +285,37 @@ public class LeftHandSideParser {
 			return false;
 		}
 
-		if (indexOfAnd >= 0) {
-			if (indexOfNot < indexOfAnd) {
-				if (indexOfOr >= 0) {
-					return indexOfNot < indexOfOr;
-				}
-			}
-
+		if (indexOfAnd >= 0 || indexOfOr >= 0) {
 			return false;
 		}
 
-		if (indexOfOr >= 0) {
-			return indexOfNot < indexOfOr;
-		}
-
 		return true;
+
+		// if (indexOfAnd >= 0) {
+		// return indexOfNot < indexOfAnd;
+		// }
+		//
+		// if (indexOfOr >= 0) {
+		// return indexOfNot < indexOfOr;
+		// }
+		//
+		// return true;
+		// if (indexOfAnd >= 0) {
+		// if (indexOfNot < indexOfAnd) {
+		// if (indexOfOr >= 0) {
+		// return indexOfNot < indexOfOr;
+		// }
+		// }
+		//
+		// return false;
+		// }
+		//
+		// if (indexOfOr >= 0) {
+		// return indexOfNot < indexOfOr;
+		// }
 	}
 
-	private boolean isQualifier(String expression) {
+	private boolean isQualifier(final String expression) {
 		return Qualifier.AND.getDisplayName().equals(expression) || Qualifier.OR.getDisplayName().equals(expression);
 	}
 
@@ -323,7 +352,7 @@ public class LeftHandSideParser {
 
 	}
 
-	private Map<String, Object> propertiesForManyQualifiers(String conditionsToParse) {
+	private Map<String, Object> propertiesForManyQualifiers(final String conditionsToParse) {
 		Map<String, Object> properties = new HashMap<String, Object>();
 
 		Iterator<String> tokenizer = new RegularExpressionTokenizer(conditionsToParse, AND_OR_NOT_PATTERN, true);
@@ -382,7 +411,7 @@ public class LeftHandSideParser {
 		return properties;
 	}
 
-	private boolean shouldHandleParenthesis(String expression) {
+	private boolean shouldHandleParenthesis(final String expression) {
 		Pattern pattern = Pattern.compile(".*\\(.*\\(");
 		Matcher matcher = pattern.matcher(expression);
 

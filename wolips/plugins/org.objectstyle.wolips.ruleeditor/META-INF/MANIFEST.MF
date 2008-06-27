@@ -9,9 +9,9 @@ Require-Bundle: org.objectstyle.wolips.baseforuiplugins,
  org.objectstyle.wolips.thirdparty.cayenne
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,
- lib/commons-lang-2.4.jar,
  lib/commons-io-1.4.jar,
- lib/junit-4.4.jar
+ lib/junit-4.4.jar,
+ lib/commons-lang-2.4.jar
 Export-Package: org.apache.commons.lang,
  org.apache.commons.lang.builder,
  org.apache.commons.lang.enums,

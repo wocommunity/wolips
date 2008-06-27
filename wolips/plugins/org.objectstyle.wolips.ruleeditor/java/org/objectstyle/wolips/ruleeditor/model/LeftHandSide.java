@@ -79,7 +79,7 @@ public class LeftHandSide extends AbstractQualifierElement {
 	 *            A map describing the <code>LeftHandSide</code> object to be
 	 *            created
 	 */
-	protected LeftHandSide(Map<String, Object> lhsProperties) {
+	protected LeftHandSide(final Map<String, Object> lhsProperties) {
 		super(lhsProperties);
 	}
 
@@ -95,7 +95,7 @@ public class LeftHandSide extends AbstractQualifierElement {
 
 		setAssignmentClassName((String) properties.get(CLASS_KEY));
 		setKey((String) properties.get(KEY_KEY));
-		setValue((String) properties.get(VALUE_KEY));
+		setValue(properties.get(VALUE_KEY));
 		setSelectorName((String) properties.get(SELECTOR_NAME_KEY));
 		setQualifiers((Collection<QualifierElement>) properties.get(QUALIFIERS_KEY));
 
