@@ -289,7 +289,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	}
 
 	protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
-		if (!myDirty && !EOModel.DIRTY.equals(_propertyName)) {
+		if (!myDirty && !EOModel.DIRTY.equals(_propertyName) && !EOModel.MODEL_SAVING.equals(_propertyName)) {
 			setDirty(true);
 		}
 		if (myModelGroup != null) {
