@@ -287,6 +287,9 @@ public class UserInfoPropertySection extends AbstractPropertySection {
 				if (!valueStr.startsWith("(") && !valueStr.startsWith("{") && !valueStr.startsWith("\"")) {
 					valueStr = "\"" + valueStr + "\"";
 				}
+				else if (valueStr.startsWith("\"") && !valueStr.endsWith("\"")) {
+					valueStr = "\"" + valueStr.replaceAll("\"", "\\\\\"") + "\"";
+				}
 				Object valueObj = PropertyListSerialization.propertyListFromStream(new ByteArrayInputStream(valueStr.getBytes("UTF-8")), new EOModelParserDataStructureFactory());
 				myUserInfoable.getUserInfo().put(mySelectedKey, valueObj);
 			} catch (Exception e) {
@@ -340,6 +343,7 @@ public class UserInfoPropertySection extends AbstractPropertySection {
 	protected class UserInfoListener implements PropertyChangeListener {
 		public void propertyChange(PropertyChangeEvent _event) {
 			String propertyName = _event.getPropertyName();
+			System.out.println("UserInfoListener.propertyChange: " + propertyName + " (" + this + ")");
 			if (propertyName == NotificationMap.CONTENTS) {
 				UserInfoPropertySection.this.refresh();
 			} else {

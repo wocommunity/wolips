@@ -197,14 +197,30 @@ public class EOModelAdvancedEditorSection extends AbstractPropertySection implem
 	}
 
 	protected void disposeBindings() {
-		_attributePrefix.removeModifyListener(this);
-		_attributeSuffix.removeModifyListener(this);
-		_attributeCase.removeSelectionChangedListener(this);
-		_attributeSeparator.removeSelectionChangedListener(this);
-		_entityPrefix.removeModifyListener(this);
-		_entitySuffix.removeModifyListener(this);
-		_entityCase.removeSelectionChangedListener(this);
-		_entitySeparator.removeSelectionChangedListener(this);
+		if (_attributePrefix != null && !_attributePrefix.isDisposed()) {
+			_attributePrefix.removeModifyListener(this);
+		}
+		if (_attributeSuffix != null && !_attributeSuffix.isDisposed()) {
+			_attributeSuffix.removeModifyListener(this);
+		}
+		if (_attributeCase != null && !_attributeCase.getCombo().isDisposed()) {
+			_attributeCase.removeSelectionChangedListener(this);
+		}
+		if (_attributeSeparator != null && !_attributeSeparator.getCombo().isDisposed()) {
+			_attributeSeparator.removeSelectionChangedListener(this);
+		}
+		if (_entityPrefix != null && !_entityPrefix.isDisposed()) {
+			_entityPrefix.removeModifyListener(this);
+		}
+		if (_entitySuffix != null && !_entitySuffix.isDisposed()) {
+			_entitySuffix.removeModifyListener(this);
+		}
+		if (_entityCase != null && !_entityCase.getCombo().isDisposed()) {
+			_entityCase.removeSelectionChangedListener(this);
+		}
+		if (_entitySeparator != null && !_entitySeparator.getCombo().isDisposed()) {
+			_entitySeparator.removeSelectionChangedListener(this);
+		}
 	}
 
 	public void dispose() {
