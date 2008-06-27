@@ -1,47 +1,49 @@
 package org.objectstyle.woproject.maven2.wolifecycle;
 
 //org.apache.maven.plugins:maven-compiler-plugin:compile
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
-import org.apache.commons.io.*;
-import org.apache.maven.plugin.*;
+import org.apache.commons.io.IOUtils;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 
-public abstract class PackageMojo extends WOMojo {
+public abstract class PackageMojo extends AbstractWOMojo {
 
 	public PackageMojo() {
 		super();
 	}
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		getLog().debug("Starting to package WebObject project...");
+		getLog().info("Starting to package WebObject project...");
 
-		String artifactFileName = getArtifactFileName();
+		File artifactFile = getArtifactFile();
 
 		BufferedWriter artifactWriter = null;
 
-		getLog().debug("Packaging WebObject project: Writing artifact to " + artifactFileName);
+		getLog().debug("Writing artifact to " + artifactFile.getAbsolutePath());
 
 		try {
-			artifactWriter = new BufferedWriter(new FileWriter(new File(artifactFileName)));
+			artifactWriter = new BufferedWriter(new FileWriter(artifactFile));
 
 			artifactWriter.write("This is an empty file created beacuse of the Maven extension mechanism.\n");
 
 		} catch (IOException ioe) {
-			new MojoExecutionException("Packaging WebObject project: Could not package the WebObjects project. Error writing" + artifactFileName, ioe);
+			new MojoExecutionException("Could not package the WebObjects project. Error writing" + artifactFile.getAbsolutePath(), ioe);
 		} finally {
 			IOUtils.closeQuietly(artifactWriter);
 		}
 
-		if (artifactFileName == null) {
+		if (artifactFile == null) {
 			return;
 		}
 
-		String fileName = artifactFileName;
+		getLog().debug("Defining artifact filename as " + artifactFile.getName());
 
-		getLog().debug("Packaging WebObject project: Defining artifact filename as " + fileName);
-
-		this.getProject().getArtifact().setFile(new File(fileName));
+		getProject().getArtifact().setFile(artifactFile);
 	}
 
-	protected abstract String getArtifactFileName();
+	protected abstract File getArtifactFile();
 }

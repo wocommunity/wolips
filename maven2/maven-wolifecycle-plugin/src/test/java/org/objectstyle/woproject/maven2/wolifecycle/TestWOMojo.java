@@ -59,7 +59,7 @@ import junit.framework.TestCase;
 
 public class TestWOMojo extends TestCase {
 
-	protected WOMojo mojo;
+	protected AbstractWOMojo mojo;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -79,7 +79,7 @@ public class TestWOMojo extends TestCase {
 	}
 
 	public void testWebObjectsGroupIsOsIndependent() throws Exception {
-		String group = "com.apple.webobjects";
+		String group = "com.webobjects";
 
 		assertTrue(mojo.isWebObjectAppleGroup(group));
 	}
