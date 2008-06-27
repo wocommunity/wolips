@@ -1,10 +1,12 @@
 package org.objectstyle.woproject.maven2.wolifecycle;
 
 //org.apache.maven.plugins:maven-compiler-plugin:compile
-import java.io.*;
+import java.io.File;
 
-import org.apache.maven.plugin.*;
-import org.apache.maven.project.*;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectHelper;
 
 /**
  * resources goal for WebObjects projects.
@@ -38,16 +40,16 @@ public class PackageWOFrameworkResourcesMojo extends PackageMojo {
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		super.execute();
 
-		getLog().info("Packaging WebObject project: attaching artifact " + this.getWOFrameworkFileName());
+		File frameworkFile = getWOFrameworkFile();
 
-		File woFrameworkJar = new File(getWOFrameworkFileName());
+		getLog().info("Attaching artifact " + frameworkFile.getAbsolutePath());
 
-		projectHelper.attachArtifact(getProject(), "jar", woFrameworkJar);
+		projectHelper.attachArtifact(getProject(), "jar", frameworkFile);
 	}
 
 	@Override
-	protected String getArtifactFileName() {
-		return this.getProjectFolder() + "target" + File.separator + this.getProject().getArtifactId() + "-" + this.getProject().getVersion() + ".woframework";
+	protected File getArtifactFile() {
+		return new File(getBuildFolder(), getProject().getArtifactId() + "-" + getProject().getVersion() + ".woframework");
 	}
 
 	@Override
@@ -60,8 +62,8 @@ public class PackageWOFrameworkResourcesMojo extends PackageMojo {
 		return project;
 	}
 
-	protected String getWOFrameworkFileName() {
-		return this.getProjectFolder() + "target" + File.separator + this.getProject().getArtifactId() + "-" + this.getProject().getVersion() + ".jar";
+	protected File getWOFrameworkFile() {
+		return new File(getBuildFolder(), getProject().getArtifactId() + "-" + getProject().getVersion() + ".jar");
 	}
 
 }

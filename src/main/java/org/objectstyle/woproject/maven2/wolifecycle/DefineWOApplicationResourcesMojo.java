@@ -34,6 +34,7 @@ import org.apache.maven.project.MavenProject;
  * @goal define-woapplication-resources
  * @requiresDependencyResolution compile
  * @author uli
+ * @author hprange
  * @since 2.0
  */
 public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
@@ -45,11 +46,9 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 	 *            Any file path
 	 * @return Returns a file path without back slashes
 	 */
-	public static String normalizedPath(String path) {
+	public static String normalizedPath(final String path) {
 		return FilenameUtils.separatorsToUnix(path);
 	}
-
-	private String[][] dependencyPaths;
 
 	/**
 	 * include JavaClientClasses in WebServerResources.
@@ -92,13 +91,11 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 		super();
 	}
 
-	protected String artifactDescription(Artifact artifact) {
+	protected String artifactDescription(final Artifact artifact) {
 		return artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getVersion();
 	}
 
-	private void copyJarEntryToFile(String jarFileName, File destinationFolder, JarEntry jarEntry) throws IOException, FileNotFoundException {
-		// getLog().info("Copy webserverresources: jarFileName " + jarFileName +
-		// " destinationFolder " + destinationFolder);
+	private void copyJarEntryToFile(final String jarFileName, final File destinationFolder, final JarEntry jarEntry) throws IOException, FileNotFoundException {
 		String name = jarEntry.getName();
 		if (this.includeJavaClientClassesInWebServerResources == null || this.includeJavaClientClassesInWebServerResources.booleanValue() == false) {
 
@@ -109,15 +106,10 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 		}
 		String destinationFolderWithPathFromJarEntry = destinationFolder + File.separator + name.substring(0, name.lastIndexOf('/'));
 		String destinationName = name.substring(name.lastIndexOf('/') + 1);
-		// getLog().info("Copy webserverresources:
-		// destinationFolderWithPathFromJarEntry " +
-		// destinationFolderWithPathFromJarEntry + " destinationName " +
-		// destinationName);
 		File file = new File(destinationFolderWithPathFromJarEntry, destinationName);
 		if (!file.getParentFile().exists()) {
 			file.getParentFile().mkdirs();
 		}
-		// getLog().info("Copy webserverresources: file " + file);
 		file.createNewFile();
 
 		InputStream is = null;
@@ -144,7 +136,7 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 	}
 
 	private void defineClasspath() throws MojoExecutionException {
-		getLog().debug("Defining wo classpath: dependencies from parameter");
+		getLog().info("Defining WO classpath");
 
 		Collection<String> classpathLines = populateClasspath(false);
 
@@ -156,7 +148,7 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 
 		File classpathTxtFile = new File(project.getBuild().getDirectory(), "classpath.txt");
 
-		getLog().info("Defining wo classpath: writing to file: " + classpathTxtFile.getAbsolutePath());
+		getLog().debug("Writing WO classpath to file: " + classpathTxtFile.getAbsolutePath());
 
 		try {
 			FileUtils.writeLines(classpathTxtFile, classpathLines);
@@ -166,7 +158,7 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 
 		File classpathPropertiesFile = new File(project.getBuild().getDirectory(), "classpath.properties");
 
-		getLog().info("Defining wo classpath: writing to file: " + classpathPropertiesFile);
+		getLog().debug("Writing WO classpath to file: " + classpathPropertiesFile);
 
 		try {
 			FileUtils.writeStringToFile(classpathPropertiesFile, "dependencies.lib = " + normalizedPath(project.getBuild().getDirectory()) + "/lib");
@@ -176,11 +168,11 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 	}
 
 	void defineProperties() throws MojoExecutionException {
-		String fileName = getProjectFolder() + "target" + File.separator + "wobuild.properties";
+		getLog().info("Defining WO properties");
 
-		getLog().debug("Defining wo properties: writing to file: " + fileName);
+		File file = new File(getBuildFolder(), "wobuild.properties");
 
-		File file = new File(fileName);
+		getLog().debug("Writing properties to file: " + file.getPath());
 
 		FileWriter fileWriter;
 
@@ -192,66 +184,71 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 			fileWriter.flush();
 			fileWriter.close();
 		} catch (IOException e) {
-			throw new MojoExecutionException("Could not write wo properties", e);
+			throw new MojoExecutionException("Could not write WO properties into wobuild.properties file", e);
 		}
 	}
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		super.execute();
-		try {
-			this.defineProperties();
-			this.defineClasspath();
-			this.executeCopyWebServerResources();
-		} finally {
-			dependencyPaths = null;
-		}
+
+		defineProperties();
+		defineClasspath();
+		executeCopyWebServerResources();
 	}
 
 	private void executeCopyWebServerResources() throws MojoExecutionException {
-		getLog().info("Copy webserverresources");
+		getLog().info("Coping WebServerResources");
 
+		@SuppressWarnings("unchecked")
 		Set<Artifact> artifacts = project.getArtifacts();
 
 		for (Artifact artifact : artifacts) {
-
 			if (skipAppleProvidedFrameworks != null && skipAppleProvidedFrameworks.booleanValue() && isWebObjectAppleGroup(artifact.getGroupId())) {
 				getLog().info("Skipping artifact: " + artifactDescription(artifact) + " (Apple provided)");
 
 				continue;
 			}
 
-			FileInputStream fileInputStream;
+			File jarFile = artifact.getFile();
+
+			if (!isArtifactDeployed(jarFile)) {
+				getLog().warn("Skipping artifact: " + artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getVersion() + " (not installed in the local repository)");
+
+				continue;
+			}
+
 			try {
-				File jarFile = artifact.getFile();
+				FileInputStream fileInputStream = new FileInputStream(jarFile);
 
-				if (!isArtifactDeployed(jarFile)) {
-					getLog().info("Skipping artifact: " + artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getVersion() + " (not installed in the local repository)");
-
-					continue;
-				}
-
-				fileInputStream = new FileInputStream(jarFile);
 				JarInputStream jarInputStream = new JarInputStream(fileInputStream);
+
 				int counter = 0;
+
 				JarEntry jarEntry = null;
+
 				while ((jarEntry = jarInputStream.getNextJarEntry()) != null) {
 					if (!jarEntry.isDirectory()) {
 						String jarEntryName = jarEntry.getName();
+
 						String prefix = "WebServerResources";
-						String frameworksFolderName = this.getProjectFolder() + "target" + File.separator + this.getProject().getArtifactId() + "-" + this.getProject().getVersion() + ".woa" + File.separator + "Contents" + File.separator + "Frameworks" + File.separator;
+
+						File frameworksFolder = new File(getBuildFolder(), File.separator + this.getProject().getArtifactId() + "-" + this.getProject().getVersion() + ".woa" + File.separator + "Contents" + File.separator + "Frameworks" + File.separator);
+
 						if (jarEntryName != null && jarEntryName.length() > prefix.length() && jarEntryName.startsWith(prefix)) {
-							File destinationFolder = new File(frameworksFolderName + jarFile.getName() + ".framework");
+							File destinationFolder = new File(frameworksFolder, jarFile.getName() + ".framework");
+
 							this.copyJarEntryToFile(jarFile.getAbsolutePath(), destinationFolder, jarEntry);
+
 							counter++;
 						}
 					}
 				}
-				getLog().debug("Copy webserverresources: extracted " + counter + " webserverresources from  jar named " + jarFile.getName());
+				getLog().debug(counter + " WebServerResources was extracted and copied from Jar named " + jarFile.getName());
 			} catch (FileNotFoundException e) {
-				throw new MojoExecutionException("Could not open file input stream", e);
+				throw new MojoExecutionException("Could not open file ('" + jarFile.getName() + "') input stream", e);
 			} catch (IOException e) {
-				throw new MojoExecutionException("Could not open jar input stream", e);
+				throw new MojoExecutionException("Could not open jar ('" + jarFile.getName() + "') input stream", e);
 			}
 		}
 	}
@@ -276,17 +273,18 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 		return true;
 	}
 
-	private boolean isArtifactDeployed(File file) {
+	private boolean isArtifactDeployed(final File file) {
 		return file.isFile();
 	}
 
-	private Collection<String> populateClasspath(boolean populateWebObjectsLibraries) throws MojoExecutionException {
+	private Collection<String> populateClasspath(final boolean populateWebObjectsLibraries) throws MojoExecutionException {
 		if (populateWebObjectsLibraries && BooleanUtils.isTrue(skipAppleProvidedFrameworks)) {
-			getLog().info("Defining wo classpath: Skipping WebObjects libraries");
+			getLog().info("Skipping WebObjects provided libraries");
 
 			return Collections.emptyList();
 		}
 
+		@SuppressWarnings("unchecked")
 		Set<Artifact> artifacts = project.getArtifacts();
 
 		Collection<String> classpathLines = new ArrayList<String>();
@@ -304,7 +302,7 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 				continue;
 			}
 
-			getLog().info("Defining wo classpath: dependencyPath: " + artifact.getArtifactId());
+			getLog().debug("Adding artifact " + artifactDescription(artifact) + " to classpath");
 
 			String groupPath = StringUtils.replace(artifact.getGroupId(), ".", "/");
 			String artifactPath = artifact.getArtifactId() + "/" + artifact.getVersion();
@@ -316,11 +314,11 @@ public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
 
 			File sourceFile = artifact.getFile();
 
-			getLog().info("Source file: " + sourceFile.getAbsolutePath());
+			getLog().debug("Copying Source file from " + sourceFile.getAbsolutePath());
 
 			File destinationFile = new File(project.getBuild().getDirectory(), "lib/" + classpathEntry);
 
-			getLog().info("Destination file: " + destinationFile.getAbsolutePath());
+			getLog().debug("\tTo destination file " + destinationFile.getAbsolutePath());
 
 			try {
 				FileUtils.copyFile(sourceFile, destinationFile);
