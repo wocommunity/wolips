@@ -4,153 +4,237 @@ package org.objectstyle.woproject.maven2.wolifecycle;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
-public abstract class DefineResourcesMojo extends WOMojo {
+public abstract class DefineResourcesMojo extends AbstractWOMojo {
+
+	/**
+	 * Flatten all Resources and WebServerResouces into the Resources folder of
+	 * WO application/framework package.
+	 * 
+	 * @parameter expression="flattenResources"
+	 */
+	private Boolean flattenResources;
 
 	public DefineResourcesMojo() {
 		super();
 	}
 
-	private void addResources(Resource[] resources) {
-		for (int i = 0; i < resources.length; i++) {
-			Resource resource = resources[i];
-			this.getProject().addResource(resource);
+	private void addResources(final List<Resource> resources) {
+		for (Resource resource : resources) {
+			getProject().addResource(resource);
 		}
 	}
 
-	private Resource[] createResources(String directory, String targetPath) {
-		String fullTargetPath = this.getFullTargetPath(targetPath);
-		ArrayList resources = new ArrayList();
+	private Resource createResources(final List<String> resourcesInclude, final List<String> resourcesExclude, final String targetPath) {
 		Resource resource = new Resource();
-		resource.setDirectory(this.getProjectFolder() + directory);
-		resource.addExclude("*.lproj/**");
-		resource.setTargetPath(fullTargetPath);
-		resources.add(resource);
-		File file = new File(this.getProjectFolder() + directory);
-		String[] files = file.list();
-		for (int i = 0; i < files.length; i++) {
-			String fileName = files[i];
-			if (fileName != null && fileName.endsWith(".lproj")) {
-				resource = new Resource();
-				resource.setDirectory(this.getProjectFolder() + directory + File.separator + fileName);
-				if (fileName.equalsIgnoreCase("Nonlocalized.lproj")) {
-					resource.setTargetPath(fullTargetPath);
-				} else {
-					resource.setTargetPath(fullTargetPath + File.separator + fileName);
-				}
-				resources.add(resource);
-			}
-		}
-		return (Resource[]) resources.toArray(new Resource[resources.size()]);
-	}
 
-	private Resource createResources(String[] resourcesInclude, String[] resourcesExclude, String targetPath) {
-		Resource resource = new Resource();
-		resource.setDirectory(this.getProjectFolder());
+		resource.setDirectory(getProjectFolder().getAbsolutePath());
+
 		if (resourcesInclude != null) {
-			for (int i = 0; i < resourcesInclude.length; i++) {
-				String string = resourcesInclude[i];
-				resource.addInclude(string);
+			for (String resourceInclude : resourcesInclude) {
+				resource.addInclude(resourceInclude);
 			}
 		}
+
 		if (resourcesExclude != null) {
-			for (int i = 0; i < resourcesExclude.length; i++) {
-				String string = resourcesExclude[i];
-				resource.addExclude(string);
+			for (String resourceExclude : resourcesExclude) {
+				resource.addExclude(resourceExclude);
 			}
+
 			resource.addExclude("build/**");
 			resource.addExclude("dist/**");
 			resource.addExclude("target/**");
 		}
-		String fullTargetPath = this.getFullTargetPath(targetPath);
+
+		String fullTargetPath = getFullTargetPath(targetPath);
+
 		resource.setTargetPath(fullTargetPath);
+
 		return resource;
 	}
 
-	public void execute() throws MojoExecutionException, MojoFailureException {
-		getLog().debug("Creating folder");
-		this.executeCreateFolders();
-		getLog().info("Defining wo resources");
-		this.executeExistingComponents();
-		this.executeExistingResources();
-		this.executeExistingWebServerResources();
-		Boolean readPatternsets = this.readPatternsets();
-		if (readPatternsets != null && readPatternsets.booleanValue()) {
-			this.executeResourcesPatternsetFiles();
-			this.executeWebServerResourcesPatternsetFiles();
+	private List<Resource> createResources(final String directory, final String targetPath) {
+		String fullTargetPath = getFullTargetPath(targetPath);
+
+		List<Resource> resources = new ArrayList<Resource>();
+
+		Resource resource = new Resource();
+
+		File resourcesDirectory = new File(getProjectFolder(), directory);
+
+		resource.setDirectory(resourcesDirectory.getAbsolutePath());
+		resource.addExclude("*.lproj/**");
+
+		Boolean shouldFlattenResources = BooleanUtils.toBooleanDefaultIfNull(flattenResources(), false);
+
+		if (shouldFlattenResources) {
+			resource.addInclude("*");
+			resource.addInclude("*.wo/**");
+			resource.addInclude("*.eomodeld/**");
 		}
-		this.executeDefineProjectWonderStyleFolders();
-		this.executeDefineWOStyleFolders();
+
+		resource.setTargetPath(fullTargetPath);
+		resources.add(resource);
+
+		File[] files = resourcesDirectory.listFiles();
+
+		for (int i = 0; i < files.length; i++) {
+			File file = files[i];
+
+			String filename = file.getName();
+
+			if (filename != null && filename.endsWith(".lproj")) {
+				resource = new Resource();
+
+				resource.setDirectory(file.getAbsolutePath());
+
+				if (filename.equalsIgnoreCase("Nonlocalized.lproj")) {
+					resource.setTargetPath(fullTargetPath);
+				} else {
+					resource.setTargetPath(fullTargetPath + File.separator + filename);
+				}
+
+				resources.add(resource);
+
+				continue;
+			}
+
+			if (shouldFlattenResources && file.isDirectory() && !filename.endsWith(".wo") && !filename.endsWith(".eomodeld")) {
+				List<Resource> additionalResources = createResources(directory + File.separator + filename, targetPath);
+
+				resources.addAll(additionalResources);
+			}
+		}
+
+		return resources;
+	}
+
+	public void execute() throws MojoExecutionException, MojoFailureException {
+		getLog().info("Creating output folders");
+
+		executeCreateFolders();
+
+		getLog().info("Defining WO resources");
+
+		executeExistingComponents();
+		executeExistingResources();
+		executeExistingWebServerResources();
+
+		Boolean readPatternsets = this.readPatternsets();
+
+		if (readPatternsets != null && readPatternsets.booleanValue()) {
+			executeResourcesPatternsetFiles();
+			executeWebServerResourcesPatternsetFiles();
+		}
+
+		executeDefineProjectWonderStyleFolders();
+		executeDefineMavenStyleFolders();
 	}
 
 	private void executeCreateFolders() {
-		File target = new File(getProjectFolder() + File.separator + "target" + File.separator + "classes");
+		File target = new File(getProject().getBuild().getOutputDirectory());
+
 		if (!target.exists()) {
 			target.mkdirs();
 		}
 	}
 
-	private void executeDefineProjectWonderStyleFolders() {
-		getLog().debug("Defining wo resources: defining default folder WOnder style");
-		String componentsPath = getProjectFolder() + "Components";
-		File componentsFile = new File(componentsPath);
-		if (componentsFile.exists()) {
-			getLog().debug("Defining wo resources: \"Components\" folder found within project. Adding include...");
-			Resource[] resourcesFromComponentsFolder = this.createResources("Components", "Resources");
-			this.addResources(resourcesFromComponentsFolder);
-		} else {
-			getLog().debug("Defining wo resources: No \"Components\" folder found within project. Skipping include...");
-		}
-		String resourcesPath = getProjectFolder() + "Resources";
-		File resourcesFile = new File(resourcesPath);
+	private void executeDefineMavenStyleFolders() {
+		getLog().debug("Patching resources for WO Maven style");
+
+		String pathPrefix = "src" + File.separator + "main" + File.separator;
+
+		String resourcesFolder = pathPrefix + "resources";
+
+		File resourcesFile = new File(getProjectFolder(), resourcesFolder);
+
 		if (resourcesFile.exists()) {
-			getLog().debug("Defining wo resources: \"Resources\" folder found within project. Adding include...");
-			Resource[] resourcesFromResourcesFolder = this.createResources("Resources", "Resources");
-			this.addResources(resourcesFromResourcesFolder);
+			getLog().debug("Patching " + resourcesFolder + " folder. Adding include...");
+
+			List<Resource> resourcesFromResourcesFolder = createResources(resourcesFolder, "Resources");
+
+			addResources(resourcesFromResourcesFolder);
 		} else {
-			getLog().debug("Defining wo resources: No \"Resources\" folder found within project. Skipping include...");
+			getLog().debug("No " + resourcesFolder + " folder found within project. Skipping include...");
 		}
-		String webServerResourcesPath = getProjectFolder() + "WebServerResources";
-		File webServerResourcesFile = new File(webServerResourcesPath);
-		if (webServerResourcesFile.exists()) {
-			getLog().debug("Defining wo webserverresources: \"WebServerResources\" folder found within project. Adding include...");
-			Resource[] webServerResourcesFromWebServerResourcesFolder = this.createResources("WebServerResources", "WebServerResources");
-			this.addResources(webServerResourcesFromWebServerResourcesFolder);
+
+		String componentsFolder = pathPrefix + "components";
+
+		File componentsFile = new File(getProjectFolder(), componentsFolder);
+
+		if (componentsFile.exists()) {
+			getLog().debug("Patching " + componentsFolder + " folder. Adding include...");
+
+			List<Resource> resourcesFromResourcesFolder = createResources(componentsFolder, "Resources");
+
+			addResources(resourcesFromResourcesFolder);
 		} else {
-			getLog().debug("Defining wo webserverresources: No \"WebServerResources\" folder found within project. Skipping include...");
+			getLog().debug("No " + componentsFolder + " folder found within project. Skipping include...");
+		}
+
+		String webServerResourcesFolder = pathPrefix + "webserver-resources";
+
+		File webServerResourcesFile = new File(getProjectFolder(), webServerResourcesFolder);
+
+		if (webServerResourcesFile.exists()) {
+			getLog().debug("Patching " + webServerResourcesFolder + " folder. Adding include...");
+
+			List<Resource> webServerResourcesFromWebServerResourcesFolder = createResources(webServerResourcesFolder, "WebServerResources");
+
+			addResources(webServerResourcesFromWebServerResourcesFolder);
+		} else {
+			getLog().debug("No " + webServerResourcesFolder + " folder found within project. Skipping include...");
 		}
 	}
 
-	private void executeDefineWOStyleFolders() {
-		getLog().debug("Defining wo resources: defining default folder WO style");
-		String resourcesPath = getProjectFolder() + "wo-resources" + File.separator + "Resources";
-		File resourcesFile = new File(resourcesPath);
-		if (resourcesFile.exists()) {
-			getLog().debug("Defining wo resources: " + "wo-resources" + File.separator + "\"Resources\" folder found within project. Adding include...");
-			Resource[] resourcesFromResourcesFolder = this.createResources("Resources", "Resources");
-			this.addResources(resourcesFromResourcesFolder);
+	private void executeDefineProjectWonderStyleFolders() {
+		getLog().debug("Patching resources for WOnder style");
+
+		File componentsFile = new File(getProjectFolder(), "Components");
+
+		if (componentsFile.exists()) {
+			getLog().debug("Patching \"Components\" folder. Adding include...");
+
+			List<Resource> resourcesFromComponentsFolder = createResources("Components", "Resources");
+
+			addResources(resourcesFromComponentsFolder);
 		} else {
-			getLog().debug("Defining wo resources: No " + "wo-resources" + File.separator + "\"Resources\" folder found within project. Skipping include...");
+			getLog().debug("No \"Components\" folder found within project. Skipping include...");
 		}
-		String webServerResourcesPath = getProjectFolder() + "wo-resources" + File.separator + "WebServerResources";
-		File webServerResourcesFile = new File(webServerResourcesPath);
-		if (webServerResourcesFile.exists()) {
-			getLog().debug("Defining wo webserverresources: " + "wo-resources" + File.separator + "\"WebServerResources\" folder found within project. Adding include...");
-			Resource[] webServerResourcesFromWebServerResourcesFolder = this.createResources("WebServerResources", "WebServerResources");
-			this.addResources(webServerResourcesFromWebServerResourcesFolder);
+
+		File resourcesFile = new File(getProjectFolder(), "Resources");
+
+		if (resourcesFile.exists()) {
+			getLog().debug("Patching \"Resources\" folder. Adding include...");
+
+			List<Resource> resourcesFromResourcesFolder = createResources("Resources", "Resources");
+
+			addResources(resourcesFromResourcesFolder);
 		} else {
-			getLog().debug("Defining wo webserverresources: No " + "wo-resources" + File.separator + "\"WebServerResources\" folder found within project. Skipping include...");
+			getLog().debug("No \"Resources\" folder found within project. Skipping include...");
+		}
+
+		File webServerResourcesFile = new File(getProjectFolder(), "WebServerResources");
+
+		if (webServerResourcesFile.exists()) {
+			getLog().debug("Patching \"WebServerResources\" folder. Adding include...");
+
+			List<Resource> webServerResourcesFromWebServerResourcesFolder = createResources("WebServerResources", "WebServerResources");
+
+			addResources(webServerResourcesFromWebServerResourcesFolder);
+		} else {
+			getLog().debug("No \"WebServerResources\" folder found within project. Skipping include...");
 		}
 	}
 
 	private void executeExistingComponents() {
-		this.executePatchResources("Components", this.getFullTargetPath("Resources"));
+		executePatchResources("Components", getFullTargetPath("Resources"));
 	}
 
 	private void executeExistingResources() {
@@ -158,119 +242,130 @@ public abstract class DefineResourcesMojo extends WOMojo {
 	}
 
 	private void executeExistingWebServerResources() {
-		this.executePatchResources("Resources", this.getFullTargetPath("Resources"));
+		this.executePatchResources("Resources", getFullTargetPath("Resources"));
 	}
 
-	private void executePatchResources(String existingTargetPath, String newTargetPath) {
-		List list = this.getProject().getResources();
-		Iterator iterator = list.iterator();
-		while (iterator.hasNext()) {
-			Resource resource = (Resource) iterator.next();
+	private void executePatchResources(final String existingTargetPath, final String newTargetPath) {
+		@SuppressWarnings("unchecked")
+		List<Resource> resources = getProject().getResources();
+
+		for (Resource resource : resources) {
 			if (resource.getTargetPath() != null && resource.getTargetPath().equals(existingTargetPath)) {
-				getLog().info("Defining wo resources:  Patching target path of resource: " + resource);
+				getLog().debug("Patching target path of resource " + resource);
+
 				resource.setTargetPath(newTargetPath);
 			}
 		}
-
 	}
 
 	private void executeResourcesPatternsetFiles() {
-		getLog().debug("Defining wo resources: loading patternsets");
-		String woProjectFolder = getWOProjectFolder();
-		if (woProjectFolder == null) {
-			getLog().debug("Defining wo resources:  No \"woproject\" folder found within project. Skipping patternsets...");
+		getLog().debug("Loading Pattern Sets for Resources");
+
+		File woProjectFile = getWOProjectFolder();
+
+		if (woProjectFile == null) {
+			getLog().debug("No \"woproject\" folder found within project. Skipping patternsets...");
+
 			return;
 		}
-		File woProjectFile = new File(woProjectFolder);
-		if (woProjectFile.exists()) {
-			getLog().debug("Defining wo resources: \"woproject\" folder found within project. Reading patternsets...");
-		} else {
-			getLog().debug("Defining wo resources:  No \"woproject\" folder found within project. Skipping patternsets...");
-			return;
-		}
-		String[] resourcesIncludeFromAntPatternsetFiles = this.getResourcesInclude();
-		String[] resourcesExcludeFromAntPatternsetFiles = this.getResourcesExclude();
-		if (resourcesIncludeFromAntPatternsetFiles != null && resourcesExcludeFromAntPatternsetFiles != null && (resourcesIncludeFromAntPatternsetFiles.length > 0 || resourcesExcludeFromAntPatternsetFiles.length > 0)) {
-			Resource resourcesFromAntPatternsetFiles = this.createResources(resourcesIncludeFromAntPatternsetFiles, resourcesExcludeFromAntPatternsetFiles, "Resources");
-			this.getProject().addResource(resourcesFromAntPatternsetFiles);
+
+		getLog().debug("\"woproject\" folder found within project. Reading patternsets...");
+
+		List<String> resourcesIncludeFromAntPatternsetFiles = getResourcesInclude();
+		List<String> resourcesExcludeFromAntPatternsetFiles = getResourcesExclude();
+
+		if (resourcesIncludeFromAntPatternsetFiles != null && resourcesExcludeFromAntPatternsetFiles != null && (resourcesIncludeFromAntPatternsetFiles.size() > 0 || resourcesExcludeFromAntPatternsetFiles.size() > 0)) {
+			Resource resourcesFromAntPatternsetFiles = createResources(resourcesIncludeFromAntPatternsetFiles, resourcesExcludeFromAntPatternsetFiles, "Resources");
+
+			getProject().addResource(resourcesFromAntPatternsetFiles);
 		}
 	}
 
 	private void executeWebServerResourcesPatternsetFiles() {
-		getLog().debug("Defining wo webserverresources: loading patternsets");
-		String woProjectFolder = getWOProjectFolder();
-		if (woProjectFolder == null) {
-			getLog().debug("Defining wo resources:  No \"woproject\" folder found within project. Skipping patternsets...");
+		getLog().debug("Loading Pattern Sets for Resources");
+		File woProjectFile = getWOProjectFolder();
+		if (woProjectFile == null) {
+			getLog().debug("No \"woproject\" folder found within project. Skipping patternsets...");
+
 			return;
 		}
-		File woProjectFile = new File(woProjectFolder);
-		if (woProjectFile.exists()) {
-			getLog().debug("Defining wo webserverresources: \"woproject\" folder found within project. Reading patternsets...");
-		} else {
-			getLog().debug("Defining wo webserverresources:  No \"woproject\" folder found within project. Skipping patternsets...");
-			return;
-		}
-		String[] webserverResourcesIncludeFromAntPatternsetFiles = this.getWebserverResourcesInclude();
-		String[] webserverResourcesExcludeFromAntPatternsetFiles = this.getWebserverResourcesExclude();
-		if (webserverResourcesIncludeFromAntPatternsetFiles != null && webserverResourcesExcludeFromAntPatternsetFiles != null && (webserverResourcesIncludeFromAntPatternsetFiles.length > 0 || webserverResourcesExcludeFromAntPatternsetFiles.length > 0)) {
+
+		getLog().debug("\"woproject\" folder found within project. Reading patternsets...");
+
+		List<String> webserverResourcesIncludeFromAntPatternsetFiles = getWebserverResourcesInclude();
+		List<String> webserverResourcesExcludeFromAntPatternsetFiles = getWebserverResourcesExclude();
+
+		if (webserverResourcesIncludeFromAntPatternsetFiles != null && webserverResourcesExcludeFromAntPatternsetFiles != null && (webserverResourcesIncludeFromAntPatternsetFiles.size() > 0 || webserverResourcesExcludeFromAntPatternsetFiles.size() > 0)) {
 			Resource webserverResourcesFromAntPatternsetFiles = this.createResources(webserverResourcesIncludeFromAntPatternsetFiles, webserverResourcesExcludeFromAntPatternsetFiles, "WebServerResources");
 			this.getProject().addResource(webserverResourcesFromAntPatternsetFiles);
 		}
 	}
 
-	private String getFullTargetPath(String targetPath) {
-		String fullTargetPath = "../" + this.getProject().getArtifactId();
+	protected Boolean flattenResources() {
+		return flattenResources;
+	}
+
+	private String getFullTargetPath(final String targetPath) {
+		String fullTargetPath = "../" + getProject().getArtifactId();
+
 		if (this.includesVersionInArtifactName()) {
 			fullTargetPath = fullTargetPath + "-" + this.getProject().getVersion();
 		}
+
 		fullTargetPath = fullTargetPath + "." + getProductExtension();
+
 		if (this.hasContentsFolder()) {
 			fullTargetPath = fullTargetPath + File.separator + "Contents";
 		}
-		fullTargetPath = fullTargetPath + File.separator + targetPath;
-		return fullTargetPath;
+
+		return fullTargetPath + File.separator + targetPath;
 	}
 
-	private String[] getResourcesExclude() {
+	private List<String> getResourcesExclude() {
 		String patternsetFileName = "resources.exclude.patternset";
-		return this.readPatternset(patternsetFileName);
+		return readPatternset(patternsetFileName);
 	}
 
-	private String[] getResourcesInclude() {
+	private List<String> getResourcesInclude() {
 		String patternsetFileName = "resources.include.patternset";
-		return this.readPatternset(patternsetFileName);
+		return readPatternset(patternsetFileName);
 	}
 
-	private String[] getWebserverResourcesExclude() {
+	private List<String> getWebserverResourcesExclude() {
 		String patternsetFileName = "wsresources.exclude.patternset";
-		return this.readPatternset(patternsetFileName);
+		return readPatternset(patternsetFileName);
 	}
 
-	private String[] getWebserverResourcesInclude() {
+	private List<String> getWebserverResourcesInclude() {
 		String patternsetFileName = "wsresources.include.patternset";
-		return this.readPatternset(patternsetFileName);
+		return readPatternset(patternsetFileName);
 	}
 
 	public abstract boolean hasContentsFolder();
 
 	public abstract boolean includesVersionInArtifactName();
 
-	private String[] readPatternset(String patternsetFileName) {
-		getLog().info("Defining wo resources: loading \"" + patternsetFileName + "\"");
+	private List<String> readPatternset(final String patternsetFileName) {
+		getLog().debug("Reading Pattern Sets file \"" + patternsetFileName + "\"");
 
-		String woProjectFolder = this.getWOProjectFolder();
-		File file = new File(woProjectFolder + File.separator + patternsetFileName);
+		File file = new File(getWOProjectFolder(), patternsetFileName);
+
 		if (!file.exists()) {
 			return null;
 		}
+
 		PatternsetReader patternsetReader;
-		String[] pattern = null;
+
+		List<String> pattern = null;
+
 		try {
 			patternsetReader = new PatternsetReader(file);
+
 			pattern = patternsetReader.getPattern();
 		} catch (IOException e) {
-			getLog().info("Defining wo resources: exception while loading \"" + patternsetFileName + "\"", e);
+			getLog().error("Exception while loading \"" + patternsetFileName + "\"", e);
 		}
+
 		return pattern;
 	}
 

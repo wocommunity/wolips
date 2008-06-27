@@ -64,17 +64,19 @@ import org.apache.maven.project.MavenProject;
  * 
  * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
  */
-public class MockWOMojo extends WOMojo {
+public class MockWOMojo extends AbstractWOMojo {
 
+	public void execute() throws MojoExecutionException, MojoFailureException {
+		// Do nothing
+	}
+
+	@Override
 	public String getProductExtension() {
 		return null;
 	}
 
+	@Override
 	public MavenProject getProject() {
 		return null;
-	}
-
-	public void execute() throws MojoExecutionException, MojoFailureException {
-		// Do nothing
 	}
 }

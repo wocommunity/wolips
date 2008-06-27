@@ -56,15 +56,33 @@
 package org.objectstyle.woproject.maven2.wolifecycle;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.project.MavenProject;
 
 public abstract class AbstractWOMojo extends AbstractMojo {
+
+	public final static String MAVEN_WEBOBJECTS_GROUP_ID = "com.webobjects";
+
+	/**
+	 * The set of dependencies required by the project
+	 * 
+	 * @parameter default-value="${project.dependencies}"
+	 * @required
+	 * @readonly
+	 */
+	private List<Artifact> dependencies;
+
+	/**
+	 * @parameter expression="${localRepository}"
+	 * @required
+	 * @readonly
+	 */
+	private ArtifactRepository localRepository;
 
 	/**
 	 * The maven project.
@@ -75,42 +93,15 @@ public abstract class AbstractWOMojo extends AbstractMojo {
 	 */
 	private MavenProject project;
 
-	/**
-	 * The set of dependencies required by the project
-	 * 
-	 * @parameter default-value="${project.dependencies}"
-	 * @required
-	 * @readonly
-	 */
-	private java.util.ArrayList dependencies;
-
-	/**
-	 * @parameter expression="${localRepository}"
-	 * @required
-	 * @readonly
-	 */
-	private ArtifactRepository localRepository;
-
-	private String[][] resolvedDependencies;
-
 	public AbstractWOMojo() {
 		super();
 	}
 
-	protected String getProjectFolder() {
-		String projectFolder = this.getProject().getFile().getPath().substring(0, this.getProject().getFile().getPath().length() - 7);
-		return projectFolder;
+	protected File getBuildFolder() {
+		return new File(getProject().getBuild().getDirectory());
 	}
 
-	protected String getWOProjectFolder() {
-		File file = new File(this.getProjectFolder() + "woproject");
-		if (file.exists()) {
-			return file.getPath();
-		}
-		return null;
-	}
-
-	public java.util.ArrayList getDependencies() {
+	public List<Artifact> getDependencies() {
 		return dependencies;
 	}
 
@@ -118,40 +109,33 @@ public abstract class AbstractWOMojo extends AbstractMojo {
 		return localRepository;
 	}
 
+	public abstract String getProductExtension();
+
 	public MavenProject getProject() {
 		return project;
 	}
 
-	private String[][] getResolvedDependencies() {
-		if (resolvedDependencies == null) {
-			ArrayList classPathEntriesArray = new ArrayList();
-			ArrayList artfactNameEntriesArray = new ArrayList();
-			Iterator dependenciesIterator = dependencies.iterator();
-			while (dependenciesIterator.hasNext()) {
-				Dependency dependency = (Dependency) dependenciesIterator.next();
-				String depenendencyGroup = dependency.getGroupId();
-				if (depenendencyGroup != null) {
-					depenendencyGroup = depenendencyGroup.replace('.', File.separatorChar);
-				}
-				String depenendencyArtifact = dependency.getArtifactId();
-				String depenendencyVersion = dependency.getVersion();
-				String dependencyPath = depenendencyGroup + File.separator + depenendencyArtifact + File.separator + depenendencyVersion + File.separator + depenendencyArtifact + "-" + depenendencyVersion + ".jar";
-				classPathEntriesArray.add(dependencyPath);
-				artfactNameEntriesArray.add(depenendencyArtifact);
-			}
-			resolvedDependencies = new String[2][];
-			resolvedDependencies[0] = (String[]) classPathEntriesArray.toArray(new String[classPathEntriesArray.size()]);
-			resolvedDependencies[1] = (String[]) artfactNameEntriesArray.toArray(new String[artfactNameEntriesArray.size()]);
+	protected File getProjectFolder() {
+		return getProject().getBasedir();
+	}
+
+	protected File getWOProjectFolder() {
+		File file = new File(getProjectFolder(), "woproject");
+
+		return file.exists() ? file : null;
+	}
+
+	protected boolean isWebObjectAppleGroup(final String dependencyGroup) {
+		if (dependencyGroup == null) {
+			return false;
 		}
-		return resolvedDependencies;
-	}
 
-	public String[] getDependecyPaths() {
-		return this.getResolvedDependencies()[0];
-	}
+		String normalizedGroup = FilenameUtils.separatorsToUnix(dependencyGroup);
 
-	public String[] getAtifactNames() {
-		return this.getResolvedDependencies()[1];
-	}
+		boolean returnValue = MAVEN_WEBOBJECTS_GROUP_ID.equals(normalizedGroup);
 
+		getLog().debug("The group " + normalizedGroup + " is " + (returnValue ? "" : "NOT ") + "an Apple group.");
+
+		return returnValue;
+	}
 }

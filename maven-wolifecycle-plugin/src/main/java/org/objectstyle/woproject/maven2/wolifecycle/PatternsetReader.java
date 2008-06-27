@@ -61,28 +61,35 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author ulrich
  */
 public class PatternsetReader {
-	private String[] pattern = new String[0];
+	private List<String> pattern = Collections.emptyList();
 
 	/*
 	 * private long lastReadAt = 0; private IFile theFile = null;
 	 */
 
-	public PatternsetReader(File patternset) throws IOException {
+	public PatternsetReader(final File patternset) throws IOException {
 
-		ArrayList patternList = new ArrayList();
+		List<String> patternList = new ArrayList<String>();
+
 		BufferedReader patternReader = null;
+
 		try {
 			patternReader = new BufferedReader(new FileReader(patternset));
+
 			String line = patternReader.readLine();
+
 			while (line != null) {
 				if (line.length() > 0) {
 					patternList.add(line);
 				}
+
 				line = patternReader.readLine();
 			}
 		} finally {
@@ -94,21 +101,23 @@ public class PatternsetReader {
 				}
 			}
 		}
-		pattern = (String[]) patternList.toArray(new String[patternList.size()]);
+
+		pattern = patternList;
 	}
 
 	/**
 	 * @param pattern
 	 */
-	public PatternsetReader(String[] pattern) {
+	public PatternsetReader(final List<String> pattern) {
 		super();
+
 		this.pattern = pattern;
 	}
 
 	/**
 	 * @return Returns the pattern.
 	 */
-	public String[] getPattern() {
+	public List<String> getPattern() {
 		return pattern;
 	}
 }

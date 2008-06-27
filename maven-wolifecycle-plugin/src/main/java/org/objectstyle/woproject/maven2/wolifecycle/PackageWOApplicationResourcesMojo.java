@@ -41,18 +41,22 @@ public class PackageWOApplicationResourcesMojo extends PackageMojo {
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		super.execute();
 
-		getLog().debug("Attaching artifact: " + this.getWOApplicationFileName());
+		File woapplicationFile = getWOApplicationFile();
 
-		projectHelper.attachArtifact(project, "woapplication.tar.gz", new File(this.getWOApplicationFileName()));
+		getLog().info("Attaching artifact: " + woapplicationFile.getAbsolutePath());
 
-		getLog().debug("Attaching artifact: " + this.getWOWebServerResourcesArtifactFileName());
+		projectHelper.attachArtifact(project, "woapplication.tar.gz", woapplicationFile);
 
-		projectHelper.attachArtifact(project, "wowebserverresources.tar.gz", new File(this.getWOWebServerResourcesArtifactFileName()));
+		File webServerResourcesArtifactFile = getWOWebServerResourcesArtifactFile();
+
+		getLog().info("Attaching artifact: " + webServerResourcesArtifactFile.getAbsolutePath());
+
+		projectHelper.attachArtifact(project, "wowebserverresources.tar.gz", webServerResourcesArtifactFile);
 	}
 
 	@Override
-	protected String getArtifactFileName() {
-		return this.getProjectFolder() + "target" + File.separator + this.getProject().getArtifactId() + "-" + this.getProject().getVersion() + ".woapplication";
+	protected File getArtifactFile() {
+		return new File(getBuildFolder(), getProject().getArtifactId() + "-" + this.getProject().getVersion() + ".woapplication");
 	}
 
 	@Override
@@ -65,11 +69,11 @@ public class PackageWOApplicationResourcesMojo extends PackageMojo {
 		return project;
 	}
 
-	protected String getWOApplicationFileName() {
-		return this.getProjectFolder() + "target" + File.separator + this.getProject().getArtifactId() + "-" + this.getProject().getVersion() + ".woapplication.tar.gz";
+	protected File getWOApplicationFile() {
+		return new File(getBuildFolder(), getProject().getArtifactId() + "-" + getProject().getVersion() + ".woapplication.tar.gz");
 	}
 
-	private String getWOWebServerResourcesArtifactFileName() {
-		return this.getProjectFolder() + "target" + File.separator + this.getProject().getArtifactId() + "-" + this.getProject().getVersion() + ".wowebserverresources.tar.gz";
+	private File getWOWebServerResourcesArtifactFile() {
+		return new File(getBuildFolder(), getProject().getArtifactId() + "-" + getProject().getVersion() + ".wowebserverresources.tar.gz");
 	}
 }
