@@ -79,6 +79,8 @@ public class EOModelTreeViewUpdater {
 	private List<EOEntity> _entities;
 
 	private List<EOStoredProcedure> _storedProcedures;
+	
+	private boolean _shouldRefresh;
 
 	public EOModelTreeViewUpdater(TreeViewer treeViewer, EOModelOutlineContentProvider contentProvider) {
 		_treeViewer = treeViewer;
@@ -89,6 +91,7 @@ public class EOModelTreeViewUpdater {
 		_modelListener = new ModelPropertyChangeListener();
 		_entityListener = new EntityPropertyChangeListener();
 		_storedProcedureListener = new StoredProcedurePropertyChangeListener();
+		_shouldRefresh = true;
 	}
 
 	public void setModel(EOModel model) {
@@ -214,20 +217,32 @@ public class EOModelTreeViewUpdater {
 			}
 		}
 	}
+	
+	protected void refresh() {
+		if (_shouldRefresh) {
+			TreeViewer treeViewer = getTreeViewer();
+			treeViewer.refresh(true);
+		}
+	}
 
 	protected class ModelPropertyChangeListener implements PropertyChangeListener {
 		public void propertyChange(PropertyChangeEvent event) {
 			TreeViewer treeViewer = getTreeViewer();
 			if (treeViewer != null && !treeViewer.getTree().isDisposed()) {
 				String changedPropertyName = event.getPropertyName();
-				if (EOModel.ENTITIES.equals(changedPropertyName) || EOModel.STORED_PROCEDURES.equals(changedPropertyName) || EOModel.DATABASE_CONFIGS.equals(changedPropertyName) || EOModel.DATABASE_CONFIG.equals(changedPropertyName)) {
+				if (EOModel.MODEL_SAVING.equals(changedPropertyName)) {
+					Boolean saving = (Boolean)event.getNewValue();
+					_shouldRefresh = !saving.booleanValue();
+					refresh();
+				}
+				else if (EOModel.ENTITIES.equals(changedPropertyName) || EOModel.STORED_PROCEDURES.equals(changedPropertyName) || EOModel.DATABASE_CONFIGS.equals(changedPropertyName) || EOModel.DATABASE_CONFIG.equals(changedPropertyName)) {
 					// getTreeViewer().refresh(true);
-					treeViewer.refresh(true);
+					refresh();
 					refreshPropertyChangeListeners();
 				} else if (EOModel.ACTIVE_DATABASE_CONFIG.equals(changedPropertyName)) {
-					treeViewer.refresh(true);
+					refresh();
 				} else if (EOModel.DIRTY.equals(changedPropertyName)) {
-					treeViewer.refresh(true);
+					refresh();
 				}
 			}
 		}
@@ -239,11 +254,11 @@ public class EOModelTreeViewUpdater {
 			if (treeViewer != null && !treeViewer.getTree().isDisposed()) {
 				String changedPropertyName = event.getPropertyName();
 				if (EOStoredProcedure.NAME.equals(changedPropertyName)) {
-					treeViewer.refresh(true);
+					refresh();
 				} else if (EOStoredProcedure.ARGUMENTS.equals(changedPropertyName)) {
-					treeViewer.refresh(true);
+					refresh();
 				} else if (EOStoredProcedure.ARGUMENT.equals(changedPropertyName)) {
-					treeViewer.refresh(true);
+					refresh();
 				}
 			}
 		}
@@ -255,15 +270,15 @@ public class EOModelTreeViewUpdater {
 			if (treeViewer != null && !treeViewer.getTree().isDisposed()) {
 				String changedPropertyName = event.getPropertyName();
 				if (EOEntity.NAME.equals(changedPropertyName)) {
-					treeViewer.refresh(true);
+					refresh();
 				} else if (EOEntity.FETCH_SPECIFICATIONS.equals(changedPropertyName)) {
-					treeViewer.refresh(true);
+					refresh();
 				} else if (EOEntity.FETCH_SPECIFICATION.equals(changedPropertyName)) {
-					treeViewer.refresh(true);
+					refresh();
 				} else if (EOEntity.ATTRIBUTES.equals(changedPropertyName)) {
-					treeViewer.refresh(true);
+					refresh();
 				} else if (EOEntity.ATTRIBUTE.equals(changedPropertyName)) {
-					treeViewer.refresh(true);
+					refresh();
 				} else if (EOEntity.RELATIONSHIPS.equals(changedPropertyName)) {
 					EOEntity entity = (EOEntity) event.getSource();
 					EOModelTreeViewUpdater.this.refreshRelationshipsForEntity(entity);
@@ -271,9 +286,9 @@ public class EOModelTreeViewUpdater {
 					EOEntity entity = (EOEntity) event.getSource();
 					EOModelTreeViewUpdater.this.refreshRelationshipsForEntity(entity);
 				} else if (EOEntity.ENTITY_INDEX.equals(changedPropertyName)) {
-					treeViewer.refresh(true);
+					refresh();
 				} else if (EOEntity.ENTITY_INDEXES.equals(changedPropertyName)) {
-					treeViewer.refresh(true);
+					refresh();
 				}
 			}
 		}

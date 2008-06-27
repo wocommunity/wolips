@@ -98,6 +98,8 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 
 	public static final String ENTITY_NAMING_CONVENTION = "entityNamingConvention";
 
+	public static final String MODEL_SAVING = "modelSaving";
+
 	private EOModelGroup myModelGroup;
 
 	private String myName;
@@ -1053,57 +1055,63 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	}
 
 	public File saveToFolder(File parentFolder) throws IOException, PropertyListParserException {
-		File modelFolder = _eomodeldFolderForFolder(parentFolder);
-		if (!modelFolder.exists()) {
-			if (!modelFolder.mkdirs()) {
-				throw new IOException("Failed to create folder '" + modelFolder + "'.");
+		firePropertyChange(EOModel.MODEL_SAVING, Boolean.FALSE, Boolean.TRUE);
+		try {
+			File modelFolder = _eomodeldFolderForFolder(parentFolder);
+			if (!modelFolder.exists()) {
+				if (!modelFolder.mkdirs()) {
+					throw new IOException("Failed to create folder '" + modelFolder + "'.");
+				}
 			}
-		}
-		myModelURL = modelFolder.toURL();
-		File indexFile = new File(modelFolder, "index.eomodeld");
-		EOModelMap modelMap = toMap();
-		PropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, indexFile, modelMap);
-
-		if (myDeletedEntityNames != null) {
-			for (String entityName : myDeletedEntityNames) {
+			myModelURL = modelFolder.toURL();
+			File indexFile = new File(modelFolder, "index.eomodeld");
+			EOModelMap modelMap = toMap();
+			PropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, indexFile, modelMap);
+	
+			if (myDeletedEntityNames != null) {
+				for (String entityName : myDeletedEntityNames) {
+					File entityFile = new File(modelFolder, entityName + ".plist");
+					if (entityFile.exists()) {
+						entityFile.delete();
+					}
+					File fspecFile = new File(modelFolder, entityName + ".fspec");
+					if (fspecFile.exists()) {
+						fspecFile.delete();
+					}
+				}
+			}
+	
+			for (EOEntity entity : myEntities) {
+				String entityName = entity.getName();
 				File entityFile = new File(modelFolder, entityName + ".plist");
-				if (entityFile.exists()) {
-					entityFile.delete();
-				}
+				entity.saveToFile(entityFile);
 				File fspecFile = new File(modelFolder, entityName + ".fspec");
-				if (fspecFile.exists()) {
-					fspecFile.delete();
+				entity.saveFetchSpecsToFile(fspecFile);
+				entity.entitySaved();
+			}
+	
+			if (myDeletedStoredProcedureNames != null) {
+				for (String storedProcedureName : myDeletedStoredProcedureNames) {
+					File storedProcedureFile = new File(modelFolder, storedProcedureName + ".storedProcedure");
+					if (storedProcedureFile.exists()) {
+						storedProcedureFile.delete();
+					}
 				}
 			}
-		}
-
-		for (EOEntity entity : myEntities) {
-			String entityName = entity.getName();
-			File entityFile = new File(modelFolder, entityName + ".plist");
-			entity.saveToFile(entityFile);
-			File fspecFile = new File(modelFolder, entityName + ".fspec");
-			entity.saveFetchSpecsToFile(fspecFile);
-			entity.entitySaved();
-		}
-
-		if (myDeletedStoredProcedureNames != null) {
-			for (String storedProcedureName : myDeletedStoredProcedureNames) {
+	
+			for (EOStoredProcedure storedProcedure : myStoredProcedures) {
+				String storedProcedureName = storedProcedure.getName();
 				File storedProcedureFile = new File(modelFolder, storedProcedureName + ".storedProcedure");
-				if (storedProcedureFile.exists()) {
-					storedProcedureFile.delete();
-				}
+				storedProcedure.saveToFile(storedProcedureFile);
 			}
+	
+			setDirty(false);
+	
+			return modelFolder;
 		}
-
-		for (EOStoredProcedure storedProcedure : myStoredProcedures) {
-			String storedProcedureName = storedProcedure.getName();
-			File storedProcedureFile = new File(modelFolder, storedProcedureName + ".storedProcedure");
-			storedProcedure.saveToFile(storedProcedureFile);
+		finally {
+			firePropertyChange(EOModel.MODEL_SAVING, Boolean.TRUE, Boolean.FALSE);
 		}
-
-		setDirty(false);
-
-		return modelFolder;
 	}
 
 	public void resolve(Set<EOModelVerificationFailure> _failures) {
