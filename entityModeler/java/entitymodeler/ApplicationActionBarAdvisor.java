@@ -8,12 +8,14 @@ import org.eclipse.jface.action.IMenuListener2;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.swt.SWT;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
+import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
 
 import entitymodeler.actions.NewEOModelAction;
 import entitymodeler.actions.OpenEOModelAction;
@@ -36,6 +38,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
   private IWorkbenchAction _selectAllAction;
 
   private IWorkbenchAction _aboutAction;
+  private IWorkbenchAction _preferencesAction;
 
   //private OpenViewAction openViewAction;
   //private IWorkbenchAction messagePopupAction;
@@ -85,6 +88,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     _aboutAction = ActionFactory.ABOUT.create(window);
     register(_aboutAction);
 
+    _preferencesAction = ActionFactory.PREFERENCES.create(window);
+    register(_preferencesAction);
+
     //openViewAction = new OpenViewAction(window, "Open Another Message View", View.ID);
     //register(openViewAction);
 
@@ -118,9 +124,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
   @Override
   protected void fillMenuBar(IMenuManager menuBar) {
-    MenuManager fileMenu = new MenuManager("&File", IWorkbenchActionConstants.M_FILE);
-    MenuManager editMenu = new MenuManager("&Edit", IWorkbenchActionConstants.M_EDIT);
-    MenuManager helpMenu = new MenuManager("&Help", IWorkbenchActionConstants.M_HELP);
+    MenuManager fileMenu = new MenuManager(IDEWorkbenchMessages.Workbench_file, IWorkbenchActionConstants.M_FILE);
+    MenuManager editMenu = new MenuManager(IDEWorkbenchMessages.Workbench_edit, IWorkbenchActionConstants.M_EDIT);
+    MenuManager helpMenu = new MenuManager(IDEWorkbenchMessages.Workbench_help, IWorkbenchActionConstants.M_HELP);
 
     menuBar.add(fileMenu);
     menuBar.add(editMenu);
@@ -136,8 +142,15 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     //fileMenu.add(messagePopupAction);
     //fileMenu.add(openViewAction);
     //fileMenu.add(new Separator());
-    //fileMenu.add(_exitAction);
-    
+    ActionContributionItem exitItem = new ActionContributionItem(_exitAction);
+    exitItem.setVisible(!"carbon".equals(SWT.getPlatform()));
+    fileMenu.add(exitItem);
+
+    //MenuManager windowMenu = new MenuManager(IDEWorkbenchMessages.Workbench_window, IWorkbenchActionConstants.M_WINDOW);
+    ActionContributionItem preferencesItem = new ActionContributionItem(_preferencesAction);
+    preferencesItem.setVisible(!"carbon".equals(SWT.getPlatform()));
+    helpMenu.add(preferencesItem);
+
     // MS: Eclipse core plugins inject some dumb shit into
     // the File menu that there doesn't appear to be a
     // good way to remove.  So I'm going to do it
@@ -168,14 +181,16 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     editMenu.add(_selectAllAction);
 
     // Help
-    helpMenu.add(_aboutAction);
+    ActionContributionItem aboutItem = new ActionContributionItem(_aboutAction);
+    aboutItem.setVisible(!"carbon".equals(SWT.getPlatform())); //$NON-NLS-1$
+    helpMenu.add(aboutItem);
 
     // MS: Most Mac apps don't have icons on menu items ...
     for (IContributionItem menu : menuBar.getItems()) {
       if (menu instanceof MenuManager) {
-        for (IContributionItem menuItem : ((MenuManager)menu).getItems()) {
+        for (IContributionItem menuItem : ((MenuManager) menu).getItems()) {
           if (menuItem instanceof ActionContributionItem) {
-            ((ActionContributionItem)menuItem).getAction().setImageDescriptor(null);
+            ((ActionContributionItem) menuItem).getAction().setImageDescriptor(null);
           }
         }
       }
