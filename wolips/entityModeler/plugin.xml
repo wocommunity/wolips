@@ -19,7 +19,7 @@
             name="Entity Modeler">
          <property
                name="startupProgressRect"
-               value="0,0,0,0"/>
+               value="47,319,251,16"/>
          <property
                name="aboutImage"
                value="icons/EntityModelerSmall.png"/>

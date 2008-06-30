@@ -10,12 +10,14 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.internal.adaptor.EclipseEnvironmentInfo;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.eclipse.ui.ide.FileStoreEditorInput;
+import org.eclipse.ui.internal.util.PrefUtil;
 import org.objectstyle.wolips.eomodeler.EOModelerPerspectiveFactory;
 import org.objectstyle.wolips.eomodeler.editors.EOModelEditor;
 
@@ -39,6 +41,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
     catch (Exception e) {
       e.printStackTrace();
     }
+    PrefUtil.getAPIPreferenceStore().setValue(IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS, false);
     super.preStartup();
   }
 

@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?pde version="3.1"?>
+<?pde version="3.4"?>
 
-<product name="Entity Modeler" id="EntityModeler.EntityModeler" application="EntityModeler.EntityModeler" useFeatures="false">
+<product name="Entity Modeler" id="EntityModeler.EntityModeler" application="EntityModeler.EntityModeler" version="1.0.6" useFeatures="false">
 
    <aboutInfo>
       <image path="icons/EntityModelerSmall.png"/>
    </aboutInfo>
 
-   <configIni use="custom" path="/EntityModeler/config.ini"/>
+   <configIni use="default">
+      <linux>/EntityModeler/config.ini</linux>
+      <macosx>/EntityModeler/config.ini</macosx>
+      <solaris>/EntityModeler/config.ini</solaris>
+      <win32>/EntityModeler/config.ini</win32>
+   </configIni>
 
    <launcherArgs>
    </launcherArgs>
@@ -16,7 +21,7 @@
 
    <splash
       location="EntityModeler"
-      startupProgressRect="0,0,0,0" />
+      startupProgressRect="47,319,251,16" />
    <launcher name="Entity Modeler">
       <macosx icon="/EntityModeler/icons/EntityModeler.icns"/>
       <solaris/>
@@ -51,6 +56,8 @@
       <plugin id="org.eclipse.core.variables"/>
       <plugin id="org.eclipse.equinox.app"/>
       <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.launcher"/>
+      <plugin id="org.eclipse.equinox.launcher.carbon.macosx" fragment="true"/>
       <plugin id="org.eclipse.equinox.preferences"/>
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.help"/>
