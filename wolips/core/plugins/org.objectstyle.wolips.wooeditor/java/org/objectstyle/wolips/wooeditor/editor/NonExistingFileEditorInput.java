@@ -12,19 +12,14 @@ package org.objectstyle.wolips.wooeditor.editor;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-
 import org.eclipse.jface.resource.ImageDescriptor;
-
-
-import org.eclipse.ui.editors.text.ILocationProvider;
-
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
+import org.eclipse.ui.editors.text.ILocationProvider;
 
 /**
  * @since 3.1
@@ -82,7 +77,6 @@ public class NonExistingFileEditorInput implements IEditorInput, ILocationProvid
 	/*
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
-	@SuppressWarnings("unchecked")
 	public Object getAdapter(Class adapter) {
 		if (ILocationProvider.class.equals(adapter))
 			return this;
