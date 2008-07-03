@@ -476,7 +476,7 @@ public void deselectAll () {
 	list.deselectAll ();
 }
 void dropDown (boolean drop) {
-	if (drop == isDropped ()) return;
+	if (drop == isDropped () || !isVisible()) return;
 	if (!drop) {
 		popup.setVisible (false);
 		if (!isDisposed ()&& arrow.isFocusControl()) {
@@ -941,8 +941,8 @@ void internalLayout (boolean changed) {
 	int width = rect.width;
 	int height = rect.height;
 	Point arrowSize = arrow.computeSize (SWT.DEFAULT, height, changed);
-	text.setBounds (0, 0, width - arrowSize.x, height);
-	arrow.setBounds (width - arrowSize.x, 0, arrowSize.x, arrowSize.y);
+	text.setBounds (2, 1, width - arrowSize.x - 2, height - 1);
+	arrow.setBounds (width - arrowSize.x - 2, 0, arrowSize.x, arrowSize.y);
 }
 void listEvent (Event event) {
 	switch (event.type) {
@@ -968,7 +968,9 @@ void listEvent (Event event) {
 			int index = list.getSelectionIndex ();
 			if (index == -1) return;
 			text.setText (list.getItem (index));
-			text.selectAll ();
+			if (getEditable()) {
+				text.selectAll ();
+			}
 			list.setSelection (index);
 			Event e = new Event ();
 			e.time = event.time;
@@ -1247,7 +1249,9 @@ public void select (int index) {
 	if (0 <= index && index < list.getItemCount()) {
 		if (index != getSelectionIndex()) {
 			text.setText (list.getItem (index));
-			text.selectAll ();
+			if (getEditable()) {
+				text.selectAll ();
+			}
 			list.select (index);
 			list.showSelection ();
 		}
@@ -1423,7 +1427,9 @@ public void setText (String string) {
 		return;
 	}
 	text.setText (string);
-	text.selectAll ();
+	if (getEditable()) {
+		text.selectAll ();
+	}
 	list.setSelection (index);
 	list.showSelection ();
 }
@@ -1515,7 +1521,9 @@ void textEvent (Event event) {
 				event.doit = false;
 				if ((event.stateMask & SWT.ALT) != 0) {
 					boolean dropped = isDropped ();
-					text.selectAll ();
+					if (getEditable()) {
+						text.selectAll ();
+					}
 					if (!dropped) setFocus ();
 					dropDown (!dropped);
 					break;
@@ -1575,7 +1583,9 @@ void textEvent (Event event) {
 			if (event.button != 1) return;
 			if (text.getEditable ()) return;
 			boolean dropped = isDropped ();
-			text.selectAll ();
+			if (getEditable()) {
+				text.selectAll ();
+			}
 			if (!dropped) setFocus ();
 			dropDown (!dropped);
 			break;
@@ -1583,7 +1593,9 @@ void textEvent (Event event) {
 		case SWT.MouseUp: {
 			if (event.button != 1) return;
 			if (text.getEditable ()) return;
-			text.selectAll ();
+			if (getEditable()) {
+				text.selectAll ();
+			}
 			break;
 		}
 		case SWT.Traverse: {		

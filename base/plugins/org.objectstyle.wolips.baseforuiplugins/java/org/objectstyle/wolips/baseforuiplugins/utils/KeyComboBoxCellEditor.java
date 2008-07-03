@@ -183,8 +183,8 @@ public class KeyComboBoxCellEditor extends CellEditor {
 	 * (non-Javadoc) Method declared on CellEditor.
 	 */
 	protected Control createControl(Composite parent) {
-
 		comboBox = new IHateCCombo(parent, getStyle());
+		comboBox.setBackground(parent.getBackground());
 		comboBox.setFont(parent.getFont());
 
 		if ("carbon".equals(SWT.getPlatform())) {
@@ -194,10 +194,10 @@ public class KeyComboBoxCellEditor extends CellEditor {
 						_moving = true;
 						Point location = comboBox.getLocation();
 						if (System.getProperty("org.eclipse.swt.internal.carbon.smallFonts") != null) {
-							comboBox.setLocation(location.x - 1, location.y);
+							comboBox.setLocation(location.x - 3, location.y - 1);
 						}
 						else {
-							comboBox.setLocation(location.x - 1, location.y - 1);
+							comboBox.setLocation(location.x - 3, location.y - 2);
 						}
 						_moving = false;
 					}
@@ -208,10 +208,15 @@ public class KeyComboBoxCellEditor extends CellEditor {
 						_resizing = true;
 						Point size = comboBox.getSize();
 						if (System.getProperty("org.eclipse.swt.internal.carbon.smallFonts") != null) {
-							comboBox.setSize(size.x - 4, size.y);
+							comboBox.setSize(size.x, size.y + 2);
 						}
 						else {
-							comboBox.setSize(size.x - 4, size.y);
+							comboBox.setSize(size.x, size.y + 3);
+						}
+						if (isActivated()) {
+							if (!comboBox.getEditable()) {
+								//comboBox.dropDown(true);
+							}
 						}
 						_resizing = false;
 					}
@@ -228,7 +233,7 @@ public class KeyComboBoxCellEditor extends CellEditor {
 
 		comboBox.addSelectionListener(new SelectionAdapter() {
 			public void widgetDefaultSelected(SelectionEvent event) {
-				applyEditorValueAndDeactivate();
+				applyEditorValue(false);
 			}
 
 			public void widgetSelected(SelectionEvent event) {
@@ -330,11 +335,16 @@ public class KeyComboBoxCellEditor extends CellEditor {
 			selection = 0;
 		}
 	}
-
+	
+	@Override
+	public void activate() {
+		super.activate();
+	}
+	
 	/**
 	 * Applies the currently selected value and deactiavates the cell editor
 	 */
-	void applyEditorValueAndDeactivate() {
+	void applyEditorValue(boolean deactivate) {
 		// must set the selection before getting value
 		selection = comboBox.getSelectionIndex();
 		Object newValue = doGetValue();
@@ -356,7 +366,15 @@ public class KeyComboBoxCellEditor extends CellEditor {
 		}
 
 		fireApplyEditorValue();
-		deactivate();
+		comboBox.dropDown(false);
+		if (deactivate) {
+			deactivate();
+		}
+	}
+	
+	@Override
+	public void deactivate() {
+		super.deactivate();
 	}
 
 	/*
@@ -366,7 +384,7 @@ public class KeyComboBoxCellEditor extends CellEditor {
 	 */
 	protected void focusLost() {
 		if (isActivated()) {
-			applyEditorValueAndDeactivate();
+			applyEditorValue(true);
 		}
 	}
 
@@ -379,7 +397,9 @@ public class KeyComboBoxCellEditor extends CellEditor {
 		if (keyEvent.character == '\u001b') { // Escape character
 			fireCancelEditor();
 		} else if (keyEvent.character == '\t') { // tab key
-			applyEditorValueAndDeactivate();
+			applyEditorValue(true);
+		} else if (keyEvent.keyCode == SWT.ARROW_DOWN) {
+			comboBox.dropDown(true);
 		} else if (Character.isLetterOrDigit(keyEvent.character)) {
 			long now = System.currentTimeMillis();
 			if ((now - lastKeyTime) > 1000) {
