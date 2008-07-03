@@ -51,113 +51,34 @@ package org.objectstyle.wolips.eomodeler.editors.userInfo;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
-import org.objectstyle.wolips.baseforuiplugins.utils.WOTextCellEditor;
-import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.core.model.EOModelParserDataStructureFactory;
+import org.objectstyle.wolips.baseforuiplugins.plist.IPropertyListChangeListener;
+import org.objectstyle.wolips.baseforuiplugins.plist.PropertyListEditor;
 import org.objectstyle.wolips.eomodeler.core.model.IUserInfoable;
+import org.objectstyle.wolips.eomodeler.core.model.UserInfoableEOModelObject;
 import org.objectstyle.wolips.eomodeler.core.utils.NotificationMap;
-import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
-import org.objectstyle.wolips.eomodeler.utils.AddRemoveButtonGroup;
-import org.objectstyle.wolips.eomodeler.utils.StayEditingCellEditorListener;
-import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
-public class UserInfoPropertySection extends AbstractPropertySection {
-	public static final String KEY = "key";
+public class UserInfoPropertySection extends AbstractPropertySection implements IPropertyListChangeListener, PropertyChangeListener {
+	private IUserInfoable _userInfoable;
 
-	public static final String VALUE = "value";
+	private PropertyListEditor _propertyListEditor;
 
-	public static final String[] COLUMNS = { UserInfoPropertySection.KEY, UserInfoPropertySection.VALUE };
-
-	private TableViewer myUserInfoTableViewer;
-
-	private Text myValueText;
-
-	private AddRemoveButtonGroup myAddRemoveButtonGroup;
-
-	private IUserInfoable myUserInfoable;
-
-	private UserInfoListener myUserInfoListener;
-
-	private Object mySelectedKey;
-
-	private boolean myValueTextDirty;
-
-	public UserInfoPropertySection() {
-		myUserInfoListener = new UserInfoListener();
-	}
-	
 	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
 		super.createControls(_parent, _tabbedPropertySheetPage);
-		Composite userInfoForm = getWidgetFactory().createFlatFormComposite(_parent);
 
-		myUserInfoTableViewer = TableUtils.createTableViewer(userInfoForm, SWT.BORDER | SWT.FLAT | SWT.FULL_SELECTION | SWT.SINGLE, "UserInfo", UserInfoPropertySection.COLUMNS, new UserInfoContentProvider(), new UserInfoLabelProvider(UserInfoPropertySection.COLUMNS), new ViewerSorter());
-
-		CellEditor[] cellEditors = new CellEditor[UserInfoPropertySection.COLUMNS.length];
-		cellEditors[TableUtils._getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.KEY)] = new WOTextCellEditor(myUserInfoTableViewer.getTable());
-		cellEditors[TableUtils._getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.VALUE)] = new WOTextCellEditor(myUserInfoTableViewer.getTable());
-		myUserInfoTableViewer.setCellModifier(new UserInfoCellModifier(myUserInfoTableViewer));
-		myUserInfoTableViewer.setCellEditors(cellEditors);
-		
-		new StayEditingCellEditorListener(myUserInfoTableViewer, TableUtils._getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.KEY));
-		new StayEditingCellEditorListener(myUserInfoTableViewer, TableUtils._getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.VALUE));
-
-		FormData tableFormData = new FormData();
-		tableFormData.left = new FormAttachment(0, 5);
-		tableFormData.right = new FormAttachment(100, -5);
-		tableFormData.top = new FormAttachment(0, 5);
-		tableFormData.bottom = new FormAttachment(50, 0);
-		myUserInfoTableViewer.getTable().setLayoutData(tableFormData);
-
-		Composite valueComposite = getWidgetFactory().createPlainComposite(userInfoForm, SWT.NONE);
-		
-		FormData valueFormData = new FormData();
-		valueFormData.left = new FormAttachment(0, 5);
-		valueFormData.right = new FormAttachment(100, -5);
-		valueFormData.top = new FormAttachment(myUserInfoTableViewer.getTable(), 5);
-		valueFormData.bottom = new FormAttachment(100, -5);
-		valueComposite.setLayoutData(valueFormData);
-		GridLayout valueCompositeLayout = new GridLayout();
-		valueCompositeLayout.marginWidth = 0;
-		valueCompositeLayout.marginHeight = 0;
-		valueComposite.setLayout(valueCompositeLayout);
-
-		myValueText = getWidgetFactory().createText(valueComposite, "", SWT.BORDER | SWT.WRAP | SWT.MULTI | SWT.V_SCROLL);
-		ValueTextListener valueTextListener = new ValueTextListener();
-		myValueText.addModifyListener(valueTextListener);
-		myValueText.addFocusListener(valueTextListener);
-		myValueText.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-		myAddRemoveButtonGroup = new AddRemoveButtonGroup(valueComposite, new AddEntryHandler(), new RemoveEntriesHandler());
-
-		// updateValueText(null);
+		Set<String> filteredKeyPaths = new HashSet<String>();
+		filteredKeyPaths.add("Root." + UserInfoableEOModelObject.ENTITY_MODELER_KEY);
+		_propertyListEditor = new PropertyListEditor(_parent, true, false, filteredKeyPaths);
+		_propertyListEditor.setListener(this);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -166,28 +87,24 @@ public class UserInfoPropertySection extends AbstractPropertySection {
 		removeListeners();
 		NotificationMap userInfo;
 		if (_selection instanceof IStructuredSelection) {
-			myUserInfoable = (IUserInfoable) ((IStructuredSelection) _selection).getFirstElement();
-			userInfo = myUserInfoable.getUserInfo();
+			_userInfoable = (IUserInfoable) ((IStructuredSelection) _selection).getFirstElement();
+			userInfo = _userInfoable.getUserInfo();
 			if (userInfo == null) {
 				userInfo = new NotificationMap();
-				myUserInfoable.setUserInfo(userInfo);
+				_userInfoable.setUserInfo(userInfo);
 			}
-			userInfo.addPropertyChangeListener(myUserInfoListener);
+			userInfo.addPropertyChangeListener(this);
 		} else {
-			myUserInfoable = null;
+			_userInfoable = null;
 			userInfo = null;
 		}
-		myUserInfoTableViewer.setInput(userInfo);
-		((UserInfoLabelProvider) myUserInfoTableViewer.getLabelProvider()).setUserInfo(userInfo);
-		((UserInfoCellModifier) myUserInfoTableViewer.getCellModifier()).setUserInfo(userInfo);
-		myUserInfoTableViewer.addSelectionChangedListener(new UserInfoSelectionListener());
+		_propertyListEditor.setInput(userInfo);
 		refresh();
 	}
 
 	protected void removeListeners() {
-		if (myUserInfoable != null) {
-			updateUserInfoFromText();
-			myUserInfoable.getUserInfo().removePropertyChangeListener(myUserInfoListener);
+		if (_userInfoable != null) {
+			_userInfoable.getUserInfo().removePropertyChangeListener(this);
 		}
 	}
 
@@ -198,15 +115,7 @@ public class UserInfoPropertySection extends AbstractPropertySection {
 
 	public void refresh() {
 		super.refresh();
-		myUserInfoTableViewer.refresh();
-		TableUtils.packTableColumns(myUserInfoTableViewer);
-		updateTextFromUserInfo();
-	}
-
-	public void refresh(String _propertyName) {
-		myUserInfoTableViewer.refresh(_propertyName);
-		TableUtils.packTableColumns(myUserInfoTableViewer);
-		updateTextFromUserInfo();
+		_propertyListEditor.refresh();
 	}
 
 	public boolean shouldUseExtraSpace() {
@@ -214,141 +123,32 @@ public class UserInfoPropertySection extends AbstractPropertySection {
 	}
 
 	public IUserInfoable getUserInfoable() {
-		return myUserInfoable;
+		return _userInfoable;
 	}
 
-	public TableViewer getUserInfoTableViewer() {
-		return myUserInfoTableViewer;
+	public void propertyChange(PropertyChangeEvent evt) {
+		_propertyListEditor.refresh();
+	}
+	
+	public void pathRenamed(String oldPath, String newPath) {
+		updateUserInfo();
 	}
 
-	public void setValueTextDirty(boolean _dirty) {
-		myValueTextDirty = _dirty;
+	public void pathAdded(String path, Object value) {
+		updateUserInfo();
 	}
 
-	public void removeSelectedEntries() {
-		mySelectedKey = null;
-		IStructuredSelection selection = (IStructuredSelection) myUserInfoTableViewer.getSelection();
-		Object[] selectedKeys = selection.toArray();
-		for (int i = 0; i < selectedKeys.length; i++) {
-			Object selectedKey = selectedKeys[i];
-			myUserInfoable.getUserInfo().remove(selectedKey);
-		}
-		updateTextFromUserInfo();
+	public void pathRemoved(String path, Object value) {
+		updateUserInfo();
 	}
 
-	public void addEntry() {
-		String key = Messages.getString("UserInfoPropertySection.newKey");
-		String value = Messages.getString("UserInfoPropertySection.newValue");
-		boolean unusedNameFound = (myUserInfoable.getUserInfo().get(key) == null);
-		String unusedKey = key;
-		for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
-			unusedKey = key + dupeNameNum;
-			unusedNameFound = (myUserInfoable.getUserInfo().get(unusedKey) == null);
-		}
-
-		myUserInfoable.getUserInfo().put(unusedKey, value);
-		myUserInfoTableViewer.setSelection(new StructuredSelection(unusedKey), true);
+	public void pathChanged(String path, Object oldValue, Object newValue) {
+		updateUserInfo();
 	}
 
-	protected void setSelectedKey(Object _key) {
-		updateUserInfoFromText();
-		mySelectedKey = _key;
-		updateTextFromUserInfo();
-	}
-
-	protected void updateTextFromUserInfo() {
-		if (myUserInfoable != null && mySelectedKey != null) {
-			try {
-				Object valueObj = myUserInfoable.getUserInfo().get(mySelectedKey);
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				PropertyListSerialization.propertyListToStream(baos, valueObj);
-				String valueStr;
-				try {
-					valueStr = new String(baos.toByteArray(), "UTF-8");
-					myValueText.setText(valueStr);
-				} catch (UnsupportedEncodingException e) {
-					throw new RuntimeException(e);
-				}
-				myValueText.setEnabled(true);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else {
-			myValueText.setText("");
-			myValueText.setEnabled(false);
-		}
-		myValueTextDirty = false;
-	}
-
-	protected void updateUserInfoFromText() {
-		if (mySelectedKey != null && myValueTextDirty) {
-			try {
-				String valueStr = myValueText.getText().trim();
-				if (!valueStr.startsWith("(") && !valueStr.startsWith("{") && !valueStr.startsWith("\"")) {
-					valueStr = "\"" + valueStr + "\"";
-				}
-				else if (valueStr.startsWith("\"") && !valueStr.endsWith("\"")) {
-					valueStr = "\"" + valueStr.replaceAll("\"", "\\\\\"") + "\"";
-				}
-				Object valueObj = PropertyListSerialization.propertyListFromStream(new ByteArrayInputStream(valueStr.getBytes("UTF-8")), new EOModelParserDataStructureFactory());
-				myUserInfoable.getUserInfo().put(mySelectedKey, valueObj);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-		myValueTextDirty = false;
-	}
-
-	protected class ValueTextListener implements ModifyListener, FocusListener {
-		public void modifyText(ModifyEvent _e) {
-			UserInfoPropertySection.this.setValueTextDirty(true);
-		}
-
-		public void focusGained(FocusEvent _e) {
-			// DO NOTHING
-		}
-
-		public void focusLost(FocusEvent _e) {
-			UserInfoPropertySection.this.updateUserInfoFromText();
-		}
-	}
-
-	protected class UserInfoSelectionListener implements ISelectionChangedListener {
-		public void selectionChanged(SelectionChangedEvent _event) {
-			IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
-			UserInfoPropertySection.this.setSelectedKey(selection.getFirstElement());
-		}
-	}
-
-	protected class AddEntryHandler implements SelectionListener {
-		public void widgetDefaultSelected(SelectionEvent _e) {
-			widgetSelected(_e);
-		}
-
-		public void widgetSelected(SelectionEvent _e) {
-			UserInfoPropertySection.this.addEntry();
-		}
-	}
-
-	protected class RemoveEntriesHandler implements SelectionListener {
-		public void widgetDefaultSelected(SelectionEvent _e) {
-			widgetSelected(_e);
-		}
-
-		public void widgetSelected(SelectionEvent _e) {
-			UserInfoPropertySection.this.removeSelectedEntries();
-		}
-	}
-
-	protected class UserInfoListener implements PropertyChangeListener {
-		public void propertyChange(PropertyChangeEvent _event) {
-			String propertyName = _event.getPropertyName();
-			System.out.println("UserInfoListener.propertyChange: " + propertyName + " (" + this + ")");
-			if (propertyName == NotificationMap.CONTENTS) {
-				UserInfoPropertySection.this.refresh();
-			} else {
-				UserInfoPropertySection.this.refresh(propertyName);
-			}
-		}
+	@SuppressWarnings("unchecked")
+	protected void updateUserInfo() {
+		Map userInfo = (Map) _propertyListEditor.getInput();
+		_userInfoable.setUserInfo(userInfo);
 	}
 }
