@@ -44,7 +44,11 @@ public class EOQualifierBinding implements ISortableEOModelObject {
 	}
 	
 	public String getJavaClassName() {
-		return getAttributePath().getChildClassName();
+		AbstractEOAttributePath attributePath = getAttributePath();
+		if (attributePath == null) {
+			throw new IllegalStateException("The binding name '" + _name + "' refers to a keypath '" + _keyPath + " that could not be resolved on the entity '" + _entity.getName() + "'.");
+		}
+		return attributePath.getChildClassName();
 	}
 
 	public String toString() {
