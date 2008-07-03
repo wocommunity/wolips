@@ -77,6 +77,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
+import org.objectstyle.wolips.baseforplugins.plist.PropertyListParserException;
 import org.objectstyle.wolips.datasets.adaptable.JavaProject;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel;
@@ -88,7 +89,6 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.model.IEOModelGroupFactory;
-import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
 import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
 
 /**
