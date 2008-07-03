@@ -132,7 +132,9 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
 		TableUtils.sort(myAttributesTableViewer, AbstractEOArgument.NAME);
 
 		CellEditor[] cellEditors = new CellEditor[TableUtils.getColumnsForTableNamed(EOAttribute.class.getName()).length];
-		TableUtils.setCellEditor(EOAttribute.class.getName(), EOAttribute.PROTOTYPE, new KeyComboBoxCellEditor(attributesTable, new String[0], SWT.READ_ONLY), cellEditors);
+		KeyComboBoxCellEditor prototypeCellEditor = new KeyComboBoxCellEditor(attributesTable, new String[0], SWT.READ_ONLY);
+		prototypeCellEditor.getComboBox().setVisibleItemCount(10);
+		TableUtils.setCellEditor(EOAttribute.class.getName(), EOAttribute.PROTOTYPE, prototypeCellEditor, cellEditors);
 		TableUtils.setCellEditor(EOAttribute.class.getName(), AbstractEOArgument.NAME, new WOTextCellEditor(attributesTable), cellEditors);
 		TableUtils.setCellEditor(EOAttribute.class.getName(), AbstractEOArgument.COLUMN_NAME, new WOTextCellEditor(attributesTable), cellEditors);
 		updateCellEditors(cellEditors);
