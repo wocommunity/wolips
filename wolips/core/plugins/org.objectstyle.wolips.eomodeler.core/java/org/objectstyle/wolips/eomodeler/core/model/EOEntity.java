@@ -60,6 +60,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.objectstyle.wolips.baseforplugins.plist.PropertyListParserException;
+import org.objectstyle.wolips.baseforplugins.plist.WOLPropertyListSerialization;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.baseforplugins.util.StringUtils;
 import org.objectstyle.wolips.eomodeler.core.Messages;
@@ -69,8 +71,6 @@ import org.objectstyle.wolips.eomodeler.core.model.history.EOAttributeDeletedEve
 import org.objectstyle.wolips.eomodeler.core.model.history.EOEntityRenamedEvent;
 import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.NamingConvention;
-import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
-import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 
 public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOEntityRelative, ISortableEOModelObject {
 	private static final String EONEXT_PRIMARY_KEY_PROCEDURE = "EONextPrimaryKeyProcedure";
@@ -2194,7 +2194,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	public void loadFromURL(URL entityURL, Set<EOModelVerificationFailure> failures) throws EOModelException {
 		try {
-			EOModelMap entityMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromURL(entityURL, new EOModelParserDataStructureFactory()));
+			EOModelMap entityMap = new EOModelMap((Map) WOLPropertyListSerialization.propertyListFromURL(entityURL, new EOModelParserDataStructureFactory()));
 			loadFromMap(entityMap, failures);
 		} catch (Throwable e) {
 			throw new EOModelException("Failed to load entity from '" + entityURL.getFile() + "'.", e);
@@ -2203,7 +2203,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	public void loadFetchSpecsFromURL(URL fetchSpecURL, Set<EOModelVerificationFailure> failures) throws EOModelException {
 		try {
-			EOModelMap fspecMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromURL(fetchSpecURL, new EOModelParserDataStructureFactory()));
+			EOModelMap fspecMap = new EOModelMap((Map) WOLPropertyListSerialization.propertyListFromURL(fetchSpecURL, new EOModelParserDataStructureFactory()));
 			loadFetchSpecsFromMap(fspecMap, failures);
 		} catch (Throwable e) {
 			throw new EOModelException("Failed to load fetch specifications from '" + fetchSpecURL.getFile() + "'.", e);
@@ -2212,7 +2212,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	public void saveToFile(File _entityFile) throws PropertyListParserException, IOException {
 		EOModelMap entityMap = toEntityMap();
-		PropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, _entityFile, entityMap);
+		WOLPropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, _entityFile, entityMap);
 	}
 
 	public void saveFetchSpecsToFile(File _fetchSpecFile) throws PropertyListParserException, IOException {
@@ -2220,7 +2220,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			_fetchSpecFile.delete();
 		} else {
 			EOModelMap fetchSpecMap = toFetchSpecsMap();
-			PropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, _fetchSpecFile, fetchSpecMap);
+			WOLPropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, _fetchSpecFile, fetchSpecMap);
 		}
 	}
 

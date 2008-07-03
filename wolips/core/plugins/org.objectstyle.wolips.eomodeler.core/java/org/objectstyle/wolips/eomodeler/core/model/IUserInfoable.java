@@ -10,4 +10,6 @@ public interface IUserInfoable {
 	public void setUserInfo(Map<Object, Object> _userInfo, boolean _fireEvents);
 
 	public NotificationMap<Object, Object> getUserInfo();
+	
+	public void userInfoChanged(String path, Object oldValue, Object newValue);
 }

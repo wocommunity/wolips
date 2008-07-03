@@ -1,15 +1,14 @@
 package org.objectstyle.wolips.eomodeler.core.model;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.HashSet;
-import org.apache.commons.collections.set.ListOrderedSet;
 
-import org.objectstyle.wolips.eomodeler.core.wocompat.ParserDataStructureFactory;
+import org.apache.commons.collections.set.ListOrderedSet;
+import org.objectstyle.wolips.baseforplugins.plist.ParserDataStructureFactory;
 
 public class EOModelParserDataStructureFactory implements ParserDataStructureFactory {
-
 	public Collection<Object> createCollection(String _keyPath) {
 		boolean createSortedSet = false;
 		if ("root.attributes".equals(_keyPath)) {

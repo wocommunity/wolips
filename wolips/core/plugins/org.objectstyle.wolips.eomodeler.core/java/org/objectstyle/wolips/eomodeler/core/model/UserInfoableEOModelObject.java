@@ -34,6 +34,10 @@ public abstract class UserInfoableEOModelObject<T> extends EOModelObject<T> impl
 	public void setUserInfo(Map<Object, Object> userInfo, boolean fireEvents) {
 		_userInfo = mapChanged(_userInfo, userInfo, _userInfoRepeater, fireEvents);
 	}
+	
+	public void userInfoChanged(String path, Object oldValue, Object newValue) {
+		firePropertyChange(UserInfoableEOModelObject.USER_INFO + "." + path, oldValue, newValue);
+	}
 
 	public EOModelMap getEntityModelerMap(boolean readWrite) {  
 		NotificationMap<Object, Object> userInfo = getUserInfo();
