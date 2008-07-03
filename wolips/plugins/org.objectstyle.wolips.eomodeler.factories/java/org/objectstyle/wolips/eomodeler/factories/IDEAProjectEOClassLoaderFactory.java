@@ -12,11 +12,11 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
+import org.objectstyle.wolips.baseforplugins.plist.PropertyListParserException;
 import org.objectstyle.wolips.baseforplugins.util.StringUtils;
 import org.objectstyle.wolips.baseforplugins.util.URLUtils;
 import org.objectstyle.wolips.eomodeler.core.model.AbstractEOClassLoader;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
-import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
