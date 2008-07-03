@@ -39,7 +39,7 @@ public class WOTextCellEditor extends TextCellEditor {
 							Text resizedText = (Text) e.widget;
 							Point location = resizedText.getLocation();
 							Composite controlParent = resizedText.getParent();
-							if (controlParent instanceof Tree) {
+							if (controlParent instanceof Tree && ((Tree)controlParent).getColumnCount() == 1) {
 								if (System.getProperty("org.eclipse.swt.internal.carbon.smallFonts") != null) {
 									resizedText.setLocation(location.x - 3, location.y - 5);
 								}
