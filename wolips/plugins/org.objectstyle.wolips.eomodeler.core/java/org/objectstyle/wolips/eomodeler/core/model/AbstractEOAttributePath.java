@@ -157,4 +157,8 @@ public abstract class AbstractEOAttributePath implements IUserInfoable, IEOEntit
 	public boolean isRelatedTo(EORelationship relationship) {
 		return ComparisonUtils.equals(relationship, myChildAttribute) || (myParentRelationshipPath != null && myParentRelationshipPath.isRelatedTo(relationship));
 	}
+	
+	public void userInfoChanged(String path, Object oldValue, Object newValue) {
+		myChildAttribute.userInfoChanged(path, oldValue, newValue);
+	}
 }

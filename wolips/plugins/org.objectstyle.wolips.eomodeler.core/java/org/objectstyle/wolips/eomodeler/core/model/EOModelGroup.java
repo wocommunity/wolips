@@ -64,10 +64,10 @@ import java.util.jar.JarEntry;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.objectstyle.wolips.baseforplugins.plist.PropertyListParserException;
+import org.objectstyle.wolips.baseforplugins.plist.WOLPropertyListSerialization;
 import org.objectstyle.wolips.baseforplugins.util.URLUtils;
 import org.objectstyle.wolips.eomodeler.core.Activator;
-import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
-import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 
 public class EOModelGroup extends EOModelObject<Object> {
 	public static final String MODELS = "models";
@@ -122,8 +122,7 @@ public class EOModelGroup extends EOModelObject<Object> {
 	}
 
 	@SuppressWarnings("unused")
-	protected void _modelChanged(@SuppressWarnings("unused")
-	EOModel model, String propertyName, Object oldValue, Object newValue) {
+	protected void _modelChanged(EOModel model, String propertyName, Object oldValue, Object newValue) {
 		if (EOModel.DIRTY.equals(propertyName)) {
 			boolean oldDirty = _dirty;
 			boolean dirty = isDirty();
@@ -578,7 +577,7 @@ public class EOModelGroup extends EOModelObject<Object> {
 	public static void main(String[] args) throws IOException, PropertyListParserException {
 		long a = System.currentTimeMillis();
 		for (int i = 0; i < 1000; i++) {
-			PropertyListSerialization.propertyListFromFile(new File("/Users/mschrag/Documents/workspace/MDTask/Resources/MDTask.eomodeld/index.eomodeld"));
+			WOLPropertyListSerialization.propertyListFromFile(new File("/Users/mschrag/Documents/workspace/MDTask/Resources/MDTask.eomodeld/index.eomodeld"));
 		}
 		System.out.println("EOModelGroup.main: " + (System.currentTimeMillis() - a));
 	}

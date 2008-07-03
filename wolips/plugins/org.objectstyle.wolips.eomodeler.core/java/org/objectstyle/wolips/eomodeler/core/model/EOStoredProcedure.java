@@ -59,10 +59,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.objectstyle.wolips.baseforplugins.plist.PropertyListParserException;
+import org.objectstyle.wolips.baseforplugins.plist.WOLPropertyListSerialization;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.baseforplugins.util.StringUtils;
-import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
-import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 
 public class EOStoredProcedure extends UserInfoableEOModelObject<EOModel> implements ISortableEOModelObject {
 	public static final String NAME = "name";
@@ -305,7 +305,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject<EOModel> implem
 
 	public void loadFromURL(URL _storedProcedureURL, Set<EOModelVerificationFailure> _failures) throws EOModelException {
 		try {
-			EOModelMap entityMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromURL(_storedProcedureURL, new EOModelParserDataStructureFactory()));
+			EOModelMap entityMap = new EOModelMap((Map) WOLPropertyListSerialization.propertyListFromURL(_storedProcedureURL, new EOModelParserDataStructureFactory()));
 			loadFromMap(entityMap, _failures);
 		} catch (Throwable e) {
 			throw new EOModelException("Failed to load stored procedure from '" + _storedProcedureURL + "'.", e);
@@ -314,7 +314,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject<EOModel> implem
 
 	public void saveToFile(File _storedProcedureFile) throws PropertyListParserException, IOException {
 		EOModelMap storedProcedureMap = toMap();
-		PropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, _storedProcedureFile, storedProcedureMap);
+		WOLPropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, _storedProcedureFile, storedProcedureMap);
 	}
 
 	public void resolve(Set<EOModelVerificationFailure> _failures) {

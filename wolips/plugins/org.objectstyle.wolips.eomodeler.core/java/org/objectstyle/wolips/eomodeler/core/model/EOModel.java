@@ -60,14 +60,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.objectstyle.wolips.baseforplugins.plist.PropertyListParserException;
+import org.objectstyle.wolips.baseforplugins.plist.WOLPropertyListSerialization;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.baseforplugins.util.URLUtils;
 import org.objectstyle.wolips.eomodeler.core.model.history.EOEntityAddedEvent;
 import org.objectstyle.wolips.eomodeler.core.model.history.EOEntityDeletedEvent;
 import org.objectstyle.wolips.eomodeler.core.model.history.ModelEvents;
 import org.objectstyle.wolips.eomodeler.core.utils.NamingConvention;
-import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
-import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 
 public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements ISortableEOModelObject {
 	public static final String CURRENT_VERSION = "1.0.1";
@@ -781,7 +781,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		myModelURL = _modelFolder;
 		Map rawModelMap;
 		try {
-			rawModelMap = (Map) PropertyListSerialization.propertyListFromURL(indexURL, new EOModelParserDataStructureFactory());
+			rawModelMap = (Map) WOLPropertyListSerialization.propertyListFromURL(indexURL, new EOModelParserDataStructureFactory());
 		} catch (Exception e) {
 			throw new EOModelException("index.eomodeld is corrupted.", e);
 		}
@@ -1066,7 +1066,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			myModelURL = modelFolder.toURL();
 			File indexFile = new File(modelFolder, "index.eomodeld");
 			EOModelMap modelMap = toMap();
-			PropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, indexFile, modelMap);
+			WOLPropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, indexFile, modelMap);
 	
 			if (myDeletedEntityNames != null) {
 				for (String entityName : myDeletedEntityNames) {
