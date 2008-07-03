@@ -8,4 +8,5 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.baseforplugins,
  org.objectstyle.wolips.baseforplugins.logging,
+ org.objectstyle.wolips.baseforplugins.plist,
  org.objectstyle.wolips.baseforplugins.util
