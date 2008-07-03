@@ -16,12 +16,12 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.objectstyle.woenvironment.env.WOEnvironment;
+import org.objectstyle.wolips.baseforplugins.plist.PropertyListParserException;
+import org.objectstyle.wolips.baseforplugins.plist.SimpleParserDataStructureFactory;
+import org.objectstyle.wolips.baseforplugins.plist.WOLPropertyListSerialization;
 import org.objectstyle.wolips.baseforplugins.util.StringUtils;
 import org.objectstyle.wolips.eomodeler.core.model.AbstractManifestEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.core.model.ManifestSearchFolder;
-import org.objectstyle.wolips.eomodeler.core.wocompat.EMPropertyListSerialization;
-import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
-import org.objectstyle.wolips.eomodeler.core.wocompat.SimpleParserDataStructureFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -145,7 +145,7 @@ public class EclipseProjectEOModelGroupFactory extends AbstractManifestEOModelGr
 				File projectLocator = new File(folder, ".EntityModeler.plist");
 				if (projectLocator.exists()) {
 					System.out.println("EclipseProjectEOModelGroupFactory.findEclipseProjectFolders:   Found project locator '" + projectLocator + "' ...");
-					Map<String, Object> projectProperties = (Map<String, Object>) EMPropertyListSerialization.propertyListWithContentsOfFile(projectLocator.getCanonicalPath(), new SimpleParserDataStructureFactory());
+					Map<String, Object> projectProperties = (Map<String, Object>) WOLPropertyListSerialization.propertyListWithContentsOfFile(projectLocator.getCanonicalPath(), new SimpleParserDataStructureFactory());
 					Map<String, List<String>> dependencies = (Map<String, List<String>>) projectProperties.get("Dependencies");
 					if (dependencies != null) {
 						List<String> projectFilePaths = dependencies.get("Eclipse");
