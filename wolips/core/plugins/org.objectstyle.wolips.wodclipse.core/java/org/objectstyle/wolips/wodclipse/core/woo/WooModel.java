@@ -40,6 +40,8 @@ import org.eclipse.ltk.core.refactoring.participants.DeleteRefactoring;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
+import org.objectstyle.wolips.baseforplugins.plist.PropertyListParserException;
+import org.objectstyle.wolips.baseforplugins.plist.WOLPropertyListSerialization;
 import org.objectstyle.wolips.baseforplugins.util.CharSetUtils;
 import org.objectstyle.wolips.bindings.wod.BindingValueKeyPath;
 import org.objectstyle.wolips.bindings.wod.TypeCache;
@@ -49,8 +51,6 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelMap;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelParserDataStructureFactory;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.model.PropertyListMap;
-import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListParserException;
-import org.objectstyle.wolips.eomodeler.core.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.refactoring.AddKeyInfo;
@@ -231,11 +231,11 @@ public class WooModel {
   }
 
   private void loadModelFromFile(final File file) throws IOException, PropertyListParserException {
-    _modelMap = new EOModelMap((Map<?, ?>) PropertyListSerialization.propertyListFromFile(file, new EOModelParserDataStructureFactory()));
+    _modelMap = new EOModelMap((Map<?, ?>) WOLPropertyListSerialization.propertyListFromFile(file, new EOModelParserDataStructureFactory()));
   }
 
   public void loadModelFromStream(final InputStream input) throws IOException, PropertyListParserException {
-    _modelMap = new EOModelMap((Map<?, ?>) PropertyListSerialization.propertyListFromStream(input, new EOModelParserDataStructureFactory()));
+    _modelMap = new EOModelMap((Map<?, ?>) WOLPropertyListSerialization.propertyListFromStream(input, new EOModelParserDataStructureFactory()));
   }
 
   @SuppressWarnings("unchecked")
@@ -372,7 +372,7 @@ public class WooModel {
     // XXX Need to validate model before saving
     EOModelMap modelMap = toModelMap();
     try {
-      PropertyListSerialization.propertyListToStream(writer, modelMap);
+      WOLPropertyListSerialization.propertyListToStream(writer, modelMap);
     }
     catch (PropertyListParserException e) {
       // TODO Auto-generated catch block
@@ -561,7 +561,7 @@ public class WooModel {
         	_file.createNewFile();
         }
         FileOutputStream writer = new FileOutputStream(_file);
-        PropertyListSerialization.propertyListToStream(writer, model._modelMap);
+        WOLPropertyListSerialization.propertyListToStream(writer, model._modelMap);
       }
       catch (PropertyListParserException e) {
         // TODO Auto-generated catch block
