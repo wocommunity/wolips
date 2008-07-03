@@ -315,8 +315,10 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 
 	public void dispose() {
 		disposeBindings();
-		for (Composite dataTypePanel : _dataTypeToDataTypePanel.values()) {
-			((IDataTypePanel) dataTypePanel).setArgument(null);
+		if (_dataTypeToDataTypePanel != null) {
+			for (Composite dataTypePanel : _dataTypeToDataTypePanel.values()) {
+				((IDataTypePanel) dataTypePanel).setArgument(null);
+			}
 		}
 		super.dispose();
 	}
