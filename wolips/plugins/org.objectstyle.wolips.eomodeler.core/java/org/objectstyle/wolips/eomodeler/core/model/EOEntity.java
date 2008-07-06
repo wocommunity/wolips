@@ -2447,6 +2447,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		entity.myAbstractEntity = myAbstractEntity;
 		entity.myReadOnly = myReadOnly;
 		entity.myMaxNumberOfInstancesToBatchFetch = myMaxNumberOfInstancesToBatchFetch;
+		entity.myGenerateSource = myGenerateSource;
 		return entity;
 	}
 
