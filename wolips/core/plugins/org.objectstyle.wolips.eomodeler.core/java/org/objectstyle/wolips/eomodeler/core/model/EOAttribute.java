@@ -139,10 +139,12 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 
 	public EOAttribute(String _name) {
 		super(_name);
+		_generateSource = true;
 	}
 
 	public EOAttribute(String _name, String _definition) {
 		super(_name, _definition);
+		_generateSource = true;
 	}
 
 	public void pasted() {
@@ -1023,6 +1025,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		attribute.myReadOnly = myReadOnly;
 		attribute.myReadFormat = myReadFormat;
 		attribute.myWriteFormat = myWriteFormat;
+		attribute._generateSource = _generateSource;
 	}
 
 	@Override
