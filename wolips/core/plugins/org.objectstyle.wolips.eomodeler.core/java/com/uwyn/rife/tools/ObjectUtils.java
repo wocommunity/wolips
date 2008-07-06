@@ -74,7 +74,7 @@ public class ObjectUtils {
 		}
 
 		if (!(object instanceof Cloneable)) {
-			throw new RuntimeException("Failed to clone " + object + ".");
+			throw new RuntimeException("Failed to clone " + object + " (" + object.getClass().getName() + ").");
 		}
 
 		try {
