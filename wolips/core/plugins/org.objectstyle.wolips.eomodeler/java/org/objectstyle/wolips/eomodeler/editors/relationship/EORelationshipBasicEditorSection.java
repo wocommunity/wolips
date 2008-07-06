@@ -345,7 +345,9 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 		if (_entityBinding != null) {
 			_entityBinding.dispose();
 		}
-		_joinsTableEditor.disposeBindings();
+		if (_joinsTableEditor != null) {
+			_joinsTableEditor.disposeBindings();
+		}
 	}
 
 	public void dispose() {
