@@ -57,7 +57,7 @@ import java.util.Set;
 
 import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
 
-public class EOModelMap implements Map {
+public class EOModelMap implements Map, Cloneable {
 	public static final int YESNO = 1;
 
 	public static final int YN = 2;
@@ -78,6 +78,11 @@ public class EOModelMap implements Map {
 		} else {
 			myBackingMap = _backingMap;
 		}
+	}
+	
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		return cloneModelMap();
 	}
 
 	public EOModelMap cloneModelMap() {
