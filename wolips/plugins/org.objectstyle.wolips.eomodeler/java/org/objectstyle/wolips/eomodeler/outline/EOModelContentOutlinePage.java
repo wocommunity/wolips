@@ -296,7 +296,7 @@ public class EOModelContentOutlinePage extends ContentOutlinePage implements Pro
 		private boolean _showNonClassProperties;
 
 		public ToggleNonClassPropertiesAction() {
-			_showNonClassProperties = false;
+			_showNonClassProperties = true;
 			refreshUI();
 			setImageDescriptor(Activator.getDefault().getImageRegistry().getDescriptor(Activator.CLASS_PROPERTY_ICON));
 		}
