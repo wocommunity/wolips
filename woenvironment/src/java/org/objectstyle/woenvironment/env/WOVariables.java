@@ -204,7 +204,7 @@ public class WOVariables {
 
 	/**
 	 * Method localRoot. NEXT_LOCAL_ROOT defined in wobuild.properties (key:
-	 * <code>wo.localroot</code>)
+	 * <code>wo.wolocalroot</code>)
 	 * 
 	 * @return String
 	 */
@@ -214,7 +214,7 @@ public class WOVariables {
 
 	/**
 	 * Method systemRoot. NEXT_SYSTEM_ROOT defined in wobuild.properties (key:
-	 * <code>wo.systemroot</code>)
+	 * <code>wo.wosystemroot</code>)
 	 * 
 	 * @return String
 	 */
