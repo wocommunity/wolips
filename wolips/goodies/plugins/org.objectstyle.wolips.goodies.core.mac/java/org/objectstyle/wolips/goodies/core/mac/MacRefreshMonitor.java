@@ -24,7 +24,7 @@ public class MacRefreshMonitor implements IRefreshMonitor {
 	}
 
 	public synchronized void monitor(IResource resource, IRefreshResult refreshResult) {
-		System.out.println("MacRefreshMonitor.monitor: " + resource);
+		//System.out.println("MacRefreshMonitor.monitor: " + resource);
 		if (resource != null) {
 			IPath resourcePath = resource.getLocation();
 			if (resourcePath != null) {
@@ -36,7 +36,7 @@ public class MacRefreshMonitor implements IRefreshMonitor {
 	}
 
 	public synchronized void unmonitor(IResource resource) {
-		System.out.println("MacRefreshMonitor.unmonitor: " + resource);
+		//System.out.println("MacRefreshMonitor.unmonitor: " + resource);
 		if (resource != null) {
 			IPath resourcePath = resource.getLocation();
 			if (resourcePath != null) {
@@ -79,7 +79,7 @@ public class MacRefreshMonitor implements IRefreshMonitor {
 
 		protected void refresh(IResource resource) {
 			if (_result != null && !resource.isSynchronized(IResource.DEPTH_INFINITE)) {
-				System.out.println("MacRefreshMonitor.refresh: " + resource);
+				//System.out.println("MacRefreshMonitor.refresh: " + resource);
 				_result.refresh(resource);
 			}
 		}
