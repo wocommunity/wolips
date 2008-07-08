@@ -360,7 +360,6 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			// Fix a problem where the entity properties view does not refresh
 			// This is a hack, but if we steal focus onto the outline, it DOES
 			// refresh
-			getContentOutlinePage().setFocus();
 			updatePartName();
 		}
 		if (_selectedEntity != null) {
@@ -975,6 +974,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	}
 
 	protected void fireSelectionChanged(ISelection _selection) {
+		// Hack: When the selection changes, update the focus on the outline view or 
+		// the properties view can sometimes not refresh properly -- It's really silly
+		// and I don't know why it's happening.
+		getContentOutlinePage().setFocus();
 		Object[] selectionChangedListeners = mySelectionChangedListeners.getListeners();
 		SelectionChangedEvent selectionChangedEvent = new SelectionChangedEvent(this, _selection);
 		for (int listenerNum = 0; listenerNum < selectionChangedListeners.length; listenerNum++) {
