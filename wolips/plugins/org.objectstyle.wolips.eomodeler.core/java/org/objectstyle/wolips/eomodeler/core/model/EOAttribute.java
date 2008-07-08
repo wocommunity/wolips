@@ -497,7 +497,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	}
 
 	public Boolean isClassProperty() {
-		return myClassProperty;// (Boolean)
+		return BooleanUtils.isTrue(myClassProperty);// (Boolean)
 		// _prototypeValueIfNull(EOAttribute.CLASS_PROPERTY,
 		// myClassProperty);
 	}
@@ -539,7 +539,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	public Boolean isPrimaryKey() {
 		// return (Boolean) _prototypeValueIfNull(EOAttribute.PRIMARY_KEY,
 		// myPrimaryKey);
-		return myPrimaryKey;
+		return BooleanUtils.isTrue(myPrimaryKey);
 	}
 
 	public void setPrimaryKey(Boolean _primaryKey) {
@@ -567,7 +567,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	public Boolean isUsedForLocking() {
 		// return (Boolean) _prototypeValueIfNull(EOAttribute.USED_FOR_LOCKING,
 		// myUsedForLocking);
-		return myUsedForLocking;
+		return BooleanUtils.isTrue(myUsedForLocking);
 	}
 
 	public void setUsedForLocking(Boolean _usedForLocking) {
@@ -788,7 +788,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	}
 
 	public Boolean isCommonClassProperty() {
-		return _commonClassProperty;
+		return BooleanUtils.isTrue(_commonClassProperty);
 	}
 
 	public void setClientClassProperty(Boolean _clientClassProperty) {
@@ -814,7 +814,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		// return (Boolean)
 		// _prototypeValueIfNull(EOAttribute.CLIENT_CLASS_PROPERTY,
 		// myClientClassProperty);
-		return myClientClassProperty;
+		return BooleanUtils.isTrue(myClientClassProperty);
 	}
 
 	public Set<EOModelReferenceFailure> getReferenceFailures() {
