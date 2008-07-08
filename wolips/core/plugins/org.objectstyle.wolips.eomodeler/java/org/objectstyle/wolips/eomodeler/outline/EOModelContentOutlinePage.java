@@ -223,6 +223,11 @@ public class EOModelContentOutlinePage extends ContentOutlinePage implements Pro
 	public boolean isSelectedWithOutline() {
 		return _selectedWithOutline;
 	}
+	
+	@Override
+	protected void fireSelectionChanged(ISelection selection) {
+		super.fireSelectionChanged(selection);
+	}
 
 	public void selectionChanged(SelectionChangedEvent event) {
 		super.selectionChanged(event);
