@@ -72,6 +72,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.baseforuiplugins.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.Messages;
@@ -150,11 +151,15 @@ public class EOEntitySharedObjectsEditorSection extends AbstractPropertySection 
 		myFetchSpecsViewer.getTable().setLayoutData(fetchSpecsLayoutData);
 	}
 
-	public void setInput(IWorkbenchPart _part, ISelection _selection) {
-		super.setInput(_part, _selection);
+	public void setInput(IWorkbenchPart part, ISelection selection) {
+    if (ComparisonUtils.equals(selection, getSelection())) {
+      return;
+    }
+    
+		super.setInput(part, selection);
 		disposeBindings();
 
-		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+		Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
 		myEntity = (EOEntity) selectedObject;
 		if (myEntity != null) {
 			myBindingContext = new DataBindingContext();

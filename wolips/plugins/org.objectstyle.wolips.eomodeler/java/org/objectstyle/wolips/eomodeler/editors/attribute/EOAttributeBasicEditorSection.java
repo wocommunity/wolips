@@ -60,6 +60,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.AbstractEOArgument;
@@ -125,14 +126,16 @@ public class EOAttributeBasicEditorSection extends AbstractEOArgumentBasicEditor
 	}
 
 	public void setInput(IWorkbenchPart part, ISelection selection) {
-		super.setInput(part, selection);
-		EOAttribute attribute = null;
-		Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
-		if (selectedObject instanceof EOAttribute) {
-			attribute = (EOAttribute) selectedObject;
-		} else if (selectedObject instanceof EOAttributePath) {
-			attribute = ((EOAttributePath) selectedObject).getChildAttribute();
+		if (!ComparisonUtils.equals(selection, getSelection())) {
+			EOAttribute attribute = null;
+			Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
+			super.setInput(part, selection);
+			if (selectedObject instanceof EOAttribute) {
+				attribute = (EOAttribute) selectedObject;
+			} else if (selectedObject instanceof EOAttributePath) {
+				attribute = ((EOAttributePath) selectedObject).getChildAttribute();
+			}
+			setArgument(attribute);
 		}
-		setArgument(attribute);
 	}
 }

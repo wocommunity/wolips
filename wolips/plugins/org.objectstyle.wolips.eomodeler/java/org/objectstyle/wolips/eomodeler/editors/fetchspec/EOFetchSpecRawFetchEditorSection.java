@@ -70,6 +70,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttributePath;
@@ -155,11 +156,15 @@ public class EOFetchSpecRawFetchEditorSection extends AbstractPropertySection im
 		myAddRemoveButtonGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 	}
 
-	public void setInput(IWorkbenchPart _part, ISelection _selection) {
-		super.setInput(_part, _selection);
+	public void setInput(IWorkbenchPart part, ISelection selection) {
+		if (ComparisonUtils.equals(selection, getSelection())) {
+			return;
+		}
+		
+		super.setInput(part, selection);
 		disposeBindings();
 
-		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+		Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
 		myFetchSpecification = (EOFetchSpecification) selectedObject;
 		if (myFetchSpecification != null) {
 			myFetchSpecification.addPropertyChangeListener(EOFetchSpecification.RAW_ROW_KEY_PATHS, myRawRowKeyPathsChangedRefresher);
