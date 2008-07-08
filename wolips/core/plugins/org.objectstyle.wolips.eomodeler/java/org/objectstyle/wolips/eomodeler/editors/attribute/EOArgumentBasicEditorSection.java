@@ -57,6 +57,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.AbstractEOArgument;
 import org.objectstyle.wolips.eomodeler.core.model.EOArgument;
@@ -98,10 +99,14 @@ public class EOArgumentBasicEditorSection extends AbstractEOArgumentBasicEditorS
 		super.disposeBindings();
 	}
 
-	public void setInput(IWorkbenchPart _part, ISelection _selection) {
-		super.setInput(_part, _selection);
+	public void setInput(IWorkbenchPart part, ISelection selection) {
+		if (ComparisonUtils.equals(selection, getSelection())) {
+			return;
+		}
+		
+		super.setInput(part, selection);
 		EOArgument attribute = null;
-		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+		Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
 		if (selectedObject instanceof EOArgument) {
 			attribute = (EOArgument) selectedObject;
 		}

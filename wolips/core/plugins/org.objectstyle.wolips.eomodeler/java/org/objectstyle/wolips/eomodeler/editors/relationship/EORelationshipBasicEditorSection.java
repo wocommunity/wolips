@@ -264,6 +264,10 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 	}
 
 	public void setInput(IWorkbenchPart part, ISelection selection) {
+		if (ComparisonUtils.equals(selection, getSelection())) {
+			return;
+		}
+		
 		super.setInput(part, selection);
 		EORelationship relationship = null;
 		Object selectedObject = ((IStructuredSelection) selection).getFirstElement();

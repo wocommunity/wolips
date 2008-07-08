@@ -142,9 +142,13 @@ public class EOEntityBasicEditorSection extends AbstractPropertySection {
 		myAbstractButton = new Button(topForm, SWT.CHECK);
 	}
 
-	public void setInput(IWorkbenchPart _part, ISelection _selection) {
-		super.setInput(_part, _selection);
-		Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+	public void setInput(IWorkbenchPart part, ISelection selection) {
+		if (ComparisonUtils.equals(selection, getSelection())) {
+			return;
+		}
+		
+		super.setInput(part, selection);
+		Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
 		EOEntity entity = (EOEntity) selectedObject;
 		if (!ComparisonUtils.equals(entity, myEntity)) {
 			disposeBindings();
