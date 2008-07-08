@@ -772,7 +772,9 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	}
 
 	public void setActivePage(int _pageIndex) {
-		super.setActivePage(_pageIndex);
+		if (_pageIndex != getActivePage()) {
+			super.setActivePage(_pageIndex);
+		}
 	}
 
 	public ISelection getSelection() {
