@@ -639,7 +639,9 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		}
 		if ("Number".equals(className) || "NSNumber".equals(className)) {
 			String valueType = getValueType();
-			if ("B".equals(valueType)) {
+			if (valueType == null || valueType.length() == 0) {
+				className = "Integer";
+			} else if ("B".equals(valueType)) {
 				className = "BigDecimal";
 			} else if ("b".equals(valueType)) {
 				className = "Byte";
@@ -661,7 +663,12 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		} else if ("NSCalendarDate".equals(className)) {
 			className = "NSTimestamp";
 		} else if ("NSDecimalNumber".equals(className)) {
-			className = "BigDecimal";
+			String valueType = getValueType();
+			if (valueType == null || valueType.length() == 0) {
+				className = "Integer";
+			} else {
+				className = "BigDecimal";
+			}
 		}
 		return className;
 	}
