@@ -66,7 +66,7 @@ public class EODataType {
 	public static final EODataType DOUBLE = new EODataType("NSNumber", "Double", "d", Messages.getString("EODataType.double"));
 	public static final EODataType BOOLEAN = new EODataType("NSNumber", "boolean", "c", Messages.getString("EODataType.boolean"));
 	public static final EODataType BIGDECIMAL = new EODataType("NSDecimalNumber", "BigDecimal", "B", Messages.getString("EODataType.bigDecimal"));
-	public static final EODataType DECIMAL_NUMBER = new EODataType("NSDecimalNumber", "BigDecimal", (String) null, Messages.getString("EODataType.decimalNumber"));
+	public static final EODataType DECIMAL_NUMBER = new EODataType("NSDecimalNumber", "Integer", (String) null, Messages.getString("EODataType.decimalNumber"));
 	public static final EODataType DATE_OBJ = new EODataType("NSCalendarDate", "NSTimestamp", new String[] { null, "" }, Messages.getString("EODataType.dateObj"));
 	public static final EODataType DATE = new EODataType("NSCalendarDate", "NSTimestamp", "D", Messages.getString("EODataType.date"));
 	public static final EODataType TIME = new EODataType("NSCalendarDate", "NSTimestamp", "t", Messages.getString("EODataType.time"));
