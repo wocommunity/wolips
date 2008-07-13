@@ -10,7 +10,7 @@ Require-Bundle: org.junit,
  org.eclipse.ui,
  org.objectstyle.wolips.datasets,
  org.objectstyle.wolips.baseforplugins,
- org.objectstyle.wolips.thirdparty.velocity,
- org.objectstyle.wolips.baseforuiplugins
+ org.objectstyle.wolips.baseforuiplugins,
+ org.objectstyle.wolips.thirdparty.velocity;bundle-version="1.0.6"
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.templateengine

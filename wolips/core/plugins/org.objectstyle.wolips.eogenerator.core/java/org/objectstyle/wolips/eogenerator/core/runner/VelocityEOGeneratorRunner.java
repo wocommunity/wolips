@@ -16,6 +16,8 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeServices;
 import org.apache.velocity.runtime.log.LogSystem;
 import org.apache.velocity.tools.generic.ListTool;
+import org.apache.velocity.tools.generic.SetTool;
+import org.apache.velocity.tools.generic.SortTool;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.objectstyle.wolips.eogenerator.core.Activator;
@@ -186,6 +188,8 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 				context.put(define.getName(), define.getValue());
 			}
 			context.put("list", new ListTool());
+			context.put("set", new SetTool());
+			context.put("sorter", new SortTool());
 			String extension = eogeneratorModel.getExtension();
 			for (EOModel model : models) {
 				// System.out.println("Generating " + model.getName() + " ...");
