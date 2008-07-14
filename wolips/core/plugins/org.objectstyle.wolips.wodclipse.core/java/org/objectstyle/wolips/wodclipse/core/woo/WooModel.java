@@ -527,10 +527,12 @@ public class WooModel {
             problems.add(new WodProblem("WODisplayGroup " + displayGroup.getName() + " is configured but not declared in class", null, 0, false));
           }
 
-          // Validate editing context
-          bindingValueKeyPath = new BindingValueKeyPath(displayGroup.getEditingContext(), type, type.getJavaProject(), WodParserCache.getTypeCache());
-          if (!(bindingValueKeyPath.isValid() && !bindingValueKeyPath.isAmbiguous())) {
-            problems.add(new WodProblem("Editing context for display group " + displayGroup.getName() + " not found", null, 0, false));
+          if (!displayGroup.isHasMasterDetail()) {
+        	// Validate editing context
+        	bindingValueKeyPath = new BindingValueKeyPath(displayGroup.getEditingContext(), type, type.getJavaProject(), WodParserCache.getTypeCache());
+        	if (!(bindingValueKeyPath.isValid() && !bindingValueKeyPath.isAmbiguous())) {
+        	  problems.add(new WodProblem("Editing context for display group " + displayGroup.getName() + " not found", null, 0, false));
+        	}
           }
         }
       }
