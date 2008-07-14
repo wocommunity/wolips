@@ -11,7 +11,7 @@ public class NamingConvention {
 	public static final NamingConvention DEFAULT = new NamingConvention(NamingConvention.Case.Camel, NamingConvention.Separator.None, null, null);
 
 	public static enum Case {
-		Upper, Lower, Camel;
+		Upper, Lower, Camel, CappedCamel;
 	}
 
 	public static enum Separator {
@@ -104,6 +104,8 @@ public class NamingConvention {
 			if (_separator == Separator.None) {
 				if (_case == Case.Camel) {
 					// newName = newName;
+				} else if (_case == Case.CappedCamel) {
+					newName = StringUtils.toUppercaseFirstLetter(newName);
 				} else if (_case == Case.Lower) {
 					newName = newName.toLowerCase();
 				} else if (_case == Case.Upper) {
@@ -112,6 +114,8 @@ public class NamingConvention {
 			} else if (_separator == Separator.Underscore) {
 				if (_case == Case.Camel) {
 					newName = StringUtils.camelCaseToUnderscore(newName, false);
+				} else if (_case == Case.CappedCamel) {
+					newName = StringUtils.toUppercaseFirstLetter(StringUtils.camelCaseToUnderscore(newName, false));
 				} else if (_case == Case.Lower) {
 					newName = StringUtils.camelCaseToUnderscore(newName, true);
 				} else if (_case == Case.Upper) {
