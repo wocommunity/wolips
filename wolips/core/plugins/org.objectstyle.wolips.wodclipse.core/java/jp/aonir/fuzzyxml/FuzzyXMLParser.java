@@ -671,10 +671,10 @@ public class FuzzyXMLParser {
     TagInfo info = parseTagContents(tagContents);
     // System.out.println("FuzzyXMLParser.handleStartTag: open " + info.name);
     FuzzyXMLElement element;
-    if (info.name.equals("script")) {
+    if (info.name.equalsIgnoreCase("script")) {
       element = new FuzzyXMLScriptImpl(getParent(), info.name, offset, end - offset, info.nameOffset);
     }
-    else if (info.name.equals("style")) {
+    else if (info.name.equalsIgnoreCase("style")) {
       element = new FuzzyXMLStyleImpl(getParent(), info.name, offset, end - offset, info.nameOffset);
     }
     else { 
