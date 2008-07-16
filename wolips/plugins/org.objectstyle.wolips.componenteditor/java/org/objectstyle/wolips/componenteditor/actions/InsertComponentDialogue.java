@@ -4,7 +4,13 @@ package org.objectstyle.wolips.componenteditor.actions;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -25,17 +31,11 @@ import org.objectstyle.wolips.wodclipse.action.ComponentLiveSearch;
  * </P>
  */
 
-public class InsertComponentDialogue extends org.eclipse.jface.dialogs.Dialog {
+public class InsertComponentDialogue extends Dialog {
 
 	public final static int RESULT_CREATE = 1;
 
 	public final static int RESULT_CANCEL = 2;
-
-	// no time to localise :-(
-	public final static String LABEL_COMPONENT_INSTANCE_NAME = "WebObject Tag Name:";
-
-	// no time to localise :-(
-	public final static String LABEL_COMPONENT_NAME = "Component name:";
 
 	// user interface elements which the user interacts with.
 
@@ -59,6 +59,12 @@ public class InsertComponentDialogue extends org.eclipse.jface.dialogs.Dialog {
 
 	protected IProgressMonitor _progressMonitor;
 
+	// no time to localise :-(
+	private final static String LABEL_COMPONENT_INSTANCE_NAME = "WebObject Tag Name:";
+
+	// no time to localise :-(
+	private final static String LABEL_COMPONENT_NAME = "Component Type Name:";
+	
 	public InsertComponentDialogue(Shell parentShell, IJavaProject project, InsertComponentSpecification insertComponentSpecification) {
 		super(parentShell);
 		_project = project;
@@ -76,6 +82,29 @@ public class InsertComponentDialogue extends org.eclipse.jface.dialogs.Dialog {
 
 		control.setLayout(layout);
 
+		_componentInstanceLabel = new Label(control, 0);
+		_componentInstanceLabel.setText(LABEL_COMPONENT_INSTANCE_NAME);
+		GridData componentInstanceLabelLayout = new GridData(GridData.FILL_HORIZONTAL);
+		_componentInstanceLabel.setLayoutData(componentInstanceLabelLayout);
+
+		_componentInstanceNameText = new Text(control, SWT.BORDER);
+		GridData componentInstanceNameLayout = new GridData(GridData.FILL_HORIZONTAL);
+		_componentInstanceNameText.setLayoutData(componentInstanceNameLayout);
+		_componentInstanceNameText.addVerifyListener(new ComponentInstanceNameVerifyListener());
+
+		if (_insertComponentSpecification.getComponentInstanceName() != null) {
+			_componentInstanceNameText.setText(_insertComponentSpecification.getComponentInstanceName());
+		} 
+//		else {
+//			if (_insertComponentSpecification.getComponentInstanceNameSuffix() != null) {
+//				_componentInstanceNameText.setText(_insertComponentSpecification.getComponentInstanceNameSuffix());
+//			}
+//		}
+
+		_inline = new Button(control, SWT.CHECK);
+		_inline.setText("Use inline bindings, or enter webobject tag name:");
+		_inline.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		
 		if (_insertComponentSpecification.getComponentName() == null) {
 			_componentNameLabel = new Label(control, 0);
 			_componentNameLabel.setText(LABEL_COMPONENT_NAME);
@@ -87,37 +116,40 @@ public class InsertComponentDialogue extends org.eclipse.jface.dialogs.Dialog {
 			componentNameCombo.setLayoutData(componentNameTextLayout);
 			new ComponentLiveSearch(_project, _progressMonitor).attachTo(componentNameCombo);
 		}
-
-		_inline = new Button(control, SWT.CHECK);
-		_inline.setText("Use inline bindings, or enter webobject tag name:");
-		_inline.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-		_componentInstanceNameText = new Text(control, SWT.BORDER);
-		GridData componentInstanceNameLayout = new GridData(GridData.FILL_HORIZONTAL);
-		_componentInstanceNameText.setLayoutData(componentInstanceNameLayout);
-		_componentInstanceNameText.addVerifyListener(new ComponentInstanceNameVerifyListener());
-
-		if (null != _insertComponentSpecification.getComponentInstanceName()) {
-			_componentInstanceNameText.setText(_insertComponentSpecification.getComponentInstanceName());
-		} else {
-			if (null != _insertComponentSpecification.getComponentInstanceNameSuffix()) {
-				_componentInstanceNameText.setText(_insertComponentSpecification.getComponentInstanceNameSuffix());
-			}
-		}
-
+		
 		_inline.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {
 				widgetSelected(e);
 			}
 
 			public void widgetSelected(SelectionEvent e) {
-				// _componentInstanceLabel.setEnabled(!_inline.getSelection());
 				_componentInstanceNameText.setEnabled(!_inline.getSelection());
+				validate();
 			}
 		});
+		
+		_componentInstanceNameText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				validate();
+			}
+		});
+
+		componentNameCombo.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				validate();
+			}
+		});
+
+		// We need this because the OK button doesn't exist yet
+		control.addPaintListener(new PaintListener() {
+			public void paintControl(PaintEvent e) {
+				validate();
+			}
+		});
+		
 		return control;
 	}
-
+	
 	// these two methods handle buttons getting pressed.
 
 	public void cancelPressed() {
@@ -136,5 +168,30 @@ public class InsertComponentDialogue extends org.eclipse.jface.dialogs.Dialog {
 
 	public InsertComponentSpecification getInsertComponentSpecification() {
 		return _insertComponentSpecification;
+	}
+	
+	
+	protected void validate() {
+		boolean isValid = false;
+		
+		if (!"".equals(componentNameCombo.getText())) {
+			if (_inline.getSelection()) {
+				isValid = true;
+			} else if (!"".equals(_componentInstanceNameText.getText())) {
+				isValid = true;
+			}
+		}
+		
+		Button okButton = getButton(IDialogConstants.OK_ID);
+		if (okButton == null) {
+			return;
+		}
+		if (isValid) {
+			if (!okButton.isEnabled()) {
+				okButton.setEnabled(true);
+			}
+		} else if (okButton.isEnabled()){
+			okButton.setEnabled(false);
+		}
 	}
 }
