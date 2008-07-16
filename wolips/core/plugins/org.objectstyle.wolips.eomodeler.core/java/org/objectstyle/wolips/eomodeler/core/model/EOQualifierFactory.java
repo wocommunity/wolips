@@ -93,24 +93,24 @@ public class EOQualifierFactory {
 
 	static {
 		_selectorMaps = new LinkedList<SelectorMap>();
-		_selectorMaps.add(new SelectorMap("isEqualTo", "="));
 		_selectorMaps.add(new SelectorMap("isEqualTo:", "="));
-		_selectorMaps.add(new SelectorMap("isNotEqualTo", "<>"));
+		_selectorMaps.add(new SelectorMap("isEqualTo", "="));
 		_selectorMaps.add(new SelectorMap("isNotEqualTo:", "<>"));
-		_selectorMaps.add(new SelectorMap("isLessThan", "<"));
+		_selectorMaps.add(new SelectorMap("isNotEqualTo", "<>"));
 		_selectorMaps.add(new SelectorMap("isLessThan:", "<"));
-		_selectorMaps.add(new SelectorMap("isGreaterThan", ">"));
+		_selectorMaps.add(new SelectorMap("isLessThan", "<"));
 		_selectorMaps.add(new SelectorMap("isGreaterThan:", ">"));
-		_selectorMaps.add(new SelectorMap("isLessThanOrEqualTo", "<="));
+		_selectorMaps.add(new SelectorMap("isGreaterThan", ">"));
 		_selectorMaps.add(new SelectorMap("isLessThanOrEqualTo:", "<="));
-		_selectorMaps.add(new SelectorMap("isGreaterThanOrEqualTo", ">="));
+		_selectorMaps.add(new SelectorMap("isLessThanOrEqualTo", "<="));
 		_selectorMaps.add(new SelectorMap("isGreaterThanOrEqualTo:", ">="));
-		_selectorMaps.add(new SelectorMap("doesContain", "contains"));
+		_selectorMaps.add(new SelectorMap("isGreaterThanOrEqualTo", ">="));
 		_selectorMaps.add(new SelectorMap("doesContain:", "contains"));
-		_selectorMaps.add(new SelectorMap("isLike", "like"));
+		_selectorMaps.add(new SelectorMap("doesContain", "contains"));
 		_selectorMaps.add(new SelectorMap("isLike:", "like"));
-		_selectorMaps.add(new SelectorMap("isCaseInsensitiveLike", "caseInsensitiveLike"));
+		_selectorMaps.add(new SelectorMap("isLike", "like"));
 		_selectorMaps.add(new SelectorMap("isCaseInsensitiveLike:", "caseInsensitiveLike"));
+		_selectorMaps.add(new SelectorMap("isCaseInsensitiveLike", "caseInsensitiveLike"));
 
 		// To correct the previous Cayenne syntax ... Just in case you had
 		// either one in your fetch specs.
