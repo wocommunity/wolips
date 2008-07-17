@@ -18,6 +18,7 @@ import org.eclipse.jface.text.ITextListener;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.TextEvent;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -113,6 +114,11 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements ITextWOEdi
       }
     });
 
+  }
+  
+  @Override
+  protected ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
+    return super.createSourceViewer(parent, ruler, styles);
   }
 
   protected void setCacheOutOfSync(boolean cacheOutOfSync) {
