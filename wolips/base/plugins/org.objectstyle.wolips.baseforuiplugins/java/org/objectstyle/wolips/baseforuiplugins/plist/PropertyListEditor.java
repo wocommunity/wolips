@@ -34,7 +34,7 @@ public class PropertyListEditor extends Viewer implements IPropertyListChangeLis
 	private TreeViewer _propertyListTree;
 
 	public PropertyListEditor(Composite parent, boolean rootVisible, boolean canEditRootType, Set<String> filteredKeyPaths) {
-		_propertyListTree = new TreeViewer(parent, SWT.BORDER | SWT.FULL_SELECTION | SWT.BACKGROUND | SWT.SINGLE);
+		_propertyListTree = new TreeViewer(parent, SWT.BORDER | SWT.FULL_SELECTION | SWT.BACKGROUND | SWT.SINGLE | SWT.NO_SCROLL | SWT.V_SCROLL);
 		_propertyListTree.getTree().setHeaderVisible(true);
 		_propertyListTree.getTree().setLinesVisible(true);
 		_propertyListTree.setAutoExpandLevel(2);
@@ -56,7 +56,7 @@ public class PropertyListEditor extends Viewer implements IPropertyListChangeLis
 		TreeViewerEditor.create(_propertyListTree, focusCellManager, actSupport, ColumnViewerEditor.TABBING_HORIZONTAL | ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR | ColumnViewerEditor.TABBING_VERTICAL | ColumnViewerEditor.KEYBOARD_ACTIVATION | ColumnViewerEditor.KEEP_EDITOR_ON_DOUBLE_CLICK);
 
 		TreeViewerColumn keyColumn = new TreeViewerColumn(_propertyListTree, SWT.NONE);
-		keyColumn.getColumn().setWidth(150);
+		keyColumn.getColumn().setWidth(120);
 		keyColumn.getColumn().setText("Key");
 		keyColumn.setLabelProvider(new PropertyListKeyLabelProvider());
 		keyColumn.setEditingSupport(new PropertyListKeyEditingSupport(_propertyListTree, this));
@@ -68,7 +68,7 @@ public class PropertyListEditor extends Viewer implements IPropertyListChangeLis
 		typeColumn.setEditingSupport(new PropertyListTypeEditingSupport(_propertyListTree, this, canEditRootType));
 
 		TreeViewerColumn valueColumn = new TreeViewerColumn(_propertyListTree, SWT.NONE);
-		valueColumn.getColumn().setWidth(303);
+		valueColumn.getColumn().setWidth(250);
 		valueColumn.getColumn().setText("Value");
 		valueColumn.setLabelProvider(new PropertyListValueLabelProvider());
 		valueColumn.setEditingSupport(new PropertyListValueEditingSupport(_propertyListTree, this));
