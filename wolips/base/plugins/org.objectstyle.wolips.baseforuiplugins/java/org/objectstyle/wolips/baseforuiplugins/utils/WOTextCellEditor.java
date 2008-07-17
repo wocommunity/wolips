@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
 
 public class WOTextCellEditor extends TextCellEditor {
 	public WOTextCellEditor() {
@@ -39,20 +40,26 @@ public class WOTextCellEditor extends TextCellEditor {
 							Text resizedText = (Text) e.widget;
 							Point location = resizedText.getLocation();
 							Composite controlParent = resizedText.getParent();
-							if (controlParent instanceof Tree && ((Tree)controlParent).getColumnCount() == 1) {
-								if (System.getProperty("org.eclipse.swt.internal.carbon.smallFonts") != null) {
-									resizedText.setLocation(location.x - 3, location.y - 5);
+							if (controlParent instanceof Tree) {
+								TreeColumn firstColumn = ((Tree) controlParent).getColumn(0);
+								// The first column of a tree lines up differently for some reason -- maybe
+								// the open/close triangle causes it to move.  I don't see any API to 
+								// determine what column this editor is editing, so this lame hack is
+								// checking to see if our initial x position is less than the width of the
+								// first column.
+								if (resizedText.getBounds().x < firstColumn.getWidth()) {
+									if (((Tree)controlParent).getColumnCount() == 1) {
+										resizedText.setLocation(location.x - 3, location.y - 5);
+									}
+									else {
+										resizedText.setLocation(location.x - 7, location.y - 5);
+									}
 								}
 								else {
-									resizedText.setLocation(location.x - 3, location.y - 6);
-								}
-							} else {
-								if (System.getProperty("org.eclipse.swt.internal.carbon.smallFonts") != null) {
 									resizedText.setLocation(location.x - 7, location.y - 6);
 								}
-								else {
-									resizedText.setLocation(location.x - 7, location.y - 7);
-								}
+							} else {
+								resizedText.setLocation(location.x - 7, location.y - 6);
 							}
 						} finally {
 							_moving = false;
@@ -68,7 +75,23 @@ public class WOTextCellEditor extends TextCellEditor {
 							Point size = resizedText.getSize();
 							Composite controlParent = resizedText.getParent();
 							if (controlParent instanceof Tree) {
-								resizedText.setSize(size.x + 8, size.y + 10);
+								TreeColumn firstColumn = ((Tree) controlParent).getColumn(0);
+								// The first column of a tree lines up differently for some reason -- maybe
+								// the open/close triangle causes it to move.  I don't see any API to 
+								// determine what column this editor is editing, so this lame hack is
+								// checking to see if our initial x position is less than the width of the
+								// first column.
+								if (resizedText.getBounds().x < firstColumn.getWidth()) {
+									if (((Tree)controlParent).getColumnCount() == 1) {
+										resizedText.setSize(size.x + 5, size.y + 10);
+									}
+									else {
+										resizedText.setSize(size.x + 11, size.y + 9);
+									}
+								}
+								else {
+									resizedText.setSize(size.x + 9, size.y + 12);
+								}
 							} else {
 								resizedText.setSize(size.x + 8, size.y + 12);
 							}
