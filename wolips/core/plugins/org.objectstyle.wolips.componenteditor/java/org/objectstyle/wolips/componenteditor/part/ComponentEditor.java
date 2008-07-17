@@ -48,6 +48,7 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -221,6 +222,16 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 		}
 		ITextEditor textEditor = (ITextEditor) editorPart;
 		return textEditor.isEditable();
+	}
+	
+	@Override
+	public void doSave(IProgressMonitor monitor) {
+		super.doSave(monitor);
+	}
+	
+	@Override
+	public void doSaveAs() {
+		super.doSaveAs();
 	}
 
 	public void doRevertToSaved() {
