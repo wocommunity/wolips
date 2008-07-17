@@ -10,6 +10,10 @@ import jp.aonir.fuzzyxml.FuzzyXMLNode;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -43,6 +47,16 @@ public class TemplateBreadcrumb extends Composite implements ICursorPositionList
 
     _editor = editor;
     _editor.addCursorPositionListener(this);
+    addPaintListener(new PaintListener() {
+      public void paintControl(PaintEvent e) {
+        GC gc = e.gc;
+        
+        Color separatorColor = new Color(gc.getDevice(), 205, 205, 205);
+        gc.setForeground(separatorColor);
+        gc.drawLine(0, 0, getBounds().width, 0);
+        separatorColor.dispose();
+      }
+    });
 
     updateBreadcrumb();
   }
