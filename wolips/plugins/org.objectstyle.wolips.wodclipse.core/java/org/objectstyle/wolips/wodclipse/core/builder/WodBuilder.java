@@ -84,7 +84,6 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
     super();
   }
 
-  @SuppressWarnings("unchecked")
   public boolean buildStarted(int kind, Map args, IProgressMonitor monitor, IProject project, Map buildCache) {
     _buildKind = kind;
     _validateTemplates = Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.VALIDATE_TEMPLATES_KEY);
@@ -96,17 +95,14 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
     return false;
   }
 
-  @SuppressWarnings("unchecked")
   public boolean buildPreparationDone(int kind, Map args, IProgressMonitor monitor, IProject project, Map buildCache) {
     return false;
   }
 
-  @SuppressWarnings("unchecked")
   public void handleClasses(IResource resource, IProgressMonitor monitor, Map buildCache) {
     // DO NOTHING
   }
 
-  @SuppressWarnings("unchecked")
   public void handleSource(IResource resource, IProgressMonitor progressMonitor, Map buildCache) {
     if (_validateTemplates) {
       try {
@@ -138,7 +134,6 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
     }
   }
 
-  @SuppressWarnings("unchecked")
   public void handleClasspath(IResource resource, IProgressMonitor monitor, Map buildCache) {
     // DO NOTHING
   }
@@ -153,7 +148,6 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
     return builtComponents;
   }
 
-  @SuppressWarnings("unchecked")
   public void handleOther(IResource resource, IProgressMonitor monitor, Map buildCache) {
     if (_validateTemplates) {
       try {
@@ -242,12 +236,10 @@ public class WodBuilder extends AbstractFullAndIncrementalBuilder {
     return validate;
   }
 
-  @SuppressWarnings("unchecked")
   public void handleWebServerResources(IResource resource, IProgressMonitor monitor, Map buildCache) {
     // DO NOTHING
   }
 
-  @SuppressWarnings("unchecked")
   public void handleWoappResources(IResource resource, IProgressMonitor monitor, Map buildCache) {
     // DO NOTHING
   }
