@@ -11,7 +11,8 @@ Require-Bundle: org.objectstyle.wolips,
  org.objectstyle.wolips.baseforuiplugins,
  org.objectstyle.wolips.locate,
  org.objectstyle.wolips.workbenchutilities,
- org.eclipse.ui.editors
+ org.eclipse.ui.editors,
+ org.objectstyle.wolips.jdt;bundle-version="1.0.6"
 Eclipse-LazyStart: true
 Bundle-ClassPath: .
 Export-Package: org.objectstyle.wolips.bindings,
