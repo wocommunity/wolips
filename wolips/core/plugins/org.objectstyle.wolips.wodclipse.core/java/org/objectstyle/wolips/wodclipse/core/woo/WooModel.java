@@ -118,7 +118,7 @@ public class WooModel {
       loadModelFromStream(input);
     }
     catch (Throwable e) {
-      throw new WooModelException(e.getMessage());
+      throw new WooModelException(e.getMessage(), e);
     }
   }
 
@@ -127,7 +127,7 @@ public class WooModel {
       loadModelFromStream(input);
     }
     catch (Throwable e) {
-      throw new WooModelException(e.getMessage());
+      throw new WooModelException(e.getMessage(), e);
     }
   }
 
@@ -139,6 +139,7 @@ public class WooModel {
       init();
     }
     catch (Throwable e) {
+      throw new RuntimeException(e.getMessage(), e);
     }
   }
 

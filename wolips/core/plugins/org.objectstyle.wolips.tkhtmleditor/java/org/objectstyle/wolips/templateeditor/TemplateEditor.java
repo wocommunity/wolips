@@ -134,10 +134,12 @@ public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtml
 
   @Override
   public void doSave(IProgressMonitor monitor) {
-    super.doSave(monitor);
-    boolean autoBuild = ResourcesPlugin.getPlugin().getPluginPreferences().getDefaultBoolean(ResourcesPlugin.PREF_AUTO_BUILDING);
-    if (_editorInteraction != null) {
-      _editorInteraction.fireWebObjectChanged();
+    if (_editorInteraction == null || _editorInteraction.embeddedEditorWillSave(monitor)) {
+      super.doSave(monitor);
+      boolean autoBuild = ResourcesPlugin.getPlugin().getPluginPreferences().getDefaultBoolean(ResourcesPlugin.PREF_AUTO_BUILDING);
+      if (_editorInteraction != null) {
+        _editorInteraction.fireWebObjectChanged();
+      }
     }
   }
 

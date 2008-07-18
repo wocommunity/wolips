@@ -7,7 +7,6 @@ Bundle-Activator: org.objectstyle.wolips.target.TargetBuilderPlugin
 Bundle-Vendor: objectstyle.org
 Require-Bundle: org.eclipse.jdt.core,
  org.objectstyle.wolips.datasets,
- org.objectstyle.wolips.baseforuiplugins,
- org.objectstyle.wolips.thirdparty.cayenne
+ org.objectstyle.wolips.baseforuiplugins
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.target
