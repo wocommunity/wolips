@@ -46,6 +46,8 @@ package org.objectstyle.wolips.components.editor;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+
 /**
  * @author uli
  */
@@ -55,11 +57,25 @@ public class ComponentEditorInteraction {
 	private IHtmlDocumentProvider _htmlDocumentProvider;
 
 	private IWodDocumentProvider _wodDocumentProvider;
+	
+	private IComponentEditor _componentEditor;
 
 	public ComponentEditorInteraction() {
 		_webObjectTagListeners = new HashSet<IWebobjectTagListener>();
 	}
+	
+	public void setComponentEditor(IComponentEditor componentEditor) {
+		_componentEditor = componentEditor;
+	}
+	
+	public IComponentEditor getComponentEditor() {
+		return _componentEditor;
+	}
 
+	public boolean embeddedEditorWillSave(IProgressMonitor progressMonitor) {
+		return _componentEditor.embeddedEditorWillSave(progressMonitor);
+	}
+	
 	public void addWebObjectTagListener(IWebobjectTagListener webobjectTagListener) {
 		synchronized (_webObjectTagListeners) {
 			_webObjectTagListeners.add(webobjectTagListener);

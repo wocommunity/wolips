@@ -98,10 +98,22 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 	private ApiTab apiTab;
 
 	private ComponentEditorTab[] componentEditorTabs;
+	
+	private boolean _saving;
 
 	public ComponentEditorPart() {
 		super();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+		editorInteraction.setComponentEditor(this);
+	}
+	
+	public boolean embeddedEditorWillSave(IProgressMonitor progressMonitor) {
+		boolean saveEmbeddedEditor = true;
+		if (!_saving) {
+			saveEmbeddedEditor = false;
+			doSave(progressMonitor);
+		}
+		return saveEmbeddedEditor;
 	}
 	
 	@Override
@@ -257,12 +269,18 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 	}
 
 	public void doSave(IProgressMonitor monitor) {
-		for (int i = 0; i < componentEditorTabs.length; i++) {
-			if (componentEditorTabs[i] != null && componentEditorTabs[i].isDirty()) {
-				componentEditorTabs[i].doSave(monitor);
+		_saving = true;
+		try {
+			for (int i = 0; i < componentEditorTabs.length; i++) {
+				if (componentEditorTabs[i] != null && componentEditorTabs[i].isDirty()) {
+					componentEditorTabs[i].doSave(monitor);
+				}
 			}
+			return;
 		}
-		return;
+		finally {
+			_saving = false;
+		}
 	}
 
 	public void close(boolean save) {

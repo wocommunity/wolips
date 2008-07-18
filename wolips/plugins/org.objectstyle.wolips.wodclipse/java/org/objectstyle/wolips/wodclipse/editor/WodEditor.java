@@ -123,9 +123,11 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 
 	@Override
 	public void doSave(IProgressMonitor progressMonitor) {
-		super.doSave(progressMonitor);
-    	updateValidation();
-		_editorInteraction.fireWebObjectChanged();
+	    if (_editorInteraction == null || _editorInteraction.embeddedEditorWillSave(progressMonitor)) {
+			super.doSave(progressMonitor);
+	    	updateValidation();
+			_editorInteraction.fireWebObjectChanged();
+	    }
 	}
 
 	@Override

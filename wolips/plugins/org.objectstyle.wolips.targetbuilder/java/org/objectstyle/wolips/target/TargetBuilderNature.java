@@ -73,7 +73,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
+import org.objectstyle.wolips.baseforplugins.plist.WOLPropertyListSerialization;
 import org.objectstyle.wolips.datasets.adaptable.Project;
 
 /**
@@ -123,7 +123,7 @@ public class TargetBuilderNature implements IProjectNature {
 		_buildTargets = new ArrayList();
 		File targetFile = filePath().toFile();
 		try {
-			targetMap = (Map) PropertyListSerialization.propertyListFromFile(targetFile);
+			targetMap = (Map) WOLPropertyListSerialization.propertyListFromFile(targetFile);
 		} catch (Exception e) {
 			System.out.println("Could not find targets.plist file for Project:" + getProject() + "!");
 			return;
