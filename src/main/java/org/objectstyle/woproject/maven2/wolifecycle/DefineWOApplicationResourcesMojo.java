@@ -37,7 +37,7 @@ import org.apache.maven.project.MavenProject;
  * @author hprange
  * @since 2.0
  */
-public class DefineWOApplicationResourcesMojo extends DefineResourcesMojo {
+public class DefineWOApplicationResourcesMojo extends AbstractDefineResourcesMojo {
 
 	/**
 	 * Changes back slashes '\' on Windows to '/'.

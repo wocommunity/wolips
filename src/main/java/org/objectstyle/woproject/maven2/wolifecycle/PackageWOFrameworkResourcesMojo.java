@@ -16,7 +16,7 @@ import org.apache.maven.project.MavenProjectHelper;
  * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
  * @since 2.0
  */
-public class PackageWOFrameworkResourcesMojo extends PackageMojo {
+public class PackageWOFrameworkResourcesMojo extends AbstractPackageMojo {
 
 	/**
 	 * The maven project.
