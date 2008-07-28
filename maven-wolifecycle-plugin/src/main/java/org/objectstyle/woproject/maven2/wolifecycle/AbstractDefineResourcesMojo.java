@@ -11,7 +11,33 @@ import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
-public abstract class DefineResourcesMojo extends AbstractWOMojo {
+public abstract class AbstractDefineResourcesMojo extends AbstractWOMojo {
+	/**
+	 * Search for the resource with the specified directory.
+	 * 
+	 * @param resources
+	 *            The collection of available resources
+	 * @param resourceDirectory
+	 *            The directory used on search
+	 * @return Returns the resource found or a new one if no one caould be found
+	 */
+	static Resource findOrCreateResource(final List<Resource> resources, final String resourceDirectory) {
+		if (resourceDirectory == null) {
+			throw new IllegalArgumentException("The resource directory argument cannot be null");
+		}
+
+		for (Resource resource : resources) {
+			if (resourceDirectory.equals(resource.getDirectory())) {
+				return resource;
+			}
+		}
+
+		Resource resource = new Resource();
+
+		resource.setDirectory(resourceDirectory);
+
+		return resource;
+	}
 
 	/**
 	 * Flatten all Resources and WebServerResouces into the Resources folder of
@@ -21,12 +47,16 @@ public abstract class DefineResourcesMojo extends AbstractWOMojo {
 	 */
 	private Boolean flattenResources;
 
-	public DefineResourcesMojo() {
+	public AbstractDefineResourcesMojo() {
 		super();
 	}
 
 	private void addResources(final List<Resource> resources) {
 		for (Resource resource : resources) {
+			if (getProject().getResources().contains(resource)) {
+				continue;
+			}
+
 			getProject().addResource(resource);
 		}
 	}
@@ -62,13 +92,11 @@ public abstract class DefineResourcesMojo extends AbstractWOMojo {
 	private List<Resource> createResources(final String directory, final String targetPath) {
 		String fullTargetPath = getFullTargetPath(targetPath);
 
-		List<Resource> resources = new ArrayList<Resource>();
-
-		Resource resource = new Resource();
-
 		File resourcesDirectory = new File(getProjectFolder(), directory);
 
-		resource.setDirectory(resourcesDirectory.getAbsolutePath());
+		@SuppressWarnings("unchecked")
+		Resource resource = findOrCreateResource(getProject().getResources(), resourcesDirectory.getAbsolutePath());
+
 		resource.addExclude("*.lproj/**");
 
 		Boolean shouldFlattenResources = BooleanUtils.toBooleanDefaultIfNull(flattenResources(), false);
@@ -80,6 +108,9 @@ public abstract class DefineResourcesMojo extends AbstractWOMojo {
 		}
 
 		resource.setTargetPath(fullTargetPath);
+
+		List<Resource> resources = new ArrayList<Resource>();
+
 		resources.add(resource);
 
 		File[] files = resourcesDirectory.listFiles();
