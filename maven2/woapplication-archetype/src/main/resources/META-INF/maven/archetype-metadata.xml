@@ -2,10 +2,13 @@
 <archetype-descriptor name="woapplication-archetype">
 	<requiredProperties>
 		<requiredProperty key="WebObjectsVersion">
-			<defaultValue>5.4.1</defaultValue>
+			<defaultValue>5.4.2</defaultValue>
 		</requiredProperty>
 		<requiredProperty key="WonderSupport">
 			<defaultValue>no</defaultValue>
+		</requiredProperty>
+		<requiredProperty key="WonderVersion">
+			<defaultValue>5.0.0-SNAPSHOT</defaultValue>
 		</requiredProperty>
 		<requiredProperty key="TrueWarSupport">
 			<defaultValue>no</defaultValue>
