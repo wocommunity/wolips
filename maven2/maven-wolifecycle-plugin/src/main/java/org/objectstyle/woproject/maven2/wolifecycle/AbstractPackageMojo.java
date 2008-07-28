@@ -10,9 +10,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
-public abstract class PackageMojo extends AbstractWOMojo {
+public abstract class AbstractPackageMojo extends AbstractWOMojo {
 
-	public PackageMojo() {
+	public AbstractPackageMojo() {
 		super();
 	}
 

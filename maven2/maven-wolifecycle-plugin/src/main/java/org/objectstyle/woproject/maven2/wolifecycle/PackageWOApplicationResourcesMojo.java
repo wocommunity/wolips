@@ -17,7 +17,7 @@ import org.apache.maven.project.MavenProjectHelper;
  * @author hprange
  * @since 2.0
  */
-public class PackageWOApplicationResourcesMojo extends PackageMojo {
+public class PackageWOApplicationResourcesMojo extends AbstractPackageMojo {
 
 	/**
 	 * The maven project.
