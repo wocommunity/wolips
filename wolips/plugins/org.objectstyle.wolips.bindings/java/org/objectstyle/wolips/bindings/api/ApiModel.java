@@ -99,7 +99,7 @@ public class ApiModel {
 
   public ApiModel(File file) throws ApiModelException {
     _file = file;
-    if (!file.exists()) {
+    if (!file.exists() || file.length() == 0) {
       String javaFileName = LocatePlugin.getDefault().fileNameWithoutExtension(file);
       try {
         FileWriter writer = new FileWriter(file);
@@ -120,7 +120,7 @@ public class ApiModel {
   public ApiModel(IFile file) throws ApiModelException {
     _eclipseFile = file;
     _file = file.getLocation().toFile();
-    if (!file.exists()) {
+    if (!file.exists() || file.getLocation().toFile().length() == 0) {
       String javaFileName = LocatePlugin.getDefault().fileNameWithoutExtension(file);
       try {
         _document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(blankContent(javaFileName))));
