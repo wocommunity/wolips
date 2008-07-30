@@ -92,6 +92,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     prefs.setDefault(PreferenceConstants.BINDING_VALIDATION_RULES_KEY, BindingValidationRule.toPreferenceString(validationRules));
 
     prefs.setDefault(PreferenceConstants.WO54_KEY, false);
+    prefs.setDefault(PreferenceConstants.USE_INLINE_BINDINGS_KEY, false);
 
     prefs.setDefault(PreferenceConstants.ALLOWED_BINDING_CHARACTERS, ".^-@,|()");
     prefs.setDefault(PreferenceConstants.VALIDATE_TEMPLATES_KEY, true);

@@ -56,7 +56,6 @@ import org.osgi.framework.BundleContext;
  * @author mike
  */
 public class ComponenteditorPlugin extends AbstractBaseUIActivator {
-	
 	public static final String COMPONENT_WOCONDITIONAL_ICON = "conditional";
 	
 	public static final String COMPONENT_ICON = "component";

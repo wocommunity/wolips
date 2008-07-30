@@ -99,7 +99,7 @@ public class PreviewRenderDelegate implements RenderDelegate {
 			if (WodHtmlUtils.isWOTag(tagName)) {
 				try {
 					WodParserCache cache = _caches.peek();
-					boolean wo54 = org.objectstyle.wolips.bindings.Activator.getDefault().isWO54();
+					boolean wo54 = org.objectstyle.wolips.bindings.Activator.getDefault().isWO54(_caches.peek().getProject());
 					IWodElement wodElement = WodHtmlUtils.getWodElement(element, wo54, true, cache);
 					if (wodElement == null) {
 						return true;

@@ -15,7 +15,6 @@ public abstract class AbstractBindingsDropHandler<T, U, V, W extends Control> im
 
 	private W _editorControl;
 
-	@SuppressWarnings("unchecked")
 	public AbstractBindingsDropHandler(W editorControl) {
 		_editorControl = editorControl;
 

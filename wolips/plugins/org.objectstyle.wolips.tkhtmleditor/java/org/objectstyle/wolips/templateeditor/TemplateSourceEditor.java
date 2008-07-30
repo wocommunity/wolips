@@ -218,7 +218,7 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements ITextWOEdi
   public FuzzyXMLDocument getHtmlXmlDocument(boolean refreshModel) throws Exception {
     FuzzyXMLDocument doc;
     if (refreshModel || isDirty()) {
-      boolean wo54 = org.objectstyle.wolips.bindings.Activator.getDefault().isWO54();
+      boolean wo54 = org.objectstyle.wolips.bindings.Activator.getDefault().isWO54(getParserCache().getProject());
       FuzzyXMLParser parser = new FuzzyXMLParser(wo54, true);
       doc = parser.parse(getHTMLSource());
       getParserCache().getHtmlEntry().setModel(doc);
@@ -234,7 +234,7 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements ITextWOEdi
     IWodElement wodElement = null;
     WodParserCache cache = getParserCache();
     if (getSelectionProvider() != null) {
-      boolean wo54 = org.objectstyle.wolips.bindings.Activator.getDefault().isWO54();
+      boolean wo54 = org.objectstyle.wolips.bindings.Activator.getDefault().isWO54(cache.getProject());
       ISelection realSelection = getSelectionProvider().getSelection();
       if (realSelection instanceof ITextSelection) {
         ITextSelection textSelection = (ITextSelection) realSelection;
@@ -338,7 +338,7 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements ITextWOEdi
     FuzzyXMLElement element = getElementAtPoint(point, refreshModel);
     if (WodHtmlUtils.isWOTag(element)) {
       WodParserCache cache = getParserCache();
-      boolean wo54 = org.objectstyle.wolips.bindings.Activator.getDefault().isWO54();
+      boolean wo54 = org.objectstyle.wolips.bindings.Activator.getDefault().isWO54(cache.getProject());
       wodElement = WodHtmlUtils.getWodElement(element, wo54, resolveWodElement, cache);
     }
     return wodElement;
@@ -408,7 +408,7 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements ITextWOEdi
           int offset = templateSelection.getOffset();
           FuzzyXMLElement element = getElementAtOffset(offset, true);
           if (element != null) {
-            DeleteTagRefactoring.run(element, false, org.objectstyle.wolips.bindings.Activator.getDefault().isWO54(), getParserCache(), new NullProgressMonitor());
+            DeleteTagRefactoring.run(element, false, org.objectstyle.wolips.bindings.Activator.getDefault().isWO54(getParserCache().getProject()), getParserCache(), new NullProgressMonitor());
           }
         }
       }
@@ -431,7 +431,7 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements ITextWOEdi
           int offset = templateSelection.getOffset();
           FuzzyXMLElement element = getElementAtOffset(offset, true);
           if (element != null) {
-            DeleteTagRefactoring.run(element, true, org.objectstyle.wolips.bindings.Activator.getDefault().isWO54(), getParserCache(), new NullProgressMonitor());
+            DeleteTagRefactoring.run(element, true, org.objectstyle.wolips.bindings.Activator.getDefault().isWO54(getParserCache().getProject()), getParserCache(), new NullProgressMonitor());
           }
         }
       }

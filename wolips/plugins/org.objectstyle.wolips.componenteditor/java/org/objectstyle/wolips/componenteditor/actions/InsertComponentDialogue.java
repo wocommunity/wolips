@@ -1,16 +1,13 @@
 package org.objectstyle.wolips.componenteditor.actions;
 
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -22,6 +19,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.objectstyle.wolips.bindings.Activator;
 import org.objectstyle.wolips.wodclipse.action.ComponentLiveSearch;
 
 /**
@@ -32,16 +30,9 @@ import org.objectstyle.wolips.wodclipse.action.ComponentLiveSearch;
  */
 
 public class InsertComponentDialogue extends Dialog {
-
-	public final static int RESULT_CREATE = 1;
-
-	public final static int RESULT_CANCEL = 2;
-
-	// user interface elements which the user interacts with.
-
 	protected Label _componentNameLabel;
 
-	protected Combo componentNameCombo;
+	protected Combo _componentNameCombo;
 
 	protected Label _componentInstanceLabel;
 
@@ -59,12 +50,6 @@ public class InsertComponentDialogue extends Dialog {
 
 	protected IProgressMonitor _progressMonitor;
 
-	// no time to localise :-(
-	private final static String LABEL_COMPONENT_INSTANCE_NAME = "WebObject Tag Name:";
-
-	// no time to localise :-(
-	private final static String LABEL_COMPONENT_NAME = "Component Type Name:";
-	
 	public InsertComponentDialogue(Shell parentShell, IJavaProject project, InsertComponentSpecification insertComponentSpecification) {
 		super(parentShell);
 		_project = project;
@@ -72,84 +57,101 @@ public class InsertComponentDialogue extends Dialog {
 		_progressMonitor = new NullProgressMonitor();
 	}
 
+	@Override
+	protected void configureShell(Shell newShell) {
+		super.configureShell(newShell);
+		String componentName = _insertComponentSpecification.getComponentName();
+		if (componentName == null) {
+			newShell.setText("Insert Component");
+		} else {
+			newShell.setText("Insert " + componentName);
+		}
+	}
+
 	protected Control createDialogArea(Composite parent) {
-		Composite control = (Composite) super.createDialogArea(parent);
-		GridLayout layout = new GridLayout(1, true);
-		layout.marginTop = 10;
-		layout.marginRight = 10;
-		layout.marginBottom = 10;
-		layout.marginLeft = 10;
+		Composite composite = (Composite) super.createDialogArea(parent);
+		((GridLayout) composite.getLayout()).numColumns = 2;
 
-		control.setLayout(layout);
+		_inline = new Button(composite, SWT.CHECK);
+		_inline.setText("Use inline bindings");
+		GridData inlineData = new GridData(GridData.FILL_HORIZONTAL);
+		inlineData.horizontalSpan = 2;
+		_inline.setLayoutData(inlineData);
+		_inline.setSelection(Activator.getDefault().useInlineBindings(_project.getProject()));
 
-		_componentInstanceLabel = new Label(control, 0);
-		_componentInstanceLabel.setText(LABEL_COMPONENT_INSTANCE_NAME);
+		_componentInstanceLabel = new Label(composite, SWT.NONE);
+		_componentInstanceLabel.setText("WebObject tag name:");
 		GridData componentInstanceLabelLayout = new GridData(GridData.FILL_HORIZONTAL);
 		_componentInstanceLabel.setLayoutData(componentInstanceLabelLayout);
 
-		_componentInstanceNameText = new Text(control, SWT.BORDER);
+		_componentInstanceNameText = new Text(composite, SWT.BORDER);
 		GridData componentInstanceNameLayout = new GridData(GridData.FILL_HORIZONTAL);
+		componentInstanceNameLayout.widthHint = 200;
 		_componentInstanceNameText.setLayoutData(componentInstanceNameLayout);
 		_componentInstanceNameText.addVerifyListener(new ComponentInstanceNameVerifyListener());
+		_componentInstanceNameText.setFocus();
 
 		if (_insertComponentSpecification.getComponentInstanceName() != null) {
 			_componentInstanceNameText.setText(_insertComponentSpecification.getComponentInstanceName());
-		} 
+		}
 //		else {
 //			if (_insertComponentSpecification.getComponentInstanceNameSuffix() != null) {
 //				_componentInstanceNameText.setText(_insertComponentSpecification.getComponentInstanceNameSuffix());
 //			}
 //		}
 
-		_inline = new Button(control, SWT.CHECK);
-		_inline.setText("Use inline bindings, or enter webobject tag name:");
-		_inline.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		
 		if (_insertComponentSpecification.getComponentName() == null) {
-			_componentNameLabel = new Label(control, 0);
-			_componentNameLabel.setText(LABEL_COMPONENT_NAME);
+			_componentNameLabel = new Label(composite, 0);
+			_componentNameLabel.setText("Component type:");
 			GridData componentNameLabelLayout = new GridData(GridData.FILL_HORIZONTAL);
 			_componentNameLabel.setLayoutData(componentNameLabelLayout);
 
-			componentNameCombo = new Combo(control, SWT.BORDER);
+			_componentNameCombo = new Combo(composite, SWT.BORDER);
 			GridData componentNameTextLayout = new GridData(GridData.FILL_HORIZONTAL);
-			componentNameCombo.setLayoutData(componentNameTextLayout);
-			new ComponentLiveSearch(_project, _progressMonitor).attachTo(componentNameCombo);
+			_componentNameCombo.setLayoutData(componentNameTextLayout);
+			new ComponentLiveSearch(_project, _progressMonitor).attachTo(_componentNameCombo);
 		}
-		
+
 		_inline.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {
 				widgetSelected(e);
 			}
 
 			public void widgetSelected(SelectionEvent e) {
-				_componentInstanceNameText.setEnabled(!_inline.getSelection());
+				inlineSelectionChanged();
 				validate();
 			}
 		});
-		
+
 		_componentInstanceNameText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				validate();
 			}
 		});
 
-		componentNameCombo.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				validate();
-			}
-		});
+		if (_componentNameCombo != null) {
+			_componentNameCombo.addModifyListener(new ModifyListener() {
+				public void modifyText(ModifyEvent e) {
+					validate();
+				}
+			});
+		}
 
-		// We need this because the OK button doesn't exist yet
-		control.addPaintListener(new PaintListener() {
-			public void paintControl(PaintEvent e) {
-				validate();
-			}
-		});
-		
-		return control;
+		inlineSelectionChanged();
+
+		return dialogArea;
+	}
+
+	protected void inlineSelectionChanged() {
+		_componentInstanceNameText.setEnabled(!_inline.getSelection());
 	}
 	
+	@Override
+	protected void createButtonsForButtonBar(Composite parent) {
+		super.createButtonsForButtonBar(parent);
+		validate();
+	}
+
 	// these two methods handle buttons getting pressed.
 
 	public void cancelPressed() {
@@ -158,30 +160,30 @@ public class InsertComponentDialogue extends Dialog {
 	}
 
 	public void okPressed() {
-		if (componentNameCombo != null) {
-			_insertComponentSpecification.setComponentName(componentNameCombo.getText());
+		if (_componentNameCombo != null) {
+			_insertComponentSpecification.setComponentName(_componentNameCombo.getText());
 		}
 		_insertComponentSpecification.setComponentInstanceName(_componentInstanceNameText.getText());
 		_insertComponentSpecification.setInline(_inline.getSelection());
+		Activator.getDefault().setUseInlineBindings(_project.getProject(), _inline.getSelection());
 		super.okPressed();
 	}
 
 	public InsertComponentSpecification getInsertComponentSpecification() {
 		return _insertComponentSpecification;
 	}
-	
-	
+
 	protected void validate() {
 		boolean isValid = false;
-		
-		if (!"".equals(componentNameCombo.getText())) {
+
+		if (_componentNameCombo == null || !"".equals(_componentNameCombo.getText())) {
 			if (_inline.getSelection()) {
 				isValid = true;
 			} else if (!"".equals(_componentInstanceNameText.getText())) {
 				isValid = true;
 			}
 		}
-		
+
 		Button okButton = getButton(IDialogConstants.OK_ID);
 		if (okButton == null) {
 			return;
@@ -190,7 +192,7 @@ public class InsertComponentDialogue extends Dialog {
 			if (!okButton.isEnabled()) {
 				okButton.setEnabled(true);
 			}
-		} else if (okButton.isEnabled()){
+		} else if (okButton.isEnabled()) {
 			okButton.setEnabled(false);
 		}
 	}

@@ -73,7 +73,7 @@ public class TemplateConfiguration extends HTMLConfiguration {
     try {
       IFile file = ((FileEditorInput) getEditorPart().getEditorInput()).getFile();
       WodParserCache parserCache = WodParserCache.parser(file);
-      boolean wo54 = Activator.getDefault().isWO54();
+      boolean wo54 = Activator.getDefault().isWO54(parserCache.getProject());
       return new TemplateAssistProcessor(getEditorPart(), parserCache, wo54);
     }
     catch (Exception e) {

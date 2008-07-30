@@ -34,7 +34,7 @@ public class TemplateValidator {
 
   public TemplateValidator(WodParserCache cache) {
     _cache = cache;
-    _wo54 = Activator.getDefault().isWO54();
+    _wo54 = Activator.getDefault().isWO54(cache.getProject());
   }
 
   /**
