@@ -332,6 +332,14 @@
             class="org.eclipse.jdt.internal.ui.filters.LocalTypesFilter"
             id="org.objectstyle.wolips.jdt.ui.WOPackageExplorer.LocalTypesFilter">
       </filter>
+      <filter
+            class="org.objectstyle.wolips.jdt.ui.WOComponentAPIFileFilter"
+            description="Hide all API files for WOComponents"
+            enabled="true"
+            id="org.objectstyle.wolips.jdt.ui.WOPackageExplorer.APIFilesFilter"
+            name="WOComponent API Files"
+            targetId="org.objectstyle.wolips.jdt.ui.WOPackageExplorer">
+      </filter>
    </extension>
 <!-- =========================================================================== -->
 <!-- Decorators                                                                  -->
