@@ -95,12 +95,12 @@ public class WOBrowserColumn extends Composite implements ISelectionProvider, IS
 		TableColumn nameColumn = new TableColumn(_keysViewer.getTable(), SWT.NONE);
 		nameColumn.setText("Column 1");
 		// nameColumn.setMoveable(true);
-		keysLayout.setColumnData(nameColumn, new ColumnWeightData(0, 200));
+		keysLayout.setColumnData(nameColumn, new ColumnWeightData(1, 200));
 
 		TableColumn iconColumn = new TableColumn(_keysViewer.getTable(), SWT.NONE);
 		iconColumn.setText("Column 2");
 		// iconColumn.setMoveable(true);
-		keysLayout.setColumnData(iconColumn, new ColumnWeightData(0, 20));
+		keysLayout.setColumnData(iconColumn, new ColumnWeightData(1, 20));
 
 		reload();
 		tableContainer.pack();
