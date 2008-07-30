@@ -62,6 +62,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.objectstyle.wolips.baseforplugins.AbstractBaseActivator;
+import org.objectstyle.wolips.baseforplugins.util.ResourceUtilities;
 import org.objectstyle.wolips.locate.cache.ComponentLocateCache;
 import org.objectstyle.wolips.locate.result.JavaLocateResult;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
@@ -141,23 +142,14 @@ public class LocatePlugin extends AbstractBaseActivator {
 	}
 
 	public String fileNameWithoutExtension(IResource file) {
-		String fileName = file.getName();
-		return fileNameWithoutExtension(fileName);
+		return ResourceUtilities.getFileNameWithoutExtension(file);
 	}
 
 	public String fileNameWithoutExtension(File file) {
-		String fileName = file.getName();
-		return fileNameWithoutExtension(fileName);
+		return ResourceUtilities.getFileNameWithoutExtension(file);
 	}
 
 	public String fileNameWithoutExtension(String fileName) {
-		String fileNameWithoutExtension;
-		int dotIndex = fileName.indexOf('.');
-		if (dotIndex != -1) {
-			fileNameWithoutExtension = fileName.substring(0, dotIndex);
-		} else {
-			fileNameWithoutExtension = fileName;
-		}
-		return fileNameWithoutExtension;
+		return ResourceUtilities.getFileNameWithoutExtension(fileName);
 	}
 }
