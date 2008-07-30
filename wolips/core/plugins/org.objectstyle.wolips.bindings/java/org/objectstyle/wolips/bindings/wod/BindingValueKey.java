@@ -6,6 +6,7 @@ import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.Signature;
 
 public class BindingValueKey implements Comparable<BindingValueKey> {
   private String _bindingName;
@@ -124,7 +125,8 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
 //            _nextTypeArgument = _cache.getTypeForNameInType(typeArguments[0], declaringType);
 //          }
 //        }
-        _nextType = _cache.getTypeForNameInType(nextTypeName, declaringType);
+        String nextTypeNameErasure = Signature.getTypeErasure(nextTypeName);
+        _nextType = _cache.getTypeForNameInType(nextTypeNameErasure, declaringType);
       }
     }
   }
