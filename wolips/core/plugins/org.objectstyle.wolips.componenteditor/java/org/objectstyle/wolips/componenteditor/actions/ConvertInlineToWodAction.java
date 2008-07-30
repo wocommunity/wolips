@@ -24,7 +24,7 @@ public class ConvertInlineToWodAction extends AbstractTemplateAction {
 					ITextSelection templateSelection = (ITextSelection) templateEditor.getSourceEditor().getSelectionProvider().getSelection();
 					int offset = templateSelection.getOffset();
 					WodParserCache cache = templateEditor.getSourceEditor().getParserCache();
-					ConvertInlineToWodRefactoring.run(cache, offset, Activator.getDefault().isWO54(), new NullProgressMonitor());
+					ConvertInlineToWodRefactoring.run(cache, offset, Activator.getDefault().isWO54(cache.getProject()), new NullProgressMonitor());
 				}
 			}
 		} catch (Exception e) {

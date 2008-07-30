@@ -16,6 +16,7 @@ import jp.aonir.fuzzyxml.FuzzyXMLParser;
 import jp.aonir.fuzzyxml.FuzzyXMLText;
 import jp.aonir.fuzzyxml.internal.RenderContext;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.AnnotationModelEvent;
@@ -97,8 +98,8 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
     return true;
   }
 
-  protected FuzzyXMLParser createParser() {
-    FuzzyXMLParser parser = new FuzzyXMLParser(Activator.getDefault().isWO54(), isHTML());
+  protected FuzzyXMLParser createParser(IProject project) {
+    FuzzyXMLParser parser = new FuzzyXMLParser(Activator.getDefault().isWO54(project), isHTML());
     return parser;
   }
 
@@ -129,7 +130,6 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
    * 
    * @param event the status text event
    */
-  @SuppressWarnings("unchecked")
   public void changed(StatusTextEvent event) {
     String text = event.text;
     int colonIndex = text.indexOf(':');
@@ -313,7 +313,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
     model.addAnnotationModelListener(this);
 
     try {
-      _doc = createParser().parse(_editor.getHTMLSource());
+      _doc = createParser(_editor.getParserCache().getProject()).parse(_editor.getHTMLSource());
     }
     catch (Exception e) {
       e.printStackTrace();
@@ -559,7 +559,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
       if (woTag) {
         className = className + " wo";
         try {
-          boolean wo54 = Activator.getDefault().isWO54();
+          boolean wo54 = Activator.getDefault().isWO54(_editor.getParserCache().getProject());
           wodElement = WodHtmlUtils.getWodElement(element, wo54, true, cache);
         }
         catch (Throwable t) {

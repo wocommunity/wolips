@@ -80,7 +80,7 @@ public class RefactoringWodBinding {
   public String _changeValue(String oldValue, String value) throws CoreException, InvocationTargetException, InterruptedException {
     String newValue = value;
     if (!ComparisonUtils.equals(oldValue, newValue, true)) {
-      newValue = RefactoringWodBinding.toBindingValue(_wodElement.isInline(), Activator.getDefault().isWO54(), newValue);
+      newValue = RefactoringWodBinding.toBindingValue(_wodElement.isInline(), Activator.getDefault().isWO54(_cache.getProject()), newValue);
       ChangeBindingValueRefactoring.run(newValue, _wodElement, _wodBinding, _cache, new NullProgressMonitor());
       _wodBinding.setValue(newValue);
     }

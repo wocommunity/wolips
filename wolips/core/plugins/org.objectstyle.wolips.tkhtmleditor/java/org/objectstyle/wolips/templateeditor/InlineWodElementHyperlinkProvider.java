@@ -24,7 +24,7 @@ public class InlineWodElementHyperlinkProvider implements IHyperlinkProvider {
     try {
       if (WodHtmlUtils.isWOTag(element.getName()) && WodHtmlUtils.isInline(element.getName())) {
         if (attrName == null) {
-          boolean wo54 = Activator.getDefault().isWO54();
+          boolean wo54 = Activator.getDefault().isWO54(file.getProject());
           WodParserCache cache = WodParserCache.parser(file);
           SimpleWodElement wodElement = new FuzzyXMLWodElement(element, wo54);
           if (wodElement.isTypeWithin(new Region(offset, 0))) {
@@ -35,7 +35,7 @@ public class InlineWodElementHyperlinkProvider implements IHyperlinkProvider {
           }
         }
         else {
-          boolean wo54 = Activator.getDefault().isWO54();
+          boolean wo54 = Activator.getDefault().isWO54(file.getProject());
           WodParserCache cache;
           cache = WodParserCache.parser(file);
           SimpleWodElement wodElement = new FuzzyXMLWodElement(element, wo54);

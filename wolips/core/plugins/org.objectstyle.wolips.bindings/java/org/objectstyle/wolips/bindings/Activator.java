@@ -1,5 +1,6 @@
 package org.objectstyle.wolips.bindings;
 
+import org.eclipse.core.resources.IProject;
 import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
 import org.objectstyle.wolips.bindings.preferences.PreferenceConstants;
 import org.osgi.framework.BundleContext;
@@ -49,7 +50,15 @@ public class Activator extends AbstractBaseUIActivator {
     return plugin;
   }
 
-  public boolean isWO54() {
+  public boolean useInlineBindings(IProject project) {
+    return Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.USE_INLINE_BINDINGS_KEY);
+  }
+  
+  public void setUseInlineBindings(IProject project, boolean useInlineBindings) {
+    Activator.getDefault().getPreferenceStore().setValue(PreferenceConstants.USE_INLINE_BINDINGS_KEY, useInlineBindings);
+  }
+  
+  public boolean isWO54(IProject project) {
     return Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.WO54_KEY);
   }
 }
