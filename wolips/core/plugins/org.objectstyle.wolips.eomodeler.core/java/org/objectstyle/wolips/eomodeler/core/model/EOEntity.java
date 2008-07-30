@@ -56,6 +56,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1065,6 +1066,57 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		return referenceFailures;
 	}
 
+	public Set<EOEntity> getReferencedEntities(boolean recursive) {
+		Set<EOEntity> referencedEntities = new HashSet<EOEntity>();
+		fillInReferencedEntities(recursive, referencedEntities);
+		return referencedEntities;
+	}
+	
+	public void fillInReferencedEntities(boolean recursive, Set<EOEntity> allReferencedEntities) {
+		Set<EOEntity> referencedEntities = new PropertyListSet<EOEntity>();
+
+		referencedEntities.addAll(getAncestors());
+		
+		if (getPartialEntity() != null) {
+			referencedEntities.add(getPartialEntity());
+		}
+		
+		for (EOAttribute attribute : getAttributes()) {
+			if (attribute.isFlattened()) {
+				for (AbstractEOAttributePath path : attribute.getDefinitionPath().getPathElements()) {
+					referencedEntities.add(path.getEntity());
+				}
+			}
+		}
+		
+		for (EORelationship relationship : getRelationships()) {
+			if (relationship.isToOne()) {
+				if (relationship.isFlattened()) {
+					for (AbstractEOAttributePath path : relationship.getDefinitionPath().getPathElements()) {
+						referencedEntities.add(path.getEntity());
+					}
+				}
+				else {
+					EOEntity destination = relationship.getDestination();
+					referencedEntities.add(destination);
+				}
+			}
+		}
+		
+		if (recursive) {
+			Set<EOEntity> existingReferencedEntities = new HashSet<EOEntity>(allReferencedEntities);
+			allReferencedEntities.addAll(referencedEntities);
+			for (EOEntity e : referencedEntities) {
+				if (e != this && !existingReferencedEntities.contains(e)) {
+					e.fillInReferencedEntities(recursive, allReferencedEntities);
+				}
+			}
+		}
+		else {
+			allReferencedEntities.addAll(referencedEntities);
+		}
+	}
+	
 	public Set<EOEntity> getReferencingEntities() {
 		Set<EOEntity> referencingEntities = new PropertyListSet<EOEntity>();
 		for (EORelationship relationship : getReferencingRelationships()) {
@@ -1107,6 +1159,15 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		return myParent != null;
 	}
 
+	public List<EOEntity> getAncestors() {
+		List<EOEntity> ancestors = new LinkedList<EOEntity>();
+		EOEntity parent = this;
+		while ((parent = parent.getParent()) != null) {
+			ancestors.add(parent);
+		}
+		return ancestors;
+	}
+	
 	public EOEntity getParent() {
 		return myParent;
 	}

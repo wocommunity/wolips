@@ -20,5 +20,6 @@ public class ${model.name}0 extends ERXMigrationDatabase.Migration {
 	public void upgrade(EOEditingContext editingContext, ERXMigrationDatabase database) throws Throwable {
 #foreach ($entityMigration in $entityMigrations)${entityMigration}
 #end
+#foreach ($foreignKeyMigration in $foreignKeyMigrations)${foreignKeyMigration}#end
 	}
 }
