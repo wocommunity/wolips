@@ -88,17 +88,20 @@ public class ApiEditor extends FormEditor {
 
 	protected void addPages() {
 		try {
-			if (this.getModel() == null) {
+			try {
+				if (this.getModel() == null) {
+					addPage(new CreatePage(this, "Create"));
+				} else {
+					addPage(new BindingsPage(this, "Bindings"));
+					// addPage(new ValidationPage(this, "Validation"));
+					// addPage(new DisplayPage(this, "Display"));
+					//addPage(new DeletePage(this, "Delete"));
+				}
+			} catch (final ApiModelException e) {
+				ApieditorPlugin.getDefault().debug(e);
 				addPage(new CreatePage(this, "Create"));
-			} else {
-				addPage(new BindingsPage(this, "Bindings"));
-				// addPage(new ValidationPage(this, "Validation"));
-				// addPage(new DisplayPage(this, "Display"));
-				//addPage(new DeletePage(this, "Delete"));
 			}
 		} catch (PartInitException e) {
-			ApieditorPlugin.getDefault().debug(e);
-		} catch (ApiModelException e) {
 			ApieditorPlugin.getDefault().debug(e);
 		}
 		CTabFolder ctf = (CTabFolder)getContainer();
