@@ -55,6 +55,8 @@
  */
 package org.objectstyle.wolips.apieditor.editor;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionEvent;
@@ -63,11 +65,14 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.part.FileEditorInput;
+import org.objectstyle.wolips.apieditor.ApieditorPlugin;
+import org.objectstyle.wolips.baseforplugins.util.StringUtils;
 import org.objectstyle.wolips.bindings.api.ApiModel;
 import org.objectstyle.wolips.bindings.api.ApiModelException;
 
@@ -107,24 +112,47 @@ public class CreatePage extends ApiFormPage {
 		gd.widthHint = 100;
 
 		final ApiEditor apiEditor = (ApiEditor) this.getEditor();
+		boolean brokenApiFile = false;
+		String brokenMessage = null;
 		ApiModel apiModel = null;
 		try {
 			apiModel = apiEditor.getModel();
 		} catch (Throwable throwable) {
-			throw new RuntimeException("Failed to open .api file.", throwable);
+			brokenApiFile = true;
+			ApieditorPlugin.getDefault().debug(throwable);
+			brokenMessage = StringUtils.getErrorMessage(throwable);
 		}
 		if (apiModel == null) {
-
-			Button createApiFileButton = toolkit.createButton(client, "Create Api File", SWT.PUSH);
+			if (brokenApiFile) {
+				Label brokenLabel = new Label(client, SWT.WRAP);
+				brokenLabel.setBackground(client.getBackground());
+				brokenLabel.setText(brokenMessage);
+				GridData labelData = new GridData(GridData.FILL_HORIZONTAL);
+				labelData.horizontalSpan = 2;
+				brokenLabel.setLayoutData(labelData);
+			}
+			Button createApiFileButton;
+			if (brokenApiFile) {
+				createApiFileButton = toolkit.createButton(client, "Recreate Api File", SWT.PUSH);
+			}
+			else {
+				createApiFileButton = toolkit.createButton(client, "Create Api File", SWT.PUSH);
+			}
 			gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 			createApiFileButton.setLayoutData(gd);
 			createApiFileButton.addSelectionListener(new SelectionListener() {
 				public void widgetSelected(SelectionEvent e) {
 					FileEditorInput fileEditorInput = (FileEditorInput) apiEditor.getEditorInput();
 					try {
-						new ApiModel(fileEditorInput.getFile());
+						IFile file = fileEditorInput.getFile();
+						if (file.exists()) {
+							file.delete(false, null);
+						}
+						new ApiModel(file);
 					} catch (ApiModelException coreException) {
 						throw new RuntimeException("Failed to create .api file.", coreException);
+					} catch (CoreException coreException) {
+						throw new RuntimeException("Failed to delete existing .api file.", coreException);
 					}
 					apiEditor.removePage(0);
 					apiEditor.addPages();
