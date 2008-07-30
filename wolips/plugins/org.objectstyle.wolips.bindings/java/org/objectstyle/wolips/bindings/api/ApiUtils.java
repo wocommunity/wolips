@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.jar.JarFile;
+import java.util.jar.JarEntry;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -19,6 +21,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IOpenable;
 import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.search.SearchPattern;
@@ -104,13 +107,38 @@ public class ApiUtils {
                 IJavaElement parent = classFile.getParent();
                 if (parent instanceof IPackageFragment) {
                   IPackageFragment parentPackage = (IPackageFragment) parent;
-                  IPath packagePath = parentPackage.getPath();
-                  IPath apiPath = packagePath.removeLastSegments(2).append(elementType.getElementName()).addFileExtension("api");
-                  File apiFile = apiPath.toFile();
-                  boolean fileExists = apiFile.exists();
-                  if (fileExists) {
-                    apiModel = new ApiModel(apiFile);
+                  IJavaElement parentParent = parentPackage.getParent();
+
+// [apl 25.june.2008]
+// We check to see if in fact the resource is contained
+// within a jar file.  This is the case if the framework
+// has been bundled into "jar style" framework.
+									
+                  if(parentParent instanceof IPackageFragmentRoot && "jar".equalsIgnoreCase(parentParent.getPath().getFileExtension())) {
+                    String jarResourcePath = "Resources/" + elementType.getElementName() + ".api";
+                    String jarOSPath = parentParent.getPath().toOSString();
+                    File jarOSFile = new File(jarOSPath);
+										
+                    if(jarOSFile.exists()) {
+                      JarFile jarFile = new JarFile(jarOSFile);
+                      JarEntry je = jarFile.getJarEntry(jarResourcePath);
+                      if (je != null && je.getSize() != 0) {
+                        apiModel = new ApiModel(new URL("jar:file:"+jarOSPath+"!/"+jarResourcePath));
+                      }
+                    }
                   }
+                  else {
+                    IPath packagePath = parentPackage.getPath();
+                    IPath apiPath = packagePath.removeLastSegments(2).append(elementType.getElementName()).addFileExtension("api");
+                    File apiFile = apiPath.toFile();
+                    boolean fileExists = apiFile.exists();
+                    if (fileExists) {
+                      apiModel = new ApiModel(apiFile);
+                    }
+                  }
+									
+// [apl] - end change.
+
                 }
               }
               else if (typeContainer instanceof ICompilationUnit) {
