@@ -24,11 +24,4 @@
 #if (!$entity.singleTableInheritance)
 		${migrationTableName}.create();
 	 	${migrationTableName}.setPrimaryKey(${entity.sqlGenerationPrimaryKeyColumnNames});
-#end		
-#foreach ($relationship in $entity.sortedToOneRelationships)
-#if ($relationship.sqlGenerationCreateProperty)
-#foreach ($join in $relationship.joins)
-		${migrationTableName}.addForeignKey("${join.sourceAttribute.columnName}", "${relationship.destination.externalName}", "${join.destinationAttribute.columnName}");
-#end
-#end
 #end
