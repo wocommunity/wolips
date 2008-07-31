@@ -53,13 +53,12 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
+import org.objectstyle.wolips.baseforplugins.plist.WOLPropertyListSerialization;
 
 /**
  * This class is the base class to work with d2wmodel files.
@@ -168,8 +167,8 @@ public class D2WModel implements PropertyChangeListener {
 		Map<String, Collection<Map>> modelMap = null;
 
 		try {
-			modelMap = (Map<String, Collection<Map>>) PropertyListSerialization.propertyListFromFile(modelFile);
-		} catch (FileNotFoundException exception) {
+			modelMap = (Map<String, Collection<Map>>) WOLPropertyListSerialization.propertyListFromFile(modelFile);
+		} catch (Exception exception) {
 			throw new IllegalArgumentException("The file " + modelFile + " cannot be found");
 		}
 
@@ -243,7 +242,7 @@ public class D2WModel implements PropertyChangeListener {
 		Map<String, Collection<Map>> modelMap = rulesToModelMap();
 
 		try {
-			PropertyListSerialization.propertyListToFile(modelFile, modelMap);
+			WOLPropertyListSerialization.propertyListToFile("", modelFile, modelMap);
 
 			setHasUnsavedChanges(false);
 
