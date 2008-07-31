@@ -8,6 +8,9 @@
 
    <runtime>
    </runtime>
+   <requires>
+      <import plugin="org.objectstyle.wolips.baseforplugins" version="1.0.6"/>
+   </requires>
 
 <!-- =================================================================================== -->
 <!-- Extension: Ant                                                                      -->
