@@ -98,10 +98,10 @@ public class PBDotProjectAdapter extends AbstractFileAdapter implements IPBDotPr
 			return;
 		}
 		this.saveRequired = false;
-		this.pbProject.saveChanges();
 		try {
+			this.pbProject.saveChanges();
 			this.getUnderlyingFile().refreshLocal(IResource.DEPTH_ZERO, monitor);
-		} catch (CoreException up) {
+		} catch (Exception up) {
 			CorePlugin.getDefault().debug(this.getClass().getName() + "Error while saving PB.project: " + this.getUnderlyingFile(), up);
 		}
 	}
@@ -129,7 +129,7 @@ public class PBDotProjectAdapter extends AbstractFileAdapter implements IPBDotPr
 			}
 			addLocalFrameworkSectionToPBProject();
 			syncProjectName();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			CorePlugin.getDefault().debug(this.getClass().getName() + "Error while loading PB.project: " + this.getUnderlyingFile(), e);
 		}
 	}
@@ -169,8 +169,12 @@ public class PBDotProjectAdapter extends AbstractFileAdapter implements IPBDotPr
 
 	public void save() {
 		if (this.pbProject != null && this.saveRequired) {
-			this.pbProject.saveChanges();
-			this.saveRequired = false;
+			try {
+				this.pbProject.saveChanges();
+				this.saveRequired = false;
+			} catch (Exception e) {
+				CorePlugin.getDefault().debug(this.getClass().getName() + " Error while saving PB.project: " + this.getUnderlyingFile(), e);
+			}
 		}
 	}
 
