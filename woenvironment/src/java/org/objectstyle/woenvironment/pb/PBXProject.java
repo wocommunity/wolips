@@ -67,8 +67,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.woenvironment.pb.PBXProject.ObjectsTable.ID;
+import org.objectstyle.wolips.baseforplugins.plist.PropertyListParserException;
+import org.objectstyle.wolips.baseforplugins.plist.WOLPropertyListSerialization;
 
 /**
  * A <b>PBXProject</b> represents a Project Builder X project package (<code>*.pbproj</code>).
@@ -132,7 +133,7 @@ public class PBXProject {
       _frameworkRefs.remove(path);
   }
 
-	public void save(File projectFile) {
+	public void save(File projectFile) throws PropertyListParserException, IOException {
 		ObjectsTable objectsTable = new ObjectsTable();
 		String projectPath;
 		try {
@@ -265,7 +266,7 @@ public class PBXProject {
 		// Create the root dictionary.
 		Map pbxproj = newPBXProj(objectsTable, projectID);
 
-		PropertyListSerialization.propertyListToFile(projectFile, pbxproj);
+		WOLPropertyListSerialization.propertyListToFile("", projectFile, pbxproj);
 	}
 
 	protected List newBuildFileList(List fileIDs, ObjectsTable objectsTable) {

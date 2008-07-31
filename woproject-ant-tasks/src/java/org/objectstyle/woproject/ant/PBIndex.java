@@ -189,7 +189,7 @@ public class PBIndex extends Task {
 
 			// notify everybody
 			// PBProjectNotifications.postPBProjectDidUpgradeNotification(name);
-		} catch (IOException ioex) {
+		} catch (Exception ioex) {
 			log("Error saving project file", Project.MSG_ERR);
 			throw new BuildException("Error saving project file", ioex);
 		} finally {

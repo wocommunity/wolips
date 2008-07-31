@@ -68,7 +68,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
+import org.objectstyle.wolips.baseforplugins.plist.PropertyListParserException;
+import org.objectstyle.wolips.baseforplugins.plist.WOLPropertyListSerialization;
 
 /**
  * A <b>PBProject </b> represents a ProjectBuilder project file traditionally
@@ -127,16 +128,18 @@ public class PBProject {
 	 * Creates a new PBProject object with an associated project file assumed to
 	 * be called "PB.project" and located in the current directory. If file does
 	 * not exist, PBProject object is initialized using default template.
+	 * @throws PropertyListParserException 
 	 */
-	public PBProject(boolean isFramework) throws IOException {
+	public PBProject(boolean isFramework) throws IOException, PropertyListParserException {
 		this("PB.project", isFramework);
 	}
 
 	/**
 	 * Creates a new PBProject object with an associated project file. If file
 	 * does not exist, PBProject object is initialized using default template.
+	 * @throws PropertyListParserException 
 	 */
-	public PBProject(String pathToProjectFile, boolean isFramework) throws IOException {
+	public PBProject(String pathToProjectFile, boolean isFramework) throws IOException, PropertyListParserException {
 		this.pathToProjectFile = pathToProjectFile;
 		this.isFramework = isFramework;
 
@@ -154,8 +157,9 @@ public class PBProject {
 	/**
 	 * Updates itself from the underlying <code>PB.project</code> file. If the
 	 * file does not exist, uses a default template to load a skeleton project.
+	 * @throws PropertyListParserException 
 	 */
-	public void update() throws IOException {
+	public void update() throws IOException, PropertyListParserException {
 		File projectFile = null;
 		InputStream in = null;
 		try {
@@ -165,7 +169,7 @@ public class PBProject {
 			} else {
 				in = new FileInputStream(projectFile);
 			}
-			pbProject = (Map) PropertyListSerialization.propertyListFromStream(in);
+			pbProject = (Map) WOLPropertyListSerialization.propertyListFromStream(in);
 		} finally {
 			projectFile = null;
 			if (in != null) {
@@ -182,14 +186,16 @@ public class PBProject {
 
 	/**
 	 * Stores changes made to this object in the underlying PB.project file.
+	 * @throws IOException 
+	 * @throws PropertyListParserException 
 	 */
-	public void saveChanges() {
+	public void saveChanges() throws PropertyListParserException, IOException {
 		this.saveFilesTable();
 		Map sortedMap = sortedMap(pbProject);
 		File projectFile = null;
 		try {
 			projectFile = new File(pathToProjectFile);
-			PropertyListSerialization.propertyListToFile(projectFile, sortedMap);
+			WOLPropertyListSerialization.propertyListToFile("", projectFile, sortedMap);
 		} finally {
 			projectFile = null;
 		}

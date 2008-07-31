@@ -112,6 +112,10 @@ public class XcodeIndex extends PBXIndex {
 			}
 		}
 
-		proj.save(pbxprojFile);
+		try {
+  		proj.save(pbxprojFile);
+    } catch (Exception x) {
+      throw new BuildException("Failed to save project.pbxproj Xcode project package file: " + x);
+    }
 	}
 }
