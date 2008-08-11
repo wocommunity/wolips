@@ -2558,7 +2558,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public boolean getSqlGenerationCreateInheritedProperties() {
-		return isVerticalInheritance();
+		return isHorizontalInheritance();
 	}
 	
 	public String getSqlGenerationPrimaryKeyColumnNames() {
