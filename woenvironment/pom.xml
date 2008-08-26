@@ -1,50 +1,27 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<parent>
 		<groupId>org.objectstyle.woproject</groupId>
 		<artifactId>woproject-all-parent</artifactId>
 		<version>2.0.16-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
-
 	<groupId>org.objectstyle.woproject.ant</groupId>
 	<artifactId>woenvironment</artifactId>
 	<version>2.0.16-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>WOEnvironment</name>
-
 	<description>Contains woenvironment stuff.</description>
-
 	<url>http://objectstyle.org/woproject/</url>
-
 	<inceptionYear>2001</inceptionYear>
-
 	<dependencies>
-		<!-- used for property list parsing -->
 		<dependency>
-			<groupId>org.objectstyle.cayenne</groupId>
-			<artifactId>cayenne</artifactId>
-			<version>1.2M12</version>
-		</dependency>
-		<!-- required by cayenne -->
-		<dependency>
-			<groupId>foundrylogic.vpp</groupId>
-			<artifactId>vpp</artifactId>
-			<version>2.2.1</version>
+			<groupId>org.objectstyle.wolips</groupId>
+			<artifactId>base-for-plugins</artifactId>
+			<version>${pom.version}</version>
 		</dependency>
 	</dependencies>
-
-	<repositories>
-		<!-- Avoid this repository declaration in settings.xml only because of one dependency -->
-		<repository>
-			<id>Objectstyle Maven Repository</id>
-			<url>http://objectstyle.org/maven2/</url>
-		</repository>
-	</repositories>
-
 	<build>
 		<sourceDirectory>src/java</sourceDirectory>
 	</build>
-
 </project>

@@ -1,32 +1,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<parent>
 		<artifactId>woproject-all-parent</artifactId>
 		<groupId>org.objectstyle.woproject</groupId>
 		<version>2.0.16-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
-
 	<groupId>org.objectstyle.woproject.ant</groupId>
 	<artifactId>woproject-ant-tasks</artifactId>
 	<version>2.0.16-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>WOProject Ant Tasks</name>
-
 	<description>Contains WOProject ant stuff.</description>
-
 	<url>http://objectstyle.org/woproject/</url>
-
 	<inceptionYear>2001</inceptionYear>
 	<dependencies>
-	
-		<dependency>			
+		<dependency>
 			<groupId>org.objectstyle.woproject.ant</groupId>
 			<artifactId>woenvironment</artifactId>
-			<version>2.0.16-SNAPSHOT</version>
+			<version>${pom.version}</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>ant</groupId>
 			<artifactId>ant</artifactId>
@@ -42,20 +35,17 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
 		<dependency>
 			<groupId>ant</groupId>
 			<artifactId>ant-junit</artifactId>
 			<version>1.6.5</version>
 		</dependency>
-
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>3.8.2</version>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
@@ -63,7 +53,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
 	<build>
 		<sourceDirectory>src/java</sourceDirectory>
 		<resources>

@@ -1,53 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<parent>
 		<artifactId>woproject-all-parent</artifactId>
 		<groupId>org.objectstyle.woproject</groupId>
 		<version>2.0.16-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
-
 	<groupId>org.objectstyle.woproject.maven2</groupId>
 	<artifactId>wolips</artifactId>
 	<version>2.0.16-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>WOLips All</name>
-
-	<description>
-		Contains WOLips Eclipse plugins collection.
-	</description>
-
+	<description> Contains WOLips Eclipse plugins collection. </description>
 	<inceptionYear>2001</inceptionYear>
-
-
-	<build>
-		<!--plugins>
-			
-			<plugin>
-			<artifactId>maven-antrun-plugin</artifactId>
-			<executions>
-			<execution>
-			<phase>package</phase>
-			<configuration>
-			<tasks>
-			<ant inheritAll="false" dir=".." target="dist.wolips.maven" />
-			</tasks>
-			</configuration>
-			<goals>
-			<goal>run</goal>
-			</goals>
-			</execution>
-			</executions>
-			<dependencies>
-			<dependency>
-			<groupId>ant</groupId>
-			<artifactId>ant-optional</artifactId>
-			<version>1.5.2</version>
-			</dependency>
-			</dependencies>
-			</plugin>
-			
-			</plugins -->
-	</build>
+	<modules>
+		<module>base/plugins/org.objectstyle.wolips.baseforplugins</module>
+	</modules>
 </project>
