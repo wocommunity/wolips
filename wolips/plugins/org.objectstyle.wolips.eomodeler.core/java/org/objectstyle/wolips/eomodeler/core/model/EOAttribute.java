@@ -632,47 +632,6 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		super.setServerTimeZone((String) _nullIfPrototyped(AbstractEOArgument.SERVER_TIME_ZONE, _serverTimeZone));
 	}
 
-	public String getJavaClassName() {
-		String className = getValueClassName();
-		if (className != null && className.startsWith("java.lang.")) {
-			className = className.substring("java.lang.".length());
-		}
-		if ("Number".equals(className) || "NSNumber".equals(className)) {
-			String valueType = getValueType();
-			if (valueType == null || valueType.length() == 0) {
-				className = "Integer";
-			} else if ("B".equals(valueType)) {
-				className = "BigDecimal";
-			} else if ("b".equals(valueType)) {
-				className = "Byte";
-			} else if ("d".equals(valueType)) {
-				className = "Double";
-			} else if ("f".equals(valueType)) {
-				className = "Float";
-			} else if ("i".equals(valueType)) {
-				className = "Integer";
-			} else if ("l".equals(valueType)) {
-				className = "Long";
-			} else if ("s".equals(valueType)) {
-				className = "Short";
-			} else if ("c".equals(valueType)) {
-				className = "Boolean";
-			}
-		} else if ("NSString".equals(className)) {
-			className = "String";
-		} else if ("NSCalendarDate".equals(className)) {
-			className = "NSTimestamp";
-		} else if ("NSDecimalNumber".equals(className)) {
-			String valueType = getValueType();
-			if (valueType == null || valueType.length() == 0) {
-				className = "Integer";
-			} else {
-				className = "BigDecimal";
-			}
-		}
-		return className;
-	}
-
 	public String getValueClassName() {
 		return (String) _prototypeValueIfNull(AbstractEOArgument.VALUE_CLASS_NAME, super.getValueClassName());
 	}

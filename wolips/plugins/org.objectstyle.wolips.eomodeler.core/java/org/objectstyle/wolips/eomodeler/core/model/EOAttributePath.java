@@ -65,7 +65,7 @@ public class EOAttributePath extends AbstractEOAttributePath {
 		String className = null;
 		EOAttribute attribute = getChildAttribute();
 		if (attribute != null) {
-			className = attribute.getJavaClassName();
+			className = attribute.getJavaClassName(true);
 		}
 		return className;
 	}
