@@ -6,12 +6,14 @@ import java.io.File;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectHelper;
 
 /**
  * resources goal for WebObjects projects.
  * 
  * @goal package-woframework
+ * @phase package
+ * @requiresProject
+ * @requiresDependencyResolution compile
  * @author uli
  * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
  * @since 2.0
@@ -27,11 +29,6 @@ public class PackageWOFrameworkResourcesMojo extends AbstractPackageMojo {
 	 */
 	private MavenProject project;
 
-	/**
-	 * @component
-	 */
-	private MavenProjectHelper projectHelper;
-
 	public PackageWOFrameworkResourcesMojo() {
 		super();
 	}
@@ -44,17 +41,12 @@ public class PackageWOFrameworkResourcesMojo extends AbstractPackageMojo {
 
 		getLog().info("Attaching artifact " + frameworkFile.getAbsolutePath());
 
-		projectHelper.attachArtifact(getProject(), "jar", frameworkFile);
-	}
-
-	@Override
-	protected File getArtifactFile() {
-		return new File(getBuildFolder(), getProject().getArtifactId() + "-" + getProject().getVersion() + ".woframework");
+		getProjectHelper().attachArtifact(getProject(), "jar", getClassifier(), frameworkFile);
 	}
 
 	@Override
 	public String getProductExtension() {
-		return "framework";
+		return "woframework";
 	}
 
 	@Override
@@ -63,7 +55,7 @@ public class PackageWOFrameworkResourcesMojo extends AbstractPackageMojo {
 	}
 
 	protected File getWOFrameworkFile() {
-		return new File(getBuildFolder(), getProject().getArtifactId() + "-" + getProject().getVersion() + ".jar");
+		return new File(getBuildDirectory(), getFinalName() + ".jar");
 	}
 
 }
