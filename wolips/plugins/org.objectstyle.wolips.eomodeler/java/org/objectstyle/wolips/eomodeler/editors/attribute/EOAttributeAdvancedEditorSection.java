@@ -70,6 +70,7 @@ import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttributePath;
+import org.objectstyle.wolips.eomodeler.utils.BooleanUpdateValueStrategy;
 
 public class EOAttributeAdvancedEditorSection extends AbstractPropertySection {
 	private EOAttribute _attribute;
@@ -149,10 +150,10 @@ public class EOAttributeAdvancedEditorSection extends AbstractPropertySection {
 
 		if (_attribute != null) {
 			_bindingContext = new DataBindingContext();
-			_bindingContext.bindValue(SWTObservables.observeSelection(_readOnlyButton), BeansObservables.observeValue(_attribute, EOAttribute.READ_ONLY), null, null);
-			_bindingContext.bindValue(SWTObservables.observeSelection(_clientClassPropertyButton), BeansObservables.observeValue(_attribute, EOAttribute.CLIENT_CLASS_PROPERTY), null, null);
-			_bindingContext.bindValue(SWTObservables.observeSelection(_commonClassPropertyButton), BeansObservables.observeValue(_attribute, EOAttribute.COMMON_CLASS_PROPERTY), null, null);
-			_bindingContext.bindValue(SWTObservables.observeSelection(_generateSourceButton), BeansObservables.observeValue(_attribute, EOAttribute.GENERATE_SOURCE), null, null);
+			_bindingContext.bindValue(SWTObservables.observeSelection(_readOnlyButton), BeansObservables.observeValue(_attribute, EOAttribute.READ_ONLY), null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(SWTObservables.observeSelection(_clientClassPropertyButton), BeansObservables.observeValue(_attribute, EOAttribute.CLIENT_CLASS_PROPERTY), null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(SWTObservables.observeSelection(_commonClassPropertyButton), BeansObservables.observeValue(_attribute, EOAttribute.COMMON_CLASS_PROPERTY), null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(SWTObservables.observeSelection(_generateSourceButton), BeansObservables.observeValue(_attribute, EOAttribute.GENERATE_SOURCE), null, new BooleanUpdateValueStrategy());
 			_bindingContext.bindValue(SWTObservables.observeText(_readFormatText, SWT.Modify), BeansObservables.observeValue(_attribute, EOAttribute.READ_FORMAT), null, null);
 			_bindingContext.bindValue(SWTObservables.observeText(_writeFormatText, SWT.Modify), BeansObservables.observeValue(_attribute, EOAttribute.WRITE_FORMAT), null, null);
 		}

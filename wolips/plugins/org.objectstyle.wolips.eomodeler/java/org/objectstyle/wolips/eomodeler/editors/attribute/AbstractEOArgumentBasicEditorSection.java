@@ -90,6 +90,7 @@ import org.objectstyle.wolips.eomodeler.editors.dataType.DoubleDataTypePanel;
 import org.objectstyle.wolips.eomodeler.editors.dataType.IDataTypePanel;
 import org.objectstyle.wolips.eomodeler.editors.dataType.IntegerDataTypePanel;
 import org.objectstyle.wolips.eomodeler.editors.dataType.StringDataTypePanel;
+import org.objectstyle.wolips.eomodeler.utils.BooleanUpdateValueStrategy;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 
 public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPropertySection {
@@ -269,7 +270,7 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 				_bindingContext.bindValue(SWTObservables.observeText(_columnNameText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.COLUMN_NAME), null, null);
 				_bindingContext.bindValue(SWTObservables.observeText(_definitionText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.DEFINITION), null, null);
 				_bindingContext.bindValue(SWTObservables.observeText(_externalTypeText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.EXTERNAL_TYPE), null, null);
-				_bindingContext.bindValue(SWTObservables.observeSelection(_allowNullsButton), BeansObservables.observeValue(_argument, AbstractEOArgument.ALLOWS_NULL), null, null);
+				_bindingContext.bindValue(SWTObservables.observeSelection(_allowNullsButton), BeansObservables.observeValue(_argument, AbstractEOArgument.ALLOWS_NULL), null, new BooleanUpdateValueStrategy());
 
 				_argumentChanged(argument);
 

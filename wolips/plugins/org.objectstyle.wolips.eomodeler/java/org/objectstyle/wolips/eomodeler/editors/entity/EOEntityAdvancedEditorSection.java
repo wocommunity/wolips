@@ -72,6 +72,7 @@ import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
+import org.objectstyle.wolips.eomodeler.utils.BooleanUpdateValueStrategy;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 
 public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
@@ -171,9 +172,9 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 			_bindingContext.bindValue(SWTObservables.observeText(_maxNumberOfInstancesToBatchFetchText, SWT.Modify), BeansObservables.observeValue(_entity, EOEntity.MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH), null, null);
 			// new BindSpec(null, null, new RegexStringValidator("^[0-9]*$",
 			// "^[0-9]+$", "Please enter a number"), null));
-			_bindingContext.bindValue(SWTObservables.observeSelection(_cacheInMemoryButton), BeansObservables.observeValue(_entity, EOEntity.CACHES_OBJECTS), null, null);
-			_bindingContext.bindValue(SWTObservables.observeSelection(_readOnlyButton), BeansObservables.observeValue(_entity, EOEntity.READ_ONLY), null, null);
-			_bindingContext.bindValue(SWTObservables.observeSelection(_generateSourceButton), BeansObservables.observeValue(_entity, EOEntity.GENERATE_SOURCE), null, null);
+			_bindingContext.bindValue(SWTObservables.observeSelection(_cacheInMemoryButton), BeansObservables.observeValue(_entity, EOEntity.CACHES_OBJECTS), null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(SWTObservables.observeSelection(_readOnlyButton), BeansObservables.observeValue(_entity, EOEntity.READ_ONLY), null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(SWTObservables.observeSelection(_generateSourceButton), BeansObservables.observeValue(_entity, EOEntity.GENERATE_SOURCE), null, new BooleanUpdateValueStrategy());
 			_bindingContext.bindValue(SWTObservables.observeText(_externalQueryText, SWT.Modify), BeansObservables.observeValue(_entity, EOEntity.EXTERNAL_QUERY), null, null);
 			_bindingContext.bindValue(SWTObservables.observeText(_clientClassNameText, SWT.Modify), BeansObservables.observeValue(_entity, EOEntity.CLIENT_CLASS_NAME), null, null);
 			_bindingContext.bindValue(SWTObservables.observeText(_parentClassNameText, SWT.Modify), BeansObservables.observeValue(_entity, EOEntity.PARENT_CLASS_NAME), null, null);
