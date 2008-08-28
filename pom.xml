@@ -116,7 +116,7 @@
 	</reporting>
 	<build>
 		<plugins>
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-changes-plugin</artifactId>
 				<executions>
@@ -142,7 +142,7 @@
 						<toAddress implementation="java.lang.String"> ulrich@objectstyle.org </toAddress>
 					</toAddresses>
 				</configuration>
-			</plugin>
+			</plugin> -->
 			<plugin>
 				<artifactId>maven-plugin-plugin</artifactId>
 				<dependencies>
