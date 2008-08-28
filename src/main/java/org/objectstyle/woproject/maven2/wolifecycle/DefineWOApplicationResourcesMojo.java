@@ -40,7 +40,7 @@ import org.apache.maven.project.MavenProject;
 public class DefineWOApplicationResourcesMojo extends AbstractDefineResourcesMojo {
 
 	/**
-	 * Changes back slashes '\' on Windows to '/'.
+	 * Change back slashes '\' on Windows to '/'.
 	 * 
 	 * @param path
 	 *            Any file path
@@ -170,7 +170,7 @@ public class DefineWOApplicationResourcesMojo extends AbstractDefineResourcesMoj
 	void defineProperties() throws MojoExecutionException {
 		getLog().info("Defining WO properties");
 
-		File file = new File(getBuildFolder(), "wobuild.properties");
+		File file = new File(getBuildDirectory(), "wobuild.properties");
 
 		getLog().debug("Writing properties to file: " + file.getPath());
 
@@ -233,7 +233,7 @@ public class DefineWOApplicationResourcesMojo extends AbstractDefineResourcesMoj
 
 						String prefix = "WebServerResources";
 
-						File frameworksFolder = new File(getBuildFolder(), File.separator + this.getProject().getArtifactId() + "-" + this.getProject().getVersion() + ".woa" + File.separator + "Contents" + File.separator + "Frameworks" + File.separator);
+						File frameworksFolder = new File(getBuildDirectory(), File.separator + this.getProject().getArtifactId() + "-" + this.getProject().getVersion() + ".woa" + File.separator + "Contents" + File.separator + "Frameworks" + File.separator);
 
 						if (jarEntryName != null && jarEntryName.length() > prefix.length() && jarEntryName.startsWith(prefix)) {
 							File destinationFolder = new File(frameworksFolder, jarFile.getName() + ".framework");

@@ -93,12 +93,19 @@ public abstract class AbstractWOMojo extends AbstractMojo {
 	 */
 	private MavenProject project;
 
+	/**
+	 * @parameter expression="${project.build.directory}"
+	 * @required
+	 * @readonly
+	 */
+	private File buildDirectory;
+
 	public AbstractWOMojo() {
 		super();
 	}
 
-	protected File getBuildFolder() {
-		return new File(getProject().getBuild().getDirectory());
+	public File getBuildDirectory() {
+		return buildDirectory;
 	}
 
 	public List<Artifact> getDependencies() {
@@ -137,5 +144,9 @@ public abstract class AbstractWOMojo extends AbstractMojo {
 		getLog().debug("The group " + normalizedGroup + " is " + (returnValue ? "" : "NOT ") + "an Apple group.");
 
 		return returnValue;
+	}
+
+	public void setBuildDirectory(final File buildDirectory) {
+		this.buildDirectory = buildDirectory;
 	}
 }
