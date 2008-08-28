@@ -95,6 +95,8 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 
 	private String myValueClassName;
 
+	private boolean _usesClassNameProperty;
+
 	private String myValueFactoryMethodName;
 
 	private EOFactoryMethodArgumentType myFactoryMethodArgumentType;
@@ -143,16 +145,16 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		_cloneUserInfoInto(argument);
 		return argument;
 	}
-	
+
 	public void _cloneIntoArgument(AbstractEOArgument argument, boolean updatingFlattenedAttribute) {
 		if (updatingFlattenedAttribute) {
 			argument.myColumnName = "";
-		}
-		else {
+		} else {
 			argument.myColumnName = myColumnName;
 		}
 		argument.myExternalType = myExternalType;
 		argument.myValueType = myValueType;
+		argument._usesClassNameProperty = _usesClassNameProperty;
 		argument.myValueClassName = myValueClassName;
 		argument.myValueFactoryMethodName = myValueFactoryMethodName;
 		argument.myFactoryMethodArgumentType = myFactoryMethodArgumentType;
@@ -334,6 +336,77 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		firePropertyChange(AbstractEOArgument.DATA_TYPE, _oldDataType, dataType);
 	}
 
+	public String getJavaClassName() {
+		return getJavaClassName(true);
+	}
+
+	protected String _convertJavaClassNameToValueClassName(String javaClassName) {
+		String className = javaClassName;
+		if (className == null) {
+			className = null;
+		} else if (className.equals("java.lang.String")) {
+			className = "NSString";
+		} else if (className.equals("java.lang.Number")) {
+			className = "NSNumber";
+		} else if (className.equals("java.math.BigDecimal")) {
+			className = "NSDecimalNumber";
+		} else if (className.equals("com.webobjects.foundation.NSTimestamp")) {
+			className = "NSCalendarDate";
+		} else if (className.equals("com.webobjects.foundation.NSData")) {
+			className = "NSData";
+		} else if (className.equals("")) {
+			className = null;
+		} else {
+			String[] strs = className.split("\\.");
+			className = strs[strs.length - 1];
+		}
+		return className;
+	}
+
+	public String getJavaClassName(boolean shorten) {
+		String className = getValueClassName();
+		if (shorten && className != null && className.startsWith("java.lang.")) {
+			className = className.substring("java.lang.".length());
+		}
+		if ("java.lang.Number".equals(className) || "Number".equals(className) || "NSNumber".equals(className)) {
+			String valueType = getValueType();
+			if (valueType == null || valueType.length() == 0) {
+				className = "java.lang.Integer";
+			} else if ("B".equals(valueType)) {
+				className = "java.lang.BigDecimal";
+			} else if ("b".equals(valueType)) {
+				className = "java.lang.Byte";
+			} else if ("d".equals(valueType)) {
+				className = "java.lang.Double";
+			} else if ("f".equals(valueType)) {
+				className = "java.lang.Float";
+			} else if ("i".equals(valueType)) {
+				className = "java.lang.Integer";
+			} else if ("l".equals(valueType)) {
+				className = "java.lang.Long";
+			} else if ("s".equals(valueType)) {
+				className = "java.lang.Short";
+			} else if ("c".equals(valueType)) {
+				className = "java.lang.Boolean";
+			}
+		} else if ("NSString".equals(className)) {
+			className = "java.lang.String";
+		} else if ("NSCalendarDate".equals(className)) {
+			className = "NSTimestamp";
+		} else if ("NSDecimalNumber".equals(className)) {
+			String valueType = getValueType();
+			if (valueType == null || valueType.length() == 0) {
+				className = "java.lang.Integer";
+			} else {
+				className = "java.lang.BigDecimal";
+			}
+		}
+		if (shorten && className != null && className.startsWith("java.lang.")) {
+			className = className.substring("java.lang.".length());
+		}
+		return className;
+	}
+
 	public String getValueClassName() {
 		return myValueClassName;
 	}
@@ -392,28 +465,27 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		firePropertyChange(AbstractEOArgument.WIDTH, oldWidth, getWidth());
 	}
 
-
 	public void setDefinition(String _definition) {
 		String oldDefinition = myDefinition;
 		myDefinition = _definition;
 		updateDefinitionPath();
 		firePropertyChange(AbstractEOArgument.DEFINITION, oldDefinition, getDefinition());
 	}
-	
+
 	public String getDefinition() {
 		return _getDefinition();
 	}
-	
-	protected String _getDefinition() {  
+
+	protected String _getDefinition() {
 		return myDefinition;
 	}
-	
+
 	protected void updateDefinitionPath() {
 		// DO NOTHING
 	}
 
-  @SuppressWarnings("unused") 
-  public void loadFromMap(EOModelMap _argumentMap, Set<EOModelVerificationFailure> _failures) {
+	@SuppressWarnings("unused")
+	public void loadFromMap(EOModelMap _argumentMap, Set<EOModelVerificationFailure> _failures) {
 		myArgumentMap = _argumentMap;
 		myName = _argumentMap.getString("name", true);
 		if (_argumentMap.containsKey("externalName")) {
@@ -431,6 +503,10 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		}
 		myValueType = _argumentMap.getString("valueType", true);
 		myValueClassName = _argumentMap.getString("valueClassName", true);
+		if (myValueClassName == null) {
+			myValueClassName = _convertJavaClassNameToValueClassName(_argumentMap.getString("className", true));
+			_usesClassNameProperty = true;
+		}
 		myValueFactoryMethodName = _argumentMap.getString("valueFactoryMethodName", true);
 		myFactoryMethodArgumentType = EOFactoryMethodArgumentType.getFactoryMethodArgumentTypeByID(_argumentMap.getString("factoryMethodArgumentType", true));
 		myAdaptorValueConversionMethodName = _argumentMap.getString("adaptorValueConversionMethodName", true);
@@ -460,28 +536,30 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		argumentMap.setString("serverTimeZone", myServerTimeZone, true);
 		argumentMap.remove("maximumLength");
 		argumentMap.setString("valueType", myValueType, true);
-		argumentMap.setString("valueClassName", myValueClassName, true);
+		if (_usesClassNameProperty) {
+			argumentMap.setString("className", getJavaClassName(false), true);
+		} else {
+			argumentMap.setString("valueClassName", myValueClassName, true);
+		}
 		argumentMap.setString("valueFactoryMethodName", myValueFactoryMethodName, true);
 		if (myFactoryMethodArgumentType != null) {
 			argumentMap.setString("factoryMethodArgumentType", myFactoryMethodArgumentType.getID(), true);
-		}
-		else {
+		} else {
 			argumentMap.remove("factoryMethodArgumentType");
 		}
 		argumentMap.setString("adaptorValueConversionMethodName", myAdaptorValueConversionMethodName, true);
-		
+
 		if (isPrototyped()) {
 			argumentMap.setBoolean("allowsNull", myAllowsNull, EOModelMap.YN);
-		}
-		else {
+		} else {
 			argumentMap.setBoolean("allowsNull", myAllowsNull, EOModelMap.YNOptionalDefaultNo);
 		}
-				
+
 		argumentMap.setString("definition", myDefinition, true);
 		writeUserInfo(argumentMap);
 		return argumentMap;
 	}
-	
+
 	protected boolean isPrototyped() {
 		return false;
 	}
