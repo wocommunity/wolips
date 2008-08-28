@@ -55,6 +55,7 @@
  */
 package org.objectstyle.wolips.jdt.classpath;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.ClasspathVariableInitializer;
 import org.eclipse.jdt.core.JavaCore;
@@ -75,7 +76,10 @@ public class ExternalBuildRootInitializer extends ClasspathVariableInitializer {
 	public void initialize(String variable) {
 		if ("EXTERNAL_BUILD_ROOT".equals(variable)) {
 			try {
-				JavaCore.setClasspathVariable(variable, VariablesPlugin.getDefault().getExternalBuildRoot(), new NullProgressMonitor());
+				IPath externalBuildRoot = VariablesPlugin.getDefault().getExternalBuildRoot();
+				if (VariablesPlugin.getDefault().getExternalBuildRoot() != null) {
+					JavaCore.setClasspathVariable(variable, externalBuildRoot, new NullProgressMonitor());
+				}
 			} catch (JavaModelException e) {
 				JdtPlugin.getDefault().getPluginLogger().log(e);
 			}
