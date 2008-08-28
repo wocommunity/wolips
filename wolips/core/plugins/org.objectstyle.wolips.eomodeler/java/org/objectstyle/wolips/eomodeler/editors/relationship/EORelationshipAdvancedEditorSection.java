@@ -73,6 +73,7 @@ import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.core.model.EORelationshipPath;
+import org.objectstyle.wolips.eomodeler.utils.BooleanUpdateValueStrategy;
 
 public class EORelationshipAdvancedEditorSection extends AbstractPropertySection {
 	private EORelationship _relationship;
@@ -150,10 +151,10 @@ public class EORelationshipAdvancedEditorSection extends AbstractPropertySection
 			_bindingContext.bindValue(SWTObservables.observeText(_numberOfToManyFaultsToBatchFetchText, SWT.Modify), BeansObservables.observeValue(_relationship, EORelationship.NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH), null, null);
 			// new BindSpec(null, null, new RegexStringValidator("^[0-9]*$",
 			// "^[0-9]+$", "Please enter a number"), null)
-			_bindingContext.bindValue(SWTObservables.observeSelection(_ownsDestinationButton), BeansObservables.observeValue(_relationship, EORelationship.OWNS_DESTINATION), null, null);
-			_bindingContext.bindValue(SWTObservables.observeSelection(_propagatesPrimaryKeyButton), BeansObservables.observeValue(_relationship, EORelationship.PROPAGATES_PRIMARY_KEY), null, null);
-			_bindingContext.bindValue(SWTObservables.observeSelection(_clientClassPropertyButton), BeansObservables.observeValue(_relationship, EORelationship.CLIENT_CLASS_PROPERTY), null, null);
-      _bindingContext.bindValue(SWTObservables.observeSelection(_commonClassPropertyButton), BeansObservables.observeValue(_relationship, EORelationship.COMMON_CLASS_PROPERTY), null, null);
+			_bindingContext.bindValue(SWTObservables.observeSelection(_ownsDestinationButton), BeansObservables.observeValue(_relationship, EORelationship.OWNS_DESTINATION), null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(SWTObservables.observeSelection(_propagatesPrimaryKeyButton), BeansObservables.observeValue(_relationship, EORelationship.PROPAGATES_PRIMARY_KEY), null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(SWTObservables.observeSelection(_clientClassPropertyButton), BeansObservables.observeValue(_relationship, EORelationship.CLIENT_CLASS_PROPERTY), null, new BooleanUpdateValueStrategy());
+      _bindingContext.bindValue(SWTObservables.observeSelection(_commonClassPropertyButton), BeansObservables.observeValue(_relationship, EORelationship.COMMON_CLASS_PROPERTY), null, new BooleanUpdateValueStrategy());
 			updateCardinalityEnabled();
 		}
 	}

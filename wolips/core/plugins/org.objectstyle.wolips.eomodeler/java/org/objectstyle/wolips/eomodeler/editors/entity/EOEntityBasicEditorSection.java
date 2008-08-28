@@ -72,6 +72,7 @@ import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
+import org.objectstyle.wolips.eomodeler.utils.BooleanUpdateValueStrategy;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 
 public class EOEntityBasicEditorSection extends AbstractPropertySection {
@@ -146,7 +147,8 @@ public class EOEntityBasicEditorSection extends AbstractPropertySection {
 		if (ComparisonUtils.equals(selection, getSelection())) {
 			return;
 		}
-		
+
+		System.out.println("EOEntityBasicEditorSection.setInput: input");
 		super.setInput(part, selection);
 		Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
 		EOEntity entity = (EOEntity) selectedObject;
@@ -160,7 +162,7 @@ public class EOEntityBasicEditorSection extends AbstractPropertySection {
 				myBindingContext.bindValue(SWTObservables.observeText(myExternalNameText, SWT.Modify), BeansObservables.observeValue(myEntity, EOEntity.EXTERNAL_NAME), null, null);
 				myBindingContext.bindValue(SWTObservables.observeText(myClassNameText, SWT.Modify), BeansObservables.observeValue(myEntity, EOEntity.CLASS_NAME), null, null);
 				myBindingContext.bindValue(SWTObservables.observeText(myRestrictingQualifierText, SWT.Modify), BeansObservables.observeValue(myEntity, EOEntity.RESTRICTING_QUALIFIER), null, null);
-				myBindingContext.bindValue(SWTObservables.observeSelection(myAbstractButton), BeansObservables.observeValue(myEntity, EOEntity.ABSTRACT_ENTITY), null, null);
+				myBindingContext.bindValue(SWTObservables.observeSelection(myAbstractButton), BeansObservables.observeValue(myEntity, EOEntity.ABSTRACT_ENTITY), null, new BooleanUpdateValueStrategy());
 
 				myParentEntityComboViewer.setInput(myEntity);
 				myParentEntityBinding = new ComboViewerBinding(myParentEntityComboViewer, myEntity, EOEntity.PARENT, myEntity.getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY);

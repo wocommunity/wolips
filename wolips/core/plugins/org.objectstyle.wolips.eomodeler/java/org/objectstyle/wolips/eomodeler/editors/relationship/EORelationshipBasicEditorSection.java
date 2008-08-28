@@ -87,6 +87,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.core.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityLabelProvider;
 import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityListContentProvider;
+import org.objectstyle.wolips.eomodeler.utils.BooleanUpdateValueStrategy;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 
 public class EORelationshipBasicEditorSection extends AbstractPropertySection {
@@ -294,11 +295,11 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 				_bindingContext = new DataBindingContext();
 				_bindingContext.bindValue(SWTObservables.observeText(_nameText, SWT.Modify), BeansObservables.observeValue(_relationship, EORelationship.NAME), null, null);
 				_bindingContext.bindValue(SWTObservables.observeText(_definitionText, SWT.Modify), BeansObservables.observeValue(_relationship, EORelationship.DEFINITION), null, null);
-				//_bindingContext.bindValue(SWTObservables.observeSelection(_toOneButton), BeansObservables.observeValue(_relationship, EORelationship.TO_ONE), null, null);
-				_bindingContext.bindValue(SWTObservables.observeSelection(_toManyButton), BeansObservables.observeValue(_relationship, EORelationship.TO_MANY), null, null);
-				_bindingContext.bindValue(SWTObservables.observeSelection(_optionalButton), BeansObservables.observeValue(_relationship, EORelationship.OPTIONAL), null, null);
-				//_bindingContext.bindValue(SWTObservables.observeSelection(_mandatoryButton), BeansObservables.observeValue(_relationship, EORelationship.MANDATORY), null, null);
-				_bindingContext.bindValue(SWTObservables.observeSelection(_classPropertyButton), BeansObservables.observeValue(_relationship, EORelationship.CLASS_PROPERTY), null, null);
+				//_bindingContext.bindValue(SWTObservables.observeSelection(_toOneButton), BeansObservables.observeValue(_relationship, EORelationship.TO_ONE), null, new BooleanUpdateValueStrategy());
+				_bindingContext.bindValue(SWTObservables.observeSelection(_toManyButton), BeansObservables.observeValue(_relationship, EORelationship.TO_MANY), null, new BooleanUpdateValueStrategy());
+				_bindingContext.bindValue(SWTObservables.observeSelection(_optionalButton), BeansObservables.observeValue(_relationship, EORelationship.OPTIONAL), null, new BooleanUpdateValueStrategy());
+				//_bindingContext.bindValue(SWTObservables.observeSelection(_mandatoryButton), BeansObservables.observeValue(_relationship, EORelationship.MANDATORY), null, new BooleanUpdateValueStrategy());
+				_bindingContext.bindValue(SWTObservables.observeSelection(_classPropertyButton), BeansObservables.observeValue(_relationship, EORelationship.CLASS_PROPERTY), null, new BooleanUpdateValueStrategy());
 
 				_deleteRuleBinding = new ComboViewerBinding(_deleteRuleComboViewer, _relationship, EORelationship.DELETE_RULE, null, null, null);
 				_joinSemanticBinding = new ComboViewerBinding(_joinSemanticComboViewer, _relationship, EORelationship.JOIN_SEMANTIC, _relationship.getEntity().getModel().getModelGroup(), EOModelGroup.MODELS, null);

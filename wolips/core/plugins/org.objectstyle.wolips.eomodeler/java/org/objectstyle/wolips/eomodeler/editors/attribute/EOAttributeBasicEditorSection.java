@@ -68,6 +68,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttributePath;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityListContentProvider;
+import org.objectstyle.wolips.eomodeler.utils.BooleanUpdateValueStrategy;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 
 public class EOAttributeBasicEditorSection extends AbstractEOArgumentBasicEditorSection {
@@ -112,9 +113,9 @@ public class EOAttributeBasicEditorSection extends AbstractEOArgumentBasicEditor
 			_prototypeComboViewer.setInput(attribute);
 			_prototypeBinding = new ComboViewerBinding(_prototypeComboViewer, attribute, EOAttribute.PROTOTYPE, attribute.getEntity().getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY);
 
-			getBindingContext().bindValue(SWTObservables.observeSelection(_primaryKeyButton), BeansObservables.observeValue(attribute, EOAttribute.PRIMARY_KEY), null, null);
-			getBindingContext().bindValue(SWTObservables.observeSelection(_classPropertyButton), BeansObservables.observeValue(attribute, EOAttribute.CLASS_PROPERTY), null, null);
-			getBindingContext().bindValue(SWTObservables.observeSelection(_lockingButton), BeansObservables.observeValue(attribute, EOAttribute.USED_FOR_LOCKING), null, null);
+			getBindingContext().bindValue(SWTObservables.observeSelection(_primaryKeyButton), BeansObservables.observeValue(attribute, EOAttribute.PRIMARY_KEY), null, new BooleanUpdateValueStrategy());
+			getBindingContext().bindValue(SWTObservables.observeSelection(_classPropertyButton), BeansObservables.observeValue(attribute, EOAttribute.CLASS_PROPERTY), null, new BooleanUpdateValueStrategy());
+			getBindingContext().bindValue(SWTObservables.observeSelection(_lockingButton), BeansObservables.observeValue(attribute, EOAttribute.USED_FOR_LOCKING), null, new BooleanUpdateValueStrategy());
 		}
 	}
 
