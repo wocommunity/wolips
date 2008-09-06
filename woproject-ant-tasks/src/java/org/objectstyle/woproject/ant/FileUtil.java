@@ -62,8 +62,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.tools.ant.BuildException;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * Provides stream copy utilities.
@@ -126,5 +136,26 @@ class FileUtil {
 				// ignore
 			}
 		}
+	}
+	
+	public static List<Node> getClasspathEntriesOfKind(File baseDir, String desiredKind) throws SAXException, IOException, ParserConfigurationException {
+	  List<Node> classpathEntryNodes = new LinkedList<Node>();
+    File classpathFile = new File(baseDir, ".classpath");
+    if (!classpathFile.exists()) {
+      throw new BuildException("You specified eclipse = 'true', but " + classpathFile + " does not exist.");
+    }
+    Document classpathDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(classpathFile);
+    classpathDocument.normalize();
+    NodeList classpathentries = classpathDocument.getElementsByTagName("classpathentry");
+    for (int classpathentryNum = 0; classpathentryNum < classpathentries.getLength(); classpathentryNum++) {
+      Node classpathentry = classpathentries.item(classpathentryNum);
+      NamedNodeMap attributes = classpathentry.getAttributes();
+      Node kindAttribute = attributes.getNamedItem("kind");
+      String kind = kindAttribute.getTextContent();
+      if (desiredKind.equals(kind)) {
+        classpathEntryNodes.add(classpathentry);
+      }
+    }
+    return classpathEntryNodes;
 	}
 }

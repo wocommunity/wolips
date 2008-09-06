@@ -20,12 +20,22 @@ public class OtherClasspathSet extends FileSet {
 
 	protected boolean embed = false;
 
+	protected boolean eclipse = false;
+	
 	/**
 	 * Constructor for OtherClasspathSet.
 	 */
 	public OtherClasspathSet() {
 		super();
 	}
+  
+  public void setEclipse(boolean eclipse) {
+    this.eclipse = eclipse;
+  }
+  
+  public boolean isEclipse() {
+    return eclipse;
+  }
 
 	private File[] findPackages(Project aProject, String packageDir) {
 
