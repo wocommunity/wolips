@@ -2,6 +2,10 @@
 <?eclipse version="3.0"?>
 <plugin>
    <extension
+         point="org.eclipse.ui.startup">
+      <startup></startup>
+   </extension>
+   <extension
          point="org.eclipse.core.runtime.adapters">
       <factory
             adaptableType="org.eclipse.core.resources.IProject"
