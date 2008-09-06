@@ -55,6 +55,7 @@
  */
 package org.objectstyle.wolips.jdt.classpath;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.ClasspathVariableInitializer;
 import org.eclipse.jdt.core.JavaCore;
@@ -75,7 +76,10 @@ public class NextRootInitializer extends ClasspathVariableInitializer {
 	public void initialize(String variable) {
 		if ("NEXT_ROOT".equals(variable)) {
 			try {
-				JavaCore.setClasspathVariable(variable, VariablesPlugin.getDefault().getSystemRoot(), new NullProgressMonitor());
+				IPath systemRoot = VariablesPlugin.getDefault().getGlobalVariables().getSystemRoot();
+				if (systemRoot != null) {
+					JavaCore.setClasspathVariable(variable, systemRoot, new NullProgressMonitor());
+				}
 			} catch (JavaModelException e) {
 				JdtPlugin.getDefault().getPluginLogger().log(e);
 			}

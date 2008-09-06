@@ -12,7 +12,8 @@ Require-Bundle: org.eclipse.jdt.core,
  org.eclipse.jdt.ui,
  org.objectstyle.wolips.locate,
  org.objectstyle.wolips.baseforuiplugins,
- org.objectstyle.wolips
-Eclipse-LazyStart: true
+ org.objectstyle.wolips,
+ org.objectstyle.wolips.variables;bundle-version="1.0.6"
+Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.refactoring,
  org.objectstyle.wolips.refactoring.actions

@@ -8,8 +8,6 @@ import java.util.Iterator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaElement;
@@ -23,7 +21,6 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.core.WorkingCopyOwner;
 import org.eclipse.jdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.jdt.internal.core.JarPackageFragmentRoot;
 import org.eclipse.jdt.internal.core.JavaElement;
@@ -41,13 +38,11 @@ public class WOHierarchyScope extends AbstractSearchScope implements SuffixConst
 
 	private String _focusPath;
 
-	private WorkingCopyOwner _owner;
-
 	private ITypeHierarchy _hierarchy;
 
 	private IType[] _types;
 
-	private HashSet _resourcePaths;
+	private HashSet<String> _resourcePaths;
 
 	private IPath[] _enclosingProjectsAndJars;
 
@@ -56,7 +51,7 @@ public class WOHierarchyScope extends AbstractSearchScope implements SuffixConst
 	protected int _elementCount;
 
 	public boolean _needsRefresh;
-	
+
 	private IJavaProject _javaProject;
 
 	/*
@@ -72,14 +67,13 @@ public class WOHierarchyScope extends AbstractSearchScope implements SuffixConst
 	/*
 	 * (non-Javadoc) Creates a new hiearchy scope for the given type.
 	 */
-	public WOHierarchyScope(IType type, IJavaProject javaProject, WorkingCopyOwner owner) throws JavaModelException {
-	  _javaProject = javaProject;
+	public WOHierarchyScope(IType type, IJavaProject javaProject) throws JavaModelException {
+		_javaProject = javaProject;
 		_focusType = type;
-		_owner = owner;
 
 		_enclosingProjectsAndJars = computeProjectsAndJars(type);
 
-		if (type != null) { 
+		if (type != null) {
 			// resource path
 			IPackageFragment packageFragment = type.getPackageFragment();
 			if (packageFragment != null) {
@@ -101,12 +95,10 @@ public class WOHierarchyScope extends AbstractSearchScope implements SuffixConst
 				} else {
 					_focusPath = type.getPath().toString();
 				}
-			}
-			else {
+			} else {
 				_focusPath = "";
 			}
-		}
-		else {
+		} else {
 			_focusPath = "";
 		}
 
@@ -117,10 +109,9 @@ public class WOHierarchyScope extends AbstractSearchScope implements SuffixConst
 	}
 
 	private void buildResourceVector() {
-		HashMap resources = new HashMap();
-		HashMap paths = new HashMap();
+		HashMap<IResource, IResource> resources = new HashMap<IResource, IResource>();
+		HashMap<IPath, IType> paths = new HashMap<IPath, IType>();
 		_types = _hierarchy.getAllTypes();
-		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		for (int i = 0; i < _types.length; i++) {
 			IType type = _types[i];
 			IResource resource = type.getResource();
@@ -166,7 +157,7 @@ public class WOHierarchyScope extends AbstractSearchScope implements SuffixConst
 	 * the hierarchy is computed.
 	 */
 	private IPath[] computeProjectsAndJars(IType type) throws JavaModelException {
-		HashSet set = new HashSet();
+		HashSet<IPath> set = new HashSet<IPath>();
 		if (type != null) {
 			IPackageFragmentRoot root = (IPackageFragmentRoot) type.getPackageFragment().getParent();
 			if (root != null) {
@@ -177,7 +168,7 @@ public class WOHierarchyScope extends AbstractSearchScope implements SuffixConst
 					IPath rootPath = root.getPath();
 					IJavaModel model = JavaModelManager.getJavaModelManager().getJavaModel();
 					IJavaProject[] projects = model.getJavaProjects();
-					HashSet visited = new HashSet();
+					HashSet<IJavaProject> visited = new HashSet<IJavaProject>();
 					for (int i = 0; i < projects.length; i++) {
 						JavaProject project = (JavaProject) projects[i];
 						IClasspathEntry entry = project.getClasspathEntryFor(rootPath);
@@ -208,7 +199,7 @@ public class WOHierarchyScope extends AbstractSearchScope implements SuffixConst
 						}
 					}
 					// add the dependent projects
-					computeDependents(project, set, new HashSet());
+					computeDependents(project, set, new HashSet<IJavaProject>());
 				}
 			}
 		}
@@ -217,7 +208,7 @@ public class WOHierarchyScope extends AbstractSearchScope implements SuffixConst
 		return result;
 	}
 
-	private void computeDependents(IJavaProject project, HashSet set, HashSet visited) {
+	private void computeDependents(IJavaProject project, HashSet<IPath> set, HashSet<IJavaProject> visited) {
 		if (visited.contains(project))
 			return;
 		visited.add(project);
@@ -351,12 +342,12 @@ public class WOHierarchyScope extends AbstractSearchScope implements SuffixConst
 	}
 
 	protected void initialize() throws JavaModelException {
-		_resourcePaths = new HashSet();
+		_resourcePaths = new HashSet<String>();
 		_elements = new IResource[5];
 		_elementCount = 0;
 		_needsRefresh = false;
 		if (_hierarchy == null) {
-			_hierarchy = SubTypeHierarchyCache.getTypeHierarchyInProject(_focusType, _javaProject, null); 
+			_hierarchy = SubTypeHierarchyCache.getTypeHierarchyInProject(_focusType, _javaProject, null);
 			//_focusType.newTypeHierarchy(_owner, null);
 		} else {
 			_hierarchy.refresh(null);
@@ -372,7 +363,7 @@ public class WOHierarchyScope extends AbstractSearchScope implements SuffixConst
 			return;
 		_needsRefresh = _hierarchy == null ? false : ((TypeHierarchy) _hierarchy).isAffected(delta, eventType);
 	}
-	
+
 	protected void refresh() throws JavaModelException {
 		if (_hierarchy != null) {
 			initialize();

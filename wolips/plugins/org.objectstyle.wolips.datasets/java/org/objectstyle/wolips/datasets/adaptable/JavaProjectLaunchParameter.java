@@ -85,12 +85,13 @@ public class JavaProjectLaunchParameter extends JavaProjectClasspath {
 	protected JavaProjectLaunchParameter(IProject project) {
 		super(project);
 	}
-
+	
 	/**
 	 * @return
 	 */
 	public boolean isOnMacOSX() {
-		return VariablesPlugin.getDefault().getSystemRoot().toOSString().startsWith("/System");
+		String osName = System.getProperty("os.name");
+		return osName != null && osName.indexOf("Mac") != -1;
 	}
 
 	/**
@@ -235,7 +236,7 @@ public class JavaProjectLaunchParameter extends JavaProjectClasspath {
 				wdFolder = theProject.getFolder(theProject.getName() + ".woa");
 			}
 			if (wdFolder == null || !wdFolder.exists()) {
-				IPath externalRoot = VariablesPlugin.getDefault().getExternalBuildRoot();
+				IPath externalRoot = VariablesPlugin.getDefault().getProjectVariables(theProject).getExternalBuildRoot();
 				if (externalRoot != null) {
 					wdFile = externalRoot.append(this.getIProject().getName() + ".woa").toFile();
 				}

@@ -57,23 +57,32 @@ package org.objectstyle.wolips.core.tobeintregrated;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.dom.*;
+import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.ClassInstanceCreation;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.IPackageBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 public class ASTMethodExplorer extends ASTVisitor {
 
-	Hashtable usedMethods;
+	Hashtable<String, List<String>> usedMethods;
 
-	Hashtable declaredMethods;
+	Hashtable<String, List<String>> declaredMethods;
 
-	Hashtable publicClassVariables;
+	Hashtable<String, List<String>> publicClassVariables;
 
-	Hashtable classDependencies;
+	Hashtable<String, String> classDependencies;
 
 	ICompilationUnit iCompUnit;
 
-	public ASTMethodExplorer(Hashtable myUsedMethods, Hashtable myDeclaredMethods, Hashtable myClassVariables, Hashtable myClassDependencies, ICompilationUnit iComp) {
+	public ASTMethodExplorer(Hashtable<String, List<String>> myUsedMethods, Hashtable<String, List<String>> myDeclaredMethods, Hashtable<String, List<String>> myClassVariables, Hashtable<String, String> myClassDependencies, ICompilationUnit iComp) {
 		super(true);
 		usedMethods = myUsedMethods;
 		declaredMethods = myDeclaredMethods;
@@ -85,7 +94,7 @@ public class ASTMethodExplorer extends ASTVisitor {
 	public boolean visit(ClassInstanceCreation node) {
 		IMethodBinding binding = node.resolveConstructorBinding();
 		if (binding != null) {
-			ArrayList nodesID;
+			List<String> nodesID;
 			String handleID = iCompUnit.getHandleIdentifier();
 
 			ITypeBinding[] params = binding.getParameterTypes();
@@ -99,10 +108,10 @@ public class ASTMethodExplorer extends ASTVisitor {
 			String key = binding.getDeclaringClass().getName() + "." + binding.getName() + paramString;
 
 			if (usedMethods.containsKey(key)) {
-				nodesID = (ArrayList) usedMethods.get(key);
+				nodesID = usedMethods.get(key);
 				nodesID.add(handleID);
 			} else {
-				nodesID = new ArrayList();
+				nodesID = new ArrayList<String>();
 				nodesID.add(handleID);
 			}
 			usedMethods.put(key, nodesID);
@@ -113,7 +122,7 @@ public class ASTMethodExplorer extends ASTVisitor {
 	public boolean visit(MethodInvocation node) {
 		IMethodBinding binding = node.resolveMethodBinding();
 		if (binding != null) {
-			ArrayList nodesID;
+			List<String> nodesID;
 			String handleID = iCompUnit.getHandleIdentifier();
 
 			ITypeBinding[] params = binding.getParameterTypes();
@@ -127,10 +136,10 @@ public class ASTMethodExplorer extends ASTVisitor {
 			String key = binding.getDeclaringClass().getName() + "." + binding.getName() + paramString;
 
 			if (usedMethods.containsKey(key)) {
-				nodesID = (ArrayList) usedMethods.get(key);
+				nodesID = usedMethods.get(key);
 				nodesID.add(handleID);
 			} else {
-				nodesID = new ArrayList();
+				nodesID = new ArrayList<String>();
 				nodesID.add(handleID);
 			}
 			usedMethods.put(key, nodesID);
@@ -182,7 +191,7 @@ public class ASTMethodExplorer extends ASTVisitor {
 			}
 
 			if (!usedMethods.containsKey(key)) {
-				ArrayList value = new ArrayList();
+				List<String> value = new ArrayList<String>();
 				value.add(iCompUnit.getHandleIdentifier());
 				value.add(binding.getName());
 				value.add(binding.getReturnType().getName());
@@ -253,7 +262,7 @@ public class ASTMethodExplorer extends ASTVisitor {
 			boolean isPublic = call.startsWith("public") && !call.startsWith("public static final") && !call.startsWith("public final static");
 			if (binding != null && isPublic) {
 				String key = binding.getDeclaringClass().getName() + "." + binding.getName();
-				ArrayList value = new ArrayList();
+				List<String> value = new ArrayList<String>();
 				value.add(iCompUnit.getHandleIdentifier());
 				value.add(binding.getType().getName());
 				publicClassVariables.put(key, value);

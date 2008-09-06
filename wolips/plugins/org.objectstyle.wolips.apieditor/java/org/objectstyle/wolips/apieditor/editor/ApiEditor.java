@@ -55,6 +55,8 @@
  */
 package org.objectstyle.wolips.apieditor.editor;
 
+import java.util.Vector;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -112,6 +114,7 @@ public class ApiEditor extends FormEditor {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void doSave(IProgressMonitor monitor) {
 		try {
 			this.getModel().saveChanges();
@@ -131,6 +134,12 @@ public class ApiEditor extends FormEditor {
 			}
 		} catch (Throwable t) {
 			throw new RuntimeException("Failed to save .api file.", t);
+		}
+		
+		for (ApiFormPage formPage : (Vector<ApiFormPage>)pages) {
+			if (formPage != null) {
+				formPage.reloadModel();
+			}
 		}
 	}
 

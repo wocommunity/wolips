@@ -21,6 +21,26 @@ function toggleProperty(elementType, flagName) {
 	updateProperties(elementType, visibility[elementType]['nonClassProperty'], visibility[elementType]['inheritedProperty'], visibility[elementType]['details']);
 }
 
+function initializeDetailsToggleForSelector(selector) {
+	$$(selector).each(function(e) {
+	  Event.observe(e, "click", function() { e.up('li').down('.details').toggle() });
+	});
+}
+
+function initializeDetailsToggle() {
+	initializeDetailsToggleForSelector('li.attribute div.name');
+	initializeDetailsToggleForSelector('li.relationship div.name');
+}
+
+function setDetailsVisible(element, detailsVisible) {
+		if (detailsVisible) {
+			element.show();
+		}
+		else {
+			element.hide();
+		}
+}
+	
 function updateProperties(propertyClassName, nonClassVisible, inheritedVisible, detailsVisible) {
 	$$('.' + propertyClassName).each(function(e) {
 		var propertyVisible = true;
@@ -38,13 +58,8 @@ function updateProperties(propertyClassName, nonClassVisible, inheritedVisible, 
 		}
 	});
 
-	$$('.' + propertyClassName + ' .details').each(function(e) { 
-		if (detailsVisible) {
-			e.show();
-		}
-		else {
-			e.hide();
-		}
+	$$('.' + propertyClassName + ' .details').each(function(e) {
+		setDetailsVisible(e, detailsVisible); 
 	});
 
 	updateToggleLink($(propertyClassName + '_details_toggle'), detailsVisible, 'details');

@@ -45,28 +45,21 @@
 
 package org.objectstyle.wolips.launching.classpath;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.StandardClasspathProvider;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
-import org.objectstyle.wolips.variables.VariablesPlugin;
+import org.objectstyle.wolips.jdt.classpath.model.EclipseDependency;
 
 /**
  * @author hn3000
  * @author uli
+ * @author mschrag
  */
 public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 
@@ -92,236 +85,20 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 	 *      org.eclipse.debug.core.ILaunchConfiguration)
 	 */
 	public IRuntimeClasspathEntry[] resolveClasspath(IRuntimeClasspathEntry[] entries, ILaunchConfiguration configuration) throws CoreException {
-		Set<IPath> allProjectArchiveEntries = new HashSet<IPath>();
-		
-		// We need to track with frameworks were projects, because they "win" when competing
-		// with the same named framework from a /Frameworks folder
-		Set<String> projectFrameworkNames = new HashSet<String>();
-		
-		// We need to track the name of the framework that contained each entry so we can
-		// look it back up when we're building the final classpath
-		Map<IRuntimeClasspathEntry, String> entryFramework = new HashMap<IRuntimeClasspathEntry, String>();
-		
-		// We also need to keep track of the location of the framework, so we only load
-		// jars from the first framework we come across 
-		Map<String, IPath> addedFramework = new HashMap<String, IPath>();
-		
-		// Pending results contains all of the classpath entries, filtered such that we only
-		// load the first of a framework from a /Frameworks folder, but we may end up with
-		// dupes that are in a project AND a /Frameworks folder -- we'll clean that up later.
-		List<IRuntimeClasspathEntry> pendingResult = new LinkedList<IRuntimeClasspathEntry>();
-		
-		IRuntimeClasspathEntry[] originalResult = super.resolveClasspath(entries, configuration);
-		for (IRuntimeClasspathEntry entry : originalResult) {
-			IPath entryPath = entry.getPath();
-			String frameworkName = null;
-			int frameworkSegment = frameworkSegmentForPath(entryPath);
-			boolean addEntry = false;
-			if (frameworkSegment == -1) {
-				// MS: If ".framework" isn't in the path and we have a project, then
-				// put a "fake" entry in the framework list corresponding to the project.  This
-				// prevents /Library/Framework versions of the framework from loading later on 
-				// in the classpath.
-				if (IRuntimeClasspathEntry.PROJECT == entry.getType()) {
-					IProject project = (IProject) entry.getResource();
-					frameworkName = frameworkNameForProject(project);
-					addedFramework.put(frameworkName, entryPath);
-					projectFrameworkNames.add(frameworkName);
-				}
-				addEntry = true;
-			}
-			else {
-				// MS: Otherwise, we have a regular framework path.  In this case, we
-				// want to skip any jar that is coming from a different path for the 
-				// framework than we have previously loaded.
-				frameworkName = entryPath.segment(frameworkSegment);
-				IPath frameworkPath = entryPath.removeLastSegments(entryPath.segmentCount() - frameworkSegment - 1);
-				IPath previousFrameworkPath = addedFramework.get(frameworkName);
-				if (previousFrameworkPath == null) {
-					addEntry = true;
-					addedFramework.put(frameworkName, frameworkPath);
-				}
-				else if (previousFrameworkPath.equals(frameworkPath)) {
-					addEntry = true;
-				}
-			}
-			
-			// MS: ... all the stars have aligned, and this is a valid entry.  Lets add it.
-			if (addEntry) {
-				if (frameworkName != null) {
-					entryFramework.put(entry, frameworkName);
-				}
-				IPath projectArchive = getWOJavaArchive(entry);
-				// MS: We need to get the build/BuiltFramework.framework folder from
-				// a project and add that instead of the bin folder ...
-				if (projectArchive != null) {
-					if (!allProjectArchiveEntries.contains(projectArchive)) {
-						pendingResult.add(entry);
-						IRuntimeClasspathEntry resolvedEntry = JavaRuntime.newArchiveRuntimeClasspathEntry(projectArchive);
-						pendingResult.add(resolvedEntry);
-						allProjectArchiveEntries.add(projectArchive);
-					}
-				} else {
-					pendingResult.add(entry);
-				}
-			}
-		}
+		IRuntimeClasspathEntry[] resolvedEntries = super.resolveClasspath(entries, configuration);
 
-		// sort classpath: project in front, then frameworks, then apple frameworks, then the rest
-		List<IRuntimeClasspathEntry> otherJars = new ArrayList<IRuntimeClasspathEntry>();
-		List<IRuntimeClasspathEntry> noAppleJars = new ArrayList<IRuntimeClasspathEntry>();
-		List<IRuntimeClasspathEntry> appleJars = new ArrayList<IRuntimeClasspathEntry>();
-		List<IRuntimeClasspathEntry> projects = new ArrayList<IRuntimeClasspathEntry>();
-		List<IRuntimeClasspathEntry> woa = new ArrayList<IRuntimeClasspathEntry>();
-		for (IRuntimeClasspathEntry entry : pendingResult) {
-			String frameworkName = entryFramework.get(entry);
-			if (IRuntimeClasspathEntry.PROJECT == entry.getType()) {
-				projects.add(entry);
-			}
-			// If the framework was added as a project, don't add it as a /Frameworks
-			// folder framework.  This is cleaning up from the case where we got, for
-			// instance /Library/Frameworks/WOOgnl.framework AND WOOgnl project.  We
-			// want the project to win.
-			else if (!projectFrameworkNames.contains(frameworkName)) {
-				if (isAppleProvided(entry)) {
-					appleJars.add(entry);
-				} else if (isFrameworkJar(entry)) {
-					noAppleJars.add(entry);
-				} else if (isBuildProject(entry)) {
-					noAppleJars.add(entry);
-				} else if (isWoa(entry)) {
-					woa.add(entry);
-				} else {
-					otherJars.add(entry);
-				}
-			}
-//			else {
-//				System.out.println("WORuntimeClasspathProvider.resolveClasspath: skipping " + frameworkName + ": " + entry);
-//			}
+		IProject project = JavaRuntime.getJavaProject(configuration).getProject();
+		List<EclipseDependency> unorderedDependencies = new ArrayList<EclipseDependency>(resolvedEntries.length);
+		for (IRuntimeClasspathEntry entry : resolvedEntries) {
+			unorderedDependencies.add(new EclipseDependency(project, entry));
 		}
-		
-		ArrayList<IRuntimeClasspathEntry> sortedEntries = new ArrayList<IRuntimeClasspathEntry>();
-		if (woa.size() > 0) {
-			sortedEntries.addAll(woa);
-		}
-		if (projects.size() > 0) {
-			sortedEntries.addAll(projects);
-		}
-		if (noAppleJars.size() > 0) {
-			sortedEntries.addAll(noAppleJars);
-		}
-		if (appleJars.size() > 0) {
-			sortedEntries.addAll(appleJars);
-		}
-		if (otherJars.size() > 0) {
-			sortedEntries.addAll(otherJars);
-		}
-//		for (IRuntimeClasspathEntry entry : sortedEntries) {
-//			System.out.println("WORuntimeClasspathProvider.resolveClasspath: final = " + entry);
-//		}
-		
-		return sortedEntries.toArray(new IRuntimeClasspathEntry[sortedEntries.size()]);
-	}
-	
-	// MS: This is a total hack ... It should use
-	// the WOLips API to framework name.  For most, I think it works
-	// out, and in particular, for Wonder it does. 
-	protected String frameworkNameForProject(IProject project) {
-		return project.getName() + ".framework";
-	}
-	
-	protected int frameworkSegmentForPath(IPath path) {
-		int frameworkSegment = -1;
-		for (int segmentNum = 0; frameworkSegment == -1 && segmentNum < path.segmentCount(); segmentNum ++) {
-			String segment = path.segment(segmentNum);
-			if (segment.endsWith(".framework")) {
-				frameworkSegment = segmentNum;
-			}
-		}
-		return frameworkSegment;
-	}
+		List<EclipseDependency> orderedDependencies = new EclipseDependencyOrdering(project).orderDependencies(unorderedDependencies);
 
-	private boolean isAppleProvided(IRuntimeClasspathEntry runtimeClasspathEntry) {
-		String location = runtimeClasspathEntry.getLocation();
-		if (location != null) {
-			// check user settings (from wobuild.properties)
-			IPath rootPath = VariablesPlugin.getDefault().getSystemRoot();
-			if(rootPath != null && location.startsWith(rootPath.toString())) {
-				return location.indexOf("JavaVM") < 0;
-			}
-			// check maven path (first french version)
-			if (location.indexOf("webobjects" + File.separator + "apple") > 0) {
-				return true;
-			}
-			// check maven path
-			if (location.indexOf("apple" + File.separator + "webobjects") > 0) {
-				return true;
-			}
-			if (location.indexOf("System" + File.separator + "Library") > 0) {
-				return location.indexOf("JavaVM") < 0;
-			}
-			// check win path
-			if (location.indexOf("Apple" + File.separator + "Library") > 0) {
-				return true;
-			}
+		IRuntimeClasspathEntry[] orderedEntries = new IRuntimeClasspathEntry[orderedDependencies.size()];
+		int orderedEntryNum = 0;
+		for (EclipseDependency dependency : orderedDependencies) {
+			orderedEntries[orderedEntryNum++] = dependency.getClasspathEntry();
 		}
-		return false;
-	}
-
-	private boolean isWoa(IRuntimeClasspathEntry runtimeClasspathEntry) {
-		String location = runtimeClasspathEntry.getLocation();
-		if (location != null) {
-			if (location.indexOf(".woa") > 0) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean isBuildProject(IRuntimeClasspathEntry runtimeClasspathEntry) {
-		String location = runtimeClasspathEntry.getLocation();
-		if (location != null) {
-			if (location.indexOf(File.separator + "build" + File.separator) > 0) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean isFrameworkJar(IRuntimeClasspathEntry runtimeClasspathEntry) {
-		String location = runtimeClasspathEntry.getLocation();
-		if (location != null) {
-			String pattern = "(?i).*?/(\\w+)\\.framework/Resources/Java/\\1.jar";
-			if (location.replace('\\', '/').matches(pattern)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean isProjectJar(String lastSegment, List projects) {
-		String lower = lastSegment.toLowerCase();
-		for (int i = 0; i < projects.size(); i++) {
-			IProject project = (IProject) projects.get(i);
-			if (lower.startsWith((project.getName() + ".jar").toLowerCase())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	IPath getWOJavaArchive(IRuntimeClasspathEntry entry) throws CoreException {
-		IPath woJavaArchivePath = null;
-		if (IRuntimeClasspathEntry.PROJECT == entry.getType()) {
-			IProject project = (IProject) entry.getResource();
-			IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
-			if (projectAdapter != null) {
-				woJavaArchivePath = projectAdapter.getWOJavaArchive();
-			}
-			else {
-				woJavaArchivePath = null;
-			}
-		}
-		return woJavaArchivePath;
+		return orderedEntries;
 	}
 }

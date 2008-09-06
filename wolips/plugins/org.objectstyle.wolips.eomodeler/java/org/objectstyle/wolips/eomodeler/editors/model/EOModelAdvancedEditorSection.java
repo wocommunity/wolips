@@ -59,11 +59,14 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -76,7 +79,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.utils.NamingConvention;
 import org.objectstyle.wolips.eomodeler.utils.StringLabelProvider;
 
-public class EOModelAdvancedEditorSection extends AbstractPropertySection implements ModifyListener, ISelectionChangedListener {
+public class EOModelAdvancedEditorSection extends AbstractPropertySection implements ModifyListener, ISelectionChangedListener, SelectionListener {
 	private EOModel _model;
 
 	private ComboViewer _entityCase;
@@ -94,6 +97,8 @@ public class EOModelAdvancedEditorSection extends AbstractPropertySection implem
 	private Text _attributePrefix;
 
 	private Text _attributeSuffix;
+	
+	private Button _reverseEngineered;
 
 	public EOModelAdvancedEditorSection() {
 		// DO NOTHING
@@ -163,6 +168,9 @@ public class EOModelAdvancedEditorSection extends AbstractPropertySection implem
 		_entitySeparator.setContentProvider(new ArrayContentProvider());
 		_entitySeparator.setInput(NamingConvention.Separator.values());
 		entitySeparatorCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		
+		_reverseEngineered = getWidgetFactory().createButton(topForm, "Reverse Engineered", SWT.CHECK);
+		_reverseEngineered.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 	}
 
 	public void setInput(IWorkbenchPart part, ISelection selection) {
@@ -190,6 +198,8 @@ public class EOModelAdvancedEditorSection extends AbstractPropertySection implem
 			_entityCase.setSelection(new StructuredSelection(_model.getEntityNamingConvention().getCase()));
 			_entitySeparator.setSelection(new StructuredSelection(_model.getEntityNamingConvention().getSeparator()));
 
+			_reverseEngineered.setSelection(_model.isReverseEngineered());
+
 			_attributePrefix.addModifyListener(this);
 			_attributeSuffix.addModifyListener(this);
 			_attributeCase.addSelectionChangedListener(this);
@@ -198,6 +208,7 @@ public class EOModelAdvancedEditorSection extends AbstractPropertySection implem
 			_entitySuffix.addModifyListener(this);
 			_entityCase.addSelectionChangedListener(this);
 			_entitySeparator.addSelectionChangedListener(this);
+			_reverseEngineered.addSelectionListener(this);
 		}
 	}
 
@@ -226,6 +237,9 @@ public class EOModelAdvancedEditorSection extends AbstractPropertySection implem
 		if (_entitySeparator != null && !_entitySeparator.getCombo().isDisposed()) {
 			_entitySeparator.removeSelectionChangedListener(this);
 		}
+		if (_reverseEngineered != null && !_reverseEngineered.isDisposed()) {
+			_reverseEngineered.removeSelectionListener(this);
+		}
 	}
 
 	public void dispose() {
@@ -249,5 +263,15 @@ public class EOModelAdvancedEditorSection extends AbstractPropertySection implem
 		NamingConvention.Case entityCase = (NamingConvention.Case) ((IStructuredSelection) _entityCase.getSelection()).getFirstElement();
 		NamingConvention.Separator entitySeparator = (NamingConvention.Separator) ((IStructuredSelection) _entitySeparator.getSelection()).getFirstElement();
 		_model.setEntityNamingConvention(new NamingConvention(entityCase, entitySeparator, _entityPrefix.getText(), _entitySuffix.getText()));
+		
+		_model.setReverseEngineered(_reverseEngineered.getSelection());
+	}
+
+	public void widgetDefaultSelected(SelectionEvent e) {
+		syncToModel();
+	}
+
+	public void widgetSelected(SelectionEvent e) {
+		syncToModel();
 	}
 }

@@ -57,6 +57,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.core.resources.internal.pattern.PatternList;
 import org.objectstyle.wolips.core.resources.internal.types.project.ProjectPatternsets;
+import org.objectstyle.wolips.core.resources.types.folder.IBuildAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IDotApplicationAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IDotFrameworkAdapter;
 
@@ -124,7 +125,7 @@ public class AbstractBuildVisitor {
 			return AbstractBuildVisitor.WO_RESOURCE_TYPE_IGNORE;
 		}
 		if (_resource.getType() == IResource.FOLDER) {
-			if ("dist".equals(_resource.getName())) {
+			if (IBuildAdapter.FILE_NAME_DIST.equals(_resource.getName())) {
 				return AbstractBuildVisitor.WO_RESOURCE_TYPE_IGNORE;
 			}
 			IDotFrameworkAdapter dotFrameworkAdapter = (IDotFrameworkAdapter) _resource.getAdapter(IDotFrameworkAdapter.class);

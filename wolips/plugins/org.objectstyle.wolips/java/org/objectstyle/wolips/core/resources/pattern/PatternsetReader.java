@@ -77,7 +77,7 @@ public class PatternsetReader {
 
 	public PatternsetReader(IFile patternset) {
 
-		ArrayList patternList = new ArrayList();
+		ArrayList<String> patternList = new ArrayList<String>();
 		BufferedReader patternReader = null;
 		try {
 			patternReader = new BufferedReader(new FileReader(new File(patternset.getLocation().toOSString())));
@@ -102,7 +102,7 @@ public class PatternsetReader {
 				}
 			}
 		}
-		setPattern((String[]) patternList.toArray(new String[patternList.size()]));
+		setPattern(patternList.toArray(new String[patternList.size()]));
 	}
 
 	/**

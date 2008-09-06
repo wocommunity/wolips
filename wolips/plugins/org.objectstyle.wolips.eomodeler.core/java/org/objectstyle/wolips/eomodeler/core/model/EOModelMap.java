@@ -129,6 +129,14 @@ public class EOModelMap implements Map, Cloneable {
 		}
 	}
 
+	public boolean getBoolean(String _key, boolean defaultValue) {
+		Boolean bool = getBoolean(_key);
+		if (bool == null) {
+			bool = Boolean.valueOf(defaultValue);
+		}
+		return bool.booleanValue();
+	}
+
 	public Boolean getBoolean(String _key) {
 		Object value = get(_key);
 		Boolean boolValue;

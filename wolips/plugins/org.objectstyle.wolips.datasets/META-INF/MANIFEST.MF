@@ -14,7 +14,7 @@ Require-Bundle: org.eclipse.jdt.core,
  org.objectstyle.wolips,
  org.objectstyle.wolips.baseforuiplugins,
  org.eclipse.jdt.ui
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.datasets,
  org.objectstyle.wolips.datasets.adaptable,
  org.objectstyle.wolips.datasets.internal,

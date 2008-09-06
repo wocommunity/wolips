@@ -1,12 +1,14 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Variables Plug-in
-Bundle-SymbolicName: org.objectstyle.wolips.variables; singleton:=true
+Bundle-SymbolicName: org.objectstyle.wolips.variables;singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.variables.VariablesPlugin
 Bundle-Vendor: objectstyle.org
 Require-Bundle: org.objectstyle.wolips.woproject,
  org.eclipse.ant.core,
- org.objectstyle.wolips.baseforplugins
-Eclipse-LazyStart: true
+ org.objectstyle.wolips.baseforplugins,
+ org.eclipse.ui,
+ org.eclipse.core.resources;bundle-version="3.4.0"
+Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.variables

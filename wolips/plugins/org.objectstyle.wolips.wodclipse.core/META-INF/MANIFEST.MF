@@ -15,8 +15,9 @@ Require-Bundle: org.objectstyle.wolips,
  org.eclipse.ui.editors,
  org.objectstyle.wolips.bindings,
  org.eclipse.ltk.core.refactoring,
- org.objectstyle.wolips.thirdparty.commonscollections;bundle-version="1.0.6"
-Eclipse-LazyStart: true
+ org.objectstyle.wolips.thirdparty.commonscollections;bundle-version="1.0.6",
+ org.objectstyle.wolips.woproject;bundle-version="1.0.6"
+Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  lib/commons-jxpath-1.2.jar,
  lib/ss_css2.jar

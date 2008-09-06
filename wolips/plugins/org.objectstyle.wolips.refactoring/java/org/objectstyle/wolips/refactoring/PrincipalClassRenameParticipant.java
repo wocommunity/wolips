@@ -53,6 +53,8 @@ package org.objectstyle.wolips.refactoring;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
@@ -66,13 +68,15 @@ import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
  */
 public class PrincipalClassRenameParticipant extends RenameParticipant {
 	private IProjectAdapter myProject;
+	private Object _element;
 
 	public PrincipalClassRenameParticipant() {
 		super();
 	}
 
-	protected boolean initialize(Object _element) {
-		myProject = PrincipalClassMoveParticipant.getInitializedProject(_element);
+	protected boolean initialize(Object element) {
+		myProject = PrincipalClassMoveParticipant.getInitializedProject(element);
+		_element = element;
 		boolean initialized = myProject != null;
 		return initialized;
 	}
@@ -89,13 +93,20 @@ public class PrincipalClassRenameParticipant extends RenameParticipant {
 	public Change createChange(IProgressMonitor _pm) throws CoreException, OperationCanceledException {
 		Change change = null;
 		if (myProject != null) {
-			String principalClass = myProject.getPrincipalClass(true);
+			String principalClass = myProject.getBuildProperties().getPrincipalClass(true);
 			int nameIndex = principalClass.lastIndexOf('$');
 			if (nameIndex == -1) {
 				nameIndex = principalClass.lastIndexOf('.');
 			}
-			String newName = principalClass.substring(0, nameIndex + 1) + getArguments().getNewName();
-			change = new PrincipalClassChange(myProject, newName);
+			if (_element instanceof IType) {
+				String newName = principalClass.substring(0, nameIndex + 1) + getArguments().getNewName();
+				change = new PrincipalClassChange(myProject, newName);
+			}
+			else if (_element instanceof IPackageFragment) {
+				String newPackageName = getArguments().getNewName();
+				String className = principalClass.substring(nameIndex + 1);
+				change = new PrincipalClassChange(myProject, newPackageName + "." + className);
+			}
 		}
 		return change;
 	}

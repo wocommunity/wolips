@@ -72,7 +72,7 @@ import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 
 public abstract class AbstractProjectTestCase extends TestCase {
 
-	private ArrayList projects;
+	private ArrayList<IProject> projects;
 
 	/**
 	 * @param suffix
@@ -97,9 +97,9 @@ public abstract class AbstractProjectTestCase extends TestCase {
 			project.create(monitor);
 			project.open(monitor);
 			IProjectDescription description = project.getDescription();
-			List naturesList = new ArrayList(Arrays.asList(description.getNatureIds()));
+			List<String> naturesList = new ArrayList<String>(Arrays.asList(description.getNatureIds()));
 			naturesList.add("org.eclipse.jdt.core.javanature");
-			description.setNatureIds((String[]) naturesList.toArray(new String[naturesList.size()]));
+			description.setNatureIds(naturesList.toArray(new String[naturesList.size()]));
 			project.setDescription(description, monitor);
 			boolean success = Nature.addIncrementalFrameworkNatureToProject(project, monitor);
 			assertTrue(success);
@@ -117,9 +117,9 @@ public abstract class AbstractProjectTestCase extends TestCase {
 			project.create(monitor);
 			project.open(monitor);
 			IProjectDescription description = project.getDescription();
-			List naturesList = new ArrayList(Arrays.asList(description.getNatureIds()));
+			List<String> naturesList = new ArrayList<String>(Arrays.asList(description.getNatureIds()));
 			naturesList.add("org.eclipse.jdt.core.javanature");
-			description.setNatureIds((String[]) naturesList.toArray(new String[naturesList.size()]));
+			description.setNatureIds(naturesList.toArray(new String[naturesList.size()]));
 			project.setDescription(description, monitor);
 			boolean success = Nature.addAntFrameworkNatureToProject(project, monitor);
 			assertTrue(success);
@@ -137,9 +137,9 @@ public abstract class AbstractProjectTestCase extends TestCase {
 			project.create(monitor);
 			project.open(monitor);
 			IProjectDescription description = project.getDescription();
-			List naturesList = new ArrayList(Arrays.asList(description.getNatureIds()));
+			List<String> naturesList = new ArrayList<String>(Arrays.asList(description.getNatureIds()));
 			naturesList.add("org.eclipse.jdt.core.javanature");
-			description.setNatureIds((String[]) naturesList.toArray(new String[naturesList.size()]));
+			description.setNatureIds(naturesList.toArray(new String[naturesList.size()]));
 			project.setDescription(description, monitor);
 			boolean success = Nature.addIncrementalApplicationNatureToProject(project, monitor);
 			assertTrue(success);
@@ -157,9 +157,9 @@ public abstract class AbstractProjectTestCase extends TestCase {
 			project.create(monitor);
 			project.open(monitor);
 			IProjectDescription description = project.getDescription();
-			List naturesList = new ArrayList(Arrays.asList(description.getNatureIds()));
+			List<String> naturesList = new ArrayList<String>(Arrays.asList(description.getNatureIds()));
 			naturesList.add("org.eclipse.jdt.core.javanature");
-			description.setNatureIds((String[]) naturesList.toArray(new String[naturesList.size()]));
+			description.setNatureIds(naturesList.toArray(new String[naturesList.size()]));
 			project.setDescription(description, monitor);
 			boolean success = Nature.addAntApplicationNatureToProject(project, monitor);
 			assertTrue(success);
@@ -170,13 +170,13 @@ public abstract class AbstractProjectTestCase extends TestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		this.projects = new ArrayList();
+		this.projects = new ArrayList<IProject>();
 	}
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		for (int i = 0; i < this.projects.size(); i++) {
-			IProject project = (IProject) this.projects.get(i);
+			IProject project = this.projects.get(i);
 			if (project.exists()) {
 				project.delete(true, new NullProgressMonitor());
 			}

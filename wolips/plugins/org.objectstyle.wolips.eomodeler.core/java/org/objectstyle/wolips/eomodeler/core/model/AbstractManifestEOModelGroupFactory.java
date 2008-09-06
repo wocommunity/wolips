@@ -31,8 +31,9 @@ public abstract class AbstractManifestEOModelGroupFactory implements IEOModelGro
 
 			List<ManifestSearchFolder> searchFolders = getSearchFolders(modelGroupFile);
 			if (searchFolders != null) {
-				System.out.println("AbstractManifestEOModelGroupFactory.loadModelGroup: Searching " + searchFolders + " ...");
+				System.out.println(getClass().getSimpleName() + ", Searching: ");
 				for (ManifestSearchFolder searchFolder : searchFolders) {
+					System.out.println("  " + searchFolder);
 					modelGroup.loadModelsFromURL(searchFolder.getFolder().toURL(), searchFolder.getDepth(), failures, skipOnDuplicates, progressMonitor);
 				}
 			}

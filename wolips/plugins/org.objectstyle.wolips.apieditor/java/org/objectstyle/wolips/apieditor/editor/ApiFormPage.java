@@ -66,6 +66,10 @@ public abstract class ApiFormPage extends FormPage {
 	public ApiFormPage(ApiEditor apiEditor, String id, String title) {
 		super(apiEditor, id, title);
 	}
+	
+	protected void reloadModel() {
+		// DO NOTHING
+	}
 
 	protected void createFormContent(IManagedForm managedForm) {
 		// nothing to do

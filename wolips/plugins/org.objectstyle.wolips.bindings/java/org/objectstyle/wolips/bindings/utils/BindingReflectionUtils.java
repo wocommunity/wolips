@@ -130,7 +130,7 @@ public class BindingReflectionUtils {
   public static void findMatchingElementClassNames(String elementTypeName, int matchType, TypeNameCollector typeNameCollector, IProgressMonitor progressMonitor) throws JavaModelException {
     if (elementTypeName != null) {
       SearchEngine searchEngine = new SearchEngine();
-      IJavaSearchScope searchScope = new WOHierarchyScope(typeNameCollector.getSuperclassType(), typeNameCollector.getProject(), DefaultWorkingCopyOwner.PRIMARY);
+      IJavaSearchScope searchScope = new WOHierarchyScope(typeNameCollector.getSuperclassType(), typeNameCollector.getProject());
       int lastDotIndex = elementTypeName.lastIndexOf('.');
       char[] packageName;
       char[] typeName;

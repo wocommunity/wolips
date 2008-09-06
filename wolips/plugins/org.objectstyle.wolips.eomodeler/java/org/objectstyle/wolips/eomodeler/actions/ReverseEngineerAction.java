@@ -121,6 +121,7 @@ public class ReverseEngineerAction implements IWorkbenchWindowActionDelegate, IO
 					List<String> selectedTableNamesList = Arrays.asList(selectedTableNames);
 					File reverseEngineeredEOModelFolder = reverseEngineer.reverseEngineerWithTableNamesIntoModel(selectedTableNamesList);
 					model.importEntitiesFromModel(reverseEngineeredEOModelFolder.toURL(), new HashSet<EOModelVerificationFailure>());
+					model.setReverseEngineered(true);
 				}
 			}
 		} catch (Throwable e) {

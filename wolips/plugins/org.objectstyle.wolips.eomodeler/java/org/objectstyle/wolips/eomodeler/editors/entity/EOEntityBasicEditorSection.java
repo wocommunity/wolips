@@ -148,7 +148,6 @@ public class EOEntityBasicEditorSection extends AbstractPropertySection {
 			return;
 		}
 
-		System.out.println("EOEntityBasicEditorSection.setInput: input");
 		super.setInput(part, selection);
 		Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
 		EOEntity entity = (EOEntity) selectedObject;

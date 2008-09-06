@@ -16,9 +16,9 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.objectstyle.wolips.baseforplugins.plist.PropertyListParserException;
-import org.objectstyle.wolips.baseforplugins.plist.SimpleParserDataStructureFactory;
-import org.objectstyle.wolips.baseforplugins.plist.WOLPropertyListSerialization;
+import org.objectstyle.woenvironment.plist.PropertyListParserException;
+import org.objectstyle.woenvironment.plist.SimpleParserDataStructureFactory;
+import org.objectstyle.woenvironment.plist.WOLPropertyListSerialization;
 import org.objectstyle.wolips.baseforplugins.util.StringUtils;
 import org.objectstyle.wolips.eomodeler.core.model.AbstractManifestEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.core.model.ManifestSearchFolder;
@@ -30,7 +30,7 @@ import org.xml.sax.SAXException;
 public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroupFactory {
 	@Override
 	public List<ManifestSearchFolder> getSearchFolders(File selectedModelFolder) throws IOException {
-		System.out.println("IDEAProjectEOModelGroupFactory.getSearchFolders: Looking for IDEA projects ...");
+		//System.out.println("IDEAProjectEOModelGroupFactory.getSearchFolders: Looking for IDEA projects ...");
 		List<ManifestSearchFolder> searchFolders = null;
 		List<File> ideaProjectFiles = new LinkedList<File>();
 		try {
@@ -42,7 +42,7 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 		if (!ideaProjectFiles.isEmpty()) {
 			searchFolders = new LinkedList<ManifestSearchFolder>();
 			for (File ideaProjectFile : ideaProjectFiles) {
-				System.out.println("IDEAProjectEOModelGroupFactory.getSearchFolders: Project = " + ideaProjectFile);
+				//System.out.println("IDEAProjectEOModelGroupFactory.getSearchFolders: Project = " + ideaProjectFile);
 				Map<String, File> ideaLibraries = new HashMap<String, File>();
 				String ideaProjectPath = ideaProjectFile.getParentFile().getAbsolutePath();
 				Set<File> visitedModulePaths = new HashSet<File>();
@@ -65,7 +65,7 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 								rootPath = rootPath.replaceAll("\\$PROJECT_DIR\\$", ideaProjectPath);
 								rootPath = rootPath.replaceAll("(.*\\.framework/Resources).*", "$1");
 								ideaLibraries.put(libraryName, new File(rootPath).getCanonicalFile());
-								System.out.println("IDEAProjectEOModelGroupFactory.getSearchFolders:   Library " + libraryName + "=" + ideaLibraries.get(libraryName));
+								//System.out.println("IDEAProjectEOModelGroupFactory.getSearchFolders:   Library " + libraryName + "=" + ideaLibraries.get(libraryName));
 								break;
 							}
 						}
@@ -84,7 +84,7 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 				}
 			}
 		}
-		System.out.println("IDEAProjectEOModelGroupFactory.getSearchFolders: Search folders = " + searchFolders);
+		//System.out.println("IDEAProjectEOModelGroupFactory.getSearchFolders: Search folders = " + searchFolders);
 		return searchFolders;
 	}
 
@@ -95,7 +95,7 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 			return;
 		}
 		visitedModulePaths.add(ideaModuleFile);
-		System.out.println("IDEAProjectEOModelGroupFactory.processIdeaModuleFile: Module file '" + ideaModuleFile + "' ...");
+		//System.out.println("IDEAProjectEOModelGroupFactory.processIdeaModuleFile: Module file '" + ideaModuleFile + "' ...");
 
 		String ideaProjectPath = ideaModuleFile.getParentFile().getAbsolutePath();
 		Document ideaModuleDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(ideaModuleFile);
@@ -107,7 +107,7 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 			contentPath = contentPath.replaceAll("^file://", "");
 			contentPath = contentPath.replaceAll("\\$MODULE_DIR\\$", ideaProjectPath);
 			File contentFolder = new File(contentPath).getCanonicalFile();
-			System.out.println("IDEAProjectEOModelGroupFactory.processIdeaModuleFile:   content folder = " + contentFolder);
+			//System.out.println("IDEAProjectEOModelGroupFactory.processIdeaModuleFile:   content folder = " + contentFolder);
 			searchFolders.add(new ManifestSearchFolder(contentFolder));
 		}
 
@@ -124,7 +124,7 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 				String ideaLibraryName = ideaModuleElement.getAttribute("name");
 				File ideaLibraryFolder = ideaLibraries.get(ideaLibraryName);
 				if (ideaLibraryFolder != null) {
-					System.out.println("IDEAProjectEOModelGroupFactory.processIdeaModuleFile:   library folder = " + ideaLibraryFolder);
+					//System.out.println("IDEAProjectEOModelGroupFactory.processIdeaModuleFile:   library folder = " + ideaLibraryFolder);
 					searchFolders.add(new ManifestSearchFolder(ideaLibraryFolder));
 				}
 			}
@@ -136,10 +136,10 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 		if (folder != null) {
 			boolean foundProjectFiles = false;
 			if (folder.isDirectory()) {
-				System.out.println("IDEAProjectEOModelGroupFactory.findIdeaProjectFilesInFolder: Looking in " + folder + " ...");
+				//System.out.println("IDEAProjectEOModelGroupFactory.findIdeaProjectFilesInFolder: Looking in " + folder + " ...");
 				File projectLocator = new File(folder, ".EntityModeler.plist");
 				if (projectLocator.exists()) {
-					System.out.println("IDEAProjectEOModelGroupFactory.findIdeaProjectFilesInFolder:   Found project locator '" + projectLocator + '.');
+					//System.out.println("IDEAProjectEOModelGroupFactory.findIdeaProjectFilesInFolder:   Found project locator '" + projectLocator + '.');
 					Map<String, Object> projectProperties = (Map<String, Object>) WOLPropertyListSerialization.propertyListWithContentsOfFile(projectLocator.getCanonicalPath(), new SimpleParserDataStructureFactory());
 					Map<String, List<String>> dependencies = (Map<String, List<String>>) projectProperties.get("Dependencies");
 					if (dependencies != null) {
@@ -153,7 +153,7 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 								if (projectFile.exists()) {
 									projectFile = projectFile.getCanonicalFile();
 									if (IDEAProjectEOModelGroupFactory.isIdeaProjectFile(projectFile)) {
-										System.out.println("IDEAProjectEOModelGroupFactory.findIdeaProjectFilesInFolder:     Found project '" + projectFile + "'.");
+										//System.out.println("IDEAProjectEOModelGroupFactory.findIdeaProjectFilesInFolder:     Found project '" + projectFile + "'.");
 										ideaProjectFiles.add(projectFile.getCanonicalFile());
 										foundProjectFiles = true;
 									}
@@ -166,7 +166,7 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 					if (files != null) {
 						for (File file : files) {
 							if (IDEAProjectEOModelGroupFactory.isIdeaProjectFile(file)) {
-								System.out.println("IDEAProjectEOModelGroupFactory.findIdeaProjectFilesInFolder:   Found project '" + file + "'.");
+								//System.out.println("IDEAProjectEOModelGroupFactory.findIdeaProjectFilesInFolder:   Found project '" + file + "'.");
 								ideaProjectFiles.add(file.getCanonicalFile());
 								foundProjectFiles = true;
 							}

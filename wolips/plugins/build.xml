@@ -10,17 +10,18 @@
 	<!-- Build all.                                 -->
 	<!-- ========================================== -->
 	<target name="all">
+		<ant dir="org.objectstyle.wolips.woproject" target="all" />
 		<ant dir="org.objectstyle.wolips.variables" target="all" />
 		<ant dir="org.objectstyle.wolips.workbenchutilities" target="all" />
 		<ant dir="org.objectstyle.wolips.preferences" target="all" />
 		<ant dir="org.objectstyle.wolips.locate" target="all" />
 		<ant dir="org.objectstyle.wolips" target="all" />
+		<ant dir="org.objectstyle.wolips.refactoring" target="all" />
+		<ant dir="org.objectstyle.wolips.jdt" target="all" />
 		<ant dir="org.objectstyle.wolips.bindings" target="all" />
 		<ant dir="org.objectstyle.wolips.datasets" target="all" />
 		<ant dir="org.objectstyle.wolips.ant" target="all" />
 		<ant dir="org.objectstyle.wolips.documentation" target="all" />
-		<ant dir="org.objectstyle.wolips.refactoring" target="all" />
-		<ant dir="org.objectstyle.wolips.jdt" target="all" />
 		<ant dir="org.objectstyle.wolips.pbserver" target="all" />
 		<ant dir="org.objectstyle.wolips.builder" target="all" />
 		<ant dir="org.objectstyle.wolips.ui" target="all" />
@@ -48,7 +49,6 @@
 		<ant dir="org.objectstyle.wolips.wooeditor" target="all" />
 		<ant dir="org.objectstyle.wolips.componenteditor" target="all" />
 		<ant dir="org.objectstyle.wolips.ruleeditor" target="all" />
-		<ant dir="org.objectstyle.wolips.woproject" target="all" />
 		<ant dir="org.objectstyle.wolips.woproject.ant" target="all" />
 		<ant dir="org.objectstyle.wolips.womodeler" target="all" />
 		<ant dir="org.objectstyle.wolips.debug" target="all" />
@@ -57,21 +57,22 @@
 	<!-- Build dist.                                -->
 	<!-- ========================================== -->
 	<target name="dist">
+		<ant dir="org.objectstyle.wolips.woproject" target="dist" />
 		<ant dir="org.objectstyle.wolips.variables" target="dist" />
 		<ant dir="org.objectstyle.wolips.workbenchutilities" target="dist" />
 		<ant dir="org.objectstyle.wolips.preferences" target="dist" />
 		<ant dir="org.objectstyle.wolips.locate" target="dist" />
 		<ant dir="org.objectstyle.wolips" target="dist" />
+		<ant dir="org.objectstyle.wolips.refactoring" target="dist" />
+		<ant dir="org.objectstyle.wolips.jdt" target="dist" />
 		<ant dir="org.objectstyle.wolips.bindings" target="dist" />
 		<ant dir="org.objectstyle.wolips.datasets" target="dist" />
 		<ant dir="org.objectstyle.wolips.ant" target="dist" />
 		<ant dir="org.objectstyle.wolips.documentation" target="dist" />
-		<ant dir="org.objectstyle.wolips.jdt" target="dist" />
 		<ant dir="org.objectstyle.wolips.pbserver" target="dist" />
 		<ant dir="org.objectstyle.wolips.ui" target="dist" />
 		<ant dir="org.objectstyle.wolips.deployment.ui" target="dist" />
 		<ant dir="org.objectstyle.wolips.launching" target="dist" />
-		<ant dir="org.objectstyle.wolips.refactoring" target="dist" />
 		<ant dir="org.objectstyle.wolips.targetbuilder" target="dist" />
 		<ant dir="org.objectstyle.wolips.team" target="dist" />
 		<ant dir="org.objectstyle.wolips.templateengine" target="dist" />
@@ -92,7 +93,6 @@
 		<ant dir="org.objectstyle.wolips.tkhtmleditor" target="dist" />
 		<ant dir="org.objectstyle.wolips.componenteditor" target="dist" />
 		<ant dir="org.objectstyle.wolips.ruleeditor" target="dist" />
-		<ant dir="org.objectstyle.wolips.woproject" target="dist" />
 		<ant dir="org.objectstyle.wolips.woproject.ant" target="dist" />
 		<ant dir="org.objectstyle.wolips.womodeler" target="dist" />
 		<ant dir="org.objectstyle.wolips.builder" target="dist" />

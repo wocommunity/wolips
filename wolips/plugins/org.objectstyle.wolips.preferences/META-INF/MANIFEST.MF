@@ -6,5 +6,5 @@ Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.preferences.PreferencesPlugin
 Bundle-Vendor: objectstyle.org
 Require-Bundle: org.objectstyle.wolips.baseforuiplugins
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.preferences

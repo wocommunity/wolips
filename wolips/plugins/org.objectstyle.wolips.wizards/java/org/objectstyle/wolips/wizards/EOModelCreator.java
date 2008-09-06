@@ -59,8 +59,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
@@ -71,15 +69,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jdt.core.IClasspathEntry;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
-import org.objectstyle.wolips.baseforplugins.plist.PropertyListParserException;
-import org.objectstyle.wolips.datasets.adaptable.JavaProject;
-import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
+import org.objectstyle.woenvironment.plist.PropertyListParserException;
 import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel;
 import org.objectstyle.wolips.eogenerator.core.model.EOModelReference;
 import org.objectstyle.wolips.eogenerator.jdt.EOGeneratorCreator;
@@ -90,6 +82,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.model.IEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
+import org.objectstyle.wolips.jdt.ProjectFrameworkAdapter;
 
 /**
  * @author mnolte
@@ -208,21 +201,9 @@ public class EOModelCreator implements IRunnableWithProgress {
 		}
 
 		// add adaptor framework
-		if (!"None".equals(_adaptorName)) {
-			IJavaProject projectToUpdate = JavaCore.create(_parentResource.getProject());
-			List<String> newAdaptorFrameworkList = new LinkedList<String>();
-			newAdaptorFrameworkList.add("Java" + _adaptorName + "Adaptor." + IWOLipsModel.EXT_FRAMEWORK);
-			JavaProject javaProject = (JavaProject) projectToUpdate.getAdapter(JavaProject.class);
-			IClasspathEntry[] newClasspathEntries = javaProject.addFrameworkListToClasspathEntries(newAdaptorFrameworkList);
-			try {
-				projectToUpdate.setRawClasspath(newClasspathEntries, null);
-			} catch (JavaModelException e) {
-				throw new InvocationTargetException(e);
-			} finally {
-				projectToUpdate = null;
-				newAdaptorFrameworkList = null;
-				newClasspathEntries = null;
-			}
+		if (!"None".equals(_adaptorName) && !"".equals(_adaptorName)) {
+			ProjectFrameworkAdapter frameworkAdapter = (ProjectFrameworkAdapter)_parentResource.getProject().getAdapter(ProjectFrameworkAdapter.class);
+			frameworkAdapter.addFrameworkNamed("Java" + _adaptorName + "Adaptor");
 		}
 	}
 }

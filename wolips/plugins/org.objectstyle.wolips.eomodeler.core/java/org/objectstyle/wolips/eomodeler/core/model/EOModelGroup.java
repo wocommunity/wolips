@@ -64,8 +64,8 @@ import java.util.jar.JarEntry;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.objectstyle.wolips.baseforplugins.plist.PropertyListParserException;
-import org.objectstyle.wolips.baseforplugins.plist.WOLPropertyListSerialization;
+import org.objectstyle.woenvironment.plist.PropertyListParserException;
+import org.objectstyle.woenvironment.plist.WOLPropertyListSerialization;
 import org.objectstyle.wolips.baseforplugins.util.URLUtils;
 import org.objectstyle.wolips.eomodeler.core.Activator;
 

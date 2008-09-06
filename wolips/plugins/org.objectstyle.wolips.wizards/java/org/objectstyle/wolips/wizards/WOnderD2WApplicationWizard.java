@@ -96,7 +96,7 @@ public class WOnderD2WApplicationWizard extends AbstractWonderProjectWizard {
 		TemplateEngine templateEngine = new TemplateEngine();
 		templateEngine.init();
 		String cptype = "";
-		if ("true".equals(VariablesPlugin.getDefault().getProperty("wonder.useprojects"))) {
+		if ("true".equals(VariablesPlugin.getDefault().getProjectVariables(project).getProperty("wonder.useprojects"))) {
 			cptype = ".usingprojects";
 		}
 		templateEngine.getWolipsContext().setProjectName(projectName);

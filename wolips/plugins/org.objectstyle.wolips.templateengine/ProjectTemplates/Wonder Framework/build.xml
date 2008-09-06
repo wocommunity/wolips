@@ -1,38 +1,37 @@
 <project name="${WOLipsContext.getProjectName()}" default="build" basedir=".">
+	<target name="build" depends="init.properties,init.build,build.woframework" />
 
-	<!-- main targets  -->
-	<!-- add optional targets to depends list if needed -->
-	<target name="build" depends="setProps,init.build,build.woframework" />
+	<target name="compileAndBuild" depends="init.properties,init.build,compile,build.woframework" />
 
-	<target name="compileAndBuild" depends="setProps,init.build,compile,build.woframework" />
+	<target name="install" depends="init.properties,init.install,build.woframework" />
 
-	<target name="install" depends="setProps,init.install,build.woframework" />
-
-	<target name="clean" depends="setProps">
+	<target name="clean" depends="init.properties">
 		<delete dir="dist" />
 	</target>
 
 	<!-- property determination  -->
-	<target name="setProps">
-		<property file="${user.home}${file.separator}build.properties" />
+	<target name="init.properties">
 		<property file="build.properties" />
-		<property file="${user.home}${file.separator}Library${file.separator}wobuild.properties" />
+
+		<property name="wolips.properties" value="${user.home}${file.separator}Library${file.separator}Application Support${file.separator}WOLips${file.separator}wolips.properties" />
+		<property file="${wolips.properties}" />
 		<condition property="wo.properties.check.failed">
 			<not>
 				<and>
-					<isset property="wo.wosystemroot" />
-					<isset property="wo.wolocalroot" />
+					<isset property="wo.system.frameworks" />
+					<isset property="wo.local.frameworks" />
 				</and>
 			</not>
 		</condition>
-		<fail message="Could not find ${user.home}${file.separator}Library${file.separator}wobuild.properties." if="wo.properties.check.failed" />
-		<property name="install.dir" value="${wo.wolocalroot}/Library/Frameworks" />
+		<fail message="The properties 'wo.system.frameworks' and 'wo.local.frameworks' must be set. Check that your ${wolips.properties} is correct." if="wo.properties.check.failed" />
+
+		<property name="wo.install.root" value="${wo.local.frameworks}" />
 	</target>
 
 	<!-- basic initializations  -->
 	<target name="init.install">
 		<tstamp />
-		<property name="dest.dir" value="${install.dir}" />
+		<property name="dest.dir" value="${wo.install.root}" />
 	</target>
 
 	<target name="init.build">
@@ -42,75 +41,54 @@
 
 	<!-- woproject tasks -->
 	<target name="build.woframework">
-
-		<taskdef name="woframework" classname="org.objectstyle.woproject.ant.WOFramework">
-		</taskdef>
+		<taskdef name="woframework" classname="org.objectstyle.woproject.ant.WOFramework"/>
 
 		<woframework name="${project.name}" destDir="${dest.dir}" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}" eoAdaptorClassName="${eoAdaptorClassName}" javaVersion="${javaVersion}" cfbundleversion="${cfBundleVersion}" cfbundleshortversion="${cfBundleShortVersion}" cfbundleID="${cfBundleID}">
 			<classes dir="${classes.dir}">
-				<patternset>
-					<includesfile name="${WOLipsContext.getAntFolderName()}/classes.include.patternset" />
-					<excludesfile name="${WOLipsContext.getAntFolderName()}/classes.exclude.patternset" />
-				</patternset>
+				<includesfile name="woproject/classes.include.patternset" />
+				<excludesfile name="woproject/classes.exclude.patternset" />
 			</classes>
-			<wsresources dir="WebServerResources">
-				<patternset>
-					<include name="**/*" />
-					<exclude name="CVS" />
-					<exclude name=".svn" />
-					<excludesfile name="woproject/wsresources.exclude.patternset" />
-				</patternset>
+
+			<wsresources dir=".">
+				<includesfile name="woproject/wsresources.include.patternset" />
+				<excludesfile name="woproject/wsresources.exclude.patternset" />
 			</wsresources>
-			<resources dir="Resources">
-				<patternset>
-					<include name="**/*" />
-					<exclude name="CVS" />
-					<exclude name=".svn" />
-					<excludesfile name="woproject/resources.exclude.patternset" />
-				</patternset>
+
+			<resources dir=".">
+				<includesfile name="woproject/resources.include.patternset" />
+				<excludesfile name="woproject/resources.exclude.patternset" />
 			</resources>
-			<resources dir="Components">
-				<patternset>
-					<include name="**/*" />
-					<exclude name="CVS" />
-					<exclude name=".svn" />
-					<excludesfile name="woproject/resources.exclude.patternset" />
-				</patternset>
-			</resources>
+
+			<frameworks root="ProjectLocal" embed="false" eclipse="true" />
+			<frameworks root="External" embed="false" eclipse="true" />
+			<frameworks root="Local" embed="false" eclipse="true" />
+			<frameworks root="User" embed="false" eclipse="true" />
+			<frameworks root="System" embed="false" eclipse="true" />
+			<frameworks root="Network" embed="false" eclipse="true" />
+
 			<lib dir="Libraries">
 				<include name="*.jar" />
-				<exclude name="**/*.framework/**" />
 			</lib>
 		</woframework>
 	</target>
-
-	<target name="compile" depends="setProps,init.build">
+	
+	<target name="compile" depends="init.properties,init.build">
 		<taskdef name="wocompile" classname="org.objectstyle.woproject.ant.WOCompile" />
+
 		<mkdir dir="bin" />
 		<wocompile srcdir="Sources" destdir="bin">
-			<frameworks root="${wo.dir.user.home.library.frameworks}">
-				<patternset>
-					<includesfile name="woproject/ant.frameworks.user.home" />
-				</patternset>
-			</frameworks>
-			<frameworks root="${wo.wolocalroot}">
-				<patternset>
-					<includesfile name="woproject/ant.frameworks.wo.wolocalroot" />
-				</patternset>
-			</frameworks>
-			<frameworks root="${wo.wosystemroot}">
-				<patternset>
-					<includesfile name="woproject/ant.frameworks.wo.wosystemroot" />
-				</patternset>
-			</frameworks>
+			<frameworks root="ProjectLocal" embed="false" eclipse="true" />
+			<frameworks root="External" embed="false" eclipse="true" />
+			<frameworks root="Local" embed="false" eclipse="true" />
+			<frameworks root="User" embed="false" eclipse="true" />
+			<frameworks root="System" embed="false" eclipse="true" />
+			<frameworks root="Network" embed="false" eclipse="true" />
 			<classpath>
-				<fileset dir="${wo.wolocalroot}">
-					<patternset>
-						<includesfile name="woproject/ant.frameworks.wo.wolocalroot" />
-					</patternset>
-				</fileset>
 				<fileset dir="Libraries">
-					<filename name="**/*.jar" />
+					<include name="*.jar" />
+				</fileset>
+				<fileset dir="${wo.extensions}">
+					<include name="*.jar" />
 				</fileset>
 			</classpath>
 		</wocompile>

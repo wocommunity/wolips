@@ -175,6 +175,14 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		return equals;
 	}
 
+	public void guessColumnNameInEntity(EOEntity entity) {
+		String columnName = getName();
+		if (entity != null) {
+			columnName = entity.getModel().getAttributeNamingConvention().format(columnName);
+		}
+		setColumnName(columnName);
+	}
+
 	public void guessPrototype(boolean _skipIfAlreadyPrototyped) {
 		if (!_skipIfAlreadyPrototyped || getPrototype() == null) {
 			boolean probablyBooleanString = new Integer(5).equals(getWidth()) && ("S".equals(getValueType()) || "c".equals(getValueType()));
@@ -390,6 +398,12 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		}
 		super.setName((String) _nullIfPrototyped(AbstractEOArgument.NAME, newName), _fireEvents);
 		if (myEntity != null) {
+			for (EOEntity childrenEntity : myEntity.getChildrenEntities()) {
+				EOAttribute childAttribute = childrenEntity.getAttributeNamed(oldName);
+				if (childAttribute != null) {
+					childAttribute.setName(newName, _fireEvents);
+				}
+			}
 			EOModelGroup modelGroup = myEntity.getModel().getModelGroup();
 			for (EOEntity entity : modelGroup.getEntities()) {
 				for (EOAttribute attribute : entity.getAttributes()) {
@@ -791,6 +805,9 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		for (EOAttribute referencingAttributes : getReferencingFlattenedAttributes()) {
 			referenceFailures.add(new EOFlattenedAttributeAttributeReferenceFailure(referencingAttributes, this));
 		}
+		for (EOEntityIndex referencingEntityIndex : getReferencingEntityIndexes()) {
+			referenceFailures.add(new EOEntityIndexAttributeReferenceFailure(referencingEntityIndex, this));
+		}
 		return referenceFailures;
 	}
 
@@ -835,6 +852,24 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 			}
 		}
 		return referencingRelationships;
+	}
+
+	public Set<EOEntityIndex> getReferencingEntityIndexes() {
+		Set<EOEntityIndex> referencingEntityIndexes = new HashSet<EOEntityIndex>();
+		if (myEntity != null) {
+			for (EOModel model : getEntity().getModel().getModelGroup().getModels()) {
+				for (EOEntity entity : model.getEntities()) {
+					for (EOEntityIndex entityIndex : entity.getEntityIndexes()) {
+						for (EOAttribute attribute : entityIndex.getAttributes()) {
+							if (attribute == this) {
+								referencingEntityIndexes.add(entityIndex);
+							}
+						}
+					}
+				}
+			}
+		}
+		return referencingEntityIndexes;
 	}
 
 	public void loadFromMap(EOModelMap _attributeMap, Set<EOModelVerificationFailure> _failures) {
@@ -905,8 +940,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		clearCachedPrototype(prototypeName, _failures, false, true);
 	}
 
-	public void verify(Set<EOModelVerificationFailure> _failures, @SuppressWarnings("unused")
-	VerificationContext verificationContext) {
+	public void verify(Set<EOModelVerificationFailure> _failures, @SuppressWarnings("unused") VerificationContext verificationContext) {
 		String name = getName();
 		if (name == null || name.trim().length() == 0) {
 			_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The attribute " + getName() + " has an empty name.", false));
@@ -947,16 +981,16 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 				}
 
 				/*
-				 * Boolean classProperty = isClassProperty(); if (classProperty !=
-				 * null && classProperty.booleanValue()) { Set<EORelationship>
-				 * referencingRelationships = getReferencingRelationships(true,
-				 * verificationContext); for (EORelationship relationship :
-				 * referencingRelationships) { boolean foreignKey = false; if
-				 * (relationship.isToOne() != null &&
-				 * relationship.isToOne().booleanValue()) { for (EOJoin join :
-				 * relationship.getJoins()) { if
-				 * (this.equals(join.getSourceAttribute())) { foreignKey = true; } } }
-				 * if (foreignKey) { _failures.add(new
+				 * Boolean classProperty = isClassProperty(); if (classProperty
+				 * != null && classProperty.booleanValue()) {
+				 * Set<EORelationship> referencingRelationships =
+				 * getReferencingRelationships(true, verificationContext); for
+				 * (EORelationship relationship : referencingRelationships) {
+				 * boolean foreignKey = false; if (relationship.isToOne() !=
+				 * null && relationship.isToOne().booleanValue()) { for (EOJoin
+				 * join : relationship.getJoins()) { if
+				 * (this.equals(join.getSourceAttribute())) { foreignKey = true;
+				 * } } } if (foreignKey) { _failures.add(new
 				 * EOModelVerificationFailure(myEntity.getModel(), this, "The
 				 * attribute " + getName() + " is a class property, but is used
 				 * as a foreign key in the relationship " +
@@ -1010,15 +1044,21 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	}
 
 	public void synchronizeNameChange(String oldName, String newName) {
+		boolean reverseEngineered = false;
 		String columnName = newName;
 		EOEntity entity = getEntity();
 		if (entity != null) {
 			EOModel model = entity.getModel();
 			if (model != null) {
-				columnName = model.getAttributeNamingConvention().format(oldName, newName, getColumnName());
+				reverseEngineered = model.isReverseEngineered();
+				if (!reverseEngineered) {
+					columnName = model.getAttributeNamingConvention().format(oldName, newName, getColumnName());
+				}
 			}
 		}
-		setColumnName(columnName);
+		if (!reverseEngineered) {
+			setColumnName(columnName);
+		}
 	}
 
 	public void _addToModelParent(EOEntity modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) throws EOModelException {

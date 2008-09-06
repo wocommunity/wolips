@@ -7,6 +7,6 @@ Bundle-Activator: org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPl
 Bundle-Vendor: objectstyle.org
 Require-Bundle: org.eclipse.jdt.core,
  org.objectstyle.wolips.baseforuiplugins
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.workbenchutilities,
  org.objectstyle.wolips.workbenchutilities.actions

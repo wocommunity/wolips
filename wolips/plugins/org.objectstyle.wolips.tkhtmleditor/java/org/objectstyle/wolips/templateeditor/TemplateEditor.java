@@ -105,6 +105,7 @@ public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtml
   public void initEditorInteraction(ComponentEditorInteraction initEditorInteraction) {
     this._editorInteraction = initEditorInteraction;
     getSourceEditor().getSelectionProvider().addSelectionChangedListener(new TemplateOutlineSelectionHandler(this, _editorInteraction));
+    getSourceEditor().initEditorInteraction(initEditorInteraction);
     _editorInteraction.setHtmlDocumentProvider(this);
     _editorInteraction.addWebObjectTagListener(this);
   }

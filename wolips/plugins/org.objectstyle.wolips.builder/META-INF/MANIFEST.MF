@@ -14,5 +14,5 @@ Require-Bundle: org.objectstyle.wolips,
  org.objectstyle.wolips.ant,
  org.objectstyle.wolips.woproject,
  org.objectstyle.wolips.baseforplugins
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.builder

@@ -104,6 +104,10 @@ public class BindingsPageBlock extends MasterDetailsBlock implements BindingChan
 	public BindingsPageBlock(FormPage page) {
 		this.page = page;
 	}
+	
+	public void reload() {
+		viewer.setInput(page.getEditor().getEditorInput());
+	}
 
 	/**
 	 * @param id

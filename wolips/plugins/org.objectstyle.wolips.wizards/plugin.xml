@@ -93,7 +93,7 @@
          </description>
       </wizard>
       <wizard
-            name="WOnderApplication"
+            name="Wonder Application"
             icon="icons/woproject/woapplication_wiz.gif"
             category="org.objectstyle.wolips.wizards"
             project="true"
@@ -105,24 +105,24 @@
          </description>
       </wizard>
       <wizard
-            name="WOnderD2WApplication"
-            icon="icons/woproject/d2wapplication_wiz.gif"
+            name="Wonder Framework"
+            icon="icons/woproject/woframework_wiz.gif"
             category="org.objectstyle.wolips.wizards"
             project="true"
-            id="org.objectstyle.wolips.wizards.new.wo.5.1.wonderd2wapplication">
-            <class class="org.objectstyle.wolips.wizards.WOnderD2WApplicationWizard">
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.wonderframework">
+            <class class="org.objectstyle.wolips.wizards.WOnderFrameworkWizard">
               <parameter name="wotype" value="true"/>
             </class>
          <description>
          </description>
       </wizard>
       <wizard
-            name="WOnderFramework"
-            icon="icons/woproject/woframework_wiz.gif"
+            name="Wonder D2W Application"
+            icon="icons/woproject/d2wapplication_wiz.gif"
             category="org.objectstyle.wolips.wizards"
             project="true"
-            id="org.objectstyle.wolips.wizards.new.wo.5.1.wonderframework">
-            <class class="org.objectstyle.wolips.wizards.WOnderFrameworkWizard">
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.wonderd2wapplication">
+            <class class="org.objectstyle.wolips.wizards.WOnderD2WApplicationWizard">
               <parameter name="wotype" value="true"/>
             </class>
          <description>
@@ -226,32 +226,6 @@
 <!-- =================================================================================== -->
    <extension
          point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            objectClass="org.eclipse.core.resources.IResource"
-            adaptable="true"
-            nameFilter="build.xml"
-            id="org.objectstyle.wolips.wizards.actions.UpgradeBuildXML">
-         <action
-               label="Replace with latest build.xml"
-               icon="icons/action/ant_buildfile.gif"
-               class="org.objectstyle.wolips.wizards.actions.UpgradeBuildXML"
-               menubarPath="org.objectstyle.wolips.ant.ui.ResourceContributions/group2"
-               enablesFor="1"
-               id="org.objectstyle.wolips.wizards.actions.UpgradeBuildXML">
-         </action>
-      </objectContribution>
-      <objectContribution
-            objectClass="org.eclipse.core.resources.IProject"
-            adaptable="true"
-            id="org.objectstyle.wolips.wizards.actions.UpgradeAllBuildXML">
-         <action
-               label="Replace with latest build.xml"
-               icon="icons/action/ant_buildfile.gif"
-               class="org.objectstyle.wolips.wizards.actions.UpgradeAllBuildXML"
-               menubarPath="org.objectstyle.wolips.ant.ui.ResourceContributions/group2"
-               id="org.objectstyle.wolips.wizards.actions.UpgradeAllBuildXML">
-         </action>
-      </objectContribution>
       <objectContribution
             adaptable="false"
             id="org.objectstyle.wolips.wizards.actions.eogenFromEOModel"

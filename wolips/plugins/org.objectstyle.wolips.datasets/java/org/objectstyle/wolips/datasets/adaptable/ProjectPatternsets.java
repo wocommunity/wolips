@@ -74,7 +74,6 @@ import org.objectstyle.wolips.core.resources.pattern.PatternsetWriter;
 import org.objectstyle.wolips.datasets.DataSetsPlugin;
 import org.objectstyle.wolips.datasets.pattern.IStringMatcher;
 import org.objectstyle.wolips.datasets.pattern.PatternsetMatcher;
-import org.objectstyle.wolips.variables.VariablesPlugin;
 
 /**
  * @author ulrich
@@ -115,36 +114,28 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 		super(project);
 	}
 
-	private String[] getStringsFromDefaults(String key, String[] def) {
-		String values = VariablesPlugin.getDefault().getProperty(key);
-		if (values == null) {
-			return def;
-		}
-		return values.split("\\,\\s*");
-	}
-
 	private String[] getWSResourcesIncludeStringsDefault() {
-		return getStringsFromDefaults("wsresources.include.patternset", new String[] { "**/*.gif", "**/*.xsl", "**/*.css", "**/*.png", "**/*.jpg", "**/*.js" });
+		return new String[] { "WebServerResources/**/*" };
 	}
 
 	private String[] getWSResourcesExcludeStringsDefault() {
-		return getStringsFromDefaults("wsresources.exclude.patternset", new String[] { "**/*.woa/**", "**/*.framework/**", "**/*.eomodeld~/**" });
+		return new String[] {};
 	}
 
 	private String[] getResourcesIncludeStringsDefault() {
-		return getStringsFromDefaults("resources.include.patternset", new String[] { "**/Properties", "**/*.eomodeld/", "**/*.d2wmodel", "**/*.wo/", "**/*.api", "**/*.strings", "**/*.plist" });
+		return new String[] { "Components/**/*.wo/**/*", "Components/**/*.api", "Resources/**/*" };
 	}
 
 	private String[] getResourcesExcludeStringsDefault() {
-		return getStringsFromDefaults("resources.exclude.patternset", new String[] { "**/*.eomodeld~/", "**/*.woa/**", "**/*.framework/**" });
+		return new String[] { "Resources/**/*.eomodeld~/**" };
 	}
 
 	private String[] getClassesIncludeStringsDefault() {
-		return getStringsFromDefaults("classes.include.patternset", new String[] { "**/*.class", "*.properties" });
+		return new String[] { "**/*.class", "*.properties" };
 	}
 
 	private String[] getClassesExcludeStringsDefault() {
-		return getStringsFromDefaults("classes.exclude.patternset", new String[] { "build.properties" });
+		return new String[] { "build.properties" };
 	}
 
 	/**

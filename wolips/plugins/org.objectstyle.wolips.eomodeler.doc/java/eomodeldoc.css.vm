@@ -236,11 +236,19 @@ div.section.attributes {
 	width: 48%;
 }
 
+li.attribute {
+	cursor: pointer;
+}
+
 /* Relationships */
 div.section.relationships {
   float: left;
 	margin-left: 10px;
 	width: 48%;
+}
+
+li.relationship {
+	cursor: pointer;
 }
 
 /* Fetch Specs */

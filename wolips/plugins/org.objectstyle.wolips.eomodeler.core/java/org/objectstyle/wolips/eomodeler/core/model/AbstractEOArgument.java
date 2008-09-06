@@ -357,8 +357,9 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		} else if (className.equals("")) {
 			className = null;
 		} else {
-			String[] strs = className.split("\\.");
-			className = strs[strs.length - 1];
+			//String[] strs = className.split("\\.");
+			//className = strs[strs.length - 1];
+			className = javaClassName;
 		}
 		return className;
 	}

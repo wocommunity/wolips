@@ -11,7 +11,7 @@ Require-Bundle: org.eclipse.ui.forms,
  org.eclipse.core.databinding,
  org.eclipse.jface.databinding,
  org.eclipse.core.databinding.beans
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.eogenerator.ui,
  org.objectstyle.wolips.eogenerator.ui.actions,
  org.objectstyle.wolips.eogenerator.ui.dialogs,

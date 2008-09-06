@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import org.apache.commons.collections.set.ListOrderedSet;
-import org.objectstyle.wolips.baseforplugins.plist.ParserDataStructureFactory;
+import org.objectstyle.woenvironment.plist.ParserDataStructureFactory;
 
 public class EOModelParserDataStructureFactory implements ParserDataStructureFactory {
 	public Collection<Object> createCollection(String _keyPath) {
