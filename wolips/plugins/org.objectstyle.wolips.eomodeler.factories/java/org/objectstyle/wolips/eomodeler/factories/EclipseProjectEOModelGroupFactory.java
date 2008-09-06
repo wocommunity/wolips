@@ -53,7 +53,7 @@ public class EclipseProjectEOModelGroupFactory extends AbstractManifestEOModelGr
 				// + eclipseProjectFolder);
 				Set<File> visitedProjectFolders = new HashSet<File>();
 				try {
-					processEclipseProject(eclipseProjectFolder, searchFolders, visitedProjectFolders, new WOEnvironment());
+					processEclipseProject(eclipseProjectFolder, searchFolders, visitedProjectFolders, new WOEnvironment(null));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -190,9 +190,9 @@ public class EclipseProjectEOModelGroupFactory extends AbstractManifestEOModelGr
 	}
 
 	protected void loadFrameworks(String[] frameworkNames, List<ManifestSearchFolder> searchFolders, Set<File> visitedProjects, WOEnvironment env) throws IOException {
-		File userFrameworksFolder = new File(env.getWOVariables().userHome(), "Library" + File.separator + "Frameworks");
-		File localFrameworksFolder = new File(env.getWOVariables().localRoot(), "Library" + File.separator + "Frameworks");
-		File systemFrameworksFolder = new File(env.getWOVariables().systemRoot(), "Library" + File.separator + "Frameworks");
+		File userFrameworksFolder = new File(env.getWOVariables().userFrameworkPath());
+		File localFrameworksFolder = new File(env.getWOVariables().localFrameworkPath());
+		File systemFrameworksFolder = new File(env.getWOVariables().systemFrameworkPath());
 		for (int frameworkNum = 1; frameworkNum < frameworkNames.length; frameworkNum++) {
 			String frameworkFolderName = frameworkNames[frameworkNum] + ".framework";
 			File matchingFrameworkFolder = null;
