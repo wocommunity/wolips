@@ -13,6 +13,7 @@ Require-Bundle: org.objectstyle.wolips,
  org.objectstyle.wolips.datasets,
  org.objectstyle.wolips.ant,
  org.objectstyle.wolips.woproject,
- org.objectstyle.wolips.baseforplugins
+ org.objectstyle.wolips.baseforplugins,
+ org.objectstyle.wolips.jdt;bundle-version="1.0.6"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.builder

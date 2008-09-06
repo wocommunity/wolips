@@ -58,13 +58,15 @@ package org.objectstyle.wolips.builder.internal;
 
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.core.resources.builder.IFullBuilder;
 import org.objectstyle.wolips.core.resources.builder.IIncrementalBuilder;
 import org.objectstyle.wolips.core.resources.types.ILocalizedPath;
@@ -74,6 +76,7 @@ import org.objectstyle.wolips.core.resources.types.folder.IDotEOModeldAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IDotSubprojAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IDotWoAdapter;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.jdt.ProjectFrameworkAdapter;
 import org.objectstyle.wolips.preferences.Preferences;
 
 public class PBDotProjectBuilder implements IIncrementalBuilder, IFullBuilder {
@@ -309,9 +312,13 @@ public class PBDotProjectBuilder implements IIncrementalBuilder, IFullBuilder {
 		IPBDotProjectOwner pbDotProjectOwner = this.getIPBDotProjectOwner(resource);
 		IPBDotProjectAdapter pbDotProjectAdapter = this.getIPBDotProjectAdapter(pbDotProjectOwner);
 		IProject project = resource.getProject();
-		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
-		List frameworkNames = projectAdapter.getFrameworkNames();
-		pbDotProjectAdapter.updateFrameworkNames(frameworkNames);
+		ProjectFrameworkAdapter projectAdapter = (ProjectFrameworkAdapter) project.getAdapter(ProjectFrameworkAdapter.class);
+		try {
+			Set<String> frameworkNames = projectAdapter.getFrameworkNames();
+			pbDotProjectAdapter.updateFrameworkNames(new LinkedList<String>(frameworkNames));
+		} catch (JavaModelException e) {
+			throw new RuntimeException("Unable to retrieve a list of frameworks.", e);
+		}
 	}
 
 	public void classpathChanged(IResourceDelta delta, IProgressMonitor monitor, Map buildCache) {
