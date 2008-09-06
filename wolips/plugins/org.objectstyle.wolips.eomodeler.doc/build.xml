@@ -19,6 +19,12 @@
 			<fileset dir="../../../../lib">
 				<include name="**/*.jar" />
 			</fileset>
+      <fileset dir="../../../3rdparty/plugins/org.objectstyle.wolips.thirdparty.commonscollections">
+        <include name="**/*.jar" />
+      </fileset>
+      <fileset dir="../../../3rdparty/plugins/org.objectstyle.wolips.thirdparty.velocity/">
+        <include name="**/*.jar" />
+      </fileset>
 			<pathelement path="../../../../${build.output.java.dir}" />
       <pathelement path = "${wo.dir.library.frameworks}/JavaEOAccess.framework/Resources/Java/javaeoaccess.jar"/>
       <pathelement path = "${wo.dir.library.frameworks}/JavaFoundation.framework/Resources/Java/javafoundation.jar"/>
