@@ -55,8 +55,6 @@
  */
 package org.objectstyle.wolips.core.resources.types.project;
 
-import java.util.List;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -67,48 +65,40 @@ import org.objectstyle.wolips.core.resources.types.folder.IDotApplicationAdapter
 import org.objectstyle.wolips.core.resources.types.folder.IDotFrameworkAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IProductAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IWoprojectAdapter;
+import org.objectstyle.wolips.variables.BuildProperties;
 
 public interface IProjectAdapter extends IResourceType, IPBDotProjectOwner {
+	public IProject getUnderlyingProject();
 
-	public abstract IProject getUnderlyingProject();
+	public boolean isFramework();
 
-	public abstract boolean isFramework();
+	public boolean isApplication();
 
-	public abstract boolean isApplication();
+	public IBuildAdapter getBuildAdapter();
 
-	public abstract IBuildAdapter getBuildAdapter();
+	public IDotApplicationAdapter getDotApplicationAdapter();
 
-	public abstract IDotApplicationAdapter getDotApplicationAdapter();
+	public IDotFrameworkAdapter getDotFrameworkAdapter();
 
-	public abstract IDotFrameworkAdapter getDotFrameworkAdapter();
+	public IProductAdapter getProductAdapter();
 
-	public abstract IProductAdapter getProductAdapter();
-
-	public abstract IWoprojectAdapter getWoprojectAdapter();
-
-	public abstract List<String> getFrameworkNames();
-
-	public abstract List<IPath> getFrameworkPaths();
-
-	public abstract String getFrameworkName(IPath _path);
-
-	public abstract boolean isFrameworkReference(IProject iProject);
+	public IWoprojectAdapter getWoprojectAdapter();
 
 	/**
 	 * Installs the ant builder.
 	 * 
 	 * @throws CoreException
 	 */
-	public abstract void installAntBuilder() throws CoreException;
+	public void installAntBuilder() throws CoreException;
 
 	/**
 	 * Removes the ant builder.
 	 * 
 	 * @throws CoreException
 	 */
-	public abstract void removeAntBuilder() throws CoreException;
+	public void removeAntBuilder() throws CoreException;
+
+	public IPath getWOJavaArchive() throws CoreException;
 	
-	public abstract String getPrincipalClass(boolean convertNullValueToEmptyString);
-	public abstract void setPrincipalClass(String principalClass);
-	public abstract IPath getWOJavaArchive() throws CoreException;
+	public BuildProperties getBuildProperties();
 }

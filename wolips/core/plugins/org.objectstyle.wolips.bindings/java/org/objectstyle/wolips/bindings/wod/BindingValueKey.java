@@ -125,6 +125,7 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
 //            _nextTypeArgument = _cache.getTypeForNameInType(typeArguments[0], declaringType);
 //          }
 //        }
+        
         String nextTypeNameErasure = Signature.getTypeErasure(nextTypeName);
         _nextType = _cache.getTypeForNameInType(nextTypeNameErasure, declaringType);
       }

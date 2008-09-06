@@ -176,6 +176,36 @@ public class ComponentEngine extends AbstractEngine {
 	public String getPackageName() {
 		return this.packageName;
 	}
+
+	public String getSuperclassPackageName() {
+		String superclassPackage = null;
+		if (this.superclassName != null) {
+			int lastDotIndex = this.superclassName.lastIndexOf('.');
+			if (lastDotIndex != -1) {
+				superclassPackage = this.superclassName.substring(0, lastDotIndex);
+			}
+		}
+		return superclassPackage;
+	}
+	
+	public boolean isSuperclassImportRequired() {
+		String superclassPackage = getSuperclassPackageName();
+		return superclassPackage != null && !superclassPackage.equals(this.packageName);
+	}
+	
+	public String getSuperclassShortName() {
+		String superclassShortName = null;
+		if (this.superclassName != null) {
+			int lastDotIndex = this.superclassName.lastIndexOf('.');
+			if (lastDotIndex != -1) {
+				superclassShortName = this.superclassName.substring(lastDotIndex + 1);
+			}
+			else {
+				superclassShortName = this.superclassName;
+			}
+		}
+		return superclassShortName;
+	}
 	
 	public void setSuperclassName(String superclassName) {
 		this.superclassName = superclassName;

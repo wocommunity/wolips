@@ -55,38 +55,24 @@
  */
 package org.objectstyle.wolips.core.resources.internal.types.project;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jdt.core.IClasspathEntry;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.core.CorePlugin;
 import org.objectstyle.wolips.core.resources.internal.build.AntApplicationNature;
 import org.objectstyle.wolips.core.resources.internal.build.AntFrameworkNature;
@@ -100,13 +86,13 @@ import org.objectstyle.wolips.core.resources.types.folder.IDotFrameworkAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IProductAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IWoprojectAdapter;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.variables.BuildProperties;
 import org.objectstyle.wolips.variables.VariablesPlugin;
 
 public class ProjectAdapter extends AbstractResourceAdapter implements IProjectAdapter {
+	private IProject _underlyingProject;
 
-	private IProject underlyingProject;
-
-	private boolean isFramework;
+	private boolean _isFramework;
 
 	/**
 	 * Comment for <code>BuilderNotFound</code>
@@ -121,16 +107,16 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 
 	public ProjectAdapter(IProject project, boolean isFramework) {
 		super(project);
-		this.underlyingProject = project;
-		this.isFramework = isFramework;
+		this._underlyingProject = project;
+		this._isFramework = isFramework;
 	}
 
 	public IProject getUnderlyingProject() {
-		return this.underlyingProject;
+		return this._underlyingProject;
 	}
 
 	public boolean isFramework() {
-		return this.isFramework;
+		return this._isFramework;
 	}
 
 	public boolean isApplication() {
@@ -217,120 +203,6 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 		}
 
 		return this.getDotApplicationAdapter();
-	}
-
-	public List<IPath> getFrameworkPaths() {
-		ArrayList<IPath> list = new ArrayList<IPath>();
-		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-		for (int i = 0; i < projects.length; i++) {
-			if (isFrameworkReference(projects[i])) {
-				list.add(projects[i].getLocation());
-			}
-		}
-		try {
-			IJavaProject javaProject = JavaCore.create(this.getUnderlyingProject());
-			list.addAll(toFrameworkPaths(javaProject.getResolvedClasspath(false)));
-		} catch (JavaModelException e) {
-			CorePlugin.getDefault().log(e);
-		}
-		return list;
-	}
-
-	public List<String> getFrameworkNames() {
-		Set<String> frameworkNamesSet = new TreeSet<String>();
-		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-		for (int i = 0; i < projects.length; i++) {
-			if (isFrameworkReference(projects[i])) {
-				frameworkNamesSet.add(projects[i].getName() + "." + "framework");
-			}
-		}
-		try {
-			IJavaProject javaProject = JavaCore.create(this.getUnderlyingProject());
-			frameworkNamesSet.addAll(this.toFrameworkNames(javaProject.getResolvedClasspath(false)));
-		} catch (JavaModelException e) {
-			CorePlugin.getDefault().log(e);
-		}
-		return new LinkedList<String>(frameworkNamesSet);
-	}
-
-	public String getFrameworkName(IPath frameworkPath) {
-		String frameworkName = null;
-		if (ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(frameworkPath) instanceof IProject) {
-			frameworkName = frameworkPath.lastSegment() + ".framework";
-		} else {
-			frameworkName = frameworkPath.lastSegment();
-		}
-		return frameworkName;
-	}
-
-	private List<IPath> toFrameworkPaths(IClasspathEntry[] classpathEntries) {
-		ArrayList<IPath> arrayList = new ArrayList<IPath>();
-		for (int i = 0; i < classpathEntries.length; i++) {
-			IPath path = classpathEntries[i].getPath();
-			IPath choppedFrameworkPath = null;
-			int count = path.segmentCount();
-			for (int pathElementNum = 0; pathElementNum < count && choppedFrameworkPath == null; pathElementNum++) {
-				String segment = path.segment(pathElementNum);
-				if (segment.endsWith("." + "framework")) {
-					choppedFrameworkPath = path.removeLastSegments(count - pathElementNum - 1);
-				}
-			}
-			if (choppedFrameworkPath != null && !choppedFrameworkPath.lastSegment().startsWith("JavaVM")) {
-				arrayList.add(choppedFrameworkPath);
-			}
-		}
-		return arrayList;
-	}
-
-	private List<String> toFrameworkNames(IClasspathEntry[] classpathEntries) {
-		List<IPath> pathsList = toFrameworkPaths(classpathEntries);
-		ArrayList<String> namesList = new ArrayList<String>(pathsList.size());
-		Iterator pathsIter = pathsList.iterator();
-		while (pathsIter.hasNext()) {
-			IPath path = (IPath) pathsIter.next();
-			String name = this.getFrameworkName(path);
-			namesList.add(name);
-		}
-		return namesList;
-	}
-
-	/**
-	 * Method isTheLaunchAppOrFramework.
-	 * 
-	 * @param iProject
-	 * @return boolean
-	 */
-	public boolean isFrameworkReference(IProject iProject) {
-		boolean isFrameworkReference;
-		IJavaProject javaProject = null;
-		try {
-			javaProject = JavaCore.create(this.getUnderlyingProject());
-			if (javaProject == null) {
-				isFrameworkReference = false;
-			} else {
-				IProjectAdapter project = (IProjectAdapter) iProject.getAdapter(IProjectAdapter.class);
-				isFrameworkReference = project != null && project.isFramework() && projectIsReferencedByProject(iProject, javaProject.getProject());
-			}
-		} catch (Exception e) {
-			CorePlugin.getDefault().log(e);
-			isFrameworkReference = false;
-		}
-		return isFrameworkReference;
-	}
-
-	public boolean projectIsReferencedByProject(IProject child, IProject mother) {
-		IProject[] projects = null;
-		try {
-			projects = mother.getReferencedProjects();
-		} catch (Exception e) {
-			CorePlugin.getDefault().log(e);
-			return false;
-		}
-		for (int i = 0; i < projects.length; i++) {
-			if (projects[i].equals(child))
-				return true;
-		}
-		return false;
 	}
 
 	/**
@@ -688,9 +560,9 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 		IFolder workingDirFolder;
 		IProject project = this.getUnderlyingProject();
 		if (this.isAntBuilderInstalled() || (Nature.getNature(project) instanceof AntApplicationNature)) {
-			workingDirFolder = this.getUnderlyingProject().getFolder("dist");
+			workingDirFolder = this.getUnderlyingProject().getFolder(IBuildAdapter.FILE_NAME_DIST);
 		} else {
-			workingDirFolder = this.getUnderlyingProject().getFolder("build");
+			workingDirFolder = this.getUnderlyingProject().getFolder(IBuildAdapter.FILE_NAME_BUILD);
 		}
 		if (workingDirFolder != null && workingDirFolder.exists()) {
 			IFolder woaFolder = null;
@@ -703,292 +575,15 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 			}
 			if (woaFolder != null && woaFolder.exists()) {
 				workingDirFolder = woaFolder;
-			}
-			else {
+			} else {
 				workingDirFolder = null;
 			}
-		}
-		else {
+		} else {
 			workingDirFolder = null;
 		}
 		return workingDirFolder;
 	}
 
-	private Properties getBuildProperties() throws CoreException, IOException {
-		Properties properties = new Properties();
-		IFile file = this.getUnderlyingProject().getFile("build.properties");
-		if (file.exists()) {
-			InputStream inputStream = file.getContents();
-			properties.load(inputStream);
-			inputStream.close();
-		}
-		return properties;
-	}
-
-	private void setBuildProperties(Properties properties) throws CoreException, IOException {
-		if (this.getBuildProperties().equals(properties))
-			return;
-		IFile file = this.getUnderlyingProject().getFile("build.properties");
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		properties.store(byteArrayOutputStream, null);
-		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-		file.setContents(byteArrayInputStream, true, true, new NullProgressMonitor());
-	}
-
-	/**
-	 * @return generate webxml
-	 */
-	public boolean getWebXML() {
-		String returnValue = null;
-		try {
-			returnValue = (String) this.getBuildProperties().get("webXML");
-		} catch (CoreException e) {
-			CorePlugin.getDefault().log(e);
-		} catch (IOException e) {
-			CorePlugin.getDefault().log(e);
-		}
-		if (returnValue == null || !"true".equalsIgnoreCase(returnValue)) {
-			return false;
-		}
-		return true;
-	}
-
-	/**
-	 * @param webXML
-	 *            generate webxml
-	 */
-	public void setWebXML(boolean webXML) {
-		try {
-			Properties properties = this.getBuildProperties();
-			properties.put("webXML", String.valueOf(webXML));
-			this.setBuildProperties(properties);
-		} catch (CoreException e) {
-			CorePlugin.getDefault().log(e);
-		} catch (IOException e) {
-			CorePlugin.getDefault().log(e);
-		}
-	}
-
-	public boolean isServletDeployment() {
-		boolean returnValue = false;
-		try {
-			returnValue = this.getBuildProperties().get("servletDeployment") != null;
-		} catch (CoreException e) {
-			CorePlugin.getDefault().log(e);
-		} catch (IOException e) {
-			CorePlugin.getDefault().log(e);
-		}
-		return returnValue;
-	}
-
-	public void setServletDeployment(boolean servletDeployment) {
-		try {
-			Properties properties = this.getBuildProperties();
-			if (servletDeployment) {
-				properties.put("servletDeployment", "true");
-			} else {
-				properties.remove("servletDeployment");
-			}
-			this.setBuildProperties(properties);
-		} catch (CoreException e) {
-			CorePlugin.getDefault().log(e);
-		} catch (IOException e) {
-			CorePlugin.getDefault().log(e);
-		}
-	}
-
-	/**
-	 * @param convertNullValueToEmptyString
-	 * @return webxml custom content
-	 */
-	public String getWebXML_CustomContent(boolean convertNullValueToEmptyString) {
-		String returnValue = null;
-		try {
-			returnValue = (String) this.getBuildProperties().get("webXML_CustomContent");
-		} catch (CoreException e) {
-			CorePlugin.getDefault().log(e);
-		} catch (IOException e) {
-			CorePlugin.getDefault().log(e);
-		}
-		if (convertNullValueToEmptyString && returnValue == null) {
-			return "";
-		}
-		return returnValue;
-	}
-
-	/**
-	 * @param webXML_CustomContent
-	 *            webxml custom content
-	 */
-	public void setWebXML_CustomContent(String webXML_CustomContent) {
-		try {
-			Properties properties = this.getBuildProperties();
-			if (webXML_CustomContent == null) {
-				properties.put("webXML_CustomContent", "");
-			} else {
-				properties.put("webXML_CustomContent", webXML_CustomContent);
-			}
-			this.setBuildProperties(properties);
-		} catch (CoreException e) {
-			CorePlugin.getDefault().log(e);
-		} catch (IOException e) {
-			CorePlugin.getDefault().log(e);
-		}
-	}
-
-	public String getEOGeneratorArgs(boolean convertNullValueToEmptyString) {
-		String returnValue = null;
-		try {
-			returnValue = (String) this.getBuildProperties().get("eogeneratorArgs");
-		} catch (CoreException e) {
-			CorePlugin.getDefault().log(e);
-		} catch (IOException e) {
-			CorePlugin.getDefault().log(e);
-		}
-		if (convertNullValueToEmptyString && returnValue == null) {
-			return "";
-		}
-		return returnValue;
-	}
-
-	public void setEOGeneratorArgs(String eogeneratorArgs) {
-		try {
-			Properties properties = this.getBuildProperties();
-			if (eogeneratorArgs == null) {
-				properties.put("eogeneratorArgs", "");
-			} else {
-				properties.put("eogeneratorArgs", eogeneratorArgs);
-			}
-			this.setBuildProperties(properties);
-		} catch (CoreException e) {
-			CorePlugin.getDefault().log(e);
-		} catch (IOException e) {
-			CorePlugin.getDefault().log(e);
-		}
-	}
-
-	/**
-	 * @param convertNullValueToEmptyString
-	 * @return principalClass.
-	 */
-	public String getPrincipalClass(boolean convertNullValueToEmptyString) {
-		String returnValue = null;
-		try {
-			returnValue = (String) this.getBuildProperties().get("principalClass");
-		} catch (CoreException e) {
-			CorePlugin.getDefault().log(e);
-		} catch (IOException e) {
-			CorePlugin.getDefault().log(e);
-		}
-		if (convertNullValueToEmptyString && returnValue == null) {
-			return "";
-		}
-		return returnValue;
-	}
-
-	/**
-	 * @param principalClass
-	 *            the principalClass for the Info.plist
-	 */
-	public void setPrincipalClass(String principalClass) {
-		try {
-			Properties properties = this.getBuildProperties();
-			if (principalClass == null) {
-				properties.put("principalClass", "");
-			} else {
-				properties.put("principalClass", principalClass);
-			}
-			this.setBuildProperties(properties);
-		} catch (CoreException e) {
-			CorePlugin.getDefault().log(e);
-		} catch (IOException e) {
-			CorePlugin.getDefault().log(e);
-		}
-	}
-
-	/**
-	 * @param convertNullValueToEmptyString
-	 * @return The CustomContent for the Info.plist
-	 */
-	public String getCustomInfoPListContent(boolean convertNullValueToEmptyString) {
-		String returnValue = null;
-		try {
-			returnValue = (String) this.getBuildProperties().get("customInfoPListContent");
-		} catch (CoreException e) {
-			CorePlugin.getDefault().log(e);
-		} catch (IOException e) {
-			CorePlugin.getDefault().log(e);
-		}
-		if (convertNullValueToEmptyString && returnValue == null) {
-			return "";
-		}
-		return returnValue;
-	}
-
-	/**
-	 * @param customInfoPListContent
-	 *            The CustomContent for the Info.plist
-	 */
-	public void setCustomInfoPListContent(String customInfoPListContent) {
-		try {
-			Properties properties = this.getBuildProperties();
-			if (customInfoPListContent == null) {
-				properties.put("customInfoPListContent", "");
-			} else {
-				properties.put("customInfoPListContent", customInfoPListContent);
-			}
-			this.setBuildProperties(properties);
-		} catch (CoreException e) {
-			CorePlugin.getDefault().log(e);
-		} catch (IOException e) {
-			CorePlugin.getDefault().log(e);
-		}
-	}
-
-	/**
-	 * @param convertNullValueToEmptyString
-	 * @return The EOAdaptorClassName for the Info.plist
-	 */
-	public String getEOAdaptorClassName(boolean convertNullValueToEmptyString) {
-		String returnValue = null;
-		try {
-			returnValue = (String) this.getBuildProperties().get("eoAdaptorClassName");
-		} catch (CoreException e) {
-			CorePlugin.getDefault().log(e);
-		} catch (IOException e) {
-			CorePlugin.getDefault().log(e);
-		}
-		if (convertNullValueToEmptyString && returnValue == null) {
-			return "";
-		}
-		return returnValue;
-	}
-
-	/**
-	 * @param eoAdaptorClassName
-	 *            the eoadaptorclassname for the Info.plist
-	 */
-	public void setEOAdaptorClassName(String eoAdaptorClassName) {
-		try {
-			Properties properties = this.getBuildProperties();
-			if (eoAdaptorClassName == null) {
-				properties.put("eoAdaptorClassName", "");
-			} else {
-				properties.put("eoAdaptorClassName", eoAdaptorClassName);
-			}
-			this.setBuildProperties(properties);
-		} catch (CoreException e) {
-			CorePlugin.getDefault().log(e);
-		} catch (IOException e) {
-			CorePlugin.getDefault().log(e);
-		}
-
-	}
-
-	/**
-	 * @return
-	 * @throws CoreException
-	 */
 	public IPath getWOJavaArchive() throws CoreException {
 		IResource resource = null;
 		IPath path = null;
@@ -1009,7 +604,7 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 			if (resource != null && resource.exists()) {
 				path = resource.getLocation();
 			} else {
-				IPath externalBuildRoot = VariablesPlugin.getDefault().getExternalBuildRoot();
+				IPath externalBuildRoot = VariablesPlugin.getDefault().getProjectVariables(_underlyingProject).getExternalBuildRoot();
 				if (externalBuildRoot != null) {
 					path = externalBuildRoot.append(projectName + ".framework/Resources/Java/" + projectName + ".jar");
 				}
@@ -1029,7 +624,7 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 			if (resource != null && (resource.exists())) {
 				path = resource.getLocation();
 			} else {
-				IPath externalBuildRoot = VariablesPlugin.getDefault().getExternalBuildRoot();
+				IPath externalBuildRoot = VariablesPlugin.getDefault().getProjectVariables(_underlyingProject).getExternalBuildRoot();
 				if (externalBuildRoot != null) {
 					path = externalBuildRoot.append(projectName + ".woa/Contents/Resources/Java/" + projectName + ".jar");
 				}
@@ -1046,5 +641,9 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 			result = this.getUnderlyingProject().getFile(prefix + projectName + postfix + "Resources/Java/" + projectName.toLowerCase() + ".jar");
 		}
 		return result;
+	}
+
+	public BuildProperties getBuildProperties() {
+		return (BuildProperties) _underlyingProject.getAdapter(BuildProperties.class);
 	}
 }

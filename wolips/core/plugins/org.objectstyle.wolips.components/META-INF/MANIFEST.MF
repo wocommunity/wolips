@@ -8,7 +8,7 @@ Bundle-Vendor: objectstyle.org
 Require-Bundle: org.objectstyle.wolips.locate,
  org.objectstyle.wolips.editors,
  org.objectstyle.wolips.baseforuiplugins
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.components,
  org.objectstyle.wolips.components.editor,
  org.objectstyle.wolips.components.input

@@ -65,7 +65,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.regex.*;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -96,38 +98,38 @@ public class MethodSearch implements IRunnableWithProgress {
 
 	private IJavaProject javaProject;
 
-	private Hashtable declaredMethods; // key =
+	private Hashtable<String, List<String>> declaredMethods; // key =
 
 	// declaredClassName.methodName(paramterTypes),
 	// value = ArrayList{handleID,
 	// methodName, returnType, overrids}
 
-	private Hashtable usedMethods; // key =
+	private Hashtable<String, List<String>> usedMethods; // key =
 
 	// declaredClassName.methodName(paramterTypes),
 	// value = ArrayList{handleIDs}
 
-	private Hashtable unusedMethods; // key =
+	private Hashtable<String, List<String>> unusedMethods; // key =
 
 	// declaredClassName.methodName(paramterTypes),
 	// value = ArrayList{handleID,
 	// methodName, returnType}
 
-	private Hashtable publicClassVariables; // key =
+	private Hashtable<String, List<String>> publicClassVariables; // key =
 
 	// declaredClassName.variableName",
 	// value = ArrayList{handleID, type}
 
-	private Hashtable possibleWodMethods; // key = wodName.methodCall, value =
+	private Hashtable<String, String> possibleWodMethods; // key = wodName.methodCall, value =
 
 	// "null"
 
-	private Hashtable unusedClassVariables; // key =
+	private Hashtable<String, List<String>> unusedClassVariables; // key =
 
 	// declaredClassName.variableName",
 	// value = ArrayList{handleID, type}
 
-	private Hashtable classDependencies; // key = className, value =
+	private Hashtable<String, String> classDependencies; // key = className, value =
 
 	// extendedByClassName
 
@@ -160,13 +162,13 @@ public class MethodSearch implements IRunnableWithProgress {
 	 */
 	public MethodSearch(IJavaProject javaProject) {
 		this.javaProject = javaProject;
-		unusedMethods = new Hashtable();
-		declaredMethods = new Hashtable();
-		usedMethods = new Hashtable();
-		publicClassVariables = new Hashtable();
-		possibleWodMethods = new Hashtable();
-		unusedClassVariables = new Hashtable();
-		classDependencies = new Hashtable();
+		unusedMethods = new Hashtable<String, List<String>>();
+		declaredMethods = new Hashtable<String, List<String>>();
+		usedMethods = new Hashtable<String, List<String>>();
+		publicClassVariables = new Hashtable<String, List<String>>();
+		possibleWodMethods = new Hashtable<String, String>();
+		unusedClassVariables = new Hashtable<String, List<String>>();
+		classDependencies = new Hashtable<String, String>();
 
 		this.monitor = new NullProgressMonitor();
 	}
@@ -359,8 +361,8 @@ public class MethodSearch implements IRunnableWithProgress {
 		while (keysEnum.hasMoreElements()) {
 			String key = (String) keysEnum.nextElement();
 			if (!usedMethods.containsKey(key)) {
-				ArrayList value = (ArrayList) declaredMethods.get(key);
-				String skip = (String) value.get(3);
+				List<String> value = declaredMethods.get(key);
+				String skip = value.get(3);
 				if (skip.equals("false")) {
 					unusedMethods.put(key, value);
 				}
@@ -417,26 +419,26 @@ public class MethodSearch implements IRunnableWithProgress {
 		// System.out.println("###################### checkWodMethods() " +
 		// possibleWodMethods.size() + " ######################");
 
-		unusedClassVariables = (Hashtable) publicClassVariables.clone();
+		unusedClassVariables = new Hashtable<String, List<String>>(publicClassVariables);
 
 		Enumeration keyEnum = possibleWodMethods.keys();
 		while (keyEnum.hasMoreElements()) {
 			String call = (String) keyEnum.nextElement();
 
 			// //System.out.println("call: "+call);
-			ArrayList splitList = new ArrayList();
+			ArrayList<String> splitList = new ArrayList<String>();
 
 			String[] split = call.split("\\.");
 			for (int i = 0; i < split.length; i++) {
 				splitList.add(split[i]);
 			}
 
-			String className = (String) splitList.remove(0);
+			String className = splitList.remove(0);
 
 			// direct class
-			recursiveMethodFinder(className, (ArrayList) splitList.clone());
+			recursiveMethodFinder(className, new ArrayList<String>(splitList));
 			// extended by
-			recursiveMethodFinder((String) classDependencies.get(className), splitList);
+			recursiveMethodFinder(classDependencies.get(className), splitList);
 
 		}
 		taskMonitor.worked(1);
@@ -452,9 +454,9 @@ public class MethodSearch implements IRunnableWithProgress {
 	 * @param className
 	 * @param splitList
 	 */
-	private void recursiveMethodFinder(String className, ArrayList splitList) {
+	private void recursiveMethodFinder(String className, List<String> splitList) {
 		try {
-			String local = (String) splitList.remove(0);
+			String local = splitList.remove(0);
 			String key = className + "." + local; // key = "className.call"
 
 			// local method call
@@ -469,8 +471,8 @@ public class MethodSearch implements IRunnableWithProgress {
 				unusedClassVariables.remove(key);
 				if (splitList.size() > 0) { // method of local variable =>
 					// recursion
-					ArrayList value = (ArrayList) publicClassVariables.get(key);
-					String newClass = (String) value.get(1);
+					List<String> value = publicClassVariables.get(key);
+					String newClass = value.get(1);
 					recursiveMethodFinder(newClass, splitList);
 				} else { // local variable
 					// //System.out.println("local variable: "+className+"
@@ -593,18 +595,18 @@ public class MethodSearch implements IRunnableWithProgress {
 			FileWriter writer = new FileWriter(outputFile);
 			writer.write("############ unused methods #############\n\n");
 
-			Object[] keyArray = unusedMethods.keySet().toArray();
+			String[] keyArray = unusedMethods.keySet().toArray(new String[0]);
 			Arrays.sort(keyArray, comparator);
 			for (int i = 0; i < keyArray.length; i++) {
-				String key = (String) keyArray[i];
+				String key = keyArray[i];
 				writer.write(key + "\n");
 			}
 
 			writer.write("\n########## unused class variables ##########\n\n");
-			keyArray = unusedClassVariables.keySet().toArray();
+			keyArray = unusedClassVariables.keySet().toArray(new String[0]);
 			Arrays.sort(keyArray, comparator);
 			for (int i = 0; i < keyArray.length; i++) {
-				String key = (String) keyArray[i];
+				String key = keyArray[i];
 				writer.write(key + "\n");
 			}
 			writer.close();

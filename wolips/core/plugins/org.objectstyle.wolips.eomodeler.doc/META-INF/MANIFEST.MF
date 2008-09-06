@@ -7,6 +7,6 @@ Bundle-Activator: org.objectstyle.wolips.eomodeler.core.Activator
 Require-Bundle: org.objectstyle.wolips.eomodeler.core,
  org.objectstyle.wolips.thirdparty.velocity,
  org.objectstyle.wolips.baseforplugins
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Bundle-Vendor: objectstyle.org
 Bundle-ClassPath: .

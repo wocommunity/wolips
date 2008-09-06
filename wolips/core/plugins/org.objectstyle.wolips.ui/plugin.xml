@@ -523,9 +523,14 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            name="WOLips Build"
-            class="org.objectstyle.wolips.ui.propertypages.ProjectNaturePage"
-            id="org.objectstyle.wolips.ui.propertypages.ProjectNaturePage"> 
+            name="WOLips Deployment"
+            class="org.objectstyle.wolips.ui.propertypages.WOLipsDeploymentPropertyPage"
+            id="org.objectstyle.wolips.ui.propertypages.WOLipsDeploymentPropertyPage"> 
+      </page>
+      <page
+            name="WOLips Development"
+            class="org.objectstyle.wolips.ui.propertypages.WOLipsDevelopmentPropertyPage"
+            id="org.objectstyle.wolips.ui.propertypages.WOLipsDevelopmentPropertyPage"> 
       </page>
    </extension>
 

@@ -61,8 +61,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.objectstyle.wolips.baseforplugins.plist.PropertyListParserException;
-import org.objectstyle.wolips.baseforplugins.plist.WOLPropertyListSerialization;
+import org.objectstyle.woenvironment.plist.PropertyListParserException;
+import org.objectstyle.woenvironment.plist.WOLPropertyListSerialization;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.baseforplugins.util.StringUtils;
 import org.objectstyle.wolips.eomodeler.core.Messages;
@@ -680,7 +680,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			attribute = new EOAttribute(newAttributeName);
 			attribute.setUsedForLocking(Boolean.TRUE);
 			attribute.synchronizeNameChange(newAttributeName, newAttributeName);
-			//attribute.guessColumnNameInEntity(this);
+			attribute.guessColumnNameInEntity(this);
 			attribute.setClassProperty(Boolean.TRUE);
 			addAttribute(attribute);
 		}
@@ -984,6 +984,14 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	public String getClassName() {
 		return myClassName;
+	}
+	
+	public String getClassNamePath() {
+		String classNamePath = getClassName();
+		if (classNamePath != null && classNamePath.length() > 0) {
+			classNamePath = classNamePath.replace('.', '/');
+		}
+		return classNamePath;
 	}
 
 	public void guessClassNameInModel(EOModel model) {
@@ -2540,12 +2548,16 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public void synchronizeNameChange(String oldName, String newName) {
+		boolean reverseEngineered = false;
 		String externalName = newName;
 		EOModel model = getModel();
 		if (model != null) {
+			reverseEngineered = model.isReverseEngineered();
 			externalName = model.getEntityNamingConvention().format(oldName, newName, getExternalName());
 		}
-		setExternalName(externalName);
+		if (!reverseEngineered) {
+			setExternalName(externalName);
+		}
 		setClassName(NamingConvention.newClassName(oldName, newName, getClassName()));
 		setClientClassName(NamingConvention.newClassName(oldName, newName, getClientClassName()));
 	}

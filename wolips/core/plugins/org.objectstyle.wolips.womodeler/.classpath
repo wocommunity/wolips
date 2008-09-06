@@ -4,8 +4,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/jdom.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="var" path="NEXT_LOCAL_ROOT/Library/WebObjects/lib/JavaEOAccess.jar"/>
-	<classpathentry kind="var" path="NEXT_LOCAL_ROOT/Library/WebObjects/lib/JavaJDBCAdaptor.jar"/>
-	<classpathentry kind="var" path="NEXT_LOCAL_ROOT/Library/WebObjects/lib/JavaFoundation.jar"/>
+	<classpathentry kind="lib" path="/Library/WebObjects/lib/JavaEOAccess.jar"/>
+	<classpathentry kind="lib" path="/Library/WebObjects/lib/JavaFoundation.jar"/>
+	<classpathentry kind="lib" path="/Library/WebObjects/lib/JavaJDBCAdaptor.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

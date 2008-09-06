@@ -8,7 +8,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.objectstyle.wolips.thirdparty.log4j;visibility:=reexport,
  org.objectstyle.wolips.thirdparty.commonscollections;visibility:=reexport,
  org.objectstyle.wolips.thirdparty.velocity;visibility:=reexport
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.objectstyle.wolips.thirdparty.cayenne.Activator
 Export-Package: org.objectstyle.cayenne,
  org.objectstyle.cayenne.access,

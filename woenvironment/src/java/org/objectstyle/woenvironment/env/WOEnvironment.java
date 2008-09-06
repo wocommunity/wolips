@@ -67,130 +67,60 @@ import java.util.Map;
  */
 
 public final class WOEnvironment extends Environment {
-	private WOVariables woVariables;
+  private WOVariables woVariables;
 
-	public WOEnvironment() {
-		super();
-		woVariables = new WOVariables(this);
-	}
+  public WOEnvironment(Map<Object, Object> existingProperties) {
+    this.woVariables = new WOVariables(this, existingProperties);
+  }
+  
+  public WOEnvironment(WOVariables variables, Map<Object, Object> existingProperties) {
+    this.woVariables = new WOVariables(this, variables, existingProperties);
+  }
 
-	/**
-	 * Creates new WOEnvironment, specifying the list of alternative properties.
-	 * 
-	 * @param properties
-	 */
-	public WOEnvironment(Map altProperties) {
-		super();
-		woVariables = new WOVariables(this, altProperties);
-	}
+  /**
+   * @return WOVariables
+   */
+  public WOVariables getWOVariables() {
+    return this.woVariables;
+  }
 
-	/**
-	 * @return WOVariables
-	 */
-	public WOVariables getWOVariables() {
-		return woVariables;
-	}
+  /**
+   * Method wo5or51 returns true if the installe WO version is 5.0 or 5.1.
+   * 
+   * @return boolean
+   */
+  public boolean wo5or51() {
+    return (this.bootstrap() == null);
+  }
 
-	/**
-	 * Method wo5or51 returns true if the installe WO version is 5.0 or 5.1.
-	 * 
-	 * @return boolean
-	 */
-	public boolean wo5or51() {
-		return (this.bootstrap() == null);
-	}
+  /**
+   * Method wo52 returns true if the installe WO version is 5.2.
+   * 
+   * @return boolean
+   */
+  public boolean wo52() {
+    return !this.wo5or51();
+  }
 
-	/**
-	 * Method wo52 returns true if the installe WO version is 5.2.
-	 * 
-	 * @return boolean
-	 */
-	public boolean wo52() {
-		return !this.wo5or51();
-	}
+  /**
+   * Method bootstrap returns the bootstrap.jar if it exists.
+   * 
+   * @param project
+   * @return File
+   */
+  public File bootstrap() {
+    String bootstrapJarPath = getWOVariables().boostrapJar();
+    File bootstrapJar = null;
+    if (bootstrapJarPath != null) {
+      bootstrapJar = new File(bootstrapJarPath);
+      if (!bootstrapJar.exists()) {
+        bootstrapJar = null;
+      }
+    }
+    return null;
+  }
 
-	/**
-	 * Method bootstrap returns the bootstrap.jar if it exists.
-	 * 
-	 * @param project
-	 * @return File
-	 */
-	public File bootstrap() {
-		File aFile = null;
-		String propertiesBootstrapJar = this.getWOVariables().bootstrapJar();
-		if (propertiesBootstrapJar != null) {
-		  aFile = new File(propertiesBootstrapJar);
-		  if (aFile != null && aFile.exists()) {
-		    return aFile;
-		  }
-		}
-		aFile = this.macBootstrap();
-		if ((aFile != null) && (aFile.exists()))
-			return aFile;
-		aFile = this.winBootstrap();
-		if ((aFile != null) && (aFile.exists()))
-			return aFile;
-		aFile = this.otherBootstrap();
-		if ((aFile != null) && (aFile.exists()))
-			return aFile;
-		return null;
-	}
-
-	/**
-	 * Method macBootstrap.
-	 * 
-	 * @param project
-	 * @return File
-	 */
-	private File macBootstrap() {
-		File aFile = null;
-		try {
-			aFile = new File(this.getWOVariables().systemRoot() + "/Library/WebObjects/JavaApplications/wotaskd.woa/WOBootstrap.jar");
-			if (aFile.exists())
-				return aFile;
-		} catch (Exception anException) {
-			System.out.println(anException);
-		}
-		return null;
-	}
-
-	/**
-	 * Method winBootstrap.
-	 * 
-	 * @param project
-	 * @return File
-	 */
-	private File winBootstrap() {
-		File aFile = null;
-		try {
-			aFile = new File(this.getWOVariables().systemRoot() + "/Library/WebObjects/JavaApplications/wotaskd.woa/WOBootstrap.jar");
-			if (aFile.exists())
-				return aFile;
-		} catch (Exception anException) {
-			System.out.println(anException);
-		}
-		return null;
-	}
-
-	/**
-	 * Method otherBootstrap.
-	 * 
-	 * @param project
-	 * @return File
-	 */
-	private File otherBootstrap() {
-		File aFile = null;
-		try {
-			aFile = new File(this.getWOVariables().systemRoot() + "\\Library\\WebObjects\\JavaApplications\\wotaskd.woa\\WOBootstrap.jar");
-			if (aFile.exists())
-				return aFile;
-		} catch (Exception anException) {
-			System.out.println(anException);
-		}
-		return null;
-	}
-
-	public boolean variablesConfigured() {
-		return getWOVariables().systemRoot() != null && getWOVariables().localRoot() != null;
-	}
+  public boolean variablesConfigured() {
+    return getWOVariables().systemRoot() != null && getWOVariables().localRoot() != null;
+  }
 }

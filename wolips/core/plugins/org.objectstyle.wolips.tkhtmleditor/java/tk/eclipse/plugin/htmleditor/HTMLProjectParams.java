@@ -273,12 +273,14 @@ public class HTMLProjectParams {
 			
 		} else {
 			// for old versions
-			this._root = project.getPersistentProperty(
-					new QualifiedName(HTMLPlugin.getDefault().getPluginId(), P_ROOT));
-			useDTD = project.getPersistentProperty(
-					new QualifiedName(HTMLPlugin.getDefault().getPluginId(), P_USE_DTD));
-			validateHTML = project.getPersistentProperty(new QualifiedName(
-					HTMLPlugin.getDefault().getPluginId(), P_VALIDATE_HTML));
+		  if (project.isOpen()) {
+  			this._root = project.getPersistentProperty(
+  					new QualifiedName(HTMLPlugin.getDefault().getPluginId(), P_ROOT));
+  			useDTD = project.getPersistentProperty(
+  					new QualifiedName(HTMLPlugin.getDefault().getPluginId(), P_USE_DTD));
+  			validateHTML = project.getPersistentProperty(new QualifiedName(
+  					HTMLPlugin.getDefault().getPluginId(), P_VALIDATE_HTML));
+		  }
 		}
 		
 		if(this._root==null){

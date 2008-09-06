@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jardesc>
-<jar path="org.objectstyle.wolips.eomodeler.core/lib/EntityModelerSQL.jar"/>
+<jar path="woproject/wolips/core/plugins/org.objectstyle.wolips.eomodeler.core/lib/EntityModelerSQL.jar"/>
 <options buildIfNeeded="true" compress="true" descriptionLocation="/org.objectstyle.wolips.eomodeler.core/wojava/org.objectstyle.wolips.eomodeler.core.sql/EntityModelerSQL.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="true" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
 <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
 <selectedProjects/>

@@ -58,7 +58,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.objectstyle.wolips.baseforplugins.plist.WOLPropertyListSerialization;
+import org.objectstyle.woenvironment.plist.WOLPropertyListSerialization;
 
 /**
  * This class is the base class to work with d2wmodel files.

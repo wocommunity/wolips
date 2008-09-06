@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import org.objectstyle.wolips.baseforplugins.plist.ParserDataStructureFactory;
+import org.objectstyle.woenvironment.plist.ParserDataStructureFactory;
 
 public class StableDataStructureFactory implements ParserDataStructureFactory {
 	public Collection<Object> createCollection(String keyPath) {

@@ -60,8 +60,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.objectstyle.wolips.baseforplugins.plist.PropertyListParserException;
-import org.objectstyle.wolips.baseforplugins.plist.WOLPropertyListSerialization;
+import org.objectstyle.woenvironment.plist.PropertyListParserException;
+import org.objectstyle.woenvironment.plist.WOLPropertyListSerialization;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.baseforplugins.util.URLUtils;
 import org.objectstyle.wolips.eomodeler.core.model.history.EOEntityAddedEvent;
@@ -100,6 +100,8 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 
 	public static final String MODEL_SAVING = "modelSaving";
 
+	public static final String REVERSE_ENGINEERED = "reverseEngineered";
+
 	private EOModelGroup myModelGroup;
 
 	private String myName;
@@ -133,6 +135,8 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	private NamingConvention _entityNamingConvention;
 
 	private NamingConvention _attributeNamingConvention;
+	
+	private boolean _reverseEngineered;
 
 	public EOModel(String _name) {
 		myName = _name;
@@ -272,6 +276,16 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		EOModelGroup modelGroup = getModelGroup();
 		boolean editing = (modelGroup == null || getName().equals(modelGroup.getEditingModelName()));
 		return editing;
+	}
+
+	public boolean isReverseEngineered() {
+		return _reverseEngineered;
+	}
+
+	public void setReverseEngineered(boolean reverseEngineered) {
+		Boolean oldReverseEngineered = Boolean.valueOf(_reverseEngineered);
+		_reverseEngineered = reverseEngineered;
+		firePropertyChange(EOModel.REVERSE_ENGINEERED, oldReverseEngineered, Boolean.valueOf(_reverseEngineered));
 	}
 
 	public boolean isDirty() {
@@ -848,6 +862,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		EOModelMap entityModelerMap = getEntityModelerMap(false);
 		_entityNamingConvention = NamingConvention.loadFromMap("entityNamingConvention", entityModelerMap);
 		_attributeNamingConvention = NamingConvention.loadFromMap("attributeNamingConvention", entityModelerMap);
+		_reverseEngineered = entityModelerMap.getBoolean("reverseEngineered", false);
 
 		Map<String, Map> databaseConfigs = entityModelerMap.getMap("databaseConfigs");
 		if (databaseConfigs != null) {
@@ -968,6 +983,8 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		} else {
 			entityModelerMap.put("activeDatabaseConfigName", myActiveDatabaseConfig.getName());
 		}
+		
+		entityModelerMap.setBoolean("reverseEngineered", Boolean.valueOf(_reverseEngineered), EOModelMap.YNOptionalDefaultNo);
 
 		writeUserInfo(modelMap);
 

@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.objectstyle.wolips.baseforplugins.plist.ParserDataStructureFactory;
+import org.objectstyle.woenvironment.plist.ParserDataStructureFactory;
 
 public class PropertyListContentProvider implements ITreeContentProvider {
 	private ParserDataStructureFactory _factory;

@@ -68,8 +68,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.objectstyle.woenvironment.pb.PBXProject.ObjectsTable.ID;
-import org.objectstyle.wolips.baseforplugins.plist.PropertyListParserException;
-import org.objectstyle.wolips.baseforplugins.plist.WOLPropertyListSerialization;
+import org.objectstyle.woenvironment.plist.PropertyListParserException;
+import org.objectstyle.woenvironment.plist.WOLPropertyListSerialization;
 
 /**
  * A <b>PBXProject</b> represents a Project Builder X project package (<code>*.pbproj</code>).

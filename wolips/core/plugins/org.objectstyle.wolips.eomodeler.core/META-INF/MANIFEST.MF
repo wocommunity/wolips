@@ -7,12 +7,14 @@ Bundle-Activator: org.objectstyle.wolips.eomodeler.core.Activator
 Require-Bundle: org.eclipse.ui.views.properties.tabbed,
  org.objectstyle.wolips.baseforuiplugins,
  org.objectstyle.wolips.thirdparty.commonscollections;bundle-version="1.0.6",
- org.objectstyle.wolips.thirdparty.velocity;bundle-version="1.0.6"
-Eclipse-LazyStart: true
+ org.objectstyle.wolips.thirdparty.velocity;bundle-version="1.0.6",
+ org.objectstyle.wolips.woproject;bundle-version="1.0.6"
+Bundle-ActivationPolicy: lazy
 Bundle-Vendor: objectstyle.org
 Export-Package: org.objectstyle.wolips.eomodeler.core,
  org.objectstyle.wolips.eomodeler.core.kvc,
  org.objectstyle.wolips.eomodeler.core.model,
+ org.objectstyle.wolips.eomodeler.core.model.history,
  org.objectstyle.wolips.eomodeler.core.model.qualifier,
  org.objectstyle.wolips.eomodeler.core.sql,
  org.objectstyle.wolips.eomodeler.core.utils

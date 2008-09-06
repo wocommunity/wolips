@@ -114,6 +114,7 @@ public class PrincipalClassMoveParticipant extends MoveParticipant {
 				if (destinationPackage.isDefaultPackage()) {
 					newFullyQualifiedName = myName;
 				} else {
+					System.out.println("PrincipalClassMoveParticipant.createChange: " + myJavaDestination.getElementName() + ", " + myName);
 					newFullyQualifiedName = myJavaDestination.getElementName() + '.' + myName;
 				}
 			} else {
@@ -132,10 +133,24 @@ public class PrincipalClassMoveParticipant extends MoveParticipant {
 			if (_element instanceof IType) {
 				IType sourceType = (IType) _element;
 				IProjectAdapter project = (IProjectAdapter) sourceType.getJavaProject().getProject().getAdapter(IProjectAdapter.class);
-				String principalClass = project.getPrincipalClass(true);
+				String principalClass = project.getBuildProperties().getPrincipalClass(true);
 				String fullyQualifiedName = sourceType.getFullyQualifiedName();
 				if (principalClass != null && principalClass.equals(fullyQualifiedName)) {
 					initializedProject = project;
+				}
+			} else if (_element instanceof IPackageFragment) {
+				IPackageFragment packageFragment = (IPackageFragment) _element;
+				IProjectAdapter project = (IProjectAdapter) packageFragment.getJavaProject().getProject().getAdapter(IProjectAdapter.class);
+				String principalClass = project.getBuildProperties().getPrincipalClass(true);
+				if (principalClass != null) {
+					int dotIndex = principalClass.lastIndexOf('.');
+					if (dotIndex != -1) {
+						String principalClassPackage = principalClass.substring(0, dotIndex);
+						String packageName = packageFragment.getElementName();
+						if (principalClassPackage.equals(packageName)) {
+							initializedProject = project;
+						}
+					}
 				}
 			}
 		} catch (Throwable e) {

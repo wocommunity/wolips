@@ -42,7 +42,7 @@ public class EOModelDoc {
     }
     
     if (outputFolder == null) {
-      System.out.println("eomodeldoc -output /path/to/output/folder [-model /path/to/model.eomodeld]* [-modelgroup /path/to/working/dir] [-templates /path/to/templates] [-entityURLTemplate \"http://whatever?${entity.classNamePath}.html");
+      System.out.println("eomodeldoc -output /path/to/output/folder [-model /path/to/model.eomodeld]* [-modelgroup /path/to/working/dir] [-templates /path/to/templates] [-entityURLTemplate \"http://whatever?${entity.classNamePath}.html\"");
       System.exit(0);
     }
 

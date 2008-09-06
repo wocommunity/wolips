@@ -73,4 +73,10 @@ public class BindingsPage extends ApiFormPage {
 		//form.setText("Bindings");
 		block.createContent(managedForm);
 	}
+
+	@Override
+	protected void reloadModel() {
+		super.reloadModel();
+		block.reload();
+	}
 }

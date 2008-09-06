@@ -30,11 +30,14 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.Saveable;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.AnnotationPreferenceLookup;
 import org.eclipse.ui.texteditor.MarkerAnnotationPreferences;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
+import org.objectstyle.wolips.components.editor.ComponentEditorInteraction;
+import org.objectstyle.wolips.components.editor.IEmbeddedEditor;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
@@ -47,19 +50,35 @@ import tk.eclipse.plugin.htmleditor.editors.HTMLConfiguration;
 import tk.eclipse.plugin.htmleditor.editors.HTMLSourceEditor;
 import tk.eclipse.plugin.htmleditor.editors.IHTMLOutlinePage;
 
-public class TemplateSourceEditor extends HTMLSourceEditor implements ITextWOEditor {
+public class TemplateSourceEditor extends HTMLSourceEditor implements ITextWOEditor, IEmbeddedEditor {
   public static final String ACTION_DELETE_TAG = "_template_deleteTag";
   public static final String ACTION_UNWRAP_TAG = "_template_unwrapTag";
-  
+
   private TemplateOutlinePage _templateOutlinePage;
   private WodParserCache _cache;
   private TemplateBreadcrumb _breadcrumb;
   private boolean _cacheOutOfSync;
+  private ComponentEditorInteraction _editorInteraction;
 
   public TemplateSourceEditor(HTMLConfiguration config) {
     super(config);
     setAction(TemplateSourceEditor.ACTION_DELETE_TAG, new DeleteTagAction());
     setAction(TemplateSourceEditor.ACTION_UNWRAP_TAG, new UnwrapTagAction());
+  }
+
+  public void initEditorInteraction(ComponentEditorInteraction editorInteraction) {
+    _editorInteraction = editorInteraction;
+  }
+
+  public ComponentEditorInteraction getEditorInteraction() {
+    return _editorInteraction;
+  }
+
+  @Override
+  public void doSave(IProgressMonitor monitor) {
+    if (_editorInteraction == null || _editorInteraction.embeddedEditorWillSave(monitor)) {
+      super.doSave(monitor);
+    }
   }
 
   @Override
@@ -115,7 +134,7 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements ITextWOEdi
     });
 
   }
-  
+
   @Override
   protected ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
     return super.createSourceViewer(parent, ruler, styles);
@@ -395,11 +414,16 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements ITextWOEdi
     return fSourceViewerDecorationSupport;
   }
 
+  @Override
+  public Saveable[] getSaveables() {
+    return super.getSaveables();
+  }
+
   public class DeleteTagAction extends Action {
     public DeleteTagAction() {
       super("Delete Tag");
     }
-    
+
     @Override
     public void run() {
       try {
@@ -422,7 +446,7 @@ public class TemplateSourceEditor extends HTMLSourceEditor implements ITextWOEdi
     public UnwrapTagAction() {
       super("Unwrap Tag");
     }
-    
+
     @Override
     public void run() {
       try {

@@ -55,9 +55,12 @@
  */
 package org.objectstyle.woproject.ant;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.taskdefs.Javac;
+import org.objectstyle.woenvironment.env.WOEnvironment;
 
 /**
  * Customized subclass of Javac used to locate jars in frameworks.
@@ -65,23 +68,28 @@ import org.apache.tools.ant.taskdefs.Javac;
  * @author Anjo Krank
  */
 public class WOCompile extends Javac {
-	private ArrayList frameworkSets = new ArrayList();
+  private List<FrameworkSet> frameworkSets;
 
-	public void addFrameworks(FrameworkSet frameworks) throws BuildException {
-		frameworkSets.add(frameworks);
-	}
+  public WOCompile() {
+    frameworkSets = new LinkedList<FrameworkSet>();
+  }
 
-	private String dumpClasspath;
+  public void addFrameworks(FrameworkSet frameworks) throws BuildException {
+    frameworkSets.add(frameworks);
+  }
 
-	public void setDumpClasspath(String dumpClasspath) {
-		this.dumpClasspath = dumpClasspath;
-	}
+  private String dumpClasspath;
 
-	public void execute() throws BuildException {
-		setClasspath(FrameworkSet.jarsPathForFrameworkSets(getProject(), frameworkSets));
-		if (dumpClasspath != null) {
-			getProject().setProperty(dumpClasspath, getClasspath().toString());
-		}
-		super.execute();
-	}
+  public void setDumpClasspath(String dumpClasspath) {
+    this.dumpClasspath = dumpClasspath;
+  }
+
+  @Override
+  public void execute() throws BuildException {
+    setClasspath(FrameworkSet.jarsPathForFrameworkSets(getProject(), frameworkSets, new WOEnvironment(getProject().getProperties()).getWOVariables()));
+    if (dumpClasspath != null) {
+      getProject().setProperty(dumpClasspath, getClasspath().toString());
+    }
+    super.execute();
+  }
 }

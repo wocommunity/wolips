@@ -413,7 +413,7 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
             int position = 0;
             if (attrList[j].hasValue()) {
               assistKeyword = attrList[j].getAttributeName() + equals + "\"\"";
-              position = 4;
+              position = equals.length() + 1;
             }
             else {
               assistKeyword = attrList[j].getAttributeName();

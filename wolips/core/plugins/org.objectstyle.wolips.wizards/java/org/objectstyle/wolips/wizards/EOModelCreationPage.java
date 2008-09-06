@@ -55,13 +55,11 @@
  */
 package org.objectstyle.wolips.wizards;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -80,7 +78,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
-import org.objectstyle.wolips.variables.VariablesPlugin;
+import org.objectstyle.wolips.jdt.ProjectFrameworkAdapter;
 
 /**
  * @author mnolte
@@ -92,7 +90,7 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 	private IResource _resourceToReveal;
 
 	private Button _createEOGeneratorFileButton;
-	
+
 	private Button _noneAdaptorButton;
 
 	// widgets
@@ -140,7 +138,7 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 		modelConfigurationGroup.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
 
 		createAvailableAdaptorButtons(modelConfigurationGroup);
-		
+
 		new Label(composite, SWT.NONE); // vertical spacer
 
 		Group supportingFilesGroup = new Group(composite, SWT.NONE);
@@ -211,10 +209,9 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 		Composite row = new Composite(group, SWT.NONE);
 		RowLayout rowLayout = new RowLayout();
 		row.setLayout(rowLayout);
-		File systemFrameworkDir = new File(VariablesPlugin.getDefault().getSystemRoot().append("Library").append("Frameworks").toOSString());
-		AdaptorFilter adaptorFilter = new AdaptorFilter();
-		systemFrameworkDir.listFiles(adaptorFilter);
-		_availableAdaptors = new HashMap<Button, String>(adaptorFilter.getAdaptorNames().size() + 1);
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(getContainerFullPath().segment(0));
+
+		_availableAdaptors = new HashMap<Button, String>();
 		String buttonText;
 		// add none adaptor entry
 		_noneAdaptorButton = new Button(row, SWT.RADIO);
@@ -222,11 +219,20 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 		_noneAdaptorButton.setText(buttonText);
 		_noneAdaptorButton.setSelection(true);
 		_availableAdaptors.put(_noneAdaptorButton, "None");
-		for (int i = 0; i < adaptorFilter.getAdaptorNames().size(); i++) {
-			Button currentAdaptorButton = new Button(row, SWT.RADIO);
-			buttonText = adaptorFilter.getAdaptorNames().get(i);
-			currentAdaptorButton.setText(buttonText);
-			_availableAdaptors.put(currentAdaptorButton, buttonText);
+		ProjectFrameworkAdapter projectFrameworkAdapter = (ProjectFrameworkAdapter) project.getAdapter(ProjectFrameworkAdapter.class);
+		Pattern adapterPattern = Pattern.compile("Java(.*)Adaptor");
+		try {
+			for (String frameworkName : projectFrameworkAdapter.getFrameworkNames()) {
+				Matcher matcher = adapterPattern.matcher(frameworkName);
+				if (matcher.matches()) {
+					String adapterName = matcher.group(1);
+					Button currentAdaptorButton = new Button(row, SWT.RADIO);
+					currentAdaptorButton.setText(adapterName);
+					_availableAdaptors.put(currentAdaptorButton, adapterName);
+				}
+			}
+		} catch (Throwable t) {
+			WizardsPlugin.getDefault().log(t);
 		}
 	}
 
@@ -235,38 +241,6 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 	 */
 	protected String getNewFileLabel() {
 		return Messages.getString("EOModelCreationPage.newEOModel.label");
-	}
-
-	private class AdaptorFilter implements FilenameFilter {
-		private static final String ADAPTOR_PREFIX = "Java";
-
-		private static final String ADAPTOR_POSTFIX = "Adaptor.framework";
-
-		private List<String> adaptorNames;
-
-		public AdaptorFilter() {
-			super();
-			adaptorNames = new LinkedList<String>();
-		}
-
-		public boolean accept(File dir, String name) {
-			String adaptorName = null;
-			boolean isAdaptor = (name.length() > (ADAPTOR_PREFIX.length() + ADAPTOR_POSTFIX.length())) && name.startsWith(ADAPTOR_PREFIX) && name.endsWith(ADAPTOR_POSTFIX);
-			if (isAdaptor) {
-				adaptorName = name.substring(ADAPTOR_PREFIX.length(), name.length() - ADAPTOR_POSTFIX.length());
-				adaptorNames.add(adaptorName);
-			}
-			return isAdaptor;
-		}
-
-		/**
-		 * Returns the adaptorNames.
-		 * 
-		 * @return Vector
-		 */
-		public List<String> getAdaptorNames() {
-			return adaptorNames;
-		}
 	}
 
 	public IResource getResourceToReveal() {

@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <template name = "Wonder Framework">
 	<inputs>
-		<input name = "linkToWonderProjects" type = "Boolean">
-			<question>Link to Wonder Eclipse Projects?</question>
-			<default>false</default>
-		</input>
-		<input name = "linkToWonderFrameworks" type = "Boolean">
-			<question>Link to Installed Wonder Frameworks?</question>
-			<default>true</default>
-		</input>
 	</inputs>
 </template>

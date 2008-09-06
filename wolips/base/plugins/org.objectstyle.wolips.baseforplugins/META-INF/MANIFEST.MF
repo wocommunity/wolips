@@ -6,8 +6,7 @@ Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.baseforplugins.Activator
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.eclipse.core.resources;bundle-version="3.4.0"
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.baseforplugins,
  org.objectstyle.wolips.baseforplugins.logging,
- org.objectstyle.wolips.baseforplugins.plist,
  org.objectstyle.wolips.baseforplugins.util

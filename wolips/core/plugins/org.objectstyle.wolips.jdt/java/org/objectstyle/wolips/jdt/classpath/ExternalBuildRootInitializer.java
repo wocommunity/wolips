@@ -76,8 +76,8 @@ public class ExternalBuildRootInitializer extends ClasspathVariableInitializer {
 	public void initialize(String variable) {
 		if ("EXTERNAL_BUILD_ROOT".equals(variable)) {
 			try {
-				IPath externalBuildRoot = VariablesPlugin.getDefault().getExternalBuildRoot();
-				if (VariablesPlugin.getDefault().getExternalBuildRoot() != null) {
+				IPath externalBuildRoot = VariablesPlugin.getDefault().getGlobalVariables().getExternalBuildRoot();
+				if (externalBuildRoot != null) {
 					JavaCore.setClasspathVariable(variable, externalBuildRoot, new NullProgressMonitor());
 				}
 			} catch (JavaModelException e) {

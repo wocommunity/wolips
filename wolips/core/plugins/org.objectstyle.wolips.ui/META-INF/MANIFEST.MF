@@ -16,8 +16,11 @@ Require-Bundle: org.eclipse.search,
  org.objectstyle.wolips,
  org.objectstyle.wolips.builder,
  org.objectstyle.wolips.baseforuiplugins,
- org.objectstyle.wolips.targetbuilder
-Eclipse-LazyStart: true
+ org.objectstyle.wolips.targetbuilder,
+ org.objectstyle.wolips.jdt;bundle-version="1.0.6",
+ org.objectstyle.wolips.woproject;bundle-version="1.0.6",
+ org.objectstyle.wolips.variables;bundle-version="1.0.6"
+Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.ui,
  org.objectstyle.wolips.ui.actions,
  org.objectstyle.wolips.ui.labeldecorator,

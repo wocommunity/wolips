@@ -55,7 +55,6 @@
  */
 package org.objectstyle.wolips.core.resources.internal.types.file;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

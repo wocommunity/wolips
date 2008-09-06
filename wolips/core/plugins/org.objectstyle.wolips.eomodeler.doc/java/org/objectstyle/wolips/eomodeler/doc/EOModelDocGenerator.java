@@ -3,10 +3,12 @@ package org.objectstyle.wolips.eomodeler.doc;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.HashSet;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.RuntimeServices;
@@ -67,15 +69,14 @@ public class EOModelDocGenerator {
 				System.out.println("Generating " + model.getName() + "." + entity.getName() + " ...");
 				context.put("entity", entity);
 				if (entityURLTemplate != null) {
-					String classNamePath = entity.getClassName();
-					if (classNamePath != null && classNamePath.length() > 0) {
-						classNamePath = classNamePath.replace('.', '/');
-						String entityURL = entityURLTemplate;
-						entityURL = entityURL.replace("$model.name", model.getName());
-						entityURL = entityURL.replace("$entity.name", entity.getName());
-						entityURL = entityURL.replace("$entity.classNamePath", classNamePath);
-						entityURL = entityURL.replace("$entity.className", entity.getClassName());
-						context.put("entityURL", entityURL);
+					String className = entity.getClassName();
+					if (className != null && className.length() > 0) {
+						StringWriter entityURLWriter = new StringWriter();
+						VelocityContext entityURLContext = new VelocityContext();
+						entityURLContext.put("entity", entity);
+						entityURLContext.put("model", model);
+						Velocity.evaluate(entityURLContext, entityURLWriter, "entityURL", entityURLTemplate);
+						context.put("entityURL", entityURLWriter.toString());
 					}
 				}
 				EOModelDocGenerator.writeTemplate(velocityEngine, context, "entityContent.html.vm", new File(outputFolder, model.getName() + "/entities/" + entity.getName() + ".html"));

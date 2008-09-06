@@ -20,16 +20,16 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,
  org.eclipse.ltk.core.refactoring,
  org.eclipse.ltk.ui.refactoring,
- org.objectstyle.wolips.refactoring
-Eclipse-LazyStart: true
+ org.objectstyle.wolips.refactoring,
+ org.eclipse.jdt.launching;bundle-version="3.4.0"
+Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.jdt,
- org.objectstyle.wolips.jdt.ant,
  org.objectstyle.wolips.jdt.classpath,
  org.objectstyle.wolips.jdt.classpath.model,
  org.objectstyle.wolips.jdt.decorator,
  org.objectstyle.wolips.jdt.javaelementfilters,
- org.objectstyle.wolips.jdt.listener,
  org.objectstyle.wolips.jdt.ui,
  org.objectstyle.wolips.jdt.ui.refactoring.actions,
  org.objectstyle.wolips.jdt.ui.tags,
  org.objectstyle.wolips.jdt.ui.tags.actions
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

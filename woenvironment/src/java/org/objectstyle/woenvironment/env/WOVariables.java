@@ -57,9 +57,8 @@ package org.objectstyle.woenvironment.env;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 
@@ -70,351 +69,351 @@ import org.objectstyle.woenvironment.util.FileStringScanner;
  * 
  */
 public class WOVariables {
-	private static final String WO_ROOT = "wo.woroot";
-	
-	private static final String WO_BOOTSTRAP_JAR = "wo.bootstrapjar";
+  private static final String USER_ROOT = "wo.user.root";
 
-	// private final String LOCAL_ROOT = "wo.localroot";
-	private static final String WO_WO_SYSTEM_ROOT = "wo.wosystemroot";
+  private static final String USER_FRAMEWORKS = "wo.user.frameworks";
 
-	private static final String WO_WO_LOCAL_ROOT = "wo.wolocalroot";
+  private static final String LOCAL_ROOT = "wo.local.root";
 
-	private static final String HOME_ROOT = "wo.homeroot";
+  private static final String LOCAL_FRAMEWORKS = "wo.local.frameworks";
 
-	private static final String REFERENCE_API_KEY = "wo.dir.reference.api";
+  private static final String SYSTEM_ROOT = "wo.system.root";
 
-	private static final String EXTERNAL_BUILD_ROOT = "wo.externalbuildroot";
+  private static final String SYSTEM_FRAMEWORKS = "wo.system.frameworks";
 
-	// private final String ABSOLUTE_ROOT = "wo.absoluteroot";
-	/**
-	 * Key for setting wobuild.properties path by environment
-	 * 
-	 * @see WOVariables
-	 */
-	private final String WOBUILD_PROPERTIES = "WOBUILD_PROPERTIES";
+  private static final String NETWORK_ROOT = "wo.network.root";
 
-	private final String WOBUILD_PROPERTIES_FILE_NAME = "wobuild.properties";
+  private static final String NETWORK_FRAMEWORKS = "wo.network.frameworks";
 
-	private Properties wobuildProperties;
+  private static final String EXTERNAL_BUILD_ROOT = "wo.external.root";
 
-	private File wobuildPropertiesFile;
+  private static final String EXTERNAL_BUILD_FRAMEWORKS = "wo.external.frameworks";
 
-	private Environment environment;
+  private static final String APPS_ROOT = "wo.apps.root";
 
-	/**
-	 * Constructor for WOVariables.
-	 * 
-	 * @param environment
-	 */
-	protected WOVariables(Environment environment) {
-		this(environment, Collections.EMPTY_MAP);
-	}
+  private static final String API_ROOT_KEY = "wo.api.root";
 
-	/**
-	 * Constructor for WOVariables.
-	 * 
-	 * @param environment
-	 * @param altProperties
-	 */
-	protected WOVariables(Environment environment, Map altProperties) {
-		super();
-		this.environment = environment;
-		this.init(altProperties);
-	}
+  private static final String BOOTSTRAP_JAR_KEY = "wo.bootstrapjar";
 
-	/**
-	 * Method init.Tries to load wobuild.properties file in the following way
-	 * <ul>
-	 * <li>looking for a java system property with key
-	 * <code>WOBUILD_PROPERTIES</code></li>
-	 * <li>looking for an environment variable
-	 * <code>Environment.WOBUILD_PROPERTIES</code></li>
-	 * <li>try to find wobuild.properties in user.home</li>
-	 * This method is invoked when the class is loaded.
-	 * 
-	 * @param altProperties
-	 */
-	private void init(Map altProperties) {
-		// load properties
-		this.wobuildProperties = new Properties();
-		// try user home
-		if (!validateWobuildPropertiesFile(this.environment.userHome() + File.separator + "Library" + File.separator + this.WOBUILD_PROPERTIES_FILE_NAME)) {
-			// try system property
-			if (!validateWobuildPropertiesFile(System.getProperty(this.WOBUILD_PROPERTIES))) {
-				// try environment variable
-				validateWobuildPropertiesFile(this.environment.getEnvVars().getProperty(this.WOBUILD_PROPERTIES));
-			}
-		}
-		if (this.wobuildPropertiesFile != null) {
-			try {
-				this.wobuildProperties.load(new FileInputStream(this.wobuildPropertiesFile));
-			} catch (FileNotFoundException e) {
-				System.out.println(e);
-			} catch (IOException e) {
-				System.out.println(e);
-			}
-		} else if (altProperties != null) {
-			// import required properties from project.. maybe do a scan on
-			// "wo.*"?
-			if (altProperties.get(WO_ROOT) != null) {
-				this.wobuildProperties.setProperty(WO_ROOT, altProperties.get(WO_ROOT).toString());
-			}
+  private static final String WEBOBJECTS_EXTENSIONS = "wo.extensions";
 
-			if (altProperties.get(WO_WO_LOCAL_ROOT) != null) {
-				this.wobuildProperties.setProperty(WO_WO_LOCAL_ROOT, altProperties.get(WO_WO_LOCAL_ROOT).toString());
-			}
+  private static final String WOLIPS_PROPERTIES = "WOLIPS_PROPERTIES";
 
-			if (altProperties.get(WO_WO_SYSTEM_ROOT) != null) {
-				this.wobuildProperties.setProperty(WO_WO_SYSTEM_ROOT, altProperties.get(WO_WO_SYSTEM_ROOT).toString());
-			}
-		}
-	}
+  private static final String WOLIPS_PROPERTIES_FILE_NAME = "wolips.properties";
 
-	private boolean validateWobuildPropertiesFile(String fileName) {
-		if (fileName != null) {
-			this.wobuildPropertiesFile = new File(fileName);
-			if (this.wobuildPropertiesFile.exists() && !this.wobuildPropertiesFile.isDirectory()) {
-				return true;
-			}
-		}
-		this.wobuildPropertiesFile = null;
-		return false;
-	}
+  private Properties wolipsProperties;
 
-	/**
-	 * Method nextRoot. NEXT_ROOT defined in wobuild.properties (key: <code>wo.
-	 * woroot</code>)
-	 * 
-	 * @deprecated Not for public use in the future. Use localRoot() and
-	 *             systemRoot() instead.
-	 * @return String
-	 */
-	public String nextRoot() {
-		return this.wobuildProperties.getProperty(WOVariables.WO_ROOT);
-	}
+  private File wolipsPropertiesFile;
 
-	/**
-	 * Where you store your XCode or ant generated stuff.
-	 * 
-	 * @return String
-	 */
-	public String externalBuildRoot() {
-		return this.wobuildProperties.getProperty(WOVariables.EXTERNAL_BUILD_ROOT);
-	}
+  private Environment environment;
 
-	/**
-	 * Method localRoot. NEXT_LOCAL_ROOT defined in wobuild.properties (key:
-	 * <code>wo.wolocalroot</code>)
-	 * 
-	 * @return String
-	 */
-	public String localRoot() {
-		return this.wobuildProperties.getProperty(WOVariables.WO_WO_LOCAL_ROOT);
-	}
+  public WOVariables(Environment environment, WOVariables variables, Map<Object, Object> existingProperties) {
+    this.environment = environment;
+    this.init(variables, existingProperties);
+  }
+  
+  public WOVariables(Environment environment, Map<Object, Object> existingProperties) {
+    this.environment = environment;
+    this.init(null, existingProperties);
+  }
 
-	/**
-	 * Method systemRoot. NEXT_SYSTEM_ROOT defined in wobuild.properties (key:
-	 * <code>wo.wosystemroot</code>)
-	 * 
-	 * @return String
-	 */
-	public String systemRoot() {
-		return this.wobuildProperties.getProperty(WOVariables.WO_WO_SYSTEM_ROOT);
-	}
+  public void init(WOVariables variables, Map<Object, Object> existingProperties) {
+    if (variables == null) {
+      // load properties
+      this.wolipsProperties = new Properties();
+  
+      String wobuildPropertiesPath = System.getProperty(WOVariables.WOLIPS_PROPERTIES);
+      if (wobuildPropertiesPath != null) {
+        this.wolipsPropertiesFile = new File(wobuildPropertiesPath);
+      }
+      if (!isValidWOlipsPropertiesFile()) {
+        wobuildPropertiesPath = this.environment.getEnvVars().getProperty(WOVariables.WOLIPS_PROPERTIES);
+        if (wobuildPropertiesPath != null) {
+          this.wolipsPropertiesFile = new File(wobuildPropertiesPath);
+        }
+      }
+  
+      if (!isValidWOlipsPropertiesFile()) {
+        if (isWindows()) {
+          this.wolipsPropertiesFile = new File(System.getProperty("user.home"), "Documents and Settings/Application Data/WOLips/" + WOVariables.WOLIPS_PROPERTIES_FILE_NAME);
+          if (!isValidWOlipsPropertiesFile()) {
+            this.wolipsPropertiesFile = new File(System.getProperty("user.home"), "Documents and Settings/AppData/Local/WOLips/" + WOVariables.WOLIPS_PROPERTIES_FILE_NAME);
+          }
+        }
+        else {
+          this.wolipsPropertiesFile = new File(this.environment.userHome(), "Library/Application Support/WOLips/" + WOVariables.WOLIPS_PROPERTIES_FILE_NAME);
+        }
+      }
+  
+      if (isValidWOlipsPropertiesFile()) {
+        try {
+          this.wolipsProperties.load(new FileInputStream(this.wolipsPropertiesFile));
+        }
+        catch (IOException e) {
+          throw new RuntimeException("Failed to configure " + wolipsPropertiesFile + ".", e);
+        }
+      }
+      else if (existingProperties == null || existingProperties.isEmpty()) {
+        createDefaultProperties();
+      }
+    }
+    else {
+      this.wolipsProperties = new Properties();
+      this.wolipsProperties.putAll(variables.wolipsProperties);
+    }
 
-	/**
-	 * Method referenceApi. WOVariables.REFERENCE_API_KEY defined in
-	 * wobuild.properties (key: <code>wo.dir.reference.api</code>)
-	 * 
-	 * @return String
-	 */
-	public String referenceApi() {
-		return this.wobuildProperties.getProperty(WOVariables.REFERENCE_API_KEY);
-	}
+    if (existingProperties != null) {
+      for (Map.Entry<Object, Object> entry : existingProperties.entrySet()) {
+        if (entry.getKey() instanceof String && entry.getValue() instanceof String) {
+          this.wolipsProperties.setProperty((String) entry.getKey(), (String) entry.getValue());
+        }
+      }
+    }
+  }
 
-	/**
-	 * Method userHome
-	 * 
-	 * @return String
-	 */
-	public String userHome() {
-		String userHome = this.wobuildProperties.getProperty(WOVariables.HOME_ROOT);
-		if (userHome == null) {
-			userHome = this.environment.userHome();
-		}
-		return userHome;
-	}
+  public void createDefaultProperties() {
+    this.wolipsProperties = new Properties();
+    if (isWindows()) {
+      this.wolipsProperties.setProperty(WOVariables.API_ROOT_KEY, "/Developer/ADC%20Reference%20Library/documentation/WebObjects/Reference/API/");
+      this.wolipsProperties.setProperty(WOVariables.APPS_ROOT, "C:\\Apple\\Applications");
+      this.wolipsProperties.setProperty(WOVariables.BOOTSTRAP_JAR_KEY, "C:\\Apple\\Library\\Application\\wotaskd.woa\\WOBootstrap.jar");
+      this.wolipsProperties.setProperty(WOVariables.LOCAL_ROOT, "C:\\Apple\\Local");
+      this.wolipsProperties.setProperty(WOVariables.LOCAL_FRAMEWORKS, "C:\\Apple\\Local\\Library\\Frameworks");
+      this.wolipsProperties.setProperty(WOVariables.SYSTEM_ROOT, "C:\\Apple");
+      this.wolipsProperties.setProperty(WOVariables.SYSTEM_FRAMEWORKS, "C:\\Apple\\Library\\Frameworks");
+      this.wolipsProperties.setProperty(WOVariables.NETWORK_ROOT, "C:\\Apple\\Network");
+      this.wolipsProperties.setProperty(WOVariables.NETWORK_FRAMEWORKS, "C:\\Apple\\Network\\Library\\Frameworks");
+      this.wolipsProperties.setProperty(WOVariables.USER_ROOT, "C:\\Documents and Settings\\" + System.getProperty("user.name"));
+      this.wolipsProperties.setProperty(WOVariables.USER_FRAMEWORKS, "C:\\Documents and Settings\\" + System.getProperty("user.name") + "\\Library\\Frameworks");
+      this.wolipsProperties.setProperty(WOVariables.WEBOBJECTS_EXTENSIONS, "C:\\Apple\\Extensions");
+    }
+    else {
+      this.wolipsProperties.setProperty(WOVariables.API_ROOT_KEY, "/Developer/ADC%20Reference%20Library/documentation/WebObjects/Reference/API/");
+      this.wolipsProperties.setProperty(WOVariables.APPS_ROOT, "/Library/WebObjects/Applications");
+      this.wolipsProperties.setProperty(WOVariables.BOOTSTRAP_JAR_KEY, "/System/Library/WebObjects/JavaApplications/wotaskd.woa/WOBootstrap.jar");
+      this.wolipsProperties.setProperty(WOVariables.LOCAL_ROOT, "/");
+      this.wolipsProperties.setProperty(WOVariables.LOCAL_FRAMEWORKS, "/Library/Frameworks");
+      this.wolipsProperties.setProperty(WOVariables.SYSTEM_ROOT, "/System");
+      this.wolipsProperties.setProperty(WOVariables.SYSTEM_FRAMEWORKS, "/System/Library/Frameworks");
+      this.wolipsProperties.setProperty(WOVariables.NETWORK_ROOT, "/Network");
+      this.wolipsProperties.setProperty(WOVariables.NETWORK_FRAMEWORKS, "/Network/Library/Frameworks");
+      this.wolipsProperties.setProperty(WOVariables.USER_ROOT, "/Users/" + System.getProperty("user.name"));
+      this.wolipsProperties.setProperty(WOVariables.USER_FRAMEWORKS, "/Users/" + System.getProperty("user.name") + "/Library/Frameworks");
+      this.wolipsProperties.setProperty(WOVariables.WEBOBJECTS_EXTENSIONS, "/Library/WebObjects/Extensions");
+    }
 
-	/**
-	 * Method developerDir.
-	 * 
-	 * @return String
-	 */
-	public String developerDir() {
-		/*
-		 * String returnValue = ""; if (Environment.isNextRootSet()) returnValue =
-		 * Environment.nextRoot(); returnValue = returnValue + File.separator +
-		 * "Developer"; return returnValue;
-		 */
-		return systemRoot() + File.separator + "Developer";
-	}
+    try {
+      File wolipsPropertiesFolder = this.wolipsPropertiesFile.getParentFile(); 
+      if (!wolipsPropertiesFolder.exists()) {
+        wolipsPropertiesFolder.mkdirs();
+      }
+      if (wolipsPropertiesFolder.canWrite()) {
+        FileOutputStream wolipsPropertiesStream = new FileOutputStream(this.wolipsPropertiesFile);
+        try {
+          this.wolipsProperties.store(wolipsPropertiesStream, null);
+        }
+        finally {
+          wolipsPropertiesStream.close();
+        }
+      }
+    }
+    catch (IOException e) {
+      throw new RuntimeException("Failed to write " + this.wolipsPropertiesFile + ".", e);
+    }
+  }
 
-	/**
-	 * Method developerAppsDir.
-	 * 
-	 * @return String
-	 */
-	public String developerAppsDir() {
-		return systemRoot() + File.separator + "Developer" + File.separator + "Applications";
-	}
+  public boolean isValidWOlipsPropertiesFile() {
+    return this.wolipsPropertiesFile != null && this.wolipsPropertiesFile.exists() && !this.wolipsPropertiesFile.isDirectory();
+  }
 
-	/**
-	 * Method libraryDir.
-	 * 
-	 * @return String
-	 */
-	public String libraryDir() {
-		return systemRoot() + File.separator + "Library";
-	}
+  public File wolipsPropertiesFile() {
+    return this.wolipsPropertiesFile;
+  }
 
-	/**
-	 * Method localDeveloperDir.
-	 * 
-	 * @return String
-	 */
-	public String localDeveloperDir() {
-		return localRoot() + File.separator + "Developer";
-	}
+  /**
+   * Where you store your XCode or ant generated stuff.
+   * 
+   * @return String
+   */
+  public String externalBuildRoot() {
+    return this.wolipsProperties.getProperty(WOVariables.EXTERNAL_BUILD_ROOT);
+  }
+  
+  public String externalBuildFrameworkPath() {
+    return this.wolipsProperties.getProperty(WOVariables.EXTERNAL_BUILD_FRAMEWORKS);
+  }
 
-	/**
-	 * Method localLibraryDir.
-	 * 
-	 * @return String
-	 */
-	public String localLibraryDir() {
-		return localRoot() + File.separator + "Library";
-	}
+  public String localRoot() {
+    return this.wolipsProperties.getProperty(WOVariables.LOCAL_ROOT);
+  }
 
-	/**
-	 * Method woProjectFileName.
-	 * 
-	 * @return String
-	 */
-	public static String woProjectFileName() {
-		return "PB.project";
-	}
+  public String localFrameworkPath() {
+    return this.wolipsProperties.getProperty(WOVariables.LOCAL_FRAMEWORKS);
+  }
 
-	/**
-	 * Method webServerResourcesDirName.
-	 * 
-	 * @return String
-	 */
-	public static String webServerResourcesDirName() {
-		return "WebServerResources";
-	}
+  public String systemRoot() {
+    return this.wolipsProperties.getProperty(WOVariables.SYSTEM_ROOT);
+  }
 
-	/**
-	 * @return String with path to the foundation.jar
-	 */
-	public String foundationJarPath() {
-		return "file:///" + systemRoot() + "/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar";
-	}
-	
-	/**
-	 * Returns the value of wo.bootstrapjar from properties (or null if there isn't one).
-	 * 
-	 * @return the bootstrap jar that is defined in the wobuild.properties, or null if there isn't one.
-	 */
-	public String bootstrapJar() {
-	   String bootstrapJar = this.wobuildProperties.getProperty(WOVariables.WO_BOOTSTRAP_JAR);
-	   return bootstrapJar;
-	}
+  public String systemFrameworkPath() {
+    return this.wolipsProperties.getProperty(WOVariables.SYSTEM_FRAMEWORKS);
+  }
 
-	/**
-	 * Method encodePathForFile.
-	 * 
-	 * @param aFile
-	 * @return String
-	 */
-	public String encodePathForFile(File aFile) {
-		return encodePath(aFile.getPath());
-	}
+  public String networkRoot() {
+    return this.wolipsProperties.getProperty(WOVariables.NETWORK_ROOT);
+  }
 
-	public String encodePath(String path) {
-		String userHome = null;
-		String systemRoot = null;
-		String localRoot = null;
-		String aPath = null;
-		try {
-			localRoot = this.localRoot();
-			userHome = this.userHome();
-			systemRoot = this.systemRoot();
-			int localRootLength = 0;
-			int userHomeLength = 0;
-			int systemRootLength = 0;
-			if (localRoot != null)
-				localRootLength = localRoot.length();
-			if (userHome != null)
-				userHomeLength = userHome.length();
-			if (systemRoot != null)
-				systemRootLength = systemRoot.length();
-			// aPath = aFile.getCanonicalPath();
-			// u.k. the CanonicalPath will resolve links this will
-			// result in path with /Versions/a in it
-			aPath = this.convertWindowsPath(path);
-			// aPrefix = this.getAppRootPath();
-			// if((aPrefix != null) && (aPrefix.length() > 1) &&
-			// (aPath.startsWith(aPrefix))) {
-			// return "APPROOT" + aPath.substring(aPrefix.length());
-			// }
-			if (localRoot != null && aPath.startsWith(localRoot)) {
-				boolean otherRoot = false;
-				if (localRootLength < userHomeLength && aPath.startsWith(userHome))
-					otherRoot = true;
-				if (localRootLength < systemRootLength && aPath.startsWith(systemRoot))
-					otherRoot = true;
-				if (!otherRoot) {
-					if (localRootLength == 1) // MacOSX
-						return "LOCALROOT" + aPath;
-					return "LOCALROOT" + aPath.substring(localRootLength);
-				}
-			}
-			if (userHome != null && aPath.startsWith(userHome)) {
-				boolean otherRoot = false;
-				if (userHomeLength < systemRootLength && aPath.startsWith(systemRoot))
-					otherRoot = true;
-				if (!otherRoot)
-					return "HOMEROOT" + aPath.substring(userHomeLength);
-			}
-			if (systemRoot != null && aPath.startsWith(systemRoot)) {
-				return "WOROOT" + aPath.substring(systemRootLength);
-			}
-			return aPath;
-		} catch (Exception anException) {
-			System.out.println("Exception occured during encoding of the path " + anException);
-		} finally {
-			localRoot = null;
-			userHome = null;
-			systemRoot = null;
-			aPath = null;
-		}
-		return null;
-	}
+  public String networkFrameworkPath() {
+    return this.wolipsProperties.getProperty(WOVariables.NETWORK_FRAMEWORKS);
+  }
 
-	private String convertWindowsPath(String path) {
-		if (path == null || path.length() == 0)
-			return null;
-		return FileStringScanner.replace(path, "\\", "/");
-	}
+  public String appsRoot() {
+    return this.wolipsProperties.getProperty(WOVariables.APPS_ROOT);
+  }
 
-	public String getProperty(String aKey) {
-		return (wobuildProperties != null ? wobuildProperties.getProperty(aKey) : null);
-	}
+  public String boostrapJar() {
+    return this.wolipsProperties.getProperty(WOVariables.BOOTSTRAP_JAR_KEY);
+  }
 
-	/**
-	 * @return boolean
-	 */
-	public boolean foundWOBuildProperties() {
-		return (this.wobuildPropertiesFile != null);
-	}
+  /**
+   * Method referenceApi. WOVariables.REFERENCE_API_KEY defined in
+   * wolips.properties (key: <code>wo.dir.reference.api</code>)
+   * 
+   * @return String
+   */
+  public String referenceApi() {
+    return this.wolipsProperties.getProperty(WOVariables.API_ROOT_KEY);
+  }
+
+  /**
+   * Method userHome
+   * 
+   * @return String
+   */
+  public String userRoot() {
+    return this.wolipsProperties.getProperty(WOVariables.USER_ROOT);
+  }
+
+  /**
+   * Method userHome
+   * 
+   * @return String
+   */
+  public String userFrameworkPath() {
+    return this.wolipsProperties.getProperty(WOVariables.USER_FRAMEWORKS);
+  }
+
+  /**
+   * Method woProjectFileName.
+   * 
+   * @return String
+   */
+  public static String woProjectFileName() {
+    return "PB.project";
+  }
+
+  /**
+   * Method webServerResourcesDirName.
+   * 
+   * @return String
+   */
+  public static String webServerResourcesDirName() {
+    return "WebServerResources";
+  }
+
+  /**
+   * Method encodePathForFile.
+   * 
+   * @param aFile
+   * @return String
+   */
+  public String encodePathForFile(File aFile) {
+    return encodePath(aFile.getPath());
+  }
+
+  public String encodePath(String path) {
+    String userHome = null;
+    String systemRoot = null;
+    String localRoot = null;
+    String aPath = null;
+    try {
+      localRoot = this.localRoot();
+      userHome = this.userRoot();
+      systemRoot = this.systemRoot();
+      int localRootLength = 0;
+      int userHomeLength = 0;
+      int systemRootLength = 0;
+      if (localRoot != null) {
+        localRootLength = localRoot.length();
+      }
+      if (userHome != null) {
+        userHomeLength = userHome.length();
+      }
+      if (systemRoot != null) {
+        systemRootLength = systemRoot.length();
+      }
+      // aPath = aFile.getCanonicalPath();
+      // u.k. the CanonicalPath will resolve links this will
+      // result in path with /Versions/a in it
+      aPath = this.convertWindowsPath(path);
+      // aPrefix = this.getAppRootPath();
+      // if((aPrefix != null) && (aPrefix.length() > 1) &&
+      // (aPath.startsWith(aPrefix))) {
+      // return "APPROOT" + aPath.substring(aPrefix.length());
+      // }
+      if (localRoot != null && aPath.startsWith(localRoot)) {
+        boolean otherRoot = false;
+        if (localRootLength < userHomeLength && aPath.startsWith(userHome)) {
+          otherRoot = true;
+        }
+        if (localRootLength < systemRootLength && aPath.startsWith(systemRoot)) {
+          otherRoot = true;
+        }
+        if (!otherRoot) {
+          if (localRootLength == 1) {// MacOSX
+            return "LOCALROOT" + aPath;
+          }
+          return "LOCALROOT" + aPath.substring(localRootLength);
+        }
+      }
+      if (userHome != null && aPath.startsWith(userHome)) {
+        boolean otherRoot = false;
+        if (userHomeLength < systemRootLength && aPath.startsWith(systemRoot)) {
+          otherRoot = true;
+        }
+        if (!otherRoot) {
+          return "HOMEROOT" + aPath.substring(userHomeLength);
+        }
+      }
+      if (systemRoot != null && aPath.startsWith(systemRoot)) {
+        return "WOROOT" + aPath.substring(systemRootLength);
+      }
+      return aPath;
+    }
+    catch (Exception anException) {
+      System.out.println("Exception occurred during encoding of the path " + anException);
+    }
+    finally {
+      localRoot = null;
+      userHome = null;
+      systemRoot = null;
+      aPath = null;
+    }
+    return null;
+  }
+
+  private String convertWindowsPath(String path) {
+    if (path == null || path.length() == 0) {
+      return null;
+    }
+    return FileStringScanner.replace(path, "\\", "/");
+  }
+
+  public String getProperty(String aKey) {
+    return (wolipsProperties != null ? wolipsProperties.getProperty(aKey) : null);
+  }
+
+  public static boolean isWindows() {
+    return System.getProperty("os.name").toLowerCase().contains("windows");
+  }
 }

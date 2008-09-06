@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="MacRoman"?>
+<jardesc>
+<jar path="/Users/mschrag/Documents/workspace/woproject/wolips/core/plugins/org.objectstyle.wolips.woproject.ant/lib/woproject.jar"/>
+<options buildIfNeeded="true" compress="true" descriptionLocation="/woproject-ant-tasks/woproject-ant-tasks.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+<storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+<selectedProjects/>
+<manifest generateManifest="true" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+<sealing sealJar="false">
+<packagesToSeal/>
+<packagesToUnSeal/>
+</sealing>
+</manifest>
+<selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+<javaElement handleIdentifier="=woenvironment/src\/java"/>
+<javaElement handleIdentifier="=woproject-ant-tasks/src\/resources"/>
+<javaElement handleIdentifier="=woproject-ant-tasks/src\/java"/>
+</selectedElements>
+<fatjar builder="org.eclipse.jdt.ui.plain_jar_builder" launchConfig=""/>
+</jardesc>

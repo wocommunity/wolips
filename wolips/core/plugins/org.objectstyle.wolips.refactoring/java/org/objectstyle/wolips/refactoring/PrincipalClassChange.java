@@ -50,28 +50,34 @@
 
 package org.objectstyle.wolips.refactoring;
 
+import java.io.IOException;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.variables.BuildProperties;
 
 /**
  * @author mike
  */
 public class PrincipalClassChange extends Change {
-	private IProjectAdapter projectAdapter;
+	private IProjectAdapter _projectAdapter;
 
-	private String myNewName;
+	private BuildProperties _buildProperties;
 
-	public PrincipalClassChange(IProjectAdapter projectAdapter, String _newName) {
-		this.projectAdapter = projectAdapter;
-		myNewName = _newName;
+	private String _newName;
+
+	public PrincipalClassChange(IProjectAdapter projectAdapter, String newName) {
+		_projectAdapter = projectAdapter;
+		_buildProperties = projectAdapter.getBuildProperties();
+		_newName = newName;
 	}
 
 	public String getName() {
-		return "Change Principal Class from " + projectAdapter.getPrincipalClass(true) + " to " + myNewName;
+		return "Change Principal Class from " + _buildProperties.getPrincipalClass(true) + " to " + _newName;
 	}
 
 	public void initializeValidationData(IProgressMonitor _pm) {
@@ -84,14 +90,19 @@ public class PrincipalClassChange extends Change {
 	}
 
 	public Change perform(IProgressMonitor _pm) throws CoreException {
-		String oldName = projectAdapter.getPrincipalClass(true);
-		projectAdapter.setPrincipalClass(myNewName);
-		PrincipalClassChange undoChange = new PrincipalClassChange(projectAdapter, oldName);
+		String oldName = _buildProperties.getPrincipalClass(true);
+		_buildProperties.setPrincipalClass(_newName);
+		try {
+			_buildProperties.save();
+		} catch (IOException e) {
+			throw new RuntimeException("Failed to save build properties.", e);
+		}
+		PrincipalClassChange undoChange = new PrincipalClassChange(_projectAdapter, oldName);
 		return undoChange;
 	}
 
 	public Object getModifiedElement() {
-		return projectAdapter;
+		return _buildProperties;
 	}
 
 }

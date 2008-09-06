@@ -68,8 +68,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.objectstyle.wolips.baseforplugins.plist.PropertyListParserException;
-import org.objectstyle.wolips.baseforplugins.plist.WOLPropertyListSerialization;
+import org.objectstyle.woenvironment.plist.PropertyListParserException;
+import org.objectstyle.woenvironment.plist.WOLPropertyListSerialization;
 
 /**
  * A <b>PBProject </b> represents a ProjectBuilder project file traditionally
@@ -271,7 +271,7 @@ public class PBProject {
 		getFilesTable().put(language + "_" + PBProject.WEB_SERVER_RESOURCES, anArray);
 	}
 
-	public List getFrameworkSearch() {
+	public List<String> getFrameworkSearch() {
 		return (List) pbProject.get(PBProject.FRAMEWORKSEARCH);
 	}
 

@@ -21,9 +21,9 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.objectstyle.wolips.baseforplugins.plist.ParserDataStructureFactory;
-import org.objectstyle.wolips.baseforplugins.plist.PropertyListParserException;
-import org.objectstyle.wolips.baseforplugins.plist.WOLPropertyListSerialization;
+import org.objectstyle.woenvironment.plist.ParserDataStructureFactory;
+import org.objectstyle.woenvironment.plist.PropertyListParserException;
+import org.objectstyle.woenvironment.plist.WOLPropertyListSerialization;
 import org.objectstyle.wolips.baseforuiplugins.utils.WOTreeCellNavigationStrategy;
 
 public class PropertyListEditor extends Viewer implements IPropertyListChangeListener, KeyListener {

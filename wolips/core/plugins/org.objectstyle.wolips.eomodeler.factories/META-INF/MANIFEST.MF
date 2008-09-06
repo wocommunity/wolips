@@ -7,6 +7,6 @@ Bundle-Activator: org.objectstyle.wolips.eomodeler.factories.Activator
 Require-Bundle: org.objectstyle.wolips.eomodeler.core,
  org.objectstyle.wolips.baseforuiplugins,
  org.objectstyle.wolips.woproject
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Bundle-Vendor: objectstyle.org
 Export-Package: org.objectstyle.wolips.eomodeler.factories

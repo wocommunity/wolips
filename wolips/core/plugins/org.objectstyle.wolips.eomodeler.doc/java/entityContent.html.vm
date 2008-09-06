@@ -56,6 +56,13 @@
 			#end
 		</tr>
 		#end
+
+		#if ($entity.restrictingQualifier)
+		<tr>
+			<th>Restricting Qualifier</th>
+			<td>$entity.restrictingQualifier</td>
+		</tr>
+		#end
 	</table>
 </div>
 
@@ -322,6 +329,10 @@
 	</ul>
 	#end
 </div>
+
+<script>
+initializeDetailsToggle();
+</script>
 
 </body>
 </html>

@@ -5,6 +5,6 @@ Bundle-SymbolicName: org.objectstyle.wolips.team; singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.team.TeamPlugin
 Bundle-Vendor: objectstyle.org
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Require-Bundle: org.objectstyle.wolips.baseforplugins
 Export-Package: org.objectstyle.wolips.team

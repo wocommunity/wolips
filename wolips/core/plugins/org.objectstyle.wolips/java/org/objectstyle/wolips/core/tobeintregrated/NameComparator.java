@@ -57,11 +57,9 @@ package org.objectstyle.wolips.core.tobeintregrated;
 
 import java.util.Comparator;
 
-public class NameComparator implements Comparator {
+public class NameComparator implements Comparator<String> {
 
-	public int compare(Object o1, Object o2) {
-		String s1 = (String) o1;
-		String s2 = (String) o2;
-		return s1.compareTo(s2);
+	public int compare(String o1, String o2) {
+		return o1.compareTo(o2);
 	}
 }

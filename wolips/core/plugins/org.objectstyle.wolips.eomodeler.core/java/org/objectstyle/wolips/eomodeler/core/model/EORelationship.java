@@ -439,14 +439,17 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 		return StringUtils.isKeyPath(_getDefinition());
 	}
 
-	public boolean isInherited() {
-		boolean inherited = false;
+	public EORelationship getParentRelationship() {
+		EORelationship parentRelationship = null;
 		EOEntity parent = myEntity.getParent();
 		if (parent != null) {
-			EORelationship attribute = parent.getRelationshipNamed(myName);
-			inherited = (attribute != null);
+			parentRelationship = parent.getRelationshipNamed(myName);
 		}
-		return inherited;
+		return parentRelationship;
+	}
+
+	public boolean isInherited() {
+		return getParentRelationship() != null;
 	}
 
 	public void _setEntity(EOEntity _entity) {

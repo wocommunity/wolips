@@ -77,13 +77,14 @@ import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.woenvironment.pb.PBXProject;
 import org.objectstyle.woenvironment.pb.XcodeProjProject;
 import org.objectstyle.woenvironment.pb.XcodeProject;
-import org.objectstyle.wolips.baseforplugins.plist.PropertyListParserException;
+import org.objectstyle.woenvironment.plist.PropertyListParserException;
 import org.objectstyle.wolips.builder.BuilderPlugin;
 import org.objectstyle.wolips.core.resources.builder.IFullBuilder;
 import org.objectstyle.wolips.core.resources.builder.IIncrementalBuilder;
 import org.objectstyle.wolips.core.resources.internal.build.BuilderWrapper;
 import org.objectstyle.wolips.core.resources.internal.build.FullBuildDeltaVisitor;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.jdt.ProjectFrameworkAdapter;
 import org.objectstyle.wolips.preferences.Preferences;
 
 /**
@@ -213,7 +214,7 @@ public class DotXcodeBuilder implements IIncrementalBuilder, IFullBuilder {
 	}
 
 	protected void writeXcodeProject(IProgressMonitor monitor, IProject project, PBXProject xcodeProject, String projectFolderName) throws CoreException, PropertyListParserException, IOException {
-		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
+		ProjectFrameworkAdapter projectAdapter = (ProjectFrameworkAdapter) project.getAdapter(ProjectFrameworkAdapter.class);
 		List frameworkPaths = projectAdapter.getFrameworkPaths();
 		//System.out.println("DotXcodeBuilder.writeXcodeProject: Writing " + project.getName() + " " + xcodeProject);
 		Iterator frameworkPathsIter = frameworkPaths.iterator();

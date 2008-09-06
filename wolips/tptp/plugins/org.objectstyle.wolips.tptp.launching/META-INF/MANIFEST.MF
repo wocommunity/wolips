@@ -14,4 +14,4 @@ Require-Bundle: org.eclipse.jdt.debug.ui,
  org.objectstyle.wolips.baseforuiplugins,
  org.eclipse.jdt.launching,
  org.eclipse.jdt.core
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy

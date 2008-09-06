@@ -58,13 +58,12 @@ package org.objectstyle.wolips.jdt;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.objectstyle.woenvironment.frameworks.FrameworkModel;
 import org.objectstyle.wolips.baseforplugins.logging.PluginLogger;
-import org.objectstyle.wolips.jdt.classpath.model.ClasspathModel;
-import org.objectstyle.wolips.jdt.listener.ResourceChangeListener;
+import org.objectstyle.wolips.jdt.classpath.model.EclipseFrameworkModel;
+import org.objectstyle.wolips.jdt.classpath.model.IEclipseFramework;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -81,9 +80,7 @@ public class JdtPlugin extends AbstractUIPlugin {
 
 	private PluginLogger pluginLogger = null;
 
-	private ClasspathModel classpathModel = null;
-
-	private IResourceChangeListener resourceChangeListener;
+	private FrameworkModel<IEclipseFramework> frameworkModel;
 
 	/**
 	 * The constructor.
@@ -134,11 +131,6 @@ public class JdtPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		this.pluginLogger = new PluginLogger(JdtPlugin.PLUGIN_ID, false);
-		this.classpathModel = new ClasspathModel();
-		// add element change listener to update project file on classpath
-		// changes
-		this.resourceChangeListener = new ResourceChangeListener();
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(this.resourceChangeListener, IResourceChangeEvent.POST_CHANGE);
 	}
 
 	/*
@@ -147,9 +139,8 @@ public class JdtPlugin extends AbstractUIPlugin {
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
-		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this.resourceChangeListener);
 		super.stop(context);
-		this.classpathModel = null;
+		this.frameworkModel = null;
 		this.pluginLogger = null;
 	}
 
@@ -163,8 +154,9 @@ public class JdtPlugin extends AbstractUIPlugin {
 	/**
 	 * @return Returns the classpathModel.
 	 */
-	public ClasspathModel getClasspathModel() {
-		return this.classpathModel;
+	public FrameworkModel<IEclipseFramework> getFrameworkModel(IProject project) {
+		this.frameworkModel = new EclipseFrameworkModel(project);
+		return this.frameworkModel;
 	}
 
 	/**

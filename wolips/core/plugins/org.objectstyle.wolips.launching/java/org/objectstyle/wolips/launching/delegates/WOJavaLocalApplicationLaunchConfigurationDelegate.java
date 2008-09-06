@@ -175,7 +175,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends JavaLaunc
 
 		File wdFile = javaProject.getWDFolder(theProject, wd);
 		if (null == wdFile) {
-			IPath path = VariablesPlugin.getDefault().getExternalBuildRoot();
+			IPath path = VariablesPlugin.getDefault().getProjectVariables(theProject).getExternalBuildRoot();
 			if(path != null) {
 				path = path.append(theProject.getName() + ".woa");
 				wdFile = path.toFile();
@@ -197,6 +197,8 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends JavaLaunc
 	}
 
 	public String getProgramArguments(ILaunchConfiguration configuration) throws CoreException {
+		IProject theProject = this.getJavaProject(configuration).getProject();
+
 		StringBuffer launchArgument = new StringBuffer(super.getProgramArguments(configuration));
 		launchArgument.append(" ");
 		JavaProject javaProject = (JavaProject) (this.getJavaProject(configuration).getAdapter(JavaProject.class));
@@ -219,14 +221,14 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends JavaLaunc
 					if ("-WOApplicationClassName".equals(parameter))
 						argument = mainTypeName;
 					if ("-DWORoot=".equals(parameter)) {
-						argument = VariablesPlugin.getDefault().getSystemRoot().toOSString();
+						argument = VariablesPlugin.getDefault().getProjectVariables(theProject).getSystemRoot().toOSString();
 						if (javaProject.isOnMacOSX()) {
 							parameter = "";
 							argument = "";
 						}
 					}
 					if ("-DWORootDirectory=".equals(parameter)) {
-						argument = VariablesPlugin.getDefault().getSystemRoot().toOSString();
+						argument = VariablesPlugin.getDefault().getProjectVariables(theProject).getSystemRoot().toOSString();
 						if (javaProject.isOnMacOSX()) {
 							parameter = "";
 							argument = "";
@@ -251,7 +253,6 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends JavaLaunc
 			launchArgument.append(debugGroups);
 			launchArgument.append(")\"");
 		}
-		System.out.println("WOJavaLocalApplicationLaunchConfigurationDelegate.getProgramArguments: " + launchArgument);
 		return launchArgument.toString();
 	}
 

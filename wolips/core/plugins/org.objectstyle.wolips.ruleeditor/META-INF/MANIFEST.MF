@@ -5,8 +5,9 @@ Bundle-SymbolicName: org.objectstyle.wolips.ruleeditor; singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.ruleeditor.RuleEditorPlugin
 Bundle-Vendor: objectstyle.org
-Require-Bundle: org.objectstyle.wolips.baseforuiplugins
-Eclipse-LazyStart: true
+Require-Bundle: org.objectstyle.wolips.baseforuiplugins,
+ org.objectstyle.wolips.woproject;bundle-version="1.0.6"
+Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  lib/commons-io-1.4.jar,
  lib/junit-4.4.jar,

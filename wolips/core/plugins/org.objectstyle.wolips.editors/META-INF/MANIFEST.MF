@@ -10,7 +10,7 @@ Require-Bundle: org.objectstyle.wolips.baseforuiplugins,
  org.objectstyle.wolips.workbenchutilities,
  org.eclipse.ui.forms,
  org.objectstyle.wolips
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.editors,
  org.objectstyle.wolips.editors.contentdescriber,
  org.objectstyle.wolips.editors.launcher,
