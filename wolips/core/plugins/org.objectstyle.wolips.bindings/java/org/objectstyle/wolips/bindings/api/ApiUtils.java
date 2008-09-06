@@ -32,6 +32,7 @@ import org.objectstyle.wolips.bindings.wod.TypeCache;
 import org.objectstyle.wolips.core.resources.internal.types.project.ProjectAdapter;
 import org.objectstyle.wolips.core.resources.types.TypeNameCollector;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.jdt.ProjectFrameworkAdapter;
 import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.osgi.framework.Bundle;
@@ -284,12 +285,10 @@ public class ApiUtils {
     }
     else if ("Frameworks".equals(defaultsName)) {
       validValues.add("\"app\"");
-      ProjectAdapter projectAdapter = (ProjectAdapter) javaProject.getProject().getAdapter(IProjectAdapter.class);
-      if (projectAdapter != null) {
-        for (String frameworkName : projectAdapter.getFrameworkNames()) {
-          if (frameworkName.endsWith(".framework")) {
-            validValues.add("\"" + frameworkName.substring(0, frameworkName.length() - ".framework".length()) + "\"");
-          }
+      ProjectFrameworkAdapter projectFrameworkAdapter = (ProjectFrameworkAdapter) javaProject.getProject().getAdapter(ProjectFrameworkAdapter.class);
+      if (projectFrameworkAdapter != null) {
+        for (String frameworkName : projectFrameworkAdapter.getFrameworkNames()) {
+          validValues.add("\"" + frameworkName + "\"");
         }
       }
     }
