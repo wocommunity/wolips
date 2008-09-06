@@ -70,7 +70,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.jdt.ProjectFrameworkAdapter;
 
 /**
  * @author ulrich
@@ -85,7 +85,7 @@ public class InstallWithSelectionDialogAction extends AbstractInstallAction {
 			IProject iProject = projects[i];
 			if (iProject.isAccessible() && iProject.isOpen()) {
 				if (iProject.getFile("build.xml").exists()) {
-					IProjectAdapter project = (IProjectAdapter) this.getIProject().getAdapter(IProjectAdapter.class);
+					ProjectFrameworkAdapter project = (ProjectFrameworkAdapter) this.getIProject().getAdapter(ProjectFrameworkAdapter.class);
 					if (project != null) {
 						if (iProject == this.getIProject()) {
 							arrayList.add(iProject);
