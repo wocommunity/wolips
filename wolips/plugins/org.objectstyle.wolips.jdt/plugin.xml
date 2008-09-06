@@ -25,15 +25,22 @@
    <extension
          point="org.eclipse.jdt.core.classpathContainerInitializer">
       <classpathContainerInitializer
-            class="org.objectstyle.wolips.jdt.classpath.ContainerInitializer"
+            class="org.objectstyle.wolips.jdt.classpath.WOFrameworkContainerInitializer"
             id="org.objectstyle.wolips.WO_CLASSPATH">
       </classpathContainerInitializer>
    </extension>
    <extension
          point="org.eclipse.jdt.core.classpathContainerInitializer">
       <classpathContainerInitializer
-            class="org.objectstyle.wolips.jdt.classpath.ContainerInitializer"
+            class="org.objectstyle.wolips.jdt.classpath.WOFrameworkContainerInitializer"
             id="org.objectstyle.wolips.ContainerInitializer">
+      </classpathContainerInitializer>
+   </extension>
+   <extension
+         point="org.eclipse.jdt.core.classpathContainerInitializer">
+      <classpathContainerInitializer
+            class="org.objectstyle.wolips.jdt.classpath.WOFrameworkContainerInitializer"
+            id="WOFramework">
       </classpathContainerInitializer>
    </extension>
 <!-- =================================================================================== -->
@@ -43,8 +50,8 @@
          point="org.eclipse.jdt.ui.classpathContainerPage">
       <classpathContainerPage
             name="WebObjects Frameworks"
-            class="org.objectstyle.wolips.jdt.ui.ContainerPage"
-            id="org.objectstyle.wolips.ContainerInitializer">
+            class="org.objectstyle.wolips.jdt.ui.WOFrameworkContainerPage"
+            id="org.objectstyle.wolips.jdt.ui.WOFrameworkContainerPage">
       </classpathContainerPage>
    </extension>
 <!-- =========================================================================== -->
@@ -176,7 +183,7 @@
       <filter
             targetId="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
             description="Hide all EOGenerator underscore files"
-            enabled="true"
+            enabled="false"
             id="org.objectstyle.wolips.ui.javaelementfilters.eogeneratedFiles"
             name="EOGenerator _Files"
             pattern="_*.java">
@@ -223,7 +230,7 @@
       <filter
             targetId="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
             name="%HideReferencedLibraries.label"
-            enabled="false"
+            enabled="true"
             description="%HideReferencedLibraries.description"
             class="org.eclipse.jdt.internal.ui.filters.LibraryFilter"
             id="org.objectstyle.wolips.jdt.ui.WOPackageExplorer.LibraryFilter">
@@ -407,7 +414,7 @@
           class="org.objectstyle.wolips.jdt.ui.WOPackageExplorerPart"
           icon="icons/WOLips16-16.png"
           id="org.objectstyle.wolips.jdt.ui.WOPackageExplorer"
-          name="WO Package Explorer">
+          name="WO Explorer">
     </view>
  </extension>
  
@@ -431,5 +438,15 @@
          </action>
       </objectContribution>
 
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.eclipse.core.resources.IProject"
+            class="org.objectstyle.wolips.jdt.ProjectFrameworkAdapterFactory">
+         <adapter
+               type="org.objectstyle.wolips.jdt.ProjectFrameworkAdapter">
+         </adapter>
+      </factory>
    </extension>
 </plugin>
