@@ -99,7 +99,7 @@
 		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/trunk/woproject</developerConnection>
 		<url>http://svn.objectstyle.org/repos/woproject/trunk/woproject</url>
 	</scm>
-	<reporting>
+	<!-- <reporting>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -113,7 +113,7 @@
 				</reportSets>
 			</plugin>
 		</plugins>
-	</reporting>
+	</reporting>  -->
 	<build>
 		<plugins>
 			<!-- <plugin>

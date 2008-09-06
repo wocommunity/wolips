@@ -14,13 +14,6 @@
 	<description>Contains woenvironment stuff.</description>
 	<url>http://objectstyle.org/woproject/</url>
 	<inceptionYear>2001</inceptionYear>
-	<dependencies>
-		<dependency>
-			<groupId>org.objectstyle.wolips</groupId>
-			<artifactId>base-for-plugins</artifactId>
-			<version>${pom.version}</version>
-		</dependency>
-	</dependencies>
 	<build>
 		<sourceDirectory>src/java</sourceDirectory>
 	</build>
