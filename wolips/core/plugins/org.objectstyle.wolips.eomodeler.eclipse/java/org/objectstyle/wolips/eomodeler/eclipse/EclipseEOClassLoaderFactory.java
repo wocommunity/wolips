@@ -14,17 +14,16 @@ import org.objectstyle.wolips.eomodeler.core.model.AbstractEOClassLoader;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.utils.EclipseFileUtils;
 import org.objectstyle.wolips.launching.actions.WOJavaApplicationLaunchShortcut;
-import org.objectstyle.wolips.variables.VariablesPlugin;
 
 public class EclipseEOClassLoaderFactory extends AbstractEOClassLoader {
 	@Override
 	protected void fillInDevelopmentClasspath(Set<URL> classpathUrls) throws Exception {
 		// AK: we don't want to re-jar each time we make a change....
-		String workSpacePath = VariablesPlugin.getDefault().getWOProjectDevelopmentPath();
-		if (workSpacePath != null) {
-			URL classUrl = new URL("file://" + workSpacePath + "wolips/core/plugins/org.objectstyle.wolips.eomodeler.core/bin/");
-			classpathUrls.add(classUrl);
-		}
+//		String workSpacePath = VariablesPlugin.getDefault().getWOProjectDevelopmentPath();
+//		if (workSpacePath != null) {
+//			URL classUrl = new URL("file://" + workSpacePath + "wolips/core/plugins/org.objectstyle.wolips.eomodeler.core/bin/");
+//			classpathUrls.add(classUrl);
+//		}
 	}
 
 	@Override
