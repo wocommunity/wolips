@@ -1,11 +1,10 @@
 <project name="${WOLipsContext.getProjectName()}" default="build" basedir=".">
-	<target name="build" depends="init.properties,init.build,build.woframework" />
+	<target name="build" depends="init.build,build.woframework" />
 
-	<target name="compileAndBuild" depends="init.properties,init.build,compile,build.woframework" />
-
-	<target name="install" depends="init.properties,init.install,build.woframework" />
+	<target name="install" depends="init.install,build.woframework" />
 
 	<target name="clean" depends="init.properties">
+		<delete dir="bin" />
 		<delete dir="dist" />
 	</target>
 
@@ -29,18 +28,18 @@
 	</target>
 
 	<!-- basic initializations  -->
-	<target name="init.install">
+	<target name="init.install" depends="init.properties">
 		<tstamp />
 		<property name="dest.dir" value="${wo.install.root}" />
 	</target>
 
-	<target name="init.build">
+	<target name="init.build" depends="init.properties">
 		<tstamp />
 		<property name="dest.dir" value="dist" />
 	</target>
 
 	<!-- woproject tasks -->
-	<target name="build.woframework">
+	<target name="build.woframework" depends="compile">
 		<taskdef name="woframework" classname="org.objectstyle.woproject.ant.WOFramework"/>
 
 		<woframework name="${project.name}" destDir="${dest.dir}" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}" eoAdaptorClassName="${eoAdaptorClassName}" javaVersion="${javaVersion}" cfbundleversion="${cfBundleVersion}" cfbundleshortversion="${cfBundleShortVersion}" cfbundleID="${cfBundleID}">
@@ -72,7 +71,7 @@
 		</woframework>
 	</target>
 	
-	<target name="compile" depends="init.properties,init.build">
+	<target name="compile" depends="init.build">
 		<taskdef name="wocompile" classname="org.objectstyle.woproject.ant.WOCompile" />
 
 		<mkdir dir="bin" />
