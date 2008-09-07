@@ -19,9 +19,12 @@ public class BuildProperties {
 	private Properties _properties;
 
 	private boolean _dirty;
+	
+	private long _version;
 
 	public BuildProperties(IProject project) {
 		_project = project;
+		_version = -1;
 	}
 
 	public IFile getBuildPropertiesFile() {
@@ -30,15 +33,14 @@ public class BuildProperties {
 	}
 
 	public synchronized long getModificationStamp() {
-		long version;
 		IFile file = getBuildPropertiesFile();
-		if (file.exists()) {
-			version = file.getModificationStamp();
+		if (_version == -1 && file.exists()) {
+			_version = file.getModificationStamp();
 		}
 		else {
-			version = -1;
+			_version = -1;
 		}
-		return version;
+		return _version;
 	}
 
 	public synchronized void setProperties(Properties properties) {
