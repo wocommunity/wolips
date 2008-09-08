@@ -76,6 +76,7 @@ import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel;
 import org.objectstyle.wolips.eogenerator.core.model.EOModelReference;
 import org.objectstyle.wolips.eogenerator.jdt.EOGeneratorCreator;
 import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
+import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
@@ -83,6 +84,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.model.IEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
 import org.objectstyle.wolips.jdt.ProjectFrameworkAdapter;
+import org.objectstyle.wolips.jdt.classpath.model.IEclipseFramework;
 
 /**
  * @author mnolte
@@ -94,6 +96,8 @@ public class EOModelCreator implements IRunnableWithProgress {
 	private String _modelName;
 
 	private String _adaptorName;
+	
+	private String _pluginName;
 
 	private IResource _parentResource;
 
@@ -108,10 +112,11 @@ public class EOModelCreator implements IRunnableWithProgress {
 	 * @param modelName
 	 * @param adaptorName
 	 */
-	public EOModelCreator(IResource parentResource, String modelName, String adaptorName, boolean createEOGeneratorFile, EOModelCreationPage page) {
+	public EOModelCreator(IResource parentResource, String modelName, String adaptorName, String pluginName, boolean createEOGeneratorFile, EOModelCreationPage page) {
 		_parentResource = parentResource;
 		_modelName = modelName;
 		_adaptorName = adaptorName;
+		_pluginName = pluginName;
 		_page = page;
 		_createEOGeneratorFile = createEOGeneratorFile;
 	}
@@ -170,6 +175,24 @@ public class EOModelCreator implements IRunnableWithProgress {
 		modelGroup.addModel(model);
 		modelGroup.setEditingModelName(_modelName);
 
+		ProjectFrameworkAdapter frameworkAdapter = (ProjectFrameworkAdapter)_parentResource.getProject().getAdapter(ProjectFrameworkAdapter.class);
+		// add adaptor framework
+		if (!"None".equals(_adaptorName) && !"".equals(_adaptorName)) {
+			frameworkAdapter.addFrameworks(frameworkAdapter.getAdaptorFrameworks().get(_adaptorName));
+		}
+		if (!"None".equals(_pluginName) && !"".equals(_pluginName)) {
+			IEclipseFramework pluginFramework = frameworkAdapter.getPluginFrameworks().get(_pluginName);
+			frameworkAdapter.addFrameworks(pluginFramework);
+			String selectedPrototypeEntityName = "EO" + _adaptorName + _pluginName + "Prototypes";
+			EOEntity selectedPrototypeEntity = modelGroup.getEntityNamed(selectedPrototypeEntityName);
+			if (selectedPrototypeEntity != null) {
+				EODatabaseConfig activeConfig = model.getActiveDatabaseConfig();
+				if (activeConfig != null) {
+					activeConfig.setPrototype(selectedPrototypeEntity);
+				}
+			}
+		}
+
 		File modelFolderFile = model.saveToFolder(parentContainer.getLocation().toFile());
 		IFolder modelFolder = parentContainer.getFolder(new Path(modelFolderFile.getName()));
 		String baseName = model.getName();
@@ -198,12 +221,6 @@ public class EOModelCreator implements IRunnableWithProgress {
 			_page.setResourceToReveal(modelGroupFile);
 		} else {
 			_page.setResourceToReveal(modelFolder.findMember("index.eomodeld"));
-		}
-
-		// add adaptor framework
-		if (!"None".equals(_adaptorName) && !"".equals(_adaptorName)) {
-			ProjectFrameworkAdapter frameworkAdapter = (ProjectFrameworkAdapter)_parentResource.getProject().getAdapter(ProjectFrameworkAdapter.class);
-			frameworkAdapter.addFrameworkNamed("Java" + _adaptorName + "Adaptor");
 		}
 	}
 }

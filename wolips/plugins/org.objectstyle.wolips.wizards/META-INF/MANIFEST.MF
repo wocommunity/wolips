@@ -30,3 +30,4 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.wizards,
  org.objectstyle.wolips.wizards.actions,
  org.objectstyle.wolips.wizards.template
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
