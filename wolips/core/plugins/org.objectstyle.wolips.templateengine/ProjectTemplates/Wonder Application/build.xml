@@ -40,7 +40,7 @@
 	</target>
 
 	<!-- This copies webserver resources from app.woa's embedded frameworks into split install bundle -->
-	<target name="split" description="Adds embedded framework webserver resources to the split install bundle by copying from deployment build bundle">
+	<target name="split" description="Adds embedded framework webserver resources to the split install bundle by copying from deployment build bundle" unless="servletDeployment">
 		<property name="wsdest.dir" value="${dest.dir}/Split" />
 		<mkdir dir="${wsdest.dir}"/>
 		<copy todir="${wsdest.dir}/WebObjects/${build.app.name}.woa" verbose="true">
