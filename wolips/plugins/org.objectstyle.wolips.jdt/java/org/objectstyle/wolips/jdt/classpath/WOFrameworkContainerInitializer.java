@@ -151,9 +151,12 @@ public class WOFrameworkContainerInitializer extends ClasspathContainerInitializ
 			if (existingContainerPath.segmentCount() > 0) {
 				String existingContainerID = existingContainerPath.segment(0);
 				if (WOFrameworkContainerInitializer.OLD_WOLIPS_CLASSPATH_CONTAINER_ID.equals(existingContainerID)) {
-					for (int segmentNum = 3; segmentNum < existingContainerPath.segmentCount(); segmentNum += 11) {
+					int skip = 0;
+					for (int segmentNum = 1; segmentNum < existingContainerPath.segmentCount(); segmentNum += skip) {
+						skip = Integer.parseInt(existingContainerPath.segment(segmentNum)) + 1;
+						
 						// 10/1/Ajax/1/nil/1/nil/1/0/1/false
-						String frameworkName = existingContainerPath.segment(segmentNum);
+						String frameworkName = existingContainerPath.segment(segmentNum + 2);
 						addFrameworkNamed(frameworkName, frameworkNames, newClasspathEntries, frameworkModel);
 					}
 				} else {
