@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -39,8 +43,6 @@ public class ProjectFrameworkAdapter {
 
 	public void addFrameworksNamed(String... frameworkNames) throws JavaModelException {
 		IProject project = getProject();
-		IJavaProject javaProject = JavaCore.create(project);
-
 		FrameworkModel<IEclipseFramework> frameworkModel = JdtPlugin.getDefault().getFrameworkModel(project);
 		List<IEclipseFramework> frameworks = new LinkedList<IEclipseFramework>();
 		for (String frameworkName : frameworkNames) {
@@ -50,8 +52,18 @@ public class ProjectFrameworkAdapter {
 			}
 			frameworks.add(framework);
 		}
-
+		IJavaProject javaProject = JavaCore.create(project);
 		IEclipseFramework.Utility.addFrameworksToProject(frameworks, javaProject, true);
+	}
+	
+	public void addFrameworks(IEclipseFramework... frameworks) throws JavaModelException {
+		List<IEclipseFramework> frameworksList = new LinkedList<IEclipseFramework>();
+		for (IEclipseFramework framework : frameworks) {
+			frameworksList.add(framework);
+		}
+		IProject project = getProject();
+		IJavaProject javaProject = JavaCore.create(project);
+		IEclipseFramework.Utility.addFrameworksToProject(frameworksList, javaProject, true);
 	}
 
 	public void removeFrameworkNamed(String frameworkName) throws JavaModelException {
@@ -97,8 +109,36 @@ public class ProjectFrameworkAdapter {
 		return getFrameworkNames().contains(frameworkName);
 	}
 
-	
-	
+	public Map<String, IEclipseFramework> getPluginFrameworks() {
+		Map<String, IEclipseFramework> pluginFrameworks = new TreeMap<String, IEclipseFramework>(); 
+		Pattern pluginPattern = Pattern.compile("(.*)PlugIn");
+		FrameworkModel<IEclipseFramework> frameworkModel = JdtPlugin.getDefault().getFrameworkModel(getProject());
+		for (IEclipseFramework framework : frameworkModel.getAllFrameworks()) {
+			String frameworkName = framework.getName();
+			Matcher matcher = pluginPattern.matcher(frameworkName);
+			if (matcher.matches()) {
+				String pluginName = matcher.group(1);
+				pluginFrameworks.put(pluginName, framework);
+			}
+		}
+		return pluginFrameworks;
+	}
+
+	public Map<String, IEclipseFramework> getAdaptorFrameworks() {
+		Map<String, IEclipseFramework> adaptorFrameworks = new TreeMap<String, IEclipseFramework>(); 
+		Pattern adaptorPattern = Pattern.compile("Java(.*)Adaptor");
+		FrameworkModel<IEclipseFramework> frameworkModel = JdtPlugin.getDefault().getFrameworkModel(getProject());
+		for (IEclipseFramework framework : frameworkModel.getAllFrameworks()) {
+			String frameworkName = framework.getName();
+			Matcher matcher = adaptorPattern.matcher(frameworkName);
+			if (matcher.matches()) {
+				String adaptorName = matcher.group(1);
+				adaptorFrameworks.put(adaptorName, framework);
+			}
+		}
+		return adaptorFrameworks;
+	}
+
 	/** OLD FRAMEWORK API'S -- SHOULD BE REWRITTEN USING NEW FRAMEWORK API'S **/
 	public List<IPath> getFrameworkPaths() {
 //		for (IEclipseFramework framework : getFrameworks()) {
