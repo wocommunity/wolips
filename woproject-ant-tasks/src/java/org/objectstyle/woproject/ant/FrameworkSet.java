@@ -361,7 +361,7 @@ public class FrameworkSet extends FileSet {
 
   @Override
   public DirectoryScanner getDirectoryScanner(Project p) {
-    if (getDir() == null) {
+    if (getDir() == null || !getDir().exists()) {
       DirectoryScanner scanner = new DirectoryScanner() {
         @Override
         public synchronized String[] getIncludedDirectories() {
