@@ -107,6 +107,9 @@ public class WOFrameworkClasspathComparator implements Comparator<IClasspathEntr
 		if (_systemFrameworks.contains(frameworkName)) {
 			value = 2000;
 		}
+		else if ("ERExtensions".equals(frameworkName)) {
+			value = 999;
+		}
 		else if (_wonderFrameworks.contains(frameworkName)) {
 			value = 1000;
 		}
