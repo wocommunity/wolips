@@ -61,6 +61,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
+import java.util.prefs.Preferences;
 
 import org.objectstyle.woenvironment.util.FileStringScanner;
 
@@ -135,10 +136,7 @@ public class WOVariables {
   
       if (!isValidWOlipsPropertiesFile()) {
         if (isWindows()) {
-          this.wolipsPropertiesFile = new File(System.getProperty("user.home"), "Documents and Settings/Application Data/WOLips/" + WOVariables.WOLIPS_PROPERTIES_FILE_NAME);
-          if (!isValidWOlipsPropertiesFile()) {
-            this.wolipsPropertiesFile = new File(System.getProperty("user.home"), "Documents and Settings/AppData/Local/WOLips/" + WOVariables.WOLIPS_PROPERTIES_FILE_NAME);
-          }
+          this.wolipsPropertiesFile = new File(System.getenv("APPDATA") + "\\WOLips\\" + WOVariables.WOLIPS_PROPERTIES_FILE_NAME);
         }
         else {
           this.wolipsPropertiesFile = new File(this.environment.userHome(), "Library/Application Support/WOLips/" + WOVariables.WOLIPS_PROPERTIES_FILE_NAME);
@@ -183,8 +181,8 @@ public class WOVariables {
       this.wolipsProperties.setProperty(WOVariables.SYSTEM_FRAMEWORKS, "C:\\Apple\\Library\\Frameworks");
       this.wolipsProperties.setProperty(WOVariables.NETWORK_ROOT, "C:\\Apple\\Network");
       this.wolipsProperties.setProperty(WOVariables.NETWORK_FRAMEWORKS, "C:\\Apple\\Network\\Library\\Frameworks");
-      this.wolipsProperties.setProperty(WOVariables.USER_ROOT, "C:\\Documents and Settings\\" + System.getProperty("user.name"));
-      this.wolipsProperties.setProperty(WOVariables.USER_FRAMEWORKS, "C:\\Documents and Settings\\" + System.getProperty("user.name") + "\\Library\\Frameworks");
+      this.wolipsProperties.setProperty(WOVariables.USER_ROOT, System.getProperty("user.home"));
+      this.wolipsProperties.setProperty(WOVariables.USER_FRAMEWORKS, System.getProperty("user.home") + "\\Library\\Frameworks");
       this.wolipsProperties.setProperty(WOVariables.WEBOBJECTS_EXTENSIONS, "C:\\Apple\\Extensions");
     }
     else {
@@ -197,8 +195,8 @@ public class WOVariables {
       this.wolipsProperties.setProperty(WOVariables.SYSTEM_FRAMEWORKS, "/System/Library/Frameworks");
       this.wolipsProperties.setProperty(WOVariables.NETWORK_ROOT, "/Network");
       this.wolipsProperties.setProperty(WOVariables.NETWORK_FRAMEWORKS, "/Network/Library/Frameworks");
-      this.wolipsProperties.setProperty(WOVariables.USER_ROOT, "/Users/" + System.getProperty("user.name"));
-      this.wolipsProperties.setProperty(WOVariables.USER_FRAMEWORKS, "/Users/" + System.getProperty("user.name") + "/Library/Frameworks");
+      this.wolipsProperties.setProperty(WOVariables.USER_ROOT, System.getProperty("user.home"));
+      this.wolipsProperties.setProperty(WOVariables.USER_FRAMEWORKS, System.getProperty("user.home") + "/Library/Frameworks");
       this.wolipsProperties.setProperty(WOVariables.WEBOBJECTS_EXTENSIONS, "/Library/WebObjects/Extensions");
     }
 
