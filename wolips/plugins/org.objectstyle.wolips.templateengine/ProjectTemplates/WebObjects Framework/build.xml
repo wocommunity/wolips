@@ -58,13 +58,6 @@
 				<excludesfile name="woproject/resources.exclude.patternset" />
 			</resources>
 
-			<frameworks root="ProjectLocal" embed="false" eclipse="true" />
-			<frameworks root="External" embed="false" eclipse="true" />
-			<frameworks root="Local" embed="false" eclipse="true" />
-			<frameworks root="User" embed="false" eclipse="true" />
-			<frameworks root="System" embed="false" eclipse="true" />
-			<frameworks root="Network" embed="false" eclipse="true" />
-
 			<lib dir="Libraries">
 				<include name="*.jar" />
 			</lib>
