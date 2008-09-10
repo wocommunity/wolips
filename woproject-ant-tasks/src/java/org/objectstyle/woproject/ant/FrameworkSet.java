@@ -351,7 +351,7 @@ public class FrameworkSet extends FileSet {
       path.append(encodedPath).append(System.getProperty("line.separator"));
     }
 
-    System.out.println("FrameworkSet.jarsPathForFrameworkSets: " + path);
+    //System.out.println("FrameworkSet.jarsPathForFrameworkSets: " + path);
     return path.toString();
   }
 

@@ -55,9 +55,14 @@
  */
 package org.objectstyle.woproject.ant;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Path;
+import org.apache.tools.ant.types.ResourceCollection;
+import org.objectstyle.woenvironment.env.WOEnvironment;
 
 
 /**
@@ -65,10 +70,9 @@ import org.apache.tools.ant.types.Path;
  *
  * @author Chuck Hill
  */
-public class WOPath extends Path
-{
-
-
+public class WOPath extends Path {
+  private List<FrameworkSet> _frameworkSets;
+  
     /**
      * Invoked by IntrospectionHelper for <code>setXXX(Path p)</code>
      * attribute setters.
@@ -77,6 +81,7 @@ public class WOPath extends Path
      */
     public WOPath(Project aProject, String path) {
         super(aProject, path);
+        _frameworkSets = new LinkedList<FrameworkSet>();
     }
 
     /**
@@ -85,16 +90,29 @@ public class WOPath extends Path
      */
     public WOPath(Project aProject) {
         super(aProject);
+        _frameworkSets = new LinkedList<FrameworkSet>();
     }
-
-
+    
     /**
      * Adds a nested <code>&lt;framework&gt;</code> element.
      * @param framework FrameworkSet to add as a FileSet
      * @throws BuildException
      */
     public void addFrameworks(FrameworkSet framework) throws BuildException {
-        addFileset(framework);
+      _frameworkSets.add(framework);
+      addFileset(framework);
     }
 
+    // MS: TOTAL HACK ... I don't know where to hook in to expand FrameworkSets into jars, but this
+    // seems to be called before it's used, so I think this will do it
+    @Override
+    protected ResourceCollection assertFilesystemOnly(ResourceCollection rc) {
+      add(FrameworkSet.jarsPathForFrameworkSets(getProject(), _frameworkSets, new WOEnvironment(getProject().getProperties()).getWOVariables()));
+      return super.assertFilesystemOnly(rc);
+    }
+    
+    @Override
+    public String toString() {
+      return super.toString();
+    }
 }
