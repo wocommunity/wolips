@@ -170,19 +170,20 @@ public class WOVariables {
 
   public void createDefaultProperties() {
     this.wolipsProperties = new Properties();
+    String nextRoot = System.getenv("NEXT_ROOT");
     if (isWindows()) {
       this.wolipsProperties.setProperty(WOVariables.API_ROOT_KEY, "/Developer/ADC%20Reference%20Library/documentation/WebObjects/Reference/API/");
-      this.wolipsProperties.setProperty(WOVariables.APPS_ROOT, "C:\\Apple\\Applications");
-      this.wolipsProperties.setProperty(WOVariables.BOOTSTRAP_JAR_KEY, "C:\\Apple\\Library\\Application\\wotaskd.woa\\WOBootstrap.jar");
-      this.wolipsProperties.setProperty(WOVariables.LOCAL_ROOT, "C:\\Apple\\Local");
-      this.wolipsProperties.setProperty(WOVariables.LOCAL_FRAMEWORKS, "C:\\Apple\\Local\\Library\\Frameworks");
-      this.wolipsProperties.setProperty(WOVariables.SYSTEM_ROOT, "C:\\Apple");
-      this.wolipsProperties.setProperty(WOVariables.SYSTEM_FRAMEWORKS, "C:\\Apple\\Library\\Frameworks");
-      this.wolipsProperties.setProperty(WOVariables.NETWORK_ROOT, "C:\\Apple\\Network");
-      this.wolipsProperties.setProperty(WOVariables.NETWORK_FRAMEWORKS, "C:\\Apple\\Network\\Library\\Frameworks");
+      this.wolipsProperties.setProperty(WOVariables.APPS_ROOT, nextRoot + "\\Applications");
+      this.wolipsProperties.setProperty(WOVariables.BOOTSTRAP_JAR_KEY, nextRoot + "\\Library\\Application\\wotaskd.woa\\WOBootstrap.jar");
+      this.wolipsProperties.setProperty(WOVariables.LOCAL_ROOT, nextRoot + "\\Local");
+      this.wolipsProperties.setProperty(WOVariables.LOCAL_FRAMEWORKS, nextRoot + "\\Local\\Library\\Frameworks");
+      this.wolipsProperties.setProperty(WOVariables.SYSTEM_ROOT, nextRoot);
+      this.wolipsProperties.setProperty(WOVariables.SYSTEM_FRAMEWORKS, nextRoot + "\\Library\\Frameworks");
+      this.wolipsProperties.setProperty(WOVariables.NETWORK_ROOT, nextRoot + "\\Network");
+      this.wolipsProperties.setProperty(WOVariables.NETWORK_FRAMEWORKS, nextRoot + "\\Network\\Library\\Frameworks");
       this.wolipsProperties.setProperty(WOVariables.USER_ROOT, System.getProperty("user.home"));
       this.wolipsProperties.setProperty(WOVariables.USER_FRAMEWORKS, System.getProperty("user.home") + "\\Library\\Frameworks");
-      this.wolipsProperties.setProperty(WOVariables.WEBOBJECTS_EXTENSIONS, "C:\\Apple\\Extensions");
+      this.wolipsProperties.setProperty(WOVariables.WEBOBJECTS_EXTENSIONS, nextRoot + "\\Extensions");
     }
     else {
       this.wolipsProperties.setProperty(WOVariables.API_ROOT_KEY, "/Developer/ADC%20Reference%20Library/documentation/WebObjects/Reference/API/");
