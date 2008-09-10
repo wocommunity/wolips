@@ -165,25 +165,25 @@ public abstract class DependencyOrdering<T extends Dependency> {
         // instance /Library/Frameworks/WOOgnl.framework AND WOOgnl project.  We
         // want the project to win.
         else if (!projectFrameworkNames.contains(frameworkName)) {
-          System.out.println("DependencyOrdering.orderDependencies: " + dependency.getLocation());
+          //System.out.println("DependencyOrdering.orderDependencies: " + dependency.getLocation());
           if (dependency.isAppleProvided()) {
-            System.out.println("DependencyOrdering.orderDependencies:   is apple");
+            //System.out.println("DependencyOrdering.orderDependencies:   is apple");
             addDependencies(dependency, frameworkName, appleDeps, processedDeps);
           }
           else if (dependency.isFrameworkJar()) {
-            System.out.println("DependencyOrdering.orderDependencies:   is framework jar");
+            //System.out.println("DependencyOrdering.orderDependencies:   is framework jar");
             addDependencies(dependency, frameworkName, nonAppleDeps, processedDeps);
           }
           else if (dependency.isBuildProject()) {
-            System.out.println("DependencyOrdering.orderDependencies:   is build project");
+            //System.out.println("DependencyOrdering.orderDependencies:   is build project");
             addDependencies(dependency, frameworkName, nonAppleDeps, processedDeps);
           }
           else if (dependency.isWoa()) {
-            System.out.println("DependencyOrdering.orderDependencies:   is woa");
+            //System.out.println("DependencyOrdering.orderDependencies:   is woa");
             addDependencies(dependency, frameworkName, woaDeps, processedDeps);
           }
           else {
-            System.out.println("DependencyOrdering.orderDependencies:   is other");
+            //System.out.println("DependencyOrdering.orderDependencies:   is other");
             addDependencies(dependency, frameworkName, otherDeps, processedDeps);
           }
         }
@@ -213,10 +213,10 @@ public abstract class DependencyOrdering<T extends Dependency> {
 //			System.out.println("WORuntimeClasspathProvider.resolveClasspath: final = " + entry);
 //		}
     
-    System.out.println("DependencyOrdering.orderDependencies: ordered");
-    for (T dep : sortedDependencies) {
-      System.out.println("DependencyOrdering.orderDependencies:   " + dep.getLocation());
-    }
+    //System.out.println("DependencyOrdering.orderDependencies: ordered");
+    //for (T dep : sortedDependencies) {
+    //  System.out.println("DependencyOrdering.orderDependencies:   " + dep.getLocation());
+    //}
 
     return sortedDependencies;
   }
