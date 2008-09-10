@@ -494,6 +494,9 @@ public class AppFormat extends ProjectFormat {
    * Returns a FilterSet that can be used to build web.xml file.
    */
   public FilterSetCollection webXMLFilter() {
+    //System.out.println("AppFormat.webXMLFilter: appPaths = " + appPaths);
+    //System.out.println("AppFormat.webXMLFilter: frameworkPaths = " + frameworkPaths);
+    //System.out.println("AppFormat.webXMLFilter: otherClasspaths = " + otherClasspaths);
     FilterSet filter = new FilterSet();
     String WEBINFROOT = "WEBINFROOT";
     String paths = "";
