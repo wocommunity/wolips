@@ -98,6 +98,10 @@
 			<lib dir="Libraries">
 				<include name="*.jar" />
 			</lib>
+			
+			<otherclasspath dir="${wo.extensions}">
+				<include name="*.jar" />
+			</otherclasspath>
 		</woapplication>
 	</target>
 	
