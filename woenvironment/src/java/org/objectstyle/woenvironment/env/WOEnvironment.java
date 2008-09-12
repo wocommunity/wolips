@@ -117,7 +117,7 @@ public final class WOEnvironment {
         bootstrapJar = null;
       }
     }
-    return null;
+    return bootstrapJar;
   }
 
   public boolean variablesConfigured() {
