@@ -56,9 +56,14 @@
   <target name="package" unless="servletDeployment">
     <tar destfile="${dest.dir}/${build.app.name}-Application.tar.gz"
         compression="gzip"
-        basedir="${dest.dir}"
-        longfile="gnu"
-        includes="${build.app.name}.woa/**">
+        longfile="gnu">
+      <tarfileset dir="${dest.dir}" mode="750">
+        <include name="${build.app.name}.woa/${build.app.name}"/>
+      </tarfileset>
+      <tarfileset dir="${dest.dir}">
+        <exclude name="${build.app.name}.woa/${build.app.name}"/>
+        <include name="${build.app.name}.woa/**"/>
+      </tarfileset>
     </tar>
     <tar destfile="${dest.dir}/${build.app.name}-WebServerResources.tar.gz"
         compression="gzip"
