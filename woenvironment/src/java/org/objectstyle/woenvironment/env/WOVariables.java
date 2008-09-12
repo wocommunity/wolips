@@ -105,15 +105,11 @@ public class WOVariables {
 
   private File wolipsPropertiesFile;
 
-  private Environment environment;
-
-  public WOVariables(Environment environment, WOVariables variables, Map<Object, Object> existingProperties) {
-    this.environment = environment;
+  public WOVariables(WOVariables variables, Map<Object, Object> existingProperties) {
     this.init(variables, existingProperties);
   }
   
-  public WOVariables(Environment environment, Map<Object, Object> existingProperties) {
-    this.environment = environment;
+  public WOVariables(Map<Object, Object> existingProperties) {
     this.init(null, existingProperties);
   }
 
@@ -127,7 +123,7 @@ public class WOVariables {
         this.wolipsPropertiesFile = new File(wobuildPropertiesPath);
       }
       if (!isValidWOlipsPropertiesFile()) {
-        wobuildPropertiesPath = this.environment.getEnvVars().getProperty(WOVariables.WOLIPS_PROPERTIES);
+        wobuildPropertiesPath = System.getenv(WOVariables.WOLIPS_PROPERTIES);
         if (wobuildPropertiesPath != null) {
           this.wolipsPropertiesFile = new File(wobuildPropertiesPath);
         }
@@ -138,7 +134,7 @@ public class WOVariables {
           this.wolipsPropertiesFile = new File(System.getenv("APPDATA") + "\\WOLips\\" + WOVariables.WOLIPS_PROPERTIES_FILE_NAME);
         }
         else {
-          this.wolipsPropertiesFile = new File(this.environment.userHome(), "Library/Application Support/WOLips/" + WOVariables.WOLIPS_PROPERTIES_FILE_NAME);
+          this.wolipsPropertiesFile = new File(userHomeFolder(), "Library/Application Support/WOLips/" + WOVariables.WOLIPS_PROPERTIES_FILE_NAME);
         }
       }
   
@@ -281,6 +277,22 @@ public class WOVariables {
    */
   public String referenceApi() {
     return this.wolipsProperties.getProperty(WOVariables.API_ROOT_KEY);
+  }
+
+  /**
+   * Returns the home directory for the current user.
+   * 
+   * @return
+   */
+  public String userHomeFolder() {
+    String userHome = System.getProperty("user.home");
+    if (userHome == null) {
+      userHome = System.getenv("USERPROFILE");
+    }
+    if (userHome == null) {
+      System.out.println("WOVariables.userHome: No user home directory found.");
+    }
+    return userHome;
   }
 
   /**

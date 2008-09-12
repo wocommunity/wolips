@@ -66,15 +66,15 @@ import java.util.Map;
  * environment and WOVariables.
  */
 
-public final class WOEnvironment extends Environment {
+public final class WOEnvironment {
   private WOVariables woVariables;
 
   public WOEnvironment(Map<Object, Object> existingProperties) {
-    this.woVariables = new WOVariables(this, existingProperties);
+    this.woVariables = new WOVariables(existingProperties);
   }
   
   public WOEnvironment(WOVariables variables, Map<Object, Object> existingProperties) {
-    this.woVariables = new WOVariables(this, variables, existingProperties);
+    this.woVariables = new WOVariables(variables, existingProperties);
   }
 
   /**
