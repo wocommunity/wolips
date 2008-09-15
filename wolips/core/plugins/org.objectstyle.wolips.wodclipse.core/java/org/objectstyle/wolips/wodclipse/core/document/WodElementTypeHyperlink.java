@@ -51,9 +51,11 @@ public class WodElementTypeHyperlink implements IHyperlink {
         if (element != null) {
           JavaUI.revealInEditor(JavaUI.openInEditor(element), element);
           LocalizedComponentsLocateResult componentsLocateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(element.getResource());
-          IFile wodFile = componentsLocateResults.getFirstWodFile();
-          if (wodFile != null) {
-            WorkbenchUtilitiesPlugin.open(wodFile, "org.objectstyle.wolips.componenteditor.ComponentEditor");
+          if (componentsLocateResults != null) {
+            IFile wodFile = componentsLocateResults.getFirstWodFile();
+            if (wodFile != null) {
+              WorkbenchUtilitiesPlugin.open(wodFile, "org.objectstyle.wolips.componenteditor.ComponentEditor");
+            }
           }
         }
       }
