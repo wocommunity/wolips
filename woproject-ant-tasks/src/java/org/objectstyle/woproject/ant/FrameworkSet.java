@@ -231,8 +231,10 @@ public class FrameworkSet extends FileSet {
       try {
         List<ExternalFolderFramework> frameworks = getEclipseFrameworks();
         for (ExternalFolderFramework framework : frameworks) {
-          NameEntry frameworkInclude = createInclude();
-          frameworkInclude.setName(framework.getFrameworkFolder().getName());
+          if (framework.getRoot() == root) {
+            NameEntry frameworkInclude = createInclude();
+            frameworkInclude.setName(framework.getFrameworkFolder().getName());
+          }
         }
 
         if (frameworks.isEmpty()) {
