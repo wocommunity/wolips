@@ -449,10 +449,12 @@ public class CreateRelationshipDialog extends Dialog implements SelectionListene
 		_inverseFKNameText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				String newInverseFKName = ((Text)e.widget).getText();
-				String newInverseFKColumnName = _destinationEntity.getModel().getAttributeNamingConvention().format(newInverseFKName);
+				if (_destinationEntity != null) {
+					String newInverseFKColumnName = _destinationEntity.getModel().getAttributeNamingConvention().format(newInverseFKName);
 					//NameSyncUtils.newDependentName(_oldInverseFKName, newInverseFKName, _inverseFKColumnNameText.getText(), null);
-				_inverseFKColumnNameText.setText(newInverseFKColumnName);
-				_oldInverseFKName = newInverseFKName;
+					_inverseFKColumnNameText.setText(newInverseFKColumnName);
+					_oldInverseFKName = newInverseFKName;
+				}
 			}
 		});
 
