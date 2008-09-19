@@ -5,8 +5,12 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.ITypeParameter;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.Signature;
+import org.objectstyle.wolips.baseforplugins.util.ArrayUtilities;
+import org.objectstyle.wolips.baseforplugins.util.StringUtilities;
+import org.objectstyle.wolips.baseforplugins.util.StringUtils;
 
 public class BindingValueKey implements Comparable<BindingValueKey> {
   private String _bindingName;
@@ -104,29 +108,30 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
   protected void ensureNextTypeInfoLoaded() throws JavaModelException {
     if (_nextType == null) {
       String nextTypeName = getNextTypeName();
-      // MS: Primitives have a return type of "I" or "C" ... Just skip them because they won't resolve.
       if (nextTypeName == null) {
         _nextType = null;
       }
       else if (nextTypeName != null && nextTypeName.length() == 0) {
         _nextType = null;
       }
-      else if (nextTypeName != null && nextTypeName.matches("^\\[{0,1}Q.;$")) {
-        _nextType = null;
-      }
-      else {
+      else if (nextTypeName != null) {
         IType declaringType = getDeclaringType();
-//        String[] typeArguments = Signature.getTypeArguments(nextTypeName);
-//        if (typeArguments.length == 1) {
-//          if (typeArguments[0].length() == "QK;".length()) {
-//            // don't even bother with pure parameterized type like NSArray<K> for now ..
-//          }
-//          else {
-//            _nextTypeArgument = _cache.getTypeForNameInType(typeArguments[0], declaringType);
-//          }
-//        }
-        
-        String nextTypeNameErasure = Signature.getTypeErasure(nextTypeName);
+        for (String param : declaringType.getTypeParameterSignatures()) {
+    		String n = Signature.getSignatureSimpleName(nextTypeName);
+    		String p = Signature.getTypeVariable(param);
+    		if (n.equals(p)) {
+    			/* XXX: Q - This is a hack, I don't like it, but it's better than no 
+    			 * validation at all. Erasure resolution assumes an erased type of Object, 
+    			 * which isn't correct but will have to do for now.
+    			 * There is no way to determining the actual declared generic type without 
+    			 * refactoring the caching behaviour as well as passing in the declaring type, 
+    			 * which would be the preferred solution to this problem.
+    			 */
+    			nextTypeName = "QObject;";
+    			break;
+    		}
+    	}
+        String nextTypeNameErasure = Signature.getTypeErasure(nextTypeName);    	
         _nextType = _cache.getTypeForNameInType(nextTypeNameErasure, declaringType);
       }
     }
