@@ -18,6 +18,7 @@
 #elseif ($attribute.javaClassName == "Boolean")${migrationTableName}.newIntBooleanColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.javaClassName == "NSTimestamp")${migrationTableName}.newTimestampColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.javaClassName == "NSData")${migrationTableName}.newBlobColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
+#elseif ($attribute.javaClassName == "ERXKeyGlobalID")${migrationTableName}.newStringColumn("${attribute.columnName}", ${attribute.width}, ${attribute.sqlGenerationAllowsNull});
 #else FIX: // Unable to create a migration for ${attribute.name} (Java Class Name: ${attribute.javaClassName})
 #end
 #end
