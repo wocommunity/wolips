@@ -93,6 +93,11 @@ public class JNDIConnectionDictionarySection extends Composite implements IConne
 		super(parent, style);
 		setLayout(new GridLayout(2, false));
 		setBackground(parent.getBackground());
+
+		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.URL), SWT.NONE);
+		_serverUrlText = new Text(this, SWT.BORDER);
+		_serverUrlText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
 		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.USERNAME), SWT.NONE);
 		_usernameText = new Text(this, SWT.BORDER);
 		_usernameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -106,10 +111,6 @@ public class JNDIConnectionDictionarySection extends Composite implements IConne
 		_authenticationMethodComboViewer.setContentProvider(new AuthenticationMethodContentProvider());
 		_authenticationMethodComboViewer.setLabelProvider(new StringLabelProvider());
 		_authenticationMethodComboViewer.getCombo().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.URL), SWT.NONE);
-		_serverUrlText = new Text(this, SWT.BORDER);
-		_serverUrlText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.TIMEOUT), SWT.NONE);
 		_timeoutText = new Text(this, SWT.BORDER);
