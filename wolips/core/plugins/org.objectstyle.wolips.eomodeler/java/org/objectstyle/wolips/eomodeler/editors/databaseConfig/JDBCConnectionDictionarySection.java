@@ -80,6 +80,10 @@ public class JDBCConnectionDictionarySection extends Composite implements IConne
 		super(parent, style);
 		setLayout(new GridLayout(2, false));
 		setBackground(parent.getBackground());
+		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.URL), SWT.NONE);
+		_urlText = new Text(this, SWT.BORDER);
+		_urlText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
 		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.USERNAME), SWT.NONE);
 		_usernameText = new Text(this, SWT.BORDER);
 		_usernameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -87,10 +91,6 @@ public class JDBCConnectionDictionarySection extends Composite implements IConne
 		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.PASSWORD), SWT.NONE);
 		_passwordText = new Text(this, SWT.BORDER | SWT.PASSWORD);
 		_passwordText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.URL), SWT.NONE);
-		_urlText = new Text(this, SWT.BORDER);
-		_urlText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.DRIVER), SWT.NONE);
 		_driverText = new Text(this, SWT.BORDER);
