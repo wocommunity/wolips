@@ -185,6 +185,18 @@ public class EclipseProjectEOModelGroupFactory extends AbstractManifestEOModelGr
 			} else if ("con".equals(kind) && path != null && path.startsWith("org.objectstyle.wolips.WO_CLASSPATH/")) {
 				String[] frameworkNames = path.split("/");
 				loadFrameworks(frameworkNames, searchFolders, visitedProjects, env);
+			} else if ("con".equals(kind) && path != null && path.startsWith("WOFramework/")) {
+				String frameworkName = path.substring(path.indexOf("/") + 1);
+				if (workspaceFolder == null) {
+					workspaceFolder = getWorkspaceFolder(eclipseProjectFolder);
+				}
+				File referencedProjectFolder = getProjectFolder(workspaceFolder, frameworkName).getCanonicalFile();
+				if (referencedProjectFolder.exists()) {
+					processEclipseProject(referencedProjectFolder, searchFolders, visitedProjects, env);
+				}
+				else {
+					loadFrameworks(new String[] { frameworkName }, searchFolders, visitedProjects, env);
+				}
 			}
 		}
 	}
