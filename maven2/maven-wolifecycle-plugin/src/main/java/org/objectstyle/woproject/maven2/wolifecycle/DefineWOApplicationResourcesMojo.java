@@ -213,7 +213,7 @@ public class DefineWOApplicationResourcesMojo extends AbstractDefineResourcesMoj
 			File jarFile = artifact.getFile();
 
 			if (!isArtifactDeployed(jarFile)) {
-				getLog().warn("Skipping artifact: " + artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getVersion() + " (not installed in the local repository)");
+				getLog().warn("Skipping artifact: " + artifactDescription(artifact) + " (not installed in the local repository)");
 
 				continue;
 			}
@@ -233,10 +233,10 @@ public class DefineWOApplicationResourcesMojo extends AbstractDefineResourcesMoj
 
 						String prefix = "WebServerResources";
 
-						File frameworksFolder = new File(getBuildDirectory(), File.separator + this.getProject().getArtifactId() + "-" + this.getProject().getVersion() + ".woa" + File.separator + "Contents" + File.separator + "Frameworks" + File.separator);
+						File frameworksFolder = getFrameworksFolder();
 
 						if (jarEntryName != null && jarEntryName.length() > prefix.length() && jarEntryName.startsWith(prefix)) {
-							File destinationFolder = new File(frameworksFolder, jarFile.getName() + ".framework");
+							File destinationFolder = new File(frameworksFolder, artifact.getArtifactId() + ".framework");
 
 							this.copyJarEntryToFile(jarFile.getAbsolutePath(), destinationFolder, jarEntry);
 
@@ -251,6 +251,10 @@ public class DefineWOApplicationResourcesMojo extends AbstractDefineResourcesMoj
 				throw new MojoExecutionException("Could not open jar ('" + jarFile.getName() + "') input stream", e);
 			}
 		}
+	}
+
+	protected File getFrameworksFolder() {
+		return new File(getBuildDirectory(), File.separator + getFinalName() + getClassifierAsString() + ".woa" + File.separator + "Contents" + File.separator + "Frameworks" + File.separator);
 	}
 
 	@Override

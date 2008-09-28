@@ -69,6 +69,21 @@ public abstract class AbstractWOMojo extends AbstractMojo {
 	public final static String MAVEN_WEBOBJECTS_GROUP_ID = "com.webobjects";
 
 	/**
+	 * @parameter expression="${project.build.directory}"
+	 * @required
+	 * @readonly
+	 */
+	private File buildDirectory;
+
+	/**
+	 * Classifier to add to the artifact generated. If given, the artifact will
+	 * be an attachment instead.
+	 * 
+	 * @parameter
+	 */
+	private String classifier;
+
+	/**
 	 * The set of dependencies required by the project
 	 * 
 	 * @parameter default-value="${project.dependencies}"
@@ -76,6 +91,14 @@ public abstract class AbstractWOMojo extends AbstractMojo {
 	 * @readonly
 	 */
 	private List<Artifact> dependencies;
+
+	/**
+	 * The name of the generated package (framework or application).
+	 * 
+	 * @parameter expression="${project.build.finalName}"
+	 * @required
+	 */
+	private String finalName;
 
 	/**
 	 * @parameter expression="${localRepository}"
@@ -93,13 +116,6 @@ public abstract class AbstractWOMojo extends AbstractMojo {
 	 */
 	private MavenProject project;
 
-	/**
-	 * @parameter expression="${project.build.directory}"
-	 * @required
-	 * @readonly
-	 */
-	private File buildDirectory;
-
 	public AbstractWOMojo() {
 		super();
 	}
@@ -108,8 +124,21 @@ public abstract class AbstractWOMojo extends AbstractMojo {
 		return buildDirectory;
 	}
 
+	public String getClassifier() {
+
+		return classifier;
+	}
+
+	protected String getClassifierAsString() {
+		return getClassifier() == null ? "" : "-" + getClassifier();
+	}
+
 	public List<Artifact> getDependencies() {
 		return dependencies;
+	}
+
+	public String getFinalName() {
+		return finalName;
 	}
 
 	public ArtifactRepository getLocalRepository() {
@@ -148,5 +177,13 @@ public abstract class AbstractWOMojo extends AbstractMojo {
 
 	public void setBuildDirectory(final File buildDirectory) {
 		this.buildDirectory = buildDirectory;
+	}
+
+	public void setClassifier(final String classifier) {
+		this.classifier = classifier;
+	}
+
+	public void setFinalName(final String finalName) {
+		this.finalName = finalName;
 	}
 }

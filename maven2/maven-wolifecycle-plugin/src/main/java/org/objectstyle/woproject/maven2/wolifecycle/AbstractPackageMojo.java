@@ -13,22 +13,6 @@ import org.apache.maven.project.MavenProjectHelper;
 
 public abstract class AbstractPackageMojo extends AbstractWOMojo {
 	/**
-	 * Classifier to add to the artifact generated. If given, the artifact will
-	 * be an attachment instead.
-	 * 
-	 * @parameter
-	 */
-	private String classifier;
-
-	/**
-	 * The name of the generated package (framework or application).
-	 * 
-	 * @parameter expression="${project.build.finalName}"
-	 * @required
-	 */
-	private String finalName;
-
-	/**
 	 * @component
 	 */
 	private MavenProjectHelper projectHelper;
@@ -70,29 +54,8 @@ public abstract class AbstractPackageMojo extends AbstractWOMojo {
 		return new File(getBuildDirectory(), getFinalName() + getClassifierAsString() + "." + getProductExtension());
 	}
 
-	public String getClassifier() {
-
-		return classifier;
-	}
-
-	protected String getClassifierAsString() {
-		return getClassifier() == null ? "" : "-" + getClassifier();
-	}
-
-	public String getFinalName() {
-		return finalName;
-	}
-
 	public MavenProjectHelper getProjectHelper() {
 		return projectHelper;
-	}
-
-	public void setClassifier(final String classifier) {
-		this.classifier = classifier;
-	}
-
-	public void setFinalName(final String finalName) {
-		this.finalName = finalName;
 	}
 
 	public void setProjectHelper(final MavenProjectHelper projectHelper) {
