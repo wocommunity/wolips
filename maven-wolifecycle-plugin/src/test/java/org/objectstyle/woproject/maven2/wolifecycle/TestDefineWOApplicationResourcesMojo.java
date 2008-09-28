@@ -55,13 +55,56 @@
  */
 package org.objectstyle.woproject.maven2.wolifecycle;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.containsString;
 
+import java.io.File;
+
+import org.apache.maven.plugin.testing.AbstractMojoTestCase;
+import org.junit.Before;
 import org.junit.Test;
 
-public class TestDefineWOApplicationResourcesMojo {
+public class TestDefineWOApplicationResourcesMojo extends AbstractMojoTestCase {
+	private static final File TEST_POM = new File(getBasedir(), "src/test/resources/unit/wolifecycle-basic-test/pom.xml");
+
+	DefineWOApplicationResourcesMojo mojo;
+
+	@Override
+	@Before
+	protected void setUp() throws Exception {
+		super.setUp();
+
+		mojo = (DefineWOApplicationResourcesMojo) lookupMojo("define-woapplication-resources", TEST_POM);
+	}
+
 	@Test
-	public void normalizedFilePath() throws Exception {
+	public void testDefaultFrameworksFolder() throws Exception {
+		mojo.setClassifier(null);
+
+		File folder = mojo.getFrameworksFolder();
+
+		assertThat(folder.getAbsolutePath(), containsString("foo-1.0-SNAPSHOT.woa/Contents/Frameworks"));
+	}
+
+	@Test
+	public void testFrameworksFolderWithClassifier() throws Exception {
+		File folder = mojo.getFrameworksFolder();
+
+		assertThat(folder.getAbsolutePath(), containsString("foo-1.0-SNAPSHOT-someClassifier.woa/Contents/Frameworks"));
+	}
+
+	@Test
+	public void testFrameworksFolderWithFinalName() throws Exception {
+		mojo.setFinalName("foo-bar-name");
+		mojo.setClassifier(null);
+
+		File folder = mojo.getFrameworksFolder();
+
+		assertThat(folder.getAbsolutePath(), containsString("foo-bar-name.woa/Contents/Frameworks"));
+	}
+
+	@Test
+	public void testNormalizedFilePath() throws Exception {
 		String path = "C:\\Documents and Settings\\User\\.m2\\repository";
 
 		String result = DefineWOApplicationResourcesMojo.normalizedPath(path);

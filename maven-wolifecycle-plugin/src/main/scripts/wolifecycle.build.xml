@@ -10,13 +10,14 @@
 	</target>
 
 	<target name="test-pom" depends="initTaskDefs">
-		
+
 		<artifact:pom file="pom.xml" id="pom.xml.project" />
 		<!--xmlproperty file="pom.xml" prefix="pom.xml" keepRoot="true" / -->
-			
-		<echo>Artifact ID = ${pom.xml.project.artifactId}</echo>
-		<echo>Artifact version = ${pom.xml.project.version}</echo>
-		
+
+		<echo>Artifact ID: ${pom.xml.project.artifactId}</echo>
+		<echo>Artifact Version: ${pom.xml.project.version}</echo>
+		<echo>Artifact Final Name: ${finalName}</echo>
+
 	</target>
 
 	<!-- ================================================================== -->
@@ -25,42 +26,29 @@
 	<target name="woapplicationproperties" depends="test-pom">
 		<property file="build.properties" />
 		<property file="target/wobuild.properties" />
-		
 
 		<property file="target/classpath.properties" />
-		<echo>dependencies.lib ${dependencies.lib}</echo>
-		<!-- property file="${user.home}${file.separator}Library${file.separator}wobuild.properties" />
-		<condition property="wobuild.properties.check.failed">
-			<not>
-				<and>
-					<isset property="wo.wosystemroot" />
-					<isset property="wo.wolocalroot" />
-				</and>
-			</not>
-		</condition>
-		<fail message="Could not find ${user.home}${file.separator}Library${file.separator}wobuild.properties." if="wobuild.properties.check.failed" / -->
+
 		<condition property="dependencies.lib.check.failed">
 			<not>
 				<isset property="dependencies.lib" />
 			</not>
 		</condition>
-		<fail message="dependencies.lib is not set" if="dependencies.lib.check.failed" />
+		<fail message="The dependencies.lib property is not set" if="dependencies.lib.check.failed" />
 	</target>
 
 	<target name="build-woapplication" depends="woapplicationproperties">
-		<echo>dependencies.lib ${dependencies.lib}</echo>
-		
-		 <delete>
-		    <fileset dir="target/${pom.xml.project.artifactId}-${pom.xml.project.version}.woa" includes="**/*.jar">
+		 <!-- <delete>
+		    <fileset dir="target/${finalName}.woa" includes="**/*.jar">
 				<patternset>
 					<excludesfile name="target/classpath.txt" />
 				</patternset>
 		    </fileset>
-		  </delete>
-		
-		
-		<woapplication name="${pom.xml.project.artifactId}-${pom.xml.project.version}"
-			frameworksBaseURL="/WebObjects/${pom.xml.project.artifactId}-${pom.xml.project.version}.woa/Contents/Frameworks"
+		  </delete> -->
+
+
+		<woapplication name="${finalName}"
+			frameworksBaseURL="/WebObjects/${finalName}.woa/Contents/Frameworks"
 			startupScriptName="${pom.xml.project.artifactId}"
 			stdFrameworks="false" destDir="target"
 			customInfoPListContent="${customInfoPListContent}"
@@ -74,34 +62,34 @@
 			</lib>
 		</woapplication>
 
-		<tar tarfile="target/${pom.xml.project.artifactId}-${pom.xml.project.version}.woapplication.tar" longfile="gnu">
-			<tarfileset dir="target/${pom.xml.project.artifactId}-${pom.xml.project.version}.woa/"
-				prefix="${pom.xml.project.artifactId}-${pom.xml.project.version}.woa/"
+		<tar tarfile="target/${finalName}.woapplication.tar" longfile="gnu">
+			<tarfileset dir="target/${finalName}.woa/"
+				prefix="${finalName}.woa/"
 						preserveLeadingSlashes="true">
 				<!-- exclude name="**/Contents/WebServerResources/**"/>
 				<exclude name="**/Contents/Frameworks/**"/ -->
 			</tarfileset>
 		</tar>
 
-		<gzip src="target/${pom.xml.project.artifactId}-${pom.xml.project.version}.woapplication.tar"
-			  zipfile="target/${pom.xml.project.artifactId}-${pom.xml.project.version}.woapplication.tar.gz"/>
-		<delete file="target/${pom.xml.project.artifactId}-${pom.xml.project.version}.woapplication.tar"/>
+		<gzip src="target/${finalName}.woapplication.tar"
+			  zipfile="target/${finalName}.woapplication.tar.gz"/>
+		<delete file="target/${finalName}.woapplication.tar"/>
 
 		<!-- force WebServerResourcesDir -->
-		
-		<mkdir dir="target/${pom.xml.project.artifactId}-${pom.xml.project.version}.woa/Contents/WebServerResources"/>
-		
-		<tar tarfile="target/${pom.xml.project.artifactId}-${pom.xml.project.version}.wowebserverresources.tar" longfile="gnu">
-			<tarfileset dir="target/${pom.xml.project.artifactId}-${pom.xml.project.version}.woa/"
-				prefix="${pom.xml.project.artifactId}-${pom.xml.project.version}.woa/"
+
+		<mkdir dir="target/${finalName}.woa/Contents/WebServerResources"/>
+
+		<tar tarfile="target/${finalName}.wowebserverresources.tar" longfile="gnu">
+			<tarfileset dir="target/${finalName}.woa/"
+				prefix="${finalName}.woa/"
 						preserveLeadingSlashes="true">
 				<include name="**/WebServerResources/**"/>
 			</tarfileset>
 		</tar>
 
-		<gzip src="target/${pom.xml.project.artifactId}-${pom.xml.project.version}.wowebserverresources.tar"
-			  zipfile="target/${pom.xml.project.artifactId}-${pom.xml.project.version}.wowebserverresources.tar.gz"/>
-		<delete file="target/${pom.xml.project.artifactId}-${pom.xml.project.version}.wowebserverresources.tar"/>
+		<gzip src="target/${finalName}.wowebserverresources.tar"
+			  zipfile="target/${finalName}.wowebserverresources.tar.gz"/>
+		<delete file="target/${finalName}.wowebserverresources.tar"/>
 	</target>
 
 	<!-- ================================================================== -->
@@ -125,7 +113,7 @@
 			<classes dir="target/classes">
 			</classes>
 		</woframework>
-		<zip zipfile="target/${pom.xml.project.artifactId}-${pom.xml.project.version}.jar" roundup="false">
+		<zip zipfile="target/${finalName}.jar" roundup="false">
 			<fileset dir="target/${pom.xml.project.artifactId}.framework">
 				<exclude name="**/Java/**"/>
 			</fileset>
