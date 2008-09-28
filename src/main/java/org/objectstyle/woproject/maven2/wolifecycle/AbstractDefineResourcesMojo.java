@@ -19,7 +19,7 @@ public abstract class AbstractDefineResourcesMojo extends AbstractWOMojo {
 	 *            The collection of available resources
 	 * @param resourceDirectory
 	 *            The directory used on search
-	 * @return Returns the resource found or a new one if no one caould be found
+	 * @return Returns the resource found or a new one if no one could be found
 	 */
 	static Resource findOrCreateResource(final List<Resource> resources, final String resourceDirectory) {
 		if (resourceDirectory == null) {
@@ -99,9 +99,7 @@ public abstract class AbstractDefineResourcesMojo extends AbstractWOMojo {
 
 		resource.addExclude("*.lproj/**");
 
-		Boolean shouldFlattenResources = BooleanUtils.toBooleanDefaultIfNull(flattenResources(), false);
-
-		if (shouldFlattenResources) {
+		if (flattenResources()) {
 			resource.addInclude("*");
 			resource.addInclude("*.wo/**");
 			resource.addInclude("*.eomodeld/**");
@@ -136,7 +134,7 @@ public abstract class AbstractDefineResourcesMojo extends AbstractWOMojo {
 				continue;
 			}
 
-			if (shouldFlattenResources && file.isDirectory() && !filename.endsWith(".wo") && !filename.endsWith(".eomodeld")) {
+			if (includeResourcesRecursively(file)) {
 				List<Resource> additionalResources = createResources(directory + File.separator + filename, targetPath);
 
 				resources.addAll(additionalResources);
@@ -332,18 +330,12 @@ public abstract class AbstractDefineResourcesMojo extends AbstractWOMojo {
 		}
 	}
 
-	protected Boolean flattenResources() {
-		return flattenResources;
+	public Boolean flattenResources() {
+		return BooleanUtils.toBooleanDefaultIfNull(flattenResources, false);
 	}
 
-	private String getFullTargetPath(final String targetPath) {
-		String fullTargetPath = "../" + getProject().getArtifactId();
-
-		if (this.includesVersionInArtifactName()) {
-			fullTargetPath = fullTargetPath + "-" + this.getProject().getVersion();
-		}
-
-		fullTargetPath = fullTargetPath + "." + getProductExtension();
+	String getFullTargetPath(final String targetPath) {
+		String fullTargetPath = "../" + getFinalName() + getClassifierAsString() + "." + getProductExtension();
 
 		if (this.hasContentsFolder()) {
 			fullTargetPath = fullTargetPath + File.separator + "Contents";
@@ -374,6 +366,12 @@ public abstract class AbstractDefineResourcesMojo extends AbstractWOMojo {
 
 	public abstract boolean hasContentsFolder();
 
+	boolean includeResourcesRecursively(final File file) {
+		String filename = file.getName();
+
+		return flattenResources() && file.isDirectory() && !file.isHidden() && !filename.endsWith(".wo") && !filename.endsWith(".eomodeld");
+	}
+
 	public abstract boolean includesVersionInArtifactName();
 
 	private List<String> readPatternset(final String patternsetFileName) {
@@ -401,4 +399,8 @@ public abstract class AbstractDefineResourcesMojo extends AbstractWOMojo {
 	}
 
 	protected abstract Boolean readPatternsets();
+
+	public void setFlattingResources(final Boolean flattenResources) {
+		this.flattenResources = flattenResources;
+	}
 }
