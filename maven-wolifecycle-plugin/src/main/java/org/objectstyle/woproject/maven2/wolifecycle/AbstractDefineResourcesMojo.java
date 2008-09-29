@@ -335,13 +335,23 @@ public abstract class AbstractDefineResourcesMojo extends AbstractWOMojo {
 	}
 
 	String getFullTargetPath(final String targetPath) {
-		String fullTargetPath = "../" + getFinalName() + getClassifierAsString() + "." + getProductExtension();
+		StringBuilder builder = new StringBuilder();
 
-		if (this.hasContentsFolder()) {
-			fullTargetPath = fullTargetPath + File.separator + "Contents";
+		builder.append("../");
+
+		if (includesVersionInArtifactName()) {
+			builder.append(getFinalName()).append(getClassifierAsString());
+		} else {
+			builder.append(getProject().getArtifactId());
 		}
 
-		return fullTargetPath + File.separator + targetPath;
+		builder.append(".").append(getProductExtension());
+
+		if (this.hasContentsFolder()) {
+			builder.append(File.separator).append("Contents");
+		}
+
+		return builder.append(File.separator).append(targetPath).toString();
 	}
 
 	private List<String> getResourcesExclude() {
