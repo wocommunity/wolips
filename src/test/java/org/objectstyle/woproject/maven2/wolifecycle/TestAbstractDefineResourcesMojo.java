@@ -106,6 +106,17 @@ public class TestAbstractDefineResourcesMojo extends AbstractMojoTestCase {
 	}
 
 	@Test
+	public void testFullTargetDirectoryNotIncludingVersion() throws Exception {
+		mojo = Mockito.spy(mojo);
+
+		Mockito.stub(mojo.includesVersionInArtifactName()).toReturn(false);
+
+		String path = mojo.getFullTargetPath("folder");
+
+		assertThat(path, is("../bar.woa/Contents/folder"));
+	}
+
+	@Test
 	public void testFullTargetPathWithClassifier() throws Exception {
 		String path = mojo.getFullTargetPath("test");
 
