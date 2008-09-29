@@ -393,7 +393,12 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		} else if ("NSString".equals(className)) {
 			className = "java.lang.String";
 		} else if ("NSCalendarDate".equals(className)) {
-			className = "com.webobjects.foundation.NSTimestamp";
+			if (shorten) {
+				className = "NSTimestamp";
+			}
+			else {
+				className = "com.webobjects.foundation.NSTimestamp";
+			}
 		} else if ("NSDecimalNumber".equals(className)) {
 			String valueType = getValueType();
 			if (valueType == null || valueType.length() == 0) {
