@@ -511,7 +511,9 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		myValueClassName = _argumentMap.getString("valueClassName", true);
 		if (myValueClassName == null) {
 			myValueClassName = _convertJavaClassNameToValueClassName(_argumentMap.getString("className", true));
-			_usesClassNameProperty = true;
+			if (myValueClassName != null) {
+				_usesClassNameProperty = true;
+			}
 		}
 		myValueFactoryMethodName = _argumentMap.getString("valueFactoryMethodName", true);
 		myFactoryMethodArgumentType = EOFactoryMethodArgumentType.getFactoryMethodArgumentTypeByID(_argumentMap.getString("factoryMethodArgumentType", true));
