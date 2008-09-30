@@ -156,6 +156,7 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		argument.myValueType = myValueType;
 		argument._usesClassNameProperty = _usesClassNameProperty;
 		argument.myValueClassName = myValueClassName;
+		argument._usesClassNameProperty = _usesClassNameProperty;
 		argument.myValueFactoryMethodName = myValueFactoryMethodName;
 		argument.myFactoryMethodArgumentType = myFactoryMethodArgumentType;
 		argument.myAdaptorValueConversionMethodName = myAdaptorValueConversionMethodName;
@@ -303,7 +304,11 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 			if (getValueFactoryMethodName() != null || getAdaptorValueConversionMethodName() != null) {
 				dataType = EODataType.CUSTOM;
 			} else {
-				dataType = EODataType.getDataTypeByValueClassAndType(getValueClassName(), getValueType());
+				String className = getValueClassName();
+				if (_usesClassNameProperty) {
+					className = _convertJavaClassNameToValueClassName(className);
+				}
+				dataType = EODataType.getDataTypeByValueClassAndType(className, getValueType());
 			}
 			myDataType = dataType;
 		}
@@ -346,7 +351,7 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 			className = null;
 		} else if (className.equals("java.lang.String")) {
 			className = "NSString";
-		} else if (className.equals("java.lang.Number")) {
+		} else if (className.equals("java.lang.Number") || className.equals("java.lang.Integer") || className.equals("java.lang.Long") || className.equals("java.lang.Short") || className.equals("java.lang.Double") || className.equals("java.lang.Float") || className.equals("java.lang.Byte")) {
 			className = "NSNumber";
 		} else if (className.equals("java.math.BigDecimal")) {
 			className = "NSDecimalNumber";
@@ -412,7 +417,7 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		}
 		return className;
 	}
-
+	
 	public String getValueClassName() {
 		return myValueClassName;
 	}
@@ -429,6 +434,9 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		firePropertyChange(AbstractEOArgument.VALUE_CLASS_NAME, oldValueClassName, getValueClassName());
 		if (_updateDataType) {
 			updateDataType(oldDataType);
+		}
+		if (_valueClassName == null) {
+			_usesClassNameProperty = false;
 		}
 	}
 
@@ -547,6 +555,7 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		if (_usesClassNameProperty) {
 			argumentMap.setString("className", getJavaClassName(false), true);
 		} else {
+			argumentMap.remove("className");
 			argumentMap.setString("valueClassName", myValueClassName, true);
 		}
 		argumentMap.setString("valueFactoryMethodName", myValueFactoryMethodName, true);

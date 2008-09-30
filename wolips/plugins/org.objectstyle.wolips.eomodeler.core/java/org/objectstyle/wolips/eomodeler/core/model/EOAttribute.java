@@ -938,6 +938,12 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	public void resolve(Set<EOModelVerificationFailure> _failures) {
 		String prototypeName = getArgumentMap().getString("prototypeName", true);
 		clearCachedPrototype(prototypeName, _failures, false, true);
+
+		// MS: Fix a bug that I introduced where it briefly was accidently setting className for prototyped attributes
+		if (super.getValueClassName() != null && _nullIfPrototyped(AbstractEOArgument.VALUE_CLASS_NAME, getValueClassName()) == null) {
+			setValueClassName(getValueClassName(), false);
+		}
+
 	}
 
 	public void verify(Set<EOModelVerificationFailure> _failures, @SuppressWarnings("unused") VerificationContext verificationContext) {
