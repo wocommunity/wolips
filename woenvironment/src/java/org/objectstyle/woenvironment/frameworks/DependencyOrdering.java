@@ -159,7 +159,9 @@ public abstract class DependencyOrdering<T extends Dependency> {
         String frameworkName = dependencyFramework.get(dependency);
         if (dependency.isProject()) {
           // Don't double-add project deps -- Remove the /bin folder, because the build/App.woa/Contents/Resources/Java version will also be in there
-          //projectDeps.add(dependency);
+          if (!dependency.isWOProject()) {
+            projectDeps.add(dependency);
+          }
         }
         // If the framework was added as a project, don't add it as a /Frameworks
         // folder framework.  This is cleaning up from the case where we got, for
