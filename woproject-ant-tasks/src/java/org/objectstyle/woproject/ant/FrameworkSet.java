@@ -210,8 +210,8 @@ public class FrameworkSet extends FileSet {
         if (path != null && path.startsWith("WOFramework/")) {
           int slashIndex = path.indexOf("/");
           String frameworkName = path.substring(slashIndex + 1);
-          IFramework framework = this.root.getFrameworkWithName(frameworkName);
-          if (framework instanceof ExternalFolderFramework) {
+          IFramework framework = this.frameworkModel.getFrameworkWithName(frameworkName);
+          if (framework instanceof ExternalFolderFramework && framework.getRoot() == this.root) {
             ExternalFolderFramework externalFolderFramework = (ExternalFolderFramework) framework;
             frameworks.add(externalFolderFramework);
           }
@@ -231,10 +231,8 @@ public class FrameworkSet extends FileSet {
       try {
         List<ExternalFolderFramework> frameworks = getEclipseFrameworks();
         for (ExternalFolderFramework framework : frameworks) {
-          if (framework.getRoot() == root) {
-            NameEntry frameworkInclude = createInclude();
-            frameworkInclude.setName(framework.getFrameworkFolder().getName());
-          }
+          NameEntry frameworkInclude = createInclude();
+          frameworkInclude.setName(framework.getFrameworkFolder().getName());
         }
 
         if (frameworks.isEmpty()) {
