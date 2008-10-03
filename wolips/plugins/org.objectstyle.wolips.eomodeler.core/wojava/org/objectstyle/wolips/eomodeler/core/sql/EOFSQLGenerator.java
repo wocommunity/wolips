@@ -202,6 +202,7 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 
 		ensureSingleTableInheritanceParentEntitiesAreIncluded();
 		ensureSingleTableInheritanceChildEntitiesAreIncluded();
+		fixAllowsNullOnSingleTableInheritance();
 		localizeEntities();
 	}
 
@@ -260,6 +261,22 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 		while (entitiesEnum.hasMoreElements()) {
 			EOEntity entity = (EOEntity) entitiesEnum.nextElement();
 			createLocalizedAttributes(entity);
+		}
+	}
+	
+	protected void fixAllowsNullOnSingleTableInheritance() {
+		Enumeration entitiesEnum = new NSArray(_entities).objectEnumerator();
+		while (entitiesEnum.hasMoreElements()) {
+			EOEntity entity = (EOEntity) entitiesEnum.nextElement();
+			if (isSingleTableInheritance(entity)) {
+				Enumeration attributeEnum = entity.attributes().objectEnumerator();
+				while (attributeEnum.hasMoreElements()) {
+					EOAttribute attribute = (EOAttribute) attributeEnum.nextElement();
+					if (!isInherited(attribute)) {
+						attribute.setAllowsNull(true);
+					}
+				}
+			}
 		}
 	}
 
