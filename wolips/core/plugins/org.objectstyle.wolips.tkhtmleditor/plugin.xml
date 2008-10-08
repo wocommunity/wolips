@@ -375,7 +375,7 @@
       <key
             commandId="tk.eclipse.plugin.xmleditor.format"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="CTRL+SHIFT+F"/>
+            sequence="M1+M2+F"/>
    </extension>
    <extension
          point="org.eclipse.ui.editors.annotationTypes">

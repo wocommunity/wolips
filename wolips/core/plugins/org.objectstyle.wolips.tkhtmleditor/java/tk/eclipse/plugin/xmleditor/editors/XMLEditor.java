@@ -18,10 +18,13 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import jp.aonir.fuzzyxml.FuzzyXMLDocType;
 import jp.aonir.fuzzyxml.FuzzyXMLDocument;
 import jp.aonir.fuzzyxml.FuzzyXMLElement;
 import jp.aonir.fuzzyxml.FuzzyXMLNode;
 import jp.aonir.fuzzyxml.FuzzyXMLParser;
+import jp.aonir.fuzzyxml.internal.RenderContext;
+import jp.aonir.fuzzyxml.internal.WOHTMLRenderDelegate;
 
 import org.apache.xerces.parsers.SAXParser;
 import org.eclipse.core.resources.IFile;
@@ -43,6 +46,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
+import org.objectstyle.wolips.wodclipse.core.Activator;
+import org.objectstyle.wolips.wodclipse.core.preferences.PreferenceConstants;
 import org.xml.sax.InputSource;
 
 import tk.eclipse.plugin.htmleditor.HTMLPlugin;
@@ -516,32 +521,61 @@ public class XMLEditor extends HTMLSourceEditor {
 		@Override
     public void run(){
 			try {
-				// Format XML using XSL
-				IEditorInput input = getEditorInput();
-				String charset = System.getProperty("file.encoding");
-				if(input instanceof IFileEditorInput){
-					charset = ((IFileEditorInput)input).getFile().getCharset();
-				}
+			  IDocument xmlDocument = getDocumentProvider().getDocument(getEditorInput());
+			  String xmlString = xmlDocument.get();
+	      FuzzyXMLDocument htmlModel = new FuzzyXMLParser(false, false).parse(xmlString);
+	      FuzzyXMLElement documentElement = htmlModel.getDocumentElement();
+
+	      IPreferenceStore prefs = Activator.getDefault().getPreferenceStore();
+	      RenderContext renderContext = new RenderContext(true);
+	      renderContext.setShowNewlines(true);
+	      renderContext.setIndentSize(prefs.getInt(PreferenceConstants.INDENT_SIZE));
+	      renderContext.setIndentTabs(prefs.getBoolean(PreferenceConstants.INDENT_TABS));
+	      renderContext.setTrim(true);
+	      renderContext.setLowercaseAttributes(prefs.getBoolean(PreferenceConstants.LOWERCASE_ATTRIBUTES));
+	      renderContext.setLowercaseTags(prefs.getBoolean(PreferenceConstants.LOWERCASE_TAGS));
+	      renderContext.setSpacesAroundEquals(prefs.getBoolean(PreferenceConstants.SPACES_AROUND_EQUALS));
+	      renderContext.setSpaceInEmptyTags(true);
+	      renderContext.setAddMissingQuotes(true);
+	      renderContext.setDelegate(new WOHTMLRenderDelegate(prefs.getBoolean(PreferenceConstants.STICKY_WOTAGS)));
+
+	      StringBuffer xmlBuffer = new StringBuffer();
+	      FuzzyXMLDocType docType = htmlModel.getDocumentType();
+	      if (docType != null) {
+	        docType.toXMLString(renderContext, xmlBuffer);
+	      }
+	      for (FuzzyXMLNode node : documentElement.getChildren()) {
+	        node.toXMLString(renderContext, xmlBuffer);
+	        //htmlBuffer.append("\n");
+	      }
+	      xmlDocument.set(xmlBuffer.toString().trim());
+
+//				// Format XML using XSL
+//				IEditorInput input = getEditorInput();
+//				String charset = System.getProperty("file.encoding");
+//				if(input instanceof IFileEditorInput){
+//					charset = ((IFileEditorInput)input).getFile().getCharset();
+//				}
+//				
+//				TransformerFactory transFactory = TransformerFactory.newInstance();
+//				
+//				String xsl = new String(HTMLUtil.readStream(
+//						XMLEditor.class.getResourceAsStream("format.xsl")));
+//				xsl = xsl.replaceAll("\\$\\{charset\\}", charset);
+//				
+//				Source xslSource = new StreamSource(new StringReader(xsl));
+//				Transformer transformer = transFactory.newTransformer(xslSource);
+//				
+//				IDocument doc = getDocumentProvider().getDocument(getEditorInput());
+//				ByteArrayOutputStream out = new ByteArrayOutputStream();
+//				
+//				
+//				Source source = new StreamSource(new StringReader(doc.get()));
+//				Result result = new StreamResult(out);
+//				
+//				transformer.transform(source, result);
 				
-				TransformerFactory transFactory = TransformerFactory.newInstance();
-				
-				String xsl = new String(HTMLUtil.readStream(
-						XMLEditor.class.getResourceAsStream("format.xsl")));
-				xsl = xsl.replaceAll("\\$\\{charset\\}", charset);
-				
-				Source xslSource = new StreamSource(new StringReader(xsl));
-				Transformer transformer = transFactory.newTransformer(xslSource);
-				
-				IDocument doc = getDocumentProvider().getDocument(getEditorInput());
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
-				
-				
-				Source source = new StreamSource(new StringReader(doc.get()));
-				Result result = new StreamResult(out);
-				
-				transformer.transform(source, result);
-				
-				doc.set(new String(out.toByteArray(), charset));
+				//doc.set(new String(out.toByteArray(), charset));
 				
 			} catch(Exception ex){
 				HTMLPlugin.openAlertDialog(ex.toString());
