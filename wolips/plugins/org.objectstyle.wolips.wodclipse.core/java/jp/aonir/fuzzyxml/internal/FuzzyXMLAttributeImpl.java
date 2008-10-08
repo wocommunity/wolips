@@ -135,6 +135,10 @@ public class FuzzyXMLAttributeImpl extends AbstractFuzzyXMLNode implements Fuzzy
 
     xmlBuffer.append(" ");
     String attributeName = FuzzyXMLUtil.escape(getName(), isHTML);
+    String namespace = getNamespace();
+    if (namespace != null && namespace.length() > 0) {
+      attributeName = namespace + ":" + attributeName;
+    }
     if (renderContext.isLowercaseAttributes()) {
       FuzzyXMLNode parentNode = getParentNode();
       boolean inlineTag = (parentNode instanceof FuzzyXMLElement && WodHtmlUtils.isInline(((FuzzyXMLElement)parentNode).getName()));
