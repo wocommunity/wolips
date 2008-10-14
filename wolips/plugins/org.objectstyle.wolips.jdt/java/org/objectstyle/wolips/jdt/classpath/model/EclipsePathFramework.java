@@ -61,11 +61,14 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IClasspathAttribute;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.internal.core.ClasspathEntry;
 import org.objectstyle.woenvironment.frameworks.AbstractFolderFramework;
 import org.objectstyle.woenvironment.frameworks.FrameworkLibrary;
 import org.objectstyle.woenvironment.frameworks.Root;
+import org.objectstyle.wolips.variables.VariablesPlugin;
 
 public class EclipsePathFramework extends AbstractFolderFramework implements IEclipseFramework {
 	public EclipsePathFramework(Root root, File frameworkFolder) {
@@ -86,7 +89,16 @@ public class EclipsePathFramework extends AbstractFolderFramework implements IEc
 			if (sourcePathStr != null) {
 				sourcePath = new Path(sourcePathStr);
 			}
-			IClasspathEntry classpathEntry = JavaCore.newLibraryEntry(jarPath, sourceJarPath, sourcePath, true);
+			String docPathStr = library.getDocPath();
+			IClasspathAttribute[] attributes = ClasspathEntry.NO_EXTRA_ATTRIBUTES;
+			if (docPathStr != null || getName().startsWith("Java")) {
+				if (docPathStr == null) {
+					docPathStr = VariablesPlugin.getDefault().getGlobalVariables().getReferenceApiAsJavaDocCompatibleString();
+				}
+				IClasspathAttribute javadoc = JavaCore.newClasspathAttribute(IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME, docPathStr);
+				attributes = new IClasspathAttribute[]{ javadoc };
+			}
+			IClasspathEntry classpathEntry = JavaCore.newLibraryEntry(jarPath, sourceJarPath, sourcePath, ClasspathEntry.NO_ACCESS_RULES, attributes, true);
 			classpathEntries.add(classpathEntry);
 		}
 		return classpathEntries;
