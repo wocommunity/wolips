@@ -5,11 +5,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.objectstyle.woenvironment.frameworks.Dependency;
+import org.objectstyle.wolips.core.resources.internal.types.project.ProjectAdapter;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 import org.objectstyle.wolips.variables.ProjectVariables;
 import org.objectstyle.wolips.variables.VariablesPlugin;
 
 public class EclipseDependency extends Dependency {
+	@SuppressWarnings("unused")
 	private IProject _project;
 
 	private IRuntimeClasspathEntry _classpathEntry;
@@ -39,12 +41,16 @@ public class EclipseDependency extends Dependency {
 		return getWOJavaArchive() != null;
 	}
 
-	// MS: This is a total hack ... It should use
-	// the WOLips API to framework name.  For most, I think it works
-	// out, and in particular, for Wonder it does. 
 	public String getProjectFrameworkName() {
 		IProject project = (IProject) _classpathEntry.getResource();
-		String frameworkName = project.getName() + ".framework";
+		ProjectAdapter projectAdaptor = (ProjectAdapter)project.getAdapter(ProjectAdapter.class);
+		String frameworkName = null;
+		if (projectAdaptor != null) {
+			frameworkName = projectAdaptor.getBuildProperties().getName() + ".framework";
+		}
+		if (frameworkName == null) {
+			frameworkName = project.getName() + ".framework";
+		}
 		return frameworkName;
 	}
 

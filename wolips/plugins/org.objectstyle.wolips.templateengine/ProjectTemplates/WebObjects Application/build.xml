@@ -77,7 +77,7 @@
 	<target name="build.woapp" depends="compile">
 		<taskdef name="woapplication" classname="org.objectstyle.woproject.ant.WOApplication"/>
 
-		<woapplication name="${build.app.name}" destDir="${dest.dir}" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}" webXML="${webXML}" webXML_CustomContent="${webXML_CustomContent}" servletAdaptor="com.webobjects.jspservlet.WOServletAdaptor">
+		<woapplication name="${build.app.name}" frameworksBaseURL="/WebObjects/${build.app.name}.woa/Frameworks" destDir="${dest.dir}" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}" webXML="${webXML}" webXML_CustomContent="${webXML_CustomContent}" servletAdaptor="com.webobjects.jspservlet.WOServletAdaptor">
 			<classes dir="${classes.dir}">
 				<includesfile name="woproject/classes.include.patternset" />
 				<excludesfile name="woproject/classes.exclude.patternset" />
@@ -103,10 +103,6 @@
 			<lib dir="Libraries">
 				<include name="*.jar" />
 			</lib>
-			
-			<otherclasspath dir="${wo.extensions}">
-				<include name="*.jar" />
-			</otherclasspath>
 		</woapplication>
 	</target>
 	

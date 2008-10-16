@@ -151,6 +151,15 @@ public class BuildProperties {
 		_dirty = false;
 	}
 
+	public String getName() {
+		return get("project.name");
+	}
+	
+	public void setName(String name) {
+		put("project.name", name);
+		put("project.name.lowercase", name.toLowerCase());
+	}
+	
 	public boolean getWebXML() {
 		return getBoolean("webXML", false);
 	}
@@ -283,5 +292,19 @@ public class BuildProperties {
 
 	public boolean isJavaWebStart() {
 		return getBoolean("javaWebStart", false);
+	}
+	
+	public boolean isFramework() {
+		String projectType = get("project.type");
+		return "framework".equals(projectType);
+	}
+	
+	public void setFramework(boolean framework) {
+		if (framework) {
+			put("project.type", "framework");
+		}
+		else {
+			put("project.type", "application");
+		}
 	}
 }
