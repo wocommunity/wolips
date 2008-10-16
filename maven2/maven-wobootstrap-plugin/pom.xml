@@ -4,11 +4,10 @@
 	<parent>
 		<artifactId>maven2</artifactId>
 		<groupId>org.objectstyle.woproject.maven2</groupId>
-		<version>2.0.16</version>
+		<version>2.0.16-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>maven-wobootstrap-plugin</artifactId>
-	<groupId>org.objectstyle.woproject.maven2</groupId>
 	<packaging>maven-plugin</packaging>
 	<name>Maven WOBootstrap Plugin</name>
 
