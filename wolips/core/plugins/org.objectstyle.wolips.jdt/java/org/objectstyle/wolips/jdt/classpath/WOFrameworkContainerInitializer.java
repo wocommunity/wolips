@@ -89,9 +89,11 @@ import org.eclipse.jdt.internal.ui.actions.WorkbenchRunnableAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.objectstyle.woenvironment.frameworks.FrameworkModel;
+import org.objectstyle.wolips.core.resources.internal.types.project.ProjectAdapter;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 import org.objectstyle.wolips.jdt.JdtPlugin;
 import org.objectstyle.wolips.jdt.classpath.model.IEclipseFramework;
+import org.objectstyle.wolips.variables.BuildProperties;
 
 /**
  * @author mschrag
@@ -154,7 +156,7 @@ public class WOFrameworkContainerInitializer extends ClasspathContainerInitializ
 					int skip = 0;
 					for (int segmentNum = 1; segmentNum < existingContainerPath.segmentCount(); segmentNum += skip) {
 						skip = Integer.parseInt(existingContainerPath.segment(segmentNum)) + 1;
-						
+
 						// 10/1/Ajax/1/nil/1/nil/1/0/1/false
 						String frameworkName = existingContainerPath.segment(segmentNum + 2);
 						addFrameworkNamed(frameworkName, frameworkNames, newClasspathEntries, frameworkModel);
@@ -167,7 +169,7 @@ public class WOFrameworkContainerInitializer extends ClasspathContainerInitializ
 			}
 		}
 
-		convertProjectReferencesToFrameworkReferences(newClasspathEntries, frameworkModel, frameworkNames);
+		convertProjectReferencesToFrameworkReferences(javaProject, newClasspathEntries, frameworkModel, frameworkNames);
 
 		updateRawClasspath(javaProject, newClasspathEntries);
 	}
@@ -195,7 +197,7 @@ public class WOFrameworkContainerInitializer extends ClasspathContainerInitializ
 			}
 		}
 
-		convertProjectReferencesToFrameworkReferences(newClasspathEntries, frameworkModel, frameworkNames);
+		convertProjectReferencesToFrameworkReferences(javaProject, newClasspathEntries, frameworkModel, frameworkNames);
 
 		updateRawClasspath(javaProject, newClasspathEntries);
 	}
@@ -223,7 +225,7 @@ public class WOFrameworkContainerInitializer extends ClasspathContainerInitializ
 		return added;
 	}
 
-	protected void convertProjectReferencesToFrameworkReferences(List<IClasspathEntry> newClasspathEntries, FrameworkModel<IEclipseFramework> frameworkModel, Set<String> frameworkNames) {
+	protected void convertProjectReferencesToFrameworkReferences(IJavaProject project, List<IClasspathEntry> newClasspathEntries, FrameworkModel<IEclipseFramework> frameworkModel, Set<String> frameworkNames) {
 		for (int classpathEntryNum = newClasspathEntries.size() - 1; classpathEntryNum >= 0; classpathEntryNum--) {
 			IClasspathEntry newClasspathEntry = newClasspathEntries.get(classpathEntryNum);
 			if (newClasspathEntry.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
@@ -234,6 +236,16 @@ public class WOFrameworkContainerInitializer extends ClasspathContainerInitializ
 				if (framework != null) {
 					addFrameworkNamed(frameworkName, frameworkNames, newClasspathEntries, frameworkModel, classpathEntryNum);
 				}
+			}
+		}
+
+		ProjectAdapter projectAdapter = (ProjectAdapter) project.getProject().getAdapter(ProjectAdapter.class);
+		if (projectAdapter != null) {
+			BuildProperties buildProperties = projectAdapter.getBuildProperties();
+			buildProperties.setFramework(projectAdapter.isFramework());
+			if (projectAdapter.isFramework()) {
+				buildProperties.put("project.name", buildProperties.get("framework.name"));
+				buildProperties.remove("framework.name");
 			}
 		}
 	}

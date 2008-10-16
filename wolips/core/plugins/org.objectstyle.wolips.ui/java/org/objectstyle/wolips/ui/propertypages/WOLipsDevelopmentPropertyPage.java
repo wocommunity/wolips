@@ -309,6 +309,7 @@ public class WOLipsDevelopmentPropertyPage extends WOLipsPropertyPage {
 					} else {
 						buildProperties.setProjectFrameworkFolder(projectFrameworkFolderText);
 					}
+					buildProperties.setFramework(_bundleTypeFrameworkButton.getSelection());
 					buildProperties.save();
 				}
 			} else {
