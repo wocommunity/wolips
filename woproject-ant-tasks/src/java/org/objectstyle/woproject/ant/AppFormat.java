@@ -71,7 +71,6 @@ import org.apache.tools.ant.types.FilterSet;
 import org.apache.tools.ant.types.FilterSetCollection;
 import org.apache.tools.ant.types.PatternSet;
 import org.objectstyle.woenvironment.env.WOVariables;
-import org.objectstyle.woenvironment.util.FileStringScanner;
 
 /**
  * Subclass of ProjectFormat that defines file copying strategy for
