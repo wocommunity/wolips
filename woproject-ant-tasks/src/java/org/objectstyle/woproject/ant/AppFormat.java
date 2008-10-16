@@ -59,6 +59,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.tools.ant.BuildException;
@@ -490,6 +491,13 @@ public class AppFormat extends ProjectFormat {
     return new FilterSetCollection(filter);
   }
 
+  protected String stripPath(String path) {
+    path = path.replace("WOROOT", "");
+    path = path.replace("APPROOT", "");
+    path = path.replace("LOCALROOT", "");
+    return path;
+  }
+  
   /**
    * Returns a FilterSet that can be used to build web.xml file.
    */
@@ -499,37 +507,39 @@ public class AppFormat extends ProjectFormat {
     //System.out.println("AppFormat.webXMLFilter: otherClasspaths = " + otherClasspaths);
     FilterSet filter = new FilterSet();
     String WEBINFROOT = "WEBINFROOT";
-    String paths = "";
+    List<String> paths = new LinkedList<String>();
     if (appPaths != null && appPaths.length() > 0) {
-      paths = paths + WEBINFROOT;
-      paths = paths + FileStringScanner.replace(appPaths, "\n", "\n" + WEBINFROOT);
+      appPaths = appPaths.trim();
+      for (String appPath : appPaths.split("\n")) {
+        paths.add(WEBINFROOT + stripPath(appPath));
+      }
     }
     if (frameworkPaths != null && frameworkPaths.length() > 0) {
-      paths = paths + WEBINFROOT;
-      paths = paths + FileStringScanner.replace(frameworkPaths, "\n", "\n" + WEBINFROOT);
+      frameworkPaths = frameworkPaths.trim();
+      for (String frameworkPath : frameworkPaths.split("\n")) {
+        paths.add(WEBINFROOT + "/" + getApplicatonTask().getName() + ".woa/Contents" + stripPath(frameworkPath));
+      }
     }
     if (otherClasspaths != null && otherClasspaths.length() > 0) {
-      paths = paths + WEBINFROOT;
-      paths = paths + FileStringScanner.replace(otherClasspaths, "\n", "\n" + WEBINFROOT);
+      otherClasspaths = otherClasspaths.trim();
+      for (String otherPath : otherClasspaths.split("\n")) {
+        paths.add(WEBINFROOT + stripPath(otherPath));
+      }
     }
-    paths = FileStringScanner.replace(paths, WEBINFROOT + WEBINFROOT, WEBINFROOT);
-
-    paths = FileStringScanner.replace(paths, "WOROOT", "");
-
-    paths = FileStringScanner.replace(paths, "APPROOT", "");
-
-    paths = FileStringScanner.replace(paths, "LOCALROOT", "");
-    if (paths.length() > 0) {
-      paths = paths + "++++++++";
-      paths = FileStringScanner.replace(paths, WEBINFROOT + "++++++++", "");
+    
+    StringBuffer pathsBuffer = new StringBuffer();
+    for (String path : paths) {
+      pathsBuffer.append(path);
+      pathsBuffer.append("\n");
     }
+
     WOApplication woappTask = (WOApplication) this.task;
     log(" AppFormat.webXMLFilter().woappTask: " + woappTask, Project.MSG_VERBOSE);
     filter.addFilter("WOROOT", woappTask.getWebXML_WOROOT());
     filter.addFilter("LOCALROOT", woappTask.getWebXML_LOCALROOT());
     filter.addFilter("WOAINSTALLROOT", woappTask.getWebXML_WOAINSTALLROOT());
     filter.addFilter("WOAppMode", woappTask.getWebXML_WOAppMode());
-    filter.addFilter("WOClasspath", paths);
+    filter.addFilter("WOClasspath", pathsBuffer.toString());
     filter.addFilter("WOApplicationClass", this.getAppClass());
     filter.addFilter("WOServletAdaptor", this.getServletAdaptor());
     filter.addFilter("WOTagLib", woappTask.getWebXML_WOtaglib());
