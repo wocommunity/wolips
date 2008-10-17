@@ -42,9 +42,16 @@ public class EOModelGroupCache {
   }
 
   public synchronized void clearCacheForProject(IProject project) {
+    clearCacheForProject(project, new HashSet<IProject>());
+  }
+
+  public synchronized void clearCacheForProject(IProject project, Set<IProject> visitedProjects) {
+    visitedProjects.add(project);
     _modelGroupCache.remove(project);
     for (IProject referencingProject : project.getReferencingProjects()) {
-      clearCacheForProject(referencingProject);
+      if (!visitedProjects.contains(referencingProject)) {
+        clearCacheForProject(referencingProject, visitedProjects);
+      }
     }
   }
 
