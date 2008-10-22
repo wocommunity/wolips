@@ -69,7 +69,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.objectstyle.wolips.baseforplugins.util.URLUtils;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.preferences.Preferences;
@@ -896,9 +895,8 @@ public class EOGeneratorModel {
 		Iterator<EOModel> modelsIter = modelGroup.getModels().iterator();
 		while (modelsIter.hasNext()) {
 			EOModel modelGroupModel = modelsIter.next();
-			File modelFolder = URLUtils.cheatAndTurnIntoFile(modelGroupModel.getModelURL());
-			if (modelFolder != null) {
-				Path modelPath = new Path(modelFolder.getAbsolutePath());
+			if (modelGroupModel.getModelURL() != null) {
+				Path modelPath = new Path(modelGroupModel.getModelURL().toString());
 				EOModelReference modelReference = new EOModelReference(modelPath);
 				if (!exceptModels.contains(modelGroupModel)) {
 					modelReferences.add(modelReference);
