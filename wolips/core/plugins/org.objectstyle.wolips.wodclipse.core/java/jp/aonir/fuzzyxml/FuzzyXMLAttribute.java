@@ -23,6 +23,8 @@ public interface FuzzyXMLAttribute extends FuzzyXMLNode {
   
 	public void setValue(String value);
 	
+	public String getRawValue();
+	
 	public String getValue();
 	
   public boolean isQuoted();
