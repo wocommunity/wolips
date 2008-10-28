@@ -1,10 +1,10 @@
 package jp.aonir.fuzzyxml.internal;
 
-import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
-
 import jp.aonir.fuzzyxml.FuzzyXMLAttribute;
 import jp.aonir.fuzzyxml.FuzzyXMLElement;
 import jp.aonir.fuzzyxml.FuzzyXMLNode;
+
+import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
 public class FuzzyXMLAttributeImpl extends AbstractFuzzyXMLNode implements FuzzyXMLAttribute {
 
@@ -13,25 +13,32 @@ public class FuzzyXMLAttributeImpl extends AbstractFuzzyXMLNode implements Fuzzy
   private String _namespace;
   private String _name;
   private String _value;
+  private String _rawValue;
   private int _valueOffset;
 
   public FuzzyXMLAttributeImpl(String namespace, String name) {
-    this(null, namespace, name, null, -1, -1, -1);
+    this(null, namespace, name, null, null, -1, -1, -1);
   }
 
-  public FuzzyXMLAttributeImpl(String namespace, String name, String value) {
-    this(null, namespace, name, value, -1, -1, -1);
+  public FuzzyXMLAttributeImpl(String namespace, String name, String value, String rawValue) {
+    this(null, namespace, name, value, rawValue, -1, -1, -1);
     setValue(value);
+    _rawValue = rawValue;
   }
 
-  public FuzzyXMLAttributeImpl(FuzzyXMLNode parent, String namespace, String name, String value, int offset, int length, int valueOffset) {
+  public FuzzyXMLAttributeImpl(FuzzyXMLNode parent, String namespace, String name, String value, String rawValue, int offset, int length, int valueOffset) {
     super(parent, offset, length);
     this._namespace = namespace;
     this._name = name;
     this._value = value;
+    this._rawValue = rawValue;
     _valueOffset = valueOffset;
   }
 
+  public String getRawValue() {
+    return _rawValue;
+  }
+  
   public String getName() {
     return _name;
   }
@@ -97,6 +104,7 @@ public class FuzzyXMLAttributeImpl extends AbstractFuzzyXMLNode implements Fuzzy
     
     int length = this._value.length();
     this._value = (value == null) ? "" : value;
+    this._rawValue = this._value;
 
     // 更新イベントを発火
     FuzzyXMLDocumentImpl document = getDocument();

@@ -591,7 +591,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   }
 
   public void setAttribute(String namespace, String name, String value) {
-    FuzzyXMLAttribute attr = new FuzzyXMLAttributeImpl(namespace, name, value);
+    FuzzyXMLAttribute attr = new FuzzyXMLAttributeImpl(namespace, name, value, value);
     setAttribute(attr);
   }
 

@@ -575,14 +575,13 @@ public class FuzzyXMLParser {
   }
 
   private void checkAttributeValue(FuzzyXMLAttribute attr) {
-    String str = attr.getValue();
+    String str = attr.getRawValue();
     if (str != null) {
       str = str.replaceAll("&[^&; \"]+;", " ");
       Matcher invalidStringMatcher = _invalidStringPattern.matcher(str);
       while (invalidStringMatcher.find()) {
         String invalidPart = invalidStringMatcher.group();
-        fireErrorEvent(attr.getParentNode().getOffset() + attr.getValueDataOffset() + 1, attr.getValueDataLength(), "The character '" + invalidPart
-            + "' must be escaped.", attr);
+        fireErrorEvent(attr.getParentNode().getOffset() + attr.getValueDataOffset() + 1, attr.getValueDataLength(), "The character '" + invalidPart + "' must be escaped.", attr);
       }
     }
   }
@@ -693,7 +692,7 @@ public class FuzzyXMLParser {
         name = name.substring(colonIndex + 1);
       }
     }
-    FuzzyXMLAttributeImpl attr = new FuzzyXMLAttributeImpl(element, namespace, name, attrInfo.value, attrInfo.offset + offset, attrInfo.end - attrInfo.offset + 1, attrInfo.valueOffset);
+    FuzzyXMLAttributeImpl attr = new FuzzyXMLAttributeImpl(element, namespace, name, attrInfo.value, attrInfo.rawValue, attrInfo.offset + offset, attrInfo.end - attrInfo.offset + 1, attrInfo.valueOffset);
     attr.setQuoteCharacter(attrInfo.quote);
     if (attrInfo.value.indexOf('"') >= 0 || attrInfo.value.indexOf('\'') >= 0 || attrInfo.value.indexOf('<') >= 0
         || attrInfo.value.indexOf('>') >= 0 || attrInfo.value.indexOf('&') >= 0) {
@@ -837,7 +836,8 @@ public class FuzzyXMLParser {
           // add an attribute
           AttrInfo attr = new AttrInfo();
           attr.name = FuzzyXMLUtil.decode(name, _isHTML);
-          attr.value = FuzzyXMLUtil.decode(sb.toString(), _isHTML);
+          attr.rawValue = sb.toString();
+          attr.value = FuzzyXMLUtil.decode(attr.rawValue, _isHTML);
           attr.valueOffset = valueOffset;
           attr.offset = start;
           attr.end = i + 1;
@@ -873,7 +873,8 @@ public class FuzzyXMLParser {
     if (state == 4 && quote == 0) {
       AttrInfo attr = new AttrInfo();
       attr.name = FuzzyXMLUtil.decode(name, _isHTML);
-      attr.value = FuzzyXMLUtil.decode(sb.toString(), _isHTML);
+      attr.rawValue = sb.toString();
+      attr.value = FuzzyXMLUtil.decode(attr.rawValue, _isHTML);
       attr.valueOffset = valueOffset;
       attr.offset = start;
       attr.end = text.length();
@@ -918,6 +919,7 @@ public class FuzzyXMLParser {
   private class AttrInfo {
     private String name;
     private String value;
+    private String rawValue;
     private int offset;
     private int valueOffset;
     private int end;
