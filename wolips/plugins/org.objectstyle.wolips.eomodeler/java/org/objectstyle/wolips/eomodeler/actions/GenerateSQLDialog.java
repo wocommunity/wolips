@@ -36,6 +36,7 @@ import org.objectstyle.wolips.baseforuiplugins.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.IEOClassLoaderFactory;
+import org.objectstyle.wolips.eomodeler.core.sql.EOFSQLUtils;
 import org.objectstyle.wolips.eomodeler.core.sql.IEOSQLGenerator;
 import org.objectstyle.wolips.eomodeler.core.sql.IEOSQLGeneratorFactory;
 
@@ -356,10 +357,19 @@ public class GenerateSQLDialog extends Dialog {
 				}
 			});
 			IEOSQLGenerator sqlGenerator = IEOSQLGeneratorFactory.Utility.sqlGeneratorFactory().sqlGenerator(_model, getEntityNames(), selectedDatabaseConfig, getEOModelClassLoader(), runInEntityModeler);
-			String[] statements = allSql.split("[;/]");
+			String url = selectedDatabaseConfig.getURL();
+			char commandSeparatorChar;
+			// yes.  This sucks.
+			if (url != null && url.toLowerCase().contains("oracle")) {
+				commandSeparatorChar = '/';
+			}
+			else {
+				commandSeparatorChar = ';';
+			}
+			List<String> statements = EOFSQLUtils.splitSQLStatements(allSql, commandSeparatorChar);
 			setCancel(false);
-			for (int statementsNum = 0; !_cancel && statementsNum < statements.length; statementsNum++) {
-				String statement = statements[statementsNum];
+			for (int statementsNum = 0; !_cancel && statementsNum < statements.size(); statementsNum++) {
+				String statement = statements.get(statementsNum);
 				statement = statement.trim().replaceAll("[\n\r]", " ");
 				if (statement.length() > 0) {
 					try {
