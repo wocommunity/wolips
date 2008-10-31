@@ -62,7 +62,6 @@ package org.objectstyle.wolips.apple.mavenintegration;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.apple.util.StatusLogger;
 import org.osgi.framework.BundleContext;
 
 /**

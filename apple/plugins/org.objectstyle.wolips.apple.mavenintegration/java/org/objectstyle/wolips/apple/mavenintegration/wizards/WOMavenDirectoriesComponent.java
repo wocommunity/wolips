@@ -90,7 +90,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.maven.ide.eclipse.Messages;
+import org.maven.ide.eclipse.core.Messages;
 
 
 
