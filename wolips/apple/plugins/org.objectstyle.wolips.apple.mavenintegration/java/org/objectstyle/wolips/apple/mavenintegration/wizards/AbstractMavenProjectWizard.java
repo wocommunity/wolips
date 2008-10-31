@@ -85,6 +85,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.maven.ide.eclipse.MavenPlugin;
+import org.maven.ide.eclipse.core.IMavenConstants;
 import org.objectstyle.wolips.wizards.NewWOProjectWizard;
 
 
@@ -170,7 +171,7 @@ public abstract class AbstractMavenProjectWizard extends NewWOProjectWizard{
 		}
 
 		IContainer container = (IContainer) resource;
-		final IFile file = container.getFile(new Path(MavenPlugin.POM_FILE_NAME));
+		final IFile file = container.getFile(new Path(IMavenConstants.POM_FILE_NAME));
 		if( file.exists()) {
 			// TODO show warning popup
 			new RuntimeException( "POM already exists");

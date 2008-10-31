@@ -85,8 +85,8 @@ import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.eclipse.ui.dialogs.WizardNewProjectReferencePage;
-import org.maven.ide.eclipse.MavenPlugin;
-import org.maven.ide.eclipse.project.BuildPathManager;
+import org.maven.ide.eclipse.core.IMavenConstants;
+import org.maven.ide.eclipse.jdt.BuildPathManager;
 import org.objectstyle.wolips.apple.util.StatusLogger;
 import org.objectstyle.wolips.core.resources.internal.build.Nature;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
@@ -238,7 +238,7 @@ public class WOMavenFrameworkProjectWizard extends AbstractMavenProjectWizard {
 	private static void createMaven2Project(IProject project, IClasspathEntry[] classpathEntries, IPath outputPath)
 	throws CoreException {
 		IProjectDescription description = project.getDescription();
-		description.setNatureIds(new String[] {JavaCore.NATURE_ID, MavenPlugin.NATURE_ID});
+		description.setNatureIds(new String[] {JavaCore.NATURE_ID, IMavenConstants.NATURE_ID});
 		project.setDescription(description, null);
 
 		IJavaProject javaProject = JavaCore.create(project);

@@ -76,7 +76,6 @@ import org.objectstyle.wolips.wizards.Messages;
 public class MavenDependenciesProjectWizardPage extends MavenDependenciesWizardPage {
 
   /**
-   * @param resolverConfiguration
    */
   public MavenDependenciesProjectWizardPage() {
     setTitle(Messages.getString("MavenDependenciesProjectWizardPage.title"));
@@ -88,8 +87,8 @@ public class MavenDependenciesProjectWizardPage extends MavenDependenciesWizardP
   @Override
   public void createControl(Composite parent) {
     super.createControl(parent);
-    Control[] controls = parent.getChildren();
-    printAllControls(controls); //Debug
+//    Control[] controls = parent.getChildren();
+//    printAllControls(controls); //Debug
     setPageComplete(true);
     ((WOMavenApplicationProjectWizard) this.getWizard()).setCurrentDependencies(this.getCombinedDependencies());
   }
@@ -101,7 +100,7 @@ public class MavenDependenciesProjectWizardPage extends MavenDependenciesWizardP
   public List getCombinedDependencies() {
 
     //TODO: fix default runtime version
-    ArrayList updatedList = new ArrayList(this.defaultDependencies("5.4.2-SNAPSHOT"));
+    ArrayList updatedList = new ArrayList(defaultDependencies("5.4.2-SNAPSHOT"));
     updatedList.addAll(new ArrayList(Arrays.asList(this.getDependencies())));
 
     return updatedList;
@@ -144,6 +143,10 @@ public class MavenDependenciesProjectWizardPage extends MavenDependenciesWizardP
     return dep;
   }
 
+  /**
+   * Debug controls
+   * @param controls
+   */
   static void printAllControls(Control[] controls) {
     System.out.println("---------------");
     for (Control c : controls) {
