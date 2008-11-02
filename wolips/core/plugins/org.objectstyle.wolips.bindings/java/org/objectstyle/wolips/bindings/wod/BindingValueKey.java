@@ -5,12 +5,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.ITypeParameter;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.Signature;
-import org.objectstyle.wolips.baseforplugins.util.ArrayUtilities;
-import org.objectstyle.wolips.baseforplugins.util.StringUtilities;
-import org.objectstyle.wolips.baseforplugins.util.StringUtils;
 
 public class BindingValueKey implements Comparable<BindingValueKey> {
   private String _bindingName;
@@ -58,20 +54,27 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
     return _bindingMember;
   }
 
+  public String getMemberTypeName(IMember member) throws JavaModelException {
+	  String result = null;
+	  if (member != null) {
+		  if (member instanceof IMethod) {
+			  result = ((IMethod) member).getReturnType();
+		  }
+		  else {
+			  result = ((IField) member).getTypeSignature();
+		  }
+	  }
+	  return result;
+  }
+  
   public String getNextTypeName() {
     try {
       String nextTypeName;
       if (_nextType != null) {
-        nextTypeName = _nextType.getFullyQualifiedName();
-      }
-      else if (_bindingMember == null) {
-        nextTypeName = null;
-      }
-      else if (_bindingMember instanceof IMethod) {
-        nextTypeName = ((IMethod) _bindingMember).getReturnType();
+        nextTypeName = "Q" + _nextType.getElementName() + ";";
       }
       else {
-        nextTypeName = ((IField) _bindingMember).getTypeSignature();
+    	nextTypeName = getMemberTypeName(_bindingMember);
       }
       return nextTypeName;
     }
@@ -80,14 +83,16 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
     }
   }
 
-//  public IType getNextTypeArgument() throws JavaModelException {
-//    ensureNextTypeInfoLoaded();
-//    return _nextTypeArgument;
-//  }
-
   public IType getNextType() throws JavaModelException {
-    ensureNextTypeInfoLoaded();
-    return _nextType;
+	  if (_nextType == null) {
+		  _nextType = resolveNextType(null);
+	  }
+	  return _nextType;
+  }
+  
+  public IType getNextType(BindingValueKey parentBinding) throws JavaModelException {
+	_nextType = resolveNextType(parentBinding);
+	return _nextType;
   }
 
   public boolean isLeaf() throws JavaModelException {
@@ -105,36 +110,40 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
     return isLeaf;
   }
 
-  protected void ensureNextTypeInfoLoaded() throws JavaModelException {
-    if (_nextType == null) {
+  protected IType resolveNextType(BindingValueKey parentBinding) throws JavaModelException {
       String nextTypeName = getNextTypeName();
-      if (nextTypeName == null) {
-        _nextType = null;
+      if (nextTypeName == null || nextTypeName.length() == 0) {
+        return null;
       }
-      else if (nextTypeName != null && nextTypeName.length() == 0) {
-        _nextType = null;
+      IType declaringType = getDeclaringType();
+	  String typeSignatureName = Signature.getSignatureSimpleName(nextTypeName);
+	  String typeSignature = "QObject;";
+	  if (parentBinding != null) {
+	  	typeSignature = getMemberTypeName(parentBinding._bindingMember);
+	  }
+	  String[] typeParameters = declaringType.getTypeParameterSignatures();
+	  String[] typeArguments = Signature.getTypeArguments(typeSignature);
+      for (int i = 0; i < typeParameters.length; i++) {
+    	  String param = typeParameters[i];
+    	  String currentParameterType = Signature.getTypeVariable(param);
+    	  if (typeSignatureName.equals(currentParameterType) &&
+    			  i < typeArguments.length) {
+  			/* XXX: Q - This is (still) a hack, I don't like it, but it's better than no 
+  			 * validation at all. Generic type resolution assumes that it was declared in
+  			 * the parent binding, which isn't always the case, but it is most of the time. 
+  			 * There is no way of determining the actual declared generic type without 
+  			 * refactoring the caching behaviour as well as passing in the declaring type
+  			 * and the type signature, which would be the preferred solution to this problem.
+  			 */
+    		String typeArgument = typeArguments[i];
+    		typeArgument = typeArgument.substring(typeArgument.indexOf('Q'));
+    		nextTypeName = typeArgument;
+    		declaringType = parentBinding.getDeclaringType();
+    		break;
+    	  }
       }
-      else if (nextTypeName != null) {
-        IType declaringType = getDeclaringType();
-        for (String param : declaringType.getTypeParameterSignatures()) {
-    		String n = Signature.getSignatureSimpleName(nextTypeName);
-    		String p = Signature.getTypeVariable(param);
-    		if (n.equals(p)) {
-    			/* XXX: Q - This is a hack, I don't like it, but it's better than no 
-    			 * validation at all. Erasure resolution assumes an erased type of Object, 
-    			 * which isn't correct but will have to do for now.
-    			 * There is no way to determining the actual declared generic type without 
-    			 * refactoring the caching behaviour as well as passing in the declaring type, 
-    			 * which would be the preferred solution to this problem.
-    			 */
-    			nextTypeName = "QObject;";
-    			break;
-    		}
-    	}
-        String nextTypeNameErasure = Signature.getTypeErasure(nextTypeName);    	
-        _nextType = _cache.getTypeForNameInType(nextTypeNameErasure, declaringType);
-      }
-    }
+      String nextTypeNameErasure = Signature.getTypeErasure(nextTypeName);
+      return _cache.getTypeForNameInType(nextTypeNameErasure, declaringType);
   }
 
   @Override
