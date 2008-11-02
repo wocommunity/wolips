@@ -136,6 +136,7 @@ public class BindingValueKeyPath {
         //System.out.println("BindingValueKeyPath.BindingValueKeyPath: KEYPATH = " + _originalKeyPath);
         int invalidKeyNum = -1;
         IType currentType = _contextType;
+        BindingValueKey currentBinding = null;
         List<BindingValueKey> bindingKeysList = new LinkedList<BindingValueKey>();
         for (int keyNum = 0; currentType != null && keyNum < _bindingKeyNames.length; keyNum++) {
           // we can't verify helper functions or @arrayOps
@@ -152,6 +153,7 @@ public class BindingValueKeyPath {
               BindingValueKey bindingKey = bindingMutatorKeys.get(0);
               bindingKeysList.add(bindingKey);
               currentType = null;
+              currentBinding = bindingKey;
             }
           }
           else if (!bindingAccessorKeys.isEmpty()) {
@@ -160,7 +162,8 @@ public class BindingValueKeyPath {
             // NTS: Deal with multiple matches ...
             BindingValueKey bindingKey = bindingAccessorKeys.get(0);
             bindingKeysList.add(bindingKey);
-            currentType = bindingKey.getNextType();
+            currentType = bindingKey.getNextType(currentBinding);
+            currentBinding = bindingKey;
           }
           
           if (!keyAccessible) {
@@ -358,7 +361,7 @@ public class BindingValueKeyPath {
     BindingValueKey lastBindingKey = getLastBindingKey();
     IType lastType;
     if (lastBindingKey != null) {
-      lastType = lastBindingKey.getNextType();
+      lastType = lastBindingKey.getNextType(getNextToLastBindingKey());
     }
     else {
       lastType = _contextType;
@@ -394,7 +397,7 @@ public class BindingValueKeyPath {
         lastType = _contextType;
       }
       else {
-        lastType = lastBindingKey.getNextType();
+        lastType = lastBindingKey.getNextType(getNextToLastBindingKey());
       }
 
       if (lastType != null) {
