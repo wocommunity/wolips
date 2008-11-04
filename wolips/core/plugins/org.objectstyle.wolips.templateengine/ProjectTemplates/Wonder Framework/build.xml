@@ -42,7 +42,7 @@
 	<target name="build.woframework" depends="compile">
 		<taskdef name="woframework" classname="org.objectstyle.woproject.ant.WOFramework"/>
 
-		<woframework name="${project.name}" frameworksBaseURL="/WebObjects/${build.app.name}.woa/Frameworks" destDir="${dest.dir}" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}" eoAdaptorClassName="${eoAdaptorClassName}" javaVersion="${javaVersion}" cfbundleversion="${cfBundleVersion}" cfbundleshortversion="${cfBundleShortVersion}" cfbundleID="${cfBundleID}">
+		<woframework name="${project.name}" destDir="${dest.dir}" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}" eoAdaptorClassName="${eoAdaptorClassName}" javaVersion="${javaVersion}" cfbundleversion="${cfBundleVersion}" cfbundleshortversion="${cfBundleShortVersion}" cfbundleID="${cfBundleID}">
 			<classes dir="${classes.dir}">
 				<includesfile name="woproject/classes.include.patternset" />
 				<excludesfile name="woproject/classes.exclude.patternset" />
