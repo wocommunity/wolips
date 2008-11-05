@@ -46,7 +46,9 @@
 package org.objectstyle.wolips.launching.classpath;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -78,6 +80,21 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 		return super.computeUnresolvedClasspath(configuration);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.jdt.launching.IRuntimeClasspathProvider#resolveClasspath(org.eclipse.jdt.launching.IRuntimeClasspathEntry[], org.eclipse.debug.core.ILaunchConfiguration)
+	 */
+	public IRuntimeClasspathEntry[] superResolveClasspath(IRuntimeClasspathEntry[] entries, ILaunchConfiguration configuration) throws CoreException {
+		// use an ordered set to avoid duplicates
+		Set all = new LinkedHashSet(entries.length);
+		for (int i = 0; i < entries.length; i++) {
+			IRuntimeClasspathEntry[] resolved = WOJavaRuntime.resolveRuntimeClasspathEntry(entries[i], configuration);
+			for (int j = 0; j < resolved.length; j++) {
+				all.add(resolved[j]);
+			}
+		}
+		return (IRuntimeClasspathEntry[]) all.toArray(new IRuntimeClasspathEntry[all.size()]);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -85,7 +102,7 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 	 *      org.eclipse.debug.core.ILaunchConfiguration)
 	 */
 	public IRuntimeClasspathEntry[] resolveClasspath(IRuntimeClasspathEntry[] entries, ILaunchConfiguration configuration) throws CoreException {
-		IRuntimeClasspathEntry[] resolvedEntries = super.resolveClasspath(entries, configuration);
+		IRuntimeClasspathEntry[] resolvedEntries = superResolveClasspath(entries, configuration);
 
 		IProject project = JavaRuntime.getJavaProject(configuration).getProject();
 		List<EclipseDependency> unorderedDependencies = new ArrayList<EclipseDependency>(resolvedEntries.length);
