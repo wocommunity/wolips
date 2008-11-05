@@ -108,6 +108,12 @@ public class WOFrameworkContainerInitializer extends ClasspathContainerInitializ
 	}
 
 	@Override
+	public String getDescription(IPath containerPath, IJavaProject project) {
+		String frameworkName = frameworkNameForClasspathPath(containerPath);
+		return frameworkName + " WebObjects Framework";
+	}
+	
+	@Override
 	public boolean canUpdateClasspathContainer(IPath containerPath, IJavaProject project) {
 		return true;
 	}
@@ -138,6 +144,9 @@ public class WOFrameworkContainerInitializer extends ClasspathContainerInitializ
 			if (framework != null) {
 				WOFrameworkClasspathContainer frameworkContainer = new WOFrameworkClasspathContainer(framework, paramsForClasspathPath(containerPath));
 				JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { javaProject }, new IClasspathContainer[] { frameworkContainer }, null);
+			}
+			else {
+				JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { javaProject }, new IClasspathContainer[] { null }, null);
 			}
 		}
 	}
