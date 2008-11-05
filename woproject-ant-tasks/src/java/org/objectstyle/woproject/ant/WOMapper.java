@@ -143,7 +143,12 @@ public class WOMapper extends Mapper {
 			if (parent != null && parent.equals("Resources")) {
 				return flatten(f);
 			}
-
+      // AK Wonder hack: we use WebServerResources as the base directory
+      String resourcesPattern = "Resources" + File.separator;
+      int index = path.indexOf(resourcesPattern);
+      if(index >= 0) {
+        return path.substring(index + resourcesPattern.length());
+      }
 			// skip the filter
 			return path;
 		}
