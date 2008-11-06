@@ -138,6 +138,15 @@ public class FuzzyXMLAttributeImpl extends AbstractFuzzyXMLNode implements Fuzzy
     return this._escape;
   }
 
+  public String getNamespaceName() {
+    String attributeName = getName();
+    String namespace = getNamespace();
+    if (namespace != null && namespace.length() > 0) {
+      attributeName = namespace + ":" + attributeName;
+    }
+    return attributeName;
+  }
+  
   public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer) {
     boolean isHTML = renderContext.isHtml();
 
