@@ -17,6 +17,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 
 public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXMLElement {
 
@@ -410,7 +411,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   }
 
   public void setAttribute(FuzzyXMLAttribute attr) {
-    FuzzyXMLAttribute attrNode = getAttributeNode(attr.getName());
+    FuzzyXMLAttribute attrNode = getAttributeNode(attr.getNamespaceName());
     if (attrNode == null) {
       if (_attributes.contains(attr)) {
         return;
@@ -445,9 +446,19 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   }
 
   public FuzzyXMLAttribute getAttributeNode(String name) {
+    String namespace;
+    int colonIndex = name.indexOf(':');
+    if (colonIndex == -1) {
+      namespace = null;
+    }
+    else {
+      namespace = name.substring(0, colonIndex);
+      name = name.substring(colonIndex + 1);
+    }
+    
     FuzzyXMLAttribute[] attrs = getAttributes();
     for (int i = 0; i < attrs.length; i++) {
-      if (attrs[i].getName().equalsIgnoreCase(name)) {
+      if (ComparisonUtils.equals(namespace, attrs[i].getNamespace()) && attrs[i].getName().equalsIgnoreCase(name)) {
         return attrs[i];
       }
     }
