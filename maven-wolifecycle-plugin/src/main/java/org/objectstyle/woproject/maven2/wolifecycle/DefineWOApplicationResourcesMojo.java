@@ -318,6 +318,12 @@ public class DefineWOApplicationResourcesMojo extends AbstractDefineResourcesMoj
 
 			File sourceFile = artifact.getFile();
 
+			if (!isArtifactDeployed(sourceFile)) {
+				getLog().warn("Cannot copy the source file because it is a directory.");
+
+				continue;
+			}
+
 			getLog().debug("Copying Source file from " + sourceFile.getAbsolutePath());
 
 			File destinationFile = new File(project.getBuild().getDirectory(), "lib/" + classpathEntry);
