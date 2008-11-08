@@ -86,12 +86,12 @@
 		<repository>
 			<id>webobjects.mdimension.com/dist/releases</id>
 			<name>mdimension Maven2 Release Repository</name>
-			<url> scp://webobjects.mdimension.com/Library/WebServer/BuildServer/maven2/releases </url>
+			<url>scp://webobjects.mdimension.com/Library/WebServer/BuildServer/maven2/releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>webobjects.mdimension.com/dist/snapshots</id>
 			<name>mdimension Maven2 Snapshot Repository</name>
-			<url> scp://webobjects.mdimension.com/Library/WebServer/BuildServer/maven2/snapshots </url>
+			<url>scp://webobjects.mdimension.com/Library/WebServer/BuildServer/maven2/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 	<scm>
@@ -165,7 +165,7 @@
 		<extensions>
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-webdav</artifactId>
+				<artifactId>wagon-ssh</artifactId>
 				<version>1.0-beta-2</version>
 			</extension>
 		</extensions>
