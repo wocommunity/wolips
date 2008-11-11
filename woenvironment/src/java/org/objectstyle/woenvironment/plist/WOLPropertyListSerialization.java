@@ -293,7 +293,7 @@ public class WOLPropertyListSerialization {
 				while (keyEnumerator.hasNext()) {
 					Object key = keyEnumerator.next();
 					if (!(key instanceof String)) {
-						throw new PropertyListParserException("Property list generation failed while attempting to write hashtable. Non-String key found in Hashtable. Property list dictionaries must have String's as keys.");
+						throw new PropertyListParserException("Property list generation failed while attempting to write hashtable. Non-String key found in Hashtable. Property list dictionaries must have String's as keys.  The attempted key was '" + key + "'.");
 					}
 					Object value = dictionary.get(key);
 					if (value != null) {
