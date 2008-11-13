@@ -11,12 +11,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.eogenerator.core.model.CommandLineTokenizer;
 import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel;
 import org.objectstyle.wolips.eogenerator.core.model.IEOGeneratorRunner;
 
 public class ExternalEOGeneratorRunner implements IEOGeneratorRunner {
-	public boolean generate(EOGeneratorModel eogenModel, StringBuffer results) throws ParseException, IOException, InterruptedException {
+	public boolean generate(EOGeneratorModel eogenModel, StringBuffer results, IProgressMonitor monitor) throws ParseException, IOException, InterruptedException {
 		String eogenFileContents = eogenModel.writeToString(eogenModel.getProjectPath().toFile());
 		List<String> commandsList = new LinkedList<String>();
 		CommandLineTokenizer tokenizer = new CommandLineTokenizer(eogenFileContents);
