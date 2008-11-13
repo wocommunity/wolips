@@ -198,7 +198,7 @@ public class WOJavaRuntime {
 
 	private static IRuntimeClasspathEntry[] resolveVariableEntry(IRuntimeClasspathEntry entry, Object object, ILaunchConfiguration configuration) {
 		try {
-			Method resolveVariableEntry = JavaRuntime.class.getDeclaredMethod("resolveVariableEntry", IRuntimeClasspathEntry.class, Object.class, ILaunchConfiguration.class);
+			Method resolveVariableEntry = JavaRuntime.class.getDeclaredMethod("resolveVariableEntry", IRuntimeClasspathEntry.class, IJavaProject.class, ILaunchConfiguration.class);
 			resolveVariableEntry.setAccessible(true);
 			return (IRuntimeClasspathEntry[]) resolveVariableEntry.invoke(null, entry, object, configuration);
 		} catch (Throwable t) {
