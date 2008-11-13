@@ -16,21 +16,27 @@ import er.extensions.foundation.*;
 @SuppressWarnings("all")
 public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($entity.parentClassNameSet)${entity.parentClassName}#elseif ($entity.partialEntitySet)er.extensions.partials.ERXPartial<${entity.partialEntity.className}>#elseif ($entity.parentSet)${entity.parent.classNameWithDefault}#elseif ($EOGenericRecord)${EOGenericRecord}#else ERXGenericRecord#end {
 #if ($entity.partialEntitySet)
-	public static final String ENTITY_NAME = "$entity.partialEntity.name";
+  public static final String ENTITY_NAME = "$entity.partialEntity.name";
 #else
-	public static final String ENTITY_NAME = "$entity.name";
+  public static final String ENTITY_NAME = "$entity.name";
 #end
 
-	// Attributes
+  // Attribute Keys
 #foreach ($attribute in $entity.sortedClassAttributes)
-	public static final String ${attribute.uppercaseUnderscoreName}_KEY = "$attribute.name";
-	public static final ERXKey<$attribute.javaClassName> ${attribute.uppercaseUnderscoreName} = new ERXKey<$attribute.javaClassName>(${attribute.uppercaseUnderscoreName}_KEY);
+  public static final ERXKey<$attribute.javaClassName> ${attribute.uppercaseUnderscoreName} = new ERXKey<$attribute.javaClassName>("$attribute.name");
+#end
+  // Relationship Keys
+#foreach ($relationship in $entity.sortedClassRelationships)
+  public static final ERXKey<$relationship.actualDestination.classNameWithDefault> ${relationship.uppercaseUnderscoreName} = new ERXKey<$relationship.actualDestination.classNameWithDefault>("$relationship.name");
 #end
 
-	// Relationships
+  // Attributes
+#foreach ($attribute in $entity.sortedClassAttributes)
+  public static final String ${attribute.uppercaseUnderscoreName}_KEY = ${attribute.uppercaseUnderscoreName}.key();
+#end
+  // Relationships
 #foreach ($relationship in $entity.sortedClassRelationships)
-	public static final String ${relationship.uppercaseUnderscoreName}_KEY = "$relationship.name";
-	public static final ERXKey<$relationship.actualDestination.classNameWithDefault> ${relationship.uppercaseUnderscoreName} = new ERXKey<$relationship.actualDestination.classNameWithDefault>(${relationship.uppercaseUnderscoreName}_KEY);
+  public static final String ${relationship.uppercaseUnderscoreName}_KEY = ${relationship.uppercaseUnderscoreName}.key();
 #end
 
   private static Logger LOG = Logger.getLogger(${entity.prefixClassNameWithoutPackage}.class);
