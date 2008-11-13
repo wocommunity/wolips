@@ -49,34 +49,51 @@
  */
 package org.objectstyle.wolips.eogenerator.core.model;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.core.runtime.jobs.Job;
 import org.objectstyle.wolips.eogenerator.core.Activator;
 import org.objectstyle.wolips.eogenerator.core.runner.ExternalEOGeneratorRunner;
 import org.objectstyle.wolips.eogenerator.core.runner.VelocityEOGeneratorRunner;
 import org.objectstyle.wolips.preferences.Preferences;
 
 public class EOGenerateWorkspaceJob extends WorkspaceJob {
-	private IFile[] _eogenFiles;
+	private IFile _eogenFile;
 
 	private List<IEOGeneratorListener> _listeners;
 
-	public EOGenerateWorkspaceJob(IFile[] eogenFiles) {
-		super("EOGenerating  ...");
-		_eogenFiles = eogenFiles;
+	private long _creationDate;
+
+	public EOGenerateWorkspaceJob(IFile eogenFile) {
+		super("EOGenerating " + eogenFile.getName() + " ...");
+		_creationDate = System.currentTimeMillis();
+		_eogenFile = eogenFile;
 		_listeners = new LinkedList<IEOGeneratorListener>();
+		//System.out.println("EOGenerateWorkspaceJob.EOGenerateWorkspaceJob: queuing up " + this);
+	}
+
+	public long creationDate() {
+		return _creationDate;
 	}
 
 	public void addListener(IEOGeneratorListener listener) {
 		_listeners.add(listener);
+	}
+
+	public boolean isFile(IFile file) {
+		return _eogenFile.equals(file);
 	}
 
 	public IStatus runInWorkspace(IProgressMonitor monitor) {
@@ -84,46 +101,72 @@ public class EOGenerateWorkspaceJob extends WorkspaceJob {
 			listener.eogeneratorStarted();
 		}
 		try {
-			StringBuffer output = new StringBuffer();
-			for (IFile eogenFile : _eogenFiles) {
+			boolean commitSuicide = false;
+
+			IJobManager jobManager = Job.getJobManager();
+			Job[] jobs = jobManager.find(null);
+			if (jobs != null) {
+				for (Job job : jobs) {
+					if (job != this && job instanceof EOGenerateWorkspaceJob && ((EOGenerateWorkspaceJob) job).isFile(_eogenFile)) {
+						EOGenerateWorkspaceJob otherJob = (EOGenerateWorkspaceJob) job;
+						if (otherJob.creationDate() > _creationDate) {
+							//System.out.println("EOGenerateWorkspaceJob.runInWorkspace: commit suicide on " + this + " because of " + job);
+							commitSuicide = true;
+						} else {
+							//System.out.println("EOGenerateWorkspaceJob.runInWorkspace: canceling " + job + " from " + this);
+							job.cancel();
+						}
+					}
+				}
+			}
+
+			if (commitSuicide) {
+				//System.out.println("EOGenerateWorkspaceJob.runInWorkspace: committing suicide");
+			} else {
+				//System.out.println("EOGenerateWorkspaceJob.runInWorkspace: running " + this + " (" + _eogenFile + ")");
+
+				StringBuffer output = new StringBuffer();
 				boolean fileSucceeded = true;
-				setName("EOGenerating " + eogenFile.getName() + " ...");
+				setName("EOGenerating " + _eogenFile.getName() + " ...");
 				try {
-					EOGeneratorModel eogenModel = EOGeneratorModel.createModelFromFile(eogenFile);
+					EOGeneratorModel eogenModel = EOGeneratorModel.createModelFromFile(_eogenFile);
 					eogenModel.setVerbose(eogenModel.isVerbose());
 
 					IEOGeneratorRunner runner;
 					String eogeneratorPath = Preferences.getEOGeneratorPath();
 					if (eogeneratorPath == null || eogeneratorPath.length() == 0 || "velocity".equalsIgnoreCase(eogeneratorPath)) {
 						runner = new VelocityEOGeneratorRunner();
-					}
-					else {
+					} else {
 						runner = new ExternalEOGeneratorRunner();
 					}
-					boolean showResults = runner.generate(eogenModel, output);
+					boolean showResults = runner.generate(eogenModel, output, monitor);
 					if (showResults) {
 						fileSucceeded = false;
 					}
 
-					eogenFile.getProject().getFolder(new Path(eogenModel.getDestination())).refreshLocal(IResource.DEPTH_INFINITE, monitor);
-					eogenFile.getProject().getFolder(new Path(eogenModel.getSubclassDestination())).refreshLocal(IResource.DEPTH_INFINITE, monitor);
+					_eogenFile.getProject().getFolder(new Path(eogenModel.getDestination())).refreshLocal(IResource.DEPTH_INFINITE, monitor);
+					_eogenFile.getProject().getFolder(new Path(eogenModel.getSubclassDestination())).refreshLocal(IResource.DEPTH_INFINITE, monitor);
+				} catch (OperationCanceledException t) {
+					//System.out.println("EOGenerateWorkspaceJob.runInWorkspace: canceled operation " + _eogenFile + ", " + this);
 				} catch (Throwable t) {
 					fileSucceeded = false;
 					output.append(t.getMessage());
-					Activator.getDefault().log("Failed to generate " + eogenFile.getName() + ".", t);
+					//System.out.println("EOGenerateWorkspaceJob.runInWorkspace: failed " + _eogenFile);
+					Activator.getDefault().log("Failed to generate " + _eogenFile.getName() + ".", t);
 				}
 
 				String outputStr = output.toString();
 				if (fileSucceeded) {
 					for (IEOGeneratorListener listener : _listeners) {
-						listener.eogeneratorSucceeded(eogenFile, outputStr);
+						listener.eogeneratorSucceeded(_eogenFile, outputStr);
 					}
 				} else {
 					for (IEOGeneratorListener listener : _listeners) {
-						listener.eogeneratorFailed(eogenFile, outputStr);
+						listener.eogeneratorFailed(_eogenFile, outputStr);
 					}
 				}
 			}
+			//System.out.println("EOGenerateWorkspaceJob.runInWorkspace: finished " + this);
 		} finally {
 			for (IEOGeneratorListener listener : _listeners) {
 				listener.eogeneratorFinished();

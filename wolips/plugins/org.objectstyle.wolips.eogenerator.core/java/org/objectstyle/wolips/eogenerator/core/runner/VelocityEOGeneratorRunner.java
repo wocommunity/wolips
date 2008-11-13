@@ -18,7 +18,9 @@ import org.apache.velocity.runtime.log.LogSystem;
 import org.apache.velocity.tools.generic.ListTool;
 import org.apache.velocity.tools.generic.SetTool;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.objectstyle.wolips.eogenerator.core.Activator;
 import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel;
 import org.objectstyle.wolips.eogenerator.core.model.EOModelReference;
@@ -56,11 +58,11 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 		_insideEclipse = insideEclipse;
 	}
 
-	public boolean generate(EOGeneratorModel eogeneratorModel, StringBuffer results) throws Exception {
-		return generate(eogeneratorModel, results, null);
+	public boolean generate(EOGeneratorModel eogeneratorModel, StringBuffer results, IProgressMonitor monitor) throws Exception {
+		return generate(eogeneratorModel, results, null, monitor);
 	}
 
-	public boolean generate(EOGeneratorModel eogeneratorModel, StringBuffer results, EOModelGroup preloadedModelGroup) throws Exception {
+	public boolean generate(EOGeneratorModel eogeneratorModel, StringBuffer results, EOModelGroup preloadedModelGroup, IProgressMonitor monitor) throws Exception {
 		boolean showResults = false;
 
 		String superclassTemplateName = eogeneratorModel.getJavaTemplate();
@@ -105,27 +107,29 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			EOModelGroup modelGroup;
 			if (preloadedModelGroup == null) {
 				modelGroup = new EOModelGroup();
-				
+
 				Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
 
 				if (BooleanUtils.isTrue(eogeneratorModel.isLoadModelGroup())) {
 					for (EOModelReference eomodelReference : eogeneratorModel.getModels()) {
-						EOModelGroup generatingModelGroup = new EOModelGroup(); 
+						EOModelGroup generatingModelGroup = new EOModelGroup();
 						URL modelURL = getModelURL(eogeneratorModel, eomodelReference);
-						IEOModelGroupFactory.Utility.loadModelGroup(modelURL, generatingModelGroup, failures, true, modelURL, new NullProgressMonitor());
+						IEOModelGroupFactory.Utility.loadModelGroup(modelURL, generatingModelGroup, failures, true, modelURL, monitor);
+						if (monitor.isCanceled()) {
+							throw new OperationCanceledException("EOGenerator canceled.");
+						}
 						EOModel generatingModel = generatingModelGroup.getEditingModel();
 						models.add(generatingModel);
-						
+
 						for (EOModel model : generatingModelGroup.getModels()) {
 							if (!modelGroup.containsModelNamed(model.getName())) {
 								modelGroup.addModel(model);
 							}
 						}
 					}
-				}
-				else {
-					loadModels(eogeneratorModel, modelGroup, eogeneratorModel.getModels(), models);
-					loadModels(eogeneratorModel, modelGroup, eogeneratorModel.getRefModels(), new LinkedList<EOModel>());
+				} else {
+					loadModels(eogeneratorModel, modelGroup, eogeneratorModel.getModels(), models, monitor);
+					loadModels(eogeneratorModel, modelGroup, eogeneratorModel.getRefModels(), new LinkedList<EOModel>(), monitor);
 
 					modelGroup.resolve(failures);
 					modelGroup.verify(failures);
@@ -191,10 +195,16 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			//context.put("sorter", new SortTool());
 			String extension = eogeneratorModel.getExtension();
 			for (EOModel model : models) {
+				if (monitor.isCanceled()) {
+					throw new OperationCanceledException("EOGenerator canceled.");
+				}
 				// System.out.println("Generating " + model.getName() + " ...");
 				context.put("model", model);
 
 				for (EOEntity entity : model.getEntities()) {
+					if (monitor.isCanceled()) {
+						throw new OperationCanceledException("EOGenerator canceled.");
+					}
 					// System.out.println("Generating " + model.getName() + "."
 					// + entity.getName() + " ...");
 					context.put("entity", entity);
@@ -217,8 +227,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 						// superclassFileTemplate);
 						if (BooleanUtils.isFalse(eogeneratorModel.isPackageDirs())) {
 							superclassFileTemplate = entity.getPrefixClassNameWithoutPackage();
-						}
-						else {
+						} else {
 							superclassFileTemplate = prefixClassNameWithPackage.toString().replace('.', '/');
 						}
 
@@ -239,8 +248,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 						// subclassFilePathWriter, "LOG", subclassFileTemplate);
 						if (BooleanUtils.isFalse(eogeneratorModel.isPackageDirs())) {
 							subclassFileTemplate = entity.getClassNameWithoutPackage();
-						}
-						else {
+						} else {
 							subclassFileTemplate = classNameWithPackage.toString().replace('.', '/');
 						}
 
@@ -276,8 +284,11 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 		return modelFile.toURL();
 	}
 
-	public void loadModels(EOGeneratorModel eogeneratorModel, EOModelGroup modelGroup, List<EOModelReference> modelReferences, List<EOModel> loadedModels) throws MalformedURLException, IOException, EOModelException {
+	public void loadModels(EOGeneratorModel eogeneratorModel, EOModelGroup modelGroup, List<EOModelReference> modelReferences, List<EOModel> loadedModels, IProgressMonitor monitor) throws MalformedURLException, IOException, EOModelException {
 		for (EOModelReference modelRef : modelReferences) {
+			if (monitor.isCanceled()) {
+				throw new OperationCanceledException("EOGenerator canceled.");
+			}
 			URL modelURL = getModelURL(eogeneratorModel, modelRef);
 			EOModel model = modelGroup.loadModelFromURL(modelURL);
 			loadedModels.add(model);

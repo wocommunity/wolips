@@ -43,9 +43,7 @@
  */
 package org.objectstyle.wolips.eogenerator.core.builder;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -105,20 +103,16 @@ public class EOGeneratorBuilder extends AbstractFullAndIncrementalBuilder {
 				Locate locate = new Locate(new EOGenLocateScope(resource.getProject()), result);
 				locate.locate();
 
-				Set<IFile> referencingEOGenFiles = new HashSet<IFile>();
 				IResource[] eogenFiles = result.getResources();
 				for (IResource eogenResource : eogenFiles) {
 					IFile eogenFile = (IFile) eogenResource;
 					EOGeneratorModel eogenModel = EOGeneratorModel.createModelFromFile(eogenFile);
 					if (eogenModel.isModelReferenced(modifiedModelReference)) {
-						referencingEOGenFiles.add(eogenFile);
+						EOGenerateWorkspaceJob eogenerateJob = new EOGenerateWorkspaceJob(eogenFile);
+						eogenerateJob.addListener(new MarkerEOGeneratorListener());
+						eogenerateJob.schedule();
 					}
 				}
-
-				IFile[] finalEOGenFiles = referencingEOGenFiles.toArray(new IFile[referencingEOGenFiles.size()]);
-				EOGenerateWorkspaceJob eogenerateJob = new EOGenerateWorkspaceJob(finalEOGenFiles);
-				eogenerateJob.addListener(new MarkerEOGeneratorListener());
-				eogenerateJob.schedule();
 			}
 		} catch (Throwable e) {
 			e.printStackTrace();
