@@ -169,7 +169,7 @@ public class Preferences {
 	/**
 	 * Method setDefaults.
 	 */
-	public static void setDefaults() {
+	public static synchronized void setDefaults() {
 		IPreferenceStore store = getPreferenceStore();
 		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_CAPTURE_ANT_OUTPUT)) {
 			store.setDefault(Preferences.PREF_CAPTURE_ANT_OUTPUT, Preferences.falseString);
@@ -226,7 +226,7 @@ public class Preferences {
 	 * @param key
 	 * @return String
 	 */
-	public static String getString(String key) {
+	public static synchronized String getString(String key) {
 		IPreferenceStore store = getPreferenceStore();
 		String returnValue = store.getString(key);
 		if (returnValue.equals(IPreferenceStore.STRING_DEFAULT_DEFAULT)) {
