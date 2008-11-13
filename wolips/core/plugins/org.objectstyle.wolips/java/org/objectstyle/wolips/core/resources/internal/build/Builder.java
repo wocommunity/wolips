@@ -103,7 +103,10 @@ public abstract class Builder extends IncrementalProjectBuilder {
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
 		IProject project = this.getProject();
 		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
-		IBuildAdapter buildAdapter = projectAdapter.getBuildAdapter();
+		IBuildAdapter buildAdapter = null;
+		if ( projectAdapter != null ) {
+			buildAdapter = projectAdapter.getBuildAdapter();
+		}
 
 		if (kind == IncrementalProjectBuilder.FULL_BUILD) {
 			this.clean(monitor);
