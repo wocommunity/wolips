@@ -249,10 +249,10 @@ public class EODatabaseConfig extends EOModelObject<EOModel> {
 
 	public void setPlugin(String _plugin) {
 		if (EODatabaseConfig.JNDI_ADAPTOR_NAME.equals(myAdaptorName)) {
-			getConnectionDictionary().put("plugInClassName", _plugin);
+			getConnectionDictionary().put("plugInClassName", _plugin.trim());
 		}
 		else {
-			getConnectionDictionary().put(EODatabaseConfig.PLUGIN, _plugin);
+			getConnectionDictionary().put(EODatabaseConfig.PLUGIN, _plugin.trim());
 		}
 	}
 
@@ -268,7 +268,7 @@ public class EODatabaseConfig extends EOModelObject<EOModel> {
 	}
 
 	public void setDriver(String _driver) {
-		getConnectionDictionary().put(EODatabaseConfig.DRIVER, _driver);
+		getConnectionDictionary().put(EODatabaseConfig.DRIVER, _driver.trim());
 	}
 
 	public String getDriver() {
@@ -277,10 +277,10 @@ public class EODatabaseConfig extends EOModelObject<EOModel> {
 
 	public void setURL(String _url) {
 		if (EODatabaseConfig.JNDI_ADAPTOR_NAME.equals(myAdaptorName)) {
-			getConnectionDictionary().put("serverUrl", _url);
+			getConnectionDictionary().put("serverUrl", _url.trim());
 		}
 		else {
-			getConnectionDictionary().put(EODatabaseConfig.URL, _url);
+			getConnectionDictionary().put(EODatabaseConfig.URL, _url.trim());
 		}
 	}
 
