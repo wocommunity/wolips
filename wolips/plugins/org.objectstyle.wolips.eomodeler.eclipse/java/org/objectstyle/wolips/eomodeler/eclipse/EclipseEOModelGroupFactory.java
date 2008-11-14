@@ -74,6 +74,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.wolips.baseforplugins.util.URLUtils;
+import org.objectstyle.wolips.core.resources.types.project.IProjectPatternsets;
 import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel;
 import org.objectstyle.wolips.eogenerator.core.model.EOModelReference;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
@@ -181,7 +182,7 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 						addModelsFromProject(modelGroup, dependsOnProject, searchedResources, searchedProjects, failures, skipOnDuplicates, progressMonitor, depth + 1);
 					} else if (entryKind == IClasspathEntry.CPE_SOURCE) {
 						visitedProject = true;
-						project.accept(new ModelVisitor(modelGroup, searchedResources, failures, skipOnDuplicates, progressMonitor), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
+						project.accept(new ModelVisitor(project, modelGroup, searchedResources, failures, skipOnDuplicates, progressMonitor), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
 					}
 					if (showProgress) {
 						progressMonitor.worked(1);
@@ -189,7 +190,7 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 				}
 
 				if (!visitedProject) {
-					project.accept(new ModelVisitor(modelGroup, searchedResources, failures, skipOnDuplicates, progressMonitor), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
+					project.accept(new ModelVisitor(project, modelGroup, searchedResources, failures, skipOnDuplicates, progressMonitor), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
 					if (showProgress) {
 						progressMonitor.worked(1);
 					}
@@ -222,6 +223,8 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 	}
 
 	protected static class ModelVisitor implements IResourceVisitor {
+		private IProject _project;
+		
 		private EOModelGroup _modelGroup;
 
 		private Set<EOModelVerificationFailure> _failures;
@@ -231,13 +234,17 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 		private boolean _skipOnDuplicates;
 
 		private IProgressMonitor _progressMonitor;
+		
+		private IProjectPatternsets _patternsets;
 
-		public ModelVisitor(EOModelGroup modelGroup, Set<Object> searchedResources, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) {
+		public ModelVisitor(IProject project, EOModelGroup modelGroup, Set<Object> searchedResources, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) {
+			_project = project;
 			_modelGroup = modelGroup;
 			_failures = failures;
 			_searchedResources = searchedResources;
 			_skipOnDuplicates = skipOnDuplicates;
 			_progressMonitor = progressMonitor;
+			_patternsets = (IProjectPatternsets) project.getAdapter(IProjectPatternsets.class);
 		}
 
 		public boolean visit(IResource resource) throws CoreException {
@@ -251,7 +258,7 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 
 				String name = resource.getName();
 				if (name != null) {
-					if ("build".equals(name) || "dist".equals(name) || "target".equals(name) || name.endsWith(".wo")) {
+					if ("build".equals(name) || "dist".equals(name) || "target".equals(name) || name.endsWith(".wo") || "woproject".equals(name) || name.startsWith(".")) {
 						return false;
 					}
 
@@ -261,17 +268,39 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 							return false;
 						}
 					}
-				}
-
-				if (resource.getType() == IResource.FOLDER) {
-					_progressMonitor.setTaskName("Scanning " + resource.getName() + " ...");
-					File resourceFile = resource.getLocation().toFile();
-					if (!_searchedResources.contains(resourceFile) && "eomodeld".equals(resource.getFileExtension())) {
-						_modelGroup.loadModelFromURL(resourceFile.toURL(), _failures, _skipOnDuplicates, _progressMonitor);
+					
+					// This is a little sketchy, but it saves a substantial amount of file system scanning ...
+					if ("WebServerResources".equals(name) || "Components".equals(name)) {
 						return false;
 					}
 				}
-				return true;
+
+				boolean continueScanning = true;
+				if (resource.getType() == IResource.FOLDER) {
+					if (_patternsets != null && _patternsets.matchesResourcesPattern(resource)) {
+						//System.out.println("ModelVisitor.visit: scanning " + resource);
+						_progressMonitor.setTaskName("Scanning " + resource.getName() + " ...");
+						File resourceFile = resource.getLocation().toFile();
+						if (!_searchedResources.contains(resourceFile) && "eomodeld".equals(resource.getFileExtension())) {
+							_modelGroup.loadModelFromURL(resourceFile.toURL(), _failures, _skipOnDuplicates, _progressMonitor);
+							return false;
+						}
+					}
+					else {
+						IJavaProject javaProject = JavaCore.create(_project);
+						if (javaProject.isOnClasspath(resource)) {
+							continueScanning = false;
+						}
+						else {
+							//System.out.println("ModelVisitor.visit: " + resource);
+						}
+					}
+				}
+				else {
+					//System.out.println("ModelVisitor.visit:   skipping " + resource);
+				}
+				
+				return continueScanning;
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, 0, "Failed to load model in " + resource + ": " + e, e));
