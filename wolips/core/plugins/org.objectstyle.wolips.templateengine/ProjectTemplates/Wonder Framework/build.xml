@@ -1,5 +1,5 @@
 <project name="${WOLipsContext.getProjectName()}" default="build" basedir=".">
-	<target name="build" depends="init.build,build.woframework" />
+	<target name="build" depends="init.build,build.woframework,package" />
 
 	<target name="install" depends="init.install,build.woframework" />
 
@@ -36,6 +36,16 @@
 	<target name="init.build" depends="init.properties">
 		<tstamp />
 		<property name="dest.dir" value="dist" />
+	</target>
+
+  <target name="package">
+    <tar destfile="${dest.dir}/${project.name}.tar.gz"
+        compression="gzip"
+        longfile="gnu">
+      <tarfileset dir="${dest.dir}">
+        <include name="${project.name}.framework/**"/>
+      </tarfileset>
+    </tar>
 	</target>
 
 	<!-- woproject tasks -->
