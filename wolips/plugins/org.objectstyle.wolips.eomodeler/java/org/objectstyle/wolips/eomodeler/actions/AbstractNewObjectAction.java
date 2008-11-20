@@ -128,6 +128,7 @@ public abstract class AbstractNewObjectAction<T extends EOModelObject, U extends
 			try {
 				Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
 				_child = AbstractNewObjectAction.this.createChild(_parent, failures);
+				//System.out.println("NewOperation.execute: Added " + _child + " to " + _parent);
 				return Status.OK_STATUS;
 			} catch (EOModelException e) {
 				throw new ExecutionException("Failed to add new object.", e);
@@ -142,6 +143,7 @@ public abstract class AbstractNewObjectAction<T extends EOModelObject, U extends
 		@Override
 		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
 			try {
+				//System.out.println("NewOperation.undo: undo adding " + _child + " to " + _parent);
 				Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
 				_child._removeFromModelParent(failures);
 				return Status.OK_STATUS;
