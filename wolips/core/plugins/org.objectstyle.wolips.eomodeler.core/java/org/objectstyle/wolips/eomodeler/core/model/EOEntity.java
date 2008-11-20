@@ -1054,13 +1054,13 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		firePropertyChange(EOEntity.EXTERNAL_NAME, oldExternalName, myExternalName);
 	}
 
-	public int hashCode() {
-		return (myName == null) ? super.hashCode() : myName.hashCode();
-	}
-
-	public boolean equals(Object _obj) {
-		return (_obj instanceof EOEntity && ((_obj == this) || ComparisonUtils.equals(myName, ((EOEntity) _obj).myName)));
-	}
+//	public int hashCode() {
+//		return (myName == null) ? super.hashCode() : myName.hashCode();
+//	}
+//
+//	public boolean equals(Object _obj) {
+//		return (_obj instanceof EOEntity && ((_obj == this) || ComparisonUtils.equals(myName, ((EOEntity) _obj).myName)));
+//	}
 
 	public Set<EOModelReferenceFailure> getReferenceFailures() {
 		Set<EOModelReferenceFailure> referenceFailures = new HashSet<EOModelReferenceFailure>();

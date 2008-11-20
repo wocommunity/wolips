@@ -92,13 +92,13 @@ public class EODatabaseConfig extends EOModelObject<EOModel> {
 		}
 	}
 
-	public boolean equals(Object _obj) {
-		return (_obj instanceof EODatabaseConfig && ComparisonUtils.equals(myName, ((EODatabaseConfig) _obj).myName));
-	}
-
-	public int hashCode() {
-		return (myName == null) ? super.hashCode() : myName.hashCode();
-	}
+//	public boolean equals(Object _obj) {
+//		return (_obj instanceof EODatabaseConfig && ComparisonUtils.equals(myName, ((EODatabaseConfig) _obj).myName));
+//	}
+//
+//	public int hashCode() {
+//		return (myName == null) ? super.hashCode() : myName.hashCode();
+//	}
 
 	public boolean isEquivalent(EODatabaseConfig config, boolean comparePrototypes) {
 		boolean equivalent = false;

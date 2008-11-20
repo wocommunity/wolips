@@ -134,33 +134,33 @@ public class EOJoin extends EOModelObject<EORelationship> implements ISortableEO
 		}
 	}
 
-	public int hashCode() {
-		int hashCode = (myRelationship == null) ? 1 : myRelationship.hashCode();
-		if (mySourceAttribute != null) {
-			hashCode *= mySourceAttribute.hashCode();
-		}
-		if (myDestinationAttribute != null) {
-			hashCode *= myDestinationAttribute.hashCode();
-		}
-		return hashCode;
-	}
-
-	public boolean equals(Object _obj) {
-		boolean equals = false;
-		if (_obj instanceof EOJoin) {
-			if (_obj == this) {
-				equals = true;
-			} else {
-				EOJoin otherJoin = (EOJoin) _obj;
-				if (ComparisonUtils.equals(otherJoin.myRelationship, myRelationship)) {
-					if (mySourceAttribute != null && myDestinationAttribute != null && otherJoin.mySourceAttribute != null && otherJoin.myDestinationAttribute != null) {
-						equals = mySourceAttribute.equals(otherJoin.mySourceAttribute) && myDestinationAttribute.equals(otherJoin.myDestinationAttribute);
-					}
-				}
-			}
-		}
-		return equals;
-	}
+//	public int hashCode() {
+//		int hashCode = (myRelationship == null) ? 1 : myRelationship.hashCode();
+//		if (mySourceAttribute != null) {
+//			hashCode *= mySourceAttribute.hashCode();
+//		}
+//		if (myDestinationAttribute != null) {
+//			hashCode *= myDestinationAttribute.hashCode();
+//		}
+//		return hashCode;
+//	}
+//
+//	public boolean equals(Object _obj) {
+//		boolean equals = false;
+//		if (_obj instanceof EOJoin) {
+//			if (_obj == this) {
+//				equals = true;
+//			} else {
+//				EOJoin otherJoin = (EOJoin) _obj;
+//				if (ComparisonUtils.equals(otherJoin.myRelationship, myRelationship)) {
+//					if (mySourceAttribute != null && myDestinationAttribute != null && otherJoin.mySourceAttribute != null && otherJoin.myDestinationAttribute != null) {
+//						equals = mySourceAttribute.equals(otherJoin.mySourceAttribute) && myDestinationAttribute.equals(otherJoin.myDestinationAttribute);
+//					}
+//				}
+//			}
+//		}
+//		return equals;
+//	}
 
 	public boolean isRelatedTo(EOAttribute _attribute) {
 		boolean isRelatedTo = false;

@@ -227,9 +227,21 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 		}
 	}
 
-	public int hashCode() {
-		return ((myEntity == null) ? 1 : myEntity.hashCode()) * ((myName == null) ? super.hashCode() : myName.hashCode());
-	}
+//	public int hashCode() {
+//		return ((myEntity == null) ? 1 : myEntity.hashCode()) * ((myName == null) ? 1 : myName.hashCode());
+//	}
+//
+//	public boolean equals(Object _obj) {
+//		boolean equals = false;
+//		if (_obj instanceof EORelationship) {
+//			EORelationship relationship = (EORelationship) _obj;
+//			equals = (relationship == this) || (ComparisonUtils.equals(relationship.myEntity, myEntity) && ComparisonUtils.equals(relationship.myName, myName));
+//			if (equals && _obj != this) {
+//				throw new IllegalStateException("RUH ROH!");
+//			}
+//		}
+//		return equals;
+//	}
 
 	public boolean isInverseRelationship(EORelationship _relationship) {
 		boolean isInverse;
@@ -285,15 +297,6 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 		}
 		inverseRelationship._setEntity(myDestination);
 		return inverseRelationship;
-	}
-
-	public boolean equals(Object _obj) {
-		boolean equals = false;
-		if (_obj instanceof EORelationship) {
-			EORelationship relationship = (EORelationship) _obj;
-			equals = (relationship == this) || (ComparisonUtils.equals(relationship.myEntity, myEntity) && ComparisonUtils.equals(relationship.myName, myName));
-		}
-		return equals;
 	}
 
 	public boolean isRelatedTo(EOEntity _entity) {

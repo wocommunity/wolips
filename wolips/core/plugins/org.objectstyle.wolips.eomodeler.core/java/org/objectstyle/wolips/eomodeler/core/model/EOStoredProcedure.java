@@ -153,18 +153,18 @@ public class EOStoredProcedure extends UserInfoableEOModelObject<EOModel> implem
 		}
 	}
 
-	public int hashCode() {
-		return ((myModel == null) ? 1 : myModel.hashCode()) * ((myName == null) ? super.hashCode() : myName.hashCode());
-	}
-
-	public boolean equals(Object _obj) {
-		boolean equals = false;
-		if (_obj instanceof EOStoredProcedure) {
-			EOStoredProcedure storedProcedure = (EOStoredProcedure) _obj;
-			equals = (storedProcedure == this) || (ComparisonUtils.equals(storedProcedure.myModel, myModel) && ComparisonUtils.equals(storedProcedure.myName, myName));
-		}
-		return equals;
-	}
+//	public int hashCode() {
+//		return ((myModel == null) ? 1 : myModel.hashCode()) * ((myName == null) ? super.hashCode() : myName.hashCode());
+//	}
+//
+//	public boolean equals(Object _obj) {
+//		boolean equals = false;
+//		if (_obj instanceof EOStoredProcedure) {
+//			EOStoredProcedure storedProcedure = (EOStoredProcedure) _obj;
+//			equals = (storedProcedure == this) || (ComparisonUtils.equals(storedProcedure.myModel, myModel) && ComparisonUtils.equals(storedProcedure.myName, myName));
+//		}
+//		return equals;
+//	}
 
 	public void setName(String _name) throws DuplicateStoredProcedureNameException {
 		setName(_name, true);

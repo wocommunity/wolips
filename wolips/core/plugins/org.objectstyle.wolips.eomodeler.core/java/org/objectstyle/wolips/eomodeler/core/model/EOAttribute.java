@@ -161,19 +161,19 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		}
 	}
 
-	public int hashCode() {
-		int hashCode = ((myEntity == null) ? 1 : myEntity.hashCode()) * super.hashCode();
-		return hashCode;
-	}
-
-	public boolean equals(Object _obj) {
-		boolean equals = false;
-		if (_obj instanceof EOAttribute) {
-			EOAttribute attribute = (EOAttribute) _obj;
-			equals = (attribute == this) || (ComparisonUtils.equals(attribute.myEntity, myEntity) && ComparisonUtils.equals(attribute.getName(), getName()));
-		}
-		return equals;
-	}
+//	public int hashCode() {
+//		int hashCode = ((myEntity == null) ? 1 : myEntity.hashCode()) * super.hashCode();
+//		return hashCode;
+//	}
+//
+//	public boolean equals(Object _obj) {
+//		boolean equals = false;
+//		if (_obj instanceof EOAttribute) {
+//			EOAttribute attribute = (EOAttribute) _obj;
+//			equals = (attribute == this) || (ComparisonUtils.equals(attribute.myEntity, myEntity) && ComparisonUtils.equals(attribute.getName(), getName()));
+//		}
+//		return equals;
+//	}
 
 	public void guessColumnNameInEntity(EOEntity entity) {
 		String columnName = getName();
