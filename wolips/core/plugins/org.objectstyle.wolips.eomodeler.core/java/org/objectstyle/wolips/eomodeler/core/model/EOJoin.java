@@ -124,12 +124,18 @@ public class EOJoin extends EOModelObject<EORelationship> implements ISortableEO
 			}
 		}
 		if (myDestinationAttribute != null) {
-			EOAttribute destinationAttribute = myRelationship.getDestination().getAttributeNamed(myDestinationAttribute.getName());
-			if (destinationAttribute == null && myDestinationAttribute.getEntity() == myRelationship.getEntity()) {
-				myDestinationAttribute = myDestinationAttribute._cloneModelObject();
-				myRelationship.getEntity().addAttribute(destinationAttribute);
-			} else {
-				myDestinationAttribute = destinationAttribute;
+			EOEntity destination = myRelationship.getDestination();
+			if (destination != null) {
+				EOAttribute destinationAttribute = destination.getAttributeNamed(myDestinationAttribute.getName());
+				if (destinationAttribute == null && myDestinationAttribute.getEntity() == myRelationship.getEntity()) {
+					myDestinationAttribute = myDestinationAttribute._cloneModelObject();
+					myRelationship.getEntity().addAttribute(destinationAttribute);
+				} else {
+					myDestinationAttribute = destinationAttribute;
+				}
+			}
+			else {
+				myDestinationAttribute = null;
 			}
 		}
 	}
