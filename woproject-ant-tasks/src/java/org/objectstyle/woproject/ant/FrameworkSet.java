@@ -211,7 +211,10 @@ public class FrameworkSet extends FileSet {
           int slashIndex = path.indexOf("/");
           String frameworkName = path.substring(slashIndex + 1);
           IFramework framework = this.frameworkModel.getFrameworkWithName(frameworkName);
-          if (framework instanceof ExternalFolderFramework && framework.getRoot() == this.root) {
+          if (framework == null) {
+            throw new BuildException("The framework name '" + frameworkName + "' does not exist.");
+          }
+          else if (framework instanceof ExternalFolderFramework && framework.getRoot() == this.root) {
             ExternalFolderFramework externalFolderFramework = (ExternalFolderFramework) framework;
             frameworks.add(externalFolderFramework);
           }
