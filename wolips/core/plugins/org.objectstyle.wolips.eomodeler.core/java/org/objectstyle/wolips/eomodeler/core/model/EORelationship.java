@@ -180,7 +180,7 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 	}
 
 	public List<EORelationship> getReferencingFlattenedRelationships() {
-		List<EORelationship> referencingFlattenedAttributes = new LinkedList<EORelationship>();
+		List<EORelationship> referencingFlattenedRelationships = new LinkedList<EORelationship>();
 		if (myEntity != null) {
 			for (EOModel model : getEntity().getModel().getModelGroup().getModels()) {
 				for (EOEntity entity : model.getEntities()) {
@@ -188,14 +188,14 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 						if (relationship.isFlattened()) {
 							EORelationshipPath relationshipPath = relationship.getDefinitionPath();
 							if (relationshipPath != null && relationshipPath.isRelatedTo(this)) {
-								referencingFlattenedAttributes.add(relationship);
+								referencingFlattenedRelationships.add(relationship);
 							}
 						}
 					}
 				}
 			}
 		}
-		return referencingFlattenedAttributes;
+		return referencingFlattenedRelationships;
 	}
 
 	public void pasted() throws DuplicateNameException {
