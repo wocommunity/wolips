@@ -689,6 +689,9 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	}
 
 	public EOAttributePath getDefinitionPath() {
+		if (myDefinitionPath == null) {
+			updateDefinitionPath();
+		}
 		return myDefinitionPath;
 	}
 
