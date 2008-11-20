@@ -161,19 +161,22 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		}
 	}
 
-//	public int hashCode() {
-//		int hashCode = ((myEntity == null) ? 1 : myEntity.hashCode()) * super.hashCode();
-//		return hashCode;
-//	}
-//
-//	public boolean equals(Object _obj) {
-//		boolean equals = false;
-//		if (_obj instanceof EOAttribute) {
-//			EOAttribute attribute = (EOAttribute) _obj;
-//			equals = (attribute == this) || (ComparisonUtils.equals(attribute.myEntity, myEntity) && ComparisonUtils.equals(attribute.getName(), getName()));
-//		}
-//		return equals;
-//	}
+	// public int hashCode() {
+	// int hashCode = ((myEntity == null) ? 1 : myEntity.hashCode()) *
+	// super.hashCode();
+	// return hashCode;
+	// }
+	//
+	// public boolean equals(Object _obj) {
+	// boolean equals = false;
+	// if (_obj instanceof EOAttribute) {
+	// EOAttribute attribute = (EOAttribute) _obj;
+	// equals = (attribute == this) ||
+	// (ComparisonUtils.equals(attribute.myEntity, myEntity) &&
+	// ComparisonUtils.equals(attribute.getName(), getName()));
+	// }
+	// return equals;
+	// }
 
 	public void guessColumnNameInEntity(EOEntity entity) {
 		String columnName = getName();
@@ -487,10 +490,18 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 			if (model != null) {
 				EOModelGroup modelGroup = model.getModelGroup();
 				if (modelGroup != null) {
-					Set<EORelationship> referencingRelationships = getReferencingRelationships(true, new VerificationContext(modelGroup));
-					for (EORelationship referencingRelationship : referencingRelationships) {
+					for (EORelationship referencingRelationship : entity.getRelationships()) {
 						if (BooleanUtils.isTrue(referencingRelationship.isToOne())) {
-							referencingRelationship._setMandatory(mandatory);
+							boolean relationshipReferencesAttribute = false;
+							List<EOJoin> joins = referencingRelationship.getJoins();
+							for (EOJoin join : joins) {
+								if (join.getSourceAttribute() == this) {
+									relationshipReferencesAttribute = true;
+								}
+							}
+							if (relationshipReferencesAttribute) {
+								referencingRelationship._setMandatory(mandatory);
+							}
 						}
 					}
 				}
@@ -942,7 +953,8 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		String prototypeName = getArgumentMap().getString("prototypeName", true);
 		clearCachedPrototype(prototypeName, _failures, false, true);
 
-		// MS: Fix a bug that I introduced where it briefly was accidently setting className for prototyped attributes
+		// MS: Fix a bug that I introduced where it briefly was accidently
+		// setting className for prototyped attributes
 		if (super.getValueClassName() != null && _nullIfPrototyped(AbstractEOArgument.VALUE_CLASS_NAME, getValueClassName()) == null) {
 			setValueClassName(getValueClassName(), false);
 		}
