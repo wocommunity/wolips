@@ -277,7 +277,7 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 
 				boolean continueScanning = true;
 				if (resource.getType() == IResource.FOLDER) {
-					if (_patternsets != null && _patternsets.matchesResourcesPattern(resource)) {
+					if (_patternsets == null || _patternsets.matchesResourcesPattern(resource)) {
 						//System.out.println("ModelVisitor.visit: scanning " + resource);
 						_progressMonitor.setTaskName("Scanning " + resource.getName() + " ...");
 						File resourceFile = resource.getLocation().toFile();
@@ -289,7 +289,8 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 					else {
 						IJavaProject javaProject = JavaCore.create(_project);
 						if (javaProject.isOnClasspath(resource)) {
-							continueScanning = false;
+							//continueScanning = false;
+							continueScanning = true; // This breaks Maven for now ... we'll come back to that
 						}
 						else {
 							//System.out.println("ModelVisitor.visit: " + resource);
