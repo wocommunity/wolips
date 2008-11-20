@@ -27,18 +27,18 @@ public class EOArgument extends AbstractEOArgument<EOStoredProcedure> {
 		myDirection = EOArgumentDirection.VOID;
 	}
 
-	public int hashCode() {
-		return ((myStoredProcedure == null) ? 1 : myStoredProcedure.hashCode()) * super.hashCode();
-	}
-
-	public boolean equals(Object _obj) {
-		boolean equals = false;
-		if (_obj instanceof EOArgument) {
-			EOArgument argument = (EOArgument) _obj;
-			equals = (argument == this) || (ComparisonUtils.equals(argument.myStoredProcedure, myStoredProcedure) && ComparisonUtils.equals(argument.getName(), getName()));
-		}
-		return equals;
-	}
+//	public int hashCode() {
+//		return ((myStoredProcedure == null) ? 1 : myStoredProcedure.hashCode()) * super.hashCode();
+//	}
+//
+//	public boolean equals(Object _obj) {
+//		boolean equals = false;
+//		if (_obj instanceof EOArgument) {
+//			EOArgument argument = (EOArgument) _obj;
+//			equals = (argument == this) || (ComparisonUtils.equals(argument.myStoredProcedure, myStoredProcedure) && ComparisonUtils.equals(argument.getName(), getName()));
+//		}
+//		return equals;
+//	}
 
 	public EOStoredProcedure getStoredProcedure() {
 		return myStoredProcedure;

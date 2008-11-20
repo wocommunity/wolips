@@ -184,18 +184,18 @@ public class EOEntityIndex extends UserInfoableEOModelObject<EOEntity> implement
 		}
 	}
 
-	public int hashCode() {
-		return ((_entity == null) ? 1 : _entity.hashCode()) * ((_name == null) ? super.hashCode() : _name.hashCode());
-	}
-
-	public boolean equals(Object obj) {
-		boolean equals = false;
-		if (obj instanceof EOEntityIndex) {
-			EOEntityIndex entityIndex = (EOEntityIndex) obj;
-			equals = (entityIndex == this) || (ComparisonUtils.equals(entityIndex._entity, _entity) && ComparisonUtils.equals(entityIndex._name, _name));
-		}
-		return equals;
-	}
+//	public int hashCode() {
+//		return ((_entity == null) ? 1 : _entity.hashCode()) * ((_name == null) ? super.hashCode() : _name.hashCode());
+//	}
+//
+//	public boolean equals(Object obj) {
+//		boolean equals = false;
+//		if (obj instanceof EOEntityIndex) {
+//			EOEntityIndex entityIndex = (EOEntityIndex) obj;
+//			equals = (entityIndex == this) || (ComparisonUtils.equals(entityIndex._entity, _entity) && ComparisonUtils.equals(entityIndex._name, _name));
+//		}
+//		return equals;
+//	}
 
 	public void setName(String name) throws DuplicateEntityIndexNameException {
 		setName(name, true);

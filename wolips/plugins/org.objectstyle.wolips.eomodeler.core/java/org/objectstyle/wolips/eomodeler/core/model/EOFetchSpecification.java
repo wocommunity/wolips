@@ -187,18 +187,18 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 		}
 	}
 
-	public int hashCode() {
-		return ((myEntity == null) ? 1 : myEntity.hashCode()) * ((myName == null) ? super.hashCode() : myName.hashCode());
-	}
-
-	public boolean equals(Object _obj) {
-		boolean equals = false;
-		if (_obj instanceof EOFetchSpecification) {
-			EOFetchSpecification fetchSpec = (EOFetchSpecification) _obj;
-			equals = (fetchSpec == this) || (ComparisonUtils.equals(fetchSpec.myEntity, myEntity) && ComparisonUtils.equals(fetchSpec.myName, myName));
-		}
-		return equals;
-	}
+//	public int hashCode() {
+//		return ((myEntity == null) ? 1 : myEntity.hashCode()) * ((myName == null) ? super.hashCode() : myName.hashCode());
+//	}
+//
+//	public boolean equals(Object _obj) {
+//		boolean equals = false;
+//		if (_obj instanceof EOFetchSpecification) {
+//			EOFetchSpecification fetchSpec = (EOFetchSpecification) _obj;
+//			equals = (fetchSpec == this) || (ComparisonUtils.equals(fetchSpec.myEntity, myEntity) && ComparisonUtils.equals(fetchSpec.myName, myName));
+//		}
+//		return equals;
+//	}
 
 	public void setName(String _name) throws DuplicateFetchSpecNameException {
 		setName(_name, true);

@@ -474,13 +474,13 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		return myDatabaseConfigs;
 	}
 
-	public int hashCode() {
-		return myName.hashCode();
-	}
-
-	public boolean equals(Object _obj) {
-		return (_obj instanceof EOModel && ((EOModel) _obj).myName.equals(myName));
-	}
+//	public int hashCode() {
+//		return myName.hashCode();
+//	}
+//
+//	public boolean equals(Object _obj) {
+//		return (_obj instanceof EOModel && ((EOModel) _obj).myName.equals(myName));
+//	}
 
 	public URL getModelURL() {
 		return myModelURL;
