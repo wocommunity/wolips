@@ -133,7 +133,7 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 					IJavaElement javaElement = JavaCore.create(file);
 					try {
 						IJavaProject javaProject = javaElement.getJavaProject();
-						if (javaProject != null && javaProject.isOnClasspath(javaElement) && javaElement.isStructureKnown()) {
+						if (javaProject != null && javaProject.isOnClasspath(javaElement)) {
 							if (!isValidSubclass(javaElement)) {
 								file = null;
 							}
@@ -149,7 +149,7 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 					IJavaElement javaElement = JavaCore.create(dotJava);
 					try {
 						IJavaProject javaProject = javaElement.getJavaProject();
-						if (javaProject != null && javaProject.isOnClasspath(javaElement) && javaElement.isStructureKnown()) {
+						if (javaProject != null && javaProject.isOnClasspath(javaElement)) {
 							if (!isValidSubclass(javaElement)) {
 								dotJava = null;
 							}

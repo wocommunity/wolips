@@ -19,6 +19,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.swt.widgets.Display;
 import org.objectstyle.wolips.bindings.Activator;
+import org.objectstyle.wolips.locate.LocatePlugin;
 
 public class WodParserCacheInvalidator implements IResourceChangeListener, IResourceDeltaVisitor {
   public void resourceChanged(IResourceChangeEvent event) {
@@ -50,7 +51,7 @@ public class WodParserCacheInvalidator implements IResourceChangeListener, IReso
           if (javaElement instanceof ICompilationUnit) {
             try {
               IJavaProject javaProject = javaElement.getJavaProject();
-              if (javaProject != null && javaProject.isOnClasspath(javaElement) && javaElement.isStructureKnown()) {
+              if (javaProject != null && javaProject.isOnClasspath(javaElement)) {
                 IType[] types = ((ICompilationUnit) javaElement).getAllTypes();
                 for (IType type : types) {
                   WodParserCache.getTypeCache().clearCacheForType(type);
@@ -58,7 +59,7 @@ public class WodParserCacheInvalidator implements IResourceChangeListener, IReso
               }
             }
             catch (JavaModelException e) {
-              e.printStackTrace(System.out);
+              //e.printStackTrace(System.out);
               Activator.getDefault().log("Failed to clear caches for " + resource + ".", e);
             }
           }
