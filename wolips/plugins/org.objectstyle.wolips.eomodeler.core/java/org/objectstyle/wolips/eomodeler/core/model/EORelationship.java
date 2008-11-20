@@ -348,7 +348,9 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 	}
 
 	public EORelationshipPath getDefinitionPath() {
-		// updateDefinitionPath();
+		if (myDefinitionPath == null) {
+			updateDefinitionPath();
+		}
 		return myDefinitionPath;
 	}
 
@@ -367,11 +369,17 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 
 	protected void updateDefinitionPath() {
 		if (isFlattened()) {
-			AbstractEOAttributePath definitionPath = getEntity().resolveKeyPath(_getDefinition());
-			if (definitionPath instanceof EORelationshipPath && definitionPath.isValid()) {
-				myDefinitionPath = (EORelationshipPath) definitionPath;
-			} else {
-				myDefinitionPath = null;
+			EOEntity entity = getEntity();
+			if (entity != null) {
+				AbstractEOAttributePath definitionPath = entity.resolveKeyPath(_getDefinition());
+				if (definitionPath instanceof EORelationshipPath && definitionPath.isValid()) {
+					myDefinitionPath = (EORelationshipPath) definitionPath;
+				} else {
+					myDefinitionPath = null;
+				}
+			}
+			else {
+				myDefinition = null;
 			}
 		} else {
 			myDefinitionPath = null;
