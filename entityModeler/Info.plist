@@ -22,7 +22,7 @@
 	<key>CFBundleSignature</key>
 		<string>eomd</string>
 	<key>CFBundleVersion</key>
-		<string>1.0.8</string>
+		<string>1.0.9</string>
 
   <key>CFBundleDocumentTypes</key>
 	  <array>
@@ -49,9 +49,9 @@
 		<array>
 			<string>-vm</string><string>/System/Library/Frameworks/JavaVM.framework/Versions/1.5/Commands/java</string>
 			<string>--launcher.library</string>
-			<string>$APP_PACKAGE/Contents/Resources/plugins/org.eclipse.equinox.launcher.carbon.macosx_1.0.100.v20080509-1800/eclipse_1114.so</string>
+			<string>$APP_PACKAGE/Contents/Resources/plugins/org.eclipse.equinox.launcher.carbon.macosx_1.0.101.R34x_v20080731</string>
 			<string>-startup</string>
-			<string>$APP_PACKAGE/Contents/Resources/plugins/org.eclipse.equinox.launcher_1.0.100.v20080509-1800.jar</string>
+			<string>$APP_PACKAGE/Contents/Resources/plugins/org.eclipse.equinox.launcher_1.0.100.200811211310.jar</string>
 			<string>-keyring</string><string>~/.eclipse_keyring</string>
 			<string>-consoleLog</string>
 			<string>-showlocation</string>
