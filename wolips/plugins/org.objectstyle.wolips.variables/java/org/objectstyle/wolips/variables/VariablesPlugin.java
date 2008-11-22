@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.variables;
 
 import java.util.Dictionary;
+import java.util.Properties;
 
 import org.eclipse.core.resources.IProject;
 import org.objectstyle.woenvironment.env.WOEnvironment;
@@ -104,7 +105,11 @@ public class VariablesPlugin extends AbstractBaseActivator {
 			environment = this.woEnvironment;
 		} else {
 			BuildProperties buildProperties = (BuildProperties) project.getAdapter(BuildProperties.class);
-			environment = new WOEnvironment(this.woEnvironment.getWOVariables(), buildProperties.getProperties());
+			Properties existingProperties = null;
+			if (buildProperties != null) {
+				existingProperties = buildProperties.getProperties();
+			}
+			environment = new WOEnvironment(this.woEnvironment.getWOVariables(), existingProperties);
 		}
 		return environment;
 	}
