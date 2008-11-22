@@ -36,9 +36,9 @@ import org.objectstyle.wolips.baseforuiplugins.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.IEOClassLoaderFactory;
-import org.objectstyle.wolips.eomodeler.core.sql.EOFSQLUtils;
 import org.objectstyle.wolips.eomodeler.core.sql.IEOSQLGenerator;
 import org.objectstyle.wolips.eomodeler.core.sql.IEOSQLGeneratorFactory;
+import org.objectstyle.wolips.eomodeler.core.utils.SQLUtils;
 
 public class GenerateSQLDialog extends Dialog {
 	private Button _dropDatabaseButton;
@@ -359,14 +359,13 @@ public class GenerateSQLDialog extends Dialog {
 			IEOSQLGenerator sqlGenerator = IEOSQLGeneratorFactory.Utility.sqlGeneratorFactory().sqlGenerator(_model, getEntityNames(), selectedDatabaseConfig, getEOModelClassLoader(), runInEntityModeler);
 			String url = selectedDatabaseConfig.getURL();
 			char commandSeparatorChar;
-			// yes.  This sucks.
+			// yes. This sucks.
 			if (url != null && url.toLowerCase().contains("oracle")) {
 				commandSeparatorChar = '/';
-			}
-			else {
+			} else {
 				commandSeparatorChar = ';';
 			}
-			List<String> statements = EOFSQLUtils.splitSQLStatements(allSql, commandSeparatorChar);
+			List<String> statements = SQLUtils.splitSQLStatements(allSql, commandSeparatorChar);
 			setCancel(false);
 			for (int statementsNum = 0; !_cancel && statementsNum < statements.size(); statementsNum++) {
 				String statement = statements.get(statementsNum);
