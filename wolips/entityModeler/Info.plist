@@ -22,7 +22,7 @@
 	<key>CFBundleSignature</key>
 		<string>eomd</string>
 	<key>CFBundleVersion</key>
-		<string>1.0.9</string>
+		<string>__VERSION__</string>
 
   <key>CFBundleDocumentTypes</key>
 	  <array>
