@@ -1066,7 +1066,10 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 
 	public void synchronizeNameChange(String oldName, String newName) {
 		boolean reverseEngineered = false;
-		String columnName = newName;
+		String columnName = getColumnName();
+		if (columnName == null) {
+			columnName = newName;
+		}
 		EOEntity entity = getEntity();
 		if (entity != null) {
 			EOModel model = entity.getModel();
@@ -1087,9 +1090,12 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 			String oldName = getName();
 			String newName = modelParent.findUnusedAttributeName(oldName);
 			setName(newName);
+			modelParent.addAttribute(this);
 			synchronizeNameChange(oldName, newName);
 		}
-		modelParent.addAttribute(this);
+		else {
+			modelParent.addAttribute(this);
+		}
 	}
 
 	public boolean getSqlGenerationAllowsNull() {
