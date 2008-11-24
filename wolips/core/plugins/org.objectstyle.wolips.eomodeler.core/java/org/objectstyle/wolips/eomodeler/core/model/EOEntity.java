@@ -2549,7 +2549,10 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	public void synchronizeNameChange(String oldName, String newName) {
 		boolean reverseEngineered = false;
-		String externalName = newName;
+		String externalName = getExternalName();
+		if (externalName == null) {
+			externalName = newName;
+		}
 		EOModel model = getModel();
 		if (model != null) {
 			reverseEngineered = model.isReverseEngineered();
@@ -2564,9 +2567,15 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	public void _addToModelParent(EOModel modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) throws EOModelException {
 		if (findUniqueName) {
-			setName(modelParent.findUnusedEntityName(getName()));
+			String oldName = getName();
+			String newName = modelParent.findUnusedEntityName(getName());
+			setName(newName);
+			modelParent.addEntity(this);
+			synchronizeNameChange(oldName, newName);
 		}
-		modelParent.addEntity(this);
+		else {
+			modelParent.addEntity(this);
+		}
 	}
 
 	public boolean getSqlGenerationCreateInheritedProperties() {
