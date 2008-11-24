@@ -65,6 +65,7 @@ import org.eclipse.core.runtime.IPath;
 import org.objectstyle.woenvironment.frameworks.FrameworkModel;
 import org.objectstyle.woenvironment.frameworks.Root;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.variables.BuildProperties;
 import org.objectstyle.wolips.variables.ProjectVariables;
 import org.objectstyle.wolips.variables.VariablesPlugin;
 
@@ -79,11 +80,14 @@ public class EclipseFrameworkModel extends FrameworkModel<IEclipseFramework> {
 		List<Root<IEclipseFramework>> roots = new LinkedList<Root<IEclipseFramework>>();
 		IProjectAdapter projectAdapter = (IProjectAdapter) this.project.getAdapter(IProjectAdapter.class);
 		if (projectAdapter != null) {
-			String projectFrameworkFolderPath = projectAdapter.getBuildProperties().getProjectFrameworkFolder();
-			if (projectFrameworkFolderPath != null) {
-				IFolder projectFrameworkFolder = this.project.getFolder(projectFrameworkFolderPath);
-				if (projectFrameworkFolder.exists()) {
-					roots.add(new EclipseFolderRoot(Root.PROJECT_LOCAL_ROOT, "Project Local Frameworks", projectFrameworkFolder.getLocation().toFile(), projectFrameworkFolder.getLocation().toFile()));
+			BuildProperties buildProperties = projectAdapter.getBuildProperties();
+			if (buildProperties != null) {
+				String projectFrameworkFolderPath = buildProperties.getProjectFrameworkFolder();
+				if (projectFrameworkFolderPath != null) {
+					IFolder projectFrameworkFolder = this.project.getFolder(projectFrameworkFolderPath);
+					if (projectFrameworkFolder.exists()) {
+						roots.add(new EclipseFolderRoot(Root.PROJECT_LOCAL_ROOT, "Project Local Frameworks", projectFrameworkFolder.getLocation().toFile(), projectFrameworkFolder.getLocation().toFile()));
+					}
 				}
 			}
 		}
