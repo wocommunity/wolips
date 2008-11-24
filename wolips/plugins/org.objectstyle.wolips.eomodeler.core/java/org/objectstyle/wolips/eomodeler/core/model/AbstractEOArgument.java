@@ -170,19 +170,6 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		}
 	}
 
-	public int hashCode() {
-		return (myName == null) ? super.hashCode() : myName.hashCode();
-	}
-
-	public boolean equals(Object _obj) {
-		boolean equals = false;
-		if (_obj instanceof AbstractEOArgument) {
-			AbstractEOArgument argument = (AbstractEOArgument) _obj;
-			equals = (argument == this) || (ComparisonUtils.equals(argument.myName, myName));
-		}
-		return equals;
-	}
-
 	public boolean isFlattened() {
 		return StringUtils.isKeyPath(_getDefinition());
 	}
