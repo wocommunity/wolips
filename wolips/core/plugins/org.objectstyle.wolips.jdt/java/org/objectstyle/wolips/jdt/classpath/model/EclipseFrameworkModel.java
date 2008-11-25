@@ -78,6 +78,8 @@ public class EclipseFrameworkModel extends FrameworkModel<IEclipseFramework> {
 
 	protected synchronized List<Root<IEclipseFramework>> createRoots() {
 		List<Root<IEclipseFramework>> roots = new LinkedList<Root<IEclipseFramework>>();
+		roots.add(new EclipseProjectRoot(Root.PROJECT_ROOT, "Project Frameworks", ResourcesPlugin.getWorkspace().getRoot()));
+
 		IProjectAdapter projectAdapter = (IProjectAdapter) this.project.getAdapter(IProjectAdapter.class);
 		if (projectAdapter != null) {
 			BuildProperties buildProperties = projectAdapter.getBuildProperties();
@@ -91,7 +93,6 @@ public class EclipseFrameworkModel extends FrameworkModel<IEclipseFramework> {
 				}
 			}
 		}
-		roots.add(new EclipseProjectRoot(Root.PROJECT_ROOT, "Project Frameworks", ResourcesPlugin.getWorkspace().getRoot()));
 
 		ProjectVariables variables = VariablesPlugin.getDefault().getProjectVariables(this.project);
 		
