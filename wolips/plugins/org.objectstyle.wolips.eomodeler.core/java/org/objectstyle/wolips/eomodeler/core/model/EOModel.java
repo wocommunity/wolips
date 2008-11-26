@@ -312,7 +312,6 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	}
 
 	protected void _entityChanged(EOEntity _entity, String _propertyName, Object _oldValue, Object _newValue) {
-		myEntities = new HashSet<EOEntity>(myEntities);
 		firePropertyChange(EOModel.ENTITY + "." + _propertyName, _oldValue, _newValue);
 		firePropertyChange(EOModel.ENTITY, null, _entity);
 	}
