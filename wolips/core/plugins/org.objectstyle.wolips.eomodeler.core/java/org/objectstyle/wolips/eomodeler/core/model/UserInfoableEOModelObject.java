@@ -17,7 +17,7 @@ public abstract class UserInfoableEOModelObject<T> extends EOModelObject<T> impl
 	private PropertyChangeRepeater _userInfoRepeater;
 
 	private NotificationMap<Object, Object> _userInfo;
-
+	
 	public UserInfoableEOModelObject() {
 		_userInfoRepeater = new PropertyChangeRepeater(UserInfoableEOModelObject.USER_INFO);
 		setUserInfo(new NotificationMap<Object, Object>(), false);
@@ -45,7 +45,7 @@ public abstract class UserInfoableEOModelObject<T> extends EOModelObject<T> impl
 		if (entityModelerMap == null) {
 			entityModelerMap = new HashMap<Object, Object>();
 			if (readWrite) {
-				userInfo.put(UserInfoableEOModelObject.ENTITY_MODELER_KEY, entityModelerMap);
+				userInfo._putWithoutEvents(UserInfoableEOModelObject.ENTITY_MODELER_KEY, entityModelerMap);
 			}
 		}
 		return new EOModelMap(entityModelerMap);
@@ -82,9 +82,9 @@ public abstract class UserInfoableEOModelObject<T> extends EOModelObject<T> impl
 	protected void writeUserInfo(EOModelMap modelMap) {
 		EOModelMap entityModelerMap = getEntityModelerMap(false);
 		if (entityModelerMap.isEmpty()) {
-			getUserInfo().remove(UserInfoableEOModelObject.ENTITY_MODELER_KEY);
+			getUserInfo()._removeWithoutEvents(UserInfoableEOModelObject.ENTITY_MODELER_KEY);
 		} else {
-			getUserInfo().put(UserInfoableEOModelObject.ENTITY_MODELER_KEY, entityModelerMap);
+			getUserInfo()._putWithoutEvents(UserInfoableEOModelObject.ENTITY_MODELER_KEY, entityModelerMap);
 		}
 
 		modelMap.setMap("userInfo", _userInfo, true);
