@@ -193,6 +193,10 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	private EOStoredProcedure myInsertProcedure;
 
 	private EOStoredProcedure myNextPrimaryKeyProcedure;
+	
+	private boolean _entityDirty;
+	
+	private boolean _fetchSpecsDirty;
 
 	public EOEntity() {
 		myAttributes = new HashSet<EOAttribute>();
@@ -202,11 +206,35 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		myEntityMap = new EOModelMap();
 		myFetchSpecsMap = new EOModelMap();
 		myGenerateSource = true;
+		_entityDirty = true;
+		_fetchSpecsDirty = true;
 	}
 
 	public EOEntity(String _name) {
 		this();
 		myName = _name;
+	}
+	
+	public void setEntityDirty(boolean entityDirty) {
+		_entityDirty = entityDirty;
+		if (!_entityDirty) {
+			setFetchSpecsDirty(false);
+		}
+	}
+	
+	public boolean isEntityDirty() {
+		return _entityDirty;
+	}
+	
+	public void setFetchSpecsDirty(boolean fetchSpecsDirty) {
+		_fetchSpecsDirty = fetchSpecsDirty;
+		if (_fetchSpecsDirty) {
+			setEntityDirty(true);
+		}
+	}
+	
+	public boolean isFetchSpecsDirty() {
+		return _fetchSpecsDirty;
 	}
 
 	public AbstractEOAttributePath resolveKeyPath(String _keyPath) {
@@ -696,6 +724,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
 		if (myModel != null) {
+			setEntityDirty(true);
 			myModel._entityChanged(this, _propertyName, _oldValue, _newValue);
 		}
 	}
@@ -1712,7 +1741,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	@SuppressWarnings("unused")
 	protected void _attributeChanged(EOAttribute _attribute, String _propertyName, Object _oldValue, Object _newValue) {
-		myAttributes = new HashSet<EOAttribute>(myAttributes);
+		//myAttributes = new HashSet<EOAttribute>(myAttributes);
 		// firePropertyChange(EOEntity.ATTRIBUTE + "." + _propertyName, new
 		// ProxyChange(_attribute, _oldValue), new ProxyChange(_attribute,
 		// _newValue));
@@ -1721,7 +1750,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	@SuppressWarnings("unused")
 	protected void _relationshipChanged(EORelationship _relationship, String _propertyName, Object _oldValue, Object _newValue) {
-		myRelationships = new HashSet<EORelationship>(myRelationships);
+		//myRelationships = new HashSet<EORelationship>(myRelationships);
 		// firePropertyChange(EOEntity.RELATIONSHIP + "." + _propertyName, new
 		// ProxyChange(_relationship, _oldValue), new ProxyChange(_relationship,
 		// _newValue));
@@ -1730,7 +1759,8 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	@SuppressWarnings("unused")
 	protected void _fetchSpecificationChanged(EOFetchSpecification _fetchSpecification, String _propertyName, Object _oldValue, Object _newValue) {
-		myFetchSpecs = new HashSet<EOFetchSpecification>(myFetchSpecs);
+		setFetchSpecsDirty(true);
+		//myFetchSpecs = new HashSet<EOFetchSpecification>(myFetchSpecs);
 		// firePropertyChange(EOEntity.FETCH_SPECIFICATION + "." +
 		// _propertyName, new ProxyChange(_fetchSpecification, _oldValue), new
 		// ProxyChange(_fetchSpecification, _newValue));
@@ -1739,7 +1769,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	@SuppressWarnings("unused")
 	protected void _entityIndexChanged(EOEntityIndex _entityIndex, String _propertyName, Object _oldValue, Object _newValue) {
-		myEntityIndexes = new HashSet<EOEntityIndex>(myEntityIndexes);
+		//myEntityIndexes = new HashSet<EOEntityIndex>(myEntityIndexes);
 		// firePropertyChange(EOEntity.ENTITY_INDEX + "." + _propertyName, new
 		// ProxyChange(_entityIndex, _oldValue), new ProxyChange(_entityIndex,
 		// _newValue));
@@ -2265,6 +2295,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		try {
 			EOModelMap entityMap = new EOModelMap((Map) WOLPropertyListSerialization.propertyListFromURL(entityURL, new EOModelParserDataStructureFactory()));
 			loadFromMap(entityMap, failures);
+			setEntityDirty(false);
 		} catch (Throwable e) {
 			throw new EOModelException("Failed to load entity from '" + entityURL.getFile() + "'.", e);
 		}
@@ -2274,6 +2305,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		try {
 			EOModelMap fspecMap = new EOModelMap((Map) WOLPropertyListSerialization.propertyListFromURL(fetchSpecURL, new EOModelParserDataStructureFactory()));
 			loadFetchSpecsFromMap(fspecMap, failures);
+			setFetchSpecsDirty(false);
 		} catch (Throwable e) {
 			throw new EOModelException("Failed to load fetch specifications from '" + fetchSpecURL.getFile() + "'.", e);
 		}
@@ -2282,12 +2314,13 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	public void saveToFile(File _entityFile) throws PropertyListParserException, IOException {
 		EOModelMap entityMap = toEntityMap();
 		WOLPropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, _entityFile, entityMap);
+		setEntityDirty(false);
 	}
 
 	public void saveFetchSpecsToFile(File _fetchSpecFile) throws PropertyListParserException, IOException {
 		if (myFetchSpecs.size() == 0) {
 			_fetchSpecFile.delete();
-		} else {
+		} else if (getEntity().isFetchSpecsDirty()) {
 			EOModelMap fetchSpecMap = toFetchSpecsMap();
 			WOLPropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, _fetchSpecFile, fetchSpecMap);
 		}

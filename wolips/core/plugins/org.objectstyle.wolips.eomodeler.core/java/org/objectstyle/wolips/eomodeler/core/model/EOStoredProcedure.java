@@ -83,14 +83,25 @@ public class EOStoredProcedure extends UserInfoableEOModelObject<EOModel> implem
 
 	private EOModelMap myStoredProcedureMap;
 
+	private boolean _storedProcedureDirty;
+	
 	public EOStoredProcedure() {
 		myStoredProcedureMap = new EOModelMap();
 		myArguments = new LinkedList<EOArgument>();
+		_storedProcedureDirty = true;
 	}
 
 	public EOStoredProcedure(String _name) {
 		this();
 		myName = _name;
+	}
+	
+	public void setStoredProcedureDirty(boolean storedProcedureDirty) {
+		_storedProcedureDirty = storedProcedureDirty;
+	}
+	
+	public boolean isStoredProcedureDirty() {
+		return _storedProcedureDirty;
 	}
 
 	public void pasted() {
@@ -149,6 +160,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject<EOModel> implem
 
 	protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
 		if (myModel != null) {
+			setStoredProcedureDirty(true);
 			myModel._storedProcedureChanged(this, _propertyName, _oldValue, _newValue);
 		}
 	}
@@ -307,6 +319,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject<EOModel> implem
 		try {
 			EOModelMap entityMap = new EOModelMap((Map) WOLPropertyListSerialization.propertyListFromURL(_storedProcedureURL, new EOModelParserDataStructureFactory()));
 			loadFromMap(entityMap, _failures);
+			setStoredProcedureDirty(false);
 		} catch (Throwable e) {
 			throw new EOModelException("Failed to load stored procedure from '" + _storedProcedureURL + "'.", e);
 		}
@@ -315,6 +328,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject<EOModel> implem
 	public void saveToFile(File _storedProcedureFile) throws PropertyListParserException, IOException {
 		EOModelMap storedProcedureMap = toMap();
 		WOLPropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, _storedProcedureFile, storedProcedureMap);
+		setStoredProcedureDirty(false);
 	}
 
 	public void resolve(Set<EOModelVerificationFailure> _failures) {
