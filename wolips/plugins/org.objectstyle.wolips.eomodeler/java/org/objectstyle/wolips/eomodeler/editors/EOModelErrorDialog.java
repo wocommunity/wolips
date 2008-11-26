@@ -1,5 +1,6 @@
 package org.objectstyle.wolips.eomodeler.editors;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -7,7 +8,6 @@ import java.util.regex.Pattern;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -266,7 +266,7 @@ public class EOModelErrorDialog extends Dialog {
 
 	protected static class FailureContentProvider implements IStructuredContentProvider {
 		public Object[] getElements(Object inputElement) {
-			Set failures = (Set) inputElement;
+			Collection failures = (Collection) inputElement;
 			return failures.toArray();
 		}
 
