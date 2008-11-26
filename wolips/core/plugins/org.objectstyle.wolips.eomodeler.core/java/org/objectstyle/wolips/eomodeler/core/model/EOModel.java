@@ -1170,7 +1170,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	}
 
 	public String getFullyQualifiedName() {
-		return myName;
+		return myName == null ? "Unknown Model '" + getModelURL() + "'" : myName;
 	}
 
 	@Override
