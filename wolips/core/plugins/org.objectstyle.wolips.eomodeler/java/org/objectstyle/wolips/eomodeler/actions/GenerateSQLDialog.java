@@ -1,5 +1,6 @@
 package org.objectstyle.wolips.eomodeler.actions;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -476,7 +477,7 @@ public class GenerateSQLDialog extends Dialog {
 		}
 
 		public Object[] getElements(Object inputElement) {
-			return ((Set) inputElement).toArray();
+			return ((Collection) inputElement).toArray();
 		}
 
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
