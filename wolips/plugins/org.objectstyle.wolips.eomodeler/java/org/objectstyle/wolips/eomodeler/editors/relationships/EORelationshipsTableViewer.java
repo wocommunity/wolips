@@ -234,26 +234,4 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
 			}
 		}
 	}
-
-	// protected class RelationshipsChangeRefresher extends
-	// TableRefreshPropertyListener {
-	// public RelationshipsChangeRefresher(TableViewer _tableViewer) {
-	// super(_tableViewer);
-	// }
-	//
-	// public void propertyChange(PropertyChangeEvent _event) {
-	// super.propertyChange(_event);
-	// Set oldValues = (Set) _event.getOldValue();
-	// Set newValues = (Set) _event.getNewValue();
-	// if (newValues != null && oldValues != null) {
-	// if (newValues.size() > oldValues.size()) {
-	// List newList = new LinkedList(newValues);
-	// newList.removeAll(oldValues);
-	// EORelationshipsTableViewer.this.setSelection(new
-	// StructuredSelection(newList));
-	// }
-	// TableUtils.packTableColumns(EORelationshipsTableViewer.this.getTableViewer());
-	// }
-	// }
-	// }
 }
