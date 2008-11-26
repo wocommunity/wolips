@@ -685,7 +685,7 @@ public class WOLPropertyListSerialization {
 		}
 
 		private static final boolean _isWhitespace(char c) {
-			return c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f';
+			return c < 33 && (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f');
 		}
 
 		private static char _nsToUnicode(int c) {
