@@ -5,7 +5,7 @@ import java.util.TreeSet;
 
 public class PropertyListSet<T> extends TreeSet<T> {
 	public PropertyListSet() {
-		super(PropertyListComparator.AscendingPropertyListComparator);
+		super(PropertyListComparator.AscendingInsensitivePropertyListComparator);
 	}
 
 	public PropertyListSet(Object[] guideArray) {
