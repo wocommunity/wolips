@@ -83,6 +83,11 @@ public class NotificationMap<U, V> implements Map<U, V>, Cloneable {
 		return oldValue;
 	}
 
+	public V _putWithoutEvents(U _key, V _value) {
+		V oldValue = myMap.put(_key, _value);
+		return oldValue;
+	}
+	
 	public void putAll(Map<? extends U, ? extends V> _t) {
 		myMap.putAll(_t);
 		myPropertyChangeSupport.firePropertyChange(NotificationMap.CONTENTS, null, null);
@@ -99,6 +104,11 @@ public class NotificationMap<U, V> implements Map<U, V>, Cloneable {
 		return oldValue;
 	}
 
+	public V _removeWithoutEvents(Object _key) {
+		V oldValue = myMap.remove(_key);
+		return oldValue;
+	}
+	
 	public int size() {
 		return myMap.size();
 	}
