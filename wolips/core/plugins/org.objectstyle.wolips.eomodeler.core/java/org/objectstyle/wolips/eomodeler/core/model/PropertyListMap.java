@@ -5,7 +5,7 @@ import java.util.TreeMap;
 
 public class PropertyListMap<U, V> extends TreeMap<U, V> {
 	public PropertyListMap() {
-		super(PropertyListComparator.AscendingPropertyListComparator);
+		super(PropertyListComparator.AscendingSensitivePropertyListComparator);
 	}
 
 	public PropertyListMap(Map<U, V> _map) {

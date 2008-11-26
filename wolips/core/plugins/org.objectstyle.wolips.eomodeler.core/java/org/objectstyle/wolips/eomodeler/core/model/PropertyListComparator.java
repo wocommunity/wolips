@@ -59,19 +59,21 @@ import java.util.Set;
 
 public class PropertyListComparator implements Comparator<Object> {
 
-	public static final PropertyListComparator AscendingPropertyListComparator = new PropertyListComparator();
+	public static final PropertyListComparator AscendingInsensitivePropertyListComparator = new PropertyListComparator(true);
+	public static final PropertyListComparator AscendingSensitivePropertyListComparator = new PropertyListComparator(false);
 
+	private boolean _caseInsensitive;
 	protected Map guideMap;
 
 	public static PropertyListComparator propertyListComparatorWithGuideArray(Object[] guideArray) {
 		if (guideArray != null && guideArray.length > 0) {
 			Object[] sortedArray = guideArray.clone();
-			Arrays.sort(sortedArray, AscendingPropertyListComparator);
+			Arrays.sort(sortedArray, AscendingInsensitivePropertyListComparator);
 
 			if (!Arrays.equals(guideArray, sortedArray)) { // if it was already
 															// sorted, don't use
 															// it
-				PropertyListComparator result = new PropertyListComparator();
+				PropertyListComparator result = new PropertyListComparator(true);
 				int size = guideArray.length;
 				if (size > 0) {
 					result.guideMap = new HashMap(size);
@@ -98,9 +100,13 @@ public class PropertyListComparator implements Comparator<Object> {
 			}
 		}
 
-		return AscendingPropertyListComparator;
+		return AscendingInsensitivePropertyListComparator;
 	}
 
+	public PropertyListComparator(boolean caseInsensitive) {
+		_caseInsensitive = caseInsensitive;
+	}
+	
 	public int compare(Object arg0, Object arg1) {
 		if (arg0 == null) {
 			return (arg1 == null) ? 0 : -1;
@@ -118,7 +124,10 @@ public class PropertyListComparator implements Comparator<Object> {
 				return guide0.compareTo(guide1);
 			}
 		} else if (arg0 instanceof String && arg1 instanceof String) {
-			return ((String) arg0).compareToIgnoreCase((String) arg1);
+			if (_caseInsensitive) {
+				return ((String) arg0).compareToIgnoreCase((String) arg1);
+			}
+			return ((String) arg0).compareTo((String) arg1);
 		} else if (arg0 instanceof Number && arg1 instanceof Number) {
 			double d0 = ((Number) arg0).doubleValue();
 			double d1 = ((Number) arg1).doubleValue();
