@@ -1086,39 +1086,47 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	
 			if (myDeletedEntityNames != null) {
 				for (String entityName : myDeletedEntityNames) {
-					File entityFile = new File(modelFolder, entityName + ".plist");
-					if (entityFile.exists()) {
-						entityFile.delete();
-					}
-					File fspecFile = new File(modelFolder, entityName + ".fspec");
-					if (fspecFile.exists()) {
-						fspecFile.delete();
+					if (getEntityNamed(entityName) == null) {
+						File entityFile = new File(modelFolder, entityName + ".plist");
+						if (entityFile.exists()) {
+							entityFile.delete();
+						}
+						File fspecFile = new File(modelFolder, entityName + ".fspec");
+						if (fspecFile.exists()) {
+							fspecFile.delete();
+						}
 					}
 				}
 			}
 	
 			for (EOEntity entity : myEntities) {
-				String entityName = entity.getName();
-				File entityFile = new File(modelFolder, entityName + ".plist");
-				entity.saveToFile(entityFile);
-				File fspecFile = new File(modelFolder, entityName + ".fspec");
-				entity.saveFetchSpecsToFile(fspecFile);
-				entity.entitySaved();
+				if (entity.isEntityDirty()) {
+					String entityName = entity.getName();
+					File entityFile = new File(modelFolder, entityName + ".plist");
+					entity.saveToFile(entityFile);
+					File fspecFile = new File(modelFolder, entityName + ".fspec");
+					entity.saveFetchSpecsToFile(fspecFile);
+					entity.entitySaved();
+				}
 			}
 	
 			if (myDeletedStoredProcedureNames != null) {
 				for (String storedProcedureName : myDeletedStoredProcedureNames) {
-					File storedProcedureFile = new File(modelFolder, storedProcedureName + ".storedProcedure");
-					if (storedProcedureFile.exists()) {
-						storedProcedureFile.delete();
+					if (getStoredProcedureNamed(storedProcedureName) == null) {
+						File storedProcedureFile = new File(modelFolder, storedProcedureName + ".storedProcedure");
+						if (storedProcedureFile.exists()) {
+							storedProcedureFile.delete();
+						}
 					}
 				}
 			}
 	
 			for (EOStoredProcedure storedProcedure : myStoredProcedures) {
-				String storedProcedureName = storedProcedure.getName();
-				File storedProcedureFile = new File(modelFolder, storedProcedureName + ".storedProcedure");
-				storedProcedure.saveToFile(storedProcedureFile);
+				if (storedProcedure.isStoredProcedureDirty()) {
+					String storedProcedureName = storedProcedure.getName();
+					File storedProcedureFile = new File(modelFolder, storedProcedureName + ".storedProcedure");
+					storedProcedure.saveToFile(storedProcedureFile);
+				}
 			}
 	
 			setDirty(false);
