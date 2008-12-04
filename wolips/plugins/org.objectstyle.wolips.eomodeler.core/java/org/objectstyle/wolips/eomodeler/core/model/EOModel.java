@@ -1103,10 +1103,8 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 				if (entity.isEntityDirty()) {
 					String entityName = entity.getName();
 					File entityFile = new File(modelFolder, entityName + ".plist");
-					entity.saveToFile(entityFile);
 					File fspecFile = new File(modelFolder, entityName + ".fspec");
-					entity.saveFetchSpecsToFile(fspecFile);
-					entity.entitySaved();
+					entity.saveToFile(entityFile, fspecFile);
 				}
 			}
 	
