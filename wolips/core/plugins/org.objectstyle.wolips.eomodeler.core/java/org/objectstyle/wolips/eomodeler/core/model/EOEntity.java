@@ -725,6 +725,9 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
 		if (myModel != null) {
 			setEntityDirty(true);
+			if (EOEntity.FETCH_SPECIFICATIONS.equals(_propertyName)) {
+				setFetchSpecsDirty(true);
+			}
 			myModel._entityChanged(this, _propertyName, _oldValue, _newValue);
 		}
 	}
@@ -875,10 +878,6 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 				}
 			}
 		}
-	}
-
-	public void entitySaved() {
-		myOriginalName = myName;
 	}
 
 	public String getOriginalName() {
@@ -2311,19 +2310,19 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		}
 	}
 
-	public void saveToFile(File _entityFile) throws PropertyListParserException, IOException {
+	public void saveToFile(File _entityFile, File fetchSpecsFile) throws PropertyListParserException, IOException {
 		EOModelMap entityMap = toEntityMap();
 		WOLPropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, _entityFile, entityMap);
-		setEntityDirty(false);
-	}
 
-	public void saveFetchSpecsToFile(File _fetchSpecFile) throws PropertyListParserException, IOException {
 		if (myFetchSpecs.size() == 0) {
-			_fetchSpecFile.delete();
+			fetchSpecsFile.delete();
 		} else if (getEntity().isFetchSpecsDirty()) {
 			EOModelMap fetchSpecMap = toFetchSpecsMap();
-			WOLPropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, _fetchSpecFile, fetchSpecMap);
+			WOLPropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, fetchSpecsFile, fetchSpecMap);
 		}
+
+		myOriginalName = myName;
+		setEntityDirty(false);
 	}
 
 	public void resolveFlattened(Set<EOModelVerificationFailure> _failures) {
