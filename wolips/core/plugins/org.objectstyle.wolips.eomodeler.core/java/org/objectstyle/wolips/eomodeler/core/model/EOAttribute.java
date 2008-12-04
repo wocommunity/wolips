@@ -989,9 +989,11 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 				} else if (columnName.indexOf(' ') != -1) {
 					_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The attribute " + getName() + "'s column name '" + columnName + "' has a space in it.", false));
 				} else {
-					for (EOAttribute attribute : myEntity.getAttributes()) {
-						if (attribute != this && columnName.equals(attribute.getColumnName())) {
-							_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The attribute " + getName() + "'s column name is the same as " + attribute.getName() + "'s.", true));
+					if (getDefinition() == null) {
+						for (EOAttribute attribute : myEntity.getAttributes()) {
+							if (attribute != this && columnName.equals(attribute.getColumnName())) {
+								_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The attribute " + getName() + "'s column name is the same as " + attribute.getName() + "'s.", true));
+							}
 						}
 					}
 				}
