@@ -96,63 +96,27 @@
 	</distributionManagement>
 	<scm>
 		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject/tags/woproject-all-parent-2.0.16</connection>
-		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/tags/woproject-all-parent-2.0.16</developerConnection>
+		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/tags/woproject-all-parent-2.0.16
+		</developerConnection>
 		<url>http://svn.objectstyle.org/repos/woproject/tags/woproject-all-parent-2.0.16</url>
 	</scm>
-	<!-- <reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-changes-plugin</artifactId>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>jira-report</report>
-						</reports>
-					</reportSet>
-				</reportSets>
-			</plugin>
-		</plugins>
-	</reporting>  -->
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<artifactId>maven-plugin-plugin</artifactId>
+					<version>2.4.3</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.apache.maven.plugin-tools</groupId>
+							<artifactId>maven-plugin-tools-ant</artifactId>
+							<version>2.4.3</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
-			<!-- <plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-changes-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>announcement-generate</goal>
-						</goals>
-						<id>announcement-generate</id>
-					</execution>
-					<execution>
-						<goals>
-							<goal>announcement-mail</goal>
-						</goals>
-						<id>announcement-mail</id>
-					</execution>
-				</executions>
-				<configuration>
-					<smtpHost>office</smtpHost>
-					<smtpPort implementation="java.lang.Integer"> 25 </smtpPort>
-					<fromAddress implementation="java.lang.String"> ulrich@objectstyle.org </fromAddress>
-					<toAddresses>
-						<toAddress implementation="java.lang.String"> ulrich@objectstyle.org </toAddress>
-						<toAddress implementation="java.lang.String"> ulrich@objectstyle.org </toAddress>
-					</toAddresses>
-				</configuration>
-			</plugin> -->
-			<plugin>
-				<artifactId>maven-plugin-plugin</artifactId>
-				<dependencies>
-					<dependency>
-						<groupId>org.apache.maven</groupId>
-						<artifactId>maven-plugin-tools-ant</artifactId>
-						<version>2.1</version>
-					</dependency>
-				</dependencies>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
