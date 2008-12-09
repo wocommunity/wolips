@@ -2,8 +2,9 @@
 	<mojos>
 		<mojo>
 			<goal>woapplication</goal>
-      		<!-- this element refers to the Ant target we'll invoke -->
+			<!-- this element refers to the Ant target we'll invoke -->
 			<call>build-woapplication</call>
+			<requiresProject>true</requiresProject>
 			<description> Build a woapplication</description>
 			<parameters>
 				<parameter>
@@ -15,13 +16,32 @@
 					<type>java.lang.String</type>
 					<description>The final name of the project currently being built.</description>
 				</parameter>
+				<parameter>
+					<name>artifactId</name>
+					<property>artifactId</property>
+					<required>true</required>
+					<readonly>true</readonly>
+					<defaultValue>${project.artifactId}</defaultValue>
+					<type>java.lang.String</type>
+					<description>The artifact ID of the project currently being built.</description>
+				</parameter>
+				<parameter>
+					<name>version</name>
+					<property>version</property>
+					<required>true</required>
+					<readonly>true</readonly>
+					<defaultValue>${project.version}</defaultValue>
+					<type>java.lang.String</type>
+					<description>The version of the project currently being built.</description>
+				</parameter>
 			</parameters>
 		</mojo>
 		<mojo>
 			<goal>woframework</goal>
-
-      <!-- this element refers to the Ant target we'll invoke -->
+			<!-- this element refers to the Ant target we'll invoke -->
 			<call>build-woframework</call>
+			<requiresProject>true</requiresProject>
+
 			<description> Build a woaframework</description>
 			<parameters>
 				<parameter>
@@ -32,6 +52,24 @@
 					<defaultValue>${project.build.finalName}</defaultValue>
 					<type>java.lang.String</type>
 					<description>The final name of the framework currently being built.</description>
+				</parameter>
+				<parameter>
+					<name>artifactId</name>
+					<property>artifactId</property>
+					<required>true</required>
+					<readonly>true</readonly>
+					<defaultValue>${project.artifactId}</defaultValue>
+					<type>java.lang.String</type>
+					<description>The artifact ID of the project currently being built.</description>
+				</parameter>
+				<parameter>
+					<name>version</name>
+					<property>version</property>
+					<required>true</required>
+					<readonly>true</readonly>
+					<defaultValue>${project.version}</defaultValue>
+					<type>java.lang.String</type>
+					<description>The version of the project currently being built.</description>
 				</parameter>
 			</parameters>
 		</mojo>

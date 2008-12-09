@@ -11,11 +11,8 @@
 
 	<target name="test-pom" depends="initTaskDefs">
 
-		<artifact:pom file="pom.xml" id="pom.xml.project" />
-		<!--xmlproperty file="pom.xml" prefix="pom.xml" keepRoot="true" / -->
-
-		<echo>Artifact ID: ${pom.xml.project.artifactId}</echo>
-		<echo>Artifact Version: ${pom.xml.project.version}</echo>
+		<echo>Artifact ID: ${artifactId}</echo>
+		<echo>Artifact Version: ${version}</echo>
 		<echo>Artifact Final Name: ${finalName}</echo>
 
 	</target>
@@ -49,7 +46,7 @@
 
 		<woapplication name="${finalName}"
 			frameworksBaseURL="/WebObjects/${finalName}.woa/Contents/Frameworks"
-			startupScriptName="${pom.xml.project.artifactId}"
+			startupScriptName="${artifactId}"
 			stdFrameworks="false" destDir="target"
 			customInfoPListContent="${customInfoPListContent}"
 			principalClass="${principalClass}">
@@ -109,12 +106,12 @@
 	</target>
 
 	<target name="build-woframework" depends="woframeworkproperties">
-		<woframework name="${pom.xml.project.artifactId}" destDir="target" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}" eoAdaptorClassName="${eoAdaptorClassName}">
+		<woframework name="${artifactId}" destDir="target" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}" eoAdaptorClassName="${eoAdaptorClassName}">
 			<classes dir="target/classes">
 			</classes>
 		</woframework>
 		<zip zipfile="target/${finalName}.jar" roundup="false">
-			<fileset dir="target/${pom.xml.project.artifactId}.framework">
+			<fileset dir="target/${artifactId}.framework">
 				<exclude name="**/Java/**"/>
 			</fileset>
 			<fileset dir="target/classes">
