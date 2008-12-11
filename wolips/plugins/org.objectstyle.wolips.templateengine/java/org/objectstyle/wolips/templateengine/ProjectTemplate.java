@@ -183,7 +183,7 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 		templateEngine.getWolipsContext().setProjectName(project.getName());
 		templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
 		templateEngine.setPropertyForKey(project.getName(), "projectName");
-		templateEngine.setPropertyForKey(project.getName(), "projectName_lowercase");
+		templateEngine.setPropertyForKey(project.getName().toLowerCase(), "projectName_lowercase");
 		for (ProjectInput input : getInputs()) {
 			Object value = input.getValue();
 			templateEngine.setPropertyForKey(value, input.getName());
