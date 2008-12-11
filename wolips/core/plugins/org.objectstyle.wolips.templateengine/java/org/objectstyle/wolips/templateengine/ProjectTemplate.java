@@ -219,6 +219,9 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 			if ("__placeholder__".equals(templateChildName) || "__placeholder".equals(templateChildName)) {
 				continue;
 			}
+			if (templateChildName.endsWith("__binary")) {
+				templateChildName = templateChildName.substring(0, templateChildName.indexOf("__binary"));
+			}
 			
 			for (String key : templateKeys) {
 				Object value = templateEngine.getPropertyForKey(key);
