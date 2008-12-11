@@ -220,7 +220,7 @@ public class WOFrameworkContainerInitializer extends ClasspathContainerInitializ
 		IEclipseFramework framework = frameworkModel.getFrameworkWithName(frameworkName);
 		if (framework != null && !frameworkNames.contains(frameworkName)) {
 			WOFrameworkClasspathContainer frameworkContainer = new WOFrameworkClasspathContainer(framework);
-			IClasspathEntry frameworkClasspathEntry = JavaCore.newContainerEntry(frameworkContainer.getPath(), true);
+			IClasspathEntry frameworkClasspathEntry = JavaCore.newContainerEntry(frameworkContainer.getPath(), false);
 			if (index == -1) {
 				newClasspathEntries.add(frameworkClasspathEntry);
 			} else {
