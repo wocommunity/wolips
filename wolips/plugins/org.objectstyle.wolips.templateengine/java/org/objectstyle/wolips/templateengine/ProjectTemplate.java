@@ -182,11 +182,17 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 
 		templateEngine.getWolipsContext().setProjectName(project.getName());
 		templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
+		templateEngine.setPropertyForKey(project.getName(), "projectName");
+		templateEngine.setPropertyForKey(project.getName(), "projectName_lowercase");
 		for (ProjectInput input : getInputs()) {
-			templateEngine.setPropertyForKey(input.getValue(), input.getName());
+			Object value = input.getValue();
+			templateEngine.setPropertyForKey(value, input.getName());
+			if (input.getValue() instanceof String) {
+				templateEngine.setPropertyForKey(((String) value).toLowerCase(), input.getName() + "_lowercase");
+			}
 			// Package types get a yourname_folder variable made
 			if (input.getType() == ProjectInput.Type.Package) {
-				templateEngine.setPropertyForKey(((String) input.getValue()).replace('.', '/'), input.getName() + "_folder");
+				templateEngine.setPropertyForKey(((String) value).replace('.', '/'), input.getName() + "_folder");
 			}
 		}
 
