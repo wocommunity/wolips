@@ -1,6 +1,8 @@
 package org.objectstyle.wolips.templateengine;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -11,6 +13,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.objectstyle.wolips.baseforplugins.util.FileUtilities;
 import org.objectstyle.wolips.baseforplugins.util.URLUtils;
 import org.objectstyle.wolips.datasets.adaptable.ProjectPatternsets;
 import org.w3c.dom.Document;
@@ -211,7 +214,7 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 		templateEngine.run(progressMonitor);
 	}
 
-	protected void _createProjectFolder(TemplateEngine templateEngine, File baseFolder, File projectFolder, File templateFolder, List<String> templateKeys, IProgressMonitor progressMonitor) throws CoreException {
+	protected void _createProjectFolder(TemplateEngine templateEngine, File baseFolder, File projectFolder, File templateFolder, List<String> templateKeys, IProgressMonitor progressMonitor) throws CoreException, FileNotFoundException, IOException {
 		for (File templateChild : templateFolder.listFiles()) {
 			String templateChildName = templateChild.getName();
 			// Skip over files named "__placeholder__".  These exist only so
@@ -219,8 +222,10 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 			if ("__placeholder__".equals(templateChildName) || "__placeholder".equals(templateChildName)) {
 				continue;
 			}
+			boolean binary = false;
 			if (templateChildName.endsWith("__binary")) {
 				templateChildName = templateChildName.substring(0, templateChildName.indexOf("__binary"));
+				binary = true;
 			}
 			
 			for (String key : templateKeys) {
@@ -235,9 +240,14 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 				_createProjectFolder(templateEngine, baseFolder, destinationFile, templateChild, templateKeys, progressMonitor);
 			} else {
 				if (!"template.xml".equals(templateChildName)) {
-					String templatePath = templateChild.getAbsolutePath();
-					templatePath = templatePath.substring(baseFolder.getAbsolutePath().length());
-					templateEngine.addTemplate(new TemplateDefinition(templatePath, destinationFile.getParentFile().getAbsolutePath(), destinationFile.getName(), destinationFile.getName()));
+					if (binary) {
+						FileUtilities.copyFileToFile(templateChild, destinationFile, false, false);
+					}
+					else {
+						String templatePath = templateChild.getAbsolutePath();
+						templatePath = templatePath.substring(baseFolder.getAbsolutePath().length());
+						templateEngine.addTemplate(new TemplateDefinition(templatePath, destinationFile.getParentFile().getAbsolutePath(), destinationFile.getName(), destinationFile.getName()));
+					}
 				}
 			}
 		}
