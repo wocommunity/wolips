@@ -20,7 +20,10 @@ Require-Bundle: org.eclipse.debug.ui,
  org.objectstyle.wolips,
  org.objectstyle.wolips.datasets,
  org.objectstyle.wolips.jdt;bundle-version="1.0.6",
- org.objectstyle.wolips.woproject;bundle-version="1.0.6"
+ org.objectstyle.wolips.woproject;bundle-version="1.0.6",
+ org.eclipse.jdt.junit;bundle-version="3.4.0",
+ org.eclipse.jdt.junit4.runtime;bundle-version="1.0.200",
+ org.eclipse.pde.junit.runtime;bundle-version="3.4.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.launching,
  org.objectstyle.wolips.launching.actions,
