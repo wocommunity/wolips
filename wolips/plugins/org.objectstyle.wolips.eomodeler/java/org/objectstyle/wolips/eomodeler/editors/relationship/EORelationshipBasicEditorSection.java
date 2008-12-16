@@ -320,7 +320,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 		boolean enabled = !hasJoins && joinsEnabled;
 		_modelComboViewer.getCombo().setEnabled(enabled);
 		_entityComboViewer.getCombo().setEnabled(enabled);
-		_joinSemanticComboViewer.getCombo().setEnabled(enabled);
+		//_joinSemanticComboViewer.getCombo().setEnabled(enabled);
 		_definitionText.setEnabled(!hasJoins);
 	}
 
