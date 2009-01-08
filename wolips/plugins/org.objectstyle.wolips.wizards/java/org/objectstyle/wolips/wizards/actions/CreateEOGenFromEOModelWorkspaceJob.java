@@ -111,9 +111,13 @@ public class CreateEOGenFromEOModelWorkspaceJob extends WorkspaceJob {
 					}
 				});
 			}
-		} catch (Throwable t) {
+		} catch (final Throwable t) {
 			t.printStackTrace();
-			ErrorUtils.openErrorDialog(new Shell(), "EOGen Creation Failed", t);
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					ErrorUtils.openErrorDialog(new Shell(), "EOGen Creation Failed", t);
+				}
+			});
 		}
 		return new Status(IStatus.OK, org.objectstyle.wolips.eogenerator.ui.Activator.PLUGIN_ID, IStatus.OK, "Done", null);
 	}
