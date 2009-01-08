@@ -359,6 +359,21 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		addDatabaseConfig(databaseConfig);
 		return databaseConfig;
 	}
+	
+	public boolean canConvertDatabaseConfigsToSingleConnectionDictionary() {
+		boolean canConvertDatabaseConfigsToSingleConnectionDictionary;
+		if (myDatabaseConfigs == null || myDatabaseConfigs.size() == 0) {
+			canConvertDatabaseConfigsToSingleConnectionDictionary = true;
+		}
+		else if (myDatabaseConfigs.size() == 1) {
+			EODatabaseConfig databaseConfig = getDatabaseConfigs().iterator().next();
+			canConvertDatabaseConfigsToSingleConnectionDictionary = databaseConfig.canConvertToConnectionDictionary();
+		}
+		else {
+			canConvertDatabaseConfigsToSingleConnectionDictionary = false;
+		}
+		return canConvertDatabaseConfigsToSingleConnectionDictionary;
+	}
 
 	public void addDatabaseConfig(EODatabaseConfig _databaseConfig) throws DuplicateNameException {
 		addDatabaseConfig(_databaseConfig, true, null);
@@ -407,11 +422,17 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		_databaseConfig._setModel(null);
 	}
 
-	public void setActiveDatabaseConfig(EODatabaseConfig _activeDatabaseConfig) {
+	public void setActiveDatabaseConfig(EODatabaseConfig activeDatabaseConfig) {
+		setActiveDatabaseConfig(activeDatabaseConfig, true);
+	}
+
+	public void setActiveDatabaseConfig(EODatabaseConfig activeDatabaseConfig, boolean fireEvents) {
 		EODatabaseConfig oldActiveDatabaseConfig = myActiveDatabaseConfig;
-		myActiveDatabaseConfig = _activeDatabaseConfig;
+		myActiveDatabaseConfig = activeDatabaseConfig;
 		clearCachedPrototypes(null, false);
-		firePropertyChange(EOModel.ACTIVE_DATABASE_CONFIG, oldActiveDatabaseConfig, myActiveDatabaseConfig);
+		if (fireEvents) {
+			firePropertyChange(EOModel.ACTIVE_DATABASE_CONFIG, oldActiveDatabaseConfig, myActiveDatabaseConfig);
+		}
 	}
 
 	public EODatabaseConfig getActiveDatabaseConfig() {
@@ -864,7 +885,11 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		_reverseEngineered = entityModelerMap.getBoolean("reverseEngineered", false);
 
 		Map<String, Map> databaseConfigs = entityModelerMap.getMap("databaseConfigs");
-		if (databaseConfigs != null) {
+		boolean backwardsCompatibility = false;
+		if (databaseConfigs == null) {
+			backwardsCompatibility = true;
+		}
+		else if (databaseConfigs != null) {
 			for (Map.Entry<String, Map> databaseConfigEntry : databaseConfigs.entrySet()) {
 				String name = databaseConfigEntry.getKey();
 				EODatabaseConfig databaseConfig = new EODatabaseConfig(name);
@@ -915,7 +940,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			if (ComparisonUtils.equals(activeDatabaseConfig.getName(), activeDatabaseConfigName)) {
 				myActiveDatabaseConfig = activeDatabaseConfig;
 			} else {
-				setActiveDatabaseConfig(activeDatabaseConfig);
+				setActiveDatabaseConfig(activeDatabaseConfig, false);
 			}
 		}
 	}
@@ -968,20 +993,27 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		modelMap.setSet("storedProcedures", storedProcedures, true);
 
 		EOModelMap entityModelerMap = getEntityModelerMap(true);
-		Map<String, Map> databaseConfigs = new PropertyListMap<String, Map>();
-		for (EODatabaseConfig databaseConfig : myDatabaseConfigs) {
-			databaseConfigs.put(databaseConfig.getName(), databaseConfig.toMap());
+		boolean canConvertDatabaseConfigsToSingleConnectionDictionary = canConvertDatabaseConfigsToSingleConnectionDictionary();
+		if (canConvertDatabaseConfigsToSingleConnectionDictionary) {
+			entityModelerMap.remove("databaseConfigs");
+			entityModelerMap.remove("activeDatabaseConfigName");
 		}
-		entityModelerMap.setMap("databaseConfigs", databaseConfigs, true);
+		else {
+			Map<String, Map> databaseConfigs = new PropertyListMap<String, Map>();
+			for (EODatabaseConfig databaseConfig : myDatabaseConfigs) {
+				databaseConfigs.put(databaseConfig.getName(), databaseConfig.toMap());
+			}
+			entityModelerMap.setMap("databaseConfigs", databaseConfigs, true);
 
+			if (myActiveDatabaseConfig == null || databaseConfigs.get(myActiveDatabaseConfig.getName()) == null) {
+				entityModelerMap.remove("activeDatabaseConfigName");
+			} else {
+				entityModelerMap.put("activeDatabaseConfigName", myActiveDatabaseConfig.getName());
+			}
+		}
+		
 		NamingConvention.toMap(_entityNamingConvention, "entityNamingConvention", entityModelerMap);
 		NamingConvention.toMap(_attributeNamingConvention, "attributeNamingConvention", entityModelerMap);
-
-		if (myActiveDatabaseConfig == null || databaseConfigs.get(myActiveDatabaseConfig.getName()) == null) {
-			entityModelerMap.remove("activeDatabaseConfigName");
-		} else {
-			entityModelerMap.put("activeDatabaseConfigName", myActiveDatabaseConfig.getName());
-		}
 		
 		entityModelerMap.setBoolean("reverseEngineered", Boolean.valueOf(_reverseEngineered), EOModelMap.YNOptionalDefaultNo);
 

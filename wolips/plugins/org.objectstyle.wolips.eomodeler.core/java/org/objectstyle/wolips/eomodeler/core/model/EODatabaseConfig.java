@@ -433,4 +433,8 @@ public class EODatabaseConfig extends EOModelObject<EOModel> {
 		}
 		modelParent.addDatabaseConfig(this);
 	}
+
+	public boolean canConvertToConnectionDictionary() {
+		return getPrototype() == null;
+	}
 }
