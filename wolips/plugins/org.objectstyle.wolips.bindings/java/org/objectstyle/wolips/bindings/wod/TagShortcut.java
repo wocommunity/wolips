@@ -10,6 +10,10 @@ public class TagShortcut {
   private String _actual;
   private Map<String, String> _attributes;
 
+  public TagShortcut(String shortcut, String actual) {
+    this(shortcut, actual, new HashMap<String, String>());
+  }
+
   public TagShortcut(String shortcut, String actual, String attributesStr) {
     this(shortcut, actual, new HashMap<String, String>());
     setAttributesAsString(attributesStr);

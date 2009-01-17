@@ -44,7 +44,6 @@
 package org.objectstyle.wolips.bindings.preferences;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
@@ -59,28 +58,75 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     IPreferenceStore prefs = Activator.getDefault().getPreferenceStore();
 
     List<TagShortcut> tagShortcuts = new ArrayList<TagShortcut>();
-    tagShortcuts.add(new TagShortcut("string", "WOString", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("str", "WOString", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("else", "ERXElse", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("if", "WOConditional", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("not", "WOConditional", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("condition", "WOConditional", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("conditional", "WOConditional", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("link", "WOHyperlink", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("loop", "WORepetition", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("textfield", "WOTextField", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("checkbox", "WOCheckBox", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("hidden", "WOHiddenField", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("select", "WOPopUpButton", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("radio", "WORadioButton", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("password", "WOPasswordField", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("upload", "WOFileUpload", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("text", "WOText", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("form", "WOForm", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("submit", "WOSubmitButton", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("localized", "ERXLocalizedString", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("image", "WOImage", new HashMap<String, String>()));
-    tagShortcuts.add(new TagShortcut("img", "WOImage", new HashMap<String, String>()));
+    tagShortcuts.add(new TagShortcut("localized", "ERXLocalizedString")); // not in 5.4
+    tagShortcuts.add(new TagShortcut("not", "WOConditional"));
+    tagShortcuts.add(new TagShortcut("else", "ERXElse"));
+    tagShortcuts.add(new TagShortcut("if", "WOConditional"));
+    tagShortcuts.add(new TagShortcut("conditional", "WOConditional"));
+    tagShortcuts.add(new TagShortcut("condition", "WOConditional")); // not in 5.4
+    tagShortcuts.add(new TagShortcut("foreach", "WORepetition"));
+    tagShortcuts.add(new TagShortcut("repeat", "WORepetition"));
+    tagShortcuts.add(new TagShortcut("repetition", "WORepetition"));
+    tagShortcuts.add(new TagShortcut("loop", "WORepetition")); // not in 5.4
+    tagShortcuts.add(new TagShortcut("content", "WOComponentContent"));
+    tagShortcuts.add(new TagShortcut("componentContent", "WOComponentContent"));
+    tagShortcuts.add(new TagShortcut("str", "WOString")); // not in 5.4
+    tagShortcuts.add(new TagShortcut("string", "WOString"));
+    tagShortcuts.add(new TagShortcut("switchComponent", "WOSwitchComponent"));
+    tagShortcuts.add(new TagShortcut("switch", "WOSwitchComponent"));
+    tagShortcuts.add(new TagShortcut("XMLNode", "WOXMLNode"));
+    tagShortcuts.add(new TagShortcut("nestedList", "WONestedList"));
+    tagShortcuts.add(new TagShortcut("param", "WOParam"));
+    tagShortcuts.add(new TagShortcut("applet", "WOApplet"));
+    tagShortcuts.add(new TagShortcut("quickTime", "WOQuickTime"));
+    tagShortcuts.add(new TagShortcut("commentString", "WOHTMLCommentString"));
+    tagShortcuts.add(new TagShortcut("comment", "WOHTMLCommentString"));
+    tagShortcuts.add(new TagShortcut("noContentElement", "WONoContentElement"));
+    tagShortcuts.add(new TagShortcut("noContent", "WONoContentElement"));
+    tagShortcuts.add(new TagShortcut("body", "WOBody"));
+    tagShortcuts.add(new TagShortcut("embeddedObject", "WOEmbeddedObject"));
+    tagShortcuts.add(new TagShortcut("embedded", "WOEmbeddedObject"));
+    tagShortcuts.add(new TagShortcut("frame", "WOFrame"));
+    tagShortcuts.add(new TagShortcut("image", "WOImage"));
+    tagShortcuts.add(new TagShortcut("img", "WOImage")); // not in 5.4
+    tagShortcuts.add(new TagShortcut("form", "WOForm"));
+    tagShortcuts.add(new TagShortcut("javaScript", "WOJavaScript"));
+    tagShortcuts.add(new TagShortcut("VBScript", "WOVBScript"));
+    tagShortcuts.add(new TagShortcut("resourceURL", "WOResourceURL"));
+    tagShortcuts.add(new TagShortcut("genericElement", "WOGenericElement"));
+    tagShortcuts.add(new TagShortcut("element", "WOGenericElement"));
+    tagShortcuts.add(new TagShortcut("genericContainer", "WOGenericContainer"));
+    tagShortcuts.add(new TagShortcut("container", "WOGenericContainer"));
+    tagShortcuts.add(new TagShortcut("activeImage", "WOActiveImage"));
+    tagShortcuts.add(new TagShortcut("checkBox", "WOCheckBox"));
+    tagShortcuts.add(new TagShortcut("checkbox", "WOCheckBox")); // not in 5.4 (5.4 is case insensitive)
+    tagShortcuts.add(new TagShortcut("fileUpload", "WOFileUpload"));
+    tagShortcuts.add(new TagShortcut("upload", "WOFileUpload"));
+    tagShortcuts.add(new TagShortcut("hiddenField", "WOHiddenField"));
+    tagShortcuts.add(new TagShortcut("hidden", "WOHiddenField")); // not in 5.4
+    tagShortcuts.add(new TagShortcut("imageButton", "WOImageButton"));
+    tagShortcuts.add(new TagShortcut("inputList", "WOInputList"));
+    tagShortcuts.add(new TagShortcut("browser", "WOBrowser"));
+    tagShortcuts.add(new TagShortcut("checkBoxList", "WOCheckBoxList"));
+    tagShortcuts.add(new TagShortcut("popUpButton", "WOPopUpButton"));
+    tagShortcuts.add(new TagShortcut("select", "WOPopUpButton")); // not in 5.4
+    tagShortcuts.add(new TagShortcut("radioButtonList", "WORadioButtonList"));
+    tagShortcuts.add(new TagShortcut("passwordField", "WOPasswordField"));
+    tagShortcuts.add(new TagShortcut("password", "WOPassword"));
+    tagShortcuts.add(new TagShortcut("radioButton", "WORadioButton"));
+    tagShortcuts.add(new TagShortcut("radio", "WORadioButton"));
+    tagShortcuts.add(new TagShortcut("resetButton", "WOResetButton"));
+    tagShortcuts.add(new TagShortcut("reset", "WOResetButton"));
+    tagShortcuts.add(new TagShortcut("submitButton", "WOSubmitButton"));
+    tagShortcuts.add(new TagShortcut("submit", "WOSubmitButton"));
+    tagShortcuts.add(new TagShortcut("text", "WOText"));
+    tagShortcuts.add(new TagShortcut("textField", "WOTextField"));
+    tagShortcuts.add(new TagShortcut("textfield", "WOTextField")); // not in 5.4 (5.4 is case insensitive)
+    tagShortcuts.add(new TagShortcut("search", "WOSearchField"));
+    tagShortcuts.add(new TagShortcut("searchfield", "WOSearchField"));
+    tagShortcuts.add(new TagShortcut("hyperlink", "WOHyperlink"));
+    tagShortcuts.add(new TagShortcut("link", "WOHyperlink"));
+    tagShortcuts.add(new TagShortcut("actionURL", "WOActionURL"));
     prefs.setDefault(PreferenceConstants.TAG_SHORTCUTS_KEY, TagShortcut.toPreferenceString(tagShortcuts));
 
     List<BindingValidationRule> validationRules = new ArrayList<BindingValidationRule>();
