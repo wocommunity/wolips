@@ -219,7 +219,7 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 			String templateChildName = templateChild.getName();
 			// Skip over files named "__placeholder__".  These exist only so
 			// empty folders make it into the plugin.
-			if ("__placeholder__".equals(templateChildName) || "__placeholder".equals(templateChildName)) {
+			if ("__placeholder__".equals(templateChildName) || "__placeholder".equals(templateChildName) || ".svn".equals(templateChildName) || "CVS".equals(templateChildName)) {
 				continue;
 			}
 			boolean binary = false;
