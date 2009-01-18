@@ -11,9 +11,9 @@
 	<!-- ========================================== -->
 	<target name="all">
 		<ant dir="org.objectstyle.wolips.woproject" target="all" />
+		<ant dir="org.objectstyle.wolips.preferences" target="all" />
 		<ant dir="org.objectstyle.wolips.variables" target="all" />
 		<ant dir="org.objectstyle.wolips.workbenchutilities" target="all" />
-		<ant dir="org.objectstyle.wolips.preferences" target="all" />
 		<ant dir="org.objectstyle.wolips.locate" target="all" />
 		<ant dir="org.objectstyle.wolips" target="all" />
 		<ant dir="org.objectstyle.wolips.refactoring" target="all" />
@@ -58,9 +58,9 @@
 	<!-- ========================================== -->
 	<target name="dist">
 		<ant dir="org.objectstyle.wolips.woproject" target="dist" />
+		<ant dir="org.objectstyle.wolips.preferences" target="dist" />
 		<ant dir="org.objectstyle.wolips.variables" target="dist" />
 		<ant dir="org.objectstyle.wolips.workbenchutilities" target="dist" />
-		<ant dir="org.objectstyle.wolips.preferences" target="dist" />
 		<ant dir="org.objectstyle.wolips.locate" target="dist" />
 		<ant dir="org.objectstyle.wolips" target="dist" />
 		<ant dir="org.objectstyle.wolips.refactoring" target="dist" />
