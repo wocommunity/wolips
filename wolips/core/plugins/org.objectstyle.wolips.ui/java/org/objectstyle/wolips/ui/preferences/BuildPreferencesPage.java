@@ -51,6 +51,7 @@ package org.objectstyle.wolips.ui.preferences;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.objectstyle.wolips.preferences.Preferences;
@@ -74,6 +75,7 @@ public class BuildPreferencesPage extends FieldEditorPreferencePage implements I
 	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
 	 */
 	public void createFieldEditors() {
+		addField(new StringFieldEditor(Preferences.PREF_WOLIPS_PROPERTIES_FILE, PreferencesMessages.getString("Preferences.wolipsPropertiesFile.Label"), getFieldEditorParent()));
 		addField(new BooleanFieldEditor(Preferences.PREF_CAPTURE_ANT_OUTPUT, PreferencesMessages.getString("Preferences.CaptureAntOutput.Label"), getFieldEditorParent()));
 		addField(new BooleanFieldEditor(Preferences.PREF_WRITE_PB_DOT_PROJECT_ON_BUILD, PreferencesMessages.getString("Preferences.WritePBDotProjectOnBuild.Label"), getFieldEditorParent()));
 		addField(new BooleanFieldEditor(Preferences.PREF_WRITE_XCODE_ON_BUILD, PreferencesMessages.getString("Preferences.WriteXcodeOnBuild.Label"), getFieldEditorParent()));

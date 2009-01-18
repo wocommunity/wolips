@@ -62,6 +62,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.objectstyle.woenvironment.env.WOEnvironment;
+import org.objectstyle.woenvironment.env.WOVariables;
 
 public class ExternalFrameworkModel extends FrameworkModel<IFramework> {
   private WOEnvironment environment;
@@ -104,7 +105,8 @@ public class ExternalFrameworkModel extends FrameworkModel<IFramework> {
     List<Root<IFramework>> roots = new LinkedList<Root<IFramework>>();
     //roots.add(new EclipseProjectRoot(Root.PROJECT_ROOT, "Project Frameworks", ResourcesPlugin.getWorkspace().getRoot()));
 
-    String projectLocalFrameworksFolder = this.environment.getWOVariables().getProperty("projectFrameworkFolder");
+    WOVariables variables = this.environment.getWOVariables();
+    String projectLocalFrameworksFolder = variables.getProperty("projectFrameworkFolder");
     if (projectLocalFrameworksFolder != null) {
       File projectLocalRoot = new File(projectLocalFrameworksFolder);
       roots.add(new ExternalFolderRoot(Root.PROJECT_LOCAL_ROOT, "Project Local Frameworks", projectLocalRoot, projectLocalRoot));
@@ -113,24 +115,24 @@ public class ExternalFrameworkModel extends FrameworkModel<IFramework> {
       roots.add(new ExternalFolderRoot(Root.PROJECT_LOCAL_ROOT, "Project Local Frameworks", null, null));
     }
 
-    File externalBuildRootPath = fixMissingSeparatorAfterDevice(this.environment.getWOVariables().externalBuildRoot());
-    File externalBuildFrameworkPath = fixMissingSeparatorAfterDevice(this.environment.getWOVariables().externalBuildFrameworkPath());
+    File externalBuildRootPath = fixMissingSeparatorAfterDevice(variables.externalBuildRoot());
+    File externalBuildFrameworkPath = fixMissingSeparatorAfterDevice(variables.externalBuildFrameworkPath());
     roots.add(new ExternalFolderRoot(Root.EXTERNAL_ROOT, "External Build Root", externalBuildRootPath, externalBuildFrameworkPath));
 
-    File userRoot = fixMissingSeparatorAfterDevice(this.environment.getWOVariables().userRoot());
-    File userFrameworksPath = fixMissingSeparatorAfterDevice(this.environment.getWOVariables().userFrameworkPath());
+    File userRoot = fixMissingSeparatorAfterDevice(variables.userRoot());
+    File userFrameworksPath = fixMissingSeparatorAfterDevice(variables.userFrameworkPath());
     roots.add(new ExternalFolderRoot(Root.USER_ROOT, "User Frameworks", userRoot, userFrameworksPath));
 
-    File localRoot = fixMissingSeparatorAfterDevice(this.environment.getWOVariables().localRoot());
-    File localFrameworksPath = fixMissingSeparatorAfterDevice(this.environment.getWOVariables().localFrameworkPath());
+    File localRoot = fixMissingSeparatorAfterDevice(variables.localRoot());
+    File localFrameworksPath = fixMissingSeparatorAfterDevice(variables.localFrameworkPath());
     roots.add(new ExternalFolderRoot(Root.LOCAL_ROOT, "Local Frameworks", localRoot, localFrameworksPath));
 
-    File systemRoot = fixMissingSeparatorAfterDevice(this.environment.getWOVariables().systemRoot());
-    File systemFrameworksPath = fixMissingSeparatorAfterDevice(this.environment.getWOVariables().systemFrameworkPath());
+    File systemRoot = fixMissingSeparatorAfterDevice(variables.systemRoot());
+    File systemFrameworksPath = fixMissingSeparatorAfterDevice(variables.systemFrameworkPath());
     roots.add(new ExternalFolderRoot(Root.SYSTEM_ROOT, "System Frameworks", systemRoot, systemFrameworksPath));
 
-    File networkRoot = fixMissingSeparatorAfterDevice(this.environment.getWOVariables().networkRoot());
-    File networkFrameworksPath = fixMissingSeparatorAfterDevice(this.environment.getWOVariables().networkFrameworkPath());
+    File networkRoot = fixMissingSeparatorAfterDevice(variables.networkRoot());
+    File networkFrameworksPath = fixMissingSeparatorAfterDevice(variables.networkFrameworkPath());
     roots.add(new ExternalFolderRoot(Root.NETWORK_ROOT, "Network Frameworks", networkRoot, networkFrameworksPath));
     return roots;
   }
