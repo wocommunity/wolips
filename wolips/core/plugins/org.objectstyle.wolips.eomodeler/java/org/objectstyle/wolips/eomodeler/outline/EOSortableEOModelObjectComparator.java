@@ -16,7 +16,19 @@ public class EOSortableEOModelObjectComparator implements Comparator<Object> {
 		} else if (_o2 == null) {
 			comparison = 1;
 		} else if (_o1 instanceof ISortableEOModelObject && _o2 instanceof ISortableEOModelObject) {
-			comparison = ((ISortableEOModelObject) _o1).getName().compareTo(((ISortableEOModelObject) _o2).getName());
+			String n1 = ((ISortableEOModelObject) _o1).getName();
+			String n2 = ((ISortableEOModelObject) _o2).getName();
+			if (n1 == null) {
+				if (n2 == null) {
+					comparison = 0;
+				} else {
+					comparison = -1;
+				}
+			} else if (n2 == null) {
+				comparison = 1;
+			} else {
+				comparison = n1.compareTo(n2);
+			}
 		} else {
 			comparison = -1;
 		}
