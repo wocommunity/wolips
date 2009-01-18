@@ -128,7 +128,9 @@ public class Preferences {
 
 	public static final String PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE = "org.objectstyle.wolips.Preference.EOGeneratorSubclassTemplate";
 
-	public static final String PREF_SHOW_CONSOLE_EXCEPTION_DIALOGS = "org.objectstyle.wolips.Preference.ConsoleExceptionDialogs"; 
+	public static final String PREF_SHOW_CONSOLE_EXCEPTION_DIALOGS = "org.objectstyle.wolips.Preference.ConsoleExceptionDialogs";
+	
+	public static final String PREF_WOLIPS_PROPERTIES_FILE = "org.objectstyle.wolips.wolipsPropertiesFile";
 	/**
 	 * Comment for <code>FLAG_INCLUDE_EXCLUDE_RULES_CHANGED</code>
 	 */

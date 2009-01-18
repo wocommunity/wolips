@@ -60,7 +60,9 @@ import java.util.Properties;
 
 import org.eclipse.core.resources.IProject;
 import org.objectstyle.woenvironment.env.WOEnvironment;
+import org.objectstyle.woenvironment.env.WOVariables;
 import org.objectstyle.wolips.baseforplugins.AbstractBaseActivator;
+import org.objectstyle.wolips.preferences.Preferences;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 
@@ -71,7 +73,7 @@ public class VariablesPlugin extends AbstractBaseActivator {
 	// The shared instance.
 	private static VariablesPlugin plugin;
 
-	private WOEnvironment woEnvironment;
+	//private WOEnvironment woEnvironment;
 
 	/**
 	 * The constructor.
@@ -89,29 +91,36 @@ public class VariablesPlugin extends AbstractBaseActivator {
 	}
 
 	public ProjectVariables getGlobalVariables() {
-		return new ProjectVariables(getWOEnvironment(null));
+		return new ProjectVariables(getWOVariables(null));
 	}
 
 	public ProjectVariables getProjectVariables(IProject project) {
-		return new ProjectVariables(getWOEnvironment(project));
+		return new ProjectVariables(getWOVariables(project));
 	}
 
-	private WOEnvironment getWOEnvironment(IProject project) {
-		if (this.woEnvironment == null) {
-			this.woEnvironment = new WOEnvironment(null);
+	private WOVariables getWOVariables(IProject project) {
+		//if (this.woEnvironment == null) {
+		//	this.woEnvironment = new WOEnvironment(null);
+		//}
+		Properties defaultProperties = new Properties();
+		String defaultPropertiesFile = Preferences.getString(WOVariables.WOLIPS_PROPERTIES);
+		if (defaultPropertiesFile != null && defaultPropertiesFile.length() > 0) {
+			defaultProperties.put(WOVariables.WOLIPS_PROPERTIES, defaultPropertiesFile);
 		}
-		WOEnvironment environment;
-		if (project == null) {
-			environment = this.woEnvironment;
-		} else {
-			BuildProperties buildProperties = (BuildProperties) project.getAdapter(BuildProperties.class);
-			Properties existingProperties = null;
-			if (buildProperties != null) {
-				existingProperties = buildProperties.getProperties();
+
+		if (project != null) {
+			BuildProperties buildPropertiesAdapter = (BuildProperties) project.getAdapter(BuildProperties.class);
+			Properties buildProperties = null;
+			if (buildPropertiesAdapter != null) {
+				buildProperties = buildPropertiesAdapter.getProperties();
 			}
-			environment = new WOEnvironment(this.woEnvironment.getWOVariables(), existingProperties);
+			if (buildProperties != null) {
+				defaultProperties.putAll(buildProperties);
+			}
 		}
-		return environment;
+
+		WOVariables variables = new WOEnvironment(defaultProperties).getWOVariables();
+		return variables;
 	}
 
 	/**

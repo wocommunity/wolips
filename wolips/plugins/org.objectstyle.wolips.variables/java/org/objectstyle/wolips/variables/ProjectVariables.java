@@ -2,18 +2,17 @@ package org.objectstyle.wolips.variables;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.objectstyle.woenvironment.env.WOEnvironment;
 import org.objectstyle.woenvironment.env.WOVariables;
 
 public class ProjectVariables {
-	private WOEnvironment _environment;
+	private WOVariables _variables;
 
-	public ProjectVariables(WOEnvironment environment) {
-		_environment = environment;
+	public ProjectVariables(WOVariables variables) {
+		_variables = variables;
 	}
 
 	public WOVariables getWOVariables() {
-		return _environment.getWOVariables();
+		return _variables;
 	}
 
 	private IPath fixMissingSeparatorAfterDevice(String string) {
@@ -32,63 +31,63 @@ public class ProjectVariables {
 	 * @return the path to the local root
 	 */
 	public IPath getLocalRoot() {
-		return this.fixMissingSeparatorAfterDevice(_environment.getWOVariables().localRoot());
+		return this.fixMissingSeparatorAfterDevice(_variables.localRoot());
 	}
 
 	/**
 	 * @return the path to the local root
 	 */
 	public IPath getLocalFrameworkPatb() {
-		return this.fixMissingSeparatorAfterDevice(_environment.getWOVariables().localFrameworkPath());
+		return this.fixMissingSeparatorAfterDevice(_variables.localFrameworkPath());
 	}
 
 	/**
 	 * @return the path to the system root
 	 */
 	public IPath getSystemRoot() {
-		return this.fixMissingSeparatorAfterDevice(_environment.getWOVariables().systemRoot());
+		return this.fixMissingSeparatorAfterDevice(_variables.systemRoot());
 	}
 
 	/**
 	 * @return the path to the system root
 	 */
 	public IPath getSystemFrameworkPath() {
-		return this.fixMissingSeparatorAfterDevice(_environment.getWOVariables().systemFrameworkPath());
+		return this.fixMissingSeparatorAfterDevice(_variables.systemFrameworkPath());
 	}
 
 	/**
 	 * @return the path to the network root
 	 */
 	public IPath getNetworkRoot() {
-		return this.fixMissingSeparatorAfterDevice(_environment.getWOVariables().networkRoot());
+		return this.fixMissingSeparatorAfterDevice(_variables.networkRoot());
 	}
 
 	/**
 	 * @return the path to the network root
 	 */
 	public IPath getNetworkFrameworkPath() {
-		return this.fixMissingSeparatorAfterDevice(_environment.getWOVariables().networkFrameworkPath());
+		return this.fixMissingSeparatorAfterDevice(_variables.networkFrameworkPath());
 	}
 
 	/**
 	 * @return the path to the user home
 	 */
 	public IPath getUserRoot() {
-		return this.fixMissingSeparatorAfterDevice(this.getWOVariables().userRoot());
+		return this.fixMissingSeparatorAfterDevice(_variables.userRoot());
 	}
 
 	/**
 	 * @return the path to the user home
 	 */
 	public IPath getUserFrameworkPath() {
-		return this.fixMissingSeparatorAfterDevice(this.getWOVariables().userFrameworkPath());
+		return this.fixMissingSeparatorAfterDevice(_variables.userFrameworkPath());
 	}
 
 	/**
 	 * @return the path to the reference api
 	 */
 	public IPath getReferenceApi() {
-		String referenceApi = this.getWOVariables().referenceApi();
+		String referenceApi = _variables.referenceApi();
 		if (referenceApi == null) {
 			return null;
 		}
@@ -116,7 +115,7 @@ public class ProjectVariables {
 	 * @return the path to external build root
 	 */
 	public IPath getExternalBuildRoot() {
-		String root = this.getWOVariables().externalBuildRoot();
+		String root = _variables.externalBuildRoot();
 		if (root != null) {
 			IPath result = this.fixMissingSeparatorAfterDevice(root);
 			return result;
@@ -128,7 +127,7 @@ public class ProjectVariables {
 	 * @return the path to external build root
 	 */
 	public IPath getExternalBuildFrameworkPath() {
-		String root = this.getWOVariables().externalBuildFrameworkPath();
+		String root = _variables.externalBuildFrameworkPath();
 		if (root != null) {
 			IPath result = this.fixMissingSeparatorAfterDevice(root);
 			return result;
@@ -137,7 +136,7 @@ public class ProjectVariables {
 	}
 
 	public String getProperty(String key) {
-		return getWOVariables().getProperty(key);
+		return _variables.getProperty(key);
 	}
 
 }
