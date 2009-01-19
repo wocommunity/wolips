@@ -230,7 +230,6 @@ public class FrameworkSet extends FileSet {
   @Override
   public synchronized void setupDirectoryScanner(FileScanner ds, Project p) {
     if (this.eclipse && !frameworkIncludesCreated) {
-      boolean atLeastOneFrameworkIncluded = false;
       try {
         List<ExternalFolderFramework> frameworks = getEclipseFrameworks();
         for (ExternalFolderFramework framework : frameworks) {
@@ -238,9 +237,11 @@ public class FrameworkSet extends FileSet {
           frameworkInclude.setName(framework.getFrameworkFolder().getName());
         }
 
+		// If no frameworks are to be included from this directory, create an
+		// empty include.  Setting a name or using an exclude will throw Ant into
+		// an infinite loop.
         if (frameworks.isEmpty()) {
-          NameEntry frameworkExclude = createExclude();
-          frameworkExclude.setName("**");
+          NameEntry frameworkExclude = createInclude();
         }
         frameworkIncludesCreated = true;
       }
