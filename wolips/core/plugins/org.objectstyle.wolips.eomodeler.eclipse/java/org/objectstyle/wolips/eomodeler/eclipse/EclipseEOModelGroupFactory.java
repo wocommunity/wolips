@@ -96,6 +96,13 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 					addModelsFromEOModelGroupFile((IFile) modelGroupEclipseResource, modelGroup, failures, skipOnDuplicates, progressMonitor);
 				} else {
 					addModelsFromProject(modelGroup, project, new HashSet<Object>(), new HashSet<IProject>(), failures, skipOnDuplicates, progressMonitor, 0);
+					
+					// If you double-clicked on a model, make sure we shove it into the modelgroup, just in case it wasn't in a matching folder
+					File modelGroupEclipseResourceFile = modelGroupEclipseResource.getLocation().toFile();
+					if (modelGroupEclipseResourceFile != null && EOModelGroup.getModelNameForFile(modelGroupEclipseResourceFile) != null) {
+						modelGroup.loadModelFromURL(modelGroupEclipseResourceFile.toURL(), failures, skipOnDuplicates, progressMonitor);
+					}
+
 					// modelGroup.resolve(failures);
 					// modelGroup.verify(failures);
 				}
