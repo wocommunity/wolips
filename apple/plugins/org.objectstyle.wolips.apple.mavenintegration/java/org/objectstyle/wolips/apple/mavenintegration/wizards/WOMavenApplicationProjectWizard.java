@@ -305,18 +305,6 @@ public class WOMavenApplicationProjectWizard extends AbstractMavenProjectWizard 
 		cpath = JavaCore.newSourceEntry(projPath.append("src"+File.separator+"test"+File.separator+"java"));
 		entries.add(cpath);
 
-		cpath = JavaCore.newSourceEntry(projPath.append("src"+File.separator+"main"+File.separator+"resources"));
-		entries.add(cpath);
-
-		cpath = JavaCore.newSourceEntry(projPath.append("src"+File.separator+"main"+File.separator+"webserver-resources"));
-		entries.add(cpath);
-
-		cpath = JavaCore.newSourceEntry(projPath.append("src"+File.separator+"test"+File.separator+"resources"));
-		entries.add(cpath);
-
-		cpath = JavaCore.newSourceEntry(projPath.append("src"+File.separator+"main"+File.separator+"components"));
-		entries.add(cpath);
-
 		return entries.toArray(new IClasspathEntry[] {});
 	}
 
@@ -371,6 +359,14 @@ public class WOMavenApplicationProjectWizard extends AbstractMavenProjectWizard 
 			templateEngine.addTemplate(new TemplateDefinition("maven/Info.plist", rootProjPath+File.separator+"src"+File.separator+"main"+File.separator+"resources", "Info.plist", "Info.plist"));
 			templateEngine.addTemplate(new TemplateDefinition("maven/Properties", rootProjPath+File.separator+"src"+File.separator+"main"+File.separator+"resources", "Properties", "Properties"));
 			templateEngine.addTemplate(new TemplateDefinition("maven/WOAfile.icns", rootProjPath+File.separator+"src"+File.separator+"main"+File.separator+"resources", "WOAfile.icns", "WOAfile.icns"));
+      
+			// patternsets
+      templateEngine.addTemplate(new TemplateDefinition("maven/classes.include.patternset", rootProjPath+File.separator+"woproject", "classes.include.patternset", "classes.include.patternset"));
+      templateEngine.addTemplate(new TemplateDefinition("maven/classes.exclude.patternset", rootProjPath+File.separator+"woproject", "classes.exclude.patternset", "classes.exclude.patternset"));
+      templateEngine.addTemplate(new TemplateDefinition("maven/resources.include.patternset", rootProjPath+File.separator+"woproject", "resources.include.patternset", "resources.include.patternset"));
+      templateEngine.addTemplate(new TemplateDefinition("maven/resources.exclude.patternset", rootProjPath+File.separator+"woproject", "resources.exclude.patternset", "resources.exclude.patternset"));
+      templateEngine.addTemplate(new TemplateDefinition("maven/wsresources.include.patternset", rootProjPath+File.separator+"woproject", "wsresources.include.patternset", "wsresources.include.patternset"));
+      templateEngine.addTemplate(new TemplateDefinition("maven/wsresources.exclude.patternset", rootProjPath+File.separator+"woproject", "wsresources.exclude.patternset", "wsresources.exclude.patternset"));
 
 			//component definitions
 			if (_mavenArtifactPage.pathIsEnabled("components")) {
