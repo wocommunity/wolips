@@ -204,7 +204,7 @@ public class TemplateEngine implements IRunnableWithProgress {
 			 */
 			String templateName = templateDefinition.getTemplateName();
 			Template template = _velocityEngine.getTemplate(templateName);
-			writer = new FileWriter(templateDefinition.getDestinationPath());
+			//writer = new FileWriter(templateDefinition.getDestinationPath());
 			file = new File(templateDefinition.getDestinationPath());
 			File parentDir = file.getParentFile();
 			if (!parentDir.exists()) {
@@ -213,14 +213,14 @@ public class TemplateEngine implements IRunnableWithProgress {
 			writer = new FileWriter(file);
 			template.merge(_context, writer);
 		} catch (Exception e) {
-			System.out.println("Exception : " + e);
+			e.printStackTrace();
 		} finally {
 			if (writer != null) {
 				try {
 					writer.flush();
 					writer.close();
 				} catch (Exception ee) {
-					System.out.println("Exception : " + ee);
+					ee.printStackTrace();
 				}
 			}
 		}
