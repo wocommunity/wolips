@@ -103,7 +103,7 @@ public class VariablesPlugin extends AbstractBaseActivator {
 		//	this.woEnvironment = new WOEnvironment(null);
 		//}
 		Properties defaultProperties = new Properties();
-		String defaultPropertiesFile = Preferences.getString(WOVariables.WOLIPS_PROPERTIES);
+		String defaultPropertiesFile = Preferences.getString(Preferences.PREF_WOLIPS_PROPERTIES_FILE);
 		if (defaultPropertiesFile != null && defaultPropertiesFile.length() > 0) {
 			defaultProperties.put(WOVariables.WOLIPS_PROPERTIES, defaultPropertiesFile);
 		}
