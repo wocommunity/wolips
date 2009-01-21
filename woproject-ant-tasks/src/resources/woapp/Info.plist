@@ -44,5 +44,5 @@
 	<key>NSJavaRoot</key>
 	<string>Contents/Resources/Java</string>
 	@CUSTOM_CONTENT@
-	</dict>
+</dict>
 </plist>

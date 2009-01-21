@@ -123,13 +123,13 @@ esac
 if [ "${PLATFORM_TYPE}" = "Rhapsody" ]
 then
     HOME_SHORTHAND=${HOME}
-    LOCAL_SHORTHAND=/Local
-    NR_SHORTHAND=/System
+    LOCAL_SHORTHAND=${NEXT_ROOT}/Local
+    NR_SHORTHAND=${NEXT_ROOT}/System
 elif [ "$PLATFORM_TYPE" = "Darwin" ]
 then
     HOME_SHORTHAND=${HOME}
-    LOCAL_SHORTHAND=
-    NR_SHORTHAND=/System
+    LOCAL_SHORTHAND=${NEXT_ROOT}
+    NR_SHORTHAND=${NEXT_ROOT}/System
 else
     HOME_SHORTHAND=${HOME}
     NR_SHORTHAND=${NEXT_ROOT}

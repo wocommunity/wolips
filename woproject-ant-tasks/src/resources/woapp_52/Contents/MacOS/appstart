@@ -110,12 +110,12 @@ esac
 #
 if [ "${PLATFORM_TYPE}" = "Rhapsody" ]
 then
-    LOCALROOT=/Local
-    WOROOT=/System
+    LOCALROOT=${NEXT_ROOT}/Local
+    WOROOT=${NEXT_ROOT}/System
 elif [ "$PLATFORM_TYPE" = "Darwin" ]
 then
-    LOCALROOT=
-    WOROOT=/System
+    LOCALROOT=${NEXT_ROOT}
+    WOROOT=${NEXT_ROOT}/System
 else
     WOROOT=${NEXT_ROOT}
     LOCALROOT=${NEXT_ROOT}/Local
