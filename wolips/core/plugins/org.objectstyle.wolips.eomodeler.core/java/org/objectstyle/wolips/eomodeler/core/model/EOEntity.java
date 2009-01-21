@@ -562,7 +562,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		for (EOAttribute attribute : _entity.getAttributes()) {
 			if (!_skipExistingNames || getAttributeNamed(attribute.getName()) == null) {
 				if (failures != null) {
-					failures.add(new EOModelVerificationFailure(getModel(), this, "The entity " + getName() + " was missing the inherited attribute " + attribute.getName() + ".", true));
+					failures.add(new EOModelVerificationFailure(getModel(), this, "The entity " + getName() + " was missing the inherited attribute '" + attribute.getName() + "'.", true));
 				}
 				if (!warnOnly) {
 					EOAttribute clonedAttribute = attribute._cloneModelObject();
@@ -575,7 +575,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		for (EORelationship relationship : _entity.getRelationships()) {
 			if (!_skipExistingNames || getRelationshipNamed(relationship.getName()) == null) {
 				if (failures != null) {
-					failures.add(new EOModelVerificationFailure(getModel(), this, "The entity " + getName() + " was missing the inherited relationship " + relationship.getName() + ".", true));
+					failures.add(new EOModelVerificationFailure(getModel(), this, "The entity " + getName() + " was missing the inherited relationship '" + relationship.getName() + "'.", true));
 				}
 				if (!warnOnly) {
 					EORelationship clonedRelationship = relationship._cloneModelObject();
