@@ -60,7 +60,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.baseforplugins.util.StringUtils;
 import org.objectstyle.wolips.eomodeler.core.model.qualifier.EOQualifier;
 import org.objectstyle.wolips.eomodeler.core.model.qualifier.EOQualifierBinding;
