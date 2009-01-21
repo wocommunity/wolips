@@ -17,9 +17,15 @@ public class EONotQualifier extends EOQualifier {
 	@Override
 	public String toString(int depth) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("not (");
+		sb.append("not ");
+		boolean containsAggregateQualifier = (_qualifier instanceof EOAggregateQualifier); 
+		if (!containsAggregateQualifier) {
+			sb.append("(");
+		}
 		sb.append(_qualifier.toString(depth + 1));
-		sb.append(")");
+		if (!containsAggregateQualifier) {
+			sb.append(")");
+		}
 		return sb.toString();
 	}
 }
