@@ -63,7 +63,6 @@ package org.objectstyle.wolips.apple.mavenintegration.wizards;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.project.MavenProject;
@@ -87,12 +86,12 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.eclipse.ui.dialogs.WizardNewProjectReferencePage;
 import org.maven.ide.eclipse.core.IMavenConstants;
+import org.maven.ide.eclipse.jdt.BuildPathManager;
 import org.objectstyle.wolips.apple.util.StatusLogger;
 import org.objectstyle.wolips.core.resources.internal.build.Nature;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
 import org.objectstyle.wolips.wizards.Messages;
-import org.maven.ide.eclipse.jdt.BuildPathManager;
 
 /**
  * Main wizard for creating WebObjects applications linking against Apple Maven repository
@@ -102,7 +101,6 @@ public class WOMavenApplicationProjectWizard extends AbstractMavenProjectWizard 
 	private WizardNewProjectReferencePage _aReferencePage;
 	protected MavenProjectWizardArtifactPage _mavenArtifactPage;
 	protected MavenDependenciesProjectWizardPage _mavenDependencyPage;
-	private ArrayList _currentDependencies;
 
 	@Override
 	public String getWindowTitle() {
@@ -128,17 +126,6 @@ public class WOMavenApplicationProjectWizard extends AbstractMavenProjectWizard 
 		return dependsPage;
 	}
 
-	/**
-	 * @param list of Maven Dependencies
-	 */
-	public void setCurrentDependencies(List list) {
-		if (list == null) {
-			return;
-		}
-
-		_currentDependencies = new ArrayList(list);
-	}
-
 	protected void createMaven2EclipseProjectFiles(final IProject project, IProgressMonitor progressMonitor) {
 		final String projectName = project.getName();
 		final String[] directories = new String[] {};
@@ -159,7 +146,7 @@ public class WOMavenApplicationProjectWizard extends AbstractMavenProjectWizard 
 //					List<Dependency> modelDependencies = model.getDependencies();
 //					modelDependencies.addAll(Arrays.asList(configuredDependencies));
 //					System.out.println("modelDependencies="+modelDependencies);
-					System.out.println("_currentDependencies="+_currentDependencies);
+//					System.out.println("_currentDependencies="+_currentDependencies);
 					doFinish(project, location, directories, model, classpathEntries, outputPath, monitor);
 					return Status.OK_STATUS;
 				} catch(CoreException e) {

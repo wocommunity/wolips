@@ -93,13 +93,30 @@ import org.objectstyle.wolips.wizards.NewWOProjectWizard;
  * Supports adding Maven references to project
  */
 public abstract class AbstractMavenProjectWizard extends NewWOProjectWizard{
-	/**
+  private ArrayList<Dependency> _currentDependencies;
+
+  /**
 	 *
 	 */
 	public AbstractMavenProjectWizard() {
 		super();
 	}
 
+  /**
+   * @param list of Maven Dependencies
+   */
+  public void setCurrentDependencies(List<Dependency> list) {
+    if (list == null) {
+      return;
+    }
+
+    _currentDependencies = new ArrayList<Dependency>(list);
+  }
+
+  public List<Dependency> currentDependencies() {
+    return _currentDependencies;
+  }
+  
 	/**
 	 * @return true if settings.xml exists
 	 */
