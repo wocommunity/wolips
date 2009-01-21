@@ -52,8 +52,6 @@ package org.objectstyle.wolips.eomodeler.core.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
-
 public class EOEntityIndex extends UserInfoableEOModelObject<EOEntity> implements IEOEntityRelative, ISortableEOModelObject {
 	public static enum Constraint {
 		Distinct("distinct"), FullText("fulltext"), Spatial("spatial"), None("none");
