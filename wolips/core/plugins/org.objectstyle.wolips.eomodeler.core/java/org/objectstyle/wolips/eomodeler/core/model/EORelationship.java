@@ -903,9 +903,9 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 			join.verify(_failures);
 			EOAttribute sourceAttribute = join.getSourceAttribute();
 			if (toOne && mandatory && !singleTableInheritance && sourceAttribute != null && BooleanUtils.isTrue(sourceAttribute.isAllowsNull())) {
-				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The relationship " + getName() + " is mandatory but the attribute " + sourceAttribute.getName() + " allows nulls.", true));
+				_failures.add(new EORelationshipOptionalityMismatchFailure(myEntity.getModel(), this, "The relationship " + getName() + " is mandatory but the attribute " + sourceAttribute.getName() + " allows nulls.", true));
 			} else if (toOne && !mandatory && sourceAttribute != null && !BooleanUtils.isTrue(sourceAttribute.isAllowsNull())) {
-				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The relationship " + getName() + " is optional but the attribute " + sourceAttribute.getName() + " does not allow nulls.", true));
+				_failures.add(new EORelationshipOptionalityMismatchFailure(myEntity.getModel(), this, "The relationship " + getName() + " is optional but the attribute " + sourceAttribute.getName() + " does not allow nulls.", true));
 			}
 		}
 	}
