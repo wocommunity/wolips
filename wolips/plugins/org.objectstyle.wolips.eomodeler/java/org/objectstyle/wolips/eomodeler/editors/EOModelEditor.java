@@ -54,6 +54,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.net.URI;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -112,6 +113,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
+import org.objectstyle.wolips.eomodeler.core.model.EORelationshipOptionalityMismatchFailure;
 import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.core.model.IEOAttribute;
 import org.objectstyle.wolips.eomodeler.core.model.IEOModelGroupFactory;
@@ -677,6 +679,16 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				}
 			} catch (Exception e) {
 				Activator.getDefault().log(e);
+			}
+		}
+
+		if (!Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.SHOW_RELATIONSHIP_ATTRIBUTE_OPTIONALITY_MISMATCH)) {
+			Iterator<EOModelVerificationFailure> failuresIter = failures.iterator();
+			while (failuresIter.hasNext()) {
+				EOModelVerificationFailure failure = failuresIter.next();
+				if (failure instanceof EORelationshipOptionalityMismatchFailure) {
+					failuresIter.remove();
+				}
 			}
 		}
 
