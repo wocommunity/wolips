@@ -71,6 +71,8 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 
 	public static final String SCALE = "scale";
 
+	public static final String CLASS_NAME = "className";
+
 	public static final String VALUE_CLASS_NAME = "valueClassName";
 
 	public static final String VALUE_FACTORY_METHOD_NAME = "valueFactoryMethodName";
@@ -93,9 +95,9 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 
 	private String myValueType;
 
+	private String _className;
+	
 	private String myValueClassName;
-
-	private boolean _usesClassNameProperty;
 
 	private String myValueFactoryMethodName;
 
@@ -154,9 +156,8 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		}
 		argument.myExternalType = myExternalType;
 		argument.myValueType = myValueType;
-		argument._usesClassNameProperty = _usesClassNameProperty;
 		argument.myValueClassName = myValueClassName;
-		argument._usesClassNameProperty = _usesClassNameProperty;
+		argument._className = _className;
 		argument.myValueFactoryMethodName = myValueFactoryMethodName;
 		argument.myFactoryMethodArgumentType = myFactoryMethodArgumentType;
 		argument.myAdaptorValueConversionMethodName = myAdaptorValueConversionMethodName;
@@ -291,10 +292,7 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 			if (getValueFactoryMethodName() != null || getAdaptorValueConversionMethodName() != null) {
 				dataType = EODataType.CUSTOM;
 			} else {
-				String className = getValueClassName();
-				if (_usesClassNameProperty) {
-					className = _convertJavaClassNameToValueClassName(className);
-				}
+				String className = _convertJavaClassNameToValueClassName(getClassName());
 				dataType = EODataType.getDataTypeByValueClassAndType(className, getValueType());
 			}
 			myDataType = dataType;
@@ -405,6 +403,20 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		return className;
 	}
 	
+	public String getClassName() {
+		return _className;
+	}
+
+	public void setClassName(String className) {
+		String oldClassName = getClassName();
+		_className = className;
+		myDataType = null;
+		firePropertyChange(AbstractEOArgument.CLASS_NAME, oldClassName, getClassName());
+//		if (_updateDataType) {
+//			updateDataType(oldDataType);
+//		}
+	}
+
 	public String getValueClassName() {
 		return myValueClassName;
 	}
@@ -419,11 +431,9 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		myValueClassName = _valueClassName;
 		myDataType = null;
 		firePropertyChange(AbstractEOArgument.VALUE_CLASS_NAME, oldValueClassName, getValueClassName());
+		setClassName(getJavaClassName(false));
 		if (_updateDataType) {
 			updateDataType(oldDataType);
-		}
-		if (_valueClassName == null) {
-			_usesClassNameProperty = false;
 		}
 	}
 
@@ -454,6 +464,7 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		if (_updateDataType) {
 			updateDataType(oldDataType);
 		}
+		setClassName(getJavaClassName(false));
 	}
 
 	public Integer getWidth() {
@@ -504,11 +515,12 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		}
 		myValueType = _argumentMap.getString("valueType", true);
 		myValueClassName = _argumentMap.getString("valueClassName", true);
+		_className = _argumentMap.getString("className", true);
 		if (myValueClassName == null) {
-			myValueClassName = _convertJavaClassNameToValueClassName(_argumentMap.getString("className", true));
-			if (myValueClassName != null) {
-				_usesClassNameProperty = true;
-			}
+			myValueClassName = _convertJavaClassNameToValueClassName(_className);
+		}
+		if (_className == null) {
+			_className = getJavaClassName(false);
 		}
 		myValueFactoryMethodName = _argumentMap.getString("valueFactoryMethodName", true);
 		myFactoryMethodArgumentType = EOFactoryMethodArgumentType.getFactoryMethodArgumentTypeByID(_argumentMap.getString("factoryMethodArgumentType", true));
@@ -539,8 +551,10 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		argumentMap.setString("serverTimeZone", myServerTimeZone, true);
 		argumentMap.remove("maximumLength");
 		argumentMap.setString("valueType", myValueType, true);
-		if (_usesClassNameProperty) {
-			argumentMap.setString("className", getJavaClassName(false), true);
+		boolean usesClassNameProperty = !ComparisonUtils.equals(getJavaClassName(false), getClassName());
+		if (usesClassNameProperty) {
+			argumentMap.setString("className", _className, true);
+			argumentMap.remove("valueClassName");
 		} else {
 			argumentMap.remove("className");
 			argumentMap.setString("valueClassName", myValueClassName, true);

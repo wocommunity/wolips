@@ -88,7 +88,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 
 	public static final String GENERATE_SOURCE = "generateSource";
 
-	private static final String[] PROTOTYPED_PROPERTIES = { AbstractEOArgument.NAME, AbstractEOArgument.COLUMN_NAME, AbstractEOArgument.ALLOWS_NULL, AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, AbstractEOArgument.EXTERNAL_TYPE, AbstractEOArgument.FACTORY_METHOD_ARGUMENT_TYPE, AbstractEOArgument.PRECISION, AbstractEOArgument.SCALE, AbstractEOArgument.VALUE_CLASS_NAME, AbstractEOArgument.VALUE_FACTORY_METHOD_NAME, AbstractEOArgument.VALUE_TYPE, AbstractEOArgument.DEFINITION, AbstractEOArgument.WIDTH, EOAttribute.READ_FORMAT, EOAttribute.WRITE_FORMAT, EOAttribute.INDEXED, EOAttribute.READ_ONLY };
+	private static final String[] PROTOTYPED_PROPERTIES = { AbstractEOArgument.NAME, AbstractEOArgument.COLUMN_NAME, AbstractEOArgument.ALLOWS_NULL, AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, AbstractEOArgument.EXTERNAL_TYPE, AbstractEOArgument.FACTORY_METHOD_ARGUMENT_TYPE, AbstractEOArgument.PRECISION, AbstractEOArgument.SCALE, AbstractEOArgument.VALUE_CLASS_NAME, AbstractEOArgument.CLASS_NAME, AbstractEOArgument.VALUE_FACTORY_METHOD_NAME, AbstractEOArgument.VALUE_TYPE, AbstractEOArgument.DEFINITION, AbstractEOArgument.WIDTH, EOAttribute.READ_FORMAT, EOAttribute.WRITE_FORMAT, EOAttribute.INDEXED, EOAttribute.READ_ONLY };
 
 	private static Map<String, IKey> myCachedPropertyKeys;
 
@@ -481,9 +481,17 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 
 	@Override
 	public void setAllowsNull(Boolean allowsNull) {
-		super.setAllowsNull(allowsNull);
+		setAllowsNull(allowsNull, true);
+	}
 
-		Boolean mandatory = BooleanUtils.negate(allowsNull);
+	public void setAllowsNull(Boolean _allowsNull, boolean _fireEvents) {
+		Boolean newAllowsNull = _allowsNull;
+		if (_fireEvents && BooleanUtils.isTrue(getPrimaryKey())) {
+			newAllowsNull = Boolean.FALSE;
+		}
+		super.setAllowsNull((Boolean) _nullIfPrototyped(AbstractEOArgument.ALLOWS_NULL, newAllowsNull), _fireEvents);
+
+		Boolean mandatory = BooleanUtils.negate(newAllowsNull);
 		EOEntity entity = getEntity();
 		if (entity != null && !entity.isSingleTableInheritance()) {
 			EOModel model = entity.getModel();
@@ -507,14 +515,6 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 				}
 			}
 		}
-	}
-
-	public void setAllowsNull(Boolean _allowsNull, boolean _fireEvents) {
-		Boolean newAllowsNull = _allowsNull;
-		if (_fireEvents && BooleanUtils.isTrue(getPrimaryKey())) {
-			newAllowsNull = Boolean.FALSE;
-		}
-		super.setAllowsNull((Boolean) _nullIfPrototyped(AbstractEOArgument.ALLOWS_NULL, newAllowsNull), _fireEvents);
 	}
 
 	public Boolean getClassProperty() {
@@ -655,6 +655,14 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 
 	public void setServerTimeZone(String _serverTimeZone) {
 		super.setServerTimeZone((String) _nullIfPrototyped(AbstractEOArgument.SERVER_TIME_ZONE, _serverTimeZone));
+	}
+
+	public String getClassName() {
+		return (String) _prototypeValueIfNull(AbstractEOArgument.CLASS_NAME, super.getClassName());
+	}
+
+	public synchronized void setClassName(String className) {
+		super.setClassName((String) _nullIfPrototyped(AbstractEOArgument.CLASS_NAME, className));
 	}
 
 	public String getValueClassName() {
@@ -954,11 +962,20 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		clearCachedPrototype(prototypeName, _failures, false, true);
 
 		// MS: Fix a bug that I introduced where it briefly was accidently
-		// setting className for prototyped attributes
-		if (super.getValueClassName() != null && _nullIfPrototyped(AbstractEOArgument.VALUE_CLASS_NAME, getValueClassName()) == null) {
+		// setting className for prototyped attributes .. this will also clean up if you've ever managed to get
+		// old crufty overridden className and valueClassNames on prototyped attributes, which can lead to 
+		// disaster if you ever change your prototype
+		if (super.getClassName() != null && _nullIfPrototyped(AbstractEOArgument.CLASS_NAME, getClassName()) == null) {
+			_failures.add(new EOModelVerificationFailure(getEntity().getModel(), this, "Removed redundant 'className' attribute.", true));
+			setClassName(getClassName());
 			setValueClassName(getValueClassName(), false);
+			getEntity()._attributeChanged(this, AbstractEOArgument.CLASS_NAME, null, null);
 		}
-
+		if (super.getValueClassName() != null && _nullIfPrototyped(AbstractEOArgument.VALUE_CLASS_NAME, getValueClassName()) == null) {
+			_failures.add(new EOModelVerificationFailure(getEntity().getModel(), this, "Removed redundant 'valueClassName' attribute.", true));
+			setValueClassName(getValueClassName(), false);
+			getEntity()._attributeChanged(this, AbstractEOArgument.VALUE_CLASS_NAME, null, null);
+		}
 	}
 
 	public void verify(Set<EOModelVerificationFailure> _failures, @SuppressWarnings("unused") VerificationContext verificationContext) {
@@ -998,9 +1015,8 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 					}
 				}
 
-				String valueClassName = getValueClassName();
-				if (valueClassName == null) {
-					_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The attribute " + getName() + " does not have a value class name.", true));
+				if (getValueClassName() == null && getClassName() == null) {
+					_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The attribute " + getName() + " does not have a value class name or a class name.", true));
 				}
 
 				/*

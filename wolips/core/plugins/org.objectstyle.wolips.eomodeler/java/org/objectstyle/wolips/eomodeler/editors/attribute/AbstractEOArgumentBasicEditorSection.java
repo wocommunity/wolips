@@ -110,6 +110,8 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 
 	private Text _externalTypeText;
 
+	private Text _classNameText;
+
 	private Button _allowNullsButton;
 
 	private ComboViewer _dataTypeComboViewer;
@@ -209,6 +211,11 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 		GridData externalTypeFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_externalTypeText.setLayoutData(externalTypeFieldLayoutData);
 
+		getWidgetFactory().createCLabel(topForm, Messages.getString("AbstractEOArgument." + AbstractEOArgument.CLASS_NAME), SWT.NONE);
+		_classNameText = new Text(topForm, SWT.BORDER);
+		GridData classNameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		_classNameText.setLayoutData(classNameFieldLayoutData);
+
 		getWidgetFactory().createCLabel(topForm, Messages.getString("AbstractEOArgument." + AbstractEOArgument.DATA_TYPE), SWT.NONE);
 		Combo dataTypeCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
 		_dataTypeComboViewer = new ComboViewer(dataTypeCombo);
@@ -270,6 +277,7 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 				_bindingContext.bindValue(SWTObservables.observeText(_columnNameText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.COLUMN_NAME), null, null);
 				_bindingContext.bindValue(SWTObservables.observeText(_definitionText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.DEFINITION), null, null);
 				_bindingContext.bindValue(SWTObservables.observeText(_externalTypeText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.EXTERNAL_TYPE), null, null);
+				_bindingContext.bindValue(SWTObservables.observeText(_classNameText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.CLASS_NAME), null, null);
 				_bindingContext.bindValue(SWTObservables.observeSelection(_allowNullsButton), BeansObservables.observeValue(_argument, AbstractEOArgument.ALLOWS_NULL), null, new BooleanUpdateValueStrategy());
 
 				_argumentChanged(argument);
