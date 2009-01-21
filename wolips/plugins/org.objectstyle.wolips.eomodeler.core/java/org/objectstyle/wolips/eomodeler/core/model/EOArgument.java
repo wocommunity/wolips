@@ -3,7 +3,6 @@ package org.objectstyle.wolips.eomodeler.core.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.Messages;
 
 public class EOArgument extends AbstractEOArgument<EOStoredProcedure> {
