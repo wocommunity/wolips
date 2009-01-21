@@ -90,18 +90,17 @@ public class MavenDependenciesProjectWizardPage extends MavenDependenciesWizardP
 //    Control[] controls = parent.getChildren();
 //    printAllControls(controls); //Debug
     setPageComplete(true);
-    ((WOMavenApplicationProjectWizard) this.getWizard()).setCurrentDependencies(this.getCombinedDependencies());
+    ((AbstractMavenProjectWizard) this.getWizard()).setCurrentDependencies(this.getCombinedDependencies());
   }
 
   /**
    * @return list of dependencies
    */
-  @SuppressWarnings("unchecked")
-  public List getCombinedDependencies() {
+  public List<Dependency> getCombinedDependencies() {
 
     //TODO: fix default runtime version
-    ArrayList updatedList = new ArrayList(defaultDependencies("5.4.2-SNAPSHOT"));
-    updatedList.addAll(new ArrayList(Arrays.asList(this.getDependencies())));
+    ArrayList<Dependency> updatedList = new ArrayList<Dependency>(defaultDependencies("5.4.2-SNAPSHOT"));
+    updatedList.addAll(new ArrayList<Dependency>(Arrays.asList(this.getDependencies())));
 
     return updatedList;
   }
@@ -163,7 +162,7 @@ public class MavenDependenciesProjectWizardPage extends MavenDependenciesWizardP
    *
    */
   protected void addDefaultDependencies() {
-    List dependencies = AbstractMavenProjectWizard.defaultDependencies(null);
+    List<Dependency> dependencies = AbstractMavenProjectWizard.defaultDependencies(null);
 
   }
 }
