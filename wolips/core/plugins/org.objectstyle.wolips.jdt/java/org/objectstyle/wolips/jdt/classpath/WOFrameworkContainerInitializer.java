@@ -60,6 +60,7 @@
  */
 package org.objectstyle.wolips.jdt.classpath;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -112,7 +113,7 @@ public class WOFrameworkContainerInitializer extends ClasspathContainerInitializ
 		String frameworkName = frameworkNameForClasspathPath(containerPath);
 		return frameworkName + " WebObjects Framework";
 	}
-	
+
 	@Override
 	public boolean canUpdateClasspathContainer(IPath containerPath, IJavaProject project) {
 		return true;
@@ -144,8 +145,7 @@ public class WOFrameworkContainerInitializer extends ClasspathContainerInitializ
 			if (framework != null) {
 				WOFrameworkClasspathContainer frameworkContainer = new WOFrameworkClasspathContainer(framework, paramsForClasspathPath(containerPath));
 				JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { javaProject }, new IClasspathContainer[] { frameworkContainer }, null);
-			}
-			else {
+			} else {
 				JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { javaProject }, new IClasspathContainer[] { null }, null);
 			}
 		}
@@ -234,7 +234,7 @@ public class WOFrameworkContainerInitializer extends ClasspathContainerInitializ
 		return added;
 	}
 
-	protected void convertProjectReferencesToFrameworkReferences(IJavaProject project, List<IClasspathEntry> newClasspathEntries, FrameworkModel<IEclipseFramework> frameworkModel, Set<String> frameworkNames) {
+	protected void convertProjectReferencesToFrameworkReferences(@SuppressWarnings("unused") IJavaProject project, List<IClasspathEntry> newClasspathEntries, FrameworkModel<IEclipseFramework> frameworkModel, Set<String> frameworkNames) {
 		for (int classpathEntryNum = newClasspathEntries.size() - 1; classpathEntryNum >= 0; classpathEntryNum--) {
 			IClasspathEntry newClasspathEntry = newClasspathEntries.get(classpathEntryNum);
 			if (newClasspathEntry.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
@@ -247,16 +247,41 @@ public class WOFrameworkContainerInitializer extends ClasspathContainerInitializ
 				}
 			}
 		}
-
-		ProjectAdapter projectAdapter = (ProjectAdapter) project.getProject().getAdapter(ProjectAdapter.class);
+		ProjectAdapter projectAdapter = (ProjectAdapter) project.getProject().getAdapter(IProjectAdapter.class);
 		if (projectAdapter != null) {
 			BuildProperties buildProperties = projectAdapter.getBuildProperties();
 			buildProperties.setFramework(projectAdapter.isFramework());
+			String projectName = buildProperties.getName();
 			if (projectAdapter.isFramework()) {
-				buildProperties.put("project.name", buildProperties.get("framework.name"));
+				if (projectName == null) {
+					String frameworkName = buildProperties.get("framework.name");
+					if (frameworkName == null) {
+						buildProperties.setName(project.getProject().getName());
+					} else {
+						buildProperties.setName(frameworkName);
+					}
+				} else {
+					// reset it so we update the dependent properties
+					buildProperties.setName(projectName);
+				}
 				buildProperties.remove("framework.name");
+			} else {
+				if (projectName == null) {
+					buildProperties.setName(project.getProject().getName());
+				} else {
+					// reset it so we update the dependent properties
+					buildProperties.setName(projectName);
+				}
+			}
+			try {
+				buildProperties.save();
+			} catch (CoreException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
+
 	}
 
 	protected void updateRawClasspath(final IJavaProject javaProject, final List<IClasspathEntry> newClasspathEntries) {
