@@ -90,6 +90,9 @@ public class Unbound extends AbstractNamedValidation {
             validation.removeChild(unbound);
           }
         }
+        if (validation.getValidationChildren().size() == 0) {
+          wo.element.removeChild(validation.element);
+        }
       }
     }
   }
