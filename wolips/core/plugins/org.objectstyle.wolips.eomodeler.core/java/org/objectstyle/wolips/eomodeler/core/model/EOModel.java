@@ -922,7 +922,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 				connectionDictionaryDatabaseConfig = tempConnectionDictionaryDatabaseConfig;
 				if (canSave() && createMissingDatabaseConfig && isEditing()) {
 					addDatabaseConfig(connectionDictionaryDatabaseConfig, false, _failures);
-					_failures.add(new EOModelVerificationFailure(this, this, "Creating default database config for model '" + getName() + "'.", true, null));
+					//_failures.add(new EOModelVerificationFailure(this, this, "Creating default database config for model '" + getName() + "'.", true, null));
 				}
 			}
 			// if the identified active database config isn't the connection
