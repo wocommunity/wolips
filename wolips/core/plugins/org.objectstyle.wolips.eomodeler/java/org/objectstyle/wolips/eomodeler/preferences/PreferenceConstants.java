@@ -9,4 +9,5 @@ public class PreferenceConstants {
 	public static final String OPEN_WINDOW_ON_VERIFICATION_WARNINGS_KEY = "EntityModelerOpenWindowOnVerificationWarnings";
 	public static final String OPEN_WINDOW_ON_VERIFICATION_ERRORS_KEY = "EntityModelerOpenWindowOnVerificationErrors";
 	public static final String CREATE_DEFAULT_DATABASE_CONFIG = "EntityModelerCreateDefaultDatabaseConfig";
+	public static final String SHOW_RELATIONSHIP_ATTRIBUTE_OPTIONALITY_MISMATCH = "ShowRelationshipAttributeOptionalityMismatchLabel";
 }
