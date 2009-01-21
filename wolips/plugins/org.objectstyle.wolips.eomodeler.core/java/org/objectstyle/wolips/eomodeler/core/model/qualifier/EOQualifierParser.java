@@ -94,15 +94,15 @@ public class EOQualifierParser {
 		_tokenNum = 0;
 
 		tokenize(false);
-		EOQualifier qualifier = qualifierForTokens(0);
+		EOQualifier qualifier = qualifierForTokens(0, true);
 		return qualifier;
 	}
 
-	protected EOQualifier qualifierForTokens(int depth) throws ParseException {
+	protected EOQualifier qualifierForTokens(int depth, boolean allowAggregateQualifiers) throws ParseException {
 		EOQualifier lqualifier = null;
 		Token lvalue = popToken();
 		if (lvalue instanceof OpenParenToken) {
-			lqualifier = qualifierForTokens(depth + 1);
+			lqualifier = qualifierForTokens(depth + 1, true);
 		} else if (lvalue instanceof KeywordToken || lvalue instanceof KeypathToken) {
 			if ("TRUEPREDICATE".equalsIgnoreCase(lvalue.getValue())) {
 				lqualifier = new EOTruePredicate();
@@ -137,7 +137,7 @@ public class EOQualifierParser {
 				}
 			}
 		} else if (lvalue instanceof NotToken) {
-			lqualifier = new EONotQualifier(qualifierForTokens(depth));
+			lqualifier = new EONotQualifier(qualifierForTokens(depth + 1, false));
 		} else if (lvalue != null) {
 			throw new ParseException("Invalid token " + lvalue + " at offset " + lvalue.getOffset() + ".", lvalue.getOffset());
 		}
@@ -155,14 +155,17 @@ public class EOQualifierParser {
 				} else {
 					throw new ParseException("Invalid close paren at offset " + nextToken.getOffset() + ".", nextToken.getOffset());
 				}
+			} else if (!allowAggregateQualifiers) {
+				qualifier = lqualifier;
+				pushToken(nextToken);
 			} else if (nextToken instanceof AndToken) {
-				EOQualifier rqualifier = qualifierForTokens(depth);
+				EOQualifier rqualifier = qualifierForTokens(depth, true);
 				if (rqualifier == null) {
 					throw new ParseException("'and' requires a second qualifier at offset " + nextToken.getOffset() + ".", nextToken.getOffset());
 				}
 				qualifier = new EOAndQualifier(lqualifier, rqualifier);
 			} else if (nextToken instanceof OrToken) {
-				EOQualifier rqualifier = qualifierForTokens(depth);
+				EOQualifier rqualifier = qualifierForTokens(depth, true);
 				if (rqualifier == null) {
 					throw new ParseException("'or' requires a second qualifier at offset " + nextToken.getOffset() + ".", nextToken.getOffset());
 				}
@@ -178,7 +181,7 @@ public class EOQualifierParser {
 
 	protected void pushToken(Token token) {
 		_tokens.add(0, token);
-		_tokenNum--;
+		//_tokenNum--;
 	}
 
 	protected Token popToken() {
@@ -569,8 +572,10 @@ public class EOQualifierParser {
 			// and (lastName caseinsensitiveLike 'schrag' or (age = 5))
 			// or(age>10) and (name<0.10) or (somevar isAnagramOf: 'test')");
 			// System.out.println("EOQualifierParser.main: " + q);
-			EOQualifier q = parser.parseQualifier("a = nil");
-			System.out.println("EOQualifierParser.main: " + q);
+			EOQualifier q1 = parser.parseQualifier("a = b and not (status = $notStatus) and voucherID = $voucherID");
+			System.out.println("EOQualifierParser.main: " + q1);
+			//EOQualifier q = parser.parseQualifier("status = $status and not (status = $notStatus) and voucherID = $voucherID");
+			//System.out.println("EOQualifierParser.main: " + q);
 		} catch (Throwable t) {
 			t.printStackTrace(System.out);
 		}
