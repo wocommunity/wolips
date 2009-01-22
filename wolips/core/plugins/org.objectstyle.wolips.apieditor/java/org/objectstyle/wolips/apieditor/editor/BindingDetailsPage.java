@@ -160,7 +160,12 @@ public class BindingDetailsPage implements IDetailsPage {
 		name.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				if (binding != null) {
-					binding.setName(name.getText());
+					try {
+						binding.setName(name.getText());
+					}
+					catch (Throwable t) {
+						binding.setName(name.getText() + System.currentTimeMillis());
+					}
 					managedForm.dirtyStateChanged();
 				}
 			}
