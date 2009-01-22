@@ -303,7 +303,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	public EOEntity joinInManyToManyWith(EOEntity _entity2, boolean createRelationship, String _relationshipName, boolean createInverseRelationship, String _inverseRelationshipName, String _joinEntityName, boolean _flatten) throws DuplicateNameException {
 		EOEntity manyToManyEntity = new EOEntity(_joinEntityName);
-		manyToManyEntity.setExternalName(manyToManyEntity.getName());
+		manyToManyEntity.setExternalName(getModel().getEntityNamingConvention().format(null, manyToManyEntity.getName(), null));
 		Set<EOEntity> joiningEntitiesSet = new HashSet<EOEntity>();
 		joiningEntitiesSet.add(this);
 		joiningEntitiesSet.add(_entity2);
@@ -331,7 +331,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			EOAttribute entity1PrimaryKeyAttribute = entity1PrimaryKeyAttributesIter.next();
 			EOAttribute manyToManyPrimaryKeyAttribute = entity1PrimaryKeyAttribute._cloneModelObject();
 			manyToManyPrimaryKeyAttribute.setName(manyToManyEntity.findUnusedAttributeName(StringUtils.toLowercaseFirstLetter(getName()) + StringUtils.toUppercaseFirstLetter(manyToManyPrimaryKeyAttribute.getName())));
-			manyToManyPrimaryKeyAttribute.setColumnName(manyToManyPrimaryKeyAttribute.getName());
+			manyToManyPrimaryKeyAttribute.setColumnName(getModel().getAttributeNamingConvention().format(null, manyToManyPrimaryKeyAttribute.getName(), null));
 			EOJoin entity1Join = new EOJoin();
 			entity1Join.setSourceAttribute(manyToManyPrimaryKeyAttribute);
 			entity1Join.setDestinationAttribute(entity1PrimaryKeyAttribute);
@@ -353,7 +353,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			EOAttribute entity2PrimaryKeyAttribute = entity2PrimaryKeyAttributesIter.next();
 			EOAttribute manyToManyPrimaryKeyAttribute = entity2PrimaryKeyAttribute._cloneModelObject();
 			manyToManyPrimaryKeyAttribute.setName(manyToManyEntity.findUnusedAttributeName(StringUtils.toLowercaseFirstLetter(_entity2.getName()) + StringUtils.toUppercaseFirstLetter(manyToManyPrimaryKeyAttribute.getName())));
-			manyToManyPrimaryKeyAttribute.setColumnName(manyToManyPrimaryKeyAttribute.getName());
+			manyToManyPrimaryKeyAttribute.setColumnName(getModel().getAttributeNamingConvention().format(null, manyToManyPrimaryKeyAttribute.getName(), null));
 			EOJoin entity2Join = new EOJoin();
 			entity2Join.setSourceAttribute(manyToManyPrimaryKeyAttribute);
 			entity2Join.setDestinationAttribute(entity2PrimaryKeyAttribute);
