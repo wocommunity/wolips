@@ -262,7 +262,14 @@ public class WOVariables {
   }
 
   public String externalBuildFrameworkPath() {
-    return _wolipsProperties.getProperty(WOVariables.EXTERNAL_BUILD_FRAMEWORKS);
+    String externalBuildFrameworkPath = _wolipsProperties.getProperty(WOVariables.EXTERNAL_BUILD_FRAMEWORKS);
+    if (externalBuildFrameworkPath == null) {
+      String externalBuildRoot = externalBuildRoot();
+      if (externalBuildRoot != null) {
+        externalBuildFrameworkPath = new File(new File(externalBuildRoot, "Library"), "Frameworks").toString();
+      }
+    }
+    return externalBuildFrameworkPath;
   }
 
   public String localRoot() {
@@ -270,7 +277,14 @@ public class WOVariables {
   }
 
   public String localFrameworkPath() {
-    return _wolipsProperties.getProperty(WOVariables.LOCAL_FRAMEWORKS);
+    String localFrameworkPath = _wolipsProperties.getProperty(WOVariables.LOCAL_FRAMEWORKS);
+    if (localFrameworkPath == null) {
+      String localRoot = localRoot();
+      if (localRoot != null) {
+        localFrameworkPath = new File(new File(localRoot, "Library"), "Frameworks").toString();
+      }
+    }
+    return localFrameworkPath;
   }
 
   public String systemRoot() {
@@ -278,7 +292,14 @@ public class WOVariables {
   }
 
   public String systemFrameworkPath() {
-    return _wolipsProperties.getProperty(WOVariables.SYSTEM_FRAMEWORKS);
+    String systemFrameworkPath = _wolipsProperties.getProperty(WOVariables.SYSTEM_FRAMEWORKS);
+    if (systemFrameworkPath == null) {
+      String systemRoot = systemRoot();
+      if (systemRoot != null) {
+        systemFrameworkPath = new File(new File(systemRoot, "Library"), "Frameworks").toString();
+      }
+    }
+    return systemFrameworkPath;
   }
 
   public String networkRoot() {
@@ -286,7 +307,14 @@ public class WOVariables {
   }
 
   public String networkFrameworkPath() {
-    return _wolipsProperties.getProperty(WOVariables.NETWORK_FRAMEWORKS);
+    String networkFrameworkPath = _wolipsProperties.getProperty(WOVariables.NETWORK_FRAMEWORKS);
+    if (networkFrameworkPath == null) {
+      String networkRoot = networkRoot();
+      if (networkRoot != null) {
+        networkFrameworkPath = new File(new File(networkRoot, "Library"), "Frameworks").toString();
+      }
+    }
+    return networkFrameworkPath;
   }
 
   public String appsRoot() {
