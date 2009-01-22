@@ -215,11 +215,14 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 			if (!patternset.exists()) {
 				IWorkspaceRunnable workspaceRunnable = new IWorkspaceRunnable() {
 					public void run(final IProgressMonitor pm) throws CoreException {
-						PatternsetWriter.create(patternset, defaultPattern);
-						try {
-							patternset.refreshLocal(IResource.DEPTH_ONE, pm);
-						} catch (CoreException e) {
-							CorePlugin.getDefault().log(e);
+						patternset.refreshLocal(IResource.DEPTH_INFINITE, pm);
+						if (!patternset.exists()) {
+							PatternsetWriter.create(patternset, defaultPattern);
+							try {
+								patternset.refreshLocal(IResource.DEPTH_ONE, pm);
+							} catch (CoreException e) {
+								CorePlugin.getDefault().log(e);
+							}
 						}
 					}
 				};
