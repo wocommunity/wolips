@@ -207,7 +207,7 @@ public class WOVariables {
       _wolipsProperties.setProperty(WOVariables.WEBOBJECTS_EXTENSIONS, nextRoot + "\\Extensions");
     }
     else {
-      _wolipsProperties.setProperty(WOVariables.API_ROOT_KEY, "/Developer/ADC%20Reference%20Library/documentation/WebObjects/Reference/API/");
+      _wolipsProperties.setProperty(WOVariables.API_ROOT_KEY, "/Developer/Documentation/DocSets/com.apple.ADC_Reference_Library.WebObjectsReference.docset/Contents/Resources/Documents/documentation/InternetWeb/Reference/WO542Reference");
       _wolipsProperties.setProperty(WOVariables.APPS_ROOT, "/Library/WebObjects/Applications");
       _wolipsProperties.setProperty(WOVariables.BOOTSTRAP_JAR_KEY, "/System/Library/WebObjects/JavaApplications/wotaskd.woa/WOBootstrap.jar");
       _wolipsProperties.setProperty(WOVariables.LOCAL_ROOT, "/");
