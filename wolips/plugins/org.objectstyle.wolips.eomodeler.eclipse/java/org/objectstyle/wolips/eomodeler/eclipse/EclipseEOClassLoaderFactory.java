@@ -17,13 +17,31 @@ import org.objectstyle.wolips.launching.actions.WOJavaApplicationLaunchShortcut;
 
 public class EclipseEOClassLoaderFactory extends AbstractEOClassLoader {
 	@Override
+	protected String getCacheKey(EOModel model, Set<URL> classpathUrlSet) {
+		String cacheKey;
+		IProject project = null;
+		IFile eclipseFile = EclipseFileUtils.getEclipseFile(model.getModelURL());
+		if (eclipseFile != null) {
+			project = eclipseFile.getProject();
+		}
+		if (project != null) {
+			cacheKey = project.getName();
+		} else {
+			cacheKey = super.getCacheKey(model, classpathUrlSet);
+		}
+		return cacheKey;
+	}
+
+	@Override
 	protected void fillInDevelopmentClasspath(Set<URL> classpathUrls) throws Exception {
 		// AK: we don't want to re-jar each time we make a change....
-//		String workSpacePath = VariablesPlugin.getDefault().getWOProjectDevelopmentPath();
-//		if (workSpacePath != null) {
-//			URL classUrl = new URL("file://" + workSpacePath + "wolips/core/plugins/org.objectstyle.wolips.eomodeler.core/bin/");
-//			classpathUrls.add(classUrl);
-//		}
+		// String workSpacePath =
+		// VariablesPlugin.getDefault().getWOProjectDevelopmentPath();
+		// if (workSpacePath != null) {
+		// URL classUrl = new URL("file://" + workSpacePath +
+		// "wolips/core/plugins/org.objectstyle.wolips.eomodeler.core/bin/");
+		// classpathUrls.add(classUrl);
+		// }
 	}
 
 	@Override
