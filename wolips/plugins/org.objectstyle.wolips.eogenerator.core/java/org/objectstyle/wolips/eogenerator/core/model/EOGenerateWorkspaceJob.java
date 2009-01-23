@@ -49,10 +49,8 @@
  */
 package org.objectstyle.wolips.eogenerator.core.model;
 
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;

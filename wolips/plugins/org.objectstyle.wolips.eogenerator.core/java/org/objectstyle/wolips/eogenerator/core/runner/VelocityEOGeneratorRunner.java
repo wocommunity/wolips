@@ -19,7 +19,6 @@ import org.apache.velocity.tools.generic.ListTool;
 import org.apache.velocity.tools.generic.SetTool;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.objectstyle.wolips.eogenerator.core.Activator;
 import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel;
@@ -38,6 +37,7 @@ import org.objectstyle.wolips.thirdparty.velocity.WOLipsVelocityUtils;
 import org.objectstyle.wolips.thirdparty.velocity.resourceloader.ResourceLoader;
 
 public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
+	@SuppressWarnings("deprecation")
 	public static class ConsoleLogger implements LogSystem {
 		public void init(RuntimeServices runtimeservices) throws Exception {
 			// DO NOTHING
@@ -210,7 +210,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 					context.put("entity", entity);
 
 					String classNameWithPackage = renderContext.getClassNameForEntity(entity);
-					boolean eogenericRecord = classNameWithPackage == null || classNameWithPackage.endsWith("GenericRecord");
+					boolean eogenericRecord = classNameWithPackage == null || (classNameWithPackage.endsWith("GenericRecord") && !entity.getName().endsWith("GenericRecord"));
 					if (entity.isGenerateSource() && !eogenericRecord) {
 						String prefixClassNameWithPackage = entity.getPrefixClassName();
 						context.put("className", classNameWithPackage);
