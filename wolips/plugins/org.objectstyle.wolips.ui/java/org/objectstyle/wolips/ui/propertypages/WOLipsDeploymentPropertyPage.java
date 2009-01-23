@@ -103,7 +103,10 @@ public class WOLipsDeploymentPropertyPage extends WOLipsPropertyPage {
 
 		_customInfoPListText = _addTextArea(customInfoPListGroup, null);
 		if (project != null) {
-			_customInfoPListText.setText(getBuildProperties().getCustomInfoPListContent(true));
+			BuildProperties buildProperties = getBuildProperties();
+			if (buildProperties != null) {
+				_customInfoPListText.setText(buildProperties.getCustomInfoPListContent(true));
+			}
 		}
 	}
 
@@ -176,16 +179,18 @@ public class WOLipsDeploymentPropertyPage extends WOLipsPropertyPage {
 	protected void enableWidgets() {
 		_customInfoPListText.setEnabled(true);
 
-		boolean isApplication = getProjectAdapter().isApplication();
-		_servletDeploymentCheck.setEnabled(isApplication);
-		_generateWebXMLCheck.setEnabled(isApplication && _servletDeploymentCheck.getSelection());
-		_customWebXMLText.setEnabled(isApplication && _servletDeploymentCheck.getSelection() && !_generateWebXMLCheck.getSelection());
-
-		for (Button embedButton : _embedButtons.values()) {
-			embedButton.setEnabled(isApplication && !_servletDeploymentCheck.getSelection());
+		if (getProjectAdapter() != null) { 
+			boolean isApplication = getProjectAdapter().isApplication();
+			_servletDeploymentCheck.setEnabled(isApplication);
+			_generateWebXMLCheck.setEnabled(isApplication && _servletDeploymentCheck.getSelection());
+			_customWebXMLText.setEnabled(isApplication && _servletDeploymentCheck.getSelection() && !_generateWebXMLCheck.getSelection());
+	
+			for (Button embedButton : _embedButtons.values()) {
+				embedButton.setEnabled(isApplication && !_servletDeploymentCheck.getSelection());
+			}
+	
+			_javaWebStartButton.setEnabled(_javaClientButton.getSelection());
 		}
-
-		_javaWebStartButton.setEnabled(_javaClientButton.getSelection());
 	}
 
 	@Override

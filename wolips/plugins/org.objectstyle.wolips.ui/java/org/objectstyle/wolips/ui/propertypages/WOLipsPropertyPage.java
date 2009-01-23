@@ -79,13 +79,18 @@ public abstract class WOLipsPropertyPage extends PropertyPage implements IAdapta
 	private BuildProperties _buildProperties;
 
 	protected BuildProperties getBuildProperties() {
-		if (_buildProperties == null) {
+		BuildProperties buildProperties = _buildProperties;
+		if (buildProperties == null) {
 			ProjectAdapter projectAdapter = getProjectAdapter();
 			if (projectAdapter != null) {
-				_buildProperties = projectAdapter.getBuildProperties();
+				buildProperties = projectAdapter.getBuildProperties();
+				_buildProperties = buildProperties;
 			}
 		}
-		return _buildProperties;
+		if (buildProperties == null) {
+			buildProperties = new BuildProperties(getProject());
+		}
+		return buildProperties;
 	}
 
 	protected Text _addTextField(Composite parent, String label) {
