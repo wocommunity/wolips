@@ -95,7 +95,15 @@ public class WodParserCache implements ITypeOwner {
   }
 
   private static String getCacheKey(IResource resource) {
-    return getWoFolder(resource).getLocation().toPortableString();
+    String cacheKey;
+    IContainer woFolder = getWoFolder(resource);
+    if (woFolder == null) {
+      cacheKey = resource.getLocation().toPortableString();
+    }
+    else {
+      cacheKey = woFolder.getLocation().toPortableString();
+    }
+    return cacheKey;
   }
 
   private static IContainer getWoFolder(IResource resource) {
