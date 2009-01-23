@@ -128,6 +128,7 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 
 		_entities = new NSMutableArray();
 		_model = _modelGroup.modelNamed(modelName);
+		
 		NSDictionary defaultConnectionDictionary;
 		Map overrideConnectionDictionary = (Map) databaseConfig.get("connectionDictionary");
 		if (overrideConnectionDictionary != null) {
@@ -207,6 +208,18 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 	}
 
 	protected void replacePrototypes(EOModelGroup modelGroup, String prototypeEntityName) {
+		String replacementPrototypeName = "EOPrototypes";
+		
+		// Don't replace prototypes if the selected prototype entity name doesn't exist
+		if (modelGroup.entityNamed(prototypeEntityName) == null) {
+			return;
+		}
+		
+		// Don't replace prototypes if you're already just using "EOPrototypes"
+		if (replacementPrototypeName.equals(prototypeEntityName)) {
+			return;
+		}
+		
 		NSMutableDictionary removedPrototypeEntities = new NSMutableDictionary();
 
 		EOModel prototypesModel = null;
@@ -245,7 +258,7 @@ public class EOFSQLGenerator implements IEOSQLGenerator {
 			// System.out.println("EOFSQLGenerator.EOFSQLGenerator: setting
 			// " + prototypesEntity.name() + " to EOPrototypes in " +
 			// prototypesModel.name());
-			prototypesEntity.setName("EOPrototypes");
+			prototypesEntity.setName(replacementPrototypeName);
 			prototypesModel.addEntity(prototypesEntity);
 		}
 
