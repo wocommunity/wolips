@@ -966,7 +966,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 			String checkPrototypeName = prototypeName;
 			while (checkPrototypeName != null) {
 				if (checkPrototypeNames.contains(checkPrototypeName)) {
-					_failures.add(new EOModelVerificationFailure(getEntity().getModel(), this, "The prototype '" + prototypeName + "' is a prototype of itself, which creates a prototype cycle. Removing '" + prototypeName + "'s prototype.", false));
+					_failures.add(new EOModelVerificationFailure(getEntity().getModel(), this, "The prototype '" + prototypeName + "' is a prototype of itself. Removing the prototype cycle.", false));
 					setPrototype(null);
 					checkPrototypeName = null;
 					prototypeName = null;
