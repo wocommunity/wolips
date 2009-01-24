@@ -90,7 +90,7 @@ public class TableRefreshPropertyListener implements PropertyChangeListener {
 			_throttle.objectsRemoved(oldSet);
 			TableUtils.packTableColumns(_tableViewer);
 		} else {
-			System.out.println("TableRefreshPropertyListener.propertyChange: refresh all " + oldValue + ", " + newValue);
+			//System.out.println("TableRefreshPropertyListener.propertyChange: refresh all " + oldValue + ", " + newValue);
 			_tableViewer.refresh(source, true);
 		}
 		// myTableViewer.refresh(false);
