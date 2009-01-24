@@ -76,7 +76,6 @@ public class EntityModelerPreferencePage extends FieldEditorPreferencePage imple
 		addField(new BooleanFieldEditor(PreferenceConstants.OPEN_IN_WINDOW_KEY, Messages.getString("Preferences.OpenInWindowLabel"), getFieldEditorParent()));
 		addField(new BooleanFieldEditor(PreferenceConstants.USED_FOR_LOCKING_DEFAULT_KEY, Messages.getString("Preferences.DefaultUsedForLockingLabel"), getFieldEditorParent()));
 		addField(new BooleanFieldEditor(PreferenceConstants.ALLOWS_NULL_DEFAULT_KEY, Messages.getString("Preferences.DefaultAllowsNullLabel"), getFieldEditorParent()));
-		addField(new BooleanFieldEditor(PreferenceConstants.CREATE_DEFAULT_DATABASE_CONFIG, "Create Default Database Config", getFieldEditorParent()));
 
 		addField(new StringFieldEditor(TableUtils.getPreferenceNameForTableNamed(EOEntity.class.getName()), "Entity Columns", getFieldEditorParent()));
 		addField(new StringFieldEditor(TableUtils.getPreferenceNameForTableNamed(EOAttribute.class.getName()), "Attribute Columns", getFieldEditorParent()));

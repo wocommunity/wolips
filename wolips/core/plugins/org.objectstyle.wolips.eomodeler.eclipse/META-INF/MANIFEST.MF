@@ -21,3 +21,4 @@ Require-Bundle: org.eclipse.jdt.core,
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: objectstyle.org
 Export-Package: org.objectstyle.wolips.eomodeler.eclipse
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

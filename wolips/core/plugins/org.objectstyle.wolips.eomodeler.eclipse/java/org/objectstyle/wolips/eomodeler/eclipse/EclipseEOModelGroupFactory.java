@@ -82,13 +82,11 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.model.IEOModelGroupFactory;
-import org.objectstyle.wolips.eomodeler.preferences.PreferenceConstants;
 import org.objectstyle.wolips.eomodeler.utils.EclipseFileUtils;
 
 public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 	public void loadModelGroup(Object modelGroupResource, EOModelGroup modelGroup, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws EOModelException {
 		try {
-			modelGroup.setCreateDefaultDatabaseConfig(org.objectstyle.wolips.eomodeler.Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CREATE_DEFAULT_DATABASE_CONFIG));
 			IResource modelGroupEclipseResource = getEclipseResourceForModelResource(modelGroupResource);
 			if (modelGroupEclipseResource != null) {
 				IProject project = modelGroupEclipseResource.getProject();

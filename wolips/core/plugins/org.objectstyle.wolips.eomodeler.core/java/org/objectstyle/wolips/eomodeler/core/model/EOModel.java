@@ -438,11 +438,13 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		return myActiveDatabaseConfig;
 	}
 
-	public EODatabaseConfig _createDatabaseConfig(String adaptorName, Map<Object, Object> _connectionDictionary) {
+	public EODatabaseConfig _createDatabaseConfig(String adaptorName, Map<Object, Object> connectionDictionary) {
 		EODatabaseConfig defaultDatabaseConfig = new EODatabaseConfig(findUnusedDatabaseConfigName("Default"));
 		defaultDatabaseConfig.setAdaptorName(adaptorName);
-		defaultDatabaseConfig.setConnectionDictionary(new HashMap<Object, Object>(_connectionDictionary));
-		defaultDatabaseConfig.setPrototype(_getPreferredPrototypeEntity(adaptorName, _connectionDictionary));
+		if (connectionDictionary != null) {
+			defaultDatabaseConfig.setConnectionDictionary(new HashMap<Object, Object>(connectionDictionary));
+		}
+		defaultDatabaseConfig.setPrototype(_getPreferredPrototypeEntity(adaptorName, connectionDictionary));
 		defaultDatabaseConfig._setModel(this);
 		return defaultDatabaseConfig;
 	}
@@ -617,7 +619,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		EOModelGroup sourceModelGroup = new EOModelGroup();
 		EOModel sourceModel = new EOModel("Temp");
 		sourceModelGroup.addModel(sourceModel);
-		sourceModel.loadFromURL(sourceModelURL, false, failures);
+		sourceModel.loadFromURL(sourceModelURL, failures);
 		sourceModel.resolve(failures);
 		sourceModel.resolveFlattened(failures);
 		return importEntitiesFromModel(sourceModel, failures);
@@ -805,11 +807,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		return indexURL;
 	}
 
-	public void loadFromURL(URL modelURL, Set<EOModelVerificationFailure> failures) throws EOModelException, IOException {
-		loadFromURL(modelURL, true, failures);
-	}
-
-	public void loadFromURL(URL _modelFolder, boolean createMissingDatabaseConfig, Set<EOModelVerificationFailure> _failures) throws EOModelException, MalformedURLException {
+	public void loadFromURL(URL _modelFolder, Set<EOModelVerificationFailure> _failures) throws EOModelException, MalformedURLException {
 		// System.out.println("EOModel.loadFromURL: " + _modelFolder);
 		URL indexURL = new URL(_modelFolder, "index.eomodeld");
 		// if (!indexURL.exists()) {
@@ -888,11 +886,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		_reverseEngineered = entityModelerMap.getBoolean("reverseEngineered", false);
 
 		Map<String, Map> databaseConfigs = entityModelerMap.getMap("databaseConfigs");
-		boolean backwardsCompatibility = false;
-		if (databaseConfigs == null) {
-			backwardsCompatibility = true;
-		}
-		else if (databaseConfigs != null) {
+		if (databaseConfigs != null) {
 			for (Map.Entry<String, Map> databaseConfigEntry : databaseConfigs.entrySet()) {
 				String name = databaseConfigEntry.getKey();
 				EODatabaseConfig databaseConfig = new EODatabaseConfig(name);
@@ -905,11 +899,13 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		if (activeDatabaseConfigName != null) {
 			activeDatabaseConfig = getDatabaseConfigNamed(activeDatabaseConfigName);
 		}
+
+		String adaptorName = modelMap.getString("adaptorName", true);
+
 		// If there is a connection dictionary, then look for a database config
 		// that is equivalent ...
 		Map<Object, Object> connectionDictionary = modelMap.getMap("connectionDictionary", true);
 		if (connectionDictionary != null && !connectionDictionary.isEmpty()) {
-			String adaptorName = modelMap.getString("adaptorName", true);
 			EODatabaseConfig tempConnectionDictionaryDatabaseConfig = _createDatabaseConfig(adaptorName, connectionDictionary);
 			EODatabaseConfig connectionDictionaryDatabaseConfig = null;
 			Iterator<EODatabaseConfig> databaseConfigsIter = myDatabaseConfigs.iterator();
@@ -919,22 +915,33 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 					connectionDictionaryDatabaseConfig = databaseConfig;
 				}
 			}
+			
 			// if one isn't found, then make a new database config based off the
 			// connection dictionary
-			if (connectionDictionaryDatabaseConfig == null) {
+			if (connectionDictionaryDatabaseConfig == null && canSave()) {
 				connectionDictionaryDatabaseConfig = tempConnectionDictionaryDatabaseConfig;
-				if (canSave() && createMissingDatabaseConfig && isEditing()) {
-					addDatabaseConfig(connectionDictionaryDatabaseConfig, false, _failures);
-					//_failures.add(new EOModelVerificationFailure(this, this, "Creating default database config for model '" + getName() + "'.", true, null));
-				}
+				addDatabaseConfig(connectionDictionaryDatabaseConfig, false, _failures);
+				//_failures.add(new EOModelVerificationFailure(this, this, "Creating default database config for model '" + getName() + "'.", true, null));
 			}
+			
 			// if the identified active database config isn't the connection
-			// dictionary config, then
-			// change the active config to the connection dictionary config
+			// dictionary config, then change the active config to the connection dictionary config
 			if (activeDatabaseConfig != connectionDictionaryDatabaseConfig) {
 				activeDatabaseConfig = connectionDictionaryDatabaseConfig;
 			}
 		}
+		
+		// If after all this, we still have no database configs, and you have an empty connection dictionary,
+		// then make a new blank database config ... If you have a NULL connection dictionary, then we're
+		// going to assume you did that on purpose.
+		if (myDatabaseConfigs.isEmpty() && canSave() && connectionDictionary != null) {
+			// If you didn't specify an adaptor name, let's just make it JDBC 
+			if (adaptorName == null) {
+				adaptorName = EODatabaseConfig.JDBC_ADAPTOR_NAME;
+			}
+			addDatabaseConfig(_createDatabaseConfig(adaptorName, null), false, _failures);
+		}
+		
 		// try to always have at least one active database config
 		if (activeDatabaseConfig == null && !myDatabaseConfigs.isEmpty()) {
 			activeDatabaseConfig = myDatabaseConfigs.iterator().next();
