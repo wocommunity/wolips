@@ -959,6 +959,25 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 
 	public void resolve(Set<EOModelVerificationFailure> _failures) {
 		String prototypeName = getArgumentMap().getString("prototypeName", true);
+		if (prototypeName != null && myEntity != null && myEntity.isPrototype()) {
+			Set<String> checkPrototypeNames = new HashSet<String>();
+			checkPrototypeNames.add(getName());
+
+			String checkPrototypeName = prototypeName;
+			while (checkPrototypeName != null) {
+				if (checkPrototypeNames.contains(checkPrototypeName)) {
+					_failures.add(new EOModelVerificationFailure(getEntity().getModel(), this, "The prototype '" + prototypeName + "' is a prototype of itself, which creates a prototype cycle. Removing '" + prototypeName + "'s prototype.", false));
+					setPrototype(null);
+					checkPrototypeName = null;
+					prototypeName = null;
+				}
+				else {
+					checkPrototypeNames.add(checkPrototypeName);
+					EOAttribute prototype = myEntity.getModel().getPrototypeAttributeNamed(checkPrototypeName);
+					checkPrototypeName = prototype.getArgumentMap().getString("prototypeName", true);
+				}
+			}
+		}
 		clearCachedPrototype(prototypeName, _failures, false, true);
 
 		// MS: Fix a bug that I introduced where it briefly was accidently
