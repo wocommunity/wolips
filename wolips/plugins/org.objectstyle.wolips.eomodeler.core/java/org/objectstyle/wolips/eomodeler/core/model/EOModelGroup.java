@@ -74,24 +74,12 @@ public class EOModelGroup extends EOModelObject<Object> {
 
 	private Set<EOModel> _models;
 
-	private boolean _createDefaultDatabaseConfig;
-
 	private String _editingModelName;
 
 	private boolean _dirty;
 
 	public EOModelGroup() {
 		_models = new HashSet<EOModel>();
-		// _createDefaultDatabaseConfig = true;
-		_createDefaultDatabaseConfig = false;
-	}
-
-	public void setCreateDefaultDatabaseConfig(boolean createDefaultDatabaseConfig) {
-		_createDefaultDatabaseConfig = createDefaultDatabaseConfig;
-	}
-
-	public boolean isCreateDefaultDatabaseConfig() {
-		return _createDefaultDatabaseConfig;
 	}
 
 	public boolean hasProjectWonder() {
@@ -498,7 +486,7 @@ public class EOModelGroup extends EOModelObject<Object> {
 				} else {
 					model._setModelGroup(this);
 					try {
-						model.loadFromURL(modelURL, _createDefaultDatabaseConfig, failures);
+						model.loadFromURL(modelURL, failures);
 						addModel(model, failures);
 						reloadModel = false;
 					} catch (DuplicateEntityNameException e) {
@@ -511,6 +499,7 @@ public class EOModelGroup extends EOModelObject<Object> {
 						failures.add(new EOModelVerificationFailure(model, model, existingEntityModel.getName() + " and " + model.getName() + " both declare an entity named " + existingEntity.getName() + ", so " + existingEntityModel.getName() + " is being removed. You can create an EOModelGroup file to resolve this.", true, e));
 						removeModel(existingEntityModel, failures);
 					} catch (Exception e) {
+						e.printStackTrace();
 						failures.add(new EOModelVerificationFailure(model, model, model.getName() + " failed to load.", true, e));
 						reloadModel = false;
 					}

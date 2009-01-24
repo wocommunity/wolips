@@ -71,7 +71,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     prefs.setDefault(PreferenceConstants.SHOW_ERRORS_IN_PROBLEMS_VIEW_KEY, true);
     prefs.setDefault(PreferenceConstants.OPEN_WINDOW_ON_VERIFICATION_ERRORS_KEY, true);
     prefs.setDefault(PreferenceConstants.OPEN_WINDOW_ON_VERIFICATION_WARNINGS_KEY, true);
-    prefs.setDefault(PreferenceConstants.CREATE_DEFAULT_DATABASE_CONFIG, true);
     TableUtils.setColumnsForTableNamed(EOArgument.class.getName(), new String[] { AbstractEOArgument.NAME, AbstractEOArgument.COLUMN_NAME, EOArgument.DIRECTION }, false);
     TableUtils.setColumnsForTableNamed(EOAttribute.class.getName(), new String[] { EOAttribute.PRIMARY_KEY, EOAttribute.CLASS_PROPERTY, EOAttribute.USED_FOR_LOCKING, AbstractEOArgument.ALLOWS_NULL, EOAttribute.PROTOTYPE, AbstractEOArgument.NAME, AbstractEOArgument.COLUMN_NAME, AbstractEOArgument.WIDTH, AbstractEOArgument.PRECISION, AbstractEOArgument.SCALE }, false);
     TableUtils.setColumnsForTableNamed(EOEntity.class.getName(), new String[] { EOEntity.NAME, EOEntity.EXTERNAL_NAME, EOEntity.CLASS_NAME, EOEntity.PARENT }, false);
