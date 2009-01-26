@@ -3,7 +3,7 @@ WORKSPACE=/Users/mschrag/Documents/workspace
 ECLIPSE=/Developer/Applications/eclipse
 TEMPDIR=/tmp/veogenjar
 MANIFEST=/tmp/MANIFEST.MF
-OUTPUT=/tmp/veogen.jar
+OUTPUT=/tmp/veogen-`svn info | grep Revision | sed 's#.* ##g'`.jar
 
 echo Veogen
 mkdir -p $TEMPDIR
