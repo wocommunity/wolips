@@ -21,6 +21,7 @@ public class Veogen {
   public static void main(String[] args) throws Exception {
     EOGeneratorModel eogeneratorModel = new EOGeneratorModel();
     eogeneratorModel.setPackageDirs(Boolean.TRUE);
+    eogeneratorModel.setExtension("java");
     
     File modelGroupFolder = new File(".");
     List<String> modelPaths = new LinkedList<String>();
@@ -130,6 +131,6 @@ public class Veogen {
     
     VelocityEOGeneratorRunner eogenRunner = new VelocityEOGeneratorRunner(false);
     StringBuffer results = new StringBuffer();
-    eogenRunner.generate(eogeneratorModel, results, modelGroup, new NullProgressMonitor());
+    eogenRunner.generate(eogeneratorModel, results, modelGroup, VeogenResourceLoader.class, new NullProgressMonitor());
   }
 }

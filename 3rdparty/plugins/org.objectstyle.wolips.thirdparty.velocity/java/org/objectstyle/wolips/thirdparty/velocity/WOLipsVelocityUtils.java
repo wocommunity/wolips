@@ -76,7 +76,9 @@ public class WOLipsVelocityUtils {
 		velocityEngine.setProperty("file.resource.loader.path", templatePaths.toString());
 		if (insideEclipse) {
 			velocityEngine.setProperty("wolips.resource.loader.class", ResourceLoader.class.getName());
-			velocityEngine.setProperty("wolips.resource.loader.bundle", templateBundle);
+			if (templateBundle != null) {
+				velocityEngine.setProperty("wolips.resource.loader.bundle", templateBundle);
+			}
 		} else if (resourceLoaderClass != null) {
 			velocityEngine.setProperty("wolips.resource.loader.class", resourceLoaderClass.getName());
 		}

@@ -6,5 +6,7 @@
 	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.equinox.common_3.4.0.v20080421-2006.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.objectstyle.wolips.eomodeler.factories"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.objectstyle.wolips.eogenerator.core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.objectstyle.wolips.thirdparty.velocity"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.objectstyle.wolips.thirdparty.commonscollections"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

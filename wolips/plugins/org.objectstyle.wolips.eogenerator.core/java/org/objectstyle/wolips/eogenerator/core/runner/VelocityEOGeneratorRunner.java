@@ -35,6 +35,7 @@ import org.objectstyle.wolips.eomodeler.core.model.IEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
 import org.objectstyle.wolips.thirdparty.velocity.WOLipsVelocityUtils;
 import org.objectstyle.wolips.thirdparty.velocity.resourceloader.ResourceLoader;
+import org.osgi.framework.Bundle;
 
 public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 	@SuppressWarnings("deprecation")
@@ -59,10 +60,14 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 	}
 
 	public boolean generate(EOGeneratorModel eogeneratorModel, StringBuffer results, IProgressMonitor monitor) throws Exception {
-		return generate(eogeneratorModel, results, null, monitor);
+		return generate(eogeneratorModel, results, null, ResourceLoader.class, monitor);
 	}
 
 	public boolean generate(EOGeneratorModel eogeneratorModel, StringBuffer results, EOModelGroup preloadedModelGroup, IProgressMonitor monitor) throws Exception {
+		return generate(eogeneratorModel, results, preloadedModelGroup, ResourceLoader.class, monitor);
+	}
+
+	public boolean generate(EOGeneratorModel eogeneratorModel, StringBuffer results, EOModelGroup preloadedModelGroup, Class resourceLoaderClass, IProgressMonitor monitor) throws Exception {
 		boolean showResults = false;
 
 		String superclassTemplateName = eogeneratorModel.getJavaTemplate();
@@ -85,7 +90,8 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			}
 		}
 
-		VelocityEngine velocityEngine = WOLipsVelocityUtils.createVelocityEngine("EOGenerator", Activator.getDefault().getBundle(), eogeneratorModel.getTemplateDir(), eogeneratorModel.getProjectPath(), _insideEclipse, ResourceLoader.class);
+		Bundle templateBundle = _insideEclipse ? Activator.getDefault().getBundle() : null;
+		VelocityEngine velocityEngine = WOLipsVelocityUtils.createVelocityEngine("EOGenerator", templateBundle, eogeneratorModel.getTemplateDir(), eogeneratorModel.getProjectPath(), _insideEclipse, resourceLoaderClass);
 		VelocityContext context = new VelocityContext();
 
 		List<EOModel> models = new LinkedList<EOModel>();
