@@ -130,6 +130,6 @@ public class Veogen {
     
     VelocityEOGeneratorRunner eogenRunner = new VelocityEOGeneratorRunner(false);
     StringBuffer results = new StringBuffer();
-    eogenRunner.generate(eogeneratorModel, results, modelGroup);
+    eogenRunner.generate(eogeneratorModel, results, modelGroup, new NullProgressMonitor());
   }
 }
