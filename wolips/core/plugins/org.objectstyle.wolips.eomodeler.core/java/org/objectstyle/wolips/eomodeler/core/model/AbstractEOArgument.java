@@ -362,26 +362,26 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		if ("java.lang.Number".equals(className) || "Number".equals(className) || "NSNumber".equals(className)) {
 			String valueType = getValueType();
 			if (valueType == null || valueType.length() == 0) {
-				className = "java.lang.Integer";
+				className = java.lang.Integer.class.getName();
 			} else if ("B".equals(valueType)) {
-				className = "java.math.BigDecimal";
+				className = java.math.BigDecimal.class.getName();
 			} else if ("b".equals(valueType)) {
-				className = "java.lang.Byte";
+				className = java.lang.Byte.class.getName();
 			} else if ("d".equals(valueType)) {
-				className = "java.lang.Double";
+				className = java.lang.Double.class.getName();
 			} else if ("f".equals(valueType)) {
-				className = "java.lang.Float";
+				className = java.lang.Float.class.getName();
 			} else if ("i".equals(valueType)) {
-				className = "java.lang.Integer";
+				className = java.lang.Integer.class.getName();
 			} else if ("l".equals(valueType)) {
-				className = "java.lang.Long";
+				className = java.lang.Long.class.getName();
 			} else if ("s".equals(valueType)) {
-				className = "java.lang.Short";
+				className = java.lang.Short.class.getName();
 			} else if ("c".equals(valueType)) {
-				className = "java.lang.Boolean";
+				className = java.lang.Boolean.class.getName();
 			}
 		} else if ("NSString".equals(className)) {
-			className = "java.lang.String";
+			className = java.lang.String.class.getName();
 		} else if ("NSCalendarDate".equals(className)) {
 			if (shorten) {
 				className = "NSTimestamp";
@@ -392,9 +392,9 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		} else if ("NSDecimalNumber".equals(className)) {
 			String valueType = getValueType();
 			if (valueType == null || valueType.length() == 0) {
-				className = "java.lang.Integer";
+				className = java.lang.Integer.class.getName();
 			} else {
-				className = "java.lang.BigDecimal";
+				className = java.math.BigDecimal.class.getName();
 			}
 		}
 		if (shorten && className != null && className.startsWith("java.lang.")) {
