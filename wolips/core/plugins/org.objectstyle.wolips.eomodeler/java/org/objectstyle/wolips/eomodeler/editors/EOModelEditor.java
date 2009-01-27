@@ -65,10 +65,12 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -85,6 +87,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -488,8 +491,25 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	}
 
 	public void _loadInBackground(IProgressMonitor progressMonitor) {
+		myLoadFailures = new LinkedHashSet<EOModelVerificationFailure>();
+		
 		try {
-			IURIEditorInput editorInput = (IURIEditorInput) getEditorInput();
+			IEditorInput editorInput = getEditorInput();
+			URI indexURL = null;
+			if (editorInput instanceof IURIEditorInput) {
+				indexURL = ((IURIEditorInput) editorInput).getURI();
+			}
+			else if (editorInput instanceof IStorageEditorInput) {
+				// MS: This is a total hackfest here ... This supports double-clicking an index.eomodeld from
+				// inside of a jar
+				IStorage storage = ((IStorageEditorInput)editorInput).getStorage();
+				Class jarEntryClass = storage.getClass();
+				IPath jarEntryPath = (IPath)jarEntryClass.getMethod("getFullPath").invoke(storage);
+				Object root = jarEntryClass.getMethod("getPackageFragmentRoot").invoke(storage);
+				Class packageFragmentRootClass = root.getClass();
+				IResource jarFile = (IResource)packageFragmentRootClass.getMethod("getUnderlyingResource").invoke(root);
+				indexURL = new URI("jar:" + jarFile.getLocation().toFile().toURL() + "!" + jarEntryPath.toPortableString());
+			}
 			if (myModel != null) {
 				if (myModel.getModelGroup() != null) {
 					myModel.getModelGroup().removePropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
@@ -507,8 +527,6 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				myModel.removePropertyChangeListener(EOModel.ENTITY + "." + EOEntity.ENTITY_INDEXES, myEntityIndexesChangeListener);
 			}
 
-			URI indexURL = editorInput.getURI();
-
 			String openingEntityName = null;
 			String extension = URLUtils.getExtension(indexURL);
 			if ("plist".equalsIgnoreCase(extension)) {
@@ -518,8 +536,6 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			} else if ("fspec".equalsIgnoreCase(extension)) {
 				indexURL = new File(URLUtils.cheatAndTurnIntoFile(indexURL).getParentFile(), "index.eomodeld").toURI();
 			}
-
-			myLoadFailures = new LinkedHashSet<EOModelVerificationFailure>();
 
 			EOModelGroup modelGroup = new EOModelGroup();
 			modelGroup.addPropertyChangeListener(EOModelGroup.MODELS, getContentOutlinePage());
@@ -542,7 +558,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			if (model == null) {
 				// DO NOTHING
 			} else {
-				editorInput = EclipseFileUtils.getEditorInput(model);
+				EclipseFileUtils.getEditorInput(model);
 				if (openingEntityName != null) {
 					myOpeningEntity = model.getEntityNamed(openingEntityName);
 				}

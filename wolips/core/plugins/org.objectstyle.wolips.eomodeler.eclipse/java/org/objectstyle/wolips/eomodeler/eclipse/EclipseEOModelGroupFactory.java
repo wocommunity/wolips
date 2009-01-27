@@ -161,7 +161,17 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 								frameworkPath = path;
 							} else {
 								if (lastSegment != null && lastSegment.endsWith(".jar")) {
-									jarPaths.add(path);
+									// MS: This is really annoying, but it appears that a jar in your project looks the
+									// same as an absolute jar path reference outside your project.  I don't know
+									// how to tell them apart, so I check to see if the jar is in your project 
+									// before we fallback to the old way.
+									IFile jarInProject = project.getWorkspace().getRoot().getFile(path);
+									if (jarInProject.exists()) {
+										jarPaths.add(jarInProject.getLocation());
+									}
+									else {
+										jarPaths.add(path);
+									}
 								}
 								path = path.removeLastSegments(1);
 							}
