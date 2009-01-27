@@ -3,6 +3,7 @@ package org.objectstyle.wolips.baseforplugins.util;
 import java.io.File;
 import java.io.IOException;
 import java.net.JarURLConnection;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -145,16 +146,11 @@ public class URLUtils {
 	}
 
 	public static File cheatAndTurnIntoFile(URI uri) {
-		File f;
-		String scheme = uri.getScheme();
-		if ("file".equals(scheme)) {
-			f = new File(uri.getPath());
-		} else {
-			System.err.println("cheatAndTurnIntoFile(URI)");
-			new Exception().printStackTrace(System.err);
-			throw new IllegalArgumentException(uri + " is not a File.");
+		try {
+			return cheatAndTurnIntoFile(uri.toURL());
+		} catch (MalformedURLException e) {
+			throw new IllegalArgumentException("Unable to turn '" + uri + "' into a URL.", e);
 		}
-		return f;
 	}
 
 	public static File cheatAndTurnIntoFile(URL url) {
@@ -164,7 +160,25 @@ public class URLUtils {
 		}
 		else {
 			String protocol = url.getProtocol();
-			if ("file".equals(protocol)) {
+			if ("jar".equals(protocol)) {
+				String externalForm = url.toExternalForm();
+				int colonIndex = externalForm.indexOf(':');
+				int bangIndex = externalForm.indexOf('!');
+				String jarPath;
+				if (bangIndex == -1) {
+					jarPath = externalForm.substring(colonIndex + 1);
+				}
+				else {
+					jarPath = externalForm.substring(colonIndex + 1, bangIndex);
+				}
+				try {
+					f = new File(new URI(jarPath));
+				}
+				catch (Exception e) {
+					throw new IllegalArgumentException(url + " cannot be turned into a File.", e);
+				}
+			}
+			else if ("file".equals(protocol)) {
 				f = new File(url.getPath());
 			} else if ("bundleresource".equals(protocol)) {
 				try {

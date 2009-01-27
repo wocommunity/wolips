@@ -1062,7 +1062,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	public boolean canSave() throws MalformedURLException {
 		boolean canSave;
 		URL indexURL = getIndexURL();
-		if (indexURL == null) {
+		if (indexURL == null || indexURL.toExternalForm().startsWith("jar:")) {
 			canSave = false;
 		} else {
 			File indexFile = URLUtils.cheatAndTurnIntoFile(indexURL);
