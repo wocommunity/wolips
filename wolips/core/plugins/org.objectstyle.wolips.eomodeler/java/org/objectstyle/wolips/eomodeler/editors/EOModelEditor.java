@@ -429,8 +429,15 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				IPath jarEntryPath = (IPath) jarEntryClass.getMethod("getFullPath").invoke(storage);
 				Object root = jarEntryClass.getMethod("getPackageFragmentRoot").invoke(storage);
 				Class packageFragmentRootClass = root.getClass();
-				IPath jarFile = (IPath) packageFragmentRootClass.getMethod("getPath").invoke(root);
-				indexURL = new URI("jar:" + jarFile.toFile().toURL() + "!" + jarEntryPath.toPortableString());
+				IResource jarResource = (IResource)packageFragmentRootClass.getMethod("getUnderlyingResource").invoke(root);
+				IPath jarPath;
+				if (jarResource == null) {
+					jarPath = (IPath) packageFragmentRootClass.getMethod("getPath").invoke(root);
+				}
+				else {
+					jarPath = jarResource.getLocation();
+				}
+				indexURL = new URI("jar:" + jarPath.toFile().toURL() + "!" + jarEntryPath.toPortableString());
 			}
 			if (myModel != null) {
 				if (myModel.getModelGroup() != null) {
@@ -480,7 +487,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			if (model == null) {
 				// DO NOTHING
 			} else {
-				EclipseFileUtils.getEditorInput(model);
+				//EclipseFileUtils.getEditorInput(model);
 				if (openingEntityName != null) {
 					myOpeningEntity = model.getEntityNamed(openingEntityName);
 				}
