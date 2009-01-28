@@ -162,7 +162,7 @@ public class EOModelErrorDialog extends Dialog {
 			//failureLabelData.horizontalIndent = 3;
 			failureLabel.setLayoutData(failureLabelData);
 
-			if (_editor != null) {
+			if (_editor != null && failure.getFailedObject() != null) {
 				Button showButton = new Button(failuresComposite, SWT.PUSH);
 				showButton.setText("Show");
 				GridData showButtonData = new GridData();
@@ -177,7 +177,7 @@ public class EOModelErrorDialog extends Dialog {
 	
 					public void widgetSelected(SelectionEvent e) {
 						EOModelVerificationFailure selectedFailure = (EOModelVerificationFailure) ((Widget) e.getSource()).getData();
-						if (selectedFailure != null && _editor != null) {
+						if (selectedFailure != null && _editor != null && selectedFailure.getFailedObject() != null) {
 							_editor.setSelection(new StructuredSelection(selectedFailure.getFailedObject()));
 							EOModelErrorDialog.this.close();
 						}
