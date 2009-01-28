@@ -49,6 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.core.model;
 
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.baseforplugins.util.StringUtils;
 
 public class EOModelVerificationFailure implements Comparable<EOModelVerificationFailure> {
@@ -103,7 +104,7 @@ public class EOModelVerificationFailure implements Comparable<EOModelVerificatio
 	}
 
 	public boolean equals(Object obj) {
-		return (obj instanceof EOModelVerificationFailure && (obj == this || (((EOModelVerificationFailure) obj)._message.equals(_message)) && _rootCause == null && ((EOModelVerificationFailure) obj)._rootCause == null));
+		return (obj instanceof EOModelVerificationFailure && (obj == this || (((EOModelVerificationFailure) obj)._message.equals(_message)) && _rootCause == null && ((EOModelVerificationFailure) obj)._rootCause == null && ComparisonUtils.equals(_failedObject, ((EOModelVerificationFailure)obj)._failedObject)));
 	}
 
 	public int compareTo(EOModelVerificationFailure obj) {
