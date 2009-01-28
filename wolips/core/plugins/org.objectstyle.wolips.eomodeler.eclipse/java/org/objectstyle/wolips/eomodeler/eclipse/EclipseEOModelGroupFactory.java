@@ -105,6 +105,24 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 					// modelGroup.verify(failures);
 				}
 			}
+			else if (modelGroupResource instanceof URL) {
+				File modelURLFile = URLUtils.cheatAndTurnIntoFile((URL)modelGroupResource);
+				if (modelURLFile != null) {
+					URL jarResourcesURL = new URL("jar:" + modelURLFile.toURL() + "!/Resources");
+					if (URLUtils.exists(jarResourcesURL)) {
+						modelGroup.loadModelsFromURL(jarResourcesURL, 1, failures, skipOnDuplicates, progressMonitor);
+					}
+				}
+			}
+			else if (modelGroupResource instanceof URI) {
+				File modelURIFile = URLUtils.cheatAndTurnIntoFile((URI)modelGroupResource);
+				if (modelURIFile != null) {
+					URL jarResourcesURL = new URL("jar:" + modelURIFile.toURL() + "!/Resources");
+					if (URLUtils.exists(jarResourcesURL)) {
+						modelGroup.loadModelsFromURL(jarResourcesURL, 1, failures, skipOnDuplicates, progressMonitor);
+					}
+				}
+			}
 		} catch (EOModelException e) {
 			throw e;
 		} catch (Throwable t) {
