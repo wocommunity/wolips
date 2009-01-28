@@ -1,35 +1,35 @@
 /*
  * ====================================================================
- * 
+ *
  * The ObjectStyle Group Software License, Version 1.0
- * 
+ *
  * Copyright (c) 2006 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  * this list of conditions and the following disclaimer.
- * 
+ *
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
- * 
+ *
  * 3. The end-user documentation included with the redistribution, if any, must
  * include the following acknowlegement: "This product includes software
  * developed by the ObjectStyle Group (http://objectstyle.org/)." Alternately,
  * this acknowlegement may appear in the software itself, if and wherever such
  * third-party acknowlegements normally appear.
- * 
+ *
  * 4. The names "ObjectStyle Group" and "Cayenne" must not be used to endorse or
  * promote products derived from this software without prior written permission.
  * For written permission, please contact andrus@objectstyle.org.
- * 
+ *
  * 5. Products derived from this software may not be called "ObjectStyle" nor
  * may "ObjectStyle" appear in their names without prior written permission of
  * the ObjectStyle Group.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
  * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
@@ -41,11 +41,11 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * ====================================================================
- * 
+ *
  * This software consists of voluntary contributions made by many individuals on
  * behalf of the ObjectStyle Group. For more information on the ObjectStyle
  * Group, please see <http://objectstyle.org/>.
- *  
+ *
  */
 package org.objectstyle.wolips.eomodeler.editors;
 
@@ -130,6 +130,219 @@ import org.objectstyle.wolips.eomodeler.utils.AbstractAddRemoveChangeRefresher;
 import org.objectstyle.wolips.eomodeler.utils.EclipseFileUtils;
 
 public class EOModelEditor extends MultiPageEditorPart implements IResourceChangeListener, ITabbedPropertySheetPageContributor, ISelectionProvider, IEOModelEditor {
+	protected class ArgumentDeletedRefresher extends AbstractAddRemoveChangeRefresher<EOArgument> {
+		public ArgumentDeletedRefresher() {
+			super("ArgumentDeleted");
+		}
+
+		public void changeSelection(final ISelection selection) {
+			EOModelEditor.this.setSelection(selection);
+		}
+
+		@Override
+		protected void objectsAdded(final List<EOArgument> _addedObjects) {
+			// DO NOTHING
+		}
+
+		@Override
+		protected void objectsRemoved(final List<EOArgument> _removedObjects) {
+			EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getSelectedStoredProcedure()));
+			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOSTOREDPROCEDURE_PAGE));
+		}
+	}
+
+	protected class AttributeAndRelationshipDeletedRefresher extends AbstractAddRemoveChangeRefresher<IEOAttribute> {
+		public AttributeAndRelationshipDeletedRefresher() {
+			super("AttributeAndRelationshipDeleted");
+		}
+
+		public void changeSelection(final ISelection selection) {
+			EOModelEditor.this.setSelection(selection);
+		}
+
+		@Override
+		protected void objectsAdded(final List<IEOAttribute> _addedObjects) {
+			// DO NOTHING
+		}
+
+		@Override
+		protected void objectsRemoved(final List<IEOAttribute> _removedObjects) {
+			EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getSelectedEntity()));
+			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
+		}
+	}
+
+	protected class DatabaseConfigsChangeRefresher extends AbstractAddRemoveChangeRefresher<EODatabaseConfig> {
+		public DatabaseConfigsChangeRefresher() {
+			super("DatabaseConfigsChange");
+		}
+
+		public void changeSelection(final ISelection selection) {
+			EOModelEditor.this.setSelection(selection);
+		}
+
+		@Override
+		protected void objectsAdded(final List<EODatabaseConfig> _addedObjects) {
+			// DO NOTHING
+		}
+
+		@Override
+		protected void objectsRemoved(final List<EODatabaseConfig> _removedObjects) {
+			EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getModel()));
+			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
+		}
+	}
+
+	protected class DirtyModelListener implements PropertyChangeListener {
+		public void propertyChange(final PropertyChangeEvent _event) {
+			String propertyName = _event.getPropertyName();
+			if (EOModel.DIRTY.equals(propertyName)) {
+				EOModelEditor.this.editorDirtyStateChanged();
+			}
+		}
+	}
+
+	protected class EntitiesChangeRefresher extends AbstractAddRemoveChangeRefresher<EOEntity> {
+		public EntitiesChangeRefresher() {
+			super("EntitiesChange");
+		}
+
+		public void changeSelection(final ISelection selection) {
+			EOModelEditor.this.setSelection(selection);
+			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
+		}
+
+		@Override
+		protected void objectsAdded(final List<EOEntity> _addedObjects) {
+			// DO NOTHING
+		}
+
+		@Override
+		protected void objectsRemoved(final List<EOEntity> _removedObjects) {
+			EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getModel()));
+			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
+		}
+	}
+
+	protected class EntityIndexesChangeRefresher extends AbstractAddRemoveChangeRefresher<EOEntityIndex> {
+		public EntityIndexesChangeRefresher() {
+			super("EntityIndexesChange");
+		}
+
+		public void changeSelection(final ISelection selection) {
+			EOModelEditor.this.setSelection(selection);
+			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
+		}
+
+		@Override
+		protected void objectsAdded(final List<EOEntityIndex> _addedObjects) {
+			// DO NOTHING
+		}
+
+		@Override
+		protected void objectsRemoved(final List<EOEntityIndex> _removedObjects) {
+			EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getModel()));
+			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
+		}
+	}
+
+	protected class EOArgumentSelectionChangedListener implements ISelectionChangedListener {
+		public void selectionChanged(final SelectionChangedEvent _event) {
+			IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
+			setSelection(selection);
+		}
+	}
+
+	protected class EOEntitySelectionChangedListener implements ISelectionChangedListener {
+		public void selectionChanged(final SelectionChangedEvent _event) {
+			IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
+			setSelection(selection);
+		}
+	}
+
+	protected class EOModelContentSelectionChangedListener implements ISelectionChangedListener {
+		private Object mySelectedObject;
+
+		public void selectionChanged(final SelectionChangedEvent _event) {
+			IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
+			Object selectedObject = selection.getFirstElement();
+			setSelection(selection, false);
+			if (myContentOutlinePage.isSelectedWithOutline()) {
+				EOModelEditor.this.doubleClickedObjectInOutline(selectedObject);
+			} else {
+				if (mySelectedObject == null) {
+					mySelectedObject = selectedObject;
+				} else if (mySelectedObject == selectedObject) {
+					EOModelEditor.this.doubleClickedObjectInOutline(selectedObject);
+					mySelectedObject = null;
+				} else {
+					mySelectedObject = selectedObject;
+				}
+			}
+		}
+	}
+
+	protected class EOModelEditorUndoContext implements IUndoContext {
+		public String getLabel() {
+			return EOModelUtils.getUndoContext(EOModelEditor.this.getModel()).getLabel();
+		}
+
+		public boolean matches(final IUndoContext context) {
+			return EOModelUtils.getUndoContext(EOModelEditor.this.getModel()).matches(context);
+		}
+	}
+
+	protected class EOModelSelectionChangedListener implements ISelectionChangedListener {
+		public void selectionChanged(final SelectionChangedEvent _event) {
+			IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
+			setSelection(selection);
+		}
+	}
+
+	protected class FetchSpecsChangeRefresher extends AbstractAddRemoveChangeRefresher<EOFetchSpecification> {
+		public FetchSpecsChangeRefresher() {
+			super("FetchSpecsChange");
+		}
+
+		public void changeSelection(final ISelection selection) {
+			EOModelEditor.this.setSelection(selection);
+			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
+		}
+
+		@Override
+		protected void objectsAdded(final List<EOFetchSpecification> _addedObjects) {
+			// DO NOTHING
+		}
+
+		@Override
+		protected void objectsRemoved(final List<EOFetchSpecification> _removedObjects) {
+			EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getModel()));
+			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
+		}
+	}
+
+	protected class StoredProceduresChangeRefresher extends AbstractAddRemoveChangeRefresher<EOStoredProcedure> {
+		public StoredProceduresChangeRefresher() {
+			super("StoredProceduresChange");
+		}
+
+		public void changeSelection(final ISelection selection) {
+			EOModelEditor.this.setSelection(selection);
+			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOSTOREDPROCEDURE_PAGE));
+		}
+
+		@Override
+		protected void objectsAdded(final List<EOStoredProcedure> _addedObjects) {
+			// DO NOTHING
+		}
+
+		@Override
+		protected void objectsRemoved(final List<EOStoredProcedure> _removedObjects) {
+			EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getModel()));
+			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
+		}
+	}
+
 	public static final String EOMODEL_EDITOR_ID = "org.objectstyle.wolips.eomodeler.editors.EOModelEditor";
 
 	public static final String EOMODEL_PAGE = "eomodel";
@@ -146,25 +359,25 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 	private EOModelContentOutlinePage myContentOutlinePage;
 
-	private ListenerList mySelectionChangedListeners;
+	private final ListenerList mySelectionChangedListeners;
 
 	private IStructuredSelection mySelection;
 
-	private PropertyChangeListener myDirtyModelListener;
+	private final PropertyChangeListener myDirtyModelListener;
 
-	private EntitiesChangeRefresher myEntitiesChangeListener;
+	private final EntitiesChangeRefresher myEntitiesChangeListener;
 
-	private FetchSpecsChangeRefresher myFetchSpecsChangeListener;
+	private final FetchSpecsChangeRefresher myFetchSpecsChangeListener;
 
-	private EntityIndexesChangeRefresher myEntityIndexesChangeListener;
+	private final EntityIndexesChangeRefresher myEntityIndexesChangeListener;
 
-	private StoredProceduresChangeRefresher myStoredProceduresChangeListener;
+	private final StoredProceduresChangeRefresher myStoredProceduresChangeListener;
 
-	private DatabaseConfigsChangeRefresher myDatabaseConfigsChangeListener;
+	private final DatabaseConfigsChangeRefresher myDatabaseConfigsChangeListener;
 
-	private AttributeAndRelationshipDeletedRefresher myAttributeAndRelationshipListener;
+	private final AttributeAndRelationshipDeletedRefresher myAttributeAndRelationshipListener;
 
-	private ArgumentDeletedRefresher myArgumentListener;
+	private final ArgumentDeletedRefresher myArgumentListener;
 
 	private EOStoredProcedure mySelectedStoredProcedure;
 
@@ -182,7 +395,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 	private int mySelectionDepth;
 
-	private Object myCreatePagesLock = new Object();
+	private final Object myCreatePagesLock = new Object();
 
 	private int _failuresHashCode;
 
@@ -199,316 +412,25 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 	}
 
-	public IUndoContext getUndoContext() {
-		return new EOModelEditorUndoContext();
-	}
-
-	protected class EOModelEditorUndoContext implements IUndoContext {
-		public String getLabel() {
-			return EOModelUtils.getUndoContext(EOModelEditor.this.getModel()).getLabel();
-		}
-
-		public boolean matches(IUndoContext context) {
-			return EOModelUtils.getUndoContext(EOModelEditor.this.getModel()).matches(context);
-		}
-	}
-
-	public EOModelContentOutlinePage getContentOutlinePage() {
-		if (myContentOutlinePage == null) {
-			myContentOutlinePage = new EOModelContentOutlinePage(this);
-			myContentOutlinePage.addSelectionChangedListener(new EOModelContentSelectionChangedListener());
-		}
-		return myContentOutlinePage;
-	}
-
-	public EOModel getModel() {
-		return myModel;
-	}
-
-	public EOEntity getSelectedEntity() {
-		return mySelectedEntity;
-	}
-
-	public String getContributorId() {
-		return getSite().getId();
-	}
-
-	public Object getAdapter(Class _adapterClass) {
-		Object adapter;
-		if (_adapterClass == IPropertySheetPage.class) {
-			adapter = new TabbedPropertySheetPage(this);
-		} else if (_adapterClass == IContentOutlinePage.class) {
-			IContentOutlinePage outlinePage = getContentOutlinePage();
-			adapter = outlinePage;
-		} else {
-			adapter = super.getAdapter(_adapterClass);
-		}
-		return adapter;
-	}
-
-	protected int getPageNum(String _pageType) {
-		int pageNum;
-		if (_pageType == EOModelEditor.EOENTITY_PAGE) {
-			pageNum = getPageNum(myEntityEditor);
-		} else if (_pageType == EOModelEditor.EOMODEL_PAGE) {
-			pageNum = getPageNum(myEntitiesTableEditor);
-		} else if (_pageType == EOModelEditor.EOSTOREDPROCEDURE_PAGE) {
-			pageNum = getPageNum(myStoredProcedureEditor);
-		} else {
-			pageNum = -1;
-		}
-		return pageNum;
-	}
-
-	protected int getPageNum(IEditorPart _editorPart) {
-		int matchingPageNum = -1;
-		int pageCount = getPageCount();
-		for (int pageNum = 0; matchingPageNum == -1 && pageNum < pageCount; pageNum++) {
-			IEditorPart editorPart = getEditor(pageNum);
-			if (editorPart == _editorPart) {
-				matchingPageNum = pageNum;
-			}
-		}
-		return matchingPageNum;
-	}
-
-	protected void createPages() {
-		synchronized (myCreatePagesLock) {
-			try {
-				myEntitiesTableEditor = new EOEntitiesTableEditor();
-
-				addPage(myEntitiesTableEditor, getEditorInput());
-				setPageText(getPageNum(EOModelEditor.EOMODEL_PAGE), Messages.getString("EOModelEditor.entitiesTab"));
-
-				myEntityEditor = new EOEntityEditor();
-
-				EOModelSelectionChangedListener modelSelectionChangedListener = new EOModelSelectionChangedListener();
-				myEntitiesTableEditor.addSelectionChangedListener(modelSelectionChangedListener);
-				myEntitiesTableEditor.setModel(myModel);
-
-				EOEntitySelectionChangedListener entitySelectionChangedListener = new EOEntitySelectionChangedListener();
-				myEntityEditor.addSelectionChangedListener(entitySelectionChangedListener);
-
-				myStoredProcedureEditor = new EOArgumentsTableEditor();
-				EOArgumentSelectionChangedListener argumentSelectionChangedListener = new EOArgumentSelectionChangedListener();
-				myStoredProcedureEditor.addSelectionChangedListener(argumentSelectionChangedListener);
-
-				if (myOpeningEntity != null) {
-					setSelectedEntity(myOpeningEntity);
-					setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
-				}
-
-			} catch (PartInitException e) {
-				ErrorDialog.openError(getSite().getShell(), "Error creating editor.", null, e.getStatus());
-			}
-		}
-	}
-
-	protected void setEntityPageVisible(boolean _entityPageVisible) {
-		try {
-			if (_entityPageVisible) {
-				if (!myEntityPageVisible) {
-					addPage(myEntityEditor, getEditorInput());
-				}
-				String entityName = mySelectedEntity.getName();
-				if (entityName == null) {
-					entityName = "?";
-				}
-				setPageText(getPageNum(EOModelEditor.EOENTITY_PAGE), entityName);
-			} else if (myEntityPageVisible) {
-				removePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
-			}
-			myEntityPageVisible = _entityPageVisible;
-		} catch (PartInitException e) {
-			ErrorDialog.openError(getSite().getShell(), "Error creating editor.", null, e.getStatus());
-		}
-	}
-
-	protected void setStoredProcedurePageVisible(boolean _storedProcedurePageVisible) {
-		try {
-			if (_storedProcedurePageVisible) {
-				if (!myStoredProcedurePageVisible) {
-					addPage(myStoredProcedureEditor, getEditorInput());
-				}
-				String storedProcedureName = mySelectedStoredProcedure.getName();
-				if (storedProcedureName == null) {
-					storedProcedureName = "?";
-				}
-				setPageText(getPageNum(EOModelEditor.EOSTOREDPROCEDURE_PAGE), storedProcedureName);
-			} else if (myStoredProcedurePageVisible) {
-				removePage(getPageNum(EOModelEditor.EOSTOREDPROCEDURE_PAGE));
-			}
-			myStoredProcedurePageVisible = _storedProcedurePageVisible;
-		} catch (PartInitException e) {
-			ErrorDialog.openError(getSite().getShell(), "Error creating editor.", null, e.getStatus());
-		}
-	}
-
-	public void setSelectedEntity(EOEntity _selectedEntity) {
-		if (!ComparisonUtils.equals(mySelectedEntity, _selectedEntity)) {
-			if (mySelectedEntity != null) {
-				mySelectedEntity.removePropertyChangeListener(EOEntity.ATTRIBUTES, myAttributeAndRelationshipListener);
-				mySelectedEntity.removePropertyChangeListener(EOEntity.RELATIONSHIPS, myAttributeAndRelationshipListener);
-			}
-			mySelectedEntity = _selectedEntity;
-			if (mySelectedEntity != null) {
-				mySelectedEntity.addPropertyChangeListener(EOEntity.ATTRIBUTES, myAttributeAndRelationshipListener);
-				mySelectedEntity.addPropertyChangeListener(EOEntity.RELATIONSHIPS, myAttributeAndRelationshipListener);
-			}
-			if (_selectedEntity == null) {
-				setEntityPageVisible(false);
-			} else {
-				setEntityPageVisible(true);
-			}
-			myEntitiesTableEditor.setSelectedEntity(_selectedEntity);
-			myEntityEditor.setEntity(_selectedEntity);
-			// Fix a problem where the entity properties view does not refresh
-			// This is a hack, but if we steal focus onto the outline, it DOES
-			// refresh
-			updatePartName();
-		}
-		if (_selectedEntity != null) {
-			setSelectedStoredProcedure(null);
-		}
-	}
-
-	public EOStoredProcedure getSelectedStoredProcedure() {
-		return mySelectedStoredProcedure;
-	}
-
-	public void setSelectedStoredProcedure(EOStoredProcedure _selectedStoredProcedure) {
-		if (!ComparisonUtils.equals(mySelectedStoredProcedure, _selectedStoredProcedure)) {
-			if (mySelectedStoredProcedure != null) {
-				mySelectedStoredProcedure.removePropertyChangeListener(EOStoredProcedure.ARGUMENTS, myArgumentListener);
-			}
-			mySelectedStoredProcedure = _selectedStoredProcedure;
-			if (mySelectedStoredProcedure != null) {
-				mySelectedStoredProcedure.addPropertyChangeListener(EOStoredProcedure.ARGUMENTS, myArgumentListener);
-			}
-			if (_selectedStoredProcedure == null) {
-				setStoredProcedurePageVisible(false);
-			} else {
-				setStoredProcedurePageVisible(true);
-			}
-			myStoredProcedureEditor.setStoredProcedure(_selectedStoredProcedure);
-			updatePartName();
-		}
-		if (_selectedStoredProcedure != null) {
-			setSelectedEntity(null);
-		}
-	}
-
-	public void dispose() {
-		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
-
-		myEntitiesChangeListener.stop();
-		myStoredProceduresChangeListener.stop();
-		myDatabaseConfigsChangeListener.stop();
-		myFetchSpecsChangeListener.stop();
-		myEntityIndexesChangeListener.stop();
-
-		super.dispose();
-
-		switchFromEntityModelerPerspective();
-	}
-
-	public void doSave(IProgressMonitor monitor) {
-		// if (!myModel.isEditing()) {
-		// ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(),
-		// "You cannot save this model because it is read-only.");
-		// return;
-		// }
-		showBusy(true);
-		try {
-			IEditorInput input = getEditorInput();
-			if (input != null && myModel != null) {
-				Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
-
-				for (EOModel model : myModel.getModelGroup().getModels()) {
-					if (model.isDirty()) {
-						monitor.beginTask("Checking " + model.getName() + " ...", IProgressMonitor.UNKNOWN);
-						try {
-							model.verify(failures);
-							if (!model.canSave()) {
-								failures.add(new EOModelVerificationFailure(model, "You modified the model '" + model.getName() + "', but you are not able to save it to '" + model.getIndexURL() + "'.", false));
-							}
-						} finally {
-							monitor.done();
-						}
-					}
-				}
-
-				handleModelErrors(failures, false);
-
-				for (EOModel model : myModel.getModelGroup().getModels()) {
-					if (model.isDirty() && model.canSave()) {
-						monitor.beginTask("Saving " + model.getName() + " ...", IProgressMonitor.UNKNOWN);
-						try {
-							model.save();
-
-							IFile eclipseIndexFile = EclipseFileUtils.getEclipseFile(myModel.getIndexURL());
-							if (eclipseIndexFile != null) {
-								eclipseIndexFile.getParent().getParent().refreshLocal(IResource.DEPTH_INFINITE, monitor);
-							}
-						} finally {
-							monitor.done();
-						}
-					}
-				}
-			}
-		} catch (Throwable t) {
-			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), t);
-		} finally {
-			showBusy(false);
-		}
-	}
-
-	public boolean isDirty() {
-		boolean dirty = false;
-		if (myModel != null) {
-			if (myModel.isDirty()) {
-				dirty = true;
-			} else if (myModel.getModelGroup() != null) {
-				dirty = myModel.getModelGroup().isDirty();
-			}
-		}
-		return dirty;
-	}
-
-	public void doSaveAs() {
-		doSave(null);
-	}
-
-	public void revert() {
-		boolean confirmed = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), Messages.getString("EOModelEditor.revertTitle"), Messages.getString("EOModelEditor.revertMessage"));
-		if (confirmed) {
-			try {
-				init((IEditorSite) getSite(), getEditorInput());
-			} catch (PartInitException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void _loadInBackground(IProgressMonitor progressMonitor) {
+	public void _loadInBackground(final IProgressMonitor progressMonitor) {
 		myLoadFailures = new LinkedHashSet<EOModelVerificationFailure>();
-		
+
 		try {
 			IEditorInput editorInput = getEditorInput();
 			URI indexURL = null;
 			if (editorInput instanceof IURIEditorInput) {
 				indexURL = ((IURIEditorInput) editorInput).getURI();
-			}
-			else if (editorInput instanceof IStorageEditorInput) {
-				// MS: This is a total hackfest here ... This supports double-clicking an index.eomodeld from
+			} else if (editorInput instanceof IStorageEditorInput) {
+				// MS: This is a total hackfest here ... This supports
+				// double-clicking an index.eomodeld from
 				// inside of a jar
-				IStorage storage = ((IStorageEditorInput)editorInput).getStorage();
+				IStorage storage = ((IStorageEditorInput) editorInput).getStorage();
 				Class jarEntryClass = storage.getClass();
-				IPath jarEntryPath = (IPath)jarEntryClass.getMethod("getFullPath").invoke(storage);
+				IPath jarEntryPath = (IPath) jarEntryClass.getMethod("getFullPath").invoke(storage);
 				Object root = jarEntryClass.getMethod("getPackageFragmentRoot").invoke(storage);
 				Class packageFragmentRootClass = root.getClass();
-				IResource jarFile = (IResource)packageFragmentRootClass.getMethod("getUnderlyingResource").invoke(root);
-				indexURL = new URI("jar:" + jarFile.getLocation().toFile().toURL() + "!" + jarEntryPath.toPortableString());
+				IPath jarFile = (IPath) packageFragmentRootClass.getMethod("getPath").invoke(root);
+				indexURL = new URI("jar:" + jarFile.toFile().toURL() + "!" + jarEntryPath.toPortableString());
 			}
 			if (myModel != null) {
 				if (myModel.getModelGroup() != null) {
@@ -618,19 +540,11 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		}
 	}
 
-	public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
-		try {
-			switchToEntityModelerPerspective();
-			super.init(site, editorInput);
-
-			LoadEOModelWorkspaceJob loadModelJob = new LoadEOModelWorkspaceJob(this, editorInput);
-			loadModelJob.schedule();
-		} catch (WorkbenchException e) {
-			e.printStackTrace();
-		}
+	public void addSelectionChangedListener(final ISelectionChangedListener _listener) {
+		mySelectionChangedListeners.add(_listener);
 	}
 
-	protected int computeFailuresHashCode(Set<EOModelVerificationFailure> failures) {
+	protected int computeFailuresHashCode(final Set<EOModelVerificationFailure> failures) {
 		StringBuffer sb = new StringBuffer();
 		for (EOModelVerificationFailure failure : failures) {
 			sb.append(failure.getMessage());
@@ -638,13 +552,229 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		return sb.toString().hashCode();
 	}
 
-	protected void handleModelErrors(final Set<EOModelVerificationFailure> failures, boolean forceOpen) {
+	@Override
+	protected void createPages() {
+		synchronized (myCreatePagesLock) {
+			try {
+				myEntitiesTableEditor = new EOEntitiesTableEditor();
+
+				addPage(myEntitiesTableEditor, getEditorInput());
+				setPageText(getPageNum(EOModelEditor.EOMODEL_PAGE), Messages.getString("EOModelEditor.entitiesTab"));
+
+				myEntityEditor = new EOEntityEditor();
+
+				EOModelSelectionChangedListener modelSelectionChangedListener = new EOModelSelectionChangedListener();
+				myEntitiesTableEditor.addSelectionChangedListener(modelSelectionChangedListener);
+				myEntitiesTableEditor.setModel(myModel);
+
+				EOEntitySelectionChangedListener entitySelectionChangedListener = new EOEntitySelectionChangedListener();
+				myEntityEditor.addSelectionChangedListener(entitySelectionChangedListener);
+
+				myStoredProcedureEditor = new EOArgumentsTableEditor();
+				EOArgumentSelectionChangedListener argumentSelectionChangedListener = new EOArgumentSelectionChangedListener();
+				myStoredProcedureEditor.addSelectionChangedListener(argumentSelectionChangedListener);
+
+				if (myOpeningEntity != null) {
+					setSelectedEntity(myOpeningEntity);
+					setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
+				}
+
+			} catch (PartInitException e) {
+				ErrorDialog.openError(getSite().getShell(), "Error creating editor.", null, e.getStatus());
+			}
+		}
+	}
+
+	@Override
+	public void dispose() {
+		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+
+		myEntitiesChangeListener.stop();
+		myStoredProceduresChangeListener.stop();
+		myDatabaseConfigsChangeListener.stop();
+		myFetchSpecsChangeListener.stop();
+		myEntityIndexesChangeListener.stop();
+
+		super.dispose();
+
+		switchFromEntityModelerPerspective();
+	}
+
+	@Override
+	public void doSave(final IProgressMonitor monitor) {
+		// if (!myModel.isEditing()) {
+		// ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(),
+		// "You cannot save this model because it is read-only.");
+		// return;
+		// }
+		showBusy(true);
+		try {
+			IEditorInput input = getEditorInput();
+			if (input != null && myModel != null) {
+				Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
+
+				for (EOModel model : myModel.getModelGroup().getModels()) {
+					if (model.isDirty()) {
+						monitor.beginTask("Checking " + model.getName() + " ...", IProgressMonitor.UNKNOWN);
+						try {
+							model.verify(failures);
+							if (!model.canSave()) {
+								failures.add(new EOModelVerificationFailure(model, "You modified the model '" + model.getName() + "', but you are not able to save it to '" + model.getIndexURL() + "'.", false));
+							}
+						} finally {
+							monitor.done();
+						}
+					}
+				}
+
+				handleModelErrors(failures, false);
+
+				for (EOModel model : myModel.getModelGroup().getModels()) {
+					if (model.isDirty() && model.canSave()) {
+						monitor.beginTask("Saving " + model.getName() + " ...", IProgressMonitor.UNKNOWN);
+						try {
+							model.save();
+
+							IFile eclipseIndexFile = EclipseFileUtils.getEclipseFile(myModel.getIndexURL());
+							if (eclipseIndexFile != null) {
+								eclipseIndexFile.getParent().getParent().refreshLocal(IResource.DEPTH_INFINITE, monitor);
+							}
+						} finally {
+							monitor.done();
+						}
+					}
+				}
+			}
+		} catch (Throwable t) {
+			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), t);
+		} finally {
+			showBusy(false);
+		}
+	}
+
+	@Override
+	public void doSaveAs() {
+		doSave(null);
+	}
+
+	protected void doubleClickedObjectInOutline(final Object _obj) {
+		if (_obj instanceof EOEntity) {
+			setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
+		} else if (_obj instanceof EOStoredProcedure) {
+			setActivePage(getPageNum(EOModelEditor.EOSTOREDPROCEDURE_PAGE));
+		}
+	}
+
+	protected void editorDirtyStateChanged() {
+		firePropertyChange(IEditorPart.PROP_DIRTY);
+	}
+
+	protected void fireSelectionChanged(final ISelection _selection) {
+		// Hack: When the selection changes, update the focus on the outline
+		// view or
+		// the properties view can sometimes not refresh properly -- It's really
+		// silly
+		// and I don't know why it's happening.
+		getContentOutlinePage().setFocus();
+		Object[] selectionChangedListeners = mySelectionChangedListeners.getListeners();
+		SelectionChangedEvent selectionChangedEvent = new SelectionChangedEvent(this, _selection);
+		for (int listenerNum = 0; listenerNum < selectionChangedListeners.length; listenerNum++) {
+			ISelectionChangedListener listener = (ISelectionChangedListener) selectionChangedListeners[listenerNum];
+			listener.selectionChanged(selectionChangedEvent);
+		}
+	}
+
+	@Override
+	public Object getAdapter(final Class _adapterClass) {
+		Object adapter;
+		if (_adapterClass == IPropertySheetPage.class) {
+			adapter = new TabbedPropertySheetPage(this);
+		} else if (_adapterClass == IContentOutlinePage.class) {
+			IContentOutlinePage outlinePage = getContentOutlinePage();
+			adapter = outlinePage;
+		} else {
+			adapter = super.getAdapter(_adapterClass);
+		}
+		return adapter;
+	}
+
+	public EOModelContentOutlinePage getContentOutlinePage() {
+		if (myContentOutlinePage == null) {
+			myContentOutlinePage = new EOModelContentOutlinePage(this);
+			myContentOutlinePage.addSelectionChangedListener(new EOModelContentSelectionChangedListener());
+		}
+		return myContentOutlinePage;
+	}
+
+	public String getContributorId() {
+		return getSite().getId();
+	}
+
+	public EOEntitiesTableEditor getEntitiesTableEditor() {
+		return myEntitiesTableEditor;
+	}
+
+	public EOEntityEditor getEntityEditor() {
+		return myEntityEditor;
+	}
+
+	public EOModel getModel() {
+		return myModel;
+	}
+
+	protected int getPageNum(final IEditorPart _editorPart) {
+		int matchingPageNum = -1;
+		int pageCount = getPageCount();
+		for (int pageNum = 0; matchingPageNum == -1 && pageNum < pageCount; pageNum++) {
+			IEditorPart editorPart = getEditor(pageNum);
+			if (editorPart == _editorPart) {
+				matchingPageNum = pageNum;
+			}
+		}
+		return matchingPageNum;
+	}
+
+	protected int getPageNum(final String _pageType) {
+		int pageNum;
+		if (_pageType == EOModelEditor.EOENTITY_PAGE) {
+			pageNum = getPageNum(myEntityEditor);
+		} else if (_pageType == EOModelEditor.EOMODEL_PAGE) {
+			pageNum = getPageNum(myEntitiesTableEditor);
+		} else if (_pageType == EOModelEditor.EOSTOREDPROCEDURE_PAGE) {
+			pageNum = getPageNum(myStoredProcedureEditor);
+		} else {
+			pageNum = -1;
+		}
+		return pageNum;
+	}
+
+	public EOEntity getSelectedEntity() {
+		return mySelectedEntity;
+	}
+
+	public EOStoredProcedure getSelectedStoredProcedure() {
+		return mySelectedStoredProcedure;
+	}
+
+	public ISelection getSelection() {
+		return mySelection;
+	}
+
+	public EOArgumentsTableEditor getStoredProcedureEditor() {
+		return myStoredProcedureEditor;
+	}
+
+	public IUndoContext getUndoContext() {
+		return new EOModelEditorUndoContext();
+	}
+
+	protected void handleModelErrors(final Set<EOModelVerificationFailure> failures, final boolean forceOpen) {
 		if (myModel != null) {
 			try {
 				if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.SHOW_ERRORS_IN_PROBLEMS_VIEW_KEY)) {
 					final EOModel editingModel = myModel;
 					IWorkspaceRunnable body = new IWorkspaceRunnable() {
-						public void run(IProgressMonitor monitor) throws CoreException {
+						public void run(final IProgressMonitor monitor) throws CoreException {
 							for (EOModel model : editingModel.getModelGroup().getModels()) {
 								try {
 									IFile indexFile = EclipseFileUtils.getEclipseIndexFile(model);
@@ -749,24 +879,46 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		}
 	}
 
-	protected void updatePartName() {
-		String partName;
-		if (myModel != null) {
-			partName = myModel.getName();
-		} else {
-			partName = Messages.getString("EOModelEditor.partName");
+	@Override
+	public void init(final IEditorSite site, final IEditorInput editorInput) throws PartInitException {
+		try {
+			switchToEntityModelerPerspective();
+			super.init(site, editorInput);
+
+			LoadEOModelWorkspaceJob loadModelJob = new LoadEOModelWorkspaceJob(this, editorInput);
+			loadModelJob.schedule();
+		} catch (WorkbenchException e) {
+			e.printStackTrace();
 		}
-		setPartName(partName);
 	}
 
+	@Override
+	public boolean isDirty() {
+		boolean dirty = false;
+		if (myModel != null) {
+			if (myModel.isDirty()) {
+				dirty = true;
+			} else if (myModel.getModelGroup() != null) {
+				dirty = myModel.getModelGroup().isDirty();
+			}
+		}
+		return dirty;
+	}
+
+	@Override
 	public boolean isSaveAsAllowed() {
 		return false;
 	}
 
-	protected void pageChange(int _newPageIndex) {
+	@Override
+	protected void pageChange(final int _newPageIndex) {
 		super.pageChange(_newPageIndex);
 		ISelectionProvider selectionProvider = (ISelectionProvider) getEditor(_newPageIndex);
 		getSite().setSelectionProvider(selectionProvider);
+	}
+
+	public void removeSelectionChangedListener(final ISelectionChangedListener _listener) {
+		mySelectionChangedListeners.remove(_listener);
 	}
 
 	public void resourceChanged(final IResourceChangeEvent _event) {
@@ -787,33 +939,138 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		}
 	}
 
-	public EOEntitiesTableEditor getEntitiesTableEditor() {
-		return myEntitiesTableEditor;
+	public void revert() {
+		boolean confirmed = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), Messages.getString("EOModelEditor.revertTitle"), Messages.getString("EOModelEditor.revertMessage"));
+		if (confirmed) {
+			try {
+				init((IEditorSite) getSite(), getEditorInput());
+			} catch (PartInitException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
-	public EOEntityEditor getEntityEditor() {
-		return myEntityEditor;
-	}
-
-	public EOArgumentsTableEditor getStoredProcedureEditor() {
-		return myStoredProcedureEditor;
-	}
-
-	public void setActivePage(int _pageIndex) {
+	@Override
+	public void setActivePage(final int _pageIndex) {
 		if (_pageIndex != getActivePage()) {
 			super.setActivePage(_pageIndex);
 		}
 	}
 
-	public ISelection getSelection() {
-		return mySelection;
+	protected void setEntityPageVisible(final boolean _entityPageVisible) {
+		try {
+			if (_entityPageVisible) {
+				if (!myEntityPageVisible) {
+					addPage(myEntityEditor, getEditorInput());
+				}
+				String entityName = mySelectedEntity.getName();
+				if (entityName == null) {
+					entityName = "?";
+				}
+				setPageText(getPageNum(EOModelEditor.EOENTITY_PAGE), entityName);
+			} else if (myEntityPageVisible) {
+				removePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
+			}
+			myEntityPageVisible = _entityPageVisible;
+		} catch (PartInitException e) {
+			ErrorDialog.openError(getSite().getShell(), "Error creating editor.", null, e.getStatus());
+		}
 	}
 
-	public void setSelection(ISelection _selection) {
+	@Override
+	public void setFocus() {
+		super.setFocus();
+		// MS: I'm not sure the right way to do this, but without
+		// this call, selecting a relationship in the EOModelEditor
+		// before ever activing the outline would not cause the
+		// property view to update.
+		getSite().setSelectionProvider(this);
+
+		// MS: If an Entity Modeler editor receives focus, and there is
+		// more than one editor in the perspective, we want to switch
+		// to Entity Modeler perspective. The "more than one editor"
+		// restriction is in place, because if you only have an
+		// Entity Modeler editor in the perspective, you won't be
+		// able to ever switch perspectives to temporarily get access
+		// to package explorer, for instance, because it will keep
+		// forcing you back. This MIGHT actually be the correct
+		// behavior, but it seemed really aggressive.
+		if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CHANGE_PERSPECTIVES_KEY)) {
+			boolean shouldSwitchToEntityModeler = false;
+			IWorkbench workbench = Activator.getDefault().getWorkbench();
+			IWorkbenchWindow activeWindow = workbench.getActiveWorkbenchWindow();
+			if (activeWindow != null) {
+				if (activeWindow != null) {
+					IWorkbenchPage workbenchPage = activeWindow.getActivePage();
+					if (workbenchPage != null) {
+						IEditorReference[] editorReferences = workbenchPage.getEditorReferences();
+						if (editorReferences.length > 1) {
+							shouldSwitchToEntityModeler = true;
+						}
+					}
+				}
+			}
+			if (shouldSwitchToEntityModeler) {
+				switchToEntityModelerPerspective();
+			}
+		}
+	}
+
+	public void setSelectedEntity(final EOEntity _selectedEntity) {
+		if (!ComparisonUtils.equals(mySelectedEntity, _selectedEntity)) {
+			if (mySelectedEntity != null) {
+				mySelectedEntity.removePropertyChangeListener(EOEntity.ATTRIBUTES, myAttributeAndRelationshipListener);
+				mySelectedEntity.removePropertyChangeListener(EOEntity.RELATIONSHIPS, myAttributeAndRelationshipListener);
+			}
+			mySelectedEntity = _selectedEntity;
+			if (mySelectedEntity != null) {
+				mySelectedEntity.addPropertyChangeListener(EOEntity.ATTRIBUTES, myAttributeAndRelationshipListener);
+				mySelectedEntity.addPropertyChangeListener(EOEntity.RELATIONSHIPS, myAttributeAndRelationshipListener);
+			}
+			if (_selectedEntity == null) {
+				setEntityPageVisible(false);
+			} else {
+				setEntityPageVisible(true);
+			}
+			myEntitiesTableEditor.setSelectedEntity(_selectedEntity);
+			myEntityEditor.setEntity(_selectedEntity);
+			// Fix a problem where the entity properties view does not refresh
+			// This is a hack, but if we steal focus onto the outline, it DOES
+			// refresh
+			updatePartName();
+		}
+		if (_selectedEntity != null) {
+			setSelectedStoredProcedure(null);
+		}
+	}
+
+	public void setSelectedStoredProcedure(final EOStoredProcedure _selectedStoredProcedure) {
+		if (!ComparisonUtils.equals(mySelectedStoredProcedure, _selectedStoredProcedure)) {
+			if (mySelectedStoredProcedure != null) {
+				mySelectedStoredProcedure.removePropertyChangeListener(EOStoredProcedure.ARGUMENTS, myArgumentListener);
+			}
+			mySelectedStoredProcedure = _selectedStoredProcedure;
+			if (mySelectedStoredProcedure != null) {
+				mySelectedStoredProcedure.addPropertyChangeListener(EOStoredProcedure.ARGUMENTS, myArgumentListener);
+			}
+			if (_selectedStoredProcedure == null) {
+				setStoredProcedurePageVisible(false);
+			} else {
+				setStoredProcedurePageVisible(true);
+			}
+			myStoredProcedureEditor.setStoredProcedure(_selectedStoredProcedure);
+			updatePartName();
+		}
+		if (_selectedStoredProcedure != null) {
+			setSelectedEntity(null);
+		}
+	}
+
+	public void setSelection(final ISelection _selection) {
 		setSelection(_selection, true);
 	}
 
-	public synchronized void setSelection(ISelection _selection, boolean _updateOutline) {
+	public synchronized void setSelection(final ISelection _selection, final boolean _updateOutline) {
 		// MS: it's really easy to setup a selection loop with so many
 		// interrelated components. In reality, we only want the top selection
 		// to count, and
@@ -886,12 +1143,24 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		}
 	}
 
-	public void addSelectionChangedListener(ISelectionChangedListener _listener) {
-		mySelectionChangedListeners.add(_listener);
-	}
-
-	public void removeSelectionChangedListener(ISelectionChangedListener _listener) {
-		mySelectionChangedListeners.remove(_listener);
+	protected void setStoredProcedurePageVisible(final boolean _storedProcedurePageVisible) {
+		try {
+			if (_storedProcedurePageVisible) {
+				if (!myStoredProcedurePageVisible) {
+					addPage(myStoredProcedureEditor, getEditorInput());
+				}
+				String storedProcedureName = mySelectedStoredProcedure.getName();
+				if (storedProcedureName == null) {
+					storedProcedureName = "?";
+				}
+				setPageText(getPageNum(EOModelEditor.EOSTOREDPROCEDURE_PAGE), storedProcedureName);
+			} else if (myStoredProcedurePageVisible) {
+				removePage(getPageNum(EOModelEditor.EOSTOREDPROCEDURE_PAGE));
+			}
+			myStoredProcedurePageVisible = _storedProcedurePageVisible;
+		} catch (PartInitException e) {
+			ErrorDialog.openError(getSite().getShell(), "Error creating editor.", null, e.getStatus());
+		}
 	}
 
 	/**
@@ -899,8 +1168,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	 * back to WOLips perspective.
 	 */
 	public void switchFromEntityModelerPerspective() {
-		// MS: If "Open in New Window" is selected, then we want to watch for the case where
-		// you were in Entity Modeler and then close the editor, which also close the new window,
+		// MS: If "Open in New Window" is selected, then we want to watch for
+		// the case where
+		// you were in Entity Modeler and then close the editor, which also
+		// close the new window,
 		// so we don't leave you sitting in a blank window.
 		boolean closedWindow = false;
 		if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.OPEN_IN_WINDOW_KEY)) {
@@ -916,7 +1187,8 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			}
 		}
 
-		// MS: If the window didn't need to close, then we want to switch perspectives on your current
+		// MS: If the window didn't need to close, then we want to switch
+		// perspectives on your current
 		// window from Entity Modeler over to the WOLips perspective.
 		if (!closedWindow && Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CHANGE_PERSPECTIVES_KEY)) {
 			try {
@@ -965,255 +1237,13 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		}
 	}
 
-	public void setFocus() {
-		super.setFocus();
-		// MS: I'm not sure the right way to do this, but without
-		// this call, selecting a relationship in the EOModelEditor
-		// before ever activing the outline would not cause the
-		// property view to update.
-		getSite().setSelectionProvider(this);
-
-		// MS: If an Entity Modeler editor receives focus, and there is
-		// more than one editor in the perspective, we want to switch 
-		// to Entity Modeler perspective.  The "more than one editor"
-		// restriction is in place, because if you only have an 
-		// Entity Modeler editor in the perspective, you won't be
-		// able to ever switch perspectives to temporarily get access
-		// to package explorer, for instance, because it will keep
-		// forcing you back.  This MIGHT actually be the correct 
-		// behavior, but it seemed really aggressive.
-		if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CHANGE_PERSPECTIVES_KEY)) {
-			boolean shouldSwitchToEntityModeler = false;
-			IWorkbench workbench = Activator.getDefault().getWorkbench();
-			IWorkbenchWindow activeWindow = workbench.getActiveWorkbenchWindow();
-			if (activeWindow != null) {
-				if (activeWindow != null) {
-					IWorkbenchPage workbenchPage = activeWindow.getActivePage();
-					if (workbenchPage != null) {
-						IEditorReference[] editorReferences = workbenchPage.getEditorReferences();
-						if (editorReferences.length > 1) {
-							shouldSwitchToEntityModeler = true;
-						}
-					}
-				}
-			}
-			if (shouldSwitchToEntityModeler) {
-				switchToEntityModelerPerspective();
-			}
+	protected void updatePartName() {
+		String partName;
+		if (myModel != null) {
+			partName = myModel.getName();
+		} else {
+			partName = Messages.getString("EOModelEditor.partName");
 		}
-	}
-
-	protected void fireSelectionChanged(ISelection _selection) {
-		// Hack: When the selection changes, update the focus on the outline view or 
-		// the properties view can sometimes not refresh properly -- It's really silly
-		// and I don't know why it's happening.
-		getContentOutlinePage().setFocus();
-		Object[] selectionChangedListeners = mySelectionChangedListeners.getListeners();
-		SelectionChangedEvent selectionChangedEvent = new SelectionChangedEvent(this, _selection);
-		for (int listenerNum = 0; listenerNum < selectionChangedListeners.length; listenerNum++) {
-			ISelectionChangedListener listener = (ISelectionChangedListener) selectionChangedListeners[listenerNum];
-			listener.selectionChanged(selectionChangedEvent);
-		}
-	}
-
-	protected void editorDirtyStateChanged() {
-		firePropertyChange(IEditorPart.PROP_DIRTY);
-	}
-
-	protected void doubleClickedObjectInOutline(Object _obj) {
-		if (_obj instanceof EOEntity) {
-			setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
-		} else if (_obj instanceof EOStoredProcedure) {
-			setActivePage(getPageNum(EOModelEditor.EOSTOREDPROCEDURE_PAGE));
-		}
-	}
-
-	protected class EOModelContentSelectionChangedListener implements ISelectionChangedListener {
-		private Object mySelectedObject;
-
-		public void selectionChanged(SelectionChangedEvent _event) {
-			IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
-			Object selectedObject = selection.getFirstElement();
-			setSelection(selection, false);
-			if (myContentOutlinePage.isSelectedWithOutline()) {
-				EOModelEditor.this.doubleClickedObjectInOutline(selectedObject);
-			} else {
-				if (mySelectedObject == null) {
-					mySelectedObject = selectedObject;
-				} else if (mySelectedObject == selectedObject) {
-					EOModelEditor.this.doubleClickedObjectInOutline(selectedObject);
-					mySelectedObject = null;
-				} else {
-					mySelectedObject = selectedObject;
-				}
-			}
-		}
-	}
-
-	protected class EOModelSelectionChangedListener implements ISelectionChangedListener {
-		public void selectionChanged(SelectionChangedEvent _event) {
-			IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
-			setSelection(selection);
-		}
-	}
-
-	protected class EOEntitySelectionChangedListener implements ISelectionChangedListener {
-		public void selectionChanged(SelectionChangedEvent _event) {
-			IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
-			setSelection(selection);
-		}
-	}
-
-	protected class EOArgumentSelectionChangedListener implements ISelectionChangedListener {
-		public void selectionChanged(SelectionChangedEvent _event) {
-			IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
-			setSelection(selection);
-		}
-	}
-
-	protected class DirtyModelListener implements PropertyChangeListener {
-		public void propertyChange(PropertyChangeEvent _event) {
-			String propertyName = _event.getPropertyName();
-			if (EOModel.DIRTY.equals(propertyName)) {
-				EOModelEditor.this.editorDirtyStateChanged();
-			}
-		}
-	}
-
-	protected class EntitiesChangeRefresher extends AbstractAddRemoveChangeRefresher<EOEntity> {
-		public EntitiesChangeRefresher() {
-			super("EntitiesChange");
-		}
-
-		public void changeSelection(ISelection selection) {
-			EOModelEditor.this.setSelection(selection);
-			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
-		}
-
-		protected void objectsAdded(List<EOEntity> _addedObjects) {
-			// DO NOTHING
-		}
-
-		protected void objectsRemoved(List<EOEntity> _removedObjects) {
-			EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getModel()));
-			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
-		}
-	}
-
-	protected class FetchSpecsChangeRefresher extends AbstractAddRemoveChangeRefresher<EOFetchSpecification> {
-		public FetchSpecsChangeRefresher() {
-			super("FetchSpecsChange");
-		}
-
-		public void changeSelection(ISelection selection) {
-			EOModelEditor.this.setSelection(selection);
-			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
-		}
-
-		protected void objectsAdded(List<EOFetchSpecification> _addedObjects) {
-			// DO NOTHING
-		}
-
-		protected void objectsRemoved(List<EOFetchSpecification> _removedObjects) {
-			EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getModel()));
-			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
-		}
-	}
-
-	protected class EntityIndexesChangeRefresher extends AbstractAddRemoveChangeRefresher<EOEntityIndex> {
-		public EntityIndexesChangeRefresher() {
-			super("EntityIndexesChange");
-		}
-
-		public void changeSelection(ISelection selection) {
-			EOModelEditor.this.setSelection(selection);
-			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
-		}
-
-		protected void objectsAdded(List<EOEntityIndex> _addedObjects) {
-			// DO NOTHING
-		}
-
-		protected void objectsRemoved(List<EOEntityIndex> _removedObjects) {
-			EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getModel()));
-			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
-		}
-	}
-
-	protected class StoredProceduresChangeRefresher extends AbstractAddRemoveChangeRefresher<EOStoredProcedure> {
-		public StoredProceduresChangeRefresher() {
-			super("StoredProceduresChange");
-		}
-
-		public void changeSelection(ISelection selection) {
-			EOModelEditor.this.setSelection(selection);
-			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOSTOREDPROCEDURE_PAGE));
-		}
-
-		protected void objectsAdded(List<EOStoredProcedure> _addedObjects) {
-			// DO NOTHING
-		}
-
-		protected void objectsRemoved(List<EOStoredProcedure> _removedObjects) {
-			EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getModel()));
-			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
-		}
-	}
-
-	protected class DatabaseConfigsChangeRefresher extends AbstractAddRemoveChangeRefresher<EODatabaseConfig> {
-		public DatabaseConfigsChangeRefresher() {
-			super("DatabaseConfigsChange");
-		}
-
-		public void changeSelection(ISelection selection) {
-			EOModelEditor.this.setSelection(selection);
-		}
-
-		protected void objectsAdded(List<EODatabaseConfig> _addedObjects) {
-			// DO NOTHING
-		}
-
-		protected void objectsRemoved(List<EODatabaseConfig> _removedObjects) {
-			EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getModel()));
-			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
-		}
-	}
-
-	protected class ArgumentDeletedRefresher extends AbstractAddRemoveChangeRefresher<EOArgument> {
-		public ArgumentDeletedRefresher() {
-			super("ArgumentDeleted");
-		}
-
-		public void changeSelection(ISelection selection) {
-			EOModelEditor.this.setSelection(selection);
-		}
-
-		protected void objectsAdded(List<EOArgument> _addedObjects) {
-			// DO NOTHING
-		}
-
-		protected void objectsRemoved(List<EOArgument> _removedObjects) {
-			EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getSelectedStoredProcedure()));
-			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOSTOREDPROCEDURE_PAGE));
-		}
-	}
-
-	protected class AttributeAndRelationshipDeletedRefresher extends AbstractAddRemoveChangeRefresher<IEOAttribute> {
-		public AttributeAndRelationshipDeletedRefresher() {
-			super("AttributeAndRelationshipDeleted");
-		}
-
-		public void changeSelection(ISelection selection) {
-			EOModelEditor.this.setSelection(selection);
-		}
-
-		protected void objectsAdded(List<IEOAttribute> _addedObjects) {
-			// DO NOTHING
-		}
-
-		protected void objectsRemoved(List<IEOAttribute> _removedObjects) {
-			EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getSelectedEntity()));
-			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
-		}
+		setPartName(partName);
 	}
 }
