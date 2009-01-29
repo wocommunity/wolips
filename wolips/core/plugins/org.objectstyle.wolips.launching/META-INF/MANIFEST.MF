@@ -22,8 +22,7 @@ Require-Bundle: org.eclipse.debug.ui,
  org.objectstyle.wolips.jdt,
  org.objectstyle.wolips.woproject,
  org.eclipse.jdt.junit,
- org.eclipse.jdt.junit4.runtime,
- org.eclipse.pde.junit.runtime
+ org.eclipse.jdt.junit4.runtime
 Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.launching,
  org.objectstyle.wolips.launching.actions,
