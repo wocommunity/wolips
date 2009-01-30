@@ -71,7 +71,7 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
     try {
       String nextTypeName;
       if (_nextType != null) {
-        nextTypeName = "Q" + _nextType.getElementName() + ";";
+        nextTypeName = Signature.createTypeSignature(_nextType.getFullyQualifiedName(),true);
       }
       else {
     	nextTypeName = getMemberTypeName(_bindingMember);
