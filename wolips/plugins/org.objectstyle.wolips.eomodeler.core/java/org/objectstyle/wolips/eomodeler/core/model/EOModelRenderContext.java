@@ -85,6 +85,9 @@ public class EOModelRenderContext {
 	  else {
 	    className = entity.getClassName();
 	  }
+	  if (className != null) {
+		  className = className.replace('$', '.');
+	  }
 	  return className;
 	}
 }
