@@ -1265,8 +1265,8 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		return prototypeAttributeNames;
 	}
 
-	public String _getDefaultPrototypeEntityName(String name) {
-		return "EO" + (name != null ? name : "") + "Prototypes";
+	public String _getDefaultPrototypeEntityName(String prefix, String name) {
+		return "EO" + (prefix != null ? prefix : "") + (name != null ? name : "") + "Prototypes";
 	}
 
 	public String getAdaptorName() {
@@ -1277,15 +1277,15 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		return adaptorName;
 	}
 
-	public String _getAdaptorPrototypeEntityName(String adaptorName, String name) {
+	public String _getAdaptorPrototypeEntityName(String prefix, String adaptorName, String name) {
 		String adaptorPrototypeEntityName = null;
 		if (adaptorName != null) {
-			adaptorPrototypeEntityName = "EO" + adaptorName + (name != null ? name : "") + "Prototypes";
+			adaptorPrototypeEntityName = "EO"  + (prefix != null ? prefix : "") + adaptorName + (name != null ? name : "") + "Prototypes";
 		}
 		return adaptorPrototypeEntityName;
 	}
 
-	public String _getDriverPrototypeEntityName(Map _connectionDictionary, String name) {
+	public String _getDriverPrototypeEntityName(String prefix, Map _connectionDictionary, String name) {
 		String driverPrototypeEntityName = null;
 		String adaptorName = getAdaptorName();
 		// MS: Hardcoded JDBC reference hack ...
@@ -1303,7 +1303,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 					}
 				}
 				if (pluginName != null) {
-					driverPrototypeEntityName = "EOJDBC" + pluginName + (name != null ? name : "") + "Prototypes";
+					driverPrototypeEntityName = "EOJDBC" + (prefix != null ? prefix : "") + pluginName + (name != null ? name : "") + "Prototypes";
 				}
 			}
 		}
@@ -1311,19 +1311,30 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	}
 
 	public EOEntity _getPreferredPrototypeEntity(String adaptorName, Map connectionDictionary) {
+		EOEntity preferredPrototypEntity = _getPreferredPrototypeEntity("Custom", adaptorName, null, connectionDictionary);
+		if (preferredPrototypEntity == null) {
+			preferredPrototypEntity = _getPreferredPrototypeEntity(null, adaptorName, getName(), connectionDictionary);
+			if (preferredPrototypEntity == null) {
+				preferredPrototypEntity = _getPreferredPrototypeEntity(null, adaptorName, null, connectionDictionary);
+			}
+		}
+		return preferredPrototypEntity;
+	}
+	
+	public EOEntity _getPreferredPrototypeEntity(String prefix, String adaptorName, String modelName, Map connectionDictionary) {
 		EOEntity prototypeEntity = null;
-		String driverPrototypeEntityName = _getDriverPrototypeEntityName(connectionDictionary, null);
+		String driverPrototypeEntityName = _getDriverPrototypeEntityName(prefix, connectionDictionary, modelName);
 		if (driverPrototypeEntityName != null && myModelGroup != null) {
 			prototypeEntity = myModelGroup.getEntityNamed(driverPrototypeEntityName);
 		}
 		if (prototypeEntity == null) {
-			String adaptorPrototypeEntityName = _getAdaptorPrototypeEntityName(adaptorName, null);
+			String adaptorPrototypeEntityName = _getAdaptorPrototypeEntityName(prefix, adaptorName, modelName);
 			if (adaptorPrototypeEntityName != null && myModelGroup != null) {
 				prototypeEntity = myModelGroup.getEntityNamed(adaptorPrototypeEntityName);
 			}
 		}
 		if (prototypeEntity == null && myModelGroup != null) {
-			String defaultPrototypeEntityName = _getDefaultPrototypeEntityName(null);
+			String defaultPrototypeEntityName = _getDefaultPrototypeEntityName(prefix, modelName);
 			prototypeEntity = myModelGroup.getEntityNamed(defaultPrototypeEntityName);
 		}
 		return prototypeEntity;
@@ -1338,13 +1349,17 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			if (activeDatabaseConfig != null) {
 				connectionDictionary = activeDatabaseConfig.getConnectionDictionary();
 			}
-			addPrototypeAttributes(_getDefaultPrototypeEntityName(null), prototypeAttributeCache);
-			addPrototypeAttributes(_getAdaptorPrototypeEntityName(getAdaptorName(), null), prototypeAttributeCache);
-			addPrototypeAttributes(_getDriverPrototypeEntityName(connectionDictionary, null), prototypeAttributeCache);
-
-			addPrototypeAttributes(_getDefaultPrototypeEntityName(getName()), prototypeAttributeCache);
-			addPrototypeAttributes(_getAdaptorPrototypeEntityName(getAdaptorName(), getName()), prototypeAttributeCache);
-			addPrototypeAttributes(_getDriverPrototypeEntityName(connectionDictionary, getName()), prototypeAttributeCache);
+			addPrototypeAttributes(_getDefaultPrototypeEntityName(null, null), prototypeAttributeCache);
+			addPrototypeAttributes(_getAdaptorPrototypeEntityName(null, getAdaptorName(), null), prototypeAttributeCache);
+			addPrototypeAttributes(_getDriverPrototypeEntityName(null, connectionDictionary, null), prototypeAttributeCache);
+			
+			addPrototypeAttributes(_getDefaultPrototypeEntityName("Custom", null), prototypeAttributeCache);
+			addPrototypeAttributes(_getAdaptorPrototypeEntityName("Custom", getAdaptorName(), null), prototypeAttributeCache);
+			addPrototypeAttributes(_getDriverPrototypeEntityName("Custom", connectionDictionary, null), prototypeAttributeCache);
+			
+			addPrototypeAttributes(_getDefaultPrototypeEntityName(null, getName()), prototypeAttributeCache);
+			addPrototypeAttributes(_getAdaptorPrototypeEntityName(null, getAdaptorName(), getName()), prototypeAttributeCache);
+			addPrototypeAttributes(_getDriverPrototypeEntityName(null, connectionDictionary, getName()), prototypeAttributeCache);
 
 			if (activeDatabaseConfig != null) {
 				EOEntity prototypeEntity = activeDatabaseConfig.getPrototype();
