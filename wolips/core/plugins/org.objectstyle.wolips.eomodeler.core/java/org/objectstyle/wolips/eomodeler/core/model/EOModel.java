@@ -1280,7 +1280,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	public String _getAdaptorPrototypeEntityName(String prefix, String adaptorName, String name) {
 		String adaptorPrototypeEntityName = null;
 		if (adaptorName != null) {
-			adaptorPrototypeEntityName = "EO"  + (prefix != null ? prefix : "") + adaptorName + (name != null ? name : "") + "Prototypes";
+			adaptorPrototypeEntityName = "EO" + adaptorName + (prefix != null ? prefix : "") + (name != null ? name : "") + "Prototypes";
 		}
 		return adaptorPrototypeEntityName;
 	}
@@ -1303,7 +1303,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 					}
 				}
 				if (pluginName != null) {
-					driverPrototypeEntityName = "EOJDBC" + (prefix != null ? prefix : "") + pluginName + (name != null ? name : "") + "Prototypes";
+					driverPrototypeEntityName = "EOJDBC" + pluginName + (prefix != null ? prefix : "") + (name != null ? name : "") + "Prototypes";
 				}
 			}
 		}
