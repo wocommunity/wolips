@@ -6,7 +6,8 @@
 #end
 #foreach ($attribute in $entity.sortedAttributes)
 #if ($attribute.sqlGenerationCreateProperty)
-		#if ($attribute.javaClassName == "String" && $attribute.width)${migrationTableName}.newStringColumn("${attribute.columnName}", ${attribute.width}, ${attribute.sqlGenerationAllowsNull});
+		#if ($attribute.prototype.name == "longText")${migrationTableName}.newLargeStringColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
+#elseif ($attribute.javaClassName == "String" && $attribute.width)${migrationTableName}.newStringColumn("${attribute.columnName}", ${attribute.width}, ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.javaClassName == "String")${migrationTableName}.newStringColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.javaClassName == "BigDecimal" || $attribute.javaClassName == "java.math.BigDecimal")${migrationTableName}.newBigDecimalColumn("${attribute.columnName}", ${attribute.precision}, ${attribute.scale}, ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.javaClassName == "Integer" && $attribute.precision)${migrationTableName}.newIntegerColumn("${attribute.columnName}", ${attribute.precision}, ${attribute.sqlGenerationAllowsNull});
