@@ -717,6 +717,10 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	public String _getDefinition() {
 		return (String) _prototypeValueIfNull(AbstractEOArgument.DEFINITION, super._getDefinition());
 	}
+	
+	public boolean hasDefinition() {
+		return getDefinition() != null;
+	}
 
 	public void updateDefinitionBecauseRelationshipNameChanged(EORelationship relationship) {
 		if (isFlattened()) {
@@ -1146,7 +1150,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	}
 
 	public boolean getSqlGenerationCreateProperty() {
-		return !isInherited() || getEntity().getSqlGenerationCreateInheritedProperties();
+		return !hasDefinition() && (!isInherited() || getEntity().getSqlGenerationCreateInheritedProperties());
 	}
 
 	public String toString() {
