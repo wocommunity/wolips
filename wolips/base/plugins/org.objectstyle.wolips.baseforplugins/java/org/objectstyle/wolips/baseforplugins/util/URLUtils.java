@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
@@ -179,12 +180,19 @@ public class URLUtils {
 				}
 			}
 			else if ("file".equals(protocol)) {
-				f = new File(url.getPath());
+				try {
+					String externalForm = url.getPath();
+					externalForm = URLDecoder.decode(externalForm, "UTF-8");
+					f = new File(externalForm);
+				} catch (IOException e) {
+					throw new IllegalArgumentException(url + " cannot be turned into a File.", e);
+				}
 			} else if ("bundleresource".equals(protocol)) {
 				try {
 					BundleURLConnection conn = (BundleURLConnection) url.openConnection();
 					String externalForm = conn.getFileURL().toExternalForm();
-					externalForm = externalForm.replaceAll(" ", "%20");
+					externalForm = URLDecoder.decode(externalForm, "UTF-8");
+					//externalForm = externalForm.replaceAll(" ", "%20");
 					f = new File(new URI(externalForm));
 				} catch (IOException e) {
 					throw new IllegalArgumentException(url + " cannot be turned into a File.", e);
@@ -192,8 +200,6 @@ public class URLUtils {
 					throw new IllegalArgumentException(url + " cannot be turned into a File.", e);
 				}
 			} else {
-				System.err.println("cheatAndTurnIntoFile(URL)");
-				new Exception().printStackTrace(System.err);
 				throw new IllegalArgumentException(url + " is not a File.");
 			}
 		}
