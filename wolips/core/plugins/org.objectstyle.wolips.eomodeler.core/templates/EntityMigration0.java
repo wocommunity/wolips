@@ -14,6 +14,7 @@
 #elseif ($attribute.javaClassName == "Integer")${migrationTableName}.newIntegerColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.javaClassName == "Long" && $attribute.precision)${migrationTableName}.newBigIntegerColumn("${attribute.columnName}", ${attribute.precision}, ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.javaClassName == "Long")${migrationTableName}.newBigIntegerColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
+#elseif ($attribute.javaClassName == "Double")${migrationTableName}.newDoubleColumn("${attribute.columnName}", ${attribute.precision}, ${attribute.scale}, ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.javaClassName == "Float")${migrationTableName}.newFloatColumn("${attribute.columnName}", ${attribute.precision}, ${attribute.scale}, ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.javaClassName == "Boolean" && $attribute.width == 5)${migrationTableName}.newBooleanColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.javaClassName == "Boolean" && $attribute.externalType == "bool")${migrationTableName}.newFlagBooleanColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
