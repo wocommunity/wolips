@@ -171,7 +171,7 @@ public class WOVariables {
         _wolipsProperties = new Properties();
         _wolipsProperties.putAll(cachedProperties.properties());
       }
-      else if (existingProperties == null || existingProperties.isEmpty()) {
+      else if (_wolipsProperties == null || _wolipsProperties.isEmpty()) {
         createDefaultProperties();
       }
     }
