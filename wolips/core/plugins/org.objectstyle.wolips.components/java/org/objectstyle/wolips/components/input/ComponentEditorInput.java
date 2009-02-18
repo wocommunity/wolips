@@ -43,6 +43,9 @@
  */
 package org.objectstyle.wolips.components.input;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
@@ -88,7 +91,15 @@ public class ComponentEditorInput extends MultiEditorInput implements IPersistab
 	}
 
 	private static ComponentEditorInput create(IFile originalFile, LocalizedComponentsLocateResult localizedComponentsLocateResult) throws CoreException {
-		IFolder[] folder = localizedComponentsLocateResult.getComponents();
+		List<IFolder> validFolders = new LinkedList<IFolder>();
+		for (IFolder folder : localizedComponentsLocateResult.getComponents()) {
+			// MS: SVN leaves an old folder around until you commit, but doesn't mark it as a phantom, so we
+			// can't know to remove it for any reason other than that it's empty ...
+			if (folder.members().length > 0) {
+				validFolders.add(folder);
+			}
+		}
+		IFolder[] folder = validFolders.toArray(new IFolder[validFolders.size()]);
 		int folderCountTimesThree = folder.length * 3;
 		String allIds[] = null;
 		ComponentEditorFileEditorInput allInput[] = null;
@@ -104,8 +115,17 @@ public class ComponentEditorInput extends MultiEditorInput implements IPersistab
 		for (int i = 0; i < folder.length; i++) {
 			IFolder currentFolder = folder[i];
 			htmlFile = LocalizedComponentsLocateResult.getHtml(currentFolder);
+			if (htmlFile == null) {
+				htmlFile = currentFolder.getFile(localizedComponentsLocateResult.getName() + ".html");
+			}
 			wodFile = LocalizedComponentsLocateResult.getWod(currentFolder);
+			if (wodFile == null) {
+				wodFile = currentFolder.getFile(localizedComponentsLocateResult.getName() + ".wod");
+			}
 			wooFile = LocalizedComponentsLocateResult.getWoo(currentFolder);
+			if (wooFile == null) {
+				wooFile = currentFolder.getFile(localizedComponentsLocateResult.getName() + ".woo");
+			}
 			allIds[inputNum] = EditorsPlugin.HTMLEditorID;
 			allInput[inputNum] = new ComponentEditorFileEditorInput(htmlFile);
 			allComponentInput[inputNum] = allInput[inputNum];
