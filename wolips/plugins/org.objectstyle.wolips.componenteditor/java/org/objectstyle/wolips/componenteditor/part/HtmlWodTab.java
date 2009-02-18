@@ -60,6 +60,8 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.PartInitException;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
+import org.objectstyle.wolips.components.input.ComponentEditorFileEditorInput;
+import org.objectstyle.wolips.components.input.ComponentEditorInput;
 import org.objectstyle.wolips.templateeditor.TemplateEditor;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.core.Activator;
@@ -117,7 +119,7 @@ public class HtmlWodTab extends ComponentEditorTab {
 				HtmlWodTab.this.getComponentEditorPart().publicHandlePropertyChange(propertyId);
 			}
 		});
-		if (wodInput != null) {
+		if (wodInput != null && ((ComponentEditorFileEditorInput)wodInput).getFile().exists()) {
 			wodEditor = new WodEditor();
 			IEditorSite wodSite = this.getComponentEditorPart().publicCreateSite(wodEditor);
 			try {

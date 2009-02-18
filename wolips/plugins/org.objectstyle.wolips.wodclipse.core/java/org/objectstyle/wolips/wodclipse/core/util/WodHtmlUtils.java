@@ -111,7 +111,12 @@ public class WodHtmlUtils {
       }
       else {
         String elementName = element.getAttributeValue("name");
-        wodElement = cache.getWodEntry().getModel().getElementNamed(elementName);
+        if (cache != null && cache.getWodEntry() != null && cache.getWodEntry().getModel() != null) {
+          wodElement = cache.getWodEntry().getModel().getElementNamed(elementName);
+        }
+        else {
+          wodElement = null;
+        }
       }
     }
     else {
