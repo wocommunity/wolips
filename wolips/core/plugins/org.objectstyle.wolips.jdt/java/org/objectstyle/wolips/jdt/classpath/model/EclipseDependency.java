@@ -11,7 +11,6 @@ import org.objectstyle.wolips.variables.ProjectVariables;
 import org.objectstyle.wolips.variables.VariablesPlugin;
 
 public class EclipseDependency extends Dependency {
-	@SuppressWarnings("unused")
 	private IProject _project;
 
 	private IRuntimeClasspathEntry _classpathEntry;
@@ -80,5 +79,9 @@ public class EclipseDependency extends Dependency {
 		} catch (CoreException e) {
 			throw new RuntimeException("Failed to retrieve WO project metadata.", e);
 		}
+	}
+	
+	public String toString() {
+		return "[EclipseDependency: project = " + _project + "]";
 	}
 }
