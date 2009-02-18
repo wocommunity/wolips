@@ -56,9 +56,12 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -94,6 +97,16 @@ public class CutAction extends Action implements IWorkbenchWindowActionDelegate,
 
 	public void run() {
 		try {
+			Control focusControl = Display.getCurrent().getFocusControl();
+			// Is this a copy for the viewer? styled text? or regular text?
+			if (focusControl instanceof Text) {
+				( (Text) focusControl ).cut();
+				return;
+			} else if (focusControl instanceof StyledText) {
+				( (StyledText) focusControl ).cut();
+				return;
+			}		
+			
 			Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 			Object[] selectedObjects = null;
 			if (_selection instanceof IStructuredSelection) {

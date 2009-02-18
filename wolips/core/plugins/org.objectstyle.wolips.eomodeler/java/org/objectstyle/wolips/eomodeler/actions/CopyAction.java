@@ -64,8 +64,11 @@ import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -100,6 +103,16 @@ public class CopyAction extends Action implements IWorkbenchWindowActionDelegate
 
 	public void run() {
 		try {
+			Control focusControl = Display.getCurrent().getFocusControl();
+			// Is this a copy for the viewer? styled text? or regular text?
+			if (focusControl instanceof Text) {
+				( (Text) focusControl ).copy();
+				return;
+			} else if (focusControl instanceof StyledText) {
+				( (StyledText) focusControl ).copy();
+				return;
+			}			
+			
 			Object[] selectedObjects = null;
 			if (_selection instanceof IStructuredSelection) {
 				selectedObjects = ((IStructuredSelection) _selection).toArray();
