@@ -95,8 +95,10 @@ public class EclipsePathFramework extends AbstractFolderFramework implements IEc
 				if (docPathStr == null) {
 					docPathStr = VariablesPlugin.getDefault().getGlobalVariables().getReferenceApiAsJavaDocCompatibleString();
 				}
-				IClasspathAttribute javadoc = JavaCore.newClasspathAttribute(IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME, docPathStr);
-				attributes = new IClasspathAttribute[]{ javadoc };
+				if (docPathStr != null) {
+					IClasspathAttribute javadoc = JavaCore.newClasspathAttribute(IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME, docPathStr);
+					attributes = new IClasspathAttribute[]{ javadoc };
+				}
 			}
 			IClasspathEntry classpathEntry = JavaCore.newLibraryEntry(jarPath, sourceJarPath, sourcePath, ClasspathEntry.NO_ACCESS_RULES, attributes, false);
 			classpathEntries.add(classpathEntry);
