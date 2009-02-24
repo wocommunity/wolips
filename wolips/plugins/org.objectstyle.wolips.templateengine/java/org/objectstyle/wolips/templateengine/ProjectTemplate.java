@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -28,6 +29,8 @@ import org.w3c.dom.NodeList;
  * @author mschrag
  */
 public class ProjectTemplate implements Comparable<ProjectTemplate> {
+	public static final String PROJECT_TEMPLATES = "Project Templates";
+	
 	private File _folder;
 
 	private Document _metadata;
@@ -77,13 +80,57 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 			if (_metadata != null) {
 				_name = _metadata.getDocumentElement().getAttribute("name");
 			}
-			if (_name == null) {
+			if (_name == null || _name.length() == 0) {
 				_name = _folder.getName();
 			}
 		}
 		return _name;
 	}
+	
+	/**
+	 * Returns the value of the input with the given name.
+	 * 
+	 * @param name the name of the input
+	 * @return the value of the input
+	 */
+	public Object valueForInputNamed(String name) {
+		return getInputNamed(name).getValue();
+	}
+	
+	/**
+	 * Sets the value of the input with the given name.
+	 * 
+	 * @param inputValue the value
+	 * @param name the input name
+	 */
+	public void setValueForInputNamed(Object inputValue, String name) {
+		getInputNamed(name).setValue(inputValue);
+	}
 
+	/**
+	 * Returns the input with the given name.
+	 * 
+	 * @param name the name of the input
+	 * @return the value of the input
+	 */
+	public ProjectInput getInputNamed(String name) {
+		for (ProjectInput input : getInputs()) {
+			if (input.getName().equals(name)) {
+				return input;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Adds the given input to this template.
+	 * 
+	 * @param input the input to add
+	 */
+	public synchronized void addInput(ProjectInput input) {
+		getInputs().add(input);
+	}
+	
 	/**
 	 * Returns the inputs for this template.
 	 * 
@@ -135,7 +182,8 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 
 	@Override
 	public int hashCode() {
-		return _name == null ? super.hashCode() : _name.hashCode();
+		String name = getName();
+		return name == null ? super.hashCode() : name.toLowerCase().hashCode();
 	}
 
 	@Override
@@ -164,7 +212,7 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 	}
 
 	public String toString() {
-		return "[ProjectTemplate: name = " + _name + "]";
+		return "[ProjectTemplate: name = " + getName() + "]";
 	}
 
 	/**
@@ -173,12 +221,13 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 	 * 
 	 * @param project
 	 *            the project to fill in
-	 * @param progressMonitor
+	 * @param targetContainer
+	 * @param progressMonitor the container to install into
 	 *            the progress tracker
 	 * @throws Exception
 	 *             if the project cannot be created
 	 */
-	public void createProjectContents(IProject project, IProgressMonitor progressMonitor) throws Exception {
+	public void createProjectContents(IProject project, IContainer targetContainer, IProgressMonitor progressMonitor) throws Exception {
 		TemplateEngine templateEngine = new TemplateEngine();
 		templateEngine.setTemplatePath(getFolder().getParentFile().getAbsolutePath());
 		templateEngine.init();
@@ -210,7 +259,7 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 		// "basePackage" (so the longer one wins).
 		Collections.sort(templateKeys, new ReverseStringLengthComparator());
 
-		_createProjectFolder(templateEngine, getFolder().getParentFile(), project.getLocation().toFile(), getFolder(), templateKeys, progressMonitor);
+		_createProjectFolder(templateEngine, getFolder().getParentFile(), targetContainer.getLocation().toFile(), getFolder(), templateKeys, progressMonitor);
 		templateEngine.run(progressMonitor);
 	}
 
@@ -257,22 +306,27 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 	/**
 	 * Returns the list of template folder locations.
 	 * 
+	 * @param baseFolderName the name of the base folder to load templates from ("Project Templates")
 	 * @return the list of template folder locations
 	 */
-	public static List<File> templateBaseFolders() {
+	public static List<File> templateBaseFolders(String baseFolderName) {
 		LinkedList<File> templateBaseFolders = new LinkedList<File>();
 		try {
-			File projectTemplatesFile = URLUtils.cheatAndTurnIntoFile(TemplateEngine.class.getResource("/ProjectTemplates"));
+			File projectTemplatesFile = URLUtils.cheatAndTurnIntoFile(TemplateEngine.class.getResource("/" + baseFolderName));
 			if (projectTemplatesFile != null) {
 				templateBaseFolders.add(projectTemplatesFile);
+			}
+			File projectTemplatesFileWithoutSpaces = URLUtils.cheatAndTurnIntoFile(TemplateEngine.class.getResource("/" + baseFolderName.replaceAll(" ", "")));
+			if (projectTemplatesFileWithoutSpaces != null && !projectTemplatesFileWithoutSpaces.equals(projectTemplatesFile)) {
+				templateBaseFolders.add(projectTemplatesFileWithoutSpaces);
 			}
 		} catch (IllegalArgumentException e) {
 			TemplateEnginePlugin.getDefault().log(e);
 		}
-		templateBaseFolders.add(new File("/Library/Application Support/WOLips/Project Templates"));
-		templateBaseFolders.add(new File(System.getProperty("user.home"), "Documents and Settings/Application Data/WOLips/Project Templates"));
-		templateBaseFolders.add(new File(System.getProperty("user.home"), "Documents and Settings/AppData/Local/WOLips/Project Templates"));
-		templateBaseFolders.add(new File(System.getProperty("user.home"), "Library/Application Support/WOLips/Project Templates"));
+		templateBaseFolders.add(new File("/Library/Application Support/WOLips/" + baseFolderName));
+		templateBaseFolders.add(new File(System.getProperty("user.home"), "Documents and Settings/Application Data/WOLips/" + baseFolderName));
+		templateBaseFolders.add(new File(System.getProperty("user.home"), "Documents and Settings/AppData/Local/WOLips/" + baseFolderName));
+		templateBaseFolders.add(new File(System.getProperty("user.home"), "Library/Application Support/WOLips/" + baseFolderName));
 		return templateBaseFolders;
 	}
 
@@ -280,10 +334,11 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 	 * Loads the project templates from the predefined project template folder
 	 * locations.
 	 * 
+	 * @param baseFolderName the name of the base folder to load templates from ("Project Templates")
 	 * @return the available project templates;
 	 */
-	public static List<ProjectTemplate> loadProjectTemplates() {
-		return ProjectTemplate.loadProjectTemplatesFromFolders(ProjectTemplate.templateBaseFolders());
+	public static List<ProjectTemplate> loadProjectTemplates(String baseFolderName) {
+		return ProjectTemplate.loadProjectTemplatesFromFolders(ProjectTemplate.templateBaseFolders(baseFolderName));
 	}
 
 	/**
@@ -342,13 +397,33 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 	/**
 	 * Returns the ProjectTemplate with the given name.
 	 * 
+	 * @param baseFolderName the name of the base folder to load templates from ("Project Templates")
 	 * @param name
 	 *            the name of the template to load
 	 * @return the requested Project Template or null if there is no template
 	 *         with the given name
 	 */
-	public static ProjectTemplate loadProjectTemplateNamed(String name) {
-		List<ProjectTemplate> projectTemplates = ProjectTemplate.loadProjectTemplates();
+	public static ProjectTemplate loadProjectTemplateNamed(String baseFolderName, String name) {
+		List<ProjectTemplate> projectTemplates = ProjectTemplate.loadProjectTemplates(baseFolderName);
+		for (ProjectTemplate projectTemplate : projectTemplates) {
+			if (name.equals(projectTemplate.getName())) {
+				return projectTemplate;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the ProjectTemplate with the given name.
+	 * 
+	 * @param baseFolderName the name of the base folder to load templates from ("Project Templates")
+	 * @param name
+	 *            the name of the template to load
+	 * @return the requested Project Template or null if there is no template
+	 *         with the given name
+	 */
+	public static ProjectTemplate loadProjectTemplateNamedFromFolder(String baseFolderName, String name) {
+		List<ProjectTemplate> projectTemplates = ProjectTemplate.loadProjectTemplates(baseFolderName);
 		for (ProjectTemplate projectTemplate : projectTemplates) {
 			if (name.equals(projectTemplate.getName())) {
 				return projectTemplate;
