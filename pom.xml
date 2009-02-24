@@ -95,10 +95,9 @@
 		</snapshotRepository>
 	</distributionManagement>
 	<scm>
-		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject/tags/woproject-all-parent-2.0.16</connection>
-		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/tags/woproject-all-parent-2.0.16
-		</developerConnection>
-		<url>http://svn.objectstyle.org/repos/woproject/tags/woproject-all-parent-2.0.16</url>
+		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject/trunk/woproject</connection>
+		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/trunk/woproject</developerConnection>
+		<url>http://svn.objectstyle.org/repos/woproject/trunk/woproject</url>
 	</scm>
 	<build>
 		<pluginManagement>
