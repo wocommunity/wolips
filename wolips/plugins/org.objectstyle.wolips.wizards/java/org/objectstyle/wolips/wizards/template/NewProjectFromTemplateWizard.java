@@ -17,7 +17,7 @@ public class NewProjectFromTemplateWizard extends NewWOProjectWizard {
 	}
 
 	public NewProjectFromTemplateWizard(String projectTemplateName) {
-		setProjectTemplate(ProjectTemplate.loadProjectTemplateNamed(ProjectTemplate.PROJECT_TEMPLATES, projectTemplateName));
+		setProjectTemplate(ProjectTemplate.loadProjectTemplateNamed(null, ProjectTemplate.PROJECT_TEMPLATES, projectTemplateName));
 	}
 
 	@Override

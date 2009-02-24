@@ -11,12 +11,16 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.baseforplugins.util.FileUtilities;
 import org.objectstyle.wolips.baseforplugins.util.URLUtils;
+import org.objectstyle.wolips.core.resources.internal.types.project.ProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 import org.objectstyle.wolips.datasets.adaptable.ProjectPatternsets;
+import org.objectstyle.wolips.variables.BuildProperties;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -306,10 +310,11 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 	/**
 	 * Returns the list of template folder locations.
 	 * 
+	 * @param project optional project reference (can be null), to load project-relative templates
 	 * @param baseFolderName the name of the base folder to load templates from ("Project Templates")
 	 * @return the list of template folder locations
 	 */
-	public static List<File> templateBaseFolders(String baseFolderName) {
+	public static List<File> templateBaseFolders(IProject project, String baseFolderName) {
 		LinkedList<File> templateBaseFolders = new LinkedList<File>();
 		try {
 			File projectTemplatesFile = URLUtils.cheatAndTurnIntoFile(TemplateEngine.class.getResource("/" + baseFolderName));
@@ -322,6 +327,20 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 			}
 		} catch (IllegalArgumentException e) {
 			TemplateEnginePlugin.getDefault().log(e);
+		}
+		if (project != null) {
+			String templatesFolderName = "Templates";
+			ProjectAdapter projectAdapter = (ProjectAdapter) project.getProject().getAdapter(IProjectAdapter.class);
+			if (projectAdapter != null) {
+				BuildProperties buildProperties = projectAdapter.getBuildProperties();
+				if (buildProperties != null) {
+					templatesFolderName = buildProperties.get("projectTemplatesFolder", templatesFolderName);
+				}
+			}
+			IFolder projectTemplatesFolder = project.getFolder(templatesFolderName).getFolder(baseFolderName);
+			if (projectTemplatesFolder.exists()) {
+				templateBaseFolders.add(projectTemplatesFolder.getLocation().toFile());
+			}
 		}
 		templateBaseFolders.add(new File("/Library/Application Support/WOLips/" + baseFolderName));
 		templateBaseFolders.add(new File(System.getProperty("user.home"), "Documents and Settings/Application Data/WOLips/" + baseFolderName));
@@ -338,7 +357,19 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 	 * @return the available project templates;
 	 */
 	public static List<ProjectTemplate> loadProjectTemplates(String baseFolderName) {
-		return ProjectTemplate.loadProjectTemplatesFromFolders(ProjectTemplate.templateBaseFolders(baseFolderName));
+		return ProjectTemplate.loadProjectTemplates(null, baseFolderName);
+	}
+
+	/**
+	 * Loads the project templates from the predefined project template folder
+	 * locations.
+	 * 
+	 * @param project optional project reference (can be null), to load project-relative templates
+	 * @param baseFolderName the name of the base folder to load templates from ("Project Templates")
+	 * @return the available project templates;
+	 */
+	public static List<ProjectTemplate> loadProjectTemplates(IProject project, String baseFolderName) {
+		return ProjectTemplate.loadProjectTemplatesFromFolders(ProjectTemplate.templateBaseFolders(project, baseFolderName));
 	}
 
 	/**
@@ -404,7 +435,21 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 	 *         with the given name
 	 */
 	public static ProjectTemplate loadProjectTemplateNamed(String baseFolderName, String name) {
-		List<ProjectTemplate> projectTemplates = ProjectTemplate.loadProjectTemplates(baseFolderName);
+		return ProjectTemplate.loadProjectTemplateNamed(null, baseFolderName, name);
+	}
+
+	/**
+	 * Returns the ProjectTemplate with the given name.
+	 * 
+	 * @param project the project to load project-relative templates out of
+	 * @param baseFolderName the name of the base folder to load templates from ("Project Templates")
+	 * @param name
+	 *            the name of the template to load
+	 * @return the requested Project Template or null if there is no template
+	 *         with the given name
+	 */
+	public static ProjectTemplate loadProjectTemplateNamed(IProject project, String baseFolderName, String name) {
+		List<ProjectTemplate> projectTemplates = ProjectTemplate.loadProjectTemplates(project, baseFolderName);
 		for (ProjectTemplate projectTemplate : projectTemplates) {
 			if (name.equals(projectTemplate.getName())) {
 				return projectTemplate;
@@ -416,14 +461,15 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 	/**
 	 * Returns the ProjectTemplate with the given name.
 	 * 
+	 * @param project the project to load project-relative templates out of
 	 * @param baseFolderName the name of the base folder to load templates from ("Project Templates")
 	 * @param name
 	 *            the name of the template to load
 	 * @return the requested Project Template or null if there is no template
 	 *         with the given name
 	 */
-	public static ProjectTemplate loadProjectTemplateNamedFromFolder(String baseFolderName, String name) {
-		List<ProjectTemplate> projectTemplates = ProjectTemplate.loadProjectTemplates(baseFolderName);
+	public static ProjectTemplate loadProjectTemplateNamedFromFolder(IProject project, String baseFolderName, String name) {
+		List<ProjectTemplate> projectTemplates = ProjectTemplate.loadProjectTemplates(project, baseFolderName);
 		for (ProjectTemplate projectTemplate : projectTemplates) {
 			if (name.equals(projectTemplate.getName())) {
 				return projectTemplate;
