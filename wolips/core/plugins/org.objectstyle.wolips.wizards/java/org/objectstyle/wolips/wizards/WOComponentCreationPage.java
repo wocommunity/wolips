@@ -71,6 +71,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
@@ -89,6 +90,7 @@ import org.eclipse.jdt.internal.ui.wizards.dialogfields.IStringButtonAdapter;
 import org.eclipse.jdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.jdt.internal.ui.wizards.dialogfields.StringButtonStatusDialogField;
 import org.eclipse.jdt.ui.JavaElementLabelProvider;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -113,6 +115,9 @@ import org.objectstyle.wolips.eomodeler.utils.StringLabelProvider;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
+import org.objectstyle.wolips.templateengine.InstallTemplateOperation;
+import org.objectstyle.wolips.templateengine.ProjectInput;
+import org.objectstyle.wolips.templateengine.ProjectTemplate;
 
 /**
  * @author mnolte
@@ -444,6 +449,12 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 		this.getDialogSettings().put(WOComponentCreationPage.API_CHECKBOX_KEY, _apiCheckbox.getSelection());
 
 		// logPreferences();
+		ProjectTemplate pt = ProjectTemplate.loadProjectTemplateNamed(actualProject, "Component Templates", "WOComponent");
+		pt.addInput(new ProjectInput("name", ProjectInput.Type.String));
+		pt.setValueForInputNamed("SomeName", "name");
+		InstallTemplateOperation top = new InstallTemplateOperation(pt, actualProject, actualProject.getFolder(getContainerFullPath().removeFirstSegments(1)));
+		createResourceOperation(top);
+
 		IRunnableWithProgress op = new WorkspaceModifyDelegatingOperation(componentCreator);
 		return createResourceOperation(op);
 	}
