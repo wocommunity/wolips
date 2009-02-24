@@ -1,21 +1,32 @@
+#set($dollar = '$')
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>${groupId}</groupId>
 	<artifactId>${artifactId}</artifactId>
 	<packaging>woframework</packaging>
 	<version>${version}</version>
-	<name>${artifactId} WebObjects App</name>
+	<name>${artifactId} WebObjects Framework</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
-		<woversion>${WebObjectsVersion}</woversion>
+		<!-- properties used for filtering and dependency management -->
+		<jvmtarget>1.5</jvmtarget>
+		<webobjects.version>${WebObjectsVersion}</webobjects.version>
+		<webobjects.groupId>com.webobjects</webobjects.groupId>
+#if( !($WonderSupport == "no") )
+		<wonder.core.groupId>wonder.core</wonder.core.groupId>
+		<wonder.version>${WonderVersion}</wonder.version>
+#if( $WebObjectsVersion.contains( "5.3" ) )
+		<wonder.classifier>wo53</wonder.classifier>
+#else
+		<wonder.classifier>wo54</wonder.classifier>
+#end
+#end
 	</properties>
 
 	<build>
-		<finalName>${artifactId}</finalName>
+		<finalName>${dollar}{project.artifactId}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.objectstyle.woproject.maven2</groupId>
@@ -23,24 +34,51 @@
 				<version>2.0.17-SNAPSHOT</version>
 				<extensions>true</extensions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${dollar}{jvmtarget}</source>
+					<target>${dollar}{jvmtarget}</target>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
 	<dependencies>
+#if( !($WonderSupport == "no") )
 		<dependency>
-			<groupId>com.webobjects</groupId>
-			<artifactId>JavaFoundation</artifactId>
-			<version>${woversion}</version>
+			<groupId>${dollar}{wonder.core.groupId}</groupId>
+			<artifactId>ERExtensions</artifactId>
+			<version>${dollar}{wonder.version}</version>
+			<classifier>${dollar}{wonder.classifier}</classifier>
 		</dependency>
 		<dependency>
-			<groupId>com.webobjects</groupId>
+			<groupId>${dollar}{wonder.core.groupId}</groupId>
+			<artifactId>WOOgnl</artifactId>
+			<version>${dollar}{wonder.version}</version>
+			<classifier>${dollar}{wonder.classifier}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>${dollar}{wonder.core.groupId}</groupId>
+			<artifactId>ERPrototypes</artifactId>
+			<version>${dollar}{wonder.version}</version>
+		</dependency>
+#end
+		<dependency>
+			<groupId>${dollar}{webobjects.groupId}</groupId>
 			<artifactId>JavaWebObjects</artifactId>
-			<version>${woversion}</version>
+			<version>${dollar}{webobjects.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.webobjects</groupId>
+			<groupId>${dollar}{webobjects.groupId}</groupId>
 			<artifactId>JavaEOAccess</artifactId>
-			<version>${woversion}</version>
+			<version>${dollar}{webobjects.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${dollar}{webobjects.groupId}</groupId>
+			<artifactId>JavaFoundation</artifactId>
+			<version>${dollar}{webobjects.version}</version>
 		</dependency>
 	</dependencies>
 </project>

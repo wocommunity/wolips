@@ -9,7 +9,7 @@ import com.webobjects.appserver.WORequest;
 import com.webobjects.appserver.WODirectAction;
 #set( $directActionClass = "WODirectAction" )
 #else
-import er.extensions.ERXDirectAction;
+import er.extensions.appserver.ERXDirectAction;
 #set( $directActionClass = "ERXDirectAction" )
 #end
 

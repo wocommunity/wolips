@@ -4,13 +4,13 @@
 		<archetype>
 			<groupId>org.objectstyle.woproject.maven2</groupId>
 			<artifactId>woapplication-archetype</artifactId>
-			<version>${pom.version}</version>
+			<version>${project.version}</version>
 			<description>WebObjects Application Archetype</description>
 		</archetype>
 		<archetype>
 			<groupId>org.objectstyle.woproject.maven2</groupId>
 			<artifactId>woframework-archetype</artifactId>
-			<version>${pom.version}</version>
+			<version>${project.version}</version>
 			<description>WebObjects Application Archetype</description>
 		</archetype>
 	</archetypes>

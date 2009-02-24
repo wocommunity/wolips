@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-
+#set($dollar = '$')
 <!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web
 Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 
@@ -7,19 +7,19 @@ Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 	WebObjects application in a Servlet container. If you would like to
 	merge the WebObjects application with your existing JSP/Servlet
 	application, you have to merge this web.xml with your existing web.xml.
-	
+
 	NOTE: This file is normally included as the template file 'web.xml.template'.
 	During the build process, the placeholders for WOROOT, LOCALROOT, WOAINSTALLROOT,
 	WOAppMode, WOClassPath, WOApplicationClass and WOtaglib will be replaced
 	with the appropriate values. Other parts of the template file may be
 	customized as required.
-	
+
 	NOTE: WEBINFROOT is added to the WOClassPath at build time, but the replacement
-	value is replaced at runtime to be the path to the WEB-INF directory. 
+	value is replaced at runtime to be the path to the WEB-INF directory.
 -->
 
 <web-app>
-	<display-name>${artifactId}</display-name>
+	<display-name>${dollar}{project.build.finalName}</display-name>
 	<context-param>
 		<param-name>WOJarBundle</param-name>
 		<param-value>YES</param-value>
@@ -33,14 +33,14 @@ Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 	<context-param>
 		<param-name>WOMainBundle</param-name>
-		<param-value>${artifactId}</param-value>
+		<param-value>${dollar}{project.build.finalName}</param-value>
 		<description>
 			Sets the name of the main bundle. Only used if WOJarBundle
 			is true
 		</description>
 	</context-param>
 
-	<!-- Indicates if application is development or deployment mode. In development
+	<!-- Indicates if application is in development or deployment mode. In development
 		mode, images are vended by the application directly from frameworks. In
 		deployment mode, images are vended by the webserver. -->
 	<context-param>
@@ -53,16 +53,15 @@ Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 	<context-param>
 		<param-name>WOApplicationClass</param-name>
 		<param-value>
-			${package}.app.Application
+			${dollar}{mainclass}
 		</param-value>
 	</context-param>
-	
+
 #if($WonderSupport == "no")
 #set( $servletAdaptor = "com.webobjects.jspservlet.WOServletAdaptor" )
 #else
 #set( $servletAdaptor = "er.extensions.jspservlet.ERXServletAdaptor" )
 #end
-
 	<!-- The WebObjects Servlet that interfaces between the Servlet container
 		world and the WebObjects world. -->
 	<servlet>
