@@ -2,7 +2,7 @@
 <archetype-descriptor name="woapplication-archetype">
 	<requiredProperties>
 		<requiredProperty key="WebObjectsVersion">
-			<defaultValue>5.4.2</defaultValue>
+			<defaultValue>5.4.3</defaultValue>
 		</requiredProperty>
 		<requiredProperty key="WonderSupport">
 			<defaultValue>no</defaultValue>
@@ -71,7 +71,6 @@
 				<include>.classpath</include>
 				<include>.project</include>
 				<include>build.properties</include>
-				<include>build.xml</include>
 			</includes>
 		</fileSet>
 	</fileSets>

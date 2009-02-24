@@ -3,16 +3,14 @@
 	<id>woframework-archetype</id>
 	<resources>
 		<resource>src/main/resources/Properties</resource>
+		<resource>src/main/components/</resource>
+		<resource>src/main/java/</resource>
+		<resource>src/main/webserver-resources/</resource>
+		<resource>src/test/java/</resource>
+		<resource>src/test/resources/</resource>
 		<resource>.project</resource>
 		<resource>.classpath</resource>
 		<resource>build.properties</resource>
-		<resource>build.xml</resource>
-		<resource>woproject/ant.classpaths.user.home</resource>
-		<resource>woproject/ant.classpaths.wo.wolocalroot</resource>
-		<resource>woproject/ant.classpaths.wo.wosystemroot</resource>
-		<resource>woproject/ant.frameworks.user.home</resource>
-		<resource>woproject/ant.frameworks.wo.wolocalroot</resource>
-		<resource>woproject/ant.frameworks.wo.wosystemroot</resource>
 		<resource>woproject/classes.exclude.patternset</resource>
 		<resource>woproject/classes.include.patternset</resource>
 		<resource>woproject/resources.exclude.patternset</resource>
