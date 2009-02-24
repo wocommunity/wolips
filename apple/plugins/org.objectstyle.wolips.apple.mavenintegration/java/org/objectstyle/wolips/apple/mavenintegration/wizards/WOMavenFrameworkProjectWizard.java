@@ -108,7 +108,7 @@ public class WOMavenFrameworkProjectWizard extends AbstractMavenProjectWizard {
 	}
 
 	@Override
-	protected void _createProject(IProject project, IProgressMonitor progressMonitor) throws Exception {
+	protected void postInstallTemplate(IProject project, IProgressMonitor progressMonitor) throws Exception {
 		createDirectoryStructure(project, progressMonitor);
 //		createEOModelSupport(project);
 		createMaven2EclipseProjectFiles(project, progressMonitor);
