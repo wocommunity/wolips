@@ -82,7 +82,7 @@ public class JarProjectWizard extends AbstractProjectWizard {
 	}
 
 	@Override
-	protected void _createProject(IProject project, IProgressMonitor progressMonitor) throws Exception {
+	protected void postInstallTemplate(IProject project, IProgressMonitor progressMonitor) throws Exception {
 		String projectName = project.getName();
 		String path = project.getLocation().toOSString();
 		File src = new File(path + File.separator + "src");

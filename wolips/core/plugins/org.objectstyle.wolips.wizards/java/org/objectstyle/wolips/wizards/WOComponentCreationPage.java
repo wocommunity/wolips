@@ -444,7 +444,6 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 		this.getDialogSettings().put(WOComponentCreationPage.API_CHECKBOX_KEY, _apiCheckbox.getSelection());
 
 		// logPreferences();
-
 		IRunnableWithProgress op = new WorkspaceModifyDelegatingOperation(componentCreator);
 		return createResourceOperation(op);
 	}

@@ -117,7 +117,7 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 	}
 
 	@Override
-	protected void _createProject(IProject project, IProgressMonitor progressMonitor) throws Exception {
+	protected void postInstallTemplate(IProject project, IProgressMonitor progressMonitor) throws Exception {
 
 		String pathRoot = pathForTemplateLook(currentD2WLook());
 		String projectName = project.getName();

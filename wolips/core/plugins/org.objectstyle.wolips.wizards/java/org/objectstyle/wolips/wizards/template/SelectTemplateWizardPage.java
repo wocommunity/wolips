@@ -26,7 +26,7 @@ public class SelectTemplateWizardPage extends WizardPage implements ISelectionCh
 	protected SelectTemplateWizardPage() {
 		super("Select Template");
 		setPageComplete(false);
-		_templates = ProjectTemplate.loadProjectTemplates();
+		_templates = ProjectTemplate.loadProjectTemplates(ProjectTemplate.PROJECT_TEMPLATES);
 	}
 
 	public List<ProjectTemplate> getProjectTemplates() {

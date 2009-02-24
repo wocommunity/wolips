@@ -88,7 +88,7 @@ public class WOnderD2WApplicationWizard extends AbstractWonderProjectWizard {
 	}
 
 	@Override
-	protected void _createProject(IProject project, IProgressMonitor progressMonitor) throws Exception {
+	protected void postInstallTemplate(IProject project, IProgressMonitor progressMonitor) throws Exception {
 		String templateFolder = getTemplateFolder();
 		String projectName = project.getName();
 		String path = project.getLocation().toOSString();

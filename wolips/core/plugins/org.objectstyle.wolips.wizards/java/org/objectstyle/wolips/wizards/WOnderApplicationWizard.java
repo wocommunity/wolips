@@ -79,7 +79,7 @@ public class WOnderApplicationWizard extends NewWOProjectWizard {
 	}
 
 	@Override
-	protected void _createProject(IProject project, IProgressMonitor progressMonitor) throws Exception {
+	protected void postInstallTemplate(IProject project, IProgressMonitor progressMonitor) throws Exception {
 		// DO NOTHING
 	}
 }
