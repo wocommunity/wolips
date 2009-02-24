@@ -204,7 +204,8 @@ public abstract class AbstractEngine implements IRunnableWithProgress {
 			folder.refreshLocal(IResource.DEPTH_ZERO, null);
 			// Keep charset of component folder and HTML template in sync
 			if ("wo".equals(folder.getFileExtension()) && file.getPath().endsWith("html") 
-					&& !encoding.equals(folder.getDefaultCharset(false))) {
+					&& !encoding.equals(folder.getDefaultCharset(true))) {
+				System.out.println("AbstractEngine.run: setting encoding of " + folder + " to " + encoding);
 				folder.setDefaultCharset(encoding, null);
 			}
 			writer = new BufferedWriter(
@@ -219,7 +220,8 @@ public abstract class AbstractEngine implements IRunnableWithProgress {
 					writer.close();
 					IFile ifile = root.getFileForLocation(new Path(file.getPath()));
 					ifile.refreshLocal(IResource.DEPTH_ZERO, null);
-					if (!encoding.equals(ifile.getCharset(false))) {
+					if (!encoding.equals(ifile.getCharset(true)) && !"java".equals(ifile.getFileExtension())) {
+						System.out.println("AbstractEngine.run: setting encoding of " + ifile + " to " + encoding + " was " + ifile.getCharset(true));
 						ifile.setCharset(encoding, null);
 					}
 
