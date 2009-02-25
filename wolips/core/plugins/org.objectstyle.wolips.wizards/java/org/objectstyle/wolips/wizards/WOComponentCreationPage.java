@@ -449,12 +449,6 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 		this.getDialogSettings().put(WOComponentCreationPage.API_CHECKBOX_KEY, _apiCheckbox.getSelection());
 
 		// logPreferences();
-		ProjectTemplate pt = ProjectTemplate.loadProjectTemplateNamed(actualProject, "Component Templates", "WOComponent");
-		pt.addInput(new ProjectInput("name", ProjectInput.Type.String));
-		pt.setValueForInputNamed("SomeName", "name");
-		InstallTemplateOperation top = new InstallTemplateOperation(pt, actualProject, actualProject.getFolder(getContainerFullPath().removeFirstSegments(1)));
-		createResourceOperation(top);
-
 		IRunnableWithProgress op = new WorkspaceModifyDelegatingOperation(componentCreator);
 		return createResourceOperation(op);
 	}
