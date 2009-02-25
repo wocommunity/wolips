@@ -71,7 +71,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
@@ -90,7 +89,6 @@ import org.eclipse.jdt.internal.ui.wizards.dialogfields.IStringButtonAdapter;
 import org.eclipse.jdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.jdt.internal.ui.wizards.dialogfields.StringButtonStatusDialogField;
 import org.eclipse.jdt.ui.JavaElementLabelProvider;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -115,9 +113,6 @@ import org.objectstyle.wolips.eomodeler.utils.StringLabelProvider;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
-import org.objectstyle.wolips.templateengine.InstallTemplateOperation;
-import org.objectstyle.wolips.templateengine.ProjectInput;
-import org.objectstyle.wolips.templateengine.ProjectTemplate;
 
 /**
  * @author mnolte
@@ -150,6 +145,7 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 	private StringButtonStatusDialogField _superclassDialogField;
 
 	private Object _currentSelection;
+
 
 	enum HTML {
 		STRICT_401("HTML 4.0.1 Strict", "4.0.1 strict doctype", 0), 
@@ -298,6 +294,20 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 		if (!status.isOK()) {
 			setErrorMessage(status.getMessage());
 			return false;
+		}
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(getContainerFullPath().segment(0));
+
+		// This may need to change depending on how we want to deal with localized components in future.
+		LocatePlugin locatePlugin = LocatePlugin.getDefault();
+		try {
+			LocalizedComponentsLocateResult result = locatePlugin.getLocalizedComponentsLocateResult(project, getFileName());
+			if (result.getResources().length > 0) {
+				setErrorMessage("A component by that name already exists");
+				return false;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return super.validatePage();
 	}
