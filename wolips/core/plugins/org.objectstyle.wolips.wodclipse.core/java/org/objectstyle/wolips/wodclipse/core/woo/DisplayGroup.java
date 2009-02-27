@@ -64,6 +64,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
+import org.objectstyle.wolips.bindings.wod.TypeCache;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.core.model.EODataSource;
 import org.objectstyle.wolips.eomodeler.core.model.EODataSourceFactory;
@@ -77,10 +82,17 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.core.model.EOSortOrdering;
 import org.objectstyle.wolips.eomodeler.core.utils.IPropertyChangeSource;
+import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 
 public class DisplayGroup implements IPropertyChangeSource {
 
   public static final String NAME = "name";
+  
+  public static final String CLASS_NAME = "className";
+
+  public static final String CLASS_NAME_INDEX = "classNameIndex";
+  
+  public static final String CLASS_NAME_LIST = "classNameList";
 
   public static final String QUALIFICATION_INDEX = "qualificationIndex";
 
@@ -148,7 +160,9 @@ public class DisplayGroup implements IPropertyChangeSource {
   private String _detailKeyName;
   private boolean _hasMasterDetail;
   private boolean _fetchesOnLoad;
-  private String _flass;
+  private String _className;
+  private int _classNameIndex;
+  private List<String> _classNameList;
   private String _qualifierFormat;
   private int _entriesPerBatch;
   private List<String> _localKeys;
@@ -170,7 +184,8 @@ public class DisplayGroup implements IPropertyChangeSource {
     _dataSource = _databaseDataSource;
     _qualificationIndex = 0;
     _qualifierFormat = QUALIFICATION_FORMATS[0];
-    _flass = "WODisplayGroup";
+    _className = "WODisplayGroup";
+    _classNameIndex = getClassNameList().indexOf(_className);
     _isSorted = false;
     _hasMasterDetail = false;
     _changeSupport = new PropertyChangeSupport(this);
@@ -193,7 +208,33 @@ public class DisplayGroup implements IPropertyChangeSource {
       _changeSupport.firePropertyChange(propertyName, oldValue, newValue);
     }
   }
+  
+  public String getClassName() {
+    return _className;
+  }
 
+  public int getClassNameIndex() {
+    return _classNameIndex;
+  }
+  
+  public List<String> getClassNameList() {
+    if (_classNameList == null) {
+      _classNameList = new ArrayList<String>();
+      try {
+        IJavaProject project = JavaCore.create(_wooModel.getProject());
+        IType displayGroupType = project.findType("com.webobjects.appserver.WODisplayGroup");
+        List<IType> subTypes = WodParserCache.getTypeCache().getSubtypesOfInProject(displayGroupType, project);
+        for (IType type : subTypes) {
+          _classNameList.add(type.getElementName());
+        }
+      } catch (JavaModelException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+    return _classNameList;
+  }
+  
   public List<String> getDetailKeyList() {
     if (_masterEntity != null) {
       List<String> keyList = new ArrayList<String>();
@@ -341,7 +382,7 @@ public class DisplayGroup implements IPropertyChangeSource {
   @SuppressWarnings("unchecked")
   public void loadFromMap(final EOModelMap map, final Set<EOModelVerificationFailure> failures) {
     _originalName = _name;
-    _flass = map.getString("class", true);
+    _className = map.getString("class", true);
     _localKeys = map.getList("localKeys");
     if (map.containsKey("numberOfObjectsPerBatch")) {
       _entriesPerBatch = map.getInteger("numberOfObjectsPerBatch");
@@ -412,7 +453,27 @@ public class DisplayGroup implements IPropertyChangeSource {
   public void removePropertyChangeListener(final String name, final PropertyChangeListener listener) {
     _changeSupport.removePropertyChangeListener(name, listener);
   }
+  
+  public void setClassName(final String className) {
+    String oldClass = getClassName();
+    String _name = className;
 
+    if ((className == null || !getClassNameList().contains(className))) {
+      _name = "WODisplayGroup";
+    }
+
+    _className = _name;
+    firePropertyChange(CLASS_NAME, oldClass, _name);
+    setClassNameIndex(getClassNameList().indexOf(_name));
+  }
+
+  public void setClassNameIndex(final int index) {
+    int oldIndex = _classNameIndex;
+    _classNameIndex = index;
+    _className = _classNameList.get(index);
+    firePropertyChange(CLASS_NAME_INDEX, oldIndex, _classNameIndex);
+  }  
+  
   public void setDetailKeyName(final String key) {
     String oldDetailKeyName = _detailKeyName;
     _detailKeyName = key;
@@ -625,7 +686,7 @@ public class DisplayGroup implements IPropertyChangeSource {
       //return null;
     }
     EOModelMap modelMap = new EOModelMap();
-    modelMap.setString("class", _flass, true);
+    modelMap.setString("class", _className, true);
     modelMap.setMap("dataSource", _dataSource.toMap(), true);
     modelMap.setBoolean("fetchesOnLoad", _fetchesOnLoad, EOModelMap.YESNO);
     modelMap.setString("formatForLikeQualifier", _qualifierFormat, true);

@@ -105,6 +105,8 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 
 	private Text myNameText;
 
+	private Combo myClassNameCombo;
+	
 	private Spinner myEntriesPerBatchSpinner;
 
 	private Combo myEntityCombo;
@@ -165,7 +167,6 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 			if (DisplayGroup.NOT_SORTED.equals(selection)) {
 				mySortRadioGroup.setSelection(DisplayGroup.ASCENDING);
 			}
-			System.out.println(myDisplayGroup.getMasterEntityName());
 		}
 	};
 
@@ -184,6 +185,14 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 				SWT.Modify), BeansObservables.observeValue(myDisplayGroup,
 				DisplayGroup.NAME), null, null);
 
+    myBindingContext.bindList(SWTObservables.observeItems(myClassNameCombo),
+        BeansObservables.observeList(Realm.getDefault(),
+            myDisplayGroup, DisplayGroup.CLASS_NAME_LIST), null, null);
+    myBindingContext.bindValue(SWTObservables
+        .observeSingleSelectionIndex(myClassNameCombo),
+        BeansObservables.observeValue(myDisplayGroup,
+            DisplayGroup.CLASS_NAME_INDEX), null, null);
+		
 		myBindingContext.bindList(SWTObservables.observeItems(myEntityCombo),
 				BeansObservables.observeList(Realm.getDefault(),
 						myDisplayGroup, DisplayGroup.ENTITY_LIST), null, null);
@@ -399,6 +408,13 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 		GridData nameFieldLayoutData = new GridData(SWT.FILL, SWT.FILL, true,
 				false);
 		myNameText.setLayoutData(nameFieldLayoutData);
+
+    // Class Name
+    form.createLabel(displayGroupComposite, "Class Type:");
+    myClassNameCombo = new Combo(displayGroupComposite, SWT.POP_UP);
+    GridData classNameFieldLayoutData = new GridData(SWT.FILL, SWT.FILL, true,
+        false);
+    myNameText.setLayoutData(classNameFieldLayoutData);
 
 		// Entity
 		form.createLabel(displayGroupComposite, "Entity:");

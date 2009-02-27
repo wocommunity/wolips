@@ -177,6 +177,7 @@ public class WooeditorPlugin extends AbstractBaseUIActivator implements IResourc
                 if (element.getType() == IResource.FILE) {
                   IFile file = (IFile) element;
                   if (file.getFileExtension().matches("(xml|html|xhtml|wod)") && !file.getCharset().equals(charset)) {
+                    System.out.println("WooeditorPlugin.run: setting encoding of " + file + " to " + charset);
                     file.setCharset(charset, null);
                   }
                 }
