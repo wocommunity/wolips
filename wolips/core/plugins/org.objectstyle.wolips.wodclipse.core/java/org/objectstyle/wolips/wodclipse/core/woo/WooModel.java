@@ -333,7 +333,18 @@ public class WooModel {
                 AddKeyOperation.addKey(info);
               } 
             } else {
-              AddKeyOperation.replaceField(info, originalName);
+              info.setName(originalName);
+              field = componentType.getField(info.getFieldName());
+              if (field.exists()) {
+                String originalClassName = Signature.getSignatureSimpleName(Signature.getTypeErasure(field.getTypeSignature()));
+                String types[] = Signature.getTypeArguments(field.getTypeSignature());
+                String originalParameterType = types.length > 0 ? Signature.getSignatureSimpleName(types[0]) : "";
+
+                if (!originalName.equals(newName) || !originalClassName.equals(displayGroup.getClassName())
+                    || !originalParameterType.equals(newParameterType)) {
+                  info.setName(newName);
+                  AddKeyOperation.replaceField(info, originalName);
+                }}
             }
           }
           
