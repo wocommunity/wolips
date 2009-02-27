@@ -319,11 +319,7 @@ public class WooModel {
             IType classType = BindingReflectionUtils.findElementType(JavaCore.create(_file.getProject()), displayGroup.getClassName(), false, WodParserCache.getTypeCache());
             String newParameterType = "";
             if (classType.getTypeParameters().length > 0) {
-              if (displayGroup.isHasMasterDetail()) {
-                newParameterType = displayGroup.getDetailKeyName();
-              } else {
-                newParameterType = displayGroup.getEntityName();
-              }
+              newParameterType = displayGroup.getEntityName();
               info.setParameterTypeName(newParameterType);
             }
             
