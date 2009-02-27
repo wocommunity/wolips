@@ -21,13 +21,17 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.ProgressMonitorWrapper;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.Signature;
 import org.eclipse.jdt.internal.corext.refactoring.reorg.JavaDeleteProcessor;
 import org.eclipse.jdt.internal.corext.refactoring.reorg.NullReorgQueries;
 import org.eclipse.jdt.internal.ui.refactoring.RefactoringExecutionHelper;
@@ -43,6 +47,7 @@ import org.eclipse.ui.IFileEditorInput;
 import org.objectstyle.woenvironment.plist.PropertyListParserException;
 import org.objectstyle.woenvironment.plist.WOLPropertyListSerialization;
 import org.objectstyle.wolips.baseforplugins.util.CharSetUtils;
+import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
 import org.objectstyle.wolips.bindings.wod.BindingValueKeyPath;
 import org.objectstyle.wolips.bindings.wod.TypeCache;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
@@ -195,14 +200,6 @@ public class WooModel {
       if (_modelMap != null && _modelMap.containsKey("encoding")) {
         _encoding = _modelMap.getString("encoding", true);
       }
-//      else if (_file != null && _file.getParent().exists()) {
-//        try {
-//          _encoding = _file.getParent().getDefaultCharset();
-//        }
-//        catch (CoreException e) {
-//        	e.printStackTrace();
-//        }
-//      }
     }
     if (_encoding == null) {
       if (_file != null && _file.exists()) {
@@ -265,6 +262,22 @@ public class WooModel {
           EOModelMap entryMap = new EOModelMap((Map<?, ?>) entry.getValue());
           String className = entryMap.getString("class", true);
           //XXX This should support subclasses of WODisplayGroup
+          try {
+            TypeCache typeCache = WodParserCache.getTypeCache();
+            IType classType = BindingReflectionUtils.findElementType(JavaCore.create(_file.getProject()), className, false, typeCache);
+            if (classType != null && BindingReflectionUtils.isType(classType, new String[] {"com.webobjects.appserver.WODisplayGroup"}, typeCache)) {
+              DisplayGroup displayGroup = new DisplayGroup(this);
+              displayGroup.setName(entry.getKey());
+              displayGroup.setClassName(className);
+              displayGroup.loadFromMap(entryMap, failures);
+              _displayGroups.add(displayGroup);
+              displayGroup.addPropertyChangeListener(_displayGroupListener);
+              continue;              
+            }
+          } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
           if ("WODisplayGroup".equals(className)) {
             DisplayGroup displayGroup = new DisplayGroup(this);
             displayGroup.setName(entry.getKey());
@@ -295,30 +308,32 @@ public class WooModel {
           for (DisplayGroup displayGroup : getDisplayGroups()) {
             String originalName = displayGroup.getOriginalName();
             String newName = displayGroup.getName();
+            String newClassName = displayGroup.getClassName();
             AddKeyInfo info = new AddKeyInfo(componentType);
+            info.setTypeName(displayGroup.getClassName());
+            info.setName(newName);
+            info.setCreateAccessorMethod(false);
+            info.setCreateMutatorMethod(false);
+            
+            // Populate generic types if required
+            IType classType = BindingReflectionUtils.findElementType(JavaCore.create(_file.getProject()), displayGroup.getClassName(), false, WodParserCache.getTypeCache());
+            String newParameterType = "";
+            if (classType.getTypeParameters().length > 0) {
+              if (displayGroup.isHasMasterDetail()) {
+                newParameterType = displayGroup.getDetailKeyName();
+              } else {
+                newParameterType = displayGroup.getEntityName();
+              }
+              info.setParameterTypeName(newParameterType);
+            }
+            
+            IField field = componentType.getField(info.getFieldName());
             if (originalName == null) {
-              info.setTypeName("WODisplayGroup");
-              info.setName(newName);
-              info.setCreateAccessorMethod(false);
-              info.setCreateMutatorMethod(false);
-
-              IField field = componentType.getField(info.getFieldName());
               if (!field.exists()) {
                 AddKeyOperation.addKey(info);
-              }
-            }
-            else if (!originalName.equals(newName)) {
-              info.setName(originalName);
-              String originalFieldName = info.getFieldName();
-
-              info.setName(newName);
-              String newFieldName = info.getFieldName();
-              
-              IField field = componentType.getField(originalFieldName);
-              if (field.exists()) {
-                RenameSupport renameSupport = RenameSupport.create(field, newFieldName, RenameSupport.UPDATE_GETTER_METHOD | RenameSupport.UPDATE_SETTER_METHOD | RenameSupport.UPDATE_REFERENCES);
-                renameSupport.perform(shell, context);
-              }
+              } 
+            } else {
+              AddKeyOperation.replaceField(info, originalName);
             }
           }
           
@@ -330,11 +345,7 @@ public class WooModel {
                 info.setName(originalName);
                 IField field = componentType.getField(info.getFieldName());
                 if (field.exists()) {
-                  JavaDeleteProcessor deleteProcessor = new JavaDeleteProcessor(new Object[] { field });
-                  deleteProcessor.setSuggestGetterSetterDeletion(false);
-                  deleteProcessor.setQueries(new NullReorgQueries());
-                  DeleteRefactoring deleteRefactoring = new DeleteRefactoring(deleteProcessor);
-                  new RefactoringExecutionHelper(deleteRefactoring, RefactoringCore.getConditionCheckingFailedSeverity(), RefactoringSaveHelper.SAVE_NOTHING, shell, new ProgressMonitorDialog(shell)).perform(false, false);
+                  field.delete(false, null);
                 }
               }
             }
@@ -349,7 +360,7 @@ public class WooModel {
   
   public void doSave() throws IOException {
     if (_file == null) {
-      throw new IOException("You can not save changes to a WooModel that is not " + "backed by a file.");
+      throw new IOException("You can not save changes to a WooModel that is not backed by a file.");
     }
 
     File file = _file.getLocation().toFile();
@@ -547,6 +558,13 @@ public class WooModel {
     return problems;
   }
 
+  public IProject getProject() {
+    if (_file != null) {
+      return _file.getProject();
+    }
+    return null;
+  }
+  
   public String getName() {
     return _file.getName();
   }
@@ -554,7 +572,7 @@ public class WooModel {
   public static void updateEncoding(IFile file, String charset) {
     WooModel model = new WooModel(file);
     String encoding = CharSetUtils.encodingNameFromObjectiveC(model.getEncoding());
-  	System.out.println("WooModel.updateEncoding: Setting encoding of " + file + " to " + encoding + "/" + charset);
+  	System.out.println("WooModel.updateEncoding: Setting encoding of " + file + " from " + encoding + " to " + charset);
     if (!encoding.equals(charset)) {
       try {
         model._modelMap.setString("encoding", charset, true);
