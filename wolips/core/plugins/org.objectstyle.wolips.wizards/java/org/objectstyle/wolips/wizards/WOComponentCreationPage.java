@@ -309,6 +309,14 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		// Check that we aren't going to create a wocomponent inside another wocomponent
+		IPath path = getContainerFullPath();
+		if (path.lastSegment().endsWith(".wo")) {
+			setErrorMessage("Cannot create a component within another component");
+			return false;
+		}
+		
 		return super.validatePage();
 	}
 
