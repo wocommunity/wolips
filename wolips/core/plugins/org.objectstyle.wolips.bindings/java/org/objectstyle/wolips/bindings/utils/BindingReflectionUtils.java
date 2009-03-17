@@ -220,7 +220,7 @@ public class BindingReflectionUtils {
 
         for (String additionalProposal : additionalProposals) {
           if (additionalProposal.startsWith(nameStartingWith)) {
-            BindingValueKey additionalKey = new BindingValueKey(additionalProposal, null, javaProject, cache);
+            BindingValueKey additionalKey = new BindingValueKey(additionalProposal, null, null, javaProject, cache);
             // MS: this is a hack to prevent NPE's because we don't know the next type right now ...
             //additionalKey.setNextType(nextType);
             bindingKeys.add(additionalKey);
@@ -237,7 +237,7 @@ public class BindingReflectionUtils {
       if (types != null) {
         for (int typeNum = 0; (!requireExactNameMatch || bindingKeys.size() == 0) && typeNum < types.size(); typeNum++) {
           //for (int typeNum = types.length - 1; (!_requireExactNameMatch || bindingKeys.size() == 0) && typeNum >= 0; typeNum --) {
-          BindingReflectionUtils.fillInBindingKeys(types.get(typeNum), lowercaseNameStartingWith, requireExactNameMatch, accessorsOrMutators, allowInheritanceDuplicates, javaProject, bindingKeys, cache);
+          BindingReflectionUtils.fillInBindingKeys(type, types.get(typeNum), lowercaseNameStartingWith, requireExactNameMatch, accessorsOrMutators, allowInheritanceDuplicates, javaProject, bindingKeys, cache);
         }
       }
     }
@@ -245,13 +245,13 @@ public class BindingReflectionUtils {
     return bindingKeys;
   }
 
-  protected static void fillInBindingKeys(IType type, String lowercaseNameStartingWith, boolean requireExactNameMatch, int accessorsOrMutators, boolean allowInheritanceDuplicates, IJavaProject javaProject, List<BindingValueKey> bindingKeys, TypeCache cache) throws JavaModelException {
+  protected static void fillInBindingKeys(IType declaringType, IType type, String lowercaseNameStartingWith, boolean requireExactNameMatch, int accessorsOrMutators, boolean allowInheritanceDuplicates, IJavaProject javaProject, List<BindingValueKey> bindingKeys, TypeCache cache) throws JavaModelException {
     //System.out.println("BindingReflectionUtils.getBindingKeys: a " + type.getFullyQualifiedName());
 
     IField[] fields = type.getFields();
     for (int fieldNum = 0; (!requireExactNameMatch || bindingKeys.size() == 0) && fieldNum < fields.length; fieldNum++) {
       for (String prefix : BindingReflectionUtils.FIELD_PREFIXES) {
-        BindingValueKey bindingKey = BindingReflectionUtils.getBindingKeyIfMatches(javaProject, fields[fieldNum], prefix + lowercaseNameStartingWith, prefix, requireExactNameMatch, accessorsOrMutators, cache);
+        BindingValueKey bindingKey = BindingReflectionUtils.getBindingKeyIfMatches(javaProject, declaringType, fields[fieldNum], prefix + lowercaseNameStartingWith, prefix, requireExactNameMatch, accessorsOrMutators, cache);
         if (bindingKey != null) {
           bindingKeys.add(bindingKey);
           break;
@@ -278,7 +278,7 @@ public class BindingReflectionUtils {
       for (int methodNum = 0; (!requireExactNameMatch || bindingKeys.size() == 0) && methodNum < methods.length; methodNum++) {
         for (String prefix : prefixes) {
           //System.out.println("BindingReflectionUtils.getBindingKeys: checking for " + prefix + methods[methodNum].getElementName());
-          BindingValueKey bindingKey = BindingReflectionUtils.getBindingKeyIfMatches(javaProject, methods[methodNum], prefix + lowercaseNameStartingWith, prefix, requireExactNameMatch, accessorsOrMutators, cache);
+          BindingValueKey bindingKey = BindingReflectionUtils.getBindingKeyIfMatches(javaProject, declaringType, methods[methodNum], prefix + lowercaseNameStartingWith, prefix, requireExactNameMatch, accessorsOrMutators, cache);
           if (bindingKey != null) {
             if (allowInheritanceDuplicates || !bindingKeys.contains(bindingKey)) {
               bindingKeys.add(bindingKey);
@@ -296,7 +296,7 @@ public class BindingReflectionUtils {
     return declaringTypePackageName == null || declaringTypePackageName.length() == 0;
   }
 
-  public static BindingValueKey getBindingKeyIfMatches(IJavaProject javaProject, IMember member, String nameStartingWith, String prefix, boolean requireExactNameMatch, int accessorsOrMutators, TypeCache cache) throws JavaModelException {
+  public static BindingValueKey getBindingKeyIfMatches(IJavaProject javaProject, IType type, IMember member, String nameStartingWith, String prefix, boolean requireExactNameMatch, int accessorsOrMutators, TypeCache cache) throws JavaModelException {
     //System.out.println("BindingReflectionUtils.getBindingKeyIfMatches: " + member.getElementName() + " starts with " + nameStartingWith);
     BindingValueKey bindingKey = null;
 
@@ -355,7 +355,7 @@ public class BindingReflectionUtils {
           String bindingName = BindingReflectionUtils.toLowercaseFirstLetter(memberName.substring(prefixLength));
           //System.out.println("BindingReflectionUtils.getBindingKeyIfMatches:   bindingName = " + bindingName);
           if (nameStartingWith.length() > 0 || !bindingName.startsWith("_")) {
-            bindingKey = new BindingValueKey(bindingName, member, javaProject, cache);
+            bindingKey = new BindingValueKey(bindingName, type, member, javaProject, cache);
           }
         }
       }
