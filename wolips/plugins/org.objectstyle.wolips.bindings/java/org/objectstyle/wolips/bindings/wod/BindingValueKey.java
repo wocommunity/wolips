@@ -13,17 +13,19 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
 
   private IMember _bindingMember;
 
+  private IType _bindingDeclaringType;
+
   private IJavaProject _javaProject;
 
   private IType _nextType;
 
-//  private IType _nextTypeArgument;
 
   private TypeCache _cache;
 
-  public BindingValueKey(String bindingName, IMember bindingMember, IJavaProject javaProject, TypeCache cache) {
+  public BindingValueKey(String bindingName, IType bindingDeclaringType, IMember bindingMember, IJavaProject javaProject, TypeCache cache) {
     _bindingName = bindingName;
     _bindingMember = bindingMember;
+    _bindingDeclaringType = bindingDeclaringType;
     _javaProject = javaProject;
     _cache = cache;
   }
@@ -91,8 +93,8 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
   }
   
   public IType getNextType(BindingValueKey parentBinding) throws JavaModelException {
-	_nextType = resolveNextType(parentBinding);
-	return _nextType;
+    _nextType = resolveNextType(parentBinding);
+    return _nextType;
   }
 
   public boolean isLeaf() throws JavaModelException {
@@ -111,39 +113,45 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
   }
 
   protected IType resolveNextType(BindingValueKey parentBinding) throws JavaModelException {
-      String nextTypeName = getNextTypeName();
-      if (nextTypeName == null || nextTypeName.length() == 0) {
-        return null;
+    String nextTypeName = getNextTypeName();
+    if (nextTypeName == null || nextTypeName.length() == 0) {
+      return null;
+    }
+    String typeSignatureName = Signature.getSignatureSimpleName(Signature.getElementType(nextTypeName));
+    String typeSignature = "QObject;";
+    if (parentBinding != null) {
+      typeSignature = getMemberTypeName(parentBinding._bindingMember);
+    } else if (_bindingDeclaringType != null) {
+      typeSignature = _bindingDeclaringType.getSuperclassTypeSignature();
+    }
+    IType declaringType = getDeclaringType();
+
+    String[] typeParameters = declaringType.getTypeParameterSignatures();
+    String[] typeArguments = Signature.getTypeArguments(typeSignature);
+    
+    /* If we have type parameters we need to use the parent type to resolve 
+     * the generic type */
+    if (typeParameters.length > 0) {
+      if (parentBinding != null) {
+        declaringType = parentBinding.getBindingMember().getDeclaringType();
+      } else {
+        declaringType = _bindingDeclaringType;
       }
-      IType declaringType = getDeclaringType();
-	  String typeSignatureName = Signature.getSignatureSimpleName(nextTypeName);
-	  String typeSignature = "QObject;";
-	  if (parentBinding != null) {
-	  	typeSignature = getMemberTypeName(parentBinding._bindingMember);
-	  }
-	  String[] typeParameters = declaringType.getTypeParameterSignatures();
-	  String[] typeArguments = Signature.getTypeArguments(typeSignature);
-      for (int i = 0; i < typeParameters.length; i++) {
-    	  String param = typeParameters[i];
-    	  String currentParameterType = Signature.getTypeVariable(param);
-    	  if (typeSignatureName.equals(currentParameterType) &&
-    			  i < typeArguments.length) {
-  			/* XXX: Q - This is (still) a hack, I don't like it, but it's better than no 
-  			 * validation at all. Generic type resolution assumes that it was declared in
-  			 * the parent binding, which isn't always the case, but it is most of the time. 
-  			 * There is no way of determining the actual declared generic type without 
-  			 * refactoring the caching behaviour as well as passing in the declaring type
-  			 * and the type signature, which would be the preferred solution to this problem.
-  			 */
-    		String typeArgument = typeArguments[i];
-    		typeArgument = typeArgument.substring(typeArgument.indexOf('Q'));
-    		nextTypeName = typeArgument;
-    		declaringType = parentBinding.getDeclaringType();
-    		break;
-    	  }
+    }
+    
+    /* Resolve next type using generic type arguments */
+    for (int i = 0; i < typeParameters.length; i++) {
+      String param = typeParameters[i];
+      String currentParameterType = Signature.getTypeVariable(param);
+      if (typeSignatureName.equals(currentParameterType) &&
+          i < typeArguments.length) {
+        nextTypeName = Signature.getElementType(typeArguments[i]);
+        break;
       }
-      String nextTypeNameErasure = Signature.getTypeErasure(nextTypeName);
-      return _cache.getTypeForNameInType(nextTypeNameErasure, declaringType);
+    }
+    String nextTypeNameErasure = Signature.getTypeErasure(nextTypeName);
+//    System.out.println("BindingValueKey.resolveNextType: " + nextTypeNameErasure + " / " + declaringType);
+    return _cache.getTypeForNameInType(nextTypeNameErasure, declaringType);
   }
 
   @Override
