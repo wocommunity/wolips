@@ -1,6 +1,7 @@
 package org.objectstyle.wolips.bindings.wod;
 
 import org.eclipse.jdt.core.IField;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IMethod;
@@ -118,14 +119,25 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
       return null;
     }
     String typeSignatureName = Signature.getSignatureSimpleName(Signature.getElementType(nextTypeName));
-    String typeSignature = "QObject;";
+    String typeSignature = null;
+    
+    boolean isField = false;
+    if (_bindingMember.getElementType() == IJavaElement.FIELD) {
+      isField = true;
+    }
+    
     if (parentBinding != null) {
-      typeSignature = getMemberTypeName(parentBinding._bindingMember);
+      if (isField) {
+        typeSignature = getMemberTypeName(parentBinding._bindingMember);
+      } else {
+        typeSignature = parentBinding._bindingDeclaringType.getSuperclassTypeSignature();
+      }
     } else if (_bindingDeclaringType != null) {
       typeSignature = _bindingDeclaringType.getSuperclassTypeSignature();
     }
     IType declaringType = getDeclaringType();
-
+    typeSignature = typeSignature == null ? "QObject;" : typeSignature;
+    
     String[] typeParameters = declaringType.getTypeParameterSignatures();
     String[] typeArguments = Signature.getTypeArguments(typeSignature);
     
@@ -135,7 +147,9 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
       if (parentBinding != null) {
         declaringType = parentBinding.getBindingMember().getDeclaringType();
       } else {
-        declaringType = _bindingDeclaringType;
+        if (isField) {
+          declaringType = _bindingDeclaringType;
+        }
       }
     }
     
