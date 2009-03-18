@@ -94,7 +94,9 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
   }
   
   public IType getNextType(BindingValueKey parentBinding) throws JavaModelException {
-    _nextType = resolveNextType(parentBinding);
+    if (_nextType == null) {
+      _nextType = resolveNextType(parentBinding);
+    }
     return _nextType;
   }
 
@@ -141,22 +143,17 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
     String[] typeParameters = declaringType.getTypeParameterSignatures();
     String[] typeArguments = Signature.getTypeArguments(typeSignature);
     
-    /* If we have type parameters we need to use the parent type to resolve 
-     * the generic type */
-    if (typeParameters.length > 0) {
-      if (parentBinding != null) {
-        declaringType = parentBinding.getBindingMember().getDeclaringType();
-      } else {
-        declaringType = _bindingDeclaringType;
-      }
-    }
-    
     /* Resolve next type using generic type arguments */
     for (int i = 0; i < typeParameters.length; i++) {
       String param = typeParameters[i];
       String currentParameterType = Signature.getTypeVariable(param);
       if (typeSignatureName.equals(currentParameterType) &&
           i < typeArguments.length) {
+        if (parentBinding != null) {
+          declaringType = parentBinding._bindingDeclaringType;
+        } else {
+          declaringType = _bindingDeclaringType;
+        }
         nextTypeName = Signature.getElementType(typeArguments[i]);
         break;
       }
