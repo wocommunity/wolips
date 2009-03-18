@@ -7,17 +7,21 @@
 	<name>WOProject All</name>
 	<description>Contains all WOProject projects.</description>
 	<url>http://objectstyle.org/woproject/</url>
+
 	<modules>
 		<module>woenvironment</module>
 		<module>woproject-ant-tasks</module>
 		<module>maven2</module>
 		<module>wolips</module>
 	</modules>
+
 	<issueManagement>
 		<system>jira</system>
 		<url>http://objectstyle.org/jira/browse/WOL</url>
 	</issueManagement>
+
 	<inceptionYear>2001</inceptionYear>
+
 	<mailingLists>
 		<mailingList>
 			<name>WOProject/WOLips Developer List</name>
@@ -30,15 +34,17 @@
 			</otherArchives>
 		</mailingList>
 	</mailingLists>
+
 	<organization>
 		<name>ObjectStyle Group</name>
 		<url>http://objectstyle.org/</url>
 	</organization>
+
 	<repositories>
 		<repository>
-			<id>webobjects.mdimension.com/releases</id>
-			<name>mdimension maven 2 releases repo</name>
-			<url>http://webobjects.mdimension.com/maven2/releases</url>
+			<id>wocommunity.releases</id>
+			<name>WOCommunity Maven 2 Releases Repository</name>
+			<url>http://maven.wocommunity.org/content/groups/public</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
@@ -47,9 +53,9 @@
 			</releases>
 		</repository>
 		<repository>
-			<id>webobjects.mdimension.com/snapshots</id>
-			<name>mdimension maven 2 snapshots repo</name>
-			<url>http://webobjects.mdimension.com/maven2/snapshots</url>
+			<id>wocommunity.snapshots</id>
+			<name>WOCommunity Maven 2 Snapshots Repository</name>
+			<url>http://maven.wocommunity.org/content/groups/public-snapshots</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
@@ -58,11 +64,12 @@
 			</releases>
 		</repository>
 	</repositories>
+
 	<pluginRepositories>
 		<pluginRepository>
-			<id>webobjects.mdimension.com/plugin/releases</id>
-			<name>mdimension maven 2 releases repo</name>
-			<url>http://webobjects.mdimension.com/maven2/releases</url>
+			<id>wocommunity.releases</id>
+			<name>WOCommunity Maven 2 Releases Repository</name>
+			<url>http://maven.wocommunity.org/content/groups/public</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
@@ -71,9 +78,9 @@
 			</releases>
 		</pluginRepository>
 		<pluginRepository>
-			<id>webobjects.mdimension.com/plugin/snapshots</id>
-			<name>mdimension maven 2 snapshot repo</name>
-			<url>http://webobjects.mdimension.com/maven2/snapshots</url>
+			<id>wocommunity.snapshots</id>
+			<name>WOCommunity Maven 2 Snapshots Repository</name>
+			<url>http://maven.wocommunity.org/content/groups/public-snapshots</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
@@ -82,23 +89,26 @@
 			</releases>
 		</pluginRepository>
 	</pluginRepositories>
+
 	<distributionManagement>
 		<repository>
-			<id>webobjects.mdimension.com/dist/releases</id>
-			<name>mdimension Maven2 Release Repository</name>
-			<url>scp://webobjects.mdimension.com/Library/WebServer/BuildServer/maven2/releases</url>
+			<id>wocommunity.deployment</id>
+			<name>WOCommunity Maven2 Releases Repository</name>
+			<url>http://maven.wocommunity.org/content/repositories/releases</url>
 		</repository>
 		<snapshotRepository>
-			<id>webobjects.mdimension.com/dist/snapshots</id>
-			<name>mdimension Maven2 Snapshot Repository</name>
-			<url>scp://webobjects.mdimension.com/Library/WebServer/BuildServer/maven2/snapshots</url>
+			<id>wocommunity.deployment</id>
+			<name>WOCommunity Maven2 Snapshots Repository</name>
+			<url>http://maven.wocommunity.org/content/repositories/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
+
 	<scm>
 		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject/trunk/woproject</connection>
 		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/trunk/woproject</developerConnection>
 		<url>http://svn.objectstyle.org/repos/woproject/trunk/woproject</url>
 	</scm>
+
 	<build>
 		<pluginManagement>
 			<plugins>
