@@ -147,9 +147,7 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
       if (parentBinding != null) {
         declaringType = parentBinding.getBindingMember().getDeclaringType();
       } else {
-        if (isField) {
-          declaringType = _bindingDeclaringType;
-        }
+        declaringType = _bindingDeclaringType;
       }
     }
     
@@ -164,7 +162,7 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
       }
     }
     String nextTypeNameErasure = Signature.getTypeErasure(nextTypeName);
-//    System.out.println("BindingValueKey.resolveNextType: " + nextTypeNameErasure + " / " + declaringType);
+    //System.out.println("BindingValueKey.resolveNextType: " + nextTypeNameErasure + " / " + _bindingDeclaringType);
     return _cache.getTypeForNameInType(nextTypeNameErasure, declaringType);
   }
 
