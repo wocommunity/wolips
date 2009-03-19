@@ -269,6 +269,8 @@ public class FrameworkSet extends FileSet {
   }
 
   protected Path getJarsPath() {
+    Path frameworkPath = new Path(getProject());
+    
     List<ExternalFolderFramework> frameworks;
     if (getEclipse()) {
       frameworks = getEclipseFrameworks();
@@ -279,9 +281,16 @@ public class FrameworkSet extends FileSet {
       for (String includedFrameworkFolderName : includedFrameworkFolderNames) {
         String frameworkName = ExternalFolderFramework.frameworkNameForFolder(new File(includedFrameworkFolderName));
         if (frameworkName != null) {
-          IFramework framework = getFrameworkModel().getFrameworkWithName(frameworkName);
-          if (framework instanceof ExternalFolderFramework) {
-            frameworks.add((ExternalFolderFramework) framework);
+          if (getDir() == null) {
+            IFramework framework = getFrameworkModel().getFrameworkWithName(frameworkName);
+            if (framework instanceof ExternalFolderFramework) {
+              frameworks.add((ExternalFolderFramework) framework);
+            }
+          }
+          else {
+            String frameworkjar = includedFrameworkFolderName+"/Resources/Java/"+frameworkName.toLowerCase()+".jar";
+            File frameworkLocation = new File(getDir(), frameworkjar);
+            frameworkPath.createPathElement().setLocation(frameworkLocation);
           }
         }
         else {
@@ -290,7 +299,6 @@ public class FrameworkSet extends FileSet {
       }
     }
 
-    Path frameworkPath = new Path(getProject());
     for (IFramework framework : frameworks) {
       if (framework.getRoot().equals(getFrameworkRoot())) {
         for (FrameworkLibrary frameworkLibrary : framework.getFrameworkLibraries()) {
@@ -323,6 +331,7 @@ public class FrameworkSet extends FileSet {
       path.append(new Path(project, jarPath));
     }
 
+    //System.out.println("FrameworkSet.jarsPathForFrameworkSets1: <" + path + ">");
     return path;
   }
 
@@ -355,7 +364,7 @@ public class FrameworkSet extends FileSet {
       path.append(encodedPath).append(System.getProperty("line.separator"));
     }
 
-    //System.out.println("FrameworkSet.jarsPathForFrameworkSets: " + path);
+    //System.out.println("FrameworkSet.jarsPathForFrameworkSets2: <" + path + ">");
     return path.toString();
   }
 
