@@ -115,6 +115,13 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
 		return this._underlyingProject;
 	}
 
+	public String getBundleName() {
+		// This is not really right ... if your project name differs from your framework name,
+		// this will choke, but it's currently consistent with how dynamic framework resolution
+		// works, and until that is changed over to use this method, we're stuck with it.
+		return getUnderlyingProject().getName();
+	}
+	
 	public boolean isFramework() {
 		return this._isFramework;
 	}

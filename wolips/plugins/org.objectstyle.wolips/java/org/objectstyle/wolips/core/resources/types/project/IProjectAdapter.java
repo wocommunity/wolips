@@ -70,6 +70,8 @@ import org.objectstyle.wolips.variables.BuildProperties;
 public interface IProjectAdapter extends IResourceType, IPBDotProjectOwner {
 	public IProject getUnderlyingProject();
 
+	public String getBundleName();
+	
 	public boolean isFramework();
 
 	public boolean isApplication();
