@@ -169,10 +169,16 @@ public class TypeCache {
           bindingValueAccessorKeys = BindingReflectionUtils.getBindingKeys(javaProject, _type, name, true, BindingReflectionUtils.ACCESSORS_OR_VOID, false, TypeCache.this);
           // MS: Don't cache this for now -- I don't know how many end up in here and how long they
           // hang around, but I think the answer is "a lot" and "for a long time".  However, it's a huge performance win.
-          _bindingValueAccessorKeys.put(name, bindingValueAccessorKeys);
+          
+          // Q: Don't cache results from types with generic type parameters
+          if (_type.getTypeParameters().length == 0 || bindingValueAccessorKeys.size() == 0) {
+            _bindingValueAccessorKeys.put(name, bindingValueAccessorKeys);
+          } else {
+            //System.out.println("TypeCacheEntry.getBindingValueMutatorKeys: not caching " + _type.getElementName() + ": " + name);
+          }
         }
         else {
-          //System.out.println("TypeCache.getBindingValueAccessorKeys: HIT  " + type.getElementName() + ": " + name);
+          //System.out.println("TypeCache.getBindingValueAccessorKeys: HIT  " + _type.getElementName() + ": " + name);
         }
         return bindingValueAccessorKeys;
       }
@@ -186,10 +192,16 @@ public class TypeCache {
           bindingValueMutatorKeys = BindingReflectionUtils.getBindingKeys(javaProject, _type, name, true, BindingReflectionUtils.MUTATORS_ONLY, false, TypeCache.this);
           // MS: Don't cache this for now -- I don't know how many end up in here and how long they
           // hang around, but I think the answer is "a lot" and "for a long time".  However, it's a huge performance win.
-          _bindingValueMutatorKeys.put(name, bindingValueMutatorKeys);
+
+          // Q: Don't cache results from types with generic type parameters
+          if (_type.getTypeParameters().length == 0 || bindingValueMutatorKeys.size() == 0) {
+            _bindingValueMutatorKeys.put(name, bindingValueMutatorKeys);
+          } else {
+            //System.out.println("TypeCacheEntry.getBindingValueMutatorKeys: not caching " + _type.getElementName() + ": " + name);
+          }
         }
         else {
-          //System.out.println("TypeCache.getBindingValueMutatorKeys: HIT  " + type.getElementName() + ": " + name);
+          //System.out.println("TypeCache.getBindingValueMutatorKeys: HIT  " + _type.getElementName() + ": " + name);
         }
         return bindingValueMutatorKeys;
       }
