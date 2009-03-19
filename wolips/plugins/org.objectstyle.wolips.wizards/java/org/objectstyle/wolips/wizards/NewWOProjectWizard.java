@@ -123,6 +123,7 @@ import org.eclipse.ui.internal.util.PrefUtil;
 import org.eclipse.ui.internal.wizards.newresource.ResourceMessages;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 import org.objectstyle.wolips.jdt.ProjectFrameworkAdapter;
+import org.objectstyle.wolips.jdt.classpath.model.IEclipseFramework;
 import org.objectstyle.wolips.templateengine.InstallTemplateOperation;
 import org.objectstyle.wolips.templateengine.ProjectTemplate;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
@@ -894,12 +895,12 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 
 			if (_refProjects != null && _refProjects.length > 0) {
 				IJavaProject javaProject = JavaCore.create(project);
-				Set<IClasspathEntry> classpathEntries = new HashSet<IClasspathEntry>();
+				List<IClasspathEntry> classpathEntries = new LinkedList<IClasspathEntry>();
 				for (IClasspathEntry classpathEntry : javaProject.getRawClasspath()) {
 					classpathEntries.add(classpathEntry);
 				}
 				for (IProject referencedProject : _refProjects) {
-					classpathEntries.add(JavaCore.newProjectEntry(referencedProject.getFullPath()));
+					IEclipseFramework.Utility.addProjectToProject(referencedProject, javaProject, classpathEntries);
 				}
 				javaProject.setRawClasspath(classpathEntries.toArray(new IClasspathEntry[classpathEntries.size()]), monitor);
 			}
