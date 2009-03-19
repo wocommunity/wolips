@@ -58,11 +58,14 @@ package org.objectstyle.wolips.jdt.classpath.model;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.woenvironment.frameworks.IFramework;
+import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.jdt.JdtPlugin;
 import org.objectstyle.wolips.jdt.classpath.WOFrameworkClasspathContainer;
 
 public interface IEclipseFramework extends IFramework {
@@ -110,6 +113,31 @@ public interface IEclipseFramework extends IFramework {
 			}
 		}
 
+		public static boolean addProjectToProject(IProject referencedProject, IJavaProject javaProject, List<IClasspathEntry> existingEntries) throws JavaModelException {
+			boolean addedProject = false;
+			
+			boolean referencedProjectIsFramework = false;
+			
+			IProjectAdapter referencedProjectAdaptor = (IProjectAdapter) referencedProject.getAdapter(IProjectAdapter.class);
+			if (referencedProjectAdaptor != null) {
+				IEclipseFramework framework = JdtPlugin.getDefault().getFrameworkModel(javaProject.getProject()).getFrameworkWithName(referencedProjectAdaptor.getBundleName());
+				if (framework != null) {
+					referencedProjectIsFramework = true;
+					addedProject = IEclipseFramework.Utility.addFrameworkToProject(framework, javaProject, existingEntries);
+				}
+			}
+			
+			if (!referencedProjectIsFramework) {
+				IClasspathEntry classpathEntry = JavaCore.newProjectEntry(referencedProject.getFullPath());
+				if (!existingEntries.contains(classpathEntry)) {
+					existingEntries.add(classpathEntry);
+					addedProject = true;
+				}
+			}
+			
+			return addedProject;
+		}
+		
 		public static boolean addFrameworkToProject(IEclipseFramework frameworkToAdd, IJavaProject javaProject, List<IClasspathEntry> existingEntries) throws JavaModelException {
 			boolean addFramework = true;
 			String name = frameworkToAdd.getName();
