@@ -147,6 +147,19 @@ public class FuzzyXMLAttributeImpl extends AbstractFuzzyXMLNode implements Fuzzy
     return attributeName;
   }
   
+  public String toDebugString() {
+    StringBuffer sb = new StringBuffer();
+    toDebugString(sb, 0);
+    return sb.toString();
+  }
+
+  public void toDebugString(StringBuffer buffer, int indent) {
+    for (int i = 0; i < indent; i ++) {
+      buffer.append("  ");
+    }
+    buffer.append(getName() + "=" + getValue());
+  }
+  
   public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer) {
     boolean isHTML = renderContext.isHtml();
 

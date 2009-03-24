@@ -62,7 +62,20 @@ public class FuzzyXMLFormatComposite implements FuzzyXMLNode, FuzzyXMLFormat {
   public FuzzyXMLFormatComposite parentNode() {
     return getParentNode();
   }
-  
+
+  public String toDebugString() {
+    StringBuffer sb = new StringBuffer();
+    toDebugString(sb, 0);
+    return sb.toString();
+  }
+
+  public void toDebugString(StringBuffer buffer, int indent) {
+    for (int i = 0; i < indent; i ++) {
+      buffer.append("  ");
+    }
+    buffer.append("formatComposite: " + delegate + "\n");
+  }
+
   public String toXMLString(RenderContext renderContext) {
     if (delegate != null) {
       return delegate.toXMLString(renderContext);

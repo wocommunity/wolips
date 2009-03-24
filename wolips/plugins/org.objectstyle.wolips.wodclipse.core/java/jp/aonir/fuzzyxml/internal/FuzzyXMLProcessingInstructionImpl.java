@@ -42,6 +42,19 @@ public class FuzzyXMLProcessingInstructionImpl extends AbstractFuzzyXMLNode impl
     return "PI: " + _name;
   }
 
+  public String toDebugString() {
+    StringBuffer sb = new StringBuffer();
+    toDebugString(sb, 0);
+    return sb.toString();
+  }
+
+  public void toDebugString(StringBuffer buffer, int indent) {
+    for (int i = 0; i < indent; i ++) {
+      buffer.append("  ");
+    }
+    buffer.append("processingInstruction: " + _name + ", " + _data + "\n");
+  }
+
   public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer) {
     xmlBuffer.append("<?" + _name + " " + _data + "?>");
   }

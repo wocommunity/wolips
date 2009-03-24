@@ -25,6 +25,10 @@ public interface FuzzyXMLElement extends FuzzyXMLNode, FuzzyXMLFormat {
 
   public int getCloseNameLength();
   
+  public FuzzyXMLNode getChild(int index);
+
+  public FuzzyXMLElement getChildElement(int index);
+
 	public FuzzyXMLNode[] getChildren();
 	
 	public boolean hasChildren();
