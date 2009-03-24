@@ -14,6 +14,10 @@ public interface FuzzyXMLNode {
 
   public int getLength();
 
+  public String toDebugString();
+  
+  public void toDebugString(StringBuffer buffer, int indent);
+
   public String toXMLString(RenderContext renderContext);
 
   public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer);

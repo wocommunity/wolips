@@ -33,6 +33,19 @@ public class FuzzyXMLDocTypeImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   public String getInternalSubset() {
     return _internalSubset;
   }
+  
+  public String toDebugString() {
+    StringBuffer sb = new StringBuffer();
+    toDebugString(sb, 0);
+    return sb.toString();
+  }
+
+  public void toDebugString(StringBuffer buffer, int indent) {
+    for (int i = 0; i < indent; i ++) {
+      buffer.append("  ");
+    }
+    buffer.append("doctype: " + _name + ", " + _publicId + ", " + _systemId + ", " + _internalSubset + "\n");
+  }
 
   public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer) {   
     xmlBuffer.append("<!DOCTYPE ").append(_name);

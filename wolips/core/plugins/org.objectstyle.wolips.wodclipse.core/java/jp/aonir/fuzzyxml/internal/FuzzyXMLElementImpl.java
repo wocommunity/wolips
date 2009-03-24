@@ -267,6 +267,14 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     return _attributes.toArray(new FuzzyXMLAttribute[_attributes.size()]);
   }
 
+  public FuzzyXMLNode getChild(int index) {
+    return _children.get(index);
+  }
+
+  public FuzzyXMLElement getChildElement(int index) {
+    return (FuzzyXMLElement) _children.get(index);
+  }
+  
   public FuzzyXMLNode[] getChildren() {
     // アトリビュートは含まない？
     return _children.toArray(new FuzzyXMLNode[_children.size()]);
@@ -505,7 +513,41 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     sb.delete(0, length);
     return sb.toString();
   }
+  
+  public String toDebugString() {
+    StringBuffer sb = new StringBuffer();
+    toDebugString(sb, 0);
+    return sb.toString();
+  }
 
+  public void toDebugString(StringBuffer buffer, int indent) {
+    for (int i = 0; i < indent; i ++) {
+      buffer.append("  ");
+    }
+    String name = getName();
+    if (name != null && name.trim().length() > 0) {
+      buffer.append(name);
+    }
+    else {
+      buffer.append("[unknown: '" + name + "']");
+    }
+    if (_attributes != null && _attributes.size() > 0) {
+      buffer.append(", attributes={");
+      FuzzyXMLAttribute[] attributes = getAttributes();
+      for (int i = 0; i < attributes.length; i ++) {
+        attributes[i].toDebugString(buffer, 0);
+        if (i < attributes.length - 1) {
+          buffer.append("; ");
+        }
+      }
+      buffer.append("}");
+    }
+    buffer.append("\n");
+    for (FuzzyXMLNode child : getChildren()) {
+      child.toDebugString(buffer, indent + 1);
+    }
+  }
+  
   public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer) {
     boolean isHTML = renderContext.isHtml();
 
