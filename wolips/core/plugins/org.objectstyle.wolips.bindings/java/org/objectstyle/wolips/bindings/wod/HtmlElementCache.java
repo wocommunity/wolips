@@ -1,6 +1,7 @@
 package org.objectstyle.wolips.bindings.wod;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -8,9 +9,11 @@ import java.util.Set;
 
 public class HtmlElementCache {
   private Map<String, List<HtmlElementName>> _htmlElementCache;
+  private Set<String> _vars;
 
   public HtmlElementCache() {
     _htmlElementCache = new HashMap<String, List<HtmlElementName>>();
+    _vars = new HashSet<String>();
   }
 
   public void addHtmlElement(HtmlElementName htmlElement) {
@@ -35,7 +38,12 @@ public class HtmlElementCache {
     return _htmlElementCache.keySet();
   }
 
+  public Set<String> getVars() {
+    return _vars;
+  }
+
   public void clearCache() {
     _htmlElementCache.clear();
+    _vars.clear();
   }
 }

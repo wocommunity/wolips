@@ -60,6 +60,8 @@ import org.objectstyle.wolips.bindings.api.IApiBinding;
 public interface IWodBinding extends IWodUnit, IApiBinding {
   public String getNamespace();
   
+  public String getValueNamespace();
+  
   public String getName();
 
   public String getValue();
@@ -80,9 +82,11 @@ public interface IWodBinding extends IWodUnit, IApiBinding {
   
   public Position getNamePosition();
 
+  public Position getValueNamespacePosition();
+
   public Position getValuePosition();
 
-  public void fillInBindingProblems(IWodElement element, IApiBinding apiBinding, IJavaProject javaProject, IType javaFileType, List<WodProblem> problems, TypeCache cache) throws JavaModelException;
+  public void fillInBindingProblems(IWodElement element, IApiBinding apiBinding, IJavaProject javaProject, IType javaFileType, List<WodProblem> problems, TypeCache cache, HtmlElementCache htmlCache) throws JavaModelException;
 
   public void writeInlineFormat(Writer writer, String prefix, String suffix) throws IOException;
 
