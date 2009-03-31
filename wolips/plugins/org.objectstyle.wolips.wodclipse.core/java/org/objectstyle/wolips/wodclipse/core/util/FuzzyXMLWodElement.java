@@ -10,6 +10,7 @@ import org.objectstyle.wolips.bindings.api.ApiCache;
 import org.objectstyle.wolips.bindings.wod.SimpleWodBinding;
 import org.objectstyle.wolips.bindings.wod.SimpleWodElement;
 import org.objectstyle.wolips.bindings.wod.TagShortcut;
+import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils.BindingValue;
 
 public class FuzzyXMLWodElement extends SimpleWodElement {
   private FuzzyXMLElement _xmlElement;
@@ -37,8 +38,8 @@ public class FuzzyXMLWodElement extends SimpleWodElement {
 
     if (matchingTagShortcut != null) {
       for (Map.Entry<String, String> shortcutAttribute : matchingTagShortcut.getAttributes().entrySet()) {
-        String value = WodHtmlUtils.toBindingValue(shortcutAttribute.getValue(), wo54);
-        SimpleWodBinding wodBinding = new SimpleWodBinding(null, shortcutAttribute.getKey(), value);
+        BindingValue value = WodHtmlUtils.toBindingValue(shortcutAttribute.getValue(), wo54);
+        SimpleWodBinding wodBinding = new SimpleWodBinding(null, shortcutAttribute.getKey(), value.getValue());
         addBinding(wodBinding);
       }
     }
@@ -48,8 +49,20 @@ public class FuzzyXMLWodElement extends SimpleWodElement {
       String namespace = attribute.getNamespace();
       String name = attribute.getName();
       String originalValue = attribute.getValue();
-      String value = WodHtmlUtils.toBindingValue(originalValue, wo54);
-      SimpleWodBinding wodBinding = new SimpleWodBinding(namespace, name, value, new Position(attribute.getNamespaceOffset(), attribute.getNamespaceLength()), new Position(attribute.getNameOffset(), attribute.getNameLength()), new Position(element.getOffset() + attribute.getValueDataOffset() + 1, attribute.getValueDataLength()), -1);
+      BindingValue value = WodHtmlUtils.toBindingValue(originalValue, wo54);
+      Position valuePosition;
+      Position valueNamespacePosition = null;
+      if (value.getValueNamespace() != null) {
+        int valueNamespaceOffset = originalValue.indexOf(value.getValueNamespace());
+        valueNamespacePosition = new Position(element.getOffset() + attribute.getValueDataOffset() + valueNamespaceOffset + 1, value.getValueNamespace().length());
+        int valueOffset = originalValue.indexOf(value.getValue(), valueNamespaceOffset + value.getValueNamespace().length());
+        valuePosition = new Position(valueNamespacePosition.offset + valueOffset, attribute.getValueDataLength() - valueOffset);
+      }
+      else {
+        valuePosition = new Position(element.getOffset() + attribute.getValueDataOffset() + 1, attribute.getValueDataLength());
+      }
+      
+      SimpleWodBinding wodBinding = new SimpleWodBinding(namespace, name, value.getValueNamespace(), value.getValue(), new Position(attribute.getNamespaceOffset(), attribute.getNamespaceLength()), new Position(attribute.getNameOffset(), attribute.getNameLength()), valueNamespacePosition, valuePosition, -1);
       wodBinding.setStartOffset(attribute.getOffset());
       wodBinding.setEndOffset(attribute.getOffset() + attribute.getLength());
       addBinding(wodBinding);

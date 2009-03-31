@@ -39,7 +39,7 @@ public class WodHtmlUtils {
   public static boolean isWOTag(FuzzyXMLElement element) {
     return element != null && WodHtmlUtils.isWOTag(element.getName());
   }
-  
+
   public static boolean isWOTag(String tagName) {
     boolean isWOTag = false;
     if (tagName != null) {
@@ -78,18 +78,53 @@ public class WodHtmlUtils {
     return lineCount;
   }
 
-  public static String toBindingValue(String value, boolean wo54) {
-    String bindingValue = value;
-    if (bindingValue.startsWith("$")) {
-      bindingValue = bindingValue.substring(1);
+  public static class BindingValue {
+    private String _valueNamespace;
+    private String _value;
+    private boolean _literal;
+
+    public BindingValue(String valueNamespace, String value, boolean literal) {
+      _valueNamespace = valueNamespace;
+      _value = value;
+      _literal = literal;
     }
-    else if (wo54 && bindingValue.startsWith("[") && bindingValue.endsWith("]")) {
-      bindingValue = bindingValue.substring(1, bindingValue.length() - 1);
+
+    public String getValue() {
+      return _value;
+    }
+
+    public String getValueNamespace() {
+      return _valueNamespace;
+    }
+
+    public boolean isLiteral() {
+      return _literal;
+    }
+  }
+
+  public static BindingValue toBindingValue(String rawValue, boolean wo54) {
+    BindingValue bindingValue;
+    String valueNamespace = null;
+    String value = rawValue;
+    boolean literal;
+    if (value.startsWith("$")) {
+      value = value.substring(1);
+      literal = false;
+    }
+    else if (wo54 && value.startsWith("[") && value.endsWith("]")) {
+      value = value.substring(1, value.length() - 1);
+      int colonIndex = value.indexOf(':');
+      if (colonIndex != -1) {
+        valueNamespace = value.substring(0, colonIndex).trim();
+        value = value.substring(colonIndex + 1).trim();
+      }
+      literal = false;
     }
     else {
-      bindingValue = "\"" + bindingValue + "\"";
+      value = "\"" + value + "\"";
+      literal = true;
     }
-    return bindingValue;
+    return new BindingValue(valueNamespace, value, literal);
   }
 
   /**

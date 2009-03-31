@@ -186,7 +186,7 @@ public class DocumentWodModel extends AbstractWodModel {
           savedRulePosition = rulePosition;
         }
         else if (ognlIsValue) {
-          lastBinding = addBinding(element, savedRulePosition2, savedRulePosition, rulePosition, scanner);
+          lastBinding = addBinding(element, savedRulePosition2, savedRulePosition, null, rulePosition, scanner);
           savedRulePosition = null;
           savedRulePosition2 = null;
         }
@@ -202,7 +202,7 @@ public class DocumentWodModel extends AbstractWodModel {
           savedRulePosition = rulePosition;
         }
         else if (literalIsValue) {
-          lastBinding = addBinding(element, savedRulePosition2, savedRulePosition, rulePosition, scanner);
+          lastBinding = addBinding(element, savedRulePosition2, savedRulePosition, null, rulePosition, scanner);
           savedRulePosition = null;
           savedRulePosition2 = null;
         }
@@ -224,7 +224,7 @@ public class DocumentWodModel extends AbstractWodModel {
           addParseProblem(element, "The binding value '" + rulePosition._getTextWithoutException() + "' can only appear after an '='", rulePosition, false);
         }
         else {
-          lastBinding = addBinding(element, savedRulePosition2, savedRulePosition, rulePosition, scanner);
+          lastBinding = addBinding(element, savedRulePosition2, savedRulePosition, null, rulePosition, scanner);
         }
         savedRulePosition = null;
         savedRulePosition2 = null;
@@ -260,7 +260,7 @@ public class DocumentWodModel extends AbstractWodModel {
     }
   }
 
-  protected DocumentWodBinding addBinding(DocumentWodElement element, RulePosition namespaceRulePosition, RulePosition nameRulePosition, RulePosition valueRulePosition, WodScanner scanner) {
+  protected DocumentWodBinding addBinding(DocumentWodElement element, RulePosition namespaceRulePosition, RulePosition nameRulePosition, RulePosition valueNamespaceRulePosition, RulePosition valueRulePosition, WodScanner scanner) {
     DocumentWodBinding binding = null;
     if (element == null) {
       addParseProblem(element, "A binding must appear in a declaration", valueRulePosition, false);
@@ -272,7 +272,7 @@ public class DocumentWodModel extends AbstractWodModel {
       addParseProblem(element, "A binding must have a value", valueRulePosition, false);
     }
     else {
-      binding = new DocumentWodBinding(namespaceRulePosition, nameRulePosition, valueRulePosition);
+      binding = new DocumentWodBinding(namespaceRulePosition, nameRulePosition, valueNamespaceRulePosition, valueRulePosition);
       element.addBinding(binding);
     }
     return binding;

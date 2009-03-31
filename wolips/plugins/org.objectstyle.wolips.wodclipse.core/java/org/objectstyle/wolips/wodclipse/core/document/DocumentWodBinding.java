@@ -54,66 +54,77 @@ import org.objectstyle.wolips.wodclipse.core.parser.RulePosition;
  */
 public class DocumentWodBinding extends AbstractWodBinding {
   private RulePosition _namespace;
-  
-	private RulePosition _name;
 
-	private RulePosition _value;
-  
+  private RulePosition _name;
+
+  private RulePosition _valueNamespace;
+
+  private RulePosition _value;
+
   private int _lineNumber;
 
-	public DocumentWodBinding(RulePosition namespace, RulePosition name, RulePosition value) {
-	  _namespace = namespace;
-		_name = name;
-		_value = value;
+  public DocumentWodBinding(RulePosition namespace, RulePosition name, RulePosition valueNamespace, RulePosition value) {
+    _namespace = namespace;
+    _name = name;
+    _valueNamespace = valueNamespace;
+    _value = value;
     _lineNumber = -1;
-	}
-	
-	public RulePosition getNamespaceRulePosition() {
-	  return _namespace;
-	}
-	
-	public RulePosition getNameRulePosition() {
-	  return _name;
-	}
-	
-	public String getNamespace() {
-	  return (_namespace == null) ? null : _namespace._getTextWithoutException();
-	}
-	
-	public Position getNamespacePosition() {
-	  return (_namespace == null) ? null : _namespace.getPosition();
-	}
-	
-	public String getName() {
-		return _name._getTextWithoutException();
-	}
+  }
 
-	public Position getNamePosition() {
-		return _name.getPosition();
-	}
+  public RulePosition getNamespaceRulePosition() {
+    return _namespace;
+  }
 
-	public String getValue() {
-		return _value._getTextWithoutException();
-	}
+  public RulePosition getNameRulePosition() {
+    return _name;
+  }
 
-	public Position getValuePosition() {
-		return _value.getPosition();
-	}
+  public String getNamespace() {
+    return (_namespace == null) ? null : _namespace._getTextWithoutException();
+  }
 
-	public int getStartOffset() {
-	  int startOffset;
-	  if (_namespace == null) {
-	    startOffset = _name.getTokenOffset();
-	  }
-	  else {
-	    startOffset = _namespace.getTokenEndOffset();
-	  }
-		return startOffset;
-	}
+  public Position getNamespacePosition() {
+    return (_namespace == null) ? null : _namespace.getPosition();
+  }
 
-	public int getEndOffset() {
-		return _value.getTokenEndOffset();
-	}
+  public String getName() {
+    return _name._getTextWithoutException();
+  }
+
+  public Position getNamePosition() {
+    return _name.getPosition();
+  }
+  
+  public String getValueNamespace() {
+    return _valueNamespace == null ? null : _valueNamespace._getTextWithoutException();
+  }
+
+  public Position getValueNamespacePosition() {
+    return _valueNamespace == null ? null : _valueNamespace.getPosition();
+  }
+
+  public String getValue() {
+    return _value._getTextWithoutException();
+  }
+
+  public Position getValuePosition() {
+    return _value.getPosition();
+  }
+
+  public int getStartOffset() {
+    int startOffset;
+    if (_namespace == null) {
+      startOffset = _name.getTokenOffset();
+    }
+    else {
+      startOffset = _namespace.getTokenEndOffset();
+    }
+    return startOffset;
+  }
+
+  public int getEndOffset() {
+    return _value.getTokenEndOffset();
+  }
 
   @Override
   public int getLineNumber() {

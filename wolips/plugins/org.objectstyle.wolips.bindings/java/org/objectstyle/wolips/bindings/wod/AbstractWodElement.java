@@ -313,7 +313,7 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
           if (wo != null) {
             apiBinding = wo.getBinding(binding.getName());
           }
-          binding.fillInBindingProblems(this, apiBinding, javaProject, javaFileType, problems, typeCache);
+          binding.fillInBindingProblems(this, apiBinding, javaProject, javaFileType, problems, typeCache, htmlCache);
         }
         catch (JavaModelException t) {
           javaModelException = t;
