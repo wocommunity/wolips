@@ -223,8 +223,11 @@ public class FrameworkSet extends FileSet {
       }
       return frameworks;
     }
+    catch(BuildException e) {
+    	throw e;
+    }
     catch (Throwable t) {
-      throw new BuildException("Failed to process eclipse frameworks.", t);
+      throw new BuildException("Failed to process eclipse frameworks: "+t.getMessage(), t);
     }
   }
 
@@ -247,7 +250,7 @@ public class FrameworkSet extends FileSet {
         frameworkIncludesCreated = true;
       }
       catch (Throwable t) {
-        throw new BuildException("Failed to process eclipse frameworks.", t);
+        throw new BuildException("Failed to process eclipse frameworks: "+t.getMessage(), t);
       }
     }
 
