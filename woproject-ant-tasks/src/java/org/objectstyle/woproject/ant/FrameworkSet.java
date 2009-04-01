@@ -56,6 +56,7 @@
 package org.objectstyle.woproject.ant;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -288,9 +289,17 @@ public class FrameworkSet extends FileSet {
             }
           }
           else {
-            String frameworkjar = includedFrameworkFolderName+"/Resources/Java/"+frameworkName.toLowerCase()+".jar";
-            File frameworkLocation = new File(getDir(), frameworkjar);
-            frameworkPath.createPathElement().setLocation(frameworkLocation);
+            String jarDirName = includedFrameworkFolderName + File.separator + "Resources" + File.separator + "Java";
+            File jarDir = new File(getDir(), jarDirName);
+            if (jarDir.isDirectory()) {
+              File[] jars = jarDir.listFiles(new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                  return (name.endsWith(".jar") || name.endsWith(".zip")) && !name.equals("src.jar");
+                }
+              });
+              for (File jar : jars)
+                frameworkPath.setLocation(jar);
+            }
           }
         }
         else {
