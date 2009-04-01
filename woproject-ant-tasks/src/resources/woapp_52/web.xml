@@ -82,6 +82,11 @@
     <param-value>@WOApplicationClass@</param-value>
   </context-param>
 
+  <context-param> 
+    <param-name>WEBINFROOT</param-name> 
+    <param-value>%WEBINFROOT%</param-value> 
+  </context-param>
+
   <!-- The WebObjects Servlet that interfaces between the Servlet container
        world and the WebObjects world. -->
   <servlet>
@@ -111,11 +116,6 @@
     <taglib-uri>/WOtaglib</taglib-uri>
     <taglib-location>/WEB-INF/tlds/@WOTagLib@</taglib-location>
   </taglib>
-
- <context-param> 
- 	<param-name>WEBINFROOT</param-name> 
- 	<param-value>%WEBINFROOT%</param-value> 
- </context-param>
 
 @CustomContent@
 
