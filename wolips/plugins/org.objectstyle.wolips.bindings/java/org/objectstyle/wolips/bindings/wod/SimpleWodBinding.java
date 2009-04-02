@@ -30,7 +30,7 @@ public class SimpleWodBinding extends AbstractWodBinding {
   }
 
   public SimpleWodBinding(String namespace, String name, String value, boolean literal) {
-    this(namespace, name, (literal) ? ("\"" + value + "\"") : value, null, null, null, null, null, -1);
+    this(namespace, name, null, (literal) ? ("\"" + value + "\"") : value, null, null, null, null, -1);
   }
 
   public SimpleWodBinding(String namespace, String name, String valueNamespace, String value, Position namespacePosition, Position namePosition, Position valueNamespacePosition, Position valuePosition, int lineNumber) {
